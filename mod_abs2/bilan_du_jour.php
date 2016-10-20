@@ -92,12 +92,20 @@ $utilisation_scriptaculous="ok";
 $utilisation_win = 'oui';
 
 $dojo=true;
-//**************** EN-TETE *****************
-$titre_page = "Les absences";
-require_once("../lib/header.inc.php");
-include('menu_abs2.inc.php');
-include('menu_bilans.inc.php');
 
+$aff_sans_entete=isset($_POST['aff_sans_entete']) ? $_POST['aff_sans_entete'] : (isset($_GET['aff_sans_entete']) ? $_GET['aff_sans_entete'] : "n");
+$csv=isset($_POST['csv']) ? $_POST['csv'] : (isset($_GET['csv']) ? $_GET['csv'] : NULL);
+//**************** EN-TETE *****************
+//debug_var();
+if($aff_sans_entete=="n") {
+	$titre_page = "Les absences";
+	require_once("../lib/header.inc.php");
+	include('menu_abs2.inc.php');
+	include('menu_bilans.inc.php');
+}
+else {
+	require_once("../lib/header.inc.php");
+}
 	if((getSettingAOui('autorise_edt_tous'))||
 		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
 		$titre_infobulle="EDT de la classe de <span id='span_id_nom_classe'></span>";
@@ -120,7 +128,17 @@ include('menu_bilans.inc.php');
 </script>\n";
 	}
 
-?>
+if($aff_sans_entete=="y") {
+	echo "<style type='text/css'>
+	td {
+		border: 1px solid black;
+	}
+</style>";
+	$cellpadding_cellspacing="";
+}
+else {
+	$cellpadding_cellspacing=' cellpadding="5" cellspacing="5"';
+ ?>
 
 <div id="contain_div" class="css-panes">
 	<div class="legende">
@@ -129,8 +147,20 @@ include('menu_bilans.inc.php');
 		<font color="red">&#9632;</font> Manquement aux obligations de présence<br />
 		<font color="blue">&#9632;</font> Non manquement aux obligations de présence<br />
 	</div>
-
+<?php
+}
+?>
 <form dojoType="dijit.form.Form" id="choix_date" name="choix_date" action="<?php $_SERVER['PHP_SELF']?>" method="post">
+	<?php
+		$temp_directory=get_user_temp_directory();
+		if($temp_directory) {
+			echo "<div id='div_csv' class='noprint' style='float:right; width:16px'><a href='".$_SERVER['PHP_SELF']."?csv=y&aff_sans_entete=$aff_sans_entete' title='Générer un CSV'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>";
+		}
+
+		//echo "<input type='hidden' name='aff_sans_entete' value='$aff_sans_entete' />";
+
+		$lignes_csv="Classe;Nom prénom;";
+	?>
 	<h2>Les saisies du
 		<input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" onchange="document.choix_date.submit()" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
 		<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Changer</button>
@@ -138,10 +168,13 @@ include('menu_bilans.inc.php');
 		 - Afficher&nbsp;:<input type='checkbox' name='afficher_retard' id='afficher_retard' value='y' <?php if($afficher_retard=="y") {echo "checked ";}?>/><label for='afficher_retard'>Retards</label>
 		 - <input type='checkbox' name='afficher_manquement' id='afficher_manquement' value='y' <?php if($afficher_manquement=="y") {echo "checked ";}?>/><label for='afficher_manquement'>Manquements</label>
 		 - <input type='checkbox' name='afficher_non_manquement' id='afficher_non_manquement' value='y' <?php if($afficher_non_manquement=="y") {echo "checked ";}?>/><label for='afficher_non_manquement'>Non-manquements</label>
+
+		- <input type='checkbox' id='aff_sans_entete' name='aff_sans_entete' value='y' <?php if($aff_sans_entete=="y") {echo "checked ";}?>/><label for='aff_sans_entete'>Sans entête</label>
+
 	</h2>
 </form>
 
-<table style="border: 1px solid black; background-color:lightgrey" class="bilan_du_jour_table" cellpadding="5" cellspacing="5">
+<table style="border: 1px solid black; background-color:lightgrey" class="bilan_du_jour_table"<?php echo $cellpadding_cellspacing;?>>
 <?php $creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();?>
 	<tr>
 		<th style="border: 1px solid black; background-color: gray;">Classe</th>
@@ -150,7 +183,9 @@ include('menu_bilans.inc.php');
 		//afficher les créneaux
 		foreach(EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $creneau){
 			echo "<th style=\"border: 1px solid black; background-color: grey;\">".$creneau->getNomDefiniePeriode()."</th>\n";
+			$lignes_csv.=$creneau->getNomDefiniePeriode().";";
 		}
+		$lignes_csv.="\r\n";
 ?>
 	</tr>
 <?php
@@ -178,6 +213,8 @@ foreach($classe_col as $classe) {
 		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
 		echo "<div style='float:right; width:3em; margin-left:1em;'><a href='../edt_organisation/index_edt.php?login_edt=".$classe->getId()."&amp;type_edt_2=classe&amp;visioedt=classe1&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle(".$classe->getId().", '".$classe->getNom()."');return false;\" title=\"Emploi du temps de la classe de ".$classe->getNom()."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>\n";
 	}
+
+	$lignes_csv.=$classe->getNom().";\r\n";
 
 	echo $classe->getNom().'</td>
 			<td colspan="'.($creneau_col->count() + 1).'"></td>
@@ -210,7 +247,7 @@ foreach($classe_col as $classe) {
 			}
 
 			if (!$affiche) {
-                continue;
+				continue;
 			}
 
 			if(($afficher_retard!="y")||($afficher_manquement!="y")||($afficher_non_manquement!="y")) {
@@ -243,7 +280,7 @@ foreach($classe_col as $classe) {
 			}
 
 			if (!$affiche) {
-                continue;
+				continue;
 			}
 
 			if ($cpt_eleve%2==0) {
@@ -255,10 +292,10 @@ foreach($classe_col as $classe) {
 			}
 			$cpt_eleve++;
 
-            echo '<tr style="background-color :'.$background_couleur.'">
-                <td><pre>';
-            //print_r($abs);
-            echo '</pre></td>
+			echo '<tr style="background-color :'.$background_couleur.'">
+			<td><pre>';
+			//print_r($abs);
+			echo '</pre></td>
 			<td>
 			<a name="ancre_id_eleve_'.$eleve->getId().'"></a>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
@@ -269,16 +306,21 @@ foreach($classe_col as $classe) {
 			} else {
 			    echo $eleve->getNom().' '.$eleve->getPrenom();
 			}
+
+			$lignes_csv.=";".$eleve->getNom().' '.$eleve->getPrenom().";";
+
 			echo '</td>';
 			// On traite alors pour chaque créneau
 			foreach($creneau_col as $creneau) {
 			    $abs_col = $eleve->getAbsenceEleveSaisiesDuCreneau($creneau, $dt_date_absence_eleve);
 			    if ($abs_col->isEmpty()){
 				echo '<td></td>';
+				$lignes_csv.=";";
 			    } else {
 				foreach($abs_col as $abs) {
                     if ($abs->getManquementObligationPresenceSpecifie_NON_PRECISE()){
                         echo '<td></td>';
+				$lignes_csv.=";";
                         break;
                     }else{
                         echo '<td style="background-color:'.$abs->getColor().';text-align:center;"';
@@ -289,6 +331,7 @@ foreach($classe_col as $classe) {
 Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_from_mysql_date($abs->getFinAbs()).'">';
                         	echo "M";
                         	echo "</a>";
+					$lignes_csv.="M;";
                         }
                         elseif($abs->getColor()=='orange') {
                         	//echo " title=\"Retard\"><span style=\"color:".$abs->getColor()."\">R</span>";
@@ -298,6 +341,7 @@ Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_f
 Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_from_mysql_date($abs->getFinAbs()).'">';
                         	echo "R";
                         	echo "</a>";
+					$lignes_csv.="R;";
                         }
                         elseif($abs->getColor()=='blue') {
                         	echo " title=\"Non manquement aux obligations de présence\n".$abs->getDescription()."\n".$abs->getTypesTraitements()."\">";
@@ -306,6 +350,7 @@ Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_f
 Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_from_mysql_date($abs->getFinAbs()).'">';
                         	echo "NM";
                         	echo "</a>";
+					$lignes_csv.="NM;";
                         }
                         else {
                         	echo ">";
@@ -323,14 +368,44 @@ Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_f
 			    }
 			}
 			echo '</tr>';
+			$lignes_csv.="\r\n";
 	}
 }
 ?>
 </table>
 <br />
   <span class="bold">Impression faite le <?php echo date("d/m/Y - H:i"); ?>.</span>
+  <?php
+	if((isset($csv))&&($csv=="y")&&($temp_directory)) {
+		$lignes_csv.="Extraction CSV concernant le ".$dt_date_absence_eleve->format('d/m/Y');
+		if($afficher_retard=="y") {
+			$lignes_csv.=" avec affichage des retards,";
+		}
+		if($afficher_manquement=="y") {
+			$lignes_csv.=" avec affichage des manquements,";
+		}
+		if($afficher_non_manquement=="y") {
+			$lignes_csv.=" avec affichage des non-manquements,";
+		}
+		$lignes_csv.=" effectuée le ".date("d/m/Y - H:i").".\r\n";
+
+		// Générer le fichier
+		$chemin_fichier="../temp/$temp_directory/bilan_jour_".$dt_date_absence_eleve->format('Y-m-d').".csv";
+		$f=fopen($chemin_fichier, "w+");
+		fwrite($f, $lignes_csv);
+		fclose($f);
+		// Remplacer le contenu du div div_csv
+		echo "<script type='text/javascript'>
+	if(document.getElementById('div_csv')) {
+		//alert('plop');
+		document.getElementById('div_csv').innerHTML=\"<a href='$chemin_fichier' title='Télécharger le CSV' target='_blank'><img src='../images/icons/csv_enabled.png' class='icone16' alt='Télécharger le CSV'/></a>\";
+	}
+</script>";
+	}
+  ?>
 </div>
 <?php
+//echo "<pre>$lignes_csv</pre>";
 $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dojo.parser");
     dojo.require("dijit.form.Button");    
