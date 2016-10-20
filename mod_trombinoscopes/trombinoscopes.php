@@ -266,7 +266,7 @@ $style_specifique = "mod_trombinoscopes/styles/styles";
 $titre_page = "Visualisation des trombinoscopes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-// debug_var();
+//debug_var();
 ?>
 <script type="text/javascript">
 
@@ -366,8 +366,13 @@ function reactiver(mavar) {
 		elseif($_SESSION['statut']=='scolarite'){
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
-		elseif($_SESSION['statut']=='professeur'){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		elseif($_SESSION['statut']=='professeur') {
+			if((isset($_SESSION['trombi_classes']))&&($_SESSION['trombi_classes']=="toutes")) {
+				$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY c.classe";
+			}
+			else {
+				$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+			}
 		}
 		elseif($_SESSION['statut']=='cpe'){
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
@@ -454,6 +459,8 @@ function reactiver(mavar) {
 
 			//=================================================================
 			// CLASSES
+
+
 			echo "<label for='classe' style='margin-left: 15px;'>Par classe</label><br />\n";
 			echo "<select name='classe' id='classe' style='margin-left: 15px;'>\n";
 
@@ -467,11 +474,15 @@ function reactiver(mavar) {
 			}
 
 			if (($classe=='')&&($_SESSION['statut']=='professeur')) {
+				$_SESSION['trombi_classes']="mes classes";
 				// Le prof ne voit par défaut que ses classes... mais en sélectionnant 'Toutes', il peut provoquer l'affichage des autres classes dans le champ select.
 				$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
 							WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
 							GROUP BY c.id
 							ORDER BY nom_complet ASC');
+			}
+			elseif (($classe=='toutes')&&($_SESSION['statut']=='professeur')) {
+				$_SESSION['trombi_classes']="toutes";
 			}
 
 			if (($classe=='')&&($_SESSION['statut']=='eleve')) {
