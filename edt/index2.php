@@ -1479,6 +1479,18 @@ echo "<p><a href=\"javascript:afficher_div('edt_test','y',-10,20)\">Afficher en 
 */
 //===============================================
 
+
+if((isset($type_affichage))&&($type_affichage!="eleve")) {
+	echo "
+<script type='text/javascript'>
+	if(document.getElementById('affichage_complementaire_sur_edt')) {
+		document.getElementById('affichage_complementaire_sur_edt').style.display='none';
+	}
+</script>
+";
+}
+
+
 echo "<!--div id='div_action_edt'></div-->
 
 <script type='text/javascript'>
