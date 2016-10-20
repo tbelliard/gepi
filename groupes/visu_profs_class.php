@@ -832,6 +832,9 @@ else {
 		if($acces_class_const) {
 			$html_current_classe.="<a href='../classes/classes_const.php?id_classe=$current_id_classe' title=\"Voir la composition de la classe, ses élèves, leurs régimes, PP et CPE.\">$current_classe</a>";
 		}
+		elseif($acces_visu_eleve) {
+			$html_current_classe.="<a href='../eleves/visu_eleve.php?id_classe=$current_id_classe' title=\"Voir la liste des élèves de la classe.\">$current_classe</a>";
+		}
 		else {
 			$html_current_classe.=$current_classe;
 		}
