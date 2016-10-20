@@ -59,16 +59,6 @@ $u_login=isset($_POST['u_login']) ? $_POST['u_login'] : (isset($_GET['u_login'])
 
 $envoi_mail=isset($_POST['envoi_mail']) ? $_POST['envoi_mail'] : (isset($_GET['envoi_mail']) ? $_GET['envoi_mail'] : NULL);
 
-//comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
-if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
-	//**************** EN-TETE *****************************
-	//$titre_page = "Gestion des utilisateurs | Réinitialisation des mots de passe";
-	$titre_page_title="Réinitialisation des mots de passe";
-	require_once("../lib/header.inc.php");
-	//**************** FIN EN-TETE *****************
-}
-
-
 //debug_var();
 
 // Passer à 'y' pour provoquer l'affichage des requetes:
@@ -90,6 +80,16 @@ $user_classe = isset($_POST["user_classe"]) ? $_POST["user_classe"] : (isset($_G
 // On bloque donc l'opération si jamais un des trois paramètres n'a pas été passé correctement, pour une raison ou une autre.
 
 if ($user_login AND strtoupper($user_login) == strtoupper($_SESSION['login'])) {
+
+	//comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
+	if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
+		//**************** EN-TETE *****************************
+		//$titre_page = "Gestion des utilisateurs | Réinitialisation des mots de passe";
+		$titre_page_title="Réinitialisation des mots de passe";
+		require_once("../lib/header.inc.php");
+		//**************** FIN EN-TETE *****************
+	}
+
 	$user_login = false;
 	echo "<p>ERREUR ! Utilisez l'interface 'Gérer mon compte' pour changer votre mot de passe !</p>";
 	require("../lib/footer.inc.php");
@@ -97,12 +97,32 @@ if ($user_login AND strtoupper($user_login) == strtoupper($_SESSION['login'])) {
 }
 
 if ($user_status and !in_array($user_status, array("scolarite", "professeur", "cpe", "secours", "responsable", "eleve", "autre"))) {
+
+	//comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
+	if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
+		//**************** EN-TETE *****************************
+		//$titre_page = "Gestion des utilisateurs | Réinitialisation des mots de passe";
+		$titre_page_title="Réinitialisation des mots de passe";
+		require_once("../lib/header.inc.php");
+		//**************** FIN EN-TETE *****************
+	}
+
 	echo "<p>ERREUR ! L'identifiant de statut est erroné. L'opération ne peut pas continuer.</p>";
 	require("../lib/footer.inc.php");
 	die();
 }
 
 if ($user_classe AND !is_numeric($user_classe)) {
+
+	//comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
+	if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
+		//**************** EN-TETE *****************************
+		//$titre_page = "Gestion des utilisateurs | Réinitialisation des mots de passe";
+		$titre_page_title="Réinitialisation des mots de passe";
+		require_once("../lib/header.inc.php");
+		//**************** FIN EN-TETE *****************
+	}
+
 	echo "<p>ERREUR ! L'identifiant de la classe est erroné. L'opération ne peut pas continuer.</p>";
 	require("../lib/footer.inc.php");
 	die();
@@ -117,8 +137,8 @@ $cas_traite = 0;
 
 // Normalement, le checkAccess() fait déjà une partie de ces tests:
 if((!in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
-(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('ScolResetPassResp')))||
-(($_SESSION['statut']=='cpe')&&(!getSettingAOui('CpeResetPassResp')))
+(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('ScolResetPassResp'))&&(!getSettingAOui('ScolResetPassEle')))||
+(($_SESSION['statut']=='cpe')&&(!getSettingAOui('CpeResetPassResp'))&&(!getSettingAOui('CpeResetPassEle')))
 ) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -145,12 +165,36 @@ if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')) {
 		//echo "\$user_status=$user_status<br />";
 	}
 
-	if ($user_status != "responsable") {
-		header("Location: ../accueil.php?msg=$user_login n'est pas un compte responsable");
+	$poursuivre="n";
+	if (($user_status=="responsable")&&
+	(
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassResp')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassResp')))
+	)) {
+		$poursuivre="y";
+	}
+	elseif (($user_status=="eleve")&&
+	(
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassEle')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassEle')))
+	)) {
+		$poursuivre="y";
+	}
+
+	if ($poursuivre=="n") {
+		header("Location: ../accueil.php?msg=Vous ne pouvez pas réinitialiser un mot de passe $user_status");
 		die();
 	}
 }
 
+//comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
+if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
+	//**************** EN-TETE *****************************
+	//$titre_page = "Gestion des utilisateurs | Réinitialisation des mots de passe";
+	$titre_page_title="Réinitialisation des mots de passe";
+	require_once("../lib/header.inc.php");
+	//**************** FIN EN-TETE *****************
+}
 
 //TODO: Sans doute faudrait-il ajouter des tests ici, si jamais un jour quelqu'un d'autre que l'administrateur peut accéder à la page.
 if ($user_login) {
