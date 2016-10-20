@@ -378,16 +378,22 @@ $test = mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'gabarits'");
 	else{
 		$gabarit="origine";
 	}
-	
 
-	
+
+	// Pour repérer les onglets lors du développement:
+	//insert into setting set value='y', name='afficher_version_en_title';
+	$tbs_prefixe_title="";
+	if(getSettingAOui("afficher_version_en_title")) {
+		$tbs_prefixe_title="(".getSettingValue("version").") ";
+	}
+
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
 
 // appel des bibliothèques tinyButStrong
 
-		
+
 $_SESSION['tbs_class'] = 'tbs/tbs_class.php';
 include_once($_SESSION['tbs_class']);
 			
