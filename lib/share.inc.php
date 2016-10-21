@@ -15434,10 +15434,25 @@ function check_tables_modifiees() {
 	if(getSettingValue('version')=="1.6.9") {
 		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'idGroupe';"));
 		if ($test_champ==0) {
-			$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;");
+			$sql="ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
+		}
+
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM matiere_element_programme LIKE 'id_user';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE matiere_element_programme ADD id_user VARCHAR(50) NOT NULL default '' COMMENT 'Auteur/proprio de l élément de programme' AFTER libelle;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
+		}
+
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'date_insert';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '0000-00-00 00:00:00' AFTER periode;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
 		}
 	}
-
 }
 
 ?>

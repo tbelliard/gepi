@@ -1490,6 +1490,7 @@ DROP TABLE IF EXISTS  matiere_element_programme;
 CREATE TABLE IF NOT EXISTS matiere_element_programme ( 
     id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', 
     libelle varchar(255) NOT NULL default '' COMMENT "Libellé de l'élément de programme", 
+    id_user VARCHAR(50) NOT NULL default '' COMMENT "Auteur/proprio de l'élément de programme", 
     PRIMARY KEY id (id), 
     UNIQUE KEY libelle (libelle)) 
     ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT 'Éléments de programme travaillé' ;
@@ -1531,6 +1532,7 @@ CREATE TABLE IF NOT EXISTS j_mep_eleve(
     idGroupe int(11)  COMMENT 'identifiant du groupe', 
     annee varchar(4) COMMENT 'année sur 4 caractères', 
     periode int(11) COMMENT 'période sur 4 caractères', 
+    date_insert DATETIME NOT NULL default '0000-00-00 00:00:00', 
     PRIMARY KEY id (id) , 
     UNIQUE KEY jointMapProf (idEP , idEleve , annee , periode)) 
     ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT 'Jointure éléments de programme travaillé ↔ groupe enseignement' ;

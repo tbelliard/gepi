@@ -551,6 +551,7 @@ if ($test == -1) {
     $sql = "CREATE TABLE IF NOT EXISTS matiere_element_programme ( "
             . "id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', "
             . "libelle varchar(255) NOT NULL default '' COMMENT \"Libellé de l'élément de programme\", "
+            . "id_user VARCHAR(50) NOT NULL default '', "
             . "PRIMARY KEY id (id) , UNIQUE KEY libelle (libelle)) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Éléments de programme travaillé' ;";
@@ -563,6 +564,19 @@ if ($test == -1) {
     }
 } else {
     $result .= msj_present("La table existe déjà");
+
+	$result .= "&nbsp;-> Ajout d'un champ 'id_user' à la table 'matiere_element_programme'<br />";
+	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM matiere_element_programme LIKE 'id_user';"));
+	if ($test_champ==0) {
+		$query = mysqli_query($mysqli, "ALTER TABLE matiere_element_programme ADD id_user VARCHAR(50) NOT NULL default '' AFTER libelle;");
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	} else {
+		$result .= msj_present("Le champ existe déjà");
+	}
 }
 
 $result .= "→ Ajout d'une table 'j_mep_mat' :<br />";  
@@ -640,6 +654,7 @@ if ($test == -1) {
             . "idGroupe int(11)  COMMENT 'identifiant du groupe', "
             . "annee varchar(4) COMMENT 'année sur 4 caractères', "
             . "periode int(11) COMMENT 'période sur 4 caractères', "
+            . "date_insert DATETIME NOT NULL default '0000-00-00 00:00:00', "
             . "PRIMARY KEY id (id) , UNIQUE KEY jointMapProf (idEP , idEleve , annee , periode)) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Jointure éléments de programme travaillé ↔ groupe enseignement' ;";
@@ -657,6 +672,19 @@ if ($test == -1) {
 	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'idGroupe';"));
 	if ($test_champ==0) {
 		$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;");
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	} else {
+		$result .= msj_present("Le champ existe déjà");
+	}
+
+	$result .= "&nbsp;-> Ajout d'un champ 'date_insert' à la table 'j_mep_eleve'<br />";
+	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'date_insert';"));
+	if ($test_champ==0) {
+		$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '0000-00-00 00:00:00' AFTER periode;");
 		if ($query) {
 				$result .= msj_ok("Ok !");
 		} else {

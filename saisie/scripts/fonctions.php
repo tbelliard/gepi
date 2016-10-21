@@ -149,8 +149,8 @@ function saveNewElemGroupe($id_groupe, $newElemGroupe, $annee, $periode) {
  */
 function saveNewElement($newElemGroupe) {
 	global $mysqli;
-	$sql1 = "INSERT INTO matiere_element_programme (`id`, `libelle`) "
-		. "VALUES (NULL, \"".$newElemGroupe."\") "
+	$sql1 = "INSERT INTO matiere_element_programme (`id`, `libelle`, `id_user`) "
+		. "VALUES (NULL, \"".$newElemGroupe."\", \"".$_SESSION['login']."\") "
 		. "ON DUPLICATE KEY UPDATE `libelle` = \"".$newElemGroupe."\" ; ";
 	// echo '<br />'.$sql1.'<br />';
 	$mysqli->query($sql1);
@@ -186,8 +186,8 @@ function saveJointureGroupeEP($id_groupe, $idNewLibelle, $annee, $periode) {
  */
 function saveJointureEleveEP($login, $idEP, $annee, $periode, $id_groupe) {
 	global $mysqli;
-	$sql = "INSERT INTO j_mep_eleve (id , idEP , idEleve , idGroupe, annee , periode) "
-		. "VALUES (NULL, '".$idEP."' , '".$login."' , '".$id_groupe."' , '".$annee."' , '".$periode."') "
+	$sql = "INSERT INTO j_mep_eleve (id , idEP , idEleve , idGroupe, annee , periode, date_insert) "
+		. "VALUES (NULL, '".$idEP."' , '".$login."' , '".$id_groupe."' , '".$annee."' , '".$periode."' , '".strftime('%Y-%m-%d %H:%M:%S')."') "
 		. "ON DUPLICATE KEY UPDATE `idEleve` = '".$login."' ; ";
 	//echo $sql.'<br />';
 	$mysqli->query($sql);
@@ -356,7 +356,7 @@ function getElementEleve($login_eleve, $annee, $periode,$groupe = NULL) {
 	if ($groupe) {
 		$sql .= " AND jme.idGroupe = '".$groupe."' ";
 	}
-	$sql .= "ORDER BY mep.libelle";
+	$sql .= "ORDER BY jme.date_insert, mep.libelle";
 	
 	//echo $sql."<br />";
 	$resultchargeDB = $mysqli->query($sql);
