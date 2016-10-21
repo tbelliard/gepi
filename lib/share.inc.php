@@ -15302,7 +15302,7 @@ function get_elements_programmes_grp($id_groupe, $periode) {
 	return $tab;
 }
 
-function get_elements_programmes_classe($id_classe, $periode) {
+function get_elements_programmes_classe($id_classe, $periode, $ordre="mep.libelle") {
 	global $mysqli;
 
 	$tab=array();
@@ -15336,13 +15336,12 @@ function get_elements_programmes_classe($id_classe, $periode) {
 				jeg.login=jme.idEleve AND 
 				jgc.id_classe='".$id_classe."' AND 
 				jme.periode='".$periode."' 
-			ORDER BY mep.libelle;";
+			ORDER BY $ordre;";
 	//echo "$sql<br />";
-	// Faut-il trier par libelle ou par ordre de saisie? ajouter un paramètre à la fonction?
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
-		$tab['ele'][$lig->login][$lig->id_groupe][]=$lig->libelle;
 		$tab['mep'][$lig->idEP][]=$lig->login;
+		$tab['ele'][$lig->login][$lig->id_groupe][]=$lig->libelle;
 	}
 
 	return $tab;

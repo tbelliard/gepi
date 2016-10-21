@@ -1799,3 +1799,4 @@ INSERT INTO setting SET name='mod_disc_avertissements_mi_periode', value='y';
 INSERT INTO droits SET id='/cahier_texte_2/extract_tag.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='V', description='Cahiers de textes: Extraction tags', statut='';
 INSERT INTO droits SET id='/bulletin/param_bull_pdf_2016.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Paramètres des bulletins PDF Réforme CLG 2016', statut='';
 INSERT INTO setting SET name='FormatAdressePostaleCheck', value='y';
+INSERT INTO droits SET id='/saisie/gerer_mep.php', administrateur='V', professeur='V', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Gérer les éléments de programme', statut='';

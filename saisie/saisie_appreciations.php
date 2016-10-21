@@ -1330,6 +1330,13 @@ $delais_affichage_infobulle=500;
 	if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 ?>
         <th>
+<?php
+		$sql="SELECT * FROM matiere_element_programme mep WHERE id_user='".$_SESSION['login']."';";
+		$test_mep=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_mep)>0) {
+			echo "<div style='float:right; width:16px' title=\"Gérer mes éléments de programmes.\"><a href='gerer_mep.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/configure.png' class='icone16' alt='Gérer' /></a></div>";
+		}
+?>
             Éléments du programme
 			<br />
 			<span style="display: inline-block; text-align:left;">

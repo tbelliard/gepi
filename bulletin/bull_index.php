@@ -2152,7 +2152,7 @@ else {
 
 			// 20160622
 			if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
-				$tab_bulletin[$id_classe][$periode_num]['ElementsProgrammes']=get_elements_programmes_classe($id_classe, $periode_num);
+				$tab_bulletin[$id_classe][$periode_num]['ElementsProgrammes']=get_elements_programmes_classe($id_classe, $periode_num, "jme.date_insert");
 				/*
 				echo "\$tab_bulletin[$id_classe][$periode_num]['ElementsProgrammes']<pre>";
 				print_r($tab_bulletin[$id_classe][$periode_num]['ElementsProgrammes']);
