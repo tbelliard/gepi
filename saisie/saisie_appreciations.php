@@ -82,6 +82,12 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 	$queMat = filter_input(INPUT_POST, 'queMat');
 	$queNiveau = filter_input(INPUT_POST, 'queNiveau');
 
+	if (isset($_POST['is_posted'])) {
+		savePref($_SESSION['login'], "ElementsProgrammesQuePerso", $quePerso);
+		savePref($_SESSION['login'], "ElementsProgrammesQueMat", $queMat);
+		savePref($_SESSION['login'], "ElementsProgrammesQueNiveau", $queNiveau);
+	}
+
 	$mefDuGroupe = NULL;
 
 	$mefDuGroupe = getMef($id_groupe);
@@ -790,6 +796,11 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
+
+// Préférences pour les éléments de programmes
+$quePerso=getPref($_SESSION['login'], "ElementsProgrammesQuePerso", false);
+$queMat=getPref($_SESSION['login'], "ElementsProgrammesQueMat", false);
+$queNiveau=getPref($_SESSION['login'], "ElementsProgrammesQueNiveau", false);
 
 $acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
