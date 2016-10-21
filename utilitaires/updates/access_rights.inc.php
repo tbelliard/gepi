@@ -1744,6 +1744,18 @@ autre='F',
 description='Paramètres des bulletins PDF Réforme CLG 2016',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/saisie/gerer_mep.php',
+administrateur='V',
+professeur='V',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Gérer les éléments de programme',
+statut='';";
+
 $tab_req[] = "INSERT INTO droits SET id='/responsables/dedoublonner_responsables.php',
 administrateur='V',
 professeur='F',

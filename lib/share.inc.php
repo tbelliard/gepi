@@ -15313,7 +15313,7 @@ function get_elements_programmes_grp($id_groupe, $periode) {
 	return $tab;
 }
 
-function get_elements_programmes_classe($id_classe, $periode) {
+function get_elements_programmes_classe($id_classe, $periode, $ordre="mep.libelle") {
 	global $mysqli;
 
 	$tab=array();
@@ -15347,13 +15347,12 @@ function get_elements_programmes_classe($id_classe, $periode) {
 				jeg.login=jme.idEleve AND 
 				jgc.id_classe='".$id_classe."' AND 
 				jme.periode='".$periode."' 
-			ORDER BY mep.libelle;";
+			ORDER BY $ordre;";
 	//echo "$sql<br />";
-	// Faut-il trier par libelle ou par ordre de saisie? ajouter un paramètre à la fonction?
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
-		$tab['ele'][$lig->login][$lig->id_groupe][]=$lig->libelle;
 		$tab['mep'][$lig->idEP][]=$lig->login;
+		$tab['ele'][$lig->login][$lig->id_groupe][]=$lig->libelle;
 	}
 
 	return $tab;
@@ -15445,10 +15444,25 @@ function check_tables_modifiees() {
 	if(getSettingValue('version')=="1.6.9") {
 		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'idGroupe';"));
 		if ($test_champ==0) {
-			$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;");
+			$sql="ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
+		}
+
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM matiere_element_programme LIKE 'id_user';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE matiere_element_programme ADD id_user VARCHAR(50) NOT NULL default '' COMMENT 'Auteur/proprio de l élément de programme' AFTER libelle;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
+		}
+
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'date_insert';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '0000-00-00 00:00:00' AFTER periode;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
 		}
 	}
-
 }
 
 ?>

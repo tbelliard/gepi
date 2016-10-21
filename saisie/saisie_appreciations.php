@@ -82,6 +82,12 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 	$queMat = filter_input(INPUT_POST, 'queMat');
 	$queNiveau = filter_input(INPUT_POST, 'queNiveau');
 
+	if (isset($_POST['is_posted'])) {
+		savePref($_SESSION['login'], "ElementsProgrammesQuePerso", $quePerso);
+		savePref($_SESSION['login'], "ElementsProgrammesQueMat", $queMat);
+		savePref($_SESSION['login'], "ElementsProgrammesQueNiveau", $queNiveau);
+	}
+
 	$mefDuGroupe = NULL;
 
 	$mefDuGroupe = getMef($id_groupe);
@@ -791,6 +797,11 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+// Préférences pour les éléments de programmes
+$quePerso=getPref($_SESSION['login'], "ElementsProgrammesQuePerso", false);
+$queMat=getPref($_SESSION['login'], "ElementsProgrammesQueMat", false);
+$queNiveau=getPref($_SESSION['login'], "ElementsProgrammesQueNiveau", false);
+
 $acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
@@ -1319,6 +1330,13 @@ $delais_affichage_infobulle=500;
 	if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 ?>
         <th>
+<?php
+		$sql="SELECT * FROM matiere_element_programme mep WHERE id_user='".$_SESSION['login']."';";
+		$test_mep=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_mep)>0) {
+			echo "<div style='float:right; width:16px' title=\"Gérer mes éléments de programmes.\"><a href='gerer_mep.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/configure.png' class='icone16' alt='Gérer' /></a></div>";
+		}
+?>
             Éléments du programme
 			<br />
 			<span style="display: inline-block; text-align:left;">
