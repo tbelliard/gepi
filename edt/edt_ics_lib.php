@@ -3522,6 +3522,28 @@ function affiche_abs2_sur_edt2() {
 					if($current_abs['englobee']=='n') {
 						$bgcolor="background-color:red; ";
 
+						$sql="SELECT DISTINCT aty.* FROM a_types aty, 
+											a_traitements atr, 
+											j_traitements_saisies jts 
+										WHERE aty.id=atr.a_type_id AND 
+											atr.id=jts.a_traitement_id AND 
+											jts.a_saisie_id='".$current_abs['id']."' 
+										ORDER BY atr.updated_at DESC LIMIT 1;";
+						$res_type_abs=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_type_abs)>0) {
+							while($lig_type_abs=mysqli_fetch_object($res_type_abs)) {
+								if($lig_type_abs->retard_bulletin=="VRAI") {
+									$bgcolor="background-color:orange; ";
+								}
+								elseif(($lig_type_abs->sous_responsabilite_etablissement=="VRAI")&&($lig_type_abs->manquement_obligation_presence=="FAUX")) {
+									$bgcolor="background-color:yellow; ";
+								}
+								elseif($lig_type_abs->manquement_obligation_presence=="FAUX") {
+									$bgcolor="background-color:blue; ";
+								}
+							}
+						}
+
 						// Défaut: pour une absence courant sur plusieurs jours, on n'entoure que le div de la journée de début de la saisie englobante
 						$chaine_mise_en_exergue="";
 						$chaine_mise_en_exergue="onmouseover=\"document.getElementById('div_fond_abs_".$cpt_abs."').style.border='2px solid lime'\" onmouseout=\"document.getElementById('div_fond_abs_".$cpt_abs."').style.border='0px solid red'\" ";
