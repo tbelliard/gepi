@@ -70,7 +70,8 @@ if(isset($choix_donnees)) {
 	$tab_matieres=array();
 	if($choix_matieres=="toutes") {
 		for($loop=0;$loop<count($id_classe);$loop++) {
-			$sql="SELECT g.*, jgm.matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE g.id=jgc.id_groupe AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='".$id_classe[$loop]."';";
+			$sql="SELECT g.*, jgm.id_matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE g.id=jgc.id_groupe AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='".$id_classe[$loop]."';";
+			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"],$sql);
 			while($lig=mysqli_fetch_object($res)) {
 				if(!array_key_exists($lig->id, $id_groupe)) {
