@@ -1381,19 +1381,59 @@ die();
 						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
 						$pdf->Rect($param_bull2016["x_acquis_col_moyclasse"], $y_courant, $param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, 'F');
 
-						$pdf->SetTextColor(0, 0, 0);
-						$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
-						$pdf->SetFont('DejaVu','',7);
+						if ($param_bull2016["bull2016_moyminclassemax"]=='y') {
+							$chaine_minclassemax="";
+							// Min
+							if (($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_min']=="-")||($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_min']=="")) {
+								$valeur = "-";
+							} else {
+								$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_min'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							}
+							$chaine_minclassemax.=$valeur."\n";
 
-						if (($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="")) {
-							$valeur = "-";
+							// Classe
+							if (($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="")) {
+								$valeur = "-";
+							}
+							else {
+								$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							}
+							$chaine_minclassemax.=$valeur."\n";
+
+							if (($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_max']=="-")||($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_max']=="")) {
+								$valeur = "-";
+							} else {
+								$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_max'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							}
+							$chaine_minclassemax.=$valeur;
+
+							// Affichage min/classe/max avec cell_ajustee()
+							$pdf->SetTextColor(0, 0, 0);
+							$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
+							$texte=$chaine_minclassemax;
+							$taille_max_police=7;
+							$taille_min_police=ceil($taille_max_police/3);
+
+							$largeur_dispo=$param_bull2016["largeur_acquis_col_moyclasse"];
+							$h_cell=$hauteur_matiere;
+
+							//if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police, '', 'C', 'C');
 						}
 						else {
-							$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							$pdf->SetTextColor(0, 0, 0);
+							$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
+							$pdf->SetFont('DejaVu','',7);
+
+							if (($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="")) {
+								$valeur = "-";
+							}
+							else {
+								$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							}
+
+							$pdf->Cell($param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, $valeur,'',0,'C');
 						}
-
-						$pdf->Cell($param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, $valeur,'',0,'C');
-
 
 						$y_courant+=$hauteur_matiere+0.5;
 
@@ -1804,6 +1844,9 @@ die();
 					$valeur=$tab_bull['statut'][$m][$i];
 				}
 				else {
+					// DEBUG: 20161024
+					//echo "\$tab_bull['note'][$m][$i]=".$tab_bull['note'][$m][$i]."<br />";
+					//echo "present_nombre(".$tab_bull['note'][$m][$i].", $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero)<br />";
 					$valeur = present_nombre($tab_bull['note'][$m][$i], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
 
 					fich_debug_bull("\$valeur=$valeur\n");
@@ -1874,17 +1917,57 @@ die();
 				$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
 				$pdf->Rect($param_bull2016["x_acquis_col_moyclasse"], $y_courant, $param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, 'F');
 
-				$pdf->SetTextColor(0, 0, 0);
-				$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
-				$pdf->SetFont('DejaVu','',7);
-				if (($tab_bull['moy_classe_grp'][$m]=="-")||($tab_bull['moy_classe_grp'][$m]=="")) {
-					$valeur = "-";
-				} else {
-					$valeur = present_nombre($tab_bull['moy_classe_grp'][$m], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+				if ($param_bull2016["bull2016_moyminclassemax"]=='y') {
+					$chaine_minclassemax="";
+					// Min
+					if (($tab_bull['moy_min_classe_grp'][$m]=="-")||($tab_bull['moy_min_classe_grp'][$m]=="")) {
+						$valeur = "-";
+					} else {
+						$valeur = present_nombre($tab_bull['moy_min_classe_grp'][$m], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+					}
+					$chaine_minclassemax.=$valeur."\n";
+
+					// Classe
+					if (($tab_bull['moy_classe_grp'][$m]=="-")||($tab_bull['moy_classe_grp'][$m]=="")) {
+						$valeur = "-";
+					}
+					else {
+						$valeur = present_nombre($tab_bull['moy_classe_grp'][$m], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+					}
+					$chaine_minclassemax.=$valeur."\n";
+
+					if (($tab_bull['moy_max_classe_grp'][$m]=="-")||($tab_bull['moy_max_classe_grp'][$m]=="")) {
+						$valeur = "-";
+					} else {
+						$valeur = present_nombre($tab_bull['moy_max_classe_grp'][$m], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+					}
+					$chaine_minclassemax.=$valeur;
+
+					// Affichage min/classe/max avec cell_ajustee()
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
+					$texte=$chaine_minclassemax;
+					$taille_max_police=7;
+					$taille_min_police=ceil($taille_max_police/3);
+
+					$largeur_dispo=$param_bull2016["largeur_acquis_col_moyclasse"];
+					$h_cell=$hauteur_matiere;
+
+					//if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+					cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police, '', 'C', 'C');
 				}
-				$pdf->Cell($param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, $valeur,'',0,'C');
-
-
+				else {
+					// Moyenne classe seulement
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
+					$pdf->SetFont('DejaVu','',7);
+					if (($tab_bull['moy_classe_grp'][$m]=="-")||($tab_bull['moy_classe_grp'][$m]=="")) {
+						$valeur = "-";
+					} else {
+						$valeur = present_nombre($tab_bull['moy_classe_grp'][$m], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+					}
+					$pdf->Cell($param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, $valeur,'',0,'C');
+				}
 
 				$y_courant+=$hauteur_matiere+0.5;
 
@@ -2182,19 +2265,60 @@ die();
 						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
 						$pdf->Rect($param_bull2016["x_acquis_col_moyclasse"], $y_courant, $param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, 'F');
 
-						$pdf->SetTextColor(0, 0, 0);
-						$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
-						$pdf->SetFont('DejaVu','',7);
 
-						if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="")) {
-							$valeur = "-";
+						if ($param_bull2016["bull2016_moyminclassemax"]=='y') {
+							$chaine_minclassemax="";
+							// Min
+							if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min']=="")) {
+								$valeur = "-";
+							} else {
+								$valeur = present_nombre($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							}
+							$chaine_minclassemax.=$valeur."\n";
+
+							// Classe
+							if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="")) {
+								$valeur = "-";
+							}
+							else {
+								$valeur = present_nombre($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							}
+							$chaine_minclassemax.=$valeur."\n";
+
+							if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_max']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_max']=="")) {
+								$valeur = "-";
+							} else {
+								$valeur = present_nombre($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_max'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							}
+							$chaine_minclassemax.=$valeur;
+
+							// Affichage min/classe/max avec cell_ajustee()
+							$pdf->SetTextColor(0, 0, 0);
+							$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
+							$texte=$chaine_minclassemax;
+							$taille_max_police=7;
+							$taille_min_police=ceil($taille_max_police/3);
+
+							$largeur_dispo=$param_bull2016["largeur_acquis_col_moyclasse"];
+							$h_cell=$hauteur_matiere;
+
+							//if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police, '', 'C', 'C');
 						}
 						else {
-							$valeur = present_nombre($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							$pdf->SetTextColor(0, 0, 0);
+							$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
+							$pdf->SetFont('DejaVu','',7);
+
+							if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="")) {
+								$valeur = "-";
+							}
+							else {
+								$valeur = present_nombre($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+							}
+
+							$pdf->Cell($param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, $valeur,'',0,'C');
 						}
-
-						$pdf->Cell($param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, $valeur,'',0,'C');
-
 
 						$y_courant+=$hauteur_matiere+0.5;
 

@@ -152,6 +152,15 @@ if (isset($_POST['is_posted'])) {
 	}
 
 
+	$bull2016_moyminclassemax=isset($_POST["bull2016_moyminclassemax"]) ? $_POST["bull2016_moyminclassemax"] : "n";
+	if(($bull2016_moyminclassemax!="y")&&($bull2016_moyminclassemax!="n")) {
+		$bull2016_affich_mentions="n";
+	}
+	if (!saveSetting("bull2016_moyminclassemax", $bull2016_moyminclassemax)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_moyminclassemax !";
+		$reg_ok = 'no';
+	}
+
 
 	$bull2016_affich_mentions=isset($_POST["bull2016_affich_mentions"]) ? $_POST["bull2016_affich_mentions"] : "y";
 	if(($bull2016_affich_mentions!="y")&&($bull2016_affich_mentions!="n")) {
@@ -359,6 +368,11 @@ if(((!preg_match("/^[0-9]{1,}$/", $bull2016_evolution_moyenne_periode_precedente
 	$bull2016_evolution_moyenne_periode_precedente_seuil=0;
 }
 
+$bull2016_moyminclassemax=getSettingValue("bull2016_moyminclassemax");
+if($bull2016_moyminclassemax=="") {
+	$bull2016_moyminclassemax="n";
+}
+
 $bull2016_affich_mentions=getSettingValue("bull2016_affich_mentions");
 if($bull2016_affich_mentions=="") {
 	$bull2016_affich_mentions="y";
@@ -496,6 +510,16 @@ echo add_token_field();
 			<input type="text" name="bull2016_evolution_moyenne_periode_precedente_seuil" id="bull2016_evolution_moyenne_periode_precedente_seuil" size="5" onchange="changement()" value="<?php
 				echo $bull2016_evolution_moyenne_periode_precedente_seuil;
 			?>" onKeyDown="clavier_3(this.id,event, 0.001, 1, 0.001);" />
+		</td>
+	</tr>
+	<tr>
+		<td>Afficher les moyennes min/classe/max dans la colonne Classe&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_moyminclassemax" id="bull2016_moyminclassemax" onchange="changement()" value="y" <?php
+			if($bull2016_moyminclassemax=="y") {
+				echo "checked ";
+			}
+			?>/>
 		</td>
 	</tr>
 </table>

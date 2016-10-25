@@ -322,6 +322,7 @@
 	$param_bull2016["bull2016_evolution_moyenne_periode_precedente_seuil"]=$bull2016_evolution_moyenne_periode_precedente_seuil;
 
 
+	$param_bull2016["bull2016_moyminclassemax"]=getSettingValue("bull2016_moyminclassemax");
 
 
 	//$afficher_nb_heures_perdues="n";
