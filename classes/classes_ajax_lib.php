@@ -60,7 +60,12 @@ if($mode=='classes_param') {
 			//echo "$sql<br />";
 			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			echo "<select name='professeur_nouvel_enseignement'>\n";
+			if((isset($_GET['per']))&&(preg_match("/^[0-9]{1,}$/", $_GET['per']))) {
+				echo "<select name='professeur_nouvel_enseignement_".$_GET['per']."'>\n";
+			}
+			else {
+				echo "<select name='professeur_nouvel_enseignement'>\n";
+			}
 			// On laisse la possibilité de ne pas associer un des profs si jamais on compte associer le PP via un autre champ (checkbox)
 			echo "<option value=''>---</option>\n";
 			$nb_profs=mysqli_num_rows($res_prof);
