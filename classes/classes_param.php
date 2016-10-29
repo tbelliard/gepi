@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -242,21 +242,21 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
-                    if (isset($_POST['ects_parcours_'.$per])) {
+					if (isset($_POST['ects_parcours_'.$per])) {
 						if ($_POST['ects_parcours_'.$per]!='') {
 							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET ects_parcours='".$_POST['ects_parcours_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
 
-                    if (isset($_POST['ects_domaines_etude_'.$per])) {
+					if (isset($_POST['ects_domaines_etude_'.$per])) {
 						if ($_POST['ects_domaines_etude_'.$per]!='') {
 							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET ects_domaines_etude='".$_POST['ects_domaines_etude_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
 
-                    if (isset($_POST['ects_code_parcours_'.$per])) {
+					if (isset($_POST['ects_code_parcours_'.$per])) {
 						if ($_POST['ects_code_parcours_'.$per]!='') {
 							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET ects_code_parcours='".$_POST['ects_code_parcours_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
@@ -323,9 +323,9 @@ if (isset($_POST['is_posted'])) {
 					}
 
 
-					if((isset($_POST['change_coef']))&&($_POST['change_coef']=='y')) {
-						if((isset($_POST['coef_enseignements']))&&($_POST['coef_enseignements']!="")) {
-							$coef_enseignements=my_ereg_replace("[^0-9]","",$_POST['coef_enseignements']);
+					if((isset($_POST['change_coef_'.$per]))&&($_POST['change_coef_'.$per]=='y')) {
+						if((isset($_POST['coef_enseignements_'.$per]))&&($_POST['coef_enseignements_'.$per]!="")) {
+							$coef_enseignements=my_ereg_replace("[^0-9]","",$_POST['coef_enseignements_'.$per]);
 							if($coef_enseignements!="") {
 								$sql="UPDATE j_groupes_classes SET coef='".$coef_enseignements."' WHERE id_classe='".$id_classe."';";
 								$update_coef=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -339,7 +339,7 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
-					if((isset($_POST['forcer_recalcul_rang']))&&($_POST['forcer_recalcul_rang']=='y')) {
+					if((isset($_POST['forcer_recalcul_rang_'.$per]))&&($_POST['forcer_recalcul_rang_'.$per]=='y')) {
 						$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
 						$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_per)>0) {
@@ -362,20 +362,21 @@ if (isset($_POST['is_posted'])) {
 					}
 
 
-					if((isset($_POST['creer_enseignement']))&&($_POST['creer_enseignement']=='y')) {
-						if((isset($_POST['matiere_nouvel_enseignement']))&&($_POST['matiere_nouvel_enseignement']!="")) {
+					if((isset($_POST['creer_enseignement_'.$per]))&&($_POST['creer_enseignement_'.$per]=='y')) {
+						if((isset($_POST['matiere_nouvel_enseignement_'.$per]))&&($_POST['matiere_nouvel_enseignement_'.$per]!="")) {
 
-							$matiere_nouvel_enseignement=$_POST['matiere_nouvel_enseignement'];
+							$matiere_nouvel_enseignement=$_POST['matiere_nouvel_enseignement_'.$per];
 							$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere_nouvel_enseignement';";
+							//echo "$sql<br />";
 							$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($verif)==0) {
 								$msg .= "<br />La matière $matiere_nouvel_enseignement n'existe pas.";
 							}
 							else {
-								$coef_nouvel_enseignement=isset($_POST['coef_nouvel_enseignement']) ? $_POST['coef_nouvel_enseignement'] : 0;
-								$coef_nouvel_enseignement=my_ereg_replace("[^0-9]","",$_POST['coef_nouvel_enseignement']);
+								$coef_nouvel_enseignement=isset($_POST['coef_nouvel_enseignement_'.$per]) ? $_POST['coef_nouvel_enseignement_'.$per] : 0;
+								$coef_nouvel_enseignement=my_ereg_replace("[^0-9]","",$_POST['coef_nouvel_enseignement_'.$per]);
 
-								$nouvel_enseignement_visibilite=isset($_POST['nouvel_enseignement_visibilite']) ? $_POST['nouvel_enseignement_visibilite'] : array();
+								$nouvel_enseignement_visibilite=isset($_POST['nouvel_enseignement_visibilite_'.$per]) ? $_POST['nouvel_enseignement_visibilite_'.$per] : array();
 								$nouvel_enseignement_non_visible=array();
 								for($loop=0;$loop<count($tab_domaines);$loop++) {
 									if(!in_array($tab_domaines[$loop], $nouvel_enseignement_visibilite)) {
@@ -383,22 +384,25 @@ if (isset($_POST['is_posted'])) {
 									}
 								}
 
-								$professeur_nouvel_enseignement=isset($_POST['professeur_nouvel_enseignement']) ? $_POST['professeur_nouvel_enseignement'] : NULL;
+								$professeur_nouvel_enseignement=isset($_POST['professeur_nouvel_enseignement_'.$per]) ? $_POST['professeur_nouvel_enseignement_'.$per] : NULL;
 								$professeur_nouvel_enseignement=my_ereg_replace("[^A-Za-z0-9._-]","",$professeur_nouvel_enseignement);
 								if($professeur_nouvel_enseignement!="") {
 									$sql="SELECT 1=1 FROM utilisateurs u WHERE u.login='$professeur_nouvel_enseignement';";
+									//echo "$sql<br />";
 									$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($verif)==0) {
 										$professeur_nouvel_enseignement="";
 									}
 
 									$sql="SELECT 1=1 FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$professeur_nouvel_enseignement' AND jpm.id_matiere='$matiere_nouvel_enseignement'";
+									//echo "$sql<br />";
 									$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($verif)==0) {
 										// Si JavaScript est inactif, on peut proposer un prof qui n'est pas professeur dans la matière.
 										// Associons le alors à la matière.
 
 										$sql="SELECT ordre_matieres FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$professeur_nouvel_enseignement' ORDER BY ordre_matieres DESC LIMIT 1;";
+										//echo "$sql<br />";
 										$res_ordre_matieres=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_ordre_matieres)==0) {
 											$tmp_ordre_matieres=1;
@@ -408,6 +412,7 @@ if (isset($_POST['is_posted'])) {
 										}
 
 										$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$professeur_nouvel_enseignement', id_matiere='$matiere_nouvel_enseignement', ordre_matieres='$tmp_ordre_matieres';";
+										//echo "$sql<br />";
 										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {
 											$professeur_nouvel_enseignement="";
@@ -420,7 +425,7 @@ if (isset($_POST['is_posted'])) {
 								$reg_clazz[] = $id_classe;
 								$reg_categorie = 1; // Récupérer par la suite la catégorie par défaut de la table 'matieres' (champ categorie_id)
 
-								$nom_nouvel_enseignement=isset($_POST['nom_nouvel_enseignement']) ? $_POST['nom_nouvel_enseignement'] : "";
+								$nom_nouvel_enseignement=isset($_POST['nom_nouvel_enseignement_'.$per]) ? $_POST['nom_nouvel_enseignement_'.$per] : "";
 								if($nom_nouvel_enseignement!="") {
 									$reg_nom_groupe=$nom_nouvel_enseignement;
 								}
@@ -436,7 +441,7 @@ if (isset($_POST['is_posted'])) {
 									$reg_nom_complet=$lig_mat->nom_complet;
 								}
 
-								$description_nouvel_enseignement=isset($_POST['description_nouvel_enseignement']) ? $_POST['description_nouvel_enseignement'] : "";
+								$description_nouvel_enseignement=isset($_POST['description_nouvel_enseignement_'.$per]) ? $_POST['description_nouvel_enseignement_'.$per] : "";
 								if($description_nouvel_enseignement!="") {
 									$reg_nom_complet=$description_nouvel_enseignement;
 								}
@@ -453,19 +458,22 @@ if (isset($_POST['is_posted'])) {
 										$reg_professeurs[]=$professeur_nouvel_enseignement;
 									}
 
-									if(isset($_POST['declarer_pp_professeur_nouvel_enseignement'])) {
+									if(isset($_POST['declarer_pp_professeur_nouvel_enseignement_'.$per])) {
 										$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe';";
+										//echo "$sql<br />";
 										$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_pp)>0) {
 											while($lig_pp=mysqli_fetch_object($res_pp)) {
 												if(!in_array($lig_pp->professeur, $reg_professeurs)) {
 													$sql="SELECT 1=1 FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$lig_pp->professeur' AND jpm.id_matiere='$matiere_nouvel_enseignement'";
+													//echo "$sql<br />";
 													$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 													if(mysqli_num_rows($verif)==0) {
 														// Si JavaScript est inactif, on peut proposer un prof qui n'est pas professeur dans la matière.
 														// Associons le alors à la matière.
 
 														$sql="SELECT ordre_matieres FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$lig_pp->professeur' ORDER BY ordre_matieres DESC LIMIT 1;";
+														//echo "$sql<br />";
 														$res_ordre_matieres=mysqli_query($GLOBALS["mysqli"], $sql);
 														if(mysqli_num_rows($res_ordre_matieres)==0) {
 															$tmp_ordre_matieres=1;
@@ -475,6 +483,7 @@ if (isset($_POST['is_posted'])) {
 														}
 
 														$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$lig_pp->professeur', id_matiere='$matiere_nouvel_enseignement', ordre_matieres='$tmp_ordre_matieres';";
+														//echo "$sql<br />";
 														$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 														if(!$insert) {
 															$msg.="Erreur lors de l'association de ".civ_nom_prenom($lig_pp->professeur)." avec la matière '$matiere_nouvel_enseignement'.<br />";
@@ -492,7 +501,7 @@ if (isset($_POST['is_posted'])) {
 										}
 									}
 
-									$nouvel_enseignement_eleves=isset($_POST['nouvel_enseignement_eleves']) ? $_POST['nouvel_enseignement_eleves'] : "tous";
+									$nouvel_enseignement_eleves=isset($_POST['nouvel_enseignement_eleves_'.$per]) ? $_POST['nouvel_enseignement_eleves_'.$per] : "tous";
 									$tab_choix_nouvel_enseignement_eleves=array("tous", "aucun", "1", "2");
 									if(!in_array($nouvel_enseignement_eleves, $tab_choix_nouvel_enseignement_eleves)) {$nouvel_enseignement_eleves="tous";}
 									$reg_eleves=array();
@@ -560,9 +569,9 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
-					if((isset($_POST['change_visibilite']))&&(isset($_POST['matiere_modif_visibilite_enseignement']))&&($_POST['matiere_modif_visibilite_enseignement']!="")) {
-						$matiere_modif_visibilite_enseignement=$_POST['matiere_modif_visibilite_enseignement'];
-						$modif_enseignement_visibilite=isset($_POST['modif_enseignement_visibilite']) ? $_POST['modif_enseignement_visibilite'] : array();
+					if((isset($_POST['change_visibilite_'.$per]))&&(isset($_POST['matiere_modif_visibilite_enseignement_'.$per]))&&($_POST['matiere_modif_visibilite_enseignement_'.$per]!="")) {
+						$matiere_modif_visibilite_enseignement=$_POST['matiere_modif_visibilite_enseignement_'.$per];
+						$modif_enseignement_visibilite=isset($_POST['modif_enseignement_visibilite_'.$per]) ? $_POST['modif_enseignement_visibilite_'.$per] : array();
 
 						$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_visibilite_enseignement."';";
 						//echo "$sql<br />";
@@ -595,11 +604,11 @@ if (isset($_POST['is_posted'])) {
 					$_POST[change_inscription_eleves_periodes]['1']=	2
 					$_POST[change_inscription_eleves_periodes]['2']=	3
 					*/
-					if((isset($_POST['change_inscription_eleves']))&&(isset($_POST['matiere_modif_inscription_eleves']))&&($_POST['change_inscription_eleves_inscrire']!="")&&(isset($_POST['change_inscription_eleves_periodes']))) {
+					if((isset($_POST['change_inscription_eleves_'.$per]))&&(isset($_POST['matiere_modif_inscription_eleves_'.$per]))&&($_POST['change_inscription_eleves_inscrire_'.$per]!="")&&(isset($_POST['change_inscription_eleves_periodes_'.$per]))) {
 
-						$matiere_modif_inscription_eleves=$_POST['matiere_modif_inscription_eleves'];
-						$change_inscription_eleves_inscrire=$_POST['change_inscription_eleves_inscrire'];
-						$change_inscription_eleves_periodes=$_POST['change_inscription_eleves_periodes'];
+						$matiere_modif_inscription_eleves=$_POST['matiere_modif_inscription_eleves_'.$per];
+						$change_inscription_eleves_inscrire=$_POST['change_inscription_eleves_inscrire_'.$per];
+						$change_inscription_eleves_periodes=$_POST['change_inscription_eleves_periodes_'.$per];
 
 						if($change_inscription_eleves_inscrire=="y") {
 							$tab_ele_clas=array();
@@ -645,7 +654,7 @@ if (isset($_POST['is_posted'])) {
 											$msg.="<br />".get_nom_prenom_eleve($lig_ele_inscr->login)." a un bulletin non vide en période ".$change_inscription_eleves_periodes[$loop];
 										}
 										elseif(nb_notes_ele_dans_tel_enseignement($lig_ele_inscr->login, $lig_grp_inscr->id_groupe, $change_inscription_eleves_periodes[$loop])>0) {
-											$msg.="<br />".get_nom_prenom_eleve($lig_ele_inscr->login)." a un bulletin non vide en période ".$change_inscription_eleves_periodes[$loop];
+											$msg.="<br />".get_nom_prenom_eleve($lig_ele_inscr->login)." a un carnet de notes non vide en période ".$change_inscription_eleves_periodes[$loop];
 										}
 										else {
 											$sql="DELETE FROM j_eleves_groupes WHERE login='".$lig_ele_inscr->login."' AND id_groupe='$lig_grp_inscr->id_groupe' AND periode='".$change_inscription_eleves_periodes[$loop]."';";
@@ -672,10 +681,10 @@ if (isset($_POST['is_posted'])) {
 					$_POST['modif_enseignement_visibilite2']=	bulletins|y
 					*/
 
-					if((isset($_POST['change_coef2']))&&(isset($_POST['coef_enseignements2']))&&($_POST['coef_enseignements2']!="")&&(is_numeric($_POST['coef_enseignements2']))&&(isset($_POST['matiere_modif_coef']))&&($_POST['matiere_modif_coef']!="")) {
-						$modif_enseignement_visibilite2=isset($_POST['modif_enseignement_visibilite2']) ? $_POST['modif_enseignement_visibilite2'] : "";
-						$coef_enseignements2=$_POST['coef_enseignements2'];
-						$matiere_modif_coef=$_POST['matiere_modif_coef'];
+					if((isset($_POST['change_coef2_'.$per]))&&(isset($_POST['coef_enseignements2_'.$per]))&&($_POST['coef_enseignements2_'.$per]!="")&&(is_numeric($_POST['coef_enseignements2_'.$per]))&&(isset($_POST['matiere_modif_coef_'.$per]))&&($_POST['matiere_modif_coef_'.$per]!="")) {
+						$modif_enseignement_visibilite2=isset($_POST['modif_enseignement_visibilite2_'.$per]) ? $_POST['modif_enseignement_visibilite2_'.$per] : "";
+						$coef_enseignements2=$_POST['coef_enseignements2_'.$per];
+						$matiere_modif_coef=$_POST['matiere_modif_coef_'.$per];
 
 						if($modif_enseignement_visibilite2!="") {
 							$tmp_tab_vis=explode("|", $modif_enseignement_visibilite2);
@@ -1119,10 +1128,10 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold;"-->
 	<td>
-	<input type='checkbox' name='change_coef' id='change_coef' value='y' /><label for='change_coef'> Passer les coefficients de tous les enseignements à</label>&nbsp;:
+	<input type='checkbox' name='change_coef_<?php echo $per; ?>' id='change_coef_<?php echo $per; ?>' value='y' /><label for='change_coef_<?php echo $per; ?>'> Passer les coefficients de tous les enseignements à</label>&nbsp;:
 	</td>
 	<td>
-	<select name='coef_enseignements' onchange="document.getElementById('change_coef').checked=true">
+	<select name='coef_enseignements_<?php echo $per; ?>' onchange="document.getElementById('change_coef_<?php echo $per; ?>').checked=true">
 	<?php
 	echo "<option value=''>---</option>\n";
 	for($i=0;$i<20;$i++){
@@ -1144,8 +1153,8 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold;"-->
 	<td>
-	<input type='checkbox' name='change_coef2' id='change_coef2' value='y' /><label for='change_coef2'> Forcer à </label>
-	<select name='coef_enseignements2' id='coef_enseignements2' onchange="if((document.getElementById('matiere_modif_coef').selectedIndex==0)||(document.getElementById('coef_enseignements2').selectedIndex==0)) {document.getElementById('change_coef2').checked=false} else {document.getElementById('change_coef2').checked=true}">
+	<input type='checkbox' name='change_coef2_<?php echo $per; ?>' id='change_coef2_<?php echo $per; ?>' value='y' /><label for='change_coef2_<?php echo $per; ?>'> Forcer à </label>
+	<select name='coef_enseignements2_<?php echo $per; ?>' id='coef_enseignements2_<?php echo $per; ?>' onchange="if((document.getElementById('matiere_modif_coef_<?php echo $per; ?>').selectedIndex==0)||(document.getElementById('coef_enseignements2_<?php echo $per; ?>').selectedIndex==0)) {document.getElementById('change_coef2_<?php echo $per; ?>').checked=false} else {document.getElementById('change_coef2_<?php echo $per; ?>').checked=true}">
 	<?php
 		echo "<option value=''>---</option>\n";
 		for($i=0;$i<20;$i++){
@@ -1153,8 +1162,8 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		}
 	?>
 	</select>
-	<label for='change_coef2'> les coefficients des enseignements de </label>
-	<select name='matiere_modif_coef' id='matiere_modif_coef' onchange="if((document.getElementById('matiere_modif_coef').selectedIndex==0)||(document.getElementById('coef_enseignements2').selectedIndex==0)) {document.getElementById('change_coef2').checked=false} else {document.getElementById('change_coef2').checked=true}">
+	<label for='change_coef2_<?php echo $per; ?>'> les coefficients des enseignements de </label>
+	<select name='matiere_modif_coef_<?php echo $per; ?>' id='matiere_modif_coef_<?php echo $per; ?>' onchange="if((document.getElementById('matiere_modif_coef_<?php echo $per; ?>').selectedIndex==0)||(document.getElementById('coef_enseignements2_<?php echo $per; ?>').selectedIndex==0)) {document.getElementById('change_coef2_<?php echo $per; ?>').checked=false} else {document.getElementById('change_coef2_<?php echo $per; ?>').checked=true}">
 		<option value=''>---</option>
 		<option value='___Tous_les_enseignements___'>Tous les enseignements</option>
 	<?php
@@ -1169,7 +1178,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		<table class='boireaus' cellspacing='0'>
 			<?php
 				echo "<tr>\n";
-				echo "<th><input type='radio' name='modif_enseignement_visibilite2' value='' title='Ne pas tenir compte de la visibilité ou non des enseignements pour modifier leur coefficient' checked /></th>\n";
+				echo "<th><input type='radio' name='modif_enseignement_visibilite2_$per' value='' title='Ne pas tenir compte de la visibilité ou non des enseignements pour modifier leur coefficient' checked /></th>\n";
 				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
 					echo "<th title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
 					echo $tab_domaines_sigle[$loop];
@@ -1181,7 +1190,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 				echo "<th>visibles sur </th>";
 				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
 					echo "<td title=\"visibles sur ".$tab_domaines_texte[$loop]."\">\n";
-					echo "<input type='radio' name='modif_enseignement_visibilite2' value='$tab_domaines[$loop]|y' />\n";
+					echo "<input type='radio' name='modif_enseignement_visibilite2_$per' value='$tab_domaines[$loop]|y' />\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";
@@ -1189,7 +1198,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 				echo "<th>invisibles sur </th>";
 				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
 					echo "<td title=\"invisibles sur ".$tab_domaines_texte[$loop]."\">\n";
-					echo "<input type='radio' name='modif_enseignement_visibilite2' value='$tab_domaines[$loop]|n' />\n";
+					echo "<input type='radio' name='modif_enseignement_visibilite2_$per' value='$tab_domaines[$loop]|n' />\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";
@@ -1211,10 +1220,10 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	<tr>
 		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
 		<td valign='top' rowspan='2'>
-			<input type='checkbox' name='change_visibilite' id='change_visibilite' value='y' /><label for='change_visibilite'> Modifier la visibilité des enseignements de</label>&nbsp;:
+			<input type='checkbox' name='change_visibilite_$per' id='change_visibilite_$per' value='y' /><label for='change_visibilite_$per'> Modifier la visibilité des enseignements de</label>&nbsp;:
 		</td>
 		<td colspan='2'>
-			<select name='matiere_modif_visibilite_enseignement' id='matiere_modif_visibilite_enseignement' onchange=\"document.getElementById('change_visibilite').checked=true;\">\n";
+			<select name='matiere_modif_visibilite_enseignement_$per' id='matiere_modif_visibilite_enseignement_$per' onchange=\"document.getElementById('change_visibilite_$per').checked=true;\">\n";
 			echo "			<option value=''>---</option>\n";
 			while($lig_mat=mysqli_fetch_object($res_mat)) {
 				echo "			<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
@@ -1236,7 +1245,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<tr class='lig-1'>\n";
 			for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
 				echo "<td title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
-				echo "<input type='checkbox' name='modif_enseignement_visibilite[]' value='$tab_domaines[$loop]' checked />\n";
+				echo "<input type='checkbox' name='modif_enseignement_visibilite_".$per."[]' value='$tab_domaines[$loop]' checked />\n";
 				echo "</td>\n";
 			}
 			echo "
@@ -1256,10 +1265,10 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	<tr>
 		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
 		<td valign='top' rowspan='2'>
-			<input type='checkbox' name='change_inscription_eleves' id='change_inscription_eleves' value='y' /><label for='change_inscription_eleves'> Modifier les inscriptions d'élèves dans les enseignements de</label>&nbsp;:
+			<input type='checkbox' name='change_inscription_eleves_$per' id='change_inscription_eleves_$per' value='y' /><label for='change_inscription_eleves_$per'> Modifier les inscriptions d'élèves dans les enseignements de</label>&nbsp;:
 		</td>
 		<td colspan='3'>
-			<select name='matiere_modif_inscription_eleves' id='matiere_modif_inscription_eleves' onchange=\"document.getElementById('change_inscription_eleves').checked=true;\">\n";
+			<select name='matiere_modif_inscription_eleves_$per' id='matiere_modif_inscription_eleves_$per' onchange=\"document.getElementById('change_inscription_eleves_$per').checked=true;\">\n";
 			echo "			<option value=''>---</option>\n";
 			while($lig_mat=mysqli_fetch_object($res_mat)) {
 				echo "			<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
@@ -1269,13 +1278,14 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	</tr>
 	<tr>
 		<td valign='top'>
-			<input type='radio' name='change_inscription_eleves_inscrire' id='change_inscription_eleves_inscrire_y' value='y' checked /><label for='change_inscription_eleves_inscrire_y'> Inscrire tous les élèves</label><br />
-			<input type='radio' name='change_inscription_eleves_inscrire' id='change_inscription_eleves_inscrire_n' value='n' /><label for='change_inscription_eleves_inscrire_n' title=\"Désinscrire sous réserve qu'il n'y ait pas de note ou appréciation sur les bulletins ou dans les carnets de notes.\"> Désinscrire tous les élèves (*)</label>
+			<input type='radio' name='change_inscription_eleves_inscrire_$per' id='change_inscription_eleves_inscrire_y_$per' value='y' checked /><label for='change_inscription_eleves_inscrire_y_$per'> Inscrire tous les élèves</label><br />
+			<input type='radio' name='change_inscription_eleves_inscrire_$per' id='change_inscription_eleves_inscrire_n_$per' value='n' /><label for='change_inscription_eleves_inscrire_n_$per' title=\"Désinscrire sous réserve qu'il n'y ait pas de note ou appréciation sur les bulletins ou dans les carnets de notes.\"> Désinscrire tous les élèves (*)</label>
 		</td>
 		<td valign='top'>sur les périodes&nbsp;: </td>
 		<td>";
-			for($loop=1;$loop<=$max_periode;$loop++) {
-				echo "<input type='checkbox' name='change_inscription_eleves_periodes[]' id='change_inscription_eleves_periodes_$loop' value='$loop' checked /><label for='change_inscription_eleves_periodes_$loop'> $loop </label><br />\n";
+			//for($loop=1;$loop<=$max_periode;$loop++) {
+			for($loop=1;$loop<=$per;$loop++) {
+				echo "<input type='checkbox' name='change_inscription_eleves_periodes_".$per."[]' id='change_inscription_eleves_periodes_".$loop."_".$per."' value='$loop' checked /><label for='change_inscription_eleves_periodes_".$loop."_".$per."'> $loop </label><br />\n";
 			}
 			echo "
 		</td>
@@ -1290,7 +1300,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<!--td style="font-weight: bold; vertical-align:top;"-->
 	<td style="vertical-align:top;">
-	<input type='checkbox' name='creer_enseignement' id='creer_enseignement' value='y' /><label for='creer_enseignement'> Créer un enseignement de</label>&nbsp;:
+	<input type='checkbox' name='creer_enseignement_<?php echo $per; ?>' id='creer_enseignement_<?php echo $per; ?>' value='y' /><label for='creer_enseignement_<?php echo $per; ?>'> Créer un enseignement de</label>&nbsp;:
 	</td>
 	<?php
 		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
@@ -1300,7 +1310,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		}
 		else {
 			echo "<td colspan='2'>\n";
-			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();maj_nom_descr_enseignement();\">\n";
+			echo "<select name='matiere_nouvel_enseignement_$per' id='matiere_nouvel_enseignement_$per' onchange=\"document.getElementById('creer_enseignement_$per').checked=true;maj_prof_enseignement_$per();maj_nom_descr_enseignement_$per();\">\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_mat=mysqli_fetch_object($res_mat)) {
 				echo "<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\" nom_matiere=\"$lig_mat->nom_complet\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
@@ -1315,7 +1325,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "Coefficient&nbsp;: ";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<select name='coef_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;\">";
+			echo "<select name='coef_nouvel_enseignement_$per' onchange=\"document.getElementById('creer_enseignement_$per').checked=true;\">";
 			echo "<option value=''>---</option>\n";
 			for($i=0;$i<20;$i++){
 				echo "<option value='$i'>$i</option>\n";
@@ -1331,12 +1341,12 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<td>\n";
 			echo "Nom&nbsp;: ";
 			echo "</td>\n";
-			echo "<td><input type='text' name='nom_nouvel_enseignement' id='nom_nouvel_enseignement' value='' />";
+			echo "<td><input type='text' name='nom_nouvel_enseignement_$per' id='nom_nouvel_enseignement_$per' value='' />";
 
 			$titre_infobulle="Ajouter un suffixe au nom de l'enseignement";
-			$texte_infobulle="<div align='center' style='padding:3px;'>".html_ajout_suffixe_ou_renommer('nom_nouvel_enseignement', 'description_nouvel_enseignement', 'matiere_nouvel_enseignement')."</div>";
-			$tabdiv_infobulle[]=creer_div_infobulle('suffixe_nom_grp',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
-			echo " <a href=\"javascript:afficher_div('suffixe_nom_grp','y',-100,20)\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Suffixe' title=\"Ajouter un suffixe ou renommer l'enseignement.\" /></a>";
+			$texte_infobulle="<div align='center' style='padding:3px;'>".html_ajout_suffixe_ou_renommer('nom_nouvel_enseignement_'.$per, 'description_nouvel_enseignement_'.$per, 'matiere_nouvel_enseignement_'.$per, "_$per")."</div>";
+			$tabdiv_infobulle[]=creer_div_infobulle('suffixe_nom_grp_'.$per,$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+			echo " <a href=\"javascript:afficher_div('suffixe_nom_grp_$per','y',-100,20)\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Suffixe' title=\"Ajouter un suffixe ou renommer l'enseignement.\" /></a>";
 
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -1347,8 +1357,8 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "Description&nbsp;: ";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<div id='div_description_nouvel_enseignement' style='display:none;'></div>\n";
-			echo "<input type='text' name='description_nouvel_enseignement' id='description_nouvel_enseignement' value='' />\n";
+			echo "<div id='div_description_nouvel_enseignement_$per' style='display:none;'></div>\n";
+			echo "<input type='text' name='description_nouvel_enseignement_$per' id='description_nouvel_enseignement_$per' value='' />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 
@@ -1370,7 +1380,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 				echo "<tr class='lig-1'>\n";
 				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
 					echo "<td title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
-					echo "<input type='checkbox' name='nouvel_enseignement_visibilite[]' value='$tab_domaines[$loop]' checked />\n";
+					echo "<input type='checkbox' name='nouvel_enseignement_visibilite_".$per."[]' value='$tab_domaines[$loop]' checked />\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";
@@ -1387,10 +1397,10 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "</td>\n";
 			echo "<td>\n";
 
-			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_tous' value='tous' checked /><label for='nouvel_enseignement_eleves_tous'>tous les élèves de la classe</label><br />\n";
-			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_aucun' value='aucun' /><label for='nouvel_enseignement_eleves_aucun'>aucun élève</label><br />\n";
-			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_1' value='1' /><label for='nouvel_enseignement_eleves_1'>la première moitié de la classe</label><br />\n";
-			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_2' value='2' /><label for='nouvel_enseignement_eleves_2'>la deuxième moitié de la classe</label><br />\n";
+			echo "<input type='radio' name='nouvel_enseignement_eleves_$per' id='nouvel_enseignement_eleves_tous_$per' value='tous' checked /><label for='nouvel_enseignement_eleves_tous_$per'>tous les élèves de la classe</label><br />\n";
+			echo "<input type='radio' name='nouvel_enseignement_eleves_$per' id='nouvel_enseignement_eleves_aucun_$per' value='aucun' /><label for='nouvel_enseignement_eleves_aucun_$per'>aucun élève</label><br />\n";
+			echo "<input type='radio' name='nouvel_enseignement_eleves_$per' id='nouvel_enseignement_eleves_1_$per' value='1' /><label for='nouvel_enseignement_eleves_1_$per'>la première moitié de la classe</label><br />\n";
+			echo "<input type='radio' name='nouvel_enseignement_eleves_$per' id='nouvel_enseignement_eleves_2_$per' value='2' /><label for='nouvel_enseignement_eleves_2_$per'>la deuxième moitié de la classe</label><br />\n";
 
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -1402,8 +1412,8 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "Professeur&nbsp;: ";
 			echo "</td>\n";
 
-			echo "<td id='td_prof_nouvel_enseignement'>\n";
-			echo "<span id='span_prof_nouvel_enseignement'>";
+			echo "<td id='td_prof_nouvel_enseignement_$per'>\n";
+			echo "<span id='span_prof_nouvel_enseignement_$per'>";
 			// Pour fonctionner sans JavaScript:
 			$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif';";
 			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1411,7 +1421,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 				echo "&nbsp;";
 			}
 			else {
-				echo "<select name='professeur_nouvel_enseignement'>\n";
+				echo "<select name='professeur_nouvel_enseignement_$per'>\n";
 				if(mysqli_num_rows($res_prof)>0) {
 					while($lig_prof=mysqli_fetch_object($res_prof)) {
 						echo "<option value='$lig_prof->login'>".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</option>\n";
@@ -1421,31 +1431,31 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			}
 			echo "</span><br />\n";
 
-			echo "<input type='checkbox' name='declarer_pp_professeur_nouvel_enseignement' id='declarer_pp_professeur_nouvel_enseignement' value='y' /><label for='declarer_pp_professeur_nouvel_enseignement'> Déclarer le ou les ".getSettingValue('gepi_prof_suivi')." professeur(s) de cet enseignement.</label>";
+			echo "<input type='checkbox' name='declarer_pp_professeur_nouvel_enseignement_$per' id='declarer_pp_professeur_nouvel_enseignement_$per' value='y' /><label for='declarer_pp_professeur_nouvel_enseignement_$per'> Déclarer le ou les ".getSettingValue('gepi_prof_suivi')." professeur(s) de cet enseignement.</label>";
 
 			echo "<script type='text/javascript'>
 				// <![CDATA[
 
 				// Au chargement, on vide le champ de choix du prof pour ne proposer que les profs de la matière, une fois une matière choisie
-				if(document.getElementById('span_prof_nouvel_enseignement')) {
-					document.getElementById('span_prof_nouvel_enseignement').innerHTML='Choisissez d\'abord une matière.';
+				if(document.getElementById('span_prof_nouvel_enseignement_$per')) {
+					document.getElementById('span_prof_nouvel_enseignement_$per').innerHTML='Choisissez d\'abord une matière.';
 				}
 
-				function maj_prof_enseignement() {
-					matiere=document.getElementById('matiere_nouvel_enseignement').value;
-					new Ajax.Updater($('span_prof_nouvel_enseignement'),'classes_ajax_lib.php?mode=classes_param&matiere='+matiere,{method: 'get'});
+				function maj_prof_enseignement_$per() {
+					matiere=document.getElementById('matiere_nouvel_enseignement_$per').value;
+					new Ajax.Updater($('span_prof_nouvel_enseignement_$per'),'classes_ajax_lib.php?mode=classes_param&per=$per&matiere='+matiere,{method: 'get'});
 
 					//maj_nom_descr_enseignement();
 				}
 
-				function maj_nom_descr_enseignement() {
-					matiere=document.getElementById('matiere_nouvel_enseignement').value;
+				function maj_nom_descr_enseignement_$per() {
+					matiere=document.getElementById('matiere_nouvel_enseignement_$per').value;
 
-					document.getElementById('nom_nouvel_enseignement').value=matiere;
+					document.getElementById('nom_nouvel_enseignement_$per').value=matiere;
 
-					new Ajax.Updater($('div_description_nouvel_enseignement'),'../matieres/matiere_ajax_lib.php?champ=nom_complet&matiere='+matiere,{method: 'get'});
+					new Ajax.Updater($('div_description_nouvel_enseignement_$per'),'../matieres/matiere_ajax_lib.php?champ=nom_complet&matiere='+matiere,{method: 'get'});
 					//document.getElementById('description_nouvel_enseignement').value=document.getElementById('div_description_nouvel_enseignement').innerHTML;
-					setTimeout(\"document.getElementById('description_nouvel_enseignement').value=document.getElementById('div_description_nouvel_enseignement').innerHTML\", 1000);
+					setTimeout(\"document.getElementById('description_nouvel_enseignement_$per').value=document.getElementById('div_description_nouvel_enseignement_$per').innerHTML\", 1000);
 				}
 				//]]>
 			</script>\n";
@@ -1459,13 +1469,13 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 <?php
 	$titre="Recalcul des rangs";
 	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.<br />Le recalcul sera effectué lors du prochain affichage de bulletin ou de moyennes.</p>";
-	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang',$titre,"",$texte,"",25,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang_'.$per,$titre,"",$texte,"",25,0,'y','y','n','n');
 ?>
 
 <table border='0' cellspacing='0'>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
-	<td><input type='checkbox' name='forcer_recalcul_rang' id='forcer_recalcul_rang' value='y' /><label for='forcer_recalcul_rang'>Forcer le recalcul des rangs</label> <a href='#' onclick="afficher_div('recalcul_rang','y',-100,20);return false;"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Forcer le recalcul des rangs' title='Forcer le recalcul des rangs' /></a>.</td>
+	<td><input type='checkbox' name='forcer_recalcul_rang_<?php echo $per; ?>' id='forcer_recalcul_rang_<?php echo $per; ?>' value='y' /><label for='forcer_recalcul_rang_<?php echo $per; ?>'>Forcer le recalcul des rangs</label> <a href='#' onclick="afficher_div('recalcul_rang_<?php echo $per; ?>','y',-100,20);return false;"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Forcer le recalcul des rangs' title='Forcer le recalcul des rangs' /></a>.</td>
 </tr>
 </table>
 
