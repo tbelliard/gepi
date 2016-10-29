@@ -253,19 +253,19 @@ $xml->appendChild($items);
 			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
 				$noeudEpisGroupes = $xml->createElement('epi-groupe');
 				//id="EPI_GROUPE_02"
-				$attributsEpiGroupe = array('id'=>"EPI_GROUPE_".$episGroupe->id, 'epi-ref'=>$episGroupe->id_epi );
+				$attributsEpiGroupe = array('id'=>"EPI_GROUPE_".$episGroupe->id, 'intitule'=>'', 'epi-ref'=>$episGroupe->id_epi );
 				foreach ($attributsEpiGroupe as $cle=>$valeur) {
 					$attsEpiGroupe = $xml->createAttribute($cle);
 					$attsEpiGroupe->value = $valeur;
 					
 					$noeudEpisGroupes->appendChild($attsEpiGroupe);
 				}
-				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire');
+				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire','commentaire sur le groupe à récupérer');
 				$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
 				
 				$noeudEpiEnseignantsDisciplines = $xml->createElement('enseignant-discipline');
 				$noeudEpisGroupes->appendChild($noeudEpiEnseignantsDisciplines);
-				
+								
 				$episGroupes->appendChild($noeudEpisGroupes);
 			}
 		$donnees->appendChild($episGroupes);

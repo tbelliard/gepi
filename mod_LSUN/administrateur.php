@@ -237,20 +237,8 @@ if ($cpt) {echo "			</div>\n";}
 <form action="index.php" method="post" id="definitionEPI">
 	<fieldset>
 		<legend>Liste des EPIs</legend>		
-		<table>
-			<caption>Enseignements Pratiques Interdisciplinaires</caption>
-			<thead>
-				<tr>
-					<th>Période</th>
-					<th>Division</th>
-					<th>Thématique/Intitule</th>
-					<th>Disciplines</th>
-					<th>Description</th>
-					<th>Liaison</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
+		<div>
+			<p>Enseignements Pratiques Interdisciplinaires</p>
 <?php while ($epiCommun = $listeEPICommun->fetch_object()) { 
 	$tableauMatieresEPI = array();
 	$listeMatieresEPI=getMatieresEPICommun($epiCommun->id);
@@ -258,8 +246,8 @@ if ($cpt) {echo "			</div>\n";}
 		$tableauMatieresEPI[] = array('matiere'=>$matiereEPI->id_matiere, 'modalite'=>$matiereEPI->modalite);
 	}
 ?>
-				<tr>
-					<td>
+					<div class="lsun_cadre">
+				<div>Période :
 						<input type="hidden" 
 							   name="modifieEpiId[<?php echo $epiCommun->id; ?>]" 
 							   value="<?php echo $epiCommun->id; ?>" />
@@ -267,8 +255,8 @@ if ($cpt) {echo "			</div>\n";}
 							   name="modifieEpiPeriode[<?php echo $epiCommun->id; ?>]" 
 							   value="<?php echo $epiCommun->periode; ?>" />
 						<?php echo $epiCommun->periode; ?>
-					</td>
-					<td>
+						
+						Division :
 						
 						<select name="modifieEpiClasse<?php echo $epiCommun->id; ?>[]" multiple >
 							<option value=""></option>
@@ -280,9 +268,7 @@ while ($classe = $classes->fetch_object()) { ?>
 							</option>
 <?php } ?>
 						</select>
-						
-					</td>
-					<td>
+						Thématique :
 						<select name="modifieEpiCode[<?php echo $epiCommun->id; ?>]">
 <?php foreach ($xml->{'thematiques-epis'}->{'thematique-epi'} as $thematiqueEpi) { ?>
 							<option value="<?php echo $thematiqueEpi['code'] ?>" 
@@ -293,14 +279,15 @@ while ($classe = $classes->fetch_object()) { ?>
 							</option>
 <?php } ?>
 						</select>
-						<br />
-						<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />
-					</td>
-					<td>
+						Intitulé :
+						<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />	
+				</div>
+				<div>
+						Disciplines :
 <?php	foreach ($tableauMatieresEPI as $matiereEPI) {
 	echo getMatiereOnMatiere($matiereEPI['matiere'])->nom_complet;
 	if ($matiereEPI['modalite'] =="O") { echo " option obligatoire"; } elseif ($matiereEPI['modalite'] =="F") {echo " option facultative";}
-	echo "<br />";
+	echo " - ";
 	}	?>
 						<select multiple name="modifieEpiMatiere<?php echo $epiCommun->id; ?>[]">
 <?php $listeMatieres->data_seek(0);
@@ -320,11 +307,12 @@ if ($matiere->code_modalite_elect == 'O') {
 							</option>
 <?php } ?>
 						</select>
-					</td>
-					<td>
+						
+						Description :
 						<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea> 
-					</td>
-					<td>
+				</div>
+						<div>
+						Liaison :
 						<?php // echo estCoursEpi($epiCommun->id ,"aid-10"); ?>
 <?php 
 	$listeLiaisons = getLiaisonEpiEnseignementByIdEpi($epiCommun->id); 
@@ -358,8 +346,11 @@ if ($matiere->code_modalite_elect == 'O') {
 			}
 		}
 ?>
-						<br />
+						
 <?php } 
+?>	
+						
+<?php
 $tableauClasses = array();
 
 foreach ($_SESSION['afficheClasse'] as $classeSelectionne) {
@@ -410,8 +401,9 @@ if (isset($cours)) {
 
 
 ?>
-					</td>
-					<td>
+				</div>
+				<div>
+						Action :
 						<input type="submit" class="btnSupprime" 
 							   alt="Boutton supprimer" 
 							   name="supprimeEpi" 
@@ -423,12 +415,15 @@ if (isset($cours)) {
 							   name="modifieEpi" 
 							   value="<?php echo $epiCommun->id; ?>"
 							   title="Modifier cet EPI" />
-					</td>
-					
-				</tr>
+				</div>
+				</div>
 <?php } ?>
-				<tr>
-					<td>
+			
+			
+			<div class="lsun_cadre">
+				<div>
+					<p>
+						Période :
 						<select name="newEpiPeriode">
 							<option value=""></option>
 	<?php $periodes->data_seek(0);
@@ -436,8 +431,8 @@ if (isset($cours)) {
 							<option value="<?php echo $periode->num_periode; ?>"><?php echo $periode->num_periode; ?></option>
 	<?php } ?>
 						</select>
-					</td>
-					<td>
+						
+						Division :
 						<select name="newEpiClasse[]" multiple >
 							<option value=""></option>
 <?php $classes->data_seek(0);
@@ -447,8 +442,8 @@ while ($classe = $classes->fetch_object()) { ?>
 							</option>
 <?php } ?>
 						</select>
-					</td>
-					<td>
+						
+						Thématique :
 						<select name="newEpiCode">
 							<option value=""></option>
 <?php foreach ($xml->{'thematiques-epis'}->{'thematique-epi'} as $epi) { ?>
@@ -457,9 +452,11 @@ while ($classe = $classes->fetch_object()) { ?>
 							</option>
 <?php } ?>
 						</select>
+						Intitule :
 						<input type="text" name="newEpiIntitule" size="40" />
-					</td>
-					<td>
+					</p>
+					<p>
+						Disciplines :
 						<select multiple name="newEpiMatiere[]">
 <?php $listeMatieres->data_seek(0);
  while ($matiere = $listeMatieres->fetch_object()) { ?>
@@ -475,31 +472,39 @@ if ($matiere->code_modalite_elect == 'O') {
 							</option>
 <?php } ?>
 						</select>
-					</td>
-					<td>
+						
+						Description :
 						<textarea rows="3" cols="50" name="newEpiDescription" /></textarea> 
-					</td>
-					<td>
+						<!--Liaison-->
 <!-- TODO : Ajouter des boutons qui créent l'EPI et un AID ou l'EPI et un cours -->
+
 						<!--
+						Liaison
 						<input type="submit" class="btnLien" 
 							   alt="Submit button" 
 							   name="lieEPI" 
 							   value="y"
 							   title="Lier cet EPI à un AID ou un enseignement" />
 						-->
-					</td>
-					<td>
+					</p>
+				<div>
+					<p>
+						Action
 						<input type="submit" class="btnValide" 
 							   alt="Submit button" 
 							   name="ajouteEPI" 
 							   value="y"
 							   title="Ajouter cet EPI" />
-					</td>
-			</tbody>
-		</table> 
-  </fieldset>
+					</p>
+				</div>
+			</div>
+			
+		</div> 
+	
+	</fieldset>
 </form>
+
+
 
 <p class="lsun_cadre" >
 	   <a href="lib/creeXML.php" target="exportLSUN.xml">Afficher l'export</a>
