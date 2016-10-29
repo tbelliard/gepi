@@ -1055,7 +1055,10 @@ elseif((($_SESSION['statut']=="professeur")&&($is_pp))||($_SESSION['statut']=="c
 							die();
 						}
 						else {
-							if(($_SESSION['statut']=='cpe')||(is_cpe($_SESSION['login'],"",$eleve_login))) {
+							// On ne filtre pas sur un droit CPE limité à ses propres élèves suivis
+							//if(($_SESSION['statut']=='cpe')||(is_cpe($_SESSION['login'],"",$eleve_login))) {
+							if(($_SESSION['statut']=='cpe')||
+							(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$eleve_login)))) {
 								if(isset($_POST['suppr_filephoto'])) {
 									check_token();
 									if($_POST['suppr_filephoto']=='y'){
