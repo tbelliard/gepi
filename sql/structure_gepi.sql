@@ -1574,3 +1574,7 @@ login_ele VARCHAR(50) NOT NULL DEFAULT '',
 item VARCHAR(100) NOT NULL DEFAULT '', 
 valeur VARCHAR(255) NULL DEFAULT '', 
 PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS aid_appreciations_grp;
+CREATE TABLE aid_appreciations_grp ( id_aid int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, indice_aid int(11) NOT NULL default '0', PRIMARY KEY  (id_aid, indice_aid, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

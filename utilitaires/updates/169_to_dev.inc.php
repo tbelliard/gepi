@@ -97,4 +97,21 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'aid_appreciations_grp' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'aid_appreciations_grp'");
+if ($test == -1) {
+	$sql="CREATE TABLE aid_appreciations_grp ( id_aid int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, indice_aid int(11) NOT NULL default '0', PRIMARY KEY  (id_aid, indice_aid, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+		//$result.="<br />$sql<br />";
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -50,6 +50,7 @@ $indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET[
 unset($aid_id);
 $aid_id = isset($_POST["aid_id"]) ? $_POST["aid_id"] : (isset($_GET["aid_id"]) ? $_GET["aid_id"] : NULL);
 
+$msg="";
 
 // On appelle les informations de l'aid pour les afficher :
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
@@ -60,6 +61,17 @@ $display_begin = @old_mysql_result($call_data, 0, "display_begin");
 $display_end = @old_mysql_result($call_data, 0, "display_end");
 
 
+if ($_SESSION['statut'] != "secours") {
+	$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.numero, a.nom";
+	//echo "$sql<br />";
+	$call_prof_aid = mysqli_query($GLOBALS["mysqli"], $sql);
+	$nombre_aid = mysqli_num_rows($call_prof_aid);
+	if ($nombre_aid == "0") {
+		header("Location: ../accueil.php?msg=$nom_aid : Vous n'êtes pas professeur responsable. Vous n'avez donc pas à entrer d'appréciations.");
+		die();
+	}
+}
+
 
 //===========================
 // Couleurs utilisées
@@ -68,12 +80,81 @@ $couleur_fond = '#AAE6AA';
 $couleur_moy_cn = '#96C8F0';
 //===========================
 
-
-
 $nom_table = "class_temp".md5(SESSION_ID());
+
+$tab_aid=get_tab_aid($aid_id);
 
 if (isset($_POST['is_posted'])) {
 	check_token();
+
+	$nb_reg=0;
+
+	// Appréciations groupe classe
+
+	$nb_periode=$tab_aid['maxper'];
+
+	$k=1;
+	while ($k < $nb_periode + 1) {
+		if (($k >= $display_begin) and ($k <= $display_end)) {
+			if(isset($_POST['no_anti_inject_app_grp_'.$k])) {
+				//f_write_tmp("\$_POST['app_grp_'.$k]=".$_POST['app_grp_'.$k]);
+				//f_write_tmp("\$current_group[\"classe\"][\"ver_periode\"]['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]);
+				if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+
+					if (isset($NON_PROTECT["app_grp_".$k])) {
+						$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp_".$k]));
+					}
+					else {
+						$app = "";
+					}
+					//echo "<pre>$k: $app</pre>";
+					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					$app=suppression_sauts_de_lignes_surnumeraires($app);
+
+					$sql="SELECT * FROM aid_appreciations_grp WHERE (id_aid='".$aid_id."' AND periode='$k' AND indice_aid='".$indice_aid."')";
+					//echo "$sql<br />";
+					$test_grp_app_query = mysqli_query($GLOBALS["mysqli"], $sql);
+					$test = mysqli_num_rows($test_grp_app_query);
+					if ($test != "0") {
+						if ($app != "") {
+							$sql="UPDATE aid_appreciations_grp SET appreciation='" . $app . "' WHERE (id_aid='".$aid_id."' AND periode='$k' AND indice_aid='".$indice_aid."')";
+						} else {
+							$sql="DELETE FROM aid_appreciations_grp WHERE (id_aid='".$aid_id."' AND periode='$k' AND indice_aid='".$indice_aid."')";
+						}
+						//echo "$sql<br />";
+						$register=mysqli_query($GLOBALS["mysqli"], $sql);
+						if (!$register) {
+							$msg.="Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";
+						}
+						else {
+							$nb_reg++;
+						}
+					} else {
+						if ($app != "") {
+							$sql="INSERT INTO aid_appreciations_grp SET id_aid='".$aid_id."', periode='$k', indice_aid='".$indice_aid."', appreciation='" . $app . "'";
+							//echo "$sql<br />";
+							$register=mysqli_query($GLOBALS["mysqli"], $sql);
+							if (!$register) {
+								$msg.="Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";
+							}
+							else {
+								$nb_reg++;
+							}
+						}
+					}
+				}
+				else {
+					$msg.="Anomalie: Tentative de saisie d'une appréciation de groupe-classe alors que la période n'est pas ouverte en saisie.<br />";
+				}
+			}
+		}
+		$k++;
+	}
+
+
+	// =============================
+	// Appréciations et notes élèves
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 	//echo "\$indice_max_log_eleve=$indice_max_log_eleve<br />";
@@ -220,7 +301,18 @@ if (isset($_POST['is_posted'])) {
 									$register=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
 							}
-							if (!$register) {$msg = "Erreur lors de l'enregistrement des données de la période $k ";} else {$msg = "Les modifications ont été enregistrées !";$affiche_message = 'yes';}
+							if (!$register) {
+								$msg.="Erreur lors de l'enregistrement des données de la période $k pour $reg_eleve_login<br />";
+							}
+							else {
+								$nb_reg++;
+							}
+							/*
+							else {
+								$msg.="Les modifications ont été enregistrées !<br />";
+								$affiche_message = 'yes';
+							}
+							*/
 						}
 					}
 				}
@@ -228,6 +320,11 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 		$j++;
+	}
+
+	if(($msg=="")&&($nb_reg>0)) {
+		$msg.="Les modifications ont été enregistrées !<br />";
+		$affiche_message = 'yes';
 	}
 }
 //
@@ -325,7 +422,155 @@ if (!isset($aid_id)) {
 	$aid_nom = old_mysql_result($calldata, 0, "nom");
 
 
-	echo "<p class='grand'>Appréciations $nom_aid : $aid_nom</p>\n";
+	echo "<h2>Appréciations $nom_aid : $aid_nom</h2>\n";
+
+	echo "<p class='bold'>Groupe-classe&nbsp;:</p>
+<table class='boireaus boireaus_alt' border=1 cellspacing=2 cellpadding=5>
+	<tr>";
+			$i = "1";
+			while ($i < $nb_periode_max + 1) {
+				if (($i >= $display_begin) and ($i <= $display_end)) {
+					$nom_periode[$i] = old_mysql_result($periode_query, $i-1, "nom_periode");
+					echo "
+			<th><b>$nom_periode[$i]</b></th>";
+				}
+				$i++;
+			}
+			echo "
+	</tr>
+	<tr>";
+			$k = '1';
+			while ($k < $nb_periode_max + 1) {
+				if (($k >= $display_begin) and ($k <= $display_end)) {
+
+					$current_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations_grp WHERE (periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
+					if(mysqli_num_rows($current_app_query)>0) {
+						$lig_app=mysqli_fetch_object($current_app_query);
+						$current_app_t[$k]=$lig_app->appreciation;
+					}
+					else {
+						$current_app_t[$k]="";
+					}
+
+					if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+						echo "
+		<td>
+			<textarea name=\"no_anti_inject_app_grp_".$k."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">".$current_app_t[$k]."</textarea>
+		</td>";
+					}
+					else {
+						// Période close
+						echo "
+		<td><b>";
+						if ($current_app_t[$k] != '') {
+							echo "$current_app_t[$k]";
+						} else {
+							echo "-";
+						}
+						echo "</b></td>";
+					}
+				}
+				$k++;
+			}
+			echo "
+	</tr>";
+
+
+	echo "
+</table>\n";
+/*
+
+	echo "<p class='bold'>Groupe-classe&nbsp;:</p>
+<table class='boireaus boireaus_alt' border=1 cellspacing=2 cellpadding=5>";
+	$num = '1';
+	$num3=0;
+	while ($num < $nb_periode_max + 1) {
+		$appel_login_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT a.login
+									FROM j_eleves_classes cc, j_aid_eleves a, $nom_table c, eleves e
+									WHERE (a.id_aid='$aid_id' AND
+									cc.login = a.login AND
+									a.login = e.login AND
+									cc.id_classe = c.id_classe AND
+									c.num = $num AND
+									a.indice_aid='$indice_aid') ORDER BY e.nom, e.prenom");
+		$nombre_lignes = mysqli_num_rows($appel_login_eleves);
+		if ($nombre_lignes != '0') {
+			echo "
+	<tr>";
+			$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $nom_table WHERE num = '$num' ");
+			$id_classe = old_mysql_result($call_data, '0', 'id_classe');
+			$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
+
+			$i = "1";
+			while ($i < $num + 1) {
+				$nom_periode[$i] = old_mysql_result($periode_query, $i-1, "nom_periode");
+				echo "
+		<th><b>$nom_periode[$i]</b></th>";
+				$i++;
+			}
+			while ($i < $nb_periode_max + 1) {
+				echo "
+		<th>X</th>";
+				$i++;
+			}
+			echo "
+	</tr>
+	<tr>";
+			$k = '1';
+			$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
+			while ($k < $num + 1) {
+				if (($k >= $display_begin) and ($k <= $display_end)) {
+
+					$current_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations_grp WHERE (periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
+					if(mysqli_num_rows($current_app_query)>0) {
+						$lig_app=mysqli_fetch_object($current_app_query);
+						$current_app_t[$k]=$lig_app->appreciation;
+					}
+					else {
+						$current_app_t[$k]="";
+					}
+
+					$ver_periode[$k] = old_mysql_result($periode_query, $k-1, "verouiller");
+					if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] == "O"))||
+						(($_SESSION['statut']!='secours')&&($ver_periode[$k] != "N"))) {
+						// Période close
+						echo "
+		<td><b>";
+						if ($current_app_t[$k] != '') {
+							echo "$current_app_t[$k]";
+						} else {
+							echo "-";
+						}
+						echo "</b></td>";
+					}
+					else {
+						echo "
+		<td>
+			<textarea name=\"no_anti_inject_app_grp_".$k."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">".$current_app_t[$k]."</textarea>
+		</td>";
+					}
+				} else {
+					echo "
+		<td>-</td>";
+				}
+				$k++;
+			}
+
+			while ($k < $nb_periode_max + 1) {
+				echo "
+		<td>X</td>";
+				$k++;
+			}
+
+			echo "
+	</tr>";
+		}
+		$num++;
+	}
+	echo "
+</table>\n";
+*/
 	echo "<table class='boireaus' border=1 cellspacing=2 cellpadding=5>\n";
 
 	$compteur_eleve=0;
