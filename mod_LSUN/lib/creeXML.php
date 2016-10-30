@@ -253,7 +253,7 @@ $xml->appendChild($items);
 			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
 				$noeudEpisGroupes = $xml->createElement('epi-groupe');
 				//id="EPI_GROUPE_02"
-				$attributsEpiGroupe = array('id'=>"EPI_GROUPE_".$episGroupe->id, 'intitule'=>'', 'epi-ref'=>$episGroupe->id_epi );
+				$attributsEpiGroupe = array('id'=>"EPI_GROUPE_".$episGroupe->id, 'intitule'=>$episGroupe->nom, 'epi-ref'=>'EPI_'.$episGroupe->id_epi );
 				foreach ($attributsEpiGroupe as $cle=>$valeur) {
 					$attsEpiGroupe = $xml->createAttribute($cle);
 					$attsEpiGroupe->value = $valeur;
@@ -267,11 +267,43 @@ $xml->appendChild($items);
 				$noeudEpisGroupes->appendChild($noeudEpiEnseignantsDisciplines);
 								
 				$episGroupes->appendChild($noeudEpisGroupes);
+				// enseih,a,ts
+				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
+				$profsEPI = getProfsEPI($episGroupe->id);
+				while($prof = $profsEPI->fetch_object()) {
+					$noeudProf1 = $xml->createElement('enseignant-discipline');
+					$attsMat1 =  $xml->createAttribute('discipline-ref');
+					//$attsMat1->value = 'DI_';
+					//var_dump(getMatiereOnMatiere($prof->matiere1)->code_matiere);
+					$attsMat1->value = 'DI_'.getMatiereOnMatiere($prof->matiere1)->code_matiere;
+					$noeudProf1->appendChild($attsMat1);
+					$attsProf1 =  $xml->createAttribute('enseignant-ref');
+					$attsProf1->value = 'ENS_'.$prof->numind1;
+					$noeudProf1->appendChild($attsProf1);
+					
+					$noeudProf2 = $xml->createElement('enseignant-discipline');
+					$attsMat2 =  $xml->createAttribute('discipline-ref');
+					$attsMat2->value = 'DI_'.getMatiereOnMatiere($prof->matiere2)->code_matiere;
+					$noeudProf2->appendChild($attsMat2);
+					$attsProf2 =  $xml->createAttribute('enseignant-ref');
+					$attsProf2->value = 'ENS_'.$prof->numind2;
+					$noeudProf2->appendChild($attsProf2);
+					
+					$noeudEnseigneDis->appendChild($noeudProf1);
+					$noeudEnseigneDis->appendChild($noeudProf2);
+				}
+				
+				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
+				
 			}
 		$donnees->appendChild($episGroupes);
 		
 			/*----- acc-persos -----*/
-			$accPersos = $xml->createElement('acc-persos');
+		$accPersos = $xml->createElement('acc-persos');
+			
+			
+			
+			
 		$donnees->appendChild($accPersos);
 		
 			/*----- acc-persos-groupes -----*/

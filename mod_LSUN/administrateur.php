@@ -373,9 +373,12 @@ while ($aid = $listeAids->fetch_object()) {
 							</option>
 <?php } ?>
 <?php 
-$listeCours = getEpiCours();
+//$listeCours = getEpiCours();
+$listeCours = getEpiAid();
+
 $lastCours = NULL;
 while ($cours = $listeCours->fetch_object()) {
+//var_dump($cours);
 	if($cours->id_groupe == $lastCours) {
 		echo ' - '.$cours->classe;
 		 continue;

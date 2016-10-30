@@ -21,6 +21,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
 */
 
+include_once 'fonctions_EPI.php';
+
 function enregistreMEF() {
 	global $mysqli;
 	$classeBase = filter_input(INPUT_POST, 'classeBase', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
@@ -247,112 +249,6 @@ function getMatiereLSUN($mefClasse = NULL) {
 	return $resultchargeDB;
 }
 
-/**
- * Enregistre un EPI
- * 
- * @global type $mysqli
- * @param type $newEpiPeriode
- * @param type $newEpiClasse
- * @param type $newEpiCode
- * @param type $newEpiIntitule
- * @param type $newEpiDescription
- * @param type $newEpiMatiere
- * @param type $modifieEPIMatiereModalite
- * @param type $idEpi
- */
-function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $newEpiDescription, $newEpiMatiere, $idEpi = NULL) {
-	global $mysqli;
-	
-	$sqlCreeEpi = "INSERT INTO lsun_epi_communs (id, periode, codeEPI, intituleEpi, descriptionEpi) VALUES (";
-	
-	if ($idEpi) {
-		$sqlCreeEpi .= $idEpi;
-		delMatiereEPI($idEpi);
-		delLienEPI($idEpi);
-	}
-	else {$sqlCreeEpi .= "NULL";}
-	
-	$sqlCreeEpi .= ", '$newEpiPeriode', '$newEpiCode', \"".htmlspecialchars($newEpiIntitule)."\", \"".htmlspecialchars($newEpiDescription)."\") "
-		. "ON DUPLICATE KEY UPDATE periode = \"".$newEpiPeriode."\", codeEPI = \"".$newEpiCode."\", intituleEpi = \"".htmlspecialchars($newEpiIntitule)."\", descriptionEpi = \"".htmlspecialchars($newEpiDescription)."\" ";
-	// echo $sqlCreeEpi.'<br>';
-	$mysqli->query($sqlCreeEpi);
-	$idEPI = getIdEPI($newEpiPeriode, $newEpiCode, $newEpiIntitule, htmlspecialchars($newEpiDescription))->fetch_object()->id;
-	
-	if ($newEpiMatiere) {
-		foreach ($newEpiMatiere AS $valeur) {
-			$matiere = substr($valeur, 0, -1);
-			$modalite = substr($valeur, -1);
-			$sqlCreLienEPI = "INSERT INTO lsun_j_epi_matieres (id_matiere,  modalite, id_epi) VALUES ('$matiere', '$modalite' , $idEPI) ON DUPLICATE KEY UPDATE id_matiere = '$matiere' , modalite = '$modalite' ";
-			//echo $sqlCreLienEPI;
-			$mysqli->query($sqlCreLienEPI);
-		}
-	}
-	
-	if ($newEpiClasse) {
-		foreach ($newEpiClasse AS $valeur) {
-			$sqlCrejoinEpiClasse = "INSERT INTO lsun_j_epi_classes (id_epi, id_classe) VALUES ($idEPI , $valeur) ";
-			//echo $sqlCrejoinEpiClasse.'<br>';
-			$mysqli->query($sqlCrejoinEpiClasse);
-		}
-	}
-}
-
-/**
- * Réupère l'Id d'un EPI en fonction de ses caractéristiques
- * 
- * @global type $mysqli
- * @param type $newParcoursPeriode
- * @param type $newEpiClasse
- * @param type $newEpiCode
- * @param type $newEpiIntitule
- * @param type $newEpiDescription
- * @return type
- */
-function getIdEPI($newParcoursPeriode, $newEpiCode, $newEpiIntitule, $newEpiDescription) {
-	global $mysqli;
-	$sqlGetIdEpi = "SELECT id FROM lsun_epi_communs WHERE "
-		. "periode = '$newParcoursPeriode' AND "
-		. "codeEPI = '$newEpiCode' AND "
-		. "intituleEpi = \"$newEpiIntitule\" AND "
-		. "descriptionEpi = \"$newEpiDescription\" ";
-	// echo $sqlGetIdEpi;
-	$resultchargeDB = $mysqli->query($sqlGetIdEpi);
-	return $resultchargeDB;
-}
-
-/**
- * Retourne un EPI commun
- * 
- * @global type $mysqli
- * @global type $selectionClasse
- * @return type
- */
-function getEPICommun() {
-	global $mysqli;
-	//global $selectionClasse;
-	//$myData = implode(",", $selectionClasse);
-	
-	$sqlGetEpi = "SELECT lec.* FROM lsun_epi_communs AS lec "
-		. "ORDER BY periode , codeEPI , id ";
-	//echo $sqlGetEpi;
-	$resultchargeDB = $mysqli->query($sqlGetEpi);
-	return $resultchargeDB;
-}
-
-/**
- * Recherche les matières d'un EPI commun
- * 
- * @global type $mysqli
- * @param type $idEPI
- * @return type
- */
-function getMatieresEPICommun($idEPI) {
-	global $mysqli;
-	$sqlGetMatieresEpi = "SELECT id_matiere, modalite FROM lsun_j_epi_matieres WHERE id_epi = '$idEPI' ";
-	//echo $sqlGetMatieresEpi;
-	$resultchargeDB = $mysqli->query($sqlGetMatieresEpi);
-	return $resultchargeDB;
-}
 
 /**
  * Retourne une matière sur son nom court
@@ -370,97 +266,6 @@ function getMatiereOnMatiere($matiere) {
 	return $retour;
 }
 
-/**
- * Supprime un EPI sur son Id
- * 
- * @global type $mysqli
- * @param type $EpiId
- */
-function supprimeEPI($EpiId) {
-	global $mysqli;	
-	delMatiereEPI($EpiId);
-	delClasseEPI($EpiId);
-	delClasseEPI($EpiId);
-	lsun_j_epi_enseignements($EpiId);
-	$sqlDeleteEpi = "DELETE FROM lsun_epi_communs WHERE id = '$EpiId' ";
-	$mysqli->query($sqlDeleteEpi);
-	echo $sqlDeleteEpi.'<br>';
-}
-
-/**
- * Supprime les matières d'un EPI
- * 
- * @global type $mysqli
- * @param type $EpiId
- */
-function delMatiereEPI($EpiId) {
-	global $mysqli;
-	$sqlDeleteJointureEpi = "DELETE FROM lsun_j_epi_matieres WHERE id_epi = '$EpiId' ";
-	//echo $sqlDeleteJointureEpi.'<br>';
-	$mysqli->query($sqlDeleteJointureEpi);
-}
-
-function getEpiAid() {
-	global $mysqli;
-	global $_EPI;
-	$in = implode(",",$_SESSION['afficheClasse']);
-	if ($in) {$in = ','.$in;}
-	$in = '0'.$in;
-	
-	$sqlAidClasse = "SELECT "
-		. "indice_aid AS id_enseignement, indice_aid AS indice_aid, nom AS groupe , nom_complet AS description, NULL AS id_groupe,  NULL AS id_classe "
-		. "FROM aid_config WHERE type_aid = $_EPI ";
-		
-	$resultchargeDB = $mysqli->query($sqlAidClasse);
-	return $resultchargeDB;
-}
-
-function getEpiCours() {
-	global $mysqli;
-	global $_EPI;
-	$in = implode(",",$_SESSION['afficheClasse']);
-	if ($in) {$in = ','.$in;}
-	$in = '0'.$in;
-	
-	$sqlAidClasse = "SELECT t2.* , c.classe "
-		. "FROM ( SELECT t1.* , jcg.id_classe AS toutesClasses "
-		. "FROM ("
-		. "SELECT jgm.id_matiere , t0.* FROM "
-		. "(SELECT jgt.id_groupe , jgc.id_classe FROM j_groupes_types AS jgt "
-		. "INNER JOIN j_groupes_classes AS jgc ON jgc.id_groupe = jgt.id_groupe "
-		. "WHERE jgt.id_type = $_EPI AND jgc.id_classe IN ($in)) AS t0 "
-		. "INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = t0.id_groupe"
-		. ""
-		. ") AS t1 "
-		. "INNER JOIN j_groupes_classes AS jcg ON jcg.id_groupe = t1.id_groupe ) "
-		. "AS t2 "
-		. "INNER JOIN classes AS c ON t2.toutesClasses = c.id";
-	
-	//echo '<br>--*--<br>'.$sqlAidClasse.'<br>--*--<br>';
-	$resultchargeDB = $mysqli->query($sqlAidClasse);
-	return $resultchargeDB;
-}
-
-function lieEpiCours($id_epi , $id_enseignement , $aid, $id=NULL) {
-	global $mysqli;
-	$sqLieEpiCours = "INSERT INTO lsun_j_epi_enseignements (id , id_epi , id_enseignements , aid) VALUES (";
-	if ($id) {
-		$sqLieEpiCours .= $id;
-	}	else {
-		$sqLieEpiCours .= "NULL";
-	}
-	$sqLieEpiCours .= ",$id_epi , $id_enseignement , $aid)";
-	//echo $sqLieEpiCours;
-	$mysqli->query($sqLieEpiCours);
-}
-
-function getLiaisonEpiEnseignementByIdEpi($id) {
-	global $mysqli;
-	$sqlGetLiaisonEpiEnseignement = "SELECT * FROM lsun_j_epi_enseignements WHERE id_epi = '$id' ";
-	//echo $sqlGetLiaisonEpiEnseignement;
-	$resultchargeDB = $mysqli->query($sqlGetLiaisonEpiEnseignement);
-	return $resultchargeDB;
-}
 
 function getAID($id) {
 	global $mysqli;
@@ -526,59 +331,4 @@ function MefAppartenanceAbsent() {
 	return $retour;
 }
 
-function delLienEPI($idEPI) {
-	global $mysqli;
-	$sqlDelLienEPI = "DELETE FROM lsun_j_epi_enseignements WHERE id_epi = '$idEPI' ";
-	//echo $sqlDelLienEPI;
-	$mysqli->query($sqlDelLienEPI);
-}
 
-function getEpisGroupes($idEPI = NULL) {
-	global $mysqli;
-	$sqlEpisGroupes = "SELECT * FROM lsun_j_epi_enseignements ";
-	if ($idEPI) {
-		$sqlEpisGroupes .= "WHERE id_epi = $idEPI ";
-	}
-	$sqlEpisGroupes .= "ORDER BY id_epi ";
-	//echo $sqlEpisGroupes;
-	$resultchargeDB = $mysqli->query($sqlEpisGroupes);
-	return $resultchargeDB;
-}
-
-function estClasseEPI($id_epi , $id_classe) {
-	global $mysqli;
-	$retour = FALSE;
-	$sqlEpisClasse = "SELECT 1=1 FROM lsun_j_epi_classes WHERE id_classe = '$id_classe' AND id_epi = '$id_epi' ";
-	//echo $sqlEpisClasse;
-	if ($mysqli->query($sqlEpisClasse)->num_rows) {
-		$retour = TRUE;
-	}
-	return $retour;
-}
-
-function estCoursEpi($id_epi , $id_cours) {
-	global $mysqli;
-	$retour = FALSE;
-	$cours = explode('-', $id_cours);
-	$sqlEpisCours= "SELECT 1=1 FROM lsun_j_epi_enseignements WHERE id_epi = '$id_epi' AND id_enseignements = '$cours[1]' ";	
-	if ($mysqli->query($sqlEpisCours)->num_rows) {
-		$retour = TRUE;
-	}
-	return $retour;
-}
-
-function delClasseEPI($EpiId) {
-	global $mysqli;
-	$sqlDelClasseEPI = "DELETE FROM lsun_j_epi_classes WHERE id_epi = '$EpiId' ";
-	//echo $sqlDelClasseEPI;
-	$mysqli->query($sqlDelClasseEPI);
-	
-}
-
-function lsun_j_epi_enseignements($EpiId) {
-	global $mysqli;
-	$sqlDelEnseignement = "DELETE FROM lsun_j_epi_enseignements WHERE id_epi = '$EpiId' ";
-	//echo $sqlDelEnseignement;
-	$mysqli->query($sqlDelEnseignement);
-
-}

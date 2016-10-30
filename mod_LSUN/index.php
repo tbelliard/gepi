@@ -150,9 +150,7 @@ include_once 'lib/fonctions.php';
 $corrigeMEF = filter_input(INPUT_POST, 'corrigeMEF');
 if($corrigeMEF == 'y') {
 	//debug_var();
-	
 	enregistreMEF();
-	//die('coucou');
 }
 
 if (MefAppartenanceAbsent()) {
@@ -194,7 +192,7 @@ if ($utilisateur->getStatut()=="professeur") {
 	
 }
 
-// debug_var();
+debug_var();
 //**************** Pied de page *****************
 require_once("../lib/footer.inc.php");
 //**************** Fin de pied de page *****************
