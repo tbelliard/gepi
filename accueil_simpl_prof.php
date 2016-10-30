@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1193,6 +1193,8 @@ ORDER BY ac.nom_complet";
 			echo "<!-- Colonne Nom de l'AID -->\n";
 			echo "<td>";
 			echo $tmp_nom_aid;
+			echo "<br />";
+			echo "<span style='font-size:x-small'>".$lig_aid->nom."<span>";
 			echo "</td>\n";
 
 			//echo "<td>".htmlspecialchars($groups[$i]['classlist_string'])."</td>\n";
