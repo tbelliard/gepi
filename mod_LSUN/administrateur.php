@@ -32,6 +32,8 @@ $responsables = getResponsables();
 $parcoursCommuns = getParcoursCommuns();
 $listeMatieres = getMatiereLSUN();
 $listeEPICommun = getEPICommun();
+$listeAPCommun = getAPCommun();
+$listeAidAp = getApAid();
 
 
 
@@ -61,7 +63,7 @@ echo $sqlDisciplines;
 
 <form action="index.php" method="post" id="responsables">
 	<fieldset>
-		<legend>Liste des responsables de l'établissement</legend>
+		<legend>Responsables de l'établissement</legend>
 <?php while ($responsable = $responsables->fetch_object()){ ?>
 		<p>
 			<input type="submit" class="btnEfface" 
@@ -142,7 +144,7 @@ if ($cpt) {echo "			</div>\n";}
 
 <form action="index.php" method="post" id="parcours">
 	<fieldset>
-		<legend>Liste des parcours communs</legend>
+		<legend>Parcours communs</legend>
 		<table>
 			<caption style="caption-side:bottom">parcours éducatifs communs à une classe pour une période</caption>
 			<thead>
@@ -236,8 +238,8 @@ if ($cpt) {echo "			</div>\n";}
 
 <form action="index.php" method="post" id="definitionEPI">
 	<fieldset>
-		<legend>Liste des EPIs</legend>		
-		<div>
+		<legend>EPIs</legend>		
+		<div id="div_epi">
 			<p>Enseignements Pratiques Interdisciplinaires</p>
 <?php while ($epiCommun = $listeEPICommun->fetch_object()) { 
 	$tableauMatieresEPI = array();
@@ -477,18 +479,7 @@ if ($matiere->code_modalite_elect == 'O') {
 						</select>
 						
 						Description :
-						<textarea rows="3" cols="50" name="newEpiDescription" /></textarea> 
-						<!--Liaison-->
-<!-- TODO : Ajouter des boutons qui créent l'EPI et un AID ou l'EPI et un cours -->
-
-						<!--
-						Liaison
-						<input type="submit" class="btnLien" 
-							   alt="Submit button" 
-							   name="lieEPI" 
-							   value="y"
-							   title="Lier cet EPI à un AID ou un enseignement" />
-						-->
+						<textarea rows="4" cols="50" name="newEpiDescription" /></textarea> 
 					</p>
 				<div>
 					<p>
@@ -504,12 +495,72 @@ if ($matiere->code_modalite_elect == 'O') {
 			
 		</div> 
 	
+		</div> 
+	</fieldset>
+</form>
+
+
+
+<form action="index.php" method="post" id="definitionAP">
+	<fieldset>
+		<legend>AP</legend>		
+		<div id="div_ap">
+			<p>Accompagnements personnalisés</p>
+			
+			
+			<div class="lsun_cadre">
+				<div>
+					<p>
+						<label for="newApIntituleAP">intitulé :</label>
+						<input type="text" id="newApIntituleAP" name="newApIntituleAP" maxlength="150" />
+						-
+						<label for="newApDescription">Description :</label>
+						<textarea rows="4" cols="50" id="newApDescription" name="newApDescription" /></textarea> 
+						-
+						<label for="newApDisciplines">Discipline(s) de référence</label>
+						<select multiple name="newApDisciplines[]">
+<?php $listeMatieres->data_seek(0);
+ while ($matiere = $listeMatieres->fetch_object()) { ?>
+							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
+								<?php echo $matiere->nom_complet; ?>
+<?php 								
+if ($matiere->code_modalite_elect == 'O') {
+	echo '- option obligatoire';
+} elseif ($matiere->code_modalite_elect == 'F') {
+	echo '- option facultative';
+}
+?>
+							</option>
+<?php } ?>
+						</select>
+						-
+						<label for="newApLiaisonAID">Liaison</label>
+						<select multiple name="newApLiaisonAID[]">
+<?php 
+var_dump($listeAidAp);
+$listeAidAp->data_seek(0);
+while ($liaison = $listeAidAp->fetch_object()) { ?>
+							<option value="<?php echo $liaison->indice_aid; ?>">
+								<?php echo $liaison->groupe; ?>
+							</option>
+<?php } ?>
+						</select>
+					</p>
+					<p>
+						<button type="submit" name="creeAP" value="y">Créer cet AP</button>
+					</p>
+					
+				</div>
+			</div>
+			
+		</div> 
 	</fieldset>
 </form>
 
 
 
 <p class="lsun_cadre" >
-	   <a href="lib/creeXML.php" target="exportLSUN.xml">Afficher l'export</a>
+	   <a href="lib/creeXML.php" target="exportLSUN.xml">Afficher l'export</a
+	   
 </p>
 

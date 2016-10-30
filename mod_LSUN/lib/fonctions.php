@@ -22,6 +22,7 @@
 */
 
 include_once 'fonctions_EPI.php';
+include_once 'fonctions_AP.php';
 
 function enregistreMEF() {
 	global $mysqli;

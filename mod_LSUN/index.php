@@ -55,27 +55,27 @@ $mysqli->query($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_epi_communs ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
-	. "periode int(11) NOT NULL COMMENT 'Periode de référence de l\epi',  "
-	. "codeEPI varchar(10) NOT NULL COMMENT 'Code officiel de l\epi', "
-	. "intituleEpi varchar(150) NOT NULL COMMENT 'Intitulé de l\epi', "
-	. "descriptionEpi text NOT NULL COMMENT 'Description de l\epi', "
+	. "periode int(11) NOT NULL COMMENT \"Periode de référence de l'epi\",  "
+	. "codeEPI varchar(10) NOT NULL COMMENT \"Code officiel de l'epi\", "
+	. "intituleEpi varchar(150) NOT NULL COMMENT \"Intitulé de l'epi\", "
+	. "descriptionEpi text NOT NULL COMMENT \"Description de l'epi\", "
 	. "PRIMARY KEY (id) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 //echo $sql;
 $mysqli->query($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_matieres ("
-	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique',"
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
 	. "id_matiere int(11) NOT NULL COMMENT 'id de la matiere' , "
-	. "modalite varchar(1) COMMENT 'modalite d\élection de la matiere' , "
-	. "id_epi int(11) NOT NULL COMMENT 'id de l\epi', "
+	. "modalite varchar(1) COMMENT 'modalite d'élection de la matiere' , "
+	. "id_epi int(11) NOT NULL COMMENT \"id de l'epi\", "
 	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_matiere , id_epi) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 //echo $sql;
 $mysqli->query($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_enseignements ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
-	. "id_epi int(11) NOT NULL COMMENT \"id de l\epi\", "
-	. "id_enseignements int(11) NOT NULL COMMENT \"id de l\enseignement\", "
+	. "id_epi int(11) NOT NULL COMMENT \"id de l'epi\", "
+	. "id_enseignements int(11) NOT NULL COMMENT \"id de l'enseignement\", "
 	. "aid int(11) NOT NULL COMMENT '0 si enseignement, 1 si AID', "
 	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_epi , id_enseignements , aid) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 //echo $sql;
@@ -83,7 +83,7 @@ $mysqli->query($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_classes ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
-	. "id_epi int(11) NOT NULL COMMENT \"id de l\epi\", "
+	. "id_epi int(11) NOT NULL COMMENT \"id de l'epi\", "
 	. "id_classe int(11) NOT NULL COMMENT \"id de la classe\", "
 	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_epi , id_classe) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 //echo $sql;
@@ -91,7 +91,7 @@ $mysqli->query($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_classe ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
-	. "id_epi int(11) NOT NULL COMMENT \"id de l\epi\", "
+	. "id_epi int(11) NOT NULL COMMENT \"id de l'epi\", "
 	. "id_classe int(11) NOT NULL COMMENT 'id de la classe concernée'"
 	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_epi , id_classe) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 
@@ -107,6 +107,23 @@ $mysqli->query($sql);
 $sql = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) "
 	. "VALUES ('/mod_LSUN/index.php', 'V', 'F', 'F', 'V', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
 	. "ON DUPLICATE KEY UPDATE administrateur = 'V'; ";
+$mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_ap_communs ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	. "intituleAP varchar(150) NOT NULL COMMENT \"Intitulé de l'AP\", "
+	. "descriptionAP varchar(600) NOT NULL COMMENT \"Description de l'AP\", "
+	. "PRIMARY KEY (id) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+//echo $sql;
+$mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_j_ap_matieres ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	. "id_matiere int(11) NOT NULL COMMENT 'id de la matiere' , "
+	. "modalite varchar(1) COMMENT \"modalite d'élection de la matiere\" , "
+	. "id_ap int(11) NOT NULL COMMENT \"id de l'ap\", "
+	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_matiere , id_ap) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+//echo $sql;
 $mysqli->query($sql);
 
 

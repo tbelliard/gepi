@@ -188,7 +188,7 @@ function getEpiAid() {
 	$sqlAidClasse = "SELECT "
 		. "indice_aid AS id_enseignement, indice_aid AS indice_aid, nom AS groupe , nom_complet AS description, NULL AS id_groupe,  NULL AS id_classe "
 		. "FROM aid_config WHERE type_aid = $_EPI ";
-	echo '<br>'.$sqlAidClasse.'<br>';
+	//echo '<br>'.$sqlAidClasse.'<br>';
 		
 	$resultchargeDB = $mysqli->query($sqlAidClasse);
 	return $resultchargeDB;
