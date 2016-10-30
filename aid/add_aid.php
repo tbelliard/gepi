@@ -31,21 +31,39 @@ if ($resultat_session == 'c') {
 	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+if((!isset($indice_aid))||(!preg_match("/^[0-9]$/", $indice_aid))) {
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
 // Vérification du niveau de gestion des AIDs
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
+
+//=======================================
+$sql="SELECT * FROM aid_config WHERE indice_aid='$indice_aid';";
+$res_famille_aid=mysqli_query($GLOBALS['mysqli'], $sql);
+if(mysqli_num_rows($res_famille_aid)==0) {
+	header("Location: ../accueil.php?msg=Indice AID $indice_aid inconnu.");
+	die();
+}
+$lig_famille_aid=mysqli_fetch_object($res_famille_aid);
+$nom_famille_aid=$lig_famille_aid->nom;
+$nom_complet_famille_aid=$lig_famille_aid->nom_complet;
+$autoriser_inscript_multiples=$lig_famille_aid->autoriser_inscript_multiples;
+//=======================================
 
 include_once 'fonctions_aid.php';
 $mysqli = $GLOBALS["mysqli"];
@@ -82,30 +100,104 @@ if (isset($is_posted) && $is_posted) {
 	check_token();
 	if (isset($is_posted) and ($is_posted =="1")) { // nouveau
 		// On calcule le nouveau id pour l'aid à insérer → Plus gros id + 1
-		$aid_id = Dernier_id ($ordre = "DESC") + 1;	
+		$aid_id = Dernier_id ($ordre = "DESC") + 1;
 	} else {
 		$count--;
 	}
 //if ($inscrit_direct) die ($inscrit_direct);
+
 	$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
 	if (!$reg_data) {
 	   $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
 	   header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 	   die();
 	}
+	else {
+		$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
+
+		$nb_ele_inscrits=0;
+		for($loop=0;$loop<count($id_classe);$loop++) {
+			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$id_classe[$loop]."';";
+			$res_ele_clas=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_ele_clas)>0) {
+				while($lig_ele=mysqli_fetch_object($res_ele_clas)) {
+					// On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
+					if ($autoriser_inscript_multiples == 'y') {
+						$filtre =  " AND id_aid='".$aid_id."' ";
+					}
+					else {
+						$filtre =  "";
+					}
+					$sql = "SELECT * FROM j_aid_eleves WHERE (login='".$lig_ele->login."' AND indice_aid='".$indice_aid."'".$filtre.")";
+					//echo $sql;
+					$test = mysqli_query($GLOBALS["mysqli"], $sql);
+					$test2 = mysqli_num_rows($test);
+					$msg = "";
+					if ($test2=="0") {
+						if($lig_ele->login!='') {
+							$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$lig_ele->login."', id_aid='$aid_id', indice_aid='$indice_aid'");
+							if (!$reg_data) {
+								$msg.="Erreur lors de l'ajout de l'élève ".$lig_ele->login."<br />";
+							}
+							else {
+								$nb_ele_inscrits++;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
+
+		$nb_profs_inscrits=0;
+		for($loop=0;$loop<count($login_prof);$loop++) {
+			$test2=Prof_deja_membre($login_prof[$loop], $aid_id, $indice_aid)->num_rows;
+			if ($test2 != "0") {
+				$msg.="Le professeur ".$login_prof[$loop]." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+			} else {
+				if ($login_prof[$loop] != '') {
+					$reg_data=Sauve_prof_membre($login_prof[$loop], $aid_id, $indice_aid);
+					if (!$reg_data) {
+						$msg.="Erreur lors de l'ajout du professeur ".$login_prof[$loop]." !<br />";
+					}
+					else {
+						$nb_profs_inscrits++;
+					}
+				}
+			}
+		}
+	}
 	if ($count == "1") {
-		$msg=$msg." Attention, une AID portant le même nom existait déja !<br />";
+		$msg=$msg." Attention, une AID ($nom_famille_aid) portant le même nom existait déja !<br />";
 	} else if ($count > 1) {
-		$msg=$msg." Attention, plusieurs AID portant le même nom existaient déja !<br />";
+		$msg=$msg." Attention, plusieurs AID ($nom_famille_aid) portant le même nom existaient déja !<br />";
 	}
 	if ($mode == "multiple") {
-	   $msg .= "AID enregistrée !" ;
-	   $mess = rawurlencode($msg);
-	   header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
-	   die();
+		$msg .= "AID ($nom_famille_aid) enregistrée !<br />" ;
+
+		if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
+			$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
+		}
+
+		if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
+			$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
+		}
+
+		$mess = rawurlencode($msg);
+		header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
+		die();
 	} else{
-		$msg .= "AID enregistrée !";
-		
+		$msg .= "AID ($nom_famille_aid) enregistrée !<br />";
+
+		if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
+			$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
+		}
+
+		if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
+			$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
+		}
+
 		$mess = rawurlencode($msg);
 		header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 		die();
@@ -116,7 +208,7 @@ if (isset($is_posted) && $is_posted) {
 	$id_aid_prec=-1;
 	$id_aid_suiv=-1;
 	$temoin_tmp=0;
-	$aid_nom = "";		
+	$aid_nom = "";
 	$aid_num = "";
 	$nouveau = "Entrez un nom : ";
 	$is_posted = (isset($action) && $action == "modif_aid") ? 2 : ((isset($action) && $action == "add_aid") ? 1 : "" );
@@ -159,10 +251,10 @@ if (isset($is_posted) && $is_posted) {
 
 //**************** EN-TETE *********************
 if ($action == "modif_aid") {
-	$titre_page = "Gestion des AID | Modifier Une AID";
+	$titre_page = "Gestion des AID | Modifier Une AID ($nom_famille_aid)";
 }
 else {
-	$titre_page = "Gestion des AID | Ajouter Une AID";
+	$titre_page = "Gestion des AID | Ajouter Une AID ($nom_famille_aid)";
 }
 require_once("../lib/header.inc.php");
 
@@ -212,8 +304,9 @@ if ($_SESSION['statut'] == 'professeur') {
 
 <form enctype="multipart/form-data" action="add_aid.php" method="post">
 
-
-
+	<h2><?php echo $nom_famille_aid; ?>
+		<input type="submit" value="Enregistrer" />
+	</h2>
 
     <p><?php echo $nouveau; ?></p>
 
@@ -271,7 +364,9 @@ if ($_SESSION['statut'] == 'professeur') {
 			</select>
 <?php } ?>
 		</div>
-		
+
+		<h3>Élèves</h3>
+		<div style='margin-left:3em;'>
 		<p>
 			<label for="inscrit_direct">
 				Un élève peut s'inscrire directement
@@ -283,9 +378,61 @@ if ($_SESSION['statut'] == 'professeur') {
 					<?php if (eleve_inscrit_direct($aid_id, $indice_aid)) {echo " checked='checked' ";} ?>
 				   />
 		</p>
+		</div>
 	</div>
-	
-	<p class="center">
+
+	<?php
+		//echo "action=$action<br />";
+		if ($action=="add_aid") {
+			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe ORDER BY c.classe, c.nom_complet;";
+			$res_classes=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_classes)>0) {
+				if (!Multiples_possible ($indice_aid)) {
+					echo "<h3>Élèves</h3>";
+				}
+				echo "<div style='margin-left:3em;'>";
+				$tab_txt=array();
+				$tab_nom_champ=array();
+				$tab_id_champ=array();
+				$tab_valeur_champ=array();
+				echo "<p style='margin-top:1em;'>Inscrire dans l'AID tous les élèves des classes cochées&nbsp;:</p>";
+				while($lig_clas=mysqli_fetch_object($res_classes)) {
+					$tab_txt[]=$lig_clas->classe;
+					$tab_nom_champ[]="id_classe[]";
+					$tab_id_champ[]="id_classe_".$lig_clas->id;
+					$tab_valeur_champ[]=$lig_clas->id;
+				}
+				tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, "checkbox_change", "modif_coche", 5);
+				echo "<p>Si vous préférez ne pas affecter tous les élèves de telle(s) ou telle(s) classe(s) dans le $nom_famille_aid, vous pourrez gérer plus finement l'inscription par la suite.</p>";
+				echo "</div>";
+			}
+
+			$sql="SELECT DISTINCT u.login, u.nom, u.prenom FROM utilisateurs u WHERE u.statut='professeur' ORDER BY u.nom, u.prenom;";
+			$res_prof=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_prof)>0) {
+				echo "<h3>Professeurs</h3>";
+				echo "<div style='margin-left:3em;'>";
+				$tab_txt=array();
+				$tab_nom_champ=array();
+				$tab_id_champ=array();
+				$tab_valeur_champ=array();
+				echo "<p style='margin-top:1em;'>Inscrire comme professeur(s) responsable(s) de cet AID les professeurs cochés&nbsp;:</p>";
+				$cpt_prof=0;
+				while($lig_prof=mysqli_fetch_object($res_prof)) {
+					$tab_txt[]=casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2");
+					$tab_nom_champ[]="login_prof[]";
+					$tab_id_champ[]="login_prof_".$cpt_prof;
+					$tab_valeur_champ[]=$lig_prof->login;
+					$cpt_prof++;
+				}
+				tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, "checkbox_change_prof", "modif_coche_prof", 5);
+				echo "<p>Si vous préférez ne pas affecter les professeurs maintenant, vous pourrez le faire plus tard.</p>";
+				echo "</div>";
+			}
+		}
+	?>
+
+	<p style='margin-top:1em;' class="center">
 		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
 		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
 		<input type="hidden" name="mode" value="<?php echo $mode; ?>" />
