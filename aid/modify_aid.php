@@ -65,11 +65,11 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
 	$test2 = Prof_deja_membre ($reg_prof_login, $aid_id, $indice_aid)->num_rows;
     if ($test2 != "0") {
-        $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+        $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID (".strftime("%d/%m/%Y à %H:%M:%S").").";
     } else {
         if ($reg_prof_login != '') {
 			$reg_data = Sauve_prof_membre ($reg_prof_login, $aid_id, $indice_aid);
-            if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur !"; } else { $msg = "Le professeur a bien été ajouté !"; }
+            if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur (".strftime("%d/%m/%Y à %H:%M:%S").") !"; } else { $msg = "Le professeur a bien été ajouté (".strftime("%d/%m/%Y à %H:%M:%S").") !"; }
         }
     }
     $flag = "prof";
@@ -80,11 +80,11 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
     $test2 = Prof_deja_gestionnaire ($reg_prof_login, $aid_id, $indice_aid)->num_rows;
     if ($test2 != "0") {
-        $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID";
+        $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID (".strftime("%d/%m/%Y à %H:%M:%S").").";
     } else {
         if ($reg_prof_login != '') {
             $reg_data = Sauve_prof_gestionnaire ($reg_prof_login, $aid_id, $indice_aid);
-            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur !"; } else { $msg = "L'utilisateur a bien été ajouté !"; }
+            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur (".strftime("%d/%m/%Y à %H:%M:%S").") !"; } else { $msg = "L'utilisateur a bien été ajouté (".strftime("%d/%m/%Y à %H:%M:%S").") !"; }
         }
     }
     $flag = "prof_gest";
@@ -426,19 +426,14 @@ if ($flag == "prof") { ?>
 	<select size=1 name="reg_prof_login" onchange="changement()">
 		<option value=''>(aucun)</option>
     <?php
-    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
+    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
     $nombreligne = mysqli_num_rows($call_prof);
-    $i = "0" ;
-    while ($i < $nombreligne) {
-        $login_prof = old_mysql_result($call_prof, $i, 'login');
-        $nom_el = old_mysql_result($call_prof, $i, 'nom');
-        $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
+    while ($lig_prof=mysqli_fetch_object($call_prof)) {
 ?>
-		<option value="<?php echo $login_prof; ?>">
-			<?php echo my_strtoupper($nom_el); ?> <?php echo casse_mot($prenom_el,'majf2'); ?>
+		<option value="<?php echo $lig_prof->login; ?>">
+			<?php echo my_strtoupper($lig_prof->nom); ?> <?php echo casse_mot($lig_prof->prenom,'majf2')." (".$lig_prof->statut.")"; ?>
 		</option>
 <?php
-		$i++;
     }
     ?>
 	</select>
@@ -510,7 +505,7 @@ if ($flag == "prof_gest") { ?>
 <p class='grand'><?php echo "$nom_aid  $aid_nom"; ?></p>
 <form enctype="multipart/form-data" action="modify_aid.php" method="post">
 	<?php echo add_token_field();
-	$call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
+	$call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom, u.statut FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysqli_num_rows($call_liste_data);
     if ($nombre !=0) {
     ?>
@@ -520,26 +515,21 @@ if ($flag == "prof_gest") { ?>
 	<table class="aid_tableau" >
     <?php
     }
-    $i = "0";
-    while ($i < $nombre) {
-        $login_prof = old_mysql_result($call_liste_data, $i, "login");
-        $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
-        $prenom_prof = old_mysql_result($call_liste_data, $i, "prenom");
+    while ($lig_user=mysqli_fetch_object($call_liste_data)) {
     ?>
 		<tr>
 			<td>
 				<strong>
-					<?php echo $nom_prof; ?> <?php echo $prenom_prof; ?>
+					<?php echo $lig_user->nom." ".$lig_user->prenom." (".$lig_user->statut.")"; ?>
 				</strong>
 			</td>
 			<td>
-				<a href='../lib/confirm_query.php?liste_cible=<?php echo $login_prof; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_gest_aid<?php echo add_token_in_url(); ?>'>
+				<a href='../lib/confirm_query.php?liste_cible=<?php echo $lig_user->login; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_gest_aid<?php echo add_token_in_url(); ?>'>
 					<img src="../images/icons/delete.png" title="Supprimer ce professeur" alt="Supprimer" />
 				</a>
 			</td>
 		</tr>
     <?php
-    $i++;
     }
 
     if ($nombre != 0) { ?>
@@ -554,20 +544,14 @@ if ($flag == "prof_gest") { ?>
     <select size=1 name="reg_prof_login" onchange="changement()">
 		<option value=''>(aucun)</option>
     <?php
-    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
+    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
     $nombreligne = mysqli_num_rows($call_prof);
-    $i = "0" ;
-    while ($i < $nombreligne) {
-        $login_prof = old_mysql_result($call_prof, $i, 'login');
-        $nom_el = old_mysql_result($call_prof, $i, 'nom');
-        $prenom_el = old_mysql_result($call_prof, $i, 'prenom'); 
+    while ($lig_user=mysqli_fetch_object($call_prof)) {
 		?>
-		<option value="<?php echo $login_prof; ?>">
-			<?php echo my_strtoupper($nom_el); ?>
-			<?php echo casse_mot($prenom_el,'majf2'); ?>
+		<option value="<?php echo $lig_user->login; ?>">
+			<?php echo casse_mot($lig_user->nom, "maj")." ".casse_mot($lig_user->prenom,'majf2')." (".$lig_user->statut.")"; ?>
 		</option>
 		<?php
-    $i++;
     }
     ?>
     </select>
