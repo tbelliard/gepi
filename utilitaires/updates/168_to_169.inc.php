@@ -1043,9 +1043,21 @@ if ($res_test == 0){
 	$res_test = mysqli_num_rows($req_test);
 	if ($res_test == 0){
 		$AutoriserTypesEnseignements="n";
+
+		$info_action_titre="LSUN Collège";
+		$info_action_texte="Il est recommandé d'utiliser les AID pour créer les EPI, AP, Parcours.<br />En administrateur, Gestion des bases/AID.<br />Ces AID permettront une remontée vers l'application LSUN.";
+		$info_action_destinataire=array("administrateur","scolarite");
+		$info_action_mode="statut";
+		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
 	}
 	else {
 		$AutoriserTypesEnseignements="y";
+
+		$info_action_titre="LSUN Collège";
+		$info_action_texte="Il est recommandé d'utiliser les AID pour créer les EPI, AP, Parcours.<br />En administrateur, Gestion des bases/AID.<br />Ces AID permettront une remontée vers l'application LSUN.<br />Vous utilisez actuellement des enseignements pour les EPI, AP,...<br />Cela risque de poser problème pour la remontée LSUN.<br />Les développeurs travaillent à une solution pour migrer les données de ces enseignements vers des AID pour pallier ce problème.";
+		$info_action_destinataire=array("administrateur","scolarite");
+		$info_action_mode="statut";
+		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
 	}
 	$result .= "Initialisation du paramètre 'AutoriserTypesEnseignements' à '$AutoriserTypesEnseignements': ";
 	$sql="INSERT INTO setting SET name='AutoriserTypesEnseignements', value='$AutoriserTypesEnseignements';";
