@@ -422,6 +422,17 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['AutoriserTypesEnseignements'])) {
+			if (!saveSetting("AutoriserTypesEnseignements", $_POST['AutoriserTypesEnseignements'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre AutoriserTypesEnseignements !";
+			}
+		}
+		else{
+			if (!saveSetting("AutoriserTypesEnseignements", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre AutoriserTypesEnseignements !";
+			}
+		}
+
 		if (isset($_POST['ele_tel_pers'])) {
 			if (!saveSetting("ele_tel_pers", $_POST['ele_tel_pers'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_pers !";
@@ -1693,7 +1704,37 @@ if($unzipped_max_filesize==""){
 <?php } ?>
 		</span>
 	</p>
-	
+
+	<?php
+	$AutoriserTypesEnseignements=getSettingValue("AutoriserTypesEnseignements");
+	if($AutoriserTypesEnseignements=="") {
+		$AutoriserTypesEnseignements="n";
+		saveSetting("AutoriserTypesEnseignements", $AutoriserTypesEnseignements);
+	}
+	$style_AutoriserTypesEnseignements="";
+	if($AutoriserTypesEnseignements=="y") {
+		$style_AutoriserTypesEnseignements="color:red";
+	}
+	?>
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<a name='ancre_types_enseignements'></a>
+			<label for='AutoriserTypesEnseignements' style='cursor: pointer'>
+				Autoriser l'utilisation d'enseignements pour les EPI, AP, Parcours&nbsp;:<br />
+				<span style='font-size:small; <?php echo $style_AutoriserTypesEnseignements;?>'>Ce choix n'est pas recommandé car la remontée LSUN ne fonctionne pas pour les enseignements.<br />
+				Il convient de plutôt utiliser des AID<!-- en activant si nécessaire le <a href='../accueil_modules.php' target='_blank'>module AID</a>-->.</span>
+			</label>
+		</span>
+		<span class="cellTab plusPetit">
+			<input type='checkbox' 
+				   name='AutoriserTypesEnseignements' 
+				   id='AutoriserTypesEnseignements' 
+				   value='y'
+				   <?php if($AutoriserTypesEnseignements=='y') {echo " checked='checked'";} ?>
+				   onchange='changement()' />
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<span class="cellTab70">
 			<a name='bul_rel_nom_matieres'></a>
