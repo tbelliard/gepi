@@ -83,7 +83,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
         $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID";
     } else {
         if ($reg_prof_login != '') {
-            $reg_data = mysqli_query($GLOBALS["mysqli"], Sauve_prof_gestionnaire ($reg_prof_login, $aid_id, $indice_aid));
+            $reg_data = Sauve_prof_gestionnaire ($reg_prof_login, $aid_id, $indice_aid);
             if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur !"; } else { $msg = "L'utilisateur a bien été ajouté !"; }
         }
     }

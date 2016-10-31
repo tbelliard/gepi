@@ -1036,4 +1036,26 @@ if ($res_test == 0){
 	}
 }
 
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT * FROM setting WHERE NAME='AutoriserTypesEnseignements';");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_groupes_types;");
+	$res_test = mysqli_num_rows($req_test);
+	if ($res_test == 0){
+		$AutoriserTypesEnseignements="n";
+	}
+	else {
+		$AutoriserTypesEnseignements="y";
+	}
+	$result .= "Initialisation du paramètre 'AutoriserTypesEnseignements' à '$AutoriserTypesEnseignements': ";
+	$sql="INSERT INTO setting SET name='AutoriserTypesEnseignements', value='$AutoriserTypesEnseignements';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
 ?>

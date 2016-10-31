@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1028,7 +1028,9 @@ for($i=0;$i<10;$i++){
 	echo "<th colspan='".($nb_periode-1)."'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits</th>\n";
 	echo "<th rowspan='2'>Priorité<br />d'affichage</th>\n";
 	echo "<th rowspan='2'>Catégorie</th>\n";
-	echo "<th rowspan='2'>Type</th>\n";
+	if(!getSettingANon('AutoriserTypesEnseignements')) {
+		echo "<th rowspan='2'>Type</th>\n";
+	}
 	echo "<th colspan='".count($tab_domaines)."'>Visibilité</th>\n";
 	echo "<th rowspan='2'>Coefficient</th>\n";
 	echo "<th colspan='3'>Mode moy</th>\n";
@@ -1264,38 +1266,23 @@ for($i=0;$i<10;$i++){
 		echo "</td>\n";
 
 
-		// 20160709
-		// Type (AP, EPI, Parcours)
-		echo "<td>";
-		echo "<select onchange=\"changement()\" size=1 id='type_".$cpt_grp."' name='type_" .$current_group["id"]. "'>\n";
-		echo "<option value='' title=\"Groupe standard\"";
-		if ((!isset($current_group["type_grp"]))||(count($current_group["type_grp"])=="0")) {echo " SELECTED";}
-		echo ">---</option>\n";
-		for($loop_grp_type=0;$loop_grp_type<count($tab_type_grp);$loop_grp_type++) {
-			echo "<option value='".$tab_type_grp[$loop_grp_type]["id"] . "' title=\"".$tab_type_grp[$loop_grp_type]["nom_complet"] . "\"";
-			if((isset($current_group["type_grp"][0]))&&($current_group["type_grp"][0]["id_type"]==$tab_type_grp[$loop_grp_type]["id"])) {
-				echo " selected";
+		if(!getSettingANon('AutoriserTypesEnseignements')) {
+			// Type (AP, EPI, Parcours)
+			echo "<td>";
+			echo "<select onchange=\"changement()\" size=1 id='type_".$cpt_grp."' name='type_" .$current_group["id"]. "'>\n";
+			echo "<option value='' title=\"Groupe standard\"";
+			if ((!isset($current_group["type_grp"]))||(count($current_group["type_grp"])=="0")) {echo " SELECTED";}
+			echo ">---</option>\n";
+			for($loop_grp_type=0;$loop_grp_type<count($tab_type_grp);$loop_grp_type++) {
+				echo "<option value='".$tab_type_grp[$loop_grp_type]["id"] . "' title=\"".$tab_type_grp[$loop_grp_type]["nom_complet"] . "\"";
+				if((isset($current_group["type_grp"][0]))&&($current_group["type_grp"][0]["id_type"]==$tab_type_grp[$loop_grp_type]["id"])) {
+					echo " selected";
+				}
+				echo ">".$tab_type_grp[$loop_grp_type]["nom_court"]."</option>\n";
 			}
-			echo ">".$tab_type_grp[$loop_grp_type]["nom_court"]."</option>\n";
+			echo "</select>\n";
+			echo "</td>\n";
 		}
-		echo "</select>\n";
-
-		if(($current_group["classes"]["classes"][$id_classe]["categorie_id"]!=0)&&(!in_array($current_group["classes"]["classes"][$id_classe]["categorie_id"],$tab_categorie_id))) {
-			$temoin_anomalie_categorie="y";
-			echo "<a href='#' onclick=\"afficher_div('association_anormale_enseignement_categorie','y',-100,20);return false;\"'><img src='../images/icons/flag2.gif' width='17' height='18' /></a>";
-		}
-
-		if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
-			//echo "<br />\n";
-			$message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/projects/gepi/wiki/Enseignement_invisible";
-			//echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
-
-			echo "<a href='#' onclick=\"afficher_div('enseignement_invisible','y',-100,20);return false;\"";
-			echo ">";
-			echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
-			echo "</a>";
-		}
-		echo "</td>\n";
 
 		// Visibilité
 		for($loop=0;$loop<count($tab_domaines);$loop++) {
