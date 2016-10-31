@@ -31,8 +31,12 @@ $Enseignants = getUtilisateurSurStatut('professeur');
 $responsables = getResponsables();
 $parcoursCommuns = getParcoursCommuns();
 $listeMatieres = getMatiereLSUN();
+
 $listeEPICommun = getEPICommun();
+
 $listeAPCommun = getAPCommun();
+//var_dump($listeAPCommun);
+$listeAp = getApCommun();
 $listeAidAp = getApAid();
 
 
@@ -170,7 +174,7 @@ if ($cpt) {echo "			</div>\n";}
 				<td>
 					<select name="modifieParcoursCode[<?php echo $parcoursCommun->id; ?>]">
 <?php foreach ($xml->{'liste-parcours'}->parcours as $parcours) { ?>
-						<option value="<?php echo $parcours['code'] ?>" <?php if($parcours['code'] == $parcoursCommun->codeParcours){echo "selected='selected'";} ?> >
+						<option value="<?php echo $parcours['code'] ?>" <?php if($parcours['code'] == $parcoursCommun->codeParcours){echo " selected ";} ?> >
 							<?php echo $parcours['libelle'] ?>
 						</option>
 <?php } ?>
@@ -265,7 +269,7 @@ if ($cpt) {echo "			</div>\n";}
 <?php $classes->data_seek(0);
 while ($classe = $classes->fetch_object()) { ?>
 							<option value="<?php echo $classe->id; ?>"
-									<?php if (estClasseEPI($epiCommun->id,$classe->id)) {echo "selected = 'selected'"; } ?> >
+									<?php if (estClasseEPI($epiCommun->id,$classe->id)) {echo " selected "; } ?> >
 								<?php echo $classe->classe; ?> <?php echo $classe->nom_complet; ?>
 							</option>
 <?php } ?>
@@ -274,7 +278,7 @@ while ($classe = $classes->fetch_object()) { ?>
 						<select name="modifieEpiCode[<?php echo $epiCommun->id; ?>]">
 <?php foreach ($xml->{'thematiques-epis'}->{'thematique-epi'} as $thematiqueEpi) { ?>
 							<option value="<?php echo $thematiqueEpi['code'] ?>" 
-								<?php if($thematiqueEpi['code'] == $epiCommun->codeEPI){echo "selected='selected'";} ?>
+								<?php if($thematiqueEpi['code'] == $epiCommun->codeEPI){echo " selected ";} ?>
 									title="<?php echo $thematiqueEpi['libelle']; ?>" >
 								<?php //echo substr($epi['libelle'],0,40); ?>
 								<?php echo substr($thematiqueEpi['libelle'],0,40); ?>
@@ -381,8 +385,9 @@ $listeCours = getEpiAid();
 $lastCours = NULL;
 while ($cours = $listeCours->fetch_object()) {
 //var_dump($cours);
+	
 	if($cours->id_groupe == $lastCours) {
-		echo ' - '.$cours->classe;
+		echo ' - '.$cours->id_classe;
 		 continue;
 	} else if ($lastCours) {
 		echo '</option>';
@@ -507,6 +512,81 @@ if ($matiere->code_modalite_elect == 'O') {
 		<div id="div_ap">
 			<p>Accompagnements personnalisés</p>
 			
+<?php
+$listeAPCommun->data_seek(0);
+$cpt2 = 0;
+while ($ap = $listeAPCommun->fetch_object()) { ?>
+			
+			<div class="lsun_cadre">
+				<!-- AP <?php //echo $ap->id; ?> -->
+				Intitulé : 
+				<input type="text" name="intituleAp[<?php echo $cpt; ?>]" value="<?php echo $ap->intituleAP; ?>" />
+				-
+				Description : <textarea rows="4" cols="50" id="ApDescription<?php echo $cpt; ?>" name="ApDescription[<?php echo $cpt; ?>]" /><?php echo $ap->descriptionAP; ?></textarea> 
+				
+								
+				
+				-
+				Liaison <?php echo getAidConfig($ap->id_aid)->fetch_object()->nom ; ?>
+<?php $listeAidAp->data_seek(0); ?>
+				<select name="liaisonApAid[<?php echo $cpt; ?>]">
+<?php 
+//var_dump($listeAidAp);
+$listeAidAp->data_seek(0);
+while ($liaison = $listeAidAp->fetch_object()) { ?>
+					<option value="<?php echo $liaison->indice_aid; ?>" 
+							 <?php if($liaison->indice_aid == $ap->id_aid) {echo 'selected'; } ?> >
+						<?php echo $liaison->groupe; ?>
+					</option>
+<?php } ?>
+				</select>								
+<?php $listeAidAp->data_seek(0); ?>	
+				
+				<br />
+				
+				<label for="ApDisciplines<?php echo $cpt; ?>">
+					Discipline(s) de référence			
+<?php $listeMatiereAP = disciplineAP($ap->id);
+	$tableauMatiere=array();
+while ($matiereAP = $listeMatiereAP->fetch_object()) { ?>
+					<?php //echo $matiereAP->id_enseignements.' '.$matiereAP->modalite ?> <?php echo getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object()->nom_complet ?>
+<?php 	
+
+$tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
+if ($matiereAP->modalite == 'O') {
+	echo '- option obligatoire';
+} elseif ($matiereAP->modalite == 'F') {
+	echo '- option facultative';
+}
+?> 
+						-
+<?php } 
+?>	
+				</label>
+				<select multiple name="ApDisciplines[<?php echo $cpt; ?>]">
+<?php $listeMatieres->data_seek(0);
+while ($matiere = $listeMatieres->fetch_object()) { ?>
+					<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>"
+							<?php if (in_array($matiere->code_matiere.$matiere->code_modalite_elect, $tableauMatiere)) { echo ' selected ';} ?> >
+						<?php echo $matiere->nom_complet; ?>
+<?php 								
+if ($matiere->code_modalite_elect == 'O') {
+echo '- option obligatoire';
+} elseif ($matiere->code_modalite_elect == 'F') {
+echo '- option facultative';
+}
+?>
+					</option>
+<?php } ?>
+				</select>
+					
+					
+					
+				
+			</div>
+<?php 
+	$cpt2 ++;
+}  ?>	
 			
 			<div class="lsun_cadre">
 				<div>
@@ -535,9 +615,9 @@ if ($matiere->code_modalite_elect == 'O') {
 						</select>
 						-
 						<label for="newApLiaisonAID">Liaison</label>
-						<select multiple name="newApLiaisonAID[]">
+						<select name="newApLiaisonAID">
 <?php 
-var_dump($listeAidAp);
+//var_dump($listeAidAp);
 $listeAidAp->data_seek(0);
 while ($liaison = $listeAidAp->fetch_object()) { ?>
 							<option value="<?php echo $liaison->indice_aid; ?>">

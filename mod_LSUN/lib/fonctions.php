@@ -238,7 +238,6 @@ function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParco
  */
 function getMatiereLSUN($mefClasse = NULL) {
 	global $mysqli;
-	//$sqlMatieres = "SELECT * FROM matieres ORDER BY nom_complet";
 	
 	 $sqlMatieres = "SELECT DISTINCT m.*, mm.code_modalite_elect FROM mef_matieres AS mm INNER JOIN matieres AS m ON mm.code_matiere = m.code_matiere ";
 	 if ($mefClasse) {
@@ -268,14 +267,6 @@ function getMatiereOnMatiere($matiere) {
 }
 
 
-function getAID($id) {
-	global $mysqli;
-	$sqlGetAid = "SELECT * FROM aid_config WHERE indice_aid = '$id' AND type_aid = '2' ";
-	//echo $sqlGetAid;
-	$retour = $mysqli->query($sqlGetAid)->fetch_object();
-	return $retour;
-}
-
 function getCoursById($id) {
 	global $mysqli;
 	
@@ -293,34 +284,6 @@ function getCoursById($id) {
 	return $retour;
 }
 
-function existeLienAID($id_classe, $id_enseignements) {
-	global $mysqli;
-	$retour = FALSE;
-	$sqlGetExisteLien = "SELECT 1=1 FROM lsun_j_epi_enseignements AS lsje "
-		. " INNER JOIN lsun_epi_communs AS lec ON lec.id = lsje.id_epi "
-		. " WHERE lsje.id_enseignements='$id_enseignements' AND aid='1' AND lec.classe ='$id_classe' ";
-	//echo $sqlGetExisteLien;
-	$resultchargeDB = $mysqli->query($sqlGetExisteLien);
-	if ($resultchargeDB->num_rows) {
-		$retour = TRUE;
-	}
-	return $retour;
-}
-
-function existeLienCours ($id_classe, $id_enseignements) {
-	global $mysqli;
-	$retour = FALSE;
-	$sqlGetExisteLien = "SELECT 1=1 FROM lsun_j_epi_enseignements AS lsje "
-		. " INNER JOIN lsun_epi_communs AS lec ON lec.id = lsje.id_epi "
-		. "WHERE id_enseignements='$id_enseignements' AND aid='0' AND lec.classe ='$id_classe' ";
-	//echo $sqlGetExisteLien;
-	$resultchargeDB = $mysqli->query($sqlGetExisteLien);
-	if ($resultchargeDB->num_rows) {
-		$retour = TRUE;
-	}
-	return $retour;
-}
-
 function MefAppartenanceAbsent() {
 	global $mysqli;
 	$retour = FALSE;
@@ -333,3 +296,10 @@ function MefAppartenanceAbsent() {
 }
 
 
+function getMatiereSurMEF($mef) {
+	global $mysqli;
+	$sqlMef = "SELECT * FROM `matieres` WHERE `code_matiere` LIKE '$mef' ";
+	//echo $sqlMef;
+	$resultchargeDB = $mysqli->query($sqlMef);
+	return $resultchargeDB;
+}

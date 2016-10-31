@@ -32,6 +32,8 @@ $ajouteEPI = filter_input(INPUT_POST, 'ajouteEPI');
 $supprimeEPI = filter_input(INPUT_POST, 'supprimeEpi');
 $modifieEPI = filter_input(INPUT_POST, 'modifieEpi');
 
+$ajouteAP = filter_input(INPUT_POST, 'creeAP');
+
 
 if (count($classesSelectionnee)) {
 	$_SESSION['afficheClasse']=array();
@@ -136,10 +138,15 @@ if ($modifieEPI) {
 			lieEpiCours($id_epi , $id_enseignement , $aid);
 		}
 	}
-	//echo var_dump($modifieEpiLiaison);
+}
+
+if ($ajouteAP) {
+	$newApIntitule = filter_input(INPUT_POST, 'newApIntituleAP');
+	$newApDescription = filter_input(INPUT_POST, 'newApDescription');
+	$newApDisciplines = filter_input(INPUT_POST, 'newApDisciplines', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$newApLiaisonAID = filter_input(INPUT_POST, 'newApLiaisonAID' );
+	saveAP($newApIntitule, $newApDisciplines, $newApDescription, $newApLiaisonAID);
 	
-	//modifieEpiLiaison31
-	//lieEpiCours($id_epi , $id_enseignement , $aid);
 }
 
 

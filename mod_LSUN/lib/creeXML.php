@@ -260,7 +260,8 @@ $xml->appendChild($items);
 					
 					$noeudEpisGroupes->appendChild($attsEpiGroupe);
 				}
-				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire','commentaire sur le groupe à récupérer');
+				$CommentaireEPI = 'commentaire sur le groupe à récupérer';
+				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI);
 				$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
 				
 				$noeudEpiEnseignantsDisciplines = $xml->createElement('enseignant-discipline');
