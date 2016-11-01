@@ -406,6 +406,8 @@
 	$param_bull2016["x_EPI_AP_Parcours_col_2"]=$param_bull2016["x_EPI_AP_Parcours"]+$param_bull2016["largeur_EPI_AP_Parcours_col_1"]+0.5;
 	$param_bull2016["largeur_EPI_AP_Parcours_col_2"]=$param_bull2016["largeur_EPI_AP_Parcours"]-$param_bull2016["largeur_EPI_AP_Parcours_col_1"]-0.5;
 
+	$param_bull2016["bull2016_pas_espace_reserve_EPI_AP_Parcours"]=getSettingValue('bull2016_pas_espace_reserve_EPI_AP_Parcours');
+
 	// Bandeau EPI
 	$param_bull2016["couleur_bandeau_EPI"]["R"]=243;
 	$param_bull2016["couleur_bandeau_EPI"]["V"]=249;

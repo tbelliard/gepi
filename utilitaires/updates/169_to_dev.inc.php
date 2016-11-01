@@ -114,4 +114,17 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull2016_pas_espace_reserve_EPI_AP_Parcours'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$result .= "Initialisation du paramètre 'bull2016_pas_espace_reserve_EPI_AP_Parcours' à 'y': ";
+	$sql="INSERT INTO setting SET name='bull2016_pas_espace_reserve_EPI_AP_Parcours', value='y';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
 ?>

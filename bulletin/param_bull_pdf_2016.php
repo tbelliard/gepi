@@ -100,6 +100,15 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+	$bull2016_pas_espace_reserve_EPI_AP_Parcours=isset($_POST["bull2016_pas_espace_reserve_EPI_AP_Parcours"]) ? $_POST["bull2016_pas_espace_reserve_EPI_AP_Parcours"] : "n";
+	if(($bull2016_pas_espace_reserve_EPI_AP_Parcours!="y")&&($bull2016_pas_espace_reserve_EPI_AP_Parcours!="n")) {
+		$bull2016_pas_espace_reserve_EPI_AP_Parcours="n";
+	}
+	if (!saveSetting("bull2016_pas_espace_reserve_EPI_AP_Parcours", $bull2016_pas_espace_reserve_EPI_AP_Parcours)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_pas_espace_reserve_EPI_AP_Parcours !";
+		$reg_ok = 'no';
+	}
+
 	$bull2016_arrondi=isset($_POST["bull2016_arrondi"]) ? $_POST["bull2016_arrondi"] : 0.01;
 	if(((!preg_match("/^[0-9]{1,}$/", $bull2016_arrondi))&&
 	(!preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $bull2016_arrondi)))||
@@ -433,6 +442,12 @@ $bull2016_afficher_cadre_adresse_resp_checked="";
 if(getSettingAOui('bull2016_afficher_cadre_adresse_resp')) {
 	$bull2016_afficher_cadre_adresse_resp_checked=" checked";
 }
+
+$bull2016_pas_espace_reserve_EPI_AP_Parcours=getSettingValue('bull2016_pas_espace_reserve_EPI_AP_Parcours');
+$bull2016_pas_espace_reserve_EPI_AP_Parcours_checked="";
+if($bull2016_pas_espace_reserve_EPI_AP_Parcours=="y") {
+	$bull2016_pas_espace_reserve_EPI_AP_Parcours_checked=" checked";
+}
 ?>
 
 
@@ -456,6 +471,15 @@ echo add_token_field();
 		<td>
 			<input type="checkbox" name="bull2016_afficher_cadre_adresse_resp" id="bull2016_afficher_cadre_adresse_resp" size="5" onchange="changement()" value="y"<?php
 				echo $bull2016_afficher_cadre_adresse_resp_checked;
+			?> />
+		</td>
+	</tr>
+	<tr>
+		<td>Ne pas réserver d'espace pour les EPI, AP, Parcours en page 2<br />
+		<span style='font-size:x-small'>Remonter les cadres suivants si un espace libre apparait</span>&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_pas_espace_reserve_EPI_AP_Parcours" id="bull2016_pas_espace_reserve_EPI_AP_Parcours" size="5" onchange="changement()" value="y"<?php
+				echo $bull2016_pas_espace_reserve_EPI_AP_Parcours_checked;
 			?> />
 		</td>
 	</tr>

@@ -2434,6 +2434,8 @@ die();
 		$nb_EPI=$nb_EPI+count($indice_AID_b_EPI)+count($indice_AID_e_EPI);
 		$nb_Parcours=$nb_Parcours+count($indice_AID_b_Parcours)+count($indice_AID_e_Parcours);
 
+		$hauteur_prise_par_EPI_AP_Parcours_page_2=$param_bull2016["y_EPI_AP_Parcours"];
+
 		if($nb_EPI_AP_Parcours>0) {
 			$hauteur_EPI_AP_Parcours=$total_hauteur_EPI_AP_Parcours/$nb_EPI_AP_Parcours;
 			// On limite la hauteur
@@ -4330,10 +4332,30 @@ die();
 
 			}
 
+			$hauteur_prise_par_EPI_AP_Parcours_page_2=$y_courant;
 			//=========================================
 		}
 
+		// 20161030
+		$y_bandeau_communication_famille=$param_bull2016["y_bandeau_communication_famille"];
+		$y_communication_famille=$param_bull2016["y_communication_famille"];
+		$y_signature_chef=$param_bull2016["y_signature_chef"];
+		$y_visa_famille=$param_bull2016["y_visa_famille"];
+		if((isset($param_bull2016["bull2016_pas_espace_reserve_EPI_AP_Parcours"]))&&($param_bull2016["bull2016_pas_espace_reserve_EPI_AP_Parcours"]=="y")) {
+			// On ne se limite pas au cas où il n'y a pas du tout d'EPI, AP,...
+//			if($nb_EPI_AP_Parcours==0) {
+				// Recalculer les ordonnées
+				$y_bilan_acquisitions-=$y_bandeau_bilan_acquisitions-$hauteur_prise_par_EPI_AP_Parcours_page_2;
 
+				$y_bandeau_communication_famille-=$y_bandeau_bilan_acquisitions-$hauteur_prise_par_EPI_AP_Parcours_page_2;
+				$y_communication_famille-=$y_bandeau_bilan_acquisitions-$hauteur_prise_par_EPI_AP_Parcours_page_2;
+				$y_signature_chef-=$y_bandeau_bilan_acquisitions-$hauteur_prise_par_EPI_AP_Parcours_page_2;
+				$y_visa_famille-=$y_bandeau_bilan_acquisitions-$hauteur_prise_par_EPI_AP_Parcours_page_2;
+
+				// On ne modifie la valeur de $y_bandeau_bilan_acquisitions qu'à la fin pour ne pas perturber/fausser les calculs ci-dessus
+				$y_bandeau_bilan_acquisitions=$hauteur_prise_par_EPI_AP_Parcours_page_2;
+//			}
+		}
 
 		//=========================================
 
@@ -4503,11 +4525,11 @@ die();
 
 		$pdf->SetFillColor($param_bull2016["couleur_bandeau_communication_famille"]["R"], $param_bull2016["couleur_bandeau_communication_famille"]["V"], $param_bull2016["couleur_bandeau_communication_famille"]["B"]);
 
-		$pdf->Rect($param_bull2016["x_bandeau_communication_famille"], $param_bull2016["y_bandeau_communication_famille"], $param_bull2016["largeur_bandeau_communication_famille"], $param_bull2016["hauteur_bandeau_communication_famille"], 'F');
+		$pdf->Rect($param_bull2016["x_bandeau_communication_famille"], $y_bandeau_communication_famille, $param_bull2016["largeur_bandeau_communication_famille"], $param_bull2016["hauteur_bandeau_communication_famille"], 'F');
 
 		$pdf->SetFillColor(0, 0, 0);
 		$pdf->SetTextColor(255, 255, 255);
-		$pdf->SetXY($param_bull2016["x_bandeau_communication_famille"], $param_bull2016["y_bandeau_communication_famille"]+1);
+		$pdf->SetXY($param_bull2016["x_bandeau_communication_famille"], $y_bandeau_communication_famille+1);
 		$pdf->SetFont('DejaVu','B',12);
 		$pdf->Cell($param_bull2016["largeur_bandeau_communication_famille"],7, "Communication avec la famille",0,2,'C');
 
@@ -4515,11 +4537,11 @@ die();
 
 		$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
 
-		$pdf->Rect($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"], $param_bull2016["largeur_communication_famille"], $param_bull2016["hauteur_communication_famille"], 'F');
+		$pdf->Rect($param_bull2016["x_communication_famille"], $y_communication_famille, $param_bull2016["largeur_communication_famille"], $param_bull2016["hauteur_communication_famille"], 'F');
 
 		$pdf->SetFillColor(0, 0, 0);
 		$pdf->SetTextColor(0, 0, 0);
-		$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]);
+		$pdf->SetXY($param_bull2016["x_communication_famille"], $y_communication_famille);
 		$pdf->SetFont('DejaVu','',9);
 		//$pdf->Cell($param_bull2016["largeur_bilan_acquisitions"],$param_bull2016["y_bilan_acquisitions_cycle_3"], "Synthèse de l'évolution des acquis scolaires et conseils pour progresser :",0,2,'L');
 		//$pdf->Cell($param_bull2016["largeur_communication_famille"],10, "Vie scolaire (assiduité, ponctualité ; respect du règlement intérieur ; pariticipation à la vie de l'établissement) :",0,2,'L');
@@ -4582,8 +4604,8 @@ die();
 			}
 		}
 
-		$y_lignes_absences_et_retards=$param_bull2016["y_communication_famille"]+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-$hauteur_lignes_absences_retards;
-		$y_cadre_orientation=$param_bull2016["y_communication_famille"]+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-1;
+		$y_lignes_absences_et_retards=$y_communication_famille+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-$hauteur_lignes_absences_retards;
+		$y_cadre_orientation=$y_communication_famille+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-1;
 		//++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -4594,7 +4616,7 @@ die();
 			$text_absences_appreciation = trim(unhtmlentities($tab_bull['eleve'][$i]['appreciation_absences']));
 			$info_absence_appreciation=$text_absences_appreciation;
 
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+10);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_communication_famille+10);
 			$pdf->SetFont('DejaVu','',8);
 			$val = $pdf->GetStringWidth($info_absence_appreciation);
 			// nombre de lignes que prend la remarque cpe
@@ -4874,22 +4896,22 @@ die();
 		// Cadre chef étab
 
 		$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
-		$pdf->Rect($param_bull2016["x_signature_chef"], $param_bull2016["y_signature_chef"], $param_bull2016["largeur_signature_chef"], $param_bull2016["hauteur_signature_chef"], 'F');
+		$pdf->Rect($param_bull2016["x_signature_chef"], $y_signature_chef, $param_bull2016["largeur_signature_chef"], $param_bull2016["hauteur_signature_chef"], 'F');
 
-		$pdf->SetXY($param_bull2016["x_signature_chef"], $param_bull2016["y_signature_chef"]);
+		$pdf->SetXY($param_bull2016["x_signature_chef"], $y_signature_chef);
 		$pdf->SetFillColor(0, 0, 0);
 		$pdf->SetTextColor(0, 0, 0);
 		//$pdf->Cell($param_bull2016["largeur_signature_chef"],7, "Date, nom et signature du chef d'établissement",0,2,'L');
 		$pdf->drawTextBox("Date, nom et signature\ndu chef de l'établissement", $param_bull2016["largeur_signature_chef"], $param_bull2016["hauteur_signature_chef"], 'R', 'T', 0);
 
 
-		$pdf->SetXY($param_bull2016["x_signature_chef"], $param_bull2016["y_signature_chef"]);
+		$pdf->SetXY($param_bull2016["x_signature_chef"], $y_signature_chef);
 
 		if((isset($signature_bull[$tab_bull['id_classe']]))&&($signature_bull[$tab_bull['id_classe']]!="")&&(file_exists($signature_bull[$tab_bull['id_classe']]))) {
 			$fich_sign=$signature_bull[$tab_bull['id_classe']];
 
 			$X_sign = $param_bull2016["x_signature_chef"];
-			$Y_sign = $param_bull2016["y_signature_chef"];
+			$Y_sign = $y_signature_chef;
 
 			$largeur_dispo=$param_bull2016["largeur_signature_chef"]-10;
 			// On ajuste mieux la hauteur de l'image, quitte à ce que le tampon/signature soit en surimpression (ou plutôt sous-impression) avec le Nom du chef en première ligne du cadre.
@@ -4928,7 +4950,7 @@ die();
 		$pdf->SetFont('DejaVu','',10);
 		if($param_bull2016["affichage_haut_responsable"]=='y') {
 			/*
-			$pdf->SetXY($param_bull2016["x_signature_chef"], $param_bull2016["y_signature_chef"]+7);
+			$pdf->SetXY($param_bull2016["x_signature_chef"], $y_signature_chef+7);
 			if($param_bull2016["affiche_fonction_chef"]=='y') {
 				if($param_bull2016["taille_texte_fonction_chef"]!= '' and $param_bull2016["taille_texte_fonction_chef"]!='0' and $param_bull2016["taille_texte_fonction_chef"]<'15') {
 					$taille=$param_bull2016["taille_texte_fonction_chef"];
@@ -4949,7 +4971,7 @@ die();
 			} else {
 				$taille='8';
 			}
-			$pdf->SetXY($param_bull2016["x_signature_chef"], $param_bull2016["y_signature_chef"]+7);
+			$pdf->SetXY($param_bull2016["x_signature_chef"], $y_signature_chef+7);
 			$pdf->SetFont('DejaVu','I',$taille);
 			$pdf->MultiCell($param_bull2016["largeur_signature_chef"], 5, "Le ".strftime("%d/%m/%Y").", ".$tab_bull['suivi_par'], 0, 2, '');
 		} else {
@@ -4960,14 +4982,14 @@ die();
 		// Cadre Visa famille
 
 		$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
-		$pdf->Rect($param_bull2016["x_visa_famille"], $param_bull2016["y_visa_famille"], $param_bull2016["largeur_visa_famille"], $param_bull2016["hauteur_visa_famille"], 'F');
+		$pdf->Rect($param_bull2016["x_visa_famille"], $y_visa_famille, $param_bull2016["largeur_visa_famille"], $param_bull2016["hauteur_visa_famille"], 'F');
 
-		$pdf->SetXY($param_bull2016["x_visa_famille"], $param_bull2016["y_visa_famille"]);
+		$pdf->SetXY($param_bull2016["x_visa_famille"], $y_visa_famille);
 		$pdf->SetFillColor(0, 0, 0);
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->Cell($param_bull2016["largeur_visa_famille"],7, "Visa de la famille",0,2,'L');
 
-		$pdf->SetXY($param_bull2016["x_visa_famille"], $param_bull2016["y_visa_famille"]);
+		$pdf->SetXY($param_bull2016["x_visa_famille"], $y_visa_famille);
 		$pdf->Cell($param_bull2016["largeur_visa_famille"], 7, "Date, nom et signature des responsables légaux",0,2,'R');
 	}
 }
