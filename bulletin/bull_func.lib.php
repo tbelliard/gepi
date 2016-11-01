@@ -3000,8 +3000,8 @@ fclose($f);
 						//$titre_entete_Elements_Programmes=$tab_modele_pdf['titre_entete_Elements_Programmes'][$classe_id];
 						$titre_entete_Elements_Programmes="Éléments de programmes";
 
-						//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LRB',0,'C');
-						$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LR',0,'C');
+						$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LRB',0,'C');
+						//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LR',0,'C');
 						$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
 					}
 
@@ -3495,8 +3495,8 @@ fclose($f);
 
 									$texte_Elements_Programmes="";
 
-									//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LRB',0,'C');
-									$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LR',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LRB',0,'C');
+									//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LR',0,'C');
 									$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
 								}
 
