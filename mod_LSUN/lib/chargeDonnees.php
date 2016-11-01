@@ -77,6 +77,11 @@ $listeParcoursCommuns = $mysqli->query($sqlParcoursCommun);
 
 /*===== commentaires de vie scolaire communs ===== */
 // Voir comment on gère les commentaires de vie scolaire communs
+$sqlVieScoCommun = "SELECT aa.* , c.classe FROM absences_appreciations_grp AS aa "
+	. "INNER JOIN classes as c ON aa.id_classe = c.id "
+	. " WHERE aa.id_classe IN ($myData) ORDER BY aa.id_classe , aa.periode ;";
+//echo $sqlVieScoCommun;
+$listeVieScoCommun = $mysqli->query($sqlVieScoCommun);
 
 /*===== EPI ===== */
 // Définitions des EPI

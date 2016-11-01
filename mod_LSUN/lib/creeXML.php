@@ -29,28 +29,11 @@ include("../../lib/initialisationsPropel.inc.php");
 require_once("../../lib/initialisations.inc.php");
 
 
-
-// si l'appel se fait avec passage de paramètre alors test du token
-if ((function_exists("check_token")) && ((count($_POST)<>0) || (count($_GET)<>0))) check_token();
-
-/*
-//recherche de l'utilisateur avec propel
-$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
-if ($utilisateur == null) {
-	header("Location: ../../logout.php?auto=1");
-	die();
-}
- * 
- */
-
 /*==========================================================================
  *             On charge les données
  ==========================================================================*/
 include_once 'fonctions.php';
 include_once 'chargeDonnees.php';
-
-
-
 
 
 header('Content-Type: application/xml');
@@ -85,13 +68,13 @@ $xml->appendChild($items);
 			
 	$items->appendChild($entete);
 	
-		/*----- Données -----*/
-		$donnees = $xml->createElement('donnees');
+	/*----- Données -----*/
+	$donnees = $xml->createElement('donnees');
 		
-			/*----- Responsables-etab -----*/
-			$responsablesEtab = $xml->createElement('responsables-etab');
-			// TODO: il faudra gérer un tableau
-			while ($responsable = $listeResponsables->fetch_object()){
+		/*----- Responsables-etab -----*/
+		$responsablesEtab = $xml->createElement('responsables-etab');
+		// TODO: il faudra gérer un tableau
+		while ($responsable = $listeResponsables->fetch_object()){
 				$noeudResponsableEtab = $xml->createElement('responsable-etab');
 				$attResponsableEtabId= $xml->createAttribute('id');
 				$attResponsableEtabId->value = "RESP_".$responsable->id;
@@ -104,9 +87,9 @@ $xml->appendChild($items);
 			
 		$donnees->appendChild($responsablesEtab);
 		
-			/*----- Élèves -----*/
-			$eleves = $xml->createElement('eleves');
-			while ($eleve = $listeEleves->fetch_object()){
+		/*----- Élèves -----*/
+		$eleves = $xml->createElement('eleves');
+		while ($eleve = $listeEleves->fetch_object()){
 				$noeudEleve = $xml->createElement('eleve');
 					$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->id_eleve,
 						'nom'=>substr($eleve->nom,0,100),
@@ -121,9 +104,9 @@ $xml->appendChild($items);
 			}
 		$donnees->appendChild($eleves);
 		
-			/*----- Périodes -----*/
-			$periodes = $xml->createElement('periodes');
-			while ($periode = $listePeriodes->fetch_object()){
+		/*----- Périodes -----*/
+		$periodes = $xml->createElement('periodes');
+		while ($periode = $listePeriodes->fetch_object()){
 				$noeudPeriode = $xml->createElement('periode');
 					if($periode->num_periode < 10) {$num_periode = "0".$periode->num_periode;} else {$num_periode = $periode->num_periode;}
 					$attributsPeriode = array('id'=>'P_'.$num_periode,'millesime'=>$millesime,
@@ -137,9 +120,9 @@ $xml->appendChild($items);
 			}
 		$donnees->appendChild($periodes);
 		
-			/*----- Disciplines -----*/
-			$disciplines = $xml->createElement('disciplines');
-			while ($discipline = $listeDisciplines->fetch_object()){
+		/*----- Disciplines -----*/
+		$disciplines = $xml->createElement('disciplines');
+		while ($discipline = $listeDisciplines->fetch_object()){
 				$noeudDiscipline = $xml->createElement('discipline');
 					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
 					$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->election,'code'=>$discipline->code_matiere,
@@ -153,9 +136,9 @@ $xml->appendChild($items);
 			}
 		$donnees->appendChild($disciplines);
 		
-			/*----- Enseignants -----*/
-			$enseignants = $xml->createElement('enseignants');
-			while ($enseignant = $listeEnseignants->fetch_object()){
+		/*----- Enseignants -----*/
+		$enseignants = $xml->createElement('enseignants');
+		while ($enseignant = $listeEnseignants->fetch_object()){
 				$noeudEnseignant = $xml->createElement('enseignant');
 					//on ne conserve que les chiffres pour id-sts
 					if (!$enseignant->numind) {
@@ -175,23 +158,23 @@ $xml->appendChild($items);
 			}
 		$donnees->appendChild($enseignants);
 		
-			/*----- Éléments du programme -----*/
-			$elementsProgramme = $xml->createElement('elements-programme');
-			while ($elementProgramme = $listeElementsProgramme->fetch_object()){
-				$noeudElementProgramme = $xml->createElement('element-programme');
-					$attributsElementProgramme = array('id'=>'EP_'.$elementProgramme->id, 'libelle'=>substr(htmlspecialchars($elementProgramme->libelle),0,300));
-					foreach ($attributsElementProgramme as $cle=>$valeur) {
-						$attElementProgramme = $xml->createAttribute($cle);
-						$attElementProgramme->value = $valeur;
-						$noeudElementProgramme->appendChild($attElementProgramme);
-					}
-				$elementsProgramme->appendChild($noeudElementProgramme);
+		/*----- Éléments du programme -----*/
+		$elementsProgramme = $xml->createElement('elements-programme');
+		while ($elementProgramme = $listeElementsProgramme->fetch_object()){
+			$noeudElementProgramme = $xml->createElement('element-programme');
+			$attributsElementProgramme = array('id'=>'EP_'.$elementProgramme->id, 'libelle'=>substr(htmlspecialchars($elementProgramme->libelle),0,300));
+			foreach ($attributsElementProgramme as $cle=>$valeur) {
+				$attElementProgramme = $xml->createAttribute($cle);
+				$attElementProgramme->value = $valeur;
+				$noeudElementProgramme->appendChild($attElementProgramme);
 			}
+			$elementsProgramme->appendChild($noeudElementProgramme);
+		}
 		$donnees->appendChild($elementsProgramme);
 		
-			/*----- Parcours -----*/
-			$parcoursCommuns = $xml->createElement('parcours-communs');
-			while ($parcoursCommun = $listeParcoursCommuns->fetch_object()){
+		/*----- Parcours -----*/
+		$parcoursCommuns = $xml->createElement('parcours-communs');
+		while ($parcoursCommun = $listeParcoursCommuns->fetch_object()){
 				$noeudParcoursCommun= $xml->createElement('parcours-commun');
 					if($parcoursCommun->periode < 10) {$num_periode = "0".$parcoursCommun->periode;} else {$num_periode = $parcoursCommun->periode;}
 					$parcoursClasse = getClasses($parcoursCommun->classe)->fetch_object()->classe;
@@ -222,7 +205,21 @@ $xml->appendChild($items);
 		$donnees->appendChild($parcoursCommuns);
 		
 			/*----- Vie scolaire -----*/
-			$viesScolairesCommuns = $xml->createElement('vies-scolaires-communs');
+		$viesScolairesCommuns = $xml->createElement('vies-scolaires-communs');
+		while ($vieScoCommun = $listeVieScoCommun->fetch_object()) {
+			$noeudVieSco =  $xml->createElement('vie-scolaire-commun');
+			if($vieScoCommun->periode < 10) {$num_periode = "0".$vieScoCommun->periode;} else {$num_periode = $vieScoCommun->periode;}
+			$attributsVieSco = array('periode-ref'=>'P_'."$num_periode" , 'code-division'=>"$vieScoCommun->classe");
+			foreach ($attributsVieSco as $cle=>$valeur) {
+				$attVieSco = $xml->createAttribute($cle);
+				$attVieSco->value = $valeur;
+				$noeudVieSco->appendChild($attVieSco);
+			}
+			$comVieScoCommun = $xml->createElement('commentaire', $vieScoCommun->appreciation);
+			$noeudVieSco->appendChild($comVieScoCommun);
+			$viesScolairesCommuns->appendChild($noeudVieSco);
+		}
+		
 			
 		$donnees->appendChild($viesScolairesCommuns);
 		
