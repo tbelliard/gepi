@@ -157,8 +157,11 @@ $xml->appendChild($items);
 			$enseignants = $xml->createElement('enseignants');
 			while ($enseignant = $listeEnseignants->fetch_object()){
 				$noeudEnseignant = $xml->createElement('enseignant');
-					//if($enseignant->id < 10) {$id_enseignant = "0".$enseignant->id;} else {$id_enseignant = $enseignant->id;}
 					//on ne conserve que les chiffres pour id-sts
+					if (!$enseignant->numind) {
+						echo $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer.";
+						die();
+					}
 					preg_match_all('#[0-9]+#',$enseignant->numind,$extract);
 					$idSts = $extract[0][0];
 					$attributsEnseignant = array('id'=>'ENS_'.$idSts, 'type'=>$enseignant->type, 'id-sts'=>$idSts,
@@ -228,7 +231,6 @@ $xml->appendChild($items);
 			$listeEPICommun = getEPICommun();
 			while ($epiCommun = $listeEPICommun->fetch_object()) { 
 				$noeudEpiCommun = $xml->createElement('epi');
-				// idClasse $epiCommun->classe 
 				$matieres = getMatieresEPICommun($epiCommun->id);
 				$refDisciplines = "";
 				foreach ($matieres as $matiere) {
@@ -260,8 +262,8 @@ $xml->appendChild($items);
 					
 					$noeudEpisGroupes->appendChild($attsEpiGroupe);
 				}
-				$CommentaireEPI = 'commentaire sur le groupe à récupérer';
-				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI);
+				$CommentaireEPI = getCommentaireGroupe($episGroupe->id,$episGroupe->periode);
+				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI->fetch_object()->appreciation);
 				$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
 				
 				$noeudEpiEnseignantsDisciplines = $xml->createElement('enseignant-discipline');
@@ -301,14 +303,54 @@ $xml->appendChild($items);
 		
 			/*----- acc-persos -----*/
 		$accPersos = $xml->createElement('acc-persos');
-			
-			
-			
-			
+		$listeApCommuns = getAPCommun();
+		while ($apCommun = $listeApCommuns->fetch_object()) {
+			$noeudApCommun = $xml->createElement('acc-perso');
+			$disciplines = getDisciplines($apCommun->id);
+			$matieresAP = "";
+			while ($matiere = $disciplines->fetch_object()) {
+				$matieresAP .= "DI_".$matiere->id_enseignements.$matiere->modalite." ";
+			}
+			$attributsAPCommun = array('id'=>'ACC_PERSO_'.$apCommun->id , 'intitule'=>"$apCommun->intituleAP" , 'discipline-refs'=>"$matieresAP");
+			foreach ($attributsAPCommun as $cle=>$valeur) {
+				$attsApCommun = $xml->createAttribute($cle);
+				$attsApCommun->value = $valeur;
+				$noeudApCommun->appendChild($attsApCommun);
+			}
+			$noeudApDescription = $xml->createElement('description', $apCommun->descriptionAP);
+			$noeudApCommun->appendChild($noeudApDescription);
+			//descriptionAP
+			$accPersos->appendChild($noeudApCommun);
+		}
 		$donnees->appendChild($accPersos);
 		
 			/*----- acc-persos-groupes -----*/
-			$accPersosGroupes = $xml->createElement('acc-persos-groupes');
+		$accPersosGroupes = $xml->createElement('acc-persos-groupes');
+		$listeApGroupes = getApGroupes();
+		while ($apGroupe = $listeApGroupes->fetch_object()) {
+			$noeudApGroupes = $xml->createElement('acc-perso-groupe');
+			$attributsEpiGroupe = array('id'=>"ACC_PERSO_GROUPE_".$apGroupe->id, 'intitule'=>$apGroupe->nom, 'acc-perso-ref'=>'ACC_PERSO_'.$apGroupe->id_ap );
+			foreach ($attributsEpiGroupe as $cle=>$valeur) {
+				$attsEpiGroupe = $xml->createAttribute($cle);
+				$attsEpiGroupe->value = $valeur;
+
+				$noeudApGroupes->appendChild($attsEpiGroupe);
+			}
+			//On a que 1 commentaire de groupe dans l'export alors qu'on peut en avoir 1 par trimestre, on prend le dernier
+			$commentairesGroupeAp = getCommentaireGroupe($apGroupe->id);
+			$commentaireGroupe = "";
+			while ($commentaire = $commentairesGroupeAp->fetch_object()) {
+				if (trim($commentaire->appreciation)) {
+					$commentaireGroupe = $commentaire->appreciation;
+				}
+				
+			}
+			$noeudComGroupeAp = $xml->createElement('commentaire',$commentaireGroupe);
+			$noeudApGroupes->appendChild($noeudComGroupeAp);
+			
+			$accPersosGroupes->appendChild($noeudApGroupes);
+		}
+		
 		$donnees->appendChild($accPersosGroupes);
 		
 			/*----- Bilans périodiques -----*/

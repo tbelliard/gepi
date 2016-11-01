@@ -119,4 +119,29 @@ function disciplineAP($id) {
 	
 }
 
+function getDisciplines($id_ap) {
+	global $mysqli;
+	$sqlMatAP = "SELECT * FROM lsun_j_ap_matiere WHERE id_ap = '$id_ap' ";
+	$resultchargeDB = $mysqli->query($sqlMatAP);
+	return $resultchargeDB;
+	
+}
+
+function getApGroupes($idAP = NULL) {
+	global $mysqli;
+	
+	$sqlApGroupes= "SELECT a.* , e.id_ap FROM aid AS a "
+		. "INNER JOIN  lsun_j_ap_aid AS e "
+		. "ON a.indice_aid = e.id_aid ";
+	if ($idAP) {
+		$sqlApGroupes .= "WHERE e.id_ap = $idAP ";
+	}
+	
+	
+	//echo '<br>'.$sqlApGroupes.'<br>';
+	$resultchargeDB = $mysqli->query($sqlApGroupes);
+	return $resultchargeDB;
+	
+	
+}
 

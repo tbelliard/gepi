@@ -303,3 +303,17 @@ function getMatiereSurMEF($mef) {
 	$resultchargeDB = $mysqli->query($sqlMef);
 	return $resultchargeDB;
 }
+
+function getCommentaireGroupe($id_aid,$periode = NULL) {
+	//echo $id_aid."-".$periode;
+	global $mysqli;
+	$sqlAppGroupe = "SELECT * FROM `aid_appreciations_grp` WHERE `id_aid` = $id_aid ";
+	if($periode) {
+		$sqlAppGroupe .= "AND `periode` = $periode ";
+	}
+	
+	$resultchargeDB = $mysqli->query($sqlAppGroupe);
+	return $resultchargeDB;
+}
+
+

@@ -113,7 +113,7 @@ echo $sqlDisciplines;
 
 <form action="index.php" method="post" id="selectionClasse">
 	<fieldset>
-		<legend>Classes</legend>
+		<legend>Classes à exporter</legend>
 		<div class="lsun3colonnes" >
 <?php 
 $toutesClasses = getClasses();
@@ -253,7 +253,7 @@ if ($cpt) {echo "			</div>\n";}
 	}
 ?>
 					<div class="lsun_cadre">
-				<div>Période :
+				<div>Période de fin :
 						<input type="hidden" 
 							   name="modifieEpiId[<?php echo $epiCommun->id; ?>]" 
 							   value="<?php echo $epiCommun->id; ?>" />
@@ -261,7 +261,7 @@ if ($cpt) {echo "			</div>\n";}
 							   name="modifieEpiPeriode[<?php echo $epiCommun->id; ?>]" 
 							   value="<?php echo $epiCommun->periode; ?>" />
 						<?php echo $epiCommun->periode; ?>
-						
+						-
 						Division :
 						
 						<select name="modifieEpiClasse<?php echo $epiCommun->id; ?>[]" multiple >
@@ -274,6 +274,7 @@ while ($classe = $classes->fetch_object()) { ?>
 							</option>
 <?php } ?>
 						</select>
+						-
 						Thématique :
 						<select name="modifieEpiCode[<?php echo $epiCommun->id; ?>]">
 <?php foreach ($xml->{'thematiques-epis'}->{'thematique-epi'} as $thematiqueEpi) { ?>
@@ -285,6 +286,7 @@ while ($classe = $classes->fetch_object()) { ?>
 							</option>
 <?php } ?>
 						</select>
+						-
 						Intitulé :
 						<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />	
 				</div>
@@ -313,7 +315,7 @@ if ($matiere->code_modalite_elect == 'O') {
 							</option>
 <?php } ?>
 						</select>
-						
+						-
 						Description :
 						<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea> 
 				</div>
@@ -433,7 +435,7 @@ if (isset($cours)) {
 			<div class="lsun_cadre">
 				<div>
 					<p>
-						Période :
+						Période de fin :
 						<select name="newEpiPeriode">
 							<option value=""></option>
 	<?php $periodes->data_seek(0);
@@ -520,16 +522,16 @@ while ($ap = $listeAPCommun->fetch_object()) { ?>
 			<div class="lsun_cadre">
 				<!-- AP <?php //echo $ap->id; ?> -->
 				Intitulé : 
-				<input type="text" name="intituleAp[<?php echo $cpt; ?>]" value="<?php echo $ap->intituleAP; ?>" />
+				<input type="text" name="intituleAp[<?php echo $cpt2; ?>]" value="<?php echo $ap->intituleAP; ?>" />
 				-
-				Description : <textarea rows="4" cols="50" id="ApDescription<?php echo $cpt; ?>" name="ApDescription[<?php echo $cpt; ?>]" /><?php echo $ap->descriptionAP; ?></textarea> 
+				Description : <textarea rows="4" cols="50" id="ApDescription<?php echo $cpt2; ?>" name="ApDescription[<?php echo $cpt2; ?>]" /><?php echo $ap->descriptionAP; ?></textarea> 
 				
 								
 				
 				-
 				Liaison <?php echo getAidConfig($ap->id_aid)->fetch_object()->nom ; ?>
 <?php $listeAidAp->data_seek(0); ?>
-				<select name="liaisonApAid[<?php echo $cpt; ?>]">
+				<select name="liaisonApAid[<?php echo $cpt2; ?>]">
 <?php 
 //var_dump($listeAidAp);
 $listeAidAp->data_seek(0);
@@ -544,7 +546,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 				
 				<br />
 				
-				<label for="ApDisciplines<?php echo $cpt; ?>">
+				<label for="ApDisciplines<?php echo $cpt2; ?>">
 					Discipline(s) de référence			
 <?php $listeMatiereAP = disciplineAP($ap->id);
 	$tableauMatiere=array();
@@ -562,8 +564,8 @@ if ($matiereAP->modalite == 'O') {
 						-
 <?php } 
 ?>	
-				</label>
-				<select multiple name="ApDisciplines[<?php echo $cpt; ?>]">
+				</label>2
+				<select multiple name="ApDisciplines[<?php echo $cpt2; ?>]">
 <?php $listeMatieres->data_seek(0);
 while ($matiere = $listeMatieres->fetch_object()) { ?>
 					<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>"
@@ -579,9 +581,12 @@ echo '- option facultative';
 					</option>
 <?php } ?>
 				</select>
-					
-					
-					
+				
+				<p>
+					<input type="hidden" name="ApId[<?php echo $cpt2; ?>]" value="<?php echo $matiere->id; ?>" />
+					<button name="modifierAp" value="<?php echo $cpt2; ?>" id="modifierAp_<?php echo $cpt2; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" >Modifier</button>
+					<button name="supprimerAp" value="<?php echo $cpt2; ?>" id="supprimeAp_<?php echo $cpt2; ?>" title="Supprimer cet Accompagnement Personnalisé" >Supprimer</button>
+				</p>
 				
 			</div>
 <?php 
@@ -616,6 +621,8 @@ if ($matiere->code_modalite_elect == 'O') {
 						-
 						<label for="newApLiaisonAID">Liaison</label>
 						<select name="newApLiaisonAID">
+							<option>
+							</option>
 <?php 
 //var_dump($listeAidAp);
 $listeAidAp->data_seek(0);

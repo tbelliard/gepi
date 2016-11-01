@@ -250,19 +250,8 @@ function delLienEPI($idEPI) {
 	$mysqli->query($sqlDelLienEPI);
 }
 
-
 function getEpisGroupes($idEPI = NULL) {
 	global $mysqli;
-	$sqlEpisGroupes = "SELECT * FROM lsun_j_epi_enseignements ";
-	if ($idEPI) {
-		$sqlEpisGroupes .= "WHERE id_epi = $idEPI ";
-	}
-	$sqlEpisGroupes .= "ORDER BY id_epi ";
-	
-	$sqlEpisGroupes = "SELECT aid.* FROM aid AS aid "
-		. "INNER JOIN (".$sqlEpisGroupes.") AS sql "
-		. "ON sql.indice_aid = aid.indice_aid ";
-	
 	
 	$sqlEpisGroupes= "SELECT a.* , e.id_epi FROM aid AS a "
 		. "INNER JOIN  lsun_j_epi_enseignements AS e "
@@ -270,6 +259,10 @@ function getEpisGroupes($idEPI = NULL) {
 	if ($idEPI) {
 		$sqlEpisGroupes .= "WHERE e.id_epi = $idEPI ";
 	}
+	
+	$sqlEpisGroupes = "SELECT t0.* , lec.periode FROM ("
+		. "$sqlEpisGroupes"
+		. ") AS t0 INNER JOIN lsun_epi_communs AS lec on t0.id_epi = lec.id ";
 	
 	//echo $sqlEpisGroupes;
 	$resultchargeDB = $mysqli->query($sqlEpisGroupes);
