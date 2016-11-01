@@ -127,4 +127,22 @@ if ($res_test == 0){
 		$result .= msj_erreur("ECHEC !");
 	}
 }
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'absences_appreciations_grp' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'absences_appreciations_grp'");
+if ($test == -1) {
+	$sql="CREATE TABLE absences_appreciations_grp (id_classe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY  (id_classe, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+		//$result.="<br />$sql<br />";
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

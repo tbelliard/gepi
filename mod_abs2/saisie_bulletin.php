@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -73,6 +73,33 @@ if(isset($_POST['enregistrement_saisie'])) {
 	else {
 		$msg="";
 
+		$nb_reg=0;
+		$nb_err=0;
+
+		if (isset($NON_PROTECT["app_grp"])){
+			$ap = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp"]));
+		}
+		else{
+			$ap = "";
+		}
+		$ap=nettoyage_retours_ligne_surnumeraires($ap);
+
+		$sql="SELECT * FROM absences_appreciations_grp WHERE (id_classe='".$id_classe."' AND periode='$num_periode')";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$sql="UPDATE absences_appreciations_grp SET appreciation='$ap' WHERE (id_classe='".$id_classe."' AND periode='$num_periode');";
+		} else {
+			$sql="INSERT INTO absences_appreciations_grp SET id_classe='".$id_classe."', periode='$num_periode', appreciation='$ap';";
+		}
+		//echo "$sql<br />";
+		$register = mysqli_query($GLOBALS["mysqli"], $sql);
+		if (!$register) {
+			$nb_err++;
+		}
+		else {
+			$nb_reg++;
+		}
+
 		$tab_login=array();
 		if (getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes') {
 			$sql="SELECT login FROM j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND periode='$num_periode';";
@@ -87,8 +114,6 @@ if(isset($_POST['enregistrement_saisie'])) {
 
 		$login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : array();
 
-		$nb_reg=0;
-		$nb_err=0;
 		for($loop=0;$loop<count($login_eleve);$loop++) {
 			if(!in_array($login_eleve[$loop], $tab_login)) {
 				$msg.="Enregistrement non effectué pour l'élève ".get_nom_prenom_eleve($login_eleve[$loop]).".<br />";
@@ -123,7 +148,7 @@ if(isset($_POST['enregistrement_saisie'])) {
 			}
 		}
 
-		$msg.="$nb_reg appréciation(s) enregistrée(s) ou mise(s) à jour.<br />";
+		$msg.="$nb_reg appréciation(s) enregistrée(s) ou mise(s) à jour (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 		if($nb_err>0) {
 			$msg.="$nb_err erreur(s) lors de l'opération.<br />";
 		}
@@ -225,6 +250,14 @@ if(mysqli_num_rows($test)==0) {
 	die();
 }
 
+$appreciation_absences_grp="";
+$sql="SELECT * FROM absences_appreciations_grp WHERE id_classe='".$id_classe."' AND periode='".$num_periode."';";
+$res_abs_grp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_abs_grp_clas)>0) {
+	$lig_abs_grp_clas=mysqli_fetch_object($res_abs_grp_clas);
+	$appreciation_absences_grp=$lig_abs_grp_clas->appreciation;
+}
+
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		<p class='bold'>Classe de ".get_nom_classe($id_classe)." en période ".$num_periode."</p>
@@ -233,6 +266,13 @@ echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 		<input type='hidden' name='enregistrement_saisie' value='y' />
 		<input type='hidden' name='id_classe' value='".$id_classe."' />
 		<input type='hidden' name='num_periode' value='".$num_periode."' />
+
+		<p>
+			Appréciation sur le groupe classe pour la période $num_periode&nbsp;:<br />
+			<textarea id='n0' name='no_anti_inject_app_grp' rows='2' cols='80'  wrap=\"virtual\" 
+							onKeyDown=\"clavier(this.id,event);\" 
+							onchange=\"changement()\">$appreciation_absences_grp</textarea>
+		</p>
 
 		<table class='boireaus boireaus_alt'>
 			<thead>

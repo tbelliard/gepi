@@ -1,7 +1,7 @@
 <?php
 
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -65,9 +65,22 @@ change = 'no';
 <?php
 $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = old_mysql_result($call_classe, "0", "classe");
+
+$appreciation_absences_grp="";
+$sql="SELECT * FROM absences_appreciations_grp WHERE id_classe='".$id_classe."' AND periode='".$periode_num."';";
+$res_abs_grp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_abs_grp_clas)>0) {
+	$lig_abs_grp_clas=mysqli_fetch_object($res_abs_grp_clas);
+	$appreciation_absences_grp=$lig_abs_grp_clas->appreciation;
+}
 ?>
-<p><b>Classe de <?php echo "$classe"; ?> - Consultation des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
-<br />
+<p><b>Classe de <?php echo "$classe"; ?> - Consultation des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b></p>
+
+<p style='margin-top:1em;' class='fieldset_opacite50'>
+	<b>Appréciation sur le groupe classe pour la période <?php echo $periode_num;?>&nbsp;:</b><br />
+	<?php echo nl2br($appreciation_absences_grp);?>
+</p>
+
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
 <tr>
