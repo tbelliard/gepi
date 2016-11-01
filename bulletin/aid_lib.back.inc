@@ -9,7 +9,8 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
     //============================
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
-    $AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $CATEGORIE_AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $CATEGORIE_AID_NOM = @old_mysql_result($call_data, 0, "nom");
     $note_max = @old_mysql_result($call_data, 0, "note_max");
     $type_note = @old_mysql_result($call_data, 0, "type_note");
     $message = @old_mysql_result($call_data, 0, "message");
@@ -83,9 +84,49 @@ function affich_aid0($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 
     }
     //------
-    // On affiche l'appréciation aid :
+    // On affiche la ligne aid :
     //------
-    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$AID_NOM_COMPLET</b><br />";
+	if($display_nom=='z') {
+		if($aid_nom!="")) {
+			$info_nom_matiere=$aid_nom;
+		}
+		elseif($CATEGORIE_AID_NOM_COMPLET!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+	}
+	elseif($display_nom=='x') {
+		if($CATEGORIE_AID_NOM!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+
+		if($aid_nom!="")) {
+			if($info_nom_matiere!="") {
+				$info_nom_matiere.=": ";
+			}
+			$info_nom_matiere.=$aid_nom;
+		}
+	}
+	else {
+		if($CATEGORIE_AID_NOM_COMPLET!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+	}
+	if($info_nom_matiere=="") {
+		$info_nom_matiere="AID";
+	}
+
+    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$info_nom_matiere</b><br />";
+
+
     $chaine_prof="";
     $n = '0';
     while ($n < $nb_lig) {
@@ -178,7 +219,8 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
     //============================
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
-    $AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $CATEGORIE_AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $CATEGORIE_AID_NOM = @old_mysql_result($call_data, 0, "nom");
     $note_max = @old_mysql_result($call_data, 0, "note_max");
     $type_note = @old_mysql_result($call_data, 0, "type_note");
     $message = @old_mysql_result($call_data, 0, "message");
@@ -252,9 +294,47 @@ function affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
 
     }
     //------
-    // On affiche l'appréciation aid :
+    // On affiche la ligne aid :
     //------
-    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$AID_NOM_COMPLET</b><br />";
+	if($display_nom=='z') {
+		if($aid_nom!="")) {
+			$info_nom_matiere=$aid_nom;
+		}
+		elseif($CATEGORIE_AID_NOM_COMPLET!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+	}
+	elseif($display_nom=='x') {
+		if($CATEGORIE_AID_NOM!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+
+		if($aid_nom!="")) {
+			if($info_nom_matiere!="") {
+				$info_nom_matiere.=": ";
+			}
+			$info_nom_matiere.=$aid_nom;
+		}
+	}
+	else {
+		if($CATEGORIE_AID_NOM_COMPLET!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+	}
+	if($info_nom_matiere=="") {
+		$info_nom_matiere="AID";
+	}
+
+    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$info_nom_matiere</b><br />";
     $chaine_prof="";
     $n = '0';
     while ($n < $nb_lig) {
@@ -349,7 +429,8 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
     //============================
 
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
-    $AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $CATEGORIE_AID_NOM_COMPLET = @old_mysql_result($call_data, 0, "nom_complet");
+    $CATEGORIE_AID_NOM = @old_mysql_result($call_data, 0, "nom");
     $note_max = @old_mysql_result($call_data, 0, "note_max");
     $type_note = @old_mysql_result($call_data, 0, "type_note");
     $message = @old_mysql_result($call_data, 0, "message");
@@ -425,7 +506,46 @@ function affich_aid2($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$a
     //------
     // On affiche l'appréciation aid :
     //------
-    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$AID_NOM_COMPLET</b><br />";
+	if($display_nom=='z') {
+		if($aid_nom!="")) {
+			$info_nom_matiere=$aid_nom;
+		}
+		elseif($CATEGORIE_AID_NOM_COMPLET!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+	}
+	elseif($display_nom=='x') {
+		if($CATEGORIE_AID_NOM!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+
+		if($aid_nom!="")) {
+			if($info_nom_matiere!="") {
+				$info_nom_matiere.=": ";
+			}
+			$info_nom_matiere.=$aid_nom;
+		}
+	}
+	else {
+		if($CATEGORIE_AID_NOM_COMPLET!="")) {
+			$info_nom_matiere=$CATEGORIE_AID_NOM_COMPLET;
+		}
+		else {
+			$info_nom_matiere=$CATEGORIE_AID_NOM;
+		}
+	}
+	if($info_nom_matiere=="") {
+		$info_nom_matiere="AID";
+	}
+
+    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><b>$info_nom_matiere</b><br />";
+
     $chaine_prof="";
     $n = '0';
     while ($n < $nb_lig) {

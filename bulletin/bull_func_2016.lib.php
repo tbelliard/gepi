@@ -1112,11 +1112,42 @@ die();
 						$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_1"], $hauteur_matiere, 'L', 'M', 0);
 						*/
 
-						if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
-							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						if($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='z') {
+							if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+							}
+							elseif((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+							}
+						}
+						elseif($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='x') {
+							if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+							}
+
+							if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+								if($info_nom_matiere!="") {
+									$info_nom_matiere.=": ";
+								}
+								$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+							}
 						}
 						else {
-							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+							if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+							}
+						}
+						if($info_nom_matiere=="") {
+							$info_nom_matiere="AID";
 						}
 
 						$hauteur_caractere_matiere=8;
@@ -1996,11 +2027,42 @@ die();
 						$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_1"], $hauteur_matiere, 'L', 'M', 0);
 						*/
 
-						if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
-							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						if($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='z') {
+							if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+							}
+							elseif((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+							}
+						}
+						elseif($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='x') {
+							if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+							}
+
+							if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+								if($info_nom_matiere!="") {
+									$info_nom_matiere.=": ";
+								}
+								$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+							}
 						}
 						else {
-							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+							if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+							}
+						}
+						if($info_nom_matiere=="") {
+							$info_nom_matiere="AID";
 						}
 
 						$hauteur_caractere_matiere=8;
@@ -2477,15 +2539,42 @@ die();
 					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
 					$pdf->SetFont('DejaVu','',8);
 
-					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+					if($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='z') {
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+						}
+						elseif((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
+					}
+					elseif($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='x') {
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+							if($info_nom_matiere!="") {
+								$info_nom_matiere.=": ";
+							}
+							$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+						}
 					}
 					else {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
 					}
-
-					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'])) {
-						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'].")";
+					if($info_nom_matiere=="") {
+						$info_nom_matiere="AID";
 					}
 
 					$hauteur_caractere_matiere=8;
@@ -2894,15 +2983,42 @@ die();
 					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
 					$pdf->SetFont('DejaVu','',8);
 
-					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+					if($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='z') {
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+						}
+						elseif((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
+					}
+					elseif($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='x') {
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+							if($info_nom_matiere!="") {
+								$info_nom_matiere.=": ";
+							}
+							$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+						}
 					}
 					else {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
 					}
-
-					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'])) {
-						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'].")";
+					if($info_nom_matiere=="") {
+						$info_nom_matiere="AID";
 					}
 
 					$hauteur_caractere_matiere=8;
@@ -3106,15 +3222,42 @@ die();
 					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
 					$pdf->SetFont('DejaVu','',8);
 
-					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+					if($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='z') {
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+						}
+						elseif((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
+					}
+					elseif($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='x') {
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+							if($info_nom_matiere!="") {
+								$info_nom_matiere.=": ";
+							}
+							$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+						}
 					}
 					else {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
 					}
-
-					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'])) {
-						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'].")";
+					if($info_nom_matiere=="") {
+						$info_nom_matiere="AID";
 					}
 
 					$hauteur_caractere_matiere=8;
@@ -3524,15 +3667,42 @@ die();
 					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
 					$pdf->SetFont('DejaVu','',8);
 
-					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+					if($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='z') {
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+						}
+						elseif((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
+					}
+					elseif($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='x') {
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+							if($info_nom_matiere!="") {
+								$info_nom_matiere.=": ";
+							}
+							$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+						}
 					}
 					else {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
 					}
-
-					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'])) {
-						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'].")";
+					if($info_nom_matiere=="") {
+						$info_nom_matiere="AID";
 					}
 
 					$hauteur_caractere_matiere=8;
@@ -3736,15 +3906,42 @@ die();
 					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
 					$pdf->SetFont('DejaVu','',8);
 
-					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+					if($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='z') {
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+						}
+						elseif((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
+					}
+					elseif($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='x') {
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+							if($info_nom_matiere!="") {
+								$info_nom_matiere.=": ";
+							}
+							$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+						}
 					}
 					else {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
 					}
-
-					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'])) {
-						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'].")";
+					if($info_nom_matiere=="") {
+						$info_nom_matiere="AID";
 					}
 
 					$hauteur_caractere_matiere=8;
@@ -4155,15 +4352,42 @@ die();
 					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
 					$pdf->SetFont('DejaVu','',8);
 
-					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+					if($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='z') {
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+						}
+						elseif((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
+					}
+					elseif($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='x') {
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+							if($info_nom_matiere!="") {
+								$info_nom_matiere.=": ";
+							}
+							$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+						}
 					}
 					else {
-						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
 					}
-
-					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'])) {
-						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'].")";
+					if($info_nom_matiere=="") {
+						$info_nom_matiere="AID";
 					}
 
 					$hauteur_caractere_matiere=8;

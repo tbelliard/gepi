@@ -873,6 +873,7 @@ width:".$largeur1."%;\n";
 			echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> La période n'est pas close. Les moyennes et appréciations peuvent encore évoluer.</p>\n";
 		}
 
+		//echo "<p>DEBUG : $fichier_bulletin</p>";
 		// Tableau des matières/notes/appréciations
 		$k=$i+1;
 		include ($fichier_bulletin);
@@ -3122,12 +3123,42 @@ fclose($f);
 						}
 						$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
 
-						// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
-						if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
-							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						if($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='z') {
+							if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+							}
+							elseif((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+							}
+						}
+						elseif($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='x') {
+							if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+							}
+
+							if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!="")) {
+								if($info_nom_matiere!="") {
+									$info_nom_matiere.=": ";
+								}
+								$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+							}
 						}
 						else {
-							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+							if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+							}
+						}
+						if($info_nom_matiere=="") {
+							$info_nom_matiere="AID";
 						}
 
 						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
@@ -4822,12 +4853,42 @@ fclose($f);
 						}
 						$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
 
-						// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
-						if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
-							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						if($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='z') {
+							if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+							}
+							elseif((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+							}
+						}
+						elseif($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='x') {
+							if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+							}
+
+							if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!="")) {
+								if($info_nom_matiere!="") {
+									$info_nom_matiere.=": ";
+								}
+								$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+							}
 						}
 						else {
-							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+							if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet']!="")) {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+							}
+						}
+						if($info_nom_matiere=="") {
+							$info_nom_matiere="AID";
 						}
 
 						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
