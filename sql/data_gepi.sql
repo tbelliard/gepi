@@ -1803,3 +1803,4 @@ INSERT INTO droits SET id='/saisie/gerer_mep.php', administrateur='V', professeu
 INSERT INTO droits SET id='/responsables/dedoublonner_responsables.php', administrateur='V', professeur='F', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Dédoublonner les responsables.', statut='';
 INSERT INTO droits SET id='/responsables/recup_comptes_parents.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Dédoublonner les responsables.', statut='';
 INSERT INTO setting SET name='bull2016_pas_espace_reserve_EPI_AP_Parcours', value='y';
+INSERT INTO droits SET id='/impression/avis_pdf_absences.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Avis PDF absences', statut='';

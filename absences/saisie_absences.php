@@ -224,6 +224,8 @@ if(mysqli_num_rows($res_abs_grp_clas)>0) {
 	$lig_abs_grp_clas=mysqli_fetch_object($res_abs_grp_clas);
 	$appreciation_absences_grp=$lig_abs_grp_clas->appreciation;
 }
+
+echo "<div style='float:right; width:16px'><a href='../impression/avis_pdf_absences.php?id_classe=$id_classe&periode_num=$periode_num' title=\"Imprimer les appréciations absences et nombre d'absences,... en PDF\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='Générer un PDF' /></a></div>";
 ?>
 <p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b></p>
 

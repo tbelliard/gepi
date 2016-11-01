@@ -260,6 +260,7 @@ if(mysqli_num_rows($res_abs_grp_clas)>0) {
 
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
+		<div style='float:right; width:16px'><a href='../impression/avis_pdf_absences.php?id_classe=$id_classe&periode_num=$num_periode' title=\"Imprimer les appréciations absences et nombre d'absences,... en PDF\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='Générer un PDF' /></a></div>
 		<p class='bold'>Classe de ".get_nom_classe($id_classe)." en période ".$num_periode."</p>
 
 		".add_token_field(true)."
