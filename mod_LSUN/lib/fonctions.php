@@ -316,4 +316,20 @@ function getCommentaireGroupe($id_aid,$periode = NULL) {
 	return $resultchargeDB;
 }
 
+function droitLSUN($droit=NULL) {
+	global $mysqli;
+	if ($droit === NULL) {
+		$retour = FALSE;
+		$sql = "SELECT `VALUE` FROM `setting` WHERE `NAME`='active_module_LSUN' ";
+		$valeur = $mysqli->query($sql)->fetch_object()->VALUE;
+		if ($valeur === 'y') {
+			$retour = TRUE;
+		}
+		return $retour;
+	} elseif ('y' == $droit || 'n' == $droit) {
+		$sql = "INSERT INTO `setting` (`NAME`, `VALUE`) VALUES ('active_module_LSUN', '".$droit."') "
+	   . "ON DUPLICATE KEY UPDATE VALUE = '".$droit."' ";
+		mysqli_query($mysqli, $sql);
+	}
+}
 

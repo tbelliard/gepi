@@ -23,6 +23,23 @@
 
 
 // TODO : mettre ça ailleurs
+
+
+
+$sql = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) "
+	. "VALUES ('/mod_LSUN/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
+	. "ON DUPLICATE KEY UPDATE administrateur = 'V'; ";
+$mysqli->query($sql);
+
+$sql = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) "
+	. "VALUES ('/mod_LSUN/admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
+	. "ON DUPLICATE KEY UPDATE administrateur = 'V'; ";
+$mysqli->query($sql);
+
+
+
+
+
 $sql = "CREATE TABLE IF NOT EXISTS lsun_responsables ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique',"
 	. "login varchar(50) NOT NULL,"
@@ -85,15 +102,6 @@ $sql = "ALTER TABLE `classes` ADD `mef_code` VARCHAR(20) CHARACTER SET utf8 COLL
 //echo $sql;
 $mysqli->query($sql);
 
-
-$sql = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) "
-	. "VALUES ('/mod_LSUN/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
-	. "ON DUPLICATE KEY UPDATE administrateur = 'V'; ";
-$mysqli->query($sql);
-$sql = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) "
-	. "VALUES ('/mod_LSUN/index.php', 'V', 'F', 'F', 'V', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
-	. "ON DUPLICATE KEY UPDATE administrateur = 'V'; ";
-$mysqli->query($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_ap_communs ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "

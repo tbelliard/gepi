@@ -423,6 +423,19 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
+	
+//Livret Scolaire Unifié
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_LSUN/admin.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('active_module_LSUN') ;
+		$nouveauItem->titre="Livret Scolaire Unifié" ;
+		$nouveauItem->expli="Préparer et générer un export vers le Livret Scolaire Unifié." ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+	
 
 
 $tbs_microtime="";
@@ -450,12 +463,5 @@ include($nom_gabarit);
 unset($menuPage);
 
 
-/*
-for ($i=0;$i<count($menuPage);$i++)
-{
-	echo "<img src='".$menuPage[$i]->icone['chemin']."' width='19' height='19' title='".$menuPage[$i]->icone['titre']."' alt='".$menuPage[$i]->icone['alt']."' />";
-	echo " - ".$i." - <a href='".mb_substr($menuPage[$i]->chemin,1)."'>".$menuPage[$i]->titre."</a> - ".$menuPage[$i]->expli."<br />";
-}
-*/
 
 ?>
