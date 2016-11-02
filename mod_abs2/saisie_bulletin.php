@@ -258,6 +258,16 @@ if(mysqli_num_rows($res_abs_grp_clas)>0) {
 	$appreciation_absences_grp=$lig_abs_grp_clas->appreciation;
 }
 
+$colspan_abs="";
+$explication_remplissage_table_absences="";
+if(getSettingAOui("abs2_import_manuel_bulletin")) {
+	// Normalement on n'arrive pas sur cette page, mais sur /absences/saisie_absences.php quand on est en mode Import manuel.
+	// Mais au cas où...
+
+	$colspan_abs=" colspan='2'";
+	$explication_remplissage_table_absences=".\nVous avez fait le choix dans le paramétrage du module Absences 2 de remplir manuellement (ou par import CSV) les ttaux destinés aux bulletins.\nSi deux valeurs sont proposées ci-dessous, c'est peut-être pas que le remplissage n'est à jour.";
+}
+
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		<div style='float:right; width:16px'><a href='../impression/avis_pdf_absences.php?id_classe=$id_classe&periode_num=$num_periode' title=\"Imprimer les appréciations absences et nombre d'absences,... en PDF\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='Générer un PDF' /></a></div>
@@ -279,9 +289,9 @@ echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 			<thead>
 				<tr>
 					<th>Élève</th>
-					<th title=\"Nombre d'absences\">Nb.abs</th>
-					<th title=\"Nombre d'absences non justifiées\">Nb.nj</th>
-					<th title=\"Nombre de retards\">Nb.ret</th>
+					<th".$colspan_abs." title=\"Nombre d'absences".$explication_remplissage_table_absences."\">Nb.abs</th>
+					<th".$colspan_abs." title=\"Nombre d'absences non justifiées".$explication_remplissage_table_absences."\">Nb.nj</th>
+					<th".$colspan_abs." title=\"Nombre de retards".$explication_remplissage_table_absences."\">Nb.ret</th>
 					<th>Appréciation</th>
 				</tr>
 			</thead>
@@ -299,6 +309,11 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($num_periode)->count());
 		$current_eleve_retards = strval($eleve->getRetardsParPeriode($num_periode)->count());
 
+		// Initialisation
+		$current_eleve_nb_absences_table_absences="";
+		$current_eleve_non_justifie_table_absences="";
+		$current_eleve_nb_retards_table_absences="";
+
 		$sql="SELECT * FROM absences WHERE (login='".$lig_ele->login."' AND periode='$num_periode');";
 		//echo "$sql< br />";
 		$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -306,27 +321,49 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$current_eleve_appreciation_absences = '';
 		if ($current_eleve_appreciation_absences_objet) { 
 			$current_eleve_appreciation_absences = $current_eleve_appreciation_absences_objet->appreciation;
+			$current_eleve_nb_absences_table_absences = $current_eleve_appreciation_absences_objet->nb_absences;
+			$current_eleve_non_justifie_table_absences = $current_eleve_appreciation_absences_objet->non_justifie;
+			$current_eleve_nb_retards_table_absences = $current_eleve_appreciation_absences_objet->nb_retards;
 		}
 	}
 
-	if($etat_periode=="N") {
-		$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$lig_ele->login."', '".$id_classe."', 'n3".$num_id."');\n";
-
+	if(getSettingAOui("abs2_import_manuel_bulletin")) {
 		echo "
 				<tr>
-					<td>".casse_mot($lig_ele->nom, 'maj')." ".casse_mot($lig_ele->prenom, 'majf2')."</td>
-					<td>$current_eleve_absences</td>
-					<td>$current_eleve_nj</td>
-					<td>$current_eleve_retards</td>
-					<td>
-						<input type='hidden' name='login_eleve[$cpt]' value='".$lig_ele->login."' />
-						<textarea id=\"n3".$num_id."\" name='no_anti_inject_app_eleve_$cpt' rows='2' cols='50'  wrap=\"virtual\" 
-											onKeyDown=\"clavier(this.id,event);\" 
-											onchange=\"changement()\" 
-											onblur=\"ajaxVerifAppreciations('".$lig_ele->login."_t".$num_periode."', '".$id_classe."', 'n3".$num_id."');\">$current_eleve_appreciation_absences</textarea>
-						<div id='div_verif_n3".$num_id."' style='color:red;'></div>
-					</td>
-				</tr>";
+					<td>".casse_mot($lig_ele->nom, 'maj')." ".casse_mot($lig_ele->prenom, 'majf2')."</td>";
+
+		if($current_eleve_absences==$current_eleve_nb_absences_table_absences) {
+			echo "
+					<td colspan='2'>$current_eleve_absences</td>";
+		}
+		else {
+			echo "
+					<td title=\"Enregistrement dans la table 'absences' remplie manuellement.\">$current_eleve_nb_absences_table_absences</td>
+					<td title=\"Calcul d'après les saisies dans le module Absences 2\">$current_eleve_absences</td>";
+		}
+
+		if($current_eleve_nj==$current_eleve_non_justifie_table_absences) {
+			echo "
+					<td colspan='2'>$current_eleve_nj</td>";
+		}
+		else {
+			echo "
+					<td title=\"Enregistrement dans la table 'absences' remplie manuellement.\">$current_eleve_non_justifie_table_absences</td>
+					<td title=\"Calcul d'après les saisies dans le module Absences 2\">$current_eleve_nj</td>";
+		}
+
+		if($current_eleve_retards==$current_eleve_nb_retards_table_absences) {
+			echo "
+					<td colspan='2'>$current_eleve_retards</td>";
+		}
+		else {
+			echo "
+					<td title=\"Enregistrement dans la table 'absences' remplie manuellement.\">$current_eleve_nb_retards_table_absences</td>
+					<td title=\"Calcul d'après les saisies dans le module Absences 2\">$current_eleve_retards</td>";
+		}
+
+		echo "
+					<td>";
 	}
 	else {
 		echo "
@@ -335,9 +372,27 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 					<td>$current_eleve_absences</td>
 					<td>$current_eleve_nj</td>
 					<td>$current_eleve_retards</td>
-					<td>".nl2br($current_eleve_appreciation_absences)."</td>
-				</tr>";
+					<td>";
 	}
+
+	if($etat_periode=="N") {
+		$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$lig_ele->login."', '".$id_classe."', 'n3".$num_id."');\n";
+
+		echo "
+						<input type='hidden' name='login_eleve[$cpt]' value='".$lig_ele->login."' />
+						<textarea id=\"n3".$num_id."\" name='no_anti_inject_app_eleve_$cpt' rows='2' cols='50'  wrap=\"virtual\" 
+											onKeyDown=\"clavier(this.id,event);\" 
+											onchange=\"changement()\" 
+											onblur=\"ajaxVerifAppreciations('".$lig_ele->login."_t".$num_periode."', '".$id_classe."', 'n3".$num_id."');\">$current_eleve_appreciation_absences</textarea>
+						<div id='div_verif_n3".$num_id."' style='color:red;'></div>";
+	}
+	else {
+		echo "
+					".nl2br($current_eleve_appreciation_absences);
+	}
+	echo "
+					</td>
+				</tr>";
 
 	$cpt++;
 	$num_id++;

@@ -26,6 +26,7 @@
 
 //=============================
 // Initialisations files
+require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 //=============================
 //debug_var();
@@ -618,6 +619,20 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 				$total_nb_non_justifie+=$current_eleve_nb_non_justifie;
 				$total_nb_retards+=$current_eleve_nb_retards;
 			}
+
+			if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
+				// On ne change pas les valeurs piochées dans la table 'absences'
+			}
+			else {
+				// C'est le mod_abs2 qui est utilisé et sans import manuel des absences
+				$eleve = EleveQuery::create()->findOneByLogin($login_elv);
+				if ($eleve != null) {
+					$current_eleve_nb_absences = strval($eleve->getDemiJourneesAbsenceParPeriode($donnees_eleves[$nb_eleves_i]['id_periode'])->count());
+					$current_eleve_nb_non_justifie = strval($eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($donnees_eleves[$nb_eleves_i]['id_periode'])->count());
+					$current_eleve_nb_retards = strval($eleve->getRetardsParPeriode($donnees_eleves[$nb_eleves_i]['id_periode'])->count());
+				}
+			}
+
 			/*
 			$current_eleve_mention="";
 			$id_mention_courante = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
