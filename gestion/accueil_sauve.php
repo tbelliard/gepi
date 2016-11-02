@@ -1181,7 +1181,11 @@ if (isset($action) and ($action == 'restaure'))  {
 
 	// C'est parti pour la restauration
 	register_shutdown_function('shutdown');
-	@exec("mysql -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt",$t_retour,$retour);
+	//@exec("mysql -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt",$t_retour,$retour);
+	$cmd="mysql -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." --host=".$dbHost;
+	if (isset($dbPort)) {$cmd.=" --protocol=TCP --port=".$dbPort;}
+	$cmd.=" < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt";
+	@exec($cmd,$t_retour,$retour);
 	// ici le script est terminé, et donc la fonction 'shutdown' est appelée
 
 	}
