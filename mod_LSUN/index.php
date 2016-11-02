@@ -61,9 +61,6 @@ if ($utilisateur == null) {
 	die();
 }
 
-// TODO : mettre ça ailleurs
-saveSetting("active_module_LSUN",'y');
-
 //On vérifie si le module est activé
 if (getSettingValue("active_module_LSUN")!='y') {
     die("Le module n'est pas activé.");
@@ -75,6 +72,7 @@ include_once 'lib/fonctions.php';
 //==============================================
 
 $corrigeMEF = filter_input(INPUT_POST, 'corrigeMEF');
+
 if($corrigeMEF == 'y') {
 	//debug_var();
 	enregistreMEF();
@@ -83,8 +81,10 @@ if($corrigeMEF == 'y') {
 if (MefAppartenanceAbsent()) {
 	include_once 'getAppartenances.php';
 	die();
-		
 }
+
+
+
 //==============================================
 //$style_specifique[] = "lib/style";
 //$tbs_CSS_spe[] = "lib/style";

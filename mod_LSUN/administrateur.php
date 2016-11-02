@@ -24,6 +24,26 @@
 
 $selectionClasse = $_SESSION['afficheClasse'];
 
+
+//===== Suppression ou modification des AP =====
+$supprimerAp = filter_input(INPUT_POST, 'supprimerAp');
+$modifierAp = filter_input(INPUT_POST, 'modifierAp');
+
+if ($supprimerAp) {
+	delAP($supprimerAp);
+}
+
+if ($modifierAp) {
+	$changeIntituleAp = filter_input(INPUT_POST, 'intituleAp', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$changeApDescription = filter_input(INPUT_POST, 'ApDescription', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$changeLiaisonApAid = filter_input(INPUT_POST, 'liaisonApAid', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$changeApDisciplines = filter_input(INPUT_POST, 'ApDisciplines'.$modifierAp, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	
+	modifieAP($modifierAp, $changeIntituleAp[$modifierAp], $changeApDescription[$modifierAp], $changeLiaisonApAid[$modifierAp], $changeApDisciplines);
+}
+
+
+
 //===== On récupère les données =====
 $scolarites = getUtilisateurSurStatut('scolarite');
 $cpes = getUtilisateurSurStatut('cpe');
@@ -52,15 +72,6 @@ if (file_exists('LSUN_nomenclatures.xml')) {
 //===== on charge les périodes =====
 $periodes = getPeriodes();
 $classes = getClasses();
-
-/*
-$sqlDisciplines = "SELECT DISTINCT m.matiere , m.nom_complet , m.code_matiere , mm.code_modalite_elect FROM mef_matieres AS mm "
-	. "INNER JOIN matieres AS m ON m.code_matiere = mm.code_matiere ";
-
-echo $sqlDisciplines;
-*/
-
-//===== On récupère les matières enseignées =====
 
 
 ?>
@@ -535,16 +546,16 @@ while ($ap = $listeAPCommun->fetch_object()) { ?>
 			<div class="lsun_cadre">
 				<!-- AP <?php //echo $ap->id; ?> -->
 				Intitulé : 
-				<input type="text" name="intituleAp[<?php echo $cpt2; ?>]" value="<?php echo $ap->intituleAP; ?>" />
+				<input type="text" name="intituleAp[<?php echo $ap->id; ?>]" value="<?php echo $ap->intituleAP; ?>" />
 				-
-				Description : <textarea rows="4" cols="50" id="ApDescription<?php echo $cpt2; ?>" name="ApDescription[<?php echo $cpt2; ?>]" /><?php echo $ap->descriptionAP; ?></textarea> 
 				
-								
-				
+				Description : 
+				<textarea rows="4" cols="50" id="ApDescription<?php echo $ap->id; ?>" name="ApDescription[<?php echo  $ap->id; ?>]" /><?php echo $ap->descriptionAP; ?></textarea> 				
 				-
+				
 				Liaison <?php echo getAidConfig($ap->id_aid)->fetch_object()->nom ; ?>
 <?php $listeAidAp->data_seek(0); ?>
-				<select name="liaisonApAid[<?php echo $cpt2; ?>]">
+				<select name="liaisonApAid[<?php echo $ap->id; ?>]">
 <?php 
 //var_dump($listeAidAp);
 $listeAidAp->data_seek(0);
@@ -559,8 +570,8 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 				
 				<br />
 				
-				<label for="ApDisciplines<?php echo $cpt2; ?>">
-					Discipline(s) de référence			
+				<label for="ApDisciplines<?php echo  $ap->id; ?>">
+					Discipline(s) de référence
 <?php $listeMatiereAP = disciplineAP($ap->id);
 	$tableauMatiere=array();
 while ($matiereAP = $listeMatiereAP->fetch_object()) { ?>
@@ -568,17 +579,14 @@ while ($matiereAP = $listeMatiereAP->fetch_object()) { ?>
 <?php 	
 
 $tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
-if ($matiereAP->modalite == 'O') {
-	echo '- option obligatoire';
-} elseif ($matiereAP->modalite == 'F') {
-	echo '- option facultative';
-}
-?> 
-						-
-<?php } 
-?>	
-				</label>2
-				<select multiple name="ApDisciplines[<?php echo $cpt2; ?>]">
+	if ($matiereAP->modalite == 'O') {
+		echo '- option obligatoire';
+	} elseif ($matiereAP->modalite == 'F') {
+		echo '- option facultative';
+	}
+} ?>	
+				</label>
+				<select multiple name="ApDisciplines<?php echo $ap->id; ?>[]">
 <?php $listeMatieres->data_seek(0);
 while ($matiere = $listeMatieres->fetch_object()) { ?>
 					<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>"
@@ -596,9 +604,8 @@ echo '- option facultative';
 				</select>
 				
 				<p>
-					<input type="hidden" name="ApId[<?php echo $cpt2; ?>]" value="<?php echo $matiere->id; ?>" />
-					<button name="modifierAp" value="<?php echo $cpt2; ?>" id="modifierAp_<?php echo $cpt2; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" >Modifier</button>
-					<button name="supprimerAp" value="<?php echo $cpt2; ?>" id="supprimeAp_<?php echo $cpt2; ?>" title="Supprimer cet Accompagnement Personnalisé" >Supprimer</button>
+					<button name="modifierAp" value="<?php echo  $ap->id; ?>" id="modifierAp_<?php echo  $ap->id; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" >Modifier</button>
+					<button name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" >Supprimer</button>
 				</p>
 				
 			</div>

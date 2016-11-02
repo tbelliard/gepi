@@ -63,8 +63,7 @@ function saveAP($ApIntitule, $ApDisciplines, $ApDescription, $ApLiaisonAID, $id 
 	}	else {
 		$sqlCreeAP .= "NULL";
 	}
-	$sqlCreeAP .= ", \"$ApIntitule\" , \"$ApDescription\") "
-		. "ON DUPLICATE KEY UPDATE intituleAP = \"$ApIntitule\" , descriptionAP = \"$ApDescription\" ";
+	$sqlCreeAP .= ", \"$ApIntitule\" , \"$ApDescription\") ON DUPLICATE KEY UPDATE intituleAP = \"$ApIntitule\" , descriptionAP = \"$ApDescription\" ";
 	//echo '<br>'.$sqlCreeAP.'<br>';
 	$mysqli->query($sqlCreeAP);
 	
@@ -136,12 +135,19 @@ function getApGroupes($idAP = NULL) {
 	if ($idAP) {
 		$sqlApGroupes .= "WHERE e.id_ap = $idAP ";
 	}
-	
-	
 	//echo '<br>'.$sqlApGroupes.'<br>';
 	$resultchargeDB = $mysqli->query($sqlApGroupes);
-	return $resultchargeDB;
-	
-	
+	return $resultchargeDB;	
 }
+
+function delAP($supprimerAp) {
+	global $mysqli;
+	$sqlDelAP = "DELETE FROM lsun_ap_communs WHERE id = $supprimerAp";
+	$mysqli->query($sqlDelAP);
+}
+
+function modifieAP($id, $IntituleAp, $ApDescription, $ApLiaisonAid, $ApDisciplines) {
+	saveAP($IntituleAp, $ApDisciplines, $ApDescription, $ApLiaisonAid, $id);
+}
+
 
