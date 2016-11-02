@@ -258,9 +258,22 @@ if ($cpt) {echo "			</div>\n";}
 							   name="modifieEpiId[<?php echo $epiCommun->id; ?>]" 
 							   value="<?php echo $epiCommun->id; ?>" />
 						<input type="hidden" 
-							   name="modifieEpiPeriode[<?php echo $epiCommun->id; ?>]" 
+							   name="modifieEpiPeriode1[<?php echo $epiCommun->id; ?>]" 
 							   value="<?php echo $epiCommun->periode; ?>" />
-						<?php echo $epiCommun->periode; ?>
+						<?php //echo $epiCommun->periode; ?>
+						
+						
+						<select name="modifieEpiPeriode[<?php echo $epiCommun->id; ?>]">
+							<option value=""></option>
+	<?php $periodes->data_seek(0);
+	while ($periode = $periodes->fetch_object()) { ?>
+							<option value="<?php echo $periode->num_periode; ?>"
+									<?php if ($periode->num_periode == $epiCommun->periode) {echo " selected ";} ?> >
+								<?php echo $periode->num_periode; ?>
+							</option>
+	<?php } ?>
+						</select>
+						
 						-
 						Division :
 						
