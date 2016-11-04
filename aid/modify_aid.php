@@ -65,11 +65,11 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
 	$test2 = Prof_deja_membre ($reg_prof_login, $aid_id, $indice_aid)->num_rows;
     if ($test2 != "0") {
-        $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+        $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID (".strftime("%d/%m/%Y à %H:%M:%S").").";
     } else {
         if ($reg_prof_login != '') {
 			$reg_data = Sauve_prof_membre ($reg_prof_login, $aid_id, $indice_aid);
-            if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur !"; } else { $msg = "Le professeur a bien été ajouté !"; }
+            if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur (".strftime("%d/%m/%Y à %H:%M:%S").") !"; } else { $msg = "Le professeur a bien été ajouté (".strftime("%d/%m/%Y à %H:%M:%S").") !"; }
         }
     }
     $flag = "prof";
@@ -80,11 +80,11 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
     $test2 = Prof_deja_gestionnaire ($reg_prof_login, $aid_id, $indice_aid)->num_rows;
     if ($test2 != "0") {
-        $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID";
+        $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID (".strftime("%d/%m/%Y à %H:%M:%S").").";
     } else {
         if ($reg_prof_login != '') {
             $reg_data = Sauve_prof_gestionnaire ($reg_prof_login, $aid_id, $indice_aid);
-            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur !"; } else { $msg = "L'utilisateur a bien été ajouté !"; }
+            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur (".strftime("%d/%m/%Y à %H:%M:%S").") !"; } else { $msg = "L'utilisateur a bien été ajouté (".strftime("%d/%m/%Y à %H:%M:%S").") !"; }
         }
     }
     $flag = "prof_gest";
@@ -247,6 +247,7 @@ if (!isset($_GET["aid_id"]) OR !isset($_GET["indice_aid"]) OR !isset($_GET["flag
 // Ajout d'un style spécifique pour l'AID
 $style_specifique = "aid/style_aid";
 
+$themessage = 'Des modifications n ont pas été enregistrées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *********************
 $titre_page = "Gestion des $nom_aid | Modifier les $nom_aid";
 require_once("../lib/header.inc.php");
@@ -278,7 +279,7 @@ for($a = 0; $a < $nbre; $a++){
 		if ($aid_p[$a]["id"] == $aid_id) {
 			$aid_precedent = $aid_p[$a-1]["id"];
 			$aff_precedent = '
-			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_precedent.'">Aid précédente&nbsp;</a>';
+			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_precedent.'" onclick="return confirm_abandon (this, change, \''.$themessage.'\')">Aid précédente&nbsp;</a>';
 		}
 	}
 
@@ -287,25 +288,28 @@ for($a = 0; $a < $nbre; $a++){
 		if ($aid_p[$a]["id"] == $aid_id) {
 			$aid_suivant = old_mysql_result($query, $a+1, "id");
 			$aff_suivant = '
-			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_suivant.'">&nbsp;Aid suivante</a>';
+			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_suivant.'" onclick="return confirm_abandon (this, change, \''.$themessage.'\')">&nbsp;Aid suivante</a>';
 		}
 	}
 }
 ?>
 <form action="modify_aid.php" method="post" name="autre_aid">
 	<p class="bold">
-		<a href="index2.php?indice_aid=<?php echo $indice_aid; ?>">
+		<a href="index2.php?indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 			<img src="../images/icons/back.png" alt="Retour" class="back_link" />
 			Retour
 		</a>&nbsp;|&nbsp;<?php echo $aff_precedent; ?>
-		<select name="aid_id" onchange="document.autre_aid.submit();">
+		<select name="aid_id" id='aid_id_autre_aid' onchange="confirm_changement_aid(change, '<?php echo $themessage;?>');">
 <?php
+$indice_aid_champ_select=-1;
+$compteur_aid=0;
 // On recommence le query
 $query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 while($infos = mysqli_fetch_array($query)){
 	// On affiche la liste des "<option>"
 	if ($aid_id == $infos["id"]) {
 		$selected = ' selected="selected" ';
+		$indice_aid_champ_select=$compteur_aid;
 	}else{
 		$selected = '';
 	}
@@ -314,6 +318,7 @@ while($infos = mysqli_fetch_array($query)){
 				&nbsp;<?php echo $infos["nom"]; ?>&nbsp;
 			</option>
 <?php
+	$compteur_aid++;
 }
 ?>
 		</select>
@@ -322,12 +327,42 @@ while($infos = mysqli_fetch_array($query)){
 		<input type="hidden" name="flag" value="<?php echo $flag; ?>" /><?php echo $aff_suivant; ?>
 		
 	</p>
+
+	<script type='text/javascript'>
+		//onchange="document.autre_aid.submit();"
+
+		// Initialisation
+		change='no';
+
+		function confirm_changement_aid(thechange, themessage)
+		{
+			if (!(thechange)) thechange='no';
+			if (thechange != 'yes') {
+				document.autre_aid.submit();
+			}
+			else{
+				var is_confirmed = confirm(themessage);
+				if(is_confirmed){
+					document.autre_aid.submit();
+				}
+				else{
+					document.getElementById('aid_id_autre_aid').selectedIndex=<?php echo $indice_aid_champ_select;?>;
+				}
+			}
+		}
+
+	</script>
 </form>
 <?php
 
 
 if ($flag == "prof") { ?>
-<p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
+<p class='grand'><?php 
+	echo "$nom_aid  $aid_nom";
+	if((isset($aid_id))&&(isset($indice_aid))&&(NiveauGestionAid($_SESSION["login"],$indice_aid)>=5)) {
+		echo " <a href='add_aid.php?action=modif_aid&aid_id=$aid_id&indice_aid=$indice_aid' title=\"Modifier cet AID.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a>";
+	}
+?></p>
 <?php
     $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysqli_num_rows($call_liste_data);
@@ -388,22 +423,17 @@ if ($flag == "prof") { ?>
     }
 ?>
 	<p class='bold'>Ajouter un professeur responsable à la liste de l'AID :</p>
-	<select size=1 name="reg_prof_login">
+	<select size=1 name="reg_prof_login" onchange="changement()">
 		<option value=''>(aucun)</option>
     <?php
-    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
+    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
     $nombreligne = mysqli_num_rows($call_prof);
-    $i = "0" ;
-    while ($i < $nombreligne) {
-        $login_prof = old_mysql_result($call_prof, $i, 'login');
-        $nom_el = old_mysql_result($call_prof, $i, 'nom');
-        $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
+    while ($lig_prof=mysqli_fetch_object($call_prof)) {
 ?>
-		<option value="<?php echo $login_prof; ?>">
-			<?php echo my_strtoupper($nom_el); ?> <?php echo casse_mot($prenom_el,'majf2'); ?>
+		<option value="<?php echo $lig_prof->login; ?>">
+			<?php echo my_strtoupper($lig_prof->nom); ?> <?php echo casse_mot($lig_prof->prenom,'majf2')." (".$lig_prof->statut.")"; ?>
 		</option>
 <?php
-		$i++;
     }
     ?>
 	</select>
@@ -451,7 +481,7 @@ if ($flag == "prof") { ?>
 	  $nombreligne = $calldata->num_rows;
       $i = 0;
 ?>
-	<select name="liste_aids[]" size="6" multiple>
+	<select name="liste_aids[]" size="6" onchange="changement()" multiple>
 <?php
 while($obj = $calldata->fetch_object()){
 ?>
@@ -475,7 +505,7 @@ if ($flag == "prof_gest") { ?>
 <p class='grand'><?php echo "$nom_aid  $aid_nom"; ?></p>
 <form enctype="multipart/form-data" action="modify_aid.php" method="post">
 	<?php echo add_token_field();
-	$call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
+	$call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom, u.statut FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysqli_num_rows($call_liste_data);
     if ($nombre !=0) {
     ?>
@@ -485,26 +515,21 @@ if ($flag == "prof_gest") { ?>
 	<table class="aid_tableau" >
     <?php
     }
-    $i = "0";
-    while ($i < $nombre) {
-        $login_prof = old_mysql_result($call_liste_data, $i, "login");
-        $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
-        $prenom_prof = old_mysql_result($call_liste_data, $i, "prenom");
+    while ($lig_user=mysqli_fetch_object($call_liste_data)) {
     ?>
 		<tr>
 			<td>
 				<strong>
-					<?php echo $nom_prof; ?> <?php echo $prenom_prof; ?>
+					<?php echo $lig_user->nom." ".$lig_user->prenom." (".$lig_user->statut.")"; ?>
 				</strong>
 			</td>
 			<td>
-				<a href='../lib/confirm_query.php?liste_cible=<?php echo $login_prof; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_gest_aid<?php echo add_token_in_url(); ?>'>
+				<a href='../lib/confirm_query.php?liste_cible=<?php echo $lig_user->login; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_gest_aid<?php echo add_token_in_url(); ?>'>
 					<img src="../images/icons/delete.png" title="Supprimer ce professeur" alt="Supprimer" />
 				</a>
 			</td>
 		</tr>
     <?php
-    $i++;
     }
 
     if ($nombre != 0) { ?>
@@ -516,23 +541,17 @@ if ($flag == "prof_gest") { ?>
     }
     ?>
     <p class='bold'>Ajouter un utilisateur à la liste des gestionnaires de l'AID :</p>
-    <select size=1 name="reg_prof_login">
+    <select size=1 name="reg_prof_login" onchange="changement()">
 		<option value=''>(aucun)</option>
     <?php
-    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
+    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
     $nombreligne = mysqli_num_rows($call_prof);
-    $i = "0" ;
-    while ($i < $nombreligne) {
-        $login_prof = old_mysql_result($call_prof, $i, 'login');
-        $nom_el = old_mysql_result($call_prof, $i, 'nom');
-        $prenom_el = old_mysql_result($call_prof, $i, 'prenom'); 
+    while ($lig_user=mysqli_fetch_object($call_prof)) {
 		?>
-		<option value="<?php echo $login_prof; ?>">
-			<?php echo my_strtoupper($nom_el); ?>
-			<?php echo casse_mot($prenom_el,'majf2'); ?>
+		<option value="<?php echo $lig_user->login; ?>">
+			<?php echo casse_mot($lig_user->nom, "maj")." ".casse_mot($lig_user->prenom,'majf2')." (".$lig_user->statut.")"; ?>
 		</option>
 		<?php
-    $i++;
     }
     ?>
     </select>
@@ -577,9 +596,21 @@ if ($flag == "eleve") {
 		$rep_profs_a = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, civilite FROM utilisateurs WHERE login = '".$rep_profs[$a]["id_utilisateur"]."'"));
 		$aff_profs .= "".$rep_profs_a["civilite"].$rep_profs_a["nom"]." ";
 	}
+		if($nbre_profs==0) {
+			$aff_profs.="aucun professeur";
+		}
+		if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
+			$aff_profs.=" <a href='modify_aid.php?flag=prof&aid_id=$aid_id&indice_aid=$indice_aid' title=\"Ajouter/supprimer des professeurs.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add_user.png' class='icone16' alt='Ajouter/supprimer' /></a>";
+		}
 		$aff_profs .= ")</font>";
 ?>
-    <p class='grand'><?php echo "$nom_aid  $aid_nom. $aff_profs"; ?></p>
+    <p class='grand'><?php 
+		echo "$nom_aid  $aid_nom";
+		if((isset($aid_id))&&(isset($indice_aid))&&(NiveauGestionAid($_SESSION["login"],$indice_aid)>=5)) {
+			echo " <a href='add_aid.php?action=modif_aid&aid_id=$aid_id&indice_aid=$indice_aid' title=\"Modifier cet AID.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a>";
+		}
+		echo " $aff_profs";
+    ?></p>
 
     <p class = 'bold'>Liste des élèves de l'AID <?php echo $aid_nom ?> :</p>
     <hr />
@@ -681,7 +712,7 @@ if ($flag == "eleve") {
         if ($activer_outils_comp == "y") {
 ?>
 			<td class="center">
-				<input type="checkbox" name="<?php echo $login_eleve; ?>_resp" value="y"
+				<input type="checkbox" name="<?php echo $login_eleve; ?>_resp" value="y" onchange="changement()"
 					   <?php if ($eleve_resp!=-1) {echo " checked = 'checked' ";} ?>
 					   />
 			</td>
@@ -714,7 +745,7 @@ if ($flag == "eleve") {
         if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) {
 ?>
 	<p>Ci-dessous, lister uniquement les élèves sans photographie 
-		<input type="checkbox" name="eleves_sans_photos" value="y"
+		<input type="checkbox" name="eleves_sans_photos" value="y" onchange="changement()"
 <?php 
             if(isset($_SESSION['eleves_sans_photos'])) {echo " checked = 'checked' ";}
 ?>
@@ -723,11 +754,11 @@ if ($flag == "eleve") {
 <?php } ?>
 	<p>
 		<span class = 'bold'>Ajouter un élève à la liste de l'AID :</span>
-		<a href="modify_aid_new.php?id_aid=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>">
+		<a href="modify_aid_new.php?id_aid=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 			Lister les élèves par classe
 		</a>
 	</p>
-	<select size="1" name="reg_add_eleve_login">
+	<select size="1" name="reg_add_eleve_login" onchange="changement()">
 		<option value=''>(aucun)</option>
 <?php 
         $i = "0" ;

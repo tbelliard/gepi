@@ -85,11 +85,21 @@ $num_semaine_annee=isset($_POST['num_semaine_annee']) ? $_POST['num_semaine_anne
 $affichage=isset($_POST['affichage']) ? $_POST['affichage'] : (isset($_GET['affichage']) ? $_GET['affichage'] : "semaine");
 
 $type_affichage=isset($_POST['type_affichage']) ? $_POST['type_affichage'] : (isset($_GET['type_affichage']) ? $_GET['type_affichage'] : NULL);
+if((isset($type_affichage))&&(!in_array($type_affichage, array("prof", "classe", "eleve")))) {
+	unset($type_affichage);
+}
 
 $display_date=isset($_POST['display_date']) ? $_POST['display_date'] : (isset($_GET['display_date']) ? $_GET['display_date'] : NULL);
 
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 $login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : NULL);
+
+
+if((isset($mode))&&($mode=="reinit")) {
+	if(isset($type_affichage)) {
+		unset($type_affichage);
+	}
+}
 
 
 if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]{1,}$/", $_GET['id_cours']))) {
@@ -347,6 +357,7 @@ if($affichage=="semaine") {
 // A ce stade, on a forcément $ts_display_date renseigné
 // A ce stade, on a forcément $num_semaine_annee renseigné
 //===================================================
+//echo "<p>DEBUG 1 : type_affichage=$type_affichage</p>";
 // Filtrage/contrôle de l'id_classe dans le cas élève/responsable
 if($_SESSION['statut']=="eleve") {
 	$login_eleve=$_SESSION['login'];
@@ -475,8 +486,10 @@ elseif($_SESSION['statut']=="responsable") {
 else {
 	if($_SESSION['statut']=="professeur") {
 		if(!isset($type_affichage)) {
-			$type_affichage="prof";
-			$login_prof=$_SESSION['login'];
+			if((!isset($mode))||($mode!="reinit")) {
+				$type_affichage="prof";
+				$login_prof=$_SESSION['login'];
+			}
 		}
 		elseif(($type_affichage=="prof")&&($login_prof!=$_SESSION['login'])&&(!getSettingAOui('AccesProf_EdtProfs'))) {
 			$msg.="Accès non autorisé aux EDT des collègues.<br />";
@@ -502,54 +515,83 @@ else {
 	*/
 }
 
+//echo "<p>DEBUG 2 : type_affichage=$type_affichage</p>";
+
+$x0=isset($_POST['x0']) ? $_POST['x0'] : (isset($_GET['x0']) ? $_GET['x0'] : 50);
+$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 10);
+
 if(isset($type_affichage)) {
 	//============================
 	$info_edt="";
 	if((isset($login_eleve))&&($type_affichage=="eleve")) {
-		$info_eleve=get_nom_prenom_eleve($login_eleve, "avec_classe");
-		if(isset($id_classe)) {
-			if(!is_eleve_classe($login_eleve, $id_classe)) {
-				unset($id_classe);
-			}
-			// Sinon, on accepte la classe proposée (pour gérer le cas des élèves changeant de classe en cours d'année)
+		$sql="SELECT 1=1 FROM eleves WHERE login='".$login_eleve."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			unset($type_affichage);
+			$msg.="Élève \"$login_eleve\" inconnu.<br />";
 		}
+		else {
+			$info_eleve=get_nom_prenom_eleve($login_eleve, "avec_classe");
+			if(isset($id_classe)) {
+				if(!is_eleve_classe($login_eleve, $id_classe)) {
+					unset($id_classe);
+				}
+				// Sinon, on accepte la classe proposée (pour gérer le cas des élèves changeant de classe en cours d'année)
+			}
 
-		if(!isset($id_classe)) {
-			$id_classe=get_id_classe_ele_d_apres_date($login_eleve, $ts_display_date);
-			if($id_classe=="") {
-				$id_classe=get_id_classe_derniere_classe_ele($login_eleve);
+			if(!isset($id_classe)) {
+				$id_classe=get_id_classe_ele_d_apres_date($login_eleve, $ts_display_date);
+				if($id_classe=="") {
+					$id_classe=get_id_classe_derniere_classe_ele($login_eleve);
+				}
 			}
+			$info_edt=$info_eleve;
 		}
-		$info_edt=$info_eleve;
 	}
 	elseif((isset($id_classe))&&($type_affichage=="classe")) {
-		$info_edt=get_nom_classe($id_classe);
+		if(!array_key_exists($id_classe, $tab_classes)) {
+			unset($type_affichage);
+			$msg.="Classe n°$id_classe inconnue.<br />";
+		}
+		else {
+			$info_edt=get_nom_classe($id_classe);
+		}
 	}
 	elseif((isset($login_prof))&&($type_affichage=="prof")) {
-		$info_edt=affiche_utilisateur($login_prof, "", "cni");
+		$sql="SELECT 1=1 FROM utilisateurs WHERE login='".$login_prof."' AND statut='professeur';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			unset($type_affichage);
+			$msg.="Professeur \"$login_prof\" inconnu.<br />";
+		}
+		else {
+			$info_edt=affiche_utilisateur($login_prof, "", "cni");
+		}
 	}
 	//============================
-	if($type_affichage=="eleve") {
-		$login_prof="";
-		if((!isset($login_eleve))||($login_eleve=="")) {
-			unset($type_affichage);
-			$msg.="Élève non choisi.<br />";
+	if(isset($type_affichage)) {
+		if($type_affichage=="eleve") {
+			$login_prof="";
+			if((!isset($login_eleve))||($login_eleve=="")) {
+				unset($type_affichage);
+				$msg.="Élève non choisi.<br />";
+			}
 		}
-	}
-	elseif($type_affichage=="classe") {
-		$login_eleve="";
-		$login_prof="";
-		if((!isset($id_classe))||($id_classe=="")) {
-			unset($type_affichage);
-			$msg.="Classe non choisie.<br />";
+		elseif($type_affichage=="classe") {
+			$login_eleve="";
+			$login_prof="";
+			if((!isset($id_classe))||($id_classe=="")) {
+				unset($type_affichage);
+				$msg.="Classe non choisie.<br />";
+			}
 		}
-	}
-	elseif($type_affichage=="prof") {
-		$login_eleve="";
-		$id_classe="";
-		if((!isset($login_prof))||($login_prof=="")) {
-			unset($type_affichage);
-			$msg.="Professeur non choisi.<br />";
+		elseif($type_affichage=="prof") {
+			$login_eleve="";
+			$id_classe="";
+			if((!isset($login_prof))||($login_prof=="")) {
+				unset($type_affichage);
+				$msg.="Professeur non choisi.<br />";
+			}
 		}
 	}
 	//============================
@@ -569,10 +611,11 @@ if((isset($_GET['mode']))&&($_GET['mode']=='afficher_edt_js')) {
 	$y0=10;
 	$hauteur_une_heure=60;
 	*/
-	$x0=50;
+	//$x0=50;
+	$x0=isset($_POST['x0']) ? $_POST['x0'] : (isset($_GET['x0']) ? $_GET['x0'] : 50);
 
-	$largeur_edt=isset($_GET['largeur_edt']) ? $_GET['largeur_edt'] : 800;
-	$y0=isset($_GET['y0']) ? $_GET['y0'] : 10;
+	$largeur_edt=isset($_POST['largeur_edt']) ? $_POST['largeur_edt'] : (isset($_GET['largeur_edt']) ? $_GET['largeur_edt'] : 800);
+	$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 10);
 	$hauteur_une_heure=isset($_GET['hauteur_une_heure']) ? $_GET['hauteur_une_heure'] : 60;
 	$hauteur_jour=isset($_GET['hauteur_jour']) ? $_GET['hauteur_jour'] : 800;
 
@@ -600,6 +643,10 @@ function echo_selon_mode($texte) {
 	if($mode!="afficher_edt") {
 		echo $texte;
 	}
+}
+
+if(acces("/edt_organisation/index_edt.php", $_SESSION['statut'])) {
+	echo_selon_mode("<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 1\"><a href='$gepiPath/edt_organisation/index_edt.php'><img src='$gepiPath/images/icons/edt1.png' class='icone16' alt='EDT1' /></a></div>");
 }
 
 // onclick=\"return confirm_abandon (this, change, '$themessage')\"
@@ -738,6 +785,8 @@ echo "</pre>";
 echo_selon_mode("
 <form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi' method='post'>
 	<fieldset class='fieldset_opacite50'>
+		<input type='hidden' name='x0' value='$x0' />
+		<input type='hidden' name='y0' value='$y0' />
 		".add_token_field());
 //=======================================
 if($_SESSION['statut']=="responsable") {
@@ -877,13 +926,70 @@ else {
 		<input type='hidden' name='login_prof' value=\"".$_SESSION['login']."\" />");
 	}
 	else {
+		$precedent="";
+		$suivant="";
+		$prof_courant_trouve="n";
+		$chaine_options_select="";
+		$sql="SELECT login, civilite, nom, prenom FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom,prenom;";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			$chaine_options_select.="
+			<option value='' style='color:red'>Aucun professeur trouvé</option>";
+		}
+		else {
+			$cpt=1;
+			while($lig=mysqli_fetch_object($res)) {
+				$selected="";
+				if((isset($login_prof))&&($lig->login==$login_prof)) {
+					$selected=" selected";
+					$prof_courant_trouve="y";
+				}
+				else {
+					if($prof_courant_trouve=="n") {
+						$precedent=$cpt;
+					}
+
+					if(($prof_courant_trouve=="y")&&($suivant=="")) {
+						$suivant=$cpt;
+					}
+				}
+
+
+				$chaine_options_select.="
+			<option value='".$lig->login."'$selected>".$lig->civilite." ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2")."</option>";
+				$cpt++;
+			}
+
+			if($prof_courant_trouve=="n") {
+				$precedent="";
+				$suivant="";
+			}
+		}
+
+		$lien_prof_precedent="";
+		if($precedent!="") {
+			$lien_prof_precedent="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$precedent;
+					document.getElementById('type_affichage_prof').checked=true;
+					document.getElementById('id_classe').selectedIndex=0;
+					document.getElementById('form_envoi').submit();\" title=\"Professeur précédent\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+		}
+		$lien_prof_suivant="";
+		if($suivant!="") {
+			$lien_prof_suivant="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$suivant;
+					document.getElementById('type_affichage_prof').checked=true;
+					document.getElementById('id_classe').selectedIndex=0;
+					document.getElementById('form_envoi').submit();\" title=\"Professeur suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivant' /></a>";
+		}
+
 		echo_selon_mode("<label for='type_affichage_prof'>professeur</label>
+		$lien_prof_precedent
 		<select name='login_prof' id='login_prof' style='width:10em;' 
 			onchange=\"if(document.getElementById('login_prof').options[document.getElementById('login_prof').selectedIndex].value!='') {
 						document.getElementById('type_affichage_prof').checked=true;
 						document.getElementById('id_classe').selectedIndex=0;
 					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
+		/*
 		$sql="SELECT login, civilite, nom, prenom FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom,prenom;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
@@ -900,24 +1006,25 @@ else {
 			<option value='".$lig->login."'$selected>".$lig->civilite." ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2")."</option>");
 			}
 		}
+		*/
+		echo_selon_mode($chaine_options_select);
 		echo_selon_mode("
 		</select>");
+		echo_selon_mode("
+		".$lien_prof_suivant);
 	}
 
-	echo_selon_mode("
-		 ou <input type='radio' name='type_affichage' id='type_affichage_classe' value='classe' ".$checked_classe."/><label for='type_affichage_classe'>classe</label>
-		<select name='id_classe' id='id_classe' style='width:5em;' 
-			onchange=\"if(document.getElementById('id_classe').options[document.getElementById('id_classe').selectedIndex].value!='') {
-						document.getElementById('type_affichage_classe').checked=true;
-						document.getElementById('login_prof').selectedIndex=0;
-					};document.getElementById('form_envoi').submit();\">
-			<option value=''>---</option>");
-	//$sql="SELECT DISTINCT p.id_classe, c.classe FROM periodes p, classes c WHERE p.id_classe=c.id ORDER BY c.classe;";
-	//$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	//if(mysqli_num_rows($res)==0) {
+
+
+
+	$precedent="";
+	$suivant="";
+	$classe_courante_trouvee="n";
+	$cpt=1;
+	$chaine_options_select="";
 	if(count($tab_classes)==0) {
-		echo_selon_mode("
-			<option value='' style='color:red'>Aucune classe trouvée</option>");
+		$chaine_options_select="
+			<option value='' style='color:red'>Aucune classe trouvée</option>";
 	}
 	else {
 		/*
@@ -934,37 +1041,141 @@ else {
 			$selected="";
 			if((isset($id_classe))&&($current_id_classe==$id_classe)) {
 				$selected=" selected";
+				$classe_courante_trouvee="y";
+			}
+			else {
+				if($classe_courante_trouvee=="n") {
+					$precedent=$cpt;
+				}
+
+				if(($classe_courante_trouvee=="y")&&($suivant=="")) {
+					$suivant=$cpt;
+				}
+			}
+			$chaine_options_select.="
+			<option value='".$current_id_classe."'".$selected.">".$current_nom_classe."</option>";
+			$cpt++;
+		}
+
+		if($classe_courante_trouvee=="n") {
+			$precedent="";
+			$suivant="";
+		}
+	}
+
+	$lien_classe_precedente="";
+	if($precedent!="") {
+		$lien_classe_precedente="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$precedent;
+				document.getElementById('type_affichage_classe').checked=true;
+				document.getElementById('login_prof').selectedIndex=0;
+				document.getElementById('form_envoi').submit();\" title=\"Classe précédente\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédente' /></a>";
+	}
+	$lien_classe_suivante="";
+	if($suivant!="") {
+		$lien_classe_suivante="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$suivant;
+				document.getElementById('type_affichage_classe').checked=true;
+				document.getElementById('login_prof').selectedIndex=0;
+				document.getElementById('form_envoi').submit();\" title=\"Classe suivante\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivante' /></a>";
+	}
+
+	echo_selon_mode("
+		 ou <input type='radio' name='type_affichage' id='type_affichage_classe' value='classe' ".$checked_classe."/><label for='type_affichage_classe'>classe</label>
+		$lien_classe_precedente
+		<select name='id_classe' id='id_classe' style='width:5em;' 
+			onchange=\"if(document.getElementById('id_classe').options[document.getElementById('id_classe').selectedIndex].value!='') {
+						document.getElementById('type_affichage_classe').checked=true;
+						document.getElementById('login_prof').selectedIndex=0;
+					};document.getElementById('form_envoi').submit();\">
+			<option value=''>---</option>");
+	echo_selon_mode($chaine_options_select);
+	//$sql="SELECT DISTINCT p.id_classe, c.classe FROM periodes p, classes c WHERE p.id_classe=c.id ORDER BY c.classe;";
+	//$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	//if(mysqli_num_rows($res)==0) {
+	/*
+	if(count($tab_classes)==0) {
+		echo_selon_mode("
+			<option value='' style='color:red'>Aucune classe trouvée</option>");
+	}
+	else {
+		foreach($tab_classes as $current_id_classe => $current_nom_classe) {
+			$selected="";
+			if((isset($id_classe))&&($current_id_classe==$id_classe)) {
+				$selected=" selected";
 			}
 			echo_selon_mode("
 			<option value='".$current_id_classe."'".$selected.">".$current_nom_classe."</option>");
 		}
 	}
+	*/
 	echo_selon_mode("
-		</select>");
+		</select>
+		$lien_classe_suivante");
 
 	if(($type_affichage=='classe')||($type_affichage=='eleve')) {
+
+		$precedent="";
+		$suivant="";
+		$eleve_courant_trouve="n";
+		$cpt=1;
+		$chaine_options_select="";
+
 		// Afficher un formulaire de choix de l'élève de la classe
 		$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND id_classe='$id_classe' ORDER BY nom, prenom;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$selected="";
+				if((isset($login_eleve))&&($lig->login==$login_eleve)) {
+					$selected=" selected";
+					$eleve_courant_trouve="y";
+				}
+				else {
+					if($eleve_courant_trouve=="n") {
+						$precedent=$cpt;
+					}
+
+					if(($eleve_courant_trouve=="y")&&($suivant=="")) {
+						$suivant=$cpt;
+					}
+				}
+				$chaine_options_select.="
+			<option value='".$lig->login."'".$selected.">".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</option>";
+				$cpt++;
+			}
+
+			if($eleve_courant_trouve=="n") {
+				$precedent="";
+				$suivant="";
+			}
+
+			$lien_eleve_precedent="";
+			if($precedent!="") {
+				$lien_eleve_precedent="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$precedent;
+						document.getElementById('type_affichage_eleve').checked=true;
+						document.getElementById('login_prof').selectedIndex=0;
+						document.getElementById('form_envoi').submit();\" title=\"Élève précédent\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+			}
+			$lien_eleve_suivant="";
+			if($suivant!="") {
+				$lien_eleve_suivant="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$suivant;
+						document.getElementById('type_affichage_eleve').checked=true;
+						document.getElementById('login_prof').selectedIndex=0;
+						document.getElementById('form_envoi').submit();\" title=\"Élève suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivant' /></a>";
+			}
+
+
 			echo_selon_mode("
 		 ou <input type='radio' name='type_affichage' id='type_affichage_eleve' value='eleve' ".$checked_eleve."/><label for='type_affichage_eleve'>élève</label>
+		$lien_eleve_precedent
 		<select name='login_eleve' id='login_eleve' style='width:10em;' 
 			onchange=\"if(document.getElementById('login_eleve').options[document.getElementById('login_eleve').selectedIndex].value!='') {
 						document.getElementById('type_affichage_eleve').checked=true;
 						document.getElementById('login_prof').selectedIndex=0;
 					};document.getElementById('form_envoi').submit();\">
-			<option value=''>---</option>");
-			while($lig=mysqli_fetch_object($res)) {
-				$selected="";
-				if((isset($login_eleve))&&($lig->login==$login_eleve)) {
-					$selected=" selected";
-				}
-				echo_selon_mode("
-			<option value='".$lig->login."'".$selected.">".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</option>");
-			}
-			echo_selon_mode("
-		</select>");
+			<option value=''>---</option>
+			$chaine_options_select
+		</select>
+		$lien_eleve_suivant");
 		}
 	}
 
@@ -992,10 +1203,11 @@ else {
 	*/
 }
 //=======================================
-echo_selon_mode("
-		<p>
-			Semaine choisie&nbsp;: <select name='num_semaine_annee' onchange=\"document.getElementById('form_envoi').submit();\">
-				<option value=''></option>");
+$precedent="";
+$suivant="";
+$semaine_courante_trouvee="n";
+$cpt=1;
+$chaine_options_select="";
 
 if(strftime("%m")>=8) {
 	$annee=strftime("%Y");
@@ -1009,10 +1221,21 @@ for($n=36;$n<52;$n++) {
 	$selected="";
 	if("$n|$annee"==$num_semaine_annee) {
 		$selected=" selected='selected'";
+		$semaine_courante_trouvee="y";
+	}
+	else {
+		if($semaine_courante_trouvee=="n") {
+			$precedent=$cpt;
+		}
+
+		if(($semaine_courante_trouvee=="y")&&($suivant=="")) {
+			$suivant=$cpt;
+		}
 	}
 
-	echo_selon_mode("
-				<option value='$n|$annee'$selected>Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>");
+	$chaine_options_select.="
+				<option value='$n|$annee'$selected>Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+	$cpt++;
 }
 $annee++;
 for($n=1;$n<28;$n++) {
@@ -1022,13 +1245,43 @@ for($n=1;$n<28;$n++) {
 	$selected="";
 	if("$m|$annee"==$num_semaine_annee) {
 		$selected=" selected='selected'";
+		$semaine_courante_trouvee="y";
 	}
-	echo_selon_mode("
-				<option value='".$m."|$annee'$selected>Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>");
+	else {
+		if($semaine_courante_trouvee=="n") {
+			$precedent=$cpt;
+		}
+
+		if(($semaine_courante_trouvee=="y")&&($suivant=="")) {
+			$suivant=$cpt;
+		}
+	}
+	$chaine_options_select.="
+				<option value='".$m."|$annee'$selected>Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+	$cpt++;
 }
 
+$lien_semaine_precedente="";
+if($precedent!="") {
+	$lien_semaine_precedente="<a href=\"#\" onclick=\"document.getElementById('num_semaine_annee').selectedIndex=$precedent;
+				document.getElementById('form_envoi').submit();\" title=\"Semaine précédente\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédente' /></a>";
+}
+$lien_semaine_suivante="";
+if($suivant!="") {
+	$lien_semaine_suivante="<a href=\"#\" onclick=\"document.getElementById('num_semaine_annee').selectedIndex=$suivant;
+				document.getElementById('form_envoi').submit();\" title=\"Semaine suivante\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivante' /></a>";
+}
+
+
 echo_selon_mode("
-			</select><br />
+		<p>
+			Semaine choisie&nbsp;: 
+			$lien_semaine_precedente
+			<select name='num_semaine_annee' id='num_semaine_annee' onchange=\"document.getElementById('form_envoi').submit();\">
+				<option value=''></option>".$chaine_options_select."
+			</select>
+			$lien_semaine_suivante
+			<br />
 
 			Afficher <select name='affichage' onchange=\"document.getElementById('form_envoi').submit();\">
 				<option value='semaine'>semaine</option>");
@@ -1082,7 +1335,8 @@ echo_selon_mode("
 //============================================================
 //echo "affichage=$affichage<br />";
 if($affichage=="semaine") {
-	$largeur_edt=800;
+	//$largeur_edt=800;
+	$largeur_edt=isset($_POST['largeur_edt']) ? $_POST['largeur_edt'] : (isset($_GET['largeur_edt']) ? $_GET['largeur_edt'] : 800);
 }
 else {
 	$largeur_edt=114;
@@ -1135,8 +1389,11 @@ if(($type_affichage=='eleve')&&(isset($login_eleve))&&($affichage_complementaire
 //$affichage_complementaire_sur_edt="absences2";
 //============================================================
 
-$x0=50;
-$y0=10;
+//$x0=50;
+//$y0=10;
+//$x0=isset($_POST['x0']) ? $_POST['x0'] : (isset($_GET['x0']) ? $_GET['x0'] : 50);
+//$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 10);
+
 $hauteur_une_heure=60;
 
 //$html=affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);

@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -234,10 +234,31 @@ if (isset($_POST['isposted'])) {
 
 	}
 
-	//$msg = rawurlencode($msg);
-    header("location: index.php?msg=$msg");
-    die();
+	/*
+	// 20161011
+	if((isset($_POST['force_modalite']))&&(isset($_POST['code_modalite_elect']))) {
+		if($_POST['code_modalite_elect']=="") {
 
+
+
+
+
+
+		}
+		else {
+
+
+
+
+
+
+		}
+	}
+	*/
+
+	//$msg = rawurlencode($msg);
+	header("location: index.php?msg=$msg");
+	die();
 }
 
 $themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -268,11 +289,92 @@ if (isset($_GET['current_matiere'])) {
     $matiere_cat_id = "0";
     $code_matiere="";
 }
-?>
-<form enctype="multipart/form-data" action="modify_matiere.php" method=post>
-<p class="bold"><a href="index.php"<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type="submit" value="Enregistrer"></input>
-</p>
-<?php
+
+$chaine_options_matieres="";
+$sql="SELECT * FROM matieres ORDER BY nom_complet, matiere;";
+$res_matiere_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_matiere_tmp)>0) {
+	$matiere_prec="";
+	$matiere_suiv="";
+	$temoin_tmp=0;
+	$cpt_matiere=0;
+	$num_matiere=-1;
+	while($lig_matiere_tmp=mysqli_fetch_object($res_matiere_tmp)){
+		if($lig_matiere_tmp->matiere==$current_matiere) {
+			// Index de la matière dans les <option>
+			$num_matiere=$cpt_matiere;
+
+			$chaine_options_matieres.="<option value='$lig_matiere_tmp->matiere' selected='true'>$lig_matiere_tmp->nom_complet</option>\n";
+			$temoin_tmp=1;
+			if($lig_matiere_tmp=mysqli_fetch_object($res_matiere_tmp)){
+				$chaine_options_matieres.="<option value='$lig_matiere_tmp->matiere'>$lig_matiere_tmp->nom_complet</option>\n";
+				$matiere_suiv=$lig_matiere_tmp->matiere;
+			}
+			else{
+				$matiere_suiv="";
+			}
+		}
+		else {
+			$chaine_options_matieres.="<option value='$lig_matiere_tmp->matiere'>$lig_matiere_tmp->nom_complet</option>\n";
+		}
+
+		if($temoin_tmp==0) {
+			$matiere_prec=$lig_matiere_tmp->matiere;
+		}
+		$cpt_matiere++;
+	}
+}
+
+if($chaine_options_matieres!="") {
+
+	$lien_matiere_precedente="";
+	if($matiere_prec!="") {
+		$lien_matiere_precedente="<a href='".$_SERVER['PHP_SELF']."?current_matiere=".$matiere_prec."'".insert_confirm_abandon()."><img src='../images/icons/arrow-left.png' class='icone16' alt='Précédente' /></a>";
+	}
+	$lien_matiere_suivante="";
+	if($matiere_suiv!="") {
+		$lien_matiere_suivante="<a href='".$_SERVER['PHP_SELF']."?current_matiere=".$matiere_suiv."'".insert_confirm_abandon()."><img src='../images/icons/arrow-right.png' class='icone16' alt='Suivante' /></a>";
+	}
+
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_matiere(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('current_matiere_chgt').selectedIndex=$num_matiere;
+			}
+		}
+	}
+</script>\n";
+
+	echo "<form action=\"modify_matiere.php\" method=\"post\" name='form1'>
+	<p class=\"bold\"><a href='index.php'".insert_confirm_abandon()."><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |
+	 $lien_matiere_precedente
+	<select name='current_matiere' id='current_matiere_chgt' onchange=\"confirm_changement_matiere(change, '$themessage');\">
+		$chaine_options_matieres
+	</select>
+	$lien_matiere_suivante
+	</p>
+</form>";
+
+}
+else {
+	echo "<p class=\"bold\"><a href='index.php'<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+}
+
+echo "<form enctype=\"multipart/form-data\" action=\"modify_matiere.php\" method=\"post\">
+<p><input type=\"submit\" value=\"Enregistrer\"></input></p>";
 echo add_token_field();
 ?>
 
@@ -391,7 +493,7 @@ else {
 <tr>
 	<th title=\"La saisie des nomenclatures est nécessaire pour le Livret Scolaire Lycée.\">Nomenclature</th>
 	<td>
-		<select name='code_matiere'>
+		<select name='code_matiere' onchange='changement()'>
 			<option value=''>---</option>";
 
 	while($lig_nomenclature=mysqli_fetch_object($res_nomenclature)) {
@@ -429,17 +531,36 @@ if ($test == 0) {
 }
 echo "</select>";
 
+//$tab_modalites=get_tab_modalites_election();
+
 ?>
 </td>
 </table>
 <p>
-<label for='force_defaut' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la priorité d'affichage à la valeur par défaut ci-dessus :</b>
-<input type="checkbox" name="force_defaut" id="force_defaut" onchange="changement()" checked /></label>
+<label for='force_defaut' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la priorité d'affichage à la valeur par défaut ci-dessus :</b></label>
+<input type="checkbox" name="force_defaut" id="force_defaut" onchange="changement()" checked />
 </p>
 <p>
-<label for='force_defaut_categorie' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la catégorie de matière à la valeur par défaut ci-dessus :</b>
-<input type="checkbox" name="force_defaut_categorie" id="force_defaut_categorie" onchange="changement()" checked /></label>
+<label for='force_defaut_categorie' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la catégorie de matière à la valeur par défaut ci-dessus :</b></label>
+<input type="checkbox" name="force_defaut_categorie" id="force_defaut_categorie" onchange="changement()" checked />
 </p>
+
+<?php
+	/*
+	echo "<p><label for='force_modalite' style='cursor: pointer;'><b>Pour toutes les classes et enseignements de cette matière, forcer à </label>
+	<select name='code_modalite_elect' onchange='changement()'>
+		<option value=''></option>";
+	for($loop_m=0;$loop_m<count($tab_modalites);$loop_m++) {
+		echo "
+		<option value='".$tab_modalites[$loop_m]["code_modalite_elect"]."' title=\"".$tab_modalites[$loop_m]["libelle_long"]."\">".$tab_modalites[$loop_m]["libelle_long"]."</option>";
+	}
+	echo "
+	</select> la valeur de modalité d'élection&nbsp:</b>
+	<input type=\"checkbox\" name=\"force_modalite\" id=\"force_modalite\" onchange=\"changement()\" checked /><br />
+	</p>";
+	*/
+?>
+
 <input type="hidden" name="isposted" value="yes" />
 </form>
 <!-- ============================================================================ -->

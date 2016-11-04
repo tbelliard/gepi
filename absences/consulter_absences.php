@@ -1,7 +1,7 @@
 <?php
 
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -65,9 +65,24 @@ change = 'no';
 <?php
 $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = old_mysql_result($call_classe, "0", "classe");
+
+$appreciation_absences_grp="";
+$sql="SELECT * FROM absences_appreciations_grp WHERE id_classe='".$id_classe."' AND periode='".$periode_num."';";
+$res_abs_grp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_abs_grp_clas)>0) {
+	$lig_abs_grp_clas=mysqli_fetch_object($res_abs_grp_clas);
+	$appreciation_absences_grp=$lig_abs_grp_clas->appreciation;
+}
+
+echo "<div style='float:right; width:16px'><a href='../impression/avis_pdf_absences.php?id_classe=$id_classe&periode_num=$periode_num' title=\"Imprimer les appréciations absences et nombre d'absences,... en PDF\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='Générer un PDF' /></a></div>";
 ?>
-<p><b>Classe de <?php echo "$classe"; ?> - Consultation des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
-<br />
+<p><b>Classe de <?php echo "$classe"; ?> - Consultation des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b></p>
+
+<p style='margin-top:1em;' class='fieldset_opacite50'>
+	<b>Appréciation sur le groupe classe pour la période <?php echo $periode_num;?>&nbsp;:</b><br />
+	<?php echo nl2br($appreciation_absences_grp);?>
+</p>
+
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
 <tr>
@@ -78,10 +93,10 @@ $classe = old_mysql_result($call_classe, "0", "classe");
 	<th align='center'><b>Observations</b></th>
 </tr>
 <?php
-if ($_SESSION['statut'] == "cpe") {
-		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom");
-	} else {
-		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num') order by e.nom, e.prenom");
+if (($_SESSION['statut'] == "cpe")&&(!getSettingAOui("GepiAccesAbsTouteClasseCpe"))&&(!getSettingAOui("GepiAccesTouteFicheEleveCpe"))) {
+	$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom");
+} else {
+	$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num') order by e.nom, e.prenom");
 }
 
 $nombre_lignes = mysqli_num_rows($appel_donnees_eleves);

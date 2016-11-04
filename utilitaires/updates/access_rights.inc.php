@@ -1756,6 +1756,42 @@ autre='F',
 description='Gérer les éléments de programme',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/responsables/dedoublonner_responsables.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Dédoublonner les responsables.',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/responsables/recup_comptes_parents.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Dédoublonner les responsables.',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/impression/avis_pdf_absences.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Avis PDF absences',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

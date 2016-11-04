@@ -76,14 +76,23 @@ if(isset($suppr_qualite)) {
 
 	for($i=0;$i<$cpt;$i++) {
 		if(isset($suppr_qualite[$i])) {
-			$sql="DELETE FROM s_qualites WHERE id='$suppr_qualite[$i]';";
-			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(!$suppr) {
-				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_qualite[$i].".<br />\n";
-				$msg.="ERREUR lors de la suppression du rôle n°".$suppr_qualite[$i].".<br />\n";
+			$current_qualite=get_valeur_champ("s_qualites", "id='".$suppr_qualite[$i]."'", "qualite");
+			$sql="SELECT 1=1 FROM s_protagonistes WHERE qualite='".$current_qualite."';";
+			//echo "$sql<br />";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				$msg.="Suppression impossible&nbsp;: Rôle associé à ".mysqli_num_rows($test)." protagoniste(s) d'incident(s).<br />";
 			}
 			else {
-				$msg.="Suppression du rôle n°".$suppr_qualite[$i].".<br />\n";
+				$sql="DELETE FROM s_qualites WHERE id='$suppr_qualite[$i]';";
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$suppr) {
+					//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_qualite[$i].".<br />\n";
+					$msg.="ERREUR lors de la suppression du rôle n°".$suppr_qualite[$i].".<br />\n";
+				}
+				else {
+					$msg.="Suppression du rôle n°".$suppr_qualite[$i].".<br />\n";
+				}
 			}
 		}
 	}
@@ -165,7 +174,18 @@ else {
 		echo "</label>";
 		echo "</td>\n";
 
-		echo "<td><input type='checkbox' name='suppr_qualite[]' id='suppr_qualite_$cpt' value=\"$lig->id\" onchange='changement();' /></td>\n";
+		echo "<td>";
+		$sql="SELECT 1=1 FROM s_protagonistes WHERE qualite='".$lig->qualite."';";
+		//echo "$sql<br/>";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<span style='color:red'>Rôle associé à ".mysqli_num_rows($test)." protagoniste(s) d'incident(s)</span>";
+		}
+		else {
+		
+			echo "<input type='checkbox' name='suppr_qualite[]' id='suppr_qualite_$cpt' value=\"$lig->id\" onchange='changement();' />";
+		}
+		echo "</td>\n";
 		echo "</tr>\n";
 
 		$cpt++;

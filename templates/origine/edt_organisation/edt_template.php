@@ -336,6 +336,32 @@ echo add_token_field();
 			Ne pas afficher dans l'interface simplifiée/résumé élève/responsable les jours fériés et vacances à venir <em>(qu'ils soient saisis ou non)</em>
 		  </label>
 		  </p>
+
+
+		  <p><input name="edt_version_defaut"
+				 id="edt_version_defaut_1"
+				 value="1"
+				 type="radio"<?php echo eval_checked("edt_version_defaut", "1", ' checked="checked"'); ?>
+				 onclick="document.getElementById('edt_autres_parametres').submit();"
+				 />
+		  <label for="edt_version_defaut_1">
+			Afficher par défaut la version 1 du module Emploi du temps.</em>
+		  </label>
+		  <br />
+		  <input name="edt_version_defaut"
+				 id="edt_version_defaut_2"
+				 value="2"
+				 type="radio"<?php echo eval_checked("edt_version_defaut", "2"); ?>
+				 onclick="document.getElementById('edt_autres_parametres').submit();"
+				 />
+		  <label for="edt_version_defaut_2">
+			Afficher par défaut la version 2 du module Emploi du temps.</em><br />
+			Cette deuxième version ne supporte pas encore toutes les fonctionnalités de l'EDT1, mais elle apporte néanmoins des améliorations.<br />
+			<em>(inconvénients&nbsp;: il faut basculer vers la version 1 pour saisir l'emploi du temps, et l'emploi du temps de salle n'est pas encore implémenté)</em>
+		  </label>
+		  </p>
+
+
 		  <br />
 		  <span class="block center">
 			<input type="submit" value="Enregistrer" id="btn_autres_param" />

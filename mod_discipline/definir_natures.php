@@ -298,7 +298,17 @@ for($i=0;$i<count($tab_nature);$i++) {
 	echo "</select>";
 	echo "</td>\n";
 
-	echo "<td><input type='checkbox' name='suppr_nature[]' id='suppr_nature_$cpt' value=\"".$tab_nature[$i]['id']."\" onchange='changement();' /></td>\n";
+	echo "<td>";
+	$sql="SELECT 1=1 FROM s_incidents WHERE nature='".mysqli_real_escape_string($mysqli, $tab_nature[$i]['nature'])."';";
+	//echo "$sql<br />";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo "<span style='color:red'>Associée à ".mysqli_num_rows($test)." ".$mod_disc_terme_incident."(s)</span>\n";
+	}
+	else {
+		echo "<input type='checkbox' name='suppr_nature[]' id='suppr_nature_$cpt' value=\"".$tab_nature[$i]['id']."\" onchange='changement();' />";
+	}
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	$cpt++;

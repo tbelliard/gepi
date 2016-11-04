@@ -168,8 +168,11 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 			}
 		}
 		else {
-			$dest_clean=preg_replace("#^.*<#","",preg_replace("#>.*$#","",$destinataire));
-			$mail->addAddress($dest_clean);
+			$tmp_tab_mail=explode(",", $destinataire);
+			for($loop=0;$loop<count($tmp_tab_mail);$loop++) {
+				$dest_clean=preg_replace("#^.*<#","",preg_replace("#>.*$#","",$tmp_tab_mail[$loop]));
+				$mail->addAddress($dest_clean);
+			}
 		}
 
 		// CC
@@ -6377,6 +6380,14 @@ function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n", $envoi_b
 				$tab[$cpt]['civilite']=$lig->civilite;
 				$tab[$cpt]['mel']=$lig->mel;
 
+				$sql="SELECT u.email FROM utilisateurs u WHERE u.login='".$lig->login."' AND u.statut='responsable' AND u.email LIKE '%@%' AND u.email!='".$lig->mel."';";
+				//echo "$sql<br />";
+				$res_u = mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_u)>0) {
+					$lig_u=mysqli_fetch_object($res_u);
+					$tab[$cpt]['email']=$lig_u->email;
+				}
+
 				$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
 
 				$tab[$cpt]['pers_id']=$lig->pers_id;
@@ -9770,13 +9781,71 @@ function get_mail_user($login_user) {
 	global $mysqli;
 	$retour="";
 
-	$sql="SELECT email FROM utilisateurs WHERE login='$login_user';";
+	$email_user="";
+	$statut_user="";
+	$sql="SELECT statut,email FROM utilisateurs WHERE login='$login_user';";
 	//echo "$sql<br />";
 	$res = mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		$obj = $res->fetch_object();
-		$retour = $obj->email;
+		$statut_user=$obj->statut;
+		$email_user=$obj->email;
 		$res->close();
+
+		if($statut_user=="responsable") {
+			if((getSettingValue('mode_email_resp')=='mon_compte')&&(check_mail($email_user))) {
+				// Email trouvé.
+				$retour=$email_user;
+			}
+			else {
+				$sql="SELECT mel FROM resp_pers WHERE login='$login_user';";
+				//echo "$sql<br />";
+				$res = mysqli_query($mysqli, $sql);
+				if($res->num_rows > 0) {
+					$obj = $res->fetch_object();
+					$mel_user = $obj->mel;
+					$res->close();
+
+					if(check_mail($mel_user)) {
+						// Email trouvé.
+						$retour=$mel_user;
+					}
+					else {
+						// Choix faute de mieux
+						$retour=$email_user;
+					}
+				}
+			}
+		}
+		elseif($statut_user=="eleve") {
+			if((getSettingValue('mode_email_ele')=='mon_compte')&&(check_mail($email_user))) {
+				// Email trouvé.
+				$retour=$email_user;
+			}
+			else {
+				$sql="SELECT email FROM eleves WHERE login='$login_user';";
+				//echo "$sql<br />";
+				$res = mysqli_query($mysqli, $sql);
+				if($res->num_rows > 0) {
+					$obj = $res->fetch_object();
+					$email_ele_user = $obj->email;
+					$res->close();
+
+					if(check_mail($email_ele_user)) {
+						// Email trouvé.
+						$retour=$email_ele_user;
+					}
+					else {
+						// Choix faute de mieux
+						$retour=$email_user;
+					}
+				}
+			}
+		}
+		else {
+			// Personnel de l'établissement
+			$retour=$email_user;
+		}
 	}
 	else {
 		// Cas d'un parent dont le compte utilisateur aurait été supprimé
@@ -9799,6 +9868,7 @@ function get_mail_user($login_user) {
 			}
 		}
 	}
+
 	return $retour;
 }
 

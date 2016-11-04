@@ -2850,13 +2850,28 @@ if(isset($eleve_login)){
 		echo "</div>\n";
 
 		//=========================
-		//$test_compte_actif=check_compte_actif($eleve_login);
-		//if($test_compte_actif!=0) {
-		if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&($_SESSION['statut']=="administrateur")) {
-			echo "<div style='margin-top: 0.5em; text-align:center; border: 1px solid black;' class='fieldset_opacite50'>\n";
-			echo affiche_actions_compte($eleve_login);
+		// Infos compte utilisateur
+		if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&(isset($eleve_login))&&
+			(
+				($_SESSION['statut']=="administrateur")||
+				(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassEle')))||
+				(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassEle')))
+			)
+		) {
+			echo "<div style='float: right; width:15 em; text-align: center; border: 1px solid black; margin:0.2em; background-image: url(\"../images/background/opacite50.png\");'>\n";
+			if($_SESSION['statut']=="administrateur") {
+				echo affiche_actions_compte($eleve_login);
+				echo "<br />\n";
+			}
+
+			if((($user_auth_mode=='gepi')||
+			(($user_auth_mode=='ldap')&&($gepiSettings['ldap_write_access'] == "yes")))&&
+			(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut']))) {
+				echo affiche_reinit_password($eleve_login);
+			}
 			echo "</div>\n";
 		}
+
 		//=========================
 
 

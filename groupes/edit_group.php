@@ -53,6 +53,10 @@ $id_groupe = isset($_GET['id_groupe']) ? $_GET['id_groupe'] : (isset($_POST['id_
 
 if (!is_numeric($id_groupe)) {$id_groupe = 0;}
 $current_group = get_group($id_groupe);
+if(!isset($current_group["name"])) {
+	header("Location: ../accueil.php?msg=Le groupe n°$id_groupe n'existe pas.");
+	die();
+}
 $reg_nom_groupe = $current_group["name"];
 $reg_nom_complet = $current_group["description"];
 $reg_matiere = $current_group["matiere"]["matiere"];

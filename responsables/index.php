@@ -395,6 +395,25 @@ if ($_SESSION['statut'] == 'administrateur') {
 		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
 	}
 
+	//- Dédoublonner parents/homonymes
+	$sql="SELECT pers_id,nom,prenom,COUNT(*) AS nb_doublons FROM resp_pers GROUP BY nom,prenom HAVING COUNT(*)>1 ORDER BY nom,prenom;";
+	$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_resp)>0) {
+		echo " | <a href=\"dedoublonner_responsables.php\" title=\"Il peut arriver que certains parents soient déclarés deux fois.
+Cela peut se produire dans le cas où un parent est associé à deux enfants dans l'établissement.
+Cela arrive assez fréquemment avec des saisies dans Sconet.
+Cela peut aussi se produire dans le cas d'une initialisation CSV.\">Dédoublonner les responsables <em title=\"".mysqli_num_rows($test_resp)." responsable(s) potentiellement en doublon.
+Il peut aussi s'agir d'homonymes.\">(".mysqli_num_rows($test_resp).")</em></a>\n";
+	}
+
+	//- Recup login et compte utilisateur
+	$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable' AND identifiant2 LIKE '%|%|%' AND temoin!='recree';";
+	$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_resp)>0) {
+		echo " | <a href=\"recup_comptes_parents.php\" title=\"Dans le cas d'une initialisation CSV, il peut arriver que certains comptes utilisateurs parents ne soient pas re-créés automatiquement faute d'une identification sûre.
+Vous pouvez récupérer manuellement les comptes pour réattribuer le même login et mot de passe aux responsables.\">Récup.comptes</a>\n";
+	}
+
 	if($num_resp!=0){
 		echo " | <a href=\"index.php?num_resp=0&amp;order_by=nom,prenom\" title=\"Il peut arriver que certains parents,... ne soient plus déclarés responsables d'aucun élève dans l'établissement.
 Ces personnes devraient être supprimées dans Gepi.
@@ -422,6 +441,27 @@ if($_SESSION['statut']=="scolarite") {
 	if((getSettingValue("import_maj_xml_sconet")==1)&&(getSettingAOui('GepiAccesMajSconetScol'))) {
 		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
 	}
+
+	//- Dédoublonner parents/homonymes
+	$sql="SELECT pers_id,nom,prenom,COUNT(*) AS nb_doublons FROM resp_pers GROUP BY nom,prenom HAVING COUNT(*)>1 ORDER BY nom,prenom;";
+	$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_resp)>0) {
+		echo " | <a href=\"dedoublonner_responsables.php\" title=\"Il peut arriver que certains parents soient déclarés deux fois.
+Cela peut se produire dans le cas où un parent est associé à deux enfants dans l'établissement.
+Cela arrive assez fréquemment avec des saisies dans Sconet.
+Cela peut aussi se produire dans le cas d'une initialisation CSV.\">Dédoublonner les responsables <em title=\"".mysqli_num_rows($test_resp)." responsable(s) potentiellement en doublon.
+Il peut aussi s'agir d'homonymes.\">(".mysqli_num_rows($test_resp).")</em></a>\n";
+	}
+
+	/*
+	//- Recup login et compte utilisateur
+	$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable' AND identifiant2 LIKE '%|%|%' AND temoin!='recree';";
+	$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_resp)>0) {
+		echo " | <a href=\"recup_comptes_parents.php\" title=\"Dans le cas d'une initialisation CSV, il peut arriver que certains comptes utilisateurs parents ne soient pas re-créés automatiquement faute d'une identification sûre.
+Vous pouvez récupérer manuellement les comptes pour réattribuer le même login et mot de passe aux responsables.\">Récup.comptes</a>\n";
+	}
+	*/
 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 	$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);

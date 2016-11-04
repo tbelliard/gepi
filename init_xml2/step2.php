@@ -473,9 +473,47 @@ onclick="javascript:MetVal('pour')" />
 <br />
 <?php
 
-    echo "<table border=1 class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des classes'>";
+    echo "<script type='text/javascript'>
+	function tout_cocher() {
+		for(i=0;i<$nb;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				document.getElementById('ligne_'+i).checked=true;
+			}
+		}
+	}
+	function tout_decocher() {
+		for(i=0;i<$nb;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				document.getElementById('ligne_'+i).checked=false;
+			}
+		}
+	}
+	function inverser_coches() {
+		for(i=0;i<$nb;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				if(document.getElementById('ligne_'+i).checked==true) {
+					document.getElementById('ligne_'+i).checked=false;
+				}
+				else {
+					document.getElementById('ligne_'+i).checked=true;
+				}
+			}
+		}
+	}
+</script>
+
+<table border=1 class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des classes'>";
     echo "<tr>
-<th><p class=\"small\" align=\"center\">Aide<br />Remplissage</p></th>
+	<th>
+		<p class=\"small\" align=\"center\" title=\"Les cases à cocher ci-dessous servent à préciser vers quelles lignes recopier les nom et formule choisis ci-dessus.\">
+			Aide<br />Remplissage<br />
+			<a href=\"javascript:tout_cocher()\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title=\"Tout cocher.\" /></a>/
+			<a href=\"javascript:tout_decocher()\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher.' /></a>/
+			<a href=\"javascript:inverser_coches()\"><img src='../images/icons/wizard.png' width='15' height='15' alt='Inverser ce qui est coché/décoché' title=\"Inverser ce qui est coché/décoché.
+
+Si vous partagez les classes entre le chef d'établissement et son adjoint, vous pouvez utiliser ce bouton pour effectuer la sélection inverse de la première sélection effectuée.\" /></a>
+		</p>
+	</th>
 <th><p class=\"small\">Identifiant de la classe</p></th>
 <th><p class=\"small\">Nom complet</p></th>
 <th><p class=\"small\">Nom apparaissant au bas du bulletin</p></th>
@@ -506,7 +544,7 @@ onclick="javascript:MetVal('pour')" />
             $formule = old_mysql_result($test_classe_exist, 0, 'formule');
         }
         echo "<tr class='lig$alt'>\n";
-        echo "<td><center><input type=\"checkbox\" /></center></td>\n";
+        echo "<td><center><input type=\"checkbox\" id='ligne_$i' name='ligne_$i' value='' /></center></td>\n";
         echo "<td>\n";
         echo "<p align='center'><b>$nom_court</b></p>\n";
         //echo "";

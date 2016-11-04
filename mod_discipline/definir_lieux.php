@@ -168,7 +168,15 @@ else {
 		// Inutile donc d'interdire la suppression de lieux
 		//$sql="SELECT 1=1 FROM s_lieux_incidents sli, s_retenues sr WHERE sr.lieu=sli.lieu;";
 		//$sql="SELECT 1=1 FROM s_lieux_incidents sli, s_exclusions se WHERE se.lieu=sli.lieu;";
-		echo "<input type='checkbox' name='suppr_lieu[]' id='suppr_lieu_$cpt' value=\"$lig->id\" onchange='changement();' />";
+		// Mais associé à un lieu d'incident?
+		$sql="SELECT 1=1 FROM s_incidents WHERE id_lieu='$lig->id';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<span style='color:red'>Associé à ".mysqli_num_rows($test)." ".$mod_disc_terme_incident."(s)</span>\n";
+		}
+		else {
+			echo "<input type='checkbox' name='suppr_lieu[]' id='suppr_lieu_$cpt' value=\"$lig->id\" onchange='changement();' />";
+		}
 		echo "</td>\n";
 		echo "</tr>\n";
 

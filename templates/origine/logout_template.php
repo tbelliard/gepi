@@ -12,7 +12,13 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>Déconnexion</title>
+<title><?php
+	// Pour repérer les onglets lors du développement:
+	//insert into setting set value='y', name='afficher_version_en_title';
+	if(getSettingAOui("afficher_version_en_title")) {
+		echo "(".getSettingValue("version").") ";
+	}
+?>Déconnexion</title>
 <link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/css/style.css" />
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 <link rel="icon" type="image/ico" href="./favicon.ico" />

@@ -82,6 +82,33 @@ if($gepi_denom_mention=="") {
 if (isset($_POST['is_posted'])) {
 	check_token();
 
+	$bull2016_INE=isset($_POST["bull2016_INE"]) ? $_POST["bull2016_INE"] : "n";
+	if(($bull2016_INE!="y")&&($bull2016_INE!="n")) {
+		$bull2016_INE="n";
+	}
+	if (!saveSetting("bull2016_INE", $bull2016_INE)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_INE !";
+		$reg_ok = 'no';
+	}
+
+	$bull2016_afficher_cadre_adresse_resp=isset($_POST["bull2016_afficher_cadre_adresse_resp"]) ? $_POST["bull2016_afficher_cadre_adresse_resp"] : "n";
+	if(($bull2016_afficher_cadre_adresse_resp!="y")&&($bull2016_afficher_cadre_adresse_resp!="n")) {
+		$bull2016_afficher_cadre_adresse_resp="n";
+	}
+	if (!saveSetting("bull2016_afficher_cadre_adresse_resp", $bull2016_afficher_cadre_adresse_resp)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_afficher_cadre_adresse_resp !";
+		$reg_ok = 'no';
+	}
+
+	$bull2016_pas_espace_reserve_EPI_AP_Parcours=isset($_POST["bull2016_pas_espace_reserve_EPI_AP_Parcours"]) ? $_POST["bull2016_pas_espace_reserve_EPI_AP_Parcours"] : "n";
+	if(($bull2016_pas_espace_reserve_EPI_AP_Parcours!="y")&&($bull2016_pas_espace_reserve_EPI_AP_Parcours!="n")) {
+		$bull2016_pas_espace_reserve_EPI_AP_Parcours="n";
+	}
+	if (!saveSetting("bull2016_pas_espace_reserve_EPI_AP_Parcours", $bull2016_pas_espace_reserve_EPI_AP_Parcours)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_pas_espace_reserve_EPI_AP_Parcours !";
+		$reg_ok = 'no';
+	}
+
 	$bull2016_arrondi=isset($_POST["bull2016_arrondi"]) ? $_POST["bull2016_arrondi"] : 0.01;
 	if(((!preg_match("/^[0-9]{1,}$/", $bull2016_arrondi))&&
 	(!preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $bull2016_arrondi)))||
@@ -133,6 +160,15 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+
+	$bull2016_moyminclassemax=isset($_POST["bull2016_moyminclassemax"]) ? $_POST["bull2016_moyminclassemax"] : "n";
+	if(($bull2016_moyminclassemax!="y")&&($bull2016_moyminclassemax!="n")) {
+		$bull2016_affich_mentions="n";
+	}
+	if (!saveSetting("bull2016_moyminclassemax", $bull2016_moyminclassemax)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_moyminclassemax !";
+		$reg_ok = 'no';
+	}
 
 
 	$bull2016_affich_mentions=isset($_POST["bull2016_affich_mentions"]) ? $_POST["bull2016_affich_mentions"] : "y";
@@ -276,7 +312,7 @@ if (isset($_POST['is_posted'])) {
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
-$msg = "Enregistrement réussi !";
+	$msg = "Enregistrement réussi <em>(".strftime("Le %A %d/%m/%Y à %H:%M:%S").")</em> !";
 }
 
 
@@ -341,6 +377,11 @@ if(((!preg_match("/^[0-9]{1,}$/", $bull2016_evolution_moyenne_periode_precedente
 	$bull2016_evolution_moyenne_periode_precedente_seuil=0;
 }
 
+$bull2016_moyminclassemax=getSettingValue("bull2016_moyminclassemax");
+if($bull2016_moyminclassemax=="") {
+	$bull2016_moyminclassemax="n";
+}
+
 $bull2016_affich_mentions=getSettingValue("bull2016_affich_mentions");
 if($bull2016_affich_mentions=="") {
 	$bull2016_affich_mentions="y";
@@ -391,6 +432,22 @@ if($bull2016_titre_avis_orientation_proposee=="") {
 }
 
 $bull2016_orientation_periodes=getSettingValue("bull2016_orientation_periodes");
+
+$bull2016_INE_checked="";
+if(getSettingAOui('bull2016_INE')) {
+	$bull2016_INE_checked=" checked";
+}
+
+$bull2016_afficher_cadre_adresse_resp_checked="";
+if(getSettingAOui('bull2016_afficher_cadre_adresse_resp')) {
+	$bull2016_afficher_cadre_adresse_resp_checked=" checked";
+}
+
+$bull2016_pas_espace_reserve_EPI_AP_Parcours=getSettingValue('bull2016_pas_espace_reserve_EPI_AP_Parcours');
+$bull2016_pas_espace_reserve_EPI_AP_Parcours_checked="";
+if($bull2016_pas_espace_reserve_EPI_AP_Parcours=="y") {
+	$bull2016_pas_espace_reserve_EPI_AP_Parcours_checked=" checked";
+}
 ?>
 
 
@@ -399,6 +456,35 @@ $bull2016_orientation_periodes=getSettingValue("bull2016_orientation_periodes");
 echo add_token_field();
 ?>
 <input type='hidden' name='is_posted' value='y' />
+<h3>Paramètres divers</h3>
+<table class='boireaus boireaus_alt' summary='Paramètres divers'>
+	<tr>
+		<td>Faire apparaître le numéro INE de l'élève&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_INE" id="bull2016_INE" size="5" onchange="changement()" value="y"<?php
+				echo $bull2016_INE_checked;
+			?> />
+		</td>
+	</tr>
+	<tr>
+		<td>Faire apparaître le cadre adresse responsable&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_afficher_cadre_adresse_resp" id="bull2016_afficher_cadre_adresse_resp" size="5" onchange="changement()" value="y"<?php
+				echo $bull2016_afficher_cadre_adresse_resp_checked;
+			?> />
+		</td>
+	</tr>
+	<tr>
+		<td>Ne pas réserver d'espace pour les EPI, AP, Parcours en page 2<br />
+		<span style='font-size:x-small'>Remonter les cadres suivants si un espace libre apparait</span>&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_pas_espace_reserve_EPI_AP_Parcours" id="bull2016_pas_espace_reserve_EPI_AP_Parcours" size="5" onchange="changement()" value="y"<?php
+				echo $bull2016_pas_espace_reserve_EPI_AP_Parcours_checked;
+			?> />
+		</td>
+	</tr>
+</table>
+
 <h3>Paramètres des moyennes</h3>
 <table class='boireaus boireaus_alt' summary='Paramètres des moyennes'>
 	<tr>
@@ -448,6 +534,16 @@ echo add_token_field();
 			<input type="text" name="bull2016_evolution_moyenne_periode_precedente_seuil" id="bull2016_evolution_moyenne_periode_precedente_seuil" size="5" onchange="changement()" value="<?php
 				echo $bull2016_evolution_moyenne_periode_precedente_seuil;
 			?>" onKeyDown="clavier_3(this.id,event, 0.001, 1, 0.001);" />
+		</td>
+	</tr>
+	<tr>
+		<td>Afficher les moyennes min/classe/max dans la colonne Classe&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_moyminclassemax" id="bull2016_moyminclassemax" onchange="changement()" value="y" <?php
+			if($bull2016_moyminclassemax=="y") {
+				echo "checked ";
+			}
+			?>/>
 		</td>
 	</tr>
 </table>
@@ -595,7 +691,7 @@ echo add_token_field();
 	</tr>
 </table>
 
-<p style="text-align: center;"><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></p>
+<p style="text-align: center; margin-bottom:2em;"><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></p>
 
 </form>
 

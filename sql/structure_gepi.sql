@@ -793,6 +793,8 @@ salt VARCHAR(128) NOT NULL,
 email VARCHAR(50) NOT NULL,
 identifiant1 VARCHAR( 10 ) NOT NULL COMMENT 'eleves.ele_id ou resp_pers.pers_id',
 identifiant2 VARCHAR( 50 ) NOT NULL COMMENT 'eleves.elenoet',
+nom VARCHAR( 50 ) NOT NULL ,
+prenom VARCHAR( 50 ) NOT NULL ,
 statut VARCHAR( 20 ) NOT NULL ,
 auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
 date_reserve DATE DEFAULT '0000-00-00',
@@ -1572,3 +1574,10 @@ login_ele VARCHAR(50) NOT NULL DEFAULT '',
 item VARCHAR(100) NOT NULL DEFAULT '', 
 valeur VARCHAR(255) NULL DEFAULT '', 
 PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS aid_appreciations_grp;
+CREATE TABLE aid_appreciations_grp ( id_aid int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, indice_aid int(11) NOT NULL default '0', PRIMARY KEY  (id_aid, indice_aid, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS absences_appreciations_grp;
+CREATE TABLE absences_appreciations_grp (id_classe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY  (id_classe, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

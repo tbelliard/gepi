@@ -523,7 +523,18 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	}
 
 	for($i=0;$i<count($ligne);$i++) {
+		$x_courant=$x;
 
+		if($align=="C") {
+			$x_courant=$x+($largeur_dispo-$pdf->GetStringWidth($ligne[$i]."   "))/2;
+		}
+		/*
+		echo "\$align=$align<br />";
+		echo "\$x=$x<br />";
+		echo "\$x_courant=$x_courant<br />";
+		echo "\$ligne[$i]=".$ligne[$i]."<br />";
+		echo "===<br />";
+		*/
 		if($v_align=='T') {
 			$pdf->SetXY($x,$y+$i*($hauteur_texte_mm+$marge_verticale));
 
@@ -531,7 +542,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			$pdf->Cell($largeur_dispo,$hauteur_texte_mm+2*$marge_verticale, '',$bord_debug,1,$align);
 
 			$y_courant=$y+$i*($hauteur_texte_mm+$marge_verticale)-$marge_verticale;
-			$pdf->SetXY($x,$y_courant);
+			$pdf->SetXY($x_courant,$y_courant);
 			if($my_echo_debug==1) {
 				$pdf->myWriteHTML($ligne[$i]." ".$i." ".round($y_courant));
 			}
@@ -546,7 +557,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			// Pour pouvoir afficher le $bord_debug
 			$pdf->Cell($largeur_dispo,$h_cell/$nb_lig, '',$bord_debug,1,$align);
 
-			$pdf->SetXY($x,$y_courant);
+			$pdf->SetXY($x_courant,$y_courant);
 			$pdf->myWriteHTML($ligne[$i]);
 		}
 		else {
@@ -554,7 +565,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 			// Pour pouvoir afficher le $bord_debug A REFAIRE
 			
-			$pdf->SetXY($x,$y_courant);
+			$pdf->SetXY($x_courant,$y_courant);
 			
 			$pdf->myWriteHTML($ligne[$i]);
 		}

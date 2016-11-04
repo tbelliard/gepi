@@ -405,7 +405,7 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 
 		$tab_aid['eleves']=array();
 
-		// Périodes: Peut-on faire un AID avec des classes à nombre de périodes différent?
+		// Périodes: Peut-on faire un AID avec des classes à nombre de périodes différent? Oui
 		$sql="SELECT max(num_periode) AS maxper FROM periodes p, 
 							j_eleves_classes jec, 
 							j_aid_eleves jae 
@@ -419,6 +419,59 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 			$maxper=$lig->maxper;
 
 			$tab_aid['maxper']=$maxper;
+			$nb_periode=$maxper+1;
+
+			// Verrouillage
+			// Initialisation
+			$i = "1";
+			$all_clos = "";
+			$all_open = "";
+			$all_clos_part = "";
+			while ($i < $nb_periode) {
+				$liste_ver_per[$i] = "";
+				$i++;
+			}
+
+			foreach ($tab_aid["classes"]["list"] as $c_id) {
+				$sql_periode2 = "SELECT * FROM periodes WHERE id_classe = '". $tab_aid["classes"]["classes"][$c_id]["id"] ."' ORDER BY num_periode";
+				$periode_query2 = mysqli_query($GLOBALS["mysqli"], $sql_periode2);
+				$nb_periode = $periode_query2->num_rows + 1 ;
+				$i = "1";
+				while ($obj_period2 = $periode_query2->fetch_object()) {
+					$tab_aid["classe"]["ver_periode"][$c_id][$i] = $obj_period2->verouiller;
+					$liste_ver_per[$i] .= $tab_aid["classe"]["ver_periode"][$c_id][$i];
+					$i++;
+				}
+				$all_clos .= "O";
+				$all_open .= "N";
+				$all_clos_part .= "P";
+				$periode_query2->close();
+			}
+			$i = "1";
+			while ($i < $nb_periode) {
+				if ($liste_ver_per[$i] == $all_clos) {
+					// Toutes les classes sont closes
+					$tab_aid["classe"]["ver_periode"]["all"][$i] = 0;
+				}
+				else if ($liste_ver_per[$i] == $all_clos_part) {
+					// Toutes les classes sont partiellement closes
+					$tab_aid["classe"]["ver_periode"]["all"][$i] = 1;
+				}
+				else if ($liste_ver_per[$i] == $all_open) {
+					// Toutes les classes sont ouvertes
+					$tab_aid["classe"]["ver_periode"]["all"][$i] = 3;
+				}
+				else if (substr_count($liste_ver_per[$i], "N") > 0) {
+					// Au moins une classe est ouverte
+					$tab_aid["classe"]["ver_periode"]["all"][$i] = 2;
+				}
+				else {
+					$tab_aid["classe"]["ver_periode"]["all"][$i] = -1;
+				}
+				$i++;
+			}
+
+			// Elèves
 
 			$tab_aid['eleves']["all"]['list']=array();
 			$tab_aid['eleves']["all"]['users']=array();

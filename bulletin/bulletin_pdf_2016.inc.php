@@ -95,6 +95,10 @@
 
 	//========================================
 
+	$param_bull2016["bull2016_INE"]=getSettingValue("bull2016_INE");
+
+	//========================================
+
 	$param_bull2016["x_cadre_logo_RF"]=10;
 	$param_bull2016["y_cadre_logo_RF"]=5;
 	$param_bull2016["largeur_cadre_logo_RF"]=25;
@@ -165,6 +169,13 @@
 	$param_bull2016["y_cadre_eleve"]=45;
 	$param_bull2016["hauteur_cadre_eleve"]=45;
 	$param_bull2016["largeur_cadre_eleve"]=189;
+
+	$param_bull2016["afficher_cadre_adresse_resp"]=getSettingValue("bull2016_afficher_cadre_adresse_resp");
+	$param_bull2016["bordure_cadre_adresse_resp"]="LRBT";
+	$param_bull2016["x_cadre_adresse_resp"]=117;
+	$param_bull2016["y_cadre_adresse_resp"]=$param_bull2016["y_cadre_eleve"]+3;
+	$param_bull2016["largeur_cadre_adresse_resp"]=78;
+	$param_bull2016["hauteur_cadre_adresse_resp"]=$param_bull2016["hauteur_cadre_eleve"]-2*3;
 
 	$param_bull2016["y_annee_scolaire"]=$param_bull2016["y_cadre_eleve"]+5;
 	$param_bull2016["y_periode"]=$param_bull2016["y_annee_scolaire"]+4;
@@ -311,6 +322,7 @@
 	$param_bull2016["bull2016_evolution_moyenne_periode_precedente_seuil"]=$bull2016_evolution_moyenne_periode_precedente_seuil;
 
 
+	$param_bull2016["bull2016_moyminclassemax"]=getSettingValue("bull2016_moyminclassemax");
 
 
 	//$afficher_nb_heures_perdues="n";
@@ -393,6 +405,8 @@
 
 	$param_bull2016["x_EPI_AP_Parcours_col_2"]=$param_bull2016["x_EPI_AP_Parcours"]+$param_bull2016["largeur_EPI_AP_Parcours_col_1"]+0.5;
 	$param_bull2016["largeur_EPI_AP_Parcours_col_2"]=$param_bull2016["largeur_EPI_AP_Parcours"]-$param_bull2016["largeur_EPI_AP_Parcours_col_1"]-0.5;
+
+	$param_bull2016["bull2016_pas_espace_reserve_EPI_AP_Parcours"]=getSettingValue('bull2016_pas_espace_reserve_EPI_AP_Parcours');
 
 	// Bandeau EPI
 	$param_bull2016["couleur_bandeau_EPI"]["R"]=243;

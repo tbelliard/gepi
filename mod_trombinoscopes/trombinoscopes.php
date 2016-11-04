@@ -228,7 +228,35 @@ if(isset($_POST['upload_photo'])) {
 			}
 		}
 	}
+	elseif((isset($_POST['suppr_photo']))&&(isset($_POST['login_photo']))&&($_POST['login_photo']!='')) {
+		$sql="SELECT elenoet FROM eleves WHERE login='".mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_photo'])."';";
+		//echo "$sql<br />";
+		$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_elenoet)==0) {
+			$msg.="Aucun elenoet n'a été trouvé pour la photo de cet élève.<br />\n";
+		}
+		else {
+			if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+				$elenoet_ou_login=$_POST['login_photo'];
+			}
+			else {
+				$lig_elenoet=mysqli_fetch_object($res_elenoet);
+				$elenoet_ou_login=$lig_elenoet->elenoet;
+			}
 
+			//$quiestce=encode_nom_photo($elenoet_ou_login);
+			$quiestce=$elenoet_ou_login;
+			//echo "\$quiestce=$quiestce<br />";
+			$dest_file=$rep_photos.encode_nom_photo($quiestce).".jpg";
+			//echo "\$dest_file=$dest_file<br />";
+			//if (!deplacer_fichier_upload($sav_photo['tmp_name'], $rep_photos.$quiestce.".jpg")) {
+			if (!unlink($dest_file)) {
+				$msg.="Problème lors de la suppression de la photo $dest_file<br />";
+			} else {
+				$msg.="Photo supprimée.<br />";
+			}
+		}
+	}
 
 }
 
@@ -238,7 +266,7 @@ $style_specifique = "mod_trombinoscopes/styles/styles";
 $titre_page = "Visualisation des trombinoscopes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-// debug_var();
+//debug_var();
 ?>
 <script type="text/javascript">
 
@@ -338,8 +366,13 @@ function reactiver(mavar) {
 		elseif($_SESSION['statut']=='scolarite'){
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
-		elseif($_SESSION['statut']=='professeur'){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		elseif($_SESSION['statut']=='professeur') {
+			if((isset($_SESSION['trombi_classes']))&&($_SESSION['trombi_classes']=="toutes")) {
+				$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY c.classe";
+			}
+			else {
+				$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+			}
 		}
 		elseif($_SESSION['statut']=='cpe'){
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
@@ -426,6 +459,8 @@ function reactiver(mavar) {
 
 			//=================================================================
 			// CLASSES
+
+
 			echo "<label for='classe' style='margin-left: 15px;'>Par classe</label><br />\n";
 			echo "<select name='classe' id='classe' style='margin-left: 15px;'>\n";
 
@@ -439,11 +474,15 @@ function reactiver(mavar) {
 			}
 
 			if (($classe=='')&&($_SESSION['statut']=='professeur')) {
+				$_SESSION['trombi_classes']="mes classes";
 				// Le prof ne voit par défaut que ses classes... mais en sélectionnant 'Toutes', il peut provoquer l'affichage des autres classes dans le champ select.
 				$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
 							WHERE jgp.id_groupe = jgc.id_groupe AND jgc.id_classe = c.id AND jgp.login = "'.$_SESSION['login'].'"
 							GROUP BY c.id
 							ORDER BY nom_complet ASC');
+			}
+			elseif (($classe=='toutes')&&($_SESSION['statut']=='professeur')) {
+				$_SESSION['trombi_classes']="toutes";
 			}
 
 			if (($classe=='')&&($_SESSION['statut']=='eleve')) {
@@ -1513,8 +1552,9 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 
 	$texte_infobulle.="<input type='hidden' name='upload_photo' value='y' />\n";
 	$texte_infobulle.="<input type='hidden' name='login_photo' id='login_photo' value=\"\" />\n";
-	$texte_infobulle.="Uploader/remplacer la photo pour <span id='nom_prenom_photo_upload' style='font-weight:bold''></span>&nbsp;:";
-	$texte_infobulle.="<input type='file' name='photo_a_uploader' id='photo_a_uploader' value='' />\n";
+	$texte_infobulle.="Uploader/remplacer la photo pour <span id='nom_prenom_photo_upload' style='font-weight:bold''></span>&nbsp;:<br />";
+	$texte_infobulle.="<input type='file' name='photo_a_uploader' id='photo_a_uploader' value='' /><br />\n";
+	$texte_infobulle.="ou <input type='checkbox' name='suppr_photo' id='suppr_photo' value='y' /><label for='suppr_photo' title=\"Si la photo existante n'est pas correcte, ou pas la bonne, et si vous n'avez pas de photo de remplacement sous la main, il vaut mieux la supprimer pour repérer plus facilement les photos manquantes par la suite et mettre en place la bonne photo.\">Supprimer la photo existante</label><br />\n";
 	$texte_infobulle.="<input type='submit' name='Valider' value='Valider' />\n";
 	$texte_infobulle.="</form>\n";
 
@@ -1529,6 +1569,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 			if(document.getElementById('nom_prenom_photo_upload')) {
 				document.getElementById('nom_prenom_photo_upload').innerHTML=nom_prenom;
 			}
+			document.getElementById('suppr_photo').checked=false;
 			afficher_div('div_upload_photo','y',-20,20);
 		}
 	}

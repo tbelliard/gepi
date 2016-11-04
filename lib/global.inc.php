@@ -169,7 +169,7 @@ $couleur_cellule_gen = "#F6F7EF";
 // les trois variables suivantes vont être remplies par un script de build avec les données svn ou git
 // dans le cas ou les variables ne sont pas remplies (donc pas de script de build), on regarde dans header.inc et header_template.inc
 // si on peut obtenir des informations sur la version dans le répertoire .git
-$gepiVersion = "1.6.9";
+$gepiVersion = "master";
 $gepiSvnRev = "";
 $gepiGitCommit = "";
 $gepiGitBranch = "";
@@ -214,6 +214,7 @@ $type_etablissement["college"] = "Collège";
 $type_etablissement["lycee"] = "Lycée";
 $type_etablissement["lprof"] = "Lyc. Prof.";
 $type_etablissement["EREA"] = "EREA";
+$type_etablissement["universite"] = "Université";
 $type_etablissement["tous_niveaux"] = "Tous niveaux";
 $type_etablissement["aucun"] = "";
 
@@ -223,6 +224,7 @@ $type_etablissement2["public"]["college"] = "public";
 $type_etablissement2["public"]["lycee"] = "public";
 $type_etablissement2["public"]["lprof"] = "public";
 $type_etablissement2["public"]["EREA"] = "public";
+$type_etablissement2["public"]["universite"] = "public";
 $type_etablissement2["public"]["tous_niveaux"] = "public";
 $type_etablissement2["public"]["aucun"] = "";
 $type_etablissement2["prive"]["ecole"] = "privée";
@@ -230,6 +232,7 @@ $type_etablissement2["prive"]["college"] = "privé";
 $type_etablissement2["prive"]["lycee"] = "privé";
 $type_etablissement2["prive"]["lprof"] = "privé";
 $type_etablissement2["prive"]["EREA"] = "privé";
+$type_etablissement2["public"]["universite"] = "privé";
 $type_etablissement2["prive"]["tous_niveaux"] = "privé";
 $type_etablissement2["prive"]["aucun"] = "";
 
@@ -286,4 +289,128 @@ $tab_type_aid[2]["nom_complet_pluriel"]="Enseignements pratiques interdisciplina
 $tab_type_aid[3]["nom_court"]="Parcours";
 $tab_type_aid[3]["nom_complet"]="Parcours éducatif";
 $tab_type_aid[3]["nom_complet_pluriel"]="Parcours éducatifs";
+
+// Tableau des couleurs pas trop épouvantablement sombres:
+$tab_couleurs_html=array("aliceblue",
+"antiquewhite",
+"aquamarine",
+"azure",
+"beige",
+"bisque",
+"blanchedalmond",
+"blueviolet",
+"brown",
+"burlywood",
+"cadetblue",
+"chartreuse",
+"chocolate",
+"coral",
+"cornflowerblue",
+"cornsilk",
+"crimson",
+"cyan",
+"darkcyan",
+"darkgoldenrod",
+"darkgray",
+"darkgreen",
+"darkkhaki",
+"darkmagenta",
+"darkolivegreen",
+"darkorange",
+"darkorchid",
+"darkred",
+"darksalmon",
+"darkseagreen",
+"darkslateblue",
+"darkslategray",
+"darkturquoise",
+"darkviolet",
+"deeppink",
+"deepskyblue",
+"dimgray",
+"dodgerblue",
+"firebrick",
+"floralwhite",
+"forestgreen",
+"gainsboro",
+"ghostwhite",
+"gold",
+"goldenrod",
+"greenyellow",
+"honeydew",
+"hotpink",
+"indianred",
+"indigo",
+"ivory",
+"khaki",
+"lavender",
+"lavenderblush",
+"lawngreen",
+"lemonchiffon",
+"lightblue",
+"lightcoral",
+"lightcyan",
+"lightgoldenrodyellow",
+"lightgreen",
+"lightgrey",
+"lightpink",
+"lightsalmon",
+"lightseagreen",
+"lightskyblue",
+"lightslategray",
+"lightsteelblue",
+"lightyellow",
+"limegreen",
+"linen",
+"magenta",
+"mediumaquamarine",
+"mediumblue",
+"mediumorchid",
+"mediumpurple",
+"mediumseagreen",
+"mediumslateblue",
+"mediumspringgreen",
+"mediumturquoise",
+"mediumvioletred",
+"mintcream",
+"mistyrose",
+"moccasin",
+"navajowhite",
+"oldlace",
+"olivedrab",
+"orange",
+"orangered",
+"orchid",
+"palegoldenrod",
+"palegreen",
+"paleturquoise",
+"palevioletred",
+"papayawhip",
+"peachpuff",
+"peru",
+"pink",
+"plum",
+"powderblue",
+"rosybrown",
+"royalblue",
+"saddlebrown",
+"salmon",
+"sandybrown",
+"seagreen",
+"seashell",
+"sienna",
+"silver",
+"skyblue",
+"slateblue",
+"slategray",
+"snow",
+"springgreen",
+"steelblue",
+"tan",
+"thistle",
+"tomato",
+"turquoise",
+"violet",
+"wheat",
+"whitesmoke");
 ?>

@@ -126,6 +126,68 @@ if(($_SESSION['statut']=="administrateur")||
 			$j++;
 		}
 
+		// Récupérer les modalités associées à l'élève pour les différents groupes
+		$tab_modalites_eleve=array();
+		$sql="SELECT * FROM j_groupes_eleves_modalites WHERE login='".$login_eleve."'";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_modalites_eleve[$lig->id_groupe]=$lig->code_modalite_elect;
+		}
+		/*
+		echo "<pre>";
+		print_r($tab_modalites_eleve);
+		echo "</pre>";
+		*/
+		$nb_insert_modalite=0;
+		$nb_update_modalite=0;
+		$nb_suppr_modalite=0;
+		$modalite=isset($_POST['modalite']) ? $_POST['modalite'] : array();
+		foreach($modalite as $current_id_groupe => $current_code_modalite_elect) {
+			// Comparer: Si changement de modalité...
+			if((!isset($tab_modalites_eleve[$current_id_groupe]))&&($current_code_modalite_elect!="")) {
+				$sql="INSERT INTO j_groupes_eleves_modalites SET login='".$login_eleve."', id_groupe='".$current_id_groupe."', code_modalite_elect='".$current_code_modalite_elect."';";
+				//echo "$sql<br />";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$msg.="Erreur lors de l'enregistrement de la modalité pour l'enseignement n°$current_id_groupe.<br />";
+				}
+				else {
+					$nb_insert_modalite++;
+				}
+			}
+			elseif((isset($tab_modalites_eleve[$current_id_groupe]))&&($current_code_modalite_elect=="")) {
+				$sql="DELETE FROM j_groupes_eleves_modalites WHERE login='".$login_eleve."' AND id_groupe='".$current_id_groupe."';";
+				//echo "$sql<br />";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$del) {
+					$msg.="Erreur lors de la suppression de la modalité pour l'enseignement n°$current_id_groupe.<br />";
+				}
+				else {
+					$nb_suppr_modalite++;
+				}
+			}
+			elseif((isset($tab_modalites_eleve[$current_id_groupe]))&&($tab_modalites_eleve[$current_id_groupe]!=$current_code_modalite_elect)) {
+				$sql="UPDATE j_groupes_eleves_modalites SET code_modalite_elect='".$current_code_modalite_elect."' WHERE  login='".$login_eleve."' AND id_groupe='".$current_id_groupe."';";
+				//echo "$sql<br />";
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$update) {
+					$msg.="Erreur lors de la mise à jour de la modalité pour l'enseignement n°$current_id_groupe.<br />";
+				}
+				else {
+					$nb_update_modalite++;
+				}
+			}
+		}
+		if($nb_insert_modalite>0) {
+			$msg.=$nb_insert_modalite." modalité(s) enregistrée(s).<br />";
+		}
+		if($nb_update_modalite>0) {
+			$msg.=$nb_update_modalite." modalité(s) mise(s) à jour.<br />";
+		}
+		if($nb_suppr_modalite>0) {
+			$msg.=$nb_suppr_modalite." modalité(s) supprimée(s).<br />";
+		}
+
 		// On vide les signalements par un prof lors de l'enregistrement
 		$sql="DELETE FROM j_signalement WHERE nature='erreur_affect' AND login='".$login_eleve."';";
 		//echo "$sql<br />";
@@ -325,9 +387,19 @@ $call_nom_class = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes W
 $classe = old_mysql_result($call_nom_class, 0, 'classe');
 
 $call_data_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE (login = '$login_eleve')");
-$nom_eleve = @old_mysql_result($call_data_eleves, '0', 'nom');
-$prenom_eleve = @old_mysql_result($call_data_eleves, '0', 'prenom');
+if(mysqli_num_rows($call_data_eleves)==0) {
+	echo "<p style='color:red'>Élève inconnu</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+$tab_info_ele=mysqli_fetch_assoc($call_data_eleves);
+//$nom_eleve = @old_mysql_result($call_data_eleves, '0', 'nom');
+//$prenom_eleve = @old_mysql_result($call_data_eleves, '0', 'prenom');
+$nom_eleve=$tab_info_ele['nom'];
+$prenom_eleve=$tab_info_ele['prenom'];
 
+// A VOIR: Pouvoir restreindre les modalités autorisées pour telle ou telle matière.
+$tab_modalites=get_tab_modalites_election();
 
 echo "<h3>";
 if(acces("/eleves/modify_eleve.php", $_SESSION['statut'])) {
@@ -376,9 +448,6 @@ if(mysqli_num_rows($res_sig)>0) {
 }
 
 //=========================
-// MODIF: boireaus
-//echo "<table border = '1' cellpadding='5' cellspacing='0'>\n<tr><td><b>Matière</b></td>";
-//echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
 echo "<table border='1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
 echo "<tr align='center'>\n";
 echo "<th><b>Matière</b></th>\n";
@@ -389,16 +458,10 @@ $chaine_coche="";
 $chaine_decoche="";
 while ($j < $nb_periode) {
 	//=========================
-	// MODIF: boireaus
-	//echo "<th><b>".$nom_periode[$j]."</b></th>";
 	echo "<th><b>".$nom_periode[$j]."</b>";
 	if(($_SESSION['statut']=="administrateur")||
 	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo "<br />\n";
-		//echo "<input type='button' name='coche_col_$j' id='id_coche_col_$j' value='Coche' onClick='coche($j,\"col\")' />/\n";
-		//echo "<input type='button' name='decoche_col_$j' id='id_decoche_col_$j' value='Décoche' onClick='decoche($j,\"col\")' />\n";
-		//echo "<input type='button' name='coche_col_$j' value='C' onClick='modif_case($j,\"col\",true)' />/\n";
-		//echo "<input type='button' name='decoche_col_$j' value='D' onClick='modif_case($j,\"col\",false)' />\n";
 		echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 		echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 
@@ -424,6 +487,7 @@ if(($_SESSION['statut']=="administrateur")||
 	echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 	echo "</th>\n";
 }
+echo "<th>Modalités</th>\n";
 
 echo "</tr>\n";
 
@@ -631,46 +695,46 @@ while ($i < $nombre_ligne) {
 
 			echo " <em style='font-size:x-small' title=\"$eff_grp élève(s) sont inscrits dans cet enseignement en période $i.\n\n(effectif enregistré ne tenant pas compte des éventuelles modifications non encore validées dans cette page).\">($eff_grp)</em>";
 			echo "</td>\n";
-
-			/*
-			//=========================
-			// MODIF: boireaus
-			if (mysql_num_rows($test) == "0") {
-				//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." /></center></td>\n";
-				if($_SESSION['statut']=="administrateur"){
-					echo "<td>\n";
-					echo "<center>\n";
-					echo "<input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' />\n";
-					echo "</center>\n";
-					echo "</td>\n";
-				}
-				else {
-					echo "<td>&nbsp;</td>\n";
-				}
-			} else {
-				if($_SESSION['statut']=="administrateur"){
-					//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." CHECKED /></center></td>\n";
-					echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' checked /></center></td>\n";
-				}
-				else {
-					echo "<td><center><img src='../images/enabled.png' width='15' height='15' alt='Inscrit' /></center></td>\n";
-				}
-			}
-			*/
-			//=========================
 		}
 		$j++;
 	}
 	//=========================
-	// AJOUT: boireaus
+
+	$current_group=get_group($id_groupe);
+
 	if(($_SESSION['statut']=="administrateur")||
 	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo "<td>\n";
-		//echo "<input type='button' name='coche_lig_$i' value='C' onClick='modif_case($i,\"lig\",true)' />/\n";
-		//echo "<input type='button' name='decoche_lig_$i' value='D' onClick='modif_case($i,\"lig\",false)' />\n";
 		echo "<a href='javascript:modif_case($i,\"lig\",true);griser_degriser(etat_grisage);'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 		echo "<a href='javascript:modif_case($i,\"lig\",false);griser_degriser(etat_grisage);'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 		echo "</td>\n";
+
+		// Modalités
+		echo "<td>";
+		echo "
+		<select name='modalite[$id_groupe]'>
+			<option value=''></option>";
+		for($loop_m=0;$loop_m<count($tab_modalites);$loop_m++) {
+			echo "
+			<option value='".$tab_modalites[$loop_m]["code_modalite_elect"]."'";
+			if((isset($current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves"]))&&(in_array($login_eleve, $current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves"]))) {
+				echo " selected='selected'";
+			}
+			echo ">".$tab_modalites[$loop_m]["libelle_court"]."</option>";
+		}
+		echo "</select>";
+		echo "</td>";
+	}
+	else {
+		// Affichage des modalités
+		echo "<td>";
+		for($loop_m=0;$loop_m<count($tab_modalites);$loop_m++) {
+			if((isset($current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves"]))&&(in_array($login_eleve, $current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves"]))) {
+				echo $tab_modalites[$loop_m]["libelle_court"];
+				break;
+			}
+		}
+		echo "</td>";
 	}
 	//=========================
 	echo "</tr>\n";

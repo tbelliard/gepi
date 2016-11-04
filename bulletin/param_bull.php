@@ -926,6 +926,7 @@ else {
 | <!--a href="./index.php"> Imprimer les bulletins au format HTML</a-->
 <a href="./bull_index.php"> Imprimer les bulletins</a>
 | <a href="./param_bull_pdf.php"> Paramètres d'impression des bulletins PDF</a>
+| <a href="./param_bull_pdf_2016.php"> Param.CLG.2016</a>
 </p>
 <?php
 }

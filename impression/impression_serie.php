@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -154,7 +154,7 @@ else {
 			}
 			$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			echo "		<optgroup label=\"-- Les classes --\">\n";
-			While ( $data_classe = mysqli_fetch_array($resultat_classe)) {
+			while ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 						echo "		<option value=\"";
 						echo $data_classe['id_classe'];
 						echo "\">";
@@ -392,8 +392,9 @@ if ($id_choix_periode != 0) {
 			echo "		<option value=\"";
 			echo $groups[$i]['id'];
 			echo "\">";
-			echo $groups[$i]['matiere']['nom_complet']." (".$groups[$i]['classlist_string'].")";
-			echo "</option>\n";			
+			//echo $groups[$i]['matiere']['nom_complet']." (".$groups[$i]['classlist_string'].")";
+			echo $groups[$i]['name']." (".$groups[$i]['description'].") "." (".$groups[$i]['classlist_string'].")";
+			echo "</option>\n";
 		}	
 		echo "		</optgroup>\n";
 		echo "	</select>\n";
@@ -440,7 +441,7 @@ if ($id_choix_periode != 0) {
 			echo "<h3>Liste des AID : </h3>\n";
 
 			// sélection multiple
-			echo "<div style=\"text-align: center;\">
+			echo "<div style=\"text-align: center; margin:1em;\">
 	<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf3\">
 		<fieldset class='fieldset_opacite50'>
 			<legend style='border: 1px solid grey; background-color: white;'>Sélectionnez le (ou les) AID(s) pour lesquels vous souhaitez imprimer les listes.</legend>

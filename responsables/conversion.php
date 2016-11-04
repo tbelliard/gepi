@@ -183,6 +183,7 @@ if($temoin==1){
 		else{
 			check_token(false);
 
+			$nb_login_retrouves=0;
 			$erreur=0;
 			$sql="SELECT * FROM eleves ORDER BY nom,prenom";
 			$res1=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -277,7 +278,7 @@ if($temoin==1){
 								$sql="SELECT r2.* FROM responsables2 r2, responsables r, eleves e WHERE r2.ele_id=e.ele_id AND r.ereno=e.ereno AND e.ereno='$lig1->ereno'";
 								//echo "$sql<br />\n";
 								$test=mysqli_query($GLOBALS["mysqli"], $sql);
-								if(mysqli_num_rows($test)>0){
+								if(mysqli_num_rows($test)>0) {
 									// Le couple de responsables correspondant à $lig1->ereno est déjà dans les nouvelles tables.
 									while($ligtmp=mysqli_fetch_object($test)){
 										//$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$ligtmp->pers_id' AND ele_id='$lig1->ele_id'";
@@ -300,7 +301,7 @@ if($temoin==1){
 										}
 									}
 								}
-								else{
+								else {
 									// Le couple n'a pas encore été inscrit dans les nouvelles tables.
 
 									// Recherche du plus grand pers_id:
@@ -346,8 +347,26 @@ if($temoin==1){
 											echo "Insertion de l'association de l'élève $ele_id avec le responsable (1) $pers_id<br />\n";
 										}
 
+										// 20160930: Tenter de récupérer le login d'après tempo_utilisateurs et en cas d'incertitude, proposer de confirmer/faire le rapprochement.
+										// Peut-être ajouter un champ ereno dans resp_pers pour gérer resp_pers.ereno->responsables.ereno->tempo_utilisateurs.identifiant2
+										$login_resp="";
+										//$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant2 LIKE '%|$lig1->ereno|%'";
+										$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant2 LIKE '%|$lig1->ereno|%' AND nom LIKE '".mysqli_real_escape_string($GLOBALS["mysqli"], preg_replace("/[^A-Za-z]/","%",$lig2->nom1))."' AND prenom LIKE '".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom1)."' AND statut='responsable';";
+										//echo "$sql<br />\n";
+										$res_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_tmp_u)==1) {
+											$lig_tmp_u=mysqli_fetch_object($res_tmp_u);
+											$login_resp=$lig_tmp_u->login;
+
+											// On vérifie si le login existe déjà:
+											$test_unicite = test_unique_login($login_resp, "y");
+											if ($test_unicite!='yes') {
+												$login_resp="";
+											}
+										}
+
 										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom1',prenom='$lig2->prenom1',adr_id='$adr_id'";
-										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom1)."',prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom1)."',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom1)."',prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom1)."',adr_id='$adr_id';";
 										//echo "$sql<br />\n";
 										$res_insert2=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert2){
@@ -356,6 +375,28 @@ if($temoin==1){
 										}
 										else{
 											echo "Insertion du responsable ($pers_id): $lig2->nom1 $lig2->prenom1 (avec le n° adresse $adr_id).<br />\n";
+
+											if($login_resp!="") {
+												$sql="INSERT INTO utilisateurs SET login='".$login_resp."', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom1)."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom1)."', ";
+												$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+												//echo "$sql<br />\n";
+												//if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+												$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(!$insert_u) {
+													echo "<span style='color:red;'>Erreur</span> lors de la création du compte utilisateur pour ".$lig2->nom1." ".$lig2->prenom1."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+												}
+												else {
+													$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$pers_id."';";
+													//if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+													$update_rp=mysqli_query($GLOBALS["mysqli"], $sql);
+	
+													$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$lig_tmp_u->identifiant1."' AND statut='responsable';";
+													if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+													$update_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+													$nb_login_retrouves++;
+												}
+											}
+
 										}
 
 										//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr1',adr2='$lig2->adr1_comp',cp='$lig2->cp1',commune='$lig2->commune1',adr_id='$adr_id'";
@@ -409,6 +450,24 @@ if($temoin==1){
 											echo "Insertion de l'association de l'élève $ele_id avec le responsable (2) $pers_id<br />\n";
 										}
 
+										// 20160930: Tenter de récupérer le login d'après tempo_utilisateurs et en cas d'incertitude, proposer de confirmer/faire le rapprochement.
+										// Peut-être ajouter un champ ereno dans resp_pers pour gérer resp_pers.ereno->responsables.ereno->tempo_utilisateurs.identifiant2
+										$login_resp="";
+										//$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant2 LIKE '%|$lig1->ereno|%'";
+										$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant2 LIKE '%|$lig1->ereno|%' AND nom LIKE '".mysqli_real_escape_string($GLOBALS["mysqli"], preg_replace("/[^A-Za-z]/","%",$lig2->nom2))."' AND prenom LIKE '".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom2)."' AND statut='responsable';";
+										//echo "$sql<br />\n";
+										$res_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_tmp_u)==1) {
+											$lig_tmp_u=mysqli_fetch_object($res_tmp_u);
+											$login_resp=$lig_tmp_u->login;
+
+											// On vérifie si le login existe déjà:
+											$test_unicite = test_unique_login($login_resp, "y");
+											if ($test_unicite!='yes') {
+												$login_resp="";
+											}
+										}
+
 										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom2',prenom='$lig2->prenom2',adr_id='$adr_id'";
 										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom2)."',prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom2)."',adr_id='$adr_id'";
 										//echo "$sql<br />\n";
@@ -419,6 +478,26 @@ if($temoin==1){
 										}
 										else{
 											echo "Insertion du responsable ($pers_id): $lig2->nom2 $lig2->prenom2 (avec le n° adresse $adr_id).<br />\n";
+
+											if($login_resp!="") {
+												$sql="INSERT INTO utilisateurs SET login='".$login_resp."', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom2)."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom2)."', ";
+												$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+												//if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+												$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(!$insert_u) {
+													echo "<span style='color:red;'>Erreur</span> lors de la création du compte utilisateur pour ".$lig2->nom1." ".$lig2->prenom1."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+												}
+												else {
+													$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$pers_id."';";
+													//if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+													$update_rp=mysqli_query($GLOBALS["mysqli"], $sql);
+	
+													$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$lig_tmp_u->identifiant1."' AND statut='responsable';";
+													if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+													$update_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+													$nb_login_retrouves++;
+												}
+											}
 										}
 									}
 								}
@@ -438,6 +517,21 @@ if($temoin==1){
 				else{
 					echo "<p>Des erreurs se sont produites.</p>\n";
 				}
+
+				if($nb_login_retrouves>0) {
+					echo "<p>$nb_login_retrouves login(s) responsable(s) ont été récupérés.</p>";
+				}
+
+				$sql="SELECT pers_id,nom,prenom,COUNT(*) AS nb_doublons FROM resp_pers GROUP BY nom,prenom HAVING COUNT(*)>1 ORDER BY nom,prenom;";
+				$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test_resp)>0) {
+					echo "<p><a href=\"dedoublonner_responsables.php\" title=\"Il peut arriver que certains parents soient déclarés deux fois.
+Cela peut se produire dans le cas où un parent est associé à deux enfants dans l'établissement.
+Cela arrive assez fréquemment avec des saisies dans Sconet.
+Cela peut aussi se produire dans le cas d'une initialisation CSV.\">Dédoublonner les responsables <em title=\"".mysqli_num_rows($test_resp)." responsable(s) potentiellement en doublon.
+Il peut aussi s'agir d'homonymes.\">(".mysqli_num_rows($test_resp).")</em></a></p>\n";
+				}
+
 			}
 			else{
 				echo "<p>Il semble que la table 'eleves' soit vide.</p>\n";

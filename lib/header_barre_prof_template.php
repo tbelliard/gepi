@@ -86,7 +86,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 		$cours_actu = retourneCours($_SESSION["login"]);
 
 		// Qui correspond à cet id_groupe :
-		if ($cours_actu != "non") {	
+		if ($cours_actu != "non") {
                 $sqlG = "SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'";
                 $queryG = mysqli_query($mysqli, $sqlG);
                 $groupe_actu = $queryG->fetch_object();
@@ -561,27 +561,48 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	//=======================================================
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {
-		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof' , "texte"=>"Emploi du tps");
+		if(getSettingValue('edt_version_defaut')=="2") {
 
-		$tmp_sous_menu=array();
-		$cpt_sous_menu=0;
+			$tbs_menu_prof[$compteur_menu]=array("lien"=> '/edt/index2.php?login_prof='.$_SESSION['login'].'&affichage=semaine&type_affichage=prof' , "texte"=>"Emploi du tps", "title"=>"Mon emploi du temps");
 
-		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=classe1' , "texte"=>"EDT classe");
-		$cpt_sous_menu++;
+			$tmp_sous_menu=array();
+			$cpt_sous_menu=0;
 
-		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1' , "texte"=>"EDT prof");
-		$cpt_sous_menu++;
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt/index2.php?mode=reinit' , "texte"=>"EDT classe/prof/élève");
+			$cpt_sous_menu++;
 
-		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=salle1' , "texte"=>"EDT salle");
-		$cpt_sous_menu++;
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=salle1' , "texte"=>"EDT salle");
+			$cpt_sous_menu++;
 
-		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=eleve1' , "texte"=>"EDT élève");
-		$cpt_sous_menu++;
+			$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
+			$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 
-		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
-		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+			$compteur_menu++;
+		}
+		else {
 
-		$compteur_menu++;
+			$tbs_menu_prof[$compteur_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof' , "texte"=>"Emploi du tps");
+
+			$tmp_sous_menu=array();
+			$cpt_sous_menu=0;
+
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=classe1' , "texte"=>"EDT classe");
+			$cpt_sous_menu++;
+
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=prof1' , "texte"=>"EDT prof");
+			$cpt_sous_menu++;
+
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=salle1' , "texte"=>"EDT salle");
+			$cpt_sous_menu++;
+
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/edt_organisation/index_edt.php?visioedt=eleve1' , "texte"=>"EDT élève");
+			$cpt_sous_menu++;
+
+			$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
+			$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+
+			$compteur_menu++;
+		}
 	}else{$barre_edt = '';}
 
 

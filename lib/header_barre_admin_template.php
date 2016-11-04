@@ -298,7 +298,13 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		}
 
 		if((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin'))||(getSettingAOui('autorise_edt_eleve'))) {
-			$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+			//$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+			if(getSettingValue('edt_version_defaut')=="2") {
+				$menus .= '  <li><a href="'.$gepiPath.'/edt/index2.php?mode=reinit" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+			}
+			else {
+				$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+			}
 		}
 
 		if(getSettingAOui('active_edt_ical')) {

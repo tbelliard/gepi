@@ -98,7 +98,46 @@ if ($bull_affiche_aid == 'y') {
 		for($z=0;$z<count($tab_bull['eleve'][$i]['aid_b']);$z++) {
 			echo "<tr>\n";
 
-			echo "<td><span class='bulletin'>".htmlspecialchars($tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet']);
+			if($tab_bull['eleve'][$i]['aid_b'][$z]['display_nom']=='z') {
+				if((isset($tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']!="")) {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom'];
+				}
+				elseif((isset($tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet']!="")) {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet'];
+				}
+				else {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$z]['nom'];
+				}
+			}
+			elseif($tab_bull['eleve'][$i]['aid_b'][$z]['display_nom']=='x') {
+				if((isset($tab_bull['eleve'][$i]['aid_b'][$z]['nom']))&&($tab_bull['eleve'][$i]['aid_b'][$z]['nom']!="")) {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$z]['nom'];
+				}
+				else {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet'];
+				}
+
+				if((isset($tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']!="")) {
+					if($info_nom_matiere!="") {
+						$info_nom_matiere.=": ";
+					}
+					$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom'];
+				}
+			}
+			else {
+				if((isset($tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet']!="")) {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet'];
+				}
+				else {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$z]['nom'];
+				}
+			}
+			if($info_nom_matiere=="") {
+				$info_nom_matiere="AID";
+			}
+
+			//echo "<td><span class='bulletin'>".htmlspecialchars($tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet']);
+			echo "<td><span class='bulletin'>".htmlspecialchars($info_nom_matiere);
 			echo "<br />";
 			$cpt=0;
 			foreach($tab_bull['eleve'][$i]['aid_b'][$z]['aid_prof_resp_login'] as $current_aid_prof_login) {
@@ -482,7 +521,47 @@ if ($bull_affiche_aid == 'y') {
 		for($z=0;$z<count($tab_bull['eleve'][$i]['aid_e']);$z++) {
 			echo "<tr>\n";
 
-			echo "<td style='text-align: center;'><span class='bulletin'>".htmlspecialchars($tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet']);
+			if($tab_bull['eleve'][$i]['aid_e'][$z]['display_nom']=='z') {
+				if((isset($tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']!="")) {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom'];
+				}
+				elseif((isset($tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet']!="")) {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet'];
+				}
+				else {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$z]['nom'];
+				}
+			}
+			elseif($tab_bull['eleve'][$i]['aid_e'][$z]['display_nom']=='x') {
+				if((isset($tab_bull['eleve'][$i]['aid_e'][$z]['nom']))&&($tab_bull['eleve'][$i]['aid_e'][$z]['nom']!="")) {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$z]['nom'];
+				}
+				else {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet'];
+				}
+
+				if((isset($tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']))&&($tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']!="")) {
+					if($info_nom_matiere!="") {
+						$info_nom_matiere.=": ";
+					}
+					$info_nom_matiere.=$tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom'];
+				}
+			}
+			else {
+				if((isset($tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet']))&&($tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet']!="")) {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet'];
+				}
+				else {
+					$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$z]['nom'];
+				}
+			}
+			if($info_nom_matiere=="") {
+				$info_nom_matiere="AID";
+			}
+
+			//echo "<td style='text-align: center;'><span class='bulletin'>".htmlspecialchars($tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet']);
+			echo "<td style='text-align: center;'><span class='bulletin'>".htmlspecialchars($info_nom_matiere);
+
 			echo "<br />";
 			$cpt=0;
 			foreach($tab_bull['eleve'][$i]['aid_e'][$z]['aid_prof_resp_login'] as $current_aid_prof_login) {

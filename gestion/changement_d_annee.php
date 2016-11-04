@@ -218,7 +218,7 @@ if (isset($_POST['is_posted'])) {
 			//echo "<span style='color:green;'>$sql</span><br />";
 			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			$sql="INSERT INTO tempo_utilisateurs SELECT u.login,u.password,u.salt,u.email,e.ele_id,e.elenoet,u.statut,u.auth_mode,NOW(),u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
+			$sql="INSERT INTO tempo_utilisateurs SELECT u.login,u.password,u.salt,u.email,e.ele_id,e.elenoet,u.nom,u.prenom,u.statut,u.auth_mode,NOW(),u.statut FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve';";
 			//echo "<span style='color:green;'>$sql</span><br />";
 			$svg_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($svg_insert) {
@@ -249,11 +249,26 @@ if (isset($_POST['is_posted'])) {
 			//echo "<span style='color:green;'>$sql</span><br />";
 			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			$sql="INSERT INTO tempo_utilisateurs SELECT u.login,u.password,u.salt,u.email,rp.pers_id,rp.pers_id,u.statut,u.auth_mode,NOW(),u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.statut='responsable';";
+			$sql="INSERT INTO tempo_utilisateurs SELECT u.login,u.password,u.salt,u.email,rp.pers_id,rp.pers_id,u.nom,u.prenom,u.statut,u.auth_mode,NOW(),u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND u.statut='responsable';";
 			//echo "<span style='color:green;'>$sql</span><br />";
 			$svg_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($svg_insert) {
 				$msg.="Mise en réserve des comptes responsables effectuée.<br />";
+				// Remplacement de l'identifiant2 par la liste des elenoet associés pour le cas d'une initialisation CSV.
+				$sql="SELECT identifiant1 FROM tempo_utilisateurs WHERE statut='responsable';";
+				$res_t_u=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_t_u=mysqli_fetch_object($res_t_u)) {
+					$sql="SELECT e.elenoet FROM eleves e, responsables2 r WHERE e.ele_id=r.ele_id AND (r.resp_legal='1' OR r.resp_legal='2') AND r.pers_id='".$lig_t_u->identifiant1."';";
+					$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
+					$chaine_elenoet="";
+					while($lig_elenoet=mysqli_fetch_object($res_elenoet)) {
+						$chaine_elenoet.="|".$lig_elenoet->elenoet;
+					}
+					if($chaine_elenoet!='') {
+						$sql="UPDATE tempo_utilisateurs SET identifiant2='".$chaine_elenoet."|' WHERE identifiant1='".$lig_t_u->identifiant1."' AND statut='responsable';";
+						$update_t_u=mysqli_query($GLOBALS["mysqli"], $sql);
+					}
+				}
 			}
 			else {
 				$msg.="Erreur lors de la mise en réserve des comptes responsables.<br />";
@@ -520,6 +535,8 @@ salt VARCHAR(128) NOT NULL,
 email VARCHAR(50) NOT NULL,
 identifiant1 VARCHAR( 10 ) NOT NULL ,
 identifiant2 VARCHAR( 50 ) NOT NULL ,
+nom VARCHAR( 50 ) NOT NULL ,
+prenom VARCHAR( 50 ) NOT NULL ,
 statut VARCHAR( 20 ) NOT NULL ,
 auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
 date_reserve DATE DEFAULT '0000-00-00',

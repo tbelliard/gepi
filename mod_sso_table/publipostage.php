@@ -300,7 +300,9 @@ if($mode=="upload") {
 		<input type='checkbox' name='inclure_url_connexion_ent' id='inclure_url_connexion_ent' value='y' onchange=\"checkbox_change(this.id)\"$checked_inclure_url_connexion_ent /><label for='inclure_url_connexion_ent' id='texte_inclure_url_connexion_ent'$style_inclure_url_connexion_ent> Inclure l'URL de connexion <input type='text' name='url_connexion_ent' value='".$url_connexion_ent."' /> dans le tableau des informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='fiche_bienvenue' id='fiche_bienvenue' value='y' onchange=\"checkbox_change(this.id)\" /><label for='fiche_bienvenue' id='texte_fiche_bienvenue'> Inclure la fiche bienvenue sous les informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='mot_de_passe_deja_modifie' id='mot_de_passe_deja_modifie' value='n' onchange=\"checkbox_change(this.id)\" /><label for='mot_de_passe_deja_modifie' id='texte_mot_de_passe_deja_modifie'> Ne pas imprimer les fiches pour lesquelles le mot de passe a déjà été modifié.</label><br />
-		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>')</em></p>";
+		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>')</em><br />
+		<input type='checkbox' name='envoi_mail' id='envoi_mail' value='y' onchange=\"checkbox_change(this.id)\" /><label for='envoi_mail' id='texte_envoi_mail'> Envoyer la fiche par mail <em>(sous réserve que l'adresse mail de l'utilisateur associé au compte soit renseigné)</em>.</label>
+		</p>";
 
 				if(count($tab_profil)>0) {
 					echo "
@@ -419,6 +421,8 @@ if($mode=="upload") {
 elseif($mode=='publiposter') {
 
 	//debug_var();
+	// Désactiver le mode deflate afin que les ob_flush() et flush() fonctionnent
+	if (function_exists('apache_setenv')) apache_setenv("no-gzip","1");
 
 	if(isset($_POST['inclure_url_connexion_ent'])) {
 		saveSetting('inclure_url_connexion_ent', 'y');
@@ -433,6 +437,15 @@ elseif($mode=='publiposter') {
 		saveSetting('url_connexion_ent', $_POST['url_connexion_ent']);
 	}
 	$url_connexion_ent=getSettingValue('url_connexion_ent');
+
+	if(isset($_POST['envoi_mail'])) {
+		$envoi_mail="y";
+	}
+	else {
+		$envoi_mail="n";
+	}
+	$nb_mail=0;
+	$chaine_mail_envoye="";
 
 	$tempdir=get_user_temp_directory();
 	if($tempdir=="") {
@@ -620,76 +633,6 @@ elseif($mode=='publiposter') {
 						$tab_cle_courante[]=$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
 						$tab_courant[$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]]=$tab;
 
-						/*
-						echo "
-		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
-			<tr>
-				<td style='width:8em;'>À l'attention de </td>
-				<td class='bold'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</td>
-			</tr>
-			<tr>
-				<td>Login </td>
-				<td class='bold'>".$tab[$tabindice['login']]."</td>
-			</tr>
-			<tr>
-				<td>Mot de passe </td>
-				<td class='bold'>".$tab[$tabindice['mot de passe']]."</td>
-			</tr>";
-
-						if((isset($tabindice['nom enfant']))&&($tab[$tabindice['nom enfant']]!='')) {
-							echo "
-			<tr>
-				<td>Responsable de </td>
-				<td>".$tab[$tabindice['nom enfant']];
-							if(isset($tabindice['prenom enfant'])) {
-								echo " ".$tab[$tabindice['prenom enfant']];
-							}
-							echo "</td>
-			</tr>";
-						}
-
-						if(isset($tabindice['classe'])) {
-							echo "
-			<tr>
-				<td>Classe de </td>
-				<td>".$tab[$tabindice['classe']]."</td>
-			</tr>";
-						}
-
-				
-
-						echo "
-		</table>";
-
-						if($fiche_bienvenue=="y") {
-							if(isset($tabindice['profil'])) {
-								if((mb_strtolower($tab[$tabindice['profil']])=='tuteur')||
-								(mb_strtolower($tab[$tabindice['profil']])=='parent')||
-								(mb_strtolower($tab[$tabindice['profil']])=='responsable')) {
-									$page=$ImpressionFicheParent;
-								}
-								elseif((mb_strtolower($tab[$tabindice['profil']])=='eleve')||(mb_strtolower($tab[$tabindice['profil']])=='élève')) {
-									$page=$ImpressionFicheEleve;
-								}
-								else {
-									$page=$Impression;
-								}
-							}
-							else {
-								$page=$Impression;
-							}
-							echo $page;
-
-
-							if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
-								echo "<p class='saut'></p>";
-							}
-						}
-						else {
-							echo "<p>&nbsp;</p>";
-						}
-						$compteur_pages_imprimees++;
-						*/
 					}
 				}
 				$compteur++;
@@ -698,24 +641,25 @@ elseif($mode=='publiposter') {
 			sort($tab_cle_courante);
 			for($loop_cle=0;$loop_cle<count($tab_cle_courante);$loop_cle++) {
 				$tab=$tab_courant[$tab_cle_courante[$loop_cle]];
-				echo "
-		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
+
+				$fb_courante="
+		<table style='page-break-inside: avoid; width:30em; font-size:9pt;' class='boireaus'>
 			<tr>
 				<td style='width:8em;'>À l'attention de </td>
 				<td class='bold'>";
-				//echo $tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
-				//echo "<a href='../eleves/recherche.php?rech_nom=".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."&statut[0]=eleve&statut[1]=responsable&is_posted_recherche=y' style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
-				echo "<a href=\"#\" onclick=\"cherche_ele_resp('".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."');return false;\" style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
-				echo "</td>
+				//$fb_courante.=$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
+				//$fb_courante.="<a href='../eleves/recherche.php?rech_nom=".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."&statut[0]=eleve&statut[1]=responsable&is_posted_recherche=y' style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
+				$fb_courante.="<a href=\"#\" onclick=\"cherche_ele_resp('".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."');return false;\" style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
+				$fb_courante.="</td>
 			</tr>";
 				if($inclure_url_connexion_ent=="y") {
-					echo "
+					$fb_courante.="
 			<tr>
 				<td>URL </td>
 				<td class='bold'>".$url_connexion_ent."</td>
 			</tr>";
 				}
-				echo "
+				$fb_courante.="
 			<tr>
 				<td>Login </td>
 				<td class='bold'>".$tab[$tabindice['login']]."</td>
@@ -726,19 +670,19 @@ elseif($mode=='publiposter') {
 			</tr>";
 
 				if((isset($tabindice['nom enfant']))&&($tab[$tabindice['nom enfant']]!='')) {
-					echo "
+					$fb_courante.="
 			<tr>
 				<td>Responsable de </td>
 				<td>".$tab[$tabindice['nom enfant']];
 					if(isset($tabindice['prenom enfant'])) {
-						echo " ".$tab[$tabindice['prenom enfant']];
+						$fb_courante.=" ".$tab[$tabindice['prenom enfant']];
 					}
-					echo "</td>
+					$fb_courante.="</td>
 			</tr>";
 				}
 
 				if(isset($tabindice['classe'])) {
-					echo "
+					$fb_courante.="
 			<tr>
 				<td>Classe de </td>
 				<td>".$tab[$tabindice['classe']]."</td>
@@ -747,7 +691,7 @@ elseif($mode=='publiposter') {
 
 				
 
-				echo "
+				$fb_courante.="
 		</table>";
 
 				if($fiche_bienvenue=="y") {
@@ -767,21 +711,112 @@ elseif($mode=='publiposter') {
 					else {
 						$page=$Impression;
 					}
-					echo $page;
+					$fb_courante.=$page;
 
+					echo $fb_courante;
 
 					if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
 						echo "<p class='saut'></p>";
 					}
 				}
 				else {
+					echo $fb_courante;
 					echo "<p>&nbsp;</p>";
 				}
+
+				// Mail 20160905
+				if($envoi_mail=="y") {
+					$tab_param_mail=array();
+					$tab_param_mail['destinataire']=array();
+					// Récupérer le login_gepi associé à l'uid.
+					// Pour un élève, rechercher l'email dans eleves et les email des parents dans utilisateurs et resp_pers
+					// Pour un parent, rechercher les email des parents dans utilisateurs et resp_pers
+
+					$sql="SELECT u.statut, u.login, u.email FROM utilisateurs u, sso_table_correspondance stc WHERE u.login=stc.login_gepi AND stc.login_sso='".$tab[$tabindice['uid']]."';";
+					//echo "$sql<br />";
+					$res_mail=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_mail)>0) {
+						$lig_mail=mysqli_fetch_object($res_mail);
+
+						if(check_mail($lig_mail->email)) {
+							$tab_param_mail['destinataire'][]=$lig_mail->email;
+						}
+
+						if($lig_mail->statut=="eleve") {
+							$sql="SELECT email FROM eleves WHERE login='".$lig_mail->login."' AND email LIKE '%@%';";
+							//echo "$sql<br />";
+							$res_mail2=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($res_mail2)>0) {
+								$lig_mail2=mysqli_fetch_object($res_mail2);
+
+								if((check_mail($lig_mail2->email))&&(!in_array($lig_mail2->email, $tab_param_mail['destinataire']))) {
+									$tab_param_mail['destinataire'][]=$lig_mail2->email;
+								}
+							}
+							// RECHERCHE DES ADRESSES MAIL DES RESPONSABLES... et envoyer un mail par reponsable? pb des responsables séparés ne voulant pas divulguer leur mail au conjoint?
+							$tab_resp=get_resp_from_ele_login($lig_mail->login);
+							for($loop_resp=0;$loop_resp<count($tab_resp);$loop_resp++) {
+								if((isset($tab_resp[$loop_resp]["mel"]))&&(check_mail($tab_resp[$loop_resp]["mel"]))) {
+									$tab_param_mail['destinataire'][]=$tab_resp[$loop_resp]["mel"];
+								}
+								if((isset($tab_resp[$loop_resp]["email"]))&&(check_mail($tab_resp[$loop_resp]["email"]))) {
+									$tab_param_mail['destinataire'][]=$tab_resp[$loop_resp]["email"];
+								}
+							}
+						}
+						elseif($lig_mail->statut=="responsable") {
+							$sql="SELECT mel AS email FROM resp_pers WHERE login='".$lig_mail->login."' AND mel LIKE '%@%';";
+							//echo "$sql<br />";
+							$res_mail2=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($res_mail2)>0) {
+								$lig_mail2=mysqli_fetch_object($res_mail2);
+
+								if((check_mail($lig_mail2->email))&&(!in_array($lig_mail2->email, $tab_param_mail['destinataire']))) {
+									$tab_param_mail['destinataire'][]=$lig_mail2->email;
+								}
+							}
+						}
+
+						if(count($tab_param_mail['destinataire'])>0) {
+							/*$destinataire=$tab_param_mail['destinataire'][0];
+							for($loop_mail=1;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
+								$destinataire.=",".$tab_param_mail['destinataire'][$loop_mail];
+							}
+							if(envoi_mail("Compte Gepi", "Bonjour(soir),\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
+								$nb_mail++;
+							}
+							*/
+							// Pour éviter les problèmes d'envoi à plusieurs adresses mail, avec des parents séparés
+							for($loop_mail=0;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
+								if($chaine_mail_envoye!="") {
+									$chaine_mail_envoye.=", ";
+								}
+
+								$destinataire=$tab_param_mail['destinataire'][$loop_mail];
+								if(envoi_mail("Compte Gepi", "Bonjour(soir),\n\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
+									$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion du compte ".$tab[$tabindice['login']]." envoyé avec succès.\">".$destinataire."</span>";
+									$nb_mail++;
+								}
+								else {
+									$chaine_mail_envoye.="<span style='color:red' title=\"Échec de l'envoi des informations de connexion du compte ".$tab[$tabindice['login']].".\">".$destinataire."</span>";
+								}
+							}
+						}
+					}
+				}
+
+				flush();
 				$compteur_pages_imprimees++;
+				//echo "\$compteur_pages_imprimees=$compteur_pages_imprimees<br />\n";
 			}
+		} // Fin de la boucle sur les classes
+
+		if($chaine_mail_envoye!="") {
+			echo "<div class='noprint'><p><strong>Liste des envois de mail&nbsp;:</strong> $chaine_mail_envoye</p></div>";
 		}
 	}
-	else {
+	else { 
+		// Il n'y a qu'une classe ou aucune classe cochée
 		$compteur_pages_imprimees=0;
 		$compteur=0;
 		while (!feof($fp)) {
@@ -841,23 +876,23 @@ elseif($mode=='publiposter') {
 
 				if($afficher=="y") {
 					$tab_deja[]=$tab[$tabindice['uid']];
-					echo "
-	<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
+					$fb_courante="
+	<table style='page-break-inside: avoid; width:30em; font-size:9pt;' class='boireaus'>
 		<tr>
 			<td style='width:8em;'>À l'attention de </td>
 			<td class='bold'>";
-				//echo $tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
-					echo "<a href=\"#\" onclick=\"cherche_ele_resp('".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."');return false;\" style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
-					echo "</td>
+				//$fb_courante.=$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
+					$fb_courante.="<a href=\"#\" onclick=\"cherche_ele_resp('".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."');return false;\" style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
+					$fb_courante.="</td>
 		</tr>";
 					if($inclure_url_connexion_ent=="y") {
-						echo "
+						$fb_courante.="
 			<tr>
 				<td>URL </td>
 				<td class='bold'>".$url_connexion_ent."</td>
 			</tr>";
 					}
-					echo "
+					$fb_courante.="
 		<tr>
 			<td>Login </td>
 			<td class='bold'>".$tab[$tabindice['login']]."</td>
@@ -868,19 +903,19 @@ elseif($mode=='publiposter') {
 		</tr>";
 
 					if((isset($tabindice['nom enfant']))&&($tab[$tabindice['nom enfant']]!='')) {
-						echo "
+						$fb_courante.="
 		<tr>
 			<td>Responsable de </td>
 			<td>".$tab[$tabindice['nom enfant']];
 						if(isset($tabindice['prenom enfant'])) {
-							echo " ".$tab[$tabindice['prenom enfant']];
+							$fb_courante.=" ".$tab[$tabindice['prenom enfant']];
 						}
-						echo "</td>
+						$fb_courante.="</td>
 		</tr>";
 					}
 
 					if(isset($tabindice['classe'])) {
-						echo "
+						$fb_courante.="
 		<tr>
 			<td>Classe de </td>
 			<td>".$tab[$tabindice['classe']]."</td>
@@ -889,7 +924,7 @@ elseif($mode=='publiposter') {
 
 				
 
-					echo "
+					$fb_courante.="
 	</table>";
 
 					if($fiche_bienvenue=="y") {
@@ -909,17 +944,107 @@ elseif($mode=='publiposter') {
 						else {
 							$page=$Impression;
 						}
-						echo $page;
+						$fb_courante.=$page;
+
+						echo $fb_courante;
 
 						if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
 							echo "<p class='saut'></p>";
 						}
 					}
 
+
+					// Mail 20160905
+					if($envoi_mail=="y") {
+						$tab_param_mail=array();
+						$tab_param_mail['destinataire']=array();
+						// Récupérer le login_gepi associé à l'uid.
+						// Pour un élève, rechercher l'email dans eleves et les email des parents dans utilisateurs et resp_pers
+						// Pour un parent, rechercher les email des parents dans utilisateurs et resp_pers
+
+						$sql="SELECT u.statut, u.login, u.email FROM utilisateurs u, sso_table_correspondance stc WHERE u.login=stc.login_gepi AND stc.login_sso='".$tab[$tabindice['uid']]."';";
+						//echo "$sql<br />";
+						$res_mail=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res_mail)>0) {
+							$lig_mail=mysqli_fetch_object($res_mail);
+
+							if(check_mail($lig_mail->email)) {
+								$tab_param_mail['destinataire'][]=$lig_mail->email;
+							}
+						
+							if($lig_mail->statut=="eleve") {
+								$sql="SELECT email FROM eleves WHERE login='".$lig_mail->login."' AND email LIKE '%@%';";
+								//echo "$sql<br />";
+								$res_mail2=mysqli_query($mysqli, $sql);
+								if(mysqli_num_rows($res_mail2)>0) {
+									$lig_mail2=mysqli_fetch_object($res_mail2);
+
+									if((check_mail($lig_mail2->email))&&(!in_array($lig_mail2->email, $tab_param_mail['destinataire']))) {
+										$tab_param_mail['destinataire'][]=$lig_mail2->email;
+									}
+								}
+								// RECHERCHE DES ADRESSES MAIL DES RESPONSABLES... et envoyer un mail par reponsable? pb des responsables séparés ne voulant pas divulguer leur mail au conjoint?
+								$tab_resp=get_resp_from_ele_login($lig_mail->login);
+								for($loop_resp=0;$loop_resp<count($tab_resp);$loop_resp++) {
+									if((isset($tab_resp[$loop_resp]["mel"]))&&(check_mail($tab_resp[$loop_resp]["mel"]))) {
+										$tab_param_mail['destinataire'][]=$tab_resp[$loop_resp]["mel"];
+									}
+									if((isset($tab_resp[$loop_resp]["email"]))&&(check_mail($tab_resp[$loop_resp]["email"]))) {
+										$tab_param_mail['destinataire'][]=$tab_resp[$loop_resp]["email"];
+									}
+								}
+							}
+							elseif($lig_mail->statut=="responsable") {
+								$sql="SELECT mel AS email FROM resp_pers WHERE login='".$lig_mail->login."' AND mel LIKE '%@%';";
+								//echo "$sql<br />";
+								$res_mail2=mysqli_query($mysqli, $sql);
+								if(mysqli_num_rows($res_mail2)>0) {
+									$lig_mail2=mysqli_fetch_object($res_mail2);
+
+									if((check_mail($lig_mail2->email))&&(!in_array($lig_mail2->email, $tab_param_mail['destinataire']))) {
+										$tab_param_mail['destinataire'][]=$lig_mail2->email;
+									}
+								}
+							}
+
+							/*$destinataire=$tab_param_mail['destinataire'][0];
+							for($loop_mail=1;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
+								$destinataire.=",".$tab_param_mail['destinataire'][$loop_mail];
+							}
+							if(envoi_mail("Compte Gepi", "Bonjour(soir),\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
+								$nb_mail++;
+							}
+							*/
+							// Pour éviter les problèmes d'envoi à plusieurs adresses mail, avec des parents séparés
+							for($loop_mail=0;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
+								if($chaine_mail_envoye!="") {
+									$chaine_mail_envoye.=", ";
+								}
+
+								$destinataire=$tab_param_mail['destinataire'][$loop_mail];
+								if(envoi_mail("Compte Gepi", "Bonjour(soir),\n\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
+									$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion du compte ".$tab[$tabindice['login']]." envoyé avec succès.\">".$destinataire."</span>";
+									$nb_mail++;
+								}
+								else {
+									$chaine_mail_envoye.="<span style='color:red' title=\"Échec de l'envoi des informations de connexion du compte ".$tab[$tabindice['login']].".\">".$destinataire."</span>";
+								}
+							}
+						}
+					}
+
+					flush();
+
 					$compteur_pages_imprimees++;
+					//echo "\$compteur_pages_imprimees=$compteur_pages_imprimees<br />\n";
 				}
 			}
 			$compteur++;
+			//echo "\$compteur=$compteur<br />\n";
+		}
+
+		if($chaine_mail_envoye!="") {
+			echo "<div class='noprint'><p><strong>Liste des envois de mail&nbsp;:</strong> $chaine_mail_envoye</p></div>";
 		}
 	}
 

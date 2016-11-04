@@ -1,7 +1,7 @@
 <?php
 
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -71,6 +71,33 @@ if($acces=="n") {
 if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	check_token();
 
+	$msg="";
+	$nb_reg=0;
+	$nb_err=0;
+	if (isset($NON_PROTECT["app_grp"])){
+		$ap = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp"]));
+	}
+	else{
+		$ap = "";
+	}
+	$ap=nettoyage_retours_ligne_surnumeraires($ap);
+
+	$sql="SELECT * FROM absences_appreciations_grp WHERE (id_classe='".$id_classe."' AND periode='$periode_num')";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="UPDATE absences_appreciations_grp SET appreciation='$ap' WHERE (id_classe='".$id_classe."' AND periode='$periode_num');";
+	} else {
+		$sql="INSERT INTO absences_appreciations_grp SET id_classe='".$id_classe."', periode='$periode_num', appreciation='$ap';";
+	}
+	//echo "$sql<br />";
+	$register = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (!$register) {
+		$nb_err++;
+	}
+	else {
+		$nb_reg++;
+	}
+
 	if ((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']!="cpe")) {
 		$sql="SELECT e.login FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num')";
 	} else {
@@ -130,30 +157,39 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			//=========================
 
 			if (!(preg_match ("/^[0-9]{1,}$/", $nb_absences))) {
-					$nb_absences = '';
-				}
-				if (!(preg_match ("/^[0-9]{1,}$/", $nb_nj))) {
-					$nb_nj = '';
-				}
-				if (!(preg_match ("/^[0-9]{1,}$/", $nb_retard))) {
-					$nb_retard = '';
-				}
+				$nb_absences = '';
+			}
+			if (!(preg_match ("/^[0-9]{1,}$/", $nb_nj))) {
+				$nb_nj = '';
+			}
+			if (!(preg_match ("/^[0-9]{1,}$/", $nb_retard))) {
+				$nb_retard = '';
+			}
 
-				$test_eleve_nb_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
-				$test_nb = mysqli_num_rows($test_eleve_nb_absences_query);
-				if ($test_nb != "0") {
-					$register = mysqli_query($GLOBALS["mysqli"], "UPDATE absences SET nb_absences='$nb_absences', non_justifie='$nb_nj', nb_retards='$nb_retard', appreciation='$ap' WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
-				} else {
-					$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO absences SET login='$reg_eleve_login', periode='$periode_num',nb_absences='$nb_absences',non_justifie='$nb_nj', nb_retards='$nb_retard',appreciation='$ap'");
-				}
+			$test_eleve_nb_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
+			$test_nb = mysqli_num_rows($test_eleve_nb_absences_query);
+			if ($test_nb != "0") {
+				$register = mysqli_query($GLOBALS["mysqli"], "UPDATE absences SET nb_absences='$nb_absences', non_justifie='$nb_nj', nb_retards='$nb_retard', appreciation='$ap' WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
+			} else {
+				$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO absences SET login='$reg_eleve_login', periode='$periode_num',nb_absences='$nb_absences',non_justifie='$nb_nj', nb_retards='$nb_retard',appreciation='$ap'");
+			}
 			if (!$register) {
-					$msg = "Erreur lors de l'enregistrement des données";
+				$msg.="Erreur lors de l'enregistrement des données pour $reg_eleve_login.<br />";
+				$nb_err++;
+			}
+			else {
+				$nb_reg++;
 			}
 		}
 		$j++;
 	}
 	//$affiche_message = 'yes';
-	if(!isset($msg)){$msg='Les modifications ont été enregistrées !';}
+	if(!isset($msg)) {
+		$msg='Les modifications ont été enregistrées ('.strftime("%d/%m/%Y à %H:%M:%S").') !<br />';
+	}
+	if($nb_reg>0) {
+		$msg.=$nb_reg." enregistrement(s) effectué(s).<br />";
+	}
 }
 $themessage  = 'Des champs ont été modifiés. Voulez-vous vraiment quitter sans enregistrer ?';
 //$message_enregistrement = 'Les modifications ont été enregistrées !';
@@ -180,9 +216,26 @@ echo add_token_field(true);
 <?php
 $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = old_mysql_result($call_classe, "0", "classe");
+
+$appreciation_absences_grp="";
+$sql="SELECT * FROM absences_appreciations_grp WHERE id_classe='".$id_classe."' AND periode='".$periode_num."';";
+$res_abs_grp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_abs_grp_clas)>0) {
+	$lig_abs_grp_clas=mysqli_fetch_object($res_abs_grp_clas);
+	$appreciation_absences_grp=$lig_abs_grp_clas->appreciation;
+}
+
+echo "<div style='float:right; width:16px'><a href='../impression/avis_pdf_absences.php?id_classe=$id_classe&periode_num=$periode_num' title=\"Imprimer les appréciations absences et nombre d'absences,... en PDF\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='Générer un PDF' /></a></div>";
 ?>
-<p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
-<br />
+<p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b></p>
+
+<p style='margin-top:1em;'>
+	<b>Appréciation sur le groupe classe pour la période <?php echo $periode_num;?>&nbsp;:</b><br />
+	<textarea id='n0' name='no_anti_inject_app_grp' rows='2' cols='80'  wrap="virtual" 
+					onKeyDown="clavier(this.id,event);" 
+					onchange="changement()"><?php echo $appreciation_absences_grp;?></textarea>
+</p>
+
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
 <tr>

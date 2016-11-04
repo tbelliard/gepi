@@ -9,6 +9,12 @@
 
 
 	<title><?php
+		// Pour repérer les onglets lors du développement:
+		//insert into setting set value='y', name='afficher_version_en_title';
+		if(getSettingAOui("afficher_version_en_title")) {
+			echo "(".getSettingValue("version").") ";
+		}
+
 		if((isset($titre_page_title2))&&($titre_page_title2!="")) {
 			echo "$titre_page_title2 : $tbs_gepiSchoolName";
 		}

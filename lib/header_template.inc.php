@@ -105,7 +105,7 @@ function last_connection() {
                 
             }
         }
-        $res->close();
+        //$res->close();
         
     return $r;
     

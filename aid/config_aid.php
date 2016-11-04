@@ -267,9 +267,9 @@ echo add_token_field();
 		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid ?>" />
 		<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>
 		<br />
-		<strong>Configuration des AID (Activités Inter-Disciplinaires) :</strong>
+		<strong>Configuration de la catégorie d'AID <em>(Activités Inter-Disciplinaires)</em>&nbsp;:</strong>
 		<hr />
-		Choisissez le nom complet de l'AID (par exemple Travaux Personnels Encadrés) :
+		Choisissez le nom complet de la catégorie d'AID <em>(par exemple Travaux Personnels Encadrés)</em>&nbsp;:
 		<br />
 		Nom complet : 
 		<input type="text" 
@@ -279,7 +279,7 @@ echo add_token_field();
 				   ?> 
 			   />
 		<br /><br />
-		Choisissez le nom abrégé de l'AID (par exemple T.P.E.) :
+		Choisissez le nom abrégé de la catégorie d'AID <em>(par exemple T.P.E.)</em>&nbsp;:
 		<br />
 		Nom : 
 		<input type="text" 
@@ -328,7 +328,7 @@ $query_max_periode = mysqli_query($GLOBALS["mysqli"], "SELECT max(num_periode) m
 $obj_periode = $query_max_periode->fetch_object();
 $max_periode = $obj_periode->max+1;
 ?>
-		Durée de l'AID :
+		Durée de la catégorie d'AID :
 <?php
 if ($max_periode == '1') {
 ?>
@@ -372,13 +372,33 @@ while ($i < $max_periode) {
 		</select>
 		(incluse).
 		<hr />
-		Choisissez le cas échéant la note maximum sur laquelle est notée l'AID :
+		Choisissez le cas échéant la note maximum sur laquelle est notée la catégorie d'AID :
 		<br />
 		Note maximum : 
 		<input type="text" name="note_max" size="4" 
 			<?php if ($note_max) { echo "value=\"".$note_max."\"";}?> 
 			   onBlur="verif_type_note()" />
 		<hr />
+
+		Dans le bulletin final<br />
+		<input type="radio" name="display_nom" id='display_nom_n' value="n" 
+			<?php if ($display_nom == "n") { echo ' checked="checked"';} ?> />
+		<label for='display_nom_n'> Ne faire apparaître que le nom <em>(complet)</em> de la catégorie d'AID en colonne Matière/enseignement,</label><br />
+
+		<input type="radio" name="display_nom" id='display_nom_y' value="y" 
+			<?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> />
+		<label for='display_nom_y'> Faire apparaître en colonne Matière/enseignement le nom <em>(complet)</em> de la catégorie d'AID et faire précéder l'appréciation du nom de l'AID,</label><br />
+
+		<input type="radio" name="display_nom" id='display_nom_z' value="z" 
+			<?php if ($display_nom == "z") { echo ' checked="checked"';} ?> />
+		<label for='display_nom_z'> Faire apparaître en colonne Matière/enseignement le nom de l'AID plutôt que le nom de la catégorie d'AID,</label><br />
+
+		<input type="radio" name="display_nom" id='display_nom_x' value="x" 
+			<?php if ($display_nom == "x") { echo ' checked="checked"';} ?> />
+		<label for='display_nom_x'> Faire apparaître en colonne Matière/enseignement le nom court de la catégorie d'AID suivi du nom de l'AID.</label><br />
+
+
+		<!--
 		Dans le bulletin final, le titre complet apparaît et précède l'appréciation dans la case appréciation :
 		<br />
 		<input type="radio" name="display_nom" id='display_nom_y' value="y" 
@@ -387,16 +407,20 @@ while ($i < $max_periode) {
 		<input type="radio" name="display_nom" id='display_nom_n' value="n" 
 			<?php if ($display_nom == "n") { echo ' checked="checked"';} ?> />
 		<label for='display_nom_n'> Non</label>
+		-->
 		<hr />
+
 		Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :
 		<br />
 		<input type="text" name="message" size="40" maxlength="40" 
 			<?php if ($message) { echo "value=\"".$message."\"";}?> />
 		<br />
 		<span style='font-size:small;'>(Ce message prendra de la place dans la case appréciation sur le bulletin)</span>
+
 		<hr />
+
 	</p>
-	<p>Place de la case réservée à cette aid dans le bulletin final :</p>
+	<p>Place de la case réservée à cette catégorie d'aid dans le bulletin final :</p>
 	<p>
 		<input type="radio" id="orderDisplay1Y" name="order_display1" value="b" 
 			<?php if (($order_display1 == "b") or (!$order_display1)) { echo ' checked="checked"' ;} ?> />
@@ -406,7 +430,7 @@ while ($i < $max_periode) {
 		<label for="orderDisplay1N"> En fin de bulletin</label>
 	</p>
 	<p>
-		Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
+		Position par rapport aux autres catégories d'aid (entrez un nombre entre 1 et 100) :
 		<input type="text" name="order_display2" size="1" 
 			<?php if (isset($order_display2)) { echo "value=\"".$order_display2."\"";} ?> />
 	</p>
@@ -415,12 +439,12 @@ while ($i < $max_periode) {
 	<p>
 		<input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" 
 			<?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
-		<label for="display_Bulletin">L'AID apparaît dans le bulletin officiel</label>
+		<label for="display_Bulletin">Les AID de cette catégorie apparaissent dans le bulletin officiel</label>
 	</p>
 	<p>
 		<input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' 
 			<?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
-		<label for="bullSimplifie">L'AID appara&icirc;t dans le bulletin simplifi&eacute;.</label>
+		<label for="bullSimplifie">Les AID de cette catégorie apparaissent dans le bulletin simplifi&eacute;.</label>
 	</p>
 	<hr />
 	<p><strong>Inscriptions multiples :  </strong></p>
