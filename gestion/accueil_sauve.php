@@ -1230,7 +1230,9 @@ if (isset($action) and ($action == 'restaure'))  {
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
 						$num_table=preg_replace('/^table_/','',$lig->name);
-						unlink("../backup/".$dirname."/base_extraite_table_".$num_table.".sql");
+						if(file_exists("../backup/".$dirname."/base_extraite_table_".$num_table.".sql")) {
+							unlink("../backup/".$dirname."/base_extraite_table_".$num_table.".sql");
+						}
 					}
 				}
 			}
