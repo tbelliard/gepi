@@ -1127,8 +1127,7 @@ if (isset($action) and ($action == 'restaure'))  {
 
 
 	// on teste l'accès à mysql
-	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe")) @exec("mysql.exe --help",$t_retour,$retour);
-	else @exec("mysql --help",$t_retour,$retour);
+	@exec("mysql --help",$t_retour,$retour);
 	if ($retour!=0) {
 		echo "<script>document.getElementById('restau_en_cours').innerHTML='<a href=\"accueil_sauve.php\"><img src=\"../images/icons/back.png\" alt=\"Retour\">Retour</a>'</script>";
 		echo "<br />";
@@ -1182,19 +1181,12 @@ if (isset($action) and ($action == 'restaure'))  {
 
 	// C'est parti pour la restauration
 	register_shutdown_function('shutdown');
-	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysql.exe")) {
-		$cmd="mysql.exe -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." --host=".$dbHost;
-		if (isset($dbPort)) {$cmd.=" --port=".$dbPort;}
-		$cmd.=" < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt";
-	}
-	else {
-		$cmd="mysql -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." --host=".$dbHost;
-		if (isset($dbPort)) {$cmd.=" --port=".$dbPort;}
-		$cmd.=" < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt";
-	}
+	//@exec("mysql -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt",$t_retour,$retour);
+	$cmd="mysql -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." --host=".$dbHost;
+	if (isset($dbPort)) {$cmd.=" --protocol=TCP --port=".$dbPort;}
+	$cmd.=" < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt";
 	@exec($cmd,$t_retour,$retour);
 	// ici le script est terminé, et donc la fonction 'shutdown' est appelée
-	
 
 	}
 	else {
@@ -1230,9 +1222,7 @@ if (isset($action) and ($action == 'restaure'))  {
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
 						$num_table=preg_replace('/^table_/','',$lig->name);
-						if(file_exists("../backup/".$dirname."/base_extraite_table_".$num_table.".sql")) {
-							unlink("../backup/".$dirname."/base_extraite_table_".$num_table.".sql");
-						}
+						unlink("../backup/".$dirname."/base_extraite_table_".$num_table.".sql");
 					}
 				}
 			}
@@ -1275,7 +1265,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 
 				// On ne devrait pas arriver là.
 
-				echo "<div  class=\"center\"><strong><p>Restauration terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
+				echo "<div  class=\"center\"><strong>><p>Restauration terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -1558,9 +1548,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe")) {
 		// on est sous Window$ et on a $filename : "xxxx.sql.gz"
 		$filename=substr($filename,0,-3); // $filename : "xxxx.sql"
-		$command = "mysqldump.exe --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass";
-		if (isset($dbPort)) {$command.=" --port=".$dbPort;}
-		$command .= " $dbDb > $filename";
+		$command = "mysqldump.exe --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb > $filename";
 		$exec = exec($command);
 		gzip($filename); // on compresse et on obtient un fichier xxxx.sql.gz
 		unlink($filename); // on supprime le fichier xxxx.sql
@@ -1568,19 +1556,13 @@ if (isset($action) and ($action == 'system_dump'))  {
 	}
 	else {
 			if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
-				$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass";
-				if (isset($dbPort)) {$command.=" --port=".$dbPort;}
-				$command .= " $dbDb | gzip > $filename";
+				$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
 			} elseif ($ver_mysql[0] == "4" AND $ver_mysql[1] == "0" AND $ver_mysql[2] >= "17") {
 				// Si on est là, c'est que le serveur mysql est d'une version 4.0.17 ou supérieure
-				$command = "mysqldump --add-drop-table --quick --quote-names --skip-comments -h $dbHost -u $dbUser --password=$dbPass";
-				if (isset($dbPort)) {$command.=" --port=".$dbPort;}
-				$command .= " $dbDb | gzip > $filename";
+				$command = "mysqldump --add-drop-table --quick --quote-names --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
 			} else {
 				// Et là c'est qu'on a une version inférieure à 4.0.17
-				$command = "mysqldump --add-drop-table --quick --quote-names -h $dbHost -u $dbUser --password=$dbPass";
-				if (isset($dbPort)) {$command.=" --port=".$dbPort;}
-				$command .= " $dbDb | gzip > $filename";
+				$command = "mysqldump --add-drop-table --quick --quote-names -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
 			}
 		$exec = exec($command);
 	}
@@ -1806,20 +1788,17 @@ if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysqldump.exe"))
         <p><input type="submit" value="Sauvegarder" /></p>
         <label for='action' class='invisible'>type de sauvegarde</label>
         <select id='action' name='action' size='1'>
-            <option value='dump'<?php if (getSettingValue("mode_sauvegarde") == "gepi") echo " selected='selected'";?>>sans mysqldump</option>
 <?php
 if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
 	(substr(PHP_OS,0,3) != 'WIN'))
 	{
 ?>
-            <option value='system_dump' 
-			<?php if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
-			 else if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " selected='selected'";?>
-			>avec mysqldump</option>
+            <option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " selected='selected'";?>>avec mysqldump</option>
 <?php
 	}
 ?>
-        </select>
+            <option value='dump'<?php if (getSettingValue("mode_sauvegarde") == "gepi") echo " selected='selected'";?>>sans mysqldump</option>
+            </select>
         <p>
             <label for='description_sauvegarde'>Description (<em>facultative</em>) de la sauvegarde&nbsp;:</label><br />
             <textarea id='description_sauvegarde' name='description_sauvegarde' cols='30' rows='2'></textarea>
