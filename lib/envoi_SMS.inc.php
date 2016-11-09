@@ -119,11 +119,6 @@ function envoi_SMS($tab_to,$sms) {
 	// $sms : le texte du SMS
 	// retourne "OK" si envoi réussi, un message d'erreur sinon
 	
-	/* Pour déboguer décommenter le code suivant
-	echo "Envoi de ".$sms." à ".$tab_to[0].".<br />";
-	return "OK"; // ou return "Erreur d'envoi SMS";
-	*/
-	
 	// on ajoute l'identité de l'émetteur
 	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite').' '.$sms;
 	
@@ -253,39 +248,5 @@ function envoi_SMS($tab_to,$sms) {
 			return 'SMS non envoyé(s) : prestataire SMS non défini.';
 		}
 }
-
-/* Tests prestataires
-
-echo "tm4b<br>";
-$url="www.tm4b.com";
-$script="/client/api/http.php";
-$parametres=array("username"=>"toto");
-echo envoi_requete_http($url,$script,$parametres);
-
-echo "<hr>123-SMS<br>";
-$url="www.123-SMS.net";
-$script="/http.php";
-$parametres=array("email"=>"toto","message"=>"test");
-$r=envoi_requete_http($url,$script,$parametres);
-$t_erreurs=array(80 => "Le message a été envoyé", 81 => "Le message est enregistré pour un envoi en différé", 82 => "Le login et/ou mot de passe n’est pas valide",  83 => "vous devez créditer le compte", 84 => "le numéro de gsm n’est pas valide", 85 => "le format d’envoi en différé n’est pas valide", 86 => "le groupe de contacts est vide", 87 => "la valeur email est vide", 88 => "la valeur pass est vide",  89 => "la valeur numero est vide", 90 => "la valeur message est vide", 91 => "le message a déjà été envoyé à ce numéro dans les 24 dernières heures");
-echo $r." : ".$t_erreurs[$r];
-
-echo "<hr>Pluriware-SMS XML<br>";
-$url="sms.pluriware.fr";
-$script="/xmlapi.php";
-$parametres=array("data"=>'<pluriAPI><login></login><password></password><sendMsg><to>330628000000</to><txt>Test msg 1</txt><climsgid></climsgid><status></status></sendMsg></pluriAPI>');	
-echo envoi_requete_http($url,$script,$parametres);
-
-echo "<hr>allmysms.com<br>";
-$url='api.allmysms.com';
-$script="/http/9.0/simulateCampaign/";
-$parametres=array("login"=>"test","apiKey"=>"pass","smsData"=>"");	
-echo envoi_requete_http($url,$script,$parametres);
-
-$url="www.ac-poitiers.fr";
-$script="/";
-$parametres=array();
-echo envoi_requete_http($url,$script,$parametres,"GET");
-*/
 
 ?>
