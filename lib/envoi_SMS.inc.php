@@ -113,12 +113,17 @@ function envoi_requete_http($url,$script,$t_parametres,$methode='POST',$port=80)
 		
 }
 
-function envoi_SMS($tab_to,$sms) {
+function envoi_SMS($tab_to,$sms,$log=false) {
 	// $tab_to : tableau des numéros de téléphone auxquels envoyer le SMS
 	// attention : certains prestataires n'autorisent qu'un seul sms par requête
 	// $sms : le texte du SMS
-	// retourne "OK" si envoi réussi, un message d'erreur sinon
-	
+	// retour
+	// si $log==false : "OK" si envoi réussi, un message d'erreur sinon
+	// si $log=true : retourne un tableau $t_log avec
+	//					$t_log['bilan'] = "OK" si envoi réussi, un message d'erreur sinon
+	//					$t_log['envoi'] = ce qui est envoyé au prestataire
+	//					$t_log['reponse'] = réponse du prestataire
+
 	// on ajoute l'identité de l'émetteur
 	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite').' '.$sms;
 	
@@ -141,6 +146,7 @@ function envoi_SMS($tab_to,$sms) {
 			}
 			$parametres['data'].='</pluriAPI>'."\n";
 
+			$t_log['envoi']=$parametres;
 			$reponse=envoi_requete_http($url,$script,$parametres);
 			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			$xml = new DOMDocument();
@@ -150,8 +156,14 @@ function envoi_SMS($tab_to,$sms) {
 				$erreur="";
 				$descs=$xml->getElementsByTagName('desc');
 				foreach($descs as $desc) $erreur.=$desc->nodeValue;
-				return 'SMS non envoyé(s) : '.$erreur;
-			} else return 'OK';
+				$bilan='SMS non envoyé(s) : '.$erreur;
+			} else return $bilan='OK';
+
+			if ($log==true) {
+				$t_log['bilan']=$bilan;
+				$t_log['retour']=$xml->saveXML();
+				return $t_log;
+			} else return $bilan;
 			break;
 
 		case '123-SMS' :
@@ -166,12 +178,20 @@ function envoi_SMS($tab_to,$sms) {
 			$to=implode('-',$tab_to);
 			$parametres['numero']=$to; // numéros de téléphones auxquels on envoie le message séparés par des tirets
 			$t_erreurs=array(80 => 'Le message a été envoyé', 81 => 'Le message est enregistré pour un envoi en différé', 82 => 'Le login et/ou mot de passe n’est pas valide',  83 => 'Vous devez créditer le compte', 84 => 'Le numéro de gsm n’est pas valide', 85 => 'Le format d’envoi en différé n’est pas valide', 86 => 'Le groupe de contacts est vide', 87 => 'La valeur email est vide', 88 => 'La valeur pass est vide',  89 => 'La valeur numero est vide', 90 => 'La valeur message est vide', 91 => 'Le message a déjà été envoyé à ce numéro dans les 24 dernières heures');
+
+			$t_log['envoi']=$parametres;
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
 			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			if ($reponse!='80') {
-				return 'SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
+				$bilan='SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
 				} 
-			else return 'OK';
+			else return $bilan='OK';
+
+			if ($log==true) {
+				$t_log['bilan']=$bilan;
+				$t_log['retour']=$reponse.' '.$t_erreurs[$reponse];
+				return $t_log;
+			} else return $bilan;
 
 			break;
 
@@ -191,13 +211,19 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['route']='business'; // type de route (pour la france, business class uniquement)
 			$parametres['version']='2.1';
 			// $parametres['sim']='yes'; // on active le mode simulation, pour tester notre script
-			
+
+			$t_log['envoi']=$parametres;			
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
 			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			if (substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') {
-				return 'SMS non envoyé(s) : '.$reponse;
+				$bilan='SMS non envoyé(s) : '.$reponse;
 				} 
-			else return 'OK';
+			else $bilan='OK';
+			if ($log==true) {
+				$t_log['bilan']=$bilan;
+				$t_log['retour']=$reponse;
+				return $t_log;
+			} else return $bilan;
 
 			break;
 
@@ -237,15 +263,26 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['smsData'].='	}'."\n";
 			$parametres['smsData'].='}'."\n";
 			
+			$t_log['envoi']=$parametres;			
 			$reponse=envoi_requete_http($url,$script,$parametres);
 			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			$t_reponse=json_decode($reponse,true);
-			if ($t_reponse['status']==100) return 'OK';
-				else return 'SMS non envoyé(s) : '.$t_reponse['statusText'];
-			break;
+			if ($t_reponse['status']==100) $bilan='OK';
+				else $bilan='SMS non envoyé(s) : '.$t_reponse['statusText'];
+			if ($log==true) {
+				$t_log['bilan']=$bilan;
+				$t_log['retour']=$t_reponse;
+				return $t_log;
+			} else return $bilan;			break;
 
 		default :
-			return 'SMS non envoyé(s) : prestataire SMS non défini.';
+			$bilan="SMS non envoyé(s) : prestataire SMS non défini.";
+			if ($log==true) {
+				$t_log['envoi']='';
+				$t_log['bilan']=$bilan;
+				$t_log['retour']='';
+				return $t_log;
+			} else return $bilan;
 		}
 }
 
