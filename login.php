@@ -213,6 +213,13 @@ $test = 'templates/accueil_externe.php' ;
 	$tbs_input_password_to_text= input_password_to_text('no_anti_inject_password');
 
 //==================================
+//	Mode d'alerte CapsLock
+	$tbs_mode_alerte_capslock = "capsDetect";
+	if (getSettingValue("login_mode_alerte_capslock")==2) {
+		$tbs_mode_alerte_capslock = "capsDetect2";
+	}
+
+//==================================
 //	Mot de passe oublié
 	$tbs_password_recovery = "";
 	if (getSettingValue("enable_password_recovery") == "yes") {

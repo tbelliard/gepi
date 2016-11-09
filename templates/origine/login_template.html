@@ -103,8 +103,9 @@
 <!-- Mot de passe -->				
 				<p class='droite' title="Saisissez votre mot de passe en respectant les minuscules et les majuscules." >
 					<label for='no_anti_inject_password'>Mot de passe</label>[onshow.tbs_input_password_to_text;magnet=p;htmlconv=no]
-					<input type='password' id='no_anti_inject_password' name='no_anti_inject_password' size='17' onkeypress='capsDetect(arguments[0]);' tabindex='2' />
+					<input type='password' id='no_anti_inject_password' name='no_anti_inject_password' size='17' onkeypress='[onshow.tbs_mode_alerte_capslock](arguments[0]);' tabindex='2' />
 				</p>
+				<div id='div_mdp_page_login' style='display:none; color:red; font-size:large; text-align:center;width:100%;'></div>
 					
 <!-- Bouton valider -->				
 				<p class='droite' title="Envoyer les identifiants">
