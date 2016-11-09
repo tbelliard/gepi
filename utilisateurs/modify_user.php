@@ -868,6 +868,10 @@ if (isset($user_login) and ($user_login!='')) {
 		echo " | <a href=\"change_pwd.php?user_login=".$user_login."&amp;attib_mdp=yes\" onclick=\"return confirm ('$themessage2')\">Attribuer un mot de passe</a>\n";
   }
 	echo " | <a href=\"modify_user.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Ajouter un nouvel utilisateur</a>\n";
+
+	if((isset($user_statut))&&($user_statut=="professeur")) {
+		echo " | <a href=\"creer_remplacant.php?login_prof_remplace=".$user_login."\" onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Créer un remplaçant, ou sélectionner un remplaçant parmi les utilisateurs existants.\">Créer un remplaçant</a>\n";
+	}
 }
 
 if(isset($liste_options_user)){
