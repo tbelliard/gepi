@@ -720,6 +720,28 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 
 	echo "</table>\n";
 
+	if(!getSettingAOui("bull_affiche_aid")) {
+		$sql="SELECT 1=1 FROM aid_config;";
+		$test_aid=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($test_aid)>0) {
+			echo "<p style='color:red'>L'affichage des AID est désactivé.<br />
+			Ce paramétrage est peut-être une erreur <em>(notamment en collège avec des EPI, AP,...)</em>";
+			if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
+			(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
+			(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))||
+			(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiCpeImprBulSettings')=='yes'))) {
+				if($type_bulletin_par_defaut=='pdf') {
+					echo "<br />Corriger <a id='lien_param_bull' href='param_bull_pdf.php#bull_affiche_aid' target='_blank'>Paramètres d'impression des bulletins</a>";
+				}
+				else {
+					echo "<br />Corriger <a id='lien_param_bull' href='param_bull.php#bull_affiche_aid' target='_blank'>Paramètres d'impression des bulletins</a>";
+				}
+			}
+			echo "</p>";
+			echo "<p style='color:red'>Le non-affichage de certains AID peut aussi être paramétré au niveau de la configuration de la catégorie d'AID elle-même <em>(dans Gestion des bases/AID)</em>.</p>";
+		}
+	}
+
 	echo "<div id='div_param_bull_pdf'>\n";
 
 	echo "<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' onchange=\"checkbox_change(this.id)\" /><label for='use_cell_ajustee' id='texte_use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";

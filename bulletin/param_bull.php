@@ -1575,7 +1575,9 @@ if(getSettingAOui('active_bulletins')) {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les données sur les AID :
+        <a name='bull_affiche_aid'></a>
+        Afficher les données sur les AID :<br />
+        <em>(l'affichage risque d'être nécessaire en collège pour les EPI, AP et Parcours)</em>
         </td>
         <td>
         <?php
