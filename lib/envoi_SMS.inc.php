@@ -148,18 +148,25 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 
 			$t_log['envoi']=$parametres;
 			$reponse=envoi_requete_http($url,$script,$parametres);
-			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
-			$xml = new DOMDocument();
-			$xml->loadXML($reponse);
-			$err=$xml->getElementsByTagName('err');
-			if ($err->length!=0) {
-				$erreur='';
-				$descs=$xml->getElementsByTagName('desc');
-				foreach($descs as $desc) $erreur.=$desc->nodeValue;
-				$retour='SMS non envoyé(s) : '.$erreur;
-			} else $retour='OK';
-			$t_log['retour']=$retour;
-			$t_log['reponse']=$xml->saveXML();
+			if ($reponse=='Erreur fsckopen'){ 
+				$retour='SMS non envoyé(s) : '.$reponse;
+				$t_log['envoi']='';
+				$t_log['retour']=$retour;
+				$t_log['reponse']='';
+			} 
+			else {
+				$xml = new DOMDocument();
+				$xml->loadXML($reponse);
+				$err=$xml->getElementsByTagName('err');
+				if ($err->length!=0) {
+					$erreur='';
+					$descs=$xml->getElementsByTagName('desc');
+					foreach($descs as $desc) $erreur.=$desc->nodeValue;
+					$retour='SMS non envoyé(s) : '.$erreur;
+				} else $retour='OK';
+				$t_log['retour']=$retour;
+				$t_log['reponse']=$xml->saveXML();
+			};
 
 			break;
 
@@ -178,11 +185,18 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 
 			$t_log['envoi']=$parametres;
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
-			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
-			if ($reponse!='80') $retour='SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
-				else $retour='OK';
-			$t_log['retour']=$retour;
-			$t_log['reponse']=$reponse.' '.$t_erreurs[$reponse];
+			if ($reponse=='Erreur fsckopen'){ 
+				$retour='SMS non envoyé(s) : '.$reponse;
+				$t_log['envoi']='';
+				$t_log['retour']=$retour;
+				$t_log['reponse']='';
+			}
+			else {
+				if ($reponse!='80') $retour='SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
+					else $retour='OK';
+				$t_log['retour']=$retour;
+				$t_log['reponse']=$reponse.' '.$t_erreurs[$reponse];
+			};
 
 			break;
 
@@ -205,11 +219,18 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 
 			$t_log['envoi']=$parametres;			
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
-			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
-			if (substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') $retour='SMS non envoyé(s) : '.$reponse;
-				else $retour='OK';
-			$t_log['retour']=$retour;
-			$t_log['reponse']=$reponse;
+			if ($reponse=='Erreur fsckopen'){ 
+				$retour='SMS non envoyé(s) : '.$reponse;
+				$t_log['envoi']='';
+				$t_log['retour']=$retour;
+				$t_log['reponse']='';
+			}
+			else {
+				if (substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') $retour='SMS non envoyé(s) : '.$reponse;
+					else $retour='OK';
+				$t_log['retour']=$retour;
+				$t_log['reponse']=$reponse;
+			};
 
 			break;
 
@@ -251,18 +272,24 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 			
 			$t_log['envoi']=$parametres;			
 			$reponse=envoi_requete_http($url,$script,$parametres);
-			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
-			$t_reponse=json_decode($reponse,true);
-			if ($t_reponse['status']==100) $retour='OK';
-				else $retour='SMS non envoyé(s) : '.$t_reponse['statusText'];
-			$t_log['retour']=$retour;
-			$t_log['reponse']=$t_reponse;
-			
+			if ($reponse=='Erreur fsckopen'){ 
+				$retour='SMS non envoyé(s) : '.$reponse;
+				$t_log['envoi']='';
+				$t_log['retour']=$retour;
+				$t_log['reponse']=''; 
+			} 
+			else {
+				$t_reponse=json_decode($reponse,true);
+				if ($t_reponse['status']==100) $retour='OK';
+					else $retour='SMS non envoyé(s) : '.$t_reponse['statusText'];
+				$t_log['retour']=$retour;
+				$t_log['reponse']=$t_reponse;
+			};
+		
 			break;
 
 		default :
 			$retour="SMS non envoyé(s) : prestataire SMS non défini.";
-
 			$t_log['envoi']='';
 			$t_log['retour']=$retour;
 			$t_log['reponse']='';
