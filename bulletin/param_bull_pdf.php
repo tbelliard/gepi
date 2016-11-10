@@ -139,6 +139,12 @@ if(isset($_POST['param_communs_pdf_html'])) {
 			$reg_ok = 'no';
 		}
 	}
+	if (isset($_POST['bull_affiche_aid'])) {
+		if (!saveSetting("bull_affiche_aid", $_POST['bull_affiche_aid'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_aid !";
+			$reg_ok = 'no';
+		}
+	}
 }
 
 //===================================================
@@ -1070,8 +1076,22 @@ function DecocheCheckbox() {
 		".add_token_field()."
 		<h3>Paramètres communs aux bulletins PDF et HTML</h3>
 		<input type='hidden' name='param_communs_pdf_html' value='y' />
+
+		<p>
 		<label for='no_anti_inject_bull_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque bulletin :</label>
 		<input type='text' name='no_anti_inject_bull_formule_bas' id='no_anti_inject_bull_formule_bas' size='100' value='".getSettingValue("bull_formule_bas")."' />
+		</p>
+
+		<p style='background-color:$bgcolor;'><a name='bull_affiche_aid'></a>Afficher les données sur les AID&nbsp;: 
+		<input type=\"radio\" name=\"bull_affiche_aid\" id=\"bull_affiche_aidy\" value=\"y\" ";
+		if (getSettingValue("bull_affiche_aid") == 'y') echo " checked";
+		echo " /><label for='bull_affiche_aidy' style='cursor: pointer;'>&nbsp;Oui</label>";
+		echo " <input type=\"radio\" name=\"bull_affiche_aid\" id=\"bull_affiche_aidn\" value=\"n\" ";
+		if (getSettingValue("bull_affiche_aid") != 'y') echo " checked";
+		echo " /><label for='bull_affiche_aidn' style='cursor: pointer;'>&nbsp;Non</label><br />
+		<em>(l'affichage risque d'être nécessaire en collège pour les EPI, AP et Parcours)</em>
+		</p>
+
 		<center><input type=\"submit\" name=\"ok2\" value=\"Enregistrer\" style=\"font-variant: small-caps;\"/></center>
 	</fieldset>
 </form>";

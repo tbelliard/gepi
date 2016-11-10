@@ -27,8 +27,10 @@
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
+
 //mes fonctions
-include("../edt_organisation/fonctions_calendrier.php");
+//include("../edt_organisation/fonctions_calendrier.php");
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -53,11 +55,11 @@ if ($utilisateur == null) {
 
 //On vérifie si le module est activé
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+	die("Le module n'est pas activé.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
-    die("acces interdit");
+	die("acces interdit");
 }
 
 // Initialisation des variables
@@ -76,6 +78,13 @@ if ($choix_creneau === null) {
     }
 } else {
     $choix_creneau_obj= EdtCreneauPeer::retrieveByPK($choix_creneau);
+}
+
+// Pour désactiver cet include qui peut provoquer une page blanche:
+// insert into setting set name='mod_abs2_tableau_des_appels_edt_organisation_fonctions_calendrier', value='n';
+if(!getSettingANon("mod_abs2_tableau_des_appels_edt_organisation_fonctions_calendrier")) {
+	// Cet appel ne semble pas utile dans la page.
+	include("../edt_organisation/fonctions_calendrier.php");
 }
 
 $avec_js_et_css_edt="y";
