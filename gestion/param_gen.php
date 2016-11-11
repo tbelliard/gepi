@@ -2795,7 +2795,6 @@ echo add_token_field();
 	<p  class="ligneCaps" style="font-variant: small-caps;">Prestataire SMS&nbsp;:&nbsp;<?php  getSettingValue('sms_prestataire'); ?>
 	<select style="width: 200px;" name="sms_prestataire">
 		<optgroup>
-		<option></option>
 	<?php
 	foreach($tab_prestataires_SMS as $prestataire)
 		{
@@ -2830,31 +2829,39 @@ if (getSettingAOui('autorise_envoi_sms'))
 	<br />
 	<form enctype="multipart/form-data" action="param_gen.php#config_envoi_sms" method="post" id="test_config_sms" style="width: 100%;">
 	<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
-	<p  class="ligneCaps" style="font-variant: small-caps;">Vous pouvez tester les paramètres ci-dessus en envoyant un sms à ce numéro :
-	<input type="text"  style="width: 300px" name="numero_test_sms" value="">
+	<p  class="ligneCaps" style="font-variant: small-caps;">Vous pouvez tester les paramètres ci-dessus en envoyant un sms<br />
+	<label for="texte_test_sms" class='small'>-vers ce (ou ces numéros séparés par des virgules) : </label><input type="text"  style="width: 300px" name="numero_test_sms" id=numero_test_sms" value="<?php if (isset($_POST['texte_test_sms'])) echo $_POST['numero_test_sms']; ?>"><br />
+	 <label for="texte_test_sms" class='small'  style='vertical-align: top;'>- texte du sms : </label><textarea rows="4" cols="50" name="texte_test_sms" id="texte_test_sms"><?php if (isset($_POST['texte_test_sms'])) echo $_POST['texte_test_sms']; ?></textarea><br />
 	</p>
 	<br />
 	<p class="center">
 	<input type="submit" name="test_sms" value="Tester" style="font-variant: small-caps;" />
 	</p>
+	</fieldset>
+	</form>
+	<br />
+
 	<?php
 	if (isset($_POST['test_sms']))
 		{
-		$tab_to[]=$_POST['numero_test_sms'];
-		$retour=envoi_SMS($tab_to,"Gepi : message de test émis par ".getSettingValue("sms_identite"));
+		$tab_to=explode(',',$_POST['numero_test_sms']);
+		$t_retour=envoi_SMS($tab_to,$_POST['texte_test_sms'],true);
 	?>
-	<br />
-	<p class="center" style="color:<?php if ($retour=="OK") echo 'blue'; else echo 'red'; ?>">
+		<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+		<br />
+		<p class="center" style="color:<?php if ($t_retour['retour']=='OK') echo 'blue'; else echo 'red'; ?>">
 	<?php
-		if ($retour=="OK") echo "Message bien envoyé."; else echo "Erreur : ".$retour;
+		if ($t_retour['retour']=='OK') echo "Message bien envoyé."; else echo "Erreur : ".$t_retour['retour'];
 	?>
-	</p>
+		<br /><br />
+		<label for="envoi" class='small'  style='vertical-align: top;'>- envoyé au prestataire : </label><textarea rows="4" cols="50" name="envoi" id="envoi"><?php print_r($t_retour['envoi']) ?></textarea><br />
+		<label for="reponse" class='small'  style='vertical-align: top;'>- réponse du prestataire : </label><textarea rows="4" cols="50" name="reponse" id="reponse"><?php print_r($t_retour['reponse']) ?></textarea><br />
+		</fieldset>
+		</p>
 	<?php
 		}
 	?>
 	<br />
-	</fieldset>
-	</form>
 <?php
 	}
 ?>
