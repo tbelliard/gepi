@@ -218,6 +218,9 @@ $test = 'templates/accueil_externe.php' ;
 	if (getSettingValue("login_mode_alerte_capslock")==2) {
 		$tbs_mode_alerte_capslock = "capsDetect2";
 	}
+	elseif (getSettingValue("login_mode_alerte_capslock")==3) {
+		$tbs_mode_alerte_capslock = "capsDetect3";
+	}
 
 //==================================
 //	Mot de passe oublié

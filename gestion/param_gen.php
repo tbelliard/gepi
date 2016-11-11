@@ -1205,7 +1205,12 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 	<?php
 		if(getSettingValue("login_mode_alerte_capslock")=='2'){echo " checked='checked'";}
 	?>
-	onchange='changement()' /><label for='login_mode_alerte_capslock_2'>par un message en rouge</label>
+	onchange='changement()' /><label for='login_mode_alerte_capslock_2'>par un message en rouge</label><br />
+			<input type="radio" id='login_mode_alerte_capslock_3' name="login_mode_alerte_capslock" value="3"
+	<?php
+		if(getSettingValue("login_mode_alerte_capslock")=='3'){echo " checked='checked'";}
+	?>
+	onchange='changement()' /><label for='login_mode_alerte_capslock_3'>aucune alerte <em>(test désactivé)</em></label>
 		</span>
 	</p>
 	
