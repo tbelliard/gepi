@@ -285,6 +285,12 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['login_mode_alerte_capslock'])) {
+			if (!saveSetting("login_mode_alerte_capslock", $_POST['login_mode_alerte_capslock'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'a façon dont on alerte l'utilisateur en page d'accueil à propos du verrouillage majuscule !";
+			}
+		}
+
 		if (isset($_POST['contact_admin_mailto'])) {
 			if (!saveSetting("contact_admin_mailto", 'y')) {
 				$msg .= "Erreur lors de l'enregistrement de 'contact_admin_mailto' !";
@@ -1173,7 +1179,7 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 			<input type="text" id="gepiAdminAdress" name="gepiAdminAdress" size="20" value="<?php echo(getSettingValue("gepiAdminAdress")); ?>" onchange='changement()' />
 		</span>
 	</p>
-	
+
 	<p class="ligneCaps">
 		<label for='gepiAdminAdressPageLogin' style='cursor: pointer;display: table-cell; width: 70%; vertical-align: middle;'>
 			Faire apparaitre le lien [Contacter l'administrateur] sur la page de login :
@@ -1184,6 +1190,27 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		if(getSettingValue("gepiAdminAdressPageLogin")!='n'){echo " checked='checked'";}
 	?>
 	onchange='changement()' />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+			Alerter l'utilisateur en page de login à propos du verrouillage Majuscule au clavier
+		<span class="cellTab plusPetit">
+			<input type="radio" id='login_mode_alerte_capslock_1' name="login_mode_alerte_capslock" value="1"
+	<?php
+		if(getSettingValue("login_mode_alerte_capslock")!='2'){echo " checked='checked'";}
+	?>
+	onchange='changement()' /><label for='login_mode_alerte_capslock_1'>par un alert popup JavaScript</label><br />
+			<input type="radio" id='login_mode_alerte_capslock_2' name="login_mode_alerte_capslock" value="2"
+	<?php
+		if(getSettingValue("login_mode_alerte_capslock")=='2'){echo " checked='checked'";}
+	?>
+	onchange='changement()' /><label for='login_mode_alerte_capslock_2'>par un message en rouge</label><br />
+			<input type="radio" id='login_mode_alerte_capslock_3' name="login_mode_alerte_capslock" value="3"
+	<?php
+		if(getSettingValue("login_mode_alerte_capslock")=='3'){echo " checked='checked'";}
+	?>
+	onchange='changement()' /><label for='login_mode_alerte_capslock_3'>aucune alerte <em>(test désactivé)</em></label>
 		</span>
 	</p>
 	
