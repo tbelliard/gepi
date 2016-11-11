@@ -70,6 +70,7 @@ $professeur = isset($_SESSION["statut"]) ? $_SESSION["statut"] : NULL;
 $mode=isset($_POST['mode']) ? $_POST['mode'] : "";
 
 // ========== Fin de l'initialisation de la page =============
+//echo "var1=$var1<br />";
 
 // On détermine si les variables envoyées sont bonnes ou pas
 //$verif_var1 = explode("_t", $var1);
@@ -91,23 +92,68 @@ $verif_var1[1]=$num_periode;
 // On vérifie que le login de l'élève soit valable et qu'il corresponde à l'enseignement envoyé par var2
 $temoin_eleve=0;
 if($_SESSION['statut']=='professeur') {
-	$sql="SELECT login FROM j_eleves_groupes
-			WHERE login = '".$verif_var1[0]."'
-			AND id_groupe = '".$var2."'
-			AND periode = '".$verif_var1[1]."'";
-	log_ajax_app("$sql");
-	$verif_eleve = mysqli_query($GLOBALS["mysqli"], $sql)
-			or die('Erreur de verif_var1 : '.mysqli_error($GLOBALS["mysqli"]));
-	log_ajax_app("Test passe.");
-	$temoin_eleve=mysqli_num_rows($verif_eleve);
+
+	// Vérification que l'élève est dans le groupe, aid ou classe indiqué
+	if($mode=="verif_aid") {
+		// var2 était le champ id de la table 'aid'
+		$sql="SELECT  * FROM j_aid_eleves WHERE id_aid='".$var2."' AND login='".$verif_var1[0]."';";
+		log_ajax_app("$sql");
+		$verif_eleve = mysqli_query($GLOBALS["mysqli"], $sql)
+				or die('Erreur de verif_var1 : '.mysqli_error($GLOBALS["mysqli"]));
+		log_ajax_app("Test passe.");
+		$temoin_eleve=mysqli_num_rows($verif_eleve);
+	}
+	elseif($mode=="verif_avis") {
+		// var2 était l'id_classe
+		$sql="SELECT login FROM j_eleves_classes 
+				WHERE login = '".$verif_var1[0]."'
+				AND id_classe = '".$var2."'
+				AND periode = '".$verif_var1[1]."'";
+		log_ajax_app("$sql");
+		$verif_eleve = mysqli_query($GLOBALS["mysqli"], $sql)
+				or die('Erreur de verif_var1 : '.mysqli_error($GLOBALS["mysqli"]));
+		log_ajax_app("Test passe.");
+		$temoin_eleve=mysqli_num_rows($verif_eleve);
+	}
+	else {
+		$sql="SELECT login FROM j_eleves_groupes 
+				WHERE login = '".$verif_var1[0]."'
+				AND id_groupe = '".$var2."'
+				AND periode = '".$verif_var1[1]."'";
+		log_ajax_app("$sql");
+		$verif_eleve = mysqli_query($GLOBALS["mysqli"], $sql)
+				or die('Erreur de verif_var1 : '.mysqli_error($GLOBALS["mysqli"]));
+		log_ajax_app("Test passe.");
+		$temoin_eleve=mysqli_num_rows($verif_eleve);
+	}
+
+	if($temoin_eleve==0) {
+		log_ajax_app("temoin_eleve nul");
+		die("Témoin élève nul: $sql");
+		//die("Témoin élève nul");
+	}
 
 	// On vérifie que le prof logué peut saisir ces appréciations
 	//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
 	//if($mode!="verif") {
 	//echo "mode=$mode<br />";
-	if($mode!="verif_avis") {
+	if($mode=="verif_aid") {
+		// Test droit de saisie prof
+		$sql="SELECT * FROM j_aid_utilisateurs WHERE id_aid='".$var2."' AND id_utilisateur='".$_SESSION['login']."';";
+		//echo "$sql<br />";
+		$verif_prof = mysqli_query($GLOBALS["mysqli"], $sql);
+		if (mysqli_num_rows($verif_prof) >= 1) {
+			// On ne fait rien
+			$temoin_prof=mysqli_num_rows($verif_prof);
+		} else {
+			log_ajax_app("Vous ne pouvez pas saisir d'appreciations pour cet eleve");
+			die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&egrave;ve');
+		}
+	}
+	elseif($mode!="verif_avis") {
 		// On ne vient pas de la page de saisie d'avis du conseil de classe
-		$verif_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
+		$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'";
+		$verif_prof = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (mysqli_num_rows($verif_prof) >= 1) {
 			// On ne fait rien
 			$temoin_prof=mysqli_num_rows($verif_prof);
@@ -124,7 +170,7 @@ if($_SESSION['statut']=='professeur') {
 		if (mysqli_num_rows($verif_prof) >= 1) {
 			// On ne fait rien
 			$temoin_prof=mysqli_num_rows($verif_prof);
-			$temoin_eleve=1;
+			//$temoin_eleve=1;
 		} else {
 			log_ajax_app("Vous ne pouvez pas saisir d'avis pour cet eleve");
 			die('Vous ne pouvez pas saisir d\'avis pour cet &eacute;l&egrave;ve');
@@ -139,6 +185,30 @@ if($_SESSION['statut']=='professeur') {
 	}
 	*/
 }
+elseif($mode=="verif_aid") {
+	// var2 était le champ id de la table 'aid'
+	$sql="SELECT  * FROM j_aid_eleves WHERE id_aid='".$var2."' AND login='".$verif_var1[0]."';";
+	log_ajax_app("$sql");
+	$verif_eleve = mysqli_query($GLOBALS["mysqli"], $sql)
+			or die('Erreur de verif_var1 : '.mysqli_error($GLOBALS["mysqli"]));
+	log_ajax_app("Test passe.");
+	$temoin_eleve=mysqli_num_rows($verif_eleve);
+
+	if($temoin_eleve==0) {
+		log_ajax_app("temoin_eleve nul");
+		//die("Témoin élève nul: $sql");
+		die("Témoin élève nul");
+	}
+
+	$sql="SELECT  * FROM j_aid_utilisateurs WHERE id_aid='".$var2."' AND id_utilisateur='".$_SESSION['login']."';";
+	if (mysqli_num_rows($verif_prof) >= 1) {
+		// On ne fait rien
+		$temoin_prof=mysqli_num_rows($verif_prof);
+	} else {
+		log_ajax_app("Vous ne pouvez pas saisir d'appreciations pour cet eleve");
+		die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&egrave;ve');
+	}
+}
 
 //echo "\$temoin_eleve=$temoin_eleve<br />";
 //echo "\$temoin_prof=$temoin_prof<br />";
@@ -146,7 +216,7 @@ if($_SESSION['statut']=='professeur') {
 if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($_SESSION['statut']=='cpe') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
 	// Si on a passé mode=verif, c'est un test des lapsus.
 	// Il ne faut pas mettre à jour matieres_appreciations_tempo sans quoi, au chargement de saisie_appreciations.php, en testant les lapsus, on va aussi remettre les anciennes valeurs (vide si on n'avait rien enregistré auparavant ou une appréciation antérieure)
-	if(($mode!="verif_avis")&&($mode!="verif")) {
+	if(($mode!="verif_avis")&&($mode!="verif")&&($mode!="verif_aid")) {
 		// On ne vient pas de la page de saisie d'avis du conseil de classe
 		// On va enregistrer les appréciations temporaires
 

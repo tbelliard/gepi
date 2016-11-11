@@ -2146,7 +2146,7 @@ ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n
             }
 
             //============================================
-            if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
+            if(getSettingAOui('appreciations_types_profs')) {include('ctp.php');}
             //============================================
 
             if($proposer_liens_enregistrement=="y") {

@@ -698,7 +698,7 @@ INSERT INTO droits VALUES ('/cahier_texte_admin/visa_ct.php', 'V', 'F', 'F', 'F'
 INSERT INTO droits VALUES ('/public/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des cahier de texte', '');
 INSERT INTO setting VALUES ('texte_visa_cdt', 'Cahier de textes visé ce jour <br />Le Principal <br /> M. XXXXX<br />');
 INSERT INTO setting VALUES ('visa_cdt_inter_modif_notices_visees', 'yes');
-INSERT INTO droits VALUES('/saisie/saisie_cmnt_type_prof.php','F','V','F','F','F','F','F','F', 'Saisie appréciations-types pour les profs','');
+INSERT INTO droits VALUES('/saisie/saisie_cmnt_type_prof.php','F','V','V','V','F','F','F','F', 'Saisie appréciations-types pour les profs','');
 INSERT INTO setting VALUES ('denomination_eleve', 'élève');
 INSERT INTO setting VALUES ('denomination_eleves', 'élèves');
 INSERT INTO setting VALUES ('denomination_professeur', 'professeur');
