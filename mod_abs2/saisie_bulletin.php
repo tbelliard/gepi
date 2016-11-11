@@ -171,7 +171,7 @@ if((!isset($id_classe))||(!isset($num_periode))) {
 	echo " - ";
 	echo "Cliquez sur la classe pour laquelle vous souhaitez saisir les absences :</p>\n";
 	if (!getSettingAOui('GepiAccesAbsTouteClasseCpe')) {
-		echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un ".$gepiSettings['denomination_eleve']." de la classe.</p>\n";
+		echo "<p><em>Remarque&nbsp;:</em> s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un ".$gepiSettings['denomination_eleve']." de la classe.</p>\n";
 	}
 
 	while($lig_classe=mysqli_fetch_object($calldata)) {
@@ -212,8 +212,11 @@ $etat_periode=etat_verrouillage_classe_periode($id_classe, $num_periode);
 
 echo "<p><a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe/période</a></p>";
 
-if (getSettingValue('GepiAccesAbsTouteClasseCpe')!='yes') {
+if (!getSettingAOui('GepiAccesAbsTouteClasseCpe')) {
 	$sql="SELECT 1=1 FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe AND c.id='$id_classe');";
+}
+else {
+	$sql="SELECT 1=1 FROM classes c WHERE c.id='$id_classe';";
 }
 $test = mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
