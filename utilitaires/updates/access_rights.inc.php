@@ -1792,6 +1792,13 @@ autre='F',
 description='Avis PDF absences',
 statut='';";
 
+$tab_req[] = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) "
+	. "VALUES ('/mod_LSUN/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
+	. "ON DUPLICATE KEY UPDATE administrateur = 'V';";
+$tab_req[] = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) "
+	. "VALUES ('/mod_LSUN/admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
+	. "ON DUPLICATE KEY UPDATE administrateur = 'V';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

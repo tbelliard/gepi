@@ -145,4 +145,18 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='active_module_LSUN'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$result .= "Initialisation du paramètre 'active_module_LSUN' à 'y': ";
+	$sql="INSERT INTO setting SET name='active_module_LSUN', value='y';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
 ?>
