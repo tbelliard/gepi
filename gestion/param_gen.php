@@ -2795,6 +2795,7 @@ echo add_token_field();
 	<p  class="ligneCaps" style="font-variant: small-caps;">Prestataire SMS&nbsp;:&nbsp;<?php  getSettingValue('sms_prestataire'); ?>
 	<select style="width: 200px;" name="sms_prestataire">
 		<optgroup>
+		<option>aucun</option>
 	<?php
 	foreach($tab_prestataires_SMS as $prestataire)
 		{
@@ -2827,45 +2828,50 @@ if (getSettingAOui('autorise_envoi_sms'))
 	{
 ?>
 	<br />
-	<form enctype="multipart/form-data" action="param_gen.php#config_envoi_sms" method="post" id="test_config_sms" style="width: 100%;">
+	<form enctype="multipart/form-data" action="param_gen.php#retour_test" method="post" id="test_config_sms" style="width: 100%;">
 	<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p  class="ligneCaps" style="font-variant: small-caps;">Vous pouvez tester les paramètres ci-dessus en envoyant un sms<br />
-	<label for="texte_test_sms" class='small'>-vers ce (ou ces numéros séparés par des virgules) : </label><input type="text"  style="width: 300px" name="numero_test_sms" id=numero_test_sms" value="<?php if (isset($_POST['texte_test_sms'])) echo $_POST['numero_test_sms']; ?>"><br />
-	 <label for="texte_test_sms" class='small'  style='vertical-align: top;'>- texte du sms : </label><textarea rows="4" cols="50" name="texte_test_sms" id="texte_test_sms"><?php if (isset($_POST['texte_test_sms'])) echo $_POST['texte_test_sms']; ?></textarea><br />
+	<span class='small'>-vers ce (ou ces numéros séparés par des virgules) : </span><input type="text"  style="width: 300px" name="numero_test_sms" id=numero_test_sms" value="<?php if (isset($_POST['numero_test_sms'])) echo $_POST['numero_test_sms']; ?>"><br />
+	 <span class='small'  style='vertical-align: top;'>- texte du sms : </span><textarea rows="4" cols="50" name="texte_test_sms" id="texte_test_sms"><?php if (isset($_POST['texte_test_sms'])) echo str_replace('\n',"\n",$_POST['texte_test_sms']); ?></textarea><br />
 	</p>
 	<br />
 	<p class="center">
 	<input type="submit" name="test_sms" value="Tester" style="font-variant: small-caps;" />
 	</p>
-	</fieldset>
 	</form>
 	<br />
-
+		
 	<?php
 	if (isset($_POST['test_sms']))
 		{
 		$tab_to=explode(',',$_POST['numero_test_sms']);
-		$t_retour=envoi_SMS($tab_to,$_POST['texte_test_sms'],true);
+		$t_retour=envoi_SMS($tab_to,str_replace('\n',"\n",$_POST['texte_test_sms']),true);
 	?>
-		<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
-		<br />
+		<p class="center">
+		---------------------------------------------------------------------<br /><br />
+		</p>
 		<p class="center" style="color:<?php if ($t_retour['retour']=='OK') echo 'blue'; else echo 'red'; ?>">
+
+		Bilan du test : 
 	<?php
 		if ($t_retour['retour']=='OK') echo "Message bien envoyé."; else echo "Erreur : ".$t_retour['retour'];
 	?>
+		</p>
 		<br /><br />
-		<label for="envoi" class='small'  style='vertical-align: top;'>- envoyé au prestataire : </label><textarea rows="4" cols="50" name="envoi" id="envoi"><?php print_r($t_retour['envoi']) ?></textarea><br />
-		<label for="reponse" class='small'  style='vertical-align: top;'>- réponse du prestataire : </label><textarea rows="4" cols="50" name="reponse" id="reponse"><?php print_r($t_retour['reponse']) ?></textarea><br />
-		</fieldset>
+		<p class="center">
+		<span class='small'  style='vertical-align: top;'>- ce qui a été envoyé au prestataire : </span><textarea rows="4" cols="50" name="envoi" id="envoi"><?php print_r($t_retour['envoi']) ?></textarea><br />
+		<br />
+		<span class='small'  style='vertical-align: top;'>- réponse retournée par le prestataire : </span><textarea rows="4" cols="50" name="reponse" id="reponse"><?php print_r($t_retour['reponse']) ?></textarea><br />
 		</p>
 	<?php
 		}
 	?>
+	</fieldset>
 	<br />
 <?php
 	}
 ?>
-
+<a name="retour_test"></a>
 
 <hr />
 
