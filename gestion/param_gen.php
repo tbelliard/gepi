@@ -2829,6 +2829,7 @@ if (getSettingAOui('autorise_envoi_sms'))
 ?>
 	<br />
 	<form enctype="multipart/form-data" action="param_gen.php#retour_test" method="post" id="test_config_sms" style="width: 100%;">
+	<?php 	echo add_token_field(); ?>
 	<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p  class="ligneCaps" style="font-variant: small-caps;">Vous pouvez tester les paramètres ci-dessus en envoyant un sms<br />
 	<span class='small'>-vers ce (ou ces numéros séparés par des virgules) : </span><input type="text"  style="width: 300px" name="numero_test_sms" id=numero_test_sms" value="<?php if (isset($_POST['numero_test_sms'])) echo $_POST['numero_test_sms']; ?>"><br />
@@ -2844,6 +2845,7 @@ if (getSettingAOui('autorise_envoi_sms'))
 	<?php
 	if (isset($_POST['test_sms']))
 		{
+		check_token();
 		$tab_to=explode(',',$_POST['numero_test_sms']);
 		$t_retour=envoi_SMS($tab_to,str_replace('\n',"\n",$_POST['texte_test_sms']),true);
 	?>
