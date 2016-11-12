@@ -333,3 +333,35 @@ function droitLSUN($droit=NULL) {
 	}
 }
 
+function getElevesExport() {
+	global $mysqli;
+	$classes = $_SESSION['afficheClasse'];
+	
+	$myData = implode(",", $classes);
+	$sqlEleves01 = "SELECT jec.* , e.nom , e.prenom, e.id_eleve FROM j_eleves_classes AS jec "
+		. "INNER JOIN eleves as e "
+		. "ON e.login = jec.login "
+		. "WHERE id_classe IN (".$myData.") ORDER BY jec.id_classe , jec.login , jec.periode ";
+	// on récupère le prof principal
+	$sqlEleves02 = "SELECT t0.*, jep.professeur FROM ($sqlEleves01) AS t0 "
+		. "LEFT JOIN j_eleves_professeurs AS jep "
+		. "ON t0.login = jep.login";
+	// on récupère la date de conseil de classe
+	$sqlEleves03 = "SELECT t1.* , DATE_FORMAT(p.date_fin, '%Y-%m-%d')  AS date_verrou FROM ($sqlEleves02) AS t1 "
+		. "INNER JOIN periodes AS p "
+		. "ON p.id_classe = t1.id_classe AND p.num_periode = t1.periode ";
+	// on récupère le responsable
+	
+	
+	
+	
+	//echo $sqlEleves03;
+	
+	$resultchargeDB = $mysqli->query($sqlEleves03);
+	return $resultchargeDB;
+	
+}
+
+
+
+
