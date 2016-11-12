@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,12 @@ if ((isset($id_classe))||(isset($current_group))) {
 	}
 
 	if(isset($_id_classe)) {
-		$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$_id_classe' ORDER BY num_periode");
+		if(!is_array($_id_classe)) {
+			$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$_id_classe' ORDER BY num_periode");
+		}
+		else {
+			$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '".$_id_classe[0]."' ORDER BY num_periode");
+		}
 		$nb_periode = mysqli_num_rows($periode_query) + 1 ;
 		$i = "1";
 		while ($i < $nb_periode) {

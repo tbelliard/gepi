@@ -55,6 +55,9 @@ if((!isset($id_classe))||(!isset($id_classe))) {
 	header("Location:index.php?msg=$msg");
 }
 
+// Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
+$aff_temoin_serveur_hors_entete="y";
+
 $acces="n";
 if($ver_periode[$periode_num]=="N") {
 	$acces="y";
@@ -235,6 +238,13 @@ echo "<div style='float:right; width:16px'><a href='../impression/avis_pdf_absen
 					onKeyDown="clavier(this.id,event);" 
 					onchange="changement()"><?php echo $appreciation_absences_grp;?></textarea>
 </p>
+<div id='div_verif_grp' style='color:red;'>
+<?php
+	if(!getSettingANon('active_recherche_lapsus')) {
+		echo teste_lapsus($appreciation_absences_grp);
+	}
+?>
+</div>
 
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
@@ -273,26 +283,37 @@ while($i < $nombre_lignes) {
 	$current_eleve_login_ap = $current_eleve_login."_ap";
 
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'><td align='center'>".my_strtoupper($current_eleve_nom)." ".casse_mot($current_eleve_prenom,'majf2')."\n";
-	//=========================
-	echo "<input type='hidden' name='log_eleve[$i]' value='$current_eleve_login' />\n";
-	echo "</td>\n";
-	echo "<td align='center'><input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_abs_ele[$i]' value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" /></td>\n";
-	echo "<td align='center'><input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" /></td>\n";
-	echo "<td align='center'><input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" /></td>\n";
-	echo "<td>\n";
-	echo "<textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\" ";
-
-	echo "onblur=\"ajaxVerifAppreciations('".$current_eleve_login."', '".$id_classe."', 'n3".$num_id."');\"";
-	$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$current_eleve_login."', '".$id_classe."', 'n3".$num_id."');\n";
-
-	echo ">$current_eleve_ap_absences</textarea>\n";
-
-	// Espace pour afficher les éventuelles fautes de frappe
-	echo "<div id='div_verif_n3".$num_id."' style='color:red;'></div>\n";
-
-	echo "</td>\n";
-	echo "</tr>\n";
+	echo "
+	<tr class='lig$alt'>
+		<td align='center'>
+			".my_strtoupper($current_eleve_nom)." ".casse_mot($current_eleve_prenom,'majf2')."
+			<input type='hidden' name='log_eleve[$i]' id='login_eleve_3$num_id' value='$current_eleve_login' />
+		</td>
+		<td align='center'>
+			<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_abs_ele[$i]' value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" />
+		</td>
+		<td align='center'>
+			<input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" />
+		</td>
+		<td align='center'>
+			<input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" />
+		</td>
+		<td>
+			<textarea id=\"n3".$num_id."\" 
+				name='no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\" 
+				onKeyDown=\"clavier(this.id,event);\" 
+				onchange=\"changement()\" 
+				onfocus=\"focus_suivant(3".$num_id.");document.getElementById('focus_courant').value='3".$num_id."'; repositionner_commtype();\" 
+				onblur=\"ajaxVerifAppreciations('".$current_eleve_login."_t".$periode_num."', '".$id_classe."', 'n3".$num_id."');\"
+				>$current_eleve_ap_absences</textarea>
+			<div id='div_verif_n3".$num_id."' style='color:red;'>";
+	// Pour afficher au chargement de la page le résultat du test de lapsus sur ce qui a été précédemment enregistré:
+	if(!getSettingANon('active_recherche_lapsus')) {
+		echo teste_lapsus($current_eleve_ap_absences);
+	}
+	echo "</div>
+		</td>
+	</tr>\n";
 	//=========================
 	$i++;
 	$num_id++;
@@ -303,7 +324,25 @@ while($i < $nombre_lignes) {
 <input type="hidden" name="is_posted" value="yes" />
 <input type="hidden" name="id_classe" value=<?php echo "$id_classe";?> />
 <input type="hidden" name="periode_num" value=<?php echo "$periode_num";?> />
-<center><div id="fixe"><input type="submit" value="Enregistrer" /></div></center>
+<center>
+	<div id="fixe">
+		<?php
+			if(getSettingAOui('aff_temoin_check_serveur')) {
+				temoin_check_srv();
+			}
+		?>
+
+		<input type="submit" value="Enregistrer" /><br />
+
+		<?php
+			include('../saisie/ctp.php');
+		?>
+
+		<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+		<input type='hidden' id='info_focus' name='champ_info_focus' value='' />
+		<input type='hidden' id='focus_courant' name='focus_courant' value='' />
+	</div>
+</center>
 </form>
 
 <?php
@@ -369,6 +408,40 @@ function vider_les_champs(prefixe) {
 
 	changement();
 }
+
+// Pour éviter une erreur dans les commentaires-types:
+id_groupe='';
+
+function focus_suivant(num){
+	temoin='';
+	// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+	dernier=num+".$nombre_lignes."
+	// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
+	// (pour réussir à passer un élève qui ne serait plus dans la période)
+	// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+	for(i=num;i<dernier;i++){
+		suivant=i+1;
+		if(temoin==''){
+			if(document.getElementById('n'+suivant)){
+				document.getElementById('info_focus').value=suivant;
+				temoin=suivant;
+			}
+		}
+	}
+
+	document.getElementById('info_focus').value=temoin;
+}
+
+function repositionner_commtype() {
+	if(document.getElementById('div_commtype')) {
+		if(document.getElementById('div_commtype').style.display!='none') {
+			x=document.getElementById('div_commtype').style.left;
+			afficher_div('div_commtype','y',20,20);
+			document.getElementById('div_commtype').style.left=x;
+		}
+	}
+}
+
 </script>\n";
 ?>
 <p><br /></p>

@@ -64,6 +64,19 @@ $utiliser_compte_existant=isset($_POST["utiliser_compte_existant"]) ? $_POST["ut
 $compte_existant=isset($_POST["compte_existant"]) ? $_POST["compte_existant"] : "";
 $id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : "";
 
+$gepi_non_plugin_lcs_mais_recherche_ldap=false;
+if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
+	include("../secure/config_ldap.inc.php");
+
+	$lcs_ldap_base_dn=$ldap_base_dn;
+	$lcs_ldap_host=$ldap_host;
+	$lcs_ldap_port=$ldap_port;
+	$gepi_non_plugin_lcs_mais_recherche_ldap=true;
+
+	$lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
+	$lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
+}
+
 $temoin_erreur="n";
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
@@ -408,6 +421,10 @@ if ($valid!='yes') {
 		$user_civilite = old_mysql_result($call_user_info, "0", "civilite");
 	}
 
+	if((getSettingValue("auth_sso")=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
+		echo "<div id='suggestion_login' style='float:right; width:400px; height: 200px; border: 1px solid black; overflow:auto; display:none; margin-right:0.5em; padding:3px; background-image: url(\"../images/background/opacite50.png\");'></div>\n";
+	}
+
 	echo "<br /><p>Création d'un remplaçant pour l'identifiant : <b>".$login_prof_remplace."</b> (".$user_civilite." ".$user_prenom." ".$user_nom.")</p>";
 	echo "<br />";
 	//Affichage formulaire
@@ -418,16 +435,55 @@ if ($valid!='yes') {
 	echo add_token_field();
 	echo "<div class = \"norme\">\n";
 	echo "<table>\n";
-	echo "<tr><td>Identifiant : </td><td><input type=text name='user_login' size=20 /> <span title='Laisser vide pour un identifiant (login) généré par Gepi.'>(*)</span></td></tr>\n";
-	echo "<tr><td>Nom : </td><td><input type=text name=form_nom size=20 /></td></tr>\n";
-	echo "<tr><td>Prénom : </td><td><input type=text name=form_prenom size=20 /></td></tr>\n";
-	echo "<tr><td>Civilité : </td><td><select name=\"form_civilite\" size=\"1\">\n";
+	echo "<tr><td>Identifiant : </td><td><input type=text name='user_login' id='reg_login' size=20 /> <span title='Laisser vide pour un identifiant (login) généré par Gepi.'>(*)</span></td></tr>\n";
+
+	if((getSettingValue("auth_sso")=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
+
+		echo "<tr><td>Nom : </td><td><input type=text name=form_nom id=reg_nom size=20 onblur=\"affiche_login_lcs('reg_nom')\" /></td></tr>\n";
+		echo "<tr><td>Prénom : </td><td><input type=text name=form_prenom id=reg_prenom size=20 onblur=\"affiche_login_lcs('reg_prenom')\" />";
+
+		echo "
+	<script type='text/javascript'>
+		// <![CDATA[
+		function affiche_login_lcs(champ) {
+
+			valeur=document.getElementById(champ).value;
+			if(valeur!='') {
+
+				nom=document.getElementById('reg_nom').value;
+				prenom=document.getElementById('reg_prenom').value;
+
+				document.getElementById('suggestion_login').style.display='';
+
+				//alert('valeur='+valeur);
+				/*
+				if(champ=='nom') {
+					//new Ajax.Updater($('suggestion_login'),'cherche_login.php?champ='+champ+'&valeur='+valeur,{method: 'get'});
+					new Ajax.Updater($('suggestion_login'),'cherche_login.php?nom='+nom,{method: 'get'});
+				}
+				elseif(champ=='prenom') {
+				*/
+					new Ajax.Updater($('suggestion_login'),'../eleves/cherche_login.php?statut_recherche=personnel&nom='+nom+'&prenom='+prenom,{method: 'get'});
+				//}
+			}
+		}
+		//]]>
+	</script>\n";
+
+		echo "</td></tr>\n";
+	}
+	else {
+		echo "<tr><td>Nom : </td><td><input type=text name=form_nom size=20 /></td></tr>\n";
+		echo "<tr><td>Prénom : </td><td><input type=text name=form_prenom size=20 /></td></tr>\n";
+	}
+
+	echo "<tr><td>Civilité : </td><td><select name=\"form_civilite\" id=\"reg_civilite\" size=\"1\">\n";
 	echo "<option value='M.' >M.</option>\n";
 	echo "<option value='Mme' >Mme</option>\n";
 	echo "<option value='Mlle' >Mlle</option>\n";
 	echo "</select>\n";
 	echo "</td></tr>\n";
-	echo "<tr><td>Courriel : </td><td><input type=text name=form_email size=30  /></td></tr>\n";
+	echo "<tr><td>Courriel : </td><td><input type=text name=form_email id=\"reg_email\" size=30  /></td></tr>\n";
 	echo "</table>\n";
 
 	if (!(isset($user_login)) or ($user_login=='')) {

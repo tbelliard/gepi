@@ -6165,4 +6165,87 @@ function affiche_numero_tel_sous_forme_classique($chaine) {
 	return $chaine;
 }
 
+function get_info_categorie_aid($indice_aid, $aid_id="", $mode="tableau") {
+	global $mysqli;
+
+	$retour="";
+	if($indice_aid!="") {
+		$sql="SELECT * FROM aid_config WHERE indice_aid='".$indice_aid."';";
+	}
+	else {
+		$sql="SELECT ac.* FROM aid_config ac, aid a WHERE ac.indice_aid=a.indice_aid AND a.id='".$aid_id."';";
+	}
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		if($mode=="tableau") {
+			$nom_categorie_aid=$lig->nom;
+			if($lig->nom_complet!=$lig->nom) {
+				$nom_categorie_aid.=" <em>(".$lig->nom_complet.")</em>";
+			}
+
+			if($lig->display_begin==$lig->display_end) {
+				$display_periodes="AID en période ".$lig->display_begin." seulement";
+			}
+			else {
+				$display_periodes="Périodes ".$lig->display_begin." à ".$lig->display_end;
+			}
+
+			if($lig->type_note=="every") {
+				$type_note="Une note par période";
+			}
+			elseif($lig->type_note=="no") {
+				$type_note="Pas de note";
+			}
+			elseif($lig->type_note=="last") {
+				$type_note="Une note en dernière période seulement";
+			}
+			else {
+				$type_note="<span style='color:red'>Notes???</span>";
+			}
+
+			$info_bulletin="";
+			if($lig->display_bulletin=="y") {
+				$info_bulletin="Visible sur les bulletins";
+			}
+
+			if($lig->bull_simplifie=="y") {
+				if($info_bulletin!="") {
+					$info_bulletin.="<br />";
+				}
+				$info_bulletin.="Visible sur les bulletins simplifiés";
+			}
+
+			if($info_bulletin=="") {
+				$info_bulletin="<img src='$gepiPath/images/icons/bulletin_16_no.png' class='icone16' alt='Pas sur bulletins' title=\"Cet AID n'apparait pas sur les bulletins.\" />";
+			}
+			elseif($lig->order_display1=="b") {
+				$info_bulletin.=" <em title=\"Au début du bulletin, avant les enseignements.\">(début)</em>";
+			}
+			else {
+				$info_bulletin.=" <em title=\"À la fin du bulletin, après les enseignements.\">(fin)</em>";
+			}
+
+			$retour="<table class='boireaus boireaus_alt'>
+	<tr>
+		<td>".$nom_categorie_aid."</td>
+	</tr>
+	<tr>
+		<td>$display_periodes</td>
+	</tr>
+	<tr>
+		<td>$type_note</td>
+	</tr>
+	<tr>
+		<td>$info_bulletin</td>
+	</tr>
+</table>";
+		}
+		else {
+			// En ligne?
+		}
+	}
+	return $retour;
+}
+
 ?>

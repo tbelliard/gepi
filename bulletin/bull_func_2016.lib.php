@@ -793,9 +793,15 @@ die();
 		//=========================================
 
 		// Section cycle et niveau
-
+		// Debug
+		/*
+		echo "<pre>";
+		print_r($tab_mef);
+		echo "</pre>";
+		echo "\$tab_bull['eleve'][$i]['mef_code']=".$tab_bull['eleve'][$i]['mef_code']."<br />";
+		*/
 		$mef_code_ele=$tab_bull['eleve'][$i]['mef_code'];
-		if(isset($tab_mef[$mef_code_ele]["mef_rattachement"])) {
+		if((isset($tab_mef[$mef_code_ele]["mef_rattachement"]))&&($tab_mef[$mef_code_ele]["mef_rattachement"]!="")) {
 			if($tab_mef[$mef_code_ele]["mef_rattachement"]=="10010012110") {
 				// C'est une classe de 6ème
 				$cycle=3;
@@ -820,12 +826,31 @@ die();
 				$niveau=3;
 			}
 		}
+		elseif($mef_code_ele=="10010012110") {
+				// C'est une classe de 6ème
+				$cycle=3;
+				$niveau=6;
+		}
+		elseif($mef_code_ele=="10110001110") {
+			$cycle=4;
+			$niveau=5;
+		}
+		elseif($mef_code_ele=="10210001110") {
+			$cycle=4;
+			$niveau=4;
+		}
+		elseif($mef_code_ele=="10310019110") {
+			$cycle=4;
+			$niveau=3;
+		}
 		else {
 			// Pour le moment, on suppose que c'est un cycle 4 et même un élève de 3ème
 			// On verra plus tard le cas d'un Gepi en Lycée
 			$cycle=4;
 			$niveau=3;
 		}
+		// Debug
+		//echo "cycle=$cycle et niveau=$niveau<br />";
 
 		// Colonne cycle:
 		for($loop_cycle=2;$loop_cycle<=4;$loop_cycle++) {

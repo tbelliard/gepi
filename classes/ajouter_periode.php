@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -91,7 +91,7 @@ if(mysqli_num_rows($res_class_tmp)>0){
 	$id_class_suiv=0;
 	$temoin_tmp=0;
 
-    $cpt_classe=0;
+	$cpt_classe=0;
 	$num_classe=-1;
 
 	while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
@@ -263,7 +263,7 @@ if(!isset($nb_ajout_periodes)) {
 				$cpt=0;
 				while($lig2=mysqli_fetch_object($test)) {
 					if($cpt==0) {
-						echo "<b>$lig2->name (<i>$lig2->description</i>)&nbsp;:</b> ";
+						echo "<b>$lig2->name (<i>$lig2->description</i>)<a href='../groupes/edit_group.php?id_groupe=".$lig2->id."&id_classe=".$lig2->id_classe."&mode=groupe' title=\"Éditer cet enseignement pour éventuellement le scinder en plusieurs enseignements et dissocier les classes.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Éditer' /></a>&nbsp;:</b> ";
 					}
 					echo " $lig2->classe";
 					$cpt++;
@@ -277,12 +277,12 @@ if(!isset($nb_ajout_periodes)) {
 	search_liaisons_classes_via_groupes($id_classe);
 	
 	if(count($tab_liaisons_classes)>0) {
-		echo "<p>La classe <b>$classe</b> est liée (<i>de façon directe ou indirecte (via une autre classe)</i>) aux classes suivantes&nbsp;: ";
+		echo "<p>La classe <b><a href='../groupes/edit_class.php?id_classe=".$id_classe."' onclick=\"return confirm_abandon (this, change, '$themessage')\">$classe</a></b> est liée (<i>de façon directe ou indirecte (via une autre classe)</i>) aux classes suivantes&nbsp;: ";
 		$cpt=0;
 		for($i=0;$i<count($tab_liaisons_classes);$i++) {
 			if($tab_liaisons_classes[$i]!=$id_classe) {
 				if($cpt>0) {echo ", ";}
-				echo get_class_from_id($tab_liaisons_classes[$i]);
+				echo "<a href='../groupes/edit_class.php?id_classe=".$tab_liaisons_classes[$i]."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".get_class_from_id($tab_liaisons_classes[$i])."</a>";
 				$cpt++;
 			}
 		}
@@ -346,7 +346,9 @@ else {
 		$id_classe_courant=$tab_liaisons_classes[$i];
 		$classe_courante=get_class_from_id($tab_liaisons_classes[$i]);
 
-		echo "<p class='bold'>Traitement de la classe $classe_courante&nbsp;:</p>\n";
+		echo "<p class='bold'>Traitement de la classe ";
+		echo "<a href='../groupes/edit_class.php?id_classe=".$tab_liaisons_classes[$i]."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$classe_courante."</a>";
+		echo "&nbsp;:</p>\n";
 		echo "<blockquote>\n";
 
 		$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe_courant."' ORDER BY num_periode DESC LIMIT 1;";

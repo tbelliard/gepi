@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -39,14 +39,14 @@ if ($resultat_session == 'c') {
 
 // Check access
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
-// On n'autorise que les profs à accéder à cette page
-if($_SESSION['statut']!='professeur') {
-    header("Location: ../logout.php?auto=1");
-    die();
+// Profs, CPE et Scol sont autorisés à accéder à cette page, mais les profs avec une restriction:
+if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('appreciations_types_profs'))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé aux appréciations-type");
+	die();
 }
 
 //================================

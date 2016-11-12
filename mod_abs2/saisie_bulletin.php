@@ -49,6 +49,9 @@ if ((getSettingValue("active_module_absence")!='2')||(!getSettingAOui('active_bu
 
 include_once 'lib/function.php';
 
+// Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
+$aff_temoin_serveur_hors_entete="y";
+
 $msg="";
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -196,7 +199,7 @@ if((!isset($id_classe))||(!isset($num_periode))) {
 	echo " - ";
 	echo "Cliquez sur la classe pour laquelle vous souhaitez saisir les absences :</p>\n";
 	if (!getSettingAOui('GepiAccesAbsTouteClasseCpe')) {
-		echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un ".$gepiSettings['denomination_eleve']." de la classe.</p>\n";
+		echo "<p><em>Remarque&nbsp;:</em> s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un ".$gepiSettings['denomination_eleve']." de la classe.</p>\n";
 	}
 
 	while($lig_classe=mysqli_fetch_object($calldata)) {
@@ -237,8 +240,11 @@ $etat_periode=etat_verrouillage_classe_periode($id_classe, $num_periode);
 
 echo "<p><a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe/période</a></p>";
 
-if (getSettingValue('GepiAccesAbsTouteClasseCpe')!='yes') {
+if (!getSettingAOui('GepiAccesAbsTouteClasseCpe')) {
 	$sql="SELECT 1=1 FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe AND c.id='$id_classe');";
+}
+else {
+	$sql="SELECT 1=1 FROM classes c WHERE c.id='$id_classe';";
 }
 $test = mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
@@ -248,6 +254,10 @@ if(mysqli_num_rows($test)==0) {
 	echo "</div>\n";
 	require_once("../lib/footer.inc.php");
 	die();
+}
+
+if(!getSettingANon('active_recherche_lapsus')) {
+	$tab_lapsus_et_correction=retourne_tableau_lapsus_et_correction();
 }
 
 $appreciation_absences_grp="";
@@ -273,6 +283,19 @@ echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 		<div style='float:right; width:16px'><a href='../impression/avis_pdf_absences.php?id_classe=$id_classe&periode_num=$num_periode' title=\"Imprimer les appréciations absences et nombre d'absences,... en PDF\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='Générer un PDF' /></a></div>
 		<p class='bold'>Classe de ".get_nom_classe($id_classe)." en période ".$num_periode."</p>
 
+		<div id='fixe'>";
+if(getSettingAOui('aff_temoin_check_serveur')) {
+	temoin_check_srv();
+}
+echo "
+			<input type='submit' value='Enregistrer' /><br />";
+include('../saisie/ctp.php');
+echo "
+			<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+			<input type='hidden' id='info_focus' name='champ_info_focus' value='' />
+			<input type='hidden' id='focus_courant' name='focus_courant' value='' />
+		</div>
+
 		".add_token_field(true)."
 		<input type='hidden' name='enregistrement_saisie' value='y' />
 		<input type='hidden' name='id_classe' value='".$id_classe."' />
@@ -284,6 +307,12 @@ echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 							onKeyDown=\"clavier(this.id,event);\" 
 							onchange=\"changement()\">$appreciation_absences_grp</textarea>
 		</p>
+
+		<div id='div_verif_grp".$num_periode."' style='color:red;'>";
+		if(!getSettingANon('active_recherche_lapsus')) {
+			echo teste_lapsus($appreciation_absences_grp);
+		}
+		echo "</div>
 
 		<table class='boireaus boireaus_alt'>
 			<thead>
@@ -299,9 +328,10 @@ echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 
 $cpt=0;
 $num_id=10;
-$chaine_test_vocabulaire="";
+//$chaine_test_vocabulaire="";
 $sql="SELECT e.nom, e.prenom, e.login FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.periode='$num_periode' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 $res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+$eff_ele=mysqli_num_rows($res_ele);
 while($lig_ele=mysqli_fetch_object($res_ele)) {
 	$eleve = EleveQuery::create()->findOneByLogin($lig_ele->login);
 	if ($eleve != null) {
@@ -376,15 +406,20 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 	}
 
 	if($etat_periode=="N") {
-		$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$lig_ele->login."', '".$id_classe."', 'n3".$num_id."');\n";
+		//$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$lig_ele->login."', '".$id_classe."', 'n3".$num_id."');\n";
 
 		echo "
-						<input type='hidden' name='login_eleve[$cpt]' value='".$lig_ele->login."' />
+						<input type='hidden' name='login_eleve[$cpt]' id='login_eleve_3".$num_id."' value='".$lig_ele->login."' />
 						<textarea id=\"n3".$num_id."\" name='no_anti_inject_app_eleve_$cpt' rows='2' cols='50'  wrap=\"virtual\" 
 											onKeyDown=\"clavier(this.id,event);\" 
 											onchange=\"changement()\" 
+											onfocus=\"focus_suivant(3".$num_id.");document.getElementById('focus_courant').value='3".$num_id."'; repositionner_commtype();\" 
 											onblur=\"ajaxVerifAppreciations('".$lig_ele->login."_t".$num_periode."', '".$id_classe."', 'n3".$num_id."');\">$current_eleve_appreciation_absences</textarea>
-						<div id='div_verif_n3".$num_id."' style='color:red;'></div>";
+						<div id='div_verif_n3".$num_id."' style='color:red;'>";
+		if(!getSettingANon('active_recherche_lapsus')) {
+			echo teste_lapsus($current_eleve_appreciation_absences);
+		}
+		echo "</div>";
 	}
 	else {
 		echo "
@@ -411,11 +446,47 @@ echo "
 
 <script type='text/javascript'>\n";
 
+/*
 if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
 	echo $chaine_test_vocabulaire;
 }
+*/
 
-echo "</script>\n";
+echo "
+// Pour éviter une erreur dans les commentaires-types:
+id_groupe='';
+
+function focus_suivant(num){
+	temoin='';
+	// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+	dernier=num+".$eff_ele."
+	// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
+	// (pour réussir à passer un élève qui ne serait plus dans la période)
+	// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+	for(i=num;i<dernier;i++){
+		suivant=i+1;
+		if(temoin==''){
+			if(document.getElementById('n'+suivant)){
+				document.getElementById('info_focus').value=suivant;
+				temoin=suivant;
+			}
+		}
+	}
+
+	document.getElementById('info_focus').value=temoin;
+}
+
+function repositionner_commtype() {
+	if(document.getElementById('div_commtype')) {
+		if(document.getElementById('div_commtype').style.display!='none') {
+			x=document.getElementById('div_commtype').style.left;
+			afficher_div('div_commtype','y',20,20);
+			document.getElementById('div_commtype').style.left=x;
+		}
+	}
+}
+
+</script>\n";
 
 echo "</div>\n";
 
