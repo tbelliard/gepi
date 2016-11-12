@@ -2861,7 +2861,7 @@ if (getSettingAOui('autorise_envoi_sms'))
 		</p>
 		<br /><br />
 		<p class="center">Ce qui a été envoyé au prestataire : </p>
-		<div  style="font-size: small; padding: 2em; background-color: white; margin-left: auto; margin-right: auto; width: 50%; white-space:pre-wrap;"><?php echo $t_retour['envoi'] ?></div>
+		<div  style="font-size: small; padding: 2em; background-color: white; margin-left: 25%; margin-right: 25%; width: 50%; white-space:pre-wrap;"><?php echo $t_retour['envoi'] ?></div>
 		<br />
 		<br />
 		<p class="center">Réponse retournée par le prestataire :  </p>
