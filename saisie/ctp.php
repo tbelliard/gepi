@@ -43,6 +43,8 @@
 function insere_cmt(num) {
 	id_focus_courant=document.getElementById('focus_courant').value;
 
+	//alert(id_focus_courant);
+
 	if(document.getElementById('prenom_eleve_'+id_focus_courant)) {
 		prenom_eleve=document.getElementById('prenom_eleve_'+id_focus_courant).value;
 	}
@@ -62,9 +64,12 @@ function insere_cmt(num) {
 	app1=app0+cmt;
 	document.getElementById('n'+id_focus_courant).value=app1;
 
+	// 20161110 : Lors d un appel depuis mod_abs2/saisie_bulletin.php id_groupe n est pas défini
 	if((id_groupe!='')&&(login_eleve!='')) {
 		ajaxAppreciations(login_eleve, id_groupe, 'n'+id_focus_courant);
 	}
+
+	changement();
 
 	document.getElementById('n'+id_focus_courant).focus();
 }
@@ -80,7 +85,7 @@ function div_comm_type() {
 
 
 	//echo "<a href='#' onClick='return false;' ";
-	echo "<a href='saisie_cmnt_type_prof.php' ";
+	echo "<a href='../saisie/saisie_cmnt_type_prof.php' ";
 	//echo "onMouseover=\"afficher_div('div_commtype','y',-10,20);\"";
 	//echo "onClick='document.forms[0].submit() ;return true;' ";
 	echo "onMouseover=\"div_comm_type();\"";

@@ -1107,7 +1107,7 @@ function check_ts_vacances($ts, $id_classe) {
 	$heure_courante=strftime("%H:%M:%S", $ts);
 
 	$sql="SELECT * FROM edt_calendrier WHERE etabvacances_calendrier!='0' AND 
-			(classe_concerne_calendrier LIKE '$id_classe;%' OR classe_concerne_calendrier LIKE '%;$id_classe;%') AND 
+			(classe_concerne_calendrier LIKE '$id_classe;%' OR classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '%;$id_classe') AND 
 			jourdebut_calendrier<='".$jour_courant."' AND 
 			heuredebut_calendrier<='".$heure_courante."' AND 
 			jourfin_calendrier>='".$jour_courant."' AND 
@@ -1127,7 +1127,7 @@ function nom_ts_vacances($ts, $id_classe) {
 	$heure_courante=strftime("%H:%M:%S", $ts);
 
 	$sql="SELECT * FROM edt_calendrier WHERE etabvacances_calendrier!='0' AND 
-			(classe_concerne_calendrier LIKE '$id_classe;%' OR classe_concerne_calendrier LIKE '%;$id_classe;%') AND 
+			(classe_concerne_calendrier LIKE '$id_classe;%' OR classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '%;$id_classe') AND 
 			jourdebut_calendrier<='".$jour_courant."' AND 
 			heuredebut_calendrier<='".$heure_courante."' AND 
 			jourfin_calendrier>='".$jour_courant."' AND 
@@ -2697,17 +2697,26 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		else {
 			$avec_contrainte_semaine="(ec.id_semaine='' OR ec.id_semaine='0' OR ec.id_semaine='$type_semaine') AND ";
 		}
+		/*
 		$sql="SELECT DISTINCT * FROM edt_cours ec, edt_creneaux ecr WHERE
 						ec.jour_semaine = '".$jour_sem."' AND
 						$ajout_sql
 						$avec_contrainte_semaine
 						ec.id_definie_periode=ecr.id_definie_periode 
 					ORDER BY heuredebut_definie_periode, id_semaine;";
+		*/
+		$sql="SELECT DISTINCT * FROM edt_cours ec, edt_creneaux ecr WHERE
+						ec.jour_semaine = '".$jour_sem."' AND
+						$ajout_sql
+						ec.id_definie_periode=ecr.id_definie_periode 
+					ORDER BY heuredebut_definie_periode, id_semaine;";
 
+		if($debug_edt=="y") {
+			echo "<div style='margin-left:1000px'>";
+			echo "$sql<br />";
+			echo "</div>";
+		}
 
-		//echo "<div style='margin-left:1000px'>";
-		//echo "$sql<br />";
-		//echo "</div>";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
 			/*
@@ -2755,20 +2764,37 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			}
 
 			if($debug_edt=="y") {
+				$html.="---<br />";
 				$html.="\$jour_debut_jour=$jour_debut_jour<br />";
 				$html.="\$ts_debut_jour=$ts_debut_jour<br />";
 				$html.="\$ts_debut=$ts_debut<br />";
 				$html.="\$duree_depuis_debut_journee=$duree_depuis_debut_journee<br />";
 				$html.="y_courant=$y_courant<br />";
+
+
+				if($lig->id_cours==24608) {
+					echo "<div style='margin-left:500px'>";
+					echo "<pre>";
+					print_r($lig);
+					echo "</pre>";
+					echo "id_classe=$id_classe et check_ts_vacances($ts_debut+600,$id_classe)=".check_ts_vacances($ts_debut+600,$id_classe)."<br />";
+					echo "</div>";
+				}
 			}
 
 			$cpt_courant=0;
 			if(isset($tab_cours[$num_jour]['y'][$y_courant])) {
 				$cpt_courant=count($tab_cours[$num_jour]['y'][$y_courant]);
 			}
-			$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
+			// On ne l'affecte que plus loin si on affiche le div
+			//$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
 
 			if(($ts_debut+600>$ts_fin_annee)||($ts_debut-600<$ts_debut_annee)) {
+				if($debug_edt=="y") {
+					echo "<p style='color:red'>Hors année scolaire</p>";
+				}
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
+
 				$bgcolor_courant="silver";
 
 				$contenu_cellule="Hors année scolaire";
@@ -2777,6 +2803,11 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
 			}
 			elseif(($id_classe!="")&&(check_ts_vacances($ts_debut+600,$id_classe))) {
+				if($debug_edt=="y") {
+					echo "<p style='color:red'>Classe définie $id_classe et en période de vacances</p>";
+				}
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
+
 				$bgcolor_courant="silver";
 
 				$contenu_cellule=nom_ts_vacances($ts_debut+600,$id_classe);
@@ -2785,6 +2816,8 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
 			}
 			else {
+				$afficher_l_enseignement="y";
+
 				$chaine_nom_enseignement="";
 				$chaine_matiere="";
 				$chaine_liste_classes="";
@@ -2798,6 +2831,10 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 				$chaine_type_semaine_du_cours_courant="";
 				if(("$lig->id_semaine"!="")&&("$lig->id_semaine"!="0")) {
 					$chaine_type_semaine_du_cours_courant="\nSemaine : ".$lig->id_semaine;
+
+					if(($avec_contrainte_semaine!="")&&("$lig->id_semaine"!="$type_semaine")) {
+						$afficher_l_enseignement="n";
+					}
 				}
 				/*
 				else {
@@ -2806,141 +2843,211 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 				*/
 
 				$chaine_texte_ligne_1="";
-				if(($lig->id_groupe!="")&&($lig->id_groupe!="0")) {
-					if(!isset($tab_group_edt[$lig->id_groupe])) {
-						$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
-					}
+				//if($afficher_l_enseignement=="y") {
+					//$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
 
-					$id_classe_1ere_du_groupe="";
-					if(isset($tab_group_edt[$lig->id_groupe]["classes"]["list"][0])) {
-						$id_classe_1ere_du_groupe=$tab_group_edt[$lig->id_groupe]["classes"]["list"][0];
-					}
-
-					if(($id_classe_1ere_du_groupe!="")&&(check_ts_vacances($ts_debut+600,$id_classe_1ere_du_groupe))) {
-						$bgcolor_courant="silver";
-
-						$contenu_cellule=nom_ts_vacances($ts_debut+600,$id_classe_1ere_du_groupe);
-
-						$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['contenu_cellule']=$contenu_cellule;
-						$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
-					}
-					else {
-						$current_group=$tab_group_edt[$lig->id_groupe];
-
-						$chaine_nom_enseignement=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']." avec ".$current_group['profs']['proflist_string'];
-
-						$chaine_matiere=$current_group['matiere']['matiere'];
-
-						// 20160919
-						//$chaine_texte_ligne_1=$chaine_matiere;
-						//$chaine_texte_ligne_1=$current_group['name'];
-						$chaine_texte_ligne_1=preg_replace("/[_.]/"," ",$current_group['name']);
-
-						$chaine_proflist_string=$current_group['profs']['proflist_string'];
-
-						if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
-							$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
+					/*
+					//DEBUG:
+					echo "\$lig->id_groupe=$lig->id_groupe<br />";
+					echo "\$avec_contrainte_semaine=$avec_contrainte_semaine<br />";
+					echo "\$lig->id_semaine=$lig->id_semaine et \$type_semaine=$type_semaine<br />";
+					*/
+					if(($lig->id_groupe!="")&&($lig->id_groupe!="0")) {
+						if(!isset($tab_group_edt[$lig->id_groupe])) {
+							$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
 						}
-						// 20160919
-						if($type_affichage=="prof") {
-							$bgcolor_courant=get_couleur_edt_prof($lig->id_groupe);
+
+						$id_classe_1ere_du_groupe="";
+						if(isset($tab_group_edt[$lig->id_groupe]["classes"]["list"][0])) {
+							$id_classe_1ere_du_groupe=$tab_group_edt[$lig->id_groupe]["classes"]["list"][0];
+						}
+
+						if(($id_classe_1ere_du_groupe!="")&&(check_ts_vacances($ts_debut+600,$id_classe_1ere_du_groupe))) {
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
+
+							$bgcolor_courant="silver";
+
+							$contenu_cellule=nom_ts_vacances($ts_debut+600,$id_classe_1ere_du_groupe);
+
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['contenu_cellule']=$contenu_cellule;
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
 						}
 						else {
-							$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
-						}
 
-						$chaine_liste_classes=$current_group['classlist_string'];
+							$chaine_type_semaine_du_cours_courant="";
+							if(("$lig->id_semaine"!="")&&("$lig->id_semaine"!="0")) {
+								$chaine_type_semaine_du_cours_courant="\nSemaine : ".$lig->id_semaine;
 
-						$cpt_prof=0;
-						foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
-							if($cpt_prof>0) {
-								$chaine_noms_profs.=", ";
+								if(($avec_contrainte_semaine!="")&&("$lig->id_semaine"!="$type_semaine")) {
+									$afficher_l_enseignement="n";
+								}
 							}
-							$chaine_noms_profs.=$current_prof['nom'];
 
-							/*
-							if(!isset($tab_prof[$lig->login_prof])) {
-								$tab_prof[$lig->login_prof]['nom']=$current_prof['nom'];
-								$tab_prof[$lig->login_prof]['designation']=$current_prof['civilite']." ".$current_prof['nom'].mb_substr($current_prof['prenom'],0,1);
-							}
-							*/
+							if($afficher_l_enseignement=="y") {
+								$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
 
-							$cpt_prof++;
-						}
-					}
-				}
-				elseif($lig->id_aid!="") {
-					// A FAIRE Remplir un $tab_edt_aid pour ne pas faire plusieurs fois les mêmes requêtes:
+								$current_group=$tab_group_edt[$lig->id_groupe];
 
-					$id_classe_1ere_de_l_aid="";
-					$sql="SELECT DISTINCT c.* FROM classes c, 
-										j_eleves_classes jec, 
-										j_aid_eleves jae 
-									WHERE c.id=jec.id_classe AND 
-										jec.login=jae.login AND 
-										jae.id_aid='".$lig->id_aid."';";
-					$res_aid_classe=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_aid_classe)>0) {
-						$lig_aid_classe=mysqli_fetch_object($res_aid_classe);
-						$id_classe_1ere_de_l_aid=$lig_aid_classe->id;
-					}
+								$chaine_nom_enseignement=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']." avec ".$current_group['profs']['proflist_string'];
 
-					if(($id_classe_1ere_de_l_aid!="")&&(check_ts_vacances($ts_debut+600,$id_classe_1ere_de_l_aid))) {
-						$bgcolor_courant="silver";
+								$chaine_matiere=$current_group['matiere']['matiere'];
 
-						$contenu_cellule=nom_ts_vacances($ts_debut+600,$id_classe_1ere_de_l_aid);
+								// 20160919
+								//$chaine_texte_ligne_1=$chaine_matiere;
+								//$chaine_texte_ligne_1=$current_group['name'];
+								$chaine_texte_ligne_1=preg_replace("/[_.]/"," ",$current_group['name']);
 
-						$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['contenu_cellule']=$contenu_cellule;
-						$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
-					}
-					else {
+								$chaine_proflist_string=$current_group['profs']['proflist_string'];
 
-						if(!isset($tab_aid_edt[$lig->id_aid])) {
-							$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet FROM aid a, 
-																	aid_config ac 
-																WHERE a.indice_aid=ac.indice_aid AND 
-																	a.id='".$lig->id_aid."';";
-							$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
-							if(mysqli_num_rows($res_aid)==0) {
-								$tab_aid_edt[$lig->id_aid]['nom_general_court']="AID";
-								$tab_aid_edt[$lig->id_aid]['nom_general_complet']="AID";
-								$tab_aid_edt[$lig->id_aid]['nom_aid']="AID";
-								$tab_aid_edt[$lig->id_aid]['proflist_string']="...";
-							}
-							else {
-								$lig_aid=mysqli_fetch_object($res_aid);
-
-								$tab_aid_edt[$lig->id_aid]['nom_general_court']=$lig_aid->nom;
-								$tab_aid_edt[$lig->id_aid]['nom_general_complet']=$lig_aid->nom_complet;
-								$tab_aid_edt[$lig->id_aid]['nom_aid']=$lig_aid->nom_aid;
-
-								$sql="SELECT u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau 
-																	WHERE u.login=jau.id_utilisateur AND 
-																		jau.id_aid='".$lig->id_aid."'
-																	ORDER BY u.nom, u.prenom;";
-								$res_aid_prof=mysqli_query($GLOBALS["mysqli"], $sql);
-								if(mysqli_num_rows($res_aid_prof)==0) {
-									$tab_aid_edt[$lig->id_aid]['proflist_string']="...";
+								if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
+									$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
+								}
+								// 20160919
+								if($type_affichage=="prof") {
+									$bgcolor_courant=get_couleur_edt_prof($lig->id_groupe);
 								}
 								else {
-									$tab_aid_edt[$lig->id_aid]['proflist_string']="";
-									$cpt_aid_prof=0;
-									while($lig_aid_prof=mysqli_fetch_object($res_aid_prof)) {
-										if($cpt_aid_prof>0) {
-											$tab_aid_edt[$lig->id_aid]['proflist_string'].=", ";
-										}
-										$tab_aid_edt[$lig->id_aid]['proflist_string'].=$lig_aid_prof->civilite." ".$lig_aid_prof->nom." ".mb_substr($lig_aid_prof->prenom,0,1);
-										$cpt_aid_prof++;
+									$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
+								}
+
+								$chaine_liste_classes=$current_group['classlist_string'];
+
+								$cpt_prof=0;
+								foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
+									if($cpt_prof>0) {
+										$chaine_noms_profs.=", ";
 									}
+									$chaine_noms_profs.=$current_prof['nom'];
+
+									/*
+									if(!isset($tab_prof[$lig->login_prof])) {
+										$tab_prof[$lig->login_prof]['nom']=$current_prof['nom'];
+										$tab_prof[$lig->login_prof]['designation']=$current_prof['civilite']." ".$current_prof['nom'].mb_substr($current_prof['prenom'],0,1);
+									}
+									*/
+
+									$cpt_prof++;
 								}
 							}
 						}
+					}
+					elseif($lig->id_aid!="") {
+						// A FAIRE Remplir un $tab_edt_aid pour ne pas faire plusieurs fois les mêmes requêtes:
 
-						$current_aid=$tab_aid_edt[$lig->id_aid];
+						$id_classe_1ere_de_l_aid="";
+						$sql="SELECT DISTINCT c.* FROM classes c, 
+											j_eleves_classes jec, 
+											j_aid_eleves jae 
+										WHERE c.id=jec.id_classe AND 
+											jec.login=jae.login AND 
+											jae.id_aid='".$lig->id_aid."';";
+						$res_aid_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_aid_classe)>0) {
+							$lig_aid_classe=mysqli_fetch_object($res_aid_classe);
+							$id_classe_1ere_de_l_aid=$lig_aid_classe->id;
+						}
 
-						$chaine_nom_enseignement=$current_aid['nom_aid']." (".$current_aid['nom_general_court'].") (".$current_aid['nom_general_complet'].") avec ".$current_aid['proflist_string'];
+						if(($id_classe_1ere_de_l_aid!="")&&(check_ts_vacances($ts_debut+600,$id_classe_1ere_de_l_aid))) {
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
 
-						$chaine_matiere=$current_aid['nom_aid'];
+							$bgcolor_courant="silver";
+
+							$contenu_cellule=nom_ts_vacances($ts_debut+600,$id_classe_1ere_de_l_aid);
+
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['contenu_cellule']=$contenu_cellule;
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
+						}
+						else {
+
+							$chaine_type_semaine_du_cours_courant="";
+							if(("$lig->id_semaine"!="")&&("$lig->id_semaine"!="0")) {
+								$chaine_type_semaine_du_cours_courant="\nSemaine : ".$lig->id_semaine;
+
+								if(($avec_contrainte_semaine!="")&&("$lig->id_semaine"!="$type_semaine")) {
+									$afficher_l_enseignement="n";
+								}
+							}
+
+							if($afficher_l_enseignement=="y") {
+								$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
+
+								if(!isset($tab_aid_edt[$lig->id_aid])) {
+									$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet FROM aid a, 
+																			aid_config ac 
+																		WHERE a.indice_aid=ac.indice_aid AND 
+																			a.id='".$lig->id_aid."';";
+									$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_aid)==0) {
+										$tab_aid_edt[$lig->id_aid]['nom_general_court']="AID";
+										$tab_aid_edt[$lig->id_aid]['nom_general_complet']="AID";
+										$tab_aid_edt[$lig->id_aid]['nom_aid']="AID";
+										$tab_aid_edt[$lig->id_aid]['proflist_string']="...";
+									}
+									else {
+										$lig_aid=mysqli_fetch_object($res_aid);
+
+										$tab_aid_edt[$lig->id_aid]['nom_general_court']=$lig_aid->nom;
+										$tab_aid_edt[$lig->id_aid]['nom_general_complet']=$lig_aid->nom_complet;
+										$tab_aid_edt[$lig->id_aid]['nom_aid']=$lig_aid->nom_aid;
+
+										$sql="SELECT u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau 
+																			WHERE u.login=jau.id_utilisateur AND 
+																				jau.id_aid='".$lig->id_aid."'
+																			ORDER BY u.nom, u.prenom;";
+										$res_aid_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_aid_prof)==0) {
+											$tab_aid_edt[$lig->id_aid]['proflist_string']="...";
+										}
+										else {
+											$tab_aid_edt[$lig->id_aid]['proflist_string']="";
+											$cpt_aid_prof=0;
+											while($lig_aid_prof=mysqli_fetch_object($res_aid_prof)) {
+												if($cpt_aid_prof>0) {
+													$tab_aid_edt[$lig->id_aid]['proflist_string'].=", ";
+												}
+												$tab_aid_edt[$lig->id_aid]['proflist_string'].=$lig_aid_prof->civilite." ".$lig_aid_prof->nom." ".mb_substr($lig_aid_prof->prenom,0,1);
+												$cpt_aid_prof++;
+											}
+										}
+									}
+								}
+
+								$current_aid=$tab_aid_edt[$lig->id_aid];
+
+								$chaine_nom_enseignement=$current_aid['nom_aid']." (".$current_aid['nom_general_court'].") (".$current_aid['nom_general_complet'].") avec ".$current_aid['proflist_string'];
+
+								$chaine_matiere=$current_aid['nom_aid'];
+								// 20160919
+								$chaine_texte_ligne_1=$chaine_matiere;
+
+								if(!isset($tab_prof[$lig->login_prof])) {
+									$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
+									$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_prof)>0) {
+										$lig_prof=mysqli_fetch_object($res_prof);
+										$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
+										$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+									}
+									else {
+										$tab_prof[$lig->login_prof]['nom']="...";
+										$tab_prof[$lig->login_prof]['designation']="...";
+									}
+								}
+								$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+								$chaine_proflist_string=$current_aid['proflist_string'];
+
+								$bgcolor_courant="azure";
+							}
+						}
+					}
+					else {
+						// On ne devrait pas passer là
+
+						$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
+
+						$chaine_nom_enseignement="Cours...";
+
+						$chaine_matiere="Matière";
 						// 20160919
 						$chaine_texte_ligne_1=$chaine_matiere;
 
@@ -2950,7 +3057,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 							if(mysqli_num_rows($res_prof)>0) {
 								$lig_prof=mysqli_fetch_object($res_prof);
 								$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
-								$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+								$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($$lig_prof->prenom,0,1);
 							}
 							else {
 								$tab_prof[$lig->login_prof]['nom']="...";
@@ -2958,40 +3065,16 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 							}
 						}
 						$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
-						$chaine_proflist_string=$current_aid['proflist_string'];
+						$chaine_proflist_string=$tab_prof[$lig->login_prof]['designation'];
 
-						$bgcolor_courant="azure";
+						$bgcolor_courant="white";
 					}
-				}
-				else {
-					// On ne devrait pas passer là
-
-					$chaine_nom_enseignement="Cours...";
-
-					$chaine_matiere="Matière";
-					// 20160919
-					$chaine_texte_ligne_1=$chaine_matiere;
-
-					if(!isset($tab_prof[$lig->login_prof])) {
-						$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
-						$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res_prof)>0) {
-							$lig_prof=mysqli_fetch_object($res_prof);
-							$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
-							$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($$lig_prof->prenom,0,1);
-						}
-						else {
-							$tab_prof[$lig->login_prof]['nom']="...";
-							$tab_prof[$lig->login_prof]['designation']="...";
-						}
-					}
-					$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
-					$chaine_proflist_string=$tab_prof[$lig->login_prof]['designation'];
-
-					$bgcolor_courant="white";
-				}
+				//}
 
 				if($chaine_texte_ligne_1!="") {
+					//DEBUG:
+					//echo "\$chaine_texte_ligne_1=$chaine_texte_ligne_1<br />";
+
 					if(isset($tab_salle['indice'][$lig->id_salle])) {
 						$chaine_salle_courante_span_title=" en salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete'];
 						$chaine_salle_courante="<br /><span style='font-size:".$font_size3."pt;' title=\"Salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete']."\">".$tab_salle['indice'][$lig->id_salle]['designation_courte']."</span>";
@@ -3046,7 +3129,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 
 		if(isset($tab_cours[$num_jour])) {
 			if($debug_edt=="y") {
-				echo "\$tab_cours[$num_jour]<pre>";
+				echo "<br />---<p>\$tab_cours[$num_jour]</p><pre>";
 				print_r($tab_cours[$num_jour]);
 				echo "</pre>";
 			}
@@ -3292,7 +3375,14 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 								$html.="<div id='div_texte_cours_".$tab2[$loop]['id_cours']."' style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; border:1px solid black; z-index:20; text-align:center; overflow:hidden; ".$text_color.$font_size."' title='$title'>".$contenu_courant."</div>";
 								*/
 
-
+								/*
+								//DEBUG:
+								if(!isset($tab2[$loop]['bgcolor_cellule'])) {
+								echo "<pre style='color:red'>";
+								print_r($tab2[$loop]);
+								echo "</pre>";
+								}
+								*/
 
 								$html.="\n";
 								$html.="\n";

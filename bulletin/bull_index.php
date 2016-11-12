@@ -1099,6 +1099,8 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 	*/
 	//=======================================
 
+	$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+
 	$acces_correction_app=acces_validation_correction_app();
 
 	if(count($tab_id_classe)>1) {
@@ -1293,7 +1295,15 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 		while($lig_ele=mysqli_fetch_object($res_ele)) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='text-align:left;'>".$lig_ele->nom." ".$lig_ele->prenom."</td>\n";
+			echo "<td style='text-align:left;'>";
+
+			if($acces_visu_eleve) {
+				echo "<div style='float:right;width:16px;' title=\"Voir le classeur élève dans un nouvel onglet.\">";
+				echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig_ele->login."' target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /></a>";
+				echo "</div>";
+			}
+
+			echo $lig_ele->nom." ".$lig_ele->prenom."</td>\n";
 			for($j=0;$j<count($tab_periode_num);$j++) {
 
 				$sql="SELECT 1=1 FROM j_eleves_classes jec

@@ -42,6 +42,9 @@ if (!checkAccess()) {
 	die();
 }
 
+// Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
+$aff_temoin_serveur_hors_entete="y";
+
 //debug_var();
 
 // Intialisation
@@ -82,7 +85,9 @@ $couleur_moy_cn = '#96C8F0';
 
 $nom_table = "class_temp".md5(SESSION_ID());
 
-$tab_aid=get_tab_aid($aid_id);
+if(isset($aid_id)) {
+	$tab_aid=get_tab_aid($aid_id);
+}
 
 if (isset($_POST['is_posted'])) {
 	check_token();
@@ -187,132 +192,133 @@ if (isset($_POST['is_posted'])) {
 			if ($type_note == 'last') {$last_periode_aid = min($nb_periode,$display_end);}
 			$k='1';
 			while ($k < $nb_periode + 1) {
-				//echo "<p>Période $k<br />";
-				if (($k >= $display_begin) and ($k <= $display_end)) {
-					$ver_periode[$k] = old_mysql_result($periode_query, $k-1, "verouiller");
-					//if ($ver_periode[$k] == "N"){
-					if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] != "O"))||
-						(($_SESSION['statut']!='secours')&&($ver_periode[$k] == "N"))) {
-						//echo "La période n'est pas fermée en saisie.<br />";
-						//=========================
-						// AJOUT: boireaus 20071003
-						unset($log_eleve);
-						$log_eleve=$_POST['log_eleve_'.$k];
-						unset($note_eleve);
-						// On n'a pas nécessairement de note
-						// cf: if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
-						if(isset($_POST['note_eleve_'.$k])) {
-							$note_eleve=$_POST['note_eleve_'.$k];
-						}
-						//=========================
-
-						//echo "\$log_eleve=$log_eleve et \$note_eleve=$note_eleve<br />";
-
-						//=========================
-						// AJOUT: boireaus 20071003
-						// Récupération du numéro de l'élève dans les saisies:
-						$num_eleve=-1;
-						//for($i=0;$i<count($log_eleve);$i++){
-						for($i=0;$i<$indice_max_log_eleve;$i++){
-							if(isset($log_eleve[$i])){
-								if(my_strtolower("$reg_eleve_login"."_t".$k)==my_strtolower("$log_eleve[$i]")){
-									$num_eleve=$i;
-									break;
-								}
-							}
-						}
-						//echo "\$num_eleve=$num_eleve<br />";
-						if($num_eleve!=-1){
-							//echo "L'élève a été trouvé dans le tableau \$log_eleve soumis.<br />";
+				if(isset($_POST['log_eleve_'.$k])) {
+					//echo "<p>Période $k<br />";
+					if (($k >= $display_begin) and ($k <= $display_end)) {
+						$ver_periode[$k] = old_mysql_result($periode_query, $k-1, "verouiller");
+						//if ($ver_periode[$k] == "N"){
+						if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] != "O"))||
+							(($_SESSION['statut']!='secours')&&($ver_periode[$k] == "N"))) {
+							//echo "La période n'est pas fermée en saisie.<br />";
 							//=========================
-							// MODIF: boireaus 20071003
-							//$nom_log = $reg_eleve_login."_t".$k;
-							$nom_log = "app_eleve_".$k."_".$num_eleve;
+							unset($log_eleve);
+							$log_eleve=$_POST['log_eleve_'.$k];
+							unset($note_eleve);
+							// On n'a pas nécessairement de note
+							// cf: if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+							if(isset($_POST['note_eleve_'.$k])) {
+								$note_eleve=$_POST['note_eleve_'.$k];
+							}
 							//=========================
 
-							//$nom_log2 = $reg_eleve_login."_n_t".$k;
+							//echo "\$log_eleve=$log_eleve et \$note_eleve=$note_eleve<br />";
 
-							if (isset($NON_PROTECT[$nom_log])){
-								$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
-							}
-							else{
-								$app = "";
-							}
-
-							//echo "\$app=$app<br />";
-
-							$elev_statut = '';
 							//=========================
-							if(isset($note_eleve[$num_eleve])) {
-								// cf: if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
-								$note=$note_eleve[$num_eleve];
-
-								if (($note == 'disp')) {
-									$note = '0';
-									$elev_statut = 'disp';
-								}
-								else if (($note == '-')) {
-									$note = '0';
-									$elev_statut = '-';
-								}
-								else if (($note == 'abs')) {
-									$note = '0';
-									$elev_statut = 'abs';
-								} else if (preg_match ("/^[0-9\.\,]{1,}$/", $note)) {
-									$note = str_replace(",", ".", "$note");
-									if (($note < 0) or ($note > $note_max)) {
-										$note = '';
-										$elev_statut = '';
+							// AJOUT: boireaus 20071003
+							// Récupération du numéro de l'élève dans les saisies:
+							$num_eleve=-1;
+							//for($i=0;$i<count($log_eleve);$i++){
+							for($i=0;$i<$indice_max_log_eleve;$i++){
+								if(isset($log_eleve[$i])){
+									if(my_strtolower("$reg_eleve_login"."_t".$k)==my_strtolower("$log_eleve[$i]")){
+										$num_eleve=$i;
+										break;
 									}
 								}
+							}
+							//echo "\$num_eleve=$num_eleve<br />";
+							if($num_eleve!=-1){
+								//echo "L'élève a été trouvé dans le tableau \$log_eleve soumis.<br />";
+								//=========================
+								// MODIF: boireaus 20071003
+								//$nom_log = $reg_eleve_login."_t".$k;
+								$nom_log = "app_eleve_".$k."_".$num_eleve;
+								//=========================
+
+								//$nom_log2 = $reg_eleve_login."_n_t".$k;
+
+								if (isset($NON_PROTECT[$nom_log])){
+									$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
+								}
+								else{
+									$app = "";
+								}
+
+								//echo "\$app=$app<br />";
+
+								$elev_statut = '';
+								//=========================
+								if(isset($note_eleve[$num_eleve])) {
+									// cf: if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+									$note=$note_eleve[$num_eleve];
+
+									if (($note == 'disp')) {
+										$note = '0';
+										$elev_statut = 'disp';
+									}
+									else if (($note == '-')) {
+										$note = '0';
+										$elev_statut = '-';
+									}
+									else if (($note == 'abs')) {
+										$note = '0';
+										$elev_statut = 'abs';
+									} else if (preg_match ("/^[0-9\.\,]{1,}$/", $note)) {
+										$note = str_replace(",", ".", "$note");
+										if (($note < 0) or ($note > $note_max)) {
+											$note = '';
+											$elev_statut = '';
+										}
+									}
+									else {
+										$note = '';
+										$elev_statut = 'other';
+									}
+								}
+								//=========================
+
+								//echo "\$note=$note et \$elev_statut=$elev_statut<br />";
+
+								$sql="SELECT * FROM aid_appreciations WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
+								//echo "$sql<br />";
+								$test_eleve_app_query = mysqli_query($GLOBALS["mysqli"], $sql);
+								$test = mysqli_num_rows($test_eleve_app_query);
+								if ($test != "0") {
+									//echo "Il y avait déjà un enregistrement.<br />";
+									if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+										$sql="UPDATE aid_appreciations SET appreciation='$app', note='$note',statut='$elev_statut' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
+										//echo "$sql<br />";
+										$register=mysqli_query($GLOBALS["mysqli"], $sql);
+									} else {
+										$sql="UPDATE aid_appreciations SET appreciation='$app' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
+										//echo "$sql<br />";
+										$register=mysqli_query($GLOBALS["mysqli"], $sql);
+									}
+								} else {
+									//echo "Il n'y avait pas encore d'enregistrement.<br />";
+									if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+										$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app', note = '$note', statut='$elev_statut', indice_aid='$indice_aid';";
+										//echo "$sql<br />";
+										$register=mysqli_query($GLOBALS["mysqli"], $sql);
+									} else {
+										$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app',statut='$elev_statut', indice_aid='$indice_aid';";
+										//echo "$sql<br />";
+										$register=mysqli_query($GLOBALS["mysqli"], $sql);
+									}
+								}
+								if (!$register) {
+									$msg.="Erreur lors de l'enregistrement des données de la période $k pour $reg_eleve_login<br />";
+								}
 								else {
-									$note = '';
-									$elev_statut = 'other';
+									$nb_reg++;
 								}
-							}
-							//=========================
-
-							//echo "\$note=$note et \$elev_statut=$elev_statut<br />";
-
-							$sql="SELECT * FROM aid_appreciations WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
-							//echo "$sql<br />";
-							$test_eleve_app_query = mysqli_query($GLOBALS["mysqli"], $sql);
-							$test = mysqli_num_rows($test_eleve_app_query);
-							if ($test != "0") {
-								//echo "Il y avait déjà un enregistrement.<br />";
-								if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
-									$sql="UPDATE aid_appreciations SET appreciation='$app', note='$note',statut='$elev_statut' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
-									//echo "$sql<br />";
-									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-								} else {
-									$sql="UPDATE aid_appreciations SET appreciation='$app' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
-									//echo "$sql<br />";
-									$register=mysqli_query($GLOBALS["mysqli"], $sql);
+								/*
+								else {
+									$msg.="Les modifications ont été enregistrées !<br />";
+									$affiche_message = 'yes';
 								}
-							} else {
-								//echo "Il n'y avait pas encore d'enregistrement.<br />";
-								if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
-									$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app', note = '$note', statut='$elev_statut', indice_aid='$indice_aid';";
-									//echo "$sql<br />";
-									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-								} else {
-									$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app',statut='$elev_statut', indice_aid='$indice_aid';";
-									//echo "$sql<br />";
-									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-								}
+								*/
 							}
-							if (!$register) {
-								$msg.="Erreur lors de l'enregistrement des données de la période $k pour $reg_eleve_login<br />";
-							}
-							else {
-								$nb_reg++;
-							}
-							/*
-							else {
-								$msg.="Les modifications ont été enregistrées !<br />";
-								$affiche_message = 'yes';
-							}
-							*/
 						}
 					}
 				}
@@ -352,6 +358,7 @@ $nb_periode_max = old_mysql_result($call_data, 0, "max");
 
 $message_enregistrement = "Les modifications ont été enregistrées !";
 $themessage  = 'Des notes ou des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des appréciations ".$nom_aid;
 require_once("../lib/header.inc.php");
@@ -363,6 +370,23 @@ change = 'no';
 </script>
 <p class=bold><a href="../accueil.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>
 <?php
+
+//================================================
+$proposer_liens_enregistrement="n";
+if(isset($tab_aid)) {
+	$k = '1';
+	while ($k < $nb_periode_max + 1) {
+		if (($k >= $display_begin) and ($k <= $display_end)) {
+			if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+			(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+				$proposer_liens_enregistrement="y";
+				break;
+			}
+		}
+		$k++;
+	}
+}
+//================================================
 
 if (!isset($aid_id)) {
 	?></p><?php
@@ -416,13 +440,17 @@ if (!isset($aid_id)) {
 	}
 
 	echo "<form enctype='multipart/form-data' action='saisie_aid.php' method='post'>\n";
-	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+	if($proposer_liens_enregistrement=='y') {
+		echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+	}
 
 	$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
 	$aid_nom = old_mysql_result($calldata, 0, "nom");
 
 
 	echo "<h2>Appréciations $nom_aid : $aid_nom</h2>\n";
+
+	echo "<div style='float:right;width:20em;'>".get_info_categorie_aid("", $aid_id)."</div>";
 
 	echo "<p class='bold'>Groupe-classe&nbsp;:</p>
 <table class='boireaus boireaus_alt' border=1 cellspacing=2 cellpadding=5>
@@ -458,6 +486,7 @@ if (!isset($aid_id)) {
 		<td>
 			<textarea name=\"no_anti_inject_app_grp_".$k."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">".$current_app_t[$k]."</textarea>
 		</td>";
+						$proposer_liens_enregistrement="y";
 					}
 					else {
 						// Période close
@@ -479,98 +508,7 @@ if (!isset($aid_id)) {
 
 	echo "
 </table>\n";
-/*
 
-	echo "<p class='bold'>Groupe-classe&nbsp;:</p>
-<table class='boireaus boireaus_alt' border=1 cellspacing=2 cellpadding=5>";
-	$num = '1';
-	$num3=0;
-	while ($num < $nb_periode_max + 1) {
-		$appel_login_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT a.login
-									FROM j_eleves_classes cc, j_aid_eleves a, $nom_table c, eleves e
-									WHERE (a.id_aid='$aid_id' AND
-									cc.login = a.login AND
-									a.login = e.login AND
-									cc.id_classe = c.id_classe AND
-									c.num = $num AND
-									a.indice_aid='$indice_aid') ORDER BY e.nom, e.prenom");
-		$nombre_lignes = mysqli_num_rows($appel_login_eleves);
-		if ($nombre_lignes != '0') {
-			echo "
-	<tr>";
-			$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $nom_table WHERE num = '$num' ");
-			$id_classe = old_mysql_result($call_data, '0', 'id_classe');
-			$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
-
-			$i = "1";
-			while ($i < $num + 1) {
-				$nom_periode[$i] = old_mysql_result($periode_query, $i-1, "nom_periode");
-				echo "
-		<th><b>$nom_periode[$i]</b></th>";
-				$i++;
-			}
-			while ($i < $nb_periode_max + 1) {
-				echo "
-		<th>X</th>";
-				$i++;
-			}
-			echo "
-	</tr>
-	<tr>";
-			$k = '1';
-			$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'  ORDER BY num_periode");
-			while ($k < $num + 1) {
-				if (($k >= $display_begin) and ($k <= $display_end)) {
-
-					$current_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations_grp WHERE (periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
-					if(mysqli_num_rows($current_app_query)>0) {
-						$lig_app=mysqli_fetch_object($current_app_query);
-						$current_app_t[$k]=$lig_app->appreciation;
-					}
-					else {
-						$current_app_t[$k]="";
-					}
-
-					$ver_periode[$k] = old_mysql_result($periode_query, $k-1, "verouiller");
-					if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] == "O"))||
-						(($_SESSION['statut']!='secours')&&($ver_periode[$k] != "N"))) {
-						// Période close
-						echo "
-		<td><b>";
-						if ($current_app_t[$k] != '') {
-							echo "$current_app_t[$k]";
-						} else {
-							echo "-";
-						}
-						echo "</b></td>";
-					}
-					else {
-						echo "
-		<td>
-			<textarea name=\"no_anti_inject_app_grp_".$k."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">".$current_app_t[$k]."</textarea>
-		</td>";
-					}
-				} else {
-					echo "
-		<td>-</td>";
-				}
-				$k++;
-			}
-
-			while ($k < $nb_periode_max + 1) {
-				echo "
-		<td>X</td>";
-				$k++;
-			}
-
-			echo "
-	</tr>";
-		}
-		$num++;
-	}
-	echo "
-</table>\n";
-*/
 	echo "<table class='boireaus' border=1 cellspacing=2 cellpadding=5>\n";
 
 	$compteur_eleve=0;
@@ -662,8 +600,7 @@ if (!isset($aid_id)) {
 							}
 							echo "</b></td>\n";
 						} else {
-							//echo "<td><textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
-							//echo "<td>\n<textarea id=\"n1".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
+							$proposer_liens_enregistrement="y";
 
 							$num2=2*$num_id;
 							$num3=$num2+1;
@@ -673,27 +610,23 @@ if (!isset($aid_id)) {
 							echo "<td id=\"td_".$k.$num3."\">\n";
 
 							//=========================
-							// MODIF: boireaus 20071003
-							//echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
-
-							//echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
-							echo "<input type='hidden' name='log_eleve_".$k."[$compteur_eleve]' value=\"".$current_eleve_login_t[$k]."\" />\n";
-
-							//echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
-							echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$compteur_eleve."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
-							//=========================
-
-							echo "$current_eleve_app_t[$k]";
+							echo "<input type='hidden' name='log_eleve_".$k."[$compteur_eleve]' id='log_eleve_".$k.$num2."' value=\"".$current_eleve_login_t[$k]."\" />\n";
+							echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$compteur_eleve."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num2.");document.getElementById('focus_courant').value='".$k.$num2."';repositionner_commtype();\"";
+							if(!getSettingANon('active_recherche_lapsus')) {
+								echo " onblur=\"ajaxVerifAppAid('".$current_eleve_login_t[$k]."', '".$aid_id."', 'n".$k.$num2."');\"";
+							}
+							echo ">";
+							echo $current_eleve_app_t[$k];
 							echo "</textarea>\n";
+
+							echo "<div id='div_verif_n".$k.$num2."' style='color:red;'>";
+							if(!getSettingANon('active_recherche_lapsus')) {
+								echo teste_lapsus($current_eleve_app_t[$k]);
+							}
+							echo "</div>";
+
 							if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
 								echo "<br />Note (sur $note_max) : ";
-								//echo "<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=$current_eleve_login_n_t[$k] value=";
-								//echo "<input id=\"n2".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=$current_eleve_login_n_t[$k] value=";
-								//$num2++;
-								//=========================
-								// MODIF: boireaus 20071003
-								//echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=$current_eleve_login_n_t[$k] value=";
-								//echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=\"note_eleve_".$k."[$i]\" value=";
 								echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=\"note_eleve_".$k."[$compteur_eleve]\" value=";
 								//=========================
 								if ($current_eleve_statut_t[$k] == 'other') {
@@ -739,12 +672,38 @@ if (!isset($aid_id)) {
 		//echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 		echo "<input type='hidden' name='indice_max_log_eleve' value='$indice_max_log_eleve' />\n";
 
-		echo add_token_field();
+		echo add_token_field(true);
 	?>
 	<input type=hidden name=is_posted value="yes" />
 	<input type=hidden name=aid_id value="<?php echo "$aid_id";?>" />
 	<input type=hidden name=indice_aid value="<?php echo "$indice_aid";?>" />
-	<center><div id="fixe"><input type=submit value=Enregistrer /></div></center>
+	<center>
+		<div id="fixe">
+			<?php
+				if($proposer_liens_enregistrement=='y') {
+					if(getSettingAOui('aff_temoin_check_serveur')) {
+						temoin_check_srv();
+					}
+					echo "
+					<input type='submit' value='Enregistrer' /><br />
+
+					<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+					<div id='decompte' title=\"La session ne sera plus valide, si vous ne consultez pas une page
+					ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n";
+
+					//============================================
+					if((($_SESSION["statut"]=="professeur")&&(getSettingAOui('appreciations_types_profs')))||
+					($_SESSION["statut"]=="cpe")||
+					($_SESSION["statut"]=="scolarite")) {include('ctp.php');}
+					//============================================
+				}
+		?>
+
+			<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
+			<input type='hidden' id='info_focus' name='champ_info_focus' value='' />
+			<input type='hidden' id='focus_courant' name='focus_courant' value='' />
+		</div>
+	</center>
 	</td></tr>
 	</table>
 	</form>
@@ -794,6 +753,44 @@ for(i=10;i<".$k.$num3.";i++){
 			if(document.getElementById('n'+i).value!=''){
 				eval(\"verifcol(\"+i+\")\");
 			}
+		}
+	}
+}";
+
+if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
+	echo $chaine_test_vocabulaire;
+}
+
+echo "
+// Pour éviter une erreur dans les commentaires-types:
+id_groupe='';
+
+function focus_suivant(num){
+	temoin='';
+	// La variable 'dernier' peut dépasser de l'effectif de la classe... mais cela n'est pas dramatique
+	dernier=num+".$compteur_eleve."
+	// On parcourt les champs à partir de celui de l'élève en cours jusqu'à rencontrer un champ existant
+	// (pour réussir à passer un élève qui ne serait plus dans la période)
+	// Après validation, c'est ce champ qui obtiendra le focus si on n'était pas à la fin de la liste.
+	for(i=num;i<dernier;i++){
+		suivant=i+1;
+		if(temoin==''){
+			if(document.getElementById('n'+suivant)){
+				document.getElementById('info_focus').value=suivant;
+				temoin=suivant;
+			}
+		}
+	}
+
+	document.getElementById('info_focus').value=temoin;
+}
+
+function repositionner_commtype() {
+	if(document.getElementById('div_commtype')) {
+		if(document.getElementById('div_commtype').style.display!='none') {
+			x=document.getElementById('div_commtype').style.left;
+			afficher_div('div_commtype','y',20,20);
+			document.getElementById('div_commtype').style.left=x;
 		}
 	}
 }

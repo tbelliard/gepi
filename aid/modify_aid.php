@@ -492,7 +492,7 @@ while($obj = $calldata->fetch_object()){
 ?>
 	</select>
 	<p>Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste de cette AID 
-		seront également affectés à toutes les AIDs sélectionnèes ci-dessus.
+		seront également affectés à toutes les AIDs sélectionnées ci-dessus.
 	</p>
 	<p><input type="submit" value="Affecter la liste aux Aids sélectionnées ci-dessus" /></p>
 
