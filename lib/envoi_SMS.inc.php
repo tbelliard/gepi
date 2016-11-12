@@ -299,7 +299,7 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 
 		default :
 			$retour="SMS non envoyé(s) : prestataire SMS non défini.";
-			$t_log['envoi']='';
+			$t_log['envoi']="sms envoyé : \n".$sms;
 			$t_log['retour']=$retour;
 			$t_log['reponse']='';
 		}
