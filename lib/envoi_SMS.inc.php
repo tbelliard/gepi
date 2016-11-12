@@ -22,6 +22,15 @@ function filtrage_numero($numero,$prefixe_france=false) {
 	return $numero;
 }
 
+function liste_parametres($parametres) {
+	$liste='';
+	foreach($parametres as $cle => $valeur) {
+		$liste.=$cle.' : '."\n";
+		$liste.=$valeur."\n";
+	}
+	return $liste;
+}
+
 function envoi_requete_http($url,$script,$t_parametres,$methode='POST',$port=80) {
 	/*
 	$methode : GET ou par défaut POST
@@ -121,8 +130,8 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 	// si $log==false : "OK" si envoi réussi, un message d'erreur sinon
 	// si $log==true : retourne un tableau $t_log avec
 	//					$t_log['retour'] = "OK" si envoi réussi, un message d'erreur sinon
-	//					$t_log['envoi'] = ce qui est envoyé au prestataire
-	//					$t_log['reponse'] = réponse du prestataire
+	//					$t_log['envoi'] = ce qui est envoyé au prestataire sous forme de chaîne de caractères (si besoin appel à function liste_parametres)
+	//					$t_log['reponse'] = réponse du prestataire sous forme de chaîne de caractères (si besoin appel à function liste_parametres)
 
 	// on ajoute l'identité de l'émetteur
 	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite').' '.$sms;
@@ -146,7 +155,7 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 			}
 			$parametres['data'].='</pluriAPI>'."\n";
 
-			$t_log['envoi']=$parametres;
+			$t_log['envoi']=liste_parametres($parametres);
 			$reponse=envoi_requete_http($url,$script,$parametres);
 			if ($reponse=='Erreur fsckopen'){ 
 				$retour='SMS non envoyé(s) : '.$reponse;
@@ -183,7 +192,7 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 			$parametres['numero']=$to; // numéros de téléphones auxquels on envoie le message séparés par des tirets
 			$t_erreurs=array(80 => 'Le message a été envoyé', 81 => 'Le message est enregistré pour un envoi en différé', 82 => 'Le login et/ou mot de passe n’est pas valide',  83 => 'Vous devez créditer le compte', 84 => 'Le numéro de gsm n’est pas valide', 85 => 'Le format d’envoi en différé n’est pas valide', 86 => 'Le groupe de contacts est vide', 87 => 'La valeur email est vide', 88 => 'La valeur pass est vide',  89 => 'La valeur numero est vide', 90 => 'La valeur message est vide', 91 => 'Le message a déjà été envoyé à ce numéro dans les 24 dernières heures');
 
-			$t_log['envoi']=$parametres;
+			$t_log['envoi']=liste_parametres($parametres);
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
 			if ($reponse=='Erreur fsckopen'){ 
 				$retour='SMS non envoyé(s) : '.$reponse;
@@ -217,7 +226,7 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 			$parametres['version']='2.1';
 			// $parametres['sim']='yes'; // on active le mode simulation, pour tester notre script
 
-			$t_log['envoi']=$parametres;			
+			$t_log['envoi']=liste_parametres($parametres);			
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
 			if ($reponse=='Erreur fsckopen'){ 
 				$retour='SMS non envoyé(s) : '.$reponse;
@@ -270,7 +279,7 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 			$parametres['smsData'].='	}'."\n";
 			$parametres['smsData'].='}'."\n";
 			
-			$t_log['envoi']=$parametres;			
+			$t_log['envoi']=liste_parametres($parametres);			
 			$reponse=envoi_requete_http($url,$script,$parametres);
 			if ($reponse=='Erreur fsckopen'){ 
 				$retour='SMS non envoyé(s) : '.$reponse;
@@ -283,7 +292,7 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 				if ($t_reponse['status']==100) $retour='OK';
 					else $retour='SMS non envoyé(s) : '.$t_reponse['statusText'];
 				$t_log['retour']=$retour;
-				$t_log['reponse']=$t_reponse;
+				$t_log['reponse']=liste_parametres($t_reponse);
 			};
 		
 			break;
