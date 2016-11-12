@@ -929,6 +929,13 @@ if (isset($_POST['sms_identite'])) {
 		$msg .= "Erreur lors de l'enregistrement de sms_identite !";
 	}
 }
+if (isset($_POST['activer_log_envoi_SMS'])) {
+	check_token();
+	if (!saveSetting("activer_log_envoi_SMS", $_POST['activer_log_envoi_SMS'])) {
+		$msg .= "Erreur lors de l'enregistrement de activer_log_envoi_SMS !";
+	}
+}
+
 /*
 if (isset($_POST['sms_max_envois'])) {
 	check_token();
@@ -2759,7 +2766,7 @@ echo add_token_field();
 ?>
 
 	<p  class="cellTab" style="font-variant: small-caps;">
-		Autoriser l'envoi de SMS&nbsp;:
+	Autoriser l'envoi de SMS&nbsp;:
 
 	<p class="cellTab">
 		<input type="radio" 
@@ -2786,6 +2793,7 @@ echo add_token_field();
 		<label for='autorise_envoi_sms_n' style='cursor: pointer;'>
 			Non
 		</label>
+	</p>
 	</p>
 	<br />
 	<p class="ligneCaps" style="font-variant: small-caps;">Identié de l'émetteur SMS&nbsp;:&nbsp;
@@ -2817,6 +2825,39 @@ echo add_token_field();
 	<br /><span class='small'>Mot de passe pour se connecter au prestataire SMS.</span></p>
 	<br />
 	<input type="hidden" name="is_posted" value="1" />
+	<p  class="ligneCaps" style="font-variant: small-caps;">
+	Activer la journalisation des envois de SMS&nbsp;:
+	
+	<p class="cellTab">
+		<input type="radio" 
+			   name="activer_log_envoi_SMS" 
+			   id="activer_log_envoi_SMS_y" 
+			   value="y" 
+			   <?php
+				if(getSettingValue('activer_log_envoi_SMS')===null) {saveSetting('activer_log_envoi_SMS', 'n');}
+				if(getSettingAOui('activer_log_envoi_SMS')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='activer_log_envoi_SMS_y' style='cursor: pointer;'>
+			Oui
+		</label>
+		<br />
+		<input type="radio" 
+			   name="activer_log_envoi_SMS" 
+			   id="activer_log_envoi_SMS_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('activer_log_envoi_SMS')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='activer_log_envoi_SMS_n' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+	</p>
+	<p class='small' style="width: 60%;">Si la journalisation est activée alors les échanges entre Gepi et le prestataire seront enregistrés dans un fichier 'envoi_SMS.log' placé dans le dossier des sauvegardes (dossier accessible via le menu Maintenance/Sauvegarde) ceci afin de résoudre d'éventuels problèmes. Pour ne pas saturer l'espace disque, ce fichier est vidé dès qu'il atteint la taille de 2 Mo.</p>
+	<p class='small' style="width: 60%; color: red;">Attention, la journalisation ralentit le processus d'envoi de SMS, et il convient donc de  ne l'activer que si nécessaire.</p>
+	<br />
 	<p class="center">
 		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>
