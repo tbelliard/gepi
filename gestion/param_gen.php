@@ -2860,10 +2860,12 @@ if (getSettingAOui('autorise_envoi_sms'))
 	?>
 		</p>
 		<br /><br />
-		<p class="center">
-		<span class='small'  style='vertical-align: top;'>- ce qui a été envoyé au prestataire : </span><textarea rows="4" cols="50" name="envoi" id="envoi"><?php print_r($t_retour['envoi']) ?></textarea><br />
+		<p class="center">Ce qui a été envoyé au prestataire : </p>
+		<div  style="font-size: small; padding: 2em; background-color: white; margin-left: auto; margin-right: auto; width: 50%; white-space:pre-wrap;"><?php echo $t_retour['envoi'] ?></div>
 		<br />
-		<span class='small'  style='vertical-align: top;'>- réponse retournée par le prestataire : </span><textarea rows="4" cols="50" name="reponse" id="reponse"><?php print_r($t_retour['reponse']) ?></textarea><br />
+		<br />
+		<p class="center">Réponse retournée par le prestataire :  </p>
+		<div  style="font-size: small;  padding: 2em; background-color: white; margin-left: 25%; margin-right: 25%; width: 50%; white-space:pre-wrap;"><?php echo $t_retour['reponse'] ?></div>
 		</p>
 	<?php
 		}
