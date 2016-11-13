@@ -931,7 +931,7 @@ if (isset($_POST['sms_identite'])) {
 }
 if (isset($_POST['activer_log_envoi_SMS'])) {
 	check_token();
-	if (!saveSetting("activer_log_envoi_SMS", $_POST['activer_log_envoi_SMS'])) {
+	if (!saveSetting("log_envoi_SMS", $_POST['activer_log_envoi_SMS'])) {
 		$msg .= "Erreur lors de l'enregistrement de activer_log_envoi_SMS !";
 	}
 }
@@ -2834,8 +2834,8 @@ echo add_token_field();
 			   id="activer_log_envoi_SMS_y" 
 			   value="y" 
 			   <?php
-				if(getSettingValue('activer_log_envoi_SMS')===null) {saveSetting('activer_log_envoi_SMS', 'n');}
-				if(getSettingAOui('activer_log_envoi_SMS')) {echo "checked='checked'";}
+				if(getSettingValue('log_envoi_SMS')===null) {saveSetting('log_envoi_SMS', 'n');}
+				if(getSettingAOui('log_envoi_SMS')) {echo "checked='checked'";}
 			   ?>
 			   onchange='changement()' />
 		<label for='activer_log_envoi_SMS_y' style='cursor: pointer;'>
@@ -2847,7 +2847,7 @@ echo add_token_field();
 			   id="activer_log_envoi_SMS_n" 
 			   value="n" 
 			   <?php
-				if(!getSettingAOui('activer_log_envoi_SMS')) {echo "checked='checked'";}
+				if(!getSettingAOui('log_envoi_SMS')) {echo "checked='checked'";}
 			   ?>
 			   onchange='changement()' />
 		<label for='activer_log_envoi_SMS_n' style='cursor: pointer;'>
