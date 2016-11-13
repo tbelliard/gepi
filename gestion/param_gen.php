@@ -929,6 +929,13 @@ if (isset($_POST['sms_identite'])) {
 		$msg .= "Erreur lors de l'enregistrement de sms_identite !";
 	}
 }
+if (isset($_POST['activer_log_envoi_SMS'])) {
+	check_token();
+	if (!saveSetting("log_envoi_SMS", $_POST['activer_log_envoi_SMS'])) {
+		$msg .= "Erreur lors de l'enregistrement de activer_log_envoi_SMS !";
+	}
+}
+
 /*
 if (isset($_POST['sms_max_envois'])) {
 	check_token();
@@ -2759,7 +2766,7 @@ echo add_token_field();
 ?>
 
 	<p  class="cellTab" style="font-variant: small-caps;">
-		Autoriser l'envoi de SMS&nbsp;:
+	Autoriser l'envoi de SMS&nbsp;:
 
 	<p class="cellTab">
 		<input type="radio" 
@@ -2787,6 +2794,7 @@ echo add_token_field();
 			Non
 		</label>
 	</p>
+	</p>
 	<br />
 	<p class="ligneCaps" style="font-variant: small-caps;">Identié de l'émetteur SMS&nbsp;:&nbsp;
 	<input type="text" style="width: 300px" name="sms_identite" value="<?php echo (getSettingValue('sms_identite')==="")?getSettingValue('gepiSchoolName'):getSettingValue('sms_identite'); ?>">
@@ -2795,7 +2803,7 @@ echo add_token_field();
 	<p  class="ligneCaps" style="font-variant: small-caps;">Prestataire SMS&nbsp;:&nbsp;<?php  getSettingValue('sms_prestataire'); ?>
 	<select style="width: 200px;" name="sms_prestataire">
 		<optgroup>
-		<option></option>
+		<option>aucun</option>
 	<?php
 	foreach($tab_prestataires_SMS as $prestataire)
 		{
@@ -2817,6 +2825,39 @@ echo add_token_field();
 	<br /><span class='small'>Mot de passe pour se connecter au prestataire SMS.</span></p>
 	<br />
 	<input type="hidden" name="is_posted" value="1" />
+	<p  class="ligneCaps" style="font-variant: small-caps;">
+	Activer la journalisation des envois de SMS&nbsp;:
+	
+	<p class="cellTab">
+		<input type="radio" 
+			   name="activer_log_envoi_SMS" 
+			   id="activer_log_envoi_SMS_y" 
+			   value="y" 
+			   <?php
+				if(getSettingValue('log_envoi_SMS')===null) {saveSetting('log_envoi_SMS', 'n');}
+				if(getSettingAOui('log_envoi_SMS')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='activer_log_envoi_SMS_y' style='cursor: pointer;'>
+			Oui
+		</label>
+		<br />
+		<input type="radio" 
+			   name="activer_log_envoi_SMS" 
+			   id="activer_log_envoi_SMS_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('log_envoi_SMS')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='activer_log_envoi_SMS_n' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+	</p>
+	<p class='small' style="width: 60%;">Si la journalisation est activée alors les échanges entre Gepi et le prestataire seront enregistrés dans un fichier 'envoi_SMS.log' placé dans le dossier des sauvegardes (dossier accessible via le menu Maintenance/Sauvegarde) ceci afin de résoudre d'éventuels problèmes. Pour ne pas saturer l'espace disque, ce fichier est vidé dès qu'il atteint la taille de 512 k0.</p>
+	<p class='small' style="width: 60%; color: red;">Attention, la journalisation ralentit le processus d'envoi de SMS, et il convient donc de  ne l'activer que si nécessaire.</p>
+	<br />
 	<p class="center">
 		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>
@@ -2828,37 +2869,54 @@ if (getSettingAOui('autorise_envoi_sms'))
 	{
 ?>
 	<br />
-	<form enctype="multipart/form-data" action="param_gen.php#config_envoi_sms" method="post" id="test_config_sms" style="width: 100%;">
+	<form enctype="multipart/form-data" action="param_gen.php#retour_test" method="post" id="test_config_sms" style="width: 100%;">
+	<?php 	echo add_token_field(); ?>
 	<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
-	<p  class="ligneCaps" style="font-variant: small-caps;">Vous pouvez tester les paramètres ci-dessus en envoyant un sms à ce numéro :
-	<input type="text"  style="width: 300px" name="numero_test_sms" value="">
+	<p  class="ligneCaps" style="font-variant: small-caps;">Vous pouvez tester les paramètres ci-dessus en envoyant un sms<br />
+	<span class='small'>-vers ce (ou ces numéros séparés par des virgules) : </span><input type="text"  style="width: 300px" name="numero_test_sms" id=numero_test_sms" value="<?php if (isset($_POST['numero_test_sms'])) echo $_POST['numero_test_sms']; ?>"><br />
+	 <span class='small'  style='vertical-align: top;'>- texte du sms : </span><textarea rows="4" cols="50" name="texte_test_sms" id="texte_test_sms"><?php if (isset($_POST['texte_test_sms'])) echo str_replace('\n',"\n",$_POST['texte_test_sms']); ?></textarea><br />
 	</p>
 	<br />
 	<p class="center">
 	<input type="submit" name="test_sms" value="Tester" style="font-variant: small-caps;" />
 	</p>
+	</form>
+	<br />
+		
 	<?php
 	if (isset($_POST['test_sms']))
 		{
-		$tab_to[]=$_POST['numero_test_sms'];
-		$retour=envoi_SMS($tab_to,"Gepi : message de test émis par ".getSettingValue("sms_identite"));
+		check_token();
+		$tab_to=explode(',',$_POST['numero_test_sms']);
+		$t_retour=envoi_SMS($tab_to,str_replace('\n',"\n",$_POST['texte_test_sms']),true);
 	?>
-	<br />
-	<p class="center" style="color:<?php if ($retour=="OK") echo 'blue'; else echo 'red'; ?>">
+		<p class="center">
+		---------------------------------------------------------------------<br /><br />
+		</p>
+		<p class="center" style="color:<?php if ($t_retour['retour']=='OK') echo 'blue'; else echo 'red'; ?>">
+
+		Bilan du test : 
 	<?php
-		if ($retour=="OK") echo "Message bien envoyé."; else echo "Erreur : ".$retour;
+		if ($t_retour['retour']=='OK') echo "Message bien envoyé."; else echo "Erreur : ".$t_retour['retour'];
 	?>
-	</p>
+		</p>
+		<br /><br />
+		<p class="center">Ce qui a été envoyé au prestataire : </p>
+		<div  style="font-size: small; padding: 2em; background-color: white; margin-left: 25%; margin-right: 25%; width: 50%; white-space:pre-wrap;"><?php echo $t_retour['envoi'] ?></div>
+		<br />
+		<br />
+		<p class="center">Réponse retournée par le prestataire :  </p>
+		<div  style="font-size: small;  padding: 2em; background-color: white; margin-left: 25%; margin-right: 25%; width: 50%; white-space:pre-wrap;"><?php echo $t_retour['reponse'] ?></div>
+		</p>
 	<?php
 		}
 	?>
-	<br />
 	</fieldset>
-	</form>
+	<br />
 <?php
 	}
 ?>
-
+<a name="retour_test"></a>
 
 <hr />
 

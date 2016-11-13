@@ -22,6 +22,15 @@ function filtrage_numero($numero,$prefixe_france=false) {
 	return $numero;
 }
 
+function liste_parametres($parametres) {
+	$liste='';
+	foreach($parametres as $cle => $valeur) {
+		$liste.=$cle.' : '."\n";
+		$liste.=$valeur."\n";
+	}
+	return $liste;
+}
+
 function envoi_requete_http($url,$script,$t_parametres,$methode='POST',$port=80) {
 	/*
 	$methode : GET ou par défaut POST
@@ -113,19 +122,19 @@ function envoi_requete_http($url,$script,$t_parametres,$methode='POST',$port=80)
 		
 }
 
-function envoi_SMS($tab_to,$sms) {
+function envoi_SMS($tab_to,$sms,$log=false) {
 	// $tab_to : tableau des numéros de téléphone auxquels envoyer le SMS
 	// attention : certains prestataires n'autorisent qu'un seul sms par requête
 	// $sms : le texte du SMS
-	// retourne "OK" si envoi réussi, un message d'erreur sinon
-	
-	/* Pour déboguer décommenter le code suivant
-	echo "Envoi de ".$sms." à ".$tab_to[0].".<br />";
-	return "OK"; // ou return "Erreur d'envoi SMS";
-	*/
-	
+	// retour
+	// si $log==false : "OK" si envoi réussi, un message d'erreur sinon
+	// si $log==true : retourne un tableau $t_log avec
+	//					$t_log['retour'] = "OK" si envoi réussi, un message d'erreur sinon
+	//					$t_log['envoi'] = ce qui est envoyé au prestataire sous forme de chaîne de caractères (si besoin appel à function liste_parametres)
+	//					$t_log['reponse'] = réponse du prestataire sous forme de chaîne de caractères (si besoin appel à function liste_parametres)
+
 	// on ajoute l'identité de l'émetteur
-	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite').' '.$sms;
+	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite')."\n".$sms;
 	
 	$sms_prestataire=getSettingValue("sms_prestataire");
 	switch ($sms_prestataire) {
@@ -146,17 +155,28 @@ function envoi_SMS($tab_to,$sms) {
 			}
 			$parametres['data'].='</pluriAPI>'."\n";
 
+			$t_log['envoi']=liste_parametres($parametres);
 			$reponse=envoi_requete_http($url,$script,$parametres);
-			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
-			$xml = new DOMDocument();
-			$xml->loadXML($reponse);
-			$err=$xml->getElementsByTagName('err');
-			if ($err->length!=0) {
-				$erreur="";
-				$descs=$xml->getElementsByTagName('desc');
-				foreach($descs as $desc) $erreur.=$desc->nodeValue;
-				return 'SMS non envoyé(s) : '.$erreur;
-			} else return 'OK';
+			if ($reponse=='Erreur fsckopen'){ 
+				$retour='SMS non envoyé(s) : '.$reponse;
+				$t_log['envoi']='';
+				$t_log['retour']=$retour;
+				$t_log['reponse']='';
+			} 
+			else {
+				$xml = new DOMDocument();
+				$xml->loadXML($reponse);
+				$err=$xml->getElementsByTagName('err');
+				if ($err->length!=0) {
+					$erreur='';
+					$descs=$xml->getElementsByTagName('desc');
+					foreach($descs as $desc) $erreur.=$desc->nodeValue;
+					$retour='SMS non envoyé(s) : '.$erreur;
+				} else $retour='OK';
+				$t_log['retour']=$retour;
+				$t_log['reponse']=$xml->saveXML();
+			};
+
 			break;
 
 		case '123-SMS' :
@@ -171,12 +191,21 @@ function envoi_SMS($tab_to,$sms) {
 			$to=implode('-',$tab_to);
 			$parametres['numero']=$to; // numéros de téléphones auxquels on envoie le message séparés par des tirets
 			$t_erreurs=array(80 => 'Le message a été envoyé', 81 => 'Le message est enregistré pour un envoi en différé', 82 => 'Le login et/ou mot de passe n’est pas valide',  83 => 'Vous devez créditer le compte', 84 => 'Le numéro de gsm n’est pas valide', 85 => 'Le format d’envoi en différé n’est pas valide', 86 => 'Le groupe de contacts est vide', 87 => 'La valeur email est vide', 88 => 'La valeur pass est vide',  89 => 'La valeur numero est vide', 90 => 'La valeur message est vide', 91 => 'Le message a déjà été envoyé à ce numéro dans les 24 dernières heures');
+
+			$t_log['envoi']=liste_parametres($parametres);
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
-			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
-			if ($reponse!='80') {
-				return 'SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
-				} 
-			else return 'OK';
+			if ($reponse=='Erreur fsckopen'){ 
+				$retour='SMS non envoyé(s) : '.$reponse;
+				$t_log['envoi']='';
+				$t_log['retour']=$retour;
+				$t_log['reponse']='';
+			}
+			else {
+				if ($reponse!='80') $retour='SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
+					else $retour='OK';
+				$t_log['retour']=$retour;
+				$t_log['reponse']=$reponse.' '.$t_erreurs[$reponse];
+			};
 
 			break;
 
@@ -196,13 +225,21 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['route']='business'; // type de route (pour la france, business class uniquement)
 			$parametres['version']='2.1';
 			// $parametres['sim']='yes'; // on active le mode simulation, pour tester notre script
-			
+
+			$t_log['envoi']=liste_parametres($parametres);			
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
-			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
-			if (substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') {
-				return 'SMS non envoyé(s) : '.$reponse;
-				} 
-			else return 'OK';
+			if ($reponse=='Erreur fsckopen'){ 
+				$retour='SMS non envoyé(s) : '.$reponse;
+				$t_log['envoi']='';
+				$t_log['retour']=$retour;
+				$t_log['reponse']='';
+			}
+			else {
+				if (substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') $retour='SMS non envoyé(s) : '.$reponse;
+					else $retour='OK';
+				$t_log['retour']=$retour;
+				$t_log['reponse']=$reponse;
+			};
 
 			break;
 
@@ -242,50 +279,49 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['smsData'].='	}'."\n";
 			$parametres['smsData'].='}'."\n";
 			
+			$t_log['envoi']=liste_parametres($parametres);			
 			$reponse=envoi_requete_http($url,$script,$parametres);
-			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
-			$t_reponse=json_decode($reponse,true);
-			if ($t_reponse['status']==100) return 'OK';
-				else return 'SMS non envoyé(s) : '.$t_reponse['statusText'];
+			if ($reponse=='Erreur fsckopen'){ 
+				$retour='SMS non envoyé(s) : '.$reponse;
+				$t_log['envoi']='';
+				$t_log['retour']=$retour;
+				$t_log['reponse']=''; 
+			} 
+			else {
+				$t_reponse=json_decode($reponse,true);
+				if ($t_reponse['status']==100) $retour='OK';
+					else $retour='SMS non envoyé(s) : '.$t_reponse['statusText'];
+				$t_log['retour']=$retour;
+				$t_log['reponse']=liste_parametres($t_reponse);
+			};
+		
 			break;
 
 		default :
-			return 'SMS non envoyé(s) : prestataire SMS non défini.';
+			$retour="SMS non envoyé(s) : prestataire SMS non défini.";
+			$t_log['envoi']="sms envoyé : \n".$sms;
+			$t_log['retour']=$retour;
+			$t_log['reponse']='Pas de réponse';
 		}
+
+	// Journalisation éventuelle
+	if (getSettingAOui('log_envoi_SMS')) {
+		$log_envoi_SMS=__DIR__.'/../backup/'.getSettingValue("backup_directory").'/log_envoi_SMS.log';
+		if (file_exists($log_envoi_SMS) && (filesize($log_envoi_SMS)>512*1024)) $h_log_envoi_SMS=@fopen($log_envoi_SMS,'w');
+			else $h_log_envoi_SMS=@fopen($log_envoi_SMS,'a');
+		@fwrite($h_log_envoi_SMS,strftime("%d/%m/%Y à %H:%M")."\n\n");
+		@fwrite($h_log_envoi_SMS,'Envoyé au pestataire'."\n");
+		@fwrite($h_log_envoi_SMS,'--------------------'."\n");
+		@fwrite($h_log_envoi_SMS,$t_log['envoi']."\n\n");
+		@fwrite($h_log_envoi_SMS,'Réponse du pestataire'."\n");
+		@fwrite($h_log_envoi_SMS,'---------------------'."\n");
+		@fwrite($h_log_envoi_SMS,$t_log['reponse']."\n");
+		@fwrite($h_log_envoi_SMS,'________________________________________________________'."\n\n");
+		@fclose($h_log_envoi_SMS);
+
+	}
+	
+	if ($log==true) return $t_log; else return $retour;
 }
-
-/* Tests prestataires
-
-echo "tm4b<br>";
-$url="www.tm4b.com";
-$script="/client/api/http.php";
-$parametres=array("username"=>"toto");
-echo envoi_requete_http($url,$script,$parametres);
-
-echo "<hr>123-SMS<br>";
-$url="www.123-SMS.net";
-$script="/http.php";
-$parametres=array("email"=>"toto","message"=>"test");
-$r=envoi_requete_http($url,$script,$parametres);
-$t_erreurs=array(80 => "Le message a été envoyé", 81 => "Le message est enregistré pour un envoi en différé", 82 => "Le login et/ou mot de passe n’est pas valide",  83 => "vous devez créditer le compte", 84 => "le numéro de gsm n’est pas valide", 85 => "le format d’envoi en différé n’est pas valide", 86 => "le groupe de contacts est vide", 87 => "la valeur email est vide", 88 => "la valeur pass est vide",  89 => "la valeur numero est vide", 90 => "la valeur message est vide", 91 => "le message a déjà été envoyé à ce numéro dans les 24 dernières heures");
-echo $r." : ".$t_erreurs[$r];
-
-echo "<hr>Pluriware-SMS XML<br>";
-$url="sms.pluriware.fr";
-$script="/xmlapi.php";
-$parametres=array("data"=>'<pluriAPI><login></login><password></password><sendMsg><to>330628000000</to><txt>Test msg 1</txt><climsgid></climsgid><status></status></sendMsg></pluriAPI>');	
-echo envoi_requete_http($url,$script,$parametres);
-
-echo "<hr>allmysms.com<br>";
-$url='api.allmysms.com';
-$script="/http/9.0/simulateCampaign/";
-$parametres=array("login"=>"test","apiKey"=>"pass","smsData"=>"");	
-echo envoi_requete_http($url,$script,$parametres);
-
-$url="www.ac-poitiers.fr";
-$script="/";
-$parametres=array();
-echo envoi_requete_http($url,$script,$parametres,"GET");
-*/
 
 ?>

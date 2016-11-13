@@ -159,4 +159,17 @@ if ($res_test == 0){
 	}
 }
 
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='log_envoi_SMS'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$result .= "Initialisation du paramètre 'log_envoi_SMS' à 'n': ";
+	$sql="INSERT INTO setting SET name='log_envoi_SMS', value='n';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
 ?>
