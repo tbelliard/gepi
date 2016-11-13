@@ -1385,8 +1385,8 @@ echo "Periode $j<br />
 									echo "<br />\n";
 		
 									echo "<span style='font-size: xx-small;'>";
-									if($nb_app_bulletin==$effectif_groupe){echo "<span class='saisies_effectuees'>";}else{echo "<span class='saisies_manquantes'>";}
-									echo "($nb_app_bulletin/$effectif_groupe)";
+									if($nb_app_bulletin==$effectif_aid){echo "<span class='saisies_effectuees'>";}else{echo "<span class='saisies_manquantes'>";}
+									echo "($nb_app_bulletin/$effectif_aid)";
 									echo "</span>";
 									echo "</span>";
 		
