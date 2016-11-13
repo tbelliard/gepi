@@ -134,7 +134,7 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 	//					$t_log['reponse'] = réponse du prestataire sous forme de chaîne de caractères (si besoin appel à function liste_parametres)
 
 	// on ajoute l'identité de l'émetteur
-	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite').' '.$sms;
+	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite')."\n".$sms;
 	
 	$sms_prestataire=getSettingValue("sms_prestataire");
 	switch ($sms_prestataire) {
