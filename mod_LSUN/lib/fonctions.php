@@ -72,7 +72,7 @@ function getUtilisateur($login) {
  */
 function getUtilisateurSurStatut($statut = "%") {
 	global $mysqli;
-	$sql = "SELECT login, nom, prenom FROM utilisateurs WHERE statut LIKE '".$statut."' ";
+	$sql = "SELECT login, nom, prenom FROM utilisateurs WHERE statut LIKE '".$statut."' ORDER BY nom, prenom";
 	//echo $sql;
 	$resultchargeDB = $mysqli->query($sql);	
 	return $resultchargeDB;		
@@ -88,7 +88,8 @@ function getResponsables() {
 	global $mysqli;
 	$sql = "SELECT r.id, r.login, u.nom, u.prenom, u.civilite FROM lsun_responsables AS r "
 		. "INNER JOIN utilisateurs AS u "
-		. "ON u.login = r.login ";
+		. "ON u.login = r.login "
+		. "ORDER BY u.nom, u.prenom";
 	//echo $sql;
 	$resultchargeDB = $mysqli->query($sql);	
 	return $resultchargeDB;		

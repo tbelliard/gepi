@@ -36,6 +36,7 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 	$codeMefBase = filter_input(INPUT_POST, 'codeMefBase', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$classeFichier = filter_input(INPUT_POST, 'classeFichier', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$nom_completFichier = filter_input(INPUT_POST, 'nom_completFichier', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	/**
 	$codeMefFichier = filter_input(INPUT_POST, 'codeMefFichier', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	
 	foreach ($classeBase as $key=>$classeActuelle) {
@@ -44,6 +45,8 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 		//echo $sql.'<br>';
 		$mysqli->query($sql);
 	}
+	 * 
+	 */
 }
 
 $tbs_CSS_spe[] = array('rel'=>"stylesheet", 'type'=>"text/css", 'fichier'=>"lib/style.css", 'media'=>"screen");
