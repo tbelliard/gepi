@@ -38,7 +38,8 @@ function getAPCommun() {
 function getApAid() {
 	global $mysqli;
 	global $_AP;
-	$in = implode(",",$_SESSION['afficheClasse']);
+	$afficheClasse = isset($_SESSION['afficheClasse']) ? $_SESSION['afficheClasse'] : array();
+	$in = implode(",", $afficheClasse);
 	if ($in) {$in = ','.$in;}
 	$in = '0'.$in;
 	

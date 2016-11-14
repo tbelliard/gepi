@@ -163,8 +163,15 @@ function creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $n
 function getParcoursCommuns($parcoursId = NULL, $classe = NULL, $periode = NULL) {
 	global $mysqli;
 	global $selectionClasse;
-	$myData = implode(",", $selectionClasse);
-	$sqlGetParcours = "SELECT * FROM lsun_parcours_communs WHERE classe IN ($myData) ";
+	
+	$sqlGetParcours = "SELECT * FROM lsun_parcours_communs WHERE ";
+	if (isset($selectionClasse) && count($selectionClasse)){
+		$myData = implode(",", $selectionClasse);
+		$sqlGetParcours .= "classe IN ($myData) ";
+	}	else {
+		$sqlGetParcours .= " 1=1 ";
+	}
+	
 	if($parcoursId || $classe || $periode) {
 		$sqlGetParcours .= setFiltreParcoursCommuns($parcoursId, $classe, $periode);
 		//echo $sqlGetParcours;

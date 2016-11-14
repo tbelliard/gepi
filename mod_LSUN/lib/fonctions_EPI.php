@@ -118,7 +118,8 @@ function getEPIparClasse($classe = NULL) {
 	global $mysqli;
 	//global $selectionClasse;
 	//$myData = implode(",", $selectionClasse);
-	$classes = $classe ? $classe : $_SESSION['afficheClasse'];
+	$classes = $classe ? $classe : (isset($_SESSION['afficheClasse']) ? $_SESSION['afficheClasse'] : array());
+	
 	$myData = implode(",", $classes);
 	
 	$sqlGetEpi = "SELECT lec.* , ljec.id_classe FROM lsun_epi_communs AS lec "
@@ -162,7 +163,7 @@ function supprimeEPI($EpiId) {
 	lsun_j_epi_enseignements($EpiId);
 	$sqlDeleteEpi = "DELETE FROM lsun_epi_communs WHERE id = '$EpiId' ";
 	$mysqli->query($sqlDeleteEpi);
-	echo $sqlDeleteEpi.'<br>';
+	//echo $sqlDeleteEpi.'<br>';
 }
 
 /**
@@ -181,9 +182,9 @@ function delMatiereEPI($EpiId) {
 function getEpiAid() {
 	global $mysqli;
 	global $_EPI;
-	$in = implode(",",$_SESSION['afficheClasse']);
-	if ($in) {$in = ','.$in;}
-	$in = '0'.$in;
+	//$in = implode(",",$_SESSION['afficheClasse']);
+	//if ($in) {$in = ','.$in;}
+	//$in = '0'.$in;
 	
 	$sqlAidClasse = "SELECT "
 		. "indice_aid AS id_enseignement, indice_aid AS indice_aid, nom AS groupe , nom_complet AS description, NULL AS id_groupe,  NULL AS id_classe "

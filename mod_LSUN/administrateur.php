@@ -136,7 +136,7 @@ while ($afficheClasse = $toutesClasses->fetch_object()) {
 				<p>
 					<input type="checkbox" 
 						   name="afficheClasse[<?php echo $afficheClasse->id; ?>]"
-						   <?php if(in_array($afficheClasse->id, $selectionClasse)){echo 'checked';} ?>
+						   <?php if(count($selectionClasse) && in_array($afficheClasse->id, $selectionClasse)){echo 'checked';} ?>
 						   />
 						<?php echo $afficheClasse->classe; ?>
 				</p>
@@ -385,8 +385,10 @@ if ($matiere->code_modalite_elect == 'O') {
 <?php
 $tableauClasses = array();
 
-foreach ($_SESSION['afficheClasse'] as $classeSelectionne) {
-	$tableauClasses[]=$classeSelectionne;
+if (count($_SESSION['afficheClasse'])) {
+	foreach ($_SESSION['afficheClasse'] as $classeSelectionne) {
+		$tableauClasses[]=$classeSelectionne;
+	}
 }
 
 ?>
