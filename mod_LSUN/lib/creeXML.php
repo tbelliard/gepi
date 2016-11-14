@@ -260,7 +260,10 @@ $xml->appendChild($items);
 					$noeudEpisGroupes->appendChild($attsEpiGroupe);
 				}
 				$CommentaireEPI = getCommentaireGroupe($episGroupe->id,$episGroupe->periode);
-				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI->fetch_object()->appreciation);
+				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire');
+				if ($CommentaireEPI->num_rows) {
+					$noeudEpisGroupesCommentaire->value = $CommentaireEPI->fetch_object()->appreciation;
+				}
 				$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
 				
 				$noeudEpiEnseignantsDisciplines = $xml->createElement('enseignant-discipline');
