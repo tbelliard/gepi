@@ -206,6 +206,8 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 		    while($rep_d = mysqli_fetch_array($query_d)){
 			    //print_r($rep_d);
+			    if ($rep_d['nom_fichier'] == '/eleves/visu_eleve.php' AND $rep_d['autorisation'] == 'V') {
+			    /*
 			    if (($rep_d['nom_fichier'] == '/voir_resp' AND $rep_d['autorisation'] == 'V')
 				|| ($rep_d['nom_fichier'] == '/voir_ens' AND $rep_d['autorisation'] == 'V')
 				|| ($rep_d['nom_fichier'] == '/voir_notes' AND $rep_d['autorisation'] == 'V')
@@ -214,6 +216,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				|| ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V')
 				|| ($rep_d['nom_fichier'] == '/mod_discipline/saisie_incident.php' AND $rep_d['autorisation'] == 'V')
 				) {
+				*/
 				$this->collAccesFicheEleves['statut_autre'] = true;
 				return true;
 			    }
