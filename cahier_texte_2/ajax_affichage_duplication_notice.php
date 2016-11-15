@@ -77,23 +77,27 @@ echo "<table style=\"border-style:solid; border-width:0px;\" cellspacing='20px'>
 echo "<select id=\"id_groupe_duplication\" name=\"id_groupe_duplication\">";
 echo "<option value='-1'>(choisissez un groupe de destination)</option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
-	echo "<option value='".$group->getId()."'";
-	if ($group->getId() == $id_groupe) {
-		echo " selected='true' ";
-	}
+	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group->getId()."' AND domaine='cahier_texte' AND visible='n';";
+	$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_grp_visib)==0) {
+		echo "<option value='".$group->getId()."'";
+		if ($group->getId() == $id_groupe) {
+			echo " selected='true' ";
+		}
 
-	echo " title=\"".$group->getName()." - ".$group->getDescriptionAvecClasses()." (";
-	$cpt_prof=0;
-	foreach($group->getProfesseurs() as $prof) {
-		if($cpt_prof>0) {echo ", ";}
-		echo casse_mot($prof->getNom(),"maj")." ".casse_mot($prof->getPrenom(),"majf2");
-		$cpt_prof++;
-	}
-	echo ").\"";
+		echo " title=\"".$group->getName()." - ".$group->getDescriptionAvecClasses()." (";
+		$cpt_prof=0;
+		foreach($group->getProfesseurs() as $prof) {
+			if($cpt_prof>0) {echo ", ";}
+			echo casse_mot($prof->getNom(),"maj")." ".casse_mot($prof->getPrenom(),"majf2");
+			$cpt_prof++;
+		}
+		echo ").\"";
 
-	echo ">";
-	echo $group->getDescriptionAvecClasses();
-	echo "</option>\n";
+		echo ">";
+		echo $group->getDescriptionAvecClasses();
+		echo "</option>\n";
+	}
 }
 echo "</select>\n";
 echo "</td><td>";
