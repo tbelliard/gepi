@@ -65,6 +65,13 @@ if ($groupe == null) {
 	die;
 }
 
+$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$id_groupe."' AND domaine='cahier_texte' AND visible='n';";
+$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test_grp_visib)!=0) {
+	echo ("Erreur duplication de notice  : Le groupe destination proposé ($id_groupe) n'apparait pas sur les cahiers de textes");
+	die;
+}
+
 $deepcopy = 1;
 $nouveauCompteRendu = $ctCompteRendu->copy($deepcopy);
 $nouveauCompteRendu->setGroupe($groupe);

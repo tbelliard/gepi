@@ -63,10 +63,18 @@ if ($groupe == null) {
 	die;
 }
 
-$ctCompteRendu->setGroupe($groupe);
-$ctCompteRendu->setDateCt($date_deplacement);
+$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$id_groupe."' AND domaine='cahier_texte' AND visible='n';";
+$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test_grp_visib)==0) {
+	$ctCompteRendu->setGroupe($groupe);
+	$ctCompteRendu->setDateCt($date_deplacement);
 
-$ctCompteRendu->save();
-$utilisateur->clearAllReferences();
-echo("Deplacement effectué");
+	$ctCompteRendu->save();
+	$utilisateur->clearAllReferences();
+	echo("Deplacement effectué");
+}
+else {
+	echo ("Erreur deplacement de notice  : Le groupe proposé ($id_groupe) n'apparait pas sur les cahiers de textes");
+	die;
+}
 ?>
