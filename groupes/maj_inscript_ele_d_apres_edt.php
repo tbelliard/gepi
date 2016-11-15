@@ -117,7 +117,8 @@ if(!acces('/prepa_conseil/edit_limite.php', $_SESSION['statut'])) {
 				"OPTION_11",
 				"OPTION_12"*/
 
-$debug_import_edt="y";
+$debug_import_edt="n";
+$avec_colonnes_detail_groupes_eleves="y"; // Le paramètre $debug_import_edt ci-dessus affecté à 'y' force l'affichage des colonnes groupes/classes EDT.
 
 $msg="";
 $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "");
@@ -1759,9 +1760,9 @@ elseif($action=="comparer") {
 							<th class='text' title='Trier suivant cette colonne'>Nom</th>
 							<th class='text' title='Trier suivant cette colonne'>Prénom</th>
 							<th class='text' title='Trier suivant cette colonne'>INE</th>
-							<th class='text' title='Trier suivant cette colonne'>Classe</th>".(($debug_import_edt=="y") ? "
-							<th>Debug classe</th>
-							<th>Debug groupes</th>" : "")."
+							<th class='text' title='Trier suivant cette colonne'>Classe</th>".((($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) ? "
+							<th title=\"Les indications de cette colonne correspondent aux regroupements désignés comme des classes dans le XML EDT.\nLe terme classe n'est pas forcément idéal.\">Classe(s) EDT</th>
+							<th title=\"Les indications de cette colonne correspondent aux regroupements désignés comme des groupes dans le XML EDT.\">Groupe(s) EDT</th>" : "")."
 						</tr>
 						</thead>
 						<tbody>";
@@ -1803,9 +1804,9 @@ elseif($action=="comparer") {
 									}
 									echo $tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]];
 								}
-								echo "</td>".(($debug_import_edt=="y") ? "
-							<td>".htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "classe"))."</td>
-							<td>".htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "groupes"))."</td>" : "")."
+								echo "</td>".((($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) ? "
+							<td>".preg_replace("/, /",",<br />\n", htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "classe")))."</td>
+							<td>".preg_replace("/, /",",<br />\n", htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "groupes")))."</td>" : "")."
 						</tr>";
 							}
 							echo "
@@ -1818,16 +1819,16 @@ elseif($action=="comparer") {
 						<a href='#' onclick=\"suppr_assoc_regroupement_edt($current_id_groupe, $current_id_temp);return false;\" title=\"Si l'association entre le regroupement d'élèves EDT et le groupe Gepi vous semble erroné, vous pouvez supprimer l'association.\nLors de la prochaine mise à jour de l'emploi du temps dans Gepi d'après le EXP_COURS.xml de EDT, une nouvelle association vous sera proposée.\" target='_blank'>Supprimer l'association</a>
 					</div>
 
-					<table class='boireaus boireaus_alt2 resizable sortable'>
+					<table class='boireaus boireaus_alt2 resizable sortable' width='100%'>
 						<thead>
 						<tr>
 							<th class='text' title='Trier suivant cette colonne'></th>
 							<th class='text' title='Trier suivant cette colonne'>Nom</th>
 							<th class='text' title='Trier suivant cette colonne'>Prénom</th>
 							<th class='text' title='Trier suivant cette colonne'>INE</th>
-							<th class='text' title='Trier suivant cette colonne'>Classe</th>".(($debug_import_edt=="y") ? "
-							<th>Debug classe</th>
-							<th>Debug groupes</th>" : "")."
+							<th class='text' title='Trier suivant cette colonne'>Classe</th>".((($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) ? "
+							<th title=\"Les indications de cette colonne correspondent aux regroupements désignés comme des classes dans le XML EDT.\nLe terme classe n'est pas forcément idéal.\">Classe(s) EDT</th>
+							<th title=\"Les indications de cette colonne correspondent aux regroupements désignés comme des groupes dans le XML EDT.\">Groupe(s) EDT</th>" : "")."
 						</tr>
 						</thead>
 						<tbody>";
@@ -1873,7 +1874,7 @@ elseif($action=="comparer") {
 							<td><a href='../eleves/modify_eleve.php?eleve_login=".$current_login_ele."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$current_ele['no_gep']."</a></td>
 							<td>";
 
-								if ($debug_import_edt=="y") {
+								if (($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) {
 									$debug_edt_eleves_lignes_classe="";
 									$debug_edt_eleves_lignes_groupes="";
 									$sql="SELECT eel.* FROM edt_eleves_lignes eel, eleves e WHERE eel.n_national=e.no_gep AND e.no_gep!='' AND e.login='".$current_login_ele."';";
@@ -1899,9 +1900,9 @@ elseif($action=="comparer") {
 									$tab_nom_classe[$current_ele['classe']]=get_nom_classe($current_ele['classe']);
 								}
 								echo $tab_nom_classe[$current_ele['classe']];
-								echo "</td>".(($debug_import_edt=="y") ? "
-							<td>".htmlentities($debug_edt_eleves_lignes_classe)."</td>
-							<td>".htmlentities($debug_edt_eleves_lignes_groupes)."</td>" : "")."
+								echo "</td>".((($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) ? "
+							<td>".preg_replace("/, /",",<br />\n", htmlentities($debug_edt_eleves_lignes_classe))."</td>
+							<td>".preg_replace("/, /",",<br />\n", htmlentities($debug_edt_eleves_lignes_groupes))."</td>" : "")."
 						</tr>";
 							}
 							echo "
