@@ -346,7 +346,7 @@ function getElevesExport() {
 	$classes = $_SESSION['afficheClasse'];
 	
 	$myData = implode(",", $classes);
-	$sqlEleves01 = "SELECT jec.* , e.nom , e.prenom, e.id_eleve FROM j_eleves_classes AS jec "
+	$sqlEleves01 = "SELECT jec.* , e.nom , e.prenom, e.id_eleve, e.date_entree FROM j_eleves_classes AS jec "
 		. "INNER JOIN eleves as e "
 		. "ON e.login = jec.login "
 		. "WHERE id_classe IN (".$myData.") ORDER BY jec.id_classe , jec.login , jec.periode ";
