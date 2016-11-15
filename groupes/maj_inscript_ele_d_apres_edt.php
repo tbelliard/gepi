@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -825,7 +825,11 @@ if($action=="") {
 		".add_token_field()."
 		<p>
 			Veuillez fournir l'export EXP_ELEVE.xml d'EDT&nbsp;:<br />
-			<input type=\"file\" size=\"65\" name=\"xml_file\" id='input_xml_file' class='fieldset_opacite50' style='padding:5px; margin:5px;' /><br />
+			<input type=\"file\" size=\"65\" name=\"xml_file\" id='input_xml_file' class='fieldset_opacite50' style='padding:5px; margin:5px;' /><br />";
+	if ($gepiSettings['unzipped_max_filesize']>=0) {
+		echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé en ZIP.</p>";
+	}
+	echo "
 			<input type='hidden' name='action' value='upload' />
 		</p>
 		<p>
@@ -899,6 +903,58 @@ elseif($action=="upload") {
 	$source_file=$xml_file['tmp_name'];
 	$dest_file="../temp/".$tempdir."/edt_eleves.xml";
 	$res_copy=copy("$source_file" , "$dest_file");
+
+	$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+	// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
+	// $unzipped_max_filesize < 0    extraction zip désactivée
+	if($unzipped_max_filesize>=0) {
+		$fichier_emis=$xml_file['name'];
+		$extension_fichier_emis=my_strtolower(mb_strrchr($fichier_emis,"."));
+		if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
+			{
+			require_once('../lib/pclzip.lib.php');
+			$archive = new PclZip($dest_file);
+
+			if (($list_file_zip = $archive->listContent()) == 0) {
+				echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			if(sizeof($list_file_zip)!=1) {
+				echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			/*
+			echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
+			echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
+			echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
+			*/
+			//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
+
+			if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
+				echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>$unzipped_max_filesize octets</em>).</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			//unlink("$dest_file"); // Pour Wamp...
+			$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
+			if ($res_extract != 0) {
+				echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+				$fichier_extrait=$res_extract[0]['filename'];
+				unlink("$dest_file"); // Pour Wamp...
+				$res_copy=rename("$fichier_extrait" , "$dest_file");
+			}
+			else {
+				echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+	}
 
 	if(!$res_copy){
 		echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
