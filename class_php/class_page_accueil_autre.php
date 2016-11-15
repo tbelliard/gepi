@@ -390,10 +390,17 @@ class class_page_accueil_autre {
  
   private function emploiDuTemps(){
 	$this->b=0;
-    $this->creeNouveauItem("/edt_organisation/index_edt.php",
+	if(getSettingValue('edt_version_defaut')=="2") {
+		$this->creeNouveauItem("/edt/index2.php",
 			"Emploi du temps",
 			"Cet outil permet la consultation/gestion de l'emploi du temps.");
-
+	}
+	else {
+		$this->creeNouveauItem("/edt_organisation/index_edt.php",
+			"Emploi du temps",
+			"Cet outil permet la consultation/gestion de l'emploi du temps.");
+	}
+		
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
 	  return true;

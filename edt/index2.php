@@ -46,6 +46,7 @@ if ($utilisateur == null) {
 
 if(((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((getSettingAOui('autorise_edt_eleve'))||(getSettingAOui('autorise_edt2_eleve'))))||
 ((in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite')))&&(getSettingAOui('autorise_edt_tous')))||
+($_SESSION['statut']=="autre")||
 (($_SESSION['statut']=='administrateur')&&(getSettingAOui('autorise_edt_admin')))) {
 	// On va afficher l'EDT
 }
