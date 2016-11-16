@@ -97,7 +97,7 @@ $dest_mail=isset($_POST['dest_mail']) ? $_POST['dest_mail'] : (isset($_GET['dest
 
 // HTML ou PDF par défaut:
 $type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
-if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$type_bulletin_par_defaut='html';}
+if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')&&($type_bulletin_par_defaut!='pdf_2016')) {$type_bulletin_par_defaut='html';}
 
 //debug_var();
 $valide_select_eleves=isset($_POST['valide_select_eleves']) ? $_POST['valide_select_eleves'] : (isset($_GET['valide_select_eleves']) ? $_GET['valide_select_eleves'] : NULL);
@@ -589,6 +589,9 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	$type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
 	if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$type_bulletin_par_defaut='html';}
 	*/
+
+	// 20161116 : DEBUG
+	//echo "\$type_bulletin_par_defaut=$type_bulletin_par_defaut<br />";
 
 	// A remplacer par la suite par un choix:
 	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
