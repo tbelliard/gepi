@@ -2797,7 +2797,7 @@ echo add_token_field();
 	</p>
 	<br />
 	<p class="ligneCaps" style="font-variant: small-caps;">Identié de l'émetteur SMS&nbsp;:&nbsp;
-	<input type="text" style="width: 300px" name="sms_identite" value="<?php echo (getSettingValue('sms_identite')==="")?getSettingValue('gepiSchoolName'):getSettingValue('sms_identite'); ?>">
+	<input type="text" style="width: 300px" name="sms_identite" value="<?php echo (getSettingValue('sms_identite')==="")?'':getSettingValue('sms_identite'); ?>">
 	<br /><span class='small'>Nom  de l'établissement, ou numéro de téléphone, ou autre (éviter les lettres accentuées et caractères spéciaux), </br> si ce champ est non vide le texte sera ajouté au début de chaque SMS.</span></p>
 	<br />
 	<p  class="ligneCaps" style="font-variant: small-caps;">Prestataire SMS&nbsp;:&nbsp;<?php  getSettingValue('sms_prestataire'); ?>
