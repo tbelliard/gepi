@@ -172,4 +172,33 @@ if ($res_test == 0){
 		$result .= msj_erreur("ECHEC !");
 	}
 }
+
+$result .= "&nbsp;-> Ajout d'un champ 'date_conseil_classe' à la table 'periodes'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM periodes LIKE 'date_conseil_classe';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE periodes ADD date_conseil_classe TIMESTAMP NOT NULL;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+		$sql="SELECT c.classe, p.* FROM periodes p, classes c WHERE c.id=p.id_classe ORDER BY c.classe, p.num_periode;";
+		$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
+		while($lig_per=mysqli_fetch_object($res_per)) {
+			$result.="<strong>".$lig_per->classe."&nbsp;:</strong> Initialisation de la date de conseil de classe à la date de fin de période <em>(".formate_date($lig_per->date_fin).")</em>&nbsp;: ";
+			$sql="UPDATE periodes SET date_conseil_classe='".$lig_per->date_fin."' WHERE id_classe='".$lig_per->id_classe."' AND num_periode='".$lig_per->num_periode."';";
+			$update=mysqli_query($GLOBALS['mysqli'], $sql);
+			if($update) {
+				$result.=msj_ok("OK");
+			}
+			else {
+				$result.=msj_erreur("ERREUR");
+			}
+			$result.="<br />";
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 ?>
