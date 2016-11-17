@@ -101,6 +101,13 @@ $mode = isset($_POST["mode"]) ? $_POST["mode"] :(isset($_GET["mode"]) ? $_GET["m
 
 //debug_var();
 
+if (isset($id_ev)) {
+	// Si on n'a pas fait le ménage dans les événements lors de l'initialisation
+	$sql="DELETE FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe NOT IN (SELECT id FROM classes);";
+	//echo "$sql<br />";
+	$menage=mysqli_query($GLOBALS['mysqli'], $sql);
+}
+
 //
 // Insertion ou modification d'un événement
 //

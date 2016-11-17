@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -157,7 +157,7 @@ function menage_utilisateurs_eleves() {
 //======================================================
 
 //$total_etapes = 8;
-$total_etapes = 16;
+$total_etapes = 18;
 $duree = 8;
 if (!isset($_GET['cpt'])) {
 	$cpt = 0;
@@ -2051,6 +2051,53 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="13")) or (isset($_GET['maj'
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
 
 	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
+	echo "<input type='hidden' name='maj' value='14' />\n";
+	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
+
+	echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+	echo "</form>\n";
+
+	echo script_suite_submit();
+
+}
+elseif ((isset($_POST['maj']) and (($_POST['maj'])=="14")) or (isset($_GET['maj']) and (($_GET['maj'])=="14"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<h2 align=\"center\">Etape 14/$total_etapes</h2>\n";
+
+	$texte_info_action="<h2>Suppression des scories de Dates événements classes attachés à des classes qui n'existent plus</h2>\n";
+
+	$sql="SELECT * FROM d_dates_evenements_classes WHERE id_classe NOT IN (SELECT id FROM classes);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$texte_info_action.="<p>Aucune scorie trouvée.</p>\n";
+	}
+	else {
+		$texte_info_action.="<p>Suppression de ".mysqli_num_rows($res)." enregistrement(s) dans la table 'd_dates_evenements_classes'&nbsp;: ";
+		$sql="DELETE FROM d_dates_evenements_classes WHERE id_classe NOT IN (SELECT id FROM classes);";
+		//echo "$sql<br />";
+		$del=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(!$del) {
+			$texte_info_action.="<span style='color:red'>ERREUR</span>";
+		}
+		else {
+			$texte_info_action.="<span style='color:green'>SUCCES</span>";
+		}
+		$texte_info_action.=".<br />\n";
+	}
+
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	//=====================================
+
+	echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+	echo add_token_field();
+	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
+
+	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
 	echo "<input type='hidden' name='maj' value='check_jec_jep_point' />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 
@@ -2206,7 +2253,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 	if (isset($_POST['is_confirmed']) and $_POST['is_confirmed'] == "yes") {
 		if((isset($_POST['maj']))&&($_POST['maj']=='check_jec_jep_point')) {
-			$texte_info_action="<h2 align=\"center\">Etape 13/$total_etapes<br />Vérification des tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes'</h2>\n";
+			$texte_info_action="<h2 align=\"center\">Etape 15/$total_etapes<br />Vérification des tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes'</h2>\n";
 		}
 		else {
 			$texte_info_action="<h2>Vérification des tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes'</h2>\n";
@@ -2769,7 +2816,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='verif_interclassements')) {
-		$texte_info_action="<h2 align=\"center\">Etape 14/$total_etapes<br />Vérification des interclassements</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 16/$total_etapes<br />Vérification des interclassements</h2>\n";
 	}
 	else {
 		$texte_info_action="<h2>Vérification des interclassements</h2>\n";
@@ -2975,7 +3022,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='corrige_ordre_matieres_professeurs')) {
-		$texte_info_action="<h2 align=\"center\">Etape 15/$total_etapes<br />Vérification de l'ordre des matières des professeurs</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 17/$total_etapes<br />Vérification de l'ordre des matières des professeurs</h2>\n";
 	}
 	else {
 		$texte_info_action="<h2>Vérification de l'ordre des matières des professeurs</h2>\n";
@@ -3047,7 +3094,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='controle_categories_matieres')) {
-		$texte_info_action="<h2 align=\"center\">Etape 16/$total_etapes<br />Vérification des catégories de matières</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 18/$total_etapes<br />Vérification des catégories de matières</h2>\n";
 	}
 	else {
 		$texte_info_action="<h2>Vérification des catégories de matières</h2>\n";
@@ -3900,7 +3947,8 @@ else {
 		echo "<a href='clean_tables.php?maj=10".add_token_in_url()."'>Tables concernant les comptes élèves et responsables</a><br />\n";
 		echo "<a href='clean_tables.php?maj=11".add_token_in_url()."'>Tables concernant les grilles PDF.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=12".add_token_in_url()."'>Supprimer les adresses responsables non associées</a><br />\n";
-		echo "<a href='clean_tables.php?maj=13".add_token_in_url()."'>Supprimer les engagements incohérents</a> (<em>élèves partis, ou association avec une classe dnas laquelle l'élève n'est pas/plus inscrit</em>)<br />\n";
+		echo "<a href='clean_tables.php?maj=13".add_token_in_url()."'>Supprimer les engagements incohérents</a> (<em>élèves partis, ou association avec une classe dans laquelle l'élève n'est pas/plus inscrit</em>)<br />\n";
+		echo "<a href='clean_tables.php?maj=14".add_token_in_url()."'>Supprimer les scories de Dates événements classes attachés à des classes qui n'existent plus<br />\n";
 		echo "<a href='clean_tables.php?maj=check_jec_jep_point".add_token_in_url()."'>Contrôle des tables j_eleves_cpe, j_eleves_professeurs et j_scol_classes.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=verif_interclassements".add_token_in_url()."'>Vérification des interclassements (<em>collation,...</em>).</a><br />\n";
 		echo "<a href='clean_tables.php?maj=corrige_ordre_matieres_professeurs".add_token_in_url()."'>Vérification de l'ordre des matières pour les professeurs.</a><br />\n";
