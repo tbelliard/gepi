@@ -212,7 +212,7 @@ if (isset($_POST['ok'])) {
 	if ($calldata) {
 		for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
 			$id_classe = $row[0];
-			$periode_query = sql_query("SELECT verouiller, date_fin FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+			$periode_query = sql_query("SELECT verouiller, date_fin, date_conseil_classe FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 			$nb_periode = sql_count($periode_query) + 1 ;
 			if ($periode_query) {
 				for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
@@ -231,6 +231,7 @@ if (isset($_POST['ok'])) {
 						    if (!$register) {$pb_reg_ver = 'yes';}
 						}
 					}
+
 					if ((isset($_POST["date_fin_".$nom_classe]))&&($_POST["date_fin_".$nom_classe]!=""))  {
 						try {
 						    $date_fin = new DateTime(str_replace("/",".",$_POST["date_fin_".$nom_classe]));
@@ -239,9 +240,18 @@ if (isset($_POST['ok'])) {
 							$register = sql_query("UPDATE periodes SET date_fin='".$date_fin->format('Y-m-d')."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
 							if (!$register) {$pb_reg_ver = 'yes';}
 						    }
-						    //$register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
-						    //$register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."', date_verrouillage=NOW() WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
-						    //if (!$register) {$pb_reg_ver = 'yes';}
+						} catch (Exception $x) {
+						}
+					}
+
+					if ((isset($_POST["date_conseil_".$nom_classe]))&&($_POST["date_conseil_".$nom_classe]!=""))  {
+						try {
+						    $date_conseil = new DateTime(str_replace("/",".",$_POST["date_conseil_".$nom_classe]));
+						    $date_fin->setTime(23,59,59);
+						    if ($date_conseil->format('U') != $row_per[1]) {
+							$register = sql_query("UPDATE periodes SET date_conseil_classe='".$date_conseil->format('Y-m-d')."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
+							if (!$register) {$pb_reg_ver = 'yes';}
+						    }
 						} catch (Exception $x) {
 						}
 					}
@@ -282,9 +292,9 @@ if (isset($_POST['ok'])) {
 	}
 	
 	if ($pb_reg_ver == 'no') {
-		$msg = "Les modifications ont été enregistrées.";
+		$msg = "Les modifications ont été enregistrées (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 	} else {
-		$msg = "Il y a eu un problème lors de l'enregistrement des données.";
+		$msg = "Il y a eu un problème lors de l'enregistrement des données.<br />";
 	}
 
 	if ($action_apres == 'retour') {
@@ -506,6 +516,7 @@ if (($classe != 0) AND ($periode !=0)) {
 			if(getSettingValue("active_module_absence")=="2"){
 				echo "<th title=\"Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les dates de périodes de cours ci-dessous.\">Date Fin</th>\n";
 			}
+			echo "<th>Date Conseil de classe</th>\n";
 		}
 		if(count($tab_dates_prochains_conseils)>0) {
 			echo "<th title=\"Si des dates de conseil de classe ont été saisies, elles apparaîtront dans cette colonne.\">Date du prochain<br />conseil de classe</th>\n";
@@ -526,7 +537,7 @@ if (($classe != 0) AND ($periode !=0)) {
 				echo "<b>$classe</b> ";
 				echo "</td>\n";
 		
-				$periode_query = sql_query("SELECT nom_periode, verouiller, date_fin FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+				$periode_query = sql_query("SELECT nom_periode, verouiller, date_fin, date_conseil_classe FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 				$nb_periode = sql_count($periode_query) + 1 ;
 				$j = 0;
 				if ($periode_query) {
@@ -587,6 +598,29 @@ Calendar.setup({
 
                             echo "</td>\n";
                         }
+
+
+				// Conseil de classe
+				echo "<td>
+				<input type=\"text\" size=\"8\" name=\"date_conseil_".$nom_classe."\" id=\"date_conseil_".$nom_classe."\" value=\"";
+				if ($row_per[3] != 0) {
+					echo date("d/m/Y", strtotime($row_per[3]));
+				}
+				echo "\"/>";
+
+				echo '
+				<script type="text/javascript">
+					Calendar.setup({
+					inputField     :    "date_conseil_'.$nom_classe.'",     // id of the input field
+					ifFormat       :    "%d/%m/%Y",      // format of the input field
+					button         :    "date_conseil_'.$nom_classe.'",  // trigger for the calendar (button ID)
+					align          :    "Bl",           // alignment (defaults to "Bl")
+					singleClick    :    true
+					});
+				</script>&nbsp;';
+
+				echo "</td>\n";
+
 						$j++;
 					}
 				}

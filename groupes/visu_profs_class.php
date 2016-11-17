@@ -448,6 +448,9 @@ if(isset($id_classe)){
 
 		echo "<h3>Equipe pédagogique de la classe de ".$classe["classe"]." <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>";
 		echo "<span id='span_mail'></span>";
+		if(peut_poster_message($_SESSION["statut"])) {
+			echo "<span id='span_mod_alerte'></span>";
+		}
 		echo "</h3>\n";
 
 		$suivi_par=get_valeur_champ("classes", "id='$id_classe'", "suivi_par");
@@ -481,6 +484,7 @@ if(isset($id_classe)){
 
 		$acces_edit_group=acces("/groupes/edit_group.php", $_SESSION['statut']);
 
+		$chaine_alerte="";
 		//echo "<div style='float:right; width:45%'>";
 		echo "<table class='boireaus boireaus_alt boireaus_white_hover' border='1' summary='Equipe'>
 	<tr>
@@ -588,13 +592,22 @@ if(isset($id_classe)){
 					$tabmail2[]=$tabmail[$i];
 				}
 			}
-			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>
+			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."' target='_blank'>mail à tous les membres de l'équipe</a>.</p>
 <script type='text/javascript'>
 	if(document.getElementById('span_mail')) {
-		document.getElementById('span_mail').innerHTML=\" <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."' title='Envoyer un mail à tous les membres de l équipe'><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' /></a>\";
+		document.getElementById('span_mail').innerHTML=\" <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."' title='Envoyer un mail à tous les membres de l équipe' target='_blank'><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' /></a>\";
 	}
 </script>\n";
+			if(peut_poster_message($_SESSION["statut"])) {
+				echo "<p>Déposer une <a href='../mod_alerte/form_message.php?equipe_dest=$id_classe&sujet=Classe ".$classe['classe']."' target='_blank'>alerte <em>(par le module Alertes)</em> à tous les membres de l'équipe</a>.</p>
+<script type='text/javascript'>
+	if(document.getElementById('span_mod_alerte')) {
+		document.getElementById('span_mod_alerte').innerHTML=\" <a href='../mod_alerte/form_message.php?equipe_dest=$id_classe&sujet=Classe ".$classe['classe']."' title='Déposer une alerte pour les membres de l équipe' target='_blank'><img src='../images/icons/module_alerte32.png' class='icone16' alt='Mail' /></a>\";
+	}
+</script>\n";
+			}
 
+			$chaine_alerte_scol="";
 			$sql="SELECT * FROM j_scol_classes jsc, utilisateurs u WHERE jsc.login=u.login AND u.etat='actif';";
 			//echo "$sql<br />";
 			$res_scol=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -602,6 +615,7 @@ if(isset($id_classe)){
 				$cpt_scol=0;
 				$chaine_title_scol="";
 				while($lig_scol=mysqli_fetch_object($res_scol)) {
+					$chaine_alerte_scol.="&login_dest[]=".$lig_scol->login;
 					if(($lig_scol->email!="")&&(check_mail($lig_scol->email))&&(!in_array($lig_scol->email,$tabmail2))) {
 						if($chaine_mail!="") {
 							$chaine_mail.=",";
@@ -622,6 +636,14 @@ if(isset($id_classe)){
 			document.getElementById('span_mail').innerHTML=document.getElementById('span_mail').innerHTML+\" <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."' title='Envoyer un mail à tous les membres de l équipe, comptes scolarité inclus'><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' />(*)</a>\";
 		}
 	</script>\n";
+					if(peut_poster_message($_SESSION["statut"])) {
+						echo "<p>Déposer une <a href='../mod_alerte/form_message.php?equipe_dest=".$id_classe.$chaine_alerte_scol."&sujet=Classe ".$classe['classe']."' target='_blank'>alerte <em>(par le module Alertes)</em> à tous les membres de l'équipe (<em title=\"".$chaine_title_scol."\">comptes scolarité inclus</em>)</a>.</p>
+		<script type='text/javascript'>
+			if(document.getElementById('span_mod_alerte')) {
+				document.getElementById('span_mod_alerte').innerHTML=\" <a href='../mod_alerte/form_message.php?equipe_dest=".$id_classe.$chaine_alerte_scol."&sujet=Classe ".$classe['classe']."' title='Déposer une alerte pour les membres de l équipe, comptes scolarité inclus' target='_blank'><img src='../images/icons/module_alerte32.png' class='icone16' alt='Mail' /></a>\";
+			}
+		</script>\n";
+					}
 				}
 			}
 

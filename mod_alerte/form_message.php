@@ -306,6 +306,44 @@ $date_visibilite=isset($_POST['date_visibilite']) ? $_POST['date_visibilite'] : 
 $heure_visibilite=isset($_POST['heure_visibilite']) ? $_POST['heure_visibilite'] : (isset($_GET['heure_visibilite']) ? $_GET['heure_visibilite'] : NULL);
 
 $login_dest=isset($_POST['login_dest']) ? $_POST['login_dest'] : (isset($_GET['login_dest']) ? $_GET['login_dest'] : NULL);
+$equipe_dest=isset($_POST['equipe_dest']) ? $_POST['equipe_dest'] : (isset($_GET['equipe_dest']) ? $_GET['equipe_dest'] : NULL);
+
+if(isset($equipe_dest)) {
+	if(!isset($login_dest)) {
+		$login_dest=array();
+	}
+	elseif(!is_array($login_dest)) {
+		$tmp_login_dest=$login_dest;
+		$login_dest=array();
+		$login_dest[]=$tmp_login_dest;
+		unset($tmp_login_dest);
+	}
+
+	if(is_array($equipe_dest)) {
+		foreach($equipe_dest as $key => $value) {
+			$sql="SELECT DISTINCT login FROM j_groupes_professeurs jgp, j_groupes_classes jgc WHERE jgp.id_groupe=jgc.id_groupe AND jgc.id_classe='".$value."';";
+			$res_prof_equip=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_prof_equip)>0) {
+				while($lig_prof_equip=mysqli_fetch_object($res_prof_equip)) {
+					if(!in_array($lig_prof_equip->login, $login_dest)) {
+						$login_dest[]=$lig_prof_equip->login;
+					}
+				}
+			}
+		}
+	}
+	else {
+		$sql="SELECT DISTINCT login FROM j_groupes_professeurs jgp, j_groupes_classes jgc WHERE jgp.id_groupe=jgc.id_groupe AND jgc.id_classe='".$equipe_dest."';";
+		$res_prof_equip=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_prof_equip)>0) {
+			while($lig_prof_equip=mysqli_fetch_object($res_prof_equip)) {
+				if(!in_array($lig_prof_equip->login, $login_dest)) {
+					$login_dest[]=$lig_prof_equip->login;
+				}
+			}
+		}
+	}
+}
 
 if((isset($_GET['id_incident']))&&(!isset($message))) {
 	$sql="SELECT * FROM s_incidents WHERE id_incident='".$_GET['id_incident']."';";

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -121,6 +121,15 @@ if (isset($is_posted) and ($is_posted == "yes")) {
             }
             else {
                 $sql.=", date_fin='".$tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00'";
+            }
+        }
+        if(isset($date_conseil_period[$k])) {
+            $tmp_tab=explode("/", $date_conseil_period[$k]);
+            if((!isset($tmp_tab[2]))||(!checkdate($tmp_tab[1], $tmp_tab[0], $tmp_tab[2]))) {
+                $msg.="Erreur sur la date de conseil de classe en période $k<br />";
+            }
+            else {
+                $sql.=", date_conseil_classe='".$tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00'";
             }
         }
         $sql.=" WHERE (num_periode='$k' and id_classe='$id_classe');";
@@ -336,6 +345,7 @@ if ($test_periode == 0) {
 	<th style='padding: 5px;'>Nom de la période</th>
 	<th style='padding: 5px;' title="La date précisée ici est prise en compte pour les appartenances des élèves à telle classe sur telle période (notamment pour les élèves changeant de classe).
 Il n'est pas question ici de verrouiller automatiquement une période de note à la date saisie.">Date de fin<br />de la période</th>
+	<th style='padding: 5px;' title="La date de conseil de classe est requise pour la remontée Livret Scolaire Unifié (LSUN).">Date de conseil<br />de classe</th>
 	</tr>
 <?php
 	$k = '1';
@@ -362,6 +372,14 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		//echo "<a href=\"#calend\" onClick=\"".$cal[$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 		echo img_calendrier_js("date_fin_period_".$k, "img_bouton_date_fin_period_".$k);
 		echo "</td>\n";
+
+		echo "<td style='padding: 5px;'><input type='text' id='date_conseil_period_$k' name='date_conseil_period[$k]'";
+		echo " onchange='changement()'";
+		echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
+		echo " value=\"".strftime("%d/%m/%Y", mysql_date_to_unix_timestamp($date_conseil_periode[$k]))."\" size='10' />";
+		echo img_calendrier_js("date_conseil_period_".$k, "img_bouton_date_conseil_period_".$k);
+		echo "</td>\n";
+
 		echo "</tr>\n";
 	$k++;
 	}

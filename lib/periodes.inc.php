@@ -44,6 +44,7 @@ if ((isset($id_classe))||(isset($current_group))) {
 			$ver_periode[$i] = old_mysql_result($periode_query, $i-1, "verouiller");
 			$date_ver_periode[$i] = old_mysql_result($periode_query, $i-1, "date_verrouillage");
 			$date_fin_periode[$i] = old_mysql_result($periode_query, $i-1, "date_fin");
+			$date_conseil_periode[$i] = old_mysql_result($periode_query, $i-1, "date_conseil_classe");
 			$i++;
 		}
 	}

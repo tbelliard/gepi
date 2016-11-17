@@ -44,9 +44,9 @@ else {
 	$autorise[6] = array('/cahier_texte/see_all.php');
 }
 $autorise[7] = array('/cahier_texte_admin/visa_ct.php');
-$autorise[8] = array('/edt_organisation/index_edt.php');
+$autorise[8] = array('/edt_organisation/index_edt.php', '/edt/index2.php');
 //$autorise[9] = array('/tous_les_edt');
-$autorise[9] = array('/tous_les_edt', '/edt_organisation/index_edt.php');
+$autorise[9] = array('/tous_les_edt', '/edt_organisation/index_edt.php', '/edt/index2.php');
 $autorise[10] = array('/messagerie/index.php');
 $autorise[11]= array('/eleves/visu_eleve.php',
 						'/eleves/liste_eleves.php');

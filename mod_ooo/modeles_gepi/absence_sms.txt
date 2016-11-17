@@ -1,1 +1,9 @@
-Madame, Monsieur [destinataire;onformat=tbs_str;]***[el_col;block=begin][el_col.getPrenom] [el_col.getNom] [el_col.getClasseNomComplet;onformat=tbs_str;] est absent:***[demi_j_string_eleve_id_[el_col.getId];block=begin][demi_j_string_eleve_id_[el_col.getId];]***[demi_j_string_eleve_id_[el_col.getId];block=end][el_col;block=end]Merci de justifier le plus rapidement possible cette absence***[nom_etab;onformat=tbs_str;] ***tel: [tel_etab]***mel: [mail_etab;onformat=tbs_str;]***fax: [fax_etab]***Ref/notif: [notif_id]
+Madame, Monsieur [destinataire;onformat=tbs_str;]
+[el_col;block=begin][el_col.getPrenom] [el_col.getNom] [el_col.getClasseNomComplet;onformat=tbs_str;] est absent: [demi_j_string_eleve_id_[el_col.getId];block=begin][demi_j_string_eleve_id_[el_col.getId];] [demi_j_string_eleve_id_[el_col.getId];block=end][el_col;block=end]
+Merci de justifier le plus rapidement possible cette absence
+[nom_etab;onformat=tbs_str;]
+tel: [tel_etab]
+mel: [mail_etab;onformat=tbs_str;]
+fax: [fax_etab]
+Ref/notif: [notif_id]
+

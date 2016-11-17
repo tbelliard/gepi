@@ -1,9 +1,9 @@
 <?php
 
 /*
- * $Id: eleves.php 2366 2008-09-10 12:26:23Z delineau $
+ * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -94,7 +94,7 @@ if ($_POST['step'] == "2") {
             // Si un nombre de periodes a ete selectionne pour cette classe, on cree les periodes
             // Pour chaque periode, jusqu'au nombre souhaite (REVOIR pour choix non faits...)
             for ($i=1; $i<=$_POST[$indice]; $i++) {
-                $req_insertion_periode = "INSERT INTO periodes VALUES ('P$i','$i','T', '$key',NULL,NULL)";
+                $req_insertion_periode = "INSERT INTO periodes VALUES ('P$i','$i','T', '$key',NULL,NULL,NULL)";
                 mysqli_query($GLOBALS["mysqli"], $req_insertion_periode);
                 // Si tout s'est bien deroule
                 if (((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {

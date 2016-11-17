@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -117,7 +117,8 @@ if(!acces('/prepa_conseil/edit_limite.php', $_SESSION['statut'])) {
 				"OPTION_11",
 				"OPTION_12"*/
 
-$debug_import_edt="y";
+$debug_import_edt="n";
+$avec_colonnes_detail_groupes_eleves="y"; // Le paramètre $debug_import_edt ci-dessus affecté à 'y' force l'affichage des colonnes groupes/classes EDT.
 
 $msg="";
 $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "");
@@ -825,7 +826,11 @@ if($action=="") {
 		".add_token_field()."
 		<p>
 			Veuillez fournir l'export EXP_ELEVE.xml d'EDT&nbsp;:<br />
-			<input type=\"file\" size=\"65\" name=\"xml_file\" id='input_xml_file' class='fieldset_opacite50' style='padding:5px; margin:5px;' /><br />
+			<input type=\"file\" size=\"65\" name=\"xml_file\" id='input_xml_file' class='fieldset_opacite50' style='padding:5px; margin:5px;' /><br />";
+	if ($gepiSettings['unzipped_max_filesize']>=0) {
+		echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé en ZIP.</p>";
+	}
+	echo "
 			<input type='hidden' name='action' value='upload' />
 		</p>
 		<p>
@@ -899,6 +904,58 @@ elseif($action=="upload") {
 	$source_file=$xml_file['tmp_name'];
 	$dest_file="../temp/".$tempdir."/edt_eleves.xml";
 	$res_copy=copy("$source_file" , "$dest_file");
+
+	$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+	// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
+	// $unzipped_max_filesize < 0    extraction zip désactivée
+	if($unzipped_max_filesize>=0) {
+		$fichier_emis=$xml_file['name'];
+		$extension_fichier_emis=my_strtolower(mb_strrchr($fichier_emis,"."));
+		if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
+			{
+			require_once('../lib/pclzip.lib.php');
+			$archive = new PclZip($dest_file);
+
+			if (($list_file_zip = $archive->listContent()) == 0) {
+				echo "<p style='color:red;'>Erreur : ".$archive->errorInfo(true)."</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			if(sizeof($list_file_zip)!=1) {
+				echo "<p style='color:red;'>Erreur : L'archive contient plus d'un fichier.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			/*
+			echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
+			echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
+			echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
+			*/
+			//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
+
+			if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
+				echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>$unzipped_max_filesize octets</em>).</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			//unlink("$dest_file"); // Pour Wamp...
+			$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
+			if ($res_extract != 0) {
+				echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+				$fichier_extrait=$res_extract[0]['filename'];
+				unlink("$dest_file"); // Pour Wamp...
+				$res_copy=rename("$fichier_extrait" , "$dest_file");
+			}
+			else {
+				echo "<p style='color:red'>Echec de l'extraction de l'archive ZIP.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+	}
 
 	if(!$res_copy){
 		echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
@@ -1703,9 +1760,9 @@ elseif($action=="comparer") {
 							<th class='text' title='Trier suivant cette colonne'>Nom</th>
 							<th class='text' title='Trier suivant cette colonne'>Prénom</th>
 							<th class='text' title='Trier suivant cette colonne'>INE</th>
-							<th class='text' title='Trier suivant cette colonne'>Classe</th>".(($debug_import_edt=="y") ? "
-							<th>Debug classe</th>
-							<th>Debug groupes</th>" : "")."
+							<th class='text' title='Trier suivant cette colonne'>Classe</th>".((($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) ? "
+							<th title=\"Les indications de cette colonne correspondent aux regroupements désignés comme des classes dans le XML EDT.\nLe terme classe n'est pas forcément idéal.\">Classe(s) EDT</th>
+							<th title=\"Les indications de cette colonne correspondent aux regroupements désignés comme des groupes dans le XML EDT.\">Groupe(s) EDT</th>" : "")."
 						</tr>
 						</thead>
 						<tbody>";
@@ -1747,9 +1804,9 @@ elseif($action=="comparer") {
 									}
 									echo $tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]];
 								}
-								echo "</td>".(($debug_import_edt=="y") ? "
-							<td>".htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "classe"))."</td>
-							<td>".htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "groupes"))."</td>" : "")."
+								echo "</td>".((($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) ? "
+							<td>".preg_replace("/, /",",<br />\n", htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "classe")))."</td>
+							<td>".preg_replace("/, /",",<br />\n", htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "groupes")))."</td>" : "")."
 						</tr>";
 							}
 							echo "
@@ -1762,16 +1819,16 @@ elseif($action=="comparer") {
 						<a href='#' onclick=\"suppr_assoc_regroupement_edt($current_id_groupe, $current_id_temp);return false;\" title=\"Si l'association entre le regroupement d'élèves EDT et le groupe Gepi vous semble erroné, vous pouvez supprimer l'association.\nLors de la prochaine mise à jour de l'emploi du temps dans Gepi d'après le EXP_COURS.xml de EDT, une nouvelle association vous sera proposée.\" target='_blank'>Supprimer l'association</a>
 					</div>
 
-					<table class='boireaus boireaus_alt2 resizable sortable'>
+					<table class='boireaus boireaus_alt2 resizable sortable' width='100%'>
 						<thead>
 						<tr>
 							<th class='text' title='Trier suivant cette colonne'></th>
 							<th class='text' title='Trier suivant cette colonne'>Nom</th>
 							<th class='text' title='Trier suivant cette colonne'>Prénom</th>
 							<th class='text' title='Trier suivant cette colonne'>INE</th>
-							<th class='text' title='Trier suivant cette colonne'>Classe</th>".(($debug_import_edt=="y") ? "
-							<th>Debug classe</th>
-							<th>Debug groupes</th>" : "")."
+							<th class='text' title='Trier suivant cette colonne'>Classe</th>".((($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) ? "
+							<th title=\"Les indications de cette colonne correspondent aux regroupements désignés comme des classes dans le XML EDT.\nLe terme classe n'est pas forcément idéal.\">Classe(s) EDT</th>
+							<th title=\"Les indications de cette colonne correspondent aux regroupements désignés comme des groupes dans le XML EDT.\">Groupe(s) EDT</th>" : "")."
 						</tr>
 						</thead>
 						<tbody>";
@@ -1817,7 +1874,7 @@ elseif($action=="comparer") {
 							<td><a href='../eleves/modify_eleve.php?eleve_login=".$current_login_ele."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$current_ele['no_gep']."</a></td>
 							<td>";
 
-								if ($debug_import_edt=="y") {
+								if (($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) {
 									$debug_edt_eleves_lignes_classe="";
 									$debug_edt_eleves_lignes_groupes="";
 									$sql="SELECT eel.* FROM edt_eleves_lignes eel, eleves e WHERE eel.n_national=e.no_gep AND e.no_gep!='' AND e.login='".$current_login_ele."';";
@@ -1843,9 +1900,9 @@ elseif($action=="comparer") {
 									$tab_nom_classe[$current_ele['classe']]=get_nom_classe($current_ele['classe']);
 								}
 								echo $tab_nom_classe[$current_ele['classe']];
-								echo "</td>".(($debug_import_edt=="y") ? "
-							<td>".htmlentities($debug_edt_eleves_lignes_classe)."</td>
-							<td>".htmlentities($debug_edt_eleves_lignes_groupes)."</td>" : "")."
+								echo "</td>".((($debug_import_edt=="y")||($avec_colonnes_detail_groupes_eleves=="y")) ? "
+							<td>".preg_replace("/, /",",<br />\n", htmlentities($debug_edt_eleves_lignes_classe))."</td>
+							<td>".preg_replace("/, /",",<br />\n", htmlentities($debug_edt_eleves_lignes_groupes))."</td>" : "")."
 						</tr>";
 							}
 							echo "
