@@ -375,6 +375,7 @@ if (isset($is_posted)) {
        $id_classe = old_mysql_result($res_menage, $k);
        $res1 = mysqli_query($GLOBALS["mysqli"], "delete from classes where id='".$id_classe."'");
        $res2 = mysqli_query($GLOBALS["mysqli"], "delete from j_groupes_classes where id_classe='".$id_classe."'");
+       $res3 = mysqli_query($GLOBALS["mysqli"], "delete from d_dates_evenements_classes where id_classe='".$id_classe."'");
        // 20150810
        $sql="SELECT * FROM edt_calendrier WHERE classe_concerne_calendrier LIKE '".$id_classe.";%' OR classe_concerne_calendrier LIKE '%;".$id_classe.";%';";
        $res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
