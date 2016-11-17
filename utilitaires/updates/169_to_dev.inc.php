@@ -192,8 +192,23 @@ if ($test_champ==0) {
 			else {
 				$result.=msj_erreur("ERREUR");
 			}
-			$result.="<br />";
+			//$result.="<br />";
 		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'periode' à la table 'd_dates_evenements'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM d_dates_evenements LIKE 'periode';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE d_dates_evenements ADD periode INT(11) NOT NULL default '0';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 	}
 	else {
 		$result .= msj_erreur("ECHEC !");
