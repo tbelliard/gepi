@@ -360,16 +360,51 @@ $xml->appendChild($items);
 		while ($eleve = $eleves->fetch_object()) {
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			
-			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$eleve->professeur , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$eleve->periode , 'date-conseil-classe'=>'' , 'date-scolarite'=>"$eleve->date_entree" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>'RESP_' );
+			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$eleve->professeur , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$eleve->periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$eleve->date_entree" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>'RESP_' );
 			foreach ($attributsElevePeriode as $cle=>$valeur) {
 				$attsElevePeriode = $xml->createAttribute($cle);
 				$attsElevePeriode->value = $valeur;
 
 				$noeudBilanElevePeriodique->appendChild($attsElevePeriode);
 			}
+			
+			$listeAcquis = $xml->createElement('liste-acquis');
+			$acquisEleve = getAcquisEleve($eleve->login, $eleve->periode);
+			// <acquis discipline-ref="DI_030602" enseignant-refs="ENS_0123456789ABE" element-programme-refs="EP_05" moyenne-eleve="18/20" moyenne-structure="15/20">
+			// <appreciation>Appréciation pour la matière espagnol</appreciation>
+			// matieres_notes - matiere_element_programme - matieres_appreciations
+			$noeudBilanElevePeriodique->appendChild($listeAcquis);
+			
+			$listeEpisEleve = $xml->createElement('epis-eleve');
+			// non obligatoire
+			
+			$listeAccPersosEleve = $xml->createElement('acc-persos-eleve');
+			// non obligatoire
+			
+			$listeParcoursEleve = $xml->createElement('liste-parcours');
+			// non obligatoire
+			
+			$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
+			// non obligatoire
+			
+			$acquisConseils = $xml->createElement('acquis-conseils');
+			$noeudBilanElevePeriodique->appendChild($acquisConseils);
+			
+			$vieScolaire = $xml->createElement('vie-scolaire');
+			$noeudBilanElevePeriodique->appendChild($vieScolaire);
+			
+			$socle = $xml->createElement('socle');
+			// non obligatoire
+			
+			$responsables = $xml->createElement('responsables');
+			// non obligatoire
+			
+			
+			
+			
+			
 			$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);
-		}
-				
+		}	
 		$donnees->appendChild($bilansPeriodiques);
 		
 	$items->appendChild($donnees);

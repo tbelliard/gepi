@@ -360,9 +360,6 @@ function getElevesExport() {
 		. "ON p.id_classe = t1.id_classe AND p.num_periode = t1.periode ";
 	// on récupère le responsable
 	
-	
-	
-	
 	//echo $sqlEleves03;
 	
 	$resultchargeDB = $mysqli->query($sqlEleves03);
@@ -371,5 +368,11 @@ function getElevesExport() {
 }
 
 
+
+// Bilan
+function getAcquisEleve($eleve, $periode) {
+	
+	
+}
 
 

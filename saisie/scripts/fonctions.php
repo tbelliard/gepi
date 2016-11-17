@@ -356,7 +356,8 @@ function getElementEleve($login_eleve, $annee, $periode,$groupe = NULL) {
 	if ($groupe) {
 		$sql .= " AND jme.idGroupe = '".$groupe."' ";
 	}
-	$sql .= "ORDER BY jme.date_insert, mep.libelle";
+	//$sql .= "ORDER BY jme.date_insert, mep.libelle";
+	$sql .= "ORDER BY mep.libelle";
 	
 	//echo $sql."<br />";
 	$resultchargeDB = $mysqli->query($sql);

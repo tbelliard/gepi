@@ -567,7 +567,7 @@ if ($affiche_bascule == 'yes') {
 	echo "<div id='div_bascule'>\n";
 
 	//if ($id_racine == '') echo "<tr><td></td><td><font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font></td></tr>\n";
-	if ($id_racine == '') {echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font>\n";}
+	if (isset($id_racine) && $id_racine == '') {echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font>\n";}
 
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\"post\">\n";
 	echo add_token_field();
