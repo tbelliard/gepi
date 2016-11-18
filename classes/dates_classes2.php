@@ -952,7 +952,45 @@ elseif((isset($mode))&&($mode=="ajouts")) {
 	echo "<p><a href=\"javascript:afficher_div('div_ajout_classe','y',100,100);\">Ajouter des classes</a></p><div id='div_classes' style='margin-left:3em;'></div>";
 
 	echo "
-			<p><input type='submit' value='Valider' /></p>
+			<!--p><input type='submit' value='Valider' /></p-->
+			<p>
+			<input type=\"button\" value=\"Valider\" style=\"font-variant: small-caps;\" name=\"button_ok_avec_javascript\" onclick=\"check_et_valide_form()\" /></p>
+			<script type='text/javascript'>
+				function check_et_valide_form() {
+					valider_le_submit='y';
+
+					tab=document.getElementsByName('date_heure_ev[]');
+					if(tab.length>0) {
+						// On va poursuivre
+					}
+					else {
+						alert('Aucune date/heure ajoutée.');
+						valider_le_submit='n';
+					}
+
+					tab=document.getElementsByName('id_salle_ev[]');
+					if(tab.length>0) {
+						// On va poursuivre
+					}
+					else {
+						alert('Aucune salle ajoutée.');
+						valider_le_submit='n';
+					}
+
+					tab=document.getElementsByName('id_classe_ev[]');
+					if(tab.length>0) {
+						// On va poursuivre
+					}
+					else {
+						alert('Aucune classe ajoutée.');
+						valider_le_submit='n';
+					}
+
+					if(valider_le_submit=='y') {
+						document.formulaire_saisie_evenement.submit();
+					}
+				}
+			</script>
 		</fieldset>
 	</form>";
 
