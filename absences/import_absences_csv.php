@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -136,13 +136,11 @@ if(!isset($num_periode)) {
 
 		echo "<p>Choisissez la période à importer&nbsp;:</p>\n";
 		//echo "<ul>\n";
-		echo "<table class='boireaus'>\n";
-		$alt=1;
+		echo "<table class='boireaus boireaus_alt'>\n";
 		for($i=0;$i<count($tab_max_per);$i++){
 			//echo "<li>\n";
 
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'><td>\n";
+			echo "<tr><td>\n";
 
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 				echo "<table border='0'>\n";
@@ -286,39 +284,68 @@ else {
 		if(!isset($_POST['is_posted'])) {
 			$etape=1;
 
-			echo "<p>Cette page permet de remplir des tables temporaires avec les informations extraites du XML.<br />\n";
-			echo "</p>\n";
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-			echo add_token_field();
-
-			echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
+			echo "<p>Cette page permet de remplir des tables temporaires avec les informations extraites d'un fichier CSV.<br />
+</p>
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='num_periode' value='$num_periode' />\n";
 
 			// Il faudrait ajouter un test ici... on pourrait injecter une classe pour laquelle la période $num_periode est close.
 			if(is_array($id_classe)){
 				for($i=0;$i<count($id_classe);$i++){
-					echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
+					echo "
+		<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 				}
 			}
 			else{
-				echo "<input type='hidden' name='id_classe[]' value='$id_classe' />\n";
+				echo "
+		<input type='hidden' name='id_classe[]' value='$id_classe' />\n";
 			}
 
-			echo "<p>Veuillez fournir le fichier CSV des absences&nbsp;:<br />\n";
-			echo "<input type=\"file\" size=\"60\" name=\"absences_csv_file\" /><br />\n";
-			echo "<input type='hidden' name='etape' value='$etape' />\n";
-			echo "<input type='hidden' name='is_posted' value='yes' />\n";
-			echo "</p>\n";
+			$checked_hist="checked ";
+			$checked_moliere="";
+			if(getPref($_SESSION["login"], "format_import_csv_absences", "")=="moliere") {
+				$checked_hist="";
+				$checked_moliere="checked ";
+			}
 
-			echo "<p><input type='submit' value='Valider' /></p>\n";
-			echo "</form>\n";
+			echo "
+		<p>Veuillez fournir le fichier CSV des absences&nbsp;:<br />
+		<input type=\"file\" size=\"60\" name=\"absences_csv_file\" /></p>
 
+		<p class='bold'>Format&nbsp;:</p>
+		<p style='margin-left:2em; text-indent:-2em;'>
+			<input type=\"radio\" name=\"format_csv\" id=\"format_csv_historique\" value=\"historique\" $checked_hist/>
+			<label for='format_csv_historique' id='texte_format_csv_historique'> Format historique Gepi<br />
+			<em>(ELENOET;NBABS;NBNONJUSTIF;NBRET)</em></label>
+		</p>
+
+		<p style='margin-left:2em; text-indent:-2em;'>
+			<input type=\"radio\" name=\"format_csv\" id=\"format_csv_moliere\" value=\"moliere\" $checked_moliere/>
+			<label for='format_csv_moliere' id='texte_format_csv_moliere'> Format Molière<br />
+			<em>(;Nom élève;Prénom élève;Division;MEF;Nb 1/2 j abs;Nb retards;Numéro)</em><br />
+			Molière n'exporte pas le nombre d'absences non justifiées; ce nombre sera considéré comme nul <em>(toutes les absences seront considérées comme justifiées, mais vous pourrez modifier manuellement ces valeurs par la suite)</em>.
+		</p>
+		<input type='hidden' name='etape' value='$etape' />
+		<input type='hidden' name='is_posted' value='yes' />
+
+		<p><input type='submit' value='Valider' /></p>
+	</fieldset>
+</form>\n";
+
+			/*
 			echo "<p><b>ATTENTION</b>:</p>\n";
 			echo "<ul>\n";
 			echo "<li><p>Fournir un export d'une seule période (<i>celle choisie précédemment</i>).<br />Le format du CSV est le suivant&nbsp;:<br /><b>ELENOET;NBABS;NBNONJUSTIF;NBRET</b></p></li>\n";
 			echo "</ul>\n";
+			*/
 		}
 		elseif($etape==1) {
 			check_token();
+
+			$format_csv=isset($_POST["format_csv"]) ? $_POST["format_csv"] : "historique";
+			savePref($_SESSION["login"], "format_import_csv_absences", $format_csv);
 
 			$post_max_size=ini_get('post_max_size');
 			$upload_max_filesize=ini_get('upload_max_filesize');
@@ -328,6 +355,35 @@ else {
 			$csv_file = isset($_FILES["absences_csv_file"]) ? $_FILES["absences_csv_file"] : NULL;
 			$fp=fopen($csv_file['tmp_name'],"r");
 			if($fp) {
+
+
+				if($format_csv=="moliere") {
+					// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
+					$tabchamps = array("Nom élève", "Prénom élève", "Division", "Nb 1/2 j abs", "Nb retards", "Numéro national");
+
+					// Lecture de la ligne 1 et la mettre dans $temp
+					$ligne_entete=trim(fgets($fp,4096));
+					//echo "$ligne_entete<br />";
+					$en_tete=explode(";", $ligne_entete);
+
+					$tabindice=array();
+
+					// On range dans tabindice les indices des champs retenus
+					for ($k = 0; $k < count($tabchamps); $k++) {
+						for ($i = 0; $i < count($en_tete); $i++) {
+							if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
+								$tabindice[$tabchamps[$k]] = $i;
+							}
+						}
+					}
+
+					if((!isset($tabindice['Nom élève']))||(!isset($tabindice['Prénom élève']))||(!isset($tabindice['Division']))||(!isset($tabindice['Nb 1/2 j abs']))||(!isset($tabindice['Nb retards']))||(!isset($tabindice['Numéro national']))) {
+						echo "<p style='color:red'>La ligne d'entête ne comporte pas un des champs indispensables (<em>Nom élève, Prénom élève, Division, Nb 1/2 j abs, Nb retards, Numéro national</em>).</p>";
+						require("../lib/footer.inc.php");
+						die();
+					}
+				}
+
 				$eleves=array();
 				$i=0;
 				while(!feof($fp)){
@@ -337,12 +393,30 @@ else {
 						if((!isset($tab[0]))||(!isset($tab[1]))||(!isset($tab[2]))) {
 							echo "<span style='color:red'>Ligne invalide&nbsp;: $ligne</span><br />\n";
 						}
-						elseif($tab[0]!='ELENOET') {
+						elseif(($format_csv=="historique")&&($tab[0]!='ELENOET')) {
 							$eleves[$i]=array();
 							$eleves[$i]['elenoet']=$tab[0];
 							$eleves[$i]['nbAbs']=$tab[1];
 							$eleves[$i]['nbNonJustif']=$tab[2];
 							$eleves[$i]['nbRet']=$tab[3];
+							$i++;
+						}
+						elseif(($format_csv=="moliere")&&($tab[1]!='Nom élève')) {
+
+/*
+> ;Nom élève;Prénom élève;Division;MEF;Nb 1/2 j abs;Nb retards;Numéro
+> national;
+> ;AZERTY;Edgar;3-1;3EME;0;0;2513000990R;
+*/
+							$eleves[$i]=array();
+							$eleves[$i]['nom']=$tab[$tabindice['Nom élève']];
+							$eleves[$i]['prenom']=$tab[$tabindice['Prénom élève']];
+							$eleves[$i]['classe']=$tab[$tabindice['Division']];
+							$eleves[$i]['nbAbs']=$tab[$tabindice['Nb 1/2 j abs']];
+							//$eleves[$i]['nbNonJustif']=$tab[2];
+							$eleves[$i]['nbNonJustif']=0;
+							$eleves[$i]['nbRet']=$tab[$tabindice['Nb retards']];
+							$eleves[$i]['ine']=$tab[$tabindice['Numéro national']];
 							$i++;
 						}
 					}
@@ -375,10 +449,10 @@ else {
 					echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 				}
 
-				echo "<table class='boireaus'>\n";
+				echo "<table class='boireaus boireaus_alt'>\n";
 				echo "<tr>\n";
 				echo "<th>&nbsp;</th>\n";
-				echo "<th>Elenoet</th>\n";
+				echo "<th>".(($format_csv=="historique") ? "Elenoet" : "INE")."</th>\n";
 				echo "<th>Nom</th>\n";
 				echo "<th>Prénom</th>\n";
 				echo "<th>Classe</th>\n";
@@ -395,13 +469,12 @@ else {
 				$chaine_liste_classes.=")";
 
 				$nb_err=0;
-				$alt=-1;
 				for($i=0;$i<count($eleves);$i++){
 
 					$ligne_tableau="";
 					$affiche_ligne="n";
 
-					if(isset($eleves[$i]['elenoet'])){
+					if(($format_csv=="historique")&&(isset($eleves[$i]['elenoet']))) {
 						// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
 						$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
 						//echo "<!--\n$sql\n-->\n";
@@ -410,8 +483,7 @@ else {
 
 						if(mysqli_num_rows($test)>0){
 
-							$alt=$alt*(-1);
-							$ligne_tableau.="<tr class='lig$alt white_hover'>\n";
+							$ligne_tableau.="<tr class='white_hover'>\n";
 							$ligne_tableau.="<td>$i</td>\n";
 							$ligne_tableau.="<td>".$eleves[$i]['elenoet']."</td>\n";
 
@@ -490,6 +562,144 @@ else {
 																			nbAbs='".$eleves[$i]['nbAbs']."',
 																			nbNonJustif='".$eleves[$i]['nbNonJustif']."',
 																			nbRet='".$eleves[$i]['nbRet']."';";
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$insert) {
+											echo "<span style='color:red;'>Erreur&nbsp;: $sql</span><br />\n";
+										}
+									}
+
+									if(isset($eleves[$i]['nbAbs'])){
+										echo $eleves[$i]['nbAbs'];
+										//echo "<input type='hidden' name='nbabs_eleve[$i]' value='".$eleves[$i]['nbAbs']."' />\n";
+									}
+									else{
+										//echo "&nbsp;";
+										echo "<span style='color:red;'>ERR</span>\n";
+										//echo "<input type='hidden' name='nbabs_eleve[$i]' value='0' />\n";
+										$nb_err++;
+									}
+									echo "</td>\n";
+
+									echo "<td>\n";
+									if(isset($eleves[$i]['nbNonJustif'])){
+										echo $eleves[$i]['nbNonJustif'];
+										//echo "<input type='hidden' name='nbnj_eleve[$i]' value='".$eleves[$i]['nbNonJustif']."' />\n";
+									}
+									else{
+										//echo "&nbsp;";
+										echo "<span style='color:red;'>ERR</span>\n";
+										//echo "<input type='hidden' name='nbnj_eleve[$i]' value='0' />\n";
+										$nb_err++;
+									}
+									echo "</td>\n";
+
+									echo "<td>\n";
+									if(isset($eleves[$i]['nbRet'])){
+										echo $eleves[$i]['nbRet'];
+										//echo "<input type='hidden' size='4' name='nbret_eleve[$i]' value='".$eleves[$i]['nbRet']."' />\n";
+									}
+									else{
+										//echo "&nbsp;";
+										echo "<span style='color:red;'>ERR</span>\n";
+										//echo "<input type='hidden' name='nbret_eleve[$i]' value='0' />\n";
+										$nb_err++;
+									}
+									echo "</td>\n";
+
+									echo "</tr>\n";
+								}
+
+							}
+						}
+					}
+					elseif(($format_csv=="moliere")&&(isset($eleves[$i]['ine']))) {
+						// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
+						$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND e.no_gep='".$eleves[$i]['ine']."' AND periode='$num_periode' AND $chaine_liste_classes;";
+						//echo "<!--\n$sql\n-->\n";
+						//echo "$sql<br />\n";
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+
+						if(mysqli_num_rows($test)>0){
+
+							$ligne_tableau.="<tr class='white_hover'>\n";
+							$ligne_tableau.="<td>$i</td>\n";
+							$ligne_tableau.="<td>".$eleves[$i]['ine']."</td>\n";
+
+							// Récupération des infos sur l'élève (on a au moins besoin du login pour tester si le CPE a cet élève.
+							$sql="SELECT e.login,e.nom,e.prenom,e.elenoet
+										FROM eleves e
+										WHERE (e.no_gep='".$eleves[$i]['ine']."')";
+							//echo "<!--\n$sql\n-->\n";
+							$res1=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res1)==0){
+								$ligne_tableau.="<td style='color:red;' colspan='3'>Elève absent de votre table 'eleves'???</td>\n";
+								$nb_err++;
+							}
+							elseif(mysqli_num_rows($res1)>1){
+								$ligne_tableau.="<td style='color:red;' colspan='3'>Plus d'un élève correspond à ce numéro INE ???</td>\n";
+								$nb_err++;
+							}
+							else{
+
+								$lig1=mysqli_fetch_object($res1);
+
+								$acces_a_cet_eleve="y";
+								if (($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')!='yes')) {
+									// Le CPE a-t-il bien cet élève:
+									$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
+									//echo "<!--\n$sql\n-->\n";
+									$test=mysqli_query($GLOBALS["mysqli"], $sql);
+
+									if((mysqli_num_rows($test)==0)) {
+										$acces_a_cet_eleve="n";
+									}
+								}
+
+								//if((mysql_num_rows($test)>0)||($_SESSION['statut']=='secours')) {
+								if($acces_a_cet_eleve=="y") {
+									$affiche_ligne="y";
+
+									$ligne_tableau.="<td>";
+									//$ligne_tableau.="<input type='hidden' name='log_eleve[$i]' value='$lig1->login' />\n";
+									$ligne_tableau.="$lig1->nom</td>\n";
+									$ligne_tableau.="<td>$lig1->prenom</td>\n";
+
+									$ligne_tableau.="<td>\n";
+									$sql="SELECT c.classe FROM j_eleves_classes jec, classes c
+											WHERE jec.login='$lig1->login' AND
+												jec.id_classe=c.id AND periode='$num_periode'";
+									$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res2)==0){
+										$ligne_tableau.="<span style='color:red;'>NA</span>\n";
+									}
+									else {
+										$cpt=0;
+										while($lig2=mysqli_fetch_object($res2)){
+											if($cpt>0){
+												$ligne_tableau.=", ";
+											}
+											$ligne_tableau.=$lig2->classe;
+										}
+									}
+									$ligne_tableau.="</td>\n";
+								}
+
+
+								if("$affiche_ligne"=="y"){
+									echo $ligne_tableau;
+									echo "<td>\n";
+
+									if((isset($eleves[$i]['ine']))&&(isset($eleves[$i]['nbAbs']))&&(isset($eleves[$i]['nbNonJustif']))&&(isset($eleves[$i]['nbRet']))) {
+										// Les absences de l'élève ont pu être importées par un autre cpe sans que l'opération soit menée à bout.
+										$sql="DELETE FROM temp_abs_import WHERE login='$lig1->login';";
+										$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+
+										$sql="INSERT INTO temp_abs_import SET login='$lig1->login',
+																cpe_login='".$_SESSION['login']."',
+																elenoet='".$lig1->elenoet."',
+																nbAbs='".$eleves[$i]['nbAbs']."',
+																nbNonJustif='".$eleves[$i]['nbNonJustif']."',
+																nbRet='".$eleves[$i]['nbRet']."';";
 										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {
 											echo "<span style='color:red;'>Erreur&nbsp;: $sql</span><br />\n";
