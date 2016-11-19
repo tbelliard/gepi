@@ -5209,6 +5209,7 @@ function acces($id,$statut) {
 						AND ds.id_statut=du.id_statut
 						AND ds.autorisation='V'
 						AND du.login_user='".$_SESSION['login']."');" ;
+		//echo "$sql<br />";
 		$result=mysqli_query($mysqli, $sql);
 		if (!$result) {
 			return FALSE;
@@ -10879,6 +10880,7 @@ function get_tab_infos_evenement($id_ev) {
 		$obj_ev=mysqli_fetch_object($res);
 
 		$tab['type']=$obj_ev->type;
+		$tab['periode']=$obj_ev->periode;
 		$tab['date_debut']=$obj_ev->date_debut;
 		$tab['texte_avant']=$obj_ev->texte_avant;
 		$tab['texte_apres']=$obj_ev->texte_apres;
@@ -15524,4 +15526,9 @@ function check_tables_modifiees() {
 	}
 }
 
+function nettoyage_evenements_classes() {
+	$sql="DELETE FROM d_dates_evenements_classes WHERE id_classe NOT IN (SELECT id FROM classes);";
+	//echo "$sql<br />";
+	$menage=mysqli_query($GLOBALS['mysqli'], $sql);
+}
 ?>

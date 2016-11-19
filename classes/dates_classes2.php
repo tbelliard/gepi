@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -99,7 +99,16 @@ $texte_apres_ele_resp=isset($_POST['texte_apres_ele_resp']) ? $_POST['texte_apre
 
 $mode = isset($_POST["mode"]) ? $_POST["mode"] :(isset($_GET["mode"]) ? $_GET["mode"] :NULL);
 
+$periode=isset($_POST['periode']) ? $_POST['periode'] : 0;
+
 //debug_var();
+
+if (isset($id_ev)) {
+	// Si on n'a pas fait le ménage dans les événements lors de l'initialisation
+	$sql="DELETE FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe NOT IN (SELECT id FROM classes);";
+	//echo "$sql<br />";
+	$menage=mysqli_query($GLOBALS['mysqli'], $sql);
+}
 
 //
 // Insertion ou modification d'un événement
@@ -148,6 +157,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			$sql="INSERT d_dates_evenements SET type='$type', 
+									periode='$periode', 
 									texte_avant='$contenu_cor', 
 									texte_apres='$contenu_cor2', 
 									texte_apres_ele_resp='$contenu_cor3', 
@@ -246,6 +256,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 		}
 		else {
 			$sql="UPDATE d_dates_evenements SET type='$type', 
+									periode='$periode', 
 									texte_avant='$contenu_cor', 
 									texte_apres='$contenu_cor2', 
 									texte_apres_ele_resp='$contenu_cor3', 
@@ -364,91 +375,122 @@ if((isset($mode))&&($mode=="enregistrer")&&(isset($id_ev))) {
 		}
 	}
 	else {
-		$nb_insert=0;
-		$nb_update=0;
-		$nb_suppr=0;
-		$nb_err=0;
-		$tab_id_classe_placees=array();
-		for($loop=0;$loop<count($reg_id_classe_ev);$loop++) {
-			$tab=explode("|", $reg_id_classe_ev[$loop]);
-			$current_id_classe=$tab[0];
-			$tab_id_classe_placees[]=$current_id_classe;
-			$current_ts=$tab[1];
-			$current_mysql_date=strftime("%Y-%m-%d %H:%M:%S", $current_ts);
-			$current_id_salle=$tab[2];
-
-			$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe='".$current_id_classe."';";
-			//echo "$sql<br />";
-			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res)==0) {
-				$sql="INSERT INTO d_dates_evenements_classes SET id_ev='$id_ev', id_classe='".$current_id_classe."', date_evenement='".$current_mysql_date."', id_salle='".$current_id_salle."';";
-				//echo "$sql<br />";
-				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-				if($insert) {
-					$nb_insert++;
-				}
-				else {
-					$nb_err++;
-				}
-			}
-			else {
-				$lig=mysqli_fetch_object($res);
-				if(($lig->date_evenement!=$current_mysql_date)||
-				($lig->id_salle!=$current_id_salle)) {
-					$sql="UPDATE d_dates_evenements_classes SET date_evenement='".$current_mysql_date."', 
-											id_salle='".$current_id_salle."' 
-										WHERE id_ev='$id_ev' AND 
-											id_classe='".$current_id_classe."';";
-					//echo "$sql<br />";
-					$update=mysqli_query($GLOBALS["mysqli"], $sql);
-					if($update) {
-						$nb_update++;
-					}
-					else {
-						$nb_err++;
-					}
-				}
-			}
+		$sql="SELECT * FROM d_dates_evenements WHERE id_ev='$id_ev';";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			$msg_erreur.="L'événement $id_ev n'existe pas.<br />";
 		}
+		else {
+			$lig_ev=mysqli_fetch_object($res);
+			$type=$lig_ev->type;
+			$periode=$lig_ev->periode;
 
-		for($loop=0;$loop<count($id_classe_ev);$loop++) {
-			if(!in_array($id_classe_ev[$loop], $tab_id_classe_placees)) {
-				$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe='".$id_classe_ev[$loop]."';";
+			$nb_insert=0;
+			$nb_update=0;
+			$nb_suppr=0;
+			$nb_err=0;
+			$tab_id_classe_placees=array();
+			for($loop=0;$loop<count($reg_id_classe_ev);$loop++) {
+				$tab=explode("|", $reg_id_classe_ev[$loop]);
+				$current_id_classe=$tab[0];
+				$tab_id_classe_placees[]=$current_id_classe;
+				$current_ts=$tab[1];
+				$current_mysql_date=strftime("%Y-%m-%d %H:%M:%S", $current_ts);
+				$current_id_salle=$tab[2];
+
+				$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe='".$current_id_classe."';";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res)>0) {
-					$sql="DELETE FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND 
-												id_classe='".$id_classe_ev[$loop]."';";
+				if(mysqli_num_rows($res)==0) {
+					$sql="INSERT INTO d_dates_evenements_classes SET id_ev='$id_ev', id_classe='".$current_id_classe."', date_evenement='".$current_mysql_date."', id_salle='".$current_id_salle."';";
 					//echo "$sql<br />";
-					$del=mysqli_query($GLOBALS["mysqli"], $sql);
-					if($del) {
-						$nb_suppr++;
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($insert) {
+						$nb_insert++;
+
+						if(($type=="conseil_de_classe")&&(preg_match("/^[0-9]{1,}$/", $periode))&&($periode>=1)) {
+							$sql="UPDATE periodes SET date_conseil_classe='".$current_mysql_date."' WHERE id_classe='".$current_id_classe."' AND num_periode='".$periode."' ";
+							//echo "$sql<br />";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$update) {
+								$msg_erreur.="Erreur lors de la mise à jour de la date du conseil de classe pour la classe de ".get_nom_classe($current_id_classe)." en période ".$periode."<br />";
+							}
+						}
 					}
 					else {
 						$nb_err++;
 					}
 				}
+				else {
+					$lig=mysqli_fetch_object($res);
+					if(($lig->date_evenement!=$current_mysql_date)||
+					($lig->id_salle!=$current_id_salle)) {
+						$sql="UPDATE d_dates_evenements_classes SET date_evenement='".$current_mysql_date."', 
+												id_salle='".$current_id_salle."' 
+											WHERE id_ev='$id_ev' AND 
+												id_classe='".$current_id_classe."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
+						if($update) {
+							$nb_update++;
+
+							if(($type=="conseil_de_classe")&&(preg_match("/^[0-9]{1,}$/", $periode))&&($periode>=1)) {
+								$sql="UPDATE periodes SET date_conseil_classe='".$current_mysql_date."' WHERE id_classe='".$current_id_classe."' AND num_periode='".$periode."' ";
+								//echo "$sql<br />";
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$update) {
+									$msg_erreur.="Erreur lors de la mise à jour de la date du conseil de classe pour la classe de ".get_nom_classe($current_id_classe)." en période ".$periode."<br />";
+								}
+							}
+						}
+						else {
+							$nb_err++;
+						}
+					}
+				}
 			}
-		}
 
-		if($nb_insert>0) {
-			$msg_OK.=$nb_insert." enregistrement(s) effectué(s).<br />";
-		}
-		if($nb_update>0) {
-			$msg_OK.=$nb_update." enregistrement(s) mis à jour.<br />";
-		}
-		if($nb_suppr>0) {
-			$msg_OK.=$nb_suppr." enregistrement(s) supprimés.<br />";
-		}
-		if($nb_err>0) {
-			$msg_erreur.=$nb_err." erreurs lors des enregistrements !<br />";
-		}
+			for($loop=0;$loop<count($id_classe_ev);$loop++) {
+				if(!in_array($id_classe_ev[$loop], $tab_id_classe_placees)) {
+					$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe='".$id_classe_ev[$loop]."';";
+					//echo "$sql<br />";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						$sql="DELETE FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND 
+													id_classe='".$id_classe_ev[$loop]."';";
+						//echo "$sql<br />";
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						if($del) {
+							$nb_suppr++;
+						}
+						else {
+							$nb_err++;
+						}
+					}
+				}
+			}
 
-		if(($nb_insert==0)&&($nb_update==0)&&($nb_suppr==0)&&($nb_err==0)) {
-			$msg_erreur.="Pas de modification.<br />";
-		}
+			if($nb_insert>0) {
+				$msg_OK.=$nb_insert." enregistrement(s) effectué(s).<br />";
+			}
+			if($nb_update>0) {
+				$msg_OK.=$nb_update." enregistrement(s) mis à jour.<br />";
+			}
+			if($nb_suppr>0) {
+				$msg_OK.=$nb_suppr." enregistrement(s) supprimés.<br />";
+			}
+			if($nb_err>0) {
+				$msg_erreur.=$nb_err." erreurs lors des enregistrements !<br />";
+			}
 
-		$mode="positionner";
+			if(($nb_insert==0)&&($nb_update==0)&&($nb_suppr==0)&&($nb_err==0)) {
+				$msg_erreur.="Pas de modification.<br />";
+			}
+
+			$mode="positionner";
+
+		}
 	}
 }
 
@@ -515,6 +557,7 @@ if((!isset($id_ev))||
 	$titre_mess = "Nouvel événement";
 	$date_debut=strftime("%Y-%m-%d %H:%M:%S");
 	$heure_courante=strftime("%H:%M");
+	$periode=0;
 	$texte_avant="";
 	$texte_apres="";
 	$texte_apres_ele_resp="";
@@ -528,6 +571,7 @@ if((!isset($id_ev))||
 			$titre_mess = "Modification de l'événement n°".$id_ev;
 
 			$type=$tab_ev['type'];
+			$periode=$tab_ev['periode'];
 			$date_debut=$tab_ev['date_debut'];
 			$texte_avant=$tab_ev['texte_avant'];
 			$texte_apres=$tab_ev['texte_apres'];
@@ -569,6 +613,25 @@ if((!isset($id_ev))||
 	}
 	$display_date_debut=formate_date($date_debut);
 
+
+	$max_per=0;
+	$chaine_options_periodes="";
+	$sql="SELECT num_periode FROM periodes ORDER BY num_periode DESC LIMIT 1;";
+	$res_max_per=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res_max_per)>0) {
+		$lig_max_per=mysqli_fetch_object($res_max_per);
+		$max_per=$lig_max_per->num_periode;
+		for($loop=1;$loop<=$max_per;$loop++) {
+			$checked_periode="";
+			if($periode==$loop) {
+				$checked_periode=" selected='selected'";
+			}
+			$chaine_options_periodes.="
+										<option value='$loop'".$checked_periode.">$loop</option>";
+		}
+	}
+
+
 	$ligne_input_id_ev="";
 	if (isset($id_ev)) {
 		$ligne_input_id_ev="
@@ -596,10 +659,17 @@ if((!isset($id_ev))||
 							</td>
 						</tr>
 						<tr>
-							<td>
-								<input type='radio' name='type' id='type_conseil_de_classe' value='conseil_de_classe' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement();\" ".($type=="conseil_de_classe" ? "checked " : "")."/><label for='type_conseil_de_classe' id='texte_type_conseil_de_classe'>Conseil de classe</label>
+							<td style='vertical-align:top;'>
+								<p style='margin-left:2em;text-indent:-2em;'>
+								<input type='radio' name='type' id='type_conseil_de_classe' value='conseil_de_classe' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement();\" ".($type=="conseil_de_classe" ? "checked " : "")."/><label for='type_conseil_de_classe' id='texte_type_conseil_de_classe'>Conseil de classe</label><br />
+								Période <select name='periode' id='periode'>
+									<option value='0'>---</option>
+									$chaine_options_periodes
+								</select>
+								<!--a href='#' onclick=\"maj_date_conseil_classe();return false;\" title=\"Prendre pour dates de conseils de classe les dates définies dans la page de Verrouillage des périodes.\"><img src='../images/icons/wizard.png' class='icone16' alt='Màj' /></a-->
+								</p>
 							</td>
-							<td>
+							<td style='vertical-align:top;'>
 								<input type='radio' name='type' id='type_autre' value='autre' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement();\" ".($type!="conseil_de_classe" ? "checked " : "")."/><label for='type_autre' id='texte_type_autre'>Autre</label>
 							</td>
 						</tr>
@@ -882,7 +952,45 @@ elseif((isset($mode))&&($mode=="ajouts")) {
 	echo "<p><a href=\"javascript:afficher_div('div_ajout_classe','y',100,100);\">Ajouter des classes</a></p><div id='div_classes' style='margin-left:3em;'></div>";
 
 	echo "
-			<p><input type='submit' value='Valider' /></p>
+			<!--p><input type='submit' value='Valider' /></p-->
+			<p>
+			<input type=\"button\" value=\"Valider\" style=\"font-variant: small-caps;\" name=\"button_ok_avec_javascript\" onclick=\"check_et_valide_form()\" /></p>
+			<script type='text/javascript'>
+				function check_et_valide_form() {
+					valider_le_submit='y';
+
+					tab=document.getElementsByName('date_heure_ev[]');
+					if(tab.length>0) {
+						// On va poursuivre
+					}
+					else {
+						alert('Aucune date/heure ajoutée.');
+						valider_le_submit='n';
+					}
+
+					tab=document.getElementsByName('id_salle_ev[]');
+					if(tab.length>0) {
+						// On va poursuivre
+					}
+					else {
+						alert('Aucune salle ajoutée.');
+						valider_le_submit='n';
+					}
+
+					tab=document.getElementsByName('id_classe_ev[]');
+					if(tab.length>0) {
+						// On va poursuivre
+					}
+					else {
+						alert('Aucune classe ajoutée.');
+						valider_le_submit='n';
+					}
+
+					if(valider_le_submit=='y') {
+						document.formulaire_saisie_evenement.submit();
+					}
+				}
+			</script>
 		</fieldset>
 	</form>";
 
@@ -999,6 +1107,11 @@ elseif((isset($mode))&&($mode=="positionner")) {
 		require("../lib/footer.inc.php");
 		die();
 	}
+	/*
+	echo "\$tab_nom_classe_deja<pre>";
+	print_r($tab_nom_classe_deja);
+	echo "</pre>";
+	*/
 	//===========================================
 	$id_salle_ev=isset($_POST['id_salle_ev']) ? $_POST['id_salle_ev'] : array();
 	$sql="SELECT DISTINCT d.id_salle, sc.nom_salle, sc.numero_salle FROM d_dates_evenements_classes d, salle_cours sc WHERE id_ev='$id_ev' AND sc.id_salle=d.id_salle ORDER BY sc.nom_salle, sc.numero_salle;";

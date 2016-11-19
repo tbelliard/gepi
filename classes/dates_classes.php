@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -100,6 +100,13 @@ $texte_apres_ele_resp=isset($_POST['texte_apres_ele_resp']) ? $_POST['texte_apre
 
 //debug_var();
 
+if (isset($id_ev)) {
+	// Si on n'a pas fait le ménage dans les événements lors de l'initialisation
+	$sql="DELETE FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe NOT IN (SELECT id FROM classes);";
+	//echo "$sql<br />";
+	$menage=mysqli_query($GLOBALS['mysqli'], $sql);
+}
+
 //
 // Purge des événements
 //
@@ -189,6 +196,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 	$display_date_id_classe=isset($_POST['display_date_id_classe']) ? $_POST['display_date_id_classe'] : array();
 	$display_heure_id_classe=isset($_POST['display_heure_id_classe']) ? $_POST['display_heure_id_classe'] : array();
 	$salle_id_classe=isset($_POST['salle_id_classe']) ? $_POST['salle_id_classe'] : array();
+	$periode=isset($_POST['periode']) ? $_POST['periode'] : 0;
 
 	if(count($id_classe)==0) {
 		$msg_erreur = "ATTENTION : Aucune classe n'est choisie.<br />";
@@ -202,6 +210,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			$sql="INSERT d_dates_evenements SET type='$type', 
+									periode='$periode', 
 									texte_avant='$contenu_cor', 
 									texte_apres='$contenu_cor2', 
 									texte_apres_ele_resp='$contenu_cor3', 
@@ -299,6 +308,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 		}
 		else {
 			$sql="UPDATE d_dates_evenements SET type='$type', 
+									periode='$periode', 
 									texte_avant='$contenu_cor', 
 									texte_apres='$contenu_cor2', 
 									texte_apres_ele_resp='$contenu_cor3', 
@@ -460,6 +470,14 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($insert) {
 							$nb_classes_reg++;
+							if(($type=="conseil_de_classe")&&(preg_match("/^[0-9]{1,}$/", $periode))&&($periode>=1)) {
+								$sql="UPDATE periodes SET date_conseil_classe='".$date_evenement."' WHERE id_classe='".$id_classe[$loop]."' AND num_periode='".$periode."' ";
+								//echo "$sql<br />";
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$update) {
+									$msg_erreur.="Erreur lors de la mise à jour de la date du conseil de classe pour la classe de ".get_nom_classe($id_classe[$loop])." en période ".$periode."<br />";
+								}
+							}
 						}
 						else {
 							$msg_erreur = "Erreur lors de l'enregistrement de la date pour la classe ".get_nom_classe($id_classe[$loop]).".<br />";
@@ -558,7 +576,7 @@ echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 echo "<!--\n";
 echo "new LiveClock();\n";
 echo "//-->\n";
-echo "</SCRIPT></p>\n";
+echo "</script></p>\n";
 echo "</td>\n";
 
 echo "</tr></table><hr />\n";
@@ -682,6 +700,7 @@ echo "<td valign=\"top\">\n";
 $titre_mess = "Nouvel événement";
 $date_debut=strftime("%Y-%m-%d %H:%M:%S");
 $heure_courante=strftime("%H:%M");
+$periode="0";
 $texte_avant="";
 $texte_apres="";
 $texte_apres_ele_resp="";
@@ -699,6 +718,7 @@ if (isset($id_ev)) {
 		$obj_ev=mysqli_fetch_object($res);
 
 		$type=$obj_ev->type;
+		$periode=$obj_ev->periode;
 		$date_debut=$obj_ev->date_debut;
 		$texte_avant=$obj_ev->texte_avant;
 		$texte_apres=$obj_ev->texte_apres;
@@ -764,11 +784,54 @@ elseif((isset($record))&&($record=="no")) {
 	$texte_avant=isset($_POST['texte_avant']) ? $_POST['texte_avant'] : "";
 	$texte_apres=isset($_POST['texte_apres']) ? $_POST['texte_apres'] : "";
 	$texte_apres_ele_resp=isset($_POST['texte_apres_ele_resp']) ? $_POST['texte_apres_ele_resp'] : "";
+	$periode=isset($_POST['periode']) ? $_POST['periode'] : "0";
 
 	//$texte_avant=html_entity_decode($texte_avant);
 	//$texte_apres=html_entity_decode($texte_apres);
 }
 $display_date_debut=formate_date($date_debut);
+
+$max_per=0;
+$chaine_options_periodes="";
+$sql="SELECT num_periode FROM periodes ORDER BY num_periode DESC LIMIT 1;";
+$res_max_per=mysqli_query($GLOBALS['mysqli'], $sql);
+if(mysqli_num_rows($res_max_per)>0) {
+	$lig_max_per=mysqli_fetch_object($res_max_per);
+	$max_per=$lig_max_per->num_periode;
+	for($loop=1;$loop<=$max_per;$loop++) {
+		$checked_periode="";
+		if($periode==$loop) {
+			$checked_periode=" selected='selected'";
+		}
+		$chaine_options_periodes.="
+									<option value='$loop'".$checked_periode.">$loop</option>";
+	}
+}
+
+$lignes_js_dates_conseils_classes="";
+$sql="SELECT * FROM periodes;";
+$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
+if(mysqli_num_rows($res_per)>0) {
+	$tab_cdc=array();
+	while($lig_per=mysqli_fetch_object($res_per)) {
+		//$tab_cdc[$lig_per->num_periode]="var date_conseil".$lig_per->num_periode."[".$lig->id_classe."]='".formate_date($lig_per->date_conseil_classe)."'\n";
+		if(!isset($tab_cdc[$lig_per->num_periode])) {$tab_cdc[$lig_per->num_periode]="";}
+		$tab_cdc[$lig_per->num_periode].="
+			if(document.getElementById('id_classe_".$lig_per->id_classe."')) {
+				document.getElementById('id_classe_".$lig_per->id_classe."').checked=true;
+				modif_affichage_ligne_classe(".$lig_per->id_classe.");
+				if(document.getElementById('display_date_id_classe_".$lig_per->id_classe."')) {
+					document.getElementById('display_date_id_classe_".$lig_per->id_classe."').value='".formate_date($lig_per->date_conseil_classe)."';
+				}
+			}\n";
+	}
+
+	foreach($tab_cdc as $key => $value) {
+		$lignes_js_dates_conseils_classes.="
+		if(periode==$key) {".$value."
+		}";
+	}
+}
 
 echo "<table style=\"border:1px solid black\" cellpadding=\"5\" cellspacing=\"0\">
 	<tr>
@@ -813,10 +876,17 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src
 							</td>
 						</tr>
 						<tr>
-							<td>
-								<input type='radio' name='type' id='type_conseil_de_classe' value='conseil_de_classe' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement2();\" ".($type=="conseil_de_classe" ? "checked " : "")."/><label for='type_conseil_de_classe' id='texte_type_conseil_de_classe'>Conseil de classe</label>
+							<td style='vertical-align:top;'>
+								<p style='margin-left:2em;text-indent:-2em;'>
+									<input type='radio' name='type' id='type_conseil_de_classe' value='conseil_de_classe' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement2();\" ".($type=="conseil_de_classe" ? "checked " : "")."/><label for='type_conseil_de_classe' id='texte_type_conseil_de_classe'>Conseil de classe</label><br />
+									Période <select name='periode' id='periode'>
+										<option value='0'>---</option>
+										$chaine_options_periodes
+									</select>
+									<a href='#' onclick=\"maj_date_conseil_classe();return false;\" title=\"Prendre pour dates de conseils de classe les dates définies dans la page de Verrouillage des périodes.\"><img src='../images/icons/wizard.png' class='icone16' alt='Màj' /></a>
+								</p>
 							</td>
-							<td>
+							<td style='vertical-align:top;'>
 								<input type='radio' name='type' id='type_autre' value='autre' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement2();\" ".($type!="conseil_de_classe" ? "checked " : "")."/><label for='type_autre' id='texte_type_autre'>Autre</label>
 							</td>
 						</tr>
@@ -1239,6 +1309,11 @@ echo "
 		}
 	}
 
+	function maj_date_conseil_classe() {
+		periode=document.getElementById('periode').options[document.getElementById('periode').selectedIndex].value;
+
+$lignes_js_dates_conseils_classes
+	}
 </script>\n";
 
 // Fin de la colonne de droite

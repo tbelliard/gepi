@@ -309,6 +309,12 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+	if (isset($_POST['bull_affiche_aid'])) {
+		if (!saveSetting("bull_affiche_aid", $_POST['bull_affiche_aid'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_aid !";
+			$reg_ok = 'no';
+		}
+	}
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
@@ -691,6 +697,20 @@ echo add_token_field();
 	</tr>
 </table>
 
+<?php
+echo "
+<h3>Paramètres communs (HTML/PDF)</h3>
+
+<p><a name='bull_affiche_aid'></a>Afficher les données sur les AID&nbsp;: 
+<input type=\"radio\" name=\"bull_affiche_aid\" id=\"bull_affiche_aidy\" value=\"y\" ";
+if (getSettingValue("bull_affiche_aid") == 'y') echo " checked";
+echo " /><label for='bull_affiche_aidy' style='cursor: pointer;'>&nbsp;Oui</label>";
+echo " <input type=\"radio\" name=\"bull_affiche_aid\" id=\"bull_affiche_aidn\" value=\"n\" ";
+if (getSettingValue("bull_affiche_aid") != 'y') echo " checked";
+echo " /><label for='bull_affiche_aidn' style='cursor: pointer;'>&nbsp;Non</label><br />
+<em>(l'affichage risque d'être nécessaire en collège pour les EPI, AP et Parcours)</em>
+</p>";
+?>
 <p style="text-align: center; margin-bottom:2em;"><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></p>
 
 </form>

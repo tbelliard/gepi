@@ -936,6 +936,7 @@ DROP TABLE IF EXISTS d_dates_evenements;
 CREATE TABLE d_dates_evenements (
 id_ev int(11) NOT NULL AUTO_INCREMENT, 
 type varchar(50) NOT NULL default '', 
+periode INT(11) NOT NULL default '0', 
 texte_avant TEXT NOT NULL default '', 
 texte_apres TEXT NOT NULL default '', 
 texte_apres_ele_resp TEXT NOT NULL default '', 

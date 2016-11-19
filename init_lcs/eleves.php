@@ -354,6 +354,7 @@ if (isset($_POST['step'])) {
                $id_classe = old_mysql_result($res_menage, $k);
                $res1 = mysqli_query($GLOBALS["mysqli"], "delete from classes where id='".$id_classe."'");
                $res2 = mysqli_query($GLOBALS["mysqli"], "delete from j_classes_matieres_professeurs where id_classe='".$id_classe."'");
+               $res3 = mysqli_query($GLOBALS["mysqli"], "delete from d_dates_evenements_classes where id_classe='".$id_classe."'");
                // On supprime les groupes qui étaient liées à la classe
                $get_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT id_groupe FROM j_groupes_classes WHERE id_classe = '" . $id_classe . "'");
                for ($l=0;$l<$nb_groupes;$l++) {
