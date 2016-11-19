@@ -15072,6 +15072,7 @@ function get_tab_modalites_election($mode="indice") {
 	$tab=array();
 
 	$sql="SELECT * FROM nomenclature_modalites_election;";
+	//echo "$sql<br />";
 	$res_nme=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_nme)>0) {
 		if($mode=="indice") {
@@ -15083,7 +15084,7 @@ function get_tab_modalites_election($mode="indice") {
 		}
 		else {
 			while($lig_nme=mysqli_fetch_assoc($res_nme)) {
-				$tab[$lig_nme->code_modalite_elect]=$lig_nme;
+				$tab[$lig_nme["code_modalite_elect"]]=$lig_nme;
 			}
 		}
 	}
