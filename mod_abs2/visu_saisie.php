@@ -444,7 +444,9 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 			echo '<button dojoType="dijit.form.Button" type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
 		}
 		}else {
-		if ($utilisateur->getStatut() != 'professeur') {
+		//if ($utilisateur->getStatut() != 'professeur') {
+		// A REVOIR: Ajouter dans utilisateurs/creer_statut_autorisation.php un droit pour traiter/notifier en statut 'autre'
+		if (($utilisateur->getStatut() != 'professeur')&&($utilisateur->getStatut() != 'autre')) {
 			$total_traitements_modifiable_non_prof++;
 			echo "<a href='../mod_abs2/visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
 		    if($menu){
