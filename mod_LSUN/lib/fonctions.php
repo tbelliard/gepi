@@ -79,20 +79,31 @@ function getUtilisateurSurStatut($statut = "%") {
 }
 
 /**
- * Récupère id, nom, prenom civilité d'un responsable du livret
+ * Récupère responsable du livret
+ * 
+ * vaudrait mieux remonter le compte scolarité ?
  * 
  * @global type $mysqli
  * @return type
  */
 function getResponsables() {
 	global $mysqli;
-	$sql = "SELECT r.id, r.login, u.nom, u.prenom, u.civilite FROM lsun_responsables AS r "
-		. "INNER JOIN utilisateurs AS u "
-		. "ON u.login = r.login "
-		. "ORDER BY u.nom, u.prenom";
+	// les responsables sont les "suivi_par" de la table classe
+	$sql = "SELECT DISTINCT suivi_par, lr.id FROM classes AS c INNER JOIN lsun_responsables as lr ON c.suivi_par = lr.login  ORDER BY suivi_par ";
+	// 
 	//echo $sql;
 	$resultchargeDB = $mysqli->query($sql);	
 	return $resultchargeDB;		
+}
+
+function MetAJourResp() {
+	global $mysqli;
+	$responsables = $mysqli->query("SELECT DISTINCT suivi_par FROM classes");
+	while ($resp = $responsables->fetch_object()) {
+		$sql = "INSERT INTO lsun_responsables (login) VALUES (\"$resp->suivi_par\") ON DUPLICATE KEY UPDATE login = \"$resp->suivi_par\" ";
+		//echo $sql;
+		$mysqli->query($sql);	
+	}
 }
 
 /**
@@ -346,7 +357,7 @@ function getElevesExport() {
 	$classes = $_SESSION['afficheClasse'];
 	
 	$myData = implode(",", $classes);
-	$sqlEleves01 = "SELECT jec.* , e.nom , e.prenom, e.id_eleve, e.date_entree FROM j_eleves_classes AS jec "
+	$sqlEleves01 = "SELECT jec.* , e.nom , e.prenom, e.id_eleve, DATE_FORMAT(e.`date_entree`, '%Y-%m-%d') AS date_entree FROM j_eleves_classes AS jec "
 		. "INNER JOIN eleves as e "
 		. "ON e.login = jec.login "
 		. "WHERE id_classe IN (".$myData.") ORDER BY jec.id_classe , jec.login , jec.periode ";
@@ -371,8 +382,89 @@ function getElevesExport() {
 
 // Bilan
 function getAcquisEleve($eleve, $periode) {
+	global $mysqli;
+	// matieres_notes - matiere_element_programme - matieres_appreciations
 	
+	//$sqlAcquis = "SELECT * FROM matieres_notes WHERE login = '$eleve' AND periode = $periode ";
+	$sqlAcquis01 = "SELECT mn.* , ma.appreciation FROM matieres_notes AS mn INNER JOIN matieres_appreciations AS ma "
+		. "ON mn.login = ma.login AND mn.periode = ma.periode AND mn.id_groupe = ma.id_groupe "
+		. "WHERE mn.login = '$eleve' AND mn.periode = $periode GROUP BY mn.`id_groupe` ";
+	$sqlAcquis02 = "SELECT s1.*, jme.idEP FROM ($sqlAcquis01) AS s1 INNER JOIN  j_mep_eleve AS jme ON jme.idEleve = s1.login ";
+	$sqlAcquis03 = "SELECT s2.* , mep.libelle FROM ($sqlAcquis02) AS s2 INNER JOIN matiere_element_programme AS mep ON s2.idEP = mep.id ";
+	$sqlAcquis04 = "SELECT s3.* , jgm.id_matiere FROM ($sqlAcquis03) AS s3 INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = s3.id_groupe ";
+	$sqlAcquis05 = "SELECT s4.* , ma.code_matiere FROM ($sqlAcquis04) AS s4 INNER JOIN matieres AS ma ON s4.id_matiere = ma.matiere ";
+	// classe
+	$sqlAcquis06 = "SELECT s5.* , jec.id_classe FROM ($sqlAcquis05) AS s5 INNER JOIN j_eleves_classes AS jec ON s5.login = jec.login AND s5.periode = jec.periode ";
+	//=== mef
+	$sqlAcquis = "SELECT s6.* , c.mef_code FROM ($sqlAcquis06) AS s6 INNER JOIN classes AS c ON s6.id_classe = c.id ";
+	
+	//echo $sqlAcquis;
+	$resultchargeDB = $mysqli->query($sqlAcquis);
+	return $resultchargeDB;
 	
 }
+
+function getModalite($groupe, $eleve, $mef_code, $code_matiere ) {
+	global $mysqli;
+	$retour = "S";
+	// On recherche la modalite du groupe
+	$sqlMefGroupe = "SELECT * FROM mef_matieres WHERE mef_code = '$mef_code' AND code_matiere = '$code_matiere' ";
+	//echo $sqlMefGroupe;
+	$modaliteGroupe = $mysqli->query($sqlMefGroupe);
+	if ($modaliteGroupe->num_rows == 1) {
+		//echo "coucou ".$sqlMefGroupe;
+		$retour = $modaliteGroupe->fetch_object()->code_modalite_elect;
+		//echo $retour;
+	} else {
+		// Si plusieurs ou pas, on recherche la modalite de l'élève
+		$sqlModalite = "SELECT code_modalite_elect FROM j_groupes_eleves_modalites WHERE id_groupe = '$groupe' AND login = '$eleve' ";
+		$retourQuery = $mysqli->query($sqlModalite);
+		if ($retourQuery->num_rows == 1) {
+			$retour = $retourQuery->fetch_object()->code_modalite_elect;
+		} else if ($retourQuery->num_rows > 1) {
+			echo "plusieurs modalités pour la matière du groupe $groupe pour l'élève $eleve";
+			$retour = "";
+		}	else {
+			echo "pas de modalité pour la matière du groupe $groupe pour l'élève $eleve";
+			$retour = "";
+		}
+	}
+	return $retour;
+	
+}
+
+function getProfGroupe ($groupe) {
+	global $mysqli;
+	$sqlProf = "SELECT gp.* , SUBSTR(u.numind,2) AS numind FROM j_groupes_professeurs AS gp INNER JOIN utilisateurs u ON gp.login = u.login WHERE id_groupe = \"$groupe\" ";
+	// echo $sqlProf;
+	$resultchargeDB = $mysqli->query($sqlProf);
+	return $resultchargeDB;
+}
+
+function getEPeleve ($idEleve, $idGroupe, $periode) {
+	global $mysqli;
+	$sqlEPeleve = "SELECT * FROM j_mep_eleve WHERE idEleve = \"$idEleve\" AND idGroupe = \"$idGroupe\" AND periode = \"$periode\" ";
+	$resultchargeDB = $mysqli->query($sqlEPeleve);
+	return $resultchargeDB;
+}
+
+function getMoyenne($id_groupe) {
+	global $mysqli;
+	$sqlMoyenne = "SELECT ROUND(AVG(`note`), 2) AS moyenne FROM `matieres_notes` WHERE `id_groupe` = $id_groupe GROUP BY `id_groupe` ";
+	$resultchargeDB = $mysqli->query($sqlMoyenne)->fetch_object()->moyenne;
+	return $resultchargeDB;
+	
+}
+
+function getStatutNote($login,$id_groupe,$periode) {
+	global $mysqli;
+	$sqlStatutNote = "SELECT * FROM `matieres_notes` WHERE `id_groupe` = $id_groupe AND login = '$login' AND periode = $periode ";
+	$resultchargeDB =  $mysqli->query($sqlStatutNote)->fetch_object()->statut;
+	if ($resultchargeDB !='' ) {
+		return $resultchargeDB;
+	}
+	return FALSE;
+}
+
 
 

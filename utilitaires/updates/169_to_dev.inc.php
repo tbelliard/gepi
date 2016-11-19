@@ -176,7 +176,8 @@ if ($res_test == 0){
 $result .= "&nbsp;-> Ajout d'un champ 'date_conseil_classe' à la table 'periodes'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM periodes LIKE 'date_conseil_classe';"));
 if ($test_champ==0) {
-	$sql="ALTER TABLE periodes ADD date_conseil_classe TIMESTAMP NOT NULL;";
+	$sql="SET SQL_MODE='ALLOW_INVALID_DATES'; ALTER TABLE periodes ADD date_conseil_classe TIMESTAMP ;";
+	//echo $sql;
 	$result_inter = traite_requete($sql);
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");

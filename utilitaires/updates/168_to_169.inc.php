@@ -684,7 +684,8 @@ if ($test == -1) {
 	$result .= "&nbsp;-> Ajout d'un champ 'date_insert' à la table 'j_mep_eleve'<br />";
 	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'date_insert';"));
 	if ($test_champ==0) {
-		$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '0000-00-00 00:00:00' AFTER periode;");
+		$query = mysqli_query($mysqli, "SET SQL_MODE='ALLOW_INVALID_DATES'; ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL AFTER periode;");
+		//echo "ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '0000-00-00 00:00:00' AFTER periode;";
 		if ($query) {
 				$result .= msj_ok("Ok !");
 		} else {

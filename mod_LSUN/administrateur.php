@@ -24,6 +24,12 @@
 
 $selectionClasse = $_SESSION['afficheClasse'];
 
+//===== Mettre à jour les responsables
+$metJourResp = filter_input(INPUT_POST, 'MetJourResp');
+if ($metJourResp == 'y') {
+	MetAJourResp();
+}
+
 
 //===== Suppression ou modification des AP =====
 $supprimerAp = filter_input(INPUT_POST, 'supprimerAp');
@@ -78,43 +84,18 @@ $classes = getClasses();
 
 <form action="index.php" method="post" id="responsables">
 	<fieldset>
-		<legend>Responsables de l'établissement</legend>
+		<legend title="Données saisies dans les paramètres des classes" >Responsables de l'établissement</legend>
+		<ul>
 <?php while ($responsable = $responsables->fetch_object()){ ?>
-		<p>
-			<input type="submit" class="btnEfface" 
-				   alt="Submit button" 
-				   name="supprimeResponsable"  
-				   value="<?php echo $responsable->login ?>"
-				   title="Supprimer <?php echo $responsable->nom; ?> <?php echo $responsable->prenom; ?>" /> - 
-			<?php echo $responsable->civilite; ?> <?php echo $responsable->nom; ?> <?php echo $responsable->prenom; ?>
-		</p>
+		<li> 
+			<?php echo $responsable->suivi_par; ?>
+		</li>
  
-<?php } ?>
-		
-		<select name="responsableAdmin">
-			<option value="">Ajouter un compte scolarité</option>
-<?php while ($scolarite = $scolarites->fetch_object()){ ?>
-			<option value="<?php echo $scolarite->login; ?>"><?php echo $scolarite->nom; ?> <?php echo $scolarite->prenom; ?></option>
-<?php } ?>
-		</select>
-		
-		<select name="responsableCPE">
-			<option value="">Ajouter un compte CPE</option>
-<?php while ($cpe = $cpes->fetch_object()){ ?>
-			<option value="<?php echo $cpe->login; ?>"><?php echo $cpe->nom; ?> <?php echo $cpe->prenom; ?></option>
-<?php } ?>
-		</select>
-		
-		<select name="responsableEnseignant">
-			<option value="">Ajouter un compte enseignant</option>
-<?php while ($Enseignant = $Enseignants->fetch_object()){ ?>
-			<option value="<?php echo $Enseignant->login; ?>"><?php echo $Enseignant->nom; ?> <?php echo $Enseignant->prenom; ?></option>
-<?php } ?>
-		</select>
-		
+<?php }  ?>
+		</ul>
 		<p class="center">
-			<button type="submit" id="soumetResponsable" >
-				Ajouter
+			<button type="submit" name="MetJourResp" id="MetJourResp" value="y" >
+				Mettre à jour
 			</button>
 		</p>
 		

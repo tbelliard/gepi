@@ -80,7 +80,7 @@ $xml->appendChild($items);
 				$attResponsableEtabId->value = "RESP_".$responsable->id;
 				$noeudResponsableEtab->appendChild($attResponsableEtabId);
 				$attResponsableEtabLibelle= $xml->createAttribute('libelle');
-				$attResponsableEtabLibelle->value = $responsable->civilite." ".$responsable->nom." ".$responsable->prenom;
+				$attResponsableEtabLibelle->value = $responsable->suivi_par;
 				$noeudResponsableEtab->appendChild($attResponsableEtabLibelle);
 				$responsablesEtab->appendChild($noeudResponsableEtab);
 			}
@@ -369,15 +369,59 @@ $xml->appendChild($items);
 			}
 			
 			$listeAcquis = $xml->createElement('liste-acquis');
-			$acquisEleve = getAcquisEleve($eleve->login, $eleve->periode);
+			$acquisEleves = getAcquisEleve($eleve->login, $eleve->periode);
 			// <acquis discipline-ref="DI_030602" enseignant-refs="ENS_0123456789ABE" element-programme-refs="EP_05" moyenne-eleve="18/20" moyenne-structure="15/20">
 			// <appreciation>Appréciation pour la matière espagnol</appreciation>
 			// matieres_notes - matiere_element_programme - matieres_appreciations
+			while ($acquisEleve = $acquisEleves->fetch_object()) {
+				$noeudAcquis = $xml->createElement('acquis');
+				$matiere = $acquisEleve->code_matiere;
+				$moyenne = getMoyenne($acquisEleve->id_groupe);
+				$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
+				$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
+				
+				$donneesProfs = getProfGroupe ($acquisEleve->id_groupe);
+				$prof = "";
+				while ($profMatiere = $donneesProfs->fetch_object()) {
+					$prof .= "ENS_".$profMatiere->numind." ";
+				}
+				
+				$elementsProgramme = getEPeleve ($eleve->login, $acquisEleve->id_groupe,$eleve->periode );
+				$elementProgramme = "";
+				while ($elemProgramme = $elementsProgramme->fetch_object()) {
+					$elementProgramme .= "EP_".$elemProgramme->idEP;
+				}
+				$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20");
+				
+				$note = $acquisEleve->note;
+				if (intval($note)) {
+					$attributsAcquis['moyenne-eleve'] = $note."/20";
+				} else {
+					if (getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode)) {
+						$attributsAcquis['eleve-non-note'] = "1";
+					} else {
+						$attributsAcquis['moyenne-eleve'] = $note."/200";
+					}
+				}
+				
+				
+				foreach ($attributsAcquis as $cle=>$valeur) {
+					$attsAcquis= $xml->createAttribute($cle);
+					$attsAcquis->value = $valeur;
+					$noeudAcquis->appendChild($attsAcquis);
+					
+				}
+				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,$acquisEleve->appreciation);
+				$noeudAcquis->appendChild($noeudAcquisAppreciation);
+				$listeAcquis->appendChild($noeudAcquis);
+			}
+			
+			
 			$noeudBilanElevePeriodique->appendChild($listeAcquis);
 			
 			$listeEpisEleve = $xml->createElement('epis-eleve');
 			// non obligatoire
-			
+		
 			$listeAccPersosEleve = $xml->createElement('acc-persos-eleve');
 			// non obligatoire
 			
