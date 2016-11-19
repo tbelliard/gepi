@@ -599,7 +599,19 @@ echo "<p style='color:red'>* Le responsable de l'absence, c'est l'élève (et se
 	<a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a><br />
 	<a href="admin_table_agregation.php">Gérér la table d'agrégation des demi-journées d'absences</a><br />
 	<?php
-		if(acces("/mod_abs2/admin/admin_table_totaux_absences.php", $_SESSION['statut'])) {echo '<a href="admin_table_totaux_absences.php">Gérér la table des totaux d\'absences</a>';}
+		if(acces("/mod_abs2/admin/admin_table_totaux_absences.php", $_SESSION['statut'])) {
+			if(getSettingAOui('abs2_import_manuel_bulletin')) {
+				echo '<span style="color:red" title="Fonction désactivée:
+Elle sert à remplir la table \'absences\' (totaux d\'absences, retards,... 
+pour les bulletins et pour Genèse des classes) d\'après les saisies
+du module Absences 2 compilées dans la table \'a_agregation_decompte\'.
+Mais vous n\'extrayez pas les absences du mod_abs2.
+Pas question d\'écraser des saisies/import effectués autrement.">Gérér la table des totaux d\'absences</span>';
+			}
+			else {
+				echo '<a href="admin_table_totaux_absences.php">Gérér la table des totaux d\'absences</a>';
+			}
+		}
 	?>
 </blockquote>
 
