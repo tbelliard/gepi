@@ -66,7 +66,20 @@ function debug_edit_eleves($texte) {
 }
 
 debug_edit_eleves("id_groupe=$id_groupe");
-if (!is_numeric($id_groupe)) $id_groupe = 0;
+if (!is_numeric($id_groupe)) {
+	$id_groupe = 0;
+
+	header("Location: ../accueil.php?msg=Enseignement non choisi");
+	die();
+}
+
+$sql="SELECT 1=1 FROM groupes WHERE id='$id_groupe';";
+$test=mysqli_query($GLOBALS['mysqli'], $sql);
+if(mysqli_num_rows($test)==0) {
+	header("Location: ../accueil.php?msg=Enseignement invalide");
+	die();
+}
+
 debug_edit_eleves("id_groupe=$id_groupe");
 $current_group = get_group($id_groupe);
 $reg_nom_groupe = $current_group["name"];
