@@ -183,7 +183,13 @@ else {
 }
 echo "<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
  | <a href=\"../matieres/index.php\">associer les nomenclatures aux matières</a>
- | <a href=\"../mef/associer_eleve_mef.php\">associer les MEF aux élèves</a>
+ | <a href=\"../mef/associer_eleve_mef.php\">associer les MEF aux élèves</a>";
+
+if(acces("/gestion/gerer_modalites_election_enseignements.php", $_SESSION['statut'])) {
+	echo " | <a href='../gestion/gerer_modalites_election_enseignements.php' title=\"Gérer les modalités d'élection des enseignements.\">Modalités d'élection des enseignements</a>";
+}
+
+echo "
 </p>";
 // | <a href=\"associer_nomenclatures_classes.php\">associer les nomenclatures aux classes</a>
 // Les MEFS sont associées aux élèves et non aux classes

@@ -137,6 +137,11 @@ require_once("../lib/header.inc.php");
  | <a href='matieres_categories.php'<?php echo insert_confirm_abandon();?>>Editer les catégories de matières</a>
  | <a href='matieres_csv.php'<?php echo insert_confirm_abandon();?>>Importer un CSV de la liste des matières</a>
  | <a href='../gestion/admin_nomenclatures.php'<?php echo insert_confirm_abandon();?>>Gérer les nomenclatures</a>
+<?php
+	if(acces("/gestion/gerer_modalites_election_enseignements.php", $_SESSION['statut'])) {
+		echo " | <a href='../gestion/gerer_modalites_election_enseignements.php' title=\"Gérer les modalités d'élection des enseignements.\">Modalités d'élection enseignements</a>";
+	}
+?>
 </p>
 
 <?php

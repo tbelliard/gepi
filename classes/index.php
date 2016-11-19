@@ -77,6 +77,10 @@ Ce choix permet de limiter la liste des classes proposées aux différents compt
 | <a href='../groupes/correction_inscriptions_grp_csv.php'>Correction CSV</a>
 | <a href='../classes/export_ele_opt.php'>Export CSV des options élèves</a>
 <?php
+	if(acces("/gestion/gerer_modalites_election_enseignements.php", $_SESSION['statut'])) {
+		echo "| <a href='../gestion/gerer_modalites_election_enseignements.php' title=\"Gérer les modalités d'élection des enseignements.\">Modalités d'élection enseignements</a>";
+	}
+
 	if(getSettingAOui('active_carnets_notes')) {echo "| <a href='../cahier_notes_admin/creation_conteneurs_par_lots.php'>Créer des ".casse_mot(getSettingValue("gepi_denom_boite"), 'min')."s par lots</a>";}
 
 	if(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
