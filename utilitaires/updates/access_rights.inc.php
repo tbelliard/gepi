@@ -1799,6 +1799,18 @@ $tab_req[] = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`,
 	. "VALUES ('/mod_LSUN/admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
 	. "ON DUPLICATE KEY UPDATE administrateur = 'V';";
 
+$tab_req[] = "INSERT INTO droits SET id='/gestion/gerer_modalites_election_enseignements.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Gérer les modalités d élection des enseignements.',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

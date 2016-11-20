@@ -410,7 +410,7 @@ if (!isset($suite)) {
 							}
 						}
 						echo "<br />\n";
-	
+
 						// Mettre tous les élèves dans le groupe pour toutes les périodes: j_eleves_groupes
 						echo "Association des élèves:<br />";
 						echo "<blockquote>\n";
@@ -426,6 +426,30 @@ if (!isset($suite)) {
 									$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele[$k]."', periode='".$tab_per[$l]."';";
 									if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 										echo "<span style='color:green;'>";
+
+										// Insérer la modalité si elle est renseignée dans Sconet.
+										$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, 
+																eleves e,
+																matieres m 
+															WHERE seo.ele_id=e.ele_id AND 
+																e.login='".$tab_ele[$k]."' AND 
+																seo.code_matiere=m.code_matiere AND 
+																m.matiere='".$mat."';";
+										$test_modalite=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test_modalite)>0) {
+											$lig_modalite=mysqli_fetch_object($test_modalite);
+											// Pour ne pas l'insérer autant de fois que de période
+											$sql="SELECT 1=1 FROM j_groupes_eleves_modalites WHERE id_groupe='".$id_groupe."'
+														AND login='".$tab_ele[$k]."';";
+											//echo "$sql<br />";
+											$test_modalite_deja=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($test_modalite_deja)==0) {
+												$sql="INSERT INTO j_groupes_eleves_modalites SET id_groupe='".$id_groupe."',
+														login='".$tab_ele[$k]."',
+														code_modalite_elect='".$lig_modalite->code_modalite_elect."';";
+												$insert_modalite=mysqli_query($GLOBALS["mysqli"], $sql);
+											}
+										}
 									}
 									else {
 										//echo "$sql<br />\n";

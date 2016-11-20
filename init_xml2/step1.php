@@ -1426,8 +1426,9 @@
 							$tab_modalites[$lig_mm->code_modalite_elect]=$lig_mm->libelle_court;
 						}
 
-						$sql="TRUNCATE nomenclature_modalites_election;";
-						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						// Si on vide la table, il faut ajouter toutes les modalités trouvées, pas seulement les nouvelles.
+						//$sql="TRUNCATE nomenclature_modalites_election;";
+						//$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						for($loop=0;$loop<count($modalites);$loop++) {
 							if((isset($modalites[$loop]['code_modalite_elect']))&&

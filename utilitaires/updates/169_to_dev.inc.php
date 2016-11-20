@@ -217,4 +217,35 @@ if ($test_champ==0) {
 } else {
 	$result .= msj_present("Le champ existe déjà");
 }
+
+$result .= "&nbsp;-> Test du contenu de la table 'nomenclature_modalites_election'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM nomenclature_modalites_election;"));
+if ($test_champ==0) {
+	$result.="Remplissage par défaut de la table 'nomenclature_modalites_election'&nbsp;:<br />";
+	/*
+	echo "<pre>";
+	print_r($tab_modalites_election_par_defaut);
+	echo "</pre>";
+	*/
+	foreach($tab_modalites_election_par_defaut as $key => $tab) {
+		//echo "<pre>Nomenclature : $key<br />";
+		//print_r($tab);
+		//echo "</pre>";
+		$result.="Ajout de ".$tab['libelle_long']."&nbsp;: ";
+		$sql="INSERT INTO nomenclature_modalites_election SET code_modalite_elect='".$tab['code_modalite_elect']."',
+											libelle_court='".$tab['libelle_court']."',
+											libelle_long='".$tab['libelle_long']."';";
+		//echo "$sql<br />";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+} else {
+	$result .= msj_present("La table est déjà renseignée.");
+}
+
 ?>
