@@ -28,6 +28,8 @@ $niveau_arbo = "2";
 include_once("../../lib/initialisationsPropel.inc.php");
 require_once("../../lib/initialisations.inc.php");
 
+
+header('Content-Type: application/xml');
 require_once("chargeXML.php");
 
 echo $xml->saveXML();

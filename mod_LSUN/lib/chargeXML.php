@@ -29,7 +29,6 @@ include_once 'fonctions.php';
 include_once 'chargeDonnees.php';
 
 
-header('Content-Type: application/xml');
 
 $xml = new DOMDocument('1.0', 'utf-8');
 
@@ -259,8 +258,6 @@ $xml->appendChild($items);
 				}
 				$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
 				
-				$noeudEpiEnseignantsDisciplines = $xml->createElement('enseignant-discipline');
-				$noeudEpisGroupes->appendChild($noeudEpiEnseignantsDisciplines);
 								
 				$episGroupes->appendChild($noeudEpisGroupes);
 				// enseih,a,ts
@@ -426,9 +423,13 @@ $xml->appendChild($items);
 			$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
 			// non obligatoire
 			
-			$avisConseil = getAppConseil($eleve->login , $eleve->periode)->fetch_object()->avis;
-			$acquisConseils = $xml->createElement('acquis-conseils', $avisConseil);
-			$noeudBilanElevePeriodique->appendChild($acquisConseils);
+			$retourAvisElv=getAppConseil($eleve->login , $eleve->periode);
+			if ($retourAvisElv->num_rows) {
+				$avisElv = $retourAvisElv->fetch_object()->avis;
+				$avisConseil = getAppConseil($eleve->login , $eleve->periode)->fetch_object()->avis;
+				$acquisConseils = $xml->createElement('acquis-conseils', $avisConseil);
+				$noeudBilanElevePeriodique->appendChild($acquisConseils);
+			}
 			
 			
 			
