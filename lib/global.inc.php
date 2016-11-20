@@ -413,4 +413,30 @@ $tab_couleurs_html=array("aliceblue",
 "violet",
 "wheat",
 "whitesmoke");
+
+$tab_modalites_election_par_defaut=array();
+$tab_modalites_election_par_defaut["S"]["code_modalite_elect"]="S";
+$tab_modalites_election_par_defaut["O"]["code_modalite_elect"]="O";
+$tab_modalites_election_par_defaut["F"]["code_modalite_elect"]="F";
+$tab_modalites_election_par_defaut["N"]["code_modalite_elect"]="N";
+$tab_modalites_election_par_defaut["X"]["code_modalite_elect"]="X";
+$tab_modalites_election_par_defaut["L"]["code_modalite_elect"]="L";
+$tab_modalites_election_par_defaut["R"]["code_modalite_elect"]="R";
+
+$tab_modalites_election_par_defaut["S"]["libelle_court"]="TRONC COMM";
+$tab_modalites_election_par_defaut["O"]["libelle_court"]="OBLIGATOIR";
+$tab_modalites_election_par_defaut["F"]["libelle_court"]="FACULTATIF";
+$tab_modalites_election_par_defaut["N"]["libelle_court"]="OBL OU FAC";
+$tab_modalites_election_par_defaut["X"]["libelle_court"]="MESURE SPE";
+$tab_modalites_election_par_defaut["L"]["libelle_court"]="AJOUT ACAD";
+$tab_modalites_election_par_defaut["R"]["libelle_court"]="ENS.RELIG.";
+
+$tab_modalites_election_par_defaut["S"]["libelle_long"]="MATIERE ENSEIGNEE EN TRONC COMMUN";
+$tab_modalites_election_par_defaut["O"]["libelle_long"]="MATIERE ENSEIGNEE OPTION OBLIGATOIRE";
+$tab_modalites_election_par_defaut["F"]["libelle_long"]="MATIERE ENSEIGNEE OPTION FACULTATIVE";
+$tab_modalites_election_par_defaut["N"]["libelle_long"]="MATIERE ENSEIGNEE OBLIG. OU FACULTATIVE";
+$tab_modalites_election_par_defaut["X"]["libelle_long"]="MESURE SPECIFIQUE";
+$tab_modalites_election_par_defaut["L"]["libelle_long"]="AJOUT ACADEMIQUE AU PROGRAMME";
+$tab_modalites_election_par_defaut["R"]["libelle_long"]="ENSEIGNEMENT RELIGIEUX";
+
 ?>
