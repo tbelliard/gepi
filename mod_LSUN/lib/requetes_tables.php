@@ -36,10 +36,6 @@ $sql = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scol
 	. "ON DUPLICATE KEY UPDATE administrateur = 'V'; ";
 $mysqli->query($sql);
 
-
-
-
-
 $sql = "CREATE TABLE IF NOT EXISTS lsun_responsables ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique',"
 	. "login varchar(50) NOT NULL,"

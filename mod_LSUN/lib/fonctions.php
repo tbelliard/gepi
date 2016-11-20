@@ -366,14 +366,17 @@ function getElevesExport() {
 		. "LEFT JOIN j_eleves_professeurs AS jep "
 		. "ON t0.login = jep.login";
 	// on récupère la date de conseil de classe
-	$sqlEleves03 = "SELECT t1.* , DATE_FORMAT(p.date_fin, '%Y-%m-%d')  AS date_verrou FROM ($sqlEleves02) AS t1 "
+	$sqlEleves03 = "SELECT t1.* , DATE_FORMAT(p.date_fin, '%Y-%m-%d') AS date_verrou , DATE_FORMAT(p.date_conseil_classe, '%Y-%m-%d') AS date_conseil FROM ($sqlEleves02) AS t1 "
 		. "INNER JOIN periodes AS p "
 		. "ON p.id_classe = t1.id_classe AND p.num_periode = t1.periode ";
 	// on récupère le responsable
+	$sqlEleves04 = "SELECT s3.* , c.mef_code , c.suivi_par FROM ($sqlEleves03) AS s3 INNER JOIN classes AS c ON s3.id_classe = c.id ";
+	
+	$sqlEleves = "SELECT s4.* , lr.id AS id_resp_etab FROM ($sqlEleves04) AS s4 INNER JOIN lsun_responsables AS lr ON lr.login = s4.suivi_par ";
 	
 	//echo $sqlEleves03;
 	
-	$resultchargeDB = $mysqli->query($sqlEleves03);
+	$resultchargeDB = $mysqli->query($sqlEleves);
 	return $resultchargeDB;
 	
 }

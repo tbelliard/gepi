@@ -359,8 +359,10 @@ $xml->appendChild($items);
 		$eleves = getElevesExport();
 		while ($eleve = $eleves->fetch_object()) {
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
-			
-			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$eleve->professeur , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$eleve->periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$eleve->date_entree" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>'RESP_' );
+			$respEtabElv = "RESP_".$eleve->id_resp_etab;
+			//var_dump($eleve);
+			//echo "-".$respEtabElv;
+			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$eleve->professeur , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$eleve->periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$eleve->date_entree" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
 			foreach ($attributsElevePeriode as $cle=>$valeur) {
 				$attsElevePeriode = $xml->createAttribute($cle);
 				$attsElevePeriode->value = $valeur;
