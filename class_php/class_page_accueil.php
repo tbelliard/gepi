@@ -2320,7 +2320,7 @@ if(getSettingAOui('active_bulletins')) {
   protected function livret(){
 	  $this->b=0;
 	  if (getSettingAOui("active_module_LSUN")) {
-		  $this->creeNouveauItem("/mod_LSUN/index.php","LSUN", "LSUN : remplir et voir les APs, les EPIs, les parcours");
+		  $this->creeNouveauItem("/mod_LSUN/index.php","LSU", "LSU : remplir et voir les APs, les EPIs, les parcours");
 	  }
 	  if ($this->b > 0 ){
 		  $this->creeNouveauTitre('accueil','Livret Scolaire','images/icons/document.png');

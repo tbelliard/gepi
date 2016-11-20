@@ -98,7 +98,7 @@ else {
 	if(!isset($step)) {
 		// style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'
 		echo "<p>".mysqli_num_rows($test)." professeur(s) ont leur NUMIND <em>(identifiant STS)</em> ou leur TYPE <em>(\"Emploi Poste Personnel\" ou \"Local\")</em> non renseigné.<br />
-Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />
+Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSU)</em>.<br />
 Il est recommandé de procéder à l'association professeur/NUMIND avant d'archiver l'année.</p>
 
 <table class='boireaus boireaus_alt'>

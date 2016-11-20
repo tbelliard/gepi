@@ -1202,7 +1202,7 @@ if (getSettingValue("statuts_prives") == "y") {
 		<td>Identifiant STS&nbsp;: </td>
 		<td>
 			<input type='text' name='reg_numind' id='reg_numind' size='6' onchange="changement()" value="<?php echo $user_numind;?>" /><br />
-			<span style='font-size:x-small'>Cet identifiant est utilisé pour la liaison LSUN et pour la liaison éventuelle avec un serveur LCS.<br />
+			<span style='font-size:x-small'>Cet identifiant est utilisé pour la liaison LSU et pour la liaison éventuelle avec un serveur LCS.<br />
 			Il est préfixé d'un P pour les professeurs lors de l'import.<br />
 			Vous ne devriez pas modifier cet identifiant s'il a été correctement importé lors de l'initialisation.</span>
 		</td>

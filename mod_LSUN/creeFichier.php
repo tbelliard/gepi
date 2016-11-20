@@ -23,7 +23,7 @@
 
 include_once 'lib/chargeXML.php';
 
-$nomFichier = "LSUN_".date("d-m-Y_H:i").".xml1";
+$nomFichier = "LSU_".date("d-m-Y_H:i").".xml1";
 
 $dirTemp = "../temp/";
 $dirTemp .= get_user_temp_directory()."/";
@@ -34,10 +34,10 @@ $file = $dirTemp.$nomFichier;
 $xml->save($file);
 
 
-$schema = "../xsd/import-complet-strict";
+$schema = "xsd/import-bilan-complet.xsd";
 
 // active la gestion d'erreur personnalisée
-libxml_use_internal_errors(true);
+//libxml_use_internal_errors(true);
 
 // Validation du document XML
 /*
@@ -46,10 +46,12 @@ $validate = $dom->schemaValidate($schema) ?
 "<p class='center grand rouge'>Schéma XML non valide !</p>";
  * 
  */
+
+/*
 if (!$xml->schemaValidate($schema)) { ?>
 <p class='center grand rouge'>Validation du schema d'export → Votre fichier <?php echo $dirTemp.$nomFichier; ?> n'est pas valide</p>
 <?php	    //libxml_display_errors();
-
+/*
 	$errors = libxml_get_errors();
 	
     foreach ($errors as $error) {
@@ -58,7 +60,21 @@ if (!$xml->schemaValidate($schema)) { ?>
 
 
 }
+ * 
+ */
 
 
 unset($xml);
 // Affichage du résultat
+?>
+
+<p>
+	<a class="bold"  href='../temp/<?php echo $dirTemp ; ?><?php echo $nomFichier; ?>' target='_blank'>
+		Récupérer le fichier XML
+	</a>
+	(<em>effectuer un clic-droit/enregistrer la cible [vous pouvez supprimer le 1 de l'extension]</em>)
+</p>
+<p class='rouge'>Vous pouvez vérifier votre fichier sur <a href=www.xmlvalidation.com/index.php">xmlvalidation.com</a></p>
+
+
+

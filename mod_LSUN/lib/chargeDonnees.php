@@ -50,10 +50,17 @@ $listePeriodes = getPeriodes($myData);
 
 /*===== Disciplines =====*/
 //Code identifiant la matière «nationale». 
-//En cas de matière définie au  niveau académique, retourner le code de la matière nationale de rattachement
+//code nationale si la matière est une matière nationale, code académique si la matière est une matière académique).
 //Modalité d’élection (S : tronc commun, O : option obligatoire, F : option facultative) de la matière issue des programmes
+// nom à récupérer dans nomenclatures_valeurs
+
 $sqlDisciplines = "SELECT DISTINCT m.matiere , m.nom_complet , m.code_matiere , mm.code_modalite_elect AS election FROM mef_matieres AS mm "
 	. "INNER JOIN matieres AS m ON m.code_matiere = mm.code_matiere ORDER BY m.code_matiere , mm.code_modalite_elect DESC ";
+
+$sqlDisciplines = "SELECT DISTINCT mm.code_matiere , mm.code_modalite_elect , nv.valeur AS nom_complet FROM mef_matieres AS mm "
+	. "INNER JOIN nomenclatures_valeurs AS nv ON nv.code = mm.code_matiere WHERE nom = 'libelle_long' ";
+
+
 //echo $sqlDisciplines;
 $listeDisciplines = $mysqli->query($sqlDisciplines);
 

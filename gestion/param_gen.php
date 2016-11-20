@@ -1755,7 +1755,7 @@ if($unzipped_max_filesize==""){
 			<a name='ancre_types_enseignements'></a>
 			<label for='AutoriserTypesEnseignements' style='cursor: pointer'>
 				Autoriser l'utilisation d'enseignements pour les EPI, AP, Parcours&nbsp;:<br />
-				<span style='font-size:small; <?php echo $style_AutoriserTypesEnseignements;?>'>Ce choix n'est pas recommandé car la remontée LSUN ne fonctionne pas pour les enseignements.<br />
+				<span style='font-size:small; <?php echo $style_AutoriserTypesEnseignements;?>'>Ce choix n'est pas recommandé car la remontée LSU ne fonctionne pas pour les enseignements.<br />
 				Il convient de plutôt utiliser des AID<!-- en activant si nécessaire le <a href='../accueil_modules.php' target='_blank'>module AID</a>-->.</span>
 			</label>
 		</span>
