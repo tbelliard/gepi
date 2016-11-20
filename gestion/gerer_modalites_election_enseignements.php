@@ -337,8 +337,8 @@ else {
 			echo "
 			<li style='margin-bottom:1em;'>
 				<p>
-					<input type='checkbox' name='code_matiere[]' id='code_matiere_$cpt' value=\"".$lig->code_matiere."\" />
-					<label for='code_matiere_$cpt'> ".$lig->matiere." <em style='font-size:x-small;'>(".$lig->nom_complet.")</em></label>
+					<input type='checkbox' name='code_matiere[]' id='code_matiere_$cpt' value=\"".$lig->code_matiere."\" onchange=\"checkbox_change('code_matiere_$cpt')\" />
+					<label for='code_matiere_$cpt' id='texte_code_matiere_$cpt'> ".$lig->matiere." <em style='font-size:x-small;'>(".$lig->nom_complet.")</em></label>
 					".($acces_modify_matiere ? "<a href='../matieres/modify_matiere.php?current_matiere=".$lig->matiere."' title=\"Voir la matière et la liste des enseignements dans un nouvel onglet.\" target='_blank'><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>" : "")."
 					 <em>(il y a  actuellement $nb_grp enseignement(s) de cette matière)</em>
 					".(($nb_grp==0) ? "<img src='../images/icons/flag.png' class='icone16' alt='Attention' title=\"Cocher cette matière ne présente pas d'intérêt puisqu'aucun enseignement n'y est associé.\nCependant, si la matière/option a été définie dans Sconet, vous avez peut-être opté pour une autre désignation de matière dans 'Gestion des matières' pour les enseignements de cette matière.\nPour prendre en compte les modalités ci-dessous, une solution consisterait à modifier le code matière associé à la désignation que vous avez choisie pour mettre le code matière '".$lig->matiere."'.\" />" : "")."
@@ -400,6 +400,7 @@ else {
 echo "
 </blockquote>
 <hr />
+".js_checkbox_change_style("checkbox_change", "texte_", "y")."
 <h3>Divers</h3>
 <blockquote>";
 
@@ -422,22 +423,31 @@ else {
 				<tr>
 					<th>Matière</th>
 					<th>Nom complet</th>
-					<th>Modalité</th>
+					<th>
+						Modalité
+						<select name='code_modalite_elect_modele' id='code_modalite_elect_modele' onchange='changement()'>
+							<option value=''>Ne pas modifier les modalités associées aux élèves</option>
+							<option value='VIDER'>Vider les modalités associées aux élèves</option>".$options_modalites."
+						</select>
+						<a href='#' onclick=\"imposer_modalite();changement();return false\" title=\"Imposer cette modalité pour tous les enseignements.\"><img src='../images/icons/wizard.png' class='icone16' alt='Forcer' /></a>
+					</th>
 				</tr>
 			</thead>
 			<tbody>";
+		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
 			echo "
 				<tr>
 					<td>".$lig->matiere."</td>
 					<td>".$lig->nom_complet."</td>
 					<td>
-						<select name='code_modalite_elect[".$lig->matiere."]'>
+						<select name='code_modalite_elect[".$lig->matiere."]' id='code_modalite_elect_$cpt'>
 							<option value=''>Ne pas modifier les modalités associées aux élèves</option>
 							<option value='VIDER'>Vider les modalités associées aux élèves</option>".$options_modalites."
 						</select>
 					</td>
 				</tr>";
+			$cpt++;
 		}
 		echo "
 			</tbody>
@@ -449,6 +459,16 @@ else {
 }
 echo "
 </blockquote>
+
+<script type='text/javascript'>
+	function imposer_modalite() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('code_modalite_elect_'+i)) {
+				document.getElementById('code_modalite_elect_'+i).selectedIndex=document.getElementById('code_modalite_elect_modele').selectedIndex;
+			}
+		}
+	}
+</script>
 
 <p><em style='color:red'>A FAIRE&nbsp;:</em> Afficher une liste des enseignements pour lesquels les modalités ne sont pas renseignées&nbsp;?</p>
 <p><br /></p>\n";
