@@ -130,42 +130,6 @@ function info_eleve($ele_login) {
 	$tab_ele['prof_liste_email']="";
 	$tab_ele['tab_prof_liste_email']=array();
 
-	/*
-	$tab_ele['classe']=array();
-	$sql="SELECT DISTINCT c.*,jec.periode FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-	$res_clas=mysql_query($sql);
-	if(mysql_num_rows($res_clas)>0) {
-		$tab_ele['liste_classes']="";
-
-		$cpt=0;
-		while($lig_clas=mysql_fetch_object($res_clas)) {
-			if($cpt>0) {$tab_ele['liste_classes'].=", ";}
-			$tab_ele['liste_classes']=$lig_clas->classe;
-
-			$tab_ele['classe'][$cpt]['id_classe']=$lig_clas->id;
-			$tab_ele['classe'][$cpt]['classe']=$lig_clas->classe;
-			$tab_ele['classe'][$cpt]['nom_complet']=$lig_clas->nom_complet;
-			$tab_ele['classe'][$cpt]['periode']=$lig_clas->periode;
-
-			// Récup infos Prof Principal (prof_suivi)
-			$sql="SELECT u.* FROM j_eleves_professeurs jep, utilisateurs u WHERE jep.login='".$ele_login."' AND id_classe='".$lig_clas->id."' AND jep.professeur=u.login;";
-			$res_pp=mysql_query($sql);
-			//echo "$sql<br />";
-			if(mysql_num_rows($res_pp)>0) {
-				$lig_pp=mysql_fetch_object($res_pp);
-				$tab_ele['classe'][$cpt]['pp']=array();
-
-				$tab_ele['classe'][$cpt]['pp']['login']=$lig_pp->login;
-				$tab_ele['classe'][$cpt]['pp']['nom']=$lig_pp->nom;
-				$tab_ele['classe'][$cpt]['pp']['prenom']=$lig_pp->prenom;
-				$tab_ele['classe'][$cpt]['pp']['civilite']=$lig_pp->civilite;
-			}
-
-			$cpt++;
-		}
-	}
-	*/
-
 	// Classes
 	$tab_ele['classe']=array();
 	$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";

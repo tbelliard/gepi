@@ -21,16 +21,4 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
-$niveau_arbo = "2";
-
-// Initialisations files
-include_once("../../lib/initialisationsPropel.inc.php");
-require_once("../../lib/initialisations.inc.php");
-
-require_once("chargeXML.php");
-
-echo $xml->saveXML();
-
-
-
+include_once 'lib/creeXML.php';

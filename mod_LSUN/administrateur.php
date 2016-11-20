@@ -31,6 +31,15 @@ if ($metJourResp == 'y') {
 }
 
 
+//===== Création du fichier =====
+$creeFichier = filter_input(INPUT_POST, 'creeFichier');
+
+
+if ($creeFichier == 'y') {
+	include_once 'creeFichier.php';
+}
+
+
 //===== Suppression ou modification des AP =====
 $supprimerAp = filter_input(INPUT_POST, 'supprimerAp');
 $modifierAp = filter_input(INPUT_POST, 'modifierAp');
@@ -649,8 +658,15 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 
 
 
-<p class="lsun_cadre" >
-	   <a href="lib/creeXML.php" target="exportLSUN.xml">Afficher l'export</a
-	   
-</p>
+<form action="index.php" method="post" id="definitionAP">
+	<fieldset>
+		<legend>Export des données</legend>		
+			<p class="lsun_cadre" >
+				<a href="lib/creeXML.php" target="exportLSUN.xml">Afficher l'export</a>
+			</p>
+			<p class="center">
+				<button type="submit" name="creeFichier" value="y">Créer le fichier</button>
+			</p>
+	</fieldset>
+</form>
 

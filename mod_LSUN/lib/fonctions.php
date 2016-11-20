@@ -469,5 +469,23 @@ function getStatutNote($login,$id_groupe,$periode) {
 	return FALSE;
 }
 
+function getAppConseil($eleve , $periode) {
+	global $mysqli;
+	$sqlGetAppConseil = "SELECT * FROM avis_conseil_classe WHERE login = '$eleve' AND periode = $periode ";
+	//echo $sqlGetAppConseil;
+	$resultchargeDB = $mysqli->query($sqlGetAppConseil);
+	return $resultchargeDB;
+}
 
+function getRetardsEleve($eleve , $periode) {
+	global $mysqli;	
+	$sqlRetard="SELECT * FROM absences WHERE login='$eleve' AND periode = $periode ;";
+	//echo $sqlRetard;
+	$resultchargeDB = $mysqli->query($sqlRetard);
+	return $resultchargeDB;
+}
+
+function getComVieSco($eleve , $periode) {
+	
+}
 
