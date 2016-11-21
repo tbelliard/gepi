@@ -306,9 +306,9 @@ while ($classe = $classes->fetch_object()) { ?>
 				</div>
 				<div>
 						Disciplines :
-<?php	foreach ($tableauMatieresEPI as $matiereEPI) {
-	echo getMatiereOnMatiere($matiereEPI['matiere'])->nom_complet;
-	if ($matiereEPI['modalite'] =="O") { echo " option obligatoire"; } elseif ($matiereEPI['modalite'] =="F") {echo " option facultative";}
+<?php	foreach ($tableauMatieresEPI as $matEPI) {
+	echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
+	if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } elseif ($matEPI['modalite'] =="F") {echo " option facultative";}
 	echo " - ";
 	}	?>
 						<select multiple name="modifieEpiMatiere<?php echo $epiCommun->id; ?>[]">
@@ -345,17 +345,9 @@ if ($matiere->code_modalite_elect == 'O') {
 			
 		} else {
 			$enseignements = getCoursById($liaison->id_enseignements);
-			//var_dump($enseignements);
-				// echo '<br>';
-				// echo '<br>';
-				// echo '<br>';
 			$enseignements->data_seek(0);
 			$lastClasse = NULL;
 			while ($enseignement = $enseignements->fetch_object()) {
-				// echo '<br>';
-				// echo '<br>';
-				// echo '<br>';
-			// var_dump($enseignement);
 				if ($lastClasse != $enseignement->id_groupe) {
 					echo $enseignement->id_matiere." → ";
 				} else {
@@ -431,18 +423,9 @@ if (isset($cours)) {
 ?>
 				</div>
 				<div>
-						Action :
-						<input type="submit" class="btnSupprime" 
-							   alt="Boutton supprimer" 
-							   name="supprimeEpi" 
-							   value="<?php echo $epiCommun->id; ?>"
-							   title="Supprimer cet EPI" />
-						/
-						<input type="submit" class="btnValide" 
-							   alt="Submit button" 
-							   name="modifieEpi" 
-							   value="<?php echo $epiCommun->id; ?>"
-							   title="Modifier cet EPI" />
+						<button type="submit" name="supprimeEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer cet EPI</button>
+						<button type="submit" name="modifieEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/enabled.png' />Modifier cet EPI</button>
+						<button type="submit" name="creeAidEpi" value="<?php echo $epiCommun->id; ?>" disabled ><img src='../images/icons/copy-16.png' /> Créer un AID pour cet EPI</button>
 				</div>
 				</div>
 <?php } ?>
@@ -506,12 +489,7 @@ if ($matiere->code_modalite_elect == 'O') {
 					</p>
 				<div>
 					<p>
-						Action
-						<input type="submit" class="btnValide" 
-							   alt="Submit button" 
-							   name="ajouteEPI" 
-							   value="y"
-							   title="Ajouter cet EPI" />
+						<button type="submit" name="ajouteEPI" value="y" ><img src='../images/enabled.png' />Ajouter cet EPI</button>
 					</p>
 				</div>
 			</div>
@@ -596,9 +574,11 @@ echo '- option facultative';
 				</select>
 				
 				<p>
-					<button name="modifierAp" value="<?php echo  $ap->id; ?>" id="modifierAp_<?php echo  $ap->id; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" >Modifier</button>
-					<button name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" >Supprimer</button>
-				</p>
+					<button type="submit" name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer</button>
+					<button type="submit" name="modifierAp" value="<?php echo  $ap->id; ?>" id="modifierAp_<?php echo  $ap->id; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" ><img src='../images/enabled.png' /> Modifier</button>
+					<button type="submit" name="creeAidAp" value="<?php echo $ap->id; ?>" disabled ><img src='../images/icons/copy-16.png' /> Créer un AID pour cet AP</button>
+					
+					</p>
 				
 			</div>
 <?php 
@@ -646,7 +626,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						</select>
 					</p>
 					<p>
-						<button type="submit" name="creeAP" value="y">Créer cet AP</button>
+						<button type="submit" name="creeAP" value="y"><img src='../images/enabled.png' /> Créer cet AP</button>
 					</p>
 					
 				</div>

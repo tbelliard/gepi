@@ -511,4 +511,3 @@ function display_xml_error($error) {
 }
 
 
-

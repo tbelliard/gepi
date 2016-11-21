@@ -64,7 +64,7 @@ $mysqli->query($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_matieres ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
-	. "id_matiere int(11) NOT NULL COMMENT 'id de la matiere' , "
+	. "id_matiere varchar(50) NOT NULL COMMENT 'id de la matiere' , "
 	. "modalite varchar(1) COMMENT \"modalite d'élection de la matiere\" , "
 	. "id_epi int(11) NOT NULL COMMENT \"id de l'epi\", "
 	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_matiere , id_epi) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";

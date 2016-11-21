@@ -58,7 +58,7 @@ function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $
 			$matiere = substr($valeur, 0, -1);
 			$modalite = substr($valeur, -1);
 			$sqlCreLienEPI = "INSERT INTO lsun_j_epi_matieres (id_matiere,  modalite, id_epi) VALUES ('$matiere', '$modalite' , $idEPI) ON DUPLICATE KEY UPDATE id_matiere = '$matiere' , modalite = '$modalite' ";
-			//echo $sqlCreLienEPI;
+			echo $sqlCreLienEPI;
 			$mysqli->query($sqlCreLienEPI);
 		}
 	}
@@ -160,7 +160,9 @@ function supprimeEPI($EpiId) {
 	delMatiereEPI($EpiId);
 	delClasseEPI($EpiId);
 	delClasseEPI($EpiId);
-	lsun_j_epi_enseignements($EpiId);
+	//delLsun_j_epi_enseignements($EpiId);
+	//$sqlDelEpiEns = "DELETE FROM lsun_j_epi_enseignements WHERE id_epi = '$EpiId'; ";
+	//$mysqli->query($sqlDelEpiEns);
 	$sqlDeleteEpi = "DELETE FROM lsun_epi_communs WHERE id = '$EpiId' ";
 	$mysqli->query($sqlDeleteEpi);
 	//echo $sqlDeleteEpi.'<br>';
@@ -230,7 +232,7 @@ function lieEpiCours($id_epi , $id_enseignement , $aid, $id=NULL) {
 		$sqLieEpiCours .= "NULL";
 	}
 	$sqLieEpiCours .= ",$id_epi , $id_enseignement , $aid)";
-	//echo $sqLieEpiCours;
+	echo $sqLieEpiCours;
 	$mysqli->query($sqLieEpiCours);
 }
 

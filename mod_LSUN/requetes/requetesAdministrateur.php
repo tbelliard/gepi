@@ -135,6 +135,7 @@ if ($modifieEPI) {
 			$id_enseignement = $tableauModifieEpiLiaison[1];
 			$id_epi = $modifieEPI;
 			//$modifieEpiLiaison[][num] = $tableauModifieEpiLiaison[1];
+			echo $id_enseignement."<br>";
 			lieEpiCours($id_epi , $id_enseignement , $aid);
 		}
 	}

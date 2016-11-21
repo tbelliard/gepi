@@ -2,6 +2,8 @@
 secure/*
 !secure/modeles/
 
+/lib/simplesaml/config/config.php
+
 # Ignore paths that contain user-generated content.
 /backup
 !/backup/donnees_test
