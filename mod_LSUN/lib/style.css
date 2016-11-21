@@ -129,3 +129,8 @@ textarea , select {
 button {
     margin: .5em
 }
+
+.pasPuces {
+    list-style:none;
+}
+
