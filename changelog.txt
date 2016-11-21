@@ -6,6 +6,51 @@
 Gepi-master (Version de développement)
 ===========================
 
+Absences pour les bulletins:
+- Absences pour les bulletins: Possibilité d'importer en CSV depuis Molière
+- Ajout d'une page d'impression PDF des appréciations absences.
+- Ajout d'une appréciation absences pour le groupe classe
+
+Absences 2:
+- Bilan du jour: Possibilité d'afficher le tableau sans entête. Possiblité de générer un CSV
+
+Bulletins:
+- Améliorations sur les bulletins CLG 2016: Cadre adresse parents, INE élève,...
+- Ajout d'un paramètre pour éviter un espace vide en haut de la page 2 du bulletin CLG 2016.
+- Possibilité d'afficher moy min/classe/max dans les bulletins CLG 2016
+- Ajout de facilités de navigation d'une page à une autre dans diverses pages.
+- Possibilité de modifier le mode d'alerte à propos du Verrouillage majuscule en page de login.
+- Possibilité de définir un port différent pour le serveur mySQL.
+
+AID:
+- Amélioration de la création des AID (facilités d'association élèves et profs).
+- Possibilité de paramétrer autrement le nom d'AID affiché dans la colonne Matière.
+- Possibilité d'insérer des commentaires-types dans les AID et appréciations absences. 
+  Et test des lapsus.
+- Possibilité d'ajouter directement les profs et élèves lors de la création.
+- Possibilité de saisir une appréciations sur le groupe-classe de l'AID.
+
+EDT:
+- Possibilité d'afficher par défaut l'EDT2 (encore incomplet, mais avec bascule possible vers EDT1)
+- Possibilité pour un professeur de définir ses propres couleurs pour l'EDT prof version 2.
+
+Général:
+- Ajout de dates de conseil de classe.
+- Ajout du type d'établissement Université.
+- Modifications envoi SMS
+  Mise en forme dans envoi_sms.txt + sms_identite vide par défaut
+  Journalisation éventuelles des échanges Gepi-Prestataire
+- Possibilités de correction par lots des modalités d'élection des enseignements pour les élèves.
+- Possibilité de déposer une alerte pour l'équipe depuis Visu équip pédago.
+- Mise à jour des affectations élèves dans des groupes d'après un EXP_Cours.xml d'EDT:
+  Possibilité d'envoyer un xml zippé
+- Possibilité d'afficher la version gepi en title (pour s'y retrouver dans les onglets).
+- Gestion par lots des modalités élèves pour les enseignements.
+- Possibilité d'envoyer par mail les fiches bienvenue
+
+Initialisation CSV:
+- Améliorations pour dédoublonner les comptes parents et récupérer les comptes parents mis en réserve dans le cas d'une initialisation CSV.
+
 Gepi-1.6.9 (21/08/2016)
 ===========================
 Carnets de notes:
