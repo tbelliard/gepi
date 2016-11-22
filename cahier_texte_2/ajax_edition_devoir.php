@@ -124,6 +124,15 @@ if ($ctTravailAFaire->getVise() == 'y') {
 	die();
 }
 
+//================================================
+$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$groupe->getId()."' AND domaine='cahier_texte' AND visible='n';";
+$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test_grp_visib)!=0) {
+	echo "<p style='color:red'>Le groupe n°".$groupe->getId()." n'est pas autorisé pour les cahiers de textes.</p>";
+	die();
+}
+//================================================
+
 if(isset($_GET['change_visibilite'])) {
 	check_token();
 

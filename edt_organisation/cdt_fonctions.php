@@ -19,24 +19,31 @@ function RecupereNotices(&$tab_data, $entetes) {
 		$index_box = 0;
 		while (isset($tab_data[$jour]['type'][$index_box]))
 		{
-		$tab_data[$jour]['id_ct'][$index_box] = 0;
-		if ($tab_data[$jour]['type'][$index_box] == "cours") {
-			$id_groupe = $tab_data[$jour]['id_groupe'][$index_box];
-			/*
-			$sql_request = "SELECT id_ct , date_ct FROM ct_entry WHERE id_groupe = '".$id_groupe."' AND 
-																date_ct = '".$timestamp."'";
-			*/
-			$sql_request = "SELECT id_ct , date_ct FROM ct_entry WHERE id_groupe = '".$id_groupe."' AND 
-																date_ct >= '".$timestamp."' AND 
-																date_ct < '".($timestamp+24*3600)."' ORDER BY date_ct;";
-			//echo $sql_request."<br/>";
-			$req = mysqli_query($GLOBALS["mysqli"], $sql_request);
-			if ($rep = mysqli_fetch_array($req)) {
-			//echo $rep['id_ct']."  ".$rep['date_ct'];
-				$tab_data[$jour]['id_ct'][$index_box] = $rep['id_ct'];
+			$tab_data[$jour]['id_ct'][$index_box] = 0;
+			if ($tab_data[$jour]['type'][$index_box] == "cours") {
+				$id_groupe = $tab_data[$jour]['id_groupe'][$index_box];
+				/*
+				$sql_request = "SELECT id_ct , date_ct FROM ct_entry WHERE id_groupe = '".$id_groupe."' AND 
+																	date_ct = '".$timestamp."'";
+				*/
+				// Il faut impérativement que le $timestamp corresponde au début de la journée à 0h00min
+				$sql_request = "SELECT id_ct , date_ct FROM ct_entry WHERE id_groupe = '".$id_groupe."' AND 
+																	date_ct >= '".$timestamp."' AND 
+																	date_ct < '".($timestamp+24*3600)."' ORDER BY date_ct;";
+				/*
+				if($id_groupe==3203) {
+					echo "\$jour=$jour<br />";
+					echo "\$timestamp=$timestamp (".strftime("%a %d/%m/%Y à %H:%M:%S", $timestamp).")<br />";
+					echo $sql_request."<br/>";
+				}
+				*/
+				$req = mysqli_query($GLOBALS["mysqli"], $sql_request);
+				if ($rep = mysqli_fetch_array($req)) {
+				//echo $rep['id_ct']."  ".$rep['date_ct'];
+					$tab_data[$jour]['id_ct'][$index_box] = $rep['id_ct'];
+				}
 			}
-		}
-		$index_box++;
+			$index_box++;
 		}
 		$jour++;
 	}
@@ -56,47 +63,96 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
         {
             $deb = "debut";
         }
-		if ($id_ct == 0) {
-			echo ("<span class=\"image\">");
-			$MaDate = RecupereTimestampJour_CDT2($jour);
-			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
-					id_groupe = '".$id_groupe."';
-					getWinDernieresNotices().hide();
-					getWinListeNotices();
-					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
-					getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=".$id_groupe."&today=".$MaDate."', { 
-								encoding: 'utf-8',
-								onComplete : 
-								function() {
-									initWysiwyg();
-								}
-							}
-					);
-					return false;
-				\">
-				<img src=\"../templates/".NameTemplateEDT()."/images/cdt_vide.png\" title=\"Ajouter Compte-rendu\" alt=\"Ajouter Compte-rendu\" /></a>";
-			echo ("</span>\n");
+
+		/*
+		//=========================
+		// DEBUG
+		echo "<span style='color:green'>$jour</span> ";
+		echo "<span style='color:plum'>$id_ct</span>";
+		//=========================
+		*/
+
+		$afficher_icone_et_lien_cdt2="y";
+		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$id_groupe."' AND domaine='cahier_texte' AND visible='n';";
+		//echo "$sql<br />\n";
+		$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_grp_visib)!=0) {
+			// C'est un groupe non affiché sur CDT.
+			$afficher_icone_et_lien_cdt2="n";
+
+			if($_SESSION['statut']=="professeur") {
+				// Trouver si le groupe est un sous-groupe d'un groupe-classe.
+				$sql="SELECT DISTINCT id_classe FROM j_groupes_classes jgc WHERE id_groupe='".$id_groupe."';";
+				//echo "$sql<br />\n";
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_clas)==1) {
+					// Il faudrait gérer les regroupements aussi, mais on verra plus tard.
+					$lig_clas=mysqli_fetch_object($res_clas);
+					$sql="SELECT * FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgc.id_classe='".$lig_clas->id_classe."' AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_texte' and visible='n');";
+					//echo "$sql<br />\n";
+					$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_clas)==1) {
+						$afficher_icone_et_lien_cdt2="y";
+						$lig_clas=mysqli_fetch_object($res_clas);
+						$id_groupe=$lig_clas->id_groupe;
+					}
+				}
+			}
 		}
-		else {
-			echo ("<span class=\"image\">");
-			$MaDate = RecupereTimestampJour_CDT2($jour);
-			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
-					id_groupe = '".$id_groupe."';
-					getWinDernieresNotices().hide();
-					getWinListeNotices();
-					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
-					getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=".$id_ct."&id_groupe=".$id_groupe."&today=".$MaDate."', { 
-								encoding: 'utf-8',
-								onComplete : 
-								function() {
-									initWysiwyg();
+
+		if($afficher_icone_et_lien_cdt2=="y") {
+			if ($id_ct == 0) {
+				echo ("<span class=\"image\">");
+				$MaDate = RecupereTimestampJour_CDT2($jour);
+				/*
+				// 20141007
+				echo "MaDate=$MaDate<br />";
+				echo strftime("%d/%m/%Y %H:%M:%S", $MaDate)."<br />";
+				*/
+				echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
+						id_groupe = '".$id_groupe."';
+						getWinDernieresNotices().hide();
+						getWinListeNotices();
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
+						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=".$id_groupe."&today=".$MaDate."', { 
+									encoding: 'utf-8',
+									onComplete : 
+									function() {
+										initWysiwyg();
+									}
 								}
-							}
-					);
-					return false;
-				\">
-				<img src=\"../templates/".NameTemplateEDT()."/images/cdt_rempli.png\" title=\"Editer Compte-rendu\" alt=\"Ajouter Compte-rendu\" /></a>";
-			echo ("</span>\n");
+						);
+						return false;
+					\">
+					<img src=\"../templates/".NameTemplateEDT()."/images/cdt_vide.png\" title=\"Ajouter Compte-rendu\" alt=\"Ajouter Compte-rendu\" /></a>";
+				echo ("</span>\n");
+			}
+			else {
+				echo ("<span class=\"image\">");
+				$MaDate = RecupereTimestampJour_CDT2($jour);
+				/*
+				// 20141007
+				echo "MaDate=$MaDate<br />";
+				echo strftime("%d/%m/%Y %H:%M:%S", $MaDate)."<br />";
+				*/
+				echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
+						id_groupe = '".$id_groupe."';
+						getWinDernieresNotices().hide();
+						getWinListeNotices();
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
+						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=".$id_ct."&id_groupe=".$id_groupe."&today=".$MaDate."', { 
+									encoding: 'utf-8',
+									onComplete : 
+									function() {
+										initWysiwyg();
+									}
+								}
+						);
+						return false;
+					\">
+					<img src=\"../templates/".NameTemplateEDT()."/images/cdt_rempli.png\" title=\"Editer Compte-rendu\" alt=\"Ajouter Compte-rendu\" /></a>";
+				echo ("</span>\n");
+			}
 		}
     }
 }
@@ -281,6 +337,12 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
 
     echo("</div></div><div class=\"spacer\"></div></div></div>");
 
+/*
+// 20141007
+echo "Tableau des créneaux<pre>";
+print_r($creneaux);
+echo "</pre>";
+*/
 }
 
 ?>
