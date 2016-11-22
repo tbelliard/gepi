@@ -6,6 +6,8 @@
 Gepi-master (Version de développement)
 ===========================
 
+Ajout d'un module LSU pour les remontées CLG vers le Livret Scolaire Unifié.
+
 Absences pour les bulletins:
 - Absences pour les bulletins: Possibilité d'importer en CSV depuis Molière
 - Ajout d'une page d'impression PDF des appréciations absences.
