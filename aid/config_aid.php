@@ -159,6 +159,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
     }
 }
 
+$themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des AID";
@@ -265,8 +266,18 @@ echo add_token_field();
 <div class='norme'>
 	<p class="bold">
 		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid ?>" />
-		<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>
-		<br />
+		<a href="index.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>
+		<?php
+			$sql="SELECT * FROM aid WHERE indice_aid='".$indice_aid."';";
+			$res_aid_cat=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_aid_cat)>0) {
+				echo "
+		 | <a href='index2.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Accéder à la liste des (".mysqli_num_rows($res_aid_cat).") AID de la catégorie</a>";
+			}
+		?>
+	</p>
+
+	<p>
 		<strong>Configuration de la catégorie d'AID <em>(Activités Inter-Disciplinaires)</em>&nbsp;:</strong>
 		<hr />
 		Choisissez le nom complet de la catégorie d'AID <em>(par exemple Travaux Personnels Encadrés)</em>&nbsp;:
@@ -275,6 +286,7 @@ echo add_token_field();
 		<input type="text" 
 			   name="reg_nom_complet" 
 			   size="40"
+			   onchange="changement();"
 				   <?php if (isset($reg_nom_complet)) { echo "value=\"".$reg_nom_complet."\"";}
 				   ?> 
 			   />
@@ -285,19 +297,20 @@ echo add_token_field();
 		<input type="text" 
 			   name="reg_nom" 
 			   size="20" 
+			   onchange="changement();"
 				   <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> 
 			   />
 		<hr />
 		Type de notation :
 		<br />
-		<input type="radio" name="type_note" id="type_note_every" value="every" 
+		<input type="radio" name="type_note" id="type_note_every" value="every" onchange="changement();" 
 			<?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> 
 			   />
 		<label for='type_note_every'> Une note pour chaque période</label>
-		<input type="radio" name="type_note" id="type_note_last" value="last" 
+		<input type="radio" name="type_note" id="type_note_last" value="last" onchange="changement();" 
 			<?php if ($type_note == "last") { echo ' checked="checked"';} ?> />
 		<label for='type_note_last'> Une note uniquement pour la dernière période</label>
-		<input type="radio" name="type_note" id="type_note_no" value="no" 
+		<input type="radio" name="type_note" id="type_note_no" value="no" onchange="changement();" 
 			<?php if ($type_note == "no") { echo ' checked="checked"';} ?> 
 			   onclick="mise_a_zero()" />
 		<label for='type_note_no'> Pas de note</label>
@@ -306,7 +319,7 @@ echo add_token_field();
 <?php
 
 	echo "Type particulier pour l'AID&nbsp;: 
-		<select name='type_aid' id='type_aid'>";
+		<select name='type_aid' id='type_aid' onchange=\"changement();\">";
 	for($loop=0;$loop<count($tab_type_aid);$loop++) {
 		if($type_aid==$loop) {
 			$selected=" selected";
@@ -342,7 +355,7 @@ if ($max_periode == '1') {
 ?>
 		<br />
 		L'aid débute à la période;
-		<select name="display_begin">
+		<select name="display_begin" onchange="changement();">
 <?php
 
 $i = 1;
@@ -357,7 +370,7 @@ while ($i < $max_periode) {
 ?>
 		</select>
 		(incluse) jusqu'à la période
-		<select name="display_end">
+		<select name="display_end" onchange="changement();">
 <?php
 
 $i = 1;
@@ -375,25 +388,25 @@ while ($i < $max_periode) {
 		Choisissez le cas échéant la note maximum sur laquelle est notée la catégorie d'AID :
 		<br />
 		Note maximum : 
-		<input type="text" name="note_max" size="4" 
+		<input type="text" name="note_max" size="4" onchange="changement();" 
 			<?php if ($note_max) { echo "value=\"".$note_max."\"";}?> 
 			   onBlur="verif_type_note()" />
 		<hr />
 
 		Dans le bulletin final<br />
-		<input type="radio" name="display_nom" id='display_nom_n' value="n" 
+		<input type="radio" name="display_nom" id='display_nom_n' value="n" onchange="changement();" 
 			<?php if ($display_nom == "n") { echo ' checked="checked"';} ?> />
 		<label for='display_nom_n'> Ne faire apparaître que le nom <em>(complet)</em> de la catégorie d'AID en colonne Matière/enseignement,</label><br />
 
-		<input type="radio" name="display_nom" id='display_nom_y' value="y" 
+		<input type="radio" name="display_nom" id='display_nom_y' value="y" onchange="changement();" 
 			<?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> />
 		<label for='display_nom_y'> Faire apparaître en colonne Matière/enseignement le nom <em>(complet)</em> de la catégorie d'AID et faire précéder l'appréciation du nom de l'AID,</label><br />
 
-		<input type="radio" name="display_nom" id='display_nom_z' value="z" 
+		<input type="radio" name="display_nom" id='display_nom_z' value="z" onchange="changement();" 
 			<?php if ($display_nom == "z") { echo ' checked="checked"';} ?> />
 		<label for='display_nom_z'> Faire apparaître en colonne Matière/enseignement le nom de l'AID plutôt que le nom de la catégorie d'AID,</label><br />
 
-		<input type="radio" name="display_nom" id='display_nom_x' value="x" 
+		<input type="radio" name="display_nom" id='display_nom_x' value="x" onchange="changement();" 
 			<?php if ($display_nom == "x") { echo ' checked="checked"';} ?> />
 		<label for='display_nom_x'> Faire apparaître en colonne Matière/enseignement le nom court de la catégorie d'AID suivi du nom de l'AID.</label><br />
 
@@ -412,7 +425,7 @@ while ($i < $max_periode) {
 
 		Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :
 		<br />
-		<input type="text" name="message" size="40" maxlength="40" 
+		<input type="text" name="message" size="40" maxlength="40" onchange="changement();" 
 			<?php if ($message) { echo "value=\"".$message."\"";}?> />
 		<br />
 		<span style='font-size:small;'>(Ce message prendra de la place dans la case appréciation sur le bulletin)</span>
@@ -422,27 +435,27 @@ while ($i < $max_periode) {
 	</p>
 	<p>Place de la case réservée à cette catégorie d'aid dans le bulletin final :</p>
 	<p>
-		<input type="radio" id="orderDisplay1Y" name="order_display1" value="b" 
+		<input type="radio" id="orderDisplay1Y" name="order_display1" value="b" onchange="changement();" 
 			<?php if (($order_display1 == "b") or (!$order_display1)) { echo ' checked="checked"' ;} ?> />
 		<label for="orderDisplay1Y"> En début du bulletin</label>
-		<input type="radio" id="orderDisplay1N" name="order_display1" value="e" 
+		<input type="radio" id="orderDisplay1N" name="order_display1" value="e" onchange="changement();" 
 			<?php if ($order_display1 == "e") { echo ' checked="checked"';} ?> />
 		<label for="orderDisplay1N"> En fin de bulletin</label>
 	</p>
 	<p>
 		Position par rapport aux autres catégories d'aid (entrez un nombre entre 1 et 100) :
-		<input type="text" name="order_display2" size="1" 
+		<input type="text" name="order_display2" size="1" onchange="changement();" 
 			<?php if (isset($order_display2)) { echo "value=\"".$order_display2."\"";} ?> />
 	</p>
 	<hr />
 	<p><strong>Affichage :  </strong></p>
 	<p>
-		<input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" 
+		<input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" onchange="changement();" 
 			<?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
 		<label for="display_Bulletin">Les AID de cette catégorie apparaissent dans le bulletin officiel</label>
 	</p>
 	<p>
-		<input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' 
+		<input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' onchange="changement();" 
 			<?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
 		<label for="bullSimplifie">Les AID de cette catégorie apparaissent dans le bulletin simplifi&eacute;.</label>
 	</p>
@@ -455,7 +468,7 @@ while ($i < $max_periode) {
 		d'un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.
 	</p>
 	<p>
-		<input type="checkbox" id="autoriser_inscript_multiples" name="autoriser_inscript_multiples" value="y" 
+		<input type="checkbox" id="autoriser_inscript_multiples" name="autoriser_inscript_multiples" value="y" onchange="changement();" 
 			<?php if ($autoriser_inscript_multiples == "y") { echo ' checked="checked"';} ?> />
 		<label for="autoriser_inscript_multiples">Autoriser les inscriptions multiples</label>
 	</p>
@@ -505,6 +518,7 @@ while ($obj_liste_data = $call_liste_data->fetch_object()) {
 			<td>
 				<input type="checkbox" 
 					   name="delete_gestionnaire_<?php echo $login_gestionnaire; ?>" 
+					   onchange="changement();" 
 					   value="y" />
 				(cocher pour supprimer)
 			</td>
@@ -518,7 +532,7 @@ while ($obj_liste_data = $call_liste_data->fetch_object()) {
 <?php
 }
 ?>
-	<select size=1 name=reg_gestionnaire_login>
+	<select size=1 name="reg_gestionnaire_login" onchange="changement();">
 		<option value=''>(aucun)</option>
 <?php
 $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
@@ -555,12 +569,12 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
 	</p>
 	<p>
 		<!--  onclick="javascript:Element.show('outils_comp');" -->
-		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_y" value="y" 
+		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_y" value="y" onchange="changement();" 
 			   onchange="js_adapte_outil_comp()" 
 				   <?php if ($activer_outils_comp=='y') echo " checked='checked' "; ?> />
 		<label for='activer_outils_comp_y'>&nbsp;Activer les outils compl&eacute;mentaires</label>
 		<br />
-		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_n" value="n" 
+		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_n" value="n" onchange="changement();" 
 			   onchange="js_adapte_outil_comp()" 
 				   <?php if ($activer_outils_comp=='n') echo " checked='checked' "; ?> />
 		<label for='activer_outils_comp_n'>&nbsp;Désactiver les outils compl&eacute;mentaires</label>
@@ -609,7 +623,7 @@ while ($obj_call_data = $call_liste_data->fetch_object()) {
 				<td>
 					<strong><?php echo $nom_prof." ".$prenom_prof; ?></strong>
 				</td>
-				<td> <input type="checkbox" name="delete_<?php echo $login_prof; ?>" value="y" />
+				<td> <input type="checkbox" name="delete_<?php echo $login_prof; ?>" value="y" onchange="changement();" />
 					(cocher pour supprimer)
 				</td>
 			</tr>
@@ -619,7 +633,7 @@ while ($obj_call_data = $call_liste_data->fetch_object()) {
 //if ($nombre !=0) ?>
 		</table>
 <?php } ?>
-		<select size=1 name=reg_prof_login>
+		<select size=1 name="reg_prof_login" onchange="changement();">
 			<option value=''>(aucun)</option>
 <?php
 $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
@@ -644,7 +658,7 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
 <hr /><p><b>Feuille de présence : </b></p>
 <p>En cochant la case présence ci-dessous, vous avez la possibilité, dans l'interface de visualisation, d'afficher un lien permettant d'imprimer des feuilles de présence.</p>
 <p>
-<input type="checkbox" id="feuillePresence" name="feuille_presence" value="y" <?php if ($feuille_presence == "y") { echo ' checked="checked"';} ?> />
+<input type="checkbox" id="feuillePresence" name="feuille_presence" value="y" <?php if ($feuille_presence == "y") { echo ' checked="checked"';} ?> onchange="changement();" />
 <label for="feuillePresence"> Afficher un lien permettant l'impression de feuilles de pr&eacute;sence</label>
 </p>
 </div>
