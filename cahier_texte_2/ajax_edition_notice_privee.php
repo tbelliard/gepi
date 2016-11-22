@@ -110,7 +110,16 @@ if (my_strtolower($cahierTexteNoticePrivee->getIdLogin()) != my_strtolower($util
 	die();
 }
 
-//on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
+//================================================
+$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$groupe->getId()."' AND domaine='cahier_texte' AND visible='n';";
+$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test_grp_visib)!=0) {
+	echo "<p style='color:red'>Le groupe n°".$groupe->getId()." n'est pas autorisé pour les cahiers de textes.</p>";
+	die();
+}
+//================================================
+
+//on met le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $cahierTexteNoticePrivee->getIdGroupe();
 
 // **********************************************

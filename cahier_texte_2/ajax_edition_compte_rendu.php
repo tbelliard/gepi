@@ -120,11 +120,21 @@ if((my_strtolower($ctCompteRendu->getIdLogin()) != my_strtolower($utilisateur->g
 	echo("Erreur edition de compte rendu : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }
+
 if ($ctCompteRendu->getVise() == 'y') {
 	// interdire la modification d'un visa par le prof si c'est un visa
 	echo("Erreur edition de compte rendu : Notices signée, edition impossible");
 	die();
 }
+
+//================================================
+$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$groupe->getId()."' AND domaine='cahier_texte' AND visible='n';";
+$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test_grp_visib)!=0) {
+	echo "<p style='color:red'>Le groupe n°".$groupe->getId()." n'est pas autorisé pour les cahiers de textes.</p>";
+	die();
+}
+//================================================
 
 if(isset($_GET['change_visibilite'])) {
 	check_token();
@@ -167,6 +177,7 @@ if ($ctCompteRendu->getDateCt() == null) {
 //on met le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $ctCompteRendu->getIdGroupe();
 $id_groupe=$ctCompteRendu->getIdGroupe();
+
 //================================================
 // Recherche du cours suivant mais pas dans la journée à partir du lendemain (pour donner du travail à faire)
 
