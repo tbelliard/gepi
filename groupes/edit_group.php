@@ -1087,9 +1087,17 @@ if(mysqli_num_rows($res_nme)>0) {
 
 			echo $lig_nme->libelle_court." <em>(".$lig_nme->libelle_long.")</em>";
 
+			/*
 			$sql="SELECT DISTINCT jgem.login FROM j_groupes_eleves_modalites jgem
 						WHERE jgem.code_modalite_elect='".$lig_nme->code_modalite_elect."' AND 
 							jgem.id_groupe='".$id_groupe."';";
+			*/
+			$sql="SELECT DISTINCT jgem.login FROM j_groupes_eleves_modalites jgem,
+							j_eleves_groupes jeg 
+						WHERE jgem.code_modalite_elect='".$lig_nme->code_modalite_elect."' AND 
+							jgem.id_groupe='".$id_groupe."' AND 
+							jeg.id_groupe=jgem.id_groupe AND 
+							jeg.login=jgem.login;";
 			//echo "$sql<br />";
 			$res_ele_mod=mysqli_query($mysqli, $sql);
 			$eff_ele_mod=mysqli_num_rows($res_ele_mod);
