@@ -666,8 +666,7 @@ $config = array (
 	 * Example:
 	 *   'proxy' => 'tcp://proxy.example.com:5100'
 	 */
-	//'proxy' => NULL,
-	'proxy'=>'tcp://10.185.36.222:3128',
+	'proxy' => NULL,
 
 	/*
 	 * Array of URL's to allow a trusted redirect to.
