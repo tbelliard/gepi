@@ -485,7 +485,29 @@ function getRetardsEleve($eleve , $periode) {
 	return $resultchargeDB;
 }
 
-function getComVieSco($eleve , $periode) {
-	
+function display_xml_error($error) {
+    switch ($error->code) {
+        case 1871:
+            $return = "Erreur XML ".$error->code." → des données ne sont pas reconnues ou trouvées";
+            $return .= "<br />".$error->message;
+            $return .= "<br />Vous devez chercher cette erreur et la supprimer manuellement dans le fichier .xml";
+            break;
+        default :	
+            switch ($error->level) {
+                case LIBXML_ERR_WARNING:
+                    $return = "Attention ".$error->code." : ";
+                    $return .= "<br />".$error->message;
+                    break;
+                 case LIBXML_ERR_ERROR:
+                    $return = "Erreur ".$error->code." : ";
+                     break;
+                case LIBXML_ERR_FATAL:
+                    $return = "Erreur Fatale ".$error->code." : ";
+                    break;
+            }
+            $return .= trim($error->message);
+    }
+    return $return."<hr />";
 }
+
 

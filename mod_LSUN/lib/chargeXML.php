@@ -117,8 +117,8 @@ $xml->appendChild($items);
 		while ($discipline = $listeDisciplines->fetch_object()){
 				$noeudDiscipline = $xml->createElement('discipline');
 					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
-					$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->election,'code'=>$discipline->code_matiere,
-						'modalite-election'=>$discipline->election,'libelle'=>htmlspecialchars($discipline->nom_complet));
+					$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
+						'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
 					foreach ($attributsDiscipline as $cle=>$valeur) {
 						$attDiscipline = $xml->createAttribute($cle);
 						$attDiscipline->value = $valeur;
@@ -139,8 +139,10 @@ $xml->appendChild($items);
 					}
 					preg_match_all('#[0-9]+#',$enseignant->numind,$extract);
 					$idSts = $extract[0][0];
-					$attributsEnseignant = array('id'=>'ENS_'.$idSts, 'type'=>$enseignant->type, 'id-sts'=>$idSts,
-						'civilite'=>$enseignant->civilite, 'nom'=>$enseignant->nom, 'prenom'=>$enseignant->prenom);
+					$type = $enseignant->type ? $enseignant->type : "local";
+					$civilite = $enseignant->civilite == "Mme" ? 'MME' : 'M' ;
+					$attributsEnseignant = array('id'=>'ENS_'.$idSts, 'type'=>$type, 'id-sts'=>$idSts,
+						'civilite'=>$civilite, 'nom'=>$enseignant->nom, 'prenom'=>$enseignant->prenom);
 					foreach ($attributsEnseignant as $cle=>$valeur) {
 						$attEnseignant = $xml->createAttribute($cle);
 						$attEnseignant->value = $valeur;
@@ -165,6 +167,7 @@ $xml->appendChild($items);
 		$donnees->appendChild($elementsProgramme);
 		
 		/*----- Parcours -----*/
+if (FALSE) {
 		$parcoursCommuns = $xml->createElement('parcours-communs');
 		while ($parcoursCommun = $listeParcoursCommuns->fetch_object()){
 				$noeudParcoursCommun= $xml->createElement('parcours-commun');
@@ -195,8 +198,10 @@ $xml->appendChild($items);
 				
 			}
 		$donnees->appendChild($parcoursCommuns);
-		
+}	
+
 			/*----- Vie scolaire -----*/
+if (FALSE) {
 		$viesScolairesCommuns = $xml->createElement('vies-scolaires-communs');
 		while ($vieScoCommun = $listeVieScoCommun->fetch_object()) {
 			$noeudVieSco =  $xml->createElement('vie-scolaire-commun');
@@ -214,8 +219,10 @@ $xml->appendChild($items);
 		
 			
 		$donnees->appendChild($viesScolairesCommuns);
-		
+}
+
 			/*----- epis -----*/
+if (FALSE) {
 			$epis = $xml->createElement('epis');
 			$listeEPICommun = getEPICommun();
 			while ($epiCommun = $listeEPICommun->fetch_object()) { 
@@ -237,8 +244,10 @@ $xml->appendChild($items);
 				$epis->appendChild($noeudEpiCommun);
 			}
 		$donnees->appendChild($epis);
-		
+}
+
 			/*----- epis-groupes -----*/
+if (FALSE) {
 			$episGroupes = $xml->createElement('epis-groupes');
 			$listeEpisGroupes = getEpisGroupes();
 			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
@@ -290,6 +299,7 @@ $xml->appendChild($items);
 				
 			}
 		$donnees->appendChild($episGroupes);
+}
 		
 			/*----- acc-persos -----*/
 		$accPersos = $xml->createElement('acc-persos');
@@ -315,6 +325,7 @@ $xml->appendChild($items);
 		$donnees->appendChild($accPersos);
 		
 			/*----- acc-persos-groupes -----*/
+if (FALSE) {
 		$accPersosGroupes = $xml->createElement('acc-persos-groupes');
 		$listeApGroupes = getApGroupes();
 		while ($apGroupe = $listeApGroupes->fetch_object()) {
@@ -327,32 +338,39 @@ $xml->appendChild($items);
 				$noeudApGroupes->appendChild($attsEpiGroupe);
 			}
 			//On a que 1 commentaire de groupe dans l'export alors qu'on peut en avoir 1 par trimestre, on prend le dernier
+			;
 			$commentairesGroupeAp = getCommentaireGroupe($apGroupe->id);
-			$commentaireGroupe = "";
 			while ($commentaire = $commentairesGroupeAp->fetch_object()) {
 				if (trim($commentaire->appreciation)) {
-					$commentaireGroupe = $commentaire->appreciation;
+					$noeudComGroupeAp = $xml->createElement('commentaire',trim($commentaire->appreciation));
+					$noeudApGroupes->appendChild($noeudComGroupeAp);
 				}
-				
 			}
-			$noeudComGroupeAp = $xml->createElement('commentaire',$commentaireGroupe);
-			$noeudApGroupes->appendChild($noeudComGroupeAp);
+			
+			
 			
 			$accPersosGroupes->appendChild($noeudApGroupes);
 		}
 		
 		$donnees->appendChild($accPersosGroupes);
+}
 		
 		/*----- Bilans périodiques -----*/
 		$bilansPeriodiques = $xml->createElement('bilans-periodiques');
 		
+		
 		$eleves = getElevesExport();
 		while ($eleve = $eleves->fetch_object()) {
+			$desAcquis = FALSE;
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			$respEtabElv = "RESP_".$eleve->id_resp_etab;
-			//var_dump($eleve);
-			//echo "-".$respEtabElv;
-			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$eleve->professeur , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$eleve->periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$eleve->date_entree" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
+			
+			$profResponsable = getUtilisateur($eleve->professeur)->numid;
+			$profResponsable = substr(getUtilisateur($eleve->professeur)->numind,1);
+			
+			//if($periode->num_periode < 10) {$num_periode = "0".$periode->num_periode;} else {$num_periode = $periode->num_periode;}
+			if($eleve->periode < 10) {$num_periode = "0".$eleve->periode;} else {$num_periode = $eleve->periode;}
+			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$eleve->date_entree" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
 			foreach ($attributsElevePeriode as $cle=>$valeur) {
 				$attsElevePeriode = $xml->createAttribute($cle);
 				$attsElevePeriode->value = $valeur;
@@ -366,6 +384,7 @@ $xml->appendChild($items);
 			// <appreciation>Appréciation pour la matière espagnol</appreciation>
 			// matieres_notes - matiere_element_programme - matieres_appreciations
 			while ($acquisEleve = $acquisEleves->fetch_object()) {
+				$desAcquis = TRUE;
 				$noeudAcquis = $xml->createElement('acquis');
 				$matiere = $acquisEleve->code_matiere;
 				$moyenne = getMoyenne($acquisEleve->id_groupe);
@@ -408,7 +427,6 @@ $xml->appendChild($items);
 				$listeAcquis->appendChild($noeudAcquis);
 			}
 			
-			
 			$noeudBilanElevePeriodique->appendChild($listeAcquis);
 			
 			$listeEpisEleve = $xml->createElement('epis-eleve');
@@ -426,7 +444,7 @@ $xml->appendChild($items);
 			$retourAvisElv=getAppConseil($eleve->login , $eleve->periode);
 			if ($retourAvisElv->num_rows) {
 				$avisElv = $retourAvisElv->fetch_object()->avis;
-				$avisConseil = getAppConseil($eleve->login , $eleve->periode)->fetch_object()->avis;
+				$avisConseil = $avisElv;
 				$acquisConseils = $xml->createElement('acquis-conseils', $avisConseil);
 				$noeudBilanElevePeriodique->appendChild($acquisConseils);
 			}
@@ -473,7 +491,8 @@ $xml->appendChild($items);
 			
 			
 			
-			$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);
+			
+			if ($desAcquis) {$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);}
 		}	
 		$donnees->appendChild($bilansPeriodiques);
 		

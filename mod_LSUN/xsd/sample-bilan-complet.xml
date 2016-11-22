@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lsun-bilans xmlns="urn:fr:edu:scolarite:lsun:bilans:import"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="urn:fr:edu:scolarite:lsun:bilans:import import-bilan-complet.xsd"
+             schemaVersion="2.0">
+	<entete>
+		<editeur>ÉDITEUR</editeur>
+		<application>LOGICIEL</application>
+		<etablissement>0382032C</etablissement>
+	</entete>
+
+	<donnees>
+		<responsables-etab>
+			<responsable-etab id="RESP_01" libelle="Joseph SERGI" />
+			<responsable-etab id="RESP_02" libelle="Catherine NAOWEL" />
+		</responsables-etab>
+		<eleves>
+			<eleve id="EL_01" id-be="1" nom="Grenelle" prenom="Victor" code-division="6EME_4"/>
+			<eleve id="EL_02" id-be="2" nom="Clerc" prenom="Aline" code-division="6EME_4"/>
+		</eleves>
+		<periodes>
+			<periode id="P_01" millesime="2015" indice="1" nb-periodes="3"/>
+			<periode id="P_02" millesime="2015" indice="2" nb-periodes="3"/>
+		</periodes>
+		<disciplines>
+			<discipline id="DI_020700" code="020700" modalite-election="S" libelle="Français"/>
+			<discipline id="DI_030201" code="030201" modalite-election="S" libelle="Anglais (LV1)"/>
+			<discipline id="DI_030602" code="030602" modalite-election="S" libelle="Espagnol (LV2)"/>
+			<discipline id="DI_061300" code="061300" modalite-election="S" libelle="Mathématiques"/>
+			<discipline id="DI_062900" code="062900" modalite-election="S" libelle="SVT"/>
+			<discipline id="DI_062300" code="062300" modalite-election="S" libelle="Physique-Chimie"/>
+			<discipline id="DI_070800" code="070800" modalite-election="S" libelle="Technologie"/>
+			<discipline id="DI_042100" code="042100" modalite-election="S" libelle="Histoire-Géographie"/>
+			<discipline id="DI_100100" code="100100" modalite-election="S" libelle="EPS"/>
+			<discipline id="DI_090100" code="090100" modalite-election="S" libelle="Arts plastiques"/>
+			<discipline id="DI_081300" code="081300" modalite-election="S" libelle="Éducation musicale"/>
+		</disciplines>
+		<enseignants>
+			<enseignant id="ENS_0123456789ABC" type="epp" id-sts="123456" civilite="MME" nom="Sand" prenom="Hélène"/>
+			<enseignant id="ENS_0123456789ABB" type="epp" id-sts="123457" civilite="MME" nom="Shelley" prenom="Cathy"/>
+			<enseignant id="ENS_0123456789ABE" type="epp" id-sts="123458" civilite="M" nom="Celés" prenom="Miguel"/>
+			<enseignant id="ENS_0123456789ABF" type="epp" id-sts="123459" civilite="MME" nom="Germain" prenom="Sophie"/>
+			<enseignant id="ENS_0123456789ABG" type="epp" id-sts="123460" civilite="M" nom="Pasteur" prenom="Louis"/>
+			<enseignant id="ENS_0123456789ABH" type="epp" id-sts="123461" civilite="MME" nom="Curie" prenom="Marie"/>
+			<enseignant id="ENS_0123456789ABI" type="epp" id-sts="123462" civilite="M" nom="Eiffel" prenom="Gustave"/>
+			<enseignant id="ENS_0123456789ABJ" type="epp" id-sts="123463" civilite="M" nom="Michelet" prenom="Edouard"/>
+			<enseignant id="ENS_0123456789ABK" type="epp" id-sts="123464" civilite="MME" nom="Lenglen" prenom="Suzanne"/>
+			<enseignant id="ENS_0123456789ABL" type="epp" id-sts="123465" civilite="MME" nom="Claudel" prenom="Camille"/>
+			<enseignant id="ENS_0123456789ABM" type="epp" id-sts="123466" civilite="M" nom="Satie" prenom="Erik"/>
+			<enseignant id="ENS_0123456789ABT" type="epp" id-sts="123467" civilite="M" nom="Vaugnan" prenom="Charles"/>
+		</enseignants>
+		<elements-programme>
+			<element-programme id="EP_01" libelle="Élément de programme 1" />
+			<element-programme id="EP_02" libelle="Élément de programme 2" />
+			<element-programme id="EP_03" libelle="Élément de programme 3" />
+			<element-programme id="EP_04" libelle="Élément de programme 4" />
+			<element-programme id="EP_05" libelle="Élément de programme 5" />
+			<element-programme id="EP_06" libelle="Élément de programme 6" />
+			<element-programme id="EP_07" libelle="Élément de programme 7" />
+			<element-programme id="EP_08" libelle="Élément de programme 8" />
+			<element-programme id="EP_09" libelle="Élément de programme 9" />
+			<element-programme id="EP_10" libelle="Élément de programme 10" />
+			<element-programme id="EP_11" libelle="Élément de programme 11" />
+			<element-programme id="EP_12" libelle="Élément de programme 12" />
+			<element-programme id="EP_13" libelle="Élément de programme 13" />
+			<element-programme id="EP_14" libelle="Élément de programme 14" />
+			<element-programme id="EP_15" libelle="Élément de programme 15" />
+		</elements-programme>
+		<parcours-communs>
+			<parcours-commun periode-ref="P_01" code-division="6EME_4">
+				<parcours code="PAR_AVN">Parcours avenir 6EME_4 pour la période 1</parcours>
+				<parcours code="PAR_CIT">Parcours citoyen 6EME_4 pour la période 1</parcours>
+				<parcours code="PAR_ART">Parcours artistique 6EME_4 pour la période 1</parcours>
+				<parcours code="PAR_SAN">Parcours santé 6EME_4 pour la période 1</parcours>
+			</parcours-commun>
+			<parcours-commun periode-ref="P_02" code-division="6EME_4">
+				<parcours code="PAR_AVN">Parcours avenir 6EME_4 pour la période 2</parcours>
+				<parcours code="PAR_CIT">Parcours citoyen 6EME_4 pour la période 2</parcours>
+				<parcours code="PAR_ART">Parcours artistique 6EME_4 pour la période 2</parcours>
+				<parcours code="PAR_SAN">Parcours santé 6EME_4 pour la période 2</parcours>
+			</parcours-commun>
+		</parcours-communs>
+		<vies-scolaires-communs>
+			<vie-scolaire-commun periode-ref="P_01" code-division="6EME_4">
+				<commentaire>Commentaire de vie scolaire commun à la 6EME_4 pour la période 1</commentaire>
+			</vie-scolaire-commun>
+			<vie-scolaire-commun periode-ref="P_02" code-division="6EME_4">
+				<commentaire>Commentaire de vie scolaire commun à la 6EME_4 pour la période 2</commentaire>
+			</vie-scolaire-commun>
+		</vies-scolaires-communs>
+		<epis>
+			<epi id="EPI_01" intitule="Mon EPI Culture et création artistiques" thematique="EPI_ART" discipline-refs="DI_020700 DI_042100">
+				<description>Description de l'EPI sur la thématique EPI_ART : français/histoire-géo</description>
+			</epi>
+			<epi id="EPI_02" intitule="Mon EPI Transition écologique et développement durable" thematique="EPI_EDD" discipline-refs="DI_062900 DI_030602">
+				<description>Description de l'EPI sur la thématique EPI_EDD : SVT/Espagnol</description>
+			</epi>
+		</epis>
+		<epis-groupes>
+			<epi-groupe id="EPI_GROUPE_01" intitule="Intitulé du groupe epi 1" epi-ref="EPI_01">
+				<commentaire>Commentaire de l'EPI sur la thématique EPI_ART groupe 1 : français/histoire-géo</commentaire>
+				<enseignants-disciplines>
+					<enseignant-discipline discipline-ref="DI_020700" enseignant-ref="ENS_0123456789ABC" />
+					<enseignant-discipline discipline-ref="DI_042100" enseignant-ref="ENS_0123456789ABJ" />
+				</enseignants-disciplines>
+			</epi-groupe>
+			<epi-groupe id="EPI_GROUPE_02" intitule="Intitulé du groupe epi 2" epi-ref="EPI_01">
+				<commentaire>Commentaire de l'EPI sur la thématique EPI_ART groupe 2 : français/histoire-géo</commentaire>
+				<enseignants-disciplines>
+					<enseignant-discipline discipline-ref="DI_020700" enseignant-ref="ENS_0123456789ABC" />
+					<enseignant-discipline discipline-ref="DI_042100" enseignant-ref="ENS_0123456789ABJ" />
+				</enseignants-disciplines>
+			</epi-groupe>
+			<epi-groupe id="EPI_GROUPE_03" intitule="Intitulé du groupe epi 3" epi-ref="EPI_02">
+				<commentaire>Commentaire de l'EPI sur la thématique EPI_EDD : SVT/Espagnol</commentaire>
+				<enseignants-disciplines>
+					<enseignant-discipline discipline-ref="DI_062900" enseignant-ref="ENS_0123456789ABM" />
+					<enseignant-discipline discipline-ref="DI_030602" enseignant-ref="ENS_0123456789ABI" />
+				</enseignants-disciplines>
+			</epi-groupe>
+		</epis-groupes>
+		<acc-persos>
+			<acc-perso id="ACC_PERSO_01" intitule="Mon accompagnement personnalisé en français" discipline-refs="DI_020700">
+				<description>Description de l'accompagnement personnalisé en français</description>
+			</acc-perso>
+			<acc-perso id="ACC_PERSO_02" intitule="Mon accompagnement personnalisé en SVT" discipline-refs="DI_062900">
+				<description>Description de l'accompagnement personnalisé en SVT</description>
+			</acc-perso>
+		</acc-persos>
+		<acc-persos-groupes>
+			<acc-perso-groupe id="ACC_PERSO_GROUPE_01" intitule="Intitulé du groupe acc perso 1" acc-perso-ref="ACC_PERSO_01">
+				<commentaire>Commentaire de l'accompagnement personnalisé groupe 1 en français</commentaire>
+				<enseignants-disciplines>
+					<enseignant-discipline discipline-ref="DI_020700" enseignant-ref="ENS_0123456789ABC" />
+				</enseignants-disciplines>
+			</acc-perso-groupe>
+			<acc-perso-groupe id="ACC_PERSO_GROUPE_02" intitule="Intitulé du groupe acc perso 2" acc-perso-ref="ACC_PERSO_01">
+				<commentaire>Commentaire de l'accompagnement personnalisé groupe 2 en français</commentaire>
+				<enseignants-disciplines>
+					<enseignant-discipline discipline-ref="DI_020700" enseignant-ref="ENS_0123456789ABC" />
+				</enseignants-disciplines>
+			</acc-perso-groupe>
+			<acc-perso-groupe id="ACC_PERSO_GROUPE_03" intitule="Intitulé du groupe acc perso 3" acc-perso-ref="ACC_PERSO_02">
+				<commentaire>Commentaire de l'accompagnement personnalisé en SVT</commentaire>
+				<enseignants-disciplines>
+					<enseignant-discipline discipline-ref="DI_062900" enseignant-ref="ENS_0123456789ABM" />
+				</enseignants-disciplines>
+			</acc-perso-groupe>
+		</acc-persos-groupes>
+
+		<bilans-periodiques>
+			<bilan-periodique prof-princ-refs="ENS_0123456789ABC" eleve-ref="EL_01" periode-ref="P_01" date-conseil-classe="2015-01-01" date-scolarite="2015-09-02" date-verrou="2015-11-12" responsable-etab-ref="RESP_01">
+				<liste-acquis>
+					<acquis discipline-ref="DI_020700" enseignant-refs="ENS_0123456789ABC" element-programme-refs="EP_01 EP_02 EP_03" eleve-non-note="1" moyenne-structure="10/20" />
+					<acquis discipline-ref="DI_030201" enseignant-refs="ENS_0123456789ABB" element-programme-refs="EP_04" moyenne-eleve="18/20" structure-non-notee="1" >
+						<appreciation>Appréciation pour la matière anglais</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_030602" enseignant-refs="ENS_0123456789ABE" element-programme-refs="EP_05"  moyenne-eleve="18/20" moyenne-structure="15/20">
+						<appreciation>Appréciation pour la matière espagnol</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_061300" enseignant-refs="ENS_0123456789ABF" element-programme-refs="EP_06" moyenne-eleve="9/20" moyenne-structure="10.5/20">
+						<appreciation>Appréciation pour la matière mathématiques</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_062900" enseignant-refs="ENS_0123456789ABG" element-programme-refs="EP_07" moyenne-eleve="17/20" structure-non-notee="true" >
+						<appreciation>Appréciation pour la matière sciences de la vie et de la terre</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_062300" enseignant-refs="ENS_0123456789ABH" element-programme-refs="EP_08" moyenne-eleve="11.5/20" moyenne-structure="13/20">
+						<appreciation>Appréciation pour la matière physique-chimie</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_070800" enseignant-refs="ENS_0123456789ABI" element-programme-refs="EP_09"  eleve-non-note="1"  moyenne-structure="12/20">
+						<appreciation>Appréciation pour la matière technologie</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_042100" enseignant-refs="ENS_0123456789ABJ" element-programme-refs="EP_10" moyenne-eleve="16.5/20"  moyenne-structure="12/20">
+						<appreciation>Appréciation pour la matière histoire-géographie</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_100100" enseignant-refs="ENS_0123456789ABK" element-programme-refs="EP_11" moyenne-eleve="9/20" moyenne-structure="10/20">
+						<appreciation>Appréciation pour la matière éducation physique et sportive</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_090100" enseignant-refs="ENS_0123456789ABL" element-programme-refs="EP_12" moyenne-eleve="15.5/20" moyenne-structure="12/20">
+						<appreciation>Appréciation pour la matière arts plastiques</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_081300" enseignant-refs="ENS_0123456789ABM" element-programme-refs="EP_13" moyenne-eleve="16/20" moyenne-structure="13/20">
+						<appreciation>Appréciation pour la matière éducation musicale</appreciation>
+					</acquis>
+				</liste-acquis>
+				<epis-eleve>
+					<epi-eleve epi-groupe-ref="EPI_GROUPE_01">
+						<commentaire>Commentaire de l'élève pour l'EPI sur la thématique  EPI_ART : français/histoire-géo</commentaire>
+					</epi-eleve>
+				</epis-eleve>
+				<acc-persos-eleve>
+					<acc-perso-eleve acc-perso-groupe-ref="ACC_PERSO_GROUPE_01">
+						<commentaire>Commentaire de l'élève pour l'accompagnement personnalisé groupe 1 en français</commentaire>
+					</acc-perso-eleve>
+				</acc-persos-eleve>
+				<liste-parcours>
+					<parcours code="PAR_AVN">Parcours avenir élève 1 période 1</parcours>
+					<parcours code="PAR_CIT">Parcours citoyen élève 1 période 1</parcours>
+					<parcours code="PAR_ART">Parcours artistique élève 1 période 1</parcours>
+					<parcours code="PAR_SAN">Parcours santé élève 1 période 1</parcours>
+				</liste-parcours>
+				<modalites-accompagnement>
+					<modalite-accompagnement code="PAP" />
+					<modalite-accompagnement code="PPS" />
+					<modalite-accompagnement code="PPRE">
+						<complement-ppre>Complément de la modalité PPRE</complement-ppre>
+					</modalite-accompagnement>
+				</modalites-accompagnement>
+				<acquis-conseils>Acquis et conseils pour progresser pour l'élève 1 pour période 1</acquis-conseils>
+				<vie-scolaire nb-retards="30" nb-abs-justifiees="12" nb-abs-injustifiees="3" nb-heures-manquees="37">
+					<commentaire>Commentaire de vie scolaire de l'élève 1 pour la période 1</commentaire>
+				</vie-scolaire>
+                <socle>
+                    <domaine code="CPD_FRA" positionnement="1" />
+                    <domaine code="CPD_ETR" positionnement="2" />
+                    <domaine code="CPD_SCI" positionnement="2" />
+                    <domaine code="CPD_ART" positionnement="1" />
+                    <domaine code="MET_APP" positionnement="1" />
+                    <domaine code="FRM_CIT" positionnement="3" />
+                    <domaine code="SYS_NAT" positionnement="1" />
+                    <domaine code="REP_MND" positionnement="4" />
+                </socle>
+				<responsables>
+					<responsable civilite="M" nom="NOM RESPONSABLE 1" prenom="Prénom responsable 1" lien-parente="PERE" legal1="true" legal2="false">
+						<adresse ligne1="68" ligne2="GALERIE DE L'ARLEQUIN" ligne3="GRENOBLE" ligne4="BP 241" code-postal="38036" commune="GRENOBLE Cedex 2"/>
+					</responsable>
+				</responsables>
+			</bilan-periodique>
+
+			<bilan-periodique prof-princ-refs="ENS_0123456789ABC ENS_0123456789ABB" eleve-ref="EL_01" periode-ref="P_02" date-conseil-classe="2015-02-02" date-scolarite="2015-12-06" date-verrou="2016-02-26" responsable-etab-ref="RESP_02">
+				<liste-acquis>
+					<acquis discipline-ref="DI_020700" enseignant-refs="ENS_0123456789ABC" element-programme-refs="EP_01 EP_13" moyenne-eleve="11.5" moyenne-structure="11">
+						<appreciation>Appréciation pour la matière français</appreciation>
+					</acquis>
+					<acquis discipline-ref="DI_030201" enseignant-refs="ENS_0123456789ABB" element-programme-refs="EP_14" moyenne-eleve="19" moyenne-structure="12.5">
+						<appreciation>Appréciation pour la matière anglais</appreciation>
+					</acquis>
+				</liste-acquis>
+				<epis-eleve>
+					<epi-eleve epi-groupe-ref="EPI_GROUPE_02">
+						<commentaire>COM_ELEVE_EPI_1</commentaire>
+					</epi-eleve>
+					<epi-eleve epi-groupe-ref="EPI_GROUPE_03">
+						<commentaire>COM_ELEVE_EPI_2</commentaire>
+					</epi-eleve>
+				</epis-eleve>
+				<acc-persos-eleve>
+					<acc-perso-eleve acc-perso-groupe-ref="ACC_PERSO_GROUPE_02">
+						<commentaire>COM_ELEVE_ACC_PERSO_1</commentaire>
+					</acc-perso-eleve>
+					<acc-perso-eleve acc-perso-groupe-ref="ACC_PERSO_GROUPE_03">
+						<commentaire>COM_ELEVE_ACC_PERSO_2</commentaire>
+					</acc-perso-eleve>
+				</acc-persos-eleve>
+				<liste-parcours>
+					<parcours code="PAR_AVN">Parcours avenir élève 1 période 2</parcours>
+					<parcours code="PAR_CIT">Parcours citoyen élève 1 période 2</parcours>
+					<parcours code="PAR_ART">Parcours artistique élève 1 période 2</parcours>
+					<parcours code="PAR_SAN">Parcours santé élève 1 période 2</parcours>
+				</liste-parcours>
+				<modalites-accompagnement>
+					<modalite-accompagnement code="PAP" />
+				</modalites-accompagnement>
+				<acquis-conseils>Acquis et conseils pour progresser pour l'élève 1 pour la période 2</acquis-conseils>
+				<vie-scolaire nb-retards="17" nb-abs-justifiees="11" nb-abs-injustifiees="6">
+					<commentaire>Commentaire de vie scolaire de l'élève 1 pour la période 2</commentaire>
+				</vie-scolaire>
+			</bilan-periodique>
+
+			<bilan-periodique prof-princ-refs="ENS_0123456789ABC" eleve-ref="EL_02" periode-ref="P_01" date-conseil-classe="2015-03-03" date-scolarite="2015-09-02" date-verrou="2015-11-12" responsable-etab-ref="RESP_01">
+				<liste-acquis>
+					<acquis discipline-ref="DI_020700" enseignant-refs="ENS_0123456789ABC" element-programme-refs="EP_15" moyenne-eleve="6" moyenne-structure="10">
+						<appreciation>Appréciation pour la matière français</appreciation>
+					</acquis>
+				</liste-acquis>
+				<epis-eleve>
+					<epi-eleve epi-groupe-ref="EPI_GROUPE_01">
+						<commentaire>Commentaire de l'élève 2 pour l'EPI sur la thématique  EPI_ART : français/histoire-géo</commentaire>
+					</epi-eleve>
+				</epis-eleve>
+				<acc-persos-eleve>
+					<acc-perso-eleve acc-perso-groupe-ref="ACC_PERSO_GROUPE_01">
+						<commentaire>Commentaire de l'élève 2 pour l'accompagnement personnalisé groupe 1 en français</commentaire>
+					</acc-perso-eleve>
+				</acc-persos-eleve>
+				<liste-parcours>
+					<parcours code="PAR_AVN">Parcours avenir élève 2 période 1</parcours>
+					<parcours code="PAR_CIT">Parcours citoyen élève 2 période 1</parcours>
+					<parcours code="PAR_ART">Parcours artistique élève 2 période 1</parcours>
+					<parcours code="PAR_SAN">Parcours santé élève 2 période 1</parcours>
+				</liste-parcours>
+				<modalites-accompagnement>
+					<modalite-accompagnement code="PAP" />
+				</modalites-accompagnement>
+				<acquis-conseils>Acquis et conseils pour progresser pour l'élève 2 pour la période 1</acquis-conseils>
+				<vie-scolaire nb-retards="0" nb-abs-justifiees="0" nb-abs-injustifiees="0" nb-heures-manquees="0">
+					<commentaire>Commentaire de vie scolaire de l'élève 2 pour la période 1</commentaire>
+				</vie-scolaire>
+			</bilan-periodique>
+		</bilans-periodiques>
+	</donnees>
+</lsun-bilans>

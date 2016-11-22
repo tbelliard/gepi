@@ -306,9 +306,9 @@ while ($classe = $classes->fetch_object()) { ?>
 				</div>
 				<div>
 						Disciplines :
-<?php	foreach ($tableauMatieresEPI as $matiereEPI) {
-	echo getMatiereOnMatiere($matiereEPI['matiere'])->nom_complet;
-	if ($matiereEPI['modalite'] =="O") { echo " option obligatoire"; } elseif ($matiereEPI['modalite'] =="F") {echo " option facultative";}
+<?php	foreach ($tableauMatieresEPI as $matEPI) {
+	echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
+	if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } elseif ($matEPI['modalite'] =="F") {echo " option facultative";}
 	echo " - ";
 	}	?>
 						<select multiple name="modifieEpiMatiere<?php echo $epiCommun->id; ?>[]">
@@ -345,17 +345,9 @@ if ($matiere->code_modalite_elect == 'O') {
 			
 		} else {
 			$enseignements = getCoursById($liaison->id_enseignements);
-			//var_dump($enseignements);
-				// echo '<br>';
-				// echo '<br>';
-				// echo '<br>';
 			$enseignements->data_seek(0);
 			$lastClasse = NULL;
 			while ($enseignement = $enseignements->fetch_object()) {
-				// echo '<br>';
-				// echo '<br>';
-				// echo '<br>';
-			// var_dump($enseignement);
 				if ($lastClasse != $enseignement->id_groupe) {
 					echo $enseignement->id_matiere." → ";
 				} else {
@@ -431,18 +423,9 @@ if (isset($cours)) {
 ?>
 				</div>
 				<div>
-						Action :
-						<input type="submit" class="btnSupprime" 
-							   alt="Boutton supprimer" 
-							   name="supprimeEpi" 
-							   value="<?php echo $epiCommun->id; ?>"
-							   title="Supprimer cet EPI" />
-						/
-						<input type="submit" class="btnValide" 
-							   alt="Submit button" 
-							   name="modifieEpi" 
-							   value="<?php echo $epiCommun->id; ?>"
-							   title="Modifier cet EPI" />
+						<button type="submit" name="supprimeEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer cet EPI</button>
+						<button type="submit" name="modifieEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/enabled.png' />Modifier cet EPI</button>
+						<button type="submit" name="creeAidEpi" value="<?php echo $epiCommun->id; ?>" disabled ><img src='../images/icons/copy-16.png' /> Créer un AID pour cet EPI</button>
 				</div>
 				</div>
 <?php } ?>
@@ -506,12 +489,7 @@ if ($matiere->code_modalite_elect == 'O') {
 					</p>
 				<div>
 					<p>
-						Action
-						<input type="submit" class="btnValide" 
-							   alt="Submit button" 
-							   name="ajouteEPI" 
-							   value="y"
-							   title="Ajouter cet EPI" />
+						<button type="submit" name="ajouteEPI" value="y" ><img src='../images/enabled.png' />Ajouter cet EPI</button>
 					</p>
 				</div>
 			</div>
@@ -596,9 +574,11 @@ echo '- option facultative';
 				</select>
 				
 				<p>
-					<button name="modifierAp" value="<?php echo  $ap->id; ?>" id="modifierAp_<?php echo  $ap->id; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" >Modifier</button>
-					<button name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" >Supprimer</button>
-				</p>
+					<button type="submit" name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer</button>
+					<button type="submit" name="modifierAp" value="<?php echo  $ap->id; ?>" id="modifierAp_<?php echo  $ap->id; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" ><img src='../images/enabled.png' /> Modifier</button>
+					<button type="submit" name="creeAidAp" value="<?php echo $ap->id; ?>" disabled ><img src='../images/icons/copy-16.png' /> Créer un AID pour cet AP</button>
+					
+					</p>
 				
 			</div>
 <?php 
@@ -646,7 +626,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						</select>
 					</p>
 					<p>
-						<button type="submit" name="creeAP" value="y">Créer cet AP</button>
+						<button type="submit" name="creeAP" value="y"><img src='../images/enabled.png' /> Créer cet AP</button>
 					</p>
 					
 				</div>
@@ -660,13 +640,76 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 
 <form action="index.php" method="post" id="definitionAP">
 	<fieldset>
-		<legend>Export des données</legend>		
-			<p class="lsun_cadre" >
-				<a href="lib/creeXML.php" target="exportLSUN.xml">Afficher l'export</a>
-			</p>
-			<p class="center">
-				<button type="submit" name="creeFichier" value="y">Créer le fichier</button>
-			</p>
+		<legend>Export des données</legend>
+		<div class="lsun3colonnes">
+			<div style='text-align:left;'>
+				<ul class='pasPuces' disable>
+					<li>
+						<input type="checkbox" name="traiteEPI" id="traiteEPI" value="y" checked disabled />
+						<label for="traiteEPI">enseignements pratiques interdisciplinaires (EPI)</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y" disabled />
+						<label for="traiteEpiElv">données élèves des EPI</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteElemProg" id="traiteElemProg" value="y" disabled />
+						<label for="traiteElemProg">elements de programme</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y" disabled />
+						<label for="traiteVieSco">éléments de vie scolaires</label>
+					</li>
+				</ul>
+			</div>
+			<div style='text-align:left;'>
+				<ul class='pasPuces' disable>
+					<li>
+						<input type="checkbox" name="traiteAP" id="traiteAP" value="y" checked  disabled />
+						<label for="traiteAP">accompagnements personnalisés (AP)</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y" disabled />
+						<label for="traiteAPElv">données élèves des AP</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" disabled />
+						<label for="traiteModSpeElv">modalités spécifiques d’accompagnement des élèves</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteParent" id="traiteParent" value="y" disabled />
+						<label for="traiteParents">informations relatives aux responsables de l’élève</label>
+					</li>
+				</ul>
+			</div>
+			<div style='text-align:left;'>
+				<ul class='pasPuces' disable>
+					<li>
+						<input type="checkbox" name="traiteParcours" id="traiteParcours" value="y" checked disabled />
+						<label for="traiteParcours">parcours éducatifs</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteParcoursElv" id="traiteParcoursElv" value="y" disabled />
+						<label for="traiteParcoursElv">données élèves des Parcours</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteProfP" id="traiteProfP" value="y" checked disabled />
+						<label for="traiteAP">professeur(s) principal(aux)</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteSocle" id="traiteSocle" value="y" disabled />
+						<label for="traiteSocle">positionnement des élèves sur les domaines du socle commun</label>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<p class="lsun_cadre" >
+			<a href="lib/creeXML.php" target="exportLSUN.xml">Afficher l'export</a>
+		</p>
+		<p class="center">
+			<button type="submit" name="creeFichier" value="y">Créer le fichier</button>
+		</p>
 	</fieldset>
 </form>
 
