@@ -332,7 +332,17 @@ else {
 
 		<p><input type='submit' value='Valider' /></p>
 	</fieldset>
-</form>\n";
+</form>
+
+<p style='margin-top:2em;margin-left:4em;text-indent:-4em;'><em>NOTE&nbsp;:</em> Pour obtenir un export au format indiqué avec le logiciel Molière, il faut suivre les étapes que voici&nbsp;:<br />
+   - menu sélection<br />
+   - liste multi critère<br />
+   - scolarité<br />
+   - choisir la division<br />
+   - cocher abs retard ...<br />
+   - cliquer sur le bouton lister<br />
+   - cliquer sur exporter<br />
+</p>\n";
 
 			/*
 			echo "<p><b>ATTENTION</b>:</p>\n";
