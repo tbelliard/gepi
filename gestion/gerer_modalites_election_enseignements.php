@@ -72,7 +72,7 @@ if(isset($_POST['forcer_modalites_options_sconet'])) {
 	$cpt_update=0;
 	$code_matiere=isset($_POST['code_matiere']) ? $_POST['code_matiere'] : array();
 	for($loop=0;$loop<count($code_matiere);$loop++) {
-		$sql="SELECT DISTINCT jeg.id_groupe, e.login, seo.code_modalite_elect FROM j_groupes_matieres jgm, 
+		$sql="SELECT DISTINCT jeg.id_groupe, e.login, e.mef_code, seo.code_modalite_elect FROM j_groupes_matieres jgm, 
 										matieres m, 
 										j_eleves_groupes jeg, 
 										eleves e, 
@@ -97,6 +97,17 @@ if(isset($_POST['forcer_modalites_options_sconet'])) {
 				}
 				else {
 					$cpt_insert++;
+
+					// Vérifier que l'association modalité/matière existe dans mef_matieres
+					$sql="SELECT 1=1 FROM mef_matieres WHERE mef_code='".$lig->mef_code."' AND code_matiere='".$code_matiere[$loop]."' AND code_modalite_elect='".$lig->code_modalite_elect."';";
+					$test_mm=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(mysqli_num_rows($test_mm)==0) {
+						$sql="INSERT INTO mef_matieres SET mef_code='".$lig->mef_code."', code_matiere='".$code_matiere[$loop]."', code_modalite_elect='".$lig->code_modalite_elect."';";
+						$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de l'association mef_code/code_matiere/code_modalite_elect dans la table mef_matieres pour ".$lig->mef_code."|".$code_matiere[$loop]."|".$lig->code_modalite_elect."<br />";
+						}
+					}
 				}
 			}
 			else {
@@ -107,6 +118,17 @@ if(isset($_POST['forcer_modalites_options_sconet'])) {
 				}
 				else {
 					$cpt_update++;
+
+					// Vérifier que l'association modalité/matière existe dans mef_matieres
+					$sql="SELECT 1=1 FROM mef_matieres WHERE mef_code='".$lig->mef_code."' AND code_matiere='".$code_matiere[$loop]."' AND code_modalite_elect='".$lig->code_modalite_elect."';";
+					$test_mm=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(mysqli_num_rows($test_mm)==0) {
+						$sql="INSERT INTO mef_matieres SET mef_code='".$lig->mef_code."', code_matiere='".$code_matiere[$loop]."', code_modalite_elect='".$lig->code_modalite_elect."';";
+						$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de l'association mef_code/code_matiere/code_modalite_elect dans la table mef_matieres pour ".$lig->mef_code."|".$code_matiere[$loop]."|".$lig->code_modalite_elect."<br />";
+						}
+					}
 				}
 			}
 		}
@@ -220,9 +242,13 @@ if(isset($_POST['forcer_modalites_telles_matieres'])) {
 			}
 		}
 		elseif($value!="") {
-			$sql="SELECT DISTINCT jeg.id_groupe, jeg.login FROM j_groupes_matieres jgm, 
-											j_eleves_groupes jeg 
-										WHERE jgm.id_matiere='".$key."' AND 
+			$sql="SELECT DISTINCT jeg.id_groupe, jeg.login, e.mef_code, m.code_matiere FROM matieres m,
+											j_groupes_matieres jgm, 
+											j_eleves_groupes jeg, 
+											eleves e
+										WHERE m.matiere=jgm.id_matiere AND 
+											e.login=jeg.login AND 
+											jgm.id_matiere='".$key."' AND 
 											jeg.id_groupe=jgm.id_groupe;";
 			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS['mysqli'], $sql);
@@ -239,6 +265,17 @@ if(isset($_POST['forcer_modalites_telles_matieres'])) {
 					}
 					else {
 						$cpt_insert++;
+
+						// Vérifier que l'association modalité/matière existe dans mef_matieres
+						$sql="SELECT 1=1 FROM mef_matieres WHERE mef_code='".$lig->mef_code."' AND code_matiere='".$lig->code_matiere."' AND code_modalite_elect='".$value."';";
+						$test_mm=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(mysqli_num_rows($test_mm)==0) {
+							$sql="INSERT INTO mef_matieres SET mef_code='".$lig->mef_code."', code_matiere='".$lig->code_matiere."', code_modalite_elect='".$value."';";
+							$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+							if(!$insert) {
+								$msg.="Erreur lors de l'association mef_code/code_matiere/code_modalite_elect dans la table mef_matieres pour ".$lig->mef_code."|".$lig->code_matiere."|".$value."<br />";
+							}
+						}
 					}
 				}
 				else {
@@ -250,6 +287,17 @@ if(isset($_POST['forcer_modalites_telles_matieres'])) {
 					}
 					else {
 						$cpt_update++;
+
+						// Vérifier que l'association modalité/matière existe dans mef_matieres
+						$sql="SELECT 1=1 FROM mef_matieres WHERE mef_code='".$lig->mef_code."' AND code_matiere='".$lig->code_matiere."' AND code_modalite_elect='".$value."';";
+						$test_mm=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(mysqli_num_rows($test_mm)==0) {
+							$sql="INSERT INTO mef_matieres SET mef_code='".$lig->mef_code."', code_matiere='".$lig->code_matiere."', code_modalite_elect='".$value."';";
+							$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+							if(!$insert) {
+								$msg.="Erreur lors de l'association mef_code/code_matiere/code_modalite_elect dans la table mef_matieres pour ".$lig->mef_code."|".$lig->code_matiere."|".$value."<br />";
+							}
+						}
 					}
 				}
 			}
