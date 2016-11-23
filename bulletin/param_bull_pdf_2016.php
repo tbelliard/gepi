@@ -109,6 +109,15 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+	$bull2016_autorise_sous_matiere=isset($_POST["bull2016_autorise_sous_matiere"]) ? $_POST["bull2016_autorise_sous_matiere"] : "n";
+	if(($bull2016_autorise_sous_matiere!="y")&&($bull2016_autorise_sous_matiere!="n")) {
+		$bull2016_autorise_sous_matiere="n";
+	}
+	if (!saveSetting("bull2016_autorise_sous_matiere", $bull2016_autorise_sous_matiere)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_autorise_sous_matiere !";
+		$reg_ok = 'no';
+	}
+
 	$bull2016_arrondi=isset($_POST["bull2016_arrondi"]) ? $_POST["bull2016_arrondi"] : 0.01;
 	if(((!preg_match("/^[0-9]{1,}$/", $bull2016_arrondi))&&
 	(!preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $bull2016_arrondi)))||
@@ -454,8 +463,14 @@ $bull2016_pas_espace_reserve_EPI_AP_Parcours_checked="";
 if($bull2016_pas_espace_reserve_EPI_AP_Parcours=="y") {
 	$bull2016_pas_espace_reserve_EPI_AP_Parcours_checked=" checked";
 }
-?>
 
+$bull2016_autorise_sous_matiere=getSettingValue('bull2016_autorise_sous_matiere');
+$bull2016_autorise_sous_matiere_checked="";
+if($bull2016_autorise_sous_matiere=="y") {
+	$bull2016_autorise_sous_matiere_checked=" checked";
+}
+
+?>
 
 <form name="formulaire" action="param_bull_pdf_2016.php" method="post" style="width: 100%;">
 <?php
@@ -465,27 +480,35 @@ echo add_token_field();
 <h3>Paramètres divers</h3>
 <table class='boireaus boireaus_alt' summary='Paramètres divers'>
 	<tr>
-		<td>Faire apparaître le numéro INE de l'élève&nbsp;:</td>
+		<td><label for='bull2016_INE'>Faire apparaître le numéro INE de l'élève&nbsp;:</label></td>
 		<td>
-			<input type="checkbox" name="bull2016_INE" id="bull2016_INE" size="5" onchange="changement()" value="y"<?php
+			<input type="checkbox" name="bull2016_INE" id="bull2016_INE" onchange="changement()" value="y"<?php
 				echo $bull2016_INE_checked;
 			?> />
 		</td>
 	</tr>
 	<tr>
-		<td>Faire apparaître le cadre adresse responsable&nbsp;:</td>
+		<td><label for='bull2016_afficher_cadre_adresse_resp'>Faire apparaître le cadre adresse responsable&nbsp;:</label></td>
 		<td>
-			<input type="checkbox" name="bull2016_afficher_cadre_adresse_resp" id="bull2016_afficher_cadre_adresse_resp" size="5" onchange="changement()" value="y"<?php
+			<input type="checkbox" name="bull2016_afficher_cadre_adresse_resp" id="bull2016_afficher_cadre_adresse_resp" onchange="changement()" value="y"<?php
 				echo $bull2016_afficher_cadre_adresse_resp_checked;
 			?> />
 		</td>
 	</tr>
 	<tr>
-		<td>Ne pas réserver d'espace pour les EPI, AP, Parcours en page 2<br />
-		<span style='font-size:x-small'>Remonter les cadres suivants si un espace libre apparait</span>&nbsp;:</td>
+		<td><label for='bull2016_pas_espace_reserve_EPI_AP_Parcours'>Ne pas réserver d'espace pour les EPI, AP, Parcours en page 2<br />
+		<span style='font-size:x-small'>Remonter les cadres suivants si un espace libre apparait</span>&nbsp;:</label></td>
 		<td>
-			<input type="checkbox" name="bull2016_pas_espace_reserve_EPI_AP_Parcours" id="bull2016_pas_espace_reserve_EPI_AP_Parcours" size="5" onchange="changement()" value="y"<?php
+			<input type="checkbox" name="bull2016_pas_espace_reserve_EPI_AP_Parcours" id="bull2016_pas_espace_reserve_EPI_AP_Parcours" onchange="changement()" value="y"<?php
 				echo $bull2016_pas_espace_reserve_EPI_AP_Parcours_checked;
+			?> />
+		</td>
+	</tr>
+	<tr>
+		<td><label for='bull2016_autorise_sous_matiere'>Prendre en compte le souhait des professeurs<br />de voir apparaitre telle ou telle sous-matière&nbsp;:</label></td>
+		<td>
+			<input type="checkbox" name="bull2016_autorise_sous_matiere" id="bull2016_autorise_sous_matiere" onchange="changement()" value="y"<?php
+				echo $bull2016_autorise_sous_matiere_checked;
 			?> />
 		</td>
 	</tr>
@@ -525,7 +548,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Afficher l'évolution (+/-) par rapport à la période précédente&nbsp;:</td>
+		<td><label for='bull2016_evolution_moyenne_periode_precedente'>Afficher l'évolution (+/-) par rapport à la période précédente&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_evolution_moyenne_periode_precedente" id="bull2016_evolution_moyenne_periode_precedente" onchange="changement()" value="y" <?php
 			if($bull2016_evolution_moyenne_periode_precedente=="y") {
@@ -543,7 +566,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Afficher les moyennes min/classe/max dans la colonne Classe&nbsp;:</td>
+		<td><label for='bull2016_moyminclassemax'>Afficher les moyennes min/classe/max dans la colonne Classe&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_moyminclassemax" id="bull2016_moyminclassemax" onchange="changement()" value="y" <?php
 			if($bull2016_moyminclassemax=="y") {
@@ -573,7 +596,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Afficher les <?php echo getSettingValue("gepi_denom_mention");?>s sous la forme de cases à cocher&nbsp;:</td>
+		<td><label for='bull2016_avec_coches_mentions'>Afficher les <?php echo getSettingValue("gepi_denom_mention");?>s sous la forme de cases à cocher&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_avec_coches_mentions" id="bull2016_avec_coches_mentions" onchange="changement()" value="y" <?php
 			if($bull2016_avec_coches_mentions!="n") {
@@ -583,7 +606,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Dans le cas où on n'affiche pas de case à cocher,<br />faire précéder la <?php echo getSettingValue("gepi_denom_mention");?> obtenue de l'intitulé "<?php echo getSettingValue("gepi_denom_mention");?>"&nbsp;:</td>
+		<td><label for='bull2016_intitule_mentions'>Dans le cas où on n'affiche pas de case à cocher,<br />faire précéder la <?php echo getSettingValue("gepi_denom_mention");?> obtenue de l'intitulé "<?php echo getSettingValue("gepi_denom_mention");?>"&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_intitule_mentions" id="bull2016_intitule_mentions" onchange="changement()" value="y" <?php
 			if($bull2016_intitule_mentions!="n") {
@@ -597,7 +620,7 @@ echo add_token_field();
 <h3>Paramètres des absences</h3>
 <table class='boireaus boireaus_alt' summary='Paramètres des absences'>
 	<tr>
-		<td>Afficher le nombre d'absences non justifiées&nbsp;:</td>
+		<td><label for='bull2016_aff_abs_nj'>Afficher le nombre d'absences non justifiées&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_aff_abs_nj" id="bull2016_aff_abs_nj" onchange="changement()" value="y" <?php
 			if(getSettingValue('bull2016_aff_abs_nj')!="n") {
@@ -607,7 +630,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Afficher le nombre d'absences justifiées&nbsp;:</td>
+		<td><label for='bull2016_aff_abs_justifiees'>Afficher le nombre d'absences justifiées&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_aff_abs_justifiees" id="bull2016_aff_abs_justifiees" onchange="changement()" value="y" <?php
 			if(getSettingValue('bull2016_aff_abs_justifiees')!="n") {
@@ -617,7 +640,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Afficher le nombre total d'absences&nbsp;:</td>
+		<td><label for='bull2016_aff_total_abs'>Afficher le nombre total d'absences&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_aff_total_abs" id="bull2016_aff_total_abs" onchange="changement()" value="y" <?php
 			if(getSettingValue('bull2016_aff_total_abs')!="n") {
@@ -627,7 +650,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Afficher le nombre de retards&nbsp;:</td>
+		<td><label for='bull2016_aff_retards'>Afficher le nombre de retards&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_aff_retards" id="bull2016_aff_retards" onchange="changement()" value="y" <?php
 			if(getSettingValue('bull2016_aff_retards')!="n") {
@@ -652,7 +675,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Afficher le cadre des Voeux d'orientation&nbsp;:</td>
+		<td><label for='bull2016_voeux_orientation'>Afficher le cadre des Voeux d'orientation&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_voeux_orientation" id="bull2016_voeux_orientation" onchange="changement()" value="y" <?php
 			if(getSettingValue('bull2016_voeux_orientation')!="n") {
@@ -670,7 +693,7 @@ echo add_token_field();
 		</td>
 	</tr>
 	<tr>
-		<td>Afficher le cadre des Orientations proposées&nbsp;:</td>
+		<td><label for='bull2016_orientation_proposee'>Afficher le cadre des Orientations proposées&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_orientation_proposee" id="bull2016_orientation_proposee" onchange="changement()" value="y" <?php
 			if(getSettingValue('bull2016_orientation_proposee')!="n") {

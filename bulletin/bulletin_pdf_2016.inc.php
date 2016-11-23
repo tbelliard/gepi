@@ -259,6 +259,7 @@
 
 
 
+	// MENTIONS
 
 	$bull2016_affich_mentions=getSettingValue("bull2016_affich_mentions");
 	if($bull2016_affich_mentions=="") {
@@ -282,7 +283,7 @@
 
 
 
-
+	// MOYENNES
 
 	$bull2016_arrondi=getSettingValue("bull2016_arrondi");
 	if(((!preg_match("/^[0-9]{1,}$/", $bull2016_arrondi))&&
@@ -324,6 +325,15 @@
 
 	$param_bull2016["bull2016_moyminclassemax"]=getSettingValue("bull2016_moyminclassemax");
 
+
+
+	// APPRECIATIONS et SOUS-MATIERES
+
+	$param_bull2016["bull2016_autorise_sous_matiere"]=getSettingValue("bull2016_autorise_sous_matiere");
+
+
+
+	// ABSENCES, RETARDS,...
 
 	//$afficher_nb_heures_perdues="n";
 	$param_bull2016["bull2016_afficher_nb_heures_perdues"]="n";

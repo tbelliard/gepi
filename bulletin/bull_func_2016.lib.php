@@ -1787,20 +1787,31 @@ die();
 				$pdf->SetFillColor(0, 0, 0);
 				$pdf->SetXY($param_bull2016["x_acquis_col_3"], $y_courant);
 
-				/*
+
+				$largeur_appreciation2=$param_bull2016["largeur_acquis_col_3"];
+				//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				// 20161123
 				// si on autorise l'affichage des sous matière et s'il y en a alors on les affiche
-				$id_groupe_select = $tab_bull['groupe'][$m]['id'];
-				$pdf->SetXY($param_bull2016["x_acquis_col_3"], $Y_decal-($espace_entre_matier/2));
+				//$id_groupe_select = $tab_bull['groupe'][$m]['id'];
+				//$pdf->SetXY($param_bull2016["x_acquis_col_3"], $Y_decal-($espace_entre_matier/2));
 				$X_sous_matiere = 0; $largeur_sous_matiere=0;
 
-				if($tab_modele_pdf["autorise_sous_matiere"][$classe_id]==='1' and !empty($tab_bull['groupe'][$m][$i]['cn_nom'])) {
-					$X_sous_matiere = $X_note_moy_app+$largeur_utilise;
-					$Y_sous_matiere = $Y_decal-($espace_entre_matier/2);
+				// A MODIFIER POUR POUVOIR LIMITER LA LARGEUR, par exemple à 20mm
+
+				if((isset($param_bull2016["bull2016_autorise_sous_matiere"]))&&($param_bull2016["bull2016_autorise_sous_matiere"]=="y")&&(!empty($tab_bull['groupe'][$m][$i]['cn_nom']))) {
+
+					// Bordure blanche pour les sous-matières
+					$pdf->SetDrawColor(255, 255, 255);
+
+					$X_sous_matiere = $param_bull2016["x_acquis_col_3"];
+					//$Y_sous_matiere = $y_courant-$hauteur_matiere/2;
+					$Y_sous_matiere = $y_courant;
 					$n=0;
-					$largeur_texte_sousmatiere=0; $largeur_sous_matiere=0;
+					$largeur_texte_sousmatiere=0;
+					$largeur_sous_matiere=0;
 					while( !empty($tab_bull['groupe'][$m][$i]['cn_nom'][$n]) )
 					{
-						$pdf->SetFont('DejaVu','',8);
+						$pdf->SetFont('DejaVu','',6);
 						$largeur_texte_sousmatiere = $pdf->GetStringWidth($tab_bull['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['groupe'][$m][$i]['cn_note'][$n]);
 						if($largeur_sous_matiere<$largeur_texte_sousmatiere) { $largeur_sous_matiere=$largeur_texte_sousmatiere; }
 						$n = $n + 1;
@@ -1810,15 +1821,20 @@ die();
 					while( !empty($tab_bull['groupe'][$m][$i]['cn_nom'][$n]) )
 					{
 						$pdf->SetXY($X_sous_matiere, $Y_sous_matiere);
-						$pdf->SetFont('DejaVu','',8);
-						$pdf->Cell($largeur_sous_matiere, $espace_entre_matier/count($tab_bull['groupe'][$m][$i]['cn_nom']), ($tab_bull['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['groupe'][$m][$i]['cn_note'][$n]),1,0,'L');
-						$Y_sous_matiere = $Y_sous_matiere+$espace_entre_matier/count($tab_bull['groupe'][$m][$i]['cn_nom']);
+						$pdf->SetFont('DejaVu','',6);
+						$pdf->Cell($largeur_sous_matiere, $hauteur_matiere/count($tab_bull['groupe'][$m][$i]['cn_nom']), ($tab_bull['groupe'][$m][$i]['cn_nom'][$n].': '.$tab_bull['groupe'][$m][$i]['cn_note'][$n]),1,0,'L');
+						$Y_sous_matiere = $Y_sous_matiere+$hauteur_matiere/count($tab_bull['groupe'][$m][$i]['cn_nom']);
 						$n = $n + 1;
 					}
-					$largeur_utilise = $largeur_utilise+$largeur_sous_matiere;
+
+					$largeur_appreciation2=$param_bull2016["largeur_acquis_col_3"]-$largeur_sous_matiere;
+
+					// Retour aux bordures noires par défaut, mais non dessinées en principe sur les bulletins PDF 2016
+					$pdf->SetDrawColor(0, 0, 0);
 				}
-				$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
-				*/
+				//$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
+				$pdf->SetXY($param_bull2016["x_acquis_col_3"]+$largeur_sous_matiere, $y_courant);
+				//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 				// calcul de la taille du texte des appréciations
 				$hauteur_caractere_appreciation = 8;
@@ -1834,7 +1850,7 @@ die();
 				// DEBUT AJUSTEMENT TAILLE APPRECIATION
 				$taille_texte_total = $pdf->GetStringWidth($app_aff);
 				//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
-				$largeur_appreciation2=$param_bull2016["largeur_acquis_col_3"];
+				//$largeur_appreciation2=$param_bull2016["largeur_acquis_col_3"];
 
 				if($use_cell_ajustee=="n") {
 					//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
