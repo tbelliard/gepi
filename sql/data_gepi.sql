@@ -1766,7 +1766,7 @@ INSERT INTO setting VALUES ('autorise_envoi_sms', 'n');
 INSERT INTO setting VALUES ('sms_prestataire', '');
 INSERT INTO setting VALUES ('sms_username', '');
 INSERT INTO setting VALUES ('sms_password', '');
-INSERT INTO setting VALUES ('sms_identite', 'Nom de l''établissement');
+INSERT INTO setting VALUES ('sms_identite', '');
 INSERT INTO droits SET id='/bulletin/impression_avis_grp.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Impression des avis sur les groupes-classes',statut='';
 INSERT INTO droits SET id='/mod_abs2/alerte_nj.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Absences non justifiées depuis un certain temps', statut='';
 INSERT INTO setting SET name='abs2_afficher_alerte_nj', value='y';
