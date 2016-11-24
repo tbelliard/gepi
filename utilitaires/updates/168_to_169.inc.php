@@ -142,7 +142,7 @@ if (getSettingValue('sms_password')===null) {
 
 $result .= "&nbsp;-> Ajout de l'entrée sms_identite dans la table setting<br />";
 if (getSettingValue('sms_identite')===null) {
-	if (saveSetting('sms_identite',getSettingValue('gepiSchoolName'))) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+	if (saveSetting('sms_identite','')) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
 } else $result .= msj_present("L'entrée sms_identite existe déjà dans la table setting");
 
 $result .= "&nbsp;-> Ajout de l'entrée abs2_afficher_alerte_nj dans la table setting<br />";
