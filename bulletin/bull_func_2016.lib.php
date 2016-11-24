@@ -1053,9 +1053,17 @@ die();
 		$pdf->SetXY($param_bull2016["x_acquis_col_2"], $param_bull2016["y_acquis_ligne_entete"]);
 		$pdf->SetFont('DejaVu','',7);
 		//$pdf->Cell($param_bull2016["largeur_bandeau_suivi_acquis"],7, "Suivi des acquis scolaires de l'élève",0,2,'C');
-		$texte="Éléments du programme travaillés durant\nla période (connaissances/compétences)";
+		//$texte="Éléments du programme travaillés durant\nla période (connaissances/compétences)";
+		$texte="Éléments du programme travaillés durant la période (connaissances/compétences)";
 		//$pdf->Cell($param_bull2016["largeur_cadre_logo_RF"]-8, $param_bull2016["hauteur_cadre_EN"]-6, $texte,0,2,'C');
-		$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_2"], $param_bull2016["hauteur_acquis_ligne_entete"], 'L', 'M', 0);
+		//$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_2"], $param_bull2016["hauteur_acquis_ligne_entete"], 'L', 'M', 0);
+		$taille_max_police=7;
+		$cell_ajustee_texte_matiere_ratio_min_max=3;
+		$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+		$largeur_dispo=$param_bull2016["largeur_acquis_col_2"];
+		$h_cell=$param_bull2016["hauteur_acquis_ligne_entete"];
+		cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
 
 		// Colonne 3 : Appréciation
 		$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_entete"]["R"], $param_bull2016["couleur_acquis_ligne_entete"]["V"], $param_bull2016["couleur_acquis_ligne_entete"]["B"]);
@@ -1068,7 +1076,14 @@ die();
 		//$pdf->Cell($param_bull2016["largeur_bandeau_suivi_acquis"],7, "Suivi des acquis scolaires de l'élève",0,2,'C');
 		$texte="Acquisitions, progrès et difficultés éventuelles";
 		//$pdf->Cell($param_bull2016["largeur_cadre_logo_RF"]-8, $param_bull2016["hauteur_cadre_EN"]-6, $texte,0,2,'C');
-		$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_3"], $param_bull2016["hauteur_acquis_ligne_entete"], 'L', 'M', 0);
+		//$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_3"], $param_bull2016["hauteur_acquis_ligne_entete"], 'L', 'M', 0);
+		$taille_max_police=7;
+		$cell_ajustee_texte_matiere_ratio_min_max=3;
+		$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+		$largeur_dispo=$param_bull2016["largeur_acquis_col_3"];
+		$h_cell=$param_bull2016["hauteur_acquis_ligne_entete"];
+		cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
 
 		// Colonne 4 : Moyenne élève
 		$pdf->SetFillColor($param_bull2016["couleur_acquis_colonne_moyenne_ligne_entete"]["R"], $param_bull2016["couleur_acquis_colonne_moyenne_ligne_entete"]["V"], $param_bull2016["couleur_acquis_colonne_moyenne_ligne_entete"]["B"]);
@@ -1081,7 +1096,13 @@ die();
 		//$pdf->Cell($param_bull2016["largeur_bandeau_suivi_acquis"],7, "Suivi des acquis scolaires de l'élève",0,2,'C');
 		$texte="Moyenne\nde l'élève";
 		//$pdf->Cell($param_bull2016["largeur_cadre_logo_RF"]-8, $param_bull2016["hauteur_cadre_EN"]-6, $texte,0,2,'C');
-		$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_moy"], $param_bull2016["hauteur_acquis_ligne_entete"], 'C', 'M', 0);
+		//$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_moy"], $param_bull2016["hauteur_acquis_ligne_entete"], 'C', 'M', 0);
+		$taille_max_police=7;
+		$cell_ajustee_texte_matiere_ratio_min_max=3;
+		$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+		$largeur_dispo=$param_bull2016["largeur_acquis_col_moy"];
+		$h_cell=$param_bull2016["hauteur_acquis_ligne_entete"];
+		cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'','C','C');
 
 		// Colonne 5 : Moyenne classe
 		$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_entete"]["R"], $param_bull2016["couleur_acquis_ligne_entete"]["V"], $param_bull2016["couleur_acquis_ligne_entete"]["B"]);
@@ -1094,7 +1115,13 @@ die();
 		//$pdf->Cell($param_bull2016["largeur_bandeau_suivi_acquis"],7, "Suivi des acquis scolaires de l'élève",0,2,'C');
 		$texte="Moyenne\nde classe";
 		//$pdf->Cell($param_bull2016["largeur_cadre_logo_RF"]-8, $param_bull2016["hauteur_cadre_EN"]-6, $texte,0,2,'C');
-		$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_moyclasse"], $param_bull2016["hauteur_acquis_ligne_entete"], 'C', 'M', 0);
+		//$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_moyclasse"], $param_bull2016["hauteur_acquis_ligne_entete"], 'C', 'M', 0);
+		$taille_max_police=7;
+		$cell_ajustee_texte_matiere_ratio_min_max=3;
+		$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+		$largeur_dispo=$param_bull2016["largeur_acquis_col_moyclasse"];
+		$h_cell=$param_bull2016["hauteur_acquis_ligne_entete"];
+		cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'','C','C');
 
 		// +++++++++++++++++
 

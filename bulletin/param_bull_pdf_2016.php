@@ -318,6 +318,53 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+
+	// Colonne Noms de matières
+	$bull2016_largeur_acquis_col_1=isset($_POST["bull2016_largeur_acquis_col_1"]) ? $_POST["bull2016_largeur_acquis_col_1"] : 44;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_1))||
+	($bull2016_largeur_acquis_col_1=="")) {
+		$bull2016_largeur_acquis_col_1=44;
+	}
+	if (!saveSetting("bull2016_largeur_acquis_col_1", $bull2016_largeur_acquis_col_1)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_largeur_acquis_col_1 !";
+		$reg_ok = 'no';
+	}
+
+	// Colonne Éléments de programmes
+	$bull2016_largeur_acquis_col_2=isset($_POST["bull2016_largeur_acquis_col_2"]) ? $_POST["bull2016_largeur_acquis_col_2"] : 49;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_2))||
+	($bull2016_largeur_acquis_col_2=="")) {
+		$bull2016_largeur_acquis_col_2=49;
+	}
+	if (!saveSetting("bull2016_largeur_acquis_col_2", $bull2016_largeur_acquis_col_2)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_largeur_acquis_col_2 !";
+		$reg_ok = 'no';
+	}
+
+	// Colonne Moyenne élève
+	$bull2016_largeur_acquis_col_moy=isset($_POST["bull2016_largeur_acquis_col_moy"]) ? $_POST["bull2016_largeur_acquis_col_moy"] : 15;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_moy))||
+	($bull2016_largeur_acquis_col_moy=="")) {
+		$bull2016_largeur_acquis_col_moy=15;
+	}
+	if (!saveSetting("bull2016_largeur_acquis_col_moy", $bull2016_largeur_acquis_col_moy)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_largeur_acquis_col_moy !";
+		$reg_ok = 'no';
+	}
+
+	// Colonne Moyenne classe
+	$bull2016_largeur_acquis_col_moyclasse=isset($_POST["bull2016_largeur_acquis_col_moyclasse"]) ? $_POST["bull2016_largeur_acquis_col_moyclasse"] : 15;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_moyclasse))||
+	($bull2016_largeur_acquis_col_moyclasse=="")) {
+		$bull2016_largeur_acquis_col_moyclasse=15;
+	}
+	if (!saveSetting("bull2016_largeur_acquis_col_moyclasse", $bull2016_largeur_acquis_col_moyclasse)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_largeur_acquis_col_moyclasse !";
+		$reg_ok = 'no';
+	}
+
+
+
 	if (isset($_POST['bull_affiche_aid'])) {
 		if (!saveSetting("bull_affiche_aid", $_POST['bull_affiche_aid'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_aid !";
@@ -470,6 +517,45 @@ if($bull2016_autorise_sous_matiere=="y") {
 	$bull2016_autorise_sous_matiere_checked=" checked";
 }
 
+// Colonne Noms de matières
+$bull2016_largeur_acquis_col_1=getSettingValue('bull2016_largeur_acquis_col_1');
+if($bull2016_largeur_acquis_col_1=="") {
+	$bull2016_largeur_acquis_col_1=44;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_1)) {
+	$bull2016_largeur_acquis_col_1=44;
+}
+
+
+// Colonne Éléments de programmes
+$bull2016_largeur_acquis_col_2=getSettingValue('bull2016_largeur_acquis_col_2');
+if($bull2016_largeur_acquis_col_2=="") {
+	$bull2016_largeur_acquis_col_2=49;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_2)) {
+	$bull2016_largeur_acquis_col_2=49;
+}
+
+
+// Colonne Moyenne élève
+$bull2016_largeur_acquis_col_moy=getSettingValue('bull2016_largeur_acquis_col_moy');
+if($bull2016_largeur_acquis_col_moy=="") {
+	$bull2016_largeur_acquis_col_moy=15;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_moy)) {
+	$bull2016_largeur_acquis_col_moy=15;
+}
+
+
+// Colonne Moyenne classe
+$bull2016_largeur_acquis_col_moyclasse=getSettingValue('bull2016_largeur_acquis_col_moyclasse');
+if($bull2016_largeur_acquis_col_moyclasse=="") {
+	$bull2016_largeur_acquis_col_moyclasse=15;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_moyclasse)) {
+	$bull2016_largeur_acquis_col_moyclasse=15;
+}
+
 ?>
 
 <form name="formulaire" action="param_bull_pdf_2016.php" method="post" style="width: 100%;">
@@ -478,6 +564,7 @@ echo add_token_field();
 ?>
 <input type='hidden' name='is_posted' value='y' />
 <h3>Paramètres divers</h3>
+<blockquote>
 <table class='boireaus boireaus_alt' summary='Paramètres divers'>
 	<tr>
 		<td><label for='bull2016_INE'>Faire apparaître le numéro INE de l'élève&nbsp;:</label></td>
@@ -513,8 +600,10 @@ echo add_token_field();
 		</td>
 	</tr>
 </table>
+</blockquote>
 
 <h3>Paramètres des moyennes</h3>
+<blockquote>
 <table class='boireaus boireaus_alt' summary='Paramètres des moyennes'>
 	<tr>
 		<td>Arrondi dans le calcul de moyennes&nbsp;:</td>
@@ -576,8 +665,10 @@ echo add_token_field();
 		</td>
 	</tr>
 </table>
+</blockquote>
 
 <h3>Paramètres des <?php echo getSettingValue("gepi_denom_mention");?>s</h3>
+<blockquote>
 <p><em>(sous réserve que des <?php echo getSettingValue("gepi_denom_mention");?>s soient associées aux classes)</em></p>
 <table class='boireaus boireaus_alt' summary='Paramètres des mentions'>
 	<tr>
@@ -616,8 +707,10 @@ echo add_token_field();
 		</td>
 	</tr>
 </table>
+</blockquote>
 
 <h3>Paramètres des absences</h3>
+<blockquote>
 <table class='boireaus boireaus_alt' summary='Paramètres des absences'>
 	<tr>
 		<td><label for='bull2016_aff_abs_nj'>Afficher le nombre d'absences non justifiées&nbsp;:</label></td>
@@ -660,8 +753,10 @@ echo add_token_field();
 		</td>
 	</tr>
 </table>
+</blockquote>
 
 <h3>Paramètres Orientation</h3>
+<blockquote>
 <p>Sous réserve que le module Orientation soit activé et que l'orientation soit activée pour les MEFS associés à la classe demandée à l'impression.</p>
 <table class='boireaus boireaus_alt' summary='Paramètres Orientation'>
 	<tr>
@@ -719,11 +814,62 @@ echo add_token_field();
 		</td>
 	</tr>
 </table>
+</blockquote>
+
+<h3>Largeurs des colonnes du tableau de Suivi des acquis</h3>
+<blockquote>
+<table class='boireaus boireaus_alt' summary='Largeurs de colonnes'>
+	<tr>
+		<td>Largeur de la colonne 'Nom de matières'&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_largeur_acquis_col_1" id="bull2016_largeur_acquis_col_1" size="5" onchange="changement()" value="<?php
+				echo $bull2016_largeur_acquis_col_1;
+			?>" onKeyDown="clavier_3(this.id,event, 0, 100, 1);" />
+		</td>
+	</tr>
+	<tr>
+		<td>Largeur de la colonne 'Éléments de programmes'&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_largeur_acquis_col_2" id="bull2016_largeur_acquis_col_2" size="5" onchange="changement()" value="<?php
+				echo $bull2016_largeur_acquis_col_2;
+			?>" onKeyDown="clavier_3(this.id,event, 0, 100, 1);" />
+		</td>
+	</tr>
+	<tr>
+		<td>Largeur de la colonne 'Moyenne élève'&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_largeur_acquis_col_moy" id="bull2016_largeur_acquis_col_moy" size="5" onchange="changement()" value="<?php
+				echo $bull2016_largeur_acquis_col_moy;
+			?>" onKeyDown="clavier_3(this.id,event, 0, 100, 1);" />
+		</td>
+	</tr>
+	<tr>
+		<td>Largeur de la colonne 'Moyenne classe'&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_largeur_acquis_col_moyclasse" id="bull2016_largeur_acquis_col_moyclasse" size="5" onchange="changement()" value="<?php
+				echo $bull2016_largeur_acquis_col_moyclasse;
+			?>" onKeyDown="clavier_3(this.id,event, 0, 100, 1);" />
+		</td>
+	</tr>
+</table>
+<p>La colonne appréciation prend la largeur restante&nbsp;: <?php
+	$bull2016_largeur_acquis_col_3=(189-$bull2016_largeur_acquis_col_1-$bull2016_largeur_acquis_col_2-$bull2016_largeur_acquis_col_moy-$bull2016_largeur_acquis_col_moyclasse);
+	if($bull2016_largeur_acquis_col_3<0) {
+		$bull2016_largeur_acquis_col_3="<span style='color:red; font-weight:bold;' title=\"La largeur est négative. L'affichage va planter.\">".$bull2016_largeur_acquis_col_3."</span>";
+	}
+	echo "189-$bull2016_largeur_acquis_col_1-$bull2016_largeur_acquis_col_2-$bull2016_largeur_acquis_col_moy-$bull2016_largeur_acquis_col_moyclasse=".$bull2016_largeur_acquis_col_3."mm";
+?></p>
+<p><a href='#' onclick="document.getElementById('bull2016_largeur_acquis_col_1').value=44;
+document.getElementById('bull2016_largeur_acquis_col_2').value=49;
+document.getElementById('bull2016_largeur_acquis_col_moy').value=15;
+document.getElementById('bull2016_largeur_acquis_col_moyclasse').value=15;
+return false;">Reprendre les largeurs de colonnes par défaut</a></p>
+</blockquote>
 
 <?php
 echo "
 <h3>Paramètres communs (HTML/PDF)</h3>
-
+<blockquote>
 <p><a name='bull_affiche_aid'></a>Afficher les données sur les AID&nbsp;: 
 <input type=\"radio\" name=\"bull_affiche_aid\" id=\"bull_affiche_aidy\" value=\"y\" ";
 if (getSettingValue("bull_affiche_aid") == 'y') echo " checked";
@@ -732,7 +878,8 @@ echo " <input type=\"radio\" name=\"bull_affiche_aid\" id=\"bull_affiche_aidn\" 
 if (getSettingValue("bull_affiche_aid") != 'y') echo " checked";
 echo " /><label for='bull_affiche_aidn' style='cursor: pointer;'>&nbsp;Non</label><br />
 <em>(l'affichage risque d'être nécessaire en collège pour les EPI, AP et Parcours)</em>
-</p>";
+</p>
+</blockquote>";
 ?>
 <p style="text-align: center; margin-bottom:2em;"><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></p>
 

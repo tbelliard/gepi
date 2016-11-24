@@ -201,20 +201,68 @@
 	$param_bull2016["y_acquis_ligne_entete"]=111.5;
 	$param_bull2016["hauteur_acquis_ligne_entete"]=9;
 
+	// Colonne Noms de matières
 	$param_bull2016["x_acquis_col_1"]=10;
-	$param_bull2016["largeur_acquis_col_1"]=44;
+	//$param_bull2016["largeur_acquis_col_1"]=44;
+	$bull2016_largeur_acquis_col_1=getSettingValue('bull2016_largeur_acquis_col_1');
+	if($bull2016_largeur_acquis_col_1=="") {
+		$bull2016_largeur_acquis_col_1=44;
+	}
+	elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_1)) {
+		$bull2016_largeur_acquis_col_1=44;
+	}
+	$param_bull2016["largeur_acquis_col_1"]=$bull2016_largeur_acquis_col_1;
 
+
+	// Colonne Éléments de programmes
 	$param_bull2016["x_acquis_col_2"]=$param_bull2016["x_acquis_col_1"]+$param_bull2016["largeur_acquis_col_1"]+0.5;
-	$param_bull2016["largeur_acquis_col_2"]=49;
+	//$param_bull2016["largeur_acquis_col_2"]=49;
+	$bull2016_largeur_acquis_col_2=getSettingValue('bull2016_largeur_acquis_col_2');
+	if($bull2016_largeur_acquis_col_2=="") {
+		$bull2016_largeur_acquis_col_2=49;
+	}
+	elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_2)) {
+		$bull2016_largeur_acquis_col_2=49;
+	}
+	$param_bull2016["largeur_acquis_col_2"]=$bull2016_largeur_acquis_col_2;
 
+
+	// Colonne Appréciations: Abscisse (la largeur est calculée plus loin)
 	$param_bull2016["x_acquis_col_3"]=$param_bull2016["x_acquis_col_2"]+$param_bull2016["largeur_acquis_col_2"]+0.5;
-	$param_bull2016["largeur_acquis_col_3"]=65;
+	//$param_bull2016["largeur_acquis_col_3"]=65;
 
+
+	// Colonne Moyenne élève: Largeur (abscisse calculée plus loin)
+	$bull2016_largeur_acquis_col_moy=getSettingValue('bull2016_largeur_acquis_col_moy');
+	if($bull2016_largeur_acquis_col_moy=="") {
+		$bull2016_largeur_acquis_col_moy=15;
+	}
+	elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_moy)) {
+		$bull2016_largeur_acquis_col_moy=15;
+	}
+	$param_bull2016["largeur_acquis_col_moy"]=$bull2016_largeur_acquis_col_moy;
+
+
+	// Colonne Moyenne classe: Largeur (abscisse calculée plus loin)
+	$bull2016_largeur_acquis_col_moyclasse=getSettingValue('bull2016_largeur_acquis_col_moyclasse');
+	if($bull2016_largeur_acquis_col_moyclasse=="") {
+		$bull2016_largeur_acquis_col_moyclasse=15;
+	}
+	elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_moyclasse)) {
+		$bull2016_largeur_acquis_col_moyclasse=15;
+	}
+	$param_bull2016["largeur_acquis_col_moyclasse"]=$bull2016_largeur_acquis_col_moyclasse;
+
+
+	// Colonne Appréciations: Largeur
+	$param_bull2016["largeur_acquis_col_3"]=189-$param_bull2016["largeur_acquis_col_1"]-$param_bull2016["largeur_acquis_col_2"]-$param_bull2016["largeur_acquis_col_moy"]-$param_bull2016["largeur_acquis_col_moyclasse"];
+
+
+	// Colonne Moyenne élève: Abscisse
 	$param_bull2016["x_acquis_col_moy"]=$param_bull2016["x_acquis_col_3"]+$param_bull2016["largeur_acquis_col_3"]+0.5;
-	$param_bull2016["largeur_acquis_col_moy"]=15;
 
+	// Colonne Moyenne classe: Abscisse
 	$param_bull2016["x_acquis_col_moyclasse"]=$param_bull2016["x_acquis_col_moy"]+$param_bull2016["largeur_acquis_col_moy"]+0.5;
-	$param_bull2016["largeur_acquis_col_moyclasse"]=15;
 
 
 	// Ligne 1 tableau des acquis
