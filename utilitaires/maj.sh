@@ -152,7 +152,7 @@ Exemples d'utilisation :
     }
 
     if ($force || $start_from == '1.6.9') {
-        require './updates/169_to_dev.inc.php';
+        require './updates/169_to_170.inc.php';
     }
 
 // Test sur la version des plugins (installés ou pas)

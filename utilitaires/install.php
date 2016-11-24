@@ -285,6 +285,7 @@ if ($etape == 4) {
 			echo "<FORM ACTION='install.php' METHOD='post'>\n";
 			echo "<INPUT TYPE='hidden' NAME='etape' VALUE='5' />\n";
 			echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' /></div>\n";
+			echo "<p><br /></p>";
 			echo "</FORM>\n";
 		}
 	}
@@ -366,6 +367,7 @@ else if ($etape == 3) {
 
 	echo "<div style='text-align:right'><input type='submit' class='fondl' name='Valider' value='Suivant >>' /></div>\n";
 
+	echo "<p><br /></p>";
 
 	echo "</form>\n";
 
@@ -403,6 +405,8 @@ else if ($etape == 2) {
 		echo "<input type='hidden' name='pass_db' value=\"".$_POST['pass_db']."\" /></p>\n";
 
 		echo "<div style='text-align:right'><p><input type='submit' class='fondl' name='Valider' value='Suivant >>' /></p></div>\n";
+
+		echo "<p><br /></p>";
 
 		echo "</form>\n";
 	}
@@ -444,6 +448,9 @@ else if ($etape == 1) {
 	echo "<input type='password' name='pass_db' class='formo' value=\"$pass_db\" size='40' /></fieldset>\n";
 
 	echo "<div style='text-align:right'><p><input type='submit' class='fondl' name='Valider' value='Suivant >>' /></p></div>\n";
+
+	echo "<p><br /></p>";
+
 	echo "</form>\n";
 
 	end_html();
@@ -480,6 +487,9 @@ else if ($etape == 1) {
 
 
 		echo "<p><input type='submit' class='fondl' Value = 'Continuer' name='Continuer' /></p>\n";
+
+		echo "<p><br /></p>";
+
 		echo "</form>\n";
 		end_html();
 	} else {

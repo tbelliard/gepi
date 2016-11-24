@@ -253,8 +253,8 @@ if (isset ($_POST['maj'])) {
         require 'updates/168_to_169.inc.php';
 	}
 
-	if (($force_maj == 'yes') or (quelle_maj("master"))) {
-        require 'updates/169_to_dev.inc.php';
+	if (($force_maj == 'yes') or (quelle_maj("1.7.0"))) {
+        require 'updates/169_to_170.inc.php';
 	}
 
 	// Mise à jour du numéro de version

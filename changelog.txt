@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-master (Version de développement)
+Gepi-1.7.0 (24/11/2016)
 ===========================
 
 Ajout d'un module LSU pour les remontées CLG vers le Livret Scolaire Unifié.
