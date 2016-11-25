@@ -278,7 +278,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/index_admin.php" '.insert_confirm_abandon().'>Engagements</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_listes_perso/index_admin.php" '.insert_confirm_abandon().'>Listes personnelles</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_orientation/admin.php" '.insert_confirm_abandon().'>Orientation</a></li>'."\n";
-		$menus .= '      <li><a href="'.$gepiPath.'/mod_LSUN/admin.php" '.insert_confirm_abandon().'>Livret Scolaire Unifié</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_LSUN/admin.php" '.insert_confirm_abandon().'>Livret Scolaire Unique</a></li>'."\n";
 		$menus .= '    </ul>'."\n";
 		$menus .= '  </li>'."\n";
 
@@ -390,7 +390,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_orientation/index.php" '.insert_confirm_abandon().'>Orientation</a></li>'."\n";
 		}
 		if(getSettingAOui('active_module_LSUN')) {
-			$menus .= '  <li><a href="'.$gepiPath.'/mod_LSUN/index.php" '.insert_confirm_abandon().'>Livret Scolaire Unifié</a></li>'."\n";
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_LSUN/index.php" '.insert_confirm_abandon().'>Livret Scolaire Unique</a></li>'."\n";
 		}
 		$menus .= '</ul>'."\n";	
 		$menus .= '</li>'."\n";
