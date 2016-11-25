@@ -119,7 +119,7 @@ if ($utilisateur->getStatut()=="professeur") {
 	
 }
 
-debug_var();
+//debug_var();
 //**************** Pied de page *****************
 require_once("../lib/footer.inc.php");
 //**************** Fin de pied de page *****************
