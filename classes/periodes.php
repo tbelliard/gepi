@@ -345,7 +345,7 @@ if ($test_periode == 0) {
 	<th style='padding: 5px;'>Nom de la période</th>
 	<th style='padding: 5px;' title="La date précisée ici est prise en compte pour les appartenances des élèves à telle classe sur telle période (notamment pour les élèves changeant de classe).
 Il n'est pas question ici de verrouiller automatiquement une période de note à la date saisie.">Date de fin<br />de la période</th>
-	<th style='padding: 5px;' title="La date de conseil de classe est requise pour la remontée Livret Scolaire Unifié (LSU).">Date de conseil<br />de classe</th>
+	<th style='padding: 5px;' title="La date de conseil de classe est requise pour la remontée Livret Scolaire Unique (LSU).">Date de conseil<br />de classe</th>
 	</tr>
 <?php
 	$k = '1';

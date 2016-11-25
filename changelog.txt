@@ -6,7 +6,7 @@
 Gepi-1.7.0 (24/11/2016)
 ===========================
 
-Ajout d'un module LSU pour les remontées CLG vers le Livret Scolaire Unifié.
+Ajout d'un module LSU pour les remontées CLG vers le Livret Scolaire Unique.
 
 Absences pour les bulletins:
 - Absences pour les bulletins: Possibilité d'importer en CSV depuis Molière.
@@ -22,7 +22,6 @@ Bulletins:
 - Possibilité d'afficher moy min/classe/max dans les bulletins CLG 2016.
 - Ajout de facilités de navigation d'une page à une autre dans diverses pages.
 - Possibilité de modifier le mode d'alerte à propos du Verrouillage majuscule en page de login.
-- Possibilité de définir un port différent pour le serveur mySQL.
 
 AID:
 - Amélioration de la création des AID (facilités d'association élèves et profs).
@@ -52,6 +51,7 @@ Général:
 - Possibilité d'envoyer par mail les fiches bienvenue
 - Possibilité d'afficher la version gepi en title
   (pour s'y retrouver dans les onglets du navigateur).
+- Possibilité de définir un port différent pour le serveur mySQL.
 
 Initialisation CSV:
 - Améliorations pour dédoublonner les comptes parents et récupérer les comptes parents mis en réserve dans le cas d'une initialisation CSV.
