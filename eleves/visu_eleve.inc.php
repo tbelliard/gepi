@@ -504,7 +504,7 @@ Patientez pendant l'extraction des données... merci.
 				$acces_anna="y";
 			}
 			$acces_discipline="y";
-            $acces_fp="y";
+			$acces_fp="y";
 		}
 		elseif($_SESSION['statut']=='scolarite') {
 			if (getSettingValue("GepiAccesTouteFicheEleveScolarite")!='yes') {
@@ -525,7 +525,8 @@ Patientez pendant l'extraction des données... merci.
 			$acces_absences="y";
 
 			$acces_discipline="y";
-			$acces_fp="y";
+			// Le droit n'y est pas.
+			$acces_fp="n";
 
 			$GepiAccesReleveScol=getSettingValue('GepiAccesReleveScol');
 			if($GepiAccesReleveScol=="yes") {
@@ -565,7 +566,7 @@ Patientez pendant l'extraction des données... merci.
 			$acces_absences="y";
 
 			$acces_discipline="y";
-            $acces_fp="y";
+			$acces_fp="y";
 
 			$GepiAccesReleveCpeTousEleves=getSettingValue('GepiAccesReleveCpeTousEleves');
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
@@ -831,12 +832,13 @@ Patientez pendant l'extraction des données... merci.
 		else {
 			$acces_cdt="n";
 		}
-        $test_outils_comp = sql_query1("select count(outils_complementaires) from aid_config where outils_complementaires='y'");
-        if ($test_outils_comp != 0) {
-            $acces_fp="y";
-        }
-        else {
-            $acces_fp="n";
+
+		$test_outils_comp = sql_query1("select count(outils_complementaires) from aid_config where outils_complementaires='y'");
+		if ($test_outils_comp != 0) {
+			$acces_global_fp="y";
+		}
+		else {
+			$acces_global_fp="n";
 		}
 
 		$active_mod_discipline=getSettingValue("active_mod_discipline");
@@ -1158,7 +1160,7 @@ Patientez pendant l'extraction des données... merci.
 		}
 
 		// Onglet fiches projet
-		if($acces_fp=="y") {
+		if(($acces_fp=="y")&&($acces_global_fp=="y")) {
 			echo "<div id='t_fp' class='t_onglet' style='";
 			if($onglet=='fp') {
 				echo "border-bottom-color: ".$tab_couleur['fp']."; ";
@@ -3015,7 +3017,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 		// Onglet FICHES PROJET
 		//========================
 
-		if($acces_fp=="y") {
+		if(($acces_fp=="y")&&($acces_global_fp=="y")) {
 			echo "<div id='fp' class='onglet' style='";
 			if($onglet!="fp") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['fp']."; ";
