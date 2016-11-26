@@ -59,8 +59,13 @@ $activer_outils_comp = isset($_POST["activer_outils_comp"]) ? $_POST["activer_ou
 $feuille_presence = isset($_POST["feuille_presence"]) ? $_POST["feuille_presence"] : 'n';
 $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 
-$indice_aid = isset($indice_aid) ? $indice_aid : (isset($_SESSION["indice_aid"]) ? $_SESSION["indice_aid"] : NULL);
-$_SESSION["indice_aid"] = $indice_aid;
+if((isset($_GET['mode']))&&($_GET['mode']=="ajout")) {
+	unset($_SESSION["indice_aid"]);
+}
+else {
+	$indice_aid = isset($indice_aid) ? $indice_aid : (isset($_SESSION["indice_aid"]) ? $_SESSION["indice_aid"] : NULL);
+	$_SESSION["indice_aid"] = $indice_aid;
+}
 
 $mysqli = $GLOBALS["mysqli"];
 // ========== fin initialisation ===================
