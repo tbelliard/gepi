@@ -147,9 +147,18 @@ if ($test == -1) {
 
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='active_module_LSUN'");
 $res_test = mysqli_num_rows($req_test);
-if ($res_test == 0){
-	$result .= "Initialisation du paramètre 'active_module_LSUN' à 'y': ";
-	$sql="INSERT INTO setting SET name='active_module_LSUN', value='y';";
+if ($res_test == 0) {
+	$sql="SELECT * FROM classes WHERE classe like '3%';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$valeur='y';
+	}
+	else {
+		$valeur='n';
+	}
+
+	$result .= "Initialisation du paramètre 'active_module_LSUN' à '$valeur': ";
+	$sql="INSERT INTO setting SET name='active_module_LSUN', value='$valeur';";
 	$result_inter = traite_requete($sql);
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");

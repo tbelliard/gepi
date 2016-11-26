@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -75,7 +75,7 @@ require_once("../lib/header.inc.php");
 <p class="bold" style="margin-top: .5em;">
 	<!-- <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> -->
 	<!-- | -->
-	<a href="config_aid.php">Ajouter une catégorie d'AID</a>
+	<a href="config_aid.php?mode=ajout">Ajouter une catégorie d'AID</a>
 	<!-- | -->
 
 <?php
