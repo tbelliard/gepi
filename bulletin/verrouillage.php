@@ -247,7 +247,7 @@ if (isset($_POST['ok'])) {
 					if ((isset($_POST["date_conseil_".$nom_classe]))&&($_POST["date_conseil_".$nom_classe]!=""))  {
 						try {
 						    $date_conseil = new DateTime(str_replace("/",".",$_POST["date_conseil_".$nom_classe]));
-						    $date_fin->setTime(23,59,59);
+						    $date_conseil->setTime(23,59,59);
 						    if ($date_conseil->format('U') != $row_per[1]) {
 							$register = sql_query("UPDATE periodes SET date_conseil_classe='".$date_conseil->format('Y-m-d')."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
 							if (!$register) {$pb_reg_ver = 'yes';}
