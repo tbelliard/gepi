@@ -1227,6 +1227,8 @@ while ($k < $nb_periode) {
 				$mess[$k].="- ".$element->libelle;
 				$cpt = TRUE;
 			}
+
+			$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 		}
     }
     else {
@@ -1264,7 +1266,7 @@ while ($k < $nb_periode) {
 			$mess[$k].="<select name='Elem_groupe$k' id='Elem_groupe$k' style='margin-top:.5em'> \n";
 			$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
 			while($element = $toutElemProgramme->fetch_object()){
-			$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
+				$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
 			}
 			$mess[$k].="</select> \n";
 
@@ -1866,7 +1868,7 @@ foreach ($liste_eleves as $eleve_login) {
 						$mess[$k].="- ".$element->libelle;
 						$cpt = TRUE;
 					}
-		
+					// 20161129
 					$toutElemProgramme->data_seek(0);
 
 					$mess[$k].="<br />\n";
@@ -2146,7 +2148,7 @@ ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n
             }
 
             //============================================
-            if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
+            if(getSettingAOui('appreciations_types_profs')) {include('ctp.php');}
             //============================================
 
             if($proposer_liens_enregistrement=="y") {
