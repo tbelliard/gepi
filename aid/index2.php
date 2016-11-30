@@ -42,7 +42,9 @@ $indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["
 $order_by = isset($_GET["order_by"]) ? $_GET["order_by"] : NULL;
 
 // Vérification du niveau de gestion des AIDs
-if (NiveauGestionAid($_SESSION["login"],$indice_aid) <= 0) {
+$NiveauGestionAid=NiveauGestionAid($_SESSION["login"],$indice_aid);
+//if (NiveauGestionAid($_SESSION["login"],$indice_aid) <= 0) {
+if ($NiveauGestionAid <= 0) {
     header("Location: ../logout.php?auto=1");
     die();
 }
@@ -61,7 +63,8 @@ $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE in
 $nom_aid = @old_mysql_result($call_data, 0, "nom");
 $activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
 
-if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["is_posted"]))) {
+//if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["is_posted"]))) {
+if (($NiveauGestionAid >= 10) and (isset($_POST["is_posted"]))) {
 	check_token();
 
     // Enregistrement des données
@@ -155,7 +158,10 @@ require_once("../lib/header.inc.php");
 // debug_var();
 ?>
 <p class="bold noprint">
-<?php if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) { ?>
+<?php 
+	//if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
+	if ($NiveauGestionAid >= 5) {
+?>
 	<!-- | -->
 	<a href="add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=<?php echo $indice_aid; ?>">
 		Ajouter un(e) <?php echo $nom_aid; ?>
@@ -164,22 +170,31 @@ require_once("../lib/header.inc.php");
 	<a href="add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=<?php echo $indice_aid; ?>">
 		Ajouter des <?php echo $nom_aid; ?> à la chaîne
 	</a>
-<?php }
-if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) { ?>
+<?php 
+	}
+	//if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
+	if ($NiveauGestionAid >= 10) {
+?>
 	|
 	<a href="export_csv_aid.php?indice_aid=<?php echo $indice_aid; ?>">
 		Importation de données depuis un fichier vers GEPI
 	</a>
 <?php } ?>
 </p>
-<?php if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { ?>
+<?php
+	//if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { 
+	if (($NiveauGestionAid >= 10) and ($activer_outils_comp == "y")) { 
+?>
 <p class="medium">
 	Les droits d'accès aux différents champs sont configurables pour l'ensemble des AID dans la page 
 	<strong><em>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></em></strong>
 	.
 </p>
 <?php } ?>
-<?php if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { ?>
+<?php
+	//if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { 
+	if (($NiveauGestionAid >= 10) and ($activer_outils_comp == "y")) { 
+?>
 <form action="index2.php" name="form1" method="post">
 	<p class="center">
 		<input type="submit" name="Valider" />
@@ -195,7 +210,8 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) { ?>
 			</th>
 <?php
 // En tete de la colonne "Ajouter, supprimer des professeurs"
-if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
+//if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
+if ($NiveauGestionAid >= 5) {
 	if(!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y'))) {
 ?>
 			<th class="noprint">&nbsp;</th>
@@ -207,7 +223,8 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
 			<th class="noprint">&nbsp;</th>
 <?php
   // En tete de la colonne "Ajouter, supprimer des gestionnairess"
-if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
+//if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
+if ($NiveauGestionAid >= 10) {
   if (getSettingValue("active_mod_gest_aid")=="y") {
 ?>
 			<th class="noprint">&nbsp;</th>
@@ -215,7 +232,8 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
 	}
 }
 // colonne publier la fiche
-if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
+//if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
+if (($NiveauGestionAid >= 10) and ($activer_outils_comp == "y")) {
 ?>
 			<th class="small" style="font-weight: normal;">
 				La fiche est visible sur la 
@@ -296,7 +314,8 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outil
 <?php
 }
 // Colonne "supprimer
-if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
+//if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
+if ($NiveauGestionAid >= 5) {
 ?>
 			<th>&nbsp;</th>
 <?php }
@@ -310,7 +329,7 @@ if ($trouve_parent > 0) {
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 $i = 0;
 $alt=1;
-while ($i < $nombreligne){
+while ($i < $nombreligne) {
     $aid_nom = @old_mysql_result($calldata, $i, "nom");
     $aid_num = @old_mysql_result($calldata, $i, "numero");
     $eleve_peut_modifier = @old_mysql_result($calldata, $i, "eleve_peut_modifier");
@@ -325,12 +344,17 @@ while ($i < $nombreligne){
     // Première colonne du numéro de l'AID
 ?>
 		<tr class='lig<?php echo $alt; ?>'>
-<?php if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) { ?>
+<?php
+	$NiveauGestionAid_courant=NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id);
+	//if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) {
+	if ($NiveauGestionAid_courant >= 1) {
+?>
 			<td class='medium'><strong><?php echo $aid_num; ?></strong></td>
 <?php
 	}
-    // Colonne du nom de l'AID
-    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) {
+	// Colonne du nom de l'AID
+	//if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) {
+	if ($NiveauGestionAid_courant >= 10) {
 		if ($activer_outils_comp == "y") {
 ?>
 			<td class='medium'>
@@ -338,27 +362,35 @@ while ($i < $nombreligne){
 					<strong><?php echo $aid_nom; ?></strong>
 				</a>
 			</td>
-<?php	} else { ?>
+<?php
+		} else { ?>
 			<td class='medium'>
 				<a href='add_aid.php?action=modif_aid&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
 					<strong><?php echo $aid_nom; ?></strong>
 				</a>
 			</td>
-<?php 	}
-	} else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5) { ?>
+<?php
+		}
+	//} else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5) {
+	} else if ($NiveauGestionAid_courant >= 5) { 
+?>
 			<td class='medium'>
 				<a href='add_aid.php?action=modif_aid&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
 					<strong><?php echo $aid_nom; ?></strong>
 				</a>
 			</td>
-<?php } else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) { ?>
+<?php 
+	//} else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) { 
+	} else if ($NiveauGestionAid_courant >= 1) { 
+?>
 			<td class='medium'>
 				<strong><?php echo $aid_nom; ?></strong>
 			</td>
 <?php 
 	}
-    // colonne "Ajouter, supprimer des professeurs"
-    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5) {
+	// colonne "Ajouter, supprimer des professeurs"
+	//if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5) {
+	if ($NiveauGestionAid_courant >= 5) {
 		if (!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y'))) {
 ?>
 			<td class='medium noprint'>
@@ -369,8 +401,9 @@ while ($i < $nombreligne){
 <?php
 		} 
 	} 
-    // colonne "Ajouter, supprimer des élèves"
-    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) {
+	// colonne "Ajouter, supprimer des élèves"
+	//if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) {
+	if ($NiveauGestionAid_courant >= 1) {
 ?>
 			<td class='medium noprint'>
 				<a href='modify_aid.php?flag=eleve&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
@@ -378,9 +411,10 @@ while ($i < $nombreligne){
 				</a>
 			</td>
  <?php } 
-    // colonne "Ajouter, supprimer des gestionnaires"
-	if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) {
-	   if (getSettingValue("active_mod_gest_aid")=="y") {
+	// colonne "Ajouter, supprimer des gestionnaires"
+	//if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) {
+	if ($NiveauGestionAid_courant >= 10) {
+		if (getSettingValue("active_mod_gest_aid")=="y") {
 ?>
 			<td class='medium noprint'>
 				<a href='modify_aid.php?flag=prof_gest&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
@@ -390,8 +424,9 @@ while ($i < $nombreligne){
 <?php
 		} 
 	} 
-	if ((NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) and ($activer_outils_comp == "y")) {
-        // La fiche est-elle publique ?
+	//if ((NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) and ($activer_outils_comp == "y")) {
+	if (($NiveauGestionAid_courant >= 10) and ($activer_outils_comp == "y")) {
+		// La fiche est-elle publique ?
 ?>
 			<td class="center">
 				<input type="checkbox" 
@@ -447,9 +482,10 @@ while ($i < $nombreligne){
 					   />
 			</td>
 <?php
-    }
-    // colonne "Supprimer"
-    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5)  {
+	}
+	// colonne "Supprimer"
+	//if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5)  {
+	if ($NiveauGestionAid_courant >= 5)  {
 ?>
 			<td class='medium'>
 				<a class="noprint" href='../lib/confirm_query.php?liste_cible=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid ?>&amp;action=del_aid<?php echo add_token_in_url() ?>'>
@@ -473,7 +509,8 @@ while ($i < $nombreligne){
 ?>
 	</table>
 <?php
-if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
+//if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
+if (($NiveauGestionAid >= 10) and ($activer_outils_comp == "y")) {
 ?>
 	<p style="padding-bottom:1em;">
 		(*) Uniquement si l'administrateur a ouvert cette possibilité pour le projet concerné.
