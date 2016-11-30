@@ -254,12 +254,27 @@ function LibelleChampAid($champ) {
     return $nom;
 }
 
+function fdebug_aid($texte) {
+	global $gepiPath;
+	$debug=getSettingValue("DEBUG_acces_aid");
+	//$debug=1;
+	if($debug==1) {
+		//$dirname="$gepiPath/backup/".getSettingValue("backup_directory");
+		$dirname="../backup/".getSettingValue("backup_directory");
+		if(file_exists($dirname)) {
+			$f=fopen($dirname."/DEBUG_acces_aid.txt", "a+");
+			fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." : ".$texte."\n");
+			fclose($f);
+		}
+	}
+}
+
 /**
  * Calcule le niveau de gestion des AIDs
  * 
  * - 0 : aucun droit
  * - 1 : peut uniquement ajouter / supprimer des élèves
- * - 2 : (pas encore implémenter) peut uniquement ajouter / supprimer des élèves et des professeurs responsables
+ * - 2 : (pas encore implémenté) peut uniquement ajouter / supprimer des élèves et des professeurs responsables
  * - 3 : ...
  * - 10 : Peut tout faire
  *
@@ -270,33 +285,64 @@ function LibelleChampAid($champ) {
  */
 function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
     if ($_SESSION['statut'] == "administrateur") {
+        fdebug_aid("Acces statut administrateur : $_login, $_indice_aid, $_id_aid\nRetour 10");
         return 10;
         die();
     }
     if (getSettingValue("active_mod_gest_aid")=="y") {
+        fdebug_aid("Acces : $_login, $_indice_aid, $_id_aid");
+
       // l'id de l'aid n'est pas défini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catégorie
       if ($_id_aid == "") {
-        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
-        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
+        fdebug_aid("aid_id est non defini");
+
+        $sql="SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')";
+        $test1 = sql_query1($sql);
+        fdebug_aid("$sql\ntest1=$test1");
+
+        $sql="SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')";
+        $test2 = sql_query1($sql);
+        fdebug_aid("$sql\ntest2=$test2");
+
         if ($test2 >= 1) {
+            fdebug_aid("Retour 5");
             return 5;
         } else if ($test1 >= 1) {
+            fdebug_aid("Retour 1");
             return 1;
         } else
+          fdebug_aid("Retour 0");
           return 0;
+
       } else {
+
+        fdebug_aid("Acces : $_login, $_indice_aid, $_id_aid");
+
       // l'id de l'aid est défini : on regarde si l'utilisateur est gestionnaire de cette aid
-        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."' and id_aid = '".$_id_aid."')");
-        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
+       fdebug_aid("aid_id est defini : $_id_aid");
+
+       $sql="SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."' and id_aid = '".$_id_aid."')";
+        $test1 = sql_query1($sql);
+        fdebug_aid("$sql\ntest1=$test1");
+
+        $sql="SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')";
+        $test2 = sql_query1($sql);
+        fdebug_aid("$sql\ntest2=$test2");
+
         if ($test2 >= 1) {
+            fdebug_aid("Retour 5");
             return 5;
         } else if ($test1 >= 1) {
+            fdebug_aid("Retour 1");
             return 1;
         } else
+          fdebug_aid("Retour 0");
           return 0;
       }
-    } else
+    } else {
+      fdebug_aid("Retour 0");
       return 0;
+    }
 }
 
 /**
