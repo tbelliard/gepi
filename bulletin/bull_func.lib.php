@@ -2993,6 +2993,7 @@ fclose($f);
 						$largeur_appreciation = $tab_modele_pdf["longeur_note_app"][$classe_id]-$largeur_utilise-$largeur_Elements_Programmes_si_affiche;
 					}
 
+					$X_col_app_finalement=$X_col_app;
 					// 20160623
 					if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&($tab_modele_pdf["active_colonne_Elements_Programmes"][$classe_id]==='1')) {
 						$pdf->SetFont('DejaVu','',10);
@@ -3000,11 +3001,22 @@ fclose($f);
 						//$titre_entete_Elements_Programmes=$tab_modele_pdf['titre_entete_Elements_Programmes'][$classe_id];
 						$titre_entete_Elements_Programmes="Éléments de programmes";
 
-						$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LRB',0,'C');
+						// 20161130
+						//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LRB',0,'C');
 						//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LR',0,'C');
+
+						$texte=$titre_entete_Elements_Programmes;
+						$taille_max_police=10;
+						$taille_min_police=ceil($taille_max_police/3);
+						$largeur_dispo=$tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+						$h_cell=$hauteur_entete;
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LB','C','C');
+
 						$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+						$X_col_app_finalement=$X_col_app + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
 					}
 
+					$pdf->SetXY($X_col_app_finalement, $tab_modele_pdf["Y_note_app"][$classe_id]);
 					$pdf->SetFont('DejaVu','',10);
 
 					//$titre_entete_appreciation=$bull_intitule_app;
@@ -4665,6 +4677,8 @@ fclose($f);
 							$place_eleve=''; // on vide la variable
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_niveau"][$classe_id];
 						}
+
+						// 20161123
 
 						//appréciation
 						if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
