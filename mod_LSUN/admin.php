@@ -101,5 +101,5 @@ require_once("../lib/header.inc.php");
 	</fieldset>
 </form>
 <?php
-debug_var();
+//debug_var();
 require_once("../lib/footer.inc.php");

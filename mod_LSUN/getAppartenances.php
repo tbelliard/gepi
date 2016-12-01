@@ -100,7 +100,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],'AP-EPI')) {
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 ?>
 <form action="index.php" method="post" enctype="multipart/form-data" id="formFichier">
 	<p class="center">

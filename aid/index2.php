@@ -203,10 +203,10 @@ require_once("../lib/header.inc.php");
 	<table class='boireaus'>
 		<tr>
 			<th>
-				<a href='index2.php?order_by=numero,nom&amp;indice_aid=$indice_aid'>N°</a>
+				<a href='index2.php?order_by=numero,nom&amp;indice_aid=<?php echo $indice_aid;?>'>N°</a>
 			</th>
 			<th>
-				<a href='index2.php?order_by=nom&amp;indice_aid=$indice_aid'>Nom</a>
+				<a href='index2.php?order_by=nom&amp;indice_aid=<?php echo $indice_aid;?>'>Nom</a>
 			</th>
 <?php
 // En tete de la colonne "Ajouter, supprimer des professeurs"
