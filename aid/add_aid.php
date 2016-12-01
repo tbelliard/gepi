@@ -41,14 +41,16 @@ if (!checkAccess()) {
 	die();
 }
 
-if((!isset($indice_aid))||(!preg_match("/^[0-9]$/", $indice_aid))) {
-	header("Location: ../logout.php?auto=1");
+if((!isset($indice_aid))||(!preg_match("/^[0-9]{1,}$/", $indice_aid))) {
+	//header("Location: ../logout.php?auto=1");
+	header("Location: ../accueil.php?msg=Indice AID non défini.");
 	die();
 }
 
 // Vérification du niveau de gestion des AIDs
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
-	header("Location: ../logout.php?auto=1");
+	//header("Location: ../logout.php?auto=1");
+	header("Location: ../accueil.php?msg=NiveauGestion AID insuffisant.");
 	die();
 }
 
