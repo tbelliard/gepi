@@ -59,7 +59,9 @@ include_once 'fonctions_aid.php';
 $javascript_specifique = "aid/aid_ajax";
 global $mysqli;
 
-$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+$sql="SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'";
+//echo "$sql<br />";
+$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
 $nom_aid = @old_mysql_result($call_data, 0, "nom");
 $activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
 
@@ -70,11 +72,12 @@ if (($NiveauGestionAid >= 10) and (isset($_POST["is_posted"]))) {
     // Enregistrement des données
     // On va chercher les aid déjà existantes
 	
-	$nombreligne = mysqli_num_rows(Extrait_aid_sur_indice_aid ($indice_aid));
+	$call_data_aid_courant=Extrait_aid_sur_indice_aid ($indice_aid);
+	$nombreligne = mysqli_num_rows($call_data_aid_courant);
     $i = 0;
     $msg_inter = "";
     while ($i < $nombreligne){
-        $aid_id = @old_mysql_result($calldata, $i, "id");
+        $aid_id = @old_mysql_result($call_data_aid_courant, $i, "id");
         // Enregistrement de fiche publique
         if (isset($_POST["fiche_publique_".$aid_id])) {
             $register = mysqli_query($GLOBALS["mysqli"], "update aid set fiche_publique='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
@@ -136,7 +139,9 @@ if (($NiveauGestionAid >= 10) and (isset($_POST["is_posted"]))) {
 
 // On va chercher les aid déjà existantes, et on les affiche.
 if (!isset($order_by)) {$order_by = "numero,nom";}
-$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
+$sql="SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by;";
+//echo "$sql<br />";
+$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 $nombreligne = mysqli_num_rows($calldata);
 
 $trouve_parent = 0;
