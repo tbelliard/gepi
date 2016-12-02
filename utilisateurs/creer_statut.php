@@ -370,9 +370,16 @@ if ($query) {
 		$query_s = mysqli_query($GLOBALS["mysqli"], "SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$tab["login"]."'");
 		$statut = mysqli_fetch_array($query_s);
 
+		if(($statut["id_statut"]=="")||($statut["id_statut"]=="0")) {
+			$couleur_span_user=" style='color:red'";
+		}
+		else {
+			$couleur_span_user="";
+		}
+
 		$aff_users .= '
 		<tr>
-			<td><a href="modify_user.php?user_login='.$tab["login"].'" target="_blank" title="Voir/modifier dans un nouvel onglet/fenêtre le compte de l\'utilisateur.">'.$tab["nom"].' '.$tab["prenom"].'</a></td>
+			<td><a href="modify_user.php?user_login='.$tab["login"].'" target="_blank" title="Voir/modifier dans un nouvel onglet/fenêtre le compte de l\'utilisateur."><span id="span_user_'.$i.'"'.$couleur_span_user.'>'.$tab["nom"].' '.$tab["prenom"].'</span></a></td>
 			<td>
 		<form id="form'.$i.'" action="creer_statut.php" method="post">'."\n";
 
@@ -383,7 +390,7 @@ if ($query) {
 			<input type="hidden" name="userid" value="'.$tab["login"].'" />
 
 			<select name="userstat" onchange=\'document.getElementById("form'.$i.'").submit();\'>
-				<option value="rien">Choix du statut</option>';
+				<option value="rien" style="color:red">Choix du statut</option>';
 
 		$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
 		$query = mysqli_query($GLOBALS["mysqli"], $sql);
