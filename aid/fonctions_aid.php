@@ -69,7 +69,8 @@ function Extrait_aid_sur_id ($id, $indice_aid = NULL) {
 	
 function Extrait_aid_sur_indice_aid ($indice_aid) {
 	global $mysqli;
-	$sql="SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero , nom";
+	$sql="SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero , nom;";
+	//echo "$sql<br />";
 	$retour = mysqli_query($mysqli, $sql);
 	return $retour;
 }
