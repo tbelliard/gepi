@@ -91,6 +91,15 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+	$bull2016_cadre_visa_famille=isset($_POST["bull2016_cadre_visa_famille"]) ? $_POST["bull2016_cadre_visa_famille"] : "n";
+	if(($bull2016_cadre_visa_famille!="y")&&($bull2016_cadre_visa_famille!="n")) {
+		$bull2016_cadre_visa_famille="n";
+	}
+	if (!saveSetting("bull2016_cadre_visa_famille", $bull2016_cadre_visa_famille)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_cadre_visa_famille !";
+		$reg_ok = 'no';
+	}
+
 	$bull2016_afficher_cadre_adresse_resp=isset($_POST["bull2016_afficher_cadre_adresse_resp"]) ? $_POST["bull2016_afficher_cadre_adresse_resp"] : "n";
 	if(($bull2016_afficher_cadre_adresse_resp!="y")&&($bull2016_afficher_cadre_adresse_resp!="n")) {
 		$bull2016_afficher_cadre_adresse_resp="n";
@@ -556,6 +565,11 @@ elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_moyclasse)) {
 	$bull2016_largeur_acquis_col_moyclasse=15;
 }
 
+$bull2016_cadre_visa_famille_checked="";
+if(!getSettingANon('bull2016_cadre_visa_famille')) {
+	$bull2016_cadre_visa_famille_checked=" checked";
+}
+
 ?>
 
 <form name="formulaire" action="param_bull_pdf_2016.php" method="post" style="width: 100%;">
@@ -596,6 +610,14 @@ echo add_token_field();
 		<td>
 			<input type="checkbox" name="bull2016_autorise_sous_matiere" id="bull2016_autorise_sous_matiere" onchange="changement()" value="y"<?php
 				echo $bull2016_autorise_sous_matiere_checked;
+			?> />
+		</td>
+	</tr>
+	<tr>
+		<td><label for='bull2016_cadre_visa_famille'>Faire apparaître le cadre Visa de la famille en bas de 2è page&nbsp;:</label></td>
+		<td>
+			<input type="checkbox" name="bull2016_cadre_visa_famille" id="bull2016_cadre_visa_famille" onchange="changement()" value="y"<?php
+				echo $bull2016_cadre_visa_famille_checked;
 			?> />
 		</td>
 	</tr>
