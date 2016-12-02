@@ -5273,16 +5273,18 @@ die();
 
 		// Cadre Visa famille
 
-		$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
-		$pdf->Rect($param_bull2016["x_visa_famille"], $y_visa_famille, $param_bull2016["largeur_visa_famille"], $param_bull2016["hauteur_visa_famille"], 'F');
+		if($param_bull2016["bull2016_cadre_visa_famille"]=="y") {
+			$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
+			$pdf->Rect($param_bull2016["x_visa_famille"], $y_visa_famille, $param_bull2016["largeur_visa_famille"], $param_bull2016["hauteur_visa_famille"], 'F');
 
-		$pdf->SetXY($param_bull2016["x_visa_famille"], $y_visa_famille);
-		$pdf->SetFillColor(0, 0, 0);
-		$pdf->SetTextColor(0, 0, 0);
-		$pdf->Cell($param_bull2016["largeur_visa_famille"],7, "Visa de la famille",0,2,'L');
+			$pdf->SetXY($param_bull2016["x_visa_famille"], $y_visa_famille);
+			$pdf->SetFillColor(0, 0, 0);
+			$pdf->SetTextColor(0, 0, 0);
+			$pdf->Cell($param_bull2016["largeur_visa_famille"],7, "Visa de la famille",0,2,'L');
 
-		$pdf->SetXY($param_bull2016["x_visa_famille"], $y_visa_famille);
-		$pdf->Cell($param_bull2016["largeur_visa_famille"], 7, "Date, nom et signature des responsables légaux",0,2,'R');
+			$pdf->SetXY($param_bull2016["x_visa_famille"], $y_visa_famille);
+			$pdf->Cell($param_bull2016["largeur_visa_famille"], 7, "Date, nom et signature des responsables légaux",0,2,'R');
+		}
 	}
 }
 

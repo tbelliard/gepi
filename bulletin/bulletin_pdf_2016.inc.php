@@ -97,6 +97,11 @@
 
 	$param_bull2016["bull2016_INE"]=getSettingValue("bull2016_INE");
 
+	$param_bull2016["bull2016_cadre_visa_famille"]=getSettingValue("bull2016_cadre_visa_famille");
+	if(($param_bull2016["bull2016_cadre_visa_famille"]!="y")&&($param_bull2016["bull2016_cadre_visa_famille"]!="n")) {
+		$param_bull2016["bull2016_cadre_visa_famille"]="y";
+	}
+
 	//========================================
 
 	$param_bull2016["x_cadre_logo_RF"]=10;
