@@ -276,6 +276,37 @@
 	//$param_bull2016["hauteur_acquis_ligne_1"]=18;
 
 	//========================================
+
+	// Hauteur Cadre Bilan des acquisitions en cycle 3
+	$bull2016_hauteur_bilan_acquisitions_cycle_3=getSettingValue("bull2016_hauteur_bilan_acquisitions_cycle_3");
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_bilan_acquisitions_cycle_3))||
+	($bull2016_hauteur_bilan_acquisitions_cycle_3=="")) {
+		$bull2016_hauteur_bilan_acquisitions_cycle_3=83;
+	}
+
+	// Hauteur Cadre Bilan des acquisitions en cycle 4
+	$bull2016_hauteur_bilan_acquisitions_cycle_4=getSettingValue("bull2016_hauteur_bilan_acquisitions_cycle_4");
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_bilan_acquisitions_cycle_4))||
+	($bull2016_hauteur_bilan_acquisitions_cycle_4=="")) {
+		$bull2016_hauteur_bilan_acquisitions_cycle_4=44;
+	}
+
+	// Hauteur Cadre Communication avec la famille
+	$bull2016_hauteur_communication_famille=getSettingValue("bull2016_hauteur_communication_famille");
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_communication_famille))||
+	($bull2016_hauteur_communication_famille=="")) {
+		$bull2016_hauteur_communication_famille=49.5;
+	}
+
+	// Hauteur Cadre Visa de la famille
+	$bull2016_hauteur_visa_famille=getSettingValue("bull2016_hauteur_visa_famille");
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_visa_famille))||
+	($bull2016_hauteur_visa_famille=="")) {
+		$bull2016_hauteur_visa_famille=18;
+	}
+
+	//========================================
+
 	//a:10
 	//b:11
 	//c:12
@@ -288,12 +319,46 @@
 	$param_bull2016["couleur_bandeau_bilan_acquisitions"]["B"]=28;
 	//a6d81c
 	$param_bull2016["x_bandeau_bilan_acquisitions"]=6;
+
+
+// POSITION/HAUTEUR A RECALCULER
+
+	// Ordonnées avec un espace maximal pour les AP, EPI, Parcours, en calant le visa de la famille en bas de page.
 	//Cycle 3
-	$param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"]=91;
+	//$param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"]=91;
+
 	//Cycle 4
-	$param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"]=129.5;
+	//$param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"]=129.5;
 	$param_bull2016["largeur_bandeau_bilan_acquisitions"]=198;
 	$param_bull2016["hauteur_bandeau_bilan_acquisitions"]=8;
+	$param_bull2016["hauteur_bandeau_communication_famille"]=8;
+
+
+	$param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"]=HauteurPage
+											-$param_bull2016["hauteur_bandeau_bilan_acquisitions"]
+											-5
+											-$bull2016_hauteur_bilan_acquisitions_cycle_3
+											-10
+											-$param_bull2016["hauteur_bandeau_communication_famille"]
+											-5
+											-$bull2016_hauteur_communication_famille
+											-($param_bull2016["bull2016_cadre_visa_famille"]=="y" ? 1 : 0)*4
+											-($param_bull2016["bull2016_cadre_visa_famille"]=="y" ? 1 : 0)*$bull2016_hauteur_visa_famille
+											-10;
+
+
+	$param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"]=HauteurPage
+											-$param_bull2016["hauteur_bandeau_bilan_acquisitions"]
+											-5
+											-$bull2016_hauteur_bilan_acquisitions_cycle_4
+											-10
+											-$param_bull2016["hauteur_bandeau_communication_famille"]
+											-5
+											-$bull2016_hauteur_communication_famille
+											-($param_bull2016["bull2016_cadre_visa_famille"]=="y" ? 1 : 0)*4
+											-($param_bull2016["bull2016_cadre_visa_famille"]=="y" ? 1 : 0)*$bull2016_hauteur_visa_famille
+											-10;
+
 
 	$param_bull2016["couleur_bilan_acquisitions"]["R"]=14*16+14;
 	$param_bull2016["couleur_bilan_acquisitions"]["V"]=15*16+7;
@@ -305,10 +370,13 @@
 	//Cycle 4
 	$param_bull2016["y_bilan_acquisitions_cycle_4"]=$param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"]+$param_bull2016["hauteur_bandeau_bilan_acquisitions"]+5;
 	$param_bull2016["largeur_bilan_acquisitions"]=189;
+
 	//Cycle 3
-	$param_bull2016["hauteur_bilan_acquisitions_cycle_3"]=83;
+	//$param_bull2016["hauteur_bilan_acquisitions_cycle_3"]=83;
+	$param_bull2016["hauteur_bilan_acquisitions_cycle_3"]=$bull2016_hauteur_bilan_acquisitions_cycle_3;
 	//Cycle 4
-	$param_bull2016["hauteur_bilan_acquisitions_cycle_4"]=44;
+	//$param_bull2016["hauteur_bilan_acquisitions_cycle_4"]=44;
+	$param_bull2016["hauteur_bilan_acquisitions_cycle_4"]=$bull2016_hauteur_bilan_acquisitions_cycle_4;
 
 
 
@@ -423,23 +491,37 @@
 	$param_bull2016["couleur_bandeau_communication_famille"]["B"]=18;
 	//f68712
 	$param_bull2016["x_bandeau_communication_famille"]=6;
-	$param_bull2016["y_bandeau_communication_famille"]=197;
+	//$param_bull2016["y_bandeau_communication_famille"]=197;
 	$param_bull2016["largeur_bandeau_communication_famille"]=198;
-	$param_bull2016["hauteur_bandeau_communication_famille"]=8;
+	//$param_bull2016["hauteur_bandeau_communication_famille"]=8;
+
+	$param_bull2016["y_bandeau_communication_famille"]=HauteurPage
+											-$param_bull2016["hauteur_bandeau_communication_famille"]
+											-5
+											-$bull2016_hauteur_communication_famille
+											-($param_bull2016["bull2016_cadre_visa_famille"]=="y" ? 1 : 0)*4
+											-($param_bull2016["bull2016_cadre_visa_famille"]=="y" ? 1 : 0)*$bull2016_hauteur_visa_famille
+											-10;
 
 	$param_bull2016["couleur_communication_famille"]["R"]=15*16+12;
 	$param_bull2016["couleur_communication_famille"]["V"]=12*16+10;
 	$param_bull2016["couleur_communication_famille"]["B"]=8*16+14;
 	//fcca8e
 	$param_bull2016["x_communication_famille"]=10;
-	$param_bull2016["y_communication_famille"]=210;
+
+	//$param_bull2016["y_communication_famille"]=210;
+	$param_bull2016["y_communication_famille"]=$param_bull2016["y_bandeau_communication_famille"]+$param_bull2016["hauteur_bandeau_communication_famille"]+4;
+
 	$param_bull2016["largeur_communication_famille"]=142;
-	$param_bull2016["hauteur_communication_famille"]=49.5;
+
+	//$param_bull2016["hauteur_communication_famille"]=49.5;
+	$param_bull2016["hauteur_communication_famille"]=$bull2016_hauteur_communication_famille;
 
 	$param_bull2016["x_signature_chef"]=$param_bull2016["x_communication_famille"]+$param_bull2016["largeur_communication_famille"]+0.5;
-	$param_bull2016["y_signature_chef"]=210;
+	//$param_bull2016["y_signature_chef"]=210;
+	$param_bull2016["y_signature_chef"]=$param_bull2016["y_communication_famille"];
 	$param_bull2016["largeur_signature_chef"]=47.5;
-	$param_bull2016["hauteur_signature_chef"]=49.5;
+	$param_bull2016["hauteur_signature_chef"]=$param_bull2016["hauteur_communication_famille"];
 
 	$param_bull2016["affichage_haut_responsable"]="y";
 	//$param_bull2016["affiche_fonction_chef"]="y";
@@ -451,9 +533,12 @@
 	//$param_bull2016["couleur_visa_famille"]["B"]=8*16+14;
 	//fcca8e
 	$param_bull2016["x_visa_famille"]=10;
-	$param_bull2016["y_visa_famille"]=264.5;
+	//$param_bull2016["y_visa_famille"]=264.5;
+	$param_bull2016["y_visa_famille"]=HauteurPage
+							-$bull2016_hauteur_visa_famille
+							-10;
 	$param_bull2016["largeur_visa_famille"]=189;
-	$param_bull2016["hauteur_visa_famille"]=18;
+	$param_bull2016["hauteur_visa_famille"]=$bull2016_hauteur_visa_famille;
 
 	//========================================
 
@@ -558,6 +643,33 @@
 	}
 
 	$param_bull2016["bull2016_orientation_taille_police"]="9";
+
+	//========================================
+
+	/*
+	$param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"]=HauteurPage
+											-$param_bull2016["hauteur_bandeau_bilan_acquisitions"]
+											-$bull2016_hauteur_bilan_acquisitions_cycle_3
+											-5
+											-$param_bull2016["hauteur_bandeau_bilan_acquisitions"]
+											-$bull2016_hauteur_bilan_acquisitions_cycle_3
+											-5
+											-($param_bull2016["bull2016_cadre_visa_famille"]=="y" ? 1 : 0)*$hauteur_visa_famille
+											-10;
+
+	//Cycle 3
+	$param_bull2016["y_bilan_acquisitions_cycle_3"]=$param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"]+$param_bull2016["hauteur_bandeau_bilan_acquisitions"]+5;
+	//Cycle 4
+	$param_bull2016["y_bilan_acquisitions_cycle_4"]=$param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"]+$param_bull2016["hauteur_bandeau_bilan_acquisitions"]+5;
+	*/
+
+
+
+
+
+
+
+
 
 	//========================================
 
