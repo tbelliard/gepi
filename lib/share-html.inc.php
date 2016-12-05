@@ -3634,67 +3634,70 @@ function retourne_temoin_ou_lien_rss($ele_login) {
 	$retour="";
 
 	if((getSettingAOui('rss_cdt_eleve'))||(getSettingAOui('rss_cdt_responsable'))) {
-		$test_https = 'y';
-		if (!isset($_SERVER['HTTPS'])
-			OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
-			OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
-		{
-			$test_https = 'n';
-		}
+		// Le témoin Lien RSS n'est utilisé actuellement que pour les CDT
+		// Cela évoluera peut-être...
+		if(!getSettingANon("active_cahiers_texte")) {
+			$test_https = 'y';
+			if (!isset($_SERVER['HTTPS'])
+				OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
+				OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
+			{
+				$test_https = 'n';
+			}
 
-		if($_SESSION['statut']=='administrateur') {
-			//echo "<div style='text-align:right;'>\n";
-			$uri_el = retourneUri($ele_login, $test_https, 'cdt');
-			if($uri_el['uri']!="#") {
-				$retour="<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+			if($_SESSION['statut']=='administrateur') {
+				//echo "<div style='text-align:right;'>\n";
+				$uri_el = retourneUri($ele_login, $test_https, 'cdt');
+				if($uri_el['uri']!="#") {
+					$retour="<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+				}
+				else {
+					$retour="<a href='../cahier_texte_admin/rss_cdt_admin.php#rss_initialisation_cas_par_cas' target='_blank' title=\"Le flux RSS du cahier de textes de cet élève n'est pas initialisé. Cliquez pour accéder au paramétrage du module RSS et créer le flux de cet élève\"><img src='../images/icons/rss_non_initialise.png' width='16' height='16' /></a>";
+				}
+				//echo "</div>\n";
 			}
-			else {
-				$retour="<a href='../cahier_texte_admin/rss_cdt_admin.php#rss_initialisation_cas_par_cas' target='_blank' title=\"Le flux RSS du cahier de textes de cet élève n'est pas initialisé. Cliquez pour accéder au paramétrage du module RSS et créer le flux de cet élève\"><img src='../images/icons/rss_non_initialise.png' width='16' height='16' /></a>";
+			elseif((($_SESSION['statut']=='scolarite')&&(getSettingAOui('rss_cdt_scol')))||
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('rss_cdt_cpe')))||
+			(($_SESSION['statut']=='professeur')&&(getSettingAOui('rss_cdt_pp'))&&(is_pp($_SESSION['login'], "", $ele_login)))) {
+				//echo "<div style='text-align:right;'>\n";
+				$uri_el = retourneUri($ele_login, $test_https, 'cdt');
+				if($uri_el['uri']!="#") {
+					$retour="<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+				}
+				else {
+					$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS du cahier de textes de cet élève n'est pas initialisé. Contactez l'administrateur\" />";
+				}
+				//echo "</div>\n";
 			}
-			//echo "</div>\n";
-		}
-		elseif((($_SESSION['statut']=='scolarite')&&(getSettingAOui('rss_cdt_scol')))||
-		(($_SESSION['statut']=='cpe')&&(getSettingAOui('rss_cdt_cpe')))||
-		(($_SESSION['statut']=='professeur')&&(getSettingAOui('rss_cdt_pp'))&&(is_pp($_SESSION['login'], "", $ele_login)))) {
-			//echo "<div style='text-align:right;'>\n";
-			$uri_el = retourneUri($ele_login, $test_https, 'cdt');
-			if($uri_el['uri']!="#") {
-				$retour="<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
-			}
-			else {
-				$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS du cahier de textes de cet élève n'est pas initialisé. Contactez l'administrateur\" />";
-			}
-			//echo "</div>\n";
-		}
-		elseif(($_SESSION['statut']=='eleve')&&(getSettingAOui('rss_cdt_eleve'))&&(getSettingValue("rss_acces_ele") == 'direct')) {
-			$uri_el = retourneUri($ele_login, $test_https, 'cdt');
+			elseif(($_SESSION['statut']=='eleve')&&(getSettingAOui('rss_cdt_eleve'))&&(getSettingValue("rss_acces_ele") == 'direct')) {
+				$uri_el = retourneUri($ele_login, $test_https, 'cdt');
 
-			if($uri_el['uri']!="#") {
-				$retour="<a href='".$uri_el['uri']."' title=\"Flux RSS de votre cahier de textes.
-
-Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.
-Firefox, Internet Explorer,... savent lire les flux RSS.
-Il existe également des lecteurs de flux RSS pour les SmartPhone,...\" target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
-			}
-			else {
-				$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS de votre cahier de textes n'est pas initialisé. Contactez l'administrateur\" />";
-			}
-		}
-		elseif(($_SESSION['statut']=='responsable')&&(getSettingAOui('rss_cdt_responsable'))&&(getSettingValue("rss_acces_ele") == 'direct')) {
-			$uri_el = retourneUri($ele_login, $test_https, 'cdt');
-
-			if($uri_el['uri']!="#") {
-				$retour="<a href='".$uri_el['uri']."' title=\"Flux RSS du cahier de textes de ".get_nom_prenom_eleve($ele_login).".
+				if($uri_el['uri']!="#") {
+					$retour="<a href='".$uri_el['uri']."' title=\"Flux RSS de votre cahier de textes.
 
 Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.
 Firefox, Internet Explorer,... savent lire les flux RSS.
 Il existe également des lecteurs de flux RSS pour les SmartPhone,...\" target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+				}
+				else {
+					$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS de votre cahier de textes n'est pas initialisé. Contactez l'administrateur\" />";
+				}
 			}
-			else {
-				$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS de votre cahier de textes n'est pas initialisé. Contactez l'administrateur\" />";
+			elseif(($_SESSION['statut']=='responsable')&&(getSettingAOui('rss_cdt_responsable'))&&(getSettingValue("rss_acces_ele") == 'direct')) {
+				$uri_el = retourneUri($ele_login, $test_https, 'cdt');
+
+				if($uri_el['uri']!="#") {
+					$retour="<a href='".$uri_el['uri']."' title=\"Flux RSS du cahier de textes de ".get_nom_prenom_eleve($ele_login).".
+
+Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.
+Firefox, Internet Explorer,... savent lire les flux RSS.
+Il existe également des lecteurs de flux RSS pour les SmartPhone,...\" target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+				}
+				else {
+					$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS de votre cahier de textes n'est pas initialisé. Contactez l'administrateur\" />";
+				}
 			}
 		}
-
 	}
 
 	return $retour;
