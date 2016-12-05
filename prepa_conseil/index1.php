@@ -646,25 +646,27 @@ if (!$current_group) {
 			$id_grp_suiv=0;
 			$temoin_tmp=0;
 			for($loop=0;$loop<count($tab_groups);$loop++) {
-				if($tab_groups[$loop]['id']==$id_groupe){
-					$num_groupe=$loop;
+				if((!isset($tab_groups[$loop]['visibilite']['bulletins']))||($tab_groups[$loop]['visibilite']['bulletins']!="n")) {
+					if($tab_groups[$loop]['id']==$id_groupe){
+						$num_groupe=$loop;
 
-					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 
-					$temoin_tmp=1;
-					if(isset($tab_groups[$loop+1])){
-						$id_grp_suiv=$tab_groups[$loop+1]['id'];
+						$temoin_tmp=1;
+						if(isset($tab_groups[$loop+1])){
+							$id_grp_suiv=$tab_groups[$loop+1]['id'];
+						}
+						else{
+							$id_grp_suiv=0;
+						}
 					}
-					else{
-						$id_grp_suiv=0;
+					else {
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					}
-				}
-				else {
-					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-				}
 
-				if($temoin_tmp==0){
-					$id_grp_prec=$tab_groups[$loop]['id'];
+					if($temoin_tmp==0){
+						$id_grp_prec=$tab_groups[$loop]['id'];
+					}
 				}
 			}
 			// =================================
