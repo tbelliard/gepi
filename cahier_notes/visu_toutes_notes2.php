@@ -652,6 +652,7 @@ while($i < $lignes_groupes) {
 			cnc.id_conteneur=cc.id AND
 			cc.id=cc.id_racine AND
 			cnc.statut='y'";
+			//echo "$sql<br />";
 			$call_moyenne = mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		else{
@@ -661,6 +662,7 @@ while($i < $lignes_groupes) {
 			cnc.id_conteneur=cc.id AND
 			cc.id=cc.id_racine AND
 			cnc.statut='y'";
+			//echo "$sql<br />";
 			$call_moyenne = mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	
@@ -683,16 +685,19 @@ while($i < $lignes_groupes) {
 					"login = '".$current_eleve_login[$j]."' AND " .
 					"id_groupe = '".$current_group["id"]."' AND " .
 					"name = 'coef')";
+			//echo "$sql<br />";
 			$test_coef_personnalise = mysqli_query($GLOBALS["mysqli"], $sql);
 			if (mysqli_num_rows($test_coef_personnalise) > 0) {
 				$coef_eleve = old_mysql_result($test_coef_personnalise, 0);
+				//echo "DEBUG : Coef personnalisé pour ".$current_eleve_login[$j]." en ".$current_group["name"]." (".$current_group["id"].")<br />";
 			} else {
 				// Coefficient du groupe:
 				$coef_eleve = $current_coef;
 			}
-			$coef_eleve=number_format($coef_eleve,1, ',', ' ');
-	
-	
+			// Formatage qui fait perdre la partie décimale du coef
+			//$coef_eleve=number_format($coef_eleve,1, ',', ' ');
+
+
 			if ($referent == "une_periode") {
 				if (!in_array($current_eleve_login[$j], $current_group["eleves"][$num_periode]["list"])) {
 					$col[$k][$j+$ligne_supl] = "/";
@@ -708,7 +713,7 @@ while($i < $lignes_groupes) {
 					cnc.id_conteneur=cc.id AND
 					cc.id=cc.id_racine AND
 					cnc.login='".$current_eleve_login[$j]."'";
-					//echo "$sql";
+					//echo "$sql<br />";
 					$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 					if(mysqli_num_rows($res_moy)>0) {
@@ -717,7 +722,9 @@ while($i < $lignes_groupes) {
 							if($lig_moy->note!="") {
 								$col[$k][$j+$ligne_supl] = number_format($lig_moy->note,1, ',', ' ');
 								$temp=$lig_moy->note;
-								if ($current_coef > 0) {
+								//if ($current_coef > 0) {
+								if ($coef_eleve > 0) {
+									//echo "DEBUG : L'élève ".$current_eleve_login[$j]." a une note (".$lig_moy->note.") en ".$current_group["name"]." (".$current_group["id"].") avec le coef ".$coef_eleve."<br />";;
 									if ($affiche_categories) {
 										if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
 										//$total_cat_coef[$j+$ligne_supl][$prev_cat_id] += $current_coef;
