@@ -196,8 +196,11 @@ while ($i < $nombre_eleves) {
 }
 
 // Pour débugger:
+$afficher_lignes_debug="n";
+// Initialisation de la chaine des lignes de debug:
 $lignes_debug="";
-$ele_login_debug="rom.abela";
+// Login de l'élève:
+$ele_login_debug="lamperi2";
 
 // Témoin destiné à tester si tous les coefficients sont à 1
 // S'ils le sont, on n'imprime pas deux lignes de moyenne générale (moy.gen.coefficientée d'après Gestion des classes/<Classe> Enseignements et moy.gen avec coef à 1) même si la case est cochée dans le modèle PDF.
@@ -405,14 +408,16 @@ while ($j < $nombre_groupes) {
 				$test_coef = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (mysqli_num_rows($test_coef) > 0) {
 					$coef_eleve = old_mysql_result($test_coef, 0);
+					if($current_eleve_login[$i]==$ele_login_debug) {$lignes_debug.="\$coef_eleve pris d apres<br />$sql<br />soit coef_eleve=$coef_eleve<br />";}
 				} else {
 					$coef_eleve = $current_coef[$j];
 				}
 
 				// On refait ce test pour dans le cas des coef_perso autres que ceux de eleves_groupes_settings forcer les coef choisis dans prepa_conseil/index2bis.php
-				if(isset($utiliser_coef_perso)) {
+				if((isset($utiliser_coef_perso))&&($utiliser_coef_perso=='y')) {
 					if(isset($coef_perso[$current_group[$j]["id"]])) {
 						$coef_eleve=$coef_perso[$current_group[$j]["id"]];
+						if($current_eleve_login[$i]==$ele_login_debug) {$lignes_debug.="On utilise des coef personnalisés \$coef_perso[".$current_group[$j]["id"]."]=".$coef_perso[$current_group[$j]["id"]]."<br />";}
 					}
 				}
 			}
@@ -686,8 +691,12 @@ foreach($categories as $cat) {
 	}
 }
 
+//====================
 // DEBUG:
-//echo $lignes_debug;
+if($afficher_lignes_debug=="y") {
+	echo $lignes_debug;
+}
+//====================
 
 $moy_min_classe=21;
 for ( $i=0 ; $i < sizeof($moy_gen_eleve) ; $i++ ) {
