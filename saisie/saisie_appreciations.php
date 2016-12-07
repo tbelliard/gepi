@@ -103,7 +103,11 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 			// on crée un nouvel élément programme pour le groupe
 			$newElemGroupe = filter_input(INPUT_POST, 'newElemGroupe'.$tmp_num_per);
 			if ($newElemGroupe != NULL) {
-				saveNewElemGroupe($id_groupe, $newElemGroupe, $anneeScolaire, $periode);
+				// Guillemets non autorisés:
+				$newElemGroupe=preg_replace('/"/', '', $newElemGroupe);
+				if($newElemGroupe!="") {
+					saveNewElemGroupe($id_groupe, $newElemGroupe, $anneeScolaire, $periode);
+				}
 			}
 		}
 
@@ -152,9 +156,12 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 			if ($newElem_Eleve) {
 				foreach ($newElem_Eleve as $loginEleve=>$texteElem) {
 					if ($texteElem) {
-						//echo "On crée l'élément ".$texteElem." pour ".$loginEleve." dans le groupe ".$id_groupe ;
-						creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $anneeScolaire, $periode);
-
+						// Guillemets non autorisés:
+						$texteElem=preg_replace('/"/', '', $texteElem);
+						if($texteElem!="") {
+							//echo "On crée l'élément ".$texteElem." pour ".$loginEleve." dans le groupe ".$id_groupe ;
+							creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $anneeScolaire, $periode);
+						}
 					}
 				}
 			}
