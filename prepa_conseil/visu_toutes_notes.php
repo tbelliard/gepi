@@ -474,8 +474,12 @@ $tab_moy['categories']['id']=$categories;
 $tab_moy['categories']['nom_from_id']=$tab_noms_categories;
 $tab_moy['categories']['id_from_nom']=$tab_id_categories;
 
-
-
+// 20161207
+/*
+echo "<pre>";
+print_r($tab_moy);
+echo "</pre>";
+*/
 /*
 	// Calcul du nombre de matières à afficher
 	if ($affiche_categories) {
@@ -508,8 +512,11 @@ $tab_moy['categories']['id_from_nom']=$tab_id_categories;
 $lignes_groupes=count($tab_moy['current_group']);
 
 // Pour débugger:
+$afficher_lignes_debug="n";
+// Initialisation de la chaine des lignes de debug:
 $lignes_debug="";
-$ele_login_debug="couetm";
+// Login de l'élève:
+$ele_login_debug="lamperi2";
 $lignes_debug.="<p><b>$ele_login_debug</b><br />";
 
 unset($current_eleve_login);
@@ -886,7 +893,7 @@ while($i < $lignes_groupes) {
 	while($j < $nb_lignes_tableau) {
 
 		if($current_eleve_login[$j]==$ele_login_debug) {
-			$lignes_debug.="<p>\$current_group['name']=".$current_group['name']."<br />";
+			$lignes_debug.="<p style='margin-top:1em;'>\$current_group['name']=".$current_group['name']."<br />";
 			$lignes_debug.="\$current_coef=".$current_coef."<br />";
 			$lignes_debug.="\$current_mode_moy=".$current_mode_moy."<br />";
 		}
@@ -967,6 +974,7 @@ while($i < $lignes_groupes) {
 					if($temp != '')  {
 						$col[$k][$j+$ligne_supl] = number_format($temp,1, ',', ' ');
 						if ($current_coef > 0) {
+						//if ($coef_eleve > 0) {
 							// ===================================
 							// MODIF: boireaus
 							//if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
@@ -1022,6 +1030,10 @@ while($i < $lignes_groupes) {
 						$col[$k][$j+$ligne_supl] = '-';
 					}
 
+					if($current_eleve_login[$j]==$ele_login_debug) {
+						$lignes_debug.="\$coef_eleve=".$coef_eleve."<br />";
+						$lignes_debug.="\$col[$k][$j+$ligne_supl]=\$col[$k][".($j+$ligne_supl)."]=".$col[$k][$j+$ligne_supl]."<br />";
+					}
 
 					$sql="SELECT * FROM j_eleves_groupes WHERE id_groupe='".$current_group["id"]."' AND periode='$num_periode'";
 					$test_eleve_grp=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -2054,7 +2066,9 @@ echo "</p>";
 */
 //====================
 // DEBUG:
-//echo $lignes_debug;
+if($afficher_lignes_debug=="y") {
+	echo $lignes_debug;
+}
 //====================
 
 //===============================
