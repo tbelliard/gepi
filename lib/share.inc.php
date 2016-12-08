@@ -15560,3 +15560,25 @@ function aidEstAfficheBulletin($aid_id) {
 	return $retour;
 }
 
+function afficheResumeAid($aid_id) {
+	global $mysqli;
+	$retour = FALSE;
+	$sqlAffiche = "SELECT 1=1 FROM aid WHERE id = $aid_id AND resumeBulletin = 'Y' ";
+	if ($mysqli->query($sqlAffiche)->num_rows) {
+		$retour = TRUE;
+	}
+	return $retour;
+}
+
+function getResume($aid_id) {
+	global $mysqli;
+	$retour = "";
+	$sqlAffiche = "SELECT resume FROM aid WHERE id = $aid_id AND resumeBulletin = 'Y' ";
+	$retourAffiche = $mysqli->query($sqlAffiche);
+	if ($retourAffiche->num_rows) {
+		$retour = $retourAffiche->fetch_object()->resume. " : ";
+	}
+	return $retour;
+}
+
+

@@ -3374,6 +3374,10 @@ else {
 													$current_eleve_aid_note=$obj_current_eleve_aid_appreciation->note;
 													$current_eleve_aid_statut=$obj_current_eleve_aid_appreciation->statut;
 												}
+												// résumé EPI
+												if (afficheResumeAid($aid_id)) {
+													$current_eleve_aid_appreciation = getResume($aid_id).$current_eleve_aid_appreciation;
+												}
 
 												$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 												$periode_max = mysqli_num_rows($periode_query);
@@ -3561,7 +3565,10 @@ else {
 													$current_eleve_aid_note=$obj_current_eleve_aid_appreciation->note;
 													$current_eleve_aid_statut=$obj_current_eleve_aid_appreciation->statut;
 												}
-
+												// résumé AP
+												if (afficheResumeAid($aid_id)) {
+													$current_eleve_aid_appreciation = getResume($aid_id).$current_eleve_aid_appreciation;
+												}
 
 												$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 												$periode_max = mysqli_num_rows($periode_query);

@@ -38,7 +38,7 @@ if (!checkAccess()) {
     die();
 }
 
-debug_var();
+//debug_var();
 
 include_once 'fonctions_aid.php';
 global $mysqli;
