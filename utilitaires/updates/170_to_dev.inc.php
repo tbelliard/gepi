@@ -67,5 +67,22 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$result .= "&nbsp;-> Ajout d'un champ 'resumeBulletin' à la table 'aid'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM aid LIKE 'resumeBulletin';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE `aid` ADD `resumeBulletin` VARCHAR(1) NOT NULL COMMENT 'Y si le résumé doit être affiché sur le bulletin' AFTER `resume`;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 
-?>
+
+
+
+

@@ -15532,4 +15532,31 @@ function nettoyage_evenements_classes() {
 	//echo "$sql<br />";
 	$menage=mysqli_query($GLOBALS['mysqli'], $sql);
 }
-?>
+
+function estEpiApParcours($indice_aid) {
+	global $mysqli;
+	
+	$sqlEstEAP = "SELECT type_aid FROM aid_config WHERE indice_aid = $indice_aid ";
+	//echo "$sql<br />";
+	$retour = $mysqli->query($sqlEstEAP)->fetch_object()->type_aid;
+	return $retour;
+}
+
+function saveResumeSurBulletin($resumeSurBulletin, $idAid) {
+	global $mysqli;
+	$sqlUpdateResumeSurBulletin = "UPDATE `aid` SET `resumeBulletin` = '$resumeSurBulletin' WHERE `aid`.`id` = '$idAid';" ;
+	//echo "$sqlUpdateResumeSurBulletin<br />";
+	$mysqli->query($sqlUpdateResumeSurBulletin);
+}
+
+function aidEstAfficheBulletin($aid_id) {
+	global $mysqli;
+	$retour = FALSE;
+	$sqlEstAffiche = "SELECT 1=1 FROM aid WHERE `aid`.`id` = '$aid_id' AND resumeBulletin = 'y' ;";
+	//echo $sqlEstAffiche;
+	if ($mysqli->query($sqlEstAffiche)->num_rows) {
+		$retour = TRUE;
+	}
+	return $retour;
+}
+

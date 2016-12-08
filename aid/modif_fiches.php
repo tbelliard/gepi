@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin
  *
  * This file is part of GEPI.
  *
@@ -38,7 +38,7 @@ if (!checkAccess()) {
     die();
 }
 
-//debug_var();
+debug_var();
 
 include_once 'fonctions_aid.php';
 global $mysqli;
@@ -110,6 +110,9 @@ if (isset($_POST["is_posted"])) {
     // Résumé
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume','W',$annee)) and (isset($_POST["reg_resume"]))) {
       $reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
+	  $resumeSurBulletin = filter_input(INPUT_POST, 'integreResume'); // ligne 740
+	  saveResumeSurBulletin($resumeSurBulletin, $aid_id) ;
+	  
       if (mb_strlen($reg_resume) > 600) {
         $reg_resume = mb_substr($reg_resume,0,597)."...";
         $msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
@@ -727,19 +730,31 @@ if ($_SESSION["statut"]=="administrateur") {
 }
 
 // résumé
+$epiApParcours = estEpiApParcours($indice_aid);
+
+
 if ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"W",$annee)) {
     echo "<div class='bloc'><span class = 'bold'>Résumé</span> (limité à 600 caractères) :\n";
-    echo "<br /><i>Présentation du projet, objectifs, réalisations, ....</i>\n";
-    echo "<br /><textarea name=\"reg_resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlspecialchars($reg_resume)."</textarea>\n";
+    echo "<p><i>Présentation du projet, objectifs, réalisations, ....</i></p>\n";
+    echo "<p><textarea name=\"reg_resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlspecialchars($reg_resume)."</textarea></p>\n";
+	if ($epiApParcours) {
+	?>
+	<p>
+		<label for="integreResume">Intégrer le résumé aux appréciations élève du bulletin</label> 
+		<input type="checkbox" name="integreResume" id="integreResume" value="y" <?php if (aidEstAfficheBulletin($aid_id)) {echo " checked ='checked' ";} ?>/>
+	</p>
+	<?php
+	}
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"R",$annee)) {
     echo "<div class='bloc'><span class = 'bold'>Résumé</span> (Présentation du projet, objectifs, réalisations, ....)\n";
-    if ($reg_resume == "")
+    if ($reg_resume == "") {
         echo "<br />".$non_defini."\n";
-    else
+    } else {
         echo "<br />".htmlspecialchars($reg_resume)."\n";
+    } 
   }
 }
 echo "</div>\n";

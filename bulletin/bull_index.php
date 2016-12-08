@@ -85,6 +85,8 @@ $intercaler_app_classe=isset($_POST['intercaler_app_classe']) ? $_POST['intercal
 //$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : NULL;
 $mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : (isset($_GET['mode_bulletin']) ? $_GET['mode_bulletin'] : NULL);
 
+$imprimeResume = filter_input(INPUT_POST, 'integreResume');
+
 // Variable non encore utilisée:
 $contexte_document_produit="bulletin";
 // Pour sur le verso du bulletin n'avoir qu'un relevé de notes et pas deux... et surtout pas celui de l'élève suivant dans la liste:
