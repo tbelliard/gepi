@@ -701,6 +701,7 @@ $tab_mef=get_tab_mef();
 
 // PROBLEME: Pour les MEF par défaut de lycée, il faudrait MEF_RATTACHEMENT
 function ajoutMefParDefaut() {
+	/*
     $mef = new Mef();
     //$mef->setMefCode("1031000111");
     //$mef->setLibelleCourt("3G");
@@ -740,6 +741,24 @@ function ajoutMefParDefaut() {
     if (MefQuery::create()->filterByMefCode($mef->getMefCode())->find()->isEmpty()) {
 	$mef->save();
     }
+    */
+
+	$mef_clg=array();
+	$mef_clg[]="CODE_MEF;LIBELLE_COURT;LIBELLE_LONG;LIBELLE_EDITION;CODE_MEFSTAT;MEF_RATTACHEMENT";
+	$mef_clg[]="10310019110;3EME;3EME;3ème;21160010019;10310019110;";
+	$mef_clg[]="10210001110;4EME;4EME;4ème;21150010001;10210001110;";
+	$mef_clg[]="10110001110;5EME;5EME;5ème;21120010001;10110001110;";
+	$mef_clg[]="10010012110;6EME;6EME;6ème;21110010012;10010012110;";
+
+	for($loop=1;$loop<count($mef_clg);$loop++) {
+		$tab=explode(";", $mef_clg[$loop]);
+		$sql="SELECT * FROM mef WHERE mef_code='".$tab[0]."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			$sql="INSERT INTO mef SET mef_code='".$tab[0]."', libelle_court='".$tab[1]."', libelle_long='".$tab[2]."', libelle_edition='".$tab[3]."', code_mefstat='".$tab[4]."', mef_rattachement='".$tab[5]."';";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+	}
 }
 
 function ajoutMefParDefautLycee() {
