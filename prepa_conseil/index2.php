@@ -850,26 +850,40 @@ display_div_coloriser();
 	$appel_donnees = mysqli_query($GLOBALS["mysqli"], $sql);
 	$lignes = mysqli_num_rows($appel_donnees);
 
-	if($lignes==0){
-		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+	if($lignes==0) {
+		echo "<p style='color:red'>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else{
+		$tab_conseils_de_classe=get_tab_date_prochain_evenement_telle_classe("", 'conseil_de_classe');
+
 		$i = 0;
 		$nb_class_par_colonne=round($lignes/3);
-			//echo "<table width='100%' border='1'>\n";
-			echo "<table width='100%' summary=\"Choix de la classe\">\n";
-			echo "<tr valign='top' align='center'>\n";
-			echo "<td align='left'>\n";
-		while($i < $lignes){
-		$id_classe = old_mysql_result($appel_donnees, $i, "id");
-		$display_class = old_mysql_result($appel_donnees, $i, "classe");
-		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-			echo "</td>\n";
-			//echo "<td style='padding: 0 10px 0 10px'>\n";
-			echo "<td align='left'>\n";
-		}
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
-		$i++;
+
+		//echo "<table width='100%' border='1'>\n";
+		echo "<table width='100%' summary=\"Choix de la classe\">\n";
+		echo "<tr valign='top' align='center'>\n";
+		echo "<td align='left' width='33%'>\n";
+		while ($lig_clas=mysqli_fetch_object($appel_donnees)){
+			$id_classe = $lig_clas->id;
+			$display_class = $lig_clas->classe;
+			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+				echo "</td>\n";
+				echo "<td align='left' width='33%'>\n";
+			}
+
+			$chaine_tmp="";
+			if(isset($tab_conseils_de_classe[$lig_clas->id])) {
+
+				$lieu_conseil_de_classe="";
+				if(isset($tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'])) {
+					$lieu_conseil_de_classe=" (".$tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'].")";
+				}
+
+				$chaine_tmp=" <span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$tab_conseils_de_classe[$lig_clas->id]['classe']." : ".$tab_conseils_de_classe[$lig_clas->id]['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$tab_conseils_de_classe[$lig_clas->id]['slashdate_ev'].")</span>";
+			}
+
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>".ucfirst($display_class)."</a>".$chaine_tmp."<br />\n";
+			$i++;
 		}
 		echo "</table>\n";
 	}

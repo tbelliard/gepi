@@ -227,28 +227,41 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$nombreligne = mysqli_num_rows($calldata);
 	echo " | Total : $nombreligne classes </p>\n";
 
-	if($nombreligne==0){
-		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+	if($nombreligne==0) {
+		echo "<p style='color:red'>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
-	else{
+	else {
+		$tab_conseils_de_classe=get_tab_date_prochain_evenement_telle_classe("", 'conseil_de_classe');
+
 		echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins</p>\n";
 		//echo "<table border=0>\n";
 		$nb_class_par_colonne=round($nombreligne/3);
 			//echo "<table width='100%' border='1'>\n";
 			echo "<table width='100%' summary='Choix de la classe'>\n";
 			echo "<tr valign='top' align='center'>\n";
-			echo "<td align='left'>\n";
+			echo "<td align='left' width='33%'>\n";
 		$i = 0;
-		while ($i < $nombreligne){
-			$id_classe = old_mysql_result($calldata, $i, "id");
-			$classe_liste = old_mysql_result($calldata, $i, "classe");
-			//echo "<tr><td><a href='index3.php?id_classe=$id_classe'>$classe_liste</a></td></tr>\n";
+		while ($lig_clas=mysqli_fetch_object($calldata)){
+			$id_classe = $lig_clas->id;
+			$classe_liste = $lig_clas->classe;
+
 			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 				echo "</td>\n";
-				//echo "<td style='padding: 0 10px 0 10px'>\n";
-				echo "<td align='left'>\n";
+				echo "<td align='left' width='33%'>\n";
 			}
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>$classe_liste</a><br />\n";
+
+			$chaine_tmp="";
+			if(isset($tab_conseils_de_classe[$lig_clas->id])) {
+
+				$lieu_conseil_de_classe="";
+				if(isset($tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'])) {
+					$lieu_conseil_de_classe=" (".$tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'].")";
+				}
+
+				$chaine_tmp=" <span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$tab_conseils_de_classe[$lig_clas->id]['classe']." : ".$tab_conseils_de_classe[$lig_clas->id]['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$tab_conseils_de_classe[$lig_clas->id]['slashdate_ev'].")</span>";
+			}
+
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>$classe_liste</a>".$chaine_tmp."<br />\n";
 			$i++;
 		}
 		echo "</table>\n";
