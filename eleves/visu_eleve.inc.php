@@ -980,7 +980,6 @@ Patientez pendant l'extraction des données... merci.
 		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 		$tab_ele=info_eleve($ele_login);
 
-		// 20140522
 		$acces_impression_bulletin=false;
 		$acces_impression_releve_notes=false;
 		if(($acces_releves=="y")||($acces_bulletins=="y")) {
@@ -988,12 +987,16 @@ Patientez pendant l'extraction des données... merci.
 			$acces_impression_releve_notes=acces_impression_releve_notes($ele_login);
 		}
 
+		// 20161205
+		$acces_bulletin_simple=acces_impression_bulletins_simplifies($ele_login);
+
 		$date_debut_log=get_date_debut_log();
 		/*
 		echo "<pre>";
 		print_r($tab_ele);
 		echo "</pre>";
 		*/
+
 		$indice_derniere_classe=count($tab_ele['classe'])-1;
 		if(!isset($tab_ele['classe'][$indice_derniere_classe]['pp'])) {
 			echo "<p style='color:red;'>Aucun ".$gepi_prof_suivi." n'est associé à cet(te) élève.";
@@ -2227,6 +2230,24 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				}
 
 				echo "</div>";
+			}
+
+			// 20161205: Afficher des liens Bull Simp Ele/Clas
+			if($acces_bulletin_simple) {
+				if(count($tab_ele["classe"])>0) {
+					if(count($tab_ele["classe"])==1) {
+						echo "<div style='float:right; width:16px; text-align:center;margin-right:3px;' class='fieldset_opacite50' title=\"Bulletins simplifiés\">";
+						echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][0]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						echo "</div>";
+					}
+					else {
+						for($loop_classe=0;$loop_classe<count($tab_ele["classe"]);$loop_classe++) {
+							echo "<div style='float:right; width:16px; text-align:center;margin-right:3px;' class='fieldset_opacite50' title=\"Bulletins simplifiés\">";
+							echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][$loop_classe]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\">".$tab_ele["classe"][$loop_classe]["classe"]."<img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+							echo "</div>";
+						}
+					}
+				}
 			}
 
 			echo "<h2>Bulletins de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
