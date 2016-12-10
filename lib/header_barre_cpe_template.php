@@ -69,7 +69,7 @@ if ($barre_plugin!="") {
 
 		$tmp_liste_classes_cpe=array();
 		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;"; 
-        
+
 		$res_tmp_liste_classes_cpe = mysqli_query($mysqli, $sql);
 		if($res_tmp_liste_classes_cpe->num_rows > 0) {
 			$tmp_cpt_classes_cpe=0;
@@ -81,7 +81,7 @@ if ($barre_plugin!="") {
 				$tmp_cpt_classes_cpe++;
 			}
 		}    
-        
+
 		$menus = null;
 
 		if (getSettingValue("active_module_absence") == 'y') {
@@ -162,6 +162,15 @@ if ($barre_plugin!="") {
 
 				if((getSettingAOui('active_mod_orientation'))&&((getSettingAOui('OrientationSaisieTypeCpe'))||(getSettingAOui('OrientationSaisieOrientationCpe'))||(getSettingAOui('OrientationSaisieVoeuxCpe')))) {
 					$menus .= '     <li><a href="'.$gepiPath.'/mod_orientation/index.php" '.insert_confirm_abandon().'>Orientation</a></li>'."\n";
+				}
+
+				if (getSettingValue("active_module_absence") == 'y') {
+					if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
+						$menus .= '     <li><a href="'.$gepiPath.'/absences/index.php"'.insert_confirm_abandon().'>Absences bulletins</a></li>'."\n";
+					}
+				}
+				elseif (getSettingValue("active_module_absence") == '2') {
+					$menus .= '     <li><a href="'.$gepiPath.'/mod_abs2/saisie_bulletin.php"'.insert_confirm_abandon().'>Saisie Vie Scolaire</a></li>'."\n";
 				}
 
 				$menus .= '   </ul>'."\n";
