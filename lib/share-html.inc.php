@@ -1892,8 +1892,10 @@ function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte
 	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
 	$retour.="
 	function $nom_js_func(id) {
+		//alert(id);
 		if(document.getElementById(id)) {
 			if(document.getElementById('$prefixe_texte'+id)) {
+				//alert('$prefixe_texte'+id);
 				if(document.getElementById(id).checked) {
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
 					document.getElementById('$prefixe_texte'+id).style.opacity=1;
@@ -3675,9 +3677,9 @@ function retourne_temoin_ou_lien_rss($ele_login) {
 				if($uri_el['uri']!="#") {
 					$retour="<a href='".$uri_el['uri']."' title=\"Flux RSS de votre cahier de textes.
 
-Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.
-Firefox, Internet Explorer,... savent lire les flux RSS.
-Il existe également des lecteurs de flux RSS pour les SmartPhone,...\" target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+	Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.
+	Firefox, Internet Explorer,... savent lire les flux RSS.
+	Il existe également des lecteurs de flux RSS pour les SmartPhone,...\" target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
 				}
 				else {
 					$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS de votre cahier de textes n'est pas initialisé. Contactez l'administrateur\" />";
@@ -3689,9 +3691,9 @@ Il existe également des lecteurs de flux RSS pour les SmartPhone,...\" target='
 				if($uri_el['uri']!="#") {
 					$retour="<a href='".$uri_el['uri']."' title=\"Flux RSS du cahier de textes de ".get_nom_prenom_eleve($ele_login).".
 
-Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.
-Firefox, Internet Explorer,... savent lire les flux RSS.
-Il existe également des lecteurs de flux RSS pour les SmartPhone,...\" target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+	Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.
+	Firefox, Internet Explorer,... savent lire les flux RSS.
+	Il existe également des lecteurs de flux RSS pour les SmartPhone,...\" target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
 				}
 				else {
 					$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS de votre cahier de textes n'est pas initialisé. Contactez l'administrateur\" />";
@@ -4874,7 +4876,7 @@ function affiche_tab_avis_conseil($login_ele, $avec_js="y", $avec_lien="y") {
 	return $retour;
 }
 
-function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group=NULL, $align="center") {
+function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group=NULL, $align="center", $type="") {
 	if(!isset($current_group)) {
 		$current_group=get_group($id_groupe, array('classes'));
 	}
@@ -4886,7 +4888,12 @@ function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_gro
 
 		if(isset($current_ev['id_ev'])) {
 			if($chaine_date_conseil_classe=="") {
-				$chaine_date_conseil_classe="<p align='$align' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+				if($type=="span") {
+					$chaine_date_conseil_classe="<span title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span>";
+				}
+				else {
+					$chaine_date_conseil_classe="<p align='$align' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+				}
 			}
 			$lieu_conseil_de_classe="";
 			if(isset($current_ev['lieu']['designation_complete'])) {
@@ -4897,21 +4904,31 @@ function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_gro
 	}
 
 	if($chaine_date_conseil_classe!="") {
-		$chaine_date_conseil_classe.="</p>";
+		if($type=="span") {
+			$chaine_date_conseil_classe.="</span>";
+		}
+		else {
+			$chaine_date_conseil_classe.="</p>";
+		}
 	}
 
 	return $chaine_date_conseil_classe;
 }
 
 
-function affiche_date_prochain_conseil_de_classe_classe($id_classe) {
+function affiche_date_prochain_conseil_de_classe_classe($id_classe, $align="center", $type="") {
 	$chaine_date_conseil_classe="";
 
 	$current_ev=get_tab_date_prochain_evenement_telle_classe($id_classe, 'conseil_de_classe');
 
 	if(isset($current_ev['id_ev'])) {
 		if($chaine_date_conseil_classe=="") {
-			$chaine_date_conseil_classe="<p align='center' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+			if($type=="span") {
+				$chaine_date_conseil_classe="<span title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span>";
+			}
+			else {
+				$chaine_date_conseil_classe="<p align='$align' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+			}
 		}
 		$lieu_conseil_de_classe="";
 		if(isset($current_ev['lieu']['designation_complete'])) {
@@ -4921,7 +4938,12 @@ function affiche_date_prochain_conseil_de_classe_classe($id_classe) {
 	}
 
 	if($chaine_date_conseil_classe!="") {
-		$chaine_date_conseil_classe.="</p>";
+		if($type=="span") {
+			$chaine_date_conseil_classe.="</span>";
+		}
+		else {
+			$chaine_date_conseil_classe.="</p>";
+		}
 	}
 
 	return $chaine_date_conseil_classe;

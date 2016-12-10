@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -216,11 +216,15 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 				
 								//$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 								//if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-					
+
 								$ajout_header="";
 								if($email_personne_autorisant!="") {
 									$ajout_header.="Cc: $nom_personne_autorisant <".$email_personne_autorisant.">";
+									// 20160615 PP
 									$ajout_header.="\r\n";
+								}
+
+								if($email_personne_autorisant!="") {
 									$ajout_header.="Reply-to: $nom_personne_autorisant <".$email_personne_autorisant.">\r\n";
 								}
 
@@ -327,6 +331,8 @@ if(!isset($id_classe)) {
 	}
 	echo "</p>\n";
 
+	echo "<h2>Autoriser la modification/saisie de notes du carnet de notes</h2>";
+
 	//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
 	// On adapte la liste des classes selon le visiteur
@@ -344,14 +350,37 @@ if(!isset($id_classe)) {
 	}
 
 	$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_clas)>0) {
+	if(mysqli_num_rows($res_clas)==0) {
+		echo "<p style='color:red'>Aucune classe n'a été trouvée.";
+		if($_SESSION['statut']=='scolarite') {
+			echo "<br />Vous n'êtes pas désigné dans Gepi pour suivre une classe.<br />Un administrateur doit vous associer des classes dans <strong>Gestion des bases/Gestion des classes/Paramétrage scolarité</strong>.";
+		}
+		echo "</p>\n";
+	}
+	else {
 		echo "<p>Choisir une classe&nbsp;:</p>\n";
+
+		$tab_conseils_de_classe=get_tab_date_prochain_evenement_telle_classe("", 'conseil_de_classe');
 
 		$tab_txt=array();
 		$tab_lien=array();
 
 		while($lig_clas=mysqli_fetch_object($res_clas)) {
-			$tab_txt[]=$lig_clas->classe;
+			if(isset($tab_conseils_de_classe[$lig_clas->id])) {
+
+				$lieu_conseil_de_classe="";
+				if(isset($tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'])) {
+					$lieu_conseil_de_classe=" (".$tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'].")";
+				}
+
+				$chaine_tmp=" <span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$tab_conseils_de_classe[$lig_clas->id]['classe']." : ".$tab_conseils_de_classe[$lig_clas->id]['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$tab_conseils_de_classe[$lig_clas->id]['slashdate_ev'].")</span>";
+
+				$tab_txt[]=$lig_clas->classe.$chaine_tmp;
+			}
+			else {
+				$tab_txt[]=$lig_clas->classe;
+			}
+
 			if(isset($id_incident)) {
 				//$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident";
 				$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."";
@@ -369,6 +398,15 @@ if(!isset($id_classe)) {
 elseif((!isset($id_groupe))||(!isset($periode))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
 	echo "</p>\n";
+
+	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe, "", "span");
+	if($chaine_date_conseil_classe!="") {
+		$chaine_date_conseil_classe="<div class='fieldset_opacite50' style='float:right; width:10em; font-size:normal; text-align:center;'>".$chaine_date_conseil_classe."</div>";
+		echo $chaine_date_conseil_classe;
+	}
+
+	echo "<h2>Autoriser la modification/saisie de notes du carnet de notes</h2>";
+
 	echo "<p>Pour quel enseignement souhaitez-vous autoriser un enseignant à effectuer des modifications dans son carnet de notes&nbsp;?</p>\n";
 	$groups=get_groups_for_class($id_classe,"","n");
 
@@ -384,7 +422,7 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 	echo "<th>Enseignants</th>\n";
 	echo "<th colspan='$nb_periode'>Périodes</th>\n";
 	echo "</tr>\n";
-	foreach($groups as $current_group)	{
+	foreach($groups as $current_group) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td style='text-align:left;'>".$current_group['name']." (<span style='font-size:xx-small;'>".$current_group['description']."</span>)</td>\n";
@@ -437,6 +475,14 @@ else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
 	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir un autre enseignement de la classe</a>\n";
 	echo "</p>\n";
+
+	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe, "", "span");
+	if($chaine_date_conseil_classe!="") {
+		$chaine_date_conseil_classe="<div class='fieldset_opacite50' style='float:right; width:10em; font-size:normal; text-align:center;'>".$chaine_date_conseil_classe."</div>";
+		echo $chaine_date_conseil_classe;
+	}
+
+	echo "<h2>Autoriser la modification/saisie de notes du carnet de notes</h2>";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	echo add_token_field();

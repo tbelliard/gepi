@@ -383,12 +383,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "</form>\n";
 		// =================================
 
+		$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe, "", "span");
+		if($chaine_date_conseil_classe!="") {
+			$chaine_date_conseil_classe="<div class='fieldset_opacite50' style='float:right; width:10em; font-size:normal; text-align:center;'>".$chaine_date_conseil_classe."</div>";
+			echo $chaine_date_conseil_classe;
+		}
 
 		$gepi_prof_suivi=retourne_denomination_pp($id_classe);
 
 		$classe_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id='$id_classe'");
 		$nom_classe = old_mysql_result($classe_eleve, 0, "classe");
-		echo "<p class='grand'>Classe de $nom_classe</p>\n";
+		echo "<p class='grand'>Classe de ".$nom_classe."</p>\n";
 		echo "<p>Afficher&nbsp;:</p>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 		echo "<table summary='Choix des élèves'>\n";

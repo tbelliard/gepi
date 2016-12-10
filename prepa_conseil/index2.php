@@ -75,6 +75,13 @@ require_once("../lib/header.inc.php");
 <!--p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a-->
 <?php
 if (isset($id_classe)) {
+	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe, "", "span");
+	if($chaine_date_conseil_classe!="") {
+		//$chaine_date_conseil_classe="<div class='fieldset_opacite50' style='float:right; width:10em; font-size:normal; text-align:center;'>".$chaine_date_conseil_classe."</div>";
+		//echo $chaine_date_conseil_classe;
+
+		$chaine_date_conseil_classe=" - <span style='font-weight:normal'>".$chaine_date_conseil_classe."</span>";
+	}
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
@@ -143,6 +150,7 @@ if (isset($id_classe)) {
 	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
 	//echo " | Classe : ".$current_eleve_classe."</p>\n";
+	echo $chaine_date_conseil_classe;
 	echo "</p>\n";
 	echo "</form>\n";
 

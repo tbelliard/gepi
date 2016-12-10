@@ -697,8 +697,10 @@ if (!$current_group) {
         die();
     }
 
+	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group, "", "span");
+
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire\">";
-    echo "<p class='bold'>Groupe : " . htmlspecialchars($current_group["description"]) ." " . htmlspecialchars($current_group["classlist_string"]) . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /></p>\n";
+    echo "<p class='bold'>Groupe : " . htmlspecialchars($current_group["description"]) ." " . htmlspecialchars($current_group["classlist_string"]) . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /> $chaine_date_conseil_classe</p>\n";
     echo "<p>Choisissez les données à imprimer (<i>vous pouvez cocher plusieurs cases</i>) : </p>\n";
     $i="1";
 	$cpt=0;

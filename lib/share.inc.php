@@ -10932,14 +10932,32 @@ function get_tab_infos_evenement($id_ev) {
 function get_tab_date_prochain_evenement_telle_classe($id_classe, $type) {
 	$tab=array();
 
-	$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res)>0) {
-		while($lig=mysqli_fetch_assoc($res)) {
-			$tab=$lig;
-			$tab['slashdate_ev']=formate_date($lig['date_evenement']);
-			$tab['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
-			$tab['lieu']=get_infos_salle_cours($lig['id_salle']);
+	if($id_classe!="") {
+		$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_assoc($res)) {
+				$tab=$lig;
+				$tab['slashdate_ev']=formate_date($lig['date_evenement']);
+				$tab['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+				$tab['lieu']=get_infos_salle_cours($lig['id_salle']);
+			}
+		}
+	}
+	else {
+		$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_assoc($res)) {
+				// Pour ne récupérer que le prochain conseil de classe de chaque classe.
+				if(!isset($tab[$lig['id_classe']])) {
+					$tab[$lig['id_classe']]=$lig;
+					$tab[$lig['id_classe']]['slashdate_ev']=formate_date($lig['date_evenement']);
+					$tab[$lig['id_classe']]['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+					$tab[$lig['id_classe']]['lieu']=get_infos_salle_cours($lig['id_salle']);
+				}
+			}
 		}
 	}
 	return $tab;
@@ -15532,4 +15550,119 @@ function nettoyage_evenements_classes() {
 	//echo "$sql<br />";
 	$menage=mysqli_query($GLOBALS['mysqli'], $sql);
 }
+
+function acces_impression_bulletins_simplifies($login_eleve, $id_classe="") {
+
+	$retour=false;
+
+	if($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesBulletinSimpleProfToutesClasses')) {
+			$retour=true;
+		}
+		else {
+			if((getSettingAOui('GepiAccesBulletinSimplePP'))&&(is_pp($_SESSION['login']))) {
+				if($login_eleve!="") {
+					// PP: Le test est fait sur l'association avec la classe (même si l'élève a changé de classe en cours d'année)
+					//     On ne se contente pas de is_pp(is_pp($_SESSION['login'], '', $login_ele)
+					$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec WHERE jec.login='$login_eleve';";
+					//echo "$sql<br />";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig=mysqli_fetch_object($res)) {
+							if(is_pp($_SESSION['login'], $lig->id_classe)) {
+								$retour=true;
+								break;
+							}
+						}
+					}
+				}
+				elseif(($id_classe!="")&&(is_pp($_SESSION['login'], $id_classe))) {
+					$retour=true;
+				}
+			}
+
+			if(!$retour) {
+				// On teste aussi: Tous les élèves des classes dans lesquels le prof enseigne, même s'il n'a pas l'élève dans un de ses groupes
+				if(getSettingAOui('GepiAccesBulletinSimpleProfTousEleves')) {
+					if($login_eleve!="") {
+						$sql="SELECT DISTINCT 1=1 FROM j_groupes_professeurs jgp, 
+												j_groupes_classes jgc, 
+												j_eleves_classes jec 
+											WHERE jec.login='".$login_eleve."' AND 
+												jec.id_classe=jgc.id_classe AND 
+												jgc.id_groupe=jgp.id_groupe AND 
+												jgp.login='".$_SESSION['login']."';";
+						//echo "$sql<br />";
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							$retour=true;
+						}
+					}
+					elseif($id_classe!="") {
+						$sql="SELECT DISTINCT 1=1 FROM j_groupes_professeurs jgp, 
+												j_groupes_classes jgc 
+											WHERE jgc.id_classe='".$id_classe."' AND 
+												jgc.id_groupe=jgp.id_groupe AND 
+												jgp.login='".$_SESSION['login']."';";
+						//echo "$sql<br />";
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							$retour=true;
+						}
+					}
+				}
+
+				if(!$retour) {
+					// On teste aussi:
+					if(getSettingAOui('GepiAccesBulletinSimpleProf')) {
+						if($login_eleve!="") {
+							$sql="SELECT DISTINCT 1=1 FROM j_groupes_professeurs jgp, 
+													j_eleves_groupes jeg 
+												WHERE jeg.login='$login_eleve' AND 
+													jeg.id_groupe=jgp.id_groupe AND 
+													jgp.login='".$_SESSION['login']."';";
+							//echo "$sql<br />";
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res)>0) {
+								$retour=true;
+							}
+						}
+						elseif($id_classe!="") {
+							$sql="SELECT DISTINCT 1=1 FROM j_groupes_professeurs jgp, 
+													j_groupes_classes jgc 
+												WHERE jgc.id_classe='".$id_classe."' AND 
+													jgc.id_groupe=jgp.id_groupe AND 
+													jgp.login='".$_SESSION['login']."';";
+							//echo "$sql<br />";
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res)>0) {
+								$retour=true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='secours') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='autre') {
+		// A DETAILLER
+		$retour=false;
+	}
+
+	return $retour;
+}
+
 ?>
