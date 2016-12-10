@@ -382,66 +382,67 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 	echo "<h2>Autoriser la modification d'appréciations des bulletins</h2>";
 
 	echo "<p>Pour quel enseignement souhaitez-vous autoriser un enseignant à proposer des saisies/corrections d'appréciations?</p>\n";
+	$get_groups_for_class_avec_visibilite="y";
 	$groups=get_groups_for_class($id_classe,"","n");
 
 	include("../lib/periodes.inc.php");
 
 	$date_courante=time();
 
-	$alt=1;
-	echo "<table class='boireaus' summary='Tableau des enseignements et périodes'>\n";
+	echo "<table class='boireaus boireaus_alt' summary='Tableau des enseignements et périodes'>\n";
 	echo "<tr>\n";
 	echo "<th>Enseignements</th>\n";
 	echo "<th>Classe(s)</th>\n";
 	echo "<th>Enseignants</th>\n";
 	echo "<th colspan='$nb_periode'>Périodes</th>\n";
 	echo "</tr>\n";
-	foreach($groups as $current_group)	{
-		$alt=$alt*(-1);
-		echo "<tr class='lig$alt white_hover'>\n";
-		echo "<td style='text-align:left;'>".$current_group['name']." (<span style='font-size:xx-small;'>".$current_group['description']."</span>)</td>\n";
+	foreach($groups as $current_group) {
+		if((!isset($current_group["visibilite"]["bulletins"]))||($current_group["visibilite"]["bulletins"]=="y")) {
+			echo "<tr class='white_hover'>\n";
+			echo "<td style='text-align:left;'>".$current_group['name']." (<span style='font-size:xx-small;'>".$current_group['description']."</span>)</td>\n";
 
-		echo "<td>".$current_group["classlist_string"]."</td>\n";
+			echo "<td>".$current_group["classlist_string"]."</td>\n";
 
-		echo "<td>\n";
-		$sql="SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_groupes_professeurs j WHERE (u.login = j.login and j.id_groupe = '" . $current_group['id'] . "') ORDER BY u.nom, u.prenom";
-		$get_profs=mysqli_query($GLOBALS["mysqli"], $sql);
+			echo "<td>\n";
+			$sql="SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_groupes_professeurs j WHERE (u.login = j.login and j.id_groupe = '" . $current_group['id'] . "') ORDER BY u.nom, u.prenom";
+			$get_profs=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		$nb = mysqli_num_rows($get_profs);
-		for ($i=0;$i<$nb;$i++){
-			if($i>0) {echo ",<br />\n";}
-			$p_login = old_mysql_result($get_profs, $i, "login");
-			$p_nom = old_mysql_result($get_profs, $i, "nom");
-			$p_prenom = old_mysql_result($get_profs, $i, "prenom");
-			$civilite = old_mysql_result($get_profs, $i, "civilite");
-			echo "$civilite $p_nom $p_prenom";
-		}
-		echo "</td>\n";
+			$nb = mysqli_num_rows($get_profs);
+			for ($i=0;$i<$nb;$i++){
+				if($i>0) {echo ",<br />\n";}
+				$p_login = old_mysql_result($get_profs, $i, "login");
+				$p_nom = old_mysql_result($get_profs, $i, "nom");
+				$p_prenom = old_mysql_result($get_profs, $i, "prenom");
+				$civilite = old_mysql_result($get_profs, $i, "civilite");
+				echo "$civilite $p_nom $p_prenom";
+			}
+			echo "</td>\n";
 
-		for($i=1;$i<$nb_periode;$i++) {
-			if($ver_periode[$i]=='P') {
-				//echo "<td><input type='checkbox' name='periode_grp_".$current_group['id']."[]' value='$i' /></td>\n";
-				echo "<td>\n";
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=".$current_group['id']."&amp;periode=$i'>Période $i</a>\n";
-				$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$current_group['id']."' AND periode='$i';";
-				$res=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res)>0) {
-					$lig=mysqli_fetch_object($res);
-					if($lig->date_limite>$date_courante) {
-						echo "<br />";
-						echo "Autorisation jusqu'au<br />".strftime("%d/%m/%Y à %H:%M",$lig->date_limite);
+			for($i=1;$i<$nb_periode;$i++) {
+				if($ver_periode[$i]=='P') {
+					//echo "<td><input type='checkbox' name='periode_grp_".$current_group['id']."[]' value='$i' /></td>\n";
+					echo "<td>\n";
+					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=".$current_group['id']."&amp;periode=$i'>Période $i</a>\n";
+					$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$current_group['id']."' AND periode='$i';";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						$lig=mysqli_fetch_object($res);
+						if($lig->date_limite>$date_courante) {
+							echo "<br />";
+							echo "Autorisation jusqu'au<br />".strftime("%d/%m/%Y à %H:%M",$lig->date_limite);
+						}
 					}
+					echo "</td>\n";
 				}
-				echo "</td>\n";
+				elseif($ver_periode[$i]=='O') {
+					echo "<td><img src='../images/disabled.png' width='20' height='20' alt='Période $i close' title='Période $i close' /></td>\n";
+				}
+				else {
+					echo "<td><img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title='Période $i ouverte en saisie' /></td>\n";
+				}
 			}
-			elseif($ver_periode[$i]=='O') {
-				echo "<td><img src='../images/disabled.png' width='20' height='20' alt='Période $i close' title='Période $i close' /></td>\n";
-			}
-			else {
-				echo "<td><img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title='Période $i ouverte en saisie' /></td>\n";
-			}
+			echo "</tr>\n";
 		}
-		echo "</tr>\n";
 	}
 	echo "</table>\n";
 }
