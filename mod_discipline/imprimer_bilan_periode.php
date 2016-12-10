@@ -491,8 +491,8 @@ Il faut mettre en place cette police sur votre machine pour obtenir les cases co
 A défaut, vous pouvez opter pour un autre mode d'affichage en créant votre propre modèle.<br />
 Quelques ressources&nbsp;:
 <ul style='margin-left:4em;'>
-	<li><a href='http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'>http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc)</a></li>
-	<li>
+	<li style='margin-bottom:1em;'><a href='http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'>http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc)</a></li>
+	<li style='margin-bottom:1em;'>
 		Les champs tests sur les cases cochées pour les avertissements nécessitent que vous sachiez quel est l'identifiant de chaque sanction.<br />
 		Pour information, sur votre Gepi, la liste est la suivante&nbsp;:
 		".affiche_tab_type_avertissement()."
@@ -500,7 +500,65 @@ Quelques ressources&nbsp;:
 		<span style='color:blue'>[eleves.ita.<span style='color:red'>1</span>; if [val]='X'; then X ; else 0]</span><br />
 		Le X est traduit avec la police gepi.ttf par une case cochée, et le 0 par une case non cochée.
 	</li>
+	<li style='margin-bottom:1em;'>
+		<p>Si vous voulez un fichier modèle personnalisé par utilisateur <em>(par exemple pour que l'un soit signé du chef d'établissement, l'autre de son adjoint selon les classes qu'ils se répartissent)</em>, il est possible de déposer un fichier via le module OOo&nbsp;:<br />
+		".((getSettingAOui("active_mod_ooo")) ? "<a class='bold' href='../mod_ooo/publipostage_ooo.php'>Publipostage OOo</a>" : "<strong>Publipostage OOo</strong>")." en page d'accueil ou dans le menu horizontal d'entête&nbsp;:</p>
+		<ul>
+			<li><strong>Élèves/Publipostage OOo</strong> pour un professeur,</li>
+			<li><strong>Liste/Publipostage OOo</strong> pour un compte scolarité ou cpe,</li>
+			<li><strong>Données/Élèves/Publipostage OOo</strong> pour un compte administrateur.</li>
+		</ul>
+		<p>Un administrateur Gepi peut mettre en place de tels fichiers utilisables par tel ou tel utilisateur.<br />
+		Si vous préférez laisser certains utilisateurs mettre eux-même en place des fichiers modèles, il est possible en administrateur de leur attribuer ce droit via <strong>Gestion générale/Droits d'accès/&lt;Tel profil&gt; a accès à l'upload de fichiers modèles openDocument personnels</strong>.
+	</li>
+	<li style='margin-bottom:1em;'>
+		<p>Modèles utilisés&nbsp;:</p>
+		<ul>
+			<li>Modèles officiels Gepi&nbsp;: <a href='../mod_ooo/modeles_gepi/avertissement_fin_periode.odt' target='_blank'>avertissement_fin_periode.odt</a> et <a href='../mod_ooo/modeles_gepi/avertissement_mi_periode.odt' target='_blank'>avertissement_mi_periode.odt</a></li>";
+		if((file_exists("../mod_ooo/mes_modeles/avertissement_fin_periode.odt"))||(file_exists("../mod_ooo/mes_modeles/avertissement_mi_periode.odt"))) {
+			echo "
+			<li>Modèles établissement&nbsp;: ";
+			if(file_exists("../mod_ooo/mes_modeles/avertissement_fin_periode.odt")) {
+				echo "<a href='../mod_ooo/mes_modeles/avertissement_fin_periode.odt' target='_blank'>avertissement_fin_periode.odt</a>";
+				if(file_exists("../mod_ooo/mes_modeles/avertissement_mi_periode.odt")) {
+					echo " et <a href='../mod_ooo/mes_modeles/avertissement_mi_periode.odt' target='_blank'>avertissement_mi_periode.odt</a>";
+				}
+			}
+			else {
+				echo "<a href='../mod_ooo/mes_modeles/avertissement_mi_periode.odt' target='_blank'>avertissement_mi_periode.odt</a>";
+			}
+			echo "</li>";
+		}
+		if((file_exists("../mod_ooo/mes_modeles/".$_SESSION['login']."/avertissement_fin_periode.odt"))||(file_exists("../mod_ooo/mes_modeles/".$_SESSION['login']."/avertissement_mi_periode.odt"))) {
+			echo "
+			<li>Modèles personnels&nbsp;: ";
+			if(file_exists("../mod_ooo/mes_modeles/".$_SESSION['login']."/avertissement_fin_periode.odt")) {
+				echo "<a href='../mod_ooo/mes_modeles/".$_SESSION['login']."/avertissement_fin_periode.odt' target='_blank'>avertissement_fin_periode.odt</a>";
+				if(file_exists("../mod_ooo/mes_modeles/".$_SESSION['login']."/avertissement_mi_periode.odt")) {
+					echo " et <a href='../mod_ooo/mes_modeles/".$_SESSION['login']."/avertissement_mi_periode.odt' target='_blank'>avertissement_mi_periode.odt</a>";
+				}
+			}
+			else {
+				echo "<a href='../mod_ooo/mes_modeles/".$_SESSION['login']."/avertissement_mi_periode.odt' target='_blank'>avertissement_mi_periode.odt</a>";
+			}
+			echo "</li>";
+		}
+	echo "
+		</ul>
+	</li>
 </ul>";
+
+/*
+
+mod_ooo/modeles_gepi/avertissement_fin_periode.odt
+mod_ooo/modeles_gepi/avertissement_mi_periode.odt
+
+mod_ooo/mes_modeles/avertissement_fin_periode.odt
+mod_ooo/mes_modeles/avertissement_mi_periode.odt
+
+Indiquer s'il y a un modèle personnalisé.
+
+*/
 
 	require("../lib/footer.inc.php");
 	die();
