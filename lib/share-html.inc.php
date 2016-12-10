@@ -1183,23 +1183,25 @@ function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL,$tab_extra=NU
 	// Nombre d'enregistrements à afficher
 	$nombreligne=count($tab_txt);
 
-	if(!is_int($nbcol)){
+	if((!is_int($nbcol))||($nbcol<1)) {
 		$nbcol=3;
 	}
 
 	// Nombre de lignes dans chaque colonne:
 	$nb_class_par_colonne=round($nombreligne/$nbcol);
 
+	$percent=floor(100/$nbcol);
+
 	echo "<table width='100%' summary=\"Tableau de choix\">\n";
 	echo "<tr style='text-align:center; vertical-align: top;'>\n";
-	echo "<td style='text-align:left' >\n";
+	echo "<td style='text-align:left' width='$percent%'>\n";
 
 	$i = 0;
 	while ($i < $nombreligne){
 
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
-			echo "<td style='text-align:left' >\n";
+			echo "<td style='text-align:left' width='$percent%'>\n";
 		}
 
 		//echo "<br />\n";
