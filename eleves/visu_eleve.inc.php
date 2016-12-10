@@ -1657,6 +1657,9 @@ Patientez pendant l'extraction des données... merci.
 
 							if($acces_impression_bulletin) {
 								$type_bulletin_par_defaut="pdf";
+								if(getSettingValue("type_bulletin_par_defaut")=="pdf_2016") {
+									$type_bulletin_par_defaut="pdf_2016";
+								}
 
 								$chaine_intercaler_releve_notes="";
 								if($acces_impression_releve_notes) {
@@ -1955,6 +1958,9 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 								// Imprimer le bulletin avec l'adresse de ce parent en particulier.
 
 								$type_bulletin_par_defaut="pdf";
+								if(getSettingValue("type_bulletin_par_defaut")=="pdf_2016") {
+									$type_bulletin_par_defaut="pdf_2016";
+								}
 
 								$chaine_intercaler_releve_notes="";
 								if($acces_impression_releve_notes) {
@@ -2198,6 +2204,9 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				echo "<div style='float:right; width:9em; text-align:center;' class='fieldset_opacite50' title=\"Imprimer les bulletins\">";
 
 				$type_bulletin_par_defaut="pdf";
+				if(getSettingValue("type_bulletin_par_defaut")=="pdf_2016") {
+					$type_bulletin_par_defaut="pdf_2016";
+				}
 
 				$chaine_intercaler_releve_notes="";
 				if($acces_impression_releve_notes) {
