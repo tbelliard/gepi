@@ -17,7 +17,7 @@
 
 	//========================================
 
-	if($mode_bulletin!='pdf') {
+	if(($mode_bulletin!='pdf')&&($mode_bulletin!='pdf_2016')) {
 		echo "<script type='text/javascript'>
 	document.getElementById('titre_infodiv').innerHTML='Relevés de notes';
 	document.getElementById('td_info').innerHTML='Préparatifs';
@@ -139,7 +139,7 @@
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 
 		//==============================
-		if($mode_bulletin!='pdf') {
+		if(($mode_bulletin!='pdf')&&($mode_bulletin!='pdf_2016')) {
 			echo "<script type='text/javascript'>
 	document.getElementById('td_classe').innerHTML='".get_class_from_id($tab_id_classe[$loop_classe])."';
 </script>\n";
@@ -171,7 +171,7 @@
 			$periode_num=$tab_periode_num[$loop_periode_num];
 
 			//==============================
-			if($mode_bulletin!='pdf') {
+			if(($mode_bulletin!='pdf')&&($mode_bulletin!='pdf_2016')) {
 				echo "<script type='text/javascript'>
 	document.getElementById('td_periode').innerHTML='".$periode_num."';
 </script>\n";
@@ -352,7 +352,7 @@
 				$tab_ele=array();
 
 				//==============================
-				if($mode_bulletin!='pdf') {
+				if(($mode_bulletin!='pdf')&&($mode_bulletin!='pdf_2016')) {
 					echo "<script type='text/javascript'>
 	document.getElementById('td_ele').innerHTML='".$current_eleve_login[$i]."';
 </script>\n";

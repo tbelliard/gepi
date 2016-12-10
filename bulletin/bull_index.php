@@ -173,7 +173,6 @@ mais il se peut que vous ayez ainsi des précisions sur ce qui pose problème.<b
 	include("header_bulletin_pdf.php");
 
 	//=============================================
-	/*
 	// Faire les extractions pour le relevé de notes si jamais cela a été demandé.
 	//$intercaler_releve_notes="y";
 	if(isset($intercaler_releve_notes)) {
@@ -183,7 +182,6 @@ mais il se peut que vous ayez ainsi des précisions sur ce qui pose problème.<b
 		//include("../cahier_notes/initialisations_header_releves_html.php");
 		include("header_releve_pdf.php");
 	}
-	*/
 	//=============================================
 
 }
@@ -778,6 +776,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	echo "<script type='text/javascript'>
 	checkbox_change('mode_bulletin_pdf');
 	checkbox_change('mode_bulletin_html');
+	checkbox_change('mode_bulletin_pdf_2016');
 
 	function display_div_modele_bulletin_pdf() {
 		if(document.getElementById('div_modele_bulletin_pdf')) {
