@@ -347,7 +347,7 @@ require_once("../lib/header.inc.php");
 
 //================================================
 $type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
-if(($type_bulletin_par_defaut!="pdf")&&($type_bulletin_par_defaut!="html")) {
+if(($type_bulletin_par_defaut!="pdf")&&($type_bulletin_par_defaut!="pdf_2016")&&($type_bulletin_par_defaut!="html")) {
 	$type_bulletin_par_defaut="pdf";
 }
 
