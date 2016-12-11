@@ -15665,4 +15665,52 @@ function acces_impression_bulletins_simplifies($login_eleve, $id_classe="") {
 	return $retour;
 }
 
+function estEpiApParcours($indice_aid) {
+	global $mysqli;
+	
+	$sqlEstEAP = "SELECT type_aid FROM aid_config WHERE indice_aid = $indice_aid ";
+	//echo "$sql<br />";
+	$retour = $mysqli->query($sqlEstEAP)->fetch_object()->type_aid;
+	return $retour;
+}
+
+function saveResumeSurBulletin($resumeSurBulletin, $idAid) {
+	global $mysqli;
+	$sqlUpdateResumeSurBulletin = "UPDATE `aid` SET `resumeBulletin` = '$resumeSurBulletin' WHERE `aid`.`id` = '$idAid';" ;
+	//echo "$sqlUpdateResumeSurBulletin<br />";
+	$mysqli->query($sqlUpdateResumeSurBulletin);
+}
+
+function aidEstAfficheBulletin($aid_id) {
+	global $mysqli;
+	$retour = FALSE;
+	$sqlEstAffiche = "SELECT 1=1 FROM aid WHERE `aid`.`id` = '$aid_id' AND resumeBulletin = 'y' ;";
+	//echo $sqlEstAffiche;
+	if ($mysqli->query($sqlEstAffiche)->num_rows) {
+		$retour = TRUE;
+	}
+	return $retour;
+}
+
+function afficheResumeAid($aid_id) {
+	global $mysqli;
+	$retour = FALSE;
+	$sqlAffiche = "SELECT 1=1 FROM aid WHERE id = $aid_id AND resumeBulletin = 'Y' ";
+	if ($mysqli->query($sqlAffiche)->num_rows) {
+		$retour = TRUE;
+	}
+	return $retour;
+}
+
+function getResume($aid_id) {
+	global $mysqli;
+	$retour = "";
+	$sqlAffiche = "SELECT resume FROM aid WHERE id = $aid_id AND resumeBulletin = 'Y' ";
+	$retourAffiche = $mysqli->query($sqlAffiche);
+	if ($retourAffiche->num_rows) {
+		$retour = $retourAffiche->fetch_object()->resume. " : ";
+	}
+	return $retour;
+}
+
 ?>

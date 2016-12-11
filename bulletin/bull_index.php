@@ -85,6 +85,8 @@ $intercaler_app_classe=isset($_POST['intercaler_app_classe']) ? $_POST['intercal
 //$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : NULL;
 $mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : (isset($_GET['mode_bulletin']) ? $_GET['mode_bulletin'] : NULL);
 
+$imprimeResume = filter_input(INPUT_POST, 'integreResume');
+
 // Variable non encore utilisée:
 $contexte_document_produit="bulletin";
 // Pour sur le verso du bulletin n'avoir qu'un relevé de notes et pas deux... et surtout pas celui de l'élève suivant dans la liste:
@@ -3371,6 +3373,10 @@ else {
 													$current_eleve_aid_note=$obj_current_eleve_aid_appreciation->note;
 													$current_eleve_aid_statut=$obj_current_eleve_aid_appreciation->statut;
 												}
+												// résumé EPI
+												if (afficheResumeAid($aid_id)) {
+													$current_eleve_aid_appreciation = getResume($aid_id).$current_eleve_aid_appreciation;
+												}
 
 												$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 												$periode_max = mysqli_num_rows($periode_query);
@@ -3558,7 +3564,10 @@ else {
 													$current_eleve_aid_note=$obj_current_eleve_aid_appreciation->note;
 													$current_eleve_aid_statut=$obj_current_eleve_aid_appreciation->statut;
 												}
-
+												// résumé AP
+												if (afficheResumeAid($aid_id)) {
+													$current_eleve_aid_appreciation = getResume($aid_id).$current_eleve_aid_appreciation;
+												}
 
 												$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 												$periode_max = mysqli_num_rows($periode_query);
