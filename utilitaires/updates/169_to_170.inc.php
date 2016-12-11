@@ -259,5 +259,4 @@ if ($test_champ==0) {
 	$result .= msj_present("La table est déjà renseignée.");
 }
 
-
-
+?>
