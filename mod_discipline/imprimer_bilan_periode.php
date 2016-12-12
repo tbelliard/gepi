@@ -452,15 +452,15 @@ if(!isset($periode)) {
 		<p>";
 		while($lig=mysqli_fetch_object($res)) {
 			echo "
-			<input type='checkbox' name='periode[]' id='periode_".$lig->periode."' value='$lig->periode' /><label for='periode_".$lig->periode."'>Période ".$lig->periode."</label><br />\n";
+			<input type='checkbox' name='periode[]' id='periode_".$lig->periode."' value='$lig->periode' onchange=\"checkbox_change(this.id)\" /><label for='periode_".$lig->periode."' id='texte_periode_".$lig->periode."'>Période ".$lig->periode."</label><br />\n";
 		}
 		echo "
 		</p>";
 		if(!getSettingANon('mod_disc_avertissements_mi_periode')) {
 			echo "
 		<p>Imprimer les $mod_disc_terme_avertissement_fin_periode de <br />
-			<input type='radio' name='s_periode' id='s_periode_y' value='y' /><label for='s_periode_y'>mi-période</label><br />
-			<input type='radio' name='s_periode' id='s_periode_n' value='n' checked /><label for='s_periode_n'>fin de période</label><br />
+			<input type='radio' name='s_periode' id='s_periode_y' value='y' onchange=\"checkbox_change('s_periode_y');checkbox_change('s_periode_n');\" /><label for='s_periode_y' id='texte_s_periode_y'>mi-période</label><br />
+			<input type='radio' name='s_periode' id='s_periode_n' value='n' onchange=\"checkbox_change('s_periode_y');checkbox_change('s_periode_n');\" checked /><label for='s_periode_n' id='texte_s_periode_n'>fin de période</label><br />
 		</p>";
 		}
 		else {
@@ -473,6 +473,12 @@ if(!isset($periode)) {
 		<p><input type='submit' name='Valider' value='Valider' /></p>
 	</fieldset>
 </form>
+
+<script type='text/javascript'>
+".js_checkbox_change_style()."
+checkbox_change('s_periode_y');
+checkbox_change('s_periode_n');
+</script>
 
 <p><br /></p>
 <p style='margin-left:4em;text-indent:-4em;'><em>NOTES&nbsp;:</em> Le fichier modèle OOo proposé par défaut utilise une police particulière pour les cases à cocher (<a href='http://www.sylogix.org/attachments/download/243/gepi.ttf' title=\"Télécharger le fichier de police de caractère.
@@ -617,7 +623,7 @@ if(!isset($id_classe)) {
 			}
 			if($afficher_ligne=="y") {
 				echo "
-			<input type='checkbox' name='id_classe[]' id='id_classe_".$lig->id_classe."' value='$lig->id_classe' /><label for='id_classe_".$lig->id_classe."'> ".$lig->classe."</label><br />\n";
+			<input type='checkbox' name='id_classe[]' id='id_classe_".$lig->id_classe."' value='$lig->id_classe' onchange=\"checkbox_change(this.id)\" /><label for='id_classe_".$lig->id_classe."' id='texte_id_classe_".$lig->id_classe."'> ".$lig->classe."</label><br />\n";
 			}
 		}
 		echo "
@@ -632,13 +638,15 @@ if(!isset($id_classe)) {
 
 <script type='text/javascript'>
 
+	".js_checkbox_change_style()."
+
 	function checkAll(){
 		champs_input=document.getElementsByTagName('input');
 		for(i=0;i<champs_input.length;i++){
 			type=champs_input[i].getAttribute('type');
 			if(type=='checkbox'){
 				champs_input[i].checked=true;
-
+				checkbox_change(champs_input[i].getAttribute('id'));
 			}
 		}
 	}
@@ -650,6 +658,7 @@ if(!isset($id_classe)) {
 			type=champs_input[i].getAttribute('type');
 			if(type=='checkbox'){
 				champs_input[i].checked=false;
+				checkbox_change(champs_input[i].getAttribute('id'));
 			}
 		}
 	}
@@ -718,7 +727,7 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 			$cpt=0;
 			while($lig=mysqli_fetch_object($res)) {
 				echo "
-					<input type='checkbox' name='eleve[]' id='eleve_".$id_classe[$loop]."_".$periode[$loop2]."_".$cpt."' value=\"".$id_classe[$loop]."|".$periode[$loop2]."|".$lig->login."\" /><label for='eleve_".$id_classe[$loop]."_".$periode[$loop2]."_".$cpt."'> ".$lig->prenom." ".$lig->nom."</label><br />\n";
+					<input type='checkbox' name='eleve[]' id='eleve_".$id_classe[$loop]."_".$periode[$loop2]."_".$cpt."' value=\"".$id_classe[$loop]."|".$periode[$loop2]."|".$lig->login."\" onchange=\"checkbox_change(this.id)\" /><label for='eleve_".$id_classe[$loop]."_".$periode[$loop2]."_".$cpt."' id='texte_eleve_".$id_classe[$loop]."_".$periode[$loop2]."_".$cpt."'> ".$lig->prenom." ".$lig->nom."</label><br />\n";
 				$cpt++;
 			}
 			echo "
@@ -742,12 +751,15 @@ UncheckAll();'>Tout décocher</a></p>
 </form>
 
 <script type='text/javascript'>
+	".js_checkbox_change_style()."
+
 	function checkAll(){
 		champs_input=document.getElementsByTagName('input');
 		for(i=0;i<champs_input.length;i++){
 			type=champs_input[i].getAttribute('type');
 			if(type=='checkbox'){
 				champs_input[i].checked=true;
+				checkbox_change(champs_input[i].getAttribute('id'));
 			}
 		}
 	}
@@ -758,6 +770,7 @@ UncheckAll();'>Tout décocher</a></p>
 			type=champs_input[i].getAttribute('type');
 			if(type=='checkbox'){
 				champs_input[i].checked=false;
+				checkbox_change(champs_input[i].getAttribute('id'));
 			}
 		}
 	}
