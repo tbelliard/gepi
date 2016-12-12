@@ -593,6 +593,11 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	// 20161116 : DEBUG
 	//echo "\$type_bulletin_par_defaut=$type_bulletin_par_defaut<br />";
 
+	$chaine_type_par_defaut=" <img src='../images/vert.png' class='icone16' title=\"Type par défaut défini dans Gestion générale/Configuration générale.\" />";
+	if(acces("/gestion/param_gen.php", $_SESSION['statut'])) {
+		$chaine_type_par_defaut=" <a href='../gestion/param_gen.php#type_bulletin_par_defaut_pdf' target=\"_blank\"><img src='../images/vert.png' class='icone16' title=\"Type par défaut défini dans Gestion générale/Configuration générale.\" /></a>";
+	}
+
 	// A remplacer par la suite par un choix:
 	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 	echo "<table border='0' summary='Choix du type de bulletin'>\n";
@@ -604,6 +609,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='mode_bulletin_html' id='texte_mode_bulletin_html' style='cursor:pointer;'>Bulletin HTML</label>\n";
+	if($type_bulletin_par_defaut=='html') {echo $chaine_type_par_defaut;}
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -643,6 +649,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='mode_bulletin_pdf' id='texte_mode_bulletin_pdf' style='cursor:pointer;'>Bulletin PDF</label>\n";
+			if($type_bulletin_par_defaut=='pdf') {echo $chaine_type_par_defaut;}
 
 			echo "<br />\n";
 			//echo "<span id='div_modele_bulletin_pdf'>\n";
@@ -718,6 +725,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 		</td>
 		<td>
 			<label for='mode_bulletin_pdf_2016' id='texte_mode_bulletin_pdf_2016'> Bulletin PDF au format Collège Réforme 2016</label>
+			".(($type_bulletin_par_defaut=='pdf_2016') ? $chaine_type_par_defaut : "")."
 		</td>
 	</tr>";
 
