@@ -69,6 +69,10 @@ if(count($tab_engagements['indice'])==0) {
 	die();
 }
 
+if(isset($_GET['page_origine'])) {
+	$_SESSION['page_origine']=$_GET['page_origine'];
+}
+
 $nb_engagements=count($tab_engagements['indice']);
 
 // Restreindre a ses propres documents
@@ -776,7 +780,13 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-echo "<p class='bold'><a href='../accueil.php";
+echo "<p class='bold'><a href='";
+if((isset($_SESSION['page_origine']))&&($_SESSION['page_origine']=="bulletins")&&(acces_impression_bulletin("",""))) {
+	echo "../bulletin/bull_index.php";
+}
+else {
+	echo "../accueil.php";
+}
 echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 if(acces("/mod_engagements/index_admin.php", $_SESSION['statut'])) {

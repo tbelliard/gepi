@@ -59,6 +59,10 @@ if(getSettingANon("mod_disc_avertissements_mi_periode")) {
 	$s_periode="n";
 }
 
+if(isset($_GET['page_origine'])) {
+	$_SESSION['page_origine']=$_GET['page_origine'];
+}
+
 //debug_var();
 
 if($_SESSION['statut']=='professeur') {
@@ -420,12 +424,19 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-if(getSettingAOui('active_mod_discipline')) {
-	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'><a href='";
+if((isset($_SESSION['page_origine']))&&($_SESSION['page_origine']=="bulletins")&&(acces_impression_bulletin("",""))) {
+	echo "../bulletin/bull_index.php";
 }
 else {
-	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	if(getSettingAOui('active_mod_discipline')) {
+		echo "index.php";
+	}
+	else {
+		echo "../accueil.php";
+	}
 }
+echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 if(!isset($periode)) {
 	// Choix de la (des?) période(s)

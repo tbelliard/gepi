@@ -72,6 +72,10 @@ if($gepi_denom_mention=="") {
 
 //debug_var();
 
+if((isset($_SESSION['page_origine']))&&($_SESSION['page_origine']=="origine")) {
+	unset($_SESSION['page_origine']);
+}
+
 //================================
 // Patch pour 1.6.9:
 check_tables_modifiees();
@@ -559,7 +563,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "&amp;id_classe[]=".$tab_id_classe[$i];
 		}
-		echo "' title=\"Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'</a></div>";
+		echo "&amp;page_origine=bulletins' title=\"Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'</a></div>";
 	}
 
 	if(($_SESSION['statut']=='administrateur')||
@@ -573,7 +577,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 			}
 			echo "id_classe[]=".$tab_id_classe[$i];
 		}
-		echo "' title=\"Imprimer les documents délégués de classe,...\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer les documents destinés aux délégués de classe...</a></div>";
+		echo "&amp;page_origine=bulletins' title=\"Imprimer les documents délégués de classe,...\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer les documents destinés aux délégués de classe...</a></div>";
 	}
 
 	//echo "<p class='bold'>Sélection des élèves:</p>\n";
