@@ -134,8 +134,8 @@ $xml->appendChild($items);
 				$noeudEnseignant = $xml->createElement('enseignant');
 					//on ne conserve que les chiffres pour id-sts
 					if (!$enseignant->numind) {
-						echo $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer.";
-						die();
+						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer. <em><a href=\"../../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br>";
+						continue;
 					}
 					preg_match_all('#[0-9]+#',$enseignant->numind,$extract);
 					$idSts = $extract[0][0];
@@ -368,7 +368,7 @@ if (FALSE) {
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			$respEtabElv = "RESP_".$eleve->id_resp_etab;
 			
-			$profResponsable = getUtilisateur($eleve->professeur)->numid;
+			$profResponsable = getUtilisateur($eleve->professeur)->numind;
 			$profResponsable = substr(getUtilisateur($eleve->professeur)->numind,1);
 			
 			//if($periode->num_periode < 10) {$num_periode = "0".$periode->num_periode;} else {$num_periode = $periode->num_periode;}

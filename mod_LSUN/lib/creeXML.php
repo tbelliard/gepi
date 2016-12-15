@@ -28,11 +28,20 @@ $niveau_arbo = "2";
 include_once("../../lib/initialisationsPropel.inc.php");
 require_once("../../lib/initialisations.inc.php");
 
+$msgErreur = "";
 
-header('Content-Type: application/xml');
+
 require_once("chargeXML.php");
 
-echo $xml->saveXML();
+if ($msgErreur) {
+	echo "<strong>Votre base contient des erreurs qui ne permettent pas de créer le fichier<br /><br /></strong>";
+	echo $msgErreur;
+} else {
+	header('Content-Type: application/xml');
+	echo $xml->saveXML();
+	
+}
+
 
 
 
