@@ -409,13 +409,13 @@ function getAcquisEleve($eleve, $periode) {
 
 function getModalite($groupe, $eleve, $mef_code, $code_matiere ) {
 	global $mysqli;
+	global $msgErreur;
 	$retour = "S";
 	// On recherche la modalite du groupe
 	$sqlMefGroupe = "SELECT * FROM mef_matieres WHERE mef_code = '$mef_code' AND code_matiere = '$code_matiere' ";
 	//echo $sqlMefGroupe;
 	$modaliteGroupe = $mysqli->query($sqlMefGroupe);
 	if ($modaliteGroupe->num_rows == 1) {
-		//echo "coucou ".$sqlMefGroupe;
 		$retour = $modaliteGroupe->fetch_object()->code_modalite_elect;
 		//echo $retour;
 	} else {
@@ -425,10 +425,10 @@ function getModalite($groupe, $eleve, $mef_code, $code_matiere ) {
 		if ($retourQuery->num_rows == 1) {
 			$retour = $retourQuery->fetch_object()->code_modalite_elect;
 		} else if ($retourQuery->num_rows > 1) {
-			echo "plusieurs modalités pour la matière du groupe $groupe pour l'élève $eleve";
+			$msgErreur .= "plusieurs modalités pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)."<br>";
 			$retour = "";
 		}	else {
-			echo "pas de modalité pour la matière du groupe $groupe pour l'élève $eleve";
+			$msgErreur .= "pas de modalité pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)." <em><a href=\"../../groupes/edit_eleves.php?id_groupe=$groupe\" target='_BLANK' >Corriger</a></em> <br>";
 			$retour = "";
 		}
 	}
@@ -510,4 +510,22 @@ function display_xml_error($error) {
     return $return."<hr />";
 }
 
+function getMatiereGroupe($groupe) {
+	global $mysqli;
+	$retour = "";
+	$sqlMatiere = "SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe = '$groupe' ";
+	$resultchargeDB = $mysqli->query($sqlMatiere);
+	
+	if ($resultchargeDB->num_rows) {
+		$retour = $resultchargeDB->fetch_object()->id_matiere;
+	}
+	return $retour;
+}
+
+function getEleve($login) {
+	global $mysqli;
+	$retour = "";
+	$sqlEleve = "SELECT ";
+
+}
 
