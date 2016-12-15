@@ -300,7 +300,8 @@ if (FALSE) {
 			}
 		$donnees->appendChild($episGroupes);
 }
-		
+
+if (FALSE) {		
 			/*----- acc-persos -----*/
 		$accPersos = $xml->createElement('acc-persos');
 		$listeApCommuns = getAPCommun();
@@ -323,6 +324,8 @@ if (FALSE) {
 			$accPersos->appendChild($noeudApCommun);
 		}
 		$donnees->appendChild($accPersos);
+}
+
 		
 			/*----- acc-persos-groupes -----*/
 if (FALSE) {
@@ -400,7 +403,8 @@ if (FALSE) {
 				$elementsProgramme = getEPeleve ($eleve->login, $acquisEleve->id_groupe,$eleve->periode );
 				$elementProgramme = "";
 				while ($elemProgramme = $elementsProgramme->fetch_object()) {
-					$elementProgramme .= "EP_".$elemProgramme->idEP;
+					$elementProgramme .= "EP_".$elemProgramme->idEP." ";
+					//TODO VÉRIFIER que l'élément de programme existe
 				}
 				$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20");
 				
@@ -462,7 +466,8 @@ if (FALSE) {
 				$vieScolaire->appendChild($attsVieSco);
 			}
 			$comVieSco = $xml->createElement('commentaire', $retardEleve->appreciation);
-			$vieScolaire->appendChild($comVieSco);
+			//$vieScolaire->appendChild($comVieSco);
+			// non obligatoire
 			$noeudBilanElevePeriodique->appendChild($vieScolaire);
 			
 			

@@ -392,16 +392,16 @@ function getAcquisEleve($eleve, $periode) {
 	$sqlAcquis01 = "SELECT mn.* , ma.appreciation FROM matieres_notes AS mn INNER JOIN matieres_appreciations AS ma "
 		. "ON mn.login = ma.login AND mn.periode = ma.periode AND mn.id_groupe = ma.id_groupe "
 		. "WHERE mn.login = '$eleve' AND mn.periode = $periode GROUP BY mn.`id_groupe` ";
-	$sqlAcquis02 = "SELECT s1.*, jme.idEP FROM ($sqlAcquis01) AS s1 INNER JOIN  j_mep_eleve AS jme ON jme.idEleve = s1.login ";
-	$sqlAcquis03 = "SELECT s2.* , mep.libelle FROM ($sqlAcquis02) AS s2 INNER JOIN matiere_element_programme AS mep ON s2.idEP = mep.id ";
-	$sqlAcquis04 = "SELECT s3.* , jgm.id_matiere FROM ($sqlAcquis03) AS s3 INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = s3.id_groupe ";
+	//$sqlAcquis02 = "SELECT s1.*, jme.idEP FROM ($sqlAcquis01) AS s1 INNER JOIN  j_mep_eleve AS jme ON jme.idEleve = s1.login ";
+	//$sqlAcquis03 = "SELECT s2.* , mep.libelle FROM ($sqlAcquis02) AS s2 INNER JOIN matiere_element_programme AS mep ON s2.idEP = mep.id ";
+	$sqlAcquis04 = "SELECT s3.* , jgm.id_matiere FROM ($sqlAcquis01) AS s3 INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = s3.id_groupe ";
 	$sqlAcquis05 = "SELECT s4.* , ma.code_matiere FROM ($sqlAcquis04) AS s4 INNER JOIN matieres AS ma ON s4.id_matiere = ma.matiere ";
 	// classe
 	$sqlAcquis06 = "SELECT s5.* , jec.id_classe FROM ($sqlAcquis05) AS s5 INNER JOIN j_eleves_classes AS jec ON s5.login = jec.login AND s5.periode = jec.periode ";
 	//=== mef
 	$sqlAcquis = "SELECT s6.* , c.mef_code FROM ($sqlAcquis06) AS s6 INNER JOIN classes AS c ON s6.id_classe = c.id ";
 	
-	//echo $sqlAcquis;
+	//echo $sqlAcquis.'<br><br>';
 	$resultchargeDB = $mysqli->query($sqlAcquis);
 	return $resultchargeDB;
 	

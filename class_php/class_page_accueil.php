@@ -635,13 +635,21 @@ if(getSettingAOui('active_bulletins')) {
 
 	if(getSettingAOui('active_bulletins')) {
 		// Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
-         
         
             $sql = "SELECT * FROM aid_config
 								  WHERE display_bulletin = 'y'
 								  OR bull_simplifie = 'y'
 								  ORDER BY nom"; 
-            $resultat = mysqli_query($mysqli, $sql); 
+		if ($_SESSION['statut'] == 'professeur') {
+			$sqlUtilisateur = "(SELECT indice_aid , id_utilisateur FROM j_aid_utilisateurs) UNION DISTINCT (SELECT  indice_aid , id_utilisateur FROM j_aid_utilisateurs)";
+			$sql = "SELECT DISTINCT * FROM ($sql) AS t0 "
+				. "INNER JOIN ($sqlUtilisateur) AS u "
+				. "ON u.indice_aid = t0.indice_aid "
+				. "WHERE u.id_utilisateur = \"".$_SESSION['login']."\" ";
+				
+		}
+			//echo $sql;
+            $resultat = mysqli_query($mysqli, $sql);  
             while ($obj = $resultat->fetch_object()) {
                 $indice_aid = $obj->indice_aid;
                 $call_prof = mysqli_query($mysqli, "SELECT * FROM j_aid_utilisateurs
