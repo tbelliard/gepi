@@ -65,12 +65,18 @@ $sqlDisciplines = "SELECT DISTINCT mm.code_matiere , mm.code_modalite_elect , nv
 $listeDisciplines = $mysqli->query($sqlDisciplines);
 
 /*===== Enseignants =====*/
-// la table n'a pas d'Id, on en crée un en attendant
-$mysqli->query("SET @rownum=0;");
-$sqlEnseignants = "SELECT @rownum:=@rownum+1 AS id, u.login, u.nom, u.prenom, u.civilite, u.numind, u.type, u.civilite "
-	. "FROM utilisateurs AS u "
-	. "WHERE u.statut = 'professeur' AND etat ='actif' ;";
-//echo $sqlEnseignants;
+
+$myClasses = implode(",", $_SESSION[afficheClasse]);
+// on récupère les groupes des classes choisies
+$sqlEns01 = "SELECT DISTINCT jgc.id_groupe, jgc.id_classe FROM j_groupes_classes AS jgc WHERE jgc.id_classe IN ($myClasses) AND jgc.id_groupe NOT IN (SELECT id_groupe FROM `j_groupes_types`)";
+// puis les logins prof
+$sqlEns02 = "SELECT DISTINCT jgp.login, t1.* FROM ($sqlEns01) AS t1 INNER JOIN j_groupes_professeurs AS jgp ON t1.id_groupe = jgp.id_groupe";
+//puis les profs
+$sqlEns03 = "SELECT DISTINCT t10.login, t10.nom, t10.prenom, t10.civilite, t10.numind, t10.type FROM ($sqlEns02) AS t2 INNER JOIN utilisateurs AS t10 ON t10.login = t2.login";
+
+
+$sqlEnseignants = $sqlEns03;
+// echo $sqlEnseignants;
 $listeEnseignants = $mysqli->query($sqlEnseignants);
 
 /*===== Éléments de programmes ===== */
