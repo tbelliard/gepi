@@ -39,6 +39,7 @@ if ($msgErreur) {
 } else {
 	header('Content-Type: application/xml');
 	echo $xml->saveXML();
+	
 }
 
 

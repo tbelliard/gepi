@@ -368,7 +368,7 @@ if (FALSE) {
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			$respEtabElv = "RESP_".$eleve->id_resp_etab;
 			
-			$profResponsable = getUtilisateur($eleve->professeur)->numid;
+			$profResponsable = getUtilisateur($eleve->professeur)->numind;
 			$profResponsable = substr(getUtilisateur($eleve->professeur)->numind,1);
 			
 			//if($periode->num_periode < 10) {$num_periode = "0".$periode->num_periode;} else {$num_periode = $periode->num_periode;}
