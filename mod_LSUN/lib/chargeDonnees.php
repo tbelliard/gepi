@@ -68,7 +68,8 @@ $listeDisciplines = $mysqli->query($sqlDisciplines);
 
 $myClasses = implode(",", $_SESSION[afficheClasse]);
 // on récupère les groupes des classes choisies
-$sqlEns01 = "SELECT DISTINCT jgc.id_groupe, jgc.id_classe FROM j_groupes_classes AS jgc WHERE jgc.id_classe IN ($myClasses) AND jgc.id_groupe NOT IN (SELECT id_groupe FROM `j_groupes_types`)";
+//$sqlEns01 = "SELECT DISTINCT jgc.id_groupe, jgc.id_classe FROM j_groupes_classes AS jgc WHERE jgc.id_classe IN ($myClasses) AND jgc.id_groupe NOT IN (SELECT id_groupe FROM `j_groupes_types`)";
+$sqlEns01 = "SELECT DISTINCT jgc.id_groupe, jgc.id_classe FROM j_groupes_classes AS jgc WHERE jgc.id_classe IN ($myClasses) ";
 // puis les logins prof
 $sqlEns02 = "SELECT DISTINCT jgp.login, t1.* FROM ($sqlEns01) AS t1 INNER JOIN j_groupes_professeurs AS jgp ON t1.id_groupe = jgp.id_groupe";
 //puis les profs
