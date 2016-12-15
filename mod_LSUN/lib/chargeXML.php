@@ -134,8 +134,8 @@ $xml->appendChild($items);
 				$noeudEnseignant = $xml->createElement('enseignant');
 					//on ne conserve que les chiffres pour id-sts
 					if (!$enseignant->numind) {
-						echo $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer.";
-						die();
+						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer. <em><a href=\"../../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br>";
+						continue;
 					}
 					preg_match_all('#[0-9]+#',$enseignant->numind,$extract);
 					$idSts = $extract[0][0];
