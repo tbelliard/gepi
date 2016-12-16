@@ -109,7 +109,9 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
-	$bull2016_pas_espace_reserve_EPI_AP_Parcours=isset($_POST["bull2016_pas_espace_reserve_EPI_AP_Parcours"]) ? $_POST["bull2016_pas_espace_reserve_EPI_AP_Parcours"] : "n";
+	// Paramètre désactivé
+	//$bull2016_pas_espace_reserve_EPI_AP_Parcours=isset($_POST["bull2016_pas_espace_reserve_EPI_AP_Parcours"]) ? $_POST["bull2016_pas_espace_reserve_EPI_AP_Parcours"] : "n";
+	$bull2016_pas_espace_reserve_EPI_AP_Parcours="y";
 	if(($bull2016_pas_espace_reserve_EPI_AP_Parcours!="y")&&($bull2016_pas_espace_reserve_EPI_AP_Parcours!="n")) {
 		$bull2016_pas_espace_reserve_EPI_AP_Parcours="n";
 	}
@@ -327,6 +329,7 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	// Colonne Noms de matières
 	$bull2016_largeur_acquis_col_1=isset($_POST["bull2016_largeur_acquis_col_1"]) ? $_POST["bull2016_largeur_acquis_col_1"] : 44;
@@ -372,7 +375,55 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+	// Hauteurs en page 2:
+
+	// Hauteur Cadre Bilan des acquisitions en cycle 3
+	$bull2016_hauteur_bilan_acquisitions_cycle_3=isset($_POST["bull2016_hauteur_bilan_acquisitions_cycle_3"]) ? $_POST["bull2016_hauteur_bilan_acquisitions_cycle_3"] : 83;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_bilan_acquisitions_cycle_3))||
+	($bull2016_hauteur_bilan_acquisitions_cycle_3=="")) {
+		$bull2016_hauteur_bilan_acquisitions_cycle_3=83;
+	}
+	if (!saveSetting("bull2016_hauteur_bilan_acquisitions_cycle_3", $bull2016_hauteur_bilan_acquisitions_cycle_3)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_hauteur_bilan_acquisitions_cycle_3 !";
+		$reg_ok = 'no';
+	}
+
+	// Hauteur Cadre Bilan des acquisitions en cycle 4
+	$bull2016_hauteur_bilan_acquisitions_cycle_4=isset($_POST["bull2016_hauteur_bilan_acquisitions_cycle_4"]) ? $_POST["bull2016_hauteur_bilan_acquisitions_cycle_4"] : 44;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_bilan_acquisitions_cycle_4))||
+	($bull2016_hauteur_bilan_acquisitions_cycle_4=="")) {
+		$bull2016_hauteur_bilan_acquisitions_cycle_4=44;
+	}
+	if (!saveSetting("bull2016_hauteur_bilan_acquisitions_cycle_4", $bull2016_hauteur_bilan_acquisitions_cycle_4)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_hauteur_bilan_acquisitions_cycle_4 !";
+		$reg_ok = 'no';
+	}
+
+	// Hauteur Cadre Communication avec la famille
+	$bull2016_hauteur_communication_famille=isset($_POST["bull2016_hauteur_communication_famille"]) ? $_POST["bull2016_hauteur_communication_famille"] : 49;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_communication_famille))||
+	($bull2016_hauteur_communication_famille=="")) {
+		$bull2016_hauteur_communication_famille=49;
+	}
+	if (!saveSetting("bull2016_hauteur_communication_famille", $bull2016_hauteur_communication_famille)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_hauteur_communication_famille !";
+		$reg_ok = 'no';
+	}
+
+	// Hauteur Cadre Visa de la famille
+	$bull2016_hauteur_visa_famille=isset($_POST["bull2016_hauteur_visa_famille"]) ? $_POST["bull2016_hauteur_visa_famille"] : 18;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_visa_famille))||
+	($bull2016_hauteur_visa_famille=="")) {
+		$bull2016_hauteur_visa_famille=18;
+	}
+	if (!saveSetting("bull2016_hauteur_visa_famille", $bull2016_hauteur_visa_famille)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_hauteur_visa_famille !";
+		$reg_ok = 'no';
+	}
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	if (isset($_POST['bull_affiche_aid'])) {
 		if (!saveSetting("bull_affiche_aid", $_POST['bull_affiche_aid'])) {
@@ -489,6 +540,8 @@ if($bull2016_aff_retards=="") {
 	$bull2016_aff_retards="y";
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 $bull2016_titre_voeux_orientation=getSettingValue("bull2016_titre_voeux_orientation");
 if($bull2016_titre_voeux_orientation=="") {
 	$bull2016_titre_voeux_orientation="Voeux";
@@ -504,6 +557,8 @@ if($bull2016_titre_avis_orientation_proposee=="") {
 
 $bull2016_orientation_periodes=getSettingValue("bull2016_orientation_periodes");
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 $bull2016_INE_checked="";
 if(getSettingAOui('bull2016_INE')) {
 	$bull2016_INE_checked=" checked";
@@ -514,6 +569,7 @@ if(getSettingAOui('bull2016_afficher_cadre_adresse_resp')) {
 	$bull2016_afficher_cadre_adresse_resp_checked=" checked";
 }
 
+// Paramètre désactivé
 $bull2016_pas_espace_reserve_EPI_AP_Parcours=getSettingValue('bull2016_pas_espace_reserve_EPI_AP_Parcours');
 $bull2016_pas_espace_reserve_EPI_AP_Parcours_checked="";
 if($bull2016_pas_espace_reserve_EPI_AP_Parcours=="y") {
@@ -525,6 +581,8 @@ $bull2016_autorise_sous_matiere_checked="";
 if($bull2016_autorise_sous_matiere=="y") {
 	$bull2016_autorise_sous_matiere_checked=" checked";
 }
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Colonne Noms de matières
 $bull2016_largeur_acquis_col_1=getSettingValue('bull2016_largeur_acquis_col_1');
@@ -565,10 +623,53 @@ elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_moyclasse)) {
 	$bull2016_largeur_acquis_col_moyclasse=15;
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Page 2:
+// Hauteur cadre Bilan des acquisitions cycle 3
+$bull2016_hauteur_bilan_acquisitions_cycle_3=getSettingValue('bull2016_hauteur_bilan_acquisitions_cycle_3');
+if($bull2016_hauteur_bilan_acquisitions_cycle_3=="") {
+	$bull2016_hauteur_bilan_acquisitions_cycle_3=83;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_bilan_acquisitions_cycle_3)) {
+	$bull2016_hauteur_bilan_acquisitions_cycle_3=83;
+}
+
+// Hauteur cadre Bilan des acquisitions cycle 4
+$bull2016_hauteur_bilan_acquisitions_cycle_4=getSettingValue('bull2016_hauteur_bilan_acquisitions_cycle_4');
+if($bull2016_hauteur_bilan_acquisitions_cycle_4=="") {
+	$bull2016_hauteur_bilan_acquisitions_cycle_4=44;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_bilan_acquisitions_cycle_4)) {
+	$bull2016_hauteur_bilan_acquisitions_cycle_4=44;
+}
+
+// Hauteur cadre Communication avec la famille
+$bull2016_hauteur_communication_famille=getSettingValue('bull2016_hauteur_communication_famille');
+if($bull2016_hauteur_communication_famille=="") {
+	$bull2016_hauteur_communication_famille=49;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_communication_famille)) {
+	$bull2016_hauteur_communication_famille=49;
+}
+
+// Hauteur cadre Visa de la famille
+$bull2016_hauteur_visa_famille=getSettingValue('bull2016_hauteur_visa_famille');
+if($bull2016_hauteur_visa_famille=="") {
+	$bull2016_hauteur_visa_famille=18;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_hauteur_visa_famille)) {
+	$bull2016_hauteur_visa_famille=18;
+}
+
+
+
 $bull2016_cadre_visa_famille_checked="";
 if(!getSettingANon('bull2016_cadre_visa_famille')) {
 	$bull2016_cadre_visa_famille_checked=" checked";
 }
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ?>
 
@@ -596,6 +697,8 @@ echo add_token_field();
 			?> />
 		</td>
 	</tr>
+
+	<!--
 	<tr>
 		<td><label for='bull2016_pas_espace_reserve_EPI_AP_Parcours'>Ne pas réserver d'espace pour les EPI, AP, Parcours en page 2<br />
 		<span style='font-size:x-small'>Remonter les cadres suivants si un espace libre apparait</span>&nbsp;:</label></td>
@@ -605,19 +708,13 @@ echo add_token_field();
 			?> />
 		</td>
 	</tr>
+	-->
+
 	<tr>
 		<td><label for='bull2016_autorise_sous_matiere'>Prendre en compte le souhait des professeurs<br />de voir apparaitre telle ou telle sous-matière&nbsp;:</label></td>
 		<td>
 			<input type="checkbox" name="bull2016_autorise_sous_matiere" id="bull2016_autorise_sous_matiere" onchange="changement()" value="y"<?php
 				echo $bull2016_autorise_sous_matiere_checked;
-			?> />
-		</td>
-	</tr>
-	<tr>
-		<td><label for='bull2016_cadre_visa_famille'>Faire apparaître le cadre Visa de la famille en bas de 2è page&nbsp;:</label></td>
-		<td>
-			<input type="checkbox" name="bull2016_cadre_visa_famille" id="bull2016_cadre_visa_famille" onchange="changement()" value="y"<?php
-				echo $bull2016_cadre_visa_famille_checked;
 			?> />
 		</td>
 	</tr>
@@ -886,6 +983,66 @@ document.getElementById('bull2016_largeur_acquis_col_2').value=49;
 document.getElementById('bull2016_largeur_acquis_col_moy').value=15;
 document.getElementById('bull2016_largeur_acquis_col_moyclasse').value=15;
 return false;">Reprendre les largeurs de colonnes par défaut</a></p>
+</blockquote>
+
+<h3>Hauteurs en page 2</h3>
+<blockquote>
+<table class='boireaus boireaus_alt' summary='Hauteurs en page 2'>
+	<tr>
+		<td>Hauteur du cadre 'Bilan des acquisitions' en cycle 3&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_hauteur_bilan_acquisitions_cycle_3" id="bull2016_hauteur_bilan_acquisitions_cycle_3" size="5" onchange="changement()" value="<?php
+				echo $bull2016_hauteur_bilan_acquisitions_cycle_3;
+			?>" onKeyDown="clavier_3(this.id,event, 0, 100, 1);" />
+		</td>
+	</tr>
+	<tr>
+		<td>Hauteur du cadre 'Bilan des acquisitions' en cycle 4&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_hauteur_bilan_acquisitions_cycle_4" id="bull2016_hauteur_bilan_acquisitions_cycle_4" size="5" onchange="changement()" value="<?php
+				echo $bull2016_hauteur_bilan_acquisitions_cycle_4;
+			?>" onKeyDown="clavier_3(this.id,event, 0, 100, 1);" />
+		</td>
+	</tr>
+	<tr>
+		<td>Hauteur du cadre 'Communication avec la famille'&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_hauteur_communication_famille" id="bull2016_hauteur_communication_famille" size="5" onchange="changement()" value="<?php
+				echo $bull2016_hauteur_communication_famille;
+			?>" onKeyDown="clavier_3(this.id,event, 0, 100, 1);" />
+		</td>
+	</tr>
+	<tr>
+		<td><label for='bull2016_cadre_visa_famille'>Faire apparaître le cadre Visa de la famille en bas de 2è page&nbsp;:</label></td>
+		<td>
+			<input type="checkbox" name="bull2016_cadre_visa_famille" id="bull2016_cadre_visa_famille" onchange="changement()" value="y"<?php
+				echo $bull2016_cadre_visa_famille_checked;
+			?> />
+		</td>
+	</tr>
+	<tr>
+		<td>Hauteur du cadre 'Visa la famille'&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_hauteur_visa_famille" id="bull2016_hauteur_visa_famille" size="5" onchange="changement()" value="<?php
+				echo $bull2016_hauteur_visa_famille;
+			?>" onKeyDown="clavier_3(this.id,event, 0, 100, 1);" />
+		</td>
+	</tr>
+</table>
+<!--
+<p>La colonne appréciation prend la largeur restante&nbsp;: <?php
+	$bull2016_largeur_acquis_col_3=(189-$bull2016_largeur_acquis_col_1-$bull2016_largeur_acquis_col_2-$bull2016_largeur_acquis_col_moy-$bull2016_largeur_acquis_col_moyclasse);
+	if($bull2016_largeur_acquis_col_3<0) {
+		$bull2016_largeur_acquis_col_3="<span style='color:red; font-weight:bold;' title=\"La largeur est négative. L'affichage va planter.\">".$bull2016_largeur_acquis_col_3."</span>";
+	}
+	echo "189-$bull2016_largeur_acquis_col_1-$bull2016_largeur_acquis_col_2-$bull2016_largeur_acquis_col_moy-$bull2016_largeur_acquis_col_moyclasse=".$bull2016_largeur_acquis_col_3."mm";
+?></p>
+-->
+<p><a href='#' onclick="document.getElementById('bull2016_hauteur_bilan_acquisitions_cycle_3').value=83;
+document.getElementById('bull2016_hauteur_bilan_acquisitions_cycle_4').value=44;
+document.getElementById('bull2016_hauteur_communication_famille').value=49;
+document.getElementById('bull2016_hauteur_visa_famille').value=18;
+return false;">Reprendre les hauteurs de sections par défaut</a></p>
 </blockquote>
 
 <?php
