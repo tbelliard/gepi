@@ -455,17 +455,19 @@ if (FALSE) {
 			
 			
 			
-			$retardEleve = getRetardsEleve($eleve->login , $eleve->periode)->fetch_object();
+			//$retardEleve = getRetardsEleve($eleve->login , $eleve->periode)->fetch_object();
+			$retardEleve = getAbsencesEleve($eleve->login , $eleve->periode);
 			$vieScolaire = $xml->createElement('vie-scolaire');
-			$retardsJustifies = $retardEleve->nb_absences - $retardEleve->non_justifie;
-			$attributsVieScolaire = array('nb-retards'=>$retardEleve->nb_retards , 'nb-abs-justifiees'=>$retardsJustifies, 'nb-abs-injustifiees'=>$retardEleve->non_justifie);
+			$retardsJustifies = $retardEleve['absences'] - $retardEleve['nj'];
+			//$attributsVieScolaire = array('nb-retards'=>$retardEleve->nb_retards , 'nb-abs-justifiees'=>$retardsJustifies, 'nb-abs-injustifiees'=>$retardEleve->non_justifie);
+			$attributsVieScolaire = array('nb-retards'=>$retardEleve['retards'] , 'nb-abs-justifiees'=>$retardsJustifies, 'nb-abs-injustifiees'=>$retardEleve['nj']);
 			
 			foreach ($attributsVieScolaire as $cle=>$valeur) {
 				$attsVieSco= $xml->createAttribute($cle);
 				$attsVieSco->value = $valeur;
 				$vieScolaire->appendChild($attsVieSco);
 			}
-			$comVieSco = $xml->createElement('commentaire', $retardEleve->appreciation);
+			$comVieSco = $xml->createElement('commentaire', $retardEleve['appreciation']);
 			//$vieScolaire->appendChild($comVieSco);
 			// non obligatoire
 			$noeudBilanElevePeriodique->appendChild($vieScolaire);
