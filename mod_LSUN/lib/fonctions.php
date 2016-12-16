@@ -493,14 +493,12 @@ function getAbsencesEleve($eleve_login , $periode_num) {
 		}
 		else {
 			$current_eleve_absences_objet = $current_eleve_absences_query->fetch_object();
-			$current_eleve['absences'] = $current_eleve_absences_objet->nb_absences;
-			$current_eleve['nj'] = $current_eleve_absences_objet->non_justifie;
-			$current_eleve['retards'] = $current_eleve_absences_objet->nb_retards;
+			$current_eleve['absences'] = $current_eleve_absences_objet->nb_absences ? $current_eleve_absences_objet->nb_absences : 0;
+			$current_eleve['nj'] = $current_eleve_absences_objet->non_justifie ? $current_eleve_absences_objet->nb_absences : 0;
+			$current_eleve['retards'] = $current_eleve_absences_objet->nb_retards ? $current_eleve_absences_objet->nb_retards : 0;
 			$current_eleve['appreciation'] = $current_eleve_absences_objet->appreciation;
 		}
 	} else {
-		// Initialisations files
-		require_once("../lib/initialisationsPropel.inc.php");
 		$eleve = EleveQuery::create()->findOneByLogin($eleve_login);
 		if ($eleve != null) {
 			$current_eleve['absences'] = strval($eleve->getDemiJourneesAbsenceParPeriode($periode_num)->count());
@@ -511,12 +509,6 @@ function getAbsencesEleve($eleve_login , $periode_num) {
 			$current_eleve_absences_query = $mysqli->query($sql2);
 			$current_eleve_appreciation_absences_objet = $current_eleve_absences_query->fetch_object();
 			$current_eleve['appreciation'] = $current_eleve_appreciation_absences_objet ? $current_eleve_appreciation_absences_objet->appreciation : '';
-			/**
-			if ($current_eleve_appreciation_absences_objet) { 
-			   $current_eleve_appreciation_absences = $current_eleve_appreciation_absences_objet->appreciation;
-			}
-			 * 
-			 */
 		}
 	}
 	return $current_eleve;
