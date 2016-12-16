@@ -98,7 +98,6 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 	//=====================================
 	/*
 	// NE PAS SUPPRIMER CETTE SECTION... c'est pour le debug
-
 	// Règles en rouge:
 	// Selon ce que l'on souhaite débugger, décommenter une des deux règles
 	$pdf->SetDrawColor(255,0,0);
@@ -2480,7 +2479,7 @@ die();
 		//=========================================
 		//=========================================
 
-		// Deuxième page:
+		// Deuxième page: Page 2 - 2è page
 		$pdf->AddPage(); //ajout d'une page au document
 		// En fin de cycle (fin d'année de l'année de fin de cycle), il faut même une autre page... prévoir le recto/verso 
 
@@ -4633,6 +4632,7 @@ die();
 		$y_communication_famille=$param_bull2016["y_communication_famille"];
 		$y_signature_chef=$param_bull2016["y_signature_chef"];
 		$y_visa_famille=$param_bull2016["y_visa_famille"];
+
 		if((isset($param_bull2016["bull2016_pas_espace_reserve_EPI_AP_Parcours"]))&&($param_bull2016["bull2016_pas_espace_reserve_EPI_AP_Parcours"]=="y")) {
 			// On ne se limite pas au cas où il n'y a pas du tout d'EPI, AP,...
 //			if($nb_EPI_AP_Parcours==0) {

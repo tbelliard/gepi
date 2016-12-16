@@ -477,12 +477,49 @@ function getAppConseil($eleve , $periode) {
 	return $resultchargeDB;
 }
 
-function getRetardsEleve($eleve , $periode) {
+function getAbsencesEleve($eleve_login , $periode_num) {
 	global $mysqli;	
-	$sqlRetard="SELECT * FROM absences WHERE login='$eleve' AND periode = $periode ;";
-	//echo $sqlRetard;
-	$resultchargeDB = $mysqli->query($sqlRetard);
-	return $resultchargeDB;
+	
+	$current_eleve= array();
+	//On vérifie si le module est activé
+	if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
+		$sql="SELECT * FROM absences WHERE (login='".$eleve_login."' AND periode='$periode_num');";
+		$current_eleve_absences_query = $mysqli->query($sql);
+		if($current_eleve_absences_query->num_rows==0) {
+			$current_eleve['absences'] = "0";
+			$current_eleve['nj'] = "0";
+			$current_eleve['retards'] = "0";
+			$current_eleve['appreciation'] = "-";
+		}
+		else {
+			$current_eleve_absences_objet = $current_eleve_absences_query->fetch_object();
+			$current_eleve['absences'] = $current_eleve_absences_objet->nb_absences;
+			$current_eleve['nj'] = $current_eleve_absences_objet->non_justifie;
+			$current_eleve['retards'] = $current_eleve_absences_objet->nb_retards;
+			$current_eleve['appreciation'] = $current_eleve_absences_objet->appreciation;
+		}
+	} else {
+		// Initialisations files
+		require_once("../lib/initialisationsPropel.inc.php");
+		$eleve = EleveQuery::create()->findOneByLogin($eleve_login);
+		if ($eleve != null) {
+			$current_eleve['absences'] = strval($eleve->getDemiJourneesAbsenceParPeriode($periode_num)->count());
+			$current_eleve['nj'] = strval($eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_num)->count());
+			$current_eleve['retards'] = strval($eleve->getRetardsParPeriode($periode_num)->count());
+			$sql2="SELECT * FROM absences WHERE (login='".$eleve_login."' AND periode='$periode_num');";
+			//echo "$sql< br />";
+			$current_eleve_absences_query = $mysqli->query($sql2);
+			$current_eleve_appreciation_absences_objet = $current_eleve_absences_query->fetch_object();
+			$current_eleve['appreciation'] = $current_eleve_appreciation_absences_objet ? $current_eleve_appreciation_absences_objet->appreciation : '';
+			/**
+			if ($current_eleve_appreciation_absences_objet) { 
+			   $current_eleve_appreciation_absences = $current_eleve_appreciation_absences_objet->appreciation;
+			}
+			 * 
+			 */
+		}
+	}
+	return $current_eleve;
 }
 
 function display_xml_error($error) {
