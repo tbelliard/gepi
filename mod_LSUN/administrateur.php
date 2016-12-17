@@ -119,6 +119,7 @@ $classes = getClasses();
 <?php 
 $toutesClasses = getClasses();
 $cpt = 0;
+$cptClasse = 0;
 $coupe = ceil($toutesClasses->num_rows/4);
 while ($afficheClasse = $toutesClasses->fetch_object()) {
 	if (!$cpt) {echo "			<div class='colonne'>\n";}
@@ -127,16 +128,38 @@ while ($afficheClasse = $toutesClasses->fetch_object()) {
 					<input type="checkbox" 
 						   name="afficheClasse[<?php echo $afficheClasse->id; ?>]"
 						   <?php if(count($selectionClasse) && in_array($afficheClasse->id, $selectionClasse)){echo 'checked';} ?>
+						   id="afficheClasse_<?php echo $cptClasse; ?>"
+						   onchange="checkbox_change(this.id)"
 						   />
+					<label for="afficheClasse_<?php echo $afficheClasse->id; ?>" id="texte_afficheClasse_<?php echo $afficheClasse->id; ?>">
 						<?php echo $afficheClasse->classe; ?>
+					</label>
 				</p>
 <?php 
 	$cpt=$cpt+1;
+	$cptClasse ++;
 	if ($cpt > $coupe) {echo "			</div>\n"; $cpt = 0;}
 }
 if ($cpt) {echo "			</div>\n";}
 ?>
 		</div>
+		
+		<p class="center"><a href='#' onClick='CocherClasses(true)'>Tout cocher</a> / <a href='#' onClick='CocherClasses(false)'>Tout décocher</a></p>
+
+<script type='text/javascript'> 
+	<?php echo js_checkbox_change_style(); ?>
+
+    function CocherClasses(mode) {
+        for (var k=0;k<<?php echo $cptClasse; ?>;k++) {
+			//alert('afficheClasse_'+k);
+            if(document.getElementById('afficheClasse_'+k)){
+                document.getElementById('afficheClasse_'+k).checked = mode;
+                checkbox_change('afficheClasse_'+k);
+            }
+        }
+    }
+</script>
+
 		<p class="center">
 			<button type="submit" name="soumetSelection" value="y" >
 				Sélectionner
