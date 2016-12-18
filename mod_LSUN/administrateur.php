@@ -131,7 +131,7 @@ while ($afficheClasse = $toutesClasses->fetch_object()) {
 						   id="afficheClasse_<?php echo $cptClasse; ?>"
 						   onchange="checkbox_change(this.id)"
 						   />
-					<label for="afficheClasse_<?php echo $afficheClasse->id; ?>" id="texte_afficheClasse_<?php echo $afficheClasse->id; ?>">
+					<label for="afficheClasse_<?php echo $cptClasse; ?>" id="texte_afficheClasse_<?php echo $cptClasse; ?>">
 						<?php echo $afficheClasse->classe; ?>
 					</label>
 				</p>
@@ -156,6 +156,13 @@ if ($cpt) {echo "			</div>\n";}
                 document.getElementById('afficheClasse_'+k).checked = mode;
                 checkbox_change('afficheClasse_'+k);
             }
+        }
+    }
+
+    // Pour re-mettre en gras les classes sélectionnées lors du re-chargement de la page
+    for (var k=0;k<<?php echo $cptClasse; ?>;k++) {
+        if(document.getElementById('afficheClasse_'+k)){
+            checkbox_change('afficheClasse_'+k);
         }
     }
 </script>
