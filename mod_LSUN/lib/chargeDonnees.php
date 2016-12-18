@@ -53,16 +53,50 @@ $listePeriodes = getPeriodes($myData);
 //code nationale si la matière est une matière nationale, code académique si la matière est une matière académique).
 //Modalité d’élection (S : tronc commun, O : option obligatoire, F : option facultative) de la matière issue des programmes
 // nom à récupérer dans nomenclatures_valeurs
-
+/*
 $sqlDisciplines = "SELECT DISTINCT m.matiere , m.nom_complet , m.code_matiere , mm.code_modalite_elect AS election FROM mef_matieres AS mm "
 	. "INNER JOIN matieres AS m ON m.code_matiere = mm.code_matiere ORDER BY m.code_matiere , mm.code_modalite_elect DESC ";
 
 $sqlDisciplines = "SELECT DISTINCT mm.code_matiere , mm.code_modalite_elect , nv.valeur AS nom_complet FROM mef_matieres AS mm "
 	. "INNER JOIN nomenclatures_valeurs AS nv ON nv.code = mm.code_matiere WHERE nom = 'libelle_long' ";
+ * 
+ */
 
+//à t2 vérifier qu'on a autant de matière qu'à t1 sinon une matière n'a pas de modalité
+
+$sqlDisciplines01 = "SELECT id_groupe , id_classe FROM `j_groupes_classes` WHERE id_classe IN ($myData)";
+$sqlDisciplines02 = "SELECT t0.* , jgm.id_matiere FROM (
+				$sqlDisciplines01
+			) AS t0
+			INNER JOIN
+				j_groupes_matieres AS jgm
+			ON jgm.id_groupe = t0.id_groupe
+			WHERE NOT EXISTS 
+			(
+				SELECT *
+				FROM j_groupes_types
+				WHERE j_groupes_types.id_groupe = t0.id_groupe
+			)";
+$nbMat01 = $mysqli->query($sqlDisciplines02)->num_rows;
+
+$sqlDisciplines = "SELECT DISTINCT t2.id_matiere , t2.code_modalite_elect , m.nom_complet ,  m.code_matiere FROM (
+		SELECT DISTINCT t1.* , jgem.code_modalite_elect FROM (
+			$sqlDisciplines02
+		) AS t1
+		INNER JOIN
+			j_groupes_eleves_modalites AS jgem
+		ON jgem.id_groupe = t1.id_groupe
+	) AS t2
+	INNER JOIN
+		matieres AS m
+	ON m.matiere = t2.id_matiere
+";
 
 //echo $sqlDisciplines;
 $listeDisciplines = $mysqli->query($sqlDisciplines);
+if ($nbMat01 != $listeDisciplines->num_rows) {
+	$msgErreur .= "Des modalités d'élection semblent ne pas être attribuées. <em><a href='../../classes/index.php'>Corriger</a></em>";
+}
 
 /*===== Enseignants =====*/
 

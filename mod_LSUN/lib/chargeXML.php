@@ -117,13 +117,17 @@ $xml->appendChild($items);
 		while ($discipline = $listeDisciplines->fetch_object()){
 				$noeudDiscipline = $xml->createElement('discipline');
 					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
-					$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
-						'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
-					foreach ($attributsDiscipline as $cle=>$valeur) {
-						$attDiscipline = $xml->createAttribute($cle);
-						$attDiscipline->value = $valeur;
-						$noeudDiscipline->appendChild($attDiscipline);
-					}
+				$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
+				if (!in_array($discipline->code_modalite_elect, $codesAutorises)) {
+					$msgErreur = "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='http://localhost/gepi/gestion/gerer_modalites_election_enseignements.php'>Corriger</a>";
+				}
+				$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
+					'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
+				foreach ($attributsDiscipline as $cle=>$valeur) {
+					$attDiscipline = $xml->createAttribute($cle);
+					$attDiscipline->value = $valeur;
+					$noeudDiscipline->appendChild($attDiscipline);
+				}
 				$disciplines->appendChild($noeudDiscipline);
 			}
 		$donnees->appendChild($disciplines);
@@ -156,7 +160,8 @@ $xml->appendChild($items);
 		$elementsProgramme = $xml->createElement('elements-programme');
 		while ($elementProgramme = $listeElementsProgramme->fetch_object()){
 			$noeudElementProgramme = $xml->createElement('element-programme');
-			$attributsElementProgramme = array('id'=>'EP_'.$elementProgramme->id, 'libelle'=>substr(htmlspecialchars($elementProgramme->libelle),0,300));
+			$elePro = trim($elementProgramme->libelle) ? substr(htmlspecialchars($elementProgramme->libelle),0,300) : "-";
+			$attributsElementProgramme = array('id'=>'EP_'.$elementProgramme->id, 'libelle'=>$elePro);
 			foreach ($attributsElementProgramme as $cle=>$valeur) {
 				$attElementProgramme = $xml->createAttribute($cle);
 				$attElementProgramme->value = $valeur;

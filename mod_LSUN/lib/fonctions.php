@@ -446,7 +446,11 @@ function getProfGroupe ($groupe) {
 
 function getEPeleve ($idEleve, $idGroupe, $periode) {
 	global $mysqli;
-	$sqlEPeleve = "SELECT * FROM j_mep_eleve WHERE idEleve = \"$idEleve\" AND idGroupe = \"$idGroupe\" AND periode = \"$periode\" ";
+	//$sqlEPeleve = "SELECT * FROM j_mep_eleve WHERE idEleve = \"$idEleve\" AND idGroupe = \"$idGroupe\" AND periode = \"$periode\" ";
+	$sqlEPeleve = "SELECT * FROM j_mep_eleve AS jmp INNER JOIN matiere_element_programme AS mep ON mep.id = jmp.idEP "
+		. "WHERE jmp.idEleve = \"$idEleve\" AND jmp.idGroupe = \"$idGroupe\" AND jmp.periode = \"$periode\" ; ";
+	// il faut vérifier que les éléments de programme existent
+	//echo $sqlEPeleve;
 	$resultchargeDB = $mysqli->query($sqlEPeleve);
 	return $resultchargeDB;
 }
