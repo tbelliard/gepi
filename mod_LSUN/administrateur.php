@@ -498,7 +498,7 @@ while ($classe = $classes->fetch_object()) { ?>
 					</p>
 					<p>
 						Disciplines :
-						<select multiple name="newEpiMatiere[]">
+						<select multiple name="newEpiMatiere[]" size="8">
 <?php $listeMatieres->data_seek(0);
  while ($matiere = $listeMatieres->fetch_object()) { ?>
 							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
@@ -625,7 +625,7 @@ echo '- option facultative';
 						<textarea rows="4" cols="50" id="newApDescription" name="newApDescription" /></textarea> 
 						-
 						<label for="newApDisciplines">Discipline(s) de référence</label>
-						<select multiple name="newApDisciplines[]">
+						<select multiple name="newApDisciplines[]" size="8">
 <?php $listeMatieres->data_seek(0);
  while ($matiere = $listeMatieres->fetch_object()) { ?>
 							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
@@ -675,7 +675,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
 					<li>
-						<input type="checkbox" name="traiteEPI" id="traiteEPI" value="y" checked disabled />
+						<input type="checkbox" name="traiteEPI" id="traiteEPI" value="y"  disabled />
 						<label for="traiteEPI">enseignements pratiques interdisciplinaires (EPI)</label>
 					</li>
 					<li>
@@ -683,8 +683,8 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteEpiElv">données élèves des EPI</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteElemProg" id="traiteElemProg" value="y" disabled />
-						<label for="traiteElemProg">elements de programme</label>
+						<input type="checkbox" name="traiteElemProg" id="traiteElemProg" value="y"  disabled />
+						<label for="traiteElemProg">éléments de programme</label>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y" disabled />
@@ -695,7 +695,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
 					<li>
-						<input type="checkbox" name="traiteAP" id="traiteAP" value="y" checked  disabled />
+						<input type="checkbox" name="traiteAP" id="traiteAP" value="y"   disabled />
 						<label for="traiteAP">accompagnements personnalisés (AP)</label>
 					</li>
 					<li>
@@ -715,7 +715,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
 					<li>
-						<input type="checkbox" name="traiteParcours" id="traiteParcours" value="y" checked disabled />
+						<input type="checkbox" name="traiteParcours" id="traiteParcours" value="y"  disabled />
 						<label for="traiteParcours">parcours éducatifs</label>
 					</li>
 					<li>
