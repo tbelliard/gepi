@@ -1811,6 +1811,8 @@ autre='F',
 description='Gérer les modalités d élection des enseignements.',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/saisie/import_note_app_aid.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

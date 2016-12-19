@@ -380,7 +380,7 @@ function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cib
 function get_tab_aid($id_aid, $order_by_ele="") {
 	$tab_aid=array();
 
-	$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet, ac.display_begin, ac.display_end FROM aid a, 
+	$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet, ac.display_begin, ac.display_end, ac.type_note FROM aid a, 
 											aid_config ac 
 										WHERE a.indice_aid=ac.indice_aid AND 
 											a.id='".$id_aid."';";
@@ -393,6 +393,7 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 		$tab_aid['proflist_string']="...";
 		$tab_aid['classes']=array();
 		$tab_aid['classlist_string']="";
+		$tab_aid['type_note']="every";
 	}
 	else {
 		$lig_aid=mysqli_fetch_object($res_aid);
@@ -402,6 +403,7 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 		$tab_aid['nom_aid']=$lig_aid->nom_aid;
 		$tab_aid['display_begin']=$lig_aid->display_begin;
 		$tab_aid['display_end']=$lig_aid->display_end;
+		$tab_aid['type_note']=$lig_aid->type_note;
 
 		$tab_aid['profs']=array();
 		$tab_aid['profs']['list']=array();
@@ -583,4 +585,17 @@ function get_info_aid($id_aid, $tab_infos=array('nom_general_complet', 'classes'
 	return $retour;
 }
 
+function acces_saisie_aid($login, $indice_aid, $id_aid) {
+	global $mysqli;
+	$sql="SELECT * FROM j_aid_utilisateurs WHERE id_utilisateur='".$login."' AND id_aid='".$id_aid."' AND indice_aid='".$indice_aid."';";
+	//echo "$sql<br />";
+	//die();
+	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_aid)==0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
 ?>

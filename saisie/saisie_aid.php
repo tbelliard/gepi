@@ -433,7 +433,11 @@ if (!isset($aid_id)) {
 	}
 } else {
 
-	echo " | <a href='saisie_aid.php?indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix $nom_aid</a></p>\n";
+	echo " | <a href='saisie_aid.php?indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix $nom_aid</a>";
+	if(acces("/saisie/import_note_app_aid.php", $_SESSION['statut'])) {
+		echo " | <a href='import_note_app_aid.php?indice_aid=$indice_aid&aid_id=$aid_id' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Importer les notes et/ou appréciations depuis un fichier CSV.\">Import CSV</a>";
+	}
+	echo "</p>\n";
 
 	if($msg_pb!='') {
 		echo "<p style='color:red'>$msg_pb</p>\n";
