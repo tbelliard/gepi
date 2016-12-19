@@ -683,11 +683,11 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteEpiElv">données élèves des EPI</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteElemProg" id="traiteElemProg" value="y"  disabled />
+						<input type="checkbox" name="traiteElemProg" id="traiteElemProg" value="y" checked disabled />
 						<label for="traiteElemProg">éléments de programme</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y" disabled />
+						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y" checked disabled />
 						<label for="traiteVieSco">éléments de vie scolaires</label>
 					</li>
 				</ul>

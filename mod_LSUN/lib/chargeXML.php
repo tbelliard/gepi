@@ -477,9 +477,13 @@ if (FALSE) {
 				$attsVieSco->value = $valeur;
 				$vieScolaire->appendChild($attsVieSco);
 			}
-			$comVieSco = $xml->createElement('commentaire', $retardEleve['appreciation']);
-			//$vieScolaire->appendChild($comVieSco);
-			// non obligatoire
+			if (trim($retardEleve['appreciation'])) {
+				// non obligatoire
+				$comVieSco = $xml->createElement('commentaire', $retardEleve['appreciation']);
+				$vieScolaire->appendChild($comVieSco);
+			}
+			
+			
 			$noeudBilanElevePeriodique->appendChild($vieScolaire);
 			
 			
