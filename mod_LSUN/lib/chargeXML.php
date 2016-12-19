@@ -477,7 +477,7 @@ if (FALSE) {
 				$attsVieSco->value = $valeur;
 				$vieScolaire->appendChild($attsVieSco);
 			}
-			if (trim($retardEleve['appreciation'])) {
+			if (trim($retardEleve['appreciation']) && getSettingValue("LSU_commentaire_vie_sco")) {
 				// non obligatoire
 				$comVieSco = $xml->createElement('commentaire', $retardEleve['appreciation']);
 				$vieScolaire->appendChild($comVieSco);
