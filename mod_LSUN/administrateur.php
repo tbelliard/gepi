@@ -32,10 +32,17 @@ if ($metJourResp == 'y') {
 	MetAJourResp();
 }
 
-//===== Choix des données à exporter =====
+
+
 //===== Création du fichier =====
 $creeFichier = filter_input(INPUT_POST, 'creeFichier');
 if ($creeFichier == 'y') {
+	if(filter_input(INPUT_POST, 'traiteVieSco')) {
+		saveSetting('LSU_commentaire_vie_sco', filter_input(INPUT_POST, 'traiteVieSco'));
+	}	else {
+		saveSetting('LSU_commentaire_vie_sco', "n");
+	}
+	
 	if(filter_input(INPUT_POST, 'traiteVieSco')) {
 		saveSetting('LSU_commentaire_vie_sco', filter_input(INPUT_POST, 'traiteVieSco'));
 	}	else {
