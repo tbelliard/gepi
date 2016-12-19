@@ -22,6 +22,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+debug_var();
+
 $selectionClasse = $_SESSION['afficheClasse'];
 
 //===== Mettre à jour les responsables
@@ -30,10 +32,14 @@ if ($metJourResp == 'y') {
 	MetAJourResp();
 }
 
+//===== Choix des données à exporter =====
+
 
 //===== Création du fichier =====
 $creeFichier = filter_input(INPUT_POST, 'creeFichier');
-
+if ($creeFichier == 'y') {
+	saveSetting('LSU_commentaire_vie_sco', filter_input(INPUT_POST, 'traiteVieSco'));
+}
 
 if ($creeFichier == 'y') {
 	if (0 == count($selectionClasse)) {
@@ -184,7 +190,9 @@ if ($cpt) {echo "			</div>\n";}
 
 <form action="index.php" method="post" id="parcours">
 	<fieldset>
-		<legend>Parcours communs</legend>
+		<legend title="Contient l’ensemble des informations relatives aux parcours éducatifs communs à une classe (contrainte d’unicité sur les combinaison de champs 'periodes', 'division' et 'Type de parcours').">
+				Parcours communs
+	</legend>
 		<table>
 			<caption style="caption-side:bottom">parcours éducatifs communs à une classe pour une période</caption>
 			<thead>
@@ -248,7 +256,7 @@ if ($cpt) {echo "			</div>\n";}
 					<select name="newParcoursClasse">
 						<option value=""></option>
 <?php while ($classe = $classes->fetch_object()) { ?>
-					<option value="<?php echo $classe->id; ?>"><?php echo $classe->classe; ?> <?php echo $classe->nom_complet; ?></option>
+						<option value="<?php echo $classe->id; ?>"><?php echo $classe->nom_complet; ?></option>
 <?php } ?>
 					</select>
 				</td>
@@ -692,8 +700,9 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteElemProg">éléments de programme</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y" checked disabled />
-						<label for="traiteVieSco">éléments de vie scolaires</label>
+						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y"
+							   <?php if (getSettingValue("LSU_commentaire_vie_sco")) {echo ' checked '; }  ?> />
+						<label for="traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaires</label>
 					</li>
 				</ul>
 			</div>
