@@ -455,7 +455,7 @@ if (isset($cours)) {
 				<div>
 						<button type="submit" name="supprimeEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer cet EPI</button>
 						<button type="submit" name="modifieEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/enabled.png' />Modifier cet EPI</button>
-						<button type="submit" name="creeAidEpi" value="<?php echo $epiCommun->id; ?>" disabled ><img src='../images/icons/copy-16.png' /> Créer un AID pour cet EPI</button>
+						<button type="submit" name="creeAidEpi" value="<?php echo $epiCommun->id; ?>" disabled hidden><img src='../images/icons/copy-16.png' /> Créer un AID pour cet EPI</button>
 				</div>
 				</div>
 <?php } ?>
@@ -575,7 +575,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 <?php $listeMatiereAP = disciplineAP($ap->id);
 	$tableauMatiere=array();
 while ($matiereAP = $listeMatiereAP->fetch_object()) { ?>
-					<?php //echo $matiereAP->id_enseignements.' '.$matiereAP->modalite ?> <?php echo getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object()->nom_complet ?>
+					<?php echo getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object()->nom_complet ?>
 <?php 	
 
 $tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
@@ -606,7 +606,7 @@ echo '- option facultative';
 				<p>
 					<button type="submit" name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer</button>
 					<button type="submit" name="modifierAp" value="<?php echo  $ap->id; ?>" id="modifierAp_<?php echo  $ap->id; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" ><img src='../images/enabled.png' /> Modifier</button>
-					<button type="submit" name="creeAidAp" value="<?php echo $ap->id; ?>" disabled ><img src='../images/icons/copy-16.png' /> Créer un AID pour cet AP</button>
+					<button type="submit" name="creeAidAp" value="<?php echo $ap->id; ?>" disabled hidden ><img src='../images/icons/copy-16.png' /> Créer un AID pour cet AP</button>
 					
 					</p>
 				
