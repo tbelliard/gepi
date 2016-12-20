@@ -80,76 +80,178 @@ if($nb_classes>0) {
 
 if(isset($_GET['export_csv'])) {
 	if((!isset($mode))||($mode==1)) {
-		$nom_fic = "export_infos_parents_1_".date("Ymd_His").".csv";
-	
-		//$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Responsable;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
-		//$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Resp_civ;Resp_nom;Resp_prenom;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
-		$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Responsable;Resp_civ;Resp_nom;Resp_prenom;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
-		for($i=0;$i<count($tab_classe);$i++) {
-			//$csv.=$tab_classe[$i]['classe'].";";
-	
-			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$tab_classe[$i]['id']."' ORDER BY e.nom, e.prenom;";
-			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-			while($lig_ele=mysqli_fetch_object($res_ele)) {
-				$sql="SELECT rp.* FROM resp_pers rp, responsables2 r WHERE (r.resp_legal='1' OR r.resp_legal='2') AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' ORDER BY r.resp_legal;";
-				//echo "$sql<br />";
-				$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
-	
-				while($lig_resp=mysqli_fetch_object($res_resp)) {
-	
-					$csv.=$tab_classe[$i]['classe'].";";
-					$csv.=mb_strtoupper($lig_ele->nom).";";
-					$csv.=casse_mot($lig_ele->prenom,'majf2').";";
-					$csv.=$lig_ele->sexe.";";
-					$csv.=formate_date($lig_ele->naissance).";";
-					$csv.=$lig_ele->login.";";
-					$csv.=$lig_ele->ele_id.";";
+		$mode_csv=isset($_GET['mode_csv']) ? $_GET['mode_csv'] : "a";
 
-					$csv.=$lig_resp->civilite." ".mb_strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2').";";
-					$csv.=$lig_resp->civilite.";".mb_strtoupper($lig_resp->nom).";".casse_mot($lig_resp->prenom,'majf2').";";
-					$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_pers).";";
-					$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_port).";";
-					$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_prof).";";
-					$csv.=$lig_resp->mel.";";
+		if($_GET['export_csv']=="export_infos_parents_1") {
+
+			$nom_fic = "export_infos_parents_1_".date("Ymd_His").".csv";
+
+			if($mode_csv=="b") {
+				$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Responsable;Resp_civ;Resp_nom;Resp_prenom;Tel_pers;Tel_port;Tel_prof;Email;Adresse;Code postal;Commune;login_resp;pers_id\r\n";
+			}
+			else {
+				$csv="Classe;Nom;Prenom;Sexe;Naissance;login_ele;ele_id;Responsable;Resp_civ;Resp_nom;Resp_prenom;Tel_pers;Tel_port;Tel_prof;Email;Adresse;login_resp;pers_id\r\n";
+			}
+
+			for($i=0;$i<count($tab_classe);$i++) {
+				//$csv.=$tab_classe[$i]['classe'].";";
 	
-					$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$tab_classe[$i]['id']."' ORDER BY e.nom, e.prenom;";
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_ele=mysqli_fetch_object($res_ele)) {
+					$sql="SELECT rp.* FROM resp_pers rp, responsables2 r WHERE (r.resp_legal='1' OR r.resp_legal='2') AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' ORDER BY r.resp_legal;";
 					//echo "$sql<br />";
-					$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_adr)==1) {
-						$adresse="";
-						$lig_adr=mysqli_fetch_object($res_adr);
-						$adresse.=$lig_adr->adr1;
-						if($lig_adr->adr1!="") {
-							$adresse.=" ";
-						}
-		
-						$adresse.=$lig_adr->adr2;
-						if($lig_adr->adr2!="") {
-							$adresse.=" ";
-						}
-		
-						$adresse.=$lig_adr->adr3;
-						if($lig_adr->adr3!="") {
-							$adresse.=" ";
-						}
-		
-						$adresse.=$lig_adr->adr4;
-						if($lig_adr->adr4!="") {
-							$adresse.=" ";
-						}
+					$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+	
+					while($lig_resp=mysqli_fetch_object($res_resp)) {
+	
+						$csv.=$tab_classe[$i]['classe'].";";
+						$csv.=mb_strtoupper($lig_ele->nom).";";
+						$csv.=casse_mot($lig_ele->prenom,'majf2').";";
+						$csv.=$lig_ele->sexe.";";
+						$csv.=formate_date($lig_ele->naissance).";";
+						$csv.=$lig_ele->login.";";
+						$csv.=$lig_ele->ele_id.";";
 
-						if(trim($adresse)!="") {$adresse=trim($adresse).", ";}
-						$adresse.=$lig_adr->cp." ".$lig_adr->commune;
+						$csv.=$lig_resp->civilite." ".mb_strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2').";";
+						$csv.=$lig_resp->civilite.";".mb_strtoupper($lig_resp->nom).";".casse_mot($lig_resp->prenom,'majf2').";";
+						$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_pers).";";
+						$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_port).";";
+						$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_prof).";";
+						$csv.=$lig_resp->mel.";";
+	
+						$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
+						//echo "$sql<br />";
+						$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_adr)==1) {
+							$adresse="";
+							$lig_adr=mysqli_fetch_object($res_adr);
+							$adresse.=$lig_adr->adr1;
+							if($lig_adr->adr1!="") {
+								$adresse.=" ";
+							}
+		
+							$adresse.=$lig_adr->adr2;
+							if($lig_adr->adr2!="") {
+								$adresse.=" ";
+							}
+		
+							$adresse.=$lig_adr->adr3;
+							if($lig_adr->adr3!="") {
+								$adresse.=" ";
+							}
+		
+							$adresse.=$lig_adr->adr4;
+							if($lig_adr->adr4!="") {
+								$adresse.=" ";
+							}
 
-						$csv.=$adresse.";";
+							if($mode_csv=="b") {
+								$csv.=trim($adresse).";".$lig_adr->cp.";".$lig_adr->commune.";";
+							}
+							else {
+								if(trim($adresse)!="") {$adresse=trim($adresse).", ";}
+								$adresse.=$lig_adr->cp." ".$lig_adr->commune;
+
+								$csv.=$adresse.";";
+							}
+
+						}
+						else {
+							$csv.=";";
+						}
+						$csv.=$lig_resp->login.";";
+						$csv.=$lig_resp->pers_id.";";
+
+						$csv.="\r\n";
 					}
-					else {
+				}
+			}
+		}
+		else {
+			// Format Ariane
+
+			if($mode_csv=="resp1") {
+				$nom_fic = "export_infos_parents_1_Ariane_Responsables_legaux_1_".date("Ymd_His").".csv";
+				$sql_choix_resp="r.resp_legal='1'";
+				$csv="Classe;Nom de famille;Prénom;Date de naissance;Lieu naissance;Nom Responsable légal 1;Prénom responsable légal 1;Adresse ;CP;Commune;Tel portable resp. légal 1;\r\n";
+			}
+			else {
+				$nom_fic = "export_infos_parents_1_Ariane_Tous_les_Responsables_legaux_".date("Ymd_His").".csv";
+				$sql_choix_resp="r.resp_legal='1' OR r.resp_legal='2'";
+				$csv="Classe;Nom de famille;Prénom;Date de naissance;Lieu naissance;Nom Responsable légal;Prénom responsable légal;Adresse ;CP;Commune;Tel portable resp. légal;Numéro responsable légal;\r\n";
+			}
+
+
+			for($i=0;$i<count($tab_classe);$i++) {
+				//$csv.=$tab_classe[$i]['classe'].";";
+	
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$tab_classe[$i]['id']."' ORDER BY e.nom, e.prenom;";
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_ele=mysqli_fetch_object($res_ele)) {
+					$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE ($sql_choix_resp) AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' ORDER BY r.resp_legal;";
+					//echo "$sql<br />";
+					$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+	
+					while($lig_resp=mysqli_fetch_object($res_resp)) {
+	
+						$csv.=$tab_classe[$i]['classe'].";";
+						$csv.=mb_strtoupper($lig_ele->nom).";";
+						$csv.=casse_mot($lig_ele->prenom,'majf2').";";
+						$csv.=formate_date($lig_ele->naissance).";";
+						$csv.=get_commune($lig_ele->lieu_naissance, 2).";";
+
+						$csv.=mb_strtoupper($lig_resp->nom).";".casse_mot($lig_resp->prenom,'majf2').";";
+
+						$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
+						//echo "$sql<br />";
+						$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_adr)==1) {
+							$adresse="";
+							$lig_adr=mysqli_fetch_object($res_adr);
+							$adresse.=$lig_adr->adr1;
+							if($lig_adr->adr1!="") {
+								$adresse.=" ";
+							}
+		
+							$adresse.=$lig_adr->adr2;
+							if($lig_adr->adr2!="") {
+								$adresse.=" ";
+							}
+		
+							$adresse.=$lig_adr->adr3;
+							if($lig_adr->adr3!="") {
+								$adresse.=" ";
+							}
+		
+							$adresse.=$lig_adr->adr4;
+							if($lig_adr->adr4!="") {
+								$adresse.=" ";
+							}
+
+							$csv.=trim($adresse).";".$lig_adr->cp.";".$lig_adr->commune.";";
+
+						}
+						else {
+							$csv.=";";
+						}
+
+						if($lig_resp->tel_port!="") {
+							//$csv.='"'.preg_replace("/ /","",affiche_numero_tel_sous_forme_classique($lig_resp->tel_port)).'"';
+							$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_port);
+						}
+						elseif($lig_resp->tel_pers!="") {
+							//$csv.='"'.preg_replace("/ /","",affiche_numero_tel_sous_forme_classique($lig_resp->tel_pers)).'"';
+							$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_pers);
+						}
 						$csv.=";";
-					}
-					$csv.=$lig_resp->login.";";
-					$csv.=$lig_resp->pers_id.";";
+	
+						if($mode_csv!="resp1") {
+							$csv.=$lig_resp->resp_legal.";";
+						}
 
-					$csv.="\r\n";
+						$csv.="\r\n";
+					}
 				}
 			}
 		}
@@ -368,7 +470,13 @@ if((!isset($mode))||($mode==1)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?mode=2'>Grille 2</a>";
 	echo "</p>\n";
 	
-	echo "<p><strong>Grille 1&nbsp;:</strong> Informations élèves/parents&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1'>Export CSV</a></p>\n";
+	echo "<p>
+	<strong>Grille 1&nbsp;:</strong> Informations élèves/parents&nbsp;:
+	 <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1'>Export CSV</a>
+	 - <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1&mode_csv=b'>Export CSV <em>(adresse avec colonnes séparées pour adresse, code postal, commune)</em></a>
+	 - <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1b&mode_csv=resp1'>CSV Ariane <em>(pour les voyages à l'étranger; responsable légal 1 seulement)</em></a>
+	 - <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1b&mode_csv=resp1_et_2'>CSV Ariane avec les responsableslégaux 1 et 2</a>
+	</p>\n";
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Classe</th>\n";
