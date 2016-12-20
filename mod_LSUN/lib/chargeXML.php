@@ -84,7 +84,7 @@ $xml->appendChild($items);
 		$eleves = $xml->createElement('eleves');
 		while ($eleve = $listeEleves->fetch_object()){
 				$noeudEleve = $xml->createElement('eleve');
-					$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->id_eleve,
+					$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
 						'nom'=>substr($eleve->nom,0,100),
 						'prenom'=>substr($eleve->prenom,0,100),
 						'code-division'=>substr($eleve->classe,0,8));
@@ -207,7 +207,8 @@ if (FALSE) {
 }	
 
 			/*----- Vie scolaire -----*/
-if (FALSE) {
+
+if ($listeVieScoCommun->num_rows) {
 		$viesScolairesCommuns = $xml->createElement('vies-scolaires-communs');
 		while ($vieScoCommun = $listeVieScoCommun->fetch_object()) {
 			$noeudVieSco =  $xml->createElement('vie-scolaire-commun');
@@ -379,7 +380,8 @@ if (FALSE) {
 			
 			//if($periode->num_periode < 10) {$num_periode = "0".$periode->num_periode;} else {$num_periode = $periode->num_periode;}
 			if($eleve->periode < 10) {$num_periode = "0".$eleve->periode;} else {$num_periode = $eleve->periode;}
-			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$eleve->date_entree" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
+			$datecolarite = dateScolarite($eleve->login, $eleve->periode);
+			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
 			foreach ($attributsElevePeriode as $cle=>$valeur) {
 				$attsElevePeriode = $xml->createAttribute($cle);
 				$attsElevePeriode->value = $valeur;

@@ -559,5 +559,43 @@ function getMatiereGroupe($groupe) {
 	return $retour;
 }
 
+function dateScolarite($login, $periode) {
+	
+	// date début de période ou date changement de classe ou date d'entrée dans l'établissement
+	$classe = EleveQuery::create()->findOneByLogin($login)->getClasse($periode)->getId();
+	$dateDebutPeriode = getDateDebutPeriode($periode, $classe);
+	
+	// date entrée dans l'établissement
+	$dateEntree = getEntreeEtablissement($login);
+	
+	//date changement de classe
+	
+	$dateDebutRetenue = max($dateEntree,$dateDebutPeriode);
+	//echo $dateEntree." * ".$dateDebutRetenue." * ".$dateDebutRetenue." - <br>";
+	return $dateDebutRetenue;
+}
+
+function getDateDebutPeriode($periode, $id_classe) {
+	global $mysqli;
+	$sqlDebutPeriode = "SELECT 1, numero_periode, jourdebut_calendrier "
+		. "FROM edt_calendrier AS ec2 "
+		. "WHERE ec2.numero_periode = $periode "
+		. "AND FIND_IN_SET($id_classe, replace(ec2.classe_concerne_calendrier, ';', ',')) > 0;";
+	//echo $sqlDebutPeriode.'<br><br>';
+	$resultchargeDB = $mysqli->query($sqlDebutPeriode);
+	return $resultchargeDB->fetch_object()->jourdebut_calendrier ;
+}
+
+function getEntreeEtablissement($login) {
+	global $mysqli;
+	$sqlEntree = "SELECT DATE_FORMAT(date_entree,'%Y-%m-%d') AS  date_entree FROM eleves WHERE login = '$login' ";
+	$resultchargeDB = $mysqli->query($sqlEntree);
+	return $resultchargeDB->fetch_object()->date_entree ;
+	
+}
 
 
+
+
+
+	
