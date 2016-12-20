@@ -677,7 +677,7 @@ if ($_SESSION['statut'] == 'professeur') {
 				echo "</div>";
 			}
 
-			$sql="SELECT DISTINCT u.login, u.nom, u.prenom FROM utilisateurs u WHERE u.statut='professeur' ORDER BY u.nom, u.prenom;";
+			$sql="SELECT DISTINCT u.login, u.nom, u.prenom FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif' ORDER BY u.nom, u.prenom;";
 			$res_prof=mysqli_query($GLOBALS['mysqli'], $sql);
 			if(mysqli_num_rows($res_prof)>0) {
 				echo "<h3>Professeurs</h3>";
