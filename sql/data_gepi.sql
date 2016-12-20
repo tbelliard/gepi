@@ -1810,3 +1810,4 @@ INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, 
 INSERT INTO setting SET name='log_envoi_SMS', value='n';
 INSERT INTO droits SET id='/gestion/gerer_modalites_election_enseignements.php', administrateur='V', professeur='F', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Gérer les modalités d élection des enseignements.', statut='';
 INSERT INTO droits VALUES ('/saisie/import_note_app_aid.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');
+INSERT INTO droits VALUES ('/saisie/import_note_app_aid2.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');

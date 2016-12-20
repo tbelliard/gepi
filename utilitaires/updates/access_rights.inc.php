@@ -1812,6 +1812,7 @@ description='Gérer les modalités d élection des enseignements.',
 statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/import_note_app_aid.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/saisie/import_note_app_aid2.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');";
 
 //$tab_req[] = "";
 

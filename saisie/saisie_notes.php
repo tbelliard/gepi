@@ -414,7 +414,7 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 }
 
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" name='form1' method=\"post\">\n";
-
+insere_lien_calendrier_crob("right");
 echo "<p class='bold'>\n";
 if (isset($retour_cn)) {
 	echo "<a href=\"../cahier_notes/index.php?id_groupe=" . $current_group["id"] . "&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes évaluations</a>";
