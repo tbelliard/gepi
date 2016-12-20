@@ -437,6 +437,9 @@ if (!isset($aid_id)) {
 	if(acces("/saisie/import_note_app_aid.php", $_SESSION['statut'])) {
 		echo " | <a href='import_note_app_aid.php?indice_aid=$indice_aid&aid_id=$aid_id' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Importer les notes et/ou appréciations depuis un fichier CSV.\">Import CSV</a>";
 	}
+	if(acces("/saisie/import_note_app_aid2.php", $_SESSION['statut'])) {
+		echo " | <a href='import_note_app_aid2.php?indice_aid=$indice_aid&aid_id=$aid_id' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Importer les notes et/ou appréciations depuis le carnet de notes ou les bulletins dans l'un de vos enseignements.\">Import d'après un autre enseignement</a>";
+	}
 	echo "</p>\n";
 
 	if($msg_pb!='') {
