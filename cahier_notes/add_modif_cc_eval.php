@@ -259,6 +259,7 @@ $titre_page="Carnet de notes - Ajout/modification d'un $nom_cc";
  */
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+insere_lien_calendrier_crob("right");
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 echo add_token_field();

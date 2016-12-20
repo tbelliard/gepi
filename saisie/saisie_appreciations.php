@@ -823,7 +823,7 @@ change = 'no';
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form1' method=\"post\">\n";
-
+insere_lien_calendrier_crob("right");
 echo "<p class='bold'>\n";
 echo "<input type='hidden' name='id_groupe' value='".$id_groupe."' />";
 

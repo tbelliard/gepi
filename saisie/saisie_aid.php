@@ -364,6 +364,7 @@ $titre_page = "Saisie des appréciations ".$nom_aid;
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
+insere_lien_calendrier_crob("right");
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';
