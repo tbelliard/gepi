@@ -608,7 +608,14 @@ function getResponsableEleve($ele_id) {
 	return $resultchargeDB ;
 }
 
-
+function getResumeAid($aid_id) {
+	global $mysqli;
+	$sqlResumeAid = "SELECT resume FROM aid WHERE id = $aid_id ";
+	$resultchargeDB = $mysqli->query($sqlResumeAid)->fetch_object()->resume;
+	return $resultchargeDB ;
+	
+	
+}
 
 
 
