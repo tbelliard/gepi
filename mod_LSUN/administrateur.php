@@ -38,7 +38,12 @@ if ($metJourResp == 'y') {
 //===== Création du fichier =====
 $creeFichier = filter_input(INPUT_POST, 'creeFichier');
 if ($creeFichier == 'y') {
-	saveSetting('LSU_commentaire_vie_sco', filter_input(INPUT_POST, 'traiteVieSco'));
+	if(filter_input(INPUT_POST, 'traiteVieSco')) {
+		saveSetting('LSU_commentaire_vie_sco', filter_input(INPUT_POST, 'traiteVieSco'));
+	}	else {
+		saveSetting('LSU_commentaire_vie_sco', "n");
+	}
+	
 }
 
 if ($creeFichier == 'y') {
@@ -701,7 +706,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y"
-							   <?php if (getSettingValue("LSU_commentaire_vie_sco")) {echo ' checked '; }  ?> />
+							   <?php if (getSettingValue("LSU_commentaire_vie_sco") != "n") {echo ' checked '; }  ?> />
 						<label for="traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaires</label>
 					</li>
 				</ul>
