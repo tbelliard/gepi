@@ -36,7 +36,7 @@ $xml = new DOMDocument('1.0', 'utf-8');
 $xml->preserveWhiteSpace = false;
 $xml->formatOutput = true;
 
-	$items = $xml->createElementNS('urn:fr:edu:scolarite:lsun:bilans:import','lsun-bilans');
+$items = $xml->createElementNS('urn:fr:edu:scolarite:lsun:bilans:import','lsun-bilans');
 	
 $xml->appendChild($items);
 
@@ -229,7 +229,7 @@ if ($listeVieScoCommun->num_rows) {
 }
 
 			/*----- epis -----*/
-if (FALSE) {
+if (getSettingValue("LSU_Donnees_responsables") != "n") {
 			$epis = $xml->createElement('epis');
 			$listeEPICommun = getEPICommun();
 			while ($epiCommun = $listeEPICommun->fetch_object()) { 
@@ -251,10 +251,10 @@ if (FALSE) {
 				$epis->appendChild($noeudEpiCommun);
 			}
 		$donnees->appendChild($epis);
-}
+//}
 
 			/*----- epis-groupes -----*/
-if (FALSE) {
+//if (FALSE) {
 			$episGroupes = $xml->createElement('epis-groupes');
 			$listeEpisGroupes = getEpisGroupes();
 			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
@@ -267,18 +267,27 @@ if (FALSE) {
 					
 					$noeudEpisGroupes->appendChild($attsEpiGroupe);
 				}
-				$CommentaireEPI = getCommentaireGroupe($episGroupe->id,$episGroupe->periode);
-				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire');
-				if ($CommentaireEPI->num_rows) {
-					$noeudEpisGroupesCommentaire->value = $CommentaireEPI->fetch_object()->appreciation;
+				
+				// Commentaire → Résumé + appréciation du groupe
+				$CommentaireEPI1 = trim(getResumeAid($episGroupe->id));
+				if (getCommentaireGroupe($episGroupe->id,$episGroupe->periode)->num_rows) {
+					$CommentaireEPI1 .= " ".trim(getCommentaireGroupe($episGroupe->id,$episGroupe->periode)->appreciation);
 				}
-				$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
+				$CommentaireEPI = substr($CommentaireEPI1, 0, 600);
+				//echo $CommentaireEPI;
+				if ($CommentaireEPI) {
+					$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI);
+					$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
+				}
 				
 								
 				$episGroupes->appendChild($noeudEpisGroupes);
 				// enseih,a,ts
 				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
 				$profsEPI = getProfsEPI($episGroupe->id);
+				if (!$profsEPI->num_rows) {
+					$msgErreur .= "Aucun enseignant  pour l'EPI $episGroupe->nom. Vous devez corriger cet erreur";
+				}
 				while($prof = $profsEPI->fetch_object()) {
 					$noeudProf1 = $xml->createElement('enseignant-discipline');
 					$attsMat1 =  $xml->createAttribute('discipline-ref');
@@ -492,7 +501,7 @@ if (FALSE) {
 			$socle = $xml->createElement('socle');
 			// non obligatoire
 			
-			if (getSettingValue("LSU_donnee_parent") != "n") {
+			if (getSettingValue("LSU_Donnees_responsables") != "n") {
 				$noeudResponsables = $xml->createElement('responsables');
 				// non obligatoire
 				$responsablesEleve = getResponsableEleve($eleve->ele_id);
