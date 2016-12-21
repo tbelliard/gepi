@@ -489,28 +489,55 @@ if (FALSE) {
 			$noeudBilanElevePeriodique->appendChild($vieScolaire);
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			$socle = $xml->createElement('socle');
 			// non obligatoire
 			
-			$responsables = $xml->createElement('responsables');
-			// non obligatoire
-			
-			
+			if (getSettingValue("LSU_donnee_parent") != "n") {
+				$noeudResponsables = $xml->createElement('responsables');
+				// non obligatoire
+				$responsablesEleve = getResponsableEleve($eleve->ele_id);
+				while ($responsable = $responsablesEleve->fetch_object()) {
+					//echo $responsable->pers_id.' '.$responsable->civilite.' '.$responsable->nom.' '.$responsable->prenom.' '.$responsable->resp_legal.' ';
+					//echo $responsable->adr1.' '.$responsable->adr2.' '.$responsable->adr3.' '.$responsable->adr4.' '.$responsable->cp.' '.$responsable->pays.' '.$responsable->commune;
+					//echo "<br>";
+					$legal1 = $responsable->resp_legal == 1 ? 1 : 0;
+					$legal2 = $responsable->resp_legal == 2 ? 1 : 0;
+					$respElv = $xml->createElement('responsable');
+					$attributsResponsable = array('civilite'=>$responsable->civilite , 'nom'=>$responsable->nom, 'prenom'=>$responsable->prenom, 'legal1'=>$legal1, 'legal2'=>$legal2);
+					foreach ($attributsResponsable as $cle=>$valeur) {
+						$attsResp = $xml->createAttribute($cle);
+						$attsResp->value = $valeur;
+						$respElv->appendChild($attsResp);
+						
+					}
+					
+					if (trim($responsable->adr1) && $responsable->cp && $responsable->commune) {
+						$noeudAdresse = $xml->createElement('adresse');
+						$responsableAdr1 = trim($responsable->adr1) ? trim($responsable->adr1) : "-";
+						$attributsAdresse = array('ligne1'=>$responsableAdr1, 'code-postal'=>$responsable->cp, 'commune'=>$responsable->commune);
+						if (trim($responsable->adr2) != "") {$attributsAdresse['ligne2'] = $responsable->adr2;}
+						if (trim($responsable->adr3) != "") {$attributsAdresse['ligne3'] = $responsable->adr3;}
+						if (trim($responsable->adr4) != "") {$attributsAdresse['ligne4'] = $responsable->adr4;}
+						foreach ($attributsAdresse as $cle=>$valeur) {
+							if (!$valeur) {continue ;}
+							$attAdresse = $xml->createAttribute($cle);
+							$attAdresse->value = $valeur;
+							$noeudAdresse->appendChild($attAdresse);
+						}
+						$respElv->appendChild($noeudAdresse);						
+					}
+					
+					$noeudResponsables->appendChild($respElv);
+				}
+				//echo "<br>";
+				
+				
+				
+				if ($responsablesEleve->num_rows) {
+					$noeudBilanElevePeriodique->appendChild($noeudResponsables);
+				}
+				
+			}
 			
 			
 			

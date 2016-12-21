@@ -357,7 +357,7 @@ function getElevesExport() {
 	$classes = $_SESSION['afficheClasse'];
 	
 	$myData = implode(",", $classes);
-	$sqlEleves01 = "SELECT jec.* , e.nom , e.prenom, e.id_eleve, DATE_FORMAT(e.`date_entree`, '%Y-%m-%d') AS date_entree FROM j_eleves_classes AS jec "
+	$sqlEleves01 = "SELECT jec.* , e.nom , e.prenom, e.id_eleve, e.ele_id, DATE_FORMAT(e.`date_entree`, '%Y-%m-%d') AS date_entree FROM j_eleves_classes AS jec "
 		. "INNER JOIN eleves as e "
 		. "ON e.login = jec.login "
 		. "WHERE id_classe IN (".$myData.") ORDER BY jec.id_classe , jec.login , jec.periode ";
@@ -592,6 +592,20 @@ function getEntreeEtablissement($login) {
 	$resultchargeDB = $mysqli->query($sqlEntree);
 	return $resultchargeDB->fetch_object()->date_entree ;
 	
+}
+
+function getResponsableEleve($ele_id) {
+	global $mysqli;
+	$sqlGetResp = "SELECT t1.*, ra.adr1, ra.adr2, ra.adr3, ra.adr4, ra.cp, ra.pays, ra.commune FROM "
+		. "(SELECT t0.*, rp.nom , rp.prenom, IF (rp.civilite='Mme','MME','M') AS civilite , rp.adr_id FROM "
+		. "(SELECT resp_legal, pers_id, ele_id, pers_contact FROM responsables2 WHERE ele_id = $ele_id AND resp_legal IN (1 , 2) ) AS t0 "
+		. "INNER JOIN resp_pers AS rp "
+		. "ON rp.pers_id = t0.pers_id ) AS t1 "
+		. "INNER JOIN resp_adr AS ra "
+		. "ON t1.adr_id = ra.adr_id ";
+	//echo $sqlGetResp.'<br>';
+	$resultchargeDB = $mysqli->query($sqlGetResp);
+	return $resultchargeDB ;
 }
 
 
