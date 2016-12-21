@@ -37,6 +37,13 @@
  */
 function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $newEpiDescription, $newEpiMatiere, $idEpi = NULL) {
 	global $mysqli;
+	//echo $newEpiMatiere;
+	foreach ($newEpiMatiere as $matiereAid) {
+		$sqlMatiereEPI = "UPDATE matieres SET matiere_aid = 'y' WHERE matiere = '".substr($matiereAid,0,-1)."' ";
+		//echo $sqlMatiereEPI."<br>";
+		$mysqli->query($sqlMatiereEPI);
+	}
+	
 	
 	$sqlCreeEpi = "INSERT INTO lsun_epi_communs (id, periode, codeEPI, intituleEpi, descriptionEpi) VALUES (";
 	
@@ -232,7 +239,7 @@ function lieEpiCours($id_epi , $id_enseignement , $aid, $id=NULL) {
 		$sqLieEpiCours .= "NULL";
 	}
 	$sqLieEpiCours .= ",$id_epi , $id_enseignement , $aid)";
-	echo $sqLieEpiCours;
+	//echo $sqLieEpiCours;
 	$mysqli->query($sqLieEpiCours);
 }
 
@@ -326,7 +333,7 @@ function getProfsEPI($idGroupeEPI) {
 		. "INNER JOIN ($sqlProfDiscipline_2) AS t3 "
 		. "ON t2.matiere2 = t3.id_matiere ";
 	
-	//echo  $sqlProfDiscipline_4;
+	//echo  $sqlProfDiscipline_1;
 	$resultchargeDB = $mysqli->query($sqlProfDiscipline_4);
 	return $resultchargeDB;
 	

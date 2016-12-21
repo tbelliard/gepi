@@ -116,7 +116,7 @@ if ($modifieEPI) {
 	$modifieEPIIntitule = filter_input(INPUT_POST, 'modifieEpiIntitule', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$modifieEPIMatiere = filter_input(INPUT_POST, 'modifieEpiMatiere'.$modifieEPI, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	// var_dump($modifieEPIMatiere);
-	echo '<br>';
+	//echo '<br>';
 	$modifieEPIDescription = filter_input(INPUT_POST, 'modifieEpiDescription', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$modifieEPIClasse = filter_input(INPUT_POST, 'modifieEpiClasse'.$modifieEPI, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	// var_dump($modifieEPIClasse);
@@ -135,7 +135,7 @@ if ($modifieEPI) {
 			$id_enseignement = $tableauModifieEpiLiaison[1];
 			$id_epi = $modifieEPI;
 			//$modifieEpiLiaison[][num] = $tableauModifieEpiLiaison[1];
-			echo $id_enseignement."<br>";
+			//echo $id_enseignement."<br>";
 			lieEpiCours($id_epi , $id_enseignement , $aid);
 		}
 	}
@@ -150,4 +150,21 @@ if ($ajouteAP) {
 	
 }
 
+
+//===== Suppression ou modification des AP =====
+$supprimerAp = filter_input(INPUT_POST, 'supprimerAp');
+$modifierAp = filter_input(INPUT_POST, 'modifierAp');
+
+if ($supprimerAp) {
+	delAP($supprimerAp);
+}
+
+if ($modifierAp) {
+	$changeIntituleAp = filter_input(INPUT_POST, 'intituleAp', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$changeApDescription = filter_input(INPUT_POST, 'ApDescription', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$changeLiaisonApAid = filter_input(INPUT_POST, 'liaisonApAid', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$changeApDisciplines = filter_input(INPUT_POST, 'ApDisciplines'.$modifierAp, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	
+	modifieAP($modifierAp, $changeIntituleAp[$modifierAp], $changeApDescription[$modifierAp], $changeLiaisonApAid[$modifierAp], $changeApDisciplines);
+}
 

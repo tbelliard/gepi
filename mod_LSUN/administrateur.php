@@ -33,20 +33,21 @@ if ($metJourResp == 'y') {
 }
 
 //===== Choix des données à exporter =====
-
-
 //===== Création du fichier =====
 $creeFichier = filter_input(INPUT_POST, 'creeFichier');
+
 if ($creeFichier == 'y') {
 	if(filter_input(INPUT_POST, 'traiteVieSco')) {
 		saveSetting('LSU_commentaire_vie_sco', filter_input(INPUT_POST, 'traiteVieSco'));
 	}	else {
 		saveSetting('LSU_commentaire_vie_sco', "n");
 	}
+	if(filter_input(INPUT_POST, 'traiteParent')) {
+		saveSetting('LSU_Donnees_responsables', filter_input(INPUT_POST, 'traiteParent'));
+	}	else {
+		saveSetting('LSU_Donnees_responsables',  "n");
+	}
 	
-}
-
-if ($creeFichier == 'y') {
 	if (0 == count($selectionClasse)) {
 		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p>";
 	}	else {
@@ -55,23 +56,6 @@ if ($creeFichier == 'y') {
 	
 }
 
-
-//===== Suppression ou modification des AP =====
-$supprimerAp = filter_input(INPUT_POST, 'supprimerAp');
-$modifierAp = filter_input(INPUT_POST, 'modifierAp');
-
-if ($supprimerAp) {
-	delAP($supprimerAp);
-}
-
-if ($modifierAp) {
-	$changeIntituleAp = filter_input(INPUT_POST, 'intituleAp', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-	$changeApDescription = filter_input(INPUT_POST, 'ApDescription', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-	$changeLiaisonApAid = filter_input(INPUT_POST, 'liaisonApAid', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-	$changeApDisciplines = filter_input(INPUT_POST, 'ApDisciplines'.$modifierAp, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-	
-	modifieAP($modifierAp, $changeIntituleAp[$modifierAp], $changeApDescription[$modifierAp], $changeLiaisonApAid[$modifierAp], $changeApDisciplines);
-}
 
 
 
@@ -693,8 +677,9 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
 					<li>
-						<input type="checkbox" name="traiteEPI" id="traiteEPI" value="y"  disabled />
-						<label for="traiteEPI">enseignements pratiques interdisciplinaires (EPI)</label>
+						<input type="checkbox" name="traiteEPI" id="traiteEPI" value="y" 
+							   <?php if (getSettingValue("LSU_Donnees_responsables") != "n") {echo ' checked '; }  ?> />
+						<label for="traiteEPI" label="Exporter les données générales de EPI">enseignements pratiques interdisciplinaires (EPI)</label>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y" disabled />
@@ -727,8 +712,10 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteParent" id="traiteParent" value="y"  
-							   <?php if (getSettingValue("LSU_donnee_parent") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteParent">informations relatives aux responsables de l’élève</label>
+							   <?php if (getSettingValue("LSU_Donnees_responsables") != "n") {echo ' checked '; }  ?> />
+						<label for="traiteParent" title="Exporter les informations relatives aux responsables (nom prénom adresse">
+							informations relatives aux responsables de l’élève
+						</label>
 					</li>
 				</ul>
 			</div>
@@ -755,7 +742,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 		</div>
 		
 		<p class="lsun_cadre" >
-			<a href="lib/creeXML.php" target="exportLSUN.xml">Afficher l'export</a>
+			<a href="lib/creeXML.php" target="exportLSUN.xml" title="Affiche le fichier dans un nouvel onglet en interceptant les erreurs" >Afficher l'export</a>
 		</p>
 		<p class="center">
 			<button type="submit" name="creeFichier" value="y">Créer le fichier</button>
