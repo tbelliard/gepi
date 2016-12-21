@@ -583,7 +583,7 @@ if (FALSE) {
 			$socle = $xml->createElement('socle');
 			// non obligatoire
 			
-			if (getSettingValue("LSU_donnee_parent") != "n") {
+			if (getSettingValue("LSU_Donnees_responsables") != "n") {
 				$noeudResponsables = $xml->createElement('responsables');
 				// non obligatoire
 				$responsablesEleve = getResponsableEleve($eleve->ele_id);
