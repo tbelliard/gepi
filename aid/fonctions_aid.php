@@ -81,7 +81,7 @@ function Extrait_aid_sur_indice_aid ($indice_aid) {
  * @param Const $ordre DESC → descendant (défaut) ASC→ascendant
  * @return integer
  */
-function Dernier_id ($ordre = DESC) {
+function Dernier_id ($ordre = "DESC") {
 	global $mysqli;
 	$sql = "SELECT CAST( aid.id AS SIGNED INTEGER ) AS idAid FROM aid ORDER BY idAid ".$ordre;
 	$return = mysqli_query($mysqli, $sql);

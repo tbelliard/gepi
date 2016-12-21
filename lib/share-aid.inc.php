@@ -598,4 +598,30 @@ function acces_saisie_aid($login, $indice_aid, $id_aid) {
 		return true;
 	}
 }
+
+function get_info_categorie_aid2($indice_aid, $tab_infos=array('nom', 'nom_complet'), $mode="html") {
+	global $mysqli;
+	$sql="SELECT * FROM aid_config WHERE indice_aid='".$indice_aid."';";
+	//echo "$sql<br />";
+	//die();
+	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_aid)==0) {
+		return "";
+	}
+	else {
+		$lig=mysqli_fetch_assoc($res_aid);
+		if($mode=="html") {
+			if(in_array('nom', $tab_infos)) {$retour.=$lig['nom'];}
+			if(in_array('nom_complet', $tab_infos)) {$retour.=" (<em>".$lig['nom_complet']."</em>)";}
+			// A COMPLETER POUR LES AUTRES CHAMPS
+		}
+		else {
+			if(in_array('nom', $tab_infos)) {$retour.=$lig['nom'];}
+			if(in_array('nom_complet', $tab_infos)) {$retour.=" (".$lig['nom_complet'].")";}
+			// A COMPLETER POUR LES AUTRES CHAMPS
+		}
+	}
+
+	return $retour;
+}
 ?>
