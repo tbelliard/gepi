@@ -726,8 +726,9 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteModSpeElv">modalités spécifiques d’accompagnement des élèves</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteParent" id="traiteParent" value="y" disabled />
-						<label for="traiteParents">informations relatives aux responsables de l’élève</label>
+						<input type="checkbox" name="traiteParent" id="traiteParent" value="y"  
+							   <?php if (getSettingValue("LSU_donnee_parent") != "n") {echo ' checked '; }  ?> />
+						<label for="traiteParent">informations relatives aux responsables de l’élève</label>
 					</li>
 				</ul>
 			</div>
