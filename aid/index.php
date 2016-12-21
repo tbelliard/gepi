@@ -84,7 +84,15 @@ if ($test_outils_comp != 0) {
 ?>
 	|
 	<a href="config_aid_fiches_projet.php">Configurer les fiches projet</a>
-<?php } ?>
+<?php
+}
+
+$sql="SELECT 1=1 FROM j_groupes_types jgt, groupes_types gt WHERE gt.id=jgt.id_type LIMIT 1;";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	echo " | <a href='transfert_groupe_aid.php'>Transfert/migration Groupe-&gt;AID</a>";
+}
+?>
 </p>
 <!-- <p class="medium"> -->
 <?php

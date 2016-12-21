@@ -118,10 +118,13 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
     // Suppression d'un type d'AID
     case "del_type_aid":
-    $nombre_req = 1;
+    $nombre_req = 2;
     $mess[0] = "Tables des AID";
     $test_nb[0] = "SELECT * FROM aid_config WHERE indice_aid='$cible1'";
     $req[0] = "DELETE FROM aid_config WHERE indice_aid='$cible1'";
+    $mess[1] = "Table jointure Groupe/AID";
+    $test_nb[1] = "SELECT * FROM j_groupes_aid WHERE indice_aid='$cible1'";
+    $req[1] = "DELETE FROM j_groupes_aid WHERE indice_aid='$cible1'";
     break;
 
 
