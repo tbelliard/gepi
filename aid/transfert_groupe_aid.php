@@ -75,6 +75,7 @@ etat varchar(255) NOT NULL default '',
 PRIMARY KEY  (id_groupe, id_aid), INDEX id_groupe_id_aid (id_groupe, id_aid)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysqli_query($GLOBALS['mysqli'], $sql);
 
+// Création individuelle de catégorie
 if((isset($_GET['creer_categorie']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_categorie']))) {
 	check_token();
 	$msg="";
@@ -185,11 +186,16 @@ if((isset($_GET['creer_categorie']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_
 	}
 }
 
+// Association des groupes avec les catégories choisies dans les champs SELECT
+// Et création/transfert par lots des AID
 if(isset($_POST['enregistrer_assoc'])) {
 	check_token();
 	$msg="";
 
 	$nb_reg=0;
+
+	// Associer les groupes aux catégories
+
 	$indice_aid=isset($_POST['indice_aid']) ? $_POST['indice_aid'] : array();
 	foreach($indice_aid as $current_id_groupe => $current_indice_aid) {
 		$sql="SELECT * FROM j_groupes_aid WHERE id_groupe='".$current_id_groupe."';";
@@ -285,12 +291,359 @@ if(isset($_POST['enregistrer_assoc'])) {
 			}
 		}
 	}
+
+	// Créer les AID demandés
+	$temoin_reg=0;
+	$creer_aid_lot=isset($_POST['creer_aid_lot']) ? $_POST['creer_aid_lot'] : array();
+	for($loop=0;$loop<count($creer_aid_lot);$loop++) {
+		$id_groupe=$creer_aid_lot[$loop];
+		$group=get_group($id_groupe);
+
+		//$temoin_reg=0;
+
+		if(isset($group["name"])) {
+			// L'AID existe-t-il déjà?
+			$sql="SELECT * FROM j_groupes_aid WHERE id_groupe='".$id_groupe."';";
+			//echo "$sql<br />";
+			$test=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($test)==0) {
+				$msg.="ANOMALIE&nbsp;: Le groupe n°".$id_groupe." n'est associé à aucune catégorie AID <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
+			}
+			else {
+				$lig_jga=mysqli_fetch_object($test);
+				$indice_aid=$lig_jga->indice_aid;
+				if($lig_jga->id_aid!=0) {
+					// L'AID existe déjà
+					$aid_id=$lig_jga->id_aid;
+					$info_aid=get_info_categorie_aid2($lig_jga->id_aid);
+
+					// Inscription des élèves
+					$tab_ele=array();
+					foreach($group["eleves"]["all"]["list"] as $current_login_ele) {
+						$sql="SELECT 1=1 FROM j_aid_eleves WHERE login='".$current_login_ele."' AND id_aid='$aid_id' AND indice_aid='$indice_aid';";
+						//echo "$sql<br />";
+						$test_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test_ele)==0) {
+							$sql="INSERT INTO j_aid_eleves SET login='".$current_login_ele."', id_aid='$aid_id', indice_aid='$indice_aid';";
+							//echo "$sql<br />";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if (!$insert) {
+								$msg.="Erreur lors de l'ajout de l'élève ".$current_login_ele." dans l'AID $info_aid<br />";
+							}
+							else {
+								$temoin_reg++;
+								$tab_ele[]=$current_login_ele;
+							}
+						}
+						else {
+							$tab_ele[]=$current_login_ele;
+						}
+					}
+					//$msg.=count($tab_ele)." élève(s) associés à l'AID $nom_aid.<br />";
+
+					// Inscription des professeurs
+					$tab_prof=array();
+					foreach($group["profs"]["list"] as $current_login_prof) {
+						$sql="SELECT 1=1 FROM j_aid_utilisateurs WHERE id_utilisateur='".$current_login_prof."' AND id_aid='$aid_id' AND indice_aid='$indice_aid';";
+						//echo "$sql<br />";
+						$test_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test_prof)==0) {
+							$sql="INSERT INTO j_aid_utilisateurs SET id_utilisateur='".$current_login_prof."', id_aid='$aid_id', indice_aid='$indice_aid';";
+							//echo "$sql<br />";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if (!$insert) {
+								$msg.="Erreur lors de l'ajout du professeur ".$current_login_prof." dans l'AID $info_aid<br />";
+							}
+							else {
+								$temoin_reg++;
+								$tab_prof[]=$current_login_prof;
+							}
+						}
+						else {
+							$tab_prof[]=$current_login_prof;
+						}
+					}
+					//$msg.=count($tab_prof)." professeur(s) associés à l'AID $nom_aid.<br />";
+
+					// Remplissage d'après matieres_notes et matieres_appreciations
+					$nb_notes=0;
+					$tab_aid_note=array();
+					$sql="SELECT * FROM matieres_notes WHERE id_groupe='".$id_groupe."';";
+					//echo "$sql<br />";
+					$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_note)>0) {
+						while($lig_note=mysqli_fetch_object($res_note)) {
+							if(in_array($lig_note->login, $tab_ele)) {
+								$sql="SELECT 1=1 FROM aid_appreciations WHERE login='".$lig_note->login."' AND 
+															id_aid='".$aid_id."' AND 
+															periode='".$lig_note->periode."' AND 
+															indice_aid='".$indice_aid."';";
+								//echo "$sql<br />";
+								$test_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test_ele)==0) {
+									$sql="INSERT INTO aid_appreciations SET login='".$lig_note->login."', 
+															id_aid='".$aid_id."', 
+															periode='".$lig_note->periode."', 
+															appreciation='', 
+															statut='".$lig_note->statut."', 
+															note='".$lig_note->note."', 
+															indice_aid='".$indice_aid."';";
+									//echo "$sql<br />";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if (!$insert) {
+										$msg.="Erreur lors de l'enregistrement de la note pour ".$lig_note->login." en période ".$lig_note->periode." dans l'AID $info_aid.<br />";
+										$msg.="$sql<br />";
+									}
+									else {
+										$temoin_reg++;
+										$tab_aid_note[$lig_note->login][$lig_note->periode]="ok";
+										$nb_notes++;
+									}
+								}
+								else {
+									$sql="UPDATE aid_appreciations SET statut='".$lig_note->statut."', 
+															note='".$lig_note->note."' 
+														WHERE login='".$lig_note->login."' AND 
+															id_aid='".$aid_id."' AND 
+															periode='".$lig_note->periode."' AND 
+															indice_aid='".$indice_aid."';";
+									//echo "$sql<br />";
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+									if (!$update) {
+										$msg.="Erreur lors de l'enregistrement de la note pour ".$lig_note->login." en période ".$lig_note->periode." dans l'AID $info_aid.<br />";
+										$msg.="$sql<br />";
+									}
+									else {
+										$temoin_reg++;
+										$tab_aid_note[$lig_note->login][$lig_note->periode]="ok";
+										$nb_notes++;
+									}
+								}
+							}
+						}
+					}
+					//$msg.=$nb_notes." note(s) enregistrée(s) <em>(toutes périodes confondues)</em>.<br />";
+
+					$nb_app=0;
+					$sql="SELECT * FROM matieres_appreciations WHERE id_groupe='".$id_groupe."';";
+					//echo "$sql<br />";
+					$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_app)>0) {
+						while($lig_app=mysqli_fetch_object($res_app)) {
+							if(in_array($lig_app->login, $tab_ele)) {
+/*
+if($lig_app->login=='beaussart_a') {
+echo "<pre>";
+print_r($tab_aid_app[$lig_app->login]);
+print_r($tab_aid_note[$lig_app->login]);
+echo "</pre>";
+}
+*/
+								$action_aid_app="update";
+								if((!isset($tab_aid_app[$lig_app->login][$lig_app->periode]))&&(!isset($tab_aid_note[$lig_app->login][$lig_app->periode]))) {
+									// On va quand même tester
+									$sql="SELECT 1=1 FROM aid_appreciations WHERE id_aid='".$aid_id."' AND 
+															periode='".$lig_app->periode."' AND 
+															indice_aid='".$indice_aid."';";
+									//echo "$sql<br />";
+									$test=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($test)==0) {
+										$action_aid_app="insert";
+									}
+								}
+
+								if($action_aid_app=="insert") {
+									$sql="INSERT INTO aid_appreciations SET login='".$lig_app->login."', 
+															id_aid='".$aid_id."', 
+															periode='".$lig_app->periode."', 
+															appreciation='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_app->appreciation)."', 
+															statut='-', 
+															note='', 
+															indice_aid='".$indice_aid."';";
+								}
+								else {
+									$sql="UPDATE aid_appreciations SET appreciation='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_app->appreciation)."' 
+														WHERE id_aid='".$aid_id."' AND 
+															periode='".$lig_app->periode."' AND 
+															indice_aid='".$indice_aid."';";
+								}
+
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if (!$insert) {
+									$msg.="Erreur lors de l'enregistrement de l'appréciation pour ".$lig_app->login." en période ".$lig_app->periode." dans l'AID $info_aid.<br />";
+									$msg.="$sql<br />";
+								}
+								else {
+									$temoin_reg++;
+									$nb_app++;
+								}
+							}
+						}
+					}
+
+
+				}
+				else {
+					// On va créer l'AID puis le remplir
+					$nom_aid=remplace_accents($group['name']."_".$group['classlist_string'], "'all_nospace'");
+
+					// Le champ id de la table aid n'est pas auto_increment
+					$aid_id=Dernier_id()+1;
+
+					// Créer l'AID
+					$sql="INSERT INTO aid SET id='".$aid_id."', 
+									nom='".$nom_aid."', 
+									indice_aid='".$indice_aid."';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(!$insert) {
+						$msg.="Erreur lors de la création de l'AID ".$nom_aid." <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
+					}
+					else {
+						$temoin_reg++;
+						//$msg.="AID $nom_aid créé.<br />";
+						//$aid_id=mysqli_insert_id($GLOBALS['mysqli']);
+
+						// Faire l'association
+						$sql="UPDATE j_groupes_aid SET id_aid='".$aid_id."' WHERE id_groupe='".$id_groupe."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$update) {
+							$msg.="Erreur lors de l'association du groupe avec l'AID ".$nom_aid." <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
+						}
+						else {
+							//$msg.="AID $nom_aid associé à l'enseignement/groupe.<br />";
+							// Remplir l'AID d'après les bulletins du groupe
+
+							// Inscription des élèves
+							$tab_ele=array();
+							foreach($group["eleves"]["all"]["list"] as $current_login_ele) {
+								$sql="INSERT INTO j_aid_eleves SET login='".$current_login_ele."', id_aid='$aid_id', indice_aid='$indice_aid'";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if (!$insert) {
+									$msg.="Erreur lors de l'ajout de l'élève ".$current_login_ele."<br />";
+								}
+								else {
+									$temoin_reg++;
+									$tab_ele[]=$current_login_ele;
+								}
+							}
+							//$msg.=count($tab_ele)." élève(s) associés à l'AID $nom_aid.<br />";
+
+							// Inscription des professeurs
+							$tab_prof=array();
+							foreach($group["profs"]["list"] as $current_login_prof) {
+								$sql="INSERT INTO j_aid_utilisateurs SET id_utilisateur='".$current_login_prof."', id_aid='$aid_id', indice_aid='$indice_aid'";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if (!$insert) {
+									$msg.="Erreur lors de l'ajout du professeur ".$current_login_prof."<br />";
+								}
+								else {
+									$temoin_reg++;
+									$tab_prof[]=$current_login_prof;
+								}
+							}
+							//$msg.=count($tab_prof)." professeur(s) associés à l'AID $nom_aid.<br />";
+
+							// Remplissage d'après matieres_notes et matieres_appreciations
+							$nb_notes=0;
+							$tab_aid_note=array();
+							$sql="SELECT * FROM matieres_notes WHERE id_groupe='".$id_groupe."';";
+							//echo "$sql<br />";
+							$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_note)>0) {
+								while($lig_note=mysqli_fetch_object($res_note)) {
+									if(in_array($lig_note->login, $tab_ele)) {
+										$sql="INSERT INTO aid_appreciations SET login='".$lig_note->login."', 
+																id_aid='".$aid_id."', 
+																periode='".$lig_note->periode."', 
+																appreciation='', 
+																statut='".$lig_note->statut."', 
+																note='".$lig_note->note."', 
+																indice_aid='".$indice_aid."';";
+										//echo "$sql<br />";
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if (!$insert) {
+											$msg.="Erreur lors de l'enregistrement de la note pour ".$lig_note->login." en période ".$lig_note->periode."<br />";
+										}
+										else {
+											$temoin_reg++;
+											$tab_aid_note[$lig_note->login][$lig_note->periode]="ok";
+											$nb_notes++;
+										}
+									}
+								}
+							}
+							//$msg.=$nb_notes." note(s) enregistrée(s) <em>(toutes périodes confondues)</em>.<br />";
+
+							$nb_app=0;
+							$sql="SELECT * FROM matieres_appreciations WHERE id_groupe='".$id_groupe."';";
+							//echo "$sql<br />";
+							$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_app)>0) {
+								while($lig_app=mysqli_fetch_object($res_app)) {
+									if(in_array($lig_app->login, $tab_ele)) {
+										//if(!isset($tab_aid_app[$lig_app->login][$lig_app->periode])) {
+										if((!isset($tab_aid_app[$lig_app->login][$lig_app->periode]))&&(!isset($tab_aid_note[$lig_app->login][$lig_app->periode]))) {
+											$sql="INSERT INTO aid_appreciations SET login='".$lig_app->login."', 
+																	id_aid='".$aid_id."', 
+																	periode='".$lig_app->periode."', 
+																	appreciation='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_app->appreciation)."', 
+																	statut='-', 
+																	note='', 
+																	indice_aid='".$indice_aid."';";
+											//echo "$sql<br />";
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+											if (!$insert) {
+												$msg.="Erreur lors de l'enregistrement de l'appréciation pour ".$lig_app->login." en période ".$lig_app->periode."<br />";
+											}
+											else {
+												$temoin_reg++;
+												$nb_app++;
+											}
+										}
+										else {
+											$sql="UPDATE aid_appreciations SET appreciation='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_app->appreciation)."' 
+																WHERE id_aid='".$aid_id."' AND 
+																	periode='".$lig_app->periode."' AND 
+																	indice_aid='".$indice_aid."';";
+											//echo "$sql<br />";
+											$update=mysqli_query($GLOBALS["mysqli"], $sql);
+											if (!$update) {
+												$msg.="Erreur lors de l'enregistrement de l'appréciation pour ".$lig_app->login." en période ".$lig_app->periode."<br />";
+											}
+											else {
+												$temoin_reg++;
+												$nb_app++;
+											}
+										}
+									}
+								}
+							}
+							//$msg.=$nb_app." appréciation(s) enregistrée(s) <em>(toutes périodes confondues)</em>.<br />";
+						}
+					}
+				}
+
+			}
+		}
+		else {
+			$msg.="Le groupe n°".$id_groupe." n'existe pas.<br />";
+		}
+	}
+
 	if($nb_reg>0) {
 		$msg.=$nb_reg." enregistrement(s) effectué(s) <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
 	}
+	if($temoin_reg>0) {
+		$msg.="Création/remplissage d'AID effectué <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
+	}
 }
 
-
+// Création individuelle d'un AID
 if((isset($_GET['creer_aid']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_aid']))) {
 	check_token();
 	$msg="";
@@ -328,7 +681,7 @@ if((isset($_GET['creer_aid']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_aid'])
 			//echo "$sql<br />";
 			$insert=mysqli_query($GLOBALS['mysqli'], $sql);
 			if(!$insert) {
-				$msg.="Erreur lors de l'association du groupe avec la catégorie ".get_info_categorie_aid($indice_aid)." <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
+				$msg.="Erreur lors de la création de l'AID ".$nom_aid." <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
 			}
 			else {
 				$msg.="AID $nom_aid créé.<br />";
@@ -339,7 +692,7 @@ if((isset($_GET['creer_aid']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_aid'])
 				//echo "$sql<br />";
 				$update=mysqli_query($GLOBALS['mysqli'], $sql);
 				if(!$update) {
-					$msg.="Erreur lors de l'association du groupe avec la catégorie ".get_info_categorie_aid($indice_aid)." <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
+					$msg.="Erreur lors de l'association du groupe avec l'AID ".$nom_aid." <em>(".strftime("Le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
 				}
 				else {
 					$msg.="AID $nom_aid associé à l'enseignement/groupe.<br />";
@@ -412,7 +765,8 @@ if((isset($_GET['creer_aid']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_aid'])
 					if(mysqli_num_rows($res_app)>0) {
 						while($lig_app=mysqli_fetch_object($res_app)) {
 							if(in_array($lig_app->login, $tab_ele)) {
-								if(!isset($tab_aid_app[$lig_app->login][$lig_app->periode])) {
+								//if(!isset($tab_aid_app[$lig_app->login][$lig_app->periode])) {
+								if((!isset($tab_aid_app[$lig_app->login][$lig_app->periode]))&&(!isset($tab_aid_note[$lig_app->login][$lig_app->periode]))) {
 									$sql="INSERT INTO aid_appreciations SET login='".$lig_app->login."', 
 															id_aid='".$aid_id."', 
 															periode='".$lig_app->periode."', 
@@ -430,7 +784,7 @@ if((isset($_GET['creer_aid']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_aid'])
 									}
 								}
 								else {
-									$sql="UPDATE aid_appreciations SET appreciation='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_app->appreciation)."'login='".$lig_app->login."'
+									$sql="UPDATE aid_appreciations SET appreciation='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_app->appreciation)."' 
 														WHERE id_aid='".$aid_id."' AND 
 															periode='".$lig_app->periode."' AND 
 															indice_aid='".$indice_aid."';";
@@ -487,12 +841,13 @@ if(!isset($mode)) {
 	Dans ce dernier cas, si ces enseignements ont les mêmes nom/description, vous devrez passer par la page classique de création de catégorie, plutôt que par les icones ci-dessous.</p>
 	<p style='margin-top:1em;margin-bottom:1em;'>Les étapes sont les suivantes&nbsp;:</p>
 	<ol>
-		<li><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Créer les catégories dans la page principale des AID</a>,<br />ou <strong>les créer ci-dessous</strong> à l'aide des liens/icones <img src='../images/icons/wizard.png' class='icone16' alt='Créer' /> en entête des <strong>colonnes Catégorie AID</strong>.</li>
+		<li><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Créer les catégories dans la page principale des AID</a>,<br />ou <strong>les créer ci-dessous</strong> à l'aide des liens/icones <img src='../images/icons/wizard.png' class='icone16' alt='Créer' /> en entête des <strong>colonnes Catégorie AID</strong>.<br />
+		Vous devez créer une catégorie de chaque type/famille <em>(pas une pour chaque enseignement)</em>, puis passer à l'étape 2.</li>
 		<li>Associer les enseignements dont le <strong>nom (description)</strong> coïncide avec la catégorie AID en cliquant sur l'icone <img src='../images/icons/wizard.png' class='icone16' alt='Créer' /> en ligne d'entête <strong>Catégorie AID</strong>, puis en validant l'association.</li>
 		<li>Créer les AID et les remplir d'après le contenu des bulletins en cliquant sur les icones <img src='../images/icons/wizard.png' class='icone16' alt='Créer' /> dans la colonne AID <em>(la création n'est possible qu'une fois l'association avec une catégorie AID effectuée)</em>.</li>
 	</ol>
 
-<p><em>Note&nbsp;:</em> Il est possible de trier le tableau en cliquant sur les colonnes.</p>";
+<p style='margin-top:1em;margin-bottom:1em;'><em>Note&nbsp;:</em> Il est possible de trier le tableau en cliquant sur les colonnes.</p>";
 
 	$tab_cat_aid=array();
 	$sql="SELECT ac.*, gt.nom_court AS nom_court_type, gt.nom_complet AS nom_complet_type FROM aid_config ac, groupes_types gt WHERE ac.type_aid=gt.id ORDER BY gt.id, ac.nom;";
@@ -539,16 +894,26 @@ if(!isset($mode)) {
 			<thead>
 				<tr>
 					<th class='number'>Id</th>
-					<th title=\"Trier par nom d'enseignement\">Nom</th>
-					<th title=\"Trier par description d'enseignement\">Description</th>
-					<th title=\"Trier par nom de classe\">Classes</th>
-					<th title=\"Trier par type d'enseignement\">Type</th>
+					<th class='text' title=\"Trier par nom d'enseignement\">Nom</th>
+					<th class='text' title=\"Trier par description d'enseignement\">Description</th>
+					<th class='text' title=\"Trier par nom de classe\">Classes</th>
+					<th class='text' title=\"Trier par type d'enseignement\">Type</th>
 					<th colspan='3'>
 						Catégorie AID
 						<a href='#' onclick=\"select_auto_cat(); return false;\" title=\"Associer les groupes/enseignements aux catégories de mêmes nom/description.\"><img src='../images/icons/wizard.png' class='icone16' alt='Associer' /></a>
 					</th>
-					<th>
+					<th colspan='3' class='nosort'>
 						AID
+
+						<a href='#' onclick=\"select_auto_creation_aid(); return false;\" title=\"Cocher les lignes pour lesquelles les AID peuvent être créés
+(ceux pour lesquels les enseignements déjà associés à une catégorie).\"><img src='../images/icons/wizard.png' class='icone16' alt='Associer' /></a>
+
+						<a href='#' onclick=\"rafraichir_notes_app_aid(); return false;\" title=\"Cocher les lignes AID pour re-transférer les données des bulletins vers les AID.
+
+ATTENTION : Vous ne devriez pas effectuer cette action si des professeurs ont effectué des saisies manuelles dans les AID.
+Vous écraseriez alors les saisies dans les AID avec le contenu des enseignements sur les bulletins.\"><img src='../images/icons/actualiser.png' class='icone16' alt='Re-transférer' /></a>
+
+						<a href='#' onclick=\"decocher_aid(); return false;\" title=\"Décocher les lignes AID.\"><img src='../images/disabled.png' class='icone16' alt='Décocher' /></a>
 					</th>
 				</tr>
 			</thead>
@@ -590,18 +955,45 @@ if(!isset($mode)) {
 					</td>
 					<td>
 						<span id='span_cat_$cpt'>".(isset($tab_grp_aid[$lig_grp->id_groupe]["indice_aid"]) ? "<a href='config_aid.php?indice_aid=".$tab_grp_aid[$lig_grp->id_groupe]["indice_aid"]."' target='_blank' title=\"Voir la catégorie dans un nouvel onglet.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>" : "")."</span>
-					</td>
-					<td>";
+					</td>";
 		if(isset($tab_grp_aid[$lig_grp->id_groupe]["id_aid"])) {
 			if($tab_grp_aid[$lig_grp->id_groupe]["id_aid"]!=0) {
-				echo "<span title=\"AID n°".$tab_grp_aid[$lig_grp->id_groupe]["id_aid"]."\">".get_info_aid($tab_grp_aid[$lig_grp->id_groupe]["id_aid"])."</span>";
+				echo "
+					<td>
+						<img src='../images/enabled.png' class='icone20' alt='AID créé' title='AID créé' />
+					</td>
+					<td id='td_aid_existant_".$cpt."'>
+						<span title=\"AID n°".$tab_grp_aid[$lig_grp->id_groupe]["id_aid"]."\">".get_info_aid($tab_grp_aid[$lig_grp->id_groupe]["id_aid"])."</span>
+					</td>
+					<td>
+						<!-- Pouvoir re-provoquer le transfert des données des bulletins (avec alerte sur le fait que si les professeurs ont fait des saisies manuelles dans l'AID, il ne faudrait plus provoquer le transfert/écrasement) -->
+						<input type='checkbox' name='creer_aid_lot[]' id='creer_aid_lot_".$cpt."' value='".$lig_grp->id_groupe."' title=\"Re-remplir les notes/appréciations des AID d'après le contenu des enseignements ci-contre dans les bulletins.
+
+ATTENTION : Si les professeurs ont effectué des saisies manuelles 
+            d appréciations/notes dans les AID, 
+            vous ne devriez pas cocher ces cases pour lesquelles 
+            le transfert enseignements vers AID a déjà été effectué.
+            Vous écraseriez leurs saisies dans les AID.\" />
+					</td>";
 			}
 			else {
-				echo "<a href='".$_SERVER['PHP_SELF']."?creer_aid=".$lig_grp->id_groupe."&".add_token_in_url()."' title=\"Créer et remplir un AID d'après l'enseignement.\"><img src='../images/icons/wizard.png' class='icone16' alt='Créer' /></a>";
+				echo "
+					<td>
+						<a href='".$_SERVER['PHP_SELF']."?creer_aid=".$lig_grp->id_groupe."&".add_token_in_url()."' title=\"Créer et remplir un AID d'après l'enseignement.\"><img src='../images/icons/wizard.png' class='icone16' alt='Créer' /></a>
+					</td>
+					<td id='td_aid_a_creer_".$cpt."'></td>
+					<td>
+						<!-- Colonne création/transfert -->
+						<input type='checkbox' name='creer_aid_lot[]' id='creer_aid_lot_".$cpt."' value='".$lig_grp->id_groupe."' title=\"Créer l'AID pour cet enseignement.\" />
+					</td>";
 			}
 		}
 		else {
 			// On ne propose rien si aucune catégorie n'est présente.
+				echo "
+					<td></td>
+					<td></td>
+					<td></td>";
 		}
 		echo "
 					</td>
@@ -637,6 +1029,47 @@ if(!isset($mode)) {
 		}
 		if(nb_assoc>0) {
 			alert(\"N'oubliez pas de valider l'enregistrement des associations proposées.\");
+		}
+	}
+
+	function select_auto_creation_aid() {
+		nb_assoc=0;
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('td_aid_a_creer_'+i)) {
+				if(document.getElementById('creer_aid_lot_'+i)) {
+					document.getElementById('creer_aid_lot_'+i).checked=true;
+					nb_assoc++;
+				}
+			}
+		}
+		if(nb_assoc>0) {
+			alert(\"N'oubliez pas de valider les créations demandées.\");
+		}
+	}
+
+	function rafraichir_notes_app_aid() {
+		var is_confirmed = confirm(\"ATTENTION : Si les professeurs ont effectué des saisies manuelles d appréciations/notes dans les AID, vous ne devriez pas cocher ces cases pour lesquelles le transfert enseignements vers AID a déjà été effectuée. Vous écraseriez leurs saisies dans les AID. Voulez-vous quand même cocher ces cases?\");
+		if(is_confirmed) {
+			nb_assoc=0;
+			for(i=0;i<$cpt;i++) {
+				if(document.getElementById('td_aid_existant_'+i)) {
+					if(document.getElementById('creer_aid_lot_'+i)) {
+						document.getElementById('creer_aid_lot_'+i).checked=true;
+						nb_assoc++;
+					}
+				}
+			}
+			if(nb_assoc>0) {
+				alert(\"N'oubliez pas de valider les re-transfert bulletins->aid demandés.\");
+			}
+		}
+	}
+
+	function decocher_aid() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('creer_aid_lot_'+i)) {
+				document.getElementById('creer_aid_lot_'+i).checked=false;
+			}
 		}
 	}
 </script>";
