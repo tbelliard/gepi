@@ -25,6 +25,7 @@
 /*==========================================================================
  *             On charge les données
  ==========================================================================*/
+$msgErreur = "";
 include_once 'fonctions.php';
 include_once 'chargeDonnees.php';
 
@@ -83,7 +84,7 @@ $xml->appendChild($items);
 		$eleves = $xml->createElement('eleves');
 		while ($eleve = $listeEleves->fetch_object()){
 				$noeudEleve = $xml->createElement('eleve');
-					$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->id_eleve,
+					$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
 						'nom'=>substr($eleve->nom,0,100),
 						'prenom'=>substr($eleve->prenom,0,100),
 						'code-division'=>substr($eleve->classe,0,8));
@@ -206,7 +207,8 @@ if (FALSE) {
 }	
 
 			/*----- Vie scolaire -----*/
-if (FALSE) {
+
+if ($listeVieScoCommun->num_rows) {
 		$viesScolairesCommuns = $xml->createElement('vies-scolaires-communs');
 		while ($vieScoCommun = $listeVieScoCommun->fetch_object()) {
 			$noeudVieSco =  $xml->createElement('vie-scolaire-commun');
@@ -373,12 +375,13 @@ if (FALSE) {
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			$respEtabElv = "RESP_".$eleve->id_resp_etab;
 			
-			$profResponsable = getUtilisateur($eleve->professeur)->numind;
+			//$profResponsable = getUtilisateur($eleve->professeur)->numind;
 			$profResponsable = substr(getUtilisateur($eleve->professeur)->numind,1);
 			
 			//if($periode->num_periode < 10) {$num_periode = "0".$periode->num_periode;} else {$num_periode = $periode->num_periode;}
 			if($eleve->periode < 10) {$num_periode = "0".$eleve->periode;} else {$num_periode = $eleve->periode;}
-			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$eleve->date_entree" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
+			$datecolarite = dateScolarite($eleve->login, $eleve->periode);
+			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
 			foreach ($attributsElevePeriode as $cle=>$valeur) {
 				$attsElevePeriode = $xml->createAttribute($cle);
 				$attsElevePeriode->value = $valeur;
@@ -410,6 +413,10 @@ if (FALSE) {
 				while ($elemProgramme = $elementsProgramme->fetch_object()) {
 					$elementProgramme .= "EP_".$elemProgramme->idEP." ";
 					//TODO VÉRIFIER que l'élément de programme existe
+				}
+				if (!$elementProgramme) {
+					$msgErreur .= get_nom_prenom_eleve($eleve->login)." n'a pas d'élément de programme en $acquisEleve->id_matiere.<br>";
+					//$msgErreur .= $eleve->login." n'a pas d'élément de programme en $matiere, votre fichier n'est pas valide.<br>";
 				}
 				$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20");
 				
@@ -472,9 +479,13 @@ if (FALSE) {
 				$attsVieSco->value = $valeur;
 				$vieScolaire->appendChild($attsVieSco);
 			}
-			$comVieSco = $xml->createElement('commentaire', $retardEleve['appreciation']);
-			//$vieScolaire->appendChild($comVieSco);
-			// non obligatoire
+			if (trim($retardEleve['appreciation'])) {
+				// non obligatoire
+				$comVieSco = $xml->createElement('commentaire', $retardEleve['appreciation']);
+				$vieScolaire->appendChild($comVieSco);
+			}
+			
+			
 			$noeudBilanElevePeriodique->appendChild($vieScolaire);
 			
 			

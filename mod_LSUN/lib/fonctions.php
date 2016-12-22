@@ -391,7 +391,9 @@ function getAcquisEleve($eleve, $periode) {
 	//$sqlAcquis = "SELECT * FROM matieres_notes WHERE login = '$eleve' AND periode = $periode ";
 	$sqlAcquis01 = "SELECT mn.* , ma.appreciation FROM matieres_notes AS mn INNER JOIN matieres_appreciations AS ma "
 		. "ON mn.login = ma.login AND mn.periode = ma.periode AND mn.id_groupe = ma.id_groupe "
-		. "WHERE mn.login = '$eleve' AND mn.periode = $periode GROUP BY mn.`id_groupe` ";
+		. "WHERE mn.login = '$eleve' AND mn.periode = $periode "
+		. "AND mn.`id_groupe` NOT IN (SELECT jgt.id_groupe FROM j_groupes_types AS jgt) "
+		. "GROUP BY mn.`id_groupe` ";
 	//$sqlAcquis02 = "SELECT s1.*, jme.idEP FROM ($sqlAcquis01) AS s1 INNER JOIN  j_mep_eleve AS jme ON jme.idEleve = s1.login ";
 	//$sqlAcquis03 = "SELECT s2.* , mep.libelle FROM ($sqlAcquis02) AS s2 INNER JOIN matiere_element_programme AS mep ON s2.idEP = mep.id ";
 	$sqlAcquis04 = "SELECT s3.* , jgm.id_matiere FROM ($sqlAcquis01) AS s3 INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = s3.id_groupe ";
@@ -428,7 +430,9 @@ function getModalite($groupe, $eleve, $mef_code, $code_matiere ) {
 			$msgErreur .= "plusieurs modalités pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)."<br>";
 			$retour = "";
 		}	else {
-			$msgErreur .= "pas de modalité pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)." <em><a href=\"../../groupes/edit_eleves.php?id_groupe=$groupe\" target='_BLANK' >Corriger</a></em> <br>";
+			$msgErreur .= "pas de modalité pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)." <em><a href=\"../../groupes/edit_eleves.php?id_groupe=$groupe\" target='_BLANK' title='Ne corriger que cet élève' >Corriger</a> ou <a href='../../gestion/gerer_modalites_election_enseignements.php'  target='_BLANK' title='Forcer la même modalité pour tous les élèves' >par lot</a></em> <br>";
+			$msgErreur .= $sqlMefGroupe.'<br>';
+			$msgErreur .= $sqlModalite.'<br>';
 			$retour = "";
 		}
 	}
@@ -555,10 +559,43 @@ function getMatiereGroupe($groupe) {
 	return $retour;
 }
 
-function getEleve($login) {
-	global $mysqli;
-	$retour = "";
-	$sqlEleve = "SELECT ";
-
+function dateScolarite($login, $periode) {
+	
+	// date début de période ou date changement de classe ou date d'entrée dans l'établissement
+	$classe = EleveQuery::create()->findOneByLogin($login)->getClasse($periode)->getId();
+	$dateDebutPeriode = getDateDebutPeriode($periode, $classe);
+	
+	// date entrée dans l'établissement
+	$dateEntree = getEntreeEtablissement($login);
+	
+	//date changement de classe
+	
+	$dateDebutRetenue = max($dateEntree,$dateDebutPeriode);
+	//echo $dateEntree." * ".$dateDebutRetenue." * ".$dateDebutRetenue." - <br>";
+	return $dateDebutRetenue;
 }
 
+function getDateDebutPeriode($periode, $id_classe) {
+	global $mysqli;
+	$sqlDebutPeriode = "SELECT 1, numero_periode, jourdebut_calendrier "
+		. "FROM edt_calendrier AS ec2 "
+		. "WHERE ec2.numero_periode = $periode "
+		. "AND FIND_IN_SET($id_classe, replace(ec2.classe_concerne_calendrier, ';', ',')) > 0;";
+	//echo $sqlDebutPeriode.'<br><br>';
+	$resultchargeDB = $mysqli->query($sqlDebutPeriode);
+	return $resultchargeDB->fetch_object()->jourdebut_calendrier ;
+}
+
+function getEntreeEtablissement($login) {
+	global $mysqli;
+	$sqlEntree = "SELECT DATE_FORMAT(date_entree,'%Y-%m-%d') AS  date_entree FROM eleves WHERE login = '$login' ";
+	$resultchargeDB = $mysqli->query($sqlEntree);
+	return $resultchargeDB->fetch_object()->date_entree ;
+	
+}
+
+
+
+
+
+	

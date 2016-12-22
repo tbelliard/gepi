@@ -77,8 +77,8 @@ $sqlDisciplines02 = "SELECT t0.* , jgm.id_matiere FROM (
 				FROM j_groupes_types
 				WHERE j_groupes_types.id_groupe = t0.id_groupe
 			)";
-$nbMat01 = $mysqli->query($sqlDisciplines02)->num_rows;
-
+//$nbMat01 = $mysqli->query($sqlDisciplines02)->num_rows;
+//echo $sqlDisciplines02."<br>";
 $sqlDisciplines = "SELECT DISTINCT t2.id_matiere , t2.code_modalite_elect , m.nom_complet ,  m.code_matiere FROM (
 		SELECT DISTINCT t1.* , jgem.code_modalite_elect FROM (
 			$sqlDisciplines02
@@ -92,10 +92,20 @@ $sqlDisciplines = "SELECT DISTINCT t2.id_matiere , t2.code_modalite_elect , m.no
 	ON m.matiere = t2.id_matiere
 ";
 
-//echo $sqlDisciplines;
+//echo $sqlDisciplines."<br>";
 $listeDisciplines = $mysqli->query($sqlDisciplines);
-if ($nbMat01 != $listeDisciplines->num_rows) {
-	$msgErreur .= "Des modalités d'élection semblent ne pas être attribuées. <em><a href='../../classes/index.php'>Corriger</a></em>";
+
+// il faut afficher les données en $sqlDisciplines02 et pas en $sqlDisciplines sinon c'est la galère pour l'administrateur
+$sqlErreurs = "SELECT DISTINCT t3.id_matiere FROM ($sqlDisciplines02) AS t3 WHERE t3.id_matiere NOT IN (SELECT DISTINCT t4.id_matiere FROM (($sqlDisciplines) AS t4 )) ";
+$reqErreurs = $mysqli->query($sqlErreurs);
+
+if ($reqErreurs->num_rows) {
+	$matErreur = "";
+	while ($erreur = $reqErreurs-> fetch_object()) {
+		$matErreur .= $erreur->id_matiere." ";
+	}
+	$msgErreur .= "Les modalités d'élection des matières $matErreur semblent ne pas être attribuées. <em><a href='../../classes/index.php'>Corriger</a></em><br>";
+	//$msgErreur .= $sqlErreurs;
 }
 
 /*===== Enseignants =====*/
