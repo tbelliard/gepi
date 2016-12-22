@@ -36,6 +36,12 @@ if ($metJourResp == 'y') {
 //===== Création du fichier =====
 $creeFichier = filter_input(INPUT_POST, 'creeFichier');
 if ($creeFichier == 'y') {
+	if (0 == count($selectionClasse)) {
+		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p>";
+	}	else {
+		include_once 'creeFichier.php';
+	}
+	
 	if(filter_input(INPUT_POST, 'traiteVieSco')) {
 		saveSetting('LSU_commentaire_vie_sco', filter_input(INPUT_POST, 'traiteVieSco'));
 	}	else {
@@ -54,6 +60,7 @@ if ($creeFichier == 'y') {
 	}
 	
 	include_once 'creeFichier.php';
+	
 }
 
 

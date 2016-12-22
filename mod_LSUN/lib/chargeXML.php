@@ -159,6 +159,15 @@ $xml->appendChild($items);
 		
 		/*----- Éléments du programme -----*/
 		$elementsProgramme = $xml->createElement('elements-programme');
+		// on crée un élément de programme "Pas d'élément de programme saisi pour la période".
+		$noeudPasEP = $xml->createElement('element-programme');
+		$attributsElementProgramme = array('id'=>'EP_0000', 'libelle'=>"Pas d'élément de programme saisi pour la période");
+			foreach ($attributsElementProgramme as $cle=>$valeur) {
+				$attElementProgramme = $xml->createAttribute($cle);
+				$attElementProgramme->value = $valeur;
+				$noeudPasEP->appendChild($attElementProgramme);
+			}
+			$elementsProgramme->appendChild($noeudPasEP);
 		while ($elementProgramme = $listeElementsProgramme->fetch_object()){
 			$noeudElementProgramme = $xml->createElement('element-programme');
 			$elePro = trim($elementProgramme->libelle) ? substr(htmlspecialchars($elementProgramme->libelle),0,300) : "-";
@@ -424,7 +433,9 @@ if (FALSE) {
 					//TODO VÉRIFIER que l'élément de programme existe
 				}
 				if (!$elementProgramme) {
-					$msgErreur .= get_nom_prenom_eleve($eleve->login)." n'a pas d'élément de programme en $acquisEleve->id_matiere.<br>";
+					$elementProgramme = "EP_0000";
+					$absenceEP = true;
+					//$msgErreur .= get_nom_prenom_eleve($eleve->login)." n'a pas d'élément de programme en $acquisEleve->id_matiere. Vérifiez si c'est une erreur ou volontaire<br>";
 					//$msgErreur .= $eleve->login." n'a pas d'élément de programme en $matiere, votre fichier n'est pas valide.<br>";
 				}
 				$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20");
