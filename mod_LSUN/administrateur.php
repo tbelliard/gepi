@@ -47,6 +47,12 @@ if ($creeFichier == 'y') {
 		saveSetting('LSU_Donnees_responsables',  "n");
 	}
 	
+	if(filter_input(INPUT_POST, 'traiteEPI')) {
+		saveSetting('LSU_traite_EPI', filter_input(INPUT_POST, 'traiteEPI'));
+	}	else {
+		saveSetting('LSU_traite_EPI', "n");
+	}
+	
 	include_once 'creeFichier.php';
 }
 
@@ -672,8 +678,8 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 				<ul class='pasPuces' disable>
 					<li>
 						<input type="checkbox" name="traiteEPI" id="traiteEPI" value="y" 
-							   <?php if (getSettingValue("LSU_Donnees_responsables") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteEPI" label="Exporter les données générales de EPI">enseignements pratiques interdisciplinaires (EPI)</label>
+							   <?php if (getSettingValue("LSU_traite_EPI") != "n") {echo ' checked '; }  ?> />
+						<label for="traiteEPI" label="Exporter les données générales des EPI">enseignements pratiques interdisciplinaires (EPI)</label>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y" disabled />
