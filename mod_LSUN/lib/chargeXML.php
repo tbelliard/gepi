@@ -238,7 +238,7 @@ if ($listeVieScoCommun->num_rows) {
 }
 
 			/*----- epis -----*/
-if (getSettingValue("LSU_Donnees_responsables") != "n") {
+if (getSettingValue("LSU_traite_EPI") != "n") {
 			$epis = $xml->createElement('epis');
 			$listeEPICommun = getEPICommun();
 			while ($epiCommun = $listeEPICommun->fetch_object()) { 
