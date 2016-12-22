@@ -85,12 +85,17 @@ function Dernier_id ($ordre = "DESC") {
 	global $mysqli;
 	$sql = "SELECT CAST( aid.id AS SIGNED INTEGER ) AS idAid FROM aid ORDER BY idAid ".$ordre;
 	$return = mysqli_query($mysqli, $sql);
-	$retour = $return->fetch_object()->idAid;
+	if(mysqli_num_rows($return)==0) {
+		$retour=0;
+	}
+	else {
+		$retour = $return->fetch_object()->idAid;
+	}
 	return $retour;
 }
 
 function a_parent ($aid_id, $indice_aid = NULL) {
-	global $mysqli;	
+	global $mysqli;
 	$retour = FALSE;
 	$filtre = $indice_aid ? " AND indice_aid='".$indice_aid."' " : "";
 	$sql = "SELECT * FROM aid "

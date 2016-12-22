@@ -58,7 +58,7 @@ function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $
 			$matiere = substr($valeur, 0, -1);
 			$modalite = substr($valeur, -1);
 			$sqlCreLienEPI = "INSERT INTO lsun_j_epi_matieres (id_matiere,  modalite, id_epi) VALUES ('$matiere', '$modalite' , $idEPI) ON DUPLICATE KEY UPDATE id_matiere = '$matiere' , modalite = '$modalite' ";
-			echo $sqlCreLienEPI;
+			//echo $sqlCreLienEPI."<br>";
 			$mysqli->query($sqlCreLienEPI);
 		}
 	}
