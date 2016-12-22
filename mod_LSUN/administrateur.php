@@ -36,7 +36,12 @@ $creeFichier = filter_input(INPUT_POST, 'creeFichier');
 
 
 if ($creeFichier == 'y') {
-	include_once 'creeFichier.php';
+	if (0 == count($selectionClasse)) {
+		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p>";
+	}	else {
+		include_once 'creeFichier.php';
+	}
+	
 }
 
 

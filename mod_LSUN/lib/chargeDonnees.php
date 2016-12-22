@@ -23,6 +23,10 @@
 
 $selectionClasse = $_SESSION['afficheClasse'];
 
+if (0 == count($selectionClasse)) {
+	echo "Vous devez valider la sélection d'au moins une classe";
+	die();
+}
 $myData = implode(",", $selectionClasse);
 $millesime = LSUN_annee(getSettingValue('gepiYear'));
 

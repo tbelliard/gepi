@@ -42,6 +42,11 @@ $schema = "xsd/import-bilan-complet.xsd";
 <div class="lsun_cadre">
 <?php
 // Validation du document XML
+
+// Affichage du résultat
+if (isset($absenceEP))  {
+	echo "<p class='rouge center gras'>Des élèves n'ont pas d'éléments de programme dans 1 (ou plusieurs) enseignement(s), vous devez vous assurer que c'est normal</p>";
+}
 $dom = new DOMDocument;
 $dom->Load($file);
 
@@ -56,8 +61,9 @@ if ($validate) {
 }
 
 unset($xml);
-// Affichage du résultat
+
 ?>
+
 
 <p>
 	<a class="bold"  href='../temp/<?php echo $dirTemp ; ?><?php echo $nomFichier; ?>' target='_blank'>
