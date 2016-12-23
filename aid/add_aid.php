@@ -213,12 +213,17 @@ if (isset($is_posted) && $is_posted) {
 							$res_prof_mat=mysqli_query($mysqli, $sql);
 							if(mysqli_num_rows($res_prof_mat)>0) {
 								while($lig_prof_mat=mysqli_fetch_object($res_prof_mat)) {
-									$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
-									if (!$reg_data) {
-										$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
-									}
-									else {
-										$nb_profs_inscrits++;
+									$test2=Prof_deja_membre($lig_prof_mat->login, $aid_id, $indice_aid)->num_rows;
+									if ($test2 != "0") {
+										$msg.="Le professeur ".$lig_prof_mat->login." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+									} else {
+										$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
+										if (!$reg_data) {
+											$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
+										}
+										else {
+											$nb_profs_inscrits++;
+										}
 									}
 								}
 							}
@@ -231,12 +236,17 @@ if (isset($is_posted) && $is_posted) {
 							$res_prof_mat=mysqli_query($mysqli, $sql);
 							if(mysqli_num_rows($res_prof_mat)>0) {
 								while($lig_prof_mat=mysqli_fetch_object($res_prof_mat)) {
-									$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
-									if (!$reg_data) {
-										$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
-									}
-									else {
-										$nb_profs_inscrits++;
+									$test2=Prof_deja_membre($lig_prof_mat->login, $aid_id, $indice_aid)->num_rows;
+									if ($test2 != "0") {
+										$msg.="Le professeur ".$lig_prof_mat->login." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+									} else {
+										$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
+										if (!$reg_data) {
+											$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
+										}
+										else {
+											$nb_profs_inscrits++;
+										}
 									}
 								}
 							}
@@ -246,12 +256,12 @@ if (isset($is_posted) && $is_posted) {
 			}
 
 			if ($count == "1") {
-				$msg=$msg." Attention, une AID ($nom_famille_aid) portant le même nom existait déja !<br />";
+				$msg=$msg." Attention, une AID ($nom_famille_aid) portant le même nom ($aid_nom) existait déja !<br />";
 			} else if ($count > 1) {
-				$msg=$msg." Attention, plusieurs AID ($nom_famille_aid) portant le même nom existaient déja !<br />";
+				$msg=$msg." Attention, plusieurs AID ($nom_famille_aid) portant le même nom ($aid_nom) existaient déja !<br />";
 			}
 			if ($mode == "multiple") {
-				$msg .= "AID ($nom_famille_aid) enregistrée !<br />" ;
+				$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />" ;
 
 				if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
 					$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
@@ -265,7 +275,7 @@ if (isset($is_posted) && $is_posted) {
 				header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
 				die();
 			} else{
-				$msg .= "AID ($nom_famille_aid) enregistrée !<br />";
+				$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />";
 
 				if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
 					$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
@@ -400,12 +410,17 @@ if (isset($is_posted) && $is_posted) {
 						$res_prof_mat=mysqli_query($mysqli, $sql);
 						if(mysqli_num_rows($res_prof_mat)>0) {
 							while($lig_prof_mat=mysqli_fetch_object($res_prof_mat)) {
-								$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
-								if (!$reg_data) {
-									$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
-								}
-								else {
-									$nb_profs_inscrits++;
+								$test2=Prof_deja_membre($lig_prof_mat->login, $aid_id, $indice_aid)->num_rows;
+								if ($test2 != "0") {
+									$msg.="Le professeur ".$lig_prof_mat->login." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+								} else {
+									$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
+									if (!$reg_data) {
+										$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
+									}
+									else {
+										$nb_profs_inscrits++;
+									}
 								}
 							}
 						}
@@ -418,12 +433,17 @@ if (isset($is_posted) && $is_posted) {
 						$res_prof_mat=mysqli_query($mysqli, $sql);
 						if(mysqli_num_rows($res_prof_mat)>0) {
 							while($lig_prof_mat=mysqli_fetch_object($res_prof_mat)) {
-								$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
-								if (!$reg_data) {
-									$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
-								}
-								else {
-									$nb_profs_inscrits++;
+								$test2=Prof_deja_membre($lig_prof_mat->login, $aid_id, $indice_aid)->num_rows;
+								if ($test2 != "0") {
+									$msg.="Le professeur ".$lig_prof_mat->login." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+								} else {
+									$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
+									if (!$reg_data) {
+										$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
+									}
+									else {
+										$nb_profs_inscrits++;
+									}
 								}
 							}
 						}
@@ -433,12 +453,12 @@ if (isset($is_posted) && $is_posted) {
 		}
 
 		if ($count == "1") {
-			$msg=$msg." Attention, une AID ($nom_famille_aid) portant le même nom existait déja !<br />";
+			$msg=$msg." Attention, une AID ($nom_famille_aid) portant le même nom ($aid_nom) existait déja !<br />";
 		} else if ($count > 1) {
-			$msg=$msg." Attention, plusieurs AID ($nom_famille_aid) portant le même nom existaient déja !<br />";
+			$msg=$msg." Attention, plusieurs AID ($nom_famille_aid) portant le même nom ($aid_nom) existaient déja !<br />";
 		}
 		if ($mode == "multiple") {
-			$msg .= "AID ($nom_famille_aid) enregistrée !<br />" ;
+			$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />" ;
 
 			if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
 				$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
@@ -451,8 +471,8 @@ if (isset($is_posted) && $is_posted) {
 			$mess = rawurlencode($msg);
 			header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
 			die();
-		} else{
-			$msg .= "AID ($nom_famille_aid) enregistrée !<br />";
+		} else {
+			$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />";
 
 			if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
 				$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
@@ -480,9 +500,9 @@ if (isset($is_posted) && $is_posted) {
 
 	if ("modif_aid" == $action) {
 		$res_aid_tmp = Extrait_aid_sur_indice_aid ($indice_aid);
-		if(mysqli_num_rows($res_aid_tmp)>0){
+		if(mysqli_num_rows($res_aid_tmp)>0) {
 			while($lig_aid_tmp=mysqli_fetch_object($res_aid_tmp)){
-				if($lig_aid_tmp->id==$aid_id){
+				if($lig_aid_tmp->id==$aid_id) {
 					$temoin_tmp=1;
 					if($lig_aid_tmp=mysqli_fetch_object($res_aid_tmp)){
 						$id_aid_suiv=$lig_aid_tmp->id;
@@ -491,7 +511,7 @@ if (isset($is_posted) && $is_posted) {
 						$id_aid_suiv=-1;
 					}
 				}
-				if($temoin_tmp==0){
+				if($temoin_tmp==0) {
 					$id_aid_prec=$lig_aid_tmp->id;
 				}
 			}
@@ -501,9 +521,9 @@ if (isset($is_posted) && $is_posted) {
 	
 	if ($action == "modif_aid") {
 		$calldata = Extrait_aid_sur_id ($aid_id, $indice_aid)->fetch_object();
-		$aid_nom = $calldata->nom;	
+		$aid_nom = $calldata->nom;
 		$aid_num = $calldata->numero;
-		$sous_groupe = $calldata->sous_groupe;		
+		$sous_groupe = $calldata->sous_groupe;
 		$nouveau = "Entrez le nouveau nom à la place de l'ancien : ";
 		if ('y' == $sous_groupe) {
 			$res_groupe_de=Extrait_parent ($aid_id);
