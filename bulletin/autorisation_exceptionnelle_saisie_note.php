@@ -129,6 +129,8 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 					else {
 						$msg.="Enregistrement de l'autorisation effectué.<br />";
 
+						$_SESSION['autorisation_saisie_date_limite']=mktime($heure, $minute, 0, $mois, $jour, $annee);
+
 						$complement_texte_mail="";
 						if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullAppPeriodeCloseScol')))) {
 							if((isset($_POST['donner_acces_modif_bull_app']))&&($_POST['donner_acces_modif_bull_app']=='y')) {
@@ -524,6 +526,12 @@ else {
 			$minute_limite=$minute_courante+15;
 		}
 		$display_heure_limite="$heure_limite:$minute_limite";
+
+		$ts_display_date_limite=mktime($heure_limite, $minute_limite, 0, $mois, $jour, $annee);
+		if((isset($_SESSION['autorisation_saisie_date_limite']))&&($_SESSION['autorisation_saisie_date_limite']>=$ts_display_date_limite)) {
+			$display_date_limite=strftime("%d/%m/%Y", $_SESSION['autorisation_saisie_date_limite']);
+			$display_heure_limite=strftime("%H:%M", $_SESSION['autorisation_saisie_date_limite']);
+		}
 	}
 
 	echo "<p>Quelle doit être la date/heure limite de cette autorisation de modification de notes de bulletins&nbsp;?<br />\n";
