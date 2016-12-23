@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -77,12 +77,14 @@ $prenom=isset($_POST['prenom']) ? $_POST['prenom'] : (isset($_GET['prenom']) ? $
 $statut_recherche=isset($_POST['statut_recherche']) ? $_POST['statut_recherche'] : (isset($_GET['statut_recherche']) ? $_GET['statut_recherche'] : "eleve");
 $type_server=isset($_POST['type_server']) ? $_POST['type_server'] : (isset($_GET['type_server']) ? $_GET['type_server'] : "");
 
+$erreur=0;
+
 if(($type_server=='scribe')&&(($nom!="")||($prenom!=""))) {
 	$ldap = new LDAPServerScribe();
 	$ldap->connect();
 
-	$nom=preg_replace("[A-Za-z]","*",$nom);
-	$prenom=preg_replace("[A-Za-z]","*",$prenom);
+	$nom=preg_replace("/[^A-Za-z]/","*",$nom);
+	$prenom=preg_replace("/[^A-Za-z]/","*",$prenom);
 
 	$filtre="";
 	if($nom!='') {
@@ -192,8 +194,8 @@ if(($type_server=='scribe')&&(($nom!="")||($prenom!=""))) {
 }
 elseif(($nom!="")||($prenom!="")) {
 
-	$nom=preg_replace("[A-Za-z]","*",$nom);
-	$prenom=preg_replace("[A-Za-z]","*",$prenom);
+	$nom=preg_replace("/[^A-Za-z]/","*",$nom);
+	$prenom=preg_replace("/[^A-Za-z]/","*",$prenom);
 
 	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 		function connect_ldap($l_adresse,$l_port,$l_login,$l_pwd) {
@@ -244,15 +246,18 @@ elseif(($nom!="")||($prenom!="")) {
 		$filtre="";
 		if($nom!='') {
 			if($prenom!='') {
-				$filtre="(&(sn=*$nom*)(givenname=*$prenom*))";
+				$filtre="(&(sn=".preg_replace("/\*\*/", "*", "*$nom*").")(givenname=".preg_replace("/\*\*/", "*", "*$prenom*")."))";
 			}
 			else {
-				$filtre="(sn=*$nom*)";
+				$filtre="(sn=".preg_replace("/\*\*/", "*", "*$nom*").")";
 			}
 		}
 		elseif($prenom!='') {
-			$filtre="(givenname=*$prenom*)";
+			//$filtre="(givenname=*$prenom*)";
+			$filtre="(givenname=".preg_replace("/\*\*/", "*", "*$prenom*").")";
 		}
+
+		//echo "<p style='color:plum'><strong>Filtre=</strong>$filtre</p>";
 
 		if($filtre!="") {
 			$result= ldap_search ($ds, $lcs_ldap_people_dn, $filtre);
@@ -290,18 +295,18 @@ elseif(($nom!="")||($prenom!="")) {
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt'>\n";
 							echo "<td><a href=\"#\" onclick=\"document.getElementById('reg_login').value='".$info[$i]["uid"][0]."';
-																document.getElementById('nom').value='".$info[$i]["sn"][0]."';
-																document.getElementById('prenom').value='".$info[$i]["givenname"][0]."';
+																document.getElementById('nom').value=document.getElementById('td_recherche_ldap_nom_$i').innerHTML;
+																document.getElementById('prenom').value=document.getElementById('td_recherche_ldap_prenom_$i').innerHTML;
 																document.getElementById('birth_day').value='".$jour."';
 																document.getElementById('birth_month').value='".$mois."';
 																document.getElementById('birth_year').value='".$annee."';
-																document.getElementById('reg_email').value='".$info[$i]["mail"][0]."';
-																document.getElementById('elenoet').value='".$info[$i]["employeenumber"][0]."';
+																document.getElementById('reg_email').value='".(isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "")."';
+																document.getElementById('elenoet').value='".(isset($info[$i]["employeenumber"][0]) ? $info[$i]["employeenumber"][0] : "")."';
 																document.getElementById('reg_sexe$sexe').checked=true;
 																return false;\"
 											title=\"Compléter les champs de formulaire avec les informations trouvées dans l'annuaire LDAP pour cet identifiant.\">".$info[$i]["uid"][0]."</a></td>\n";
-							echo "<td>".$info[$i]["sn"][0]."</td>\n";
-							echo "<td>".$info[$i]["givenname"][0]."</td>\n";
+							echo "<td id='td_recherche_ldap_nom_$i'>".casse_mot($info[$i]["sn"][0], "majf2")."</td>\n";
+							echo "<td id='td_recherche_ldap_prenom_$i'>".casse_mot($info[$i]["givenname"][0], "majf2")."</td>\n";
 							echo "<td>".$naissance."</td>\n";
 							echo "</tr>\n";
 						}
