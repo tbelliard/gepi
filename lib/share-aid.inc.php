@@ -601,12 +601,13 @@ function acces_saisie_aid($login, $indice_aid, $id_aid) {
 
 function get_info_categorie_aid2($indice_aid, $tab_infos=array('nom', 'nom_complet'), $mode="html") {
 	global $mysqli;
+	$retour="";
 	$sql="SELECT * FROM aid_config WHERE indice_aid='".$indice_aid."';";
 	//echo "$sql<br />";
 	//die();
 	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_aid)==0) {
-		return "";
+		return $retour;
 	}
 	else {
 		$lig=mysqli_fetch_assoc($res_aid);

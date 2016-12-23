@@ -1813,6 +1813,17 @@ statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/import_note_app_aid.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/import_note_app_aid2.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');";
+$tab_req[] = "INSERT INTO droits SET id='/aid/transfert_groupe_aid.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Transfert Groupe/AID',
+statut='';";
 
 //$tab_req[] = "";
 

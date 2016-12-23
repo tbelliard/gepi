@@ -1582,3 +1582,10 @@ CREATE TABLE aid_appreciations_grp ( id_aid int(11) NOT NULL default '0', period
 DROP TABLE IF EXISTS absences_appreciations_grp;
 CREATE TABLE absences_appreciations_grp (id_classe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY  (id_classe, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS j_groupes_aid;
+CREATE TABLE IF NOT EXISTS j_groupes_aid (id_groupe INT(11) NOT NULL default '0', 
+id_aid INT(11) NOT NULL default '0', 
+indice_aid INT(11) NOT NULL default '0', 
+etat varchar(255) NOT NULL default '', 
+PRIMARY KEY  (id_groupe, id_aid), INDEX id_groupe_id_aid (id_groupe, id_aid)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
