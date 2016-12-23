@@ -137,10 +137,17 @@ $xml->appendChild($items);
 		$enseignants = $xml->createElement('enseignants');
 		while ($enseignant = $listeEnseignants->fetch_object()){
 				$noeudEnseignant = $xml->createElement('enseignant');
+						
 					//on ne conserve que les chiffres pour id-sts
 					if (!$enseignant->numind) {
 						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer. <em><a href=\"../../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br>";
 						continue;
+					}
+					if (!$enseignant->nom ) {
+						$msgErreur = "L'enseignant $enseignant->numind n'a pas de nom, vous devez corriger cette erreur.";
+					}
+					if (!$enseignant->prenom) {
+						$msgErreur = "L'enseignant $enseignant->nom ($enseignant->numind) n'a pas de nom, vous devez corriger cette erreur.";
 					}
 					preg_match_all('#[0-9]+#',$enseignant->numind,$extract);
 					$idSts = $extract[0][0];
@@ -279,8 +286,11 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				
 				// Commentaire → Résumé + appréciation du groupe
 				$CommentaireEPI1 = trim(getResumeAid($episGroupe->id));
-				if (getCommentaireGroupe($episGroupe->id,$episGroupe->periode)->num_rows) {
-					$CommentaireEPI1 .= " ".trim(getCommentaireGroupe($episGroupe->id,$episGroupe->periode)->appreciation);
+				$commentairesGroupe = getCommentaireGroupe($episGroupe->id,$episGroupe->periode);
+				if ($commentairesGroupe->num_rows) {
+					//echo "coucou ".trim($commentairesGroupe->fetch_object()->appreciation)."<br>";
+					$CommentaireEPI1 .= " ".trim($commentairesGroupe->fetch_object()->appreciation);
+					
 				}
 				$CommentaireEPI = substr($CommentaireEPI1, 0, 600);
 				//echo $CommentaireEPI;
@@ -293,20 +303,30 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$episGroupes->appendChild($noeudEpisGroupes);
 				// enseignants
 				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
+				/**
 				$profsEPI = getProfsEPI($episGroupe->id);
 				if (!$profsEPI->num_rows) {
-					$msgErreur .= "Aucun enseignant  pour l'EPI $episGroupe->nom. Vous devez corriger cet erreur";
+					$msgErreur .= "Aucun enseignant (ou aucune discipline) définit pour l'EPI $episGroupe->nom. Vous devez corriger cet erreur. <a href='../../aid/index2.php?indice_aid=$episGroupe->indice_aid'>Corriger</a><br>";
 				}
 				while($prof = $profsEPI->fetch_object()) {
+					/*
 					$noeudProf1 = $xml->createElement('enseignant-discipline');
 					$attsMat1 =  $xml->createAttribute('discipline-ref');
 					//$attsMat1->value = 'DI_';
 					//var_dump(getMatiereOnMatiere($prof->matiere1)->code_matiere);
-					$attsMat1->value = 'DI_'.getMatiereOnMatiere($prof->matiere)->code_matiere;
+					// On recupere la modalite
+					$matiere = getMatiereOnMatiere($prof->matiere)->code_matiere;
+					// On peut avoir plusieurs modalités, on prend la première
+					$modalite = $modaliteEns->fetch_object()->modalite;
+					
+					$attsMat1->value = 'DI_'.$matiere.$modalite;
+					
 					$noeudProf1->appendChild($attsMat1);
 					$attsProf1 =  $xml->createAttribute('enseignant-ref');
 					$attsProf1->value = 'ENS_'.$prof->numind;
 					$noeudProf1->appendChild($attsProf1);
+					
+					
 					/**
 					$noeudProf2 = $xml->createElement('enseignant-discipline');
 					$attsMat2 =  $xml->createAttribute('discipline-ref');
@@ -317,10 +337,30 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					$noeudProf2->appendChild($attsProf2);
 					 * 
 					 */
-					
-					$noeudEnseigneDis->appendChild($noeudProf1);
+				/*	
+					//$noeudEnseigneDis->appendChild($noeudProf1);
 					//$noeudEnseigneDis->appendChild($noeudProf2);
 				}
+				*/
+				$modaliteEns = getModaliteGroupe($episGroupe->id);
+				if ($modaliteEns->num_rows) {
+					while ($ensModalite = $modaliteEns->fetch_object()) {
+						$noeudProf = $xml->createElement('enseignant-discipline');
+						$attsMat =  $xml->createAttribute('discipline-ref');
+						$matiere = getMatiereOnMatiere($ensModalite->matiere);
+						$attsMat->value = 'DI_'.$matiere->code_matiere.$ensModalite->modalite;
+						$noeudProf->appendChild($attsMat);
+						$prof = substr(getUtilisateur($ensModalite->login)->numind,1);
+						$attsProf =  $xml->createAttribute('enseignant-ref');
+						$attsProf->value = 'ENS_'.$prof;
+						$noeudProf->appendChild($attsProf);
+						$noeudEnseigneDis->appendChild($noeudProf);
+					}
+				}
+					
+					
+					
+					
 				
 				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
 				
@@ -469,7 +509,7 @@ if (FALSE) {
 			
 			if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_eleve") != "n")) {
 				// non obligatoire
-				$episEleve = getAidEleve($eleve->login);
+				$episEleve = getAidEleve($eleve->login, 2);
 				if ($episEleve->num_rows) {
 					//var_dump($episEleve);
 					$listeEpisEleve = $xml->createElement('epis-eleve');
@@ -479,15 +519,21 @@ if (FALSE) {
 						$attsEpisEleve= $xml->createAttribute('epi-groupe-ref');
 						$attsEpisEleve->value = "EPI_GROUPE_".$epiEleve->id_aid;
 						$noeudEpiEleve->appendChild($attsEpisEleve);
+						
+						$commentaireEpiElv = getCommentaireAidElv($eleve->login, $epiEleve->id_aid, $eleve->periode);
+						if ($commentaireEpiElv->num_rows) {
+							$comm = trim($commentaireEpiElv->fetch_object()->appreciation);
+							if ($comm) {
+								$noeudComEpiEleve = $xml->createElement('commentaire', $comm);
+								$noeudEpiEleve->appendChild($noeudComEpiEleve);
+							}
+							
+						}
 						$listeEpisEleve->appendChild($noeudEpiEleve);
+						
 					}
 					$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
 					
-					
-					
-					
-					
-					//$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
 				}
 			}
 			

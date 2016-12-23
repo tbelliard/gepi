@@ -330,7 +330,7 @@ function getCommentaireGroupe($id_aid,$periode = NULL) {
 	if($periode) {
 		$sqlAppGroupe .= "AND `periode` = $periode ";
 	}
-	
+	//echo $sqlAppGroupe."<br>";
 	$resultchargeDB = $mysqli->query($sqlAppGroupe);
 	return $resultchargeDB;
 }
@@ -617,15 +617,84 @@ function getResumeAid($aid_id) {
 	
 }
 
-function getAidEleve($login) {
+function getAidEleve($login, $typeAid) {
 	global $mysqli;
 	//indice_aid → la catégorie de l'AID
 	//id_aid → l'identifiant de l'AID
-	$sqlGetAidEleve = "SELECT  login , indice_aid , id_aid FROM j_aid_eleves WHERE login = '$login' ";
+	$sqlGetAidEleve01 = "SELECT  login , indice_aid , id_aid FROM j_aid_eleves WHERE login = '$login' ";
+	
+	$sqlGetAidEleve02 = "SELECT t0.*, ac.type_aid FROM ($sqlGetAidEleve01) AS t0 "
+		. "INNER JOIN aid_config AS ac "
+		. "ON ac.indice_aid = t0.indice_aid "
+		. "WHERE ac.type_aid = $typeAid ";
+	
+	$sqlGetAidEleve = "SELECT t1.* FROM ($sqlGetAidEleve02) AS t1 "
+		. "INNER JOIN lsun_j_epi_enseignements AS lje "
+		. "ON t1.indice_aid = lje.id_enseignements "
+		. "WHERE lje.aid = 1 ";
+	
+	
 	//echo $sqlGetAidEleve."<br>";
 	$resultchargeDB = $mysqli->query($sqlGetAidEleve);
 	return $resultchargeDB ;
 	
 }
 
+function getCommentaireAidElv($login, $id_aid, $periode) {
+	global $mysqli;
+	$sqlComAidEpi = "SELECT appreciation FROM aid_appreciations WHERE login = '$login' AND id_aid = '$id_aid' AND periode = '$periode' ";
 	
+	//echo $sqlComAidEpi."<br>";
+	$resultchargeDB = $mysqli->query($sqlComAidEpi);
+	return $resultchargeDB ;
+	
+	
+}	
+
+function getModaliteGroupe($groupe_id) {
+	global $mysqli;
+	// La modalité est dans la matiere de la classe
+	//echo $groupe_id.' '.$prof_numind.' '.matiere.' '.'<br>';
+	
+	$sqlGroupeModalite = "
+SELECT DISTINCT t3.* , t4.modalite FROM (
+	SELECT t1.`id_groupe` , t1.id_aid , t1.indice_aid , t1.login , t1.matiere AS matiere FROM (
+		SELECT t0.*, jpm.id_matiere AS matiere FROM (
+			SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.login FROM `j_groupes_professeurs` AS jgp INNER JOIN `j_groupes_aid` AS jga ON jgp.`id_groupe` = jga.`id_groupe` WHERE jga.`id_aid` = 38
+		) AS t0
+		LEFT JOIN
+			j_professeurs_matieres AS jpm
+		ON jpm.id_professeur = t0.login
+	) AS t1
+	INNER JOIN
+	(SELECT id , nom , indice_aid , matiere1, matiere2 FROM aid WHERE id = $groupe_id) AS t2
+	ON t1.matiere = t2.matiere1 OR t1.matiere = t2.matiere2
+	) AS t3
+INNER JOIN 
+	(SELECT DISTINCT t2.* , jgm.code_modalite_elect AS modalite FROM (
+		SELECT DISTINCT t1.id_groupe , jgm.id_matiere FROM (
+			SELECT t0.* , jeg.id_groupe FROM (
+				SELECT DISTINCT login, periode FROM j_eleves_groupes
+			) AS t0
+			INNER JOIN
+				j_eleves_groupes AS jeg
+			ON jeg.login = t0.login
+		) AS t1
+		INNER JOIN
+			j_groupes_matieres AS jgm
+		ON jgm.id_groupe = t1.id_groupe
+	) AS t2
+	INNER JOIN
+		j_groupes_eleves_modalites AS jgm
+	ON jgm.id_groupe = t2.id_groupe 
+	) AS t4
+ON t3.matiere = t4.id_matiere
+	";
+	
+	//echo $sqlGroupeModalite.'<br>';
+	$resultchargeDB = $mysqli->query($sqlGroupeModalite);
+	return $resultchargeDB ;
+	
+}
+
+

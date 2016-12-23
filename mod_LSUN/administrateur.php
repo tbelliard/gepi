@@ -340,12 +340,10 @@ while ($classe = $classes->fetch_object()) { ?>
 <?php } ?>
 						</select>
 						-
-						Intitulé :
-						<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />	
+						Intitulé&nbsp;:&nbsp;<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />	
 				</div>
 				<div>
-						Disciplines :
-<?php	foreach ($tableauMatieresEPI as $matEPI) {
+					Disciplines&nbsp;:&nbsp;<?php	foreach ($tableauMatieresEPI as $matEPI) {
 	echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
 	if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } elseif ($matEPI['modalite'] =="F") {echo " option facultative";}
 	echo " - ";
@@ -369,8 +367,7 @@ if ($matiere->code_modalite_elect == 'O') {
 <?php } ?>
 						</select>
 						-
-						Description :
-						<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea> 
+						Description&nbsp;:&nbsp;<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea> 
 				</div>
 						<div>
 						Liaison :
@@ -382,7 +379,8 @@ if ($matiere->code_modalite_elect == 'O') {
 		if ($liaison->aid) {
 			echo "AID - ".getAID($liaison->id_enseignements)->nom;
 			
-		} else {
+		} 
+		/*else {
 			$enseignements = getCoursById($liaison->id_enseignements);
 			$enseignements->data_seek(0);
 			$lastClasse = NULL;
@@ -398,6 +396,8 @@ if ($matiere->code_modalite_elect == 'O') {
 				
 			}
 		}
+		 * 
+		 */
 ?>
 						
 <?php } 
