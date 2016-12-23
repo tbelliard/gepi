@@ -5147,9 +5147,6 @@ function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
  * $id_classe : identifiant de la classe
  *              (si vide, on récupère tous les CPE de l'établissement)
  * 
- * $login_eleve : login de l'élève à tester (si vide, on teste juste si le prof est PP 
- * (éventuellement pour la classe si id_classe est non vide))
- * 
  * @param type $id_classe identifiant de la classe
  * @return array
  */
