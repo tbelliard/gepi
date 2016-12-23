@@ -617,6 +617,15 @@ function getResumeAid($aid_id) {
 	
 }
 
-
+function getAidEleve($login) {
+	global $mysqli;
+	//indice_aid → la catégorie de l'AID
+	//id_aid → l'identifiant de l'AID
+	$sqlGetAidEleve = "SELECT  login , indice_aid , id_aid FROM j_aid_eleves WHERE login = '$login' ";
+	//echo $sqlGetAidEleve."<br>";
+	$resultchargeDB = $mysqli->query($sqlGetAidEleve);
+	return $resultchargeDB ;
+	
+}
 
 	

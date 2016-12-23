@@ -291,7 +291,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				
 								
 				$episGroupes->appendChild($noeudEpisGroupes);
-				// enseih,a,ts
+				// enseignants
 				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
 				$profsEPI = getProfsEPI($episGroupe->id);
 				if (!$profsEPI->num_rows) {
@@ -302,12 +302,12 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					$attsMat1 =  $xml->createAttribute('discipline-ref');
 					//$attsMat1->value = 'DI_';
 					//var_dump(getMatiereOnMatiere($prof->matiere1)->code_matiere);
-					$attsMat1->value = 'DI_'.getMatiereOnMatiere($prof->matiere1)->code_matiere;
+					$attsMat1->value = 'DI_'.getMatiereOnMatiere($prof->matiere)->code_matiere;
 					$noeudProf1->appendChild($attsMat1);
 					$attsProf1 =  $xml->createAttribute('enseignant-ref');
-					$attsProf1->value = 'ENS_'.$prof->numind1;
+					$attsProf1->value = 'ENS_'.$prof->numind;
 					$noeudProf1->appendChild($attsProf1);
-					
+					/**
 					$noeudProf2 = $xml->createElement('enseignant-discipline');
 					$attsMat2 =  $xml->createAttribute('discipline-ref');
 					$attsMat2->value = 'DI_'.getMatiereOnMatiere($prof->matiere2)->code_matiere;
@@ -315,9 +315,11 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					$attsProf2 =  $xml->createAttribute('enseignant-ref');
 					$attsProf2->value = 'ENS_'.$prof->numind2;
 					$noeudProf2->appendChild($attsProf2);
+					 * 
+					 */
 					
 					$noeudEnseigneDis->appendChild($noeudProf1);
-					$noeudEnseigneDis->appendChild($noeudProf2);
+					//$noeudEnseigneDis->appendChild($noeudProf2);
 				}
 				
 				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
@@ -465,8 +467,31 @@ if (FALSE) {
 			
 			$noeudBilanElevePeriodique->appendChild($listeAcquis);
 			
-			$listeEpisEleve = $xml->createElement('epis-eleve');
-			// non obligatoire
+			if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_eleve") != "n")) {
+				// non obligatoire
+				$episEleve = getAidEleve($eleve->login);
+				if ($episEleve->num_rows) {
+					//var_dump($episEleve);
+					$listeEpisEleve = $xml->createElement('epis-eleve');
+					while ($epiEleve = $episEleve->fetch_object()) {
+						//var_dump($epiEleve);
+						$noeudEpiEleve = $xml->createElement('epi-eleve');
+						$attsEpisEleve= $xml->createAttribute('epi-groupe-ref');
+						$attsEpisEleve->value = "EPI_GROUPE_".$epiEleve->id_aid;
+						$noeudEpiEleve->appendChild($attsEpisEleve);
+						$listeEpisEleve->appendChild($noeudEpiEleve);
+					}
+					$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
+					
+					
+					
+					
+					
+					//$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
+				}
+			}
+			
+			
 		
 			$listeAccPersosEleve = $xml->createElement('acc-persos-eleve');
 			// non obligatoire

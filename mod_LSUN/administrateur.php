@@ -682,7 +682,8 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteEPI" label="Exporter les données générales des EPI">enseignements pratiques interdisciplinaires (EPI)</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y" disabled />
+						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y"
+							   <?php if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_eleve") != "n")) {echo ' checked '; }  ?> />
 						<label for="traiteEpiElv">données élèves des EPI</label>
 					</li>
 					<li>
