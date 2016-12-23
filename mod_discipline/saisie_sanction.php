@@ -52,6 +52,8 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 
 require('sanctions_func_lib.php');
 
+$acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
+
 $msg="";
 
 $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET['id_incident']) ? $_GET['id_incident'] : NULL);
@@ -1555,6 +1557,8 @@ echo "
 }
 echo "
 	}
+
+	//maj_div_liste_retenues_jour();
 </script>\n";
 
 //=====================================================
@@ -2186,6 +2190,11 @@ elseif($mode=='ajout') {
 </script>\n";
 	}
 
+	// 20161203
+	if($acces_visu_eleve) {
+		echo " <a href='../eleves/visu_eleve.php?ele_login=$ele_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Élève' /></a>";
+	}
+
 	echo " (<em>".$mod_disc_terme_incident." n°$id_incident</em>)&nbsp;:</p>\n";
 
 	echo "<blockquote>\n";
@@ -2211,7 +2220,7 @@ elseif($mode=='ajout') {
 	echo "<div style='float:left; width:".$largeur_champ_select."em;'>\n";
 
 	echo "<p class='bold'>Nature de la ".$mod_disc_terme_sanction."&nbsp;:<br />\n";
-	echo "<select name='traitement' id='traitement' onchange=\"maj_traitement()\">\n";
+	echo "<select name='traitement' id='traitement' onchange=\"maj_traitement(); setTimeout('maj_div_liste_retenues_jour()', 1000)\">\n";
 	if(count($tab_autres_sanctions)>1) {
 		echo "<option value=''";
 		echo ">---</option>\n";
@@ -2250,6 +2259,17 @@ elseif($mode=='ajout') {
 	echo "</div>\n";
 
 	echo "<div style='clear:both;'></div>\n";
+
+	// 20161203
+	// Rechercher les sanctions à venir concernant cet élève pour les afficher sur la droite et éviter de saisir deux sanctions sur le même créneau
+	$sql="SELECT * FROM s_sanctions ss, 
+				s_retenues sr 
+			WHERE ss.id_sanction=sr.id_sanction AND ss.login='".$ele_login."';";
+	//echo "$sql<br />";
+	//echo "<div style='float:right;width:20em;' class='fieldset_opacite50'>"."</div>";
+	//Difficulté: Lister les dates/heures s_sanctions<->s_types_sanctions/s_types_sanctions2<->s_retenues|s_exclusions|s_travail,...
+	// Quand on change de champ après le champ date, on a la liste des retenues du jour,...
+
 
 	// Pour afficher les autres champs de formulaire des détails de la sanction:
 	echo "<div id='div_details_sanction'>\n";
