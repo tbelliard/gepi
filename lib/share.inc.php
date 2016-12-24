@@ -4454,6 +4454,46 @@ function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 		}
 		$res_user->close();
 	}
+	else {
+		// Chercher si c'est un élève, ou un parent avec login dont le compte aurait été supprimé?
+		$sql="SELECT nom,prenom,sexe FROM eleves WHERE login='$login';";
+		$res_user=mysqli_query($mysqli, $sql);
+		if ($res_user->num_rows > 0) {
+			$lig_user=$res_user->fetch_object();
+			if($mode=='prenom') {
+				$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
+			}
+			else {
+				// Initiale
+				$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
+			}
+			if($avec_statut=='y') {
+				$retour.=" (eleve)";
+			}
+			$res_user->close();
+		}
+		else {
+			$sql="SELECT nom,prenom,civilite FROM resp_pers WHERE login='$login';";
+			$res_user=mysqli_query($mysqli, $sql);
+			if ($res_user->num_rows > 0) {
+				$lig_user=$res_user->fetch_object();
+				if($lig_user->civilite!="") {
+					$retour.=$lig_user->civilite." ";
+				}
+				if($mode=='prenom') {
+					$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
+				}
+				else {
+					// Initiale
+					$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
+				}
+				if($avec_statut=='y') {
+					$retour.=" (responsable)";
+				}
+				$res_user->close();
+			}
+		}
+	}
 	return $retour;
 }
 
