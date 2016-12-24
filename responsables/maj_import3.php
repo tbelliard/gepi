@@ -1708,6 +1708,53 @@ else{
 	
 						$texte.="Désinscription des classes et des enseignements de ".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')." pour la période $periode: ";
 
+						// 20161224
+						$sql="SELECT DISTINCT u.nom, u.prenom, u.email FROM utilisateurs u, j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jeg.login='$ele_login' AND jeg.periode='$periode' AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login;";
+						info_debug($sql);
+						$res_prof_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_prof_ele)>0) {
+							$tmp_nom_prenom_classe_ele=get_nom_prenom_eleve($ele_login,'avec_classe');
+							$sujet_message="Départ de ".$tmp_nom_prenom_classe_ele;
+							$texte_message="";
+							$tmp_date=getdate();
+							if($tmp_date['hours']>=18) {$texte_message.="Bonsoir";} else {$texte_message.="Bonjour";}
+							$texte_message.="\nDépart de l'établissement de ".$tmp_nom_prenom_classe_ele."\nCordialement.\n-- \nGepi";
+
+							$tab_param_mail['destinataire']=array();
+							while($lig_prof = $res_prof->fetch_object()) {
+								if(check_mail($lig_prof->email)) {
+									if(!in_array($lig_prof->email, $tab_param_mail['destinataire'])) {
+										$tab_param_mail['destinataire'][]=$lig_prof->email;
+									}
+								}
+								// Enregistrer un message dans mod_alerte
+								if(getSettingAOui('active_mod_alerte')) {
+									enregistre_message($sujet_message, $texte_message, $_SESSION['login'], $lig_prof->login);
+								}
+							}
+
+							if(count($tab_param_mail['destinataire'])>0) {
+								$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+								if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+									$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+								}
+								if($envoi_mail_actif=='y') {
+									$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+									if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
+									$ajout_header="";
+
+									$destinataire_mail="";
+									for($loop_mail=0;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
+										if($loop_mail>0) {$destinataire_mail.=",";}
+										$destinataire_mail.=$tab_param_mail['destinataire'][$loop_mail];
+									}
+
+									$envoi = envoi_mail($sujet_message, $texte_message, $destinataire_mail, $ajout_header, "plain", $tab_param_mail);
+								}
+							}
+						}
+
 						$sql="DELETE FROM j_eleves_groupes WHERE login='$ele_login' AND periode='$periode';";
 						info_debug($sql);
 						if(!mysqli_query($GLOBALS["mysqli"], $sql)) {
@@ -1724,7 +1771,7 @@ else{
 							}
 						}
 						$texte.="<br />\n";
-	
+
 						$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$ele_login';";
 						$test_encore_dans_une_classe_sur_une_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test_encore_dans_une_classe_sur_une_periode)==0) {
@@ -4384,7 +4431,7 @@ else{
 						if(mysqli_num_rows($test)==0){
 							//echo "New: $lig->ELE_ID : $lig->ELENOM $lig->ELEPRE<br />";
 	
-							if($cpt>0){$texte.=", ";}
+							//if($cpt>0){$texte.=", ";}
 	
 							$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 	
@@ -4440,7 +4487,10 @@ else{
 
 								//$filtre = "(employeenumber=".$lig->ELENOET.")";
 								$filtre="(|(employeenumber=".$lig->ELENOET.")(employeenumber=".sprintf("%05d",$lig->ELENOET)."))";
-								$result= ldap_search ($ds, $lcs_ldap_people_dn, $filtre);
+								$result=false;
+								if($ds) {
+									$result= ldap_search ($ds, $lcs_ldap_people_dn, $filtre);
+								}
 								if ($result) {
 									$info = @ldap_get_entries( $ds, $result );
 									if($info[0]["uid"]["count"]==0) {
@@ -4460,7 +4510,7 @@ else{
 									@ldap_free_result ( $result );
 								}
 								else {
-									$texte.="<p>Echec de la recherche dans le LDAP de l'ELENOET pour $lig->ELENOET ($lig->ELENOM $lig->ELEPRE).</p>";
+									$texte.="<p style='color:red'>Echec de la recherche dans le LDAP de l'ELENOET pour $lig->ELENOET ($lig->ELENOM $lig->ELEPRE).</p>";
 								}
 							}
 							else {
@@ -4502,6 +4552,8 @@ else{
 								$texte.="<p style='color:red;'>Le login de $lig->ELENOM $lig->ELEPRE n'a pas pu être généré ni récupéré.</p>\n";
 							}
 							else {
+								if($cpt>0){$texte.=", ";}
+
 								// On ne renseigne plus l'ERENO et on n'a pas l'EMAIL dans temp_gep_import2
 								$sql="INSERT INTO eleves SET login='$login_eleve',
 														nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELENOM)."',
@@ -4692,7 +4744,7 @@ else{
 				info_debug($sql);
 				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
-				if(mysqli_num_rows($res_per)==0){
+				if(mysqli_num_rows($res_per)==0) {
 					echo "<p>Bizarre: il semble qu'aucune période ne soit encore définie.</p>\n";
 					// FAUT-IL SAUTER A UNE AUTRE ETAPE?
 				}
@@ -4842,11 +4894,8 @@ else{
 						$cpt++;
 					}
 					echo "</table>\n";
-				}
-			}
 
-
-			echo "<script type='text/javascript' language='javascript'>
+					echo "<script type='text/javascript' language='javascript'>
 	function modif_case(rang,type,statut){
 		// type: col ou lig
 		// rang: le numéro de la colonne ou de la ligne
@@ -4868,6 +4917,9 @@ else{
 		changement();
 	}
 </script>\n";
+
+				}
+			}
 
 			echo "<p><br /></p>\n";
 
@@ -4921,7 +4973,7 @@ else{
 								if(mysqli_num_rows($test)>0){
 									$lig_classe=mysqli_fetch_object($test);
 
-									$texte.="en $lig_classe->classe pour ";
+									$texte.="en ".$lig_classe->classe." pour ";
 									if(count($tab_periode)==1){
 										$texte.="la période ";
 									}
@@ -4930,6 +4982,7 @@ else{
 									}
 
 									$cpt_per=0;
+									$nb_insert=0;
 									for($j=1;$j<=$maxper;$j++){
 										if(isset($tab_periode[$j])){
 											//if(is_int($tab_periode[$j])){
@@ -4953,10 +5006,65 @@ else{
 																							rang='0'";
 														info_debug($sql);
 														$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+														$nb_insert++;
 													}
 													if($cpt_per>0){$texte.=", ";}
 													$texte.="$j";
 													$cpt_per++;
+												}
+											}
+										}
+									}
+									// 20161223: Envoyer un mail aux PP
+									if($nb_insert>0) {
+										$sql = "SELECT DISTINCT u.login, u.email 
+											FROM utilisateurs u, 
+												j_eleves_professeurs jep, 
+												j_eleves_classes jec 
+											WHERE jec.id_classe='".$id_classe[$i]."' 
+												AND jec.login=jep.login 
+												AND jec.id_classe=jep.id_classe 
+												AND u.login=jep.professeur 
+											ORDER BY u.nom,u.prenom;";
+										$res_prof = mysqli_query($mysqli, $sql);
+										if($res_prof->num_rows > 0) {
+											$sujet_message="Nouvel élève en ".$lig_classe->classe." : ".$lig_ele->prenom." ".$lig_ele->nom;
+											$texte_message="";
+											$tmp_date=getdate();
+											if($tmp_date['hours']>=18) {$texte_message.="Bonsoir";} else {$texte_message.="Bonjour";}
+											$texte_message.="\nUn nouvel élève arrive en classe de ".$lig_classe->classe." : $lig_ele->prenom $lig_ele->nom\nCordialement.\n-- \nGepi";
+
+											$tab_param_mail['destinataire']=array();
+											while($lig_prof = $res_prof->fetch_object()) {
+												if(check_mail($lig_prof->email)) {
+													if(!in_array($lig_prof->email, $tab_param_mail['destinataire'])) {
+														$tab_param_mail['destinataire'][]=$lig_prof->email;
+													}
+												}
+												// Enregistrer un message dans mod_alerte
+												if(getSettingAOui('active_mod_alerte')) {
+													enregistre_message($sujet_message, $texte_message, $_SESSION['login'], $lig_prof->login);
+												}
+											}
+
+											if(count($tab_param_mail['destinataire'])>0) {
+												$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+												if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+													$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+												}
+												if($envoi_mail_actif=='y') {
+													$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+													if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
+													$ajout_header="";
+
+													$destinataire_mail="";
+													for($loop_mail=0;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
+														if($loop_mail>0) {$destinataire_mail.=",";}
+														$destinataire_mail.=$tab_param_mail['destinataire'][$loop_mail];
+													}
+
+													$envoi = envoi_mail($sujet_message, $texte_message, $destinataire_mail, $ajout_header, "plain", $tab_param_mail);
 												}
 											}
 										}
@@ -5080,6 +5188,7 @@ else{
 					}
 				}
 
+				$temoin_insert=0;
 				$j = 1;
 				while ($j < $nb_periode) {
 					$call_group = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
@@ -5096,7 +5205,9 @@ else{
 						$test = mysqli_num_rows($test_query);
 						if (isset($_POST[$id_group[$j]])) {
 							if ($test == 0) {
-								$req = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_groupes SET id_groupe = '" . $id_groupe . "', login = '" . $login_eleve . "', periode = '" . $j ."'");
+								$sql="INSERT INTO j_eleves_groupes SET id_groupe = '" . $id_groupe . "', login = '" . $login_eleve . "', periode = '" . $j ."'";
+								$req = mysqli_query($GLOBALS["mysqli"], $sql);
+								$temoin_insert++;
 							}
 						} else {
 							$test1 = mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
@@ -5114,7 +5225,64 @@ else{
 					$j++;
 				}
 
+				if($temoin_insert>0) {
+					// 20161223: Envoyer un mail aux profs qui vont avoir l'élève
+					$sql = "SELECT DISTINCT u.login, u.email 
+						FROM utilisateurs u, 
+							j_groupes_professeurs jgp, 
+							j_eleves_groupes jeg 
+						WHERE jeg.login='".$login_eleve."' 
+							AND jeg.id_groupe=jgp.id_groupe 
+							AND u.login=jgp.login 
+						ORDER BY u.nom,u.prenom;";
+					$res_prof = mysqli_query($mysqli, $sql);
+					if($res_prof->num_rows > 0) {
+						$tmp_nom_classe="???";
+						if(isset($id_classe)) {
+							$tmp_nom_classe=get_nom_classe($id_classe);
+						}
+						$tmp_nom_prenom_eleve=get_nom_prenom_eleve($login_eleve);
+						$sujet_message="Nouvel élève en ".$tmp_nom_classe." : ".$tmp_nom_prenom_eleve;
+						$texte_message="";
+						$tmp_date=getdate();
+						if($tmp_date['hours']>=18) {$texte_message.="Bonsoir";} else {$texte_message.="Bonjour";}
+						$texte_message.="\nUn nouvel élève arrive en classe de ".$tmp_nom_classe." : $tmp_nom_prenom_eleve\nCordialement.\n-- \nGepi";
 
+						$tab_param_mail['destinataire']=array();
+						while($lig_prof = $res_prof->fetch_object()) {
+							if(check_mail($lig_prof->email)) {
+								if(!in_array($lig_prof->email, $tab_param_mail['destinataire'])) {
+									$tab_param_mail['destinataire'][]=$lig_prof->email;
+								}
+							}
+							// Enregistrer un message dans mod_alerte
+							if(getSettingAOui('active_mod_alerte')) {
+								enregistre_message($sujet_message, $texte_message, $_SESSION['login'], $lig_prof->login);
+							}
+						}
+
+						if(count($tab_param_mail['destinataire'])>0) {
+							$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+							if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+								$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+							}
+							if($envoi_mail_actif=='y') {
+								$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+								if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
+								$ajout_header="";
+
+								$destinataire_mail="";
+								for($loop_mail=0;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
+									if($loop_mail>0) {$destinataire_mail.=",";}
+									$destinataire_mail.=$tab_param_mail['destinataire'][$loop_mail];
+								}
+
+								$envoi = envoi_mail($sujet_message, $texte_message, $destinataire_mail, $ajout_header, "plain", $tab_param_mail);
+							}
+						}
+					}
+				}
 
 				if(isset($eleve)){
 					$sql="SELECT e.* FROM eleves e WHERE e.ele_id='$eleve[0]'";
