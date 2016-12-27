@@ -129,7 +129,7 @@ if((isset($_GET['creer_categorie']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_
 			$display_bulletin = "y";
 			$autoriser_inscript_multiples = "y";
 			$bull_simplifie = "y";
-			$activer_outils_comp = "n";
+			$activer_outils_comp = "y";
 			$feuille_presence = "n";
 
 			$sql="SELECT MAX(indice_aid) AS max_aid FROM aid_config;";
