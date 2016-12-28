@@ -27,6 +27,10 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.9 :</h3>";
 /*
 // Section d'exemple
 
+// Attention : on peut effectuer des mysqli_query() pour des tests en SELECT,
+//             mais toujours utiliser traite_requete() pour les CREATE, ALTER, INSERT, UPDATE
+//             pour que le message indiquant qu'il s'est produit une erreur soit affiché en haut de la page (l'admin ne lit pas toute la page;)
+
 $result .= "&nbsp;-> Ajout d'un champ 'tel_pers' à la table 'eleves'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
 if ($test_champ==0) {
@@ -301,7 +305,8 @@ PRIMARY KEY (id), UNIQUE KEY login (login)
 $result .= "&nbsp;-> Ajout d'un champ 'type' à la table 'utilisateurs'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM utilisateurs LIKE 'type';"));
 if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "ALTER TABLE utilisateurs ADD type varchar(10) NOT NULL default '';");
+	$sql="ALTER TABLE utilisateurs ADD type varchar(10) NOT NULL default '';";
+	$result_inter = traite_requete($sql);
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -342,8 +347,9 @@ if ($test == -1) {
 $result .= "&nbsp;-> Ajout d'un champ 'type_prof' à la table 'archivage_disciplines'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'type_prof';"));
 if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD type_prof varchar(10) NOT NULL default '' AFTER prof;");
-	if ($query) {
+	$sql="ALTER TABLE archivage_disciplines ADD type_prof varchar(10) NOT NULL default '' AFTER prof;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
 			$result .= msj_ok("Ok !");
 	} else {
 			$result .= msj_erreur();
@@ -355,8 +361,9 @@ if ($test_champ==0) {
 $result .= "&nbsp;-> Ajout d'un champ 'id_prof' à la table 'archivage_disciplines'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'id_prof';"));
 if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD id_prof varchar(255) NOT NULL default '' AFTER prof;");
-	if ($query) {
+	$sql="ALTER TABLE archivage_disciplines ADD id_prof varchar(255) NOT NULL default '' AFTER prof;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
 			$result .= msj_ok("Ok !");
 	} else {
 			$result .= msj_erreur();
@@ -419,8 +426,9 @@ $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS sconet_ele_options (
 $result .= "&nbsp;-> Ajout d'un champ 'rang' à la table 's_types_sanctions2'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM s_types_sanctions2 LIKE 'rang';"));
 if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "ALTER TABLE s_types_sanctions2 ADD rang INT(11) NOT NULL default 0 AFTER saisie_prof;");
-	if ($query) {
+	$sql="ALTER TABLE s_types_sanctions2 ADD rang INT(11) NOT NULL default 0 AFTER saisie_prof;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
 			$result .= msj_ok("Ok !");
 	} else {
 			$result .= msj_erreur();
@@ -441,9 +449,10 @@ if ($test_champ==0) {
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'affiche_vacances_eleresp'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='affiche_vacances_eleresp', value='yes';");
+	$sql="INSERT INTO setting SET name='affiche_vacances_eleresp', value='yes';";
+	$result_inter = traite_requete($sql);
 	$result .= "Initialisation du paramètre affiche_vacances_eleresp à 'yes': ";
-	if($query){
+	if ($result_inter == '') {
 		$result .= msj_ok();
 	}
 	else{
@@ -454,8 +463,9 @@ if ($res_test == 0){
 $result .= "&nbsp;-> Ajout d'un champ 'valable' à la table 'a_motifs'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM a_motifs LIKE 'valable';"));
 if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "ALTER TABLE a_motifs ADD valable VARCHAR(3) NOT NULL default 'y' AFTER sortable_rank;");
-	if ($query) {
+	$sql="ALTER TABLE a_motifs ADD valable VARCHAR(3) NOT NULL default 'y' AFTER sortable_rank;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
 			$result .= msj_ok("Ok !");
 	} else {
 			$result .= msj_erreur();
@@ -467,7 +477,7 @@ if ($test_champ==0) {
 $result .= "<strong>Ajout d'une table 'ct_tag_type' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'ct_tag_type';");
 if ($test == -1) {
-$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS ct_tag_type (
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS ct_tag_type (
 						id int(11) unsigned NOT NULL auto_increment, 
 						nom_tag varchar(255) NOT NULL default '',
 						tag_compte_rendu char(1) NOT NULL default 'y',
@@ -568,8 +578,9 @@ if ($test == -1) {
 	$result .= "&nbsp;-> Ajout d'un champ 'id_user' à la table 'matiere_element_programme'<br />";
 	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM matiere_element_programme LIKE 'id_user';"));
 	if ($test_champ==0) {
-		$query = mysqli_query($mysqli, "ALTER TABLE matiere_element_programme ADD id_user VARCHAR(50) NOT NULL default '' AFTER libelle;");
-		if ($query) {
+		$sql="ALTER TABLE matiere_element_programme ADD id_user VARCHAR(50) NOT NULL default '' AFTER libelle;";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
 				$result .= msj_ok("Ok !");
 		} else {
 				$result .= msj_erreur();
@@ -671,8 +682,9 @@ if ($test == -1) {
 	$result .= "&nbsp;-> Ajout d'un champ 'idGroupe' à la table 'j_mep_eleve'<br />";
 	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'idGroupe';"));
 	if ($test_champ==0) {
-		$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;");
-		if ($query) {
+		$sql="ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
 				$result .= msj_ok("Ok !");
 		} else {
 				$result .= msj_erreur();
@@ -684,11 +696,19 @@ if ($test == -1) {
 	$result .= "&nbsp;-> Ajout d'un champ 'date_insert' à la table 'j_mep_eleve'<br />";
 	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'date_insert';"));
 	if ($test_champ==0) {
-		$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '0000-00-00 00:00:00' AFTER periode;");
-		if ($query) {
-				$result .= msj_ok("Ok !");
+		$sql="ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '0000-00-00 00:00:00' AFTER periode;";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("Ok !");
 		} else {
+			$result .= "Il s'est produit une erreur probablement liée au paramétrage serveur MySQL n'acceptant pas les dates invalides (0000-00-00 00:00:00)<br />Nouvelle tentative en tentant de forcer 'ALLOW_INVALID_DATES'&nbsp: ";
+			$sql="SET SQL_MODE='ALLOW_INVALID_DATES'; ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL AFTER periode;";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("Ok !");
+			} else {
 				$result .= msj_erreur();
+			}
 		}
 	} else {
 		$result .= msj_present("Le champ existe déjà");
@@ -720,9 +740,10 @@ if ($test == -1) {
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bullNoSaisieElementsProgrammes'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bullNoSaisieElementsProgrammes', value='no';");
+	$sql="INSERT INTO setting SET name='bullNoSaisieElementsProgrammes', value='no';";
+	$result_inter = traite_requete($sql);
 	$result .= "Initialisation du paramètre 'bullNoSaisieElementsProgrammes' à 'no': ";
-	if($query){
+	if ($result_inter == '') {
 		$result .= msj_ok();
 	}
 	else{
@@ -963,8 +984,9 @@ $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_types (
 $result .= "&nbsp;-> Ajout d'un champ 'type_aid' à la table 'aid_config'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM aid_config LIKE 'type_aid';"));
 if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "ALTER TABLE aid_config ADD type_aid int(11) NOT NULL DEFAULT '0' AFTER type_note;");
-	if ($query) {
+	$sql="ALTER TABLE aid_config ADD type_aid int(11) NOT NULL DEFAULT '0' AFTER type_note;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
 			$result .= msj_ok("Ok !");
 	} else {
 			$result .= msj_erreur();
@@ -998,8 +1020,9 @@ if ($test == -1) {
 $result .= "&nbsp;-> Ajout d'un champ 's_periode' à la table 's_avertissements'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM s_avertissements LIKE 's_periode';"));
 if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "ALTER TABLE s_avertissements ADD s_periode CHAR(1) NOT NULL DEFAULT 'n' AFTER periode;");
-	if ($query) {
+	$sql="ALTER TABLE s_avertissements ADD s_periode CHAR(1) NOT NULL DEFAULT 'n' AFTER periode;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
 			$result .= msj_ok("Ok !");
 	} else {
 			$result .= msj_erreur();
@@ -1045,7 +1068,7 @@ if ($res_test == 0){
 		$AutoriserTypesEnseignements="n";
 
 		$info_action_titre="LSUN Collège";
-		$info_action_texte="Il est recommandé d'utiliser les AID pour créer les EPI, AP, Parcours.<br />En administrateur, Gestion des bases/AID.<br />Ces AID permettront une remontée vers l'application LSUN.";
+		$info_action_texte="Il est recommandé d'utiliser les AID pour créer les EPI, AP, Parcours.<br />En administrateur, Gestion des bases/AID.<br />Ces AID permettront une remontée vers l'application LSU.";
 		$info_action_destinataire=array("administrateur","scolarite");
 		$info_action_mode="statut";
 		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -1054,7 +1077,7 @@ if ($res_test == 0){
 		$AutoriserTypesEnseignements="y";
 
 		$info_action_titre="LSUN Collège";
-		$info_action_texte="Il est recommandé d'utiliser les AID pour créer les EPI, AP, Parcours.<br />En administrateur, Gestion des bases/AID.<br />Ces AID permettront une remontée vers l'application LSUN.<br />Vous utilisez actuellement des enseignements pour les EPI, AP,...<br />Cela risque de poser problème pour la remontée LSUN.<br />Les développeurs travaillent à une solution pour migrer les données de ces enseignements vers des AID pour pallier ce problème.";
+		$info_action_texte="Il est recommandé d'utiliser les AID pour créer les EPI, AP, Parcours.<br />En administrateur, Gestion des bases/AID.<br />Ces AID permettront une remontée vers l'application LSU.<br />Vous utilisez actuellement des enseignements pour les EPI, AP,...<br />Cela risque de poser problème pour la remontée LSU.<br />Les développeurs travaillent à une solution pour migrer les données de ces enseignements vers des AID pour pallier ce problème.";
 		$info_action_destinataire=array("administrateur","scolarite");
 		$info_action_mode="statut";
 		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
