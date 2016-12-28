@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -255,7 +255,9 @@ echo " | <a href='".$_SERVER['PHP_SELF']."?mode=import_xml'>Importer un XML</a>\
 if((isset($mode))&&($mode=='import_csv')) {
 	echo "</p>\n";
 
-	echo "<p>L'application nationale LPC permet d'exporter les saisies effectuées.<br />\n";
+	echo "<p style='color:red;margin-bottom:1em;margin-top:1em;font-weight:bold;'>La saisie et l'export des états de maitrise des éléments du socle n'est plus gérée dans l'application nationale LPC à compter de septembre 2016.</p>";
+
+	echo "<p>L'application nationale <strong>LPC permettait jusqu'avant la rentrée 2016</strong> d'exporter les saisies effectuées.<br />\n";
 	echo "En 2011, le fichier était au format CSV.<br />\n";
 	echo "Il semble depuis être passé au <a href='".$_SERVER['PHP_SELF']."?mode=import_xml'>format XML</a>.<br />\n";
 	echo "Pour obtenir ce CSV, sur l'application LPC, il faut \"confirmer\" la maîtrise pour les élèves, puis effectuer la procédure d'export vers NOTANET.</p>\n";
@@ -276,7 +278,9 @@ if((isset($mode))&&($mode=='import_csv')) {
 elseif((isset($mode))&&($mode=='import_xml')) {
 	echo "</p>\n";
 
-	echo "<p>L'application nationale LPC permet d'exporter les saisies effectuées.<br />";
+	echo "<p style='color:red;margin-bottom:1em;margin-top:1em;font-weight:bold;'>La saisie et l'export des états de maitrise des éléments du socle n'est plus gérée dans l'application nationale LPC à compter de septembre 2016.</p>";
+
+	echo "<p>L'application nationale <strong>LPC permettait jusqu'avant la rentrée 2016</strong> d'exporter les saisies effectuées.<br />";
 	echo "Pour obtenir ce XML, sur l'application LPC, il faut \"confirmer\" la maîtrise pour les élèves, puis dans le menu Administration, effectuer la procédure d'export vers NOTANET.</p>\n";
 
 	echo "<p>Veuillez fournir le fichier&nbsp;:</p>\n";
@@ -346,6 +350,8 @@ elseif(!isset($id_classe)) {
 else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 	echo "</p>\n";
+
+	echo "<p style='color:red;margin-bottom:1em;'>La présente page n'est pas à jour.</p>";
 
 	$chaine_classes="";
 	for($loop=0;$loop<count($id_classe);$loop++) {
