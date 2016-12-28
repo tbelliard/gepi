@@ -670,6 +670,7 @@ while ($i < $nombreligne){
     $user_login = old_mysql_result($calldata, $i, "login");
     $user_pwd = old_mysql_result($calldata, $i, "password");
     $user_etat[$i] = old_mysql_result($calldata, $i, "etat");
+    $user_email[$i] = old_mysql_result($calldata, $i, "email");
 //    $date_verrouillage[$i] = old_mysql_result($calldata, $i, "date_verrouillage");
     if (($user_etat[$i] == 'actif') and (($display == 'tous') or ($display == 'actifs'))) {
         $affiche = 'yes';
@@ -711,7 +712,7 @@ while ($i < $nombreligne){
 
     // Affichage du statut
     $col[$i][3]=$user_statut;
-	$col[$i][7]=$user_statut; // le status de de la personne
+	$col[$i][7]=$user_statut; // le statut de de la personne
     if ($user_statut == "administrateur") { $color_='red';}
     if ($user_statut == "secours") { $color_='red';}
     if ($user_statut == "professeur") { $color_='green'; }
@@ -917,14 +918,25 @@ while ($i < $nombreligne){
 	}
 	echo "</td>\n";
 
+	echo "<td>";
 	if ($col[$i][7] == "professeur") {
-		echo "<td><p class='small'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
-		//echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
-		echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'><img src='../images/remplacant.png' width='29' height='16' alt='Créer un remplaçant' title='Créer un remplaçant' /></a>";
-		echo "</td>\n";
+		echo "<p class='small' style='margin-bottom:0.5em;'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
+		echo "<p style='margin-bottom:0.5em;'><a href='creer_remplacant.php?login_prof_remplace=$user_login'><img src='../images/remplacant.png' width='29' height='16' alt='Créer un remplaçant' title='Créer un remplaçant' /></a></p>";
 	} else {
-	  echo "<td><p class='small'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
+	  echo "<p class='small' style='margin-bottom:0.5em;'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>";
 	}
+
+	if(check_mail($user_email[$i])) {
+		echo "<a href='mailto:".$user_email[$i]."?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] :")."' target='_blank' title=\"Envoyer un mail.\"><img src='../images/icons/mail.png' class='icone16' alt='Mail' /></a>";
+	}
+	else {
+		echo "<img src='../images/icons/mail_echec.png' class='icone16' alt='NoMail' title=\"Pas d'adresse mail.\" /></a>";
+	}
+
+	if(getSettingAOui('active_mod_alerte')) {
+		echo " <a href='../mod_alerte/form_message.php?login_dest=".$user_login."' title='Déposer une alerte/message dans le module Alertes.' target='_blank'><img src='../images/icons/module_alerte32.png' class='icone16' alt='Mail' /></a>";
+	}
+	echo "</td>\n";
 
 
     echo "<td><p class='small'><span class='bold'>{$col[$i][3]}</span></p></td>\n";
