@@ -117,19 +117,37 @@ if ($bull_affiche_aid == 'y') {
 				echo "<td>-</td>\n";
 			}
 
+
+			if(($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']!='')&&($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']!='-')) {
+				$aid_note_min=number_format($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min'],1, ',', ' ');
+			} else {
+				$aid_note_min = $tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min'];
+			}
+			if(($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']!='')&&($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']!='-')) {
+				$aid_note_max=number_format($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max'],1, ',', ' ');
+			} else {
+				$aid_note_max = $tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max'];
+			}
+			if(($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']!='')&&($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']!='-')) {
+				$aid_note_moyenne=number_format($tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne'],1, ',', ' ');
+			} else {
+				$aid_note_moyenne = $tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne'];
+			}
+
 			// Moyenne min/classe/max de la classe
 			if($min_max_moyclas!=1) {
 				// Trois colonnes séparées pour min/moy/max
-				echo "<td><span class='bulletin' title=\"Note minimale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']."</span></td>\n";
-				echo "<td><span class='bulletin' title=\"Note moyenne des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']."</span></td>\n";
-				echo "<td><span class='bulletin' title=\"Note maximale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note minimale des élèves pour cet enseignement\">".$aid_note_min."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note moyenne des élèves pour cet enseignement\">".$aid_note_moyenne."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note maximale des élèves pour cet enseignement\">".$aid_note_max."</span></td>\n";
 			}
 			else{
 				// Min/Classe/Max en une seule colonne
-				echo "<td><span class='bullminclasmax' title=\"Note minimale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_min']."</span><br />\n";
-				echo "<span class='bullminclasmax' title=\"Note moyenne des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_moyenne']."</span><br />\n";
-				echo "<span class='bullminclasmax' title=\"Note maximale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_note_max']."</span></td>\n";
+				echo "<td><span class='bullminclasmax' title=\"Note minimale des élèves pour cet enseignement\">".$aid_note_min."</span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Note moyenne des élèves pour cet enseignement\">".$aid_note_moyenne."</span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Note maximale des élèves pour cet enseignement\">".$aid_note_max."</span></td>\n";
 			}
+
 
 			// Moyenne de l'élève
 			echo "<td style='font-weight:bold;'><span class='bulletin'>";
@@ -502,17 +520,34 @@ if ($bull_affiche_aid == 'y') {
 			}
 
 			// Moyenne min/classe/max de la classe
+			if(($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']!='')&&($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']!='-')) {
+				$aid_note_min=number_format($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min'],1, ',', ' ');
+			} else {
+				$aid_note_min = $tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min'];
+			}
+			if(($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']!='')&&($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']!='-')) {
+				$aid_note_max=number_format($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max'],1, ',', ' ');
+			} else {
+				$aid_note_max = $tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max'];
+			}
+			if(($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']!='')&&($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']!='-')) {
+				$aid_note_moyenne=number_format($tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne'],1, ',', ' ');
+			} else {
+				$aid_note_moyenne = $tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne'];
+			}
+
+			// Moyenne min/classe/max de la classe
 			if($min_max_moyclas!=1) {
 				// Trois colonnes séparées pour min/moy/max
-				echo "<td style='text-align: center;'><span class='bulletin' title=\"Note minimale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']."</span></td>\n";
-				echo "<td style='text-align: center;'><span class='bulletin' title=\"Note moyenne des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']."</span></td>\n";
-				echo "<td style='text-align: center;'><span class='bulletin' title=\"Note maximale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note minimale des élèves pour cet enseignement\">".$aid_note_min."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note moyenne des élèves pour cet enseignement\">".$aid_note_moyenne."</span></td>\n";
+				echo "<td><span class='bulletin' title=\"Note maximale des élèves pour cet enseignement\">".$aid_note_max."</span></td>\n";
 			}
 			else{
 				// Min/Classe/Max en une seule colonne
-				echo "<td style='text-align: center;'><span class='bullminclasmax' title=\"Note minimale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_min']."</span><br />\n";
-				echo "<span class='bullminclasmax' title=\"Note moyenne des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_moyenne']."</span><br />\n";
-				echo "<span class='bullminclasmax' title=\"Note maximale des élèves pour cet enseignement\">".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_note_max']."</span></td>\n";
+				echo "<td><span class='bullminclasmax' title=\"Note minimale des élèves pour cet enseignement\">".$aid_note_min."</span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Note moyenne des élèves pour cet enseignement\">".$aid_note_moyenne."</span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Note maximale des élèves pour cet enseignement\">".$aid_note_max."</span></td>\n";
 			}
 
 			// Moyenne de l'élève
