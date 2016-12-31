@@ -380,30 +380,50 @@ function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cib
 function get_tab_aid($id_aid, $order_by_ele="") {
 	$tab_aid=array();
 
-	$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet, ac.display_begin, ac.display_end, ac.type_note FROM aid a, 
+	$sql="SELECT a.indice_aid, a.nom AS nom_aid, ac.nom, ac.nom_complet, ac.display_begin, ac.display_end, ac.type_note, ac.order_display1, ac.order_display2, ac.type_aid, ac.display_nom, ac.message FROM aid a, 
 											aid_config ac 
 										WHERE a.indice_aid=ac.indice_aid AND 
 											a.id='".$id_aid."';";
 	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_aid)==0) {
+		$tab_aid['id_aid']="";
+		$tab_aid['indice_aid']="";
 		$tab_aid['nom_general_court']="AID";
+		$tab_aid['nom']="AID";
 		$tab_aid['nom_general_complet']="AID";
+		$tab_aid['nom_complet']="AID";
 		$tab_aid['nom_aid']="AID";
+		$tab_aid['aid_nom']="AID";
 		$tab_aid['profs']=array();
 		$tab_aid['proflist_string']="...";
 		$tab_aid['classes']=array();
 		$tab_aid['classlist_string']="";
 		$tab_aid['type_note']="every";
+		$tab_aid['order_display1']="b";
+		$tab_aid['order_display2']=0;
+		$tab_aid['type_aid']=0;
+		$tab_aid['display_nom']="n";
+		$tab_aid['message']="";
 	}
 	else {
 		$lig_aid=mysqli_fetch_object($res_aid);
 
+		$tab_aid['id_aid']=$id_aid;
+		$tab_aid['indice_aid']=$lig_aid->indice_aid;
 		$tab_aid['nom_general_court']=$lig_aid->nom;
+		$tab_aid['nom']=$lig_aid->nom;
 		$tab_aid['nom_general_complet']=$lig_aid->nom_complet;
+		$tab_aid['nom_complet']=$lig_aid->nom_complet;
 		$tab_aid['nom_aid']=$lig_aid->nom_aid;
+		$tab_aid['aid_nom']=$lig_aid->nom_aid;
 		$tab_aid['display_begin']=$lig_aid->display_begin;
 		$tab_aid['display_end']=$lig_aid->display_end;
 		$tab_aid['type_note']=$lig_aid->type_note;
+		$tab_aid['order_display1']=$lig_aid->order_display1;
+		$tab_aid['order_display2']=$lig_aid->order_display2;
+		$tab_aid['type_aid']=$lig_aid->type_aid;
+		$tab_aid['display_nom']=$lig_aid->display_nom;
+		$tab_aid['message']=$lig_aid->message;
 
 		$tab_aid['profs']=array();
 		$tab_aid['profs']['list']=array();
@@ -624,5 +644,41 @@ function get_info_categorie_aid2($indice_aid, $tab_infos=array('nom', 'nom_compl
 	}
 
 	return $retour;
+}
+
+function get_tab_aid_ele_clas($login_ele, $id_classe="", $periode_num="") {
+	global $mysqli;
+
+	$tab=array();
+
+	if($login_ele!="") {
+		$sql="SELECT DISTINCT a.id, a.indice_aid FROM aid_config ac, aid a, j_aid_eleves jae WHERE ac.indice_aid=a.indice_aid AND a.id=jae.id_aid AND ac.indice_aid=jae.indice_aid AND jae.login='".$login_ele."'";
+		if($periode_num!="") {
+			$sql.=" AND ac.display_begin<='".$periode_num."' AND ac.display_end>='".$periode_num."'";
+		}
+		$sql.=" ORDER BY ac.order_display1, ac.order_display2, a.numero;";
+		//echo "$sql<br />";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0) {
+			while($lig_aid=mysqli_fetch_assoc($res_aid)) {
+				$tab[]=get_tab_aid($lig_aid['id']);
+			}
+		}
+	}
+	elseif($id_classe!="") {
+		$sql="SELECT DISTINCT a.id, a.indice_aid FROM aid_config ac, aid a, j_aid_eleves jae, j_eleves_classes jec WHERE ac.indice_aid=a.indice_aid AND a.id=jae.id_aid AND ac.indice_aid=jae.indice_aid AND jae.login=jec.login AND jec.id_classe='".$id_classe."'";
+		if($periode_num!="") {
+			$sql.=" AND ac.display_begin<='".$periode_num."' AND ac.display_end>='".$periode_num."' AND jec.periode='".$periode_num."'";
+		}
+		$sql.=" ORDER BY ac.order_display1, ac.order_display2, a.numero;";
+		//echo "$sql<br />";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0) {
+			while($lig_aid=mysqli_fetch_assoc($res_aid)) {
+				$tab[]=get_tab_aid($lig_aid['id']);
+			}
+		}
+	}
+	return $tab;
 }
 ?>

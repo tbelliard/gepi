@@ -194,10 +194,30 @@
 
 	//+++++++++++++++++
 
+	$param_bull2016["x_cadre_eleve_app_classe"]=10;
+	$param_bull2016["y_cadre_eleve_app_classe"]=45;
+	$param_bull2016["hauteur_cadre_eleve_app_classe"]=25;
+	$param_bull2016["largeur_cadre_eleve_app_classe"]=189;
+
+	$param_bull2016["y_annee_scolaire_app_classe"]=$param_bull2016["y_cadre_eleve_app_classe"]+2;
+	$param_bull2016["y_periode_app_classe"]=$param_bull2016["y_annee_scolaire_app_classe"]+4;
+
+	$param_bull2016["y_pp_app_classe"]=$param_bull2016["y_cadre_eleve_app_classe"]+12;
+	$param_bull2016["y_classe_app_classe"]=$param_bull2016["y_pp_app_classe"]+5;
+
+	//+++++++++++++++++
+
 	$param_bull2016["x_bandeau_suivi_acquis"]=3;
 	$param_bull2016["y_bandeau_suivi_acquis"]=99;
 	$param_bull2016["hauteur_bandeau_suivi_acquis"]=8;
 	$param_bull2016["largeur_bandeau_suivi_acquis"]=202.5;
+
+	//+++++++++++++++++
+
+	//$param_bull2016["y_bandeau_suivi_acquis_app_classe"]=79;
+	$param_bull2016["y_bandeau_suivi_acquis_app_classe"]=$param_bull2016["y_cadre_eleve_app_classe"]+$param_bull2016["hauteur_cadre_eleve_app_classe"]+5;
+	//$param_bull2016["y_acquis_ligne_entete_app_classe"]=91.5;
+	$param_bull2016["y_acquis_ligne_entete_app_classe"]=$param_bull2016["y_bandeau_suivi_acquis_app_classe"]+12.5;
 
 	//+++++++++++++++++
 
@@ -269,6 +289,14 @@
 	// Colonne Moyenne classe: Abscisse
 	$param_bull2016["x_acquis_col_moyclasse"]=$param_bull2016["x_acquis_col_moy"]+$param_bull2016["largeur_acquis_col_moy"]+0.5;
 
+
+	//========================================
+
+	$param_bull2016["x_acquis_col_appreciation_app_classe"]=$param_bull2016["x_acquis_col_2"];
+	$param_bull2016["x_acquis_col_moyclasse_app_classe"]=$param_bull2016["x_acquis_col_moyclasse"];
+	$param_bull2016["largeur_acquis_col_appreciation_app_classe"]=189-$param_bull2016["largeur_acquis_col_1"]-$param_bull2016["largeur_acquis_col_moyclasse"];
+
+	//========================================
 
 	// Ligne 1 tableau des acquis
 

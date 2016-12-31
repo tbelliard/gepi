@@ -2534,7 +2534,8 @@ else {
 			$classe=$lig_classe->classe;
 			$classe_nom_complet=$lig_classe->nom_complet;
 
-
+			$tab_bulletin[$id_classe][$periode_num]['mef_cycle']=array();
+			$tab_bulletin[$id_classe][$periode_num]['mef_niveau']=array();
 
 			// Récupérer l'effectif de la classe,...
 			$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$periode_num';";
@@ -2962,6 +2963,174 @@ else {
 
 				// L'ordre des matières est obtenu via calcul_moy_gen.inc.php dans lequel le $affiche_categorie fixe l'ordre par catégories ou non.
 
+				// 20161229:
+				// intercaler_app_classe
+				// Si on a demandé à intercaler les bulletins des appréciations grp-classe
+				// Récupérer la liste des AID associés à la classe et les appréciations de groupe associées
+				// Table aid_appreciations_grp
+				/*
+
+mysql> show fields from aid_appreciations_grp;
++--------------+---------+------+-----+---------+-------+
+| Field        | Type    | Null | Key | Default | Extra |
++--------------+---------+------+-----+---------+-------+
+| id_aid       | int(11) | NO   | PRI | 0       |       |
+| periode      | int(11) | NO   | PRI | 0       |       |
+| appreciation | text    | NO   |     | NULL    |       |
+| indice_aid   | int(11) | NO   | PRI | 0       |       |
++--------------+---------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> 
+
+mysql> select * from j_aid_eleves limit 5;
++--------+----------+------------+
+| id_aid | login    | indice_aid |
++--------+----------+------------+
+| 1      | cheront  |          3 |
+| 1      | delamarc |          3 |
+| 1      | delaunel |          3 |
+| 1      | fortierm |          3 |
+| 1      | mourierm |          3 |
++--------+----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> 
+
+mysql> show fields from aid_config;
++------------------------------+---------------+------+-----+---------+-------+
+| Field                        | Type          | Null | Key | Default | Extra |
++------------------------------+---------------+------+-----+---------+-------+
+| nom                          | char(100)     | NO   |     |         |       |
+| nom_complet                  | char(100)     | NO   |     |         |       |
+| note_max                     | int(11)       | NO   |     | 0       |       |
+| order_display1               | char(1)       | NO   |     | 0       |       |
+| order_display2               | int(11)       | NO   |     | 0       |       |
+| type_note                    | char(5)       | NO   |     |         |       |
+| type_aid                     | int(11)       | NO   |     | 0       |       |
+| display_begin                | int(11)       | NO   |     | 0       |       |
+| display_end                  | int(11)       | NO   |     | 0       |       |
+| message                      | varchar(40)   | NO   |     | NULL    |       |
+| display_nom                  | char(1)       | NO   |     |         |       |
+| indice_aid                   | int(11)       | NO   | PRI | 0       |       |
+| display_bulletin             | char(1)       | NO   |     | y       |       |
+| bull_simplifie               | char(1)       | NO   |     | y       |       |
+| outils_complementaires       | enum('y','n') | NO   |     | n       |       |
+| feuille_presence             | enum('y','n') | NO   |     | n       |       |
+| autoriser_inscript_multiples | char(1)       | YES  |     | n       |       |
++------------------------------+---------------+------+-----+---------+-------+
+17 rows in set (0.00 sec)
+
+mysql> 
+
+mysql> show fields from aid;
++---------------------+---------------+------+-----+---------+-------+
+| Field               | Type          | Null | Key | Default | Extra |
++---------------------+---------------+------+-----+---------+-------+
+| id                  | varchar(100)  | NO   | PRI | NULL    |       |
+| nom                 | varchar(100)  | NO   |     |         |       |
+| numero              | varchar(8)    | NO   |     | 0       |       |
+| indice_aid          | int(11)       | NO   |     | 0       |       |
+| perso1              | varchar(255)  | NO   |     |         |       |
+| perso2              | varchar(255)  | NO   |     |         |       |
+| perso3              | varchar(255)  | NO   |     |         |       |
+| productions         | varchar(100)  | NO   |     |         |       |
+| resume              | mediumtext    | NO   |     | NULL    |       |
+| resumeBulletin      | varchar(1)    | NO   |     | NULL    |       |
+| famille             | smallint(6)   | NO   |     | 0       |       |
+| mots_cles           | varchar(255)  | NO   |     |         |       |
+| adresse1            | varchar(255)  | NO   |     |         |       |
+| adresse2            | varchar(255)  | NO   |     |         |       |
+| public_destinataire | varchar(50)   | NO   |     |         |       |
+| contacts            | mediumtext    | NO   |     | NULL    |       |
+| divers              | mediumtext    | NO   |     | NULL    |       |
+| matiere1            | varchar(100)  | NO   |     |         |       |
+| matiere2            | varchar(100)  | NO   |     |         |       |
+| eleve_peut_modifier | enum('y','n') | NO   |     | n       |       |
+| prof_peut_modifier  | enum('y','n') | NO   |     | n       |       |
+| cpe_peut_modifier   | enum('y','n') | NO   |     | n       |       |
+| fiche_publique      | enum('y','n') | NO   |     | n       |       |
+| affiche_adresse1    | enum('y','n') | NO   |     | n       |       |
+| en_construction     | enum('y','n') | NO   |     | n       |       |
+| sous_groupe         | enum('y','n') | NO   |     | n       |       |
+| inscrit_direct      | enum('y','n') | NO   |     | n       |       |
++---------------------+---------------+------+-----+---------+-------+
+27 rows in set (0.00 sec)
+
+mysql> 
+				*/
+				// 20161230
+				if(isset($intercaler_app_classe)) {
+					$tab_aid_classe_per_courante=get_tab_aid_ele_clas("", $id_classe, $periode_num);
+					/*
+					echo "<pre>";
+					print_r($tab_aid_classe_per_courante);
+					echo "</pre>";
+					*/
+					for($loop_aid=0;$loop_aid<count($tab_aid_classe_per_courante);$loop_aid++) {
+						$tab_bulletin[$id_classe][$periode_num]['aid'][$loop_aid]=$tab_aid_classe_per_courante[$loop_aid];
+
+						$sql="SELECT * FROM aid_appreciations_grp WHERE (id_aid='" . $tab_aid_classe_per_courante[$loop_aid]["id_aid"] . "' AND indice_aid='" . $tab_aid_classe_per_courante[$loop_aid]["indice_aid"] . "' AND periode='$periode_num')";
+						$current_grp_appreciation_query = mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($current_grp_appreciation_query)>0) {
+							$lig_grp_app=mysqli_fetch_object($current_grp_appreciation_query);
+							$tab_bulletin[$id_classe][$periode_num]['aid'][$loop_aid]['app_grp']=$lig_grp_app->appreciation;
+						}
+						else {
+							$tab_bulletin[$id_classe][$periode_num]['aid'][$loop_aid]['app_grp']="-";
+						}
+
+						/*
+						$sql="SELECT round(avg(note),1) moyenne FROM aid_appreciations a, 
+													j_eleves_classes j 
+												WHERE (a.login = j.login AND 
+													j.id_classe = '$id_classe' AND 
+													a.statut='' AND 
+													a.periode = '$periode_num' AND 
+													j.periode='$periode_num' AND 
+													a.id_aid='".$tab_aid_classe_per_courante[$loop_aid]["id_aid"]."' AND 
+													a.indice_aid='".$tab_aid_classe_per_courante[$loop_aid]["indice_aid"]."')";
+						echo "$sql<br >\n";
+						*/
+						$sql="SELECT round(avg(note),1) AS moyenne, MIN(note) AS note_min, MAX(note) AS note_max FROM aid_appreciations a, 
+													j_eleves_classes j 
+												WHERE (a.login = j.login AND 
+													a.statut='' AND 
+													a.periode = '$periode_num' AND 
+													j.periode='$periode_num' AND 
+													a.id_aid='".$tab_aid_classe_per_courante[$loop_aid]["id_aid"]."' AND 
+													a.indice_aid='".$tab_aid_classe_per_courante[$loop_aid]["indice_aid"]."');";
+						//echo "$sql<br >\n";
+						$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
+						$obj_aid_note_moyenne = $aid_note_moyenne_query->fetch_object();
+						$aid_note_moyenne = $obj_aid_note_moyenne->moyenne;
+						if ($aid_note_moyenne == '') {
+							$aid_note_moyenne = '-';
+						} else {
+							//$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
+						}
+
+						$aid_note_min = $obj_aid_note_moyenne->note_min;
+						if ($aid_note_min == '') {
+							$aid_note_min = '-';
+						} else {
+							//$aid_note_min=number_format($aid_note_min,1, ',', ' ');
+						}
+
+						$aid_note_max = $obj_aid_note_moyenne->note_max;
+						if ($aid_note_max == '') {
+							$aid_note_max = '-';
+						} else {
+							//$aid_note_max=number_format($aid_note_max,1, ',', ' ');
+						}
+
+						$tab_bulletin[$id_classe][$periode_num]['aid'][$loop_aid]['aid_note_moyenne']=$aid_note_moyenne;
+						$tab_bulletin[$id_classe][$periode_num]['aid'][$loop_aid]['aid_note_max']=$aid_note_max;
+						$tab_bulletin[$id_classe][$periode_num]['aid'][$loop_aid]['aid_note_min']=$aid_note_min;
+					}
+
+					// Si aucun élève n'est sélectionné, on imprime que les appréciations classe, il faut alors extraire aussi les moyennes min/max/classe.
+				}
 
 
 				// Boucle élèves de la classe $id_classe pour la période $periode_num
@@ -3012,6 +3181,77 @@ else {
 						$tab_ele['ele_id']=$lig_ele->ele_id;
 						$tab_ele['no_gep']=$lig_ele->no_gep;
 						$tab_ele['mef_code']=$lig_ele->mef_code;
+
+						//==========================================
+						if($mode_bulletin=="pdf_2016") {
+							$mef_code_ele=$lig_ele->mef_code;
+							if((isset($tab_mef[$mef_code_ele]["mef_rattachement"]))&&($tab_mef[$mef_code_ele]["mef_rattachement"]!="")) {
+								if($tab_mef[$mef_code_ele]["mef_rattachement"]=="10010012110") {
+									// C'est une classe de 6ème
+									$cycle=3;
+									$niveau=6;
+								}
+								elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10110001110") {
+									$cycle=4;
+									$niveau=5;
+								}
+								elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10210001110") {
+									$cycle=4;
+									$niveau=4;
+								}
+								elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10310019110") {
+									$cycle=4;
+									$niveau=3;
+								}
+								else {
+									// Pour le moment, on suppose que c'est un cycle 4 et même un élève de 3ème
+									// On verra plus tard le cas d'un Gepi en Lycée
+									//$cycle=4;
+									//$niveau=3;
+
+									// Il vaut mieux ne rien mettre en couleur pour repérer que les cycle et niveau n'ont pas été identifiés
+									$cycle="";
+									$niveau="";
+								}
+							}
+							elseif($mef_code_ele=="10010012110") {
+									// C'est une classe de 6ème
+									$cycle=3;
+									$niveau=6;
+							}
+							elseif($mef_code_ele=="10110001110") {
+								$cycle=4;
+								$niveau=5;
+							}
+							elseif($mef_code_ele=="10210001110") {
+								$cycle=4;
+								$niveau=4;
+							}
+							elseif($mef_code_ele=="10310019110") {
+								$cycle=4;
+								$niveau=3;
+							}
+							else {
+								// Pour le moment, on suppose que c'est un cycle 4 et même un élève de 3ème
+								// On verra plus tard le cas d'un Gepi en Lycée
+								//$cycle=4;
+								//$niveau=3;
+
+								// Il vaut mieux ne rien mettre en couleur pour repérer que les cycle et niveau n'ont pas été identifiés
+								$cycle="";
+								$niveau="";
+							}
+							$tab_ele['mef_cycle']=$cycle;
+							$tab_ele['mef_niveau']=$niveau;
+							if(($cycle!="")&&(!in_array($cycle, $tab_bulletin[$id_classe][$periode_num]['mef_cycle']))) {
+								$tab_bulletin[$id_classe][$periode_num]['mef_cycle'][]=$cycle;
+							}
+							if(($niveau!="")&&(!in_array($niveau, $tab_bulletin[$id_classe][$periode_num]['mef_niveau']))) {
+								$tab_bulletin[$id_classe][$periode_num]['mef_niveau'][]=$niveau;
+							}
+						}
+						//==========================================
+
 
 						$tab_ele['classe']=$classe;
 						$tab_ele['id_classe']=$id_classe;
@@ -3400,7 +3640,6 @@ else {
 													if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
 														$current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
 													}
-
 													if ($current_eleve_aid_note == '') {
 														$current_eleve_aid_note = '-';
 													} else {
@@ -3618,7 +3857,6 @@ else {
 													if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
 														$current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
 													}
-
 													if ($current_eleve_aid_note == '') {
 														$current_eleve_aid_note = '-';
 													} else {
