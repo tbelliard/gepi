@@ -3382,6 +3382,7 @@ else {
 													if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
 														$current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
 													}
+
 													if ($current_eleve_aid_note == '') {
 														$current_eleve_aid_note = '-';
 													} else {
@@ -3410,35 +3411,61 @@ else {
 
 														}
 														if($current_eleve_aid_note!="-") {
-															$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
+															//$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
 														}
 													}
-													$aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-													$obj_note_min = $aid_note_min_query->fetch_object();
-													$aid_note_min = $obj_note_min->note_min;
+
+													/*
+													$sql="SELECT MIN(note) AS note_min, 
+															MAX(note) AS note_max, 
+															round(avg(note),1) AS moyenne 
+														FROM aid_appreciations a, 
+															j_eleves_classes j 
+														WHERE (a.login = j.login AND 
+															j.id_classe = '$id_classe' AND 
+															a.statut='' AND 
+															a.periode = '$periode_num' AND 
+															j.periode='$periode_num' AND 
+															a.indice_aid='$indice_aid' AND 
+															a.id_aid='$aid_id')";
+													*/
+													$sql="SELECT MIN(note) AS note_min, 
+															MAX(note) AS note_max, 
+															round(avg(note),1) AS moyenne 
+														FROM aid_appreciations a, 
+															j_eleves_classes j 
+														WHERE (a.login = j.login AND 
+															a.statut='' AND 
+															a.periode = '$periode_num' AND 
+															j.periode='$periode_num' AND 
+															a.indice_aid='$indice_aid' AND 
+															a.id_aid='$aid_id')";
+													//echo "$sql<br />";
+													$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
+													$obj_aid_note_moyenne = $aid_note_moyenne_query->fetch_object();
+
+													$aid_note_min = $obj_aid_note_moyenne->note_min;
 													if ($aid_note_min == '') {
 														$aid_note_min = '-';
 													} else {
-														$aid_note_min=number_format($aid_note_min,1, ',', ' ');
+														//$aid_note_min=number_format($aid_note_min,1, ',', ' ');
 													}
-													$aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-													$obj_aid_note_max = $aid_note_max_query->fetch_object();
-													$aid_note_max = $obj_aid_note_max->note_max;
 
+													$aid_note_max = $obj_aid_note_moyenne->note_max;
 													if ($aid_note_max == '') {
 														$aid_note_max = '-';
 													} else {
-														$aid_note_max=number_format($aid_note_max,1, ',', ' ');
+														//$aid_note_max=number_format($aid_note_max,1, ',', ' ');
 													}
 
-													$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-													$obj_aid_note_moyenne = $aid_note_moyenne_query->fetch_object();
 													$aid_note_moyenne = $obj_aid_note_moyenne->moyenne;
 													if ($aid_note_moyenne == '') {
 														$aid_note_moyenne = '-';
 													} else {
-														$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
+														//$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
 													}
+
+													//echo "$aid_note_moyenne|$aid_note_max|$aid_note_min;<br />";
 
 													$tab_ele['aid_b'][$zz]['aid_note']=$current_eleve_aid_note;
 													$tab_ele['aid_b'][$zz]['aid_statut']=$current_eleve_aid_statut;
@@ -3570,6 +3597,7 @@ else {
 													if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
 														$current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
 													}
+
 													if ($current_eleve_aid_note == '') {
 														$current_eleve_aid_note = '-';
 													} else {
@@ -3598,35 +3626,57 @@ else {
 
 														}
 														if($current_eleve_aid_note!="-") {
-															$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
+															//$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
 														}
 													}
-													$aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-													$aid_note_min_objet = $aid_note_min_query->fetch_object();
-											
-													$aid_note_min = $aid_note_min_objet->note_min;
+
+													/*
+													$sql="SELECT MIN(note) AS note_min, 
+															MAX(note) AS note_max, 
+															round(avg(note),1) AS moyenne 
+														FROM aid_appreciations a, 
+															j_eleves_classes j 
+														WHERE (a.login = j.login AND 
+															j.id_classe = '$id_classe' AND 
+															a.statut='' AND 
+															a.periode = '$periode_num' AND 
+															j.periode='$periode_num' AND 
+															a.indice_aid='$indice_aid' AND 
+															a.id_aid='$aid_id')";
+													*/
+													$sql="SELECT MIN(note) AS note_min, 
+															MAX(note) AS note_max, 
+															round(avg(note),1) AS moyenne 
+														FROM aid_appreciations a, 
+															j_eleves_classes j 
+														WHERE (a.login = j.login AND 
+															a.statut='' AND 
+															a.periode = '$periode_num' AND 
+															j.periode='$periode_num' AND 
+															a.indice_aid='$indice_aid' AND 
+															a.id_aid='$aid_id')";
+													$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
+													$obj_aid_note_moyenne = $aid_note_moyenne_query->fetch_object();
+
+													$aid_note_min = $obj_aid_note_moyenne->note_min;
 													if ($aid_note_min == '') {
 														$aid_note_min = '-';
 													} else {
-														$aid_note_min=number_format($aid_note_min,1, ',', ' ');
+														//$aid_note_min=number_format($aid_note_min,1, ',', ' ');
 													}
-													$aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-													$aid_note_max_objet = $aid_note_max_query->fetch_object();
-													$aid_note_max = $aid_note_max_objet->note_max;
 
+													$aid_note_max = $obj_aid_note_moyenne->note_max;
 													if ($aid_note_max == '') {
 														$aid_note_max = '-';
 													} else {
-														$aid_note_max=number_format($aid_note_max,1, ',', ' ');
+														//$aid_note_max=number_format($aid_note_max,1, ',', ' ');
 													}
 
-													$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-													$aid_note_moyenne_objet = $aid_note_moyenne_query->fetch_object();
-													$aid_note_moyenne = $aid_note_moyenne_objet->moyenne;
+													$aid_note_moyenne = $obj_aid_note_moyenne->moyenne;
 													if ($aid_note_moyenne == '') {
 														$aid_note_moyenne = '-';
 													} else {
-														$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
+														//$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
 													}
 
 													$tab_ele['aid_e'][$zz]['aid_note']=$current_eleve_aid_note;
