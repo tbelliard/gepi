@@ -27,6 +27,10 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.7.0 :</h3>";
 /*
 // Section d'exemple
 
+// Attention : on peut effectuer des mysqli_query() pour des tests en SELECT,
+//             mais toujours utiliser traite_requete() pour les CREATE, ALTER, INSERT, UPDATE
+//             pour que le message indiquant qu'il s'est produit une erreur soit affiché en haut de la page (l'admin ne lit pas toute la page;)
+
 $result .= "&nbsp;-> Ajout d'un champ 'tel_pers' à la table 'eleves'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
 if ($test_champ==0) {
