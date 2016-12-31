@@ -187,10 +187,12 @@ if (!isset($id_groupe)) {
 
 	// On ne va retenir que les groupes avec des classes en commun avec l'AID
 	$groups2=array();
+	$tmp_groups2=array();
 	foreach($groups as $current_group) {
 		for($loop=0;$loop<count($current_group['classes']['list']);$loop++) {
-			if(in_array($current_group['classes']['list'][$loop], $tab_aid['classes']['list'])) {
+			if((!in_array($current_group['id'], $tmp_groups2))&&(in_array($current_group['classes']['list'][$loop], $tab_aid['classes']['list']))) {
 				$groups2[]=$current_group;
+				$tmp_groups2[]=$current_group['id'];
 			}
 		}
 	}
