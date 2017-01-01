@@ -583,6 +583,30 @@ if ($_SESSION['statut'] == 'professeur') {
 <?php
 		}
 	}
+
+	// Ajouter des liens vers l'ajout de profs, élèves et l'édition de la catégorie
+	echo "
+	|
+	<a href='modify_aid.php?flag=prof&aid_id=$aid_id&indice_aid=$indice_aid'
+	   onclick=\"return confirm_abandon (this, change, '$themessage')\">
+		Ajouter/supprimer des professeurs
+	</a>
+	|
+	<a href='modify_aid.php?flag=eleve&aid_id=$aid_id&indice_aid=$indice_aid'
+	   onclick=\"return confirm_abandon (this, change, '$themessage')\">
+		Ajouter/supprimer des élèves
+	</a>
+	|
+	<a href='modify_aid.php?flag=prof_gest&aid_id=$aid_id&indice_aid=$indice_aid'
+	   onclick=\"return confirm_abandon (this, change, '$themessage')\"
+	   title=\"Un gestionnaire peut gérer les inscriptions élèves dans un AID, donc en ajouter/supprimer.\">
+		Ajouter/supprimer des gestionnaires
+	</a>
+	|
+	<a href='config_aid.php?indice_aid=$indice_aid'
+	   onclick=\"return confirm_abandon (this, change, '$themessage')\">
+		Modifier la catégorie AID
+	</a>";
 ?>
 
 </p>
