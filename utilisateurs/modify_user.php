@@ -655,6 +655,7 @@ check_token();
 elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 	check_token();
 
+	// Liste des groupes avec lesquels le prof reste associé/coché
 	$user_group=isset($_POST["user_group"]) ? $_POST["user_group"] : array();
 
 	$call_classes = mysqli_query($GLOBALS["mysqli"], "SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
@@ -674,11 +675,12 @@ elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 			$user_classe['group_id'] = old_mysql_result($call_classes, $k, "group_id");
 
 			if(!in_array($user_classe['group_id'],$user_group)) {
+				// L'enseignement n'est plus coché pour ce groupe
 				$sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='".$user_classe['group_id']."' AND login='$user_login';";
 				//echo "$sql<br />\n";
 				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($suppr) {
-					$msg.="Suppression de l'association avec l'enseignement ".$user_classe['matiere_nom_court']." en ".$user_classe['classe_nom_court']."<br />\n";
+					$msg.="Suppression de l'association avec l'enseignement ".$user_classe['matiere_nom_court']." en ".$user_classe['classe_nom_court']." effectuée.<br />\n";
 				}
 				else {
 					$msg.="ERREUR lors de la suppression de l'association avec l'enseignement ".$user_classe['matiere_nom_court']." en ".$user_classe['classe_nom_court']."<br />\n";
@@ -687,6 +689,32 @@ elseif(isset($_POST['suppression_assoc_user_groupes'])) {
 			$k++;
 		}
 		unset($user_classe);
+	}
+}
+
+elseif(isset($_POST['suppression_assoc_user_aid'])) {
+	check_token();
+
+	// Liste des AID avec lesquels le prof reste associé/coché
+	$user_aid=isset($_POST["user_aid"]) ? $_POST["user_aid"] : array();
+
+	$tab_aid=get_tab_aid_prof($user_login);
+
+	if(count($tab_aid)>0) {
+		for($loop=0;$loop<count($tab_aid);$loop++) {
+			if(!in_array($tab_aid[$loop]['id_aid'], $user_aid)) {
+				// L'enseignement n'est plus coché pour cet AID
+				$sql="DELETE FROM j_aid_utilisateurs WHERE id_aid='".$tab_aid[$loop]['id_aid']."' AND indice_aid='".$tab_aid[$loop]['indice_aid']."' AND id_utilisateur='$user_login';";
+				//echo "$sql<br />\n";
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($suppr) {
+					$msg.="Suppression de l'association avec l'AID ".$tab_aid[$loop]['nom_aid']." en ".$tab_aid[$loop]['classlist_string']." effectuée.<br />\n";
+				}
+				else {
+					$msg.="ERREUR lors de la suppression de l'association avec l'AID ".$tab_aid[$loop]['nom_aid']." en ".$tab_aid[$loop]['classlist_string']."<br />\n";
+				}
+			}
+		}
 	}
 }
 
@@ -1321,6 +1349,35 @@ echo "<input type='hidden' name='max_mat' value='$nb_mat' />\n";
 			echo "</fieldset>\n";
 			echo "</form>\n";
 		}
+
+		$tab_aid=get_tab_aid_prof($user_login);
+		if(count($tab_aid)>0) {
+			echo "<p>&nbsp;</p>\n";
+			echo "<form enctype='multipart/form-data' action='modify_user.php' method='post'>\n";
+			echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white; color: black; font-weight:normal;'>AID du professeur</legend>";
+			echo add_token_field();
+			echo "<p>Le professeur est associé aux AID suivants.<br />Vous pouvez supprimer (<i>décocher</i>) l'association avec certains AID&nbsp;:</p>";
+			$k = 0;
+			foreach($tab_aid as $current_aid) {
+				/*
+				if($k==0) {
+				echo "<pre>";
+				print_r($current_aid);
+				echo "</pre>";
+				}
+				*/
+				echo "<input type='checkbox' id='user_aid_$k' name='user_aid[]' value='".$current_aid["id_aid"]."' checked onchange=\"changement()\" /><label for='user_aid_$k'> ".$current_aid['nom_aid']." (<em>".$current_aid['nom_complet'];
+				echo "</em>) en ".$current_aid['classlist_string']."</label> <a href='../aid/add_aid.php?action=modif_aid&aid_id=".$current_aid['id_aid']."&indice_aid=".$current_aid['indice_aid']."' title='Éditer cet AID' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Éditer cet AID' /></a><br />\n";
+				$k++;
+			}
+			echo "<input type='hidden' name='user_login' value='$user_login' />\n";
+			echo "<input type='hidden' name='suppression_assoc_user_aid' value='y' />\n";
+			echo "<center><input type='submit' value=\"Supprimer l'association avec les AID décochés\" /></center>\n";
+			echo "</fieldset>\n";
+			echo "</form>\n";
+		}
+
 	}
 	echo "<p>&nbsp;</p>\n";
 
