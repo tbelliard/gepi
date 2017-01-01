@@ -211,6 +211,7 @@ include("menu_plugins.inc.php");
 Les listes de professeurs associés à telle classe,
 pour tel enseignement, avec les effectifs par période
 seront affichés (et exportables en CSV).">Equipes pédago</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_groupes_prof.php" '.insert_confirm_abandon().' title="Consulter les enseignements d\'un prof.">Enseign.tel prof</a></li>'."\n";
 
 		$menus .= '                <li><a href="'.$gepiPath.'/statistiques/classes_effectifs.php"'.insert_confirm_abandon().' title="Effectifs par classe et périodes.">Effectifs</a></li>'."\n";
 

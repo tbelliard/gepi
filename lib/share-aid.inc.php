@@ -681,4 +681,28 @@ function get_tab_aid_ele_clas($login_ele, $id_classe="", $periode_num="") {
 	}
 	return $tab;
 }
+
+function get_tab_aid_prof($login_prof, $id_classe="", $periode_num="") {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT DISTINCT a.id, a.indice_aid FROM aid_config ac, aid a, j_aid_utilisateurs jau WHERE ac.indice_aid=a.indice_aid AND a.id=jau.id_aid AND ac.indice_aid=jau.indice_aid AND jau.id_utilisateur='".$login_prof."'";
+	if($periode_num!="") {
+		$sql.=" AND ac.display_begin<='".$periode_num."' AND ac.display_end>='".$periode_num."'";
+	}
+	if($id_classe!="") {
+		$sql.=" AND id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves jae, j_eleves_classes jec WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."')";
+	}
+	$sql.=" ORDER BY ac.order_display1, ac.order_display2, a.numero;";
+	//echo "$sql<br />";
+	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_aid)>0) {
+		while($lig_aid=mysqli_fetch_assoc($res_aid)) {
+			$tab[]=get_tab_aid($lig_aid['id']);
+		}
+	}
+
+	return $tab;
+}
 ?>

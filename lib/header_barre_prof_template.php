@@ -732,6 +732,9 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 	$cpt_sous_menu++;
 
+	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/groupes/visu_groupes_prof.php', "texte"=>"Enseign.tel prof", "title"=>"Consulter les enseignements d'un prof.");
+	$cpt_sous_menu++;
+
 	if(acces_modif_liste_eleves_grp_groupes()) {
 		$groupe_de_groupes=getSettingValue('denom_groupe_de_groupes');
 		if($groupe_de_groupes=="") {

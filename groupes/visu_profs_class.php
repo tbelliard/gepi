@@ -105,6 +105,8 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 			$cpt2=0;
 			while($lig_cpe=mysqli_fetch_object($result_cpe)) {
 
+				$tab_enseignements[$cpt]['prof'][$cpt2]['login']=$lig_cpe->cpe_login;
+				$tab_enseignements[$cpt]['prof'][$cpt2]['statut']="cpe";
 				$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof']=my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2');
 				if($lig_cpe->email!=""){
 					$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof_mailto']="<a href='mailto:$lig_cpe->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe=".$classe['classe'])."' title=\"Envoyer un mail\">".my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2')."</a>";
@@ -192,6 +194,8 @@ if((isset($id_classe))&&(is_numeric($id_classe))) {
 			$result_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 			$cpt2=0;
 			while($lig_prof=mysqli_fetch_object($result_prof)){
+				$tab_enseignements[$cpt]['prof'][$cpt2]['login']=$lig_prof->login;
+				$tab_enseignements[$cpt]['prof'][$cpt2]['statut']="professeur";
 
 				$tab_enseignements[$cpt]['prof'][$cpt2]['designation_prof']=my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2');
 				if($lig_prof->email!=""){
@@ -471,6 +475,8 @@ if(isset($id_classe)){
 	}
 </script>\n";
 
+		$acces_visu_groupes_prof=acces("/groupes/visu_groupes_prof.php", $_SESSION['statut']);
+
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe'";
 		$res_eleves_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleves_classe=mysqli_num_rows($res_eleves_classe);
@@ -558,6 +564,10 @@ if(isset($id_classe)){
 					if($loop>0) {
 						echo "
 			<br />";
+					}
+
+					if(($acces_visu_groupes_prof)&&($tab_enseignements[$i]['prof'][$loop]['statut']=="professeur")) {
+						echo "<div style='float:right;width:16px;'><a href='../groupes/visu_groupes_prof.php?login_prof=".$tab_enseignements[$i]['prof'][$loop]['login']."' title='Voir les enseignements du professeur'><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a></div>";
 					}
 
 					if(isset($tab_enseignements[$i]['prof'][$loop]['designation_prof_mailto'])) {

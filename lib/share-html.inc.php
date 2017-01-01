@@ -6275,4 +6275,15 @@ function get_info_categorie_aid($indice_aid, $aid_id="", $mode="tableau") {
 	return $retour;
 }
 
+function liste_classes_pp_prof_suivi($login_user) {
+	$retour="";
+
+	$tab=get_tab_prof_suivi("", $login_user);
+	for($loop=0;$loop<count($tab);$loop++) {
+		if($loop>0) {$retour.=", ";}
+		$retour.=get_nom_classe($tab[$loop]);
+	}
+	return $retour;
+}
+
 ?>

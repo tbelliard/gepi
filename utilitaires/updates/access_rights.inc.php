@@ -1825,6 +1825,18 @@ autre='F',
 description='Transfert Groupe/AID',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/groupes/visu_groupes_prof.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='V',
+autre='F',
+description='Voir les enseignements du professeur',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
