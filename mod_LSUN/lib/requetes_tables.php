@@ -71,6 +71,11 @@ $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_matieres ("
 //echo $sql;
 $mysqli->query($sql);
 
+$sql = "ALTER TABLE `lsun_j_epi_matieres` DROP index couple ;";
+$mysqli->query($sql);
+$sql = "ALTER TABLE `lsun_j_epi_matieres` ADD UNIQUE INDEX triplette (id_enseignements , id_ap , modalite );";
+$mysqli->query($sql);
+
 $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_enseignements ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
 	. "id_epi int(11) NOT NULL COMMENT \"id de l'epi\", "
@@ -126,3 +131,11 @@ $sql = "CREATE TABLE IF NOT EXISTS lsun_j_ap_matiere ("
 // echo $sql;
 $mysqli->query($sql);
 
+$sql = "ALTER TABLE `lsun_j_ap_matiere` DROP index couple ;";
+$mysqli->query($sql);
+$sql = "ALTER TABLE `lsun_j_ap_matiere` ADD UNIQUE INDEX triplette (id_enseignements , id_ap , modalite );";
+$mysqli->query($sql);
+
+
+//echo $sql;
+$mysqli->query($sql);
