@@ -1721,7 +1721,7 @@ else{
 							$texte_message.="\nDépart de l'établissement de ".$tmp_nom_prenom_classe_ele."\nCordialement.\n-- \nGepi";
 
 							$tab_param_mail['destinataire']=array();
-							while($lig_prof = $res_prof->fetch_object()) {
+							while($lig_prof = $res_prof_ele->fetch_object()) {
 								if(check_mail($lig_prof->email)) {
 									if(!in_array($lig_prof->email, $tab_param_mail['destinataire'])) {
 										$tab_param_mail['destinataire'][]=$lig_prof->email;
