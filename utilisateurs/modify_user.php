@@ -470,21 +470,31 @@ check_token();
 				}
 
 				$sql_ajout_chaine_numind_et_type="";
-				if((isset($_POST['reg_numind']))&&($_POST['reg_numind']!="")) {
-					$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
-					if($_POST['reg_statut']=="professeur") {
-						$reg_numind="P".$reg_numind;
-					}
+				if(isset($_POST['reg_numind'])) {
+					if($_POST['reg_numind']!="") {
+						$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
+						if($_POST['reg_statut']=="professeur") {
+							$reg_numind="P".$reg_numind;
+						}
 
-					$sql="SELECT 1=1 FROM utilisateurs WHERE numind='".$reg_numind."' AND login!='".$user_login."';";
-					$test=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($test)==0) {
-						$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
+						$sql="SELECT 1=1 FROM utilisateurs WHERE numind='".$reg_numind."' AND login!='".$user_login."';";
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test)==0) {
+							$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
+						}
+						else {
+							$msg.="Identifiant STS déjà attribué à un autre utilisateur.<br />";
+						}
 					}
 					else {
-						$msg.="Identifiant STS déjà attribué à un autre utilisateur.<br />";
+						$sql="UPDATE utilisateurs SET numind='' WHERE login='".$user_login."';";
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$update) {
+							$msg.="Erreur lors de la suppression de l'identifiant STS.<br />";
+						}
 					}
 				}
+
 				if((isset($_POST['reg_type']))&&(in_array($_POST['reg_type'], array('epp', 'local')))) {
 					$sql_ajout_chaine_numind_et_type.=", type='".$_POST['reg_type']."'";
 				}
