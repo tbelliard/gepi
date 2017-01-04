@@ -195,13 +195,15 @@ check_token();
 							$reg_numind="P".$reg_numind;
 						}
 
-						$sql="SELECT 1=1 FROM utilisateurs WHERE numind='".$reg_numind."' AND login!='".$_POST['new_login']."';";
+						$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE numind='".$reg_numind."' AND login!='".$_POST['new_login']."';";
 						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)==0) {
 							$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
 						}
 						else {
-							$msg.="Identifiant STS déjà attribué à un autre utilisateur.<br />";
+							$lig_u_sts=mysqli_fetch_object($test);
+							$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+							$msg.="Identifiant STS déjà attribué à un autre utilisateur (<a href='".$_SERVER['PHP_SELF']."?user_login=".$lig_u_sts->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".casse_mot($lig_u_sts->nom, "maj")." ".casse_mot($lig_u_sts->prenom, "majf2")."</a>).<br />";
 						}
 					}
 					if((isset($_POST['reg_type']))&&(in_array($_POST['reg_type'], array('epp', 'local')))) {
@@ -477,13 +479,15 @@ check_token();
 							$reg_numind="P".$reg_numind;
 						}
 
-						$sql="SELECT 1=1 FROM utilisateurs WHERE numind='".$reg_numind."' AND login!='".$user_login."';";
+						$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE numind='".$reg_numind."' AND login!='".$user_login."';";
 						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)==0) {
 							$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
 						}
 						else {
-							$msg.="Identifiant STS déjà attribué à un autre utilisateur.<br />";
+							$lig_u_sts=mysqli_fetch_object($test);
+							$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+							$msg.="Identifiant STS déjà attribué à un autre utilisateur (<a href='".$_SERVER['PHP_SELF']."?user_login=".$lig_u_sts->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".casse_mot($lig_u_sts->nom, "maj")." ".casse_mot($lig_u_sts->prenom, "majf2")."</a>).<br />";
 						}
 					}
 					else {
