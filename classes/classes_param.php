@@ -636,6 +636,36 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
+					// 20170104
+					if(isset($_POST['change_visibilite_type_'.$per])) {
+						$change_visibilite_type=$_POST['change_visibilite_type_'.$per];
+						$modif_visibilite_type=isset($_POST['modif_visibilite_type_'.$per]) ? $_POST['modif_visibilite_type_'.$per] : array();
+
+						for($loop_type=0;$loop_type<count($change_visibilite_type);$loop_type++) {
+							$sql="SELECT jgt.id_groupe FROM j_groupes_types jgt, j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgt.id_groupe AND jgt.id_type='".$change_visibilite_type[$loop_type]."';";
+							//echo "$sql<br />";
+							$res_grp_vis=mysqli_query($GLOBALS["mysqli"], $sql);
+							while($lig_grp_vis=mysqli_fetch_object($res_grp_vis)) {
+								for($loop=0;$loop<count($tab_domaines);$loop++) {
+									$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='$lig_grp_vis->id_groupe' AND domaine='$tab_domaines[$loop]';";
+									//echo "$sql<br />";
+									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!in_array($tab_domaines[$loop], $modif_visibilite_type)) {
+										$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$lig_grp_vis->id_groupe', domaine='$tab_domaines[$loop]', visible='n';";
+										//echo "$sql<br />";
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$insert) {
+											$msg.="<br />Erreur lors de l'enregistrement de la non-visibilité du groupe n°$lig_grp_vis->id_groupe sur ".$tab_domaines[$loop];
+										}
+										else {
+											$nb_reg_ok++;
+										}
+									}
+								}
+							}
+						}
+					}
+
 
 					/*
 					$_POST['change_inscription_eleves']=	y
@@ -1299,6 +1329,50 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	}
 
 
+	// 20170104
+	if(getSettingAOui("AutoriserTypesEnseignements")) {
+		$sql="SELECT DISTINCT gt.*, id_type, COUNT(jgt.id_groupe) AS nb FROM groupes g, j_groupes_types jgt, groupes_types gt WHERE g.id=jgt.id_groupe AND gt.id=jgt.id_type GROUP BY id_type ORDER BY id_type;";
+		//echo "$sql<br />";
+		$res_type=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_type)>0) {
+			echo "<table border='0' cellspacing='0'>
+	<tr>
+		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
+		<td valign='top' rowspan='2'>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modifier la visibilité des enseignements de type&nbsp;:
+		</td>
+		<td>";
+			while($lig_type=mysqli_fetch_object($res_type)) {
+				echo "
+			<input type='checkbox' name='change_visibilite_type_".$per."[]' id='change_visibilite_type_".$lig_type->id_type."_".$per."' value='$lig_type->id_type' onchange=\"changement()\" /><label for='change_visibilite_type_".$lig_type->id_type."_".$per."' id='texte_change_visibilite_type_".$lig_type->id_type."_".$per."' title=\"$lig_type->nb $lig_type->nom_complet\"> ".htmlspecialchars($lig_type->nom_court)."</label><br />";
+			}
+			echo "
+		</td>
+		<td valign='top'>Visibilité&nbsp;: </td>
+		<td>
+			<table class='boireaus' cellspacing='0'>
+				<tr>\n";
+			for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+				echo "<th title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+				echo $tab_domaines_sigle[$loop];
+				echo "</th>\n";
+			}
+			echo "</tr>\n";
+			echo "<tr class='lig-1'>\n";
+			for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+				echo "<td title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+				echo "<input type='checkbox' name='modif_visibilite_type_".$per."[]' value='$tab_domaines[$loop]' checked />\n";
+				echo "</td>\n";
+			}
+			echo "
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>\n";
+		}
+	}
+
 
 	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
 	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1334,6 +1408,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	</tr>
 </table>\n";
 	}
+
 ?>
 
 
