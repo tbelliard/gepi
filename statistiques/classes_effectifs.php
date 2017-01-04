@@ -31,11 +31,11 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == "c") {
-   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
-   die();
+	header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
+	die();
 } else if ($resultat_session == "0") {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/statistiques/classes_effectifs.php';";
@@ -56,8 +56,8 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=2");
-    die();
+	header("Location: ../logout.php?auto=2");
+	die();
 }
 
 
@@ -249,6 +249,16 @@ if(mysqli_num_rows($res_per)==0) {
 	echo "<p style='color:red'>Aucune classe avec périodes n'a été trouvée.</p>\n";
 }
 else {
+	echo "<p>Choisissez dans la page&nbsp;:</p>
+<ul>
+	<li><a href='#eff_classes'>Effectifs des classes par périodes</a></li>
+	<li><a href='#eff_grp'>Effectifs des enseignements/regroupements par périodes</a></li>
+	<li><a href='#eff_grp_clas'>Effectifs des enseignements/regroupements par rapport aux effectifs des classes par périodes</a></li>
+	<li><a href='#eff_classes_sexes'>Effectifs des classes par sexes par périodes</a></li>
+</ul>
+
+<a name='eff_classes'></a>";
+
 	$tab_eff_classe=array();
 	$max_per=old_mysql_result($res_per, 0, "num_periode");
 	for($loop=1;$loop<=$max_per;$loop++) {
@@ -294,6 +304,7 @@ else {
 
 	//=======================================================
 
+	echo "<a name='eff_grp'></a>\n";
 	//$sql="SELECT distinct id_groupe, count(id_classe) FROM j_groupes_classes group by id_groupe HAVING COUNT(id_classe)>1;";
 	$sql="SELECT distinct id_groupe, count(id_classe) FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe=c.id group by id_groupe HAVING COUNT(id_classe)>1 order by c.classe;";
 	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -354,6 +365,7 @@ else {
 		echo "<p><br /></p>\n";
 	}
 
+	echo "<a name='eff_grp_clas'></a>\n";
 	//=======================================================
 	$tab_sous_grp=array();
 	$tab_nom_classe=array();
@@ -428,6 +440,7 @@ else {
 
 	//=======================================================
 
+	echo "<a name='eff_classes_sexes'></a>\n";
 	for($loop=1;$loop<=$max_per;$loop++) {
 		echo "<div style='float:left; width:40em;margin:3px;'>\n";
 		echo "<p class='bold'>Effectifs par sexe en période $loop&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs_sexe&amp;num_periode=$loop'>Export CSV</a></p>\n";
