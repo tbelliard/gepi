@@ -134,3 +134,7 @@ button {
     list-style:none;
 }
 
+.desactive {
+    color: #999;
+}
+
