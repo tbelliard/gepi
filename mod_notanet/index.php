@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -271,6 +271,19 @@ echo "<p class='bold'><a href='../accueil.php'>Accueil</a>";
 echo "</p>\n";
 echo "</div>\n";
 
+echo "<p style='color:red; margin:1em; padding:1em;' class='fieldset_opacite50'>Le présent module est obsolète.<br />
+A compter de la rentrée 2016, c'est dans le Livret Scolaire Unique <em>(LSU)</em> qu'il convient de saisir/transférer les notes et appréciations.<br />
+L'application Notanet ne sera plus accessible sauf cas particuliers <em>(établissement à l'étranger, sans Sconet,...)</em>.<br />";
+if(getSettingAOui("active_module_LSUN")) {
+	echo "<a href='../mod_LSUN/index.php'>Accéder au module LSUN</a> de Gepi.";
+}
+else {
+	echo "Vous n'avez pas activé le module LSUN de Gepi.";
+	if(acces("/mod_LSUN/admin.php", $_SESSION['statut'])) {
+		echo "<br /><a href='../mod_LSUN/admin.php'>Accéder au paramétrage du module LSUN</a>";
+	}
+}
+echo "</p>";
 
 $sql="CREATE TABLE IF NOT EXISTS notanet (
   login varchar(50) NOT NULL default '',
