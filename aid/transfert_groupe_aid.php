@@ -123,7 +123,7 @@ if((isset($_GET['creer_categorie']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_
 			$display_end=$lig_per->num_periode;
 			$display_nom='x';
 			$message = '';
-			$order_display1 = '';
+			$order_display1 = 'e';
 			$order_display2 = '';
 			$type_note = "every";
 			$display_bulletin = "y";
@@ -846,6 +846,34 @@ if(!isset($mode)) {
 		<li>Associer les enseignements dont le <strong>nom (description)</strong> coïncide avec la catégorie AID en cliquant sur l'icone <img src='../images/icons/wizard.png' class='icone16' alt='Créer' /> en ligne d'entête <strong>Catégorie AID</strong>, puis en validant l'association.</li>
 		<li>Créer les AID et les remplir d'après le contenu des bulletins en cliquant sur les icones <img src='../images/icons/wizard.png' class='icone16' alt='Créer' /> dans la colonne AID <em>(la création n'est possible qu'une fois l'association avec une catégorie AID effectuée)</em>.</li>
 	</ol>
+
+<div class='fieldset_opacite50' style='margin:1em;padding:1em;'>
+<p><strong style='color:red;'>Attention&nbsp;:</strong></p>
+<p>Après création des AID d'après les enseignements et le transfert/copie des notes/appréciations des enseignements vers les AID, vos bulletins vont faire apparaître les enseignements et AID simultanément... donc en double puisque correspondant l'un et l'autre <em>(enseignement et AID)</em> aux mêmes informations.<br />
+Il faudrait faire disparaitre les uns ou les autres des bulletins.<br />
+Vous pouvez&nbsp;:</p>
+<ul>
+	<li>
+		<p>
+			soit rendre les enseignements de type EPI, AP, Parcours invisibles sur les bulletins <em>(ils peuvent rester visibles dans les carnets de notes et cahiers de textes si vous le souhaitez)</em>.<br />
+			La saisie de notes et appréciations dans les bulletins par les enseignants ne sera plus possible.<br />
+			Ils devront faire la saisie dans les AID.<br />
+			C'est la meilleure solution pour que les informations destinées à remonter via LSUN soient remplies directement par les professeurs dans les AID.
+		</p>
+		<p>
+			Pour cela utilisez la page de <a href='../classes/classes_param.php' target='_blank'>Paramétrage de plusieurs classes par lots</a>.<br />
+			Choisissez les classes,<br />
+			Cochez les cases <strong>Modifier la visibilité des enseignements de type AP, EPI, Parcours</strong>,<br />
+			Décochez la colonne <strong>Visibilité sur les Bulletins</strong><br />
+			et <strong>Validez</strong>.
+		</p>
+	</li>
+	<li>soit ne pas afficher les AID sur les bulletins <em>(et ils ne seront alors utilisés que pour la remontée LSU)</em>.<br />
+	Avec ce choix, les professeurs risquent de ne pas savoir où remplir les appréciations <em>(dans les enseignements ou dans les AID)</em> et vous ne saurez pas s'il faut re-provoquer un transfert enseignement-&gt;AID dans la présente page.<br />
+	Il suffit avec cette solution de décocher la case <strong>Afficher les données sur les AID</strong> dans les <strong>Paramètres d'impression des bulletins</strong>.<br />
+	C'est simple, mais risqué parce qu'il y aura toujours un professeur pour ne pas remplir ce que vous aurez choisi <em>(enseignement ou AID)</em>.</li>
+</ul>
+</div>
 
 <p style='margin-top:1em;margin-bottom:1em;'><em>Note&nbsp;:</em> Il est possible de trier le tableau en cliquant sur les colonnes.</p>";
 
