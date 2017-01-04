@@ -74,11 +74,8 @@ if ($id_choix_periode != 0) {
 
 if ($id_choix_periode == 0) {
 	echo "<div style=\"text-align: center;\">\n";
-	echo "<fieldset style='border: 1px solid grey;";
-	echo "background-image: url(\"../images/background/opacite50.png\"); ";
-	echo "'>\n";
+	echo "<fieldset class='fieldset_opacite50'>\n";
 	echo "<legend style='border: 1px solid grey;";
-	//echo "background-image: url(\"../images/background/opacite50.png\"); ";
 	echo "background-color: white; ";
 	echo "'>Sélectionnez la période pour laquelle vous souhaitez imprimer les listes.</legend>\n";
 	echo "<form method=\"post\" action=\"impression_serie.php\" name=\"imprime_serie\">\n";
@@ -86,13 +83,15 @@ if ($id_choix_periode == 0) {
 	$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	echo "<br />\n";
 	While ( $data_periode = mysqli_fetch_array($resultat_periode)) {
-		echo "<label for='id_choix_periode".$data_periode['num_periode']."' style='cursor: pointer;'>Période ".$data_periode['num_periode']." : </label><input type='radio' name='id_choix_periode' id='id_choix_periode".$data_periode['num_periode']."' value='".$data_periode['num_periode']."' /> <br />\n";
+		echo "<label for='id_choix_periode".$data_periode['num_periode']."' id='texte_id_choix_periode".$data_periode['num_periode']."' style='cursor: pointer;'>Période ".$data_periode['num_periode']." : </label><input type='radio' name='id_choix_periode' id='id_choix_periode".$data_periode['num_periode']."' value='".$data_periode['num_periode']."' onchange=\"change_style_radio()\" /> <br />\n";
 	}
 	echo "<br /><br /> <input value=\"Valider la période\" name=\"Valider\" type=\"submit\" />\n
 			<br />\n";
 
 	echo "</form>\n";
 	echo "</fieldset>\n";
+
+	echo js_change_style_radio("change_style_radio", "y", "y", 'checkbox_change', 'texte_');
 
 	echo "</div>\n";
 	echo "<br />";
@@ -138,7 +137,6 @@ else {
 		if ($id_choix_periode != 0) {
 			echo "<br />\n";
 
-			echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='5'>\n";
 			if($_SESSION['statut']=='scolarite') { //n'affiche que les classes du profil scolarité
 				$login_scolarite = $_SESSION['login'];
 				$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` , jsc.login, jsc.id_classe
@@ -153,6 +151,18 @@ else {
 				$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
 			}
 			$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
+
+			if(mysqli_num_rows($resultat_classe)<4) {
+				$size_select=4;
+			}
+			elseif(mysqli_num_rows($resultat_classe)<=8) {
+				$size_select=mysqli_num_rows($resultat_classe);
+			}
+			else {
+				$size_select=8;
+			}
+
+			echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='$size_select'>\n";
 			echo "		<optgroup label=\"-- Les classes --\">\n";
 			while ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 						echo "		<option value=\"";
@@ -221,7 +231,6 @@ else {
 			if ($id_choix_periode != 0) {
 				echo "<br />\n";
 	
-				echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='5'>\n";
 				if($_SESSION['statut']=='scolarite') { //n'affiche que les classes du profil scolarité
 					$login_scolarite = $_SESSION['login'];
 					$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` , jsc.login, jsc.id_classe
@@ -236,8 +245,20 @@ else {
 					$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
 				}
 				$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
+
+				if(mysqli_num_rows($resultat_classe)<4) {
+					$size_select=4;
+				}
+				elseif(mysqli_num_rows($resultat_classe)<=8) {
+					$size_select=mysqli_num_rows($resultat_classe);
+				}
+				else {
+					$size_select=8;
+				}
+
+				echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='$size_select'>\n";
 				echo "		<optgroup label=\"-- Les classes --\">\n";
-				While ( $data_classe = mysqli_fetch_array($resultat_classe)) {
+				while ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 							echo "		<option value=\"";
 							echo $data_classe['id_classe'];
 							echo "\">";
@@ -363,7 +384,17 @@ if ($id_choix_periode != 0) {
 		echo "<h3>Liste des enseignements : </h3>\n";
 		
 		$groups=get_groups_for_prof($_SESSION["login"]);
-		
+
+		if(count($groups)<4) {
+			$size_select=4;
+		}
+		elseif(count($groups)<=8) {
+			$size_select=count($groups);
+		}
+		else {
+			$size_select=8;
+		}
+
 		/*
 		echo "<pre>";
 			print_r($groups);
@@ -380,15 +411,15 @@ if ($id_choix_periode != 0) {
 		//echo "background-image: url(\"../images/background/opacite50.png\"); ";
 		echo "background-color: white; ";
 		echo "'>Sélectionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
-		
+
 		//echo "<form method=\"post\" action=\"liste_pdf.php\" name=\"imprime_pdf\">\n";
 		echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf2\">\n";
 		echo "<br />\n";
 		//echo "<select id='liste_classes' name='id_liste_groupes[]' multiple='yes' size='5'>\n";
-		echo "<select id='liste_groupes' name='id_liste_groupes[]' multiple='yes' size='5'>\n";
+		echo "<select id='liste_groupes' name='id_liste_groupes[]' multiple='yes' size='$size_select'>\n";
 		echo "		<optgroup label=\"-- Les enseignements --\">\n";
 		
-		for($i=0;$i<count($groups);$i++){				
+		for($i=0;$i<count($groups);$i++){
 			echo "		<option value=\"";
 			echo $groups[$i]['id'];
 			echo "\">";
@@ -440,13 +471,23 @@ if ($id_choix_periode != 0) {
 		if(mysqli_num_rows($res_aid_config)>0) {
 			echo "<h3>Liste des AID : </h3>\n";
 
+			if(mysqli_num_rows($res_aid_config)<4) {
+				$size_select=4;
+			}
+			elseif(mysqli_num_rows($res_aid_config)<=8) {
+				$size_select=mysqli_num_rows($res_aid_config);
+			}
+			else {
+				$size_select=8;
+			}
+
 			// sélection multiple
 			echo "<div style=\"text-align: center; margin:1em;\">
 	<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf3\">
 		<fieldset class='fieldset_opacite50'>
 			<legend style='border: 1px solid grey; background-color: white;'>Sélectionnez le (ou les) AID(s) pour lesquels vous souhaitez imprimer les listes.</legend>
 			<br />
-			<select id='liste_aid' name='id_liste_aid[]' multiple='yes' size='5'>
+			<select id='liste_aid' name='id_liste_aid[]' multiple='yes' size='$size_select'>
 				<optgroup label=\"-- Les AID --\">\n";
 
 			while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
@@ -512,13 +553,23 @@ if ($id_choix_periode != 0) {
 		if(mysqli_num_rows($res_aid_config)>0) {
 			echo "<h3>Liste des AID : </h3>\n";
 
+			if(mysqli_num_rows($res_aid_config)<4) {
+				$size_select=4;
+			}
+			elseif(mysqli_num_rows($res_aid_config)<=8) {
+				$size_select=mysqli_num_rows($res_aid_config);
+			}
+			else {
+				$size_select=8;
+			}
+
 			// sélection multiple
 			echo "<div style=\"text-align: center;\">
 	<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf3\">
 		<fieldset class='fieldset_opacite50'>
 			<legend style='border: 1px solid grey; background-color: white;'>Sélectionnez le (ou les) AID(s) pour lesquels vous souhaitez imprimer les listes.</legend>
 			<br />
-			<select id='liste_aid' name='id_liste_aid[]' multiple='yes' size='5'>
+			<select id='liste_aid' name='id_liste_aid[]' multiple='yes' size='$size_select'>
 				<optgroup label=\"-- Les AID --\">\n";
 
 			while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
