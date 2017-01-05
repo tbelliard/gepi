@@ -662,6 +662,7 @@ echo "
 <p><br /></p>\n";
 
 echo "
+<a name='update_xml_sts'></a>
 <form action='".$_SERVER['PHP_SELF']."' enctype='multipart/form-data' method='post' id='form_envoi_xml'>
 	<fieldset style='border:1px solid white; background-image: url(\"../images/background/opacite50.png\");'>
 		".add_token_field()."
