@@ -120,7 +120,7 @@ $xml->appendChild($items);
 					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
 				$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
 				if (!in_array($discipline->code_modalite_elect, $codesAutorises)) {
-					$msgErreur = "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='http://localhost/gepi/gestion/gerer_modalites_election_enseignements.php'>Corriger</a>";
+					$msgErreur = "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='../../gestion/gerer_modalites_election_enseignements.php' target='_BLANK' >Corriger</a> / <a href='../../utilisateurs/modif_par_lots.php#update_xml_sts' target='_BLANK' >mettre à jour d'après le XML STS</a>";
 				}
 				$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
 					'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
