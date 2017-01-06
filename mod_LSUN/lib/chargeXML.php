@@ -193,7 +193,8 @@ $xml->appendChild($items);
 		$donnees->appendChild($elementsProgramme);
 		
 		/*----- Parcours -----*/
-if (FALSE) {
+if (getSettingValue("LSU_Parcours") != "n") {
+	if ($listeParcoursCommuns->num_rows) {
 		$parcoursCommuns = $xml->createElement('parcours-communs');
 		while ($parcoursCommun = $listeParcoursCommuns->fetch_object()){
 				$noeudParcoursCommun= $xml->createElement('parcours-commun');
@@ -224,6 +225,7 @@ if (FALSE) {
 				
 			}
 		$donnees->appendChild($parcoursCommuns);
+	}
 }	
 
 			/*----- Vie scolaire -----*/
@@ -555,8 +557,34 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				}
 			}
 			
-			$listeParcoursEleve = $xml->createElement('liste-parcours');
-			// non obligatoire
+			if ((getSettingValue("LSU_Parcours") != "n") && (getSettingValue("LSU_ParcoursElv") != "n")) {
+				// non obligatoire
+				$parcoursEleve = getAidEleve($eleve->login, $_PARCOURS);
+				if ($parcoursEleve->num_rows) {
+					$listeParcoursEleve = $xml->createElement('liste-parcours');
+					$creeParcours = FALSE;
+					while ($parcoursElv = $parcoursEleve->fetch_object()) {
+						$typeParcoursEleve = getCodeParcours($parcoursElv->id_aid);
+						if ($typeParcoursEleve->num_rows) {
+							$typeParcoursEleve = $typeParcoursEleve->fetch_object();
+							$creeParcours = TRUE;
+							$noeudParcoursEleve = $xml->createElement('parcours');
+							$attsParcoursEleve = $xml->createAttribute('code');
+
+							$attsParcoursEleve->value = $parcoursElv->id_aid."--".$typeParcoursEleve->periode."--".$typeParcoursEleve->codeParcours;
+							getCommentaireGroupe($parcoursElv->id_aid, $typeParcoursEleve->periode);
+							
+							$noeudParcoursEleve->appendChild($attsParcoursEleve);
+							$listeParcoursEleve->appendChild($noeudParcoursEleve);
+							
+						}
+					}
+					if ($creeParcours) {
+						$noeudBilanElevePeriodique->appendChild($listeParcoursEleve);
+					}
+					
+				}
+			}
 			
 			$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
 			// non obligatoire

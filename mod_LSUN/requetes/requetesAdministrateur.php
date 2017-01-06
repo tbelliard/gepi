@@ -89,10 +89,11 @@ if ($modifieParcours) {
 	$modifieParcoursCode = filter_input(INPUT_POST, 'modifieParcoursCode', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$modifieParcoursTexte = filter_input(INPUT_POST, 'modifieParcoursTexte', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$modifieParcoursId = filter_input(INPUT_POST, 'modifieParcoursId', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursLien = filter_input(INPUT_POST, 'modifieParcoursLien', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	
 	//echo $modifieParcoursTexte[$modifieParcours];
 	//modifieParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte, $modifieParcours);
-	modifieParcours($modifieParcoursId[$modifieParcours], $modifieParcoursCode[$modifieParcours], $modifieParcoursTexte[$modifieParcours]);
+	modifieParcours($modifieParcoursId[$modifieParcours], $modifieParcoursCode[$modifieParcours], $modifieParcoursTexte[$modifieParcours], $modifieParcoursLien[$modifieParcours]);
 }
 
 if ($ajouteEPI) {

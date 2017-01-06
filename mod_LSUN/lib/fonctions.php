@@ -239,14 +239,21 @@ function supprimeParcours($deleteParcours) {
  * @param type $modifieParcoursId
  * @param type $modifieParcoursCode
  * @param type $modifieParcoursTexte
+ * @param type $modifieParcoursLien
  */
-function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParcoursTexte) {
+function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParcoursTexte, $modifieParcoursLien, $idLien = NULL) {
 	global $mysqli;
 	$sqlModifieParcours = "UPDATE lsun_parcours_communs "
 		. "SET codeParcours = '$modifieParcoursCode', description = '$modifieParcoursTexte' "
 		. "WHERE id = '$modifieParcoursId' ";
 	//echo $sqlModifieParcours;
 	$mysqli->query($sqlModifieParcours);
+	
+	$sqlModifieParcoursLien = "INSERT INTO lsun_j_aid_parcours (id_aid, id_parcours) VALUES ($modifieParcoursLien , $modifieParcoursId) "
+		. "ON DUPLICATE KEY UPDATE id_aid = $modifieParcoursLien ";
+	//echo $sqlModifieParcoursLien;
+	$mysqli->query($sqlModifieParcoursLien);
+	
 }
 
 /**
@@ -633,7 +640,7 @@ function getAidEleve($login, $typeAid) {
 		. "ON t1.indice_aid = lje.id_enseignements "
 		. "WHERE lje.aid = $typeAid ";
 	
-	//echo $sqlGetAidEleve02."<br>";
+	// echo $sqlGetAidEleve02."<br>";
 	$resultchargeDB = $mysqli->query($sqlGetAidEleve02);
 	return $resultchargeDB ;
 	
@@ -769,3 +776,49 @@ ON t6.login = t5.login AND t6.id_matiere = t5.matiere
 	return $resultchargeDB ;
 	
 }
+
+function getAidParcours($typeAid = 3) {
+	global $mysqli;
+	$sqlAidParcours = "SELECT t0.* , aid.nom AS aid ,aid.id AS idAid FROM (
+	SELECT indice_aid , nom , nom_complet , type_aid FROM aid_config WHERE type_aid = $typeAid
+) AS t0
+INNER JOIN
+	aid
+ON aid.indice_aid = t0.indice_aid
+ORDER BY aid";
+	
+	// echo $sqlAidParcours.'<br><br>';
+	$resultchargeDB = $mysqli->query($sqlAidParcours);
+	return $resultchargeDB ;
+	
+}
+
+function getLiaisonsAidParcours($idAid = NULL, $parcoursCommun = NULL) {
+	global $mysqli;
+	$sqlAidParcours = "SELECT * FROM lsun_j_aid_parcours ";
+	if ($idAid) {
+		$sqlAidParcours .= "WHERE id_aid = $idAid ";
+		if ($parcoursCommun) {
+			$sqlAidParcours .= "AND id_parcours = $parcoursCommun ";
+		}
+	}
+	//echo $idAid." ".$sqlAidParcours;
+	$resultchargeDB = $mysqli->query($sqlAidParcours);
+	return $resultchargeDB ;
+	
+}
+
+function getCodeParcours($id_aid ) {
+	global $mysqli;
+	$sqlParcours = "SELECT DISTINCT jap.id_parcours, pc.codeParcours, pc.periode FROM lsun_j_aid_parcours AS jap "
+		. "INNER JOIN "
+		. "lsun_parcours_communs AS pc "
+		. "WHERE id_aid = $id_aid  ";
+	//echo $sqlParcours.'<br><br>';
+	$resultchargeDB = $mysqli->query($sqlParcours);
+	return $resultchargeDB ;
+	
+}
+
+
+

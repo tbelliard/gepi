@@ -88,6 +88,9 @@ $cpes = getUtilisateurSurStatut('cpe');
 $Enseignants = getUtilisateurSurStatut('professeur');
 $responsables = getResponsables();
 $parcoursCommuns = getParcoursCommuns();
+$AidParcours = getAidParcours();
+$ListeAidParcours = getLiaisonsAidParcours();
+
 $listeMatieres = getMatiereLSUN();
 
 $listeEPICommun = getEPICommun();
@@ -96,6 +99,7 @@ $listeAPCommun = getAPCommun();
 //var_dump($listeAPCommun);
 $listeAp = getApCommun();
 $listeAidAp = getApAid();
+
 
 
 
@@ -213,6 +217,7 @@ if ($cpt) {echo "			</div>\n";}
 					<th>Division</th>
 					<th>Type de parcours éducatifs</th>
 					<th>Description</th>
+					<th>liaison AID</th>
 					<th>Action</th>
 				</tr>
 			</thead>
@@ -237,8 +242,22 @@ if ($cpt) {echo "			</div>\n";}
 					</select>
 				</td>
 				<td>
-					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="80" value="<?php echo $parcoursCommun->description; ?>"/>
+					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="70" value="<?php echo $parcoursCommun->description; ?>"/>
 				</td>
+				<td>
+				
+					<select name="modifieParcoursLien[<?php echo $parcoursCommun->id; ?>]">
+						<option value=""></option>
+<?php $AidParcours->data_seek(0);
+while ($AidParc = $AidParcours->fetch_object()) { ?>
+						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> >
+							<?php echo $AidParc->aid; ?>
+						</option>
+<?php } ?>
+					</select>
+				
+				</td>
+				
 				<td>
 					<input type="submit" class="btnSupprime" 
 						   alt="Boutton supprimer" 
@@ -281,7 +300,16 @@ if ($cpt) {echo "			</div>\n";}
 					</select>
 				</td>
 				<td>
-					<input type="text" name="newParcoursTexte" size="80" />
+					<input type="text" name="newParcoursTexte" size="70" />
+				</td>
+				<td>
+					<select name="newParcoursLien">
+						<option value=""></option>
+<?php $AidParcours->data_seek(0);
+while ($APCommun = $AidParcours->fetch_object()) { ?>
+						<option value="<?php echo $APCommun->indice_aid; ?>"><?php echo $APCommun->aid; ?></option>
+<?php } ?>
+					</select>
 				</td>
 				<td>
 					<input type="submit" class="btnValide" 
@@ -744,7 +772,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" disabled />
-						<label for="traiteModSpeElv"  class="desactive" >modalités spécifiques d’accompagnement des élèves</label>
+						<label for="traiteModSpeElv"  class="desactive" title="À saisir directement dans LSU" >modalités spécifiques d’accompagnement des élèves</label>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteParent" id="traiteParent" value="y"  
@@ -774,7 +802,8 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteParcours">parcours éducatifs</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteParcoursElv" id="traiteParcoursElv" value="y" disabled />
+						<input type="checkbox" name="traiteParcoursElv" id="traiteParcoursElv" value="y"   
+							   <?php if ((getSettingValue("LSU_Parcours") != "n") && (getSettingValue("LSU_ParcoursElv") != "n")) {echo ' checked '; }  ?>  />
 						<label for="traiteParcoursElv">données élèves des Parcours</label>
 					</li>
 					<li>
@@ -783,7 +812,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteSocle" id="traiteSocle" value="y" disabled />
-						<label for="traiteSocle" class="desactive" >positionnement des élèves sur les domaines du socle commun</label>
+						<label for="traiteSocle" class="desactive" title="À saisir directement dans LSU" >positionnement des élèves sur les domaines du socle commun</label>
 					</li>
 				</ul>
 			</div>
