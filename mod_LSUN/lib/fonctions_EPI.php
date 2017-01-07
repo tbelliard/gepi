@@ -37,6 +37,13 @@
  */
 function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $newEpiDescription, $newEpiMatiere, $idEpi = NULL) {
 	global $mysqli;
+	//echo $newEpiMatiere;
+	foreach ($newEpiMatiere as $matiereAid) {
+		$sqlMatiereEPI = "UPDATE matieres SET matiere_aid = 'y' WHERE matiere = '".substr($matiereAid,0,-1)."' ";
+		//echo $sqlMatiereEPI."<br>";
+		$mysqli->query($sqlMatiereEPI);
+	}
+	
 	
 	$sqlCreeEpi = "INSERT INTO lsun_epi_communs (id, periode, codeEPI, intituleEpi, descriptionEpi) VALUES (";
 	
@@ -232,7 +239,7 @@ function lieEpiCours($id_epi , $id_enseignement , $aid, $id=NULL) {
 		$sqLieEpiCours .= "NULL";
 	}
 	$sqLieEpiCours .= ",$id_epi , $id_enseignement , $aid)";
-	echo $sqLieEpiCours;
+	//echo $sqLieEpiCours;
 	$mysqli->query($sqLieEpiCours);
 }
 
@@ -299,36 +306,6 @@ function delClasseEPI($EpiId) {
 	$sqlDelClasseEPI = "DELETE FROM lsun_j_epi_classes WHERE id_epi = '$EpiId' ";
 	//echo $sqlDelClasseEPI;
 	$mysqli->query($sqlDelClasseEPI);
-	
-}
-
-
-function getProfsEPI($idGroupeEPI) {
-	global $mysqli;
-	
-	// récupérer le code_matiere dans la table matiere
-	
-	$sqlProfDiscipline_1 = "SELECT a.id, a.nom, a.matiere1, a.matiere2 FROM aid AS a WHERE a.id = $idGroupeEPI ";
-	
-	$sqlProfDiscipline_2 = "SELECT p0.*, SUBSTR(u.numind, 2) AS numind FROM "
-		. "(SELECT jau.id_utilisateur , jpm.id_matiere FROM j_aid_utilisateurs as jau "
-		. "INNER JOIN j_professeurs_matieres AS jpm "
-		. "ON jpm.id_professeur = jau.id_utilisateur "
-		. "WHERE jau.id_aid = $idGroupeEPI  ) AS p0 "
-		. "INNER JOIN utilisateurs AS u "
-		. "ON p0.id_utilisateur = u.login";
-	
-	$sqlProfDiscipline_3 = "SELECT t0.* , t1.id_utilisateur as prof1, t1.numind AS numind1 FROM ($sqlProfDiscipline_1) AS t0 "
-		. "INNER JOIN ($sqlProfDiscipline_2) AS t1 "
-		. "ON t0.matiere1 = t1.id_matiere ";
-	
-	$sqlProfDiscipline_4 = "SELECT t2.* , t3.id_utilisateur as prof2, t3.numind AS numind2 FROM ($sqlProfDiscipline_3) AS t2 "
-		. "INNER JOIN ($sqlProfDiscipline_2) AS t3 "
-		. "ON t2.matiere2 = t3.id_matiere ";
-	
-	//echo  $sqlProfDiscipline_4;
-	$resultchargeDB = $mysqli->query($sqlProfDiscipline_4);
-	return $resultchargeDB;
 	
 }
 
