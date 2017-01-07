@@ -164,12 +164,7 @@ if((isset($_GET['type_export']))&&($_GET['type_export']=="ariane")&&(isset($tab_
 			else{
 				$lig_tmp=mysqli_fetch_object($res_tmp);
 				$eleve_sexe=$lig_tmp->sexe;
-				if((isset($format_naiss))&&($format_naiss=='jjmmaaaa')) {
-					$eleve_naissance=formate_date($lig_tmp->naissance);
-				}
-				else {
-					$eleve_naissance=$lig_tmp->naissance;
-				}
+				$eleve_naissance=formate_date($lig_tmp->naissance);
 				$eleve_email=$lig_tmp->email;
 				$eleve_no_gep=$lig_tmp->no_gep;
 				$eleve_elenoet=$lig_tmp->elenoet;
