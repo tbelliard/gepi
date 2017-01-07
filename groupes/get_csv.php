@@ -254,6 +254,29 @@ elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdier")&&(isset(
 			if($eleve_email=="") {
 				$eleve_mail=get_valeur_champ("utilisateurs", "login='".$eleve_login."'", "email");
 			}
+			if($eleve_email=="") {
+				// Récupérer l'adresse mail parent
+				//get_mail_user()
+
+				$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$eleve_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
+				//echo "$sql<br />";
+				$res = mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if(check_mail($lig->mel)) {
+							$eleve_email=$lig->mel;
+							break;
+						}
+						elseif($lig->login!="") {
+							$tmp_mail=get_mail_user($lig->login);
+							if(check_mail($tmp_mail)) {
+								$eleve_email=$tmp_mail;
+								break;
+							}
+						}
+					}
+				}
+			}
 
 			$ligne=$eleve_nom.";".$eleve_prenom.";E;".$eleve_sexe.";".$eleve_email;
 
