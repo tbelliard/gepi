@@ -324,6 +324,10 @@ if($_SESSION['statut']=='professeur') {
 						for($i=$lig_aid_config->display_begin;$i<=$lig_aid_config->display_end;$i++) {
 							if($cpt>0) {echo " - ";}
 							echo "<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' target='_blank'>Période $i</a>\n";
+							// Faut-il limiter l'accès?
+							echo " 
+					(<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\">Ariane</a> - 
+					<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>)";
 							$cpt++;
 						}
 					}
@@ -675,14 +679,19 @@ if(mysqli_num_rows($res_aid_config)>0) {
 				echo "
 			<li>
 				<strong>".$lig_aid->nom."&nbsp;:</strong> ";
+				$cpt=0;
 				if($lig_aid_config->display_begin<=$lig_aid_config->display_end) {
-					$cpt=0;
 					for($i=$lig_aid_config->display_begin;$i<=$lig_aid_config->display_end;$i++) {
 						if($cpt>0) {echo " - ";}
-						echo "<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' target='_blank'>Période $i</a>\n";
+						echo "<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' title=\"Listing des élèves en période $i\" target='_blank'>Période $i</a>\n";
+						// Faut-il limiter l'accès?
+						echo " 
+					(<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\">Ariane</a> - 
+					<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>)";
 						$cpt++;
 					}
 				}
+
 				echo "
 			</li>";
 			}

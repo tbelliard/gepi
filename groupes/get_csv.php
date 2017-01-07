@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -97,7 +97,11 @@ if ($current_group) {
 		die("Indice AID '$id_aid' invalide.");
 	}
 	$tab_aid=get_tab_aid($id_aid);
-	$nom_fic=remplace_accents($tab_aid['nom_aid']."_".$tab_aid['nom_general_complet']."_periode_".$periode_num,"all") . ".csv";
+	$complement="";
+	if(isset($_GET['type_export'])) {
+		$complement="_".$_GET['type_export'];
+	}
+	$nom_fic=remplace_accents($tab_aid['nom_aid']."_".$tab_aid['nom_general_complet'].$complement."_periode_".$periode_num,"all") . ".csv";
 	if ((!isset($periode_num))||(!is_numeric($periode_num))) {$periode_num="all";}
 } else {
 	if($id_classe=='toutes') {
@@ -121,6 +125,154 @@ if((!isset($id_classe))||($id_classe!="toutes")) {
 }
 
 $fd = '';
+
+//==============================================================================
+if((isset($_GET['type_export']))&&($_GET['type_export']=="ariane")&&(isset($tab_aid))) {
+	$fd.="Classe;Nom de famille;Prénom;Date de naissance;Lieu naissance;Nom Responsable légal 1;Prénom responsable légal 1;Adresse;CP;Commune;Tel portable resp. légal 1\n";
+
+	/*
+	echo "<pre>";
+	print_r($tab_aid);
+	echo "</pre>";
+	*/
+
+	if(isset($tab_aid["eleves"][$periode_num]["users"])) {
+		foreach($tab_aid["eleves"][$periode_num]["users"] as $current_eleve) {
+			$eleve_login = $current_eleve["login"];
+			$eleve_nom = $current_eleve["nom"];
+			$eleve_prenom = $current_eleve["prenom"];
+
+			//$eleve_classe = $current_eleve["classe"];
+			$sql="SELECT classe FROM classes WHERE id='".$current_eleve["classe"]."'";
+			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_tmp)==0){
+				die("$eleve_login ne serait dans aucune classe???</body></html>");
+			}
+			else{
+				$lig_tmp=mysqli_fetch_object($res_tmp);
+				$eleve_classe=$lig_tmp->classe;
+			}
+
+			// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance...
+			// ... pourrait-on l'ajouter?
+			$sql="SELECT sexe,naissance,lieu_naissance,email,no_gep,elenoet,ele_id FROM eleves WHERE login='$eleve_login'";
+			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			if(mysqli_num_rows($res_tmp)==0){
+				die("Problème avec les infos (date de naissance, sexe,...) de $eleve_login</body></html>");
+			}
+			else{
+				$lig_tmp=mysqli_fetch_object($res_tmp);
+				$eleve_sexe=$lig_tmp->sexe;
+				if((isset($format_naiss))&&($format_naiss=='jjmmaaaa')) {
+					$eleve_naissance=formate_date($lig_tmp->naissance);
+				}
+				else {
+					$eleve_naissance=$lig_tmp->naissance;
+				}
+				$eleve_email=$lig_tmp->email;
+				$eleve_no_gep=$lig_tmp->no_gep;
+				$eleve_elenoet=$lig_tmp->elenoet;
+				$eleve_ele_id=$lig_tmp->ele_id;
+
+				$eleve_lieu_naissance=get_commune($lig_tmp->lieu_naissance,'2');
+			}
+
+			$ligne=$eleve_classe.";".$eleve_nom.";".$eleve_prenom.";".$eleve_naissance.";".$eleve_lieu_naissance.";";
+
+			//$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.ele_id='$eleve_ele_id' AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2' OR (r.pers_contact='1' AND (rp.tel_pers!='' OR rp.tel_prof!='' OR rp.tel_port!='')));";
+			$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.ele_id='$eleve_ele_id' AND r.pers_id=rp.pers_id AND r.resp_legal='1';";
+			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_tmp)>0) {
+				// Il n'y a qu'un resp_legal=1, donc on ne va faire qu'un tour dans la boucle.
+				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
+
+					$tmp_tab_adr=get_adresse_responsable($lig_tmp->pers_id);
+
+					$adresse=$tmp_tab_adr["adresse_sans_cp_commune"];
+
+					if(($tmp_tab_adr['pays']!="")&&(casse_mot($tmp_tab_adr['pays'],"maj")!=casse_mot(getSettingValue("gepiSchoolPays")))) {
+						$tmp_tab_adr['commune'].=" (".$tmp_tab_adr['pays'].")";
+					}
+
+					$ligne.=$lig_tmp->nom.";".$lig_tmp->prenom.";".$adresse.";".$tmp_tab_adr['cp'].";".$tmp_tab_adr['commune'].";";
+
+					if($lig_tmp->tel_port!='') {
+						$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_port);
+					}
+					elseif($lig_tmp->tel_pers!='') {
+						$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_pers);
+					}
+					elseif($lig_tmp->tel_prof!='') {
+						$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_prof);
+					}
+				}
+			}
+			else {
+				$ligne.=";;;;;";
+			}
+
+			// Suppression du ; en fin de ligne
+			//$ligne=preg_replace('/;$/','',$ligne);
+
+			$fd.=$ligne."\n";
+		}
+	}
+
+	echo echo_csv_encoded($fd);
+	die();
+}
+elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdier")&&(isset($tab_aid))) {
+	$fd.="Nom;Prénom;Statut (A/E);Sexe (M/F);E-mail\n";
+
+	$sql="SELECT u.login, u.nom, u.prenom, u.email, u.civilite, u.numind FROM utilisateurs u, j_aid_utilisateurs jau WHERE jau.id_utilisateur=u.login AND jau.id_aid='$id_aid';";
+	//echo "$sql<br />\n";
+	$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_prof)>0) {
+		while($lig=mysqli_fetch_object($res_prof)) {
+			$ligne="$lig->nom;$lig->prenom;A;";
+			if($lig->civilite=="Mme") {$ligne.="F;";}
+			elseif($lig->civilite=="Mlle") {$ligne.="F;";}
+			else {$ligne.="M;";}
+			$ligne.="$lig->email";
+	
+			// Suppression du ; en fin de ligne
+			//$ligne=preg_replace('/;$/','',$ligne);
+
+			$fd.=$ligne."\n";
+		}
+	}
+
+	/*
+	echo "<pre>";
+	print_r($tab_aid);
+	echo "</pre>";
+	*/
+
+	if(isset($tab_aid["eleves"][$periode_num]["users"])) {
+		foreach($tab_aid["eleves"][$periode_num]["users"] as $current_eleve) {
+			$eleve_login = $current_eleve["login"];
+			$eleve_nom = $current_eleve["nom"];
+			$eleve_prenom = $current_eleve["prenom"];
+			$eleve_sexe = $current_eleve["sexe"];
+			$eleve_email = $current_eleve["email"];
+			if($eleve_email=="") {
+				$eleve_mail=get_valeur_champ("utilisateurs", "login='".$eleve_login."'", "email");
+			}
+
+			$ligne=$eleve_nom.";".$eleve_prenom.";E;".$eleve_sexe.";".$eleve_email;
+
+			// Suppression du ; en fin de ligne
+			//$ligne=preg_replace('/;$/','',$ligne);
+
+			$fd.=$ligne."\n";
+		}
+	}
+
+	echo echo_csv_encoded($fd);
+	die();
+}
+//==============================================================================
 
 if(!isset($mode)) {
 	$fd.="CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS\n";
