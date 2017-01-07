@@ -6193,7 +6193,7 @@ function affiche_numero_tel_sous_forme_classique($chaine) {
 }
 
 function get_info_categorie_aid($indice_aid, $aid_id="", $mode="tableau") {
-	global $mysqli;
+	global $mysqli, $gepiPath;
 
 	$retour="";
 	if($indice_aid!="") {
