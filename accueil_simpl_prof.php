@@ -1117,6 +1117,7 @@ while ($i < $tmp_nb_aid) {
 	$tmp_aid_bull_simplifie = @old_mysql_result($res_aid, $i, "bull_simplifie");
 	$tmp_aid_type_note = @old_mysql_result($res_aid, $i, "type_note");
 	$tmp_aid_outils_complementaires = @old_mysql_result($res_aid, $i, "outils_complementaires");
+	$tmp_nom_aid = @old_mysql_result($tmp_aid, $i, "nom");
 
 /*
 
@@ -1140,7 +1141,7 @@ ORDER BY ac.nom_complet";
 	$tmp_call_prof = mysqli_query($GLOBALS["mysqli"], $sql);
 	$tmp_nb_result = mysqli_num_rows($tmp_call_prof);
 	if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
-		$tmp_nom_aid = @old_mysql_result($tmp_call_data, $i, "nom");
+		//$tmp_nom_aid = @old_mysql_result($tmp_call_data, $i, "nom");
 
 		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
 		//echo "$sql<br />";
