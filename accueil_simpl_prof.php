@@ -1095,12 +1095,7 @@ for($i=0;$i<count($groups);$i++){
 //==================================================================
 // AID
 $ii=$i;
-/*
-$sql="SELECT * FROM aid_config
-		WHERE display_bulletin = 'y'
-			OR bull_simplifie = 'y'
-			ORDER BY nom;";
-*/
+
 $sql="SELECT ac.* FROM aid_config ac, aid a
 		WHERE ac.indice_aid=a.indice_aid 
 		ORDER BY ac.order_display1, ac.order_display2, a.numero, ac.nom;";
@@ -1109,30 +1104,21 @@ $res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 $i=0;
 $tmp_nb_aid_a_afficher=0;
 $nb_aid=0;
-while ($i < $tmp_nb_aid) {
-	$tmp_indice_aid = @old_mysql_result($res_aid, $i, "indice_aid");
-	$tmp_aid_display_begin = @old_mysql_result($res_aid, $i, "display_begin");
-	$tmp_aid_display_end = @old_mysql_result($res_aid, $i, "display_end");
-	$tmp_aid_display_bulletin = @old_mysql_result($res_aid, $i, "display_bulletin");
-	$tmp_aid_bull_simplifie = @old_mysql_result($res_aid, $i, "bull_simplifie");
-	$tmp_aid_type_note = @old_mysql_result($res_aid, $i, "type_note");
-	$tmp_aid_outils_complementaires = @old_mysql_result($res_aid, $i, "outils_complementaires");
-	$tmp_nom_aid = @old_mysql_result($tmp_aid, $i, "nom");
+while ($lig_cat_aid=mysqli_fetch_object($res_aid)) {
+	$tmp_indice_aid = $lig_cat_aid->indice_aid;
+	$tmp_aid_display_begin = $lig_cat_aid->display_begin;
+	$tmp_aid_display_end = $lig_cat_aid->display_end;
+	$tmp_aid_display_bulletin = $lig_cat_aid->display_bulletin;
+	$tmp_aid_bull_simplifie = $lig_cat_aid->bull_simplifie;
+	$tmp_aid_type_note = $lig_cat_aid->type_note;
+	$tmp_aid_outils_complementaires = $lig_cat_aid->outils_complementaires;
+	$tmp_nom_aid = $lig_cat_aid->nom;
 
-/*
-
-SELECT * FROM aid_config
-WHERE display_bulletin = 'y'
-OR bull_simplifie = 'y'
-ORDER BY nom;
-
-$sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
-FROM aid_config ac, j_aid_utilisateurs u
-WHERE ac.outils_complementaires = 'y'
-AND u.indice_aid = ac.indice_aid
-AND u.id_utilisateur='".$_SESSION['login']."'
-ORDER BY ac.nom_complet"; 
-*/
+	/*
+	echo "<pre>";
+	print_r($lig_cat_aid);
+	echo "</pre>";
+	*/
 
 	$sql="SELECT * FROM j_aid_utilisateurs
 		WHERE (id_utilisateur = '".$_SESSION['login']."'
@@ -1143,31 +1129,12 @@ ORDER BY ac.nom_complet";
 	if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
 		//$tmp_nom_aid = @old_mysql_result($tmp_call_data, $i, "nom");
 
-		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
+		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom;";
 		//echo "$sql<br />";
 		$tmp_call_prof_aid = mysqli_query($GLOBALS["mysqli"], $sql);
 		$tmp_nombre_aid = mysqli_num_rows($tmp_call_prof_aid);
 		//if ($tmp_nombre_aid>0) {
 		while($lig_aid=mysqli_fetch_object($tmp_call_prof_aid)) {
-
-
-/*
-			if($tmp_nb_aid_a_afficher==0) {
-				//$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_aid.php' , "texte"=>"AID");
-				$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>"AID");
-				$tmp_sous_menu2=array();
-				$cpt_sous_menu2=0;
-			}
-
-			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
-			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (saisie)";
-			$cpt_sous_menu2++;
-
-			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
-			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (visualisation)";
-			$cpt_sous_menu2++;
-*/
-
 			$tab_clas_aid=array();
 			$cpt_clas_aid=0;
 			$liste_classes_aid="";
@@ -1205,6 +1172,16 @@ ORDER BY ac.nom_complet";
 			//echo "<td>".htmlspecialchars($groups[$i]['classlist_string'])."</td>\n";
 			echo "<!-- Colonne nom classe menant à la liste de élèves du 'groupe'... non réalisé pour les AID -->\n";
 			echo "<td>\n";
+
+			/*
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/popup.php?id_aid=".$lig_aid->id_aid;
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Liste élèves";
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+			$tmp_sous_menu2[$cpt_sous_menu2]['js']=" onclick=\"ouvre_popup_visu_aid('".$lig_aid->id_aid."','".$lig_aid->display_end."');return false;\"";
+			$cpt_sous_menu2++;
+			*/
+			//echo "<a href='$gepiPath/aid/popup.php?id_aid=".$lig_aid->id."' target='_blank' onclick=\"ouvre_popup_visu_aid('".$lig_aid->id."','".$lig_cat_aid->display_end."');return false;\">";
+			echo "<a href='$gepiPath/aid/popup.php?id_aid=".$lig_aid->id."' target='_blank' onclick=\"ouvre_popup_visu_aid('".$lig_aid->id."');return false;\">";
 			for($loop=0;$loop<count($tab_clas_aid);$loop++) {
 				if($loop>0) {
 					echo ", ";
@@ -1213,6 +1190,7 @@ ORDER BY ac.nom_complet";
 				echo "<span title=\"".$tab_clas_aid[$loop]['nom_complet']."\">".$tab_clas_aid[$loop]['classe']."</span>";
 				$liste_classes_aid.=$tab_clas_aid[$loop]['classe'];
 			}
+			echo "</a>";
 			echo "</td>\n";
 
 			// mod_abs2
@@ -1687,6 +1665,11 @@ echo "<script type='text/javascript'>
 	function ouvre_popup_visu_groupe(id_groupe,id_classe){
 		//eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
 		eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
+		setTimeout('fen.focus()',500);
+	}
+
+	function ouvre_popup_visu_aid(id_aid){
+		eval(\"fen=window.open('aid/popup.php?id_aid=\"+id_aid+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
 		setTimeout('fen.focus()',500);
 	}
 
