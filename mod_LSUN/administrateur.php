@@ -253,7 +253,7 @@ if ($cpt) {echo "			</div>\n";}
 						<option value=""></option>
 <?php $AidParcours->data_seek(0);
 while ($AidParc = $AidParcours->fetch_object()) { ?>
-						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> >
+						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->num_rows && getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> >
 							<?php echo $AidParc->aid; ?>
 						</option>
 <?php } ?>

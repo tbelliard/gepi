@@ -871,4 +871,17 @@ function assureDisciplinePresente($refDisciplines) {
 
 }
 
+function getCommentaireEleveParcours($login, $id_aid, $periode) {
+	global $mysqli;
+	
+	$sql = "SELECT * FROM aid_appreciations WHERE login = '$login' AND id_aid ='$id_aid' AND periode ='$periode' ";
+	
+	//echo $sql.'<br>';
+	$resultchargeDB = $mysqli->query($sql);
+	return $resultchargeDB ;
+	
+}
+
+
+
 
