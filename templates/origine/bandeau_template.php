@@ -246,11 +246,11 @@
      */
 	function ligne_menu_barre($tab,$niveau) {
 		global $gepiPath, $themessage;
-             
-            $afficheTitle='';
-            if (isset ($tab['title']) && $tab['title'] !='') {
-              $afficheTitle= ' title="'.$tab['title'].'"';
-            }
+
+		$afficheTitle='';
+		if (isset ($tab['title']) && $tab['title'] !='') {
+			$afficheTitle= ' title="'.$tab['title'].'"';
+		}
 
 		if(isset($tab['sous_menu'])) {
 			echo "<li";
@@ -271,12 +271,18 @@
 				if(isset($tab['target'])) {
 					echo " target='".$tab['target']."'";
 				}
+				if(isset($tab['js'])) {
+					echo $tab['js'];
+				}
 				echo ">".$tab['texte']."</a>\n";
 			}
 			else {
 				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
 				if(isset($tab['target'])) {
 					echo " target='".$tab['target']."'";
+				}
+				if(isset($tab['js'])) {
+					echo $tab['js'];
 				}
 				echo ">".$tab['texte']."</a>\n";
 			}
@@ -304,12 +310,18 @@
 				if(isset($tab['target'])) {
 					echo " target='".$tab['target']."'";
 				}
+				if(isset($tab['js'])) {
+					echo $tab['js'];
+				}
 				echo ">".$tab['texte']."</a>\n";
 			}
 			else {
 				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
 				if(isset($tab['target'])) {
 					echo " target='".$tab['target']."'";
+				}
+				if(isset($tab['js'])) {
+					echo $tab['js'];
 				}
 				echo ">".$tab['texte']."</a>";
 			}
