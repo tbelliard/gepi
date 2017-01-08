@@ -588,7 +588,6 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	echo "</div>\n";
 }
 
-
 $display_mat_cat="n";
 $sql="SELECT display_mat_cat FROM classes WHERE id='$id_classe';";
 $res_display_mat_cat=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -706,7 +705,7 @@ if(acces("/groupes/modify_grp_group.php", $_SESSION['statut'])) {
 	echo " | <a href='../groupes/modify_grp_group.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Groupes de groupes\">Groupes de groupes</a>";
 }
 
-echo "</p>\n";
+echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/actualiser.png' class='icone16' alt='Rafraichir' />Rafraichir la page sans enregistrer</a></p>\n";
 echo "</form>\n";
 
 
@@ -1028,9 +1027,9 @@ for($i=0;$i<10;$i++){
 	echo "<th colspan='".($nb_periode-1)."'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits</th>\n";
 	echo "<th rowspan='2'>Priorité<br />d'affichage</th>\n";
 	echo "<th rowspan='2'>Catégorie</th>\n";
-	if(!getSettingANon('AutoriserTypesEnseignements')) {
+	//if(!getSettingANon('AutoriserTypesEnseignements')) {
 		echo "<th rowspan='2'>Type</th>\n";
-	}
+	//}
 	echo "<th colspan='".count($tab_domaines)."'>Visibilité</th>\n";
 	echo "<th rowspan='2'>Coefficient</th>\n";
 	echo "<th colspan='3'>Mode moy</th>\n";
@@ -1266,7 +1265,7 @@ for($i=0;$i<10;$i++){
 		echo "</td>\n";
 
 
-		if(!getSettingANon('AutoriserTypesEnseignements')) {
+		//if(!getSettingANon('AutoriserTypesEnseignements')) {
 			// Type (AP, EPI, Parcours)
 			echo "<td>";
 			echo "<select onchange=\"changement()\" size=1 id='type_".$cpt_grp."' name='type_" .$current_group["id"]. "'>\n";
@@ -1282,7 +1281,7 @@ for($i=0;$i<10;$i++){
 			}
 			echo "</select>\n";
 			echo "</td>\n";
-		}
+		//}
 
 		// Visibilité
 		for($loop=0;$loop<count($tab_domaines);$loop++) {

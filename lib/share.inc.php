@@ -15545,7 +15545,12 @@ function get_tab_types_groupe() {
 
 	$tab=array();
 
-	$sql="SELECT * FROM groupes_types;";
+	if(!getSettingANon('AutoriserTypesEnseignements')) {
+		$sql="SELECT * FROM groupes_types;";
+	}
+	else {
+		$sql="SELECT * FROM groupes_types WHERE nom_court='local';";
+	}
 	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res)>0) {

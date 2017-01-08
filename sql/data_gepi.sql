@@ -1813,3 +1813,4 @@ INSERT INTO droits VALUES ('/saisie/import_note_app_aid.php', 'F', 'V', 'F', 'F'
 INSERT INTO droits VALUES ('/saisie/import_note_app_aid2.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');
 INSERT INTO droits SET id='/aid/transfert_groupe_aid.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Transfert Groupe/AID', statut='';
 INSERT INTO droits SET id='/groupes/visu_groupes_prof.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='V', autre='F', description='Voir les enseignements du professeur', statut='';
+INSERT INTO groupes_types SET nom_court='local', nom_complet='Enseignement local', nom_complet_pluriel='Enseignements locaux';
