@@ -22,7 +22,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-debug_var();
+//debug_var();
 
 $selectionClasse = $_SESSION['afficheClasse'];
 
@@ -72,7 +72,7 @@ if ($creeFichier == 'y') {
 	}
 	
 	if (0 == count($selectionClasse)) {
-		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p>";
+		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p> <p><a href = 'index.php'>Cliquez ici pour recharger la page</a></p>";
 	}	else if ($creeFichier == 'y') {
 		include_once 'creeFichier.php';
 	}

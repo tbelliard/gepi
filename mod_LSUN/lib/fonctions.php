@@ -666,7 +666,10 @@ function getModaliteGroupe($groupe_id) {
 SELECT DISTINCT t3.* , t4.modalite FROM (
 	SELECT t1.`id_groupe` , t1.id_aid , t1.indice_aid , t1.login , t1.matiere AS matiere FROM (
 		SELECT t0.*, jpm.id_matiere AS matiere FROM (
-			SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.login FROM `j_groupes_professeurs` AS jgp INNER JOIN `j_groupes_aid` AS jga ON jgp.`id_groupe` = jga.`id_groupe` WHERE jga.`id_aid` = $groupe_id
+			SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.id_utilisateur AS login FROM `j_aid_utilisateurs` AS jgp 
+			INNER JOIN `j_groupes_aid` AS jga 
+			ON jgp.`id_aid` = jga.`id_aid` 
+			WHERE jga.`id_aid` = $groupe_id
 		) AS t0
 		LEFT JOIN
 			j_professeurs_matieres AS jpm
@@ -708,12 +711,28 @@ function getModaliteGroupeAP($groupe_id) {
 	global $mysqli;
 	// La modalité est dans la matiere de la classe
 	//echo $groupe_id.' '.$prof_numind.' '.matiere.' '.'<br>';
+	
+	/**
 	$sqlGroupeModaliteProfs = "
 		SELECT t0.*, jpm.id_matiere AS matiere FROM (
 			SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.login FROM 
 				`j_groupes_professeurs` AS jgp 
 			INNER JOIN `j_groupes_aid` AS jga 
 			ON jgp.`id_groupe` = jga.`id_groupe` 
+			WHERE jga.`id_aid` = $groupe_id
+		) AS t0
+		LEFT JOIN
+			j_professeurs_matieres AS jpm
+		ON jpm.id_professeur = t0.login";
+	 * 
+	 */	
+	
+	$sqlGroupeModaliteProfs = "
+		SELECT t0.*, jpm.id_matiere AS matiere FROM (
+			SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.id_utilisateur AS login FROM 
+				`j_aid_utilisateurs` AS jgp 
+			INNER JOIN `j_groupes_aid` AS jga 
+			ON jgp.`id_aid` = jga.`id_aid` 
 			WHERE jga.`id_aid` = $groupe_id
 		) AS t0
 		LEFT JOIN
@@ -728,9 +747,9 @@ function getModaliteGroupeAP($groupe_id) {
 				SELECT t1.id_classe , jgc.id_groupe FROM (
 					SELECT DISTINCT jec.id_classe FROM (
 						SELECT DISTINCT jga.*, jeg.login FROM `j_groupes_aid` AS jga
-						INNER JOIN `j_eleves_groupes` AS jeg 
-						ON jeg.`id_groupe` = jga.`id_groupe`
-						WHERE `id_aid` = $groupe_id
+						INNER JOIN `j_aid_eleves` AS jeg 
+						ON jeg.`id_aid` = jga.`id_aid`
+						WHERE jga.`id_aid` = $groupe_id
 					) AS t0
 					INNER JOIN
 						j_eleves_classes AS jec
@@ -769,7 +788,6 @@ ON t6.login = t5.login AND t6.id_matiere = t5.matiere
 		. "INNER JOIN "
 		. "matieres AS m "
 		. "ON m.matiere = t7.id_matiere";
-	
 	
 	//echo $sqlGroupeModalite.'<br><br>';
 	$resultchargeDB = $mysqli->query($sqlGroupeModalite);
@@ -819,6 +837,51 @@ function getCodeParcours($id_aid ) {
 	return $resultchargeDB ;
 	
 }
+
+
+function assureDisciplinePresente($refDisciplines) {
+	global $xml;
+	//echo "recherché ".$refDisciplines.'<br>';
+	$listediscipline = $xml->getElementsByTagName('discipline');
+
+	foreach($listediscipline as $discipline) {
+		$trouve = FALSE;
+		//echo $discipline->getAttribute("id")." → ";
+		if ($discipline->getAttribute("id") == $refDisciplines ) {
+			$trouve = TRUE;
+			break;
+		}
+	}
+	
+	if (!$trouve) {
+		//echo $refDisciplines." n'a pas été trouvé, il faut le créer<br>";
+		$disciplines = $xml->getElementsByTagName("disciplines")->item(0);
+		
+		$noeudDiscipline = $xml->createElement('discipline');
+		$code = substr($refDisciplines, 3, -1);
+		$modalite = substr($refDisciplines, -1);
+		$libelle = getMatiereSurMEF($code)->fetch_object()->nom_complet;
+		$attributsDiscipline = array('id'=>$refDisciplines,'code'=>$code, 'modalite-election'=>$modalite,'libelle'=>htmlspecialchars($libelle));
+		foreach ($attributsDiscipline as $cle=>$valeur) {
+			$attDiscipline = $xml->createAttribute($cle);
+			$attDiscipline->value = $valeur;
+			$noeudDiscipline->appendChild($attDiscipline);
+		}
+		$disciplines->appendChild($noeudDiscipline);
+			
+	}
+  
+
+
+
+
+
+
+
+
+
+}
+
 
 
 

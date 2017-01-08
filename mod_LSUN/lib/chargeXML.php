@@ -67,6 +67,7 @@ $xml->appendChild($items);
 	
 	/*----- Données -----*/
 	$donnees = $xml->createElement('donnees');
+	$items->appendChild($donnees);
 		
 		/*----- Responsables-etab -----*/
 		$responsablesEtab = $xml->createElement('responsables-etab');
@@ -259,8 +260,11 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$matieres = getMatieresEPICommun($epiCommun->id);
 				$refDisciplines = "";
 				foreach ($matieres as $matiere) {
-					$refDisciplines .= "DI_".getMatiereOnMatiere($matiere["id_matiere"])->code_matiere.$matiere["modalite"]." ";
-					
+					$ref = "DI_".getMatiereOnMatiere($matiere["id_matiere"])->code_matiere.$matiere["modalite"];
+					assureDisciplinePresente($ref);
+					$refDisciplines .= $ref." ";
+	
+	
 				}
 				$attributsEpiCommun = array('id'=>"EPI_$epiCommun->id", 'intitule'=>"$epiCommun->intituleEpi", 'thematique'=>"$epiCommun->codeEPI", 'discipline-refs'=>"$refDisciplines");
 				foreach ($attributsEpiCommun as $cle=>$valeur) {
@@ -332,7 +336,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 		$donnees->appendChild($episGroupes);
 }
 
-if (getSettingValue("LSU_traite_AP") != "n") {	
+if (getSettingValue("LSU_traite_AP") != "n") {
 			/*----- acc-persos -----*/
 	$listeApCommuns = getAPCommun();
 	if ($listeApCommuns->num_rows) {
@@ -361,7 +365,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$accPersos->appendChild($noeudApCommun);
 		}
 		$donnees->appendChild($accPersos);
-	}
+	//}
 
 		
 			/*----- acc-persos-groupes -----*/
@@ -386,12 +390,6 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$noeudApGroupes->appendChild($noeudComGroupeAp);
 				}
 			}
-			//À SUPPRIMER
-				//	$noeudComGroupeAp = $xml->createElement('commentaire',"coucou");
-				//	$noeudApGroupes->appendChild($noeudComGroupeAp);
-			
-			
-			
 			
 			// on ajoute les enseignants
 			//print_r($apGroupe);
@@ -420,8 +418,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			}
 		}
 		
-		$donnees->appendChild($accPersosGroupes);		
-		
+		$donnees->appendChild($accPersosGroupes);	
+	}
 }
 		
 		/*----- Bilans périodiques -----*/
@@ -678,4 +676,4 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		}	
 		$donnees->appendChild($bilansPeriodiques);
 		
-	$items->appendChild($donnees);
+	//$items->appendChild($donnees);
