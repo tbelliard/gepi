@@ -86,7 +86,19 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
-
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT 1=1 FROM groupes_types WHERE nom_court='local';"));
+if ($test_champ==0) {
+	$result .= "Ajout du type 'local' pour les enseignements&nbsp;: ";
+	$sql="INSERT INTO groupes_types SET nom_court='local', nom_complet='Enseignement local', nom_complet_pluriel='Enseignements locaux';";
+	//echo "$sql<br />";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
 
 
 

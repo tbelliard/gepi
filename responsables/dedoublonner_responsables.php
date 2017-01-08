@@ -221,7 +221,9 @@ echo "<p class='bold'><a href=\"index.php\"><img src='../images/icons/back.png' 
 echo "<p>Il peut arriver que certains parents soient déclarés deux fois.<br />
 Cela peut se produire dans le cas où un parent est associé à deux enfants dans l'établissement.<br />
 Cela arrive assez fréquemment avec des saisies dans Sconet.<br />
-Cela peut aussi se produire dans le cas d'une initialisation CSV.</p>";
+Cela peut aussi se produire dans le cas d'une initialisation CSV.</p>
+<p style='margin-top:1em;margin-bottom:1em;'>Dans le cas d'une initialisation d'après Sconet, il peut être intéressant de consulter les liens suivants pour régler le problème à la source&nbsp;:<br />
+<a href='http://www.sylogix.org/projects/gepi/wiki/Adresses_resp_doublons' target='_blank'>http://www.sylogix.org/projects/gepi/wiki/Adresses_resp_doublons</a> et <br /><a href='http://www.sylogix.org/attachments/download/1152/2012-09-13_SIECLE-methode%20pour%20supprimer%20les%20doublons%20responsables.pdf' target='_blank'>http://www.sylogix.org/attachments/download/1152/2012-09-13_SIECLE-methode%20pour%20supprimer%20les%20doublons%20responsables.pdf</a></p>";
 
 $sql="SELECT pers_id,nom,prenom,COUNT(*) AS nb_doublons FROM resp_pers GROUP BY nom,prenom HAVING COUNT(*)>1 ORDER BY nom,prenom;";
 $test_resp=mysqli_query($GLOBALS["mysqli"], $sql);

@@ -344,52 +344,52 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 				//========================================================
 				// AID
 				// Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
-                $sql_call_data = "SELECT * FROM aid_config
-										  WHERE display_bulletin = 'y'
-										  OR bull_simplifie = 'y'
-										  ORDER BY nom";
-                $tmp_cpt_aid=0;
-                $tmp_nb_aid_a_afficher=0;
-                    $tmp_call_data = mysqli_query($mysqli, $sql_call_data);
-                    $tmp_nb_aid = $tmp_call_data->num_rows;
-                    while ($obj_call_data = $tmp_call_data->fetch_object()) {
-                        $tmp_indice_aid = $obj_call_data->indice_aid;
-                        $sql="SELECT * FROM j_aid_utilisateurs
-                        WHERE (id_utilisateur = '".$_SESSION['login']."'
-                        AND indice_aid = '".$tmp_indice_aid."')";
-                        //echo "$sql<br />";
-                        $tmp_call_prof = mysqli_query($mysqli, $sql);
-                        $tmp_nb_result = $tmp_call_prof->num_rows;
-                        if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
-                            $tmp_nom_aid = $obj_call_data->nom;
-                            $sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
-                            //echo "$sql<br />";
-                            $tmp_call_prof_aid = mysqli_query($mysqli, $sql);
-                            $tmp_nombre_aid = $tmp_call_prof_aid->num_rows;
-                            if ($tmp_nombre_aid>0) {
-                                if($tmp_nb_aid_a_afficher==0) {
-                                    $tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>"AID");
-                                    $tmp_sous_menu2=array();
-                                    $cpt_sous_menu2=0;
-                                }
+				$sql_call_data = "SELECT * FROM aid_config
+					WHERE display_bulletin = 'y'
+					OR bull_simplifie = 'y'
+					ORDER BY nom";
+				$tmp_cpt_aid=0;
+				$tmp_nb_aid_a_afficher=0;
+				$tmp_call_data = mysqli_query($mysqli, $sql_call_data);
+				$tmp_nb_aid = $tmp_call_data->num_rows;
+				while ($obj_call_data = $tmp_call_data->fetch_object()) {
+					$tmp_indice_aid = $obj_call_data->indice_aid;
+					$sql="SELECT * FROM j_aid_utilisateurs
+						WHERE (id_utilisateur = '".$_SESSION['login']."'
+						AND indice_aid = '".$tmp_indice_aid."')";
+					//echo "$sql<br />";
+					$tmp_call_prof = mysqli_query($mysqli, $sql);
+					$tmp_nb_result = $tmp_call_prof->num_rows;
+					if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
+						$tmp_nom_aid = $obj_call_data->nom;
+						$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
+						//echo "$sql<br />";
+						$tmp_call_prof_aid = mysqli_query($mysqli, $sql);
+						$tmp_nombre_aid = $tmp_call_prof_aid->num_rows;
+						if ($tmp_nombre_aid>0) {
+							if($tmp_nb_aid_a_afficher==0) {
+								$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>"AID");
+								$tmp_sous_menu2=array();
+								$cpt_sous_menu2=0;
+							}
 
-                                $tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
-                                $tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (saisie)";
-                                $cpt_sous_menu2++;
+							$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (saisie)";
+							$cpt_sous_menu2++;
 
-                                $tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
-                                $tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (visualisation)";
-                                $cpt_sous_menu2++;
+							$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (visualisation)";
+							$cpt_sous_menu2++;
 
-                                $tmp_nb_aid_a_afficher++;
-                                
-                            }
-                            $tmp_call_prof_aid->close();
-                        }
-                        $tmp_call_prof->close();
-                        $tmp_cpt_aid++;
-                    }
-                
+							$tmp_nb_aid_a_afficher++;
+
+						}
+						$tmp_call_prof_aid->close();
+					}
+					$tmp_call_prof->close();
+					$tmp_cpt_aid++;
+				}
+
 				if($tmp_nb_aid_a_afficher>0) {
 					$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 					$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
@@ -467,11 +467,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 													jec.login=jeg.login AND
 													jec.periode=jeg.periode AND
 													jep.professeur='".$_SESSION['login']."';";
-                    //echo "$sql";
-                        $resultat = mysqli_query($mysqli, $sql);  
-                        $res_test_affiche_bull_simp = $resultat->num_rows;
-                        $resultat->close();
-                    if($res_test_affiche_bull_simp > 0) {$affiche_li_bull_simp="y";}
+					//echo "$sql";
+					$resultat = mysqli_query($mysqli, $sql);  
+					$res_test_affiche_bull_simp = $resultat->num_rows;
+					$resultat->close();
+					if($res_test_affiche_bull_simp > 0) {$affiche_li_bull_simp="y";}
 				}
 
 				if($affiche_li_bull_simp=="y") {
@@ -557,6 +557,121 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 			$compteur_menu++;
 		}
 	}else{$barre_note = '';}
+
+	//========================================================
+	// AID
+	$sql="SELECT DISTINCT ac.*, a.nom AS nom_aid, a.id AS id_aid FROM aid_config ac, aid a, j_aid_utilisateurs jau
+			WHERE ac.indice_aid=a.indice_aid AND 
+				a.id=jau.id_aid AND 
+				a.indice_aid=jau.indice_aid AND 
+				jau.id_utilisateur='".$_SESSION['login']."'
+			ORDER BY ac.order_display1, ac.order_display2, a.numero, ac.nom;";
+	//echo "$sql<br />";
+	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_aid)>0) {
+		$tbs_menu_prof[$compteur_menu]=array("lien"=> '' , "texte"=>"AID");
+		$tmp_sous_menu=array();
+		$cpt_sous_menu=0;
+
+		while ($lig_aid=mysqli_fetch_object($res_aid)) {
+			$tmp_indice_aid = $lig_aid->indice_aid;
+			$tmp_aid_display_begin = $lig_aid->display_begin;
+			$tmp_aid_display_end = $lig_aid->display_end;
+			$tmp_aid_display_bulletin = $lig_aid->display_bulletin;
+			$tmp_aid_bull_simplifie = $lig_aid->bull_simplifie;
+			$tmp_aid_type_note = $lig_aid->type_note;
+			$tmp_aid_outils_complementaires = $lig_aid->outils_complementaires;
+			$tmp_aid_nom = $lig_aid->nom_aid;
+
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>$lig_aid->nom_aid);
+			//, "title"=>$lig_aid->nom." (".$lig_aid->nom_complet.") : ".$lig_aid->nom_aid
+			$tmp_sous_menu2=array();
+			$cpt_sous_menu2=0;
+
+			if(($lig_aid->display_bulletin=="y")||($lig_aid->bull_simplifie=="y")) {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (saisie)";
+				$cpt_sous_menu2++;
+
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (visualisation)";
+				$cpt_sous_menu2++;
+			}
+
+			/*
+			for($loop_per=$lig_aid->display_begin;$loop_per<=$lig_aid->display_end;$loop_per++) {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/popup.php?id_aid=".$lig_aid->id_aid."&periode_num=".$loop_per;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Liste Période ".$loop_per;
+				$cpt_sous_menu2++;
+			}
+
+			for($loop_per=$lig_aid->display_begin;$loop_per<=$lig_aid->display_end;$loop_per++) {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/groupes/get_csv.php?id_aid=".$lig_aid->id_aid."&periode_num=".$loop_per;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Export CSV Période ".$loop_per;
+				$cpt_sous_menu2++;
+			}
+			*/
+
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/popup.php?id_aid=".$lig_aid->id_aid;
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Liste élèves";
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+			$tmp_sous_menu2[$cpt_sous_menu2]['js']=" onclick=\"ouvre_popup_visu_aid('".$lig_aid->id_aid."','".$lig_aid->display_end."');return false;\"";
+			$cpt_sous_menu2++;
+
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/groupes/get_csv.php?id_aid=".$lig_aid->id_aid;
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Export CSV";
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+			$cpt_sous_menu2++;
+
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/impression/liste_pdf.php?id_aid=".$lig_aid->id_aid."&periode_num=".$lig_aid->display_end;
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Export PDF";
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+			$cpt_sous_menu2++;
+
+			if(getSettingAOui("active_module_trombinoscopes")) {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_trombinoscopes/trombi_impr.php?aid=".$lig_aid->id_aid;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Trombinoscope";
+				$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+				$cpt_sous_menu2++;
+
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_trombinoscopes/trombino_pdf.php?aid=".$lig_aid->id_aid;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Trombi.PDF";
+				$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+				$cpt_sous_menu2++;
+			}
+
+			if(getSettingValue("active_module_absence")=="2") {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_abs2/index.php?type_selection=id_aid&id_aid=".$lig_aid->id_aid;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Saisie Absences";
+				$cpt_sous_menu2++;
+			}
+
+			$sql="SELECT 1=1 FROM j_aid_utilisateurs_gest SET id_utilisateur= '".$_SESSION['login']."' AND id_aid = '".$lig_aid->id_aid."' AND indice_aid='".$lig_aid->indice_aid."';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_aid)>0) {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid->id_aid."&indice_aid=".$lig_aid->indice_aid;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Gérer les élèves";
+				$cpt_sous_menu2++;
+			}
+
+			if($lig_aid->outils_complementaires=="y") {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/index_fiches.php?indice_aid=".$lig_aid->indice_aid;
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Fiches projet";
+				$cpt_sous_menu2++;
+			}
+		}
+
+		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+		$cpt_sous_menu++;
+
+		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
+		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+		$compteur_menu++;
+
+	}
+	//========================================================
+
 
 	//=======================================================
 	// Module emploi du temps
@@ -804,5 +919,5 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	//=======================================================
 	$tbs_menu_prof[$compteur_menu]=array("lien"=> '/utilisateurs/mon_compte.php' , "texte"=>"Mon compte");
 	$compteur_menu++;
-	
+
 ?>
