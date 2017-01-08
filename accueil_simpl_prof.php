@@ -1095,11 +1095,15 @@ for($i=0;$i<count($groups);$i++){
 //==================================================================
 // AID
 $ii=$i;
-
+/*
 $sql="SELECT * FROM aid_config
 		WHERE display_bulletin = 'y'
 			OR bull_simplifie = 'y'
 			ORDER BY nom;";
+*/
+$sql="SELECT ac.* FROM aid_config ac, aid a
+		WHERE ac.indice_aid=a.indice_aid 
+		ORDER BY ac.order_display1, ac.order_display2, a.numero, ac.nom;";
 //echo "$sql<br />";
 $res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 $i=0;
@@ -1409,28 +1413,31 @@ echo "Periode $j<br />
 								echo "<!-- Colonne Graphe -->\n";
 								echo "<td class='$class_style'>\n";
 								if($afficher_aid=="y") {
-									echo "<div id='h_g_".$ii."_".$j."'>";
-									$cpt=0;
-									for($loop=0;$loop<count($tab_clas_aid);$loop++) {
-										if($cpt>0){echo "<br />\n";}
-										echo "<a href='visualisation/affiche_eleve.php?id_classe=".$tab_clas_aid[$loop]['id']."'";
-										if($pref_accueil_infobulles=="y"){
-											echo " onmouseover=\"afficher_div('info_graphe_".$ii."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_graphe_".$ii."_".$j."_".$cpt."');\"";
+									if(($tmp_aid_type_note=='every')||
+									(($j==$tmp_aid_display_end)&&($tmp_aid_type_note=='last'))) {
+										echo "<div id='h_g_".$ii."_".$j."'>";
+										$cpt=0;
+										for($loop=0;$loop<count($tab_clas_aid);$loop++) {
+											if($cpt>0){echo "<br />\n";}
+											echo "<a href='visualisation/affiche_eleve.php?id_classe=".$tab_clas_aid[$loop]['id']."'";
+											if($pref_accueil_infobulles=="y"){
+												echo " onmouseover=\"afficher_div('info_graphe_".$ii."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_graphe_".$ii."_".$j."_".$cpt."');\"";
+											}
+											echo ">";
+											echo "<img src='images/icons/graphes.png' width='32' height='32' alt='Graphe' border='0' />";
+											if(count($tab_clas_aid)>1){echo " ".$tab_clas_aid[$loop]['classe'];}
+											echo "</a>\n";
+	
+	
+											if($pref_accueil_infobulles=="y"){
+												echo "<div id='info_graphe_".$ii."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 10em;' onmouseout=\"cacher_div('info_graphe_".$ii."_".$j."_".$cpt."');\">Outil graphique<br />".$tab_clas_aid[$loop]['classe'].".</div>\n";
+	
+												$tab_liste_infobulles[]='info_graphe_'.$ii.'_'.$j.'_'.$cpt;
+											}
+											$cpt++;
 										}
-										echo ">";
-										echo "<img src='images/icons/graphes.png' width='32' height='32' alt='Graphe' border='0' />";
-										if(count($tab_clas_aid)>1){echo " ".$tab_clas_aid[$loop]['classe'];}
-										echo "</a>\n";
-	
-	
-										if($pref_accueil_infobulles=="y"){
-											echo "<div id='info_graphe_".$ii."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 10em;' onmouseout=\"cacher_div('info_graphe_".$ii."_".$j."_".$cpt."');\">Outil graphique<br />".$tab_clas_aid[$loop]['classe'].".</div>\n";
-	
-											$tab_liste_infobulles[]='info_graphe_'.$ii.'_'.$j.'_'.$cpt;
-										}
-										$cpt++;
+										echo "</div>\n";
 									}
-									echo "</div>\n";
 								}
 								echo "</td>\n";
 

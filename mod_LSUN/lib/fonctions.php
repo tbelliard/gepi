@@ -838,6 +838,16 @@ function getCodeParcours($id_aid ) {
 	
 }
 
+function getCommentaireAidElv($login, $id_aid, $periode) {
+	global $mysqli;
+	$sqlComAidEpi = "SELECT appreciation FROM aid_appreciations WHERE login = '$login' AND id_aid = '$id_aid' AND periode = '$periode' ";
+	
+	//echo $sqlComAidEpi."<br>";
+	$resultchargeDB = $mysqli->query($sqlComAidEpi);
+	return $resultchargeDB ;
+	
+	
+}	
 
 function assureDisciplinePresente($refDisciplines) {
 	global $xml;
@@ -870,18 +880,7 @@ function assureDisciplinePresente($refDisciplines) {
 		$disciplines->appendChild($noeudDiscipline);
 			
 	}
-  
-
-
-
-
-
-
-
-
 
 }
-
-
 
 

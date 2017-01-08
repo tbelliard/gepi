@@ -1884,7 +1884,6 @@ function check_user_temp_directory($login_user="", $_niveau_arbo=0) {
 	}
 
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$login_user."'";
-            
 	$res_temp_dir =  mysqli_query($mysqli, $sql);  
 	if($res_temp_dir->num_rows == 0){
 		// Cela revient à dire que l'utilisateur n'est pas dans la table utilisateurs???
@@ -4420,7 +4419,7 @@ function get_commune($code_commune_insee,$mode){
  * @return string civilite nom prénom de l'utilisateur
  */
 function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
-    global $mysqli;
+	global $mysqli;
 	$retour="";
 	$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
 	$res_user=mysqli_query($mysqli, $sql);
@@ -9349,6 +9348,7 @@ function get_adresse_responsable($pers_id, $login_resp="") {
 	$tab_adresse['commune']="";
 	$tab_adresse['pays']="";
 	$tab_adresse['en_ligne']="";
+	$tab_adresse['adresse_sans_cp_commune']="";
 
 	if(($pers_id!="")||($login_resp!="")) {
 		if($pers_id!="") {
@@ -9379,6 +9379,7 @@ function get_adresse_responsable($pers_id, $login_resp="") {
 				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
 				$tab_adresse['en_ligne'].=$lig->adr3;
 			}
+			$tab_adresse['adresse_sans_cp_commune']=$tab_adresse['en_ligne'];
 
 			if($lig->cp!="") {
 				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}

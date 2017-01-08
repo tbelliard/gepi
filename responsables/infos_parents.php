@@ -475,7 +475,7 @@ if((!isset($mode))||($mode==1)) {
 	 <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1'>Export CSV</a>
 	 - <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1&mode_csv=b'>Export CSV <em>(adresse avec colonnes séparées pour adresse, code postal, commune)</em></a>
 	 - <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1b&mode_csv=resp1'>CSV Ariane <em>(pour les voyages à l'étranger; responsable légal 1 seulement)</em></a>
-	 - <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1b&mode_csv=resp1_et_2'>CSV Ariane avec les responsableslégaux 1 et 2</a>
+	 - <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_1b&mode_csv=resp1_et_2'>CSV Ariane avec les responsables légaux 1 et 2</a>
 	</p>\n";
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";

@@ -31,6 +31,7 @@ $metJourResp = filter_input(INPUT_POST, 'MetJourResp');
 if ($metJourResp == 'y') {
 	MetAJourResp();
 }
+
 //===== Choix des données à exporter =====
 //===== Création du fichier =====
 $creeFichier = filter_input(INPUT_POST, 'creeFichier');
@@ -76,7 +77,9 @@ if ($creeFichier == 'y') {
 	}	else if ($creeFichier == 'y') {
 		include_once 'creeFichier.php';
 	}
-		
+	
+	include_once 'creeFichier.php';
+	
 }
 
 
@@ -744,6 +747,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y"
+							   
 							   <?php if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_Elv") != "n")) {echo ' checked '; }  ?> />
 						<label for="traiteEpiElv">données élèves des EPI</label>
 					</li>
@@ -776,21 +780,13 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteParent" id="traiteParent" value="y"  
-<<<<<<< bae0828fd34f56c2c80b6fbd640fa3818a388c2b
-<<<<<<< b86cdb3ff11ae9315fd89fea47380346dac07a62
-=======
->>>>>>> Export de EPI
+							   
 							   <?php if (getSettingValue("LSU_Donnees_responsables") != "n") {echo ' checked '; }  ?> />
 						<label for="traiteParent" title="Exporter les informations relatives aux responsables (nom prénom adresse">
 							informations relatives aux responsables de l’élève
 						</label>
-<<<<<<< bae0828fd34f56c2c80b6fbd640fa3818a388c2b
-=======
 							   <?php if (getSettingValue("LSU_donnee_parent") != "n") {echo ' checked '; }  ?> />
 						<label for="traiteParent">informations relatives aux responsables de l’élève</label>
->>>>>>> Export responsables
-=======
->>>>>>> Export de EPI
 					</li>
 				</ul>
 			</div>

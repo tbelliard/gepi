@@ -313,7 +313,6 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$episGroupes->appendChild($noeudEpisGroupes);
 				// enseignants
 				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
-				
 				$modaliteEns = getModaliteGroupe($episGroupe->id);
 				if ($modaliteEns->num_rows) {
 					while ($ensModalite = $modaliteEns->fetch_object()) {
@@ -328,7 +327,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 						$noeudProf->appendChild($attsProf);
 						$noeudEnseigneDis->appendChild($noeudProf);
 					}
-				}	
+				}
 				
 				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
 				
