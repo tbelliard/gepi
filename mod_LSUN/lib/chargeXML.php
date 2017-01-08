@@ -504,26 +504,32 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_Elv") != "n")) {
 				// non obligatoire
-				$episEleve = getAidEleve($eleve->login, $_EPI);
+				$episEleve = getAidEleve($eleve->login, $_EPI, $eleve->periode);
 				if ($episEleve->num_rows) {
 					//var_dump($episEleve);
 					$listeEpisEleve = $xml->createElement('epis-eleve');
 					while ($epiEleve = $episEleve->fetch_object()) {
-						//var_dump($epiEleve);
-						$noeudEpiEleve = $xml->createElement('epi-eleve');
-						$attsEpisEleve = $xml->createAttribute('epi-groupe-ref');
-						$attsEpisEleve->value = "EPI_GROUPE_".$epiEleve->id_aid;
-						$noeudEpiEleve->appendChild($attsEpisEleve);
-						
-						$commentaireEpiElv = getCommentaireAidElv($eleve->login, $epiEleve->id_aid, $eleve->periode);
-						if ($commentaireEpiElv->num_rows) {
-							$comm = trim($commentaireEpiElv->fetch_object()->appreciation);
-							if ($comm) {
-								$noeudComEpiEleve = $xml->createElement('commentaire', $comm);
-								$noeudEpiEleve->appendChild($noeudComEpiEleve);
+						//on verifie que le groupe est bien déclaré
+						if (!verifieGroupeEPI($epiEleve->id_aid)) {
+							$msgErreur = "<p class='rouge'>".$eleve->nom." ".$eleve->prenom." a un EPI qui n'est pas déclaré en administrateur, il ne sera pas exporté (AID $epiEleve->indice_aid).</p>";
+						} else {
+							$noeudEpiEleve = $xml->createElement('epi-eleve');
+							$attsEpisEleve = $xml->createAttribute('epi-groupe-ref');
+							$attsEpisEleve->value = "EPI_GROUPE_".$epiEleve->id_aid;
+							$noeudEpiEleve->appendChild($attsEpisEleve);
+
+							$commentaireEpiElv = getCommentaireAidElv($eleve->login, $epiEleve->id_aid, $eleve->periode);
+							if ($commentaireEpiElv->num_rows) {
+								$comm = trim($commentaireEpiElv->fetch_object()->appreciation);
+								if ($comm) {
+									$noeudComEpiEleve = $xml->createElement('commentaire', $comm);
+									$noeudEpiEleve->appendChild($noeudComEpiEleve);
+								}
 							}
+							$listeEpisEleve->appendChild($noeudEpiEleve);
+							
 						}
-						$listeEpisEleve->appendChild($noeudEpiEleve);
+						
 					}
 					$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
 				}
@@ -531,7 +537,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			if ((getSettingValue("LSU_traite_AP") != "n") && (getSettingValue("LSU_traite_AP_Elv") != "n")) {
 				// non obligatoire
-				$apEleve = getAidEleve($eleve->login, $_AP);
+				$apEleve = getAidEleve($eleve->login, $_AP, $eleve->periode);
 				if ($apEleve->num_rows) {
 					$listeAccPersosEleve = $xml->createElement('acc-persos-eleve');
 					while ($accPersosEleve = $apEleve->fetch_object()) {
@@ -556,7 +562,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			if ((getSettingValue("LSU_Parcours") != "n") && (getSettingValue("LSU_ParcoursElv") != "n")) {
 				// non obligatoire
-				$parcoursEleve = getAidEleve($eleve->login, $_PARCOURS);
+				$parcoursEleve = getAidEleve($eleve->login, $_PARCOURS, $eleve->periode);
 				if ($parcoursEleve->num_rows) {
 					$listeParcoursEleve = $xml->createElement('liste-parcours');
 					$creeParcours = FALSE;

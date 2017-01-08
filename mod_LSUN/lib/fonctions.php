@@ -624,7 +624,7 @@ function getResumeAid($aid_id) {
 	
 }
 
-function getAidEleve($login, $typeAid) {
+function getAidEleve($login, $typeAid, $periode = NULL) {
 	global $mysqli;
 	//indice_aid → la catégorie de l'AID
 	//id_aid → l'identifiant de l'AID
@@ -634,28 +634,15 @@ function getAidEleve($login, $typeAid) {
 		. "INNER JOIN aid_config AS ac "
 		. "ON ac.indice_aid = t0.indice_aid "
 		. "WHERE ac.type_aid = $typeAid ";
-	
-	$sqlGetAidEleve = "SELECT t1.* FROM ($sqlGetAidEleve02) AS t1 "
-		. "INNER JOIN lsun_j_epi_enseignements AS lje "
-		. "ON t1.indice_aid = lje.id_enseignements "
-		. "WHERE lje.aid = $typeAid ";
-	
-	// echo $sqlGetAidEleve02."<br>";
+	if($periode) {
+		$sqlGetAidEleve02 .= " AND ac.display_begin <= $periode AND ac.display_end >= $periode ";
+	}
+		
+	//echo $sqlGetAidEleve02."<br>";
 	$resultchargeDB = $mysqli->query($sqlGetAidEleve02);
 	return $resultchargeDB ;
 	
 }
-
-function getCommentaireAidElv($login, $id_aid, $periode) {
-	global $mysqli;
-	$sqlComAidEpi = "SELECT appreciation FROM aid_appreciations WHERE login = '$login' AND id_aid = '$id_aid' AND periode = '$periode' ";
-	
-	//echo $sqlComAidEpi."<br>";
-	$resultchargeDB = $mysqli->query($sqlComAidEpi);
-	return $resultchargeDB ;
-	
-	
-}	
 
 function getModaliteGroupe($groupe_id) {
 	global $mysqli;
@@ -848,6 +835,7 @@ function getCommentaireAidElv($login, $id_aid, $periode) {
 	
 	
 }	
+
 
 function assureDisciplinePresente($refDisciplines) {
 	global $xml;
