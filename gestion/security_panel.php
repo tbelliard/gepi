@@ -46,6 +46,12 @@ $afficher_les_alertes_d_un_compte=isset($_POST['afficher_les_alertes_d_un_compte
 
 $user_login2=isset($_POST['user_login2']) ? $_POST['user_login2'] : (isset($_GET['user_login2']) ? $_GET['user_login2'] : '');
 
+$avec_login=isset($_POST['avec_login']) ? $_POST['avec_login'] : (isset($_GET['avec_login']) ? $_GET['avec_login'] : 'n');
+
+if($afficher_les_alertes_d_un_compte=="y") {
+	$avec_login="y";
+}
+
 if (isset($_GET['action'])) {
 	check_token();
 	// Une action a été demandée
@@ -120,8 +126,6 @@ if(mysqli_num_rows($test_arch)>0) {
 
 	echo "<input type='submit' name='filtrer_user' id='filtrer_user' value='Filtrer' />\n";
 
-
-
 	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login :%' GROUP BY description ORDER BY description;";
 
 	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login :%' GROUP BY description ORDER BY nb DESC;";
@@ -146,6 +150,14 @@ if(mysqli_num_rows($test_arch)>0) {
 		echo "</select>\n";
 	}
 
+	if($avec_login=="y") {
+		$checked="checked ";
+	}
+	else {
+		$checked="";
+	}
+	echo "<nobr title=\"N'afficher que les alertes avec login associé,\npas les lignes correspondant à des tentatives d'accès après fin de session,...\"><input type='checkbox' name='avec_login' id='avec_login' value='y' onchange=\"checkbox_change(this.id);document.forms['form1'].submit();\" $checked/><label for='avec_login' id='texte_avec_login' style='font-weight:normal'>Avec login</label></nobr>\n";
+
 
 /*
 
@@ -156,9 +168,13 @@ SELECT DISTINCT adresse_ip, count(adresse_ip) as nb FROM tentatives_intrusion GR
 echo "</p>\n";
 
 echo "<script type='text/javascript'>
+	".js_checkbox_change_style()."
+
 	if(document.getElementById('filtrer_user')) {
 		document.getElementById('filtrer_user').style.display='none';
 	}
+
+	checkbox_change('avec_login');
 </script>\n";
 
 echo "</form>\n";
@@ -431,7 +447,11 @@ echo "<th style='width: 20%;'>Actions</th>\n";
 echo "</tr>\n";
 
 //$req = mysql_query("SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new') ORDER BY t.date DESC");
-$sql="SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new') ORDER BY ";
+$sql="SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new'";
+if($avec_login=="y") {
+	$sql.=" AND login!='-'";
+}
+$sql.=") ORDER BY ";
 if(isset($_GET['order_by'])) {
 	$order_by=$_GET['order_by'];
 	if($order_by=='login') {
