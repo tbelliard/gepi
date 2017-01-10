@@ -646,7 +646,7 @@ Par exemple, réclamer une punition à un élève." /></a></div>
 									$loop=0;
 									foreach($login_dest as $key => $value) {
 										// Avec l'identifiant spécial, on peut se retrouver, en ajoutant des destinataires, à avoir deux fois un même destinataire.
-										echo "<br /><span id='span_login_u_choisi_special_$loop'>";
+										echo "<br /><span id='span_login_u_choisi_special_$loop' class='span_user_dest_alerte'>";
 										//echo "<input type='hidden' name='login_dest[]' value='".$login_dest[$loop]."' />";
 										//echo civ_nom_prenom($login_dest[$loop]);
 										echo "<input type='hidden' name='login_dest[]' value='".$value."' />";
@@ -656,7 +656,7 @@ Par exemple, réclamer une punition à un élève." /></a></div>
 									}
 								}
 								else {
-									echo "<br /><span id='span_login_u_choisi_special'>";
+									echo "<br /><span id='span_login_u_choisi_special' class='span_user_dest_alerte'>";
 									echo "<input type='hidden' name='login_dest[]' value='".$login_dest."' />";
 									echo civ_nom_prenom($login_dest);
 									echo " <a href=\"javascript:removeElement('span_login_u_choisi_special')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
@@ -780,9 +780,43 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 			</tr>
 		</table>
 		<input type='hidden' name='message_envoye' value='y' />
-		<p><input type='submit' name='envoyer' value='Envoyer' /></p>
+		<p>
+			<input type='submit' name='envoyer' id='envoyer' value='Envoyer' />
+			<input type='button' name='envoyer2' id='envoyer2' value='Envoyer' onclick="test_et_submit_envoi_alerte()" style="display:none;" />
+		</p>
 	</fieldset>
 </form>
+
+<script type='text/javascript'>
+	document.getElementById('envoyer').style.display='none';
+	document.getElementById('envoyer2').style.display='';
+
+	function test_et_submit_envoi_alerte() {
+		if(document.getElementById('sujet').value=='') {
+			alert("Le sujet est vide.");
+		}
+		else {
+			if(document.getElementById('message_messagerie').value=='') {
+				alert("Le message est vide.");
+			}
+			else {
+
+				tab=document.getElementsByClassName('span_user_dest_alerte');
+				if(tab.length==0) {
+					if(confirm("Aucun destinataire ne semble choisi. Voulez-vous quand même tenter l'envoi?")) {
+
+
+						document.formulaire.submit();
+					}
+				}
+				else {
+
+					document.formulaire.submit();
+				}
+			}
+		}
+	}
+</script>
 <p><br /></p>
 
 <?php
@@ -1001,7 +1035,7 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 	function ajouter_mon_compte() {
 		i=-1;
 
-		document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='<?php echo $_SESSION['login'];?>' /><?php echo "Moi-même (<em>".$_SESSION['prenom']." ".$_SESSION['nom']."</em>)".$chaine_edt_ajouter_mon_compte;?> <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
+		document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"' class='span_user_dest_alerte'><input type='hidden' name='login_dest[]' value='<?php echo $_SESSION['login'];?>' /><?php echo "Moi-même (<em>".$_SESSION['prenom']." ".$_SESSION['nom']."</em>)".$chaine_edt_ajouter_mon_compte;?> <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 
 		// Masquage du texte initial d'ajout de destinataires
 		if(document.getElementById('span_ajoutez_un_ou_des_destinataires')) {document.getElementById('span_ajoutez_un_ou_des_destinataires').style.display='none';}
@@ -1012,7 +1046,7 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 			for(i=0;i<<?php echo $cpt_u;?>;i++) {
 				if(document.getElementById('login_dest_'+i)) {
 					if(document.getElementById('login_dest_'+i).checked==true) {
-						document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='"+login_u[i]+"' />"+designation_u[i]+"<?php echo $chaine_edt_ajouter_lien_prof;?> <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
+						document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"' class='span_user_dest_alerte'><input type='hidden' name='login_dest[]' value='"+login_u[i]+"' />"+designation_u[i]+"<?php echo $chaine_edt_ajouter_lien_prof;?> <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 
 						// On décoche les cases pour que si on ajoute par la suite d'autres destinataires,
 						// ils ne soient pas pré-sélectionnés, au risque de faire apparaitre des doublons.
