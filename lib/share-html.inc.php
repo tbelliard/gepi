@@ -1832,6 +1832,14 @@ function affiche_actions_compte($login, $target="") {
 			$retour.=" target='$target'";
 		}
 		$retour.=">Réinitialiser cumul</a>";
+
+		$retour.="<br />\n";
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Voir les alertes</a>";
 	}
 	$retour.="</p>\n";
 
