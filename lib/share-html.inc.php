@@ -5347,15 +5347,15 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 	$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
 	$acces_bilan_individuel=acces("/mod_abs2/bilan_individuel.php", $_SESSION['statut']);
 
-	$sql="SELECT e.login, aad.eleve_id, count(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad, 
+	$sql="SELECT e.login, aad.eleve_id, SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad, 
 											eleves e 
 										WHERE aad.eleve_id=e.id_eleve AND 
 											(e.date_sortie IS NULL OR e.date_sortie LIKE '0000-00-00%' OR e.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."') AND 
 											manquement_obligation_presence='1' AND 
 											non_justifiee!='0' AND 
 											date_demi_jounee<'".$date_test."' 
-										GROUP BY eleve_id HAVING count(non_justifiee)>".$abs2_afficher_alerte_nb_nj." 
-										ORDER BY count(non_justifiee) DESC;";
+										GROUP BY eleve_id HAVING SUM(non_justifiee)>".$abs2_afficher_alerte_nb_nj." 
+										ORDER BY SUM(non_justifiee) DESC;";
 	//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
 	$res_alerte=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_alerte)>0) {
@@ -5436,13 +5436,13 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 					if(mysqli_num_rows($res_per)>0) {
 						$lig_per=mysqli_fetch_object($res_per);
 
-						$sql="SELECT count(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad 
+						$sql="SELECT SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad 
 														WHERE eleve_id='".$lig->eleve_id."' AND 
 															manquement_obligation_presence='1' AND 
 															non_justifiee!='0' AND 
 															date_demi_jounee>'".$lig_per->date_fin."' AND 
 															date_demi_jounee<'".$date_test."' 
-														GROUP BY eleve_id HAVING count(non_justifiee)>".$abs2_afficher_alerte_nb_nj.";";
+														GROUP BY eleve_id HAVING SUM(non_justifiee)>".$abs2_afficher_alerte_nb_nj.";";
 						//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
 						$date_absence_eleve_debut=$lig_per->date_fin;
 						$date_absence_eleve_fin=$date_test;
@@ -5451,12 +5451,12 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 				else {
 					// On prend le début de l'année
 
-						$sql="SELECT count(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad
+						$sql="SELECT SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad
 														WHERE eleve_id='".$lig->eleve_id."' AND 
 															manquement_obligation_presence='1' AND 
 															non_justifiee!='0' AND 
 															date_demi_jounee<'".$date_test."' 
-														GROUP BY eleve_id HAVING count(non_justifiee)>".$abs2_afficher_alerte_nb_nj.";";
+														GROUP BY eleve_id HAVING SUM(non_justifiee)>".$abs2_afficher_alerte_nb_nj.";";
 						//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
 
 						$date_absence_eleve_debut=strftime("%Y-%m-%d", getSettingValue('begin_bookings'));
