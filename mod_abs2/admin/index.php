@@ -108,6 +108,40 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+
+		if (isset($_POST['abs2_afficher_alerte_abs'])) {
+			if (!saveSetting("abs2_afficher_alerte_abs", "y")) {
+				$msg = "Erreur lors de l'enregistrement à 'y' du paramètre 'abs2_afficher_alerte_abs' !";
+			}
+		}
+		else {
+			if (!saveSetting("abs2_afficher_alerte_abs", "n")) {
+				$msg = "Erreur lors de l'enregistrement à 'n' du paramètre 'abs2_afficher_alerte_abs' !";
+			}
+		}
+
+		if (isset($_POST['abs2_afficher_alerte_nb_abs'])) {
+			if(!preg_match("/^[0-9]{1,}$/", $_POST['abs2_afficher_alerte_nb_abs'])) {
+				$msg = "Valeur invalide pour 'abs2_afficher_alerte_nb_abs' !";
+			}
+			else {
+				if (!saveSetting("abs2_afficher_alerte_nb_abs", $_POST['abs2_afficher_alerte_nb_abs'])) {
+					$msg = "Erreur lors de l'enregistrement du paramètre 'abs2_afficher_alerte_nb_abs' !";
+				}
+			}
+		}
+
+		if (isset($_POST['abs2_afficher_alerte_abs_delai'])) {
+			if((!preg_match("/^[0-9]{1,}$/", $_POST['abs2_afficher_alerte_abs_delai']))||($_POST['abs2_afficher_alerte_abs_delai']<1)) {
+				$msg = "Valeur invalide pour 'abs2_afficher_alerte_abs_delai' !";
+			}
+			else {
+				if (!saveSetting("abs2_afficher_alerte_abs_delai", $_POST['abs2_afficher_alerte_abs_delai'])) {
+					$msg = "Erreur lors de l'enregistrement du paramètre 'abs2_afficher_alerte_abs_delai' !";
+				}
+			}
+		}
+
 		if (isset($_POST['abs2_retard_critere_duree'])) {
 			if (!saveSetting("abs2_retard_critere_duree", $_POST['abs2_retard_critere_duree'])) {
 				$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
@@ -415,15 +449,37 @@ $abs2_afficher_alerte_nj_delai=getSettingValue("abs2_afficher_alerte_nj_delai");
 if($abs2_afficher_alerte_nj_delai=="") {
 	$abs2_afficher_alerte_nj_delai=30;
 }
+
+$abs2_afficher_alerte_nb_abs=getSettingValue("abs2_afficher_alerte_nb_abs");
+if($abs2_afficher_alerte_nb_abs=="") {
+	$abs2_afficher_alerte_nb_abs=4;
+}
+
+$abs2_afficher_alerte_abs_delai=getSettingValue("abs2_afficher_alerte_abs_delai");
+if($abs2_afficher_alerte_abs_delai=="") {
+	$abs2_afficher_alerte_abs_delai=30;
+}
 ?>
 <p>
 	<input type="checkbox" name="abs2_afficher_alerte_nj" id="abs2_afficher_alerte_nj" value="y"
 	<?php if (getSettingValue("abs2_afficher_alerte_nj")=='y') echo " checked='checked'"; ?> />
+
 	<label for="abs2_afficher_alerte_nj">&nbsp;Alerter en page d'accueil les comptes CPE lorsque plus de </label>
 	<input type="text" name="abs2_afficher_alerte_nb_nj" id="abs2_afficher_alerte_nb_nj" onkeydown="clavier_2(this.id,event,1,50);" value="<?php echo $abs2_afficher_alerte_nb_nj;?>" size="2" />
-	<label for="abs2_afficher_alerte_nj"> manquements (<em>dans la période courante</em>) ne sont pas justifiés depuis plus de </label>
+	<label for="abs2_afficher_alerte_nj"> manquements <em>(dans la période courante)</em> ne sont pas justifiés depuis plus de </label>
 	<input type="text" name="abs2_afficher_alerte_nj_delai" id="abs2_afficher_alerte_nj_delai" onkeydown="clavier_2(this.id,event,1,300);" value="<?php echo $abs2_afficher_alerte_nj_delai;?>" size="2" />
 	<label for="abs2_afficher_alerte_nj"> jours.</label>
+</p>
+
+<p>
+	<input type="checkbox" name="abs2_afficher_alerte_abs" id="abs2_afficher_alerte_abs" value="y"
+	<?php if (getSettingValue("abs2_afficher_alerte_abs")=='y') echo " checked='checked'"; ?> />
+
+	<label for="abs2_afficher_alerte_abs">&nbsp;Alerter en page d'accueil les comptes CPE lorsque plus de </label>
+	<input type="text" name="abs2_afficher_alerte_nb_abs" id="abs2_afficher_alerte_nb_abs" onkeydown="clavier_2(this.id,event,1,50);" value="<?php echo $abs2_afficher_alerte_nb_abs;?>" size="2" />
+	<label for="abs2_afficher_alerte_abs"> manquements <em>(dans la période courante) (justifiés ou non)</em> depuis plus de </label>
+	<input type="text" name="abs2_afficher_alerte_abs_delai" id="abs2_afficher_alerte_abs_delai" onkeydown="clavier_2(this.id,event,1,300);" value="<?php echo $abs2_afficher_alerte_abs_delai;?>" size="2" />
+	<label for="abs2_afficher_alerte_abs"> jours.</label>
 </p>
 
 </div>

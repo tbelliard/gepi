@@ -355,6 +355,25 @@
 		}
 	}
 
+	if((getSettingAOui('abs2_afficher_alerte_abs'))&&(in_array($_SESSION['statut'], array('cpe')))) {
+		// Que pour les CPE pour le moment
+
+		// Autres paramètres à implémenter: envoi de mail tous les tel jour de la semaine ou tel jour du mois (à la connexion du premier cpe, ou scolarite ou administrateur)
+		// Renseigner un setting avec la date du dernier envoi... calculer la date de l'envoi suivant au cas où... ou renseigner une date d'envoi suivant... et si on dépasse, on envoie.
+
+		// Paramétrage des jours d'affichage non encore implémenté
+		//$tab_jours_affichage_alerte_nj=array(1,2,3,4,5); // strftime("%u")
+		$tab_jours_affichage_alerte_abs=array(0,1,2,3,4,5,6); // strftime("%u")
+		if(in_array(strftime("%u"), $tab_jours_affichage_alerte_abs)) {
+			$lignes_alerte_abs2_abs=abs2_afficher_tab_alerte_abs();
+			if($lignes_alerte_abs2_abs!="") {
+				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau des absences justifiées ou non depuis un certain temps.\">";
+				$chaine_tableaux_page_accueil.=$lignes_alerte_abs2_abs;
+				$chaine_tableaux_page_accueil.="</div>";
+			}
+		}
+	}
+
 	if ((count($afficheAccueil->message))||
 	($chaine_tableaux_page_accueil!="")||
 	((isset($liste_evenements))&&($liste_evenements!=""))||
