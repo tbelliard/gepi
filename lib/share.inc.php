@@ -15756,4 +15756,13 @@ function getResume($aid_id) {
 	return $retour;
 }
 
+function acces_trombinoscope() {
+	$retour="false";
+	if(getSettingAOui("active_module_trombinoscopes")) {
+		if(acces("/mod_trombinoscopes/trombinoscope.php", $_SESSION['statut'])) {
+			$retour="true";
+		}
+	}
+	return $retour;
+}
 ?>
