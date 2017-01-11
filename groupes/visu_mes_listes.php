@@ -54,20 +54,7 @@ if(acces("/classes/export_ele_opt.php", $_SESSION['statut'])) {
 }
 echo "</p>\n";
 
-echo "<script type='text/javascript'>
-	var fen;
-	function ouvre_popup_visu_groupe(id_groupe,id_classe,periode_num) {
-		//alert('azerty');
-		eval(\"fen=window.open('popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"&periode_num=\"+periode_num+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		setTimeout('fen.focus()',500);
-	}
-
-	function ouvre_popup_visu_aid(id_aid,periode_num) {
-		//alert('azerty');
-		eval(\"fen=window.open('../aid/popup.php?id_aid=\"+id_aid+\"&periode_num=\"+periode_num+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		setTimeout('fen.focus()',500);
-	}
-</script>";
+echo ouvre_popup_visu_groupe_visu_aid("y");
 
 //$id_classe=isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL;
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;

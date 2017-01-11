@@ -633,7 +633,7 @@ for($i=0;$i<count($groups);$i++){
 			echo ", ";
 			$liste_classes_du_groupe.=", ";
 		}
-		echo "<a href='groupes/popup.php?id_groupe=".$groups[$i]['id']."&amp;id_classe=".$classe['id']."' onClick=\"ouvre_popup_visu_groupe('".$groups[$i]['id']."','".$classe['id']."');return false;\" target='_blank'";
+		echo "<a href='groupes/popup.php?id_groupe=".$groups[$i]['id']."&amp;id_classe=".$classe['id']."' onClick=\"ouvre_popup_visu_groupe('".$groups[$i]['id']."','".$classe['id']."','');return false;\" target='_blank'";
 
 		if($pref_accueil_infobulles=="y"){
 			echo " onmouseover=\"afficher_div('info_popup_".$i."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\"";
@@ -1181,7 +1181,7 @@ while ($lig_cat_aid=mysqli_fetch_object($res_aid)) {
 			$cpt_sous_menu2++;
 			*/
 			//echo "<a href='$gepiPath/aid/popup.php?id_aid=".$lig_aid->id."' target='_blank' onclick=\"ouvre_popup_visu_aid('".$lig_aid->id."','".$lig_cat_aid->display_end."');return false;\">";
-			echo "<a href='$gepiPath/aid/popup.php?id_aid=".$lig_aid->id."' target='_blank' onclick=\"ouvre_popup_visu_aid('".$lig_aid->id."');return false;\">";
+			echo "<a href='$gepiPath/aid/popup.php?id_aid=".$lig_aid->id."' target='_blank' onclick=\"ouvre_popup_visu_aid('".$lig_aid->id."','');return false;\">";
 			for($loop=0;$loop<count($tab_clas_aid);$loop++) {
 				if($loop>0) {
 					echo ", ";
@@ -1461,7 +1461,7 @@ echo "Periode $j<br />
 												}
 												echo ">";
 												echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Bulletin simplifié' border='0' />";
-												if(count($groups[$i]["classes"]["classes"])>1){echo " ".$tab_clas_aid[$loop]['classe'];}
+												if(count($tab_clas_aid[$loop])>1){echo " ".$tab_clas_aid[$loop]['classe'];}
 												echo "</a>\n";
 	
 												if($pref_accueil_infobulles=="y"){
@@ -1661,17 +1661,7 @@ echo "<script type='text/javascript'>
 		}
 	}
 
-	var fen;
-	function ouvre_popup_visu_groupe(id_groupe,id_classe){
-		//eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		setTimeout('fen.focus()',500);
-	}
-
-	function ouvre_popup_visu_aid(id_aid){
-		eval(\"fen=window.open('aid/popup.php?id_aid=\"+id_aid+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		setTimeout('fen.focus()',500);
-	}
+	".ouvre_popup_visu_groupe_visu_aid("n")."
 
 </script>\n";
 
