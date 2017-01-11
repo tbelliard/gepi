@@ -325,7 +325,23 @@ while($infos = mysqli_fetch_array($query)){
 		
 		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
 		<input type="hidden" name="flag" value="<?php echo $flag; ?>" /><?php echo $aff_suivant; ?>
-		
+
+<?php
+	if((!isset($flag))||($flag!="eleve")) {
+		echo "
+		| <a href='".$_SERVER['PHP_SELF']."?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves de l'AID</a>";
+	}
+	if((!isset($flag))||($flag!="prof")) {
+		echo "
+		| <a href='".$_SERVER['PHP_SELF']."?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Professeurs de l'AID</a>";
+	}
+	if((!isset($flag))||($flag!="prof_gest")) {
+		echo "
+		| <a href='".$_SERVER['PHP_SELF']."?flag=prof_gest&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gestionnaires de l'AID</a>";
+	}
+	echo "
+		| <a href='config_aid.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
+?>
 	</p>
 
 	<script type='text/javascript'>

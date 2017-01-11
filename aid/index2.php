@@ -164,6 +164,14 @@ require_once("../lib/header.inc.php");
 ?>
 <p class="bold noprint">
 <?php 
+	if ($NiveauGestionAid >= 10) {
+		// Admin
+		echo "
+	<a href=\"index.php\" title=\"Retour à la page d'accueil des AID : Liste des catégories d'AID\">
+		<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+	</a>
+	|";
+	}
 	//if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
 	if ($NiveauGestionAid >= 5) {
 ?>

@@ -139,11 +139,11 @@ if ($nb_aid == 0) {
 ?>
 		<tr class='lig<?php echo $alt; ?>'>
 			<td>
-				<a href='config_aid.php?indice_aid=<?php echo $indice_aid; ?>'><?php echo $nom_aid; ?></a>
+				<a href='config_aid.php?indice_aid=<?php echo $indice_aid; ?>'><?php echo $nom_aid; ?> <img src='../images/edit16.png' class='icone16' alt='Éditer' /></a>
 				<?php echo $display_outils; ?> <?php echo $display_trombino; ?>
 			</td>
 			<td>
-				<a href='index2.php?indice_aid=<?php echo $indice_aid; ?>'>Liste des aid de la catégorie</a>
+				<a href='index2.php?indice_aid=<?php echo $indice_aid; ?>'>Liste des aid de la catégorie <img src='../images/icons/chercher.png' class='icone16' alt='Éditer' /></a>
 			</td>
 			<td>
 				<?php echo $nom_complet_aid; ?>
