@@ -238,7 +238,8 @@ if($_SESSION['statut']=="professeur") {
 	$sql="SELECT DISTINCT c.* FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c
 					WHERE jep.professeur='".$_SESSION['login']."' AND
 						jep.login=jec.login AND
-						jec.id_classe=c.id
+						jec.id_classe=c.id AND 
+						jep.id_classe=jec.id_classe 
 					ORDER BY c.classe;";
 }
 elseif($_SESSION['statut']=="scolarite") {
