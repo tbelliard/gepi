@@ -6589,4 +6589,17 @@ function ouvre_popup_visu_groupe_visu_aid($avec_balise_script="n") {
 
 	return $retour;
 }
+
+function lien_valeur_unzipped_max_filesize() {
+	global $gepiPath;
+
+	$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+
+	if(acces("/gestion/param_gen.php", $_SESSION['statut'])) {
+		return "<a href='$gepiPath/gestion/param_gen.php#unzipped_max_filesize' target='_blank' title=\"Modifier la valeur maximale paramétrée.\">".$unzipped_max_filesize." octets <img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
+	}
+	else {
+		return $unzipped_max_filesize." octets <img src='$gepiPath/images/icons/ico_question_petit.png' class='icone16' alt='Info' title=\"Valeur qui peut être modifiée en administrateur dans Gestion générale/Configuration générale/\" />";
+	}
+}
 ?>
