@@ -541,7 +541,7 @@ else {
 
 }
 
-$tab_aid=get_tab_aid_prof($login_prof);
+$tab_aid=get_tab_aid_prof($login_prof, "", "", "", array("classes"));
 if(count($tab_aid)>0) {
 	echo "<p>&nbsp;</p>\n";
 	echo "<p style='text-indent:-3em;margin-left:3em;'>Le professeur est associé aux AID suivants&nbsp;:<br />";

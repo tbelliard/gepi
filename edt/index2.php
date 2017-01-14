@@ -224,7 +224,7 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 			echo "</p>";
 		}
 		elseif($lig->id_aid!=0) {
-			$tab_aid=get_tab_aid($lig->id_aid);
+			$tab_aid=get_tab_aid($lig->id_aid, "", array("classes", "profs"));
 
 			echo "<p>".$tab_aid['nom_general_court']." (".$tab_aid['nom_general_complet'].") (".$tab_aid['nom_aid'].")";
 
