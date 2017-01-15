@@ -374,6 +374,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		while ($apGroupe = $listeApGroupes->fetch_object()) {
 			$noeudApGroupes = $xml->createElement('acc-perso-groupe');
 			$attributsEpiGroupe = array('id'=>"ACC_PERSO_GROUPE_".$apGroupe->id, 'intitule'=>$apGroupe->nom, 'acc-perso-ref'=>'ACC_PERSO_'.$apGroupe->id_ap );
+			//echo " - AP ".$apGroupe->id. " ";
 			foreach ($attributsEpiGroupe as $cle=>$valeur) {
 				$attsEpiGroupe = $xml->createAttribute($cle);
 				$attsEpiGroupe->value = $valeur;
@@ -508,6 +509,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				if ($episEleve->num_rows) {
 					//var_dump($episEleve);
 					$listeEpisEleve = $xml->createElement('epis-eleve');
+					$existeEpi = false;
 					while ($epiEleve = $episEleve->fetch_object()) {
 						//on verifie que le groupe est bien déclaré
 						if (!verifieGroupeEPI($epiEleve->id_aid)) {
@@ -517,7 +519,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$attsEpisEleve = $xml->createAttribute('epi-groupe-ref');
 							$attsEpisEleve->value = "EPI_GROUPE_".$epiEleve->id_aid;
 							$noeudEpiEleve->appendChild($attsEpisEleve);
-
+							$existeEpi = TRUE;
 							$commentaireEpiElv = getCommentaireAidElv($eleve->login, $epiEleve->id_aid, $eleve->periode);
 							if ($commentaireEpiElv->num_rows) {
 								$comm = trim($commentaireEpiElv->fetch_object()->appreciation);
@@ -531,7 +533,10 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						}
 						
 					}
-					$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
+					if ($existeEpi) {
+						$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
+					}
+					
 				}
 			}
 			

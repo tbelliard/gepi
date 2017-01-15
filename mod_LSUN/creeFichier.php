@@ -23,7 +23,7 @@
 
 include_once 'lib/chargeXML.php';
 
-$nomFichier = "LSU_".date("d-m-Y_H:i").".xml1";
+$nomFichier = "LSU_".date("d-m-Y_H:i").".xml";
 
 $dirTemp = "../temp/";
 $dirTemp .= get_user_temp_directory()."/";
@@ -37,7 +37,7 @@ $xml->save($file);
 $schema = "xsd/import-bilan-complet.xsd";
 
 // active la gestion d'erreur personnalisée
-//libxml_use_internal_errors(true);
+libxml_use_internal_errors(true);
 	?>
 <div class="lsun_cadre">
 <?php
@@ -47,7 +47,11 @@ $schema = "xsd/import-bilan-complet.xsd";
 if (isset($absenceEP))  {
 	echo "<p class='rouge center gras'>Des élèves n'ont pas d'éléments de programme dans 1 (ou plusieurs) enseignement(s), vous devez vous assurer que c'est normal</p>";
 }
-$dom = new DOMDocument;
+
+// Activer "user error handling"
+//libxml_use_internal_errors(true);
+
+$dom = new DOMDocument("1.0");
 $dom->Load($file);
 
 $validate = $dom->schemaValidate($schema);
@@ -56,6 +60,7 @@ if ($validate) {
 } else {
 	?>
 <p class ="rouge">Le fichier <?php echo $nomFichier; ?> n'est pas valide, vous devez le vérifier et corriger les erreurs.</p>
+<?php echo "<p>".libxml_display_errors()."</p>"; ?>
 <p>Vous pouvez récupérer le schéma du fichier pour votre validateur en <a href="<?php echo $schema; ?>" target="_BLANK">cliquant ici</a></p>
 <?php
 }

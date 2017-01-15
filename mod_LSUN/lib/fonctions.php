@@ -697,22 +697,6 @@ ON t3.matiere = t4.id_matiere
 function getModaliteGroupeAP($groupe_id) {
 	global $mysqli;
 	// La modalité est dans la matiere de la classe
-	//echo $groupe_id.' '.$prof_numind.' '.matiere.' '.'<br>';
-	
-	/**
-	$sqlGroupeModaliteProfs = "
-		SELECT t0.*, jpm.id_matiere AS matiere FROM (
-			SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.login FROM 
-				`j_groupes_professeurs` AS jgp 
-			INNER JOIN `j_groupes_aid` AS jga 
-			ON jgp.`id_groupe` = jga.`id_groupe` 
-			WHERE jga.`id_aid` = $groupe_id
-		) AS t0
-		LEFT JOIN
-			j_professeurs_matieres AS jpm
-		ON jpm.id_professeur = t0.login";
-	 * 
-	 */	
 	
 	$sqlGroupeModaliteProfs = "
 		SELECT t0.*, jpm.id_matiere AS matiere FROM (
@@ -880,6 +864,43 @@ function getCommentaireEleveParcours($login, $id_aid, $periode) {
 	$resultchargeDB = $mysqli->query($sql);
 	return $resultchargeDB ;
 	
+}
+
+function libxml_display_error($error) {
+	$return = "<br/>\n";
+	switch ($error->level) {
+		case LIBXML_ERR_WARNING:
+		$return .= "<b>Warning $error->code</b>: ";
+		break;
+		case LIBXML_ERR_ERROR:
+		$return .= "<b>Error $error->code</b>: ";
+		break;
+		case LIBXML_ERR_FATAL:
+		$return .= "<b>Fatal Error $error->code</b>: ";
+		break;
+	}
+	$return .= trim($error->message);
+	if ($error->file) {
+		$return .= " in <b>$error->file</b>";
+	}
+	$return .= " on line <b>$error->line</b>\n";
+
+	return $return;
+}
+
+function libxml_display_errors($display_errors = true) {
+	$errors = libxml_get_errors();
+	$chain_errors = "";
+
+	foreach ($errors as $error) {
+		$chain_errors .= preg_replace('/( in\ \/(.*))/',  », strip_tags(libxml_display_error($error)))."\n";
+		if ($display_errors) {
+			trigger_error(libxml_display_error($error), E_USER_WARNING);
+		}
+	}
+	libxml_clear_errors();
+
+	return $chain_errors;
 }
 
 
