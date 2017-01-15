@@ -285,6 +285,7 @@ function fdebug_aid($texte) {
  */
 function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
     if ($_SESSION['statut'] == "administrateur") {
+        // Pas génial: on ne renvoie pas le niveau de $_login, mais celui de l'administrateur si NiveauGestionAid() n'est pas appelée pour $_SESSION['login']
         fdebug_aid("Acces statut administrateur : $_login, $_indice_aid, $_id_aid\nRetour 10");
         return 10;
         die();
@@ -394,7 +395,7 @@ function get_tab_aid($id_aid, $order_by_ele="",$tab_champs=array('all')) {
 		if(in_array('profs',$tab_champs)) {$get_profs='y';}
 	}
 
-	$sql="SELECT a.indice_aid, a.nom AS nom_aid, ac.nom, ac.nom_complet, ac.display_begin, ac.display_end, ac.type_note, ac.order_display1, ac.order_display2, ac.type_aid, ac.display_nom, ac.message FROM aid a, 
+	$sql="SELECT a.indice_aid, a.nom AS nom_aid, ac.nom, ac.nom_complet, ac.display_begin, ac.display_end, ac.type_note, ac.order_display1, ac.order_display2, ac.type_aid, ac.display_nom, ac.message, ac.outils_complementaires, ac.autoriser_inscript_multiples, ac.display_bulletin, ac.bull_simplifie FROM aid a, 
 											aid_config ac 
 										WHERE a.indice_aid=ac.indice_aid AND 
 											a.id='".$id_aid."';";
@@ -418,6 +419,10 @@ function get_tab_aid($id_aid, $order_by_ele="",$tab_champs=array('all')) {
 		$tab_aid['type_aid']=0;
 		$tab_aid['display_nom']="n";
 		$tab_aid['message']="";
+		$tab_aid['outils_complementaires']="n";
+		$tab_aid['autoriser_inscript_multiples']="n";
+		$tab_aid['display_bulletin']="y";
+		$tab_aid['bull_simplifie']="y";
 	}
 	else {
 		$lig_aid=mysqli_fetch_object($res_aid);
@@ -438,6 +443,10 @@ function get_tab_aid($id_aid, $order_by_ele="",$tab_champs=array('all')) {
 		$tab_aid['type_aid']=$lig_aid->type_aid;
 		$tab_aid['display_nom']=$lig_aid->display_nom;
 		$tab_aid['message']=$lig_aid->message;
+		$tab_aid['outils_complementaires']=$lig_aid->outils_complementaires;
+		$tab_aid['autoriser_inscript_multiples']=$lig_aid->autoriser_inscript_multiples;
+		$tab_aid['display_bulletin']=$lig_aid->display_bulletin;
+		$tab_aid['bull_simplifie']=$lig_aid->bull_simplifie;
 
 		if($get_profs=='y') {
 			$tab_aid['profs']=array();
