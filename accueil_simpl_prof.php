@@ -1096,7 +1096,7 @@ for($i=0;$i<count($groups);$i++){
 // AID
 $ii=$i;
 
-$sql="SELECT ac.* FROM aid_config ac, aid a
+$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a
 		WHERE ac.indice_aid=a.indice_aid 
 		ORDER BY ac.order_display1, ac.order_display2, a.numero, ac.nom;";
 //echo "$sql<br />";
@@ -1164,6 +1164,20 @@ while ($lig_cat_aid=mysqli_fetch_object($res_aid)) {
 			echo "<tr valign='top'>\n";
 			echo "<!-- Colonne Nom de l'AID -->\n";
 			echo "<td>";
+
+// Si Gestionnaire, ou accès modif... ajout <div style='float:right'><a href=''></a></div>
+			if(NiveauGestionAid($_SESSION['login'],$tmp_indice_aid,$lig_aid->id)>=5) {
+				if ($tmp_aid_outils_complementaires=="y") {
+					echo "<div style='float:right;width:16px;'><a href='./aid/modif_fiches.php?action=modif&aid_id=".$lig_aid->id."&indice_aid=".$tmp_indice_aid."' title='Éditer cet AID' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='./images/edit16.png' class='icone16' alt='Éditer cet AID' /></a></div>";
+				}
+				else {
+					echo "<div style='float:right;width:16px;'><a href='./aid/add_aid.php?action=modif_aid&aid_id=".$lig_aid->id."&indice_aid=".$tmp_indice_aid."' title='Éditer cet AID' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='./images/edit16.png' class='icone16' alt='Éditer cet AID' /></a></div>";
+				}
+			}
+			elseif(NiveauGestionAid($_SESSION['login'],$tmp_indice_aid,$lig_aid->id)>=1) {
+				echo "<div style='float:right;width:16px;'><a href='./aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid->id."&indice_aid=".$tmp_indice_aid."' title='Gérer la liste des élèves' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='./images/edit16.png' class='icone16' alt='Éditer cet AID' /></a></div>";
+			}
+
 			echo $tmp_nom_aid;
 			echo "<br />";
 			echo "<span style='font-size:x-small'>".$lig_aid->nom."<span>";
