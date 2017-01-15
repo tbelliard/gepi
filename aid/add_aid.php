@@ -546,6 +546,8 @@ require_once("../lib/header.inc.php");
 
 // debug_var();
 //**************** FIN EN-TETE *****************
+$NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
+$NiveauGestionAid_AID_courant=NiveauGestionAid($_SESSION["login"],$indice_aid, $aid_id);
 
 if ($_SESSION['statut'] == 'professeur') {
 	$retour = 'index2.php';
@@ -584,29 +586,22 @@ if ($_SESSION['statut'] == 'professeur') {
 		}
 	}
 
-	// Ajouter des liens vers l'ajout de profs, élèves et l'édition de la catégorie
-	echo "
-	|
-	<a href='modify_aid.php?flag=prof&aid_id=$aid_id&indice_aid=$indice_aid'
-	   onclick=\"return confirm_abandon (this, change, '$themessage')\">
-		Ajouter/supprimer des professeurs
-	</a>
-	|
-	<a href='modify_aid.php?flag=eleve&aid_id=$aid_id&indice_aid=$indice_aid'
-	   onclick=\"return confirm_abandon (this, change, '$themessage')\">
-		Ajouter/supprimer des élèves
-	</a>
-	|
-	<a href='modify_aid.php?flag=prof_gest&aid_id=$aid_id&indice_aid=$indice_aid'
-	   onclick=\"return confirm_abandon (this, change, '$themessage')\"
-	   title=\"Un gestionnaire peut gérer les inscriptions élèves dans un AID, donc en ajouter/supprimer.\">
-		Ajouter/supprimer des gestionnaires
-	</a>
-	|
-	<a href='config_aid.php?indice_aid=$indice_aid'
-	   onclick=\"return confirm_abandon (this, change, '$themessage')\">
-		Modifier la catégorie AID
-	</a>";
+	if($NiveauGestionAid_AID_courant>=1) {
+		echo "
+	| <a href='modify_aid.php?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves de l'AID</a>";
+	}
+	if($NiveauGestionAid_AID_courant>=2) {
+		echo "
+	| <a href='modify_aid.php?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Professeurs de l'AID</a>";
+	}
+	if($NiveauGestionAid_AID_courant>=5) {
+		echo "
+	| <a href='modify_aid.php?flag=prof_gest&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gestionnaires de l'AID</a>";
+	}
+	if($NiveauGestionAid_categorie==10) {
+		echo "
+	| <a href='config_aid.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
+	}
 ?>
 
 </p>

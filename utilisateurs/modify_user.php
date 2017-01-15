@@ -712,7 +712,7 @@ elseif(isset($_POST['suppression_assoc_user_aid'])) {
 	// Liste des AID avec lesquels le prof reste associé/coché
 	$user_aid=isset($_POST["user_aid"]) ? $_POST["user_aid"] : array();
 
-	$tab_aid=get_tab_aid_prof($user_login);
+	$tab_aid=get_tab_aid_prof($user_login, "", "", "", array("classes"));
 
 	if(count($tab_aid)>0) {
 		for($loop=0;$loop<count($tab_aid);$loop++) {
@@ -1369,7 +1369,7 @@ echo "<input type='hidden' name='max_mat' value='$nb_mat' />\n";
 			echo "</form>\n";
 		}
 
-		$tab_aid=get_tab_aid_prof($user_login);
+		$tab_aid=get_tab_aid_prof($user_login, "", "", "", array("classes"));
 		if(count($tab_aid)>0) {
 			echo "<p>&nbsp;</p>\n";
 			echo "<form enctype='multipart/form-data' action='modify_user.php' method='post'>\n";

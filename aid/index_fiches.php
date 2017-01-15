@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -92,7 +92,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
     $order_by = isset($_POST["order_by"]) ? $_POST["order_by"] : (isset($_GET["order_by"]) ? $_GET["order_by"] : 'nom');
     $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
     $nombreligne = mysqli_num_rows($calldata);
-    echo "<table style=\"width:100%\" cellpadding=\"3\" border=\"1\">\n";
+    echo "<table style=\"width:100%\" cellpadding=\"3\" border=\"1\" class='boireaus boireaus_alt'>\n";
     echo "<tr>\n";
     echo "<td>N°</td>\n";
     echo "<td>Nom du projet ".$nom_projet."</td>\n";
@@ -294,7 +294,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
         $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom
         FROM eleves e, j_aid_eleves j
         WHERE (j.id_aid='".$aid_id."' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
-        echo "<table style=\"width:95%\" border=\"1\" cellpadding=\"8\">\n";
+        echo "<table style=\"width:95%\" border=\"1\" cellpadding=\"8\" class='boireaus boireaus_alt'>\n";
         echo "<tr><td style=\"width:50%\"><b>Nom Prénom</b></td><td><b>Absences / Retard (début de séance)</b></td><td><b>Absences / Retard (fin de séance)</b></td></tr>";
         $nombre = mysqli_num_rows($call_liste_data);
         $j = "0";
@@ -312,7 +312,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
         if (!isset ($vide) || $vide == 1) {
             echo "<br /><font color = red>Il n'y a actuellement aucun ".$gepiSettings['denomination_eleve']." dans cette AID !</font>\n";
         } else {
-            echo "<table style=\"width:90%\" border=\"0\" cellpadding=\"5\">\n";
+            echo "<table style=\"width:90%\" border=\"0\" cellpadding=\"5\" class='boireaus boireaus_alt'>\n";
             echo "<tr><td style=\"width:50%\">&nbsp;</td><td><b>Signature du/des ".$gepiSettings['denomination_professeur']."/".$gepiSettings['denomination_professeurs']." responsable(s)</b></td></tr>\n";
             echo "</table>";
         }
@@ -345,7 +345,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
     a.id = j.id_aid
     ) ORDER BY ".$order_by2);
 
-    echo "<table style=\"width:90%\" border=\"1\" cellpadding=\"3\">\n";
+    echo "<table style=\"width:90%\" border=\"1\" cellpadding=\"3\" class='boireaus boireaus_alt'>\n";
     echo "<tr>
     <td style=\"width:50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>Nom Prénom</a></b></td>\n
     <td style=\"width:50%\"><b>Identifiant</b></td>\n
@@ -409,7 +409,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
     echo "</p>\n";
     // Affichage sur 4/5 colonnes
     $nb_classes_par_colonne=round($nb_classes/4);
-    echo "<table style=\"width:100%\" summary='Choix des classes'>\n";
+    echo "<table style=\"width:100%\" summary='Choix des classes' class='boireaus boireaus_alt'>\n";
     echo "<tr valign='top' align='center'>\n";
     $cpt_i = 0;
     echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
@@ -459,7 +459,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
     $call_liste_data = mysqli_query($GLOBALS["mysqli"], $sql);
 
 
-    echo "<table style=\"width:90%\" border=\"1\" cellpadding=\"3\">\n";
+    echo "<table style=\"width:90%\" border=\"1\" cellpadding=\"3\" class='boireaus boireaus_alt'>\n";
     echo "<tr>
       <td style=\"width:50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."&amp;id_classe_serie=".serialize($id_classe)."&amp;choix_classes=y'>Nom Prénom</a></b></td>\n
     <td style=\"width:50%\"><b>Identifiant</b></td>\n

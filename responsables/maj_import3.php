@@ -781,7 +781,7 @@ else{
 						//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 						if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<em>".lien_valeur_unzipped_max_filesize()."</em>).</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -5525,6 +5525,8 @@ else{
 						echo "</p>";
 					}
 
+					echo "<div id='div_info_effectif_max'></div>";
+
 					echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 
 					echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -5575,6 +5577,7 @@ else{
 					//$tab_champs_grp=array('matieres','profs','classes');
 					$tab_champs_grp=array('matieres','profs','classes','eleves');
 
+					$eff_max_enseignement=0;
 					$nb_erreurs=0;
 					$i=0;
 					$alt=-1;
@@ -5628,6 +5631,9 @@ else{
 
 							if(isset($tmp_group['eleves'][$j]["list"])) {
 								$eff_grp_periode_courante=count($tmp_group['eleves'][$j]["list"]);
+								if($eff_grp_periode_courante>$eff_max_enseignement) {
+									$eff_max_enseignement=$eff_grp_periode_courante;
+								}
 							}
 							else {
 								$eff_grp_periode_courante="-";
@@ -5753,6 +5759,8 @@ else{
 		}
 		changement();
 	}
+
+	document.getElementById('div_info_effectif_max').innerHTML=\"<p style='margin-top:1em;margin-bottom:1em;'>Effectif maximum dans un enseignement de la classe avant arrivée de cet(te) élève&nbsp;: <strong>".$eff_max_enseignement."</strong><br />donc potentiellement 1 élève de plus après <em>(".($eff_max_enseignement+1).")</em>.</p>\";
 </script>\n";
 
 					echo "<input type='hidden' name='step' value='8' />\n";
@@ -6006,7 +6014,7 @@ else{
 						//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 						if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<em>".lien_valeur_unzipped_max_filesize()."</em>).</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}

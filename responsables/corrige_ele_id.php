@@ -319,7 +319,7 @@ else{
 						//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 						if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+							echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>".lien_valeur_unzipped_max_filesize()."</i>).</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}

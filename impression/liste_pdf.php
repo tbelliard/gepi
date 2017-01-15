@@ -291,6 +291,14 @@ if(isset($current_aid)) {
 	if(count($current_aid['classes']['list'])>1) {
 		$flag_aid_plusieurs_classes = "y";
 	}
+
+	// Si on force à 1 $id_periode et que display_begin est 2 ou 3, la liste des élèves va être vide
+	$id_periode=$current_aid['display_begin'];
+	/*
+	echo "<pre>";
+	print_r($current_aid);
+	echo "</pre>";
+	*/
 }
 //+++++++++++++++++++++++++++++++++++++++++
 

@@ -617,26 +617,33 @@ function reactiver(mavar) {
 			
 			
 			if (($_SESSION['statut']=='eleve')) {
-			   $sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
-			      FROM aid_config ac, j_aid_eleves u
-			      WHERE ac.outils_complementaires = 'y'
-			      AND u.indice_aid = ac.indice_aid
-                  AND u.login='".$_SESSION['login']."'
-                  ORDER BY ac.nom_complet"; 
-			   
+				$sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
+					FROM aid_config ac, j_aid_eleves u
+					WHERE ac.outils_complementaires = 'y'
+						AND u.indice_aid = ac.indice_aid
+						AND u.login='".$_SESSION['login']."'
+					ORDER BY ac.nom_complet"; 
+			} elseif($_SESSION['statut']=="professeur") {
+				$sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
+					FROM aid_config ac, j_aid_utilisateurs u, j_aid_eleves jae 
+					WHERE ac.outils_complementaires = 'y'
+						AND u.indice_aid = jae.indice_aid
+						AND u.id_aid = jae.id_aid
+						AND u.indice_aid = ac.indice_aid
+						AND u.id_utilisateur='".$_SESSION['login']."'
+					ORDER BY ac.nom_complet"; 
 			} else {
-			   $sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
-			      FROM aid_config ac, j_aid_utilisateurs u
-			      WHERE ac.outils_complementaires = 'y'
-			      AND u.indice_aid = ac.indice_aid
-                  AND u.id_utilisateur='".$_SESSION['login']."'
-                  ORDER BY ac.nom_complet"; 
+				$sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
+					FROM aid_config ac, j_aid_eleves jae 
+					WHERE ac.outils_complementaires = 'y' 
+						AND jae.indice_aid = ac.indice_aid 
+					ORDER BY ac.nom_complet"; 
 			}
-			// echo $sql;
-			
-        	$call_data = mysqli_query($mysqli, $sql);  
-        	$nb_aid = $call_data->num_rows;
-			
+			//echo "$sql<br />";
+
+			$call_data = mysqli_query($mysqli, $sql);  
+			$nb_aid = $call_data->num_rows;
+
 			if ($nb_aid != 0) {
 ?>
    <p style="padding-bottom: 1em">
@@ -646,22 +653,26 @@ function reactiver(mavar) {
 		<option value='' selected='selected'>pas de sélection</option>
 	
 <?php
-while ($aid_prof = mysqli_fetch_object($call_data)) {
-   if ($_SESSION['statut']=='eleve') {
-	  $sql2 = "SELECT DISTINCT a.nom, a.id, a.indice_aid
-			   FROM aid a , j_aid_eleves u
-			   WHERE a.indice_aid = '".$aid_prof->indice_aid."'
-			   AND a.id = u.id_aid 
-               AND u.login = '".$_SESSION['login']."'
-			    ";
+	while ($aid_prof = mysqli_fetch_object($call_data)) {
+	if ($_SESSION['statut']=='eleve') {
+		$sql2 = "SELECT DISTINCT a.nom, a.id, a.indice_aid
+			FROM aid a , j_aid_eleves u
+			WHERE a.indice_aid = '".$aid_prof->indice_aid."'
+				AND a.id = u.id_aid 
+				AND u.login = '".$_SESSION['login']."'";
+	} elseif($_SESSION['statut']=="professeur") {
+		$sql2 = "SELECT  a.nom, a.id, a.indice_aid
+			FROM aid a , j_aid_utilisateurs u
+			WHERE a.indice_aid = '".$aid_prof->indice_aid."'
+				AND a.id = u.id_aid 
+				AND u.id_utilisateur = '".$_SESSION['login']."'"; 
 	} else {
-      $sql2 = "SELECT  a.nom, a.id, a.indice_aid
-			   FROM aid a , j_aid_utilisateurs u
-			   WHERE a.indice_aid = '".$aid_prof->indice_aid."'
-			   AND a.id = u.id_aid 
-               AND u.id_utilisateur = '".$_SESSION['login']."'"; 
+		$sql2 = "SELECT  a.nom, a.id, a.indice_aid
+			FROM aid a
+			WHERE a.indice_aid='".$aid_prof->indice_aid."';"; 
 	}
-   $call_aid =  mysqli_query($mysqli, $sql2);
+	//echo "$sql<br />";
+	$call_aid =  mysqli_query($mysqli, $sql2);
 ?>
 		<optgroup label='-- <?php echo $aid_prof->nom_complet ?> --'>
 	

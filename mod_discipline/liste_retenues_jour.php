@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -49,7 +49,8 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 
 // Page appelée via ajax depuis saisie_sanction.php->liste_retenues_jour.php
 
-$date=$_GET['date'];
+$date=isset($_GET['date']) ? $_GET['date'] : NULL;
+$login_ele=isset($_GET['login_ele']) ? $_GET['login_ele'] : NULL;
 
 if(!isset($date)) {
 	echo "<p><strong>Erreur&nbsp;:</strong> Des paramètres n'ont pas été transmis.</p>\n";
@@ -76,6 +77,7 @@ else {
 	}
 	else {
 		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_sanction=sr.id_sanction AND date='".$annee."-".$mois."-".$jour."' ORDER BY heure_debut, lieu;";
+		//echo "$sql<br />";
 		$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_sanction)>0) {
 	
@@ -97,14 +99,19 @@ else {
 				$lieu=$lig_sanction->lieu;
 				$travail=$lig_sanction->travail;
 				$current_eleve_login=$lig_sanction->login;
-	
+
+				$style_ele="";
+				if((isset($login_ele))&&($login_ele==$current_eleve_login)) {
+					$style_ele=";color:red;";
+				}
+
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
 				echo "<td style='font-size:x-small;'>".ucfirst($lig_sanction->nature)."</td>\n";
 				echo "<td style='font-size:x-small;'>$heure_debut</td>\n";
 				echo "<td style='font-size:x-small;'>$duree</td>\n";
 				echo "<td style='font-size:x-small;'>$lieu</td>\n";
-				echo "<td style='font-size:x-small;'>";
+				echo "<td style='font-size:x-small".$style_ele.";'>";
 				echo htmlspecialchars(p_nom($current_eleve_login));
 	
 				echo " (<em>";

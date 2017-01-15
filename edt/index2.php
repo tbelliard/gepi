@@ -150,7 +150,54 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 		if($lig->id_groupe!=0) {
 			$current_group=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
 			$info_grp=get_info_grp($lig->id_groupe);
-			echo "<p>".$info_grp."</p>";
+
+			//https://127.0.0.1/steph/gepi_git_trunk/groupes/edit_group.php?id_groupe=3917&id_classe=34&mode=groupe
+			if(acces("/groupes/edit_group.php", $_SESSION['statut'])) {
+				echo "<p><a href='../groupes/edit_group.php?id_groupe=".$lig->id_groupe."' title=\"Éditer le groupe dans un nouvel onglet.\" target='_blank'>".$info_grp."</a>";
+			}
+			else {
+				echo "<p>".$info_grp;
+			}
+
+			// 20170110
+			$lien_edt_prof=false;
+			$restriction_lien_prof="n";
+			if($_SESSION['statut']=="professeur") {
+				if(getSettingAOui("AccesProf_EdtProfs")) {
+					$lien_edt_prof=true;
+				}
+				elseif(in_array($_SESSION['login'], $current_group["profs"]["list"])) {
+					$lien_edt_prof=true;
+					$restriction_lien_prof="y";
+				}
+			}
+			elseif(in_array($_SESSION['statut'], array("administrateur", "cpe", "scolarite", "autre", "secours"))) {
+				$lien_edt_prof=true;
+			}
+
+			if($lien_edt_prof) {
+				if($restriction_lien_prof=="y") {
+					echo " <a href='".$_SERVER['PHP_SELF']."?login_prof=".$_SESSION['login']."&amp;type_affichage=prof&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT de ".civ_nom_prenom($_SESSION['login'])." seul\"><img src='../images/icons/edt2_prof.png' class='icone16' alt='EDT seul' /></a>";
+				}
+				else {
+					// Boucler sur la liste des profs
+					foreach($current_group["profs"]["users"] as $current_login_prof => $current_prof) {
+						echo " <a href='".$_SERVER['PHP_SELF']."?login_prof=".$current_login_prof."&amp;type_affichage=prof&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT de ".$current_prof["prenom"]." ".$current_prof["nom"]." seul\"><img src='../images/icons/edt2_prof.png' class='icone16' alt='EDT seul' /></a>";
+					}
+				}
+			}
+
+			if(acces_trombinoscope()) {
+				echo " <a href='../mod_trombinoscopes/trombinoscopes.php?groupe=".$lig->id_groupe."&amp;etape=2' target='_blank' title=\"Afficher le trombinoscope du groupe\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
+			}
+
+			if(acces("/groupes/popup.php", $_SESSION['statut'])) {
+				echo " <a href=\"../groupes/popup.php?id_groupe=".$lig->id_groupe."&amp;id_classe=\" onclick=\"ouvre_popup_visu_groupe('".$lig->id_groupe."','');return false;\" target='_blank' title=\"Liste des élèves en popup.\"><img src='../images/icons/tableau.png' class='icone16' alt='Popup' /></a>";
+			}
+
+			echo "</p>";
+
+			$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
 
 			echo "<p>Voir l'EDT de la classe&nbsp: ";
 			$cpt_classe=0;
@@ -159,15 +206,61 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 					echo " - ";
 				}
 				//echo "<a href='".$_SERVER['PHP_SELF']."?login_prof=$login_prof&amp;id_classe=$current_id_classe&amp;type_affichage=$type_affichage&amp;login_eleve=$login_eleve&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' /></a>";
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe&amp;type_affichage=classe&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' />".$current_classe['classe']."</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe&amp;type_affichage=classe&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT ".$current_classe['classe']." seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' />".$current_classe['classe']."</a>";
+
+				if(count($current_group['classes']['classes'])>1) {
+					if(acces_trombinoscope()) {
+						echo " <a href='../mod_trombinoscopes/trombinoscopes.php?classe=".$current_id_classe."&amp;etape=2' target='_blank' title=\"Afficher le trombinoscope de la classe de ".$current_classe['classe']."\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
+					}
+				}
+
+				if($acces_visu_eleve) {
+					echo " <a href='../eleves/visu_eleve.php?id_classe=".$current_id_classe."' target='_blank' title=\"Accéder dans un nouvel onglet aux dossiers élèves avec leurs fiches Eleve/Responsables/Bulletins/CN/... pour la classe de ".$current_classe['classe']."\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Visu.ele' /></a>";
+				}
+
 				$cpt_classe++;
 			}
+
 			echo "</p>";
 		}
 		elseif($lig->id_aid!=0) {
-			$tab_aid=get_tab_aid($lig->id_aid);
+			$tab_aid=get_tab_aid($lig->id_aid, "", array("classes", "profs"));
 
-			echo "<p>".$tab_aid['nom_general_court']." (".$tab_aid['nom_general_complet'].") (".$tab_aid['nom_aid'].")</p>";
+			echo "<p>".$tab_aid['nom_general_court']." (".$tab_aid['nom_general_complet'].") (".$tab_aid['nom_aid'].")";
+
+			// 20170110
+			$lien_edt_prof=false;
+			$restriction_lien_prof="n";
+			if($_SESSION['statut']=="professeur") {
+				if(getSettingAOui("AccesProf_EdtProfs")) {
+					$lien_edt_prof=true;
+				}
+				elseif(in_array($_SESSION['login'], $tab_aid["profs"]["list"])) {
+					$lien_edt_prof=true;
+					$restriction_lien_prof="y";
+				}
+			}
+			elseif(in_array($_SESSION['statut'], array("administrateur", "cpe", "scolarite", "autre", "secours"))) {
+				$lien_edt_prof=true;
+			}
+
+			if($lien_edt_prof) {
+				if($restriction_lien_prof=="y") {
+					echo " <a href='".$_SERVER['PHP_SELF']."?login_prof=".$_SESSION['login']."&amp;type_affichage=prof&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT de ".civ_nom_prenom($_SESSION['login'])." seul\"><img src='../images/icons/edt2_prof.png' class='icone16' alt='EDT seul' /></a>";
+				}
+				else {
+					// Boucler sur la liste des profs
+					foreach($tab_aid["profs"]["users"] as $current_login_prof => $current_prof) {
+						echo " <a href='".$_SERVER['PHP_SELF']."?login_prof=".$current_login_prof."&amp;type_affichage=prof&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT de ".$current_prof["prenom"]." ".$current_prof["nom"]." seul\"><img src='../images/icons/edt2_prof.png' class='icone16' alt='EDT seul' /></a>";
+					}
+				}
+			}
+
+			if(acces_trombinoscope()) {
+				echo " <a href='../mod_trombinoscopes/trombinoscopes.php?aid=".$lig->id_aid."&amp;etape=2' target='_blank' title=\"Afficher le trombinoscope de l'AID\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
+			}
+
+			echo "</p>";
 
 			echo "<p>Voir l'EDT de la classe&nbsp: ";
 			$cpt_classe=0;
@@ -175,9 +268,21 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 				if($cpt_classe>0) {
 					echo " - ";
 				}
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe&amp;type_affichage=classe&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' />".$current_classe['classe']."</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe&amp;type_affichage=classe&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT ".$current_classe['classe']." seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' />".$current_classe['classe']."</a>";
+
+				if(count($tab_aid['classes']['classes'])>1) {
+					if(acces_trombinoscope()) {
+						echo " <a href='../mod_trombinoscopes/trombinoscopes.php?classe=".$current_id_classe."&amp;etape=2' target='_blank' title=\"Afficher le trombinoscope de la classe de ".$current_classe['classe']."\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
+					}
+				}
+
+				if($acces_visu_eleve) {
+					echo " <a href='../eleves/visu_eleve.php?id_classe=".$current_id_classe."' target='_blank' title=\"Accéder dans un nouvel onglet aux dossiers élèves avec leurs fiches Eleve/Responsables/Bulletins/CN/... pour la classe de ".$current_classe['classe']."\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Visu.ele' /></a>";
+				}
+
 				$cpt_classe++;
 			}
+
 			echo "</p>";
 		}
 
@@ -644,6 +749,12 @@ function echo_selon_mode($texte) {
 	if($mode!="afficher_edt") {
 		echo $texte;
 	}
+}
+
+echo ouvre_popup_visu_groupe_visu_aid("y");
+
+if($mode=="afficher_edt") {
+	echo "<div style='float:left;width:16px;'><a href='$gepiPath/edt/index2.php' title=\"Retour à l'accueil EDT\"><img src='../images/icons/edt2_home.png' class='icone16' alt='Accueil EDT' /></a></div>";
 }
 
 if(acces("/edt_organisation/index_edt.php", $_SESSION['statut'])) {
