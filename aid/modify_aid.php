@@ -60,7 +60,9 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
 include_once 'fonctions_aid.php';
 global $mysqli;
 
-if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof) and ($add_prof == "yes"))) {
+$NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
+
+if (($NiveauGestionAid_categorie >= 5) and (isset($add_prof) and ($add_prof == "yes"))) {
 	check_token();
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
 	$test2 = Prof_deja_membre ($reg_prof_login, $aid_id, $indice_aid)->num_rows;
@@ -75,7 +77,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof
     $flag = "prof";
 }
 
-if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_prof_gest) and ($add_prof_gest == "yes"))) {
+if (($NiveauGestionAid_categorie >= 10) and (isset($add_prof_gest) and ($add_prof_gest == "yes"))) {
 	check_token();
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
     $test2 = Prof_deja_gestionnaire ($reg_prof_login, $aid_id, $indice_aid)->num_rows;
@@ -254,12 +256,13 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 // debug_var();
 
+$NiveauGestionAid_AID_courant=NiveauGestionAid($_SESSION["login"],$indice_aid, $aid_id);
 
 // On affiche un select avec la liste des aid de cette catégorie
-if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5) {
+if ($NiveauGestionAid_AID_courant >= 5) {
     $sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
 }
-else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) {
+else if ($NiveauGestionAid_AID_courant >= 1) {
     $sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
 }
 
@@ -327,20 +330,22 @@ while($infos = mysqli_fetch_array($query)){
 		<input type="hidden" name="flag" value="<?php echo $flag; ?>" /><?php echo $aff_suivant; ?>
 
 <?php
-	if((!isset($flag))||($flag!="eleve")) {
+	if(((!isset($flag))||($flag!="eleve"))&&(($NiveauGestionAid_AID_courant>=1))) {
 		echo "
 		| <a href='".$_SERVER['PHP_SELF']."?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves de l'AID</a>";
 	}
-	if((!isset($flag))||($flag!="prof")) {
+	if(((!isset($flag))||($flag!="prof"))&&(($NiveauGestionAid_AID_courant>=2))) {
 		echo "
 		| <a href='".$_SERVER['PHP_SELF']."?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Professeurs de l'AID</a>";
 	}
-	if((!isset($flag))||($flag!="prof_gest")) {
+	if(((!isset($flag))||($flag!="prof_gest"))&&(($NiveauGestionAid_AID_courant>=5))) {
 		echo "
 		| <a href='".$_SERVER['PHP_SELF']."?flag=prof_gest&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gestionnaires de l'AID</a>";
 	}
-	echo "
+	if($NiveauGestionAid_categorie==10) {
+		echo "
 		| <a href='config_aid.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
+	}
 ?>
 	</p>
 
@@ -375,7 +380,7 @@ while($infos = mysqli_fetch_array($query)){
 if ($flag == "prof") { ?>
 <p class='grand'><?php 
 	echo "$nom_aid  $aid_nom";
-	if((isset($aid_id))&&(isset($indice_aid))&&(NiveauGestionAid($_SESSION["login"],$indice_aid)>=5)) {
+	if((isset($aid_id))&&(isset($indice_aid))&&($NiveauGestionAid_categorie>=5)) {
 		echo " <a href='add_aid.php?action=modif_aid&aid_id=$aid_id&indice_aid=$indice_aid' title=\"Modifier cet AID.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a>";
 	}
 ?></p>
@@ -615,14 +620,14 @@ if ($flag == "eleve") {
 		if($nbre_profs==0) {
 			$aff_profs.="aucun professeur";
 		}
-		if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
+		if ($NiveauGestionAid_categorie >= 5) {
 			$aff_profs.=" <a href='modify_aid.php?flag=prof&aid_id=$aid_id&indice_aid=$indice_aid' title=\"Ajouter/supprimer des professeurs.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add_user.png' class='icone16' alt='Ajouter/supprimer' /></a>";
 		}
 		$aff_profs .= ")</font>";
 ?>
     <p class='grand'><?php 
 		echo "$nom_aid  $aid_nom";
-		if((isset($aid_id))&&(isset($indice_aid))&&(NiveauGestionAid($_SESSION["login"],$indice_aid)>=5)) {
+		if((isset($aid_id))&&(isset($indice_aid))&&($NiveauGestionAid_categorie>=5)) {
 			echo " <a href='add_aid.php?action=modif_aid&aid_id=$aid_id&indice_aid=$indice_aid' title=\"Modifier cet AID.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a>";
 		}
 		echo " $aff_profs";
