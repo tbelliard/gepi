@@ -377,6 +377,9 @@ if(!isset($login_prof)) {
 	}
 	else {
 		echo "<p style='text-indent:-3em;margin-left:3em;'>Pour quel professeur souhaitez-vous consulter la liste des enseignements&nbsp;:<br />";
+		if($_SESSION['statut']=="professeur") {
+			echo "<br /><a href='".$_SERVER['PHP_SELF']."?login_prof=".$_SESSION["login"]."'>Mes enseignements</a><br /><br />";
+		}
 		for($loop=0;$loop<count($tab_profs);$loop++) {
 			//echo "<a href='".$_SERVER['PHP_SELF']."?login_prof=".$tab_profs[$loop]["login"]."'>".$tab_profs[$loop]["civilite"]." ".$tab_profs[$loop]["nom"]." ".$tab_profs[$loop]["prenom"]."</a><br />";
 			echo "<a href='".$_SERVER['PHP_SELF']."?login_prof=".$tab_profs[$loop]["login"]."'>".casse_mot($tab_profs[$loop]["nom"], "maj")." ".casse_mot($tab_profs[$loop]["prenom"], "majf2")."</a><br />";
@@ -454,7 +457,7 @@ else {
 	// Afficher les enseignements avec des effectifs par périodes, la liste des classes, des liens EDT, des liens ABS2, la possibilité d'un lien publipostage?
 
 	echo "
-<p>Voici la liste des enseignements de ".$chaine_prof.($acces_edt_prof ? " <a href='../edt/index2.php?login_prof=$login_prof&affichage=semaine&type_affichage=prof' title=\"Voir l'emploi du temps de ce professeur\"><img src='../images/icons/edt2.png' class='icone16' alt='EDT' /></a></td>" : "")."</p>
+<p>Voici la liste des enseignements de ".$chaine_prof.($acces_edt_prof ? " <a href='../edt/index2.php?login_prof=$login_prof&affichage=semaine&type_affichage=prof' title=\"Voir l'emploi du temps de ce professeur\"><img src='../images/icons/edt2_prof.png' class='icone16' alt='EDT' /></a></td>" : "")."</p>
 <table class='boireaus boireaus_alt sortable resizable'>
 	<thead>
 		<tr>
@@ -548,8 +551,35 @@ if(count($tab_aid)>0) {
 	$k = 0;
 	foreach($tab_aid as $current_aid) {
 		echo $current_aid['nom_aid']." (<em>".$current_aid['nom_complet']."</em>) en ".$current_aid['classlist_string'];
+
+		//echo " <span style='color:orange'>".NiveauGestionAid($login_prof,$current_aid['indice_aid'],$current_aid['id_aid'])."</span>";
+
 		if($acces_add_aid) {
-			echo " <a href='../aid/add_aid.php?action=modif_aid&aid_id=".$current_aid['id_aid']."&indice_aid=".$current_aid['indice_aid']."' title='Éditer cet AID' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Éditer cet AID' /></a>";
+			if(NiveauGestionAid($_SESSION['login'],$current_aid['indice_aid'],$current_aid['id_aid'])>=5) {
+				if ($current_aid['outils_complementaires']=="y") {
+					echo " <a href='../aid/modif_fiches.php?action=modif&aid_id=".$current_aid['id_aid']."&indice_aid=".$current_aid['indice_aid']."' title='Éditer cet AID' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Éditer cet AID' /></a>";
+				}
+				else {
+					echo " <a href='../aid/add_aid.php?action=modif_aid&aid_id=".$current_aid['id_aid']."&indice_aid=".$current_aid['indice_aid']."' title='Éditer cet AID' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Éditer cet AID' /></a>";
+				}
+			}
+			elseif(NiveauGestionAid($_SESSION['login'],$current_aid['indice_aid'],$current_aid['id_aid'])>=1) {
+				echo " <a href='../aid/modify_aid.php?flag=eleve&aid_id=".$current_aid['id_aid']."&indice_aid=".$current_aid['indice_aid']."' title='Gérer la liste des élèves' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Éditer cet AID' /></a>";
+			}
+
+			if($login_prof!=$_SESSION['login']) {
+				if(NiveauGestionAid($login_prof,$current_aid['indice_aid'],$current_aid['id_aid'])>=5) {
+					if ($current_aid['outils_complementaires']=="y") {
+						echo " <img src='../images/bulle_verte.png' class='icone9' alt='Éditer' title='Peut éditer la fiche Projet de cet AID' />";
+					}
+					else {
+						echo " <img src='../images/bulle_verte.png' class='icone9' alt='Éditer' title='Peut éditer cet AID'  />";
+					}
+				}
+				elseif(NiveauGestionAid($login_prof,$current_aid['indice_aid'],$current_aid['id_aid'])>=1) {
+					echo " <img src='../images/bulle_bleue.png' class='icone9' alt='Éditer' title='Peut gérer la liste des élèves de cet AID' />";
+				}
+			}
 		}
 		echo "<br />\n";
 		$k++;
