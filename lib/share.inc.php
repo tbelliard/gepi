@@ -1884,7 +1884,6 @@ function check_user_temp_directory($login_user="", $_niveau_arbo=0) {
 	}
 
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$login_user."'";
-            
 	$res_temp_dir =  mysqli_query($mysqli, $sql);  
 	if($res_temp_dir->num_rows == 0){
 		// Cela revient à dire que l'utilisateur n'est pas dans la table utilisateurs???
@@ -4420,7 +4419,7 @@ function get_commune($code_commune_insee,$mode){
  * @return string civilite nom prénom de l'utilisateur
  */
 function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
-    global $mysqli;
+	global $mysqli;
 	$retour="";
 	$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
 	$res_user=mysqli_query($mysqli, $sql);
@@ -5117,12 +5116,12 @@ function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="", $logi
  * @return array Tableau d'indices ['login'][] et ['id_classe'][] et ['classe'][]
  */
 function get_tab_ele_clas_pp($login_prof) {
-    global $mysqli;
+	global $mysqli;
 	$tab=array();
 	$tab['login']=array();
 	$tab['id_classe']=array();
 
-	$sql="SELECT DISTINCT jep.login FROM j_eleves_professeurs jep, eleves e, j_eleves_classes jec, classes c WHERE jep.professeur='$login_prof' AND jep.login=e.login AND jec.login=e.login AND jec.id_classe=c.id ORDER BY c.classe, e.nom, e.prenom;";
+	$sql="SELECT DISTINCT jep.login FROM j_eleves_professeurs jep, eleves e, j_eleves_classes jec, classes c WHERE jep.professeur='$login_prof' AND jep.login=e.login AND jec.login=e.login AND jec.id_classe=c.id AND jep.id_classe=jec.id_classe ORDER BY c.classe, e.nom, e.prenom;";
 	$res=mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		while($lig=$res->fetch_object()) {
@@ -5131,7 +5130,7 @@ function get_tab_ele_clas_pp($login_prof) {
 		$res->close();
 	}
 
-	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE jep.professeur='$login_prof' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe;";
+	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE jep.professeur='$login_prof' AND jep.login=jec.login AND jec.id_classe=c.id AND jep.id_classe=jec.id_classe ORDER BY c.classe;";
 	$res=mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		while($lig=$res->fetch_object()) {
@@ -9349,6 +9348,7 @@ function get_adresse_responsable($pers_id, $login_resp="") {
 	$tab_adresse['commune']="";
 	$tab_adresse['pays']="";
 	$tab_adresse['en_ligne']="";
+	$tab_adresse['adresse_sans_cp_commune']="";
 
 	if(($pers_id!="")||($login_resp!="")) {
 		if($pers_id!="") {
@@ -9379,6 +9379,7 @@ function get_adresse_responsable($pers_id, $login_resp="") {
 				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
 				$tab_adresse['en_ligne'].=$lig->adr3;
 			}
+			$tab_adresse['adresse_sans_cp_commune']=$tab_adresse['en_ligne'];
 
 			if($lig->cp!="") {
 				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
@@ -15544,7 +15545,12 @@ function get_tab_types_groupe() {
 
 	$tab=array();
 
-	$sql="SELECT * FROM groupes_types;";
+	if(!getSettingANon('AutoriserTypesEnseignements')) {
+		$sql="SELECT * FROM groupes_types;";
+	}
+	else {
+		$sql="SELECT * FROM groupes_types WHERE nom_court='local';";
+	}
 	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res)>0) {
@@ -15750,4 +15756,13 @@ function getResume($aid_id) {
 	return $retour;
 }
 
+function acces_trombinoscope() {
+	$retour="false";
+	if(getSettingAOui("active_module_trombinoscopes")) {
+		if(acces("/mod_trombinoscopes/trombinoscope.php", $_SESSION['statut'])) {
+			$retour="true";
+		}
+	}
+	return $retour;
+}
 ?>

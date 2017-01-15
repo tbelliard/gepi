@@ -1547,11 +1547,15 @@ echo "
 	function maj_div_liste_retenues_jour() {
 ";
 if(acces("/mod_discipline/liste_retenues_jour.php", $_SESSION['statut'])) {
-echo "
+	$ajout_param_ele="";
+	if(isset($ele_login)) {
+		$ajout_param_ele="+'&login_ele=$ele_login'";
+	}
+	echo "
 		if($('date_retenue')) {
 			date=$('date_retenue').value;
 			//alert('date='+date);
-			new Ajax.Updater($('div_liste_retenues_jour'),'liste_retenues_jour.php?date='+date,{method: 'get'});
+			new Ajax.Updater($('div_liste_retenues_jour'),'liste_retenues_jour.php?date='+date".$ajout_param_ele.",{method: 'get'});
 		}
 ";
 }
@@ -1691,6 +1695,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 			echo "<td>\n";
 			if($lig->statut=='eleve') {
 
+				$tab_creneau_deja=array();
 				// Retenues
 				$passage_report=false; //traiter les cas ou une sanction correspond à plusieurs retenues
 				//$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
@@ -1724,13 +1729,22 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					echo "</tr>\n";
 					$alt_b=1;
 					while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+						// On ne va pas repérer les collisions si on a M1 d'une part et 8h-9h d'autre part.
+						// On ne va pas repérer non plus une collision 8h-10h et M2
+						$ajout_style_collision="";
+						if(in_array($lig_sanction->date."_".$lig_sanction->heure_debut, $tab_creneau_deja)) {
+							$ajout_style_collision=" style='color:red' title='Collision possible'";
+						}
+						else {
+							$tab_creneau_deja[]=$lig_sanction->date."_".$lig_sanction->heure_debut;
+						}
 						$alt_b=$alt_b*(-1);
 						echo "<tr class='lig$alt_b'>\n";
 						//echo "<td>Retenue</td>\n";
 						//echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=modif&amp;valeur=retenue&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login'>".ucfirst($lig_sanction->nature_sts)."</a></td>\n";
 						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login' title=\"Consulter/Modifier.\">".ucfirst($lig_sanction->nature_sts)."</a></td>\n";
-						echo "<td>".formate_date($lig_sanction->date)."</td>\n";
-						echo "<td>$lig_sanction->heure_debut</td>\n";
+						echo "<td".$ajout_style_collision.">".formate_date($lig_sanction->date)."</td>\n";
+						echo "<td".$ajout_style_collision.">$lig_sanction->heure_debut</td>\n";
 						echo "<td>$lig_sanction->duree</td>\n";
 						echo "<td>$lig_sanction->lieu</td>\n";
 						//echo "<td>".nl2br($lig_sanction->travail)."</td>\n";

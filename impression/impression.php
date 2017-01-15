@@ -246,7 +246,7 @@ if(mysqli_num_rows($res_aid_config)>0){
 		if(mysqli_num_rows($res_aid)>0){
 			$temoin_afficher_aid="y";
 			while($lig_aid=mysqli_fetch_object($res_aid)) {
-				$current_aid=get_tab_aid($lig_aid->id);
+				$current_aid=get_tab_aid($lig_aid->id, "", array("classes"));
 				$html_aid.="
 		<tr>
 			<td>

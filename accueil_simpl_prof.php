@@ -633,7 +633,7 @@ for($i=0;$i<count($groups);$i++){
 			echo ", ";
 			$liste_classes_du_groupe.=", ";
 		}
-		echo "<a href='groupes/popup.php?id_groupe=".$groups[$i]['id']."&amp;id_classe=".$classe['id']."' onClick=\"ouvre_popup_visu_groupe('".$groups[$i]['id']."','".$classe['id']."');return false;\" target='_blank'";
+		echo "<a href='groupes/popup.php?id_groupe=".$groups[$i]['id']."&amp;id_classe=".$classe['id']."' onClick=\"ouvre_popup_visu_groupe('".$groups[$i]['id']."','".$classe['id']."','');return false;\" target='_blank'";
 
 		if($pref_accueil_infobulles=="y"){
 			echo " onmouseover=\"afficher_div('info_popup_".$i."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\"";
@@ -1096,38 +1096,29 @@ for($i=0;$i<count($groups);$i++){
 // AID
 $ii=$i;
 
-$sql="SELECT * FROM aid_config
-		WHERE display_bulletin = 'y'
-			OR bull_simplifie = 'y'
-			ORDER BY nom;";
+$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a
+		WHERE ac.indice_aid=a.indice_aid 
+		ORDER BY ac.order_display1, ac.order_display2, a.numero, ac.nom;";
 //echo "$sql<br />";
 $res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 $i=0;
 $tmp_nb_aid_a_afficher=0;
 $nb_aid=0;
-while ($i < $tmp_nb_aid) {
-	$tmp_indice_aid = @old_mysql_result($res_aid, $i, "indice_aid");
-	$tmp_aid_display_begin = @old_mysql_result($res_aid, $i, "display_begin");
-	$tmp_aid_display_end = @old_mysql_result($res_aid, $i, "display_end");
-	$tmp_aid_display_bulletin = @old_mysql_result($res_aid, $i, "display_bulletin");
-	$tmp_aid_bull_simplifie = @old_mysql_result($res_aid, $i, "bull_simplifie");
-	$tmp_aid_type_note = @old_mysql_result($res_aid, $i, "type_note");
-	$tmp_aid_outils_complementaires = @old_mysql_result($res_aid, $i, "outils_complementaires");
+while ($lig_cat_aid=mysqli_fetch_object($res_aid)) {
+	$tmp_indice_aid = $lig_cat_aid->indice_aid;
+	$tmp_aid_display_begin = $lig_cat_aid->display_begin;
+	$tmp_aid_display_end = $lig_cat_aid->display_end;
+	$tmp_aid_display_bulletin = $lig_cat_aid->display_bulletin;
+	$tmp_aid_bull_simplifie = $lig_cat_aid->bull_simplifie;
+	$tmp_aid_type_note = $lig_cat_aid->type_note;
+	$tmp_aid_outils_complementaires = $lig_cat_aid->outils_complementaires;
+	$tmp_nom_aid = $lig_cat_aid->nom;
 
-/*
-
-SELECT * FROM aid_config
-WHERE display_bulletin = 'y'
-OR bull_simplifie = 'y'
-ORDER BY nom;
-
-$sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
-FROM aid_config ac, j_aid_utilisateurs u
-WHERE ac.outils_complementaires = 'y'
-AND u.indice_aid = ac.indice_aid
-AND u.id_utilisateur='".$_SESSION['login']."'
-ORDER BY ac.nom_complet"; 
-*/
+	/*
+	echo "<pre>";
+	print_r($lig_cat_aid);
+	echo "</pre>";
+	*/
 
 	$sql="SELECT * FROM j_aid_utilisateurs
 		WHERE (id_utilisateur = '".$_SESSION['login']."'
@@ -1136,33 +1127,14 @@ ORDER BY ac.nom_complet";
 	$tmp_call_prof = mysqli_query($GLOBALS["mysqli"], $sql);
 	$tmp_nb_result = mysqli_num_rows($tmp_call_prof);
 	if (($tmp_nb_result != 0) or ($_SESSION['statut'] == 'secours')) {
-		$tmp_nom_aid = @old_mysql_result($tmp_call_data, $i, "nom");
+		//$tmp_nom_aid = @old_mysql_result($tmp_call_data, $i, "nom");
 
-		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom";
+		$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom;";
 		//echo "$sql<br />";
 		$tmp_call_prof_aid = mysqli_query($GLOBALS["mysqli"], $sql);
 		$tmp_nombre_aid = mysqli_num_rows($tmp_call_prof_aid);
 		//if ($tmp_nombre_aid>0) {
 		while($lig_aid=mysqli_fetch_object($tmp_call_prof_aid)) {
-
-
-/*
-			if($tmp_nb_aid_a_afficher==0) {
-				//$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_aid.php' , "texte"=>"AID");
-				$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>"AID");
-				$tmp_sous_menu2=array();
-				$cpt_sous_menu2=0;
-			}
-
-			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
-			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (saisie)";
-			$cpt_sous_menu2++;
-
-			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
-			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (visualisation)";
-			$cpt_sous_menu2++;
-*/
-
 			$tab_clas_aid=array();
 			$cpt_clas_aid=0;
 			$liste_classes_aid="";
@@ -1192,6 +1164,20 @@ ORDER BY ac.nom_complet";
 			echo "<tr valign='top'>\n";
 			echo "<!-- Colonne Nom de l'AID -->\n";
 			echo "<td>";
+
+// Si Gestionnaire, ou accès modif... ajout <div style='float:right'><a href=''></a></div>
+			if(NiveauGestionAid($_SESSION['login'],$tmp_indice_aid,$lig_aid->id)>=5) {
+				if ($tmp_aid_outils_complementaires=="y") {
+					echo "<div style='float:right;width:16px;'><a href='./aid/modif_fiches.php?action=modif&aid_id=".$lig_aid->id."&indice_aid=".$tmp_indice_aid."' title='Éditer cet AID' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='./images/edit16.png' class='icone16' alt='Éditer cet AID' /></a></div>";
+				}
+				else {
+					echo "<div style='float:right;width:16px;'><a href='./aid/add_aid.php?action=modif_aid&aid_id=".$lig_aid->id."&indice_aid=".$tmp_indice_aid."' title='Éditer cet AID' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='./images/edit16.png' class='icone16' alt='Éditer cet AID' /></a></div>";
+				}
+			}
+			elseif(NiveauGestionAid($_SESSION['login'],$tmp_indice_aid,$lig_aid->id)>=1) {
+				echo "<div style='float:right;width:16px;'><a href='./aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid->id."&indice_aid=".$tmp_indice_aid."' title='Gérer la liste des élèves' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='./images/edit16.png' class='icone16' alt='Éditer cet AID' /></a></div>";
+			}
+
 			echo $tmp_nom_aid;
 			echo "<br />";
 			echo "<span style='font-size:x-small'>".$lig_aid->nom."<span>";
@@ -1200,6 +1186,16 @@ ORDER BY ac.nom_complet";
 			//echo "<td>".htmlspecialchars($groups[$i]['classlist_string'])."</td>\n";
 			echo "<!-- Colonne nom classe menant à la liste de élèves du 'groupe'... non réalisé pour les AID -->\n";
 			echo "<td>\n";
+
+			/*
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/popup.php?id_aid=".$lig_aid->id_aid;
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Liste élèves";
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+			$tmp_sous_menu2[$cpt_sous_menu2]['js']=" onclick=\"ouvre_popup_visu_aid('".$lig_aid->id_aid."','".$lig_aid->display_end."');return false;\"";
+			$cpt_sous_menu2++;
+			*/
+			//echo "<a href='$gepiPath/aid/popup.php?id_aid=".$lig_aid->id."' target='_blank' onclick=\"ouvre_popup_visu_aid('".$lig_aid->id."','".$lig_cat_aid->display_end."');return false;\">";
+			echo "<a href='$gepiPath/aid/popup.php?id_aid=".$lig_aid->id."' target='_blank' onclick=\"ouvre_popup_visu_aid('".$lig_aid->id."','');return false;\">";
 			for($loop=0;$loop<count($tab_clas_aid);$loop++) {
 				if($loop>0) {
 					echo ", ";
@@ -1208,6 +1204,7 @@ ORDER BY ac.nom_complet";
 				echo "<span title=\"".$tab_clas_aid[$loop]['nom_complet']."\">".$tab_clas_aid[$loop]['classe']."</span>";
 				$liste_classes_aid.=$tab_clas_aid[$loop]['classe'];
 			}
+			echo "</a>";
 			echo "</td>\n";
 
 			// mod_abs2
@@ -1409,28 +1406,31 @@ echo "Periode $j<br />
 								echo "<!-- Colonne Graphe -->\n";
 								echo "<td class='$class_style'>\n";
 								if($afficher_aid=="y") {
-									echo "<div id='h_g_".$ii."_".$j."'>";
-									$cpt=0;
-									for($loop=0;$loop<count($tab_clas_aid);$loop++) {
-										if($cpt>0){echo "<br />\n";}
-										echo "<a href='visualisation/affiche_eleve.php?id_classe=".$tab_clas_aid[$loop]['id']."'";
-										if($pref_accueil_infobulles=="y"){
-											echo " onmouseover=\"afficher_div('info_graphe_".$ii."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_graphe_".$ii."_".$j."_".$cpt."');\"";
+									if(($tmp_aid_type_note=='every')||
+									(($j==$tmp_aid_display_end)&&($tmp_aid_type_note=='last'))) {
+										echo "<div id='h_g_".$ii."_".$j."'>";
+										$cpt=0;
+										for($loop=0;$loop<count($tab_clas_aid);$loop++) {
+											if($cpt>0){echo "<br />\n";}
+											echo "<a href='visualisation/affiche_eleve.php?id_classe=".$tab_clas_aid[$loop]['id']."'";
+											if($pref_accueil_infobulles=="y"){
+												echo " onmouseover=\"afficher_div('info_graphe_".$ii."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_graphe_".$ii."_".$j."_".$cpt."');\"";
+											}
+											echo ">";
+											echo "<img src='images/icons/graphes.png' width='32' height='32' alt='Graphe' border='0' />";
+											if(count($tab_clas_aid)>1){echo " ".$tab_clas_aid[$loop]['classe'];}
+											echo "</a>\n";
+	
+	
+											if($pref_accueil_infobulles=="y"){
+												echo "<div id='info_graphe_".$ii."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 10em;' onmouseout=\"cacher_div('info_graphe_".$ii."_".$j."_".$cpt."');\">Outil graphique<br />".$tab_clas_aid[$loop]['classe'].".</div>\n";
+	
+												$tab_liste_infobulles[]='info_graphe_'.$ii.'_'.$j.'_'.$cpt;
+											}
+											$cpt++;
 										}
-										echo ">";
-										echo "<img src='images/icons/graphes.png' width='32' height='32' alt='Graphe' border='0' />";
-										if(count($tab_clas_aid)>1){echo " ".$tab_clas_aid[$loop]['classe'];}
-										echo "</a>\n";
-	
-	
-										if($pref_accueil_infobulles=="y"){
-											echo "<div id='info_graphe_".$ii."_".$j."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 10em;' onmouseout=\"cacher_div('info_graphe_".$ii."_".$j."_".$cpt."');\">Outil graphique<br />".$tab_clas_aid[$loop]['classe'].".</div>\n";
-	
-											$tab_liste_infobulles[]='info_graphe_'.$ii.'_'.$j.'_'.$cpt;
-										}
-										$cpt++;
+										echo "</div>\n";
 									}
-									echo "</div>\n";
 								}
 								echo "</td>\n";
 
@@ -1475,7 +1475,7 @@ echo "Periode $j<br />
 												}
 												echo ">";
 												echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Bulletin simplifié' border='0' />";
-												if(count($groups[$i]["classes"]["classes"])>1){echo " ".$tab_clas_aid[$loop]['classe'];}
+												if(count($tab_clas_aid[$loop])>1){echo " ".$tab_clas_aid[$loop]['classe'];}
 												echo "</a>\n";
 	
 												if($pref_accueil_infobulles=="y"){
@@ -1675,12 +1675,7 @@ echo "<script type='text/javascript'>
 		}
 	}
 
-	var fen;
-	function ouvre_popup_visu_groupe(id_groupe,id_classe){
-		//eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		setTimeout('fen.focus()',500);
-	}
+	".ouvre_popup_visu_groupe_visu_aid("n")."
 
 </script>\n";
 

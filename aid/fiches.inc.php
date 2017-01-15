@@ -76,7 +76,7 @@ while ($i < $nombreligne){
 echo "\" > cacher </a>";
 echo " tous les détails.<br />\n";
 if ($_login!="")
-    echo "Selon le paramétrage effectué par l'administrateur, certaines de ces fiches sont en partie <a href=\"../public/index_fiches.php\">librement consultables et accessibles au public</a>.<br />";
+    echo "Selon le paramétrage effectué par l'administrateur, certaines de ces fiches sont en partie <a href=\"../public/index_fiches.php\" target='_blank'>librement consultables et accessibles au public</a>.<br />";
 echo "<br />";
 $i = 0;
 while ($i < $nombreligne){

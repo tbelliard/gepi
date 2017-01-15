@@ -1431,7 +1431,7 @@ echo "<tr><td colspan='5'>
 					elseif((isset($tab_id_cours['id_aid']))&&($tab_id_cours['id_aid']!="")) {
 						$id_aid_courant=$tab_id_cours['id_aid'];
 						if(!isset($aid[$id_aid_courant])) {
-							$aid[$id_aid_courant]=get_tab_aid($id_aid_courant);
+							$aid[$id_aid_courant]=get_tab_aid($id_aid_courant, "", array("classes", "profs"));
 						}
 
 						echo "<span title=\"".$aid[$id_aid_courant]['nom_aid']."

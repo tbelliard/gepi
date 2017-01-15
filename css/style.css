@@ -223,6 +223,11 @@ TD.calendarHeader {border:0px; font-size: 10pt}
 }
 
 /* Icones */
+.icone9 {
+    height: 9px;
+    width: 9px;
+}
+
 .icone15 {
     height: 15px;
     width: 15px;

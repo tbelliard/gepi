@@ -404,6 +404,7 @@ $sous_groupe_de = Extrait_info_parent ($aid_id) ? Extrait_info_parent ($aid_id)-
 //print_r($sous_groupe_de->fetch_object()->id);
 $res_parents=Extrait_aid_sur_indice_aid ($indice_aid);
 
+$themessage = 'Des modifications n ont pas été enregistrées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *********************
 if ($action == "visu")
     $titre_page = "Visualisation d'une fiche projet ".$nom_projet;
@@ -411,6 +412,9 @@ else
     $titre_page = "Modification d'une fiche projet ".$nom_projet;
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+$NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
+$NiveauGestionAid_AID_courant=NiveauGestionAid($_SESSION["login"],$indice_aid, $aid_id);
 
 if ($action != "visu") {
 ?>
@@ -453,6 +457,13 @@ if ($_SESSION['retour']!='') { ?>
 		Retour
 	</a>
 <?php }
+elseif(acces("/aid/index_fiches.php", $_SESSION['statut'])) {
+	echo "<a href='index_fiches.php?indice_aid=$indice_aid'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+}
+else {
+	echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+}
+
 if ($action == "visu") {
     if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,"","",$annee)) {
 ?>
@@ -465,7 +476,26 @@ if ($action == "visu") {
 	| <a href='modif_fiches.php?aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>&amp;annee=<?php echo $annee; ?>&amp;action=visu'>
 		Visualiser la fiche
 	</a>
-<?php } ?>
+<?php
+} 
+
+if($NiveauGestionAid_AID_courant>=1) {
+	echo "
+	| <a href='modify_aid.php?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves de l'AID</a>";
+}
+if($NiveauGestionAid_AID_courant>=2) {
+	echo "
+	| <a href='modify_aid.php?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Professeurs de l'AID</a>";
+}
+if($NiveauGestionAid_AID_courant>=5) {
+	echo "
+	| <a href='modify_aid.php?flag=prof_gest&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gestionnaires de l'AID</a>";
+}
+if($NiveauGestionAid_categorie==10) {
+	echo "
+	| <a href='config_aid.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
+}
+?>
 </p>
 <!-- Nom du projet -->
 <p class='grand'>
@@ -538,7 +568,7 @@ if ($annee=='') {
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso1','W',$annee)) {
     echo "<p><span class = 'bold'>".LibelleChampAid("perso1")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso1\" value=\"".htmlspecialchars($reg_perso1)."\" size=\"40\" /></p>\n";
+    echo "<input type=\"text\" name=\"reg_perso1\" value=\"".htmlspecialchars($reg_perso1)."\" size=\"40\" onchange=\"changement()\" /></p>\n";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso1','R',$annee)) {
@@ -550,7 +580,7 @@ if ($annee=='') {
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso2','W',$annee)) {
     echo "<p><span class = 'bold'>".LibelleChampAid("perso2")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso2\" value=\"".htmlspecialchars($reg_perso2)."\" size=\"40\" /></p>\n";
+    echo "<input type=\"text\" name=\"reg_perso2\" value=\"".htmlspecialchars($reg_perso2)."\" size=\"40\" onchange=\"changement()\" /></p>\n";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso2','R',$annee)) {
@@ -562,7 +592,7 @@ if ($annee=='') {
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso3','W',$annee)) {
     echo "<p><span class = 'bold'>".LibelleChampAid("perso3")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso3\" value=\"".htmlspecialchars($reg_perso3)."\" size=\"40\" /></p>\n";
+    echo "<input type=\"text\" name=\"reg_perso3\" value=\"".htmlspecialchars($reg_perso3)."\" size=\"40\" onchange=\"changement()\" /></p>\n";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso3','R',$annee)) {
@@ -584,13 +614,13 @@ if ($annee=='') {
 				   id='sous_groupe'
 				   value="y"
 					<?php if (a_parent($aid_id, $indice_aid)) {echo " checked='checked' ";} ?>  
-				   onchange="afficher_cacher_parent();"
+				   onchange="afficher_cacher_parent();changement();"
 				   />
 		
 		<span id="aidParent">
 		
 <?php if((Categorie_a_enfants ($indice_aid) != NULL) && Categorie_a_enfants ($indice_aid)->num_rows){ ?>
-			<select name="parent" id="choix_parent">
+			<select name="parent" id="choix_parent" onchange="changement()">
 				<option value="" 
 						<?php if (!$sous_groupe_de) {echo " selected='selected' ";} ?>
 						>
@@ -617,7 +647,7 @@ if ($annee=='') {
 				   id='inscrit_direct'
 				   value="y"
 					<?php if (eleve_inscrit_direct($aid_id, $indice_aid)) {echo " checked='checked' ";} ?>  
-				   onchange="afficher_cacher_parent();"
+				   onchange="afficher_cacher_parent();changement();"
 				   />
 		</p>
 	</div>
@@ -636,6 +666,7 @@ if ($annee=='') {
 					   id='eleve_s_inscrit'
 					   value="y"
 						<?php if (Eleve_est_deja_membre ($login, $indice_aid, $aid_id)->num_rows) {echo " checked='checked' ";} ?>
+					   onchange="changement()"
 					   />
 				<input type='hidden' name="indice_aid" value="<?php echo $indice_aid; ?>" />
 				<input type='hidden' name="aid_id" value="<?php echo $aid_id; ?>" />
@@ -652,38 +683,38 @@ if ($_SESSION["statut"]=="administrateur") {
     echo "<div class='bloc'>\n";
     If ($action != "visu") {
         //nom
-        echo "<p>Nom : <input type=\"text\" name=\"reg_nom\" size=\"50\" value=\"".htmlspecialchars($aid_nom)."\" /></p>\n";
+        echo "<p>Nom : <input type=\"text\" name=\"reg_nom\" size=\"50\" value=\"".htmlspecialchars($aid_nom)."\" onchange=\"changement()\" /></p>\n";
         if ($annee=='') {
           //numero
-          echo "<p>Numéro (fac.) : <input type=\"text\" name=\"reg_num\" size=\"4\" value=\"".$reg_num."\" /></p>\n";
+          echo "<p>Numéro (fac.) : <input type=\"text\" name=\"reg_num\" size=\"4\" value=\"".$reg_num."\" onchange=\"changement()\" /></p>\n";
           //eleve_peut_modifier
-          echo "<p><input type=\"checkbox\" name=\"reg_eleve_peut_modifier\" value=\"y\" ";
+          echo "<p><input type=\"checkbox\" name=\"reg_eleve_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
           if ($reg_eleve_peut_modifier == 'y') echo " checked ";
           echo "/> \n";
           echo "Les élèves responsables peuvent modifier la fiche.</p>\n";
           //prof_peut_modifier
-          echo "<p><input type=\"checkbox\" name=\"reg_prof_peut_modifier\" value=\"y\" ";
+          echo "<p><input type=\"checkbox\" name=\"reg_prof_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
           if ($reg_prof_peut_modifier == 'y') echo " checked ";
           echo "/> \n";
           echo "Les professeurs responsables peuvent modifier la fiche.</p>\n";
           //cpe_peut_modifier
-          echo "<p><input type=\"checkbox\" name=\"reg_cpe_peut_modifier\" value=\"y\" ";
+          echo "<p><input type=\"checkbox\" name=\"reg_cpe_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
           if ($reg_cpe_peut_modifier == 'y') echo " checked ";
           echo "/> \n";
           echo "Les CPE peuvent modifier la fiche.</p>\n";
         }
         //fiche_publique
-        echo "<p><input type=\"checkbox\" name=\"reg_fiche_publique\" value=\"y\" ";
+        echo "<p><input type=\"checkbox\" name=\"reg_fiche_publique\" value=\"y\" onchange=\"changement()\" ";
         if ($reg_fiche_publique == 'y') echo " checked ";
         echo "/> \n";
         echo "La fiche est visible dans <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">l'interface publique</a>.</p>\n";
         //affiche_adresse1
-        echo "<p><input type=\"checkbox\" name=\"reg_affiche_adresse1\" value=\"y\" ";
+        echo "<p><input type=\"checkbox\" name=\"reg_affiche_adresse1\" value=\"y\" onchange=\"changement()\" ";
         if ($reg_affiche_adresse1 == 'y') echo " checked ";
         echo "/> \n";
         echo "L'adresse publique d'accès à la production est en lien sur la fiche publique.</p>\n";
         //en_construction
-        echo "<p><input type=\"checkbox\" name=\"reg_en_construction\" value=\"y\" ";
+        echo "<p><input type=\"checkbox\" name=\"reg_en_construction\" value=\"y\" onchange=\"changement()\" ";
         if ($reg_en_construction == 'y') echo " checked ";
         echo "/> \n";
         echo "L'adresse publique est déclarée \"en construction\" sur la fiche publique.</p>\n";
@@ -742,7 +773,7 @@ if ($action != "visu") {
 	?>
 	<p>
 		<label for="integreResume">Intégrer le résumé aux appréciations élève du bulletin</label> 
-		<input type="checkbox" name="integreResume" id="integreResume" value="y" <?php if (aidEstAfficheBulletin($aid_id)) {echo " checked ='checked' ";} ?>/>
+		<input type="checkbox" name="integreResume" id="integreResume" value="y" onchange="changement()" <?php if (aidEstAfficheBulletin($aid_id)) {echo " checked ='checked' ";} ?>/>
 	</p>
 	<?php
 	}
@@ -766,7 +797,7 @@ If ($action != "visu") {
     echo "<span class = 'bold'>Classez votre projet parmi la liste suivante (classification Dewey) : </span><br />\n";
     $call_famille = mysqli_query($GLOBALS["mysqli"], "select * from aid_familles order by ordre_affichage");
     $nb_famille = mysqli_num_rows($call_famille);
-    echo "<select name=\"reg_famille\" size=\"1\">\n";
+    echo "<select name=\"reg_famille\" size=\"1\" onchange=\"changement()\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
     $k = 0;
     while ($k < $nb_famille) {
@@ -806,7 +837,7 @@ If ($action != "visu")  {
     echo "<table><tr>";
     $k = 0;
     while ($k < 5) {
-        echo "<td><input type=\"text\" name=\"mc".$k."\" value=\"".htmlspecialchars($mc[$k])."\" size=\"15\" /></td>\n";
+        echo "<td><input type=\"text\" name=\"mc".$k."\" value=\"".htmlspecialchars($mc[$k])."\" size=\"15\" onchange=\"changement()\" /></td>\n";
         $k++;
     }
     echo "</tr></table>";
@@ -853,7 +884,7 @@ If ($action != "visu")  {
         $nom_productions = old_mysql_result($call_productions,$k,"nom");
         echo "<td><input type=\"checkbox\" name=\"p".$k."\" value=\"".$id_productions."\" ";
         if (in_array($id_productions, $p))  echo " checked ";
-        echo " onClick=\"compteur_coches(this)\" />";
+        echo " onClick=\"compteur_coches(this)\" onchange=\"changement()\" />";
         echo $nom_productions."</td>\n";
         $newligne++;
         if ($newligne == 5) {
@@ -906,7 +937,7 @@ If ($action != "visu") {
         if ($newligne == 1) echo "<tr>";
         $id_public = old_mysql_result($call_public,$k,"id");
         $nom_public = old_mysql_result($call_public,$k,"public");
-        echo "<td><input type=\"checkbox\" name=\"public".$k."\" value=\"".$id_public."\" ";
+        echo "<td><input type=\"checkbox\" name=\"public".$k."\" value=\"".$id_public."\" onchange=\"changement()\" ";
         if (in_array($id_public, $public))  echo " checked ";
         echo " />";
         echo $nom_public."</td>\n";
@@ -947,7 +978,7 @@ echo "<div class='bloc'>\n";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1',"W",$annee)) {
     echo "<span class = 'bold'>Indiquez éventuellement ci-dessous un <strong>lien public de type internet</strong> qui donne accès à la production :</span>\n";
-    echo "<br /><input type=\"text\" name=\"reg_adresse1\" value=\"".htmlspecialchars($reg_adresse1)."\" size=\"50\" />\n";
+    echo "<br /><input type=\"text\" name=\"reg_adresse1\" value=\"".htmlspecialchars($reg_adresse1)."\" size=\"50\" onchange=\"changement()\" />\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1',"R",$annee)) {
@@ -964,7 +995,7 @@ If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse2',"W",$annee)) {
     echo "<span class = 'bold'>Indiquez ci-dessous un <b>lien à accès restreint</B>
     <br />(par exemple, <b>chemin d'accès à la production sur un serveur</b>) :</span>\n";
-    echo "<br /><input type=\"text\" name=\"reg_adresse2\" value=\"".htmlspecialchars($reg_adresse2)."\" size=\"50\" />\n";
+    echo "<br /><input type=\"text\" name=\"reg_adresse2\" value=\"".htmlspecialchars($reg_adresse2)."\" size=\"50\" onchange=\"changement()\" />\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse2',"R",$annee)) {
@@ -1001,7 +1032,7 @@ If ($action != "visu") {
     echo "<span class = 'bold'>Indiquez la discipline principale à laquelle se rattache votre projet : </span><br />\n";
     $call_discipline = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
     $nb_discipline = mysqli_num_rows($call_discipline);
-    echo "<select name=\"reg_discipline1\" size=\"1\">\n";
+    echo "<select name=\"reg_discipline1\" size=\"1\" onchange=\"changement()\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
     $k = 0;
     $discipline_reconnue=FALSE;
@@ -1042,7 +1073,7 @@ If ($action != "visu") {
     echo "<span class = 'bold'>Indiquez la discipline secondaire à laquelle se rattache votre projet : </span><br />\n";
     $call_discipline = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
     $nb_discipline = mysqli_num_rows($call_discipline);
-    echo "<select name=\"reg_discipline2\" size=\"1\">\n";
+    echo "<select name=\"reg_discipline2\" size=\"1\" onchange=\"changement()\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
     $k = 0;
     $discipline_reconnue=FALSE;

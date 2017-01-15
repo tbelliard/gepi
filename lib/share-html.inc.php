@@ -1832,6 +1832,14 @@ function affiche_actions_compte($login, $target="") {
 			$retour.=" target='$target'";
 		}
 		$retour.=">Réinitialiser cumul</a>";
+
+		$retour.="<br />\n";
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Voir les alertes</a>";
 	}
 	$retour.="</p>\n";
 
@@ -5437,15 +5445,15 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 	$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
 	$acces_bilan_individuel=acces("/mod_abs2/bilan_individuel.php", $_SESSION['statut']);
 
-	$sql="SELECT e.login, aad.eleve_id, count(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad, 
+	$sql="SELECT e.login, aad.eleve_id, SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad, 
 											eleves e 
 										WHERE aad.eleve_id=e.id_eleve AND 
 											(e.date_sortie IS NULL OR e.date_sortie LIKE '0000-00-00%' OR e.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."') AND 
 											manquement_obligation_presence='1' AND 
 											non_justifiee!='0' AND 
 											date_demi_jounee<'".$date_test."' 
-										GROUP BY eleve_id HAVING count(non_justifiee)>".$abs2_afficher_alerte_nb_nj." 
-										ORDER BY count(non_justifiee) DESC;";
+										GROUP BY eleve_id HAVING SUM(non_justifiee)>".$abs2_afficher_alerte_nb_nj." 
+										ORDER BY SUM(non_justifiee) DESC;";
 	//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
 	$res_alerte=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_alerte)>0) {
@@ -5526,13 +5534,13 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 					if(mysqli_num_rows($res_per)>0) {
 						$lig_per=mysqli_fetch_object($res_per);
 
-						$sql="SELECT count(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad 
+						$sql="SELECT SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad 
 														WHERE eleve_id='".$lig->eleve_id."' AND 
 															manquement_obligation_presence='1' AND 
 															non_justifiee!='0' AND 
 															date_demi_jounee>'".$lig_per->date_fin."' AND 
 															date_demi_jounee<'".$date_test."' 
-														GROUP BY eleve_id HAVING count(non_justifiee)>".$abs2_afficher_alerte_nb_nj.";";
+														GROUP BY eleve_id HAVING SUM(non_justifiee)>".$abs2_afficher_alerte_nb_nj.";";
 						//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
 						$date_absence_eleve_debut=$lig_per->date_fin;
 						$date_absence_eleve_fin=$date_test;
@@ -5541,12 +5549,12 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 				else {
 					// On prend le début de l'année
 
-						$sql="SELECT count(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad
+						$sql="SELECT SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad
 														WHERE eleve_id='".$lig->eleve_id."' AND 
 															manquement_obligation_presence='1' AND 
 															non_justifiee!='0' AND 
 															date_demi_jounee<'".$date_test."' 
-														GROUP BY eleve_id HAVING count(non_justifiee)>".$abs2_afficher_alerte_nb_nj.";";
+														GROUP BY eleve_id HAVING SUM(non_justifiee)>".$abs2_afficher_alerte_nb_nj.";";
 						//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
 
 						$date_absence_eleve_debut=strftime("%Y-%m-%d", getSettingValue('begin_bookings'));
@@ -5587,7 +5595,7 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 						$lignes_alerte.="
 							<th class='text' title=\"Cliquez pour trier d'après le nom de l'élève\">Élève</th>
 							<th class='text' title=\"Cliquez pour trier d'après la classe de l'élève\">Classe</th>
-							<th class='number' title=\"Cliquez pour trier d'après le nombre de demi-journées\">Nombre de demi-journées</th>
+							<th class='number' title=\"Cliquez pour trier d'après le nombre de demi-journées\">Nombre de demi-journées non justifiées</th>
 						</tr>
 					</thead>
 					<tbody>";
@@ -5601,6 +5609,276 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 					$lignes_alerte.="
 							<td>".$nom_prenom_ele."</td>
 							<td>".$classe."</td>
+							<td>";
+					if($acces_bilan_individuel) {
+						$lignes_alerte.="<a href='$gepiPath/mod_abs2/bilan_individuel.php?date_absence_eleve_debut=".$date_absence_eleve_debut."&amp;date_absence_eleve_fin=".$date_absence_eleve_fin."&amp;id_eleve=".$lig->eleve_id."&amp;affichage=html&amp;id_classe=-1&amp;type_extrait=1' title=\"Voir le bilan des manquements de cet élève.\">".$lig->nb_nj."</a>";
+
+					}
+					else {
+						$lignes_alerte.=$lig->nb_nj;
+					}
+					$lignes_alerte.="</td>
+						</tr>";
+
+					$temoin_au_moins_une_alerte++;
+				}
+			}
+
+			//if($lignes_alerte!="") {
+			if($temoin_au_moins_une_alerte>0) {
+				$lignes_alerte.="
+				</tbody>
+			</table>";
+
+				//echo $lignes_alerte;
+			}
+		}
+	}
+	return $lignes_alerte;
+}
+
+
+function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_courante_seulement="y") {
+	global $mysqli, $gepiPath;
+
+	$chaine_lien_alerte_abs="";
+	if(acces("/mod_abs2/alerte_nj.php", $_SESSION['statut'])) {
+		$chaine_lien_alerte_abs="<div style='float:right; width:20px; margin:3px;' title=\"Afficher les absences justifiées ou non depuis un certain temps.\"><a href='$gepiPath/mod_abs2/alerte_nj.php?mode=abs'><img src='$gepiPath/images/icons/absences_flag.png' class='icone20' alt='Alerte' /></a></div>";
+	}
+
+	$lignes_alerte="";
+	// Pour le debug
+	$temoin_au_moins_une_alerte=0;
+
+	if(($nb_abs=="")||(!preg_match("/^[0-9]{1,}$/", $nb_abs))||($nb_abs<1)) {
+		$abs2_afficher_alerte_nb_abs=getSettingValue("abs2_afficher_alerte_nb_abs");
+		if($abs2_afficher_alerte_nb_abs=="") {
+			$abs2_afficher_alerte_nb_abs=4;
+		}
+	}
+	else {
+		$abs2_afficher_alerte_nb_abs=$nb_abs;
+	}
+
+	if(($abs_delai=="")||(!preg_match("/^[0-9]{1,}$/", $abs_delai))||($abs_delai<1)) {
+		$abs2_afficher_alerte_abs_delai=getSettingValue("abs2_afficher_alerte_abs_delai");
+		if($abs2_afficher_alerte_abs_delai=="") {
+			$abs2_afficher_alerte_abs_delai=30;
+		}
+	}
+	else {
+		$abs2_afficher_alerte_abs_delai=$abs_delai;
+	}
+
+	// Autres paramètres: envoi de mail tous les tel jour de la semaine ou tel jour du mois (à la connexion du premier cpe, ou scolarite ou administrateur)
+	// Renseigner un setting avec la date du dernier envoi... calculer la date de l'envoi suivant au cas où... ou renseigner une date d'envoi suivant... et si on dépasse, on envoie.
+
+	$date_test=strftime("%Y-%m-%d", time()-$abs2_afficher_alerte_abs_delai*3600*24);
+
+	$msg_switch_mode_periode="";
+	// Période courante seulement?
+	if($periode_courante_seulement=="y") {
+		$afficher_alertes_periode_seulement="y";
+		// Mettre "y" par défaut et avoir un lien... pour faire un autre choix: telle période ou année ou même d'autres seuils que les seuils par défaut.
+		$sql="SELECT date_fin FROM periodes WHERE date_fin<NOW() ORDER BY date_fin DESC limit 1;";
+		//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
+		$res_date_fin=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_date_fin)>0) {
+			$lig_date_fin=mysqli_fetch_object($res_date_fin);
+			if($lig_date_fin->date_fin>$date_test." 00:00:00") {
+				$afficher_alertes_periode_seulement="n";
+				$msg_switch_mode_periode="<em>(à moins de $abs2_afficher_alerte_abs_delai jour(s) après la fin de période, on bascule vers l'affichage du décompte de toutes les absences non justifiées depuis le début de l'année)</em>";
+			}
+		}
+	}
+	else {
+		$afficher_alertes_periode_seulement="n";
+	}
+
+	$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+	$acces_bilan_individuel=acces("/mod_abs2/bilan_individuel.php", $_SESSION['statut']);
+
+	$sql="SELECT e.login, aad.eleve_id, SUM(aad.manquement_obligation_presence) AS nb_abs , SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad, 
+											eleves e 
+										WHERE aad.eleve_id=e.id_eleve AND 
+											(e.date_sortie IS NULL OR e.date_sortie LIKE '0000-00-00%' OR e.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."') AND 
+											manquement_obligation_presence='1' AND 
+											date_demi_jounee<'".$date_test."' 
+										GROUP BY eleve_id HAVING SUM(manquement_obligation_presence)>".$abs2_afficher_alerte_nb_abs." 
+										ORDER BY SUM(manquement_obligation_presence) DESC;";
+	//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
+	$res_alerte=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_alerte)>0) {
+		if($afficher_alertes_periode_seulement=="n") {
+			$date_absence_eleve_debut=strftime("%Y-%m-%d", getSettingValue('begin_bookings'));
+			$date_absence_eleve_fin=$date_test;
+
+			$lignes_alerte.=$chaine_lien_alerte_abs;
+			$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_abs." demi-journées d'absence justifiées ou non depuis plus de ".$abs2_afficher_alerte_abs_delai." jour(s).</p>".$msg_switch_mode_periode."
+			<table class='boireaus boireaus_alt resizable sortable' border='1'>
+				<thead>
+					<tr>";
+			if($acces_visu_eleve) {
+				$lignes_alerte.="
+						<th class='nosort'></th>";
+			}
+			$lignes_alerte.="
+						<th class='text' title=\"Cliquez pour trier d'après le nom de l'élève\">Élève</th>
+						<th class='text' title=\"Cliquez pour trier d'après la classe de l'élève\">Classe</th>
+						<th class='number' title=\"Cliquez pour trier d'après le nombre de demi-journées\">Nombre de demi-journées</th>
+						<th class='number' title=\"Cliquez pour trier d'après le nombre de demi-journées\">NJ</th>
+					</tr>
+				</thead>
+				<tbody>";
+
+			while($lig=mysqli_fetch_object($res_alerte)) {
+				$nom_prenom_ele=get_nom_prenom_eleve($lig->login);
+
+				$classe="";
+				$sql="SELECT c.id, c.classe, c.nom_complet FROM j_eleves_classes jec, classes c WHERE c.id=jec.id_classe AND jec.login='".$lig->login."' ORDER BY jec.periode DESC LIMIT 1;";
+				//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
+				//echo "$sql<br />";
+				$res_clas=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_clas)>0) {
+					$lig_clas=mysqli_fetch_object($res_clas);
+					$classe=$lig_clas->classe;
+				}
+
+				$lignes_alerte.="
+					<tr>";
+				if($acces_visu_eleve) {
+					$lignes_alerte.="
+						<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$lig->login."&onglet=absences' title=\"Voir les absences de l'élève dans le classeur élève.\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a></td>";
+				}
+				$lignes_alerte.="
+						<td>".$nom_prenom_ele."</td>
+						<td>".$classe."</td>
+						<td>";
+				if($acces_bilan_individuel) {
+					$lignes_alerte.="<a href='$gepiPath/mod_abs2/bilan_individuel.php?date_absence_eleve_debut=".$date_absence_eleve_debut."&amp;date_absence_eleve_fin=".$date_absence_eleve_fin."&amp;id_eleve=".$lig->eleve_id."&amp;affichage=html&amp;id_classe=-1&amp;type_extrait=1' title=\"Voir le bilan des manquements de cet élève.\">".$lig->nb_abs."</a>";
+
+				}
+				else {
+					$lignes_alerte.=$lig->nb_abs;
+				}
+				$lignes_alerte.="</td>
+						<td>";
+				if($acces_bilan_individuel) {
+					$lignes_alerte.="<a href='$gepiPath/mod_abs2/bilan_individuel.php?date_absence_eleve_debut=".$date_absence_eleve_debut."&amp;date_absence_eleve_fin=".$date_absence_eleve_fin."&amp;id_eleve=".$lig->eleve_id."&amp;affichage=html&amp;id_classe=-1&amp;type_extrait=1' title=\"Voir le bilan des manquements de cet élève.\">".$lig->nb_nj."</a>";
+
+				}
+				else {
+					$lignes_alerte.=$lig->nb_nj;
+				}
+				$lignes_alerte.="</td>
+					</tr>";
+
+				$temoin_au_moins_une_alerte++;
+			}
+
+			$lignes_alerte.="
+				</tbody>
+			</table>";
+			//echo $lignes_alerte;
+		}
+		else {
+			// Problème: Les $abs2_afficher_alerte_abs_delai premiers jours de la période courante, on n'a aucun affichage d'absence non justifiée.
+			while($lig=mysqli_fetch_object($res_alerte)) {
+				$num_periode_courante=get_num_periode_d_apres_date("", $lig->login);
+
+				if($num_periode_courante>1) {
+					$sql="SELECT p.* FROM periodes p, j_eleves_classes jec 
+								WHERE p.id_classe=jec.id_classe AND 
+									p.num_periode=jec.periode AND 
+									p.num_periode='".($num_periode_courante-1)."';";
+					//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
+					$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_per)>0) {
+						$lig_per=mysqli_fetch_object($res_per);
+
+						$sql="SELECT SUM(aad.manquement_obligation_presence) AS nb_abs,SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad 
+														WHERE eleve_id='".$lig->eleve_id."' AND 
+															manquement_obligation_presence='1' AND 
+															date_demi_jounee>'".$lig_per->date_fin."' AND 
+															date_demi_jounee<'".$date_test."' 
+														GROUP BY eleve_id HAVING SUM(manquement_obligation_presence)>".$abs2_afficher_alerte_nb_abs.";";
+						//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
+						$date_absence_eleve_debut=$lig_per->date_fin;
+						$date_absence_eleve_fin=$date_test;
+					}
+				}
+				else {
+					// On prend le début de l'année
+
+						$sql="SELECT SUM(aad.manquement_obligation_presence) AS nb_abs,SUM(aad.non_justifiee) AS nb_nj FROM a_agregation_decompte aad
+														WHERE eleve_id='".$lig->eleve_id."' AND 
+															manquement_obligation_presence='1' AND 
+															date_demi_jounee<'".$date_test."' 
+														GROUP BY eleve_id HAVING SUM(manquement_obligation_presence)>".$abs2_afficher_alerte_nb_abs.";";
+						//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
+
+						$date_absence_eleve_debut=strftime("%Y-%m-%d", getSettingValue('begin_bookings'));
+						$date_absence_eleve_fin=$date_test;
+				}
+
+				$res_alerte2=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_alerte2)>0) {
+
+					$nom_prenom_ele=get_nom_prenom_eleve($lig->login);
+
+					$classe="";
+					if($num_periode_courante>=1) {
+						$sql="SELECT c.id, c.classe, c.nom_complet FROM j_eleves_classes jec, classes c WHERE c.id=jec.id_classe AND jec.login='".$lig->login."' ORDER BY jec.periode DESC LIMIT 1;";
+					}
+					else {
+						$sql="SELECT c.id, c.classe, c.nom_complet FROM j_eleves_classes jec, classes c WHERE c.id=jec.id_classe AND jec.login='".$lig->login."' AND periode='".$num_periode_courante."';";
+					}
+					//$lignes_alerte.="<span style='color:red'>$sql</span><br />";
+					//echo "$sql<br />";
+					$res_clas=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_clas)>0) {
+						$lig_clas=mysqli_fetch_object($res_clas);
+						$classe=$lig_clas->classe;
+					}
+
+					//if($lignes_alerte=="") {
+					if($temoin_au_moins_une_alerte==0) {
+						$lignes_alerte.=$chaine_lien_alerte_abs;
+						$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_abs." demi-journées d'absence justifiées ou non depuis plus de ".$abs2_afficher_alerte_abs_delai." jour(s) (<em>dans la période courante</em>).</p>
+				<table class='boireaus boireaus_alt resizable sortable' border='1'>
+					<thead>
+						<tr>";
+						if($acces_visu_eleve) {
+							$lignes_alerte.="
+							<th class='nosort'></th>";
+						}
+						$lignes_alerte.="
+							<th class='text' title=\"Cliquez pour trier d'après le nom de l'élève\">Élève</th>
+							<th class='text' title=\"Cliquez pour trier d'après la classe de l'élève\">Classe</th>
+							<th class='number' title=\"Cliquez pour trier d'après le nombre de demi-journées\">Nombre de demi-journées</th>
+							<th class='number' title=\"Cliquez pour trier d'après le nombre de demi-journées\">NJ</th>
+						</tr>
+					</thead>
+					<tbody>";
+					}
+					$lignes_alerte.="
+						<tr>";
+					if($acces_visu_eleve) {
+						$lignes_alerte.="
+							<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$lig->login."&onglet=absences' title=\"Voir les absences de l'élève dans le classeur élève.\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a></td>";
+					}
+					$lignes_alerte.="
+							<td>".$nom_prenom_ele."</td>
+							<td>".$classe."</td>
+							<td>";
+					if($acces_bilan_individuel) {
+						$lignes_alerte.="<a href='$gepiPath/mod_abs2/bilan_individuel.php?date_absence_eleve_debut=".$date_absence_eleve_debut."&amp;date_absence_eleve_fin=".$date_absence_eleve_fin."&amp;id_eleve=".$lig->eleve_id."&amp;affichage=html&amp;id_classe=-1&amp;type_extrait=1' title=\"Voir le bilan des manquements de cet élève.\">".$lig->nb_abs."</a>";
+
+					}
+					else {
+						$lignes_alerte.=$lig->nb_abs;
+					}
+					$lignes_alerte.="</td>
 							<td>";
 					if($acces_bilan_individuel) {
 						$lignes_alerte.="<a href='$gepiPath/mod_abs2/bilan_individuel.php?date_absence_eleve_debut=".$date_absence_eleve_debut."&amp;date_absence_eleve_fin=".$date_absence_eleve_fin."&amp;id_eleve=".$lig->eleve_id."&amp;affichage=html&amp;id_classe=-1&amp;type_extrait=1' title=\"Voir le bilan des manquements de cet élève.\">".$lig->nb_nj."</a>";
@@ -6286,4 +6564,42 @@ function liste_classes_pp_prof_suivi($login_user) {
 	return $retour;
 }
 
+function ouvre_popup_visu_groupe_visu_aid($avec_balise_script="n") {
+	global $gepiPath;
+
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>";}
+
+	$retour.="
+	var fen;
+	function ouvre_popup_visu_groupe(id_groupe,id_classe,periode_num) {
+		//alert('azerty');
+		eval(\"fen=window.open('$gepiPath/groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"&periode_num=\"+periode_num+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
+		setTimeout('fen.focus()',500);
+	}
+
+	function ouvre_popup_visu_aid(id_aid,periode_num) {
+		//alert('azerty');
+		eval(\"fen=window.open('$gepiPath/aid/popup.php?id_aid=\"+id_aid+\"&periode_num=\"+periode_num+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
+		setTimeout('fen.focus()',500);
+	}";
+
+	if($avec_balise_script!="n") {$retour.="
+</script>";}
+
+	return $retour;
+}
+
+function lien_valeur_unzipped_max_filesize() {
+	global $gepiPath;
+
+	$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
+
+	if(acces("/gestion/param_gen.php", $_SESSION['statut'])) {
+		return "<a href='$gepiPath/gestion/param_gen.php#unzipped_max_filesize' target='_blank' title=\"Modifier la valeur maximale paramétrée.\">".$unzipped_max_filesize." octets <img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
+	}
+	else {
+		return $unzipped_max_filesize." octets <img src='$gepiPath/images/icons/ico_question_petit.png' class='icone16' alt='Info' title=\"Valeur qui peut être modifiée en administrateur dans Gestion générale/Configuration générale/\" />";
+	}
+}
 ?>

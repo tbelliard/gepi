@@ -80,7 +80,7 @@ if((isset($_GET['creer_categorie']))&&(preg_match("/^[0-9]{1,}$/", $_GET['creer_
 	check_token();
 	$msg="";
 
-	$sql="SELECT g.id AS id_groupe, g.name, g.description, gt.* FROM groupes g, j_groupes_types jgt, groupes_types gt WHERE g.id=jgt.id_groupe AND gt.id=jgt.id_type AND jgt.id_type=gt.id AND g.id='".$_GET['creer_categorie']."';";
+	$sql="SELECT g.id AS id_groupe, g.name, g.description, gt.* FROM groupes g, j_groupes_types jgt, groupes_types gt WHERE g.id=jgt.id_groupe AND gt.id=jgt.id_type AND jgt.id_type=gt.id AND g.id='".$_GET['creer_categorie']."' AND gt.nom_court!='local';";
 	//echo "$sql<br />";
 	$res_grp=mysqli_query($GLOBALS['mysqli'], $sql);
 	if(mysqli_num_rows($res_grp)==0) {
@@ -878,7 +878,7 @@ Vous pouvez&nbsp;:</p>
 <p style='margin-top:1em;margin-bottom:1em;'><em>Note&nbsp;:</em> Il est possible de trier le tableau en cliquant sur les colonnes.</p>";
 
 	$tab_cat_aid=array();
-	$sql="SELECT ac.*, gt.nom_court AS nom_court_type, gt.nom_complet AS nom_complet_type FROM aid_config ac, groupes_types gt WHERE ac.type_aid=gt.id ORDER BY gt.id, ac.nom;";
+	$sql="SELECT ac.*, gt.nom_court AS nom_court_type, gt.nom_complet AS nom_complet_type FROM aid_config ac, groupes_types gt WHERE ac.type_aid=gt.id AND gt.nom_court!='local' ORDER BY gt.id, ac.nom;";
 	//echo "$sql<br />";
 	$res_aid=mysqli_query($GLOBALS['mysqli'], $sql);
 	if(mysqli_num_rows($res_aid)==0) {
@@ -893,7 +893,7 @@ Vous pouvez&nbsp;:</p>
 		echo "</p>";
 	}
 
-	$sql="SELECT g.id AS id_groupe, g.name, g.description, gt.* FROM groupes g, j_groupes_types jgt, groupes_types gt WHERE g.id=jgt.id_groupe AND gt.id=jgt.id_type AND jgt.id_type=gt.id ORDER BY gt.id, g.name, g.description;";
+	$sql="SELECT g.id AS id_groupe, g.name, g.description, gt.* FROM groupes g, j_groupes_types jgt, groupes_types gt WHERE g.id=jgt.id_groupe AND gt.id=jgt.id_type AND jgt.id_type=gt.id AND gt.nom_court!='local' ORDER BY gt.id, g.name, g.description;";
 	//echo "$sql<br />";
 	$res_grp=mysqli_query($GLOBALS['mysqli'], $sql);
 	if(mysqli_num_rows($res_grp)==0) {

@@ -417,8 +417,8 @@ if (!isset($aid_id)) {
 
     echo "</p>\n";
 
-    affiche_tableau($nombre_eleves, $indice_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
-
+    //affiche_tableau($nombre_eleves, $indice_col, $ligne1, $col, $larg_tab, $bord,0,0,"");
+    affiche_tableau($nombre_eleves, $indice_col, $ligne1, $col, $larg_tab, $bord,0,0,"y");
 }
 require("../lib/footer.inc.php");
 ?>

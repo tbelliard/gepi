@@ -49,7 +49,10 @@ if (isset($_POST['is_posted'])) {
 	$reg_ok = '';
 	$nb_reg_ok=0;
 	$nb_modif_priorite=0;
-	// Première boucle sur le nombre de periodes
+	// Première boucle sur le nombre de periodes:
+	// $per va correspondre au nombre de périodes des classes 
+	// (on va traiter avec un suffixe _3 les champs correspondant aux classes à trimestres 
+	// et _2 les classes à semestres)
 	$per = 0;
 	while ($per < $max_periode) {
 		$per++;
@@ -636,6 +639,64 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
+					/*
+					$_POST['change_type_3']=	y
+					$_POST['matiere_modif_type_enseignement_3']=	ACCPE
+					$_POST['change_type_enseignement_3']=	Array (*)
+					$_POST[change_type_enseignement_3]=	4
+					*/
+					if((isset($_POST['change_type_'.$per]))&&(isset($_POST['matiere_modif_type_enseignement_'.$per]))&&($_POST['matiere_modif_type_enseignement_'.$per]!="")) {
+						$matiere_modif_type_enseignement=$_POST['matiere_modif_type_enseignement_'.$per];
+						$change_type_enseignement=isset($_POST['change_type_enseignement_'.$per]) ? $_POST['change_type_enseignement_'.$per] : array();
+
+						if($matiere_modif_type_enseignement=="___TOUS___") {
+							$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe."';";
+						}
+						else {
+							$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_type_enseignement."';";
+						}
+						//echo "$sql<br />";
+						$res_grp_type=mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig_grp_type=mysqli_fetch_object($res_grp_type)) {
+							if($change_type_enseignement=="") {
+								$sql="DELETE FROM j_groupes_types WHERE id_groupe='$lig_grp_type->id_groupe';";
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+								if($menage) {
+									$nb_reg_ok++;
+								}
+								else {
+									$msg.="<br />Erreur lors de la suppression du type pour l'enseignement n°".$lig_grp_type->id_groupe;
+								}
+							}
+							else {
+								$sql="SELECT * FROM j_groupes_types WHERE id_groupe='$lig_grp_type->id_groupe';";
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test)==0) {
+									$sql="INSERT INTO j_groupes_types SET id_groupe='".$lig_grp_type->id_groupe."', id_type='".$change_type_enseignement."';";
+									//echo "$sql<br />";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$insert) {
+										$msg.="<br />Erreur lors de la définition du type n°".$change_type_enseignement." pour l'enseignement n°".$lig_grp_type->id_groupe;
+									}
+									else {
+										$nb_reg_ok++;
+									}
+								}
+								else {
+									$sql="UPDATE j_groupes_types SET id_type='".$change_type_enseignement."' WHERE id_groupe='".$lig_grp_type->id_groupe."';";
+									//echo "$sql<br />";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$insert) {
+										$msg.="<br />Erreur lors de la définition du type n°".$change_type_enseignement." pour l'enseignement n°".$lig_grp_type->id_groupe;
+									}
+									else {
+										$nb_reg_ok++;
+									}
+								}
+							}
+						}
+					}
+
 					// 20170104
 					if(isset($_POST['change_visibilite_type_'.$per])) {
 						$change_visibilite_type=$_POST['change_visibilite_type_'.$per];
@@ -647,11 +708,11 @@ if (isset($_POST['is_posted'])) {
 							$res_grp_vis=mysqli_query($GLOBALS["mysqli"], $sql);
 							while($lig_grp_vis=mysqli_fetch_object($res_grp_vis)) {
 								for($loop=0;$loop<count($tab_domaines);$loop++) {
-									$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='$lig_grp_vis->id_groupe' AND domaine='$tab_domaines[$loop]';";
+									$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='$lig_grp_vis->id_groupe' AND domaine='".$tab_domaines[$loop]."';";
 									//echo "$sql<br />";
 									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!in_array($tab_domaines[$loop], $modif_visibilite_type)) {
-										$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$lig_grp_vis->id_groupe', domaine='$tab_domaines[$loop]', visible='n';";
+										$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$lig_grp_vis->id_groupe', domaine='".$tab_domaines[$loop]."', visible='n';";
 										//echo "$sql<br />";
 										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {
@@ -880,8 +941,11 @@ if($max_periode <= 0) {
 	die();
 }
 echo "<form action=\"classes_param.php\" method='post' name='formulaire'>\n";
+echo "<div class='center' id='fixe'>
+	<input type='submit' value='Enregistrer' />
+</div>";
 echo add_token_field();
-echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' name='enregistrer1' value='Enregistrer' /></p>";
+echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>| <input type='submit' name='enregistrer1' value='Enregistrer' /> | <a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/actualiser.png' class='icone16' alt='Rafraichir' />Rafraichir la page sans enregistrer</a></p>";
 echo "Sur cette page, vous pouvez modifier différents paramètres par lots de classes cochées ci-dessous.";
 /*
 echo "<script language='javascript' type='text/javascript'>
@@ -1328,9 +1392,50 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 </table>\n";
 	}
 
+	if(getSettingAOui("AutoriserTypesEnseignements")) {
+		$sql="SELECT DISTINCT gt.*, gt.id AS id_type FROM groupes_types gt ORDER BY gt.nom_court;";
+	}
+	else {
+		$sql="SELECT DISTINCT gt.*, gt.id AS id_type FROM groupes_types gt WHERE nom_court='local' ORDER BY gt.nom_court;";
+	}
+	//echo "$sql<br />";
+	$res_type=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_type)>0) {
+		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
+		$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_mat)>0) {
+			echo "<table border='0' cellspacing='0'>
+		<tr>
+			<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
+			<td valign='top' rowspan='2'>
+				<input type='checkbox' name='change_type_$per' id='change_type_$per' value='y' /><label for='change_type_$per'> Modifier le type des enseignements de</label>&nbsp;:
+			</td>
+			<td colspan='2'>
+				<select name='matiere_modif_type_enseignement_$per' id='matiere_modif_type_enseignement_$per' onchange=\"document.getElementById('change_type_$per').checked=true;\">
+					<option value=''>---</option>
+					<option value='___TOUS___' style='color:red'>Tous les enseignements</option>";
+				while($lig_mat=mysqli_fetch_object($res_mat)) {
+					echo "
+					<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+				}
+				echo "	</select>
+			</td>
+			<td valign='top'>Imposer le type suivant&nbsp;: </td>
+			<td>
+				<input type='radio' name='change_type_enseignement_".$per."' id='change_type_enseignement_AUCUN_".$per."' value='' onchange=\"changement()\" /><label for='change_type_enseignement_AUCUN_".$per."' id='texte_change_type_enseignement_AUCUN_".$per."' title=\"Aucun type\"> AUCUN <em>(supprimer le type éventuellement existant)</em></label><br />";
+			while($lig_type=mysqli_fetch_object($res_type)) {
+				echo "
+				<input type='radio' name='change_type_enseignement_".$per."' id='change_type_enseignement_".$lig_type->id_type."_".$per."' value='$lig_type->id_type' onchange=\"changement()\" /><label for='change_type_enseignement_".$lig_type->id_type."_".$per."' id='texte_change_type_enseignement_".$lig_type->id_type."_".$per."' title=\"$lig_type->nom_complet\"> ".htmlspecialchars($lig_type->nom_court)."</label><br />";
+			}
+				echo "
+			</td>
+		</tr>
+	</table>\n";
+		}
+	}
 
 	// 20170104
-	if(getSettingAOui("AutoriserTypesEnseignements")) {
+	//if(getSettingAOui("AutoriserTypesEnseignements")) {
 		$sql="SELECT DISTINCT gt.*, id_type, COUNT(jgt.id_groupe) AS nb FROM groupes g, j_groupes_types jgt, groupes_types gt WHERE g.id=jgt.id_groupe AND gt.id=jgt.id_type GROUP BY id_type ORDER BY id_type;";
 		//echo "$sql<br />";
 		$res_type=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1371,7 +1476,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	</tr>
 </table>\n";
 		}
-	}
+	//}
 
 
 	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
