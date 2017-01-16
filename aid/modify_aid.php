@@ -450,8 +450,9 @@ if ($flag == "prof") { ?>
     $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
     $nombreligne = mysqli_num_rows($call_prof);
     while ($lig_prof=mysqli_fetch_object($call_prof)) {
+    	echo "
+		<option value=\"$lig_prof->login\" title=\"".casse_mot($lig_prof->nom,'maj')." ".casse_mot($lig_prof->prenom,'majf2')." ($lig_prof->login)\">";
 ?>
-		<option value="<?php echo $lig_prof->login; ?>">
 			<?php echo my_strtoupper($lig_prof->nom); ?> <?php echo casse_mot($lig_prof->prenom,'majf2')." (".$lig_prof->statut.")"; ?>
 		</option>
 <?php
@@ -568,8 +569,9 @@ if ($flag == "prof_gest") { ?>
     $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
     $nombreligne = mysqli_num_rows($call_prof);
     while ($lig_user=mysqli_fetch_object($call_prof)) {
+    	echo "
+		<option value=\"$lig_user->login\" title=\"".casse_mot($lig_user->nom,'maj')." ".casse_mot($lig_user->prenom,'majf2')." ($lig_user->login)\">";
 		?>
-		<option value="<?php echo $lig_user->login; ?>">
 			<?php echo casse_mot($lig_user->nom, "maj")." ".casse_mot($lig_user->prenom,'majf2')." (".$lig_user->statut.")"; ?>
 		</option>
 		<?php
