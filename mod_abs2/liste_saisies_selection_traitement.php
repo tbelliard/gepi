@@ -174,6 +174,8 @@ if (isFiltreRechercheParam('filter_eleve')) {
 if (isFiltreRechercheParam('filter_marqueur_appel')) {
     $query->filterByEleveId(null);
 }
+// filter_no_marqueur_appel
+// Il faudrait un filterByEleveId is not null
 if (isFiltreRechercheParam('filter_classe')) {
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JEleveClasse');
@@ -704,9 +706,12 @@ echo 'border-width:1px;" alt="" name="order" value="des_eleve" onclick="this.for
 echo '</span>';
 echo 'Élève';
 echo '<input type="hidden" value="y" name="filter_checkbox_posted"/>';echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="11"/>';
-echo '<br /><nobr><input type="checkbox" name="filter_marqueur_appel"  onchange="submit()" value="y"';
+echo '<br /><nobr><input type="checkbox" name="filter_marqueur_appel" id="filter_marqueur_appel" onchange="submit()" value="y"';
 if (getFiltreRechercheParam('filter_marqueur_appel') == 'y') {echo "checked='checked'";}
-echo '/>Marque d\'appel</nobr>';
+echo '/><label for="filter_marqueur_appel">Marque d\'appel</label></nobr>';
+echo '<br /><nobr><input type="checkbox" name="filter_no_marqueur_appel" id="filter_no_marqueur_appel" onchange="submit()" value="y"';
+if (getFiltreRechercheParam('filter_no_marqueur_appel') == 'y') {echo "checked='checked'";}
+echo '/><label for="filter_no_marqueur_appel">Exclure Marque appel</label></nobr>';
 echo '</th>';
 
 echo '<th>';
@@ -1120,7 +1125,7 @@ echo '<th>';
 echo 'Com.';
 echo '</th>';
 
-//en tete disciplinne
+//en tete discipline
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
@@ -1160,7 +1165,13 @@ $hier='';
 $numero_couleur=1;
 $chaine_id_checkbox="";
 foreach ($results as $saisie) {
-    $aujourdhui=strftime("%d/%m/%Y", $saisie->getDebutAbs('U'));    
+	if ((getFiltreRechercheParam('filter_no_marqueur_appel') == 'y')&&($saisie->getEleve() == null)) {
+		//echo "<tr><td>Ligne exclue</td></tr>";
+		continue;
+		//echo "<tr><td>Après ligne exclue</td></tr>";
+	}
+
+    $aujourdhui=strftime("%d/%m/%Y", $saisie->getDebutAbs('U'));
     if (!isFiltreRechercheParam('filter_eleve')) {
         $numero_couleur = $results->getPosition();
     } else {
@@ -1541,7 +1552,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
             label: "non traitées",
             onClick: function() {
 			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false);
-			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_vierge\', true);			
+			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_vierge\', true);
 	    }
         });
         menu.addChild(menuItem2);
@@ -1550,7 +1561,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
             label: "non notifiées",
             onClick: function() {
 			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true);
-			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_notifie\', false);	    }
+			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_notifie\', false);}
         });
         menu.addChild(menuItem3);
 
