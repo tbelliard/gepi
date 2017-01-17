@@ -1239,7 +1239,8 @@ while ($lig_cat_aid=mysqli_fetch_object($res_aid)) {
 				echo "<!-- Colonne Trombino -->\n";
 				echo "<td>";
 				if($tmp_aid_outils_complementaires=="y") {
-					echo "<a href='mod_trombinoscopes/trombinoscopes.php' onClick=\"valide_trombino_aid('".$lig_aid->id."'); return false;\"";
+					echo "<a href='mod_trombinoscopes/trombinoscopes.php?aid=".$lig_aid->id."&etape=2'";
+					//" onClick=\"valide_trombino_aid('".$lig_aid->id."'); return false;\"";
 
 					if($pref_accueil_infobulles=="y"){
 						echo " onmouseover=\"afficher_div('info_trombino_$ii','y',10,10);\" onmouseout=\"cacher_div('info_trombino_$ii');\"";
