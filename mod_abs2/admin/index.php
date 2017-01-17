@@ -188,6 +188,16 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['abs2_PasDoublonMarqueurAppel'])) {
+			if (!saveSetting("abs2_PasDoublonMarqueurAppel", $_POST['abs2_PasDoublonMarqueurAppel'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_PasDoublonMarqueurAppel";
+			}
+		} else {
+			if (!saveSetting("abs2_PasDoublonMarqueurAppel", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_PasDoublonMarqueurAppel";
+			}
+		}
+
 		if (isset($_POST['abs2_import_manuel_bulletin'])) {
 			if (!saveSetting("abs2_import_manuel_bulletin", $_POST['abs2_import_manuel_bulletin'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_import_manuel_bulletin";
@@ -198,7 +208,7 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
-                if (isset($_POST['abs2_saisie_prof_decale_journee'])) {
+		if (isset($_POST['abs2_saisie_prof_decale_journee'])) {
 			if (!saveSetting("abs2_saisie_prof_decale_journee", $_POST['abs2_saisie_prof_decale_journee'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sur la journée pour les professeurs !";
 			}
@@ -430,6 +440,12 @@ echo add_token_field();
 	<?php if (getSettingValue("abs2_ne_pas_afficher_lignes_avec_traitement_englobant")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_ne_pas_afficher_lignes_avec_traitement_englobant">&nbsp;Par défaut, ne pas afficher les lignes concernant des saisies déjà traitées dans la page 'Absences du jour'.<br />
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>(les saisies n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
+</p>
+<p style='text-indent:-2.3em;margin-left:2.3em;'>
+	<input type="checkbox" name="abs2_PasDoublonMarqueurAppel" id="abs2_PasDoublonMarqueurAppel" value="y"
+	<?php if (getSettingValue("abs2_PasDoublonMarqueurAppel")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_PasDoublonMarqueurAppel">&nbsp;Ne pas enregistrer un marqueur d'appel pour chaque enregistrement dans la saisie de groupe lorsque l'utilisateur <em>(professeur, cpe)</em> fait plusieurs saisies dans la même heure pour un même groupe/classe.<br />
+	<em>(pour un même créneau/cours/groupe... une seul marqueur d'appel sera enregistré)</em></label>
 </p>
 <br />
 <p>
