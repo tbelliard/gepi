@@ -303,7 +303,8 @@ if($_SESSION['statut']=='professeur') {
 	//echo "$sql<br />";
 	$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_aid_config)>0) {
-		echo "<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
+		echo "<a name='aid'></a>
+<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
 <div style='margin-left:3em;'>
 <ul>";
 		while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
@@ -664,7 +665,8 @@ $sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_eleves jae WHERE ac.
 //echo "$sql<br />";
 $res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_aid_config)>0) {
-	echo "<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
+	echo "<a name='aid'></a>
+<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
 <ul>";
 	while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
 		echo "

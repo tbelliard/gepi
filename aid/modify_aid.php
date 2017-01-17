@@ -334,6 +334,14 @@ while($infos = mysqli_fetch_array($query)){
 		echo "
 		| <a href='".$_SERVER['PHP_SELF']."?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves de l'AID</a>";
 	}
+	if(acces("/groupes/mes_listes.php", $_SESSION['statut'])) {
+		echo "
+		| <a href='../groupes/mes_listes.php#aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export CSV</a>";
+	}
+	if((getSettingAOui('active_module_trombinoscopes'))&&(acces("/mod_trombinoscopes/trombinoscopes.php", $_SESSION['statut']))) {
+		echo "
+		| <a href='../mod_trombinoscopes/trombinoscopes.php?aid=$aid_id&etape=2' onclick=\"return confirm_abandon (this, change, '$themessage')\">Trombinoscope</a>";
+	}
 	if(((!isset($flag))||($flag!="prof"))&&(($NiveauGestionAid_AID_courant>=2))) {
 		echo "
 		| <a href='".$_SERVER['PHP_SELF']."?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Professeurs de l'AID</a>";
