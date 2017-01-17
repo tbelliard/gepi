@@ -959,7 +959,7 @@ if ($ldap_write_access) {
 <?php
 echo add_token_field();
 if (isset($user_login)) {
-	echo "<div style='float:right; width:; height:;'><a href='".$_SERVER['PHP_SELF']."?user_login=$user_login&amp;journal_connexions=y#connexion' title='Journal des connexions'><img src='../images/icons/document.png' width='16' height='16' alt='Journal des connexions' /></a></div>\n";
+	echo "<div style='float:right; width:; height:;'><a href='".$_SERVER['PHP_SELF']."?user_login=$user_login&amp;journal_connexions=y#connexion' title='Journal des connexions' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/document.png' width='16' height='16' alt='Journal des connexions' /></a></div>\n";
 }
 ?>
 <!--span class = "norme"-->
@@ -1248,7 +1248,13 @@ if (getSettingValue("statuts_prives") == "y") {
 	<tr style='vertical-align:top;'>
 		<td>Identifiant STS&nbsp;: </td>
 		<td>
-			<input type='text' name='reg_numind' id='reg_numind' size='6' onchange="changement()" value="<?php echo $user_numind;?>" /><br />
+			<input type='text' name='reg_numind' id='reg_numind' size='6' onchange="changement()" value="<?php echo $user_numind;?>" />
+			<?php
+				if($user_numind=="") {
+					echo " <a href='modif_par_lots.php#update_xml_sts' title='Importer un fichier STS_EMP_RNE_ANNEE.xml pour corriger cet identifiant.' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/wizard.png' class='icone16' alt='Corriger/Importer' /></a>";
+				}
+			?>
+			<br />
 			<span style='font-size:x-small'>Cet identifiant est utilisé pour la liaison LSU et pour la liaison éventuelle avec un serveur LCS.<br />
 			Il est préfixé d'un P pour les professeurs lors de l'import.<br />
 			Vous ne devriez pas modifier cet identifiant s'il a été correctement importé lors de l'initialisation.</span>
@@ -1262,6 +1268,11 @@ if (getSettingValue("statuts_prives") == "y") {
 				<option value='epp' title="Personnel recruté par une académie"<?php if($user_type=='epp') {echo " selected";}?>>Emploi Poste Personnel</option>
 				<option value='local' title="Enseignant (vacataire ?) recruté par un établissement et payé avec des crédits du département ou de la région."<?php if($user_type=='local') {echo " selected";}?>>Local</option>
 			</select>
+			<?php
+				if(($user_type=='local')||($user_type=='')) {
+					echo " <a href='modif_par_lots.php#update_xml_sts' title='Importer un fichier STS_EMP_RNE_ANNEE.xml pour rechercher cet utilisateur dans STS avec un éventuel EPP.' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/wizard.png' class='icone16' alt='Corriger/Importer' /></a>";
+				}
+			?>
 		</td>
 	</tr>
 </table>
@@ -1401,7 +1412,7 @@ echo "<input type='hidden' name='max_mat' value='$nb_mat' />\n";
 	echo "<p>&nbsp;</p>\n";
 
 	if((isset($user_login))&&($journal_connexions=='n')) {
-		echo "<p><a href='".$_SERVER['PHP_SELF']."?user_login=$user_login&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?user_login=$user_login&amp;journal_connexions=y#connexion' title='Journal des connexions' onclick=\"return confirm_abandon (this, change, '$themessage')\">Journal des connexions</a></p>\n";
 	}
 
 	if($journal_connexions=='y') {
