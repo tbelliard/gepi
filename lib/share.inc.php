@@ -15765,4 +15765,76 @@ function acces_trombinoscope() {
 	}
 	return $retour;
 }
+
+function calcule_cycle_et_niveau($mef_code_ele, $valeur_par_defaut_cycle="", $valeur_par_defaut_niveau="") {
+	global $tab_mef;
+
+	if((!is_array($tab_mef))||(count($tab_mef)==0)) {
+		$tab_mef=get_tab_mef();
+	}
+
+	$tab=array();
+
+	if((isset($tab_mef[$mef_code_ele]["mef_rattachement"]))&&($tab_mef[$mef_code_ele]["mef_rattachement"]!="")) {
+		if($tab_mef[$mef_code_ele]["mef_rattachement"]=="10010012110") {
+			// C'est une classe de 6ème
+			$cycle=3;
+			$niveau=6;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10110001110") {
+			$cycle=4;
+			$niveau=5;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10210001110") {
+			$cycle=4;
+			$niveau=4;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10310019110") {
+			$cycle=4;
+			$niveau=3;
+		}
+		else {
+			// Pour le moment, on suppose que c'est un cycle 4 et même un élève de 3ème
+			// On verra plus tard le cas d'un Gepi en Lycée
+			//$cycle=4;
+			//$niveau=3;
+
+			// Il vaut mieux ne rien mettre en couleur pour repérer que les cycle et niveau n'ont pas été identifiés
+			$cycle=$valeur_par_defaut_cycle;
+			$niveau=$valeur_par_defaut_niveau;
+		}
+	}
+	elseif($mef_code_ele=="10010012110") {
+			// C'est une classe de 6ème
+			$cycle=3;
+			$niveau=6;
+	}
+	elseif($mef_code_ele=="10110001110") {
+		$cycle=4;
+		$niveau=5;
+	}
+	elseif($mef_code_ele=="10210001110") {
+		$cycle=4;
+		$niveau=4;
+	}
+	elseif($mef_code_ele=="10310019110") {
+		$cycle=4;
+		$niveau=3;
+	}
+	else {
+		// Pour le moment, on suppose que c'est un cycle 4 et même un élève de 3ème
+		// On verra plus tard le cas d'un Gepi en Lycée
+		//$cycle=4;
+		//$niveau=3;
+
+		// Il vaut mieux ne rien mettre en couleur pour repérer que les cycle et niveau n'ont pas été identifiés
+		$cycle=$valeur_par_defaut_cycle;
+		$niveau=$valeur_par_defaut_niveau;
+	}
+
+	$tab['mef_cycle']=$cycle;
+	$tab['mef_niveau']=$niveau;
+
+	return $tab;
+}
 ?>

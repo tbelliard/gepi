@@ -1254,6 +1254,8 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 		echo "</div>\n";
 		echo "</div>\n";
 
+		$tab_mef=get_tab_mef();
+
 		echo "<table class='boireaus' summary='Choix des élèves'>\n";
 		echo "<tr>\n";
 		echo "<th>Elèves</th>\n";
@@ -1319,7 +1321,25 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 				echo "</div>";
 			}
 
+			// 20170118 : Si bulletin clg 2016 par défaut, afficher le cycle/niveau trouvé.
+			if($type_bulletin_par_defaut=='pdf_2016') {
+				$couleur_cycle="blue";
+				$couleur_niveau="green";
+
+				$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($lig_ele->mef_code, "?", "?");
+
+				if($tmp_tab_cycle_niveau["mef_cycle"]=="?") {
+					$couleur_cycle="red";
+				}
+				if($tmp_tab_cycle_niveau["mef_niveau"]=="?") {
+					$couleur_niveau="red";
+				}
+
+				echo "<div style='float:right;width:3em;' title=\"Cycle ".$tmp_tab_cycle_niveau["mef_cycle"]." - Niveau ".$tmp_tab_cycle_niveau["mef_niveau"]."\"><span style='color:".$couleur_cycle."'>".$tmp_tab_cycle_niveau["mef_cycle"]."</span>-<span style='color:".$couleur_niveau."'>".$tmp_tab_cycle_niveau["mef_niveau"]."</span></div>";
+			}
+
 			echo $lig_ele->nom." ".$lig_ele->prenom."</td>\n";
+
 			for($j=0;$j<count($tab_periode_num);$j++) {
 
 				$sql="SELECT 1=1 FROM j_eleves_classes jec
@@ -3185,6 +3205,7 @@ mysql>
 						//==========================================
 						if($mode_bulletin=="pdf_2016") {
 							$mef_code_ele=$lig_ele->mef_code;
+							/*
 							if((isset($tab_mef[$mef_code_ele]["mef_rattachement"]))&&($tab_mef[$mef_code_ele]["mef_rattachement"]!="")) {
 								if($tab_mef[$mef_code_ele]["mef_rattachement"]=="10010012110") {
 									// C'est une classe de 6ème
@@ -3241,6 +3262,11 @@ mysql>
 								$cycle="";
 								$niveau="";
 							}
+							*/
+							$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
+							$cycle=$tmp_tab_cycle_niveau["mef_cycle"];
+							$niveau=$tmp_tab_cycle_niveau["mef_niveau"];
+
 							$tab_ele['mef_cycle']=$cycle;
 							$tab_ele['mef_niveau']=$niveau;
 							if(($cycle!="")&&(!in_array($cycle, $tab_bulletin[$id_classe][$periode_num]['mef_cycle']))) {
