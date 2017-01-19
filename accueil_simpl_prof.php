@@ -998,6 +998,25 @@ for($i=0;$i<count($groups);$i++){
 							$tab_liste_infobulles[]='info_liste_pdf_'.$i.'_'.$j;
 						}
 						echo "</div>\n";
+
+						// CSV
+						echo "<div id='h_listes_csv_".$i."_".$j."'>";
+						echo "<a href='groupes/get_csv.php?id_groupe=".$groups[$i]['id']."&periode_num=".$groups[$i]['periodes'][$j]['num_periode']."' target='_blank'";
+						// onClick=\"valide_liste_pdf('".$groups[$i]['id']."','".$groups[$i]['periodes'][$j]['num_periode']."'); return false;\"
+						if($pref_accueil_infobulles=="y"){
+							echo " onmouseover=\"afficher_div('info_liste_csv_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_liste_csv_".$i."_".$j."');\"";
+						}
+						echo ">";
+						//echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
+						echo "<img src='images/notes_app_csv.png' width='30' height='30' alt='CSV' />";
+						echo "</a>";
+	
+						if($pref_accueil_infobulles=="y"){
+							echo "<div id='info_liste_csv_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 12em;' onmouseout=\"cacher_div('info_liste_csv_".$i."_".$j."');\">Listes CSV des élèves<br />".$classe['classe']."<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+							$tab_liste_infobulles[]='info_liste_csv_'.$i.'_'.$j;
+						}
+						echo "</div>\n";
+
 						echo "</td>\n";
 					}
 			}
@@ -1502,6 +1521,27 @@ echo "Periode $j<br />
 									echo "<div id='h_listes_".$ii."_".$j."'>";
 									echo "<a href='impression/liste_pdf.php?id_aid=".$lig_aid->id."&amp;periode_num=".$j."' target='_blank'><img src='images/icons/pdf32.png' width='32' height='32' alt='PDF' /></a>";
 									echo "</div>";
+
+
+									// 20170119
+									// CSV
+									echo "<div id='h_listes_csv_".$ii."_".$j."'>";
+									echo "<a href='groupes/mes_listes.php#aid' target='_blank'";
+									if($pref_accueil_infobulles=="y"){
+										echo " onmouseover=\"afficher_div('info_liste_csv_".$ii."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_liste_csv_".$ii."_".$j."');\"";
+									}
+									echo ">";
+									//echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
+									echo "<img src='images/notes_app_csv.png' width='30' height='30' alt='CSV' />";
+									echo "</a>";
+	
+									if($pref_accueil_infobulles=="y"){
+										echo "<div id='info_liste_csv_".$ii."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 12em;' onmouseout=\"cacher_div('info_liste_csv_".$ii."_".$j."');\">Listes CSV des élèves<br />".$classe['classe']."<br />".$groups[$ii]["periodes"][$j]["nom_periode"].".</div>\n";
+										$tab_liste_infobulles[]='info_liste_csv_'.$ii.'_'.$j;
+									}
+									echo "</div>\n";
+
+
 								}
 								echo "</td>\n";
 							}
@@ -1615,6 +1655,9 @@ echo "<script type='text/javascript'>
 				if(document.getElementById('h_listes_'+i+'_'+num_periode)){
 					document.getElementById('h_listes_'+i+'_'+num_periode).style.display='';
 				}
+				if(document.getElementById('h_listes_csv_'+i+'_'+num_periode)){
+					document.getElementById('h_listes_csv_'+i+'_'+num_periode).style.display='';
+				}
 			}
 		}
 		else{
@@ -1671,6 +1714,9 @@ echo "<script type='text/javascript'>
 				}
 				if(document.getElementById('h_listes_'+i+'_'+num_periode)){
 					document.getElementById('h_listes_'+i+'_'+num_periode).style.display='none';
+				}
+				if(document.getElementById('h_listes_csv_'+i+'_'+num_periode)){
+					document.getElementById('h_listes_csv_'+i+'_'+num_periode).style.display='none';
 				}
 			}
 		}
@@ -1785,6 +1831,9 @@ if(document.getElementById('h_liste_pdf_'+$i)){
 				}
 				if(document.getElementById('h_listes_'+i+'_'+$i)){
 					document.getElementById('h_listes_'+i+'_'+$i).style.display='none';
+				}
+				if(document.getElementById('h_listes_csv_'+i+'_'+$i)){
+					document.getElementById('h_listes_csv_'+i+'_'+$i).style.display='none';
 				}
 			}\n";
 		}
