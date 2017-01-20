@@ -95,28 +95,6 @@ if(!acces('/prepa_conseil/edit_limite.php', $_SESSION['statut'])) {
 	$acces_prepa_conseil_edit_limite="n";
 }
 
-/*
-
-				"NOM",
-				"PRENOM",
-				"DATE_NAISS",
-				"SEXE",
-				"N_NATIONAL",
-				"CLASSE",
-				"GROUPES",
-				"OPTION_1",
-				"OPTION_2",
-				"OPTION_3",
-				"OPTION_4",
-				"OPTION_5",
-				"OPTION_6",
-				"OPTION_7",
-				"OPTION_8",
-				"OPTION_9",
-				"OPTION_10",
-				"OPTION_11",
-				"OPTION_12"*/
-
 $debug_import_edt="n";
 $avec_colonnes_detail_groupes_eleves="y"; // Le paramètre $debug_import_edt ci-dessus affecté à 'y' force l'affichage des colonnes groupes/classes EDT.
 
@@ -272,17 +250,16 @@ if((isset($_POST['valider_ec3']))&&(isset($id_groupe))&&(isset($_POST['id_nom_ed
 					die();
 				}
 			}
-			/*
-			$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
-			$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_grp)>0) {
-				$sql="UPDATE SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
-				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-			}
-			else {
 
-			}
-			*/
+			//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+			//$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+			//if(mysqli_num_rows($res_grp)>0) {
+			//	$sql="UPDATE SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+			//	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+			//}
+			//else {
+
+			//}
 		}
 	}
 }
@@ -450,33 +427,14 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 
 			$lig_grp=mysqli_fetch_object($res_grp);
 
-			/*
 			//echo "\$lig_grp->nom_groupe_edt=$lig_grp->nom_groupe_edt<br />";
-			$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
+			//$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
 			//echo "\$current_nom_groupe=$current_nom_groupe<br />";
-			*/
 
 			$nom_groupe_edt=$lig_grp->nom_groupe_edt;
 			$nom_groupe_edt_clean=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
 
 			//$chaine_nom_groupe="";
-			/*
-			$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig->nom_groupe_edt));
-
-			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
-				WHERE (groupes like '$current_nom_groupe' OR 
-					groupes like '$current_nom_groupe, %' OR 
-					groupes like '%, $current_nom_groupe, %' OR 
-					groupes like '%, $current_nom_groupe');";
-
-			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
-				WHERE (groupes like '$current_nom_groupe' OR 
-					groupes like '$current_nom_groupe, %' OR 
-					groupes like '%, $current_nom_groupe, %' OR 
-					groupes like '%, $current_nom_groupe');";
-			echo "$sql<br />";
-			*/
-
 
 			//$sql="";
 			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
@@ -588,11 +546,11 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 						$id_classe="";
 						$classe="";
 						$tmp_tab=get_class_periode_from_ele_login($lig_nn->login);
-						/*
-						echo "<pre>";
-						print_r($tmp_tab);
-						echo "</pre>";
-						*/
+
+						//echo "<pre>";
+						//print_r($tmp_tab);
+						//echo "</pre>";
+
 						if(isset($tmp_tab['periode'][$num_periode]['id_classe'])) {
 							$id_classe=$tmp_tab['periode'][$num_periode]['id_classe'];
 
@@ -812,8 +770,8 @@ if($action=="") {
 		".add_token_field()."
 		<p>
 			Lors de la modification des membres élèves d'un groupe, un mail peut être envoyé au professeur <em>(si son mail est renseigné)</em>.<br />
-			<input type=\"radio\" name=\"MajInscriptEleEdtEnvoiMail\" id='MajInscriptEleEdtEnvoiMail_y' value='y'".$checked_envoi_y." /><label for='MajInscriptEleEdtEnvoiMail_y'> Envoyer un mail lors de la modification.</label><br />
-			<input type=\"radio\" name=\"MajInscriptEleEdtEnvoiMail\" id='MajInscriptEleEdtEnvoiMail_n' value='n'".$checked_envoi_n." /><label for='MajInscriptEleEdtEnvoiMail_n'> Ne pas envoyer un mail lors de la modification.</label>
+			<input type=\"radio\" name=\"MajInscriptEleEdtEnvoiMail\" id='MajInscriptEleEdtEnvoiMail_y' value='y'".$checked_envoi_y." onchange=\"checkbox_change('MajInscriptEleEdtEnvoiMail_y');checkbox_change('MajInscriptEleEdtEnvoiMail_n');\" /><label for='MajInscriptEleEdtEnvoiMail_y' id='texte_MajInscriptEleEdtEnvoiMail_y'> Envoyer un mail lors de la modification.</label><br />
+			<input type=\"radio\" name=\"MajInscriptEleEdtEnvoiMail\" id='MajInscriptEleEdtEnvoiMail_n' value='n'".$checked_envoi_n." onchange=\"checkbox_change('MajInscriptEleEdtEnvoiMail_y');checkbox_change('MajInscriptEleEdtEnvoiMail_n');\" /><label for='MajInscriptEleEdtEnvoiMail_n' id='texte_MajInscriptEleEdtEnvoiMail_n'> Ne pas envoyer un mail lors de la modification.</label>
 		</p>
 		<p>
 			<input type='submit' value='Valider' />
@@ -831,7 +789,9 @@ if($action=="") {
 		echo "<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé en ZIP.</p>";
 	}
 	echo "
-			<input type='hidden' name='action' value='upload' />
+			<input type='hidden' name='action' value='upload' /><br />
+			<input type='radio' name='fichier_xml_complet' id='fichier_xml_complet_y' value='y' onchange=\"checkbox_change('fichier_xml_complet_y');checkbox_change('fichier_xml_complet_n');\" checked /><label for='fichier_xml_complet_y' id='texte_fichier_xml_complet_y' title=\"Dans ce cas, on commence par vider les lignes des groupes EDT des élèves sauvegardées, avant de re-remplir.\">Fichier XML complet</label><br />
+			<input type='radio' name='fichier_xml_complet' id='fichier_xml_complet_n' value='n' onchange=\"checkbox_change('fichier_xml_complet_y');checkbox_change('fichier_xml_complet_n');\" /><label for='fichier_xml_complet_n' id='texte_fichier_xml_complet_n' title=\"Dans ce cas, on ne vide pas les lignes des groupes EDT des élèves sauvegardées.\nOn ne fait qu'ajouter les nouveaux élèves et mettre à jour les lignes correspondant aux élèves présents dans le XML fourni.\">Fichier XML partiel <em>(une classe, quelques classes ou quelques élèves)</em></label>
 		</p>
 		<p>
 			<input type='submit' id='input_submit' value='Valider' />
@@ -857,12 +817,19 @@ if($action=="") {
 				document.getElementById('form_envoi_xml').submit();
 			}
 		}
+		".js_checkbox_change_style()."
+		checkbox_change('fichier_xml_complet_y');
+		checkbox_change('fichier_xml_complet_n');
+		checkbox_change('MajInscriptEleEdtEnvoiMail_y');
+		checkbox_change('MajInscriptEleEdtEnvoiMail_n');
 	</script>
 </form>";
 	require("../lib/footer.inc.php");
 	die();
 }
 elseif($action=="upload") {
+	$fichier_xml_complet=isset($_POST['fichier_xml_complet']) ? $_POST['fichier_xml_complet'] : "y";
+
 	check_token(false);
 	$post_max_size=ini_get('post_max_size');
 	$upload_max_filesize=ini_get('upload_max_filesize');
@@ -928,15 +895,14 @@ elseif($action=="upload") {
 				die();
 			}
 
-			/*
-			echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
-			echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
-			echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
-			*/
+			//echo "<p>\$list_file_zip[0]['filename']=".$list_file_zip[0]['filename']."<br />\n";
+			//echo "\$list_file_zip[0]['size']=".$list_file_zip[0]['size']."<br />\n";
+			//echo "\$list_file_zip[0]['compressed_size']=".$list_file_zip[0]['compressed_size']."</p>\n";
+
 			//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 			if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-				echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée (<em>".lien_valeur_unzipped_max_filesize()."</em>).</p>\n";
+				echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<em>".$list_file_zip[0]['size']." octets</em>) dépasse la limite paramétrée <em>(".lien_valeur_unzipped_max_filesize().")</em>.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -983,18 +949,6 @@ elseif($action=="upload") {
 
 		if(trim($ligne)!="") {
 
-			/*if((preg_match('/^<\?xml/', $ligne))||
-				(preg_match("/^<TABLE /i", $ligne))||
-				(preg_match("/^<Eleves /i", $ligne))||
-				(preg_match("/^<NOM>/i", $ligne))||
-				(preg_match("/^<PRENOM>/i", $ligne))||
-				(preg_match("/^<DATE_NAISS>/i", $ligne))||
-				(preg_match("/^<N_NATIONAL>/i", $ligne))||
-				(preg_match("/^<CLASSE>/i", $ligne))||
-				(preg_match("/^<GROUPES>/i", $ligne))||
-				(preg_match("|^</Eleves>|i", $ligne))||
-				(preg_match("|^</TABLE>|i", $ligne))) {
-			*/
 			if((preg_match("/^<Eleves /i", $ligne))||
 				(preg_match("/^<NOM>/i", $ligne))||
 				(preg_match("/^<PRENOM>/i", $ligne))||
@@ -1031,15 +985,6 @@ elseif($action=="upload") {
 		require("../lib/footer.inc.php");
 		die();
 	}
-
-/*
-	$nom_racine=$eleves_xml->getName();
-	if(my_strtoupper($nom_racine)!='TABLE') {
-		echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML EXP_ELEVES.<br />Sa racine devrait être 'TABLE'.</p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-*/
 
 	/*
 	<TABLE nom="Elèves">
@@ -1097,8 +1042,10 @@ elseif($action=="upload") {
 		$tab_champs2[$tab_champs[$loop]]=casse_mot($tab_champs[$loop], "min");
 	}
 
-	$sql="TRUNCATE edt_eleves_lignes;";
-	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($fichier_xml_complet=="y") {
+		$sql="TRUNCATE edt_eleves_lignes;";
+		$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
 
 	echo "<p class='bold' style='margin-top:1em;'>Parcours du XML.</p>\n";
 	echo "<span style='font-size:x-small'>";
@@ -1128,6 +1075,17 @@ elseif($action=="upload") {
 			echo "</pre>";
 			*/
 
+			if($fichier_xml_complet=="n") {
+				if(isset($tab_ele[$cpt]["n_national"])) {
+					$sql="DELETE FROM edt_eleves_lignes WHERE n_national='".$tab_ele[$cpt]["n_national"]."';";
+					//echo "$sql<br />";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$del) {
+						echo "<span style='color:red'>$sql</span><br />";
+					}
+				}
+			}
+
 			// Enregistrer la ligne dans edt_lignes
 			$sql="INSERT INTO edt_eleves_lignes SET ";
 			$sql_ajout="";
@@ -1148,11 +1106,11 @@ elseif($action=="upload") {
 				if(!$insert) {
 					echo "<span style='color:red'>$sql</span><br />";
 				}
-				/*
 				else {
-					echo "<span style='color:green'>$sql</span><br />";
+					//echo "<span style='color:green'>$sql</span><br />";
+					//$tab_ele[$cpt]["id"]=mysqli_insert_id($GLOBALS["mysqli"], $insert);
+					$tab_ele[$cpt]["id"]=mysqli_insert_id($GLOBALS["mysqli"]);
 				}
-				*/
 			}
 			echo ". ";
 			flush();
@@ -1163,8 +1121,6 @@ elseif($action=="upload") {
 	echo "</span>";
 
 	echo "<p>$cpt élève(s) trouvés dans ce fichier.</p>";
-
-
 
 	echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -1276,7 +1232,7 @@ elseif($action=="upload") {
 					$lig->n_national
 				</td>
 				<td>
-					$lig->classe
+					".preg_replace("/, /", ",<br />", htmlentities($lig->classe))."
 				</td>
 				<td>
 					<input type='text' name='ine_corrige[$cpt]' id='ine_corrige_$cpt' value='' onchange=\"changement()\" />
@@ -1362,10 +1318,86 @@ elseif($action=="upload") {
 </script>";
 	}
 
+	if(count($tab_ele)>0) {
+		if($fichier_xml_complet=="n") {
+
+			/*
+			echo "<pre>";
+			print_r($tab_ele);
+			echo "</pre>";
+			*/
+
+			echo "
+<p style='margin-top:1em;'><span class='bold'>Pour quel élève souhaitez-vous corriger les appartenances à tels groupes d'après les groupes/regroupements EDT&nbsp;?</span><br />Cliquez sur le nom de la classe correspondante.</p>
+<table class='boireaus boireaus_alt'>
+	<thead>
+		<tr>
+			<th>INE</th>
+			<th>Élève</th>
+			<th>Classes</th>
+			<th colspan=''>Regroupements EDT</th>
+		</tr>
+	</thead>
+	<tbody>";
+
+			for($loop=0;$loop<count($tab_ele);$loop++) {
+				if($tab_ele[$loop]["n_national"]=="") {
+					echo "
+		<tr>
+			<td style='color:red'>INE vide</td>
+			<td>".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."</td>
+			<td style='color:red'>Élève non identifié dans la base</td>
+			<td>".htmlentities($tab_ele[$loop]["classe"])."</td>
+		</tr>";
+				}
+				else {
+					$sql="SELECT * FROM eleves where no_gep='".$tab_ele[$loop]["n_national"]."';";
+					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ele)==0) {
+						echo "
+		<tr>
+			<td>".$tab_ele[$loop]["n_national"]."</td>
+			<td>".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."</td>
+			<td style='color:red'>Élève non identifié dans la base</td>
+			<td>".htmlentities($tab_ele[$loop]["classe"])."</td>
+		</tr>";
+					}
+					else {
+						$lig_ele=mysqli_fetch_object($res_ele);
+
+						echo "
+		<tr>
+			<td>".$tab_ele[$loop]["n_national"]."</td>
+			<td>".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."</td>
+			<td>";
+						$tmp_tab_clas=get_class_periode_from_ele_login($lig_ele->login);
+						if(!isset($tmp_tab_clas['classe'])) {
+							echo "<img src='../images/disabled.png' class='icone16' alt='Aucune' title='Aucune' />";
+						}
+						else {
+							foreach($tmp_tab_clas['classe'] as $current_id_classe => $current_classe) {
+								echo "<a href='../classes/eleve_options.php?id_classe=".$current_id_classe."&login_eleve=".$lig_ele->login."&grp_edt=y&quitter_la_page=y' target='_blank' title=\"Modifier les inscriptions pour cet élève.\">".$current_classe['classe']."</a>";
+							}
+						}
+						echo "</td>
+			<td>".htmlentities($tab_ele[$loop]["classe"])."</td>
+		</tr>";
+
+					}
+				}
+			}
+			echo "
+</table>
+<p>Vous pouvez aussi opter pour une comparaison globale, mais il est préférable de procéder à ce genre de comparaison avec un export XML complet.</p>";
+		}
+	}
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?action=comparer'>Rechercher les modifications d'appartenance aux groupes/enseignements</a>.</p>";
+
 
 	echo "<!--p style='color:red'><em>A FAIRE&nbsp;:</em> Repérer les élèves avec N_NATIONAL vide... qu'il va falloir rapprocher.<br />
 	Rechercher les élèves non matchés entre 'edt_eleves_lignes.n_national' et 'eleves.no_gep'.</p-->";
+
+	echo "<p>&nbsp;<br />&nbsp;</p>";
 
 	require("../lib/footer.inc.php");
 	die();
