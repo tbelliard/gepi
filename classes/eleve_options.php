@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -70,6 +70,7 @@ if($_SESSION['statut']=="scolarite") {
 
 include "../lib/periodes.inc.php";
 
+$grp_edt=isset($_POST['grp_edt']) ? $_POST['grp_edt'] : (isset($_GET['grp_edt']) ? $_GET['grp_edt'] : "n");
 
 if(($_SESSION['statut']=="administrateur")||
 (($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
@@ -84,8 +85,9 @@ if(($_SESSION['statut']=="administrateur")||
 			$nombre_ligne = mysqli_num_rows($call_group);
 			$i=0;
 			while ($i < $nombre_ligne) {
-				$id_groupe = old_mysql_result($call_group, $i, "id");
-				$nom_groupe = old_mysql_result($call_group, $i, "name");
+				$lig_grp=mysqli_fetch_object($call_group);
+				$id_groupe = $lig_grp->id;
+				$nom_groupe = $lig_grp->name;
 				$id_group[$j] = $id_groupe."_".$j;
 				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 						"id_groupe = '" . $id_groupe . "' and " .
@@ -128,7 +130,8 @@ if(($_SESSION['statut']=="administrateur")||
 
 		// Récupérer les modalités associées à l'élève pour les différents groupes
 		$tab_modalites_eleve=array();
-		$sql="SELECT * FROM j_groupes_eleves_modalites WHERE login='".$login_eleve."'";
+		$sql="SELECT * FROM j_groupes_eleves_modalites WHERE login='".$login_eleve."';";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_modalites_eleve[$lig->id_groupe]=$lig->code_modalite_elect;
@@ -258,23 +261,45 @@ require_once("../lib/header.inc.php");
 // MODIF: boireaus
 //echo "<p class=bold>|<a href=\"classes_const.php?id_classe=".$id_classe."\">Retour</a>|";
 
+$call_data_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE (login = '$login_eleve')");
+if(mysqli_num_rows($call_data_eleves)==0) {
+	echo "<p style='color:red'>Élève inconnu</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+$tab_info_ele=mysqli_fetch_assoc($call_data_eleves);
+$nom_eleve=$tab_info_ele['nom'];
+$prenom_eleve=$tab_info_ele['prenom'];
+$ine_eleve=$tab_info_ele['no_gep'];
+
+$temoin_noms_edt_groupes="n";
+$tab_grp_edt=array();
+$sql="SELECT * FROM edt_corresp2 ec, j_groupes_classes jgc WHERE jgc.id_groupe=ec.id_groupe AND jgc.id_classe='".$id_classe."';";
+$res_grp_edt=mysqli_query($GLOBALS['mysqli'], $sql);
+if(mysqli_num_rows($res_grp_edt)>0) {
+	$temoin_noms_edt_groupes="y";
+	if($grp_edt=="y") {
+		while($lig_edt_grp=mysqli_fetch_assoc($res_grp_edt)) {
+			$tab_grp_edt[$lig_edt_grp["id_groupe"]]=$lig_edt_grp;
+			$tmp_tab=explode(",", $lig_edt_grp["nom_groupe_edt"]);
+			for($loop=0;$loop<count($tmp_tab);$loop++) {
+				$tmp_nom=trim($tmp_tab[$loop]);
+				if($tmp_nom!="") {
+					$tab_grp_edt[$lig_edt_grp["id_groupe"]]["nom_groupe_edt_2"][]=$tmp_nom;
+				}
+			}
+		}
+	}
+}
+
 if(!isset($quitter_la_page)) {
 	echo "<form action='eleve_options.php' name='form1' method='post'>\n";
+	echo "<input type='hidden' name='grp_edt' value='$grp_edt' />\n";
 
-	echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\"";
-	if(($_SESSION['statut']=="administrateur")||
-	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
-		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	}
-	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 	if("$login_eleve_prec"!="0"){
-		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec'";
-		if(($_SESSION['statut']=="administrateur")||
-		(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
-			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		}
-		echo ">Elève précédent</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec".(($grp_edt=="y") ? "&grp_edt=y" : "")."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elève précédent</a>";
 	}
 
 
@@ -303,22 +328,21 @@ if(!isset($quitter_la_page)) {
 
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 	//echo " | <select name='login_eleve' onchange='document.form1.submit()'>\n";
-	echo " | <select name='login_eleve' id='login_eleve'";
-	if(($_SESSION['statut']=="administrateur")||
-	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
-		echo " onchange=\"confirm_changement_eleve(change, '$themessage');\"";
-	}
-	echo ">\n";
+	echo " | <select name='login_eleve' id='login_eleve' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
 	echo $chaine_options_login_eleves;
 	echo "</select>\n";
 
 	if("$login_eleve_suiv"!="0"){
-		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv'";
-		if(($_SESSION['statut']=="administrateur")||
-		(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
-			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv".(($grp_edt=="y") ? "&grp_edt=y" : "")."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elève suivant</a>";
+	}
+
+	if($temoin_noms_edt_groupes=="y") {
+		if($grp_edt=="y") {
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve&grp_edt=n' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher la page sans les noms de regroupements EDT.\">Sans noms de groupes EDT</a>";
 		}
-		echo ">Elève suivant</a>";
+		else {
+			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve&grp_edt=y' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher la page avec les noms de regroupements EDT.\">Afficher noms de groupes EDT</a>";
+		}
 	}
 
 	echo " | <a href='export_ele_opt.php?id_classe[0]=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Exporter les options suivies par les élèves de ".get_nom_classe($id_classe)."</a>";
@@ -373,6 +397,7 @@ else{
 if(($_SESSION['statut']=="administrateur")||
 (($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 	echo "<form action='eleve_options.php' name='form2' method=post>\n";
+	echo "<input type='hidden' name='grp_edt' value='$grp_edt' />\n";
 
 	echo add_token_field();
 
@@ -383,23 +408,15 @@ if(($_SESSION['statut']=="administrateur")||
 	}
 }
 
-$call_nom_class = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = old_mysql_result($call_nom_class, 0, 'classe');
-
-$call_data_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE (login = '$login_eleve')");
-if(mysqli_num_rows($call_data_eleves)==0) {
-	echo "<p style='color:red'>Élève inconnu</p>";
-	require("../lib/footer.inc.php");
-	die();
-}
-$tab_info_ele=mysqli_fetch_assoc($call_data_eleves);
-//$nom_eleve = @old_mysql_result($call_data_eleves, '0', 'nom');
-//$prenom_eleve = @old_mysql_result($call_data_eleves, '0', 'prenom');
-$nom_eleve=$tab_info_ele['nom'];
-$prenom_eleve=$tab_info_ele['prenom'];
+$classe = get_nom_classe($id_classe);
 
 // A VOIR: Pouvoir restreindre les modalités autorisées pour telle ou telle matière.
 $tab_modalites=get_tab_modalites_election();
+/*
+echo "<pre>";
+print_r($tab_modalites);
+echo "</pre>";
+*/
 
 echo "<h3>";
 if(acces("/eleves/modify_eleve.php", $_SESSION['statut'])) {
@@ -447,6 +464,27 @@ if(mysqli_num_rows($res_sig)>0) {
 	}
 }
 
+
+if($grp_edt=="y") {
+	$tab_grp_edt_eleve=array();
+	if($ine_eleve!="") {
+		$sql="SELECT * FROM edt_eleves_lignes WHERE n_national='".$ine_eleve."';";
+		$res_grp_edt=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_grp_edt)>0) {
+			while($lig_edt_grp=mysqli_fetch_object($res_grp_edt)) {
+				// Normalement, on ne fait qu'un tour dans la boucle.
+				echo "<p>Lors du dernier upload EXP_Eleve.xml d'EDT, cet élève était inscrit dans les regroupements EDT suivants&nbsp;: <span style='color:green'>".preg_replace("/, /",",<br />",htmlentities($lig_edt_grp->classe))."</span></p>";
+				$tmp_tab=explode(",", $lig_edt_grp->classe);
+				for($loop=0;$loop<count($tmp_tab);$loop++) {
+					$tmp_nom=trim($tmp_tab[$loop]);
+					if($tmp_nom!="") {
+						$tab_grp_edt_eleve[]=$tmp_nom;
+					}
+				}
+			}
+		}
+	}
+}
 //=========================
 echo "<table border='1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
 echo "<tr align='center'>\n";
@@ -489,6 +527,10 @@ if(($_SESSION['statut']=="administrateur")||
 }
 echo "<th>Modalités</th>\n";
 
+if($grp_edt=="y") {
+	echo "<th>Nom EDT</th>
+<th>Groupes EDT élève</th>";
+}
 echo "</tr>\n";
 
 $acces_edit_group=acces("/groupes/edit_group.php", $_SESSION['statut']);
@@ -497,10 +539,11 @@ $nb_erreurs=0;
 $i=0;
 $alt=1;
 while ($i < $nombre_ligne) {
-	$id_groupe = old_mysql_result($call_group, $i, "id");
-	$nom_groupe = old_mysql_result($call_group, $i, "name");
-	//$description_groupe = old_mysql_result($call_group, $i, "description");
-	$description_groupe = htmlspecialchars(old_mysql_result($call_group, $i, "description"));
+	$lig_grp=mysqli_fetch_object($call_group);
+
+	$id_groupe = $lig_grp->id;
+	$nom_groupe = $lig_grp->name;
+	$description_groupe = htmlspecialchars($lig_grp->description);
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover' id='tr_$i'>\n";
 	echo "<td>";
@@ -736,6 +779,21 @@ while ($i < $nombre_ligne) {
 		}
 		echo "</td>";
 	}
+
+	if($grp_edt=="y") {
+		echo "
+		<td style='font-size:small' title=\"Regroupement EDT associé à ce groupe\">".(isset($tab_grp_edt[$id_groupe]["nom_groupe_edt"]) ? htmlentities(preg_replace("/, /", ",<br />", $tab_grp_edt[$id_groupe]["nom_groupe_edt"])) : "")."</td>
+		<td style='font-size:small'>";
+		// Parcours des groupes de l'élève 
+		for($loop_grp_edt_ele=0;$loop_grp_edt_ele<count($tab_grp_edt_eleve);$loop_grp_edt_ele++) {
+			if((isset($tab_grp_edt[$id_groupe]["nom_groupe_edt_2"]))&&(in_array($tab_grp_edt_eleve[$loop_grp_edt_ele], $tab_grp_edt[$id_groupe]["nom_groupe_edt_2"]))) {
+				echo "<span title=\"Regroupement correspondant pour l'élève\">".htmlentities($tab_grp_edt_eleve[$loop_grp_edt_ele])."</span>";
+				//echo "<br />";
+				//echo "<img src='../images/enabled.png' class='icone16' alt='A cocher' title=\"".$tab_grp_edt_eleve[$loop_grp_edt_ele]."\" />";
+			}
+		}
+		echo "</td>";
+	}
 	//=========================
 	echo "</tr>\n";
 	$i++;
@@ -763,6 +821,12 @@ if(($_SESSION['statut']=="administrateur")||
 	echo "<th>\n";
 	echo "&nbsp;";
 	echo "</th>\n";
+}
+
+echo "<th></th>\n";
+if($grp_edt=="y") {
+	echo "<th></th>\n";
+	echo "<th></th>\n";
 }
 echo "</tr>\n";
 
