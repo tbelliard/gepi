@@ -378,10 +378,10 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_genese_classes/index.php" '.insert_confirm_abandon().'>Genèse des classes</a></li>'."\n";
 		}
 		if(getSettingAOui('active_mod_engagements')) {
-			$menus .= '  <li class="plus"><a href="'.$gepiPath.'/mod_engagements/index_admin.php" '.insert_confirm_abandon().'>Engagements</a>'."\n";
+			$menus .= '  <li class="plus"><a href="'.$gepiPath.'/mod_engagements/index_admin.php" title="Définir les engagements" '.insert_confirm_abandon().'>Engagements</a>'."\n";
 			$menus .= '    <ul class="niveau3">'."\n";
 			$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
-			$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
+			$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" title="Saisir les engagements de tels ou tels utilisateurs" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
 
 			$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
 			$menus .= '    </ul>'."\n";
