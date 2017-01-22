@@ -296,6 +296,14 @@
 		<li><p>Les "codes" des engagements correspondent aux codes des engagements attendus dans l'application Livret Scolaire Lycée (<em>LSL</em>).<br />
 		Seuls les engagements officiels du LSL requièrent un tel code.</p></li>
 		<li><p>Vous pouvez ajouter des engagements comme "Délégué parent" pour générer les convocations aux conseils de classe qui sont associées.</p></li>
+		<li><p>Vous pouvez choisir dans la page de <?php
+		if(getSettingAOui('GepiAdminImprBulSettings')) {
+			echo "<a href='../bulletin/param_bull_pdf_2016.php#engagements' target='_blank'>Paramétrage des bulletins CLG 2016</a>";
+		}
+		else {
+			echo "<strong>Paramétrage des bulletins CLG 2016</strong>";
+		}
+		?> quels engagements doivent apparaitre dans le cadre Vie Scolaire du bulletin CLG 2016.</p></li>
 	</ul>
 </form>
 

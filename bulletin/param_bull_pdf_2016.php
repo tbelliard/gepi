@@ -981,6 +981,7 @@ echo add_token_field();
 
 		if(count($tab_engagements["indice"]>0)) {
 			echo "
+<a name='engagements'></a>
 <h3>Engagements</h3>
 <blockquote>
 <table class='boireaus boireaus_alt' summary='Engagements'>
