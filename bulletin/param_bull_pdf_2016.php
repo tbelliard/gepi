@@ -331,6 +331,29 @@ if (isset($_POST['is_posted'])) {
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+	$bull2016_largeur_engagements=isset($_POST["bull2016_largeur_engagements"]) ? $_POST["bull2016_largeur_engagements"] : 30;
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_engagements))||
+	($bull2016_largeur_engagements=="")) {
+		$bull2016_largeur_engagements=30;
+	}
+	if (!saveSetting("bull2016_largeur_engagements", $bull2016_largeur_engagements)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_largeur_engagements !";
+		$reg_ok = 'no';
+	}
+
+	$sql="DELETE FROM setting WHERE name LIKE 'bull2016_afficher_engagements_id_%';";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(isset($_POST['bull2016_afficher_engagements_id'])) {
+		$bull2016_afficher_engagements_id=$_POST['bull2016_afficher_engagements_id'];
+		for($loop=0;$loop<count($bull2016_afficher_engagements_id);$loop++) {
+			if (!saveSetting("bull2016_afficher_engagements_id_".$bull2016_afficher_engagements_id[$loop], "y")) {
+				$msg .= "Erreur lors de l'enregistrement de l'affichage de l'engagement n°".$bull2016_afficher_engagements_id[$loop]." !";
+				$reg_ok = 'no';
+			}
+		}
+	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	// Colonne Noms de matières
 	$bull2016_largeur_acquis_col_1=isset($_POST["bull2016_largeur_acquis_col_1"]) ? $_POST["bull2016_largeur_acquis_col_1"] : 44;
 	if((!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_acquis_col_1))||
@@ -583,6 +606,23 @@ if($bull2016_autorise_sous_matiere=="y") {
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+$bull2016_largeur_engagements=getSettingValue('bull2016_largeur_engagements');
+if($bull2016_largeur_engagements=="") {
+	$bull2016_largeur_engagements=30;
+}
+elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_engagements)) {
+	$bull2016_largeur_engagements=30;
+}
+
+$bull2016_afficher_engagements_id=array();
+$sql="SELECT * FROM setting WHERE name LIKE 'bull2016_afficher_engagements_id_%';";
+$res_eng=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_eng)>0) {
+	while($lig_eng=mysqli_fetch_object($res_eng)) {
+		$bull2016_afficher_engagements_id[]=preg_replace("/^bull2016_afficher_engagements_id_/", "", $lig_eng->NAME);
+	}
+}
 
 // Colonne Noms de matières
 $bull2016_largeur_acquis_col_1=getSettingValue('bull2016_largeur_acquis_col_1');
@@ -934,6 +974,43 @@ echo add_token_field();
 	</tr>
 </table>
 </blockquote>
+
+<?php
+	if(getSettingAOui('active_mod_engagements')) {
+		$tab_engagements=get_tab_engagements();
+
+		if(count($tab_engagements["indice"]>0)) {
+			echo "
+<h3>Engagements</h3>
+<blockquote>
+<table class='boireaus boireaus_alt' summary='Engagements'>
+	<tr>
+		<td>Largeur réservée pour les Engagements dans le cadre Vie scolaire&nbsp;:</td>
+		<td>
+			<input type='text' name='bull2016_largeur_engagements' id='bull2016_largeur_engagements' size='5' onchange='changement()' value='".$bull2016_largeur_engagements."' onKeyDown='clavier_3(this.id,event, 0, 100, 1);' />
+		</td>
+	</tr>";
+		for($loop=0;$loop<count($tab_engagements["indice"]);$loop++) {
+			if($tab_engagements["indice"][$loop]["ConcerneEleve"]=="yes") {
+				$checked="";
+				if(in_array($tab_engagements["indice"][$loop]["id"], $bull2016_afficher_engagements_id)) {
+					$checked=" checked";
+				}
+				echo "
+	<tr>
+		<td><label for='bull2016_largeur_engagements_$loop'>Afficher les engagements <strong>".$tab_engagements["indice"][$loop]["nom"]."</strong>&nbsp;:</label></td>
+		<td>
+			<input type='checkbox' name='bull2016_afficher_engagements_id[]' id='bull2016_largeur_engagements_$loop' onchange='changement()' value='".$tab_engagements["indice"][$loop]["id"]."'".$checked." />
+		</td>
+	</tr>";
+			}
+		}
+		echo "
+</table>
+</blockquote>";
+		}
+	}
+?>
 
 <h3>Largeurs des colonnes du tableau de Suivi des acquis</h3>
 <blockquote>

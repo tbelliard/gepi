@@ -94,6 +94,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		$signature_bull,
 
+		$tab_engagements,
+
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
 
@@ -4940,6 +4942,46 @@ die();
 		//++++++++++++++++++++++++++++++++++++++++++++
 
 
+		$largeur_dispo_app_abs=$param_bull2016["largeur_communication_famille"];
+		if((isset($tab_bull['eleve'][$i]['engagements']["id_engagement"]))&&(count($tab_bull['eleve'][$i]['engagements']["id_engagement"]>0))) {
+
+			$texte="";
+			for($loop_eng=0;$loop_eng<count($tab_bull['eleve'][$i]['engagements']["indice"]);$loop_eng++) {
+				// A paramétrer dans param_bull_pdf_2016.php
+				// Tester si $tab_bull['eleve'][$i]['engagements']["indice"][$loop_eng][...] est dans la liste des engagements que l'on veut afficher sur les bulletins.
+				if(in_array($tab_bull['eleve'][$i]['engagements']["indice"][$loop_eng]["id_engagement"], $param_bull2016["bull2016_afficher_engagements_id"])) {
+					$texte.=$tab_bull['eleve'][$i]['engagements']["indice"][$loop_eng]["nom_engagement"]."\n";
+				}
+			}
+			if($texte!="") {
+				$texte="<b>Engagements :</b>\n".$texte;
+
+				// A paramétrer dans param_bull_pdf_2016.php
+				$largeur_engagement=30;
+
+				$pdf->SetXY($param_bull2016["x_communication_famille"]+$largeur_dispo_app_abs-$largeur_engagement, $y_communication_famille+10);
+				$pdf->SetFont('DejaVu','',8);
+
+				/*
+				$val = $pdf->GetStringWidth($info_absence_appreciation);
+				// nombre de lignes que prend la remarque cpe
+				//Arrondi à l'entier supérieur : ceil()
+				$nb_ligne = 1;
+				$nb_ligne = ceil($val / 200);
+				$hauteur_pris = $nb_ligne * 3;
+				*/
+
+				$taille_max_police=8;
+				$taille_min_police=ceil($taille_max_police/3);
+				$largeur_dispo=$largeur_engagement;
+				$h_cell=$hauteur_restant_pour_appreciation_absences;
+				cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
+				$largeur_dispo_app_abs-=$largeur_engagement;
+				$largeur_dispo_app_abs-=3; // et 3mm de marge horizontale
+			}
+		}
+
 		if($tab_bull['eleve'][$i]['appreciation_absences'] != "")
 		{
 			// supprimer les espaces
@@ -4958,7 +5000,7 @@ die();
 
 			$taille_max_police=8;
 			$taille_min_police=ceil($taille_max_police/3);
-			$largeur_dispo=$param_bull2016["largeur_communication_famille"];
+			$largeur_dispo=$largeur_dispo_app_abs;
 			//$h_cell=22; // A ajuster selon ce qu'on affiche des retards, nj, j,...
 			$h_cell=$hauteur_restant_pour_appreciation_absences;
 			cell_ajustee($info_absence_appreciation,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');

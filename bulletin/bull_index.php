@@ -1776,6 +1776,10 @@ else {
 
 	$tab_mef=get_tab_mef();
 
+	if(getSettingAOui('active_mod_engagements')) {
+		$tab_engagements=get_tab_engagements();
+	}
+
 	$nb_bulletins_edites=0;
 	// Boucle sur les classes
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
@@ -3274,6 +3278,15 @@ mysql>
 							}
 							if(($niveau!="")&&(!in_array($niveau, $tab_bulletin[$id_classe][$periode_num]['mef_niveau']))) {
 								$tab_bulletin[$id_classe][$periode_num]['mef_niveau'][]=$niveau;
+							}
+
+							if(getSettingAOui('active_mod_engagements')) {
+								$tab_ele["engagements"]=get_tab_engagements_user($current_eleve_login[$i], $id_classe);
+								/*
+								echo "get_tab_engagements_user(".$current_eleve_login[$i].", $id_classe)<pre>";
+								print_r($tab_ele["engagements"]);
+								echo "<pre>";
+								*/
 							}
 						}
 						//==========================================
