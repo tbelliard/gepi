@@ -150,8 +150,9 @@ if(isset($_GET['suppr_msg_chgt_version_gepi'])) {
 
 if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 	$accueil_simpl=isset($_GET['accueil_simpl']) ? $_GET['accueil_simpl'] : NULL;
-	if(!isset($accueil_simpl)){
+	if(!isset($accueil_simpl)) {
 		if($_SESSION['statut']=='professeur') {
+			// Si on affichait par défaut l'interface simplifiée pour les profs, il faudrait définir un modèle pour savoir quelles colonnes afficher
 			$valeur_par_defaut="n";
 		}
 		else {
@@ -184,27 +185,25 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='eleve')||($_SESSI
 
 			$msg=isset($_POST['msg']) ? $_POST['msg'] : (isset($_GET['msg']) ? $_GET['msg'] : NULL);
 
+			$chaine_complement_url="";
+			if(isset($_POST['supprimer_message'])) {
+				$chaine_complement_url="supprimer_message=".$_POST['supprimer_message'].add_token_in_url(false);
+			}
+
 			if($_SESSION['statut']=='professeur') {
-				$chaine_complement_url="";
 				if(isset($msg)) {
-					if(isset($_POST['supprimer_message'])) {
-						$chaine_complement_url="&supprimer_message=".$_POST['supprimer_message'].add_token_in_url(false);
-					}
-					header("Location: ./accueil_simpl_prof.php?msg=$msg".$chaine_complement_url);
+					header("Location: ./accueil_simpl_prof.php?msg=$msg&".$chaine_complement_url);
 				}
 				else {
-					if(isset($_POST['supprimer_message'])) {
-						$chaine_complement_url="?supprimer_message=".$_POST['supprimer_message'].add_token_in_url(false);
-					}
-					header("Location: ./accueil_simpl_prof.php".$chaine_complement_url);
+					header("Location: ./accueil_simpl_prof.php?".$chaine_complement_url);
 				}
 			}
 			else {
 				if(isset($msg)) {
-					header("Location: ./eleves/resume_ele.php?msg=$msg");
+					header("Location: ./eleves/resume_ele.php?msg=$msg&".$chaine_complement_url);
 				}
 				else {
-					header("Location: ./eleves/resume_ele.php");
+					header("Location: ./eleves/resume_ele.php?".$chaine_complement_url);
 				}
 			}
 			die();
