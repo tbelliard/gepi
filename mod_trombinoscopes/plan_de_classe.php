@@ -92,8 +92,79 @@ x INT(11) NOT NULL ,
 y INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
+if((isset($_POST['copier_plan_classe']))&&(isset($_POST['id_groupe']))&&(preg_match("/^[0-9]{1,}$/", $_POST['id_groupe']))&&(isset($_POST['id_groupe_modele']))&&(preg_match("/^[0-9]{1,}$/", $_POST['id_groupe_modele']))) {
+	check_token();
+
+	$sql="SELECT * FROM t_plan_de_classe tpc, t_plan_de_classe_ele tpce WHERE tpc.id_groupe='".$_POST['id_groupe_modele']."' AND tpc.login_prof='".$_SESSION['login']."' AND tpc.id=tpce.id_plan;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		$sql="DELETE FROM t_plan_de_classe WHERE id_groupe='".$_POST['id_groupe']."';";
+		//echo "$sql<br />";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		$sql="INSERT INTO t_plan_de_classe SET id_groupe='".$_POST['id_groupe']."', login_prof='".$_SESSION['login']."', dim_photo='".$lig->dim_photo."';";
+		//echo "$sql<br />";
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($insert) {
+			$id_plan=mysqli_insert_id($GLOBALS['mysqli']);
+			//echo "\$id_plan=$id_plan<br />";
+			//if(preg_match("/^[0-9]{1,}$/", $id_plan)) {
+				$current_group=get_group($_POST['id_groupe'], array("eleves"));
+				/*
+				echo "<pre>";
+				print_r($current_group['eleves']['all']['list']);
+				echo "</pre>";
+				*/
+
+				$cpt_ele=0;
+				if(in_array($lig->login_ele, $current_group['eleves']['all']['list'])) {
+					$sql="INSERT INTO t_plan_de_classe_ele SET id_plan='".$id_plan."', login_ele='".$lig->login_ele."', x='".$lig->x."', y='".$lig->y."';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($insert) {
+						$cpt_ele++;
+					}
+				}
+
+
+				while($lig=mysqli_fetch_object($res)) {
+					if(in_array($lig->login_ele, $current_group['eleves']['all']['list'])) {
+						$sql="INSERT INTO t_plan_de_classe_ele SET id_plan='".$id_plan."', login_ele='".$lig->login_ele."', x='".$lig->x."', y='".$lig->y."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if($insert) {
+							$cpt_ele++;
+						}
+					}
+				}
+
+				echo "<span title=\"Plan de classe copié pour $cpt_ele élèves.\"><img src='../images/enabled.png' class='icone16' alt='Succès' /> $cpt_ele</span>";
+			/*
+			}
+			else {
+				echo "<img src='../images/icons/disabled.png' class='icone16' alt='Erreur' title=\"Erreur lors de la récupération du nouvel identifiant de plan de classe.\" />";
+			}
+			*/
+		}
+		else {
+			echo "<img src='../images/disabled.png' class='icone16' alt='Erreur' title=\"Erreur lors de la définition des paramètres, dimensions.\" />";
+		}
+	}
+	else {
+		echo "<img src='../images/disabled.png' class='icone16' alt='Erreur' title=\"Erreur : Le modèle n'a pas été trouvé.\" />";
+	}
+
+	die();
+}
+
 // On ne va afficher l'entête que pour le choix du groupe, pas sur la partie réalisation du plan de classe
 if((!isset($id_groupe))||($id_groupe=="")) {
+	$javascript_specifique[] = "lib/tablekit";
+	$utilisation_tablekit="ok";
+
 	//**************** EN-TETE *****************
 	$titre_page = "Plan de classe";
 	/**
@@ -108,20 +179,22 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 
 	$tab_groups = get_groups_for_prof($_SESSION['login'],"classe puis matière");
 
-	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-	echo add_token_field();
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_choix_grp'>\n";
+	echo add_token_field(true);
 	echo "<p>Choisissez l'enseignement pour lequel vous souhaitez réaliser le plan de classe&nbsp;:</p>\n";
 
-	echo "<table class='boireaus'>\n";
+	echo "<table class='boireaus boireaus_alt resizable sortable'>\n";
 	echo "<tr>\n";
 	echo "<th>Choix</th>\n";
+	echo "<th>Id</th>\n";
 	echo "<th>Enseignement</th>\n";
+	echo "<th>Classes</th>\n";
 	echo "<th>Dimension<br />des photos</th>\n";
+	echo "<th>Copier</th>\n";
+	echo "<th>Coller</th>\n";
 	echo "</tr>\n";
-	$alt=1;
 	for($loop=0;$loop<count($tab_groups);$loop++) {
-		$alt=$alt*(-1);
-		echo "<tr class='lig$alt white_hover'>\n";
+		echo "<tr class='white_hover'>\n";
 		echo "<td>\n";
 		echo "<input type='radio' name='id_groupe' id='id_groupe_".$tab_groups[$loop]['id']."' value='".$tab_groups[$loop]['id']."' ";
 		if($loop==0) {echo "checked ";}
@@ -129,7 +202,15 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo "<label for='id_groupe_".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['description'].") en ".$tab_groups[$loop]['classlist_string']."</label>\n";
+		echo $tab_groups[$loop]['id'];
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo "<label for='id_groupe_".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['description'].")</label>\n";
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo "<label for='id_groupe_".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['classlist_string']."</label>\n";
 		echo "</td>\n";
 
 		echo "<td>\n";
@@ -141,6 +222,24 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 		}
 		echo "<input type='text' name='dim_photo_".$tab_groups[$loop]['id']."' value='$dim_photo' size='3' />";
 		echo "</td>\n";
+
+
+		echo "<td>\n";
+		$sql="SELECT * FROM t_plan_de_classe tpc, t_plan_de_classe_ele tpce WHERE tpc.id_groupe='".$tab_groups[$loop]['id']."' AND tpc.login_prof='".$_SESSION['login']."' AND tpc.id=tpce.id_plan LIMIT 1;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo "<span title=\"Prendre ce plan de classe comme modèle pour coller dans un autre groupe.\">";
+			echo "<input type='radio' name='id_groupe_modele' id='id_groupe_modele_".$tab_groups[$loop]['id']."' value='".$tab_groups[$loop]['id']."' />";
+			echo "<label for='id_groupe_modele_".$tab_groups[$loop]['id']."'><img src='../images/icons/copy-16.png' class='icone16' alt='Copier' /></label>";
+			echo "</span>";
+		}
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo "<a href='#' onclick='coller_plan_classe(".$tab_groups[$loop]['id'].");return false;'><img src='../images/icons/coller_23x24.png' width='23' height='24' alt='Coller' /></a><span id='span_resultat_collage_".$tab_groups[$loop]['id']."'></span>";
+		echo "</td>\n";
+
 		echo "</tr>\n";
 	}
 	echo "</table>\n";
@@ -169,6 +268,39 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 		echo "<br />Vous pourrez aussi effectuer la saisie des absences sur le plan de classe.<br />Dans la page de saisie des absences pour un groupe (<em>Onglet Saisir groupe</em>), vous trouverez la page de saisie sur le plan de classe (<em>si le plan de classe existe</em>) en suivant le lien sur l'icone <img src='../images/icons/trombino.png' width='20' height='20' alt='Icone trombi' />.";
 	}
 	echo "</p>\n";
+
+	echo "<script type='text/javascript'>
+	function coller_plan_classe(id_groupe) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+
+		//alert('id_groupe='+id_groupe);
+
+		id_groupe_modele='';
+		champ_id_groupe_modele=document.form_choix_grp.id_groupe_modele;
+
+		for (var i=0; i<champ_id_groupe_modele.length;i++) {
+			//alert('champ_id_groupe_modele['+i+'].value='+champ_id_groupe_modele[i].value);
+			if (champ_id_groupe_modele[i].checked) {
+				id_groupe_modele=champ_id_groupe_modele[i].value;
+				break;
+			}
+		}
+
+		//alert('id_groupe_modele='+id_groupe_modele);
+
+		if(id_groupe_modele!='') {
+			//new Ajax.Updater($('span_regroupement_edt_associe'),'maj_inscript_ele_d_apres_edt.php?id_groupe=$id_groupe&action=editer_ec3&valider_ec3=y&id_nom_edt='+,{method: 'get'});
+
+			new Ajax.Updater($('span_resultat_collage_'+id_groupe),'".$_SERVER['PHP_SELF']."',{method: 'post',
+			parameters: {
+				copier_plan_classe: 'y',
+				id_groupe: id_groupe,
+				id_groupe_modele: id_groupe_modele,
+				csrf_alea: csrf_alea
+			}});
+		}
+	}
+</script>";
 
 	require("../lib/footer.inc.php");
 	die();
