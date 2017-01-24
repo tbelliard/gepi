@@ -79,6 +79,14 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 		}
 	}
 
+	$acces_saisie_engagement="n";
+	if(getSettingAOui('active_mod_engagements')) {
+		$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+		if(count($tab_engagements_avec_droit_saisie['indice'])>0) {
+			$acces_saisie_engagement="y";
+		}
+	}
+
 	// Pour permettre d'utiliser le module EdT avec les autres modules
 	$groupe_abs = $groupe_text = '';
 	if (getSettingValue("autorise_edt_tous") == "y") {
@@ -536,7 +544,8 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 				$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 				$cpt_sous_menu++;
 
-				if((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template)) {
+				if(((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template))||
+				($acces_saisie_engagement=="y")) {
 					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
 					$cpt_sous_menu++;
 				}
@@ -876,7 +885,8 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 		$cpt_sous_menu++;
 	}
 
-	if((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template)) {
+	if(((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template))||
+	($acces_saisie_engagement=="y")) {
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
 		$cpt_sous_menu++;
 	}

@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -56,8 +56,8 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=2");
-    die();
+	header("Location: ../logout.php?auto=2");
+	die();
 }
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -107,7 +107,23 @@ echo "</pre>";
 
 //debug_var();
 
+$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+if(count($tab_engagements_avec_droit_saisie['indice'])==0) {
+	header("Location: ../accueil.php?msg=Vous ne pouvez saisir aucun type d engagement.");
+	die();
+}
+/*
+echo "<pre>";
+print_r($tab_engagements_avec_droit_saisie);
+echo "</pre>";
+*/
+/*
+// 20170122
 if($_SESSION['statut']=='professeur') {
+
+	// Si l'id_engagement est précisé, on peut tester array_key_exists($id_engagement, $tab_engagements_avec_droit_saisie["id_engagement"])
+	// Sinon, il faut être PP
+
 	if(!is_pp($_SESSION['login'])) {
 		header("Location: ../accueil.php?msg=Vous n êtes PP d'aucune classe.");
 		die();
@@ -123,6 +139,7 @@ if($_SESSION['statut']=='professeur') {
 		}
 	}
 }
+*/
 
 if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='eleve')) {
 	check_token();
@@ -147,28 +164,74 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='elev
 		$current_login=$tab[1];
 		$current_id_engagement=$tab[2];
 
-		if(!array_key_exists($current_id_classe, $tab_engagements_classe)) {
-			$tab_engagements_classe[$current_id_classe]=get_tab_engagements_user("", $current_id_classe, "eleve");
+		//echo "<br /><p>\$current_id_classe=$current_id_classe<br />";
+		//echo "\$current_login=$current_login<br />";
+		//echo "\$current_id_engagement=$current_id_engagement<br />";
+
+		$acces_saisie="n";
+		if($_SESSION['statut']=="administrateur") {
+			$acces_saisie="y";
 		}
-		if(array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
-			// L'utilisateur a accès à la saisie de ce type d'engagement
-			if((!isset($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))||(!in_array($current_login, $tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))) {
-				/*
-				echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
-				print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
-				echo "</pre>";
-				*/
-				$sql="INSERT INTO engagements_user SET login='$current_login', id_type='id_classe', valeur='$current_id_classe', id_engagement='$current_id_engagement';";
-				//echo "$sql<br />";
-				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(!$insert) {
-					$msg.="Erreur lors de l'inscription de l'engagement n°$current_id_engagement en classe ".get_nom_classe($current_id_classe)." pour ".civ_nom_prenom($current_login)."<br />";
+		elseif($_SESSION['statut']=="professeur") {
+			if(isset($tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement])) {
+				$indice_tab=$tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement];
+				//echo "\$indice_tab=$indice_tab<br />";
+				if(isset($tab_engagements_avec_droit_saisie["indice"][$indice_tab]["droit_special"])) {
+					// Accès indépendamment de la classe pour ce type d'engagement
+					$acces_saisie="y";
+					//echo "\$acces_saisie=$acces_saisie<br />";
 				}
 				else {
-					$nb_inscriptions++;
+					if(is_pp($_SESSION['login'], $current_id_classe)) {
+						$acces_saisie="y";
+					}
+					else {
+						$acces_saisie="n";
+					}
 				}
 			}
+			/*
+			else {
+				if(is_pp($_SESSION['login'], $current_id_classe)) {
+					$acces_saisie="y";
+				}
+				else {
+					$acces_saisie="n";
+				}
+			}
+			*/
+		}
+		else {
+			// Limite-t-on à certaines classes seulement pour un autre profil?
+			if(isset($tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement])) {
+				$acces_saisie="y";
+			}
+		}
 
+		if($acces_saisie=="y") {
+			if(!array_key_exists($current_id_classe, $tab_engagements_classe)) {
+				$tab_engagements_classe[$current_id_classe]=get_tab_engagements_user("", $current_id_classe, "eleve");
+			}
+			if(array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
+				// L'utilisateur a accès à la saisie de ce type d'engagement
+				if((!isset($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))||(!in_array($current_login, $tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))) {
+					/*
+					echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
+					print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
+					echo "</pre>";
+					*/
+					$sql="INSERT INTO engagements_user SET login='$current_login', id_type='id_classe', valeur='$current_id_classe', id_engagement='$current_id_engagement';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						$msg.="Erreur lors de l'inscription de l'engagement n°$current_id_engagement en classe ".get_nom_classe($current_id_classe)." pour ".civ_nom_prenom($current_login)."<br />";
+					}
+					else {
+						$nb_inscriptions++;
+					}
+				}
+
+			}
 		}
 	}
 	$msg.=$nb_inscriptions." inscription(s) d'engagements.<br />";
@@ -186,20 +249,62 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='elev
 			print_r($current_login);
 			echo "</pre>";
 			*/
-			for($loop2=0;$loop2<count($current_login);$loop2++) {
-				$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
-				//echo "$chaine<br />";
-				//if(!in_array($chaine, $engagement)) {
-				$tmp_info_user=get_info_user($current_login[$loop2]);
-				if((!in_array($chaine, $engagement))&&($tmp_info_user['statut']=='eleve')) {
-					$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
-					$del=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(!$del) {
-						$msg.="Erreur lors de la suppression de l'engagement n°$current_id_engagement en classe ".get_nom_classe($id_classe[$loop])." pour ".civ_nom_prenom($current_login[$loop2])."<br />";
+
+			$acces_saisie="n";
+			if($_SESSION['statut']=="administrateur") {
+				$acces_saisie="y";
+			}
+			elseif($_SESSION['statut']=="professeur") {
+				if(isset($tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement])) {
+					$indice_tab=$tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement];
+					if(isset($tab_engagements_avec_droit_saisie["indice"][$indice_tab]["droit_special"])) {
+						$acces_saisie="y";
 					}
 					else {
-						$nb_desinscriptions++;
-						$msg.="Désinscription de ".civ_nom_prenom($current_login[$loop2])."<br />";
+						if(is_pp($_SESSION['login'], $id_classe[$loop])) {
+							$acces_saisie="y";
+						}
+						else {
+							$acces_saisie="n";
+						}
+					}
+				}
+				/*
+				else {
+					if(is_pp($_SESSION['login'], $id_classe[$loop])) {
+						$acces_saisie="y";
+					}
+					else {
+						$acces_saisie="n";
+					}
+				}
+				*/
+			}
+			else {
+				// Limite-t-on à certaines classes seulement pour un autre profil?
+				if(isset($tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement])) {
+					$acces_saisie="y";
+				}
+			}
+
+			if($acces_saisie=="y") {
+
+				for($loop2=0;$loop2<count($current_login);$loop2++) {
+					$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
+					//echo "$chaine<br />";
+					//if(!in_array($chaine, $engagement)) {
+					$tmp_info_user=get_info_user($current_login[$loop2]);
+					if((!in_array($chaine, $engagement))&&($tmp_info_user['statut']=='eleve')) {
+						$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
+						//echo "$sql<br />";
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$del) {
+							$msg.="Erreur lors de la suppression de l'engagement n°$current_id_engagement en classe ".get_nom_classe($id_classe[$loop])." pour ".civ_nom_prenom($current_login[$loop2])."<br />";
+						}
+						else {
+							$nb_desinscriptions++;
+							$msg.="Désinscription de ".civ_nom_prenom($current_login[$loop2])."<br />";
+						}
 					}
 				}
 			}
@@ -233,28 +338,60 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='resp
 		$current_login=$tab[1];
 		$current_id_engagement=$tab[2];
 
-		if(!array_key_exists($current_id_classe, $tab_engagements_classe)) {
-			$tab_engagements_classe[$current_id_classe]=get_tab_engagements_user("", $current_id_classe, "responsable");
+		$acces_saisie="n";
+		if($_SESSION['statut']=="administrateur") {
+			$acces_saisie="y";
 		}
-		if(array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
-			// L'utilisateur a accès à la saisie de ce type d'engagement
-			if((!isset($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))||(!in_array($current_login, $tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))) {
-				/*
-				echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
-				print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
-				echo "</pre>";
-				*/
-				$sql="INSERT INTO engagements_user SET login='$current_login', id_type='id_classe', valeur='$current_id_classe', id_engagement='$current_id_engagement';";
-				//echo "$sql<br />";
-				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(!$insert) {
-					$msg.="Erreur lors de l'inscription de l'engagement n°$current_id_engagement en classe ".get_nom_classe($current_id_classe)." pour ".civ_nom_prenom($current_login)."<br />";
+		elseif($_SESSION['statut']=="professeur") {
+			if(isset($tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement])) {
+				$indice_tab=$tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement];
+				//echo "\$indice_tab=$indice_tab<br />";
+				if(isset($tab_engagements_avec_droit_saisie["indice"][$indice_tab]["droit_special"])) {
+					$acces_saisie="y";
+					//echo "\$acces_saisie=$acces_saisie<br />";
 				}
 				else {
-					$nb_inscriptions++;
+					if(is_pp($_SESSION['login'], $current_id_classe)) {
+						$acces_saisie="y";
+					}
+					else {
+						$acces_saisie="n";
+					}
 				}
 			}
+		}
+		else {
+			// Limite-t-on à certaines classes seulement pour un autre profil?
+			if(isset($tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement])) {
+				$acces_saisie="y";
+			}
+		}
 
+		if($acces_saisie=="y") {
+
+			if(!array_key_exists($current_id_classe, $tab_engagements_classe)) {
+				$tab_engagements_classe[$current_id_classe]=get_tab_engagements_user("", $current_id_classe, "responsable");
+			}
+			if(array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
+				// L'utilisateur a accès à la saisie de ce type d'engagement
+				if((!isset($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))||(!in_array($current_login, $tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))) {
+					/*
+					echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
+					print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
+					echo "</pre>";
+					*/
+					$sql="INSERT INTO engagements_user SET login='$current_login', id_type='id_classe', valeur='$current_id_classe', id_engagement='$current_id_engagement';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						$msg.="Erreur lors de l'inscription de l'engagement n°$current_id_engagement en classe ".get_nom_classe($current_id_classe)." pour ".civ_nom_prenom($current_login)."<br />";
+					}
+					else {
+						$nb_inscriptions++;
+					}
+				}
+
+			}
 		}
 	}
 	$msg.=$nb_inscriptions." inscription(s) d'engagements.<br />";
@@ -278,22 +415,53 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='resp
 			print_r($current_login);
 			echo "</pre>";
 			*/
-			for($loop2=0;$loop2<count($current_login);$loop2++) {
-				$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
 
-				//echo "$chaine<br />";
-				// Il ne faut pas désinscrire les élèves ici
-				$tmp_info_user=get_info_user($current_login[$loop2]);
-				if((!in_array($chaine, $engagement))&&($tmp_info_user['statut']=='responsable')) {
-					$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
-					//echo "$sql<br />";
-					$del=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(!$del) {
-						$msg.="Erreur lors de la suppression de l'engagement n°$current_id_engagement en classe ".get_nom_classe($id_classe[$loop])." pour ".civ_nom_prenom($current_login[$loop2])."<br />";
+
+			$acces_saisie="n";
+			if($_SESSION['statut']=="administrateur") {
+				$acces_saisie="y";
+			}
+			elseif($_SESSION['statut']=="professeur") {
+				if(isset($tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement])) {
+					$indice_tab=$tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement];
+					if(isset($tab_engagements_avec_droit_saisie["indice"][$indice_tab]["droit_special"])) {
+						$acces_saisie="y";
 					}
 					else {
-						$nb_desinscriptions++;
-						$msg.="Désinscription de ".civ_nom_prenom($current_login[$loop2])."<br />";
+						if(is_pp($_SESSION['login'], $id_classe[$loop])) {
+							$acces_saisie="y";
+						}
+						else {
+							$acces_saisie="n";
+						}
+					}
+				}
+			}
+			else {
+				// Limite-t-on à certaines classes seulement pour un autre profil?
+				if(isset($tab_engagements_avec_droit_saisie["id_engagement"][$current_id_engagement])) {
+					$acces_saisie="y";
+				}
+			}
+
+			if($acces_saisie=="y") {
+				for($loop2=0;$loop2<count($current_login);$loop2++) {
+					$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
+
+					//echo "$chaine<br />";
+					// Il ne faut pas désinscrire les élèves ici
+					$tmp_info_user=get_info_user($current_login[$loop2]);
+					if((!in_array($chaine, $engagement))&&($tmp_info_user['statut']=='responsable')) {
+						$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
+						//echo "$sql<br />";
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$del) {
+							$msg.="Erreur lors de la suppression de l'engagement n°$current_id_engagement en classe ".get_nom_classe($id_classe[$loop])." pour ".civ_nom_prenom($current_login[$loop2])."<br />";
+						}
+						else {
+							$nb_desinscriptions++;
+							$msg.="Désinscription de ".civ_nom_prenom($current_login[$loop2])."<br />";
+						}
 					}
 				}
 			}
@@ -349,8 +517,16 @@ if((!isset($id_classe))||($engagement_statut=="")) {
 	echo "<p class='bold'>Choix des classes&nbsp;:</p>\n";
 
 	if($_SESSION['statut']=='professeur') {
-		// Liste des classes dont le prof est PP:
-		$sql="SELECT DISTINCT c.* FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe AND jep.login=jec.login AND jep.professeur='".$_SESSION['login']."') ORDER BY c.classe;";
+		$sql="SELECT * FROM engagements_droit_saisie WHERE login='".$_SESSION['login']."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			// Liste des classes avec élève:
+			$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
+		}
+		else {
+			// Liste des classes dont le prof est PP:
+			$sql="SELECT DISTINCT c.* FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe AND jep.login=jec.login AND jep.professeur='".$_SESSION['login']."' AND jep.id_classe=jec.id_classe) ORDER BY c.classe;";
+		}
 	}
 	else {
 		// Liste des classes avec élève:
@@ -468,6 +644,12 @@ if($engagement_statut=="eleve") {
 	echo "</pre>";
 	*/
 
+
+// Récupérer les droits en fonction de la classe et de l'id_engagement.
+//acces_saisie_engagement($id_engagement, $id_classe) à modifier
+
+	$tab_pp=get_tab_prof_suivi();
+
 	$cpt=0;
 	for($i=0;$i<count($id_classe);$i++) {
 		$sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.sexe, e.naissance FROM eleves e, j_eleves_classes jec WHERE (e.login=jec.login AND jec.id_classe='".$id_classe[$i]."') ORDER BY e.nom, e.prenom;";
@@ -521,9 +703,11 @@ if($engagement_statut=="eleve") {
 				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
 					echo "<td>\n";
 					if(($_SESSION['statut']=='administrateur')||
+					((isset($tab_engagements['indice'][$loop]['droit_special']))&&(in_array($_SESSION['login'], $tab_engagements['indice'][$loop]['droit_special'])))||
 					(($_SESSION['statut']=='cpe')&&(isset($tab_engagements['indice'][$loop]['SaisieCpe']))&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
 					(($_SESSION['statut']=='scolarite')&&(isset($tab_engagements['indice'][$loop]['SaisieScol']))&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
-					(($_SESSION['statut']=='professeur')&&(isset($tab_engagements['indice'][$loop]['SaisiePP']))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes'))
+					(($_SESSION['statut']=='professeur')&&
+						((isset($tab_engagements['indice'][$loop]['SaisiePP']))&&(in_array($_SESSION['login'], $tab_pp[$id_classe[$i]]))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes')))
 					) {
 						$checked="";
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
@@ -560,6 +744,8 @@ else {
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	echo "<input type='hidden' name='is_posted' value='1' />\n";
 	echo add_token_field();
+
+	$tab_pp=get_tab_prof_suivi();
 
 	$cpt=0;
 	for($i=0;$i<count($id_classe);$i++) {
@@ -640,9 +826,11 @@ else {
 				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
 					echo "<td>\n";
 					if(($_SESSION['statut']=='administrateur')||
+					((isset($tab_engagements['indice'][$loop]['droit_special']))&&(in_array($_SESSION['login'], $tab_engagements['indice'][$loop]['droit_special'])))||
 					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
 					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
-					(($_SESSION['statut']=='professeur')&&(isset($tab_engagements['indice'][$loop]['SaisiePP']))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes'))
+					(($_SESSION['statut']=='professeur')&&
+						((isset($tab_engagements['indice'][$loop]['SaisiePP']))&&(in_array($_SESSION['login'], $tab_pp[$id_classe[$i]]))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes')))
 					) {
 						$checked="";
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {

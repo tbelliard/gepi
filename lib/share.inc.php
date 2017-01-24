@@ -2572,9 +2572,8 @@ function get_noms_classes_from_ele_login($ele_login){
  * @return string 
  */
 function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
-    global $mysqli;
+	global $mysqli;
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
-     
 	$res_class=mysqli_query($mysqli, $sql);
 	$chaine="";
 	if($res_class->num_rows > 0) {
@@ -4421,44 +4420,14 @@ function get_commune($code_commune_insee,$mode){
 function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 	global $mysqli;
 	$retour="";
-	$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
-	$res_user=mysqli_query($mysqli, $sql);
-	if ($res_user->num_rows > 0) {
-		$lig_user=$res_user->fetch_object();
-		if($lig_user->civilite!="") {
-			$retour.=$lig_user->civilite." ";
-		}
-		if($mode=='prenom') {
-			$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
-		}
-		else {
-			// Initiale
-			$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
-		}
-		if($avec_statut=='y') {
-			if($lig_user->statut=='autre') {
-				$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
-					WHERE du.login_user = '".$login."'
-						AND du.id_statut = ds.id;";
-				$res_statut=mysqli_query($mysqli, $sql);
-				if($res_statut->num_rows > 0) {
-					$lig_statut=$res_statut->fetch_object();
-					$retour.=" ($lig_statut->nom_statut)";
-					$res_statut->close();
-				}
-			}
-			else {
-				$retour.=" ($lig_user->statut)";
-			}
-		}
-		$res_user->close();
-	}
-	else {
-		// Chercher si c'est un élève, ou un parent avec login dont le compte aurait été supprimé?
-		$sql="SELECT nom,prenom,sexe FROM eleves WHERE login='$login';";
+	if($login!="") {
+		$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
 		$res_user=mysqli_query($mysqli, $sql);
 		if ($res_user->num_rows > 0) {
 			$lig_user=$res_user->fetch_object();
+			if($lig_user->civilite!="") {
+				$retour.=$lig_user->civilite." ";
+			}
 			if($mode=='prenom') {
 				$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
 			}
@@ -4467,18 +4436,29 @@ function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 				$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
 			}
 			if($avec_statut=='y') {
-				$retour.=" (eleve)";
+				if($lig_user->statut=='autre') {
+					$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+						WHERE du.login_user = '".$login."'
+							AND du.id_statut = ds.id;";
+					$res_statut=mysqli_query($mysqli, $sql);
+					if($res_statut->num_rows > 0) {
+						$lig_statut=$res_statut->fetch_object();
+						$retour.=" ($lig_statut->nom_statut)";
+						$res_statut->close();
+					}
+				}
+				else {
+					$retour.=" ($lig_user->statut)";
+				}
 			}
 			$res_user->close();
 		}
 		else {
-			$sql="SELECT nom,prenom,civilite FROM resp_pers WHERE login='$login';";
+			// Chercher si c'est un élève, ou un parent avec login dont le compte aurait été supprimé?
+			$sql="SELECT nom,prenom,sexe FROM eleves WHERE login='$login';";
 			$res_user=mysqli_query($mysqli, $sql);
 			if ($res_user->num_rows > 0) {
 				$lig_user=$res_user->fetch_object();
-				if($lig_user->civilite!="") {
-					$retour.=$lig_user->civilite." ";
-				}
 				if($mode=='prenom') {
 					$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
 				}
@@ -4487,9 +4467,30 @@ function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 					$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
 				}
 				if($avec_statut=='y') {
-					$retour.=" (responsable)";
+					$retour.=" (eleve)";
 				}
 				$res_user->close();
+			}
+			else {
+				$sql="SELECT nom,prenom,civilite FROM resp_pers WHERE login='$login';";
+				$res_user=mysqli_query($mysqli, $sql);
+				if ($res_user->num_rows > 0) {
+					$lig_user=$res_user->fetch_object();
+					if($lig_user->civilite!="") {
+						$retour.=$lig_user->civilite." ";
+					}
+					if($mode=='prenom') {
+						$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
+					}
+					else {
+						// Initiale
+						$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
+					}
+					if($avec_statut=='y') {
+						$retour.=" (responsable)";
+					}
+					$res_user->close();
+				}
 			}
 		}
 	}
@@ -13213,6 +13214,26 @@ function get_tab_engagements($statut_concerne="", $statut_saisie="") {
 			$tab_engagements['id_engagement'][$lig['id']]=$lig;
 			$tab_engagements['id_engagement'][$lig['id']]['effectif']=mysqli_num_rows($res_eff);
 
+			$tab_engagements['indice'][$cpt]['droit_user']=array();
+			$tab_engagements['id_engagement'][$lig['id']]['droit_user']=array();
+
+			$sql="SELECT * FROM engagements_droit_saisie WHERE id_engagement='".$lig['id']."';";
+			$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_droit)) {
+				while($lig_droit=mysqli_fetch_object($res_droit)) {
+					$tab_engagements['indice'][$cpt]['droit_user'][]=$lig_droit->login;
+
+					$tab_engagements['id_engagement'][$lig['id']]['droit_user'][]=$lig_droit->login;
+				}
+			}
+
+			$sql="SELECT * FROM engagements_droit_saisie WHERE id_engagement='".$lig['id']."';";
+			//echo "$sql<br />";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig2=mysqli_fetch_object($res2)) {
+				$tab_engagements['indice'][$cpt]["droit_special"][]=$lig2->login;
+			}
+
 			$cpt++;
 		}
 		/*
@@ -13391,6 +13412,113 @@ function is_delegue_conseil_classe($login_user, $id_classe="") {
 		return false;
 	}
 }
+
+
+function get_tab_engagements_droit_saisie_tel_user($login_user) {
+
+	$tab_engagements_user=array();
+	$tab_engagements_user['indice']=array();
+	$tab_engagements_user['login_user']=array();
+	$tab_engagements_user['id_engagement']=array();
+	$tab_engagements_user['id_engagement_user']=array();
+
+	$statut=get_valeur_champ("utilisateurs", "login='".$login_user."'", "statut");
+
+	$cpt=0;
+	if($statut=="administrateur") {
+		$sql="SELECT * FROM engagements ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+			$cpt++;
+		}
+	}
+	elseif($statut=="scolarite") {
+		$sql="SELECT * FROM engagements WHERE SaisieScol='yes' ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+			$cpt++;
+		}
+	}
+	elseif($statut=="cpe") {
+		$sql="SELECT * FROM engagements WHERE SaisieCpe='yes' ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+			$cpt++;
+		}
+	}
+	elseif(($statut=="professeur")&&(is_pp($login_user))) {
+		$sql="SELECT * FROM engagements WHERE SaisiePP='yes' ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+
+			// Accès limité aux classes dont le prof est PP:
+			// Récupérer la liste des classes dont le prof est PP
+			$tmp_tab=get_tab_prof_suivi("", $login_user);
+			for($loop=0;$loop<count($tmp_tab);$loop++) {
+				$tab_engagements_user['indice'][$cpt]["id_classe"][]=$tmp_tab[$loop];
+			}
+
+			$cpt++;
+		}
+	}
+
+	$sql="SELECT e.* FROM engagements_droit_saisie eds, engagements e WHERE eds.id_engagement=e.id AND eds.login='".$login_user."' ORDER BY e.nom, e.description;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_assoc($res)) {
+		if(!array_key_exists($lig['id'], $tab_engagements_user['id_engagement'])) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+			// Droit quelle que soit la classe:
+			$tab_engagements_user['indice'][$cpt]["droit_special"]="y";
+			// Au moins un droit sur toutes les classes
+			$tab_engagements_user["droit_special"]="y";
+		}
+		$cpt++;
+	}
+
+	return $tab_engagements_user;
+}
+
+/*
+function acces_saisie_engagement($id_engagement, $id_classe) {
+	global $tab_engagements_avec_droit_saisie;
+
+// A MODIFIER : Il faut voir si l'utilisateur a un engagement particulier non lié à la classe
+// issset($tab_engagements_user['indice'][$cpt]["droit_special"])
+
+
+
+
+
+
+
+
+
+	if(count($tab_engagements_avec_droit_saisie)==0) {
+		$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+	}
+
+	if(array_key_exists($id_engagement, $tab_engagements_avec_droit_saisie["id_engagement"])) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+*/
 
 /** Fonction destinée à copier les images de ../documents/archives/etablissement/cl1234/XXX vers le CDT courant quand des copier/coller sont faits depuis des archives
  *  Sans cela, les chemins des images sont incorrects quand on archive les CDT l'année suivante, et les images risquent de disparaitre du CDT courant si l'archive dont elles viennent est supprimée.

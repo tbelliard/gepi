@@ -1414,14 +1414,21 @@ if(getSettingAOui('active_bulletins')) {
 				  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la faute passe inaperçue</em>)");
 		}
 
+		$acces_saisie_engagement="n";
 		if(getSettingAOui('active_mod_engagements')) {
-			if(($_SESSION['statut']=='cpe')||
-			($_SESSION['statut']=='scolarite')||
-			($_SESSION['statut']=='administrateur')||
-			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'])))) {
-				$this->creeNouveauItem("/mod_engagements/imprimer_documents.php",
-				  "Imprimer les documents concernant les engagements",
-				  "Les engagements sont par exemple les rôles de Délégué de classe, membre du Conseil d'Administration,...<br />Cet outil permet d'imprimer les convocations aux conseils de classe,...");
+
+			$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+			if(count($tab_engagements_avec_droit_saisie['indice'])>0) {
+				$acces_saisie_engagement="y";
+
+				if(($_SESSION['statut']=='cpe')||
+				($_SESSION['statut']=='scolarite')||
+				($_SESSION['statut']=='administrateur')||
+				($_SESSION['statut']=='professeur')) {
+					$this->creeNouveauItem("/mod_engagements/imprimer_documents.php",
+					  "Imprimer les documents concernant les engagements",
+					  "Les engagements sont par exemple les rôles de Délégué de classe, membre du Conseil d'Administration,...<br />Cet outil permet d'imprimer les convocations aux conseils de classe,...");
+				}
 			}
 		}
 	}

@@ -192,6 +192,39 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 						$nb_modif++;
 					}
 				}
+
+				$SaisieLogin=isset($_POST["SaisieLogin_".$tab_engagements['indice'][$loop]['id']]) ? $_POST["SaisieLogin_".$tab_engagements['indice'][$loop]['id']] : array();
+				if(isset($tab_engagements['indice'][$loop]['droit_user'])) {
+					for($loop_u=0;$loop_u<count($tab_engagements['indice'][$loop]['droit_user']);$loop_u++) {
+						if(!in_array($tab_engagements['indice'][$loop]['droit_user'][$loop_u], $SaisieLogin)) {
+							$sql="DELETE FROM engagements_droit_saisie WHERE id_engagement='".$tab_engagements['indice'][$loop]['id']."' AND login='".$tab_engagements['indice'][$loop]['droit_user'][$loop_u]."';";
+							//echo "$sql<br />";
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$del) {
+								$msg.="Erreur lors de la suppression de ".$tab_engagements['indice'][$loop]['droit_user'][$loop_u]." pour l'engagement n°".$tab_engagements['indice'][$loop]['id']."<br />";
+							}
+							else {
+								//echo "Modif sur $sql<br />";
+								$nb_modif++;
+							}
+						}
+					}
+				}
+
+				for($loop_u=0;$loop_u<count($SaisieLogin);$loop_u++) {
+					if(($SaisieLogin[$loop_u]!="")&&(!in_array($SaisieLogin[$loop_u], $tab_engagements['indice'][$loop]['droit_user']))) {
+						$sql="INSERT INTO engagements_droit_saisie SET id_engagement='".$tab_engagements['indice'][$loop]['id']."', login='".$SaisieLogin[$loop_u]."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de l'ajout de ".$tab_engagements['indice'][$loop]['droit_user'][$loop_u]." pour l'engagement n°".$tab_engagements['indice'][$loop]['id']."<br />";
+						}
+						else {
+							//echo "Modif sur $sql<br />";
+							$nb_modif++;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -208,14 +241,22 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 			$msg.="Erreur lors de la suppression de l'association avec l'engagement n°".$suppr[$loop]."<br />";
 		}
 		else {
-			$sql="DELETE FROM engagements WHERE id='".$suppr[$loop]."';";
+			$sql="DELETE FROM engagements_droit_saisie WHERE id_engagement='".$suppr[$loop]."';";
 			//echo "$sql<br />";
 			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$del) {
-				$msg.="Erreur lors de la suppression de l'engagement n°".$suppr[$loop]."<br />";
+				$msg.="Erreur lors de la suppression de l'association utilisateur avec droit de saisie avec l'engagement n°".$suppr[$loop]."<br />";
 			}
 			else {
-				$msg.="Engagement n°".$suppr[$loop]." supprimé.<br />";
+				$sql="DELETE FROM engagements WHERE id='".$suppr[$loop]."';";
+				//echo "$sql<br />";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$del) {
+					$msg.="Erreur lors de la suppression de l'engagement n°".$suppr[$loop]."<br />";
+				}
+				else {
+					$msg.="Engagement n°".$suppr[$loop]." supprimé.<br />";
+				}
 			}
 		}
 	}
@@ -229,6 +270,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	$AjoutEngagementSaisieCpe=isset($_POST['AjoutEngagementSaisieCpe']) ? $_POST['AjoutEngagementSaisieCpe'] : "";
 	$AjoutEngagementSaisieScol=isset($_POST['AjoutEngagementSaisieScol']) ? $_POST['AjoutEngagementSaisieScol'] : "";
 	$AjoutEngagementSaisiePP=isset($_POST['AjoutEngagementSaisiePP']) ? $_POST['AjoutEngagementSaisiePP'] : "";
+	$AjoutEngagementSaisieLogin=isset($_POST['AjoutEngagementSaisieLogin']) ? $_POST['AjoutEngagementSaisieLogin'] : array();
 	if($AjoutEngagementNom!="") {
 		$sql="SELECT 1=1 FROM engagements WHERE nom='".$AjoutEngagementNom."';";
 		//echo "$sql<br />";
@@ -267,6 +309,23 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 			}
 			else {
 				$msg.="Engagement ajouté.<br />";
+
+				$nb_modif=0;
+				$id_engagement=mysqli_insert_id($GLOBALS['mysqli']);
+				for($loop=0;$loop<count($AjoutEngagementSaisieLogin);$loop++) {
+					if($AjoutEngagementSaisieLogin[$loop]!="") {
+						$sql="INSERT INTO engagements_droit_saisie SET id_engagement='".$id_engagement."', login='".$AjoutEngagementSaisieLogin[$loop]."';";
+						echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de l'ajout de ".$AjoutEngagementSaisieLogin[$loop]." pour le nouvel engagement (n°".$id_engagement.")<br />";
+						}
+						else {
+							//echo "Modif sur $sql<br />";
+							$nb_modif++;
+						}
+					}
+				}
 			}
 		}
 	}

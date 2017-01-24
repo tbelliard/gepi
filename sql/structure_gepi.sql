@@ -1589,3 +1589,11 @@ indice_aid INT(11) NOT NULL default '0',
 etat varchar(255) NOT NULL default '', 
 PRIMARY KEY  (id_groupe, id_aid), INDEX id_groupe_id_aid (id_groupe, id_aid)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS engagements_droit_saisie;
+CREATE TABLE IF NOT EXISTS engagements_droit_saisie (
+id INT(11) unsigned NOT NULL auto_increment,
+id_engagement INT(11) NOT NULL ,
+login VARCHAR( 50 ) NOT NULL DEFAULT '', 
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

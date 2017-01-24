@@ -64,7 +64,7 @@ if ($barre_plugin!="") {
  *
  *******************************************************************/
 
-	
+
 	if ($_SESSION['statut'] == "cpe") {
 
 		$tmp_liste_classes_cpe=array();
@@ -80,7 +80,15 @@ if ($barre_plugin!="") {
 				$tmp_liste_classes_cpe[$tmp_cpt_classes_cpe]['nom_complet']=$lig_tmp_liste_classes_cpe->nom_complet;
 				$tmp_cpt_classes_cpe++;
 			}
-		}    
+		}
+
+		$acces_saisie_engagement="n";
+		if(getSettingAOui('active_mod_engagements')) {
+			$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+			if(count($tab_engagements_avec_droit_saisie['indice'])>0) {
+				$acces_saisie_engagement="y";
+			}
+		}
 
 		$menus = null;
 
@@ -276,9 +284,11 @@ if ($barre_plugin!="") {
 		if(getSettingAOui('active_mod_engagements')) {
 			$menus .= '       <li class="plus"><a href="#">Engagements</a>'."\n";
 			$menus .= '         <ul class="niveau3">'."\n";
-			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
-
-			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+			if($acces_saisie_engagement=="y") {
+				$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().' title="Saisir les engagements élèves/responsables.">Saisie engagements</a></li>'."\n";
+			}
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().' title="Imprimer les documents, convocations,...">Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().' title="Extraire en CSV, envoyer par mail.">Extraction engagements</a></li>'."\n";
 			$menus .= '         </ul>'."\n";
 			$menus .= '       </li>'."\n";
 		}

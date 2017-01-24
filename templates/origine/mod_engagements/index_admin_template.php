@@ -89,6 +89,20 @@
 
 <!-- fin bandeau_template.html      -->
 
+<?php
+// onclick=\"return confirm_abandon (this, change, '$messageEnregistrer')\"
+// S'il y a des eng
+if(count($tab_engagements['indice'])>0) {
+	echo "
+<p class='bold'>
+	<a href=\"../accueil_modules.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"../mod_engagements/saisie_engagements.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Saisir les engagements des élèves/responsables</a> | 
+	<a href=\"../mod_engagements/imprimer_documents.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Imprimer les engagements/convocations/mail</a> | 
+	<a href=\"../mod_engagements/extraction_engagements.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Extraction CSV ou message</a>
+</p>";
+}
+?>
+
   <div id='container'>
 
   <form action="index_admin.php" id="form1" method="post" class='fieldset_opacite50'>
@@ -137,6 +151,21 @@
 <?php
 	$gepi_prof_suivi=ucfirst(getSettingValue('gepi_prof_suivi'));
 	echo add_token_field();
+
+	$tab_user=array();
+	$sql="SELECT DISTINCT login, nom, prenom, statut, etat FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' ORDER BY nom, prenom;";
+	$res_u=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res_u)>0) {
+		while($lig_u=mysqli_fetch_assoc($res_u)) {
+			$tab_user[$lig_u['login']]=$lig_u;
+		}
+	}
+
+	/*
+	echo "<pre>";
+	print_r($tab_engagements);
+	echo "</pre>";
+	*/
 ?>
 	<input type="hidden" name="is_posted" value="2" />
 
@@ -153,7 +182,7 @@
 				<th style='color:black;' rowspan='2'>Lié à une classe</th>
 				<th style='color:black;' rowspan='2'>Conseil de classe</th>
 				<th style='color:black;' colspan='2'>Statuts visés</th>
-				<th style='color:black;' colspan='3'>Statuts saisie</th>
+				<th style='color:black;' colspan='4'>Statuts saisie</th>
 				<th style='color:black;' rowspan='2'>Supprimer cet engagement</th>
 			</tr>
 			<tr>
@@ -162,10 +191,12 @@
 				<th style='color:black;'>Scolarité</th>
 				<th style='color:black;'>Cpe</th>
 				<th style='color:black;'><?php echo $gepi_prof_suivi;?></th>
+				<th style='color:black;'>Utilisateurs<br />particuliers</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php
+				$cpt_u=0;
 				for($loop=0;$loop<count($tab_engagements['indice']);$loop++) {
 					$checked_type="";
 					if($tab_engagements['indice'][$loop]['type']=="id_classe") {
@@ -209,6 +240,28 @@
 				<td><input type='checkbox' name='SaisieScol[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_SaisieScol /></td>
 				<td><input type='checkbox' name='SaisieCpe[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_SaisieCpe /></td>
 				<td><input type='checkbox' name='SaisiePP[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_SaisiePP /></td>
+				<td>";
+				foreach($tab_engagements['indice'][$loop]['droit_user'] as $current_login) {
+					echo "
+					<input type='checkbox' name='SaisieLogin_".$tab_engagements['indice'][$loop]['id']."[]' id='SaisieLogin_".$cpt_u."' value=\"".$current_login."\" checked /><label for='SaisieLogin_".$cpt_u."' title=\"Droit de saisie pour $current_login\">".civ_nom_prenom($current_login)."</label><br />";
+					$cpt_u++;
+				}
+				echo "
+					<select name='SaisieLogin_".$tab_engagements['indice'][$loop]['id']."[]'>
+						<option value=''>---</option>";
+
+					foreach($tab_user as $current_login => $user) {
+						$style='';
+						if($user['etat']=="inactif") {
+							$style=" style='color:grey'";
+						}
+						echo "
+						<option value=\"".$current_login."\" title=\"".$current_login."\"".$style.">".$user['nom']." ".$user['prenom']." (".$user['statut'].")</option>";
+					}
+					echo "
+					</select>
+
+				</td>
 				<td><input type='checkbox' name='suppr[]' value=\"".$tab_engagements['indice'][$loop]['id']."\" /></td>
 			</tr>";
 				}
@@ -281,7 +334,21 @@
 				id='EngagementSaisiePP' 
 				value="yes" 
 				onchange='changement();' />
-				<label for='EngagementSaisiePP'><?php echo $gepi_prof_suivi;?></label>
+				<label for='EngagementSaisiePP'><?php echo $gepi_prof_suivi;?></label><br />
+
+				Utilisateurs particuliers&nbsp;: <select name='AjoutEngagementSaisieLogin[]' multiple='y' size='7' style='vertical-align:top;'>
+					<option value=''>---</option>
+					<?php
+					foreach($tab_user as $current_login => $user) {
+						$style='';
+						if($user['etat']=="inactif") {
+							$style=" style='color:grey'";
+						}
+						echo "
+					<option value=\"".$current_login."\" title=\"".$current_login."\"".$style.">".$user['nom']." ".$user['prenom']." (".$user['statut'].")</option>";
+					}
+					?>
+				</select>
 			</td>
 		</tr>
 	</table>
@@ -399,5 +466,3 @@
 
 </body>
 </html>
-
-

@@ -101,4 +101,24 @@ if ($test_champ==0) {
 }
 
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'engagements_droit_saisie' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'engagements_droit_saisie'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS engagements_droit_saisie (
+	id INT(11) unsigned NOT NULL auto_increment,
+	id_engagement INT(11) NOT NULL ,
+	login VARCHAR( 50 ) NOT NULL DEFAULT '', 
+	PRIMARY KEY ( id )
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 
