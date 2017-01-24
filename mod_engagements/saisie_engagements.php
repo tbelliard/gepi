@@ -713,11 +713,11 @@ if($engagement_statut=="eleve") {
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
 							$checked=" checked";
 						}
-						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_ele->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' />";
+						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_ele->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' title=\"".$tab_engagements['indice'][$loop]['nom']." -> $lig_ele->nom $lig_ele->prenom\" />";
 					}
 					else {
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
-							echo "<img src='../images/enabled.png' class='icone20' />";
+							echo "<img src='../images/enabled.png' class='icone20' title=\"".$tab_engagements['indice'][$loop]['nom']." : $lig_ele->nom $lig_ele->prenom\" />";
 						}
 					}
 					echo "</td>\n";
