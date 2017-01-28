@@ -347,6 +347,9 @@ if(!isset($quitter_la_page)) {
 
 	echo " | <a href='export_ele_opt.php?id_classe[0]=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Exporter les options suivies par les élèves de ".get_nom_classe($id_classe)."</a>";
 
+	if(acces("/groupes/maj_inscript_ele_d_apres_edt.php", $_SESSION['statut'])) {
+		echo " | <a href='../groupes/maj_inscript_ele_d_apres_edt.php' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Mettre à jour les inscriptions dans les groupes d'après un export XML Eleves d'EDT.\">Màj XML STS</a>";
+	}
 
 	echo "</p>\n";
 	echo "</form>\n";
@@ -696,17 +699,17 @@ while ($i < $nombre_ligne) {
 			$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$j' AND login='$login_eleve'";
 			*/
 
-			echo "<td style='text-align:center'>\n";
+			echo "<td style='text-align:center' id='td_case".$i."_".$j."'>\n";
 			if(($_SESSION['statut']=="administrateur")||
 			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
-				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();' value='y' ";
+				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement(); colore_td_eleve_options($i);' value='y' ";
 				if (mysqli_num_rows($test)>0) {
 					echo "checked ";
 				}
 				echo "/>\n";
 			}
 			else {
-				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();' value='y' style='display:none; '";
+				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement(); colore_td_eleve_options($i);' value='y' style='display:none; '";
 				if (mysqli_num_rows($test)==0) {
 					echo "/>\n";
 					echo "&nbsp;\n";
@@ -748,8 +751,8 @@ while ($i < $nombre_ligne) {
 	if(($_SESSION['statut']=="administrateur")||
 	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo "<td>\n";
-		echo "<a href='javascript:modif_case($i,\"lig\",true);griser_degriser(etat_grisage);'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-		echo "<a href='javascript:modif_case($i,\"lig\",false);griser_degriser(etat_grisage);'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		echo "<a href='javascript:modif_case($i,\"lig\",true);'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+		echo "<a href='javascript:modif_case($i,\"lig\",false);'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 		echo "</td>\n";
 
 		// Modalités
@@ -837,16 +840,14 @@ echo "</table>\n";
 // AJOUT: boireaus
 echo "<script type='text/javascript' language='javascript'>
 
-	var etat_grisage='griser';
-
 	function DecocheColonne_si_bull_et_cn_vide(i) {
 		for (var ki=0;ki<$nombre_ligne;ki++) {
 			if((document.getElementById('case'+ki+'_'+i))&&(!document.getElementById('img_bull_non_vide_'+ki+'_'+i))&&(!document.getElementById('img_cn_non_vide_'+ki+'_'+i))) {
 				document.getElementById('case'+ki+'_'+i).checked = false;
+				colore_td_eleve_options(ki);
 			}
 		}
 		changement();
-		griser_degriser(etat_grisage);
 	}
 
 	function copieEnseignementsPeriode1(num_periode) {
@@ -865,6 +866,8 @@ echo "<script type='text/javascript' language='javascript'>
 			for(k=0;k<$nombre_ligne;k++){
 				if(document.getElementById('case'+k+'_'+rang)){
 					document.getElementById('case'+k+'_'+rang).checked=statut;
+
+					colore_td_eleve_options(k);
 				}
 			}
 		}
@@ -874,43 +877,46 @@ echo "<script type='text/javascript' language='javascript'>
 					document.getElementById('case'+rang+'_'+k).checked=statut;
 				}
 			}
+			colore_td_eleve_options(rang);
 		}
-		griser_degriser(etat_grisage);
 		changement();
 	}
 
-	function griser_degriser(mode) {
-		if(mode=='griser') {
-			griser_degriser('degriser');
+	function colore_td_eleve_options(ligne) {
 
-			for (var ki=0;ki<$nombre_ligne;ki++) {
-				temoin='n';
-				for(i=1;i<".$nb_periode.";i++) {
-					if(document.getElementById('case'+ki+'_'+i)){
-						if(document.getElementById('case'+ki+'_'+i).checked == true) {
-							temoin='y';
-						}
-					}
-				}
+		if(document.getElementById('tr_'+ligne)) {
+			document.getElementById('tr_'+ligne).style.backgroundColor='';
+		}
 
-				if(temoin=='n') {
-					if(document.getElementById('tr_'+ki)) {
-						document.getElementById('tr_'+ki).style.backgroundColor='grey';
-					}
+		temoin='n';
+		for(i=1;i<".$nb_periode.";i++) {
+			if(document.getElementById('case'+ligne+'_'+i)){
+				if(document.getElementById('case'+ligne+'_'+i).checked) {
+					// Au moins une période cochée
+					temoin='y';
 				}
 			}
 		}
-		else {
-			for (var ki=0;ki<$nombre_ligne;ki++) {
-				if(document.getElementById('tr_'+ki)) {
-					document.getElementById('tr_'+ki).style.backgroundColor='';
-				}
+
+		if(temoin=='n') {
+			if(document.getElementById('tr_'+ligne)) {
+				document.getElementById('tr_'+ligne).style.backgroundColor='grey';
 			}
 		}
-		etat_grisage=mode;
+
+		for(i=1;i<".$nb_periode.";i++) {
+			if(document.getElementById('case'+ligne+'_'+i).checked) {
+				document.getElementById('td_case'+ligne+'_'+i).style.backgroundColor='';
+			}
+			else {
+				document.getElementById('td_case'+ligne+'_'+i).style.backgroundColor='grey';
+			}
+		}
 	}
 
-	griser_degriser('griser');
+	for (var ki=0;ki<$nombre_ligne;ki++) {
+		colore_td_eleve_options(ki);
+	}
 
 </script>\n";
 
