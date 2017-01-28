@@ -1340,7 +1340,8 @@ $delais_affichage_infobulle=500;
 ?>
         <th>
 <?php
-		$sql="SELECT * FROM matiere_element_programme mep WHERE id_user='".$_SESSION['login']."';";
+		//$sql="SELECT * FROM matiere_element_programme mep WHERE id_user='".$_SESSION['login']."';";
+		$sql="SELECT DISTINCT mep.* FROM matiere_element_programme mep, j_mep_prof jmp WHERE mep.id=jmp.idEP AND jmp.id_prof='".$_SESSION['login']."' ORDER BY mep.libelle LIMIT 1;";
 		$test_mep=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($test_mep)>0) {
 			echo "<div style='float:right; width:16px' title=\"Gérer mes éléments de programmes.\"><a href='gerer_mep.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/configure.png' class='icone16' alt='Gérer' /></a></div>";
