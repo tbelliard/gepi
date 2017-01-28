@@ -121,4 +121,98 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+/*
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'edt_cours_remplacements' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'edt_cours_remplacements'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE edt_cours_remplacements (id_cours int(11) NOT NULL auto_increment, 
+	id_groupe varchar(10) NOT NULL, 
+	id_aid varchar(10) NOT NULL, 
+	id_salle varchar(3) NOT NULL, 
+	jour_semaine varchar(10) NOT NULL, 
+	id_definie_periode varchar(3) NOT NULL, 
+	duree varchar(10) NOT NULL default '2', 
+	heuredeb_dec varchar(3) NOT NULL default '0', 
+	id_semaine varchar(10) NOT NULL default '0', 
+	id_calendrier varchar(3) NOT NULL default '0', 
+	modif_edt varchar(3) NOT NULL default '0', 
+	login_prof varchar(50) NOT NULL, 
+	id_absence int(11) NOT NULL, 
+	jour varchar(10) NOT NULL, DEFAULT '', 
+	PRIMARY KEY  (id_cours)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+duree='".$duree."', 
+heuredeb_dec='".$heuredeb_dec."'
+*/
+
+$result .= "&nbsp;-> Ajout d'un champ 'duree' à la table 'abs_prof_remplacement'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM abs_prof_remplacement LIKE 'duree';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE abs_prof_remplacement ADD duree varchar(10) NOT NULL default '0';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'heuredeb_dec' à la table 'abs_prof_remplacement'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM abs_prof_remplacement LIKE 'heuredeb_dec';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE abs_prof_remplacement ADD heuredeb_dec varchar(3) NOT NULL default '0';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'jour_semaine' à la table 'abs_prof_remplacement'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM abs_prof_remplacement LIKE 'jour_semaine';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE abs_prof_remplacement ADD jour_semaine varchar(10) NOT NULL;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'id_cours_remplaced' à la table 'abs_prof_remplacement'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM abs_prof_remplacement LIKE 'id_cours_remplaced';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE abs_prof_remplacement ADD id_cours_remplaced INT(11) NOT NULL;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 
