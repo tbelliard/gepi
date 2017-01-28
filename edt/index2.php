@@ -1315,6 +1315,9 @@ else {
 	*/
 }
 //=======================================
+// 20170128
+$tab_jours_vacances=get_tab_jours_vacances();
+
 $precedent="";
 $suivant="";
 $semaine_courante_trouvee="n";
@@ -1344,9 +1347,14 @@ for($n=36;$n<52;$n++) {
 			$suivant=$cpt;
 		}
 	}
-
+	// 20170128
+	$style_option="";
+	if((in_array($tmp_tab['num_jour'][1]['aaaammjj'], $tab_jours_vacances))&&
+	(in_array($tmp_tab['num_jour'][7]['aaaammjj'], $tab_jours_vacances))) {
+		$style_option=" style='color:grey'";
+	}
 	$chaine_options_select.="
-				<option value='$n|$annee'$selected>Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+				<option value='$n|$annee'".$selected.$style_option.">Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
 	$cpt++;
 }
 $annee++;
@@ -1368,8 +1376,14 @@ for($n=1;$n<28;$n++) {
 			$suivant=$cpt;
 		}
 	}
+	// 20170128
+	$style_option="";
+	if((in_array($tmp_tab['num_jour'][1]['aaaammjj'], $tab_jours_vacances))&&
+	(in_array($tmp_tab['num_jour'][7]['aaaammjj'], $tab_jours_vacances))) {
+		$style_option=" style='color:grey'";
+	}
 	$chaine_options_select.="
-				<option value='".$m."|$annee'$selected>Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+				<option value='".$m."|$annee'".$selected.$style_option.">Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
 	$cpt++;
 }
 
