@@ -2649,6 +2649,11 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		$afficher_remplacements="y";
 	}
 
+	$signaler_cours_non_remplaces="n";
+	if((getSettingAOui("active_mod_abs_prof"))&&(getSettingAOui("AbsProfSignalerNonRemplaceSurEDT2"))) {
+		$signaler_cours_non_remplaces="y";
+	}
+
 	//==================================================================
 	// On passe à l'affichage du contenu du ou des jours
 	//for($num_jour=1;$num_jour<=count($tab_jour);$num_jour++) {
@@ -2682,6 +2687,60 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			$res_mes_cours_remplaced=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig_mes_cours_remplaced=mysqli_fetch_object($res_mes_cours_remplaced)) {
 				$tab_mes_cours_remplaces_par_d_autres[$lig_mes_cours_remplaced->id_cours_remplaced]=$lig_mes_cours_remplaced->login_user;
+			}
+		}
+
+		$tab_cours_non_remplaces=array();
+		if($signaler_cours_non_remplaces=="y") {
+			// Il faut récupérer les id_cours pris dans l'amplitude d'absence et exclure ceux qui sont remplacés.
+
+/*
+mysql> select * from abs_prof;
++----+------------+---------------------+---------------------+------------------+------------------------------------------------------------+
+| id | login_user | date_debut          | date_fin            | titre            | description                                                |
++----+------------+---------------------+---------------------+------------------+------------------------------------------------------------+
+|  1 | JOSSETF    | 2016-10-14 07:58:00 | 2016-10-14 17:29:00 | Stage            | <p>
+	Stage</p>
+                                            |
+|  2 | TOESCAV    | 2017-01-24 13:27:00 | 2017-01-24 14:25:00 | Musée Bernay 6C  | <p>
+	Musée Bernay 6C avec M.Pauly de 13h30 à 16h00.</p>
+   |
+|  3 | paulya     | 2017-01-30 07:58:00 | 2017-01-31 17:29:00 | Absence Pauly    | <p>
+	Absence  d'Aurélien</p>
+                              |
++----+------------+---------------------+---------------------+------------------+------------------------------------------------------------+
+3 rows in set (0.00 sec)
+
+mysql> 
+
+mysql> select * from abs_prof_remplacement where validation_remplacement='oui';
++----+------------+-----------+--------+-----------+----------+------------+---------------------+---------------------+---------+---------------------+------------+------------------+-------------------------+------------------------+----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+-------+--------------+--------------+--------------------+
+| id | id_absence | id_groupe | id_aid | id_classe | jour     | id_creneau | date_debut_r        | date_fin_r          | reponse | date_reponse        | login_user | commentaire_prof | validation_remplacement | commentaire_validation | salle    | texte_famille                                                                                                                                                                                | info_famille | duree | heuredeb_dec | jour_semaine | id_cours_remplaced |
++----+------------+-----------+--------+-----------+----------+------------+---------------------+---------------------+---------+---------------------+------------+------------------+-------------------------+------------------------+----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+-------+--------------+--------------+--------------------+
+|  1 |          1 |      4044 |      0 |        35 | 20161014 |          3 | 2016-10-14 10:04:00 | 2016-10-14 11:02:00 | oui     | 2016-10-05 08:37:27 | BOIREAUS   | Blabla
+Blibloblu | oui                     | blabla
+                | 14       |                                                                                                                                                                                              |              | 0     | 0            |              |                  0 |
+|  2 |          2 |      3825 |      0 |        34 | 20170124 |          5 | 2017-01-24 13:27:00 | 2017-01-24 14:25:00 | oui     | 2017-01-16 13:10:44 | BOIREAUS   | Avec joie.       | oui                     |                        | 14       | En raison de la sortie scolaire des 6C au Musée de Bernay, le cours __COURS__ de __PROF_ABSENT__ du __DATE_HEURE__ sera remplacé par un cours avec __PROF_REMPLACANT__ en salle __SALLE__.   | oui          | 0     | 0            |              |                  0 |
+| 15 |          3 |      4059 |      0 |        35 | 20170130 |          2 | 2017-01-30 08:55:00 | 2017-01-30 09:52:00 | oui     | 2017-01-27 21:07:52 | BOIREAUS   |                  | oui                     | Salle info réservée    | Salle 14 |                                                                                                                                                                                              |              | 2     | 0            | lundi        |              24106 |
++----+------------+-----------+--------+-----------+----------+------------+---------------------+---------------------+---------+---------------------+------------+------------------+-------------------------+------------------------+----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+-------+--------------+--------------+--------------------+
+3 rows in set (0.01 sec)
+
+mysql> 
+
+*/
+
+			$sql="SELECT * FROM abs_prof WHERE DATE(date_debut)<='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour."' AND 
+									DATE(date_fin)>='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour."';";
+			$res_cours_non_remplaces=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_cours_non_remplaces=mysqli_fetch_object($res_cours_non_remplaces)) {
+				// Parcourir les cours du prof pour ce jour.
+
+
+
+
+
+
+
 			}
 		}
 
@@ -3129,6 +3188,8 @@ mysql>
 
 								// 20170128
 								if((!isset($lig->type_cours))||($lig->type_cours!="remplacement")) {
+									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="standard";
+
 									$chaine_texte_ligne_1=preg_replace("/[_.]/"," ",$current_group['name']);
 
 									$chaine_proflist_string=$current_group['profs']['proflist_string'];
@@ -3178,6 +3239,8 @@ mysql>
 								}
 								else {
 									$bgcolor_courant=$couleur_remplacement;
+
+									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="remplacement";
 
 									// RCD : Remplacement de Courte Durée
 									$chaine_texte_ligne_1="<span title='Remplacement ponctuel'>Remplacement</span>";
@@ -3305,6 +3368,8 @@ mysql>
 
 								// 20170128
 								if((!isset($lig->type_cours))||($lig->type_cours!="remplacement")) {
+									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="standard";
+
 									$bgcolor_courant="azure";
 
 									$current_aid=$tab_aid_edt[$lig->id_aid];
@@ -3338,6 +3403,8 @@ mysql>
 									}
 								}
 								else {
+									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="remplacement";
+
 									$bgcolor_courant=$couleur_remplacement;
 
 									$chaine_matiere="";
@@ -3373,6 +3440,8 @@ mysql>
 
 						// 20170128
 						if((!isset($lig->type_cours))||($lig->type_cours!="remplacement")) {
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="bizarre";
+
 							$bgcolor_courant="white";
 
 							$chaine_nom_enseignement="Cours...";
@@ -3405,6 +3474,8 @@ mysql>
 
 						}
 						else {
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="remplacement";
+
 							$bgcolor_courant=$couleur_remplacement;
 
 							$chaine_matiere="";
@@ -3770,9 +3841,18 @@ mysql>
 										line-height:".$font_size."pt;
 										overflow: hidden;
 										z-index:21;'";
-								if(isset($tab2[$loop]['id_cours'])) {
+								if((isset($tab2[$loop]['id_cours']))&&((!isset($tab2[$loop]['type_cours']))||($tab2[$loop]['type_cours']!="remplacement"))) {
+									//alert('".$tab2[$loop]['type_cours']."');
 									$html.="
 										onclick=\"action_edt_cours('".$tab2[$loop]['id_cours']."')\"";
+								}
+								elseif((isset($tab2[$loop]['type_cours']))&&($tab2[$loop]['type_cours']=="remplacement")) {
+									$html.="
+										onclick=\"cacher_div('infobulle_action_edt')\"";
+									/*
+									$html.="
+										title=\"\"";
+									*/
 								}
 								$html.=">";
 								// DEBUG:
