@@ -474,7 +474,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	if(($id_groupe!=NULL)&&($matiere!=NULL)) {
 
 		$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
-		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
 			echo "</p>\n";
 
@@ -482,7 +482,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			require("../lib/footer.inc.php");
 			die();
 		}
-		$lig=mysqli_fetch_object($res);
+		$lig=mysqli_fetch_object($test);
 		$id_ex_grp=$lig->id;
 
 		$sql="SELECT 1=1 FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
