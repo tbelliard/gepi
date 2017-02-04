@@ -268,6 +268,11 @@ require_once("../lib/header.inc.php");
 
 ?>
 <div class="noprint">
+<?php
+if((isset($idListe))&&(preg_match("/^[0-9]{1,}$/", $idListe))) {
+	echo "<div style='float:right; width:16px;'><a href='export_liste.php?id_def=".$idListe."' target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>";
+}
+?>
 <ul class="menu_entete_liste">
     <li class="menu_liste"
 		id='menu_lien_tableau'

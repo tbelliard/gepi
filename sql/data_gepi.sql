@@ -1815,3 +1815,4 @@ INSERT INTO droits SET id='/aid/transfert_groupe_aid.php', administrateur='V', p
 INSERT INTO droits SET id='/groupes/visu_groupes_prof.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='V', autre='F', description='Voir les enseignements du professeur', statut='';
 INSERT INTO groupes_types SET nom_court='local', nom_complet='Enseignement local', nom_complet_pluriel='Enseignements locaux';
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_droits.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'ABS2: Droits non admin', '');
+INSERT INTO droits SET id='/mod_listes_perso/export_liste.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Listes perso: Export', statut='';
