@@ -839,6 +839,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/impression/impression_serie.php' , "texte"=>"Mes listes PDF");
 	$cpt_sous_menu++;
 
+	if(getSettingAOui("GepiListePersonnelles")) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_listes_perso/index.php' , "texte"=>"Listes perso");
+		$cpt_sous_menu++;
+	}
+
 	if(getSettingValue('active_mod_ooo')=='y') {
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_ooo/publipostage_ooo.php' , "texte"=>"Publipostage OOo");
 		$cpt_sous_menu++;
