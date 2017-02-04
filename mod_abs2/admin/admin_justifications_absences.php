@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2010-2011 Josselin Jacquard
+ * Copyright 2010-2017 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -45,6 +45,14 @@ if (!checkAccess()) {
     die();
 }
 
+
+if(!acces_consultation_admin_abs2("/mod_abs2/admin/admin_justifications_absences.php")) {
+	header("Location: ../../accueil.php?msg=Accès non autorisé");
+	die();
+}
+
+$acces_saisie_admin_abs2=acces_saisie_admin_abs2("/mod_abs2/admin/admin_justifications_absences.php");
+
 if (empty($_GET['action']) and empty($_POST['action'])) { $action="";}
     else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
 if (empty($_GET['id']) and empty($_POST['id'])) { $id="";}
@@ -58,60 +66,68 @@ if (empty($_GET['commentaire']) and empty($_POST['commentaire'])) { $commentaire
 
 include("function.php");
 
-//$justification = new AbsenceElevejustification();
-$justification = AbsenceEleveJustificationQuery::create()->findPk($id);
-if ($action == 'supprimer') {
-	check_token();
-    if ($justification != null) {
-	$justification->delete();
-    }
-} elseif ($action == "monter") {
-	check_token();
-    if ($justification != null) {
-	$justification->moveUp();
-    }
-} elseif ($action == 'descendre') {
-	check_token();
-    if ($justification != null) {
-	$justification->moveDown();
-    }
-} elseif ($action == 'ajouterdefaut') {
-	check_token();
-    //include("function.php");
-    ajoutJustificationsParDefaut();
-} else {
-    if ($nom != '') {
-		check_token();
-		$justification = AbsenceEleveJustificationQuery::create()->findPk($id);
-		if ($justification == null) {
-			$justification = new AbsenceEleveJustification();
-		}
-		$justification->setNom(stripslashes($nom));
-		$justification->setCommentaire(stripslashes($commentaire));
-		$justification->save();
-    }
+if(((($action!="")&&($action!="visualiser"))||($nom!="")||(isset($_GET['corriger'])))&&
+(!$acces_saisie_admin_abs2)) {
+	//debug_var();
+	header("Location: ../../accueil.php?msg=Saisie non autorisée");
+	die();
 }
-
-if(isset($_GET['corriger'])) {
-	check_token();
-
-	$table="a_justifications";
-
-	$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
-	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	$cpt=1;
-	while($lig=mysqli_fetch_object($res)) {
-		$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
-		//echo "$sql<br />";
-		$update=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(!$update) {
-			$msg="Erreur lors de la correction des rangs.<br />";
-			break;
-		}
-		$cpt++;
+else {
+	//$justification = new AbsenceElevejustification();
+	$justification = AbsenceEleveJustificationQuery::create()->findPk($id);
+	if ($action == 'supprimer') {
+		check_token();
+	    if ($justification != null) {
+		$justification->delete();
+	    }
+	} elseif ($action == "monter") {
+		check_token();
+	    if ($justification != null) {
+		$justification->moveUp();
+	    }
+	} elseif ($action == 'descendre') {
+		check_token();
+	    if ($justification != null) {
+		$justification->moveDown();
+	    }
+	} elseif ($action == 'ajouterdefaut') {
+		check_token();
+	    //include("function.php");
+	    ajoutJustificationsParDefaut();
+	} else {
+	    if ($nom != '') {
+			check_token();
+			$justification = AbsenceEleveJustificationQuery::create()->findPk($id);
+			if ($justification == null) {
+				$justification = new AbsenceEleveJustification();
+			}
+			$justification->setNom(stripslashes($nom));
+			$justification->setCommentaire(stripslashes($commentaire));
+			$justification->save();
+	    }
 	}
-	$msg="Correction effectuée.<br />";
+
+	if(isset($_GET['corriger'])) {
+		check_token();
+
+		$table="a_justifications";
+
+		$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		$cpt=1;
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
+			//echo "$sql<br />";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$update) {
+				$msg="Erreur lors de la correction des rangs.<br />";
+				break;
+			}
+			$cpt++;
+		}
+		$msg="Correction effectuée.<br />";
+	}
 }
 //==========================================
 // header
@@ -120,14 +136,20 @@ require_once("../../lib/header.inc.php");
 //==========================================
 
 echo "<p class=bold>";
-echo "<a href=\"index.php\">";
+echo "<a href=\"index.php";
+if($_SESSION['statut']!="administrateur") {
+	echo "#config_avancee";
+}
+echo "\">";
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
 ?>
 
 <div style="text-align:center">
     <h2>Définition des justifications d'absence</h2>
-<?php if ($action == "ajouter" OR $action == "modifier" OR $action == "supprimer_statut") { ?>
+<?php
+if($acces_saisie_admin_abs2) {
+	if ($action == "ajouter" OR $action == "modifier" OR $action == "supprimer_statut") { ?>
 <div style="text-align:center">
     <?php
     	if($action=="ajouter") { 
@@ -168,15 +190,25 @@ echo add_token_field();
 	<a href="admin_justifications_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter une nouvelle justification</a>
 	<br/><br/>
 	<a href="admin_justifications_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les justifications par défaut</a>
+<?php
+}
+?>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
         <td>Nom</td>
         <td>Commentaire</td>
+        <td title="Nombre de saisies/traitements avec ce lieu.">Effectif</td>
+<?php 
+if($acces_saisie_admin_abs2) {
+?>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
+<?php 
+}
+?>
       </tr>
     <?php
     $justification_collection = new PropelCollection();
@@ -187,10 +219,27 @@ echo add_token_field();
         <tr>
 	  <td><?php echo $justification->getNom(); ?></td>
 	  <td><?php echo $justification->getCommentaire(); ?></td>
+<?php 
+	$nb_saisies_traitements_avec_cette_justification=abs2_nombre_de_saisies_avec_cette_justification($justification->getId());
+	echo "
+	<td title=\"$nb_saisies_traitements_avec_cette_justification saisies/traitements ont cette justification\">".$nb_saisies_traitements_avec_cette_justification."</td>";
+	if($acces_saisie_admin_abs2) {
+?>
           <td><a href="admin_justifications_absences.php?action=modifier&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_justifications_absences.php?action=supprimer&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce justification ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td>
+          <?php
+          	if(($nb_saisies_traitements_avec_cette_justification==0)||($_SESSION['statut']=="administrateur")) {
+          ?>
+              <a href="admin_justifications_absences.php?action=supprimer&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce justification ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a>
+          <?php
+          	}
+          ?>
+          </td>
           <td><a href="admin_justifications_absences.php?action=monter&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
           <td><a href="admin_justifications_absences.php?action=descendre&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
+<?php 
+}
+?>
         </tr>
      <?php } ?>
     </table>

@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2010-2011 Josselin Jacquard
+ * Copyright 2010-2017 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -51,7 +51,8 @@ $_SESSION['retour']=$_SERVER['PHP_SELF'] ;
 
 $msg = '';
 
-if (isset($_POST['is_posted'])) {
+// On laisse seulement un administrateur modifier les paramétrages dans cette page:
+if (($_SESSION['statut']=="administrateur")&&(isset($_POST['is_posted']))) {
 	if ($_POST['is_posted']=='1') {
 
 		if (isset($_POST['activer'])) {
@@ -348,21 +349,23 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
-
-if (isset($_POST['classement'])) {
-	if (!saveSetting("absence_classement_top", $_POST['classement'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre de classement des absences (TOP 10) !";
+// On laisse seulement un administrateur modifier les paramétrages dans cette page:
+if($_SESSION["statut"]=="administrateur") {
+	if (isset($_POST['classement'])) {
+		if (!saveSetting("absence_classement_top", $_POST['classement'])) {
+			$msg = "Erreur lors de l'enregistrement du paramètre de classement des absences (TOP 10) !";
+		}
 	}
-}
-if (isset($_POST['installation_base'])) {
-	// Remise à zéro de la table des droits d'accès
-	$result = "";
-	require '../../utilitaires/updates/access_rights.inc.php';
-	// Scorie:
-	//require '../../utilitaires/updates/mod_abs2.inc.php';
-}
+	if (isset($_POST['installation_base'])) {
+		// Remise à zéro de la table des droits d'accès
+		$result = "";
+		require '../../utilitaires/updates/access_rights.inc.php';
+		// Scorie:
+		//require '../../utilitaires/updates/mod_abs2.inc.php';
+	}
 
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+	if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+}
 
 // A propos du TOP 10 : récupération du setting pour le select en bas de page
 $selected10 = $selected20 = $selected30 = $selected40 = $selected50 = NULL;
@@ -379,9 +382,12 @@ if (getSettingValue("absence_classement_top") == '10'){
   $selected50 = ' selected="selected"';
 }
 
+//**************** EN-TETE *****************
 // header
 $titre_page = "Gestion du module absence";
 require_once("../../lib/header.inc.php");
+//**************** EN-TETE *****************
+
 echo "<p class='bold'><a href='../../accueil_modules.php' title='Retour'><img src='../../images/icons/back.png' alt='Retour' class='back_link' /> Retour </a> | <a href=\"http://www.sylogix.org/projects/gepi/wiki/Abs_2\" alt='Aide' />Aide à la configuration</a>";
 echo "</p>";
     if (isset ($result)) {
@@ -390,8 +396,16 @@ echo "</p>";
 	    echo "</td></tr></table></center>";
     }
 ?>
+
+<?php
+if($_SESSION["statut"]=="administrateur") {
+	// ADMINISTRATEUR
+?>
 <form action="index.php" name="form1" method="post">
 <p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
+<?php
+}
+?>
 
 <h2>Gestion des absences par les CPE</h2>
 <div style='margin-left:3em;'>
@@ -400,6 +414,29 @@ suppression des données. Lorsque le module est désactivé, les CPE n'ont pas a
 
 <?php
 echo add_token_field();
+
+$abs2_afficher_alerte_nb_nj=getSettingValue("abs2_afficher_alerte_nb_nj");
+if($abs2_afficher_alerte_nb_nj=="") {
+	$abs2_afficher_alerte_nb_nj=4;
+}
+
+$abs2_afficher_alerte_nj_delai=getSettingValue("abs2_afficher_alerte_nj_delai");
+if($abs2_afficher_alerte_nj_delai=="") {
+	$abs2_afficher_alerte_nj_delai=30;
+}
+
+$abs2_afficher_alerte_nb_abs=getSettingValue("abs2_afficher_alerte_nb_abs");
+if($abs2_afficher_alerte_nb_abs=="") {
+	$abs2_afficher_alerte_nb_abs=4;
+}
+
+$abs2_afficher_alerte_abs_delai=getSettingValue("abs2_afficher_alerte_abs_delai");
+if($abs2_afficher_alerte_abs_delai=="") {
+	$abs2_afficher_alerte_abs_delai=30;
+}
+
+if($_SESSION["statut"]=="administrateur") {
+	// ADMINISTRATEUR
 ?>
 <p>
 	<input type="radio" id="activerY" name="activer" value="y"
@@ -447,6 +484,7 @@ echo add_token_field();
 	<label for="abs2_PasDoublonMarqueurAppel">&nbsp;Ne pas enregistrer un marqueur d'appel pour chaque enregistrement dans la saisie de groupe lorsque l'utilisateur <em>(professeur, cpe)</em> fait plusieurs saisies dans la même heure pour un même groupe/classe.<br />
 	<em>(pour un même créneau/cours/groupe... une seul marqueur d'appel sera enregistré)</em></label>
 </p>
+
 <br />
 <p>
 E-mail gestion absence établissement :
@@ -455,27 +493,7 @@ E-mail gestion absence établissement :
 
 <br />
 
-<?php
-$abs2_afficher_alerte_nb_nj=getSettingValue("abs2_afficher_alerte_nb_nj");
-if($abs2_afficher_alerte_nb_nj=="") {
-	$abs2_afficher_alerte_nb_nj=4;
-}
 
-$abs2_afficher_alerte_nj_delai=getSettingValue("abs2_afficher_alerte_nj_delai");
-if($abs2_afficher_alerte_nj_delai=="") {
-	$abs2_afficher_alerte_nj_delai=30;
-}
-
-$abs2_afficher_alerte_nb_abs=getSettingValue("abs2_afficher_alerte_nb_abs");
-if($abs2_afficher_alerte_nb_abs=="") {
-	$abs2_afficher_alerte_nb_abs=4;
-}
-
-$abs2_afficher_alerte_abs_delai=getSettingValue("abs2_afficher_alerte_abs_delai");
-if($abs2_afficher_alerte_abs_delai=="") {
-	$abs2_afficher_alerte_abs_delai=30;
-}
-?>
 <p>
 	<input type="checkbox" name="abs2_afficher_alerte_nj" id="abs2_afficher_alerte_nj" value="y"
 	<?php if (getSettingValue("abs2_afficher_alerte_nj")=='y') echo " checked='checked'"; ?> />
@@ -498,12 +516,159 @@ if($abs2_afficher_alerte_abs_delai=="") {
 	<label for="abs2_afficher_alerte_abs"> jours.</label>
 </p>
 
+
+<?php
+}
+else {
+	// NON-ADMINISTRATEUR
+?>
+<p>
+	<?php if(getSettingValue("active_module_absence")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="activerY">&nbsp;Activer le module de la gestion des absences <em style='color:red'>(obsolète&nbsp;: le module n'est plus maintenu)</em></label>
+</p>
+<p>
+	<?php if(getSettingValue("active_module_absence")=='2') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="activer2">&nbsp;Activer le module de la gestion des absences version 2</label>
+</p>
+<p>
+	<?php if(getSettingValue("active_module_absence")=='n') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="activerN">&nbsp;Désactiver le module de la gestion des absences</label>
+	<!--input type="hidden" name="is_posted" value="1" /-->
+</p>
+<br />
+<p>
+	<?php
+	if(getSettingValue("abs2_import_manuel_bulletin")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_import_manuel_bulletin">&nbsp;Utiliser un import (<em>manuel, gep ou sconet</em>) pour les bulletins et fiches élève.</label>
+
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_alleger_abs_du_jour")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
+</p>
+<br />
+<p>
+	<?php
+	if(getSettingValue("abs2_ne_pas_afficher_saisies_englobees")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_ne_pas_afficher_saisies_englobees">&nbsp;Par défaut, ne pas afficher les saisies englobées dans la page 'Absences du jour'.<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>(les saisies englobées n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_ne_pas_afficher_lignes_avec_traitement_englobant")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_ne_pas_afficher_lignes_avec_traitement_englobant">&nbsp;Par défaut, ne pas afficher les lignes concernant des saisies déjà traitées dans la page 'Absences du jour'.<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>(les saisies n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
+</p>
+<p style='text-indent:-2.3em;margin-left:2.3em;'>
+	<?php
+	if(getSettingValue("abs2_PasDoublonMarqueurAppel")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_PasDoublonMarqueurAppel">&nbsp;Ne pas enregistrer un marqueur d'appel pour chaque enregistrement dans la saisie de groupe lorsque l'utilisateur <em>(professeur, cpe)</em> fait plusieurs saisies dans la même heure pour un même groupe/classe.<br />
+	<em>(pour un même créneau/cours/groupe... une seul marqueur d'appel sera enregistré)</em></label>
+</p>
+
+<br />
+<p>
+E-mail gestion absence établissement : <?php echo(getSettingValue("gepiAbsenceEmail")); ?>
+</p>
+
+<br />
+
+<p>
+	<?php
+	if(getSettingValue("abs2_afficher_alerte_nj")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_afficher_alerte_nj">&nbsp;Alerter en page d'accueil les comptes CPE lorsque plus de </label>
+	<?php echo $abs2_afficher_alerte_nb_nj;?>
+	<label for="abs2_afficher_alerte_nj"> manquements <em>(dans la période courante)</em> ne sont pas justifiés depuis plus de </label>
+	<?php echo $abs2_afficher_alerte_nj_delai;?>
+	<label for="abs2_afficher_alerte_nj"> jours.</label>
+</p>
+
+<p>
+	<?php
+	if(getSettingValue("abs2_afficher_alerte_abs")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_afficher_alerte_abs">&nbsp;Alerter en page d'accueil les comptes CPE lorsque plus de </label>
+	<?php echo $abs2_afficher_alerte_nb_abs;?>
+	<label for="abs2_afficher_alerte_abs"> manquements <em>(dans la période courante) (justifiés ou non)</em> depuis plus de </label>
+	<?php echo $abs2_afficher_alerte_abs_delai;?>
+	<label for="abs2_afficher_alerte_abs"> jours.</label>
+</p>
+
+<?php
+}
+//==========================================================================
+?>
 </div>
 
 <h2>Saisie des absences par les professeurs</h2>
 <div style='margin-left:3em;'>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
 Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.</p>
+
+<?php
+if($_SESSION["statut"]=="administrateur") {
+	// ADMINISTRATEUR
+?>
 <p>
 	<input type="radio" id="activerProfY" name="activer_prof" value="y"
 	<?php if (getSettingValue("active_module_absence_professeur")=='y') echo " checked='checked'"; ?> />
@@ -560,32 +725,217 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	<?php if (getSettingAOui("abs2_jouer_sound_erreur")) echo " checked='checked'"; ?> />
 	<label for="abs2_jouer_sound_erreur">&nbsp;Jouer un son en cas d'erreur d'enregistrement de la saisie sur le groupe</label>
 </p>
+<?php
+}
+else {
+	// NON-ADMINISTRATEUR
+?>
+
+<p>
+	<?php
+	if(getSettingValue("active_module_absence_professeur")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="activerProfY">&nbsp;Activer le module de la saisie des absences par les professeurs</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("active_module_absence_professeur")=='n') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="activerProfN">&nbsp;Désactiver le module de la saisie des absences par les professeurs</label>
+	<input type="hidden" name="is_posted" value="1" />
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_saisie_prof_decale_journee")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie décalée sur une même journée par les professeurs</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_saisie_prof_decale")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie décalée sans limite de temps par les professeurs</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_saisie_prof_hors_cours")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prévus dans l'emploi du temps du professeur</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_modification_saisie_une_heure")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa création</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_montrer_creneaux_precedents")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_montrer_creneaux_precedents" title="ATTENTION : Si vous cochez cette case, l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage.">&nbsp;Montrer les informations des créneaux précédents lors de la saisie </label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_afficher_saisies_creneau_courant")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_afficher_saisies_creneau_courant" title="ATTENTION : Si vous cochez cette case, l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage.">&nbsp;Afficher en rouge le créneau en cours de saisie s'il existe déjà une autre saisie</label>
+</p>
+<p>
+<?php if ((getSettingValue("abs2_montrer_creneaux_precedents")=='y') or (getSettingValue("abs2_afficher_saisies_creneau_courant")=='y')) echo "<p style='color:red'> VOUS AVEZ COCHÉ UNE DES DEUX CASES CI-DESSUS : l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage.";?></p>
+</p>
+
+<p>
+	<?php
+	if(getSettingValue("abs2_rattachement_auto_saisies_englobees")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_rattachement_auto_saisies_englobees">&nbsp;Rattacher automatiquement les saisies englobées lors de la saisie sur le groupe.</label>
+</p>
+
+<p>
+	<?php
+	if(getSettingValue("abs2_jouer_sound_erreur")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_jouer_sound_erreur">&nbsp;Jouer un son en cas d'erreur d'enregistrement de la saisie sur le groupe</label>
+</p>
+
+<?php
+}
+//==========================================================================
+?>
 </div>
 
 <h2>Envoi des SMS</h2>
 <div style='margin-left:3em;'>
+<?php
+if($_SESSION["statut"]=="administrateur") {
+	// ADMINISTRATEUR
+?>
 	<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
 		<em>NOTE 1&nbsp;:</em> Le paramétrage de l'envoi de SMS est à définir dans le module de <a href="../../gestion/param_gen.php#config_envoi_sms">Configuration générale.</a>
 	</p>
+
+	<?php
+	if (getSettingAOui("autorise_envoi_sms"))
+		{
+	?>
+		<p>
+			<input type="checkbox" id="abs2_sms" name="abs2_sms" value="y"
+			<?php if (getSettingAOui("abs2_sms")) echo " checked='checked'"; ?> />
+			<label for="abs2_sms">&nbsp;Activer l'envoi des SMS</label>
+		</p>
+		<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
+			<em>NOTE 2&nbsp;:</em> Le fichier modèle de SMS, comme les fichiers modèles openDocument générés par ce module peuvent être modifiés/remplacés dans la rubrique <a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a>.
+		</p>
+	<?php
+		}
+	?>
+
 <?php
-if (getSettingAOui("autorise_envoi_sms"))
-	{
+}
+else {
+	// NON-ADMINISTRATEUR
 ?>
-	<p>
-		<input type="checkbox" id="abs2_sms" name="abs2_sms" value="y"
-		<?php if (getSettingAOui("abs2_sms")) echo " checked='checked'"; ?> />
-		<label for="abs2_sms">&nbsp;Activer l'envoi des SMS</label>
-	</p>
+
 	<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
-		<em>NOTE 2&nbsp;:</em> Le fichier modèle de SMS, comme les fichiers modèles openDocument générés par ce module peuvent être modifiés/remplacés dans la rubrique <a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a>.
+		<em>NOTE 1&nbsp;:</em> Le paramétrage de l'envoi de SMS est à définir dans le module de <strong>Configuration générale.</strong>
 	</p>
+
+	<?php
+	if (getSettingAOui("autorise_envoi_sms"))
+		{
+
+		if(getSettingValue("abs2_sms")=='y') {
+			echo "
+		<p>
+			<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+		}
+		else {
+			echo "
+		<p>
+			<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+		}
+	?>
+			<label for="abs2_sms">&nbsp;Activer l'envoi des SMS</label>
+		</p>
+		<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
+			<em>NOTE 2&nbsp;:</em> Le fichier modèle de SMS, comme les fichiers modèles openDocument générés par ce module peuvent être modifiés/remplacés dans la rubrique <?php
+			if((acces("/mod_ooo/gerer_modeles_ooo.php",$_SESSION["statut"]))&&
+			(($_SESSION["statut"]=="cpe")&&(getSettingAOui("OOoUploadCpeAbs2"))||
+			(($_SESSION["statut"]=="scolarite")&&(getSettingAOui("OOoUploadScolAbs2"))))) {
+				echo "<a href='../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE'>Gérer ses propres modèles de documents du module</a>";
+			}
+			else {
+				echo "<strong>Gérer ses propres modèles de documents du module</strong>";
+			}
+		?>.
+		</p>
+	<?php
+		}
+	?>
+
+
 <?php
-	}
+}
+//==========================================================================
 ?>
 </div>
 
 <h2>Configuration des saisies</h2>
 <div style='margin-left:3em;'>
+<?php
+if($_SESSION["statut"]=="administrateur") {
+	// ADMINISTRATEUR
+?>
 <p>
 	<input type="checkbox" id="abs2_saisie_par_defaut_sans_manquement" name="abs2_saisie_par_defaut_sans_manquement" value="y"
 	<?php if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') echo " checked='checked'"; ?> />
@@ -634,7 +984,8 @@ if (getSettingAOui("autorise_envoi_sms"))
 <p>
 	<?php if (getSettingValue("abs2_heure_demi_journee") == null || getSettingValue("abs2_heure_demi_journee") == '') saveSetting("abs2_heure_demi_journee", '11:55'); ?>
 	<input style="font-size:88%;" name="abs2_heure_demi_journee" value="<?php echo getSettingValue("abs2_heure_demi_journee")?>" type="text" maxlength="5" size="4"/>
-	Heure de bascule de demi-journée pour le décompte des demi-journées. Cette heure doit correspondre au tout début de la pause déjeuner (typiquement 11:55 ou 12:25).
+	Heure de bascule de demi-journée pour le décompte des demi-journées. Cette heure doit correspondre au tout début de la pause déjeuner <em>(typiquement 11:55 ou 12:25)</em>.<br />
+	En cas de correction/modification de cette valeur, n'oubliez pas de vider/re-remplir la table d'agrégation des absences pour recalculer les absences sur telle ou telle demi-journée.
 </p>
 
 <!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
@@ -651,25 +1002,184 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 	<label for="activerRespKo">Ne pas permettre cet acc&egrave;s</label>
 </p-->
 
+<?php
+}
+else {
+	// NON-ADMINISTRATEUR
+?>
+
+<p>
+	<?php
+	if(getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_saisie_par_defaut_sans_manquement">&nbsp;Dans le cas d'une saisie sans type, considérer que l'élève ne manque pas à ses obligations.
+	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_saisie_multi_type_sans_manquement">&nbsp;Dans le cas de plusieurs saisies simultanées avec des types contradictoires, considérer que l'élève ne manque pas à ses obligations.
+	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_saisie_multi_type_non_justifiee")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_saisie_multi_type_non_justifiee">&nbsp;Dans le cas de plusieurs saisies simultanées avec des types contradictoires, considérer que la saisie n'est pas justifiée.</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_saisie_par_defaut_sous_responsabilite_etab">&nbsp;Dans le cas d'une saisie sans type, considérer que l'élève est par défaut sous la responsabilité de l'établissement.</label>
+</p>
+<p>
+	<?php
+	if(getSettingValue("abs2_saisie_multi_type_sous_responsabilite_etab")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_saisie_multi_type_sous_responsabilite_etab">&nbsp;Dans le cas de plusieurs saisies simultanées avec des types contradictoires, considérer que l'élève est par défaut sous la responsabilité de l'établissement.</label>
+</p>
+<p>
+	<?php if (getSettingValue("abs2_retard_critere_duree") == null || getSettingValue("abs2_retard_critere_duree") == '') saveSetting("abs2_retard_critere_duree", 30); ?>
+	Configuration du bulletin : Dans le décompte des demi-journées d'absence, considérer les saisie inférieures à 
+	<?php echo getSettingValue("abs2_retard_critere_duree");?>
+	min comme des retards.<br/>
+	Note : si les créneaux durent 45 minutes et que ce paramètre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
+	Note : sont considérées comme retard les saisies de durées inférieures au paramètre ci-dessus et les saisies dont le type est décompté comme retard
+	<?php 
+		if((acces_consultation_admin_abs2("/mod_abs2/admin/admin_types_absences.php"))||
+		(acces_saisie_admin_abs2("/mod_abs2/admin/admin_types_absences.php"))) {
+			echo "(voir la page <a href='admin_types_absences.php?action=visualiser'>Définir les types d'absence</a>)";
+		}
+		else {
+			echo "(voir la page <strong>Définir les types d'absence</strong>)";
+		}
+	?>
+	.<br/>
+
+</p>
+<br/>
+<p>
+	<?php if (getSettingValue("abs2_heure_demi_journee") == null || getSettingValue("abs2_heure_demi_journee") == '') saveSetting("abs2_heure_demi_journee", '11:55'); ?>
+	<?php echo getSettingValue("abs2_heure_demi_journee")?> 
+	Heure de bascule de demi-journée pour le décompte des demi-journées. Cette heure doit correspondre au tout début de la pause déjeuner <em>(typiquement 11:55 ou 12:25)</em>.<br />
+	En cas de correction/modification de cette valeur, n'oubliez pas de vider/re-remplir la table d'agrégation des absences pour recalculer les absences sur telle ou telle demi-journée.
+</p>
+
+<!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
+<p style="font-style: italic">Vous pouvez permettre aux responsables d'acc&eacute;der aux donn&eacute;es brutes
+entr&eacute;es dans Gepi par le biais du module absences.</p>
+<p>
+	<input type="radio" id="activerRespOk" name="activer_resp" value="y"
+	<?php if (getSettingValue("active_absences_parents") == 'y') echo ' checked="checked"'; ?> />
+	<label for="activerRespOk">Permettre l'acc&egrave;s aux responsables</label>
+</p>
+<p>
+	<input type="radio" id="activerRespKo" name="activer_resp" value="n"
+	<?php if (getSettingValue("active_absences_parents") == 'n') echo ' checked="checked"'; ?> />
+	<label for="activerRespKo">Ne pas permettre cet acc&egrave;s</label>
+</p-->
+
+<?php
+}
+//==========================================================================
+?>
+
 </div>
 
 <br/>
+<?php
+if($_SESSION["statut"]=="administrateur") {
+	// ADMINISTRATEUR
+?>
 <p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
-
 </form>
 <?php
-echo "<p style='color:red' font-style:bold> LES RESPONSABILITÉS : <br /><br /></p>";
+}
+?>
+<?php
+echo "<p style='color:red' font-style:bold> LES RESPONSABILITÉS&nbsp;: <br /><br /></p>";
 echo "<p style='color:red'>* Le responsable de l'absence, c'est l'élève (et ses parents).<br />* Le responsable de la <b>gestion</b> (ou traitement) de l'absence, c'est la vie scolaire.<br />* Le responsable du <b>constat</b> de l'absence, c'est l'enseignant (pour un cours, ou l'adulte pour une activité encadrée).<br />Si la gestion anticipe une absence, elle peut communiquer l'information, mais cela ne vaut pas constat, lequel devient alors validation de l'anticipation, mais reste indispensable.</p>";
 ?>
 <br/><br/>
+<a name='config_avancee'></a>
 <h2>Configuration avancée</h2>
 <blockquote>
-	<a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a><br />
-	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
-	<a href="admin_lieux_absences.php?action=visualiser">Définir les lieux des absences</a><br />
-	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a><br />
-	<a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a><br />
-	<a href="admin_table_agregation.php">Gérér la table d'agrégation des demi-journées d'absences</a><br />
+<?php
+	if((acces_consultation_admin_abs2("/mod_abs2/admin/admin_types_absences.php"))||
+	(acces_saisie_admin_abs2("/mod_abs2/admin/admin_types_absences.php"))) {
+		echo "<a href='admin_types_absences.php?action=visualiser'>Définir les types d'absence</a><br />";
+	}
+	else {
+		echo "<strong style='color:grey' title='Accès non autorisé'>Définir les types d'absence</strong><br />";
+	}
+
+	if((acces_consultation_admin_abs2("/mod_abs2/admin/admin_motifs_absences.php"))||
+	(acces_saisie_admin_abs2("/mod_abs2/admin/admin_motifs_absences.php"))) {
+		echo "<a href='admin_motifs_absences.php?action=visualiser'>Définir les motifs des absences</a><br />";
+	}
+	else {
+		echo "<strong style='color:grey'>Définir les motifs des absences</strong><br />";
+	}
+
+	if((acces_consultation_admin_abs2("/mod_abs2/admin/admin_lieux_absences.php"))||
+	(acces_saisie_admin_abs2("/mod_abs2/admin/admin_lieux_absences.php"))) {
+		echo "	<a href='admin_lieux_absences.php?action=visualiser'>Définir les lieux des absences</a><br />";
+	}
+	else {
+		echo "<strong style='color:grey' title='Accès non autorisé'>Définir les lieux des absences</strong><br />";
+	}
+
+	if((acces_consultation_admin_abs2("/mod_abs2/admin/admin_justifications_absences.php"))||
+	(acces_saisie_admin_abs2("/mod_abs2/admin/admin_justifications_absences.php"))) {
+		echo "	<a href='admin_justifications_absences.php?action=visualiser'>Définir les justifications</a><br />";
+	}
+	else {
+		echo "<strong style='color:grey' title='Accès non autorisé'>Définir les justifications</strong><br />";
+	}
+
+	if(($_SESSION["statut"]=="administrateur")||
+	(($_SESSION["statut"]=="cpe")&&(getSettingAOui("OOoUploadCpeAbs2")))) {
+		echo "	<a href='../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE'>Gérer ses propres modèles de documents du module</a><br />";
+	}
+	else {
+		echo "<strong style='color:grey' title='Accès non autorisé'>Gérer ses propres modèles de documents du module</strong><br />";
+	}
+
+	if(($_SESSION["statut"]=="administrateur")||
+	(($_SESSION["statut"]=="cpe")&&(getSettingAOui("AccesCpeAgregationAbs2")))) {
+		echo "	<a href='admin_table_agregation.php'>Gérér la table d'agrégation des demi-journées d'absences</a><br />";
+	}
+	else {
+		echo "<strong style='color:grey' title='Accès non autorisé'>Gérér la table d'agrégation des demi-journées d'absences</strong><br />";
+	}
+?>
 	<?php
 		if(acces("/mod_abs2/admin/admin_table_totaux_absences.php", $_SESSION['statut'])) {
 			if(getSettingAOui('abs2_import_manuel_bulletin')) {
@@ -683,12 +1193,20 @@ Pas question d\'écraser des saisies/import effectués autrement.">Gérér la ta
 			else {
 				echo '<a href="admin_table_totaux_absences.php">Gérér la table des totaux d\'absences</a>';
 			}
+			echo "<br />";
+		}
+
+		if($_SESSION['statut']=="administrateur") {
+			echo "<a href=\"admin_droits.php\">Donner des droits d'accès à des pages d'administration du module Absences 2</a><br />";
 		}
 	?>
 </blockquote>
 
 <h2>Partie Emplois du temps</h2>
 <blockquote>
+<?php
+		if($_SESSION['statut']=="administrateur") {
+?>
 	<a href="../../edt_organisation/admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
 	<a href="../../edt_organisation/admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />
 	<?php // On vérifie si le module calendrier / edt est ouvert ou non pour savoir quel lien on lance
@@ -702,6 +1220,25 @@ Pas question d\'écraser des saisies/import effectués autrement.">Gérér la ta
 	}
 	?>
 	<a href="../../edt_organisation/admin_config_semaines.php?action=visualiser">Définir les types de semaine</a><br />
+<?php
+	}
+	else {
+?>
+	<strong style="color:grey" title='Accès non autorisé'>Définir les horaires d'ouverture de l'établissement</strong><br />
+	<strong style="color:grey" title='Accès non autorisé'>Définir les créneaux horaires</strong><br />
+	<?php // On vérifie si le module calendrier / edt est ouvert ou non pour savoir quel lien on lance
+
+	if ((getSettingAOui('autorise_edt_admin'))||getSettingAOui('autorise_edt_tous')) {
+		// On initialise le $_SESSION["retour"] pour pouvoir revenir proprement
+		$_SESSION["retour"] = "../mod_abs2/admin/index";
+		echo '<strong style="color:grey" title="Accès non autorisé">D&eacute;finir p&eacute;riodes de vacances et jours f&eacute;ri&eacute;s</strong><br />';
+	} else {
+		echo '<strong style="color:grey" title="Accès non autorisé">D&eacute;finir p&eacute;riodes de vacances et jours f&eacute;ri&eacute;s</strong><br />';
+	}
+	?>
+	<strong style="color:grey" title='Accès non autorisé'>Définir les types de semaine</strong><br />
+<?php	}
+?>
 </blockquote>
 
 <?php

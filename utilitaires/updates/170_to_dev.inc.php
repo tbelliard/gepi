@@ -215,4 +215,57 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$sql="SELECT DISTINCT id_statut FROM droits_speciaux;";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+while($lig=mysqli_fetch_object($res)) {
+	// Tester si les entrées '/mod_alerte/form_message.php', '/eleves/ajax_consultation.php' sont présentes
+	$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/mod_alerte/form_message.php' AND id_statut='".$lig->id_statut."';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		$result .= "&nbsp;-> Ajout du droit d'accès à '/mod_alerte/form_message.php' pour le statut autre n°".$lig->id_statut."&nbsp;: ";
+		$sql="INSERT INTO droits_speciaux SET nom_fichier='/mod_alerte/form_message.php', id_statut='".$lig->id_statut."', autorisation='V';";
+		//echo "$sql<br />";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+	$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/eleves/ajax_consultation.php' AND id_statut='".$lig->id_statut."';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		$result .= "&nbsp;-> Ajout du droit d'accès à '/eleves/ajax_consultation.php' pour le statut autre n°".$lig->id_statut."&nbsp;: ";
+		$sql="INSERT INTO droits_speciaux SET nom_fichier='/eleves/ajax_consultation.php', id_statut='".$lig->id_statut."', autorisation='V';";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'a_droits' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'a_droits'");
+if ($test == -1) {
+//		$sql="SELECT 1=1 FROM a_droits WHERE login='".$_SESSION['login']."' AND page='/mod_abs2/admin/admin_types_absences.php' AND consultation='y'";
+	$result_inter = traite_requete("CREATE TABLE a_droits (id int(11) NOT NULL auto_increment, 
+	login varchar(50) NOT NULL, 
+	page varchar(255) NOT NULL, 
+	consultation varchar(10) NOT NULL DEFAULT 'n', 
+	saisie varchar(10) NOT NULL DEFAULT 'n', 
+	PRIMARY KEY (id), INDEX login_page (login,page)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 

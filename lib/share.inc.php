@@ -15965,4 +15965,111 @@ function calcule_cycle_et_niveau($mef_code_ele, $valeur_par_defaut_cycle="", $va
 
 	return $tab;
 }
+
+function acces_consultation_admin_abs2($page) {
+	global $mysqli;
+
+	$retour=false;
+
+	if($_SESSION['statut']=="administrateur") {
+		$retour=true;
+	}
+	elseif(acces($page, $_SESSION['statut'])) {
+		// Tester si le droit a été donné.
+		$sql="SELECT 1=1 FROM a_droits WHERE login='".$_SESSION['login']."' AND page='".$page."' AND consultation='y'";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+	return $retour;
+}
+
+function acces_saisie_admin_abs2($page) {
+	global $mysqli;
+
+	$retour=false;
+	if($_SESSION['statut']=="administrateur") {
+		$retour=true;
+	}
+	elseif(acces($page, $_SESSION['statut'])) {
+		// Tester si le droit a été donné.
+		$sql="SELECT 1=1 FROM a_droits WHERE login='".$_SESSION['login']."' AND page='".$page."' AND saisie='y'";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+	return $retour;
+}
+
+// ABS2: Retourner le nombre de traitements avec tel Type d'absence attribué.
+function abs2_nombre_de_saisies_de_tel_type($type_id) {
+	global $mysqli;
+
+	$retour=0;
+
+	$sql="SELECT 1=1 FROM a_traitements WHERE a_type_id='".$type_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	return mysqli_num_rows($test);
+}
+
+// ABS2: Retourner le nombre de traitements avec tel Motif d'absence attribué.
+function abs2_nombre_de_saisies_avec_tel_motif($motif_id) {
+	global $mysqli;
+
+	$retour=0;
+
+	$sql="SELECT 1=1 FROM a_traitements WHERE a_motif_id='".$motif_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	return mysqli_num_rows($test);
+}
+
+// ABS2: Retourner le nombre de traitements avec telle justification d'absence attribuée.
+function abs2_nombre_de_saisies_avec_cette_justification($justification_id) {
+	global $mysqli;
+
+	$retour=0;
+
+	$sql="SELECT 1=1 FROM a_traitements WHERE a_justification_id='".$justification_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	return mysqli_num_rows($test);
+}
+
+// ABS2: Retourner le nombre de saisies avec tel Lieu d'absence attribué.
+function abs2_nombre_de_saisies_avec_tel_lieu($lieu_id) {
+	global $mysqli;
+
+	$retour=0;
+
+	$sql="SELECT 1=1 FROM a_saisies WHERE id_lieu='".$lieu_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	return mysqli_num_rows($test);
+}
+
+function abs2_acces_au_moins_une_pages_admin() {
+	global $mysqli;
+
+	$tab_url=array();
+	$tab_url[]="/mod_abs2/admin/admin_types_absences.php";
+	$tab_url[]="/mod_abs2/admin/admin_motifs_absences.php";
+	$tab_url[]="/mod_abs2/admin/admin_lieux_absences.php";
+	$tab_url[]="/mod_abs2/admin/admin_justifications_absences.php";
+
+	$tab_pages=array();
+	$tab_pages["/mod_abs2/admin/admin_types_absences.php"]="Types d'absence";
+	$tab_pages["/mod_abs2/admin/admin_motifs_absences.php"]="Motifs d'absence";
+	$tab_pages["/mod_abs2/admin/admin_lieux_absences.php"]="Lieux d'absence";
+	$tab_pages["/mod_abs2/admin/admin_justifications_absences.php"]="Justifications d'absence";
+
+	$retour=false;
+	foreach($tab_pages as $url => $intitule) {
+		if((acces_consultation_admin_abs2($url))||(acces_saisie_admin_abs2($url))) {
+			$retour=true;
+			break;
+		}
+	}
+	return $retour;
+}
+
 ?>

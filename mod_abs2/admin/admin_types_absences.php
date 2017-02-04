@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2010-2011 Josselin Jacquard
+ * Copyright 2010-2017 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -41,9 +41,16 @@ if ($resultat_session == 'c') {
 
 // Check access
 if (!checkAccess()) {
-    header("Location: ../../logout.php?auto=1");
-    die();
+	header("Location: ../../logout.php?auto=1");
+	die();
 }
+
+if(!acces_consultation_admin_abs2("/mod_abs2/admin/admin_types_absences.php")) {
+	header("Location: ../../accueil.php?msg=Accès non autorisé");
+	die();
+}
+
+$acces_saisie_admin_abs2=acces_saisie_admin_abs2("/mod_abs2/admin/admin_types_absences.php");
 
 if (empty($_GET['action']) and empty($_POST['action'])) { $action="";}
     else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
@@ -75,87 +82,102 @@ if($id_lieu=='-1'){
 
 include("function.php");
 
-//$type = new AbsenceEleveType();
-$type = AbsenceEleveTypeQuery::create()->findPk($id);
-if ($action == 'supprimer') {
-	check_token();
-    if ($type != null) {
-	$type->delete();
-    }
-} elseif ($action == "monter") {
-	check_token();
-    if ($type != null) {
-	$type->moveUp();
-    }
-} elseif ($action == 'descendre') {
-	check_token();
-    if ($type != null) {
-	$type->moveDown();
-    }
-} elseif ($action == 'ajouterdefaut') {
-	check_token();
-    //include("function.php");
-    ajoutTypesParDefaut();
-} elseif ($action == 'supprimer_statut') {
-	check_token();
-	$type_statut = AbsenceEleveTypeStatutAutoriseQuery::create()->findPk($statut_id);
-	if ($type_statut != null) {
-	    $type_statut->delete();
-	}
-} else {
-    if ($nom != '') {
-		check_token();
-		$type = AbsenceEleveTypeQuery::create()->findPk($id);
-		if ($type == null) {
-			$type = new AbsenceEleveType();
-		}
-		$type->setNom(stripslashes($nom));
-		$type->setCommentaire(stripslashes($commentaire));
-		$type->setJustificationExigible($justification_exigible);
-		$type->setSousResponsabiliteEtablissement($sous_responsabilite_etablissement);
-		$type->setManquementObligationPresence($manquement_obligation_presence);
-		$type->setRetardBulletin($retard_bulletin);
-		$type->setModeInterface($type_saisie);
-        $type->setIdLieu($id_lieu);
-		$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
-		if ($ajout_statut_type_saisie != '') {
-			//test si le statut est deja autorisé
-			if (AbsenceEleveTypeStatutAutoriseQuery::create()->
-				filterByStatut($ajout_statut_type_saisie)->
-				filterByIdAType($type->getId())->
-				find()->isEmpty()) {
-				//on creer un nouveau statut autorisé
-			$statut_ajout = new AbsenceEleveTypeStatutAutorise();
-			$statut_ajout->setStatut($ajout_statut_type_saisie);
-			$type->addAbsenceEleveTypeStatutAutorise($statut_ajout);
-			$statut_ajout->save();
-			}
-			$action = "modifier";
-		}
-		$type->save();
-    }
+
+if(((($action!="")&&($action!="visualiser"))||($nom!="")||(isset($_GET['corriger'])))&&
+(!$acces_saisie_admin_abs2)) {
+	//debug_var();
+	header("Location: ../../accueil.php?msg=Saisie non autorisée");
+	die();
 }
-
-if(isset($_GET['corriger'])) {
-	check_token();
-
-	$table="a_types";
-
-	$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
-	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	$cpt=1;
-	while($lig=mysqli_fetch_object($res)) {
-		$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
-		//echo "$sql<br />";
-		$update=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(!$update) {
-			$msg="Erreur lors de la correction des rangs.<br />";
-			break;
+else {
+	//$type = new AbsenceEleveType();
+	$type = AbsenceEleveTypeQuery::create()->findPk($id);
+	if ($action == 'supprimer') {
+		check_token();
+		if ($type != null) {
+			$nb_saisies_traitements_de_ce_type=abs2_nombre_de_saisies_de_tel_type($type->getId());
+			if(($nb_saisies_traitements_de_ce_type==0)||($_SESSION['statut']=="administrateur")) {
+				$type->delete();
+			}
+			else {
+				$msg.="Suppression impossible&nbsp;: Type attribué à ".$nb_saisies_traitements_de_ce_type." saisies/traitements.<br />";
+			}
 		}
-		$cpt++;
+	} elseif ($action == "monter") {
+		check_token();
+	    if ($type != null) {
+		$type->moveUp();
+	    }
+	} elseif ($action == 'descendre') {
+		check_token();
+	    if ($type != null) {
+		$type->moveDown();
+	    }
+	} elseif ($action == 'ajouterdefaut') {
+		check_token();
+	    //include("function.php");
+	    ajoutTypesParDefaut();
+	} elseif ($action == 'supprimer_statut') {
+		check_token();
+		$type_statut = AbsenceEleveTypeStatutAutoriseQuery::create()->findPk($statut_id);
+		if ($type_statut != null) {
+		    $type_statut->delete();
+		}
+	} else {
+	    if ($nom != '') {
+			check_token();
+			$type = AbsenceEleveTypeQuery::create()->findPk($id);
+			if ($type == null) {
+				$type = new AbsenceEleveType();
+			}
+			$type->setNom(stripslashes($nom));
+			$type->setCommentaire(stripslashes($commentaire));
+			$type->setJustificationExigible($justification_exigible);
+			$type->setSousResponsabiliteEtablissement($sous_responsabilite_etablissement);
+			$type->setManquementObligationPresence($manquement_obligation_presence);
+			$type->setRetardBulletin($retard_bulletin);
+			$type->setModeInterface($type_saisie);
+		  $type->setIdLieu($id_lieu);
+			$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
+			if ($ajout_statut_type_saisie != '') {
+				//test si le statut est deja autorisé
+				if (AbsenceEleveTypeStatutAutoriseQuery::create()->
+					filterByStatut($ajout_statut_type_saisie)->
+					filterByIdAType($type->getId())->
+					find()->isEmpty()) {
+					//on creer un nouveau statut autorisé
+				$statut_ajout = new AbsenceEleveTypeStatutAutorise();
+				$statut_ajout->setStatut($ajout_statut_type_saisie);
+				$type->addAbsenceEleveTypeStatutAutorise($statut_ajout);
+				$statut_ajout->save();
+				}
+				$action = "modifier";
+			}
+			$type->save();
+	    }
 	}
-	$msg="Correction effectuée.<br />";
+
+	if(isset($_GET['corriger'])) {
+		check_token();
+
+		$table="a_types";
+
+		$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		$cpt=1;
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
+			//echo "$sql<br />";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$update) {
+				$msg="Erreur lors de la correction des rangs.<br />";
+				break;
+			}
+			$cpt++;
+		}
+		$msg="Correction effectuée.<br />";
+	}
 }
 //==========================================
 // header
@@ -164,7 +186,11 @@ require_once("../../lib/header.inc.php");
 //==========================================
 
 echo "<p class='bold'>";
-echo "<a href=\"index.php\">";
+echo "<a href=\"index.php";
+if($_SESSION['statut']!="administrateur") {
+	echo "#config_avancee";
+}
+echo "\">";
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
 ?>
@@ -176,7 +202,9 @@ echo "</p>";
         Pour éviter une multiplicité des traitements pour une saisie, il peut être intéressant de limiter les statuts pouvant saisir un type.<br />
         Par exemple si l'on souhaite que seule la vie scolaire crée le traitement absence ou retard on n'affectera pas ces types au statut professeur.        
     </p>
-<?php if ($action == "ajouter" OR $action == "modifier" OR $action == "supprimer_statut") { ?>
+<?php 
+if($acces_saisie_admin_abs2) {
+	if ($action == "ajouter" OR $action == "modifier" OR $action == "supprimer_statut") { ?>
 <div style="text-align:center">
     <?php
     	if($action=="ajouter") { 
@@ -290,10 +318,16 @@ echo add_token_field();
 <?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
 <?php
-} ?>
+}
+?>
 	<a href="admin_types_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un nouveau type</a>
 	<br/><br/>
 	<a href="admin_types_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par défaut</a>
+<?php
+}
+
+// Tableau des types existants
+?>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu" style="width:80%">
       <tr>
@@ -301,15 +335,22 @@ echo add_token_field();
         <td>Commentaire</td>
         <td>Justification exigible</td>
 	<td>L'élève est sous la responsabilité de l'établissement</td>
-	<td>Manquement obligations (apparaît sur le bulletin)</td>
+	<td>Manquement obligations <em>(apparaît sur le bulletin)</em></td>
 	<td>Retard</td>
         <td>Type de saisie</td>
         <td>Lieu</td>
 	<td>Statut(s) autorisé(s) à la saisie</td>
+	<td title="Nombre de saisies/traitements avec ce type.">Effectif</td>
+<?php
+	if($acces_saisie_admin_abs2) {
+?>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
+<?php
+}
+?>
       </tr>
     <?php
     $type_collection = new PropelCollection();
@@ -322,23 +363,23 @@ echo add_token_field();
         <tr onmouseover="this.style.backgroundColor='white';" onmouseout="this.style.backgroundColor='';">
 	  <td><?php echo $type->getNom(); ?></td>
 	  <td><?php echo $type->getCommentaire(); ?></td>
-	  <td><?php if ($type->getJustificationExigible()) { ?><img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' /><?php } ?></td>
+	  <td><?php if ($type->getJustificationExigible()) { ?><img src='../../images/enabled.png' width='20' height='20' title="Justification exigible" alt='oui' /><?php } ?></td>
 	  <td>
-	    <?php if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
-		else if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
+	    <?php if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title=\"Élève sous la responsabilité de l'établissement\" alt='oui' />"; }
+		else if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title=\"L'élève n'est pas sous la responsabilité de l'établissement\" alt='non' />"; }
 		//si le ManquementObligationPresence est non precisé on affiche rien
 	    ?>
 	  </td>
 	  <td>
-	    <?php if ($type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
-		else if ($type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
+	    <?php if ($type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title=\"Manquement obligations (apparaît sur le bulletin)\" alt='oui' />"; }
+		else if ($type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title=\"Non-manquement (n'apparaît pas sur le bulletin)\" alt='non' />"; }
 		//si le ManquementObligationPresence est non precisé on affiche rien
 	    ?>
 	  </td>
 	  <td>
-	    <?php if ($type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
+	    <?php if ($type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='Retard' alt='oui' />"; }
 		//else if ($type->getRetardBulletin() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
-		else { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
+		else { echo "<img src='../../images/disabled.png' width='20' height='20' title=\"Pas un retard\" alt='non' />"; }
 	    ?>
 	  </td>
 	  <td><?php if ($type->getModeInterface() != AbsenceEleveType::MODE_INTERFACE_NON_PRECISE) {echo $type->getModeInterfaceDescription();} ?></td>
@@ -349,12 +390,29 @@ echo add_token_field();
 			echo " ";
 		}
 	  ?></td>
+<?php
+	$nb_saisies_traitements_de_ce_type=abs2_nombre_de_saisies_de_tel_type($type->getId());
+	echo "
+	<td title=\"$nb_saisies_traitements_de_ce_type saisies/traitements ont ce type\">".$nb_saisies_traitements_de_ce_type."</td>";
+	if($acces_saisie_admin_abs2) {
+?>
           <td><a href="admin_types_absences.php?action=modifier&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>'" border="0" alt="" /></a></td>
-          <td><a href="admin_types_absences.php?action=supprimer&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>' ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td>
+          <?php
+          	if(($nb_saisies_traitements_de_ce_type==0)||($_SESSION['statut']=="administrateur")) {
+          ?>
+          <a href="admin_types_absences.php?action=supprimer&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>' ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a>
+          <?php
+          	}
+          ?>
+          </td>
           <td><a href="admin_types_absences.php?action=monter&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="Monter le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>'" border="0" alt="" /></a></td>
           <td><a href="admin_types_absences.php?action=descendre&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="Descendre le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>'" border="0" alt="" /></a></td>
         </tr>
-     <?php } ?>
+     <?php 
+     }
+}
+      ?>
     </table>
     <br/><br/>
 </div>
