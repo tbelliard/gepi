@@ -6,6 +6,38 @@
 Gepi-master (Version de développement)
 ===========================
 
+Absences 2:
+- Possibilité de donner des droits de consultation/modification de certains paramètres ABS2 à des non-administrateurs (typiquement tel CPE).
+- Possibilité de ne pas afficher les saisies correspondant aux Marques d'appel.
+- Possibilité de ne pas enregistrer un marqueur d'appel lorsque plusieurs saisies sont faites sur le même créneau/groupe,...
+
+Bulletins:
+- Ajout d'un témoin sur le cycle et le niveau de chaque élève pour repérer un éventuel problème de Nomenclature/mef.
+- Page appréciations groupe classe avec le style CLG2016.
+
+Éléments de programmes:
+- Accès à la gestion des éléments de programmes même si on n'en a pas saisi soi-même.
+
+EDT2:
+- Possibilité de faire apparaitre les remplacements (du module Absences Profs) sur l'EDT2.
+
+Trombinoscope:
+- Possbilité de copier un plan de classe vers un autre groupe.
+
+Engagements:
+- Possibilité de définir des engagements qui peuvent être saisis par un professeur non nécessairement professeur principal.
+- Possibilité de choisir les engagements à faire apparaitre sur les bulletins CLG 2016.
+
+Général:
+- Mise à jour d'après un XML Eleves d'EDT: Possibilité de n'uploader qu'un fichier xml partiel.
+- Possibilité de mettre à jour les infos identifiant STS et Type STS d'après sts_emp_RNE_ANNEE.xml
+- Ajout d'une barre de menu pour le statut autre.
+- Possibilité de n'afficher que les alertes avec login enregistré dans tentatives_intrusion.
+- Ajout d'un type "local" pour les enseignements qui n'ont pas à remonter vers LSUN.
+- Possibilité de rendre visible/invisible par lots des enseignements de type AP, EPI, Parcours.
+- Exports CSV aux formats Ariane et Verdier.
+- Affichage des AID en page d'accueil professeur.
+
 Gepi-1.7.0 (24/11/2016)
 ===========================
 
