@@ -159,6 +159,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 				echo "<p>".$info_grp;
 			}
 
+			if((getSettingValue("active_module_absence")=="2")&&(acces("/mod_abs2/index.php", $_SESSION['statut']))) {
+				echo " <a href='../mod_abs2/index.php?type_selection=id_groupe&id_groupe=".$lig->id_groupe."' title=\"Saisir les absences pour ce groupe.\"><img src='../images/icons/absences.png' class='icone16' alt='Abs2' /></a>";
+			}
+
 			// 20170110
 			$lien_edt_prof=false;
 			$restriction_lien_prof="n";
@@ -1532,8 +1536,10 @@ if($mode!="afficher_edt") {
 	$y1=252;
 
 	if(isset($_SESSION['ariane'])) {
-		$y_decalage_1_js=210;
-		$y_decalage_2_js=272;
+		//$y_decalage_1_js=210;
+		//$y_decalage_2_js=272;
+		$y_decalage_1_js=220;
+		$y_decalage_2_js=282;
 	}
 	else {
 		$y_decalage_1_js=190;
