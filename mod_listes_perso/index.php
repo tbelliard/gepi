@@ -201,8 +201,18 @@ elseif ($sauveModifieCaseColonne) {
 	$idColonne = filter_input(INPUT_POST, 'id_col');
 	$contenu = filter_input(INPUT_POST, 'contenu');
 	$id = filter_input(INPUT_POST, 'id');
-	ModifieCaseColonneEleve($login, $idDef, $idColonne, $contenu, $id);
+	$retour_ModifieCaseColonneEleve=ModifieCaseColonneEleve($login, $idDef, $idColonne, $contenu, $id);
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+
+	if(isset($_POST['mode_ajax'])) {
+		if($retour_ModifieCaseColonneEleve) {
+			echo $contenu;
+		}
+		else {
+			echo "<span style='color:red'>ERREUR</span>";
+		}
+		die();
+	}
 }
 elseif ($supprimeColonne) { //===== On supprime une colonne
 	$idCol = filter_input(INPUT_POST, 'colonneASupprime') ? filter_input(INPUT_POST, 'colonneASupprime') : NULL;
@@ -662,8 +672,11 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 								   name="contenu" 
 								   value="<?php echo $contenuCase; ?>"
 								   id="entree<?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?>"
-								   onblur="this.form.submit()"
+								   onblur="valide_saisie_case(<?php
+									echo "'".$idCase."', '".$colonne['id']."', '".$colonne['id_def']."', '".$elv_choisi->getLogin()."'";
+								   ?>)"
 								   />
+								<!--   onblur="this.form.submit()"-->
 							<input type="hidden" name="id" value="<?php echo $idCase; ?>" />
 							<input type="hidden" name="id_col" value="<?php echo $colonne['id']; ?>" />
 							<input type="hidden" name="id_def" value="<?php echo $colonne['id_def']; ?>" />
@@ -695,6 +708,24 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 </div>
 
 <script type="text/javascript" >
+
+	function valide_saisie_case(idCase, id, id_def, login) {
+		document.getElementById('vision'+login+'_'+id_def+'_'+id).innerHTML="<img src='../images/spinner.gif' class='icone16' alt='Enregistrement en cours' />";
+		contenu=document.getElementById('entree'+login+'_'+id_def+'_'+id).value;
+		new Ajax.Updater($('vision'+login+'_'+id_def+'_'+id),'./index.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {
+			id: idCase,
+			id_col: id,
+			id_def: id_def,
+			login: login,
+			action: 'sauveModifieCaseColonne',
+			mode_ajax: 'y',
+			contenu: contenu,
+		}});
+		masque('saisie'+login+'_'+id_def+'_'+id);
+		affiche('vision'+login+'_'+id_def+'_'+id);
+	}
+
 	afficher_cacher("aide");
 	afficher_cacher("eleves");
 	afficher_cacher("construction");
