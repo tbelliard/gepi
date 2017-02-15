@@ -1851,6 +1851,30 @@ autre='F',
 description='Listes perso: Export',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/saisie/saisie_socle.php',
+administrateur='F',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Socle: Saisie',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/saisie/socle_verrouillage.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Socle: Verrouillage',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

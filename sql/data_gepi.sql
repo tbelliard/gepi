@@ -1816,3 +1816,5 @@ INSERT INTO droits SET id='/groupes/visu_groupes_prof.php', administrateur='V', 
 INSERT INTO groupes_types SET nom_court='local', nom_complet='Enseignement local', nom_complet_pluriel='Enseignements locaux';
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_droits.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'ABS2: Droits non admin', '');
 INSERT INTO droits SET id='/mod_listes_perso/export_liste.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Listes perso: Export', statut='';
+INSERT INTO droits SET id='/saisie/saisie_socle.php', administrateur='F', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Socle: Saisie', statut='';
+INSERT INTO droits SET id='/saisie/socle_verrouillage.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Socle: Verrouillage', statut='';

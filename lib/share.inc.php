@@ -3481,7 +3481,9 @@ $cpt_debug_debug_var=0;
 function debug_var() {
 	global $debug_var_count;
 	global $cpt_debug_debug_var;
+	global $NON_PROTECT;
 
+	$debug_var_count['NON_PROTECT']=0;
 	$debug_var_count['POST']=0;
 	$debug_var_count['GET']=0;
 	$debug_var_count['SESSION']=0;
@@ -3628,6 +3630,44 @@ function debug_var() {
 
 	echo "</div>\n";
 	echo "</blockquote>\n";
+
+
+	if(isset($NON_PROTECT)) {
+		echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
+		echo "<p>Variables envoyées en NON_PROTECT: ";
+		if(count($NON_PROTECT)==0) {
+			echo "aucune";
+		}
+		else {
+			echo "(<a href='#ancre_debug_var_$cpt_debug_debug_var' onclick=\"tab_etat_debug_var[$cpt_debug_debug_var]=tab_etat_debug_var[$cpt_debug_debug_var]*(-1);affiche_debug_var('container_debug_var_$cpt_debug_debug_var',tab_etat_debug_var[$cpt_debug_debug_var]);return FALSE;\">*</a>)";
+		}
+		echo "</p>\n";
+		echo "<blockquote>\n";
+		echo "<div id='container_debug_var_$cpt_debug_debug_var'>\n";
+		$cpt_debug_debug_var++;
+		echo "<table summary=\"Tableau de debug\">\n";
+		foreach($NON_PROTECT as $post => $val) {
+			echo "<tr><td valign='top'>\$NON_PROTECT['".$post."']=</td><td>";
+
+			if(is_array($NON_PROTECT[$post])) {
+				echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>Array\n";
+				tab_debug_var('NON_PROTECT',$NON_PROTECT[$post],'$NON_PROTECT['.$post.']');
+
+				$cpt_debug_debug_var++;
+			}
+			else {
+				echo $val;
+				$debug_var_count['NON_PROTECT']++;
+			}
+
+			echo "</td></tr>\n";
+		}
+		echo "</table>\n";
+
+		echo "<p>Nombre de valeurs en NON_PROTECT: <b>".$debug_var_count['NON_PROTECT']."</b></p>\n";
+		echo "</div>\n";
+		echo "</blockquote>\n";
+	}
 
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
@@ -4417,7 +4457,7 @@ function get_commune($code_commune_insee,$mode){
  *
  * @return string civilite nom prénom de l'utilisateur
  */
-function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
+function civ_nom_prenom($login, $mode='prenom', $avec_statut="n", $retourner_login_si_non_trouve="n") {
 	global $mysqli;
 	$retour="";
 	if($login!="") {
@@ -4492,6 +4532,9 @@ function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 					$res_user->close();
 				}
 			}
+		}
+		if(($retour=="")&&($retourner_login_si_non_trouve=="y")) {
+			$retour=$login;
 		}
 	}
 	return $retour;
@@ -16072,4 +16115,18 @@ function abs2_acces_au_moins_une_pages_admin() {
 	return $retour;
 }
 
+function get_nom_prenom_from_INE($ine) {
+	global $mysqli;
+
+	$retour="";
+
+	$sql="SELECT nom, prenom FROM eleves WHERE no_gep='".$ine."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$lig=mysqli_fetch_object($test);
+		$retour=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
+	}
+
+	return $retour;
+}
 ?>

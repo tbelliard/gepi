@@ -198,6 +198,25 @@ if ($barre_plugin!="") {
 		}
 
 		//=======================================================
+		// Composantes du Socle
+		if(getSettingAOui("SocleSaisieComposantes_cpe")) {
+			if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a>'."\n";
+				$menus .= '   <ul class="niveau2">'."\n";
+				$menus .= '      <a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Saisie Socle</a>'."\n";
+				$menus .= '      <a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Verrouillage&nbsp;Socle</a>'."\n";
+				$menus .= '   </ul>'."\n";
+				$menus .= '</li>'."\n";
+			}
+			else {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a></li>'."\n";
+			}
+		}
+		elseif((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Socle</a></li>'."\n";
+		}
+
+		//=======================================================
 		// Module emploi du temps
 		if (getSettingValue("autorise_edt_tous") == "y") {
 			if(getSettingValue('edt_version_defaut')=="2") {
