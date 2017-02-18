@@ -5952,7 +5952,7 @@ function insere_lien_calendrier_crob($float="") {
 		if($float!="") {
 			echo "<div style='float:$float;width:16px;margin:3px;'>";
 		}
-		echo "<a href='$gepiPath/lib/calendrier.php' onclick=\"afficher_div('div_calendrier_crob_popup', 'y', 10, 10); return false;\" target='_blank' title=\"Afficher le calendrier.\"><img src='$gepiPath/images/icons/date.png' class='icone16' alt='Calendrier' /></a>
+		echo "<a href='$gepiPath/lib/calendrier_crob.php' onclick=\"afficher_div('div_calendrier_crob_popup', 'y', 10, 10); return false;\" target='_blank' title=\"Afficher le calendrier.\"><img src='$gepiPath/images/icons/date.png' class='icone16' alt='Calendrier' /></a>
 <script type='text/javascript'>
 	function affiche_calendrier_crob(mois, annee, id_classe) {
 		//alert('plop');

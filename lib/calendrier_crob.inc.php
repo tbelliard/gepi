@@ -79,7 +79,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 		$afficher_lien_mois_suivant="n";
 	}
 	else {
-		$lien_mois_suivant="<a href='$gepiPath/lib/calendrier.php?id_classe=$id_classe&amp;annee=$annee_suivante&amp;mois=$mois_suivant'".$complement_lien_mois_suivant."><img src='$gepiPath/images/icons/forward.png' class='icone16' alt='Mois suivant' /></a>";
+		$lien_mois_suivant="<a href='$gepiPath/lib/calendrier_crob.php?id_classe=$id_classe&amp;annee=$annee_suivante&amp;mois=$mois_suivant'".$complement_lien_mois_suivant."><img src='$gepiPath/images/icons/forward.png' class='icone16' alt='Mois suivant' /></a>";
 	}
 
 	$lien_mois_precedent="";
@@ -88,7 +88,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 		$afficher_lien_mois_precedent="n";
 	}
 	else {
-		$lien_mois_precedent="<a href='$gepiPath/lib/calendrier.php?id_classe=$id_classe&amp;annee=$annee_prec&amp;mois=$mois_prec'".$complement_lien_mois_precedent."><img src='$gepiPath/images/icons/back.png' class='icone16' alt='Mois précédent' /></a>";
+		$lien_mois_precedent="<a href='$gepiPath/lib/calendrier_crob.php?id_classe=$id_classe&amp;annee=$annee_prec&amp;mois=$mois_prec'".$complement_lien_mois_precedent."><img src='$gepiPath/images/icons/back.png' class='icone16' alt='Mois précédent' /></a>";
 	}
 
 	$ts_dim_suiv=$ts_j1_mois_suiv;
