@@ -1328,6 +1328,8 @@ $semaine_courante_trouvee="n";
 $cpt=1;
 $chaine_options_select="";
 
+$date_courante_aaaammjj=strftime("%Y%m%d");
+
 if(strftime("%m")>=8) {
 	$annee=strftime("%Y");
 }
@@ -1353,7 +1355,10 @@ for($n=36;$n<52;$n++) {
 	}
 	// 20170128
 	$style_option="";
-	if((in_array($tmp_tab['num_jour'][1]['aaaammjj'], $tab_jours_vacances))&&
+	if(($date_courante_aaaammjj>=$tmp_tab['num_jour'][1]['aaaammjj'])&&($date_courante_aaaammjj<=$tmp_tab['num_jour'][7]['aaaammjj'])) {
+		$style_option=" style='color:blue' title=\"Semaine courante\"";
+	}
+	elseif((in_array($tmp_tab['num_jour'][1]['aaaammjj'], $tab_jours_vacances))&&
 	(in_array($tmp_tab['num_jour'][7]['aaaammjj'], $tab_jours_vacances))) {
 		$style_option=" style='color:grey'";
 	}
@@ -1382,7 +1387,10 @@ for($n=1;$n<28;$n++) {
 	}
 	// 20170128
 	$style_option="";
-	if((in_array($tmp_tab['num_jour'][1]['aaaammjj'], $tab_jours_vacances))&&
+	if(($date_courante_aaaammjj>=$tmp_tab['num_jour'][1]['aaaammjj'])&&($date_courante_aaaammjj<=$tmp_tab['num_jour'][7]['aaaammjj'])) {
+		$style_option=" style='color:blue' title=\"Semaine courante\"";
+	}
+	elseif((in_array($tmp_tab['num_jour'][1]['aaaammjj'], $tab_jours_vacances))&&
 	(in_array($tmp_tab['num_jour'][7]['aaaammjj'], $tab_jours_vacances))) {
 		$style_option=" style='color:grey'";
 	}
