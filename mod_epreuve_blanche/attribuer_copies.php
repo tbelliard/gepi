@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -158,6 +158,7 @@ if(mysqli_num_rows($res)==0) {
 $login_prof=array();
 $info_prof=array();
 $eff_habituel_prof=array();
+$js_chaine_effectif_habituel_prof="";
 while($lig=mysqli_fetch_object($res)) {
 	//if($liste_profs!="") {$liste_profs.=",";}
 	//$liste_profs.=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
@@ -167,6 +168,10 @@ while($lig=mysqli_fetch_object($res)) {
 	$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id AND jgp.id_groupe=jeg.id_groupe AND jeg.id_groupe=g.id AND jgp.login='".$lig->login."';";
 	$res_eff_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 	$eff_habituel_prof[]=mysqli_num_rows($res_eff_prof);
+	if($js_chaine_effectif_habituel_prof!="") {
+		$js_chaine_effectif_habituel_prof.=",";
+	}
+	$js_chaine_effectif_habituel_prof.=mysqli_num_rows($res_eff_prof);
 }
 
 //$tri=isset($_POST['tri']) ? $_POST['tri'] : (isset($_GET['tri']) ? $_GET['tri'] : "groupe");
@@ -224,8 +229,13 @@ if($tri=='groupe') {
 	$cpt=0;
 	$compteur_groupe=-1;
 	if($etat!='clos') {
+
+		echo "<p style='margin-top:1em;margin-bottom:1em;'><a href='javascript:repartir_automatiquement_entre_les_profs(1)'>Répartir les copies entre les ".count($login_prof)." professeur(s) en nombre égal pour tous</a>.<br />
+<a href='javascript:repartir_automatiquement_entre_les_profs(2)'>Attribuer à chaque professeur un nombre de copies égal au nombre d'élèves qu'il a en classe</a>.</p>";
+
 		echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves$cpt' value='Valider' /></p>\n";
 	}
+
 	while($lig=mysqli_fetch_object($res)) {
 		$tab_cpt_eleve[]=$cpt;
 
@@ -456,6 +466,38 @@ function coche(colonne,rang_groupe,mode) {
 	changement();
 }
 
+function repartir_automatiquement_entre_les_profs(mode) {
+	if(mode==1) {
+		var effectif_par_prof=Math.ceil($cpt/".count($login_prof).");
+
+		for(j=0;j<$cpt;j++) {
+			indice_prof=Math.floor(j/effectif_par_prof);
+			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+				document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+			}
+		}
+	}
+	else {
+		var tab_eff_prof=new Array($js_chaine_effectif_habituel_prof);
+
+		indice_prof=0;
+		limite=tab_eff_prof[indice_prof];
+		for(j=0;j<$cpt;j++) {
+			if(j>=limite) {
+				indice_prof++;
+				limite+=tab_eff_prof[indice_prof];
+			}
+			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+				document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+			}
+		}
+
+	}
+
+	calcule_effectif();
+	changement();
+}
+
 </script>\n";
 	}
 }
@@ -516,6 +558,10 @@ elseif($tri=='n_anonymat') {
 
 	
 	if($etat!='clos') {
+
+		echo "<p style='margin-top:1em;margin-bottom:1em;'><a href='javascript:repartir_automatiquement_entre_les_profs(1)'>Répartir les copies entre les ".count($login_prof)." professeur(s) en nombre égal pour tous</a>.<br />
+<a href='javascript:repartir_automatiquement_entre_les_profs(2)'>Attribuer à chaque professeur un nombre de copies égal au nombre d'élèves qu'il a en classe</a>.</p>";
+
 		echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves$cpt_tranche' value='Valider' /></p>\n";
 	}
 
@@ -739,6 +785,38 @@ function coche(colonne,rang_groupe,mode) {
 	changement();
 }
 
+function repartir_automatiquement_entre_les_profs(mode) {
+	if(mode==1) {
+		var effectif_par_prof=Math.ceil($cpt/".count($login_prof).");
+
+		for(j=0;j<$cpt;j++) {
+			indice_prof=Math.floor(j/effectif_par_prof);
+			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+				document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+			}
+		}
+	}
+	else {
+		var tab_eff_prof=new Array($js_chaine_effectif_habituel_prof);
+
+		indice_prof=0;
+		limite=tab_eff_prof[indice_prof];
+		for(j=0;j<$cpt;j++) {
+			if(j>=limite) {
+				indice_prof++;
+				limite+=tab_eff_prof[indice_prof];
+			}
+			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+				document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+			}
+		}
+
+	}
+
+	calcule_effectif();
+	changement();
+}
+
 </script>\n";
 	}
 }
@@ -764,6 +842,11 @@ elseif($tri=='salle') {
 		die();
 	}
 
+	if($etat!='clos') {
+		echo "<p style='margin-top:1em;margin-bottom:1em;'><a href='javascript:repartir_automatiquement_entre_les_profs(1)'>Répartir les copies entre les ".count($login_prof)." professeur(s) en nombre égal pour tous</a>.<br />
+<a href='javascript:repartir_automatiquement_entre_les_profs(2)'>Attribuer à chaque professeur un nombre de copies égal au nombre d'élèves qu'il a en classe</a>.</p>";
+	}
+
 	$tab_cpt_eleve=array();
 	$tab_id_salle=array();
 	$tab_salle=array();
@@ -780,6 +863,7 @@ elseif($tri=='salle') {
 		$tab_id_salle[]=$lig->id;
 
 		if($etat!='clos') {
+
 			echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves$cpt' value='Valider' /></p>\n";
 		}
 		echo "<p>Salle <b>$lig->salle</b>&nbsp;:</p>\n";
@@ -1115,6 +1199,39 @@ function coche(colonne,rang_groupe,mode) {
 
 	calcule_effectif();
 
+	changement();
+}
+
+
+function repartir_automatiquement_entre_les_profs(mode) {
+	if(mode==1) {
+		var effectif_par_prof=Math.ceil($cpt/".count($login_prof).");
+
+		for(j=0;j<$cpt;j++) {
+			indice_prof=Math.floor(j/effectif_par_prof);
+			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+				document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+			}
+		}
+	}
+	else {
+		var tab_eff_prof=new Array($js_chaine_effectif_habituel_prof);
+
+		indice_prof=0;
+		limite=tab_eff_prof[indice_prof];
+		for(j=0;j<$cpt;j++) {
+			if(j>=limite) {
+				indice_prof++;
+				limite+=tab_eff_prof[indice_prof];
+			}
+			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+				document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+			}
+		}
+
+	}
+
+	calcule_effectif();
 	changement();
 }
 </script>\n";
