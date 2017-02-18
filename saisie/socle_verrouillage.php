@@ -56,7 +56,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(!getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"])) {
+if((!getSettingAOui("SocleOuvertureSaisieComposantes"))||(!getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
 	/*
 	if(($_SESSION['statut']=="professeur")&&(getSettingAOui("SocleOuvertureSaisieComposantes_PP"))&&(is_pp($_SESSION["login"]))) {
 		// Accès autorisé

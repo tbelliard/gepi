@@ -777,8 +777,9 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	} else {$barre_notanet = '';}
 
 	// Composantes du Socle
-	if((getSettingAOui("SocleSaisieComposantes_professeur"))||
-	((getSettingAOui("SocleSaisieComposantes_PP"))&&($is_pp_header_barre_prof_template))) {
+	if((getSettingAOui("SocleSaisieComposantes"))&&
+	((getSettingAOui("SocleSaisieComposantes_professeur"))||
+	((getSettingAOui("SocleSaisieComposantes_PP"))&&($is_pp_header_barre_prof_template)))) {
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/saisie/saisie_socle.php' , "texte"=>"Socle");
 
 		if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(

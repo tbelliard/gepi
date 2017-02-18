@@ -60,6 +60,11 @@ if (!checkAccess()) {
 
 // A FAIRE : Modifier pour permettre tout de même une consultation sans droits de saisie.
 
+if(!getSettingAOui("SocleOuvertureSaisieComposantes")) {
+	header("Location: ../accueil.php?msg=Accès non autorisé");
+	die();
+}
+
 if(!getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
 	if(($_SESSION['statut']=="professeur")&&(getSettingAOui("SocleSaisieComposantes_PP"))&&(is_pp($_SESSION["login"]))) {
 		// Accès autorisé

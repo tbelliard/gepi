@@ -250,7 +250,7 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 
 		//=======================================================
 		// Composantes du Socle
-		if(getSettingAOui("SocleSaisieComposantes_scolarite")) {
+		if((getSettingAOui("SocleSaisieComposantes"))&&(getSettingAOui("SocleSaisieComposantes_scolarite"))) {
 			if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
 				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a>'."\n";
 				$menus .= '   <ul class="niveau2">'."\n";
@@ -263,7 +263,7 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a></li>'."\n";
 			}
 		}
-		elseif((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
+		elseif((getSettingAOui("SocleSaisieComposantes"))&&(acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Socle</a></li>'."\n";
 		}
 
