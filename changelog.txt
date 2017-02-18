@@ -40,6 +40,7 @@ Général:
 - Possibilité de rendre visible/invisible par lots des enseignements de type AP, EPI, Parcours.
 - Exports CSV aux formats Ariane et Verdier.
 - Affichage des AID en page d'accueil professeur.
+- Affichage des dates de fin de période et de conseils de classe sur un calendrier popup.
 
 Gepi-1.7.0 (24/11/2016)
 ===========================
