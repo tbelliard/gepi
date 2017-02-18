@@ -11011,11 +11011,19 @@ function get_tab_infos_evenement($id_ev) {
 	return $tab;
 }
 
-function get_tab_date_prochain_evenement_telle_classe($id_classe, $type) {
+//function get_tab_date_prochain_evenement_telle_classe($id_classe, $type, $tab_visible_par=array("all")) {
+function get_tab_date_prochain_evenement_telle_classe($id_classe, $type, $avec_visible_par_statut="n") {
 	$tab=array();
 
+	/*
+	$sql_ajout="";
+	if(!in_array("all", $tab_visible_par)) {
+		
+	}
+	*/
+
 	if($id_classe!="") {
-		$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
+		$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_assoc($res)) {
@@ -11023,11 +11031,22 @@ function get_tab_date_prochain_evenement_telle_classe($id_classe, $type) {
 				$tab['slashdate_ev']=formate_date($lig['date_evenement']);
 				$tab['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
 				$tab['lieu']=get_infos_salle_cours($lig['id_salle']);
+				$tab['periode']=get_infos_salle_cours($lig['periode']);
+				if($avec_visible_par_statut=="y") {
+					$tab['statuts']=array();
+					$sql="SELECT DISTINCT statut FROM d_dates_evenements_utilisateurs WHERE id_ev='".$lig['id_ev']."';";
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res2)>0) {
+						while($lig2=mysqli_fetch_assoc($res2)) {
+							$tab['statuts'][]=$lig2['statut'];
+						}
+					}
+				}
 			}
 		}
 	}
 	else {
-		$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement;";
+		$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
@@ -11038,6 +11057,17 @@ function get_tab_date_prochain_evenement_telle_classe($id_classe, $type) {
 					$tab[$lig['id_classe']]['slashdate_ev']=formate_date($lig['date_evenement']);
 					$tab[$lig['id_classe']]['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
 					$tab[$lig['id_classe']]['lieu']=get_infos_salle_cours($lig['id_salle']);
+					$tab[$lig['id_classe']]['periode']=get_infos_salle_cours($lig['periode']);
+					if($avec_visible_par_statut=="y") {
+						$tab[$lig['id_classe']]['statuts']=array();
+						$sql="SELECT DISTINCT statut FROM d_dates_evenements_utilisateurs WHERE id_ev='".$lig['id_ev']."';";
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res2)>0) {
+							while($lig2=mysqli_fetch_assoc($res2)) {
+								$tab[$lig['id_classe']]['statuts'][]=$lig2['statut'];
+							}
+						}
+					}
 				}
 			}
 		}

@@ -4892,24 +4892,28 @@ function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_gro
 	}
 
 	$chaine_date_conseil_classe="";
+	$date_courante_debut_journee_mysql=strftime("%Y-%m-%d 00:00:00");
 
 	foreach($current_group["classes"]["list"] as $key => $current_id_classe) {
-		$current_ev=get_tab_date_prochain_evenement_telle_classe($current_id_classe, 'conseil_de_classe');
+		$current_ev=get_tab_date_prochain_evenement_telle_classe($current_id_classe, 'conseil_de_classe', "y");
 
-		if(isset($current_ev['id_ev'])) {
-			if($chaine_date_conseil_classe=="") {
-				if($type=="span") {
-					$chaine_date_conseil_classe="<span title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span>";
+		if((isset($current_ev['id_ev']))&&(in_array($_SESSION["statut"], $current_ev['statuts']))) {
+
+			if($current_ev['date_debut']<=$date_courante_debut_journee_mysql) {
+				if($chaine_date_conseil_classe=="") {
+					if($type=="span") {
+						$chaine_date_conseil_classe="<span title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span>";
+					}
+					else {
+						$chaine_date_conseil_classe="<p align='$align' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+					}
 				}
-				else {
-					$chaine_date_conseil_classe="<p align='$align' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+				$lieu_conseil_de_classe="";
+				if(isset($current_ev['lieu']['designation_complete'])) {
+					$lieu_conseil_de_classe=" (".$current_ev['lieu']['designation_complete'].")";
 				}
+				$chaine_date_conseil_classe.=" ".$current_ev['classe']."&nbsp;<span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$current_ev['classe']." : ".$current_ev['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$current_ev['slashdate_ev'].")</span>";
 			}
-			$lieu_conseil_de_classe="";
-			if(isset($current_ev['lieu']['designation_complete'])) {
-				$lieu_conseil_de_classe=" (".$current_ev['lieu']['designation_complete'].")";
-			}
-			$chaine_date_conseil_classe.=" ".$current_ev['classe']."&nbsp;<span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$current_ev['classe']." : ".$current_ev['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$current_ev['slashdate_ev'].")</span>";
 		}
 	}
 

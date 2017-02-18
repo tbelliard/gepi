@@ -461,7 +461,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                     $p_nom = casse_mot($obj_prof->nom,'maj');
                     $p_prenom = casse_mot($obj_prof->prenom,'majf2');
                     $civilite = $obj_prof->civilite;
-					$temp["profs"]["list"][] = $p_login;
+                    $temp["profs"]["list"][] = $p_login;
                     $temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
                     $temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
                     $i++;
@@ -503,6 +503,9 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                     while ($obj_period2 = $periode_query2->fetch_object()) {
                         $temp["classe"]["ver_periode"][$c_id][$i] = $obj_period2->verouiller;
                         $liste_ver_per[$i] .= $temp["classe"]["ver_periode"][$c_id][$i];
+
+                        $temp["classe"]["date_fin"][$c_id][$i] = $obj_period2->date_fin;
+                        $temp["classe"]["date_conseil_classe"][$c_id][$i] = $obj_period2->date_conseil_classe;
                         $i++;
                     }
                     $all_clos .= "O";

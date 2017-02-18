@@ -28,6 +28,9 @@ Engagements:
 - Possibilité de définir des engagements qui peuvent être saisis par un professeur non nécessairement professeur principal.
 - Possibilité de choisir les engagements à faire apparaitre sur les bulletins CLG 2016.
 
+LSUN:
+- Possibilité de saisir les bilans de composantes du Socle.
+
 Général:
 - Mise à jour d'après un XML Eleves d'EDT: Possibilité de n'uploader qu'un fichier xml partiel.
 - Possibilité de mettre à jour les infos identifiant STS et Type STS d'après sts_emp_RNE_ANNEE.xml
