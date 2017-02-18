@@ -3,6 +3,10 @@
 function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 	global $mysqli, $gepiPath;
 
+
+	$tab_conseils_de_classe=get_tab_dates_evenements_classes("", "conseil_de_classe", "y", "y", "date_ev");
+	$tab_periodes=get_tab_dates_periodes();
+
 	$YYYYmmjj_aujourdhui=strftime("%Y%m%d");
 
 	$tab_creneaux=get_heures_debut_fin_creneaux();
@@ -228,10 +232,36 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 		}
 
 		//$texte_jour=strftime("%d", $ts_courant);
-			$texte_jour="<span title=\"".strftime("%A %d/%m/%Y", $ts_courant)."\">".strftime("%d", $ts_courant)."</span>";
+		$texte_jour="<span title=\"".strftime("%A %d/%m/%Y", $ts_courant)."\">".strftime("%d", $ts_courant)."</span>";
 		if($YYYYmmjj_aujourdhui==$annee_courant.$mois_courant.$jour_courant) {
 			$texte_jour="<span style='color:red; font-weight:bold;' title=\"Aujourd'hui ".strftime("%A", $ts_courant)." $jour_courant/$mois_courant/$annee_courant\">".strftime("%d", $ts_courant)."</span>";
 		}
+		$tmp_mysql_date=strftime("%Y-%m-%d 00:00:00", $ts_courant);
+		if(array_key_exists($tmp_mysql_date, $tab_periodes["date_fin"])) {
+			$texte_jour.="<span title=\"Fin de période pour ";
+			for($loop_date_fin=0;$loop_date_fin<count($tab_periodes["date_fin"][$tmp_mysql_date]);$loop_date_fin++) {
+				if($loop_date_fin>0) {
+					$texte_jour.=", ";
+				}
+				//$texte_jour.=$tab_periodes["date_fin"][$tmp_mysql_date][$loop_date_fin]["classe"]." (".$tab_periodes["date_fin"][$tmp_mysql_date][$loop_date_fin]['num_periode'].")";
+				$texte_jour.=$tab_periodes["date_fin"][$tmp_mysql_date][$loop_date_fin]["classe"];
+			}
+			$texte_jour.="\"><img src='$gepiPath/images/bulle_bleue.png' width='9' height='9' alt='FP' /></span>";
+		}
+		$tmp_jjmmaaaa_date=strftime("%d/%m/%Y", $ts_courant);
+		if(array_key_exists($tmp_jjmmaaaa_date, $tab_conseils_de_classe)) {
+			$texte_jour.="<span title=\"Conseil de classe de ";
+			$cpt_clas=0;
+			foreach($tab_conseils_de_classe[$tmp_jjmmaaaa_date] as $tmp_id_classe => $tmp_classe) {
+				if($cpt_clas>0) {
+					$texte_jour.=", ";
+				}
+				$texte_jour.=$tmp_classe["classe"]." (".$tmp_classe['slashdate_heure_ev'].")";
+				$cpt_clas++;
+			}
+			$texte_jour.="\"><img src='$gepiPath/images/bulle_verte.png' width='9' height='9' alt='CC' /></span>";
+		}
+
 		$retour.="
 				<td$style>".$texte_jour.$ajout.$chaine_debug."</td>";
 
