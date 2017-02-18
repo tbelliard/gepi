@@ -766,12 +766,16 @@ for($i=0;$i<count($groups);$i++){
 								$tab_liste_infobulles[]='info_cn_'.$i.'_'.$j;
 							}
 
-
+							/*
+							echo "<pre>";
+							print_r($groups[$i]['classe']['date_fin']);
+							echo "</pre>";
+							*/
 							$chaine_date_fin_periode="";
 							$tmp_tab_date_fin_periode=array();
 							foreach($groups[$i]['classe']['date_fin'] as $tmp_id_classe => $tmp_classe) {
 								if($tmp_classe[$j]>=$date_courante_debut_journee_mysql) {
-									$tmp_tab_date_fin_periode[$date_courante_debut_journee_mysql][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
+									$tmp_tab_date_fin_periode[$tmp_classe[$j]][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
 								}
 							}
 							foreach($tmp_tab_date_fin_periode as $current_mysql_date => $tmp_tab_classe) {
