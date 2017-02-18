@@ -491,10 +491,10 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 				}
 				else {
 					if($nb_classes_reg>0) {
-						$msg_OK="Enregistrement effectué pour $nb_classes_reg classe(s).<br />";
+						$msg_OK="Enregistrement effectué pour $nb_classes_reg classe(s) <em>(".strftime("%d/%m/%Y à %H:%M:%S").")</em>.<br />";
 					}
 					else {
-						$msg_OK="Enregistrement effectué... mais sans classe&nbsp;?.<br />";
+						$msg_OK="Enregistrement effectué... mais sans classe&nbsp;? <em>(".strftime("%d/%m/%Y à %H:%M:%S").")</em>.<br />";
 					}
 				}
 			}
