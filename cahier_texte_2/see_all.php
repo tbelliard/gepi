@@ -302,6 +302,25 @@ echo "<div class='centre_table'>\n";
 					}
 				}
 			}
+			if ($_SESSION['statut'] == 'professeur') {
+				$groups_prof=get_groups_for_prof($_SESSION['login'], NULL, array("classes", "matieres", "visibilite"));
+				if(count($groups_prof)>0) {
+					echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_choix_groupe'><p>Ou choisissez un <strong>enseignement</strong>&nbsp;:<br /><select name='id_groupe' onchange=\"if(this.selectedIndex>0) {document.getElementById('form_choix_groupe').submit();}\">
+	<option value=''>(choisissez un groupe)</option>";
+					for($loop=0;$loop<count($groups_prof);$loop++) {
+						if((!isset($groups_prof[$loop]["visibilite"]["cahier_texte"]))||($groups_prof[$loop]["visibilite"]["cahier_texte"]!="n")) {
+							$selected_grp="";
+							if((isset($id_groupe))&&($groups_prof[$loop]["id"]==$id_groupe)) {
+								$selected_grp=" selected='true'";
+							}
+							echo "
+	<option value='".$groups_prof[$loop]["id"]."'".$selected_grp." title=\"".$groups_prof[$loop]["name"]." (".$groups_prof[$loop]["description"].") (".$groups_prof[$loop]["matiere"]["matiere"].") (".$groups_prof[$loop]["classlist_string"].")"."\">".$groups_prof[$loop]["name"]." (".$groups_prof[$loop]["classlist_string"].")"."</option>";
+						}
+					}
+					echo "
+</select></form>";
+				}
+			}
 		}
 	echo "</div>\n";
 
