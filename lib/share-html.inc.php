@@ -4535,7 +4535,12 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			$nom_classe=$lig->classe;
 		}
 
-		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: $nom_classe</p>
+		$lien_verif="";
+		if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
+			$lien_verif=" <em style='font-weight:normal;'>(<a href='bulletin/verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\">Vérification</a>)</em>";
+		}
+
+		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: $nom_classe".$lien_verif."</p>
 <table class='boireaus boireaus_alt'>
 	<thead>
 		<tr>
