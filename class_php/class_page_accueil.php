@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -687,11 +687,32 @@ if(getSettingAOui('active_bulletins')) {
             }
 		}
 
-		  if ($this->b>0){
+	  }
+
+		if(getSettingAOui("SocleSaisieComposantes")) {
+			if(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
+				$this->creeNouveauItem("/saisie/saisie_socle.php",
+					"Saisie Composantes du Socle",
+					"Permet de saisir les bilans de composantes du Socle.");
+			}
+			elseif(($_SESSION['statut']=="professeur")&&(getSettingAOui("SocleSaisieComposantes_PP"))&&(is_pp($_SESSION["login"]))) {
+				$this->creeNouveauItem("/saisie/saisie_socle.php",
+					"Saisie des Composantes du Socle",
+					"Permet de saisir les bilans de composantes du Socle.");
+			}
+
+			if((getSettingAOui("SocleOuvertureSaisieComposantes"))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
+				$this->creeNouveauItem("/saisie/socle_verrouillage.php",
+					"Verrouillage saisies Composantes Socle",
+					"Permet de verrouiller/déverrouiller la saisie des bilans de composantes du Socle.");
+			}
+		}
+
+		if ($this->b>0){
 			$this->creeNouveauTitre('accueil',"Saisie",'images/icons/configure.png');
 			return true;
-		  }
-	  }
+		}
+
 	}
 
   private function cahierTexteCPE(){
