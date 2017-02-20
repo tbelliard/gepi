@@ -60,7 +60,7 @@ if (!checkAccess()) {
 
 // A FAIRE : Modifier pour permettre tout de même une consultation sans droits de saisie.
 
-if(!getSettingAOui("SocleOuvertureSaisieComposantes")) {
+if(!getSettingAOui("SocleSaisieComposantes")) {
 	header("Location: ../accueil.php?msg=Accès non autorisé");
 	die();
 }
@@ -743,13 +743,14 @@ if(!$SocleOuvertureSaisieComposantes) {
 
 
 $SocleSaisieSyntheses=false;
-if(getSettingAOui("SocleSaisieSyntheses_".$_SESSION["statut"])) {
-	$SocleSaisieSyntheses=true;
+if($SocleOuvertureSaisieComposantes) {
+	if(getSettingAOui("SocleSaisieSyntheses_".$_SESSION["statut"])) {
+		$SocleSaisieSyntheses=true;
+	}
+	elseif(($_SESSION["statut"]=="professeur")&&(isset($id_classe))&&(getSettingAOui("SocleSaisieSyntheses_PP"))&&(is_pp($_SESSION["login"], $id_classe))) {
+		$SocleSaisieSyntheses=true;
+	}
 }
-elseif(($_SESSION["statut"]=="professeur")&&(isset($id_classe))&&(getSettingAOui("SocleSaisieSyntheses_PP"))&&(is_pp($_SESSION["login"], $id_classe))) {
-	$SocleSaisieSyntheses=true;
-}
-
 
 if(isset($id_groupe)) {
 	echo "\n<h2>".get_info_grp($id_groupe)."</h2>";
@@ -827,7 +828,8 @@ if(isset($id_groupe)) {
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field();
 
-		if((getSettingValue("SocleSaisieComposantesConcurrentes")=="meilleure")&&
+		if(($SocleOuvertureSaisieComposantes)&&
+		(getSettingValue("SocleSaisieComposantesConcurrentes")=="meilleure")&&
 		(getSettingAOui("SocleSaisieComposantesForcer_".$_SESSION["statut"]))) {
 			echo "
 		<p style='margin-left:2em;text-indent:-2em;'><input type='checkbox' name='forcer' id='forcer' value='y' /><label for='forcer'>Forcer les saisies <br />
@@ -1096,7 +1098,8 @@ elseif(isset($id_classe)) {
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field();
 
-		if((getSettingValue("SocleSaisieComposantesConcurrentes")=="meilleure")&&
+		if(($SocleOuvertureSaisieComposantes)&&
+		(getSettingValue("SocleSaisieComposantesConcurrentes")=="meilleure")&&
 		((getSettingAOui("SocleSaisieComposantesForcer_".$_SESSION["statut"]))||
 		((getSettingAOui("SocleSaisieComposantesForcer_PP"))&&(is_pp($_SESSION['login'], $id_classe))))) {
 			echo "
