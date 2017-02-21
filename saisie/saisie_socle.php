@@ -270,7 +270,8 @@ if(isset($_POST['enregistrer_saisies'])) {
 						}
 						else {
 
-							if((isset($NON_PROTECT["synthese_".$ine."_".$cycle]))&&($NON_PROTECT["synthese_".$ine."_".$cycle]!="")) {
+							if((isset($NON_PROTECT["synthese_".$ine."_".$cycle]))&&
+							(($NON_PROTECT["synthese_".$ine."_".$cycle]!="")||($forcer=="y"))) {
 								//$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese_".$ine."_".$cycle]));
 								$synthese=$NON_PROTECT["synthese_".$ine."_".$cycle];
 								$synthese=trim(suppression_sauts_de_lignes_surnumeraires($synthese));
@@ -486,7 +487,8 @@ if(isset($_POST['enregistrer_saisies'])) {
 						}
 						else {
 
-							if((isset($NON_PROTECT["synthese_".$ine."_".$cycle]))&&($NON_PROTECT["synthese_".$ine."_".$cycle]!="")) {
+							if((isset($NON_PROTECT["synthese_".$ine."_".$cycle]))&&
+							(($NON_PROTECT["synthese_".$ine."_".$cycle]!="")||($forcer=="y"))) {
 								//$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese_".$ine."_".$cycle]));
 								$synthese=$NON_PROTECT["synthese_".$ine."_".$cycle];
 								$synthese=trim(suppression_sauts_de_lignes_surnumeraires($synthese));
@@ -575,6 +577,7 @@ require_once("../lib/header.inc.php");
 $SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
 
 echo "<p class='bold'><a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo " | <a href=\"socle_verif.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Vérification du remplissage des bilans de composantes du socle</a>";
 
 if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(
 	(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))||
@@ -849,7 +852,7 @@ if(isset($id_groupe)) {
 				$tab_cycle[$mef_code_ele]=$cycle;
 			}
 
-			if(!isset($tab_cycle[$mef_code_ele])) {
+			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
 			}
@@ -1120,7 +1123,7 @@ elseif(isset($id_classe)) {
 				$tab_cycle[$mef_code_ele]=$cycle;
 			}
 
-			if(!isset($tab_cycle[$mef_code_ele])) {
+			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
 			}
