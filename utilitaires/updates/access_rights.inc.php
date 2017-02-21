@@ -1875,6 +1875,18 @@ autre='F',
 description='Socle: Verrouillage',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/saisie/socle_verif.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Socle: Vérification du remplissage',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

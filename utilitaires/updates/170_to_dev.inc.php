@@ -281,7 +281,7 @@ if ($test == -1) {
 	niveau_maitrise varchar(10) NOT NULL DEFAULT '', 
 	login_saisie varchar(50) NOT NULL DEFAULT '', 
 	date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
-	PRIMARY KEY (id), INDEX ine_cycle_id_composante (ine, cycle, code_composante)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	PRIMARY KEY (id), INDEX ine_cycle_id_composante (ine, cycle, code_composante), UNIQUE(ine, cycle, code_composante)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -302,7 +302,7 @@ if ($test == -1) {
 	synthese TEXT DEFAULT '', 
 	login_saisie varchar(50) NOT NULL DEFAULT '', 
 	date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
-	PRIMARY KEY (id), INDEX ine_cycle (ine, cycle)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	PRIMARY KEY (id), INDEX ine_cycle (ine, cycle), UNIQUE(ine, cycle)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
