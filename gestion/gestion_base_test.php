@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -397,8 +397,21 @@ $titre_page = "Outil de gestion | Données de test";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+$quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : (isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL);
+
+if(!isset($quitter_la_page)){
+	echo "<p class='bold'><a href='index.php#gestion_base_test'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+}
+else {
+	echo "<p class='bold'><a href=\"javascript:window.self.close();\"";
+	echo ">Refermer la page</a>";
+}
+
 //debug_var();
 if(getSettingAOui('gepi_en_production')) {
+	echo "</p>";
     echo "<h3 class='gepi'>Attention</h3>\n";
     echo "<p>Votre serveur Gepi est paramétré comme un serveur en production.<br />Vous ne devriez pas charger des données de test (<em>cela polluerait votre base avec des données qui n'ont rien à voir avec celles de votre établissement</em>).</p>\n";
     echo "<p>Vous pouvez modifier ce paramétrage dans la page de <a href='param_gen.php#gepi_en_production'>Configuration générale</a> si votre Gepi est en fait juste un Gepi de test.</p>\n";
@@ -406,7 +419,214 @@ if(getSettingAOui('gepi_en_production')) {
     die();
 }
 
+if(isset($_GET['remplissage_aleatoire_socle'])) {
+
+	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+<h2>Remplissage des bilans de composantes du Socle</h2>
+
+<form action='".$_SERVER["PHP_SELF"]."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<h3>Confirmation du remplissage aléatoire.<br />
+		<span style='color:red; text-decoration: blink;'>Attention, ne pas faire sur une base de production</span></h3>
+
+		<p>
+			<input type='radio' name='mode' id='mode_ecraser' value='ecraser' onchange='change_style_radio()' checked /><label for='mode_ecraser' id='texte_mode_ecraser'>Écraser les données de bilans de composantes du socle existantes</label>,<br />
+			<input type='radio' name='mode' id='mode_completer' value='completer' onchange='change_style_radio()' /><label for='mode_completer' id='texte_mode_completer'>Compléter les données de bilans de composantes du socle existantes</label>.
+		</p>
+		<br />
+
+		<p><b>Êtes-vous sûr de vouloir continuer ?</b></p>
+		<input type='hidden' name='remplissage_aleatoire_socle' value='y' />
+		<p><input type='submit' name='confirm' value = 'Oui' /></p>
+
+		<script type='text/javascript'>
+			".js_change_style_radio("change_style_radio", "n", "y")."
+			change_style_radio();
+		</script>
+	</fieldset>
+</form>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif(isset($_POST['remplissage_aleatoire_socle'])) {
+	check_token(false);
+
+		echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+
+<h2>Remplissage des bilans de composantes du Socle</h2>";
+
+	// Pour toutes les classes ou une sélection?
+
+	$tab_domaine_socle=array();
+	$tab_domaine_socle["CPD_FRA"]="Comprendre, s'exprimer en utilisant la langue française à l'oral et à l'écrit";
+	$tab_domaine_socle["CPD_ETR"]="Comprendre, s'exprimer en utilisant une langue étrangère et, le cas échéant, une langue régionale";
+	$tab_domaine_socle["CPD_SCI"]="Comprendre, s'exprimer en utilisant les langages mathématiques, scientifiques et informatiques";
+	$tab_domaine_socle["CPD_ART"]="Comprendre, s'exprimer en utilisant les langages des arts et du corps";
+	$tab_domaine_socle["MET_APP"]="Les méthodes et outils pour apprendre";
+	$tab_domaine_socle["FRM_CIT"]="La formation de la personne et du citoyen";
+	$tab_domaine_socle["SYS_NAT"]="Les systèmes naturels et les systèmes techniques";
+	$tab_domaine_socle["REP_MND"]="Les représentations du monde et l'activité humaine";
+	$nb_composantes_socle=count($tab_domaine_socle);
+
+	$tab_syntheses_type=array("Bon ensemble.", "Bonne maitrise d'ensemble.", "Des composantes restent à travailler.", "Bilan de composantes à déposer.", "Un socle sur lequel il ne faudra pas se reposer.", "La base du socle est bien fragile.");
+	$nb_synthese_type=count($tab_syntheses_type);
+
+	$mode=isset($_POST['mode']) ? $_POST['mode'] : "ecraser";
+	$date_saisie=strftime("%Y-%m-%d %H:%M:%S");
+
+	//echo "\$mode=$mode<br />";
+
+	$id_classe_precedente="";
+	$cpt=0;
+	$cpt_ele=0;
+	$cpt_synthese=0;
+	$tab_cycle=array();
+	echo "<p><strong>Remplissage&nbsp;:</strong> ";
+	$sql="SELECT DISTINCT c.classe, c.id AS id_classe, e.* FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND c.id=jec.id_classe ORDER BY c.classe, e.nom, e.prenom;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			if($lig["id_classe"]!=$id_classe_precedente) {
+				echo " - <strong>".get_nom_classe($lig["id_classe"])."</strong> ";
+				$id_classe_precedente=$lig["id_classe"];
+			}
+
+			$temoin_err_ele=0;
+			$mef_code_ele=$lig['mef_code'];
+			if(!isset($tab_cycle[$mef_code_ele])) {
+				$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
+				$cycle=$tmp_tab_cycle_niveau["mef_cycle"];
+				$niveau=$tmp_tab_cycle_niveau["mef_niveau"];
+				$tab_cycle[$mef_code_ele]=$cycle;
+			}
+
+			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
+				echo "
+		<p style='color:red'>Le cycle courant pour ".$lig['nom']." ".$lig['prenom']." n'a pas pu être identitfié&nbsp;???</p>";
+			}
+			else {
+				if($mode=="ecraser") {
+					if($cpt_ele>0) {
+						echo ", ";
+					}
+					echo $lig["login"]." ($cpt_ele)";
+
+					$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."';";
+					//echo "$sql<br />";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$sql="DELETE FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."';";
+					//echo "$sql<br />";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					foreach($tab_domaine_socle as $code => $libelle) {
+						$niveau_maitrise=rand(1,4);
+
+						$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							echo " <span style='color:red' title='Erreur'>$code</span>";
+							$temoin_err_ele++;
+						}
+						$cpt++;
+					}
+
+					$sql="INSERT INTO socle_eleves_syntheses SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_syntheses_type[$cpt_synthese%$nb_synthese_type])."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						echo " <span style='color:red' title='Erreur'>$code</span>";
+						$temoin_err_ele++;
+					}
+					$cpt_synthese++;
+					$cpt_ele++;
+
+					if($temoin_err_ele==0) {
+						echo " <span style='color:green'>OK</span>";
+					}
+
+				}
+				else {
+					$tab_deja=array();
+					$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."';";
+					//echo "$sql<br />";
+					$res_deja=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_deja)>0) {
+						while($lig_deja=mysqli_fetch_object($res_deja)) {
+							// Normalement, il n'y a qu'un enregistrement par ine/cycle/code_composante
+							if(!in_array($lig_deja->code_composante, $tab_deja)) {
+								$tab_deja[]=$lig_deja->code_composante;
+							}
+						}
+					}
+
+					$synthese_deja="n";
+					$sql="SELECT * FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."';";
+					//echo "$sql<br />";
+					$res_deja=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_deja)>0) {
+						$synthese_deja="y";
+					}
+
+					//echo "\$synthese_deja=$synthese_deja, count(\$tab_deja)=".count($tab_deja)." et \$nb_composantes_socle=$nb_composantes_socle<br />";
+
+					if(($synthese_deja=="n")||(count($tab_deja)!=$nb_composantes_socle)) {
+						if($cpt_ele>0) {
+							echo ", ";
+						}
+						echo $lig["login"]." ($cpt_ele)";
+
+						foreach($tab_domaine_socle as $code => $libelle) {
+							if(!in_array($code, $tab_deja)) {
+								$niveau_maitrise=rand(1,4);
+
+								$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$insert) {
+									echo " <span style='color:red' title='Erreur'>$code</span>";
+									$temoin_err_ele++;
+								}
+								$cpt++;
+							}
+						}
+
+						if($synthese_deja=="n") {
+
+							$sql="INSERT INTO socle_eleves_syntheses SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_syntheses_type[$cpt_synthese%$nb_synthese_type])."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
+							//echo "$sql<br />";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$insert) {
+								echo " <span style='color:red' title='Erreur'>$code</span>";
+								$temoin_err_ele++;
+							}
+							$cpt_synthese++;
+						}
+						$cpt_ele++;
+
+						if($temoin_err_ele==0) {
+							echo " <span style='color:green'>OK</span>";
+						}
+						flush();
+					}
+				}
+			}
+		}
+	}
+	echo "</p>";
+	echo "<p>Terminé.</p>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+
+
 if (!function_exists("gzwrite")) {
+	echo "</p>";
     echo "<h3 class='gepi'>Problème de configuration :</h3>\n";
     echo "<p>Les fonctions de compression 'zlib' ne sont pas activées. Vous devez configurer PHP pour qu'il utilise 'zlib'.</p>\n";
     echo "<p>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
@@ -418,6 +638,8 @@ if (!function_exists("gzwrite")) {
 // Confirmation de la restauration
 if (isset($action) and ($action == 'restaure_confirm'))  {
 	check_token(false);
+
+	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>";
 
     echo "<h3>Confirmation de chargement des données de test. <span style='color:red; text-decoration: blink;'>Attention, ne pas faire sur une base de production</span></h3>\n";
     echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b><br/>";
@@ -469,6 +691,8 @@ $succes_etape='n';
 
 // Restauration
 if (isset($action) and ($action == 'restaure'))  {
+	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>";
+
 	check_token();
     unset($file);
     $file = isset($_POST["file"]) ? $_POST["file"] : (isset($_GET["file"]) ? $_GET["file"] : NULL);
@@ -515,7 +739,6 @@ if (isset($action) and ($action == 'restaure'))  {
 	die();
 }
 
-$quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : (isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL);
 
 // Sauvegarde
 if (isset($action) and ($action == 'dump'))  {
@@ -527,7 +750,7 @@ if (isset($action) and ($action == 'dump'))  {
 			saveSetting("backup_duree_portion", $_SESSION['defaulttimeout']);
 		}
 	}
-	// SAuvegarde de la base
+	// Sauvegarde de la base
     $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
     $cur_time=date("Y-m-d H:i");
     $filename=$path."data_test.sql";
@@ -649,20 +872,6 @@ if (isset($action) and ($action == 'dump'))  {
 //    }
 }
 
-?>
-
-<?php
-
-if(!isset($quitter_la_page)){
-	echo "<p class='bold'><a href='index.php#gestion_base_test'";
-	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-}
-else {
-	echo "<p class='bold'><a href=\"javascript:window.self.close();\"";
-	echo ">Refermer la page</a>";
-}
-
 $handle=opendir('../backup/' . $dirname);
 $tab_file = array();
 $n=0;
@@ -682,6 +891,7 @@ closedir($handle);
 arsort($tab_file);
 
 if ($n > 0) {
+
     echo "<h3>Fichiers de chargement des données de test</h3>\n";
     //echo "<center>\n<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">\n<tr><td><b>Nom du fichier de sauvegarde</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
     echo "<center>\n<table class='boireaus' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><b>Nom du fichier de sauvegarde</b></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
@@ -729,6 +939,8 @@ include("../backup/$dirname/doc.html");
 
 echo "<hr />";
 echo "<p>Avec une base contenant déjà des données, vous pouvez procéder à des <a href='../cahier_notes_admin/copie_tous_dev.php'>recopies de devoirs, CDT,... d'une classe vers une autre</a></p>\n";
+
+echo "<p>Avec une base contenant déjà des données, vous pouvez <a href='".$_SERVER['PHP_SELF']."?remplissage_aleatoire_socle=y'>remplir aléatoirement les Bilans de Composantes du Socle</a> pour procéder à des essais.</p>\n";
 
 require("../lib/footer.inc.php");
 ?>
