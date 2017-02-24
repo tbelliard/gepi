@@ -691,11 +691,11 @@ $tab_req[] = "INSERT INTO droits SET id='/init_scribe_ng/etape6.php',administrat
 $tab_req[] = "INSERT INTO droits SET id='/init_scribe_ng/etape7.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - etape 7',statut='';";
 
 
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_lieux_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/index.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_lieux_absences.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_table_agregation.php', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/index.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');";
@@ -1835,6 +1835,56 @@ responsable='F',
 secours='V',
 autre='F',
 description='Voir les enseignements du professeur',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_droits.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'ABS2: Droits non admin', '');";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_listes_perso/export_liste.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Listes perso: Export',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/saisie/saisie_socle.php',
+administrateur='F',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Socle: Saisie',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/saisie/socle_verrouillage.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Socle: Verrouillage',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/saisie/socle_verif.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Socle: Vérification du remplissage',
 statut='';";
 
 //$tab_req[] = "";

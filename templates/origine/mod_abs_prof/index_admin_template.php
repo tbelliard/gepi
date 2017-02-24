@@ -230,6 +230,18 @@
 	  </label>
 	</p>
 
+	<p>
+	  <input type="checkbox" 
+			 name="AbsProfAfficherSurEDT2" 
+			 id='AbsProfAfficherSurEDT2' 
+			 value="yes" 
+			<?php if (getSettingAOui("AbsProfAfficherSurEDT2")) echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='AbsProfAfficherSurEDT2' style='cursor: pointer;'>
+		Afficher les remplacements sur l'EDT version 2 <em style='color:red'>(expérimental)</em>.
+	  </label>
+	</p>
+
 	<p class="center">
 	  <input type="submit" value="Enregistrer" />
 	</p>

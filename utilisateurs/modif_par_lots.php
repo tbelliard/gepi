@@ -447,14 +447,14 @@ if(isset($_POST['upload_sts_file'])) {
 						<input type='text' name='numind[$cpt]' id='numind_$cpt' value='".$lig_u->numind."' onchange='changement()' />
 					</td>
 					<td>".$lig_u->type."</td>
-					<td>
+					<td title=\"Sélectionnez ici le type pour une mise à jour manuelle du type STS.\">
 						<select name='type[$cpt]' id='type_$cpt' onchange='changement()'>
 							<option value=''>---</option>
 							<option value='epp'".($lig_u->type=="epp" ? " selected='true'" : "").">Emploi Poste Personnel</option>
 							<option value='local'".($lig_u->type=="local" ? " selected='true'" : "").">Local</option>
 						</select>
 					</td>
-					<td>
+					<td title=\"Effectuez ici le rapprochement pour mettre à jour l'identifiant et le type STS d'après le contenu du fichier XML.\">
 						<select name='select_xml[$cpt]' id='select_xml_$cpt' onchange=\"maj_info($cpt);changement()\">
 							<option value='|'>---</option>";
 				for($k=0;$k<count($prof);$k++){

@@ -853,8 +853,9 @@ display_div_coloriser();
 	if($lignes==0) {
 		echo "<p style='color:red'>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
-	else{
-		$tab_conseils_de_classe=get_tab_date_prochain_evenement_telle_classe("", 'conseil_de_classe');
+	else {
+		$date_courante_debut_journee_mysql=strftime("%Y-%m-%d 00:00:00");
+		$tab_conseils_de_classe=get_tab_date_prochain_evenement_telle_classe("", 'conseil_de_classe', "y");
 
 		$i = 0;
 		$nb_class_par_colonne=round($lignes/3);
@@ -863,7 +864,7 @@ display_div_coloriser();
 		echo "<table width='100%' summary=\"Choix de la classe\">\n";
 		echo "<tr valign='top' align='center'>\n";
 		echo "<td align='left' width='33%'>\n";
-		while ($lig_clas=mysqli_fetch_object($appel_donnees)){
+		while ($lig_clas=mysqli_fetch_object($appel_donnees)) {
 			$id_classe = $lig_clas->id;
 			$display_class = $lig_clas->classe;
 			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
@@ -872,7 +873,7 @@ display_div_coloriser();
 			}
 
 			$chaine_tmp="";
-			if(isset($tab_conseils_de_classe[$lig_clas->id])) {
+			if((isset($tab_conseils_de_classe[$lig_clas->id]))&&($tab_conseils_de_classe[$lig_clas->id]["date_debut"]>=$date_courante_debut_journee_mysql)&&(in_array($_SESSION["statut"], $tab_conseils_de_classes[$id_classe]["statuts"]))) {
 
 				$lieu_conseil_de_classe="";
 				if(isset($tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'])) {

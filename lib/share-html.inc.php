@@ -4535,7 +4535,12 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			$nom_classe=$lig->classe;
 		}
 
-		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: $nom_classe</p>
+		$lien_verif="";
+		if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
+			$lien_verif=" <em style='font-weight:normal;'>(<a href='bulletin/verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\">Vérification</a>)</em>";
+		}
+
+		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: $nom_classe".$lien_verif."</p>
 <table class='boireaus boireaus_alt'>
 	<thead>
 		<tr>
@@ -4892,24 +4897,28 @@ function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_gro
 	}
 
 	$chaine_date_conseil_classe="";
+	$date_courante_debut_journee_mysql=strftime("%Y-%m-%d 00:00:00");
 
 	foreach($current_group["classes"]["list"] as $key => $current_id_classe) {
-		$current_ev=get_tab_date_prochain_evenement_telle_classe($current_id_classe, 'conseil_de_classe');
+		$current_ev=get_tab_date_prochain_evenement_telle_classe($current_id_classe, 'conseil_de_classe', "y");
 
-		if(isset($current_ev['id_ev'])) {
-			if($chaine_date_conseil_classe=="") {
-				if($type=="span") {
-					$chaine_date_conseil_classe="<span title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span>";
+		if((isset($current_ev['id_ev']))&&(in_array($_SESSION["statut"], $current_ev['statuts']))) {
+
+			if($current_ev['date_debut']<=$date_courante_debut_journee_mysql) {
+				if($chaine_date_conseil_classe=="") {
+					if($type=="span") {
+						$chaine_date_conseil_classe="<span title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span>";
+					}
+					else {
+						$chaine_date_conseil_classe="<p align='$align' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+					}
 				}
-				else {
-					$chaine_date_conseil_classe="<p align='$align' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+				$lieu_conseil_de_classe="";
+				if(isset($current_ev['lieu']['designation_complete'])) {
+					$lieu_conseil_de_classe=" (".$current_ev['lieu']['designation_complete'].")";
 				}
+				$chaine_date_conseil_classe.=" ".$current_ev['classe']."&nbsp;<span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$current_ev['classe']." : ".$current_ev['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$current_ev['slashdate_ev'].")</span>";
 			}
-			$lieu_conseil_de_classe="";
-			if(isset($current_ev['lieu']['designation_complete'])) {
-				$lieu_conseil_de_classe=" (".$current_ev['lieu']['designation_complete'].")";
-			}
-			$chaine_date_conseil_classe.=" ".$current_ev['classe']."&nbsp;<span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$current_ev['classe']." : ".$current_ev['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$current_ev['slashdate_ev'].")</span>";
 		}
 	}
 
@@ -6254,7 +6263,7 @@ function insere_lien_calendrier_crob($float="") {
 		if($float!="") {
 			echo "<div style='float:$float;width:16px;margin:3px;'>";
 		}
-		echo "<a href='$gepiPath/lib/calendrier.php' onclick=\"afficher_div('div_calendrier_crob_popup', 'y', 10, 10); return false;\" target='_blank' title=\"Afficher le calendrier.\"><img src='$gepiPath/images/icons/date.png' class='icone16' alt='Calendrier' /></a>
+		echo "<a href='$gepiPath/lib/calendrier_crob.php' onclick=\"afficher_div('div_calendrier_crob_popup', 'y', 10, 10); return false;\" target='_blank' title=\"Afficher le calendrier.\"><img src='$gepiPath/images/icons/date.png' class='icone16' alt='Calendrier' /></a>
 <script type='text/javascript'>
 	function affiche_calendrier_crob(mois, annee, id_classe) {
 		//alert('plop');

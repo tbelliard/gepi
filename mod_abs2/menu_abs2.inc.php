@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2017 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -78,6 +78,10 @@ if(($_SESSION['statut']=='cpe')||
     }
     else {echo "style='background-color:#ecf6f8;' ";}
     echo "title='Notifications'>Notifications</a></li>\n";
+
+	if(abs2_acces_au_moins_une_pages_admin()) {
+		echo '<li style="float :right"><a href="admin/index.php'.(($_SESSION['statut']!="administrateur") ? '#config_avancee' : '').'" target="_blank" title="Paramétrer le module"><img src="../images/icons/configure.png" class="icone16" alt="Config" /></a></li>';
+	}
 
     if($url_end=='saisir_eleve.php' || $url_end=='enregistrement_saisie_eleve.php' || $url_end=='saisir_groupe.php' || $url_end=='enregistrement_saisie_groupe.php') {
 	echo '<li style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe" target="_blank">wiki</a></li>';

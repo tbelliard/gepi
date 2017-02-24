@@ -65,18 +65,26 @@ if ($barre_plugin!="") {
 
 		$tmp_liste_classes_scol=array();
 		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;";
-        
+
 		$res_tmp_liste_classes_scol = mysqli_query($mysqli, $sql);
 		if($res_tmp_liste_classes_scol->num_rows > 0) {
 			$tmp_cpt_classes_scol=0;
 			while($lig_tmp_liste_classes_scol = $res_tmp_liste_classes_scol->fetch_object()) {
-                $tmp_liste_classes_scol[$tmp_cpt_classes_scol]=array();
+				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]=array();
 				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['id']=$lig_tmp_liste_classes_scol->id;
 				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['classe']=$lig_tmp_liste_classes_scol->classe;
 				$tmp_liste_classes_scol[$tmp_cpt_classes_scol]['nom_complet']=$lig_tmp_liste_classes_scol->nom_complet;
 				$tmp_cpt_classes_scol++;
-            }
-        } 
+			}
+		} 
+
+		$acces_saisie_engagement="n";
+		if(getSettingAOui('active_mod_engagements')) {
+			$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+			if(count($tab_engagements_avec_droit_saisie['indice'])>0) {
+				$acces_saisie_engagement="y";
+			}
+		}
 
 		$menus = null;
 
@@ -241,6 +249,25 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		}
 
 		//=======================================================
+		// Composantes du Socle
+		if((getSettingAOui("SocleSaisieComposantes"))&&(getSettingAOui("SocleSaisieComposantes_scolarite"))) {
+			if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a>'."\n";
+				$menus .= '   <ul class="niveau2">'."\n";
+				$menus .= '      <a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Saisie Socle</a>'."\n";
+				$menus .= '      <a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Verrouillage&nbsp;Socle</a>'."\n";
+				$menus .= '   </ul>'."\n";
+				$menus .= '</li>'."\n";
+			}
+			else {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a></li>'."\n";
+			}
+		}
+		elseif((getSettingAOui("SocleSaisieComposantes"))&&(acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Socle</a></li>'."\n";
+		}
+
+		//=======================================================
 		// Module emploi du temps
 		if (getSettingValue("autorise_edt_tous") == "y") {
 
@@ -362,9 +389,12 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		if(getSettingAOui('active_mod_engagements')) {
 			$menus .= '       <li class="plus"><a href="#">Engagements</a>'."\n";
 			$menus .= '         <ul class="niveau3">'."\n";
-			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
+			if($acces_saisie_engagement=="y") {
+				$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().' title="Saisir les engagements élèves/responsables.">Saisie engagements</a></li>'."\n";
+			}
 
 			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().' title="Extraire en CSV, envoyer par mail.">Extraction engagements</a></li>'."\n";
 			$menus .= '         </ul>'."\n";
 			$menus .= '       </li>'."\n";
 		}

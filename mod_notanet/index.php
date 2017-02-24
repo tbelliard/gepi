@@ -275,7 +275,12 @@ echo "<p style='color:red; margin:1em; padding:1em;' class='fieldset_opacite50'>
 A compter de la rentrée 2016, c'est dans le Livret Scolaire Unique <em>(LSU)</em> qu'il convient de saisir/transférer les notes et appréciations.<br />
 L'application Notanet ne sera plus accessible sauf cas particuliers <em>(établissement à l'étranger, sans Sconet,...)</em>.<br />";
 if(getSettingAOui("active_module_LSUN")) {
-	echo "<a href='../mod_LSUN/index.php'>Accéder au module LSUN</a> de Gepi.";
+	if(acces("/mod_LSUN/index.php", $_SESSION["statut"])) {
+		echo "<a href='../mod_LSUN/index.php'>Accéder au module LSUN</a> de Gepi.";
+	}
+	else {
+		echo "Le module LSUN de Gepi prend le relais.";
+	}
 }
 else {
 	echo "Vous n'avez pas activé le module LSUN de Gepi.";
@@ -284,6 +289,21 @@ else {
 	}
 }
 echo "</p>";
+
+$is_pp=is_pp($_SESSION["login"]);
+if((getSettingAOui("SocleSaisieComposantes_professeur"))||
+((getSettingAOui("SocleSaisieComposantes_PP"))&&($is_pp))) {
+	echo "<p><a href='/saisie/saisie_socle.php'>Saisir les bilans de composantes du Socle</a></p>";
+
+	if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(
+		(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))||
+		((getSettingAOui("SocleOuvertureSaisieComposantes_PP"))&&($is_pp))
+	)) {
+		echo "<p><a href='/saisie/socle_verrouillage.php'>Ouvrir/verrouiller les saisies des bilans de composantes du Socle</a></p>";
+	}
+	echo "<br />";
+}
+
 
 $sql="CREATE TABLE IF NOT EXISTS notanet (
   login varchar(50) NOT NULL default '',

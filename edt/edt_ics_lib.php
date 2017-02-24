@@ -6,6 +6,9 @@ $debug_edt="n";
 // Pouvoir régler l'opacité des couleurs de cours
 $opacity_couleur=0.5;
 
+$couleur_remplacement="red";
+$couleur_remplaced="grey";
+
 $tab_couleur_edt[1]="blue";
 $tab_couleur_edt[2]="fuchsia";
 $tab_couleur_edt[3]="lime";
@@ -203,6 +206,7 @@ function get_days_from_week_number($num_semaine ,$annee) {
 		$tab['num_jour'][$num_jour]['mm']=date('m', $ts);
 		$tab['num_jour'][$num_jour]['aaaa']=date('Y', $ts);
 		$tab['num_jour'][$num_jour]['jjmmaaaa']=date('d/m/Y', $ts);
+		$tab['num_jour'][$num_jour]['aaaammjj']=date('Ymd', $ts);
 	}
 
 	return $tab;
@@ -2121,6 +2125,8 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 //function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_prof="", $largeur_edt=800, $x0=50, $y0=60, $hauteur_une_heure=60, $hauteur_titre=10, $hauteur_entete=40) {
 function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage="semaine", $x0=350, $y0=150, $largeur_edt=800, $hauteur_une_heure=60) {
 	//echo "y0=$y0<br />";
+	global $couleur_remplacement;
+	global $couleur_remplaced;
 	global $debug_edt;
 	global $hauteur_jour, $hauteur_entete;
 	global $tab_group_edt;
@@ -2638,7 +2644,15 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	}
 	*/
 
+	$afficher_remplacements="n";
+	if((getSettingAOui("active_mod_abs_prof"))&&(getSettingAOui("AbsProfAfficherSurEDT2"))) {
+		$afficher_remplacements="y";
+	}
 
+	$signaler_cours_non_remplaces="n";
+	if((getSettingAOui("active_mod_abs_prof"))&&(getSettingAOui("AbsProfSignalerNonRemplaceSurEDT2"))) {
+		$signaler_cours_non_remplaces="y";
+	}
 
 	//==================================================================
 	// On passe à l'affichage du contenu du ou des jours
@@ -2660,23 +2674,118 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			echo "ts_debut_jour=$ts_debut_jour<br />";
 		}
 
+		$tab_mes_cours_remplaces_par_d_autres=array();
+		if(($afficher_remplacements=="y")&&($login_prof!="")&&($login_prof==$_SESSION['login'])) {
+			// Récupérer les cours remplacés par d'autres
+
+			// strftime("%u") : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
+			$tmp_tab_jour=array("", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
+			$nom_jour=$tmp_tab_jour[strftime("%u", $ts_debut_jour)];
+
+			$sql="SELECT apr.id_cours_remplaced, apr.login_user FROM abs_prof_remplacement apr, edt_cours ec WHERE apr.jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."' AND ec.id_cours=apr.id_cours_remplaced AND ec.jour_semaine='".$nom_jour."'";
+			//echo "$sql<br />";
+			$res_mes_cours_remplaced=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_mes_cours_remplaced=mysqli_fetch_object($res_mes_cours_remplaced)) {
+				$tab_mes_cours_remplaces_par_d_autres[$lig_mes_cours_remplaced->id_cours_remplaced]=$lig_mes_cours_remplaced->login_user;
+			}
+		}
+
+		$tab_cours_non_remplaces=array();
+		if($signaler_cours_non_remplaces=="y") {
+			// Il faut récupérer les id_cours pris dans l'amplitude d'absence et exclure ceux qui sont remplacés.
+
+/*
+mysql> select * from abs_prof;
++----+------------+---------------------+---------------------+------------------+------------------------------------------------------------+
+| id | login_user | date_debut          | date_fin            | titre            | description                                                |
++----+------------+---------------------+---------------------+------------------+------------------------------------------------------------+
+|  1 | JOSSETF    | 2016-10-14 07:58:00 | 2016-10-14 17:29:00 | Stage            | <p>
+	Stage</p>
+                                            |
+|  2 | TOESCAV    | 2017-01-24 13:27:00 | 2017-01-24 14:25:00 | Musée Bernay 6C  | <p>
+	Musée Bernay 6C avec M.Pauly de 13h30 à 16h00.</p>
+   |
+|  3 | paulya     | 2017-01-30 07:58:00 | 2017-01-31 17:29:00 | Absence Pauly    | <p>
+	Absence  d'Aurélien</p>
+                              |
++----+------------+---------------------+---------------------+------------------+------------------------------------------------------------+
+3 rows in set (0.00 sec)
+
+mysql> 
+
+mysql> select * from abs_prof_remplacement where validation_remplacement='oui';
++----+------------+-----------+--------+-----------+----------+------------+---------------------+---------------------+---------+---------------------+------------+------------------+-------------------------+------------------------+----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+-------+--------------+--------------+--------------------+
+| id | id_absence | id_groupe | id_aid | id_classe | jour     | id_creneau | date_debut_r        | date_fin_r          | reponse | date_reponse        | login_user | commentaire_prof | validation_remplacement | commentaire_validation | salle    | texte_famille                                                                                                                                                                                | info_famille | duree | heuredeb_dec | jour_semaine | id_cours_remplaced |
++----+------------+-----------+--------+-----------+----------+------------+---------------------+---------------------+---------+---------------------+------------+------------------+-------------------------+------------------------+----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+-------+--------------+--------------+--------------------+
+|  1 |          1 |      4044 |      0 |        35 | 20161014 |          3 | 2016-10-14 10:04:00 | 2016-10-14 11:02:00 | oui     | 2016-10-05 08:37:27 | BOIREAUS   | Blabla
+Blibloblu | oui                     | blabla
+                | 14       |                                                                                                                                                                                              |              | 0     | 0            |              |                  0 |
+|  2 |          2 |      3825 |      0 |        34 | 20170124 |          5 | 2017-01-24 13:27:00 | 2017-01-24 14:25:00 | oui     | 2017-01-16 13:10:44 | BOIREAUS   | Avec joie.       | oui                     |                        | 14       | En raison de la sortie scolaire des 6C au Musée de Bernay, le cours __COURS__ de __PROF_ABSENT__ du __DATE_HEURE__ sera remplacé par un cours avec __PROF_REMPLACANT__ en salle __SALLE__.   | oui          | 0     | 0            |              |                  0 |
+| 15 |          3 |      4059 |      0 |        35 | 20170130 |          2 | 2017-01-30 08:55:00 | 2017-01-30 09:52:00 | oui     | 2017-01-27 21:07:52 | BOIREAUS   |                  | oui                     | Salle info réservée    | Salle 14 |                                                                                                                                                                                              |              | 2     | 0            | lundi        |              24106 |
++----+------------+-----------+--------+-----------+----------+------------+---------------------+---------------------+---------+---------------------+------------+------------------+-------------------------+------------------------+----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+-------+--------------+--------------+--------------------+
+3 rows in set (0.01 sec)
+
+mysql> 
+
+*/
+
+			$sql="SELECT * FROM abs_prof WHERE DATE(date_debut)<='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour."' AND 
+									DATE(date_fin)>='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour."';";
+			$res_cours_non_remplaces=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_cours_non_remplaces=mysqli_fetch_object($res_cours_non_remplaces)) {
+				// Parcourir les cours du prof pour ce jour.
+
+
+
+
+
+
+
+			}
+		}
+
 		// A REVOIR On suppose là qu'il n'y a qu'un id_calendrier.
 		//          A revoir quand on enregistrera des id_calendrier autres
 		// id_groupe, id_aid, duree, heuredeb_dec, id_semaine, id_cours
 		$ajout_sql="";
+		$ajout_sql2="";
 		if($login_eleve!="") {
 			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') AND ";
 			$ajout_sql.="(ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') OR ec.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves WHERE login = '".$login_eleve."')) AND ";
+
+			if($afficher_remplacements=="y") {
+				$ajout_sql2.="(apr.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') OR apr.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves WHERE login = '".$login_eleve."')) AND ";
+
+				$ajout_sql.="(CONCAT(ec.id_cours,'|',ec.jour_semaine,'|',ec.id_definie_periode) NOT IN (SELECT CONCAT(id_cours_remplaced,'|',jour_semaine,'|',id_creneau) FROM abs_prof_remplacement WHERE jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."')) AND ";
+			}
+
 		}
 		if($id_classe!="") {
 			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_groupes_classes WHERE id_classe = '".$id_classe."') AND ";
 			$ajout_sql.="(ec.id_groupe IN (SELECT id_groupe from j_groupes_classes WHERE id_classe = '".$id_classe."') OR 
 					ec.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves jae, j_eleves_classes jec 
 											WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."')) AND ";
+
+			if($afficher_remplacements=="y") {
+				$ajout_sql2.="(apr.id_groupe IN (SELECT id_groupe from j_groupes_classes WHERE id_classe = '".$id_classe."') OR 
+						apr.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves jae, j_eleves_classes jec 
+												WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."')) AND ";
+
+				$ajout_sql.="(CONCAT(ec.id_cours,'|',ec.jour_semaine,'|',ec.id_definie_periode) NOT IN (SELECT CONCAT(id_cours_remplaced,'|',jour_semaine,'|',id_creneau) FROM abs_prof_remplacement WHERE jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."')) AND ";
+			}
 		}
 		if($login_prof!="") {
 			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_groupes_professeurs WHERE login = '".$login_prof."') AND ";
 			$ajout_sql.="ec.login_prof = '".$login_prof."' AND ";
+
+			if($afficher_remplacements=="y") {
+				$ajout_sql2.="apr.login_user = '".$login_prof."' AND ";
+
+				// Pour éviter que le prof ne voit plus du tout ses cours (remplacés par d'autres)
+				if($login_prof!=$_SESSION['login']) {
+					$ajout_sql.="(CONCAT(ec.id_cours,'|',ec.jour_semaine,'|',ec.id_definie_periode) NOT IN (SELECT CONCAT(id_cours_remplaced,'|',jour_semaine,'|',id_creneau) FROM abs_prof_remplacement WHERE jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."')) AND ";
+				}
+			}
 		}
 
 		//20150206
@@ -2704,12 +2813,92 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 						$avec_contrainte_semaine
 						ec.id_definie_periode=ecr.id_definie_periode 
 					ORDER BY heuredebut_definie_periode, id_semaine;";
-		*/
-		$sql="SELECT DISTINCT * FROM edt_cours ec, edt_creneaux ecr WHERE
-						ec.jour_semaine = '".$jour_sem."' AND
-						$ajout_sql
-						ec.id_definie_periode=ecr.id_definie_periode 
-					ORDER BY heuredebut_definie_periode, id_semaine;";
+
+		$jour_debut_jour=$jours['num_jour'][$num_jour]['jj'];
+		$mois_debut_jour=$jours['num_jour'][$num_jour]['mm'];
+		$annee_debut_jour=$jours['num_jour'][$num_jour]['aaaa'];
+		
+id
+id_groupe
+salle
+jour
+id_creneau
+
+date_debut_r
+date_fin_r
+
+id_classe
+info_famille
+id_absence
+
+login_user
+id_aid
+
+mysql> show fields from edt_cours;
++--------------------+-------------+------+-----+---------+----------------+
+| Field              | Type        | Null | Key | Default | Extra          |
++--------------------+-------------+------+-----+---------+----------------+
+| id_cours           | int(11)     | NO   | PRI | NULL    | auto_increment |
+| id_groupe          | varchar(10) | NO   |     |         |                |
+| id_salle           | char(3)     | NO   |     |         |                |
+| jour_semaine       | varchar(10) | NO   |     |         |                |
+| id_definie_periode | char(3)     | NO   |     |         |                |
+| duree              | varchar(10) | NO   |     | 2       |                |
+| heuredeb_dec       | char(3)     | NO   |     | 0       |                |
+| id_semaine         | varchar(10) | NO   |     | 0       |                |
+| id_calendrier      | char(3)     | NO   |     | 0       |                |
+| modif_edt          | char(3)     | NO   |     | 0       |                |
+| login_prof         | varchar(50) | NO   |     |         |                |
+| id_aid             | char(10)    | YES  |     |         |                |
++--------------------+-------------+------+-----+---------+----------------+
+12 rows in set (0.06 sec)
+
+mysql> 
+
+							,id_definie_periode
+							id_creneau AS id_definie_periode,
+*/
+
+		if($afficher_remplacements=="y") {
+			$sql="(SELECT DISTINCT id_cours,id_groupe,id_salle,jour_semaine,duree,heuredeb_dec,id_semaine,id_calendrier,modif_edt,login_prof,id_aid,
+							'standard' AS type_cours,
+							ecr.*
+						 FROM edt_cours ec, edt_creneaux ecr WHERE
+							ec.jour_semaine = '".$jour_sem."' AND
+							$ajout_sql
+							ec.id_definie_periode=ecr.id_definie_periode)
+				UNION 
+				(SELECT DISTINCT id,
+							id_groupe,
+							salle AS id_salle,
+							jour_semaine,
+							duree, 
+							heuredeb_dec, 
+							'0' AS id_semaine, 
+							'0' AS id_calendrier, 
+							id_absence AS modif_edt, 
+							login_user AS login_prof,
+							id_aid,
+							'remplacement' AS type_cours,
+							ecr.* 
+						FROM abs_prof_remplacement apr, edt_creneaux ecr WHERE
+							apr.jour = '".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."' AND 
+							apr.validation_remplacement='oui' AND 
+							apr.duree!='0' AND 
+							$ajout_sql2
+							apr.id_creneau=ecr.id_definie_periode) 
+						ORDER BY heuredebut_definie_periode, id_semaine;";
+		}
+		else {
+			$sql="SELECT DISTINCT *,
+							'standard' AS type_cours,
+							ecr.*
+						 FROM edt_cours ec, edt_creneaux ecr WHERE
+							ec.jour_semaine = '".$jour_sem."' AND
+							$ajout_sql
+							ec.id_definie_periode=ecr.id_definie_periode 
+						ORDER BY heuredebut_definie_periode, id_semaine;";
+		}
 
 		if($debug_edt=="y") {
 			echo "<div style='margin-left:1000px'>";
@@ -2717,13 +2906,114 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			echo "</div>";
 		}
 
+/*
+
+stdClass Object
+(
+    [id_cours] => 24627
+    [id_groupe] => 4086
+    [id_salle] => 4
+    [jour_semaine] => lundi
+    [id_definie_periode] => 6
+    [duree] => 2
+    [heuredeb_dec] => 0
+    [id_semaine] => B
+    [id_calendrier] => 0
+    [modif_edt] => 0
+    [login_prof] => BOIREAUS
+    [id_aid] => 
+    [nom_definie_periode] => S2
+    [heuredebut_definie_periode] => 14:25:00
+    [heurefin_definie_periode] => 15:22:00
+    [suivi_definie_periode] => 1
+    [type_creneaux] => cours
+    [jour_creneau] => 
+    [type_cours] => standard
+)
+
+stdClass Object
+(
+    [id_cours] => 15
+    [id_groupe] => 4059
+    [id_salle] => Salle 14
+    [jour_semaine] => lundi
+    [id_definie_periode] => remplacement			???????????
+    [duree] => 2
+    [heuredeb_dec] => 0
+    [id_semaine] => 0
+    [id_calendrier] => 0
+    [modif_edt] => 3
+    [login_prof] => BOIREAUS
+    [id_aid] => 0
+    [nom_definie_periode] => 2			???????????
+    [heuredebut_definie_periode] => M2			???????????
+    [heurefin_definie_periode] => 08:55:00
+    [suivi_definie_periode] => 09:52:00			???????????
+    [type_creneaux] => 1			???????????
+    [jour_creneau] => cours			???????????
+    [type_cours] => 
+)
+
+mysql> show fields from abs_prof_remplacement
+    -> ;
++-------------------------+--------------+------+-----+---------+----------------+
+| Field                   | Type         | Null | Key | Default | Extra          |
++-------------------------+--------------+------+-----+---------+----------------+
+| id                      | int(11)      | NO   | PRI | NULL    | auto_increment |
+| id_absence              | int(11)      | NO   |     | NULL    |                |
+| id_groupe               | int(11)      | NO   |     | NULL    |                |
+| id_aid                  | int(11)      | NO   |     | NULL    |                |
+| id_classe               | int(11)      | NO   |     | NULL    |                |
+| jour                    | char(8)      | NO   |     | NULL    |                |
+| id_creneau              | int(11)      | NO   |     | NULL    |                |
+| date_debut_r            | datetime     | NO   |     | NULL    |                |
+| date_fin_r              | datetime     | NO   |     | NULL    |                |
+| reponse                 | varchar(30)  | NO   |     | NULL    |                |
+| date_reponse            | datetime     | NO   |     | NULL    |                |
+| login_user              | varchar(50)  | NO   |     | NULL    |                |
+| commentaire_prof        | text         | NO   |     | NULL    |                |
+| validation_remplacement | varchar(30)  | NO   |     | NULL    |                |
+| commentaire_validation  | text         | NO   |     | NULL    |                |
+| salle                   | varchar(100) | NO   |     | NULL    |                |
+| texte_famille           | text         | NO   |     | NULL    |                |
+| info_famille            | varchar(10)  | NO   |     | NULL    |                |
+| duree                   | varchar(10)  | NO   |     | 0       |                |
+| heuredeb_dec            | varchar(3)   | NO   |     | 0       |                |
+| jour_semaine            | varchar(10)  | NO   |     | NULL    |                |
+| id_cours_remplaced      | int(11)      | NO   |     | NULL    |                |
++-------------------------+--------------+------+-----+---------+----------------+
+22 rows in set (0.01 sec)
+
+mysql> show fields from edt_cours;
++--------------------+-------------+------+-----+---------+----------------+
+| Field              | Type        | Null | Key | Default | Extra          |
++--------------------+-------------+------+-----+---------+----------------+
+| id_cours           | int(11)     | NO   | PRI | NULL    | auto_increment |
+| id_groupe          | varchar(10) | NO   |     |         |                |
+| id_salle           | char(3)     | NO   |     |         |                |
+| jour_semaine       | varchar(10) | NO   |     |         |                |
+| id_definie_periode | char(3)     | NO   |     |         |                |
+| duree              | varchar(10) | NO   |     | 2       |                |
+| heuredeb_dec       | char(3)     | NO   |     | 0       |                |
+| id_semaine         | varchar(10) | NO   |     | 0       |                |
+| id_calendrier      | char(3)     | NO   |     | 0       |                |
+| modif_edt          | char(3)     | NO   |     | 0       |                |
+| login_prof         | varchar(50) | NO   |     |         |                |
+| id_aid             | char(10)    | YES  |     |         |                |
++--------------------+-------------+------+-----+---------+----------------+
+12 rows in set (0.00 sec)
+
+mysql> 
+
+*/
+
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
-			/*
-			echo "<div style='margin-left:1000px'><pre>";
-			print_r($lig);
-			echo "</pre></div>";
-			*/
+			if($debug_edt=="y") {
+				echo "<div style='margin-left:1000px;color:orange;'><pre>";
+				print_r($lig);
+				echo "</pre></div>";
+			}
 			$tab_debut=explode(":", $lig->heuredebut_definie_periode);
 			$heure_debut=$tab_debut[0];
 			$min_debut=$tab_debut[1];
@@ -2895,39 +3185,87 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 								// 20160919
 								//$chaine_texte_ligne_1=$chaine_matiere;
 								//$chaine_texte_ligne_1=$current_group['name'];
-								$chaine_texte_ligne_1=preg_replace("/[_.]/"," ",$current_group['name']);
 
-								$chaine_proflist_string=$current_group['profs']['proflist_string'];
+								// 20170128
+								if((!isset($lig->type_cours))||($lig->type_cours!="remplacement")) {
+									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="standard";
 
-								if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
-									$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
-								}
-								// 20160919
-								if($type_affichage=="prof") {
-									$bgcolor_courant=get_couleur_edt_prof($lig->id_groupe);
+									$chaine_texte_ligne_1=preg_replace("/[_.]/"," ",$current_group['name']);
+
+									$chaine_proflist_string=$current_group['profs']['proflist_string'];
+
+									if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
+										$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
+									}
+									// 20160919
+									if($type_affichage=="prof") {
+										$bgcolor_courant=get_couleur_edt_prof($lig->id_groupe);
+									}
+									else {
+										$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
+									}
+
+									$cpt_prof=0;
+									foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
+										if($cpt_prof>0) {
+											$chaine_noms_profs.=", ";
+										}
+										$chaine_noms_profs.=$current_prof['nom'];
+
+										$cpt_prof++;
+									}
+
+									if(array_key_exists($lig->id_cours,$tab_mes_cours_remplaces_par_d_autres)) {
+										$chaine_texte_ligne_1="Remplacé";
+
+										if(!isset($tab_prof[$lig->login_prof])) {
+											$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
+											$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($res_prof)>0) {
+												$lig_prof=mysqli_fetch_object($res_prof);
+												$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
+												$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+											}
+											else {
+												$tab_prof[$lig->login_prof]['nom']="...";
+												$tab_prof[$lig->login_prof]['designation']="...";
+											}
+										}
+										$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+										$chaine_proflist_string=$chaine_noms_profs;
+
+										$bgcolor_courant=$couleur_remplaced;
+									}
 								}
 								else {
-									$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
+									$bgcolor_courant=$couleur_remplacement;
+
+									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="remplacement";
+
+									// RCD : Remplacement de Courte Durée
+									$chaine_texte_ligne_1="<span title='Remplacement ponctuel'>Remplacement</span>";
+
+									if(!isset($tab_prof[$lig->login_prof])) {
+										$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
+										$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_prof)>0) {
+											$lig_prof=mysqli_fetch_object($res_prof);
+											$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
+											$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+										}
+										else {
+											$tab_prof[$lig->login_prof]['nom']="...";
+											$tab_prof[$lig->login_prof]['designation']="...";
+										}
+									}
+									$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+									$chaine_proflist_string=$chaine_noms_profs;
+
+									//$chaine_proflist_string=get_valeur_champ("utilisateurs", "login='".$lig->login_prof."'", "nom");
 								}
 
 								$chaine_liste_classes=$current_group['classlist_string'];
 
-								$cpt_prof=0;
-								foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
-									if($cpt_prof>0) {
-										$chaine_noms_profs.=", ";
-									}
-									$chaine_noms_profs.=$current_prof['nom'];
-
-									/*
-									if(!isset($tab_prof[$lig->login_prof])) {
-										$tab_prof[$lig->login_prof]['nom']=$current_prof['nom'];
-										$tab_prof[$lig->login_prof]['designation']=$current_prof['civilite']." ".$current_prof['nom'].mb_substr($current_prof['prenom'],0,1);
-									}
-									*/
-
-									$cpt_prof++;
-								}
 							}
 						}
 					}
@@ -3012,14 +3350,6 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 									}
 								}
 
-								$current_aid=$tab_aid_edt[$lig->id_aid];
-
-								$chaine_nom_enseignement=$current_aid['nom_aid']." (".$current_aid['nom_general_court'].") (".$current_aid['nom_general_complet'].") avec ".$current_aid['proflist_string'];
-
-								$chaine_matiere=$current_aid['nom_aid'];
-								// 20160919
-								$chaine_texte_ligne_1=$chaine_matiere;
-
 								if(!isset($tab_prof[$lig->login_prof])) {
 									$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
 									$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -3036,7 +3366,54 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 								$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
 								$chaine_proflist_string=$current_aid['proflist_string'];
 
-								$bgcolor_courant="azure";
+								// 20170128
+								if((!isset($lig->type_cours))||($lig->type_cours!="remplacement")) {
+									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="standard";
+
+									$bgcolor_courant="azure";
+
+									$current_aid=$tab_aid_edt[$lig->id_aid];
+
+									$chaine_nom_enseignement=$current_aid['nom_aid']." (".$current_aid['nom_general_court'].") (".$current_aid['nom_general_complet'].") avec ".$current_aid['proflist_string'];
+
+									$chaine_matiere=$current_aid['nom_aid'];
+									// 20160919
+									$chaine_texte_ligne_1=$chaine_matiere;
+
+									if(array_key_exists($lig->id_cours,$tab_mes_cours_remplaces_par_d_autres)) {
+										$chaine_texte_ligne_1="Remplacé";
+
+										if(!isset($tab_prof[$lig->login_prof])) {
+											$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
+											$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($res_prof)>0) {
+												$lig_prof=mysqli_fetch_object($res_prof);
+												$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
+												$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+											}
+											else {
+												$tab_prof[$lig->login_prof]['nom']="...";
+												$tab_prof[$lig->login_prof]['designation']="...";
+											}
+										}
+										$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+										$chaine_proflist_string=$chaine_noms_profs;
+
+										$bgcolor_courant=$couleur_remplaced;
+									}
+								}
+								else {
+									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="remplacement";
+
+									$bgcolor_courant=$couleur_remplacement;
+
+									$chaine_matiere="";
+									// RCD : Remplacement de Courte Durée
+									$chaine_texte_ligne_1="<span title='Remplacement ponctuel'>Remplacement</span>";
+
+									//$chaine_proflist_string=get_valeur_champ("utilisateurs", "login='".$lig->login_prof."'", "nom");
+									//$chaine_noms_profs=$chaine_proflist_string;
+								}
 							}
 						}
 					}
@@ -3044,12 +3421,6 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 						// On ne devrait pas passer là
 
 						$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
-
-						$chaine_nom_enseignement="Cours...";
-
-						$chaine_matiere="Matière";
-						// 20160919
-						$chaine_texte_ligne_1=$chaine_matiere;
 
 						if(!isset($tab_prof[$lig->login_prof])) {
 							$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
@@ -3067,7 +3438,53 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 						$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
 						$chaine_proflist_string=$tab_prof[$lig->login_prof]['designation'];
 
-						$bgcolor_courant="white";
+						// 20170128
+						if((!isset($lig->type_cours))||($lig->type_cours!="remplacement")) {
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="bizarre";
+
+							$bgcolor_courant="white";
+
+							$chaine_nom_enseignement="Cours...";
+
+							$chaine_matiere="Matière";
+							// 20160919
+							$chaine_texte_ligne_1=$chaine_matiere;
+
+							if(array_key_exists($lig->id_cours,$tab_mes_cours_remplaces_par_d_autres)) {
+								$chaine_texte_ligne_1="Remplacé";
+
+								if(!isset($tab_prof[$lig->login_prof])) {
+									$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
+									$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_prof)>0) {
+										$lig_prof=mysqli_fetch_object($res_prof);
+										$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
+										$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+									}
+									else {
+										$tab_prof[$lig->login_prof]['nom']="...";
+										$tab_prof[$lig->login_prof]['designation']="...";
+									}
+								}
+								$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+								$chaine_proflist_string=$chaine_noms_profs;
+
+								$bgcolor_courant=$couleur_remplaced;
+							}
+
+						}
+						else {
+							$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="remplacement";
+
+							$bgcolor_courant=$couleur_remplacement;
+
+							$chaine_matiere="";
+							// RCD : Remplacement de Courte Durée
+							$chaine_texte_ligne_1="<span title='Remplacement ponctuel'>Remplacement</span>";
+
+							//$chaine_proflist_string=get_valeur_champ("utilisateurs", "login='".$lig->login_prof."'", "nom");
+							//$chaine_noms_profs=$chaine_proflist_string;
+						}
 					}
 				//}
 
@@ -3424,9 +3841,18 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 										line-height:".$font_size."pt;
 										overflow: hidden;
 										z-index:21;'";
-								if(isset($tab2[$loop]['id_cours'])) {
+								if((isset($tab2[$loop]['id_cours']))&&((!isset($tab2[$loop]['type_cours']))||($tab2[$loop]['type_cours']!="remplacement"))) {
+									//alert('".$tab2[$loop]['type_cours']."');
 									$html.="
 										onclick=\"action_edt_cours('".$tab2[$loop]['id_cours']."')\"";
+								}
+								elseif((isset($tab2[$loop]['type_cours']))&&($tab2[$loop]['type_cours']=="remplacement")) {
+									$html.="
+										onclick=\"cacher_div('infobulle_action_edt')\"";
+									/*
+									$html.="
+										title=\"\"";
+									*/
 								}
 								$html.=">";
 								// DEBUG:

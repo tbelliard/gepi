@@ -159,6 +159,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 				echo "<p>".$info_grp;
 			}
 
+			if((getSettingValue("active_module_absence")=="2")&&(acces("/mod_abs2/index.php", $_SESSION['statut']))) {
+				echo " <a href='../mod_abs2/index.php?type_selection=id_groupe&id_groupe=".$lig->id_groupe."' title=\"Saisir les absences pour ce groupe.\"><img src='../images/icons/absences.png' class='icone16' alt='Abs2' /></a>";
+			}
+
 			// 20170110
 			$lien_edt_prof=false;
 			$restriction_lien_prof="n";
@@ -1315,11 +1319,16 @@ else {
 	*/
 }
 //=======================================
+// 20170128
+$tab_jours_vacances=get_tab_jours_vacances();
+
 $precedent="";
 $suivant="";
 $semaine_courante_trouvee="n";
 $cpt=1;
 $chaine_options_select="";
+
+$date_courante_aaaammjj=strftime("%Y%m%d");
 
 if(strftime("%m")>=8) {
 	$annee=strftime("%Y");
@@ -1344,9 +1353,17 @@ for($n=36;$n<52;$n++) {
 			$suivant=$cpt;
 		}
 	}
-
+	// 20170128
+	$style_option="";
+	if(($date_courante_aaaammjj>=$tmp_tab['num_jour'][1]['aaaammjj'])&&($date_courante_aaaammjj<=$tmp_tab['num_jour'][7]['aaaammjj'])) {
+		$style_option=" style='color:blue' title=\"Semaine courante\"";
+	}
+	elseif((in_array($tmp_tab['num_jour'][1]['aaaammjj'], $tab_jours_vacances))&&
+	(in_array($tmp_tab['num_jour'][7]['aaaammjj'], $tab_jours_vacances))) {
+		$style_option=" style='color:grey'";
+	}
 	$chaine_options_select.="
-				<option value='$n|$annee'$selected>Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+				<option value='$n|$annee'".$selected.$style_option.">Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
 	$cpt++;
 }
 $annee++;
@@ -1368,8 +1385,17 @@ for($n=1;$n<28;$n++) {
 			$suivant=$cpt;
 		}
 	}
+	// 20170128
+	$style_option="";
+	if(($date_courante_aaaammjj>=$tmp_tab['num_jour'][1]['aaaammjj'])&&($date_courante_aaaammjj<=$tmp_tab['num_jour'][7]['aaaammjj'])) {
+		$style_option=" style='color:blue' title=\"Semaine courante\"";
+	}
+	elseif((in_array($tmp_tab['num_jour'][1]['aaaammjj'], $tab_jours_vacances))&&
+	(in_array($tmp_tab['num_jour'][7]['aaaammjj'], $tab_jours_vacances))) {
+		$style_option=" style='color:grey'";
+	}
 	$chaine_options_select.="
-				<option value='".$m."|$annee'$selected>Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+				<option value='".$m."|$annee'".$selected.$style_option.">Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
 	$cpt++;
 }
 
@@ -1518,8 +1544,10 @@ if($mode!="afficher_edt") {
 	$y1=252;
 
 	if(isset($_SESSION['ariane'])) {
-		$y_decalage_1_js=210;
-		$y_decalage_2_js=272;
+		//$y_decalage_1_js=210;
+		//$y_decalage_2_js=272;
+		$y_decalage_1_js=220;
+		$y_decalage_2_js=282;
 	}
 	else {
 		$y_decalage_1_js=190;

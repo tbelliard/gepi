@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -2273,15 +2273,17 @@ function checkbox_change(cpt) {
 			echo "</tr>\n";
 			echo "</table>\n";
 
+			echo "<p><a href='javascript:cocher_decocher(true)'>Cocher</a> / <a href='javascript:cocher_decocher(false)'>décocher</a> tous les groupes.</p>\n";
+
 			echo "<p>\n";
-			echo "<input type='checkbox' name='groupe_hors_enseignement' id='groupe_hors_enseignement' value='y' onchange='changement()' ";
+			echo "<input type='checkbox' name='groupe_hors_enseignement' id='groupe_hors_enseignement' value='y' onchange=\"changement(); checkbox_change2(this.id);\" ";
 			$sql="SELECT 1=1 FROM ex_groupes WHERE id_exam='$id_exam' AND matiere='$matiere' AND id_groupe='0' AND type='hors_enseignement';";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				echo "checked ";
 			}
 			echo "/>\n";
-			echo "<label for='groupe_hors_enseignement' style='cursor: pointer;'> Créer un groupe hors enseignement</label><br />\n";
+			echo "<label for='groupe_hors_enseignement' id='texte_groupe_hors_enseignement' style='cursor: pointer;'> Créer un groupe hors enseignement</label><br />\n";
 			echo "(<i>Un tel 'groupe' permet par exemple de saisir en terminale des notes obtenues au bac de français en première</i>).</p>\n";
 
 			echo "<input type='hidden' name='id_exam' value='$id_exam' />\n";
@@ -2291,8 +2293,6 @@ function checkbox_change(cpt) {
 			//echo "<input type='hidden' name='aff' value='groupes' />\n";
 			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
-
-			echo "<p><a href='javascript:cocher_decocher(true)'>Cocher</a> / <a href='javascript:cocher_decocher(false)'>décocher</a> tous les groupes.</p>\n";
 
 			echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
@@ -2306,11 +2306,23 @@ function checkbox_change(cpt) {
 	}
 }
 
+function checkbox_change2(id) {
+	if(document.getElementById(id)) {
+		if(document.getElementById(id).checked) {
+			document.getElementById('texte_'+id).style.fontWeight='bold';
+		}
+		else {
+			document.getElementById('texte_'+id).style.fontWeight='normal';
+		}
+	}
+}
+
 // Tout cocher/décocher
 function cocher_decocher(mode) {
 	for (var k=0;k<$cpt;k++) {
 		if(document.getElementById('id_groupe_'+k)){
 			document.getElementById('id_groupe_'+k).checked=mode;
+			checkbox_change(k);
 		}
 	}
 }

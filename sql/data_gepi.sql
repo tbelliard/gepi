@@ -840,11 +840,11 @@ INSERT INTO droits VALUES ( '/mod_ooo/documents_ects.php', 'F', 'V', 'F', 'V', '
 INSERT INTO droits VALUES ( '/mod_ects/recapitulatif.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Recapitulatif globaux', '');
 INSERT INTO droits SET id='/mod_discipline/stats2/index.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Module discipline: Statistiques',statut='';
 INSERT INTO droits VALUES ( '/mod_discipline/definir_categories.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Définir les catégories', '');
-INSERT INTO droits VALUES ('/mod_abs2/admin/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
-INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
-INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
-INSERT INTO droits VALUES ('/mod_abs2/admin/admin_lieux_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
-INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/index.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_lieux_absences.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_table_agregation.php', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/index.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');
@@ -1814,3 +1814,8 @@ INSERT INTO droits VALUES ('/saisie/import_note_app_aid2.php', 'F', 'V', 'F', 'F
 INSERT INTO droits SET id='/aid/transfert_groupe_aid.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Transfert Groupe/AID', statut='';
 INSERT INTO droits SET id='/groupes/visu_groupes_prof.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='V', autre='F', description='Voir les enseignements du professeur', statut='';
 INSERT INTO groupes_types SET nom_court='local', nom_complet='Enseignement local', nom_complet_pluriel='Enseignements locaux';
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_droits.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'ABS2: Droits non admin', '');
+INSERT INTO droits SET id='/mod_listes_perso/export_liste.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Listes perso: Export', statut='';
+INSERT INTO droits SET id='/saisie/saisie_socle.php', administrateur='F', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Socle: Saisie', statut='';
+INSERT INTO droits SET id='/saisie/socle_verrouillage.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Socle: Verrouillage', statut='';
+INSERT INTO droits SET id='/saisie/socle_verif.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Socle: Vérification du remplissage', statut='';

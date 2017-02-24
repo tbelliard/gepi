@@ -79,6 +79,14 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 		}
 	}
 
+	$acces_saisie_engagement="n";
+	if(getSettingAOui('active_mod_engagements')) {
+		$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+		if(count($tab_engagements_avec_droit_saisie['indice'])>0) {
+			$acces_saisie_engagement="y";
+		}
+	}
+
 	// Pour permettre d'utiliser le module EdT avec les autres modules
 	$groupe_abs = $groupe_text = '';
 	if (getSettingValue("autorise_edt_tous") == "y") {
@@ -536,7 +544,8 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 				$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 				$cpt_sous_menu++;
 
-				if((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template)) {
+				if(((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template))||
+				($acces_saisie_engagement=="y")) {
 					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
 					$cpt_sous_menu++;
 				}
@@ -766,7 +775,34 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
             }
             $res_test_notanet->close();
 	} else {$barre_notanet = '';}
-    
+
+	// Composantes du Socle
+	if((getSettingAOui("SocleSaisieComposantes"))&&
+	((getSettingAOui("SocleSaisieComposantes_professeur"))||
+	((getSettingAOui("SocleSaisieComposantes_PP"))&&($is_pp_header_barre_prof_template)))) {
+		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/saisie/saisie_socle.php' , "texte"=>"Socle");
+
+		if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(
+			(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))||
+			((getSettingAOui("SocleOuvertureSaisieComposantes_PP"))&&($is_pp_header_barre_prof_template))
+		)) {
+			$tmp_sous_menu=array();
+			$cpt_sous_menu=0;
+
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_socle.php' , "texte"=>"Saisie Socle");
+			$cpt_sous_menu++;
+
+			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/socle_verrouillage.php' , "texte"=>"Verrouillage");
+			$cpt_sous_menu++;
+
+			$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
+			$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+
+		}
+
+		$compteur_menu++;
+	}
+
 	//=======================================================
 	// Module Epreuves blanches
 	if (getSettingAOui("active_mod_epreuve_blanche")) {
@@ -830,6 +866,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/impression/impression_serie.php' , "texte"=>"Mes listes PDF");
 	$cpt_sous_menu++;
 
+	if(getSettingAOui("GepiListePersonnelles")) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_listes_perso/index.php' , "texte"=>"Listes perso");
+		$cpt_sous_menu++;
+	}
+
 	if(getSettingValue('active_mod_ooo')=='y') {
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_ooo/publipostage_ooo.php' , "texte"=>"Publipostage OOo");
 		$cpt_sous_menu++;
@@ -876,7 +917,8 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 		$cpt_sous_menu++;
 	}
 
-	if((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template)) {
+	if(((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template))||
+	($acces_saisie_engagement=="y")) {
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
 		$cpt_sous_menu++;
 	}

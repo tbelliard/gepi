@@ -2572,9 +2572,8 @@ function get_noms_classes_from_ele_login($ele_login){
  * @return string 
  */
 function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
-    global $mysqli;
+	global $mysqli;
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
-     
 	$res_class=mysqli_query($mysqli, $sql);
 	$chaine="";
 	if($res_class->num_rows > 0) {
@@ -3482,7 +3481,9 @@ $cpt_debug_debug_var=0;
 function debug_var() {
 	global $debug_var_count;
 	global $cpt_debug_debug_var;
+	global $NON_PROTECT;
 
+	$debug_var_count['NON_PROTECT']=0;
 	$debug_var_count['POST']=0;
 	$debug_var_count['GET']=0;
 	$debug_var_count['SESSION']=0;
@@ -3629,6 +3630,44 @@ function debug_var() {
 
 	echo "</div>\n";
 	echo "</blockquote>\n";
+
+
+	if(isset($NON_PROTECT)) {
+		echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
+		echo "<p>Variables envoyées en NON_PROTECT: ";
+		if(count($NON_PROTECT)==0) {
+			echo "aucune";
+		}
+		else {
+			echo "(<a href='#ancre_debug_var_$cpt_debug_debug_var' onclick=\"tab_etat_debug_var[$cpt_debug_debug_var]=tab_etat_debug_var[$cpt_debug_debug_var]*(-1);affiche_debug_var('container_debug_var_$cpt_debug_debug_var',tab_etat_debug_var[$cpt_debug_debug_var]);return FALSE;\">*</a>)";
+		}
+		echo "</p>\n";
+		echo "<blockquote>\n";
+		echo "<div id='container_debug_var_$cpt_debug_debug_var'>\n";
+		$cpt_debug_debug_var++;
+		echo "<table summary=\"Tableau de debug\">\n";
+		foreach($NON_PROTECT as $post => $val) {
+			echo "<tr><td valign='top'>\$NON_PROTECT['".$post."']=</td><td>";
+
+			if(is_array($NON_PROTECT[$post])) {
+				echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>Array\n";
+				tab_debug_var('NON_PROTECT',$NON_PROTECT[$post],'$NON_PROTECT['.$post.']');
+
+				$cpt_debug_debug_var++;
+			}
+			else {
+				echo $val;
+				$debug_var_count['NON_PROTECT']++;
+			}
+
+			echo "</td></tr>\n";
+		}
+		echo "</table>\n";
+
+		echo "<p>Nombre de valeurs en NON_PROTECT: <b>".$debug_var_count['NON_PROTECT']."</b></p>\n";
+		echo "</div>\n";
+		echo "</blockquote>\n";
+	}
 
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
@@ -4418,47 +4457,17 @@ function get_commune($code_commune_insee,$mode){
  *
  * @return string civilite nom prénom de l'utilisateur
  */
-function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
+function civ_nom_prenom($login, $mode='prenom', $avec_statut="n", $retourner_login_si_non_trouve="n") {
 	global $mysqli;
 	$retour="";
-	$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
-	$res_user=mysqli_query($mysqli, $sql);
-	if ($res_user->num_rows > 0) {
-		$lig_user=$res_user->fetch_object();
-		if($lig_user->civilite!="") {
-			$retour.=$lig_user->civilite." ";
-		}
-		if($mode=='prenom') {
-			$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
-		}
-		else {
-			// Initiale
-			$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
-		}
-		if($avec_statut=='y') {
-			if($lig_user->statut=='autre') {
-				$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
-					WHERE du.login_user = '".$login."'
-						AND du.id_statut = ds.id;";
-				$res_statut=mysqli_query($mysqli, $sql);
-				if($res_statut->num_rows > 0) {
-					$lig_statut=$res_statut->fetch_object();
-					$retour.=" ($lig_statut->nom_statut)";
-					$res_statut->close();
-				}
-			}
-			else {
-				$retour.=" ($lig_user->statut)";
-			}
-		}
-		$res_user->close();
-	}
-	else {
-		// Chercher si c'est un élève, ou un parent avec login dont le compte aurait été supprimé?
-		$sql="SELECT nom,prenom,sexe FROM eleves WHERE login='$login';";
+	if($login!="") {
+		$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
 		$res_user=mysqli_query($mysqli, $sql);
 		if ($res_user->num_rows > 0) {
 			$lig_user=$res_user->fetch_object();
+			if($lig_user->civilite!="") {
+				$retour.=$lig_user->civilite." ";
+			}
 			if($mode=='prenom') {
 				$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
 			}
@@ -4467,18 +4476,29 @@ function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 				$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
 			}
 			if($avec_statut=='y') {
-				$retour.=" (eleve)";
+				if($lig_user->statut=='autre') {
+					$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+						WHERE du.login_user = '".$login."'
+							AND du.id_statut = ds.id;";
+					$res_statut=mysqli_query($mysqli, $sql);
+					if($res_statut->num_rows > 0) {
+						$lig_statut=$res_statut->fetch_object();
+						$retour.=" ($lig_statut->nom_statut)";
+						$res_statut->close();
+					}
+				}
+				else {
+					$retour.=" ($lig_user->statut)";
+				}
 			}
 			$res_user->close();
 		}
 		else {
-			$sql="SELECT nom,prenom,civilite FROM resp_pers WHERE login='$login';";
+			// Chercher si c'est un élève, ou un parent avec login dont le compte aurait été supprimé?
+			$sql="SELECT nom,prenom,sexe FROM eleves WHERE login='$login';";
 			$res_user=mysqli_query($mysqli, $sql);
 			if ($res_user->num_rows > 0) {
 				$lig_user=$res_user->fetch_object();
-				if($lig_user->civilite!="") {
-					$retour.=$lig_user->civilite." ";
-				}
 				if($mode=='prenom') {
 					$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
 				}
@@ -4487,10 +4507,34 @@ function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 					$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
 				}
 				if($avec_statut=='y') {
-					$retour.=" (responsable)";
+					$retour.=" (eleve)";
 				}
 				$res_user->close();
 			}
+			else {
+				$sql="SELECT nom,prenom,civilite FROM resp_pers WHERE login='$login';";
+				$res_user=mysqli_query($mysqli, $sql);
+				if ($res_user->num_rows > 0) {
+					$lig_user=$res_user->fetch_object();
+					if($lig_user->civilite!="") {
+						$retour.=$lig_user->civilite." ";
+					}
+					if($mode=='prenom') {
+						$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
+					}
+					else {
+						// Initiale
+						$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
+					}
+					if($avec_statut=='y') {
+						$retour.=" (responsable)";
+					}
+					$res_user->close();
+				}
+			}
+		}
+		if(($retour=="")&&($retourner_login_si_non_trouve=="y")) {
+			$retour=$login;
 		}
 	}
 	return $retour;
@@ -10967,11 +11011,22 @@ function get_tab_infos_evenement($id_ev) {
 	return $tab;
 }
 
-function get_tab_date_prochain_evenement_telle_classe($id_classe, $type) {
+//function get_tab_date_prochain_evenement_telle_classe($id_classe, $type, $tab_visible_par=array("all")) {
+function get_tab_date_prochain_evenement_telle_classe($id_classe, $type, $avec_visible_par_statut="n", $mes_classes_seulement="n") {
 	$tab=array();
 
+	// $mes_classes_seulement implémenté seulement pour les profs pour le moment
+	//                        Sans intérêt si $id_classe!=""
+
+	/*
+	$sql_ajout="";
+	if(!in_array("all", $tab_visible_par)) {
+		
+	}
+	*/
+
 	if($id_classe!="") {
-		$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
+		$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_assoc($res)) {
@@ -10979,11 +11034,27 @@ function get_tab_date_prochain_evenement_telle_classe($id_classe, $type) {
 				$tab['slashdate_ev']=formate_date($lig['date_evenement']);
 				$tab['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
 				$tab['lieu']=get_infos_salle_cours($lig['id_salle']);
+				$tab['periode']=get_infos_salle_cours($lig['periode']);
+				if($avec_visible_par_statut=="y") {
+					$tab['statuts']=array();
+					$sql="SELECT DISTINCT statut FROM d_dates_evenements_utilisateurs WHERE id_ev='".$lig['id_ev']."';";
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res2)>0) {
+						while($lig2=mysqli_fetch_assoc($res2)) {
+							$tab['statuts'][]=$lig2['statut'];
+						}
+					}
+				}
 			}
 		}
 	}
 	else {
-		$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement;";
+		$sql_ajout_mes_classes="";
+		if($mes_classes_seulement=="y") {
+			$sql_ajout_mes_classes=" AND ddec.id_classe IN (SELECT DISTINCT id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."') ";
+		}
+
+		$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND dde.type='".$type."' AND c.id=ddec.id_classe ".$sql_ajout_mes_classes." ORDER BY date_evenement;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
@@ -10994,6 +11065,149 @@ function get_tab_date_prochain_evenement_telle_classe($id_classe, $type) {
 					$tab[$lig['id_classe']]['slashdate_ev']=formate_date($lig['date_evenement']);
 					$tab[$lig['id_classe']]['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
 					$tab[$lig['id_classe']]['lieu']=get_infos_salle_cours($lig['id_salle']);
+					$tab[$lig['id_classe']]['periode']=get_infos_salle_cours($lig['periode']);
+					if($avec_visible_par_statut=="y") {
+						$tab[$lig['id_classe']]['statuts']=array();
+						$sql="SELECT DISTINCT statut FROM d_dates_evenements_utilisateurs WHERE id_ev='".$lig['id_ev']."';";
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res2)>0) {
+							while($lig2=mysqli_fetch_assoc($res2)) {
+								$tab[$lig['id_classe']]['statuts'][]=$lig2['statut'];
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return $tab;
+}
+
+function get_tab_dates_evenements_classes($id_classe, $type, $avec_visible_par_statut="n", $mes_classes_seulement="n", $indice="") {
+	$tab=array();
+
+	// $mes_classes_seulement implémenté seulement pour les profs pour le moment
+	//                        Sans intérêt si $id_classe!=""
+
+	/*
+	$sql_ajout="";
+	if(!in_array("all", $tab_visible_par)) {
+		
+	}
+	*/
+
+	if($indice=="date_ev") {
+		if($id_classe!="") {
+			$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+					$date_ev=formate_date($lig['date_evenement']);
+					$tab[$date_ev]=$lig;
+					$tab[$date_ev]['slashdate_ev']=formate_date($lig['date_evenement']);
+					$tab[$date_ev]['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+					$tab[$date_ev]['lieu']=get_infos_salle_cours($lig['id_salle']);
+					$tab[$date_ev]['periode']=get_infos_salle_cours($lig['periode']);
+					if($avec_visible_par_statut=="y") {
+						$tab[$date_ev]['statuts']=array();
+						$sql="SELECT DISTINCT statut FROM d_dates_evenements_utilisateurs WHERE id_ev='".$lig['id_ev']."';";
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res2)>0) {
+							while($lig2=mysqli_fetch_assoc($res2)) {
+								$tab[$date_ev]['statuts'][]=$lig2['statut'];
+							}
+						}
+					}
+				}
+			}
+		}
+		else {
+			$sql_ajout_mes_classes="";
+			if($mes_classes_seulement=="y") {
+				$sql_ajout_mes_classes=" AND ddec.id_classe IN (SELECT DISTINCT id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."') ";
+			}
+
+			$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND dde.type='".$type."' AND c.id=ddec.id_classe ".$sql_ajout_mes_classes." ORDER BY date_evenement;";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+					// Pour ne récupérer que le prochain conseil de classe de chaque classe.
+					if(!isset($tab[$lig['id_classe']])) {
+						$date_ev=formate_date($lig['date_evenement']);
+						$tab[$date_ev][$lig['id_classe']]=$lig;
+						$tab[$date_ev][$lig['id_classe']]['slashdate_ev']=formate_date($lig['date_evenement']);
+						$tab[$date_ev][$lig['id_classe']]['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+						$tab[$date_ev][$lig['id_classe']]['lieu']=get_infos_salle_cours($lig['id_salle']);
+						$tab[$date_ev][$lig['id_classe']]['periode']=get_infos_salle_cours($lig['periode']);
+						if($avec_visible_par_statut=="y") {
+							$tab[$date_ev][$lig['id_classe']]['statuts']=array();
+							$sql="SELECT DISTINCT statut FROM d_dates_evenements_utilisateurs WHERE id_ev='".$lig['id_ev']."';";
+							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res2)>0) {
+								while($lig2=mysqli_fetch_assoc($res2)) {
+									$tab[$date_ev][$lig['id_classe']]['statuts'][]=$lig2['statut'];
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	else {
+		if($id_classe!="") {
+			$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab=$lig;
+					$tab['slashdate_ev']=formate_date($lig['date_evenement']);
+					$tab['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+					$tab['lieu']=get_infos_salle_cours($lig['id_salle']);
+					$tab['periode']=get_infos_salle_cours($lig['periode']);
+					if($avec_visible_par_statut=="y") {
+						$tab['statuts']=array();
+						$sql="SELECT DISTINCT statut FROM d_dates_evenements_utilisateurs WHERE id_ev='".$lig['id_ev']."';";
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res2)>0) {
+							while($lig2=mysqli_fetch_assoc($res2)) {
+								$tab['statuts'][]=$lig2['statut'];
+							}
+						}
+					}
+				}
+			}
+		}
+		else {
+			$sql_ajout_mes_classes="";
+			if($mes_classes_seulement=="y") {
+				$sql_ajout_mes_classes=" AND ddec.id_classe IN (SELECT DISTINCT id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."') ";
+			}
+
+			$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND dde.type='".$type."' AND c.id=ddec.id_classe ".$sql_ajout_mes_classes." ORDER BY date_evenement;";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+					// Pour ne récupérer que le prochain conseil de classe de chaque classe.
+					if(!isset($tab[$lig['id_classe']])) {
+						$tab[$lig['id_classe']]=$lig;
+						$tab[$lig['id_classe']]['slashdate_ev']=formate_date($lig['date_evenement']);
+						$tab[$lig['id_classe']]['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+						$tab[$lig['id_classe']]['lieu']=get_infos_salle_cours($lig['id_salle']);
+						$tab[$lig['id_classe']]['periode']=get_infos_salle_cours($lig['periode']);
+						if($avec_visible_par_statut=="y") {
+							$tab[$lig['id_classe']]['statuts']=array();
+							$sql="SELECT DISTINCT statut FROM d_dates_evenements_utilisateurs WHERE id_ev='".$lig['id_ev']."';";
+							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res2)>0) {
+								while($lig2=mysqli_fetch_assoc($res2)) {
+									$tab[$lig['id_classe']]['statuts'][]=$lig2['statut'];
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -13213,6 +13427,26 @@ function get_tab_engagements($statut_concerne="", $statut_saisie="") {
 			$tab_engagements['id_engagement'][$lig['id']]=$lig;
 			$tab_engagements['id_engagement'][$lig['id']]['effectif']=mysqli_num_rows($res_eff);
 
+			$tab_engagements['indice'][$cpt]['droit_user']=array();
+			$tab_engagements['id_engagement'][$lig['id']]['droit_user']=array();
+
+			$sql="SELECT * FROM engagements_droit_saisie WHERE id_engagement='".$lig['id']."';";
+			$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_droit)) {
+				while($lig_droit=mysqli_fetch_object($res_droit)) {
+					$tab_engagements['indice'][$cpt]['droit_user'][]=$lig_droit->login;
+
+					$tab_engagements['id_engagement'][$lig['id']]['droit_user'][]=$lig_droit->login;
+				}
+			}
+
+			$sql="SELECT * FROM engagements_droit_saisie WHERE id_engagement='".$lig['id']."';";
+			//echo "$sql<br />";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig2=mysqli_fetch_object($res2)) {
+				$tab_engagements['indice'][$cpt]["droit_special"][]=$lig2->login;
+			}
+
 			$cpt++;
 		}
 		/*
@@ -13391,6 +13625,113 @@ function is_delegue_conseil_classe($login_user, $id_classe="") {
 		return false;
 	}
 }
+
+
+function get_tab_engagements_droit_saisie_tel_user($login_user) {
+
+	$tab_engagements_user=array();
+	$tab_engagements_user['indice']=array();
+	$tab_engagements_user['login_user']=array();
+	$tab_engagements_user['id_engagement']=array();
+	$tab_engagements_user['id_engagement_user']=array();
+
+	$statut=get_valeur_champ("utilisateurs", "login='".$login_user."'", "statut");
+
+	$cpt=0;
+	if($statut=="administrateur") {
+		$sql="SELECT * FROM engagements ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+			$cpt++;
+		}
+	}
+	elseif($statut=="scolarite") {
+		$sql="SELECT * FROM engagements WHERE SaisieScol='yes' ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+			$cpt++;
+		}
+	}
+	elseif($statut=="cpe") {
+		$sql="SELECT * FROM engagements WHERE SaisieCpe='yes' ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+			$cpt++;
+		}
+	}
+	elseif(($statut=="professeur")&&(is_pp($login_user))) {
+		$sql="SELECT * FROM engagements WHERE SaisiePP='yes' ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+
+			// Accès limité aux classes dont le prof est PP:
+			// Récupérer la liste des classes dont le prof est PP
+			$tmp_tab=get_tab_prof_suivi("", $login_user);
+			for($loop=0;$loop<count($tmp_tab);$loop++) {
+				$tab_engagements_user['indice'][$cpt]["id_classe"][]=$tmp_tab[$loop];
+			}
+
+			$cpt++;
+		}
+	}
+
+	$sql="SELECT e.* FROM engagements_droit_saisie eds, engagements e WHERE eds.id_engagement=e.id AND eds.login='".$login_user."' ORDER BY e.nom, e.description;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_assoc($res)) {
+		if(!array_key_exists($lig['id'], $tab_engagements_user['id_engagement'])) {
+			$tab_engagements_user['indice'][$cpt]=$lig;
+			$tab_engagements_user['id_engagement'][$lig['id']]=$cpt;
+			// Droit quelle que soit la classe:
+			$tab_engagements_user['indice'][$cpt]["droit_special"]="y";
+			// Au moins un droit sur toutes les classes
+			$tab_engagements_user["droit_special"]="y";
+		}
+		$cpt++;
+	}
+
+	return $tab_engagements_user;
+}
+
+/*
+function acces_saisie_engagement($id_engagement, $id_classe) {
+	global $tab_engagements_avec_droit_saisie;
+
+// A MODIFIER : Il faut voir si l'utilisateur a un engagement particulier non lié à la classe
+// issset($tab_engagements_user['indice'][$cpt]["droit_special"])
+
+
+
+
+
+
+
+
+
+	if(count($tab_engagements_avec_droit_saisie)==0) {
+		$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+	}
+
+	if(array_key_exists($id_engagement, $tab_engagements_avec_droit_saisie["id_engagement"])) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+*/
 
 /** Fonction destinée à copier les images de ../documents/archives/etablissement/cl1234/XXX vers le CDT courant quand des copier/coller sont faits depuis des archives
  *  Sans cela, les chemins des images sont incorrects quand on archive les CDT l'année suivante, et les images risquent de disparaitre du CDT courant si l'archive dont elles viennent est supprimée.
@@ -15764,5 +16105,216 @@ function acces_trombinoscope() {
 		}
 	}
 	return $retour;
+}
+
+function calcule_cycle_et_niveau($mef_code_ele, $valeur_par_defaut_cycle="", $valeur_par_defaut_niveau="") {
+	global $tab_mef;
+
+	if((!is_array($tab_mef))||(count($tab_mef)==0)) {
+		$tab_mef=get_tab_mef();
+	}
+
+	$tab=array();
+
+	if((isset($tab_mef[$mef_code_ele]["mef_rattachement"]))&&($tab_mef[$mef_code_ele]["mef_rattachement"]!="")) {
+		if($tab_mef[$mef_code_ele]["mef_rattachement"]=="10010012110") {
+			// C'est une classe de 6ème
+			$cycle=3;
+			$niveau=6;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10110001110") {
+			$cycle=4;
+			$niveau=5;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10210001110") {
+			$cycle=4;
+			$niveau=4;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10310019110") {
+			$cycle=4;
+			$niveau=3;
+		}
+		else {
+			// Pour le moment, on suppose que c'est un cycle 4 et même un élève de 3ème
+			// On verra plus tard le cas d'un Gepi en Lycée
+			//$cycle=4;
+			//$niveau=3;
+
+			// Il vaut mieux ne rien mettre en couleur pour repérer que les cycle et niveau n'ont pas été identifiés
+			$cycle=$valeur_par_defaut_cycle;
+			$niveau=$valeur_par_defaut_niveau;
+		}
+	}
+	elseif($mef_code_ele=="10010012110") {
+			// C'est une classe de 6ème
+			$cycle=3;
+			$niveau=6;
+	}
+	elseif($mef_code_ele=="10110001110") {
+		$cycle=4;
+		$niveau=5;
+	}
+	elseif($mef_code_ele=="10210001110") {
+		$cycle=4;
+		$niveau=4;
+	}
+	elseif($mef_code_ele=="10310019110") {
+		$cycle=4;
+		$niveau=3;
+	}
+	else {
+		// Pour le moment, on suppose que c'est un cycle 4 et même un élève de 3ème
+		// On verra plus tard le cas d'un Gepi en Lycée
+		//$cycle=4;
+		//$niveau=3;
+
+		// Il vaut mieux ne rien mettre en couleur pour repérer que les cycle et niveau n'ont pas été identifiés
+		$cycle=$valeur_par_defaut_cycle;
+		$niveau=$valeur_par_defaut_niveau;
+	}
+
+	$tab['mef_cycle']=$cycle;
+	$tab['mef_niveau']=$niveau;
+
+	return $tab;
+}
+
+function acces_consultation_admin_abs2($page) {
+	global $mysqli;
+
+	$retour=false;
+
+	if($_SESSION['statut']=="administrateur") {
+		$retour=true;
+	}
+	elseif(acces($page, $_SESSION['statut'])) {
+		// Tester si le droit a été donné.
+		$sql="SELECT 1=1 FROM a_droits WHERE login='".$_SESSION['login']."' AND page='".$page."' AND consultation='y'";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+	return $retour;
+}
+
+function acces_saisie_admin_abs2($page) {
+	global $mysqli;
+
+	$retour=false;
+	if($_SESSION['statut']=="administrateur") {
+		$retour=true;
+	}
+	elseif(acces($page, $_SESSION['statut'])) {
+		// Tester si le droit a été donné.
+		$sql="SELECT 1=1 FROM a_droits WHERE login='".$_SESSION['login']."' AND page='".$page."' AND saisie='y'";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+	return $retour;
+}
+
+// ABS2: Retourner le nombre de traitements avec tel Type d'absence attribué.
+function abs2_nombre_de_saisies_de_tel_type($type_id) {
+	global $mysqli;
+
+	$retour=0;
+
+	$sql="SELECT 1=1 FROM a_traitements WHERE a_type_id='".$type_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	return mysqli_num_rows($test);
+}
+
+// ABS2: Retourner le nombre de traitements avec tel Motif d'absence attribué.
+function abs2_nombre_de_saisies_avec_tel_motif($motif_id) {
+	global $mysqli;
+
+	$retour=0;
+
+	$sql="SELECT 1=1 FROM a_traitements WHERE a_motif_id='".$motif_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	return mysqli_num_rows($test);
+}
+
+// ABS2: Retourner le nombre de traitements avec telle justification d'absence attribuée.
+function abs2_nombre_de_saisies_avec_cette_justification($justification_id) {
+	global $mysqli;
+
+	$retour=0;
+
+	$sql="SELECT 1=1 FROM a_traitements WHERE a_justification_id='".$justification_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	return mysqli_num_rows($test);
+}
+
+// ABS2: Retourner le nombre de saisies avec tel Lieu d'absence attribué.
+function abs2_nombre_de_saisies_avec_tel_lieu($lieu_id) {
+	global $mysqli;
+
+	$retour=0;
+
+	$sql="SELECT 1=1 FROM a_saisies WHERE id_lieu='".$lieu_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	return mysqli_num_rows($test);
+}
+
+function abs2_acces_au_moins_une_pages_admin() {
+	global $mysqli;
+
+	$tab_url=array();
+	$tab_url[]="/mod_abs2/admin/admin_types_absences.php";
+	$tab_url[]="/mod_abs2/admin/admin_motifs_absences.php";
+	$tab_url[]="/mod_abs2/admin/admin_lieux_absences.php";
+	$tab_url[]="/mod_abs2/admin/admin_justifications_absences.php";
+
+	$tab_pages=array();
+	$tab_pages["/mod_abs2/admin/admin_types_absences.php"]="Types d'absence";
+	$tab_pages["/mod_abs2/admin/admin_motifs_absences.php"]="Motifs d'absence";
+	$tab_pages["/mod_abs2/admin/admin_lieux_absences.php"]="Lieux d'absence";
+	$tab_pages["/mod_abs2/admin/admin_justifications_absences.php"]="Justifications d'absence";
+
+	$retour=false;
+	foreach($tab_pages as $url => $intitule) {
+		if((acces_consultation_admin_abs2($url))||(acces_saisie_admin_abs2($url))) {
+			$retour=true;
+			break;
+		}
+	}
+	return $retour;
+}
+
+function get_nom_prenom_from_INE($ine) {
+	global $mysqli;
+
+	$retour="";
+
+	$sql="SELECT nom, prenom FROM eleves WHERE no_gep='".$ine."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$lig=mysqli_fetch_object($test);
+		$retour=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
+	}
+
+	return $retour;
+}
+
+function get_tab_dates_periodes() {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT p.*, c.classe FROM periodes p, classes c WHERE c.id=p.id_classe ORDER BY c.classe, p.num_periode, p.date_fin;";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab["id_classe"][$lig["id_classe"]][$lig["num_periode"]]=$lig;
+			$tab["periode"][$lig["num_periode"]][$lig["id_classe"]]=$lig;
+			$tab["date_fin"][$lig["date_fin"]][]=$lig;
+		}
+	}
+
+	return $tab;
 }
 ?>

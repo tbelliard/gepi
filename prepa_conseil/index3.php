@@ -231,7 +231,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<p style='color:red'>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else {
-		$tab_conseils_de_classe=get_tab_date_prochain_evenement_telle_classe("", 'conseil_de_classe');
+		$date_courante_debut_journee_mysql=strftime("%Y-%m-%d 00:00:00");
+		$tab_conseils_de_classe=get_tab_date_prochain_evenement_telle_classe("", 'conseil_de_classe', "y");
 
 		echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins</p>\n";
 		//echo "<table border=0>\n";
@@ -251,7 +252,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 
 			$chaine_tmp="";
-			if(isset($tab_conseils_de_classe[$lig_clas->id])) {
+			if((isset($tab_conseils_de_classe[$lig_clas->id]))&&($tab_conseils_de_classe[$lig_clas->id]["date_debut"]>=$date_courante_debut_journee_mysql)&&(in_array($_SESSION["statut"], $tab_conseils_de_classes[$id_classe]["statuts"]))) {
 
 				$lieu_conseil_de_classe="";
 				if(isset($tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'])) {

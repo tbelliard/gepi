@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -687,11 +687,32 @@ if(getSettingAOui('active_bulletins')) {
             }
 		}
 
-		  if ($this->b>0){
+	  }
+
+		if(getSettingAOui("SocleSaisieComposantes")) {
+			if(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
+				$this->creeNouveauItem("/saisie/saisie_socle.php",
+					"Saisie Composantes du Socle",
+					"Permet de saisir les bilans de composantes du Socle.");
+			}
+			elseif(($_SESSION['statut']=="professeur")&&(getSettingAOui("SocleSaisieComposantes_PP"))&&(is_pp($_SESSION["login"]))) {
+				$this->creeNouveauItem("/saisie/saisie_socle.php",
+					"Saisie des Composantes du Socle",
+					"Permet de saisir les bilans de composantes du Socle.");
+			}
+
+			if((getSettingAOui("SocleOuvertureSaisieComposantes"))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
+				$this->creeNouveauItem("/saisie/socle_verrouillage.php",
+					"Verrouillage saisies Composantes Socle",
+					"Permet de verrouiller/déverrouiller la saisie des bilans de composantes du Socle.");
+			}
+		}
+
+		if ($this->b>0){
 			$this->creeNouveauTitre('accueil',"Saisie",'images/icons/configure.png');
 			return true;
-		  }
-	  }
+		}
+
 	}
 
   private function cahierTexteCPE(){
@@ -1414,14 +1435,21 @@ if(getSettingAOui('active_bulletins')) {
 				  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la faute passe inaperçue</em>)");
 		}
 
+		$acces_saisie_engagement="n";
 		if(getSettingAOui('active_mod_engagements')) {
-			if(($_SESSION['statut']=='cpe')||
-			($_SESSION['statut']=='scolarite')||
-			($_SESSION['statut']=='administrateur')||
-			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'])))) {
-				$this->creeNouveauItem("/mod_engagements/imprimer_documents.php",
-				  "Imprimer les documents concernant les engagements",
-				  "Les engagements sont par exemple les rôles de Délégué de classe, membre du Conseil d'Administration,...<br />Cet outil permet d'imprimer les convocations aux conseils de classe,...");
+
+			$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+			if(count($tab_engagements_avec_droit_saisie['indice'])>0) {
+				$acces_saisie_engagement="y";
+
+				if(($_SESSION['statut']=='cpe')||
+				($_SESSION['statut']=='scolarite')||
+				($_SESSION['statut']=='administrateur')||
+				($_SESSION['statut']=='professeur')) {
+					$this->creeNouveauItem("/mod_engagements/imprimer_documents.php",
+					  "Imprimer les documents concernant les engagements",
+					  "Les engagements sont par exemple les rôles de Délégué de classe, membre du Conseil d'Administration,...<br />Cet outil permet d'imprimer les convocations aux conseils de classe,...");
+				}
 			}
 		}
 	}
@@ -2052,71 +2080,73 @@ if(getSettingAOui('active_bulletins')) {
 	private function fluxRSS(){
 		$this->b=0;
 
-		if (getSettingValue("rss_cdt_eleve") == 'y' AND $this->statutUtilisateur == "eleve") {
-			// Les flux rss sont ouverts pour les élèves
-			$this->canal_rss_flux=1;
+		if(getSettingAOui("active_cahiers_texte")) {
+			if (getSettingValue("rss_cdt_eleve") == 'y' AND $this->statutUtilisateur == "eleve") {
+				// Les flux rss sont ouverts pour les élèves
+				$this->canal_rss_flux=1;
 
-			// A vérifier pour les cdt
-			if (getSettingValue("rss_acces_ele") == 'direct') {
-				// echo "il y a un flux RSS direct";
-				$uri_el = retourneUri($this->loginUtilisateur, $this->test_https, 'cdt');
-				$this->canal_rss=array("lien"=>$uri_el["uri"] ,
-										"texte"=>$uri_el["text"],
-										"mode"=>1 ,
-										"expli"=>"En cliquant sur la cellule de gauche,
-										vous pourrez récupérer votre URI (<em>si vous avez activé le javascript sur votre navigateur</em>).
-										<br />
-										<br />
-										<em style='font-size:small'>Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.<br />Firefox, Internet Explorer,... savent lire les flux RSS.<br />Il existe également des lecteurs de flux RSS pour les SmartPhone,...</em>");
+				// A vérifier pour les cdt
+				if (getSettingValue("rss_acces_ele") == 'direct') {
+					// echo "il y a un flux RSS direct";
+					$uri_el = retourneUri($this->loginUtilisateur, $this->test_https, 'cdt');
+					$this->canal_rss=array("lien"=>$uri_el["uri"] ,
+											"texte"=>$uri_el["text"],
+											"mode"=>1 ,
+											"expli"=>"En cliquant sur la cellule de gauche,
+											vous pourrez récupérer votre URI (<em>si vous avez activé le javascript sur votre navigateur</em>).
+											<br />
+											<br />
+											<em style='font-size:small'>Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.<br />Firefox, Internet Explorer,... savent lire les flux RSS.<br />Il existe également des lecteurs de flux RSS pour les SmartPhone,...</em>");
+				}
+				elseif(getSettingValue("rss_acces_ele") == 'csv'){
+					$this->canal_rss=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
+				}
+
+				$this->creeNouveauTitre('accueil',"Votre flux RSS",'images/icons/rss.png');
+				return true;
 			}
-			elseif(getSettingValue("rss_acces_ele") == 'csv'){
-				$this->canal_rss=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
-			}
+			elseif (getSettingValue("rss_cdt_responsable") == 'y' AND $this->statutUtilisateur == "responsable") {
+				// Les flux rss sont ouverts pour les élèves
+				$this->canal_rss_flux=1;
 
-			$this->creeNouveauTitre('accueil',"Votre flux RSS",'images/icons/rss.png');
-			return true;
-		}
-		elseif (getSettingValue("rss_cdt_responsable") == 'y' AND $this->statutUtilisateur == "responsable") {
-			// Les flux rss sont ouverts pour les élèves
-			$this->canal_rss_flux=1;
+				// A vérifier pour les cdt
+				if (getSettingValue("rss_acces_ele") == 'direct') {
+					// echo "il y a un flux RSS direct";
+					$this->canal_rss=array("mode"=>1 ,
+											"expli"=>"En cliquant sur la cellule de gauche,
+											vous pourrez récupérer votre URI (<em>si vous avez activé le javascript sur votre navigateur</em>).
+											<br />
+											<br />
+											<em style='font-size:small'>Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.<br />Firefox, Internet Explorer,... savent lire les flux RSS.<br />Il existe également des lecteurs de flux RSS pour les SmartPhone,...</em>");
 
-			// A vérifier pour les cdt
-			if (getSettingValue("rss_acces_ele") == 'direct') {
-				// echo "il y a un flux RSS direct";
-				$this->canal_rss=array("mode"=>1 ,
-										"expli"=>"En cliquant sur la cellule de gauche,
-										vous pourrez récupérer votre URI (<em>si vous avez activé le javascript sur votre navigateur</em>).
-										<br />
-										<br />
-										<em style='font-size:small'>Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.<br />Firefox, Internet Explorer,... savent lire les flux RSS.<br />Il existe également des lecteurs de flux RSS pour les SmartPhone,...</em>");
+					$tab_ele_resp=get_enfants_from_resp_login($this->loginUtilisateur, 'avec_classe', "yy");
+					if(count($tab_ele_resp)>2) {
+						$cpt_ele_rss=0;
+						$this->canal_rss_plus="";
+						for($loop=0;$loop<count($tab_ele_resp);$loop+=2) {
+							$uri_el = retourneUri($tab_ele_resp[$loop], $this->test_https, 'cdt');
+							$this->canal_rss_plus.=$tab_ele_resp[$loop+1]."<br /><a href='".$uri_el["uri"]."'>".$uri_el["text"]."</a><br />";
+						}
+					}
+					elseif(count($tab_ele_resp)==2) {
 
-				$tab_ele_resp=get_enfants_from_resp_login($this->loginUtilisateur, 'avec_classe', "yy");
-				if(count($tab_ele_resp)>2) {
-					$cpt_ele_rss=0;
-					$this->canal_rss_plus="";
-					for($loop=0;$loop<count($tab_ele_resp);$loop+=2) {
-						$uri_el = retourneUri($tab_ele_resp[$loop], $this->test_https, 'cdt');
-						$this->canal_rss_plus.=$tab_ele_resp[$loop+1]."<br /><a href='".$uri_el["uri"]."'>".$uri_el["text"]."</a><br />";
+						$uri_el = retourneUri($tab_ele_resp[0], $this->test_https, 'cdt');
+
+						$this->canal_rss['lien']=$uri_el["uri"];
+						$this->canal_rss['texte']=$uri_el["text"];
+					}
+					else {
+						$this->canal_rss['lien']="Aucune URL";
+						$this->canal_rss['texte']="Aucun eleve trouvé.";
 					}
 				}
-				elseif(count($tab_ele_resp)==2) {
-
-					$uri_el = retourneUri($tab_ele_resp[0], $this->test_https, 'cdt');
-
-					$this->canal_rss['lien']=$uri_el["uri"];
-					$this->canal_rss['texte']=$uri_el["text"];
+				elseif(getSettingValue("rss_acces_ele") == 'csv' AND $this->statutUtilisateur == "responsable"){
+					$this->canal_rss=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
 				}
-				else {
-					$this->canal_rss['lien']="Aucune URL";
-					$this->canal_rss['texte']="Aucun eleve trouvé.";
-				}
-			}
-			elseif(getSettingValue("rss_acces_ele") == 'csv' AND $this->statutUtilisateur == "responsable"){
-				$this->canal_rss=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
-			}
 
-			$this->creeNouveauTitre('accueil',"Votre flux RSS",'images/icons/rss.png');
-			return true;
+				$this->creeNouveauTitre('accueil',"Votre flux RSS",'images/icons/rss.png');
+				return true;
+			}
 		}
 	}
 

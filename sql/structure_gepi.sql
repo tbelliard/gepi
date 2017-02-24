@@ -1106,6 +1106,10 @@ commentaire_validation text NOT NULL,
 salle VARCHAR(100) NOT NULL,
 texte_famille TEXT NOT NULL,
 info_famille VARCHAR( 10 ) NOT NULL,
+duree varchar(10) NOT NULL default '0',
+heuredeb_dec varchar(3) NOT NULL default '0',
+jour_semaine varchar(10) NOT NULL,
+id_cours_remplaced INT(11) NOT NULL,
 PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
@@ -1589,3 +1593,32 @@ indice_aid INT(11) NOT NULL default '0',
 etat varchar(255) NOT NULL default '', 
 PRIMARY KEY  (id_groupe, id_aid), INDEX id_groupe_id_aid (id_groupe, id_aid)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS engagements_droit_saisie;
+CREATE TABLE IF NOT EXISTS engagements_droit_saisie (
+id INT(11) unsigned NOT NULL auto_increment,
+id_engagement INT(11) NOT NULL ,
+login VARCHAR( 50 ) NOT NULL DEFAULT '', 
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `edt_cours_remplacements`;
+CREATE TABLE `edt_cours_remplacements` (`id_cours` int(11) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL, `id_aid` varchar(10) NOT NULL, `id_salle` varchar(3) NOT NULL, `jour_semaine` varchar(10) NOT NULL, `id_definie_periode` varchar(3) NOT NULL, `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(10) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', `login_prof` varchar(50) NOT NULL, id_absence int(11) NOT NULL, jour varchar(10) NOT NULL, DEFAULT '', PRIMARY KEY  (`id_cours`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS socle_eleves_composantes;
+CREATE TABLE socle_eleves_composantes (id int(11) NOT NULL auto_increment, 
+ine varchar(50) NOT NULL, 
+cycle tinyint(2) NOT NULL, 
+code_composante varchar(10) NOT NULL DEFAULT '', 
+etat_maitrise varchar(10) NOT NULL DEFAULT '', 
+login_saisie varchar(50) NOT NULL DEFAULT '', 
+date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+PRIMARY KEY (id), INDEX ine_cycle_id_composante (ine, cycle, code_composante), UNIQUE(ine, cycle, code_composante)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS socle_eleves_syntheses;
+CREATE TABLE socle_eleves_syntheses (id int(11) NOT NULL auto_increment, 
+ine varchar(50) NOT NULL, 
+cycle tinyint(2) NOT NULL, 
+synthese TEXT DEFAULT '', 
+login_saisie varchar(50) NOT NULL DEFAULT '', 
+date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+PRIMARY KEY (id), INDEX ine_cycle (ine, cycle), UNIQUE(ine, cycle)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

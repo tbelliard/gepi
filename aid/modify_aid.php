@@ -334,6 +334,14 @@ while($infos = mysqli_fetch_array($query)){
 		echo "
 		| <a href='".$_SERVER['PHP_SELF']."?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves de l'AID</a>";
 	}
+	if(acces("/groupes/mes_listes.php", $_SESSION['statut'])) {
+		echo "
+		| <a href='../groupes/mes_listes.php#aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export CSV</a>";
+	}
+	if((getSettingAOui('active_module_trombinoscopes'))&&(acces("/mod_trombinoscopes/trombinoscopes.php", $_SESSION['statut']))) {
+		echo "
+		| <a href='../mod_trombinoscopes/trombinoscopes.php?aid=$aid_id&etape=2' onclick=\"return confirm_abandon (this, change, '$themessage')\">Trombinoscope</a>";
+	}
 	if(((!isset($flag))||($flag!="prof"))&&(($NiveauGestionAid_AID_courant>=2))) {
 		echo "
 		| <a href='".$_SERVER['PHP_SELF']."?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Professeurs de l'AID</a>";
@@ -450,8 +458,9 @@ if ($flag == "prof") { ?>
     $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
     $nombreligne = mysqli_num_rows($call_prof);
     while ($lig_prof=mysqli_fetch_object($call_prof)) {
+    	echo "
+		<option value=\"$lig_prof->login\" title=\"".casse_mot($lig_prof->nom,'maj')." ".casse_mot($lig_prof->prenom,'majf2')." ($lig_prof->login)\">";
 ?>
-		<option value="<?php echo $lig_prof->login; ?>">
 			<?php echo my_strtoupper($lig_prof->nom); ?> <?php echo casse_mot($lig_prof->prenom,'majf2')." (".$lig_prof->statut.")"; ?>
 		</option>
 <?php
@@ -568,8 +577,9 @@ if ($flag == "prof_gest") { ?>
     $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
     $nombreligne = mysqli_num_rows($call_prof);
     while ($lig_user=mysqli_fetch_object($call_prof)) {
+    	echo "
+		<option value=\"$lig_user->login\" title=\"".casse_mot($lig_user->nom,'maj')." ".casse_mot($lig_user->prenom,'majf2')." ($lig_user->login)\">";
 		?>
-		<option value="<?php echo $lig_user->login; ?>">
 			<?php echo casse_mot($lig_user->nom, "maj")." ".casse_mot($lig_user->prenom,'majf2')." (".$lig_user->statut.")"; ?>
 		</option>
 		<?php

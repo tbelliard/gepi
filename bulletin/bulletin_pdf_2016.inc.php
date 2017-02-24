@@ -634,6 +634,27 @@
 
 	//========================================
 
+	$bull2016_largeur_engagements=getSettingValue('bull2016_largeur_engagements');
+	if($bull2016_largeur_engagements=="") {
+		$bull2016_largeur_engagements=30;
+	}
+	elseif(!preg_match("/^[0-9]{1,}$/", $bull2016_largeur_engagements)) {
+		$bull2016_largeur_engagements=30;
+	}
+	$param_bull2016["largeur_engagements"]=$bull2016_largeur_engagements;
+
+	$param_bull2016["bull2016_afficher_engagements_id"]=array();
+	$sql="SELECT * FROM setting WHERE name LIKE 'bull2016_afficher_engagements_id_%';";
+	$res_eng=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_eng)>0) {
+		while($lig_eng=mysqli_fetch_object($res_eng)) {
+			$param_bull2016["bull2016_afficher_engagements_id"][]=preg_replace("/^bull2016_afficher_engagements_id_/", "", $lig_eng->NAME);
+		}
+	}
+
+
+	//========================================
+
 	//$param_bull2016["bull2016_orientation_periodes"]="2;3";
 	$param_bull2016["bull2016_orientation_periodes"]=getSettingValue("bull2016_orientation_periodes");
 

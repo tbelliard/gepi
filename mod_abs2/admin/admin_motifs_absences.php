@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2010-2016 Josselin Jacquard
+ * Copyright 2010-2017 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -47,6 +47,13 @@ if (!checkAccess()) {
 
 //debug_var();
 
+if(!acces_consultation_admin_abs2("/mod_abs2/admin/admin_motifs_absences.php")) {
+	header("Location: ../../accueil.php?msg=Accès non autorisé");
+	die();
+}
+
+$acces_saisie_admin_abs2=acces_saisie_admin_abs2("/mod_abs2/admin/admin_motifs_absences.php");
+
 if (empty($_GET['action']) and empty($_POST['action'])) { $action="";}
     else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
 if (empty($_GET['id_motif']) and empty($_POST['id_motif'])) { $id_motif="";}
@@ -60,66 +67,74 @@ if (empty($_GET['valable_motif']) and empty($_POST['valable_motif'])) { $valable
 
 include("function.php");
 
-$motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
-if ($action == 'supprimer') {
-	check_token();
-    if ($motif != null) {
-	$motif->delete();
-    }
-} elseif ($action == "monter") {
-	check_token();
-    if ($motif != null) {
-	$motif->moveUp();
-    }
-} elseif ($action == 'descendre') {
-	check_token();
-    if ($motif != null) {
-	$motif->moveDown();
-    }
-} elseif ($action == 'ajouterdefaut') {
-	check_token();
-    //include("function.php");
-    ajoutMotifsParDefaut();
-} else {
-    if ($nom_motif != '') {
-		check_token();
-		$motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
-		if ($motif == null) {
-			$motif = new AbsenceEleveMotif();
-		}
-		$motif->setNom(stripslashes($nom_motif));
-		$motif->setCommentaire(stripslashes($com_motif));
-		$motif->save();
-
-		$id_motif=$motif->getId();
-
-		// Il faudrait modifier le modèle ORM... mais je ne sais pas faire.
-		$sql="UPDATE a_motifs SET valable='".$valable_motif."' WHERE id='".$id_motif."';";
-		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS['mysqli'], $sql);
-    }
+if(((($action!="")&&($action!="visualiser"))||($nom_motif!="")||(isset($_GET['corriger'])))&&
+(!$acces_saisie_admin_abs2)) {
+	//debug_var();
+	header("Location: ../../accueil.php?msg=Saisie non autorisée");
+	die();
 }
+else {
+	$motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
+	if ($action == 'supprimer') {
+		check_token();
+	    if ($motif != null) {
+		$motif->delete();
+	    }
+	} elseif ($action == "monter") {
+		check_token();
+	    if ($motif != null) {
+		$motif->moveUp();
+	    }
+	} elseif ($action == 'descendre') {
+		check_token();
+	    if ($motif != null) {
+		$motif->moveDown();
+	    }
+	} elseif ($action == 'ajouterdefaut') {
+		check_token();
+	    //include("function.php");
+	    ajoutMotifsParDefaut();
+	} else {
+	    if ($nom_motif != '') {
+			check_token();
+			$motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
+			if ($motif == null) {
+				$motif = new AbsenceEleveMotif();
+			}
+			$motif->setNom(stripslashes($nom_motif));
+			$motif->setCommentaire(stripslashes($com_motif));
+			$motif->save();
 
-if(isset($_GET['corriger'])) {
-	check_token();
+			$id_motif=$motif->getId();
 
-	$table="a_motifs";
-
-	$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
-	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	$cpt=1;
-	while($lig=mysqli_fetch_object($res)) {
-		$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
-		//echo "$sql<br />";
-		$update=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(!$update) {
-			$msg="Erreur lors de la correction des rangs.<br />";
-			break;
-		}
-		$cpt++;
+			// Il faudrait modifier le modèle ORM... mais je ne sais pas faire.
+			$sql="UPDATE a_motifs SET valable='".$valable_motif."' WHERE id='".$id_motif."';";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS['mysqli'], $sql);
+	    }
 	}
-	$msg="Correction effectuée.<br />";
+
+	if(isset($_GET['corriger'])) {
+		check_token();
+
+		$table="a_motifs";
+
+		$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		$cpt=1;
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
+			//echo "$sql<br />";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$update) {
+				$msg="Erreur lors de la correction des rangs.<br />";
+				break;
+			}
+			$cpt++;
+		}
+		$msg="Correction effectuée.<br />";
+	}
 }
 //==========================================
 // header
@@ -128,14 +143,20 @@ require_once("../../lib/header.inc.php");
 //==========================================
 
 echo "<p class=bold>";
-echo "<a href=\"index.php\">";
+echo "<a href=\"index.php";
+if($_SESSION['statut']!="administrateur") {
+	echo "#config_avancee";
+}
+echo "\">";
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
 ?>
 
 <div style="text-align:center">
     <h2>Définition des motifs d'absence</h2>
-<?php if ($action == "ajouter" OR $action == "modifier") { ?>
+<?php 
+if($acces_saisie_admin_abs2) {
+	if ($action == "ajouter" OR $action == "modifier") { ?>
 <div style="text-align:center">
     <?php
     	if($action=="ajouter") { 
@@ -209,16 +230,26 @@ echo add_token_field();
 	<a href="admin_motifs_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un motif</a>
 	<br/><br/>
 	<a href="admin_motifs_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les motifs par défaut</a>
+<?php
+}
+?>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
         <td>Nom</td>
         <td>Commentaire</td>
         <td style="width: 25px;">Valable</td>
+        <td title="Nombre de saisies/traitements avec ce motif.">Effectif</td>
+<?php 
+if($acces_saisie_admin_abs2) {
+?>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
+<?php 
+}
+?>
       </tr>
     <?php
 	// A FAIRE AVEC PROPEL ORM dans l'objet AbsenceEleveMotif, mais je ne sais pas faire
@@ -236,7 +267,7 @@ echo add_token_field();
     $motif = new AbsenceEleveMotif();
     $i = '1';
     foreach ($motif_collection as $motif) { ?>
-        <tr>
+        <tr onmouseover="this.style.backgroundColor='white';" onmouseout="this.style.backgroundColor='';">
 	  <td><?php echo $motif->getNom(); ?></td>
 	  <td><?php echo $motif->getCommentaire(); ?></td>
 	  <td><?php 
@@ -252,11 +283,30 @@ echo add_token_field();
 			echo "<img src='$gepiPath/images/icons/ico_question.png' class='icone16' alt='?' title=\"???\" />";
 		}
 		?></td>
+<?php 
+	$nb_saisies_traitements_avec_ce_motif=abs2_nombre_de_saisies_avec_tel_motif($motif->getId());
+	echo "
+	<td title=\"$nb_saisies_traitements_avec_ce_motif saisies/traitements ont ce motif\">".$nb_saisies_traitements_avec_ce_motif."</td>";
+if($acces_saisie_admin_abs2) {
+?>
           <td><a href="admin_motifs_absences.php?action=modifier&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_motifs_absences.php?action=supprimer&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce motif ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+
+          <td>
+          <?php
+          	if(($nb_saisies_traitements_avec_ce_motif==0)||($_SESSION['statut']=="administrateur")) {
+          ?>
+               <a href="admin_motifs_absences.php?action=supprimer&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce motif ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a>
+          <?php
+          	}
+          ?>
+          </td>
+
           <td><a href="admin_motifs_absences.php?action=monter&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
           <td><a href="admin_motifs_absences.php?action=descendre&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
         </tr>
+<?php 
+}
+?>
      <?php } ?>
     </table>
     <br/><br/>

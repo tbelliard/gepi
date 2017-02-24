@@ -22,7 +22,9 @@ if (!$_SESSION["statut"] OR ($_SESSION["statut"] != 'autre' AND $_SESSION["statu
 $autorise[0] = array('/accueil.php',
 				'/utilisateurs/mon_compte.php',
 				'/gestion/contacter_admin.php',
-				'/gestion/info_gepi.php');
+				'/gestion/info_gepi.php',
+				'/mod_alerte/form_message.php',
+				'/eleves/ajax_consultation.php');
 // droits spécifiques sur les pages relatives aux droits possibles
 //$autorise[1] = array('/cahier_notes/visu_releve_notes.php');
 $autorise[1] = array('/cahier_notes/visu_releve_notes_bis.php');

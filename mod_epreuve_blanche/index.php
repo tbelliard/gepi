@@ -1663,7 +1663,7 @@ function checkbox_change(cpt) {
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$lig=mysqli_fetch_object($res);
 			if($lig->type_anonymat=='alea') {
-				echo "<div style='float:right; width:20em; border: 1px solid black;'>\n";
+				echo "<div style='float:right; width:20em; border: 1px solid black; margin:2px;' class='fieldset_opacite50'>\n";
 				echo "<p>Le type d'anonymat choisi est un numéro 'aléatoire'.</p>\n";
 				echo "<p><b>Attention</b>&nbsp;: Lors de la validation de ce formulaire, les numéros d'anonymat sont générés/regénérés.<br />Vous ne devriez pas valider ce formulaire une fois que des étiquettes ont été collées ou des copies anonymées.</p>\n";
 				echo "</div>\n";
@@ -1721,6 +1721,8 @@ function checkbox_change(cpt) {
 			//echo "<input type='hidden' name='aff' value='groupes' />\n";
 			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
+
+			echo "<p><br /></p>&nbsp;\n";
 
 			echo "<script type='text/javascript'>
 function checkbox_change(cpt) {

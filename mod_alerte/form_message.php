@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -407,6 +407,13 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 				$in_reply_to=$_POST['in_reply_to'];
 			}
 		}
+
+		// Nettoyage du message pour le cas des utilisateurs qui s'endorment sur la touche espace ou ENTREE
+		//$message=preg_replace("/^ /", "", preg_replace("/ $/", "", preg_replace("/\\\n$/", "", $message)));
+		$message=trim($message);
+		$message=preg_replace("/ {2,}/", " ", $message);
+		$message=preg_replace('/(\\\n)+/',"\n",$message);
+		$message=trim($message);
 
 		if(is_array($login_dest)) {
 			$tmp_login_dest=$login_dest;

@@ -87,6 +87,7 @@ if((isset($_POST['is_posted']))) {
 		if($validation[$key]!="") {
 			// On s'assure qu'il n'y a pas d'autre validation déjà enregistrée
 			$sql="SELECT * FROM abs_prof_remplacement WHERE id='".$validation[$key]."';";
+			//$sql="SELECT *, TIMEDIFF(date_fin_r,date_debut_r) AS duree FROM abs_prof_remplacement WHERE id='".$validation[$key]."';";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				$msg.="La proposition n°".$validation[$key]." n'existe pas.<br />";
@@ -112,7 +113,7 @@ if((isset($_POST['is_posted']))) {
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)>0) {
 					$lig=mysqli_fetch_object($test);
-					$msg.="La proposition n°".$validation[$key]." est déjà validée pour ".civ_nom_prenom($login_user).".<br />";
+					$msg.="La proposition n°".$validation[$key]." est déjà validée pour ".civ_nom_prenom($lig->login_user)." <em>(pas possible simultanément pour ".civ_nom_prenom($login_user).")</em>.<br />";
 					// Ca ne devrait pas arriver sauf si deux admin/scol/cpe valident en même temps des remplacements.
 					// A FAIRE: Ailleurs pouvoir forcer/modifier
 				}
@@ -127,6 +128,45 @@ if((isset($_POST['is_posted']))) {
 						$msg.="$sql<br />";
 					}
 					else {
+						/*
+						// Durée:
+						$tmp_tab_duree=explode(":", $lig->duree);
+						$duree=
+
+						// Salle
+
+						// strftime("%u") : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
+						$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
+
+						$tmp_date=mktime(12, 0, 0, substr($jour, 4,2), substr($jour, 6,2), substr($jour, 0,4));
+						$nom_jour=$tmp_tab_jour[strftime($tmp_date, "%u")];
+
+						$sql="DELETE FROM edt_cours_remplacements WHERE id_absence='".$id_absence."' AND 
+														id_groupe='".$id_groupe."' AND 
+														id_aid='".$id_aid."' AND 
+														jour_semaine='".$nom_jour."' AND 
+														id_definie_periode='".$id_creneau."' AND 
+														jour='".$jour."';";
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+						$sql="INSERT INTO edt_cours_remplacements SET id_absence='".$id_absence."', 
+														id_groupe='".$id_groupe."', 
+														id_aid='".$id_aid."', 
+														jour_semaine='".$nom_jour."', 
+														id_definie_periode='".$id_creneau."', 
+														duree='".$duree."', 
+														jour='".$jour."', 
+														id_salle='".$lig->salle."', 
+														heuredeb_dec='', 
+														id_semaine='', 
+														id_calendrier='', 
+														modif_edt='', 
+														login_prof='".$login_user."';";
+						echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						*/
+
+
 						// A FAIRE : Envoyer un mail à l'heureux destinataire, mettre un message en page d'accueil, et signaler aux autres candidats que le remplacement est attribué
 						$nb_validations++;
 

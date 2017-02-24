@@ -58,6 +58,8 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
     die("Le module n'est pas activé.");
 }
 
+//debug_var();
+
 //récupération des paramètres de la requète
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
@@ -189,7 +191,10 @@ if ($message_enregistrement != '') {
 	die();
 }
 
-//on enregistre le marqueur d'appel (saisie sans eleve)
+//=============================================
+
+//on enregistre le marqueur d'appel (pour avoir un témoin même dans le cas d'une saisie sans eleve absent)
+
 $message_erreur = '';
 $saisie = new AbsenceEleveSaisie();
 
@@ -229,28 +234,78 @@ if ($message_erreur != '') {
     include("saisir_groupe.php");
     die();
 } else if ($saisie->validate()) {
-    $saisie->save();
-    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a><br/>";
+	if(getSettingAOui("abs2_PasDoublonMarqueurAppel")) {
+		$sql="SELECT * FROM a_saisies WHERE debut_abs LIKE '".$dt_date_debut_appel->format('Y')."-".$dt_date_debut_appel->format('m')."-".$dt_date_debut_appel->format('d')." ".$dt_date_debut_appel->format('H').":".$dt_date_debut_appel->format('i')."%'";
+		if(!isset($id_creneau)) {
+			$sql.=" AND id_edt_creneau IS NULL";
+		}
+		else {
+			$sql.=" AND id_edt_creneau='".$id_creneau."'";
+		}
+		if(!isset($id_cours)) {
+			$sql.=" AND id_edt_emplacement_cours IS NULL";
+		}
+		else {
+			$sql.=" AND id_edt_emplacement_cours='".$id_cours."'";
+		}
+		if(!isset($id_groupe)) {
+			$sql.=" AND id_groupe IS NULL";
+		}
+		else {
+			$sql.=" AND id_groupe='".$id_groupe."'";
+		}
+		if(!isset($id_classe)) {
+			$sql.=" AND id_classe IS NULL";
+		}
+		else {
+			$sql.=" AND id_classe='".$id_classe."'";
+		}
+		if(!isset($id_aid)) {
+			$sql.=" AND id_aid IS NULL";
+		}
+		else {
+			$sql.=" AND id_aid='".$id_aid."'";
+		}
+		$sql.=" AND eleve_id IS NULL AND utilisateur_id='".$_SESSION['login']."';";
+		//echo "$sql<br />";
+		$test=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$lig_saisie=mysqli_fetch_object($test);
+			$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$lig_saisie->id."'>Marqueur d'appel déjà enregistré</a><br/>";
+
+			// Y a -t-il moyen de détruire la saisie initiée? $saisie->destroy()?
+		}
+		else {
+			$saisie->save();
+			$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a><br/>";
+		}
+	}
+	else {
+		$saisie->save();
+		$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a><br/>";
+	}
+
 } else {
-    //on arrete la saisie
-    $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.format_verif_failures($saisie).'</span>';
+	//on arrete la saisie
+	$message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.format_verif_failures($saisie).'</span>';
 
 	if(getSettingAOui("abs2_jouer_sound_erreur")) {
 		$message_enregistrement .= $chaine_son_alerte;
 	}
 
-    include("saisir_groupe.php");
-    die();
+	include("saisir_groupe.php");
+	die();
 }
 
-
+//=============================================
+// On passe aux élèves
 
 for($i=0; $i<$total_eleves; $i++) {
 
-    if (!(isset($_POST['id_eleve_absent'][$i]))) {
-	continue;
-    }
-    $id_eleve = $_POST['id_eleve_absent'][$i];
+	if (!(isset($_POST['id_eleve_absent'][$i]))) {
+		continue;
+	}
+	$id_eleve = $_POST['id_eleve_absent'][$i];
 	
 	// on teste si une case est cochée
 	if (isset ($_POST['check'][$i]) && $_POST['check'][$i]) {
@@ -258,14 +313,14 @@ for($i=0; $i<$total_eleves; $i++) {
 		$_POST['type_absence_eleve'][$i] = $_POST['check'][$i];
 	}
 
-    //on teste si l'eleve est coché absent
-    if (!isset($_POST['active_absence_eleve'][$i])
-	&& !(isset($_POST['commentaire_absence_eleve'][$i]) && $_POST['commentaire_absence_eleve'][$i] != null)
-	&& !(isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1)
-	    ) {
-	continue;
-    }
-    
+	//on teste si l'eleve est coché absent
+	if (!isset($_POST['active_absence_eleve'][$i])
+		&& !(isset($_POST['commentaire_absence_eleve'][$i]) && $_POST['commentaire_absence_eleve'][$i] != null)
+		&& !(isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1)
+		) {
+		continue;
+	}
+
     //on cherche l'eleve
     $eleve = EleveQuery::create()->findPk($_POST['id_eleve_absent'][$i]);
     if ($eleve == null) {

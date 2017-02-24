@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -617,16 +617,26 @@ if (isset($_POST['is_posted'])) {
 					if((isset($_POST['change_visibilite_'.$per]))&&(isset($_POST['matiere_modif_visibilite_enseignement_'.$per]))&&($_POST['matiere_modif_visibilite_enseignement_'.$per]!="")) {
 						$matiere_modif_visibilite_enseignement=$_POST['matiere_modif_visibilite_enseignement_'.$per];
 						$modif_enseignement_visibilite=isset($_POST['modif_enseignement_visibilite_'.$per]) ? $_POST['modif_enseignement_visibilite_'.$per] : array();
+						$prof_modif_visibilite_enseignement=isset($_POST['prof_modif_visibilite_enseignement_'.$per]) ? $_POST['prof_modif_visibilite_enseignement_'.$per] : "___TOUS___";
 
-						$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_visibilite_enseignement."';";
+
+						if($prof_modif_visibilite_enseignement=="___TOUS___") {
+							$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_visibilite_enseignement."';";
+						}
+						else {
+							$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_groupes_professeurs jgp WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_visibilite_enseignement."' AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$prof_modif_visibilite_enseignement."';";
+						}
+
 						//echo "$sql<br />";
 						$res_grp_vis=mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_grp_vis=mysqli_fetch_object($res_grp_vis)) {
 							for($loop=0;$loop<count($tab_domaines);$loop++) {
 								$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='$lig_grp_vis->id_groupe' AND domaine='$tab_domaines[$loop]';";
+								//echo "$sql<br />";
 								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!in_array($tab_domaines[$loop], $modif_enseignement_visibilite)) {
 									$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$lig_grp_vis->id_groupe', domaine='$tab_domaines[$loop]', visible='n';";
+									//echo "$sql<br />";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert) {
 										$msg.="<br />Erreur lors de l'enregistrement de la non-visibilité du groupe n°$lig_grp_vis->id_groupe sur ".$tab_domaines[$loop];
@@ -648,18 +658,30 @@ if (isset($_POST['is_posted'])) {
 					if((isset($_POST['change_type_'.$per]))&&(isset($_POST['matiere_modif_type_enseignement_'.$per]))&&($_POST['matiere_modif_type_enseignement_'.$per]!="")) {
 						$matiere_modif_type_enseignement=$_POST['matiere_modif_type_enseignement_'.$per];
 						$change_type_enseignement=isset($_POST['change_type_enseignement_'.$per]) ? $_POST['change_type_enseignement_'.$per] : array();
+						$prof_modif_type_enseignement=isset($_POST['prof_modif_type_enseignement_'.$per]) ? $_POST['prof_modif_type_enseignement_'.$per] : "___TOUS___";
 
-						if($matiere_modif_type_enseignement=="___TOUS___") {
-							$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe."';";
+						if($prof_modif_type_enseignement=="___TOUS___") {
+							if($matiere_modif_type_enseignement=="___TOUS___") {
+								$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe."';";
+							}
+							else {
+								$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_type_enseignement."';";
+							}
 						}
 						else {
-							$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_type_enseignement."';";
+							if($matiere_modif_type_enseignement=="___TOUS___") {
+								$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$prof_modif_type_enseignement."';";
+							}
+							else {
+								$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_groupes_professeurs jgp WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_type_enseignement."' AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$prof_modif_type_enseignement."';";
+							}
 						}
 						//echo "$sql<br />";
 						$res_grp_type=mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_grp_type=mysqli_fetch_object($res_grp_type)) {
 							if($change_type_enseignement=="") {
 								$sql="DELETE FROM j_groupes_types WHERE id_groupe='$lig_grp_type->id_groupe';";
+								//echo "$sql<br />";
 								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($menage) {
 									$nb_reg_ok++;
@@ -1354,8 +1376,8 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	if(mysqli_num_rows($res_mat)>0) {
 		echo "<table border='0' cellspacing='0'>
 	<tr>
-		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
-		<td valign='top' rowspan='2'>
+		<td rowspan='3'>&nbsp;&nbsp;&nbsp;</td>
+		<td valign='top'>
 			<input type='checkbox' name='change_visibilite_$per' id='change_visibilite_$per' value='y' /><label for='change_visibilite_$per'> Modifier la visibilité des enseignements de</label>&nbsp;:
 		</td>
 		<td colspan='2'>
@@ -1363,6 +1385,27 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "			<option value=''>---</option>\n";
 			while($lig_mat=mysqli_fetch_object($res_mat)) {
 				echo "			<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+			}
+			echo "	</select>
+		</td>
+	</tr>
+	<tr>
+		<td valign='top' rowspan='2'>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dont le professeur est
+		</td>
+		<td colspan='2'>
+			<select name='prof_modif_visibilite_enseignement_$per' id='prof_modif_visibilite_enseignement_$per' onchange=\"document.getElementById('change_visibilite_$per').checked=true;\">";
+			echo "
+				<option value=''>---</option>
+				<option value='___TOUS___' style='color:red'>Tous les professeurs de la matière choisie</option>";
+
+			$sql="SELECT DISTINCT login, nom, prenom FROM utilisateurs u WHERE u.statut='professeur' ORDER BY u.nom, u.prenom;";
+			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_prof)>0) {
+				while($lig_prof=mysqli_fetch_object($res_prof)) {
+					echo "
+					<option value='$lig_prof->login'>".casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2")."</option>\n";
+				}
 			}
 			echo "	</select>
 		</td>
@@ -1410,13 +1453,29 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			<td valign='top' rowspan='2'>
 				<input type='checkbox' name='change_type_$per' id='change_type_$per' value='y' /><label for='change_type_$per'> Modifier le type des enseignements de</label>&nbsp;:
 			</td>
-			<td colspan='2'>
+			<td>
 				<select name='matiere_modif_type_enseignement_$per' id='matiere_modif_type_enseignement_$per' onchange=\"document.getElementById('change_type_$per').checked=true;\">
 					<option value=''>---</option>
 					<option value='___TOUS___' style='color:red'>Tous les enseignements</option>";
 				while($lig_mat=mysqli_fetch_object($res_mat)) {
 					echo "
 					<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+				}
+				echo "	</select>
+
+				<br />
+				dont le professeur est 
+				<select name='prof_modif_type_enseignement_$per' id='prof_modif_type_enseignement_$per' onchange=\"document.getElementById('change_type_$per').checked=true;\">
+					<option value=''>---</option>
+					<option value='___TOUS___' style='color:red'>Tous les professeurs de la matière choisie</option>";
+
+				$sql="SELECT DISTINCT login, nom, prenom FROM utilisateurs u WHERE u.statut='professeur' ORDER BY u.nom, u.prenom;";
+				$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_prof)>0) {
+					while($lig_prof=mysqli_fetch_object($res_prof)) {
+						echo "
+						<option value='$lig_prof->login'>".casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2")."</option>\n";
+					}
 				}
 				echo "	</select>
 			</td>

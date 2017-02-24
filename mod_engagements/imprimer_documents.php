@@ -75,6 +75,10 @@ if(isset($_GET['page_origine'])) {
 
 $nb_engagements=count($tab_engagements['indice']);
 
+$tab_engagements_avec_droit_saisie=get_tab_engagements_droit_saisie_tel_user($_SESSION['login']);
+
+//debug_var();
+
 // Restreindre a ses propres documents
 if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 
@@ -793,16 +797,8 @@ if(acces("/mod_engagements/index_admin.php", $_SESSION['statut'])) {
 	echo " | <a href='index_admin.php'>Définir les types d'engagements</a>";
 }
 
-if(acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut'])) {
+if((acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut']))&&(count($tab_engagements_avec_droit_saisie['indice'])>0)) {
 	echo " | <a href='saisie_engagements.php'>Saisir les engagements</a>";
-}
-elseif(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login']))) {
-	// Tester s'il y a des droits de saisie pour les PP
-	$sql="SELECT 1=1 FROM engagements WHERE SaisiePP='yes';";
-	$test=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($test)>0) {
-		echo " | <a href='saisie_engagements.php'>Saisir les engagements</a>";
-	}
 }
 
 $acces_imprimerConvocationConseilClasse=true;
@@ -814,45 +810,22 @@ elseif(($_SESSION['statut']=="cpe")&&(!getSettingAOui('imprimerConvocationConsei
 }
 
 if($_SESSION['statut']=='professeur') {
-	$tab_pp=get_tab_ele_clas_pp($_SESSION['login']);
-	if(count($tab_pp['id_classe'])==0) {
-		echo "</p>
-
-<p>Vous n'êtes ".getSettingValue('gepi_prof_suivi')." d'aucune classe.</p>";
-		require_once("../lib/footer.inc.php");
-		die();
-	}
-	elseif(count($tab_pp['id_classe'])==1) {
-		$id_classe=array();
-		$id_classe[0]=$tab_pp['id_classe'][0];
-	}
-	else {
+	// 20170124
+	if(isset($tab_engagements_avec_droit_saisie["droit_special"])) {
 		if(!isset($id_classe)) {
-			$suite="n";
-		}
-		else {
-			$suite="y";
-			for($loop=0;$loop<count($id_classe);$loop++) {
-				if(!in_array($id_classe[$loop], $tab_pp['id_classe'])) {
-					echo "</p>\n";
-					$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe[$loop]));
-					echo "<p style='color:red'>Vous n'êtes pas ".$gepi_prof_suivi." de la classe de ".get_nom_classe($id_classe[$loop]);
-					$suite="n";
-					break;
-				}
-			}
-		}
-
-		if($suite=="n") {
 			echo "</p>\n";
 
 			echo "<p class='bold'>Choix des classes&nbsp;:</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
-			for($loop=0;$loop<count($tab_pp['id_classe']);$loop++) {
-				echo "<label id='label_tab_id_classe_$loop' for='tab_id_classe_$loop' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$loop' value='".$tab_pp['id_classe'][$loop]."' onchange='change_style_classe($loop)' /> ".$tab_pp['classe'][$loop]."</label>";
+			$sql="SELECT DISTINCT c.id, c.id as id_classe, c.classe FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe ORDER BY classe";
+			$res_clas=mysqli_query($GLOBALS['mysqli'], $sql);
+			$loop=0;
+			while($lig_clas=mysqli_fetch_object($res_clas)) {
+				echo "<label id='label_tab_id_classe_$loop' for='tab_id_classe_$loop' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$loop' value='".$lig_clas->id_classe."' onchange='change_style_classe($loop)' /> ".$lig_clas->classe."</label>";
 				echo "<br />\n";
+				$loop++;
 			}
 
 			echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -861,6 +834,57 @@ if($_SESSION['statut']=='professeur') {
 			echo "<p><br /></p>";
 			require_once("../lib/footer.inc.php");
 			die();
+		}
+	}
+	else {
+		$tab_pp=get_tab_ele_clas_pp($_SESSION['login']);
+		if(count($tab_pp['id_classe'])==0) {
+			echo "</p>
+
+	<p>Vous n'êtes ".getSettingValue('gepi_prof_suivi')." d'aucune classe.</p>";
+			require_once("../lib/footer.inc.php");
+			die();
+		}
+		elseif(count($tab_pp['id_classe'])==1) {
+			$id_classe=array();
+			$id_classe[0]=$tab_pp['id_classe'][0];
+		}
+		else {
+			if(!isset($id_classe)) {
+				$suite="n";
+			}
+			else {
+				$suite="y";
+				for($loop=0;$loop<count($id_classe);$loop++) {
+					if(!in_array($id_classe[$loop], $tab_pp['id_classe'])) {
+						echo "</p>\n";
+						$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe[$loop]));
+						echo "<p style='color:red'>Vous n'êtes pas ".$gepi_prof_suivi." de la classe de ".get_nom_classe($id_classe[$loop]);
+						$suite="n";
+						break;
+					}
+				}
+			}
+
+			if($suite=="n") {
+				echo "</p>\n";
+
+				echo "<p class='bold'>Choix des classes&nbsp;:</p>\n";
+
+				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+
+				for($loop=0;$loop<count($tab_pp['id_classe']);$loop++) {
+					echo "<label id='label_tab_id_classe_$loop' for='tab_id_classe_$loop' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$loop' value='".$tab_pp['id_classe'][$loop]."' onchange='change_style_classe($loop)' /> ".$tab_pp['classe'][$loop]."</label>";
+					echo "<br />\n";
+				}
+
+				echo "<p><input type='submit' value='Valider' /></p>\n";
+				echo "</form>\n";
+
+				echo "<p><br /></p>";
+				require_once("../lib/footer.inc.php");
+				die();
+			}
 		}
 	}
 }
@@ -950,6 +974,7 @@ if(!isset($id_classe)) {
 
 echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>";
 
+/*
 $acces_saisie_engagements="n";
 if($_SESSION['statut']=='administrateur') {
 	$acces_saisie_engagements="y";
@@ -966,10 +991,10 @@ elseif($_SESSION['statut']=='scolarite') {
 		$acces_saisie_engagements="y";
 	}
 }
-if($acces_saisie_engagements=="y") {
+if((acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut']))&&(count($tab_engagements_avec_droit_saisie['indice'])>0)) {
 	echo " | <a href='saisie_engagements.php'>Saisie des engagements</a>";
 }
-
+*/
 if(acces("/mod_ooo/gerer_modeles_ooo.php", $_SESSION['statut'])) {
 	echo " | <a href='../mod_ooo/gerer_modeles_ooo.php#MODULE_Engagements'>Modifier les modèles de documents</a>";
 }

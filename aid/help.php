@@ -49,7 +49,7 @@ de définir un résumé, le type de production, des mots_clés, un public
 destinataire...).</p>
 
 <p>Ces données supplémentaires sont accessibles à travers des fiches dite
-"fiches projet".</p>
+"fiches projet" <a href='http://www.sylogix.org/projects/gepi/wiki/Outils_compl%C3%A9mentaires_de_gestion_des_AIDs' title="Explications supplémentaires sur le site Gepi."><img src='../images/info.png' class='icone16' alt='Info' /></a>.</p>
 
 <p>Ces fiches sont accessibles dans GEPI à différents
 types d'utilisateurs connectés (administrateur, professeur, cpe, élève ou responsable)</p>

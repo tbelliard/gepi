@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -37,16 +37,12 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-
-
-// INSERT INTO `droits` VALUES ('/cahier_notes/verif_prof.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Vérification des notes/appréciations saisies sur le bulletin', '');
 // INSERT INTO `droits` VALUES ('/accueil_simpl_prof.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Page d accueil simplifiée pour les profs', '');
 if (!checkAccess()) {
 	//header("Location: ../logout.php?auto=1");
 	header("Location: ./logout.php?auto=1");
 	die();
 }
-
 
 /*
 //On vérifie si le module est activé
@@ -609,6 +605,9 @@ $day=date("d");
 $month=date("m");
 $year=date("Y");
 
+$date_courante_debut_journee_mysql=strftime("%Y-%m-%d 00:00:00");
+$tab_conseils_de_classes=get_tab_date_prochain_evenement_telle_classe("", "conseil_de_classe", "y");
+
 $tab_liste_infobulles=array();
 
 for($i=0;$i<count($groups);$i++){
@@ -754,18 +753,45 @@ for($i=0;$i<count($groups);$i++){
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['cahier_notes'])) {
 							echo "<div id='h_cn_".$i."_".$j."'>";
 							echo "<a href='cahier_notes/index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'";
-							if($pref_accueil_infobulles=="y"){
+							if($pref_accueil_infobulles=="y") {
 								echo " onmouseover=\"afficher_div('info_cn_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\"";
 							}
 							echo ">";
 							echo "<img src='images/icons/carnet_notes.png' width='32' height='32' alt='Saisie de notes' border='0' />";
 							echo "</a>";
 		
-							if($pref_accueil_infobulles=="y"){
+							if($pref_accueil_infobulles=="y") {
 								echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Carnet de notes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
 		
 								$tab_liste_infobulles[]='info_cn_'.$i.'_'.$j;
 							}
+
+							/*
+							echo "<pre>";
+							print_r($groups[$i]['classe']['date_fin']);
+							echo "</pre>";
+							*/
+							$chaine_date_fin_periode="";
+							$tmp_tab_date_fin_periode=array();
+							foreach($groups[$i]['classe']['date_fin'] as $tmp_id_classe => $tmp_classe) {
+								if($tmp_classe[$j]>=$date_courante_debut_journee_mysql) {
+									$tmp_tab_date_fin_periode[$tmp_classe[$j]][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
+								}
+							}
+							foreach($tmp_tab_date_fin_periode as $current_mysql_date => $tmp_tab_classe) {
+								$chaine_date_fin_periode.="<br /><span style='font-size:x-small;' title=\"Date de fin de période ";
+								for($loop_clas=0;$loop_clas<count($tmp_tab_classe);$loop_clas++) {
+									if($loop_clas>0) {
+										$chaine_date_fin_periode.=", ";
+									}
+									$chaine_date_fin_periode.=$tmp_tab_classe[$loop_clas];
+								}
+								$chaine_date_fin_periode.=" : ".formate_date($current_mysql_date)."\">";
+								$chaine_date_fin_periode.=formate_date($current_mysql_date);
+								$chaine_date_fin_periode.="</span>";
+							}
+							echo $chaine_date_fin_periode;
+
 							echo "</div>\n";
 						}
 						else {echo "&nbsp;";}
@@ -966,10 +992,18 @@ for($i=0;$i<count($groups);$i++){
 	
 										$tab_liste_infobulles[]='info_bs_'.$i.'_'.$j.'_'.$cpt;
 									}
+
 									$cpt++;
 								}
 	
 							}
+
+							foreach($groups[$i]['classes']['classes'] as $tmp_id_classe => $tmp_classe) {
+								if((isset($tab_conseils_de_classes[$tmp_id_classe]["date_debut"]))&&($tab_conseils_de_classes[$tmp_id_classe]["date_debut"]<=$date_courante_debut_journee_mysql)&&(isset($tab_conseils_de_classes[$tmp_id_classe]["statuts"]))&&(in_array("professeur", $tab_conseils_de_classes[$tmp_id_classe]["statuts"]))) {
+									echo "<br /><span style='font-size:x-small;' title=\"Date du conseil de classe de ".$tmp_classe["classe"]." : ".$tab_conseils_de_classes[$tmp_id_classe]["slashdate_heure_ev"]."\">".$tab_conseils_de_classes[$tmp_id_classe]["slashdate_ev"]."</span>";
+								}
+							}
+
 							echo "</div>\n";
 							echo "</td>\n";
 						}
@@ -998,6 +1032,25 @@ for($i=0;$i<count($groups);$i++){
 							$tab_liste_infobulles[]='info_liste_pdf_'.$i.'_'.$j;
 						}
 						echo "</div>\n";
+
+						// CSV
+						echo "<div id='h_listes_csv_".$i."_".$j."'>";
+						echo "<a href='groupes/get_csv.php?id_groupe=".$groups[$i]['id']."&periode_num=".$groups[$i]['periodes'][$j]['num_periode']."' target='_blank'";
+						// onClick=\"valide_liste_pdf('".$groups[$i]['id']."','".$groups[$i]['periodes'][$j]['num_periode']."'); return false;\"
+						if($pref_accueil_infobulles=="y"){
+							echo " onmouseover=\"afficher_div('info_liste_csv_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_liste_csv_".$i."_".$j."');\"";
+						}
+						echo ">";
+						//echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
+						echo "<img src='images/notes_app_csv.png' width='30' height='30' alt='CSV' />";
+						echo "</a>";
+	
+						if($pref_accueil_infobulles=="y"){
+							echo "<div id='info_liste_csv_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 12em;' onmouseout=\"cacher_div('info_liste_csv_".$i."_".$j."');\">Listes CSV des élèves<br />".$classe['classe']."<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+							$tab_liste_infobulles[]='info_liste_csv_'.$i.'_'.$j;
+						}
+						echo "</div>\n";
+
 						echo "</td>\n";
 					}
 			}
@@ -1239,7 +1292,8 @@ while ($lig_cat_aid=mysqli_fetch_object($res_aid)) {
 				echo "<!-- Colonne Trombino -->\n";
 				echo "<td>";
 				if($tmp_aid_outils_complementaires=="y") {
-					echo "<a href='mod_trombinoscopes/trombinoscopes.php' onClick=\"valide_trombino_aid('".$lig_aid->id."'); return false;\"";
+					echo "<a href='mod_trombinoscopes/trombinoscopes.php?aid=".$lig_aid->id."&etape=2'";
+					//" onClick=\"valide_trombino_aid('".$lig_aid->id."'); return false;\"";
 
 					if($pref_accueil_infobulles=="y"){
 						echo " onmouseover=\"afficher_div('info_trombino_$ii','y',10,10);\" onmouseout=\"cacher_div('info_trombino_$ii');\"";
@@ -1501,6 +1555,27 @@ echo "Periode $j<br />
 									echo "<div id='h_listes_".$ii."_".$j."'>";
 									echo "<a href='impression/liste_pdf.php?id_aid=".$lig_aid->id."&amp;periode_num=".$j."' target='_blank'><img src='images/icons/pdf32.png' width='32' height='32' alt='PDF' /></a>";
 									echo "</div>";
+
+
+									// 20170119
+									// CSV
+									echo "<div id='h_listes_csv_".$ii."_".$j."'>";
+									echo "<a href='groupes/mes_listes.php#aid' target='_blank'";
+									if($pref_accueil_infobulles=="y"){
+										echo " onmouseover=\"afficher_div('info_liste_csv_".$ii."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_liste_csv_".$ii."_".$j."');\"";
+									}
+									echo ">";
+									//echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
+									echo "<img src='images/notes_app_csv.png' width='30' height='30' alt='CSV' />";
+									echo "</a>";
+	
+									if($pref_accueil_infobulles=="y"){
+										echo "<div id='info_liste_csv_".$ii."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 12em;' onmouseout=\"cacher_div('info_liste_csv_".$ii."_".$j."');\">Listes CSV des élèves<br />".$classe['classe']."<br />".$groups[$ii]["periodes"][$j]["nom_periode"].".</div>\n";
+										$tab_liste_infobulles[]='info_liste_csv_'.$ii.'_'.$j;
+									}
+									echo "</div>\n";
+
+
 								}
 								echo "</td>\n";
 							}
@@ -1614,6 +1689,9 @@ echo "<script type='text/javascript'>
 				if(document.getElementById('h_listes_'+i+'_'+num_periode)){
 					document.getElementById('h_listes_'+i+'_'+num_periode).style.display='';
 				}
+				if(document.getElementById('h_listes_csv_'+i+'_'+num_periode)){
+					document.getElementById('h_listes_csv_'+i+'_'+num_periode).style.display='';
+				}
 			}
 		}
 		else{
@@ -1670,6 +1748,9 @@ echo "<script type='text/javascript'>
 				}
 				if(document.getElementById('h_listes_'+i+'_'+num_periode)){
 					document.getElementById('h_listes_'+i+'_'+num_periode).style.display='none';
+				}
+				if(document.getElementById('h_listes_csv_'+i+'_'+num_periode)){
+					document.getElementById('h_listes_csv_'+i+'_'+num_periode).style.display='none';
 				}
 			}
 		}
@@ -1784,6 +1865,9 @@ if(document.getElementById('h_liste_pdf_'+$i)){
 				}
 				if(document.getElementById('h_listes_'+i+'_'+$i)){
 					document.getElementById('h_listes_'+i+'_'+$i).style.display='none';
+				}
+				if(document.getElementById('h_listes_csv_'+i+'_'+$i)){
+					document.getElementById('h_listes_csv_'+i+'_'+$i).style.display='none';
 				}
 			}\n";
 		}

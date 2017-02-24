@@ -356,6 +356,20 @@ if((isset($tab_id_absence))&&(count($tab_id_absence)>1)) {
 	die();
 }
 
+//===============================================
+$chaine_js_journee="";
+$tab_creneau=get_tab_creneaux();
+if(isset($tab_creneau["list"][0])) {
+	$premier_creneau=$tab_creneau["list"][0]['nom_definie_periode'];
+	$dernier_creneau=$tab_creneau["list"][count($tab_creneau["list"])-1]['nom_definie_periode'];
+	$chaine_js_journee="<a href='#' onclick=\"document.getElementById('display_date_fin').value=document.getElementById('display_date_debut').value;
+								document.getElementById('display_heure_debut').value='".$premier_creneau."';
+								document.getElementById('display_heure_fin').value='".$dernier_creneau."';
+								return false;\"
+						title=\"Prendre la même date de fin que la date de début.\nPrendre le premier créneau de la journée comme heure de début et le dernier créneau de la journée pour l'heure de fin.\">Toute la journée</a>";
+}
+//===============================================
+
 echo "
 <form action=\"".$_SERVER['PHP_SELF']."#debut_de_page\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_saisie_details\">
 	<fieldset class='fieldset_opacite50'>
@@ -390,6 +404,7 @@ echo "</span></p>
 					 à/en 
 					<input type='text' name = 'display_heure_debut' id= 'display_heure_debut' size='5' value = \"".(isset($display_heure_debut) ? $display_heure_debut : "")."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />
 					".choix_heure('display_heure_debut','div_choix_heure_debut', 'return')."
+					".$chaine_js_journee."
 				</td>
 			</tr>
 

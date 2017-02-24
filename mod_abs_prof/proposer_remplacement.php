@@ -131,6 +131,8 @@ if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
 	$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 }
 
+//debug_var();
+
 if(isset($_POST['is_posted'])) {
 	check_token();
 
@@ -158,6 +160,7 @@ if(isset($_POST['is_posted'])) {
 			$jour=$tab[2];
 			$id_creneau=$tab[3];
 			$login_user=$tab[4];
+			$id_cours=$tab[5];
 
 			$jour_mysql=substr($jour,0,4)."-".substr($jour,4,2)."-".substr($jour,6,2);
 
@@ -184,10 +187,27 @@ if(isset($_POST['is_posted'])) {
 
 			// On ne refait pas de proposition si le remplacement est déjà attribué.
 			if($temoin_remplacement_confirme=="n") {
+
 				// id_creneau et heure début fin...
 				// Tester si le prof fait partie de ceux à qui on a déjà proposé.
 				// Tester si la proposition est acceptée/validée pour quelqu'un... si oui, vider les autres
 				if(!in_array($login_user, $tab_propositions_deja_enregistrees)) {
+
+					$duree="";
+					$heuredeb_dec="";
+					$jour_semaine="";
+					$id_cours_remplaced="";
+					$sql="SELECT * FROM edt_cours WHERE id_cours='".$id_cours."';";
+					//echo "$sql<br />";
+					$res_cours=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_cours)>0) {
+						$lig_cours=mysqli_fetch_object($res_cours);
+						$duree=$lig_cours->duree;
+						$heuredeb_dec=$lig_cours->heuredeb_dec;
+						$jour_semaine=$lig_cours->jour_semaine;
+						$id_cours_remplaced=$lig_cours->id_cours;
+					}
+
 					$sql="INSERT INTO abs_prof_remplacement SET id_absence='$id_absence',
 												id_aid='".$id_aid."',
 												id_classe='".$id_classe."',
@@ -195,7 +215,10 @@ if(isset($_POST['is_posted'])) {
 												id_creneau='".$id_creneau."',
 												date_debut_r='".$date_debut_r."',
 												date_fin_r='".$date_fin_r."',
-												login_user='".$login_user."';";
+												login_user='".$login_user."', 
+												duree='".$duree."', 
+												heuredeb_dec='".$heuredeb_dec."', 
+												id_cours_remplaced='".$id_cours_remplaced."';";
 					//echo "$sql<br />";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($insert) {
@@ -258,6 +281,7 @@ Cordialement.
 			$jour=$tab[2];
 			$id_creneau=$tab[3];
 			$login_user=$tab[4];
+			$id_cours=$tab[5];
 
 			$jour_mysql=substr($jour,0,4)."-".substr($jour,4,2)."-".substr($jour,6,2);
 
@@ -288,6 +312,24 @@ Cordialement.
 				// Tester si le prof fait partie de ceux à qui on a déjà proposé.
 				// Tester si la proposition est acceptée/validée pour quelqu'un... si oui, vider les autres
 				if(!in_array($login_user, $tab_propositions_deja_enregistrees)) {
+					$duree="";
+					$heuredeb_dec="";
+					$jour_semaine="";
+					$id_cours_remplaced="";
+					$sql="SELECT * FROM edt_cours WHERE id_cours='".$id_cours."';";
+					//echo "$sql<br />";
+					$res_cours=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_cours)>0) {
+						$lig_cours=mysqli_fetch_object($res_cours);
+						$duree=$lig_cours->duree;
+						$heuredeb_dec=$lig_cours->heuredeb_dec;
+						$jour_semaine=$lig_cours->jour_semaine;
+						$id_cours_remplaced=$lig_cours->id_cours;
+					}
+
+					// 20170127 $id_groupe contient l'id_groupe remplacé
+					// Il faudrait pour la suite, le groupe qui remplace.
+
 					$sql="INSERT INTO abs_prof_remplacement SET id_absence='$id_absence',
 												id_groupe='".$id_groupe."',
 												id_classe='".$id_classe."',
@@ -295,7 +337,11 @@ Cordialement.
 												id_creneau='".$id_creneau."',
 												date_debut_r='".$date_debut_r."',
 												date_fin_r='".$date_fin_r."',
-												login_user='".$login_user."';";
+												login_user='".$login_user."', 
+												jour_semaine='".$jour_semaine."', 
+												duree='".$duree."', 
+												heuredeb_dec='".$heuredeb_dec."', 
+												id_cours_remplaced='".$id_cours_remplaced."';";
 					//echo "$sql<br />";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($insert) {
@@ -361,10 +407,10 @@ Cordialement.
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			if(($lig->id_groupe!="")&&($lig->id_groupe!="0")) {
-				$chaine=$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau."|".$lig->login_user;
+				$chaine=$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau."|".$lig->login_user."|".$lig->id_cours_remplaced;
 			}
 			else {
-				$chaine="AID_".$lig->id_aid."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau."|".$lig->login_user;
+				$chaine="AID_".$lig->id_aid."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau."|".$lig->login_user."|".$lig->id_cours_remplaced;
 			}
 			if(!in_array($chaine, $proposition)) {
 				$sql="DELETE FROM abs_prof_remplacement WHERE id='$lig->id';";
@@ -879,10 +925,10 @@ $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)>0) {
 	while($lig=mysqli_fetch_object($res)) {
 		if(($lig->id_groupe!="")&&($lig->id_groupe!="0")) {
-			$chaine=$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau."|".$lig->login_user;
+			$chaine=$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau."|".$lig->login_user."|".$lig->id_cours_remplaced;
 		}
 		else {
-			$chaine="AID_".$lig->id_aid."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau."|".$lig->login_user;
+			$chaine="AID_".$lig->id_aid."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau."|".$lig->login_user."|".$lig->id_cours_remplaced;
 		}
 		/*
 		$tab_propositions_deja_enregistrees[$cpt]['chaine']=$chaine;
@@ -1556,7 +1602,7 @@ echo "<tr><td colspan='5'>
 														$temoin_num_proposition++;
 													}
 
-													$chaine=$id_groupe_courant."|".$current_id_classe."|".$date_aaaammjj."|".$id_creneau_courant."|".$lig_prof->login;
+													$chaine=$id_groupe_courant."|".$current_id_classe."|".$date_aaaammjj."|".$id_creneau_courant."|".$lig_prof->login."|".$value['id_cours'];
 													$checked="";
 													if((isset($tab_propositions_deja_enregistrees['chaine']))&&(in_array($chaine, $tab_propositions_deja_enregistrees['chaine']))) {
 														$checked=" checked";
@@ -1693,7 +1739,7 @@ echo "<tr><td colspan='5'>
 													$temoin_num_proposition++;
 												}
 
-												$chaine="AID_".$id_aid_courant."|".$current_id_classe."|".$date_aaaammjj."|".$id_creneau_courant."|".$lig_prof->login;
+												$chaine="AID_".$id_aid_courant."|".$current_id_classe."|".$date_aaaammjj."|".$id_creneau_courant."|".$lig_prof->login."|".$value['id_cours'];
 												$checked="";
 												if((isset($tab_propositions_deja_enregistrees['chaine']))&&(in_array($chaine, $tab_propositions_deja_enregistrees['chaine']))) {
 													$checked=" checked";
