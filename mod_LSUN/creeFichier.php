@@ -74,7 +74,7 @@ unset($xml);
 	<a class="bold"  href='../temp/<?php echo $dirTemp ; ?><?php echo $nomFichier; ?>' target='_blank'>
 		Récupérer le fichier XML
 	</a>
-	(<em>effectuer un clic-droit/enregistrer la cible [vous pouvez supprimer le 1 de l'extension]</em>)
+	(<em>effectuer un clic-droit → enregistrer la cible </em>)
 </p>
 <p class='rouge'>Vous pouvez vérifier votre fichier sur <a href="http://www.xmlvalidation.com/index.php" target="_blank">xmlvalidation.com</a></p>
 

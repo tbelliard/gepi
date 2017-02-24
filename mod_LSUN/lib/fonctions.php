@@ -687,7 +687,7 @@ INNER JOIN
 ON t3.matiere = t4.id_matiere
 	";
 	
-	//echo $sqlGroupeModalite.'<br>';
+	echo $sqlGroupeModalite.'<br>';
 	$resultchargeDB = $mysqli->query($sqlGroupeModalite);
 	return $resultchargeDB ;
 	
