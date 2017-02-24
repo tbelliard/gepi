@@ -893,7 +893,7 @@ function libxml_display_errors($display_errors = true) {
 	$chain_errors = "";
 
 	foreach ($errors as $error) {
-		$chain_errors .= preg_replace('/( in\ \/(.*))/',  », strip_tags(libxml_display_error($error)))."\n";
+		$chain_errors .= preg_replace('/( in\ \/(.*))/',  », strip_tags(libxml_display_error($error)))."<br>\n";
 		if ($display_errors) {
 			trigger_error(libxml_display_error($error), E_USER_WARNING);
 		}
