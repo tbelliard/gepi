@@ -114,10 +114,15 @@ require_once("../lib/header.inc.php");
 
 //echo "<div class='noprint'>\n";
 //echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
-echo "<p class='bold'><a href='index.php?id_epreuve=$id_epreuve&amp;mode=modif_epreuve'";
-echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo ">Retour</a>";
-echo "</p>\n";
+echo "<p class='bold'>
+	<a href='index.php?id_epreuve=$id_epreuve&amp;mode=modif_epreuve'
+			 onclick=\"return confirm_abandon (this, change, '$themessage')\"
+			 ><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+	 | 
+	<a href='".$_SERVER["PHP_SELF"]."?id_epreuve=$id_epreuve&amp;mode=modif_epreuve'
+			 onclick=\"return confirm_abandon (this, change, '$themessage')\"
+			 >Rafraichir sans prendre en compte les modifications <img src='../images/icons/actualiser.png' alt='Retour' class='icone16'/></a>
+</p>\n";
 //echo "</div>\n";
 
 //==================================================================
@@ -154,25 +159,68 @@ if(mysqli_num_rows($res)==0) {
 	die();
 }
 
-//$liste_profs="";
+//=======================================
+$tmp_verif=array();
+$ordre_prof=isset($_POST['ordre_prof']) ? $_POST['ordre_prof'] : NULL;
+if(isset($ordre_prof)) {
+	for($loop=0;$loop<count($ordre_prof);$loop++) {
+		if(in_array($ordre_prof[$loop], $tmp_verif)) {
+			echo "<p style='margin-top:1em;margin-bottom:1em;color:red'>L'ordre choisi pour les correcteurs comporte un doublon.<br />Ce choix n'est pas valide.</p>";
+			unset($ordre_prof);
+			break;
+		}
+		$tmp_verif[]=$ordre_prof[$loop];
+	}
+}
+
+// Tableau avant ré-ordonnement
+$indice_prof_0=array();
+$login_prof_0=array();
+$info_prof_0=array();
+$cpt_prof=0;
+while($lig=mysqli_fetch_object($res)) {
+	$login_prof_0[$cpt_prof]=$lig->login;
+	$info_prof_0[$cpt_prof]=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
+	$indice_prof_0[$lig->login]=$cpt_prof;
+	$cpt_prof++;
+}
+
 $login_prof=array();
 $info_prof=array();
+if(!isset($ordre_prof)) {
+	for($loop=0;$loop<count($login_prof_0);$loop++) {
+		$login_prof[$loop]=$login_prof_0[$loop];
+		$info_prof[$loop]=$info_prof_0[$loop];
+		$ordre_prof[$loop]=$login_prof_0[$loop];
+	}
+}
+else {
+	for($loop=0;$loop<count($ordre_prof);$loop++) {
+		$tmp_login=$ordre_prof[$loop];
+		$indice_tmp=$indice_prof_0[$tmp_login];
+		$login_prof[$loop]=$login_prof_0[$indice_tmp];
+		// En fait, $login_prof c'est alors $ordre_prof
+		$info_prof[$loop]=$info_prof_0[$indice_tmp];
+	}
+}
+
 $eff_habituel_prof=array();
 $js_chaine_effectif_habituel_prof="";
-while($lig=mysqli_fetch_object($res)) {
-	//if($liste_profs!="") {$liste_profs.=",";}
-	//$liste_profs.=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
-	$login_prof[]=$lig->login;
-	$info_prof[]=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
-
-	$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id AND jgp.id_groupe=jeg.id_groupe AND jeg.id_groupe=g.id AND jgp.login='".$lig->login."';";
+for($loop=0;$loop<count($login_prof);$loop++) {
+	$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id AND jgp.id_groupe=jeg.id_groupe AND jeg.id_groupe=g.id AND jgp.login='".$login_prof[$loop]."';";
 	$res_eff_prof=mysqli_query($GLOBALS["mysqli"], $sql);
-	$eff_habituel_prof[]=mysqli_num_rows($res_eff_prof);
+	$eff_habituel_prof[$loop]=mysqli_num_rows($res_eff_prof);
+
 	if($js_chaine_effectif_habituel_prof!="") {
 		$js_chaine_effectif_habituel_prof.=",";
 	}
 	$js_chaine_effectif_habituel_prof.=mysqli_num_rows($res_eff_prof);
 }
+/*
+echo "\$login_prof<pre>";
+print_r($login_prof);
+echo "</pre>";
+*/
 
 //$tri=isset($_POST['tri']) ? $_POST['tri'] : (isset($_GET['tri']) ? $_GET['tri'] : "groupe");
 $tri=isset($_POST['tri']) ? $_POST['tri'] : (isset($_GET['tri']) ? $_GET['tri'] : "salle");
@@ -206,9 +254,62 @@ echo ">numéro anonymat</a></li>\n";
 echo "</ul>\n";
 
 if($etat!='clos') {
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
-	echo add_token_field();
-	echo "<input type='hidden' name='tri' value='$tri' />\n";
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+	<fieldset class='fieldset_opacite50' style='margin-bottom:1em;'>
+		".add_token_field()."
+		<p><strong>Modifier l'ordre des professeurs</strong><br />
+		<em>(pour pouvoir utiliser les répartitions automatiques ci-dessous, sans affecter toujours les mêmes élèves aux mêmes correcteurs si vous programmez plusieurs épreuves blanches dans l'année)</em></p>
+		<input type='hidden' name='id_epreuve' value='$id_epreuve' />
+		<input type='hidden' name='tri' value='$tri' />";
+
+	for($loop=0;$loop<count($login_prof_0);$loop++) {
+		echo "<strong>".($loop+1)."-</strong> 
+			<select name='ordre_prof[]'>";
+		for($loop2=0;$loop2<count($login_prof_0);$loop2++) {
+			$selected="";
+			if($login_prof_0[$loop2]==$ordre_prof[$loop]) {
+				$selected=" selected='true'";
+			}
+			echo "
+				<option value='".$login_prof_0[$loop2]."'".$selected.">".$info_prof_0[$loop2]."</option>";
+		}
+		echo "
+			</select><br />";
+	}
+	/*
+	for($loop=0;$loop<count($login_prof_0);$loop++) {
+		echo "<strong>".($loop+1)."-</strong> 
+			<select name='ordre_prof[]'>";
+		for($loop2=0;$loop2<count($login_prof_0);$loop2++) {
+
+			$selected="";
+			if($loop2==$ordre_prof[$loop]) {
+				$selected=" selected='true'";
+			}
+			echo "
+				<option value='".$loop2."'".$selected.">".$info_prof_0[$loop2]." $loop $loop2</option>";
+		}
+		echo "
+			</select><br />";
+	}
+	*/
+	echo "
+		<input type='submit' value=\"Valider l'ordre choisi pour les correcteurs\" />
+	</fieldset>
+</form>\n";
+
+
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='tri' value='$tri' />\n";
+
+	if(isset($ordre_prof)) {
+		for($loop=0;$loop<count($ordre_prof);$loop++) {
+			echo "
+		<input type='hidden' name='ordre_prof[]' value=\"".$ordre_prof[$loop]."\" />";
+		}
+	}
 }
 
 //echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves1' value='Valider' /></p>\n";
@@ -255,23 +356,26 @@ if($tri=='groupe') {
 	
 		//$sql="SELECT * FROM eb_copies ec, eb_groupes eg WHERE id_epreuve='$id_epreuve' AND...;";
 	
-		$sql="SELECT ec.login_ele,ec.login_prof FROM eb_copies ec, eb_groupes eg WHERE eg.id_epreuve='$id_epreuve' AND ec.id_epreuve=eg.id_epreuve AND eg.id_groupe='$lig->id';";
+		$sql="SELECT ec.login_ele,ec.login_prof, ec.n_anonymat FROM eb_copies ec, eb_groupes eg WHERE eg.id_epreuve='$id_epreuve' AND ec.id_epreuve=eg.id_epreuve AND eg.id_groupe='$lig->id';";
 		//echo "$sql<br />";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
-	
+
 		$tab_ele_prof=array();
+		$tab_ele_anonymat=array();
 		while($lig2=mysqli_fetch_object($res2)) {
 			$tab_ele_prof[$lig2->login_ele]=$lig2->login_prof;
+			$tab_ele_anonymat[$lig2->login_ele]=$lig2->n_anonymat;
 		}
 
 		echo "<table class='boireaus' summary='Choix des élèves du groupe $lig->id'>\n";
 		echo "<tr>\n";
+		echo "<th>Numéro</th>\n";
 		echo "<th>Elèves</th>\n";
 		echo "<th>Classes</th>\n";
 		for($i=0;$i<count($info_prof);$i++) {
 			echo "<th>\n";
 			if($etat!='clos') {
-				echo "<a href='javascript:coche($i,$compteur_groupe,true)'>\n";
+				echo "<a href='javascript:coche($i,$compteur_groupe,true)' title=\"Affecter les copies de cette salle à ce professeur\">\n";
 				echo "$info_prof[$i]\n";
 				echo "</a>\n";
 			}
@@ -311,6 +415,7 @@ if($tri=='groupe') {
 			echo "<tr>\n";
 			echo "<th>Effectifs</th>\n";
 			echo "<th>&nbsp;</th>\n";
+			echo "<th>&nbsp;</th>\n";
 			for($i=0;$i<count($info_prof);$i++) {
 				echo "<th title=\"Nombre de copies attribuées à ce professeur par rapport au nombre d'élèves qu'il a en cours.\">\n";
 				echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
@@ -330,8 +435,15 @@ if($tri=='groupe') {
 				$tab_eleves_deja_affiches[]=$current_group["eleves"]["all"]["list"][$j];
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt white_hover'>\n";
-				echo "<td style='text-align:left;'>\n";
+
 				$login_ele=$current_group["eleves"]["all"]["list"][$j];
+				echo "<td>\n";
+				if(isset($tab_ele_anonymat[$login_ele])) {
+					echo $tab_ele_anonymat[$login_ele];
+				}
+				echo "</td>\n";
+
+				echo "<td style='text-align:left;'>\n";
 				echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
 				echo get_nom_prenom_eleve($login_ele);
 				echo "</td>\n";
@@ -388,7 +500,8 @@ if($tri=='groupe') {
 		echo "<input type='hidden' name='mode' value='affect_eleves' />\n";
 		echo "<input type='hidden' name='valide_affect_eleves' value='y' />\n";
 		//echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves2' value='Valider' /></p>\n";
-		echo "</form>\n";
+		echo "	</fieldset>
+</form>\n";
 		
 	
 		$chaine_groupes="";
@@ -591,7 +704,7 @@ elseif($tri=='n_anonymat') {
 				$compteur_eleves_du_prof[$i]=0;
 				echo "<th>\n";
 				if($etat!='clos') {
-					echo "<a href='javascript:coche($i,$compteur_tranche,true)'>\n";
+					echo "<a href='javascript:coche($i,$compteur_tranche,true)' title=\"Affecter les copies de cette tranche à ce professeur\">\n";
 					echo "$info_prof[$i]\n";
 					echo "</a>\n";
 				}
@@ -721,7 +834,8 @@ elseif($tri=='n_anonymat') {
 		echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
 		echo "<input type='hidden' name='mode' value='affect_eleves' />\n";
 		echo "<input type='hidden' name='valide_affect_eleves' value='y' />\n";
-		echo "</form>\n";
+		echo "	</fieldset>
+</form>\n";
 
 		$chaine_cpt0_eleves="";
 		$chaine_cpt1_eleves="";
@@ -872,13 +986,14 @@ elseif($tri=='salle') {
 		//echo "\$cpt=$cpt<br />";
 		echo "<table class='boireaus' summary='Elèves de la salle $lig->id'>\n";
 		echo "<tr>\n";
+		echo "<th>Numéro</th>\n";
 		echo "<th>Elèves</th>\n";
 		echo "<th>Classes</th>\n";
 		for($i=0;$i<count($info_prof);$i++) {
 			$compteur_eleves_du_prof[$i]=0;
 			echo "<th>\n";
 			if($etat!='clos') {
-				echo "<a href='javascript:coche($i,$compteur_salle,true)'>\n";
+				echo "<a href='javascript:coche($i,$compteur_salle,true)' title=\"Affecter les copies de cette salle à ce professeur\">\n";
 				echo "$info_prof[$i]\n";
 				echo "</a>\n";
 			}
@@ -907,6 +1022,7 @@ elseif($tri=='salle') {
 			echo "<tr>\n";
 			echo "<th>Effectifs</th>\n";
 			echo "<th>&nbsp;</th>\n";
+			echo "<th>&nbsp;</th>\n";
 			for($i=0;$i<count($info_prof);$i++) {
 				echo "<th title=\"Nombre de copies attribuées à ce professeur par rapport au nombre d'élèves qu'il a en cours.\">\n";
 				echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
@@ -930,13 +1046,18 @@ elseif($tri=='salle') {
 		while($lig2=mysqli_fetch_object($res2)) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt white_hover'>\n";
+
+			echo "<td>\n";
+			echo $lig2->n_anonymat;
+			echo "</td>\n";
+
 			echo "<td style='text-align:left;'>\n";
 			$login_ele=$lig2->login_ele;
 			echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
 			//echo get_nom_prenom_eleve($login_ele);
 			echo casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2');
 			echo "</td>\n";
-	
+
 			echo "<td>\n";
 			$tmp_tab_classe=get_class_from_ele_login($login_ele);
 			echo $tmp_tab_classe['liste'];
@@ -1121,7 +1242,8 @@ elseif($tri=='salle') {
 		echo "<input type='hidden' name='mode' value='affect_eleves' />\n";
 		echo "<input type='hidden' name='valide_affect_eleves' value='y' />\n";
 		//echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves2' value='Valider' /></p>\n";
-		echo "</form>\n";
+		echo "	</fieldset>
+</form>\n";
 		
 		$chaine_salles="";
 		for($i=0;$i<count($tab_id_salle);$i++) {
