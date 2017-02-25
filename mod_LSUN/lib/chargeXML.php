@@ -424,7 +424,10 @@ if (FALSE) {
 		
 		$donnees->appendChild($accPersosGroupes);
 }
-		
+
+		// Initialisation des tableau des cycles et MEF associés
+		$tab_cycle=array();
+
 		/*----- Bilans périodiques -----*/
 		$bilansPeriodiques = $xml->createElement('bilans-periodiques');
 		
@@ -582,7 +585,37 @@ if (FALSE) {
 			
 			$socle = $xml->createElement('socle');
 			// non obligatoire
-			
+			if (getSettingValue("LSU_Donnees_socle") == "y") {
+
+				$mef_code_ele=$eleve->mef_code;
+				if(!isset($tab_cycle[$mef_code_ele])) {
+					$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
+					$cycle_eleve_courant=$tmp_tab_cycle_niveau["mef_cycle"];
+					$niveau_eleve_courant=$tmp_tab_cycle_niveau["mef_niveau"];
+					$tab_cycle[$mef_code_ele]=$cycle_eleve_courant;
+				}
+
+				$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."';";
+				$res_ele_socle=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_ele_socle)>0) {
+					while($lig_ele_socle=mysqli_fetch_object($res_ele_socle)) {
+
+						$socleElv=$xml->createElement('domaine');
+
+						$attsSocle=$xml->createAttribute('code');
+						$attsSocle->value=$lig_ele_socle->code_composante;
+						$socleElv->appendChild($attsSocle);
+
+						$attsSocle=$xml->createAttribute('positionnement');
+						$attsSocle->value=$lig_ele_socle->niveau_maitrise;
+						$socleElv->appendChild($attsSocle);
+
+						$socle->appendChild($socleElv);
+					}
+					$noeudBilanElevePeriodique->appendChild($socle);
+				}
+			}
+
 			if (getSettingValue("LSU_Donnees_responsables") != "n") {
 				$noeudResponsables = $xml->createElement('responsables');
 				// non obligatoire
