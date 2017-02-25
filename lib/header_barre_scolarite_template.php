@@ -250,21 +250,26 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 
 		//=======================================================
 		// Composantes du Socle
-		if((getSettingAOui("SocleSaisieComposantes"))&&(getSettingAOui("SocleSaisieComposantes_scolarite"))) {
-			if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a>'."\n";
+
+		if(getSettingAOui("SocleSaisieComposantes")) {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/socle_verif.php" '.insert_confirm_abandon().' title="Vérifier le remplissage des bilans de composantes du Socle">Socle</a>'."\n";
 				$menus .= '   <ul class="niveau2">'."\n";
-				$menus .= '      <a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Saisie Socle</a>'."\n";
-				$menus .= '      <a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Verrouillage&nbsp;Socle</a>'."\n";
+
+				if(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
+					$menus .= '      <a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Saisie&nbsp;Socle</a>'."\n";
+				}
+				if(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"])) {
+					$menus .= '      <a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Verrouillage&nbsp;Socle</a>'."\n";
+				}
+
+				$menus .= '      <a href="'.$gepiPath.'/saisie/socle_verif.php" '.insert_confirm_abandon().' title="Vérifier le remplissage des bilans de composantes du Socle">Vérification&nbsp;remplissage</a>'."\n";
+
+				if((getSettingAOui("SocleImportComposantes"))&&(getSettingAOui("SocleImportComposantes_".$_SESSION['statut']))) {
+					$menus .= '      <a href="'.$gepiPath.'/saisie/socle_import.php" '.insert_confirm_abandon().' title="Importer les bilans de composantes du Socle d\'après SACoche">Import&nbsp;Socle</a>'."\n";
+				}
+
 				$menus .= '   </ul>'."\n";
 				$menus .= '</li>'."\n";
-			}
-			else {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a></li>'."\n";
-			}
-		}
-		elseif((getSettingAOui("SocleSaisieComposantes"))&&(acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
-			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Socle</a></li>'."\n";
 		}
 
 		//=======================================================

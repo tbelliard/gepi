@@ -86,7 +86,7 @@ if(isset($_POST['enregistrer_Saisie_Socle'])) {
 		}
 	}
 
-	$tab=array("SocleSaisieComposantes_scolarite", "SocleSaisieComposantes_cpe", "SocleSaisieComposantes_PP", "SocleSaisieComposantes_professeur", "SocleSaisieComposantesForcer_scolarite", "SocleSaisieComposantesForcer_cpe", "SocleSaisieComposantesForcer_PP", "SocleSaisieComposantesForcer_professeur", "SocleOuvertureSaisieComposantes_scolarite", "SocleOuvertureSaisieComposantes_cpe", "SocleSaisieSyntheses_scolarite", "SocleSaisieSyntheses_cpe", "SocleSaisieSyntheses_PP", "SocleSaisieSyntheses_professeur");
+	$tab=array("SocleSaisieComposantes_scolarite", "SocleSaisieComposantes_cpe", "SocleSaisieComposantes_PP", "SocleSaisieComposantes_professeur", "SocleSaisieComposantesForcer_scolarite", "SocleSaisieComposantesForcer_cpe", "SocleSaisieComposantesForcer_PP", "SocleSaisieComposantesForcer_professeur", "SocleOuvertureSaisieComposantes_scolarite", "SocleOuvertureSaisieComposantes_cpe", "SocleSaisieSyntheses_scolarite", "SocleSaisieSyntheses_cpe", "SocleSaisieSyntheses_PP", "SocleSaisieSyntheses_professeur", "SocleImportComposantes", "SocleImportComposantes_scolarite", "SocleImportComposantes_cpe");
 	for($loop=0;$loop<count($tab);$loop++) {
 		if(isset($_POST[$tab[$loop]])) {
 			$valeur="y";
@@ -119,6 +119,7 @@ $droit = droitLSUN();
 
 //$droit = DroitSurListeOuvert();
 
+$themessage  = 'Des valeurs ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Ouverture du Livret Scolaire Unique";
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Ouverture LSU")) {echo "erreur lors de la création du fil d'ariane";}
@@ -141,7 +142,7 @@ $SocleSaisieComposantesConcurrentes=getSettingValue("SocleSaisieComposantesConcu
 				   name="ouvre"
 					<?php if($droit) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="change_style_radio()" />
+				   onchange="change_style_radio();changement();" />
 			<label for="ouvreDroit" id='texte_ouvreDroit'>Ouverture du module <em>Livret Scolaire Unique</em></label>
 		</p>
 		
@@ -151,7 +152,7 @@ $SocleSaisieComposantesConcurrentes=getSettingValue("SocleSaisieComposantesConcu
 				   name="ouvre"
 					<?php if(!$droit) {echo " checked ";} ?>
 				   value="n" 
-				   onchange="change_style_radio()" />
+				   onchange="change_style_radio();changement();" />
 			<label for="fermeDroit" id='texte_fermeDroit'>
 				Fermer le module LSU
 			</label>
@@ -232,7 +233,7 @@ echo "</p>";
 				   name="SocleSaisieComposantes"
 					<?php if($SocleSaisieComposantes) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="change_style_radio()" />
+				   onchange="change_style_radio();changement();" />
 			<label for="SocleSaisieComposantes_y" id='texte_SocleSaisieComposantes_y'>Ouvrir le module de saisie des <em>Bilans de composantes du socle</em></label>
 			<br />
 			<input type="radio" 
@@ -240,7 +241,7 @@ echo "</p>";
 				   name="SocleSaisieComposantes"
 					<?php if(!$SocleSaisieComposantes) {echo " checked ";} ?>
 				   value="n" 
-				   onchange="change_style_radio()" />
+				   onchange="change_style_radio();changement();" />
 			<label for="SocleSaisieComposantes_n" id='texte_SocleSaisieComposantes_n'>
 				Fermer le module de saisie des <em>Bilans de composantes du socle</em>
 			</label>
@@ -253,7 +254,7 @@ echo "</p>";
 				   name="SocleOuvertureSaisieComposantes"
 					<?php if($SocleOuvertureSaisieComposantes) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="change_style_radio()" />
+				   onchange="change_style_radio();changement();" />
 			<label for="SocleOuvertureSaisieComposantes_y" id='texte_SocleOuvertureSaisieComposantes_y'>Saisie des <em>Bilans de composantes du socle</em> ouverte</label>
 			<br />
 			<input type="radio" 
@@ -261,7 +262,7 @@ echo "</p>";
 				   name="SocleOuvertureSaisieComposantes"
 					<?php if(!$SocleOuvertureSaisieComposantes) {echo " checked ";} ?>
 				   value="n" 
-				   onchange="change_style_radio()" />
+				   onchange="change_style_radio();changement();" />
 			<label for="SocleOuvertureSaisieComposantes_n" id='texte_SocleOuvertureSaisieComposantes_n'>
 				Saisie des <em>Bilans de composantes du socle</em> fermée
 			</label>
@@ -274,7 +275,7 @@ echo "</p>";
 				   name="SocleOuvertureSaisieComposantes_scolarite"
 					<?php if(getSettingAOui("SocleOuvertureSaisieComposantes_scolarite")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleOuvertureSaisieComposantes_scolarite" id='texte_SocleOuvertureSaisieComposantes_scolarite'>
 				les comptes Scolarité
 			</label>
@@ -285,7 +286,7 @@ echo "</p>";
 				   name="SocleOuvertureSaisieComposantes_cpe"
 					<?php if(getSettingAOui("SocleOuvertureSaisieComposantes_cpe")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleOuvertureSaisieComposantes_cpe" id='texte_SocleOuvertureSaisieComposantes_cpe'>
 				les comptes CPE
 			</label>
@@ -298,7 +299,7 @@ echo "</p>";
 				   name="SocleSaisieComposantes_scolarite"
 					<?php if(getSettingAOui("SocleSaisieComposantes_scolarite")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantes_scolarite" id='texte_SocleSaisieComposantes_scolarite'>
 				les comptes Scolarité associés à la classe
 			</label>
@@ -309,7 +310,7 @@ echo "</p>";
 				   name="SocleSaisieComposantes_cpe"
 					<?php if(getSettingAOui("SocleSaisieComposantes_cpe")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantes_cpe" id='texte_SocleSaisieComposantes_cpe'>
 				les comptes CPE associés à la classe
 			</label>
@@ -320,7 +321,7 @@ echo "</p>";
 				   name="SocleSaisieComposantes_PP"
 					<?php if(getSettingAOui("SocleSaisieComposantes_PP")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantes_PP" id='texte_SocleSaisieComposantes_PP'>
 				les comptes <?php echo getSettingValue("gepi_prof_suivi");?> associés à la classe
 			</label>
@@ -331,7 +332,7 @@ echo "</p>";
 				   name="SocleSaisieComposantes_professeur"
 					<?php if(getSettingAOui("SocleSaisieComposantes_professeur")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantes_professeur" id='texte_SocleSaisieComposantes_professeur'>
 				les comptes Professeurs associés à la classe
 			</label>
@@ -344,7 +345,7 @@ echo "</p>";
 				   name="SocleSaisieComposantesConcurrentes"
 					<?php if($SocleSaisieComposantesConcurrentes!="meilleure") {echo " checked ";} ?>
 				   value="derniere" 
-				   onchange="change_style_radio()" />
+				   onchange="change_style_radio();changement();" />
 			<label for="SocleSaisieComposantesConcurrentes_derniere" id='texte_SocleSaisieComposantesConcurrentes_derniere'>Retenir la dernière saisie effectuée.</label>
 			<br />
 			<input type="radio" 
@@ -352,7 +353,7 @@ echo "</p>";
 				   name="SocleSaisieComposantesConcurrentes"
 					<?php if($SocleSaisieComposantesConcurrentes=="meilleure") {echo " checked ";} ?>
 				   value="meilleure" 
-				   onchange="change_style_radio()" />
+				   onchange="change_style_radio();changement();" />
 			<label for="SocleSaisieComposantesConcurrentes_meilleure" id='texte_SocleSaisieComposantesConcurrentes_meilleure'>
 				Retenir la saisie la plus favorable à l'élève.
 			</label>
@@ -365,7 +366,7 @@ echo "</p>";
 				   name="SocleSaisieComposantesForcer_scolarite"
 					<?php if(getSettingAOui("SocleSaisieComposantesForcer_scolarite")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantesForcer_scolarite" id='texte_SocleSaisieComposantesForcer_scolarite'>
 				Comptes Scolarité associés à la classe
 			</label>
@@ -375,7 +376,7 @@ echo "</p>";
 				   name="SocleSaisieComposantesForcer_cpe"
 					<?php if(getSettingAOui("SocleSaisieComposantesForcer_cpe")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantesForcer_cpe" id='texte_SocleSaisieComposantesForcer_cpe'>
 				Comptes CPE associés à la classe
 			</label>
@@ -385,7 +386,7 @@ echo "</p>";
 				   name="SocleSaisieComposantesForcer_PP"
 					<?php if(getSettingAOui("SocleSaisieComposantesForcer_PP")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantesForcer_PP" id='texte_SocleSaisieComposantesForcer_PP'>
 				Comptes <?php echo getSettingValue("gepi_prof_suivi");?> associés à la classe
 			</label>
@@ -395,7 +396,7 @@ echo "</p>";
 				   name="SocleSaisieComposantesForcer_professeur"
 					<?php if(getSettingAOui("SocleSaisieComposantesForcer_professeur")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantesForcer_professeur" id='texte_SocleSaisieComposantesForcer_professeur'>
 				Tous les comptes professeurs associés à la classe
 			</label>
@@ -408,7 +409,7 @@ echo "</p>";
 				   name="SocleSaisieSyntheses_scolarite"
 					<?php if(getSettingAOui("SocleSaisieSyntheses_scolarite")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieSyntheses_scolarite" id='texte_SocleSaisieSyntheses_scolarite'>
 				les comptes Scolarité associés à la classe
 			</label>
@@ -419,7 +420,7 @@ echo "</p>";
 				   name="SocleSaisieSyntheses_cpe"
 					<?php if(getSettingAOui("SocleSaisieSyntheses_cpe")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieSyntheses_cpe" id='texte_SocleSaisieSyntheses_cpe'>
 				les comptes CPE associés à la classe
 			</label>
@@ -430,7 +431,7 @@ echo "</p>";
 				   name="SocleSaisieSyntheses_PP"
 					<?php if(getSettingAOui("SocleSaisieSyntheses_PP")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieSyntheses_PP" id='texte_SocleSaisieSyntheses_PP'>
 				les comptes <?php echo getSettingValue("gepi_prof_suivi");?> associés à la classe
 			</label>
@@ -441,12 +442,49 @@ echo "</p>";
 				   name="SocleSaisieSyntheses_professeur"
 					<?php if(getSettingAOui("SocleSaisieSyntheses_professeur")) {echo " checked ";} ?>
 				   value="y" 
-				   onchange="checkbox_change(this.id)" />
+				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieSyntheses_professeur" id='texte_SocleSaisieSyntheses_professeur'>
 				les comptes Professeurs associés à la classe
 			</label>
 			<br />
 			Limiter les saisies aux comptes Scolarité, CPE et/ou <?php echo getSettingValue("gepi_prof_suivi");?> parait raisonnable.
+		</p>
+
+		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
+			<input type="checkbox" 
+				   id="SocleImportComposantes" 
+				   name="SocleImportComposantes"
+					<?php if(getSettingAOui("SocleImportComposantes")) {echo " checked ";} ?>
+				   value="y" 
+				   onchange="checkbox_change(this.id);changement();" />
+			<label for="SocleImportComposantes" id='texte_SocleImportComposantes'>
+				Permettre l'import d'un export JSON des niveaux de maitrise estimés d'après les saisies effectuées dans 
+			</label >
+			<a href='https://sacoche.sesamath.net/index.php?page=documentation__referentiels_socle__socle_export_import#toggle_export_gepi' target='_blank' title="Voir, dans un nouvel onglet, la page concernant cet export.">SACoche</a>.
+		</p>
+
+		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
+			Les profils autorisés à <strong><a href='../saisie/socle_import.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">importer les niveaux de maitrise depuis un export SACoche</a></strong> sont, en sus des administrateurs <em>(sous réserve de cocher la case ci-dessus)</em>&nbsp;:<br />
+			<input type="checkbox" 
+				   id="SocleImportComposantes_scolarite" 
+				   name="SocleImportComposantes_scolarite"
+					<?php if(getSettingAOui("SocleImportComposantes_scolarite")) {echo " checked ";} ?>
+				   value="y" 
+				   onchange="checkbox_change(this.id);changement();" />
+			<label for="SocleImportComposantes_scolarite" id='texte_SocleImportComposantes_scolarite'>
+				les comptes Scolarité associés à la classe
+			</label>
+			<br />
+
+			<input type="checkbox" 
+				   id="SocleImportComposantes_cpe" 
+				   name="SocleImportComposantes_cpe"
+					<?php if(getSettingAOui("SocleImportComposantes_cpe")) {echo " checked ";} ?>
+				   value="y" 
+				   onchange="checkbox_change(this.id);changement();" />
+			<label for="SocleImportComposantes_cpe" id='texte_SocleImportComposantes_cpe'>
+				les comptes CPE associés à la classe
+			</label>
 		</p>
 
 		<input type="hidden" name="enregistrer_Saisie_Socle" value="y" />

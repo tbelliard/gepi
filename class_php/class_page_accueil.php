@@ -706,6 +706,18 @@ if(getSettingAOui('active_bulletins')) {
 					"Verrouillage saisies Composantes Socle",
 					"Permet de verrouiller/déverrouiller la saisie des bilans de composantes du Socle.");
 			}
+
+			if(acces("/saisie/socle_verif.php",$_SESSION["statut"])) {
+				$this->creeNouveauItem("/saisie/socle_verif.php",
+					"Vérification du remplissage des Composantes Socle",
+					"Permet de vérifier l'état du remplissage/saisie des Composantes du Socle.");
+			}
+
+			if((getSettingAOui("SocleImportComposantes"))&&(getSettingAOui("SocleImportComposantes_".$_SESSION["statut"]))) {
+				$this->creeNouveauItem("/saisie/socle_import.php",
+					"Import des Composantes Socle",
+					"Permet d'importer depuis SACoche, les bilans de composantes du Socle.");
+			}
 		}
 
 		if ($this->b>0){

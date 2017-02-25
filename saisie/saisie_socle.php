@@ -585,6 +585,11 @@ if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(
 )) {
 	echo " | <a href=\"socle_verrouillage.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Ouverture/verrouillage des saisies</a>";
 }
+if((acces("/saisie/socle_import.php", $_SESSION["statut"]))&&
+	(getSettingAOui("SocleImportComposantes"))&&
+	(($_SESSION['statut']=="administrateur")||(getSettingAOui("SocleImportComposantes_".$_SESSION["statut"])))) {
+	echo " | <a href=\"socle_import.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Import des bilans de composantes du socle</a>";
+}
 
 // Choix du groupe ou de la classe
 if($_SESSION['statut']=="professeur") {

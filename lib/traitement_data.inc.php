@@ -341,10 +341,10 @@ else {
 	if($nb_lignes == 0) {
 		// Et on traite les fichiers uploadés
 		if (!isset($AllowedFilesExtensions)) {
-			$AllowedFilesExtensions = array("bmp","csv","doc","dot","epg","gif","ggb","gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","pptx","sql","swf","txt","xcf","xls","xlsx","xml","zip","pps","docx", "ics");
+			$AllowedFilesExtensions = array("bmp","csv","doc","dot","epg","gif","ggb","gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","pptx","sql","swf","txt","xcf","xls","xlsx","xml","zip","pps","docx", "ics", "json");
 		}
 		
-		if (isset($_FILES) and !empty($_FILES)) {		
+		if (isset($_FILES) and !empty($_FILES)) {
 			foreach ($_FILES as &$file) {
 				if (is_array($file['name'])) {
 					$i = 0;
