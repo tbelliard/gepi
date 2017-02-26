@@ -1464,6 +1464,17 @@ if(getSettingAOui('active_bulletins')) {
 				}
 			}
 		}
+
+		if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+			if((($_SESSION['statut']=='scolarite')&&(getSettingAOui("ScolGererMEP")))||
+			($_SESSION['statut']=='administrateur')||
+			($_SESSION['statut']=='professeur')) {
+				$this->creeNouveauItem("/saisie/gerer_mep.php",
+				  "Gérer les éléments de programmes",
+				  "Gérer les éléments de programmes inscrits dans les bulletins.");
+			}
+		}
+
 	}
 
 	if ($this->statutUtilisateur=='scolarite'){

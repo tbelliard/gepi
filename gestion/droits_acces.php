@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -609,6 +609,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='AccesModifAppreciationScol';
 $texteItem="peut corriger les appréciations des professeurs en période non close.<br />(<em>cela permet de corriger des fautes pendant le conseil de classe.<br />Le professeur concerné reçoit un mail l'informant de la modification.</em>).";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='ScolGererMEP';
+$texteItem="peut gérer les éléments de programmes apparaissant sur les bulletins.<br />(<em>cela permet de corriger des fautes dans les éléments de programmes ou de modifier des éléments trop longs.</em>).";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
