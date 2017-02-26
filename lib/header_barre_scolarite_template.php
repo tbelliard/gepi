@@ -188,6 +188,13 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/bull_index.php"'.insert_confirm_abandon().'>Impression bulletins</a></li>'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a></li>'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/impression_avis_grp.php"'.insert_confirm_abandon().'>Avis groupes/classes</a></li>'."\n";
+				if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+					if((($_SESSION['statut']=='scolarite')&&(getSettingAOui("ScolGererMEP")))||
+					($_SESSION['statut']=='administrateur')||
+					($_SESSION['statut']=='professeur')) {
+						$menus .= '                <li><a href="'.$gepiPath.'/saisie/gerer_mep.php" '.insert_confirm_abandon().'>Gérer les éléments de programmes</a></li>'."\n";
+					}
+				}
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
 	
@@ -250,21 +257,26 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 
 		//=======================================================
 		// Composantes du Socle
-		if((getSettingAOui("SocleSaisieComposantes"))&&(getSettingAOui("SocleSaisieComposantes_scolarite"))) {
-			if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a>'."\n";
+
+		if(getSettingAOui("SocleSaisieComposantes")) {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/socle_verif.php" '.insert_confirm_abandon().' title="Vérifier le remplissage des bilans de composantes du Socle">Socle</a>'."\n";
 				$menus .= '   <ul class="niveau2">'."\n";
-				$menus .= '      <a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Saisie Socle</a>'."\n";
-				$menus .= '      <a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Verrouillage&nbsp;Socle</a>'."\n";
+
+				if(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
+					$menus .= '      <a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Saisie&nbsp;Socle</a>'."\n";
+				}
+				if(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"])) {
+					$menus .= '      <a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Verrouillage&nbsp;Socle</a>'."\n";
+				}
+
+				$menus .= '      <a href="'.$gepiPath.'/saisie/socle_verif.php" '.insert_confirm_abandon().' title="Vérifier le remplissage des bilans de composantes du Socle">Vérification&nbsp;remplissage</a>'."\n";
+
+				if((getSettingAOui("SocleImportComposantes"))&&(getSettingAOui("SocleImportComposantes_".$_SESSION['statut']))) {
+					$menus .= '      <a href="'.$gepiPath.'/saisie/socle_import.php" '.insert_confirm_abandon().' title="Importer les bilans de composantes du Socle d\'après SACoche">Import&nbsp;Socle</a>'."\n";
+				}
+
 				$menus .= '   </ul>'."\n";
 				$menus .= '</li>'."\n";
-			}
-			else {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/saisie_socle.php" '.insert_confirm_abandon().' title="Saisir les bilans de composantes du Socle">Socle</a></li>'."\n";
-			}
-		}
-		elseif((getSettingAOui("SocleSaisieComposantes"))&&(acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))) {
-			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/saisie/socle_verrouillage.php" '.insert_confirm_abandon().' title="Ouvrir/verrouiller la saisie des bilans de composantes du Socle">Socle</a></li>'."\n";
 		}
 
 		//=======================================================
@@ -401,6 +413,14 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 
 		if((getSettingAOui('active_mod_orientation'))&&((getSettingAOui('OrientationSaisieTypeScolarite'))||(getSettingAOui('OrientationSaisieOrientationScolarite'))||(getSettingAOui('OrientationSaisieVoeuxScolarite')))) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_orientation/index.php" '.insert_confirm_abandon().'>Orientation</a></li>'."\n";
+		}
+
+		if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+			if((($_SESSION['statut']=='scolarite')&&(getSettingAOui("ScolGererMEP")))||
+			($_SESSION['statut']=='administrateur')||
+			($_SESSION['statut']=='professeur')) {
+				$menus .= '  <li><a href="'.$gepiPath.'/saisie/gerer_mep.php" '.insert_confirm_abandon().'>Gérer les éléments de programmes</a></li>'."\n";
+			}
 		}
 
 		if ((getSettingAOui('active_mod_genese_classes'))&&(getSettingAOui('geneseClassesSaisieProfilsScol'))) {

@@ -555,6 +555,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 					$cpt_sous_menu++;
 				}
 
+				if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/gerer_mep.php' , "texte"=>"Éléments de progrmmes");
+					$cpt_sous_menu++;
+				}
+
 				if((getSettingAOui('AAProfTout'))||(getSettingAOui('AAProfClasses'))||(getSettingAOui('AAProfGroupes'))||
 				((getSettingAOui('AAProfPrinc'))&&($is_pp_header_barre_prof_template))) {
 					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_annees_anterieures/consultation_annee_anterieure.php' , "texte"=>"Années antérieures");

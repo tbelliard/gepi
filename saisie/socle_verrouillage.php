@@ -107,6 +107,11 @@ if((acces("/saisie/saisie_socle.php", $_SESSION["statut"]))&&(getSettingAOui("So
 	echo " | <a href=\"saisie_socle.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
 }
 echo " | <a href=\"socle_verif.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Vérification du remplissage des bilans de composantes du socle</a>";
+if((acces("/saisie/socle_import.php", $_SESSION["statut"]))&&
+	(getSettingAOui("SocleImportComposantes"))&&
+	(($_SESSION['statut']=="administrateur")||(getSettingAOui("SocleImportComposantes_".$_SESSION["statut"])))) {
+	echo " | <a href=\"socle_import.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Import des bilans de composantes du socle</a>";
+}
 
 echo "</p>
 

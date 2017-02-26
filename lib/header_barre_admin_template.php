@@ -313,6 +313,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 			$menus .= '  <li><a href="'.$gepiPath.'/edt/index.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
 		}
 
+		// Bulletins
 		$menus .= '  <li class="plus"><a href="#" title="'.chaine_title_explication_verrouillage_periodes().'">Bulletins</a>'."\n";
 		$menus .= '    <ul class="niveau3">'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_app.php" '.insert_confirm_abandon().'>Droits saisie profs</a></li>'."\n";
@@ -335,6 +336,13 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		if(getSettingAOui('active_mod_engagements')) {
 			$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
 			$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+		}
+		if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+			if((($_SESSION['statut']=='scolarite')&&(getSettingAOui("ScolGererMEP")))||
+			($_SESSION['statut']=='administrateur')||
+			($_SESSION['statut']=='professeur')) {
+				$menus .= '     <li><a href="'.$gepiPath.'/saisie/gerer_mep.php" '.insert_confirm_abandon().'>Gérer les éléments de programmes</a></li>'."\n";
+			}
 		}
 		$menus .= '    </ul>'."\n";
 		$menus .= '  </li>'."\n";

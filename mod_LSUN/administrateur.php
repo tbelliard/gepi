@@ -77,7 +77,13 @@ if ($creeFichier == 'y') {
 	}	else if ($creeFichier == 'y') {
 		include_once 'creeFichier.php';
 	}
-	
+
+	if(filter_input(INPUT_POST, 'traiteSocle')) {
+		saveSetting('LSU_Donnees_socle', filter_input(INPUT_POST, 'traiteSocle'));
+	}	else {
+		saveSetting('LSU_Donnees_socle',  "n");
+	}
+
 	include_once 'creeFichier.php';
 	
 }
@@ -807,8 +813,9 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteAP">professeur(s) principal(aux)</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteSocle" id="traiteSocle" value="y" disabled />
-						<label for="traiteSocle" class="desactive" title="À saisir directement dans LSU" >positionnement des élèves sur les domaines du socle commun</label>
+						<input type="checkbox" name="traiteSocle" id="traiteSocle" value="y"  
+							   <?php if (getSettingValue("LSU_Donnees_socle") == "y") {echo ' checked '; }  ?> />
+						<label for="traiteSocle">positionnement des élèves sur les domaines du socle commun</label>
 					</li>
 				</ul>
 			</div>
