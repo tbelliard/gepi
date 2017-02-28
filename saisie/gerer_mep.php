@@ -236,7 +236,12 @@ if(isset($_POST['is_posted'])) {
 
 $themessage = 'Des modifications n ont pas été enregistrées. Voulez-vous vraiment quitter sans enregistrer ?';
 //================================
-$titre_page = "Gérer mes éléments de programme";
+if($_SESSION['statut']=="professeur") {
+	$titre_page = "Gérer mes éléments de programme";
+}
+else {
+	$titre_page = "Gérer les éléments de programme";
+}
 require_once("../lib/header.inc.php");
 //================================
 
@@ -403,7 +408,7 @@ else {
 		".add_token_field()."
 		<input type='hidden' name='is_posted' value='y' />
 		".(isset($id_groupe) ? "<input type='hidden' name='id_groupe' value='$id_groupe' />" : "")."
-		<p>Modifier/corriger mes éléments de programme&nbsp;:</p>
+		<p>Modifier/corriger les éléments de programme&nbsp;:</p>
 		<table class='boireaus boireaus_alt'>
 			<thead>
 				<tr>
