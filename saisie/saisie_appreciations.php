@@ -1227,14 +1227,15 @@ while ($k < $nb_periode) {
 		
 			$elemProgramme = getGroupElemProg($current_group["id"], $anneeScolaire, $k);
 			$cpt=FALSE;
-			while($element = $elemProgramme->fetch_object()){
-				if($cpt) {
-					$mess[$k].="\n<br />\n";
+			if(mysqli_num_rows($elemProgramme)>0) {
+				while($element = $elemProgramme->fetch_object()){
+					if($cpt) {
+						$mess[$k].="\n<br />\n";
+					}
+					$mess[$k].="- ".$element->libelle;
+					$cpt = TRUE;
 				}
-				$mess[$k].="- ".$element->libelle;
-				$cpt = TRUE;
 			}
-
 			$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 		}
     }
@@ -1258,26 +1259,30 @@ while ($k < $nb_periode) {
 
 			$elemProgramme = getGroupElemProg($current_group["id"], $anneeScolaire, $k);
 			$cpt=FALSE;
-			while($element = $elemProgramme->fetch_object()){
-				if($cpt) {
-					$mess[$k].="\n<br />\n";
+			if(mysqli_num_rows($elemProgramme)>0) {
+				while($element = $elemProgramme->fetch_object()){
+					if($cpt) {
+						$mess[$k].="\n<br />\n";
+					}
+					$mess[$k].="<input type='image' name=\"delElemProgGroup".$k."[$element->idEP]\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour tous les élèves' /> ";
+					$mess[$k].="- ".$element->libelle;
+					$cpt = TRUE;
 				}
-				$mess[$k].="<input type='image' name=\"delElemProgGroup".$k."[$element->idEP]\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour tous les élèves' /> ";
-				$mess[$k].="- ".$element->libelle;
-				$cpt = TRUE;
 			}
-		
+
 			$mess[$k].="<br />\n";
 			$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 
-			$mess[$k].="<select name='Elem_groupe$k' id='Elem_groupe$k' style='margin-top:.5em'> \n";
-			$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
-			while($element = $toutElemProgramme->fetch_object()){
-				$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
-			}
-			$mess[$k].="</select> \n";
+			if(mysqli_num_rows($toutElemProgramme)>0) {
+				$mess[$k].="<select name='Elem_groupe$k' id='Elem_groupe$k' style='margin-top:.5em'> \n";
+				$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
+				while($element = $toutElemProgramme->fetch_object()){
+					$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
+				}
+				$mess[$k].="</select> \n";
 
-			$mess[$k].="<br />\n";
+				$mess[$k].="<br />\n";
+			}
 			$mess[$k].="<input type='text' name='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
 		}
     }
@@ -1699,20 +1704,22 @@ foreach ($liste_eleves as $eleve_login) {
 					//$mess[$k].= var_dump($elementEleve);
 
 					$cpt=FALSE;
-					while($element = $elementEleve->fetch_object()){
-						if($cpt) {
-							$mess[$k].="\n<br />\n";
+					if(mysqli_num_rows($elementEleve)>0) {
+						while($element = $elementEleve->fetch_object()){
+							if($cpt) {
+								$mess[$k].="\n<br />\n";
+							}
+							//$mess[$k].="<input type='image' name=\"delElemProgElv".$k."['$element->idEP']['$eleve_login']\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
+							//$mess[$k].="<input type='image' name=\"delElemProgElv".$k."[$element->idEP]['$eleve_login']\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
+							//if(getSettingAOui('ElementProgModifProfPeriodeClose')) {
+								$mess[$k].="<button name=\"delElemProgElv".$k."[".$element->idEP."]\" value='$eleve_login' "
+									. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
+								$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
+								$mess[$k].="</button>\n";
+							//}
+							$mess[$k].="- ".$element->libelle;
+							$cpt = TRUE;
 						}
-						//$mess[$k].="<input type='image' name=\"delElemProgElv".$k."['$element->idEP']['$eleve_login']\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
-						//$mess[$k].="<input type='image' name=\"delElemProgElv".$k."[$element->idEP]['$eleve_login']\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
-						//if(getSettingAOui('ElementProgModifProfPeriodeClose')) {
-							$mess[$k].="<button name=\"delElemProgElv".$k."[".$element->idEP."]\" value='$eleve_login' "
-								. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
-							$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
-							$mess[$k].="</button>\n";
-						//}
-						$mess[$k].="- ".$element->libelle;
-						$cpt = TRUE;
 					}
 				}
 
@@ -1864,29 +1871,31 @@ foreach ($liste_eleves as $eleve_login) {
 				
 					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);	
 					$cpt=FALSE;
-					while($element = $elementEleve->fetch_object()){
-						if($cpt) {
-							$mess[$k].="\n<br />\n";
+					if(mysqli_num_rows($elementEleve)>0) {
+						while($element = $elementEleve->fetch_object()){
+							if($cpt) {
+								$mess[$k].="\n<br />\n";
+							}
+							//$mess[$k].="<input type='image' name=\"delElemProgElv_".$element->idEP."['$eleve_login']\"  src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
+							$mess[$k].="<button name=\"delElemProgElv".$k."[".$element->idEP."]\" value='$eleve_login' "
+								. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
+							$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
+							$mess[$k].="</button>\n";
+							$mess[$k].="- ".$element->libelle;
+							$cpt = TRUE;
 						}
-						//$mess[$k].="<input type='image' name=\"delElemProgElv_".$element->idEP."['$eleve_login']\"  src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
-						$mess[$k].="<button name=\"delElemProgElv".$k."[".$element->idEP."]\" value='$eleve_login' "
-							. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
-						$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
-						$mess[$k].="</button>\n";
-						$mess[$k].="- ".$element->libelle;
-						$cpt = TRUE;
 					}
 					// 20161129
 					$toutElemProgramme->data_seek(0);
-
-					$mess[$k].="<br />\n";
-					$mess[$k].="<select name=\"Elem_Eleve".$k."[$eleve_login]\" id='Elem_Eleve_".$k."_".$eleve_login."' style='margin-top:.5em'> \n";
-					$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
-					while($element = $toutElemProgramme->fetch_object()){
-						$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
+					if(mysqli_num_rows($toutElemProgramme)>0) {
+						$mess[$k].="<br />\n";
+						$mess[$k].="<select name=\"Elem_Eleve".$k."[$eleve_login]\" id='Elem_Eleve_".$k."_".$eleve_login."' style='margin-top:.5em'> \n";
+						$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
+						while($element = $toutElemProgramme->fetch_object()){
+							$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
+						}
+						$mess[$k].="</select> \n";
 					}
-					$mess[$k].="</select> \n";
-
 					$mess[$k].="<br />\n";
 					
 					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
