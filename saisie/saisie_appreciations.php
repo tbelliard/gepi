@@ -1268,9 +1268,9 @@ while ($k < $nb_periode) {
 					$mess[$k].="- ".$element->libelle;
 					$cpt = TRUE;
 				}
+				$mess[$k].="<br />\n";
 			}
 
-			$mess[$k].="<br />\n";
 			$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 
 			if(mysqli_num_rows($toutElemProgramme)>0) {
@@ -1884,20 +1884,21 @@ foreach ($liste_eleves as $eleve_login) {
 							$mess[$k].="- ".$element->libelle;
 							$cpt = TRUE;
 						}
+						$mess[$k].="<br />\n";
 					}
 					// 20161129
-					$toutElemProgramme->data_seek(0);
 					if(mysqli_num_rows($toutElemProgramme)>0) {
-						$mess[$k].="<br />\n";
+						$toutElemProgramme->data_seek(0);
+
 						$mess[$k].="<select name=\"Elem_Eleve".$k."[$eleve_login]\" id='Elem_Eleve_".$k."_".$eleve_login."' style='margin-top:.5em'> \n";
 						$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
 						while($element = $toutElemProgramme->fetch_object()){
 							$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
 						}
 						$mess[$k].="</select> \n";
+						$mess[$k].="<br />\n";
 					}
-					$mess[$k].="<br />\n";
-					
+
 					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
 
 					//$mess[$k].= var_dump($elementEleve);
