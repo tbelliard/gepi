@@ -44,8 +44,23 @@ libxml_use_internal_errors(true);
 // Validation du document XML
 
 // Affichage du résultat
+if((isset($msg_erreur_remplissage))&&($msg_erreur_remplissage!="")) {
+	echo "<p class='rouge center gras' style='margin-bottom:1em;'>".$msg_erreur_remplissage."</p>";
+}
+
+if((isset($msgErreur))&&($msgErreur!="")) {
+	echo "<p class='rouge center gras' style='margin-bottom:1em;'>".$msgErreur."</p>";
+}
+
+// A désactiver peut-être pour ne pas faire peur inutilement?
+$afficher_liste_absence_EP=true;
 if (isset($absenceEP))  {
-	echo "<p class='rouge center gras'>Des élèves n'ont pas d'éléments de programme dans 1 (ou plusieurs) enseignement(s), vous devez vous assurer que c'est normal</p>";
+	echo "<p class='rouge center gras' style='margin-bottom:1em;'>Des élèves n'ont pas d'éléments de programme dans un (ou plusieurs) enseignement(s), vous devez vous assurer que c'est normal.</p>";
+	if($afficher_liste_absence_EP) {
+		if(isset($liste_absenceEP)) {
+			echo $liste_absenceEP;
+		}
+	}
 }
 
 // Activer "user error handling"

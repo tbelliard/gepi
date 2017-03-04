@@ -592,10 +592,23 @@ if(getSettingAOui('active_bulletins')) {
 		if ((($this->test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes'))
 				or (($this->statutUtilisateur=='scolarite') and (getSettingValue("GepiRubConseilScol")=='yes'))
 				or (($this->statutUtilisateur=='cpe') and ((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes')))
-				or ($this->statutUtilisateur=='secours')  )
-		  $this->creeNouveauItem("/saisie/saisie_avis.php",
-				  "Bulletin : saisie des avis du conseil",
-				  "Cet outil permet la saisie des avis du conseil de classe.");
+				or ($this->statutUtilisateur=='secours')  ) {
+				  $this->creeNouveauItem("/saisie/saisie_avis.php",
+						  "Bulletin : saisie des avis du conseil",
+						  "Cet outil permet la saisie des avis du conseil de classe.");
+		}
+
+		if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+			if((($_SESSION['statut']=='scolarite')&&(getSettingAOui("ScolGererMEP")))||
+			($_SESSION['statut']=='administrateur')||
+			($_SESSION['statut']=='professeur')) {
+				  $this->creeNouveauItem("/saisie/gerer_mep.php",
+						  "Éléments de programmes",
+						  "Cet outil permet de gérer les éléments de programmes associés aux appréciations des bulletins.");
+			}
+		}
+
+
 	}
 
 	// Saisie ECTS - ne doit être affichée que si l'utilisateur a bien des classes ouvrant droit à ECTS

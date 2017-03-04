@@ -220,6 +220,48 @@ if($temoin_modif_reg_domaine==0) {
 	echo " <span style='color:green'>OK.</span>";
 }
 echo "</p>";
+
+/*
+	<enseignements-complement>
+		<enseignement-complement code="AUC" libelle="Aucun" />
+		<enseignement-complement code="LCA" libelle="Langues et cultures de l'Antiquité" />
+		<enseignement-complement code="LCR" libelle="Langue et culture régionale" />
+		<enseignement-complement code="PRO" libelle="Découverte professionnelle" />
+		<enseignement-complement code="LSF" libelle="Langue des signes française" />
+		<enseignement-complement code="LVE" libelle="Langue vivante étrangère" />
+	</enseignements-complement>
+*/
+$tab_enseignements_complement=array();
+// Aucun, c'est si on ne remonte rien.
+//$tab_enseignements_complement["AUC"]="Aucun";
+$tab_enseignements_complement["LCA"]="Langues et cultures de l'Antiquité";
+$tab_enseignements_complement["LCR"]="Langue et culture régionale";
+$tab_enseignements_complement["PRO"]="Découverte professionnelle";
+$tab_enseignements_complement["LSF"]="Langue des signes française";
+$tab_enseignements_complement["LVE"]="Langue vivante étrangère";
+echo "<p>Contrôle de l'initialisation des codes et intitulés d'enseignements de complément&nbsp;:";
+$temoin_modif_reg_enseignements_complement=0;
+foreach($tab_enseignements_complement as $code => $libelle) {
+	$sql="SELECT * FROM nomenclatures_valeurs WHERE type='enseignement_complement' AND code='".$code."';";
+	$test=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($test)==0) {
+		$sql="INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='".$code."', nom='".$code."', valeur='".mysqli_real_escape_string($GLOBALS['mysqli'], $libelle)."';";
+		$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+		if($insert) {
+			echo "<br /><span style='color:green'>Enregistrement du code <strong>$code</strong> pour <em>$libelle</em> effectué.</span>";
+		}
+		else {
+			echo "<br /><span style='color:red'>Erreur lors de l'enregistrement du code <strong>$code</strong> pour <em>$libelle</em>.</span>";
+		}
+		$temoin_modif_reg_enseignements_complement++;
+	}
+}
+if($temoin_modif_reg_enseignements_complement==0) {
+	echo " <span style='color:green'>OK.</span>";
+}
+echo "</p>";
+
+
 ?>
 <form action="admin.php" method="post" name="formulaire2" id="formulaire2">
 	<fieldset class='fieldset_opacite50'>

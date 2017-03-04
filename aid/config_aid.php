@@ -568,7 +568,7 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
 		de cette cat&eacute;gorie (ajout, suppression, modification d'AID, de professeurs ou d'&eacute;l&egrave;ves)
 	</p>
 <?php
-$sql_liste_data = "SELECT u.login, u.prenom, u.nom "
+$sql_liste_data = "SELECT u.login, u.prenom, u.nom, u.statut "
    . "FROM utilisateurs u, j_aidcateg_super_gestionnaires j "
    . "WHERE (j.indice_aid='".$indice_aid."' AND u.login=j.id_utilisateur AND (statut='professeur' or statut='cpe'))  "
    . "ORDER BY u.nom, u.prenom";
@@ -591,8 +591,8 @@ while ($obj_liste_data = $call_liste_data->fetch_object()) {
 ?>
 		<tr>
 			<td>
-				<strong>
-					<?php echo $nom_prof." ". $prenom_prof; ?>
+				<strong title="<?php echo $obj_liste_data->login; ?>">
+					<?php echo casse_mot($nom_prof, "maj")." ". casse_mot($prenom_prof, "majf2")." <em>(". $obj_liste_data->statut.")</em>"; ?>
 				</strong>
 			</td>
 			<td>
@@ -615,7 +615,7 @@ while ($obj_liste_data = $call_liste_data->fetch_object()) {
 	<select size=1 name="reg_gestionnaire_login" onchange="changement();">
 		<option value=''>(aucun)</option>
 <?php
-$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
+$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut  FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
 $nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
 // while ($i < $nombreligne) {
@@ -627,7 +627,7 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
     // $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
     $prenom_el = $obj_call_prof->prenom;
 ?>
-		<option value="<?php echo $login_prof; ?>"><?php echo $nom_el; ?> <?php echo $prenom_el; ?></option>
+		<option value="<?php echo $login_prof; ?>" title="<?php echo $obj_call_prof->login; ?>"><?php echo casse_mot($nom_el, "maj"); ?> <?php echo casse_mot($prenom_el, "majf2")." (".$obj_call_prof->statut.")"; ?></option>
 <?php
     $i++;
 }

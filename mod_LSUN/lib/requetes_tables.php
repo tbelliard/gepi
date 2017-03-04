@@ -148,5 +148,12 @@ $sql = "ALTER TABLE `lsun_j_ap_matiere` ADD UNIQUE INDEX triplette (id_enseignem
 $mysqli->query($sql);
 
 
+$sql = "CREATE TABLE IF NOT EXISTS j_groupes_aid (id_groupe INT(11) NOT NULL default '0', 
+id_aid INT(11) NOT NULL default '0', 
+indice_aid INT(11) NOT NULL default '0', 
+etat varchar(255) NOT NULL default '', 
+PRIMARY KEY  (id_groupe, id_aid), INDEX id_groupe_id_aid (id_groupe, id_aid)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+$mysqli->query($sql);
+
 //echo $sql;
 //$mysqli->query($sql);

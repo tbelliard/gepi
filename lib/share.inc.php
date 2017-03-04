@@ -16317,4 +16317,24 @@ function get_tab_dates_periodes() {
 
 	return $tab;
 }
+
+function get_tab_types_enseignements_complement() {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT * FROM nomenclatures_valeurs WHERE type='enseignement_complement' ORDER BY code;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab["indice"][$cpt]=$lig;
+			$tab["code"][$lig["code"]]=$lig;
+			$cpt++;
+		}
+	}
+	return $tab;
+}
+
 ?>
