@@ -609,13 +609,13 @@ $texte_infobulle="Un message peut être adressé à :<br />- tous les utilisateu
 $tabdiv_infobulle[]=creer_div_infobulle('aide',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
 // Titre
-echo "<tr><td colspan=\"4\"><span class='grand'>".$titre_mess." ";
+echo "<tr><td colspan=\"3\"><span class='grand'>".$titre_mess." ";
 echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('aide','y',100,100);\"  onmouseout=\"cacher_div('aide');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 echo "</span></td></tr>\n";
 
 
 //Dates
-echo "<tr><td colspan=\"4\">\n";
+echo "<tr><td colspan=\"3\">\n";
 echo "<p><i>Le message sera affiché :</i><br />de la date : ";
 echo "<input type='text' name = 'display_date_debut' id= 'display_date_debut' size='10' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 
@@ -627,38 +627,38 @@ echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size=
 //echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo img_calendrier_js("display_date_fin", "img_bouton_display_date_fin");
 
-echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)</p></td></tr>\n";
+echo "(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br /><br /></p></td></tr>\n";
 
 //Date pour décompte
-echo "<tr><td colspan=\"4\">\n";
+echo "<tr><td colspan=\"3\">\n";
 echo "<p><i>Décompte des jours jusqu'au :</i> ";
 echo "<input type='text' name = 'display_date_decompte' id= 'display_date_decompte' size='10' value = \"".$display_date_decompte."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 //echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo img_calendrier_js("display_date_decompte", "img_bouton_display_date_decompte");
 
 echo " à <input type='text' name = 'display_heure_decompte' id= 'display_heure_decompte' size='5' value = \"".$display_heure_decompte."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />\n";
-echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.\n";
+echo "<span style='font-size:small'>(Respectez le format jj/mm/aaaa)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.</span>\n";
 
 $titre_infobulle="DECOMPTE\n";
-$texte_infobulle="Afin d'afficher un compte à rebours, vous devez écrire un texte du style&nbsp;:<br />Il vous reste _DECOMPTE_ pour saisir vos appréciations du 1er trimestre.<br />\n";
+$texte_infobulle="Afin d'afficher un compte à rebours, vous devez écrire un texte du style&nbsp;:<br />Il vous reste _DECOMPTE_ pour saisir vos appréciations du 1er trimestre.\n";
 //$texte_infobulle.="\n";
 $tabdiv_infobulle[]=creer_div_infobulle('a_propos_DECOMPTE',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
 echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_DECOMPTE','y',100,100);\"  onmouseout=\"cacher_div('a_propos_DECOMPTE');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
-
+echo "<br /><br />";
 echo "</p>";
 
 echo "</td></tr>\n";
 
 //Destinataires
-echo "<tr><td  colspan=\"4\"><i>Statut(s) des destinataires du message :</i></td></tr>\n";
+echo "<tr><td  colspan=\"3\"><i>Statut(s) des destinataires du message :</i></td></tr>\n";
 echo "<tr>\n";
-echo "<td><input type=\"checkbox\" id=\"desti_p\" name=\"desti_p\" value=\"desti_p\"";
+echo "<td width=\"33%\"><input type=\"checkbox\" id=\"desti_p\" name=\"desti_p\" value=\"desti_p\"";
 if (strpos($statuts_destinataires, "p")) {echo "checked";}
 echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_p' style='cursor: pointer;'>Professeurs</label></td>\n";
 
-echo "<td><input type=\"checkbox\" id=\"desti_c\" name=\"desti_c\" value=\"desti_c\"";
+echo "<td width=\"33%\"><input type=\"checkbox\" id=\"desti_c\" name=\"desti_c\" value=\"desti_c\"";
 if (strpos($statuts_destinataires, "c")) {echo "checked";}
 echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_c' style='cursor: pointer;'>C.P.E.</label></td>\n";
@@ -670,12 +670,12 @@ echo " /><label for='desti_s' style='cursor: pointer;'>Scolarité</label></td>\n
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td><input type=\"checkbox\" id=\"desti_a\" name=\"desti_a\" value=\"desti_a\"";
+echo "<td width=\"33%\"><input type=\"checkbox\" id=\"desti_a\" name=\"desti_a\" value=\"desti_a\"";
 if (strpos($statuts_destinataires, "a")) {echo "checked";}
 echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_a' style='cursor: pointer;'>Administrateur</label></td>\n";
 
-echo "<td><input type=\"checkbox\" id=\"desti_r\" name=\"desti_r\" value=\"desti_r\"";
+echo "<td width=\"33%\"><input type=\"checkbox\" id=\"desti_r\" name=\"desti_r\" value=\"desti_r\"";
 if (strpos($statuts_destinataires, "r")) {echo "checked";}
 echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_r' style='cursor: pointer;'>Responsables</label></td>\n";
@@ -688,7 +688,7 @@ echo " /><label for='desti_e' style='cursor: pointer;'>Elèves</label></td>\n";
 echo "</tr>\n";
 
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
 <br>
 <i>Destinataire du message&nbsp;:&nbsp;</i><br />
@@ -720,7 +720,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 <?php
 echo "</td></tr>\n";
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
 <br>
 <i>Matière du destinataire du message&nbsp;:&nbsp;</i><br />
@@ -747,13 +747,14 @@ echo "<tr><td  colspan=\"4\" >\n";
 	?>
 		</optgroup>
 	</select>
-<br><br>
+<br>
 
 <?php
 echo "</td></tr>\n";
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
+<br>
 <i>Classe dans laquelle enseignent les destinataires du message&nbsp;:&nbsp;</i><br />
 	<select name="id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
@@ -776,13 +777,13 @@ Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la
 	?>
 		</optgroup>
 	</select>
-<br><br>
-
+<br>
 <?php
 echo "</td></tr>\n";
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
+<br>
 <i>Élèves de la classe de&nbsp;:&nbsp;</i><br />
 	<select name="eleves_id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
@@ -805,13 +806,14 @@ Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la
 	?>
 		</optgroup>
 	</select>
-<br><br>
+<br>
 
 <?php
 echo "</td></tr>\n";
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
+<br>
 <i>Responsables (parents,...) d'élèves de la classe de&nbsp;:&nbsp;</i><br />
 	<select name="parents_id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
@@ -834,13 +836,13 @@ Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la
 	?>
 		</optgroup>
 	</select>
-<br><br>
+<br>
 
 <?php
 echo "</td></tr>\n";
 
 echo "<tr>\n";
-echo "<td><input type=\"checkbox\" id=\"prof_suivi\" name=\"prof_suivi\" value=\"y\"";
+echo "<td colspan=\"3\"><br /><input type=\"checkbox\" id=\"prof_suivi\" name=\"prof_suivi\" value=\"y\"";
 if (isset($_POST['prof_suivi'])) {echo " checked";}
 echo " /><label for='prof_suivi' style='cursor: pointer;'> Déposer le message pour les \"".getSettingValue('gepi_prof_suivi')."\" actuellement associés aux classes.</label><br /><br />\n";
 echo "</td></tr>\n";
@@ -860,7 +862,7 @@ if(getSettingAOui('active_mod_engagements')) {
 
 	if($chaine_engagements_ele!="") {
 		echo "<tr>
-	<td colspan=\"4\" >
+	<td colspan=\"3\" >
 		<i>Élèves ayant un des engagements suivants&nbsp;:&nbsp;</i><br />
 		$chaine_engagements_ele
 		<br />
@@ -886,7 +888,7 @@ if(getSettingAOui('active_mod_engagements')) {
 
 	if($chaine_engagements_resp!="") {
 		echo "<tr>
-	<td colspan=\"4\" >
+	<td colspan=\"3\" >
 		<i>Responsables ayant un des engagements suivants&nbsp;:&nbsp;</i><br />
 		".$chaine_engagements_resp."<br />
 	</td>
@@ -895,7 +897,7 @@ if(getSettingAOui('active_mod_engagements')) {
 }
 
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
 
 <i>Le destinataire peut supprimer ce message&nbsp;:&nbsp;</i>
@@ -922,7 +924,7 @@ echo js_checkbox_change_style('checkbox_change', 'texte_', "y", 0.5);
 echo "</td></tr>\n";
 
 // Message
-echo "<tr><td  colspan=\"4\">\n";
+echo "<tr><td  colspan=\"3\">\n";
 
 echo "<i>Mise en forme du message :</i>\n";
 
@@ -932,7 +934,7 @@ $oCKeditor->editor('message',$contenu) ;
 echo "</td></tr>";
 
 // Boutons Enregistrer - Annuler
-echo "<tr><td colspan=\"4\" align=\"center\"> ";
+echo "<tr><td colspan=\"3\" align=\"center\"> ";
 
 echo "<input type='hidden' name='ok' value='y' />\n";
 
