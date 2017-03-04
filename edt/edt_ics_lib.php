@@ -2781,7 +2781,7 @@ mysql>
 			if($afficher_remplacements=="y") {
 				$ajout_sql2.="apr.login_user = '".$login_prof."' AND ";
 
-				// Pour éviter que le prof ne voit plus du tout ses cours (remplacés par d'autres)
+				// Pour éviter que le prof ne voie plus du tout ses cours (remplacés par d'autres)
 				if($login_prof!=$_SESSION['login']) {
 					$ajout_sql.="(CONCAT(ec.id_cours,'|',ec.jour_semaine,'|',ec.id_definie_periode) NOT IN (SELECT CONCAT(id_cours_remplaced,'|',jour_semaine,'|',id_creneau) FROM abs_prof_remplacement WHERE jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."')) AND ";
 				}
@@ -3136,12 +3136,14 @@ mysql>
 				//if($afficher_l_enseignement=="y") {
 					//$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
 
-					/*
 					//DEBUG:
-					echo "\$lig->id_groupe=$lig->id_groupe<br />";
-					echo "\$avec_contrainte_semaine=$avec_contrainte_semaine<br />";
-					echo "\$lig->id_semaine=$lig->id_semaine et \$type_semaine=$type_semaine<br />";
-					*/
+					if($debug_edt=="y") {
+						$html.="\$lig->id_cours=$lig->id_cours<br />";
+						$html.="\$lig->id_groupe=$lig->id_groupe<br />";
+						$html.="\$avec_contrainte_semaine=$avec_contrainte_semaine<br />";
+						$html.="\$lig->id_semaine=$lig->id_semaine et \$type_semaine=$type_semaine<br />";
+					}
+
 					if(($lig->id_groupe!="")&&($lig->id_groupe!="0")) {
 						if(!isset($tab_group_edt[$lig->id_groupe])) {
 							$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
@@ -3171,6 +3173,11 @@ mysql>
 								if(($avec_contrainte_semaine!="")&&("$lig->id_semaine"!="$type_semaine")) {
 									$afficher_l_enseignement="n";
 								}
+							}
+
+							//DEBUG:
+							if($debug_edt=="y") {
+								$html.="\$afficher_l_enseignement=$afficher_l_enseignement<br />";
 							}
 
 							if($afficher_l_enseignement=="y") {
@@ -3214,7 +3221,8 @@ mysql>
 
 										$cpt_prof++;
 									}
-
+									//DEBUG: 20170228
+									//$chaine_texte_ligne_1.=" ".$lig->id_cours;
 									if(array_key_exists($lig->id_cours,$tab_mes_cours_remplaces_par_d_autres)) {
 										$chaine_texte_ligne_1="Remplacé";
 

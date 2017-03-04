@@ -118,9 +118,13 @@ if((isset($_POST['is_posted']))) {
 					// A FAIRE: Ailleurs pouvoir forcer/modifier
 				}
 				else {
+					// On valide créneau par créneau, donc en principe 2 tranches de 30min.
+					$duree=2;
+
 					$sql="UPDATE abs_prof_remplacement SET validation_remplacement='oui',
 												commentaire_validation='".$commentaire_validation[$key]."',
-												salle='".$salle[$key]."'
+												salle='".$salle[$key]."', 
+												duree='".$duree."'
 											WHERE id='".$validation[$key]."';";
 					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$update) {
