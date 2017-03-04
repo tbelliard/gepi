@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -73,6 +73,9 @@ if(isset($_GET['forcer_recalcul_rang'])) {
 
 // 20160709
 $tab_type_grp=get_tab_types_groupe();
+if(getSettingAOui('active_module_LSUN')) {
+	$tab_type_enseignements_complement=get_tab_types_enseignements_complement();
+}
 
 // =================================
 // AJOUT: boireaus
@@ -348,6 +351,58 @@ if (isset($_POST['is_posted'])) {
 					$update=mysqli_query($GLOBALS['mysqli'], $sql);
 					if(!$update) {
 						$msg.="Erreur lors de la mise à jour du type du groupe n°".$tab_id_groupe[$loop].".<br />";
+					}
+				}
+			}
+		}
+	}
+
+	if(getSettingAOui('active_module_LSUN')) {
+		echo "plop<br />";
+		$enseignement_complement=array();
+		foreach ($_POST as $key => $value) {
+			$pattern = "/^enseignement_complement\_/";
+			if (preg_match($pattern, $key)) {
+				$group_id = preg_replace($pattern, "", $key);
+				$enseignement_complement[$group_id] = "$value";
+				echo "\$enseignement_complement[$group_id] = \"$value\";<br />";
+
+				$sql="SELECT * FROM j_groupes_enseignements_complement WHERE id_groupe='".$group_id."';";
+				echo "$sql<br />";
+				$res_type_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res_type_grp)==0) {
+					if($enseignement_complement[$group_id]!="") {
+						$sql="INSERT INTO j_groupes_enseignements_complement SET id_groupe='".$group_id."', code='".$value."';";
+						echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de l'enregistrement du type d'enseignement de complément pour le groupe n°".$tab_id_groupe[$loop].".<br />";
+						}
+					}
+				}
+				else {
+					$lig_type=mysqli_fetch_object($res_type_grp);
+					echo "<pre>";
+					print_r($lig_type);
+					echo "</pre>";
+					if($enseignement_complement[$group_id]=="") {
+						$sql="DELETE FROM j_groupes_enseignements_complement WHERE id_groupe='".$group_id."';";
+						echo "$sql<br />";
+						$suppr=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$suppr) {
+							$msg.="Erreur lors de la remise à vide du type d'enseignement de complément pour le groupe n°".$tab_id_groupe[$loop].".<br />";
+						}
+					}
+					elseif($enseignement_complement[$group_id]!=$lig_type->code) {
+						$sql="UPDATE j_groupes_enseignements_complement SET code='".$value."' WHERE id_groupe='".$group_id."';";
+						echo "$sql<br />";
+						$update=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$update) {
+							$msg.="Erreur lors de la mise à jour du type d'enseignement de complément pour le groupe n°".$tab_id_groupe[$loop].".<br />";
+						}
+					}
+					else {
+						echo "Type d'enseignement de complément inchangé<br />";
 					}
 				}
 			}
@@ -1012,6 +1067,12 @@ for($i=0;$i<10;$i++){
 
 	$afficher_champs_modif_nom_groupe=isset($_POST['afficher_champs_modif_nom_groupe']) ? $_POST['afficher_champs_modif_nom_groupe'] : (isset($_GET['afficher_champs_modif_nom_groupe']) ? $_GET['afficher_champs_modif_nom_groupe'] : "n");
 
+	/*
+	echo "<pre>";
+	print_r($tab_type_enseignements_complement);
+	echo "</pre>";
+	*/
+
 	echo "<table class='boireaus' summary='Tableau des enseignements'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Supprimer</th>\n";
@@ -1030,10 +1091,15 @@ for($i=0;$i<10;$i++){
 	//if(!getSettingANon('AutoriserTypesEnseignements')) {
 		echo "<th rowspan='2'>Type</th>\n";
 	//}
+	// 20170302
+	$nb_total_col=9+$nb_periode-1+count($tab_domaines);
+	if(getSettingAOui('active_module_LSUN')) {
+		echo "<th rowspan='2' title=\"Enseignement de complément (ou non)\">Ens.<br />Compl.</th>\n";
+		$nb_total_col++;
+	}
 	echo "<th colspan='".count($tab_domaines)."'>Visibilité</th>\n";
 	echo "<th rowspan='2'>Coefficient</th>\n";
 	echo "<th colspan='3'>Mode moy</th>\n";
-	$nb_total_col=9+$nb_periode-1+count($tab_domaines);
 
 	if ($gepiSettings['active_mod_ects'] == "y") {
 		echo "<th rowspan='2'>Activer la saisie ECTS</th>\n";
@@ -1282,6 +1348,24 @@ for($i=0;$i<10;$i++){
 			echo "</select>\n";
 			echo "</td>\n";
 		//}
+
+		// 20170302
+		if(getSettingAOui('active_module_LSUN')) {
+			echo "<td>";
+			echo "<select onchange=\"changement()\" size=1 id='enseignement_complement_".$cpt_grp."' name='enseignement_complement_" .$current_group["id"]. "'>\n";
+			echo "<option value='' title=\"Ce n'est pas un enseignement de complément.\"";
+			if ((!isset($current_group["enseignement_complement"]))||(count($current_group["enseignement_complement"])=="0")) {echo " SELECTED";}
+			echo ">---</option>\n";
+			for($loop_grp_type=0;$loop_grp_type<count($tab_type_enseignements_complement["indice"]);$loop_grp_type++) {
+				echo "<option value='".$tab_type_enseignements_complement["indice"][$loop_grp_type]["code"] . "' title=\"".$tab_type_enseignements_complement["indice"][$loop_grp_type]["valeur"] . "\"";
+				if((isset($current_group["enseignement_complement"]["code"]))&&($current_group["enseignement_complement"]["code"]==$tab_type_enseignements_complement["indice"][$loop_grp_type]["code"])) {
+					echo " selected";
+				}
+				echo " title=\"".$tab_type_enseignements_complement["indice"][$loop_grp_type]["valeur"]."\">".$tab_type_enseignements_complement["indice"][$loop_grp_type]["code"]."</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+		}
 
 		// Visibilité
 		for($loop=0;$loop<count($tab_domaines);$loop++) {

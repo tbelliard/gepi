@@ -1622,3 +1622,20 @@ synthese TEXT DEFAULT '',
 login_saisie varchar(50) NOT NULL DEFAULT '', 
 date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
 PRIMARY KEY (id), INDEX ine_cycle (ine, cycle), UNIQUE(ine, cycle)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS j_groupes_enseignements_complement;
+CREATE TABLE IF NOT EXISTS j_groupes_enseignements_complement (
+id int(11) unsigned NOT NULL auto_increment, 
+id_groupe int(11) NOT NULL,
+code VARCHAR(50) NOT NULL,
+PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS socle_eleves_enseignements_complements;
+CREATE TABLE socle_eleves_enseignements_complements (id int(11) NOT NULL auto_increment, 
+ine varchar(50) NOT NULL, 
+id_groupe INT(11) NOT NULL, 
+positionnement varchar(10) NOT NULL DEFAULT '', 
+login_saisie varchar(50) NOT NULL DEFAULT '', 
+date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+PRIMARY KEY (id), INDEX ine_id_groupe (ine, id_groupe), UNIQUE(ine, id_groupe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

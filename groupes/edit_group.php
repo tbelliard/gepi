@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -57,6 +57,11 @@ if(!isset($current_group["name"])) {
 	header("Location: ../accueil.php?msg=Le groupe n°$id_groupe n'existe pas.");
 	die();
 }
+
+if(getSettingAOui('active_module_LSUN')) {
+	$tab_type_enseignements_complement=get_tab_types_enseignements_complement();
+}
+
 $reg_nom_groupe = $current_group["name"];
 $reg_nom_complet = $current_group["description"];
 $reg_matiere = $current_group["matiere"]["matiere"];
@@ -573,6 +578,45 @@ if (isset($_POST['is_posted'])) {
 			//$msg = "Le groupe a bien été mis à jour.";
 			$msg = "Enseignement ". stripslashes($reg_nom_complet) . " bien mis à jour.<br />";
 
+
+			// 20170302
+			if((getSettingAOui('active_module_LSUN'))&&(isset($_POST["enseignement_complement"]))) {
+
+				if($_POST["enseignement_complement"]=="") {
+					$sql="DELETE FROM j_groupes_enseignements_complement WHERE id_groupe='".$id_groupe."';";
+					//echo "$sql<br />";
+					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($menage) {
+						$nb_reg_ok++;
+					}
+					else {
+						$msg.="Erreur lors de la suppression du type d'enseignement de complément.<br />";
+					}
+				}
+				else {
+					$sql="SELECT * FROM j_groupes_enseignements_complement WHERE id_groupe='".$id_groupe."';";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)==0) {
+						$sql="INSERT INTO j_groupes_enseignements_complement SET id_groupe='".$id_groupe."', code='".$_POST["enseignement_complement"]."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de la définition du type d'enseignement de complément ".$_POST["enseignement_complement"].".<br />";
+						}
+					}
+					else {
+						$sql="UPDATE j_groupes_enseignements_complement SET code='".$_POST["enseignement_complement"]."' WHERE id_groupe='".$id_groupe."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de la définition du type d'enseignement de complément ".$_POST["enseignement_complement"].".<br />";
+						}
+					}
+				}
+
+			}
+
+
 			if(isset($_POST['creer_sous_groupes'])) {
 				if((!isset($_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']=='')||(!preg_match("/^[0-9]*$/", $_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']<1)) {
 					$msg.="Erreur : Le nombre de sous-groupes demandés est invalide.<br />";
@@ -982,6 +1026,27 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 	}
 	echo ">".$tab_domaines_texte[$loop]."</label><br />\n";
 }
+
+
+// 20170302
+if(getSettingAOui('active_module_LSUN')) {
+	if(count($tab_type_enseignements_complement)>0) {
+		echo "<br /><p><strong>Type d'enseignement de complément (ou non)&nbsp;:</strong><br />";
+		echo "<select onchange=\"changement()\" size=1 id='enseignement_complement' name='enseignement_complement'>\n";
+		echo "<option value='' title=\"Ce n'est pas un enseignement de complément.\"";
+		if ((!isset($current_group["enseignement_complement"]))||(count($current_group["enseignement_complement"])=="0")) {echo " SELECTED";}
+		echo ">---</option>\n";
+		for($loop_grp_type=0;$loop_grp_type<count($tab_type_enseignements_complement["indice"]);$loop_grp_type++) {
+			echo "<option value='".$tab_type_enseignements_complement["indice"][$loop_grp_type]["code"] . "' title=\"".$tab_type_enseignements_complement["indice"][$loop_grp_type]["valeur"] . "\"";
+			if((isset($current_group["enseignement_complement"]["code"]))&&($current_group["enseignement_complement"]["code"]==$tab_type_enseignements_complement["indice"][$loop_grp_type]["code"])) {
+				echo " selected";
+			}
+			echo " title=\"".$tab_type_enseignements_complement["indice"][$loop_grp_type]["valeur"]."\">".$tab_type_enseignements_complement["indice"][$loop_grp_type]["code"]." (".$tab_type_enseignements_complement["indice"][$loop_grp_type]["valeur"].")"."</option>\n";
+		}
+		echo "</select></p>\n";
+	}
+}
+
 
 echo "
 	<br />

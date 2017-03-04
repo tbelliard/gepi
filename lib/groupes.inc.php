@@ -660,6 +660,17 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			}
 		}
 
+		if(getSettingAOui('active_module_LSUN')) {
+			$sql="SELECT * FROM j_groupes_enseignements_complement WHERE id_groupe='".$_id_groupe."';";
+			//echo "$sql<br />";
+			$res_type_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_type_grp)>0) {
+				//$tab_type_enseignements_complement=get_tab_types_enseignements_complement();
+				$lig_type=mysqli_fetch_object($res_type_grp);
+				$temp["enseignement_complement"]["code"]=$lig_type->code;
+			}
+		}
+
         }
         $resultat->close();
     return $temp;
