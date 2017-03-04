@@ -269,6 +269,7 @@ function getEpisGroupes($idEPI = NULL) {
 	if ($idEPI) {
 		$sqlEpisGroupes .= "WHERE e.id_epi = $idEPI ";
 	}
+	//echo $sqlEpisGroupes;
 	
 	$sqlEpisGroupes = "SELECT t0.* , lec.periode FROM ("
 		. "$sqlEpisGroupes"
@@ -345,3 +346,13 @@ function existeLienAID($id_classe, $id_enseignements) {
 	return $retour;
 }
 
+function verifieGroupeEPI($id_aid) {
+	global $mysqli;
+	$sql = "SELECT jea.*, a.id AS idAid, a.nom FROM lsun_j_epi_enseignements AS jea "
+		. "INNER JOIN aid AS a "
+		. "ON a.indice_aid = jea.id_enseignements "
+		. " WHERE a.id = '$id_aid' ";
+	//echo $sql."<br>";
+	$resultchargeDB = $mysqli->query($sql);
+	return $resultchargeDB->num_rows;
+}

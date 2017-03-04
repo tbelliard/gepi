@@ -48,9 +48,20 @@ $sql = "CREATE TABLE IF NOT EXISTS lsun_parcours_communs ("
 	. "classe int(11) NOT NULL COMMENT 'id de la classe concernée', "
 	. "codeParcours varchar(10) NOT NULL COMMENT 'Code officiel du parcours', "
 	. "description text NOT NULL COMMENT 'Description du parcours', "
-	. "PRIMARY KEY (id) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+	. "PRIMARY KEY (id), UNIQUE KEY parcours ( periode, classe , codeParcours ) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 //echo $sql;
 $mysqli->query($sql);
+
+$sql = "ALTER TABLE `lsun_parcours_communs` ADD UNIQUE INDEX parcours ( periode, classe , codeParcours );";
+$mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_j_aid_parcours ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	. "id_aid int(11) NOT NULL COMMENT \"id de l'aid\" , "
+	. "id_parcours int(11) NOT NULL COMMENT'id du parcour', "
+	. "PRIMARY KEY (id) , UNIQUE KEY parcours (id_parcours) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+$mysqli->query($sql);
+
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_epi_communs ("
 	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
@@ -69,6 +80,11 @@ $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_matieres ("
 	. "id_epi int(11) NOT NULL COMMENT \"id de l'epi\", "
 	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_matiere , id_epi) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 //echo $sql;
+$mysqli->query($sql);
+
+$sql = "ALTER TABLE `lsun_j_epi_matieres` DROP index couple ;";
+$mysqli->query($sql);
+$sql = "ALTER TABLE `lsun_j_epi_matieres` ADD UNIQUE INDEX triplette (id_enseignements , id_ap , modalite );";
 $mysqli->query($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_enseignements ("
@@ -126,3 +142,11 @@ $sql = "CREATE TABLE IF NOT EXISTS lsun_j_ap_matiere ("
 // echo $sql;
 $mysqli->query($sql);
 
+$sql = "ALTER TABLE `lsun_j_ap_matiere` DROP index couple ;";
+$mysqli->query($sql);
+$sql = "ALTER TABLE `lsun_j_ap_matiere` ADD UNIQUE INDEX triplette (id_enseignements , id_ap , modalite );";
+$mysqli->query($sql);
+
+
+//echo $sql;
+//$mysqli->query($sql);

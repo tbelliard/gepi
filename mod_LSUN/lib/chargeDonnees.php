@@ -108,7 +108,7 @@ if ($reqErreurs->num_rows) {
 	while ($erreur = $reqErreurs-> fetch_object()) {
 		$matErreur .= $erreur->id_matiere." ";
 	}
-	$msgErreur .= "Les modalités d'élection des matières $matErreur semblent ne pas être attribuées. <em><a href='../../classes/index.php'>Corriger</a></em><br>";
+	$msgErreur .= "Les modalités d'élection des matières $matErreur semblent ne pas être attribuées. <em><a href='../../classes/index.php'  target='_BLANK'>Corriger</a></em><br>";
 	//$msgErreur .= $sqlErreurs;
 }
 

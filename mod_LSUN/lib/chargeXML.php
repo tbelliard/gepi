@@ -29,6 +29,10 @@ $msgErreur = "";
 include_once 'fonctions.php';
 include_once 'chargeDonnees.php';
 
+$_AP = 1;
+$_EPI = 2;
+$_PARCOURS = 3;
+
 
 
 $xml = new DOMDocument('1.0', 'utf-8');
@@ -63,6 +67,7 @@ $xml->appendChild($items);
 	
 	/*----- Données -----*/
 	$donnees = $xml->createElement('donnees');
+	$items->appendChild($donnees);
 		
 		/*----- Responsables-etab -----*/
 		$responsablesEtab = $xml->createElement('responsables-etab');
@@ -120,7 +125,7 @@ $xml->appendChild($items);
 					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
 				$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
 				if (!in_array($discipline->code_modalite_elect, $codesAutorises)) {
-					$msgErreur = "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='http://localhost/gepi/gestion/gerer_modalites_election_enseignements.php'>Corriger</a>";
+					$msgErreur = "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='../../gestion/gerer_modalites_election_enseignements.php' target='_BLANK' >Corriger</a> / <a href='../../utilisateurs/modif_par_lots.php#update_xml_sts' target='_BLANK' >mettre à jour d'après le XML STS</a>";
 				}
 				$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
 					'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
@@ -189,7 +194,8 @@ $xml->appendChild($items);
 		$donnees->appendChild($elementsProgramme);
 		
 		/*----- Parcours -----*/
-if (FALSE) {
+if (getSettingValue("LSU_Parcours") != "n") {
+	if ($listeParcoursCommuns->num_rows) {
 		$parcoursCommuns = $xml->createElement('parcours-communs');
 		while ($parcoursCommun = $listeParcoursCommuns->fetch_object()){
 				$noeudParcoursCommun= $xml->createElement('parcours-commun');
@@ -220,6 +226,7 @@ if (FALSE) {
 				
 			}
 		$donnees->appendChild($parcoursCommuns);
+	}
 }	
 
 			/*----- Vie scolaire -----*/
@@ -235,7 +242,7 @@ if ($listeVieScoCommun->num_rows) {
 				$attVieSco->value = $valeur;
 				$noeudVieSco->appendChild($attVieSco);
 			}
-			$comVieScoCommun = $xml->createElement('commentaire', $vieScoCommun->appreciation);
+			$comVieScoCommun = $xml->createElement('commentaire', substr(trim($vieScoCommun->appreciation),0,600));
 			$noeudVieSco->appendChild($comVieScoCommun);
 			$viesScolairesCommuns->appendChild($noeudVieSco);
 		}
@@ -253,8 +260,11 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$matieres = getMatieresEPICommun($epiCommun->id);
 				$refDisciplines = "";
 				foreach ($matieres as $matiere) {
-					$refDisciplines .= "DI_".getMatiereOnMatiere($matiere["id_matiere"])->code_matiere.$matiere["modalite"]." ";
-					
+					$ref = "DI_".getMatiereOnMatiere($matiere["id_matiere"])->code_matiere.$matiere["modalite"];
+					assureDisciplinePresente($ref);
+					$refDisciplines .= $ref." ";
+	
+	
 				}
 				$attributsEpiCommun = array('id'=>"EPI_$epiCommun->id", 'intitule'=>"$epiCommun->intituleEpi", 'thematique'=>"$epiCommun->codeEPI", 'discipline-refs'=>"$refDisciplines");
 				foreach ($attributsEpiCommun as $cle=>$valeur) {
@@ -303,46 +313,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$episGroupes->appendChild($noeudEpisGroupes);
 				// enseignants
 				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
-				/**
-				$profsEPI = getProfsEPI($episGroupe->id);
-				if (!$profsEPI->num_rows) {
-					$msgErreur .= "Aucun enseignant (ou aucune discipline) définit pour l'EPI $episGroupe->nom. Vous devez corriger cet erreur. <a href='../../aid/index2.php?indice_aid=$episGroupe->indice_aid'>Corriger</a><br>";
-				}
-				while($prof = $profsEPI->fetch_object()) {
-					/*
-					$noeudProf1 = $xml->createElement('enseignant-discipline');
-					$attsMat1 =  $xml->createAttribute('discipline-ref');
-					//$attsMat1->value = 'DI_';
-					//var_dump(getMatiereOnMatiere($prof->matiere1)->code_matiere);
-					// On recupere la modalite
-					$matiere = getMatiereOnMatiere($prof->matiere)->code_matiere;
-					// On peut avoir plusieurs modalités, on prend la première
-					$modalite = $modaliteEns->fetch_object()->modalite;
-					
-					$attsMat1->value = 'DI_'.$matiere.$modalite;
-					
-					$noeudProf1->appendChild($attsMat1);
-					$attsProf1 =  $xml->createAttribute('enseignant-ref');
-					$attsProf1->value = 'ENS_'.$prof->numind;
-					$noeudProf1->appendChild($attsProf1);
-					
-					
-					/**
-					$noeudProf2 = $xml->createElement('enseignant-discipline');
-					$attsMat2 =  $xml->createAttribute('discipline-ref');
-					$attsMat2->value = 'DI_'.getMatiereOnMatiere($prof->matiere2)->code_matiere;
-					$noeudProf2->appendChild($attsMat2);
-					$attsProf2 =  $xml->createAttribute('enseignant-ref');
-					$attsProf2->value = 'ENS_'.$prof->numind2;
-					$noeudProf2->appendChild($attsProf2);
-					 * 
-					 */
-				/*	
-					//$noeudEnseigneDis->appendChild($noeudProf1);
-					//$noeudEnseigneDis->appendChild($noeudProf2);
-				}
-				*/
-				$modaliteEns = getModaliteGroupe($episGroupe->id);
+				$modaliteEns = getModaliteGroupeAP($episGroupe->id);
 				if ($modaliteEns->num_rows) {
 					while ($ensModalite = $modaliteEns->fetch_object()) {
 						$noeudProf = $xml->createElement('enseignant-discipline');
@@ -357,10 +328,6 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 						$noeudEnseigneDis->appendChild($noeudProf);
 					}
 				}
-					
-					
-					
-					
 				
 				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
 				
@@ -368,10 +335,13 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 		$donnees->appendChild($episGroupes);
 }
 
-if (FALSE) {		
+if (getSettingValue("LSU_traite_AP") != "n") {
 			/*----- acc-persos -----*/
+	$listeApCommuns = getAPCommun();
+	if ($listeApCommuns->num_rows) {
+		
 		$accPersos = $xml->createElement('acc-persos');
-		$listeApCommuns = getAPCommun();
+		
 		while ($apCommun = $listeApCommuns->fetch_object()) {
 			$noeudApCommun = $xml->createElement('acc-perso');
 			$disciplines = getDisciplines($apCommun->id);
@@ -379,28 +349,32 @@ if (FALSE) {
 			while ($matiere = $disciplines->fetch_object()) {
 				$matieresAP .= "DI_".$matiere->id_enseignements.$matiere->modalite." ";
 			}
-			$attributsAPCommun = array('id'=>'ACC_PERSO_'.$apCommun->id , 'intitule'=>"$apCommun->intituleAP" , 'discipline-refs'=>"$matieresAP");
+			$attributsAPCommun = array('id'=>'ACC_PERSO_'.$apCommun->id , 'intitule'=>  substr(trim($apCommun->intituleAP), 0, 150) , 'discipline-refs'=>"$matieresAP");
 			foreach ($attributsAPCommun as $cle=>$valeur) {
 				$attsApCommun = $xml->createAttribute($cle);
 				$attsApCommun->value = $valeur;
 				$noeudApCommun->appendChild($attsApCommun);
 			}
-			$noeudApDescription = $xml->createElement('description', $apCommun->descriptionAP);
-			$noeudApCommun->appendChild($noeudApDescription);
+			if (substr(trim($apCommun->descriptionAP),0,600)) {
+				$noeudApDescription = $xml->createElement('description', substr(trim($apCommun->descriptionAP),0,600));
+				$noeudApCommun->appendChild($noeudApDescription);
+			}
+			
 			//descriptionAP
 			$accPersos->appendChild($noeudApCommun);
 		}
 		$donnees->appendChild($accPersos);
-}
+	//}
 
 		
 			/*----- acc-persos-groupes -----*/
-if (FALSE) {
+	
 		$accPersosGroupes = $xml->createElement('acc-persos-groupes');
 		$listeApGroupes = getApGroupes();
 		while ($apGroupe = $listeApGroupes->fetch_object()) {
 			$noeudApGroupes = $xml->createElement('acc-perso-groupe');
 			$attributsEpiGroupe = array('id'=>"ACC_PERSO_GROUPE_".$apGroupe->id, 'intitule'=>$apGroupe->nom, 'acc-perso-ref'=>'ACC_PERSO_'.$apGroupe->id_ap );
+			//echo " - AP ".$apGroupe->id. " ";
 			foreach ($attributsEpiGroupe as $cle=>$valeur) {
 				$attsEpiGroupe = $xml->createAttribute($cle);
 				$attsEpiGroupe->value = $valeur;
@@ -408,21 +382,44 @@ if (FALSE) {
 				$noeudApGroupes->appendChild($attsEpiGroupe);
 			}
 			//On a que 1 commentaire de groupe dans l'export alors qu'on peut en avoir 1 par trimestre, on prend le dernier
-			;
+			
 			$commentairesGroupeAp = getCommentaireGroupe($apGroupe->id);
 			while ($commentaire = $commentairesGroupeAp->fetch_object()) {
 				if (trim($commentaire->appreciation)) {
-					$noeudComGroupeAp = $xml->createElement('commentaire',trim($commentaire->appreciation));
+					$noeudComGroupeAp = $xml->createElement('commentaire',substr(trim($commentaire->appreciation),0,600));
 					$noeudApGroupes->appendChild($noeudComGroupeAp);
 				}
 			}
 			
-			
-			
+			// on ajoute les enseignants
+			//print_r($apGroupe);
+			//echo '<br><br>';
+			$profMatiere = getModaliteGroupeAP($apGroupe->id);
+			//print_r($profMatiere);
+			//echo '<br><br>';
+			if ($profMatiere->num_rows) {
+				$noeudProfs = $xml->createElement('enseignants-disciplines');
+			//print_r($profMatiere);
+				while ($ensModalite = $profMatiere->fetch_object()) {
+					$noeudProf = $xml->createElement('enseignant-discipline');
+					$attsMat =  $xml->createAttribute('discipline-ref');
+					//$matiere = getMatiereOnMatiere($ensModalite->matiere);
+					$attsMat->value = 'DI_'.$ensModalite->code_matiere.$ensModalite->modalite;
+					$noeudProf->appendChild($attsMat);
+					$prof = substr(getUtilisateur($ensModalite->login)->numind,1);
+					$attsProf =  $xml->createAttribute('enseignant-ref');
+					$attsProf->value = 'ENS_'.$prof;
+					$noeudProf->appendChild($attsProf);
+					$noeudProfs->appendChild($noeudProf);
+				}
+				$noeudApGroupes->appendChild($noeudProfs);
+				
 			$accPersosGroupes->appendChild($noeudApGroupes);
+			}
 		}
 		
-		$donnees->appendChild($accPersosGroupes);
+		$donnees->appendChild($accPersosGroupes);	
+	}
 }
 
 		// Initialisation des tableau des cycles et MEF associés
@@ -441,7 +438,6 @@ if (FALSE) {
 			//$profResponsable = getUtilisateur($eleve->professeur)->numind;
 			$profResponsable = substr(getUtilisateur($eleve->professeur)->numind,1);
 			
-			//if($periode->num_periode < 10) {$num_periode = "0".$periode->num_periode;} else {$num_periode = $periode->num_periode;}
 			if($eleve->periode < 10) {$num_periode = "0".$eleve->periode;} else {$num_periode = $eleve->periode;}
 			$datecolarite = dateScolarite($eleve->login, $eleve->periode);
 			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
@@ -503,50 +499,104 @@ if (FALSE) {
 					$noeudAcquis->appendChild($attsAcquis);
 					
 				}
-				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,$acquisEleve->appreciation);
+				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($acquisEleve->appreciation),0,600));
 				$noeudAcquis->appendChild($noeudAcquisAppreciation);
 				$listeAcquis->appendChild($noeudAcquis);
 			}
 			
 			$noeudBilanElevePeriodique->appendChild($listeAcquis);
 			
-			if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_eleve") != "n")) {
+			if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_Elv") != "n")) {
 				// non obligatoire
-				$episEleve = getAidEleve($eleve->login, 2);
+				$episEleve = getAidEleve($eleve->login, $_EPI, $eleve->periode);
 				if ($episEleve->num_rows) {
 					//var_dump($episEleve);
 					$listeEpisEleve = $xml->createElement('epis-eleve');
+					$existeEpi = false;
 					while ($epiEleve = $episEleve->fetch_object()) {
-						//var_dump($epiEleve);
-						$noeudEpiEleve = $xml->createElement('epi-eleve');
-						$attsEpisEleve= $xml->createAttribute('epi-groupe-ref');
-						$attsEpisEleve->value = "EPI_GROUPE_".$epiEleve->id_aid;
-						$noeudEpiEleve->appendChild($attsEpisEleve);
-						
-						$commentaireEpiElv = getCommentaireAidElv($eleve->login, $epiEleve->id_aid, $eleve->periode);
-						if ($commentaireEpiElv->num_rows) {
-							$comm = trim($commentaireEpiElv->fetch_object()->appreciation);
-							if ($comm) {
-								$noeudComEpiEleve = $xml->createElement('commentaire', $comm);
-								$noeudEpiEleve->appendChild($noeudComEpiEleve);
+						//on verifie que le groupe est bien déclaré
+						if (!verifieGroupeEPI($epiEleve->id_aid)) {
+							$msgErreur = "<p class='rouge'>".$eleve->nom." ".$eleve->prenom." a un EPI qui n'est pas déclaré en administrateur, il ne sera pas exporté (AID $epiEleve->indice_aid).</p>";
+						} else {
+							$noeudEpiEleve = $xml->createElement('epi-eleve');
+							$attsEpisEleve = $xml->createAttribute('epi-groupe-ref');
+							$attsEpisEleve->value = "EPI_GROUPE_".$epiEleve->id_aid;
+							$noeudEpiEleve->appendChild($attsEpisEleve);
+							$existeEpi = TRUE;
+							$commentaireEpiElv = getCommentaireAidElv($eleve->login, $epiEleve->id_aid, $eleve->periode);
+							if ($commentaireEpiElv->num_rows) {
+								$comm = substr(trim($commentaireEpiElv->fetch_object()->appreciation),0,600);
+								if ($comm) {
+									$noeudComEpiEleve = $xml->createElement('commentaire', $comm);
+									$noeudEpiEleve->appendChild($noeudComEpiEleve);
+								}
 							}
+							$listeEpisEleve->appendChild($noeudEpiEleve);
 							
 						}
-						$listeEpisEleve->appendChild($noeudEpiEleve);
 						
 					}
-					$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
+					if ($existeEpi) {
+						$noeudBilanElevePeriodique->appendChild($listeEpisEleve);
+					}
 					
 				}
 			}
 			
+			if ((getSettingValue("LSU_traite_AP") != "n") && (getSettingValue("LSU_traite_AP_Elv") != "n")) {
+				// non obligatoire
+				$apEleve = getAidEleve($eleve->login, $_AP, $eleve->periode);
+				if ($apEleve->num_rows) {
+					$listeAccPersosEleve = $xml->createElement('acc-persos-eleve');
+					while ($accPersosEleve = $apEleve->fetch_object()) {
+						$noeudAPEleve = $xml->createElement('acc-perso-eleve');
+						$attsAPEleve = $xml->createAttribute('acc-perso-groupe-ref');
+						$attsAPEleve->value = "ACC_PERSO_GROUPE_".$accPersosEleve->id_aid;
+						$noeudAPEleve->appendChild($attsAPEleve);
+						
+						$commentaireAPEleve = getCommentaireAidElv($eleve->login, $accPersosEleve->id_aid, $eleve->periode);
+						if ($commentaireAPEleve->num_rows) {
+							$comm = substr(trim($commentaireAPEleve->fetch_object()->appreciation),0,600);
+							if ($comm) {
+								$noeudComApEleve = $xml->createElement('commentaire', $comm);
+								$noeudAPEleve->appendChild($noeudComApEleve);
+							}
+						}
+						$listeAccPersosEleve->appendChild($noeudAPEleve);
+					}
+					$noeudBilanElevePeriodique->appendChild($listeAccPersosEleve);
+				}
+			}
 			
-		
-			$listeAccPersosEleve = $xml->createElement('acc-persos-eleve');
-			// non obligatoire
-			
-			$listeParcoursEleve = $xml->createElement('liste-parcours');
-			// non obligatoire
+			if ((getSettingValue("LSU_Parcours") != "n") && (getSettingValue("LSU_ParcoursElv") != "n")) {
+				// non obligatoire
+				$parcoursEleve = getAidEleve($eleve->login, $_PARCOURS, $eleve->periode);
+				if ($parcoursEleve->num_rows) {
+					$listeParcoursEleve = $xml->createElement('liste-parcours');
+					$creeParcours = FALSE;
+					while ($parcoursElv = $parcoursEleve->fetch_object()) {
+						$typeParcoursEleve = getCodeParcours($parcoursElv->id_aid);
+						if ($typeParcoursEleve->num_rows) {
+							$typeParcoursEleve = $typeParcoursEleve->fetch_object();
+							
+							$commentaireEleve = getCommentaireEleveParcours($eleve->login,$parcoursElv->id_aid, $eleve->periode);//
+							if ($commentaireEleve->num_rows) {
+								$creeParcours = TRUE;
+								$commentaireEleve = substr(trim($commentaireEleve->fetch_object()->appreciation),0,600);
+								$noeudParcoursEleve = $xml->createElement('parcours',$commentaireEleve);
+								$attsParcoursEleve = $xml->createAttribute('code');
+								$attsParcoursEleve->value = $typeParcoursEleve->codeParcours;
+								$noeudParcoursEleve->appendChild($attsParcoursEleve);
+								$listeParcoursEleve->appendChild($noeudParcoursEleve);
+							}							
+						}
+					}
+					if ($creeParcours) {
+						$noeudBilanElevePeriodique->appendChild($listeParcoursEleve);
+					}
+					
+				}
+			}
 			
 			$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
 			// non obligatoire
@@ -575,7 +625,7 @@ if (FALSE) {
 			}
 			if (trim($retardEleve['appreciation']) && getSettingValue("LSU_commentaire_vie_sco")) {
 				// non obligatoire
-				$comVieSco = $xml->createElement('commentaire', $retardEleve['appreciation']);
+				$comVieSco = $xml->createElement('commentaire', substr(trim($retardEleve['appreciation']),0,600));
 				$vieScolaire->appendChild($comVieSco);
 			}
 			
@@ -669,5 +719,4 @@ if (FALSE) {
 			if ($desAcquis) {$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);}
 		}	
 		$donnees->appendChild($bilansPeriodiques);
-		
-	$items->appendChild($donnees);
+	

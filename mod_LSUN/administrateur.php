@@ -22,7 +22,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-debug_var();
+//debug_var();
 
 $selectionClasse = $_SESSION['afficheClasse'];
 
@@ -35,13 +35,8 @@ if ($metJourResp == 'y') {
 //===== Choix des données à exporter =====
 //===== Création du fichier =====
 $creeFichier = filter_input(INPUT_POST, 'creeFichier');
+
 if ($creeFichier == 'y') {
-	if (0 == count($selectionClasse)) {
-		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p>";
-	}	else {
-		include_once 'creeFichier.php';
-	}
-	
 	if(filter_input(INPUT_POST, 'traiteVieSco')) {
 		saveSetting('LSU_commentaire_vie_sco', filter_input(INPUT_POST, 'traiteVieSco'));
 	}	else {
@@ -57,6 +52,30 @@ if ($creeFichier == 'y') {
 		saveSetting('LSU_traite_EPI', filter_input(INPUT_POST, 'traiteEPI'));
 	}	else {
 		saveSetting('LSU_traite_EPI', "n");
+	}
+	
+	if(filter_input(INPUT_POST, 'traiteEpiElv')) {
+		saveSetting('LSU_traite_EPI_Elv', filter_input(INPUT_POST, 'traiteEPIElv'));
+	}	else {
+		saveSetting('LSU_traite_EPI_Elv', "n");
+	}
+	
+	if(filter_input(INPUT_POST, 'traiteAP')) {
+		saveSetting('LSU_traite_AP', filter_input(INPUT_POST, 'traiteAP'));
+	}	else {
+		saveSetting('LSU_traite_AP', "n");
+	}
+	
+	if(filter_input(INPUT_POST, 'traiteAPElv')) {
+		saveSetting('LSU_traite_AP_Elv', filter_input(INPUT_POST, 'traiteAPElv'));
+	}	else {
+		saveSetting('LSU_traite_AP_Elv', "n");
+	}
+	
+	if (0 == count($selectionClasse)) {
+		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p> <p><a href = 'index.php'>Cliquez ici pour recharger la page</a></p>";
+	}	else if ($creeFichier == 'y') {
+		include_once 'creeFichier.php';
 	}
 
 	if(filter_input(INPUT_POST, 'traiteSocle')) {
@@ -78,6 +97,9 @@ $cpes = getUtilisateurSurStatut('cpe');
 $Enseignants = getUtilisateurSurStatut('professeur');
 $responsables = getResponsables();
 $parcoursCommuns = getParcoursCommuns();
+$AidParcours = getAidParcours();
+$ListeAidParcours = getLiaisonsAidParcours();
+
 $listeMatieres = getMatiereLSUN();
 
 $listeEPICommun = getEPICommun();
@@ -86,6 +108,7 @@ $listeAPCommun = getAPCommun();
 //var_dump($listeAPCommun);
 $listeAp = getApCommun();
 $listeAidAp = getApAid();
+
 
 
 
@@ -203,6 +226,7 @@ if ($cpt) {echo "			</div>\n";}
 					<th>Division</th>
 					<th>Type de parcours éducatifs</th>
 					<th>Description</th>
+					<th>liaison AID</th>
 					<th>Action</th>
 				</tr>
 			</thead>
@@ -227,8 +251,22 @@ if ($cpt) {echo "			</div>\n";}
 					</select>
 				</td>
 				<td>
-					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="80" value="<?php echo $parcoursCommun->description; ?>"/>
+					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="70" value="<?php echo $parcoursCommun->description; ?>"/>
 				</td>
+				<td>
+				
+					<select name="modifieParcoursLien[<?php echo $parcoursCommun->id; ?>]">
+						<option value=""></option>
+<?php $AidParcours->data_seek(0);
+while ($AidParc = $AidParcours->fetch_object()) { ?>
+						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->num_rows && getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> >
+							<?php echo $AidParc->aid; ?>
+						</option>
+<?php } ?>
+					</select>
+				
+				</td>
+				
 				<td>
 					<input type="submit" class="btnSupprime" 
 						   alt="Boutton supprimer" 
@@ -271,7 +309,16 @@ if ($cpt) {echo "			</div>\n";}
 					</select>
 				</td>
 				<td>
-					<input type="text" name="newParcoursTexte" size="80" />
+					<input type="text" name="newParcoursTexte" size="70" />
+				</td>
+				<td>
+					<select name="newParcoursLien">
+						<option value=""></option>
+<?php $AidParcours->data_seek(0);
+while ($APCommun = $AidParcours->fetch_object()) { ?>
+						<option value="<?php echo $APCommun->indice_aid; ?>"><?php echo $APCommun->aid; ?></option>
+<?php } ?>
+					</select>
 				</td>
 				<td>
 					<input type="submit" class="btnValide" 
@@ -351,7 +398,9 @@ while ($classe = $classes->fetch_object()) { ?>
 				<div>
 					Disciplines&nbsp;:&nbsp;<?php	foreach ($tableauMatieresEPI as $matEPI) {
 	echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
-	if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } elseif ($matEPI['modalite'] =="F") {echo " option facultative";}
+	if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } 
+	elseif ($matEPI['modalite'] =="F") {echo " option facultative";} 
+	elseif ($matEPI['modalite'] =="X") {echo " modalité X";}
 	echo " - ";
 	}	?>
 						<select multiple name="modifieEpiMatiere<?php echo $epiCommun->id; ?>[]">
@@ -366,8 +415,9 @@ if ($matiere->code_modalite_elect == 'O') {
 	echo '- option obligatoire';
 } elseif ($matiere->code_modalite_elect == 'F') {
 	echo '- option facultative';
+} elseif ($matiere->code_modalite_elect == 'X') {
+	echo '- modalité X';
 }
-
 									?>
 							</option>
 <?php } ?>
@@ -523,6 +573,8 @@ if ($matiere->code_modalite_elect == 'O') {
 	echo '- option obligatoire';
 } elseif ($matiere->code_modalite_elect == 'F') {
 	echo '- option facultative';
+} elseif ($matiere->code_modalite_elect == 'X') {
+	echo '- modalité X';
 }
 ?>
 							</option>
@@ -598,8 +650,11 @@ $tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
 		echo '- option obligatoire';
 	} elseif ($matiereAP->modalite == 'F') {
 		echo '- option facultative';
+	} elseif ($matiereAP->modalite == 'X') {
+		echo '- modalité X';
 	}
-} ?>	
+} ?>
+					-
 				</label>
 				<select multiple name="ApDisciplines<?php echo $ap->id; ?>[]">
 <?php $listeMatieres->data_seek(0);
@@ -612,6 +667,8 @@ if ($matiere->code_modalite_elect == 'O') {
 echo '- option obligatoire';
 } elseif ($matiere->code_modalite_elect == 'F') {
 echo '- option facultative';
+} elseif ($matiere->code_modalite_elect == 'X') {
+	echo '- modalité X';
 }
 ?>
 					</option>
@@ -644,7 +701,7 @@ echo '- option facultative';
 <?php $listeMatieres->data_seek(0);
  while ($matiere = $listeMatieres->fetch_object()) { ?>
 							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
-								<?php echo $matiere->nom_complet; ?>
+								<?php echo $matiere->nom_complet ?>
 <?php 								
 if ($matiere->code_modalite_elect == 'O') {
 	echo '- option obligatoire';
@@ -696,7 +753,8 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y"
-							   <?php if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_eleve") != "n")) {echo ' checked '; }  ?> />
+							   
+							   <?php if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_Elv") != "n")) {echo ' checked '; }  ?> />
 						<label for="traiteEpiElv">données élèves des EPI</label>
 					</li>
 					<li>
@@ -713,34 +771,41 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
 					<li>
-						<input type="checkbox" name="traiteAP" id="traiteAP" value="y"   disabled />
+						<input type="checkbox" name="traiteAP" id="traiteAP" value="y"     
+							   <?php if (getSettingValue("LSU_traite_AP") != "n") {echo ' checked '; }  ?>  />
 						<label for="traiteAP">accompagnements personnalisés (AP)</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y" disabled />
+						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y"      
+							   <?php if ((getSettingValue("LSU_traite_AP") != "n") && (getSettingValue("LSU_traite_AP_Elv") != "n")) {echo ' checked '; }  ?>  />
 						<label for="traiteAPElv">données élèves des AP</label>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" disabled />
-						<label for="traiteModSpeElv">modalités spécifiques d’accompagnement des élèves</label>
+						<label for="traiteModSpeElv"  class="desactive" title="À saisir directement dans LSU" >modalités spécifiques d’accompagnement des élèves</label>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteParent" id="traiteParent" value="y"  
+							   
 							   <?php if (getSettingValue("LSU_Donnees_responsables") != "n") {echo ' checked '; }  ?> />
 						<label for="traiteParent" title="Exporter les informations relatives aux responsables (nom prénom adresse">
 							informations relatives aux responsables de l’élève
 						</label>
+							   <?php if (getSettingValue("LSU_donnee_parent") != "n") {echo ' checked '; }  ?> />
+						<label for="traiteParent">informations relatives aux responsables de l’élève</label>
 					</li>
 				</ul>
 			</div>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
 					<li>
-						<input type="checkbox" name="traiteParcours" id="traiteParcours" value="y"  disabled />
+						<input type="checkbox" name="traiteParcours" id="traiteParcours" value="y"  
+							   <?php if (getSettingValue("LSU_Parcours") != "n") {echo ' checked '; }  ?> />
 						<label for="traiteParcours">parcours éducatifs</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteParcoursElv" id="traiteParcoursElv" value="y" disabled />
+						<input type="checkbox" name="traiteParcoursElv" id="traiteParcoursElv" value="y"   
+							   <?php if ((getSettingValue("LSU_Parcours") != "n") && (getSettingValue("LSU_ParcoursElv") != "n")) {echo ' checked '; }  ?>  />
 						<label for="traiteParcoursElv">données élèves des Parcours</label>
 					</li>
 					<li>
