@@ -389,7 +389,7 @@ function supprimeElemProgElv($login, $idElem, $annee, $periode, $groupe) {
  * @param type $annee
  * @param type $periode
  */
-function creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $annee, $periode) {
+function creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $annee, $periode, $login_prof="") {
 	
 	// on commence par créér l'élément de programme → ".$texteElem;
 	saveNewElement($texteElem);
@@ -398,7 +398,12 @@ function creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $annee, $peri
 	$idNewLibelle = getElemProgByLibelle($texteElem)->fetch_object()->id;
 	
 	// puis on traite le prof ".$_SESSION['login'];
-	saveJointureProfEP($_SESSION['login'], $idNewLibelle);
+	if($login_prof=="") {
+		saveJointureProfEP($_SESSION['login'], $idNewLibelle);
+	}
+	else {
+		saveJointureProfEP($login_prof, $idNewLibelle);
+	}
 	
 	// puis pour la matière
 	$matiere = getMatiere($id_groupe);
@@ -406,7 +411,8 @@ function creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $annee, $peri
 	
 	// puis pour l'éleve ".$loginEleve; pour l'année ".$annee; et la période ".$periode;
 	saveJointureEleveEP($loginEleve, $idNewLibelle, $annee, $periode, $id_groupe);
-	
+
+	return $idNewLibelle;
 }
 
 /**
