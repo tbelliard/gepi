@@ -1,8 +1,7 @@
 <?php
-
 /*
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -47,7 +46,7 @@ if ($resultat_session == 'c') {
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
@@ -1274,8 +1273,6 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Discipline : Saisie"))
 
 include_once("../templates/origine/gabarit_entete.php");
 
-
-
 $page="saisie_incident.php";
 
 if (!isset($return_url) || $return_url == null) {
@@ -1294,6 +1291,11 @@ if (!isset($return_url) || $return_url == null) {
 <?php
 
 // ===== On construit le menu spécifique de la page =====
+
+echo "<a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
+if(isset($id_incident)) {
+	echo "<a href='".$_SERVER["PHP_SELF"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Créer un autre incident</a> | ";
+}
 
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite')) {
 	$sql="SELECT 1=1 FROM s_incidents si
@@ -1653,8 +1655,8 @@ if(isset($id_incident) ) {
                 ((($_SESSION['statut']=='professeur')&&(getSettingValue('imprDiscProfRetenueOOo')=='yes'))
                 ||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
 ?>
-                <th>Rapport</th>               
-                <th>Retenue</th>               
+                <th>Rapport</th>
+                <th>Retenue</th>
 <?php
         }
         // A affiner pour le statut autre : il faudrait pouvoir préciser si c'est un statut seulement autorisé à saisir des incidents ou aussi autorisé à les traiter (droits à ajouter dans statuts personnalisés)
