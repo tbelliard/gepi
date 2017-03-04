@@ -71,12 +71,6 @@ if ($creeFichier == 'y') {
 	}	else {
 		saveSetting('LSU_traite_AP_Elv', "n");
 	}
-	
-	if (0 == count($selectionClasse)) {
-		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p> <p><a href = 'index.php'>Cliquez ici pour recharger la page</a></p>";
-	}	else if ($creeFichier == 'y') {
-		include_once 'creeFichier.php';
-	}
 
 	if(filter_input(INPUT_POST, 'traiteSocle')) {
 		saveSetting('LSU_Donnees_socle', filter_input(INPUT_POST, 'traiteSocle'));
@@ -84,8 +78,26 @@ if ($creeFichier == 'y') {
 		saveSetting('LSU_Donnees_socle',  "n");
 	}
 
+	if(filter_input(INPUT_POST, 'traiteBilanFinCycle')) {
+		saveSetting('LSU_Donnees_BilanFinCycle', filter_input(INPUT_POST, 'traiteBilanFinCycle'));
+	}	else {
+		saveSetting('LSU_Donnees_BilanFinCycle',  "n");
+	}
+
+	if(filter_input(INPUT_POST, 'CreerAutomatiquementElementsProgrammes')) {
+		saveSetting('LSU_CreerAutomatiquementElementsProgrammes', filter_input(INPUT_POST, 'CreerAutomatiquementElementsProgrammes'));
+	}	else {
+		saveSetting('LSU_CreerAutomatiquementElementsProgrammes',  "n");
+	}
+
+	if (0 == count($selectionClasse)) {
+		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p> <p><a href = 'index.php'>Cliquez ici pour recharger la page</a></p>";
+	}	else if ($creeFichier == 'y') {
+		include_once 'creeFichier.php';
+	}
+
 	include_once 'creeFichier.php';
-	
+
 }
 
 
@@ -816,6 +828,11 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<input type="checkbox" name="traiteSocle" id="traiteSocle" value="y"  
 							   <?php if (getSettingValue("LSU_Donnees_socle") == "y") {echo ' checked '; }  ?> />
 						<label for="traiteSocle">positionnement des élèves sur les domaines du socle commun</label>
+					</li>
+					<li>
+						<input type="checkbox" name="traiteBilanFinCycle" id="traiteBilanFinCycle" value="y"  
+							   <?php if (getSettingValue("LSU_Donnees_BilanFinCycle") == "y") {echo ' checked '; }  ?> />
+						<label for="traiteBilanFinCycle">Bilan de fin de Cycle</label>
 					</li>
 				</ul>
 			</div>

@@ -368,26 +368,53 @@ function getElevesExport() {
 		. "INNER JOIN eleves as e "
 		. "ON e.login = jec.login "
 		. "WHERE id_classe IN (".$myData.") ORDER BY jec.id_classe , jec.login , jec.periode ";
+	//echo "<p>".$sqlEleves01.";</p>";
 	// on récupère le prof principal
 	$sqlEleves02 = "SELECT t0.*, jep.professeur FROM ($sqlEleves01) AS t0 "
 		. "LEFT JOIN j_eleves_professeurs AS jep "
-		. "ON t0.login = jep.login";
+		. "ON t0.login = jep.login AND jep.id_classe=t0.id_classe";
+	//echo "<p>".$sqlEleves02.";</p>";
 	// on récupère la date de conseil de classe
 	$sqlEleves03 = "SELECT t1.* , DATE_FORMAT(p.date_fin, '%Y-%m-%d') AS date_verrou , DATE_FORMAT(p.date_conseil_classe, '%Y-%m-%d') AS date_conseil FROM ($sqlEleves02) AS t1 "
 		. "INNER JOIN periodes AS p "
 		. "ON p.id_classe = t1.id_classe AND p.num_periode = t1.periode ";
+	//echo "<p>".$sqlEleves03.";</p>";
 	// on récupère le responsable
 	$sqlEleves04 = "SELECT s3.* , c.mef_code , c.suivi_par FROM ($sqlEleves03) AS s3 INNER JOIN classes AS c ON s3.id_classe = c.id ";
-	
+	//echo "<p>".$sqlEleves04.";</p>";
+
 	$sqlEleves = "SELECT s4.* , lr.id AS id_resp_etab FROM ($sqlEleves04) AS s4 INNER JOIN lsun_responsables AS lr ON lr.login = s4.suivi_par ";
 	
 	//echo $sqlEleves03;
+	//echo "<p>".$sqlEleves.";</p>";
 	
 	$resultchargeDB = $mysqli->query($sqlEleves);
 	return $resultchargeDB;
 	
 }
 
+
+function getElevesExportCycle() {
+	global $mysqli;
+	$classes = $_SESSION['afficheClasse'];
+	
+	$myData = implode(",", $classes);
+
+	$sql="SELECT DISTINCT e.login, 
+				e.nom, 
+				e.prenom, 
+				e.id_eleve, 
+				e.ele_id, 
+				e.mef_code, 
+				e.no_gep, 
+				DATE_FORMAT(e.`date_entree`, '%Y-%m-%d') AS date_entree 
+			FROM eleves e 
+			WHERE e.login IN (SELECT login FROM j_eleves_classes WHERE id_classe IN (".$myData."));";
+
+	$resultchargeDB = $mysqli->query($sql);
+	return $resultchargeDB;
+	
+}
 
 
 // Bilan
@@ -893,7 +920,7 @@ function libxml_display_errors($display_errors = true) {
 	$chain_errors = "";
 
 	foreach ($errors as $error) {
-		$chain_errors .= preg_replace('/( in\ \/(.*))/',  », strip_tags(libxml_display_error($error)))."<br>\n";
+		$chain_errors .= preg_replace('/( in\ \/(.*))/', "", strip_tags(libxml_display_error($error)))."<br>\n";
 		if ($display_errors) {
 			trigger_error(libxml_display_error($error), E_USER_WARNING);
 		}
