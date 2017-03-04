@@ -929,7 +929,34 @@ echo "<tr><td  colspan=\"3\">\n";
 echo "<i>Mise en forme du message :</i>\n";
 
 $oCKeditor = new CKeditor('../ckeditor/');
-$oCKeditor->editor('message',$contenu) ;
+$config = array();
+/* Tous les outils
+config['toolbar'] =array(
+	array('Source','-','Save','NewPage','DocProps','Preview','Print','-','Templates'),
+	array('Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo'),
+	array('Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt'),
+	array('Form','Checkbox','Radio','TextField','Textarea','Select','Button','ImageButton', 'HiddenField'),
+	array('Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat'),
+	array( 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl'),
+	array('Link','Unlink','Anchor'),
+	array('Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe'),
+	array( 'Styles','Format','Font','FontSize'),
+	array('TextColor','BGColor'),
+	array('Maximize', 'ShowBlocks','-','About')
+);
+*/
+$config['toolbar'] =array(
+	array('Save','NewPage','DocProps','Preview'),
+	array('Cut','Copy','Paste','PasteText','-','Undo','Redo'),
+	array('Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt'),
+	array('Bold','Italic','Underline','Strike','Subscript','Superscript','-','SpecialChar','-','RemoveFormat'),
+	array( 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'),
+	array('Link','Unlink'),
+	array( 'Styles','Format','Font','FontSize'),
+	array('TextColor','BGColor'),
+	array('About')
+);
+$oCKeditor->editor('message',$contenu,$config) ;
 
 echo "</td></tr>";
 
