@@ -393,7 +393,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			// on ajoute les enseignants
 			//print_r($apGroupe);
-			//echo '<br><br>';
+			//echo '<br>11<br>';
 			$profMatiere = getModaliteGroupeAP($apGroupe->id);
 			//print_r($profMatiere);
 			//echo '<br><br>';

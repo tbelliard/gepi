@@ -753,8 +753,9 @@ INNER JOIN
 	) AS t6
 ON t6.login = t5.login AND t6.id_matiere = t5.matiere
 	";
+	//SELECT DISTINCT t7.* , m.code_matiere FROM
 	$sqlGroupeModalite = ""
-		. "SELECT t7.* , m.code_matiere FROM "
+		. "SELECT DISTINCT t7.id_matiere , t7.modalite , t7.login , m.code_matiere FROM "
 		. "	($sqlGroupeModalite01) AS t7 "
 		. "INNER JOIN "
 		. "matieres AS m "
