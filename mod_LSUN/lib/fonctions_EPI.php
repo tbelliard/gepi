@@ -269,13 +269,13 @@ function getEpisGroupes($idEPI = NULL) {
 	if ($idEPI) {
 		$sqlEpisGroupes .= "WHERE e.id_epi = $idEPI ";
 	}
-	//echo $sqlEpisGroupes;
+	//echo $sqlEpisGroupes.";<br />";
 	
 	$sqlEpisGroupes = "SELECT t0.* , lec.periode FROM ("
 		. "$sqlEpisGroupes"
 		. ") AS t0 INNER JOIN lsun_epi_communs AS lec on t0.id_epi = lec.id ";
 	
-	//echo $sqlEpisGroupes;
+	//echo $sqlEpisGroupes.";<br />";
 	$resultchargeDB = $mysqli->query($sqlEpisGroupes);
 	return $resultchargeDB;
 }

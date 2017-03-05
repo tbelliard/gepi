@@ -103,7 +103,11 @@ if ($ajouteEPI) {
 	$newEpiIntitule = filter_input(INPUT_POST, 'newEpiIntitule');
 	$newEpiMatiere = filter_input(INPUT_POST, 'newEpiMatiere', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$newEpiDescription = filter_input(INPUT_POST, 'newEpiDescription');
-	
+
+	// Suppression des retours à la ligne.
+	//$newEpiDescription=preg_replace('/\r/', " - ", preg_replace('/\n/', " - ", preg_replace('/\r\n/', " - ", $newEpiDescription)));
+	// A faire plutôt à l'export
+
 	sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $newEpiDescription, $newEpiMatiere);
 }
 
@@ -119,6 +123,13 @@ if ($modifieEPI) {
 	// var_dump($modifieEPIMatiere);
 	//echo '<br>';
 	$modifieEPIDescription = filter_input(INPUT_POST, 'modifieEpiDescription', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+
+	// Suppression des retours à la ligne.
+	//foreach($modifieEPIDescription as $key => $value) {
+	//	$modifieEPIDescription[$key]=preg_replace('/\r/', " - ", preg_replace('/\n/', " - ", preg_replace('/\r\n/', " - ", $value)));
+	//}
+	// A faire plutôt à l'export
+
 	$modifieEPIClasse = filter_input(INPUT_POST, 'modifieEpiClasse'.$modifieEPI, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	// var_dump($modifieEPIClasse);
 	sauveEPI($modifieEPIPeriode[$modifieEPI], $modifieEPIClasse, $modifieEPICode[$modifieEPI], $modifieEPIIntitule[$modifieEPI], $modifieEPIDescription[$modifieEPI], $modifieEPIMatiere, $modifieEPI);
