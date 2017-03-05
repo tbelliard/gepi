@@ -956,6 +956,9 @@ $config['toolbar'] =array(
 	array('TextColor','BGColor'),
 	array('About')
 );
+
+$config['stylesSet']='gepi_styles';
+
 $oCKeditor->editor('message',$contenu,$config) ;
 
 echo "</td></tr>";
