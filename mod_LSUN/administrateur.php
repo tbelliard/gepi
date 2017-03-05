@@ -347,7 +347,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 
 <form action="index.php" method="post" id="definitionEPI">
 	<fieldset>
-		<legend>EPIs</legend>		
+		<legend>EPIs</legend>
 		<div id="div_epi">
 			<p>Enseignements Pratiques Interdisciplinaires</p>
 <?php while ($epiCommun = $listeEPICommun->fetch_object()) { 
@@ -382,7 +382,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 						-
 						Division :
 						
-						<select name="modifieEpiClasse<?php echo $epiCommun->id; ?>[]" multiple >
+						<select name="modifieEpiClasse<?php echo $epiCommun->id; ?>[]" multiple title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque classe." >
 							<option value=""></option>
 <?php $classes->data_seek(0);
 while ($classe = $classes->fetch_object()) { ?>
@@ -405,35 +405,109 @@ while ($classe = $classes->fetch_object()) { ?>
 <?php } ?>
 						</select>
 						-
-						Intitulé&nbsp;:&nbsp;<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />	
+						Intitulé&nbsp;:&nbsp;<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />
 				</div>
-				<div>
-					Disciplines&nbsp;:&nbsp;<?php	foreach ($tableauMatieresEPI as $matEPI) {
-	echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
-	if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } 
-	elseif ($matEPI['modalite'] =="F") {echo " option facultative";} 
-	elseif ($matEPI['modalite'] =="X") {echo " modalité X";}
-	echo " - ";
-	}	?>
-						<select multiple name="modifieEpiMatiere<?php echo $epiCommun->id; ?>[]">
-<?php $listeMatieres->data_seek(0);
-while ($matiere = $listeMatieres->fetch_object()) { 
-?>
-							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>" 
-								<?php if(in_array(array('matiere'=>$matiere->matiere,'modalite'=>$matiere->code_modalite_elect), $tableauMatieresEPI)) {echo " selected";} ?> >
-								<?php echo $matiere->nom_complet; ?>
-								<?php 
-if ($matiere->code_modalite_elect == 'O') {
-	echo '- option obligatoire';
-} elseif ($matiere->code_modalite_elect == 'F') {
-	echo '- option facultative';
-} elseif ($matiere->code_modalite_elect == 'X') {
-	echo '- modalité X';
-}
-									?>
-							</option>
-<?php } ?>
-						</select>
+
+				<div align='center'>
+					<table style='border:0px;'>
+						<tr>
+							<?php
+							if(count($tableauMatieresEPI)==0) {
+									echo "
+								<th style='vertical-align:top; border:0px;'>
+						Disciplines&nbsp;:&nbsp;
+								</th>
+
+								<td style='vertical-align:top; border:0px;' title=\"Associer des disciplines\">
+								Associer des disciplines&nbsp;:<br />
+							<select multiple name=\"modifieEpiMatiere".$epiCommun->id."[]\" title=\"Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque matière.\">";
+									$listeMatieres->data_seek(0);
+									while ($matiere = $listeMatieres->fetch_object()) { 
+										echo "
+								<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">".$matiere->matiere." (".$matiere->nom_complet;
+										if ($matiere->code_modalite_elect == 'O') {
+											echo '- option obligatoire';
+										} elseif ($matiere->code_modalite_elect == 'F') {
+											echo '- option facultative';
+										} elseif ($matiere->code_modalite_elect == 'X') {
+											echo '- mesure spécifique';
+										}
+										elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
+										elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
+										elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
+										echo ")</option>";
+									}
+									echo "
+							</select>
+								</td>";
+
+								echo "</tr>";
+
+							}
+							else {
+								echo "
+							<th style='vertical-align:top; border:0px;' rowspan='".count($tableauMatieresEPI)."'>
+					Disciplines&nbsp;:&nbsp;
+							</th>";
+								$cpt_row=0;
+								foreach ($tableauMatieresEPI as $matEPI) {
+									if($cpt_row>0) {
+										echo "<tr>";
+									}
+									echo "
+								<td style='border:0px;'>
+									<input type='checkbox' name='modifieEpiMatiere".$epiCommun->id."[]' id='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."' value=\"".$matEPI['matiere'].$matEPI['modalite']."\" checked />
+								</td>
+								<td style='text-align:left; border:0px;'><label for='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."'>";
+		echo $matEPI['matiere']." (";
+		echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
+		echo "<span style='color:grey'>";
+		if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } 
+		elseif ($matEPI['modalite'] =="F") {echo " option facultative";} 
+		elseif ($matEPI['modalite'] =="X") {echo " mesure spécifique";}
+		elseif ($matEPI['modalite'] =="N") {echo " obligatoire ou facultatif";}
+		elseif ($matEPI['modalite'] =="L") {echo " ajout académique";}
+		elseif ($matEPI['modalite'] =="R") {echo " enseignement religieux";}
+		echo "</span>";
+		//echo " - ";
+		echo ")</label><br />";
+								echo "</td>";
+
+								if($cpt_row==0) {
+									echo "
+								<td style='vertical-align:top; border:0px;' title=\"Associer d'autres disciplines\" rowspan='".count($tableauMatieresEPI)."'>
+								Associer d'autres disciplines&nbsp;:<br />
+							<select multiple name=\"modifieEpiMatiere".$epiCommun->id."[]\" title=\"Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque matière.\">";
+									$listeMatieres->data_seek(0);
+									while ($matiere = $listeMatieres->fetch_object()) { 
+										if(!in_array(array('matiere'=>$matiere->matiere,'modalite'=>$matiere->code_modalite_elect), $tableauMatieresEPI)) {
+											echo "
+								<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">".$matiere->matiere." (".$matiere->nom_complet;
+											if ($matiere->code_modalite_elect == 'O') {
+												echo '- option obligatoire';
+											} elseif ($matiere->code_modalite_elect == 'F') {
+												echo '- option facultative';
+											} elseif ($matiere->code_modalite_elect == 'X') {
+												echo '- mesure spécifique';
+											}
+											elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
+											elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
+											elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
+											echo ")</option>";
+										}
+									}
+									echo "
+							</select>
+								</td>";
+								}
+								echo "</tr>";
+								$cpt_row++;
+			}
+		}
+
+		?>
+					</table>
+
 						-
 						Description&nbsp;:&nbsp;<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea> 
 				</div>
@@ -481,7 +555,7 @@ if (count($_SESSION['afficheClasse'])) {
 }
 
 ?>
-						<select multiple  name="modifieEpiLiaison<?php echo $epiCommun->id; ?>[]">
+						<select multiple  name="modifieEpiLiaison<?php echo $epiCommun->id; ?>[]" title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque AID à associer à cet EPI." >
 							<option value=""></option>
 <?php 
 $listeAids = getEpiAid(); 
@@ -512,7 +586,7 @@ while ($cours = $listeCours->fetch_object()) {
 	$lastCours = $cours->id_groupe;
 ?>
 							<option value="cours-<?php echo $cours->id_groupe; ?>" <?php
-	if(estCoursEpi($epiCommun->id ,"cours-".$cours->id_groupe)) {echo 'selected';}			
+	if(estCoursEpi($epiCommun->id ,"cours-".$cours->id_groupe)) {echo 'selected';}
 									?> >
 								cours
 								-
@@ -551,7 +625,7 @@ if (isset($cours)) {
 						</select>
 						
 						Division :
-						<select name="newEpiClasse[]" multiple >
+						<select name="newEpiClasse[]" multiple title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque classe.">
 							<option value=""></option>
 <?php $classes->data_seek(0);
 while ($classe = $classes->fetch_object()) { ?>
@@ -575,7 +649,7 @@ while ($classe = $classes->fetch_object()) { ?>
 					</p>
 					<p>
 						Disciplines :
-						<select multiple name="newEpiMatiere[]" size="8">
+						<select multiple name="newEpiMatiere[]" size="8" title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque matière.">
 <?php $listeMatieres->data_seek(0);
  while ($matiere = $listeMatieres->fetch_object()) { ?>
 							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
