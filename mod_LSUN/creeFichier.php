@@ -53,9 +53,9 @@ if((isset($msgErreur))&&($msgErreur!="")) {
 }
 
 // A désactiver peut-être pour ne pas faire peur inutilement?
-$afficher_liste_absence_EP=true;
+$afficher_liste_absence_EP=false;
 if (isset($absenceEP))  {
-	echo "<p class='rouge center gras' style='margin-bottom:1em;'>Des élèves n'ont pas d'éléments de programme dans un (ou plusieurs) enseignement(s), vous devez vous assurer que c'est normal.</p>";
+	echo "<p class='rouge center gras' style='margin-bottom:1em;'>Des élèves n'ont pas d'éléments de programme dans un <em>(ou plusieurs)</em> enseignement(s), vous devez vous assurer que c'est normal <em>(mais ce n'est pas bloquant)</em>.</p>";
 	if($afficher_liste_absence_EP) {
 		if(isset($liste_absenceEP)) {
 			echo $liste_absenceEP;
@@ -75,7 +75,7 @@ if ($validate) {
 } else {
 	?>
 <p class ="rouge">Le fichier <?php echo $nomFichier; ?> n'est pas valide, vous devez le vérifier et corriger les erreurs.</p>
-<?php echo "<p>".libxml_display_errors()."</p>"; ?>
+<?php echo "<p class='rouge'>".libxml_display_errors()."</p>"; ?>
 <p>Vous pouvez récupérer le schéma du fichier pour votre validateur en <a href="<?php echo $schema; ?>" target="_BLANK">cliquant ici</a></p>
 <?php
 }
