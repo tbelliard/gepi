@@ -38,12 +38,13 @@
 function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $newEpiDescription, $newEpiMatiere, $idEpi = NULL) {
 	global $mysqli;
 	//echo $newEpiMatiere;
-	foreach ($newEpiMatiere as $matiereAid) {
-		$sqlMatiereEPI = "UPDATE matieres SET matiere_aid = 'y' WHERE matiere = '".substr($matiereAid,0,-1)."' ";
-		//echo $sqlMatiereEPI."<br>";
-		$mysqli->query($sqlMatiereEPI);
+	if(is_array($newEpiMatiere)) {
+		foreach ($newEpiMatiere as $matiereAid) {
+			$sqlMatiereEPI = "UPDATE matieres SET matiere_aid = 'y' WHERE matiere = '".substr($matiereAid,0,-1)."' ";
+			//echo $sqlMatiereEPI."<br>";
+			$mysqli->query($sqlMatiereEPI);
+		}
 	}
-	
 	
 	$sqlCreeEpi = "INSERT INTO lsun_epi_communs (id, periode, codeEPI, intituleEpi, descriptionEpi) VALUES (";
 	
@@ -269,13 +270,13 @@ function getEpisGroupes($idEPI = NULL) {
 	if ($idEPI) {
 		$sqlEpisGroupes .= "WHERE e.id_epi = $idEPI ";
 	}
-	//echo $sqlEpisGroupes.";<br />";
+	//echo $sqlEpisGroupes.";<br /><br />";
 	
 	$sqlEpisGroupes = "SELECT t0.* , lec.periode FROM ("
 		. "$sqlEpisGroupes"
 		. ") AS t0 INNER JOIN lsun_epi_communs AS lec on t0.id_epi = lec.id ";
 	
-	//echo $sqlEpisGroupes.";<br />";
+	//echo $sqlEpisGroupes.";<br /><br />";
 	$resultchargeDB = $mysqli->query($sqlEpisGroupes);
 	return $resultchargeDB;
 }

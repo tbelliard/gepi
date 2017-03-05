@@ -714,7 +714,7 @@ INNER JOIN
 ON t3.matiere = t4.id_matiere
 	";
 	
-	echo $sqlGroupeModalite.'<br>';
+	//echo $sqlGroupeModalite.'<br>';
 	$resultchargeDB = $mysqli->query($sqlGroupeModalite);
 	return $resultchargeDB ;
 	
@@ -748,7 +748,8 @@ function getModaliteGroupeAP($groupe_id) {
 		LEFT JOIN
 			j_professeurs_matieres AS jpm
 		ON jpm.id_professeur = t0.login";
-	
+	//echo $sqlGroupeModaliteProfs.";<br /><br />";
+
 	//On récupère les élèves du groupe puis leurs classes
 	/*
 	$sqlGroupeModaliteClasses = "		
@@ -785,7 +786,7 @@ function getModaliteGroupeAP($groupe_id) {
 	 * 
 	 */
 	
-	$sqlGroupeModaliteClasses = "		
+	$sqlGroupeModaliteClasses = "
 	SELECT DISTINCT t4.* , jgp.login FROM (
 		SELECT DISTINCT t3.*, jgem.code_modalite_elect AS modalite FROM (
 			SELECT t2.* , jgm.id_matiere FROM (
@@ -815,7 +816,7 @@ function getModaliteGroupeAP($groupe_id) {
 		j_groupes_professeurs AS jgp
 	ON jgp.id_groupe = t4.id_groupe ";
 	
-	//echo $sqlGroupeModaliteClasses.'<br><br>';
+	//echo $sqlGroupeModaliteClasses.';<br><br>';
 	
 	$sqlGroupeModalite01 = "
 SELECT DISTINCT t6.* FROM (
@@ -828,7 +829,7 @@ INNER JOIN
 ON t6.login = t5.login AND t6.id_matiere = t5.matiere
 	";
 	
-	//echo $sqlGroupeModalite01.'<br><br>';
+	//echo $sqlGroupeModalite01.';<br><br>';
 	
 	//SELECT DISTINCT t7.* , m.code_matiere FROM
 	$sqlGroupeModalite = ""
@@ -838,7 +839,7 @@ ON t6.login = t5.login AND t6.id_matiere = t5.matiere
 		. "matieres AS m "
 		. "ON m.matiere = t7.id_matiere";
 	
-	//echo $sqlGroupeModalite.'<br><br>';
+	//echo $sqlGroupeModalite.';<br><br>';
 	$resultchargeDB = $mysqli->query($sqlGroupeModalite);
 	return $resultchargeDB ;
 	
