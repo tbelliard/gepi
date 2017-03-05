@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -95,6 +95,10 @@ if (isset($is_posted) and ($is_posted == "1")) {
 			$reg_nom="Nom AID vide ".microtime();
 			$reg_nom_complet=$reg_nom;
 		}
+	}
+
+	if($type_aid!=0) {
+		$activer_outils_comp="y";
 	}
 
 	$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid_config SET
@@ -399,7 +403,7 @@ echo add_token_field();
 <?php
 
 	echo "Type particulier pour l'AID&nbsp;: 
-		<select name='type_aid' id='type_aid' onchange=\"changement();\">";
+		<select name='type_aid' id='type_aid' onchange=\"verif_type_aid();changement();\">";
 	for($loop=0;$loop<count($tab_type_aid);$loop++) {
 		if($type_aid==$loop) {
 			$selected=" selected";
@@ -666,6 +670,13 @@ function js_adapte_outil_comp() {
 	}
 	else {
 		Element.hide('outils_comp');
+	}
+}
+
+function verif_type_aid() {
+	if(document.getElementById('type_aid').selectedIndex!=0) {
+		document.getElementById('activer_outils_comp_y').checked=true;
+		js_adapte_outil_comp();
 	}
 }
 </script>
