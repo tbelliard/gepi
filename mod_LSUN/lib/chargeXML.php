@@ -283,7 +283,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					$attsEpiCommun->value = $valeur;
 					$noeudEpiCommun->appendChild($attsEpiCommun);
 				}
-				$noeudDexcriptionEpiCommun = $xml->createElement('description', $epiCommun->descriptionEpi);
+				$noeudDexcriptionEpiCommun = $xml->createElement('description', nettoye_texte_vers_chaine($epiCommun->descriptionEpi));
 				$noeudEpiCommun->appendChild($noeudDexcriptionEpiCommun);
 				$epis->appendChild($noeudEpiCommun);
 			}

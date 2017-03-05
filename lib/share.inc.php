@@ -16337,4 +16337,16 @@ function get_tab_types_enseignements_complement() {
 	return $tab;
 }
 
+function nettoye_texte_vers_chaine($texte, $remplacement_retour_ligne=" - ") {
+
+	$chaine=preg_replace('/\r/', '\n', $texte);
+	$chaine=nettoyage_retours_ligne_surnumeraires($chaine);
+	// On remplace les retours à la ligne par des " - "
+	$chaine=preg_replace('/\n/', $remplacement_retour_ligne, trim($chaine));
+	$chaine=preg_replace('/('.$remplacement_retour_ligne.'){2,}/', $remplacement_retour_ligne, trim($chaine));
+	$chaine=trim($chaine);
+
+	return $chaine;
+}
+
 ?>
