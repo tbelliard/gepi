@@ -299,7 +299,7 @@ if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE socle_eleves_syntheses (id int(11) NOT NULL auto_increment, 
 	ine varchar(50) NOT NULL, 
 	cycle tinyint(2) NOT NULL, 
-	synthese TEXT , 
+	synthese TEXT, 
 	login_saisie varchar(50) NOT NULL DEFAULT '', 
 	date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
 	PRIMARY KEY (id), INDEX ine_cycle (ine, cycle), UNIQUE(ine, cycle)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
@@ -352,7 +352,23 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
-
-
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'j_groupes_aid' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_groupes_aid'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_aid (id_groupe INT(11) NOT NULL default '0', 
+		id_aid INT(11) NOT NULL default '0', 
+		indice_aid INT(11) NOT NULL default '0', 
+		etat varchar(255) NOT NULL default '', 
+		PRIMARY KEY  (id_groupe, id_aid), INDEX id_groupe_id_aid (id_groupe, id_aid)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 
 
