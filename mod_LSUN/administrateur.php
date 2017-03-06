@@ -872,13 +872,10 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteParent" id="traiteParent" value="y"  
-							   
 							   <?php if (getSettingValue("LSU_Donnees_responsables") != "n") {echo ' checked '; }  ?> />
 						<label for="traiteParent" title="Exporter les informations relatives aux responsables (nom prénom adresse">
 							informations relatives aux responsables de l’élève
 						</label>
-							   <?php if (getSettingValue("LSU_donnee_parent") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteParent">informations relatives aux responsables de l’élève</label>
 					</li>
 				</ul>
 			</div>
