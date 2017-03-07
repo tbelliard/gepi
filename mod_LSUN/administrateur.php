@@ -139,9 +139,35 @@ $classes = getClasses();
 
 ?>
 
+<h2>Procédure</h2>
+<div style='margin-left:3em;'>
+	<h3>Les grandes lignes</h3>
+	<div style='margin-left:3em;'>
+		<p>L'opération de génération d'un fichier export XML à destination de l'application Livret Scolaire Unique <em title="Livret Scolaire Unique Numérique">(LSUN)</em> se déroule en plusieurs étapes&nbsp;:</p>
+		<ol>
+			<li>Sélection des classes</li>
+			<li>Sélection/définition des EPI, AP et Parcours</li>
+			<li>Sélection des éléments à exporter <em>(Bilans périodiques, positionnement sur le Socle de composantes, Bilan de fin de cycle,...)</em><br />
+			Certains éléments cochés/grisés doivent impérativement être présents <em>(d'où les champs cochés et grisés)</em>.</li>
+		</ol>
+		<p>Si lors de l'export des erreurs sont signalées, vous devrez compléter/corriger dans Gepi <em>(nomenclatures ou modalités de matières manquantes, identifiants de professeurs manquants,...)</em></p>
+		<p>Si l'export produit est conforme, vous pourrez l'importer dans l'application LSUN.</p>
+	</div>
+	<h3>Prérequis</h3>
+	<div style='margin-left:3em;'>
+		<p>Les nomenclatures, identifiants,... doivent être à jour.<br />
+		S'il manque des éléments, les erreurs vous seront signalées et vous devrez corriger.</p>
+		<p>L'étape de définition des EPI nécessite <em title="Il est envisagé de permettre la création complète des EPI depuis la présente page, mais ce n'est pas encore réalisé/finalisé.">actuellement (*)</em> d'avoir <a href='../aid/index.php' target='_blank'>créé les AID</a> correspondants préalablement.<br />
+		Les AID peuvent être <a href='../aid/transfert_groupe_aid.php' target='_blank'>créés/migrés depuis des enseignements classiques</a>.<br />
+		Et dans la présente page, le lien est fait entre ces AID et les EPI que vous souhaitez exporter vers LSUN.</p>
+	</div>
+</div>
+
+<h2>Formulaires</h2>
+
 <form action="index.php" method="post" id="responsables">
-	<fieldset>
-		<legend title="Données saisies dans les paramètres des classes" >Responsables de l'établissement</legend>
+	<fieldset class='fieldset_opacite50'>
+		<legend class='fieldset_opacite50' title="Données saisies dans les paramètres des classes" >Responsables de l'établissement</legend>
 		<ul>
 <?php while ($responsable = $responsables->fetch_object()){ ?>
 		<li> 
@@ -161,8 +187,8 @@ $classes = getClasses();
 
 
 <form action="index.php" method="post" id="selectionClasse">
-	<fieldset>
-		<legend>Classes à exporter</legend>
+	<fieldset class='fieldset_opacite50'>
+		<legend class='fieldset_opacite50'>Classes à exporter</legend>
 		<div class="lsun3colonnes" >
 <?php 
 $toutesClasses = getClasses();
@@ -225,9 +251,12 @@ if ($cpt) {echo "			</div>\n";}
   </fieldset>
 </form>
 
+<!-- ======================================================================= -->
+<!-- Formulaire Parcours -->
+
 <form action="index.php" method="post" id="parcours">
-	<fieldset>
-		<legend title="Contient l’ensemble des informations relatives aux parcours éducatifs communs à une classe (contrainte d’unicité sur les combinaison de champs 'periodes', 'division' et 'Type de parcours').">
+	<fieldset class='fieldset_opacite50'>
+		<legend class='fieldset_opacite50' title="Contient l’ensemble des informations relatives aux parcours éducatifs communs à une classe (contrainte d’unicité sur les combinaison de champs 'periodes', 'division' et 'Type de parcours').">
 				Parcours communs
 	</legend>
 		<table>
@@ -344,275 +373,439 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 	</fieldset>
 </form>
 
+<style type='text/css'>
+	.table_no_border {
+		border:0px;
+	}
+	.table_no_border td {
+		border:0px;
+		vertical-align:top;
+		text-align:left;
+	}
+	.table_no_border th {
+		border:0px;
+		vertical-align:top;
+	}
+</style>
+
+<!-- ======================================================================= -->
+<!-- Formulaire EPI -->
 
 <form action="index.php" method="post" id="definitionEPI">
-	<fieldset>
-		<legend>EPIs</legend>
+	<fieldset class='fieldset_opacite50'>
+		<legend class='fieldset_opacite50'>EPIs</legend>
 		<div id="div_epi">
 			<p>Enseignements Pratiques Interdisciplinaires</p>
-<?php while ($epiCommun = $listeEPICommun->fetch_object()) { 
-	$tableauMatieresEPI = array();
-	$listeMatieresEPI=getMatieresEPICommun($epiCommun->id);
-	while ($matiereEPI = $listeMatieresEPI->fetch_object()) {
-		$tableauMatieresEPI[] = array('matiere'=>$matiereEPI->id_matiere, 'modalite'=>$matiereEPI->modalite);
+<?php
+	/*
+	// A quoi sert cette section?
+	$tableauClasses = array();
+	if (count($_SESSION['afficheClasse'])) {
+		foreach ($_SESSION['afficheClasse'] as $classeSelectionne) {
+			$tableauClasses[]=$classeSelectionne;
+		}
 	}
+	*/
+
+	$cpt_EPI_tmp=0;
+	while ($epiCommun = $listeEPICommun->fetch_object()) {
+		$cpt_EPI_tmp++;
+		$tableauMatieresEPI = array();
+		$listeMatieresEPI=getMatieresEPICommun($epiCommun->id);
+		while ($matiereEPI = $listeMatieresEPI->fetch_object()) {
+			$tableauMatieresEPI[] = array('matiere'=>$matiereEPI->id_matiere, 'modalite'=>$matiereEPI->modalite);
+		}
 ?>
-					<div class="lsun_cadre">
-				<div>Période de fin :
-						<input type="hidden" 
-							   name="modifieEpiId[<?php echo $epiCommun->id; ?>]" 
-							   value="<?php echo $epiCommun->id; ?>" />
-						<input type="hidden" 
-							   name="modifieEpiPeriode1[<?php echo $epiCommun->id; ?>]" 
-							   value="<?php echo $epiCommun->periode; ?>" />
-						<?php //echo $epiCommun->periode; ?>
-						
-						
-						<select name="modifieEpiPeriode[<?php echo $epiCommun->id; ?>]">
-							<option value=""></option>
-	<?php $periodes->data_seek(0);
-	while ($periode = $periodes->fetch_object()) { ?>
-							<option value="<?php echo $periode->num_periode; ?>"
-									<?php if ($periode->num_periode == $epiCommun->periode) {echo " selected ";} ?> >
-								<?php echo $periode->num_periode; ?>
-							</option>
-	<?php } ?>
-						</select>
-						
-						-
-						Division :
-						
-						<select name="modifieEpiClasse<?php echo $epiCommun->id; ?>[]" multiple title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque classe." >
-							<option value=""></option>
-<?php $classes->data_seek(0);
-while ($classe = $classes->fetch_object()) { ?>
-							<option value="<?php echo $classe->id; ?>"
-									<?php if (estClasseEPI($epiCommun->id,$classe->id)) {echo " selected "; } ?> >
-								<?php echo $classe->classe; ?> <?php echo $classe->nom_complet; ?>
-							</option>
-<?php } ?>
-						</select>
-						-
-						Thématique :
-						<select name="modifieEpiCode[<?php echo $epiCommun->id; ?>]">
-<?php foreach ($xml->{'thematiques-epis'}->{'thematique-epi'} as $thematiqueEpi) { ?>
-							<option value="<?php echo $thematiqueEpi['code'] ?>" 
-								<?php if($thematiqueEpi['code'] == $epiCommun->codeEPI){echo " selected ";} ?>
-									title="<?php echo $thematiqueEpi['libelle']; ?>" >
-								<?php //echo substr($epi['libelle'],0,40); ?>
-								<?php echo substr($thematiqueEpi['libelle'],0,40); ?>
-							</option>
-<?php } ?>
-						</select>
-						-
-						Intitulé&nbsp;:&nbsp;<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />
-				</div>
-
+			<div class="lsun_cadre fieldset_opacite50">
 				<div align='center'>
-					<table style='border:0px;'>
+					<input type="hidden" 
+						   name="modifieEpiId[<?php echo $epiCommun->id; ?>]" 
+						   value="<?php echo $epiCommun->id; ?>" />
+
+					<table class='table_no_border'>
 						<tr>
-							<?php
-							if(count($tableauMatieresEPI)==0) {
-									echo "
-								<th style='vertical-align:top; border:0px;'>
-						Disciplines&nbsp;:&nbsp;
-								</th>
+							<th>Thématique</th>
+							<th>Intitulé</th>
+							<th>Description</th>
+						</tr>
+						<tr>
+							<td>
+								<select name="modifieEpiCode[<?php echo $epiCommun->id; ?>]">
+<?php foreach ($xml->{'thematiques-epis'}->{'thematique-epi'} as $thematiqueEpi) { ?>
+									<option value="<?php echo $thematiqueEpi['code'] ?>" 
+										<?php if($thematiqueEpi['code'] == $epiCommun->codeEPI){echo " selected ";} ?>
+											title="<?php echo $thematiqueEpi['libelle']; ?>" >
+										<?php //echo substr($epi['libelle'],0,40); ?>
+										<?php echo substr($thematiqueEpi['libelle'],0,40); ?>
+									</option>
+<?php } ?>
+								</select>
+							</td>
+							<td>
+								<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />
+							</td>
+							<td>
+								<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea>
+							</td>
+						</tr>
+					</table>
 
-								<td style='vertical-align:top; border:0px;' title=\"Associer des disciplines\">
+					<table class='table_no_border'>
+						<tr>
+							<th colspan='2'>Divisions</th>
+							<th>Période de fin</th>
+						</tr>
+						<tr>
+							<td>
+<?php
+		$classes->data_seek(0);
+		$cpt_classe=0;
+		$tab_classes_non_associees=array();
+		while ($classe = $classes->fetch_object()) { 
+			if(estClasseEPI($epiCommun->id,$classe->id)) {
+				echo "
+									<input type='checkbox' name='modifieEpiClasse".$epiCommun->id."[]' id='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."' value='".$classe->id."' checked /><label for=''>".$classe->classe." <em>(".$classe->classe.")</em></label><br />";
+			}
+			else {
+				$tab_classes_non_associees[]=$classe->id;
+			}
+			$cpt_classe++;
+		}
+?>
+							</td>
+
+<?php
+
+		if(count($tab_classes_non_associees)==0) {
+			echo "
+			<td style='color:red'>Aucune classe ne reste à associer</td>";
+		}
+		else {
+?>
+							<td onmouseover="document.getElementById('span_ajout_modifieEpiClasse_<?php echo $epiCommun->id;?>').style.display=''" 
+								onmouseout="affiche_masque_select_EPI('modifieEpiClasse', <?php echo $epiCommun->id;?>)">
+								<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
+								Ajouter des divisions<br />
+<!--
+								<span id='span_ajout_modifieEpiClasse_<?php echo $cpt_EPI_tmp;?>'>
+-->
+<?php
+$tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
+?>
+								<span id='span_ajout_modifieEpiClasse_<?php echo $epiCommun->id;?>'>
+								<select name="modifieEpiClasse<?php echo $epiCommun->id; ?>[]" 
+										id="modifieEpiClasse<?php echo $epiCommun->id; ?>"
+										multiple 
+										title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque classe.">
+<?php
+			$classes->data_seek(0);
+			while ($classe = $classes->fetch_object()) { 
+				if (!estClasseEPI($epiCommun->id,$classe->id)) {
+?>
+									<option value="<?php echo $classe->id; ?>">
+										<?php echo $classe->classe; ?> <?php echo $classe->nom_complet; ?>
+									</option>
+<?php
+				}
+			}
+?>
+								</select>
+								</span>
+							</td>
+<?php
+		}
+?>
+							<td>
+								<input type="hidden" 
+									   name="modifieEpiPeriode1[<?php echo $epiCommun->id; ?>]" 
+									   value="<?php echo $epiCommun->periode; ?>" />
+								<?php //echo $epiCommun->periode; ?>
+
+								<select name="modifieEpiPeriode[<?php echo $epiCommun->id; ?>]">
+									<option value=""></option>
+<?php
+		$periodes->data_seek(0);
+		while ($periode = $periodes->fetch_object()) {
+?>
+									<option value="<?php echo $periode->num_periode; ?>"
+											<?php if ($periode->num_periode == $epiCommun->periode) {echo " selected ";} ?> >
+										<?php echo $periode->num_periode; ?>
+									</option>
+<?php
+		}
+?>
+								</select>
+							</td>
+						</tr>
+
+
+					</table>
+
+					<table class='table_no_border'>
+						<tr>
+<?php
+		if(count($tableauMatieresEPI)==0) {
+			// Aucune matière n'est encore associée !
+			echo "
+							<th style='vertical-align:top; border:0px;'>
+								Disciplines&nbsp;:&nbsp;
+							</th>
+
+							<td style='vertical-align:top; border:0px;' title=\"Associer des disciplines\">
 								Associer des disciplines&nbsp;:<br />
-							<select multiple name=\"modifieEpiMatiere".$epiCommun->id."[]\" title=\"Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque matière.\">";
-									$listeMatieres->data_seek(0);
-									while ($matiere = $listeMatieres->fetch_object()) { 
-										echo "
+								<select multiple 
+										size='6' 
+										name=\"modifieEpiMatiere".$epiCommun->id."[]\" 
+										id=\"modifieEpiMatiere".$epiCommun->id."\" 
+										title=\"Pour sélectionner plusieurs matières, effectuer CTRL+Clic sur chaque matière.\">";
+			$listeMatieres->data_seek(0);
+			while ($matiere = $listeMatieres->fetch_object()) { 
+				echo "
 								<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">".$matiere->matiere." (".$matiere->nom_complet;
-										if ($matiere->code_modalite_elect == 'O') {
-											echo '- option obligatoire';
-										} elseif ($matiere->code_modalite_elect == 'F') {
-											echo '- option facultative';
-										} elseif ($matiere->code_modalite_elect == 'X') {
-											echo '- mesure spécifique';
-										}
-										elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
-										elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
-										elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
-										echo ")</option>";
-									}
-									echo "
-							</select>
-								</td>";
-
-								echo "</tr>";
-
-							}
-							else {
-								echo "
+				if ($matiere->code_modalite_elect == 'O') {
+					echo '- option obligatoire';
+				} elseif ($matiere->code_modalite_elect == 'F') {
+					echo '- option facultative';
+				} elseif ($matiere->code_modalite_elect == 'X') {
+					echo '- mesure spécifique';
+				}
+				elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
+				elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
+				elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
+				echo ")</option>";
+			}
+			echo "
+								</select>
+							</td>
+						</tr>";
+		}
+		else {
+			// Il y a déjà des matières associées
+			echo "
 							<th style='vertical-align:top; border:0px;' rowspan='".count($tableauMatieresEPI)."'>
-					Disciplines&nbsp;:&nbsp;
+								Disciplines&nbsp;:&nbsp;
 							</th>";
-								$cpt_row=0;
-								foreach ($tableauMatieresEPI as $matEPI) {
-									if($cpt_row>0) {
-										echo "<tr>";
-									}
-									echo "
+			$cpt_row=0;
+			foreach ($tableauMatieresEPI as $matEPI) {
+				if($cpt_row>0) {
+					echo "
+						<tr>";
+				}
+
+				// Matières déjà associées:
+				echo "
 								<td style='border:0px;'>
 									<input type='checkbox' name='modifieEpiMatiere".$epiCommun->id."[]' id='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."' value=\"".$matEPI['matiere'].$matEPI['modalite']."\" checked />
 								</td>
-								<td style='text-align:left; border:0px;'><label for='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."'>";
-		echo $matEPI['matiere']." (";
-		echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
-		echo "<span style='color:grey'>";
-		if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } 
-		elseif ($matEPI['modalite'] =="F") {echo " option facultative";} 
-		elseif ($matEPI['modalite'] =="X") {echo " mesure spécifique";}
-		elseif ($matEPI['modalite'] =="N") {echo " obligatoire ou facultatif";}
-		elseif ($matEPI['modalite'] =="L") {echo " ajout académique";}
-		elseif ($matEPI['modalite'] =="R") {echo " enseignement religieux";}
-		echo "</span>";
-		//echo " - ";
-		echo ")</label><br />";
-								echo "</td>";
-
-								if($cpt_row==0) {
-									echo "
-								<td style='vertical-align:top; border:0px;' title=\"Associer d'autres disciplines\" rowspan='".count($tableauMatieresEPI)."'>
-								Associer d'autres disciplines&nbsp;:<br />
-							<select multiple name=\"modifieEpiMatiere".$epiCommun->id."[]\" title=\"Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque matière.\">";
-									$listeMatieres->data_seek(0);
-									while ($matiere = $listeMatieres->fetch_object()) { 
-										if(!in_array(array('matiere'=>$matiere->matiere,'modalite'=>$matiere->code_modalite_elect), $tableauMatieresEPI)) {
-											echo "
-								<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">".$matiere->matiere." (".$matiere->nom_complet;
-											if ($matiere->code_modalite_elect == 'O') {
-												echo '- option obligatoire';
-											} elseif ($matiere->code_modalite_elect == 'F') {
-												echo '- option facultative';
-											} elseif ($matiere->code_modalite_elect == 'X') {
-												echo '- mesure spécifique';
-											}
-											elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
-											elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
-											elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
-											echo ")</option>";
-										}
-									}
-									echo "
-							</select>
+								<td style='text-align:left; border:0px;'>
+									<label for='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."'>";
+				echo $matEPI['matiere']." (";
+				echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
+				echo "<span style='color:grey'>";
+				if ($matEPI['modalite'] =="O") { echo " option obligatoire"; } 
+				elseif ($matEPI['modalite'] =="F") {echo " option facultative";} 
+				elseif ($matEPI['modalite'] =="X") {echo " mesure spécifique";}
+				elseif ($matEPI['modalite'] =="N") {echo " obligatoire ou facultatif";}
+				elseif ($matEPI['modalite'] =="L") {echo " ajout académique";}
+				elseif ($matEPI['modalite'] =="R") {echo " enseignement religieux";}
+				echo "</span>";
+				echo ")</label><br />";
+				echo "
 								</td>";
+
+				// Ajouter des matières
+				if($cpt_row==0) {
+
+					$tab_matieres_non_associees=array();
+					$listeMatieres->data_seek(0);
+					while ($matiere = $listeMatieres->fetch_assoc()) { 
+						if(!in_array(array('matiere'=>$matiere['matiere'],'modalite'=>$matiere['code_modalite_elect']), $tableauMatieresEPI)) {
+							$tab_matieres_non_associees[]=$matiere;
+						}
+					}
+
+					if(count($tab_matieres_non_associees)==0) {
+						echo "
+						<td style='color:red'>Aucune matière ne reste à associer</td>";
+					}
+					else {
+
+						$tab_span_champs_select[]='span_ajout_modifieEpiMatiere_'.$epiCommun->id;
+						echo "
+								<td style='vertical-align:top; border:0px;' 
+									title=\"Associer d'autres disciplines\" 
+									rowspan='".count($tableauMatieresEPI)."' 
+									onmouseover=\"document.getElementById('span_ajout_modifieEpiMatiere_".$epiCommun->id."').style.display=''\" 
+									onmouseout=\"affiche_masque_select_EPI('modifieEpiMatiere', ".$epiCommun->id.")\">
+
+									<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
+									Associer d'autres disciplines<br />
+									<span id='span_ajout_modifieEpiMatiere_".$epiCommun->id."'>
+									<select multiple 
+											size='6' 
+											name=\"modifieEpiMatiere".$epiCommun->id."[]\" 
+											id=\"modifieEpiMatiere".$epiCommun->id."\" 
+											title=\"Pour sélectionner plusieurs matières, effectuer CTRL+Clic sur chaque matière.\">";
+						$listeMatieres->data_seek(0);
+						while ($matiere = $listeMatieres->fetch_object()) { 
+							if(!in_array(array('matiere'=>$matiere->matiere,'modalite'=>$matiere->code_modalite_elect), $tableauMatieresEPI)) {
+								echo "
+										<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">".$matiere->matiere." (".$matiere->nom_complet;
+								if ($matiere->code_modalite_elect == 'O') {
+									echo '- option obligatoire';
+								} elseif ($matiere->code_modalite_elect == 'F') {
+									echo '- option facultative';
+								} elseif ($matiere->code_modalite_elect == 'X') {
+									echo '- mesure spécifique';
 								}
-								echo "</tr>";
-								$cpt_row++;
+								elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
+								elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
+								elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
+								echo ")</option>";
+							}
+						}
+					}
+					echo "
+									</select>
+									</span>
+								</td>";
+				}
+				echo "
+							</tr>";
+				$cpt_row++;
 			}
 		}
-
-		?>
+?>
 					</table>
 
-						-
-						Description&nbsp;:&nbsp;<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea> 
-				</div>
-						<div>
-						Liaison :
-						<?php // echo estCoursEpi($epiCommun->id ,"aid-10"); ?>
-<?php 
-	$listeLiaisons = getLiaisonEpiEnseignementByIdEpi($epiCommun->id); 
-	while ($liaison = $listeLiaisons->fetch_object()) { ?>
 <?php
-		if ($liaison->aid) {
-			echo "AID - ".getAID($liaison->id_enseignements)->nom;
-			
-		} 
-		/*else {
-			$enseignements = getCoursById($liaison->id_enseignements);
-			$enseignements->data_seek(0);
-			$lastClasse = NULL;
-			while ($enseignement = $enseignements->fetch_object()) {
-				if ($lastClasse != $enseignement->id_groupe) {
-					echo $enseignement->id_matiere." → ";
-				} else {
-					echo " - ";
+		$listeLiaisons = getLiaisonEpiEnseignementByIdEpi($epiCommun->id); 
+?>
+					<table class='table_no_border'>
+<?php
+		if(mysqli_num_rows($listeLiaisons)==0) {
+			// Aucune liaison AID à ce stade
+			echo "
+						<tr>
+							<th>Liaisons&nbsp;:</th>
+							<td>
+								Associer des EPI<br />
+								<select multiple 
+										size='6' 
+										name=\"modifieEpiLiaison".$epiCommun->id."[]\" 
+										id=\"modifieEpiLiaison".$epiCommun->id."\" 
+										title=\"Pour sélectionner plusieurs AID, effectuer CTRL+Clic sur chaque AID à associer à cet EPI.\">
+									<option value=\"\"></option>";
+
+							$listeAids = getEpiAid(); 
+							while ($aid = $listeAids->fetch_object()) {
+								if(!estCoursEpi($epiCommun->id ,"aid-".$aid->id_enseignement)) {
+									echo "
+									<option value=\"aid-".$aid->id_enseignement."\">aid-".$aid->description."</option>";
+								}
+							}
+
+							echo "
+								</select>
+							</td>
+						</tr>";
+		}
+		else {
+			// Il y a déjà des liaisons AID
+			$chaine_rowspan="";
+			if(mysqli_num_rows($listeLiaisons)>1) {
+				$chaine_rowspan=" rowspan='".mysqli_num_rows($listeLiaisons)."'";
+			}
+			echo "
+						<tr>
+							<th".$chaine_rowspan.">Liaison&nbsp;:</th>";
+
+			$cpt_row=0;
+			while ($liaison = $listeLiaisons->fetch_object()) {
+				if ($liaison->aid) {
+					if($cpt_row>0) {
+						echo "
+						<tr>";
+					}
+					echo "
+							<td>
+								<input type='checkbox' name='modifieEpiLiaison".$epiCommun->id."[]' id='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."' value=\"aid-".$liaison->id_enseignements."\" checked />
+							</td>
+							<td>
+								<label for='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."'>AID - ".getAID($liaison->id_enseignements)->nom."</label>
+							</td>";
+
+					if($cpt_row==0) {
+						// Ajouter une liaison
+
+						$tab_aid_non_associes=array();
+						$listeAids = getEpiAid(); 
+						while ($aid = $listeAids->fetch_assoc()) {
+							if(!estCoursEpi($epiCommun->id ,"aid-".$aid['id_enseignement'])) {
+								$tab_aid_non_associes[]=$aid;
+							}
+						}
+
+						if(count($tab_aid_non_associes)==0) {
+							echo "
+							<td style='color:red'>Aucun AID restant à associer</td>";
+						}
+						else {
+							$tab_span_champs_select[]='span_ajout_modifieEpiLiaison_'.$epiCommun->id;
+							echo "
+							<td ".$chaine_rowspan." 
+								onmouseover=\"document.getElementById('span_ajout_modifieEpiLiaison_".$epiCommun->id."').style.display=''\" 
+								onmouseout=\"affiche_masque_select_EPI('modifieEpiLiaison', ".$epiCommun->id.")\">
+								<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
+								Associer d'autres EPI<br />
+								<span id='span_ajout_modifieEpiLiaison_".$epiCommun->id."'>
+									<select multiple 
+											size='6' 
+											name=\"modifieEpiLiaison".$epiCommun->id."[]\" 
+											id=\"modifieEpiLiaison".$epiCommun->id."\" 
+											title=\"Pour sélectionner plusieurs AID, effectuer CTRL+Clic sur chaque AID à associer à cet EPI.\">
+										<option value=\"\"></option>";
+
+							$listeAids = getEpiAid(); 
+							while ($aid = $listeAids->fetch_object()) {
+								if(!estCoursEpi($epiCommun->id ,"aid-".$aid->id_enseignement)) {
+									echo "
+										<option value=\"aid-".$aid->id_enseignement."\">aid-".$aid->description."</option>";
+								}
+							}
+
+							echo "
+									</select>
+								</span>
+							</td>";
+						}
+					}
+					echo "
+						</tr>";
+					$cpt_row++;
 				}
-				$lastClasse = $enseignement->id_groupe;
-				echo $enseignement->classe;
-			
-				
 			}
 		}
-		 * 
-		 */
 ?>
-						
-<?php } 
-?>	
-						
+					</table>
+
+					<!-- Validation des modifications de cet EPI -->
+
+					<div>
+							<button type="submit" name="supprimeEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer cet EPI</button>
+							<button type="submit" name="modifieEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/enabled.png' />Modifier cet EPI</button>
+							<button type="submit" name="creeAidEpi" value="<?php echo $epiCommun->id; ?>" disabled hidden><img src='../images/icons/copy-16.png' /> Créer un AID pour cet EPI</button>
+					</div>
+				</div>
+			</div>
 <?php
-$tableauClasses = array();
-
-if (count($_SESSION['afficheClasse'])) {
-	foreach ($_SESSION['afficheClasse'] as $classeSelectionne) {
-		$tableauClasses[]=$classeSelectionne;
 	}
-}
-
 ?>
-						<select multiple  name="modifieEpiLiaison<?php echo $epiCommun->id; ?>[]" title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque AID à associer à cet EPI." >
-							<option value=""></option>
-<?php 
-$listeAids = getEpiAid(); 
-while ($aid = $listeAids->fetch_object()) {
-?>
-							<option value="aid-<?php echo $aid->id_enseignement; ?>" <?php 
-	if(estCoursEpi($epiCommun->id ,"aid-".$aid->id_enseignement)) {echo 'selected';}
-?> >
-								aid
-								-
-								<?php echo $aid->description; ?>
-							</option>
-<?php } ?>
-<?php 
-//$listeCours = getEpiCours();
-$listeCours = getEpiAid();
 
-$lastCours = NULL;
-while ($cours = $listeCours->fetch_object()) {
-//var_dump($cours);
-	
-	if($cours->id_groupe == $lastCours) {
-		echo ' - '.$cours->id_classe;
-		 continue;
-	} else if ($lastCours) {
-		echo '</option>';
-	}
-	$lastCours = $cours->id_groupe;
-?>
-							<option value="cours-<?php echo $cours->id_groupe; ?>" <?php
-	if(estCoursEpi($epiCommun->id ,"cours-".$cours->id_groupe)) {echo 'selected';}
-									?> >
-								cours
-								-
-								<?php echo $cours->id_matiere; ?> <?php echo $cours->classe; ?>
- <?php } ?>
-							</option>
-						</select>
-						
-<?php 
-if (isset($cours)) {
-	estCoursEpi($epiCommun->id ,"cours-".$cours->id_groupe);
-}
+			<!-- Nouvel EPI -->
 
-
-?>
-				</div>
-				<div>
-						<button type="submit" name="supprimeEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer cet EPI</button>
-						<button type="submit" name="modifieEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/enabled.png' />Modifier cet EPI</button>
-						<button type="submit" name="creeAidEpi" value="<?php echo $epiCommun->id; ?>" disabled hidden><img src='../images/icons/copy-16.png' /> Créer un AID pour cet EPI</button>
-				</div>
-				</div>
-<?php } ?>
-			
-			
-			<div class="lsun_cadre">
+			<div class="lsun_cadre fieldset_opacite50">
+				<div style='float:left; width:5em; font-weight:bold;'>Nouvel EPI</div>
 				<div>
 					<p>
 						Période de fin :
@@ -625,7 +818,7 @@ if (isset($cours)) {
 						</select>
 						
 						Division :
-						<select name="newEpiClasse[]" multiple title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque classe.">
+						<select name="newEpiClasse[]" multiple size='6' title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque classe.">
 							<option value=""></option>
 <?php $classes->data_seek(0);
 while ($classe = $classes->fetch_object()) { ?>
@@ -649,7 +842,7 @@ while ($classe = $classes->fetch_object()) { ?>
 					</p>
 					<p>
 						Disciplines :
-						<select multiple name="newEpiMatiere[]" size="8" title="Pour sélectionner plusieurs classes, effectuer CTRL+Clic sur chaque matière.">
+						<select multiple size='6' name="newEpiMatiere[]" size="8" title="Pour sélectionner plusieurs matières, effectuer CTRL+Clic sur chaque matière.">
 <?php $listeMatieres->data_seek(0);
  while ($matiere = $listeMatieres->fetch_object()) { ?>
 							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
@@ -683,11 +876,51 @@ if ($matiere->code_modalite_elect == 'O') {
 	</fieldset>
 </form>
 
+<script type='text/javascript'>
+	/*
+	for(i=0;i<=<?php echo $cpt_EPI_tmp;?>;i++) {
+		if(document.getElementById("span_ajout_modifieEpiClasse_"+i)) {
+			document.getElementById("span_ajout_modifieEpiClasse_"+i).style.display='none';
+		}
+		if(document.getElementById("span_ajout_modifieEpiMatiere_"+i)) {
+			document.getElementById("span_ajout_modifieEpiMatiere_"+i).style.display='none';
+		}
+		if(document.getElementById("span_ajout_modifieEpiLiaison_"+i)) {
+			document.getElementById("span_ajout_modifieEpiLiaison_"+i).style.display='none';
+		}
+	}
+	*/
 
+	function affiche_masque_select_EPI(prefixe_champ, idEPI) {
+		//if(document.getElementById(prefixe_champ+'_'+idEPI).selectedIndex) {
+		//alert(document.getElementById(prefixe_champ+idEPI).selectedIndex);
+
+		if(document.getElementById(prefixe_champ+idEPI).selectedIndex=='-1') {
+		/*
+			alert('Selection non faite');
+		}
+		else {
+			alert('Selection faite');
+		*/
+			document.getElementById("span_ajout_"+prefixe_champ+"_"+idEPI).style.display='none';
+		}
+	}
+
+<?php
+	//$tab_span_champs_select
+	for($loop=0;$loop<count($tab_span_champs_select);$loop++) {
+		echo "
+	document.getElementById(\"".$tab_span_champs_select[$loop]."\").style.display='none';";
+	}
+?>
+</script>
+
+<!-- ======================================================================= -->
+<!-- Formulaire AP -->
 
 <form action="index.php" method="post" id="definitionAP">
-	<fieldset>
-		<legend>AP</legend>		
+	<fieldset class='fieldset_opacite50'>
+		<legend class='fieldset_opacite50'>AP</legend>
 		<div id="div_ap">
 			<p>Accompagnements personnalisés</p>
 			
@@ -696,7 +929,7 @@ $listeAPCommun->data_seek(0);
 $cpt2 = 0;
 while ($ap = $listeAPCommun->fetch_object()) { ?>
 			
-			<div class="lsun_cadre">
+			<div class="lsun_cadre fieldset_opacite50">
 				<!-- AP <?php //echo $ap->id; ?> -->
 				Intitulé : 
 				<input type="text" name="intituleAp[<?php echo $ap->id; ?>]" value="<?php echo $ap->intituleAP; ?>" />
@@ -742,7 +975,7 @@ $tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
 } ?>
 					-
 				</label>
-				<select multiple name="ApDisciplines<?php echo $ap->id; ?>[]">
+				<select multiple size='6' name="ApDisciplines<?php echo $ap->id; ?>[]">
 <?php $listeMatieres->data_seek(0);
 while ($matiere = $listeMatieres->fetch_object()) { ?>
 					<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>"
@@ -773,7 +1006,7 @@ echo '- option facultative';
 	$cpt2 ++;
 }  ?>	
 			
-			<div class="lsun_cadre">
+			<div class="lsun_cadre fieldset_opacite50">
 				<div>
 					<p>
 						<label for="newApIntituleAP">intitulé :</label>
@@ -783,7 +1016,7 @@ echo '- option facultative';
 						<textarea rows="4" cols="50" id="newApDescription" name="newApDescription" /></textarea> 
 						-
 						<label for="newApDisciplines">Discipline(s) de référence</label>
-						<select multiple name="newApDisciplines[]" size="8">
+						<select multiple size='6' name="newApDisciplines[]" size="8">
 <?php $listeMatieres->data_seek(0);
  while ($matiere = $listeMatieres->fetch_object()) { ?>
 							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
@@ -824,11 +1057,12 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 	</fieldset>
 </form>
 
+<!-- ======================================================================= -->
+<!-- Formulaire Export des données -->
 
-
-<form action="index.php" method="post" id="definitionAP">
-	<fieldset>
-		<legend>Export des données</legend>
+<form action="index.php" method="post" id="exportDonnees">
+	<fieldset class='fieldset_opacite50'>
+		<legend class='fieldset_opacite50'>Export des données</legend>
 		<div class="lsun3colonnes">
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
@@ -909,7 +1143,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			</div>
 		</div>
 		
-		<p class="lsun_cadre" >
+		<p class="lsun_cadre fieldset_opacite50" >
 			<a href="lib/creeXML.php" target="exportLSUN.xml" title="Affiche le fichier dans un nouvel onglet en interceptant les erreurs" >Afficher l'export</a>
 		</p>
 		<p class="center">
@@ -917,4 +1151,5 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 		</p>
 	</fieldset>
 </form>
+
 
