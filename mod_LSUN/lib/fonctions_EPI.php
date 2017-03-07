@@ -150,7 +150,7 @@ function getEPIparClasse($classe = NULL) {
  */
 function getMatieresEPICommun($idEPI) {
 	global $mysqli;
-	$sqlGetMatieresEpi = "SELECT id_matiere, modalite FROM lsun_j_epi_matieres WHERE id_epi = '$idEPI' ";
+	$sqlGetMatieresEpi = "SELECT id_matiere, modalite FROM lsun_j_epi_matieres WHERE id_epi = '$idEPI' ORDER BY id_matiere;";
 	//echo $sqlGetMatieresEpi;
 	$resultchargeDB = $mysqli->query($sqlGetMatieresEpi);
 	return $resultchargeDB;
