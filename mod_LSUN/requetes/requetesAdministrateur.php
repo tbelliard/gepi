@@ -138,17 +138,25 @@ if ($modifieEPI) {
 	
 	if ($listeModifieEpiLiaison) {
 		foreach ($listeModifieEpiLiaison as $lien) {
+//echo "<p>\$lien=$lien</p>";
 			$tableauModifieEpiLiaison = explode('-', $lien);
 			if ($tableauModifieEpiLiaison[0] == "aid") {
 				$aid = 1;
 			} else {
 				$aid = 0;
 			}
-			$id_enseignement = $tableauModifieEpiLiaison[1];
-			$id_epi = $modifieEPI;
-			//$modifieEpiLiaison[][num] = $tableauModifieEpiLiaison[1];
-			//echo $id_enseignement."<br>";
-			lieEpiCours($id_epi , $id_enseignement , $aid);
+/*
+echo "<pre>";
+print_r($tableauModifieEpiLiaison);
+echo "</pre>";
+*/
+			if(isset($tableauModifieEpiLiaison[1])) {
+				$id_enseignement = $tableauModifieEpiLiaison[1];
+				$id_epi = $modifieEPI;
+				//$modifieEpiLiaison[][num] = $tableauModifieEpiLiaison[1];
+				//echo $id_enseignement."<br>";
+				lieEpiCours($id_epi , $id_enseignement , $aid);
+			}
 		}
 	}
 }
