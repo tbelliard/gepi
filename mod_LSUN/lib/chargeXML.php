@@ -329,7 +329,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					while ($ensModalite = $modaliteEns->fetch_object()) {
 						$noeudProf = $xml->createElement('enseignant-discipline');
 						$attsMat =  $xml->createAttribute('discipline-ref');
-						$matiere = getMatiereOnMatiere($ensModalite->matiere);
+						$matiere = getMatiereOnMatiere($ensModalite->id_matiere);
 						$attsMat->value = 'DI_'.$matiere->code_matiere.$ensModalite->modalite;
 						$noeudProf->appendChild($attsMat);
 						$prof = substr(getUtilisateur($ensModalite->login)->numind,1);
