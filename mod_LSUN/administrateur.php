@@ -1,6 +1,4 @@
 <?php
-
-
 /*
 *
 * Copyright 2016 Régis Bouguin
@@ -22,7 +20,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-debug_var();
+//debug_var();
 
 $selectionClasse = $_SESSION['afficheClasse'];
 
@@ -486,7 +484,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 		else {
 ?>
 							<td onmouseover="document.getElementById('span_ajout_modifieEpiClasse_<?php echo $epiCommun->id;?>').style.display=''" 
-								onmouseout="affiche_masque_select_EPI('modifieEpiClasse', <?php echo $epiCommun->id;?>)">
+								onmouseout="affiche_masque_select_EPI_AP_Parcours('modifieEpiClasse', <?php echo $epiCommun->id;?>)">
 <?php
 		if($cpt_classe_associees==0) {
 			echo "
@@ -665,7 +663,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 									title=\"Associer d'autres disciplines\" 
 									rowspan='".count($tableauMatieresEPI)."' 
 									onmouseover=\"document.getElementById('span_ajout_modifieEpiMatiere_".$epiCommun->id."').style.display=''\" 
-									onmouseout=\"affiche_masque_select_EPI('modifieEpiMatiere', ".$epiCommun->id.")\">
+									onmouseout=\"affiche_masque_select_EPI_AP_Parcours('modifieEpiMatiere', ".$epiCommun->id.")\">
 
 									<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
 									Associer d'autres disciplines<br />
@@ -797,7 +795,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 							echo "
 							<td ".$chaine_rowspan." 
 								onmouseover=\"document.getElementById('span_ajout_modifieEpiLiaison_".$epiCommun->id."').style.display=''\" 
-								onmouseout=\"affiche_masque_select_EPI('modifieEpiLiaison', ".$epiCommun->id.")\">
+								onmouseout=\"affiche_masque_select_EPI_AP_Parcours('modifieEpiLiaison', ".$epiCommun->id.")\">
 								<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
 								Associer d'autres AID à l'EPI<br />
 								<span id='span_ajout_modifieEpiLiaison_".$epiCommun->id."'>
@@ -930,45 +928,6 @@ while ($classe = $classes->fetch_object()) { ?>
 	</fieldset>
 </form>
 
-<script type='text/javascript'>
-	/*
-	for(i=0;i<=<?php echo $cpt_EPI_tmp;?>;i++) {
-		if(document.getElementById("span_ajout_modifieEpiClasse_"+i)) {
-			document.getElementById("span_ajout_modifieEpiClasse_"+i).style.display='none';
-		}
-		if(document.getElementById("span_ajout_modifieEpiMatiere_"+i)) {
-			document.getElementById("span_ajout_modifieEpiMatiere_"+i).style.display='none';
-		}
-		if(document.getElementById("span_ajout_modifieEpiLiaison_"+i)) {
-			document.getElementById("span_ajout_modifieEpiLiaison_"+i).style.display='none';
-		}
-	}
-	*/
-
-	function affiche_masque_select_EPI(prefixe_champ, idEPI) {
-		//if(document.getElementById(prefixe_champ+'_'+idEPI).selectedIndex) {
-		//alert(document.getElementById(prefixe_champ+idEPI).selectedIndex);
-
-		if(document.getElementById(prefixe_champ+idEPI).selectedIndex=='-1') {
-		/*
-			alert('Selection non faite');
-		}
-		else {
-			alert('Selection faite');
-		*/
-			document.getElementById("span_ajout_"+prefixe_champ+"_"+idEPI).style.display='none';
-		}
-	}
-
-<?php
-	//$tab_span_champs_select
-	for($loop=0;$loop<count($tab_span_champs_select);$loop++) {
-		echo "
-	document.getElementById(\"".$tab_span_champs_select[$loop]."\").style.display='none';";
-	}
-?>
-</script>
-
 <!-- ======================================================================= -->
 <!-- Formulaire AP -->
 
@@ -979,48 +938,60 @@ while ($classe = $classes->fetch_object()) { ?>
 			<p>Accompagnements personnalisés</p>
 			
 <?php
-$listeAPCommun->data_seek(0);
-$cpt2 = 0;
-while ($ap = $listeAPCommun->fetch_object()) { ?>
+
+	// Les AP déjà définis
+
+	$listeAPCommun->data_seek(0);
+	$cpt2 = 0;
+	while ($ap = $listeAPCommun->fetch_object()) { ?>
 			
 			<div class="lsun_cadre fieldset_opacite50">
 				<!-- AP <?php //echo $ap->id; ?> -->
-				Intitulé : 
-				<input type="text" name="intituleAp[<?php echo $ap->id; ?>]" value="<?php echo $ap->intituleAP; ?>" />
-				-
-				
-				Description : 
-				<textarea rows="4" cols="50" id="ApDescription<?php echo $ap->id; ?>" name="ApDescription[<?php echo  $ap->id; ?>]" /><?php echo $ap->descriptionAP; ?></textarea> 				
-				-
-				
-				Liaison <?php 
-					$res_liaison=getAidConfig($ap->id_aid);
-					if(mysqli_num_rows($res_liaison)>0) {
-						echo $res_liaison->fetch_object()->nom;
-					}
-					else {
-						echo "<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune liaison AID n'est encore effectuée.</span><br />";
-					}
-				?>
-<?php $listeAidAp->data_seek(0); ?>
-				<select name="liaisonApAid[<?php echo $ap->id; ?>]">
+
+				<div style='float:left; width:50em; font-weight:bold; font-size:x-large; text-align:left; margin-left:1em;'><?php echo $ap->intituleAP;?></div>
+				<div align='center'>
+
+					<table class='table_no_border'>
+						<tr>
+							<th>Intitulé</th>
+							<th>Description</th>
+							<th>Liaison</th>
+						</tr>
+						<tr>
+							<td>
+								<input type="text" name="intituleAp[<?php echo $ap->id; ?>]" value="<?php echo $ap->intituleAP; ?>" />
+							</td>
+							<td>
+								<textarea rows="4" cols="50" id="ApDescription<?php echo $ap->id; ?>" name="ApDescription[<?php echo  $ap->id; ?>]" /><?php echo $ap->descriptionAP; ?></textarea>
+							</td>
+							<td>
 <?php 
-//var_dump($listeAidAp);
-$listeAidAp->data_seek(0);
-while ($liaison = $listeAidAp->fetch_object()) { ?>
-					<option value="<?php echo $liaison->indice_aid; ?>" 
-							 <?php if($liaison->indice_aid == $ap->id_aid) {echo 'selected'; } ?> >
-						<?php echo $liaison->groupe; ?>
-					</option>
-<?php } ?>
-				</select>
-<?php $listeAidAp->data_seek(0); ?>	
-				
-				<br />
-				
-				<label for="ApDisciplines<?php echo  $ap->id; ?>">
-					Discipline(s) de référence
+	$res_liaison=getAidConfig($ap->id_aid);
+	if(mysqli_num_rows($res_liaison)==0) {
+		echo "
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune liaison AID n'est encore effectuée.</span><br />Sélectionnez un AID et Enregistrez la modification&nbsp;:<br />";
+	}
+?>
+								<select name="liaisonApAid[<?php echo $ap->id; ?>]">
 <?php
+	$listeAidAp->data_seek(0);
+
+	while ($liaison = $listeAidAp->fetch_object()) {
+		$selected="";
+		if($liaison->indice_aid == $ap->id_aid) {$selected='selected';}
+		echo "
+									<option value=\"".$liaison->indice_aid."\"".$selected.">".$liaison->groupe."</option>";
+	}
+?>
+								</select>
+							</td>
+						</tr>
+					</table>
+
+<?php
+	$listeAidAp->data_seek(0);
+
+
 	$listeMatiereAP = disciplineAP($ap->id);
 	//echo "\$listeMatiereAP = disciplineAP(".$ap->id.")<br />";
 	$tableauMatiere=array();
@@ -1031,55 +1002,221 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 		echo "</pre>";
 		echo "getMatiereSurMEF(".$matiereAP->id_enseignements.")<br />";
 		*/
-		echo getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object()->nom_complet;
-
-		$tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
-		if ($matiereAP->modalite == 'O') {
-			echo ' - option obligatoire';
-		} elseif ($matiereAP->modalite == 'F') {
-			echo ' - option facultative';
-		} elseif ($m atiereAP->modalite == 'X') {
-			echo '- modalité X';
-		}
-		echo "<br />";
+		//$tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
+		$matiere_courante=getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object();
+		$tableauMatiere[] = $matiere_courante->matiere.$matiereAP->modalite;
 	}
+	/*
+	echo "<pre>";
+	print_r($tableauMatiere);
+	echo "</pre>";
+	*/
+
 ?>
-					-
-				</label>
-				<select multiple size='6' name="ApDisciplines<?php echo $ap->id; ?>[]">
+
+					<table class='table_no_border'>
+						<tr>
 <?php
-	$listeMatieres->data_seek(0);
-	while ($matiere = $listeMatieres->fetch_object()) {
-		if($matiere->code_modalite_elect=="") {
+		if(count($tableauMatiere)==0) {
+			// Aucune matière n'est encore associée !
 			echo "
-							<option value='' disabled title=\"Modalité non définie.\" style='color:orange'";
+							<th style='vertical-align:top; border:0px;'>
+								Disciplines de référence&nbsp;:&nbsp;
+							</th>
+
+							<td style='vertical-align:top; border:0px;' title=\"Associer des disciplines\">
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune discipline n'est encore associée.</span><br />
+								Associer des disciplines&nbsp;:<br />
+								<select multiple 
+										size='6' 
+										name=\"ApDisciplines".$ap->id."[]\" 
+										id=\"ApDisciplines".$ap->id."\" 
+										title=\"Pour sélectionner plusieurs matières, effectuer CTRL+Clic sur chaque matière.\">";
+			$listeMatieres->data_seek(0);
+			while ($matiere = $listeMatieres->fetch_object()) {
+				if($matiere->code_matiere=="") {
+					echo "
+							<option value='' disabled title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\" style='color:red'>";
+					echo $matiere->matiere." (".$matiere->nom_complet;
+					if ($matiere->code_modalite_elect == 'O') {
+						echo '- option obligatoire';
+					} elseif ($matiere->code_modalite_elect == 'F') {
+						echo '- option facultative';
+					} elseif ($matiere->code_modalite_elect == 'X') {
+						echo '- mesure spécifique';
+					}
+					elseif ($matiere->code_modalite_elect =="N") {echo " - obligatoire ou facultatif";}
+					elseif ($matiere->code_modalite_elect =="L") {echo " - ajout académique";}
+					elseif ($matiere->code_modalite_elect =="R") {echo " - enseignement religieux";}
+					echo ")</option>";
+				}
+				elseif($matiere->code_modalite_elect=="") {
+					echo "
+							<option value='' disabled title=\"Modalité non définie.\" style='color:orange'>";
+					echo $matiere->matiere." (".$matiere->nom_complet;
+					if ($matiere->code_modalite_elect == 'O') {
+						echo '- option obligatoire';
+					} elseif ($matiere->code_modalite_elect == 'F') {
+						echo '- option facultative';
+					} elseif ($matiere->code_modalite_elect == 'X') {
+						echo '- mesure spécifique';
+					}
+					elseif ($matiere->code_modalite_elect =="N") {echo " - obligatoire ou facultatif";}
+					elseif ($matiere->code_modalite_elect =="L") {echo " - ajout académique";}
+					elseif ($matiere->code_modalite_elect =="R") {echo " - enseignement religieux";}
+					echo ")</option>";
+				}
+				//elseif(!in_array($matiere->code_matiere.$matiere->code_modalite_elect ,$tableauMatiere)) {
+				elseif(!in_array($matiere->matiere.$matiere->code_modalite_elect ,$tableauMatiere)) {
+					echo "
+							<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">";
+					echo $matiere->matiere." (".$matiere->nom_complet;
+					if ($matiere->code_modalite_elect == 'O') {
+						echo '- option obligatoire';
+					} elseif ($matiere->code_modalite_elect == 'F') {
+						echo '- option facultative';
+					} elseif ($matiere->code_modalite_elect == 'X') {
+						echo '- mesure spécifique';
+					}
+					elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
+					elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
+					elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
+					echo ")</option>";
+				}
+			}
+
+			echo "
+								</select>
+							</td>
+						</tr>";
 		}
 		else {
-			$style_matiere="";
-			if($matiere->code_matiere=="") {
-				$style_matiere=" style='color:red' title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
-			}
-			echo "
-							<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere;
-		}
 
-		if (in_array($matiere->code_matiere.$matiere->code_modalite_elect, $tableauMatiere)) {
-			echo ' selected ';
-		}
-		echo ">";
-		echo $matiere->nom_complet;
-		if ($matiere->code_modalite_elect == 'O') {
-			echo '- option obligatoire';
-		} elseif ($matiere->code_modalite_elect == 'F') {
-			echo '- option facultative';
-		} elseif ($matiere->code_modalite_elect == 'X') {
-			echo '- modalité X';
+			// Il y a déjà des matières associées
+			echo "
+							<th style='vertical-align:top; border:0px;' rowspan='".count($tableauMatiere)."'>
+								Disciplines de référence&nbsp;:&nbsp;
+							</th>";
+			$cpt_row=0;
+			//$tableauMatiere=array();
+			$listeMatiereAP->data_seek(0);
+			while ($matiereAP = $listeMatiereAP->fetch_object()) {
+				if(($matiereAP->id_enseignements!="")&&($matiereAP->modalite!="")) {
+					if($cpt_row>0) {
+						echo "
+							<tr>";
+					}
+
+					// Matières déjà associées:
+					$matiere_courante=getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object();
+					echo "
+									<td style='border:0px;'>
+										<input type='checkbox' name='ApDisciplines".$ap->id."[]' id='ApDisciplines".$ap->id."_".$cpt_row."' value=\"".$matiere_courante->matiere.$matiereAP->modalite."\" checked />
+									</td>
+									<td style='text-align:left; border:0px;'>
+										<label for='ApDisciplines".$ap->id."_".$cpt_row."'>";
+					echo $matiere_courante->matiere." (";
+					echo $matiere_courante->nom_complet;
+					echo "<span style='color:grey'>";
+					if ($matiereAP->modalite =="O") { echo " option obligatoire"; } 
+					elseif ($matiereAP->modalite =="F") {echo " option facultative";} 
+					elseif ($matiereAP->modalite =="X") {echo " mesure spécifique";}
+					elseif ($matiereAP->modalite =="N") {echo " obligatoire ou facultatif";}
+					elseif ($matiereAP->modalite =="L") {echo " ajout académique";}
+					elseif ($matiereAP->modalite =="R") {echo " enseignement religieux";}
+					echo "</span>)</label>";
+					echo "<br />";
+					echo "
+									</td>";
+
+					// Ajouter des matières
+					if($cpt_row==0) {
+
+						$tab_span_champs_select[]='span_ajout_ApDisciplines_'.$ap->id;
+						echo "
+								<td style='vertical-align:top; border:0px;' 
+									title=\"Associer d'autres disciplines\" 
+									rowspan='".count($tableauMatiere)."' 
+									onmouseover=\"document.getElementById('span_ajout_ApDisciplines_".$ap->id."').style.display=''\" 
+									onmouseout=\"affiche_masque_select_EPI_AP_Parcours('ApDisciplines', ".$ap->id.")\">
+
+									<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
+									Associer d'autres disciplines<br />
+									<span id='span_ajout_ApDisciplines_".$ap->id."'>
+									<select multiple 
+											size='6' 
+											name=\"ApDisciplines".$ap->id."[]\" 
+											id=\"ApDisciplines".$ap->id."\" 
+											title=\"Pour sélectionner plusieurs matières, effectuer CTRL+Clic sur chaque matière.\">";
+						$listeMatieres->data_seek(0);
+						while ($matiere = $listeMatieres->fetch_object()) {
+							if($matiere->code_matiere=="") {
+								echo "
+										<option value='' disabled title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\" style='color:red'>";
+								echo $matiere->matiere." (".$matiere->nom_complet;
+								if ($matiere->code_modalite_elect == 'O') {
+									echo '- option obligatoire';
+								} elseif ($matiere->code_modalite_elect == 'F') {
+									echo '- option facultative';
+								} elseif ($matiere->code_modalite_elect == 'X') {
+									echo '- mesure spécifique';
+								}
+								elseif ($matiere->code_modalite_elect =="N") {echo " - obligatoire ou facultatif";}
+								elseif ($matiere->code_modalite_elect =="L") {echo " - ajout académique";}
+								elseif ($matiere->code_modalite_elect =="R") {echo " - enseignement religieux";}
+								echo ")</option>";
+							}
+							elseif($matiere->code_modalite_elect=="") {
+								echo "
+										<option value='' disabled title=\"Modalité non définie.\" style='color:orange'>";
+								echo $matiere->matiere." (".$matiere->nom_complet;
+								if ($matiere->code_modalite_elect == 'O') {
+									echo '- option obligatoire';
+								} elseif ($matiere->code_modalite_elect == 'F') {
+									echo '- option facultative';
+								} elseif ($matiere->code_modalite_elect == 'X') {
+									echo '- mesure spécifique';
+								}
+								elseif ($matiere->code_modalite_elect =="N") {echo " - obligatoire ou facultatif";}
+								elseif ($matiere->code_modalite_elect =="L") {echo " - ajout académique";}
+								elseif ($matiere->code_modalite_elect =="R") {echo " - enseignement religieux";}
+								echo ")</option>";
+							}
+							//elseif(!in_array($matiere->code_matiere.$matiere->code_modalite_elect ,$tableauMatiere)) {
+							elseif(!in_array($matiere->matiere.$matiere->code_modalite_elect ,$tableauMatiere)) {
+								echo "
+										<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">";
+								echo $matiere->matiere." (".$matiere->nom_complet;
+								if ($matiere->code_modalite_elect == 'O') {
+									echo '- option obligatoire';
+								} elseif ($matiere->code_modalite_elect == 'F') {
+									echo '- option facultative';
+								} elseif ($matiere->code_modalite_elect == 'X') {
+									echo '- mesure spécifique';
+								}
+								elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
+								elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
+								elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
+								//echo $matiere->matiere.$matiere->code_modalite_elect;
+								echo ")</option>";
+							}
+						}
+
+						echo "
+										</select>
+										</span>
+									</td>";
+					}
+					echo "
+								</tr>";
+					$cpt_row++;
+				}
+			}
+
 		}
 ?>
-					</option>
-<?php } ?>
-				</select>
-				
+						</table>
+
 				<p>
 					<button type="submit" name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer</button>
 					<button type="submit" name="modifierAp" value="<?php echo  $ap->id; ?>" id="modifierAp_<?php echo  $ap->id; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" ><img src='../images/enabled.png' /> Modifier</button>
@@ -1088,11 +1225,17 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</p>
 				
 			</div>
+			</div>
 <?php 
 	$cpt2 ++;
 }  ?>	
-			
+
+			<!-- Nouvel AP -->
 			<div class="lsun_cadre fieldset_opacite50">
+				<div style='float:left; width:5em; font-weight:bold;'>Nouvel AP</div>
+
+				<div align='center'>
+
 				<div>
 					<p>
 						<label for="newApIntituleAP">intitulé :</label>
@@ -1149,11 +1292,29 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					</p>
 					
 				</div>
+				</div>
 			</div>
 			
 		</div> 
 	</fieldset>
 </form>
+
+
+<script type='text/javascript'>
+	function affiche_masque_select_EPI_AP_Parcours(prefixe_champ, idEPI) {
+		if(document.getElementById(prefixe_champ+idEPI).selectedIndex=='-1') {
+			document.getElementById("span_ajout_"+prefixe_champ+"_"+idEPI).style.display='none';
+		}
+	}
+
+<?php
+	//$tab_span_champs_select
+	for($loop=0;$loop<count($tab_span_champs_select);$loop++) {
+		echo "
+	document.getElementById(\"".$tab_span_champs_select[$loop]."\").style.display='none';";
+	}
+?>
+</script>
 
 <!-- ======================================================================= -->
 <!-- Formulaire Export des données -->
