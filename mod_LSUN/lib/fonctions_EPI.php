@@ -52,6 +52,7 @@ function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $
 		$sqlCreeEpi .= $idEpi;
 		delMatiereEPI($idEpi);
 		delLienEPI($idEpi);
+		delClasseEPI($idEpi);
 	}
 	else {$sqlCreeEpi .= "NULL";}
 	
@@ -164,10 +165,10 @@ function getMatieresEPICommun($idEPI) {
  * @param type $EpiId
  */
 function supprimeEPI($EpiId) {
-	global $mysqli;	
+	global $mysqli;
 	delMatiereEPI($EpiId);
 	delClasseEPI($EpiId);
-	delClasseEPI($EpiId);
+	delLienEPI($EpiId);
 	//delLsun_j_epi_enseignements($EpiId);
 	//$sqlDelEpiEns = "DELETE FROM lsun_j_epi_enseignements WHERE id_epi = '$EpiId'; ";
 	//$mysqli->query($sqlDelEpiEns);
