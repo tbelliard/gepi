@@ -54,6 +54,23 @@ if ($creeFichier == 'y') {
 		saveSetting('LSU_traite_EPI', "n");
 	}
 	
+	if(filter_input(INPUT_POST, 'traiteAP')) {
+		saveSetting('LSU_traite_AP', filter_input(INPUT_POST, 'traiteAP'));
+	}	else {
+		saveSetting('LSU_traite_AP', "n");
+	}
+	
+	if (0 == count($selectionClasse)) {
+		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p>";
+	}	else {
+		saveSetting('LSU_commentaire_vie_sco', "n");
+	}
+	if(filter_input(INPUT_POST, 'traiteParent')) {
+		saveSetting('LSU_Donnees_responsables', filter_input(INPUT_POST, 'traiteParent'));
+	}	else {
+		saveSetting('LSU_Donnees_responsables',  "n");
+	}
+	
 	if(filter_input(INPUT_POST, 'traiteEpiElv')) {
 		saveSetting('LSU_traite_EPI_Elv', filter_input(INPUT_POST, 'traiteEPIElv'));
 	}	else {
@@ -77,7 +94,7 @@ if ($creeFichier == 'y') {
 	}	else {
 		saveSetting('LSU_Donnees_socle',  "n");
 	}
-
+	
 	if(filter_input(INPUT_POST, 'traiteBilanFinCycle')) {
 		saveSetting('LSU_Donnees_BilanFinCycle', filter_input(INPUT_POST, 'traiteBilanFinCycle'));
 	}	else {
@@ -99,7 +116,6 @@ if ($creeFichier == 'y') {
 	include_once 'creeFichier.php';
 
 }
-
 
 
 
@@ -508,6 +524,7 @@ while ($classe = $classes->fetch_object()) { ?>
 		?>
 					</table>
 
+
 						-
 						Description&nbsp;:&nbsp;<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea> 
 				</div>
@@ -841,6 +858,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y"
 							   
 							   <?php if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_Elv") != "n")) {echo ' checked '; }  ?> />
+							   
 						<label for="traiteEpiElv">données élèves des EPI</label>
 					</li>
 					<li>
@@ -862,7 +880,8 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteAP">accompagnements personnalisés (AP)</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y"      
+						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y"     
+							   
 							   <?php if ((getSettingValue("LSU_traite_AP") != "n") && (getSettingValue("LSU_traite_AP_Elv") != "n")) {echo ' checked '; }  ?>  />
 						<label for="traiteAPElv">données élèves des AP</label>
 					</li>
