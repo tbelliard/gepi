@@ -65,33 +65,44 @@ function saveAP($ApIntitule, $ApDisciplines, $ApDescription, $ApLiaisonAID, $id 
 		$sqlCreeAP .= "NULL";
 	}
 	$sqlCreeAP .= ", \"$ApIntitule\" , \"$ApDescription\") ON DUPLICATE KEY UPDATE intituleAP = \"$ApIntitule\" , descriptionAP = \"$ApDescription\" ";
-	//echo '<br>'.$sqlCreeAP.'<br>';
+	//echo '<br>'.$sqlCreeAP.';<br>';
 	$mysqli->query($sqlCreeAP);
 	//echo $id." → ";
 	//On récupère l'id'
 	if ($id == NULL) {
 		$sqlGetId = "SELECT id FROM lsun_ap_communs WHERE intituleAP = \"$ApIntitule\" AND descriptionAP = \"$ApDescription\" ";
-		//echo '<br>'.$sqlGetId.'<br>';
+		//echo '<br>'.$sqlGetId.';<br>';
 		$id = $mysqli->query($sqlGetId)->fetch_object()->id;
-	}	else {
+	}
+	else {
 		//On a un id, il faut supprimer les enregistrements de lsun_j_ap_matiere pour les recréer
 		$delMatiereAp = "DELETE FROM lsun_j_ap_matiere WHERE id_ap = $id";
+		//echo '<br>'.$delMatiereAp.';<br>';
 		$mysqli->query($delMatiereAp);
 	}
-	
+	//echo "AP: id=$id<br />";
+
 	// $ApDisciplines est un tableau
 	foreach ($ApDisciplines as $discipline) {
 		$code = substr($discipline,0,-1) ;
+		//echo "discipline=$discipline, code=$code<br />";
 		$matiere = getMatiereOnMatiere($code)->code_matiere;
 		$modalite = substr($discipline,-1) ;
+		//echo "modalite=$modalite<br />";
 		//echo $id." ".$matiere." ".$modalite."<br>";
-		$sqlMatiereAp = "INSERT INTO lsun_j_ap_matiere (id_enseignements, modalite ,id_ap) VALUES (\"$matiere\",\"$modalite\",\"$id\") ON DUPLICATE KEY UPDATE id_enseignements = \"$matiere\" ";
-		//echo '<br>'.$sqlMatiereAp.'<br>';
-		$mysqli->query($sqlMatiereAp);
+
+		if($matiere=="") {
+			echo "<p style='color:red'><strong>Erreur&nbsp;:</strong> Une matière n'a pas été enregistrée pour l'AP n°$id faute de code_matiere valide.</p>";
+		}
+		else {
+			$sqlMatiereAp = "INSERT INTO lsun_j_ap_matiere (id_enseignements, modalite ,id_ap) VALUES (\"$matiere\",\"$modalite\",\"$id\") ON DUPLICATE KEY UPDATE id_enseignements = \"$matiere\" ";
+			//echo '<br>'.$sqlMatiereAp.';<br>';
+			$mysqli->query($sqlMatiereAp);
+		}
 	}
 		
 	$sqlLiaisonApAid = "INSERT INTO lsun_j_ap_aid (id_aid, id_ap) VALUES (\"$ApLiaisonAID\",\"$id\") ON DUPLICATE KEY UPDATE id_aid = \"$ApLiaisonAID\" ";
-	//echo '<br>'.$sqlLiaisonApAid.'<br>';
+	//echo '<br>'.$sqlLiaisonApAid.';<br>';
 	$mysqli->query($sqlLiaisonApAid);
 	
 }
