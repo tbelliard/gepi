@@ -58,7 +58,7 @@ function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $
 	
 	$sqlCreeEpi .= ", '$newEpiPeriode', '$newEpiCode', \"".htmlspecialchars($newEpiIntitule)."\", \"".htmlspecialchars($newEpiDescription)."\") "
 		. "ON DUPLICATE KEY UPDATE periode = \"".$newEpiPeriode."\", codeEPI = \"".$newEpiCode."\", intituleEpi = \"".htmlspecialchars($newEpiIntitule)."\", descriptionEpi = \"".htmlspecialchars($newEpiDescription)."\" ";
-	// echo $sqlCreeEpi.'<br>';
+	//echo $sqlCreeEpi.';<br>';
 	$mysqli->query($sqlCreeEpi);
 	$idEPI = getIdEPI($newEpiPeriode, $newEpiCode, $newEpiIntitule, htmlspecialchars($newEpiDescription))->fetch_object()->id;
 	
@@ -67,7 +67,7 @@ function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $
 			$matiere = substr($valeur, 0, -1);
 			$modalite = substr($valeur, -1);
 			$sqlCreLienEPI = "INSERT INTO lsun_j_epi_matieres (id_matiere,  modalite, id_epi) VALUES ('$matiere', '$modalite' , $idEPI) ON DUPLICATE KEY UPDATE id_matiere = '$matiere' , modalite = '$modalite' ";
-			//echo $sqlCreLienEPI."<br>";
+			//echo $sqlCreLienEPI.";<br>";
 			$mysqli->query($sqlCreLienEPI);
 		}
 	}
@@ -75,7 +75,7 @@ function sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $
 	if ($newEpiClasse) {
 		foreach ($newEpiClasse AS $valeur) {
 			$sqlCrejoinEpiClasse = "INSERT INTO lsun_j_epi_classes (id_epi, id_classe) VALUES ($idEPI , $valeur) ";
-			//echo $sqlCrejoinEpiClasse.'<br>';
+			//echo $sqlCrejoinEpiClasse.';<br>';
 			$mysqli->query($sqlCrejoinEpiClasse);
 		}
 	}
@@ -173,8 +173,8 @@ function supprimeEPI($EpiId) {
 	//$sqlDelEpiEns = "DELETE FROM lsun_j_epi_enseignements WHERE id_epi = '$EpiId'; ";
 	//$mysqli->query($sqlDelEpiEns);
 	$sqlDeleteEpi = "DELETE FROM lsun_epi_communs WHERE id = '$EpiId' ";
+	//echo $sqlDeleteEpi.';<br>';
 	$mysqli->query($sqlDeleteEpi);
-	//echo $sqlDeleteEpi.'<br>';
 }
 
 /**
@@ -186,7 +186,7 @@ function supprimeEPI($EpiId) {
 function delMatiereEPI($EpiId) {
 	global $mysqli;
 	$sqlDeleteJointureEpi = "DELETE FROM lsun_j_epi_matieres WHERE id_epi = '$EpiId' ";
-	//echo $sqlDeleteJointureEpi.'<br>';
+	//echo $sqlDeleteJointureEpi.';<br>';
 	$mysqli->query($sqlDeleteJointureEpi);
 }
 
@@ -258,7 +258,7 @@ function getLiaisonEpiEnseignementByIdEpi($id) {
 function delLienEPI($idEPI) {
 	global $mysqli;
 	$sqlDelLienEPI = "DELETE FROM lsun_j_epi_enseignements WHERE id_epi = '$idEPI' ";
-	//echo $sqlDelLienEPI;
+	//echo $sqlDelLienEPI.";<br />";
 	$mysqli->query($sqlDelLienEPI);
 }
 
@@ -307,7 +307,7 @@ function estCoursEpi($id_epi , $id_cours) {
 function delClasseEPI($EpiId) {
 	global $mysqli;
 	$sqlDelClasseEPI = "DELETE FROM lsun_j_epi_classes WHERE id_epi = '$EpiId' ";
-	//echo $sqlDelClasseEPI;
+	//echo $sqlDelClasseEPI.";<br />";
 	$mysqli->query($sqlDelClasseEPI);
 	
 }

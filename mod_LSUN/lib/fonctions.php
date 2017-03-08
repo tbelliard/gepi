@@ -270,7 +270,7 @@ function getMatiereLSUN($mefClasse = NULL) {
 		 $sqlMatieres .= "WHERE mef_code = $mefClasse ";
 	 }
 	$sqlMatieres .= " ORDER BY matiere , code_modalite_elect DESC ";
-	//echo $sqlMatieres;
+	//echo $sqlMatieres.";<br />";
 	$resultchargeDB = $mysqli->query($sqlMatieres);
 	return $resultchargeDB;
 }
@@ -286,7 +286,7 @@ function getMatiereLSUN($mefClasse = NULL) {
 function getMatiereOnMatiere($matiere) {
 	global $mysqli;
 	$sqlGetMatiereOnMatiere = "SELECT * FROM matieres WHERE matiere = '$matiere' ";
-	//echo $sqlGetMatiereOnMatiere;
+	//echo $sqlGetMatiereOnMatiere.";<br />";
 	$resultchargeDB = $mysqli->query($sqlGetMatiereOnMatiere);
 	$retour = $resultchargeDB->fetch_object();
 	return $retour;

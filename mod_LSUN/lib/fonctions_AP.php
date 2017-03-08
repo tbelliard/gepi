@@ -67,7 +67,7 @@ function saveAP($ApIntitule, $ApDisciplines, $ApDescription, $ApLiaisonAID, $id 
 	$sqlCreeAP .= ", \"$ApIntitule\" , \"$ApDescription\") ON DUPLICATE KEY UPDATE intituleAP = \"$ApIntitule\" , descriptionAP = \"$ApDescription\" ";
 	//echo '<br>'.$sqlCreeAP.'<br>';
 	$mysqli->query($sqlCreeAP);
-	echo $id." → ";
+	//echo $id." → ";
 	//On récupère l'id'
 	if ($id == NULL) {
 		$sqlGetId = "SELECT id FROM lsun_ap_communs WHERE intituleAP = \"$ApIntitule\" AND descriptionAP = \"$ApDescription\" ";
@@ -84,7 +84,7 @@ function saveAP($ApIntitule, $ApDisciplines, $ApDescription, $ApLiaisonAID, $id 
 		$code = substr($discipline,0,-1) ;
 		$matiere = getMatiereOnMatiere($code)->code_matiere;
 		$modalite = substr($discipline,-1) ;
-		echo $id." ".$matiere." ".$modalite."<br>";
+		//echo $id." ".$matiere." ".$modalite."<br>";
 		$sqlMatiereAp = "INSERT INTO lsun_j_ap_matiere (id_enseignements, modalite ,id_ap) VALUES (\"$matiere\",\"$modalite\",\"$id\") ON DUPLICATE KEY UPDATE id_enseignements = \"$matiere\" ";
 		//echo '<br>'.$sqlMatiereAp.'<br>';
 		$mysqli->query($sqlMatiereAp);

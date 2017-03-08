@@ -112,6 +112,7 @@ if ($ajouteEPI) {
 }
 
 if ($supprimeEPI) {
+	//echo "supprimeEPI($supprimeEPI)<br />";
 	supprimeEPI($supprimeEPI);
 }
 
@@ -131,7 +132,7 @@ if ($modifieEPI) {
 	// A faire plutôt à l'export
 
 	$modifieEPIClasse = filter_input(INPUT_POST, 'modifieEpiClasse'.$modifieEPI, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-	// var_dump($modifieEPIClasse);
+	//var_dump($modifieEPIClasse);
 	sauveEPI($modifieEPIPeriode[$modifieEPI], $modifieEPIClasse, $modifieEPICode[$modifieEPI], $modifieEPIIntitule[$modifieEPI], $modifieEPIDescription[$modifieEPI], $modifieEPIMatiere, $modifieEPI);
 	
 	$listeModifieEpiLiaison = filter_input(INPUT_POST, 'modifieEpiLiaison'.$modifieEPI, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
