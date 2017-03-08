@@ -928,9 +928,11 @@ echo "<tr><td  colspan=\"3\">\n";
 
 echo "<i>Mise en forme du message :</i>\n";
 
+/* Configuration via PHP
+
 $oCKeditor = new CKeditor('../ckeditor/');
 $config = array();
-/* Tous les outils
+// Tous les outils
 config['toolbar'] =array(
 	array('Source','-','Save','NewPage','DocProps','Preview','Print','-','Templates'),
 	array('Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo'),
@@ -944,22 +946,135 @@ config['toolbar'] =array(
 	array('TextColor','BGColor'),
 	array('Maximize', 'ShowBlocks','-','About')
 );
-*/
+
 $config['toolbar'] =array(
 	array('Save','NewPage','DocProps','Preview'),
 	array('Cut','Copy','Paste','PasteText','-','Undo','Redo'),
 	array('Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt'),
 	array('Bold','Italic','Underline','Strike','Subscript','Superscript','-','SpecialChar','-','RemoveFormat'),
-	array( 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'),
 	array('Link','Unlink'),
+	array('Image','HorizontalRule','Smiley'),
+	'/',
+	array( 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'),
 	array( 'Styles','Format','Font','FontSize'),
 	array('TextColor','BGColor'),
 	array('About')
 );
 
-$config['stylesSet']='gepi_styles';
+$config['stylesSet'] =array(
+
+		// Block Styles
+
+	array( 'name' => 'Titre bleu'		, 'element' => 'h3', 'styles' => array( 'color' => 'Blue' ) ),
+	array( 'name' => 'Titre rouge'		, 'element' => 'h3', 'styles' => array( 'color' => 'Red' ) ),
+
+		// Inline 'styles'
+
+	array( 'name' => 'Surligné jaune'	, 'element' => 'span', 'styles' => array( 'background-color' => 'Yellow' ) ),
+	array( 'name' => 'Surligné vert'	, 'element' => 'span', 'styles' => array( 'background-color' => 'Lime' ) ),
+	array( 'name' => 'Gros'				, 'element' => 'big' ),
+	array( 'name' => 'Petit'			, 'element' => 'small' ),
+	array( 'name' => 'Italique'			, 'element' => 'var' ),
+	array( 'name' => 'Barré'		, 'element' => 'del' ),
+	array( 'name' => 'Surligné'	, 'element' => 'ins' ),
+	array( 'name' => 'Guillemets'	, 'element' => 'q' ),
+
+		// Object Styles
+
+	array(
+		'name' => 'Image à gauche',
+		'element' => 'img',
+		'attributes' =>
+		array(
+			'style' => 'padding: 5px; margin-right: 5px',
+			'border' => '2',
+			'align' => 'left'
+		)
+	),
+
+	array(
+		'name' => 'Image à droite',
+		'element' => 'img',
+		'attributes' =>
+		array(
+			'style' => 'padding: 5px; margin-left: 5px',
+			'border' => '2',
+			'align' => 'right'
+		)
+	)
+
+);
+
+$config['font_names'] = 'Helvetica/Helvetica, Arial, sans-serif; Courier/Courier, Courier New, monospace; Times New Roman/Times New Roman, Times, serif; Geneva/Geneva, Verdana, sans-serif';
+
+$config['format_tags'] = 'p;h1;h2;h3;h4;h5;h6;pre';
 
 $oCKeditor->editor('message',$contenu,$config) ;
+
+*/
+?>
+
+<script src="../ckeditor/ckeditor.js"></script>  
+<textarea name="message" id ="message" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('message', 
+	{ 
+	toolbar : [ 
+		['Save','NewPage','DocProps','Preview'],
+		['Cut','Copy','Paste','PasteText','-','Undo','Redo'],
+		['Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt'],
+		['Bold','Italic','Underline','Strike','Subscript','Superscript','-','SpecialChar','-','RemoveFormat'],
+		['Link','Unlink'],
+		['Image','HorizontalRule','Smiley'],
+		'/',
+		[ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+		[ 'Styles','Format','Font','FontSize'],
+		['TextColor','BGColor'],
+		['About']
+		],
+
+		stylesSet : [
+		/* Block Styles */
+		{ name : 'Titre bleu'		, element : 'h3', styles : { 'color' : 'Blue' } },
+		{ name : 'Titre rouge'		, element : 'h3', styles : { 'color' : 'Red' } },
+		/* Inline Styles */
+		{ name : 'Surligné jaune'	, element : 'span', styles : { 'background-color' : 'Yellow' } },
+		{ name : 'Surligné vert'	, element : 'span', styles : { 'background-color' : 'Lime' } },
+		{ name : 'Gros'				, element : 'big' },
+		{ name : 'Petit'			, element : 'small' },
+		{ name : 'Italique'			, element : 'var' },
+		{ name : 'Barré'		, element : 'del' },
+		{ name : 'Surligné'		, element : 'ins' },
+		{ name : 'Guillemets'	, element : 'q' },
+		/* Object Styles */
+		{
+			name : 'Image à gauche',
+			element : 'img',
+			attributes :
+			{
+				'style' : 'padding: 5px; margin-right: 5px',
+				'border' : '2',
+				'align' : 'left'
+			}
+		},
+		{
+			name : 'Image à droite',
+			element : 'img',
+			attributes :
+			{
+				'style' : 'padding: 5px; margin-left: 5px',
+				'border' : '2',
+				'align' : 'right'
+			}
+		}
+		],
+	font_names : 'Helvetica/Helvetica, Arial, sans-serif; Courier/Courier, Courier New, monospace; Times New Roman/Times New Roman, Times, serif; Geneva/Geneva, Verdana, sans-serif',
+	format_tags : 'p;h1;h2;h3;h4;h5;h6;pre'
+	});
+</script>
+
+<?php
 
 echo "</td></tr>";
 
