@@ -417,6 +417,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 		}
 ?>
 			<div class="lsun_cadre fieldset_opacite50">
+				<div style='float:left; width:50em; font-weight:bold; font-size:x-large; text-align:left; margin-left:1em;'><?php echo $epiCommun->intituleEpi;?></div>
 				<div align='center'>
 					<input type="hidden" 
 						   name="modifieEpiId[<?php echo $epiCommun->id; ?>]" 
@@ -573,8 +574,12 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 										title=\"Pour sélectionner plusieurs matières, effectuer CTRL+Clic sur chaque matière.\">";
 			$listeMatieres->data_seek(0);
 			while ($matiere = $listeMatieres->fetch_object()) { 
+				$style_matiere="";
+				if($matiere->code_matiere=="") {
+					$style_matiere=" style='color:red' title=\"La nomenclature de cette matière n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+				}
 				echo "
-								<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">".$matiere->matiere." (".$matiere->nom_complet;
+								<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">".$matiere->matiere." (".$matiere->nom_complet;
 				if ($matiere->code_modalite_elect == 'O') {
 					echo '- option obligatoire';
 				} elseif ($matiere->code_modalite_elect == 'F') {
@@ -621,8 +626,11 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 				elseif ($matEPI['modalite'] =="N") {echo " obligatoire ou facultatif";}
 				elseif ($matEPI['modalite'] =="L") {echo " ajout académique";}
 				elseif ($matEPI['modalite'] =="R") {echo " enseignement religieux";}
-				echo "</span>";
-				echo ")</label><br />";
+				echo "</span>)</label>";
+				if(getMatiereOnMatiere($matEPI['matiere'])->code_matiere=="") {
+					echo "<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' title=\"La nomenclature de la matière ".$matEPI['matiere']." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\" />";
+				}
+				echo "<br />";
 				echo "
 								</td>";
 
@@ -662,8 +670,12 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 						$listeMatieres->data_seek(0);
 						while ($matiere = $listeMatieres->fetch_object()) { 
 							if(!in_array(array('matiere'=>$matiere->matiere,'modalite'=>$matiere->code_modalite_elect), $tableauMatieresEPI)) {
+								$style_matiere="";
+								if($matiere->code_matiere=="") {
+									$style_matiere=" style='color:red' title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+								}
 								echo "
-										<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\">".$matiere->matiere." (".$matiere->nom_complet;
+										<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">".$matiere->matiere." (".$matiere->nom_complet;
 								if ($matiere->code_modalite_elect == 'O') {
 									echo '- option obligatoire';
 								} elseif ($matiere->code_modalite_elect == 'F') {
@@ -953,7 +965,15 @@ while ($ap = $listeAPCommun->fetch_object()) { ?>
 				<textarea rows="4" cols="50" id="ApDescription<?php echo $ap->id; ?>" name="ApDescription[<?php echo  $ap->id; ?>]" /><?php echo $ap->descriptionAP; ?></textarea> 				
 				-
 				
-				Liaison <?php echo getAidConfig($ap->id_aid)->fetch_object()->nom ; ?>
+				Liaison <?php 
+					$res_liaison=getAidConfig($ap->id_aid);
+					if(mysqli_num_rows($res_liaison)>0) {
+						echo $res_liaison->fetch_object()->nom;
+					}
+					else {
+						echo "<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune liaison AID n'est encore effectuée.</span><br />";
+					}
+				?>
 <?php $listeAidAp->data_seek(0); ?>
 				<select name="liaisonApAid[<?php echo $ap->id; ?>]">
 <?php 
