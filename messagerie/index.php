@@ -169,7 +169,7 @@ if ((isset($action)) and ($action == 'sup_entry')) {
 // Annulation des modifs
 //
 if ((isset($action)) and ($action == 'message') and (isset($_POST['cancel']))) {
-	unset ($id_mess);
+	unset ($id_mess); $contenu='';
 }
 
 
@@ -182,13 +182,13 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['message']));
 	//$contenu_cor = html_entity_decode($_POST['message']);
 
-	$statuts_destinataires = '_';
-	if (isset($_POST['desti_s'])) $statuts_destinataires .= 's';
-	if (isset($_POST['desti_p'])) $statuts_destinataires .= 'p';
-	if (isset($_POST['desti_c'])) $statuts_destinataires .= 'c';
-	if (isset($_POST['desti_a'])) $statuts_destinataires .= 'a';
-	if (isset($_POST['desti_r'])) $statuts_destinataires .= 'r';
-	if (isset($_POST['desti_e'])) $statuts_destinataires .= 'e';
+	$statuts_destinataires = '_'; $t_statuts_destinataires=array();
+	if (isset($_POST['desti_s'])) {$statuts_destinataires .= 's'; $t_statuts_destinataires[]='scolarite'; };
+	if (isset($_POST['desti_p'])) {$statuts_destinataires .= 'p'; $t_statuts_destinataires[]='professeur'; };
+	if (isset($_POST['desti_c'])) {$statuts_destinataires .= 'c'; $t_statuts_destinataires[]='cpe'; };
+	if (isset($_POST['desti_a'])) {$statuts_destinataires .= 'a'; $t_statuts_destinataires[]='administrateur'; };
+	if (isset($_POST['desti_r'])) {$statuts_destinataires .= 'r'; $t_statuts_destinataires[]='responsable'; };
+	if (isset($_POST['desti_e'])) {$statuts_destinataires .= 'e'; $t_statuts_destinataires[]='eleve'; };
 
 	$engagement_ele=isset($_POST['engagement_ele']) ? $_POST['engagement_ele'] : array();
 	$engagement_resp=isset($_POST['engagement_resp']) ? $_POST['engagement_resp'] : array();
@@ -392,6 +392,46 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 					$erreur=!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) && $erreur;
 			}
 
+	// Envoi de sms
+	if (getSettingAOui('autorise_envoi_sms')) {
+		if ($statuts_destinataires<>"_") {
+			// on complète le tableau des logins des destinataires
+			// avec les logins des utilisateurs dont le statut est destinataire sauf 'responsable' et 'eleve'
+			$liste_statuts=''; // liste des statuts destinataires sauf 'responsable' et 'eleve'
+			foreach($t_statuts_destinataires as $statut) {
+				if ($liste_statuts<>'') $liste_statuts.=', ';
+				if ($statut<>'responsable' || $statut<>'eleve') $liste_statuts.="'".$statut."'";
+				}
+			if ($liste_statuts<>'') {
+				$liste_statuts='('.$liste_statuts.')';
+				$r_sql='SELECT `login` FROM `utilisateurs` WHERE `statut` IN '.$liste_statuts;
+				$R_logins=mysqli_query($GLOBALS["mysqli"], $r_sql);
+				while ($un_login=mysqli_fetch_assoc($R_logins)) $t_login_destinataires[]=$un_login['login'];
+				$t_login_destinataires=array_unique($t_login_destinataires);
+				}
+		}
+		// On constitue la liste des numéros de portable destinataires du sms
+		$t_numeros=array();
+		$liste_logins_destinataires='';
+		foreach($t_login_destinataires as $login) {
+			if ($liste_logins_destinataires<>'') $liste_logins_destinataires.=', ';
+			$liste_logins_destinataires.="'".$login."'";
+			}
+		if ($liste_logins_destinataires<>'') {
+			$liste_logins_destinataires='('.$liste_logins_destinataires.')';
+			// les numéros de portable des responsables
+			$r_sql='SELECT `tel_port` FROM `resp_pers` WHERE `login` IN '.$liste_logins_destinataires;
+			$R_tel_ports=mysqli_query($GLOBALS["mysqli"], $r_sql);
+			while ($un_tel_port=mysqli_fetch_assoc($R_tel_ports)) $t_numeros[]=$un_tel_port['tel_port'];
+			// les numéros de portable des élèves
+			$r_sql='SELECT `tel_port` FROM `eleves` WHERE `login` IN '.$liste_logins_destinataires;
+			$R_tel_ports=mysqli_query($GLOBALS["mysqli"], $r_sql);
+			while ($un_tel_port=mysqli_fetch_assoc($R_tel_ports)) $t_numeros[]=$un_tel_port['tel_port'];
+			}
+		$t_numeros=array_unique($t_numeros);
+	}
+
+
 		if (!$erreur) {
 			$msg_OK = "Le message a été enregistré.";
 			unset($contenu_cor);
@@ -409,6 +449,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysqli_error($GLOBALS["mysqli"]);
 		}
 	}
+ 
 }
 
 
