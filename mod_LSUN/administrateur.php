@@ -464,7 +464,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 		while ($classe = $classes->fetch_object()) { 
 			if(estClasseEPI($epiCommun->id,$classe->id)) {
 				echo "
-									<input type='checkbox' name='modifieEpiClasse".$epiCommun->id."[]' id='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."' value='".$classe->id."' checked /><label for=''>".$classe->classe." <em>(".$classe->classe.")</em></label><br />";
+									<input type='checkbox' name='modifieEpiClasse".$epiCommun->id."[]' id='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."' value='".$classe->id."' checked /><label for='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."'>".$classe->classe." <em>(".$classe->classe.")</em></label><br />";
 			}
 			else {
 				$tab_classes_non_associees[]=$classe->id;
