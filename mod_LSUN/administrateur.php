@@ -460,11 +460,13 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 <?php
 		$classes->data_seek(0);
 		$cpt_classe=0;
+		$cpt_classe_associees=0;
 		$tab_classes_non_associees=array();
 		while ($classe = $classes->fetch_object()) { 
 			if(estClasseEPI($epiCommun->id,$classe->id)) {
 				echo "
 									<input type='checkbox' name='modifieEpiClasse".$epiCommun->id."[]' id='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."' value='".$classe->id."' checked /><label for='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."'>".$classe->classe." <em>(".$classe->classe.")</em></label><br />";
+				$cpt_classe_associees++;
 			}
 			else {
 				$tab_classes_non_associees[]=$classe->id;
@@ -484,6 +486,12 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 ?>
 							<td onmouseover="document.getElementById('span_ajout_modifieEpiClasse_<?php echo $epiCommun->id;?>').style.display=''" 
 								onmouseout="affiche_masque_select_EPI('modifieEpiClasse', <?php echo $epiCommun->id;?>)">
+<?php
+		if($cpt_classe_associees==0) {
+			echo "
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune classe n'est associée.</span><br />";
+		}
+?>
 								<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
 								Ajouter des divisions<br />
 <!--
@@ -528,17 +536,21 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 		while ($periode = $periodes->fetch_object()) {
 ?>
 									<option value="<?php echo $periode->num_periode; ?>"
-											<?php if ($periode->num_periode == $epiCommun->periode) {echo " selected ";} ?> >
+										<?php if ($periode->num_periode == $epiCommun->periode) {echo " selected ";} ?> >
 										<?php echo $periode->num_periode; ?>
 									</option>
 <?php
 		}
 ?>
 								</select>
+<?php
+		if(($epiCommun->periode=="")||($epiCommun->periode=="0")) {
+			echo "
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Période de fin non définie.</span><br />";
+		}
+?>
 							</td>
 						</tr>
-
-
 					</table>
 
 					<table class='table_no_border'>
@@ -552,6 +564,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 							</th>
 
 							<td style='vertical-align:top; border:0px;' title=\"Associer des disciplines\">
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune discipline n'est encore associée.</span><br />
 								Associer des disciplines&nbsp;:<br />
 								<select multiple 
 										size='6' 
@@ -689,7 +702,8 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 						<tr>
 							<th>Liaisons&nbsp;:</th>
 							<td>
-								Associer des EPI<br />
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune liaison AID n'est encore effectuée.</span><br />
+								Associer des AID aux EPI<br />
 								<select multiple 
 										size='6' 
 										name=\"modifieEpiLiaison".$epiCommun->id."[]\" 
@@ -757,7 +771,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 								onmouseover=\"document.getElementById('span_ajout_modifieEpiLiaison_".$epiCommun->id."').style.display=''\" 
 								onmouseout=\"affiche_masque_select_EPI('modifieEpiLiaison', ".$epiCommun->id.")\">
 								<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
-								Associer d'autres EPI<br />
+								Associer d'autres AID à l'EPI<br />
 								<span id='span_ajout_modifieEpiLiaison_".$epiCommun->id."'>
 									<select multiple 
 											size='6' 
