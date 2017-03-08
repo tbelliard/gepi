@@ -22,7 +22,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-//debug_var();
+debug_var();
 
 $selectionClasse = $_SESSION['afficheClasse'];
 
@@ -574,12 +574,20 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 										title=\"Pour sélectionner plusieurs matières, effectuer CTRL+Clic sur chaque matière.\">";
 			$listeMatieres->data_seek(0);
 			while ($matiere = $listeMatieres->fetch_object()) { 
-				$style_matiere="";
-				if($matiere->code_matiere=="") {
-					$style_matiere=" style='color:red' title=\"La nomenclature de cette matière n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+				if($matiere->code_modalite_elect=="") {
+					echo "
+									<option value='' disabled title=\"Modalité non définie.\" style='color:orange'>";
 				}
-				echo "
-								<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">".$matiere->matiere." (".$matiere->nom_complet;
+				else {
+					$style_matiere="";
+					if($matiere->code_matiere=="") {
+						$style_matiere=" style='color:red' title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+					}
+					echo "
+								<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">";
+				}
+				echo $matiere->matiere." (".$matiere->nom_complet;
+
 				if ($matiere->code_modalite_elect == 'O') {
 					echo '- option obligatoire';
 				} elseif ($matiere->code_modalite_elect == 'F') {
@@ -670,12 +678,20 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 						$listeMatieres->data_seek(0);
 						while ($matiere = $listeMatieres->fetch_object()) { 
 							if(!in_array(array('matiere'=>$matiere->matiere,'modalite'=>$matiere->code_modalite_elect), $tableauMatieresEPI)) {
-								$style_matiere="";
-								if($matiere->code_matiere=="") {
-									$style_matiere=" style='color:red' title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+								if($matiere->code_modalite_elect=="") {
+									echo "
+										<option value='' disabled title=\"Modalité non définie.\" style='color:orange'>";
 								}
-								echo "
-										<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">".$matiere->matiere." (".$matiere->nom_complet;
+								else {
+									$style_matiere="";
+									if($matiere->code_matiere=="") {
+										$style_matiere=" style='color:red' title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+									}
+									echo "
+										<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">";
+								}
+
+								echo $matiere->matiere." (".$matiere->nom_complet;
 								if ($matiere->code_modalite_elect == 'O') {
 									echo '- option obligatoire';
 								} elseif ($matiere->code_modalite_elect == 'F') {
@@ -869,18 +885,30 @@ while ($classe = $classes->fetch_object()) { ?>
 					<p>
 						Disciplines :
 						<select multiple size='6' name="newEpiMatiere[]" size="8" title="Pour sélectionner plusieurs matières, effectuer CTRL+Clic sur chaque matière.">
-<?php $listeMatieres->data_seek(0);
- while ($matiere = $listeMatieres->fetch_object()) { ?>
-							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
-								<?php echo $matiere->nom_complet; ?>
-<?php 								
-if ($matiere->code_modalite_elect == 'O') {
-	echo '- option obligatoire';
-} elseif ($matiere->code_modalite_elect == 'F') {
-	echo '- option facultative';
-} elseif ($matiere->code_modalite_elect == 'X') {
-	echo '- modalité X';
-}
+<?php
+	$listeMatieres->data_seek(0);
+	while ($matiere = $listeMatieres->fetch_object()) {
+		if($matiere->code_modalite_elect=="") {
+			echo "
+							<option value='' disabled title=\"Modalité non définie.\" style='color:orange'>";
+		}
+		else {
+			$style_matiere="";
+			if($matiere->code_matiere=="") {
+				$style_matiere=" style='color:red' title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+			}
+			echo "
+							<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">";
+		}
+
+		echo $matiere->nom_complet;
+		if ($matiere->code_modalite_elect == 'O') {
+			echo '- option obligatoire';
+		} elseif ($matiere->code_modalite_elect == 'F') {
+			echo '- option facultative';
+		} elseif ($matiere->code_modalite_elect == 'X') {
+			echo '- modalité X';
+		}
 ?>
 							</option>
 <?php } ?>
@@ -985,44 +1013,68 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<?php echo $liaison->groupe; ?>
 					</option>
 <?php } ?>
-				</select>								
+				</select>
 <?php $listeAidAp->data_seek(0); ?>	
 				
 				<br />
 				
 				<label for="ApDisciplines<?php echo  $ap->id; ?>">
 					Discipline(s) de référence
-<?php $listeMatiereAP = disciplineAP($ap->id);
+<?php
+	$listeMatiereAP = disciplineAP($ap->id);
+	//echo "\$listeMatiereAP = disciplineAP(".$ap->id.")<br />";
 	$tableauMatiere=array();
-while ($matiereAP = $listeMatiereAP->fetch_object()) { ?>
-					<?php echo getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object()->nom_complet ?>
-<?php 	
+	while ($matiereAP = $listeMatiereAP->fetch_object()) {
+		/*
+		echo "<pre>";
+		print_r($matiereAP);
+		echo "</pre>";
+		echo "getMatiereSurMEF(".$matiereAP->id_enseignements.")<br />";
+		*/
+		echo getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object()->nom_complet;
 
-$tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
-	if ($matiereAP->modalite == 'O') {
-		echo '- option obligatoire';
-	} elseif ($matiereAP->modalite == 'F') {
-		echo '- option facultative';
-	} elseif ($matiereAP->modalite == 'X') {
-		echo '- modalité X';
+		$tableauMatiere[] = $matiereAP->id_enseignements.$matiereAP->modalite;
+		if ($matiereAP->modalite == 'O') {
+			echo ' - option obligatoire';
+		} elseif ($matiereAP->modalite == 'F') {
+			echo ' - option facultative';
+		} elseif ($m atiereAP->modalite == 'X') {
+			echo '- modalité X';
+		}
+		echo "<br />";
 	}
-} ?>
+?>
 					-
 				</label>
 				<select multiple size='6' name="ApDisciplines<?php echo $ap->id; ?>[]">
-<?php $listeMatieres->data_seek(0);
-while ($matiere = $listeMatieres->fetch_object()) { ?>
-					<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>"
-							<?php if (in_array($matiere->code_matiere.$matiere->code_modalite_elect, $tableauMatiere)) { echo ' selected ';} ?> >
-						<?php echo $matiere->nom_complet; ?>
-<?php 								
-if ($matiere->code_modalite_elect == 'O') {
-echo '- option obligatoire';
-} elseif ($matiere->code_modalite_elect == 'F') {
-echo '- option facultative';
-} elseif ($matiere->code_modalite_elect == 'X') {
-	echo '- modalité X';
-}
+<?php
+	$listeMatieres->data_seek(0);
+	while ($matiere = $listeMatieres->fetch_object()) {
+		if($matiere->code_modalite_elect=="") {
+			echo "
+							<option value='' disabled title=\"Modalité non définie.\" style='color:orange'";
+		}
+		else {
+			$style_matiere="";
+			if($matiere->code_matiere=="") {
+				$style_matiere=" style='color:red' title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+			}
+			echo "
+							<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere;
+		}
+
+		if (in_array($matiere->code_matiere.$matiere->code_modalite_elect, $tableauMatiere)) {
+			echo ' selected ';
+		}
+		echo ">";
+		echo $matiere->nom_complet;
+		if ($matiere->code_modalite_elect == 'O') {
+			echo '- option obligatoire';
+		} elseif ($matiere->code_modalite_elect == 'F') {
+			echo '- option facultative';
+		} elseif ($matiere->code_modalite_elect == 'X') {
+			echo '- modalité X';
+		}
 ?>
 					</option>
 <?php } ?>
@@ -1051,16 +1103,28 @@ echo '- option facultative';
 						-
 						<label for="newApDisciplines">Discipline(s) de référence</label>
 						<select multiple size='6' name="newApDisciplines[]" size="8">
-<?php $listeMatieres->data_seek(0);
- while ($matiere = $listeMatieres->fetch_object()) { ?>
-							<option value="<?php echo $matiere->matiere.$matiere->code_modalite_elect; ?>">
-								<?php echo $matiere->nom_complet ?>
-<?php 								
-if ($matiere->code_modalite_elect == 'O') {
-	echo '- option obligatoire';
-} elseif ($matiere->code_modalite_elect == 'F') {
-	echo '- option facultative';
-}
+<?php
+	$listeMatieres->data_seek(0);
+	while ($matiere = $listeMatieres->fetch_object()) {
+		if($matiere->code_modalite_elect=="") {
+			echo "
+							<option value='' disabled title=\"Modalité non définie.\" style='color:orange'>";
+		}
+		else {
+			$style_matiere="";
+			if($matiere->code_matiere=="") {
+				$style_matiere=" style='color:red' title=\"La nomenclature de la matière ".$matiere->matiere." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\"";
+			}
+			echo "
+							<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">";
+		}
+		echo $matiere->nom_complet;
+
+		if ($matiere->code_modalite_elect == 'O') {
+			echo '- option obligatoire';
+		} elseif ($matiere->code_modalite_elect == 'F') {
+			echo '- option facultative';
+		}
 ?>
 							</option>
 <?php } ?>
