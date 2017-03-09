@@ -75,7 +75,7 @@ if ($creeFichier == 'y') {
 	}	else {
 		saveSetting('LSU_Donnees_socle',  "n");
 	}
-	
+
 	if(filter_input(INPUT_POST, 'traiteBilanFinCycle')) {
 		saveSetting('LSU_Donnees_BilanFinCycle', filter_input(INPUT_POST, 'traiteBilanFinCycle'));
 	}	else {
@@ -97,6 +97,7 @@ if ($creeFichier == 'y') {
 	include_once 'creeFichier.php';
 
 }
+
 
 
 
@@ -215,7 +216,7 @@ if ($cpt) {echo "			</div>\n";}
 ?>
 		</div>
 		
-		<p class="center"><a href='#' onClick='CocherClasses(true)'>Tout cocher</a> / <a href='#' onClick='CocherClasses(false)'>Tout décocher</a></p>
+		<p class="center"><a href='#' onClick='CocherClasses(true);return false;'>Tout cocher</a> / <a href='#' onClick='CocherClasses(false);return false;'>Tout décocher</a></p>
 
 <script type='text/javascript'> 
 	<?php echo js_checkbox_change_style(); ?>
@@ -715,6 +716,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 		}
 ?>
 					</table>
+
 <?php
 		$listeLiaisons = getLiaisonEpiEnseignementByIdEpi($epiCommun->id); 
 ?>
@@ -1332,7 +1334,6 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y"
 							   
 							   <?php if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_Elv") != "n")) {echo ' checked '; }  ?> />
-							   
 						<label for="traiteEpiElv">données élèves des EPI</label>
 					</li>
 					<li>
@@ -1354,8 +1355,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteAP">accompagnements personnalisés (AP)</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y"     
-							   
+						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y"      
 							   <?php if ((getSettingValue("LSU_traite_AP") != "n") && (getSettingValue("LSU_traite_AP_Elv") != "n")) {echo ' checked '; }  ?>  />
 						<label for="traiteAPElv">données élèves des AP</label>
 					</li>
