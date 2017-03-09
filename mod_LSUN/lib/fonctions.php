@@ -674,47 +674,34 @@ function getAidEleve($login, $typeAid, $periode = NULL) {
 function getModaliteGroupe($groupe_id) {
 	global $mysqli;
 	// La modalité est dans la matiere de la classe
-	//echo $groupe_id.' '.$prof_numind.' '.matiere.' '.'<br>';
 	
-	$sqlGroupeModalite = "
-SELECT DISTINCT t3.* , t4.modalite FROM (
-	SELECT t1.`id_groupe` , t1.id_aid , t1.indice_aid , t1.login , t1.matiere AS matiere FROM (
-		SELECT t0.*, jpm.id_matiere AS matiere FROM (
-			SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.id_utilisateur AS login FROM `j_aid_utilisateurs` AS jgp 
-			INNER JOIN `j_groupes_aid` AS jga 
-			ON jgp.`id_aid` = jga.`id_aid` 
-			WHERE jga.`id_aid` = $groupe_id
-		) AS t0
-		LEFT JOIN
-			j_professeurs_matieres AS jpm
-		ON jpm.id_professeur = t0.login
-	) AS t1
-	INNER JOIN
-	(SELECT id , nom , indice_aid , matiere1, matiere2 FROM aid WHERE id = $groupe_id) AS t2
-	ON t1.matiere = t2.matiere1 OR t1.matiere = t2.matiere2
-	) AS t3
-INNER JOIN 
-	(SELECT DISTINCT t2.* , jgm.code_modalite_elect AS modalite FROM (
-		SELECT DISTINCT t1.id_groupe , jgm.id_matiere FROM (
-			SELECT t0.* , jeg.id_groupe FROM (
-				SELECT DISTINCT login, periode FROM j_eleves_groupes
-			) AS t0
-			INNER JOIN
-				j_eleves_groupes AS jeg
-			ON jeg.login = t0.login
-		) AS t1
-		INNER JOIN
-			j_groupes_matieres AS jgm
-		ON jgm.id_groupe = t1.id_groupe
-	) AS t2
-	INNER JOIN
-		j_groupes_eleves_modalites AS jgm
-	ON jgm.id_groupe = t2.id_groupe 
-	) AS t4
-ON t3.matiere = t4.id_matiere
-	";
+	$sqlGroupeModalite = "SELECT t4.* , u.numind FROM (
+	SELECT DISTINCT t3.* , m.code_matiere FROM ( 	
+		SELECT t1.`id_groupe` , t1.id_aid , t1.indice_aid , t1.login , t1.matiere AS matiere , t2.modalite FROM (
+			SELECT t00.* , ljee.id_epi FROM (
+				SELECT t0.*, jpm.id_matiere AS matiere FROM ( 
+					SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.id_utilisateur AS login FROM `j_aid_utilisateurs` AS jgp 
+					INNER JOIN `j_groupes_aid` AS jga 
+					ON jgp.`id_aid` = jga.`id_aid` 
+					WHERE jga.`id_aid` = $groupe_id
+				) AS t0 
+				LEFT JOIN j_professeurs_matieres AS jpm 
+				ON jpm.id_professeur = t0.login
+			) AS t00 
+			INNER JOIN `lsun_j_epi_enseignements` AS ljee
+			ON ljee.id_enseignements = t00.indice_aid
+		) AS t1 
+		INNER JOIN lsun_j_epi_matieres AS t2 
+		ON t1.matiere = t2.id_matiere AND t1.id_epi = t2.id_epi
+	) AS t3 
+	INNER JOIN matieres AS m 
+	ON t3.matiere = m.matiere 
+) AS t4
+INNER JOIN utilisateurs AS u 
+ON t4.login = u.login
+";
 	
-	//echo $sqlGroupeModalite.'<br>';
+	// echo $sqlGroupeModalite.'<br>';
 	$resultchargeDB = $mysqli->query($sqlGroupeModalite);
 	return $resultchargeDB ;
 	
