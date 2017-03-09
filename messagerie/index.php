@@ -394,6 +394,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 
 	// Envoi de sms
 	if (getSettingAOui('autorise_envoi_sms')) {
+		/* code inutile pour l'instant, seuls les responsables et les éléves ont un tél. portable dans la base
 		if ($statuts_destinataires<>"_") {
 			// on complète le tableau des logins des destinataires
 			// avec les logins des utilisateurs dont le statut est destinataire sauf 'responsable' et 'eleve'
@@ -410,6 +411,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 				$t_login_destinataires=array_unique($t_login_destinataires);
 				}
 		}
+		*/
 		// On constitue la liste des numéros de portable destinataires du sms
 		$t_numeros=array();
 		$liste_logins_destinataires='';
