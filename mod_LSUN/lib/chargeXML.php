@@ -26,7 +26,7 @@
  *             On charge les données
  ==========================================================================*/
 $msgErreur = "";
-include_once 'fonctions.php';
+include_once 'lib/fonctions.php';
 include_once 'chargeDonnees.php';
 
 $_AP = 1;
@@ -41,6 +41,12 @@ $liste_creation_auto_element_programme="";
 //$gepiYear=getSettingValue("gepiYear");
 //$millesime=preg_replace("/[^0-9]{1,}[0-9]*/","",$gepiYear);
 $date_creation=strftime("%Y-%m-%d");
+
+$longueur_limite_ligne_adresse=32;
+if($date_creation>="2017-05-15") {
+	$longueur_limite_ligne_adresse=38;
+}
+$tab_erreur_adr=array();
 //++++++++++++++++++++++++++++++++++
 
 $xml = new DOMDocument('1.0', 'utf-8');
@@ -324,7 +330,8 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$episGroupes->appendChild($noeudEpisGroupes);
 				// enseignants
 				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
-				
+
+				//$modaliteEns = getModaliteGroupeAP($episGroupe->id);
 				$modaliteEns = getModaliteGroupe($episGroupe->id);
 				
 				if ($modaliteEns->num_rows) {
@@ -340,7 +347,6 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 						$noeudProf->appendChild($attsProf);
 						$noeudEnseigneDis->appendChild($noeudProf);
 					}
-				
 				}
 				
 				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
@@ -350,7 +356,6 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 }
 
 if (getSettingValue("LSU_traite_AP") != "n") {
-				
 			/*----- acc-persos -----*/
 	$listeApCommuns = getAPCommun();
 	if ($listeApCommuns->num_rows) {
@@ -379,7 +384,6 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$accPersos->appendChild($noeudApCommun);
 		}
 		$donnees->appendChild($accPersos);
-		
 	//}
 
 		
@@ -409,7 +413,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			// on ajoute les enseignants
 			//print_r($apGroupe);
-			//echo '<br><br>';
+			//echo '<br>11<br>';
 			$profMatiere = getModaliteGroupeAP($apGroupe->id);
 			//print_r($profMatiere);
 			//echo '<br><br>';
@@ -433,6 +437,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$accPersosGroupes->appendChild($noeudApGroupes);
 			}
 		}
+		
 		$donnees->appendChild($accPersosGroupes);	
 	}
 }
@@ -530,10 +535,16 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				// non obligatoire
 				$episEleve = getAidEleve($eleve->login, $_EPI, $eleve->periode);
 				if ($episEleve->num_rows) {
+					//echo "<br /><p>$eleve->login EPI: $_EPI en période $eleve->periode<br />";
 					//var_dump($episEleve);
 					$listeEpisEleve = $xml->createElement('epis-eleve');
 					$existeEpi = false;
 					while ($epiEleve = $episEleve->fetch_object()) {
+						/*
+						echo "<pre>";
+						print_r($epiEleve);
+						echo "</pre>";
+						*/
 						//on verifie que le groupe est bien déclaré
 						if (!verifieGroupeEPI($epiEleve->id_aid)) {
 							$msgErreur .= "<p class='rouge'>".$eleve->nom." ".$eleve->prenom." a un EPI qui n'est pas déclaré en administrateur, il ne sera pas exporté (AID $epiEleve->indice_aid).</p>";
@@ -714,6 +725,11 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						if (trim($responsable->adr4) != "") {$attributsAdresse['ligne4'] = $responsable->adr4;}
 						foreach ($attributsAdresse as $cle=>$valeur) {
 							if (!$valeur) {continue ;}
+
+							if((mb_strlen($valeur)>$longueur_limite_ligne_adresse)&&(!in_array("longueur_adresse_resp_".$responsable->pers_id, $tab_erreur_adr))) {
+								$msg_erreur_remplissage.="L'adresse postale de <a href='../responsables/modify_resp.php?pers_id=".$responsable->pers_id."' target='_blank'>".$responsable->civilite." ".$responsable->nom." ".$responsable->prenom."</a> dépasse ".$longueur_limite_ligne_adresse." caractères.<br />";
+								$tab_erreur_adr[]="longueur_adresse_resp_".$responsable->pers_id;
+							}
 							$attAdresse = $xml->createAttribute($cle);
 							$attAdresse->value = $valeur;
 							$noeudAdresse->appendChild($attAdresse);
