@@ -299,7 +299,9 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 
 		default :
 			$retour="SMS non envoyé(s) : prestataire SMS non défini.";
-			$t_log['envoi']="sms envoyé : \n".$sms;
+			$mobiles=print_r($tab_to,true);
+			$t_log['envoi']="destinataires : \n".$mobiles."\n";
+			$t_log['envoi'].="sms envoyé : \n".$sms;
 			$t_log['retour']=$retour;
 			$t_log['reponse']='Pas de réponse';
 		}
@@ -310,11 +312,11 @@ function envoi_SMS($tab_to,$sms,$log=false) {
 		if (file_exists($log_envoi_SMS) && (filesize($log_envoi_SMS)>512*1024)) $h_log_envoi_SMS=@fopen($log_envoi_SMS,'w');
 			else $h_log_envoi_SMS=@fopen($log_envoi_SMS,'a');
 		@fwrite($h_log_envoi_SMS,strftime("%d/%m/%Y à %H:%M")."\n\n");
-		@fwrite($h_log_envoi_SMS,'Envoyé au pestataire'."\n");
-		@fwrite($h_log_envoi_SMS,'--------------------'."\n");
-		@fwrite($h_log_envoi_SMS,$t_log['envoi']."\n\n");
-		@fwrite($h_log_envoi_SMS,'Réponse du pestataire'."\n");
+		@fwrite($h_log_envoi_SMS,'Envoyé au prestataire'."\n");
 		@fwrite($h_log_envoi_SMS,'---------------------'."\n");
+		@fwrite($h_log_envoi_SMS,$t_log['envoi']."\n\n");
+		@fwrite($h_log_envoi_SMS,'Réponse du prestataire'."\n");
+		@fwrite($h_log_envoi_SMS,'----------------------'."\n");
 		@fwrite($h_log_envoi_SMS,$t_log['reponse']."\n");
 		@fwrite($h_log_envoi_SMS,'________________________________________________________'."\n\n");
 		@fclose($h_log_envoi_SMS);
