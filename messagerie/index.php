@@ -744,7 +744,7 @@ echo "</tr>\n";
 echo "<tr><td  colspan=\"3\" >\n";
 ?>
 <br>
-<i>Destinataire du message&nbsp;:&nbsp;</i><br />
+<i>Personnel destinataire du message&nbsp;:&nbsp;</i><br />
 	<select name="login_destinataire" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
 		<option></option>
@@ -776,7 +776,7 @@ echo "</td></tr>\n";
 echo "<tr><td  colspan=\"3\" >\n";
 ?>
 <br>
-<i>Matière du destinataire du message&nbsp;:&nbsp;</i><br />
+<i>Matière enseignée par les destinataires du message&nbsp;:&nbsp;</i><br />
 	<select name="matiere_destinataire" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
 		<option></option>
@@ -867,7 +867,7 @@ echo "</td></tr>\n";
 echo "<tr><td  colspan=\"3\" >\n";
 ?>
 <br>
-<i>Responsables (parents,...) d'élèves de la classe de&nbsp;:&nbsp;</i><br />
+<i>Responsables des élèves de la classe de&nbsp;:&nbsp;</i><br />
 	<select name="parents_id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
 		<option></option>
@@ -980,7 +980,7 @@ if (getSettingAOui('autorise_envoi_sms')) {
 
 <?php
 	$titre_infobulle="Envoi de SMS\n";
-	$texte_infobulle="Le message sera également envoyé en SMS aux destinataires (responsables et/ou élèves).\n Il faut dans ce cas saiisir un message ne contenant aucune mise en forme.\n";
+	$texte_infobulle="Le message sera également envoyé en SMS aux destinataires (responsables et/ou élèves) dont le numéro de portable est renseigné.\n Il faut dans ce cas saisir un message simple et ne contenant aucune mise en forme particulière.\n";
 	$tabdiv_infobulle[]=creer_div_infobulle('envoi_sms',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
 	echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('envoi_sms','y',100,100);\"  onmouseout=\"cacher_div('envoi_sms');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
