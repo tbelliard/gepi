@@ -749,42 +749,6 @@ function getModaliteGroupeAP($groupe_id) {
 			j_professeurs_matieres AS jpm
 		ON jpm.id_professeur = t0.login";
 	//echo $sqlGroupeModaliteProfs.";<br /><br />";
-
-	//On récupère les élèves du groupe puis leurs classes
-	/*
-	$sqlGroupeModaliteClasses = "		
-	SELECT DISTINCT t4.* , jgp.login FROM (
-		SELECT DISTINCT t3.*, jgem.code_modalite_elect AS modalite FROM (
-			SELECT t2.* , jgm.id_matiere FROM (
-				SELECT t1.id_classe , jgc.id_groupe FROM (
-					SELECT DISTINCT jec.id_classe FROM (
-						SELECT DISTINCT jga.*, jeg.login FROM `j_groupes_aid` AS jga
-						INNER JOIN `j_aid_eleves` AS jeg 
-						ON jeg.`id_aid` = jga.`id_aid`
-						WHERE jga.`id_aid` = $groupe_id
-					) AS t0
-					INNER JOIN
-						j_eleves_classes AS jec
-					ON t0.login = jec.login
-				) AS t1
-				INNER JOIN
-				j_groupes_classes AS jgc
-				ON jgc.id_classe = t1.id_classe
-				WHERE jgc.id_groupe NOT IN (SELECT jgt.id_groupe FROM j_groupes_types AS jgt) 
-			) AS t2
-			INNER JOIN
-				j_groupes_matieres AS jgm
-			ON jgm.id_groupe = t2.id_groupe
-		) AS t3
-		INNER JOIN 
-			j_groupes_eleves_modalites AS jgem
-		ON jgem.id_groupe = t3.id_groupe
-	) AS t4
-	INNER JOIN
-		j_groupes_professeurs AS jgp
-	ON jgp.id_groupe = t4.id_groupe ";
-	 * 
-	 */
 	
 	$sqlGroupeModaliteClasses = "
 	SELECT DISTINCT t4.* , jgp.login FROM (
@@ -884,6 +848,7 @@ function getCodeParcours($id_aid ) {
 		. "WHERE id_aid = $id_aid  ";
 	//echo $sqlParcours.'<br><br>';
 	$resultchargeDB = $mysqli->query($sqlParcours);
+
 	return $resultchargeDB ;
 	
 }
@@ -981,6 +946,7 @@ function libxml_display_errors($display_errors = true) {
 
 	return $chain_errors;
 }
+
 
 
 

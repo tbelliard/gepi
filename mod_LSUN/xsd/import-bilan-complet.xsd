@@ -18,11 +18,19 @@
             <xs:element name="entete" type="lsun:Entete" />
             <xs:element name="donnees" type="lsun:Donnees" />
         </xs:sequence>
-        <xs:attribute name="schemaVersion" type="xs:string" use="required" fixed="2.0">
+        <xs:attribute name="schemaVersion" use="required">
             <xs:annotation>
-                <xs:documentation>La version de ce XSD est fixée à 2.0
+                <xs:documentation>
+                    La dernière version de ce XSD est fixée à 3.0. 
+                    La version 2.0 des documents reste acceptée.
                 </xs:documentation>
             </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="2.0"/>
+                    <xs:enumeration value="3.0"/>
+                </xs:restriction>
+            </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
 
@@ -67,7 +75,7 @@
                 </xs:complexType>
                 <xs:unique name="responsableEtabConstraint">
                     <xs:annotation>
-                        <xs:documentation>Unicité du libellé du responsable
+                        <xs:documentation>Unicité du libellé du responsable établissement
                         </xs:documentation>
                     </xs:annotation>
                     <xs:selector xpath="lsun:responsable-etab" />
@@ -486,7 +494,7 @@
             <xs:element name="vie-scolaire" type="lsun:VieScolaire" />
             <xs:element name="socle" minOccurs="0">
                 <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded">
+                    <xs:sequence minOccurs="8" maxOccurs="8">
                         <xs:element name="domaine" type="lsun:DomaineSocle" />
                     </xs:sequence>
                 </xs:complexType>
@@ -511,10 +519,9 @@
         <xs:attribute name="periode-ref" type="xs:IDREF" use="required" />
         <xs:attribute name="date-conseil-classe" type="xs:date" use="required" />
         <xs:attribute name="date-scolarite" type="xs:date" use="required" />
-        <xs:attribute name="date-verrou" type="xs:date" use="required" />
+        <xs:attribute name="date-verrou" type="lsun:StringDateTime" use="required" />
         <xs:attribute name="responsable-etab-ref" type="xs:IDREF" use="required" />
         <xs:attribute name="prof-princ-refs" type="xs:IDREFS" />
-        
     </xs:complexType>
 
     <xs:complexType name="Acquis">
@@ -645,7 +652,7 @@
             <xs:element name="socle">
                 <xs:complexType>
                     <xs:sequence minOccurs="8" maxOccurs="8">
-                        <xs:element name="domaine" type="lsun:DomaineSocle" />
+                        <xs:element name="domaine" type="lsun:DomaineSocleCycle" />
                     </xs:sequence>
                 </xs:complexType>
                 <xs:unique name="domaineSocleCycleConstraint">
@@ -671,9 +678,18 @@
         <xs:attribute name="cycle" type="lsun:Cycle" use="required" />
         <xs:attribute name="millesime" type="lsun:Millesime" use="required" />
         <xs:attribute name="date-creation" type="xs:date" use="required" />
-        <xs:attribute name="date-verrou" type="xs:date" use="required" />
+        <xs:attribute name="date-verrou" type="lsun:StringDateTime" use="required" />
         <xs:attribute name="responsable-etab-ref" type="xs:IDREF" use="required" />
         <xs:attribute name="prof-princ-refs" type="xs:IDREFS" />
+    </xs:complexType>    
+    
+    <xs:complexType name="DomaineSocleCycle">
+        <xs:annotation>
+            <xs:documentation>Décrit le positionnement de l'élève sur les domaines du socle commun dans les bilans de cycle
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="code" type="lsun:CodeDomaineSocle" use="required" />
+        <xs:attribute name="positionnement" type="lsun:PositionnementSocle" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="EnseignementComplement">
@@ -682,7 +698,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="code" type="lsun:CodeEnsCompl" use="required" />
-        <xs:attribute name="positionnement" type="lsun:PositionnementEnsCompl" use="required" />
+        <xs:attribute name="positionnement" type="lsun:PositionnementEnsCompl"/>
     </xs:complexType>
 
 	<xs:simpleType name="Millesime">
@@ -1028,4 +1044,16 @@
 		 <xs:minLength value="2"/>
 	 </xs:restriction>
 	</xs:simpleType>
+  
+    <xs:simpleType name="StringDateTime">
+        <xs:annotation>
+            <xs:documentation>Type utilisé pour les chaînes de caractères correspondant à une dateTime
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="10" />
+            <xs:maxLength value="19" />
+            <xs:pattern value="(\d{4}-\d{2}-\d{2})+(T\d{2}:\d{2}:\d{2})?" />
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>

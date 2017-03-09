@@ -324,7 +324,9 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$episGroupes->appendChild($noeudEpisGroupes);
 				// enseignants
 				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
-				$modaliteEns = getModaliteGroupeAP($episGroupe->id);
+				
+				$modaliteEns = getModaliteGroupe($episGroupe->id);
+				
 				if ($modaliteEns->num_rows) {
 					while ($ensModalite = $modaliteEns->fetch_object()) {
 						$noeudProf = $xml->createElement('enseignant-discipline');
@@ -338,6 +340,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 						$noeudProf->appendChild($attsProf);
 						$noeudEnseigneDis->appendChild($noeudProf);
 					}
+				
 				}
 				
 				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
@@ -347,6 +350,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 }
 
 if (getSettingValue("LSU_traite_AP") != "n") {
+				
 			/*----- acc-persos -----*/
 	$listeApCommuns = getAPCommun();
 	if ($listeApCommuns->num_rows) {
@@ -375,6 +379,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$accPersos->appendChild($noeudApCommun);
 		}
 		$donnees->appendChild($accPersos);
+		
 	//}
 
 		
@@ -404,7 +409,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			// on ajoute les enseignants
 			//print_r($apGroupe);
-			//echo '<br>11<br>';
+			//echo '<br><br>';
 			$profMatiere = getModaliteGroupeAP($apGroupe->id);
 			//print_r($profMatiere);
 			//echo '<br><br>';
@@ -428,7 +433,6 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$accPersosGroupes->appendChild($noeudApGroupes);
 			}
 		}
-		
 		$donnees->appendChild($accPersosGroupes);	
 	}
 }
