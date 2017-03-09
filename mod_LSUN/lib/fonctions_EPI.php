@@ -265,17 +265,32 @@ function delLienEPI($idEPI) {
 function getEpisGroupes($idEPI = NULL) {
 	global $mysqli;
 	
+	$tableClasses = implode(",",$_SESSION['afficheClasse']);
+	//if ($in) {$in = ','.$in;}
+	//$in = '0'.$in;
+	
 	$sqlEpisGroupes= "SELECT a.* , e.id_epi FROM aid AS a "
 		. "INNER JOIN  lsun_j_epi_enseignements AS e "
 		. "ON a.indice_aid = e.id_enseignements ";
 	if ($idEPI) {
 		$sqlEpisGroupes .= "WHERE e.id_epi = $idEPI ";
-	}
-	//echo $sqlEpisGroupes.";<br /><br />";
+	}	
 	
-	$sqlEpisGroupes = "SELECT t0.* , lec.periode FROM ("
-		. "$sqlEpisGroupes"
-		. ") AS t0 INNER JOIN lsun_epi_communs AS lec on t0.id_epi = lec.id ";
+	$sqlEpisGroupes = "SELECT DISTINCT t2.id , t2.nom , t2.indice_aid , t2.id_epi , t2.periode FROM (
+	SELECT t1.* , jae.login FROM (
+		SELECT t0.* , lec.periode FROM (
+			$sqlEpisGroupes 
+		) AS t0 
+		INNER JOIN lsun_epi_communs AS lec 
+		ON t0.id_epi = lec.id
+	) AS t1
+	INNER JOIN j_aid_eleves AS jae
+	ON jae.id_aid = t1.id
+) AS t2
+INNER JOIN j_eleves_classes AS jec
+ON jec.login = t2.login
+WHERE jec.id_classe IN ($tableClasses) ";
+	
 	
 	//echo $sqlEpisGroupes.";<br /><br />";
 	$resultchargeDB = $mysqli->query($sqlEpisGroupes);

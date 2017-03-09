@@ -73,7 +73,7 @@ include_once 'lib/fonctions.php';
 
 $corrigeMEF = filter_input(INPUT_POST, 'corrigeMEF');
 
-//debug_var();
+debug_var();
 
 if($corrigeMEF == 'y') {
 	enregistreMEF();
