@@ -393,7 +393,9 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			}
 
 	// Envoi de sms
-	if (getSettingAOui('autorise_envoi_sms')) {
+	if (getSettingAOui('autorise_envoi_sms') && isset($_POST['envoi_sms']) && $_POST['envoi_sms']=='oui') {
+		require_once("../lib/envoi_SMS.inc.php");
+		
 		/* code inutile pour l'instant, seuls les responsables et les éléves ont un tél. portable dans la base
 		if ($statuts_destinataires<>"_") {
 			// on complète le tableau des logins des destinataires
@@ -415,6 +417,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 		// On constitue la liste des numéros de portable destinataires du sms
 		$t_numeros=array();
 		$liste_logins_destinataires='';
+		$t_login_destinataires=array_unique($t_login_destinataires);
 		foreach($t_login_destinataires as $login) {
 			if ($liste_logins_destinataires<>'') $liste_logins_destinataires.=', ';
 			$liste_logins_destinataires.="'".$login."'";
@@ -424,13 +427,20 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			// les numéros de portable des responsables
 			$r_sql='SELECT `tel_port` FROM `resp_pers` WHERE `login` IN '.$liste_logins_destinataires;
 			$R_tel_ports=mysqli_query($GLOBALS["mysqli"], $r_sql);
-			while ($un_tel_port=mysqli_fetch_assoc($R_tel_ports)) $t_numeros[]=$un_tel_port['tel_port'];
+			while ($un_tel_port=mysqli_fetch_assoc($R_tel_ports)) if ($un_tel_port['tel_port']<>'') $t_numeros[]=$un_tel_port['tel_port'];
 			// les numéros de portable des élèves
 			$r_sql='SELECT `tel_port` FROM `eleves` WHERE `login` IN '.$liste_logins_destinataires;
 			$R_tel_ports=mysqli_query($GLOBALS["mysqli"], $r_sql);
-			while ($un_tel_port=mysqli_fetch_assoc($R_tel_ports)) $t_numeros[]=$un_tel_port['tel_port'];
+			while ($un_tel_port=mysqli_fetch_assoc($R_tel_ports)) if ($un_tel_port['tel_port']<>'') $t_numeros[]=$un_tel_port['tel_port'];
 			}
 		$t_numeros=array_unique($t_numeros);
+		
+		$sms=strip_tags($_POST['message']);
+		// suppression des tabulations
+		$sms=preg_replace('/\t/','',$sms);
+
+		// envoi des SMS
+		envoi_SMS($t_numeros,$sms);
 	}
 
 
@@ -959,6 +969,22 @@ $tabdiv_infobulle[]=creer_div_infobulle('SUPPRESSION',$titre_infobulle,"",$texte
 
 echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('SUPPRESSION','y',100,100);\"  onmouseout=\"cacher_div('SUPPRESSION');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 ?>
+<br><br>
+
+<?php
+if (getSettingAOui('autorise_envoi_sms')) {
+?>
+	<i>Envoyer une copie du message par SMS&nbsp;:&nbsp;</i>
+	<label for='envoi_sms_oui'>Oui </label><input type="radio" name="envoi_sms" id="envoi_sms_oui" value="oui" />
+	<label for='envoi_sms_non'>Non </label><input type="radio" name="envoi_sms" id="envoi_sms_non" value="non" checked="checked" />
+
+<?php
+	$titre_infobulle="Envoi de SMS\n";
+	$texte_infobulle="Le message sera également envoyé en SMS aux destinataires (responsables et/ou élèves).\n Il faut dans ce cas saiisir un message ne contenant aucune mise en forme.\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('envoi_sms',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+	echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('envoi_sms','y',100,100);\"  onmouseout=\"cacher_div('envoi_sms');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+}?>
 <br><br>
 
 <?php
