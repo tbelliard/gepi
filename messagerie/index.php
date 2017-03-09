@@ -663,7 +663,7 @@ $tabdiv_infobulle[]=creer_div_infobulle('aide',$titre_infobulle,"",$texte_infobu
 
 // Titre
 echo "<tr><td colspan=\"3\"><span class='grand'>".$titre_mess." ";
-echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('aide','y',100,100);\"  onmouseout=\"cacher_div('aide');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('aide','y',100,100);\"  onmouseout=\"cacher_div('aide');\"><img src='../images/icons/ico_aide.png' width='15' height='25' /></a>";
 echo "</span></td></tr>\n";
 
 
@@ -697,7 +697,7 @@ $texte_infobulle="Afin d'afficher un compte à rebours, vous devez écrire un te
 //$texte_infobulle.="\n";
 $tabdiv_infobulle[]=creer_div_infobulle('a_propos_DECOMPTE',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_DECOMPTE','y',100,100);\"  onmouseout=\"cacher_div('a_propos_DECOMPTE');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_DECOMPTE','y',100,100);\"  onmouseout=\"cacher_div('a_propos_DECOMPTE');\"><img src='../images/icons/ico_aide.png' width='15' height='25' /></a>";
 echo "<br /><br />";
 echo "</p>";
 
@@ -967,7 +967,7 @@ En revanche, lors de la saisie d'un message destiné à des individus, classe, m
 //$texte_infobulle.="\n";
 $tabdiv_infobulle[]=creer_div_infobulle('SUPPRESSION',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('SUPPRESSION','y',100,100);\"  onmouseout=\"cacher_div('SUPPRESSION');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('SUPPRESSION','y',100,100);\"  onmouseout=\"cacher_div('SUPPRESSION');\"><img src='../images/icons/ico_aide.png' width='15' height='25' /></a>";
 ?>
 <br><br>
 
@@ -983,7 +983,7 @@ if (getSettingAOui('autorise_envoi_sms')) {
 	$texte_infobulle="Le message sera également envoyé en SMS aux destinataires (responsables et/ou élèves) dont le numéro de portable est renseigné.\n Il faut dans ce cas saisir un message simple et ne contenant aucune mise en forme particulière.\n";
 	$tabdiv_infobulle[]=creer_div_infobulle('envoi_sms',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-	echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('envoi_sms','y',100,100);\"  onmouseout=\"cacher_div('envoi_sms');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+	echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('envoi_sms','y',100,100);\"  onmouseout=\"cacher_div('envoi_sms');\"><img src='../images/icons/ico_aide.png' width='15' height='25' /></a>";
 }?>
 <br><br>
 
