@@ -1611,7 +1611,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 
 	if(getSettingAOui('active_module_LSUN')) {
 		$tab_type_enseignements_complement=get_tab_types_enseignements_complement();
-		if(count($tab_type_enseignements_complement)>0) {
+		if(count($tab_type_enseignements_complement["indice"])>0) {
 			$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
 			$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_mat)>0) {
