@@ -155,7 +155,13 @@ function getClasses($classeId = NULL) {
  */
 function creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte, $newParcoursId = '') {
 	global $mysqli;
-	$sqlNewParcours = "INSERT INTO lsun_parcours_communs (id,periode,classe,codeParcours,description)  VALUES ('$newParcoursId', '$newParcoursTrim', '$newParcoursClasse', '$newParcoursCode', '$newParcoursTexte') ON DUPLICATE KEY UPDATE periode = '$newParcoursTrim',classe = '$newParcoursClasse',codeParcours = '$newParcoursCode',description = '$newParcoursTexte' ";
+	$newParcoursTexte = $mysqli->real_escape_string($newParcoursTexte);
+	if ($newParcoursId) {
+		$newParcoursId = "'".$newParcoursId."'";
+	}	else {
+		$newParcoursId = 'NULL';
+	}
+	$sqlNewParcours = "INSERT INTO lsun_parcours_communs (id,periode,classe,codeParcours,description)  VALUES ($newParcoursId, $newParcoursTrim, $newParcoursClasse, '$newParcoursCode', '$newParcoursTexte') ON DUPLICATE KEY UPDATE periode = $newParcoursTrim ,classe = $newParcoursClasse,codeParcours = '$newParcoursCode',description = '$newParcoursTexte' ";
 	//echo $sqlNewParcours;
 	$resultchargeDB = $mysqli->query($sqlNewParcours);	
 	return $resultchargeDB;	
@@ -243,10 +249,14 @@ function supprimeParcours($deleteParcours) {
  */
 function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParcoursTexte, $modifieParcoursLien, $idLien = NULL) {
 	global $mysqli;
+	
+	//$newParcoursTexte = $mysqli->real_escape_string($newParcoursTexte);
+	$modifieParcoursTexte = $mysqli->real_escape_string($modifieParcoursTexte);
+	
 	$sqlModifieParcours = "UPDATE lsun_parcours_communs "
 		. "SET codeParcours = '$modifieParcoursCode', description = '$modifieParcoursTexte' "
 		. "WHERE id = '$modifieParcoursId' ";
-	//echo $sqlModifieParcours;
+	echo $sqlModifieParcours;
 	$mysqli->query($sqlModifieParcours);
 	
 	$sqlModifieParcoursLien = "INSERT INTO lsun_j_aid_parcours (id_aid, id_parcours) VALUES ($modifieParcoursLien , $modifieParcoursId) "

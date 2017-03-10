@@ -290,7 +290,7 @@ if ($cpt) {echo "			</div>\n";}
 					</select>
 				</td>
 				<td>
-					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="70" value="<?php echo $parcoursCommun->description; ?>"/>
+					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="70" value="<?php echo htmlspecialchars($parcoursCommun->description); ?>"/>
 				</td>
 				<td>
 				
