@@ -677,13 +677,11 @@ function getModaliteGroupe($groupe_id) {
 	
 	$sqlGroupeModalite = "SELECT t4.* , u.numind FROM (
 	SELECT DISTINCT t3.* , m.code_matiere FROM ( 	
-		SELECT t1.`id_groupe` , t1.id_aid , t1.indice_aid , t1.login , t1.matiere AS matiere , t2.modalite FROM (
+		SELECT t1.id_aid , t1.indice_aid , t1.login , t1.matiere AS matiere , t2.modalite FROM (
 			SELECT t00.* , ljee.id_epi FROM (
 				SELECT t0.*, jpm.id_matiere AS matiere FROM ( 
-					SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.id_utilisateur AS login FROM `j_aid_utilisateurs` AS jgp 
-					INNER JOIN `j_groupes_aid` AS jga 
-					ON jgp.`id_aid` = jga.`id_aid` 
-					WHERE jga.`id_aid` = $groupe_id
+					SELECT jgp.id_aid , jgp.indice_aid , jgp.id_utilisateur AS login FROM `j_aid_utilisateurs` AS jgp 
+					WHERE jgp.`id_aid` = $groupe_id
 				) AS t0 
 				LEFT JOIN j_professeurs_matieres AS jpm 
 				ON jpm.id_professeur = t0.login
@@ -701,7 +699,7 @@ INNER JOIN utilisateurs AS u
 ON t4.login = u.login
 ";
 	
-	// echo $sqlGroupeModalite.'<br>';
+	//echo $sqlGroupeModalite.'<br>';
 	$resultchargeDB = $mysqli->query($sqlGroupeModalite);
 	return $resultchargeDB ;
 	

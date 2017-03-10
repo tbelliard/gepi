@@ -408,13 +408,20 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			//On a que 1 commentaire de groupe dans l'export alors qu'on peut en avoir 1 par trimestre, on prend le dernier
 			
 			$commentairesGroupeAp = getCommentaireGroupe($apGroupe->id);
-			while ($commentaire = $commentairesGroupeAp->fetch_object()) {
-				if (trim($commentaire->appreciation)) {
-					$tmp_chaine=nettoye_texte_vers_chaine($commentaire->appreciation);
-					$noeudComGroupeAp = $xml->createElement('commentaire',substr(trim($tmp_chaine),0,600));
+			if ($commentairesGroupeAp->num_rows) {
+				$commentaires = "";
+				while ($commentaire = $commentairesGroupeAp->fetch_object()) {
+					$commentaires .= trim($commentaire->appreciation)."\n";
+				}
+				if (trim($commentaires)) {
+					$tmp_chaine=nettoye_texte_vers_chaine($commentaires);
+					$noeudComGroupeAp = $xml->createElement('commentaire',substr(trim($commentaires),0,600));
 					$noeudApGroupes->appendChild($noeudComGroupeAp);
 				}
 			}
+			
+				
+				
 			
 			// on ajoute les enseignants
 			//print_r($apGroupe);
@@ -457,6 +464,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		
 		$eleves = getElevesExport();
 		while ($eleve = $eleves->fetch_object()) {
+			$exporteEleve = FALSE;
 			$desAcquis = FALSE;
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			$respEtabElv = "RESP_".$eleve->id_resp_etab;
@@ -646,6 +654,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			$retourAvisElv=getAppConseil($eleve->login , $eleve->periode);
 			if ($retourAvisElv->num_rows) {
+				$exporteEleve = true;
 				$avisElv = $retourAvisElv->fetch_object()->avis;
 				$avisConseil = $avisElv;
 				$acquisConseils = $xml->createElement('acquis-conseils', $avisConseil);
@@ -776,7 +785,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			
 			
-			if ($desAcquis) {$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);}
+			if ($desAcquis && $exporteEleve) {$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);}
 		}	
 		$donnees->appendChild($bilansPeriodiques);
 
