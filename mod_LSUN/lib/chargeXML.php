@@ -620,14 +620,17 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							
 							$commentaireEleve = getCommentaireEleveParcours($eleve->login,$parcoursElv->id_aid, $eleve->periode);//
 							if ($commentaireEleve->num_rows) {
-								$creeParcours = TRUE;
 								$tmp_chaine=nettoye_texte_vers_chaine($commentaireEleve->fetch_object()->appreciation);
 								$commentaireEleve = substr(trim($tmp_chaine),0,600);
-								$noeudParcoursEleve = $xml->createElement('parcours',$commentaireEleve);
-								$attsParcoursEleve = $xml->createAttribute('code');
-								$attsParcoursEleve->value = $typeParcoursEleve->codeParcours;
-								$noeudParcoursEleve->appendChild($attsParcoursEleve);
-								$listeParcoursEleve->appendChild($noeudParcoursEleve);
+								if (strlen($commentaireEleve)) {
+									$noeudParcoursEleve = $xml->createElement('parcours',$commentaireEleve);
+									$attsParcoursEleve = $xml->createAttribute('code');
+									$attsParcoursEleve->value = $typeParcoursEleve->codeParcours;
+									$noeudParcoursEleve->appendChild($attsParcoursEleve);
+									$listeParcoursEleve->appendChild($noeudParcoursEleve);
+									$creeParcours = TRUE;
+								}
+								
 							}							
 						}
 					}

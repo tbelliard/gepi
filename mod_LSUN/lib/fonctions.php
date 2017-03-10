@@ -664,8 +664,8 @@ function getAidEleve($login, $typeAid, $periode = NULL) {
 	if($periode) {
 		$sqlGetAidEleve02 .= " AND ac.display_begin <= $periode AND ac.display_end >= $periode ";
 	}
-		
-	//echo $sqlGetAidEleve02."<br>";
+	
+	// echo $sqlGetAidEleve02."<br>";
 	$resultchargeDB = $mysqli->query($sqlGetAidEleve02);
 	return $resultchargeDB ;
 	
@@ -711,20 +711,6 @@ ON t4.login = u.login
 function getModaliteGroupeAP($groupe_id) {
 	global $mysqli;
 	// La modalité est dans la matiere de la classe
-	/*
-	$sqlGroupeModaliteProfs = "
-		SELECT t0.*, jpm.id_matiere AS matiere FROM (
-			SELECT jga.`id_groupe` , jga.id_aid , jga.indice_aid , jgp.id_utilisateur AS login FROM 
-				`j_aid_utilisateurs` AS jgp 
-			INNER JOIN `j_groupes_aid` AS jga 
-			ON jgp.`id_aid` = jga.`id_aid` 
-			WHERE jga.`id_aid` = $groupe_id
-		) AS t0
-		LEFT JOIN
-			j_professeurs_matieres AS jpm
-		ON jpm.id_professeur = t0.login";
-	 * 
-	 */
 	
 	$sqlGroupeModaliteProfs = "
 		SELECT t0.*, jpm.id_matiere AS matiere FROM (
@@ -832,7 +818,8 @@ function getCodeParcours($id_aid ) {
 	$sqlParcours = "SELECT DISTINCT jap.id_parcours, pc.codeParcours, pc.periode FROM lsun_j_aid_parcours AS jap "
 		. "INNER JOIN "
 		. "lsun_parcours_communs AS pc "
-		. "WHERE id_aid = $id_aid  ";
+		. "ON jap.id_parcours = pc.id "
+		. "WHERE jap.id_aid = $id_aid  ";
 	//echo $sqlParcours.'<br><br>';
 	$resultchargeDB = $mysqli->query($sqlParcours);
 
