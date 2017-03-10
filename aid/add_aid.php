@@ -627,6 +627,7 @@ if ($_SESSION['statut'] == 'professeur') {
 			   name="aid_nom" 
 			   size="100" 
 				<?php echo " value=\"".$aid_nom."\"";?>/>
+		<a href='#' onclick="document.getElementById('aidRegNom').value='<?php echo remplace_accents($nom_famille_aid, "all");?>'" title="Prendre pour nom d'AID, le nom de la catégorie d'AID."><img src='../images/icons/wizard.png' class='icone16' alt='Magic' /></a>
 	</p>
 	<p>
 		<label for="aidRegNum">
