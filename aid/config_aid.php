@@ -653,13 +653,13 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
 	</p>
 	<p>
 		<!--  onclick="javascript:Element.show('outils_comp');" -->
-		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_y" value="y" onchange="changement();" 
-			   onchange="js_adapte_outil_comp()" 
+		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_y" value="y" 
+			   onchange="changement(); js_adapte_outil_comp()" 
 				   <?php if ($activer_outils_comp=='y') echo " checked='checked' "; ?> />
 		<label for='activer_outils_comp_y'>&nbsp;Activer les outils compl&eacute;mentaires</label>
 		<br />
-		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_n" value="n" onchange="changement();" 
-			   onchange="js_adapte_outil_comp()" 
+		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_n" value="n" 
+			   onchange="changement();js_adapte_outil_comp()" 
 				   <?php if ($activer_outils_comp=='n') echo " checked='checked' "; ?> />
 		<label for='activer_outils_comp_n'>&nbsp;Désactiver les outils compl&eacute;mentaires</label>
 	</p>
@@ -695,7 +695,7 @@ function verif_type_aid() {
 			même lorsque l'administrateur a désactivé cette possibilité pour les professeurs responsables.
 		</p>
 <?php
-$call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
+$call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom, u.statut FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
 $nombre = mysqli_num_rows($call_liste_data);
 if ($nombre !=0) { ?>
 		<table border=0>
@@ -710,9 +710,12 @@ while ($obj_call_data = $call_liste_data->fetch_object()) {
     // $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
     $prenom_prof = $obj_call_data->prenom;
 ?>
-			<tr>
+			<tr title="<?php echo $obj_call_data->login;?>">
 				<td>
 					<strong><?php echo $nom_prof." ".$prenom_prof; ?></strong>
+				</td>
+				<td>
+					<em><?php echo $obj_call_data->statut; ?></em>
 				</td>
 				<td> <input type="checkbox" name="delete_<?php echo $login_prof; ?>" value="y" onchange="changement();" />
 					(cocher pour supprimer)
@@ -727,7 +730,7 @@ while ($obj_call_data = $call_liste_data->fetch_object()) {
 		<select size=1 name="reg_prof_login" onchange="changement();">
 			<option value=''>(aucun)</option>
 <?php
-$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
+$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
 $nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
 // while ($i < $nombreligne) {
@@ -739,7 +742,7 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
     // $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
     $prenom_el = $obj_call_prof->prenom;
 ?>
-			<option value="<?php echo $login_gestionnaire; ?>"><?php echo $nom_el; ?> <?php echo $prenom_el; ?></option>
+			<option value="<?php echo $login_gestionnaire; ?>" title="<?php echo $obj_call_prof->login;?>"><?php echo $nom_el; ?> <?php echo $prenom_el; ?> (<?php echo $obj_call_prof->statut;?>)</option>
 <?php
     $i++;
 }
