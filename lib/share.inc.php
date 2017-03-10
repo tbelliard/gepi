@@ -16123,15 +16123,38 @@ function calcule_cycle_et_niveau($mef_code_ele, $valeur_par_defaut_cycle="", $va
 			$niveau=6;
 		}
 		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10110001110") {
+			// C'est une classe de 5ème
 			$cycle=4;
 			$niveau=5;
 		}
 		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10210001110") {
+			// C'est une classe de 4ème
 			$cycle=4;
 			$niveau=4;
 		}
 		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10310019110") {
+			// C'est une classe de 3ème
 			$cycle=4;
+			$niveau=3;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="16410002110") {
+			// C'est une classe de 6ème SEGPA
+			$cycle=2;
+			$niveau=6;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="16510002110") {
+			// C'est une classe de 5ème SEGPA
+			$cycle=3;
+			$niveau=5;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="16610002110") {
+			// C'est une classe de 4ème SEGPA
+			$cycle=3;
+			$niveau=4;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="16710002110") {
+			// C'est une classe de 3ème SEGPA
+			$cycle=3;
 			$niveau=3;
 		}
 		else {
@@ -16146,20 +16169,43 @@ function calcule_cycle_et_niveau($mef_code_ele, $valeur_par_defaut_cycle="", $va
 		}
 	}
 	elseif($mef_code_ele=="10010012110") {
-			// C'est une classe de 6ème
-			$cycle=3;
-			$niveau=6;
+		// C'est une classe de 6ème
+		$cycle=3;
+		$niveau=6;
 	}
 	elseif($mef_code_ele=="10110001110") {
+		// C'est une classe de 5ème
 		$cycle=4;
 		$niveau=5;
 	}
 	elseif($mef_code_ele=="10210001110") {
+		// C'est une classe de 4ème
 		$cycle=4;
 		$niveau=4;
 	}
 	elseif($mef_code_ele=="10310019110") {
+		// C'est une classe de 3ème
 		$cycle=4;
+		$niveau=3;
+	}
+	elseif($mef_code_ele=="16410002110") {
+		// C'est une classe de 6ème SEGPA
+		$cycle=2;
+		$niveau=6;
+	}
+	elseif($mef_code_ele=="16510002110") {
+		// C'est une classe de 5ème SEGPA
+		$cycle=3;
+		$niveau=5;
+	}
+	elseif($mef_code_ele=="16610002110") {
+		// C'est une classe de 4ème SEGPA
+		$cycle=3;
+		$niveau=4;
+	}
+	elseif($mef_code_ele=="16710002110") {
+		// C'est une classe de 3ème SEGPA
+		$cycle=3;
 		$niveau=3;
 	}
 	else {
