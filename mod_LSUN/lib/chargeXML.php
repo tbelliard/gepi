@@ -259,7 +259,8 @@ if ($listeVieScoCommun->num_rows) {
 				$attVieSco->value = $valeur;
 				$noeudVieSco->appendChild($attVieSco);
 			}
-			$comVieScoCommun = $xml->createElement('commentaire', substr(trim($vieScoCommun->appreciation),0,600));
+			$tmp_chaine=nettoye_texte_vers_chaine($vieScoCommun->appreciation);
+			$comVieScoCommun = $xml->createElement('commentaire', substr(trim($tmp_chaine),0,600));
 			$noeudVieSco->appendChild($comVieScoCommun);
 			$viesScolairesCommuns->appendChild($noeudVieSco);
 		}
@@ -319,7 +320,8 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					$CommentaireEPI1 .= " ".trim($commentairesGroupe->fetch_object()->appreciation);
 					
 				}
-				$CommentaireEPI = substr($CommentaireEPI1, 0, 600);
+				$tmp_chaine=nettoye_texte_vers_chaine($CommentaireEPI1);
+				$CommentaireEPI = substr($tmp_chaine, 0, 600);
 				//echo $CommentaireEPI;
 				if ($CommentaireEPI) {
 					$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI);
@@ -406,7 +408,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$commentairesGroupeAp = getCommentaireGroupe($apGroupe->id);
 			while ($commentaire = $commentairesGroupeAp->fetch_object()) {
 				if (trim($commentaire->appreciation)) {
-					$noeudComGroupeAp = $xml->createElement('commentaire',substr(trim($commentaire->appreciation),0,600));
+					$tmp_chaine=nettoye_texte_vers_chaine($commentaire->appreciation);
+					$noeudComGroupeAp = $xml->createElement('commentaire',substr(trim($tmp_chaine),0,600));
 					$noeudApGroupes->appendChild($noeudComGroupeAp);
 				}
 			}
@@ -524,7 +527,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$noeudAcquis->appendChild($attsAcquis);
 					
 				}
-				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($acquisEleve->appreciation),0,600));
+				$tmp_chaine=nettoye_texte_vers_chaine($acquisEleve->appreciation);
+				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
 				$noeudAcquis->appendChild($noeudAcquisAppreciation);
 				$listeAcquis->appendChild($noeudAcquis);
 			}
@@ -556,7 +560,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$existeEpi = TRUE;
 							$commentaireEpiElv = getCommentaireAidElv($eleve->login, $epiEleve->id_aid, $eleve->periode);
 							if ($commentaireEpiElv->num_rows) {
-								$comm = substr(trim($commentaireEpiElv->fetch_object()->appreciation),0,600);
+								$tmp_chaine=nettoye_texte_vers_chaine($commentaireEpiElv->fetch_object()->appreciation);
+								$comm = substr(trim($tmp_chaine),0,600);
 								if ($comm) {
 									$noeudComEpiEleve = $xml->createElement('commentaire', $comm);
 									$noeudEpiEleve->appendChild($noeudComEpiEleve);
@@ -587,7 +592,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						
 						$commentaireAPEleve = getCommentaireAidElv($eleve->login, $accPersosEleve->id_aid, $eleve->periode);
 						if ($commentaireAPEleve->num_rows) {
-							$comm = substr(trim($commentaireAPEleve->fetch_object()->appreciation),0,600);
+							$tmp_chaine=nettoye_texte_vers_chaine($commentaireAPEleve->fetch_object()->appreciation);
+							$comm = substr(trim($tmp_chaine),0,600);
 							if ($comm) {
 								$noeudComApEleve = $xml->createElement('commentaire', $comm);
 								$noeudAPEleve->appendChild($noeudComApEleve);
@@ -613,7 +619,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$commentaireEleve = getCommentaireEleveParcours($eleve->login,$parcoursElv->id_aid, $eleve->periode);//
 							if ($commentaireEleve->num_rows) {
 								$creeParcours = TRUE;
-								$commentaireEleve = substr(trim($commentaireEleve->fetch_object()->appreciation),0,600);
+								$tmp_chaine=nettoye_texte_vers_chaine($commentaireEleve->fetch_object()->appreciation);
+								$commentaireEleve = substr(trim($tmp_chaine),0,600);
 								$noeudParcoursEleve = $xml->createElement('parcours',$commentaireEleve);
 								$attsParcoursEleve = $xml->createAttribute('code');
 								$attsParcoursEleve->value = $typeParcoursEleve->codeParcours;
@@ -656,7 +663,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			}
 			if (trim($retardEleve['appreciation']) && getSettingValue("LSU_commentaire_vie_sco")) {
 				// non obligatoire
-				$comVieSco = $xml->createElement('commentaire', substr(trim($retardEleve['appreciation']),0,600));
+				$tmp_chaine=nettoye_texte_vers_chaine($retardEleve['appreciation']);
+				$comVieSco = $xml->createElement('commentaire', substr(trim($tmp_chaine),0,600));
 				$vieScolaire->appendChild($comVieSco);
 			}
 			
