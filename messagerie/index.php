@@ -169,7 +169,7 @@ if ((isset($action)) and ($action == 'sup_entry')) {
 // Annulation des modifs
 //
 if ((isset($action)) and ($action == 'message') and (isset($_POST['cancel']))) {
-	unset ($id_mess);
+	unset ($id_mess); $contenu='';
 }
 
 
@@ -182,13 +182,13 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['message']));
 	//$contenu_cor = html_entity_decode($_POST['message']);
 
-	$statuts_destinataires = '_';
-	if (isset($_POST['desti_s'])) $statuts_destinataires .= 's';
-	if (isset($_POST['desti_p'])) $statuts_destinataires .= 'p';
-	if (isset($_POST['desti_c'])) $statuts_destinataires .= 'c';
-	if (isset($_POST['desti_a'])) $statuts_destinataires .= 'a';
-	if (isset($_POST['desti_r'])) $statuts_destinataires .= 'r';
-	if (isset($_POST['desti_e'])) $statuts_destinataires .= 'e';
+	$statuts_destinataires = '_'; $t_statuts_destinataires=array();
+	if (isset($_POST['desti_s'])) {$statuts_destinataires .= 's'; $t_statuts_destinataires[]='scolarite'; };
+	if (isset($_POST['desti_p'])) {$statuts_destinataires .= 'p'; $t_statuts_destinataires[]='professeur'; };
+	if (isset($_POST['desti_c'])) {$statuts_destinataires .= 'c'; $t_statuts_destinataires[]='cpe'; };
+	if (isset($_POST['desti_a'])) {$statuts_destinataires .= 'a'; $t_statuts_destinataires[]='administrateur'; };
+	if (isset($_POST['desti_r'])) {$statuts_destinataires .= 'r'; $t_statuts_destinataires[]='responsable'; };
+	if (isset($_POST['desti_e'])) {$statuts_destinataires .= 'e'; $t_statuts_destinataires[]='eleve'; };
 
 	$engagement_ele=isset($_POST['engagement_ele']) ? $_POST['engagement_ele'] : array();
 	$engagement_resp=isset($_POST['engagement_resp']) ? $_POST['engagement_resp'] : array();
@@ -392,6 +392,60 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 					$erreur=!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) && $erreur;
 			}
 
+	// Envoi de sms
+	if (getSettingAOui('autorise_envoi_sms') && isset($_POST['envoi_sms']) && $_POST['envoi_sms']=='oui') {
+		require_once("../lib/envoi_SMS.inc.php");
+		
+		/* code inutile pour l'instant, seuls les responsables et les éléves ont un tél. portable dans la base
+		if ($statuts_destinataires<>"_") {
+			// on complète le tableau des logins des destinataires
+			// avec les logins des utilisateurs dont le statut est destinataire sauf 'responsable' et 'eleve'
+			$liste_statuts=''; // liste des statuts destinataires sauf 'responsable' et 'eleve'
+			foreach($t_statuts_destinataires as $statut) {
+				if ($liste_statuts<>'') $liste_statuts.=', ';
+				if ($statut<>'responsable' || $statut<>'eleve') $liste_statuts.="'".$statut."'";
+				}
+			if ($liste_statuts<>'') {
+				$liste_statuts='('.$liste_statuts.')';
+				$r_sql='SELECT `login` FROM `utilisateurs` WHERE `statut` IN '.$liste_statuts;
+				$R_logins=mysqli_query($GLOBALS["mysqli"], $r_sql);
+				while ($un_login=mysqli_fetch_assoc($R_logins)) $t_login_destinataires[]=$un_login['login'];
+				$t_login_destinataires=array_unique($t_login_destinataires);
+				}
+		}
+		*/
+		// On constitue la liste des numéros de portable destinataires du sms
+		$t_numeros=array();
+		$liste_logins_destinataires='';
+		$t_login_destinataires=array_unique($t_login_destinataires);
+		foreach($t_login_destinataires as $login) {
+			if ($liste_logins_destinataires<>'') $liste_logins_destinataires.=', ';
+			$liste_logins_destinataires.="'".$login."'";
+			}
+		if ($liste_logins_destinataires<>'') {
+			$liste_logins_destinataires='('.$liste_logins_destinataires.')';
+			// les numéros de portable des responsables
+			$r_sql='SELECT `tel_port` FROM `resp_pers` WHERE `login` IN '.$liste_logins_destinataires;
+			$R_tel_ports=mysqli_query($GLOBALS["mysqli"], $r_sql);
+			while ($un_tel_port=mysqli_fetch_assoc($R_tel_ports)) if ($un_tel_port['tel_port']<>'') $t_numeros[]=$un_tel_port['tel_port'];
+			// les numéros de portable des élèves
+			$r_sql='SELECT `tel_port` FROM `eleves` WHERE `login` IN '.$liste_logins_destinataires;
+			$R_tel_ports=mysqli_query($GLOBALS["mysqli"], $r_sql);
+			while ($un_tel_port=mysqli_fetch_assoc($R_tel_ports)) if ($un_tel_port['tel_port']<>'') $t_numeros[]=$un_tel_port['tel_port'];
+			}
+		$t_numeros=array_unique($t_numeros);
+		
+		$sms=strip_tags($_POST['message']);
+		// suppression des tabulations
+		$sms=preg_replace('/\t/','',$sms);
+		// suppression des \n\n
+		while(strpos($sms,"\n\n")!==false) {$sms=preg_replace('/\n\n/',"\n",$sms);};
+
+		// envoi des SMS
+		envoi_SMS($t_numeros,$sms);
+	}
+
+
 		if (!$erreur) {
 			$msg_OK = "Le message a été enregistré.";
 			unset($contenu_cor);
@@ -409,6 +463,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysqli_error($GLOBALS["mysqli"]);
 		}
 	}
+ 
 }
 
 
@@ -609,13 +664,13 @@ $texte_infobulle="Un message peut être adressé à :<br />- tous les utilisateu
 $tabdiv_infobulle[]=creer_div_infobulle('aide',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
 // Titre
-echo "<tr><td colspan=\"4\"><span class='grand'>".$titre_mess." ";
-echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('aide','y',100,100);\"  onmouseout=\"cacher_div('aide');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+echo "<tr><td colspan=\"3\"><span class='grand'>".$titre_mess." ";
+echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('aide','y',100,100);\"  onmouseout=\"cacher_div('aide');\"><img src='../images/icons/ico_aide.png' width='15' height='25' /></a>";
 echo "</span></td></tr>\n";
 
 
 //Dates
-echo "<tr><td colspan=\"4\">\n";
+echo "<tr><td colspan=\"3\">\n";
 echo "<p><i>Le message sera affiché :</i><br />de la date : ";
 echo "<input type='text' name = 'display_date_debut' id= 'display_date_debut' size='10' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 
@@ -627,38 +682,38 @@ echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size=
 //echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo img_calendrier_js("display_date_fin", "img_bouton_display_date_fin");
 
-echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)</p></td></tr>\n";
+echo "(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br /><br /></p></td></tr>\n";
 
 //Date pour décompte
-echo "<tr><td colspan=\"4\">\n";
+echo "<tr><td colspan=\"3\">\n";
 echo "<p><i>Décompte des jours jusqu'au :</i> ";
 echo "<input type='text' name = 'display_date_decompte' id= 'display_date_decompte' size='10' value = \"".$display_date_decompte."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 //echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo img_calendrier_js("display_date_decompte", "img_bouton_display_date_decompte");
 
 echo " à <input type='text' name = 'display_heure_decompte' id= 'display_heure_decompte' size='5' value = \"".$display_heure_decompte."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />\n";
-echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.\n";
+echo "<span style='font-size:small'>(Respectez le format jj/mm/aaaa)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.</span>\n";
 
 $titre_infobulle="DECOMPTE\n";
-$texte_infobulle="Afin d'afficher un compte à rebours, vous devez écrire un texte du style&nbsp;:<br />Il vous reste _DECOMPTE_ pour saisir vos appréciations du 1er trimestre.<br />\n";
+$texte_infobulle="Afin d'afficher un compte à rebours, vous devez écrire un texte du style&nbsp;:<br />Il vous reste _DECOMPTE_ pour saisir vos appréciations du 1er trimestre.\n";
 //$texte_infobulle.="\n";
 $tabdiv_infobulle[]=creer_div_infobulle('a_propos_DECOMPTE',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_DECOMPTE','y',100,100);\"  onmouseout=\"cacher_div('a_propos_DECOMPTE');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
-
+echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_DECOMPTE','y',100,100);\"  onmouseout=\"cacher_div('a_propos_DECOMPTE');\"><img src='../images/icons/ico_aide.png' width='15' height='25' /></a>";
+echo "<br /><br />";
 echo "</p>";
 
 echo "</td></tr>\n";
 
 //Destinataires
-echo "<tr><td  colspan=\"4\"><i>Statut(s) des destinataires du message :</i></td></tr>\n";
+echo "<tr><td  colspan=\"3\"><i>Statut(s) des destinataires du message :</i></td></tr>\n";
 echo "<tr>\n";
-echo "<td><input type=\"checkbox\" id=\"desti_p\" name=\"desti_p\" value=\"desti_p\"";
+echo "<td width=\"33%\"><input type=\"checkbox\" id=\"desti_p\" name=\"desti_p\" value=\"desti_p\"";
 if (strpos($statuts_destinataires, "p")) {echo "checked";}
 echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_p' style='cursor: pointer;'>Professeurs</label></td>\n";
 
-echo "<td><input type=\"checkbox\" id=\"desti_c\" name=\"desti_c\" value=\"desti_c\"";
+echo "<td width=\"33%\"><input type=\"checkbox\" id=\"desti_c\" name=\"desti_c\" value=\"desti_c\"";
 if (strpos($statuts_destinataires, "c")) {echo "checked";}
 echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_c' style='cursor: pointer;'>C.P.E.</label></td>\n";
@@ -670,12 +725,12 @@ echo " /><label for='desti_s' style='cursor: pointer;'>Scolarité</label></td>\n
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td><input type=\"checkbox\" id=\"desti_a\" name=\"desti_a\" value=\"desti_a\"";
+echo "<td width=\"33%\"><input type=\"checkbox\" id=\"desti_a\" name=\"desti_a\" value=\"desti_a\"";
 if (strpos($statuts_destinataires, "a")) {echo "checked";}
 echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_a' style='cursor: pointer;'>Administrateur</label></td>\n";
 
-echo "<td><input type=\"checkbox\" id=\"desti_r\" name=\"desti_r\" value=\"desti_r\"";
+echo "<td width=\"33%\"><input type=\"checkbox\" id=\"desti_r\" name=\"desti_r\" value=\"desti_r\"";
 if (strpos($statuts_destinataires, "r")) {echo "checked";}
 echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_r' style='cursor: pointer;'>Responsables</label></td>\n";
@@ -688,10 +743,10 @@ echo " /><label for='desti_e' style='cursor: pointer;'>Elèves</label></td>\n";
 echo "</tr>\n";
 
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
 <br>
-<i>Destinataire du message&nbsp;:&nbsp;</i><br />
+<i>Personnel destinataire du message&nbsp;:&nbsp;</i><br />
 	<select name="login_destinataire" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
 		<option></option>
@@ -720,10 +775,10 @@ echo "<tr><td  colspan=\"4\" >\n";
 <?php
 echo "</td></tr>\n";
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
 <br>
-<i>Matière du destinataire du message&nbsp;:&nbsp;</i><br />
+<i>Matière enseignée par les destinataires du message&nbsp;:&nbsp;</i><br />
 	<select name="matiere_destinataire" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
 		<option></option>
@@ -747,13 +802,14 @@ echo "<tr><td  colspan=\"4\" >\n";
 	?>
 		</optgroup>
 	</select>
-<br><br>
+<br>
 
 <?php
 echo "</td></tr>\n";
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
+<br>
 <i>Classe dans laquelle enseignent les destinataires du message&nbsp;:&nbsp;</i><br />
 	<select name="id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
@@ -776,13 +832,13 @@ Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la
 	?>
 		</optgroup>
 	</select>
-<br><br>
-
+<br>
 <?php
 echo "</td></tr>\n";
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
+<br>
 <i>Élèves de la classe de&nbsp;:&nbsp;</i><br />
 	<select name="eleves_id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
@@ -805,14 +861,15 @@ Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la
 	?>
 		</optgroup>
 	</select>
-<br><br>
+<br>
 
 <?php
 echo "</td></tr>\n";
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
-<i>Responsables (parents,...) d'élèves de la classe de&nbsp;:&nbsp;</i><br />
+<br>
+<i>Responsables des élèves de la classe de&nbsp;:&nbsp;</i><br />
 	<select name="parents_id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
 		<optgroup>
 		<option></option>
@@ -834,13 +891,13 @@ Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la
 	?>
 		</optgroup>
 	</select>
-<br><br>
+<br>
 
 <?php
 echo "</td></tr>\n";
 
 echo "<tr>\n";
-echo "<td><input type=\"checkbox\" id=\"prof_suivi\" name=\"prof_suivi\" value=\"y\"";
+echo "<td colspan=\"3\"><br /><input type=\"checkbox\" id=\"prof_suivi\" name=\"prof_suivi\" value=\"y\"";
 if (isset($_POST['prof_suivi'])) {echo " checked";}
 echo " /><label for='prof_suivi' style='cursor: pointer;'> Déposer le message pour les \"".getSettingValue('gepi_prof_suivi')."\" actuellement associés aux classes.</label><br /><br />\n";
 echo "</td></tr>\n";
@@ -860,7 +917,7 @@ if(getSettingAOui('active_mod_engagements')) {
 
 	if($chaine_engagements_ele!="") {
 		echo "<tr>
-	<td colspan=\"4\" >
+	<td colspan=\"3\" >
 		<i>Élèves ayant un des engagements suivants&nbsp;:&nbsp;</i><br />
 		$chaine_engagements_ele
 		<br />
@@ -886,7 +943,7 @@ if(getSettingAOui('active_mod_engagements')) {
 
 	if($chaine_engagements_resp!="") {
 		echo "<tr>
-	<td colspan=\"4\" >
+	<td colspan=\"3\" >
 		<i>Responsables ayant un des engagements suivants&nbsp;:&nbsp;</i><br />
 		".$chaine_engagements_resp."<br />
 	</td>
@@ -895,7 +952,7 @@ if(getSettingAOui('active_mod_engagements')) {
 }
 
 
-echo "<tr><td  colspan=\"4\" >\n";
+echo "<tr><td  colspan=\"3\" >\n";
 ?>
 
 <i>Le destinataire peut supprimer ce message&nbsp;:&nbsp;</i>
@@ -912,8 +969,24 @@ En revanche, lors de la saisie d'un message destiné à des individus, classe, m
 //$texte_infobulle.="\n";
 $tabdiv_infobulle[]=creer_div_infobulle('SUPPRESSION',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('SUPPRESSION','y',100,100);\"  onmouseout=\"cacher_div('SUPPRESSION');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('SUPPRESSION','y',100,100);\"  onmouseout=\"cacher_div('SUPPRESSION');\"><img src='../images/icons/ico_aide.png' width='15' height='25' /></a>";
 ?>
+<br><br>
+
+<?php
+if (getSettingAOui('autorise_envoi_sms')) {
+?>
+	<i>Envoyer une copie du message par SMS&nbsp;:&nbsp;</i>
+	<label for='envoi_sms_oui'>Oui </label><input type="radio" name="envoi_sms" id="envoi_sms_oui" value="oui" />
+	<label for='envoi_sms_non'>Non </label><input type="radio" name="envoi_sms" id="envoi_sms_non" value="non" checked="checked" />
+
+<?php
+	$titre_infobulle="Envoi de SMS\n";
+	$texte_infobulle="Le message sera également envoyé en SMS aux destinataires (responsables et/ou élèves) dont le numéro de portable est renseigné.\n Il faut dans ce cas saisir un message simple et ne contenant aucune mise en forme particulière.\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('envoi_sms',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+	echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('envoi_sms','y',100,100);\"  onmouseout=\"cacher_div('envoi_sms');\"><img src='../images/icons/ico_aide.png' width='15' height='25' /></a>";
+}?>
 <br><br>
 
 <?php
@@ -922,17 +995,162 @@ echo js_checkbox_change_style('checkbox_change', 'texte_', "y", 0.5);
 echo "</td></tr>\n";
 
 // Message
-echo "<tr><td  colspan=\"4\">\n";
+echo "<tr><td  colspan=\"3\">\n";
 
 echo "<i>Mise en forme du message :</i>\n";
 
+/* Configuration via PHP
+
 $oCKeditor = new CKeditor('../ckeditor/');
-$oCKeditor->editor('message',$contenu) ;
+$config = array();
+// Tous les outils
+config['toolbar'] =array(
+	array('Source','-','Save','NewPage','DocProps','Preview','Print','-','Templates'),
+	array('Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo'),
+	array('Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt'),
+	array('Form','Checkbox','Radio','TextField','Textarea','Select','Button','ImageButton', 'HiddenField'),
+	array('Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat'),
+	array( 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl'),
+	array('Link','Unlink','Anchor'),
+	array('Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe'),
+	array( 'Styles','Format','Font','FontSize'),
+	array('TextColor','BGColor'),
+	array('Maximize', 'ShowBlocks','-','About')
+);
+
+$config['toolbar'] =array(
+	array('Save','NewPage','DocProps','Preview'),
+	array('Cut','Copy','Paste','PasteText','-','Undo','Redo'),
+	array('Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt'),
+	array('Bold','Italic','Underline','Strike','Subscript','Superscript','-','SpecialChar','-','RemoveFormat'),
+	array('Link','Unlink'),
+	array('Image','HorizontalRule','Smiley'),
+	'/',
+	array( 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'),
+	array( 'Styles','Format','Font','FontSize'),
+	array('TextColor','BGColor'),
+	array('About')
+);
+
+$config['stylesSet'] =array(
+
+		// Block Styles
+
+	array( 'name' => 'Titre bleu'		, 'element' => 'h3', 'styles' => array( 'color' => 'Blue' ) ),
+	array( 'name' => 'Titre rouge'		, 'element' => 'h3', 'styles' => array( 'color' => 'Red' ) ),
+
+		// Inline 'styles'
+
+	array( 'name' => 'Surligné jaune'	, 'element' => 'span', 'styles' => array( 'background-color' => 'Yellow' ) ),
+	array( 'name' => 'Surligné vert'	, 'element' => 'span', 'styles' => array( 'background-color' => 'Lime' ) ),
+	array( 'name' => 'Gros'				, 'element' => 'big' ),
+	array( 'name' => 'Petit'			, 'element' => 'small' ),
+	array( 'name' => 'Italique'			, 'element' => 'var' ),
+	array( 'name' => 'Barré'		, 'element' => 'del' ),
+	array( 'name' => 'Surligné'	, 'element' => 'ins' ),
+	array( 'name' => 'Guillemets'	, 'element' => 'q' ),
+
+		// Object Styles
+
+	array(
+		'name' => 'Image à gauche',
+		'element' => 'img',
+		'attributes' =>
+		array(
+			'style' => 'padding: 5px; margin-right: 5px',
+			'border' => '2',
+			'align' => 'left'
+		)
+	),
+
+	array(
+		'name' => 'Image à droite',
+		'element' => 'img',
+		'attributes' =>
+		array(
+			'style' => 'padding: 5px; margin-left: 5px',
+			'border' => '2',
+			'align' => 'right'
+		)
+	)
+
+);
+
+$config['font_names'] = 'Helvetica/Helvetica, Arial, sans-serif; Courier/Courier, Courier New, monospace; Times New Roman/Times New Roman, Times, serif; Geneva/Geneva, Verdana, sans-serif';
+
+$config['format_tags'] = 'p;h1;h2;h3;h4;h5;h6;pre';
+
+$oCKeditor->editor('message',$contenu,$config) ;
+
+*/
+?>
+
+<script src="../ckeditor/ckeditor.js"></script>  
+<textarea name="message" id ="message" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('message', 
+	{ 
+	toolbar : [ 
+		['Save','NewPage','DocProps','Preview'],
+		['Cut','Copy','Paste','PasteText','-','Undo','Redo'],
+		['Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt'],
+		['Bold','Italic','Underline','Strike','Subscript','Superscript','-','SpecialChar','-','RemoveFormat'],
+		['Link','Unlink'],
+		['Image','HorizontalRule','Smiley'],
+		'/',
+		[ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+		[ 'Styles','Format','Font','FontSize'],
+		['TextColor','BGColor'],
+		['About']
+		],
+
+		stylesSet : [
+		/* Block Styles */
+		{ name : 'Titre bleu'		, element : 'h3', styles : { 'color' : 'Blue' } },
+		{ name : 'Titre rouge'		, element : 'h3', styles : { 'color' : 'Red' } },
+		/* Inline Styles */
+		{ name : 'Surligné jaune'	, element : 'span', styles : { 'background-color' : 'Yellow' } },
+		{ name : 'Surligné vert'	, element : 'span', styles : { 'background-color' : 'Lime' } },
+		{ name : 'Gros'				, element : 'big' },
+		{ name : 'Petit'			, element : 'small' },
+		{ name : 'Italique'			, element : 'var' },
+		{ name : 'Barré'		, element : 'del' },
+		{ name : 'Surligné'		, element : 'ins' },
+		{ name : 'Guillemets'	, element : 'q' },
+		/* Object Styles */
+		{
+			name : 'Image à gauche',
+			element : 'img',
+			attributes :
+			{
+				'style' : 'padding: 5px; margin-right: 5px',
+				'border' : '2',
+				'align' : 'left'
+			}
+		},
+		{
+			name : 'Image à droite',
+			element : 'img',
+			attributes :
+			{
+				'style' : 'padding: 5px; margin-left: 5px',
+				'border' : '2',
+				'align' : 'right'
+			}
+		}
+		],
+	font_names : 'Helvetica/Helvetica, Arial, sans-serif; Courier/Courier, Courier New, monospace; Times New Roman/Times New Roman, Times, serif; Geneva/Geneva, Verdana, sans-serif',
+	format_tags : 'p;h1;h2;h3;h4;h5;h6;pre'
+	});
+</script>
+
+<?php
 
 echo "</td></tr>";
 
 // Boutons Enregistrer - Annuler
-echo "<tr><td colspan=\"4\" align=\"center\"> ";
+echo "<tr><td colspan=\"3\" align=\"center\"> ";
 
 echo "<input type='hidden' name='ok' value='y' />\n";
 
