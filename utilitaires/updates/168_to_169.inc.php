@@ -708,6 +708,15 @@ if ($test == -1) {
 				$result .= msj_ok("Ok !");
 			} else {
 				$result .= msj_erreur();
+
+				$result .= "Pas mieux&nbsp;: Il s'est produit une erreur probablement liée au paramétrage serveur MySQL n'acceptant pas les dates invalides et la tentative de passer outre a échoué.<br />Nouvelle tentative avec une date par défaut (1970-01-01 00:00:01)&nbsp: ";
+				$sql="ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '1970-01-01 00:00:01' AFTER periode;";
+				$result_inter = traite_requete($sql);
+				if ($result_inter == '') {
+					$result .= msj_ok("Ok !");
+				} else {
+					$result .= msj_erreur();
+				}
 			}
 		}
 	} else {
