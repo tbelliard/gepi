@@ -464,6 +464,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		
 		$eleves = getElevesExport();
 		while ($eleve = $eleves->fetch_object()) {
+			$exporteEleve = FALSE;
 			$desAcquis = FALSE;
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			$respEtabElv = "RESP_".$eleve->id_resp_etab;
@@ -653,6 +654,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			$retourAvisElv=getAppConseil($eleve->login , $eleve->periode);
 			if ($retourAvisElv->num_rows) {
+				$exporteEleve = true;
 				$avisElv = $retourAvisElv->fetch_object()->avis;
 				$avisConseil = $avisElv;
 				$acquisConseils = $xml->createElement('acquis-conseils', $avisConseil);
@@ -772,7 +774,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			
 			
-			if ($desAcquis) {$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);}
+			if ($desAcquis && $exporteEleve) {$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);}
 		}	
 		$donnees->appendChild($bilansPeriodiques);
 
