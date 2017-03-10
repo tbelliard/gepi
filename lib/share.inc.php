@@ -16323,6 +16323,9 @@ function get_tab_types_enseignements_complement() {
 
 	$tab=array();
 
+	$tab["indice"]=array();
+	$tab["code"]=array();
+
 	$sql="SELECT * FROM nomenclatures_valeurs WHERE type='enseignement_complement' ORDER BY code;";
 	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
@@ -16344,6 +16347,7 @@ function nettoye_texte_vers_chaine($texte, $remplacement_retour_ligne=" - ") {
 	// On remplace les retours à la ligne par des " - "
 	$chaine=preg_replace('/\n/', $remplacement_retour_ligne, trim($chaine));
 	$chaine=preg_replace('/('.$remplacement_retour_ligne.'){2,}/', $remplacement_retour_ligne, trim($chaine));
+	$chaine=preg_replace('/[ ]{2,}/', " ", trim($chaine));
 	$chaine=trim($chaine);
 
 	return $chaine;

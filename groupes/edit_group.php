@@ -1030,7 +1030,7 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 
 // 20170302
 if(getSettingAOui('active_module_LSUN')) {
-	if(count($tab_type_enseignements_complement)>0) {
+	if(count($tab_type_enseignements_complement["indice"])>0) {
 		echo "<br /><p><strong>Type d'enseignement de complément (ou non)&nbsp;:</strong><br />";
 		echo "<select onchange=\"changement()\" size=1 id='enseignement_complement' name='enseignement_complement'>\n";
 		echo "<option value='' title=\"Ce n'est pas un enseignement de complément.\"";
