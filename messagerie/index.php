@@ -438,6 +438,8 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 		$sms=strip_tags($_POST['message']);
 		// suppression des tabulations
 		$sms=preg_replace('/\t/','',$sms);
+		// suppression des \n\n
+		while(strpos($sms,"\n\n")!==false) {$sms=preg_replace('/\n\n/',"\n",$sms);};
 
 		// envoi des SMS
 		envoi_SMS($t_numeros,$sms);
