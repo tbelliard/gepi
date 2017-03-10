@@ -42,10 +42,13 @@ $liste_creation_auto_element_programme="";
 //$millesime=preg_replace("/[^0-9]{1,}[0-9]*/","",$gepiYear);
 $date_creation=strftime("%Y-%m-%d");
 
-$longueur_limite_ligne_adresse=32;
-if($date_creation>="2017-05-15") {
-	$longueur_limite_ligne_adresse=38;
-}
+$longueur_limite_lignes_adresse["ligne1"]=50;
+$longueur_limite_lignes_adresse["ligne2"]=50;
+$longueur_limite_lignes_adresse["ligne3"]=50;
+$longueur_limite_lignes_adresse["ligne4"]=50;
+$longueur_limite_lignes_adresse["code-postal"]=10;
+$longueur_limite_lignes_adresse["commune"]=100;
+
 $tab_erreur_adr=array();
 //++++++++++++++++++++++++++++++++++
 
@@ -734,8 +737,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						foreach ($attributsAdresse as $cle=>$valeur) {
 							if (!$valeur) {continue ;}
 
-							if((mb_strlen($valeur)>$longueur_limite_ligne_adresse)&&(!in_array("longueur_adresse_resp_".$responsable->pers_id, $tab_erreur_adr))) {
-								$msg_erreur_remplissage.="L'adresse postale de <a href='../responsables/modify_resp.php?pers_id=".$responsable->pers_id."' target='_blank'>".$responsable->civilite." ".$responsable->nom." ".$responsable->prenom."</a> dépasse ".$longueur_limite_ligne_adresse." caractères.<br />";
+							if((isset($longueur_limite_lignes_adresse[$cle]))&&(mb_strlen($valeur)>$longueur_limite_lignes_adresse[$cle])&&(!in_array("longueur_adresse_resp_".$responsable->pers_id, $tab_erreur_adr))) {
+								$msg_erreur_remplissage.="La ".$cle." de l'adresse postale de <a href='../responsables/modify_resp.php?pers_id=".$responsable->pers_id."' target='_blank'>".$responsable->civilite." ".$responsable->nom." ".$responsable->prenom."</a> dépasse ".$longueur_limite_lignes_adresse[$cle]." caractères.<br />";
 								$tab_erreur_adr[]="longueur_adresse_resp_".$responsable->pers_id;
 							}
 							$attAdresse = $xml->createAttribute($cle);
