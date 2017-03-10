@@ -689,10 +689,15 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$tab_cycle[$mef_code_ele]=$cycle_eleve_courant;
 				}
 
+				$tab_positionnement_trouve=array();
 				$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."';";
 				$res_ele_socle=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_ele_socle)>0) {
 					while($lig_ele_socle=mysqli_fetch_object($res_ele_socle)) {
+
+						if((in_array($lig_ele_socle->code_composante, $tab_domaines))&&(!in_array($lig_ele_socle->code_composante, $tab_positionnement_trouve))) {
+							$tab_positionnement_trouve[]=$lig_ele_socle->code_composante;
+						}
 
 						$socleElv=$xml->createElement('domaine');
 
@@ -706,7 +711,13 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 						$socle->appendChild($socleElv);
 					}
-					$noeudBilanElevePeriodique->appendChild($socle);
+
+					if(count($tab_domaines)==count($tab_positionnement_trouve)) {
+						$noeudBilanElevePeriodique->appendChild($socle);
+					}
+					elseif(isset($socle)) {
+						unset($socle);
+					}
 				}
 			}
 
@@ -972,6 +983,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 								$on_a_un_BilanFinCycle_pour_cet_eleve=TRUE;
 							}
 
+						}
+						elseif(isset($socle)) {
+							unset($socle);
 						}
 
 						if ($on_a_un_BilanFinCycle_pour_cet_eleve) {
