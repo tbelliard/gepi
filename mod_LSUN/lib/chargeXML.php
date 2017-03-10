@@ -303,7 +303,11 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 			/*----- epis-groupes -----*/
 //if (FALSE) {
 			$episGroupes = $xml->createElement('epis-groupes');
+			$creeEpisGroupes = FALSE;
 			$listeEpisGroupes = getEpisGroupes();
+			if ($listeEpisGroupes->num_rows) {
+				$creeEpisGroupes = TRUE;
+			}
 			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
 				$noeudEpisGroupes = $xml->createElement('epi-groupe');
 				//id="EPI_GROUPE_02"
@@ -356,7 +360,10 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
 				
 			}
-		$donnees->appendChild($episGroupes);
+			if ($creeEpisGroupes) {
+				$donnees->appendChild($episGroupes);
+			}
+		
 }
 
 if (getSettingValue("LSU_traite_AP") != "n") {
