@@ -408,13 +408,20 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			//On a que 1 commentaire de groupe dans l'export alors qu'on peut en avoir 1 par trimestre, on prend le dernier
 			
 			$commentairesGroupeAp = getCommentaireGroupe($apGroupe->id);
-			while ($commentaire = $commentairesGroupeAp->fetch_object()) {
-				if (trim($commentaire->appreciation)) {
-					$tmp_chaine=nettoye_texte_vers_chaine($commentaire->appreciation);
-					$noeudComGroupeAp = $xml->createElement('commentaire',substr(trim($tmp_chaine),0,600));
+			if ($commentairesGroupeAp->num_rows) {
+				$commentaires = "";
+				while ($commentaire = $commentairesGroupeAp->fetch_object()) {
+					$commentaires .= trim($commentaire->appreciation)."\n";
+				}
+				if (trim($commentaires)) {
+					$tmp_chaine=nettoye_texte_vers_chaine($commentaires);
+					$noeudComGroupeAp = $xml->createElement('commentaire',substr(trim($commentaires),0,600));
 					$noeudApGroupes->appendChild($noeudComGroupeAp);
 				}
 			}
+			
+				
+				
 			
 			// on ajoute les enseignants
 			//print_r($apGroupe);
