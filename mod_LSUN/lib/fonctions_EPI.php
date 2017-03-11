@@ -169,9 +169,6 @@ function supprimeEPI($EpiId) {
 	delMatiereEPI($EpiId);
 	delClasseEPI($EpiId);
 	delLienEPI($EpiId);
-	//delLsun_j_epi_enseignements($EpiId);
-	//$sqlDelEpiEns = "DELETE FROM lsun_j_epi_enseignements WHERE id_epi = '$EpiId'; ";
-	//$mysqli->query($sqlDelEpiEns);
 	$sqlDeleteEpi = "DELETE FROM lsun_epi_communs WHERE id = '$EpiId' ";
 	//echo $sqlDeleteEpi.';<br>';
 	$mysqli->query($sqlDeleteEpi);

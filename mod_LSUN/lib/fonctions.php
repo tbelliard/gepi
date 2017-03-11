@@ -236,6 +236,9 @@ function supprimeParcours($deleteParcours) {
 	$sqlDelParcours = "DELETE FROM lsun_parcours_communs WHERE id = $deleteParcours ";
 	//echo $sqlDelParcours;
 	$mysqli->query($sqlDelParcours);
+	$sqlDelParcoursAid = "DELETE FROM lsun_j_aid_parcours WHERE id_parcours = $deleteParcours ";
+	$mysqli->query($sqlDelParcoursAid);
+	
 }
 
 /**

@@ -157,6 +157,8 @@ function delAP($supprimerAp) {
 	global $mysqli;
 	$sqlDelAP = "DELETE FROM lsun_ap_communs WHERE id = $supprimerAp";
 	$mysqli->query($sqlDelAP);
+	$sqlDelAPAid = "DELETE FROM lsun_j_ap_aid WHERE id_ap = $supprimerAp";
+	$mysqli->query($sqlDelAPAid);
 }
 
 function modifieAP($id, $IntituleAp, $ApDescription, $ApLiaisonAid, $ApDisciplines) {
