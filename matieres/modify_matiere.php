@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -582,6 +582,11 @@ if((isset($current_matiere))&&($current_matiere!="")) {
 			$chaine_domaines.="&amp;rech_domaine[]=".$tab_domaines[$loop];
 		}
 		echo "<a href='../eleves/recherche.php?is_posted_recherche2=y&amp;rech_matiere[]=".$current_matiere.$chaine_domaines.add_token_in_url()."' title=\"Extraire la liste des professeurs (associés aux enseignements ci-dessous).\" target='_blank'><img src='../images/group16.png' class='icone16' /></a>";
+
+		if(acces("/matieres/associations_matieres_enseignements.php", $_SESSION['statut'])) {
+			echo " <a href='associations_matieres_enseignements.php?matiere=".$current_matiere."' title=\"Modifier les associations matière/enseignements.\"><img src='../images/edit16.png' class='icone16' /></a>";
+		}
+
 		echo "<br />";
 		while($lig_ens=mysqli_fetch_object($res_ens)) {
 

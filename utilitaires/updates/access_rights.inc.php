@@ -1899,6 +1899,18 @@ autre='F',
 description='Socle: Import',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/matieres/associations_matieres_enseignements.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Associations matières/enseignements',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

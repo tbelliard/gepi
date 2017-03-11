@@ -141,6 +141,9 @@ require_once("../lib/header.inc.php");
 	if(acces("/gestion/gerer_modalites_election_enseignements.php", $_SESSION['statut'])) {
 		echo " | <a href='../gestion/gerer_modalites_election_enseignements.php' title=\"Gérer les modalités d'élection des enseignements.\">Modalités d'élection enseignements</a>";
 	}
+	if(acces("/matieres/associations_matieres_enseignements.php", $_SESSION['statut'])) {
+		echo " | <a href='associations_matieres_enseignements.php' title=\"Modifier les matières associées aux enseignements.\">Associations matières/enseignements</a>";
+	}
 ?>
 </p>
 
