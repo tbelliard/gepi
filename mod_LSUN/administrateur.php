@@ -307,17 +307,17 @@ while ($AidParc = $AidParcours->fetch_object()) { ?>
 				</td>
 				
 				<td>
-					<input type="submit" class="btnSupprime" 
-						   alt="Boutton supprimer" 
-						   name="supprimeParcours[<?php echo $parcoursCommun->id; ?>]" 
-						   value="y"
-						   title="Supprimer ce parcours" />
-					/
 					<input type="submit" class="btnValide" 
 						   alt="Submit button" 
 						   name="modifieParcours" 
 						   value="<?php echo $parcoursCommun->id; ?>"
 						   title="Modifier ce parcours" />
+					/
+					<input type="submit" class="btnSupprime" 
+						   alt="Boutton supprimer" 
+						   name="supprimeParcours[<?php echo $parcoursCommun->id; ?>]" 
+						   value="y"
+						   title="Supprimer ce parcours" />
 				</td>
 			</tr>
 <?php } ?>
@@ -832,8 +832,8 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 					<!-- Validation des modifications de cet EPI -->
 
 					<div>
-							<button type="submit" name="supprimeEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer cet EPI</button>
 							<button type="submit" name="modifieEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/enabled.png' />Modifier cet EPI</button>
+							<button type="submit" name="supprimeEpi" value="<?php echo $epiCommun->id; ?>" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer cet EPI</button>
 							<button type="submit" name="creeAidEpi" value="<?php echo $epiCommun->id; ?>" disabled hidden><img src='../images/icons/copy-16.png' /> Créer un AID pour cet EPI</button>
 					</div>
 				</div>
@@ -1218,8 +1218,8 @@ while ($classe = $classes->fetch_object()) { ?>
 						</table>
 
 				<p>
-					<button type="submit" name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer</button>
 					<button type="submit" name="modifierAp" value="<?php echo  $ap->id; ?>" id="modifierAp_<?php echo  $ap->id; ?>" title="Enregistrer les modifications pour cet Accompagnement Personnalisé" ><img src='../images/enabled.png' /> Modifier</button>
+					<button type="submit" name="supprimerAp" value="<?php echo  $ap->id; ?>" id="supprimeAp_<?php echo  $ap->id; ?>" title="Supprimer cet Accompagnement Personnalisé" ><img src='../images/disabled.png' style="width: 16px;" /> Supprimer</button>
 					<button type="submit" name="creeAidAp" value="<?php echo $ap->id; ?>" disabled hidden ><img src='../images/icons/copy-16.png' /> Créer un AID pour cet AP</button>
 					
 					</p>
