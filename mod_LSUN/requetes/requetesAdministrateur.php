@@ -31,12 +31,13 @@ $_SESSION['afficheClasse'] = $classesSelectionnee ? $classesSelectionnee : (isse
 $ajouteEPI = filter_input(INPUT_POST, 'ajouteEPI');
 $supprimeEPI = filter_input(INPUT_POST, 'supprimeEpi');
 $modifieEPI = filter_input(INPUT_POST, 'modifieEpi');
+$soumetSelection = filter_input(INPUT_POST, 'soumetSelection');
 
 $ajouteAP = filter_input(INPUT_POST, 'creeAP');
 
 $msg_requetesAdmin="";
 
-if (count($classesSelectionnee)>0) {
+if ($soumetSelection) {
 	$_SESSION['afficheClasse']=array();
 	foreach ($classesSelectionnee as $key=>$value) {
 		$_SESSION['afficheClasse'][]=$key;

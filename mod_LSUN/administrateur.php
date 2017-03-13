@@ -251,6 +251,8 @@ if ($cpt) {echo "			</div>\n";}
   </fieldset>
 </form>
 
+
+<div id="defAid">
 <!-- ======================================================================= -->
 <!-- Formulaire Parcours -->
 
@@ -1414,5 +1416,16 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 		</p>
 	</fieldset>
 </form>
+
+</div>
+
+<?php echo count($selectionClasse);
+if (!$selectionClasse) { ?>
+<script type='text/javascript'>
+	document.getElementById("defAid").style.display='none';
+</script>
+<?php } ?>
+
+
 
 
