@@ -34,12 +34,14 @@ $modifieEPI = filter_input(INPUT_POST, 'modifieEpi');
 
 $ajouteAP = filter_input(INPUT_POST, 'creeAP');
 
+$msg_requetesAdmin="";
 
-if (count($classesSelectionnee)) {
+if (count($classesSelectionnee)>0) {
 	$_SESSION['afficheClasse']=array();
 	foreach ($classesSelectionnee as $key=>$value) {
 		$_SESSION['afficheClasse'][]=$key;
 	}
+	$msg_requetesAdmin.="<span style='color:green'>".count($classesSelectionnee)." classe(s) sélectionnée(s).</span><br />";
 }
 
 
@@ -48,6 +50,7 @@ foreach ($newResponsable as $valeur) {
 		$sqlNewResponsable = "INSERT INTO lsun_responsables (id, login) VALUES ('', '".$valeur."')";
 		//echo $sqlNewResponsable;
 		$resultchargeDB = $mysqli->query($sqlNewResponsable);
+		$msg_requetesAdmin.="<span style='color:green'>Ajout du responsable établissement ".civ_nom_prenom($valeur).".</span><br />";
 	}
 }
 
@@ -57,6 +60,7 @@ if ($supprimeResponsable) {
 	$sqlNewResponsable = "DELETE FROM lsun_responsables WHERE login = '".$supprimeResponsable."'" ;
 	//echo $sqlNewResponsable;
 	$resultchargeDB = $mysqli->query($sqlNewResponsable);
+	$msg_requetesAdmin.="<span style='color:green'>Suppression de ".civ_nom_prenom($supprimeResponsable)." comme responsable établissement.</span><br />";
 }
 
 // on crée un parcours
@@ -67,7 +71,12 @@ if ('y' == $newParcours) {
 	$newParcoursCode = filter_input(INPUT_POST, 'newParcoursCode');
 	$newParcoursTexte = filter_input(INPUT_POST, 'newParcoursTexte');
 	//echo 'on crée '.$newParcoursTrim.' → '.$newParcoursClasse.' → '.$newParcoursCode.' → '.$newParcoursTexte;
-	creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte);
+	if(creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte)) {
+		$msg_requetesAdmin.="<span style='color:green'>Nouveau parcours créé.</span><br />";
+	}
+	else {
+		$msg_requetesAdmin.="<span style='color:red'>Échec lors de la création du Nouveau parcours.</span><br />";
+	}
 }
 
 // on supprime un parcours
@@ -77,7 +86,12 @@ if (count($deleteParcours)) {
 	//var_dump($deleteParcours);
 	//echo '<br>';
 	foreach ($deleteParcours as $key=>$value) {
-		supprimeParcours($key);
+		if(supprimeParcours($key)) {
+			$msg_requetesAdmin.="<span style='color:green'>Parcours n°$key supprimé.</span><br />";
+		}
+		else {
+			$msg_requetesAdmin.="<span style='color:red'>Échec lors de la suppresion du parcours n°$key.</span><br />";
+		}
 	}
 }
 
@@ -93,7 +107,12 @@ if ($modifieParcours) {
 	
 	//echo $modifieParcoursTexte[$modifieParcours];
 	//modifieParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte, $modifieParcours);
-	modifieParcours($modifieParcoursId[$modifieParcours], $modifieParcoursCode[$modifieParcours], $modifieParcoursTexte[$modifieParcours], $modifieParcoursLien[$modifieParcours]);
+	if(modifieParcours($modifieParcoursId[$modifieParcours], $modifieParcoursCode[$modifieParcours], $modifieParcoursTexte[$modifieParcours], $modifieParcoursLien[$modifieParcours])) {
+		$msg_requetesAdmin.="<span style='color:green'>Parcours modifié.</span><br />";
+	}
+	else {
+		$msg_requetesAdmin.="<span style='color:red'>Échec lors de la modification du parcours.</span><br />";
+	}
 }
 
 if ($ajouteEPI) {
@@ -113,7 +132,12 @@ if ($ajouteEPI) {
 
 if ($supprimeEPI) {
 	//echo "supprimeEPI($supprimeEPI)<br />";
-	supprimeEPI($supprimeEPI);
+	if(supprimeEPI($supprimeEPI)) {
+		$msg_requetesAdmin.="<span style='color:green'>EPI supprimé.</span><br />";
+	}
+	else {
+		$msg_requetesAdmin.="<span style='color:red'>Échec lors de la suppression de l'EPI.</span><br />";
+	}
 }
 
 if ($modifieEPI) {
@@ -156,7 +180,9 @@ echo "</pre>";
 				$id_epi = $modifieEPI;
 				//$modifieEpiLiaison[][num] = $tableauModifieEpiLiaison[1];
 				//echo $id_enseignement."<br>";
-				lieEpiCours($id_epi , $id_enseignement , $aid);
+				if(!lieEpiCours($id_epi , $id_enseignement , $aid)) {
+					$msg_requetesAdmin.="<span style='color:red'>Erreur lors de la liaison de l'EPI avec l'AID n°$aid.</span><br />";
+				}
 			}
 		}
 	}
@@ -168,7 +194,6 @@ if ($ajouteAP) {
 	$newApDisciplines = filter_input(INPUT_POST, 'newApDisciplines', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$newApLiaisonAID = filter_input(INPUT_POST, 'newApLiaisonAID' );
 	saveAP($newApIntitule, $newApDisciplines, $newApDescription, $newApLiaisonAID);
-	
 }
 
 

@@ -53,6 +53,7 @@ function getApAid() {
 
 function saveAP($ApIntitule, $ApDisciplines, $ApDescription, $ApLiaisonAID, $id = NULL) {
 	global $mysqli;
+	global $msg_requetesAdmin;
 	
 	if (!$ApDescription) {
 		$ApDescription = '';
@@ -66,45 +67,63 @@ function saveAP($ApIntitule, $ApDisciplines, $ApDescription, $ApLiaisonAID, $id 
 	}
 	$sqlCreeAP .= ", \"$ApIntitule\" , \"$ApDescription\") ON DUPLICATE KEY UPDATE intituleAP = \"$ApIntitule\" , descriptionAP = \"$ApDescription\" ";
 	//echo '<br>'.$sqlCreeAP.';<br>';
-	$mysqli->query($sqlCreeAP);
-	//echo $id." → ";
-	//On récupère l'id'
-	if ($id == NULL) {
-		$sqlGetId = "SELECT id FROM lsun_ap_communs WHERE intituleAP = \"$ApIntitule\" AND descriptionAP = \"$ApDescription\" ";
-		//echo '<br>'.$sqlGetId.';<br>';
-		$id = $mysqli->query($sqlGetId)->fetch_object()->id;
-	}
-	else {
-		//On a un id, il faut supprimer les enregistrements de lsun_j_ap_matiere pour les recréer
-		$delMatiereAp = "DELETE FROM lsun_j_ap_matiere WHERE id_ap = $id";
-		//echo '<br>'.$delMatiereAp.';<br>';
-		$mysqli->query($delMatiereAp);
-	}
-	//echo "AP: id=$id<br />";
+	if($mysqli->query($sqlCreeAP)) {
+		$msg_requetesAdmin.="<span style='color:green'>Paramètres AP enregistrés.</span><br />";
 
-	// $ApDisciplines est un tableau
-	foreach ($ApDisciplines as $discipline) {
-		$code = substr($discipline,0,-1) ;
-		//echo "discipline=$discipline, code=$code<br />";
-		$matiere = getMatiereOnMatiere($code)->code_matiere;
-		$modalite = substr($discipline,-1) ;
-		//echo "modalite=$modalite<br />";
-		//echo $id." ".$matiere." ".$modalite."<br>";
-
-		if($matiere=="") {
-			echo "<p style='color:red'><strong>Erreur&nbsp;:</strong> Une matière n'a pas été enregistrée pour l'AP n°$id faute de code_matiere valide.</p>";
+		//echo $id." → ";
+		//On récupère l'id'
+		if ($id == NULL) {
+			$sqlGetId = "SELECT id FROM lsun_ap_communs WHERE intituleAP = \"$ApIntitule\" AND descriptionAP = \"$ApDescription\" ";
+			//echo '<br>'.$sqlGetId.';<br>';
+			$id = $mysqli->query($sqlGetId)->fetch_object()->id;
 		}
 		else {
-			$sqlMatiereAp = "INSERT INTO lsun_j_ap_matiere (id_enseignements, modalite ,id_ap) VALUES (\"$matiere\",\"$modalite\",\"$id\") ON DUPLICATE KEY UPDATE id_enseignements = \"$matiere\" ";
-			//echo '<br>'.$sqlMatiereAp.';<br>';
-			$mysqli->query($sqlMatiereAp);
+			//On a un id, il faut supprimer les enregistrements de lsun_j_ap_matiere pour les recréer
+			$delMatiereAp = "DELETE FROM lsun_j_ap_matiere WHERE id_ap = $id";
+			//echo '<br>'.$delMatiereAp.';<br>';
+			$mysqli->query($delMatiereAp);
+		}
+		//echo "AP: id=$id<br />";
+
+		// $ApDisciplines est un tableau
+		if(count($ApDisciplines)>0) {
+			$msg_requetesAdmin.="<span style='color:green'>Enregistrement des disciplines associées à l'AP&nbsp;:</span> ";
+		}
+		foreach ($ApDisciplines as $discipline) {
+			$code = substr($discipline,0,-1) ;
+			//echo "discipline=$discipline, code=$code<br />";
+			$matiere = getMatiereOnMatiere($code)->code_matiere;
+			$modalite = substr($discipline,-1) ;
+			//echo "modalite=$modalite<br />";
+			//echo $id." ".$matiere." ".$modalite."<br>";
+
+			if($matiere=="") {
+				$msg_requetesAdmin.="<span style='color:red' title=\"Erreur : Une matière n'a pas été enregistrée pour l'AP n°$id faute de code_matiere valide.\">$matiere</span> ";
+			}
+			else {
+				$sqlMatiereAp = "INSERT INTO lsun_j_ap_matiere (id_enseignements, modalite ,id_ap) VALUES (\"$matiere\",\"$modalite\",\"$id\") ON DUPLICATE KEY UPDATE id_enseignements = \"$matiere\" ";
+				//echo '<br>'.$sqlMatiereAp.';<br>';
+				if(!$mysqli->query($sqlMatiereAp)) {
+					$msg_requetesAdmin.="<span style='color:red' title=\"ERREUR\">".$code."</span> ";
+				}
+				else {
+					$msg_requetesAdmin.="<span style='color:green'>".$code."</span> ";
+				}
+			}
+		}
+		if(count($ApDisciplines)>0) {
+			$msg_requetesAdmin.="<br />";
+		}
+		
+		$sqlLiaisonApAid = "INSERT INTO lsun_j_ap_aid (id_aid, id_ap) VALUES (\"$ApLiaisonAID\",\"$id\") ON DUPLICATE KEY UPDATE id_aid = \"$ApLiaisonAID\" ";
+		//echo '<br>'.$sqlLiaisonApAid.';<br>';
+		if(!$mysqli->query($sqlLiaisonApAid)) {
+			$msg_requetesAdmin.="<span style='color:red'>Erreur lors de l'enregistrement de la liaison AP/AID.</span><br />";
 		}
 	}
-		
-	$sqlLiaisonApAid = "INSERT INTO lsun_j_ap_aid (id_aid, id_ap) VALUES (\"$ApLiaisonAID\",\"$id\") ON DUPLICATE KEY UPDATE id_aid = \"$ApLiaisonAID\" ";
-	//echo '<br>'.$sqlLiaisonApAid.';<br>';
-	$mysqli->query($sqlLiaisonApAid);
-	
+	else {
+		$msg_requetesAdmin.="<span style='color:red'>Erreur lors de l'enrregistrement des paramètres de l'AP.</span><br />";
+	}	
 }
 
 function getAp() {
@@ -136,7 +155,6 @@ function getDisciplines($id_ap) {
 	$sqlMatAP = "SELECT * FROM lsun_j_ap_matiere WHERE id_ap = '$id_ap' ";
 	$resultchargeDB = $mysqli->query($sqlMatAP);
 	return $resultchargeDB;
-	
 }
 
 function getApGroupes($idAP = NULL) {
