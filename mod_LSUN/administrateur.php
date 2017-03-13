@@ -134,7 +134,9 @@ if (file_exists('LSUN_nomenclatures.xml')) {
 $periodes = getPeriodes();
 $classes = getClasses();
 
-
+if(isset($msg_requetesAdmin)) {
+	echo "<div align='center'>".$msg_requetesAdmin."</div>";
+}
 ?>
 
 <h2>Procédure</h2>
@@ -258,7 +260,7 @@ if ($cpt) {echo "			</div>\n";}
 				Parcours communs
 	</legend>
 		<table>
-			<caption style="caption-side:bottom">parcours éducatifs communs à une classe pour une période</caption>
+			<caption style="caption-side:bottom">Parcours éducatifs communs à une classe pour une période</caption>
 			<thead>
 				<tr>
 					<th>Période</th>
@@ -368,6 +370,8 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 				</td>
 			</tr>
 		</table> 
+		<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Les parcours affichés sont ceux des classes sélectionnées.<br />
+		Si vous voulez voir tous les parcours saisis, sélectionnez toutes les classes dans le premier formulaire et validez la sélection.</p>
 	</fieldset>
 </form>
 

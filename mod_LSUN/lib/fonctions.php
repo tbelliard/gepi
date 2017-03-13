@@ -237,8 +237,8 @@ function supprimeParcours($deleteParcours) {
 	//echo $sqlDelParcours;
 	$mysqli->query($sqlDelParcours);
 	$sqlDelParcoursAid = "DELETE FROM lsun_j_aid_parcours WHERE id_parcours = $deleteParcours ";
-	$mysqli->query($sqlDelParcoursAid);
-	
+	$res=$mysqli->query($sqlDelParcoursAid);
+	return $res;
 }
 
 /**
@@ -259,14 +259,14 @@ function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParco
 	$sqlModifieParcours = "UPDATE lsun_parcours_communs "
 		. "SET codeParcours = '$modifieParcoursCode', description = '$modifieParcoursTexte' "
 		. "WHERE id = '$modifieParcoursId' ";
-	echo $sqlModifieParcours;
+	//echo $sqlModifieParcours.";<br />";
 	$mysqli->query($sqlModifieParcours);
 	
 	$sqlModifieParcoursLien = "INSERT INTO lsun_j_aid_parcours (id_aid, id_parcours) VALUES ($modifieParcoursLien , $modifieParcoursId) "
 		. "ON DUPLICATE KEY UPDATE id_aid = $modifieParcoursLien ";
 	//echo $sqlModifieParcoursLien;
-	$mysqli->query($sqlModifieParcoursLien);
-	
+	$res=$mysqli->query($sqlModifieParcoursLien);
+	return $res;
 }
 
 /**
