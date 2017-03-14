@@ -1419,8 +1419,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 
 </div>
 
-<?php echo count($selectionClasse);
-if (!$selectionClasse) { ?>
+<?php if (!$selectionClasse) { ?>
 <script type='text/javascript'>
 	document.getElementById("defAid").style.display='none';
 </script>
