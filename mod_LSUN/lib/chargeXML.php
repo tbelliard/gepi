@@ -263,13 +263,21 @@ if ($listeVieScoCommun->num_rows) {
 				$noeudVieSco->appendChild($attVieSco);
 			}
 			$tmp_chaine=nettoye_texte_vers_chaine($vieScoCommun->appreciation);
-			$comVieScoCommun = $xml->createElement('commentaire', substr(trim($tmp_chaine),0,600));
+			$comVieSco = substr(trim($tmp_chaine),0,600);
+			//echo "-".$VieScoCommun."-";
+			if (!$comVieSco) {
+				$comVieSco = "-";
+				$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire, vous devez vous assurer que c'est normal (mais ce n'est pas bloquant).</p>";
+			}
+			$comVieScoCommun = $xml->createElement('commentaire', $comVieSco);
 			$noeudVieSco->appendChild($comVieScoCommun);
 			$viesScolairesCommuns->appendChild($noeudVieSco);
 		}
 		
 			
 		$donnees->appendChild($viesScolairesCommuns);
+}else {
+	$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire.</p>";
 }
 
 			/*----- epis -----*/
