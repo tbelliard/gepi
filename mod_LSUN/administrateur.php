@@ -247,6 +247,7 @@ if ($cpt) {echo "			</div>\n";}
 			</button>
 		</p>
 
+		<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Le choix des EPI/AP/Parcours n'est proposé qu'une fois le choix des classes effectué.</p>
 
   </fieldset>
 </form>
