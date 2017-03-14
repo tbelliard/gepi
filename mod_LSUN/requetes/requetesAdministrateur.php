@@ -215,3 +215,12 @@ if ($modifierAp) {
 	modifieAP($modifierAp, $changeIntituleAp[$modifierAp], $changeApDescription[$modifierAp], $changeLiaisonApAid[$modifierAp], $changeApDisciplines);
 }
 
+if(isset($_GET['nettoyer_doublons_AP'])) {
+	check_token(false);
+
+	$nettoyage_anomalies_tables_AP=corrige_anomalie_mod_LSUN();
+	if($nettoyage_anomalies_tables_AP!="") {
+		echo "<div align='center'>".$nettoyage_anomalies_tables_AP."</div>";
+	}
+}
+

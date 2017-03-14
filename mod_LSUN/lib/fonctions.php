@@ -932,7 +932,47 @@ function libxml_display_errors($display_errors = true) {
 	return $chain_errors;
 }
 
+function check_anomalie_mod_LSUN() {
+	global $mysqli;
 
+	$retour="";
 
+	//$sql="SELECT COUNT(id_aid) AS nbr_doublon, id_aid FROM lsun_j_ap_aid GROUP BY id_aid HAVING COUNT(id_aid) > 1;";
+	$sql="SELECT * FROM lsun_j_ap_aid AS t0
+		WHERE NOT EXISTS (
+			SELECT * FROM lsun_ap_communs AS t1
+			WHERE t0.id_ap = t1.id
+		);";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$retour.="<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> ";
+		while($lig=mysqli_fetch_object($res)) {
+			$retour.="L'AID n°".$lig->id_aid." (".get_valeur_champ("aid","id='".$lig->id_aid."'", "nom").") est associé à plusieurs AP.<br />";
+		}
+		$retour.="<a href='".$_SERVER["PHP_SELF"]."?nettoyer_doublons_AP=y".add_token_in_url()."'>Corriger</a></p>";
+	}
+
+	return $retour;
+}
+
+// $mode à utiliser par la suite si nécessaire pour nettoyer tout ou seulement certaines tables
+function corrige_anomalie_mod_LSUN($mode="nettoyer_doublons_AP") {
+	global $mysqli;
+
+	$retour="";
+
+	if($mode=="nettoyer_doublons_AP") {
+		$sql="DELETE FROM lsun_j_ap_aid WHERE NOT EXISTS ( SELECT * FROM lsun_ap_communs AS t1 WHERE lsun_j_ap_aid.id_ap = t1.id );";
+		$del=mysqli_query($mysqli, $sql);
+		if($del) {
+			$retour.="<span style='color:green'>Suppression des doublons de liaisons AP effectuée.</span><br />";
+		}
+		else {
+			$retour.="<span style='color:red'>Erreur lors de la suppression des doublons de liaisons AP.</span><br />";
+		}
+	}
+
+	return $retour;
+}
 
 

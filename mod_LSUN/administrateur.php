@@ -134,6 +134,11 @@ if (file_exists('LSUN_nomenclatures.xml')) {
 $periodes = getPeriodes();
 $classes = getClasses();
 
+$anomalies_tables=check_anomalie_mod_LSUN();
+if($anomalies_tables!="") {
+	echo "<div align='center'>".$anomalies_tables."</div>";
+}
+
 if(isset($msg_requetesAdmin)) {
 	echo "<div align='center'>".$msg_requetesAdmin."</div>";
 }
