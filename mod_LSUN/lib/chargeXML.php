@@ -103,20 +103,30 @@ $xml->appendChild($items);
 		$donnees->appendChild($responsablesEtab);
 		
 		/*----- Élèves -----*/
+		//$tab_ele_deja=array();
 		$eleves = $xml->createElement('eleves');
 		while ($eleve = $listeEleves->fetch_object()){
-				$noeudEleve = $xml->createElement('eleve');
-					$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
-						'nom'=>substr($eleve->nom,0,100),
-						'prenom'=>substr($eleve->prenom,0,100),
-						'code-division'=>substr($eleve->classe,0,8));
-					foreach ($attributsEleve as $cle=>$valeur) {
-						$attEleve = $xml->createAttribute($cle);
-						$attEleve->value = $valeur;
-						$noeudEleve->appendChild($attEleve);
-					}
-				$eleves->appendChild($noeudEleve);
+			$noeudEleve = $xml->createElement('eleve');
+
+			$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
+				'nom'=>substr($eleve->nom,0,100),
+				'prenom'=>substr($eleve->prenom,0,100),
+				'code-division'=>substr($eleve->classe,0,8));
+			foreach ($attributsEleve as $cle=>$valeur) {
+				$attEleve = $xml->createAttribute($cle);
+				$attEleve->value = $valeur;
+				$noeudEleve->appendChild($attEleve);
 			}
+
+			$eleves->appendChild($noeudEleve);
+
+			/*
+			if(in_array('EL_'.$eleve->id_eleve, $tab_ele_deja)) {
+				$msg_erreur_remplissage.="";
+			}
+			$tab_ele_deja[]='EL_'.$eleve->id_eleve;
+			*/
+		}
 		$donnees->appendChild($eleves);
 		
 		/*----- Périodes -----*/
@@ -491,7 +501,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 				$noeudBilanElevePeriodique->appendChild($attsElevePeriode);
 			}
-			
+
+			$tab_disciplines_deja=array();
+
 			$listeAcquis = $xml->createElement('liste-acquis');
 			$acquisEleves = getAcquisEleve($eleve->login, $eleve->periode);
 			// <acquis discipline-ref="DI_030602" enseignant-refs="ENS_0123456789ABE" element-programme-refs="EP_05" moyenne-eleve="18/20" moyenne-structure="15/20">
@@ -504,7 +516,12 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$moyenne = getMoyenne($acquisEleve->id_groupe);
 				$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 				$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
-				
+
+				if(in_array($matiere, $tab_disciplines_deja)) {
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br />";
+				}
+				$tab_disciplines_deja[]=$matiere;
+
 				$donneesProfs = getProfGroupe ($acquisEleve->id_groupe);
 				$prof = "";
 				while ($profMatiere = $donneesProfs->fetch_object()) {
@@ -545,9 +562,12 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$attsAcquis= $xml->createAttribute($cle);
 					$attsAcquis->value = $valeur;
 					$noeudAcquis->appendChild($attsAcquis);
-					
 				}
 				$tmp_chaine=nettoye_texte_vers_chaine($acquisEleve->appreciation);
+				if(trim($tmp_chaine)=="") {
+					// Apparemment, on ne récupère que les enseignements avec appréciation non vide... Exact?
+					$msg_erreur_remplissage.="L'appréciation de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>.<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br />";
+				}
 				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
 				$noeudAcquis->appendChild($noeudAcquisAppreciation);
 				$listeAcquis->appendChild($noeudAcquis);

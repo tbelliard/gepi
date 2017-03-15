@@ -438,7 +438,7 @@ function getAcquisEleve($eleve, $periode) {
 	//$sqlAcquis = "SELECT * FROM matieres_notes WHERE login = '$eleve' AND periode = $periode ";
 	$sqlAcquis01 = "SELECT mn.* , ma.appreciation FROM matieres_notes AS mn INNER JOIN matieres_appreciations AS ma "
 		. "ON mn.login = ma.login AND mn.periode = ma.periode AND mn.id_groupe = ma.id_groupe "
-		. "WHERE mn.login = '$eleve' AND mn.periode = $periode "
+		. "WHERE mn.login = '$eleve' AND mn.periode = '$periode' "
 		. "AND mn.`id_groupe` NOT IN (SELECT jgt.id_groupe FROM j_groupes_types AS jgt) "
 		. "GROUP BY mn.`id_groupe` ";
 	//$sqlAcquis02 = "SELECT s1.*, jme.idEP FROM ($sqlAcquis01) AS s1 INNER JOIN  j_mep_eleve AS jme ON jme.idEleve = s1.login ";
@@ -450,7 +450,7 @@ function getAcquisEleve($eleve, $periode) {
 	//=== mef
 	$sqlAcquis = "SELECT s6.* , c.mef_code FROM ($sqlAcquis06) AS s6 INNER JOIN classes AS c ON s6.id_classe = c.id ";
 	
-	//echo $sqlAcquis.'<br><br>';
+	//echo $sqlAcquis.';<br><br>';
 	$resultchargeDB = $mysqli->query($sqlAcquis);
 	return $resultchargeDB;
 	
