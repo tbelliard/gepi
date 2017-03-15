@@ -4097,7 +4097,7 @@ die();
 			}
 		}
 
-		if($tab_bull['eleve'][$i]['appreciation_absences'] != "") {
+		//if($tab_bull['eleve'][$i]['appreciation_absences'] != "") {
 			$hauteur_restant_pour_appreciation_absences=$param_bull2016["hauteur_communication_famille"]-10-$hauteur_lignes_absences_retards-$hauteur_orientation;
 			if($hauteur_restant_pour_appreciation_absences<10) {
 				$hauteur_restant_pour_appreciation_absences=10;
@@ -4106,7 +4106,7 @@ die();
 				}
 				// Sinon, on va avoir un souci
 			}
-		}
+		//}
 
 		$y_lignes_absences_et_retards=$param_bull2016["y_communication_famille"]+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-$hauteur_lignes_absences_retards;
 		$y_cadre_orientation=$param_bull2016["y_communication_famille"]+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-1;
@@ -4325,9 +4325,13 @@ die();
 		// On commence par la ligne le plus en bas parmi les lignes absences et on inscrit ensuite, si elles sont demandées à l'affichage, les lignes au-dessus une à une
 		$h_ligne_retard_abs=3.5;
 		$decal=3.5*3;
+
+		//$y_lignes_absences_et_retards_2=$y_lignes_absences_et_retards;
+		$y_lignes_absences_et_retards_2=$y_communication_famille+$param_bull2016["hauteur_communication_famille"]-5*$h_ligne_retard_abs;
+
 		// Heures perdues
 		if($param_bull2016["bull2016_afficher_nb_heures_perdues"]=="y") {
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards_2+$decal);
 			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Nombre d'heures de cours manquées du fait de ses absences, justifiées ou non justifiées : "."       heure(s)",0,2,'L');
 			$decal-=3.5;
@@ -4346,7 +4350,7 @@ die();
 			elseif($nb_nj>=1) {
 				$s="s";
 			}
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards_2+$decal);
 			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences non justifiées par les responsables légaux : ".$nb_nj." demi-journée".$s,0,2,'L');
 			$decal-=3.5;
@@ -4365,7 +4369,7 @@ die();
 			elseif($nb_j>=1) {
 				$s="s";
 			}
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards_2+$decal);
 			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences justifiées par les responsables légaux : ".$nb_j." demi-journée".$s,0,2,'L');
 			$decal-=3.5;
@@ -4383,14 +4387,14 @@ die();
 			elseif($nb_j>=1) {
 				$s="s";
 			}
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards_2+$decal);
 			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Total des absences : ".$nb_j." demi-journée".$s,0,2,'L');
 			$decal-=3.5;
 		}
 
 		if($param_bull2016["bull2016_aff_retards"]=="y") {
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards_2+$decal);
 			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Retards : ".$tab_bull['eleve'][$i]['eleve_retards'],0,2,'L');
 		}
