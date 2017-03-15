@@ -263,6 +263,9 @@ if ($listeVieScoCommun->num_rows) {
 				$noeudVieSco->appendChild($attVieSco);
 			}
 			$tmp_chaine=nettoye_texte_vers_chaine($vieScoCommun->appreciation);
+			if(trim($tmp_chaine)=="") {
+				$msg_erreur_remplissage.="L'appréciation Vie-Scolaire sur le groupe classe de <strong>".$vieScoCommun->classe."</strong> est vide pour la période <strong>".$num_periode."</strong>.<br />Un <strong>CPE</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br />";
+			}
 			$comVieScoCommun = $xml->createElement('commentaire', substr(trim($tmp_chaine),0,600));
 			$noeudVieSco->appendChild($comVieScoCommun);
 			$viesScolairesCommuns->appendChild($noeudVieSco);
