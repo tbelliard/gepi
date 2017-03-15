@@ -452,7 +452,7 @@ if(($_SESSION['statut']=="administrateur")||
 // J'appelle les différents groupes existants pour la classe de l'élève
 
 //$call_group = mysql_query("SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
-$call_group = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT g.id, g.name,g.description FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
+$call_group = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT g.id, g.name,g.description, jgm.id_matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."' AND jgm.id_groupe=g.id) ORDER BY jgc.priorite, g.name");
 $nombre_ligne = mysqli_num_rows($call_group);
 
 $tab_sig=array();
@@ -491,8 +491,9 @@ if($grp_edt=="y") {
 //=========================
 echo "<table border='1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
 echo "<tr align='center'>\n";
-echo "<th><b>Matière</b></th>\n";
-echo "<th><b>Classes</b></th>\n";
+echo "<th>Enseignement</th>\n";
+echo "<th style='font-size:x-small;'>Matière</th>\n";
+echo "<th>Classes</th>\n";
 //=========================
 $j = 1;
 $chaine_coche="";
@@ -592,6 +593,7 @@ while ($i < $nombre_ligne) {
 		echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
 	}
 	echo "</td>\n";
+	echo "<td style='font-size:x-small;'>".$lig_grp->id_matiere."</td>";
 	echo "<td>".$liste_classes_du_groupe."</td>";
 	$j = 1;
 	while ($j < $nb_periode) {
@@ -766,9 +768,29 @@ while ($i < $nombre_ligne) {
 			if((isset($current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves"]))&&(in_array($login_eleve, $current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves"]))) {
 				echo " selected='selected'";
 			}
-			echo ">".$tab_modalites[$loop_m]["libelle_court"]."</option>";
+			elseif((!isset($current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves_possibles"]))||(!in_array($login_eleve, $current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves_possibles"]))) {
+				echo " disabled style='color:red' title=\"Modalité non associée à l'enseignement dans vos nomenclatures.\"";
+			}
+			echo ">".$tab_modalites[$loop_m]["libelle_court"];
+			// Debug
+			//echo " (".$tab_modalites[$loop_m]["code_modalite_elect"].")";
+			echo "</option>";
 		}
 		echo "</select>";
+		/*
+		// Debug: 20170315
+		if(($current_group["id"]=="3825")||
+		($current_group["id"]=="3839")) {
+			for($loop_m=0;$loop_m<count($tab_modalites);$loop_m++) {
+				// Debug
+				echo "<br />Modalité ".$tab_modalites[$loop_m]["code_modalite_elect"];
+				echo "<pre>";
+				//print_r($current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]["eleves"]);
+				print_r($current_group["modalites"][$tab_modalites[$loop_m]["code_modalite_elect"]]);
+				echo "</pre>";
+			}
+		}
+		*/
 		echo "</td>";
 	}
 	else {
@@ -803,6 +825,9 @@ while ($i < $nombre_ligne) {
 }
 
 echo "<tr>\n";
+echo "<th>\n";
+echo "&nbsp;";
+echo "</th>\n";
 echo "<th>\n";
 echo "&nbsp;";
 echo "</th>\n";
