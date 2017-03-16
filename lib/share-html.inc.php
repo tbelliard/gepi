@@ -2594,7 +2594,7 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
 			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
-			if(in_array($lig->login, $tab_user_preselectionnes)) {
+			if(in_array_i($lig->login, $tab_user_preselectionnes)) {
 				$retour.="checked ";
 				$temp_style=" style='font-weight: bold;'";
 			}
