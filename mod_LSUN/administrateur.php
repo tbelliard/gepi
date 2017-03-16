@@ -1334,6 +1334,30 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 <form action="index.php" method="post" id="exportDonnees">
 	<fieldset class='fieldset_opacite50'>
 		<legend class='fieldset_opacite50'>Export des données</legend>
+
+		<?php
+			if(isset($selectionClasse)) {
+				if(count($selectionClasse)>0) {
+					/*
+					echo "<pre>";
+					print_r($selectionClasse);
+					echo "</pre>";
+					*/
+					echo "<p style='color:green'>".count($selectionClasse)." classe(s) sélectionnée(s)&nbsp;: ";
+					$cpt=0;
+					foreach($selectionClasse as $indice => $id_classe) {
+						if($cpt>0) {echo ", ";}
+						echo get_nom_classe($id_classe);
+						$cpt++;
+					}
+					echo "</p>";
+				}
+				else {
+					echo "<p style='color:red'>Aucune classe n'est sélectionnée.</p>";
+				}
+			}
+		?>
+
 		<div class="lsun3colonnes">
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
@@ -1425,7 +1449,8 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 
 </div>
 
-<?php echo count($selectionClasse);
+<?php
+//echo count($selectionClasse);
 if (!$selectionClasse) { ?>
 <script type='text/javascript'>
 	document.getElementById("defAid").style.display='none';
