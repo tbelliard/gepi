@@ -908,10 +908,35 @@ die();
 
 		}
 
+		// Colonne correspondant à $loop_niveau et Ligne à $loop_cycle
+		$tab_coord_niveau["cp"]=array("col"=>0, "lig"=>2);
+		$tab_coord_niveau["ce1"]=array("col"=>1, "lig"=>2);
+		$tab_coord_niveau["ce2"]=array("col"=>2, "lig"=>2);
+		$tab_coord_niveau["cm1"]=array("col"=>0, "lig"=>3);
+		$tab_coord_niveau["cm2"]=array("col"=>1, "lig"=>3);
+		$tab_coord_niveau["6"]=array("col"=>2, "lig"=>3);
+		$tab_coord_niveau["5"]=array("col"=>0, "lig"=>4);
+		$tab_coord_niveau["4"]=array("col"=>1, "lig"=>4);
+		$tab_coord_niveau["3"]=array("col"=>2, "lig"=>4);
+/*
+echo "<br /><p>DEBUG : ".$tab_bull['eleve'][$i]["login"]."<br />";
+echo "Cycle=$cycle et niveau=$niveau<br />";
+echo "<pre>";
+print_r($tab_coord_niveau[$niveau]);
+echo "</pre>";
+*/
 		// Colonnes niveau:
 		for($loop_cycle=2;$loop_cycle<=4;$loop_cycle++) {
 			for($loop_niveau=0;$loop_niveau<3;$loop_niveau++) {
-				if(($loop_cycle==$cycle)&&(isset($param_bull2016["cycles_et_niveaux"][$loop_cycle][$loop_niveau]["texte"]))&&($param_bull2016["cycles_et_niveaux"][$loop_cycle][$loop_niveau]["texte"]==$niveau)) {
+				//if(($loop_cycle==$cycle)&&(isset($param_bull2016["cycles_et_niveaux"][$loop_cycle][$loop_niveau]["texte"]))&&($param_bull2016["cycles_et_niveaux"][$loop_cycle][$loop_niveau]["texte"]==$niveau)) {
+
+//echo "loop_niveau=".$loop_niveau." et loop_cycle=".$loop_cycle."<br />";
+
+				if((isset($tab_coord_niveau[$niveau]))&&
+				($tab_coord_niveau[$niveau]["col"]==$loop_niveau)&&
+				($tab_coord_niveau[$niveau]["lig"]==$loop_cycle)) {
+//echo "On y est.<br />";
+
 					$pdf->SetFillColor($param_bull2016["couleur_cycle_courant"]["niveau"]["R"], $param_bull2016["couleur_cycle_courant"]["niveau"]["V"], $param_bull2016["couleur_cycle_courant"]["niveau"]["B"]);
 				}
 				else {
@@ -5198,6 +5223,9 @@ die();
 		//$y_lignes_absences_et_retards_2=$y_lignes_absences_et_retards;
 		$y_lignes_absences_et_retards_2=$y_communication_famille+$param_bull2016["hauteur_communication_famille"]-5*$h_ligne_retard_abs;
 
+//		$pdf->SetXY(5, $y_lignes_absences_et_retards+$decal);
+//		$pdf->Cell(10,1, "",0,2,'L','LRBT');
+
 		// Heures perdues
 		if($param_bull2016["bull2016_afficher_nb_heures_perdues"]=="y") {
 			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards_2+$decal);
@@ -5205,6 +5233,9 @@ die();
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Nombre d'heures de cours manquées du fait de ses absences, justifiées ou non justifiées : "."       heure(s)",0,2,'L');
 			$decal-=3.5;
 		}
+
+//		$pdf->SetXY(20, $y_lignes_absences_et_retards+$decal);
+//		$pdf->Cell(10,1, "",0,2,'L','LRBT');
 
 		// Non justifiées
 		if($param_bull2016["bull2016_aff_abs_nj"]=="y") {
@@ -5225,6 +5256,10 @@ die();
 			$decal-=3.5;
 		}
 
+//		$pdf->SetXY(35, $y_lignes_absences_et_retards+$decal);
+//		$pdf->Cell(10,1, "",0,2,'L','LRBT');
+
+
 		// Justifiées
 		if($param_bull2016["bull2016_aff_abs_justifiees"]=="y") {
 			$nb_j=$tab_bull['eleve'][$i]['eleve_absences']-$tab_bull['eleve'][$i]['eleve_nj'];
@@ -5243,6 +5278,10 @@ die();
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences justifiées par les responsables légaux : ".$nb_j." demi-journée".$s,0,2,'L');
 			$decal-=3.5;
 		}
+
+//		$pdf->SetXY(50, $y_lignes_absences_et_retards+$decal);
+//		$pdf->Cell(10,1, "",0,2,'L','LRBT');
+
 		//elseif($param_bull2016["bull2016_aff_total_abs"]=="y") {
 		if($param_bull2016["bull2016_aff_total_abs"]=="y") {
 			$nb_j=$tab_bull['eleve'][$i]['eleve_absences'];
@@ -5261,6 +5300,9 @@ die();
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Total des absences : ".$nb_j." demi-journée".$s,0,2,'L');
 			$decal-=3.5;
 		}
+
+//		$pdf->SetXY(65, $y_lignes_absences_et_retards+$decal);
+//		$pdf->Cell(10,1, "",0,2,'L','LRBT');
 
 		if($param_bull2016["bull2016_aff_retards"]=="y") {
 			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards_2+$decal);
