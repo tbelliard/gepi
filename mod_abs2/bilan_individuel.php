@@ -120,6 +120,30 @@ if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format(
     $_SESSION['date_absence_eleve_debut'] = $dt_date_absence_eleve_debut->format('d/m/Y');
     $_SESSION['date_absence_eleve_fin'] = $dt_date_absence_eleve_fin->format('d/m/Y');
 }
+
+// ===============================
+if($_SESSION['statut']=='cpe') {
+	$val_defaut_afficher_strictement_englobee="y";
+}
+else {
+	$val_defaut_afficher_strictement_englobee="n";
+}
+
+if(!isset($_POST['bilan_individuel_abs2_is_posted'])) {
+	$afficher_strictement_englobee=isset($_POST['afficher_strictement_englobee']) ? $_POST['afficher_strictement_englobee'] : (isset($_SESSION['abs2_afficher_strictement_englobee']) ? $_SESSION['abs2_afficher_strictement_englobee'] : $val_defaut_afficher_strictement_englobee);
+}
+else {
+	if(isset($_POST['afficher_strictement_englobee'])) {
+		$afficher_strictement_englobee=$_POST['afficher_strictement_englobee'];
+	}
+	else {
+		$afficher_strictement_englobee="n";
+	}
+}
+
+$_SESSION['abs2_afficher_strictement_englobee']=$afficher_strictement_englobee;
+// ===============================
+
 // fonction de formatage des dates de debut et de fin
 /*
 function getDateDescription($date_debut,$date_fin) {
@@ -244,6 +268,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             }
             ?>
             Nom (facultatif) : <input dojoType="dijit.form.TextBox" type="text" style="width : 10em" name="nom_eleve" size="10" value="<?php echo $nom_eleve ?>" onChange="document.bilan_individuel.id_eleve.value='';"/>
+            <input type="hidden" name="bilan_individuel_abs2_is_posted" value="y"/>
             <input type="hidden" name="id_eleve" value="<?php echo $id_eleve ?>"/>
             <input type="hidden" name="affichage" value="<?php echo $affichage ?>"/>
             <input type="hidden" name="filtrage" value="<?php echo $filtrage ?>"/>
@@ -313,6 +338,12 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             } ?> 
 			> Ne pas répéter les informations globales de l'élève par ligne dans l'export tableur (pour totaux par colonne)
             <br />
+
+		<input type='checkbox' name='afficher_strictement_englobee' id='afficher_strictement_englobee' value='y' <?php
+			if($afficher_strictement_englobee=="y") {echo "checked ";}
+		?>/><label for='afficher_strictement_englobee' style='font-variant: normal;'>Afficher les saisies englobées</label>
+		<br />
+
             <input dojoType="dijit.form.CheckBox" type="checkbox" name="sans_commentaire" value="no"  <?php
             if($sans_commentaire) {
                 echo'checked';
@@ -364,6 +395,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
              if($affichage==Null || $affichage=='') echo'disabled';?>><br />
             (OU/ET) Nombre de retards &ge;: <INPUT dojoType="dijit.form.NumberTextBox" constraints="{min:1}" style="width:3em;" type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3"  <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>><br />
+            <input type="hidden" name="bilan_individuel_abs2_is_posted" value="y"/>
             <input type="hidden" name="nom_eleve"  value="<?php echo $nom_eleve ?>" />
             <input type="hidden" name="affichage" value="html" />
             <input type="hidden" name="tri" value="<?php echo $tri ?>" />
@@ -371,6 +403,16 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             <input type="hidden" name="ods2" value="<?php echo $ods2 ?>" />
             <input type="hidden" name="texte_conditionnel" value="<?php echo $texte_conditionnel ?>" />
             <input type="hidden" name="sans_commentaire" value="<?php echo $sans_commentaire ?>" />
+		<?php
+			if($afficher_strictement_englobee=="y") {
+				echo "
+		<input type='hidden' name='afficher_strictement_englobee' value='y' />";
+			}
+			else {
+				echo "
+		<input type='hidden' name='afficher_strictement_englobee' value='n' />";
+			}
+		?>
             <input type="hidden" name="filtrage" value="ok" />
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="click_filtrage" value="ok" <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>>Filtrer</button> 
@@ -428,7 +470,7 @@ $precedent_eleve_id = null;
 if (isset($_SESSION['donnees_bilan'])){
     $donnees = unserialize($_SESSION['donnees_bilan']);
 }
-foreach ($eleve_col as $eleve) {    
+foreach ($eleve_col as $eleve) {
   //  $eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
     $eleve_id = $eleve->getId();
     //on initialise les donnees pour le nouvel eleve
@@ -517,6 +559,20 @@ foreach ($eleve_col as $eleve) {
         if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasModeInterface()) {
             continue;
         }
+
+	// 20170317
+	if($afficher_strictement_englobee!="y") {
+	  $strictement_englobee = false;
+	    foreach ($saisie->getAbsenceEleveSaisiesEnglobantes() as $saisie_englobante) {
+		  if ($saisie_englobante->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue;
+		  if ($saisie_englobante->getDebutAbs(null) != $saisie->getDebutAbs(null) || $saisie_englobante->getFinAbs(null) != $saisie->getFinAbs(null)) {
+		      $strictement_englobee = true;
+		      break;
+		  }
+	    }
+	    if ($strictement_englobee) continue;
+	}
+
         if ($saisie->getRetard()) {
             if ($tri != null && $tri != '') {
                 $type_tab = 'retard';
