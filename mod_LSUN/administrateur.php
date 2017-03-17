@@ -308,8 +308,11 @@ if ($cpt) {echo "			</div>\n";}
 						<option value=""></option>
 <?php $AidParcours->data_seek(0);
 while ($AidParc = $AidParcours->fetch_object()) { ?>
-						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->num_rows && getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> >
-							<?php echo $AidParc->aid; ?>
+						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->num_rows && getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> title="<?php echo $AidParc->nom_complet;?>">
+							<?php
+								echo $AidParc->aid;
+								//echo " (".$AidParc->nom_complet.")";
+							?>
 						</option>
 <?php } ?>
 					</select>
@@ -365,7 +368,12 @@ while ($AidParc = $AidParcours->fetch_object()) { ?>
 						<option value=""></option>
 <?php $AidParcours->data_seek(0);
 while ($APCommun = $AidParcours->fetch_object()) { ?>
-						<option value="<?php echo $APCommun->indice_aid; ?>"><?php echo $APCommun->aid; ?></option>
+						<option value="<?php echo $APCommun->indice_aid; ?>" title="<?php echo $APCommun->nom_complet;?>">
+							<?php
+								echo $APCommun->aid;
+								//echo " (".$APCommun->nom_complet.")";
+							?>
+						</option>
 <?php } ?>
 					</select>
 				</td>
@@ -992,7 +1000,7 @@ while ($classe = $classes->fetch_object()) { ?>
 		$selected="";
 		if($liaison->indice_aid == $ap->id_aid) {$selected='selected';}
 		echo "
-									<option value=\"".$liaison->indice_aid."\"".$selected.">".$liaison->groupe."</option>";
+									<option value=\"".$liaison->indice_aid."\"".$selected." title=\"".$liaison->groupe." (".$liaison->description.")\">".$liaison->groupe."</option>";
 	}
 ?>
 								</select>
@@ -1293,7 +1301,7 @@ while ($classe = $classes->fetch_object()) { ?>
 //var_dump($listeAidAp);
 $listeAidAp->data_seek(0);
 while ($liaison = $listeAidAp->fetch_object()) { ?>
-							<option value="<?php echo $liaison->indice_aid; ?>">
+							<option value="<?php echo $liaison->indice_aid; ?>" title="<?php echo $liaison->groupe." (".$liaison->description.")";?>">
 								<?php echo $liaison->groupe; ?>
 							</option>
 <?php } ?>
