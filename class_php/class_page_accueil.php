@@ -1310,7 +1310,7 @@ if(getSettingAOui('active_bulletins')) {
                 $nom_aid = $obj->nom;
                 if ($this->AfficheAid($indice_aid)) {
                     $this->creeNouveauItem("/aid/index_fiches.php?indice_aid=".$indice_aid,
-                        $nom_aid,
+                        $nom_aid."<br /><span style='font-size:x-small'>".$obj->nom_complet."</span>",
                         "Tableau récapitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
                 }
             }            
