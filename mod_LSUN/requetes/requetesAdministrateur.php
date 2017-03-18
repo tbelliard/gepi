@@ -72,8 +72,26 @@ if ('y' == $newParcours) {
 	$newParcoursCode = filter_input(INPUT_POST, 'newParcoursCode');
 	$newParcoursTexte = filter_input(INPUT_POST, 'newParcoursTexte');
 	//echo 'on crée '.$newParcoursTrim.' → '.$newParcoursClasse.' → '.$newParcoursCode.' → '.$newParcoursTexte;
-	if(creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte)) {
+	$res_creation_parcours=creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte);
+	if($res_creation_parcours) {
 		$msg_requetesAdmin.="<span style='color:green'>Nouveau parcours créé.</span><br />";
+
+		$newParcoursLien = filter_input(INPUT_POST, 'newParcoursLien');
+		//echo "\$newParcoursLien=$newParcoursLien<br />";
+		if(preg_match("/^[0-9]{1,}$/", $newParcoursLien)) {
+			$id_new_parcours=mysqli_insert_id($mysqli);
+			//echo "\$id_new_parcours=$id_new_parcours<br />";
+			if(preg_match("/^[0-9]{1,}$/", $id_new_parcours)) {
+				if(!modifieParcours($id_new_parcours, $newParcoursCode, $newParcoursTexte, $newParcoursLien)) {
+					$msg_requetesAdmin.="<span style='color:red'>Échec lors de la liaison AID.</span><br />";
+				}
+				/*
+				else {
+					$msg_requetesAdmin.="<span style='color:green'>Liaison AID effectuée.</span><br />";
+				}
+				*/
+			}
+		}
 	}
 	else {
 		$msg_requetesAdmin.="<span style='color:red'>Échec lors de la création du Nouveau parcours.</span><br />";

@@ -163,7 +163,7 @@ function creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $n
 	}
 	$sqlNewParcours = "INSERT INTO lsun_parcours_communs (id,periode,classe,codeParcours,description)  VALUES ($newParcoursId, $newParcoursTrim, $newParcoursClasse, '$newParcoursCode', '$newParcoursTexte') ON DUPLICATE KEY UPDATE periode = $newParcoursTrim ,classe = $newParcoursClasse,codeParcours = '$newParcoursCode',description = '$newParcoursTexte' ";
 	//echo $sqlNewParcours;
-	$resultchargeDB = $mysqli->query($sqlNewParcours);	
+	$resultchargeDB = $mysqli->query($sqlNewParcours);
 	return $resultchargeDB;	
 }
 
@@ -264,7 +264,7 @@ function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParco
 	
 	$sqlModifieParcoursLien = "INSERT INTO lsun_j_aid_parcours (id_aid, id_parcours) VALUES ($modifieParcoursLien , $modifieParcoursId) "
 		. "ON DUPLICATE KEY UPDATE id_aid = $modifieParcoursLien ";
-	//echo $sqlModifieParcoursLien;
+	//echo $sqlModifieParcoursLien.";<br />";
 	$res=$mysqli->query($sqlModifieParcoursLien);
 	return $res;
 }
@@ -803,7 +803,7 @@ INNER JOIN
 ON aid.indice_aid = t0.indice_aid
 ORDER BY aid";
 	
-	// echo $sqlAidParcours.'<br><br>';
+	//echo $sqlAidParcours.';<br><br>';
 	$resultchargeDB = $mysqli->query($sqlAidParcours);
 	return $resultchargeDB ;
 	

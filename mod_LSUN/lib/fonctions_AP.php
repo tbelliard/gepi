@@ -45,7 +45,7 @@ function getApAid() {
 	
 	$sqlAidAP = "SELECT indice_aid AS indice_aid, nom AS groupe , nom_complet AS description "
 		. "FROM aid_config WHERE type_aid = $_AP ";
-	//echo '<br>'.$sqlAidAP.'<br>';
+	//echo '<br>'.$sqlAidAP.';<br>';
 		
 	$resultchargeDB = $mysqli->query($sqlAidAP);
 	return $resultchargeDB;

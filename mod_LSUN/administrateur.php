@@ -311,6 +311,8 @@ while ($AidParc = $AidParcours->fetch_object()) { ?>
 						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->num_rows && getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> title="<?php echo $AidParc->nom_complet;?>">
 							<?php
 								echo $AidParc->aid;
+								// DEBUG
+								//echo " (".$AidParc->idAid.")";
 								//echo " (".$AidParc->nom_complet.")";
 							?>
 						</option>
@@ -368,9 +370,15 @@ while ($AidParc = $AidParcours->fetch_object()) { ?>
 						<option value=""></option>
 <?php $AidParcours->data_seek(0);
 while ($APCommun = $AidParcours->fetch_object()) { ?>
-						<option value="<?php echo $APCommun->indice_aid; ?>" title="<?php echo $APCommun->nom_complet;?>">
+						<option value="<?php 
+								//echo $APCommun->indice_aid; 
+								echo $APCommun->idAid; 
+							?>" title="<?php echo $APCommun->nom_complet;?>">
 							<?php
 								echo $APCommun->aid;
+								// DEBUG
+								//echo " (".$APCommun->indice_aid.")";
+								//echo " (".$APCommun->idAid.")";
 								//echo " (".$APCommun->nom_complet.")";
 							?>
 						</option>
