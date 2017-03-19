@@ -498,6 +498,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			}
 			
 			$listeAcquis = $xml->createElement('liste-acquis');
+			// 1 note ou Abs, Disp, NN et 1 appréciation
 			$acquisEleves = getAcquisEleve($eleve->login, $eleve->periode);
 			// <acquis discipline-ref="DI_030602" enseignant-refs="ENS_0123456789ABE" element-programme-refs="EP_05" moyenne-eleve="18/20" moyenne-structure="15/20">
 			// <appreciation>Appréciation pour la matière espagnol</appreciation>
@@ -538,12 +539,29 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				if (intval($note)) {
 					$attributsAcquis['moyenne-eleve'] = $note."/20";
 				} else {
-					if (getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode)) {
+					$statutNote = getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode);
+					//if (getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode)) {
+					if ($statutNote) {
 						$attributsAcquis['eleve-non-note'] = "1";
+						switch ($statutNote) {
+							case "disp":
+								$statutNote = "Disp. ";
+								break;
+							case "abs":
+								$statutNote = "Abs. ";
+								break;
+							case "-":
+								$statutNote = "N N. ";
+								break;
+							default:
+								$statutNote = $statutNote;
+						}
+						$acquisEleve->appreciation = $statutNote.$acquisEleve->appreciation;
 					} else {
-						$attributsAcquis['moyenne-eleve'] = $note."/200";
+						$attributsAcquis['moyenne-eleve'] = $note."/20";
 					}
 				}
+				
 				
 				
 				foreach ($attributsAcquis as $cle=>$valeur) {
@@ -557,6 +575,80 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$noeudAcquis->appendChild($noeudAcquisAppreciation);
 				$listeAcquis->appendChild($noeudAcquis);
 			}
+				
+			// Abs, Disp ou NN sans appréciation → on exporte
+			//$acquisEleve = getStatutSansApp($eleve->login,$acquisEleve->id_groupe,$eleve->periode);
+			$noNotesSansApp = getStatutSansApp($eleve->login,$eleve->periode);
+			while ($acquisEleve = $noNotesSansApp->fetch_object()) {
+				$desAcquis = TRUE;
+				$noeudAcquis = $xml->createElement('acquis');
+				
+				
+				
+				$matiere = $acquisEleve->code_matiere;
+				$moyenne = getMoyenne($acquisEleve->id_groupe);
+				$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
+				$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
+				
+				$donneesProfs = getProfGroupe ($acquisEleve->id_groupe);
+				$prof = "";
+				while ($profMatiere = $donneesProfs->fetch_object()) {
+					$prof .= "ENS_".$profMatiere->numind." ";
+				}
+				
+				$elementsProgramme = getEPeleve ($eleve->login, $acquisEleve->id_groupe,$eleve->periode );
+				$elementProgramme = "";
+				while ($elemProgramme = $elementsProgramme->fetch_object()) {
+					$elementProgramme .= "EP_".$elemProgramme->idEP." ";
+					//TODO VÉRIFIER que l'élément de programme existe
+				}
+				if (!$elementProgramme) {
+					$elementProgramme = "EP_0000";
+					$absenceEP = true;
+					if(!isset($liste_absenceEP)) {
+						$liste_absenceEP="";
+					}
+					$liste_absenceEP.="<span style='color:red'>".get_nom_prenom_eleve($eleve->login)." n'a pas d'élément de programme en ".$acquisEleve->id_matiere." en période ".$eleve->periode.".</span><br />";
+					}
+				$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20");
+								
+				$statutNote = getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode);
+				
+				$attributsAcquis['eleve-non-note'] = "1";
+				switch ($statutNote) {
+					case "disp":
+						$statutNote = "Dispensé ";
+						break;
+					case "abs":
+						$statutNote = "Absent. ";
+						break;
+					case "-":
+						$statutNote = "Non Noté. ";
+						break;
+					default:
+						$statutNote = $statutNote;
+				}
+				$acquisEleve->appreciation = $statutNote;
+				
+				
+				
+				foreach ($attributsAcquis as $cle=>$valeur) {
+					$attsAcquis= $xml->createAttribute($cle);
+					$attsAcquis->value = $valeur;
+					$noeudAcquis->appendChild($attsAcquis);
+					
+				}
+				$tmp_chaine=nettoye_texte_vers_chaine($acquisEleve->appreciation);
+				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
+				$noeudAcquis->appendChild($noeudAcquisAppreciation);
+				$listeAcquis->appendChild($noeudAcquis);
+								
+			}
+			
+			// 1 note sans appréciation → on n'exporte pas
+			
+			// 1 appréciation sans note ni Abs, Disp ou NN → on n'exporte pas
+			
 			
 			$noeudBilanElevePeriodique->appendChild($listeAcquis);
 			

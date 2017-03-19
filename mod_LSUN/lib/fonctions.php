@@ -524,6 +524,39 @@ function getStatutNote($login,$id_groupe,$periode) {
 	return FALSE;
 }
 
+//function getStatutSansApp($login,$id_groupe,$periode) {
+function getStatutSansApp($login,$periode) {
+	global $mysqli;
+	$sqlStatutSSApp = "SELECT mn.* FROM `matieres_notes` AS mn "
+		. "WHERE mn.login = '$login' "
+		. "AND mn.periode = $periode "
+		. "AND NOT EXISTS ("
+		. "SELECT ma.* FROM `matieres_appreciations` AS ma "
+		. "WHERE ma.login = mn.login "
+		. "AND ma.id_groupe = mn.id_groupe "
+		. "AND ma.periode = mn.periode "
+		. ") "
+		. "AND mn.statut NOT LIKE '' ";
+	
+	
+	$sqlAcquis04 = "SELECT s3.* , jgm.id_matiere FROM ($sqlStatutSSApp) AS s3 INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = s3.id_groupe ";
+	$sqlAcquis05 = "SELECT s4.* , ma.code_matiere FROM ($sqlAcquis04) AS s4 INNER JOIN matieres AS ma ON s4.id_matiere = ma.matiere ";
+	// classe
+	$sqlAcquis06 = "SELECT s5.* , jec.id_classe FROM ($sqlAcquis05) AS s5 INNER JOIN j_eleves_classes AS jec ON s5.login = jec.login AND s5.periode = jec.periode ";
+	//=== mef
+	$sqlStatutSSApp = "SELECT s6.* , c.mef_code FROM ($sqlAcquis06) AS s6 INNER JOIN classes AS c ON s6.id_classe = c.id ";
+	
+	
+	$resultchargeDB = $mysqli->query($sqlStatutSSApp);
+	/*
+	if ($resultchargeDB->num_rows) {
+		echo $sqlStatutSSApp."<br>";
+	}
+	 * 
+	 */
+	return $resultchargeDB;
+}
+
 function getAppConseil($eleve , $periode) {
 	global $mysqli;
 	$sqlGetAppConseil = "SELECT * FROM avis_conseil_classe WHERE login = '$eleve' AND periode = $periode ";
