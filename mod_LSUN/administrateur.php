@@ -1412,7 +1412,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteAPElv">données élèves des AP</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" disabled />
+						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" checked disabled />
 						<label for="traiteModSpeElv"  class="desactive" title="À saisir directement dans LSU" >modalités spécifiques d’accompagnement des élèves</label>
 					</li>
 					<li>

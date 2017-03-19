@@ -678,10 +678,40 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					
 				}
 			}
-			
+
+/*
+                <modalites-accompagnement>
+                    <modalite-accompagnement code="PAP" />
+                    <modalite-accompagnement code="PPS" />
+                    <modalite-accompagnement code="PPRE">
+                        <complement-ppre>Complément de la modalité PPRE</complement-ppre>
+                    </modalite-accompagnement>
+                </modalites-accompagnement>
+*/
 			$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
-			// non obligatoire
-			
+
+			$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($eleve->login);
+			if(count($tab_modalites_accompagnement_eleve>0)) {
+				for($loop_modalite=0;$loop_modalite<count($tab_modalites_accompagnement_eleve);$loop_modalite++) {
+					$modaliteAcc = $xml->createElement('modalite-accompagnement');
+					$attsModaliteAcc = $xml->createAttribute('code');
+					$attsModaliteAcc->value = $tab_modalites_accompagnement_eleve[$loop_modalite]["code"];
+					$modaliteAcc->appendChild($attsModaliteAcc);
+
+					if(($tab_modalites_accompagnement_eleve[$loop_modalite]["code"]=="PPRE")&&
+					($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]!="")) {
+						$tmp_chaine=nettoye_texte_vers_chaine($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]);
+						if(trim($tmp_chaine)!="") {
+							$complement_ppre=$xml->createElement('complement-ppre' ,substr(trim($tmp_chaine),0,600));
+							$modaliteAcc->appendChild($complement_ppre);
+						}
+					}
+					$modalitesAccompagnement->appendChild($modaliteAcc);
+				}
+
+				$noeudBilanElevePeriodique->appendChild($modalitesAccompagnement);
+			}
+
 			$retourAvisElv=getAppConseil($eleve->login , $eleve->periode);
 			if ($retourAvisElv->num_rows) {
 				$exporteEleve = true;
