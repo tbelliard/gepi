@@ -242,3 +242,15 @@ if(isset($_GET['nettoyer_doublons_AP'])) {
 	}
 }
 
+
+//===== Forcer l'export des données incomplètes =====
+$forceAppreciations = filter_input(INPUT_POST, 'forceAppreciations');
+$forceNotes = filter_input(INPUT_POST, 'forceNotes');
+
+$_SESSION['forceAppreciations'] = $forceAppreciations;
+$_SESSION['forceNotes'] = $forceNotes;
+
+
+
+
+

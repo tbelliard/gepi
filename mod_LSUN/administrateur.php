@@ -1393,14 +1393,28 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteElemProg">éléments de programme</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y"
-							   <?php if (getSettingValue("LSU_commentaire_vie_sco") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaires</label>
+						<input type="checkbox" name="forceNotes" id="forceNotes" value="y"
+							   <?php if ($_SESSION['forceNotes'] == "y") {echo ' checked '; }  ?> />
+						<label for="forceNotes" title="Exporter les Acquis même si la note n'est pas remplie. L'élève est déclaré 'non-noté'">
+							forcer l'export des appréciations sans note
+						</label>
+					</li>
+					<li>
+						<input type="checkbox" name="forceAppreciations" id="forceAppreciations" value="y"
+							   <?php if ($_SESSION['forceAppreciations'] == "y") {echo ' checked '; }  ?> />
+						<label for="forceAppreciations" title="Exporter les Acquis même si le commentaire n'est pas rempli. Un - est mis en commentaire">
+							forcer l'export des notes sans appréciation
+						</label>
 					</li>
 				</ul>
 			</div>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
+					<li>
+						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y"
+							   <?php if (getSettingValue("LSU_commentaire_vie_sco") != "n") {echo ' checked '; }  ?> />
+						<label for="traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaires</label>
+					</li>
 					<li>
 						<input type="checkbox" name="traiteAP" id="traiteAP" value="y"     
 							   <?php if (getSettingValue("LSU_traite_AP") != "n") {echo ' checked '; }  ?>  />
