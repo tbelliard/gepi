@@ -625,6 +625,449 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 }
 
 
+if(isset($_GET['remplissage_aleatoire_bulletins'])) {
+
+	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+<h2>Remplissage des bulletins périodiques</h2>
+
+<form action='".$_SERVER["PHP_SELF"]."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<h3>Confirmation du remplissage aléatoire.<br />
+		<span style='color:red; text-decoration: blink;'>Attention, ne pas faire sur une base de production</span></h3>
+
+		<p>
+			<input type='radio' name='mode' id='mode_ecraser' value='ecraser' onchange='change_style_radio()' checked /><label for='mode_ecraser' id='texte_mode_ecraser'>Écraser les données existantes</label>,<br />
+			<input type='radio' name='mode' id='mode_completer' value='completer' onchange='change_style_radio()' /><label for='mode_completer' id='texte_mode_completer'>Juste compléter, remplir aléatoirement les champs manquants</label>.
+		</p>";
+
+
+	echo "
+		<p style='margin-top:1em;'>Choisir les classes pour lesquelles faire ce remplissage&nbsp;: </p>";
+	$tab_txt=array();
+	$tab_lien=array();
+	$sql=retourne_sql_mes_classes();
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab_txt[]=$lig->classe;
+		$tab_nom_champ[]="id_classe[]";
+		$tab_id_champ[]="id_classe_".$lig->id_classe;
+		$tab_valeur_champ[]=$lig->id_classe;
+	}
+
+	echo tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, "checkbox_change2");
+
+	echo "
+
+		<br />
+
+		<p><b>Êtes-vous sûr de vouloir continuer ?</b></p>
+		<input type='hidden' name='remplissage_aleatoire_bulletins' value='y' />
+		<p><input type='submit' name='confirm' value = 'Oui' /></p>
+
+		<script type='text/javascript'>
+			".js_change_style_radio("change_style_radio", "n", "y")."
+			change_style_radio();
+		</script>
+	</fieldset>
+</form>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
+	check_token(false);
+
+		echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a>
+ | <a href='gestion_base_test.php?remplissage_aleatoire_bulletins=y'>Choisir d'autres classes</a>
+</p>
+
+<h2>Remplissage des bulletins périodiques</h2>";
+
+	$tab_avis=array("Bon ensemble ce trimestre pour ", "Bonne maitrise d'ensemble de la part de ", "Un trimestre bien fragile pour ", "Bilan du trimestre à déposer pour ", "Il ne faudra pas se reposer pour ");
+	$nb_avis_type=count($tab_avis);
+
+	$mode=isset($_POST['mode']) ? $_POST['mode'] : "ecraser";
+	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
+	$date_saisie=strftime("%Y-%m-%d %H:%M:%S");
+
+	//echo "\$mode=$mode<br />";
+	/*
+	$id_classe_precedente="";
+	$cpt=0;
+	$cpt_ele=0;
+	$cpt_synthese=0;
+	$tab_cycle=array();
+	*/
+
+	$cpt_avis=0;
+	for($loop=0;$loop<count($id_classe);$loop++) {
+		echo "<h3>".get_nom_classe($id_classe[$loop])."</h3>";
+
+		$tab_aid=get_tab_aid_ele_clas("", $id_classe[$loop]);
+
+		$sql="SELECT e.nom, e.prenom, e.login, jec.periode 
+			FROM j_eleves_classes jec, 
+				eleves e 
+			WHERE jec.login=e.login AND 
+				jec.id_classe='".$id_classe[$loop]."';";
+		//echo "$sql<br />";
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ele)>0) {
+			echo "<p>Élèves&nbsp;: ";
+			while($lig_ele=mysqli_fetch_object($res_ele)) {
+				echo $lig_ele->prenom." ".$lig_ele->nom." <span title='Période ".$lig_ele->periode."'>(P".$lig_ele->periode.")</span>";
+				$sql="SELECT jeg.*, g.name FROM j_eleves_groupes jeg, groupes g WHERE login='".$lig_ele->login."' AND jeg.id_groupe=g.id AND jeg.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n');";
+				//echo "$sql<br />";
+				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_grp)>0) {
+					while($lig_grp=mysqli_fetch_object($res_grp)) {
+						if($mode=="ecraser") {
+							$sql="DELETE FROM matieres_notes WHERE id_groupe='".$lig_grp->id_groupe."' AND login='".$lig_ele->login."' AND periode='".$lig_ele->periode."';";
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							//$note=rand(-2,40);
+							$note=rand(-1,40);
+							if($note==-1) {
+								$note=0;
+								$statut="abs";
+								$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.".";
+							}
+							/*
+							elseif($note==-2) {
+								$note=0;
+								$statut="disp";
+							}
+							*/
+							else {
+								$note=$note/2;
+								$statut="";
+
+								if($note<6) {
+									$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut impérativement se mettre au travail.";
+								}
+								elseif($note<9) {
+									$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut s'accrocher, travailler davantage.";
+								}
+								elseif($note<11) {
+									$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut s'accrocher, s'investir davantage.";
+								}
+								elseif($note<14) {
+									$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il peut mieux faire avec plus d'attention.";
+								}
+								else {
+									$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut continuer.";
+								}
+							}
+
+							$sql="INSERT INTO matieres_notes SET id_groupe='".$lig_grp->id_groupe."', login='".$lig_ele->login."', periode='".$lig_ele->periode."', note='".$note."', statut='".$statut."';";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$lig_grp->id_groupe."' AND login='".$lig_ele->login."' AND periode='".$lig_ele->periode."';";
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							$sql="INSERT INTO matieres_appreciations SET id_groupe='".$lig_grp->id_groupe."', login='".$lig_ele->login."', periode='".$lig_ele->periode."', appreciation='".addslashes($app)."';";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						}
+						else {
+							// On complète seulement.
+
+							$app="Appréciation bidon pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode.".";
+
+							$sql="SELECT * FROM matieres_notes WHERE id_groupe='".$lig_grp->id_groupe."' AND login='".$lig_ele->login."' AND periode='".$lig_ele->periode."';";
+							$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_note)>0) {
+								$lig_note=mysqli_fetch_object($res_note);
+								if($lig_note->statut=="") {
+									$note=$lig_note->note;
+									if($note<6) {
+										$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut impérativement se mettre au travail.";
+									}
+									elseif($note<9) {
+										$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut s'accrocher, travailler davantage.";
+									}
+									elseif($note<11) {
+										$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut s'accrocher, s'investir davantage.";
+									}
+									elseif($note<14) {
+										$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il peut mieux faire avec plus d'attention.";
+									}
+									else {
+										$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut continuer.";
+									}
+								}
+								elseif($lig_note->statut=="disp") {
+									$app="Je te souhaite un bon rétablissement pour permettre une pratique sportive pour la prochaine période.";
+								}
+								elseif($lig_note->statut=="abs") {
+									$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.".";
+								}
+							}
+							else {
+								//$note=rand(-2,40);
+								$note=rand(-1,40);
+								if($note==-1) {
+									$note=0;
+									$statut="abs";
+									$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.".";
+								}
+								/*
+								elseif($note==-2) {
+									$note=0;
+									$statut="disp";
+								}
+								*/
+								else {
+									$note=$note/2;
+									$statut="";
+
+									if($note<6) {
+										$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut impérativement se mettre au travail.";
+									}
+									elseif($note<9) {
+										$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut s'accrocher, travailler davantage.";
+									}
+									elseif($note<11) {
+										$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut s'accrocher, s'investir davantage.";
+									}
+									elseif($note<14) {
+										$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il peut mieux faire avec plus d'attention.";
+									}
+									else {
+										$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut continuer.";
+									}
+								}
+
+								$sql="INSERT INTO matieres_notes SET id_groupe='".$lig_grp->id_groupe."', login='".$lig_ele->login."', periode='".$lig_ele->periode."', note='".$note."', statut='".$statut."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+
+							$sql="SELECT * FROM matieres_appreciations WHERE id_groupe='".$lig_grp->id_groupe."' AND login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND appreciation!='';";
+							$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_app)==0) {
+								$sql="INSERT INTO matieres_appreciations SET id_groupe='".$lig_grp->id_groupe."', login='".$lig_ele->login."', periode='".$lig_ele->periode."', appreciation='".addslashes($app)."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+						}
+					}
+				}
+
+				// Avis du conseil de classe
+				if($mode=="ecraser") {
+					$sql="DELETE FROM avis_conseil_classe WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."';";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$avis=$tab_avis[$cpt_avis%$nb_avis_type].$lig_ele->prenom." (période ".$lig_ele->periode.").";
+					$cpt_avis++;
+
+					$sql="INSERT INTO avis_conseil_classe SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', avis='".addslashes($avis)."';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+				else {
+					$sql="SELECT * FROM avis_conseil_classe WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND avis!='';";
+					$res_avis=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_avis)==0) {
+						$avis=$tab_avis[$cpt_avis%$nb_avis_type].$lig_ele->prenom." (période ".$lig_ele->periode.").";
+						$cpt_avis++;
+
+						$sql="INSERT INTO avis_conseil_classe SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', avis='".addslashes($avis)."';";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					}
+				}
+
+
+				// Absences et retards? A faire...
+
+				// AID
+				for($loop_aid=0;$loop_aid<count($tab_aid);$loop_aid++) {
+					if(($lig_ele->periode>=$tab_aid[$loop]['display_begin'])&&($lig_ele->periode<=$tab_aid[$loop]['display_end'])) {
+						if(in_array($lig_ele->login, $tab_aid[$loop]['eleves'][$lig_ele->periode]['list'])) {
+							if($mode=="ecraser") {
+
+								$note=rand(-1,40);
+								if($note==-1) {
+									$note=0;
+									$statut="abs";
+									$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet'].").";
+								}
+								/*
+								elseif($note==-2) {
+									$note=0;
+									$statut="disp";
+								}
+								*/
+								else {
+									$note=$note/2;
+									$statut="";
+
+									if($note<6) {
+										$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
+									}
+									elseif($note<9) {
+										$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
+									}
+									elseif($note<11) {
+										$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
+									}
+									elseif($note<14) {
+										$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il peut mieux faire avec plus d'attention.";
+									}
+									else {
+										$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
+									}
+								}
+
+								$sql="DELETE FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop]['id_aid']."' AND indice_aid='".$tab_aid[$loop]['indice_aid']."';";
+								$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+								if($tab_aid[$loop]['type_note']=="no") {
+									// On n'a pas de note à gérér
+									$note=0;
+									$statut="-";
+								}
+								elseif($tab_aid[$loop]['type_note']=="every") {
+									// On prend les note et statut calculés plus haut
+								}
+								elseif(($tab_aid[$loop]['type_note']=="last")&&($lig_ele->periode==$tab_aid[$loop]['display_end'])) {
+									// On prend les note et statut calculés plus haut
+								}
+								elseif(($tab_aid[$loop]['type_note']=="first")&&($lig_ele->periode==$tab_aid[$loop]['display_begin'])) {
+									// On prend les note et statut calculés plus haut
+								}
+								else {
+									$note=0;
+									$statut="-";
+								}
+
+								$sql="INSERT INTO aid_appreciations SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', id_aid='".$tab_aid[$loop]['id_aid']."', indice_aid='".$tab_aid[$loop]['indice_aid']."', note='".$note."', statut='".$statut."', appreciation='".mysqli_real_escape_string($mysqli, $app)."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+							else {
+
+								$sql="SELECT * FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop]['id_aid']."' AND indice_aid='".$tab_aid[$loop]['indice_aid']."';";
+								$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_app)>0) {
+									$lig_app=mysqli_fetch_object($res_app);
+									$note=$lig_app->note;
+									$statut=$lig_app->statut;
+									$app=$lig_app->appreciation;
+
+									if($statut=="-") {
+										$note=rand(-1,40);
+										if($note==-1) {
+											$note=0;
+											$statut="abs";
+											$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet'].").";
+										}
+										/*
+										elseif($note==-2) {
+											$note=0;
+											$statut="disp";
+										}
+										*/
+										else {
+											$note=$note/2;
+											$statut="";
+										}
+									}
+
+									if(trim($app)=="") {
+										if($note<6) {
+											$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
+										}
+										elseif($note<9) {
+											$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
+										}
+										elseif($note<11) {
+											$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
+										}
+										elseif($note<14) {
+											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il peut mieux faire avec plus d'attention.";
+										}
+										else {
+											$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
+										}
+									}
+
+								}
+								else {
+									$note=rand(-1,40);
+									if($note==-1) {
+										$note=0;
+										$statut="abs";
+										$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet'].").";
+									}
+									/*
+									elseif($note==-2) {
+										$note=0;
+										$statut="disp";
+									}
+									*/
+									else {
+										$note=$note/2;
+										$statut="";
+
+										if($note<6) {
+											$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
+										}
+										elseif($note<9) {
+											$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
+										}
+										elseif($note<11) {
+											$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
+										}
+										elseif($note<14) {
+											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il peut mieux faire avec plus d'attention.";
+										}
+										else {
+											$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
+										}
+									}
+								}
+
+								$sql="DELETE FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop]['id_aid']."' AND indice_aid='".$tab_aid[$loop]['indice_aid']."';";
+								$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+								if($tab_aid[$loop]['type_note']=="no") {
+									// On n'a pas de note à gérér
+									$note=0;
+									$statut="-";
+								}
+								elseif($tab_aid[$loop]['type_note']=="every") {
+									// On prend les note et statut calculés plus haut
+								}
+								elseif(($tab_aid[$loop]['type_note']=="last")&&($lig_ele->periode==$tab_aid[$loop]['display_end'])) {
+									// On prend les note et statut calculés plus haut
+								}
+								elseif(($tab_aid[$loop]['type_note']=="first")&&($lig_ele->periode==$tab_aid[$loop]['display_begin'])) {
+									// On prend les note et statut calculés plus haut
+								}
+								else {
+									$note=0;
+									$statut="-";
+								}
+
+								$sql="INSERT INTO aid_appreciations SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', id_aid='".$tab_aid[$loop]['id_aid']."', indice_aid='".$tab_aid[$loop]['indice_aid']."', note='".$note."', statut='".$statut."', appreciation='".mysqli_real_escape_string($mysqli, $app)."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+
+
+							}
+						}
+					}
+				}
+
+				echo " (<a href='../prepa_conseil/edit_limite.php?id_classe=".$id_classe[$loop]."&amp;periode1=".$lig_ele->periode."&amp;periode2=".$lig_ele->periode."&amp;choix_edit=2&amp;login_eleve=".$lig_ele->login."' target='bullsimp'><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>) - ";
+			}
+			echo "</p>";
+		}
+	}
+
+	echo "<p>Terminé.</p>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+
 if (!function_exists("gzwrite")) {
 	echo "</p>";
     echo "<h3 class='gepi'>Problème de configuration :</h3>\n";
@@ -939,6 +1382,8 @@ include("../backup/$dirname/doc.html");
 
 echo "<hr />";
 echo "<p>Avec une base contenant déjà des données, vous pouvez procéder à des <a href='../cahier_notes_admin/copie_tous_dev.php'>recopies de devoirs, CDT,... d'une classe vers une autre</a></p>\n";
+
+echo "<p>Avec une base contenant déjà des données, vous pouvez <a href='".$_SERVER['PHP_SELF']."?remplissage_aleatoire_bulletins=y'>remplir aléatoirement les Bulletins périodiques</a> pour procéder à des essais.</p>\n";
 
 echo "<p>Avec une base contenant déjà des données, vous pouvez <a href='".$_SERVER['PHP_SELF']."?remplissage_aleatoire_socle=y'>remplir aléatoirement les Bilans de Composantes du Socle</a> pour procéder à des essais.</p>\n";
 
