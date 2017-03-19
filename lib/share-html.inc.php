@@ -2594,7 +2594,7 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
 			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
-			if(in_array($lig->login, $tab_user_preselectionnes)) {
+			if(in_array_i($lig->login, $tab_user_preselectionnes)) {
 				$retour.="checked ";
 				$temp_style=" style='font-weight: bold;'";
 			}
@@ -5240,6 +5240,9 @@ function affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins($mode
 		}
 	}
 	else {
+		$tab_pp=get_tab_prof_suivi();
+		$gepi_prof_suivi=ucfirst(getSettingValue('gepi_prof_suivi'));
+
 		$sql="SELECT max(num_periode) AS maxper FROM periodes;";
 		$res=mysqli_query($GLOBALS['mysqli'], $sql);
 		if(mysqli_num_rows($res)>0) {
@@ -5256,8 +5259,20 @@ function affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins($mode
 				while($lig_clas=mysqli_fetch_object($res_clas)) {
 					$tab_clas[$lig_clas->id_classe]=$lig_clas->classe;
 
+					$title="";
+					if(isset($tab_pp[$lig_clas->id_classe])) {
+						$title=" title=\"".$gepi_prof_suivi." : ";
+						for($loop_pp=0;$loop_pp<count($tab_pp[$lig_clas->id_classe]);$loop_pp++) {
+							if($loop_pp>0) {
+								$title.=", ";
+							}
+							$title.=civ_nom_prenom($tab_pp[$lig_clas->id_classe][$loop_pp]);
+						}
+						$title.="\"";
+					}
+
 				$retour.="
-		<th>".$lig_clas->classe."</th>";
+		<th".$title.">".$lig_clas->classe."</th>";
 				}
 				$retour.="
 	</tr>";

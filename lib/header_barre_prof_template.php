@@ -660,7 +660,8 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 				$cpt_sous_menu2++;
 			}
 
-			$sql="SELECT 1=1 FROM j_aid_utilisateurs_gest SET id_utilisateur= '".$_SESSION['login']."' AND id_aid = '".$lig_aid->id_aid."' AND indice_aid='".$lig_aid->indice_aid."';";
+			$sql="SELECT 1=1 FROM j_aid_utilisateurs_gest WHERE id_utilisateur= '".$_SESSION['login']."' AND id_aid = '".$lig_aid->id_aid."' AND indice_aid='".$lig_aid->indice_aid."';";
+			//echo "$sql<br />";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_aid)>0) {
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid->id_aid."&indice_aid=".$lig_aid->indice_aid;
@@ -673,11 +674,18 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Fiches projet";
 				$cpt_sous_menu2++;
 			}
+
+			$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+			$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+
+			$cpt_sous_menu++;
 		}
 
+		/*
 		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 		$cpt_sous_menu++;
+		*/
 
 		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;

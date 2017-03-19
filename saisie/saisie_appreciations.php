@@ -992,13 +992,18 @@ if($proposer_liens_enregistrement=="y") {
 		// Pour tester:
 		// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
 
-		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
-		$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_droit)>0) {
+		if($_SESSION["statut"]=="secours") {
 			$droit_insert_mass_appreciation_type="y";
 		}
 		else {
-			$droit_insert_mass_appreciation_type="n";
+			$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
+			$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_droit)>0) {
+				$droit_insert_mass_appreciation_type="y";
+			}
+			else {
+				$droit_insert_mass_appreciation_type="n";
+			}
 		}
 
 		if($droit_insert_mass_appreciation_type=="y") {
@@ -1898,7 +1903,7 @@ foreach ($liste_eleves as $eleve_login) {
 						$mess[$k].="</select> \n";
 						$mess[$k].="<br />\n";
 					}
-
+					
 					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
 
 					//$mess[$k].= var_dump($elementEleve);

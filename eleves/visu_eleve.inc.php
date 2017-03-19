@@ -1353,6 +1353,22 @@ Patientez pendant l'extraction des données... merci.
 			}
 		}
 
+		echo "<div style='margin-top:1em; text-align:center; float:right; width:10em;' class='fieldset_opacite50' title=\"Modalités d'accompagnement\">";
+		$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($ele_login);
+		if(count($tab_modalites_accompagnement_eleve>0)) {
+			for($loop_modalite=0;$loop_modalite<count($tab_modalites_accompagnement_eleve);$loop_modalite++) {
+				echo " <span title=\"".$tab_modalites_accompagnement_eleve[$loop_modalite]["libelle"]."\">".$tab_modalites_accompagnement_eleve[$loop_modalite]["code"]."</span>";
+			}
+		}
+		else {
+			echo "Aucune modalité d'accompagnement n'est définie.";
+		}
+
+		if(acces("/gestion/saisie_modalites_accompagnement.php", $_SESSION["statut"])) {
+			echo "<br /><a href='../gestion/saisie_modalites_accompagnement.php?login_eleve=".$ele_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" style='font-size:small; text-decoration:none; color:black;'><img src='../images/icons/add.png' class='icone16' alt='Add' />Ajouter/Modifier des modalités d'accompagnement.</a>";
+		}
+		echo "</div>\n";
+
 
 		echo "<table border='0' summary='Infos élève'>\n";
 		echo "<tr>\n";
@@ -2246,13 +2262,16 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				if(count($tab_ele["classe"])>0) {
 					if(count($tab_ele["classe"])==1) {
 						echo "<div style='float:right; width:16px; text-align:center;margin-right:3px;' class='fieldset_opacite50' title=\"Bulletins simplifiés\">";
-						echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][0]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						// Le statut administrateur n'a pas accès à prepa_conseil/index3.php, mais seulement à prepa_conseil/edit_limite.php
+						//echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][0]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						echo "<a href='../prepa_conseil/edit_limite.php?id_classe=".$tab_ele["classe"][0]["id_classe"]."&amp;periode1=1&amp;periode2=".count($tab_ele['classe'][0]['periodes'])."&amp;choix_edit=2&amp;login_eleve=".$ele_login."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
 						echo "</div>";
 					}
 					else {
 						for($loop_classe=0;$loop_classe<count($tab_ele["classe"]);$loop_classe++) {
 							echo "<div style='float:right; width:16px; text-align:center;margin-right:3px;' class='fieldset_opacite50' title=\"Bulletins simplifiés\">";
-							echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][$loop_classe]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\">".$tab_ele["classe"][$loop_classe]["classe"]."<img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+							//echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][$loop_classe]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\">".$tab_ele["classe"][$loop_classe]["classe"]."<img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+							echo "<a href='../prepa_conseil/edit_limite.php?id_classe=".$tab_ele["classe"][$loop_classe]["id_classe"]."&amp;periode1=1&amp;periode2=".count($tab_ele['classe'][$loop_classe]['periodes'])."&amp;choix_edit=2&amp;login_eleve=".$ele_login."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\">".$tab_ele["classe"][$loop_classe]["classe"]."<img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
 							echo "</div>";
 						}
 					}

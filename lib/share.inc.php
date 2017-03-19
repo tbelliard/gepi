@@ -12162,7 +12162,7 @@ function tableau_des_avertissements_de_fin_de_periode_eleve($login_ele) {
 }
 
 
-function get_info_eleve($login_ele, $periode) {
+function get_info_eleve($login_ele, $periode=1) {
 	$tab=array();
 
 	$sql="SELECT * FROM eleves WHERE login='$login_ele';";
@@ -16397,6 +16397,46 @@ function nettoye_texte_vers_chaine($texte, $remplacement_retour_ligne=" - ") {
 	$chaine=trim($chaine);
 
 	return $chaine;
+}
+
+function get_tab_modalites_accompagnement() {
+	global $mysqli;
+
+	$tab=array();
+
+	$tab["indice"]=array();
+	$tab["code"]=array();
+
+	$sql="SELECT * FROM modalites_accompagnement ORDER BY code;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab["indice"][$cpt]=$lig;
+			$tab["code"][$lig["code"]]=$lig["libelle"];
+			$cpt++;
+		}
+	}
+	return $tab;
+}
+
+function get_tab_modalites_accompagnement_eleve($login_eleve) {
+	global $mysqli;
+
+
+	$tab=array();
+
+	$sql="SELECT jmae.*, ma.libelle FROM modalites_accompagnement ma, j_modalite_accompagnement_eleve jmae, eleves e WHERE ma.code=jmae.code AND jmae.id_eleve=e.id_eleve AND e.login='".$login_eleve."' ORDER BY code;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab[]=$lig;
+		}
+	}
+	return $tab;
 }
 
 ?>

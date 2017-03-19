@@ -134,6 +134,11 @@ if (file_exists('LSUN_nomenclatures.xml')) {
 $periodes = getPeriodes();
 $classes = getClasses();
 
+$anomalies_tables=check_anomalie_mod_LSUN();
+if($anomalies_tables!="") {
+	echo "<div align='center'>".$anomalies_tables."</div>";
+}
+
 if(isset($msg_requetesAdmin)) {
 	echo "<div align='center'>".$msg_requetesAdmin."</div>";
 }
@@ -247,6 +252,7 @@ if ($cpt) {echo "			</div>\n";}
 			</button>
 		</p>
 
+		<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Le choix des EPI/AP/Parcours n'est proposé qu'une fois le choix des classes effectué.</p>
 
   </fieldset>
 </form>
@@ -302,8 +308,13 @@ if ($cpt) {echo "			</div>\n";}
 						<option value=""></option>
 <?php $AidParcours->data_seek(0);
 while ($AidParc = $AidParcours->fetch_object()) { ?>
-						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->num_rows && getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> >
-							<?php echo $AidParc->aid; ?>
+						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->num_rows && getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> title="<?php echo $AidParc->nom_complet;?>">
+							<?php
+								echo $AidParc->aid;
+								// DEBUG
+								//echo " (".$AidParc->idAid.")";
+								//echo " (".$AidParc->nom_complet.")";
+							?>
 						</option>
 <?php } ?>
 					</select>
@@ -359,7 +370,18 @@ while ($AidParc = $AidParcours->fetch_object()) { ?>
 						<option value=""></option>
 <?php $AidParcours->data_seek(0);
 while ($APCommun = $AidParcours->fetch_object()) { ?>
-						<option value="<?php echo $APCommun->indice_aid; ?>"><?php echo $APCommun->aid; ?></option>
+						<option value="<?php 
+								//echo $APCommun->indice_aid; 
+								echo $APCommun->idAid; 
+							?>" title="<?php echo $APCommun->nom_complet;?>">
+							<?php
+								echo $APCommun->aid;
+								// DEBUG
+								//echo " (".$APCommun->indice_aid.")";
+								//echo " (".$APCommun->idAid.")";
+								//echo " (".$APCommun->nom_complet.")";
+							?>
+						</option>
 <?php } ?>
 					</select>
 				</td>
@@ -986,7 +1008,7 @@ while ($classe = $classes->fetch_object()) { ?>
 		$selected="";
 		if($liaison->indice_aid == $ap->id_aid) {$selected='selected';}
 		echo "
-									<option value=\"".$liaison->indice_aid."\"".$selected.">".$liaison->groupe."</option>";
+									<option value=\"".$liaison->indice_aid."\"".$selected." title=\"".$liaison->groupe." (".$liaison->description.")\">".$liaison->groupe."</option>";
 	}
 ?>
 								</select>
@@ -1287,7 +1309,7 @@ while ($classe = $classes->fetch_object()) { ?>
 //var_dump($listeAidAp);
 $listeAidAp->data_seek(0);
 while ($liaison = $listeAidAp->fetch_object()) { ?>
-							<option value="<?php echo $liaison->indice_aid; ?>">
+							<option value="<?php echo $liaison->indice_aid; ?>" title="<?php echo $liaison->groupe." (".$liaison->description.")";?>">
 								<?php echo $liaison->groupe; ?>
 							</option>
 <?php } ?>
@@ -1328,6 +1350,30 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 <form action="index.php" method="post" id="exportDonnees">
 	<fieldset class='fieldset_opacite50'>
 		<legend class='fieldset_opacite50'>Export des données</legend>
+
+		<?php
+			if(isset($selectionClasse)) {
+				if(count($selectionClasse)>0) {
+					/*
+					echo "<pre>";
+					print_r($selectionClasse);
+					echo "</pre>";
+					*/
+					echo "<p style='color:green'>".count($selectionClasse)." classe(s) sélectionnée(s)&nbsp;: ";
+					$cpt=0;
+					foreach($selectionClasse as $indice => $id_classe) {
+						if($cpt>0) {echo ", ";}
+						echo get_nom_classe($id_classe);
+						$cpt++;
+					}
+					echo "</p>";
+				}
+				else {
+					echo "<p style='color:red'>Aucune classe n'est sélectionnée.</p>";
+				}
+			}
+		?>
+
 		<div class="lsun3colonnes">
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
@@ -1366,7 +1412,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<label for="traiteAPElv">données élèves des AP</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" disabled />
+						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" checked disabled />
 						<label for="traiteModSpeElv"  class="desactive" title="À saisir directement dans LSU" >modalités spécifiques d’accompagnement des élèves</label>
 					</li>
 					<li>
@@ -1420,6 +1466,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 </div>
 
 <?php if (!$selectionClasse) { ?>
+
 <script type='text/javascript'>
 	document.getElementById("defAid").style.display='none';
 </script>

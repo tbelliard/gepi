@@ -358,22 +358,22 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if(getSettingAOui('active_module_LSUN')) {
-		echo "plop<br />";
+		//echo "plop<br />";
 		$enseignement_complement=array();
 		foreach ($_POST as $key => $value) {
 			$pattern = "/^enseignement_complement\_/";
 			if (preg_match($pattern, $key)) {
 				$group_id = preg_replace($pattern, "", $key);
 				$enseignement_complement[$group_id] = "$value";
-				echo "\$enseignement_complement[$group_id] = \"$value\";<br />";
+				//echo "\$enseignement_complement[$group_id] = \"$value\";<br />";
 
 				$sql="SELECT * FROM j_groupes_enseignements_complement WHERE id_groupe='".$group_id."';";
-				echo "$sql<br />";
+				//echo "$sql<br />";
 				$res_type_grp=mysqli_query($GLOBALS['mysqli'], $sql);
 				if(mysqli_num_rows($res_type_grp)==0) {
 					if($enseignement_complement[$group_id]!="") {
 						$sql="INSERT INTO j_groupes_enseignements_complement SET id_groupe='".$group_id."', code='".$value."';";
-						echo "$sql<br />";
+						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS['mysqli'], $sql);
 						if(!$insert) {
 							$msg.="Erreur lors de l'enregistrement du type d'enseignement de complément pour le groupe n°".$tab_id_groupe[$loop].".<br />";
@@ -382,12 +382,14 @@ if (isset($_POST['is_posted'])) {
 				}
 				else {
 					$lig_type=mysqli_fetch_object($res_type_grp);
+					/*
 					echo "<pre>";
 					print_r($lig_type);
 					echo "</pre>";
+					*/
 					if($enseignement_complement[$group_id]=="") {
 						$sql="DELETE FROM j_groupes_enseignements_complement WHERE id_groupe='".$group_id."';";
-						echo "$sql<br />";
+						//echo "$sql<br />";
 						$suppr=mysqli_query($GLOBALS['mysqli'], $sql);
 						if(!$suppr) {
 							$msg.="Erreur lors de la remise à vide du type d'enseignement de complément pour le groupe n°".$tab_id_groupe[$loop].".<br />";
@@ -395,15 +397,17 @@ if (isset($_POST['is_posted'])) {
 					}
 					elseif($enseignement_complement[$group_id]!=$lig_type->code) {
 						$sql="UPDATE j_groupes_enseignements_complement SET code='".$value."' WHERE id_groupe='".$group_id."';";
-						echo "$sql<br />";
+						//echo "$sql<br />";
 						$update=mysqli_query($GLOBALS['mysqli'], $sql);
 						if(!$update) {
 							$msg.="Erreur lors de la mise à jour du type d'enseignement de complément pour le groupe n°".$tab_id_groupe[$loop].".<br />";
 						}
 					}
+					/*
 					else {
 						echo "Type d'enseignement de complément inchangé<br />";
 					}
+					*/
 				}
 			}
 		}

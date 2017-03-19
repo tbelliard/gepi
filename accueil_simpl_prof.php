@@ -773,13 +773,29 @@ for($i=0;$i<count($groups);$i++){
 							*/
 							$chaine_date_fin_periode="";
 							$tmp_tab_date_fin_periode=array();
+							$tmp_tab_date_fin_periode_passee=array();
 							foreach($groups[$i]['classe']['date_fin'] as $tmp_id_classe => $tmp_classe) {
 								if($tmp_classe[$j]>=$date_courante_debut_journee_mysql) {
 									$tmp_tab_date_fin_periode[$tmp_classe[$j]][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
 								}
+								else {
+									$tmp_tab_date_fin_periode_passee[$tmp_classe[$j]][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
+								}
 							}
 							foreach($tmp_tab_date_fin_periode as $current_mysql_date => $tmp_tab_classe) {
 								$chaine_date_fin_periode.="<br /><span style='font-size:x-small;' title=\"Date de fin de période ";
+								for($loop_clas=0;$loop_clas<count($tmp_tab_classe);$loop_clas++) {
+									if($loop_clas>0) {
+										$chaine_date_fin_periode.=", ";
+									}
+									$chaine_date_fin_periode.=$tmp_tab_classe[$loop_clas];
+								}
+								$chaine_date_fin_periode.=" : ".formate_date($current_mysql_date)."\">";
+								$chaine_date_fin_periode.=formate_date($current_mysql_date);
+								$chaine_date_fin_periode.="</span>";
+							}
+							foreach($tmp_tab_date_fin_periode_passee as $current_mysql_date => $tmp_tab_classe) {
+								$chaine_date_fin_periode.="<br /><span style='font-size:x-small; color:red;' title=\"Date de fin de période dépassée ";
 								for($loop_clas=0;$loop_clas<count($tmp_tab_classe);$loop_clas++) {
 									if($loop_clas>0) {
 										$chaine_date_fin_periode.=", ";

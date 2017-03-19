@@ -163,7 +163,7 @@ function creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $n
 	}
 	$sqlNewParcours = "INSERT INTO lsun_parcours_communs (id,periode,classe,codeParcours,description)  VALUES ($newParcoursId, $newParcoursTrim, $newParcoursClasse, '$newParcoursCode', '$newParcoursTexte') ON DUPLICATE KEY UPDATE periode = $newParcoursTrim ,classe = $newParcoursClasse,codeParcours = '$newParcoursCode',description = '$newParcoursTexte' ";
 	//echo $sqlNewParcours;
-	$resultchargeDB = $mysqli->query($sqlNewParcours);	
+	$resultchargeDB = $mysqli->query($sqlNewParcours);
 	return $resultchargeDB;	
 }
 
@@ -264,7 +264,7 @@ function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParco
 	
 	$sqlModifieParcoursLien = "INSERT INTO lsun_j_aid_parcours (id_aid, id_parcours) VALUES ($modifieParcoursLien , $modifieParcoursId) "
 		. "ON DUPLICATE KEY UPDATE id_aid = $modifieParcoursLien ";
-	//echo $sqlModifieParcoursLien;
+	//echo $sqlModifieParcoursLien.";<br />";
 	$res=$mysqli->query($sqlModifieParcoursLien);
 	return $res;
 }
@@ -438,7 +438,7 @@ function getAcquisEleve($eleve, $periode) {
 	//$sqlAcquis = "SELECT * FROM matieres_notes WHERE login = '$eleve' AND periode = $periode ";
 	$sqlAcquis01 = "SELECT mn.* , ma.appreciation FROM matieres_notes AS mn INNER JOIN matieres_appreciations AS ma "
 		. "ON mn.login = ma.login AND mn.periode = ma.periode AND mn.id_groupe = ma.id_groupe "
-		. "WHERE mn.login = '$eleve' AND mn.periode = $periode "
+		. "WHERE mn.login = '$eleve' AND mn.periode = '$periode' "
 		. "AND mn.`id_groupe` NOT IN (SELECT jgt.id_groupe FROM j_groupes_types AS jgt) "
 		. "GROUP BY mn.`id_groupe` ";
 	//$sqlAcquis02 = "SELECT s1.*, jme.idEP FROM ($sqlAcquis01) AS s1 INNER JOIN  j_mep_eleve AS jme ON jme.idEleve = s1.login ";
@@ -450,7 +450,7 @@ function getAcquisEleve($eleve, $periode) {
 	//=== mef
 	$sqlAcquis = "SELECT s6.* , c.mef_code FROM ($sqlAcquis06) AS s6 INNER JOIN classes AS c ON s6.id_classe = c.id ";
 	
-	//echo $sqlAcquis.'<br><br>';
+	//echo $sqlAcquis.';<br><br>';
 	$resultchargeDB = $mysqli->query($sqlAcquis);
 	return $resultchargeDB;
 	
@@ -836,7 +836,7 @@ INNER JOIN
 ON aid.indice_aid = t0.indice_aid
 ORDER BY aid";
 	
-	// echo $sqlAidParcours.'<br><br>';
+	//echo $sqlAidParcours.';<br><br>';
 	$resultchargeDB = $mysqli->query($sqlAidParcours);
 	return $resultchargeDB ;
 	
@@ -965,7 +965,47 @@ function libxml_display_errors($display_errors = true) {
 	return $chain_errors;
 }
 
+function check_anomalie_mod_LSUN() {
+	global $mysqli;
 
+	$retour="";
 
+	//$sql="SELECT COUNT(id_aid) AS nbr_doublon, id_aid FROM lsun_j_ap_aid GROUP BY id_aid HAVING COUNT(id_aid) > 1;";
+	$sql="SELECT * FROM lsun_j_ap_aid AS t0
+		WHERE NOT EXISTS (
+			SELECT * FROM lsun_ap_communs AS t1
+			WHERE t0.id_ap = t1.id
+		);";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$retour.="<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> ";
+		while($lig=mysqli_fetch_object($res)) {
+			$retour.="L'AID n°".$lig->id_aid." (".get_valeur_champ("aid","id='".$lig->id_aid."'", "nom").") est associé à plusieurs AP.<br />";
+		}
+		$retour.="<a href='".$_SERVER["PHP_SELF"]."?nettoyer_doublons_AP=y".add_token_in_url()."'>Corriger</a></p>";
+	}
+
+	return $retour;
+}
+
+// $mode à utiliser par la suite si nécessaire pour nettoyer tout ou seulement certaines tables
+function corrige_anomalie_mod_LSUN($mode="nettoyer_doublons_AP") {
+	global $mysqli;
+
+	$retour="";
+
+	if($mode=="nettoyer_doublons_AP") {
+		$sql="DELETE FROM lsun_j_ap_aid WHERE NOT EXISTS ( SELECT * FROM lsun_ap_communs AS t1 WHERE lsun_j_ap_aid.id_ap = t1.id );";
+		$del=mysqli_query($mysqli, $sql);
+		if($del) {
+			$retour.="<span style='color:green'>Suppression des doublons de liaisons AP effectuée.</span><br />";
+		}
+		else {
+			$retour.="<span style='color:red'>Erreur lors de la suppression des doublons de liaisons AP.</span><br />";
+		}
+	}
+
+	return $retour;
+}
 
 

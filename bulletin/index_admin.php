@@ -109,6 +109,36 @@ if(isset($_POST['is_posted'])) {
 				$msg.="Erreur lors de l'enregistrement de 'bullNoSaisieElementsProgrammes'.<br />";
 			}
 		}
+
+
+		if (isset($_POST['insert_mass_appreciation_type'])) {
+			if(!saveSetting('insert_mass_appreciation_type', "y")) {
+				$msg.="Erreur lors de l'enregistrement de 'insert_mass_appreciation_type'.<br />";
+			}
+		}
+		else {
+			if(!saveSetting('insert_mass_appreciation_type', "n")) {
+				$msg.="Erreur lors de l'enregistrement de 'insert_mass_appreciation_type'.<br />";
+			}
+		}
+
+		$sql="DELETE FROM b_droits_divers WHERE nom_droit='insert_mass_appreciation_type';";
+		$del=mysqli_query($mysqli, $sql);
+		$nb_mass=0;
+		$login_user_mass_app=isset($_POST['login_user_mass_app']) ? $_POST['login_user_mass_app'] : array();
+		for($loop=0;$loop<count($login_user_mass_app);$loop++) {
+			$sql="INSERT INTO b_droits_divers SET nom_droit='insert_mass_appreciation_type', valeur_droit='y', login='".$login_user_mass_app[$loop]."';";
+			$insert=mysqli_query($mysqli, $sql);
+			if(!$insert) {
+				$msg.="Erreur lors de l'enregistrement du droit insert_mass_appreciation_type pour ".civ_nom_prenom($login_user_mass_app[$loop]).".<br />";
+			}
+			else {
+				$nb_mass++;
+			}
+		}
+		if($nb_mass>0) {
+			$msg.="$nb_mass droit(s) insert_mass_appreciation_type enregistré(s).<br />";
+		}
 	}
 }
 

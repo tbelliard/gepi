@@ -72,8 +72,26 @@ if ('y' == $newParcours) {
 	$newParcoursCode = filter_input(INPUT_POST, 'newParcoursCode');
 	$newParcoursTexte = filter_input(INPUT_POST, 'newParcoursTexte');
 	//echo 'on crée '.$newParcoursTrim.' → '.$newParcoursClasse.' → '.$newParcoursCode.' → '.$newParcoursTexte;
-	if(creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte)) {
+	$res_creation_parcours=creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte);
+	if($res_creation_parcours) {
 		$msg_requetesAdmin.="<span style='color:green'>Nouveau parcours créé.</span><br />";
+
+		$newParcoursLien = filter_input(INPUT_POST, 'newParcoursLien');
+		//echo "\$newParcoursLien=$newParcoursLien<br />";
+		if(preg_match("/^[0-9]{1,}$/", $newParcoursLien)) {
+			$id_new_parcours=mysqli_insert_id($mysqli);
+			//echo "\$id_new_parcours=$id_new_parcours<br />";
+			if(preg_match("/^[0-9]{1,}$/", $id_new_parcours)) {
+				if(!modifieParcours($id_new_parcours, $newParcoursCode, $newParcoursTexte, $newParcoursLien)) {
+					$msg_requetesAdmin.="<span style='color:red'>Échec lors de la liaison AID.</span><br />";
+				}
+				/*
+				else {
+					$msg_requetesAdmin.="<span style='color:green'>Liaison AID effectuée.</span><br />";
+				}
+				*/
+			}
+		}
 	}
 	else {
 		$msg_requetesAdmin.="<span style='color:red'>Échec lors de la création du Nouveau parcours.</span><br />";
@@ -213,5 +231,14 @@ if ($modifierAp) {
 	$changeApDisciplines = filter_input(INPUT_POST, 'ApDisciplines'.$modifierAp, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	
 	modifieAP($modifierAp, $changeIntituleAp[$modifierAp], $changeApDescription[$modifierAp], $changeLiaisonApAid[$modifierAp], $changeApDisciplines);
+}
+
+if(isset($_GET['nettoyer_doublons_AP'])) {
+	check_token(false);
+
+	$nettoyage_anomalies_tables_AP=corrige_anomalie_mod_LSUN();
+	if($nettoyage_anomalies_tables_AP!="") {
+		echo "<div align='center'>".$nettoyage_anomalies_tables_AP."</div>";
+	}
 }
 

@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -962,10 +962,13 @@ Vous écraseriez alors les saisies dans les AID avec le contenu des enseignement
 		echo "
 				<tr>
 					<td>$lig_grp->id_groupe</td>
-					<td id='td_name_".$cpt."'>".$lig_grp->name."</td>
-					<td id='td_description_".$cpt."'>".stripslashes($lig_grp->description)."</td>
+					<td id='td_name_".$cpt."'>".trim($lig_grp->name)."</td>
+					<td id='td_description_".$cpt."'>".trim(stripslashes($lig_grp->description))."</td>
 					<td>$chaine_classes</td>
-					<td>$lig_grp->nom_court</td>
+					<td>
+						$lig_grp->nom_court
+						<span id='span_name_plus_description_".$cpt."' style='display:none'>".ensure_ascii(casse_mot(trim($lig_grp->name)." (".trim(stripslashes($lig_grp->description).")"), "min"))."</span>
+					</td>
 					<td>".(isset($tab_grp_aid[$lig_grp->id_groupe]) ? "<img src='../images/enabled.png' class='icone20' alt='Catégorie créée' title='Catégorie créée/associée' />" : "<a href='".$_SERVER['PHP_SELF']."?creer_categorie=".$lig_grp->id_groupe."&".add_token_in_url()."' title=\"Créer une catégorie AID d'après le nom de l'enseignement.\"><img src='../images/icons/wizard.png' class='icone16' alt='Créer' /></a>")."</td>
 					<td>
 						<select name='indice_aid[".$lig_grp->id_groupe."]' id='indice_aid_".$cpt."' style='width:20em;' onchange=\"changement(); document.getElementById('span_cat_$cpt').style.display='none';\">
@@ -976,7 +979,7 @@ Vous écraseriez alors les saisies dans les AID avec le contenu des enseignement
 				$selected=" selected='true'";
 			}
 			echo "
-							<option value='".$tab_cat_aid[$loop]["indice_aid"]."'".$selected.">".$tab_cat_aid[$loop]["nom"]." (".$tab_cat_aid[$loop]["nom_complet"].")</option>";
+							<option value='".$tab_cat_aid[$loop]["indice_aid"]."'".$selected.">".trim($tab_cat_aid[$loop]["nom"])." (".trim($tab_cat_aid[$loop]["nom_complet"]).")</option>";
 		}
 		echo "
 						</select>
@@ -1036,6 +1039,21 @@ ATTENTION : Si les professeurs ont effectué des saisies manuelles
 </form>
 
 <script type='text/javascript'>
+	// https://gist.github.com/alisterlf/3490957
+	function RemoveAccents(str) {
+	  var accents    = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž';
+	  var accentsOut = \"AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz\";
+	  str = str.split('');
+	  var strLen = str.length;
+	  var i, x;
+	  for (i = 0; i < strLen; i++) {
+	    if ((x = accents.indexOf(str[i])) != -1) {
+		str[i] = accentsOut[x];
+	    }
+	  }
+	  return str.join('');
+	}
+
 	function select_auto_cat() {
 		nb_assoc=0;
 		for(i=0;i<$cpt;i++) {
@@ -1048,7 +1066,11 @@ ATTENTION : Si les professeurs ont effectué des saisies manuelles
 						alert('Contenu TD compilés='+document.getElementById('td_name_'+i).innerHTML+' ('+document.getElementById('td_description_'+i).innerHTML+')');
 					}
 					*/
-					if(document.getElementById('indice_aid_'+i).options[j].innerHTML==document.getElementById('td_name_'+i).innerHTML+' ('+document.getElementById('td_description_'+i).innerHTML+')') {
+
+					//if(document.getElementById('indice_aid_'+i).options[j].innerHTML==document.getElementById('td_name_'+i).innerHTML+' ('+document.getElementById('td_description_'+i).innerHTML+')') {
+					tmp_var=RemoveAccents(document.getElementById('indice_aid_'+i).options[j].innerHTML);
+					if(tmp_var.toLowerCase()==document.getElementById('span_name_plus_description_'+i).innerHTML) {
+
 						document.getElementById('indice_aid_'+i).selectedIndex=j;
 						nb_assoc++;
 					}

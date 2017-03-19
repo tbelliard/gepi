@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -490,6 +490,72 @@ else {
 
 	echo "<p>Saisie des notes et appréciations pour $info_ele sur la période ".$nom_periode[$periode_num]."</p>\n";
 
+
+	$insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
+if ($insert_mass_appreciation_type=="y") {
+	// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
+
+	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	// Pour tester:
+	// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
+
+	if($_SESSION["statut"]=="secours") {
+		$droit_insert_mass_appreciation_type="y";
+	}
+	else {
+		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
+		$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_droit)>0) {
+			$droit_insert_mass_appreciation_type="y";
+		}
+		else {
+			$droit_insert_mass_appreciation_type="n";
+		}
+	}
+
+	if($droit_insert_mass_appreciation_type=="y") {
+		echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
+		echo "Insérer la note/chaine suivante pour toutes les <strong>notes</strong> vides: ";
+		echo "<input type='text' name='ajout_a_note_vide' id='ajout_a_note_vide' value='-' size='10' /><br />\n";
+		echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_note_vide()' /><br />\n";
+
+		echo "<br />\n";
+
+		echo "Insérer l'appréciation-type suivante pour toutes les <strong>appréciations</strong> vides: ";
+		echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
+		echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
+		echo "</div>\n";
+
+		echo "<script type='text/javascript'>
+	function ajoute_a_textarea_vide() {
+		champs_textarea=document.getElementsByTagName('textarea');
+		//alert('champs_textarea.length='+champs_textarea.length);
+		for(i=0;i<champs_textarea.length;i++){
+			if(champs_textarea[i].value=='') {
+				champs_textarea[i].value=document.getElementById('ajout_a_textarea_vide').value;
+			}
+		}
+	}
+
+	function ajoute_a_note_vide() {
+		champs_input=document.getElementsByTagName('input');
+		//alert('champs_textarea.length='+champs_input.length);
+		for(i=0;i<champs_input.length;i++){
+
+			if(champs_input[i].value=='') {
+				nom_champ=champs_input[i].getAttribute('name');
+				if(nom_champ.substring(0,8)=='note_grp') {
+					champs_input[i].value=document.getElementById('ajout_a_note_vide').value;
+				}
+			}
+		}
+	}
+</script>\n";
+
+	}
+}
 	$sql="SELECT jeg.id_groupe, g.name, g.description, m.nom_complet
 			FROM groupes g,
 				matieres m,

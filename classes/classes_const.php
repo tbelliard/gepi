@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -476,6 +476,10 @@ if(!isset($quitter_la_page)){
 	//=========================
 
 	echo " | <a href='export_ele_opt.php?id_classe[0]=$id_classe'>Exporter les options suivies par les élèves</a>";
+
+	if(acces("/gestion/saisie_modalites_accompagnement.php", $_SESSION["statut"])) {
+		echo " | <a href='../gestion/saisie_modalites_accompagnement.php?id_classe=$id_classe'>Modalités d'accompagnement</a>";
+	}
 
 	echo "</p>\n";
 	echo "</form>\n";
