@@ -2849,6 +2849,22 @@ if(isset($eleve_login)){
 		}
 		echo "</div>\n";
 
+		echo "<div style='margin-top:1em; text-align:center;' class='fieldset_opacite50' title=\"Modalités d'accompagnement\">";
+		$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($eleve_login);
+		if(count($tab_modalites_accompagnement_eleve>0)) {
+			for($loop_modalite=0;$loop_modalite<count($tab_modalites_accompagnement_eleve);$loop_modalite++) {
+				echo " <span title=\"".$tab_modalites_accompagnement_eleve[$loop_modalite]["libelle"]."\">".$tab_modalites_accompagnement_eleve[$loop_modalite]["code"]."</span>";
+			}
+		}
+		else {
+			echo "Aucune modalité d'accompagnement n'est définie.";
+		}
+
+		if(acces("/gestion/saisie_modalites_accompagnement.php", $_SESSION["statut"])) {
+			echo "<br /><a href='../gestion/saisie_modalites_accompagnement.php?login_eleve=".$eleve_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" style='font-size:small; text-decoration:none; color:black;'><img src='../images/icons/add.png' class='icone16' alt='Add' />Ajouter/Modifier des modalités d'accompagnement.</a>";
+		}
+		echo "</div>\n";
+
 		//=========================
 		// Infos compte utilisateur
 		if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&(isset($eleve_login))&&

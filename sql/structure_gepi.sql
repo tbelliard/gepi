@@ -1639,3 +1639,14 @@ login_saisie varchar(50) NOT NULL DEFAULT '',
 date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
 PRIMARY KEY (id), INDEX ine_id_groupe (ine, id_groupe), UNIQUE(ine, id_groupe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS modalites_accompagnement;
+CREATE TABLE IF NOT EXISTS modalites_accompagnement (code VARCHAR(10) DEFAULT '', 
+libelle varchar(255) NOT NULL default '', 
+PRIMARY KEY (code)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS j_modalite_accompagnement_eleve;
+CREATE TABLE IF NOT EXISTS j_modalite_accompagnement_eleve (code VARCHAR(10) DEFAULT '', 
+id_eleve INT(11) NOT NULL default '0', 
+commentaire TEXT, 
+PRIMARY KEY code_id_eleve (code, id_eleve), INDEX code_id_eleve (code, id_eleve)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

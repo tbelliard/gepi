@@ -371,4 +371,60 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'modalites_accompagnement'&nbsp;:</strong> ";
+$test = sql_query1("SHOW TABLES LIKE 'modalites_accompagnement'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS modalites_accompagnement (code VARCHAR(10) DEFAULT '', 
+		libelle varchar(255) NOT NULL default '', 
+		PRIMARY KEY (code)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+
+		$tab_modalite_accompagnement["PAP"]="Plan d’accompagnement personnalisé";
+		$tab_modalite_accompagnement["PAI"]="Projet d’accueil individualisé";
+		$tab_modalite_accompagnement["PPRE"]="Programme personnalisé de réussite éducative";
+		$tab_modalite_accompagnement["PPS"]="Projet personnalisé de scolarisation";
+		$tab_modalite_accompagnement["ULIS"]="Unité localisée pour l’inclusion scolaire";
+		$tab_modalite_accompagnement["UPE2A"]="Unité pédagogique pour élèves allophones arrivants";
+		$tab_modalite_accompagnement["SEGPA"]="Section d’enseignement général adapté";
+
+		foreach($tab_modalite_accompagnement as $code => $libelle) {
+			$result .= "&nbsp;-> Ajout de la modalité \"$code\" pour \"$libelle\"&nbsp;: ";
+			$sql="INSERT INTO modalites_accompagnement SET code='".$code."', libelle='".addslashes($libelle)."';";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+			}
+			//$result .= "<br />";
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'j_modalite_accompagnement_eleve'&nbsp;:</strong>";
+$test = sql_query1("SHOW TABLES LIKE 'j_modalite_accompagnement_eleve'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_modalite_accompagnement_eleve (code VARCHAR(10) DEFAULT '', 
+		id_eleve INT(11) NOT NULL default '0', 
+		commentaire TEXT, 
+		PRIMARY KEY code_id_eleve (code, id_eleve), INDEX code_id_eleve (code, id_eleve)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 
