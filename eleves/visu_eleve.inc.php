@@ -2262,13 +2262,16 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				if(count($tab_ele["classe"])>0) {
 					if(count($tab_ele["classe"])==1) {
 						echo "<div style='float:right; width:16px; text-align:center;margin-right:3px;' class='fieldset_opacite50' title=\"Bulletins simplifiés\">";
-						echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][0]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						// Le statut administrateur n'a pas accès à prepa_conseil/index3.php, mais seulement à prepa_conseil/edit_limite.php
+						//echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][0]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						echo "<a href='../prepa_conseil/edit_limite.php?id_classe=".$tab_ele["classe"][0]["id_classe"]."&amp;periode1=1&amp;periode2=".count($tab_ele['classe'][0]['periodes'])."&amp;choix_edit=2&amp;login_eleve=".$ele_login."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
 						echo "</div>";
 					}
 					else {
 						for($loop_classe=0;$loop_classe<count($tab_ele["classe"]);$loop_classe++) {
 							echo "<div style='float:right; width:16px; text-align:center;margin-right:3px;' class='fieldset_opacite50' title=\"Bulletins simplifiés\">";
-							echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][$loop_classe]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\">".$tab_ele["classe"][$loop_classe]["classe"]."<img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+							//echo "<a href='../prepa_conseil/index3.php?id_classe=".$tab_ele["classe"][$loop_classe]["id_classe"]."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\">".$tab_ele["classe"][$loop_classe]["classe"]."<img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+							echo "<a href='../prepa_conseil/edit_limite.php?id_classe=".$tab_ele["classe"][$loop_classe]["id_classe"]."&amp;periode1=1&amp;periode2=".count($tab_ele['classe'][$loop_classe]['periodes'])."&amp;choix_edit=2&amp;login_eleve=".$ele_login."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\">".$tab_ele["classe"][$loop_classe]["classe"]."<img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
 							echo "</div>";
 						}
 					}
