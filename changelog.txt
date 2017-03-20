@@ -10,13 +10,20 @@ Absences 2:
 - Possibilité de donner des droits de consultation/modification de certains paramètres ABS2 à des non-administrateurs (typiquement tel CPE).
 - Possibilité de ne pas afficher les saisies correspondant aux Marques d'appel.
 - Possibilité de ne pas enregistrer un marqueur d'appel lorsque plusieurs saisies sont faites sur le même créneau/groupe,...
+- Bilan individuel: Possibilité de ne pas afficher/exporter les saisies englobées.
 
 Bulletins:
 - Ajout d'un témoin sur le cycle et le niveau de chaque élève pour repérer un éventuel problème de Nomenclature/mef.
 - Page appréciations groupe classe avec le style CLG2016.
 
+LSUN:
+- Possibilité de saisir les bilans de composantes du Socle.
+
 Éléments de programmes:
 - Accès à la gestion des éléments de programmes même si on n'en a pas saisi soi-même.
+
+AID:
+- Dispositif pour transférer vers des AID des saisies EPI/AP/Parcours effectuées dans des enseignements. 
 
 EDT2:
 - Possibilité de faire apparaitre les remplacements (du module Absences Profs) sur l'EDT2.
@@ -27,9 +34,6 @@ Trombinoscope:
 Engagements:
 - Possibilité de définir des engagements qui peuvent être saisis par un professeur non nécessairement professeur principal.
 - Possibilité de choisir les engagements à faire apparaitre sur les bulletins CLG 2016.
-
-LSUN:
-- Possibilité de saisir les bilans de composantes du Socle.
 
 Général:
 - Mise à jour d'après un XML Eleves d'EDT: Possibilité de n'uploader qu'un fichier xml partiel.
