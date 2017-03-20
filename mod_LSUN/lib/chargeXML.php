@@ -851,24 +851,27 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$listeParcoursEleve = $xml->createElement('liste-parcours');
 					$creeParcours = FALSE;
 					while ($parcoursElv = $parcoursEleve->fetch_object()) {
-						$typeParcoursEleve = getCodeParcours($parcoursElv->id_aid);
-						if ($typeParcoursEleve->num_rows) {
-							$typeParcoursEleve = $typeParcoursEleve->fetch_object();
-							
-							$commentaireEleve = getCommentaireEleveParcours($eleve->login,$parcoursElv->id_aid, $eleve->periode);//
-							if ($commentaireEleve->num_rows) {
-								$tmp_chaine=nettoye_texte_vers_chaine($commentaireEleve->fetch_object()->appreciation);
-								$commentaireEleve = substr(trim($tmp_chaine),0,600);
-								if (strlen($commentaireEleve)) {
-									$noeudParcoursEleve = $xml->createElement('parcours',$commentaireEleve);
-									$attsParcoursEleve = $xml->createAttribute('code');
-									$attsParcoursEleve->value = $typeParcoursEleve->codeParcours;
-									$noeudParcoursEleve->appendChild($attsParcoursEleve);
-									$listeParcoursEleve->appendChild($noeudParcoursEleve);
-									$creeParcours = TRUE;
-								}
-								
-							}							
+						$verifieParcoursOuvert = parcoursOuvert($parcoursElv->id_aid, $eleve->periode);
+						if ($verifieParcoursOuvert) {
+							$typeParcoursEleve = getCodeParcours($parcoursElv->id_aid);
+							if ($typeParcoursEleve->num_rows) {
+								$typeParcoursEleve = $typeParcoursEleve->fetch_object();
+
+								$commentaireEleve = getCommentaireEleveParcours($eleve->login,$parcoursElv->id_aid, $eleve->periode);//
+								if ($commentaireEleve->num_rows) {
+									$tmp_chaine=nettoye_texte_vers_chaine($commentaireEleve->fetch_object()->appreciation);
+									$commentaireEleve = substr(trim($tmp_chaine),0,600);
+									if (strlen($commentaireEleve)) {
+										$noeudParcoursEleve = $xml->createElement('parcours',$commentaireEleve);
+										$attsParcoursEleve = $xml->createAttribute('code');
+										$attsParcoursEleve->value = $typeParcoursEleve->codeParcours;
+										$noeudParcoursEleve->appendChild($attsParcoursEleve);
+										$listeParcoursEleve->appendChild($noeudParcoursEleve);
+										$creeParcours = TRUE;
+									}
+
+								}							
+							}
 						}
 					}
 					if ($creeParcours) {

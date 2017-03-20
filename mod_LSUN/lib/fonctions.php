@@ -1088,4 +1088,20 @@ function corrige_anomalie_mod_LSUN($mode="nettoyer_doublons_AP") {
 	return $retour;
 }
 
+function parcoursOuvert($id_aid, $periode) {
+	global $mysqli;
+	$retour = FALSE;
+	$sql = "SELECT jap.id_aid, jap.id_parcours FROM lsun_j_aid_parcours AS jap "
+		. "INNER JOIN lsun_parcours_communs AS lpc "
+		. "ON jap.id_parcours = lpc.id "
+		. "WHERE jap.id_aid = $id_aid "
+		. "AND lpc.periode = $periode ";
+	//echo $sql."<br>";
+	$resultchargeDB = $mysqli->query($sql);
+	if ($resultchargeDB->num_rows) {
+		$retour = TRUE;
+	}
+
+	return $retour;
+}
 
