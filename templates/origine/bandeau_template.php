@@ -124,6 +124,7 @@
 																	// Les pages que l'on affiche pendant un conseil de classe
 																	// On n'a pas le temps pendant les conseils de cocher "lu"
 																	"/visualisation/", 
+																	"/mod_discipline/saisie_avertissement_fin_periode.php", 
 																	"/bulletin/bull_index.php", 
 																	"/saisie/saisie_avis", 
 																	"/prepa_conseil/index3.php", 
