@@ -46,6 +46,10 @@ $msg="";
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 
+if(isset($id_classe)) {
+	include("../lib/periodes.inc.php");
+}
+
 $tab_modalite_accompagnement=get_tab_modalites_accompagnement();
 
 //debug_var();
@@ -57,6 +61,26 @@ if(isset($_POST['is_posted_modalites_classes'])) {
 	$nb_reg=0;
 	$nb_del=0;
 
+/*
+ $_POST['accompagnement_4459_PAP_1']=	PAP
+$_POST['accompagnement_4459_PAP_2']=	PAP
+$_POST['accompagnement_4459_PAP_3']=	PAP
+$_POST['no_anti_inject_textarea_4459_PPRE_1']=	
+$_POST['no_anti_inject_textarea_4459_PPRE_2']=	
+$_POST['no_anti_inject_textarea_4459_PPRE_3']=	
+$_POST['accompagnement_4460_PPRE_1']=	PPRE
+$_POST['no_anti_inject_textarea_4460_PPRE_1']=	Bidule PPRE BAVENCOFF T1
+$_POST['no_anti_inject_textarea_4460_PPRE_2']=	
+$_POST['accompagnement_4460_PPRE_3']=	PPRE
+$_POST['no_anti_inject_textarea_4460_PPRE_3']=	Bidule PPRE BAVENCOFF T3
+$_POST['accompagnement_4460_SEGPA_1']=	SEGPA
+$_POST['accompagnement_4460_SEGPA_3']=	SEGPA
+$_POST['no_anti_inject_textarea_4461_PPRE_1']=	
+$_POST['no_anti_inject_textarea_4461_PPRE_2']=	
+$_POST['no_anti_inject_textarea_4461_PPRE_3']=	
+*/
+
+
 	$tab_modalites_ele=array();
 	$sql="SELECT DISTINCT jmae.* FROM j_modalite_accompagnement_eleve jmae, 
 				eleves e, 
@@ -67,13 +91,13 @@ if(isset($_POST['is_posted_modalites_classes'])) {
 			ORDER BY e.nom, e.prenom;";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
-		if(!isset($_POST['accompagnement_'.$lig->id_eleve."_".$lig->code])) {
-			$sql="DELETE FROM j_modalite_accompagnement_eleve WHERE id_eleve='".$lig->id_eleve."' AND code='".$lig->code."';";
+		if(!isset($_POST['accompagnement_'.$lig->id_eleve."_".$lig->code."_".$lig->periode])) {
+			$sql="DELETE FROM j_modalite_accompagnement_eleve WHERE id_eleve='".$lig->id_eleve."' AND code='".$lig->code."' AND periode='".$lig->periode."';";
 			$del=mysqli_query($mysqli, $sql);
 			$nb_del++;
 		}
 		else {
-			$tab_modalites_ele[$lig->id_eleve][$lig->code]=$lig->commentaire;
+			$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
 		}
 	}
 	if($nb_del>0) {
@@ -81,26 +105,22 @@ if(isset($_POST['is_posted_modalites_classes'])) {
 	}
 
 	$tab_ele=array();
-	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' ORDER BY e.nom, e.prenom;";
+	$sql="SELECT e.*, jec.periode FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' ORDER BY jec.periode, e.nom, e.prenom;";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		//$tab_ele[]=$lig;
 
 		foreach($tab_modalite_accompagnement["code"] as $code => $libelle) {
-			if(isset($_POST['accompagnement_'.$lig->id_eleve."_".$code])) {
-				if(isset($tab_modalites_ele[$lig->id_eleve][$code])) {
-					/*
-					if((isset($_POST['textarea_'.$lig->id_eleve."_".$code]))&&($_POST['textarea_'.$lig->id_eleve."_".$code]!=$tab_modalites_ele[$lig->id_eleve][$code])) {
-						//$sql="UPDATE j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, stripslashes($_POST['textarea_'.$lig->id_eleve."_".$code]))."' WHERE id_eleve='".$lig->id_eleve."' AND code='".$code."';";
-						$sql="UPDATE j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $_POST['textarea_'.$lig->id_eleve."_".$code])."' WHERE id_eleve='".$lig->id_eleve."' AND code='".$code."';";
-					*/
-
-					if((isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code]))&&($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code]!=$tab_modalites_ele[$lig->id_eleve][$code])) {
-						$sql="UPDATE j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $NON_PROTECT['textarea_'.$lig->id_eleve."_".$code])."' WHERE id_eleve='".$lig->id_eleve."' AND code='".$code."';";
+			if(isset($_POST['accompagnement_'.$lig->id_eleve."_".$code."_".$lig->periode])) {
+				if(isset($tab_modalites_ele[$lig->id_eleve][$code][$lig->periode])) {
+					// Modalité d'accompagnement déjà enregistrée sur cette période.
+					// On se contente de mettre à jour le commentaire s'il y en a un
+					if((isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode]))&&($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode]!=$tab_modalites_ele[$lig->id_eleve][$code])) {
+						$sql="UPDATE j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])."' WHERE id_eleve='".$lig->id_eleve."' AND code='".$code."' AND periode='".$lig->periode."';";
 
 						$update=mysqli_query($mysqli, $sql);
 						if(!$update) {
-							$msg.="Erreur lors de la mise à jour de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom.".<br />";
+							$msg.="Erreur lors de la mise à jour de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom." en période ".$lig->periode.".<br />";
 						}
 						else {
 							$nb_maj++;
@@ -108,19 +128,113 @@ if(isset($_POST['is_posted_modalites_classes'])) {
 					}
 				}
 				else {
-					//$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, stripslashes($_POST['textarea_'.$lig->id_eleve."_".$code]))."', id_eleve='".$lig->id_eleve."', code='".$code."';";
-					//$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $_POST['textarea_'.$lig->id_eleve."_".$code])."', id_eleve='".$lig->id_eleve."', code='".$code."';";
+					// On enregistre une nouvelle modalité.
 
-					if(isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code])) {
-						$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $NON_PROTECT['textarea_'.$lig->id_eleve."_".$code])."', id_eleve='".$lig->id_eleve."', code='".$code."';";
+					if(isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])) {
+						$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])."', id_eleve='".$lig->id_eleve."', code='".$code."', periode='".$lig->periode."'";
 					}
 					else {
-						$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='', id_eleve='".$lig->id_eleve."', code='".$code."';";
+						$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='', id_eleve='".$lig->id_eleve."', code='".$code."', periode='".$lig->periode."'";
 					}
 
 					$insert=mysqli_query($mysqli, $sql);
 					if(!$insert) {
-						$msg.="Erreur lors de l'enregistrement de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom.".<br />";
+						$msg.="Erreur lors de l'enregistrement de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom." en période ".$lig->periode.".<br />";
+					}
+					else {
+						$nb_reg++;
+					}
+				}
+			}
+		}
+	}
+
+	if($nb_reg>0) {
+		$msg.=$nb_reg." modalité(s) d'accompagnement enregistrée(s).<br />";
+	}
+	if($nb_maj>0) {
+		$msg.=$nb_maj." modalité(s) d'accompagnement mise(s) à jour.<br />";
+	}
+
+}
+elseif(isset($_POST['is_posted_modalites_eleve'])) {
+	check_token();
+
+	$nb_maj=0;
+	$nb_reg=0;
+	$nb_del=0;
+
+/*
+$_POST['login_eleve']=	abras_j
+$_POST['is_posted_modalites_eleve']=	y
+$_POST['accompagnement_4459_PAI_3']=	PAI
+$_POST['accompagnement_4459_PPRE_1']=	PPRE
+$_POST['no_anti_inject_textarea_4459_PPRE_1']=	PPRE ABRAS T1
+$_POST['accompagnement_4459_PPRE_2']=	PPRE
+$_POST['no_anti_inject_textarea_4459_PPRE_2']=	PPRE ABRAS T2
+$_POST['accompagnement_4459_PPRE_3']=	PPRE
+$_POST['no_anti_inject_textarea_4459_PPRE_3']=	PPRE ABRAS T3
+$_POST['accompagnement_4459_SEGPA_2']=	SEGPA
+$_POST['accompagnement_4459_ULIS_1']=	ULIS
+*/
+
+	$tab_modalites_ele=array();
+	$sql="SELECT DISTINCT jmae.* FROM j_modalite_accompagnement_eleve jmae, 
+				eleves e
+			WHERE jmae.id_eleve=e.id_eleve AND 
+				e.login='".$login_eleve."' 
+			ORDER BY jmae.periode;";
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		if(!isset($_POST['accompagnement_'.$lig->id_eleve."_".$lig->code."_".$lig->periode])) {
+			$sql="DELETE FROM j_modalite_accompagnement_eleve WHERE id_eleve='".$lig->id_eleve."' AND code='".$lig->code."' AND periode='".$lig->periode."';";
+			$del=mysqli_query($mysqli, $sql);
+			$nb_del++;
+		}
+		else {
+			$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+		}
+	}
+	if($nb_del>0) {
+		$msg.=$nb_del." modalité(s) d'accompagnement supprimée(s).<br />";
+	}
+
+	$tab_ele=array();
+	$sql="SELECT e.*, jec.periode FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND e.login='".$login_eleve."' ORDER BY jec.periode;";
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		//$tab_ele[]=$lig;
+
+		foreach($tab_modalite_accompagnement["code"] as $code => $libelle) {
+			if(isset($_POST['accompagnement_'.$lig->id_eleve."_".$code."_".$lig->periode])) {
+				if(isset($tab_modalites_ele[$lig->id_eleve][$code][$lig->periode])) {
+					// Modalité d'accompagnement déjà enregistrée sur cette période.
+					// On se contente de mettre à jour le commentaire s'il y en a un
+					if((isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode]))&&($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode]!=$tab_modalites_ele[$lig->id_eleve][$code])) {
+						$sql="UPDATE j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])."' WHERE id_eleve='".$lig->id_eleve."' AND code='".$code."' AND periode='".$lig->periode."';";
+
+						$update=mysqli_query($mysqli, $sql);
+						if(!$update) {
+							$msg.="Erreur lors de la mise à jour de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom." en période ".$lig->periode.".<br />";
+						}
+						else {
+							$nb_maj++;
+						}
+					}
+				}
+				else {
+					// On enregistre une nouvelle modalité.
+
+					if(isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])) {
+						$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])."', id_eleve='".$lig->id_eleve."', code='".$code."', periode='".$lig->periode."'";
+					}
+					else {
+						$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='', id_eleve='".$lig->id_eleve."', code='".$code."', periode='".$lig->periode."'";
+					}
+
+					$insert=mysqli_query($mysqli, $sql);
+					if(!$insert) {
+						$msg.="Erreur lors de l'enregistrement de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom." en période ".$lig->periode.".<br />";
 					}
 					else {
 						$nb_reg++;
@@ -266,10 +380,35 @@ elseif(isset($login_eleve)) {
 				e.login='".$login_eleve."';";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
-		$tab_modalites_ele[$lig->id_eleve][$lig->code]=$lig->commentaire;
+		$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
 	}
 
 	$rowspan=count($tab_modalite_accompagnement["indice"]);
+
+	$max_per=0;
+	$tab_ele_per=array();
+	$sql="SELECT DISTINCT c.id, c.classe, jec.periode 
+		FROM classes c, 
+			j_eleves_classes jec 
+		WHERE c.id=jec.id_classe AND 
+			jec.login='$login_eleve' 
+		ORDER BY jec.periode;";
+	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res2)>0) {
+		while($lig2=mysqli_fetch_assoc($res2)) {
+			$tab_ele_per[]=$lig2["periode"];
+
+			if($lig2["periode"]>$max_per) {
+				$max_per=$lig2["periode"];
+			}
+		}
+	}
+	$nb_periode=$max_per+1;
+
+	$chaine_js_traite_graisse_lignes="";
+
+	$current_login=$login_eleve;
+	$current_ele=get_info_eleve($login_eleve);
 
 	echo "
 <form action='".$_SERVER["PHP_SELF"]."' method='post' name='form2'>
@@ -278,55 +417,134 @@ elseif(isset($login_eleve)) {
 		".add_token_field()."
 		<input type='hidden' name='login_eleve' value='$login_eleve' />
 		<input type='hidden' name='is_posted_modalites_eleve' value='y' />
-		<table class='boireaus boireaus_alt'>
+
+		<table class='boireaus boireaus_alt' style='margin-bottom:1em;'>
 			<thead>
 				<tr>
-					<th colspan='2'>Élève</th>
-					<th colspan='3'>Accompagnement</th>
-					<th>Commentaire</th>
+					<th>
+						Accompagnements<br />
+						<a href='../eleves/modify_eleve.php?eleve_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$current_ele["nom"]." ".$current_ele["prenom"]."</a> 
+						<a href='../eleves/visu_eleve.php?ele_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a>
+					</th>";
+		for($i=1;$i<$nb_periode;$i++) {
+			echo "
+					<th title=\"Période $i\">P.".$i."</th>";
+		}
+		echo "
 				</tr>
 			</thead>
 			<tbody>";
-	for($loop=0;$loop<count($tab_ele);$loop++) {
+
+		foreach($tab_modalite_accompagnement["code"] as $code => $tmp_tab) {
+			$style="";
+
+			$chaine_js_traite_graisse_lignes.="traite_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');\n";
+
 			echo "
 				<tr>
-					<td rowspan='$rowspan'><a href='../eleves/visu_eleve.php?ele_login=".$tab_ele[$loop]['login']."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></td>
-					<td rowspan='$rowspan'><a href='../eleves/modify_eleve.php?eleve_login=".$tab_ele[$loop]['login']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."</td>";
-		$cpt_ac=0;
-		foreach($tab_modalite_accompagnement["code"] as $code => $libelle) {
-			if($cpt_ac>0) {
-				echo "
-				<tr>";
-			}
+					<!--
+					<td><a href='#' onclick=\"coche_decoche_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');return false;\" style='text-decoration:none;color:black;'><label for='accompagnement_".$current_ele['id_eleve']."_".$code."' id='texte_accompagnement_".$current_ele['id_eleve']."_".$code."'".$style." title=\"".$tmp_tab["libelle"]."\">$code</label></a></td>
+					-->
+					<td><a href='#' onclick=\"coche_decoche_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');return false;\" style='text-decoration:none;color:black;' id='texte_accompagnement_".$current_ele['id_eleve']."_".$code."'".$style." title=\"".$tmp_tab["libelle"]."\">$code</a></td>";
 
-			$checked="";
-			$style='';
-			$textarea="";
-			if(isset($tab_modalites_ele[$tab_ele[$loop]['id_eleve']][$code])) {
-				$checked=" checked";
-				$style=" style='font-weight:bold'";
-				$textarea=$tab_modalites_ele[$tab_ele[$loop]['id_eleve']][$code];
+			for($i=1;$i<$nb_periode;$i++) {
+
+				//if(in_array($i, $tab_ele_per[$current_login])) {
+				if(in_array($i, $tab_ele_per)) {
+					$checked="";
+					$style='';
+					$textarea="";
+					$chaine_textarea="";
+					//		$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+
+					if(isset($tab_modalites_ele[$current_ele['id_eleve']][$code][$i])) {
+						$checked=" checked";
+						$style=" style='font-weight:bold'";
+
+						$textarea=$tab_modalites_ele[$current_ele['id_eleve']][$code][$i];
+					}
+
+					if($tab_modalite_accompagnement["code"][$code]['avec_commentaire']=="y") {
+						$chaine_textarea="<br /><textarea name='no_anti_inject_textarea_".$current_ele['id_eleve']."_".$code."_".$i."' id='no_anti_inject_textarea_".$current_ele['id_eleve']."_".$code."_".$i."' 
+						onblur=\"if(this.value!='') {document.getElementById('accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."').checked=true;traite_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."')}\">".$textarea."</textarea>";
+					}
+
+					echo "
+					<td>
+						<input type='checkbox' name='accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."' id='accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."' value='$code' onchange=\"changement(); traite_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');\" ".$checked."/>".$chaine_textarea."
+					</td>";
+				}
+				else {
+					echo "
+					<td></td>";
+				}
 			}
 			echo "
-					<td><input type='checkbox' name='accompagnement_".$tab_ele[$loop]['id_eleve']."_".$code."' id='accompagnement_".$tab_ele[$loop]['id_eleve']."_".$cpt_ac."' value='$code' onchange='changement(); checkbox_change(this.id);' ".$checked."/></td>
-					<td><label for='accompagnement_".$tab_ele[$loop]['id_eleve']."_".$cpt_ac."' id='texte_accompagnement_".$tab_ele[$loop]['id_eleve']."_".$cpt_ac."'".$style.">$code</label></td>
-					<td><label for='accompagnement_".$tab_ele[$loop]['id_eleve']."_".$cpt_ac."'>$libelle</label></td>
-					<td>
-						<!--textarea name='textarea_".$tab_ele[$loop]['id_eleve']."_".$code."'>".$textarea."</textarea-->
-						<textarea name='no_anti_inject_textarea_".$tab_ele[$loop]['id_eleve']."_".$code."'>".$textarea."</textarea>
-					</td>
 				</tr>";
-			$cpt_ac++;
+
 		}
-	}
-	echo "
+
+		echo "
 			</tbody>
 		</table>
+
 		<p><input type='submit' value='Enregistrer' /></p>
 	</fieldset>
 </form>";
 
 	echo js_checkbox_change_style('checkbox_change', 'texte_', "y");
+
+
+	echo "
+<script type='text/javascript'>
+	function traite_ligne(id) {
+		coche=false;
+		for(i=1;i<$nb_periode;i++) {
+			if(document.getElementById(id+'_'+i)) {
+				if(document.getElementById(id+'_'+i).checked==true) {
+					//alert(id+'_'+i+' est coché.');
+					coche=true;
+					break;
+				}
+			}
+		}
+		//alert('coche='+coche);
+		if(coche==true) {
+			//alert('On met en gras texte_'+id);
+			document.getElementById('texte_'+id).style.fontWeight='bold';
+		}
+		else {
+			//alert('On met en normal texte_'+id);
+			document.getElementById('texte_'+id).style.fontWeight='normal';
+		}
+	}
+
+	function coche_decoche_ligne(id) {
+		coche=false;
+		i=1;
+		if(document.getElementById(id+'_'+i)) {
+			if(document.getElementById(id+'_'+i).checked==true) {
+				coche=true;
+			}
+		}
+
+		for(i=1;i<$nb_periode;i++) {
+			if(document.getElementById(id+'_'+i)) {
+				if(coche==true) {
+					document.getElementById(id+'_'+i).checked=false;
+				}
+				else {
+					document.getElementById(id+'_'+i).checked=true;
+				}
+			}
+		}
+
+		traite_ligne(id);
+	}
+
+$chaine_js_traite_graisse_lignes
+
+</script>";
 }
 else {
 	/*
@@ -338,10 +556,12 @@ else {
 	echo "<h2>Modalités d'accompagnement en ".get_nom_classe($id_classe)."</h2>";
 
 	$tab_ele=array();
-	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' ORDER BY e.nom, e.prenom;";
+	$tab_ele_per=array();
+	$sql="SELECT DISTINCT e.*, jec.periode FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' ORDER BY jec.periode, e.nom, e.prenom;";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_assoc($res)) {
-		$tab_ele[]=$lig;
+		$tab_ele[$lig['login']]=$lig;
+		$tab_ele_per[$lig['login']][]=$lig["periode"];
 	}
 
 	$tab_modalites_ele=array();
@@ -350,71 +570,164 @@ else {
 				j_eleves_classes jec 
 			WHERE jmae.id_eleve=e.id_eleve AND 
 				jec.login=e.login AND 
+				jec.periode=jmae.periode AND 
 				jec.id_classe='".$id_classe."' 
 			ORDER BY e.nom, e.prenom;";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
-		$tab_modalites_ele[$lig->id_eleve][$lig->code]=$lig->commentaire;
+		$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
 	}
 
 	$rowspan=count($tab_modalite_accompagnement["indice"]);
+
+	$max_per=$nb_periode-1;
+
+	$chaine_js_traite_graisse_lignes="";
 
 	echo "
 <form action='".$_SERVER["PHP_SELF"]."' method='post' name='form2'>
 	<fieldset class='fieldset_opacite50'>
 		<p><input type='submit' value='Enregistrer' /></p>
+		<div class='center' id='fixe'>
+			<input type='submit' value='Enregistrer' />
+		</div>
+
 		".add_token_field()."
 		<input type='hidden' name='id_classe' value='$id_classe' />
-		<input type='hidden' name='is_posted_modalites_classes' value='y' />
-		<table class='boireaus boireaus_alt'>
+		<input type='hidden' name='is_posted_modalites_classes' value='y' />";
+
+	//for($loop=0;$loop<count($tab_ele);$loop++) {
+	foreach($tab_ele as $current_login => $current_ele) {
+		echo "
+		<!--
+		<p><a href='../eleves/modify_eleve.php?eleve_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier les informations élève.\">".$current_ele["nom"]." ".$current_ele["prenom"]."</a> <a href='../eleves/visu_eleve.php?ele_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Voir la fiche/classeur élève dans un nouvel onglet.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a></p>
+		-->
+		<table class='boireaus boireaus_alt' style='margin-bottom:1em;'>
 			<thead>
 				<tr>
-					<th colspan='2'>Élève</th>
-					<th colspan='3'>Accompagnement</th>
-					<th>Commentaire</th>
+					<th>
+						Accompagnements<br />
+						<a href='../eleves/modify_eleve.php?eleve_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$current_ele["nom"]." ".$current_ele["prenom"]."</a> 
+						<a href='../eleves/visu_eleve.php?ele_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a>
+					</th>";
+		for($i=1;$i<$nb_periode;$i++) {
+			echo "
+					<th title=\"Période $i\">P.".$i."</th>";
+		}
+		echo "
 				</tr>
 			</thead>
 			<tbody>";
-	for($loop=0;$loop<count($tab_ele);$loop++) {
+
+		foreach($tab_modalite_accompagnement["code"] as $code => $tmp_tab) {
+			$style="";
+
+			$chaine_js_traite_graisse_lignes.="traite_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');\n";
+
 			echo "
 				<tr>
-					<td rowspan='$rowspan'><a href='../eleves/visu_eleve.php?ele_login=".$tab_ele[$loop]['login']."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></td>
-					<td rowspan='$rowspan'><a href='../eleves/modify_eleve.php?eleve_login=".$tab_ele[$loop]['login']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."</td>";
-		$cpt_ac=0;
-		foreach($tab_modalite_accompagnement["code"] as $code => $libelle) {
-			if($cpt_ac>0) {
-				echo "
-				<tr>";
-			}
+					<!--
+					<td><a href='#' onclick=\"coche_decoche_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');return false;\" style='text-decoration:none;color:black;'><label for='accompagnement_".$current_ele['id_eleve']."_".$code."' id='texte_accompagnement_".$current_ele['id_eleve']."_".$code."'".$style." title=\"".$tmp_tab["libelle"]."\">$code</label></a></td>
+					-->
+					<td><a href='#' onclick=\"coche_decoche_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');return false;\" style='text-decoration:none;color:black;' id='texte_accompagnement_".$current_ele['id_eleve']."_".$code."'".$style." title=\"".$tmp_tab["libelle"]."\">$code</a></td>";
 
-			$checked="";
-			$style='';
-			$textarea="";
-			if(isset($tab_modalites_ele[$tab_ele[$loop]['id_eleve']][$code])) {
-				$checked=" checked";
-				$style=" style='font-weight:bold'";
-				$textarea=$tab_modalites_ele[$tab_ele[$loop]['id_eleve']][$code];
+			for($i=1;$i<$nb_periode;$i++) {
+
+				if(in_array($i, $tab_ele_per[$current_login])) {
+					$checked="";
+					$style='';
+					$textarea="";
+					$chaine_textarea="";
+					//		$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+
+					if(isset($tab_modalites_ele[$current_ele['id_eleve']][$code][$i])) {
+						$checked=" checked";
+						$style=" style='font-weight:bold'";
+
+						$textarea=$tab_modalites_ele[$current_ele['id_eleve']][$code][$i];
+					}
+
+					if($tab_modalite_accompagnement["code"][$code]['avec_commentaire']=="y") {
+						$chaine_textarea="<br /><textarea name='no_anti_inject_textarea_".$current_ele['id_eleve']."_".$code."_".$i."' id='no_anti_inject_textarea_".$current_ele['id_eleve']."_".$code."_".$i."' 
+						onblur=\"if(this.value!='') {document.getElementById('accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."').checked=true;traite_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."')}\">".$textarea."</textarea>";
+					}
+
+					echo "
+					<td>
+						<input type='checkbox' name='accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."' id='accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."' value='$code' onchange=\"changement(); traite_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');\" ".$checked."/>".$chaine_textarea."
+					</td>";
+				}
+				else {
+					echo "
+					<td></td>";
+				}
 			}
 			echo "
-					<td><input type='checkbox' name='accompagnement_".$tab_ele[$loop]['id_eleve']."_".$code."' id='accompagnement_".$tab_ele[$loop]['id_eleve']."_".$cpt_ac."' value='$code' onchange='changement(); checkbox_change(this.id);' ".$checked."/></td>
-					<td><label for='accompagnement_".$tab_ele[$loop]['id_eleve']."_".$cpt_ac."' id='texte_accompagnement_".$tab_ele[$loop]['id_eleve']."_".$cpt_ac."'".$style.">$code</label></td>
-					<td><label for='accompagnement_".$tab_ele[$loop]['id_eleve']."_".$cpt_ac."'>$libelle</label></td>
-					<td>
-						<!--textarea name='textarea_".$tab_ele[$loop]['id_eleve']."_".$code."'>".$textarea."</textarea-->
-						<textarea name='no_anti_inject_textarea_".$tab_ele[$loop]['id_eleve']."_".$code."'>".$textarea."</textarea>
-					</td>
 				</tr>";
-			$cpt_ac++;
+
 		}
+
+		echo "
+			</tbody>
+		</table>";
 	}
 	echo "
-			</tbody>
-		</table>
 		<p><input type='submit' value='Enregistrer' /></p>
 	</fieldset>
 </form>";
 
 	echo js_checkbox_change_style('checkbox_change', 'texte_', "y");
+
+	echo "
+<script type='text/javascript'>
+	function traite_ligne(id) {
+		coche=false;
+		for(i=1;i<$nb_periode;i++) {
+			if(document.getElementById(id+'_'+i)) {
+				if(document.getElementById(id+'_'+i).checked==true) {
+					//alert(id+'_'+i+' est coché.');
+					coche=true;
+					break;
+				}
+			}
+		}
+		//alert('coche='+coche);
+		if(coche==true) {
+			//alert('On met en gras texte_'+id);
+			document.getElementById('texte_'+id).style.fontWeight='bold';
+		}
+		else {
+			//alert('On met en normal texte_'+id);
+			document.getElementById('texte_'+id).style.fontWeight='normal';
+		}
+	}
+
+	function coche_decoche_ligne(id) {
+		coche=false;
+		i=1;
+		if(document.getElementById(id+'_'+i)) {
+			if(document.getElementById(id+'_'+i).checked==true) {
+				coche=true;
+			}
+		}
+
+		for(i=1;i<$nb_periode;i++) {
+			if(document.getElementById(id+'_'+i)) {
+				if(coche==true) {
+					document.getElementById(id+'_'+i).checked=false;
+				}
+				else {
+					document.getElementById(id+'_'+i).checked=true;
+				}
+			}
+		}
+
+		traite_ligne(id);
+	}
+
+$chaine_js_traite_graisse_lignes
+
+</script>";
 }
 
 

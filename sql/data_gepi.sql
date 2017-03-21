@@ -1822,10 +1822,10 @@ INSERT INTO droits SET id='/saisie/socle_verif.php', administrateur='V', profess
 INSERT INTO droits SET id='/saisie/socle_import.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Socle: Import', statut='';
 INSERT INTO droits SET id='/matieres/associations_matieres_enseignements.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Associations matières/enseignements', statut='';
 INSERT INTO droits SET id='/gestion/saisie_modalites_accompagnement.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Saisie des modalités d accompagnement', statut='';
-INSERT INTO modalites_accompagnement SET code='PAP', libelle='Plan d\’accompagnement personnalisé';
-INSERT INTO modalites_accompagnement SET code='PAI', libelle='Projet d\’accueil individualisé';
-INSERT INTO modalites_accompagnement SET code='PPRE', libelle='Programme personnalisé de réussite éducative';
-INSERT INTO modalites_accompagnement SET code='PPS', libelle='Projet personnalisé de scolarisation';
-INSERT INTO modalites_accompagnement SET code='ULIS', libelle='Unité localisée pour l\’inclusion scolaire';
-INSERT INTO modalites_accompagnement SET code='UPE2A', libelle='Unité pédagogique pour élèves allophones arrivants';
-INSERT INTO modalites_accompagnement SET code='SEGPA', libelle='Section d\’enseignement général adapté';
+INSERT INTO modalites_accompagnement SET code='PAP', libelle='Plan d\’accompagnement personnalisé', avec_commentaire='n';
+INSERT INTO modalites_accompagnement SET code='PAI', libelle='Projet d\’accueil individualisé', avec_commentaire='n';
+INSERT INTO modalites_accompagnement SET code='PPRE', libelle='Programme personnalisé de réussite éducative', avec_commentaire='y';
+INSERT INTO modalites_accompagnement SET code='PPS', libelle='Projet personnalisé de scolarisation', avec_commentaire='n';
+INSERT INTO modalites_accompagnement SET code='ULIS', libelle='Unité localisée pour l\’inclusion scolaire', avec_commentaire='n';
+INSERT INTO modalites_accompagnement SET code='UPE2A', libelle='Unité pédagogique pour élèves allophones arrivants', avec_commentaire='n';
+INSERT INTO modalites_accompagnement SET code='SEGPA', libelle='Section d\’enseignement général adapté', avec_commentaire='n';

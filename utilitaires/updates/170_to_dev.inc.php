@@ -371,12 +371,28 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
-$result .= "<br />";
+$test = sql_query1("SHOW TABLES LIKE 'modalites_accompagnement'");
+if ($test != -1) {
+	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM modalites_accompagnement LIKE 'avec_commentaire';"));
+	if ($test_champ==0) {
+		$result .= "<br />";
+		$result .= "<strong>Suppression de la table 'modalites_accompagnement'&nbsp;:</strong> ";
+		$result_inter = traite_requete("DROP TABLE modalites_accompagnement;");
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+}
+
 $result .= "<strong>Ajout d'une table 'modalites_accompagnement'&nbsp;:</strong> ";
 $test = sql_query1("SHOW TABLES LIKE 'modalites_accompagnement'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS modalites_accompagnement (code VARCHAR(10) DEFAULT '', 
 		libelle varchar(255) NOT NULL default '', 
+		avec_commentaire char(1) NOT NULL default 'n', 
 		PRIMARY KEY (code)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
@@ -389,9 +405,15 @@ if ($test == -1) {
 		$tab_modalite_accompagnement["UPE2A"]="Unité pédagogique pour élèves allophones arrivants";
 		$tab_modalite_accompagnement["SEGPA"]="Section d’enseignement général adapté";
 
+		$tab_modalite_accompagnement_commentaire["PPRE"]="y";
+
 		foreach($tab_modalite_accompagnement as $code => $libelle) {
+			$ajout_sql="";
+			if(isset($tab_modalite_accompagnement_commentaire[$code])) {
+				$ajout_sql=", avec_commentaire='y'";
+			}
 			$result .= "&nbsp;-> Ajout de la modalité \"$code\" pour \"$libelle\"&nbsp;: ";
-			$sql="INSERT INTO modalites_accompagnement SET code='".$code."', libelle='".addslashes($libelle)."';";
+			$sql="INSERT INTO modalites_accompagnement SET code='".$code."', libelle='".addslashes($libelle)."'".$ajout_sql.";";
 			$result_inter = traite_requete($sql);
 			if ($result_inter == '') {
 				$result .= msj_ok("SUCCES !");
@@ -409,14 +431,31 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
-$result .= "<br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_modalite_accompagnement_eleve'");
+if ($test != -1) {
+	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_modalite_accompagnement_eleve LIKE 'periode';"));
+	if ($test_champ==0) {
+		$result .= "<br />";
+		$result .= "<strong>Suppression de la table 'j_modalite_accompagnement_eleve'&nbsp;:</strong> ";
+		$result_inter = traite_requete("DROP TABLE j_modalite_accompagnement_eleve;");
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+}
+
+//$result .= "<br />";
 $result .= "<strong>Ajout d'une table 'j_modalite_accompagnement_eleve'&nbsp;:</strong>";
 $test = sql_query1("SHOW TABLES LIKE 'j_modalite_accompagnement_eleve'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_modalite_accompagnement_eleve (code VARCHAR(10) DEFAULT '', 
 		id_eleve INT(11) NOT NULL default '0', 
+		periode INT(11) NOT NULL default '0', 
 		commentaire TEXT, 
-		PRIMARY KEY code_id_eleve (code, id_eleve), INDEX code_id_eleve (code, id_eleve)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		PRIMARY KEY code_id_eleve_periode (code, id_eleve, periode), INDEX code_id_eleve_periode (code, id_eleve, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}

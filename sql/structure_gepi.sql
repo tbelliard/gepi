@@ -1642,11 +1642,12 @@ PRIMARY KEY (id), INDEX ine_id_groupe (ine, id_groupe), UNIQUE(ine, id_groupe)) 
 DROP TABLE IF EXISTS modalites_accompagnement;
 CREATE TABLE IF NOT EXISTS modalites_accompagnement (code VARCHAR(10) DEFAULT '', 
 libelle varchar(255) NOT NULL default '', 
+avec_commentaire char(1) NOT NULL default 'n', 
 PRIMARY KEY (code)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS j_modalite_accompagnement_eleve;
 CREATE TABLE IF NOT EXISTS j_modalite_accompagnement_eleve (code VARCHAR(10) DEFAULT '', 
 id_eleve INT(11) NOT NULL default '0', 
+periode INT(11) NOT NULL default '0', 
 commentaire TEXT, 
-PRIMARY KEY code_id_eleve (code, id_eleve), INDEX code_id_eleve (code, id_eleve)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
-
+PRIMARY KEY code_id_eleve_periode (code, id_eleve, periode), INDEX code_id_eleve_periode (code, id_eleve, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

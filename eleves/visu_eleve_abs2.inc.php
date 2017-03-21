@@ -121,144 +121,144 @@ $saisie_col = $saisie_query->find();
 
 // on traite les saisies et on stocke les informations dans un tableau
 foreach ($saisie_col as $saisie) {
-  if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
-	continue;
-  }
+	if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
+		continue;
+	}
 
-//$afficher_strictement_englobee="y";
-if($afficher_strictement_englobee!="y") {
-  $strictement_englobee = false;
-    foreach ($saisie->getAbsenceEleveSaisiesEnglobantes() as $saisie_englobante) {
-        if ($saisie_englobante->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue;
-        if ($saisie_englobante->getDebutAbs(null) != $saisie->getDebutAbs(null) || $saisie_englobante->getFinAbs(null) != $saisie->getFinAbs(null)) {
-            $strictement_englobee = true;
-            break;
-        }
-    }
-    if ($strictement_englobee) continue;
-}
-
-  // on repère si retards, manquements, sans_manquements si $tri n'est pas vide
-  if ($saisie->getRetard()) {
-	  if ($tri != null && $tri != '') {
-		  $type_tab = 'retard';
-	  } else {
-		  $type_tab = 'sans';
-	  }
-	  $type_css = 'couleur_retard';
-  } elseif ($saisie->getManquementObligationPresence()) {
-	  if ($tri != null && $tri != '') {
-		  $type_tab = 'manquement';
-	  } else {
-		  $type_tab = 'sans';
-	  }
-	  $type_css = 'couleur_manquement';
-  } else {
-	  if ($tri != null && $tri != '') {
-		  $type_tab = 'sans_manquement';
-	  } else {
-		  $type_tab = 'sans';
-	  }
-	  $type_css = '';
-  }
-  if ($saisie->getTraitee()) {
-	// La saisie est traitée, on stocke les infos
-	foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-	  if (!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()])) {
-		// on avait pas de saisie de ce type pour ce traitement ce jour
-		$donnees[$eleve_id]['nbre_lignes_total']++;
-	  }
-	  // On ajoute la saisie
-	  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['saisies'][] = $saisie->getId();
-	  if (isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'])) {
-		// On a déjà des saisies pour ce type, ce jour
-		if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['debut'] > $saisie->getDebutAbs('U')) {
-		  // On met à jour la date et l'heure de début au besoin
-		  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['debut'] = $saisie->getDebutAbs('U');
-		}
-		if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['fin'] < $saisie->getFinAbs('U')) {
-		  // On met à jour la date et l'heure de fin au besoin
-		  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['fin'] = $saisie->getFinAbs('U');
-		}
-	  } else {
-		// On met à jour la date et l'heure de début et de fin
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'] = Array('debut' => $saisie->getDebutAbs('U'), 'fin' => $saisie->getFinAbs('U'));
-	  }
-
-	  if ($traitement->getAbsenceEleveType() != Null) {
-		// On met à jour le type
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = $traitement->getAbsenceEleveType()->getNom();
-	  } else {
-		 $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = 'Non défini';
-	  }
-
-	  if ($traitement->getAbsenceEleveMotif() != Null) {
-		// On met à jour le motif
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['motif'] = $traitement->getAbsenceEleveMotif()->getNom();
-	  } else {
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['motif'] = '-';
-	  }
-
-	  if ($traitement->getAbsenceEleveJustification() != Null) {
-		// On met à jour la justification
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['justification'] = $traitement->getAbsenceEleveJustification()->getNom();
-	  } else {
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['justification'] = '-';
-	  }
-
-	  if ($saisie->getCommentaire() !== '') {
-		// On met à jour le commentaire
-		  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = stripslashes($saisie->getCommentaire());
-	  }
-
-	  if(trim($traitement->getCommentaire()) !== '') {
-		  if((!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires']))||(!in_array(stripslashes($traitement->getCommentaire()), $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires']))) {
-			  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = stripslashes($traitement->getCommentaire());
+	//$afficher_strictement_englobee="y";
+	if($afficher_strictement_englobee!="y") {
+	  $strictement_englobee = false;
+	    foreach ($saisie->getAbsenceEleveSaisiesEnglobantes() as $saisie_englobante) {
+		  if ($saisie_englobante->getManquementObligationPresenceSpecifie_NON_PRECISE()) continue;
+		  if ($saisie_englobante->getDebutAbs(null) != $saisie->getDebutAbs(null) || $saisie_englobante->getFinAbs(null) != $saisie->getFinAbs(null)) {
+		      $strictement_englobee = true;
+		      break;
 		  }
+	    }
+	    if ($strictement_englobee) continue;
+	}
+
+	  // on repère si retards, manquements, sans_manquements si $tri n'est pas vide
+	  if ($saisie->getRetard()) {
+		  if ($tri != null && $tri != '') {
+			  $type_tab = 'retard';
+		  } else {
+			  $type_tab = 'sans';
+		  }
+		  $type_css = 'couleur_retard';
+	  } elseif ($saisie->getManquementObligationPresence()) {
+		  if ($tri != null && $tri != '') {
+			  $type_tab = 'manquement';
+		  } else {
+			  $type_tab = 'sans';
+		  }
+		  $type_css = 'couleur_manquement';
+	  } else {
+		  if ($tri != null && $tri != '') {
+			  $type_tab = 'sans_manquement';
+		  } else {
+			  $type_tab = 'sans';
+		  }
+		  $type_css = '';
 	  }
+	  if ($saisie->getTraitee()) {
+		// La saisie est traitée, on stocke les infos
+		foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+		  if (!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()])) {
+			// on avait pas de saisie de ce type pour ce traitement ce jour
+			$donnees[$eleve_id]['nbre_lignes_total']++;
+		  }
+		  // On ajoute la saisie
+		  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['saisies'][] = $saisie->getId();
+		  if (isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'])) {
+			// On a déjà des saisies pour ce type, ce jour
+			if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['debut'] > $saisie->getDebutAbs('U')) {
+			  // On met à jour la date et l'heure de début au besoin
+			  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['debut'] = $saisie->getDebutAbs('U');
+			}
+			if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['fin'] < $saisie->getFinAbs('U')) {
+			  // On met à jour la date et l'heure de fin au besoin
+			  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['fin'] = $saisie->getFinAbs('U');
+			}
+		  } else {
+			// On met à jour la date et l'heure de début et de fin
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'] = Array('debut' => $saisie->getDebutAbs('U'), 'fin' => $saisie->getFinAbs('U'));
+		  }
 
-	  // On récupère le style css
-	  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type_css'] = $type_css;
-	}
-  } else {
-	// La saisie n'est pas traitée, on stocke les infos
-	if (!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees'])) {
-	  // on avait pas de saisie de ce type pour ce jour
-	  $donnees[$eleve_id]['nbre_lignes_total']++;
-	}
+		  if ($traitement->getAbsenceEleveType() != Null) {
+			// On met à jour le type
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = $traitement->getAbsenceEleveType()->getNom();
+		  } else {
+			 $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = 'Non défini';
+		  }
 
-	// On ajoute la saisie
-	$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['saisies'][] = $saisie->getId(); 
-	// On met à jour le type   
-	$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type'] = 'Non traitée(s)';
-	// On met à jour le motif
-	$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['motif'] = '-';
-	// On met à jour la justification
-	$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['justification'] = '-';
-	// On met à jour la date
-	if (isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates'])) {
-	  // La date existe déjà
-	  if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['debut'] > $saisie->getDebutAbs('U')) {
-		// On met à jour la date et l'heure de début au besoin
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['debut'] = $saisie->getDebutAbs('U');
+		  if ($traitement->getAbsenceEleveMotif() != Null) {
+			// On met à jour le motif
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['motif'] = $traitement->getAbsenceEleveMotif()->getNom();
+		  } else {
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['motif'] = '-';
+		  }
+
+		  if ($traitement->getAbsenceEleveJustification() != Null) {
+			// On met à jour la justification
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['justification'] = $traitement->getAbsenceEleveJustification()->getNom();
+		  } else {
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['justification'] = '-';
+		  }
+
+		  if ($saisie->getCommentaire() !== '') {
+			// On met à jour le commentaire
+			  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = stripslashes($saisie->getCommentaire());
+		  }
+
+		  if(trim($traitement->getCommentaire()) !== '') {
+			  if((!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires']))||(!in_array(stripslashes($traitement->getCommentaire()), $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires']))) {
+				  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = stripslashes($traitement->getCommentaire());
+			  }
+		  }
+
+		  // On récupère le style css
+		  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type_css'] = $type_css;
+		}
+	  } else {
+		// La saisie n'est pas traitée, on stocke les infos
+		if (!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees'])) {
+		  // on avait pas de saisie de ce type pour ce jour
+		  $donnees[$eleve_id]['nbre_lignes_total']++;
+		}
+
+		// On ajoute la saisie
+		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['saisies'][] = $saisie->getId(); 
+		// On met à jour le type   
+		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type'] = 'Non traitée(s)';
+		// On met à jour le motif
+		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['motif'] = '-';
+		// On met à jour la justification
+		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['justification'] = '-';
+		// On met à jour la date
+		if (isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates'])) {
+		  // La date existe déjà
+		  if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['debut'] > $saisie->getDebutAbs('U')) {
+			// On met à jour la date et l'heure de début au besoin
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['debut'] = $saisie->getDebutAbs('U');
+		  }
+		  if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['fin'] < $saisie->getFinAbs('U')) {
+			// On met à jour la date et l'heure de fin au besoin
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['fin'] = $saisie->getFinAbs('U');
+		  }
+		} else {
+		  // La date n'existe pas
+		  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates'] = Array('debut' => $saisie->getDebutAbs('U'), 'fin' => $saisie->getFinAbs('U'));
+		}
+
+		// On met à jour le commentaire
+		if ($saisie->getCommentaire() !== '') {
+			$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['commentaires'][] = $saisie->getCommentaire();
+		}
+
+		// On récupère le style css
+		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type_css'] = $type_css;
 	  }
-	  if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['fin'] < $saisie->getFinAbs('U')) {
-		// On met à jour la date et l'heure de fin au besoin
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['fin'] = $saisie->getFinAbs('U');
-	  }
-	} else {
-	  // La date n'existe pas
-	  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates'] = Array('debut' => $saisie->getDebutAbs('U'), 'fin' => $saisie->getFinAbs('U'));
-	}
-
-	// On met à jour le commentaire
-	if ($saisie->getCommentaire() !== '') {
-		$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['commentaires'][] = $saisie->getCommentaire();
-	}
-
-	// On récupère le style css
-	$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type_css'] = $type_css;
-  }
 }
 
 // inclusion des éléments Dojo

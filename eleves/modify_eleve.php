@@ -2851,9 +2851,19 @@ if(isset($eleve_login)){
 
 		echo "<div style='margin-top:1em; text-align:center;' class='fieldset_opacite50' title=\"Modalités d'accompagnement\">";
 		$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($eleve_login);
-		if(count($tab_modalites_accompagnement_eleve>0)) {
-			for($loop_modalite=0;$loop_modalite<count($tab_modalites_accompagnement_eleve);$loop_modalite++) {
-				echo " <span title=\"".$tab_modalites_accompagnement_eleve[$loop_modalite]["libelle"]."\">".$tab_modalites_accompagnement_eleve[$loop_modalite]["code"]."</span>";
+		/*
+		echo "<pre>";
+		print_r($tab_modalites_accompagnement_eleve);
+		echo "</pre>";
+		*/
+		if(isset($tab_modalites_accompagnement_eleve["code"])) {
+			$tab_modalites_accompagnement=get_tab_modalites_accompagnement();
+			$tmp_tab_deja=array();
+			foreach($tab_modalites_accompagnement_eleve["code"] as $current_code => $tmp_tab) {
+				if(!in_array($current_code, $tmp_tab_deja)) {
+					echo " <span title=\"".$tab_modalites_accompagnement["code"][$current_code]["libelle"]."\">".$current_code."</span>";
+				}
+				$tmp_tab_deja[]=$current_code;
 			}
 		}
 		else {
