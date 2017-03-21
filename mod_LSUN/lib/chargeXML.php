@@ -892,7 +892,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 */
 			
 
-			$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($eleve->login);
+			$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($eleve->login, $eleve->periode);
 			if(count($tab_modalites_accompagnement_eleve)>0) {
 				$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
 				for($loop_modalite=0;$loop_modalite<count($tab_modalites_accompagnement_eleve);$loop_modalite++) {
