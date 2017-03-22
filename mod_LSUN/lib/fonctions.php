@@ -536,7 +536,8 @@ function getStatutSansApp($login,$periode) {
 		. "AND ma.id_groupe = mn.id_groupe "
 		. "AND ma.periode = mn.periode "
 		. ") "
-		. "AND mn.statut NOT LIKE '' ";
+		. "AND mn.statut NOT LIKE '' "
+		. "AND mn.`id_groupe` NOT IN (SELECT jgt.id_groupe FROM j_groupes_types AS jgt)" ;
 	
 	
 	$sqlAcquis04 = "SELECT s3.* , jgm.id_matiere FROM ($sqlStatutSSApp) AS s3 INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = s3.id_groupe ";
@@ -576,7 +577,8 @@ function getNotesForcees($login,$periode) {
 		. "AND ma.id_groupe = mn.id_groupe "
 		. "AND ma.periode = mn.periode "
 		. ") "
-		. "AND mn.statut LIKE '' ";
+		. "AND mn.statut LIKE '' "
+		. "AND mn.`id_groupe` NOT IN (SELECT jgt.id_groupe FROM j_groupes_types AS jgt)";
 	
 	$sqlAcquis04 = "SELECT s3.* , jgm.id_matiere FROM ($sqlStatutSSApp) AS s3 INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = s3.id_groupe ";
 	$sqlAcquis05 = "SELECT s4.* , ma.code_matiere FROM ($sqlAcquis04) AS s4 INNER JOIN matieres AS ma ON s4.id_matiere = ma.matiere ";
@@ -614,7 +616,8 @@ function getAppForcees($login,$periode) {
 		. "WHERE ma.login = mn.login "
 		. "AND ma.id_groupe = mn.id_groupe "
 		. "AND ma.periode = mn.periode "
-		. ") ";
+		. ") "
+		. "AND mn.`id_groupe` NOT IN (SELECT jgt.id_groupe FROM j_groupes_types AS jgt)";
 	
 	$sqlAcquis04 = "SELECT s3.* , jgm.id_matiere FROM ($sqlStatutSSApp) AS s3 INNER JOIN j_groupes_matieres AS jgm ON jgm.id_groupe = s3.id_groupe ";
 	$sqlAcquis05 = "SELECT s4.* , ma.code_matiere FROM ($sqlAcquis04) AS s4 INNER JOIN matieres AS ma ON s4.id_matiere = ma.matiere WHERE ma.code_matiere NOT LIKE '' ";
