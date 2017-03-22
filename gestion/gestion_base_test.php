@@ -484,13 +484,13 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 	$cpt_synthese=0;
 	$tab_cycle=array();
 	echo "<p><strong>Remplissage&nbsp;:</strong> ";
-	$sql="SELECT DISTINCT c.classe, c.id AS id_classe, e.* FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND c.id=jec.id_classe ORDER BY c.classe, e.nom, e.prenom;";
+	$sql="SELECT DISTINCT c.classe, c.id AS id_classe, e.*, jec.periode FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND c.id=jec.id_classe ORDER BY c.classe, jec.periode, e.nom, e.prenom;";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_assoc($res)) {
 			if($lig["id_classe"]!=$id_classe_precedente) {
-				echo " - <strong>".get_nom_classe($lig["id_classe"])."</strong> ";
+				echo "<br /> - <strong>".get_nom_classe($lig["id_classe"])."</strong> ";
 				$id_classe_precedente=$lig["id_classe"];
 			}
 
@@ -512,9 +512,9 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 					if($cpt_ele>0) {
 						echo ", ";
 					}
-					echo $lig["login"]." ($cpt_ele)";
+					echo $lig["login"]." (P.".$lig['periode'].")($cpt_ele)";
 
-					$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."';";
+					$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$lig['periode']."';";
 					//echo "$sql<br />";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -525,7 +525,7 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 					foreach($tab_domaine_socle as $code => $libelle) {
 						$niveau_maitrise=rand(1,4);
 
-						$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
+						$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."', periode='".$lig['periode']."';";
 						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
@@ -552,7 +552,7 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 				}
 				else {
 					$tab_deja=array();
-					$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."';";
+					$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$lig['periode']."';";
 					//echo "$sql<br />";
 					$res_deja=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_deja)>0) {
@@ -578,13 +578,13 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 						if($cpt_ele>0) {
 							echo ", ";
 						}
-						echo $lig["login"]." ($cpt_ele)";
+						echo $lig["login"]." (P.".$lig['periode'].")($cpt_ele)";
 
 						foreach($tab_domaine_socle as $code => $libelle) {
 							if(!in_array($code, $tab_deja)) {
 								$niveau_maitrise=rand(1,4);
 
-								$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
+								$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."', periode='".$lig['periode']."';";
 								//echo "$sql<br />";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$insert) {

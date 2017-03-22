@@ -962,7 +962,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				}
 
 				$tab_positionnement_trouve=array();
-				$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."';";
+				$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$eleve->periode."';";
 				$res_ele_socle=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_ele_socle)>0) {
 					while($lig_ele_socle=mysqli_fetch_object($res_ele_socle)) {
@@ -1209,23 +1209,28 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 						// Récupération des positionnements dans les domaines du socle
 						$tab_positionnement_trouve=array();
-						$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND niveau_maitrise!='' AND niveau_maitrise!='0';";
+						$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND niveau_maitrise!='' AND niveau_maitrise!='0' ORDER BY sec.periode;";
 						//echo "$sql<br />";
 						$res_ele_socle=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele_socle)>0) {
+							$tab_positionnement_domaine=array();
 							while($lig_ele_socle=mysqli_fetch_object($res_ele_socle)) {
-								if((in_array($lig_ele_socle->code_composante, $tab_domaines))&&(!in_array($lig_ele_socle->code_composante, $tab_positionnement_trouve))) {
-									$tab_positionnement_trouve[]=$lig_ele_socle->code_composante;
+								$tab_positionnement_domaine[$lig_ele_socle->code_composante]=$lig_ele_socle->niveau_maitrise;
+							}
+
+							foreach($tab_positionnement_domaine as $code_composante => $niveau_maitrise) {
+								if((in_array($code_composante, $tab_domaines))&&(!in_array($code_composante, $tab_positionnement_trouve))) {
+									$tab_positionnement_trouve[]=$code_composante;
 								}
 
 								$socleElv=$xml->createElement('domaine');
 
 								$attsSocle=$xml->createAttribute('code');
-								$attsSocle->value=$lig_ele_socle->code_composante;
+								$attsSocle->value=$code_composante;
 								$socleElv->appendChild($attsSocle);
 
 								$attsSocle=$xml->createAttribute('positionnement');
-								$attsSocle->value=$lig_ele_socle->niveau_maitrise;
+								$attsSocle->value=$niveau_maitrise;
 								$socleElv->appendChild($attsSocle);
 
 								$socle->appendChild($socleElv);

@@ -1457,12 +1457,12 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					<li>
 						<input type="checkbox" name="traiteSocle" id="traiteSocle" value="y"  
 							   <?php if (getSettingValue("LSU_Donnees_socle") == "y") {echo ' checked '; }  ?> />
-						<label for="traiteSocle">positionnement des élèves sur les domaines du socle commun</label>
+						<label for="traiteSocle" title="Le positionnement n'est remonté pour un élève donné sur une période donnée que si le positionnement sur les 8 domaines est renseigné.">positionnement des élèves sur les domaines du socle commun</label>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteBilanFinCycle" id="traiteBilanFinCycle" value="y"  
 							   <?php if (getSettingValue("LSU_Donnees_BilanFinCycle") == "y") {echo ' checked '; }  ?> />
-						<label for="traiteBilanFinCycle">Bilan de fin de Cycle</label>
+						<label for="traiteBilanFinCycle" title="Le Bilan n'est remonté n'est remonté pour un élève donné que si le positionnement sur les 8 domaines est renseigné et si la synthèse est renseignée.">Bilan de fin de Cycle</label>
 					</li>
 				</ul>
 			</div>

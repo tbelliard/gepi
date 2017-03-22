@@ -77,6 +77,7 @@ if(!getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
 
 $msg="";
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+$periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
 
 $tab_mes_classes=array();
 $tab_mes_classes_txt=array();
@@ -96,8 +97,23 @@ if((isset($id_classe))&&(!in_array($id_classe, $tab_mes_classes))) {
 	unset($id_classe);
 }
 
+
 // Etat d'ouverture ou non des saisies
-$SocleOuvertureSaisieComposantes=getSettingValue("SocleOuvertureSaisieComposantes");
+$max_per=0;
+$sql="SELECT MAX(num_periode) AS max_per FROM periodes;";
+$res_max=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_max)==0) {
+	echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Aucune classe avec périodes ne semble définie.</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+$lig_max=mysqli_fetch_object($res_max);
+$max_per=$lig_max->max_per;
+
+$SocleOuvertureSaisieComposantes=array();
+for($i=1;$i<$max_per+1;$i++) {
+	$SocleOuvertureSaisieComposantes[$i]=getSettingAOui("SocleOuvertureSaisieComposantesPeriode".$i);
+}
 
 $tab_domaine_socle=array();
 $tab_domaine_socle["CPD_FRA"]="Comprendre, s'exprimer en utilisant la langue française à l'oral et à l'écrit";
@@ -120,7 +136,7 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
+//$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
 
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_choix_classe'>
 <p class='bold'><a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -131,9 +147,7 @@ if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(
 )) {
 	echo " | <a href=\"socle_verrouillage.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Ouverture/verrouillage des saisies</a>";
 }
-if((acces("/saisie/saisie_socle.php", $_SESSION["statut"]))&&(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"]))) {
-	echo " | <a href=\"saisie_socle.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
-}
+
 if((acces("/saisie/socle_import.php", $_SESSION["statut"]))&&
 	(getSettingAOui("SocleImportComposantes"))&&
 	(($_SESSION['statut']=="administrateur")||(getSettingAOui("SocleImportComposantes_".$_SESSION["statut"])))) {
@@ -141,6 +155,9 @@ if((acces("/saisie/socle_import.php", $_SESSION["statut"]))&&
 }
 
 if(!isset($id_classe)) {
+	if((acces("/saisie/saisie_socle.php", $_SESSION["statut"]))&&(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"]))) {
+		echo " | <a href=\"saisie_socle.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+	}
 	echo "</p>
 </form>";
 
@@ -154,12 +171,61 @@ if(!isset($id_classe)) {
 		echo "<p style='color:red'>Aucune classe n'a été trouvée.</p>";
 	}
 
+		echo "<p style='margin-top:1em'><em>Notes&nbsp;:</em></p>
+<ul>
+	<li><p>Si vous souhaitez une remontée périodique de l'état de maitrise des Composantes du socle, il convient de saisir un positionnement pour chacun des domaines.<br />
+	Si un domaine n'est pas renseigné pour un élève, aucun bilan du socle ne sera remonté pour l'élève en question.</p></li>
+	<li><p>Pour les bilans de fin de cycle en 6ème et 3ème, il faut en plus que la saisie d'une synthèse soit effectuée.</p></li>
+</ul>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif(!isset($periode)) {
+	if((acces("/saisie/saisie_socle.php", $_SESSION["statut"]))&&(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"]))) {
+		echo " | <a href=\"saisie_socle.php?id_classe=$id_classe\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+	}
+	echo "</p>
+</form>";
+
+	echo "<h2>Vérification du remplissage des Composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h2>";
+	$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
+	$res_max=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_max)==0) {
+		echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> La classe n'a pas de périodes définies.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	$lig_max=mysqli_fetch_object($res_max);
+
+	echo "<p style='margin-left:3em;text-indent:-3em;'>Choisissez la période&nbsp;:<br />";
+	for($i=1;$i<$max_per+1;$i++) {
+		$etat_periode="";
+		if(!$SocleOuvertureSaisieComposantes[$i]) {
+			$etat_periode=" (période close)";
+		}
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."&periode=".$i."'>Période $i</a>".$etat_periode."<br />";
+	}
+	echo "</p>";
+
+		echo "<p style='margin-top:1em'><em>Notes&nbsp;:</em></p>
+<ul>
+	<li><p>Si vous souhaitez une remontée périodique de l'état de maitrise des Composantes du socle, il convient de saisir un positionnement pour chacun des domaines.<br />
+	Si un domaine n'est pas renseigné pour un élève, aucun bilan du socle ne sera remonté pour l'élève en question.</p></li>
+	<li><p>Pour les bilans de fin de cycle en 6ème et 3ème, il faut en plus que la saisie d'une synthèse soit effectuée.</p></li>
+</ul>";
+
 	require("../lib/footer.inc.php");
 	die();
 }
 
+if((acces("/saisie/saisie_socle.php", $_SESSION["statut"]))&&(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"]))) {
+	echo " | <a href=\"saisie_socle.php?id_classe=$id_classe&periode=$periode\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+}
+
 $classe=get_nom_classe($id_classe);
 echo " | <a href=\"socle_verif.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre classe</a>
+<input type='hidden' name='periode' value='$periode' />
  <select name='id_classe' onchange=\"document.getElementById('form_choix_classe').submit();\">";
 for($loop=0;$loop<count($tab_mes_classes);$loop++) {
 	$selected="";
@@ -174,10 +240,10 @@ echo "
 </p>
 </form>
 
-<h2>".$classe."</h2>";
+<h2>".$classe." (période $periode)</h2>";
 
 $tab_ele_saisie_incomplete=array();
-$sql="SELECT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' ORDER BY e.nom, e.prenom;";
+$sql="SELECT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' AND jec.periode='$periode' ORDER BY e.nom, e.prenom;";
 //echo "$sql<br />";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)>0) {
@@ -196,7 +262,7 @@ if(mysqli_num_rows($res)>0) {
 		}
 		else {
 			foreach($tab_domaine_socle as $code => $libelle) {
-				$sql="SELECT 1=1 FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND code_composante='".$code."';";
+				$sql="SELECT 1=1 FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND code_composante='".$code."' AND periode='$periode';";
 				//echo "$sql<br />";
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
@@ -224,7 +290,7 @@ if(mysqli_num_rows($res)>0) {
 	echo "</pre>";
 	*/
 	if(count($tab_ele_saisie_incomplete)>0) {
-		echo "<p>Les saisies sont incomplètes pour le ou les élèves suivants&nbsp;:</p>
+		echo "<p>Les saisies sont <strong>incomplètes</strong> pour le ou les élèves suivants&nbsp;:</p>
 <table class='boireaus boireaus_alt'>
 	<thead>
 		<tr>
@@ -262,6 +328,14 @@ if(mysqli_num_rows($res)>0) {
 	else {
 		echo "<p>Les bilans de composantes du socle et les synthèses sont remplis pour tous les élèves de la classe.</p>";
 	}
+
+	echo "<p style='margin-top:1em'><em>Notes&nbsp;:</em></p>
+<ul>
+	<li><p>Si vous souhaitez une remontée périodique de l'état de maitrise des Composantes du socle, il convient de saisir un positionnement pour chacun des domaines.<br />
+	Si un domaine n'est pas renseigné pour un élève, aucun bilan du socle ne sera remonté pour l'élève en question.</p></li>
+	<li><p>Pour les bilans de fin de cycle en 6ème et 3ème, il faut en plus que la saisie d'une synthèse soit effectuée.</p></li>
+</ul>";
+
 	echo "
 <p><br /></p>";
 }

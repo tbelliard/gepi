@@ -79,9 +79,26 @@ $msg="";
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 $cycle=isset($_POST['cycle']) ? $_POST['cycle'] : NULL;
 $mode=isset($_POST['mode']) ? $_POST['mode'] : NULL;
+$periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
+
+//$SocleOuvertureSaisieComposantes=getSettingValue("SocleOuvertureSaisieComposantes");
 
 // Etat d'ouverture ou non des saisies
-$SocleOuvertureSaisieComposantes=getSettingValue("SocleOuvertureSaisieComposantes");
+$max_per=0;
+$sql="SELECT MAX(num_periode) AS max_per FROM periodes;";
+$res_max=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_max)==0) {
+	echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Aucune classe avec périodes ne semble définie.</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+$lig_max=mysqli_fetch_object($res_max);
+$max_per=$lig_max->max_per;
+
+$SocleOuvertureSaisieComposantes=array();
+for($i=1;$i<$max_per+1;$i++) {
+	$SocleOuvertureSaisieComposantes[$i]=getSettingAOui("SocleOuvertureSaisieComposantesPeriode".$i);
+}
 
 $tab_domaine_socle=array();
 $tab_domaine_socle["CPD_FRA"]="Comprendre, s'exprimer en utilisant la langue française à l'oral et à l'écrit";
@@ -112,7 +129,7 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
+//$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
 
 echo "<p class='bold'><a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 if((acces("/saisie/saisie_socle.php", $_SESSION["statut"]))&&(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"]))) {
@@ -127,7 +144,7 @@ if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(
 	echo " | <a href=\"socle_verrouillage.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Ouverture/verrouillage des saisies</a>";
 }
 
-if((!isset($id_classe))||(!isset($cycle))||(!isset($mode))) {
+if((!isset($id_classe))||(!isset($cycle))||(!isset($mode))||(!isset($periode))) {
 	echo "</p>";
 	// Choix du cycle, des classes et du fichier
 
@@ -187,9 +204,24 @@ if((!isset($id_classe))||(!isset($cycle))||(!isset($mode))) {
 	//echo tab_liste_checkbox($tab_mes_classes_txt, $tab_mes_classes_nom_champ, $tab_mes_classes_id_champ, $tab_mes_classes_valeur_champ);
 
 	echo "
+		<p style='margin-left:3em;text-indent:-3em;margin-top:1em;'>Période&nbsp;:<br />";
+	for($i=1;$i<$max_per+1;$i++) {
+		$checked="";
+		$style="";
+		if($i==1) {
+			$checked=" checked";
+			$style=" style='font-weight:bold'";
+		}
+		echo "
+			<input type='radio' name='periode' id='periode_$i' value='$i' onchange=\"change_style_radio()\"".$checked." /><label for='periode_$i' id='texte_periode_$i'".$style.">Période $i</label><br />";
+	}
+	echo "
+		</p>
 		<p><input type='submit' value='Valider' /></p>
 	</fieldset>
 </form>
+
+".js_change_style_radio("change_style_radio", "y")."
 
 <p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
 <ul>
@@ -347,6 +379,7 @@ if(!isset($_POST['confirmer_import'])) {
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field()."
 		<input type='hidden' name='confirmer_import' value='y' />
+		<input type='hidden' name='periode' value='$periode' />
 		<input type='hidden' name='mode' value='$mode' />";
 
 	$tab_nom_classe=array();
@@ -361,7 +394,7 @@ if(!isset($_POST['confirmer_import'])) {
 		echo "<strong>".$tab_nom_classe[$id_classe[$loop]]."</strong>";
 		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$loop]."' />";
 
-		$sql="SELECT DISTINCT e.*, jec.id_classe, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND jec.id_classe='".$id_classe[$loop]."' AND c.id=jec.id_classe ORDER BY c.classe, e.nom, e.prenom;";
+	$sql="SELECT DISTINCT e.*, jec.id_classe, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND jec.id_classe='".$id_classe[$loop]."' AND jec.periode='".$periode."' AND c.id=jec.id_classe ORDER BY c.classe, e.nom, e.prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
@@ -514,11 +547,11 @@ else {
 		$tab_nom_classe[$id_classe[$loop]]=get_nom_classe($id_classe[$loop]);
 		echo "<strong>".$tab_nom_classe[$id_classe[$loop]]."</strong>";
 
-		$sql="SELECT DISTINCT e.*, jec.id_classe, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND jec.id_classe='".$id_classe[$loop]."' AND c.id=jec.id_classe ORDER BY c.classe, e.nom, e.prenom;";
+		$sql="SELECT DISTINCT e.*, jec.id_classe, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND jec.id_classe='".$id_classe[$loop]."' AND periode='".$periode."' AND c.id=jec.id_classe ORDER BY c.classe, e.nom, e.prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
-			$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND jec.id_classe='".$id_classe[$loop]."';";
+			$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND jec.id_classe='".$id_classe[$loop]."' AND sec.periode=jec.periode AND jec.periode='".$periode."';";
 			$res_saisies=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_saisies)>0) {
 				while($lig_saisies=mysqli_fetch_object($res_saisies)) {
@@ -624,10 +657,10 @@ else {
 							$valeur=$current_eleve["position"][$code];
 
 							if(($mode=="remplacer")||(!isset($tab_saisies[$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]][$cycle[$loop]][$code]["niveau_maitrise"]))) {
-								$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]."' AND cycle='".$cycle[$loop]."' AND code_composante='".$code."';";
+								$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]."' AND cycle='".$cycle[$loop]."' AND code_composante='".$code."' AND periode='".$periode."';";
 								$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
-								$sql="INSERT INTO socle_eleves_composantes SET ine='".$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]."', cycle='".$cycle[$loop]."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
+								$sql="INSERT INTO socle_eleves_composantes SET ine='".$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]."', cycle='".$cycle[$loop]."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$insert) {
 									$temoin_erreur++;
@@ -645,10 +678,10 @@ else {
 							}
 							elseif(isset($tab_saisies[$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]][$cycle[$loop]][$code]["niveau_maitrise"])) {
 								if($valeur>$tab_saisies[$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]][$cycle[$loop]][$code]["niveau_maitrise"]) {
-									$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]."' AND cycle='".$cycle[$loop]."' AND code_composante='".$code."';";
+									$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]."' AND cycle='".$cycle[$loop]."' AND code_composante='".$code."' AND periode='".$periode."';";
 									$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
-									$sql="INSERT INTO socle_eleves_composantes SET ine='".$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]."', cycle='".$cycle[$loop]."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
+									$sql="INSERT INTO socle_eleves_composantes SET ine='".$tab_ele_classe["indice_ele_id"][$current_eleve["id_be"]]["no_gep"]."', cycle='".$cycle[$loop]."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert) {
 										$temoin_erreur++;

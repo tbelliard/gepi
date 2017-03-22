@@ -75,19 +75,30 @@ $msg="";
 if(isset($_POST['enregistrer_Saisie_Socle'])) {
 	check_token();
 
-	$nb_reg=0;
-
-	if(isset($_POST['SocleOuvertureSaisieComposantes'])) {
-		if(!saveSetting("SocleOuvertureSaisieComposantes", $_POST['SocleOuvertureSaisieComposantes'])) {
-			$msg.="Erreur lors de l'ouverture/fermeture des saisies de composantes du socle.<br />";
-		}
-		else {
-			$nb_reg++;
-		}
+	$max_per=0;
+	$sql="SELECT MAX(num_periode) AS max_per FROM periodes;";
+	$res_max=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_max)==0) {
+		$msg.="<strong>ANOMALIE&nbsp;:</strong> Aucune classe avec périodes ne semble définie.<br />";
 	}
+	else {
+		$lig_max=mysqli_fetch_object($res_max);
+		$max_per=$lig_max->max_per;
 
-	$msg.=$nb_reg." paramètre(s) enregistré(s) <em>(".strftime("le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
+		$SocleOuvertureSaisieComposantes=isset($_POST['SocleOuvertureSaisieComposantes']) ? $_POST['SocleOuvertureSaisieComposantes'] : array();
 
+		$nb_reg=0;
+		for($i=1;$i<$max_per+1;$i++) {
+			if(!saveSetting("SocleOuvertureSaisieComposantesPeriode".$i, $SocleOuvertureSaisieComposantes[$i])) {
+				$msg.="Erreur lors de l'ouverture/fermeture des saisies de composantes du socle en période $i.<br />";
+			}
+			else {
+				$nb_reg++;
+			}
+		}
+
+		$msg.=$nb_reg." paramètre(s) enregistré(s) <em>(".strftime("le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
+	}
 }
 
 $themessage  = 'Des valeurs ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -98,8 +109,6 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
-
-$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
 
 echo "<p class='bold'><a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
@@ -113,14 +122,76 @@ if((acces("/saisie/socle_import.php", $_SESSION["statut"]))&&
 	echo " | <a href=\"socle_import.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Import des bilans de composantes du socle</a>";
 }
 
-echo "</p>
+echo "</p>";
 
+$max_per=0;
+$sql="SELECT MAX(num_periode) AS max_per FROM periodes;";
+$res_max=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_max)==0) {
+	echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Aucune classe avec périodes ne semble définie.</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+$lig_max=mysqli_fetch_object($res_max);
+$max_per=$lig_max->max_per;
+
+$SocleOuvertureSaisieComposantes=array();
+for($i=1;$i<$max_per+1;$i++) {
+	$SocleOuvertureSaisieComposantes[$i]=getSettingAOui("SocleOuvertureSaisieComposantesPeriode".$i);
+}
+
+echo "
 <form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field();
 ?>
 		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
-			État d'ouverture ou non de la saisie des Bilans de composantes du socle dans Gepi&nbsp;:<br />
+			État d'ouverture ou non de la saisie des Bilans de composantes du socle dans Gepi&nbsp;:
+		</p>
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th rowspan='2'>Période</th>
+<?php
+	for($i=1;$i<$max_per+1;$i++) {
+		echo "
+					<th colspan='2'>Période $i</th>";
+	}
+?>
+				</tr>
+				<tr>
+<?php
+	for($i=1;$i<$max_per+1;$i++) {
+		echo "
+					<th>Ouvert</th>
+					<th>Fermé</th>";
+	}
+?>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>État</th>
+<?php
+	for($i=1;$i<$max_per+1;$i++) {
+		if(!$SocleOuvertureSaisieComposantes[$i]) {
+			$checked_y="";
+			$checked_n=" checked";
+		}
+		else {
+			$checked_y=" checked";
+			$checked_n="";
+		}
+		echo "
+					<td><input type='radio' name='SocleOuvertureSaisieComposantes[$i]' value='y'".$checked_y." /></td>
+					<td><input type='radio' name='SocleOuvertureSaisieComposantes[$i]' value='n'".$checked_n." /></td>";
+	}
+?>
+				</tr>
+			</tbody>
+		</table>
+
+		<!--
 			<input type="radio" 
 				   id="SocleOuvertureSaisieComposantes_y" 
 				   name="SocleOuvertureSaisieComposantes"
@@ -138,7 +209,7 @@ echo "</p>
 			<label for="SocleOuvertureSaisieComposantes_n" id='texte_SocleOuvertureSaisieComposantes_n'>
 				Saisie des <em>Bilans de composantes du socle</em> fermée
 			</label>
-		</p>
+		-->
 		<input type="hidden" name="enregistrer_Saisie_Socle" value="y" />
 		<input type="submit" value="Valider" />
 

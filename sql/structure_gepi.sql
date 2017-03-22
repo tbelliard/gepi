@@ -1609,10 +1609,11 @@ CREATE TABLE socle_eleves_composantes (id int(11) NOT NULL auto_increment,
 ine varchar(50) NOT NULL, 
 cycle tinyint(2) NOT NULL, 
 code_composante varchar(10) NOT NULL DEFAULT '', 
-etat_maitrise varchar(10) NOT NULL DEFAULT '', 
+niveau_maitrise varchar(10) NOT NULL DEFAULT '', 
+periode INT(11) NOT NULL default '1', 
 login_saisie varchar(50) NOT NULL DEFAULT '', 
 date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
-PRIMARY KEY (id), INDEX ine_cycle_id_composante (ine, cycle, code_composante), UNIQUE(ine, cycle, code_composante)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+PRIMARY KEY (id), INDEX ine_cycle_id_composante_periode (ine, cycle, code_composante, periode), UNIQUE(ine, cycle, code_composante, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS socle_eleves_syntheses;
 CREATE TABLE socle_eleves_syntheses (id int(11) NOT NULL auto_increment, 

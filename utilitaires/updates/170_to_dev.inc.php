@@ -269,8 +269,19 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
-
 $result .= "<br />";
+$test = sql_query1("SHOW TABLES LIKE 'socle_eleves_composantes'");
+if ($test != -1) {
+	$result .= "&nbsp;-> Suppression de la table 'socle_eleves_composantes' avec son ancienne structure&nbsp;: ";
+	$result_inter = traite_requete("DROP TABLE socle_eleves_composantes;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
 $result .= "<strong>Ajout d'une table 'socle_eleves_composantes' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'socle_eleves_composantes'");
 if ($test == -1) {
@@ -279,9 +290,10 @@ if ($test == -1) {
 	cycle tinyint(2) NOT NULL, 
 	code_composante varchar(10) NOT NULL DEFAULT '', 
 	niveau_maitrise varchar(10) NOT NULL DEFAULT '', 
+	periode INT(11) NOT NULL default '1', 
 	login_saisie varchar(50) NOT NULL DEFAULT '', 
 	date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
-	PRIMARY KEY (id), INDEX ine_cycle_id_composante (ine, cycle, code_composante), UNIQUE(ine, cycle, code_composante)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	PRIMARY KEY (id), INDEX ine_cycle_id_composante_periode (ine, cycle, code_composante, periode), UNIQUE(ine, cycle, code_composante, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}

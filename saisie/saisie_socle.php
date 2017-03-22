@@ -78,6 +78,7 @@ if(!getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
 $msg="";
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+$periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
 
 if(isset($id_classe)) {
 	unset($id_groupe);
@@ -95,7 +96,21 @@ if(($_SESSION['statut']=="professeur")&&(isset($id_classe))&&
 }
 
 // Etat d'ouverture ou non des saisies
-$SocleOuvertureSaisieComposantes=getSettingValue("SocleOuvertureSaisieComposantes");
+$max_per=0;
+$sql="SELECT MAX(num_periode) AS max_per FROM periodes;";
+$res_max=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_max)==0) {
+	echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Aucune classe avec périodes ne semble définie.</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+$lig_max=mysqli_fetch_object($res_max);
+$max_per=$lig_max->max_per;
+
+$SocleOuvertureSaisieComposantes=array();
+for($i=1;$i<$max_per+1;$i++) {
+	$SocleOuvertureSaisieComposantes[$i]=getSettingAOui("SocleOuvertureSaisieComposantesPeriode".$i);
+}
 
 $tab_domaine_socle=array();
 $tab_domaine_socle["CPD_FRA"]="Comprendre, s'exprimer en utilisant la langue française à l'oral et à l'écrit";
@@ -107,15 +122,29 @@ $tab_domaine_socle["FRM_CIT"]="La formation de la personne et du citoyen";
 $tab_domaine_socle["SYS_NAT"]="Les systèmes naturels et les systèmes techniques";
 $tab_domaine_socle["REP_MND"]="Les représentations du monde et l'activité humaine";
 
+$tab_traduction_niveau=array();
+$tab_traduction_niveau[0]="";
+$tab_traduction_niveau[1]="MI";
+$tab_traduction_niveau[2]="MF";
+$tab_traduction_niveau[3]="MS";
+$tab_traduction_niveau[4]="TBM";
+
+$tab_traduction_niveau_couleur=array();
+$tab_traduction_niveau_couleur[0]="";
+$tab_traduction_niveau_couleur[1]="<span style='color:red' title=\"\">MI</span>";
+$tab_traduction_niveau_couleur[2]="<span style='color:orange' title=\"\">MF</span>";
+$tab_traduction_niveau_couleur[3]="<span style='color:green' title=\"\">MS</span>";
+$tab_traduction_niveau_couleur[4]="<span style='color:blue' title=\"\">TBM</span>";
+
 //20170302
 $tab_types_enseignements_complement=get_tab_types_enseignements_complement();
 
 //debug_var();
 
-if(isset($_POST['enregistrer_saisies'])) {
+if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 	check_token();
 
-	if($SocleOuvertureSaisieComposantes=="n") {
+	if(!$SocleOuvertureSaisieComposantes[$periode]) {
 		$msg="La saisie est fermée.<br />";
 	}
 	else {
@@ -162,7 +191,7 @@ if(isset($_POST['enregistrer_saisies'])) {
 			}
 			else {
 				$tab_ine_du_groupe=array();
-				$sql="SELECT DISTINCT no_gep FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND id_groupe='".$id_groupe."';";
+				$sql="SELECT DISTINCT no_gep FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND periode='".$periode."' AND id_groupe='".$id_groupe."';";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig=mysqli_fetch_object($res)) {
@@ -185,12 +214,12 @@ if(isset($_POST['enregistrer_saisies'])) {
 							$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de la classe.<br />";
 						}
 						else {
-							$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."';";
+							$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
 							//echo "$sql<br />";
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
 								if($valeur!="") {
-									$sql="INSERT INTO socle_eleves_composantes SET ine='".$ine."', cycle='".$cycle."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
+									$sql="INSERT INTO socle_eleves_composantes SET ine='".$ine."', cycle='".$cycle."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
 									//echo "$sql<br />";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
@@ -240,10 +269,10 @@ if(isset($_POST['enregistrer_saisies'])) {
 
 									if($enregistrer_valeur=="y") {
 										if($valeur=="") {
-											$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."';";
+											$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
 										}
 										else {
-											$sql="UPDATE socle_eleves_composantes SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."';";
+											$sql="UPDATE socle_eleves_composantes SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
 										}
 										//echo "$sql<br />";
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -446,12 +475,12 @@ if(isset($_POST['enregistrer_saisies'])) {
 							$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de la classe.<br />";
 						}
 						else {
-							$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."';";
+							$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
 							//echo "$sql<br />";
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
 								if($valeur!="") {
-									$sql="INSERT INTO socle_eleves_composantes SET ine='".$ine."', cycle='".$cycle."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
+									$sql="INSERT INTO socle_eleves_composantes SET ine='".$ine."', cycle='".$cycle."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
 									//echo "$sql<br />";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
@@ -501,10 +530,10 @@ if(isset($_POST['enregistrer_saisies'])) {
 
 									if($enregistrer_valeur=="y") {
 										if($valeur=="") {
-											$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."';";
+											$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
 										}
 										else {
-											$sql="UPDATE socle_eleves_composantes SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."';";
+											$sql="UPDATE socle_eleves_composantes SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
 										}
 										//echo "$sql<br />";
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -622,7 +651,7 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
+//$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
 
 echo "<p class='bold'><a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo " | <a href=\"socle_verif.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Vérification du remplissage des bilans de composantes du socle</a>";
@@ -645,9 +674,11 @@ if($_SESSION['statut']=="professeur") {
 		echo "</p>";
 		// Choix du groupe
 
+		/*
 		if(!$SocleOuvertureSaisieComposantes) {
 			echo "<p style='color:red'>La saisie/modification des bilans de composantes du socle est fermée.<br />Seule la consultation des saisies est possible.</p>";
 		}
+		*/
 
 		$nb_entrees=0;
 		if(getSettingAOui("SocleSaisieComposantes_professeur")) {
@@ -727,15 +758,65 @@ if($_SESSION['statut']=="professeur") {
 		require("../lib/footer.inc.php");
 		die();
 	}
+	elseif(!isset($periode)) {
+
+		if(isset($id_classe)) {
+			echo "<h2>Saisie des composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h2>";
+			$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
+			$res_max=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_max)==0) {
+				echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> La classe n'a pas de périodes définies.</p>";
+				require("../lib/footer.inc.php");
+				die();
+			}
+			$lig_max=mysqli_fetch_object($res_max);
+
+			echo "<p style='margin-left:3em;text-indent:-3em;'>Choisissez la période&nbsp;:<br />";
+			for($i=1;$i<$max_per+1;$i++) {
+				$etat_periode="";
+				if(!$SocleOuvertureSaisieComposantes[$i]) {
+					$etat_periode=" (période close)";
+				}
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."&periode=".$i."'>Période $i</a>".$etat_periode."<br />";
+			}
+			echo "</p>";
+		}
+		else {
+			echo "<h2>Saisie des composantes du socle pour l'enseignement de ".get_info_grp($id_groupe)."</h2>";
+			$sql="SELECT MAX(periode) AS max_per FROM j_eleves_groupes WHERE id_groupe='$id_groupe';";
+			$res_max=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_max)==0) {
+				echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Aucun élève n'a été trouvé dans le groupe/enseignement.</p>";
+				require("../lib/footer.inc.php");
+				die();
+			}
+			$lig_max=mysqli_fetch_object($res_max);
+
+			echo "<p style='margin-left:3em;text-indent:-3em;'>Choisissez la période&nbsp;:<br />";
+			for($i=1;$i<$max_per+1;$i++) {
+				$etat_periode="";
+				if(!$SocleOuvertureSaisieComposantes[$i]) {
+					$etat_periode=" (période close)";
+				}
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=".$id_groupe."&periode=".$i."'>Période $i</a>".$etat_periode."<br />";
+			}
+			echo "</p>";
+		}
+
+		require("../lib/footer.inc.php");
+		die();
+	}
 }
 else {
 	if(!isset($id_classe)) {
 		echo "</p>";
 		// Choix de la classe
 
+		/*
 		if(!$SocleOuvertureSaisieComposantes) {
 			echo "<p style='color:red'>La saisie/modification des bilans de composantes du socle est fermée.<br />Seule la consultation des saisies est possible.</p>";
 		}
+		*/
 
 		$sql=retourne_sql_mes_classes();
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -787,14 +868,50 @@ else {
 		require("../lib/footer.inc.php");
 		die();
 	}
+	elseif(!isset($periode)) {
+
+		echo "<h2>Saisie des composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h2>";
+		$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
+		$res_max=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_max)==0) {
+			echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> La classe n'a pas de périodes définies.</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+		$lig_max=mysqli_fetch_object($res_max);
+
+		echo "<p style='margin-left:3em;text-indent:-3em;'>Choisissez la période&nbsp;:<br />";
+		for($i=1;$i<$max_per+1;$i++) {
+			$etat_periode="";
+			if(!$SocleOuvertureSaisieComposantes[$i]) {
+				$etat_periode=" (période close)";
+			}
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."&periode=".$i."'>Période $i</a>".$etat_periode."<br />";
+		}
+		echo "</p>";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
 }
 
-// Saisies (sous réserve que la saisie soit ouverte, sinon affichage)
+$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantesPeriode".$periode);
 
-echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir un autre groupe ou classe</a></p>";
+// Saisies (sous réserve que la saisie soit ouverte, sinon affichage)
+$complement_url_retour="";
+if(isset($id_groupe)) {
+	$complement_url_retour="id_groupe=".$id_groupe;
+}
+elseif(isset($id_classe)) {
+	$complement_url_retour="id_classe=".$id_classe;
+}
+
+echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir un autre groupe ou classe</a>
+ | <a href='".$_SERVER['PHP_SELF']."?".$complement_url_retour."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre période</a>
+</p>";
 
 if(!$SocleOuvertureSaisieComposantes) {
-	echo "\n<p style='color:red'>La saisie/modification des bilans de composantes du socle est fermée.<br />Seule la consultation des saisies est possible.</p>";
+	echo "\n<p style='color:red'>La saisie/modification des bilans de composantes du socle est fermée en période $periode.<br />Seule la consultation des saisies est possible.</p>";
 }
 
 
@@ -809,20 +926,20 @@ if($SocleOuvertureSaisieComposantes) {
 }
 
 if(isset($id_groupe)) {
-	echo "\n<h2>".get_info_grp($id_groupe)."</h2>";
+	echo "\n<h2>".get_info_grp($id_groupe)." (période $periode)</h2>";
 
 	// Récupérer les saisies antérieures
 	$tab_civ_nom_prenom=array();
 	$tab_saisies=array();
-	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND sec.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."';";
+	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND sec.periode=jeg.periode AND sec.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
-			$tab_saisies[$lig->ine][$lig->cycle][$lig->code_composante]["niveau_maitrise"]=$lig->niveau_maitrise;
+			$tab_saisies[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode]["niveau_maitrise"]=$lig->niveau_maitrise;
 			if(!isset($tab_civ_nom_prenom[$lig->login_saisie])) {
 				$tab_civ_nom_prenom[$lig->login_saisie]=civ_nom_prenom($lig->login_saisie);
 			}
-			$tab_saisies[$lig->ine][$lig->cycle][$lig->code_composante]["title"]="Saisi par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2");
+			$tab_saisies[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode]["title"]="Saisi par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2");
 		}
 	}
 
@@ -841,7 +958,7 @@ if(isset($id_groupe)) {
 
 
 	// Récupérer la liste des élèves et leur cycle.
-	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND jeg.id_groupe='".$id_groupe."' ORDER BY e.nom, e.prenom;";
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND jeg.id_groupe='".$id_groupe."' AND jeg.periode='".$periode."' ORDER BY e.nom, e.prenom;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red;'>Aucun élève n'a été trouvé pour ce groupe.</p>";
@@ -882,8 +999,12 @@ if(isset($id_groupe)) {
 			}
 		}
 
+		echo "<p><em>Notes&nbsp;:</em></p>
+<ul>
+	<li><p>Pour les bilans de fin de cycle en 6ème et 3ème, la saisie d'une synthèse est requise.<br />
+	Elle n'est prise en compte dans les remontées LSUN que pour le Bilan de fin de cycle.</p></li>";
 		if(getSettingValue("SocleSaisieComposantesConcurrentes")=="meilleure") {
-			echo "<p style='margin-left:3em;text-indent:-3em;'><em>Note&nbsp;:</em> Le module est paramétré de tel sorte qu'un niveau de maitrise ne peut <em>(normalement)</em> pas être baissé.";
+			echo "<li><p>Le module est paramétré de tel sorte qu'un niveau de maitrise ne peut <em>(normalement)</em> pas être baissé.";
 
 			$liste_profils_autorises_forcer="";
 			if(getSettingAOui("SocleSaisieComposantesForcer_scolarite")) {
@@ -911,9 +1032,15 @@ if(isset($id_groupe)) {
 				echo "<br />Certains profils <em>($liste_profils_autorises_forcer)</em> sont cependant autorisés à forcer la saisie pour baisser le niveau.";
 			}
 
-			echo "</p>";
+			echo "</p></li>";
 		}
-
+		echo "
+</ul>";
+		/*
+		echo "<pre>";
+		print_r($tab_saisies);
+		echo "</pre>";
+		*/
 		echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field();
@@ -950,7 +1077,8 @@ if(isset($id_groupe)) {
 			<thead>
 				<tr>
 					<th rowspan='2'>Domaine du socle</th>
-					<th colspan='5'>Niveau de maitrise</th>
+					<th colspan='5'>Niveau de maitrise</th>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
+					<th rowspan='2'>Période<br />précédente</th>" : "")."
 				</tr>
 				<tr>
 					<th title='Non encore défini'>X</th>
@@ -975,10 +1103,24 @@ if(isset($id_groupe)) {
 					$title[3]="";
 					$title[4]="";
 
-					if(isset($tab_saisies[$lig->no_gep][$cycle][$code])) {
+					if(isset($tab_saisies[$lig->no_gep][$cycle][$code][$periode])) {
 						$checked[0]="";
-						$checked[$tab_saisies[$lig->no_gep][$cycle][$code]["niveau_maitrise"]]=" checked";
-						$title[$tab_saisies[$lig->no_gep][$cycle][$code]["niveau_maitrise"]]=" title=\"".$tab_saisies[$lig->no_gep][$cycle][$code]["title"]."\"";
+						$checked[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" checked";
+						$title[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" title=\"".$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["title"]."\"";
+					}
+					/*
+					echo "
+					<tr>
+						<td>";
+					echo "<pre>";
+					print_r($tab_saisies[$lig->no_gep][$cycle][$code]);
+					echo "</pre>";
+					echo "</td>
+					</tr>";
+					*/
+					$valeur_precedente="";
+					if(($periode>1)&&(isset($tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]))&&(isset($tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]]))) {
+						$valeur_precedente=$tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]];
 					}
 
 					if($SocleOuvertureSaisieComposantes=="y") {
@@ -1019,7 +1161,10 @@ if(isset($id_groupe)) {
 							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
 							value='4'".$checked[4]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
-					</td>
+					</td>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
+					<td>
+						$valeur_precedente
+					</td>" : "")."
 				</tr>";
 						$cpt_domaine++;
 					}
@@ -1096,6 +1241,7 @@ if(isset($id_groupe)) {
 			echo "
 		<input type='hidden' name='enregistrer_saisies' value='y' />
 		<input type='hidden' name='id_groupe' value='$id_groupe' />
+		<input type='hidden' name='periode' value='$periode' />
 		<p><input type='submit' value='Enregistrer' /></p>
 
 		<div id='fixe'>
@@ -1151,15 +1297,16 @@ elseif(isset($id_classe)) {
 
 	// Récupérer les saisies antérieures
 	$tab_saisies=array();
-	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND jec.id_classe='".$id_classe."';";
+	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND sec.periode=jec.periode AND jec.id_classe='".$id_classe."';";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
-			$tab_saisies[$lig->ine][$lig->cycle][$lig->code_composante]["niveau_maitrise"]=$lig->niveau_maitrise;
+			$tab_saisies[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode]["niveau_maitrise"]=$lig->niveau_maitrise;
 			if(!isset($tab_civ_nom_prenom[$lig->login_saisie])) {
 				$tab_civ_nom_prenom[$lig->login_saisie]=civ_nom_prenom($lig->login_saisie);
 			}
-			$tab_saisies[$lig->ine][$lig->cycle][$lig->code_composante]["title"]="Saisi par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2");
+			$tab_saisies[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode]["title"]="Saisi par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2");
 		}
 	}
 
@@ -1185,8 +1332,12 @@ elseif(isset($id_classe)) {
 	}
 	else {
 
+		echo "<p><em>Notes&nbsp;:</em></p>
+<ul>
+	<li><p>Pour les bilans de fin de cycle en 6ème et 3ème, la saisie d'une synthèse est requise.<br />
+	Elle n'est prise en compte dans les remontées LSUN que pour le Bilan de fin de cycle.</p></li>";
 		if(getSettingValue("SocleSaisieComposantesConcurrentes")=="meilleure") {
-			echo "<p style='margin-left:3em;text-indent:-3em;'><em>Note&nbsp;:</em> Le module est paramétré de tel sorte qu'un niveau de maitrise ne peut <em>(normalement)</em> pas être baissé.";
+			echo "<li><p>Le module est paramétré de tel sorte qu'un niveau de maitrise ne peut <em>(normalement)</em> pas être baissé.";
 
 			$liste_profils_autorises_forcer="";
 			if(getSettingAOui("SocleSaisieComposantesForcer_scolarite")) {
@@ -1214,8 +1365,10 @@ elseif(isset($id_classe)) {
 				echo "<br />Certains profils <em>($liste_profils_autorises_forcer)</em> sont cependant autorisés à forcer la saisie pour baisser le niveau.";
 			}
 
-			echo "</p>";
+			echo "</p></li>";
 		}
+		echo "
+</ul>";
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
@@ -1254,7 +1407,8 @@ elseif(isset($id_classe)) {
 			<thead>
 				<tr>
 					<th rowspan='2'>Domaine du socle</th>
-					<th colspan='5'>Niveau de maitrise</th>
+					<th colspan='5'>Niveau de maitrise</th>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
+					<th rowspan='2'>Période<br />précédente</th>" : "")."
 				</tr>
 				<tr>
 					<th title='Non encore défini'>X</th>
@@ -1279,10 +1433,15 @@ elseif(isset($id_classe)) {
 					$title[3]="";
 					$title[4]="";
 
-					if(isset($tab_saisies[$lig->no_gep][$cycle][$code])) {
+					if(isset($tab_saisies[$lig->no_gep][$cycle][$code][$periode])) {
 						$checked[0]="";
-						$checked[$tab_saisies[$lig->no_gep][$cycle][$code]["niveau_maitrise"]]=" checked";
-						$title[$tab_saisies[$lig->no_gep][$cycle][$code]["niveau_maitrise"]]=" title=\"".$tab_saisies[$lig->no_gep][$cycle][$code]["title"]."\"";
+						$checked[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" checked";
+						$title[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" title=\"".$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["title"]."\"";
+					}
+
+					$valeur_precedente="";
+					if(($periode>1)&&(isset($tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]))&&(isset($tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]]))) {
+						$valeur_precedente=$tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]];
 					}
 
 					if($SocleOuvertureSaisieComposantes=="y") {
@@ -1323,7 +1482,10 @@ elseif(isset($id_classe)) {
 							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
 							value='4'".$checked[4]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
-					</td>
+					</td>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
+					<td>
+						$valeur_precedente
+					</td>" : "")."
 				</tr>";
 						$cpt_domaine++;
 					}
@@ -1369,6 +1531,7 @@ elseif(isset($id_classe)) {
 			echo "
 		<input type='hidden' name='enregistrer_saisies' value='y' />
 		<input type='hidden' name='id_classe' value='$id_classe' />
+		<input type='hidden' name='periode' value='$periode' />
 		<p><input type='submit' value='Enregistrer' /></p>
 
 		<div id='fixe'>
