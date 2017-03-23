@@ -272,13 +272,16 @@ if ($test == -1) {
 $result .= "<br />";
 $test = sql_query1("SHOW TABLES LIKE 'socle_eleves_composantes'");
 if ($test != -1) {
-	$result .= "&nbsp;-> Suppression de la table 'socle_eleves_composantes' avec son ancienne structure&nbsp;: ";
-	$result_inter = traite_requete("DROP TABLE socle_eleves_composantes;");
-	if ($result_inter == '') {
-		$result .= msj_ok("SUCCES !");
-	}
-	else {
-		$result .= msj_erreur("ECHEC !");
+	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM socle_eleves_composantes LIKE 'periode';"));
+	if ($test_champ==0) {
+		$result .= "&nbsp;-> Suppression de la table 'socle_eleves_composantes' avec son ancienne structure&nbsp;: ";
+		$result_inter = traite_requete("DROP TABLE socle_eleves_composantes;");
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
 	}
 }
 
