@@ -959,7 +959,7 @@ if($display_rang=='y') {
 <input type='button' value='Mettre tous les coefficients à' onClick='coeff(); changement();' title="N'oubliez pas d'enregistrer ensuite." />
 <select name='coefficient_recop' id='coefficient_recopie' >
 <?php
-for($i=0;$i<10;$i++){
+for($i=0;$i<30;$i++){
     echo "<option value='$i'>$i</option>\n";
 }
 ?>
@@ -1390,7 +1390,7 @@ for($i=0;$i<10;$i++){
 
 		// Coefficient
 		echo "<td>";
-		echo "<input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"3\" onkeydown=\"clavier_2(this.id,event,0,10);changement();\" autocomplete=\"off\" />\n";
+		echo "<input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"3\" onkeydown=\"clavier_2(this.id,event,0,30);changement();\" autocomplete=\"off\" />\n";
 		echo "</td>\n";
 
 		// Mode moy

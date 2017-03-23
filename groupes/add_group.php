@@ -524,7 +524,7 @@ echo "</select>\n";
 
 echo "<p>Coefficient de l'enseignement&nbsp;: ";
 echo "<select name='coef' id='coef'>\n";
-for($i=0;$i<10;$i++){
+for($i=0;$i<30;$i++){
 	echo "<option value='$i'>$i</option>\n";
 }
 echo "</select>\n";

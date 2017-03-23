@@ -1363,7 +1363,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	<select name='coef_enseignements_<?php echo $per; ?>' onchange="document.getElementById('change_coef_<?php echo $per; ?>').checked=true">
 	<?php
 	echo "<option value=''>---</option>\n";
-	for($i=0;$i<20;$i++){
+	for($i=0;$i<30;$i++){
 		echo "<option value='$i'>$i</option>\n";
 	}
 	?>
@@ -1386,7 +1386,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	<select name='coef_enseignements2_<?php echo $per; ?>' id='coef_enseignements2_<?php echo $per; ?>' onchange="if((document.getElementById('matiere_modif_coef_<?php echo $per; ?>').selectedIndex==0)||(document.getElementById('coef_enseignements2_<?php echo $per; ?>').selectedIndex==0)) {document.getElementById('change_coef2_<?php echo $per; ?>').checked=false} else {document.getElementById('change_coef2_<?php echo $per; ?>').checked=true}">
 	<?php
 		echo "<option value=''>---</option>\n";
-		for($i=0;$i<20;$i++){
+		for($i=0;$i<30;$i++){
 			echo "<option value='$i'>$i</option>\n";
 		}
 	?>
@@ -1734,7 +1734,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<td>\n";
 			echo "<select name='coef_nouvel_enseignement_$per' onchange=\"document.getElementById('creer_enseignement_$per').checked=true;\">";
 			echo "<option value=''>---</option>\n";
-			for($i=0;$i<20;$i++){
+			for($i=0;$i<30;$i++){
 				echo "<option value='$i'>$i</option>\n";
 			}
 			echo "</select>\n";
