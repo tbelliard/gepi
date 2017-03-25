@@ -28,7 +28,7 @@ $traite_anti_inject = 'no';
 // Initialisations files et inclusion des librairies utiles
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-require_once("../ckeditor/ckeditor.php");
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -191,8 +191,21 @@ echo '
 
   <p>';
 
-    $oCKeditor = new CKeditor('../ckeditor/');
-    $oCKeditor->editor('cr['.$a.']','');
+    //$oCKeditor = new CKeditor('../ckeditor/');
+    //$oCKeditor->editor('cr['.$a.']','');
+	
+?>
+
+	<script src="../ckeditor/ckeditor.js"></script>  
+	<textarea name="<?php echo "cr[".$a."]"?>" id ="<?php echo "cr[".$a."]"?>" style="border: 1px solid gray; width: 600px; height: 250px;"></textarea>
+	<script type='text/javascript'>
+	// Configuration via JavaScript
+	CKEDITOR.replace('<?php echo "cr[".$a."]"?>',{
+		customConfig: '../lib/ckeditor_gepi_config.js'
+	});
+	</script>
+
+<?php
   echo '</p>
 </div>
 <br />';
