@@ -32,7 +32,6 @@ $filtrage_extensions_fichiers_table_ct_types_documents='y';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 require_once("../public/lib/functions.inc");
-include("../ckeditor/ckeditor.php") ;
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -1523,11 +1522,17 @@ echo "</td></tr>";
 //==============================================
 ?>
 <tr><td colspan="4">
-<?php
-// lancement de CKeditor
-$oCKeditor = new CKeditor('../ckeditor/');
-$oCKeditor->editor('notes',$contenu) ;
 
+<script src="../ckeditor/ckeditor.js"></script>  
+<textarea name="notes" id ="notes" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('notes',{
+    customConfig: '../lib/ckeditor_gepi_config_ct.js'
+});
+</script>
+
+<?php
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('notes').value='TRUC'; return false;\">CLIC</a>";
 //echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('notes').value); return false;\">CLOC</a>";
 
