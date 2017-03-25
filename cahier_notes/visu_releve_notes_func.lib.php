@@ -1224,7 +1224,8 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		// On initialise le tableau :
 		$larg_tab = $releve_largeurtableau;
 		$larg_col1 = $releve_col_matiere_largeur;
-		if ($tab_rel['rn_col_moy']!="y") {
+		//if ($tab_rel['rn_col_moy']!="y") {
+		if(($tab_rel['rn_col_moy']!="y")||(!isset($tab_rel['num_periode']))) {
 			$larg_col2 = $larg_tab - $larg_col1;
 		}
 		else {
@@ -1241,7 +1242,8 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		echo ">\n";
 		echo "<tr>\n";
 		echo "<th style=\"width: ".$larg_col1."px\" class='releve'><b>Matière</b><br /><i>Professeur</i></th>\n";
-		if ($tab_rel['rn_col_moy']=="y") {
+		//if ($tab_rel['rn_col_moy']=="y") {
+		if(($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
 			echo "<th style=\"width: ".$larg_col1b."px\" class='releve'>Moy.</th>\n";
 		}
 		echo "<th style=\"width: ".$larg_col2."px\" class='releve'>Notes sur 20</th>\n";
@@ -1263,7 +1265,13 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 							$prev_cat_id = $tab_rel['eleve'][$i]['groupe'][$j]['id_cat'];
 		
 							echo "<tr>\n";
-							if ($tab_rel['rn_col_moy']=="y") {$colspan=3;} else {$colspan=2;}
+							//if ($tab_rel['rn_col_moy']=="y") {$colspan=3;} else {$colspan=2;}
+							if(($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
+								$colspan=3;
+							}
+							else {
+								$colspan=2;
+							}
 							echo "<td colspan='$colspan'>\n\n";
 							//echo "<p style='padding: 0; margin:0; font-size: 10px;'>".$tab_rel['categorie'][$prev_cat_id]."</p>\n";
 							echo "<p style='padding: 0; margin:0; font-size: ".$releve_categ_font_size."px;";
@@ -1298,7 +1306,9 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 					//echo "<br />\$tab_rel['rn_col_moy']=".$tab_rel['rn_col_moy'];
 					echo "</td>\n";
 
-					if ($tab_rel['rn_col_moy']=="y") {
+					//if ($tab_rel['rn_col_moy']=="y") {
+					//if ($tab_rel['rn_col_moy']=="y") {$colspan=3;} else {$colspan=2;}
+					if (($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
 						echo "<td class='releve'>\n";
 						if(!isset($tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']])) {
 							echo "&nbsp;";
@@ -1964,6 +1974,9 @@ function releve_pdf($tab_rel,$i) {
 
 		// Pour être pris en compte dans les boites/conteneurs:
 		global $retour_a_la_ligne;
+
+		// Sauvegarde de la largeur par défaut
+		$largeur_cadre_matiere_0=$largeur_cadre_matiere;
 
 		// Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
 		$retour_a_la_ligne="y";
@@ -2676,7 +2689,53 @@ function releve_pdf($tab_rel,$i) {
 				}
 				$pdf->Cell(90,5, $texte_1_responsable,0,2,'');
 			}
-	
+
+			//============================================================
+			// 20170322
+			//if ($tab_rel['rn_col_moy']=="y") {
+			if (($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
+				//$largeur_cadre_matiere=40;
+				$largeur_cadre_moy=10;
+				$largeur_cadre_matiere=$largeur_cadre_matiere_0-$largeur_cadre_moy;
+				$X_col_moy=$X_cadre_note+$largeur_cadre_matiere;
+				$X_col_note=$X_cadre_note+$largeur_cadre_matiere+$largeur_cadre_moy;
+
+				if ( $affiche_bloc_observation==1) {
+					//$largeur_cadre_note = $largeur_cadre_note;
+					$largeur_cadre_note = $largeur_cadre_note_si_obs;
+					//echo "\$largeur_cadre_note=$largeur_cadre_note<br />\n";
+					$X_col_observation=$X_cadre_note+$largeur_cadre_matiere+$largeur_cadre_note+$largeur_cadre_moy;
+					$X_signature=$X_col_observation;
+					//$largeur_col_observation=$largeur_cadre_note_global-($X_col_observation-$X_cadre_note);
+					$largeur_col_observation=$X_cadre_note+$largeur_cadre_note_global-$X_col_observation;
+				}
+				else {
+					$largeur_cadre_note = $largeur_cadre_note_global - $largeur_cadre_matiere;
+					//echo "\$largeur_cadre_note=$largeur_cadre_note_global - $largeur_cadre_matiere = $largeur_cadre_note<br />\n";
+				}
+			}
+			else {
+				// Valeur définie dans header_releve_pdf.php
+				//$largeur_cadre_matiere=50;
+				$X_col_note=$X_cadre_note+$largeur_cadre_matiere;
+
+				if ( $affiche_bloc_observation==1) {
+					//$largeur_cadre_note = $largeur_cadre_note;
+					$largeur_cadre_note = $largeur_cadre_note_si_obs;
+					//echo "\$largeur_cadre_note=$largeur_cadre_note<br />\n";
+					$X_col_observation=$X_cadre_note+$largeur_cadre_matiere+$largeur_cadre_note;
+					$X_signature=$X_col_observation;
+					//$largeur_col_observation=$largeur_cadre_note_global-($X_col_observation-$X_cadre_note);
+					$largeur_col_observation=$X_cadre_note+$largeur_cadre_note_global-$X_col_observation;
+				}
+				else {
+					$largeur_cadre_note = $largeur_cadre_note_global - $largeur_cadre_matiere;
+					//echo "\$largeur_cadre_note=$largeur_cadre_note_global - $largeur_cadre_matiere = $largeur_cadre_note<br />\n";
+				}
+			}
+			//============================================================
+
+
 			// BLOC NOTATION ET OBSERVATION
 			//Titre du tableau
 			$pdf->SetXY($X_cadre_note,$Y_cadre_note);
@@ -2952,6 +3011,22 @@ function releve_pdf($tab_rel,$i) {
 					if ((isset($tab_rel['nom_periode']))||
 					((!isset($tab_rel['nom_periode'])&&(isset($tab_rel['eleve'][$i]['groupe'][$m]['devoir']))))) {
 			
+						//============================================================
+						// 20170322
+						if(($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
+							$pdf->SetFont('DejaVu','',8);
+							$pdf->SetXY($X_col_moy,$Y_cadre_note+$hauteur_utilise);
+
+							$valeur="";
+							if(isset($tab_rel['eleve'][$i]['groupe'][$m]['moyenne'][$tab_rel['num_periode']])) {
+								$valeur=$tab_rel['eleve'][$i]['groupe'][$m]['moyenne'][$tab_rel['num_periode']];
+							}
+							$pdf->Cell($largeur_cadre_moy, $hauteur_cadre_matiere, $valeur, 'LRBT', 2, 'C');
+						}
+						$pdf->SetXY($X_col_note,$Y_cadre_note+$hauteur_utilise);
+
+						/*
+
 						//NOTES
 						$largeur_utilise=$largeur_cadre_matiere;
 //echo "\$largeur_utilise=$largeur_utilise<br />\n";
@@ -2970,6 +3045,11 @@ function releve_pdf($tab_rel,$i) {
 						}
 						//=======================
 						$pdf->SetXY($X_cadre_note+$largeur_utilise,$Y_cadre_note+$hauteur_utilise);
+						*/
+
+
+
+
 						// on affiche les nom des regroupement
 						/*
 						if($nom_regroupement[$eleve_select][$cpt_i]!=$nom_regroupement_passer and $active_entete_regroupement === '1')
@@ -3370,8 +3450,8 @@ function releve_pdf($tab_rel,$i) {
 			//if($affiche_bloc_observation === '1')
 			if($affiche_bloc_observation==1)
 			{
-				$largeur_utilise=$largeur_cadre_matiere+$largeur_cadre_note;
-				$largeur_restant=$largeur_cadre_note_global-$largeur_utilise;
+				//$largeur_utilise=$largeur_cadre_matiere+$largeur_cadre_note;
+				//$largeur_restant=$largeur_cadre_note_global-$largeur_utilise;
 				$hauteur_utilise = $hauteur_du_titre;
 				//if($affiche_cachet_pp==='1' or $affiche_signature_parent==='1')
 				if($affiche_cachet_pp==1 or $affiche_signature_parent==1)
@@ -3381,10 +3461,14 @@ function releve_pdf($tab_rel,$i) {
 				else {
 					$hauteur_cadre_observation=$hauteur_cadre_note_global;
 				}
-				$pdf->Rect($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise, $largeur_restant, $hauteur_cadre_observation, 'D');
-				$pdf->SetXY($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise);
+				//$pdf->Rect($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise, $largeur_restant, $hauteur_cadre_observation, 'D');
+				//$pdf->SetXY($X_cadre_note+$largeur_utilise, $Y_cadre_note+$hauteur_utilise);
+				// 20170322
+				$pdf->Rect($X_col_observation, $Y_cadre_note+$hauteur_utilise, $largeur_col_observation, $hauteur_cadre_observation, 'D');
+				$pdf->SetXY($X_col_observation, $Y_cadre_note+$hauteur_utilise);
 				$pdf->SetFont('DejaVu','',11);
-				$pdf->Cell($largeur_restant,7, $texte_observation,0,1,'C');
+				//$pdf->Cell($largeur_restant,7, $texte_observation,0,1,'C');
+				$pdf->Cell($largeur_col_observation,7, $texte_observation,0,1,'C');
 			}
 			//=======================
 	
@@ -3399,11 +3483,18 @@ function releve_pdf($tab_rel,$i) {
 				if($affiche_signature_parent==1) { $nb_col_sign=$nb_col_sign+1; }
 				$largeur_utilise=$largeur_cadre_matiere+$largeur_cadre_note;
 	
-				$X_signature = $X_cadre_note+$largeur_utilise;
+				// 20170322
+				//$X_signature = $X_cadre_note+$largeur_utilise;
+				//$X_signature = $X_col_observation;
 				$Y_signature = $Y_cadre_note+$hauteur_cadre_observation+$hauteur_du_titre;
+
+				// Pour test debug:
+				//$Y_signature=$Y_signature-5;
+
 				$hauteur_cadre_signature=$hauteur_cadre_note_global-$hauteur_cadre_observation;
-				$largeur_cadre_signature=$largeur_cadre_note_global-$largeur_utilise;
-	
+				//$largeur_cadre_signature=$largeur_cadre_note_global-$largeur_utilise;
+				$largeur_cadre_signature=$largeur_col_observation;
+
 				$pdf->SetFont('DejaVu','',8);
 				$pdf->Rect($X_signature, $Y_signature, $largeur_cadre_signature, $hauteur_cadre_signature, 'D');
 	

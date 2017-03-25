@@ -18,7 +18,8 @@
 
 	$gepiProfSuivi=getSettingValue("gepi_prof_suivi");
 
-	$tab_js_lignes_specifiques_releve_html="var tab_html=new Array('rn_col_moy', 'rn_sign_chefetab', 'rn_abs_2');";
+	//$tab_js_lignes_specifiques_releve_html="var tab_html=new Array('rn_col_moy', 'rn_sign_chefetab', 'rn_abs_2');";
+	$tab_js_lignes_specifiques_releve_html="var tab_html=new Array('rn_sign_chefetab', 'rn_abs_2');";
 	$tab_js_lignes_specifiques_releve_pdf="var tab_pdf=new Array('rn_aff_classe_nom', 'rn_rapport_standard_min_font', 'rn_bloc_obs');";
 
 	$tab_item=array();
@@ -39,7 +40,14 @@
 		(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesColMoyReleveParent')))
 		) {
 		$tab_item[]='rn_col_moy';
-		$tab_traduc['rn_col_moy']="Avec la colonne moyenne (<em>relevé HTML</em>)<br />(<em style='font-size:small'>sur une période seulement, pas sur un intervalle de dates</em>)";
+		//$tab_traduc['rn_col_moy']="Avec la colonne moyenne (<em>relevé HTML</em>)<br />(<em style='font-size:small'>sur une période seulement, pas sur un intervalle de dates</em>)";
+
+		if((isset($choix_periode))&&($choix_periode=="intervalle")) {
+			$tab_traduc['rn_col_moy']="Avec la colonne moyenne<br />(<em style='font-size:small; color:red;'>sur une période seulement, pas sur un intervalle de dates</em>)";
+		}
+		else {
+			$tab_traduc['rn_col_moy']="Avec la colonne moyenne<br />(<em style='font-size:small'>sur une période seulement, pas sur un intervalle de dates</em>)";
+		}
 	}
 
 	$tab_item[]='rn_sign_chefetab';

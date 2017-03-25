@@ -16,6 +16,9 @@ Bulletins:
 - Ajout d'un témoin sur le cycle et le niveau de chaque élève pour repérer un éventuel problème de Nomenclature/mef.
 - Page appréciations groupe classe avec le style CLG2016.
 
+Cahier de notes:
+- Possibilité d'afficher la colonne Moyenne de l'élève sur les relevés de notes PDF (et non plus seulement sur les relevés HTML).
+
 LSUN:
 - Possibilité de saisir les bilans de composantes du Socle.
 
