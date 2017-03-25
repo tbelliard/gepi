@@ -521,18 +521,28 @@ if($tri=='groupe') {
 			$chaine_cpt1_eleves.="'$tab_cpt_eleve[$j]'";
 		}
 		*/
-	
+
+		/*
+		echo "<pre>";
+		print_r($tab_cpt_eleve);
+		echo "</pre>";
+		*/
+
 		$chaine_cpt0_eleves="";
 		$chaine_cpt1_eleves="";
 		for($i=0;$i<count($tab_cpt_eleve);$i++) {
-			if($i>1) {$chaine_cpt1_eleves.=",";}
+			//if($i>1) {$chaine_cpt1_eleves.=",";}
+			if($chaine_cpt1_eleves!="") {$chaine_cpt1_eleves.=",";}
 			if($i>0) {
 				$chaine_cpt0_eleves.=",";
 				$chaine_cpt1_eleves.="'$tab_cpt_eleve[$i]'";
 			}
 			$chaine_cpt0_eleves.="'$tab_cpt_eleve[$i]'";
 		}
-		$chaine_cpt1_eleves.=",'$cpt'";
+		if($chaine_cpt1_eleves!="") {
+			$chaine_cpt1_eleves.=",";
+		}
+		$chaine_cpt1_eleves.="'$cpt'";
 
 		echo "<script type='text/javascript'>
 
@@ -837,17 +847,27 @@ elseif($tri=='n_anonymat') {
 		echo "	</fieldset>
 </form>\n";
 
+		/*
+		echo "<pre>";
+		print_r($tab_cpt_eleve);
+		echo "</pre>";
+		*/
+
 		$chaine_cpt0_eleves="";
 		$chaine_cpt1_eleves="";
 		for($i=0;$i<count($tab_cpt_eleve);$i++) {
-			if($i>1) {$chaine_cpt1_eleves.=",";}
+			//if($i>1) {$chaine_cpt1_eleves.=",";}
+			if($chaine_cpt1_eleves!="") {$chaine_cpt1_eleves.=",";}
 			if($i>0) {
 				$chaine_cpt0_eleves.=",";
 				$chaine_cpt1_eleves.="'$tab_cpt_eleve[$i]'";
 			}
 			$chaine_cpt0_eleves.="'$tab_cpt_eleve[$i]'";
 		}
-		$chaine_cpt1_eleves.=",'$cpt'";
+		if($chaine_cpt1_eleves!="") {
+			$chaine_cpt1_eleves.=",";
+		}
+		$chaine_cpt1_eleves.="'$cpt'";
 
 		//echo "\$chaine_cpt0_eleves=$chaine_cpt0_eleves<br />";
 		//echo "\$chaine_cpt1_eleves=$chaine_cpt1_eleves<br />";
@@ -1263,21 +1283,29 @@ elseif($tri=='salle') {
 			$chaine_cpt1_eleves.="'$tab_cpt_eleve[$j]'";
 		}
 		*/
-	
+
+		/*
+		echo "<pre>";
+		print_r($tab_cpt_eleve);
+		echo "</pre>";
+		*/
+
 		$chaine_cpt0_eleves="";
 		$chaine_cpt1_eleves="";
 		for($i=0;$i<count($tab_cpt_eleve);$i++) {
-			if($i>1) {
-				$chaine_cpt1_eleves.=",";
-			}
+			//if($i>1) {$chaine_cpt1_eleves.=",";}
+			if($chaine_cpt1_eleves!="") {$chaine_cpt1_eleves.=",";}
 			if($i>0) {
 				$chaine_cpt0_eleves.=",";
 				$chaine_cpt1_eleves.="'$tab_cpt_eleve[$i]'";
 			}
 			$chaine_cpt0_eleves.="'$tab_cpt_eleve[$i]'";
 		}
-		$chaine_cpt1_eleves.=",'$cpt'";
-	
+		if($chaine_cpt1_eleves!="") {
+			$chaine_cpt1_eleves.=",";
+		}
+		$chaine_cpt1_eleves.="'$cpt'";
+
 		//echo "\$chaine_cpt0_eleves=$chaine_cpt0_eleves<br />";
 		//echo "\$chaine_cpt1_eleves=$chaine_cpt1_eleves<br />";
 	
