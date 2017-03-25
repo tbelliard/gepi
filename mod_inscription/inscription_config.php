@@ -26,10 +26,6 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-include("../ckeditor/ckeditor.php") ;
-
-
-
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -290,9 +286,18 @@ echo "<p>Le texte ci-dessous sera visible par les personnes accédant au module 
 echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />\n";
     // lancement de CKeditor
 
-    $oCKeditor = new CKeditor('../ckeditor/');
-    $oCKeditor->editor('no_anti_inject_notes',$contenu) ;
+?>
 
+<script src="../ckeditor/ckeditor.js"></script>  
+<textarea name="no_anti_inject_notes" id ="no_anti_inject_notes" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('no_anti_inject_notes',{
+    customConfig: '../lib/ckeditor_gepi_config_mini.js'
+});
+</script>
+
+<?php
 //echo "<div id=\"fixe\">\n";
 echo "<center>";
 echo "<input type=\"submit\" name=\"ok\" value=\"Enregistrer\" />";

@@ -44,8 +44,6 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-include("../ckeditor/ckeditor.php") ;
-
 $sql="SELECT 1=1 FROM droits WHERE id='/classes/info_dates_classes.php';";
 $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {

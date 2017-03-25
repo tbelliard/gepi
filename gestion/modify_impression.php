@@ -37,7 +37,6 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
-include("../ckeditor/ckeditor.php");
 
 if(!isset($msg)){$msg="";}
 
@@ -134,9 +133,18 @@ case 'personnels' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oCKeditor = new CKeditor('../ckeditor/');
-		$oCKeditor->editor('impression_personnelFCK',$impression) ;
+?>
 
+	<script src="../ckeditor/ckeditor.js"></script>  
+	<textarea name="impression_personnelFCK" id ="impression_personnelFCK" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $impression; ?></textarea>
+	<script type='text/javascript'>
+	// Configuration via JavaScript
+	CKEDITOR.replace('impression_personnelFCK',{
+		customConfig: '../lib/ckeditor_gepi_config_mini.js'
+	});
+	</script>
+
+<?php
 		//echo "</div>\n";
     break;
 
@@ -158,8 +166,18 @@ case 'responsables' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oCKeditor = new CKeditor('../ckeditor/');
-		$oCKeditor->editor('impression_parentFCK',$impression_parent) ;
+?>
+
+		<script src="../ckeditor/ckeditor.js"></script>  
+		<textarea name="impression_parentFCK" id ="impression_parentFCK" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $impression_parent; ?></textarea>
+		<script type='text/javascript'>
+		// Configuration via JavaScript
+		CKEDITOR.replace('impression_parentFCK',{
+			customConfig: '../lib/ckeditor_gepi_config_mini.js'
+		});
+		</script>
+
+<?php
 
 		//echo "</div>\n";
     break;
@@ -183,9 +201,18 @@ case 'eleves' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oCKeditor = new CKeditor('../ckeditor/');
-		$oCKeditor->editor('impression_eleveFCK',$impression_eleve) ;
+?>
 
+		<script src="../ckeditor/ckeditor.js"></script>  
+		<textarea name="impression_eleveFCK" id ="impression_eleveFCK" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $impression_eleve; ?></textarea>
+		<script type='text/javascript'>
+		// Configuration via JavaScript
+		CKEDITOR.replace('impression_eleveFCK',{
+			customConfig: '../lib/ckeditor_gepi_config_mini.js'
+		});
+		</script>
+
+<?php
 		//echo "</div>\n";
 	break;
 }

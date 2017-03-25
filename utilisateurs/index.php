@@ -42,8 +42,6 @@ if (!checkAccess()) {
 	die();
 }
 
-include("../ckeditor/ckeditor.php");
-
 $msg="";
 
 // pour l'envoi des photos du trombinoscope
@@ -374,9 +372,20 @@ if($mode=="MonCompteAfficheInfo") {
 
 		//echo "<textarea name='no_anti_inject_MonCompteInfo".ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])."' rows='5' cols='80'>".getSettingValue('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]))."</textarea>";
 
-			$oCKeditor = new CKeditor('../ckeditor/');
-			$oCKeditor->editor('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]).'FCK',getSettingValue('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]))) ;
 
+			
+?>
+
+		<script src="../ckeditor/ckeditor.js"></script>  
+		<textarea name="<?php echo 'MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]).'FCK'; ?>" id ="<?php echo 'MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]).'FCK'; ?>" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo getSettingValue('MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop])); ?></textarea>
+		<script type='text/javascript'>
+		// Configuration via JavaScript
+		CKEDITOR.replace('<?php echo 'MonCompteInfo'.ucfirst($tab_statuts_MonCompteAfficheInfo[$loop]).'FCK'; ?>',{
+			customConfig: '../lib/ckeditor_gepi_config_mini.js'
+		});
+		</script>
+
+<?php
 		echo "
 		</td>
 	</tr>";

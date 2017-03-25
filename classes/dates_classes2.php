@@ -46,8 +46,6 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-include("../ckeditor/ckeditor.php") ;
-
 $sql="SELECT 1=1 FROM droits WHERE id='/classes/dates_classes2.php';";
 $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
@@ -707,24 +705,54 @@ if((!isset($id_ev))||
 							<td colspan='4'>
 								<p style='margin-top:1em;'>
 															<i>Texte affiché avant les dates :</i>";
-$oCKeditor = new CKeditor('../ckeditor/');
-$oCKeditor->editor('texte_avant',$texte_avant);
+?>
+
+<script src="../ckeditor/ckeditor.js"></script>  
+<textarea name="texte_avant" id ="texte_avant" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_avant; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('texte_avant',{
+    customConfig: '../lib/ckeditor_gepi_config_mini.js'
+});
+</script>
+
+<?php
 echo "
 							</td>
 						</tr>
 						<tr>
 							<td colspan=\"4\">
 								<i>Texte affiché après les dates :</i>";
-$oCKeditor2 = new CKeditor('../ckeditor/');
-$oCKeditor2->editor('texte_apres',$texte_apres);
+?>
+
+<script src="../ckeditor/ckeditor.js"></script>  
+<textarea name="texte_apres" id ="texte_apres" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_apres; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('texte_apres',{
+    customConfig: '../lib/ckeditor_gepi_config_mini.js'
+});
+</script>
+
+<?php
 	echo "
 							</td>
 						</tr>
 						<tr>
 							<td colspan=\"4\">
 								<i>Texte affiché après les dates pour les élèves et responsables<br />(<em>sous réserve qu'ils soient concernés par cet événement</em>)&nbsp;:</i>";
-$oCKeditor3 = new CKeditor('../ckeditor/');
-$oCKeditor3->editor('texte_apres_ele_resp',$texte_apres_ele_resp);
+?>
+
+<script src="../ckeditor/ckeditor.js"></script>  
+<textarea name="texte_apres_ele_resp" id ="texte_apres_ele_resp" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_apres_ele_resp; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('texte_apres_ele_resp',{
+    customConfig: '../lib/ckeditor_gepi_config_mini.js'
+});
+</script>
+
+<?php
 echo "
 							</td>
 						</tr>

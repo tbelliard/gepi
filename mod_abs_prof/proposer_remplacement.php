@@ -73,7 +73,6 @@ if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('AbsProfProposerRemplacementCp
 	die();
 }
 
-include("../ckeditor/ckeditor.php") ;
 
 $id_absence=isset($_POST['id_absence']) ? $_POST['id_absence'] : (isset($_GET['id_absence']) ? $_GET['id_absence'] : NULL);
 //echo "\$id_absence=$id_absence<br />";

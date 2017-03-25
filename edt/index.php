@@ -304,8 +304,6 @@ if((isset($_GET['mode']))&&($_GET['mode']=="afficher_edt_js")) {
 	die();
 }
 
-//include("../ckeditor/ckeditor.php") ;
-
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
@@ -342,7 +340,6 @@ if(!isset($mode)) {
 
 	if(($_SESSION['statut']=="administrateur")||
 	(getSettingAOui("EdtIcalUpload".casse_mot($_SESSION['statut'],"majf")))) {
-		include("../ckeditor/ckeditor.php") ;
 
 		echo "
 <h3 class='gepi'>Envoi de fichiers emploi du temps au format ICAL/ICS</h3>
@@ -402,8 +399,19 @@ sa page d'accueil une fois le message lu.\">Le destinataire peut supprimer ce me
 			<label for='suppression_possible_non'>Non </label><input type='radio' name='suppression_possible' id='suppression_possible_non' value='non' /><br />
 			La suppression de ces messages EDT est toujours possible pour les comptes administrateur, scolarite et cpe.</p>";
 
-			$oCKeditor = new CKeditor('../ckeditor/');
-			$oCKeditor->editor('message',$contenu) ;
+
+?>
+
+			<script src="../ckeditor/ckeditor.js"></script>  
+			<textarea name="message" id ="message" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
+			<script type='text/javascript'>
+			// Configuration via JavaScript
+			CKEDITOR.replace('message',{
+				customConfig: '../lib/ckeditor_gepi_config.js'
+			});
+			</script>
+
+<?php
 
 			echo "
 			<p>Dans le cas où vous déposez un message, vous pouvez, en précisant le numéro de semaine ci-dessous, faire pointer le lien EDT du message directement sur la semaine souhaitée&nbsp;: 
