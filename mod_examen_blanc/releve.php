@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -173,6 +173,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_bull->note;
 
 												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["infobulle"]='bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur;
+
+												if($lig_bull->statut=="") {
+													if(!isset($tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
+														$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
+														$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
+													}
+
+													$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=$lig_bull->note;
+													$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
+												}
 											}
 
 											if(!in_array('bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$tab_bull)) {
@@ -199,14 +209,20 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 											$note_sur=20;
 											if(!array_key_exists($lig_groupe->id_dev, $tab_dev_param)) {
 												$tab_dev_param[$lig_groupe->id_dev]=get_tab_infos_cn_devoir($lig_groupe->id_dev);
-												if(isset($tab_dev_param[$lig_groupe->id_dev]['note_sur'])) {
-													$note_sur=$tab_dev_param[$lig_groupe->id_dev]['note_sur'];
-												}
-												else {
-													if(!isset($msg)) {$msg="";}
-													$msg.="Anomalie : Le devoir n°$lig_groupe->id_dev n'a pas été trouvé.<br />";
-													//echo $msg;
-												}
+											}
+
+											if(isset($tab_dev_param[$lig_groupe->id_dev]['note_sur'])) {
+												$note_sur=$tab_dev_param[$lig_groupe->id_dev]['note_sur'];
+											}
+											else {
+												if(!isset($msg)) {$msg="";}
+												$msg.="Anomalie : Le devoir n°$lig_groupe->id_dev n'a pas été trouvé.<br />";
+												//echo $msg;
+											}
+
+											if($note_sur==0) {
+												$msg.="ANOMALIE&nbsp;: Le devoir n°$lig_groupe->id_dev serait noté sur zéro.<br />Référentiel ramené à 20.<br />";
+												$note_sur=20;
 											}
 
 											$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='$lig_groupe->id_dev';";
@@ -219,6 +235,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
 													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note*20/$note_sur;
 													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]=$lig_groupe->id_dev;
+
+													if($lig_dev->statut=="") {
+														if(!isset($tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
+															$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
+															$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
+														}
+
+														$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=20*$lig_dev->note/$note_sur;
+														$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
+													}
+
 												}
 
 												if(!in_array($lig_groupe->id_dev,$tab_dev)) {
@@ -251,6 +278,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										}
 									}
 									elseif($lig_groupe->type=='moy_plusieurs_periodes') {
+										// Dans le cas d'une moyenne de bulletins sur plusieurs périodes, on a calculé la moyenne dans mod_examen_blanc/index.php et rempli ex_notes (les valeurs sont figées à l'instant de la sélection dans mod_examen_blanc/index.php; si les moyennes sont modifiées/corrigées après coup, il faut reprovoquer le calcul dans mod_examen_blanc/index.php)
 
 										$chaine_mpp="moy_plusieurs_periodes_".$lig_groupe->id_groupe."_".strtr($lig_groupe->valeur," ","_");
 
@@ -262,6 +290,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
 											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
 											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["infobulle"]=$chaine_mpp;
+
+											if($lig_dev->statut=="") {
+												if(!isset($tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
+													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
+													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
+												}
+
+												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=$lig_dev->note;
+												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
+											}
 										}
 
 										if(!in_array($chaine_mpp,$tab_moy_plusieurs_periodes)) {
@@ -279,13 +317,19 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										$note_sur=20;
 										if(!array_key_exists($lig_groupe->valeur, $tab_epb_param)) {
 											$tab_epb_param[$lig_groupe->valeur]=get_tab_infos_epreuve_blanche($lig_groupe->valeur);
-											if(isset($tab_epb_param[$lig_groupe->valeur]['note_sur'])) {
-												$note_sur=$tab_epb_param[$lig_groupe->valeur]['note_sur'];
-											}
-											else {
-												if(!isset($msg)) {$msg="";}
-												$msg.="Anomalie : L'épreuve blanche n°$lig_groupe->valeur n'a pas été trouvée.<br />";
-											}
+										}
+
+										if(isset($tab_epb_param[$lig_groupe->valeur]['note_sur'])) {
+											$note_sur=$tab_epb_param[$lig_groupe->valeur]['note_sur'];
+										}
+										else {
+											if(!isset($msg)) {$msg="";}
+											$msg.="Anomalie : L'épreuve blanche n°$lig_groupe->valeur n'a pas été trouvée.<br />";
+										}
+
+										if($note_sur==0) {
+											$msg.="ANOMALIE&nbsp;: L'épreuve blanche n°$lig_groupe->valeur serait notée sur zéro.<br />Référentiel ramené à 20.<br />";
+											$note_sur=20;
 										}
 
 										$chaine_mpp="note_epreuve_blanche_".$lig_groupe->id_groupe."_".strtr($lig_groupe->valeur," ","_");
@@ -307,6 +351,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_note->statut;
 												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_note->note*20/$note_sur;
 												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["infobulle"]=$chaine_mpp;
+
+												if($lig_note->statut=="") {
+													if(!isset($tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
+														$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
+														$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
+													}
+
+													$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=20*$lig_dev->note/$note_sur;
+													$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
+												}
 											}
 										}
 
@@ -353,10 +407,20 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							for($i=0;$i<$nb_classes;$i++) {
 								$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
 								$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
+
+								if($lig_dev->statut=="") {
+									if(!isset($tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
+										$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
+										$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
+									}
+
+									$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=$lig_dev->note;
+									$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
+								}
 							}
 						}
 					}
-
+// 20170326 : total et nb_notes à prendre en compte dans les exports.
 					if($mode=='csv') {
 						check_token();
 
@@ -386,7 +450,21 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 									$csv.=$lig_ele->login.";".casse_mot($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2').";";
 									for($j=0;$j<count($tab_matiere);$j++) {
-										if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
+										if((isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']))&&($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']>1)) {
+											$note_courante=round($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['total']/$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']*10)/10;
+
+											if($tab_bonus[$j]=='n') {
+												$tot_coef+=$tab_coef[$j];
+												$tot_ele+=$note_courante*$tab_coef[$j];
+											}
+											else {
+												$tot_ele+=max(0,($note_courante-10)*$tab_coef[$j]);
+											}
+
+											$csv.=strtr($note_courante,".",",").";";
+
+										}
+										elseif(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
 											if($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut']!='') {
 												$csv.=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'].";";
 											}
@@ -647,7 +725,22 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									for($j=0;$j<count($tab_matiere);$j++) {
 										$pdf->SetXY($x2, $y2);
 										$texte="";
-										if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
+										if((isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']))&&($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']>1)) {
+											$note_courante=round($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['total']/$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']*10)/10;
+
+											if($tab_bonus[$j]=='n') {
+												$tot_coef+=$tab_coef[$j];
+												$tot_ele+=$note_courante*$tab_coef[$j];
+											}
+											else {
+												$tot_ele+=max(0,($note_courante-10)*$tab_coef[$j]);
+											}
+
+											$texte=strtr($note_courante,".",",");
+											$tab_notes[$j][]=$note_courante;
+
+										}
+										elseif(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
 											if($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut']!='') {
 												$texte=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'];
 											}
@@ -1040,7 +1133,20 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			echo "<td style='text-align:left;'>".casse_mot($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</td>\n";
 			for($j=0;$j<count($tab_matiere);$j++) {
 				echo "<td>\n";
-				if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
+				if((isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']))&&($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']>1)) {
+					$note_courante=round($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['total']/$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']*10)/10;
+					echo "<span title='Moyenne de plusieurs notes.'>".strtr($note_courante, ".", ",")."</span>";
+
+					if($tab_bonus[$j]=='n') {
+						$tot_coef+=$tab_coef[$j];
+						$tot_ele+=$note_courante*$tab_coef[$j];
+					}
+					else {
+						$tot_ele+=max(0,($note_courante-10)*$tab_coef[$j]);
+					}
+
+				}
+				elseif(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
 					if($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut']!='') {
 						if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['id_dev'])) {
 							echo "<a href='#' onmouseover=\"delais_afficher_div('div_dev_".$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['id_dev']."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_dev_".$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['id_dev']."')\" onclick='return false;'>";
