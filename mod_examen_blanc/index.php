@@ -2461,8 +2461,12 @@ function cocher_decocher(mode) {
 				//echo "$sql<br />\n";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
+					$cpt_grp_classe_courante=0;
 					while($lig=mysqli_fetch_object($res)) {
 						if((!in_array($lig->id, $groupes_non_visibles['cn']))||(!in_array($lig->id, $groupes_non_visibles['bull']))) {
+							if($cpt_grp_classe_courante>0) {
+								echo "<hr />\n";
+							}
 							echo "<p><span class='bold'>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span><br />\n";
 
 							echo "<input type='hidden' name='id_groupe[$cpt_grp]' value='$lig->id' />\n";
@@ -2619,7 +2623,7 @@ function cocher_decocher(mode) {
 							$sql="SELECT ee.* FROM eb_epreuves ee, eb_groupes eg WHERE ee.id=eg.id_epreuve AND eg.id_groupe='$lig->id';";
 							//echo "$sql<br />\n";
 							$res_epreuve=mysqli_query($GLOBALS["mysqli"], $sql);
-							if(mysqli_num_rows($res)>0) {
+							if(mysqli_num_rows($res_epreuve)>0) {
 								echo "<b>Ou épreuve blanche</b>&nbsp;:<br />";
 								while($lig_epreuve=mysqli_fetch_object($res_epreuve)) {
 									echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='epb_".$lig_epreuve->id."' ";
@@ -2639,6 +2643,7 @@ Note sur : $lig_epreuve->note_sur\">$lig_epreuve->intitule</span></label><br />\
 									$cpt++;
 								}
 							}
+							$cpt_grp_classe_courante++;
 						}
 
 						$cpt_grp++;
