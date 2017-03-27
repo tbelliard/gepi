@@ -249,6 +249,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+?>
+<script src="../ckeditor/ckeditor.js"></script>
+<?php
+
 echo "<div class='noprint'>";
 if($_SESSION['statut']=='administrateur') {
 	echo "<p class='bold'><a href='../classes/classes_const.php";
@@ -520,7 +524,6 @@ echo "
 $contenu="";
 ?>
 
-<script src="../ckeditor/ckeditor.js"></script>  
 <textarea name="message" id ="message" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
 <script type='text/javascript'>
 // Configuration via JavaScript

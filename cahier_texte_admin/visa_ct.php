@@ -166,6 +166,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+?>
+<script src="../ckeditor/ckeditor.js"></script>
+<?php
+
 if (!(isset($_GET['action']))) {
 // Affichage du tableau complet
 
@@ -198,7 +202,6 @@ if(isset($definir_visa_par_defaut)) {
 
 ?>
 
-	<script src="../ckeditor/ckeditor.js"></script>  
 	<textarea name="texte_visa_FCK" id ="texte_visa_FCK" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_visa_cdt; ?></textarea>
 	<script type='text/javascript'>
 	// Configuration via JavaScript
@@ -249,7 +252,6 @@ echo "</ul>\n";
 
 ?>
 
-	<script src="../ckeditor/ckeditor.js"></script>  
 	<textarea name="texte_visa_FCK" id ="texte_visa_FCK" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_visa_cdt; ?></textarea>
 	<script type='text/javascript'>
 	// Configuration via JavaScript

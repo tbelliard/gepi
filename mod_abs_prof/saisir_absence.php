@@ -274,6 +274,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+?>
+<script src="../ckeditor/ckeditor.js"></script>
+<?php
+
 /*
 A FAIRE
 Si un remplacement a été accepté et que l'on change des dates, il faut supprimer le remplacement accepté et/ou avertir le prof.
@@ -429,7 +433,6 @@ echo "</span></p>
 
 ?>
 
-<script src="../ckeditor/ckeditor.js"></script>  
 <textarea name="description" id ="description" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo preg_replace("/\\\\n/","",$description); ?></textarea>
 <script type='text/javascript'>
 // Configuration via JavaScript

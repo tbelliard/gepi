@@ -318,6 +318,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+?>
+<script src="../ckeditor/ckeditor.js"></script>
+<?php
+
 if(!isset($mode)) {
 	$sql="SELECT DISTINCT id, classe FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -402,7 +406,6 @@ sa page d'accueil une fois le message lu.\">Le destinataire peut supprimer ce me
 
 ?>
 
-			<script src="../ckeditor/ckeditor.js"></script>  
 			<textarea name="message" id ="message" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
 			<script type='text/javascript'>
 			// Configuration via JavaScript

@@ -473,6 +473,11 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();
+
+?>
+<script src="../ckeditor/ckeditor.js"></script>
+<?php
+
 //onclick=\"return confirm_abandon (this, change, '$themessage')\"
 echo "<a name=\"debut_de_page\"></a>";
 
@@ -999,7 +1004,6 @@ echo "<i>Mise en forme du message :</i>\n";
 
 ?>
 
-<script src="../ckeditor/ckeditor.js"></script>  
 <textarea name="message" id ="message" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
 <script type='text/javascript'>
 // Configuration via JavaScript

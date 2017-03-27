@@ -869,6 +869,8 @@ if (!loadSettings()) {
 }
 ?>
 
+<script src="../ckeditor/ckeditor.js"></script>
+
 <script type="text/javascript">
 <!-- Debut
 var nb='';
@@ -2343,7 +2345,7 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre c
 		<i>Mise en forme du message :</i>";
 ?>
 
-		<script src="../ckeditor/ckeditor.js"></script>  
+		  
 		<textarea name="no_anti_inject_page_garde_texte" id ="no_anti_inject_page_garde_texte" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $impression; ?></textarea>
 		<script type='text/javascript'>
 		// Configuration via JavaScript

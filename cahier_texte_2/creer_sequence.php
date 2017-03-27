@@ -137,6 +137,10 @@ $titre_page = "Créer des séquences pour le cahier de textes";
 include '../lib/header.inc.php';
 //debug_var();
 
+?>
+<script src="../ckeditor/ckeditor.js"></script>
+<?php
+
 $nb_max_seq=getSettingValue('cdt2_sequence_nb_max_notice');
 if(($nb_max_seq=="")||(!preg_match("/^[0-9]*$/", $nb_max_seq))) {
 	$nb_max_seq=6;
@@ -196,7 +200,7 @@ echo '
 	
 ?>
 
-	<script src="../ckeditor/ckeditor.js"></script>  
+	  
 	<textarea name="<?php echo "cr[".$a."]"?>" id ="<?php echo "cr[".$a."]"?>" style="border: 1px solid gray; width: 600px; height: 250px;"></textarea>
 	<script type='text/javascript'>
 	// Configuration via JavaScript

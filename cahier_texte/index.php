@@ -345,11 +345,11 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_devoirs') and $valide_
 	    $sql = "select id from ct_devoirs_documents where id_ct_devoir='".$_GET['id_ct_del']."' AND emplacement LIKE '%".$architecture."%'";
 	    $res = sql_query($sql);
 	    if (($res) and (sql_count($res)!=0)) {
-		  $msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
+$msg = "Impossible de supprimer cette notice : Vous devez d'abord supprimer les documents joints";
 	    } else {
 		//modif Eric interdire la suppression de notice visée
 	    $res = mysqli_query($GLOBALS["mysqli"], "delete from ct_devoirs_entry where (id_ct = '".$_GET['id_ct_del']."' and vise != 'y')");
-		  if ($res) $msg = "Suppression réussie";
+if ($res) $msg = "Suppression réussie";
 	    }
 	}
 
@@ -702,6 +702,10 @@ $titre_page = "Cahier de textes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
+?>
+<script src="../ckeditor/ckeditor.js"></script>
+<?php
+
 //debug_var();
 
 //echo "id_ct=$id_ct<br />";
@@ -745,7 +749,7 @@ foreach($groups as $group) {
 	if(mysqli_num_rows($test_grp_visib)==0) {
 		//echo "<b>";
 		if ($group["id"] == $current_group["id"]) {
-		   echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group["description"] . "&nbsp;-&nbsp;(";
+ echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group["description"] . "&nbsp;-&nbsp;(";
 			$str = null;
 			foreach ($group["classes"]["classes"] as $classe) {
 				$str .= $classe["classe"] . ", ";
@@ -754,8 +758,8 @@ foreach($groups as $group) {
 			echo $str . ")&nbsp;</p>\n";
 		} else {
 			echo "<span style=\"font-weight: bold;\">";
-		   echo "<a href=\"index.php?id_groupe=". $group["id"] ."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir=$edit_devoir\">";
-		   echo $group["name"] . "&nbsp;-&nbsp;(";
+ echo "<a href=\"index.php?id_groupe=". $group["id"] ."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir=$edit_devoir\">";
+ echo $group["name"] . "&nbsp;-&nbsp;(";
 			$str = null;
 			foreach ($group["classes"]["classes"] as $classe) {
 				$str .= $classe["classe"] . ", ";
@@ -1523,7 +1527,7 @@ echo "</td></tr>";
 ?>
 <tr><td colspan="4">
 
-<script src="../ckeditor/ckeditor.js"></script>  
+  
 <textarea name="notes" id ="notes" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
 <script type='text/javascript'>
 // Configuration via JavaScript

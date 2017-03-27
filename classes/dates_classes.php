@@ -554,6 +554,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+?>
+<script src="../ckeditor/ckeditor.js"></script>
+<?php
+
 echo "<a name=\"debut_de_page\"></a>";
 
 //debug_var();
@@ -1094,7 +1098,6 @@ echo "
 
 ?>
 
-<script src="../ckeditor/ckeditor.js"></script>  
 <textarea name="texte_avant" id ="texte_avant" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_avant; ?></textarea>
 <script type='text/javascript'>
 // Configuration via JavaScript
@@ -1113,7 +1116,6 @@ echo "
 
 ?>
 
-<script src="../ckeditor/ckeditor.js"></script>  
 <textarea name="texte_apres" id ="texte_apres" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_apres; ?></textarea>
 <script type='text/javascript'>
 // Configuration via JavaScript
@@ -1133,7 +1135,6 @@ echo "
 
 ?>
 
-<script src="../ckeditor/ckeditor.js"></script>  
 <textarea name="texte_apres_ele_resp" id ="texte_apres_ele_resp" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_apres_ele_resp; ?></textarea>
 <script type='text/javascript'>
 // Configuration via JavaScript
@@ -1155,21 +1156,21 @@ echo "
 								<input type=\"button\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"button_ok_avec_javascript\" onclick=\"check_et_valide_form()\" />
 								<script type='text/javascript'>
 									function checkdate (m, d, y) {
-									    // Returns true(1) if it is a valid date in gregorian calendar  
-									    // 
-									    // version: 1109.2015
-									    // discuss at: http://phpjs.org/functions/checkdate    
-									    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-									    // +   improved by: Pyerre
-									    // +   improved by: Theriault
-									    // *     example 1: checkdate(12, 31, 2000);
-									    // *     returns 1: true    // *     example 2: checkdate(2, 29, 2001);
-									    // *     returns 2: false
-									    // *     example 3: checkdate(3, 31, 2008);
-									    // *     returns 3: true
-									    // *     example 4: checkdate(1, 390, 2000);    
-									    // *     returns 4: false
-									    return m > 0 && m < 13 && y > 2000 && y < 32768 && d > 0 && d <= (new Date(y, m, 0)).getDate();
+							  // Returns true(1) if it is a valid date in gregorian calendar  
+							  // 
+							  // version: 1109.2015
+							  // discuss at: http://phpjs.org/functions/checkdate    
+							  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+							  // +   improved by: Pyerre
+							  // +   improved by: Theriault
+							  // *     example 1: checkdate(12, 31, 2000);
+							  // *     returns 1: true    // *     example 2: checkdate(2, 29, 2001);
+							  // *     returns 2: false
+							  // *     example 3: checkdate(3, 31, 2008);
+							  // *     returns 3: true
+							  // *     example 4: checkdate(1, 390, 2000);    
+							  // *     returns 4: false
+							  return m > 0 && m < 13 && y > 2000 && y < 32768 && d > 0 && d <= (new Date(y, m, 0)).getDate();
 									}
 
 									function check_et_valide_form() {
