@@ -279,14 +279,14 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 			$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
 			$headers .= "MIME-Version: 1.0\r\n";
 			$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
-			$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+			if (strpos($ajout_headers,'From:')===false) $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 			$headers .= $ajout_headers;
 
 		if($piece_jointe=="") {
 			$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
 			$headers .= "MIME-Version: 1.0\r\n";
 			$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
-			$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+			if (strpos($ajout_headers,'From:')===false) $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 			$headers .= $ajout_headers;
 		}
 		else {
@@ -310,7 +310,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 			$headers .= "MIME-Version: 1.0\r\n";
 			$headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\" \r\n";
 			//$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
-			$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+			if (strpos($ajout_headers,'From:')===false) $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 			$headers .= $ajout_headers;
 
 			$tmp_message  = "--$boundary \r\n";
