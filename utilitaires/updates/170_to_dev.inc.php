@@ -402,7 +402,7 @@ if ($test != -1) {
 	}
 }
 
-$result .= "<strong>Ajout d'une table 'modalites_accompagnement'&nbsp;:</strong> ";
+$result .= "<br /><strong>Ajout d'une table 'modalites_accompagnement'&nbsp;:</strong> ";
 $test = sql_query1("SHOW TABLES LIKE 'modalites_accompagnement'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS modalites_accompagnement (code VARCHAR(10) DEFAULT '', 
@@ -463,7 +463,7 @@ if ($test != -1) {
 }
 
 //$result .= "<br />";
-$result .= "<strong>Ajout d'une table 'j_modalite_accompagnement_eleve'&nbsp;:</strong>";
+$result .= "<strong>Ajout d'une table 'j_modalite_accompagnement_eleve'&nbsp;:</strong> ";
 $test = sql_query1("SHOW TABLES LIKE 'j_modalite_accompagnement_eleve'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_modalite_accompagnement_eleve (code VARCHAR(10) DEFAULT '', 
