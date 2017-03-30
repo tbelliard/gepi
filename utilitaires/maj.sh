@@ -156,7 +156,7 @@ Exemples d'utilisation :
     }
 
     if ($force || $start_from == '1.7.0') {
-        require './updates/170_to_dev.inc.php';
+        require './updates/170_to_171.inc.php';
     }
 
 // Test sur la version des plugins (installés ou pas)

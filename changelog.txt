@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-master (Version de développement)
+Gepi-1.7.1 (30/03/2017)
 ===========================
 
 Absences 2:
