@@ -564,7 +564,7 @@ if(($pref_accueil_cn=="y")||
 						($pref_accueil_visu=="y")
 					) {echo " rowspan='2'";}
 				echo ">\n";
-				echo "<span id='h_liste_pdf_$i'>Liste PDF</span>\n";
+				echo "<span id='h_liste_pdf_$i'>Liste PDF/CSV</span>\n";
 				echo "</th>\n";
 			}
 		}
