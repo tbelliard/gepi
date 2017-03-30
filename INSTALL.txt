@@ -1,6 +1,7 @@
 GEPI-1.6.9 (version stable)-- Procédure d'installation
 ==========================================
 
+Version de développement: NE PAS INSTALLER EN PRODUCTION !
 La branche stable actuelle est la 1.7.1
 
 ****************************************************
