@@ -7,26 +7,37 @@ Gepi-1.7.1 (30/03/2017)
 ===========================
 
 Absences 2:
-- Possibilité de donner des droits de consultation/modification de certains paramètres ABS2 à des non-administrateurs (typiquement tel CPE).
+- Possibilité de donner des droits de consultation/modification de certains 
+  paramètres ABS2 à des non-administrateurs (typiquement tel CPE).
 - Possibilité de ne pas afficher les saisies correspondant aux Marques d'appel.
-- Possibilité de ne pas enregistrer un marqueur d'appel lorsque plusieurs saisies sont faites sur le même créneau/groupe,...
+- Possibilité de ne pas enregistrer un marqueur d'appel lorsque plusieurs saisies 
+  sont faites sur le même créneau/groupe,...
 - Bilan individuel: Possibilité de ne pas afficher/exporter les saisies englobées.
 
 Bulletins:
-- Ajout d'un témoin sur le cycle et le niveau de chaque élève pour repérer un éventuel problème de Nomenclature/mef.
+- Ajout d'un témoin sur le cycle et le niveau de chaque élève pour repérer un 
+  éventuel problème de Nomenclature/mef.
 - Page appréciations groupe classe avec le style CLG2016.
+- Modification pour les cycles et niveaux Segpa.
+- Ajout d'un droit d'insertion en masse d'appréciations 
+  (pour par exemple remplir d'un tiret les appréciations pour un professeur absent).
+  Droit donné par défaut aux comptes secours.
 
 Cahier de notes:
-- Possibilité d'afficher la colonne Moyenne de l'élève sur les relevés de notes PDF (et non plus seulement sur les relevés HTML).
+- Possibilité d'afficher la colonne Moyenne de l'élève sur les relevés de notes PDF 
+  (et non plus seulement sur les relevés HTML).
 
 LSUN:
+- Export LSUN validé officiellement.
 - Possibilité de saisir les bilans de composantes du Socle.
+- Possibilité de saisir/exporter les modalités d'accompagnement des élèves.
 
 Éléments de programmes:
 - Accès à la gestion des éléments de programmes même si on n'en a pas saisi soi-même.
 
 AID:
-- Dispositif pour transférer vers des AID des saisies EPI/AP/Parcours effectuées dans des enseignements. 
+- Dispositif pour transférer vers des AID des saisies EPI/AP/Parcours effectuées 
+  dans des enseignements. 
 
 EDT2:
 - Possibilité de faire apparaitre les remplacements (du module Absences Profs) sur l'EDT2.
@@ -35,11 +46,12 @@ Trombinoscope:
 - Possbilité de copier un plan de classe vers un autre groupe.
 
 Engagements:
-- Possibilité de définir des engagements qui peuvent être saisis par un professeur non nécessairement professeur principal.
+- Possibilité de définir des engagements qui peuvent être saisis par un professeur 
+  non nécessairement professeur principal.
 - Possibilité de choisir les engagements à faire apparaitre sur les bulletins CLG 2016.
 
 Panneau d'affichage :
-- possibilité de compléter l'affichage d'un message en page d'accueil par son envoi en SMS.
+- Possibilité de compléter l'affichage d'un message en page d'accueil par son envoi en SMS.
 
 Général:
 - Mise à jour d'après un XML Eleves d'EDT: Possibilité de n'uploader qu'un fichier xml partiel.
