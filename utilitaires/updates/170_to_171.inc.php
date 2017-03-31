@@ -246,6 +246,42 @@ while($lig=mysqli_fetch_object($res)) {
 			$result .= msj_erreur("ECHEC !");
 		}
 	}
+
+	$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/groupes/popup.php' AND id_statut='".$lig->id_statut."';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/aid/popup.php' AND id_statut='".$lig->id_statut."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			$result .= "&nbsp;-> Ajout du droit d'accès à '/aid/popup.php' pour le statut autre n°".$lig->id_statut."&nbsp;: ";
+			$sql="INSERT INTO droits_speciaux SET nom_fichier='/aid/popup.php', id_statut='".$lig->id_statut."', autorisation='V';";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+			}
+		}
+	}
+
+	$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/mod_abs2/enregistrement_saisie_groupe.php' AND id_statut='".$lig->id_statut."';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/mod_abs2/visu_traitement.php' AND id_statut='".$lig->id_statut."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			$result .= "&nbsp;-> Ajout du droit d'accès à '/mod_abs2/visu_traitement.php' pour le statut autre n°".$lig->id_statut."&nbsp;: ";
+			$sql="INSERT INTO droits_speciaux SET nom_fichier='/mod_abs2/visu_traitement.php', id_statut='".$lig->id_statut."', autorisation='V';";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+			}
+		}
+	}
 }
 
 $result .= "<br />";
