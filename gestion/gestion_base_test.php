@@ -1067,6 +1067,211 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 	require("../lib/footer.inc.php");
 	die();
 }
+elseif(isset($_GET['duplication_enseignement'])) {
+	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+<h2>Duplication d'enseignements</h2>";
+
+	$sql="SELECT DISTINCT m.* FROM matieres m, j_groupes_matieres jgm WHERE m.matiere=jgm.id_matiere ORDER BY m.matiere;";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "<p style='color:red'>Il n'existe pas de matières associées à des enseignements.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$lignes_opt_mat_src="";
+	while($lig=mysqli_fetch_assoc($res)) {
+		$lignes_opt_mat_src.="
+				<option value=\"".$lig['matiere']."\">".$lig['matiere']." (".$lig['nom_complet'].")</option>";
+	}
+
+	$sql="SELECT * FROM matieres ORDER BY matiere;";
+	$res=mysqli_query($mysqli, $sql);
+	$lignes_opt_mat_dest="";
+	while($lig=mysqli_fetch_assoc($res)) {
+		$lignes_opt_mat_dest.="
+				<option value=\"".$lig['matiere']."\">".$lig['matiere']." (".$lig['nom_complet'].")</option>";
+	}
+
+	echo "
+<form action='".$_SERVER["PHP_SELF"]."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<h3>Dupliquer des enseignements</h3>
+
+		<p>
+			Dupliquer les enseignements de 
+			<select name='matiere_src'>".$lignes_opt_mat_src."
+			</select>
+			<br />
+			pour créer des enseignements de 
+			<select name='matiere_dest'>".$lignes_opt_mat_dest."
+			</select>
+		</p>
+
+		<p>
+			<input type='checkbox' name='copier_notes_bull' id='copier_notes_bull' value='y' onchange='checkbox_change(this.id)' checked /><label for='copier_notes_bull' id='texte_copier_notes_bull' style='font-weight:bold'> Copier les notes des bulletins</label>,<br />
+			<input type='checkbox' name='copier_app_bull' id='copier_app_bull' value='y' onchange='checkbox_change(this.id)' checked /><label for='copier_app_bull' id='texte_copier_app_bull' style='font-weight:bold'> Copier les appréciations des bulletins</label>
+		</p>";
+
+
+	echo "
+		<p style='margin-top:1em;'>Choisir les classes pour lesquelles faire cette duplication&nbsp;: </p>";
+	$tab_txt=array();
+	$tab_lien=array();
+	$sql=retourne_sql_mes_classes();
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab_txt[]=$lig->classe;
+		$tab_nom_champ[]="id_classe[]";
+		$tab_id_champ[]="id_classe_".$lig->id_classe;
+		$tab_valeur_champ[]=$lig->id_classe;
+	}
+
+	echo tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, "checkbox_change2");
+
+	echo "
+
+		<br />
+
+		<p><b>Êtes-vous sûr de vouloir continuer ?</b></p>
+		<input type='hidden' name='duplication_enseignement' value='y' />
+		<p><input type='submit' name='confirm' value = 'Oui' /></p>
+
+		<script type='text/javascript'>
+			".js_change_style_radio("change_style_radio", "n", "y")."
+			change_style_radio();
+		</script>
+	</fieldset>
+</form>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif((isset($_POST['duplication_enseignement']))&&(isset($_POST['matiere_src']))&&(isset($_POST['matiere_dest']))&&(isset($_POST['id_classe']))) {
+
+	$matiere_src=$_POST['matiere_src'];
+	$matiere_dest=$_POST['matiere_dest'];
+	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
+	$copier_notes_bull=isset($_POST['copier_notes_bull']) ? true : false;
+	$copier_app_bull=isset($_POST['copier_app_bull']) ? true : false;
+
+	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+
+	<h2>Duplication d'enseignements de $matiere_src -&gt; $matiere_dest</h2>";
+
+	$cpt_avis=0;
+	for($loop=0;$loop<count($id_classe);$loop++) {
+		echo "<h3>".get_nom_classe($id_classe[$loop])."</h3>";
+
+		$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_matieres jgm, j_groupes_classes jgc WHERE jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_src."' AND jgc.id_classe='".$id_classe[$loop]."'";
+		$res_grp=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_grp)==0) {
+			echo "<p style='color:red'>Pas d'enseignement de $matiere_src dans cette classe.</p>";
+		}
+		else {
+			while($lig_grp=mysqli_fetch_object($res_grp)) {
+				$current_group=get_group($lig_grp->id_groupe);
+
+				$reg_nom_nouveau_groupe=$matiere_dest;
+				$reg_nom_complet_nouveau_groupe=$matiere_dest." (".$current_group["description"].")";
+				$reg_matiere=$matiere_dest;
+				$reg_clazz = $current_group["classes"]["list"];
+				$reg_categorie=$current_group["classes"]["classes"][$reg_clazz[0]]["categorie_id"];
+
+				// Création d'un nouveau groupe:
+
+				$create=create_group($reg_nom_nouveau_groupe, $reg_nom_complet_nouveau_groupe, $reg_matiere, $reg_clazz, $reg_categorie);
+				if (!$create) {
+					echo "<p style='color:red'>Erreur lors de la création du groupe $reg_nom_nouveau_groupe <em>($reg_nom_complet_nouveau_groupe)</em>.</p>";
+				}
+				else {
+					echo "<p>Groupe $reg_nom_nouveau_groupe <em>($reg_nom_complet_nouveau_groupe)</em>&nbsp;: ";
+					$id_groupe=$create;
+
+					$reg_professeurs = (array)$current_group["profs"]["list"];
+					for($loop=0;$loop<count($reg_professeurs);$loop++) {
+						$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='".$reg_professeurs[$loop]."' AND id_matiere='$matiere_dest';";
+						$test=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($test)==0) {
+							$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$reg_professeurs[$loop]."', id_matiere='$matiere_dest';";
+							$insert=mysqli_query($mysqli, $sql);
+							if(!$insert) {
+								echo " <span style='color:red'>Erreur lors de l'association de ".$reg_professeurs[$loop]." avec la matière $matiere_dest</span>";
+							}
+							else {
+								echo " <span style='color:green'>Association de ".$reg_professeurs[$loop]."/$matiere_dest effectuée</span>";
+							}
+						}
+					}
+
+					foreach ($current_group["periodes"] as $period) {
+						$reg_eleves[$period["num_periode"]] = $current_group["eleves"][$period["num_periode"]]["list"];
+					}
+					$code_modalite_elect_eleves=$current_group["modalites"];
+
+					$create = update_group($id_groupe, $reg_nom_nouveau_groupe, $reg_nom_complet_nouveau_groupe, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
+					if (!$create) {
+						echo "<p style='color:red'>Erreur lors de la mise à jour du groupe $reg_nom_nouveau_groupe <em>($reg_nom_complet_nouveau_groupe)</em>.</p>";
+					}
+					else {
+						echo " <span style='color:green'>OK</span>";
+						// Remplissage des bulletins
+						if($copier_notes_bull) {
+							$sql="SELECT * FROM matieres_notes WHERE id_groupe='".$lig_grp->id_groupe."';";
+							$res_notes=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($res_notes)==0) {
+								echo " - Pas de notes";
+							}
+							else {
+								$nb_note=0;
+								while($lig_notes=mysqli_fetch_object($res_notes)) {
+									$sql="INSERT INTO matieres_notes SET id_groupe='".$id_groupe."', login='".$lig_notes->login."', periode='".$lig_notes->periode."', note='".$lig_notes->note."', statut='".$lig_notes->statut."', rang='".$lig_notes->rang."';";
+									$insert=mysqli_query($mysqli, $sql);
+									if(!$insert) {
+										echo " <span style='color:red'>Erreur&nbsp;: $sql</span><br />";
+									}
+									else {
+										$nb_note++;
+									}
+								}
+								echo " - <span style='color:green'>$nb_note note(s)</span>";
+							}
+						}
+
+						if($copier_app_bull) {
+							$sql="SELECT * FROM matieres_appreciations WHERE id_groupe='".$lig_grp->id_groupe."';";
+							$res_app=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($res_app)==0) {
+								echo " - Pas d'appreciation";
+							}
+							else {
+								$nb_app=0;
+								while($lig_app=mysqli_fetch_object($res_app)) {
+									$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe."', login='".$lig_app->login."', periode='".$lig_app->periode."', appreciation='".mysqli_real_escape_string($mysqli, $lig_app->appreciation)."';";
+									$insert=mysqli_query($mysqli, $sql);
+									if(!$insert) {
+										echo " <span style='color:red'>Erreur&nbsp;: $sql</span><br />";
+									}
+									else {
+										$nb_app++;
+									}
+								}
+								echo " - <span style='color:green'>$nb_app appréciation(s)</span>";
+							}
+						}
+					}
+					echo "</p>";
+				}
+				flush();
+			}
+		}
+	}
+
+
+	require("../lib/footer.inc.php");
+	die();
+}
 
 if (!function_exists("gzwrite")) {
 	echo "</p>";
@@ -1386,6 +1591,8 @@ echo "<p>Avec une base contenant déjà des données, vous pouvez procéder à d
 echo "<p>Avec une base contenant déjà des données, vous pouvez <a href='".$_SERVER['PHP_SELF']."?remplissage_aleatoire_bulletins=y'>remplir aléatoirement les Bulletins périodiques</a> pour procéder à des essais.</p>\n";
 
 echo "<p>Avec une base contenant déjà des données, vous pouvez <a href='".$_SERVER['PHP_SELF']."?remplissage_aleatoire_socle=y'>remplir aléatoirement les Bilans de Composantes du Socle</a> pour procéder à des essais.</p>\n";
+
+echo "<p>Avec une base contenant déjà des données, vous pouvez <a href='".$_SERVER['PHP_SELF']."?duplication_enseignement=y'>dupliquer un enseignement pour en créer un nouveau éventuellement d'une autre matière, et en dupliquant éventuellement les notes et appréciations sur les Bulletins périodiques</a> pour procéder à des essais.</p>\n";
 
 require("../lib/footer.inc.php");
 ?>
