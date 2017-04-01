@@ -55,6 +55,9 @@ $msg="";
 $sauver = filter_input(INPUT_POST, 'valider') ==="y" ? TRUE : FALSE ;
 $ouvre = filter_input(INPUT_POST, 'ouvre') ? filter_input(INPUT_POST, 'ouvre') : 'n';
 
+// Droit de verrouillage par défaut en administrateur:
+saveSetting("SocleOuvertureSaisieComposantes_administrateur", "y");
+
 if(isset($_POST['enregistrer_Saisie_Socle'])) {
 	check_token();
 
@@ -291,7 +294,9 @@ echo "</p>";
 
 		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
 			État d'ouverture ou non de la saisie des Bilans de composantes du socle dans Gepi&nbsp;:<br />
-			<input type="radio" 
+			<a href='../saisie/socle_verrouillage.php' target='_blank'>Consulter/modifier le verrouillage des saisies par période</a><br />
+			L'accès n'est possible que si vous avez validez l'ouverture du module de Saisie ci-dessus.
+			<!--input type="radio" 
 				   id="SocleOuvertureSaisieComposantes_y" 
 				   name="SocleOuvertureSaisieComposantes"
 					<?php if($SocleOuvertureSaisieComposantes) {echo " checked ";} ?>
@@ -307,7 +312,7 @@ echo "</p>";
 				   onchange="change_style_radio();changement();" />
 			<label for="SocleOuvertureSaisieComposantes_n" id='texte_SocleOuvertureSaisieComposantes_n'>
 				Saisie des <em>Bilans de composantes du socle</em> fermée
-			</label>
+			</label-->
 		</p>
 
 		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
