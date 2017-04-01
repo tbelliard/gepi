@@ -157,6 +157,7 @@ if(isset($msg_requetesAdmin)) {
 		</ol>
 		<p>Si lors de l'export des erreurs sont signalées, vous devrez compléter/corriger dans Gepi <em>(nomenclatures ou modalités de matières manquantes, identifiants de professeurs manquants,...)</em></p>
 		<p>Si l'export produit est conforme, vous pourrez l'importer dans l'application LSUN.</p>
+		<p>Voir la documentation sur le <a href='http://www.sylogix.org/projects/gepi/wiki/LSUN' target='_blank'>wiki</a>.</p>
 	</div>
 	<h3>Prérequis</h3>
 	<div style='margin-left:3em;'>
@@ -927,14 +928,20 @@ while ($classe = $classes->fetch_object()) { ?>
 							<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">";
 		}
 
-		echo $matiere->nom_complet;
+		//echo $matiere->nom_complet;
+		echo $matiere->matiere." (".$matiere->nom_complet;
 		if ($matiere->code_modalite_elect == 'O') {
 			echo '- option obligatoire';
 		} elseif ($matiere->code_modalite_elect == 'F') {
 			echo '- option facultative';
 		} elseif ($matiere->code_modalite_elect == 'X') {
-			echo '- modalité X';
+			echo '- mesure spécifique';
 		}
+		elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
+		elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
+		elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
+
+		echo ")";
 ?>
 							</option>
 <?php } ?>
@@ -1289,13 +1296,19 @@ while ($classe = $classes->fetch_object()) { ?>
 			echo "
 							<option value=\"".$matiere->matiere.$matiere->code_modalite_elect."\"".$style_matiere.">";
 		}
-		echo $matiere->nom_complet;
+		echo $matiere->matiere." (".$matiere->nom_complet;
 
 		if ($matiere->code_modalite_elect == 'O') {
 			echo '- option obligatoire';
 		} elseif ($matiere->code_modalite_elect == 'F') {
 			echo '- option facultative';
+		} elseif ($matiere->code_modalite_elect == 'X') {
+			echo '- mesure spécifique';
 		}
+		elseif ($matiere->code_modalite_elect =="N") {echo "- obligatoire ou facultatif";}
+		elseif ($matiere->code_modalite_elect =="L") {echo "- ajout académique";}
+		elseif ($matiere->code_modalite_elect =="R") {echo "- enseignement religieux";}
+		echo ")";
 ?>
 							</option>
 <?php } ?>
