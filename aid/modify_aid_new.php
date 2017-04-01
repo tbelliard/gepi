@@ -144,14 +144,141 @@ $titre_page = "Gestion des élèves dans les AID";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
-	
 // Affichage du retour
+/*
 	// On récupère l'indice de l'aid en question
 	$aff_infos_g .= "<p class=\"aid_a\">"
 	   . "<a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid.add_token_in_url()."\">"
 	   . "<img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour"
 	   . "</a>"
 	   . "</p>";
+*/
+$NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
+$NiveauGestionAid_AID_courant=NiveauGestionAid($_SESSION["login"],$indice_aid, $id_aid);
+
+// On affiche un select avec la liste des aid de cette catégorie
+if ($NiveauGestionAid_AID_courant >= 5) {
+    $sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
+}
+else if ($NiveauGestionAid_AID_courant >= 1) {
+    $sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
+}
+
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]));
+$nbre = mysqli_num_rows($query);
+
+$aff_precedent = '';
+$aff_suivant = '';
+
+// On recherche les AID précédente et suivante
+for($a = 0; $a < $nbre; $a++){
+	$aid_p[$a]["id"] = old_mysql_result($query, $a, "id");
+
+	// On teste pour savoir quel est le aid_id actuellement affiché
+	if ($a != 0) {
+		// Alors on propose un lien vers l'AID précédente
+		if ($aid_p[$a]["id"] == $id_aid) {
+			$aid_precedent = $aid_p[$a-1]["id"];
+			$aff_precedent = '
+			<a href="modify_aid_new.php?indice_aid='.$indice_aid.'&amp;id_aid='.$aid_precedent.'" onclick="return confirm_abandon (this, change, \''.$themessage.'\')">Aid précédente&nbsp;</a>';
+		}
+	}
+
+	if ($a < ($nbre - 1)) {
+		// alors on propose un lien vers l'AID suivante
+		if ($aid_p[$a]["id"] == $id_aid) {
+			$aid_suivant = old_mysql_result($query, $a+1, "id");
+			$aff_suivant = '
+			<a href="modify_aid_new.php?indice_aid='.$indice_aid.'&amp;id_aid='.$aid_suivant.'" onclick="return confirm_abandon (this, change, \''.$themessage.'\')">&nbsp;Aid suivante</a>';
+		}
+	}
+}
+?>
+<form action="modify_aid_new.php" method="post" name="autre_aid" style='margin-bottom:1em;'>
+	<p class="bold">
+		<!--a href="index2.php?indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')"-->
+		<a href="modify_aid.php?flag=eleve&aid_id=<?php echo $id_aid; ?>&indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
+			<img src="../images/icons/back.png" alt="Retour" class="back_link" />
+			Retour
+		</a>&nbsp;|&nbsp;<?php echo $aff_precedent; ?>
+		<select name="id_aid" id='aid_id_autre_aid' onchange="confirm_changement_aid(change, '<?php echo $themessage;?>');">
+<?php
+$indice_aid_champ_select=-1;
+$compteur_aid=0;
+// On recommence le query
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
+while($infos = mysqli_fetch_array($query)){
+	// On affiche la liste des "<option>"
+	if ($id_aid == $infos["id"]) {
+		$selected = ' selected="selected" ';
+		$indice_aid_champ_select=$compteur_aid;
+	}else{
+		$selected = '';
+	}
+?>
+			<option value="<?php echo $infos["id"]; ?>"<?php echo $selected; ?>>
+				&nbsp;<?php echo $infos["nom"]; ?>&nbsp;
+			</option>
+<?php
+	$compteur_aid++;
+}
+?>
+		</select>
+		
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="hidden" name="flag" value="<?php echo $flag; ?>" /><?php echo $aff_suivant; ?>
+
+<?php
+	if(acces("/groupes/mes_listes.php", $_SESSION['statut'])) {
+		echo "
+		| <a href='../groupes/mes_listes.php#aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export CSV</a>";
+	}
+	if((getSettingAOui('active_module_trombinoscopes'))&&(acces("/mod_trombinoscopes/trombinoscopes.php", $_SESSION['statut']))) {
+		echo "
+		| <a href='../mod_trombinoscopes/trombinoscopes.php?aid=$id_aid&etape=2' onclick=\"return confirm_abandon (this, change, '$themessage')\">Trombinoscope</a>";
+	}
+	if(((!isset($flag))||($flag!="prof"))&&(($NiveauGestionAid_AID_courant>=2))) {
+		echo "
+		| <a href='".$_SERVER['PHP_SELF']."?flag=prof&aid_id=".$id_aid."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Professeurs de l'AID</a>";
+	}
+	if(((!isset($flag))||($flag!="prof_gest"))&&(($NiveauGestionAid_AID_courant>=5))) {
+		echo "
+		| <a href='".$_SERVER['PHP_SELF']."?flag=prof_gest&aid_id=".$id_aid."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gestionnaires de l'AID</a>";
+	}
+	if($NiveauGestionAid_categorie==10) {
+		echo "
+		| <a href='config_aid.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
+	}
+?>
+	</p>
+
+	<script type='text/javascript'>
+		//onchange="document.autre_aid.submit();"
+
+		// Initialisation
+		change='no';
+
+		function confirm_changement_aid(thechange, themessage)
+		{
+			if (!(thechange)) thechange='no';
+			if (thechange != 'yes') {
+				document.autre_aid.submit();
+			}
+			else{
+				var is_confirmed = confirm(themessage);
+				if(is_confirmed){
+					document.autre_aid.submit();
+				}
+				else{
+					document.getElementById('aid_id_autre_aid').selectedIndex=<?php echo $indice_aid_champ_select;?>;
+				}
+			}
+		}
+
+	</script>
+</form>
+<?php
+
 
 //Affichage du nom et des précisions sur l'AID en question
 	$req_aid = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE id = '".$id_aid."'");
