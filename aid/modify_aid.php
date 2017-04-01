@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -643,7 +643,10 @@ if ($flag == "eleve") {
 		echo " $aff_profs";
     ?></p>
 
-    <p class = 'bold'>Liste des élèves de l'AID <?php echo $aid_nom ?> :</p>
+    <p class = 'bold'>Liste des élèves de l'AID <?php echo $aid_nom ?>&nbsp;: 
+	<a href='javascript:affichage_des_photos_ou_non()' id='temoin_photo'><img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.
+Cliquer pour masquer les photos.' /></a>
+    </p>
     <hr />
     <?php
     $vide = 1;
@@ -651,6 +654,8 @@ if ($flag == "eleve") {
 ?>
 <form enctype="multipart/form-data" action="modify_aid.php" method="post">
 	<?php echo add_token_field(); ?>
+	<div id='fixe'></div>
+	<div style='float:left; width:30em;'>
 	<table class="aid_tableau">
     <?php
     // appel de la liste des élèves de l'AID :
@@ -690,18 +695,26 @@ if ($flag == "eleve") {
 ?>
 		</tr>
 <?php 
-    $i = "0";
-    while ($i < $nombre) {
-        $vide = 0;
-        $login_eleve = old_mysql_result($call_liste_data, $i, "login");
-        $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
-        $prenom_eleve = old_mysql_result($call_liste_data, $i, "prenom");
-        $eleve_resp = sql_query1("select login from j_aid_eleves_resp where id_aid='$aid_id' and login ='$login_eleve' and indice_aid='$indice_aid'");
-        $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-        $classe_eleve = old_mysql_result($call_classe, '0', "classe");
-        $v_elenoet=old_mysql_result($call_liste_data, $i, 'elenoet');
+	$active_module_trombinoscopes=getSettingAOui("active_module_trombinoscopes");
+	$i = "0";
+	while ($i < $nombre) {
+		$vide = 0;
+		$login_eleve = old_mysql_result($call_liste_data, $i, "login");
+		$nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
+		$prenom_eleve = old_mysql_result($call_liste_data, $i, "prenom");
+		$eleve_resp = sql_query1("select login from j_aid_eleves_resp where id_aid='$aid_id' and login ='$login_eleve' and indice_aid='$indice_aid'");
+		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
+		$classe_eleve = old_mysql_result($call_classe, '0', "classe");
+		$v_elenoet=old_mysql_result($call_liste_data, $i, 'elenoet');
+		if($active_module_trombinoscopes) {
+			echo "
+		<tr onmouseover=\"affiche_photo_courante('".nom_photo($v_elenoet)."')\" onmouseout=\"vide_photo_courante();\">";
+		}
+		else {
+			echo "
+		<tr>";
+		}
 ?>
-		<tr>
 			<td>
 				<strong><?php echo $nom_eleve; ?> <?php echo $prenom_eleve; ?></strong>, <?php echo $classe_eleve ; ?>
 			</td>
@@ -754,6 +767,27 @@ if ($flag == "eleve") {
     }
 ?>
 	</table>
+	<script type='text/javascript'>
+		function affiche_photo_courante(photo) {
+			document.getElementById('fixe').innerHTML="<img src='"+photo+"' width='150' alt='Photo' />";
+		}
+
+		function vide_photo_courante() {
+			document.getElementById('fixe').innerHTML='';
+		}
+
+		function affichage_des_photos_ou_non() {
+			if(document.getElementById('fixe').style.display=='') {
+				document.getElementById('fixe').style.display='none';
+				document.getElementById('temoin_photo').innerHTML="<img src='../images/icons/camera-photo-barre.png' class='icone16' alt='Photo masquée' title='Photo masquée.\\nCliquer pour afficher les photos.' />";
+			}
+			else {
+				document.getElementById('fixe').style.display='';
+				document.getElementById('temoin_photo').innerHTML="<img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.\\nCliquer pour masquer les photos.' />";
+			}
+		}
+	</script>
+	</div>
 <?php
 
     if ($vide == 1) {
