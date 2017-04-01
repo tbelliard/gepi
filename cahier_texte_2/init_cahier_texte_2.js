@@ -190,7 +190,7 @@ function temporiser_chargement_js() {
 }
 
 //setTimeout("include('../lib/DHTMLcalendar/calendar-setup.js')", 500);
-include('../ckeditor/ckeditor.js');
+include('../ckeditor_4/ckeditor.js');
 include('../edt_effets/javascripts/window.js');
 include('../temp/info_jours.js');
 

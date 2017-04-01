@@ -869,7 +869,7 @@ if (!loadSettings()) {
 }
 ?>
 
-<script src="../ckeditor/ckeditor.js"></script>
+<script src="../ckeditor_4/ckeditor.js"></script>
 
 <script type="text/javascript">
 <!-- Debut

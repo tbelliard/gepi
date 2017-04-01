@@ -331,7 +331,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 ?>
-<script src="../ckeditor/ckeditor.js"></script>
+<script src="../ckeditor_4/ckeditor.js"></script>
 <?php
 
 //echo "\$total_photo=$total_photo<br />\$nb_succes_photos=$nb_succes_photos<br />\$nb_photos_proposees=$nb_photos_proposees<br />";

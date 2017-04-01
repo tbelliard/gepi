@@ -95,7 +95,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 ?>
 
-<script src="../ckeditor/ckeditor.js"></script>
+<script src="../ckeditor_4/ckeditor.js"></script>
 
 <form action="modify_impression.php" method=post name=formulaire>
 <p class=bold><a href="index.php#modify_impression"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_impression.php?fiche=personnels"> Fiche Personnels Etablissement </a>|<a href="modify_impression.php?fiche=responsables"> Fiche <?php echo $gepiSettings['denomination_responsables']; ?></a>|<a href="modify_impression.php?fiche=eleves"> Fiche <?php echo $gepiSettings['denomination_eleves'];?> </a></p>

@@ -275,7 +275,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 ?>
-<script src="../ckeditor/ckeditor.js"></script>
+<script src="../ckeditor_4/ckeditor.js"></script>
 <?php
 
 /*

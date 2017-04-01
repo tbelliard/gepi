@@ -138,7 +138,7 @@ include '../lib/header.inc.php';
 //debug_var();
 
 ?>
-<script src="../ckeditor/ckeditor.js"></script>
+<script src="../ckeditor_4/ckeditor.js"></script>
 <?php
 
 $nb_max_seq=getSettingValue('cdt2_sequence_nb_max_notice');

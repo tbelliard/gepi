@@ -507,7 +507,7 @@ $evenement_sans_lien_ics="y";
 //debug_var();
 
 ?>
-<script src="../ckeditor/ckeditor.js"></script>
+<script src="../ckeditor_4/ckeditor.js"></script>
 <?php
 
 echo "<a name=\"debut_de_page\"></a>";

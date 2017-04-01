@@ -131,7 +131,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>
-<script src="../ckeditor/ckeditor.js"></script>
+<script src="../ckeditor_4/ckeditor.js"></script>
 <?php
 
 // Ajout d'un item
