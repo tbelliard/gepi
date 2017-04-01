@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -62,11 +62,11 @@ echo "</p>\n";
 if ($id_choix_periode != 0) {
 	$periode = "Période N°".$id_choix_periode;
 	echo "<h3 align='center'>".$periode."</h3>\n";
-	echo "<h3>Liste des classes : ";
+	echo "<h3>Liste des classes&nbsp;: ";
 	echo "</h3>\n";
 } else {
 	$periode="";
-	echo "<h3>Liste des classes : ";
+	echo "<h3>Liste des classes&nbsp;: ";
 	echo "</h3>\n";
 }
 
@@ -422,7 +422,12 @@ if ($id_choix_periode != 0) {
 		for($i=0;$i<count($groups);$i++){
 			echo "		<option value=\"";
 			echo $groups[$i]['id'];
-			echo "\">";
+			echo "\"";
+			if((count($groups[$i]["classes"]["list"])==1)&&(count($groups[$i]["eleves"][1]["list"])==$groups[$i]["classe"][$groups[$i]["classes"]["list"][0]][1])) {
+				//echo " style='font-weight:bold;'";
+				echo " style='color:blue;' title='Groupe classe'";
+			}
+			echo ">";
 			//echo $groups[$i]['matiere']['nom_complet']." (".$groups[$i]['classlist_string'].")";
 			echo $groups[$i]['name']." (".$groups[$i]['description'].") "." (".$groups[$i]['classlist_string'].")";
 			echo "</option>\n";
