@@ -532,6 +532,14 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                     $i++;
                 }
                 $periode_query->close();
+                for($loop_classe=0;$loop_classe<count($temp["classes"]["list"]);$loop_classe++) {
+                    $sql="SELECT periode,COUNT(login) AS effectif FROM j_eleves_classes WHERE id_classe='".$temp["classes"]["list"][$loop_classe]."' GROUP BY periode;";
+                    //echo "$sql<br />";
+                    $res_eff_classe_periode = mysqli_query($mysqli, $sql);
+                    while ($lig_clas=mysqli_fetch_object($res_eff_classe_periode)) {
+                        $temp["classe"][$temp["classes"]["list"][$loop_classe]][$lig_clas->periode] = $lig_clas->effectif;
+                    }
+                }
             }
             
             if($get_eleves=='y') {
