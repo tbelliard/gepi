@@ -169,12 +169,6 @@ if(isset($msg_requetesAdmin)) {
 			$res_mat=mysqli_query($mysqli, $sql);
 			echo mysqli_num_rows($res_mat)." matière(s) a(ont) leur nomenclature renseignée.<br />";
 
-/*
-SELECT DISTINCT jec.login FROM j_eleves_classes jec
-		LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
-		WHERE jer.login is null;
-*/
-
 			$sql="SELECT DISTINCT m.matiere FROM matieres m LEFT JOIN nomenclatures_valeurs nv ON m.code_matiere=nv.code WHERE nv.code IS NULL;";
 			$res_mat=mysqli_query($mysqli, $sql);
 			echo "<span style='color:red'>".mysqli_num_rows($res_mat)." matière(s) n'a(ont) pas leur nomenclature renseignée.</span>";

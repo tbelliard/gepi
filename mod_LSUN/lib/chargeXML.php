@@ -288,7 +288,8 @@ if ($listeVieScoCommun->num_rows) {
 			
 		$donnees->appendChild($viesScolairesCommuns);
 }else {
-	$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire.</p>";
+	//$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire.</p>";
+	$msgErreur .= "<p class='rouge'>Pas de commentaires trouvés en vie scolaire.</p>";
 }
 
 			/*----- epis -----*/

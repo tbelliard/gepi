@@ -136,6 +136,9 @@ function getClasses($classeId = NULL) {
 	global $mysqli;
 	$sqlClasses = "SELECT DISTINCT id, classe, nom_complet, mef_code FROM classes ";
 	if ($classeId) {$sqlClasses .= " WHERE id = '$classeId' ";}
+	else {
+		$sqlClasses.=" WHERE id NOT IN (SELECT id_classe FROM classes_param WHERE name='type_classe' AND value='non_sconet')";
+	}
 	$sqlClasses .= " ORDER BY classe ";
 	//echo $sqlClasses;
 	$resultchargeDB = $mysqli->query($sqlClasses);	
@@ -326,7 +329,7 @@ function getCoursById($id) {
 function MefAppartenanceAbsent() {
 	global $mysqli;
 	$retour = FALSE;
-	$sqlGetMefAppartenance = "SELECT 1=1 FROM classes WHERE mef_code = '' ";
+	$sqlGetMefAppartenance = "SELECT 1=1 FROM classes WHERE mef_code = '' AND id NOT IN (SELECT id_classe FROM classes_param WHERE name='type_classe' AND value='non_sconet');";
 	//echo $sqlGetMefAppartenance;
 	if ($mysqli->query($sqlGetMefAppartenance)->num_rows) {
 		$retour = TRUE;
