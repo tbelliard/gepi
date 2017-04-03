@@ -161,9 +161,30 @@ if(isset($msg_requetesAdmin)) {
 	</div>
 	<h3>Prérequis</h3>
 	<div style='margin-left:3em;'>
-		<p>Les nomenclatures, identifiants,... doivent être à jour.<br />
-		S'il manque des éléments, les erreurs vous seront signalées et vous devrez corriger.</p>
-		<p>L'étape de définition des EPI nécessite <em title="Il est envisagé de permettre la création complète des EPI depuis la présente page, mais ce n'est pas encore réalisé/finalisé.">actuellement (*)</em> d'avoir <a href='../aid/index.php' target='_blank'>créé les AID</a> correspondants préalablement.<br />
+		<p>Les nomenclatures, identifiants,... doivent être à jour.</p>
+
+		<p style='margin-top:1em;'>Les nomenclatures des disciplines doivent avoir été renseignées d'après Sconet pour que l'association d'une Discipline avec un EPI ou une AP puisse être effectuée.<br />
+		<?php
+			$sql="SELECT DISTINCT m.matiere FROM matieres m, nomenclatures_valeurs nv WHERE nv.type='matiere' AND m.code_matiere=nv.code;";
+			$res_mat=mysqli_query($mysqli, $sql);
+			echo mysqli_num_rows($res_mat)." matière(s) a(ont) leur nomenclature renseignée.<br />";
+
+/*
+SELECT DISTINCT jec.login FROM j_eleves_classes jec
+		LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
+		WHERE jer.login is null;
+*/
+
+			$sql="SELECT DISTINCT m.matiere FROM matieres m LEFT JOIN nomenclatures_valeurs nv ON m.code_matiere=nv.code WHERE nv.code IS NULL;";
+			$res_mat=mysqli_query($mysqli, $sql);
+			echo "<span style='color:red'>".mysqli_num_rows($res_mat)." matière(s) n'a(ont) pas leur nomenclature renseignée.</span>";
+		?><br />
+		S'il manque des nomenclatures, sélectionnez/complétez manuellement un à un les codes matières dans <a href='../matieres/index.php'>Gestion des matières</a><br />
+		ou globalement dans <a href='../gestion/admin_nomenclatures.php?action=importnomenclature'>Importer les nomenclatures</a>.</p>
+
+		<p style='margin-top:1em;'>S'il manque des éléments, les erreurs vous seront signalées et vous devrez corriger.</p>
+
+		<p style='margin-top:1em;'>L'étape de définition des EPI nécessite <em title="Il est envisagé de permettre la création complète des EPI depuis la présente page, mais ce n'est pas encore réalisé/finalisé.">actuellement (*)</em> d'avoir <a href='../aid/index.php' target='_blank'>créé les AID</a> correspondants préalablement.<br />
 		Les AID peuvent être <a href='../aid/transfert_groupe_aid.php' target='_blank'>créés/migrés depuis des enseignements classiques</a>.<br />
 		Et dans la présente page, le lien est fait entre ces AID et les EPI que vous souhaitez exporter vers LSUN.</p>
 	</div>

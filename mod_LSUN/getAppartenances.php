@@ -30,6 +30,8 @@ if(isset($_FILES['fichier_sts_emp']['tmp_name'])) {
 }
 
 if (filter_input(INPUT_POST, 'corrigeMEF')) {
+	//debug_var();
+
 	// On enregistre les MEF
 	$classeBase = filter_input(INPUT_POST, 'classeBase', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	//print_r($classeBase);
@@ -50,7 +52,7 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 	foreach ($classeBase as $key=>$classeActuelle) {
 		//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
 		$sql = "UPDATE classes SET mef_code = '$codeMefFichier[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase[$key]';";
-		echo $sql.'<br>';
+		//echo $sql.'<br>';
 		$mysqli->query($sql);
 
 		$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
@@ -71,7 +73,7 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 	foreach ($classeBase2 as $key=>$classeActuelle) {
 		//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
 		$sql = "UPDATE classes SET mef_code = '$mefAppartenance2[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase2[$key]';";
-		echo $sql.'<br>';
+		//echo $sql.'<br>';
 		$mysqli->query($sql);
 
 		if(isset($nomXMLclasse[$key])) {
@@ -230,7 +232,8 @@ while ($classe = $listeClasse->fetch_object()) {
 			".(isset($tab_xml["$nom_classe_xml"]["LIBELLE_LONG"]) ? $tab_xml["$nom_classe_xml"]["LIBELLE_LONG"] : "")."
 		</td>
 		<td>
-			<input type='text' name='mefAppartenance[".$classe->id."]' value=\"".$result[0]->MEFS_APPARTENANCE->MEF_APPARTENANCE['CODE']."\" />
+			<!--input type='text' name='mefAppartenance[".$classe->id."]' value=\"".$result[0]->MEFS_APPARTENANCE->MEF_APPARTENANCE['CODE']."\" /-->
+			<input type='text' name='codeMefFichier[".$classe->id."]' value=\"".$result[0]->MEFS_APPARTENANCE->MEF_APPARTENANCE['CODE']."\" />
 		</td>
 	</tr>";
 	}
