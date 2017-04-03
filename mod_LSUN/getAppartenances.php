@@ -30,6 +30,8 @@ if(isset($_FILES['fichier_sts_emp']['tmp_name'])) {
 }
 
 if (filter_input(INPUT_POST, 'corrigeMEF')) {
+	//debug_var();
+
 	// On enregistre les MEF
 	$classeBase = filter_input(INPUT_POST, 'classeBase', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	//print_r($classeBase);
@@ -230,7 +232,8 @@ while ($classe = $listeClasse->fetch_object()) {
 			".(isset($tab_xml["$nom_classe_xml"]["LIBELLE_LONG"]) ? $tab_xml["$nom_classe_xml"]["LIBELLE_LONG"] : "")."
 		</td>
 		<td>
-			<input type='text' name='mefAppartenance[".$classe->id."]' value=\"".$result[0]->MEFS_APPARTENANCE->MEF_APPARTENANCE['CODE']."\" />
+			<!--input type='text' name='mefAppartenance[".$classe->id."]' value=\"".$result[0]->MEFS_APPARTENANCE->MEF_APPARTENANCE['CODE']."\" /-->
+			<input type='text' name='codeMefFichier[".$classe->id."]' value=\"".$result[0]->MEFS_APPARTENANCE->MEF_APPARTENANCE['CODE']."\" />
 		</td>
 	</tr>";
 	}
