@@ -102,6 +102,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (!isset($rn_adr_resp)) $rn_adr_resp = 'n';
 	if (!isset($rn_bloc_obs)) $rn_bloc_obs = 'n';
 	if (!isset($rn_col_moy)) $rn_col_moy = 'n';
+
+	if (!isset($type_classe)) $type_classe = 'standard';
+
 	// =========================
 
 	if (isset($id_classe)) {
@@ -188,7 +191,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -292,7 +295,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -501,7 +504,7 @@ if (isset($id_classe)) {
 	// =========================
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
@@ -510,6 +513,7 @@ if (isset($id_classe)) {
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
 	if($bull_prefixe_periode=="") {$bull_prefixe_periode="Bulletin du ";}
+	if($type_classe=="") {$type_classe="standard";}
 	// =========================
 
 } else {
@@ -544,7 +548,7 @@ if (isset($id_classe)) {
 	$rn_abs_2='n';
 	// =========================
 	// 20121027
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		/*
@@ -557,6 +561,7 @@ if (isset($id_classe)) {
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
 	if($bull_prefixe_periode=="") {$bull_prefixe_periode="Bulletin du ";}
+	if($type_classe=="") {$type_classe="standard";}
 	// =========================
 
 	// Mod ECTS
@@ -641,7 +646,26 @@ Fonction associée (<em>chef, adjoint</em>)&nbsp;:<br />
 <label for='reg_elformat_pn' style='cursor: pointer;'>Prénom Nom (<em>Albert Durand</em>)</label>
 
 <input type=hidden name=is_posted value=1 />
-<?php if (isset($id_classe)) {echo "<input type=hidden name=id_classe value=$id_classe />";} ?>
+<?php
+	if (isset($id_classe)) {echo "<input type=hidden name=id_classe value=$id_classe />";} 
+
+	$checked_type_classe_standard=" checked";
+	$checked_type_classe_non_sconet="";
+	if($type_classe=="non_sconet") {
+		$checked_type_classe_standard="";
+		$checked_type_classe_non_sconet=" checked";
+	}
+?>
+
+<br />
+<p style='margin-top:1em;' title="Certaines classes particulières n'existent pas dans Sconet.
+Leur prise en compte dans des modules comme LSU peut perturber le fonctionnement du module.
+Déclarez ces classes comme non standard/non Sconet permet de ne pas les prendre en compte dans ces modules.
+Actuellement, le paramètre n'est pris en compte que pour le module LSU de Gepi."><b>Type de classe&nbsp;:</b><br />
+<input type="radio" name="type_classe" id='type_classe_standard' value="standard" onchange='changement()'<?php echo $checked_type_classe_standard;?> /><label for='type_classe_standard'> classe standard <em>(Sconet)</em></label><br />
+<input type="radio" name="type_classe" id='type_classe_non_sconet' value="non_sconet" onchange='changement()'<?php echo $checked_type_classe_non_sconet;?> /><label for='type_classe_non_sconet'> classe non standard <em>(hors Sconet,...)</em></label>
+</p>
+
 <br />
 <br />
 <!-- ========================================= -->
