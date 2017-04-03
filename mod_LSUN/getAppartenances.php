@@ -50,7 +50,7 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 	foreach ($classeBase as $key=>$classeActuelle) {
 		//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
 		$sql = "UPDATE classes SET mef_code = '$codeMefFichier[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase[$key]';";
-		echo $sql.'<br>';
+		//echo $sql.'<br>';
 		$mysqli->query($sql);
 
 		$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
@@ -71,7 +71,7 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 	foreach ($classeBase2 as $key=>$classeActuelle) {
 		//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
 		$sql = "UPDATE classes SET mef_code = '$mefAppartenance2[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase2[$key]';";
-		echo $sql.'<br>';
+		//echo $sql.'<br>';
 		$mysqli->query($sql);
 
 		if(isset($nomXMLclasse[$key])) {
