@@ -47,8 +47,6 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-include("../ckeditor/ckeditor.php") ;
-
 $sql="SELECT 1=1 FROM droits WHERE id='/classes/dates_classes.php';";
 $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
@@ -555,6 +553,10 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();
+
+?>
+<script src="../ckeditor_4/ckeditor.js"></script>
+<?php
 
 echo "<a name=\"debut_de_page\"></a>";
 
@@ -1093,16 +1095,36 @@ echo "
 						<tr>
 							<td colspan=\"5\">
 								<i>Texte affiché avant les dates&nbsp;:</i>";
-$oCKeditor = new CKeditor('../ckeditor/');
-$oCKeditor->editor('texte_avant',$texte_avant);
+
+?>
+
+<textarea name="texte_avant" id ="texte_avant" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_avant; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('texte_avant',{
+    customConfig: '../lib/ckeditor_gepi_config_mini.js'
+});
+</script>
+
+<?php
 echo "
 							</td>
 						</tr>
 						<tr>
 							<td colspan=\"5\">
 								<i>Texte affiché après les dates pour les personnels&nbsp;:</i>";
-$oCKeditor2 = new CKeditor('../ckeditor/');
-$oCKeditor2->editor('texte_apres',$texte_apres);
+
+?>
+
+<textarea name="texte_apres" id ="texte_apres" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_apres; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('texte_apres',{
+    customConfig: '../lib/ckeditor_gepi_config_mini.js'
+});
+</script>
+
+<?php
 echo "
 							</td>
 						</tr>
@@ -1110,8 +1132,18 @@ echo "
 							<td colspan=\"5\">
 								<i>Texte affiché après les dates pour les élèves et responsables&nbsp;:<br />
 								(<em>sous réserve qu'ils soient concernés par cet événement</em>)</i>";
-$oCKeditor3 = new CKeditor('../ckeditor/');
-$oCKeditor3->editor('texte_apres_ele_resp',$texte_apres_ele_resp);
+
+?>
+
+<textarea name="texte_apres_ele_resp" id ="texte_apres_ele_resp" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_apres_ele_resp; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('texte_apres_ele_resp',{
+    customConfig: '../lib/ckeditor_gepi_config_mini.js'
+});
+</script>
+
+<?php
 echo "
 							</td>
 						</tr>
@@ -1124,21 +1156,21 @@ echo "
 								<input type=\"button\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"button_ok_avec_javascript\" onclick=\"check_et_valide_form()\" />
 								<script type='text/javascript'>
 									function checkdate (m, d, y) {
-									    // Returns true(1) if it is a valid date in gregorian calendar  
-									    // 
-									    // version: 1109.2015
-									    // discuss at: http://phpjs.org/functions/checkdate    
-									    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-									    // +   improved by: Pyerre
-									    // +   improved by: Theriault
-									    // *     example 1: checkdate(12, 31, 2000);
-									    // *     returns 1: true    // *     example 2: checkdate(2, 29, 2001);
-									    // *     returns 2: false
-									    // *     example 3: checkdate(3, 31, 2008);
-									    // *     returns 3: true
-									    // *     example 4: checkdate(1, 390, 2000);    
-									    // *     returns 4: false
-									    return m > 0 && m < 13 && y > 2000 && y < 32768 && d > 0 && d <= (new Date(y, m, 0)).getDate();
+							  // Returns true(1) if it is a valid date in gregorian calendar  
+							  // 
+							  // version: 1109.2015
+							  // discuss at: http://phpjs.org/functions/checkdate    
+							  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+							  // +   improved by: Pyerre
+							  // +   improved by: Theriault
+							  // *     example 1: checkdate(12, 31, 2000);
+							  // *     returns 1: true    // *     example 2: checkdate(2, 29, 2001);
+							  // *     returns 2: false
+							  // *     example 3: checkdate(3, 31, 2008);
+							  // *     returns 3: true
+							  // *     example 4: checkdate(1, 390, 2000);    
+							  // *     returns 4: false
+							  return m > 0 && m < 13 && y > 2000 && y < 32768 && d > 0 && d <= (new Date(y, m, 0)).getDate();
 									}
 
 									function check_et_valide_form() {

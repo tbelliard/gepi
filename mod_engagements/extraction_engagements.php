@@ -72,8 +72,6 @@ if(count($tab_engagements['indice'])==0) {
 	die();
 }
 
-include("../ckeditor/ckeditor.php") ;
-
 $nb_engagements=count($tab_engagements['indice']);
 
 $msg="";
@@ -250,6 +248,10 @@ require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 //debug_var();
+
+?>
+<script src="../ckeditor_4/ckeditor.js"></script>
+<?php
 
 echo "<div class='noprint'>";
 if($_SESSION['statut']=='administrateur') {
@@ -520,8 +522,17 @@ echo "
 			Texte du message&nbsp;:";
 
 $contenu="";
-$oCKeditor = new CKeditor('../ckeditor/');
-$oCKeditor->editor('message',$contenu) ;
+?>
+
+<textarea name="message" id ="message" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $contenu; ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('message',{
+    customConfig: '../lib/ckeditor_gepi_config.js'
+});
+</script>
+
+<?php
 
 $annee = strftime("%Y");
 $mois = strftime("%m");

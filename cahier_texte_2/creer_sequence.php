@@ -28,7 +28,7 @@ $traite_anti_inject = 'no';
 // Initialisations files et inclusion des librairies utiles
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-require_once("../ckeditor/ckeditor.php");
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -137,6 +137,10 @@ $titre_page = "Créer des séquences pour le cahier de textes";
 include '../lib/header.inc.php';
 //debug_var();
 
+?>
+<script src="../ckeditor_4/ckeditor.js"></script>
+<?php
+
 $nb_max_seq=getSettingValue('cdt2_sequence_nb_max_notice');
 if(($nb_max_seq=="")||(!preg_match("/^[0-9]*$/", $nb_max_seq))) {
 	$nb_max_seq=6;
@@ -191,8 +195,21 @@ echo '
 
   <p>';
 
-    $oCKeditor = new CKeditor('../ckeditor/');
-    $oCKeditor->editor('cr['.$a.']','');
+    //$oCKeditor = new CKeditor('../ckeditor/');
+    //$oCKeditor->editor('cr['.$a.']','');
+	
+?>
+
+	  
+	<textarea name="<?php echo "cr[".$a."]"?>" id ="<?php echo "cr[".$a."]"?>" style="border: 1px solid gray; width: 600px; height: 250px;"></textarea>
+	<script type='text/javascript'>
+	// Configuration via JavaScript
+	CKEDITOR.replace('<?php echo "cr[".$a."]"?>',{
+		customConfig: '../lib/ckeditor_gepi_config.js'
+	});
+	</script>
+
+<?php
   echo '</p>
 </div>
 <br />';

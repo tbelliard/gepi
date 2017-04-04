@@ -190,7 +190,7 @@ function temporiser_chargement_js() {
 }
 
 //setTimeout("include('../lib/DHTMLcalendar/calendar-setup.js')", 500);
-include('../ckeditor/ckeditor.js');
+include('../ckeditor_4/ckeditor.js');
 include('../edt_effets/javascripts/window.js');
 include('../temp/info_jours.js');
 
@@ -500,54 +500,9 @@ function initWysiwyg() {
 		    CKEDITOR.remove(CKEDITOR.instances['contenu']);
 		}
 		//creation de l'instance
-		//En fonction de la largeur, on change le menu pour eviter de le couper si la largeur est trop petite
-		if (GetWidth() < 1100) {
-		    CKEDITOR.replace( 'contenu', {
-			language : 'fr',
-			skin : 'kama',
-			resize_enabled : false,
-			startupFocus : true,
-                        removePlugins : 'elementspath',
-			extraPlugins : 'equation',
-			toolbar :
-			[
-			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
-			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
-			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
-			    ['NumberedList','BulletedList'],
-			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','Equation'],
-			    ['Styles','Format','Font','FontSize'],
-			    ['TextColor','BGColor'],
-			    ['Maximize', 'About','-','Print']
-			]
-		    } );
-		} else {
-		    CKEDITOR.replace( 'contenu', {
-			language : 'fr',
-			skin : 'kama',
-			resize_enabled : false,
-			startupFocus : true,
-		        removePlugins : 'elementspath',
-			extraPlugins : 'equation',
-			toolbar :
-			[
-			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
-			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
-			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
-			    ['NumberedList','BulletedList'],
-			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-			    '/',
-			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','Equation'],
-			    ['Styles','Format','Font','FontSize'],
-			    ['TextColor','BGColor'],
-			    ['Maximize', 'About','-','Print']
-
-			]
-		    } );
-		}
+		CKEDITOR.replace( 'contenu', {
+			customConfig: '../lib/ckeditor_gepi_config_ct.js'
+		});
 	}
 }
 

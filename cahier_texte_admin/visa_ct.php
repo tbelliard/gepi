@@ -49,8 +49,6 @@ if(isset($_SESSION['retour_cdt'])) {unset($_SESSION['retour_cdt']);}
 
 $definir_visa_par_defaut=isset($_POST['definir_visa_par_defaut']) ? $_POST['definir_visa_par_defaut'] : (isset($_GET['definir_visa_par_defaut']) ? $_GET['definir_visa_par_defaut'] : NULL);
 
-include("../ckeditor/ckeditor.php") ;
-
 if (isset($_POST['ok_enr_visa'])) {
 	check_token();
 
@@ -168,6 +166,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+?>
+<script src="../ckeditor_4/ckeditor.js"></script>
+<?php
+
 if (!(isset($_GET['action']))) {
 // Affichage du tableau complet
 
@@ -197,9 +199,18 @@ if(isset($definir_visa_par_defaut)) {
 	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa par défaut</h2>\n";
 	echo "<p><em>Mise en forme du visa :</em></p><p>\n";
 	
-	$oCKeditor = new CKeditor('../ckeditor/');
-	$oCKeditor->editor('texte_visa_FCK',$texte_visa_cdt) ;
-	
+
+?>
+
+	<textarea name="texte_visa_FCK" id ="texte_visa_FCK" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_visa_cdt; ?></textarea>
+	<script type='text/javascript'>
+	// Configuration via JavaScript
+	CKEDITOR.replace('texte_visa_FCK',{
+		customConfig: '../lib/ckeditor_gepi_config_mini.js'
+	});
+	</script>
+
+<?php
 	echo "<input type='submit' name=\"ok_enr_visa\" value='Enregistrer le visa' /></p>\n";
 	echo "</form>\n";
 	echo "<br /><br />";
@@ -237,9 +248,19 @@ echo "</ul>\n";
 	//echo add_token_field();
 	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa à apposer sur les cahiers de textes</h2>\n";
 	echo "<p><em>Mise en forme du visa :</em> <a href='visa_ct.php'>Réinitialiser au visa par défaut</a></p><p>\n";
-	
-	$oCKeditor = new CKeditor('../ckeditor/');
-	$oCKeditor->editor('texte_visa_FCK',$texte_visa_cdt) ;
+
+
+?>
+
+	<textarea name="texte_visa_FCK" id ="texte_visa_FCK" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $texte_visa_cdt; ?></textarea>
+	<script type='text/javascript'>
+	// Configuration via JavaScript
+	CKEDITOR.replace('texte_visa_FCK',{
+		customConfig: '../lib/ckeditor_gepi_config_mini.js'
+	});
+	</script>
+
+<?php
 	
 	//echo "<input type='submit' name=\"ok_enr_visa\" value='Enregistrer le visa' /></p>\n";
 	//echo "</form>\n";

@@ -38,7 +38,6 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include("../ckeditor/ckeditor.php") ;
 
 // Check access
 if (!checkAccess()) {
@@ -869,6 +868,8 @@ if (!loadSettings()) {
     die("Erreur chargement settings");
 }
 ?>
+
+<script src="../ckeditor_4/ckeditor.js"></script>
 
 <script type="text/javascript">
 <!-- Debut
@@ -2342,10 +2343,16 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre c
     echo "
 	<tr><td colspan=\"2\" ><div class='small' style='width: 820px;'>
 		<i>Mise en forme du message :</i>";
-
-    $oCKeditor = new CKeditor('../ckeditor/');
-    $oCKeditor->editor('no_anti_inject_page_garde_texte',$impression);
 ?>
+
+		  
+		<textarea name="no_anti_inject_page_garde_texte" id ="no_anti_inject_page_garde_texte" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo $impression; ?></textarea>
+		<script type='text/javascript'>
+		// Configuration via JavaScript
+		CKEDITOR.replace('no_anti_inject_page_garde_texte',{
+			customConfig: '../lib/ckeditor_gepi_config_mini.js'
+		});
+		</script>
 
 		</div>
 	</td></tr>

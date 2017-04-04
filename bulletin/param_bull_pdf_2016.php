@@ -38,7 +38,6 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include("../ckeditor/ckeditor.php") ;
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/bulletin/param_bull_pdf_2016.php';";

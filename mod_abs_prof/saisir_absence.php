@@ -73,9 +73,6 @@ if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('AbsProfSaisieAbsCpe'))) {
 	die();
 }
 
-
-include("../ckeditor/ckeditor.php") ;
-
 $login_user=isset($_POST['login_user']) ? $_POST['login_user'] : (isset($_GET['login_user']) ? $_GET['login_user'] : NULL);
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : NULL;
 $display_heure_debut=isset($_POST['display_heure_debut']) ? $_POST['display_heure_debut'] : NULL;
@@ -277,6 +274,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+?>
+<script src="../ckeditor_4/ckeditor.js"></script>
+<?php
+
 /*
 A FAIRE
 Si un remplacement a été accepté et que l'on change des dates, il faut supprimer le remplacement accepté et/ou avertir le prof.
@@ -430,8 +431,17 @@ echo "</span></p>
 				<th>Description/détails</th>
 				<td>";
 
-$oCKeditor = new CKeditor('../ckeditor/');
-$oCKeditor->editor('description',preg_replace("/\\\\n/","",$description));
+?>
+
+<textarea name="description" id ="description" style="border: 1px solid gray; width: 600px; height: 250px;"><?php echo preg_replace("/\\\\n/","",$description); ?></textarea>
+<script type='text/javascript'>
+// Configuration via JavaScript
+CKEDITOR.replace('description',{
+    customConfig: '../lib/ckeditor_gepi_config_mini.js'
+});
+</script>
+
+<?php
 echo "
 				</td>
 			</tr>
