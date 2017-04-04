@@ -35,7 +35,7 @@ require_once("chargeXML.php");
 
 if ($msgErreur) {
 	echo "<strong>Votre base contient des erreurs qui ne permettent pas de créer le fichier<br /><br /></strong>";
-	echo $msgErreur;
+	echo "<span style='color:red'>".$msgErreur."</span>";
 } else {
 	header('Content-Type: application/xml');
 	echo $xml->saveXML();
