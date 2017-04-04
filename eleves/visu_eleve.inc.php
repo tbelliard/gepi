@@ -1677,7 +1677,7 @@ Patientez pendant l'extraction des données... merci.
 							// Imprimer le bulletin avec l'adresse de ce parent en particulier.
 
 
-							if($acces_impression_bulletin) {
+							if(($acces_impression_bulletin)&&(isset($tab_ele['periodes']))) {
 								$type_bulletin_par_defaut="pdf";
 								if(getSettingValue("type_bulletin_par_defaut")=="pdf_2016") {
 									$type_bulletin_par_defaut="pdf_2016";
@@ -1721,7 +1721,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 							echo "</td></tr>\n";
 						}
 
-						if(($acces_releves=="y")&&($acces_impression_releve_notes)) {
+						if(($acces_releves=="y")&&($acces_impression_releve_notes)&&(isset($tab_ele['periodes']))) {
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Relevés:</th><td>";
 
@@ -2049,7 +2049,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 			$acces_edit_group=acces("/groupes/edit_group.php", $_SESSION['statut']);
 
 			$acces_eleve_options=acces("/classes/eleve_options.php", $_SESSION['statut']);
-			if($acces_eleve_options) {
+			if(($acces_eleve_options)&&(isset($tab_ele['periodes']))) {
 				for($j=0;$j<count($tab_ele['periodes']);$j++) {
 					$tab_classe_acces_eleve_options[$j]=true;
 
@@ -2222,7 +2222,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 			echo "background-color: ".$tab_couleur['bulletins']."; ";
 			echo "'>";
 
-			if($acces_impression_bulletin) {
+			if(($acces_impression_bulletin)&&(isset($tab_ele['periodes']))) {
 				echo "<div style='float:right; width:9em; text-align:center;' class='fieldset_opacite50' title=\"Imprimer les bulletins\">";
 
 				$type_bulletin_par_defaut="pdf";
