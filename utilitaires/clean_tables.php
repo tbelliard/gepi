@@ -3534,6 +3534,81 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	echo "<p>Terminé.</p>\n";
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'correction_tables_aid') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Nettoyage des tables des AID&nbsp;:</b><br />\n";
+
+	$sql="SELECT * FROM aid WHERE id='';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		echo "Aucun AID avec identifiant vide.";
+	}
+	elseif(mysqli_num_rows($test)==1) {
+		// id étant primaire, il ne peut y en avoir qu'un
+		echo "L'AID ".get_valeur_champ("aid", "id=''", "nom")." a un identifiant vide.<br />Cela ne devrait pas se produire.<br />Génération d'un nouvel identifiant&nbsp;:";
+		//$sql="SELECT MAX(id) AS maxid FROM aid;";
+		$sql="SELECT MAX(cast(id as unsigned)) AS maxid FROM aid;";
+		echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			// Ca ne devrait pas arriver
+			$maxid=1;
+		}
+		else {
+			$lig=mysqli_fetch_object($res);
+			$maxid=$lig->maxid+1;
+		}
+		echo $maxid."<br />";
+
+		$temoin_erreur=0;
+		$sql="UPDATE aid SET id='".$maxid."' WHERE id='';";
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$update) {
+			echo "<span style='color:red'>ERREUR&nbsp;: $sql</span><br />";
+			$temoin_erreur++;
+		}
+		else {
+			$liste_tables=array("aid_appreciations", "aid_appreciations_grp", "j_aid_eleves", "j_aid_eleves_resp", "j_aid_utilisateurs", "j_aid_utilisateurs_gest", "j_groupes_aid", "lsun_j_aid_parcours", "lsun_j_ap_aid", "carnets_de_liaison_aid");
+			for($loop=0;$loop<count($liste_tables);$loop++) {
+				$sql="UPDATE ".$liste_tables[$loop]." SET id_aid='".$maxid."' WHERE id_aid='';";
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$update) {
+					echo "<span style='color:red'>ERREUR&nbsp;: $sql</span><br />";
+					$temoin_erreur++;
+				}
+			}
+
+			$sql="UPDATE aid_sous_groupes SET aid='".$maxid."' WHERE aid='';";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$update) {
+				echo "<span style='color:red'>ERREUR&nbsp;: $sql</span><br />";
+				$temoin_erreur++;
+			}
+
+			$sql="UPDATE aid_sous_groupes SET parent='".$maxid."' WHERE parent='';";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$update) {
+				echo "<span style='color:red'>ERREUR&nbsp;: $sql</span><br />";
+				$temoin_erreur++;
+			}
+
+			if($temoin_erreur==0) {
+				echo "Correction effectuée.";
+			}
+			echo "<br />\n";
+		}
+	}
+	else {
+		// Le champ ne serait pas primaire???
+		echo "<strong>ANOMALIE&nbsp;:</strong> Plusieurs AID ont un id vide alors que ce champ est sensé être primaire&nbsp;???<br />";
+	}
+
+	echo "</p>\n";
+
+	echo "<p>Terminé.</p>\n";
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'nettoyage_cdt') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -4135,7 +4210,7 @@ else {
 		echo "</form>\n";
 
 		echo "<hr />\n";
-	
+
 		echo "<p>Nettoyage de scories dans le module Discipline.</p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
@@ -4155,7 +4230,19 @@ else {
 		echo "<input type='hidden' name='action' value='nettoyage_cdt' />\n";
 		echo "</center>\n";
 		echo "</form>\n";
-	
+
+		echo "<hr />\n";
+
+		echo "<a name='correction_tables_aid'></a><p>Corrections sur les tables AID.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Corrections sur les tables AID\" />\n";
+		echo "<input type='hidden' name='action' value='correction_tables_aid' />\n";
+		echo "</center>\n";
+		echo "</form>\n";
+
+		echo "<hr />\n";
 
 	echo "</div>\n";
 

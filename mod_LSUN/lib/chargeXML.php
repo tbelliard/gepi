@@ -37,6 +37,7 @@ $_PARCOURS = 3;
 // Initialisations
 $msg_erreur_remplissage="";
 $liste_creation_auto_element_programme="";
+$tab_classes_avec_date_debut_periode_manquante=array();
 
 //$gepiYear=getSettingValue("gepiYear");
 //$millesime=preg_replace("/[^0-9]{1,}[0-9]*/","",$gepiYear);
@@ -107,6 +108,10 @@ $xml->appendChild($items);
 		$eleves = $xml->createElement('eleves');
 		while ($eleve = $listeEleves->fetch_object()){
 			$noeudEleve = $xml->createElement('eleve');
+
+			if(!preg_match("/^[0-9]{1,}$/", $eleve->ele_id)) {
+				$msg_erreur_remplissage.="L'élève ".$eleve->nom." ".$eleve->prenom." n'est pas associé à un élève dans Sconet <em>(Identifiant ELE_ID non valide)</em>&nbsp;: <a href='../responsables/corrige_ele_id.php' target='_blank'>Corriger</a><br />";
+			}
 
 			$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
 				'nom'=>substr($eleve->nom,0,100),
@@ -329,56 +334,61 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$creeEpisGroupes = TRUE;
 			}
 			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
-				$noeudEpisGroupes = $xml->createElement('epi-groupe');
-				//id="EPI_GROUPE_02"
-				$attributsEpiGroupe = array('id'=>"EPI_GROUPE_".$episGroupe->id, 'intitule'=>$episGroupe->nom, 'epi-ref'=>'EPI_'.$episGroupe->id_epi );
-				foreach ($attributsEpiGroupe as $cle=>$valeur) {
-					$attsEpiGroupe = $xml->createAttribute($cle);
-					$attsEpiGroupe->value = $valeur;
+				if($episGroupe->id=="") {
+					// 20170404
+					$msg_erreur_remplissage.="<strong>ANOMALIE&nbsp;:</strong> Un AID a un identifiant vide&nbsp;: ".$episGroupe->nom." (<a href='../utilitaires/clean_tables.php#correction_tables_aid' target='_blank'>Corriger</a>)<br />";
+				}
+				else {
+					$noeudEpisGroupes = $xml->createElement('epi-groupe');
+					//id="EPI_GROUPE_02"
+					$attributsEpiGroupe = array('id'=>"EPI_GROUPE_".$episGroupe->id, 'intitule'=>$episGroupe->nom, 'epi-ref'=>'EPI_'.$episGroupe->id_epi );
+					foreach ($attributsEpiGroupe as $cle=>$valeur) {
+						$attsEpiGroupe = $xml->createAttribute($cle);
+						$attsEpiGroupe->value = $valeur;
 					
-					$noeudEpisGroupes->appendChild($attsEpiGroupe);
-				}
-				
-				// Commentaire → Résumé + appréciation du groupe
-				$CommentaireEPI1 = trim(getResumeAid($episGroupe->id));
-				$commentairesGroupe = getCommentaireGroupe($episGroupe->id,$episGroupe->periode);
-				if ($commentairesGroupe->num_rows) {
-					//echo "coucou ".trim($commentairesGroupe->fetch_object()->appreciation)."<br>";
-					$CommentaireEPI1 .= " ".trim($commentairesGroupe->fetch_object()->appreciation);
-					
-				}
-				$tmp_chaine=nettoye_texte_vers_chaine($CommentaireEPI1);
-				$CommentaireEPI = substr($tmp_chaine, 0, 600);
-				//echo $CommentaireEPI;
-				if ($CommentaireEPI) {
-					$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI);
-					$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
-				}
-				
-								
-				$episGroupes->appendChild($noeudEpisGroupes);
-				// enseignants
-				$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
-
-				//$modaliteEns = getModaliteGroupeAP($episGroupe->id);
-				$modaliteEns = getModaliteGroupe($episGroupe->id);
-				
-				if ($modaliteEns->num_rows) {
-					while ($ensModalite = $modaliteEns->fetch_object()) {
-						$noeudProf = $xml->createElement('enseignant-discipline');
-						$attsMat =  $xml->createAttribute('discipline-ref');
-						$attsMat->value = 'DI_'.$ensModalite->code_matiere.$ensModalite->modalite;
-						$noeudProf->appendChild($attsMat);
-						$prof = substr($ensModalite->numind,1);
-						$attsProf =  $xml->createAttribute('enseignant-ref');
-						$attsProf->value = 'ENS_'.$prof;
-						$noeudProf->appendChild($attsProf);
-						$noeudEnseigneDis->appendChild($noeudProf);
+						$noeudEpisGroupes->appendChild($attsEpiGroupe);
 					}
+				
+					// Commentaire → Résumé + appréciation du groupe
+					$CommentaireEPI1 = trim(getResumeAid($episGroupe->id));
+					$commentairesGroupe = getCommentaireGroupe($episGroupe->id,$episGroupe->periode);
+					if ($commentairesGroupe->num_rows) {
+						//echo "coucou ".trim($commentairesGroupe->fetch_object()->appreciation)."<br>";
+						$CommentaireEPI1 .= " ".trim($commentairesGroupe->fetch_object()->appreciation);
+					
+					}
+					$tmp_chaine=nettoye_texte_vers_chaine($CommentaireEPI1);
+					$CommentaireEPI = substr($tmp_chaine, 0, 600);
+					//echo $CommentaireEPI;
+					if ($CommentaireEPI) {
+						$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI);
+						$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
+					}
+				
+
+					$episGroupes->appendChild($noeudEpisGroupes);
+					// enseignants
+					$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
+
+					//$modaliteEns = getModaliteGroupeAP($episGroupe->id);
+					$modaliteEns = getModaliteGroupe($episGroupe->id);
+				
+					if ($modaliteEns->num_rows) {
+						while ($ensModalite = $modaliteEns->fetch_object()) {
+							$noeudProf = $xml->createElement('enseignant-discipline');
+							$attsMat =  $xml->createAttribute('discipline-ref');
+							$attsMat->value = 'DI_'.$ensModalite->code_matiere.$ensModalite->modalite;
+							$noeudProf->appendChild($attsMat);
+							$prof = substr($ensModalite->numind,1);
+							$attsProf =  $xml->createAttribute('enseignant-ref');
+							$attsProf->value = 'ENS_'.$prof;
+							$noeudProf->appendChild($attsProf);
+							$noeudEnseigneDis->appendChild($noeudProf);
+						}
+					}
+				
+					$noeudEpisGroupes->appendChild($noeudEnseigneDis);
 				}
-				
-				$noeudEpisGroupes->appendChild($noeudEnseigneDis);
-				
 			}
 			if ($creeEpisGroupes) {
 				$donnees->appendChild($episGroupes);
@@ -998,46 +1008,52 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$noeudResponsables = $xml->createElement('responsables');
 				// non obligatoire
 				$responsablesEleve = getResponsableEleve($eleve->ele_id);
-				while ($responsable = $responsablesEleve->fetch_object()) {
-					//echo $responsable->pers_id.' '.$responsable->civilite.' '.$responsable->nom.' '.$responsable->prenom.' '.$responsable->resp_legal.' ';
-					//echo $responsable->adr1.' '.$responsable->adr2.' '.$responsable->adr3.' '.$responsable->adr4.' '.$responsable->cp.' '.$responsable->pays.' '.$responsable->commune;
-					//echo "<br>";
-					$legal1 = $responsable->resp_legal == 1 ? 1 : 0;
-					$legal2 = $responsable->resp_legal == 2 ? 1 : 0;
-					$respElv = $xml->createElement('responsable');
-					$attributsResponsable = array('civilite'=>$responsable->civilite , 'nom'=>$responsable->nom, 'prenom'=>$responsable->prenom, 'legal1'=>$legal1, 'legal2'=>$legal2);
-					foreach ($attributsResponsable as $cle=>$valeur) {
-						$attsResp = $xml->createAttribute($cle);
-						$attsResp->value = $valeur;
-						$respElv->appendChild($attsResp);
-						
-					}
-					
-					if (trim($responsable->adr1) && $responsable->cp && $responsable->commune) {
-						$noeudAdresse = $xml->createElement('adresse');
-						$responsableAdr1 = trim($responsable->adr1) ? trim($responsable->adr1) : "-";
-						$attributsAdresse = array('ligne1'=>$responsableAdr1, 'code-postal'=>$responsable->cp, 'commune'=>$responsable->commune);
-						if (trim($responsable->adr2) != "") {$attributsAdresse['ligne2'] = $responsable->adr2;}
-						if (trim($responsable->adr3) != "") {$attributsAdresse['ligne3'] = $responsable->adr3;}
-						if (trim($responsable->adr4) != "") {$attributsAdresse['ligne4'] = $responsable->adr4;}
-						foreach ($attributsAdresse as $cle=>$valeur) {
-							if (!$valeur) {continue ;}
-
-							if((isset($longueur_limite_lignes_adresse[$cle]))&&(mb_strlen($valeur)>$longueur_limite_lignes_adresse[$cle])&&(!in_array("longueur_adresse_resp_".$responsable->pers_id, $tab_erreur_adr))) {
-								$msg_erreur_remplissage.="La ".$cle." de l'adresse postale de <a href='../responsables/modify_resp.php?pers_id=".$responsable->pers_id."' target='_blank'>".$responsable->civilite." ".$responsable->nom." ".$responsable->prenom."</a> dépasse ".$longueur_limite_lignes_adresse[$cle]." caractères.<br />";
-								$tab_erreur_adr[]="longueur_adresse_resp_".$responsable->pers_id;
-							}
-							$attAdresse = $xml->createAttribute($cle);
-							$attAdresse->value = $valeur;
-							$noeudAdresse->appendChild($attAdresse);
-						}
-						$respElv->appendChild($noeudAdresse);
-					}
-					
-					$noeudResponsables->appendChild($respElv);
+				// 20170404
+				//echo "\$responsablesEleve = getResponsableEleve($eleve->ele_id);<br />";
+				if(mysqli_num_rows($responsablesEleve)==0) {
+					$msg_erreur_remplissage.="Pas de responsable légal pour <a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>.<br />";
 				}
-				//echo "<br>";
-				
+				else {
+					while ($responsable = $responsablesEleve->fetch_object()) {
+						//echo $responsable->pers_id.' '.$responsable->civilite.' '.$responsable->nom.' '.$responsable->prenom.' '.$responsable->resp_legal.' ';
+						//echo $responsable->adr1.' '.$responsable->adr2.' '.$responsable->adr3.' '.$responsable->adr4.' '.$responsable->cp.' '.$responsable->pays.' '.$responsable->commune;
+						//echo "<br>";
+						$legal1 = $responsable->resp_legal == 1 ? 1 : 0;
+						$legal2 = $responsable->resp_legal == 2 ? 1 : 0;
+						$respElv = $xml->createElement('responsable');
+						$attributsResponsable = array('civilite'=>$responsable->civilite , 'nom'=>$responsable->nom, 'prenom'=>$responsable->prenom, 'legal1'=>$legal1, 'legal2'=>$legal2);
+						foreach ($attributsResponsable as $cle=>$valeur) {
+							$attsResp = $xml->createAttribute($cle);
+							$attsResp->value = $valeur;
+							$respElv->appendChild($attsResp);
+						
+						}
+					
+						if (trim($responsable->adr1) && $responsable->cp && $responsable->commune) {
+							$noeudAdresse = $xml->createElement('adresse');
+							$responsableAdr1 = trim($responsable->adr1) ? trim($responsable->adr1) : "-";
+							$attributsAdresse = array('ligne1'=>$responsableAdr1, 'code-postal'=>$responsable->cp, 'commune'=>$responsable->commune);
+							if (trim($responsable->adr2) != "") {$attributsAdresse['ligne2'] = $responsable->adr2;}
+							if (trim($responsable->adr3) != "") {$attributsAdresse['ligne3'] = $responsable->adr3;}
+							if (trim($responsable->adr4) != "") {$attributsAdresse['ligne4'] = $responsable->adr4;}
+							foreach ($attributsAdresse as $cle=>$valeur) {
+								if (!$valeur) {continue ;}
+
+								if((isset($longueur_limite_lignes_adresse[$cle]))&&(mb_strlen($valeur)>$longueur_limite_lignes_adresse[$cle])&&(!in_array("longueur_adresse_resp_".$responsable->pers_id, $tab_erreur_adr))) {
+									$msg_erreur_remplissage.="La ".$cle." de l'adresse postale de <a href='../responsables/modify_resp.php?pers_id=".$responsable->pers_id."' target='_blank'>".$responsable->civilite." ".$responsable->nom." ".$responsable->prenom."</a> dépasse ".$longueur_limite_lignes_adresse[$cle]." caractères.<br />";
+									$tab_erreur_adr[]="longueur_adresse_resp_".$responsable->pers_id;
+								}
+								$attAdresse = $xml->createAttribute($cle);
+								$attAdresse->value = $valeur;
+								$noeudAdresse->appendChild($attAdresse);
+							}
+							$respElv->appendChild($noeudAdresse);
+						}
+					
+						$noeudResponsables->appendChild($respElv);
+					}
+					//echo "<br>";
+				}
 				
 				
 				if ($responsablesEleve->num_rows) {

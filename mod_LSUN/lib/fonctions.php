@@ -29,9 +29,9 @@ function enregistreMEF() {
 	$classeBase = filter_input(INPUT_POST, 'classeBase', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	$classeMEF = filter_input(INPUT_POST, 'mefAppartenance', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 	foreach ($classeBase as $key=>$value) {
-		$sqlSaveMEF = "UPDATE classes SET mef_code = '$classeMEF[$key]' WHERE id = $key ";
+		$sqlSaveMEF = "UPDATE classes SET mef_code = '".$classeMEF[$key]."' WHERE id = '$key' ";
 		//echo $sqlSaveMEF.'<br>';
-		$mysqli->query($sqlSaveMEF);	
+		$mysqli->query($sqlSaveMEF);
 	}
 }
 
@@ -74,8 +74,8 @@ function getUtilisateurSurStatut($statut = "%") {
 	global $mysqli;
 	$sql = "SELECT login, nom, prenom FROM utilisateurs WHERE statut LIKE '".$statut."' ORDER BY nom, prenom";
 	//echo $sql;
-	$resultchargeDB = $mysqli->query($sql);	
-	return $resultchargeDB;		
+	$resultchargeDB = $mysqli->query($sql);
+	return $resultchargeDB;
 }
 
 /**
@@ -92,8 +92,8 @@ function getResponsables() {
 	$sql = "SELECT DISTINCT suivi_par, lr.id FROM classes AS c INNER JOIN lsun_responsables as lr ON c.suivi_par = lr.login  ORDER BY suivi_par ";
 	// 
 	//echo $sql;
-	$resultchargeDB = $mysqli->query($sql);	
-	return $resultchargeDB;		
+	$resultchargeDB = $mysqli->query($sql);
+	return $resultchargeDB;
 }
 
 function MetAJourResp() {
@@ -102,7 +102,7 @@ function MetAJourResp() {
 	while ($resp = $responsables->fetch_object()) {
 		$sql = "INSERT INTO lsun_responsables (login) VALUES (\"$resp->suivi_par\") ON DUPLICATE KEY UPDATE login = \"$resp->suivi_par\" ";
 		//echo $sql;
-		$mysqli->query($sql);	
+		$mysqli->query($sql);
 	}
 }
 
@@ -164,7 +164,7 @@ function creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $n
 	}	else {
 		$newParcoursId = 'NULL';
 	}
-	$sqlNewParcours = "INSERT INTO lsun_parcours_communs (id,periode,classe,codeParcours,description)  VALUES ($newParcoursId, $newParcoursTrim, $newParcoursClasse, '$newParcoursCode', '$newParcoursTexte') ON DUPLICATE KEY UPDATE periode = $newParcoursTrim ,classe = $newParcoursClasse,codeParcours = '$newParcoursCode',description = '$newParcoursTexte' ";
+	$sqlNewParcours = "INSERT INTO lsun_parcours_communs (id,periode,classe,codeParcours,description)  VALUES ($newParcoursId, $newParcoursTrim, $newParcoursClasse, '$newParcoursCode', '$newParcoursTexte') ON DUPLICATE KEY UPDATE periode = '$newParcoursTrim' ,classe = '$newParcoursClasse',codeParcours = '$newParcoursCode',description = '$newParcoursTexte' ";
 	//echo $sqlNewParcours;
 	$resultchargeDB = $mysqli->query($sqlNewParcours);
 	return $resultchargeDB;	
@@ -198,8 +198,8 @@ function getParcoursCommuns($parcoursId = NULL, $classe = NULL, $periode = NULL)
 	}
 	$sqlGetParcours .= " ORDER BY classe, periode, codeParcours ";
 	//echo $sqlGetParcours;
-	$resultchargeDB = $mysqli->query($sqlGetParcours);	
-	return $resultchargeDB;	
+	$resultchargeDB = $mysqli->query($sqlGetParcours);
+	return $resultchargeDB;
 }
 
 /**
@@ -236,10 +236,10 @@ function setFiltreParcoursCommuns($parcoursId, $classe, $periode) {
  */
 function supprimeParcours($deleteParcours) {
 	global $mysqli;
-	$sqlDelParcours = "DELETE FROM lsun_parcours_communs WHERE id = $deleteParcours ";
+	$sqlDelParcours = "DELETE FROM lsun_parcours_communs WHERE id = '$deleteParcours' ";
 	//echo $sqlDelParcours;
 	$mysqli->query($sqlDelParcours);
-	$sqlDelParcoursAid = "DELETE FROM lsun_j_aid_parcours WHERE id_parcours = $deleteParcours ";
+	$sqlDelParcoursAid = "DELETE FROM lsun_j_aid_parcours WHERE id_parcours = '$deleteParcours' ";
 	$res=$mysqli->query($sqlDelParcoursAid);
 	return $res;
 }
@@ -265,8 +265,8 @@ function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParco
 	//echo $sqlModifieParcours.";<br />";
 	$mysqli->query($sqlModifieParcours);
 	
-	$sqlModifieParcoursLien = "INSERT INTO lsun_j_aid_parcours (id_aid, id_parcours) VALUES ($modifieParcoursLien , $modifieParcoursId) "
-		. "ON DUPLICATE KEY UPDATE id_aid = $modifieParcoursLien ";
+	$sqlModifieParcoursLien = "INSERT INTO lsun_j_aid_parcours (id_aid, id_parcours) VALUES ('$modifieParcoursLien' , '$modifieParcoursId') "
+		. "ON DUPLICATE KEY UPDATE id_aid = '$modifieParcoursLien' ";
 	//echo $sqlModifieParcoursLien.";<br />";
 	$res=$mysqli->query($sqlModifieParcoursLien);
 	return $res;
@@ -283,7 +283,7 @@ function getMatiereLSUN($mefClasse = NULL) {
 	
 	 $sqlMatieres = "SELECT DISTINCT m.*, mm.code_modalite_elect FROM mef_matieres AS mm INNER JOIN matieres AS m ON mm.code_matiere = m.code_matiere ";
 	 if ($mefClasse) {
-		 $sqlMatieres .= "WHERE mef_code = $mefClasse ";
+		 $sqlMatieres .= "WHERE mef_code = '$mefClasse' ";
 	 }
 	$sqlMatieres .= " ORDER BY matiere , code_modalite_elect DESC ";
 	//echo $sqlMatieres.";<br />";
@@ -349,9 +349,9 @@ function getMatiereSurMEF($mef) {
 function getCommentaireGroupe($id_aid,$periode = NULL) {
 	//echo $id_aid."-".$periode;
 	global $mysqli;
-	$sqlAppGroupe = "SELECT * FROM `aid_appreciations_grp` WHERE `id_aid` = $id_aid ";
+	$sqlAppGroupe = "SELECT * FROM `aid_appreciations_grp` WHERE `id_aid` = '$id_aid' ";
 	if($periode) {
-		$sqlAppGroupe .= "AND `periode` = $periode ";
+		$sqlAppGroupe .= "AND `periode` = '$periode' ";
 	}
 	//echo $sqlAppGroupe."<br>";
 	$resultchargeDB = $mysqli->query($sqlAppGroupe);
@@ -477,12 +477,13 @@ function getModalite($groupe, $eleve, $mef_code, $code_matiere ) {
 		if ($retourQuery->num_rows == 1) {
 			$retour = $retourQuery->fetch_object()->code_modalite_elect;
 		} else if ($retourQuery->num_rows > 1) {
-			$msgErreur .= "plusieurs modalités pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)."<br>";
+			$msgErreur .= "Plusieurs modalités pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)."<br />";
 			$retour = "";
-		}	else {
-			$msgErreur .= "pas de modalité pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)." <em><a href=\"../../groupes/edit_eleves.php?id_groupe=$groupe\" target='_BLANK' title='Ne corriger que cet élève' >Corriger</a> ou <a href='../../gestion/gerer_modalites_election_enseignements.php'  target='_BLANK' title='Forcer la même modalité pour tous les élèves' >par lot</a></em> <br>";
-			$msgErreur .= $sqlMefGroupe.'<br>';
-			$msgErreur .= $sqlModalite.'<br>';
+		}
+		else {
+			$msgErreur .= "Pas de modalité pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)." <em><a href=\"../../groupes/edit_eleves.php?id_groupe=$groupe\" target='_BLANK' title='Ne corriger que cet élève' >Corriger</a> ou <a href='../../gestion/gerer_modalites_election_enseignements.php'  target='_BLANK' title='Forcer la même modalité pour tous les élèves' >par lot</a></em> <br />";
+			//$msgErreur .= $sqlMefGroupe.'<br>';
+			//$msgErreur .= $sqlModalite.'<br>';
 			$retour = "";
 		}
 	}
@@ -511,7 +512,7 @@ function getEPeleve ($idEleve, $idGroupe, $periode) {
 
 function getMoyenne($id_groupe) {
 	global $mysqli;
-	$sqlMoyenne = "SELECT ROUND(AVG(`note`), 2) AS moyenne FROM `matieres_notes` WHERE `id_groupe` = $id_groupe GROUP BY `id_groupe` ";
+	$sqlMoyenne = "SELECT ROUND(AVG(`note`), 2) AS moyenne FROM `matieres_notes` WHERE `id_groupe` = '$id_groupe' GROUP BY `id_groupe` ";
 	$resultchargeDB = $mysqli->query($sqlMoyenne)->fetch_object()->moyenne;
 	return $resultchargeDB;
 	
@@ -519,7 +520,7 @@ function getMoyenne($id_groupe) {
 
 function getStatutNote($login,$id_groupe,$periode) {
 	global $mysqli;
-	$sqlStatutNote = "SELECT * FROM `matieres_notes` WHERE `id_groupe` = $id_groupe AND login = '$login' AND periode = $periode ";
+	$sqlStatutNote = "SELECT * FROM `matieres_notes` WHERE `id_groupe` = '$id_groupe' AND login = '$login' AND periode = '$periode' ";
 	$resultchargeDB =  $mysqli->query($sqlStatutNote)->fetch_object()->statut;
 	if ($resultchargeDB !='' ) {
 		return $resultchargeDB;
@@ -532,7 +533,7 @@ function getStatutSansApp($login,$periode) {
 	global $mysqli;
 	$sqlStatutSSApp = "SELECT mn.* FROM `matieres_notes` AS mn "
 		. "WHERE mn.login = '$login' "
-		. "AND mn.periode = $periode "
+		. "AND mn.periode = '$periode' "
 		. "AND NOT EXISTS ("
 		. "SELECT ma.* FROM `matieres_appreciations` AS ma "
 		. "WHERE ma.login = mn.login "
@@ -573,7 +574,7 @@ function getNotesForcees($login,$periode) {
 	global $mysqli;
 	$sqlStatutSSApp = "SELECT mn.* FROM `matieres_notes` AS mn "
 		. "WHERE mn.login = '$login' "
-		. "AND mn.periode = $periode "
+		. "AND mn.periode = '$periode' "
 		. "AND NOT EXISTS ("
 		. "SELECT ma.* FROM `matieres_appreciations` AS ma "
 		. "WHERE ma.login = mn.login "
@@ -613,7 +614,7 @@ function getAppForcees($login,$periode) {
 	global $mysqli;
 	$sqlStatutSSApp = "SELECT mn.* FROM `matieres_appreciations` AS mn "
 		. "WHERE mn.login = '$login' "
-		. "AND mn.periode = $periode "
+		. "AND mn.periode = '$periode' "
 		. "AND NOT EXISTS ("
 		. "SELECT ma.* FROM `matieres_notes` AS ma "
 		. "WHERE ma.login = mn.login "
@@ -645,7 +646,7 @@ function getAppForcees($login,$periode) {
 
 function getAppConseil($eleve , $periode) {
 	global $mysqli;
-	$sqlGetAppConseil = "SELECT * FROM avis_conseil_classe WHERE login = '$eleve' AND periode = $periode ";
+	$sqlGetAppConseil = "SELECT * FROM avis_conseil_classe WHERE login = '$eleve' AND periode = '$periode' ";
 	//echo $sqlGetAppConseil;
 	$resultchargeDB = $mysqli->query($sqlGetAppConseil);
 	return $resultchargeDB;
@@ -726,7 +727,8 @@ function getMatiereGroupe($groupe) {
 }
 
 function dateScolarite($login, $periode) {
-	
+	global $msg_erreur_remplissage;
+
 	// date début de période ou date changement de classe ou date d'entrée dans l'établissement
 	$classe = EleveQuery::create()->findOneByLogin($login)->getClasse($periode)->getId();
 	$dateDebutPeriode = getDateDebutPeriode($periode, $classe);
@@ -743,13 +745,25 @@ function dateScolarite($login, $periode) {
 
 function getDateDebutPeriode($periode, $id_classe) {
 	global $mysqli;
+	global $msg_erreur_remplissage, $tab_classes_avec_date_debut_periode_manquante;
+
 	$sqlDebutPeriode = "SELECT 1, numero_periode, jourdebut_calendrier "
 		. "FROM edt_calendrier AS ec2 "
-		. "WHERE ec2.numero_periode = $periode "
+		. "WHERE ec2.numero_periode ='$periode' "
 		. "AND FIND_IN_SET($id_classe, replace(ec2.classe_concerne_calendrier, ';', ',')) > 0;";
+	// 20170404
 	//echo $sqlDebutPeriode.'<br><br>';
 	$resultchargeDB = $mysqli->query($sqlDebutPeriode);
-	return $resultchargeDB->fetch_object()->jourdebut_calendrier ;
+	if(mysqli_num_rows($resultchargeDB)>0) {
+		return $resultchargeDB->fetch_object()->jourdebut_calendrier ;
+	}
+	else {
+		if(!in_array($id_classe, $tab_classes_avec_date_debut_periode_manquante)) {
+			$msg_erreur_remplissage.="Date de début de période non définie dans le module <a href='../edt_organisation/edt_calendrier.php' target='_blank'>Emploi du Temps/Gestion/Gestion du calendrier</a> pour la classe <strong>".get_nom_classe($id_classe)."</strong><br >";
+			$tab_classes_avec_date_debut_periode_manquante[]=$id_classe;
+		}
+		return "1970-01-01";
+	}
 }
 
 function getEntreeEtablissement($login) {
@@ -764,11 +778,11 @@ function getResponsableEleve($ele_id) {
 	global $mysqli;
 	$sqlGetResp = "SELECT t1.*, ra.adr1, ra.adr2, ra.adr3, ra.adr4, ra.cp, ra.pays, ra.commune FROM "
 		. "(SELECT t0.*, rp.nom , rp.prenom, IF (rp.civilite='Mme','MME','M') AS civilite , rp.adr_id FROM "
-		. "(SELECT resp_legal, pers_id, ele_id, pers_contact FROM responsables2 WHERE ele_id = $ele_id AND resp_legal IN (1 , 2) ) AS t0 "
+		. "(SELECT resp_legal, pers_id, ele_id, pers_contact FROM responsables2 WHERE ele_id ='$ele_id' AND resp_legal IN (1 , 2) ) AS t0 "
 		. "INNER JOIN resp_pers AS rp "
 		. "ON rp.pers_id = t0.pers_id ) AS t1 "
 		. "INNER JOIN resp_adr AS ra "
-		. "ON t1.adr_id = ra.adr_id ";
+		. "ON t1.adr_id = ra.adr_id;";
 	//echo $sqlGetResp.'<br>';
 	$resultchargeDB = $mysqli->query($sqlGetResp);
 	return $resultchargeDB ;
@@ -776,7 +790,9 @@ function getResponsableEleve($ele_id) {
 
 function getResumeAid($aid_id) {
 	global $mysqli;
-	$sqlResumeAid = "SELECT resume FROM aid WHERE id = $aid_id ";
+	$sqlResumeAid = "SELECT resume FROM aid WHERE id='$aid_id';";
+	//echo "$sqlResumeAid<br />";
+	// 20170404
 	$resultchargeDB = $mysqli->query($sqlResumeAid)->fetch_object()->resume;
 	return $resultchargeDB ;
 	
@@ -792,9 +808,9 @@ function getAidEleve($login, $typeAid, $periode = NULL) {
 	$sqlGetAidEleve02 = "SELECT t0.*, ac.type_aid FROM ($sqlGetAidEleve01) AS t0 "
 		. "INNER JOIN aid_config AS ac "
 		. "ON ac.indice_aid = t0.indice_aid "
-		. "WHERE ac.type_aid = $typeAid ";
+		. "WHERE ac.type_aid = '$typeAid' ";
 	if($periode) {
-		$sqlGetAidEleve02 .= " AND ac.display_begin <= $periode AND ac.display_end >= $periode ";
+		$sqlGetAidEleve02 .= " AND ac.display_begin <= '$periode' AND ac.display_end >= '$periode' ";
 	}
 	
 	// echo $sqlGetAidEleve02."<br>";
@@ -808,12 +824,12 @@ function getModaliteGroupe($groupe_id) {
 	// La modalité est dans la matiere de la classe
 	
 	$sqlGroupeModalite = "SELECT t4.* , u.numind FROM (
-	SELECT DISTINCT t3.* , m.code_matiere FROM ( 	
+	SELECT DISTINCT t3.* , m.code_matiere FROM ( 
 		SELECT t1.id_aid , t1.indice_aid , t1.login , t1.matiere AS matiere , t2.modalite FROM (
 			SELECT t00.* , ljee.id_epi FROM (
 				SELECT t0.*, jpm.id_matiere AS matiere FROM ( 
 					SELECT jgp.id_aid , jgp.indice_aid , jgp.id_utilisateur AS login FROM `j_aid_utilisateurs` AS jgp 
-					WHERE jgp.`id_aid` = $groupe_id
+					WHERE jgp.`id_aid` = '$groupe_id'
 				) AS t0 
 				LEFT JOIN j_professeurs_matieres AS jpm 
 				ON jpm.id_professeur = t0.login
@@ -846,7 +862,7 @@ function getModaliteGroupeAP($groupe_id) {
 		SELECT t0.*, jpm.id_matiere AS matiere FROM (
 			SELECT jgp.id_aid , jgp.indice_aid , jgp.id_utilisateur AS login FROM 
 				`j_aid_utilisateurs` AS jgp 
-			WHERE jgp.`id_aid` = $groupe_id
+			WHERE jgp.`id_aid` = '$groupe_id'
 		) AS t0
 		LEFT JOIN
 			j_professeurs_matieres AS jpm
@@ -860,7 +876,7 @@ function getModaliteGroupeAP($groupe_id) {
 				SELECT t1.id_classe , jgc.id_groupe FROM (
 					SELECT DISTINCT jec.id_classe FROM (
 						SELECT DISTINCT jeg.* FROM `j_aid_eleves` AS jeg 
-						WHERE jeg.`id_aid` = $groupe_id
+						WHERE jeg.`id_aid` = '$groupe_id'
 					) AS t0
 					INNER JOIN
 						j_eleves_classes AS jec
@@ -915,7 +931,7 @@ ON t6.login = t5.login AND t6.id_matiere = t5.matiere
 function getAidParcours($typeAid = 3) {
 	global $mysqli;
 	$sqlAidParcours = "SELECT t0.* , aid.nom AS aid ,aid.id AS idAid FROM (
-	SELECT indice_aid , nom , nom_complet , type_aid FROM aid_config WHERE type_aid = $typeAid
+	SELECT indice_aid , nom , nom_complet , type_aid FROM aid_config WHERE type_aid = '$typeAid'
 ) AS t0
 INNER JOIN
 	aid
@@ -932,9 +948,9 @@ function getLiaisonsAidParcours($idAid = NULL, $parcoursCommun = NULL) {
 	global $mysqli;
 	$sqlAidParcours = "SELECT * FROM lsun_j_aid_parcours ";
 	if ($idAid) {
-		$sqlAidParcours .= "WHERE id_aid = $idAid ";
+		$sqlAidParcours .= "WHERE id_aid = '$idAid' ";
 		if ($parcoursCommun) {
-			$sqlAidParcours .= "AND id_parcours = $parcoursCommun ";
+			$sqlAidParcours .= "AND id_parcours = '$parcoursCommun';";
 		}
 	}
 	//echo $idAid." ".$sqlAidParcours;
@@ -949,7 +965,7 @@ function getCodeParcours($id_aid ) {
 		. "INNER JOIN "
 		. "lsun_parcours_communs AS pc "
 		. "ON jap.id_parcours = pc.id "
-		. "WHERE jap.id_aid = $id_aid  ";
+		. "WHERE jap.id_aid = '$id_aid';";
 	//echo $sqlParcours.'<br><br>';
 	$resultchargeDB = $mysqli->query($sqlParcours);
 
@@ -1100,8 +1116,8 @@ function parcoursOuvert($id_aid, $periode) {
 	$sql = "SELECT jap.id_aid, jap.id_parcours FROM lsun_j_aid_parcours AS jap "
 		. "INNER JOIN lsun_parcours_communs AS lpc "
 		. "ON jap.id_parcours = lpc.id "
-		. "WHERE jap.id_aid = $id_aid "
-		. "AND lpc.periode = $periode ";
+		. "WHERE jap.id_aid = '$id_aid' "
+		. "AND lpc.periode = '$periode';";
 	//echo $sql."<br>";
 	$resultchargeDB = $mysqli->query($sql);
 	if ($resultchargeDB->num_rows) {
