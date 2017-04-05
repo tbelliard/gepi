@@ -28,7 +28,7 @@ $autorise[0] = array('/accueil.php',
 // droits spécifiques sur les pages relatives aux droits possibles
 //$autorise[1] = array('/cahier_notes/visu_releve_notes.php');
 $autorise[1] = array('/cahier_notes/visu_releve_notes_bis.php');
-$autorise[2] = array('/cahier_notes/index2.php', '/cahier_notes/visu_toutes_notes2.php');
+$autorise[2] = array('/cahier_notes/index2.php', '/cahier_notes/visu_toutes_notes2.php', '/visualisation/draw_graphe.php');
 $autorise[3] = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php');
 $autorise[4] = array('/mod_absences/gestion/voir_absences_viescolaire.php',
 						'/mod_absences/gestion/bilan_absences_quotidien.php',
@@ -46,9 +46,9 @@ else {
 	$autorise[6] = array('/cahier_texte/see_all.php');
 }
 $autorise[7] = array('/cahier_texte_admin/visa_ct.php');
-$autorise[8] = array('/edt_organisation/index_edt.php', '/edt/index2.php');
+$autorise[8] = array('/edt_organisation/index_edt.php', '/edt/index2.php', '/lib/ajax_action.php');
 //$autorise[9] = array('/tous_les_edt');
-$autorise[9] = array('/tous_les_edt', '/edt_organisation/index_edt.php', '/edt/index2.php');
+$autorise[9] = array('/tous_les_edt', '/edt_organisation/index_edt.php', '/edt/index2.php', '/lib/ajax_action.php');
 $autorise[10] = array('/messagerie/index.php');
 $autorise[11]= array('/eleves/visu_eleve.php',
 						'/eleves/liste_eleves.php');
