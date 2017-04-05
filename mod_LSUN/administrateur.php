@@ -488,7 +488,13 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 								<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />
 							</td>
 							<td>
-								<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea>
+								<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea><?php
+								if($epiCommun->descriptionEpi=="") {
+									echo "
+								<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' title=\"La description ne doit pas être vide.\" style='vertical-align:top;' />";
+				}
+
+								?>
 							</td>
 						</tr>
 					</table>
