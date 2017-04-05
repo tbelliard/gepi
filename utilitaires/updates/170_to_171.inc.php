@@ -282,6 +282,42 @@ while($lig=mysqli_fetch_object($res)) {
 			}
 		}
 	}
+
+	$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/cahier_notes/visu_toutes_notes2.php' AND id_statut='".$lig->id_statut."';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/visualisation/draw_graphe.php' AND id_statut='".$lig->id_statut."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			$result .= "&nbsp;-> Ajout du droit d'accès à '/visualisation/draw_graphe.php' pour le statut autre n°".$lig->id_statut."&nbsp;: ";
+			$sql="INSERT INTO droits_speciaux SET nom_fichier='/visualisation/draw_graphe.php', id_statut='".$lig->id_statut."', autorisation='V';";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+			}
+		}
+	}
+
+	$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/edt/index2.php' AND id_statut='".$lig->id_statut."';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT * FROM droits_speciaux WHERE nom_fichier='/edt/index2.php' AND id_statut='".$lig->id_statut."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			$result .= "&nbsp;-> Ajout du droit d'accès à '/lib/ajax_action.php' pour le statut autre n°".$lig->id_statut."&nbsp;: ";
+			$sql="INSERT INTO droits_speciaux SET nom_fichier='/lib/ajax_action.php', id_statut='".$lig->id_statut."', autorisation='V';";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+			}
+		}
+	}
 }
 
 $result .= "<br />";
