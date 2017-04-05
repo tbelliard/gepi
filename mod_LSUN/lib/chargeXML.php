@@ -333,6 +333,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 			if ($listeEpisGroupes->num_rows) {
 				$creeEpisGroupes = TRUE;
 			}
+			$tab_id_epi_groupes=array();
 			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
 				if($episGroupe->id=="") {
 					// 20170404
@@ -348,6 +349,10 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					
 						$noeudEpisGroupes->appendChild($attsEpiGroupe);
 					}
+					if(in_array("EPI_GROUPE_".$episGroupe->id, $tab_id_epi_groupes)) {
+						$msg_erreur_remplissage.="<strong>".get_valeur_champ("lsun_epi_communs", "id='".$episGroupe->id_epi."'", "intituleEpi")."&nbsp;:</strong> L'AID ".$episGroupe->nom." est déjà associé à un autre EPI.<br />Un même AID ne peut pas être associé à plusieurs EPI; vous devez créer des catégories AID distinctes, y associer les AID correspondant et n'associer à l'EPI que les catégories AID appropriées.<br />";
+					}
+					$tab_id_epi_groupes[]="EPI_GROUPE_".$episGroupe->id;
 				
 					// Commentaire → Résumé + appréciation du groupe
 					$CommentaireEPI1 = trim(getResumeAid($episGroupe->id));
