@@ -386,6 +386,35 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 							$noeudEnseigneDis->appendChild($noeudProf);
 						}
 					}
+					else {
+						// Si il y a bien un professeur associé à l'EPI, il faut que ce soit un professeur avec une matière associée à l'EPI dans LSUN
+
+						$sql="SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid='".$episGroupe->id."';";
+						$test_prof_aid=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($test_prof_aid)==0) {
+							$msg_erreur_remplissage.="EPI&nbsp;: Aucun professeur n'est associé à l'AID ".$episGroupe->nom."&nbsp;: <a href='../aid/modify_aid.php?flag=prof&aid_id=".$episGroupe->id."' target='_blank'>Corriger</a><br />";
+							//&indice_aid=1
+						}
+						else {
+							$sql="SELECT * FROM j_aid_utilisateurs jau, 
+										j_professeurs_matieres jpm, 
+										lsun_j_epi_matieres ljem 
+									WHERE jau.id_aid='".$episGroupe->id."' AND 
+										jau.id_utilisateur=jpm.id_professeur AND 
+										jpm.id_matiere=ljem.id_matiere AND 
+										id_epi='".$episGroupe->id_epi."';";
+							$test_prof_aid2=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($test_prof_aid2)==0) {
+								$msg_erreur_remplissage.="EPI&nbsp;: Le ou les professeurs associé(s) à l'AID ".$episGroupe->nom." ne sont pas associés aux matières de l'EPI déclarées dans la présente page.<br />
+								Vous pouvez ajouter des matières à l'EPI plus bas dans la page,<br />
+								ou associer d'autres matières aux enseignants de l'AID pour correspondre aux matières déclarées dans l'EPI plus bas dans la page&nbsp;: ";
+								while($lig_prof_aid=mysqli_fetch_object($test_prof_aid)) {
+									$msg_erreur_remplissage.="<a href='../utilisateurs/modify_user.php?user_login=".$lig_prof_aid->id_utilisateur."' target='_blank'>".civ_nom_prenom($lig_prof_aid->id_utilisateur)."</a> - ";
+								}
+								$msg_erreur_remplissage.="<br />";
+							}
+						}
+					}
 				
 					$noeudEpisGroupes->appendChild($noeudEnseigneDis);
 				}
