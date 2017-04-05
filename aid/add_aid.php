@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -89,6 +89,38 @@ if (isset($is_posted) && $is_posted) {
 	//debug_var();
 
 	$msg = "";
+
+	if(($aid_id!="")&&(preg_match("/^[0-9]{1,}$/", $aid_id))&&(isset($_POST['indice_aid_modif']))&&(preg_match("/^[0-9]{1,}$/", $_POST['indice_aid_modif']))&&($_POST['indice_aid_modif']!=$indice_aid)) {
+		$sql="UPDATE aid SET indice_aid='".$_POST['indice_aid_modif']."' WHERE id='".$aid_id."';";
+		$update=mysqli_query($mysqli, $sql);
+		if(!$update) {
+			$msg.="Erreur lors de la modification de la catégorie AID.<br />";
+		}
+		else {
+			$sql="UPDATE aid_appreciations SET indice_aid='".$_POST['indice_aid_modif']."' WHERE id_aid='".$aid_id."';";
+			$update=mysqli_query($mysqli, $sql);
+
+			$sql="UPDATE j_aid_eleves SET indice_aid='".$_POST['indice_aid_modif']."' WHERE id_aid='".$aid_id."';";
+			$update=mysqli_query($mysqli, $sql);
+
+			$sql="UPDATE j_aid_utilisateurs SET indice_aid='".$_POST['indice_aid_modif']."' WHERE id_aid='".$aid_id."';";
+			$update=mysqli_query($mysqli, $sql);
+
+			$sql="UPDATE j_aid_eleves_resp SET indice_aid='".$_POST['indice_aid_modif']."' WHERE id_aid='".$aid_id."';";
+			$update=mysqli_query($mysqli, $sql);
+
+			$sql="UPDATE j_aid_utilisateurs_gest SET indice_aid='".$_POST['indice_aid_modif']."' WHERE id_aid='".$aid_id."';";
+			$update=mysqli_query($mysqli, $sql);
+
+			$sql="UPDATE aid_appreciations_grp SET indice_aid='".$_POST['indice_aid_modif']."' WHERE id_aid='".$aid_id."';";
+			$update=mysqli_query($mysqli, $sql);
+
+			$sql="UPDATE j_groupes_aid SET indice_aid='".$_POST['indice_aid_modif']."' WHERE id_aid='".$aid_id."';";
+			$update=mysqli_query($mysqli, $sql);
+
+			$indice_aid=$_POST['indice_aid_modif'];
+		}
+	}
 
 	if(($is_posted==1)&&(isset($_POST['creer_un_aid_par_classe']))&&($_POST['creer_un_aid_par_classe']=="y")&&(count($id_classe)>1)) {
 
@@ -618,7 +650,7 @@ if ($_SESSION['statut'] == 'professeur') {
 		echo add_token_field();
 	?>
 
-    <p>
+	<p>
 		<label for="aidRegNom">
 			Nom : 
 		</label>
@@ -687,6 +719,27 @@ if ($_SESSION['statut'] == 'professeur') {
 	</div>
 
 	<?php
+
+		//echo "aid_id=$aid_id<br />";
+		if((isset($aid_id))&&($aid_id!="")) {
+			echo "
+		<br />
+		<h3>Catégorie</h3>
+		<div style='margin-left:3em;'>
+			<p>Catégorie à laquelle l'AID est rattaché&nbsp;: 
+				<select name='indice_aid_modif'>";
+			$sql="SELECT * FROM aid_config ORDER BY nom, nom_complet;";
+			$res_cat_aid=mysqli_query($mysqli, $sql);
+			while($lig_cat_aid=mysqli_fetch_object($res_cat_aid)) {
+				echo "
+					<option value='".$lig_cat_aid->indice_aid."'".(($lig_cat_aid->indice_aid==$indice_aid) ? " selected='true'" : "").">".$lig_cat_aid->nom." (".$lig_cat_aid->nom_complet.")</option>";
+			}
+			echo "
+				</select>
+			</p>
+		</div>";
+		}
+
 		//echo "action=$action<br />";
 		if ($action=="add_aid") {
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe ORDER BY c.classe, c.nom_complet;";

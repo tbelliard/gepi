@@ -192,7 +192,16 @@ require_once("../lib/header.inc.php");
 	<a href="export_csv_aid.php?indice_aid=<?php echo $indice_aid; ?>">
 		Importation de données depuis un fichier vers GEPI
 	</a>
-<?php } ?>
+<?php
+	} 
+
+	$NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
+	if($NiveauGestionAid_categorie==10) {
+		echo "
+		| <a href='config_aid.php?indice_aid=".$indice_aid."'>Catégorie AID</a>";
+	}
+
+?>
 </p>
 <?php
 	//if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { 
