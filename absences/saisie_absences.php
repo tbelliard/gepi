@@ -228,7 +228,53 @@ if(mysqli_num_rows($res_abs_grp_clas)>0) {
 	$appreciation_absences_grp=$lig_abs_grp_clas->appreciation;
 }
 
-echo "<div style='float:right; width:16px'><a href='../impression/avis_pdf_absences.php?id_classe=$id_classe&periode_num=$periode_num' title=\"Imprimer les appréciations absences et nombre d'absences,... en PDF\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='Générer un PDF' /></a></div>";
+$insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
+if ($insert_mass_appreciation_type=="y") {
+	// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
+
+	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	// Pour tester:
+	// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
+
+	if($_SESSION["statut"]=="secours") {
+		$droit_insert_mass_appreciation_type="y";
+	}
+	else {
+		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
+		$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_droit)>0) {
+			$droit_insert_mass_appreciation_type="y";
+		}
+		else {
+			$droit_insert_mass_appreciation_type="n";
+		}
+	}
+
+	if($droit_insert_mass_appreciation_type=="y") {
+		echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;margin-left:0.5em;'>
+	Insérer l'appréciation-type suivante pour toutes les appréciations vides: 
+	<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />
+	<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />
+</div>
+
+<script type='text/javascript'>
+	function ajoute_a_textarea_vide() {
+		champs_textarea=document.getElementsByTagName('textarea');
+		//alert('champs_textarea.length='+champs_textarea.length);
+		for(i=0;i<champs_textarea.length;i++){
+			if(champs_textarea[i].value=='') {
+				champs_textarea[i].value=document.getElementById('ajout_a_textarea_vide').value;
+			}
+		}
+	}
+</script>\n";
+	}
+}
+
+echo "<div style='float:right; width:16px;'><a href='../impression/avis_pdf_absences.php?id_classe=$id_classe&periode_num=$periode_num' title=\"Imprimer les appréciations absences et nombre d'absences,... en PDF\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='Générer un PDF' /></a></div>";
+
 ?>
 <p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b></p>
 
