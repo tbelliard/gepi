@@ -688,36 +688,36 @@ if ($_SESSION["statut"]=="administrateur") {
           //numero
           echo "<p>Numéro (fac.) : <input type=\"text\" name=\"reg_num\" size=\"4\" value=\"".$reg_num."\" onchange=\"changement()\" /></p>\n";
           //eleve_peut_modifier
-          echo "<p><input type=\"checkbox\" name=\"reg_eleve_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
+          echo "<p><input type=\"checkbox\" name=\"reg_eleve_peut_modifier\" id=\"reg_eleve_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
           if ($reg_eleve_peut_modifier == 'y') echo " checked ";
           echo "/> \n";
-          echo "Les élèves responsables peuvent modifier la fiche.</p>\n";
+          echo "<label for='reg_eleve_peut_modifier'>Les élèves responsables peuvent modifier la fiche.</label></p>\n";
           //prof_peut_modifier
-          echo "<p><input type=\"checkbox\" name=\"reg_prof_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
+          echo "<p><input type=\"checkbox\" name=\"reg_prof_peut_modifier\" id=\"reg_prof_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
           if ($reg_prof_peut_modifier == 'y') echo " checked ";
           echo "/> \n";
-          echo "Les professeurs responsables peuvent modifier la fiche.</p>\n";
+          echo "<label for='reg_prof_peut_modifier'>Les professeurs responsables peuvent modifier la fiche.</label></p>\n";
           //cpe_peut_modifier
-          echo "<p><input type=\"checkbox\" name=\"reg_cpe_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
+          echo "<p><input type=\"checkbox\" name=\"reg_cpe_peut_modifier\" id=\"reg_cpe_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
           if ($reg_cpe_peut_modifier == 'y') echo " checked ";
           echo "/> \n";
-          echo "Les CPE peuvent modifier la fiche.</p>\n";
+          echo "<label for='reg_cpe_peut_modifier'>Les CPE peuvent modifier la fiche.</label></p>\n";
         }
         //fiche_publique
-        echo "<p><input type=\"checkbox\" name=\"reg_fiche_publique\" value=\"y\" onchange=\"changement()\" ";
+        echo "<p><input type=\"checkbox\" name=\"reg_fiche_publique\" id=\"reg_fiche_publique\" value=\"y\" onchange=\"changement()\" ";
         if ($reg_fiche_publique == 'y') echo " checked ";
         echo "/> \n";
-        echo "La fiche est visible dans <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">l'interface publique</a>.</p>\n";
+        echo "<label for='reg_fiche_publique'>La fiche est visible dans </label><a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">l'interface publique</a>.</p>\n";
         //affiche_adresse1
-        echo "<p><input type=\"checkbox\" name=\"reg_affiche_adresse1\" value=\"y\" onchange=\"changement()\" ";
+        echo "<p><input type=\"checkbox\" name=\"reg_affiche_adresse1\" id=\"reg_affiche_adresse1\" value=\"y\" onchange=\"changement()\" ";
         if ($reg_affiche_adresse1 == 'y') echo " checked ";
         echo "/> \n";
-        echo "L'adresse publique d'accès à la production est en lien sur la fiche publique.</p>\n";
+        echo "<label for='reg_affiche_adresse1'>L'adresse publique d'accès à la production est en lien sur la fiche publique.</label></p>\n";
         //en_construction
-        echo "<p><input type=\"checkbox\" name=\"reg_en_construction\" value=\"y\" onchange=\"changement()\" ";
+        echo "<p><input type=\"checkbox\" name=\"reg_en_construction\" id=\"reg_en_construction\" value=\"y\" onchange=\"changement()\" ";
         if ($reg_en_construction == 'y') echo " checked ";
         echo "/> \n";
-        echo "L'adresse publique est déclarée \"en construction\" sur la fiche publique.</p>\n";
+        echo "<label for='reg_en_construction'>L'adresse publique est déclarée \"en construction\" sur la fiche publique.</label></p>\n";
     } else {
         echo "<ul>";
         if ($annee=='') {
@@ -882,10 +882,10 @@ If ($action != "visu")  {
         if ($newligne == 1) echo "<tr>";
         $id_productions = old_mysql_result($call_productions,$k,"id");
         $nom_productions = old_mysql_result($call_productions,$k,"nom");
-        echo "<td><input type=\"checkbox\" name=\"p".$k."\" value=\"".$id_productions."\" ";
+        echo "<td><input type=\"checkbox\" name=\"p".$k."\" id=\"p".$k."\" value=\"".$id_productions."\" ";
         if (in_array($id_productions, $p))  echo " checked ";
-        echo " onClick=\"compteur_coches(this)\" onchange=\"changement()\" />";
-        echo $nom_productions."</td>\n";
+        echo " onClick=\"compteur_coches(this)\" onchange=\"changement()\" /><label for='p".$k."'>";
+        echo $nom_productions."</label></td>\n";
         $newligne++;
         if ($newligne == 5) {
             echo "</tr>";
@@ -937,10 +937,10 @@ If ($action != "visu") {
         if ($newligne == 1) echo "<tr>";
         $id_public = old_mysql_result($call_public,$k,"id");
         $nom_public = old_mysql_result($call_public,$k,"public");
-        echo "<td><input type=\"checkbox\" name=\"public".$k."\" value=\"".$id_public."\" onchange=\"changement()\" ";
+        echo "<td><input type=\"checkbox\" name=\"public".$k."\" id=\"public".$k."\" value=\"".$id_public."\" onchange=\"changement()\" ";
         if (in_array($id_public, $public))  echo " checked ";
-        echo " />";
-        echo $nom_public."</td>\n";
+        echo " /><label for='public".$k."'>";
+        echo $nom_public."</label></td>\n";
         $newligne++;
         if ($newligne == 7) {
             echo "</tr>";
