@@ -1159,9 +1159,11 @@ for($i=0;$i<30;$i++){
 		$sql="SELECT m.priority, m.categorie_id FROM matieres m, j_groupes_matieres jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgc.id_matiere";
 		//echo "$sql<br />\n";
 		$result_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
-		$ligmat=mysqli_fetch_object($result_matiere);
-		$mat_priorite[$cpt_grp]=$ligmat->priority;
-		$mat_cat_id[$cpt_grp]=$ligmat->categorie_id;
+		if(mysqli_num_rows($result_matiere)>0) {
+			$ligmat=mysqli_fetch_object($result_matiere);
+			$mat_priorite[$cpt_grp]=$ligmat->priority;
+			$mat_cat_id[$cpt_grp]=$ligmat->categorie_id;
+		}
 		//===============================
 
 
