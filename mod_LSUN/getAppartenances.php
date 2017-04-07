@@ -105,6 +105,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 ?>
 <form action="index.php" method="post" enctype="multipart/form-data" id="formFichier">
+	<h2>Rapprochement des noms de classes et renseignement des MEFs</h2>
 	<p class="center">
 		<label for="fichier_sts_emp">Choisissez le fichier sts_emp :</label>
 		<input type="file" name="fichier_sts_emp" id="fichier_sts_emp" />
@@ -215,7 +216,7 @@ while ($classe = $listeClasse->fetch_object()) {
 	<tr class='lig".(($cpt%2)-1)."'>
 		<td>
 			<input type='hidden' name='classeBase[".$classe->id."]' value=\"".$classe->classe."\" />
-			".$classe->classe."
+			<a href='../classes/modify_nom_class.php?id_classe=".$classe->id."#type_de_classe' target='_blank' title='Voir/modifier les paramètres de cette classe dans un nouvel onglet.'>".$classe->classe."</a>
 		</td>
 		<td>
 			<input type='hidden' name='nom_completBase[".$classe->id."]' value=\"".$classe->nom_complet."\" />
@@ -242,7 +243,7 @@ while ($classe = $listeClasse->fetch_object()) {
 	<tr class='lig".(($cpt%2)-1)."'>
 		<td>
 			<input type='hidden' name='classeBase2[".$classe->id."]' value=\"".$classe->classe."\" />
-			".$classe->classe."
+			<a href='../classes/modify_nom_class.php?id_classe=".$classe->id."#type_de_classe' target='_blank' title='Voir/modifier les paramètres de cette classe dans un nouvel onglet.'>".$classe->classe."</a>
 		</td>
 		<td>
 			<input type='hidden' name='nom_completBase2[".$classe->id."]' value=\"".$classe->nom_complet."\" />
@@ -280,7 +281,19 @@ $cpt ++;
 <?php 
 }
 
-echo "<!-- Pour avoir un peu de place en bas de page -->
+echo "
+<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>
+		<p>Vous allez rapprocher ici les noms Sconet des classes et les noms que vous avez éventuellement modifiés dans Gepi<br />
+		Vous devrez également préciser les MEF des classes <em>(information en principe présente dans le fichier XML et donc récupérée autmatiquement par import)</em>.</p>
+	</li>
+	<li style='margin-top:1em;'>
+		<p>Si certaines classes n'existent pas dans Sconet, parce que correspondant à des usages particuliers, vous devez le déclarer dans <strong>Gestion des bases/Gestion des classes/&lt;Telle classe&gt; Paramètres</strong> à la rubrique <strong>Type de classe</strong> pour indiquer qu'il s'agit d'une classe <strong>classe non standard <em>(hors Sconet,...)</em></strong>.<br />
+	Elle ne sera alors pas remontée vers LSU et ne vous bloquera pas dans la présente page.</p>
+	</li>
+</ul>
+<!-- Pour avoir un peu de place en bas de page -->
 <p><br /></p>";
 
 //debug_var();

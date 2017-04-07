@@ -658,7 +658,7 @@ Fonction associée (<em>chef, adjoint</em>)&nbsp;:<br />
 ?>
 
 <br />
-<p style='margin-top:1em;' title="Certaines classes particulières n'existent pas dans Sconet.
+<a name='type_de_classe'></a><p style='margin-top:1em;' title="Certaines classes particulières n'existent pas dans Sconet.
 Leur prise en compte dans des modules comme LSU peut perturber le fonctionnement du module.
 Déclarez ces classes comme non standard/non Sconet permet de ne pas les prendre en compte dans ces modules.
 Actuellement, le paramètre n'est pris en compte que pour le module LSU de Gepi."><b>Type de classe&nbsp;:</b><br />
@@ -1155,6 +1155,9 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 
 </table>
 <center><input type=submit value="Enregistrer" style="margin-top: 30px; margin-bottom: 100px;" /></center>
+<div id='fixe'>
+	<input type=submit value="Enregistrer" />
+</div>
 </form>
 <?php
 

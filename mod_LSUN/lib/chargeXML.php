@@ -266,7 +266,8 @@ if (getSettingValue("LSU_Parcours") != "n") {
 
 			/*----- Vie scolaire -----*/
 
-if ($listeVieScoCommun->num_rows) {
+if (getSettingAOui("LSU_commentaire_vie_sco")) {
+	if ($listeVieScoCommun->num_rows) {
 		$viesScolairesCommuns = $xml->createElement('vies-scolaires-communs');
 		while ($vieScoCommun = $listeVieScoCommun->fetch_object()) {
 			$noeudVieSco =  $xml->createElement('vie-scolaire-commun');
@@ -282,7 +283,7 @@ if ($listeVieScoCommun->num_rows) {
 			//echo "-".$VieScoCommun."-";
 			if (!$comVieSco) {
 				$comVieSco = "-";
-				$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire, vous devez vous assurer que c'est normal (mais ce n'est pas bloquant).</p>";
+				$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire, vous devez vous assurer que c'est normal <em>(mais ce n'est pas bloquant)</em>.</p>";
 			}
 			$comVieScoCommun = $xml->createElement('commentaire', $comVieSco);
 
@@ -292,9 +293,11 @@ if ($listeVieScoCommun->num_rows) {
 		
 			
 		$donnees->appendChild($viesScolairesCommuns);
-}else {
-	//$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire.</p>";
-	$msgErreur .= "<p class='rouge'>Pas de commentaires trouvés en vie scolaire.</p>";
+	}
+	else {
+		//$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire.</p>";
+		$msgErreur .= "<p class='rouge'>Pas de commentaires trouvés en vie scolaire <em>(mais ce n'est pas bloquant)</em>.</p>";
+	}
 }
 
 			/*----- epis -----*/
@@ -983,7 +986,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$attsVieSco->value = $valeur;
 				$vieScolaire->appendChild($attsVieSco);
 			}
-			if (trim($retardEleve['appreciation']) && getSettingValue("LSU_commentaire_vie_sco")) {
+			if (trim($retardEleve['appreciation']) && getSettingAOui("LSU_commentaire_vie_sco")) {
 				// non obligatoire
 				$tmp_chaine=nettoye_texte_vers_chaine($retardEleve['appreciation']);
 				$comVieSco = $xml->createElement('commentaire', substr(trim($tmp_chaine),0,600));
