@@ -22,7 +22,7 @@
 #
 # table aid
 #
-INSERT INTO aid  values ('0', 'Premiere activite ludique', '1', '1', '', '', '', '', '', '0', '', '', '', '', '', '', '', '', 'n', 'n', 'n', 'n', 'n', 'n');
+INSERT INTO aid SET id='0', nom='Premiere activite ludique', numero='1', indice_aid='1', famille='0';
 
 
 #
@@ -145,9 +145,9 @@ INSERT INTO aid_public  values ('5', '5', 'Experts (ou spécialistes)');
 #
 # table classes
 #
-INSERT INTO classes  values ('1', '5A', '5eme A', '','Chef etablissement Test',  'cni', 'n', 'n', 'n', 'n', 'n', 'n', '1', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '', 'n');
-INSERT INTO classes  values ('9', '5B', '5eme B','', '', 'cni', 'n', 'n', 'n', 'n', 'n', 'n', '1', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '', 'n');
-INSERT INTO classes  values ('115', '5E', 'cinquieme E', '','',  'cni', 'n', 'n', 'n', 'n', 'n', 'n', '1', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '', 'n');
+INSERT INTO classes SET id='1', classe='5A', nom_complet='5eme A', formule='Chef etablissement Test', format_nom='cni';
+INSERT INTO classes SET id='9', classe='5B', nom_complet='5eme B', format_nom='cni';
+INSERT INTO classes SET id='115', classe='5E', nom_complet='cinquieme E', format_nom='cni';
 
 
 #
@@ -159,8 +159,7 @@ INSERT INTO cn_cahier_notes  values ('1', '1', '1');
 #
 # table cn_conteneurs
 #
-INSERT INTO cn_conteneurs  values ('1', '1', 'Mathématiques', 'Mathématiques', '', '2', '1.0', 's1', '0.0', '0', '1', '0');
-
+INSERT INTO cn_conteneurs SET id='1', id_racine='1', nom_court='Mathématiques', nom_complet='Mathématiques', description='', mode='2', coef='1.0', arrondir='s1', ponderation='0.0', display_parents='0', display_bulletin='1', parent='0', modele_id_conteneur='0';
 
 #
 # table cn_devoirs
@@ -173,6 +172,7 @@ INSERT INTO cn_devoirs  values ('1', '1', '1', 'evaulation test', 'evaulation te
 #
 INSERT INTO cn_notes_conteneurs  values ('testEleve1', '1', '14.0', 'y', '');
 INSERT INTO cn_notes_conteneurs  values ('testEleve2', '1', '18.0', 'y', '');
+INSERT INTO cn_notes_conteneurs  values ('testEleve1', '1', '14.0', 'y', '');
 
 
 #
@@ -1079,14 +1079,14 @@ INSERT INTO edt_setting  values ('13', 'scolarite_modif_cours', 'y');
 #
 # table eleves
 #
-INSERT INTO eleves  values ('', 'testEleve1', 'nomtestEleve1', 'prenomtestEleve1', 'M', '1995-01-01', '', '', '', 'e000000001', '', '1', '0000-00-00 00:00:00', NULL);
-INSERT INTO eleves  values ('', 'testEleve3', 'nomtestEleve3', 'prenomtestEleve3', 'M', '1900-01-01', '', '', '', 'e000000003', '', '3', '0000-00-00 00:00:00', NULL);
-INSERT INTO eleves  values ('', 'testEleve4', 'nomtestEleve4', 'prenomtestEleve4', 'M', '1900-01-01', '', '', '', 'e000000004', '', '4', '0000-00-00 00:00:00', NULL);
-INSERT INTO eleves  values ('', 'eleve7', 'eleve7', 'Jean', 'M', '1900-01-01', '', 'eleleve7', '', 'e000000005', '', '229', '0000-00-00 00:00:00', NULL);
-INSERT INTO eleves  values ('', 'eleve8', 'eleve8', 'pren8om', 'M', '1900-01-01', '', '', '', 'e000000006', '', '230', '0000-00-00 00:00:00', NULL);
-INSERT INTO eleves  values ('', 'eleve9', 'eleve9', 'pré9', 'M', '1900-01-01', '', 'eleve9eleo', '', 'e000000007', '', '231', '0000-00-00 00:00:00', NULL);
-INSERT INTO eleves  values ('', 'eleve10', 'eleve10', 'j-f', 'M', '1900-01-01', '', 'eleve10eleo', '', 'e000000008', '', '232', '0000-00-00 00:00:00', NULL);
-INSERT INTO eleves  values ('', 'eleve11', 'eleve11', 'emma', 'M', '1900-01-01', '', 'eleauieve11', '', 'e000000009', '', '233', '0000-00-00 00:00:00', NULL);
+INSERT INTO eleves  SET no_gep='', login='testEleve1', nom='nomtestEleve1', prenom='prenomtestEleve1', sexe='M', naissance='1995-01-01', ele_id='e000000001', id_eleve='1';
+INSERT INTO eleves  SET no_gep='', login='testEleve3', nom='nomtestEleve3', prenom='prenomtestEleve3', sexe='M', naissance='1900-01-01', ele_id='e000000003', id_eleve='3';
+INSERT INTO eleves  SET no_gep='', login='testEleve4', nom='nomtestEleve4', prenom='prenomtestEleve4', sexe='M', naissance='1900-01-01', ele_id='e000000004', id_eleve='4';
+INSERT INTO eleves  SET no_gep='', login='eleve7', nom='eleve7', prenom='Jean', sexe='M', naissance='1900-01-01', ereno='eleleve7', ele_id='e000000005', id_eleve='229';
+INSERT INTO eleves  SET no_gep='', login='eleve8', nom='eleve8', prenom='pren8om', sexe='M', naissance='1900-01-01', ele_id='e000000006', id_eleve='230';
+INSERT INTO eleves  SET no_gep='',login= 'eleve9', nom='eleve9', prenom='pré9', sexe='M', naissance='1900-01-01', ereno='eleve9eleo', ele_id='e000000007', id_eleve='231';
+INSERT INTO eleves  SET no_gep='', login='eleve10', nom='eleve10', prenom='j-f', sexe='M', naissance='1900-01-01', ereno='eleve10eleo', ele_id='e000000008', id_eleve='232';
+INSERT INTO eleves  SET no_gep='', login='eleve11', nom='eleve11', prenom='emma', sexe='M', naissance='1900-01-01', ereno='eleauieve11', ele_id='e000000009', id_eleve='233';
 
 
 #
@@ -1658,10 +1658,10 @@ INSERT INTO lettres_types  values ('10', 'retenue', 'sanction', '');
 #
 # table matieres
 #
-INSERT INTO matieres  values ('Math', 'Mathématiques', '0', '1', 'n', 'n');
-INSERT INTO matieres  values ('LV1anglais', 'LV1 anglais', '0', '1', 'n', 'n');
-INSERT INTO matieres  values ('LettreModerne', 'LettresModernes', '0', '1', 'n', 'n');
-INSERT INTO matieres  values ('EPS', 'EPS', '0', '1', 'n', 'n');
+INSERT INTO matieres  SET matiere='Math', nom_complet='Mathématiques';
+INSERT INTO matieres  SET matiere='LV1anglais', nom_complet='LV1 anglais';
+INSERT INTO matieres  SET matiere='LettreModerne', nom_complet='LettresModernes';
+INSERT INTO matieres  SET matiere='EPS', nom_complet='EPS';
 
 
 #
@@ -1781,15 +1781,15 @@ INSERT INTO model_bulletin  values (3, 'Affiche tout', 1, 1, 1, 1, 1, 1, 1, 1, 1
 #
 # table periodes
 #
-INSERT INTO periodes  values ('Premier trimestre', '1', 'O', '1', '2010-07-08 22:48:47', '2010-05-08 00:00:00');
-INSERT INTO periodes  values ('Deuxieme trimestre', '2', 'N', '1', '2010-06-14 17:29:50', '0000-00-00 00:00:00');
-INSERT INTO periodes  values ('Troisieme trimestre', '3', 'O', '1', '2010-04-07 11:52:04', '0000-00-00 00:00:00');
-INSERT INTO periodes  values ('période 2', '2', 'N', '9', '2010-06-20 18:26:31', '0000-00-00 00:00:00');
-INSERT INTO periodes  values ('période 1', '1', 'N', '9', '2010-06-20 18:25:28', '0000-00-00 00:00:00');
-INSERT INTO periodes  values ('période 3', '3', 'N', '9', '2010-06-20 18:26:31', '0000-00-00 00:00:00');
-INSERT INTO periodes  values ('période 1', '1', 'N', '115', '2010-07-08 22:18:33', '0000-00-00 00:00:00');
-INSERT INTO periodes  values ('période 2', '2', 'N', '115', '2010-07-08 22:18:33', '0000-00-00 00:00:00');
-INSERT INTO periodes  values ('période 3', '3', 'N', '115', '2010-07-08 22:18:33', '0000-00-00 00:00:00');
+INSERT INTO periodes  SET nom_periode='Premier trimestre', num_periode='1', verouiller='O', id_classe='1', date_verrouillage='2010-07-08 22:48:47';
+INSERT INTO periodes  SET nom_periode='Deuxieme trimestre', num_periode='2', verouiller='N', id_classe='1', date_verrouillage='2010-06-14 17:29:50';
+INSERT INTO periodes  SET nom_periode='Troisieme trimestre', num_periode='3', verouiller='O', id_classe='1', date_verrouillage='2010-04-07 11:52:04';
+INSERT INTO periodes  SET nom_periode='période 2', num_periode='2', verouiller='N', id_classe='9', date_verrouillage='2010-06-20 18:26:31';
+INSERT INTO periodes  SET nom_periode='période 1', num_periode='1', verouiller='N', id_classe='9', date_verrouillage='2010-06-20 18:25:28';
+INSERT INTO periodes  SET nom_periode='période 3', num_periode='3', verouiller='N', id_classe='9', date_verrouillage='2010-06-20 18:26:31';
+INSERT INTO periodes  SET nom_periode='période 1', num_periode='1', verouiller='N', id_classe='115', date_verrouillage='2010-07-08 22:18:33';
+INSERT INTO periodes  SET nom_periode='période 2', num_periode='2', verouiller='N', id_classe='115', date_verrouillage='2010-07-08 22:18:33';
+INSERT INTO periodes  SET nom_periode='période 3', num_periode='3', verouiller='N', id_classe='115', date_verrouillage='2010-07-08 22:18:33';
 
 
 #
@@ -1850,11 +1850,11 @@ INSERT INTO resp_pers  values ('p000000005', '', 'pere3', 'prenomdupere3', '', '
 #
 # table responsables2
 #
-INSERT INTO responsables2  values ('e000000007', 'p000000005', '1', '');
-INSERT INTO responsables2  values ('e000000006', 'p000000004', '1', '');
-INSERT INTO responsables2  values ('e000000005', 'p000000003', '1', '');
-INSERT INTO responsables2  values ('e000000001', 'p000000002', '2', '1');
-INSERT INTO responsables2  values ('e000000001', 'p000000001', '1', '');
+INSERT INTO responsables2  SET ele_id='e000000007', pers_id='p000000005', resp_legal='1';
+INSERT INTO responsables2  SET ele_id='e000000006', pers_id='p000000004', resp_legal='1';
+INSERT INTO responsables2  SET ele_id='e000000005', pers_id='p000000003', resp_legal='1';
+INSERT INTO responsables2  SET ele_id='e000000001', pers_id='p000000002', resp_legal='2', pers_contact='1';
+INSERT INTO responsables2  SET ele_id='e000000001', pers_id='p000000001', resp_legal='1';
 
 
 #
@@ -1885,22 +1885,22 @@ INSERT INTO responsables2  values ('e000000001', 'p000000001', '1', '');
 #
 # table s_incidents
 #
-INSERT INTO s_incidents  values ('1', 'PROF1', '2010-04-24', '', '0', '', '', '', '', '');
-INSERT INTO s_incidents  values ('2', 'PROF1', '2010-04-24', '', '0', '', '', '', '', '');
-INSERT INTO s_incidents  values ('3', 'PROF1', '2010-04-24', '', '0', '', '', '', '', '');
-INSERT INTO s_incidents  values ('4', 'PROF1', '2010-04-24', '', '0', '', '', '', '', '');
-INSERT INTO s_incidents  values ('5', 'PROF1', '2010-04-24', '', '0', '', '', '', '', '');
-INSERT INTO s_incidents  values ('6', 'PROF1', '2010-04-24', '08:00', '0', 'exclusion de cours', '', '', 'clos', '6.20100424221746.582e87');
-INSERT INTO s_incidents  values ('7', 'PROF1', '2010-04-24', '08:55', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('8', 'PROF1', '2010-04-25', '15:20', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('9', 'PROF1', '2010-04-25', '15:20', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('10', 'PROF1', '2010-04-25', '15:20', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('11', 'PROF1', '2010-04-25', '15:20', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('12', 'PROF1', '2010-04-25', '10:05', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('13', 'PROF1', '2010-04-25', '08:55', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('14', 'PROF1', '2010-04-25', '09:50', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('15', 'PROF1', '2010-04-25', '08:00', '0', 'exclusion de cours', '', '', '', '');
-INSERT INTO s_incidents  values ('16', 'CPE', '2010-06-23', '08:00', '0', 'exclusion de cours', '', 'test', '', '');
+INSERT INTO s_incidents SET id_incident='1', declarant='PROF1', date='2010-04-24', heure='';
+INSERT INTO s_incidents  SET id_incident='2', declarant='PROF1', date='2010-04-24', heure='';
+INSERT INTO s_incidents  SET id_incident='3', declarant='PROF1', date='2010-04-24', heure='';
+INSERT INTO s_incidents  SET id_incident='4', declarant='PROF1', date='2010-04-24', heure='';
+INSERT INTO s_incidents  SET id_incident='5', declarant='PROF1', date='2010-04-24', heure='';
+INSERT INTO s_incidents  SET id_incident='6', declarant='PROF1', date='2010-04-24', heure='08:00', nature='exclusion de cours', etat='clos', message_id='6.20100424221746.582e87';
+INSERT INTO s_incidents  SET id_incident='7', declarant='PROF1', date='2010-04-24', heure='08:55', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='8', declarant='PROF1', date='2010-04-25', heure='15:20', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='9', declarant='PROF1', date='2010-04-25', heure='15:20', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='10', declarant='PROF1', date='2010-04-25', heure='15:20', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='11', declarant='PROF1', date='2010-04-25', heure='15:20', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='12', declarant='PROF1', date='2010-04-25', heure='10:05', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='13', declarant='PROF1', date='2010-04-25', heure='08:55', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='14', declarant='PROF1', date='2010-04-25', heure='09:50', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='15', declarant='PROF1', date='2010-04-25', heure='08:00', nature='exclusion de cours';
+INSERT INTO s_incidents  SET id_incident='16', declarant='CPE', date='2010-06-23', heure='08:00', nature='exclusion de cours', commentaire='test';
 
 
 #
@@ -2232,8 +2232,6 @@ INSERT INTO setting  values ('note_autre_que_sur_referentiel', 'F');
 INSERT INTO setting  values ('referentiel_note', '20');
 INSERT INTO setting  values ('active_mod_apb', 'n');
 INSERT INTO setting  values ('utiliser_mb', 'n');
-INSERT INTO setting  values ('backup_directory', 'WkNgq4rg4hF2nmJqf3R6RE38rb9iF79A73GTZuqQ');
-INSERT INTO setting  values ('backupdir_lastchange', '1279784745');
 INSERT INTO setting  values ('GepiAccesCpePPEmailEleve', 'no');
 INSERT INTO setting  values ('GepiAccesCpePPEmailParent', 'no');
 INSERT INTO setting  values ('ImpressionParent', '');
@@ -2353,13 +2351,13 @@ INSERT INTO setting  values ('GepiAccesAbsTouteClasseCpe', 'yes');
 #
 # table utilisateurs
 #
-INSERT INTO utilisateurs  values ('scola', 'nomscola', 'prenomscola', 'M.', 'cb120a6a08fac73fed2189afec368630','', '', 'no', 'scolarite', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '1', '0', 'SCOLA_u31j38j3892T42Nu9oxULHiRNXf69zEl7Hxz9k', '', 'gepi');
-INSERT INTO utilisateurs  values ('cpe', 'nomcpe', 'prenomcpe', 'M.', 'cf5b5210da6051314a5311329a59e5d8','', '', 'no', 'cpe', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '7', '0', 'CPE_070DE714g9FY14AbPeI4JwUJzGJHpud546yKS7', '', 'gepi');
-INSERT INTO utilisateurs  values ('prof1', 'nom profTest1', 'prenom profTest2', 'M.', 'ab992c2f7f6fedef6e9fb277674efac8','', '', 'no', 'professeur', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '8', '0', 'PROF1_rPq85PCcDAwvSDY0Ed7Ph13Mu96SK935udH13', '', 'gepi');
-INSERT INTO utilisateurs  values ('profAngl', 'nomprofanglais', 'prenomprofanglais', 'M.', 'ab992c2f7f6fedef6e9fb277674efac8','', '', 'no', 'professeur', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', 'PROFANGL_Nx6Umg6l5gz0y7GcEYxDt3rpeyK717a2Hif91', '', 'gepi');
-INSERT INTO utilisateurs  values ('Pere', 'Pere1', 'PrenomPere', '', 'c8c07410beacb3cdbee5af1aa9341948','', 'joss', 'no', 'responsable', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', '', '', 'gepi');
-INSERT INTO utilisateurs  values ('azert', 'azert', 'azert', 'M.', 'a88d4ae7dc2a22f8473938d5e6230ec6', '','', 'no', 'professeur', 'actif', 'y', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '2', '0', '', '', 'gepi');
-INSERT INTO utilisateurs  values ('autre', 'aui', 'aui', 'M.', 'e710f1f4b31779a87562d6d8d5871c43','', 'aui@aui.com', 'no', 'autre', 'actif', 'y', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', '', '', 'gepi');
+INSERT INTO utilisateurs SET login='scola', nom='nomscola', prenom='prenomscola', civilite='M.', password='cb120a6a08fac73fed2189afec368630',salt='', email='', show_email='no', statut='scolarite', etat='actif', change_mdp='n', date_verrouillage='2006-01-01 00:00:00', password_ticket='', ticket_expiration='0000-00-00 00:00:00', niveau_alerte='1', observation_securite='0', temp_dir='SCOLA_u31j38j3892T42Nu9oxULHiRNXf69zEl7Hxz9k', numind='', auth_mode='gepi';
+INSERT INTO utilisateurs SET login='cpe', nom='nomcpe', prenom='prenomcpe', civilite='M.', password='cf5b5210da6051314a5311329a59e5d8',salt='', email='', show_email='no', statut='cpe', etat='actif', change_mdp='n', date_verrouillage='2006-01-01 00:00:00', password_ticket='', ticket_expiration='0000-00-00 00:00:00', niveau_alerte='7', observation_securite='0', temp_dir='CPE_070DE714g9FY14AbPeI4JwUJzGJHpud546yKS7', numind='', auth_mode='gepi';
+INSERT INTO utilisateurs SET login='prof1', nom='nom profTest1', prenom='prenom profTest2', civilite='M.', password='ab992c2f7f6fedef6e9fb277674efac8',salt='', email='', show_email='no', statut='professeur', etat='actif', change_mdp='n', date_verrouillage='2006-01-01 00:00:00', password_ticket='', ticket_expiration='0000-00-00 00:00:00', niveau_alerte='8', observation_securite='0', temp_dir='PROF1_rPq85PCcDAwvSDY0Ed7Ph13Mu96SK935udH13', numind='', auth_mode='gepi';
+INSERT INTO utilisateurs SET login='profAngl', nom='nomprofanglais', prenom='prenomprofanglais', civilite='M.', password='ab992c2f7f6fedef6e9fb277674efac8',salt='', email='', show_email='no', statut='professeur', etat='actif', change_mdp='n', date_verrouillage='2006-01-01 00:00:00', password_ticket='', ticket_expiration='0000-00-00 00:00:00', niveau_alerte='0', observation_securite='0', temp_dir='PROFANGL_Nx6Umg6l5gz0y7GcEYxDt3rpeyK717a2Hif91', numind='', auth_mode='gepi';
+INSERT INTO utilisateurs SET login='Pere', nom='Pere1', prenom='PrenomPere', civilite='', password='c8c07410beacb3cdbee5af1aa9341948',salt='', email='joss', show_email='no', statut='responsable', etat='actif', change_mdp='n', date_verrouillage='2006-01-01 00:00:00', password_ticket='', ticket_expiration='0000-00-00 00:00:00', niveau_alerte='0', observation_securite='0', temp_dir='', numind='', auth_mode='gepi';
+INSERT INTO utilisateurs SET login='azert', nom='azert', prenom='azert', civilite='M.', password='a88d4ae7dc2a22f8473938d5e6230ec6', salt='',email='', show_email='no', statut='professeur', etat='actif', change_mdp='y', date_verrouillage='2006-01-01 00:00:00', password_ticket='', ticket_expiration='0000-00-00 00:00:00', niveau_alerte='2', observation_securite='0', temp_dir='', numind='', auth_mode='gepi';
+INSERT INTO utilisateurs SET login='autre', nom='aui', prenom='aui', civilite='M.', password='e710f1f4b31779a87562d6d8d5871c43',salt='', email='aui@aui.com', show_email='no', statut='autre', etat='actif', change_mdp='y', date_verrouillage='2006-01-01 00:00:00', password_ticket='', ticket_expiration='0000-00-00 00:00:00', niveau_alerte='0', observation_securite='0', temp_dir='', numind='', auth_mode='gepi';
 
 
 #
