@@ -56,16 +56,16 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 		$mysqli->query($sql);
 
 		$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
-		echo $sql.'<br>';
+		//echo $sql.'<br>';
 		$test=mysqli_query($GLOBALS['mysqli'], $sql);
 		if(mysqli_num_rows($test)==0) {
 			$sql="INSERT INTO classes_param SET name='nom_classe_sts', value='".$classeXML[$key]."', id_classe='".$key."';";
-			echo $sql.'<br>';
+			//echo $sql.'<br>';
 			$insert=mysqli_query($GLOBALS['mysqli'], $sql);
 		}
 		else {
 			$sql="UPDATE classes_param SET name='nom_classe_sts', value='".$classeXML[$key]."' WHERE id_classe='".$key."';";
-			echo $sql.'<br>';
+			//echo $sql.'<br>';
 			$update=mysqli_query($GLOBALS['mysqli'], $sql);
 		}
 	}
@@ -78,16 +78,16 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 
 		if(isset($nomXMLclasse[$key])) {
 			$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
-			echo $sql.'<br>';
+			//echo $sql.'<br>';
 			$test=mysqli_query($GLOBALS['mysqli'], $sql);
 			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."', id_classe='".$key."';";
-				echo $sql.'<br>';
+				//echo $sql.'<br>';
 				$insert=mysqli_query($GLOBALS['mysqli'], $sql);
 			}
 			else {
 				$sql="UPDATE classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."' WHERE id_classe='".$key."';";
-				echo $sql.'<br>';
+				//echo $sql.'<br>';
 				$update=mysqli_query($GLOBALS['mysqli'], $sql);
 			}
 		}
