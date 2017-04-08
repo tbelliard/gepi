@@ -69,6 +69,8 @@ function affiche_debug($texte) {
 	}
 }
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
 
 function nb_cols_textarea_sous_graphe($font_size) {
 	// C'est un pis aller.
@@ -2855,8 +2857,8 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 		</div>";
 									*/
 									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
-			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' target='_blank'>
-				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' target='_blank' title=\"Saisir des $mod_disc_terme_avertissement_fin_periode\">
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"$mod_disc_terme_avertissement_fin_periode\" />
 			</a>
 		</div>";
 									//$retour_ligne_sous_textarea="n";
@@ -2869,7 +2871,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 								if($retour_ligne_sous_textarea=="y") {$texte.="<br/>\n";}
 								$texte.=ucfirst($gepi_denom_mention)." : ";
 	
-								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention)."<span title=\"Les ".$gepi_denom_mention."s sont définies classe par classe, en administrateur, dans *".ucfirst($gepi_denom_mention)."s des bulletins* en page d'accueil.\"><img src='../images/icons/ico_aide.png' width='15' height='25' alt='Aide' /></span>";
 								/*
 								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
 								$selectedF="";
@@ -3096,8 +3098,8 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 		</div>";
 									*/
 									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
-			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' target='_blank'>
-				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' target='_blank' title=\"Saisir des $mod_disc_terme_avertissement_fin_periode\">
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"$mod_disc_terme_avertissement_fin_periode\" />
 			</a>
 		</div>";
 									//$retour_ligne_sous_textarea="n";
@@ -3109,7 +3111,7 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 							if(test_existence_mentions_classe($id_classe)) {
 								if($retour_ligne_sous_textarea=="y") {$texte.="<br/>\n";}
 								$texte.=ucfirst($gepi_denom_mention)." : ";
-								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention)."<span title=\"Les ".$gepi_denom_mention."s sont définies classe par classe, en administrateur, dans *".ucfirst($gepi_denom_mention)."s des bulletins* en page d'accueil.\"><img src='../images/icons/ico_aide.png' width='15' height='25' alt='Aide' /></span>";
 								$texte.="<br/>\n";
 							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
@@ -5726,8 +5728,8 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 		// 20140226
 		if((getSettingAOui('active_mod_discipline'))&&(getSettingAOui('mod_disc_acces_avertissements'))) {
 			echo "<div align='center'>\n";
-			$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
-			if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+			//$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+			//if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
 
 			echo necessaire_saisie_avertissement_fin_periode();
 
@@ -5746,7 +5748,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 
 						echo "
 			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$i&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $i, 'n', 'liste_avertissements_fin_periode_$i');return false;\" style='color:black;' target='_blank' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $i\">
-				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"$mod_disc_terme_avertissement_fin_periode\" />
 				<span class='bold' id='liste_avertissements_fin_periode_$i'>".liste_avertissements_fin_periode($eleve1, $i)."</span>
 			</a>";
 					}
@@ -5766,7 +5768,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 
 					echo "<div title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $num_periode_choisie\">
 	<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'n', 'liste_avertissements_fin_periode');return false;\" style='color:black;' target='_blank'>
-		<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+		<img src='../images/icons/balance_justice.png' class='icone20' alt=\"$mod_disc_terme_avertissement_fin_periode\" />
 		<span class='bold' id='liste_avertissements_fin_periode'>".liste_avertissements_fin_periode($eleve1, $num_periode_choisie)."</span>
 	</a>
 </div>";
