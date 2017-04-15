@@ -169,9 +169,18 @@ if(isset($msg_requetesAdmin)) {
 			$res_mat=mysqli_query($mysqli, $sql);
 			echo mysqli_num_rows($res_mat)." matière(s) a(ont) leur nomenclature renseignée.<br />";
 
-			$sql="SELECT DISTINCT m.matiere FROM matieres m LEFT JOIN nomenclatures_valeurs nv ON m.code_matiere=nv.code WHERE nv.code IS NULL;";
+			$sql="SELECT DISTINCT m.matiere, m.nom_complet FROM matieres m LEFT JOIN nomenclatures_valeurs nv ON m.code_matiere=nv.code WHERE nv.code IS NULL;";
 			$res_mat=mysqli_query($mysqli, $sql);
-			echo "<span style='color:red'>".mysqli_num_rows($res_mat)." matière(s) n'a(ont) pas leur nomenclature renseignée.</span>";
+			echo "<span style='color:red'>".mysqli_num_rows($res_mat)." matière(s) n'a(ont) pas leur nomenclature renseignée <em>(";
+			$cpt_mat=0;
+			while($lig_mat=mysqli_fetch_object($res_mat)) {
+				if($cpt_mat>0) {
+					echo ", ";
+				}
+				echo "<span title=\"$lig_mat->nom_complet\">$lig_mat->matiere</span>";
+				$cpt_mat++;
+			}
+			echo ")</em>.<br />Si ces matières ne sont pas destinées à remonter vers LSUN, ce n'est pas grave.</span>";
 		?><br />
 		S'il manque des nomenclatures, sélectionnez/complétez manuellement un à un les codes matières dans <a href='../matieres/index.php'>Gestion des matières</a><br />
 		ou globalement dans <a href='../gestion/admin_nomenclatures.php?action=importnomenclature'>Importer les nomenclatures</a>.</p>
