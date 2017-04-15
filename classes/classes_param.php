@@ -794,6 +794,7 @@ if (isset($_POST['is_posted'])) {
 							}
 							else {
 								$sql="SELECT * FROM j_groupes_enseignements_complement WHERE id_groupe='$lig_grp_type->id_groupe';";
+								//echo "$sql<br />";
 								$test=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test)==0) {
 									$sql="INSERT INTO j_groupes_enseignements_complement SET id_groupe='".$lig_grp_type->id_groupe."', code='".$change_type_enseignement_complement."';";
@@ -1522,10 +1523,33 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		<tr>
 			<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
 			<td valign='top' rowspan='2'>
-				<input type='checkbox' name='change_type_$per' id='change_type_$per' value='y' /><label for='change_type_$per'> Modifier le type des enseignements de</label>&nbsp;:
+				<input type='checkbox' name='change_type_$per' id='change_type_$per' value='y' 
+				onchange=\"if(this.checked==true) {
+					if(document.getElementById('prof_modif_type_enseignement_$per').selectedIndex==0) {
+						document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='';
+					}
+					else {
+						document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='none';
+					}
+				}
+				else {
+					document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='none';
+				}\" /><label for='change_type_$per'> Modifier le type des enseignements de</label>&nbsp;:
 			</td>
 			<td>
-				<select name='matiere_modif_type_enseignement_$per' id='matiere_modif_type_enseignement_$per' onchange=\"document.getElementById('change_type_$per').checked=true;\">
+				<select name='matiere_modif_type_enseignement_$per' id='matiere_modif_type_enseignement_$per' 
+				onchange=\"document.getElementById('change_type_$per').checked=true;
+				if(document.getElementById('change_type_$per').checked==true) {
+					if(document.getElementById('prof_modif_type_enseignement_$per').selectedIndex==0) {
+						document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='';
+					}
+					else {
+						document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='none';
+					}
+				}
+				else {
+					document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='none';
+				}\">
 					<option value=''>---</option>
 					<option value='___TOUS___' style='color:red'>Tous les enseignements</option>";
 				while($lig_mat=mysqli_fetch_object($res_mat)) {
@@ -1536,7 +1560,19 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 
 				<br />
 				dont le professeur est 
-				<select name='prof_modif_type_enseignement_$per' id='prof_modif_type_enseignement_$per' onchange=\"document.getElementById('change_type_$per').checked=true;\">
+				<select name='prof_modif_type_enseignement_$per' id='prof_modif_type_enseignement_$per' 
+				onchange=\"document.getElementById('change_type_$per').checked=true;
+				if(document.getElementById('change_type_$per').checked==true) {
+					if(document.getElementById('prof_modif_type_enseignement_$per').selectedIndex==0) {
+						document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='';
+					}
+					else {
+						document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='none';
+					}
+				}
+				else {
+					document.getElementById('span_info_choix_prof_modif_type_enseignement').style.display='none';
+				}\">
 					<option value=''>---</option>
 					<option value='___TOUS___' style='color:red'>Tous les professeurs de la matière choisie</option>";
 
@@ -1548,7 +1584,9 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 						<option value='$lig_prof->login'>".casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2")."</option>\n";
 					}
 				}
-				echo "	</select>
+				echo "
+				</select>
+				<span id='span_info_choix_prof_modif_type_enseignement' style='display:none;' title=\"Il faut choisir *un* professeur ou éventuellement *Tous les professeurs de la matière* sans quoi seuls les enseignements sans professeur seront concernés.\"><img src='../images/icons/flag2.gif' class='icone16' alt='Attention' /></span>
 			</td>
 			<td valign='top'>Imposer le type suivant&nbsp;: </td>
 			<td>
