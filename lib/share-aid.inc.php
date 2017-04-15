@@ -737,7 +737,7 @@ function get_tab_aid_prof($login_prof, $id_classe="", $periode_num="", $order_by
 	if($id_classe!="") {
 		$sql.=" AND id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves jae, j_eleves_classes jec WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."')";
 	}
-	$sql.=" ORDER BY ac.order_display1, ac.order_display2, a.numero;";
+	$sql.=" ORDER BY ac.order_display1, ac.order_display2, a.numero, ac.nom_complet, ac.nom;";
 	//echo "$sql<br />";
 	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_aid)>0) {
