@@ -2624,16 +2624,21 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	return $retour;
 }
 
-function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_champ='matiere', $nom_func_js_tout_cocher_decocher='cocher_decocher', $matieres_enseignees="y") {
+function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_champ='matiere', $nom_func_js_tout_cocher_decocher='cocher_decocher', $matieres_enseignees="y", $order_by="") {
 
 	$retour="";
 
+	if($order_by=="") {
+		$order_by="m.priority, m.matiere, m.nom_complet";
+	}
+
 	if($matieres_enseignees=="y") {
-		$sql="SELECT DISTINCT m.* FROM matieres m, j_groupes_matieres jgm WHERE m.matiere=jgm.id_matiere ORDER BY m.priority, m.matiere, m.nom_complet;";
+		$sql="SELECT DISTINCT m.* FROM matieres m, j_groupes_matieres jgm WHERE m.matiere=jgm.id_matiere ";
 	}
 	else {
-		$sql="SELECT * FROM matieres ORDER BY priority, matiere, nom_complet;";
+		$sql="SELECT * FROM matieres m ";
 	}
+	$sql.=" ORDER BY $order_by;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$nombreligne=mysqli_num_rows($res);

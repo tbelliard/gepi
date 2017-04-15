@@ -800,7 +800,7 @@ if ($_SESSION['statut'] == 'professeur') {
 					<input type='radio' name='restreindre_aux_profs_de_la_classe' id='restreindre_aux_profs_de_la_classe_n' value='n' /><label for='restreindre_aux_profs_de_la_classe_n'>Inscrire le(s) professeur(s) de la (des) matière(s) suivante(s) sans se restreindre aux professeurs enseignant par ailleurs dans la(les) classe(s) sélectionnée(s)</label>.<br />
 					Si vous ne cochez aucune matière, ce paramètre ne sera pas pris en compte.
 				</p>";
-				echo liste_checkbox_matieres(array(), 'prof_matiere', 'cocher_decocher', "y");
+				echo liste_checkbox_matieres(array(), 'prof_matiere', 'cocher_decocher', "y", "m.matiere, m.nom_complet");
 				echo "</div>";
 
 			}
