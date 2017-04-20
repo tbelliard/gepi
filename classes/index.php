@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -89,6 +89,10 @@ Ce choix permet de limiter la liste des classes proposées aux différents compt
 
 	if((getSettingAOui("active_mod_engagements"))&&(acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut']))) {
 		echo "| <a href='../mod_engagements/saisie_engagements.php'>Saisir les engagements </a>";
+	}
+
+	if(acces("/groupes/remplir_enseignement_moyenne.php", $_SESSION['statut'])) {
+		echo "| <a href='../groupes/remplir_enseignement_moyenne.php' title=\"Remplir les notes de certains groupes/enseignements comme moyenne d'autres groupes/enseignements avec les coefficients de votre choix.\nEt concaténer (si vous le souhaitez) les appréciations des bulletins pour les groupes choisis.\">Remplir des groupes moyenne </a>";
 	}
 ?>
 </p>

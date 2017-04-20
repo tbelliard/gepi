@@ -1923,6 +1923,17 @@ autre='F',
 description='Saisie des modalités d accompagnement',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/groupes/remplir_enseignement_moyenne.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Création d enseignement moyenne',
+statut='';";
 
 //$tab_req[] = "";
 

@@ -1829,3 +1829,4 @@ INSERT INTO modalites_accompagnement SET code='PPS', libelle='Projet personnalis
 INSERT INTO modalites_accompagnement SET code='ULIS', libelle='Unité localisée pour l\’inclusion scolaire', avec_commentaire='n';
 INSERT INTO modalites_accompagnement SET code='UPE2A', libelle='Unité pédagogique pour élèves allophones arrivants', avec_commentaire='n';
 INSERT INTO modalites_accompagnement SET code='SEGPA', libelle='Section d\’enseignement général adapté', avec_commentaire='n';
+INSERT INTO droits SET id='/groupes/remplir_enseignement_moyenne.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Création d enseignement moyenne', statut='';
