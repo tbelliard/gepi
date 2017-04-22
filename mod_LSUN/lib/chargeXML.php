@@ -70,7 +70,7 @@ $xml->appendChild($items);
 
 	$items->setAttribute(
 		'schemaVersion',
-		'2.0'
+		'3.0'
 	);
 		/*----- Entête -----*/
 		$entete = $xml->createElement('entete');
