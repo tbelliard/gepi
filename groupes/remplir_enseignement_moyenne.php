@@ -254,7 +254,7 @@ if((!isset($matiere))||(!isset($matiere_dest))) {
 			echo "<td align='left'>\n";
 		}
 
-		echo "<label id='label_tab_mat_$cpt' for='tab_mat_$cpt' style='cursor: pointer;'><input type='checkbox' name='matiere[]' id='tab_mat_$cpt' value=\"".$tab_mat[$loop]["matiere"]."\" onchange='change_style_mat($cpt)' /> ".$tab_mat[$loop]["matiere"]." <em>(".$tab_mat[$loop]["nom_complet"].")</em></label>";
+		echo "<input type='checkbox' name='matiere[]' id='tab_mat_$cpt' value=\"".$tab_mat[$loop]["matiere"]."\" onchange='change_style_mat($cpt)' /><label id='label_tab_mat_$cpt' for='tab_mat_$cpt' style='cursor: pointer;'> ".$tab_mat[$loop]["matiere"]." <em>(".$tab_mat[$loop]["nom_complet"].")</em></label>";
 		echo "<br />\n";
 		$cpt++;
 	}
@@ -393,6 +393,7 @@ Coef
 	echo "<p><b>Choix des enseignements&nbsp;:</b><br />
 	Les enregistrements ne seront effectués que pour les périodes pour lesquelles les élèves sont inscrits dans les groupes destination.</p>\n";
 
+	//$tab_id_app_per=array();
 	for($loop=0;$loop<count($id_classe);$loop++) {
 		$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='".$id_classe[$loop]."';";
 		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -418,7 +419,7 @@ Coef
 				while($lig_grp_dest=mysqli_fetch_object($res_grp_dest)) {
 					$current_group=get_group($lig_grp_dest->id_groupe, $tab_champs_grp);
 					echo "
-				<input type='radio' name='id_groupe_dest[".$id_classe[$loop]."]' id='id_groupe_dest_".$id_classe[$loop]."_".$lig_grp_dest->id_groupe."' value='".$lig_grp_dest->id_groupe."' onchange='change_style_radio()' /><label for='id_groupe_dest_".$id_classe[$loop]."_".$lig_grp_dest->id_groupe."' id='texte_id_groupe_dest_".$id_classe[$loop]."_".$lig_grp_dest->id_groupe."'>".$current_group['name']." (".$current_group['description'].")</em> <em title='Matière'>(".$current_group['matiere']['matiere'].")</em> <em title='Professeur(s)'>(".$current_group['profs']['proflist_string'].")</em> "."</label><br />";
+				<input type='radio' name='id_groupe_dest[".$id_classe[$loop]."]' id='id_groupe_dest_".$id_classe[$loop]."_".$lig_grp_dest->id_groupe."' value='".$lig_grp_dest->id_groupe."' onchange=\"change_style_radio(); document.getElementById('texte_id_groupe_dest_".$id_classe[$loop]."_".$lig_grp_dest->id_groupe."').style.color='black';\" /><label for='id_groupe_dest_".$id_classe[$loop]."_".$lig_grp_dest->id_groupe."' id='texte_id_groupe_dest_".$id_classe[$loop]."_".$lig_grp_dest->id_groupe."' style='color:red'>".$current_group['name']." (".$current_group['description'].")</em> <em title='Matière'>(".$current_group['matiere']['matiere'].")</em> <em title='Professeur(s)'>(".$current_group['profs']['proflist_string'].")</em> "."</label><br />";
 				}
 				echo "
 			</p>
@@ -438,16 +439,27 @@ Coef
 						<th>Visibilité</th>";
 				for($loop_per=1;$loop_per<=$lig_per->maxper;$loop_per++) {
 					echo "
-						<th title=\"Période $loop_per\">P$loop_per</th>";
+						<th title=\"Période $loop_per\">P$loop_per<br />
+							<select name='coef_".$id_classe[$loop]."_TOUS_GRP[$loop_per]' id='coef_".$id_classe[$loop]."_TOUS_GRP_$loop_per' onchange=\"change_coef_".$id_classe[$loop]."_TOUS_GRP($loop_per)\" title=\"Imposer le même coefficient pour tous les enseignements de la période $loop_per.\nAvec un coefficient à zéro, l'enseignement ne sera pas pris en compte dans le calcul de la moyenne sur cette période.\">
+								<option value=''>---</option>";
+								for($i=0;$i<50;$i++) {
+									echo "
+								<option value='$i'>$i</option>";
+								}
+								echo "
+							</select>
+						</th>";
 				}
 				for($loop_per=1;$loop_per<=$lig_per->maxper;$loop_per++) {
+					$chaine_app_per[$loop_per]="";
 					echo "
-						<th title=\"Période $loop_per\">P$loop_per</th>";
+						<th title=\"Période $loop_per\"><a href='#' onclick=\"check_app_per_".$id_classe[$loop]."_".$loop_per."(); return false;\">P$loop_per</a></th>";
 				}
 				echo "
 					</tr>
 				</thead>
 				<tbody>";
+				$tab_tmp_grp_id=array();
 				for($loop2=0;$loop2<count($matiere);$loop2++) {
 					$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
 								j_groupes_matieres jgm 
@@ -458,6 +470,7 @@ Coef
 					if(mysqli_num_rows($res_grp)>0) {
 						while($lig_grp=mysqli_fetch_object($res_grp)) {
 							$current_group=get_group($lig_grp->id_groupe, $tab_champs_grp);
+							$tab_tmp_grp_id[]=$lig_grp->id_groupe;
 
 							$chaine_visibilite="";
 							for($loop3=0;$loop3<count($tab_domaines_check);$loop3++) {
@@ -479,7 +492,7 @@ Coef
 							for($loop_per=1;$loop_per<=$lig_per->maxper;$loop_per++) {
 								echo "
 						<td>
-							<select name='coef_".$id_classe[$loop]."_".$lig_grp->id_groupe."[$loop_per]' title=\"Avec un coefficient à zéro, l'enseignement ne sera pas pris en compte dans le calcul de la moyenne sur cette période.\">";
+							<select name='coef_".$id_classe[$loop]."_".$lig_grp->id_groupe."[$loop_per]' id='coef_".$id_classe[$loop]."_".$lig_grp->id_groupe."_$loop_per' title=\"Avec un coefficient à zéro, l'enseignement ne sera pas pris en compte dans le calcul de la moyenne sur cette période.\">";
 								for($i=0;$i<50;$i++) {
 									echo "
 								<option value='$i'>$i</option>";
@@ -489,9 +502,13 @@ Coef
 						</td>";
 							}
 							for($loop_per=1;$loop_per<=$lig_per->maxper;$loop_per++) {
+								//$tab_id_app_per[$id_classe[$loop]][$loop_per][]="app_".$id_classe[$loop]."_".$lig_grp->id_groupe."_".$loop_per;
+
+								$chaine_app_per[$loop_per].="document.getElementById('app_".$id_classe[$loop]."_".$lig_grp->id_groupe."_".$loop_per."').checked=true;\n";
+
 								echo "
 						<td>
-							<input type='checkbox' name='app_".$id_classe[$loop]."_".$lig_grp->id_groupe."[$loop_per]' value='y' \">
+							<input type='checkbox' name='app_".$id_classe[$loop]."_".$lig_grp->id_groupe."[$loop_per]' id='app_".$id_classe[$loop]."_".$lig_grp->id_groupe."_$loop_per' value='y' \">
 						</td>";
 							}
 							echo "
@@ -502,6 +519,28 @@ Coef
 				echo "
 				</tbody>
 			</table>
+			<script type='text/javascript'>
+				function change_coef_".$id_classe[$loop]."_TOUS_GRP(num_per) {
+					if(document.getElementById('coef_".$id_classe[$loop]."_TOUS_GRP_'+num_per)) {
+						if(document.getElementById('coef_".$id_classe[$loop]."_TOUS_GRP_'+num_per).selectedIndex>0) {";
+					for($loop_grp_id=0;$loop_grp_id<count($tab_tmp_grp_id);$loop_grp_id++) {
+						echo "
+							document.getElementById('coef_".$id_classe[$loop]."_".$tab_tmp_grp_id[$loop_grp_id]."_'+num_per).selectedIndex=eval(document.getElementById('coef_".$id_classe[$loop]."_TOUS_GRP_'+num_per).selectedIndex-1);";
+					}
+					echo "
+						}
+					}
+				}";
+
+				for($loop_per=1;$loop_per<=$lig_per->maxper;$loop_per++) {
+					echo "
+				function check_app_per_".$id_classe[$loop]."_".$loop_per."() {
+					".$chaine_app_per[$loop_per]."
+				}";
+				}
+
+				echo "
+			</script>
 			<p><br /></p>
 		</div>";
 			}
@@ -520,7 +559,26 @@ echo "</pre>";
 	echo "<p style='margin-bottom:2em;'><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
-	echo js_change_style_radio("change_style_radio", "y", "y", 'checkbox_change', 'texte_');
+	//echo js_change_style_radio("change_style_radio", "y", "y", 'checkbox_change', 'texte_');
+
+	echo "<script type='text/javascript'>
+	".js_change_style_radio("change_style_radio")."
+
+	function checkbox_change(id) {
+		//alert(id);
+		if(document.getElementById(id)) {
+			if(document.getElementById('texte_'+id)) {
+				//alert('texte_'+id);
+				if(document.getElementById(id).checked) {
+					document.getElementById('texte_'+id).style.fontWeight='bold';
+				}
+				else {
+					document.getElementById('texte_'+id).style.fontWeight='normal';
+				}
+			}
+		}
+	}
+</script>\n";
 
 	/*
 	echo "<script type='text/javascript'>
@@ -548,6 +606,9 @@ echo "</pre>";
 	*/
 
 	echo "<p style='margin-top:1em; margin-bottom:2em; margin-left:6.7em;text-indent:-6.7em;'><em>ATTENTION&nbsp;:</em> L'opération est irréversible pour les groupes destination.<br />Les saisies antérieures dans ces groupes pour les périodes sélectionnées ne pourront pas être récupérées après écrasement.</p>\n";
+
+	echo "<p style='color:red'>A FAIRE : Ajouter des facilités pour cocher les appréciations, pour imposer un même coef (en entête de colonne période de chaque tableau, avant chaque tableau, et globalement),<br />
+	Cocher par défaut le groupe destination s'il n'y en a qu'un ou mettre un témoin drapeau si aucune groupe destination n'est sélectionné.</p>";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -649,6 +710,7 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 				$lig_per=mysqli_fetch_object($res_per);
 
 				// Récupérer le groupe dest pour tester l'inscription des élèves sur telle période
+				//echo "<p>Enseignement destination&nbsp;: ".get_info_grp($id_groupe_dest[$id_classe[$loop]])."</p>";
 				$current_group_dest=get_group($id_groupe_dest[$id_classe[$loop]]);
 
 				$tab_grp_src_moy=array();
@@ -672,6 +734,11 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 							}
 						}
 					}
+					/*
+					else {
+						echo "\$_POST['coef_'.$id_classe[$loop].'_'.$current_id_groupe_src] non défini.<br />";
+					}
+					*/
 
 					if(isset($_POST['app_'.$id_classe[$loop].'_'.$current_id_groupe_src])) {
 						$tab_app=$_POST['app_'.$id_classe[$loop].'_'.$current_id_groupe_src];
@@ -692,7 +759,8 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 					}
 				}
 
-				/*echo "<pre>";
+				/*
+				echo "<pre>";
 				print_r($tab_grp_src_moy);
 				echo "</pre>";
 				*/
@@ -773,11 +841,18 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 						}
 					}
 
+					/*
+					echo "\$tab_total_notes<pre>";
+					print_r($tab_total_notes);
+					echo "</pre>";
+					*/
+
 					foreach($tab_total_notes as $current_login => $total) {
 						if(in_array($current_login, $current_group_dest["eleves"][$periode]["list"])) {
 							$note=round(10*$total/$tab_total_coef[$current_login])/10;
 
 							$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$id_groupe_dest[$id_classe[$loop]]."' AND periode='".$periode."' AND login='".$current_login."';";
+							//echo "$sql<br />";
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)>0) {
 								$sql="UPDATE matieres_notes SET note='".$note."' WHERE id_groupe='".$id_groupe_dest[$id_classe[$loop]]."' AND periode='".$periode."' AND login='".$current_login."';";
@@ -794,6 +869,11 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 								echo "<span style='color:red'>Erreur&nbsp;: $sql</span><br />";
 							}
 						}
+						/*
+						else {
+							echo "$current_login n'est pas dans \$current_group_dest[\"eleves\"][$periode][\"list\"]<br />";
+						}
+						*/
 					}
 
 					foreach($tab_app_concat as $current_login => $appreciation) {
