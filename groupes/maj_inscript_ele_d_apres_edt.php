@@ -1376,7 +1376,7 @@ elseif($action=="upload") {
 						}
 						else {
 							foreach($tmp_tab_clas['classe'] as $current_id_classe => $current_classe) {
-								echo "<a href='../classes/eleve_options.php?id_classe=".$current_id_classe."&login_eleve=".$lig_ele->login."&grp_edt=y&quitter_la_page=y' target='_blank' title=\"Modifier les inscriptions pour cet élève.\">".$current_classe['classe']."</a>";
+								echo "<a href='../classes/eleve_options.php?id_classe=".$current_id_classe."&login_eleve=".$lig_ele->login."&grp_edt=y&quitter_la_page=y' target='_blank' title=\"Modifier les inscriptions pour cet élève.\">".$current_classe['classe']."</a> ";
 							}
 						}
 						echo "</td>
