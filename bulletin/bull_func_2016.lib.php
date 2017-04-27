@@ -545,7 +545,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		//if(isset($tab_bull['note'][$m][$i])) {
 		// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
 		if((isset($tab_bull['note'][$m][$i]))&&
-		(!isset($tab_bull['groupe'][$m]['type_grp'][0]))) {
+		((!isset($tab_bull['groupe'][$m]['type_grp'][0]))||($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="local"))) {
 			// Si l'élève suit l'option, sa note est affectée (éventuellement vide)
 			//fwrite($fich,"\$tab_bull['groupe'][$m]['matiere']['matiere']=".$tab_bull['groupe'][$m]['matiere']['matiere']." ");
 			//fwrite($fich,"\$tab_bull['note'][$m][$i]=".$tab_bull['note'][$m][$i]."\n");
@@ -1598,7 +1598,7 @@ echo "</pre>";
 			//if(isset($tab_bull['note'][$m][$i])) {
 			// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
 			if((isset($tab_bull['note'][$m][$i]))&&
-			(!isset($tab_bull['groupe'][$m]['type_grp'][0]))) {
+			((!isset($tab_bull['groupe'][$m]['type_grp'][0]))||($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="local"))) {
 				// Colonne 1 : Matière, prof
 
 				$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
@@ -5485,14 +5485,14 @@ function bulletin_pdf_classe($tab_bull, $i="") {
 		// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
 
 		if("$i"=="") {
-			if(!isset($tab_bull['groupe'][$m]['type_grp'][0])) {
+			if((!isset($tab_bull['groupe'][$m]['type_grp'][0]))||($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="local")) {
 				//fwrite($fich,"\$tab_bull['groupe'][$m]['matiere']['matiere']=".$tab_bull['groupe'][$m]['matiere']['matiere']." ");
 				$nb_matiere++;
 			}
 		}
 		else {
 			if((isset($tab_bull['note'][$m][$i]))&&
-			(!isset($tab_bull['groupe'][$m]['type_grp'][0]))) {
+			((!isset($tab_bull['groupe'][$m]['type_grp'][0]))||($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="local"))) {
 				// Si l'élève suit l'option, sa note est affectée (éventuellement vide)
 				//fwrite($fich,"\$tab_bull['groupe'][$m]['matiere']['matiere']=".$tab_bull['groupe'][$m]['matiere']['matiere']." ");
 				//fwrite($fich,"\$tab_bull['note'][$m][$i]=".$tab_bull['note'][$m][$i]."\n");
@@ -6643,7 +6643,7 @@ function bulletin_pdf_classe($tab_bull, $i="") {
 		//echo "plop";
 		if("$i"=="") {
 			//echo "plip";
-			if(!isset($tab_bull['groupe'][$m]['type_grp'][0])) {
+			if((!isset($tab_bull['groupe'][$m]['type_grp'][0]))||($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="local")) {
 
 				// Colonne 1 : Matière, prof
 
@@ -7025,7 +7025,7 @@ function bulletin_pdf_classe($tab_bull, $i="") {
 		else {
 			// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
 			if((isset($tab_bull['note'][$m][$i]))&&
-			(!isset($tab_bull['groupe'][$m]['type_grp'][0]))) {
+			((!isset($tab_bull['groupe'][$m]['type_grp'][0]))||($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="local"))) {
 				// Colonne 1 : Matière, prof
 
 				$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
