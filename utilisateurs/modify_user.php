@@ -447,6 +447,15 @@ check_token();
 					}
 				}
 
+				// Si l'utilisateur était AUTRE, il faut supprimer les associations dans la table droit_special
+				if($lig_tmp->statut=="autre"){
+					if($_POST['reg_statut']!="autre"){
+						$sql="DELETE FROM droits_utilisateurs WHERE login_user='$user_login';";
+						//echo "$sql<br />";
+						$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+					}
+				}
+
 				// On effectue les opérations LDAP
 				if (isset($create_ldap_user) && $create_ldap_user) {
 					$ldap_server = new LDAPServer;
@@ -1204,7 +1213,7 @@ if (!(isset($user_login)) or ($user_login=='')) {
 	echo "</div>";
 }
 ?>
-<br />Statut (consulter l'<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>aide</a>) : <SELECT name=reg_statut size=1 onchange="changement()">
+<br />Statut (consulter l'<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>aide</a>) : <SELECT name="reg_statut" size="1" onchange="changement()">
 <?php if (!isset($user_statut)) $user_statut = "professeur"; ?>
 <option value="professeur" <?php if ($user_statut == "professeur") { echo ' selected="selected"';}?>>Professeur</option>
 <option value="administrateur" <?php if ($user_statut == "administrateur") { echo ' selected="selected"';}?>>Administrateur</option>
