@@ -71,5 +71,34 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$sql="SELECT * FROM preferences GROUP BY login,name HAVING COUNT(login)>1;";
+//echo "$sql<br />\n";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
+	$result .= "<br />";
+	$result .= "<span style='color:red'>Des préférences utilisateurs sont en doublon.<br />Un <a href='../utilitaires/clean_tables.php?maj=controle_preferences".add_token_in_url()."'>nettoyage des tables</a> est nécessaire.</span><br />";
+
+	$info_action_titre="Préférences utilisateurs en doublon";
+	$info_action_texte="Des préférences utilisateurs sont en doublon.<br />Un <a href='./utilitaires/clean_tables.php#controle_preferences'>nettoyage des tables</a> est nécessaire.";
+	$info_action_destinataire=array("administrateur");
+	$info_action_mode="statut";
+	enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+}
+else {
+	$sql="SHOW INDEX FROM preferences WHERE Key_name='PRIMARY';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		$sql="ALTER TABLE preferences ADD PRIMARY KEY ( login , name );";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= "<br />";
+			$result .= "Ajout d'une clé primaire sur la table 'preferences'&nbsp;:".msj_ok("SUCCES !")."<br />";
+		}
+		else {
+			$result .= "<br />";
+			$result .= "Ajout d'une clé primaire sur la table 'preferences'&nbsp;:".msj_erreur("ECHEC !")."<br />";
+		}
+	}
+}
 
 ?>

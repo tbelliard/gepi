@@ -71,6 +71,24 @@ if((isset($_POST['mode']))&&($_POST['mode']=='suppr_assoc_doublon')) {
 	$mode="";
 }
 
+//$total_etapes = 8;
+$total_etapes = 19;
+$duree = 8;
+if (!isset($_GET['cpt'])) {
+	$cpt = 0;
+} else {
+	$cpt = $_GET['cpt'];
+}
+
+$maj=isset($_POST['maj']) ? $_POST['maj'] : (isset($_GET['maj']) ? $_GET['maj'] : NULL);
+
+$stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
+
+//debug_var();
+
+if((isset($maj))||(isset($_REQUEST['action']))) {
+	check_token();
+}
 
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
@@ -154,26 +172,18 @@ function menage_utilisateurs_eleves() {
 		return true;
 	}
 }
+
+function menage_droits_utilisateurs_autres() {
+	$sql="delete from droits_utilisateurs where login_user NOT IN (SELECT login FROM utilisateurs WHERE statut='autre');";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(!$res) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
 //======================================================
-
-//$total_etapes = 8;
-$total_etapes = 18;
-$duree = 8;
-if (!isset($_GET['cpt'])) {
-	$cpt = 0;
-} else {
-	$cpt = $_GET['cpt'];
-}
-
-$maj=isset($_POST['maj']) ? $_POST['maj'] : (isset($_GET['maj']) ? $_GET['maj'] : NULL);
-
-$stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
-
-//debug_var();
-
-if((isset($maj))||(isset($_REQUEST['action']))) {
-	check_token();
-}
 
 /*
 //if (($_POST['maj'])=="9") {
@@ -3195,6 +3205,211 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	update_infos_action_nettoyage($id_info, $texte_info_action);
 	*/
 
+	//=====================================
+
+	echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+	echo add_token_field();
+	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
+
+	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
+	echo "<input type='hidden' name='maj' value='controle_preferences' />\n";
+	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
+
+	echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+	echo "</form>\n";
+
+	echo script_suite_submit();
+
+	//=====================================
+
+} elseif ((isset($_POST['action']) AND $_POST['action'] == 'controle_preferences')||(isset($_POST['maj']) AND $_POST['maj'] == 'controle_preferences')||(isset($_GET['maj']) AND $_GET['maj'] == 'controle_preferences')) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	if((isset($_POST['maj']))&&($_POST['maj']=='controle_preferences')) {
+		$texte_info_action="<h2 align=\"center\">Etape 19/$total_etapes<br />Vérification des préférences utilisateurs</h2>\n";
+	}
+	else {
+		$texte_info_action="<h2>Vérification des préférences utilisateurs</h2>\n";
+	}
+
+	$sql="SELECT 1=1 FROM preferences WHERE login NOT IN (SELECT login FROM utilisateurs);";
+	//echo "$sql<br />\n";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$texte_info_action.="<p>Aucune préférence pour d'anciens utilisateurs.</p>\n";
+	}
+	else {
+		$texte_info_action.="<p>".mysqli_num_rows($res)." scories à supprimer.</p>\n";
+
+		$sql="DELETE FROM preferences WHERE login NOT IN (SELECT login FROM utilisateurs);";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($del) {
+			$texte_info_action.="<p>Suppression effectuée.</p>\n";
+		}
+		else {
+			$texte_info_action.="<p style='color:red'>Erreur lors de la suppression.</p>\n";
+		}
+	}
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+
+	$sql="SELECT 1=1 FROM preferences WHERE name='add_modif_conteneur_aff_display_';";
+	//echo "$sql<br />\n";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$texte_info_action="<p>Aucune préférence pour 'add_modif_conteneur_aff_display_'.</p>\n";
+	}
+	else {
+		$texte_info_action="<p>".mysqli_num_rows($res)." scories de 'add_modif_conteneur_aff_display_' à supprimer.</p>\n";
+
+		$sql="DELETE FROM preferences WHERE name='add_modif_conteneur_aff_display_';";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($del) {
+			$texte_info_action.="<p>Suppression effectuée.</p>\n";
+		}
+		else {
+			$texte_info_action.="<p style='color:red'>Erreur lors de la suppression.</p>\n";
+		}
+	}
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	//debug_var();
+
+	if(isset($_POST["confirmer_nettoyage_doublons_preferences"])) {
+		check_token(false);
+
+		$texte_info_action="";
+
+		$cpt_menage=0;
+		$cpt_user_item=isset($_POST["cpt_user_item"]) ? $_POST["cpt_user_item"] : NULL;
+		if(isset($cpt_user_item)) {
+			for($loop=0;$loop<$cpt_user_item;$loop++) {
+				$user_item_courant=isset($_POST["conserver_".$loop]) ? $_POST["conserver_".$loop] : NULL;
+				if(isset($user_item_courant)) {
+					$tab=explode("|", $user_item_courant);
+					if(isset($tab[2])) {
+						$sql="DELETE FROM preferences WHERE login='".mysqli_real_escape_string($mysqli, $tab[0])."' AND name='".mysqli_real_escape_string($mysqli, $tab[1])."';";
+						//echo "$sql<br />\n";
+						$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+
+						$sql="INSERT INTO preferences SET login='".mysqli_real_escape_string($mysqli, $tab[0])."', name='".mysqli_real_escape_string($mysqli, $tab[1])."', value='".mysqli_real_escape_string($mysqli, $tab[2])."';";
+						//echo "$sql<br />\n";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if($insert) {
+							$cpt_menage++;
+						}
+						else {
+							$texte_info_action.="<span style='color:red'>ERREUR&nbsp;: $sql</span><br />";
+						}
+					}
+				}
+			}
+		}
+		if($cpt_menage>0) {
+			$texte_info_action.=$cpt_menage." préférences dédoublonnées.<br />";
+
+			$sql="SELECT * FROM infos_actions WHERE titre='Préférences utilisateurs en doublon';";
+			//echo "$sql<br />\n";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
+				del_info_action($lig->id);
+			}
+		}
+		echo $texte_info_action;
+		update_infos_action_nettoyage($id_info, $texte_info_action);
+	}
+
+	// Recherche de doublons:
+	$sql="SELECT * FROM preferences GROUP BY login,name HAVING COUNT(login)>1;";
+	//echo "$sql<br />\n";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$texte_info_action="<p>Aucune préférence en doublon.</p>\n";
+		echo $texte_info_action;
+		update_infos_action_nettoyage($id_info, $texte_info_action);
+
+		// Puis modifier la table preferences pour mettre (login,name) comme clé.
+		$sql="SHOW INDEX FROM preferences WHERE Key_name='PRIMARY';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			$sql="ALTER TABLE preferences ADD PRIMARY KEY ( login , name );";
+			$ajout_cle=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($ajout_cle) {
+				$texte_info_action="Ajout d'une clé primaire sur la table 'preferences'.<br />";
+			}
+			else {
+				$texte_info_action="<span style='color:red'>ERREUR lors de l'ajout d'une clé primaire sur la table 'preferences'&nbsp;:<br />$sql</span><br />";
+			}
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
+		}
+	}
+	else {
+
+		$texte_info_action="<p>Des préférences sont en doublon.</p>
+	<table class='boireaus'>
+		<thead>
+			<tr>
+				<th></th>
+				<th>Utilisateur</th>
+				<th>Statut</th>
+				<th>Préférence</th>
+				<th>Valeur</th>
+			</tr>
+		</thead>
+		<tbody>";
+		$cpt=0;
+		$cpt_user_item=0;
+		$alt=1;
+		while($lig=mysqli_fetch_object($res)) {
+			$alt=$alt*(-1);
+
+			$cpt2=0;
+			$sql="SELECT u.nom, u.prenom, u.statut, p.* FROM preferences p, utilisateurs u WHERE p.login=u.login AND p.login='".$lig->login."' AND p.name='".$lig->name."' ORDER BY p.value;";
+			//echo "$sql<br />\n";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig2=mysqli_fetch_object($res2)) {
+				$checked="";
+				if($cpt2==0) {
+					$checked=" checked";
+				}
+				$texte_info_action.="
+			<tr class='lig$alt'>
+				<td><input type='radio' name='conserver_".$cpt_user_item."' id='conserver_$cpt' value=\"".$lig2->login."|".$lig2->name."|".$lig2->value."\"".$checked." /></td>
+				<td><label for='conserver_$cpt'>".casse_mot($lig2->nom, "maj")." ".casse_mot($lig2->nom, "majf2")."</label></td>
+				<td><label for='conserver_$cpt'>".$lig2->statut."</label></td>
+				<td><label for='conserver_$cpt'>".$lig2->name."</label></td>
+				<td><label for='conserver_$cpt'>".$lig2->value."</label></td>
+			</tr>";
+				$cpt++;
+				$cpt2++;
+			}
+			$cpt_user_item++;
+		}
+		$texte_info_action.="
+		</thead>
+	</table>";
+
+		update_infos_action_nettoyage($id_info, $texte_info_action);
+
+		echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">
+	".add_token_field()."<input type=\"hidden\" name='mode_auto' value='$mode_auto' />
+	<input type='hidden' name='is_confirmed' value='yes' />
+	<input type='hidden' name='maj' value='controle_preferences' />
+	<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />
+	<input type=\"hidden\" name=\"confirmer_nettoyage_doublons_preferences\" value=\"y\" />
+	".$texte_info_action."
+	<input type='hidden' name='cpt_user_item' value='$cpt_user_item' />
+	<input type='submit' name='suite' value='Ne conserver que les préférences sélectionnées parmi les doublons' />
+</form>";
+	}
+
+
+
 	$texte_info_action="<hr />\n";
 	$texte_info_action.="<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
 	echo $texte_info_action;
@@ -4028,6 +4243,7 @@ else {
 		echo "<a href='clean_tables.php?maj=verif_interclassements".add_token_in_url()."'>Vérification des interclassements (<em>collation,...</em>).</a><br />\n";
 		echo "<a href='clean_tables.php?maj=corrige_ordre_matieres_professeurs".add_token_in_url()."'>Vérification de l'ordre des matières pour les professeurs.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=controle_categories_matieres".add_token_in_url()."'>Vérification des catégories de matières.</a><br />\n";
+		echo "<a name='controle_preferences'></a><a href='clean_tables.php?maj=controle_preferences".add_token_in_url()."'>Vérification des préférences utilisateurs.</a><br />\n";
 		//echo "<span style='color:red'>A DETAILLER...</span>";
 		echo "</p>\n";
 	
