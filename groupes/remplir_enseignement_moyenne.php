@@ -664,7 +664,7 @@ if($conserver_note_precedente=="n") {
 						for($loop_per=1;$loop_per<=$lig_per->maxper;$loop_per++) {
 							if((isset($tab_coef[$loop_per]))&&($tab_coef[$loop_per]!=0)) {
 								echo "<p>Suppression des notes de l'enseignement à remplir ".get_info_grp($id_groupe_dest[$id_classe[$loop]])." en période $loop_per&nbsp;: ";
-								$sql="DELETE FROM matieres_notes WHERE id_groupe='".$current_id_groupe_src."' AND periode='".$loop_per."';";
+								$sql="DELETE FROM matieres_notes WHERE id_groupe='".$id_groupe_dest[$id_classe[$loop]]."' AND periode='".$loop_per."';";
 								//echo "$sql<br />";
 								$del=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($del) {
