@@ -157,7 +157,14 @@ if (get_magic_quotes_runtime()) {
 
 $config = HTMLPurifier_Config::createDefault();
 $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
-$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+
+// Permettre l'insertion dans CKEditor de vidéos
+// Youtube, Dailymotion, Viméo
+$config->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+$config->set('HTML.SafeObject', true); //
+$config->set('HTML.SafeIframe', true); //Pour limiter les iframes uniquement à ceux acceptés
+$config->set('URI.SafeIframeRegexp', '%^//www.youtube.com/embed/|^//www.youtube.com/watch|^https://www.youtube.com/embed/|^https://www.youtube.com/watch|^http://www.dailymotion.com/embed/|^//www.dailymotion.com/embed/|^https://player.vimeo.com/video/%'); //Regex pour youtube, dailymotion et vimeo
+
 $purifier = new HTMLPurifier($config);
 $magic_quotes = get_magic_quotes_gpc();
 
