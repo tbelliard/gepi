@@ -1790,58 +1790,60 @@ function affiche_actions_compte($login, $target="") {
 
 	$user=get_infos_from_login_utilisateur($login);
 
-	$retour.="<p>\n";
-	if ($user['etat'] == "actif") {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'";
-		if($target!="") {
-			$retour.=" target='$target'";
+	if(isset($user['etat'])) {
+		$retour.="<p>\n";
+		if ($user['etat'] == "actif") {
+			$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+			$retour.=add_token_in_url()."'";
+			if($target!="") {
+				$retour.=" target='$target'";
+			}
+			$retour.=">Désactiver le compte</a>";
+		} else {
+			$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+			$retour.=add_token_in_url()."'";
+			if($target!="") {
+				$retour.=" target='$target'";
+			}
+			$retour.=">Réactiver le compte</a>";
 		}
-		$retour.=">Désactiver le compte</a>";
-	} else {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'";
-		if($target!="") {
-			$retour.=" target='$target'";
-		}
-		$retour.=">Réactiver le compte</a>";
-	}
-	$retour.="<br />\n";
-	if ($user['observation_securite'] == 0) {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'";
-		if($target!="") {
-			$retour.=" target='$target'";
-		}
-		$retour.=">Placer en observation</a>";
-	} else {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=stop_observation&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'";
-		if($target!="") {
-			$retour.=" target='$target'";
-		}
-		$retour.=">Retirer l'observation</a>";
-	}
-	if($user['niveau_alerte']>0) {
 		$retour.="<br />\n";
-		$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
-		$retour.="<br />\n";
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'";
-		if($target!="") {
-			$retour.=" target='$target'";
+		if ($user['observation_securite'] == 0) {
+			$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+			$retour.=add_token_in_url()."'";
+			if($target!="") {
+				$retour.=" target='$target'";
+			}
+			$retour.=">Placer en observation</a>";
+		} else {
+			$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=stop_observation&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+			$retour.=add_token_in_url()."'";
+			if($target!="") {
+				$retour.=" target='$target'";
+			}
+			$retour.=">Retirer l'observation</a>";
 		}
-		$retour.=">Réinitialiser cumul</a>";
+		if($user['niveau_alerte']>0) {
+			$retour.="<br />\n";
+			$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
+			$retour.="<br />\n";
+			$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+			$retour.=add_token_in_url()."'";
+			if($target!="") {
+				$retour.=" target='$target'";
+			}
+			$retour.=">Réinitialiser cumul</a>";
 
-		$retour.="<br />\n";
-		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'";
-		if($target!="") {
-			$retour.=" target='$target'";
+			$retour.="<br />\n";
+			$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+			$retour.=add_token_in_url()."'";
+			if($target!="") {
+				$retour.=" target='$target'";
+			}
+			$retour.=">Voir les alertes</a>";
 		}
-		$retour.=">Voir les alertes</a>";
+		$retour.="</p>\n";
 	}
-	$retour.="</p>\n";
 
 	return $retour;
 }
@@ -1861,27 +1863,29 @@ function affiche_reinit_password($login) {
 
 	$user=get_infos_from_login_utilisateur($login);
 
-	$retour.="<p>\n";
+	if(isset($user['etat'])) {
+		$retour.="<p>\n";
 
-	$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
-	$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank' title=\"Une fiche bienvenue sera générée avec les informations login/mot de passe.\">Réinitialiser le mot de passe</a><br />";
+		$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
+		$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank' title=\"Une fiche bienvenue sera générée avec les informations login/mot de passe.\">Réinitialiser le mot de passe</a><br />";
 
-	if ($user['statut'] == "responsable") {
-		$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html&amp;affiche_adresse_resp=y";
-		$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank' title=\"Une fiche bienvenue sera générée avec les informations login/mot de passe.\n\nLa fiche bienvenue comportera un cadre Adresse du responsable pour un envoi courrier papier.\">Idem avec adresse</a>";
+		if ($user['statut'] == "responsable") {
+			$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html&amp;affiche_adresse_resp=y";
+			$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank' title=\"Une fiche bienvenue sera générée avec les informations login/mot de passe.\n\nLa fiche bienvenue comportera un cadre Adresse du responsable pour un envoi courrier papier.\">Idem avec adresse</a>";
 
-		if((isset($user['mel']))&&(check_mail($user['mel']))) {
-			$retour.="<br /><a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
-			$retour.="&envoi_mail=y".add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank' title=\"Une fiche bienvenue sera générée avec les informations login/mot de passe.\nCette fiche sera affichée et envoyée par mail.\">Réinitialiser le mot de passe<br />et envoyer par mail à<br />".$user['mel']."</a><br />";
+			if((isset($user['mel']))&&(check_mail($user['mel']))) {
+				$retour.="<br /><a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
+				$retour.="&envoi_mail=y".add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank' title=\"Une fiche bienvenue sera générée avec les informations login/mot de passe.\nCette fiche sera affichée et envoyée par mail.\">Réinitialiser le mot de passe<br />et envoyer par mail à<br />".$user['mel']."</a><br />";
+			}
 		}
-	}
-	else {
-		if((isset($user['email']))&&(check_mail($user['email']))) {
-			$retour.="<br /><a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
-			$retour.="&envoi_mail=y".add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank' title=\"Une fiche bienvenue sera générée avec les informations login/mot de passe.\nCette fiche sera affichée et envoyée par mail.\">Réinitialiser le mot de passe<br />et envoyer par mail à<br />".$user['email']."</a><br />";
+		else {
+			if((isset($user['email']))&&(check_mail($user['email']))) {
+				$retour.="<br /><a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
+				$retour.="&envoi_mail=y".add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank' title=\"Une fiche bienvenue sera générée avec les informations login/mot de passe.\nCette fiche sera affichée et envoyée par mail.\">Réinitialiser le mot de passe<br />et envoyer par mail à<br />".$user['email']."</a><br />";
+			}
 		}
+		$retour.="</p>\n";
 	}
-	$retour.="</p>\n";
 
 	return $retour;
 }
