@@ -124,6 +124,15 @@ if((acces("/saisie/socle_import.php", $_SESSION["statut"]))&&
 
 echo "</p>";
 
+$gepiYear=getSettingValue("gepiYear");
+$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+
+echo "<h2>Import des saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
+
+if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
+	echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Année scolaire non définie dans Gestion générale/Configuration générale.</p>";
+}
+
 $max_per=0;
 $sql="SELECT MAX(num_periode) AS max_per FROM periodes;";
 $res_max=mysqli_query($mysqli, $sql);

@@ -5344,7 +5344,7 @@ function send_file_download_headers($content_type, $filename, $content_dispositi
  *
  */
 function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
-    global $mysqli;
+	global $mysqli;
 	if(is_array($destinataire)) {
 		$tab_dest=$destinataire;
 	}
@@ -15925,6 +15925,76 @@ function check_tables_modifiees() {
 			$sql="ALTER TABLE j_mep_eleve ADD date_insert DATETIME NOT NULL default '0000-00-00 00:00:00' AFTER periode;";
 			//echo "$sql<br />";
 			$query = mysqli_query($mysqli, $sql);
+		}
+	}
+
+	if((getSettingValue('version')=="1.7.1")||(getSettingValue('version')=="master")) {
+		// Ajouter le champ annee sur les tables socle_*
+
+		$gepiYear=getSettingValue("gepiYear");
+		$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+		if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
+			$gepiYear_debut="";
+		}
+
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM socle_eleves_composantes LIKE 'annee';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE socle_eleves_composantes ADD annee varchar(10) NOT NULL default '' AFTER cycle;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
+
+			$sql="SHOW INDEX FROM socle_eleves_composantes WHERE Key_name='ine';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				$sql="ALTER TABLE socle_eleves_composantes DROP INDEX ine;";
+				//echo "$sql<br />";
+				$query = mysqli_query($mysqli, $sql);
+			}
+
+			$sql="SHOW INDEX FROM socle_eleves_composantes WHERE Key_name='ine_cycle_id_composante_periode';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
+				$sql="ALTER TABLE socle_eleves_composantes ADD INDEX ine_cycle_id_composante_periode(ine,cycle,code_composante,annee);";
+				//echo "$sql<br />";
+				$query = mysqli_query($mysqli, $sql);
+			}
+			else {
+				$sql="ALTER TABLE socle_eleves_composantes DROP INDEX ine_cycle_id_composante_periode, ADD INDEX ine_cycle_id_composante_periode(ine,cycle,code_composante,annee);";
+				//echo "$sql<br />";
+				$query = mysqli_query($mysqli, $sql);
+			}
+
+			if($gepiYear_debut!="") {
+				$sql="UPDATE socle_eleves_composantes SET annee='".$gepiYear_debut."';";
+				//echo "$sql<br />";
+				$query = mysqli_query($mysqli, $sql);
+			}
+		}
+
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM socle_eleves_syntheses LIKE 'annee';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE socle_eleves_syntheses ADD annee varchar(10) NOT NULL default '' AFTER cycle;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
+
+			$sql="SHOW INDEX FROM socle_eleves_syntheses WHERE Key_name='ine_cycle';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
+				$sql="ALTER TABLE socle_eleves_syntheses ADD INDEX ine_cycle_annee(ine,cycle,annee);";
+				//echo "$sql<br />";
+				$query = mysqli_query($mysqli, $sql);
+			}
+			else {
+				$sql="ALTER TABLE socle_eleves_syntheses DROP INDEX ine_cycle, ADD INDEX ine_cycle_annee(ine,cycle,annee);";
+				//echo "$sql<br />";
+				$query = mysqli_query($mysqli, $sql);
+			}
+
+			if($gepiYear_debut!="") {
+				$sql="UPDATE socle_eleves_syntheses SET annee='".$gepiYear_debut."';";
+				//echo "$sql<br />";
+				$query = mysqli_query($mysqli, $sql);
+			}
 		}
 	}
 }

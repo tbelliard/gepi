@@ -74,6 +74,22 @@ if(!getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
 	}
 }
 */
+//==============================================================
+// Pour tenir compte d'un ajout de champ 'annee' oublié en 1.7.1
+check_tables_modifiees();
+//==============================================================
+
+$gepiYear=getSettingValue("gepiYear");
+$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
+	header("Location: ../accueil.php?msg=Année scolaire non définie dans Gestion générale/Configuration générale.");
+	die();
+}
+
+//==============================================================
+// Pour tenir compte d'un ajout de champ 'annee' oublié en 1.7.1
+check_tables_modifiees();
+//==============================================================
 
 $msg="";
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -161,6 +177,8 @@ if(!isset($id_classe)) {
 	echo "</p>
 </form>";
 
+	echo "<h2>Import des saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
+
 	if(count($tab_mes_classes)>0) {
 		$nbcol=3;
 
@@ -188,7 +206,9 @@ elseif(!isset($periode)) {
 	echo "</p>
 </form>";
 
-	echo "<h2>Vérification du remplissage des Composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h2>";
+	echo "<h2>Import des saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
+
+	echo "<h3>Vérification du remplissage des Composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h3>";
 	$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
 	$res_max=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_max)==0) {
@@ -220,11 +240,18 @@ elseif(!isset($periode)) {
 }
 
 if((acces("/saisie/saisie_socle.php", $_SESSION["statut"]))&&(getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"]))) {
-	echo " | <a href=\"saisie_socle.php?id_classe=$id_classe&periode=$periode\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+	if((getSettingAOui("SocleSaisieComposantes_PP"))&&(is_pp($_SESSION["login"],$id_classe))) {
+		echo " | <a href=\"saisie_socle.php?id_classe=$id_classe&periode=$periode\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+	}
+	else {
+		echo " | <a href=\"saisie_socle.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+	}
 }
 
 $classe=get_nom_classe($id_classe);
 echo " | <a href=\"socle_verif.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre classe</a>
+ | <a href=\"socle_verif.php?id_classe=$id_classe\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre période de $classe</a>
+ | Même période&nbsp;:
 <input type='hidden' name='periode' value='$periode' />
  <select name='id_classe' onchange=\"document.getElementById('form_choix_classe').submit();\">";
 for($loop=0;$loop<count($tab_mes_classes);$loop++) {
@@ -240,7 +267,9 @@ echo "
 </p>
 </form>
 
-<h2>".$classe." (période $periode)</h2>";
+<h2>Import des saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>
+
+<h3>".$classe." (période $periode)</h3>";
 
 $tab_ele_saisie_incomplete=array();
 $sql="SELECT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' AND jec.periode='$periode' ORDER BY e.nom, e.prenom;";
@@ -262,7 +291,7 @@ if(mysqli_num_rows($res)>0) {
 		}
 		else {
 			foreach($tab_domaine_socle as $code => $libelle) {
-				$sql="SELECT 1=1 FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND code_composante='".$code."' AND periode='$periode';";
+				$sql="SELECT 1=1 FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND code_composante='".$code."' AND periode='$periode' AND annee='".$gepiYear_debut."';";
 				//echo "$sql<br />";
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
@@ -273,7 +302,7 @@ if(mysqli_num_rows($res)>0) {
 				}
 			}
 
-			$sql="SELECT 1=1 FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND synthese!='';";
+			$sql="SELECT 1=1 FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND synthese!='' AND annee='".$gepiYear_debut."';";
 			//echo "$sql<br />";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)==0) {
