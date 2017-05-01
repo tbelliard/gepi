@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -107,7 +107,7 @@ function get_tab_utilisateurs_responsables_fantomes() {
 	$retour=array();
 
 	$sql="select login from utilisateurs where statut='responsable' and login not in (select login from resp_pers);";
-	$res=mysqli_query($GLOBALS["mysqli"], $sq);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$retour[]=$lig->login;
@@ -127,8 +127,43 @@ function menage_utilisateurs_responsables() {
 	}
 }
 
+function get_tab_utilisateurs_responsables_sans_eleve() {
+	$retour=array();
+	$sql="SELECT * FROM utilisateurs WHERE statut='responsable' AND 
+								login NOT IN (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e
+													WHERE rp.pers_id=r.pers_id AND 
+														r.ele_id=e.ele_id);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour[]=$lig->login;
+		}
+	}
+	return $retour;
+}
+
+function get_tab_utilisateurs_responsables_actifs_sans_eleve() {
+	$retour=array();
+	$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND 
+								statut='responsable' AND 
+								login NOT IN (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e
+													WHERE rp.pers_id=r.pers_id AND 
+														r.ele_id=e.ele_id);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour[]=$lig->login;
+		}
+	}
+	return $retour;
+}
+
 function desactivation_utilisateurs_responsables_sans_eleve() {
-	$sql="update utilisateurs set statut='inactif' where statut='responsable' and login not in (select login from resp_pers);";
+	$sql="UPDATE utilisateurs SET etat='inactif' 
+					WHERE statut='responsable' AND 
+						login NOT IN (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e
+											WHERE rp.pers_id=r.pers_id AND 
+												r.ele_id=e.ele_id);";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		return false;
@@ -138,8 +173,66 @@ function desactivation_utilisateurs_responsables_sans_eleve() {
 	}
 }
 
+function suppression_utilisateurs_responsables_sans_eleve() {
+	$sql="DELETE FROM utilisateurs WHERE statut='responsable' AND 
+						login NOT IN (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e
+											WHERE rp.pers_id=r.pers_id AND 
+												r.ele_id=e.ele_id);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(!$res) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+function get_tab_utilisateurs_responsables_sans_eleve_scolarise() {
+	$retour=array();
+	$sql="SELECT * FROM utilisateurs WHERE statut='responsable' AND 
+								login NOT IN (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec 
+													WHERE rp.pers_id=r.pers_id AND 
+														r.ele_id=e.ele_id AND 
+														e.login=jec.login);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour[]=$lig->login;
+		}
+	}
+	return $retour;
+}
+
+function get_tab_utilisateurs_responsables_actifs_sans_eleve_scolarise() {
+	$retour=array();
+	$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND 
+								statut='responsable' AND 
+								login NOT IN (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec 
+													WHERE rp.pers_id=r.pers_id AND 
+														r.ele_id=e.ele_id AND 
+														e.login=jec.login);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour[]=$lig->login;
+		}
+	}
+	return $retour;
+}
+
 function desactivation_utilisateurs_responsables_sans_eleve_scolarise() {
-	$sql="update utilisateurs set statut='inactif' where statut='responsable' and login in (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes));";
+	$sql="update utilisateurs set etat='inactif' where statut='responsable' and login in (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes));";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(!$res) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+function suppression_utilisateurs_responsables_sans_eleve_scolarise() {
+	$sql="DELETE FROM utilisateurs WHERE statut='responsable' and login in (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes));";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		return false;
@@ -153,7 +246,7 @@ function get_tab_utilisateurs_eleves_fantomes() {
 	$retour=array();
 
 	$sql="select login from utilisateurs where statut='eleve' and login not in (select login from eleves);";
-	$res=mysqli_query($GLOBALS["mysqli"], $sq);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$retour[]=$lig->login;
@@ -171,6 +264,19 @@ function menage_utilisateurs_eleves() {
 	else {
 		return true;
 	}
+}
+
+function get_tab_scories_droits_utilisateurs_autres() {
+	$retour=array();
+
+	$sql="select login_user AS login from droits_utilisateurs where login_user NOT IN (SELECT login FROM utilisateurs WHERE statut='autre');";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour[]=$lig->login;
+		}
+	}
+	return $retour;
 }
 
 function menage_droits_utilisateurs_autres() {
@@ -3234,6 +3340,8 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$texte_info_action="<h2>Vérification des préférences utilisateurs</h2>\n";
 	}
 
+	$temoin_suppression_message_page_accueil="y";
+
 	$sql="SELECT 1=1 FROM preferences WHERE login NOT IN (SELECT login FROM utilisateurs);";
 	//echo "$sql<br />\n";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -3250,6 +3358,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 		else {
 			$texte_info_action.="<p style='color:red'>Erreur lors de la suppression.</p>\n";
+			$temoin_suppression_message_page_accueil="n";
 		}
 	}
 	echo $texte_info_action;
@@ -3272,6 +3381,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		}
 		else {
 			$texte_info_action.="<p style='color:red'>Erreur lors de la suppression.</p>\n";
+			$temoin_suppression_message_page_accueil="n";
 		}
 	}
 	echo $texte_info_action;
@@ -3304,19 +3414,14 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 						}
 						else {
 							$texte_info_action.="<span style='color:red'>ERREUR&nbsp;: $sql</span><br />";
+							$temoin_suppression_message_page_accueil="n";
 						}
 					}
 				}
 			}
-		}
-		if($cpt_menage>0) {
-			$texte_info_action.=$cpt_menage." préférences dédoublonnées.<br />";
 
-			$sql="SELECT * FROM infos_actions WHERE titre='Préférences utilisateurs en doublon';";
-			//echo "$sql<br />\n";
-			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			while($lig=mysqli_fetch_object($res)) {
-				del_info_action($lig->id);
+			if($cpt_menage>0) {
+				$texte_info_action.=$cpt_menage." préférences dédoublonnées.<br />";
 			}
 		}
 		echo $texte_info_action;
@@ -3343,12 +3448,14 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			}
 			else {
 				$texte_info_action="<span style='color:red'>ERREUR lors de l'ajout d'une clé primaire sur la table 'preferences'&nbsp;:<br />$sql</span><br />";
+				$temoin_suppression_message_page_accueil="n";
 			}
 			echo $texte_info_action;
 			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
 	}
 	else {
+		$temoin_suppression_message_page_accueil="n";
 
 		$texte_info_action="<p>Des préférences sont en doublon.</p>
 	<table class='boireaus'>
@@ -3408,6 +3515,15 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 </form>";
 	}
 
+
+	if($temoin_suppression_message_page_accueil=="y") {
+		$sql="SELECT * FROM infos_actions WHERE titre='Préférences utilisateurs en doublon';";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			del_info_action($lig->id);
+		}
+	}
 
 
 	$texte_info_action="<hr />\n";
@@ -3824,6 +3940,301 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	echo "<p>Terminé.</p>\n";
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'correction_tables_utilisateurs') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Nettoyage des tables des 'utilisateurs'</b></p>\n";
+
+	if(isset($_POST["menage_utilisateurs_responsables"])) {
+		// Nettoyer...
+		echo "<p>Suppression des comptes utilisateurs responsables sans identité dans la table 'resp_pers'&nbsp;: ";
+		if(menage_utilisateurs_responsables()) {
+			echo "<span style='color:green'>SUCCÈS</span>";
+		}
+		else {
+			echo "<span style='color:red'>ÉCHEC</span>";
+		}
+		echo "</p>";
+	}
+
+	if(isset($_POST["desactivation_utilisateurs_responsables_sans_eleve"])) {
+		// Nettoyer...
+		echo "<p>Désactivation des comptes utilisateurs responsables sans élève associé&nbsp;: ";
+		if(desactivation_utilisateurs_responsables_sans_eleve()) {
+			echo "<span style='color:green'>SUCCÈS</span>";
+		}
+		else {
+			echo "<span style='color:red'>ÉCHEC</span>";
+		}
+		echo "</p>";
+	}
+
+	if(isset($_POST["suppression_utilisateurs_responsables_sans_eleve"])) {
+		// Nettoyer...
+		echo "<p>Suppression des comptes utilisateurs responsables sans élève associé&nbsp;: ";
+		if(suppression_utilisateurs_responsables_sans_eleve()) {
+			echo "<span style='color:green'>SUCCÈS</span>";
+		}
+		else {
+			echo "<span style='color:red'>ÉCHEC</span>";
+		}
+		echo "</p>";
+	}
+
+	if(isset($_POST["desactivation_utilisateurs_responsables_sans_eleve_scolarise"])) {
+		// Nettoyer...
+		echo "<p>Désactivation des comptes utilisateurs responsables sans élève scolarisé associé&nbsp;: ";
+		if(desactivation_utilisateurs_responsables_sans_eleve_scolarise()) {
+			echo "<span style='color:green'>SUCCÈS</span>";
+		}
+		else {
+			echo "<span style='color:red'>ÉCHEC</span>";
+		}
+		echo "</p>";
+	}
+
+	if(isset($_POST["suppression_utilisateurs_responsables_sans_eleve_scolarise"])) {
+		// Nettoyer...
+		echo "<p>Suppression des comptes utilisateurs responsables sans élève scolarisé associé&nbsp;: ";
+		if(suppression_utilisateurs_responsables_sans_eleve_scolarise()) {
+			echo "<span style='color:green'>SUCCÈS</span>";
+		}
+		else {
+			echo "<span style='color:red'>ÉCHEC</span>";
+		}
+		echo "</p>";
+	}
+
+	if(isset($_POST["menage_utilisateurs_eleves"])) {
+		// Nettoyer...
+		echo "<p>Suppression des comptes élèves fantômes&nbsp;: ";
+		if(menage_utilisateurs_eleves()) {
+			echo "<span style='color:green'>SUCCÈS</span>";
+		}
+		else {
+			echo "<span style='color:red'>ÉCHEC</span>";
+		}
+		echo "</p>";
+	}
+
+	if(isset($_POST["menage_droits_utilisateurs_autres"])) {
+		// Nettoyer...
+		echo "<p>Suppression des scories droits_utilisateurs pour les statuts 'autre'&nbsp;: ";
+		if(menage_droits_utilisateurs_autres()) {
+			echo "<span style='color:green'>SUCCÈS</span>";
+		}
+		else {
+			echo "<span style='color:red'>ÉCHEC</span>";
+		}
+		echo "</p>";
+	}
+
+	$tab_utilisateurs=array();
+	$sql="SELECT login FROM utilisateurs;";
+	$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_u)>0) {
+		while($lig_u=mysqli_fetch_object($res_u)) {
+			$tab_utilisateurs[]=$lig_u->login;
+		}
+	}
+
+	$temoin_scories=0;
+	echo "<form action='".$_SERVER["PHP_SELF"]."' method='post'>
+	".add_token_field()."
+	<input type='hidden' name='action' value='correction_tables_utilisateurs' />
+	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>Recherche des comptes utilisateurs responsables sans identité dans la table 'resp_pers'&nbsp;:<br />";
+	$tab_responsables_fantomes=get_tab_utilisateurs_responsables_fantomes();
+	if(count($tab_responsables_fantomes)==0) {
+		echo "
+	Tous les comptes utilisateurs responsables correspondent à des personnes présentes dans la table 'resp_pers'.";
+	}
+	else {
+		$temoin_scories++;
+		echo "
+	<span style='color:red'>".count($tab_responsables_fantomes)." compte(s) utilisateur(s) responsable(s) ne correspond(ent) à personne dans la table 'resp_pers'&nbsp;:<br />";
+		for($loop=0;$loop<count($tab_responsables_fantomes);$loop++) {
+			if($loop>0) {
+				echo ", ";
+			}
+			echo $tab_responsables_fantomes[$loop];
+		}
+		echo "</span><br />
+	<input type='checkbox' name='menage_utilisateurs_responsables' id='menage_utilisateurs_responsables' value='y' /><label for='menage_utilisateurs_responsables'> Désactiver ces comptes utilisateurs.</label>";
+	}
+	echo "</p>
+
+
+
+
+	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>Recherche des comptes utilisateurs responsables actifs sans élève associé&nbsp;:<br />";
+	$tab=get_tab_utilisateurs_responsables_actifs_sans_eleve();
+	if(count($tab)==0) {
+		echo "
+	Tous les comptes utilisateurs responsables actifs sont liés à des élèves <em>(éventuellement non scolarisés dans une classe)</em>.";
+	}
+	else {
+		$temoin_scories++;
+		echo "
+	<span style='color:red'>".count($tab)." compte(s) utilisateur(s) responsable(s) actif(s) ne sont pas liés à des élèves <em>(même non scolarisés dans une classe)</em>&nbsp;:<br />";
+		for($loop=0;$loop<count($tab);$loop++) {
+			if($loop>0) {
+				echo ", ";
+			}
+			if(!in_array($tab[$loop], $tab_responsables_fantomes)) {
+				echo "<a href='../responsables/modify_resp.php?login_resp=".$tab[$loop]."' target='_blank'>".$tab[$loop]."</a>";
+			}
+			else {
+				echo $tab[$loop];
+			}
+		}
+		echo "</span><br />
+	<input type='checkbox' name='desactivation_utilisateurs_responsables_sans_eleve' id='desactivation_utilisateurs_responsables_sans_eleve' value='y' /><label for='desactivation_utilisateurs_responsables_sans_eleve'> Désactiver ces comptes utilisateurs.</label>";
+	}
+	echo "</p>
+
+	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>Recherche des comptes utilisateurs responsables sans élève associé&nbsp;:<br />";
+	$tab=get_tab_utilisateurs_responsables_sans_eleve();
+	if(count($tab)==0) {
+		echo "
+	Tous les comptes utilisateurs responsables sont liés à des élèves <em>(éventuellement non scolarisés dans une classe)</em>.";
+	}
+	else {
+		$temoin_scories++;
+		echo "
+	<span style='color:red'>".count($tab)." compte(s) utilisateur(s) responsable(s) ne sont pas liés à des élèves <em>(même non scolarisés dans une classe)</em>&nbsp;:<br />";
+		for($loop=0;$loop<count($tab);$loop++) {
+			if($loop>0) {
+				echo ", ";
+			}
+			if(!in_array($tab[$loop], $tab_responsables_fantomes)) {
+				echo "<a href='../responsables/modify_resp.php?login_resp=".$tab[$loop]."' target='_blank'>".$tab[$loop]."</a>";
+			}
+			else {
+				echo $tab[$loop];
+			}
+		}
+		echo "</span><br />
+	<input type='checkbox' name='suppression_utilisateurs_responsables_sans_eleve' id='suppression_utilisateurs_responsables_sans_eleve' value='y' /><label for='suppression_utilisateurs_responsables_sans_eleve'> Supprimer ces comptes utilisateurs.</label>";
+	}
+	echo "</p>
+
+
+
+
+
+	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>Recherche des comptes utilisateurs responsables actifs sans élève <em>(scolarisé dans une classe)</em> associé&nbsp;:<br />";
+	$tab=get_tab_utilisateurs_responsables_actifs_sans_eleve_scolarise();
+	if(count($tab)==0) {
+		echo "
+	Tous les comptes utilisateurs responsables actifs sont liés à des élèves scolarisés dans une classe.";
+	}
+	else {
+		$temoin_scories++;
+		echo "
+	<span style='color:red'>".count($tab)." compte(s) utilisateur(s) responsable(s) actif(s) ne sont pas liés à des élèves scolarisés dans une classe&nbsp;:<br />";
+		for($loop=0;$loop<count($tab);$loop++) {
+			if($loop>0) {
+				echo ", ";
+			}
+			if(!in_array($tab[$loop], $tab_responsables_fantomes)) {
+				echo "<a href='../responsables/modify_resp.php?login_resp=".$tab[$loop]."' target='_blank'>".$tab[$loop]."</a>";
+			}
+			else {
+				echo $tab[$loop];
+			}
+		}
+		echo "</span><br />
+	<input type='checkbox' name='desactivation_utilisateurs_responsables_sans_eleve_scolarise' id='desactivation_utilisateurs_responsables_sans_eleve_scolarise' value='y' /><label for='desactivation_utilisateurs_responsables_sans_eleve_scolarise'> Désactiver ces comptes utilisateurs.</label>";
+	}
+	echo "</p>
+
+	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>Recherche des comptes utilisateurs responsables sans élève <em>(scolarisé dans une classe)</em> associé&nbsp;:<br />";
+	$tab=get_tab_utilisateurs_responsables_sans_eleve_scolarise();
+	if(count($tab)==0) {
+		echo "
+	Tous les comptes utilisateurs responsables sont liés à des élèves scolarisés dans une classe.";
+	}
+	else {
+		$temoin_scories++;
+		echo "
+	<span style='color:red'>".count($tab)." compte(s) utilisateur(s) responsable(s) ne sont pas liés à des élèves scolarisés dans une classe&nbsp;:<br />";
+		for($loop=0;$loop<count($tab);$loop++) {
+			if($loop>0) {
+				echo ", ";
+			}
+			if(!in_array($tab[$loop], $tab_responsables_fantomes)) {
+				echo "<a href='../responsables/modify_resp.php?login_resp=".$tab[$loop]."' target='_blank'>".$tab[$loop]."</a>";
+			}
+			else {
+				echo $tab[$loop];
+			}
+		}
+		echo "</span><br />
+	<input type='checkbox' name='suppression_utilisateurs_responsables_sans_eleve_scolarise' id='suppression_utilisateurs_responsables_sans_eleve_scolarise' value='y' /><label for='suppression_utilisateurs_responsables_sans_eleve_scolarise'> Supprimer ces comptes utilisateurs.</label>";
+	}
+	echo "</p>
+
+
+
+
+	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>Recherche des comptes utilisateurs élèves sans élève associé dans la table 'eleves'&nbsp;:<br />";
+	$tab=get_tab_utilisateurs_eleves_fantomes();
+	if(count($tab)==0) {
+		echo "
+	Tous les comptes utilisateurs eleves correspondent à des élèves de la table 'eleves'.";
+	}
+	else {
+		$temoin_scories++;
+		echo "
+	<span style='color:red'>".count($tab)." compte(s) utilisateur(s) élèves(s) ne correspondent pas à des élèves de la table 'eleves'&nbsp;:<br />";
+		for($loop=0;$loop<count($tab);$loop++) {
+			if($loop>0) {
+				echo ", ";
+			}
+			echo $tab[$loop];
+		}
+		echo "</span><br />
+	<input type='checkbox' name='menage_utilisateurs_eleves' id='menage_utilisateurs_eleves' value='y' /><label for='menage_utilisateurs_eleves'> Supprimer ces comptes élèves fantomes.</label>";
+	}
+	echo "</p>
+
+	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>Recherche des scories de droits_utilisateurs 'autres' qui n'existent plus dans la table 'utilisateurs'&nbsp;:<br />";
+	$tab=get_tab_scories_droits_utilisateurs_autres();
+	if(count($tab)==0) {
+		echo "
+	Pas de scorie trouvée.";
+	}
+	else {
+		$temoin_scories++;
+		echo "
+	<span style='color:red'>".count($tab)." scories(s) à supprimer concernant&nbsp;:<br />";
+		for($loop=0;$loop<count($tab);$loop++) {
+			if($loop>0) {
+				echo ", ";
+			}
+			if(in_array($tab[$loop], $tab_utilisateurs)) {
+				echo "<a href='../utilisateurs/modify_user.php?user_login=".$tab[$loop]."' target='_blank'>".$tab[$loop]."</a>";
+			}
+			else {
+				echo $tab[$loop];
+			}
+		}
+		echo "</span><br />
+	<input type='checkbox' name='menage_droits_utilisateurs_autres' id='menage_droits_utilisateurs_autres' value='y' /><label for='menage_droits_utilisateurs_autres'> Supprimer ces scories.</label>";
+	}
+	echo "</p>";
+	if($temoin_scories>0) {
+		echo "<p style='margin-top:1em;'><input type='submit' value='Effectuer les nettoyages cochés' /></p>
+<p style='margin-top:1em;margin-left:4em;text-indent:-4em;'><em>NOTE&nbsp;:</em> Les actions sur les comptes utilisateurs responsables ou élèves ne supprime ni les responsables, ni les élèves.<br />Elles n'ont d'impact que sur les comptes utilisateurs permettant de se connecter dans Gepi.</p>";
+	}
+	else {
+		echo "<p style='margin-top:1em;'>Terminé.</p>\n";
+	}
+	echo "
+	</form>";
+
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'nettoyage_cdt') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -4459,6 +4870,18 @@ else {
 		echo "</form>\n";
 
 		echo "<hr />\n";
+
+		echo "<a name='correction_tables_utilisateurs'></a><p>Corrections sur les tables utilisateurs.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Corrections sur les tables utilisateurs\" />\n";
+		echo "<input type='hidden' name='action' value='correction_tables_utilisateurs' />\n";
+		echo "</center>\n";
+		echo "</form>\n";
+
+		echo "<hr />\n";
+
 
 	echo "</div>\n";
 
