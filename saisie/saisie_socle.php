@@ -95,6 +95,18 @@ if(($_SESSION['statut']=="professeur")&&(isset($id_classe))&&
 	unset($id_classe);
 }
 
+$gepiYear=getSettingValue("gepiYear");
+$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
+	header("Location: ../accueil.php?msg=Année scolaire non définie dans Gestion générale/Configuration générale.");
+	die();
+}
+
+//==============================================================
+// Pour tenir compte d'un ajout de champ 'annee' oublié en 1.7.1
+check_tables_modifiees();
+//==============================================================
+
 // Etat d'ouverture ou non des saisies
 $max_per=0;
 $sql="SELECT MAX(num_periode) AS max_per FROM periodes;";
@@ -214,12 +226,12 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 							$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de la classe.<br />";
 						}
 						else {
-							$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
+							$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."' AND annee='".$gepiYear_debut."';";
 							//echo "$sql<br />";
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
 								if($valeur!="") {
-									$sql="INSERT INTO socle_eleves_composantes SET ine='".$ine."', cycle='".$cycle."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
+									$sql="INSERT INTO socle_eleves_composantes SET ine='".$ine."', cycle='".$cycle."', annee='".$gepiYear_debut."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
 									//echo "$sql<br />";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
@@ -269,10 +281,10 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 									if($enregistrer_valeur=="y") {
 										if($valeur=="") {
-											$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
+											$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."' AND annee='".$gepiYear_debut."';";
 										}
 										else {
-											$sql="UPDATE socle_eleves_composantes SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
+											$sql="UPDATE socle_eleves_composantes SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."' AND code_composante='".$code."' AND periode='".$periode."';";
 										}
 										//echo "$sql<br />";
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -353,13 +365,14 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 								$synthese=$NON_PROTECT["synthese_".$ine."_".$cycle];
 								$synthese=trim(suppression_sauts_de_lignes_surnumeraires($synthese));
 
-								$sql="SELECT * FROM socle_eleves_syntheses WHERE ine='".$ine."' AND cycle='".$cycle."';";
+								$sql="SELECT * FROM socle_eleves_syntheses WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."';";
 								//echo "$sql<br />";
 								$test=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test)==0) {
 									if($synthese!="") {
 										$sql="INSERT INTO socle_eleves_syntheses SET ine='".$ine."', 
 													cycle='".$cycle."', 
+													annee='".$gepiYear_debut."', 
 													synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $synthese)."', 
 													login_saisie='".$_SESSION['login']."', 
 													date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
@@ -379,7 +392,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 									if($synthese=="") {
 										if($forcer=="y") {
-											$sql="DELETE FROM socle_eleves_syntheses WHERE ine='".$ine."' AND cycle='".$cycle."';";
+											$sql="DELETE FROM socle_eleves_syntheses WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."';";
 											//echo "$sql<br />";
 											$del=mysqli_query($GLOBALS["mysqli"], $sql);
 											if($del) {
@@ -395,7 +408,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 										$sql="UPDATE socle_eleves_syntheses SET synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $synthese)."', 
 														login_saisie='".$_SESSION['login']."', 
 														date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
-													WHERE ine='".$ine."' AND cycle='".$cycle."';";
+													WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."';";
 										//echo "$sql<br />";
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
 										if($update) {
@@ -475,12 +488,12 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 							$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de la classe.<br />";
 						}
 						else {
-							$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
+							$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."' AND annee='".$gepiYear_debut."';";
 							//echo "$sql<br />";
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
 								if($valeur!="") {
-									$sql="INSERT INTO socle_eleves_composantes SET ine='".$ine."', cycle='".$cycle."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
+									$sql="INSERT INTO socle_eleves_composantes SET ine='".$ine."', cycle='".$cycle."', annee='".$gepiYear_debut."', code_composante='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
 									//echo "$sql<br />";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
@@ -530,10 +543,10 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 									if($enregistrer_valeur=="y") {
 										if($valeur=="") {
-											$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
+											$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."' AND annee='".$gepiYear_debut."';";
 										}
 										else {
-											$sql="UPDATE socle_eleves_composantes SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_composante='".$code."' AND periode='".$periode."';";
+											$sql="UPDATE socle_eleves_composantes SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."' AND code_composante='".$code."' AND periode='".$periode."';";
 										}
 										//echo "$sql<br />";
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -570,13 +583,14 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 								$synthese=$NON_PROTECT["synthese_".$ine."_".$cycle];
 								$synthese=trim(suppression_sauts_de_lignes_surnumeraires($synthese));
 
-								$sql="SELECT * FROM socle_eleves_syntheses WHERE ine='".$ine."' AND cycle='".$cycle."';";
+								$sql="SELECT * FROM socle_eleves_syntheses WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."';";
 								//echo "$sql<br />";
 								$test=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test)==0) {
 									if($synthese!="") {
 										$sql="INSERT INTO socle_eleves_syntheses SET ine='".$ine."', 
 													cycle='".$cycle."', 
+													annee='".$gepiYear_debut."', 
 													synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $synthese)."', 
 													login_saisie='".$_SESSION['login']."', 
 													date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
@@ -596,7 +610,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 									if($synthese=="") {
 										if($forcer=="y") {
-											$sql="DELETE FROM socle_eleves_syntheses WHERE ine='".$ine."' AND cycle='".$cycle."';";
+											$sql="DELETE FROM socle_eleves_syntheses WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."';";
 											//echo "$sql<br />";
 											$del=mysqli_query($GLOBALS["mysqli"], $sql);
 											if($del) {
@@ -612,7 +626,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 										$sql="UPDATE socle_eleves_syntheses SET synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $synthese)."', 
 														login_saisie='".$_SESSION['login']."', 
 														date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
-													WHERE ine='".$ine."' AND cycle='".$cycle."';";
+													WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."';";
 										//echo "$sql<br />";
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
 										if($update) {
@@ -672,6 +686,9 @@ if((acces("/saisie/socle_import.php", $_SESSION["statut"]))&&
 if($_SESSION['statut']=="professeur") {
 	if((!isset($id_groupe))&&(!isset($id_classe))) {
 		echo "</p>";
+
+		echo "<h2>Saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
+
 		// Choix du groupe
 
 		/*
@@ -760,8 +777,10 @@ if($_SESSION['statut']=="professeur") {
 	}
 	elseif(!isset($periode)) {
 
+		echo "<h2>Saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
+
 		if(isset($id_classe)) {
-			echo "<h2>Saisie des composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h2>";
+			echo "<h3>Saisie des composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h3>";
 			$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
 			$res_max=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($res_max)==0) {
@@ -782,7 +801,7 @@ if($_SESSION['statut']=="professeur") {
 			echo "</p>";
 		}
 		else {
-			echo "<h2>Saisie des composantes du socle pour l'enseignement de ".get_info_grp($id_groupe)."</h2>";
+			echo "<h3>Saisie des composantes du socle pour l'enseignement de ".get_info_grp($id_groupe)."</h3>";
 			$sql="SELECT MAX(periode) AS max_per FROM j_eleves_groupes WHERE id_groupe='$id_groupe';";
 			$res_max=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($res_max)==0) {
@@ -810,6 +829,9 @@ if($_SESSION['statut']=="professeur") {
 else {
 	if(!isset($id_classe)) {
 		echo "</p>";
+
+		echo "<h2>Saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
+
 		// Choix de la classe
 
 		/*
@@ -870,7 +892,9 @@ else {
 	}
 	elseif(!isset($periode)) {
 
-		echo "<h2>Saisie des composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h2>";
+		echo "<h2>Saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
+
+		echo "<h3>Saisie des composantes du socle pour la classe de ".get_nom_classe($id_classe)."</h3>";
 		$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
 		$res_max=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res_max)==0) {
@@ -910,6 +934,8 @@ echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (th
  | <a href='".$_SERVER['PHP_SELF']."?".$complement_url_retour."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre période</a>
 </p>";
 
+echo "<h2>Saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
+
 if(!$SocleOuvertureSaisieComposantes) {
 	echo "\n<p style='color:red'>La saisie/modification des bilans de composantes du socle est fermée en période $periode.<br />Seule la consultation des saisies est possible.</p>";
 }
@@ -928,10 +954,14 @@ if($SocleOuvertureSaisieComposantes) {
 if(isset($id_groupe)) {
 	echo "\n<h2>".get_info_grp($id_groupe)." (période $periode)</h2>";
 
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// A REVOIR POUR RECUPERER LES SAISIES D ANNEES PRECEDENTES
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	// Récupérer les saisies antérieures
 	$tab_civ_nom_prenom=array();
 	$tab_saisies=array();
-	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND sec.periode=jeg.periode AND sec.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."';";
+	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND sec.periode=jeg.periode AND sec.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."' AND annee='".$gepiYear_debut."';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -944,7 +974,7 @@ if(isset($id_groupe)) {
 	}
 
 	$tab_syntheses=array();
-	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses ses, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND ses.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."';";
+	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses ses, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND ses.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."' AND annee='".$gepiYear_debut."';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -989,6 +1019,7 @@ if(isset($id_groupe)) {
 
 			$tab_niveaux_eleves_enseignement_complement=array();
 
+			// A VOIR : Si on fait un TRUNCATE au lieu d'un DELETE sur les groupes au changement d'année, on risque de ré-attribuer des id_groupe correspondant à des valeurs de socle_eleves_enseignements_complements
 			$sql="SELECT * FROM socle_eleves_enseignements_complements 
 							WHERE id_groupe='".$id_groupe."';";
 			$res_ec=mysqli_query($mysqli, $sql);
@@ -1081,11 +1112,11 @@ if(isset($id_groupe)) {
 					<th rowspan='2'>Période<br />précédente</th>" : "")."
 				</tr>
 				<tr>
-					<th title='Non encore défini'>X</th>
-					<th title='Maitrise Insuffisante' style='color:red'>MI</th>
-					<th title='Maitrise Fragile' style='color:orange'>MF</th>
-					<th title='Maitrise Satisfaisante' style='color:green'>MS</th>
-					<th title='Très Bonne Maitrise' style='color:blue'>TBM</th>
+					<th title='Non encore défini' onclick=\"coche_colonne_ele($cpt_ele, 0)\">X</th>
+					<th title='Maitrise Insuffisante' style='color:red' onclick=\"coche_colonne_ele($cpt_ele, 1)\">MI</th>
+					<th title='Maitrise Fragile' style='color:orange' onclick=\"coche_colonne_ele($cpt_ele, 2)\">MF</th>
+					<th title='Maitrise Satisfaisante' style='color:green' onclick=\"coche_colonne_ele($cpt_ele, 3)\">MS</th>
+					<th title='Très Bonne Maitrise' style='color:blue' onclick=\"coche_colonne_ele($cpt_ele, 4)\">TBM</th>
 				</tr>
 			</thead>
 			<tbody>";
@@ -1185,34 +1216,36 @@ if(isset($id_groupe)) {
 		</table>";
 
 				// 20170302
-				if($enseignement_complement) {
-					//$tab_types_enseignements_complement
-					$checked[0]=" checked";
-					$checked[1]="";
-					$checked[2]="";
-
-					$style[0]=" style='font-weight:bold'";
-					$style[1]="";
-					$style[2]="";
-					if(isset($tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"])) {
-						$style[0]="";
-						$style[1]="";
-						$style[2]="";
-
-						$checked[0]="";
+				if(($tab_cycle[$mef_code_ele]==4)&&($periode==3)) {
+					if($enseignement_complement) {
+						//$tab_types_enseignements_complement
+						$checked[0]=" checked";
 						$checked[1]="";
 						$checked[2]="";
 
-						$checked[$tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"]]=" checked";
-						$style[$tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"]]=" style='font-weight:bold'";
-					}
-					echo "
+						$style[0]=" style='font-weight:bold'";
+						$style[1]="";
+						$style[2]="";
+						if(isset($tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"])) {
+							$style[0]="";
+							$style[1]="";
+							$style[2]="";
+
+							$checked[0]="";
+							$checked[1]="";
+							$checked[2]="";
+
+							$checked[$tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"]]=" checked";
+							$style[$tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"]]=" style='font-weight:bold'";
+						}
+						echo "
 		<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de l'enseignement de complément (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")\">
 			<strong>Enseignement de complément&nbsp;:</strong> ".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["code"]." (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")<br />
 			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$lig->no_gep."_0' value='0'".$checked[0]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_2');\" /><label for='enseignement_complement_".$id_groupe."_".$lig->no_gep."_0' id='texte_enseignement_complement_".$id_groupe."_".$lig->no_gep."_0'".$style[0]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
 			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$lig->no_gep."_1' value='1'".$checked[1]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_2');\" /><label for='enseignement_complement_".$id_groupe."_".$lig->no_gep."_1' id='texte_enseignement_complement_".$id_groupe."_".$lig->no_gep."_1'".$style[1]."> Objectif atteint</label><br />
 			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$lig->no_gep."_2' value='2'".$checked[2]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_2');\" /><label for='enseignement_complement_".$id_groupe."_".$lig->no_gep."_2' id='texte_enseignement_complement_".$id_groupe."_".$lig->no_gep."_2'".$style[2].">Objectif dépassé</label>
 		</p>";
+					}
 				}
 
 				if($SocleSaisieSyntheses) {
@@ -1250,6 +1283,15 @@ if(isset($id_groupe)) {
 
 		<script type='text/javascript'>
 			".js_checkbox_change_style()."
+
+			function coche_colonne_ele(cpt_ele, niveau_maitrise) {
+				for(i=0;i<8;i++) {
+					if(document.getElementById('niveau_maitrise_'+cpt_ele+'_'+i+'_'+niveau_maitrise)) {
+						document.getElementById('niveau_maitrise_'+cpt_ele+'_'+i+'_'+niveau_maitrise).checked=true;
+						maj_couleurs_maitrise(cpt_ele,i);
+					}
+				}
+			}
 
 			var couleur_maitrise=new Array('black', 'red', 'orange', 'green', 'blue');
 			function maj_couleurs_maitrise(cpt_ele, cpt_domaine) {
@@ -1293,11 +1335,15 @@ if(isset($id_groupe)) {
 	}
 }
 elseif(isset($id_classe)) {
-	echo "<h2>Classe de ".get_nom_classe($id_classe)."</h2>";
+	echo "<h3>Classe de ".get_nom_classe($id_classe)." (période $periode)</h3>";
+
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// A REVOIR POUR RECUPERER LES SAISIES D ANNEES PRECEDENTES
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	// Récupérer les saisies antérieures
 	$tab_saisies=array();
-	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND sec.periode=jec.periode AND jec.id_classe='".$id_classe."';";
+	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND sec.periode=jec.periode AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."';";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
@@ -1311,7 +1357,7 @@ elseif(isset($id_classe)) {
 	}
 
 	$tab_syntheses=array();
-	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses ses, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND ses.ine=e.no_gep AND jec.id_classe='".$id_classe."';";
+	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses ses, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND ses.ine=e.no_gep AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -1325,7 +1371,7 @@ elseif(isset($id_classe)) {
 	}
 
 	// Récupérer la liste des élèves et leur cycle.
-	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$id_classe."' ORDER BY e.nom, e.prenom;";
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$id_classe."' AND jec.periode='".$periode."' ORDER BY e.nom, e.prenom;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red;'>Aucun élève n'a été trouvé pour cette classe.</p>";
@@ -1411,11 +1457,11 @@ elseif(isset($id_classe)) {
 					<th rowspan='2'>Période<br />précédente</th>" : "")."
 				</tr>
 				<tr>
-					<th title='Non encore défini'>X</th>
-					<th title='Maitrise Insuffisante' style='color:red'>MI</th>
-					<th title='Maitrise Fragile' style='color:orange'>MF</th>
-					<th title='Maitrise Satisfaisante' style='color:green'>MS</th>
-					<th title='Très Bonne Maitrise' style='color:blue'>TBM</th>
+					<th title='Non encore défini' onclick=\"coche_colonne_ele($cpt_ele, 0)\">X</th>
+					<th title='Maitrise Insuffisante' style='color:red' onclick=\"coche_colonne_ele($cpt_ele, 1)\">MI</th>
+					<th title='Maitrise Fragile' style='color:orange' onclick=\"coche_colonne_ele($cpt_ele, 2)\">MF</th>
+					<th title='Maitrise Satisfaisante' style='color:green' onclick=\"coche_colonne_ele($cpt_ele, 3)\">MS</th>
+					<th title='Très Bonne Maitrise' style='color:blue' onclick=\"coche_colonne_ele($cpt_ele, 4)\">TBM</th>
 				</tr>
 			</thead>
 			<tbody>";
@@ -1539,6 +1585,16 @@ elseif(isset($id_classe)) {
 		</div>
 
 		<script type='text/javascript'>
+
+			function coche_colonne_ele(cpt_ele, niveau_maitrise) {
+				for(i=0;i<8;i++) {
+					if(document.getElementById('niveau_maitrise_'+cpt_ele+'_'+i+'_'+niveau_maitrise)) {
+						document.getElementById('niveau_maitrise_'+cpt_ele+'_'+i+'_'+niveau_maitrise).checked=true;
+						maj_couleurs_maitrise(cpt_ele,i);
+					}
+				}
+			}
+
 			var couleur_maitrise=new Array('black', 'red', 'orange', 'green', 'blue');
 			function maj_couleurs_maitrise(cpt_ele, cpt_domaine) {
 				if(document.getElementById('td_libelle_'+cpt_ele+'_'+cpt_domaine)) {
