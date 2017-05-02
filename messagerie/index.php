@@ -1125,7 +1125,6 @@ CKEDITOR.replace('message',
 			attributes :
 			{
 				'style' : 'padding: 5px; margin-right: 5px',
-				'border' : '2',
 				'align' : 'left'
 			}
 		},
@@ -1135,7 +1134,6 @@ CKEDITOR.replace('message',
 			attributes :
 			{
 				'style' : 'padding: 5px; margin-left: 5px',
-				'border' : '2',
 				'align' : 'right'
 			}
 		}
