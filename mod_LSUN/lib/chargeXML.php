@@ -151,6 +151,7 @@ $xml->appendChild($items);
 		$donnees->appendChild($periodes);
 		
 		/*----- Disciplines -----*/
+		$tab_disciplines_global_deja=array();
 		$disciplines = $xml->createElement('disciplines');
 		while ($discipline = $listeDisciplines->fetch_object()){
 				$noeudDiscipline = $xml->createElement('discipline');
@@ -162,6 +163,16 @@ $xml->appendChild($items);
 				if($discipline->code_matiere=="") {
 					$msgErreur .= "La matière ".$discipline->nom_complet." a un code vide <em>(non rattaché à une <strong>nomenclature</strong>)</em>. Le XML ne va pas être valide. <a href='../matieres/modify_matiere.php?current_matiere=".$discipline->id_matiere."' target='_blank'>Corriger</a>.<br />";
 				}
+				else {
+
+					$matiere = "DI_".$discipline->code_matiere.$discipline->code_modalite_elect;
+					if(in_array($matiere, $tab_disciplines_global_deja)) {
+						//$sql="SELECT valeur FROM nomenclatures_valeurs WHERE code='".$discipline->code_matiere."' AND nom='libelle_edition';";
+						$msg_erreur_remplissage.="Plusieurs enseignements de <b>".get_valeur_champ("nomenclatures_valeurs", "code='".$discipline->code_matiere."' AND nom='libelle_edition'", "valeur")."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Ce n'est pas possible.<br />Il faut corriger.<br />";
+					}
+					$tab_disciplines_global_deja[]=$matiere;
+				}
+
 				$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
 					'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
 				foreach ($attributsDiscipline as $cle=>$valeur) {
@@ -576,6 +587,10 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br />";
 				}
 				$tab_disciplines_deja[]=$matiere;
+
+				if(!in_array($matiere, $tab_disciplines_global_deja)) {
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un enseignement de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la modalité (".$modalite.") non déclaré au niveau global pour la classe.<br />La différence ne porte peut-être que sur la modalité.<br />Cela risque de provoquer une erreur&nbsp;: <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>Voir les enseignements de l'élève</a> ou <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>contrôler et éventuellement forcer les modalités</a>.<br />";
+				}
 
 				$donneesProfs = getProfGroupe ($acquisEleve->id_groupe);
 				$prof = "";

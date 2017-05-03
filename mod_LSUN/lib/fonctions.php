@@ -481,7 +481,7 @@ function getModalite($groupe, $eleve, $mef_code, $code_matiere ) {
 			$retour = "";
 		}
 		else {
-			$msgErreur .= "Pas de modalité pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)." <em><a href=\"../../groupes/edit_eleves.php?id_groupe=$groupe\" target='_BLANK' title='Ne corriger que cet élève' >Corriger</a> ou <a href='../../gestion/gerer_modalites_election_enseignements.php'  target='_BLANK' title='Forcer la même modalité pour tous les élèves' >par lot</a></em> <br />";
+			$msgErreur .= "Pas de modalité pour la matière du groupe $groupe (".getMatiereGroupe($groupe).") pour l'élève ".get_nom_prenom_eleve($eleve)." <em><a href=\"../groupes/edit_eleves.php?id_groupe=$groupe\" target='_BLANK' title='Ne corriger que cet élève' >Corriger</a> ou <a href='../gestion/gerer_modalites_election_enseignements.php'  target='_BLANK' title='Forcer la même modalité pour tous les élèves' >par lot</a></em> <br />";
 			//$msgErreur .= $sqlMefGroupe.'<br>';
 			//$msgErreur .= $sqlModalite.'<br>';
 			$retour = "";
