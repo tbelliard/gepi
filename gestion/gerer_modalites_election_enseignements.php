@@ -449,6 +449,7 @@ echo "
 </blockquote>
 <hr />
 ".js_checkbox_change_style("checkbox_change", "texte_", "y")."
+<a name='forcer_modalites_telles_matieres'></a>
 <h3>Divers</h3>
 <blockquote>";
 
