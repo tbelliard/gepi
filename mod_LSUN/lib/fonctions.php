@@ -990,6 +990,7 @@ function assureDisciplinePresente($refDisciplines) {
 	//echo "recherché ".$refDisciplines.'<br>';
 	$listediscipline = $xml->getElementsByTagName('discipline');
 
+	$trouve = FALSE;
 	foreach($listediscipline as $discipline) {
 		$trouve = FALSE;
 		//echo $discipline->getAttribute("id")." → ";
