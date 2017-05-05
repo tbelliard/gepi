@@ -1081,8 +1081,8 @@ if(isset($id_groupe)) {
 		(getSettingAOui("SocleSaisieComposantesForcer_".$_SESSION["statut"]))) {
 			echo "
 		<p style='margin-left:2em;text-indent:-2em;'><input type='checkbox' name='forcer' id='forcer' value='y' /><label for='forcer'>Forcer les saisies <br />
-<em>(pour vider/baisser éventuellement les niveaux de maitrise en écrasant les saisies antérieures 
-<br />(les votres ou celles de collègues (à manipuler avec précaution, dans un soucis de bonne entente entre collègues)))</em>.</label></p>";
+<em>(pour vider/baisser éventuellement les niveaux de maîtrise en écrasant les saisies antérieures 
+<br />(les vôtres ou celles de collègues (à manipuler avec précaution, dans un souci de bonne entente entre collègues)))</em>.</label></p>";
 		}
 
 		$cpt_ele=0;
