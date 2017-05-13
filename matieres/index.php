@@ -25,103 +25,102 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 //debug_var();
 $msg = '';
 $error = false;
 if (isset($_POST['is_posted'])) {
-    // Les données ont été postées, on met à jour
-    check_token();
+	// Les données ont été postées, on met à jour
+	check_token();
 
-    $get_all_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT matiere, priority, categorie_id, code_matiere FROM matieres");
-    while ($row = mysqli_fetch_object($get_all_matieres)) {
-        // On passe les matières une par une et on met à jour
-        $varname_p = my_strtolower($row->matiere)."_priorite";
-        $varname_cm = my_strtolower($row->matiere)."_code_matiere";
+	$get_all_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT matiere, priority, categorie_id, code_matiere FROM matieres");
+	while ($row = mysqli_fetch_object($get_all_matieres)) {
+		// On passe les matières une par une et on met à jour
+		$varname_p = my_strtolower($row->matiere)."_priorite";
+		$varname_cm = my_strtolower($row->matiere)."_code_matiere";
 		//echo "<p>Test \$varname_p=$varname_p<br />";
-        if (isset($_POST[$varname_p])) {
+		if (isset($_POST[$varname_p])) {
 			//echo "isset(\$_POST[$varname_p]) oui<br />";
-            if (is_numeric($_POST[$varname_p])) {
+			if (is_numeric($_POST[$varname_p])) {
 				//echo "is_numeric(\$_POST[$varname_p]) oui<br />";
-            	// La valeur est correcte
-            	if ($_POST[$varname_p] != $row->priority) {
-                // On a une valeur différente. On met à jour.
-                    $res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET priority = '".$_POST[$varname_p] . "' WHERE matiere = '" . $row->matiere . "'");
-                    if (!$res) {
-                        $msg .= "<br/>Erreur lors de la mise à jour de la priorité de la matière ".$row->matiere.".";
-                        $error = true;
-                    }
-                }
-                // On met à jour toutes les priorités dans les classes si ça a été demandé
-                if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
-			        $sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$_POST[$varname_p]."' " .
-			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')";
+				// La valeur est correcte
+				if ($_POST[$varname_p] != $row->priority) {
+					// On a une valeur différente. On met à jour.
+					$res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET priority = '".$_POST[$varname_p] . "' WHERE matiere = '" . $row->matiere . "'");
+					if (!$res) {
+						$msg .= "<br/>Erreur lors de la mise à jour de la priorité de la matière ".$row->matiere.".";
+						$error = true;
+					}
+				}
+				// On met à jour toutes les priorités dans les classes si ça a été demandé
+				if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
+					$sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$_POST[$varname_p]."' " .
+								"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')";
 					//echo "$sql<br />";
 					$req = mysqli_query($GLOBALS["mysqli"], $sql);
-			        if (!$req) {
-			        	$msg .="<br/>Erreur lors de la mise à jour de la priorité de matière dans les classes pour la matière ".$row->matiere.".";
-			        	$error = true;
-			        }
-                }
-            }
-        }
+					if (!$req) {
+						$msg .="<br/>Erreur lors de la mise à jour de la priorité de matière dans les classes pour la matière ".$row->matiere.".";
+						$error = true;
+					}
+				}
+			}
+		}
 
-	if (isset($_POST[$varname_cm])) {
-		if (is_numeric($_POST[$varname_cm])) {
-			if ($_POST[$varname_cm] != $row->code_matiere) {
-				// On a une valeur différente. On met à jour.
-				$res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET code_matiere = '".$_POST[$varname_cm] . "' WHERE matiere = '" . $row->matiere . "'");
-				if (!$res) {
-					$msg .= "<br/>Erreur lors de la mise à jour du code_matiere de la matière ".$row->matiere.".";
-					$error = true;
+		if (isset($_POST[$varname_cm])) {
+			if ((is_numeric($_POST[$varname_cm]))||($_POST[$varname_cm]=="")) {
+				if ($_POST[$varname_cm] != $row->code_matiere) {
+					// On a une valeur différente. On met à jour.
+					$res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET code_matiere = '".$_POST[$varname_cm] . "' WHERE matiere = '" . $row->matiere . "'");
+					if (!$res) {
+						$msg .= "<br/>Erreur lors de la mise à jour du code_matiere de la matière ".$row->matiere.".";
+						$error = true;
+					}
+				}
+			}
+		}
+
+		// La même chose pour la catégorie de matière
+		$varname_c = my_strtolower($row->matiere)."_categorie";
+		if (isset($_POST[$varname_c])) {
+			if (is_numeric($_POST[$varname_c])) {
+				// On a une valeur correcte. On y va !
+				if ($_POST[$varname_c] != $row->categorie_id) {
+					// On a une valeur différente. On met à jour.
+					$res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET categorie_id = '".$_POST[$varname_c] . "' WHERE matiere = '" . $row->matiere . "'");
+					if (!$res) {
+						$msg .= "<br/>Erreur lors de la mise à jour de la catégorie de la matière ".$row->matiere.".";
+						$error = true;
+					}
+				}
+
+				// On met à jour toutes les catégories dans les classes si ça a été demandé
+				if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
+					$req = mysqli_query($GLOBALS["mysqli"], "UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$_POST[$varname_c]."' " .
+												"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')");
+					if (!$req) {
+						$msg .="<br/>Erreur lors de la mise à jour de la catégorie de matière dans les classes pour la matière ".$row->matiere.".";
+						$error = true;
+					}
 				}
 			}
 		}
 	}
 
-        // La même chose pour la catégorie de matière
-        $varname_c = my_strtolower($row->matiere)."_categorie";
-        if (isset($_POST[$varname_c])) {
-        	if (is_numeric($_POST[$varname_c])) {
-        		// On a une valeur correcte. On y va !
-            	if ($_POST[$varname_c] != $row->categorie_id) {
-                	// On a une valeur différente. On met à jour.
-                    $res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET categorie_id = '".$_POST[$varname_c] . "' WHERE matiere = '" . $row->matiere . "'");
-                    if (!$res) {
-                        $msg .= "<br/>Erreur lors de la mise à jour de la catégorie de la matière ".$row->matiere.".";
-                        $error = true;
-                    }
-                }
-
-                // On met à jour toutes les catégories dans les classes si ça a été demandé
-                if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
-			        $req = mysqli_query($GLOBALS["mysqli"], "UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$_POST[$varname_c]."' " .
-			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')");
-			        if (!$req) {
-			        	$msg .="<br/>Erreur lors de la mise à jour de la catégorie de matière dans les classes pour la matière ".$row->matiere.".";
-			        	$error = true;
-			        }
-                }
-            }
-        }
-
-
-    }
-    if ($error) {
-        $msg .= "<br/>Des erreurs se sont produites lors de la mise à jour des données.";
-    } else {
-        $msg .= "<br/>Mise à jour effectuée.";
-    }
+	if ($error) {
+		$msg .= "<br/>Des erreurs se sont produites lors de la mise à jour des données.";
+	} else {
+		$msg .= "<br/>Mise à jour effectuée.";
+	}
 }
 
 $themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';

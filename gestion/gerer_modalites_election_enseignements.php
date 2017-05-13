@@ -343,10 +343,14 @@ echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Ret
 <p>Les informations provenant de Sconet sont remplies à l'intialisation de l'année et lors de la mise à jour d'après Sconet.</p>\n";
 
 $options_modalites="";
+$tab_indice_modalite=array();
 $tab_modalites=get_tab_modalites_election("code");
+$cpt=0;
 foreach($tab_modalites as $key => $value) {
 	$options_modalites.="
 							<option value='$key'>".$value["libelle_long"]."</option>";
+	$tab_indice_modalite[$key]=$cpt+2;
+	$cpt++;
 }
 
 $sql="SELECT * FROM sconet_ele_options;";
@@ -480,6 +484,92 @@ else {
 						</select>
 						<a href='#' onclick=\"imposer_modalite();changement();return false\" title=\"Imposer cette modalité pour tous les enseignements.\"><img src='../images/icons/wizard.png' class='icone16' alt='Forcer' /></a>
 					</th>
+					<th>
+						Modalités associées aux MEFS
+					</th>
+				</tr>
+			</thead>
+			<tbody>";
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$liste_modalites="";
+			//SELECT * FROM mef_matieres WHERE mef_code = '$mef_code' AND code_matiere = '$code_matiere'
+			$sql="SELECT DISTINCT code_modalite_elect FROM mef_matieres WHERE code_matiere='".$lig->code_matiere."';";
+			//$liste_modalites.="$sql";
+			$res_mod=mysqli_query($mysqli, $sql);
+			$nb_mod=mysqli_num_rows($res_mod);
+			if($nb_mod>0) {
+				while($lig_mod=mysqli_fetch_object($res_mod)) {
+					if($liste_modalites!="") {
+						$liste_modalites.="<br />";
+					}
+					$liste_modalites.=$lig_mod->code_modalite_elect." <em style='font-size:small'>(".$tab_modalites[$lig_mod->code_modalite_elect]["libelle_long"].")</em>";
+					if($nb_mod>1) {
+						// Faire la liste des MEFS
+					}
+					elseif(($nb_mod==1)&&(isset($tab_indice_modalite[$lig_mod->code_modalite_elect]))) {
+						//alert('".$lig_mod->code_modalite_elect." ".$tab_indice_modalite[$lig_mod->code_modalite_elect]."');
+						$liste_modalites.="<a href='#' onclick=\"document.getElementById('code_modalite_elect_$cpt').selectedIndex=".$tab_indice_modalite[$lig_mod->code_modalite_elect]."; return false;\" title=\"Prendre cette modalité ci-contre.\"><img src='../images/icons/wizard.png' class='icone16' alt='Choix' /></a>";
+					}
+				}
+			}
+			echo "
+				<tr>
+					<td>".$lig->matiere."</td>
+					<td>".$lig->nom_complet."</td>
+					<td>
+						<select name='code_modalite_elect[".$lig->matiere."]' id='code_modalite_elect_$cpt'>
+							<option value=''>Ne pas modifier les modalités associées aux élèves</option>
+							<option value='VIDER'>Vider les modalités associées aux élèves</option>".$options_modalites."
+						</select>
+					</td>
+					<td>
+						$liste_modalites
+					</td>
+				</tr>";
+			$cpt++;
+		}
+		echo "
+			</tbody>
+		</table>
+
+		<p><input type='submit' value='Forcer les modalités pour les enseignements des matières cochées' /></p>
+	</fieldset>
+</form>";
+}
+
+
+/*
+$sql="SELECT DISTINCT m.* FROM matieres m, j_groupes_matieres jgm WHERE m.matiere=jgm.id_matiere ORDER BY m.matiere, m.nom_complet;";
+$res=mysqli_query($GLOBALS['mysqli'], $sql);
+if(mysqli_num_rows($res)==0) {
+	echo "<p style='color:red'>Aucune matière avec enseignement associé n'a été trouvée.</p>";
+}
+else {
+	echo "
+<form action='".$_SERVER['PHP_SELF']."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='forcer_modalites_telles_matieres' value='y' />
+
+		<p>Forcer les modalités élèves pour tous les enseignements des matières suivantes&nbsp;:</p>
+
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th>Matière</th>
+					<th>Nom complet</th>
+					<th>
+						Modalité
+						<select name='code_modalite_elect_modele' id='code_modalite_elect_modele' onchange='changement()'>
+							<option value=''>Ne pas modifier les modalités associées aux élèves</option>
+							<option value='VIDER'>Vider les modalités associées aux élèves</option>".$options_modalites."
+						</select>
+						<a href='#' onclick=\"imposer_modalite();changement();return false\" title=\"Imposer cette modalité pour tous les enseignements.\"><img src='../images/icons/wizard.png' class='icone16' alt='Forcer' /></a>
+					</th>
+					<th>
+						Modalités associées aux MEFS
+					</th>
 				</tr>
 			</thead>
 			<tbody>";
@@ -495,6 +585,38 @@ else {
 							<option value='VIDER'>Vider les modalités associées aux élèves</option>".$options_modalites."
 						</select>
 					</td>
+					<td>";
+
+			$liste_modalites="";
+			//SELECT * FROM mef_matieres WHERE mef_code = '$mef_code' AND code_matiere = '$code_matiere'
+			$sql="SELECT DISTINCT mm.code_modalite_elect, m.* FROM mef_matieres mm, 
+												mef m 
+											WHERE mm.code_matiere='".$lig->code_matiere."' AND 
+												m.mef_code=mm.mef_code 
+											ORDER BY m.libelle_edition;";
+			//$liste_modalites.="$sql";
+			$res_mod=mysqli_query($mysqli, $sql);
+			$nb_mod=mysqli_num_rows($res_mod);
+			if($nb_mod>0) {
+				echo "
+						<table class='boireaus boireaus_alt2'>";
+				while($lig_mod=mysqli_fetch_object($res_mod)) {
+					echo "
+							<tr>
+								<td>".$lig->code_matiere."</td>
+								<td>".$lig_mod->code_modalite_elect."</td>
+								<td>".$lig_mod->libelle_edition."</td>
+							</tr>";
+				}
+				echo "
+						</table>";
+			}
+
+
+
+
+			echo "
+					</td>
 				</tr>";
 			$cpt++;
 		}
@@ -506,6 +628,7 @@ else {
 	</fieldset>
 </form>";
 }
+*/
 echo "
 </blockquote>
 

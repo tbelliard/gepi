@@ -2185,16 +2185,21 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				echo "</p>\n";
 
 				echo "<p><strong>".ucfirst($gepi_cpe_suivi)." chargé(e) du suivi</strong>: ";
-				if($tab_ele['cpe']['email']!="") {
-					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
-					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
-					echo "<a href='mailto:".$tab_ele['cpe']['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
-					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-					echo ",%0d%0aCordialement.' title=\"Envoyer un email au ".$gepi_cpe_suivi."\">";
+				if(isset($tab_ele['cpe'])) {
+					if($tab_ele['cpe']['email']!="") {
+						//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
+						//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
+						echo "<a href='mailto:".$tab_ele['cpe']['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+						if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+						echo ",%0d%0aCordialement.' title=\"Envoyer un email au ".$gepi_cpe_suivi."\">";
+					}
+					echo $tab_ele['cpe']['civ_nom_prenom'];
+					if($tab_ele['cpe']['email']!="") {
+						echo "</a>";
+					}
 				}
-				echo $tab_ele['cpe']['civ_nom_prenom'];
-				if($tab_ele['cpe']['email']!="") {
-					echo "</a>";
+				else {
+					echo "<span style='color:red'>Aucun CPE</span>";
 				}
 				echo "</p>\n";
 

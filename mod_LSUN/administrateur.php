@@ -88,6 +88,18 @@ if ($creeFichier == 'y') {
 		saveSetting('LSU_CreerAutomatiquementElementsProgrammes',  "n");
 	}
 
+	if(filter_input(INPUT_POST, 'forceNotes')) {
+		$_SESSION["forceNotes"]="y";
+	}	else {
+		$_SESSION["forceNotes"]="n";
+	}
+
+	if(filter_input(INPUT_POST, 'forceAppreciations')) {
+		$_SESSION["forceAppreciations"]="y";
+	}	else {
+		$_SESSION["forceAppreciations"]="n";
+	}
+
 	if (0 == count($selectionClasse)) {
 		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p> <p><a href = 'index.php'>Cliquez ici pour recharger la page</a></p>";
 	}	else if ($creeFichier == 'y') {
@@ -195,6 +207,53 @@ if(isset($msg_requetesAdmin)) {
 		<p style='margin-top:1em;'>L'étape de définition des EPI nécessite <em title="Il est envisagé de permettre la création complète des EPI depuis la présente page, mais ce n'est pas encore réalisé/finalisé.">actuellement (*)</em> d'avoir <a href='../aid/index.php' target='_blank'>créé les AID</a> correspondants préalablement.<br />
 		Les AID peuvent être <a href='../aid/transfert_groupe_aid.php' target='_blank'>créés/migrés depuis des enseignements classiques</a>.<br />
 		Et dans la présente page, le lien est fait entre ces AID et les EPI que vous souhaitez exporter vers LSUN.</p>
+
+		<p style='margin-top:1em;'>Les dates des périodes de cours doivent être définies dans <a href='../edt_organisation/edt_calendrier.php' target='_blank'>Emplois du temps/Gestion/Gestion du calendrier</a> et les classes associées à ces périodes.<br />
+		<?php
+
+			if((isset($selectionClasse))&&(count($selectionClasse)>0)) {
+				$begin_bookings=getSettingValue('begin_bookings');
+				$debut_annee=strftime("%Y-%m-%d", $begin_bookings);
+				$end_bookings=getSettingValue('end_bookings');
+				$fin_annee=strftime("%Y-%m-%d", $end_bookings);
+
+				for($loop=0;$loop<count($selectionClasse);$loop++) {
+					$tab_date=array();
+					$sql="SELECT id_calendrier, numero_periode, jourdebut_calendrier, jourfin_calendrier FROM edt_calendrier AS ec2  WHERE ec2.numero_periode>0 AND FIND_IN_SET(".$selectionClasse[$loop].", replace(ec2.classe_concerne_calendrier, ';', ',')) > 0 ORDER BY numero_periode;";
+					$res_clas=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_clas)>0) {
+						//echo "<span style='color:red'>".mysqli_num_rows($res_mat)." matière(s) n'a(ont) pas leur nomenclature renseignée <em>(";
+						$cpt_clas=0;
+
+						$jourdebut_prec=$debut_annee;
+						$jourfin_prec=$debut_annee;
+						while($lig_clas=mysqli_fetch_object($res_clas)) {
+							$tab_date[$lig_clas->numero_periode]=$lig_clas->jourdebut_calendrier;
+
+							if(($lig_clas->numero_periode==1)&&($lig_clas->jourdebut_calendrier<$debut_annee)) {
+								echo "<span style='color:red'><strong>Anomalie&nbsp;:</strong> Le premier jour de la <a href='../edt_organisation/edt_calendrier.php?calendrier=ok&modifier=".$lig_clas->id_calendrier."' target='_blank'>première période (".formate_date($lig_clas->jourdebut_calendrier).")</a> de la classe de ".get_nom_classe($selectionClasse[$loop])." est antérieur au <a href='../gestion/param_gen.php' target='_blank'>début de l'année scolaire</a>.</span><br />";
+							}
+							elseif($lig_clas->jourdebut_calendrier<$jourfin_prec) {
+								echo "<span style='color:red'><strong>Anomalie&nbsp;:</strong> Le premier jour de la <a href='../edt_organisation/edt_calendrier.php?calendrier=ok&modifier=".$lig_clas->id_calendrier."' target='_blank'>période ".$lig_clas->numero_periode." <em>(".formate_date($lig_clas->jourdebut_calendrier).")</em></a> de la classe de ".get_nom_classe($selectionClasse[$loop])." est antérieur au dernier jour de la période précédente <em>($jourfin_prec)</em>.</span><br />";
+							}
+
+							$jourdebut_prec=$lig_clas->jourdebut_calendrier;
+							$jourfin_prec=$lig_clas->jourfin_calendrier;
+							if($jourdebut_prec>$jourfin_prec) {
+								echo "<span style='color:red'><strong>Anomalie&nbsp;:</strong> Le premier jour de la <a href='../edt_organisation/edt_calendrier.php?calendrier=ok&modifier=".$lig_clas->id_calendrier."' target='_blank'>période ".$lig_clas->numero_periode." (".formate_date($lig_clas->jourdebut_calendrier).") est postérieure à la date de fin (".$lig_clas->jourfin_calendrier.")</a> pour la classe de ".get_nom_classe($selectionClasse[$loop]).".</span><br />";
+							}
+						}
+					}
+
+					for($loop_per=1;$loop_per<=3;$loop_per++) {
+						if(!isset($tab_date[$loop_per])) {
+							echo "<span style='color:red'>La période $loop_per n'est pas définie dans <a href='../edt_organisation/edt_calendrier.php' target='_blank'>Emplois du temps/Gestion/Gestion du calendrier</a> pour la classe de ".get_nom_classe($selectionClasse[$loop]).".</span><br />";
+						}
+					}
+				}
+			}
+		?>
+		</p>
 	</div>
 </div>
 
