@@ -21,7 +21,8 @@ elseif(isset($_POST['type_extrait'])) {
 	$type_extrait=$_POST['type_extrait'];
 }
 else {
-	$type_extrait=1; // filtrer par manquement aux obligations scolaires
+	//$type_extrait=1; // filtrer par manquement aux obligations scolaires
+	$type_extrait=0; // filtrer par manquement aux obligations scolaires
 }
 
 $_SESSION['abs2_type_extrait']=$type_extrait;
