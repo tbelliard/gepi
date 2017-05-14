@@ -952,7 +952,7 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
 
 	foreach($former_groupe["modalites"] as $code_modalite_elect => $tab_modalite) {
 		for($loop=0;$loop<count($tab_modalite["eleves"]);$loop++) {
-			if(!in_array($tab_modalite["eleves"][$loop], $code_modalite_elect_eleves[$code_modalite_elect]["eleves"])) {
+			if((!isset($code_modalite_elect_eleves[$code_modalite_elect]))||(!in_array($tab_modalite["eleves"][$loop], $code_modalite_elect_eleves[$code_modalite_elect]["eleves"]))) {
 				// Enlever l'élève:
 				$sql="DELETE FROM j_groupes_eleves_modalites WHERE code_modalite_elect='".$code_modalite_elect."' AND id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
 				$res = mysqli_query($GLOBALS["mysqli"], $sql);
