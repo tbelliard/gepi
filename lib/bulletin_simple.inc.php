@@ -353,7 +353,7 @@ if ($on_continue == 'yes') {
 	//=========================
 	// MODIF: boireaus 20080315
 	//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-	echo "<table width=$larg_tab class='boireaus";
+	echo "<table width='$larg_tab' style='background-color:white' class='boireaus";
 	if($utilisation_tablekit=="ok") {
 		echo " sortable resizable";
 	}
@@ -1218,7 +1218,7 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 	if(getSettingAOui('bull_affiche_absences')) {
 		echo "<span class='bull_simpl'><b>Absences et retards:</b></span>\n";
 		//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
-		echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
+		echo "<table width='$larg_tab' style='background-color:white' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
 		$nb=$periode1;
 		while ($nb < $periode2+1) {
 			// Initialisation:
@@ -1390,7 +1390,7 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 	}
 	echo " :</span>\n";
 	$larg_col1b = $larg_tab - $larg_col1 ;
-	echo "<table width=\"$larg_tab\" class='boireaus' cellspacing='1' cellpadding='1' summary='Avis du conseil de classe'>\n";
+	echo "<table width=\"$larg_tab\" style='background-color:white' class='boireaus' cellspacing='1' cellpadding='1' summary='Avis du conseil de classe'>\n";
 	$nb=$periode1;
 	while ($nb < $periode2+1) {
 	
@@ -1471,6 +1471,7 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 function affiche_aid_simple($affiche_rang, $test_coef, $indice_aid, $aid_id, $current_eleve_login, $periode1, $periode2, $id_classe, $style_bulletin, $affiche_coef) {
 
 global $affiche_colonne_moy_classe;
+global $couleur_lignes, $alt, $alt2;
 
 unset($tab_acces_app);
 $tab_acces_app=array();
@@ -1567,7 +1568,15 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 	// On affiche l'appréciation aid :
 	//------
 
-	echo "<tr><td ";
+	if($couleur_lignes=='y') {
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		$alt2=$alt;
+	}
+	else {
+		echo "<tr>\n";
+	}
+	echo "<td";
 	if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 	echo " class='$style_bulletin' style='$style_bordure_cell'><b>$AID_NOM : $aid_nom</b><br /><i>";
 	$n = '0';

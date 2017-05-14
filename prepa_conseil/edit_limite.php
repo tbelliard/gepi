@@ -664,7 +664,7 @@ echo "</div>\n"; // Fin du div_prepa_conseil_bull_simp
 
 echo "<div class='noprint'>\n";
 //===========================================================
-echo "<p><em>NOTE&nbsp;:</em></p>\n";
+echo "<p style='margin-top:1em;'><em>NOTE&nbsp;:</em></p>\n";
 require("../lib/textes.inc.php");
 echo "<p style='margin-left: 3em;'>$explication_bulletin_ou_graphe_vide</p>\n";
 //===========================================================
