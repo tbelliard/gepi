@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -90,6 +90,9 @@ Ce choix permet de limiter la liste des classes proposées aux différents compt
 	if((getSettingAOui("active_mod_engagements"))&&(acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut']))) {
 		echo "| <a href='../mod_engagements/saisie_engagements.php'>Saisir les engagements </a>";
 	}
+
+	if($_SESSION['statut']=="administrateur") {echo " | <a href='../gestion/saisie_modalites_accompagnement.php'>Modalités d'accompagnement des élèves</a>\n";}
+
 ?>
 </p>
 <p style='margin-top: 10px;'>
