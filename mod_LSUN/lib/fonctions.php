@@ -463,16 +463,32 @@ function getModalite($groupe, $eleve, $mef_code, $code_matiere ) {
 	global $mysqli;
 	global $msgErreur;
 	$retour = "S";
+
+	//========================
+	$debug=0; // Passer à 1 pour afficher les requêtes
+	$login_debug="bouamar_f";
+	$code_matiere_debug="030102";
+	//========================
+
 	// On recherche la modalite du groupe
-	$sqlMefGroupe = "SELECT * FROM mef_matieres WHERE mef_code = '$mef_code' AND code_matiere = '$code_matiere' ";
-	//echo $sqlMefGroupe;
+	$sqlMefGroupe = "SELECT * FROM mef_matieres WHERE mef_code = '$mef_code' AND code_matiere = '$code_matiere';";
+	
+	if(($debug==1)&&($eleve==$login_debug)&&($code_matiere==$code_matiere_debug)) {
+		echo $sqlMefGroupe."<br />";
+	}
+	
 	$modaliteGroupe = $mysqli->query($sqlMefGroupe);
 	if ($modaliteGroupe->num_rows == 1) {
 		$retour = $modaliteGroupe->fetch_object()->code_modalite_elect;
-		//echo $retour;
+		if(($debug==1)&&($eleve==$login_debug)&&($code_matiere==$code_matiere_debug)) {
+			echo "retour=getModalite($groupe, $eleve, $mef_code, $code_matiere )=".$retour."<br />";
+		}
 	} else {
 		// Si plusieurs ou pas, on recherche la modalite de l'élève
 		$sqlModalite = "SELECT code_modalite_elect FROM j_groupes_eleves_modalites WHERE id_groupe = '$groupe' AND login = '$eleve' ";
+		if(($debug==1)&&($eleve==$login_debug)&&($code_matiere==$code_matiere_debug)) {
+			echo $sqlModalite."<br />";
+		}
 		$retourQuery = $mysqli->query($sqlModalite);
 		if ($retourQuery->num_rows == 1) {
 			$retour = $retourQuery->fetch_object()->code_modalite_elect;
@@ -512,16 +528,31 @@ function getEPeleve ($idEleve, $idGroupe, $periode) {
 
 function getMoyenne($id_groupe) {
 	global $mysqli;
+
+	$resultchargeDB="";
+
 	$sqlMoyenne = "SELECT ROUND(AVG(`note`), 2) AS moyenne FROM `matieres_notes` WHERE `id_groupe` = '$id_groupe' GROUP BY `id_groupe` ";
-	$resultchargeDB = $mysqli->query($sqlMoyenne)->fetch_object()->moyenne;
+	//echo "\$sqlMoyenne=$sqlMoyenne<br />";
+	//$resultchargeDB = $mysqli->query($sqlMoyenne)->fetch_object()->moyenne;
+	$res=$mysqli->query($sqlMoyenne);
+	if(mysqli_num_rows($res)>0) {
+		$resultchargeDB=$res->fetch_object()->moyenne;
+	}
 	return $resultchargeDB;
 	
 }
 
 function getStatutNote($login,$id_groupe,$periode) {
 	global $mysqli;
+
+	$resultchargeDB="";
+
 	$sqlStatutNote = "SELECT * FROM `matieres_notes` WHERE `id_groupe` = '$id_groupe' AND login = '$login' AND periode = '$periode' ";
-	$resultchargeDB =  $mysqli->query($sqlStatutNote)->fetch_object()->statut;
+	//$resultchargeDB =  $mysqli->query($sqlStatutNote)->fetch_object()->statut;
+	$res=$mysqli->query($sqlStatutNote);
+	if(mysqli_num_rows($res)>0) {
+		$resultchargeDB =  $res->fetch_object()->statut;
+	}
 	if ($resultchargeDB !='' ) {
 		return $resultchargeDB;
 	}

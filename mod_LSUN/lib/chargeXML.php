@@ -51,6 +51,12 @@ $longueur_limite_lignes_adresse["code-postal"]=10;
 $longueur_limite_lignes_adresse["commune"]=100;
 
 $tab_erreur_adr=array();
+
+//========================
+$debug=0; // Passer à 1 pour afficher les requêtes
+$login_debug="bouamar_f";
+$code_matiere_debug="030102";
+//========================
 //++++++++++++++++++++++++++++++++++
 
 $xml = new DOMDocument('1.0', 'utf-8');
@@ -110,7 +116,7 @@ $xml->appendChild($items);
 			$noeudEleve = $xml->createElement('eleve');
 
 			if(!preg_match("/^[0-9]{1,}$/", $eleve->ele_id)) {
-				$msg_erreur_remplissage.="L'élève ".$eleve->nom." ".$eleve->prenom." n'est pas associé à un élève dans Sconet <em>(Identifiant ELE_ID non valide)</em>&nbsp;: <a href='../responsables/corrige_ele_id.php' target='_blank'>Corriger</a><br />";
+				$msg_erreur_remplissage.="L'élève ".$eleve->nom." ".$eleve->prenom." n'est pas associé à un élève dans Sconet <em>(Identifiant ELE_ID non valide)</em>&nbsp;: <a href='../responsables/corrige_ele_id.php' target='_blank'>Corriger</a><br /><br />";
 			}
 
 			$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
@@ -168,10 +174,16 @@ $xml->appendChild($items);
 					$matiere = "DI_".$discipline->code_matiere.$discipline->code_modalite_elect;
 					if(in_array($matiere, $tab_disciplines_global_deja)) {
 						//$sql="SELECT valeur FROM nomenclatures_valeurs WHERE code='".$discipline->code_matiere."' AND nom='libelle_edition';";
-						$msg_erreur_remplissage.="Plusieurs enseignements de <b>".get_valeur_champ("nomenclatures_valeurs", "code='".$discipline->code_matiere."' AND nom='libelle_edition'", "valeur")."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Ce n'est pas possible.<br />Il faut corriger.<br />";
+						$msg_erreur_remplissage.="Plusieurs enseignements de <b>".get_valeur_champ("nomenclatures_valeurs", "code='".$discipline->code_matiere."' AND nom='libelle_edition'", "valeur")."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Ce n'est pas possible.<br />Il faut corriger.<br /><br />";
 					}
 					$tab_disciplines_global_deja[]=$matiere;
 				}
+
+
+				if(($debug==1)&&($discipline->code_matiere==$code_matiere_debug)) {
+					echo "$matiere groupe ".(isset($discipline->id_groupe) ? $discipline->id_groupe : "Pas d'id_groupe")."<br />";
+				}
+
 
 				$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
 					'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
@@ -364,7 +376,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 						$noeudEpisGroupes->appendChild($attsEpiGroupe);
 					}
 					if(in_array("EPI_GROUPE_".$episGroupe->id, $tab_id_epi_groupes)) {
-						$msg_erreur_remplissage.="<strong>".get_valeur_champ("lsun_epi_communs", "id='".$episGroupe->id_epi."'", "intituleEpi")."&nbsp;:</strong> L'AID ".$episGroupe->nom." est déjà associé à un autre EPI.<br />Un même AID ne peut pas être associé à plusieurs EPI; vous devez créer des catégories AID distinctes, y associer les AID correspondant et n'associer à l'EPI que les catégories AID appropriées.<br />";
+						$msg_erreur_remplissage.="<strong>".get_valeur_champ("lsun_epi_communs", "id='".$episGroupe->id_epi."'", "intituleEpi")."&nbsp;:</strong> L'AID ".$episGroupe->nom." est déjà associé à un autre EPI.<br />Un même AID ne peut pas être associé à plusieurs EPI; vous devez créer des catégories AID distinctes, y associer les AID correspondant et n'associer à l'EPI que les catégories AID appropriées.<br /><br />";
 					}
 					$tab_id_epi_groupes[]="EPI_GROUPE_".$episGroupe->id;
 				
@@ -391,7 +403,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 
 					//$modaliteEns = getModaliteGroupeAP($episGroupe->id);
 					$modaliteEns = getModaliteGroupe($episGroupe->id);
-				
+
 					if ($modaliteEns->num_rows) {
 						while ($ensModalite = $modaliteEns->fetch_object()) {
 							$noeudProf = $xml->createElement('enseignant-discipline');
@@ -411,7 +423,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 						$sql="SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid='".$episGroupe->id."';";
 						$test_prof_aid=mysqli_query($mysqli, $sql);
 						if(mysqli_num_rows($test_prof_aid)==0) {
-							$msg_erreur_remplissage.="EPI&nbsp;: Aucun professeur n'est associé à l'AID ".$episGroupe->nom."&nbsp;: <a href='../aid/modify_aid.php?flag=prof&aid_id=".$episGroupe->id."' target='_blank'>Corriger</a><br />";
+							$msg_erreur_remplissage.="EPI&nbsp;: Aucun professeur n'est associé à l'AID ".$episGroupe->nom."&nbsp;: <a href='../aid/modify_aid.php?flag=prof&aid_id=".$episGroupe->id."' target='_blank'>Corriger</a><br /><br />";
 							//&indice_aid=1
 						}
 						else {
@@ -430,7 +442,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 								while($lig_prof_aid=mysqli_fetch_object($test_prof_aid)) {
 									$msg_erreur_remplissage.="<a href='../utilisateurs/modify_user.php?user_login=".$lig_prof_aid->id_utilisateur."' target='_blank'>".civ_nom_prenom($lig_prof_aid->id_utilisateur)."</a> - ";
 								}
-								$msg_erreur_remplissage.="<br />";
+								$msg_erreur_remplissage.="<br /><br />";
 							}
 						}
 					}
@@ -583,13 +595,18 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 				$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
 
+				if(($debug==1)&&($eleve->login==$login_debug)&&($acquisEleve->code_matiere==$code_matiere_debug)) {
+					echo "$matiere groupe $acquisEleve->id_groupe<br />getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere)<br />";
+				}
+				
+
 				if(in_array($matiere, $tab_disciplines_deja)) {
-					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br />";
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br /><br />";
 				}
 				$tab_disciplines_deja[]=$matiere;
 
 				if(!in_array($matiere, $tab_disciplines_global_deja)) {
-					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un enseignement de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la modalité (".$modalite.") non déclaré au niveau global pour la classe.<br />La différence ne porte peut-être que sur la modalité.<br />Cela risque de provoquer une erreur&nbsp;: <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>Voir les enseignements de l'élève</a> ou <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>contrôler et éventuellement forcer les modalités</a>.<br />";
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un enseignement de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la modalité (".$modalite.") non déclaré au niveau global pour la classe.<br />La différence ne porte peut-être que sur la modalité.<br />Cela risque de provoquer une erreur&nbsp;: <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>Voir les enseignements de l'élève</a> ou <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>contrôler et éventuellement forcer les modalités</a>.<br /><br />";
 				}
 
 				$donneesProfs = getProfGroupe ($acquisEleve->id_groupe);
@@ -663,14 +680,21 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			while ($acquisEleve = $noNotesSansApp->fetch_object()) {
 				$desAcquis = TRUE;
 				$noeudAcquis = $xml->createElement('acquis');
-				
-				
-				
+
 				$matiere = $acquisEleve->code_matiere;
 				$moyenne = getMoyenne($acquisEleve->id_groupe);
 				$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 				$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
-				
+
+				if(in_array($matiere, $tab_disciplines_deja)) {
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br /><br />";
+				}
+				$tab_disciplines_deja[]=$matiere;
+
+				if(!in_array($matiere, $tab_disciplines_global_deja)) {
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un enseignement de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la modalité (".$modalite.") non déclaré au niveau global pour la classe.<br />La différence ne porte peut-être que sur la modalité.<br />Cela risque de provoquer une erreur&nbsp;: <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>Voir les enseignements de l'élève</a> ou <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>contrôler et éventuellement forcer les modalités</a>.<br /><br />";
+				}
+
 				$donneesProfs = getProfGroupe ($acquisEleve->id_groupe);
 				$prof = "";
 				while ($profMatiere = $donneesProfs->fetch_object()) {
@@ -720,16 +744,25 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				}
 				$tmp_chaine=nettoye_texte_vers_chaine($acquisEleve->appreciation);
 				if(trim($tmp_chaine)=="") {
+
+					// 20170511
+					$lien_bull_simp="";
+					if(acces_impression_bulletins_simplifies($eleve->login)) {
+						$tmp_tab_clas=get_class_dates_from_ele_login($eleve->login);
+						if(isset($tmp_tab_clas[$eleve->periode]["id_classe"])) {
+							$lien_bull_simp=" <a href='../prepa_conseil/edit_limite.php?id_classe=".$tmp_tab_clas[$eleve->periode]["id_classe"]."&amp;periode1=".$eleve->periode."&amp;periode2=".$eleve->periode."&amp;choix_edit=2&amp;login_eleve=".$eleve->login."&couleur_alterne=y' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						}
+					}
+
 					// Apparemment, on ne récupère que les enseignements avec appréciation non vide... Exact?
-					$msg_erreur_remplissage.="L'appréciation de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>.<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br />";
+					$msg_erreur_remplissage.="L'appréciation de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
 				}
 				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
 				$noeudAcquis->appendChild($noeudAcquisAppreciation);
 				$listeAcquis->appendChild($noeudAcquis);
-								
 			}
-			
-			
+
+
 // 1 note sans appréciation → on n'exporte pas sauf forcé avec '-' en commentaire
 			if ($forceAppreciations) {
 				$notesForcees = getNotesForcees($eleve->login,$eleve->periode);
@@ -741,6 +774,17 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$moyenne = getMoyenne($acquisEleve->id_groupe);
 					$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 					$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
+
+					//echo "$matiere : $moyenne<br />";
+
+					if(in_array($matiere, $tab_disciplines_deja)) {
+						$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br /><br />";
+					}
+					$tab_disciplines_deja[]=$matiere;
+
+					if(!in_array($matiere, $tab_disciplines_global_deja)) {
+						$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un enseignement de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la modalité (".$modalite.") non déclaré au niveau global pour la classe.<br />La différence ne porte peut-être que sur la modalité.<br />Cela risque de provoquer une erreur&nbsp;: <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>Voir les enseignements de l'élève</a> ou <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>contrôler et éventuellement forcer les modalités</a>.<br /><br />";
+					}
 
 					$donneesProfs = getProfGroupe ($acquisEleve->id_groupe);
 					$prof = "";
@@ -771,7 +815,16 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 					$tmp_chaine="-";
 
-					$msg_erreur_remplissage.="L'appréciation de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>.<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br />";
+					// 20170511
+					$lien_bull_simp="";
+					if(acces_impression_bulletins_simplifies($eleve->login)) {
+						$tmp_tab_clas=get_class_dates_from_ele_login($eleve->login);
+						if(isset($tmp_tab_clas[$eleve->periode]["id_classe"])) {
+							$lien_bull_simp=" <a href='../prepa_conseil/edit_limite.php?id_classe=".$tmp_tab_clas[$eleve->periode]["id_classe"]."&amp;periode1=".$eleve->periode."&amp;periode2=".$eleve->periode."&amp;choix_edit=2&amp;login_eleve=".$eleve->login."&couleur_alterne=y' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						}
+					}
+
+					$msg_erreur_remplissage.="L'appréciation de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
 
 					$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
 					$noeudAcquis->appendChild($noeudAcquisAppreciation);
@@ -794,6 +847,17 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$moyenne = getMoyenne($acquisEleve->id_groupe);
 					$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 					$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
+
+
+					if(in_array($matiere, $tab_disciplines_deja)) {
+						$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br /><br />";
+					}
+					$tab_disciplines_deja[]=$matiere;
+
+					if(!in_array($matiere, $tab_disciplines_global_deja)) {
+						$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un enseignement de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la modalité (".$modalite.") non déclaré au niveau global pour la classe.<br />La différence ne porte peut-être que sur la modalité.<br />Cela risque de provoquer une erreur&nbsp;: <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>Voir les enseignements de l'élève</a> ou <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>contrôler et éventuellement forcer les modalités</a>.<br /><br />";
+					}
+
 
 					$donneesProfs = getProfGroupe ($acquisEleve->id_groupe);
 					$prof = "";
@@ -824,7 +888,17 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 					$tmp_chaine=nettoye_texte_vers_chaine($acquisEleve->appreciation);
 
-					$msg_erreur_remplissage.="La note de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>.<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br />";
+
+					// 20170511
+					$lien_bull_simp="";
+					if(acces_impression_bulletins_simplifies($eleve->login)) {
+						$tmp_tab_clas=get_class_dates_from_ele_login($eleve->login);
+						if(isset($tmp_tab_clas[$eleve->periode]["id_classe"])) {
+							$lien_bull_simp=" <a href='../prepa_conseil/edit_limite.php?id_classe=".$tmp_tab_clas[$eleve->periode]["id_classe"]."&amp;periode1=".$eleve->periode."&amp;periode2=".$eleve->periode."&amp;choix_edit=2&amp;login_eleve=".$eleve->login."&couleur_alterne=y' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						}
+					}
+
+					$msg_erreur_remplissage.="La note de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
 
 					$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
 					$noeudAcquis->appendChild($noeudAcquisAppreciation);
@@ -978,15 +1052,31 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$noeudBilanElevePeriodique->appendChild($modalitesAccompagnement);
 			}
 
+			$avis_conseil_extrait=true;
 			$retourAvisElv=getAppConseil($eleve->login , $eleve->periode);
 			if ($retourAvisElv->num_rows) {
 				$exporteEleve = true;
 				$avisElv = $retourAvisElv->fetch_object()->avis;
 				$avisConseil = $avisElv;
-				$acquisConseils = $xml->createElement('acquis-conseils', $avisConseil);
-				$noeudBilanElevePeriodique->appendChild($acquisConseils);
+				if(trim($avisConseil)=="") {
+					$exporteEleve = false;
+					$avis_conseil_extrait=false;
+
+					$lien_bull_simp="";
+					if(acces_impression_bulletins_simplifies($eleve->login)) {
+						$tmp_tab_clas=get_class_dates_from_ele_login($eleve->login);
+						if(isset($tmp_tab_clas[$eleve->periode]["id_classe"])) {
+							$lien_bull_simp=" <a href='../prepa_conseil/edit_limite.php?id_classe=".$tmp_tab_clas[$eleve->periode]["id_classe"]."&amp;periode1=".$eleve->periode."&amp;periode2=".$eleve->periode."&amp;choix_edit=2&amp;login_eleve=".$eleve->login."&couleur_alterne=y' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+						}
+					}
+
+					$msg_erreur_remplissage.="Aucun avis du conseil de classe n'est saisi pour <strong>".get_nom_prenom_eleve($eleve->login)."</strong> pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Les saisies concernant cet élève ne seront pas extraites et donc pas remontées vers LSU.<br />Un compte scolarité, professeur principal,... <em>(selon les droits d'accès paramétrés)</em> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
+				}
+				else {
+					$acquisConseils = $xml->createElement('acquis-conseils', $avisConseil);
+					$noeudBilanElevePeriodique->appendChild($acquisConseils);
+				}
 			}
-			
 			
 			
 			//$retardEleve = getRetardsEleve($eleve->login , $eleve->periode)->fetch_object();
@@ -995,7 +1085,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$retardsJustifies = $retardEleve['absences'] - $retardEleve['nj'];
 			//$attributsVieScolaire = array('nb-retards'=>$retardEleve->nb_retards , 'nb-abs-justifiees'=>$retardsJustifies, 'nb-abs-injustifiees'=>$retardEleve->non_justifie);
 			$attributsVieScolaire = array('nb-retards'=>$retardEleve['retards'] , 'nb-abs-justifiees'=>$retardsJustifies, 'nb-abs-injustifiees'=>$retardEleve['nj']);
-			
+		
 			foreach ($attributsVieScolaire as $cle=>$valeur) {
 				$attsVieSco= $xml->createAttribute($cle);
 				$attsVieSco->value = $valeur;
@@ -1007,11 +1097,10 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$comVieSco = $xml->createElement('commentaire', substr(trim($tmp_chaine),0,600));
 				$vieScolaire->appendChild($comVieSco);
 			}
-			
-			
+		
+		
 			$noeudBilanElevePeriodique->appendChild($vieScolaire);
-			
-			
+
 			$socle = $xml->createElement('socle');
 			// non obligatoire
 			if (getSettingValue("LSU_Donnees_socle") == "y") {
@@ -1063,7 +1152,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				// 20170404
 				//echo "\$responsablesEleve = getResponsableEleve($eleve->ele_id);<br />";
 				if(mysqli_num_rows($responsablesEleve)==0) {
-					$msg_erreur_remplissage.="Pas de responsable légal pour <a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>.<br />";
+					$msg_erreur_remplissage.="Pas de responsable légal pour <a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>.<br /><br />";
 				}
 				else {
 					while ($responsable = $responsablesEleve->fetch_object()) {
@@ -1078,9 +1167,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$attsResp = $xml->createAttribute($cle);
 							$attsResp->value = $valeur;
 							$respElv->appendChild($attsResp);
-						
-						}
 					
+						}
+				
 						if (trim($responsable->adr1) && $responsable->cp && $responsable->commune) {
 							$noeudAdresse = $xml->createElement('adresse');
 							$responsableAdr1 = trim($responsable->adr1) ? trim($responsable->adr1) : "-";
@@ -1092,7 +1181,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 								if (!$valeur) {continue ;}
 
 								if((isset($longueur_limite_lignes_adresse[$cle]))&&(mb_strlen($valeur)>$longueur_limite_lignes_adresse[$cle])&&(!in_array("longueur_adresse_resp_".$responsable->pers_id, $tab_erreur_adr))) {
-									$msg_erreur_remplissage.="La ".$cle." de l'adresse postale de <a href='../responsables/modify_resp.php?pers_id=".$responsable->pers_id."' target='_blank'>".$responsable->civilite." ".$responsable->nom." ".$responsable->prenom."</a> dépasse ".$longueur_limite_lignes_adresse[$cle]." caractères.<br />";
+									$msg_erreur_remplissage.="La ".$cle." de l'adresse postale de <a href='../responsables/modify_resp.php?pers_id=".$responsable->pers_id."' target='_blank'>".$responsable->civilite." ".$responsable->nom." ".$responsable->prenom."</a> dépasse ".$longueur_limite_lignes_adresse[$cle]." caractères.<br /><br />";
 									$tab_erreur_adr[]="longueur_adresse_resp_".$responsable->pers_id;
 								}
 								$attAdresse = $xml->createAttribute($cle);
@@ -1101,19 +1190,17 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							}
 							$respElv->appendChild($noeudAdresse);
 						}
-					
+				
 						$noeudResponsables->appendChild($respElv);
 					}
 					//echo "<br>";
 				}
-				
-				
+			
+			
 				if ($responsablesEleve->num_rows) {
 					$noeudBilanElevePeriodique->appendChild($noeudResponsables);
 				}
-				
 			}
-			
 			
 			
 			
@@ -1186,7 +1273,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$niveau_eleve_courant=$tmp_tab_cycle_niveau["mef_niveau"];
 
 				if($tab_cycle[$mef_code_ele]=="") {
-					$msg_erreur_remplissage.="Cycle courant de ".$eleve->nom." ".$eleve->prenom." en classe de ".get_chaine_liste_noms_classes_from_ele_login($eleve->login)." non identifié.<br />";
+					$msg_erreur_remplissage.="Cycle courant de ".$eleve->nom." ".$eleve->prenom." en classe de ".get_chaine_liste_noms_classes_from_ele_login($eleve->login)." non identifié.<br /><br />";
 					//$generer_bilan_pour_cet_eleve=false;
 				}
 
@@ -1227,7 +1314,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						$respEtabElv = "RESP_".$lig_lr->id_resp_etab;
 					}
 					else {
-						$msg_erreur_remplissage.="Le principal/adjoint chargé suivi de la classe de ".$lig_clas->classe." n'est pas défini.<br />";
+						$msg_erreur_remplissage.="Le principal/adjoint chargé suivi de la classe de ".$lig_clas->classe." n'est pas défini.<br /><br />";
 						$generer_bilan_pour_cet_eleve=false;
 					}
 
@@ -1242,7 +1329,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						$profResponsable = substr(getUtilisateur($lig_profprinc->professeur)->numind,1);
 					}
 					else {
-						$msg_erreur_remplissage.="Le professeur principal chargé suivi de ".$eleve->nom." ".$eleve->prenom." en classe de ".$lig_clas->classe." n'est pas défini.<br />";
+						$msg_erreur_remplissage.="Le professeur principal chargé suivi de ".$eleve->nom." ".$eleve->prenom." en classe de ".$lig_clas->classe." n'est pas défini.<br /><br />";
 						$generer_bilan_pour_cet_eleve=false;
 					}
 
