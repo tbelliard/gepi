@@ -252,6 +252,31 @@ if(isset($msg_requetesAdmin)) {
 					}
 				}
 			}
+
+			if((isset($selectionClasse))&&(count($selectionClasse)>0)) {
+				for($loop=0;$loop<count($selectionClasse);$loop++) {
+					$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, 
+										j_eleves_classes jec, 
+										mef m 
+									WHERE e.mef_code=m.mef_code AND 
+										jec.login=e.login AND 
+										jec.id_classe='".$selectionClasse[$loop]."' AND 
+										((m.libelle_long LIKE '%ULIS%' AND e.id_eleve NOT IN (SELECT id_eleve FROM j_modalite_accompagnement_eleve WHERE code='ULIS')) OR 
+										(m.libelle_long LIKE '%SEGPA%' AND e.id_eleve NOT IN (SELECT id_eleve FROM j_modalite_accompagnement_eleve WHERE code='SEGPA')))";
+					//echo "$sql<br />";
+					$test=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($test)>0) {
+						echo "<br /><span style='color:red'>Un ou des élèves semblent avoir un MEF de type SEGPA ou ULIS, mais la modalité d'accompagnement n'est pas renseignée dans <a href='../gestion/saisie_modalites_accompagnement.php?id_classe=".$selectionClasse[$loop]."' target='_blank'>Modalités d'accompagnement en ".get_nom_classe($selectionClasse[$loop])."</a>&nbsp;: ";
+						$cpt_em=0;
+						while($lig=mysqli_fetch_object($test)) {
+							if($cpt_em>0) {echo ", ";}
+							echo "<a href='../gestion/saisie_modalites_accompagnement.php?login_eleve=".$lig->login."' target='_blank'>".$lig->nom." ".$lig->prenom."</a> ";
+							$cpt_em++;
+						}
+						echo ".</span><br />";
+					}
+				}
+			}
 		?>
 		</p>
 	</div>

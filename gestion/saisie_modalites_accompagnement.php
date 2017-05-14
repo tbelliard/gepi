@@ -306,7 +306,7 @@ require_once("../lib/header.inc.php");
 
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>
 	<p class='bold'>
-		<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+		<a href='../eleves/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 
 if($id_class_prec!=0){
 	echo "
@@ -349,6 +349,8 @@ if($id_class_suiv!=0){
 echo "
 	</p>
 </form>\n";
+
+$tab_mef=get_tab_mef();
 
 if((!isset($login_eleve))&&(!isset($id_classe))) {
 	// A faire: proposer une recherche sur un élève
@@ -410,6 +412,11 @@ elseif(isset($login_eleve)) {
 	$current_login=$login_eleve;
 	$current_ele=get_info_eleve($login_eleve);
 
+	$chaine_mef="";
+	if(isset($tab_mef[$current_ele['mef_code']])) {
+		$chaine_mef="<br /><span style='font-size:small'>".$tab_mef[$current_ele['mef_code']]["libelle_edition"]."</span>";
+	}
+
 	echo "
 <form action='".$_SERVER["PHP_SELF"]."' method='post' name='form2'>
 	<fieldset class='fieldset_opacite50'>
@@ -424,7 +431,7 @@ elseif(isset($login_eleve)) {
 					<th>
 						Accompagnements<br />
 						<a href='../eleves/modify_eleve.php?eleve_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$current_ele["nom"]." ".$current_ele["prenom"]."</a> 
-						<a href='../eleves/visu_eleve.php?ele_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a>
+						<a href='../eleves/visu_eleve.php?ele_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a>".$chaine_mef."
 					</th>";
 		for($i=1;$i<$nb_periode;$i++) {
 			echo "
@@ -598,6 +605,10 @@ else {
 
 	//for($loop=0;$loop<count($tab_ele);$loop++) {
 	foreach($tab_ele as $current_login => $current_ele) {
+		$chaine_mef="";
+		if(isset($tab_mef[$current_ele['mef_code']])) {
+			$chaine_mef="<br /><span style='font-size:small'>".$tab_mef[$current_ele['mef_code']]["libelle_edition"]."</span>";
+		}
 		echo "
 		<!--
 		<p><a href='../eleves/modify_eleve.php?eleve_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier les informations élève.\">".$current_ele["nom"]." ".$current_ele["prenom"]."</a> <a href='../eleves/visu_eleve.php?ele_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Voir la fiche/classeur élève dans un nouvel onglet.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a></p>
@@ -608,7 +619,7 @@ else {
 					<th>
 						Accompagnements<br />
 						<a href='../eleves/modify_eleve.php?eleve_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$current_ele["nom"]." ".$current_ele["prenom"]."</a> 
-						<a href='../eleves/visu_eleve.php?ele_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a>
+						<a href='../eleves/visu_eleve.php?ele_login=".$current_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a>".$chaine_mef."
 					</th>";
 		for($i=1;$i<$nb_periode;$i++) {
 			echo "
