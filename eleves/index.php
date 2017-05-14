@@ -705,11 +705,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 }
 
 if(!getSettingValue('conv_new_resp_table')){
-	echo "</p></form>";
 
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
+		echo "</p></form>";
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 
 		if($_SESSION['statut']=="administrateur"){
@@ -726,6 +726,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0){
+		echo "</p></form>";
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 
 		if($_SESSION['statut']=="administrateur"){
@@ -742,14 +743,15 @@ if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0){
+			echo "</p></form>";
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 
-		if($_SESSION['statut']=="administrateur"){
-			echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
-		}
-		else{
-			echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
-		}
+			if($_SESSION['statut']=="administrateur"){
+				echo "<p>Suivez ce lien: <a href='../responsables/conversion.php'>CONVERTIR</a></p>\n";
+			}
+			else{
+				echo "<p><a href=\"javascript:centrerpopup('../gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Contactez l'administrateur</a></p>\n";
+			}
 
 			require("../lib/footer.inc.php");
 			die();
@@ -786,6 +788,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {echo " | <a href='synchro_mail.php'>Synchroniser les adresses mail élèves</a>\n";}
 
 if($_SESSION['statut']=="administrateur") {echo " | <a href='../utilisateurs/edit_eleve.php'>Comptes d'utilisateurs élèves</a>\n";}
+
+if($_SESSION['statut']=="administrateur") {echo " | <a href='../gestion/saisie_modalites_accompagnement.php'>Modalités d'accompagnement des élèves</a>\n";}
 
 if(($_SESSION['statut']=="administrateur")&&(getSettingValue('exp_imp_chgt_etab')=='yes')) {
 	// Pour activer le dispositif:
