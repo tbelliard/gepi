@@ -558,17 +558,34 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		/*----- Bilans périodiques -----*/
 		$bilansPeriodiques = $xml->createElement('bilans-periodiques');
 		
-		
+		$tab_id_eleve=array();
 		$eleves = getElevesExport();
 		while ($eleve = $eleves->fetch_object()) {
 			$exporteEleve = FALSE;
 			$desAcquis = FALSE;
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			$respEtabElv = "RESP_".$eleve->id_resp_etab;
-			
+
+			$profResponsable="";
 			//$profResponsable = getUtilisateur($eleve->professeur)->numind;
-			$profResponsable = substr(getUtilisateur($eleve->professeur)->numind,1);
-			
+			if(!isset($eleve->professeur)) {
+				$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> n'a pas de professeur principal.<br />Il faut <a href='../classes/classes_const.php?id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br /><br />";
+			}
+			else {
+				$obj_u=getUtilisateur($eleve->professeur);
+				if(!isset($obj_u->numind)) {
+					$msg_erreur_remplissage.="Le professeur principal ($eleve->professeur) associé à l'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> n'a pas de d'identifiant ID/NUMIND.<br />Il faut <a href='../utilisateurs/modify_user.php?login_user=".$eleve->professeur."' target='_blank'>corriger</a>.<br /><br />";
+				}
+				elseif(mb_strlen($obj_u->numind)<=1) {
+					$msg_erreur_remplissage.="Le professeur principal ($eleve->professeur) associé à l'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un identifiant ID/NUMIND non standard (moins de deux caractères).<br />Il faut <a href='../utilisateurs/modify_user.php?login_user=".$eleve->professeur."' target='_blank'>corriger</a>.<br /><br />";
+				}
+				else {
+					$profResponsable = substr($obj_u->numind,1);
+				}
+			}
+			//$profResponsable = substr(getUtilisateur($eleve->professeur)->numind,1);
+			//echo "\$profResponsable = substr(getUtilisateur($eleve->professeur)->numind,1)= = substr(".getUtilisateur($eleve->professeur)->numind.",1)=$profResponsable<br />";
+
 			if($eleve->periode < 10) {$num_periode = "0".$eleve->periode;} else {$num_periode = $eleve->periode;}
 			$datecolarite = dateScolarite($eleve->login, $eleve->periode);
 			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
@@ -1204,7 +1221,15 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			
 			
-			if ($desAcquis && $exporteEleve) {$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);}
+			if ($desAcquis && $exporteEleve) {
+				if(in_array("EL_".$eleve->id_eleve."_".$eleve->periode, $tab_id_eleve)) {
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est inscrit plusieurs fois.<br />Cela correspond probablement à un changement de classe en cours d'année.<br />Il faudrait exporter les différentes classes de l'élève en plusieurs fois&nbsp;: un fichier XML par classe de l'élève.<br /><br />";
+				}
+
+				$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);
+
+				$tab_id_eleve[]="EL_".$eleve->id_eleve."_".$eleve->periode;
+			}
 		}	
 		$donnees->appendChild($bilansPeriodiques);
 
