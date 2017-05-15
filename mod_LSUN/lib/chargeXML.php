@@ -457,6 +457,10 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 }
 
 if (getSettingValue("LSU_traite_AP") != "n") {
+	$tab_acc_perso_groupes=array();
+	$tab_acc_perso_groupes_ele_msg=array();
+	$tab_acc_perso_groupes_info=array();
+
 			/*----- acc-persos -----*/
 	$listeApCommuns = getAPCommun();
 	if ($listeApCommuns->num_rows) {
@@ -489,7 +493,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 		
 			/*----- acc-persos-groupes -----*/
-	
+
 		$accPersosGroupes = $xml->createElement('acc-persos-groupes');
 		$listeApGroupes = getApGroupes();
 		while ($apGroupe = $listeApGroupes->fetch_object()) {
@@ -528,7 +532,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			//echo '<br><br>';
 			if ($profMatiere->num_rows) {
 				$noeudProfs = $xml->createElement('enseignants-disciplines');
-			//print_r($profMatiere);
+				//print_r($profMatiere);
 				while ($ensModalite = $profMatiere->fetch_object()) {
 					$noeudProf = $xml->createElement('enseignant-discipline');
 					$attsMat =  $xml->createAttribute('discipline-ref');
@@ -543,7 +547,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				}
 				$noeudApGroupes->appendChild($noeudProfs);
 				
-			$accPersosGroupes->appendChild($noeudApGroupes);
+				$accPersosGroupes->appendChild($noeudApGroupes);
+
+				$tab_acc_perso_groupes[]="ACC_PERSO_GROUPE_".$apGroupe->id;
 			}
 		}
 		
@@ -977,24 +983,42 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$apEleve = getAidEleve($eleve->login, $_AP, $eleve->periode);
 				if ($apEleve->num_rows) {
 					$listeAccPersosEleve = $xml->createElement('acc-persos-eleve');
+					$au_moins_un_aid=false;
 					while ($accPersosEleve = $apEleve->fetch_object()) {
-						$noeudAPEleve = $xml->createElement('acc-perso-eleve');
-						$attsAPEleve = $xml->createAttribute('acc-perso-groupe-ref');
-						$attsAPEleve->value = "ACC_PERSO_GROUPE_".$accPersosEleve->id_aid;
-						$noeudAPEleve->appendChild($attsAPEleve);
+						if(in_array("ACC_PERSO_GROUPE_".$accPersosEleve->id_aid, $tab_acc_perso_groupes)) {
+							$au_moins_un_aid=true;
+							$noeudAPEleve = $xml->createElement('acc-perso-eleve');
+							$attsAPEleve = $xml->createAttribute('acc-perso-groupe-ref');
+							$attsAPEleve->value = "ACC_PERSO_GROUPE_".$accPersosEleve->id_aid;
+							$noeudAPEleve->appendChild($attsAPEleve);
 						
-						$commentaireAPEleve = getCommentaireAidElv($eleve->login, $accPersosEleve->id_aid, $eleve->periode);
-						if ($commentaireAPEleve->num_rows) {
-							$tmp_chaine=nettoye_texte_vers_chaine($commentaireAPEleve->fetch_object()->appreciation);
-							$comm = substr(trim($tmp_chaine),0,600);
-							if ($comm) {
-								$noeudComApEleve = $xml->createElement('commentaire', $comm);
-								$noeudAPEleve->appendChild($noeudComApEleve);
+							$commentaireAPEleve = getCommentaireAidElv($eleve->login, $accPersosEleve->id_aid, $eleve->periode);
+							if ($commentaireAPEleve->num_rows) {
+								$tmp_chaine=nettoye_texte_vers_chaine($commentaireAPEleve->fetch_object()->appreciation);
+								$comm = substr(trim($tmp_chaine),0,600);
+								if ($comm) {
+									$noeudComApEleve = $xml->createElement('commentaire', $comm);
+									$noeudAPEleve->appendChild($noeudComApEleve);
+								}
 							}
+							$listeAccPersosEleve->appendChild($noeudAPEleve);
 						}
-						$listeAccPersosEleve->appendChild($noeudAPEleve);
+						elseif(!in_array($eleve->login."_".$accPersosEleve->id_aid, $tab_acc_perso_groupes_ele_msg)) {
+							/*
+							echo "<pre>";
+							print_r($accPersosEleve);
+							echo "</pre>";
+							*/
+							if(!array_key_exists($accPersosEleve->id_aid, $tab_acc_perso_groupes_info)) {
+								$tab_acc_perso_groupes_info[$accPersosEleve->id_aid]=get_valeur_champ("aid","id='".$accPersosEleve->id_aid."'","nom");
+							}
+							$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un AID (<a href='../aid/index2.php?indice_aid=".$accPersosEleve->indice_aid."' target='_blank'>".$tab_acc_perso_groupes_info[$accPersosEleve->id_aid]."</a>) de type AP qui n'est pas déclaré dans le présent module LSU.<br />Déclarez l'AP dans la présente page et rattachez-y la catégorie de l'AID, ou ne tenez pas compte de l'alerte si cet AID ne doit pas être exporté.<br /><br />";
+							$tab_acc_perso_groupes_ele_msg[]=$eleve->login."_".$accPersosEleve->id_aid;
+						}
 					}
-					$noeudBilanElevePeriodique->appendChild($listeAccPersosEleve);
+					if($au_moins_un_aid) {
+						$noeudBilanElevePeriodique->appendChild($listeAccPersosEleve);
+					}
 				}
 			}
 			
