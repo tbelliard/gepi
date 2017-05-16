@@ -638,10 +638,11 @@ if ($_SESSION['statut'] == 'professeur') {
 
 </p>
 
-<form enctype="multipart/form-data" action="add_aid.php" method="post">
+<form enctype="multipart/form-data" action="add_aid.php" method="post" id='form_add_aid'>
 
 	<h2><?php echo $nom_famille_aid; ?>
-		<input type="submit" value="Enregistrer" />
+		<input type="submit" id='submit_enregistrer_1' value="Enregistrer" />
+		<input type="button" id='bouton_enregistrer_1' value="Enregistrer" style='display:none' />
 	</h2>
 
     <p><?php echo $nouveau; ?></p>
@@ -813,12 +814,33 @@ if ($_SESSION['statut'] == 'professeur') {
 		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
 		<input type="hidden" name="mode" value="<?php echo $mode; ?>" />
 		<input type="hidden" name="is_posted" value="<?php echo $is_posted; ?>" />
-		<input type="submit" value="Enregistrer" />
+		<input type="submit" id='submit_enregistrer_2' value="Enregistrer" />
+		<input type="button" id='bouton_enregistrer_2' value="Enregistrer" style='display:none' onclick="check_form_et_submit()" />
 	</p>
 	
 </form>
 
 <script type='text/javascript'>
+if((document.getElementById("submit_enregistrer_1"))&&(document.getElementById("bouton_enregistrer_1"))) {
+	document.getElementById("submit_enregistrer_1").style.display='none';
+	document.getElementById("bouton_enregistrer_1").style.display='';
+}
+if((document.getElementById("submit_enregistrer_2"))&&(document.getElementById("bouton_enregistrer_2"))) {
+	document.getElementById("submit_enregistrer_2").style.display='none';
+	document.getElementById("bouton_enregistrer_2").style.display='';
+}
+
+function check_form_et_submit() {
+	if(document.getElementById("aidRegNom")) {
+		if(document.getElementById("aidRegNom").value=="") {
+			alert("Le nom de l'AID est vide");
+		}
+		else {
+			document.getElementById('form_add_aid').submit();
+		}
+	}
+}
+
 if(document.getElementById('aidRegNom')) {
 	document.getElementById('aidRegNom').focus();
 }

@@ -763,12 +763,60 @@ function clean_table_j_eleves_professeurs() {
 
 	// cas j_eleves_professeurs
 	$retour.="<h2>Vérification de la table j_eleves_professeurs</h2>\n";
+
+
+	$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe NOT IN (SELECT id FROM classes);";
+	$test = mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$retour.="Suppression de ".mysqli_num_rows($test)." scories correspondant à des classes qui n'existent plus&nbsp;: ";
+		$sql="DELETE FROM j_eleves_professeurs WHERE id_classe NOT IN (SELECT id FROM classes);";
+		$del = mysqli_query($GLOBALS["mysqli"], $sql);
+		if($del) {
+			$retour.="<span style='color:green'>Succès</span>";
+			$cpt+=mysqli_num_rows($test);
+		}
+		else {
+			$retour.="<span style='color:red'>Échec</span>";
+		}
+		$retour.="<br />";
+	}
+	$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login NOT IN (SELECT login FROM eleves);";
+	$test = mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$retour.="Suppression de ".mysqli_num_rows($test)." scories correspondant à des élèves qui ne sont plus dans la table 'eleves'&nbsp;: ";
+		$sql="DELETE FROM j_eleves_professeurs WHERE login NOT IN (SELECT login FROM eleves);";
+		$del = mysqli_query($GLOBALS["mysqli"], $sql);
+		if($del) {
+			$retour.="<span style='color:green'>Succès</span>";
+			$cpt+=mysqli_num_rows($test);
+		}
+		else {
+			$retour.="<span style='color:red'>Échec</span>";
+		}
+		$retour.="<br />";
+	}
+	$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
+	$test = mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$retour.="Suppression de ".mysqli_num_rows($test)." scories correspondant à des utilisateurs qui ne sont plus professeurs dans l'établissement&nbsp;: ";
+		$sql="DELETE FROM j_eleves_professeurs WHERE professeur NOT IN (SELECT login FROM utilisateurs AND statut='professeur');";
+		$del = mysqli_query($GLOBALS["mysqli"], $sql);
+		if($del) {
+			$retour.="<span style='color:green'>Succès</span>";
+			$cpt+=mysqli_num_rows($test);
+		}
+		else {
+			$retour.="<span style='color:red'>Échec</span>";
+		}
+		$retour.="<br />";
+	}
+
 	$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_professeurs order by login,professeur,id_classe");
 	$nb_lignes = mysqli_num_rows($req);
 	$i = 0;
 	while ($i < $nb_lignes) {
 
-	$login_user = old_mysql_result($req,$i,'login');
+		$login_user = old_mysql_result($req,$i,'login');
 		$professeur = old_mysql_result($req,$i,'professeur');
 		$id_classe = old_mysql_result($req,$i,'id_classe');
 
@@ -784,10 +832,12 @@ function clean_table_j_eleves_professeurs() {
 			$nb = $nb_lignes2-1;
 			//$retour.="Suppression d'un doublon : identifiant élève : $login_user - identifiant professeur = $professeur - identifiant classe = $id_classe<br />\n";
 			// On efface les lignes en trop
-			$del = mysqli_query($GLOBALS["mysqli"], "delete from j_eleves_professeurs where
+			$sql="delete from j_eleves_professeurs where
 			login ='$login_user' and
 			professeur ='$professeur' and
-			id_classe ='$id_classe' LIMIT $nb");
+			id_classe ='$id_classe' LIMIT $nb";
+			echo "$sql<br />";
+			$del = mysqli_query($GLOBALS["mysqli"], $sql);
 			$cpt++;
 		}
 
@@ -827,6 +877,34 @@ function clean_table_j_eleves_professeurs() {
 
 	$i++;
 	}
+
+	$sql="SELECT DISTINCT jep.id_classe, c.classe FROM j_eleves_professeurs jep, classes c WHERE c.id=jep.id_classe ORDER BY c.classe;";
+	//$retour.="$sql<br />";
+	$res = mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="SELECT DISTINCT login,COUNT(professeur) AS nb_prof FROM j_eleves_professeurs WHERE id_classe='".$lig->id_classe."' GROUP BY login HAVING COUNT(professeur)>1;";
+			$test = mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				while($lig2=mysqli_fetch_object($test)) {
+					$retour.="Plusieurs ".$gepi_prof_suivi." pour ".get_nom_prenom_eleve($lig2->login)." en classe de ".$lig->classe.".<br />On ne retiendra arbitrairement qu'un seul professeur.<br />Ménage&nbsp;: ";
+					$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$lig->id_classe."' AND login='".$lig2->login."' LIMIT ".($lig2->nb_prof-1).";";
+					//$retour.="$sql<br />";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($del) {
+						$retour.="<span style='color:green'>Succès</span>";
+						$cpt+=($lig2->nb_prof-1);
+					}
+					else {
+						$retour.="<span style='color:red'>Échec</span>";
+					}
+					$retour.="<br /><br />";
+				}
+			}
+		}
+	}
+
 	if ($cpt != 0) {
 		$retour.="<font color=\"red\">Nombre de lignes supprimées : ".$cpt."</font><br />\n";
 	} else {
