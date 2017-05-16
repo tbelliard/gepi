@@ -112,7 +112,7 @@ $xml->appendChild($items);
 		/*----- Élèves -----*/
 		//$tab_ele_deja=array();
 		$eleves = $xml->createElement('eleves');
-		while ($eleve = $listeEleves->fetch_object()){
+		while ($eleve = $listeEleves->fetch_object()) {
 			$noeudEleve = $xml->createElement('eleve');
 
 			if(!preg_match("/^[0-9]{1,}$/", $eleve->ele_id)) {
@@ -159,7 +159,7 @@ $xml->appendChild($items);
 		/*----- Disciplines -----*/
 		$tab_disciplines_global_deja=array();
 		$disciplines = $xml->createElement('disciplines');
-		while ($discipline = $listeDisciplines->fetch_object()){
+		while ($discipline = $listeDisciplines->fetch_object()) {
 				$noeudDiscipline = $xml->createElement('discipline');
 					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
 				$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
@@ -198,7 +198,7 @@ $xml->appendChild($items);
 		
 		/*----- Enseignants -----*/
 		$enseignants = $xml->createElement('enseignants');
-		while ($enseignant = $listeEnseignants->fetch_object()){
+		while ($enseignant = $listeEnseignants->fetch_object()) {
 				$noeudEnseignant = $xml->createElement('enseignant');
 						
 					//on ne conserve que les chiffres pour id-sts
@@ -238,7 +238,7 @@ $xml->appendChild($items);
 				$noeudPasEP->appendChild($attElementProgramme);
 			}
 			$elementsProgramme->appendChild($noeudPasEP);
-		while ($elementProgramme = $listeElementsProgramme->fetch_object()){
+		while ($elementProgramme = $listeElementsProgramme->fetch_object()) {
 			$noeudElementProgramme = $xml->createElement('element-programme');
 			$elePro = trim($elementProgramme->libelle) ? substr(htmlspecialchars($elementProgramme->libelle),0,300) : "-";
 			$attributsElementProgramme = array('id'=>'EP_'.$elementProgramme->id, 'libelle'=>$elePro);
@@ -1247,7 +1247,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			
 			if ($desAcquis && $exporteEleve) {
 				if(in_array("EL_".$eleve->id_eleve."_".$eleve->periode, $tab_id_eleve)) {
-					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est inscrit plusieurs fois.<br />Cela correspond probablement à un changement de classe en cours d'année.<br />Il faudrait exporter les différentes classes de l'élève en plusieurs fois&nbsp;: un fichier XML par classe de l'élève.<br /><br />";
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> (EL_".$eleve->id_eleve."_".$eleve->periode.") est inscrit plusieurs fois en période EL_".$eleve->id_eleve.".<br />Cela correspond probablement à un changement de classe en cours d'année.<br />Il faudrait exporter les différentes classes de l'élève en plusieurs fois&nbsp;: un fichier XML par classe de l'élève.<br /><br />";
 				}
 
 				$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);
