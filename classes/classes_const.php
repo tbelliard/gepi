@@ -70,7 +70,7 @@ if (isset($is_posted)) {
 	//=========================
 
 	$k = 0;
-	While ($k < $nombreligne) {
+	while ($k < $nombreligne) {
 		$login_eleve = old_mysql_result($call_eleves, $k, 'login');
 
 		//echo "<p>\$login_eleve=$login_eleve<br />\n";
@@ -122,8 +122,26 @@ if (isset($is_posted)) {
 			//echo "$login_eleve - \$reg_prof=\$prof_principal[$num_eleve]=".$prof_principal[$num_eleve]."<br />";
 			//=========================
 
-			$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT professeur FROM j_eleves_professeurs WHERE (login = '$login_eleve' AND id_classe='$id_classe')");
-			$eleve_profsuivi = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
+			$sql="SELECT professeur FROM j_eleves_professeurs WHERE (login = '$login_eleve' AND id_classe='$id_classe')";
+			//echo "$sql<br />";
+			$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($call_profsuivi_eleve)>1) {
+				// ANOMALIE&nbsp;: On fait le ménage
+				$sql="DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')";
+				//echo "$sql<br />";
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
+				if (!($reg_data)){
+					$reg_ok = 'no';
+					//echo "<span style='color:red;'>PB</span>";
+					$eleve_profsuivi = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
+				}
+				else {
+					$eleve_profsuivi="";
+				}
+			}
+			else {
+				$eleve_profsuivi = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
+			}
 			//echo "\$eleve_profsuivi=$eleve_profsuivi<br />\n";
 			if (($reg_prof == '(vide)') and ($eleve_profsuivi != '')) {
 				$sql="DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')";
@@ -135,7 +153,12 @@ if (isset($is_posted)) {
 				}
 			}
 			if  (($reg_prof != '(vide)') and ($eleve_profsuivi != '') and ($reg_prof != $eleve_profsuivi)) {
-				$sql="UPDATE j_eleves_professeurs SET professeur ='$reg_prof' WHERE (login='$login_eleve' AND id_classe='$id_classe')";
+				// Problème de doublon
+				//$sql="UPDATE j_eleves_professeurs SET professeur ='$reg_prof' WHERE (login='$login_eleve' AND id_classe='$id_classe')";
+				$sql="DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')";
+				//echo "$sql<br />";
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
+				$sql="INSERT INTO j_eleves_professeurs VALUES ('$login_eleve', '$reg_prof', '$id_classe')";
 				//echo "$sql<br />";
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)){
