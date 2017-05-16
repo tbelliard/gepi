@@ -463,6 +463,7 @@ if(mysqli_num_rows($res)==0) {
 	echo "<p style='color:red'>Aucune matière avec enseignement associé n'a été trouvée.</p>";
 }
 else {
+	$chaine_selection_modalites="";
 	echo "
 <form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
@@ -485,7 +486,7 @@ else {
 						<a href='#' onclick=\"imposer_modalite();changement();return false\" title=\"Imposer cette modalité pour tous les enseignements.\"><img src='../images/icons/wizard.png' class='icone16' alt='Forcer' /></a>
 					</th>
 					<th>
-						Modalités associées aux MEFS
+						Modalités associées aux MEFS<span id='span_magic_modalites' style='display:none'><a href='#' onclick=\"selectionner_lignes_une_seule_modalite_sts_sconet();return false;\" title=\"Sélectionner les modalités dans le cas où une seule modalité est associée à la classe.\"><img src='../images/icons/wizard.png' class='icone16' alt='Choix' /></a></span>
 					</th>
 				</tr>
 			</thead>
@@ -510,6 +511,7 @@ else {
 					elseif(($nb_mod==1)&&(isset($tab_indice_modalite[$lig_mod->code_modalite_elect]))) {
 						//alert('".$lig_mod->code_modalite_elect." ".$tab_indice_modalite[$lig_mod->code_modalite_elect]."');
 						$liste_modalites.="<a href='#' onclick=\"document.getElementById('code_modalite_elect_$cpt').selectedIndex=".$tab_indice_modalite[$lig_mod->code_modalite_elect]."; return false;\" title=\"Prendre cette modalité ci-contre.\"><img src='../images/icons/wizard.png' class='icone16' alt='Choix' /></a>";
+						$chaine_selection_modalites.="document.getElementById('code_modalite_elect_$cpt').selectedIndex=".$tab_indice_modalite[$lig_mod->code_modalite_elect].";\n";
 					}
 				}
 			}
@@ -639,6 +641,15 @@ echo "
 				document.getElementById('code_modalite_elect_'+i).selectedIndex=document.getElementById('code_modalite_elect_modele').selectedIndex;
 			}
 		}
+	}
+
+	".(($chaine_selection_modalites!="") ? "
+	if(document.getElementById('span_magic_modalites')) {
+		document.getElementById('span_magic_modalites').style.display='';
+	}
+	" : "")."
+	function selectionner_lignes_une_seule_modalite_sts_sconet() {
+		$chaine_selection_modalites
 	}
 </script>
 
