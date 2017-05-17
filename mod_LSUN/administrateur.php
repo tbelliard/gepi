@@ -285,7 +285,7 @@ if(isset($msg_requetesAdmin)) {
 					$test=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($test)>0) {
 						while($lig=mysqli_fetch_object($test)) {
-							echo "<br /><span style='color:red'>".get_nom_prenom_eleve($lig->login)." a ".$lig->nb_prof." ".$gepi_prof_suivi."<br />C'est une anomalie. Vous ne devriez en avoir qu'un par élève/classe.<br />Effectuez un <a href='../utilitaires/clean_tables.php?maj=2".add_token_in_url()."' target='_blank'>Nettoyage des tables</a> pour n'en retenir qu'un par élève/classe ou revalidez la sélection affichée dans <a href='../classes/classes_const.php?id_classe=".$selectionClasse[$loop]."' target='_blank'>Gérer les élèves de la classe de ".get_nom_classe($selectionClasse[$loop])."</a> pour ne garder que le professeur affiché dans le champ SELECT.<br />";
+							echo "<br /><span style='color:red'>".get_nom_prenom_eleve($lig->login)." a ".$lig->nb_prof." ".$gepi_prof_suivi."<br />C'est une anomalie. Vous ne devriez en avoir qu'un par élève/classe.<br />Effectuez un <a href='../utilitaires/clean_tables.php?maj=2".add_token_in_url()."' target='_blank'>Nettoyage des tables</a> pour n'en retenir qu'un par élève/classe ou revalidez la sélection affichée dans <a href='../classes/classes_const.php?id_classe=".$selectionClasse[$loop]."' target='_blank'>Gérer les élèves de la classe de ".get_nom_classe($selectionClasse[$loop])."</a> pour ne garder que le professeur affiché dans le champ SELECT.<br />Dans le cas contraire, un seul des $gepi_prof_suivi sera arbitrairement retenu dans l'export.<br />";
 						}
 					}
 				}
