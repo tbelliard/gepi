@@ -174,7 +174,23 @@ $xml->appendChild($items);
 					$matiere = "DI_".$discipline->code_matiere.$discipline->code_modalite_elect;
 					if(in_array($matiere, $tab_disciplines_global_deja)) {
 						//$sql="SELECT valeur FROM nomenclatures_valeurs WHERE code='".$discipline->code_matiere."' AND nom='libelle_edition';";
-						$msg_erreur_remplissage.="Plusieurs enseignements de <b>".get_valeur_champ("nomenclatures_valeurs", "code='".$discipline->code_matiere."' AND nom='libelle_edition'", "valeur")."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Ce n'est pas possible.<br />Il faut corriger.<br /><br />";
+						$nom_matiere=get_valeur_champ("nomenclatures_valeurs", "code='".$discipline->code_matiere."' AND nom='libelle_edition'", "valeur");
+						// Ca ne convient pas: On ne liste pas les matières qui ont cette nomenclature
+						//$msg_erreur_remplissage.="Plusieurs enseignements de <b><a href='../matieres/modify_matiere.php?current_matiere=".$nom_matiere."' target='_blank'>".$nom_matiere."</a></b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Ce n'est pas possible.<br />Il faut corriger.<br /><br />";
+						$info_matieres="";
+						$sql="SELECT DISTINCT m.matiere FROM matieres m, j_groupes_matieres jgm WHERE m.code_matiere='".$discipline->code_matiere."' AND jgm.id_matiere=m.matiere ORDER BY matiere;";
+						$res_mat=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res_mat)>0) {
+							$info_matieres.=" <em title=\"Les matières associées à la nomenclature ".$discipline->code_matiere." sont celles-ci.\">(";
+							$cpt_mat=0;
+							while($lig_mat=mysqli_fetch_object($res_mat)) {
+								if($cpt_mat>0) {$info_matieres.=", ";}
+								$info_matieres.="<a href='../matieres/modify_matiere.php?current_matiere=".$lig_mat->matiere."' target='_blank'>".$lig_mat->matiere."</a>";
+								$cpt_mat++;
+							}
+							$info_matieres.=")</em>";
+						}
+						$msg_erreur_remplissage.="Plusieurs enseignements de <b>".$nom_matiere."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Cela peut arriver quand une même nomenclature matière est associée à plusieurs matières et que les différentes matières sont extraites avec la même modalité dans un export XML".$info_matieres.".<br />Ce n'est pas possible.<br />Il faut corriger.<br />";
 					}
 					$tab_disciplines_global_deja[]=$matiere;
 				}
@@ -565,6 +581,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		$bilansPeriodiques = $xml->createElement('bilans-periodiques');
 		
 		$tab_id_eleve=array();
+		$tab_eleve_sans_pp=array();
 		$eleves = getElevesExport();
 		while ($eleve = $eleves->fetch_object()) {
 			$exporteEleve = FALSE;
@@ -575,15 +592,24 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$profResponsable="";
 			//$profResponsable = getUtilisateur($eleve->professeur)->numind;
 			if(!isset($eleve->professeur)) {
-				$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> n'a pas de professeur principal.<br />Il faut <a href='../classes/classes_const.php?id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br /><br />";
+				if(!in_array($eleve->login, $tab_eleve_sans_pp)) {
+					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> n'a pas de professeur principal.<br />Il faut <a href='../classes/classes_const.php?id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br /><br />";
+					$tab_eleve_sans_pp[]=$eleve->login;
+				}
 			}
 			else {
 				$obj_u=getUtilisateur($eleve->professeur);
 				if(!isset($obj_u->numind)) {
-					$msg_erreur_remplissage.="Le professeur principal ($eleve->professeur) associé à l'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> n'a pas de d'identifiant ID/NUMIND.<br />Il faut <a href='../utilisateurs/modify_user.php?login_user=".$eleve->professeur."' target='_blank'>corriger</a>.<br /><br />";
+					if(!in_array($eleve->login, $tab_eleve_sans_pp)) {
+						$msg_erreur_remplissage.="Le professeur principal ($eleve->professeur) associé à l'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> n'a pas de d'identifiant ID/NUMIND.<br />Il faut <a href='../utilisateurs/modify_user.php?login_user=".$eleve->professeur."' target='_blank'>corriger</a>.<br /><br />";
+						$tab_eleve_sans_pp[]=$eleve->login;
+					}
 				}
 				elseif(mb_strlen($obj_u->numind)<=1) {
-					$msg_erreur_remplissage.="Le professeur principal ($eleve->professeur) associé à l'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un identifiant ID/NUMIND non standard (moins de deux caractères).<br />Il faut <a href='../utilisateurs/modify_user.php?login_user=".$eleve->professeur."' target='_blank'>corriger</a>.<br /><br />";
+					if(!in_array($eleve->login, $tab_eleve_sans_pp)) {
+						$msg_erreur_remplissage.="Le professeur principal ($eleve->professeur) associé à l'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a un identifiant ID/NUMIND non standard (moins de deux caractères).<br />Il faut <a href='../utilisateurs/modify_user.php?login_user=".$eleve->professeur."' target='_blank'>corriger</a>.<br /><br />";
+						$tab_eleve_sans_pp[]=$eleve->login;
+					}
 				}
 				else {
 					$profResponsable = substr($obj_u->numind,1);
