@@ -387,7 +387,7 @@ function getElevesExport() {
 	//echo "<p>".$sqlEleves01.";</p>";
 	// on récupère le prof principal
 	$sqlEleves02 = "SELECT t0.*, jep.professeur FROM ($sqlEleves01) AS t0 "
-		. "LEFT JOIN j_eleves_professeurs AS jep "
+		. "LEFT JOIN (SELECT login , id_classe , MIN(professeur) AS professeur FROM j_eleves_professeurs GROUP BY login , id_classe) AS jep "
 		. "ON t0.login = jep.login AND jep.id_classe=t0.id_classe";
 	//echo "<p>".$sqlEleves02.";</p>";
 	// on récupère la date de conseil de classe
