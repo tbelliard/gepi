@@ -663,7 +663,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 			$sql="SELECT 1=1 FROM j_aid_utilisateurs_gest WHERE id_utilisateur= '".$_SESSION['login']."' AND id_aid = '".$lig_aid->id_aid."' AND indice_aid='".$lig_aid->indice_aid."';";
 			//echo "$sql<br />";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_aid)>0) {
+			if(mysqli_num_rows($test)>0) {
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid->id_aid."&indice_aid=".$lig_aid->indice_aid;
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Gérer les élèves";
 				$cpt_sous_menu2++;
