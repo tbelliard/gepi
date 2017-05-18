@@ -184,7 +184,7 @@ if(isset($msg_requetesAdmin)) {
 			$sql="SELECT DISTINCT m.matiere, m.nom_complet FROM matieres m LEFT JOIN nomenclatures_valeurs nv ON m.code_matiere=nv.code WHERE nv.code IS NULL;";
 			$res_mat=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($res_mat)>0) {
-				echo "<span style='color:red'>".mysqli_num_rows($res_mat)." matière(s) n'a(ont) pas leur nomenclature renseignée <em>(";
+				echo "<span style='color:red; font-weight:bold;'>Problème potentiel&nbsp;:</span> ".mysqli_num_rows($res_mat)." matière(s) n'a(ont) pas leur nomenclature renseignée <em>(";
 				$cpt_mat=0;
 				while($lig_mat=mysqli_fetch_object($res_mat)) {
 					if($cpt_mat>0) {
@@ -193,7 +193,7 @@ if(isset($msg_requetesAdmin)) {
 					echo "<span title=\"$lig_mat->nom_complet\">$lig_mat->matiere</span>";
 					$cpt_mat++;
 				}
-				echo ")</em>.<br />Si ces matières ne sont pas destinées à remonter vers LSUN, ce n'est pas grave.</span>";
+				echo ")</em>.<br /><span style='color:red'>Si ces matières ne sont pas destinées à remonter vers LSUN, vous pouvez ne pas tenir compte de cette alerte.</span>";
 			}
 			else {
 				echo "Toutes les matières ont leur nomenclature renseignée.";
@@ -201,6 +201,13 @@ if(isset($msg_requetesAdmin)) {
 		?><br />
 		S'il manque des nomenclatures, sélectionnez/complétez manuellement un à un les codes matières dans <a href='../matieres/index.php'>Gestion des matières</a><br />
 		ou globalement dans <a href='../gestion/admin_nomenclatures.php?action=importnomenclature'>Importer les nomenclatures</a>.</p>
+
+		<?php
+			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM nomenclature_modalites_election;"));
+			if ($test_champ==0) {
+				echo "<span style='color:red;'><strong>ANOMALIE&nbsp;:</strong> Les modalités d'élection des matières sont manquantes.<br /><a href='../utilitaires/maj.php'>Forcer une mise à jour de la base</a> pour re-créer les modalités manquantes.</span><br />";
+			}
+		?>
 
 		<p style='margin-top:1em;'>S'il manque des éléments, les erreurs vous seront signalées et vous devrez corriger.</p>
 
@@ -285,7 +292,7 @@ if(isset($msg_requetesAdmin)) {
 					$test=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($test)>0) {
 						while($lig=mysqli_fetch_object($test)) {
-							echo "<br /><span style='color:red'>".get_nom_prenom_eleve($lig->login)." a ".$lig->nb_prof." ".$gepi_prof_suivi."<br />C'est une anomalie. Vous ne devriez en avoir qu'un par élève/classe.<br />Effectuez un <a href='../utilitaires/clean_tables.php?maj=2".add_token_in_url()."' target='_blank'>Nettoyage des tables</a> pour n'en retenir qu'un par élève/classe ou revalidez la sélection affichée dans <a href='../classes/classes_const.php?id_classe=".$selectionClasse[$loop]."' target='_blank'>Gérer les élèves de la classe de ".get_nom_classe($selectionClasse[$loop])."</a> pour ne garder que le professeur affiché dans le champ SELECT.<br />Dans le cas contraire, un seul des $gepi_prof_suivi sera arbitrairement retenu dans l'export.<br />";
+							echo "<br /><span style='color:red'>Attention&nbsp;:</span> ".get_nom_prenom_eleve($lig->login)." a ".$lig->nb_prof." ".$gepi_prof_suivi."<br />C'est une anomalie. Vous ne devriez en avoir qu'un par élève/classe.<br />Effectuez un <a href='../utilitaires/clean_tables.php?maj=2".add_token_in_url()."' target='_blank'>Nettoyage des tables</a> pour n'en retenir qu'un par élève/classe ou revalidez la sélection affichée dans <a href='../classes/classes_const.php?id_classe=".$selectionClasse[$loop]."' target='_blank'>Gérer les élèves de la classe de ".get_nom_classe($selectionClasse[$loop])."</a> pour ne garder que le professeur affiché dans le champ SELECT.<br />Dans le cas contraire, <span style='color:red'>un seul des $gepi_prof_suivi sera arbitrairement retenu dans l'export</span>.<br />";
 						}
 					}
 				}
