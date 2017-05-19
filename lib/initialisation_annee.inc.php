@@ -35,6 +35,8 @@ $liste_tables_del_etape_eleves = array(
 // Elèves et responsables
 "eleves",
 "responsables",
+
+"sconet_ele_options",
 /*
 // NE FAUDRAIT-IL PAS VIDER ICI responsables2, resp_pers et reps_adr?
 // NON: Cela empêche de conserver les comptes utilisateurs pour les responsables
@@ -159,6 +161,7 @@ $liste_tables_del_etape_matieres = array(
 "matieres_appreciations_acces",
 "matieres_appreciations_acces_eleve",
 "synthese_app_classe",
+"sconet_ele_options",
 "tempo2",
 "tempo",
 "cc_dev",
