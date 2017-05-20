@@ -829,7 +829,7 @@ Il faut pour le moment faire les imports dans les pages d'import des nomenclatur
 						foreach($modalite->children() as $key => $value) {
 							if(in_array(my_strtoupper($key),$tab_champs_modalites)) {
 								$modalites[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
-								//echo "\$modalite->$key=".$value."<br />";
+								echo "\$modalite->$key=".$value."<br />";
 							}
 						}
 					}
@@ -850,8 +850,9 @@ Il faut pour le moment faire les imports dans les pages d'import des nomenclatur
 						$tab_modalites[$lig_mm->code_modalite_elect]=$lig_mm->libelle_court;
 					}
 
-					$sql="TRUNCATE nomenclature_modalites_election;";
-					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+					// A VERIFIER: Il semble qu'on ne remplisse ensuite jamais la table si on la vide là... si, on la vide, une fois sur deux.
+					//$sql="TRUNCATE nomenclature_modalites_election;";
+					//$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					for($loop=0;$loop<count($modalites);$loop++) {
 						if((isset($modalites[$loop]['code_modalite_elect']))&&
@@ -873,6 +874,8 @@ Il faut pour le moment faire les imports dans les pages d'import des nomenclatur
 							}
 						}
 					}
+					
+					// Et il faudrait faire un tour de plus pour éliminer des modalités non utilisées dans l'établissement.
 
 					if($nb_insert_mod>0) {
 						echo "<p>$nb_insert_mod modalités élection ont été importées.</p>";
