@@ -110,7 +110,7 @@ $xml->appendChild($items);
 		$donnees->appendChild($responsablesEtab);
 		
 		/*----- Élèves -----*/
-		//$tab_ele_deja=array();
+		$tab_ele_deja=array();
 		$eleves = $xml->createElement('eleves');
 		while ($eleve = $listeEleves->fetch_object()) {
 			$noeudEleve = $xml->createElement('eleve');
@@ -131,12 +131,12 @@ $xml->appendChild($items);
 
 			$eleves->appendChild($noeudEleve);
 
-			/*
+			
 			if(in_array('EL_'.$eleve->id_eleve, $tab_ele_deja)) {
-				$msg_erreur_remplissage.="";
+				$msg_erreur_remplissage.="<strong>ATTENTION&nbsp;:</strong> L'élève ".'EL_'.$eleve->id_eleve." (<a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>) apparait plusieurs fois. Cela correspond probablement à un changement de classe.<br />L'export ne va pas être valide. Il faut exporter séparément les classes de cet élève.<br /><br />";
 			}
 			$tab_ele_deja[]='EL_'.$eleve->id_eleve;
-			*/
+			
 		}
 		$donnees->appendChild($eleves);
 		
@@ -1276,14 +1276,19 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> (EL_".$eleve->id_eleve."_".$eleve->periode.") est inscrit plusieurs fois en période EL_".$eleve->id_eleve.".<br />Cela correspond probablement à un changement de classe en cours d'année.<br />Il faudrait exporter les différentes classes de l'élève en plusieurs fois&nbsp;: un fichier XML par classe de l'élève.<br /><br />";
 				}
 
-				$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);
-
 				$tab_id_eleve[]="EL_".$eleve->id_eleve."_".$eleve->periode;
+
+				$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);
 			}
 		}	
 		$donnees->appendChild($bilansPeriodiques);
 
-
+		/*
+		echo "<pre>";
+		sort($tab_id_eleve);
+		print_r($tab_id_eleve);
+		echo "</pre>";
+		*/
 	/*
 		// Bilans de fin de cycle
 
