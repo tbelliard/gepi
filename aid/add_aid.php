@@ -122,21 +122,221 @@ if (isset($is_posted) && $is_posted) {
 		}
 	}
 
-	if(($is_posted==1)&&(isset($_POST['creer_un_aid_par_classe']))&&($_POST['creer_un_aid_par_classe']=="y")&&(count($id_classe)>1)) {
+	if($aid_nom=="") {
+		$msg.="ANOMALIE&nbsp;: Le nom de l'AID ne peut pas être vide.<br />";
+		$id_aid_prec=-1;
+		$id_aid_suiv=-1;
+		$temoin_tmp=0;
+		$aid_nom = "";
+		$aid_num = "";
+		$nouveau = "Entrez un nom : ";
 
-		$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
-		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
-		$prof_matiere=isset($_POST['prof_matiere']) ? $_POST['prof_matiere'] : array();
+		$res_parents=Extrait_aid_sur_indice_aid ($indice_aid);
+	}
+	else {
+		if(($is_posted==1)&&(isset($_POST['creer_un_aid_par_classe']))&&($_POST['creer_un_aid_par_classe']=="y")&&(count($id_classe)>1)) {
 
-		$aid_nom_depart=$aid_nom;
+			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
+			$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
+			$prof_matiere=isset($_POST['prof_matiere']) ? $_POST['prof_matiere'] : array();
 
-		for($loop=0;$loop<count($id_classe);$loop++) {
+			$aid_nom_depart=$aid_nom;
 
-			$aid_nom=$aid_nom_depart." (".get_nom_classe($id_classe[$loop]).")";
-			//$msg.="aid_nom=$aid_nom<br />";
+			for($loop=0;$loop<count($id_classe);$loop++) {
 
-			//$msg.="aid_id=$aid_id<br />";
-			// Pour un nouveau AID, on a aid_id=""
+				$aid_nom=$aid_nom_depart." (".get_nom_classe($id_classe[$loop]).")";
+				//$msg.="aid_nom=$aid_nom<br />";
+
+				//$msg.="aid_id=$aid_id<br />";
+				// Pour un nouveau AID, on a aid_id=""
+				if ("n" == $sous_groupe) {
+					Efface_sous_groupe($aid_id);
+					//die($aid_id);
+				}
+				if ("y" == $sous_groupe || $sous_groupe_de != NULL) {
+					$reg_parent = Sauve_sous_groupe($aid_id, $parent);
+					if (!$reg_parent) {
+						$mess = rawurlencode("Erreur lors de l'enregistrement des données pour $aid_nom.");
+						header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+						die();
+					}
+				}
+				//$msg.="aid_id=$aid_id<br />";
+
+
+				//  On regarde si une aid porte déjà le même nom
+				$count = mysqli_num_rows(Extrait_aid_sur_nom($aid_nom , $indice_aid));
+				check_token();
+				if (isset($is_posted) and ($is_posted =="1")) { // nouveau
+					// On calcule le nouveau id pour l'aid à insérer → Plus gros id + 1
+					$aid_id = Dernier_id ($ordre = "DESC") + 1;
+				} else {
+					$count--;
+				}
+				//if ($inscrit_direct) die ($inscrit_direct);
+
+
+				$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
+				if (!$reg_data) {
+					$mess = rawurlencode("Erreur lors de l'enregistrement des données pour $aid_nom.");
+					header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+					die();
+				}
+				else {
+					//$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
+
+					//$msg.="aid_id=$aid_id<br />";
+
+					$nb_ele_inscrits=0;
+					//for($loop=0;$loop<count($id_classe);$loop++) {
+						$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$id_classe[$loop]."';";
+						//echo "$sql<br />";
+						$res_ele_clas=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(mysqli_num_rows($res_ele_clas)>0) {
+							while($lig_ele=mysqli_fetch_object($res_ele_clas)) {
+								// On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
+								if ($autoriser_inscript_multiples == 'y') {
+									$filtre =  " AND id_aid='".$aid_id."' ";
+								}
+								else {
+									$filtre =  "";
+								}
+								$sql = "SELECT * FROM j_aid_eleves WHERE (login='".$lig_ele->login."' AND indice_aid='".$indice_aid."'".$filtre.")";
+								//echo $sql;
+								$test = mysqli_query($GLOBALS["mysqli"], $sql);
+								$test2 = mysqli_num_rows($test);
+								//$msg = "";
+								if ($test2=="0") {
+									if($lig_ele->login!='') {
+										$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$lig_ele->login."', id_aid='$aid_id', indice_aid='$indice_aid'");
+										if (!$reg_data) {
+											$msg.="Erreur lors de l'ajout de l'élève ".$lig_ele->login."<br />";
+										}
+										else {
+											$nb_ele_inscrits++;
+										}
+									}
+								}
+							}
+						}
+					//}
+
+					//$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
+
+					$nb_profs_inscrits=0;
+					for($loop2=0;$loop2<count($login_prof);$loop2++) {
+						$test2=Prof_deja_membre($login_prof[$loop2], $aid_id, $indice_aid)->num_rows;
+						if ($test2 != "0") {
+							$msg.="Le professeur ".$login_prof[$loop2]." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+						} else {
+							if ($login_prof[$loop2] != '') {
+								$reg_data=Sauve_prof_membre($login_prof[$loop2], $aid_id, $indice_aid);
+								if (!$reg_data) {
+									$msg.="Erreur lors de l'ajout du professeur ".$login_prof[$loop2]." !<br />";
+								}
+								else {
+									$nb_profs_inscrits++;
+								}
+							}
+						}
+					}
+
+					if((count($prof_matiere)>0)&&(isset($_POST['restreindre_aux_profs_de_la_classe']))) {
+						if($_POST['restreindre_aux_profs_de_la_classe']=="y") {
+							for($loop_mat=0;$loop_mat<count($prof_matiere);$loop_mat++) {
+								$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, 
+																	j_groupes_professeurs jgp, 
+																	j_groupes_matieres jgm, 
+																	j_groupes_classes jgc 
+																WHERE jgp.login=u.login AND 
+																	jgp.id_groupe=jgm.id_groupe AND 
+																	jgp.id_groupe=jgc.id_groupe AND 
+																	jgc.id_classe='".$id_classe[$loop]."' AND 
+																	jgm.id_matiere='".$prof_matiere[$loop_mat]."';";
+								//echo "$sql<br />";
+								$res_prof_mat=mysqli_query($mysqli, $sql);
+								if(mysqli_num_rows($res_prof_mat)>0) {
+									while($lig_prof_mat=mysqli_fetch_object($res_prof_mat)) {
+										$test2=Prof_deja_membre($lig_prof_mat->login, $aid_id, $indice_aid)->num_rows;
+										if ($test2 != "0") {
+											$msg.="Le professeur ".$lig_prof_mat->login." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+										} else {
+											$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
+											if (!$reg_data) {
+												$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
+											}
+											else {
+												$nb_profs_inscrits++;
+											}
+										}
+									}
+								}
+							}
+						}
+						else {
+							for($loop_mat=0;$loop_mat<count($prof_matiere);$loop_mat++) {
+								$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$prof_matiere[$loop_mat]."' AND u.etat='actif' ORDER BY u.nom, u.prenom;";
+								//echo "$sql<br />";
+								$res_prof_mat=mysqli_query($mysqli, $sql);
+								if(mysqli_num_rows($res_prof_mat)>0) {
+									while($lig_prof_mat=mysqli_fetch_object($res_prof_mat)) {
+										$test2=Prof_deja_membre($lig_prof_mat->login, $aid_id, $indice_aid)->num_rows;
+										if ($test2 != "0") {
+											$msg.="Le professeur ".$lig_prof_mat->login." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+										} else {
+											$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
+											if (!$reg_data) {
+												$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
+											}
+											else {
+												$nb_profs_inscrits++;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if ($count == "1") {
+					$msg=$msg." Attention, une AID ($nom_famille_aid) portant le même nom ($aid_nom) existait déja !<br />";
+				} else if ($count > 1) {
+					$msg=$msg." Attention, plusieurs AID ($nom_famille_aid) portant le même nom ($aid_nom) existaient déja !<br />";
+				}
+				if ($mode == "multiple") {
+					$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />" ;
+
+					if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
+						$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
+					}
+
+					if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
+						$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
+					}
+
+					$mess = rawurlencode($msg);
+					header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
+					die();
+				} else{
+					$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />";
+
+					if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
+						$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
+					}
+
+					if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
+						$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
+					}
+				}
+			}
+
+
+			$mess = rawurlencode($msg);
+			header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+			die();
+		}
+		else {
 			if ("n" == $sous_groupe) {
 				Efface_sous_groupe($aid_id);
 				//die($aid_id);
@@ -144,14 +344,12 @@ if (isset($is_posted) && $is_posted) {
 			if ("y" == $sous_groupe || $sous_groupe_de != NULL) {
 				$reg_parent = Sauve_sous_groupe($aid_id, $parent);
 				if (!$reg_parent) {
-					$mess = rawurlencode("Erreur lors de l'enregistrement des données pour $aid_nom.");
+					$mess = rawurlencode("Erreur lors de l'enregistrement des données.");
 					header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 					die();
 				}
 			}
-			//$msg.="aid_id=$aid_id<br />";
-
-
+	
 			//  On regarde si une aid porte déjà le même nom
 			$count = mysqli_num_rows(Extrait_aid_sur_nom($aid_nom , $indice_aid));
 			check_token();
@@ -161,24 +359,20 @@ if (isset($is_posted) && $is_posted) {
 			} else {
 				$count--;
 			}
-			//if ($inscrit_direct) die ($inscrit_direct);
-
+		//if ($inscrit_direct) die ($inscrit_direct);
 
 			$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
 			if (!$reg_data) {
-				$mess = rawurlencode("Erreur lors de l'enregistrement des données pour $aid_nom.");
+				$mess = rawurlencode("Erreur lors de l'enregistrement des données.");
 				header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 				die();
 			}
 			else {
-				//$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
-
-				//$msg.="aid_id=$aid_id<br />";
+				$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
 
 				$nb_ele_inscrits=0;
-				//for($loop=0;$loop<count($id_classe);$loop++) {
+				for($loop=0;$loop<count($id_classe);$loop++) {
 					$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$id_classe[$loop]."';";
-					//echo "$sql<br />";
 					$res_ele_clas=mysqli_query($GLOBALS['mysqli'], $sql);
 					if(mysqli_num_rows($res_ele_clas)>0) {
 						while($lig_ele=mysqli_fetch_object($res_ele_clas)) {
@@ -193,7 +387,7 @@ if (isset($is_posted) && $is_posted) {
 							//echo $sql;
 							$test = mysqli_query($GLOBALS["mysqli"], $sql);
 							$test2 = mysqli_num_rows($test);
-							//$msg = "";
+							$msg = "";
 							if ($test2=="0") {
 								if($lig_ele->login!='') {
 									$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$lig_ele->login."', id_aid='$aid_id', indice_aid='$indice_aid'");
@@ -207,20 +401,20 @@ if (isset($is_posted) && $is_posted) {
 							}
 						}
 					}
-				//}
+				}
 
-				//$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
+				$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
 
 				$nb_profs_inscrits=0;
-				for($loop2=0;$loop2<count($login_prof);$loop2++) {
-					$test2=Prof_deja_membre($login_prof[$loop2], $aid_id, $indice_aid)->num_rows;
+				for($loop=0;$loop<count($login_prof);$loop++) {
+					$test2=Prof_deja_membre($login_prof[$loop], $aid_id, $indice_aid)->num_rows;
 					if ($test2 != "0") {
-						$msg.="Le professeur ".$login_prof[$loop2]." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+						$msg.="Le professeur ".$login_prof[$loop]." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
 					} else {
-						if ($login_prof[$loop2] != '') {
-							$reg_data=Sauve_prof_membre($login_prof[$loop2], $aid_id, $indice_aid);
+						if ($login_prof[$loop] != '') {
+							$reg_data=Sauve_prof_membre($login_prof[$loop], $aid_id, $indice_aid);
 							if (!$reg_data) {
-								$msg.="Erreur lors de l'ajout du professeur ".$login_prof[$loop2]." !<br />";
+								$msg.="Erreur lors de l'ajout du professeur ".$login_prof[$loop]." !<br />";
 							}
 							else {
 								$nb_profs_inscrits++;
@@ -231,6 +425,21 @@ if (isset($is_posted) && $is_posted) {
 
 				if((count($prof_matiere)>0)&&(isset($_POST['restreindre_aux_profs_de_la_classe']))) {
 					if($_POST['restreindre_aux_profs_de_la_classe']=="y") {
+						$chaine_classes="";
+						for($loop=0;$loop<count($id_classe);$loop++) {
+							if($chaine_classes=="") {
+								$chaine_classes.=" AND (";
+							}
+							else {
+								$chaine_classes.=" OR ";
+							}
+
+							$chaine_classes.="jgc.id_classe='".$id_classe[$loop]."'";
+						}
+						if($chaine_classes!="") {
+							$chaine_classes.=")";
+						}
+
 						for($loop_mat=0;$loop_mat<count($prof_matiere);$loop_mat++) {
 							$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, 
 																j_groupes_professeurs jgp, 
@@ -239,8 +448,8 @@ if (isset($is_posted) && $is_posted) {
 															WHERE jgp.login=u.login AND 
 																jgp.id_groupe=jgm.id_groupe AND 
 																jgp.id_groupe=jgc.id_groupe AND 
-																jgc.id_classe='".$id_classe[$loop]."' AND 
-																jgm.id_matiere='".$prof_matiere[$loop_mat]."';";
+																jgm.id_matiere='".$prof_matiere[$loop_mat]."' 
+																$chaine_classes;";
 							//echo "$sql<br />";
 							$res_prof_mat=mysqli_query($mysqli, $sql);
 							if(mysqli_num_rows($res_prof_mat)>0) {
@@ -306,7 +515,7 @@ if (isset($is_posted) && $is_posted) {
 				$mess = rawurlencode($msg);
 				header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
 				die();
-			} else{
+			} else {
 				$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />";
 
 				if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
@@ -316,212 +525,16 @@ if (isset($is_posted) && $is_posted) {
 				if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
 					$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
 				}
-			}
-		}
 
-
-		$mess = rawurlencode($msg);
-		header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
-		die();
-	}
-	else {
-		if ("n" == $sous_groupe) {
-			Efface_sous_groupe($aid_id);
-			//die($aid_id);
-		}
-		if ("y" == $sous_groupe || $sous_groupe_de != NULL) {
-			$reg_parent = Sauve_sous_groupe($aid_id, $parent);
-			if (!$reg_parent) {
-				$mess = rawurlencode("Erreur lors de l'enregistrement des données.");
+				$mess = rawurlencode($msg);
 				header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 				die();
 			}
 		}
-	
-		//  On regarde si une aid porte déjà le même nom
-		$count = mysqli_num_rows(Extrait_aid_sur_nom($aid_nom , $indice_aid));
-		check_token();
-		if (isset($is_posted) and ($is_posted =="1")) { // nouveau
-			// On calcule le nouveau id pour l'aid à insérer → Plus gros id + 1
-			$aid_id = Dernier_id ($ordre = "DESC") + 1;
-		} else {
-			$count--;
-		}
-	//if ($inscrit_direct) die ($inscrit_direct);
-
-		$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
-		if (!$reg_data) {
-			$mess = rawurlencode("Erreur lors de l'enregistrement des données.");
-			header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
-			die();
-		}
-		else {
-			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
-
-			$nb_ele_inscrits=0;
-			for($loop=0;$loop<count($id_classe);$loop++) {
-				$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$id_classe[$loop]."';";
-				$res_ele_clas=mysqli_query($GLOBALS['mysqli'], $sql);
-				if(mysqli_num_rows($res_ele_clas)>0) {
-					while($lig_ele=mysqli_fetch_object($res_ele_clas)) {
-						// On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
-						if ($autoriser_inscript_multiples == 'y') {
-							$filtre =  " AND id_aid='".$aid_id."' ";
-						}
-						else {
-							$filtre =  "";
-						}
-						$sql = "SELECT * FROM j_aid_eleves WHERE (login='".$lig_ele->login."' AND indice_aid='".$indice_aid."'".$filtre.")";
-						//echo $sql;
-						$test = mysqli_query($GLOBALS["mysqli"], $sql);
-						$test2 = mysqli_num_rows($test);
-						$msg = "";
-						if ($test2=="0") {
-							if($lig_ele->login!='') {
-								$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$lig_ele->login."', id_aid='$aid_id', indice_aid='$indice_aid'");
-								if (!$reg_data) {
-									$msg.="Erreur lors de l'ajout de l'élève ".$lig_ele->login."<br />";
-								}
-								else {
-									$nb_ele_inscrits++;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
-
-			$nb_profs_inscrits=0;
-			for($loop=0;$loop<count($login_prof);$loop++) {
-				$test2=Prof_deja_membre($login_prof[$loop], $aid_id, $indice_aid)->num_rows;
-				if ($test2 != "0") {
-					$msg.="Le professeur ".$login_prof[$loop]." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
-				} else {
-					if ($login_prof[$loop] != '') {
-						$reg_data=Sauve_prof_membre($login_prof[$loop], $aid_id, $indice_aid);
-						if (!$reg_data) {
-							$msg.="Erreur lors de l'ajout du professeur ".$login_prof[$loop]." !<br />";
-						}
-						else {
-							$nb_profs_inscrits++;
-						}
-					}
-				}
-			}
-
-			if((count($prof_matiere)>0)&&(isset($_POST['restreindre_aux_profs_de_la_classe']))) {
-				if($_POST['restreindre_aux_profs_de_la_classe']=="y") {
-					$chaine_classes="";
-					for($loop=0;$loop<count($id_classe);$loop++) {
-						if($chaine_classes=="") {
-							$chaine_classes.=" AND (";
-						}
-						else {
-							$chaine_classes.=" OR ";
-						}
-
-						$chaine_classes.="jgc.id_classe='".$id_classe[$loop]."'";
-					}
-					if($chaine_classes!="") {
-						$chaine_classes.=")";
-					}
-
-					for($loop_mat=0;$loop_mat<count($prof_matiere);$loop_mat++) {
-						$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, 
-															j_groupes_professeurs jgp, 
-															j_groupes_matieres jgm, 
-															j_groupes_classes jgc 
-														WHERE jgp.login=u.login AND 
-															jgp.id_groupe=jgm.id_groupe AND 
-															jgp.id_groupe=jgc.id_groupe AND 
-															jgm.id_matiere='".$prof_matiere[$loop_mat]."' 
-															$chaine_classes;";
-						//echo "$sql<br />";
-						$res_prof_mat=mysqli_query($mysqli, $sql);
-						if(mysqli_num_rows($res_prof_mat)>0) {
-							while($lig_prof_mat=mysqli_fetch_object($res_prof_mat)) {
-								$test2=Prof_deja_membre($lig_prof_mat->login, $aid_id, $indice_aid)->num_rows;
-								if ($test2 != "0") {
-									$msg.="Le professeur ".$lig_prof_mat->login." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
-								} else {
-									$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
-									if (!$reg_data) {
-										$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
-									}
-									else {
-										$nb_profs_inscrits++;
-									}
-								}
-							}
-						}
-					}
-				}
-				else {
-					for($loop_mat=0;$loop_mat<count($prof_matiere);$loop_mat++) {
-						$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$prof_matiere[$loop_mat]."' AND u.etat='actif' ORDER BY u.nom, u.prenom;";
-						//echo "$sql<br />";
-						$res_prof_mat=mysqli_query($mysqli, $sql);
-						if(mysqli_num_rows($res_prof_mat)>0) {
-							while($lig_prof_mat=mysqli_fetch_object($res_prof_mat)) {
-								$test2=Prof_deja_membre($lig_prof_mat->login, $aid_id, $indice_aid)->num_rows;
-								if ($test2 != "0") {
-									$msg.="Le professeur ".$lig_prof_mat->login." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
-								} else {
-									$reg_data=Sauve_prof_membre($lig_prof_mat->login, $aid_id, $indice_aid);
-									if (!$reg_data) {
-										$msg.="Erreur lors de l'ajout du professeur ".$lig_prof_mat->nom." ".$lig_prof_mat->prenom." !<br />";
-									}
-									else {
-										$nb_profs_inscrits++;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if ($count == "1") {
-			$msg=$msg." Attention, une AID ($nom_famille_aid) portant le même nom ($aid_nom) existait déja !<br />";
-		} else if ($count > 1) {
-			$msg=$msg." Attention, plusieurs AID ($nom_famille_aid) portant le même nom ($aid_nom) existaient déja !<br />";
-		}
-		if ($mode == "multiple") {
-			$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />" ;
-
-			if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
-				$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
-			}
-
-			if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
-				$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
-			}
-
-			$mess = rawurlencode($msg);
-			header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
-			die();
-		} else {
-			$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />";
-
-			if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
-				$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
-			}
-
-			if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
-				$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
-			}
-
-			$mess = rawurlencode($msg);
-			header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
-			die();
-		}
 	}
 } else {
 	// on remplit tous les champs pour n'avoir qu'un affichage
-	
+
 	$id_aid_prec=-1;
 	$id_aid_suiv=-1;
 	$temoin_tmp=0;
@@ -642,7 +655,7 @@ if ($_SESSION['statut'] == 'professeur') {
 
 	<h2><?php echo $nom_famille_aid; ?>
 		<input type="submit" id='submit_enregistrer_1' value="Enregistrer" />
-		<input type="button" id='bouton_enregistrer_1' value="Enregistrer" style='display:none' />
+		<input type="button" id='bouton_enregistrer_1' value="Enregistrer" style='display:none' onclick="check_form_et_submit()" />
 	</h2>
 
     <p><?php echo $nouveau; ?></p>
