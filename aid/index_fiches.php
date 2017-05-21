@@ -47,6 +47,7 @@ if (!VerifAidIsActive($indice_aid,"")) {
 $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice_aid."'");
 $feuille_presence = sql_query1("select feuille_presence from aid_config where indice_aid='".$indice_aid."'");
 
+$utilisation_tablekit="ok";
 //**************** EN-TETE *********************
 if ((isset($_GET['action'])) and ($_GET['action'] == "liste_presence")) {
     unset ($titre_page);
@@ -325,6 +326,9 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
 
 // Affichage de la liste des élèves
 if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
+
+	$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+
     $order_by2 = isset($_POST["order_by2"]) ? $_POST["order_by2"] : (isset($_GET["order_by2"]) ? $_GET["order_by2"] : 'nom');
     if ($order_by2 == "nom") $order_by2 = "e.nom, e.prenom";
     if ($order_by2 == "classe") $order_by2 = "c.classe, e.nom, e.prenom";
@@ -345,12 +349,15 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
     a.id = j.id_aid
     ) ORDER BY ".$order_by2);
 
-    echo "<table style=\"width:90%\" border=\"1\" cellpadding=\"3\" class='boireaus boireaus_alt'>\n";
+    echo "<table style=\"width:90%\" border=\"1\" cellpadding=\"3\" class='boireaus boireaus_alt resizable sortable'>\n";
     echo "<tr>
-    <td style=\"width:50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>Nom Prénom</a></b></td>\n
+    <!--td style=\"width:50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>Nom Prénom</a></b></td-->
+    <td style=\"width:50%\"><b>Nom Prénom</b></td>
     <td style=\"width:50%\"><b>Identifiant</b></td>\n
-    <td><b><a href='index_fiches.php?order_by2=classe&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>Classe</a></b></td>\n
-    <td><b><a href='index_fiches.php?order_by2=projet&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>".$nom_projet."</a></b></td>\n";
+    <!--td><b><a href='index_fiches.php?order_by2=classe&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>Classe</a></b></td>\n
+    <td><b><a href='index_fiches.php?order_by2=projet&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>".$nom_projet."</a></b></td-->
+    <td><b>Classe</b></td>\n
+    <td><b>".$nom_projet."</b></td>\n";
     if (isset($test_salle) and ($test_salle != 0))
         echo "<td><b>Salle</b></td>\n";
     echo "</tr>\n";
@@ -370,11 +377,16 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
         $salle = sql_query1("select salle from aid where (id_aid = '$id_aid' and indice_aid='$indice_aid')");
         if ($salle == -1) $salle = "";
 
-        echo "<tr><td>".$nom_eleve." ".$prenom_eleve."</td>\n";
+        echo "<tr><td>";
+        if($acces_visu_eleve) {
+		echo "<span style='display:none;'>".$nom_eleve." ".$prenom_eleve."</span>";
+		echo "<div style='float:right; width:16px;'><a href='../eleves/visu_eleve.php?ele_login=".$login_eleve."' target='_blank' title=\"Voir la fiche élève dans un nouvel onglet.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /></a></div>";
+        }
+        echo $nom_eleve." ".$prenom_eleve."</td>\n";
         echo "<td>".$login_eleve."</td>\n";
         echo "<td>";
         if (($_SESSION["statut"] != "eleve") and ($_SESSION["statut"] != "responsable"))
-            echo "<a href='../groupes/visu_profs_class.php?id_classe=".$id_classe_eleve."' >".$classe_eleve."</a>";
+            echo "<a href='../groupes/visu_profs_class.php?id_classe=".$id_classe_eleve."' title=\"Accéder à l'équipe de la classe de ".$classe_eleve.".\">".$classe_eleve."</a>";
         else
             echo $classe_eleve;
         echo "&nbsp;</td>\n";
