@@ -381,7 +381,14 @@ while ($i < $nombreligne) {
 ?>
 			<td class='medium'>
 				<a href='modif_fiches.php?aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>&amp;action=modif&amp;retour=index2.php'>
-					<strong><?php echo $aid_nom; ?></strong>
+					<strong><?php 
+						if(trim($aid_nom)=="") {
+							echo "<span style='color:red'>ANOMALIE&nbsp;: Le nom est vide. Cliquez pour corriger</span>";
+						}
+						else {
+							echo $aid_nom;
+						}
+						?></strong>
 				</a>
 			</td>
 <?php

@@ -154,6 +154,8 @@ if($anomalies_tables!="") {
 if(isset($msg_requetesAdmin)) {
 	echo "<div align='center'>".$msg_requetesAdmin."</div>";
 }
+
+$msg_erreur="";
 ?>
 
 <h2>Procédure</h2>
@@ -888,6 +890,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 
 <?php
 		$listeLiaisons = getLiaisonEpiEnseignementByIdEpi($epiCommun->id); 
+		//echo "\$listeLiaisons=getLiaisonEpiEnseignementByIdEpi($epiCommun->id)<br />mysqli_num_rows(\$listeLiaisons)=".mysqli_num_rows($listeLiaisons)."<br />";
 ?>
 					<table class='table_no_border'>
 <?php
@@ -910,7 +913,9 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 							while ($aid = $listeAids->fetch_object()) {
 								if(!estCoursEpi($epiCommun->id ,"aid-".$aid->id_enseignement)) {
 									echo "
-									<option value=\"aid-".$aid->id_enseignement."\">aid-".$aid->description."</option>";
+									<option value=\"aid-".$aid->id_enseignement."\">aid-".$aid->description;
+									//echo " (".$aid->id_enseignement.")";
+									echo "</option>";
 								}
 							}
 
@@ -1629,6 +1634,10 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 		</p>
 	</fieldset>
 </form>
+
+<?php
+echo $msg_erreur;
+?>
 
 </div>
 

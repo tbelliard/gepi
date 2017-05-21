@@ -151,6 +151,16 @@ $tab_traduction_niveau_couleur[4]="<span style='color:blue' title=\"\">TBM</span
 //20170302
 $tab_types_enseignements_complement=get_tab_types_enseignements_complement();
 
+// 20170521: Ménage:
+//===========================================
+$sql="DELETE FROM socle_eleves_composantes WHERE ine='';";
+$del=mysqli_query($mysqli, $sql);
+$sql="DELETE FROM socle_eleves_enseignements_complements WHERE ine='';";
+$del=mysqli_query($mysqli, $sql);
+$sql="DELETE FROM socle_eleves_syntheses WHERE ine='';";
+$del=mysqli_query($mysqli, $sql);
+//===========================================
+
 //debug_var();
 
 if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
@@ -203,7 +213,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 			}
 			else {
 				$tab_ine_du_groupe=array();
-				$sql="SELECT DISTINCT no_gep FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND periode='".$periode."' AND id_groupe='".$id_groupe."';";
+				$sql="SELECT DISTINCT no_gep FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND periode='".$periode."' AND id_groupe='".$id_groupe."' AND e.no_gep!='';";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig=mysqli_fetch_object($res)) {
@@ -212,7 +222,18 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 				foreach($niveau_maitrise as $current_element => $valeur) {
 					if(($valeur!="")&&($valeur!="1")&&($valeur!="2")&&($valeur!="3")&&($valeur!="4")) {
-						$msg.=get_nom_prenom_from_INE($ine)."&nbsp;: Valeur invalide pour '$current_element'&nbsp;: '$valeur'.<br />";
+						// 20170521
+						$tmp_tab=explode("|", $current_element);
+						$ine=$tmp_tab[0];
+						$cycle=$tmp_tab[1];
+						$code=$tmp_tab[2];
+
+						if($ine=="") {
+							$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte.<br />";
+						}
+						else {
+							$msg.=get_nom_prenom_from_INE($ine)."&nbsp;: Valeur invalide pour '$current_element'&nbsp;: '$valeur'.<br />";
+						}
 					}
 					else {
 						//$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code
@@ -221,8 +242,10 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 						$cycle=$tmp_tab[1];
 						$code=$tmp_tab[2];
 
-
-						if(!in_array($ine, $tab_ine_du_groupe)) {
+						if($ine=="") {
+							$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte.<br />";
+						}
+						elseif(!in_array($ine, $tab_ine_du_groupe)) {
 							$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de la classe.<br />";
 						}
 						else {
@@ -305,42 +328,48 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 				$enseignement_complement=isset($_POST["enseignement_complement"]) ? $_POST["enseignement_complement"] : NULL;
 				if(isset($enseignement_complement)) {
 					foreach($enseignement_complement as $ine => $positionnement) {
-						$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."' AND id_groupe='".$id_groupe."';";
-						//echo "$sql<br />";
-						$test=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($test)==0) {
-							$sql="INSERT INTO socle_eleves_enseignements_complements SET ine='".$ine."', 
-										id_groupe='".$id_groupe."', 
-										positionnement='".$positionnement."', 
-										login_saisie='".$_SESSION['login']."', 
-										date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
-							//echo "$sql<br />";
-							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-							if($insert) {
-								$cpt_reg++;
-							}
-							else {
-								$msg.="Erreur lors de l'enregistrement $sql<br />";
-								$nb_err++;
-							}
+						// 20170521 : 
+						if($ine=="") {
+							$msg.="Enseignement de complément&nbsp;: Un identifiant INE est vide pour un élève. Il ne peut pas être pris en compte.<br />";
 						}
 						else {
-							$lig=mysqli_fetch_object($test);
-
-							if($positionnement!=$lig->positionnement) {
-								$sql="UPDATE socle_eleves_enseignements_complements SET 
-												positionnement='".$positionnement."', 
-												login_saisie='".$_SESSION['login']."', 
-												date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
-											WHERE ine='".$ine."' AND id_groupe='".$id_groupe."';";
+							$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."' AND id_groupe='".$id_groupe."';";
+							//echo "$sql<br />";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql="INSERT INTO socle_eleves_enseignements_complements SET ine='".$ine."', 
+											id_groupe='".$id_groupe."', 
+											positionnement='".$positionnement."', 
+											login_saisie='".$_SESSION['login']."', 
+											date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
 								//echo "$sql<br />";
-								$update=mysqli_query($GLOBALS["mysqli"], $sql);
-								if($update) {
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if($insert) {
 									$cpt_reg++;
 								}
 								else {
-									$msg.="Erreur lors de la mise à jour $sql<br />";
+									$msg.="Erreur lors de l'enregistrement $sql<br />";
 									$nb_err++;
+								}
+							}
+							else {
+								$lig=mysqli_fetch_object($test);
+
+								if($positionnement!=$lig->positionnement) {
+									$sql="UPDATE socle_eleves_enseignements_complements SET 
+													positionnement='".$positionnement."', 
+													login_saisie='".$_SESSION['login']."', 
+													date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
+												WHERE ine='".$ine."' AND id_groupe='".$id_groupe."';";
+									//echo "$sql<br />";
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+									if($update) {
+										$cpt_reg++;
+									}
+									else {
+										$msg.="Erreur lors de la mise à jour $sql<br />";
+										$nb_err++;
+									}
 								}
 							}
 						}
@@ -354,7 +383,10 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 						$ine=$tmp_tab[0];
 						$cycle=$tmp_tab[1];
 
-						if(!in_array($ine, $tab_ine_du_groupe)) {
+						if($ine=="") {
+							$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte pour la synthèse.<br />";
+						}
+						elseif(!in_array($ine, $tab_ine_du_groupe)) {
 							$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de l'enseignement.<br />";
 						}
 						else {
@@ -474,7 +506,18 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 				foreach($niveau_maitrise as $current_element => $valeur) {
 					if(($valeur!="")&&($valeur!="1")&&($valeur!="2")&&($valeur!="3")&&($valeur!="4")) {
-						$msg.=get_nom_prenom_from_INE($ine)."&nbsp;: Valeur invalide pour '$current_element'&nbsp;: '$valeur'.<br />";
+						// 20170521
+						$tmp_tab=explode("|", $current_element);
+						$ine=$tmp_tab[0];
+						$cycle=$tmp_tab[1];
+						$code=$tmp_tab[2];
+
+						if($ine=="") {
+							$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte.<br />";
+						}
+						else {
+							$msg.=get_nom_prenom_from_INE($ine)."&nbsp;: Valeur invalide pour '$current_element'&nbsp;: '$valeur'.<br />";
+						}
 					}
 					else {
 						//$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code
@@ -483,8 +526,11 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 						$cycle=$tmp_tab[1];
 						$code=$tmp_tab[2];
 
-
-						if(!in_array($ine, $tab_ine_du_groupe)) {
+						// 20170521
+						if($ine=="") {
+							$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte pour la composante $code.<br />";
+						}
+						elseif(!in_array($ine, $tab_ine_du_groupe)) {
 							$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de la classe.<br />";
 						}
 						else {
@@ -572,7 +618,10 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 						$ine=$tmp_tab[0];
 						$cycle=$tmp_tab[1];
 
-						if(!in_array($ine, $tab_ine_du_groupe)) {
+						if($ine=="") {
+							$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte pour la synthèse.<br />";
+						}
+						elseif(!in_array($ine, $tab_ine_du_groupe)) {
 							$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de la classe.<br />";
 						}
 						else {
@@ -961,7 +1010,7 @@ if(isset($id_groupe)) {
 	// Récupérer les saisies antérieures
 	$tab_civ_nom_prenom=array();
 	$tab_saisies=array();
-	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND sec.periode=jeg.periode AND sec.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."' AND annee='".$gepiYear_debut."';";
+	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND sec.periode=jeg.periode AND sec.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."' AND annee='".$gepiYear_debut."' AND e.no_gep!='';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -974,7 +1023,7 @@ if(isset($id_groupe)) {
 	}
 
 	$tab_syntheses=array();
-	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses ses, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND ses.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."' AND annee='".$gepiYear_debut."';";
+	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses ses, eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND ses.ine=e.no_gep AND jeg.id_groupe='".$id_groupe."' AND annee='".$gepiYear_debut."' AND e.no_gep!='';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -986,12 +1035,27 @@ if(isset($id_groupe)) {
 		}
 	}
 
+	// INE vide:
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND jeg.id_groupe='".$id_groupe."' AND jeg.periode='".$periode."' AND e.no_gep='' ORDER BY e.nom, e.prenom;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		echo "<p style='color:red; margin-bottom:1em;'>Un ou des élèves ont un numéro national (INE) vide&nbsp;: ";
+		$cpt_ine_vide=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if($cpt_ine_vide>0) {
+				echo ", ";
+			}
+			echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' target='_blank'>".$lig->nom." ".$lig->prenom."</a>";
+			$cpt_ine_vide++;
+		}
+		echo "<br />La saisie n'est pas possible pour ces élèves.<br />Demandez à l'administrateur de faire une mise à jour des informations élèves d'après Sconet.</p>";
+	}
 
 	// Récupérer la liste des élèves et leur cycle.
-	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND jeg.id_groupe='".$id_groupe."' AND jeg.periode='".$periode."' ORDER BY e.nom, e.prenom;";
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND jeg.id_groupe='".$id_groupe."' AND jeg.periode='".$periode."' AND e.no_gep!='' ORDER BY e.nom, e.prenom;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
-		echo "<p style='color:red;'>Aucun élève n'a été trouvé pour ce groupe.</p>";
+		echo "<p style='color:red;'>Aucun élève avec INE non vide n'a été trouvé pour ce groupe.</p>";
 	}
 	else {
 		//20170302
@@ -1021,7 +1085,7 @@ if(isset($id_groupe)) {
 
 			// A VOIR : Si on fait un TRUNCATE au lieu d'un DELETE sur les groupes au changement d'année, on risque de ré-attribuer des id_groupe correspondant à des valeurs de socle_eleves_enseignements_complements
 			$sql="SELECT * FROM socle_eleves_enseignements_complements 
-							WHERE id_groupe='".$id_groupe."';";
+							WHERE id_groupe='".$id_groupe."' AND ine!='';";
 			$res_ec=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($res_ec)>0) {
 				while($lig_ec=mysqli_fetch_assoc($res_ec)) {
@@ -1343,7 +1407,7 @@ elseif(isset($id_classe)) {
 
 	// Récupérer les saisies antérieures
 	$tab_saisies=array();
-	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND sec.periode=jec.periode AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."';";
+	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND sec.periode=jec.periode AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."' AND e.no_gep!='';";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
@@ -1357,7 +1421,7 @@ elseif(isset($id_classe)) {
 	}
 
 	$tab_syntheses=array();
-	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses ses, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND ses.ine=e.no_gep AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."';";
+	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses ses, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND ses.ine=e.no_gep AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."' AND e.no_gep!='';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -1370,11 +1434,28 @@ elseif(isset($id_classe)) {
 		}
 	}
 
+
+	// INE vide:
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$id_classe."' AND jec.periode='".$periode."' AND e.no_gep='' ORDER BY e.nom, e.prenom;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		echo "<p style='color:red; margin-bottom:1em;'>Un ou des élèves ont un numéro national (INE) vide&nbsp;: ";
+		$cpt_ine_vide=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if($cpt_ine_vide>0) {
+				echo ", ";
+			}
+			echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' target='_blank'>".$lig->nom." ".$lig->prenom."</a>";
+			$cpt_ine_vide++;
+		}
+		echo "<br />La saisie n'est pas possible pour ces élèves.<br />Demandez à l'administrateur de faire une mise à jour des informations élèves d'après Sconet.</p>";
+	}
+
 	// Récupérer la liste des élèves et leur cycle.
-	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$id_classe."' AND jec.periode='".$periode."' ORDER BY e.nom, e.prenom;";
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$id_classe."' AND jec.periode='".$periode."' AND e.no_gep!='' ORDER BY e.nom, e.prenom;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
-		echo "<p style='color:red;'>Aucun élève n'a été trouvé pour cette classe.</p>";
+		echo "<p style='color:red;'>Aucun élève avec INE non vide n'a été trouvé pour cette classe.</p>";
 	}
 	else {
 

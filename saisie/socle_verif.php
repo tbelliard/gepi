@@ -141,6 +141,16 @@ $tab_domaine_socle["FRM_CIT"]="La formation de la personne et du citoyen";
 $tab_domaine_socle["SYS_NAT"]="Les systèmes naturels et les systèmes techniques";
 $tab_domaine_socle["REP_MND"]="Les représentations du monde et l'activité humaine";
 
+// 20170521: Ménage:
+//===========================================
+$sql="DELETE FROM socle_eleves_composantes WHERE ine='';";
+$del=mysqli_query($mysqli, $sql);
+$sql="DELETE FROM socle_eleves_enseignements_complements WHERE ine='';";
+$del=mysqli_query($mysqli, $sql);
+$sql="DELETE FROM socle_eleves_syntheses WHERE ine='';";
+$del=mysqli_query($mysqli, $sql);
+//===========================================
+
 //debug_var();
 
 $themessage  = 'Des valeurs ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -290,26 +300,32 @@ if(mysqli_num_rows($res)>0) {
 	<p style='color:red'>Le cycle courant pour ".$lig['nom']." ".$lig['prenom']." n'a pas pu être identitfié&nbsp;???</p>";
 		}
 		else {
-			foreach($tab_domaine_socle as $code => $libelle) {
-				$sql="SELECT 1=1 FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND code_composante='".$code."' AND periode='$periode' AND annee='".$gepiYear_debut."';";
+			if($lig['no_gep']=="") {
+				echo "<p style='color:red; margin-bottom:1em;'>Le numéro national INE de l'élève <a href='../eleves/visu_eleve.php?ele_login=".$lig["login"]."' target='_blank'>".$lig['nom']." ".$lig['prenom']."</a> est vide.<br />La saisie n'est pas possible pour cet élève.<br />Demandez à l'administrateur de faire une mise à jour des informations élèves d'après Sconet.</p>";
+			}
+			else {
+
+				foreach($tab_domaine_socle as $code => $libelle) {
+					$sql="SELECT 1=1 FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND code_composante='".$code."' AND periode='$periode' AND annee='".$gepiYear_debut."';";
+					//echo "$sql<br />";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)==0) {
+						if(!array_key_exists($lig['login'], $tab_ele_saisie_incomplete)) {
+							$tab_ele_saisie_incomplete[$lig['login']]=$lig;
+						}
+						$tab_ele_saisie_incomplete[$lig['login']]["code_composante"][$code]="vide";
+					}
+				}
+
+				$sql="SELECT 1=1 FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND synthese!='' AND annee='".$gepiYear_debut."';";
 				//echo "$sql<br />";
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
 					if(!array_key_exists($lig['login'], $tab_ele_saisie_incomplete)) {
 						$tab_ele_saisie_incomplete[$lig['login']]=$lig;
 					}
-					$tab_ele_saisie_incomplete[$lig['login']]["code_composante"][$code]="vide";
+					$tab_ele_saisie_incomplete[$lig['login']]["synthese_vide"]="y";
 				}
-			}
-
-			$sql="SELECT 1=1 FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND synthese!='' AND annee='".$gepiYear_debut."';";
-			//echo "$sql<br />";
-			$test=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($test)==0) {
-				if(!array_key_exists($lig['login'], $tab_ele_saisie_incomplete)) {
-					$tab_ele_saisie_incomplete[$lig['login']]=$lig;
-				}
-				$tab_ele_saisie_incomplete[$lig['login']]["synthese_vide"]="y";
 			}
 		}
 	}
