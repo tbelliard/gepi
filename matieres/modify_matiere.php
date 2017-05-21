@@ -39,6 +39,7 @@ if (!checkAccess()) {
 }
 
 //debug_var();
+$current_matiere=isset($_POST['current_matiere']) ? $_POST['current_matiere'] : (isset($_GET['current_matiere']) ? $_GET['current_matiere'] : NULL);
 
 if((isset($_GET['export_ele_csv']))&&(isset($_GET['matiere']))) {
 	check_token();
@@ -268,8 +269,8 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
 
 // On va chercher les infos de la matière que l'on souhaite modifier
-if (isset($_GET['current_matiere'])) {
-    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet, priority, categorie_id, code_matiere from matieres WHERE matiere='".$_GET['current_matiere']."'");
+if (isset($current_matiere)) {
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet, priority, categorie_id, code_matiere from matieres WHERE matiere='".$current_matiere."'");
     if(mysqli_num_rows($call_data)==0) {
         echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <p style='color:red'>La matière proposée n'existe pas.</p>";
@@ -281,7 +282,6 @@ if (isset($_GET['current_matiere'])) {
     $matiere_priorite = $lig_matiere->priority;
     $matiere_cat_id = $lig_matiere->categorie_id;
     $code_matiere = $lig_matiere->code_matiere;
-    $current_matiere = $_GET['current_matiere'];
 } else {
     $matiere_nom_complet = "";
     $matiere_priorite = "0";
@@ -372,7 +372,6 @@ if($chaine_options_matieres!="") {
 else {
 	echo "<p class=\"bold\"><a href='index.php'<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 }
-
 echo "<form enctype=\"multipart/form-data\" action=\"modify_matiere.php\" method=\"post\">
 <p><input type=\"submit\" value=\"Enregistrer\"></input></p>";
 echo add_token_field();
@@ -450,7 +449,7 @@ function checkbox_change(cpt) {
 <th>Nom de matière : </th>
 <td>
 <?php
-if (!isset($_GET['current_matiere'])) {
+if (!isset($current_matiere)) {
     echo "<input type=text size='19' maxlength='19' name='reg_current_matiere' onchange='changement()' /> (<span style='font-style: italic; font-size: small;'>19 caractères maximum</span>)";
 } else {
     echo "<input type=hidden name=matiere_name value=\"".$current_matiere."\" />".$current_matiere;
