@@ -430,6 +430,11 @@ if(acces("/eleves/modify_eleve.php", $_SESSION['statut'])) {
 else {
 	echo $nom_eleve." ".$prenom_eleve;
 }
+if(acces("/eleves/visu_eleve.php", $_SESSION['statut'])) {
+	echo " <a href='../eleves/visu_eleve.php?ele_login=".$login_eleve."' title=\"Voir les onglets élève\"";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets' /></a>";
+}
 echo " - Classe : ";
 if(acces("/classes/classes_const.php", $_SESSION['statut'])) {
 	echo "<a href='../classes/classes_const.php?id_classe=$id_classe' title=\"Voir la composition de la classe (élèves)\"";
@@ -673,6 +678,7 @@ while ($i < $nombre_ligne) {
 
 				// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 				if (!test_before_eleve_removal($login_eleve, $id_groupe, $j)) {
+					// AJOUTER UN LIEN SI DROIT ACCES acces_impression_bulletin($login_eleve, $id_classe="")
 					echo "<img id='img_bull_non_vide_".$i."_".$j."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
 				}
 	
