@@ -829,7 +829,7 @@ Il faut pour le moment faire les imports dans les pages d'import des nomenclatur
 						foreach($modalite->children() as $key => $value) {
 							if(in_array(my_strtoupper($key),$tab_champs_modalites)) {
 								$modalites[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
-								echo "\$modalite->$key=".$value."<br />";
+								//echo "\$modalite->$key=".$value."<br />";
 							}
 						}
 					}
