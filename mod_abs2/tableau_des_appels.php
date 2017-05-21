@@ -207,7 +207,7 @@ if ($choix_creneau_obj != null) {
 
 
 <!-- Affichage des réponses-->
-<table class="tab_edt" summary="Liste des absents r&eacute;partie par classe">
+<table class="tab_edt boireaus_alt" summary="Liste des absents r&eacute;partie par classe">
 <?php
 // 20130416
 $tab_dest_message=array();
@@ -428,7 +428,7 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 		}
 	}
 	if ($appel_manquant) {
-		echo '<td style="min-width: 350px;">';
+		echo '<td style="min-width: 350px; background-color:#ddd">'; // correction Yan Naessens 2017-04-21
 	} else {
 		echo '<td style="min-width: 350px; background-color:#9f9">';
 	}

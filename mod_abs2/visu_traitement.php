@@ -263,6 +263,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 
 		echo '<div>';
 		echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+		echo ' ('.$saisie->getEleve()->getClasseNom().")";   // ajout nom de classe Yan Naessens 2017-04-21     
 		if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 			$nom_photo = $saisie->getEleve()->getNomPhoto(1);
 			$photos = $nom_photo;
