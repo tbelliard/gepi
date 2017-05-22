@@ -222,11 +222,11 @@ $xml->appendChild($items);
 						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br />";
 						continue;
 					}
-					if (!$enseignant->nom ) {
-						$msgErreur .= "L'enseignant $enseignant->numind n'a pas de nom, vous devez corriger cette erreur.<br />";
+					if((!$enseignant->nom)||($enseignant->nom=="")) {
+						$msgErreur .= "L'enseignant '$enseignant->numind' n'a pas de nom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br />";
 					}
-					if (!$enseignant->prenom) {
-						$msgErreur .= "L'enseignant $enseignant->nom ($enseignant->numind) n'a pas de nom, vous devez corriger cette erreur.<br />";
+					if((!$enseignant->prenom)||($enseignant->prenom=="")) {
+						$msgErreur .= "L'enseignant $enseignant->nom ($enseignant->numind) n'a pas de prénom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br />";
 					}
 					preg_match_all('#[0-9]+#',$enseignant->numind,$extract);
 					$idSts = $extract[0][0];
@@ -1368,7 +1368,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$niveau_eleve_courant=$tmp_tab_cycle_niveau["mef_niveau"];
 
 				if($tab_cycle[$mef_code_ele]=="") {
-					$msg_erreur_remplissage.="Cycle courant de ".$eleve->nom." ".$eleve->prenom." en classe de ".get_chaine_liste_noms_classes_from_ele_login($eleve->login)." non identifié.<br /><br />";
+					$msg_erreur_remplissage.="Cycle courant de <a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a> ($mef_code_ele) en classe de ".get_chaine_liste_noms_classes_from_ele_login($eleve->login)." non identifié (<a href='../mef/associer_eleve_mef.php?type_selection=nom_eleve&nom_eleve=".preg_replace("/^[^A-Za-z0-9 _]*$/", "%", $eleve->nom)."' target='_blank'>Mef</a>).<br /><br />";
 					//$generer_bilan_pour_cet_eleve=false;
 				}
 
