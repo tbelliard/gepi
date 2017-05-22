@@ -351,9 +351,24 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					$ref = "DI_".getMatiereOnMatiere($matiere["id_matiere"])->code_matiere.$matiere["modalite"];
 					assureDisciplinePresente($ref);
 					$refDisciplines .= $ref." ";
-	
-	
 				}
+
+				if($epiCommun->intituleEpi=="") {
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Intitulé non définie. Corrigez dans la présente page.<br /><br />";
+				}
+
+				if($epiCommun->codeEPI=="") {
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Thématique non définie. Corrigez dans la présente page.<br /><br />";
+				}
+
+				if($refDisciplines=="") {
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Aucune matière n'est associée. Corrigez dans la présente page.<br /><br />";
+				}
+
+				if(nettoye_texte_vers_chaine($epiCommun->descriptionEpi)=="") {
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Description vide. Corrigez dans la présente page.<br /><br />";
+				}
+
 				$attributsEpiCommun = array('id'=>"EPI_$epiCommun->id", 'intitule'=>"$epiCommun->intituleEpi", 'thematique'=>"$epiCommun->codeEPI", 'discipline-refs'=>"$refDisciplines");
 				foreach ($attributsEpiCommun as $cle=>$valeur) {
 					$attsEpiCommun = $xml->createAttribute($cle);
