@@ -300,6 +300,21 @@ $msg_erreur="";
 				}
 			}
 
+			$sql="SELECT DISTINCT m.* FROM mef m, eleves e, j_eleves_classes jec WHERE e.mef_code=m.mef_code AND jec.login=e.login AND m.mef_rattachement='' ORDER BY libelle_long, libelle_edition;";
+			$test=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test)>0) {
+				echo "<br /><span style='color:red'>Un ou des MEF n'ont pas de <strong>mef_rattachement</strong>.<br />Les MEF des élèves correspondants ne vont pas être identifiés.<br /><a href='../mef/admin_mef.php' target='_blank'>Corriger</a> par exemple en important un <strong>Nomenclature.xml</strong> de Sconet.<br />Liste des MEF concernés&nbsp;: ";
+				$cpt_mef=0;
+				while($lig=mysqli_fetch_object($test)) {
+					if($cpt_mef>0) {
+						echo ", ";
+					}
+					echo $lig->libelle_edition;
+					$cpt_mef++;
+				}
+				echo ".</span><br />";
+			}
+
 		?>
 		</p>
 	</div>
@@ -578,6 +593,11 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 		while ($matiereEPI = $listeMatieresEPI->fetch_object()) {
 			$tableauMatieresEPI[] = array('matiere'=>$matiereEPI->id_matiere, 'modalite'=>$matiereEPI->modalite);
 		}
+		/*
+		echo "EPI ".$epiCommun->id."<pre>";
+		print_r($tableauMatieresEPI);
+		echo "</pre>";
+		*/
 ?>
 			<div class="lsun_cadre fieldset_opacite50">
 				<div style='float:left; width:50em; font-weight:bold; font-size:x-large; text-align:left; margin-left:1em;'><?php echo $epiCommun->intituleEpi;?></div>

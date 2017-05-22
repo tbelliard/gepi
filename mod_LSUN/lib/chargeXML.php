@@ -1368,7 +1368,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$niveau_eleve_courant=$tmp_tab_cycle_niveau["mef_niveau"];
 
 				if($tab_cycle[$mef_code_ele]=="") {
-					$msg_erreur_remplissage.="Cycle courant de <a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a> ($mef_code_ele) en classe de ".get_chaine_liste_noms_classes_from_ele_login($eleve->login)." non identifié (<a href='../mef/associer_eleve_mef.php?type_selection=nom_eleve&nom_eleve=".preg_replace("/^[^A-Za-z0-9 _]*$/", "%", $eleve->nom)."' target='_blank'>Mef</a>).<br /><br />";
+					$msg_erreur_remplissage.="Cycle courant de <a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a> ($mef_code_ele) en classe de ".get_chaine_liste_noms_classes_from_ele_login($eleve->login)." non identifié (<a href='../mef/associer_eleve_mef.php?type_selection=nom_eleve&nom_eleve=".preg_replace("/^[^A-Za-z0-9 _]*$/", "%", $eleve->nom)."' target='_blank'>Mef élève</a> <a href='../mef/admin_mef.php' target='_blank' title=\"Contrôler tous les MEFS\"><img src='../images/icons/configure.png' class='icone16' alt='Config' /></a>).<br /><br />";
 					//$generer_bilan_pour_cet_eleve=false;
 				}
 
