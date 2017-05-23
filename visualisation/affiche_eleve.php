@@ -5553,7 +5553,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 			if($afficher_absences=="y") {
 				if((getSettingValue("active_module_absence")=='y')||
 					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||
-					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
+					((isset($tab_ele["absences"]))&&(count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
 					// On affiche les absences par défaut
 				}
 				elseif (getSettingValue("active_module_absence")=='2') {
@@ -5574,7 +5574,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 			if($afficher_absences=="y") {
 				if((getSettingValue("active_module_absence")=='y')||
 					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||
-					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
+					((isset($tab_ele['absences']))&&(count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
 
 					/*
 					$tmp_p=$num_periode_choisie-1;
@@ -6018,7 +6018,7 @@ echo "<script type='text/javascript'>
 
 	//=========================
 	// 20160412: Orientation
-	if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($id_classe))) {
+	if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($id_classe))&&(isset($tab_ele['nom']))) {
 		// Orientations type saisies dans la bases
 		//$tab_orientation=get_tab_orientations_types_par_mef();
 		//$tab_orientation2=get_tab_orientations_types();
