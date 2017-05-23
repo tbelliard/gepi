@@ -598,6 +598,8 @@ else{
 				$tab_champs_eleve=array("ID_NATIONAL",
 				"ELENOET",
 				"NOM",
+				"NOM_DE_FAMILLE",
+				"NOM_USAGE",
 				"PRENOM",
 				"DATE_NAISS",
 				"DOUBLEMENT",
@@ -758,6 +760,12 @@ else{
 				affiche_debug("count(\$eleves)=".count($eleves)."<br />\n");
 				affiche_debug("count(\$tab_ele_id)=".count($tab_ele_id)."<br />\n");
 
+				/*
+				echo "<pre>";
+				print_r($eleves);
+				echo "</pre>";
+				*/
+
 				//===========================
 				// A FAIRE: boireaus 20071115
 				// Insérer ici un tableau comme dans la partie ADRESSES pour simuler une barre de progression
@@ -766,6 +774,14 @@ else{
 				$stat=0;
 				$nb_err=0;
 				for($i=0;$i<count($eleves);$i++){
+					// Pour tenir compte de la modif Sconet de l'été 2016
+					if(isset($eleves[$i]['nom_de_famille'])) {
+						$eleves[$i]['nom']=$eleves[$i]['nom_de_famille'];
+					}
+					elseif((!isset($eleves[$i]['nom']))&&(isset($eleves[$i]['nom_usage']))) {
+						$eleves[$i]['nom']=$eleves[$i]['nom_usage'];
+					}
+
 					if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
 
 						$sql="UPDATE temp_gep_import2 SET ";
