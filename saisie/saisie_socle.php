@@ -1136,6 +1136,13 @@ if(isset($id_groupe)) {
 		print_r($tab_saisies);
 		echo "</pre>";
 		*/
+
+		$acces_bull_simp=acces("/prepa_conseil/edit_limite.php", $_SESSION['statut']);
+
+		$titre_infobulle="Bulletin simplifié";
+		$texte_infobulle="<div id='div_bull_simp'></div>";
+		$tabdiv_infobulle[]=creer_div_infobulle('div_bulletin_simplifie',$titre_infobulle,"",$texte_infobulle,"",50,0,'y','y','n','n',2);
+
 		echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field();
@@ -1166,8 +1173,18 @@ if(isset($id_groupe)) {
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
 			}
 			else {
+				$chaine_bull_simp="";
+				if($acces_bull_simp) {
+					$sql="SELECT id_classe, periode FROM j_eleves_classes WHERE login='".$lig->login."' ORDER BY periode DESC LIMIT 1;";
+					$res_clas_ele=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_clas_ele)>0) {
+						$lig_clas_ele=mysqli_fetch_object($res_clas_ele);
+						$chaine_bull_simp=" <a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$lig->login."&id_classe=".$lig_clas_ele->id_classe."&periode1=1&periode2=".$lig_clas_ele->periode."&couleur_alterne=y' onclick=\"affiche_bull_simp('".$lig->login."', ".$lig_clas_ele->id_classe.", 1, ".$lig_clas_ele->periode.") ;return false;\" target='_blank'><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+					}
+				}
+
 				echo "
-		<p style='margin-top:2em;'><strong>".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;:</p>
+		<p style='margin-top:2em;'><strong>".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;:".$chaine_bull_simp."</p>
 		<table class='boireaus boireaus_alt'>
 			<thead>
 				<tr>
@@ -1391,6 +1408,13 @@ if(isset($id_groupe)) {
 					maj_couleurs_maitrise(i, j);
 				}
 			}
+
+			function affiche_bull_simp(login_ele, id_classe, periode1, periode2) {
+				new Ajax.Updater($('div_bull_simp'),'../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve='+login_ele+'&id_classe='+id_classe+'&periode1='+periode1+'&periode2='+periode2+'&couleur_alterne=y',{method: 'get'});
+
+				afficher_div('div_bulletin_simplifie', 'y', 10, 10);
+			}
+
 		</script>";
 		}
 		echo "
