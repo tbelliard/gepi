@@ -164,10 +164,10 @@ $xml->appendChild($items);
 					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
 				$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
 				if (!in_array($discipline->code_modalite_elect, $codesAutorises)) {
-					$msgErreur .= "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='../gestion/gerer_modalites_election_enseignements.php' target='_blank'>Corriger</a> / <a href='../utilisateurs/modif_par_lots.php#update_xml_sts' target='_BLANK' >mettre à jour d'après le XML STS</a>.<br />";
+					$msgErreur .= "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='../gestion/gerer_modalites_election_enseignements.php' target='_blank'>Corriger</a> / <a href='../utilisateurs/modif_par_lots.php#update_xml_sts' target='_BLANK' >mettre à jour d'après le XML STS</a>.<br /><br />";
 				}
 				if($discipline->code_matiere=="") {
-					$msgErreur .= "La matière ".$discipline->nom_complet." a un code vide <em>(non rattaché à une <strong>nomenclature</strong>)</em>. Le XML ne va pas être valide. <a href='../matieres/modify_matiere.php?current_matiere=".$discipline->id_matiere."' target='_blank'>Corriger</a>.<br />";
+					$msgErreur .= "La matière ".$discipline->nom_complet." a un code vide <em>(non rattaché à une <strong>nomenclature</strong>)</em>. Le XML ne va pas être valide. <a href='../matieres/modify_matiere.php?current_matiere=".$discipline->id_matiere."' target='_blank'>Corriger</a>.<br /><br />";
 				}
 				else {
 
@@ -190,7 +190,7 @@ $xml->appendChild($items);
 							}
 							$info_matieres.=")</em>";
 						}
-						$msg_erreur_remplissage.="Plusieurs enseignements de <b>".$nom_matiere."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Cela peut arriver quand une même nomenclature matière est associée à plusieurs matières et que les différentes matières sont extraites avec la même modalité dans un export XML".$info_matieres.".<br />Ce n'est pas possible.<br />Il faut corriger.<br />";
+						$msg_erreur_remplissage.="Plusieurs enseignements de <b>".$nom_matiere."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Cela peut arriver quand une même nomenclature matière est associée à plusieurs matières et que les différentes matières sont extraites avec la même modalité dans un export XML".$info_matieres.".<br />Ce n'est pas possible.<br />Il faut corriger.<br /><br />";
 					}
 					$tab_disciplines_global_deja[]=$matiere;
 				}
@@ -224,11 +224,24 @@ $xml->appendChild($items);
 					}
 					if((!$enseignant->nom)||($enseignant->nom=="")) {
 						$msgErreur .= "L'enseignant '$enseignant->numind' n'a pas de nom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br />";
+						continue;
 					}
 					if((!$enseignant->prenom)||($enseignant->prenom=="")) {
 						$msgErreur .= "L'enseignant $enseignant->nom ($enseignant->numind) n'a pas de prénom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br />";
+						continue;
 					}
 					preg_match_all('#[0-9]+#',$enseignant->numind,$extract);
+					/*
+					echo "$enseignant->numind<pre>";
+					print_r($enseignant);
+					print_r($extract);
+					echo "</pre>";
+					*/
+					if((!isset($extract[0]))||(!isset($extract[0][0]))) {
+						$msgErreur .= "Le format de l'identifiant NUMIND de ".$enseignant->nom." ".$enseignant->prenom." n'est pas valide.<br />Ce doit être un <strong>P</strong> suivi d'<strong>un ou plusieurs chiffres</strong>; vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br />";
+						continue;
+					}
+
 					$idSts = $extract[0][0];
 					$type = $enseignant->type ? $enseignant->type : "local";
 					$civilite = $enseignant->civilite == "Mme" ? 'MME' : 'M' ;
