@@ -100,8 +100,8 @@ function MetAJourResp() {
 	global $mysqli;
 	$responsables = $mysqli->query("SELECT DISTINCT suivi_par FROM classes");
 	while ($resp = $responsables->fetch_object()) {
-		$sql = "INSERT INTO lsun_responsables (login) VALUES (\"$resp->suivi_par\") ON DUPLICATE KEY UPDATE login = \"$resp->suivi_par\" ";
-		//echo $sql;
+		$sql = "INSERT INTO lsun_responsables (login) VALUES (\"".mysqli_real_escape_string($mysqli, $resp->suivi_par)."\") ON DUPLICATE KEY UPDATE login = \"".mysqli_real_escape_string($mysqli, $resp->suivi_par)."\";";
+		//echo $sql."<br />";
 		$mysqli->query($sql);
 	}
 }
@@ -467,8 +467,8 @@ function getModalite($groupe, $eleve, $mef_code, $code_matiere ) {
 
 	//========================
 	$debug=0; // Passer à 1 pour afficher les requêtes
-	$login_debug="bouamar_f";
-	$code_matiere_debug="030102";
+	$login_debug="marie.serra_pacheco";
+	$code_matiere_debug="020700";
 	//========================
 
 	// On recherche la modalite du groupe
