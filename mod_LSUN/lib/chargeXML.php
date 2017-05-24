@@ -360,26 +360,31 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$noeudEpiCommun = $xml->createElement('epi');
 				$matieres = getMatieresEPICommun($epiCommun->id);
 				$refDisciplines = "";
+				$cpt_disc_epi=0;
 				foreach ($matieres as $matiere) {
 					$ref = "DI_".getMatiereOnMatiere($matiere["id_matiere"])->code_matiere.$matiere["modalite"];
 					assureDisciplinePresente($ref);
 					$refDisciplines .= $ref." ";
+					$cpt_disc_epi++;
+				}
+				if($cpt_disc_epi<=1) {
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Un EPI nécessite au moins 2 matières associées. <a href='#ancre_EPI_".$epiCommun->id."'>Corriger</a> plus bas dans la page.<br /><br />";
 				}
 
 				if($epiCommun->intituleEpi=="") {
-					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Intitulé non définie. Corrigez dans la présente page.<br /><br />";
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Intitulé non définie. <a href='#ancre_EPI_".$epiCommun->id."'>Corrigez</a> dans la présente page.<br /><br />";
 				}
 
 				if($epiCommun->codeEPI=="") {
-					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Thématique non définie. Corrigez dans la présente page.<br /><br />";
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Thématique non définie. <a href='#ancre_EPI_".$epiCommun->id."'>Corrigez</a> dans la présente page.<br /><br />";
 				}
 
 				if($refDisciplines=="") {
-					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Aucune matière n'est associée. Corrigez dans la présente page.<br /><br />";
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Aucune matière n'est associée. <a href='#ancre_EPI_".$epiCommun->id."'>Corrigez</a> dans la présente page.<br /><br />";
 				}
 
 				if(nettoye_texte_vers_chaine($epiCommun->descriptionEpi)=="") {
-					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Description vide. Corrigez dans la présente page.<br /><br />";
+					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Description vide. <a href='#ancre_EPI_".$epiCommun->id."'>Corrigez</a> dans la présente page.<br /><br />";
 				}
 
 				$attributsEpiCommun = array('id'=>"EPI_$epiCommun->id", 'intitule'=>"$epiCommun->intituleEpi", 'thematique'=>"$epiCommun->codeEPI", 'discipline-refs'=>"$refDisciplines");
@@ -1209,7 +1214,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				}
 
 				$tab_positionnement_trouve=array();
-				$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$eleve->periode."';";
+				$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$eleve->periode."' AND annee='".$millesime."';";
 				$res_ele_socle=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_ele_socle)>0) {
 					while($lig_ele_socle=mysqli_fetch_object($res_ele_socle)) {
@@ -1473,11 +1478,12 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 						// Récupération des positionnements dans les domaines du socle
 						$tab_positionnement_trouve=array();
-						$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND niveau_maitrise!='' AND niveau_maitrise!='0' ORDER BY sec.periode;";
+						$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND sec.niveau_maitrise!='' AND sec.niveau_maitrise!='0' AND sec.annee='".$millesime."' ORDER BY sec.annee, sec.periode;";
 						//echo "$sql<br />";
 						$res_ele_socle=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele_socle)>0) {
 							$tab_positionnement_domaine=array();
+							// En faisant plusieurs tours par période, on va écraser et retenir le dernier niveau validé.
 							while($lig_ele_socle=mysqli_fetch_object($res_ele_socle)) {
 								$tab_positionnement_domaine[$lig_ele_socle->code_composante]=$lig_ele_socle->niveau_maitrise;
 							}
@@ -1508,7 +1514,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$noeudBilanEleveFinCycle->appendChild($socle);
 
 							// On vérifie aussi qu'on a une synthèse:
-							$sql="SELECT DISTINCT sec.* FROM socle_eleves_syntheses sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND sec.synthese!='';";
+							$sql="SELECT DISTINCT sec.* FROM socle_eleves_syntheses sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND sec.synthese!='' AND sec.annee='".$millesime."';";
 							//echo "$sql<br />";
 							$res_ele_synthese=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_ele_synthese)>0) {

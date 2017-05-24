@@ -602,6 +602,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 			<div class="lsun_cadre fieldset_opacite50">
 				<div style='float:left; width:50em; font-weight:bold; font-size:x-large; text-align:left; margin-left:1em;'><?php echo $epiCommun->intituleEpi;?></div>
 				<div align='center'>
+					<a name='ancre_EPI_<?php echo $epiCommun->id; ?>'></a>
 					<input type="hidden" 
 						   name="modifieEpiId[<?php echo $epiCommun->id; ?>]" 
 						   value="<?php echo $epiCommun->id; ?>" />
@@ -626,14 +627,19 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 								</select>
 							</td>
 							<td>
-								<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" />
+								<input type="text" size="40" name="modifieEpiIntitule[<?php echo $epiCommun->id; ?>]" value="<?php echo $epiCommun->intituleEpi; ?>" /><?php
+								if($epiCommun->intituleEpi=="") {
+									echo "
+								<img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' title=\"L'intitulé ne doit pas être vide.\" style='vertical-align:top;' />";
+								}
+								?>
 							</td>
 							<td>
 								<textarea rows="6" cols="50" name="modifieEpiDescription[<?php echo $epiCommun->id; ?>]" /><?php echo $epiCommun->descriptionEpi; ?></textarea><?php
 								if($epiCommun->descriptionEpi=="") {
 									echo "
-								<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' title=\"La description ne doit pas être vide.\" style='vertical-align:top;' />";
-				}
+								<img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' title=\"La description ne doit pas être vide.\" style='vertical-align:top;' />";
+								}
 
 								?>
 							</td>
@@ -679,7 +685,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 <?php
 		if($cpt_classe_associees==0) {
 			echo "
-								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune classe n'est associée.</span><br />";
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' />Aucune classe n'est associée.</span><br />";
 		}
 ?>
 								<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
@@ -736,7 +742,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 <?php
 		if(($epiCommun->periode=="")||($epiCommun->periode=="0")) {
 			echo "
-								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Période de fin non définie.</span><br />";
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' />Période de fin non définie.</span><br />";
 		}
 ?>
 							</td>
@@ -754,7 +760,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 							</th>
 
 							<td style='vertical-align:top; border:0px;' title=\"Associer des disciplines\">
-								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune discipline n'est encore associée.</span><br />
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' />Aucune discipline n'est encore associée.</span><br />
 								Associer des disciplines&nbsp;:<br />
 								<select multiple 
 										size='6' 
@@ -825,7 +831,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 				elseif ($matEPI['modalite'] =="R") {echo " enseignement religieux";}
 				echo "</span>)</label>";
 				if(getMatiereOnMatiere($matEPI['matiere'])->code_matiere=="") {
-					echo "<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' title=\"La nomenclature de la matière ".$matEPI['matiere']." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\" />";
+					echo "<img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' title=\"La nomenclature de la matière ".$matEPI['matiere']." n'est pas renseignée.\nL'export ne sera pas valide sans que les nomenclatures soient corrigées.\" />";
 				}
 				echo "<br />";
 				echo "
@@ -833,6 +839,10 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 
 				// Ajouter des matières
 				if($cpt_row==0) {
+					$message_nb_matieres_EPI="";
+					if(count($tableauMatieresEPI)<=1) {
+						$message_nb_matieres_EPI="<span style='color:red'>Un EPI nécessite au moins 2 matières associées.</span><br />";
+					}
 
 					$tab_matieres_non_associees=array();
 					$listeMatieres->data_seek(0);
@@ -844,7 +854,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 
 					if(count($tab_matieres_non_associees)==0) {
 						echo "
-						<td style='color:red'>Aucune matière ne reste à associer</td>";
+						<td style='color:red'>".$message_nb_matieres_EPI."Aucune matière ne reste à associer</td>";
 					}
 					else {
 
@@ -855,7 +865,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 									rowspan='".count($tableauMatieresEPI)."' 
 									onmouseover=\"document.getElementById('span_ajout_modifieEpiMatiere_".$epiCommun->id."').style.display=''\" 
 									onmouseout=\"affiche_masque_select_EPI_AP_Parcours('modifieEpiMatiere', ".$epiCommun->id.")\">
-
+									".$message_nb_matieres_EPI."
 									<img src='../images/icons/add.png' class='icone16' alt='Ajouter' />
 									Associer d'autres disciplines<br />
 									<span id='span_ajout_modifieEpiMatiere_".$epiCommun->id."'>
@@ -920,7 +930,7 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 						<tr>
 							<th>Liaisons&nbsp;:</th>
 							<td>
-								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune liaison AID n'est encore effectuée.</span><br />
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' />Aucune liaison AID n'est encore effectuée.</span><br />
 								Associer des AID aux EPI<br />
 								<select multiple 
 										size='6' 
@@ -932,8 +942,14 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 							$listeAids = getEpiAid(); 
 							while ($aid = $listeAids->fetch_object()) {
 								if(!estCoursEpi($epiCommun->id ,"aid-".$aid->id_enseignement)) {
+									$style_erreurs_aid="";
+									$sql="SELECT * FROM aid WHERE indice_aid='".$aid->id_enseignement."' AND nom='';";
+									$test=mysqli_query($mysqli, $sql);
+									if(mysqli_num_rows($test)>0) {
+										$style_erreurs_aid=" style='color:red' title=\"Un ou des AID de la catégorie ont un nom vide. Il faudra corriger cela.\"";
+									}
 									echo "
-									<option value=\"aid-".$aid->id_enseignement."\">aid-".$aid->description;
+									<option value=\"aid-".$aid->id_enseignement."\"".$style_erreurs_aid.">aid-".$aid->description;
 									//echo " (".$aid->id_enseignement.")";
 									echo "</option>";
 								}
@@ -961,12 +977,22 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 						echo "
 						<tr>";
 					}
+
+					$chaine_erreurs_aid="";
+					$sql="SELECT * FROM aid WHERE indice_aid='".$liaison->id_enseignements."' AND nom='';";
+					$test=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($test)>0) {
+						while($lig_test=mysqli_fetch_object($test)) {
+							$chaine_erreurs_aid.="<br /><span style='color:red'>L'AID n°".$lig_test->id." a un nom vide. Il faut <a href='../aid/modif_fiches.php?aid_id=".$lig_test->id."&indice_aid=".$liaison->id_enseignements."&action=modif&retour=index2.php' target='_blank'>corriger</a>.</span>";
+						}
+					}
+
 					echo "
 							<td>
 								<input type='checkbox' name='modifieEpiLiaison".$epiCommun->id."[]' id='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."' value=\"aid-".$liaison->id_enseignements."\" checked />
 							</td>
 							<td>
-								<label for='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."'>AID - ".getAID($liaison->id_enseignements)->nom."</label>
+								<label for='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."'>AID - ".getAID($liaison->id_enseignements)->nom."</label>".$chaine_erreurs_aid."
 							</td>";
 
 					if($cpt_row==0) {
@@ -1003,8 +1029,15 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 							$listeAids = getEpiAid(); 
 							while ($aid = $listeAids->fetch_object()) {
 								if(!estCoursEpi($epiCommun->id ,"aid-".$aid->id_enseignement)) {
+									$style_erreurs_aid="";
+									$sql="SELECT * FROM aid WHERE indice_aid='".$aid->id_enseignement."' AND nom='';";
+									$test=mysqli_query($mysqli, $sql);
+									if(mysqli_num_rows($test)>0) {
+										$style_erreurs_aid=" style='color:red' title=\"Un ou des AID de la catégorie ont un nom vide. Il faudra corriger cela.\"";
+									}
+
 									echo "
-										<option value=\"aid-".$aid->id_enseignement."\">aid-".$aid->description."</option>";
+										<option value=\"aid-".$aid->id_enseignement."\"".$style_erreurs_aid.">aid-".$aid->description."</option>";
 								}
 							}
 
@@ -1169,7 +1202,7 @@ while ($classe = $classes->fetch_object()) { ?>
 	$res_liaison=getAidConfig($ap->id_aid);
 	if(mysqli_num_rows($res_liaison)==0) {
 		echo "
-								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune liaison AID n'est encore effectuée.</span><br />Sélectionnez un AID et Enregistrez la modification&nbsp;:<br />";
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' />Aucune liaison AID n'est encore effectuée.</span><br />Sélectionnez un AID et Enregistrez la modification&nbsp;:<br />";
 	}
 ?>
 								<select name="liaisonApAid[<?php echo $ap->id; ?>]">
@@ -1225,7 +1258,7 @@ while ($classe = $classes->fetch_object()) { ?>
 							</th>
 
 							<td style='vertical-align:top; border:0px;' title=\"Associer des disciplines\">
-								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />Aucune discipline n'est encore associée.</span><br />
+								<span style='color:red'><img src='../images/icons/ico_attention.png' class='icone32' alt='Attention' />Aucune discipline n'est encore associée.</span><br />
 								Associer des disciplines&nbsp;:<br />
 								<select multiple 
 										size='6' 
