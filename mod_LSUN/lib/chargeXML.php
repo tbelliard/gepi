@@ -120,9 +120,9 @@ $xml->appendChild($items);
 			}
 
 			$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
-				'nom'=>substr($eleve->nom,0,100),
-				'prenom'=>substr($eleve->prenom,0,100),
-				'code-division'=>substr($eleve->classe,0,8));
+				'nom'=>mb_substr($eleve->nom,0,100),
+				'prenom'=>mb_substr($eleve->prenom,0,100),
+				'code-division'=>mb_substr($eleve->classe,0,8));
 			foreach ($attributsEleve as $cle=>$valeur) {
 				$attEleve = $xml->createAttribute($cle);
 				$attEleve->value = $valeur;
@@ -269,7 +269,7 @@ $xml->appendChild($items);
 			$elementsProgramme->appendChild($noeudPasEP);
 		while ($elementProgramme = $listeElementsProgramme->fetch_object()) {
 			$noeudElementProgramme = $xml->createElement('element-programme');
-			$elePro = trim($elementProgramme->libelle) ? substr(htmlspecialchars($elementProgramme->libelle),0,300) : "-";
+			$elePro = trim($elementProgramme->libelle) ? mb_substr(htmlspecialchars($elementProgramme->libelle),0,300) : "-";
 			$attributsElementProgramme = array('id'=>'EP_'.$elementProgramme->id, 'libelle'=>$elePro);
 			foreach ($attributsElementProgramme as $cle=>$valeur) {
 				$attElementProgramme = $xml->createAttribute($cle);
@@ -288,7 +288,7 @@ if (getSettingValue("LSU_Parcours") != "n") {
 				$noeudParcoursCommun= $xml->createElement('parcours-commun');
 					if($parcoursCommun->periode < 10) {$num_periode = "0".$parcoursCommun->periode;} else {$num_periode = $parcoursCommun->periode;}
 					$parcoursClasse = getClasses($parcoursCommun->classe)->fetch_object()->classe;
-					$attributsParcoursCommun = array('periode-ref'=>'P_'.$num_periode, 'code-division'=>substr(htmlspecialchars($parcoursClasse),0,8));
+					$attributsParcoursCommun = array('periode-ref'=>'P_'.$num_periode, 'code-division'=>mb_substr(htmlspecialchars($parcoursClasse),0,8));
 					foreach ($attributsParcoursCommun as $cle=>$valeur) {
 						$attParcoursCommun = $xml->createAttribute($cle);
 						$attParcoursCommun->value = $valeur;
@@ -331,7 +331,7 @@ if (getSettingAOui("LSU_commentaire_vie_sco")) {
 				$noeudVieSco->appendChild($attVieSco);
 			}
 			$tmp_chaine=nettoye_texte_vers_chaine($vieScoCommun->appreciation);
-			$comVieSco = substr(trim($tmp_chaine),0,600);
+			$comVieSco = ensure_utf8(mb_substr(trim($tmp_chaine),0,600));
 			//echo "-".$VieScoCommun."-";
 			if (!$comVieSco) {
 				$comVieSco = "-";
@@ -433,7 +433,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					
 					}
 					$tmp_chaine=nettoye_texte_vers_chaine($CommentaireEPI1);
-					$CommentaireEPI = substr($tmp_chaine, 0, 600);
+					$CommentaireEPI = ensure_utf8(mb_substr($tmp_chaine, 0, 600));
 					//echo $CommentaireEPI;
 					if ($CommentaireEPI) {
 						$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI);
@@ -518,14 +518,14 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			while ($matiere = $disciplines->fetch_object()) {
 				$matieresAP .= "DI_".$matiere->id_enseignements.$matiere->modalite." ";
 			}
-			$attributsAPCommun = array('id'=>'ACC_PERSO_'.$apCommun->id , 'intitule'=>  substr(trim($apCommun->intituleAP), 0, 150) , 'discipline-refs'=>"$matieresAP");
+			$attributsAPCommun = array('id'=>'ACC_PERSO_'.$apCommun->id , 'intitule'=>  mb_substr(trim($apCommun->intituleAP), 0, 150) , 'discipline-refs'=>"$matieresAP");
 			foreach ($attributsAPCommun as $cle=>$valeur) {
 				$attsApCommun = $xml->createAttribute($cle);
 				$attsApCommun->value = $valeur;
 				$noeudApCommun->appendChild($attsApCommun);
 			}
-			if (substr(trim($apCommun->descriptionAP),0,600)) {
-				$noeudApDescription = $xml->createElement('description', substr(trim($apCommun->descriptionAP),0,600));
+			if (ensure_utf8(mb_substr(trim($apCommun->descriptionAP),0,600))) {
+				$noeudApDescription = $xml->createElement('description', ensure_utf8(mb_substr(trim($apCommun->descriptionAP),0,600)));
 				$noeudApCommun->appendChild($noeudApDescription);
 			}
 			
@@ -560,7 +560,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				}
 				if (trim($commentaires)) {
 					$tmp_chaine=nettoye_texte_vers_chaine($commentaires);
-					$noeudComGroupeAp = $xml->createElement('commentaire',substr(trim($commentaires),0,600));
+					$noeudComGroupeAp = $xml->createElement('commentaire',ensure_utf8(mb_substr(trim($commentaires),0,600)));
 					$noeudApGroupes->appendChild($noeudComGroupeAp);
 				}
 			}
@@ -746,7 +746,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					
 				}
 				$tmp_chaine=nettoye_texte_vers_chaine($acquisEleve->appreciation);
-				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
+				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600)));
 				$noeudAcquis->appendChild($noeudAcquisAppreciation);
 				$listeAcquis->appendChild($noeudAcquis);
 			}
@@ -834,7 +834,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					// Apparemment, on ne récupère que les enseignements avec appréciation non vide... Exact?
 					$msg_erreur_remplissage.="L'appréciation de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
 				}
-				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
+				$noeudAcquisAppreciation = $xml->createElement('appreciation' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600)));
 				$noeudAcquis->appendChild($noeudAcquisAppreciation);
 				$listeAcquis->appendChild($noeudAcquis);
 			}
@@ -903,7 +903,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 					$msg_erreur_remplissage.="L'appréciation de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
 
-					$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
+					$noeudAcquisAppreciation = $xml->createElement('appreciation' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600)));
 					$noeudAcquis->appendChild($noeudAcquisAppreciation);
 					$listeAcquis->appendChild($noeudAcquis);
 
@@ -977,7 +977,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 					$msg_erreur_remplissage.="La note de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
 
-					$noeudAcquisAppreciation = $xml->createElement('appreciation' ,substr(trim($tmp_chaine),0,600));
+					$noeudAcquisAppreciation = $xml->createElement('appreciation' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600)));
 					$noeudAcquis->appendChild($noeudAcquisAppreciation);
 					$listeAcquis->appendChild($noeudAcquis);
 
@@ -1014,7 +1014,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$commentaireEpiElv = getCommentaireAidElv($eleve->login, $epiEleve->id_aid, $eleve->periode);
 							if ($commentaireEpiElv->num_rows) {
 								$tmp_chaine=nettoye_texte_vers_chaine($commentaireEpiElv->fetch_object()->appreciation);
-								$comm = substr(trim($tmp_chaine),0,600);
+								$comm = ensure_utf8(mb_substr(trim($tmp_chaine),0,600));
 								if ($comm) {
 									$noeudComEpiEleve = $xml->createElement('commentaire', $comm);
 									$noeudEpiEleve->appendChild($noeudComEpiEleve);
@@ -1049,7 +1049,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$commentaireAPEleve = getCommentaireAidElv($eleve->login, $accPersosEleve->id_aid, $eleve->periode);
 							if ($commentaireAPEleve->num_rows) {
 								$tmp_chaine=nettoye_texte_vers_chaine($commentaireAPEleve->fetch_object()->appreciation);
-								$comm = substr(trim($tmp_chaine),0,600);
+								$comm = ensure_utf8(mb_substr(trim($tmp_chaine),0,600));
 								if ($comm) {
 									$noeudComApEleve = $xml->createElement('commentaire', $comm);
 									$noeudAPEleve->appendChild($noeudComApEleve);
@@ -1092,7 +1092,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 								$commentaireEleve = getCommentaireEleveParcours($eleve->login,$parcoursElv->id_aid, $eleve->periode);//
 								if ($commentaireEleve->num_rows) {
 									$tmp_chaine=nettoye_texte_vers_chaine($commentaireEleve->fetch_object()->appreciation);
-									$commentaireEleve = substr(trim($tmp_chaine),0,600);
+									$commentaireEleve = ensure_utf8(mb_substr(trim($tmp_chaine),0,600));
 									if (strlen($commentaireEleve)) {
 										$noeudParcoursEleve = $xml->createElement('parcours',$commentaireEleve);
 										$attsParcoursEleve = $xml->createAttribute('code');
@@ -1137,7 +1137,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]!="")) {
 						$tmp_chaine=nettoye_texte_vers_chaine($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]);
 						if(trim($tmp_chaine)!="") {
-							$complement_ppre=$xml->createElement('complement-ppre' ,substr(trim($tmp_chaine),0,600));
+							$complement_ppre=$xml->createElement('complement-ppre' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600)));
 							$modaliteAcc->appendChild($complement_ppre);
 						}
 					}
@@ -1189,7 +1189,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			if (trim($retardEleve['appreciation']) && getSettingAOui("LSU_commentaire_vie_sco")) {
 				// non obligatoire
 				$tmp_chaine=nettoye_texte_vers_chaine($retardEleve['appreciation']);
-				$comVieSco = $xml->createElement('commentaire', substr(trim($tmp_chaine),0,600));
+				$comVieSco = $xml->createElement('commentaire', ensure_utf8(mb_substr(trim($tmp_chaine),0,600)));
 				$vieScolaire->appendChild($comVieSco);
 			}
 		
