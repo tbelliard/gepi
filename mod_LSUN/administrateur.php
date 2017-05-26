@@ -315,6 +315,126 @@ $msg_erreur="";
 				echo ".</span><br />";
 			}
 
+
+			if((getSettingAOui("LSU_Donnees_BilanFinCycle"))&&(isset($selectionClasse))&&(count($selectionClasse)>0)) {
+
+				$gepiYear=getSettingValue("gepiYear");
+				$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+				if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
+					echo "<span style='color:red'>Année scolaire non définie dans Gestion générale/Configuration générale.</span><br />";
+				}
+				else {
+
+					$tab_domaine_socle=array();
+					$tab_domaine_socle["CPD_FRA"]="Comprendre, s'exprimer en utilisant la langue française à l'oral et à l'écrit";
+					$tab_domaine_socle["CPD_ETR"]="Comprendre, s'exprimer en utilisant une langue étrangère et, le cas échéant, une langue régionale";
+					$tab_domaine_socle["CPD_SCI"]="Comprendre, s'exprimer en utilisant les langages mathématiques, scientifiques et informatiques";
+					$tab_domaine_socle["CPD_ART"]="Comprendre, s'exprimer en utilisant les langages des arts et du corps";
+					$tab_domaine_socle["MET_APP"]="Les méthodes et outils pour apprendre";
+					$tab_domaine_socle["FRM_CIT"]="La formation de la personne et du citoyen";
+					$tab_domaine_socle["SYS_NAT"]="Les systèmes naturels et les systèmes techniques";
+					$tab_domaine_socle["REP_MND"]="Les représentations du monde et l'activité humaine";
+
+					for($loop=0;$loop<count($selectionClasse);$loop++) {
+						$tab_ele_saisie_incomplete=array();
+						//$sql="SELECT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' AND jec.periode='$periode' ORDER BY e.nom, e.prenom;";
+						$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$selectionClasse[$loop]."' ORDER BY e.nom, e.prenom;";
+						//echo "$sql<br />";
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while($lig=mysqli_fetch_assoc($res)) {
+								$mef_code_ele=$lig['mef_code'];
+								if(!isset($tab_cycle[$mef_code_ele])) {
+									$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
+									$cycle=$tmp_tab_cycle_niveau["mef_cycle"];
+									$niveau=$tmp_tab_cycle_niveau["mef_niveau"];
+									$tab_cycle[$mef_code_ele]=$cycle;
+								}
+
+								if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
+									echo "
+							<span style='color:red'>Le cycle courant pour ".$lig['nom']." ".$lig['prenom']." n'a pas pu être identitfié&nbsp;???<br />";
+								}
+								else {
+									if($lig['no_gep']=="") {
+										echo "<span style='color:red; margin-bottom:1em;'>Le numéro national INE de l'élève <a href='../eleves/visu_eleve.php?ele_login=".$lig["login"]."' target='_blank'>".$lig['nom']." ".$lig['prenom']."</a> est vide.<br />La saisie du niveau de maitrise sur les composantes du socle n'est pas possible pour cet élève.<br />";
+									}
+									else {
+
+										foreach($tab_domaine_socle as $code => $libelle) {
+											//$sql="SELECT 1=1 FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND code_composante='".$code."' AND periode='$periode' AND annee='".$gepiYear_debut."';";
+											$sql="SELECT 1=1 FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND code_composante='".$code."' AND annee='".$gepiYear_debut."';";
+											//echo "$sql<br />";
+											$test=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($test)==0) {
+												if(!array_key_exists($lig['login'], $tab_ele_saisie_incomplete)) {
+													$tab_ele_saisie_incomplete[$lig['login']]=$lig;
+												}
+												$tab_ele_saisie_incomplete[$lig['login']]["code_composante"][$code]="vide";
+											}
+										}
+
+										$sql="SELECT 1=1 FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND synthese!='' AND annee='".$gepiYear_debut."';";
+										//echo "$sql<br />";
+										$test=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test)==0) {
+											if(!array_key_exists($lig['login'], $tab_ele_saisie_incomplete)) {
+												$tab_ele_saisie_incomplete[$lig['login']]=$lig;
+											}
+											$tab_ele_saisie_incomplete[$lig['login']]["synthese_vide"]="y";
+										}
+									}
+								}
+							}
+
+							//echo "<pre>";
+							//print_r($tab_ele_saisie_incomplete);
+							//echo "</pre>";
+
+							if(count($tab_ele_saisie_incomplete)>0) {
+								$current_classe=get_nom_classe($selectionClasse[$loop]);
+								echo "
+						<p style='color:red; margin-top:1em;'>Les saisies de composantes du socle sont <strong>incomplètes</strong> pour le ou les élèves suivants de ".$current_classe."&nbsp;:</p>
+						<table class='boireaus boireaus_alt'>
+							<thead>
+								<tr>
+									<th rowspan='2'>Élève</th>
+									<th rowspan='2'>Classe</th>
+									<th colspan='".count($tab_domaine_socle)."'>Composantes</th>
+									<th rowspan='2'>Synthèse</th>
+								</tr>
+								<tr>";
+								foreach($tab_domaine_socle as $code => $libelle) {
+									echo "
+									<th title=\"$libelle\">".$code."</th>";
+								}
+								echo "
+								</tr>
+							</thead>
+							<tbody>";
+								foreach($tab_ele_saisie_incomplete as $login_ele => $current_tab) {
+									echo "
+								<tr onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">
+									<td>".$current_tab["nom"]." ".$current_tab["prenom"]."</td>
+									<td>".$current_classe."</td>";
+								foreach($tab_domaine_socle as $code => $libelle) {
+									echo "
+									<td title=\"$libelle\">".(isset($current_tab["code_composante"][$code]) ? "<img src='../images/disabled.png' class='icone16' alt='Vide' />" : "<img src='../images/enabled.png' class='icone16' alt='Ok' />")."</td>";
+								}
+								echo "
+									<td>".(isset($current_tab["synthese_vide"]) ? "<img src='../images/disabled.png' class='icone16' alt='Vide' />" : "<img src='../images/enabled.png' class='icone16' alt='Ok' />")."</td>
+								</tr>";
+								}
+								echo "
+							</tbody>
+						</table>
+						<p style='color:red;'>L'enregistrement du bilan de fin de cycle de ces élèves sera refusé dans LSU.</p>";
+							}
+						}
+					}
+				}
+			}
+
 		?>
 		</p>
 	</div>
