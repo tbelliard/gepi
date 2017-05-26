@@ -24,6 +24,77 @@
 
 $selectionClasse = $_SESSION['afficheClasse'];
 
+//+++++++++++++++++++++++++++++++++++++++++
+// Initialisation:
+$LSUN_periodes_a_extraire="toutes";
+// Nombre max de périodes:
+$sql="SELECT MAX(num_periode) AS maxper FROM periodes p, classes c WHERE p.id_classe=c.id;";
+$res_max_per=mysqli_query($mysqli, $sql);
+$lig_maxper=mysqli_fetch_object($res_max_per);
+$maxper=$lig_maxper->maxper;
+// Liste des périodes à extraire
+if(isset($_POST['LSUN_periodes_a_extraire'])) {
+	if($_POST['LSUN_periodes_a_extraire']=="toutes") {
+		$LSUN_periodes_a_extraire="toutes";
+
+		if(isset($_SESSION['LSUN_periodes'])) {
+			unset($_SESSION['LSUN_periodes']);
+		}
+	}
+	elseif(!isset($_POST['LSUN_periodes'])) {
+		$LSUN_periodes_a_extraire="toutes";
+
+		if(isset($_SESSION['LSUN_periodes'])) {
+			unset($_SESSION['LSUN_periodes']);
+		}
+	}
+	else {
+		$LSUN_periodes_a_extraire="restreindre";
+		$_SESSION['LSUN_periodes']=$_POST['LSUN_periodes'];
+		$LSUN_periodes=$_SESSION['LSUN_periodes'];
+	}
+	$_SESSION['LSUN_periodes_a_extraire']=$LSUN_periodes_a_extraire;
+}
+else {
+	if(isset($_SESSION['LSUN_periodes_a_extraire'])) {
+		if(($_SESSION['LSUN_periodes_a_extraire']=="toutes")||(!isset($_SESSION['LSUN_periodes']))) {
+			$LSUN_periodes_a_extraire="toutes";
+		}
+		else {
+			$LSUN_periodes_a_extraire="restreindre";
+			$LSUN_periodes=$_SESSION['LSUN_periodes'];
+		}
+	}
+	else {
+		$LSUN_periodes_a_extraire="toutes";
+	}
+
+	$_SESSION['LSUN_periodes_a_extraire']=$LSUN_periodes_a_extraire;
+}
+
+if($LSUN_periodes_a_extraire=="toutes") {
+	$checked_LSUN_periodes_a_extraire_toutes=" checked";
+	$checked_LSUN_periodes_a_extraire_restreindre="";
+	for($loop=1;$loop<=$maxper;$loop++) {
+		$checked_LSUN_periodes[$loop]="";
+	}
+}
+else {
+	$checked_LSUN_periodes_a_extraire_toutes="";
+	$checked_LSUN_periodes_a_extraire_restreindre=" checked";
+	for($loop=1;$loop<=$maxper;$loop++) {
+		if((is_array($LSUN_periodes))&&(in_array($loop, $LSUN_periodes))) {
+			$checked_LSUN_periodes[$loop]=" checked";
+		}
+		else {
+			$checked_LSUN_periodes[$loop]="";
+		}
+	}
+}
+//+++++++++++++++++++++++++++++++++++++++++
+
+//debug_var();
+
 //===== Mettre à jour les responsables
 $metJourResp = filter_input(INPUT_POST, 'MetJourResp');
 if ($metJourResp == 'y') {
@@ -497,34 +568,61 @@ if ($cpt) {echo "			</div>\n";}
 		
 		<p class="center"><a href='#' onClick='CocherClasses(true);return false;'>Tout cocher</a> / <a href='#' onClick='CocherClasses(false);return false;'>Tout décocher</a></p>
 
-<script type='text/javascript'> 
-	<?php echo js_checkbox_change_style(); ?>
-
-    function CocherClasses(mode) {
-        for (var k=0;k<<?php echo $cptClasse; ?>;k++) {
-			//alert('afficheClasse_'+k);
-            if(document.getElementById('afficheClasse_'+k)){
-                document.getElementById('afficheClasse_'+k).checked = mode;
-                checkbox_change('afficheClasse_'+k);
-            }
-        }
-    }
-
-    // Pour re-mettre en gras les classes sélectionnées lors du re-chargement de la page
-    for (var k=0;k<<?php echo $cptClasse; ?>;k++) {
-        if(document.getElementById('afficheClasse_'+k)){
-            checkbox_change('afficheClasse_'+k);
-        }
-    }
-</script>
-
 		<p class="center">
 			<button type="submit" name="soumetSelection" value="y" >
 				Sélectionner
 			</button>
 		</p>
 
+
+		<?php
+
+		?>
+		<p style='margin-top:1em; margin-left:8.6em; text-indent:-8.6em;'><span style='color:red;font-weight:bold;'>Expérimental&nbsp;:</span> 
+		<input type='radio' name='LSUN_periodes_a_extraire' id='LSUN_periodes_a_extraire_toutes' value='toutes'<?php echo $checked_LSUN_periodes_a_extraire_toutes?> onchange="checkbox_change('LSUN_periodes_a_extraire_toutes');checkbox_change('LSUN_periodes_a_extraire_restreindre')" /><label for='LSUN_periodes_a_extraire_toutes' id='texte_LSUN_periodes_a_extraire_toutes'> Extraire toutes les périodes</label><br />
+		<input type='radio' name='LSUN_periodes_a_extraire' id='LSUN_periodes_a_extraire_restreindre' value='restreindre'<?php echo $checked_LSUN_periodes_a_extraire_restreindre?> onchange="checkbox_change('LSUN_periodes_a_extraire_toutes');checkbox_change('LSUN_periodes_a_extraire_restreindre')" /><label for='LSUN_periodes_a_extraire_restreindre' id='texte_LSUN_periodes_a_extraire_restreindre'> Restreindre l'extraction aux périodes&nbsp;: </label>
+		<?php
+			for($loop=1;$loop<=$maxper;$loop++) {
+				if($loop>1) {
+					echo " - ";
+				}
+				echo "<input type='checkbox' name='LSUN_periodes[]' id='LSUN_periodes_".$loop."' value='".$loop."'".$checked_LSUN_periodes[$loop]." onchange=\"checkbox_change(this.id);if(this.checked==true) {document.getElementById('LSUN_periodes_a_extraire_restreindre').checked=true;checkbox_change('LSUN_periodes_a_extraire_toutes');checkbox_change('LSUN_periodes_a_extraire_restreindre');}\" /><label for='LSUN_periodes_".$loop."' id='texte_LSUN_periodes_".$loop."'>P.".$loop."</label>";
+			}
+		?>
+		</p>
+
 		<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Le choix des EPI/AP/Parcours n'est proposé qu'une fois le choix des classes effectué.</p>
+
+
+<script type='text/javascript'> 
+	<?php echo js_checkbox_change_style(); ?>
+
+	function CocherClasses(mode) {
+		for (var k=0;k<<?php echo $cptClasse; ?>;k++) {
+			//alert('afficheClasse_'+k);
+			if(document.getElementById('afficheClasse_'+k)){
+				document.getElementById('afficheClasse_'+k).checked = mode;
+				checkbox_change('afficheClasse_'+k);
+			}
+		}
+	}
+
+	// Pour re-mettre en gras les classes sélectionnées lors du re-chargement de la page
+	for (var k=0;k<<?php echo $cptClasse; ?>;k++) {
+		if(document.getElementById('afficheClasse_'+k)){
+			checkbox_change('afficheClasse_'+k);
+		}
+	}
+
+	checkbox_change('LSUN_periodes_a_extraire_toutes');
+	checkbox_change('LSUN_periodes_a_extraire_restreindre')
+
+	for (var k=1;k<=<?php echo $maxper; ?>;k++) {
+		if(document.getElementById('LSUN_periodes_'+k)){
+			checkbox_change('LSUN_periodes_'+k);
+		}
+	}
+</script>
 
   </fieldset>
 </form>
