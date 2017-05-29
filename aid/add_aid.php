@@ -297,6 +297,24 @@ if (isset($is_posted) && $is_posted) {
 							}
 						}
 					}
+
+					if((isset($_POST['inscrire_pp_de_la_classe']))&&($_POST['inscrire_pp_de_la_classe']=="y")) {
+						$tab_pp=get_tab_prof_suivi($id_classe[$loop]);
+						for($loop_pp=0;$loop_pp<count($tab_pp);$loop_pp++) {
+							$test2=Prof_deja_membre($tab_pp[$loop_pp], $aid_id, $indice_aid)->num_rows;
+							if ($test2 != "0") {
+								$msg.="Le professeur ".$tab_pp[$loop_pp]." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+							} else {
+								$reg_data=Sauve_prof_membre($tab_pp[$loop_pp], $aid_id, $indice_aid);
+								if (!$reg_data) {
+									$msg.="Erreur lors de l'ajout du professeur ".$tab_pp[$loop_pp]." !<br />";
+								}
+								else {
+									$nb_profs_inscrits++;
+								}
+							}
+						}
+					}
 				}
 
 				if ($count == "1") {
@@ -489,6 +507,26 @@ if (isset($is_posted) && $is_posted) {
 											$nb_profs_inscrits++;
 										}
 									}
+								}
+							}
+						}
+					}
+				}
+
+				for($loop=0;$loop<count($id_classe);$loop++) {
+					if((isset($_POST['inscrire_pp_de_la_classe']))&&($_POST['inscrire_pp_de_la_classe']=="y")) {
+						$tab_pp=get_tab_prof_suivi($id_classe[$loop]);
+						for($loop_pp=0;$loop_pp<count($tab_pp);$loop_pp++) {
+							$test2=Prof_deja_membre($tab_pp[$loop_pp], $aid_id, $indice_aid)->num_rows;
+							if ($test2 != "0") {
+								$msg.="Le professeur ".$tab_pp[$loop_pp]." que vous avez tenté d'ajouter appartient déjà à cet AID.<br />";
+							} else {
+								$reg_data=Sauve_prof_membre($tab_pp[$loop_pp], $aid_id, $indice_aid);
+								if (!$reg_data) {
+									$msg.="Erreur lors de l'ajout du professeur ".$tab_pp[$loop_pp]." !<br />";
+								}
+								else {
+									$nb_profs_inscrits++;
 								}
 							}
 						}
@@ -815,6 +853,16 @@ if ($_SESSION['statut'] == 'professeur') {
 					Si vous ne cochez aucune matière, ce paramètre ne sera pas pris en compte.
 				</p>";
 				echo liste_checkbox_matieres(array(), 'prof_matiere', 'cocher_decocher', "y", "m.matiere, m.nom_complet");
+				echo "</div>";
+
+
+				echo "<div style='margin-left:3em; margin-top:1em;'>";
+				echo "<p style='text-indent:-3em;margin-left:3em;'>
+					Vous pouvez également ou alternativement, affecter les professeurs principaux des classes choisies ci-dessus&nbsp;:<br />
+					<input type='checkbox' name='inscrire_pp_de_la_classe' id='inscrire_pp_de_la_classe' value='y' onchange=\"checkbox_change(this.id)\" /><label for='inscrire_pp_de_la_classe' id='label_inscrire_pp_de_la_classe'>Inscrire le ".getSettingValue("gepi_prof_suivi")." de la classe</label>.
+				</p>";
+				echo "</div>";
+
 				echo "</div>";
 
 			}
