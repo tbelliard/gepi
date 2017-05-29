@@ -240,7 +240,8 @@ if((!isset($id_classe))||(!isset($cycle))||(!isset($mode))||(!isset($periode))) 
 <p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
 <ul>
 	<li><p style='margin-bottom:1em;'>L'export attendu est un export de <a href='https://sacoche.sesamath.net' target='_blank'>SACoche</a>.<br />
-	Voir <a href='https://sacoche.sesamath.net/index.php?page=documentation__referentiels_socle__socle_export_import#toggle_export_gepi' target='_blank'>https://sacoche.sesamath.net/index.php?page=documentation__referentiels_socle__socle_export_import#toggle_export_gepi</a></p></li>
+
+	Voir dans SACoche, la rubrique <strong>Informations/Extraction de données</strong>&nbsp;: <br /><a href='https://sacoche.sesamath.net/index.php?page=documentation__support_administrateur__export_listings#toggle_socle_gepi' target='_blank'>https://sacoche.sesamath.net/index.php?page=documentation__support_administrateur__export_listings#toggle_socle_gepi</a></p></li>
 	<li>
 		<p>La structure du fichier JSON après extraction par json_decode() est la suivante&nbsp;:<br />
 		<pre>
