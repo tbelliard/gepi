@@ -102,7 +102,7 @@ $xml->appendChild($items);
 				$attResponsableEtabId->value = "RESP_".$responsable->id;
 				$noeudResponsableEtab->appendChild($attResponsableEtabId);
 				$attResponsableEtabLibelle= $xml->createAttribute('libelle');
-				$attResponsableEtabLibelle->value = $responsable->suivi_par;
+				$attResponsableEtabLibelle->value = trim($responsable->suivi_par);
 				$noeudResponsableEtab->appendChild($attResponsableEtabLibelle);
 				$responsablesEtab->appendChild($noeudResponsableEtab);
 			}
