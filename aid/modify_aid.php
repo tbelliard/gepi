@@ -256,6 +256,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 // debug_var();
 
+//echo "NiveauGestionAid(".$_SESSION["login"].",$indice_aid,$aid_id)=".NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id)."<br />";
 $NiveauGestionAid_AID_courant=NiveauGestionAid($_SESSION["login"],$indice_aid, $aid_id);
 
 // On affiche un select avec la liste des aid de cette catégorie
