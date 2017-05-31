@@ -119,7 +119,7 @@ echo add_token_field();
 				 onclick="document.getElementById('autorise_edt').submit();"
 				 />
 		  <label for="activTous">
-			Activer les emplois du temps pour tous les utilisateurs
+			Activer les emplois du temps pour tous les utilisateurs <em>(professeurs, cpe, scolarité)</em>
 		  </label>
 		  <br />
 		  <input name="activ_tous"
@@ -129,7 +129,7 @@ echo add_token_field();
 				 onclick="document.getElementById('autorise_edt').submit();"
 				 />
 		  <label for="activPas">
-			Désactiver les emplois du temps pour tous les utilisateurs
+			Désactiver les emplois du temps pour tous les utilisateurs <em>(professeurs, cpe, scolarité)</em>
 		  </label>
 		  <br />
 		  <span class="block center">
@@ -193,7 +193,8 @@ echo add_token_field();
 		  <legend class="invisible">Activation pour les administrateurs</legend>
 		  <em>Les comptes </em>administrateur<em> ont accès aux emplois du temps si celui-ci est activé pour eux.
 		  Si vous avez désactivé; l'accès pour tous, vous pouvez quand même autoriser les comptes
-		  </em>administrateur<em> à y avoir accès.</em>
+		  </em>administrateur<em> à y avoir accès.</em><br />
+		  Pour activer l'accès administrateur, la case Activer ci-dessous doit impérativement être cochée.
 		  <br />
 		  <input name="activ_ad"
 				 id="activAdY"
