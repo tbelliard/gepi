@@ -1490,8 +1490,10 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 		return "";
 	}
 
-	$aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
+	$aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
 	$aid_nom = @old_mysql_result($aid_nom_query, 0, "nom");
+	//$lig_aid=mysqli_fetch_object($aid_nom_query);
+	//$aid_nom=$lig_aid->nom;
 	//------
 	// On regarde maintenant quels sont les profs responsables de cette AID
 	$aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id' and indice_aid='$indice_aid')");
@@ -1609,10 +1611,26 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 		} else  echo "-";
 		echo "</b></td>";
 		if ($affiche_rang == 'y') echo "<td align=\"center\" class='".$style_bulletin."' style='$style_bordure_cell'>-</td>";
+
+		$current_eleve_aid_appreciation="";
 		if ($test_eleve_app !=0) {
-			if (($eleve_aid_app[$nb]== '') or ($tab_acces_app[$nb]!="y")) {$eleve_aid_app[$nb] = ' -';}
-			echo "<td class='$style_bulletin' style='text-align:left; $style_bordure_cell'>$eleve_aid_app[$nb]</td></tr>";
-		} else echo "<td class='$style_bulletin' style='$style_bordure_cell'>-</td></tr>";
+			if (($eleve_aid_app[$nb]== '') or ($tab_acces_app[$nb]!="y")) {
+				$eleve_aid_app[$nb] = ' -';
+			}
+			$current_eleve_aid_appreciation=$eleve_aid_app[$nb];
+			//echo "<td class='$style_bulletin' style='text-align:left; $style_bordure_cell'>$eleve_aid_app[$nb]</td></tr>";
+		}
+		else {
+			$current_eleve_aid_appreciation="-";
+			//echo "<td class='$style_bulletin' style='$style_bordure_cell'>-</td></tr>";
+		}
+
+		if (afficheResumeAid($aid_id)) {
+			$current_eleve_aid_appreciation = getResume($aid_id).$current_eleve_aid_appreciation;
+		}
+
+		echo "<td class='$style_bulletin' style='text-align:left; $style_bordure_cell'>".$current_eleve_aid_appreciation."</td></tr>";
+
 		$print_tr = 'yes';
 		$nb++;
 	}
