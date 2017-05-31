@@ -111,6 +111,25 @@ $xml->appendChild($items);
 		
 		/*----- Élèves -----*/
 		$tab_ele_deja=array();
+		$tab_ele_derniere_classe=array();
+
+		// 20170531
+		// Tester les doublons élèves, pour retenir la classe de la dernière période.
+		while ($eleve = $listeEleves->fetch_object()) {
+			if(!in_array('EL_'.$eleve->id_eleve, $tab_ele_deja)) {
+				// Récupérer la dernière classe de l'élève.
+				$sql="SELECT classe FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login='".$eleve->login."' ORDER BY jec.periode DESC LIMIT 1;";
+				$res_class_tmp=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_class_tmp)>0) {
+					$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
+					$tab_ele_derniere_classe[$eleve->login]=$lig_class_tmp->classe;
+				}
+			}
+			$tab_ele_deja[]='EL_'.$eleve->id_eleve;
+		}
+		mysqli_data_seek($listeEleves, 0);
+
+		$tab_ele_deja=array();
 		$eleves = $xml->createElement('eleves');
 		while ($eleve = $listeEleves->fetch_object()) {
 			$noeudEleve = $xml->createElement('eleve');
@@ -119,21 +138,27 @@ $xml->appendChild($items);
 				$msg_erreur_remplissage.="L'élève ".$eleve->nom." ".$eleve->prenom." n'est pas associé à un élève dans Sconet <em>(Identifiant ELE_ID non valide)</em>&nbsp;: <a href='../responsables/corrige_ele_id.php' target='_blank'>Corriger</a><br /><br />";
 			}
 
+			$tmp_classe=$eleve->classe;
+			if((!getSettingANon("LSU_LastDivEleve"))&&(isset($tab_ele_derniere_classe[$eleve->login]))) {
+				$tmp_classe=$tab_ele_derniere_classe[$eleve->login];
+			}
+
 			$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
 				'nom'=>mb_substr($eleve->nom,0,100,'UTF-8'),
 				'prenom'=>mb_substr($eleve->prenom,0,100,'UTF-8'),
-				'code-division'=>mb_substr($eleve->classe,0,8,'UTF-8'));
+				'code-division'=>mb_substr($tmp_classe,0,8,'UTF-8'));
 			foreach ($attributsEleve as $cle=>$valeur) {
 				$attEleve = $xml->createAttribute($cle);
 				$attEleve->value = $valeur;
 				$noeudEleve->appendChild($attEleve);
 			}
 
-			$eleves->appendChild($noeudEleve);
-
-			
 			if(in_array('EL_'.$eleve->id_eleve, $tab_ele_deja)) {
-				$msg_erreur_remplissage.="<strong>ATTENTION&nbsp;:</strong> L'élève ".'EL_'.$eleve->id_eleve." (<a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>) apparait plusieurs fois. Cela correspond probablement à un changement de classe.<br />L'export ne va pas être valide. Il faut exporter séparément les classes de cet élève.<br /><br />";
+				//$msg_erreur_remplissage.="<strong>ATTENTION&nbsp;:</strong> L'élève ".'EL_'.$eleve->id_eleve." (<a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>) apparait plusieurs fois. Cela correspond probablement à un changement de classe.<br />L'export ne va pas être valide. Il faut exporter séparément les classes de cet élève.<br /><br />";
+				$msg_erreur_remplissage.="<strong>ATTENTION&nbsp;:</strong> L'élève ".'EL_'.$eleve->id_eleve." (<a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>) apparait plusieurs fois. Cela correspond probablement à un changement de classe.<br />La dernière classe de l'élève sera retenue dans l'export.<br /><br />";
+			}
+			else {
+				$eleves->appendChild($noeudEleve);
 			}
 			$tab_ele_deja[]='EL_'.$eleve->id_eleve;
 			
@@ -636,7 +661,10 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		$tab_eleve_sans_pp=array();
 		$eleves = getElevesExport();
 
-// Si retour vide, ajouter un test sur les éléments de la requête pour trouver où cela plante.
+		// Si retour vide, ajouter un test sur les éléments de la requête pour trouver où cela plante.
+		if(mysqli_num_rows($eleves)==0) {
+			$msg_erreur_remplissage.="Aucun élève n'a été trouvé. Commencez par valider le formulaire <strong>Responsables de l'établissement</strong> en cliquant sur <strong>Mettre à jour</strong><br />";
+		}
 
 		while ($eleve = $eleves->fetch_object()) {
 			$exporteEleve = FALSE;
