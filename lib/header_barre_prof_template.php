@@ -597,6 +597,12 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 			$tmp_aid_outils_complementaires = $lig_aid->outils_complementaires;
 			$tmp_aid_nom = $lig_aid->nom_aid;
 
+			/*
+			echo "<pre>";
+			print_r($lig_aid);
+			echo "</pre>";
+			*/
+
 			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>$lig_aid->nom_aid);
 			//, "title"=>$lig_aid->nom." (".$lig_aid->nom_complet.") : ".$lig_aid->nom_aid
 			$tmp_sous_menu2=array();
@@ -604,11 +610,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 
 			if(($lig_aid->display_bulletin=="y")||($lig_aid->bull_simplifie=="y")) {
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (saisie)";
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_aid_nom." (saisie)";
 				$cpt_sous_menu2++;
 
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_nom_aid." (visualisation)";
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_aid_nom." (visualisation)";
 				$cpt_sous_menu2++;
 			}
 

@@ -259,6 +259,12 @@ $xml->appendChild($items);
 						$msgErreur .= "L'enseignant $enseignant->nom ($enseignant->numind) n'a pas de prénom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br />";
 						continue;
 					}
+
+					if((preg_match_all('#[0-9]+#',$enseignant->numind))&&(substr($enseignant->numind,1)==0)) {
+						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." a un identifiant STS non valide (".$enseignant->numind."). Cela doit être P suivi d'un entier non nul.<br />Vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br />";
+						continue;
+					}
+
 					preg_match_all('#[0-9]+#',$enseignant->numind,$extract);
 					/*
 					echo "$enseignant->numind<pre>";
@@ -679,11 +685,17 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		$tab_id_eleve=array();
 		$tab_eleve_sans_pp=array();
 		$eleves = getElevesExport();
+
+// Si retour vide, ajouter un test sur les éléments de la requête pour trouver où cela plante.
+
 		while ($eleve = $eleves->fetch_object()) {
 			$exporteEleve = FALSE;
 			$desAcquis = FALSE;
 			$noeudBilanElevePeriodique = $xml->createElement('bilan-periodique');
 			$respEtabElv = "RESP_".$eleve->id_resp_etab;
+
+//echo "DEBUG: \$eleve->login=".$eleve->login."<br />";
+
 
 			$profResponsable="";
 			//$profResponsable = getUtilisateur($eleve->professeur)->numind;
@@ -723,6 +735,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$attsElevePeriode->value = $valeur;
 
 					$noeudBilanElevePeriodique->appendChild($attsElevePeriode);
+					//echo "DEBUG:     Préparation du noeud: $cle : $valeur<br />";
 				}
 
 				$tab_disciplines_deja=array();
@@ -740,6 +753,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$moyenne = getMoyenne($acquisEleve->id_groupe);
 					$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 					$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
+
+					//echo "DEBUG:     Acquis: $acquisEleve->id_groupe<br />";
 
 					if(($debug==1)&&($eleve->login==$login_debug)&&($acquisEleve->code_matiere==$code_matiere_debug)) {
 						echo "$matiere groupe $acquisEleve->id_groupe<br />getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere)<br />";
@@ -1123,6 +1138,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 										$noeudComApEleve = $xml->createElement('commentaire', $comm);
 										$noeudAPEleve->appendChild($noeudComApEleve);
 									}
+
 								}
 								$listeAccPersosEleve->appendChild($noeudAPEleve);
 							}

@@ -181,8 +181,10 @@ if ($creeFichier == 'y') {
 
 }
 
-
-
+//==============================================================
+// Pour tenir compte d'un ajout de champ 'annee' oublié en 1.7.1
+check_tables_modifiees();
+//==============================================================
 
 //===== On récupère les données =====
 $scolarites = getUtilisateurSurStatut('scolarite');
