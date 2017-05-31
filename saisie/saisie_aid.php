@@ -452,13 +452,95 @@ if (!isset($aid_id)) {
 		echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 	}
 
-	$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
-	$aid_nom = old_mysql_result($calldata, 0, "nom");
+	$sql="SELECT * FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')";
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
+	$lig_aid=mysqli_fetch_object($calldata);
+	$aid_nom = $lig_aid->nom;
 
-
-	echo "<h2>Appréciations $nom_aid : $aid_nom</h2>\n";
+	echo "<h2>Appréciations $nom_aid : $aid_nom";
+	// Accès à la fiche?
+	if(VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','')) {
+		echo " <a href='../aid/modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif&amp;retour=index_fiches.php' title=\"Éditer la fiche projet et notamment le résumé dans un nouvel onglet.\" target='_blank'><img src='../images/edit16.png' class='icone16' alt='Insérer' /></a>";
+	}
+	echo "</h2>\n";
 
 	echo "<div style='float:right;width:20em;'>".get_info_categorie_aid("", $aid_id)."</div>";
+
+	if(trim($lig_aid->resume)!="") {
+		echo "<p style='margin-left:5.7em;text-indent:-5.7em;margin-bottom:1em;'><strong>Résumé&nbsp;:</strong> ".nl2br($lig_aid->resume);
+		echo "<span id='resumeBulletin' style='display:none'>".$lig_aid->resume."</span>";
+		if($lig_aid->resumeBulletin=="y") {
+			echo "<br /><em style='color:blue;'>Le résumé ci-dessus est automatiquement intégré à l'appréciation de l'élève sur le bulletin.</em>";
+		}
+		else {
+			echo " <a href='#' onclick=\"ajoute_resume_a_textarea_vide()\" title=\"Insérer le résumé dans les appréciations vides.\"><img src='../images/icons/wizard.png' class='icone16' alt='Insérer' /></a>";
+		}
+		echo "</p>";
+	}
+
+
+	echo "<script type='text/javascript'>
+	function ajoute_resume_a_textarea_vide() {
+		champs_textarea=document.getElementsByTagName('textarea');
+		//alert('champs_textarea.length='+champs_textarea.length);
+		for(i=0;i<champs_textarea.length;i++){
+			if(champs_textarea[i].value=='') {
+				champs_textarea[i].value=document.getElementById('resumeBulletin').value;
+			}
+		}
+	}
+
+	function ajoute_app_periode_a_textarea(num_per) {
+		//alert('plop');
+		if(document.getElementById('app_grp_'+num_per)) {
+
+			champs_textarea=document.getElementsByTagName('textarea');
+			//alert('champs_textarea.length='+champs_textarea.length);
+			for(i=0;i<champs_textarea.length;i++) {
+				champ_courant=champs_textarea[i];
+				id_textarea=champ_courant.getAttribute('id');
+				if(id_textarea) {
+					//if(i<3) {alert('id_textarea='+id_textarea)}
+					if(id_textarea.substring(0,2)=='n'+num_per) {
+						if(champs_textarea[i].value=='') {
+							champs_textarea[i].value=document.getElementById('app_grp_'+num_per).value;
+						}
+						else {
+							champs_textarea[i].value=champs_textarea[i].value+' '+document.getElementById('app_grp_'+num_per).value;
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	function ajoute_app_periode_a_textarea_vide(num_per) {
+		if(document.getElementById('app_grp_'+num_per)) {
+
+			champs_textarea=document.getElementsByTagName('textarea');
+			for(i=0;i<champs_textarea.length;i++) {
+				champ_courant=champs_textarea[i];
+				id_textarea=champ_courant.getAttribute('id');
+				if(id_textarea) {
+					if(id_textarea.substring(0,2)=='n'+num_per) {
+						if(champs_textarea[i].value=='') {
+							champs_textarea[i].value=document.getElementById('app_grp_'+num_per).value;
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+</script>\n";
+
+	/*
+	echo "<pre>";
+	print_r($tab_aid);
+	echo "</pre>";
+	*/
 
 	echo "<p class='bold'>Groupe-classe&nbsp;:</p>
 <table class='boireaus boireaus_alt' border=1 cellspacing=2 cellpadding=5>
@@ -468,7 +550,21 @@ if (!isset($aid_id)) {
 				if (($i >= $display_begin) and ($i <= $display_end)) {
 					$nom_periode[$i] = old_mysql_result($periode_query, $i-1, "nom_periode");
 					echo "
-			<th><b>$nom_periode[$i]</b></th>";
+			<th>
+				<b>$nom_periode[$i]</b>";
+
+					//echo "\$tab_aid[\"classe\"][\"ver_periode\"]['all'][$i]=".$tab_aid["classe"]["ver_periode"]['all'][$i]."<br />";
+
+					if(($tab_aid["classe"]["ver_periode"]['all'][$i]>=2)||
+					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='secours'))) {
+
+						echo "
+						 <a href='#' onclick=\"ajoute_app_periode_a_textarea($i)\" title=\"Ajouter l'avis sur le groupe aux appréciations de la période $k.\"><img src='../images/icons/add.png' class='icone16' alt='Insérer' /></a> 
+						<a href='#' onclick=\"ajoute_app_periode_a_textarea_vide($i)\" title=\"Insérer l'avis sur le groupe aux appréciations de la période $k\n*lorsque l'appréciation est vide*.\"><img src='../images/icons/wizard.png' class='icone16' alt='Insérer' /></a>";
+
+					}
+					echo "
+			</th>";
 				}
 				$i++;
 			}
@@ -492,7 +588,7 @@ if (!isset($aid_id)) {
 					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 						echo "
 		<td>
-			<textarea name=\"no_anti_inject_app_grp_".$k."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">".$current_app_t[$k]."</textarea>
+			<textarea name=\"no_anti_inject_app_grp_".$k."\" id=\"app_grp_".$k."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">".$current_app_t[$k]."</textarea>
 		</td>";
 						$proposer_liens_enregistrement="y";
 					}
