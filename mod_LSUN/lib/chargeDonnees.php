@@ -36,7 +36,7 @@ $listeResponsables = getResponsables();
 //$libelle = 'À déterminer, civilité nom prénom par exemple';
 
 /*===== Élève =====*/
-// On récupère tous les élève
+// On récupère tous les élèves
 $sqlEleves = "SELECT t3.* , c.classe FROM "
 	. "(SELECT DISTINCT t1.* , t2.id_classe "
 	. "FROM eleves AS t1 "
@@ -45,7 +45,7 @@ $sqlEleves = "SELECT t3.* , c.classe FROM "
 	. "WHERE  t2.id_classe IN (".$myData.")) AS t3 "
 	. "INNER JOIN classes AS c "
 	. "ON t3.id_classe = c.id";
-//echo $sqlEleves;
+//echo $sqlEleves."<br />";
 $listeEleves = $mysqli->query($sqlEleves);
 
 /*===== Périodes =====*/
@@ -108,7 +108,7 @@ if ($reqErreurs->num_rows) {
 	while ($erreur = $reqErreurs-> fetch_object()) {
 		$matErreur .= $erreur->id_matiere." ";
 	}
-	$msgErreur .= "Les modalités d'élection des matières $matErreur semblent ne pas être attribuées. <em><a href='../classes/index.php'  target='_BLANK'>Corriger</a></em><br>";
+	$msgErreur .= "Les modalités d'élection des matières $matErreur semblent ne pas être attribuées. <em><a href='../classes/index.php'  target='_BLANK'>Corriger</a></em><br /><br />";
 	//$msgErreur .= $sqlErreurs;
 }
 

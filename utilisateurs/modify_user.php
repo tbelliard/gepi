@@ -193,17 +193,30 @@ check_token();
 						$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
 						if($_POST['reg_statut']=="professeur") {
 							$reg_numind="P".$reg_numind;
+
+							//20170531
+							$sql="SELECT u.login,u.nom,u.prenom,u.numind FROM utilisateurs u WHERE CAST(SUBSTRING(numind,2,255) AS UNSIGNED)=CAST(SUBSTRING('$reg_numind',2,255) AS UNSIGNED) AND u.login!='".$_POST['new_login']."' AND u.numind!='';";
+							//echo "$sql<br />";
+							$test=mysqli_query($mysqli,$sql);
+							if(mysqli_num_rows($test)>0) {
+								$poursuivre_enregistrer_numind=false;
+								$lig_u_sts=mysqli_fetch_object($test);
+								$msg.="Identifiant STS déjà attribué à un autre utilisateur (<a href='".$_SERVER['PHP_SELF']."?user_login=".$lig_u_sts->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".casse_mot($lig_u_sts->nom, "maj")." ".casse_mot($lig_u_sts->prenom, "majf2")."</a>).<br />";
+							}
 						}
 
-						$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE numind='".$reg_numind."' AND login!='".$_POST['new_login']."';";
-						$test=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($test)==0) {
-							$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
-						}
-						else {
-							$lig_u_sts=mysqli_fetch_object($test);
-							$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-							$msg.="Identifiant STS déjà attribué à un autre utilisateur (<a href='".$_SERVER['PHP_SELF']."?user_login=".$lig_u_sts->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".casse_mot($lig_u_sts->nom, "maj")." ".casse_mot($lig_u_sts->prenom, "majf2")."</a>).<br />";
+						if($poursuivre_enregistrer_numind) {
+							$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE numind='".$reg_numind."' AND login!='".$_POST['new_login']."';";
+							//echo "$sql<br />";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
+							}
+							else {
+								$lig_u_sts=mysqli_fetch_object($test);
+								$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+								$msg.="Identifiant STS déjà attribué à un autre utilisateur (<a href='".$_SERVER['PHP_SELF']."?user_login=".$lig_u_sts->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".casse_mot($lig_u_sts->nom, "maj")." ".casse_mot($lig_u_sts->prenom, "majf2")."</a>).<br />";
+							}
 						}
 					}
 					if((isset($_POST['reg_type']))&&(in_array($_POST['reg_type'], array('epp', 'local')))) {
@@ -483,20 +496,35 @@ check_token();
 				$sql_ajout_chaine_numind_et_type="";
 				if(isset($_POST['reg_numind'])) {
 					if($_POST['reg_numind']!="") {
+						$poursuivre_enregistrer_numind=true;
+
 						$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
 						if($_POST['reg_statut']=="professeur") {
 							$reg_numind="P".$reg_numind;
+
+							//20170531
+							$sql="SELECT u.login,u.nom,u.prenom,u.numind FROM utilisateurs u WHERE CAST(SUBSTRING(numind,2,255) AS UNSIGNED)=CAST(SUBSTRING('$reg_numind',2,255) AS UNSIGNED) AND u.login!='".$user_login."' AND u.numind!='';";
+							//echo "$sql<br />";
+							$test=mysqli_query($mysqli,$sql);
+							if(mysqli_num_rows($test)>0) {
+								$poursuivre_enregistrer_numind=false;
+								$lig_u_sts=mysqli_fetch_object($test);
+								$msg.="Identifiant STS déjà attribué à un autre utilisateur (<a href='".$_SERVER['PHP_SELF']."?user_login=".$lig_u_sts->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".casse_mot($lig_u_sts->nom, "maj")." ".casse_mot($lig_u_sts->prenom, "majf2")."</a>).<br />";
+							}
 						}
 
-						$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE numind='".$reg_numind."' AND login!='".$user_login."';";
-						$test=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($test)==0) {
-							$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
-						}
-						else {
-							$lig_u_sts=mysqli_fetch_object($test);
-							$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-							$msg.="Identifiant STS déjà attribué à un autre utilisateur (<a href='".$_SERVER['PHP_SELF']."?user_login=".$lig_u_sts->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".casse_mot($lig_u_sts->nom, "maj")." ".casse_mot($lig_u_sts->prenom, "majf2")."</a>).<br />";
+						if($poursuivre_enregistrer_numind) {
+							$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE numind='".$reg_numind."' AND login!='".$user_login."';";
+							//echo "$sql<br />";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
+							}
+							else {
+								$lig_u_sts=mysqli_fetch_object($test);
+								$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+								$msg.="Identifiant STS déjà attribué à un autre utilisateur (<a href='".$_SERVER['PHP_SELF']."?user_login=".$lig_u_sts->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\">".casse_mot($lig_u_sts->nom, "maj")." ".casse_mot($lig_u_sts->prenom, "majf2")."</a>).<br />";
+							}
 						}
 					}
 					else {

@@ -1437,7 +1437,11 @@ Patientez pendant l'extraction des données... merci.
 			}
 
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'><th style='text-align: left;'>MEF&nbsp;:</th><td>".$tab_ele['mef']."</td></tr>\n";
+			echo "<tr class='lig$alt'><th style='text-align: left;'>MEF&nbsp;:</th><td>";
+			if(acces("/mef/associer_eleve_mef.php", $_SESSION['statut'])) {
+				echo "<div style='float:right;width:16px;'><a href='../mef/associer_eleve_mef.php?type_selection=nom_eleve&nom_eleve=".preg_replace("/^[^A-Za-z0-9 _]*$/", "%", $tab_ele['nom'])."' target='_blank'><img src='../images/edit16.png' class='icone16' alt='Éditer' /></a></div>";
+			}
+			echo $tab_ele['mef']."</td></tr>\n";
 
 			if((isset($tab_ele["tel_pers"]))&&($tab_ele["tel_pers"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
 				$alt=$alt*(-1);
