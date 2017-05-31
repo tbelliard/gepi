@@ -209,7 +209,7 @@ $msg_erreur="";
 		<?php
 			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM nomenclature_modalites_election;"));
 			if ($test_champ==0) {
-				echo "<span style='color:red;'><strong>ANOMALIE&nbsp;:</strong> Les modalités d'élection des matières sont manquantes.<br /><a href='../utilitaires/maj.php'>Forcer une mise à jour de la base</a> pour re-créer les modalités manquantes.</span><br />";
+				echo "<span style='color:red;'><strong>ANOMALIE&nbsp;:</strong> Les modalités d'élection des matières sont manquantes.<br /><a href='../utilitaires/maj.php'>Forcer une mise à jour de la base</a> pour re-créer les modalités manquantes.</span><br /><br />";
 			}
 		?>
 
@@ -301,6 +301,44 @@ $msg_erreur="";
 					}
 				}
 			}
+
+			//$sql="SELECT login,numind,cast(SUBSTRING(numind,2,10) AS UNSIGNED) as ma_valeur from utilisateurs where statut='professeur';";
+			//$sql="SELECT login,numind,CAST(SUBSTRING(numind,2,255) AS UNSIGNED) AS ma_valeur FROM utilisateurs u,j_groupes_professeurs jgp WHERE u.statut='professeur' AND jgp.login=u.login GROUP BY ma_valeur HAVING COUNT(ma_valeur)>1;";
+			//$sql="SELECT u.login,u.numind,CAST(SUBSTRING(numind,2,255) AS UNSIGNED) AS ma_valeur FROM utilisateurs u,j_groupes_professeurs jgp WHERE u.statut='professeur' AND jgp.login=u.login GROUP BY ma_valeur HAVING COUNT(ma_valeur)>1;";
+			$sql="SELECT u.login,u.numind,CAST(SUBSTRING(numind,2,255) AS UNSIGNED) AS ma_valeur FROM utilisateurs u WHERE u.statut='professeur' AND u.login IN (SELECT DISTINCT login FROM j_groupes_professeurs) GROUP BY ma_valeur HAVING COUNT(ma_valeur)>1;";
+			//echo "$sql<br />";
+			$test_numind=mysqli_query($mysqli,$sql);
+			if(mysqli_num_rows($test_numind)>0) {
+				echo "<br /><span style='color:red'>Un ou des identifiants professeurs sont en doublons.<br />La valeur numérique suivant le P doit être unique.<br />";
+				echo "</span>";
+				while($lig_numind=mysqli_fetch_object($test_numind)) {
+
+					$sql="SELECT DISTINCT u.login,u.numind,u.nom,u.prenom FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.statut='professeur' AND CAST(SUBSTRING(numind,2,255) AS UNSIGNED)='".$lig_numind->ma_valeur."' AND u.login=jgp.login ORDER BY u.nom, u.prenom;";
+					//echo "$sql<br />";
+					$test_numind2=mysqli_query($mysqli,$sql);
+					if(mysqli_num_rows($test_numind2)>0) {
+						echo "<table class='boireaus boireaus_alt'>
+						<tr>
+							<th>Login</th>
+							<th>Nom</th>
+							<th>Prénom</th>
+							<th>Numind</th>
+						</tr>";
+						while($lig_numind2=mysqli_fetch_object($test_numind2)) {
+							echo "
+						<tr>
+							<td><a href='../utilisateurs/modify_user.php?user_login=".$lig_numind2->login."' target='_blank'>".$lig_numind2->login."</a></td>
+							<td>".$lig_numind2->nom."</td>
+							<td>".$lig_numind2->prenom."</td>
+							<td>".$lig_numind2->numind."</td>
+						</tr>";
+						}
+						echo "</table>
+						<p style='color:red'>Vous devez faire en sorte d'avoir des identifiants STS différents pour la partie numérique.</p>";
+					}
+				}
+			}
+
 
 			$sql="SELECT DISTINCT m.* FROM mef m, eleves e, j_eleves_classes jec WHERE e.mef_code=m.mef_code AND jec.login=e.login AND m.mef_rattachement='' ORDER BY libelle_long, libelle_edition;";
 			$test=mysqli_query($mysqli, $sql);
