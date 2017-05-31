@@ -1230,7 +1230,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$msg_erreur_remplissage.="Aucun avis du conseil de classe n'est saisi pour <strong>".get_nom_prenom_eleve($eleve->login)."</strong> pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Les saisies concernant cet élève ne seront pas extraites et donc pas remontées vers LSU.<br />Un compte scolarité, professeur principal,... <em>(selon les droits d'accès paramétrés)</em> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
 				}
 				else {
-					$acquisConseils = $xml->createElement('acquis-conseils', $avisConseil);
+					$tmp_chaine=nettoye_texte_vers_chaine($avisConseil);
+					$acquisConseils = $xml->createElement('acquis-conseils', ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
 					$noeudBilanElevePeriodique->appendChild($acquisConseils);
 				}
 			}
