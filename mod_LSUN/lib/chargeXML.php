@@ -244,20 +244,20 @@ $xml->appendChild($items);
 						
 					//on ne conserve que les chiffres pour id-sts
 					if (!$enseignant->numind) {
-						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br />";
+						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br /><br />";
 						continue;
 					}
 					if((!$enseignant->nom)||($enseignant->nom=="")) {
-						$msgErreur .= "L'enseignant '$enseignant->numind' n'a pas de nom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br />";
+						$msgErreur .= "L'enseignant '$enseignant->numind' n'a pas de nom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br /><br />";
 						continue;
 					}
 					if((!$enseignant->prenom)||($enseignant->prenom=="")) {
-						$msgErreur .= "L'enseignant $enseignant->nom ($enseignant->numind) n'a pas de prénom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br />";
+						$msgErreur .= "L'enseignant $enseignant->nom ($enseignant->numind) n'a pas de prénom, vous devez <a href='../utilisateurs/modify_user.php?user_login=".$enseignant->login."' target='_blank'>corriger</a> cette erreur.<br /><br />";
 						continue;
 					}
 
 					if((preg_match_all('#[0-9]+#',$enseignant->numind))&&(substr($enseignant->numind,1)==0)) {
-						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." a un identifiant STS non valide (".$enseignant->numind."). Cela doit être P suivi d'un entier non nul.<br />Vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br />";
+						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." a un identifiant STS non valide (".$enseignant->numind."). Cela doit être P suivi d'un entier non nul.<br />Vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br /><br />";
 						continue;
 					}
 
@@ -269,7 +269,7 @@ $xml->appendChild($items);
 					echo "</pre>";
 					*/
 					if((!isset($extract[0]))||(!isset($extract[0][0]))) {
-						$msgErreur .= "Le format de l'identifiant NUMIND de ".$enseignant->nom." ".$enseignant->prenom." n'est pas valide.<br />Ce doit être un <strong>P</strong> suivi d'<strong>un ou plusieurs chiffres</strong>; vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br />";
+						$msgErreur .= "Le format de l'identifiant NUMIND de ".$enseignant->nom." ".$enseignant->prenom." n'est pas valide.<br />Ce doit être un <strong>P</strong> suivi d'<strong>un ou plusieurs chiffres</strong>; vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br /><br />";
 						continue;
 					}
 
