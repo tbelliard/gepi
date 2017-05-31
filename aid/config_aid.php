@@ -369,6 +369,7 @@ echo add_token_field();
 		Nom complet : 
 		<input type="text" 
 			   name="reg_nom_complet" 
+			   id="reg_nom_complet" 
 			   size="40"
 			   onchange="changement();"
 				   <?php if (isset($reg_nom_complet)) { echo "value=\"".$reg_nom_complet."\"";}
@@ -678,6 +679,10 @@ function verif_type_aid() {
 		document.getElementById('activer_outils_comp_y').checked=true;
 		js_adapte_outil_comp();
 	}
+}
+
+if(document.getElementById('reg_nom_complet')) {
+	document.getElementById('reg_nom_complet').focus();
 }
 </script>
 <?php if ($activer_outils_comp=='y') {?>
