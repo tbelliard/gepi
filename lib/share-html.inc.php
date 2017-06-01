@@ -5989,8 +5989,12 @@ function get_liste_voeux_orientation($login_eleve, $mode="") {
 
 function get_select_voeux_orientation($login_eleve) {
 	global $tab_orientation;
+	global $gepiPath;
+	global $mysqli;
 
 	$retour="";
+
+	$lien_definition_type_orientation="";
 
 	$sql="SELECT * FROM eleves WHERE login='$login_eleve';";
 	//echo "$sql<br />";
@@ -5999,6 +6003,7 @@ function get_select_voeux_orientation($login_eleve) {
 		$retour="Élève non trouvé.<br />";
 	}
 	else {
+		//$retour.=$lien_definition_type_orientation;
 		if((!isset($tab_orientation))||(!is_array($tab_orientation))) {
 			$tab_orientation=get_tab_orientations_types_par_mef();
 			//$tab_orientation2=get_tab_orientations_types();
@@ -6013,6 +6018,14 @@ function get_select_voeux_orientation($login_eleve) {
 		$OrientationNbMaxVoeux=getSettingValue('OrientationNbMaxVoeux');
 
 		$lig_ele=mysqli_fetch_object($res_ele);
+
+		if((($_SESSION['statut']=="scolarite")&&(getSettingAOui("OrientationSaisieTypeScolarite")))||
+		(($_SESSION['statut']=="cpe")&&(getSettingAOui("OrientationSaisieTypeCpe")))||
+		(($_SESSION['statut']=="professeur")&&(getSettingAOui("OrientationSaisieTypePP"))&&(is_pp($_SESSION['login'],"",$login_eleve)))) {
+			$tab_mef_ele=get_tab_mef_from_mef_code($lig_ele->mef_code);
+
+			$lien_definition_type_orientation="<div style='float:right;width:16px' title=\"Éditer, modifier, compléter la liste des voeux d'orientation possibles pour un élève de ".(isset($tab_mef_ele["designation_courte"]) ? $tab_mef_ele["designation_courte"] : "MEF inconnu").".\"><a href='$gepiPath/mod_orientation/saisie_types_orientation.php' target='_blank'><img src='$gepiPath/images/edit16.png' class='icone16' alt='Saisie' /></a></div>";
+		}
 
 		$tab=get_tab_voeux_orientations_ele($login_eleve);
 		$tab_voeux_ele=$tab['voeux'];
@@ -6051,6 +6064,7 @@ function get_select_voeux_orientation($login_eleve) {
 		}
 	}
 
+	$retour.=$lien_definition_type_orientation;
 	return $retour;
 }
 
@@ -6104,8 +6118,12 @@ function get_liste_orientations_proposees($login_eleve, $mode="") {
 
 function get_select_orientations_proposees($login_eleve) {
 	global $tab_orientation;
+	global $gepiPath;
+	global $mysqli;
 
 	$retour="";
+
+	$lien_definition_type_orientation="";
 
 	$sql="SELECT * FROM eleves WHERE login='$login_eleve';";
 	//echo "$sql<br />";
@@ -6129,6 +6147,14 @@ function get_select_orientations_proposees($login_eleve) {
 		$OrientationNbMaxOrientation=getSettingValue('OrientationNbMaxOrientation');
 
 		$lig_ele=mysqli_fetch_object($res_ele);
+
+		if((($_SESSION['statut']=="scolarite")&&(getSettingAOui("OrientationSaisieTypeScolarite")))||
+		(($_SESSION['statut']=="cpe")&&(getSettingAOui("OrientationSaisieTypeCpe")))||
+		(($_SESSION['statut']=="professeur")&&(getSettingAOui("OrientationSaisieTypePP"))&&(is_pp($_SESSION['login'],"",$login_eleve)))) {
+			$tab_mef_ele=get_tab_mef_from_mef_code($lig_ele->mef_code);
+
+			$lien_definition_type_orientation="<div style='float:right;width:16px' title=\"Éditer, modifier, compléter la liste des voeux d'orientation possibles pour un élève de ".(isset($tab_mef_ele["designation_courte"]) ? $tab_mef_ele["designation_courte"] : "MEF inconnu").".\"><a href='$gepiPath/mod_orientation/saisie_types_orientation.php' target='_blank'><img src='$gepiPath/images/edit16.png' class='icone16' alt='Saisie' /></a></div>";
+		}
 
 		$tab=get_tab_voeux_orientations_ele($login_eleve);
 		$tab_o_ele=$tab['orientation_proposee'];
@@ -6167,6 +6193,7 @@ function get_select_orientations_proposees($login_eleve) {
 		}
 	}
 
+	$retour.=$lien_definition_type_orientation;
 	return $retour;
 }
 
