@@ -1241,7 +1241,20 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$retardEleve = getAbsencesEleve($eleve->login , $eleve->periode);
 			$vieScolaire = $xml->createElement('vie-scolaire');
 			$retardsJustifies = $retardEleve['absences'] - $retardEleve['nj'];
+
 			//$attributsVieScolaire = array('nb-retards'=>$retardEleve->nb_retards , 'nb-abs-justifiees'=>$retardsJustifies, 'nb-abs-injustifiees'=>$retardEleve->non_justifie);
+			if(!preg_match("/^[0-9]{1,}$/", $retardEleve['retards'])) {
+				$msg_erreur_remplissage.="Le nombre de retards pour <strong>".get_nom_prenom_eleve($eleve->login)."</strong> en période <strong>".$eleve->periode."</strong> est invalide (".$retardEleve['retards'].").<br />Valeur mise à zéro dans l'export pour ne pas provoquer d'erreur (mais vous devriez corriger).<br /><br />";
+				$retardEleve['retards']=0;
+			}
+			if(!preg_match("/^[0-9]{1,}$/", $retardsJustifies)) {
+				$msg_erreur_remplissage.="Le nombre d'absences justifiées pour <strong>".get_nom_prenom_eleve($eleve->login)."</strong> en période <strong>".$eleve->periode."</strong> est invalide (".$retardsJustifies.").<br />Valeur mise à zéro dans l'export pour ne pas provoquer d'erreur (mais vous devriez corriger).<br /><br />";
+				$retardsJustifies=0;
+			}
+			if(!preg_match("/^[0-9]{1,}$/", $retardEleve['nj'])) {
+				$msg_erreur_remplissage.="Le nombre de retards pour <strong>".get_nom_prenom_eleve($eleve->login)."</strong> en période <strong>".$eleve->periode."</strong> est invalide (".$retardEleve['nj'].").<br />Valeur mise à zéro dans l'export pour ne pas provoquer d'erreur (mais vous devriez corriger).<br /><br />";
+				$retardEleve['nj']=0;
+			}
 			$attributsVieScolaire = array('nb-retards'=>$retardEleve['retards'] , 'nb-abs-justifiees'=>$retardsJustifies, 'nb-abs-injustifiees'=>$retardEleve['nj']);
 		
 			foreach ($attributsVieScolaire as $cle=>$valeur) {
