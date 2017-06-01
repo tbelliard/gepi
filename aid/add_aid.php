@@ -65,6 +65,7 @@ $lig_famille_aid=mysqli_fetch_object($res_famille_aid);
 $nom_famille_aid=$lig_famille_aid->nom;
 $nom_complet_famille_aid=$lig_famille_aid->nom_complet;
 $autoriser_inscript_multiples=$lig_famille_aid->autoriser_inscript_multiples;
+$outils_complementaires=$lig_famille_aid->outils_complementaires;
 //=======================================
 
 include_once 'fonctions_aid.php';
@@ -186,6 +187,27 @@ if (isset($is_posted) && $is_posted) {
 					//$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
 
 					//$msg.="aid_id=$aid_id<br />";
+
+					// Résumé
+					if(isset($_POST["reg_resume"])) {
+						$reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
+						$resumeSurBulletin = filter_input(INPUT_POST, 'integreResume');
+						saveResumeSurBulletin($resumeSurBulletin, $aid_id) ;
+
+						if(trim($reg_resume)!="") {
+							if (mb_strlen($reg_resume) > 600) {
+								$reg_resume = mb_substr($reg_resume,0,597)."...";
+								$msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
+							}
+							//$sql="UPDATE aid SET resume='".mysqli_real_escape_string($mysqli, $reg_resume)."' WHERE id='".$aid_id."';";
+							$sql="UPDATE aid SET resume='".$reg_resume."' WHERE id='".$aid_id."';";
+							//echo "$sql<br />";
+							$update=mysqli_query($GLOBALS['mysqli'], $sql);
+							if(!$update) {
+								$msg.="Erreur lors de l'enregistrement du résumé pour l'AID n°".$aid_id."<br />";
+							}
+						}
+					}
 
 					$nb_ele_inscrits=0;
 					//for($loop=0;$loop<count($id_classe);$loop++) {
@@ -532,6 +554,27 @@ if (isset($is_posted) && $is_posted) {
 						}
 					}
 				}
+
+				// Résumé
+				if(isset($_POST["reg_resume"])) {
+					$reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
+					$resumeSurBulletin = filter_input(INPUT_POST, 'integreResume');
+					saveResumeSurBulletin($resumeSurBulletin, $aid_id) ;
+
+					if(trim($reg_resume)!="") {
+						if (mb_strlen($reg_resume) > 600) {
+							$reg_resume = mb_substr($reg_resume,0,597)."...";
+							$msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
+						}
+						//$sql="UPDATE aid SET resume='".mysqli_real_escape_string($mysqli, $reg_resume)."' WHERE id='".$aid_id."';";
+						$sql="UPDATE aid SET resume='".$reg_resume."' WHERE id='".$aid_id."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$update) {
+							$msg.="Erreur lors de l'enregistrement du résumé pour l'AID n°".$aid_id."<br />";
+						}
+					}
+				}
 			}
 
 			if ($count == "1") {
@@ -818,7 +861,7 @@ if ($_SESSION['statut'] == 'professeur') {
 
 
 				echo "<div style='margin-left:3em;'>";
-				echo "<p style='text-indent:-2em;margin-left:2em;'><input type='checkbox' id='creer_un_aid_par_classe' name='creer_un_aid_par_classe' value='y' /><label for='creer_un_aid_par_classe'>Ajouter un $nom_famille_aid par classe cochée <em>(un suffixe au nom de la classe sera ajouté)</em>.</label><br />Sinon, on ne crée qu'un $nom_famille_aid avec tous les élèves des classes cochés dans cet unique $nom_famille_aid.</p>";
+				echo "<p style='text-indent:-2em;margin-left:2em;'><input type='checkbox' id='creer_un_aid_par_classe' name='creer_un_aid_par_classe' value='y' onchange=\"checkbox_change(this.id)\" /><label for='creer_un_aid_par_classe' id='label_creer_un_aid_par_classe'>Ajouter un $nom_famille_aid par classe cochée <em>(un suffixe au nom de la classe sera ajouté)</em>.</label><br />Sinon, on ne crée qu'un $nom_famille_aid avec tous les élèves des classes cochés dans cet unique $nom_famille_aid.</p>";
 				echo "</div>";
 			}
 
@@ -848,8 +891,8 @@ if ($_SESSION['statut'] == 'professeur') {
 				echo "<div style='margin-left:3em; margin-top:1em;'>";
 				echo "<p style='text-indent:-3em;margin-left:3em;'>
 					Vous pouvez également ou alternativement, affecter des profs avec les contraintes suivantes&nbsp;:<br />
-					<input type='radio' name='restreindre_aux_profs_de_la_classe' id='restreindre_aux_profs_de_la_classe_y' value='y' checked /><label for='restreindre_aux_profs_de_la_classe_y'>Inscrire le(s) professeur(s) de la (des) matière(s) suivante(s) enseignant par ailleurs dans la(les) classe(s) sélectionnée(s)</label><br />
-					<input type='radio' name='restreindre_aux_profs_de_la_classe' id='restreindre_aux_profs_de_la_classe_n' value='n' /><label for='restreindre_aux_profs_de_la_classe_n'>Inscrire le(s) professeur(s) de la (des) matière(s) suivante(s) sans se restreindre aux professeurs enseignant par ailleurs dans la(les) classe(s) sélectionnée(s)</label>.<br />
+					<input type='radio' name='restreindre_aux_profs_de_la_classe' id='restreindre_aux_profs_de_la_classe_y' value='y' onchange=\"checkbox_change('restreindre_aux_profs_de_la_classe_y');checkbox_change('restreindre_aux_profs_de_la_classe_n')\" checked /><label for='restreindre_aux_profs_de_la_classe_y' id='label_restreindre_aux_profs_de_la_classe_y'>Inscrire le(s) professeur(s) de la (des) matière(s) suivante(s) enseignant par ailleurs dans la(les) classe(s) sélectionnée(s)</label><br />
+					<input type='radio' name='restreindre_aux_profs_de_la_classe' id='restreindre_aux_profs_de_la_classe_n' value='n' onchange=\"checkbox_change('restreindre_aux_profs_de_la_classe_y');checkbox_change('restreindre_aux_profs_de_la_classe_n')\" /><label for='restreindre_aux_profs_de_la_classe_n' id='label_restreindre_aux_profs_de_la_classe_n'>Inscrire le(s) professeur(s) de la (des) matière(s) suivante(s) sans se restreindre aux professeurs enseignant par ailleurs dans la(les) classe(s) sélectionnée(s)</label>.<br />
 					Si vous ne cochez aucune matière, ce paramètre ne sera pas pris en compte.
 				</p>";
 				echo liste_checkbox_matieres(array(), 'prof_matiere', 'cocher_decocher', "y", "m.matiere, m.nom_complet");
@@ -864,6 +907,20 @@ if ($_SESSION['statut'] == 'professeur') {
 				echo "</div>";
 
 				echo "</div>";
+
+			}
+
+			if($outils_complementaires=="y") {
+				echo "<h3>Fiche projet</h3>
+				<div style='margin-left:3em;'>
+					<p class='bold'>Résumé</span> <em>(limité à 600 caractères)</em>&nbsp;:</p>
+					<p><i>Présentation du projet, objectifs, réalisations,...</i></p>
+					<p><textarea name=\"reg_resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" ></textarea></p>
+					<p>
+						<input type='checkbox' name='integreResume' id='integreResume' value='y' onchange='checkbox_change(this.id); changement();' /> 
+						<label for='integreResume' id='label_integreResume'>Intégrer le résumé aux appréciations élève du bulletin</label>
+					</p>
+				</div>";
 
 			}
 
@@ -905,10 +962,18 @@ function check_form_et_submit() {
 if(document.getElementById('aidRegNom')) {
 	document.getElementById('aidRegNom').focus();
 }
-</script>
 
-<script type='text/javascript'>
-	function afficher_cacher(id)
+//*** Paramètres
+//*** texte : objet représentant le textarea
+//*** max : nombre de caractères maximum
+function CaracMax(texte, max) {
+	if (texte.value.length >= max) {
+		alert('Pas plus de ' + max + ' caractère(s) !!!') ;
+		texte.value = texte.value.substr(0, max - 1) ;
+	}
+}
+
+function afficher_cacher(id)
 {
     if(document.getElementById(id).style.visibility=="hidden")
     {
@@ -935,6 +1000,9 @@ if(document.getElementById('aidRegNom')) {
 }
 
 afficher_cacher_parent();
+
+checkbox_change('restreindre_aux_profs_de_la_classe_y');
+checkbox_change('restreindre_aux_profs_de_la_classe_n');
 </script>
 
 <?php 
