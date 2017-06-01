@@ -1082,7 +1082,7 @@ if ($insert_mass_appreciation_type=="y") {
 				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
 				(getSettingAOui('GepiAccesGraphEleve'))) {
 					//if($tab_acces_app_classe[$id_classe][$k]=="y") {
-					if($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login]=="y") {
+					if((isset($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login]))&&($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login]=="y")) {
 						echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
 					}
 					else {
@@ -1101,7 +1101,7 @@ $msg_acces_app_ele_resp\" />";
 				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
 				(getSettingAOui('GepiAccesGraphEleve'))) {
 					//if($tab_acces_app_classe[$id_classe][$k]=="y") {
-					if($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login]=="y") {
+					if((isset($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login]))&&($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login]=="y")) {
 						echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour.") les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
 					}
 					else {
