@@ -75,6 +75,8 @@ $liste_tables_del_etape_eleves = array(
 'notanet_socles',
 'notanet_ele_type',
 //==========================
+"socle_eleves_enseignements_complements",
+//==========================
 "observatoire",
 "observatoire_comment",
 "observatoire_suivi",
@@ -161,6 +163,9 @@ $liste_tables_del_etape_matieres = array(
 "matieres_appreciations_acces",
 "matieres_appreciations_acces_eleve",
 "synthese_app_classe",
+//==========================
+"socle_eleves_enseignements_complements",
+//==========================
 "sconet_ele_options",
 "tempo2",
 "tempo",
