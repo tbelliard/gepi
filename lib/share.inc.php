@@ -16523,4 +16523,47 @@ function get_tab_modalites_accompagnement_eleve($login_eleve, $periode="") {
 	return $tab;
 }
 
+function nb_pts_DNB($num) {
+	$retour=0;
+	if($num==1) {
+		$retour=10;
+	}
+	elseif($num==2) {
+		$retour=25;
+	}
+	elseif($num==3) {
+		$retour=40;
+	}
+	elseif($num==4) {
+		$retour=50;
+	}
+	return $retour;
+}
+
+function calcule_points_DNB_enseignement_complement($ine) {
+	global $mysqli;
+
+	/*
+	http://eduscol.education.fr/cid98239/dnb-2017.html
+	10 points si les objectifs d'apprentissage du cycle 4 sont atteints ;
+	20 points si ces objectifs sont dépassés.
+	*/
+
+	$retour=0;
+	$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if($lig->positionnement==1) {
+				$retour+=10;
+			}
+			elseif($lig->positionnement==2) {
+				$retour+=20;
+			}
+		}
+	}
+
+	return $retour;
+}
 ?>
