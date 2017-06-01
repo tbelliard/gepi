@@ -1151,7 +1151,7 @@ if(isset($id_groupe)) {
 		(getSettingValue("SocleSaisieComposantesConcurrentes")=="meilleure")&&
 		(getSettingAOui("SocleSaisieComposantesForcer_".$_SESSION["statut"]))) {
 			echo "
-		<p style='margin-left:2em;text-indent:-2em;'><input type='checkbox' name='forcer' id='forcer' value='y' /><label for='forcer'>Forcer les saisies <br />
+		<p style='margin-left:2em;text-indent:-2em;'><input type='checkbox' name='forcer' id='forcer' value='y'".(((isset($_POST["forcer"]))&&($_POST["forcer"]=="y")) ? " checked" : "")." onchange=\"checkbox_change(this.id)\"/><label for='forcer' id='texte_forcer'>Forcer les saisies <br />
 <em>(pour vider/baisser éventuellement les niveaux de maîtrise en écrasant les saisies antérieures 
 <br />(les vôtres ou celles de collègues (à manipuler avec précaution, dans un souci de bonne entente entre collègues)))</em>.</label></p>";
 		}
@@ -1183,6 +1183,7 @@ if(isset($id_groupe)) {
 					}
 				}
 
+				$nb_pts_dnb=0;
 				echo "
 		<p style='margin-top:2em;'><strong>".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;:".$chaine_bull_simp."</p>
 		<table class='boireaus boireaus_alt'>
@@ -1219,6 +1220,7 @@ if(isset($id_groupe)) {
 						$checked[0]="";
 						$checked[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" checked";
 						$title[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" title=\"".$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["title"]."\"";
+						$nb_pts_dnb+=nb_pts_DNB($tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]);
 					}
 					/*
 					echo "
@@ -1329,6 +1331,21 @@ if(isset($id_groupe)) {
 					}
 				}
 
+				$nb_points_enseignement_complement=calcule_points_DNB_enseignement_complement($lig->no_gep);
+				$nb_pts_dnb+=$nb_points_enseignement_complement;
+
+				$commentaire_nb_points="";
+				$style_nb_points="";
+				if($nb_pts_dnb>=420) {
+					$style_nb_points="font-weight:bold; color:blue;";
+					$commentaire_nb_points=".\nDNB d'ores et déjà obtenu *avec mention*";
+				}
+				elseif($nb_pts_dnb>=350) {
+					$style_nb_points="font-weight:bold; color:green;";
+					$commentaire_nb_points=".\nDNB d'ores et déjà obtenu";
+				}
+				echo "<div id='nb_points_".$cpt_ele."' style='float:right;width:3em;text-align:center;".$style_nb_points."' title=\"Nombre de points pour le DNB".((($nb_points_enseignement_complement!="")&&($nb_points_enseignement_complement>0)) ? " (dont $nb_points_enseignement_complement points d'enseignement de complément)" : "")."".$commentaire_nb_points.".\" class='fieldset_opacite50'>".$nb_pts_dnb."</div>";
+
 				if($SocleSaisieSyntheses) {
 					echo "
 		<p".((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"])) ? $tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"] : "").">
@@ -1364,6 +1381,7 @@ if(isset($id_groupe)) {
 
 		<script type='text/javascript'>
 			".js_checkbox_change_style()."
+			checkbox_change('forcer');
 
 			function coche_colonne_ele(cpt_ele, niveau_maitrise) {
 				for(i=0;i<8;i++) {
@@ -1521,6 +1539,12 @@ elseif(isset($id_classe)) {
 		echo "
 </ul>";
 
+		$acces_bull_simp=acces("/prepa_conseil/edit_limite.php", $_SESSION['statut']);
+
+		$titre_infobulle="Bulletin simplifié";
+		$texte_infobulle="<div id='div_bull_simp'></div>";
+		$tabdiv_infobulle[]=creer_div_infobulle('div_bulletin_simplifie',$titre_infobulle,"",$texte_infobulle,"",50,0,'y','y','n','n',2);
+
 		echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field();
@@ -1530,7 +1554,7 @@ elseif(isset($id_classe)) {
 		((getSettingAOui("SocleSaisieComposantesForcer_".$_SESSION["statut"]))||
 		((getSettingAOui("SocleSaisieComposantesForcer_PP"))&&(is_pp($_SESSION['login'], $id_classe))))) {
 			echo "
-		<p style='margin-left:2em;text-indent:-2em;'><input type='checkbox' name='forcer' id='forcer' value='y' /><label for='forcer'>Forcer les saisies <br />
+		<p style='margin-left:2em;text-indent:-2em;'><input type='checkbox' name='forcer' id='forcer' value='y' onchange=\"checkbox_change(this.id)\" ".(((isset($_POST["forcer"]))&&($_POST["forcer"]=="y")) ? " checked" : "")." /><label for='forcer' id='texte_forcer'>Forcer les saisies <br />
 <em>(pour vider/baisser éventuellement les niveaux de maitrise en écrasant les saisies antérieures 
 <br />(les votres ou celles de collègues (à manipuler avec précaution, dans un soucis de bonne entente entre collègues)))</em>.</label></p>";
 		}
@@ -1552,8 +1576,19 @@ elseif(isset($id_classe)) {
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
 			}
 			else {
+				$chaine_bull_simp="";
+				if($acces_bull_simp) {
+					$sql="SELECT id_classe, periode FROM j_eleves_classes WHERE login='".$lig->login."' ORDER BY periode DESC LIMIT 1;";
+					$res_clas_ele=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_clas_ele)>0) {
+						$lig_clas_ele=mysqli_fetch_object($res_clas_ele);
+						$chaine_bull_simp=" <a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$lig->login."&id_classe=".$lig_clas_ele->id_classe."&periode1=1&periode2=".$lig_clas_ele->periode."&couleur_alterne=y' onclick=\"affiche_bull_simp('".$lig->login."', ".$lig_clas_ele->id_classe.", 1, ".$lig_clas_ele->periode.") ;return false;\" target='_blank'><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+					}
+				}
+
+				$nb_pts_dnb=0;
 				echo "
-		<p style='margin-top:2em;'><strong>".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;:</p>
+		<p style='margin-top:2em;'><strong>".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;: ".$chaine_bull_simp."</p>
 		<table class='boireaus boireaus_alt'>
 			<thead>
 				<tr>
@@ -1588,6 +1623,7 @@ elseif(isset($id_classe)) {
 						$checked[0]="";
 						$checked[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" checked";
 						$title[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" title=\"".$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["title"]."\"";
+						$nb_pts_dnb+=nb_pts_DNB($tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]);
 					}
 
 					$valeur_precedente="";
@@ -1656,6 +1692,21 @@ elseif(isset($id_classe)) {
 			</tbody>
 		</table>";
 
+				$nb_points_enseignement_complement=calcule_points_DNB_enseignement_complement($lig->no_gep);
+				$nb_pts_dnb+=$nb_points_enseignement_complement;
+
+				$commentaire_nb_points="";
+				$style_nb_points="";
+				if($nb_pts_dnb>=420) {
+					$style_nb_points="font-weight:bold; color:blue;";
+					$commentaire_nb_points=".\nDNB d'ores et déjà obtenu *avec mention*";
+				}
+				elseif($nb_pts_dnb>=350) {
+					$style_nb_points="font-weight:bold; color:green;";
+					$commentaire_nb_points=".\nDNB d'ores et déjà obtenu";
+				}
+				echo "<div id='nb_points_".$cpt_ele."' style='float:right;width:3em;text-align:center;".$style_nb_points."' title=\"Nombre de points pour le DNB".((($nb_points_enseignement_complement!="")&&($nb_points_enseignement_complement>0)) ? " (dont $nb_points_enseignement_complement points d'enseignement de complément)" : "")."".$commentaire_nb_points.".\" class='fieldset_opacite50'>".$nb_pts_dnb."</div>";
+
 				if($SocleSaisieSyntheses) {
 					echo "
 		<p".((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"])) ? $tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"] : "").">
@@ -1690,6 +1741,8 @@ elseif(isset($id_classe)) {
 		</div>
 
 		<script type='text/javascript'>
+			".js_checkbox_change_style()."
+			checkbox_change('forcer');
 
 			function coche_colonne_ele(cpt_ele, niveau_maitrise) {
 				for(i=0;i<8;i++) {
@@ -1733,6 +1786,12 @@ elseif(isset($id_classe)) {
 				for(j=0;j<".count($tab_domaine_socle).";j++) {
 					maj_couleurs_maitrise(i, j);
 				}
+			}
+
+			function affiche_bull_simp(login_ele, id_classe, periode1, periode2) {
+				new Ajax.Updater($('div_bull_simp'),'../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve='+login_ele+'&id_classe='+id_classe+'&periode1='+periode1+'&periode2='+periode2+'&couleur_alterne=y',{method: 'get'});
+
+				afficher_div('div_bulletin_simplifie', 'y', 10, 10);
 			}
 		</script>";
 		}
