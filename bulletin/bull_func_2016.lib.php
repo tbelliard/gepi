@@ -4964,6 +4964,7 @@ echo "</pre>";
 
 		$y_lignes_absences_et_retards=$y_communication_famille+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-$hauteur_lignes_absences_retards;
 		$y_cadre_orientation=$y_communication_famille+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-1;
+		$y_cadre_orientation-=$hauteur_lignes_absences_retards;
 		//++++++++++++++++++++++++++++++++++++++++++++
 
 
