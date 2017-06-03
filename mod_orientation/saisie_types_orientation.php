@@ -472,6 +472,8 @@ if($_SESSION['statut']=='administrateur') {
 //==========================================================
 //==========================================================
 
+$tab_mef_avec_proposition_orientation=get_tab_mef_avec_proposition_orientation();
+
 echo "<form name='formulaire' action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		<center><input type='submit' name='ok' value='Valider' /></center>
@@ -501,14 +503,24 @@ if(mysqli_num_rows($res)!=0) {
 		$res_mef=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_mef)>0) {
 			while($lig_mef=mysqli_fetch_object($res_mef)) {
-				$lignes_mef.="<span style='display:none'>".$tab_mef[$lig_mef->mef_code]['designation_courte']."</span><input type='checkbox' name='assoc_mef_".$lig->id."[]' id='assoc_mef_".$cpt_assoc_mef."' value=\"".$lig_mef->mef_code."\" checked onchange=\"changement();\" /><label for='assoc_mef_".$cpt_assoc_mef."'>".$tab_mef[$lig_mef->mef_code]['designation_courte']."</label><br />\n";
+				$style="";
+				if(!in_array($lig_mef->mef_code, $tab_mef_avec_proposition_orientation)) {
+					$style=" style='color:red' title=\"Anomalie : Un MEF est associé alors qu'il n'est pas déclaré dans les MEF faisant l'objet d'orientation.\nModifiez si nécessaire en administrateur le paramétrage dans *Gestion des modules/Orientation*\".";
+				}
+
+				$lignes_mef.="<span style='display:none'>".$tab_mef[$lig_mef->mef_code]['designation_courte']."</span><input type='checkbox' name='assoc_mef_".$lig->id."[]' id='assoc_mef_".$cpt_assoc_mef."' value=\"".$lig_mef->mef_code."\" checked onchange=\"changement();\" /><label for='assoc_mef_".$cpt_assoc_mef."'".$style.">".$tab_mef[$lig_mef->mef_code]['designation_courte']."</label>";
+				$lignes_mef.="<br />\n";
 				$cpt_assoc_mef++;
 			}
 		}
 		$lignes_mef.="<select name='ajout_assoc_mef_".$lig->id."' onchange=\"changement();\">\n";
 		$lignes_mef.="<option value=\"\">--- Ajouter un MEF ---</option>\n";
 		foreach($tab_mef as $mef_code => $mef_courante) {
-			$lignes_mef.="<option value=\"".$mef_code."\">".$mef_courante['designation_courte']."</option>\n";
+			$style="";
+			if(!in_array($mef_code, $tab_mef_avec_proposition_orientation)) {
+				$style=" style='color:red' title=\"Ce MEF ne fait pas partie des MEF concernés par l'orientation d'après ce qui est déclaré dans *Gestion des modules/Orientation*.\nSi c'est une erreur, corrigez la liste des MEF dans *Gestion des modules/Orientation*.\"";
+			}
+			$lignes_mef.="<option value=\"".$mef_code."\"".$style.">".$mef_courante['designation_courte']."</option>\n";
 		}
 		$lignes_mef.="</select>\n";
 		//+++++++++++++++++++++++++++
@@ -547,8 +559,12 @@ echo "
 
 $compteur=0;
 foreach($tab_mef as $mef_code => $mef_courante) {
+	$style="";
+	if(!in_array($mef_code, $tab_mef_avec_proposition_orientation)) {
+		$style=" style='color:red' title=\"Anomalie : Un MEF est associé alors qu'il n'est pas déclaré dans les MEF faisant l'objet d'orientation.\nModifiez si nécessaire en administrateur le paramétrage dans *Gestion des modules/Orientation*\".";
+	}
 	echo "
-						<input type='checkbox' name='ajout_mef_nouvelle_orientation[]' id='ajout_mef_nouvelle_orientation_$compteur' value=\"".$mef_code."\" onchange=\"changement();\" /><label for='ajout_mef_nouvelle_orientation_$compteur'>".$mef_courante['designation_courte']."</label><br />";
+						<input type='checkbox' name='ajout_mef_nouvelle_orientation[]' id='ajout_mef_nouvelle_orientation_$compteur' value=\"".$mef_code."\" onchange=\"changement();\" /><label for='ajout_mef_nouvelle_orientation_$compteur'".$style.">".$mef_courante['designation_courte']."</label><br />";
 	$compteur++;
 }
 
