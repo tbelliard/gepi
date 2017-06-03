@@ -192,6 +192,7 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 	echo "<th>Dimension<br />des photos</th>\n";
 	echo "<th>Copier</th>\n";
 	echo "<th>Coller</th>\n";
+	echo "<th>Afficher</th>\n";
 	echo "</tr>\n";
 	for($loop=0;$loop<count($tab_groups);$loop++) {
 		echo "<tr class='white_hover'>\n";
@@ -238,6 +239,10 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 
 		echo "<td>\n";
 		echo "<a href='#' onclick='coller_plan_classe(".$tab_groups[$loop]['id'].");return false;'><img src='../images/icons/coller_23x24.png' width='23' height='24' alt='Coller' /></a><span id='span_resultat_collage_".$tab_groups[$loop]['id']."'></span>";
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo "<a href='#' onclick=\"document.getElementById('id_groupe_".$tab_groups[$loop]['id']."').checked=true;document.form_choix_grp.submit();return false;\" title=\"Voir le plan de cette classe/groupe\"><img src='../images/icons/trombinoscope.png' width='16' height='16' alt='Voir' /></a>";
 		echo "</td>\n";
 
 		echo "</tr>\n";
