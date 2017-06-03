@@ -186,9 +186,8 @@ $xml->appendChild($items);
 					$noeudEleve->appendChild($attEleve);
 				}
 
-				$eleves->appendChild($noeudEleve);
+				//$eleves->appendChild($noeudEleve);
 
-			
 				if(in_array('EL_'.$eleve->id_eleve, $tab_ele_deja)) {
 					//$msg_erreur_remplissage.="<strong>ATTENTION&nbsp;:</strong> L'élève ".'EL_'.$eleve->id_eleve." (<a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>) apparait plusieurs fois. Cela correspond probablement à un changement de classe.<br />L'export ne va pas être valide. Il faut exporter séparément les classes de cet élève.<br /><br />";
 					$msg_erreur_remplissage.="<strong>ATTENTION&nbsp;:</strong> L'élève ".'EL_'.$eleve->id_eleve." (<a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>) apparait plusieurs fois. Cela correspond probablement à un changement de classe.<br />La dernière classe de l'élève sera retenue dans l'export.<br /><br />";
