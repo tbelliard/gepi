@@ -1689,11 +1689,21 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							ou si on n'a pas d'enseignement de complément à remonter:
 							    <enseignement-complement code="AUC" />
 							*/
-							$sql="SELECT seec.*, jgec.code FROM j_groupes_enseignements_complement jgec, 
-										socle_eleves_enseignements_complements seec 
-									WHERE jgec.id_groupe=seec.id_groupe AND 
-										(seec.positionnement='1' OR seec.positionnement='2') AND 
-										seec.ine='".$eleve->no_gep."';";
+							if(getSettingAOui("LSU_BilanFinCycleUnSeulEnseignementComplement")) {
+								$sql="SELECT seec.*, jgec.code FROM j_groupes_enseignements_complement jgec, 
+											socle_eleves_enseignements_complements seec 
+										WHERE jgec.id_groupe=seec.id_groupe AND 
+											(seec.positionnement='1' OR seec.positionnement='2') AND 
+											seec.ine='".$eleve->no_gep."' 
+										ORDER BY seec.positionnement DESC LIMIT 1;";
+							}
+							else {
+								$sql="SELECT seec.*, jgec.code FROM j_groupes_enseignements_complement jgec, 
+											socle_eleves_enseignements_complements seec 
+										WHERE jgec.id_groupe=seec.id_groupe AND 
+											(seec.positionnement='1' OR seec.positionnement='2') AND 
+											seec.ine='".$eleve->no_gep."';";
+							}
 							//echo "$sql<br />";
 							$res_seec=mysqli_query($mysqli, $sql);
 							if(mysqli_num_rows($res_seec)>0) {
