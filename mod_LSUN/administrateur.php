@@ -1841,14 +1841,6 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 							   <?php if (getSettingValue("LSU_Donnees_BilanFinCycle") == "y") {echo ' checked '; }  ?> />
 						<label for="traiteBilanFinCycle" title="Le Bilan n'est remonté n'est remonté pour un élève donné que si le positionnement sur les 8 domaines est renseigné et si la synthèse est renseignée.">Bilan de fin de Cycle</label>
 					</li>
-					<li>
-						<input type="checkbox" name="BilanFinCycleUnSeulEnseignementComplement" id="BilanFinCycleUnSeulEnseignementComplement" value="y"  
-							   <?php if (getSettingValue("LSU_BilanFinCycleUnSeulEnseignementComplement") == "y") {echo ' checked '; }  ?> />
-						<label for="BilanFinCycleUnSeulEnseignementComplement" title="Restriction pour ne retenir qu'un seul enseignement de complément par élève.
-Celui dans lequel l'élève a le mieux réussi.
-
-Il semblerait qu'il ne faille qu'un seul enseignement de complément par élève, mais la confirmation n'est pas arrivée.">Un seul enseignement de complément par élève</label>
-					</li>
 				</ul>
 			</div>
 		</div>
