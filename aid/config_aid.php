@@ -67,6 +67,14 @@ else {
 	$_SESSION["indice_aid"] = $indice_aid;
 }
 
+if((!isset($indice_aid))&&(isset($_GET['aid_id']))) {
+	$sql="SELECT indice_aid FROM aid WHERE id='".$_GET['aid_id']."';";
+	$res_aid=mysqli_query($GLOBALS["mysqli"],$sql);
+	if(mysqli_num_rows($res_aid)>0) {
+		$lig_aid=mysqli_fetch_object($res_aid);
+		$indice_aid=$lig_aid->indice_aid;
+	}
+}
 //debug_var();
 
 $mysqli = $GLOBALS["mysqli"];
@@ -253,7 +261,6 @@ function checkFormElementInRange(formulaire,champ,vmin,vmax){
 		}
 	}
 
-
 </script>
 
 <?php
@@ -304,7 +311,7 @@ if (isset($indice_aid)) {
 ?>
 
 <div class='norme'>
-<form enctype="multipart/form-data" name="form_tel_aid" action="add_aid.php" method="post">
+<!--form enctype="multipart/form-data" name="form_tel_aid" action="add_aid.php" method="post"-->
 
 <?php
 	// Modifier le form action selon que les fiches projet sont activées ou non,...
@@ -312,10 +319,10 @@ if (isset($indice_aid)) {
 	//	modif_fiches.php?aid_id=2&indice_aid=4&action=modif&retour=index2.php
 	//	modify_aid.php?flag=eleve&aid_id=2&indice_aid=4
 
-echo add_token_field();
+//echo add_token_field();
 ?>
-	<p class="bold">
-		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid ?>" />
+	<div class="bold" style='float:left'>
+		<!--input type="hidden" name="indice_aid" value="<?php echo $indice_aid ?>" /-->
 		<a href="index.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>
 		<?php
 			$sql="SELECT * FROM aid WHERE indice_aid='".$indice_aid."';";
@@ -336,23 +343,80 @@ echo add_token_field();
 			}
 			$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]));
 
+	echo "</div>";
+
 			if(mysqli_num_rows($query)>0) {
 				echo "
-		<input type='hidden' name='indice_aid' value='".$indice_aid."' />
-		<input type='hidden' name='action' value='modif_aid' />
-		<select name='aid_id' id='aid_id_tel_aid' onchange=\"confirm_changement_aid(change, '$themessage');\">
-			<option value=''>Accéder à un AID particulier</option>";
-				while($lig_aid=mysqli_fetch_object($query)) {
+		<form enctype='multipart/form-data' name='form_tel_aid' action='add_aid.php' method='post' style='float:left; margin-left:1em;'>
+			".add_token_field()."
+
+			<input type='hidden' name='indice_aid' value='".$indice_aid."' />
+			<input type='hidden' name='action' value='modif_aid' />
+			<select name='aid_id' id='aid_id_tel_aid' onchange=\"confirm_changement_aid(change, '$themessage');\">
+				<option value=''>Accéder à un AID particulier</option>";
+					while($lig_aid=mysqli_fetch_object($query)) {
+						echo "
+				<option value='".$lig_aid->id."'>".$lig_aid->nom."</option>";
+					}
 					echo "
-			<option value='".$lig_aid->id."'>".$lig_aid->nom."</option>";
-				}
-				echo "
-		</select>";
+			</select>
+		</form>";
 			}
+
+			$sql="SELECT * FROM aid_config ORDER BY nom, nom_complet;";
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($query)>1) {
+				echo "
+		<form enctype='multipart/form-data' name='form_telle_categorie_aid' action='".$_SERVER["PHP_SELF"]."' method='post' style='float:left; margin-left:1em;'>
+			".add_token_field()."
+
+			<input type='hidden' name='action' value='modif_aid' />
+			 | Catégorie 
+			<select name='indice_aid' id='form_chgt_categorie_indice_aid' onchange=\"confirm_changement_categorie_aid(change, '$themessage');\">
+				<!--option value=''>Accéder à une autre catégorie AID</option-->";
+					$indice_form_chgt_aid=-1;
+					$cpt_cat_aid=0;
+					while($lig_cat_aid=mysqli_fetch_object($query)) {
+						$selected="";
+						if($lig_cat_aid->indice_aid==$indice_aid) {
+							$selected=" selected='true'";
+							$indice_form_chgt_aid=$cpt_cat_aid;
+						}
+						echo "
+				<option value='".$lig_cat_aid->indice_aid."'".$selected.">".$lig_cat_aid->nom." (".$lig_cat_aid->nom_complet.")</option>";
+						$cpt_cat_aid++;
+					}
+					echo "
+			</select>
+		</form>";
+			}
+
+			echo "<div style='clear:both;'></div>";
 		?>
-	</p>
-</form>
+
+<!--/form-->
 </div>
+
+<script type='text/javascript'>
+	function confirm_changement_categorie_aid(thechange, themessage)
+	{
+		if(document.getElementById('form_chgt_categorie_indice_aid').selectedIndex!=0) {
+			if (!(thechange)) thechange='no';
+			if (thechange != 'yes') {
+				document.form_telle_categorie_aid.submit();
+			}
+			else{
+				var is_confirmed = confirm(themessage);
+				if(is_confirmed){
+					document.form_telle_categorie_aid.submit();
+				}
+				else {
+					document.getElementById('form_chgt_categorie_indice_aid').selectedIndex=<?php echo $indice_form_chgt_aid;?>;
+				}
+			}
+		}
+	}
+</script>
 
 <form enctype="multipart/form-data" name="formulaire" action="config_aid.php" method="post" onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') &amp;&amp; (emptyFormElements('formulaire', 'reg_nom')) &amp;&amp; checkFormElementInRange('formulaire', 'order_display2', 0, 100))">
 	<input type="hidden" name="indice_aid" value="<?php echo $indice_aid ?>" />
@@ -361,7 +425,7 @@ echo add_token_field();
 echo add_token_field();
 ?>
 <div class='norme'>
-	<p>
+	<p style='margin-top:1em;'>
 		<strong>Configuration de la catégorie d'AID <em>(Activités Inter-Disciplinaires)</em>&nbsp;:</strong>
 		<hr />
 		Choisissez le nom complet de la catégorie d'AID <em>(par exemple Travaux Personnels Encadrés)</em>&nbsp;:
