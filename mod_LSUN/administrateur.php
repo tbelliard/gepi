@@ -339,7 +339,7 @@ $msg_erreur="";
 						}
 					}
 
-					for($loop_per=1;$loop_per<=3;$loop_per++) {
+					for($loop_per=1;$loop_per<=$maxper;$loop_per++) {
 						if(!isset($tab_date[$loop_per])) {
 							echo "<span style='color:red'>La période $loop_per n'est pas définie dans <a href='../edt_organisation/edt_calendrier.php' target='_blank'>Emplois du temps/Gestion/Gestion du calendrier</a> pour la classe de ".get_nom_classe($selectionClasse[$loop]).".</span><br />";
 						}
@@ -688,7 +688,7 @@ if ($cpt) {echo "			</div>\n";}
 	<fieldset class='fieldset_opacite50'>
 		<legend class='fieldset_opacite50' title="Contient l’ensemble des informations relatives aux parcours éducatifs communs à une classe (contrainte d’unicité sur les combinaison de champs 'periodes', 'division' et 'Type de parcours').">
 				Parcours communs
-	</legend>
+		</legend>
 		<table>
 			<caption style="caption-side:bottom">Parcours éducatifs communs à une classe pour une période</caption>
 			<thead>
@@ -706,7 +706,33 @@ if ($cpt) {echo "			</div>\n";}
 				<td>
 					<input type="hidden" name="modifieParcoursId[<?php echo $parcoursCommun->id; ?>]" value="<?php echo $parcoursCommun->id; ?>" />
 					<input type="hidden" name="modifieParcoursPeriode[<?php echo $parcoursCommun->id; ?>]" value="<?php echo $parcoursCommun->periode; ?>" />
-					<?php echo $parcoursCommun->periode; ?>
+					<?php
+						// Vérifier si l'AID choisi est bien associé à la période, sinon, afficher une alerte
+						$sql="SELECT * FROM lsun_j_aid_parcours ljap, 
+									lsun_parcours_communs lpc 
+								WHERE lpc.id='".$parcoursCommun->id."' AND 
+									lpc.id=ljap.id_parcours";
+						$test=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($test)>0) {
+							$lig_test=mysqli_fetch_object($test);
+							$sql="SELECT * FROM aid a, 
+										aid_config ac, 
+										lsun_j_aid_parcours ljap, 
+										lsun_parcours_communs lpc 
+									WHERE lpc.id='".$parcoursCommun->id."' AND 
+										lpc.id=ljap.id_parcours AND 
+											ljap.id_aid=a.id AND 
+											a.indice_aid=ac.indice_aid AND 
+											ac.display_begin<=lpc.periode AND 
+											ac.display_end>=lpc.periode";
+							$test=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($test)==0) {
+								echo "<div style='float:right; width:16px' title=\"Le Parcours a été déclaré pour la classe sur une période\nnon couverte par les périodes de la catégorie AID.\n(aucune extraction ne sera réalisée, sauf à modifier le paramétrage de la catégorie)\"><a href='../aid/config_aid.php?aid_id=".$lig_test->id_aid."' target='_blank'><img src='../images/icons/flag2.gif' class='icone16' alt='Attention' /></a></div>";
+							}
+						}
+
+						echo $parcoursCommun->periode; 
+					?>
 				</td>
 				<td>
 					<input type="hidden" name="modifieParcoursClasse[<?php echo $parcoursCommun->id; ?>]" value="<?php echo $parcoursCommun->classe; ?>" />
@@ -821,20 +847,104 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 
 
 		<?php
-			/*
 			if(isset($selectionClasse)) {
+				$tab_aid_parcours=array();
+				$sql="SELECT a.* FROM aid a, 
+						aid_config ac
+					WHERE ac.type_aid='3' AND 
+						a.indice_aid=ac.indice_aid
+					ORDER BY ac.nom, a.numero, a.nom;";
+				//echo "$sql<br />";
+				$res_aid=mysqli_query($mysqli, $sql);
+				while($lig_aid=mysqli_fetch_assoc($res_aid)) {
+					$tab_aid_parcours[]=$lig_aid;
+				}
+				echo "
+		<div id='div_ajout_plusieurs_parcours' onmouseover=\"document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';\" onmouseout=\"document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';\">
+		<p style='margin-top:1em;'><img src='../images/icons/add.png' class='icone16' alt='Ajouter' />Ajouter plusieurs Parcours d'un coup</p>
+		<div id='tableau_ajout_plusieurs_parcours' style='display:none;'>
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th rowspan='2'>Classe</th>
+					<th rowspan='2'>Type</th>
+					<th colspan='$maxper'>Période</th>
+					<th rowspan='2'>Description</th>
+					<th rowspan='2'>Liaison</th>
+				</tr>
+				<tr>";
+				for($loop_per=1;$loop_per<=$maxper;$loop_per++) {
+					echo "
+					<th title='Période $loop_per'>P.$loop_per</th>";
+				}
+				echo "
+				</tr>
+			</thead>
+			<tbody>";
+				//$tab_type_parcours=array("Parcours avenir","Parcours citoyen","Parcours d'éducatin artistique et culturelle","Parcours éducatif et santé");
 				for($loop=0;$loop<count($selectionClasse);$loop++) {
-					$sql="SELECT * FROM aid a, 
+					echo "
+				<tr>
+					<td rowspan='4'>".get_nom_classe($selectionClasse[$loop])."</td>";
+					$loop2=0;
+					//for($loop2=0;$loop2<count($tab_type_parcours);$loop2++) {
+					foreach($tab_type_parcours as $code_parcours => $texte_type_parcours) {
+						if($loop2>0) {
+							echo "
+				<tr>";
+						}
+						echo "
+					<td>".$texte_type_parcours."</td>";
+
+						// Boucle sur les périodes
+						for($loop_per=1;$loop_per<=$maxper;$loop_per++) {
+							echo "
+					<td title='Période $loop_per'><input type='checkbox' name='nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_periode[]' id='nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_periode_".$loop_per."' value='$loop_per' /></td>";
+						}
+
+						// Description
+						echo "
+					<td><input type='text' name='nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_description' id='nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_description' value='' /></td>";
+
+						// Liaison AID
+						/*
+						// Récupérer les AID non déjà associés
+						$sql="SELECT * FROM aid a, 
 								aid_config ac, 
 								lsun_j_aid_parcours ljap, 
 								lsun_parcours_communs lpc
 							WHERE ac.type_aid='3' AND 
 								a.indice_aid=ac.indice_aid AND 
 								a.id NOT IN ();";
-					echo "$sql<br />";
+						*/
+
+						echo "
+					<td>
+						<select name='nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_liaison'>
+							<option value=''></option>";
+						for($loop_aid=0;$loop_aid<count($tab_aid_parcours);$loop_aid++) {
+							echo "
+							<option value='".$tab_aid_parcours[$loop_aid]['id']."'>".$tab_aid_parcours[$loop_aid]['nom']."</option>";
+						}
+						echo "
+						</select>
+					</td>
+				</tr>";
+						$loop2++;
+					}
 				}
+				echo "
+			</tbody>
+		</table>
+		<p><input type=\"submit\" 
+			   alt=\"Submit button\" 
+			   name=\"ajoutePlusieursParcours\" 
+			   value=\"Déclarer les Parcours\"
+			   title=\"Ajouter ces parcours\" />
+		</p>
+		</div>
+		</div>";
 			}
-			*/
 		?>
 
 	</fieldset>

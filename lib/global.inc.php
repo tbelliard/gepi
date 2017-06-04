@@ -290,6 +290,11 @@ $tab_type_aid[3]["nom_court"]="Parcours";
 $tab_type_aid[3]["nom_complet"]="Parcours éducatif";
 $tab_type_aid[3]["nom_complet_pluriel"]="Parcours éducatifs";
 
+$tab_type_parcours=array("PAR_AVN" => "Parcours avenir",
+				"PAR_CIT"=>"Parcours citoyen",
+				"PAR_ART"=>"Parcours d'éducation artistique et culturelle",
+				"PAR_SAN"=>"Parcours éducatif et santé");
+
 // Tableau des couleurs pas trop épouvantablement sombres:
 $tab_couleurs_html=array("aliceblue",
 "antiquewhite",

@@ -134,6 +134,72 @@ if ($modifieParcours) {
 	}
 }
 
+if(isset($_POST["ajoutePlusieursParcours"])) {
+	if(isset($_SESSION['afficheClasse'])) {
+		$tmp_classesSelectionnee=$_SESSION['afficheClasse'];
+
+		// Nombre max de périodes:
+		$sql="SELECT MAX(num_periode) AS maxper FROM periodes p, classes c WHERE p.id_classe=c.id;";
+		$res_max_per=mysqli_query($mysqli, $sql);
+		$lig_maxper=mysqli_fetch_object($res_max_per);
+		$maxper=$lig_maxper->maxper;
+
+		for($loop=0;$loop<count($tmp_classesSelectionnee);$loop++) {
+			foreach($tab_type_parcours as $code_parcours => $texte_type_parcours) {
+				for($loop_per=1;$loop_per<=$maxper;$loop_per++) {
+
+					if(isset($_POST['nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_periode'])) {
+						if(in_array($loop_per, $_POST['nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_periode'])) {
+							// La description et la liaison sont-elles définies
+
+							if((isset($_POST['nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_description']))&&
+							(trim($_POST['nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_description'])!="")&&
+							(isset($_POST['nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_liaison']))&&
+							(preg_match("/^[0-9]{1,}$/", $_POST['nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_liaison']))) {
+
+								//$newParcoursTrim = filter_input(INPUT_POST, 'newParcoursPeriode');
+								//$newParcoursClasse = filter_input(INPUT_POST, 'newParcoursClasse');
+								//$newParcoursCode = filter_input(INPUT_POST, 'newParcoursCode');
+								$newParcoursTexte = filter_input(INPUT_POST, 'nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_description');
+
+								$res_creation_parcours=creeParcours($loop_per, $tmp_classesSelectionnee[$loop], $code_parcours, $newParcoursTexte);
+								if($res_creation_parcours) {
+									$msg_requetesAdmin.="<br /><span style='color:green;'>Nouveau parcours ($newParcoursTexte) créé pour la classe de ".get_nom_classe($tmp_classesSelectionnee[$loop])." en période $loop_per.</span><br />";
+
+									$newParcoursLien = filter_input(INPUT_POST, 'nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_liaison');
+									//echo "\$newParcoursLien=$newParcoursLien<br />";
+									$id_new_parcours=mysqli_insert_id($mysqli);
+									//echo "\$id_new_parcours=$id_new_parcours<br />";
+									if(preg_match("/^[0-9]{1,}$/", $id_new_parcours)) {
+										if(!modifieParcours($id_new_parcours, $code_parcours, $newParcoursTexte, $newParcoursLien)) {
+											$msg_requetesAdmin.="<span style='color:red'>Échec lors de la liaison AID pour la classe ".get_nom_classe($tmp_classesSelectionnee[$loop])." en période $loop_per pour le parcours de type $code_parcours.</span><br />";
+										}
+										else {
+											//$msg_requetesAdmin.="<span style='color:green'>Liaison AID effectuée.</span><br />";
+											// Vérifier si l'AID choisi est bien associé à la période, sinon, afficher une alerte
+											$sql="SELECT * FROM aid a, aid_config ac WHERE a.id='".$newParcoursLien."' AND 
+																		a.indice_aid=ac.indice_aid AND 
+																		ac.display_begin<='".$loop_per."' AND 
+																		ac.display_end>='".$loop_per."'";
+											$test=mysqli_query($mysqli, $sql);
+											if(mysqli_num_rows($test)==0) {
+												$msg_requetesAdmin.="<span style='color:red'>Le Parcours $code_parcours a été déclaré en période $loop_per pour la classe ".get_nom_classe($tmp_classesSelectionnee[$loop])." alors que la catégorie AID ne couvre pas cette période<br /><em>(aucune extraction ne sera réalisée, sauf à <a href='../aid/config_aid.php?aid_id=".$newParcoursLien."' target='_blank'>modifier le paramétrage de la catégorie</a>)</em>.</span><br />";
+											}
+										}
+									}
+								}
+								else {
+									$msg_requetesAdmin.="<span style='color:red'>Échec lors de la création du Nouveau parcours pour la classe ".get_nom_classe($tmp_classesSelectionnee[$loop])." en période $loop_per pour le parcours de type $code_parcours.</span><br />";
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 if ($ajouteEPI) {
 	$newEpiPeriode = filter_input(INPUT_POST, 'newEpiPeriode');
 	$newEpiClasse = filter_input(INPUT_POST, 'newEpiClasse', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
