@@ -16553,7 +16553,7 @@ function calcule_points_DNB_enseignement_complement($ine) {
 	$retour=0;
 	// Un seul enseignement de complément doit être retenu.
 	//$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."';";
-	$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."' ORDER BY positionnement DESC LIMIT 1;";
+	$sql="SELECT seec.* FROM socle_eleves_enseignements_complements seec, j_groupes_enseignements_complement jgec WHERE see.ine='".$ine."' AND jgec.id_groupe=seec.id_groupe ORDER BY positionnement DESC LIMIT 1;";
 	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res)>0) {
