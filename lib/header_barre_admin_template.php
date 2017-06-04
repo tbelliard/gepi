@@ -59,7 +59,7 @@ include("menu_plugins.inc.php");
 
 		$menus = null;
 		// Choix Initialisation
-		$menus .= '<li class="li_inline"><a href="#">&nbsp;Initialisation</a>'."\n";
+		$menus .= '<li class="li_inline"><a href="#" onclick="return false">&nbsp;Initialisation</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/changement_d_annee.php" '.insert_confirm_abandon().'>Changement d\'année</a></li>'."\n";
 		if (LDAPServer::is_setup()) {
@@ -77,7 +77,7 @@ include("menu_plugins.inc.php");
 		$menus .= '</li>'."\n";
 
 		// Choix Paramètres
-		$menus .= '<li class="li_inline"><a href="#">&nbsp;Paramètres</a>'."\n";
+		$menus .= '<li class="li_inline"><a href="#" onclick="return false">&nbsp;Paramètres</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_gen.php" '.insert_confirm_abandon().'>Config. générale</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/mod_serveur/test_serveur.php" '.insert_confirm_abandon().'>Config. serveur</a></li>'."\n";
@@ -91,7 +91,7 @@ include("menu_plugins.inc.php");
 		$menus .= '</li>'."\n";
 
 		// Choix Maintenance
-		$menus .= '<li class="li_inline"><a href="#">&nbsp;Maintenance</a>'."\n";
+		$menus .= '<li class="li_inline"><a href="#" onclick="return false">&nbsp;Maintenance</a>'."\n";
 		$menus .= '  <ul class="niveau2">'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/accueil_sauve.php" '.insert_confirm_abandon().'>Sauvegardes</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/maj.php" '.insert_confirm_abandon().'>Mise à jour de la base</a></li>'."\n";
@@ -113,7 +113,7 @@ include("menu_plugins.inc.php");
 		$menus .= '</li>'."\n";
 
 		// Choix Données
-		$menus .= '<li class="li_inline"><a href="#">&nbsp;Données</a>'."\n";
+		$menus .= '<li class="li_inline"><a href="#" onclick="return false">&nbsp;Données</a>'."\n";
 		$menus .= '  <ul class="niveau2">'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/eleves/recherche.php" '.insert_confirm_abandon().' title="Effectuer une recherche sur une personne (élève, responsable ou personnel)">Rechercher</a></li>'."\n";
@@ -250,7 +250,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '</li>'."\n";
 
 		// Choix Modules
-		$menus .= '<li class="li_inline"><a href="#">&nbsp;Modules</a>'."\n";
+		$menus .= '<li class="li_inline"><a href="#" onclick="return false">&nbsp;Modules</a>'."\n";
 		$menus .= '<ul class="niveau2">'."\n";
 		$menus .= '  <li class="plus"><a href="'.$gepiPath.'/accueil_modules.php" '.insert_confirm_abandon().'>Paramétrages</a>'."\n";
 		$menus .= '    <ul class="niveau3">'."\n";
@@ -405,7 +405,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '</li>'."\n";
 
 		// Choix Plugins
-		$menus .= '<li class="li_inline"><a href="#">&nbsp;Plugins</a>'."\n";
+		$menus .= '<li class="li_inline"><a href="#" onclick="return false">&nbsp;Plugins</a>'."\n";
 		$menus .= '    <ul class="niveau2">'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_plugins/index.php" '.insert_confirm_abandon().'>Gestion des plugins</a></li>'."\n";
 		$menus.='		'.menu_plugins();
