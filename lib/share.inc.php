@@ -15308,6 +15308,7 @@ function get_tab_mef_avec_proposition_orientation() {
 	$tab_mef=array();
 
 	$sql="SELECT m.* FROM o_mef om, mef m WHERE om.mef_code=m.mef_code AND om.affichage='y' ORDER BY libelle_edition, libelle_long, libelle_court;";
+	//echo "$sql<br />";
 	$res_mef=mysqli_query($mysqli, $sql);
 	while($lig_mef=mysqli_fetch_object($res_mef)) {
 		$tab_mef[]=$lig_mef->mef_code;
@@ -16550,7 +16551,9 @@ function calcule_points_DNB_enseignement_complement($ine) {
 	*/
 
 	$retour=0;
-	$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."';";
+	// Un seul enseignement de complément doit être retenu.
+	//$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."';";
+	$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."' ORDER BY positionnement DESC LIMIT 1;";
 	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res)>0) {
