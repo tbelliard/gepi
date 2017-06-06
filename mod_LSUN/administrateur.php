@@ -476,7 +476,7 @@ $msg_erreur="";
 
 								if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 									echo "
-							<span style='color:red'>Le cycle courant pour <a href='../eleves/visu_eleve.php?ele_login=".$lig['login']."' target='_blank'>".$lig['nom']." ".$lig['prenom']."</a> n'a pas pu être identitfié&nbsp;???<br />";
+							<span style='color:red'>Le cycle courant pour <a href='../eleves/visu_eleve.php?ele_login=".$lig['login']."' target='_blank'>".$lig['nom']." ".$lig['prenom']."</a> n'a pas pu être identifié&nbsp;???<br />";
 								}
 								else {
 									if($lig['no_gep']=="") {
