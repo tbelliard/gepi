@@ -70,10 +70,16 @@ class CategoriesCtrl extends Controleur {
   function save() {
     check_token(false);
     $this->natures_selected=isset($_POST['natures_incidents'])?$_POST['natures_incidents']:(isset($_GET['natures_incidents'])?$_GET['natures_incidents']:Null);
+    //$this->natures_selected=isset($_POST['natures_incidents'])?addslashes($_POST['natures_incidents']):(isset($_GET['natures_incidents'])?$_GET['natures_incidents']:Null);
     if(is_null($this->natures_selected)) {
       echo"<script type='text/javascript'>alert('Selectionnez des natures d\'incidents et une catégorie')</script>";
     }
     else {
+      /*
+      echo "<pre>";
+      print_r($this->natures_selected);
+      echo "</pre>";
+      */
       $this->categorie_selected=isset($_POST['categorie'])?$_POST['categorie']:(isset($_GET['categorie'])?$_GET['categorie']:Null);
       $this->modele_incidents->update_categorie($this->categorie_selected,$this->natures_selected);
     }

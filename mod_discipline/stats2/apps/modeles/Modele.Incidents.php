@@ -120,7 +120,9 @@ Class Modele_Incidents extends Modele {
   public function update_categorie($categorie_selected,$natures_selected=Null,$categorie=Null) {
     if(isset($natures_selected)) {
       foreach ($natures_selected as $nature) {
-        $this->sql="UPDATE s_incidents SET id_categorie=".$categorie_selected." WHERE nature='".traitement_magic_quotes($nature)."';";
+        //$this->sql="UPDATE s_incidents SET id_categorie=".$categorie_selected." WHERE nature='".traitement_magic_quotes($nature)."';";
+        $this->sql="UPDATE s_incidents SET id_categorie=".$categorie_selected." WHERE nature='".$nature."';";
+        //echo "$this->sql<br />";
         $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
       }
     }else {
