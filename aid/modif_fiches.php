@@ -481,7 +481,8 @@ obj.checked = false;
 
 </script>
 <?php } ?>
-<p class=bold>
+<!--p class="bold"-->
+<div class="bold" style='float:left;'>
 <?php
 if ($_SESSION['retour']!='') { ?>
 	<a href="<?php echo $_SESSION['retour']; ?>">
@@ -527,8 +528,80 @@ if($NiveauGestionAid_categorie==10) {
 	echo "
 	| <a href='config_aid.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
 }
+
+//+++++++++++++++++++++++++++++++++
+// Autres AID de la même catégorie:
+$sql="SELECT * FROM aid WHERE indice_aid='".$indice_aid."';";
+$res_aid_cat=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_aid_cat)>0) {
+	echo "
+| <a href='index2.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Accéder à la liste des (".mysqli_num_rows($res_aid_cat).") AID de la catégorie</a>";
+}
+echo "</div>";
+
+// On affiche un select avec la liste des aid de cette catégorie
+if ($NiveauGestionAid_categorie>= 5) {
+	// Normalement dans la page de config Catégorie, on a NiveauGestionAid à 10
+	$sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
+}
+else if ($NiveauGestionAid_categorie>= 1) {
+	$sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
+}
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]));
+
+//echo "</div>";
+
+if(mysqli_num_rows($query)>0) {
+	echo "
+<form enctype='multipart/form-data' name='form_tel_aid' action='add_aid.php' method='post' style='float:left; margin-left:1em;'>
+".add_token_field()."
+
+<input type='hidden' name='indice_aid' value='".$indice_aid."' />
+<input type='hidden' name='action' value='modif_aid' />
+<select name='aid_id' id='aid_id_tel_aid' onchange=\"confirm_changement_aid(change, '$themessage');\">
+	<option value=''>Accéder à un AID particulier</option>";
+		while($lig_aid=mysqli_fetch_object($query)) {
+			$selected="";
+			if($lig_aid->id==$aid_id) {
+				$selected=" selected='true'";
+			}
+			echo "
+	<option value='".$lig_aid->id."'".$selected.">".$lig_aid->nom."</option>";
+		}
+		echo "
+</select>
+</form>
+
+<script type='text/javascript'>
+	change='no';
+
+	function confirm_changement_aid(thechange, themessage)
+	{
+		if(document.getElementById('aid_id_tel_aid').selectedIndex!=0) {
+			if (!(thechange)) thechange='no';
+			if (thechange != 'yes') {
+				document.form_tel_aid.submit();
+			}
+			else{
+				var is_confirmed = confirm(themessage);
+				if(is_confirmed){
+					document.form_tel_aid.submit();
+				}
+				else {
+					document.getElementById('aid_id_tel_aid').selectedIndex=0;
+				}
+			}
+		}
+	}
+
+</script>";
+}
+echo "</div>";
+//+++++++++++++++++++++++++++++++++
+
 ?>
-</p>
+<div style='clear:both'></div>
+<!--/p-->
 <!-- Nom du projet -->
 <p class='grand'>
 	projet <?php echo $nom_projet; ?> : <?php echo $aid_nom; ?>
