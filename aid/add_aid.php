@@ -84,6 +84,12 @@ $parent = isset($parent) ? $parent : "";
 $sous_groupe_de =isset($sous_groupe_de) ? $sous_groupe_de : NULL;
 $inscrit_direct =isset($inscrit_direct) ? $inscrit_direct : NULL;
 
+if(($aid_id!="")&&(preg_match("/^[0-9]{1,}$/", $aid_id))&&($outils_complementaires=="y")) {
+	// Rediriger vers la fiche projet
+	header("Location: ./modif_fiches.php?aid_id=$aid_id&indice_aid=$indice_aid&action=modif&retour=index2.php");
+	die();
+}
+
 // Si is_posted==1, c'est un nouveau AID.
 // Si is_posted==2, c'est une modification d'AID.
 if (isset($is_posted) && $is_posted) {
