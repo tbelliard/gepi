@@ -197,6 +197,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 // echo "Indice ".$indice_aid;
 
+$NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
 ?>
 
 <script type="text/javascript" language="javascript">
@@ -334,11 +335,11 @@ if (isset($indice_aid)) {
 
 
 			// On affiche un select avec la liste des aid de cette catégorie
-			if (NiveauGestionAid($_SESSION["login"],$indice_aid,"") >= 5) {
+			if ($NiveauGestionAid_categorie>=5) {
 				// Normalement dans la page de config Catégorie, on a NiveauGestionAid à 10
 				$sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
 			}
-			else if (NiveauGestionAid($_SESSION["login"],$indice_aid,"") >= 1) {
+			else if ($NiveauGestionAid_categorie>=1) {
 				$sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
 			}
 			$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]));
