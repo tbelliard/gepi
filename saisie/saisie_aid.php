@@ -738,7 +738,7 @@ function verifcol(num_id){
 
 	if((note!='-')&&(note!='disp')&&(note!='abs')&&(note!='')){
 		if((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0))){
-		if((note>20)||(note<0)){
+		if((note>$note_max)||(note<0)){
 			couleur='red';
 		}
 		else{
