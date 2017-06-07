@@ -851,6 +851,7 @@ if($_SESSION['statut']=="professeur") {
 				die();
 			}
 			$lig_max=mysqli_fetch_object($res_max);
+			$max_per=$lig_max->max_per;
 
 			echo "<p style='margin-left:3em;text-indent:-3em;'>Choisissez la période&nbsp;:<br />";
 			for($i=1;$i<$max_per+1;$i++) {
@@ -872,6 +873,7 @@ if($_SESSION['statut']=="professeur") {
 				die();
 			}
 			$lig_max=mysqli_fetch_object($res_max);
+			$max_per=$lig_max->max_per;
 
 			echo "<p style='margin-left:3em;text-indent:-3em;'>Choisissez la période&nbsp;:<br />";
 			for($i=1;$i<$max_per+1;$i++) {
@@ -965,6 +967,7 @@ else {
 			die();
 		}
 		$lig_max=mysqli_fetch_object($res_max);
+		$max_per=$lig_max->max_per;
 
 		echo "<p style='margin-left:3em;text-indent:-3em;'>Choisissez la période&nbsp;:<br />";
 		for($i=1;$i<$max_per+1;$i++) {
@@ -1039,6 +1042,16 @@ if(isset($id_groupe)) {
 	if(isset($cycle_particulier)) {
 		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
 	}
+
+	$sql="SELECT MAX(periode) AS max_per FROM j_eleves_groupes WHERE id_groupe='$id_groupe';";
+	$res_max=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_max)==0) {
+		echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Aucun élève n'a été trouvé dans le groupe/enseignement.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	$lig_max=mysqli_fetch_object($res_max);
+	$max_per=$lig_max->max_per;
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// A REVOIR POUR RECUPERER LES SAISIES D ANNEES PRECEDENTES
@@ -1342,8 +1355,8 @@ if(isset($id_groupe)) {
 			</tbody>
 		</table>";
 
-				// 20170302
-				if(($cycle==4)&&($periode==3)) {
+				// 20170302 :
+				if(($tab_cycle[$mef_code_ele]==4)&&($periode==$max_per)) {
 					if($enseignement_complement) {
 						//$tab_types_enseignements_complement
 						$checked[0]=" checked";
@@ -1500,6 +1513,15 @@ elseif(isset($id_classe)) {
 	if(isset($cycle_particulier)) {
 		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
 	}
+	$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
+	$res_max=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_max)==0) {
+		echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> La classe n'a pas de périodes définies.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	$lig_max=mysqli_fetch_object($res_max);
+	$max_per=$lig_max->max_per;
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// A REVOIR POUR RECUPERER LES SAISIES D ANNEES PRECEDENTES
