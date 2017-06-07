@@ -80,6 +80,19 @@ $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_g
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
 
+$cycle_particulier=isset($_POST['cycle_particulier']) ? $_POST['cycle_particulier'] : (isset($_GET['cycle_particulier']) ? $_GET['cycle_particulier'] : NULL);
+$checked_cycle_particulier["courant_eleve"]="";
+$checked_cycle_particulier[2]="";
+$checked_cycle_particulier[3]="";
+$checked_cycle_particulier[4]="";
+if((isset($cycle_particulier))&&($cycle_particulier=="")) {
+	unset($cycle_particulier);
+	$checked_cycle_particulier["courant_eleve"]=" checked";
+}
+else {
+	$checked_cycle_particulier[$cycle_particulier]=" checked";
+}
+
 if(isset($id_classe)) {
 	unset($id_groupe);
 }
@@ -1003,8 +1016,32 @@ if($SocleOuvertureSaisieComposantes) {
 	}
 }
 
+// Saisie pour un cycle particulier, pas forcément le cycle actuel de l'élève.
+echo "<form action='".$_SERVER['PHP_SELF']."' method='post' style='float:right; width:20em;' style='display:none;' id='form_choix_cycle'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='forcer_cycle' value='y' />
+		".((isset($id_groupe)) ? "<input type='hidden' name='id_groupe' value='$id_groupe' />" : ((isset($id_classe)) ? "<input type='hidden' name='id_classe' value='$id_classe' />" : ""))."
+		<input type='hidden' name='periode' value='$periode' />
+		<p>Effectuer les saisies pour un cycle particulier, autre que le cycle actuel de l'élève&nbsp;:<br />
+			<input type='radio' name='cycle_particulier' id='cycle_VIDE' value=''".$checked_cycle_particulier["courant_eleve"]." onchange=\"checkbox_change('cycle_VIDE');checkbox_change('cycle_2');checkbox_change('cycle_3');checkbox_change('cycle_4');\" /><label for='cycle_VIDE' id='texte_cycle_VIDE'>Cycle courant de l'élève</label><br />
+			<input type='radio' name='cycle_particulier' id='cycle_2' value='2'".$checked_cycle_particulier[2]." onchange=\"checkbox_change('cycle_VIDE');checkbox_change('cycle_2');checkbox_change('cycle_3');checkbox_change('cycle_4');\" /><label for='cycle_2' id='texte_cycle_2'>Cycle 2</label><br />
+			<input type='radio' name='cycle_particulier' id='cycle_3' value='3'".$checked_cycle_particulier[3]." onchange=\"checkbox_change('cycle_VIDE');checkbox_change('cycle_2');checkbox_change('cycle_3');checkbox_change('cycle_4');\" /><label for='cycle_3' id='texte_cycle_3'>Cycle 3</label><br />
+			<input type='radio' name='cycle_particulier' id='cycle_4' value='4'".$checked_cycle_particulier[4]." onchange=\"checkbox_change('cycle_VIDE');checkbox_change('cycle_2');checkbox_change('cycle_3');checkbox_change('cycle_4');\" /><label for='cycle_4' id='texte_cycle_4'>Cycle 4</label>
+		</p>
+		<p><input type='submit' value='Choisir' /></p>
+	</fieldset>
+</form>
+<!--
+<div style='clear:both;'></div>
+-->";
+
 if(isset($id_groupe)) {
 	echo "\n<h2>".get_info_grp($id_groupe)." (période $periode)</h2>";
+
+	if(isset($cycle_particulier)) {
+		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
+	}
 
 	$sql="SELECT MAX(periode) AS max_per FROM j_eleves_groupes WHERE id_groupe='$id_groupe';";
 	$res_max=mysqli_query($mysqli, $sql);
@@ -1179,6 +1216,13 @@ if(isset($id_groupe)) {
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
 			}
 			else {
+				if(isset($cycle_particulier)) {
+					$cycle=$cycle_particulier;
+				}
+				else {
+					$cycle=$tab_cycle[$mef_code_ele];
+				}
+
 				echo "
 		<p style='margin-top:2em;'><strong>".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;:</p>
 		<table class='boireaus boireaus_alt'>
@@ -1238,35 +1282,35 @@ if(isset($id_groupe)) {
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_0'".$title[0].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_0' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value=''".$checked[0]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_1'".$title[1].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_1' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='1'".$checked[1]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2'".$title[2].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='2'".$checked[2]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_3'".$title[3].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_3' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='3'".$checked[3]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_4'".$title[4].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_4' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='4'".$checked[4]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
@@ -1327,20 +1371,20 @@ if(isset($id_groupe)) {
 
 				if($SocleSaisieSyntheses) {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"])) ? $tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"] : "").">
+		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
 			<strong>Synthèse&nbsp;:</strong> 
-			<input type='hidden' name='indice_synthese[]' value=\"".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."\" />
+			<input type='hidden' name='indice_synthese[]' value=\"".$lig->no_gep."|".$cycle."\" />
 			<textarea style='vertical-align:top;' 
 					cols='80' 
 					rows='4' 
-					name=\"no_anti_inject_synthese_".$lig->no_gep."_".$tab_cycle[$mef_code_ele]."\">".
-					((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["synthese"])) ? $tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["synthese"] : "").
+					name=\"no_anti_inject_synthese_".$lig->no_gep."_".$cycle."\">".
+					((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? $tab_syntheses[$lig->no_gep][$cycle]["synthese"] : "").
 			"</textarea>
 		</p>";
 				}
 				else {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"])) ? $tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
+		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
 				}
 
 				$cpt_ele++;
@@ -1348,6 +1392,11 @@ if(isset($id_groupe)) {
 		}
 
 		if($SocleOuvertureSaisieComposantes=="y") {
+			if(isset($cycle_particulier)) {
+				echo "
+		<input type='hidden' name='cycle_particulier' value='".$cycle_particulier."' />";
+			}
+
 			echo "
 		<input type='hidden' name='enregistrer_saisies' value='y' />
 		<input type='hidden' name='id_groupe' value='$id_groupe' />
@@ -1404,6 +1453,12 @@ if(isset($id_groupe)) {
 					maj_couleurs_maitrise(i, j);
 				}
 			}
+
+			checkbox_change('cycle_VIDE');
+			checkbox_change('cycle_2');
+			checkbox_change('cycle_3');
+			checkbox_change('cycle_4');
+			document.getElementById('form_choix_cycle').style.display='';
 		</script>";
 		}
 		echo "
@@ -1413,6 +1468,10 @@ if(isset($id_groupe)) {
 }
 elseif(isset($id_classe)) {
 	echo "<h3>Classe de ".get_nom_classe($id_classe)." (période $periode)</h3>";
+
+	if(isset($cycle_particulier)) {
+		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
+	}
 
 	$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
 	$res_max=mysqli_query($mysqli, $sql);
@@ -1551,6 +1610,13 @@ elseif(isset($id_classe)) {
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
 			}
 			else {
+				if(isset($cycle_particulier)) {
+					$cycle=$cycle_particulier;
+				}
+				else {
+					$cycle=$tab_cycle[$mef_code_ele];
+				}
+
 				echo "
 		<p style='margin-top:2em;'><strong>".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;:</p>
 		<table class='boireaus boireaus_alt'>
@@ -1601,35 +1667,35 @@ elseif(isset($id_classe)) {
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_0'".$title[0].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_0' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value=''".$checked[0]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_1'".$title[1].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_1' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='1'".$checked[1]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2'".$title[2].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='2'".$checked[2]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_3'".$title[3].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_3' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='3'".$checked[3]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_4'".$title[4].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_4' 
-							name=\"niveau_maitrise[".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code."]\" 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='4'".$checked[4]." 
 							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
 					</td>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
@@ -1657,20 +1723,20 @@ elseif(isset($id_classe)) {
 
 				if($SocleSaisieSyntheses) {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"])) ? $tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"] : "").">
+		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
 			<strong>Synthèse&nbsp;:</strong> 
-			<input type='hidden' name='indice_synthese[]' value=\"".$lig->no_gep."|".$tab_cycle[$mef_code_ele]."\" />
+			<input type='hidden' name='indice_synthese[]' value=\"".$lig->no_gep."|".$cycle."\" />
 			<textarea style='vertical-align:top;' 
 					cols='80' 
 					rows='4' 
-					name=\"no_anti_inject_synthese_".$lig->no_gep."_".$tab_cycle[$mef_code_ele]."\">".
-					((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["synthese"])) ? $tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["synthese"] : "").
+					name=\"no_anti_inject_synthese_".$lig->no_gep."_".$cycle."\">".
+					((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? $tab_syntheses[$lig->no_gep][$cycle]["synthese"] : "").
 			"</textarea>
 		</p>";
 				}
 				else {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"])) ? $tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$tab_cycle[$mef_code_ele]]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
+		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
 				}
 
 				$cpt_ele++;
@@ -1678,6 +1744,12 @@ elseif(isset($id_classe)) {
 		}
 
 		if($SocleOuvertureSaisieComposantes=="y") {
+
+			if(isset($cycle_particulier)) {
+				echo "
+		<input type='hidden' name='cycle_particulier' value='".$cycle_particulier."' />";
+			}
+
 			echo "
 		<input type='hidden' name='enregistrer_saisies' value='y' />
 		<input type='hidden' name='id_classe' value='$id_classe' />
@@ -1689,6 +1761,7 @@ elseif(isset($id_classe)) {
 		</div>
 
 		<script type='text/javascript'>
+			".js_checkbox_change_style()."
 
 			function coche_colonne_ele(cpt_ele, niveau_maitrise) {
 				for(i=0;i<8;i++) {
@@ -1733,6 +1806,12 @@ elseif(isset($id_classe)) {
 					maj_couleurs_maitrise(i, j);
 				}
 			}
+
+			checkbox_change('cycle_VIDE');
+			checkbox_change('cycle_2');
+			checkbox_change('cycle_3');
+			checkbox_change('cycle_4');
+			document.getElementById('form_choix_cycle').style.display='';
 		</script>";
 		}
 		echo "
