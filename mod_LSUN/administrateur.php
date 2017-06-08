@@ -106,6 +106,18 @@ if ($creeFichier == 'y') {
 		$_SESSION["forceAppreciations"]="n";
 	}
 
+	if(filter_input(INPUT_POST, 'BilanFinCycle3')) {
+		$_SESSION["BilanFinCycle3"]="y";
+	}	else {
+		$_SESSION["BilanFinCycle3"]="n";
+	}
+
+	if(filter_input(INPUT_POST, 'BilanFinCycle4')) {
+		$_SESSION["BilanFinCycle4"]="y";
+	}	else {
+		$_SESSION["BilanFinCycle4"]="n";
+	}
+
 	if (0 == count($selectionClasse)) {
 		echo "<p class='rouge center gras'>Vous devez valider la sélection d'au moins une classe</p> <p><a href = 'index.php'>Cliquez ici pour recharger la page</a></p>";
 	}	else if ($creeFichier == 'y') {
@@ -1783,15 +1795,15 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 							forcer l'export des notes sans appréciation
 						</label>
 					</li>
-				</ul>
-			</div>
-			<div style='text-align:left;'>
-				<ul class='pasPuces' disable>
 					<li>
 						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y"
 							   <?php if (getSettingValue("LSU_commentaire_vie_sco") != "n") {echo ' checked '; }  ?> />
 						<label for="traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaires</label>
 					</li>
+				</ul>
+			</div>
+			<div style='text-align:left;'>
+				<ul class='pasPuces' disable>
 					<li>
 						<input type="checkbox" name="traiteAP" id="traiteAP" value="y"     
 							   <?php if (getSettingValue("LSU_traite_AP") != "n") {echo ' checked '; }  ?>  />
@@ -1813,10 +1825,6 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 							informations relatives aux responsables de l’élève
 						</label>
 					</li>
-				</ul>
-			</div>
-			<div style='text-align:left;'>
-				<ul class='pasPuces' disable>
 					<li>
 						<input type="checkbox" name="traiteParcours" id="traiteParcours" value="y"  
 							   <?php if (getSettingValue("LSU_Parcours") != "n") {echo ' checked '; }  ?> />
@@ -1827,6 +1835,10 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 							   <?php if ((getSettingValue("LSU_Parcours") != "n") && (getSettingValue("LSU_ParcoursElv") != "n")) {echo ' checked '; }  ?>  />
 						<label for="traiteParcoursElv">données élèves des Parcours</label>
 					</li>
+				</ul>
+			</div>
+			<div style='text-align:left;'>
+				<ul class='pasPuces' disable>
 					<li>
 						<input type="checkbox" name="traiteProfP" id="traiteProfP" value="y" checked disabled />
 						<label for="traiteAP">professeur(s) principal(aux)</label>
@@ -1840,6 +1852,16 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 						<input type="checkbox" name="traiteBilanFinCycle" id="traiteBilanFinCycle" value="y"  
 							   <?php if (getSettingValue("LSU_Donnees_BilanFinCycle") == "y") {echo ' checked '; }  ?> />
 						<label for="traiteBilanFinCycle" title="Le Bilan n'est remonté n'est remonté pour un élève donné que si le positionnement sur les 8 domaines est renseigné et si la synthèse est renseignée.">Bilan de fin de Cycle</label>
+					</li>
+					<li>
+						<input type="checkbox" name="BilanFinCycle3" id="BilanFinCycle3" value="y"  
+							   <?php if ((isset($_SESSION['BilanFinCycle3']))&&($_SESSION['BilanFinCycle3'] == "y")) {echo ' checked '; }  ?> />
+						<label for="BilanFinCycle3" title="">Générer, si les saisies existent, un bilan de fin de cycle 3, indépendamment du cycle courant de l'élève</label>
+					</li>
+					<li>
+						<input type="checkbox" name="BilanFinCycle4" id="BilanFinCycle4" value="y"  
+							   <?php if ((isset($_SESSION['BilanFinCycle4']))&&($_SESSION['BilanFinCycle4'] == "y")) {echo ' checked '; }  ?> />
+						<label for="BilanFinCycle4" title="">Générer, si les saisies existent, un bilan de fin de cycle 4, indépendamment du cycle courant de l'élève</label>
 					</li>
 				</ul>
 			</div>

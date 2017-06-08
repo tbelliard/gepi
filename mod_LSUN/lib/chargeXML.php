@@ -1161,7 +1161,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							if ($typeParcoursEleve->num_rows) {
 								$typeParcoursEleve = $typeParcoursEleve->fetch_object();
 
-								$commentaireEleve = getCommentaireEleveParcours($eleve->login,$parcoursElv->id_aid, $eleve->periode);//
+								$commentaireEleve = getCommentaireEleveParcours($eleve->login,$parcoursElv->id_aid, $eleve->periode);
 								if ($commentaireEleve->num_rows) {
 									$tmp_chaine=nettoye_texte_vers_chaine($commentaireEleve->fetch_object()->appreciation);
 									$commentaireEleve = ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8'));
@@ -1444,7 +1444,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 	*/
 		//echo "getSettingValue(LSU_Donnees_BilanFinCycle)=".getSettingValue("LSU_Donnees_BilanFinCycle")."<br />";
-		if (getSettingValue("LSU_Donnees_BilanFinCycle") == "y") {
+		if ((getSettingValue("LSU_Donnees_BilanFinCycle") == "y")||
+			((isset($_SESSION["BilanFinCycle3"]))&&($_SESSION["BilanFinCycle3"]=="y"))||
+			((isset($_SESSION["BilanFinCycle4"]))&&($_SESSION["BilanFinCycle4"]=="y"))) {
 			$bilansFinCycle = $xml->createElement('bilans-cycle');
 
 			$on_a_des_BilansFinCycle=FALSE;
@@ -1472,13 +1474,30 @@ echo "</pre>";
 //echo "\$cycle_eleve_courant=$cycle_eleve_courant<br />";
 //echo "\$niveau_eleve_courant=$niveau_eleve_courant<br />";
 
-				if($tab_cycle[$mef_code_ele]=="") {
+				if(((getSettingValue("LSU_Donnees_BilanFinCycle") == "y"))&&($tab_cycle[$mef_code_ele]=="")) {
 					$msg_erreur_remplissage.="Cycle courant de <a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a> ($mef_code_ele) en classe de ".get_chaine_liste_noms_classes_from_ele_login($eleve->login)." non identifié (<a href='../mef/associer_eleve_mef.php?type_selection=nom_eleve&nom_eleve=".preg_replace("/^[^A-Za-z0-9 _]*$/", "%", $eleve->nom)."' target='_blank'>Mef élève</a> <a href='../mef/admin_mef.php' target='_blank' title=\"Contrôler tous les MEFS\"><img src='../images/icons/configure.png' class='icone16' alt='Config' /></a>).<br /><br />";
 					//$generer_bilan_pour_cet_eleve=false;
 				}
 
+// 20170603: REMPLIR UN TABLEAU DES CYCLES POUR LESQUELS TENTER DE GENERER UN EXPORT
+				$tableau_des_cycles_pour_lesquels_generer_bilan=array();
+				if((getSettingValue("LSU_Donnees_BilanFinCycle") == "y")&&
+					((($cycle_eleve_courant==3)&&($niveau_eleve_courant==6))||
+					(($cycle_eleve_courant==4)&&($niveau_eleve_courant==3)))) {
+					$tableau_des_cycles_pour_lesquels_generer_bilan[]=$cycle_eleve_courant;
+				}
+				if((isset($_SESSION["BilanFinCycle3"]))&&($_SESSION["BilanFinCycle3"]=="y")&&(!in_array(3, $tableau_des_cycles_pour_lesquels_generer_bilan))) {
+					$tableau_des_cycles_pour_lesquels_generer_bilan[]=3;
+				}
+				if((isset($_SESSION["BilanFinCycle4"]))&&($_SESSION["BilanFinCycle4"]=="y")&&(!in_array(4, $tableau_des_cycles_pour_lesquels_generer_bilan))) {
+					$tableau_des_cycles_pour_lesquels_generer_bilan[]=4;
+				}
+
+				/*
 				if((($cycle_eleve_courant==3)&&($niveau_eleve_courant==6))||
 				(($cycle_eleve_courant==4)&&($niveau_eleve_courant==3))) {
+				*/
+				for($loop_cycle=0;$loop_cycle<count($tableau_des_cycles_pour_lesquels_generer_bilan);$loop_cycle++) {
 					$on_a_un_BilanFinCycle_pour_cet_eleve=FALSE;
 					$generer_bilan_pour_cet_eleve=true;
 
@@ -1546,7 +1565,8 @@ echo "</pre>";
 
 					if($generer_bilan_pour_cet_eleve) {
 						$attributsEleveCycle = array('eleve-ref'=>"EL_".$eleve->id_eleve , 
-											'cycle'=>$tab_cycle[$mef_code_ele], 
+											//'cycle'=>$tab_cycle[$mef_code_ele], 
+											'cycle'=>$tableau_des_cycles_pour_lesquels_generer_bilan[$loop_cycle], 
 											'millesime'=>$millesime , 
 											'date-creation'=>$date_creation , 
 											'date-verrou'=>"$date_verrou" , 
@@ -1565,7 +1585,8 @@ echo "</pre>";
 
 						// Récupération des positionnements dans les domaines du socle
 						$tab_positionnement_trouve=array();
-						$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND sec.niveau_maitrise!='' AND sec.niveau_maitrise!='0' AND sec.annee='".$millesime."' ORDER BY sec.annee, sec.periode;";
+						//$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND sec.niveau_maitrise!='' AND sec.niveau_maitrise!='0' AND sec.annee='".$millesime."' ORDER BY sec.annee, sec.periode;";
+						$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tableau_des_cycles_pour_lesquels_generer_bilan[$loop_cycle]."' AND sec.niveau_maitrise!='' AND sec.niveau_maitrise!='0' AND sec.annee='".$millesime."' ORDER BY sec.annee, sec.periode;";
 						//echo "$sql<br />";
 						$res_ele_socle=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_ele_socle)>0) {
@@ -1601,7 +1622,8 @@ echo "</pre>";
 							$noeudBilanEleveFinCycle->appendChild($socle);
 
 							// On vérifie aussi qu'on a une synthèse:
-							$sql="SELECT DISTINCT sec.* FROM socle_eleves_syntheses sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND sec.synthese!='' AND sec.annee='".$millesime."';";
+							//$sql="SELECT DISTINCT sec.* FROM socle_eleves_syntheses sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tab_cycle[$mef_code_ele]."' AND sec.synthese!='' AND sec.annee='".$millesime."';";
+							$sql="SELECT DISTINCT sec.* FROM socle_eleves_syntheses sec, eleves e WHERE sec.ine=e.no_gep AND e.ele_id='".$eleve->ele_id."' AND sec.cycle='".$tableau_des_cycles_pour_lesquels_generer_bilan[$loop_cycle]."' AND sec.synthese!='' AND sec.annee='".$millesime."';";
 							//echo "$sql<br />";
 							$res_ele_synthese=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_ele_synthese)>0) {
@@ -1630,26 +1652,39 @@ echo "</pre>";
 							ou si on n'a pas d'enseignement de complément à remonter:
 							    <enseignement-complement code="AUC" />
 							*/
-							// Il ne faut retenir qu'un enseignement de complément
-							$sql="SELECT seec.*, jgec.code FROM j_groupes_enseignements_complement jgec, 
-										socle_eleves_enseignements_complements seec 
-									WHERE jgec.id_groupe=seec.id_groupe AND 
-										(seec.positionnement='1' OR seec.positionnement='2') AND 
-										seec.ine='".$eleve->no_gep."' 
-									ORDER BY seec.positionnement DESC LIMIT 1;";
-							//echo "$sql<br />";
-							$res_seec=mysqli_query($mysqli, $sql);
-							if(mysqli_num_rows($res_seec)>0) {
-								while($lig_seec=mysqli_fetch_object($res_seec)) {
+							if(($tableau_des_cycles_pour_lesquels_generer_bilan[$loop_cycle]==4)&&($niveau_eleve_courant==3)) {
+								// Il ne faut retenir qu'un enseignement de complément
+								$sql="SELECT seec.*, jgec.code FROM j_groupes_enseignements_complement jgec, 
+											socle_eleves_enseignements_complements seec 
+										WHERE jgec.id_groupe=seec.id_groupe AND 
+											(seec.positionnement='1' OR seec.positionnement='2') AND 
+											seec.ine='".$eleve->no_gep."' 
+										ORDER BY seec.positionnement DESC LIMIT 1;";
+								//echo "$sql<br />";
+								$res_seec=mysqli_query($mysqli, $sql);
+								if(mysqli_num_rows($res_seec)>0) {
+									while($lig_seec=mysqli_fetch_object($res_seec)) {
+										$noeudEnseignementComplement=$xml->createElement('enseignement-complement');
+
+										// Ca ne devrait pas arriver
+										if($lig_seec->code=="AUC") {
+											$attributsEnseignementComplement = array('code'=>"AUC");
+										}
+										else {
+											$attributsEnseignementComplement = array('code'=>$lig_seec->code , 'positionnement'=>$lig_seec->positionnement);
+										}
+										foreach ($attributsEnseignementComplement as $cle=>$valeur) {
+											$attsEC = $xml->createAttribute($cle);
+											$attsEC->value = $valeur;
+											$noeudEnseignementComplement->appendChild($attsEC);
+										}
+										$noeudBilanEleveFinCycle->appendChild($noeudEnseignementComplement);
+									}
+								}
+								else {
 									$noeudEnseignementComplement=$xml->createElement('enseignement-complement');
 
-									// Ca ne devrait pas arriver
-									if($lig_seec->code=="AUC") {
-										$attributsEnseignementComplement = array('code'=>"AUC");
-									}
-									else {
-										$attributsEnseignementComplement = array('code'=>$lig_seec->code , 'positionnement'=>$lig_seec->positionnement);
-									}
+									$attributsEnseignementComplement = array('code'=>"AUC");
 									foreach ($attributsEnseignementComplement as $cle=>$valeur) {
 										$attsEC = $xml->createAttribute($cle);
 										$attsEC->value = $valeur;
@@ -1657,17 +1692,6 @@ echo "</pre>";
 									}
 									$noeudBilanEleveFinCycle->appendChild($noeudEnseignementComplement);
 								}
-							}
-							else {
-								$noeudEnseignementComplement=$xml->createElement('enseignement-complement');
-
-								$attributsEnseignementComplement = array('code'=>"AUC");
-								foreach ($attributsEnseignementComplement as $cle=>$valeur) {
-									$attsEC = $xml->createAttribute($cle);
-									$attsEC->value = $valeur;
-									$noeudEnseignementComplement->appendChild($attsEC);
-								}
-								$noeudBilanEleveFinCycle->appendChild($noeudEnseignementComplement);
 							}
 
 							if (getSettingValue("LSU_Donnees_responsables") != "n") {
