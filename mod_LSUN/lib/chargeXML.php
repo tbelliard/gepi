@@ -136,6 +136,7 @@ $xml->appendChild($items);
 		mysqli_data_seek($listeEleves, 0);
 
 		$tab_ele_deja=array();
+		$tab_idbe_ele_deja=array();
 		$eleves = $xml->createElement('eleves');
 		while ($eleve = $listeEleves->fetch_object()) {
 			/*
@@ -193,9 +194,18 @@ $xml->appendChild($items);
 					$msg_erreur_remplissage.="<strong>ATTENTION&nbsp;:</strong> L'élève ".'EL_'.$eleve->id_eleve." (<a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a>) apparait plusieurs fois. Cela correspond probablement à un changement de classe.<br />La dernière classe de l'élève sera retenue dans l'export.<br /><br />";
 				}
 				else {
+					if(in_array($eleve->ele_id, $tab_idbe_ele_deja)) {
+						//20170606
+						// On ne devrait pas arriver à cette situation
+						// L'ele_id n'est pas éditable directement dans Gepi, seulement par responsables/corrige_ele_id.php (et responsables/maj_import3.php)
+
+						$msg_erreur_remplissage.="<strong>ATTENTION&nbsp;:</strong> L'élève <a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a> a un identifiant ELEVE_ID qui n'est pas unique.<br />Il faut corriger.<br /><br />";
+					}
+
 					$eleves->appendChild($noeudEleve);
 				}
 				$tab_ele_deja[]='EL_'.$eleve->id_eleve;
+				$tab_idbe_ele_deja[]=$eleve->ele_id;
 			}
 		}
 		$donnees->appendChild($eleves);
@@ -795,7 +805,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$desAcquis = TRUE;
 					$noeudAcquis = $xml->createElement('acquis');
 					$matiere = $acquisEleve->code_matiere;
-					$moyenne = getMoyenne($acquisEleve->id_groupe);
+					$moyenne = getMoyenne($acquisEleve->id_groupe, $eleve->periode);
 					$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 					$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
 
@@ -888,7 +898,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					$noeudAcquis = $xml->createElement('acquis');
 
 					$matiere = $acquisEleve->code_matiere;
-					$moyenne = getMoyenne($acquisEleve->id_groupe);
+					$moyenne = getMoyenne($acquisEleve->id_groupe, $eleve->periode);
 					$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 					$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
 
@@ -977,7 +987,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						$noeudAcquis = $xml->createElement('acquis');
 
 						$matiere = $acquisEleve->code_matiere;
-						$moyenne = getMoyenne($acquisEleve->id_groupe);
+						$moyenne = getMoyenne($acquisEleve->id_groupe, $eleve->periode);
 						$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 						$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
 
@@ -1050,7 +1060,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						$noeudAcquis = $xml->createElement('acquis');
 
 						$matiere = $acquisEleve->code_matiere;
-						$moyenne = getMoyenne($acquisEleve->id_groupe);
+						$moyenne = getMoyenne($acquisEleve->id_groupe, $eleve->periode);
 						$modalite = getModalite($acquisEleve->id_groupe, $eleve->login, $acquisEleve->mef_code, $acquisEleve->code_matiere);
 						$matiere = "DI_".$acquisEleve->code_matiere.$modalite;
 
@@ -1520,7 +1530,11 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			$eleves = getElevesExportCycle();
 
 			while ($eleve = $eleves->fetch_object()) {
-
+/*
+echo "<pre>";
+print_r($eleve);
+echo "</pre>";
+*/
 				$mef_code_ele=$eleve->mef_code;
 				//if(!isset($tab_cycle[$mef_code_ele])) {
 					$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
@@ -1531,6 +1545,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 				$cycle_eleve_courant=$tmp_tab_cycle_niveau["mef_cycle"];
 				$niveau_eleve_courant=$tmp_tab_cycle_niveau["mef_niveau"];
+//echo "\$cycle_eleve_courant=$cycle_eleve_courant<br />";
+//echo "\$niveau_eleve_courant=$niveau_eleve_courant<br />";
 
 				if(((getSettingValue("LSU_Donnees_BilanFinCycle") == "y"))&&($tab_cycle[$mef_code_ele]=="")) {
 					$msg_erreur_remplissage.="Cycle courant de <a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".$eleve->nom." ".$eleve->prenom."</a> ($mef_code_ele) en classe de ".get_chaine_liste_noms_classes_from_ele_login($eleve->login)." non identifié (<a href='../mef/associer_eleve_mef.php?type_selection=nom_eleve&nom_eleve=".preg_replace("/^[^A-Za-z0-9 _]*$/", "%", $eleve->nom)."' target='_blank'>Mef élève</a> <a href='../mef/admin_mef.php' target='_blank' title=\"Contrôler tous les MEFS\"><img src='../images/icons/configure.png' class='icone16' alt='Config' /></a>).<br /><br />";

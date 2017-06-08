@@ -1513,6 +1513,7 @@ elseif(isset($id_classe)) {
 	if(isset($cycle_particulier)) {
 		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
 	}
+
 	$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
 	$res_max=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_max)==0) {

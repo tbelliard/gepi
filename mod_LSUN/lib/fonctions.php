@@ -527,12 +527,12 @@ function getEPeleve ($idEleve, $idGroupe, $periode) {
 	return $resultchargeDB;
 }
 
-function getMoyenne($id_groupe) {
+function getMoyenne($id_groupe, $periode) {
 	global $mysqli;
 
 	$resultchargeDB="";
 
-	$sqlMoyenne = "SELECT ROUND(AVG(`note`), 2) AS moyenne FROM `matieres_notes` WHERE `id_groupe` = '$id_groupe' GROUP BY `id_groupe` ";
+	$sqlMoyenne = "SELECT ROUND(AVG(`note`), 2) AS moyenne FROM `matieres_notes` WHERE `id_groupe` = '$id_groupe' AND `periode` = '$periode' AND `statut` = '' GROUP BY `id_groupe` ";
 	//echo "\$sqlMoyenne=$sqlMoyenne<br />";
 	//$resultchargeDB = $mysqli->query($sqlMoyenne)->fetch_object()->moyenne;
 	$res=$mysqli->query($sqlMoyenne);
