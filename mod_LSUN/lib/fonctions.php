@@ -453,7 +453,7 @@ function getAcquisEleve($eleve, $periode) {
 	//=== mef
 	$sqlAcquis = "SELECT s6.* , c.mef_code FROM ($sqlAcquis06) AS s6 INNER JOIN eleves AS c ON s6.login = c.login ";
 
-	//echo $sqlAcquis.';<br>-<br>';
+	//echo "getAcquisEleve($eleve, $periode) : ".$sqlAcquis.';<br>-<br>';
 	$resultchargeDB = $mysqli->query($sqlAcquis);
 	return $resultchargeDB;
 
@@ -583,7 +583,7 @@ function getStatutSansApp($login,$periode) {
 	//=== mef
 	$sqlStatutSSApp = "SELECT s6.* , c.mef_code FROM ($sqlAcquis06) AS s6 INNER JOIN classes AS c ON s6.id_classe = c.id ";
 	
-	
+	//echo "getStatutSansApp($login,$periode) : $sqlStatutSSApp<br /><br />";
 	$resultchargeDB = $mysqli->query($sqlStatutSSApp);
 	/*
 	if ($resultchargeDB->num_rows) {
@@ -623,6 +623,7 @@ function getNotesForcees($login,$periode) {
 	//=== mef
 	$sqlStatutSSApp = "SELECT s6.* , c.mef_code FROM ($sqlAcquis06) AS s6 INNER JOIN classes AS c ON s6.id_classe = c.id ";
 	
+	//echo "getNotesForcees($login,$periode) : $sqlStatutSSApp<br /><br />";
 	$resultchargeDB = $mysqli->query($sqlStatutSSApp);
 	/*
 	 *
