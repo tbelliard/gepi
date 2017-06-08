@@ -416,7 +416,7 @@ if (getSettingAOui("LSU_commentaire_vie_sco")) {
 				//echo "-".$VieScoCommun."-";
 				if (!$comVieSco) {
 					$comVieSco = "-";
-					$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire, vous devez vous assurer que c'est normal <em>(mais ce n'est pas bloquant)</em>.</p>";
+					$msgErreur .= "<p class='rouge'>La classe ".$vieScoCommun->classe." n'a pas de commentaire en vie scolaire en période $num_periode, vous devez vous assurer que c'est normal <em>(mais ce n'est pas bloquant)</em>.</p>";
 				}
 				$comVieScoCommun = $xml->createElement('commentaire', $comVieSco);
 
@@ -930,9 +930,42 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$liste_absenceEP="";
 						}
 						$liste_absenceEP.="<span style='color:red'>".get_nom_prenom_eleve($eleve->login)." n'a pas d'élément de programme en ".$acquisEleve->id_matiere." en période ".$eleve->periode.".</span><br />";
-						}
+					}
 					$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20");
-								
+
+
+					/*
+					$note = $acquisEleve->note;
+					if (intval($note)) {
+						$attributsAcquis['moyenne-eleve'] = $note."/20";
+						$acquisEleve->appreciation = $note."/20";
+					} else {
+						$statutNote = getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode);
+						//if (getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode)) {
+						if ($statutNote) {
+							$attributsAcquis['eleve-non-note'] = "1";
+							switch ($statutNote) {
+								case "disp":
+									$statutNote = "Disp. ";
+									break;
+								case "abs":
+									$statutNote = "Abs. ";
+									break;
+								case "-":
+									$statutNote = "N N. ";
+									break;
+								default:
+									$statutNote = $statutNote;
+							}
+							//$acquisEleve->appreciation = $statutNote.$acquisEleve->appreciation;
+							$acquisEleve->appreciation = $statutNote;
+						} else {
+							$attributsAcquis['moyenne-eleve'] = $note."/20";
+							$acquisEleve->appreciation = $note."/20";
+						}
+					}
+					*/
+
 					$statutNote = getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode);
 				
 					$attributsAcquis['eleve-non-note'] = "1";
@@ -1021,15 +1054,53 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 								$liste_absenceEP="";
 							}
 							$liste_absenceEP.="<span style='color:red'>".get_nom_prenom_eleve($eleve->login)." n'a pas d'élément de programme en ".$acquisEleve->id_matiere." en période ".$eleve->periode.".</span><br />";
+						}
+
+						//$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20", 'eleve-non-note' => "1");
+						$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20");
+
+
+						$tmp_chaine="-";
+
+						//++++++++++++++++++++++++++++++++++++++++++++++
+						$note = $acquisEleve->note;
+						if (intval($note)) {
+							$attributsAcquis['moyenne-eleve'] = $note."/20";
+							//$acquisEleve->appreciation = $note."/20";
+						} else {
+							$statutNote = getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode);
+							//if (getStatutNote($eleve->login,$acquisEleve->id_groupe,$eleve->periode)) {
+							if ($statutNote) {
+								$attributsAcquis['eleve-non-note'] = "1";
+								switch ($statutNote) {
+									case "disp":
+										$statutNote = "Disp. ";
+										break;
+									case "abs":
+										$statutNote = "Abs. ";
+										break;
+									case "-":
+										$statutNote = "N N. ";
+										break;
+									default:
+										$statutNote = $statutNote;
+								}
+								//$acquisEleve->appreciation = $statutNote.$acquisEleve->appreciation;
+								//$acquisEleve->appreciation = $statutNote;
+								$tmp_chaine=$statutNote;
+							} else {
+								$attributsAcquis['moyenne-eleve'] = $note."/20";
+								//$acquisEleve->appreciation = $note."/20";
 							}
-						$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20", 'eleve-non-note' => "1");
+						}
+						//++++++++++++++++++++++++++++++++++++++++++++++
 
 						foreach ($attributsAcquis as $cle=>$valeur) {
 							$attsAcquis= $xml->createAttribute($cle);
 							$attsAcquis->value = $valeur;
 							$noeudAcquis->appendChild($attsAcquis);
 						}
-						$tmp_chaine="-";
+						//$tmp_chaine="-";
 
 						// 20170511
 						$lien_bull_simp="";
@@ -1517,7 +1588,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
         </bilans-cycle>
 
 	*/
-
+		//echo "getSettingValue(LSU_Donnees_BilanFinCycle)=".getSettingValue("LSU_Donnees_BilanFinCycle")."<br />";
 		if ((getSettingValue("LSU_Donnees_BilanFinCycle") == "y")||
 			((isset($_SESSION["BilanFinCycle3"]))&&($_SESSION["BilanFinCycle3"]=="y"))||
 			((isset($_SESSION["BilanFinCycle4"]))&&($_SESSION["BilanFinCycle4"]=="y"))) {
@@ -1572,7 +1643,6 @@ echo "</pre>";
 				(($cycle_eleve_courant==4)&&($niveau_eleve_courant==3))) {
 				*/
 				for($loop_cycle=0;$loop_cycle<count($tableau_des_cycles_pour_lesquels_generer_bilan);$loop_cycle++) {
-
 					$on_a_un_BilanFinCycle_pour_cet_eleve=FALSE;
 					$generer_bilan_pour_cet_eleve=true;
 
