@@ -12674,7 +12674,7 @@ function bulletin_pdf_bilan_cycle($tab_bull, $i, $num_resp_bull="", $cycle="") {
 		$num_resp_fin=$num_resp_bull+1;
 	}
 
-	for($num_resp_ini=0;$num_resp_bull<$num_resp_fin;$num_resp_bull++) {
+	for($num_resp_bull=$num_resp_ini;$num_resp_bull<$num_resp_fin;$num_resp_bull++) {
 		$pdf->AddPage(); //ajout d'une page au document
 		$pdf->SetFont('DejaVu');
 
