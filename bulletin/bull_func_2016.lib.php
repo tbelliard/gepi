@@ -5454,7 +5454,7 @@ echo "</pre>";
 		}
 
 		if((isset($avec_bilan_cycle))&&($avec_bilan_cycle=="y")) {
-			bulletin_pdf_bilan_cycle($tab_bull, $i);
+			bulletin_pdf_bilan_cycle($tab_bull, $i, $num_resp_bull);
 		}
 
 		if((isset($intercaler_app_classe))&&($intercaler_app_classe=="y")) {
@@ -12162,7 +12162,7 @@ function bulletin_pdf_classe($tab_bull, $i="") {
 }
 
 // Par défaut, cycle courant de l'élève
-function bulletin_pdf_bilan_cycle($tab_bull,$i,$cycle="") {
+function bulletin_pdf_bilan_cycle($tab_bull, $i, $num_resp_bull="", $cycle="") {
 	//echo "DEBUG";
 	global
 		//==============
@@ -12207,7 +12207,7 @@ function bulletin_pdf_bilan_cycle($tab_bull,$i,$cycle="") {
 		$use_cell_ajustee,
 
 		// Pour permettre de récupérer via global dans releve_pdf() le numéro du parent dont on imprime le bulletin avec au verso le relevé de notes:
-		$num_resp_bull,
+		//$num_resp_bull, // Cela pose pb...
 
 		// Pour récupérer le 1 relevé par page en verso du bulletin... variable récupérée via 'global' dans la fonction releve_pdf()
 		$nb_releve_par_page,
@@ -12665,7 +12665,16 @@ function bulletin_pdf_bilan_cycle($tab_bull,$i,$cycle="") {
 	}
 	//=====================================
 
-	for($num_resp_bull=0;$num_resp_bull<$nb_bulletins;$num_resp_bull++) {
+	// Dans le cas d'un recto/verso, il ne faut retenir que le bulletin correspondant au responsable courant, ne pas boucler sur les responsables.
+	//$nb_bulletins=1;
+	$num_resp_ini=0;
+	$num_resp_fin=$nb_bulletins;
+	if((isset($num_resp_bull))&&(preg_match("/^[0-9]{1,}$/", $num_resp_bull))) {
+		$num_resp_ini=$num_resp_bull;
+		$num_resp_fin=$num_resp_bull+1;
+	}
+
+	for($num_resp_ini=0;$num_resp_bull<$num_resp_fin;$num_resp_bull++) {
 		$pdf->AddPage(); //ajout d'une page au document
 		$pdf->SetFont('DejaVu');
 
@@ -13403,6 +13412,8 @@ echo "</pre>";
 			$pdf->SetFont('DejaVu','',7);
 			$pdf->Cell($param_bull2016["largeur_signature_parents_bilan_cycle"], 7, "Signature",0,2,'L');
 		//}
+
+		$pdf->SetDrawColor(0, 0, 0);
 
 	}
 }
