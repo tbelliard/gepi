@@ -109,6 +109,7 @@ if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')&&($ty
 $valide_select_eleves=isset($_POST['valide_select_eleves']) ? $_POST['valide_select_eleves'] : (isset($_GET['valide_select_eleves']) ? $_GET['valide_select_eleves'] : NULL);
 
 $avec_bilan_cycle=isset($_POST['avec_bilan_cycle']) ? $_POST['avec_bilan_cycle'] : (isset($_GET['avec_bilan_cycle']) ? $_GET['avec_bilan_cycle'] : "n");
+$bulletin_fin_cycle_seulement=isset($_POST['bulletin_fin_cycle_seulement']) ? $_POST['bulletin_fin_cycle_seulement'] : (isset($_GET['bulletin_fin_cycle_seulement']) ? $_GET['bulletin_fin_cycle_seulement'] : "n");
 
 //====================================================
 //=============== ENTETE STANDARD ====================
@@ -945,8 +946,9 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	echo "</blockquote>\n";
 	echo "</div>\n";
 	//===========================================
-
-	echo "<p><input type='checkbox' name='avec_bilan_cycle' id='avec_bilan_cycle' value='y' onchange='checkbox_change(this.id)' /> <label for='avec_bilan_cycle' id='texte_avec_bilan_cycle' style='cursor: pointer;'>Intercaler le bilan de fin de cycle pour les 6èmes et 3èmes <em style='color:red'>(expérimental (en PDF 2016 seulement pour le moment))</em></label></p>\n";
+	//20170611
+	echo "<p style='text-indent:-2em;margin-left:2em;'><input type='checkbox' name='avec_bilan_cycle' id='avec_bilan_cycle' value='y' onchange='checkbox_change(this.id)' /> <label for='avec_bilan_cycle' id='texte_avec_bilan_cycle' style='cursor: pointer;'>Intercaler le bilan de fin de cycle pour les 6èmes et 3èmes <em style='color:red'>(expérimental (en PDF 2016 seulement pour le moment))</em></label><br />
+	<input type='checkbox' name='bulletin_fin_cycle_seulement' id='bulletin_fin_cycle_seulement' value='y' onchange='checkbox_change(this.id)' /> <label for='bulletin_fin_cycle_seulement' id='texte_bulletin_fin_cycle_seulement' style='cursor: pointer;'>N'imprimer que le bilan de fin de cycle.</p>\n";
 
 	echo "<p><input type='checkbox' name='intercaler_app_classe' id='intercaler_app_classe' value='y' onchange='checkbox_change(this.id)' /> <label for='intercaler_app_classe' id='texte_intercaler_app_classe' style='cursor: pointer;'>Intercaler les appréciations professeurs sur les \"groupes classes\" <em style='color:red'>(expérimental (en PDF seulement pour le moment, et mise en page très perfectible))</em></label></p>\n";
 
@@ -1782,6 +1784,10 @@ else {
 
 	if(getSettingAOui('active_mod_engagements')) {
 		$tab_engagements=get_tab_engagements();
+	}
+
+	if($bulletin_fin_cycle_seulement=="y") {
+		$avec_bilan_cycle="y";
 	}
 
 	$nb_bulletins_edites=0;
@@ -5398,7 +5404,13 @@ Bien cordialement.
 					flush();
 				}
 				else {
-					bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+					// 20170611
+					if($bulletin_fin_cycle_seulement=="y") {
+						bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$k);
+					}
+					else {
+						bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+					}
 				}
 				$compteur_bulletins++;
 			}
@@ -5521,8 +5533,15 @@ Bien cordialement.
 									flush();
 								}
 								else {
-									//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
-									bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+									// 20170611
+									if($bulletin_fin_cycle_seulement=="y") {
+										//bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$k);
+										bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$rg[$i]);
+									}
+									else {
+										//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+										bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+									}
 								}
 
 		/*
