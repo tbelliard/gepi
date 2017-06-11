@@ -101,6 +101,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 	global $intercaler_app_classe;
 
+	global $avec_bilan_cycle;
+
 	global $param_bull2016;
 	global $gepiPath;
 	global $tab_mef;
@@ -4944,7 +4946,12 @@ echo "</pre>";
 
 		$hauteur_orientation=0;
 		if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($classe_id))) {
-
+			/*
+			echo "\$tab_bull['eleve'][$i]['mef_code']=".$tab_bull['eleve'][$i]['mef_code']."<br />";
+			echo "<pre>";
+			print_r($tab_bull['orientation']['mef_avec_orientation']);
+			echo "</pre>";
+			*/
 			$tmp_tab_periode_orientation=explode(";", $param_bull2016["bull2016_orientation_periodes"]);
 			if((in_array($tab_bull['num_periode'], $tmp_tab_periode_orientation))&&(isset($tab_bull['orientation']['mef_avec_orientation']))&&(in_array($tab_bull['eleve'][$i]['mef_code'], $tab_bull['orientation']['mef_avec_orientation']))) {
 				$hauteur_orientation=$param_bull2016["hauteur_cadre_orientation"];
@@ -5444,6 +5451,10 @@ echo "</pre>";
 				$pdf->Cell(90,7,"Relevé de notes non trouvé pour ".my_strtoupper($tab_bull['eleve'][$i]['nom'])." ".casse_mot($tab_bull['eleve'][$i]['prenom'],'majf2'),0,2,'');
 
 			}
+		}
+
+		if((isset($avec_bilan_cycle))&&($avec_bilan_cycle=="y")) {
+			bulletin_pdf_bilan_cycle($tab_bull, $i);
 		}
 
 		if((isset($intercaler_app_classe))&&($intercaler_app_classe=="y")) {
@@ -12150,4 +12161,1249 @@ function bulletin_pdf_classe($tab_bull, $i="") {
 
 }
 
+// Par défaut, cycle courant de l'élève
+function bulletin_pdf_bilan_cycle($tab_bull,$i,$cycle="") {
+	//echo "DEBUG";
+	global
+		//==============
+		//Ajout J.Etheve
+		//$coefficients_a_1,
+		//==============
+		//============================================
+		// Paramètres généraux:
+		// En admin, dans Gestion générale/Configuration générale
+		//$gepi_prof_suivi,
+		$gepi_cpe_suivi,
+		$RneEtablissement,
+		$gepiSchoolAcademie,
+		$gepiSchoolName,
+		$gepiSchoolAdress1,
+		$gepiSchoolAdress2,
+		$gepiSchoolZipCode,
+		$gepiSchoolCity,
+		$gepiSchoolPays,
+		$gepiSchoolTel,
+		$gepiSchoolFax,
+		$gepiSchoolEmail,
+		$gepiYear,
+
+		$logo_etab,
+
+		$bull_intitule_app,
+
+		$bull_formule_bas,
+
+		// Paramètre transmis depuis la page d'impression des bulletins
+		$un_seul_bull_par_famille,
+
+		$compteur_bulletins,
+
+		// Datation du bulletin (paramètre initié dans l'entête du bulletin PDF)
+		$date_bulletin,
+
+		// Paramètres du modèle PDF
+		$tab_modele_pdf,
+
+		$use_cell_ajustee,
+
+		// Pour permettre de récupérer via global dans releve_pdf() le numéro du parent dont on imprime le bulletin avec au verso le relevé de notes:
+		$num_resp_bull,
+
+		// Pour récupérer le 1 relevé par page en verso du bulletin... variable récupérée via 'global' dans la fonction releve_pdf()
+		$nb_releve_par_page,
+
+		//20100615
+		//$moyennes_periodes_precedentes,
+		//$evolution_moyenne_periode_precedente,
+
+		//$avec_coches_mentions,
+		$gepi_denom_mention,
+
+		$signature_bull,
+
+		//$tab_engagements,
+
+		$tab_domaine_bilan_socle,
+		$tab_domaine_bilan_socle_description,
+
+		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
+		$pdf;
+
+	//global $intercaler_app_classe;
+
+	global $param_bull2016;
+	global $gepiPath;
+	global $tab_mef;
+
+	/*
+	echo "<pre>";
+	print_r($tab_bull);
+	echo "</pre>";
+	*/
+
+	//=========================================
+
+	// Inutile dans le bulletin 2016
+	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		// On récupère le RNE de l'établissement
+		$rep_photos="../photos/".$_COOKIE['RNE']."/eleves/";
+	}else{
+		$rep_photos="../photos/eleves/";
+	}
+
+	//=====================================
+	/*
+	// NE PAS SUPPRIMER CETTE SECTION... c'est pour le debug
+
+	// Règles en rouge:
+	// Selon ce que l'on souhaite débugger, décommenter une des deux règles
+	$pdf->SetDrawColor(255,0,0);
+	//=====================================
+	// Règle 1: horizontale
+	$tmp_marge_gauche=5;
+	$tmp_marge_haut=5;
+	$x=$tmp_marge_gauche;
+	$y=$tmp_marge_haut;
+
+	$pdf->SetXY($x,$y);
+	$pdf->Cell(200,1,'','T',0,'C',0);
+
+	for($loop=0;$loop<19;$loop++) {
+		$x=$tmp_marge_gauche+$loop*10;
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(5,20,''.$loop,'',0,'L',0);
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(10,270,'','L',0,'C',0);
+
+		for($loop2=0;$loop2<10;$loop2++) {
+			$pdf->SetXY($x+$loop2,$y);
+			$pdf->Cell(10,5,'','L',0,'C',0);
+		}
+	}
+	//=====================================
+	// Règle 2: verticale
+	$tmp_marge_gauche=1;
+	$tmp_marge_haut=0;
+	$x=$tmp_marge_gauche;
+	$y=$tmp_marge_haut;
+
+	$pdf->SetFont('DejaVu','',5);
+
+	// Ligne verticale
+	$pdf->SetXY($x,$y);
+	$pdf->Cell(1,280,'','L',0,'C',0);
+
+	for($loop=1;$loop<29;$loop++) {
+		// Repère numérique en cm
+		$y=$tmp_marge_haut+$loop*10-3;
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(10,5,''.$loop,'',0,'L',0);
+
+		// Ligne tous les centimètres
+		$y=$tmp_marge_haut+$loop*10;
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(200,10,'','T',0,'C',0);
+
+		// Les millimètres
+		for($loop2=0;$loop2<10;$loop2++) {
+			$pdf->SetXY($x,$y-10+$loop2);
+			$pdf->Cell(2,10,'','T',0,'C',0);
+		}
+	}
+	//=====================================
+	// Retour au noir pour les tracés qui suivent:
+	$pdf->SetDrawColor(0,0,0);
+	*/
+	//=====================================
+	$nb_bulletins=1;
+
+	// 20161013
+	// Préparation des lignes d'adresse
+
+	//echo "\$i=$i et \$nb_bulletins=$nb_bulletins<br />";
+
+	// Initialisation:
+	for($loop=0;$loop<=1;$loop++) {
+		$tab_adr_ligne1[$loop]="";
+		$tab_adr_ligne2[$loop]="";
+		$tab_adr_ligne3[$loop]="";
+		$tab_adr_ligne4[$loop]="";
+		$tab_adr_ligne5[$loop]="";
+		$tab_adr_ligne6[$loop]="";
+		$tab_adr_ligne7[$loop]="";
+	}
+
+	// ON N'UTILISE PAS LE CHAMP adr4 DE L'ADRESSE DANS resp_adr
+	// IL FAUDRA VOIR COMMENT LE RECUPERER
+
+	if (!isset($tab_bull['eleve'][$i]['resp'][0])) {
+		//$tab_adr_ligne1[0]="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
+		$tab_adr_ligne1[0]="ADRESSE MANQUANTE";
+		$tab_adr_ligne2[0]="";
+		$tab_adr_ligne3[0]="";
+		$tab_adr_ligne4[0]="";
+		$tab_adr_ligne5[0]="";
+		$tab_adr_ligne6[0]="";
+		$tab_adr_ligne7[0]="";
+
+		// Initialisation parce qu'on a des blagues s'il n'y a pas de resp:
+		$nb_bulletins=1;
+	}
+	else {
+		if (isset($tab_bull['eleve'][$i]['resp'][1])) {
+			if((isset($tab_bull['eleve'][$i]['resp'][1]['adr1']))&&
+				(isset($tab_bull['eleve'][$i]['resp'][1]['adr2']))&&
+				(isset($tab_bull['eleve'][$i]['resp'][1]['adr3']))&&
+				(isset($tab_bull['eleve'][$i]['resp'][1]['adr4']))&&
+				(isset($tab_bull['eleve'][$i]['resp'][1]['cp']))&&
+				(isset($tab_bull['eleve'][$i]['resp'][1]['commune']))
+			) {
+				// Le deuxième responsable existe et est renseigné
+				if (($tab_bull['eleve'][$i]['resp'][0]['adr_id']==$tab_bull['eleve'][$i]['resp'][1]['adr_id']) OR
+					(
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr1'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr1']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr2'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr2']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr3'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr3']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr4'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr4']))&&
+						($tab_bull['eleve'][$i]['resp'][0]['cp']==$tab_bull['eleve'][$i]['resp'][1]['cp'])&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['commune'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['commune']))
+					)
+				) {
+					// Les adresses sont identiques
+					$nb_bulletins=1;
+
+					$tab_adr_lignes[0]="";
+					if(($tab_bull['eleve'][$i]['resp'][0]['nom']!=$tab_bull['eleve'][$i]['resp'][1]['nom'])&&
+						($tab_bull['eleve'][$i]['resp'][1]['nom']!="")) {
+						// Les noms des responsables sont différents
+						$tab_adr_ligne1[0]=$tab_bull['eleve'][$i]['resp'][0]['civilite']." ".$tab_bull['eleve'][$i]['resp'][0]['nom']." ".$tab_bull['eleve'][$i]['resp'][0]['prenom']." et ".$tab_bull['eleve'][$i]['resp'][1]['civilite']." ".$tab_bull['eleve'][$i]['resp'][1]['nom']." ".$tab_bull['eleve'][$i]['resp'][1]['prenom'];
+					}
+					else{
+						if(($tab_bull['eleve'][$i]['resp'][0]['civilite']!="")&&($tab_bull['eleve'][$i]['resp'][1]['civilite']!="")) {
+							$tab_adr_ligne1[0]=$tab_bull['eleve'][$i]['resp'][0]['civilite']." et ".$tab_bull['eleve'][$i]['resp'][1]['civilite']." ".$tab_bull['eleve'][$i]['resp'][0]['nom']." ".$tab_bull['eleve'][$i]['resp'][0]['prenom'];
+						}
+						else {
+							$tab_adr_ligne1[0]="M. et Mme ".$tab_bull['eleve'][$i]['resp'][0]['nom']." ".$tab_bull['eleve'][$i]['resp'][0]['prenom'];
+						}
+					}
+					$tab_adr_lignes[0]="<b>".$tab_adr_ligne1[0]."</b>";
+
+					$tab_adr_ligne2[0]="";
+					if($tab_bull['eleve'][$i]['resp'][0]['adr1']!='') {
+						$tab_adr_ligne2[0]=$tab_bull['eleve'][$i]['resp'][0]['adr1'];
+						$tab_adr_lignes[0].="\n";
+						$tab_adr_lignes[0].=$tab_adr_ligne2[0];
+					}
+
+					if($tab_bull['eleve'][$i]['resp'][0]['adr2']!=""){
+						$tab_adr_ligne3[0]=$tab_bull['eleve'][$i]['resp'][0]['adr2'];
+
+						$tab_adr_lignes[0].="\n";
+						$tab_adr_lignes[0].=$tab_adr_ligne3[0];
+					}
+					if($tab_bull['eleve'][$i]['resp'][0]['adr3']!=""){
+						$tab_adr_ligne4[0]=$tab_bull['eleve'][$i]['resp'][0]['adr3'];
+
+						$tab_adr_lignes[0].="\n";
+						$tab_adr_lignes[0].=$tab_adr_ligne4[0];
+					}
+					if($tab_bull['eleve'][$i]['resp'][0]['adr4']!=""){
+						$tab_adr_ligne5[0]=$tab_bull['eleve'][$i]['resp'][0]['adr4'];
+
+						$tab_adr_lignes[0].="\n";
+						$tab_adr_lignes[0].=$tab_adr_ligne5[0];
+					}
+
+					$tab_adr_ligne6[0]=$tab_bull['eleve'][$i]['resp'][0]['cp']." ".$tab_bull['eleve'][$i]['resp'][0]['commune'];
+					$tab_adr_lignes[0].="\n";
+					$tab_adr_lignes[0].=$tab_adr_ligne6[0];
+
+
+					if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
+						$tab_adr_ligne7[0]=$tab_bull['eleve'][$i]['resp'][0]['pays'];
+
+						$tab_adr_lignes[0].="\n";
+						$tab_adr_lignes[0].=$tab_adr_ligne7[0];
+					}
+
+				}
+				else {
+					// Les adresses sont différentes
+					//if ($un_seul_bull_par_famille!="oui") {
+					// On teste en plus si la deuxième adresse est valide
+					if (($un_seul_bull_par_famille!="oui")&&
+						($tab_bull['eleve'][$i]['resp'][1]['adr1']!="")&&
+						($tab_bull['eleve'][$i]['resp'][1]['commune']!="")
+					) {
+						$nb_bulletins=2;
+					}
+					else {
+						$nb_bulletins=1;
+					}
+
+					for($cpt=0;$cpt<$nb_bulletins;$cpt++) {
+						$tab_adr_lignes[$cpt]="";
+
+						if($tab_bull['eleve'][$i]['resp'][$cpt]['civilite']!="") {
+							$tab_adr_ligne1[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['civilite']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['nom']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['prenom'];
+						}
+						else {
+							$tab_adr_ligne1[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['nom']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['prenom'];
+						}
+						$tab_adr_lignes[$cpt].="<b>".$tab_adr_ligne1[$cpt]."</b>";
+
+						$tab_adr_ligne2[$cpt]="";
+						if($tab_bull['eleve'][$i]['resp'][$cpt]['adr1']!='') {
+							$tab_adr_ligne2[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['adr1'];
+							$tab_adr_lignes[$cpt].="\n";
+							$tab_adr_lignes[$cpt].=$tab_adr_ligne2[$cpt];
+						}
+
+						if($tab_bull['eleve'][$i]['resp'][$cpt]['adr2']!=""){
+							$tab_adr_ligne3[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['adr2'];
+
+							$tab_adr_lignes[$cpt].="\n";
+							$tab_adr_lignes[$cpt].=$tab_adr_ligne3[$cpt];
+						}
+						if($tab_bull['eleve'][$i]['resp'][$cpt]['adr3']!=""){
+							$tab_adr_ligne4[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['adr3'];
+
+							$tab_adr_lignes[$cpt].="\n";
+							$tab_adr_lignes[$cpt].=$tab_adr_ligne4[$cpt];
+						}
+
+						if($tab_bull['eleve'][$i]['resp'][$cpt]['adr4']!=""){
+							$tab_adr_ligne5[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['adr4'];
+
+							$tab_adr_lignes[$cpt].="\n";
+							$tab_adr_lignes[$cpt].=$tab_adr_ligne5[$cpt];
+						}
+
+						$tab_adr_ligne6[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['cp']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['commune'];
+						$tab_adr_lignes[$cpt].="\n";
+						$tab_adr_lignes[$cpt].=$tab_adr_ligne6[$cpt];
+
+						if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=my_strtolower($gepiSchoolPays))) {
+							$tab_adr_ligne7[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['pays'];
+
+							$tab_adr_lignes[$cpt].="\n";
+							$tab_adr_lignes[$cpt].=$tab_adr_ligne7[$cpt];
+						}
+					}
+
+				}
+			}
+			else {
+				// Il n'y a pas de deuxième adresse, mais il y aurait un deuxième responsable???
+				// CA NE DEVRAIT PAS ARRIVER ETANT DONNé LA REQUETE EFFECTUEE QUI JOINT resp_pers ET resp_adr...
+				if ($un_seul_bull_par_famille!="oui") {
+					$nb_bulletins=2;
+				}
+				else {
+					$nb_bulletins=1;
+				}
+
+				for($cpt=0;$cpt<$nb_bulletins;$cpt++) {
+					$tab_adr_lignes[$cpt]="";
+
+					if($tab_bull['eleve'][$i]['resp'][$cpt]['civilite']!="") {
+						$tab_adr_ligne1[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['civilite']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['nom']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['prenom'];
+					}
+					else {
+						$tab_adr_ligne1[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['nom']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['prenom'];
+					}
+					$tab_adr_lignes[$cpt].="<b>".$tab_adr_ligne1[$cpt]."</b>";
+
+					$tab_adr_ligne2[$cpt]="";
+					if($tab_bull['eleve'][$i]['resp'][$cpt]['adr1']!='') {
+						$tab_adr_ligne2[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['adr1'];
+						$tab_adr_lignes[$cpt].="\n";
+						$tab_adr_lignes[$cpt].=$tab_adr_ligne2[$cpt];
+					}
+
+					if($tab_bull['eleve'][$i]['resp'][$cpt]['adr2']!=""){
+						$tab_adr_ligne3[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['adr2'];
+
+						$tab_adr_lignes[$cpt].="\n";
+						$tab_adr_lignes[$cpt].=$tab_adr_ligne3[$cpt];
+					}
+					if($tab_bull['eleve'][$i]['resp'][$cpt]['adr3']!=""){
+						$tab_adr_ligne4[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['adr3'];
+
+						$tab_adr_lignes[$cpt].="\n";
+						$tab_adr_lignes[$cpt].=$tab_adr_ligne4[$cpt];
+					}
+
+					if($tab_bull['eleve'][$i]['resp'][$cpt]['adr4']!=""){
+						$tab_adr_ligne5[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['adr4'];
+
+						$tab_adr_lignes[$cpt].="\n";
+						$tab_adr_lignes[$cpt].=$tab_adr_ligne5[$cpt];
+					}
+
+					$tab_adr_ligne6[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['cp']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['commune'];
+					$tab_adr_lignes[$cpt].="\n";
+					$tab_adr_lignes[$cpt].=$tab_adr_ligne6[$cpt];
+
+					if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=my_strtolower($gepiSchoolPays))) {
+						$tab_adr_ligne7[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['pays'];
+
+						$tab_adr_lignes[$cpt].="\n";
+						$tab_adr_lignes[$cpt].=$tab_adr_ligne7[$cpt];
+					}
+				}
+			}
+		}
+		else {
+			// Il n'y a pas de deuxième responsable
+			$nb_bulletins=1;
+
+			$tab_adr_lignes[0]="";
+			if($tab_bull['eleve'][$i]['resp'][0]['civilite']!="") {
+				$tab_adr_ligne1[0]=$tab_bull['eleve'][$i]['resp'][0]['civilite']." ".$tab_bull['eleve'][$i]['resp'][0]['nom']." ".$tab_bull['eleve'][$i]['resp'][0]['prenom'];
+			}
+			else {
+				$tab_adr_ligne1[0]=$tab_bull['eleve'][$i]['resp'][0]['nom']." ".$tab_bull['eleve'][$i]['resp'][0]['prenom'];
+			}
+			$tab_adr_lignes[0].="<b>".$tab_adr_ligne1[0]."</b>";
+
+			$tab_adr_ligne2[0]="";
+			if($tab_bull['eleve'][$i]['resp'][0]['adr1']!='') {
+				$tab_adr_ligne2[0]=$tab_bull['eleve'][$i]['resp'][0]['adr1'];
+				$tab_adr_lignes[0].="\n";
+				$tab_adr_lignes[0].=$tab_adr_ligne2[0];
+			}
+
+			if($tab_bull['eleve'][$i]['resp'][0]['adr2']!=""){
+				$tab_adr_ligne3[0]=$tab_bull['eleve'][$i]['resp'][0]['adr2'];
+
+				$tab_adr_lignes[0].="\n";
+				$tab_adr_lignes[0].=$tab_adr_ligne3[0];
+			}
+
+			if($tab_bull['eleve'][$i]['resp'][0]['adr3']!=""){
+				$tab_adr_ligne4[0]=$tab_bull['eleve'][$i]['resp'][0]['adr3'];
+
+				$tab_adr_lignes[0].="\n";
+				$tab_adr_lignes[0].=$tab_adr_ligne4[0];
+			}
+
+			if($tab_bull['eleve'][$i]['resp'][0]['adr4']!=""){
+				$tab_adr_ligne5[0]=$tab_bull['eleve'][$i]['resp'][0]['adr4'];
+
+				$tab_adr_lignes[0].="\n";
+				$tab_adr_lignes[0].=$tab_adr_ligne5[0];
+			}
+
+			$tab_adr_ligne6[0]=$tab_bull['eleve'][$i]['resp'][0]['cp']." ".$tab_bull['eleve'][$i]['resp'][0]['commune'];
+			$tab_adr_lignes[0].="\n";
+			$tab_adr_lignes[0].=$tab_adr_ligne6[0];
+
+			if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
+				$tab_adr_ligne7[0]=$tab_bull['eleve'][$i]['resp'][0]['pays'];
+				$tab_adr_lignes[0].="\n";
+				$tab_adr_lignes[0].=$tab_adr_ligne7[0];
+			}
+		}
+	}
+
+	// Envoi du bulletin à des resp_legal=0
+	if (isset($tab_bull['eleve'][$i]['resp'][2])) {
+		//$indice_tab_adr=count($tab_adr_ligne1);
+		foreach($tab_bull['eleve'][$i]['resp'] as $key => $value) {
+			if($key>=2) {
+				$tab_adr_lignes[$nb_bulletins]="";
+				if($tab_bull['eleve'][$i]['resp'][$key]['civilite']!="") {
+					$tab_adr_ligne1[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['civilite']." ".$tab_bull['eleve'][$i]['resp'][$key]['nom']." ".$tab_bull['eleve'][$i]['resp'][$key]['prenom'];
+				}
+				else {
+					$tab_adr_ligne1[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['nom']." ".$tab_bull['eleve'][$i]['resp'][$key]['prenom'];
+				}
+				$tab_adr_lignes[$nb_bulletins].="<b>".$tab_adr_ligne1[0]."</b>";
+
+				$tab_adr_ligne2[$nb_bulletins]="";
+				if($tab_bull['eleve'][$i]['resp'][$key]['adr1']!='') {
+					$tab_adr_ligne2[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr1'];
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne2[0];
+				}
+
+				if($tab_bull['eleve'][$i]['resp'][$key]['adr2']!=""){
+					$tab_adr_ligne3[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr2'];
+
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne3[0];
+				}
+
+				if($tab_bull['eleve'][$i]['resp'][$key]['adr3']!=""){
+					$tab_adr_ligne4[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr3'];
+
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne4[0];
+				}
+
+				if($tab_bull['eleve'][$i]['resp'][$key]['adr4']!=""){
+					$tab_adr_ligne5[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr4'];
+
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne5[0];
+				}
+
+				$tab_adr_ligne6[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['cp']." ".$tab_bull['eleve'][$i]['resp'][$key]['commune'];
+				$tab_adr_lignes[$nb_bulletins].="\n";
+				$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne6[0];
+
+				if(($tab_bull['eleve'][$i]['resp'][$key]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$key]['pays'])!=my_strtolower($gepiSchoolPays))) {
+					$tab_adr_ligne7[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['pays'];
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne7[0];
+				}
+
+				$nb_bulletins++;
+			}
+		}
+	}
+	//=====================================
+
+	for($num_resp_bull=0;$num_resp_bull<$nb_bulletins;$num_resp_bull++) {
+		$pdf->AddPage(); //ajout d'une page au document
+		$pdf->SetFont('DejaVu');
+
+
+		$pdf->SetFillColor($param_bull2016["couleur_fond_bilan_cycle"]["R"], $param_bull2016["couleur_fond_bilan_cycle"]["V"], $param_bull2016["couleur_fond_bilan_cycle"]["B"]);
+		$pdf->Rect(0, 0, LargeurPage, HauteurPage, 'F');
+		$pdf->SetFillColor(0, 0, 0);
+
+
+		$hauteur_pris=0;
+
+		//=========================================
+		// Récupération de l'identifiant de la classe:
+		$classe_id=$tab_bull['eleve'][$i]['id_classe'];
+		//=========================================
+
+		//=========================================
+
+		// Définition du $cycle par défaut, mais il est modifié/adapté/identifié plus bas d'après le MEF de l'élève
+		$cycle=3;
+
+		//=========================================
+
+		// Cadre Logo RF
+
+		$pdf->SetFillColor(255, 255, 255);
+		//$pdf->Rect($param_bull2016["x_cadre_logo_RF"], $param_bull2016["y_cadre_logo_RF"], $param_bull2016["largeur_cadre_logo_RF"], $param_bull2016["hauteur_cadre_logo_RF"], 'D');
+		$pdf->Rect($param_bull2016["x_cadre_logo_RF"], $param_bull2016["y_cadre_logo_RF"], $param_bull2016["largeur_cadre_logo_RF"], $param_bull2016["hauteur_cadre_logo_RF"], 'F');
+
+		//$logo_RF=$gepiPath."/images/logo_RF.jpg";
+		$logo_RF="../images/logo_RF.jpg";
+		$valeur=redimensionne_image($logo_RF, 18*3.2, 10*3.2);
+		//$X_logo = $param_bull2016["x_logo_RF"];
+		//$Y_logo = $param_bull2016["y_logo_RF"];
+		$L_logo = $valeur[0];
+		$H_logo = $valeur[1];
+
+		$X_logo=$param_bull2016["x_cadre_logo_RF"]+($param_bull2016["largeur_cadre_logo_RF"]-$L_logo)/2;
+		$Y_logo=$param_bull2016["y_cadre_logo_RF"]+($param_bull2016["hauteur_cadre_logo_RF"]-$H_logo)/2;
+
+		// centrage du logo
+		//$centre_du_logo = ( $H_logo / 2 );
+		//$Y_logo = $tab_modele_pdf["Y_centre_logo"][$classe_id] - $centre_du_logo;
+
+		//logo
+		$tmp_dim_photo=getimagesize($logo_RF);
+		if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+			$pdf->Image($logo_RF, $X_logo, $Y_logo, $L_logo, $H_logo);
+		}
+
+		//=========================================
+
+		// Cadre EN
+
+		$pdf->SetFillColor(255, 255, 255);
+		//$pdf->Rect($param_bull2016["x_cadre_EN"], $param_bull2016["y_cadre_EN"], $param_bull2016["largeur_cadre_logo_RF"], $param_bull2016["hauteur_cadre_logo_RF"], 'D');
+		$pdf->Rect($param_bull2016["x_cadre_EN"], $param_bull2016["y_cadre_EN"], $param_bull2016["largeur_cadre_logo_RF"], $param_bull2016["hauteur_cadre_logo_RF"], 'F');
+
+		$pdf->SetXY($param_bull2016["x_cadre_EN"]+2.5, $param_bull2016["y_cadre_EN"]+1);
+		$pdf->SetFont('DejaVu','',6);
+		$pdf->SetTextColor(0,0,0);
+		$texte="MINISTÈRE\nDE L'ÉDUCATION\nNATIONALE, DE\nL'ENSEIGNEMENT\nSUPÉRIEUR ET DE\nLA RECHERCHE";
+		//$pdf->Cell($param_bull2016["largeur_cadre_logo_RF"]-8, $param_bull2016["hauteur_cadre_EN"]-6, $texte,0,2,'C');
+		$pdf->drawTextBox($texte, $param_bull2016["largeur_cadre_logo_RF"]-5, $param_bull2016["hauteur_cadre_EN"]-4, 'C', 'M', 0);
+
+		//=========================================
+
+		// Section Académie, établissement, adresse étab
+
+		$pdf->SetXY($param_bull2016["x_cadre_etab"], $param_bull2016["y_cadre_etab_academie"]);
+		$pdf->SetFont('DejaVu','',9);
+		$pdf->SetTextColor(0,0,0);
+		$pdf->Cell($param_bull2016["largeur_cadre_etab"],7, "Académie de ".$gepiSchoolAcademie,0,2,'L');
+
+		$pdf->SetXY($param_bull2016["x_cadre_etab"], $param_bull2016["y_cadre_etab_college"]);
+		$pdf->SetFont('DejaVu','B',10);
+		$pdf->SetTextColor(0,0,0);
+		$pdf->Cell($param_bull2016["largeur_cadre_etab"],7, $gepiSchoolName,0,2,'L');
+
+		$pdf->SetXY($param_bull2016["x_cadre_etab"], $param_bull2016["y_cadre_etab_adresse_college"]);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->SetTextColor(0,0,0);
+		$adresse_etab="";
+		if($gepiSchoolAdress1!="") {
+			$adresse_etab=$gepiSchoolAdress1;
+			if($gepiSchoolAdress2!="") {
+				$adresse_etab.=", ".$gepiSchoolAdress2;
+			}
+		}
+		elseif($gepiSchoolAdress2!="") {
+			$adresse_etab=$gepiSchoolAdress2;
+		}
+		$pdf->Cell($param_bull2016["largeur_cadre_etab"], 7, $adresse_etab, 0, 2, 'L');
+
+		$pdf->SetXY($param_bull2016["x_cadre_etab"], $param_bull2016["y_cadre_etab_cp_commune_college"]);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->SetTextColor(0,0,0);
+		$cp_commune_etab="";
+		if($gepiSchoolZipCode!="") {
+			$cp_commune_etab=$gepiSchoolZipCode;
+			if($gepiSchoolCity!="") {
+				$cp_commune_etab.=" ".$gepiSchoolCity;
+			}
+		}
+		elseif($gepiSchoolCity!="") {
+			$cp_commune_etab=$gepiSchoolCity;
+		}
+		$pdf->Cell($param_bull2016["largeur_cadre_etab"], 7, $cp_commune_etab, 0, 2, 'L');
+
+		$pdf->SetXY($param_bull2016["x_cadre_etab"], $param_bull2016["y_cadre_etab_tel_college"]);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->SetTextColor(0,0,0);
+		$tel_etab="";
+		if($gepiSchoolTel!="") {
+			$tel_etab=$gepiSchoolTel;
+			if($gepiSchoolFax!="") {
+				$tel_etab.=" (fax:".$gepiSchoolFax.")";
+			}
+		}
+		elseif($gepiSchoolFax!="") {
+			$tel_etab="(fax:".$gepiSchoolFax.")";
+		}
+		$pdf->Cell($param_bull2016["largeur_cadre_etab"], 7, $tel_etab, 0, 2, 'L');
+
+		$pdf->SetXY($param_bull2016["x_cadre_etab"], $param_bull2016["y_cadre_etab_email_college"]);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->SetTextColor(0,0,0);
+		$pdf->Cell($param_bull2016["largeur_cadre_etab"], 7, $gepiSchoolEmail, 0, 2, 'L');
+
+		//=========================================
+
+		// Section cycle et niveau
+		// Debug
+		/*
+		echo "<pre>";
+		print_r($tab_mef);
+		echo "</pre>";
+		echo "\$tab_bull['eleve'][$i]['mef_code']=".$tab_bull['eleve'][$i]['mef_code']."<br />";
+		*/
+
+		$cycle=$tab_bull['eleve'][$i]['mef_cycle'];
+		$niveau=$tab_bull['eleve'][$i]['mef_niveau'];
+		// Debug
+		//echo "cycle=$cycle et niveau=$niveau<br />";
+
+		// Colonne cycle:
+		for($loop_cycle=2;$loop_cycle<=4;$loop_cycle++) {
+			if($loop_cycle==$cycle) {
+				$pdf->SetFillColor($param_bull2016["couleur_cycle_courant"]["cycle"]["R"], $param_bull2016["couleur_cycle_courant"]["cycle"]["V"], $param_bull2016["couleur_cycle_courant"]["cycle"]["B"]);
+			}
+			else {
+				$pdf->SetFillColor($param_bull2016["couleur_cycle_autre"]["R"], $param_bull2016["couleur_cycle_autre"]["V"], $param_bull2016["couleur_cycle_autre"]["B"]);
+			}
+			$pdf->Rect($param_bull2016["x_colonne_cycle"], $param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]), $param_bull2016["cote_carre_cycle"], $param_bull2016["cote_carre_cycle"], 'F');
+			$pdf->SetFillColor(0, 0, 0);
+
+			$pdf->SetXY($param_bull2016["x_colonne_cycle"], $param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]));
+			$pdf->SetFont('DejaVu','',14);
+			$pdf->SetTextColor(255,255,255);
+			$pdf->Cell($param_bull2016["cote_carre_cycle"],$param_bull2016["cote_carre_cycle"], $loop_cycle,0,2,'C');
+
+		}
+
+		// Colonne correspondant à $loop_niveau et Ligne à $loop_cycle
+		$tab_coord_niveau["cp"]=array("col"=>0, "lig"=>2);
+		$tab_coord_niveau["ce1"]=array("col"=>1, "lig"=>2);
+		$tab_coord_niveau["ce2"]=array("col"=>2, "lig"=>2);
+		$tab_coord_niveau["cm1"]=array("col"=>0, "lig"=>3);
+		$tab_coord_niveau["cm2"]=array("col"=>1, "lig"=>3);
+		$tab_coord_niveau["6"]=array("col"=>2, "lig"=>3);
+		$tab_coord_niveau["5"]=array("col"=>0, "lig"=>4);
+		$tab_coord_niveau["4"]=array("col"=>1, "lig"=>4);
+		$tab_coord_niveau["3"]=array("col"=>2, "lig"=>4);
+/*
+echo "<br /><p>DEBUG : ".$tab_bull['eleve'][$i]["login"]."<br />";
+echo "Cycle=$cycle et niveau=$niveau<br />";
+echo "<pre>";
+print_r($tab_coord_niveau[$niveau]);
+echo "</pre>";
+*/
+		// Colonnes niveau:
+		for($loop_cycle=2;$loop_cycle<=4;$loop_cycle++) {
+			for($loop_niveau=0;$loop_niveau<3;$loop_niveau++) {
+				//if(($loop_cycle==$cycle)&&(isset($param_bull2016["cycles_et_niveaux"][$loop_cycle][$loop_niveau]["texte"]))&&($param_bull2016["cycles_et_niveaux"][$loop_cycle][$loop_niveau]["texte"]==$niveau)) {
+
+//echo "loop_niveau=".$loop_niveau." et loop_cycle=".$loop_cycle."<br />";
+
+				if((isset($tab_coord_niveau[$niveau]))&&
+				//($tab_coord_niveau[$niveau]["col"]==$loop_niveau)&&
+				($tab_coord_niveau[$niveau]["lig"]==$loop_cycle)) {
+//echo "On y est.<br />";
+
+					$pdf->SetFillColor($param_bull2016["couleur_cycle_courant"]["niveau"]["R"], $param_bull2016["couleur_cycle_courant"]["niveau"]["V"], $param_bull2016["couleur_cycle_courant"]["niveau"]["B"]);
+				}
+				else {
+					$pdf->SetFillColor($param_bull2016["couleur_cycle_autre"]["R"], $param_bull2016["couleur_cycle_autre"]["V"], $param_bull2016["couleur_cycle_autre"]["B"]);
+				}
+				$pdf->Rect($param_bull2016["x_colonne_cycle"]+($loop_niveau+1)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]), $param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]), $param_bull2016["cote_carre_cycle"], $param_bull2016["cote_carre_cycle"], 'F');
+				$pdf->SetFillColor(0, 0, 0);
+
+				$pdf->SetXY($param_bull2016["x_colonne_cycle"]+($loop_niveau+1)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]), $param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]));
+				$pdf->SetFont('DejaVu','',14);
+				$pdf->SetTextColor(255,255,255);
+				$pdf->Cell($param_bull2016["cote_carre_cycle"],$param_bull2016["cote_carre_cycle"], $param_bull2016["cycles_et_niveaux"][$loop_cycle][$loop_niveau]["texte"],0,2,'C');
+			}
+		}
+
+
+		//=========================================
+
+		// Cadre Logo établissement
+
+		$logo = '../images/'.getSettingValue('logo_etab');
+		$format_du_logo = mb_strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
+
+		// Logo
+		//if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png')) {
+		if($param_bull2016["affiche_logo_etab"]==1 and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png')) {
+			$valeur=redimensionne_image($logo, ($param_bull2016["largeur_max_logo_etab"]*2.8), ($param_bull2016["hauteur_max_logo_etab"]*2.8));
+			$X_logo = $param_bull2016["x_logo_etab"];
+			$Y_logo = $param_bull2016["y_logo_etab"];
+			$L_logo = $valeur[0];
+			$H_logo = $valeur[1];
+			//$X_etab = $X_logo + $L_logo + 1;
+			//$Y_etab = $Y_logo;
+
+			/*
+			if ( !isset($tab_modele_pdf["centrage_logo"][$classe_id]) or empty($tab_modele_pdf["centrage_logo"][$classe_id]) ) {
+				$tab_modele_pdf["centrage_logo"][$classe_id] = '0';
+			}
+
+			if ( $tab_modele_pdf["centrage_logo"][$classe_id] === '1' ) {
+				// centrage du logo
+				$centre_du_logo = ( $H_logo / 2 );
+				$Y_logo = $tab_modele_pdf["Y_centre_logo"][$classe_id] - $centre_du_logo;
+			}
+			*/
+
+			//logo
+			$tmp_dim_photo=getimagesize($logo);
+			if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+				$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
+			}
+		}
+
+		//=========================================
+
+		// Cadre Année, période, identité élève, pp et classe
+		$pdf->SetFillColor($param_bull2016["couleur_cadre_identite"]["R"], $param_bull2016["couleur_cadre_identite"]["V"], $param_bull2016["couleur_cadre_identite"]["B"]);
+
+		$pdf->Rect($param_bull2016["x_cadre_eleve"], $param_bull2016["y_cadre_eleve"], $param_bull2016["largeur_cadre_eleve"], $param_bull2016["hauteur_cadre_eleve"], 'F');
+
+		if($param_bull2016["afficher_cadre_adresse_resp"]=="y") {
+			$largeur_cadre_eleve=$param_bull2016["x_cadre_eleve"]+$param_bull2016["largeur_cadre_eleve"]-$param_bull2016["x_cadre_adresse_resp"];
+		}
+		else {
+			$largeur_cadre_eleve=$param_bull2016["largeur_cadre_eleve"];
+		}
+
+		$pdf->SetFillColor(0, 0, 0);
+
+		$pdf->SetXY($param_bull2016["x_cadre_eleve"], $param_bull2016["y_annee_scolaire"]);
+		$pdf->SetFont('DejaVu','B',10);
+		$pdf->SetTextColor(0,0,0);
+		$pdf->Cell($largeur_cadre_eleve,7, "Année scolaire ".$gepiYear,0,2,'C');
+
+		$pdf->SetXY($param_bull2016["x_cadre_eleve"], $param_bull2016["y_periode"]);
+		$pdf->SetFont('DejaVu','',8);
+		$pdf->SetTextColor(0,0,0);
+		//$pdf->Cell($param_bull2016["largeur_cadre_eleve"],7, "Bilan trimestriel du cycle ".$num_cycle." - ".$tab_bull['num_periode']." trimestre",0,2,'C');
+		if($tab_bull['nb_periodes']==2) {
+			$trimestriel_ou_semestriel="semestriel";
+		}
+		else {
+			$trimestriel_ou_semestriel="trimestriel";
+		}
+		$pdf->Cell($largeur_cadre_eleve,7, "Bilan ".$trimestriel_ou_semestriel." du cycle ".$cycle." - ".$tab_bull['nom_periode'],0,2,'C');
+
+		$pdf->SetXY($param_bull2016["x_cadre_eleve"], $param_bull2016["y_nom_prenom_eleve"]);
+		$pdf->SetFont('DejaVu','B',12);
+		$pdf->SetTextColor(0,0,0);
+		$pdf->Cell($largeur_cadre_eleve,7, $tab_bull['eleve'][$i]['prenom']." ".$tab_bull['eleve'][$i]['nom'],0,2,'C');
+
+		$info_naissance="Né";
+		if($tab_bull['eleve'][$i]['sexe']=="F") {$info_naissance.="e";}
+		$info_naissance.=" le ".$tab_bull['eleve'][$i]['naissance'];
+		/*
+		if((getSettingValue('ele_lieu_naissance')=='y')&&($tab_modele_pdf["affiche_lieu_naissance"][$classe_id]==='1')) {
+			$info_naissance.=" à ".$tab_bull['eleve'][$i]['lieu_naissance'];
+		}
+		*/
+
+		$info_ligne_2_eleve=$info_naissance;
+		if($param_bull2016["bull2016_INE"]=="y") {
+			$info_ligne_2_eleve.=" - INE : ".$tab_bull['eleve'][$i]['no_gep'];
+		}
+
+		$pdf->SetXY($param_bull2016["x_cadre_eleve"], $param_bull2016["y_naissance_eleve"]);
+		$pdf->SetFont('DejaVu','',8);
+		$pdf->Cell($largeur_cadre_eleve,7, $info_ligne_2_eleve,0,2,'C');
+
+
+		//if($tab_modele_pdf["afficher_tous_profprincipaux"][$classe_id]==1) {
+			$index_pp='pp_classe';
+		/*
+		}
+		else {
+			$index_pp='pp';
+		}
+		*/
+		if(isset($tab_bull['eleve'][$i][$index_pp][0]['login'])) {
+			$pp_classe[$i]=ucfirst($tab_bull['gepi_prof_suivi'])." : ";
+			$pp_classe[$i].=affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][0]['login'],$tab_bull['eleve'][$i]['id_classe']);
+			for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i][$index_pp]);$i_pp++) {
+				$pp_classe[$i].=", ";
+				$pp_classe[$i].=affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][$i_pp]['login'],$tab_bull['eleve'][$i]['id_classe']);
+			}
+		}
+		else {
+			$pp_classe[$i]="";
+		}
+		$pdf->SetXY($param_bull2016["x_cadre_eleve"], $param_bull2016["y_pp"]);
+		$pdf->Cell($largeur_cadre_eleve,7, $pp_classe[$i],0,2,'C');
+
+		$pdf->SetXY($param_bull2016["x_cadre_eleve"], $param_bull2016["y_classe"]);
+		$pdf->SetFont('DejaVu','',11);
+		$pdf->Cell($largeur_cadre_eleve,7, "Classe de ".unhtmlentities($tab_bull['eleve'][$i]['classe']),0,2,'C');
+
+		//=========================================
+		if($param_bull2016["afficher_cadre_adresse_resp"]=="y") {
+			// 20161013
+
+			$texte=$tab_adr_lignes[$num_resp_bull];
+			$taille_max_police=10;
+			//$taille_max_police=$tab_modele_pdf["adresse_resp_fontsize"][$classe_id];
+			$taille_min_police=ceil($taille_max_police/3);
+
+			$largeur_dispo=$param_bull2016["largeur_cadre_adresse_resp"];
+			$h_cell=$param_bull2016["hauteur_cadre_adresse_resp"];
+
+			cell_ajustee($texte, $param_bull2016["x_cadre_adresse_resp"], $param_bull2016["y_cadre_adresse_resp"], $largeur_dispo, $h_cell, $taille_max_police, $taille_min_police, $param_bull2016["bordure_cadre_adresse_resp"],'C','L',0.3,1);
+
+		}
+		//=========================================
+
+		// Bandeau Maitrise des composantes
+
+		$pdf->SetFillColor($param_bull2016["couleur_bandeau_maitrise_composantes_socle"]["R"], $param_bull2016["couleur_bandeau_maitrise_composantes_socle"]["V"], $param_bull2016["couleur_bandeau_maitrise_composantes_socle"]["B"]);
+
+		$pdf->Rect($param_bull2016["x_bandeau_maitrise_composantes_socle"], $param_bull2016["y_bandeau_maitrise_composantes_socle"], $param_bull2016["largeur_bandeau_maitrise_composantes_socle"], $param_bull2016["hauteur_bandeau_maitrise_composantes_socle"], 'F');
+
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(255, 255, 255);
+		$pdf->SetXY($param_bull2016["x_bandeau_maitrise_composantes_socle"], $param_bull2016["y_bandeau_maitrise_composantes_socle"]+1);
+		$pdf->SetFont('DejaVu','B',12);
+		$pdf->Cell($param_bull2016["largeur_bandeau_maitrise_composantes_socle"],7, "Maîtrise des composantes du socle en fin de cycle ".$cycle,0,2,'C');
+
+		//=========================================
+
+		// Tableau Maîtrise des composantes du socle en fin de cycle N
+
+		$y_tableau_maitrise=$param_bull2016["y_bandeau_maitrise_composantes_socle"]+$param_bull2016["hauteur_bandeau_maitrise_composantes_socle"]+5;
+		$y_courant=$y_tableau_maitrise;
+
+
+		// Ligne d'entête du tableau
+		$cpt=0;
+
+		$x_courant=$param_bull2016["x_MI_bilan_cycle"];
+		$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["B"]);
+		$pdf->SetDrawColor(255, 255, 255);
+		$pdf->Rect($x_courant, $y_courant, $param_bull2016["largeur_col_niveau_maitrise_composantes_socle"], $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], "Maîtrise insuffisante",0,2,'C');
+
+		$x_courant=$param_bull2016["x_MF_bilan_cycle"];
+		$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_MF_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_MF_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_MF_bilan_cycle"]["B"]);
+		$pdf->SetDrawColor(255, 255, 255);
+		$pdf->Rect($x_courant, $y_courant, $param_bull2016["largeur_col_niveau_maitrise_composantes_socle"], $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], "Maîtrise fragile",0,2,'C');
+
+		$x_courant=$param_bull2016["x_MS_bilan_cycle"];
+		$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_MS_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_MS_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_MS_bilan_cycle"]["B"]);
+		$pdf->SetDrawColor(255, 255, 255);
+		$pdf->Rect($x_courant, $y_courant, $param_bull2016["largeur_col_niveau_maitrise_composantes_socle"], $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], "Maîtrise satisfaisante",0,2,'C');
+
+		$x_courant=$param_bull2016["x_TBM_bilan_cycle"];
+		$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_TBM_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_TBM_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_TBM_bilan_cycle"]["B"]);
+		$pdf->SetDrawColor(255, 255, 255);
+		$pdf->Rect($x_courant, $y_courant, $param_bull2016["largeur_col_niveau_maitrise_composantes_socle"], $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], "Très bonne maîtrise",0,2,'C');
+
+		// Lignes domaines du tableau
+		$tab_domaines=array("CPD_FRA", "CPD_ETR", "CPD_SCI", "CPD_ART", "MET_APP", "FRM_CIT", "SYS_NAT", "REP_MND");
+		$tab_niveau_maitrise=array(0=>"", 1=>"MI", 2=>"MF", 3=>"MS", 4=>"TBM");
+		foreach($tab_domaine_bilan_socle as $domaine => $intitule) {
+			$cpt++;
+			$y_courant+=$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"]+1;
+
+			//$tab_bilan_cycle_eleves[$lig_socle->login][$lig_socle->cycle][$lig_socle->code_composante]=$lig_socle->niveau_maitrise;
+			for($loop_domaine=0;$loop_domaine<count($tab_domaines);$loop_domaine++) {
+				$coche[$tab_domaines[$loop_domaine]][1]="";
+				$coche[$tab_domaines[$loop_domaine]][2]="";
+				$coche[$tab_domaines[$loop_domaine]][3]="";
+				$coche[$tab_domaines[$loop_domaine]][4]="";
+			}
+			if(isset($tab_bull['eleve'][$i]['socle'][$cycle])) {
+				for($loop_domaine=0;$loop_domaine<count($tab_domaines);$loop_domaine++) {
+					if(isset($tab_bull['eleve'][$i]['socle'][$cycle][$tab_domaines[$loop_domaine]])) {
+						$coche[$tab_domaines[$loop_domaine]][$tab_bull['eleve'][$i]['socle'][$cycle][$tab_domaines[$loop_domaine]]]="X";
+					}
+				}
+			}
+
+			$x_courant=$param_bull2016["x_col_domaine_maitrise_composantes_socle"];
+			//$largeur_domaine_socle=$param_bull2016["x_MI_bilan_cycle"]-10-1;
+			$largeur_domaine_socle=$param_bull2016["largeur_col_domaine_maitrise_composantes_socle"];
+
+			$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["B"]);
+			$pdf->SetDrawColor(255, 255, 255);
+			$pdf->Rect($x_courant, $y_courant, $largeur_domaine_socle, $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+			$pdf->SetFillColor(0, 0, 0);
+			$pdf->SetTextColor(0, 0, 0);
+			$pdf->SetXY($x_courant, $y_courant);
+			$pdf->SetFont('DejaVu','',7);
+			$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], $intitule,0,2,'L');
+
+			$x_courant=$param_bull2016["x_MI_bilan_cycle"];
+			$contenu=$coche[$domaine][1];
+			$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_MI_bilan_cycle"]["B"]);
+			$pdf->SetDrawColor(255, 255, 255);
+			$pdf->Rect($x_courant, $y_courant, $param_bull2016["largeur_col_niveau_maitrise_composantes_socle"], $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+			$pdf->SetFillColor(0, 0, 0);
+			$pdf->SetTextColor(0, 0, 0);
+			$pdf->SetXY($x_courant, $y_courant);
+			$pdf->SetFont('DejaVu','',7);
+			$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], $contenu,0,2,'C');
+
+			$x_courant=$param_bull2016["x_MF_bilan_cycle"];
+			$contenu=$coche[$domaine][2];
+			$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_MF_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_MF_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_MF_bilan_cycle"]["B"]);
+			$pdf->SetDrawColor(255, 255, 255);
+			$pdf->Rect($x_courant, $y_courant, $param_bull2016["largeur_col_niveau_maitrise_composantes_socle"], $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+			$pdf->SetFillColor(0, 0, 0);
+			$pdf->SetTextColor(0, 0, 0);
+			$pdf->SetXY($x_courant, $y_courant);
+			//$pdf->SetFont('DejaVu','B',12);
+			$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], $contenu,0,2,'C');
+
+			$x_courant=$param_bull2016["x_MS_bilan_cycle"];
+			$contenu=$coche[$domaine][3];
+			$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_MS_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_MS_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_MS_bilan_cycle"]["B"]);
+			$pdf->SetDrawColor(255, 255, 255);
+			$pdf->Rect($x_courant, $y_courant, $param_bull2016["largeur_col_niveau_maitrise_composantes_socle"], $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+			$pdf->SetFillColor(0, 0, 0);
+			$pdf->SetTextColor(0, 0, 0);
+			$pdf->SetXY($x_courant, $y_courant);
+			//$pdf->SetFont('DejaVu','B',12);
+			$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], $contenu,0,2,'C');
+
+
+			$x_courant=$param_bull2016["x_TBM_bilan_cycle"];
+			$contenu=$coche[$domaine][4];
+			$pdf->SetFillColor($param_bull2016["couleur_".($cpt%2+1)."_TBM_bilan_cycle"]["R"], $param_bull2016["couleur_".($cpt%2+1)."_TBM_bilan_cycle"]["V"], $param_bull2016["couleur_".($cpt%2+1)."_TBM_bilan_cycle"]["B"]);
+			$pdf->SetDrawColor(255, 255, 255);
+			$pdf->Rect($x_courant, $y_courant, $param_bull2016["largeur_col_niveau_maitrise_composantes_socle"], $param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], 'DF');
+			$pdf->SetFillColor(0, 0, 0);
+			$pdf->SetTextColor(0, 0, 0);
+			$pdf->SetXY($x_courant, $y_courant);
+			//$pdf->SetFont('DejaVu','B',12);
+			$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], $contenu,0,2,'C');
+		}
+
+		// Explications sur le contenu des domaines du socle, sous le tableau des niveaux de maitrise
+
+		$texte="";
+		foreach($tab_domaine_bilan_socle_description as $domaine => $commentaire) {
+			if($texte!="") {
+				$texte.=" - ";
+			}
+			$texte.=$commentaire;
+		}
+
+		$x_courant=10;
+		$y_courant+=7;
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->SetFont('DejaVu','',7);
+		//$pdf->Cell($param_bull2016["largeur_col_niveau_maitrise_composantes_socle"],$param_bull2016["hauteur_ligne_maitrise_bilan_cycle"], "Très bonne maîtrise",0,2,'C');
+
+		$taille_max_police=7;
+		$taille_min_police=ceil($taille_max_police/3);
+
+		$largeur_dispo=$param_bull2016["largeur_bandeau_bilan_acquisitions"];
+		$h_cell=10;
+
+		cell_ajustee($texte, $x_courant, $y_courant, $largeur_dispo, $h_cell, $taille_max_police, $taille_min_police, "",'C','L',0.3,1);
+
+
+		//=========================================
+
+		// Bandeau Synthèse des acquis scolaires de l'élève en fin de cycle N
+
+		$pdf->SetFillColor($param_bull2016["couleur_bandeau_synthese_acquis_fin_cycle"]["R"], $param_bull2016["couleur_bandeau_synthese_acquis_fin_cycle"]["V"], $param_bull2016["couleur_bandeau_synthese_acquis_fin_cycle"]["B"]);
+
+		$pdf->Rect($param_bull2016["x_bandeau_synthese_acquis_fin_cycle"], $param_bull2016["y_bandeau_synthese_acquis_fin_cycle"], $param_bull2016["largeur_bandeau_synthese_acquis_fin_cycle"], $param_bull2016["hauteur_bandeau_synthese_acquis_fin_cycle"], 'F');
+
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(255, 255, 255);
+		$pdf->SetXY($param_bull2016["x_bandeau_synthese_acquis_fin_cycle"], $param_bull2016["y_bandeau_synthese_acquis_fin_cycle"]+1);
+		$pdf->SetFont('DejaVu','B',12);
+		$pdf->Cell($param_bull2016["largeur_bandeau_synthese_acquis_fin_cycle"],7, "Synthèse des acquis scolaires de l'élève en fin de cycle ".$cycle,0,2,'C');
+
+		// Cadre synthèse des acquis...
+
+		$y_courant=$param_bull2016["y_bandeau_synthese_acquis_fin_cycle"]+$param_bull2016["hauteur_bandeau_synthese_acquis_fin_cycle"]+5;
+
+		$pdf->SetFillColor($param_bull2016["couleur_bilan_acquisitions"]["R"], $param_bull2016["couleur_bilan_acquisitions"]["V"], $param_bull2016["couleur_bilan_acquisitions"]["B"]);
+		$pdf->SetDrawColor(255, 255, 255);
+		$pdf->Rect($param_bull2016["x_bilan_acquisitions"], $y_courant, $param_bull2016["largeur_bilan_acquisitions"], $param_bull2016["hauteur_synthese_acquis_bilan_cycle"], 'DF');
+
+		$texte="-";
+		//"Synthèse à récupérer dans la base..."
+		if(isset($tab_bull['eleve'][$i]['socle'][$cycle]["synthese"])) {
+			$texte=$tab_bull['eleve'][$i]['socle'][$cycle]["synthese"];
+		}
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetXY($param_bull2016["x_bilan_acquisitions"], $y_courant+1);
+		$pdf->SetFont('DejaVu','',9);
+		$pdf->Cell($param_bull2016["largeur_bilan_acquisitions"],7, $texte,0,2,'L');
+
+/*
+		if($use_cell_ajustee=="n") {
+			$pdf->drawTextBox(($texteavis), $param_bull2016["largeur_bilan_acquisitions"]-$marge_droite_avis_cons, $hauteur_bilan_acquisitions-10, 'J', 'M', 0);
+		}
+		else {
+			$texte=$texteavis;
+			$taille_max_police=10;
+			$taille_min_police=ceil($taille_max_police/3);
+
+			$largeur_dispo=$param_bull2016["largeur_bilan_acquisitions"]-$marge_droite_avis_cons;
+			$h_cell=$hauteur_bilan_acquisitions-10;
+
+			cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+		}
+		//=========================================
+
+*/
+
+
+	//=========================================
+
+		// Visa
+
+		$x_courant=$param_bull2016["x_signature_PP_bilan_cycle"];
+		//$y_visa=$param_bull2016["y_visa_bilan_cycle"];
+
+		$y_visa=$param_bull2016["y_bandeau_synthese_acquis_fin_cycle"]+$param_bull2016["hauteur_bandeau_synthese_acquis_fin_cycle"]+5+$param_bull2016["hauteur_synthese_acquis_bilan_cycle"]+5;
+
+
+		// Cadre Visa PP
+
+		$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
+		$pdf->SetDrawColor(255, 255, 255);
+		$pdf->Rect($param_bull2016["x_signature_PP_bilan_cycle"], $y_visa, $param_bull2016["largeur_signature_PP_bilan_cycle"], $param_bull2016["hauteur_signature_bilan_cycle"], 'DF');
+		//$pdf->SetDrawColor(255, 255, 255);
+		//$pdf->Rect($param_bull2016["x_signature_PP_bilan_cycle"], $y_visa, $param_bull2016["largeur_signature_PP_bilan_cycle"], $param_bull2016["hauteur_signature_bilan_cycle"], 'D');
+
+		$texte="Visa du professeur principal";
+		$y_courant=$y_visa;
+		$pdf->SetXY($param_bull2016["x_signature_PP_bilan_cycle"], $y_courant);
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->Cell($param_bull2016["largeur_signature_PP_bilan_cycle"],7, $texte,0,2,'L');
+
+		$index_pp='pp_classe';
+		if(isset($tab_bull['eleve'][$i][$index_pp][0]['login'])) {
+			$texte=affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][0]['login'],$tab_bull['eleve'][$i]['id_classe']);
+			/*
+			for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i][$index_pp]);$i_pp++) {
+				$texte.=", ";
+				$texte.=affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][$i_pp]['login'],$tab_bull['eleve'][$i]['id_classe']);
+			}
+			*/
+
+			$y_courant+=4;
+			$pdf->SetFont('DejaVu','',6);
+			$pdf->SetXY($param_bull2016["x_signature_PP_bilan_cycle"], $y_courant);
+			$pdf->Cell($param_bull2016["largeur_signature_PP_bilan_cycle"], 7, $texte,0,2,'L');
+		}
+
+		$texte=strftime("Le %d/%m/%Y");
+		$y_courant+=3;
+		$pdf->SetFont('DejaVu','',6);
+		$pdf->SetXY($param_bull2016["x_signature_PP_bilan_cycle"], $y_courant);
+		$pdf->Cell($param_bull2016["largeur_signature_PP_bilan_cycle"], 7, $texte,0,2,'L');
+
+		$texte="Signature";
+		$y_courant+=6;
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->SetXY($param_bull2016["x_signature_PP_bilan_cycle"], $y_courant);
+		$pdf->Cell($param_bull2016["largeur_signature_PP_bilan_cycle"], 7, $texte,0,2,'L');
+
+		//$pdf->drawTextBox($texte, $param_bull2016["largeur_signature_PP_bilan_cycle"], $param_bull2016["hauteur_signature_bilan_cycle"], 'L', 'T', 0);
+
+
+
+
+		// Cadre Visa chef étab
+		$x_courant=$param_bull2016["x_signature_PP_bilan_cycle"]+$param_bull2016["largeur_signature_PP_bilan_cycle"];
+
+		$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
+		$pdf->SetDrawColor(255, 255, 255);
+		$pdf->Rect($x_courant, $y_visa, $param_bull2016["largeur_signature_chef_bilan_cycle"], $param_bull2016["hauteur_signature_bilan_cycle"], 'DF');
+
+		$texte="Visa du principal du collège";
+		$y_courant=$y_visa;
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"],7, $texte,0,2,'L');
+
+/*
+		$pdf->SetXY($x_courant, $y_visa);
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->drawTextBox($texte, $param_bull2016["largeur_signature_chef_bilan_cycle"], $param_bull2016["hauteur_signature_bilan_cycle"], 'L', 'T', 0);
+*/
+
+		$pdf->SetXY($x_courant, $y_visa);
+		if((isset($signature_bull[$tab_bull['id_classe']]))&&($signature_bull[$tab_bull['id_classe']]!="")&&(file_exists($signature_bull[$tab_bull['id_classe']]))) {
+			$fich_sign=$signature_bull[$tab_bull['id_classe']];
+
+			$X_sign = $param_bull2016["x_signature_chef"];
+			$Y_sign = $y_visa;
+
+			$largeur_dispo=$param_bull2016["largeur_signature_chef_bilan_cycle"]-10;
+			// On ajuste mieux la hauteur de l'image, quitte à ce que le tampon/signature soit en surimpression (ou plutôt sous-impression) avec le Nom du chef en première ligne du cadre.
+			$hauteur_dispo=$param_bull2016["hauteur_signature_bilan_cycle"]-2;
+
+			$tmp_dim_photo=getimagesize($fich_sign);
+			$ratio_l=$tmp_dim_photo[0]/$largeur_dispo;
+			$ratio_h=$tmp_dim_photo[1]/$hauteur_dispo;
+			if($ratio_l>$ratio_h) {
+				$L_sign = $largeur_dispo;
+				$H_sign = $largeur_dispo*$tmp_dim_photo[1]/$tmp_dim_photo[0];
+			}
+			else {
+				$H_sign = $hauteur_dispo;
+				$L_sign = $hauteur_dispo*$tmp_dim_photo[0]/$tmp_dim_photo[1];
+			}
+
+			/*
+			echo "\$X_sign=$X_sign<br />\n";
+			echo "\$Y_sign=$Y_sign<br />\n";
+			echo "\$L_sign=$L_sign<br />\n";
+			echo "\$H_sign=$H_sign<br />\n";
+			*/
+
+			$X_sign += ($param_bull2016["largeur_signature_chef_bilan_cycle"]-$L_sign) / 2;
+			$Y_sign += ($param_bull2016["hauteur_signature_bilan_cycle"]-$H_sign) / 2;
+
+			$tmp_dim_photo=getimagesize($fich_sign);
+
+			if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+				//$pdf->Image($fich_sign, $X_sign, $Y_sign, $L_sign, $H_sign);
+				$pdf->Image($fich_sign, round($X_sign), round($Y_sign), round($L_sign), round($H_sign));
+			}
+		}
+
+		//$pdf->MultiCell($param_bull2016["largeur_signature_chef_bilan_cycle"], 5, "Le ".strftime("%d/%m/%Y").", ".$tab_bull['suivi_par'], 0, 2, '');
+
+		$texte=$tab_bull['suivi_par'];
+		$y_courant+=4;
+		$pdf->SetFont('DejaVu','',6);
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"], 7, $texte,0,2,'L');
+
+
+		$texte=strftime("Le %d/%m/%Y");
+		$y_courant+=3;
+		$pdf->SetFont('DejaVu','',6);
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"], 7, $texte,0,2,'L');
+
+		$y_courant+=6;
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"], 7, "Signature",0,2,'L');
+
+
+
+		// Cadre Visa famille
+
+		//if($param_bull2016["bull2016_cadre_visa_famille"]=="y") {
+			$x_courant=$param_bull2016["x_signature_PP_bilan_cycle"]+$param_bull2016["largeur_signature_PP_bilan_cycle"]+1;
+			$x_courant+=$param_bull2016["largeur_signature_chef_bilan_cycle"];
+
+			$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
+			$pdf->SetDrawColor(255, 255, 255);
+			$pdf->Rect($x_courant, $y_visa, $param_bull2016["largeur_signature_parents_bilan_cycle"], $param_bull2016["hauteur_signature_bilan_cycle"], 'DF');
+
+			$y_courant=$y_visa;
+			//$pdf->SetXY($param_bull2016["x_visa_famille"], $y_visa);
+			$pdf->SetXY($x_courant, $y_courant);
+			$pdf->SetFillColor(0, 0, 0);
+			$pdf->SetTextColor(0, 0, 0);
+			$pdf->SetFont('DejaVu','',7);
+			$pdf->Cell($param_bull2016["largeur_signature_parents_bilan_cycle"],7, "Visa des parents ou du responsable légal",0,2,'L');
+
+			$y_courant+=4;
+			$pdf->SetXY($x_courant, $y_courant);
+			$pdf->SetFont('DejaVu','',6);
+			$pdf->Cell($param_bull2016["largeur_signature_parents_bilan_cycle"], 7, "Pris connaissance le :",0,2,'L');
+
+			$y_courant+=3;
+			$y_courant+=6;
+			$pdf->SetXY($x_courant, $y_courant);
+			$pdf->SetFont('DejaVu','',7);
+			$pdf->Cell($param_bull2016["largeur_signature_parents_bilan_cycle"], 7, "Signature",0,2,'L');
+		//}
+
+	}
+}
 ?>

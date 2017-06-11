@@ -444,4 +444,35 @@ $tab_modalites_election_par_defaut["X"]["libelle_long"]="MESURE SPECIFIQUE";
 $tab_modalites_election_par_defaut["L"]["libelle_long"]="AJOUT ACADEMIQUE AU PROGRAMME";
 $tab_modalites_election_par_defaut["R"]["libelle_long"]="ENSEIGNEMENT RELIGIEUX";
 
+//===================================
+$tab_domaine_socle=array();
+$tab_domaine_socle["CPD_FRA"]="Comprendre, s'exprimer en utilisant la langue française à l'oral et à l'écrit";
+$tab_domaine_socle["CPD_ETR"]="Comprendre, s'exprimer en utilisant une langue étrangère et, le cas échéant, une langue régionale";
+$tab_domaine_socle["CPD_SCI"]="Comprendre, s'exprimer en utilisant les langages mathématiques, scientifiques et informatiques";
+$tab_domaine_socle["CPD_ART"]="Comprendre, s'exprimer en utilisant les langages des arts et du corps";
+$tab_domaine_socle["MET_APP"]="Les méthodes et outils pour apprendre";
+$tab_domaine_socle["FRM_CIT"]="La formation de la personne et du citoyen";
+$tab_domaine_socle["SYS_NAT"]="Les systèmes naturels et les systèmes techniques";
+$tab_domaine_socle["REP_MND"]="Les représentations du monde et l'activité humaine";
+
+$tab_domaine_bilan_socle=array();
+$tab_domaine_bilan_socle["CPD_FRA"]="Langue française à l'oral et à l'écrit";
+$tab_domaine_bilan_socle["CPD_SCI"]="Langages mathématiques, scientifiques et informatiques";
+$tab_domaine_bilan_socle["REP_MND"]="Représentations du monde et l'activité humaine (1)";
+$tab_domaine_bilan_socle["CPD_ETR"]="Langues étrangères et régionales";
+$tab_domaine_bilan_socle["SYS_NAT"]="Systèmes naturels et systèmes techniques (2)";
+$tab_domaine_bilan_socle["CPD_ART"]="Langages des arts et du corps (3)";
+$tab_domaine_bilan_socle["FRM_CIT"]="Formation de la personne et du citoyen (4)";
+$tab_domaine_bilan_socle["MET_APP"]="Méthodes et outils pour apprendre (5)";
+
+$tab_domaine_bilan_socle_description=array();
+$tab_domaine_bilan_socle_description["REP_MND"]="1. Connaître l’histoire et la géographie, savoir étudier les organisations et fonctionnements des sociétés";
+$tab_domaine_bilan_socle_description["SYS_NAT"]="2. Savoir pratiquer les démarches scientifiques et techniques, découvrir la nature et ses phénomènes,
+réaliser des observations et des expériences";
+$tab_domaine_bilan_socle_description["CPD_ART"]="3. S’exprimer et communiquer par les pratiques artistiques, physiques et sportives";
+$tab_domaine_bilan_socle_description["FRM_CIT"]="4. Savoir formuler ses opinions et respecter celles d’autrui, avoir conscience
+de la justice et du droit, connaître les valeurs de la République";
+$tab_domaine_bilan_socle_description["MET_APP"]="5. Savoir organiser son travail, accéder à l’information, à la documentation et aux médias, utiliser les outils numériques, conduire des projets.";
+//===================================
+
 ?>

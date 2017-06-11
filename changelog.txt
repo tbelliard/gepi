@@ -6,6 +6,13 @@
 Gepi-master (Version de développement)
 ===========================
 
+Bulletins:
+- Bulletins 2016: Possibilité d'imprimer le bulletin de fin de cycle.
+
+LSUN:
+- Possibilité de n'extraire qu'une ou certaines périodes.
+
+
 Gepi-1.7.1 (30/03/2017)
 ===========================
 
