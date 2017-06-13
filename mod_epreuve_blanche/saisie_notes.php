@@ -690,6 +690,10 @@ function verifcol(num_id){
 	}
 	eval('document.getElementById(\'td_'+num_id+'\').style.background=couleur');
 }
+
+if(document.getElementById('n0')) {
+	document.getElementById('n0').focus();
+}
 </script>
 ";
 }
