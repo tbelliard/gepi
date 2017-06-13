@@ -2197,6 +2197,9 @@ elseif($_SESSION['statut']=='professeur') {
 		}
 		echo "</ul>\n";
 	}
+	else {
+		echo "<p>Aucune épreuve n'est ouverte.</p>";
+	}
 }
 
 require("../lib/footer.inc.php");
