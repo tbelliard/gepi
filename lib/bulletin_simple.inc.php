@@ -509,6 +509,7 @@ if ($on_continue == 'yes') {
 			// Test supplémentaire pour savoir si l'élève appartient à la classe pour la période considérée
 			$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
 			if(
+				(isset($current_group["eleves"][$nb]["list"]))&&
 				(
 					(in_array($current_eleve_login, $current_group["eleves"][$nb]["list"])) or
 					(in_array(my_strtolower($current_eleve_login), $current_group["eleves"][$nb]["list"])) or
@@ -817,7 +818,7 @@ if ($on_continue == 'yes') {
 					// A N'INSERER QUE POUR LES COMPTES DE PERSONNELS... de façon à éviter de donner les mails des profs à des élèves
 					echo "<td class='bull_simpl noprint'>";
 
-					if($current_group["classe"]["ver_periode"][$id_classe][$nb]=='O') {
+					if((!isset($current_group["classe"]["ver_periode"][$id_classe][$nb]))||($current_group["classe"]["ver_periode"][$id_classe][$nb]=='O')) {
 						echo "-";
 					}
 					else {
