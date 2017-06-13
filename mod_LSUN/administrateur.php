@@ -1725,10 +1725,11 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 	}
 
 <?php
-	//$tab_span_champs_select
-	for($loop=0;$loop<count($tab_span_champs_select);$loop++) {
-		echo "
+	if(isset($tab_span_champs_select)) {
+		for($loop=0;$loop<count($tab_span_champs_select);$loop++) {
+			echo "
 	document.getElementById(\"".$tab_span_champs_select[$loop]."\").style.display='none';";
+		}
 	}
 ?>
 </script>
