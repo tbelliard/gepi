@@ -76,6 +76,7 @@ $id_groupe = filter_input(INPUT_POST, 'id_groupe') ? filter_input(INPUT_POST, 'i
 $periode_cn = filter_input(INPUT_POST, 'periode_cn') ? filter_input(INPUT_POST, 'periode_cn') : filter_input(INPUT_GET, 'periode_cn');
 //$periode = filter_input(INPUT_POST, 'periode');
 
+$forcer_focus_element_prog_groupe="";
 if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 
 	$quePerso = filter_input(INPUT_POST, 'quePerso');
@@ -107,6 +108,7 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 				$newElemGroupe=preg_replace('/"/', '', $newElemGroupe);
 				if($newElemGroupe!="") {
 					saveNewElemGroupe($id_groupe, $newElemGroupe, $anneeScolaire, $periode);
+					$forcer_focus_element_prog_groupe='newElemGroupe'.$tmp_num_per;
 				}
 			}
 		}
@@ -1288,7 +1290,7 @@ while ($k < $nb_periode) {
 
 				$mess[$k].="<br />\n";
 			}
-			$mess[$k].="<input type='text' name='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
+			$mess[$k].="<input type='text' name='newElemGroupe$k' id='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
 		}
     }
     
@@ -2572,10 +2574,16 @@ if(document.getElementById('decompte')) {
 	decompte(cpt);
 }
 ";
-
 // Après validation, on donne le focus au champ qui suivait celui qui vient d'être rempli
-if(isset($_POST['champ_info_focus'])){
-	if($_POST['champ_info_focus']!=""){
+// 20170613: Sauf si on vient de remplir un élément de programme du groupe classe
+//           auquel cas on remet dans le champ élément de prog du groupe classe
+if($forcer_focus_element_prog_groupe!="") {
+	echo "// On positionne le focus...
+	document.getElementById('".$forcer_focus_element_prog_groupe."').focus();
+\n";
+}
+elseif(isset($_POST['champ_info_focus'])) {
+	if($_POST['champ_info_focus']!="") {
 		echo "// On positionne le focus...
 	document.getElementById('n".$_POST['champ_info_focus']."').focus();
 \n";
