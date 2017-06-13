@@ -2581,6 +2581,9 @@ if($forcer_focus_element_prog_groupe!="") {
 	echo "// On positionne le focus...
 	document.getElementById('".$forcer_focus_element_prog_groupe."').focus();
 \n";
+	if(isset($id_premier_textarea)) {
+		echo "if(document.getElementById('focus_courant')) {document.getElementById('focus_courant').value='$id_premier_textarea';}";
+	}
 }
 elseif(isset($_POST['champ_info_focus'])) {
 	if($_POST['champ_info_focus']!="") {
