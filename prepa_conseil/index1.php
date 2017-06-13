@@ -473,6 +473,7 @@ if ($en_tete!="yes"){
 </script>\n";
 }
 
+$acces_pp="n";
 if($_SESSION['statut']=='professeur'){
 	//++++++++++++++++++++++++++++++++++++++++++++++++++
 	// A FAIRE

@@ -26,16 +26,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //debug_var();
@@ -66,92 +66,96 @@ if((isset($_GET['export_ele_csv']))&&(isset($_GET['matiere']))) {
 
 if (isset($_POST['isposted'])) {
 	check_token();
-    $ok = 'yes';
-    $ok_categorie = 'yes';
-    $code_matiere=isset($_POST['code_matiere']) ? $_POST['code_matiere'] : "";
-    if (isset($_POST['reg_current_matiere'])) {
-        // On vérifie d'abord que l'identifiant est constitué uniquement de lettres et de chiffres :
-        $matiere_name = $_POST['reg_current_matiere'];
-        if ((!isset($_POST['matiere_categorie']))||(!is_numeric($_POST['matiere_categorie']))) {
-            // On empêche les mise à jour globale automatiques, car on n'est pas sûr de ce qui s'est passé si l'ID n'est pas numérique...
-            //$ok = "no";
-            $ok_categorie = 'no';
-            $matiere_categorie = "0";
-        } else {
-            $matiere_categorie = $_POST['matiere_categorie'];
-        }
-        //if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
-        // Le POINT est interdit dans le nom court de matière (problème avec des noms de champs PHP sinon notamment dans matieres/index.php)
-        if (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_-]{1,19}$/", $matiere_name)) {
-            $verify_query = mysqli_query($GLOBALS["mysqli"], "SELECT * from matieres WHERE matiere='$matiere_name'");
-            $verify = mysqli_num_rows($verify_query);
-            if ($verify == 0) {
-                //========================
-                // MODIF: boireaus
-                // Quand on poste un &, c'est un &amp; qui est reçu.
-                //$matiere_nom_complet = $_POST['matiere_nom_complet'];
+	$ok = 'yes';
+	$ok_categorie = 'yes';
+	$code_matiere=isset($_POST['code_matiere']) ? $_POST['code_matiere'] : "";
+	if (isset($_POST['reg_current_matiere'])) {
+		// On vérifie d'abord que l'identifiant est constitué uniquement de lettres et de chiffres :
+		$matiere_name = $_POST['reg_current_matiere'];
+		if ((!isset($_POST['matiere_categorie']))||(!is_numeric($_POST['matiere_categorie']))) {
+			// On empêche les mise à jour globale automatiques, car on n'est pas sûr de ce qui s'est passé si l'ID n'est pas numérique...
+			//$ok = "no";
+			$ok_categorie = 'no';
+			$matiere_categorie = "0";
+		} else {
+			$matiere_categorie = $_POST['matiere_categorie'];
+		}
+		//if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
+		// Le POINT est interdit dans le nom court de matière (problème avec des noms de champs PHP sinon notamment dans matieres/index.php)
+		if (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_-]{1,19}$/", $matiere_name)) {
+			$sql="SELECT * from matieres WHERE matiere='$matiere_name'";
+			//echo "$sql<br />";
+			$verify_query = mysqli_query($GLOBALS["mysqli"], $sql);
+			$verify = mysqli_num_rows($verify_query);
+			if ($verify == 0) {
+				//========================
+				// Quand on poste un &, c'est un &amp; qui est reçu.
+				//$matiere_nom_complet = $_POST['matiere_nom_complet'];
 				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
-                $matiere_nom_complet = html_entity_decode($_POST['matiere_nom_complet']);
+				$matiere_nom_complet = html_entity_decode($_POST['matiere_nom_complet']);
+				if($matiere_nom_complet=="") {
+					$matiere_nom_complet=$matiere_name;
+				}
 				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
-                //========================
-                $matiere_priorite = $_POST['matiere_priorite'];
-                $sql="INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n', code_matiere='$code_matiere';";
+				//========================
+				$matiere_priorite = $_POST['matiere_priorite'];
+				$sql="INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n', code_matiere='$code_matiere';";
 				//echo "$sql<br />\n";
-                $register_matiere = mysqli_query($GLOBALS["mysqli"], $sql);
-                if (!$register_matiere) {
-                    $msg = "Une erreur s'est produite lors de l'enregistrement de la nouvelle matière. <br />";
-                    $ok = 'no';
-                } else {
-                    $msg = "La nouvelle matière a bien été enregistrée. <br />";
-                }
-            } else {
-                $msg = "Cette matière existe déjà !! <br />";
-                $ok = 'no';
-            }
-        } else {
-            $msg = "L'identifiant de matière doit être constitué uniquement de lettres et de chiffres avec un maximum de 19 caractères ! <br />";
-            $ok = 'no';
-        }
-    } else {
+				$register_matiere = mysqli_query($GLOBALS["mysqli"], $sql);
+				if (!$register_matiere) {
+					$msg = "Une erreur s'est produite lors de l'enregistrement de la nouvelle matière. <br />";
+					$ok = 'no';
+				} else {
+					$msg = "La nouvelle matière a bien été enregistrée. <br />";
+				}
+			} else {
+				$msg = "Cette matière existe déjà !! <br />";
+				$ok = 'no';
+			}
+		} else {
+			$msg = "L'identifiant de matière doit être constitué uniquement de lettres et de chiffres avec un maximum de 19 caractères ! <br />";
+			$ok = 'no';
+		}
+	} else {
 
-        $matiere_nom_complet = $_POST['matiere_nom_complet'];
+		$matiere_nom_complet = $_POST['matiere_nom_complet'];
 		$matiere_nom_complet = html_entity_decode($_POST['matiere_nom_complet']);
-        $matiere_priorite = $_POST['matiere_priorite'];
-        $matiere_name = $_POST['matiere_name'];
-        if ((!isset($_POST['matiere_categorie']))||(!is_numeric($_POST['matiere_categorie']))) {
-            $matiere_categorie = "0";
-            $ok_categorie = 'no';
-        } else {
-            $matiere_categorie = $_POST['matiere_categorie'];
-        }
+		$matiere_priorite = $_POST['matiere_priorite'];
+		$matiere_name = $_POST['matiere_name'];
+		if ((!isset($_POST['matiere_categorie']))||(!is_numeric($_POST['matiere_categorie']))) {
+			$matiere_categorie = "0";
+			$ok_categorie = 'no';
+		} else {
+			$matiere_categorie = $_POST['matiere_categorie'];
+		}
 
-        $sql="UPDATE matieres SET nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "', code_matiere='$code_matiere' WHERE matiere='".$matiere_name."';";
+		$sql="UPDATE matieres SET nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "', code_matiere='$code_matiere' WHERE matiere='".$matiere_name."';";
 		//echo "$sql<br />\n";
-        $register_matiere = mysqli_query($GLOBALS["mysqli"], $sql);
+		$register_matiere = mysqli_query($GLOBALS["mysqli"], $sql);
 
-        if (!$register_matiere) {
-            $msg = "Une erreur s'est produite lors de la modification de la matière <br />";
-            $ok = 'no';
-        } else {
-            $msg = "Les modifications ont été enregistrées ! <br />";
-        }
-    }
+		if (!$register_matiere) {
+			$msg = "Une erreur s'est produite lors de la modification de la matière <br />";
+			$ok = 'no';
+		} else {
+			$msg = "Les modifications ont été enregistrées ! <br />";
+		}
+	}
 
-    if ((isset($_POST['force_defaut'])) and ($ok == 'yes')) {
-        $sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$matiere_priorite."'
-        WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
-        //echo "$sql<br />";
-        //$msg = rawurlencode($sql);
-        $req = mysqli_query($GLOBALS["mysqli"], $sql);
-    }
+	if ((isset($_POST['force_defaut'])) and ($ok == 'yes')) {
+		$sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$matiere_priorite."' 
+		WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
+		//echo "$sql<br />";
+		//$msg = rawurlencode($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
+	}
 
-    if ((isset($_POST['force_defaut_categorie'])) and ($ok == 'yes') and ($ok_categorie == 'yes')) {
-        $sql="UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$matiere_categorie."'
-        WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
-        //echo "$sql<br />";
-        //$msg = rawurlencode($sql);
-        $req = mysqli_query($GLOBALS["mysqli"], $sql);
-    }
+	if ((isset($_POST['force_defaut_categorie'])) and ($ok == 'yes') and ($ok_categorie == 'yes')) {
+		$sql="UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$matiere_categorie."' 
+		WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$matiere_name."')";
+		//echo "$sql<br />";
+		//$msg = rawurlencode($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
+	}
 
 	if($ok=='yes') {
 		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : NULL;
@@ -270,24 +274,24 @@ require_once("../lib/header.inc.php");
 
 // On va chercher les infos de la matière que l'on souhaite modifier
 if (isset($current_matiere)) {
-    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet, priority, categorie_id, code_matiere from matieres WHERE matiere='".$current_matiere."'");
-    if(mysqli_num_rows($call_data)==0) {
-        echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<p style='color:red'>La matière proposée n'existe pas.</p>";
-        require("../lib/footer.inc.php");
-        die();
-    }
-    $lig_matiere=mysqli_fetch_object($call_data);
-    $matiere_nom_complet = $lig_matiere->nom_complet;
-    $matiere_priorite = $lig_matiere->priority;
-    $matiere_cat_id = $lig_matiere->categorie_id;
-    $code_matiere = $lig_matiere->code_matiere;
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet, priority, categorie_id, code_matiere from matieres WHERE matiere='".$current_matiere."'");
+	if(mysqli_num_rows($call_data)==0) {
+		echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+		<p style='color:red'>La matière proposée n'existe pas.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	$lig_matiere=mysqli_fetch_object($call_data);
+	$matiere_nom_complet = $lig_matiere->nom_complet;
+	$matiere_priorite = $lig_matiere->priority;
+	$matiere_cat_id = $lig_matiere->categorie_id;
+	$code_matiere = $lig_matiere->code_matiere;
 } else {
-    $matiere_nom_complet = "";
-    $matiere_priorite = "0";
-    $current_matiere = "";
-    $matiere_cat_id = "0";
-    $code_matiere="";
+	$matiere_nom_complet = "";
+	$matiere_priorite = "0";
+	$current_matiere = "";
+	$matiere_cat_id = "0";
+	$code_matiere="";
 }
 
 $chaine_options_matieres="";
@@ -449,7 +453,7 @@ function checkbox_change(cpt) {
 <th>Nom de matière : </th>
 <td>
 <?php
-if (!isset($current_matiere)) {
+if ((!isset($current_matiere))||($current_matiere=="")) {
     echo "<input type=text size='19' maxlength='19' name='reg_current_matiere' onchange='changement()' /> (<span style='font-style: italic; font-size: small;'>19 caractères maximum</span>)";
 } else {
     echo "<input type=hidden name=matiere_name value=\"".$current_matiere."\" />".$current_matiere;

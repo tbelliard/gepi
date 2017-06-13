@@ -3372,6 +3372,7 @@ mysql>
 									}
 								}
 								$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+								$current_aid=$tab_aid_edt[$lig->id_aid];
 								$chaine_proflist_string=$current_aid['proflist_string'];
 
 								// 20170128
@@ -3380,7 +3381,7 @@ mysql>
 
 									$bgcolor_courant="azure";
 
-									$current_aid=$tab_aid_edt[$lig->id_aid];
+									//$current_aid=$tab_aid_edt[$lig->id_aid];
 
 									$chaine_nom_enseignement=$current_aid['nom_aid']." (".$current_aid['nom_general_court'].") (".$current_aid['nom_general_complet'].") avec ".$current_aid['proflist_string'];
 

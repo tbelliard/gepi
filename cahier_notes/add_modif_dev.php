@@ -1333,7 +1333,7 @@ if ($new_devoir=='yes') {
 		echo "<input type='checkbox' id='creation_dev_autres_groupes' name='creation_dev_autres_groupes' value='y' onchange=\"display_div_autres_groupes()\" onchange=\"changement();\" /><label for='creation_dev_autres_groupes'> Créer le même devoir pour d'autres enseignements.</label><br />\n";
 	
 		echo "<div id='div_autres_groupes'>\n";
-		echo "<table class='boireaus' summary='Autres enseignements'>\n";
+		echo "<table class='boireaus boireaus_alt' summary='Autres enseignements'>\n";
 		echo "<tr>\n";
 		echo "<th rowspan='2'>";
 		echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' class='icone15' alt='Tout cocher' /></a>/\n";
@@ -1346,33 +1346,33 @@ if ($new_devoir=='yes') {
 		echo "<th>Description</th>\n";
 		echo "<th>Classe</th>\n";
 		echo "</tr>\n";
-	
-		$alt=1;
+
 		$cpt=0;
 		for($i=0;$i<count($tab_group);$i++) {
 			if((!isset($tab_group[$i]["visibilite"]["cahier_notes"]))||($tab_group[$i]["visibilite"]["cahier_notes"]=='y')) {
 				if($tab_group[$i]['id']!=$id_groupe) {
 					// Tester si la période est aussi ouverte pour le groupe... ou sinon si une seule période est ouverte en saisie?
-					$alt=$alt*(-1);
-					echo "<tr class='lig$alt'>\n";
-					echo "<td>\n";
-					if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
-						echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' onchange=\"changement();\" />\n";
-						echo "</td>\n";
-						echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['name'])."</label></td>\n";
-						echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['description'])."</label></td>\n";
-						echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
-						$cpt++;
+					if(isset($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num])) {
+						echo "<tr>\n";
+						echo "<td>\n";
+						if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
+							echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' onchange=\"changement();\" />\n";
+							echo "</td>\n";
+							echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['name'])."</label></td>\n";
+							echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['description'])."</label></td>\n";
+							echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
+							$cpt++;
+						}
+						else {
+							echo "<span style='color:red;'>Clos</span>";
+							echo "</td>\n";
+							echo "<td>".htmlspecialchars($tab_group[$i]['name'])."</td>\n";
+							echo "<td>".htmlspecialchars($tab_group[$i]['description'])."</td>\n";
+							echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
+						}
+						//echo "<td>...</td>\n";
+						echo "</tr>\n";
 					}
-					else {
-						echo "<span style='color:red;'>Clos</span>";
-						echo "</td>\n";
-						echo "<td>".htmlspecialchars($tab_group[$i]['name'])."</td>\n";
-						echo "<td>".htmlspecialchars($tab_group[$i]['description'])."</td>\n";
-						echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
-					}
-					//echo "<td>...</td>\n";
-					echo "</tr>\n";
 				}
 			}
 		}

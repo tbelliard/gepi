@@ -198,9 +198,9 @@
             $sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
             $test_info_jours = mysqli_query($mysqli, $sql);
             if($test_info_jours->num_rows > 0) {
-				while($lig_action=$test_info_jours->fetch_object($test_info_jours)) {
-					del_info_action($lig_action->id);
-				}
+			while($lig_action=mysqli_fetch_object($test_info_jours)) {
+				del_info_action($lig_action->id);
+			}
             }
         }
     }
