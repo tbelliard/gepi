@@ -599,6 +599,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 }
 //echo "<th width='100px'>Note</th>\n";
 echo "<th style='width:5em;' class='none'>Note sur $note_sur</th>\n";
+echo "<th style='width:5em;' class='none'>Note sur 20</th>\n";
 echo "</tr>\n";
 
 $cpt=0;
@@ -622,7 +623,7 @@ while($lig=mysqli_fetch_object($res)) {
 		echo "<input id=\"n".$cpt."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" ";
 		echo "autocomplete=\"off\" ";
 		//echo "onfocus=\"javascript:this.select()\" onchange=\"verifcol($cpt);changement()\" ";
-		echo "onfocus=\"javascript:this.select()\" onchange=\"verifcol($cpt);calcul_moy_med();changement()\" ";
+		echo "onfocus=\"javascript:this.select()\" onchange=\"verifcol($cpt);calcul_moy_med();changement();\" ";
 		echo "name=\"note[$cpt]\" value='";
 		if(($lig->statut=='v')) {echo "";}
 		elseif($lig->statut!='') {echo "$lig->statut";}
@@ -639,6 +640,7 @@ while($lig=mysqli_fetch_object($res)) {
 		}
 	}
 	echo "</td>\n";
+	echo "<td id='td_sur_20_".$cpt."'></td>\n";
 	echo "</tr>\n";
 	$cpt++;
 }
@@ -676,23 +678,39 @@ function verifcol(num_id){
 	((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
 			if((note>$note_sur)||(note<0)){
 				couleur='red';
+				if(document.getElementById('td_sur_20_'+num_id)) {
+					document.getElementById('td_sur_20_'+num_id).innerHTML='';
+				}
 			}
 			else{
 				couleur='$couleur_devoirs';
+				if(document.getElementById('td_sur_20_'+num_id)) {
+					document.getElementById('td_sur_20_'+num_id).innerHTML=eval(note*20/$note_sur);
+				}
 			}
 		}
 		else{
 			couleur='red';
+			if(document.getElementById('td_sur_20_'+num_id)) {
+				document.getElementById('td_sur_20_'+num_id).innerHTML='';
+			}
 		}
 	}
 	else{
 		couleur='$couleur_devoirs';
+		if(document.getElementById('td_sur_20_'+num_id)) {
+			document.getElementById('td_sur_20_'+num_id).innerHTML=note;
+		}
 	}
 	eval('document.getElementById(\'td_'+num_id+'\').style.background=couleur');
 }
 
 if(document.getElementById('n0')) {
 	document.getElementById('n0').focus();
+}
+
+for(i=0;i<$cpt;i++) {
+	verifcol(i);
 }
 </script>
 ";
