@@ -464,7 +464,12 @@ class CvsentCtrl extends Controleur {
                 break;
             default:
                 $this->class = "message_green";
+                if($this->ecriture) {
                 $this->message = 'La correspondance est mise en place.';
+                }
+                else {
+                $this->message = 'La correspondance serait mise en place.';
+                }
                 // DEBUG 20150929 : Enregistrer dans une table tempo2 pour permettre une génération publipostage juste pour ces comptes
         }
         return array($this->class, $this->message);
