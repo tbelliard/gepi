@@ -877,7 +877,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo " | <select name='id_epreuve' id='id_epreuve_a_passage_autre_epreuve' onchange=\"confirm_changement_epreuve(change, '$themessage');\">\n";
 				echo "<option value=''>---</option>\n";
 				while($lig_eb=mysqli_fetch_object($res_eb)) {
-					echo "<option value='$lig_eb->id'>$lig_eb->intitule (".formate_date($lig_eb->date).")</option>\n";
+					$style="";
+					if($lig_eb->etat=="clos") {
+						$style=" style='color:red;' title=\"Épreuve close.\"";
+					}
+					echo "<option value='".$lig_eb->id."'".$style.">$lig_eb->intitule (".formate_date($lig_eb->date).")</option>\n";
 				}
 				echo "</select>\n";
 				echo "<input type='hidden' name='mode' value='modif_epreuve' />\n";
@@ -1003,7 +1007,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo " | <select name='id_epreuve' id='id_epreuve_a_passage_autre_epreuve' onchange=\"confirm_changement_epreuve(change, '$themessage');\">\n";
 			//echo "<option value=''>---</option>\n";
 			while($lig_eb=mysqli_fetch_object($res_eb)) {
-				echo "<option value='$lig_eb->id'";
+				$style="";
+				if($lig_eb->etat=="clos") {
+					$style=" style='color:red;' title=\"Épreuve close.\"";
+				}
+				echo "<option value='".$lig_eb->id."'".$style;
 				if($lig_eb->id==$id_epreuve) {
 					echo " selected";
 					$indice_epreuve_courante=$cpt_ep;
