@@ -35,13 +35,13 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
         <td width="60%"><strong title="Supprimer pour le login Gepi indiqué la correspondance SSO existante de la table 'sso_table_correspondance'">Supprimer</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
-        <td>[b1.login_gepi]</td>
+        <td><a href='../utilisateurs/cherche_user.php?login_user=[b1.login_gepi]' target='_blank' title="Voir la fiche">[b1.login_gepi]</a></td>
         <td>[b1.login_sso;block=tr]</td>
         <td ><div>[b1.couleur;att=div#class][b1.message]</div></td>
         <td id='td_[b1.login_sso;block=tr]' style='text-align:center'><a href='#' onclick="delete_corresp_sso('[b1.login_gepi;block=tr]', '[b1.login_sso;block=tr]')"><img src="../images/delete16.png" class='icone16' alt='Supprimer' /></a></td>
     </tr>
     <tr bgcolor="#E6E6E6" >
-        <td>[b1.login_gepi]</td>
+        <td><a href='../utilisateurs/cherche_user.php?login_user=[b1.login_gepi]' target='_blank' title="Voir la fiche">[b1.login_gepi]</a></td>
         <td>[b1.login_sso;block=tr]</td>
         <td ><div>[b1.couleur;att=div#class][b1.message]</div></td>
         <td id='td_[b1.login_sso;block=tr]' style='text-align:center'><a href='#' onclick="delete_corresp_sso('[b1.login_gepi;block=tr]', '[b1.login_sso;block=tr]')"><img src="../images/delete16.png" class='icone16' alt='Supprimer' /></a></td>
