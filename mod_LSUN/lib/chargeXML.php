@@ -199,7 +199,7 @@ $xml->appendChild($items);
 					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
 				$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
 				if (!in_array($discipline->code_modalite_elect, $codesAutorises)) {
-					$msgErreur .= "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='../gestion/gerer_modalites_election_enseignements.php' target='_blank'>Corriger</a> / <a href='../utilisateurs/modif_par_lots.php#update_xml_sts' target='_BLANK' >mettre à jour d'après le XML STS</a>.<br /><br />";
+					$msgErreur .= "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>Corriger</a>.<br /><br />";
 				}
 				if($discipline->code_matiere=="") {
 					$msgErreur .= "La matière ".$discipline->nom_complet." a un code vide <em>(non rattaché à une <strong>nomenclature</strong>)</em>. Le XML ne va pas être valide. <a href='../matieres/modify_matiere.php?current_matiere=".$discipline->id_matiere."' target='_blank'>Corriger</a>.<br /><br />";
@@ -669,6 +669,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 		
 		$tab_id_eleve=array();
 		$tab_eleve_sans_pp=array();
+		$tab_classe_periode_sans_date_conseil=array();
 		$eleves = getElevesExport();
 
 		// Si retour vide, ajouter un test sur les éléments de la requête pour trouver où cela plante.
@@ -716,7 +717,15 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 			if($eleve->periode < 10) {$num_periode = "0".$eleve->periode;} else {$num_periode = $eleve->periode;}
 			$datecolarite = dateScolarite($eleve->login, $eleve->periode);
-			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$eleve->date_conseil , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
+			$date_conseil_classe = $eleve->date_conseil;
+			if(($date_conseil_classe==NULL)||($date_conseil_classe=="0000-00-00")) {
+				$date_conseil_classe=$eleve->date_verrou;
+				if(!in_array($eleve->id_classe."|".$num_periode, $tab_classe_periode_sans_date_conseil)) {
+					$msg_erreur_remplissage.="La date du conseil de classe de <strong>".get_nom_classe($eleve->id_classe)."</strong> en période <strong>".$num_periode."</strong> n'est pas valide.<br />Utilisation de la date de verrouillage de la période (".formate_date($date_conseil_classe).") à la place, mais si vous avez la date effective du conseil de classe, vous devriez corriger en <strong>compte scolarité</strong> dans la page de <strong>Verrouillage/déverrouillage des périodes</strong>.<br /><br />";
+					$tab_classe_periode_sans_date_conseil[]=$eleve->id_classe."|".$num_periode;
+				}
+			}
+			$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$date_conseil_classe , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
 			foreach ($attributsElevePeriode as $cle=>$valeur) {
 				$attsElevePeriode = $xml->createAttribute($cle);
 				$attsElevePeriode->value = $valeur;
@@ -985,7 +994,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							$liste_absenceEP="";
 						}
 						$liste_absenceEP.="<span style='color:red'>".get_nom_prenom_eleve($eleve->login)." n'a pas d'élément de programme en ".$acquisEleve->id_matiere." en période ".$eleve->periode.".</span><br />";
-						}
+					}
 
 
 					//$attributsAcquis = array('discipline-ref'=>$matiere , 'enseignant-refs'=>$prof, 'element-programme-refs'=>$elementProgramme, 'moyenne-structure'=>$moyenne."/20", 'eleve-non-note' => "1");
