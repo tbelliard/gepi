@@ -587,7 +587,7 @@ if (isset($_POST['is_posted'])) {
 					//echo "$sql<br />";
 					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($menage) {
-						$nb_reg_ok++;
+						//$nb_reg_ok++;
 					}
 					else {
 						$msg.="Erreur lors de la suppression du type d'enseignement de complément.<br />";
