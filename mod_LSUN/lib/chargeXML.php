@@ -303,7 +303,7 @@ $xml->appendChild($items);
 						continue;
 					}
 
-					if((preg_match_all('#[0-9]+#',$enseignant->numind))&&(substr($enseignant->numind,1)==0)) {
+					if((preg_match('#[0-9]+#',$enseignant->numind))&&(substr($enseignant->numind,1)==0)) {
 						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." a un identifiant STS non valide (".$enseignant->numind."). Cela doit être P suivi d'un entier non nul.<br />Vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br /><br />";
 						continue;
 					}
@@ -1223,7 +1223,17 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							*/
 							//on verifie que le groupe est bien déclaré
 							if (!verifieGroupeEPI($epiEleve->id_aid)) {
-								$msgErreur .= "<p class='rouge'>".$eleve->nom." ".$eleve->prenom." a un EPI qui n'est pas déclaré en administrateur, il ne sera pas exporté (AID $epiEleve->indice_aid).</p>";
+								$complement_aid="";
+								$sql="SELECT DISTINCT id_aid FROM j_aid_eleves jae, aid a WHERE a.id=jae.id_aid AND jae.indice_aid='".$epiEleve->indice_aid."' AND jae.login='".$eleve->login."';";
+								$res_aid=mysqli_query($mysqli, $sql);
+								if(mysqli_num_rows($res_aid)>0) {
+									$complement_aid=" (AID";
+									while($lig_aid=mysqli_fetch_object($res_aid)) {
+										$complement_aid.=" n°<a href='../aid/modif_fiches.php?aid_id=".$lig_aid->id_aid."&indice_aid=".$epiEleve->indice_aid."&action=modif&retour=index2.php' target='_blank'>".$lig_aid->id_aid."</a>";
+									}
+									$complement_aid.=")";
+								}
+								$msgErreur .= "<p class='rouge' title=\"Si il s'agit d'un AID projet d'EPI finalement non réalisé, vous pouvez ne pas tenir compte de cette alerte. En revanche, si c'est un oubli de déclaration d'EPI dans la présente page, corrigez l'oubli plus bas dans cette page.\">".$eleve->nom." ".$eleve->prenom." a dans les AID un EPI qui n'est pas déclaré en administrateur dans la présente page, il ne sera pas exporté (<a href='../aid/config_aid.php?indice_aid=".$epiEleve->indice_aid."' target='_blank'>Catégorie AID ".$epiEleve->indice_aid."</a>".$complement_aid.").</p>";
 							} else {
 								$noeudEpiEleve = $xml->createElement('epi-eleve');
 								$attsEpisEleve = $xml->createAttribute('epi-groupe-ref');
