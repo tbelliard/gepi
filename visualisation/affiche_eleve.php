@@ -5669,6 +5669,14 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 					require_once("../lib/initialisationsPropel.inc.php");
 					$eleve = EleveQuery::create()->findOneByLogin($eleve1);
 
+					// 20170621
+					if(isset($tab_ele['classe'])) {
+						$id_derniere_classe=$tab_ele['classe'][count($tab_ele['classe'])-1]['id_classe'];
+
+						$maxper=get_max_per($id_derniere_classe);
+						$tab_date_dernier_conseil_classe=get_date_conseil_classe($id_derniere_classe, $maxper);
+					}
+
 					echo "<table class='boireaus' summary='Bilan des absences'>\n";
 					echo "<tr>\n";
 					echo "<th>Absences sur la période</th>\n";
@@ -5683,9 +5691,37 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 					foreach($eleve->getPeriodeNotes() as $periode_note) {
 						//$periode_note = new PeriodeNote();
 						if ($periode_note->getDateDebut() == null) {
-						//periode non commencee
-						continue;
+							//periode non commencee
+							continue;
 						}
+
+						// 20170621
+						$info_complementaire_abs="";
+						$info_complementaire_nj="";
+						$info_complementaire_retards="";
+						if(isset($id_derniere_classe)) {
+							if(($periode_note->getNumPeriode()==$maxper)&&
+								($tab_date_dernier_conseil_classe['date_conseil_classe_valide'])&&
+								(getSettingAOui("abs2_limiter_abs_date_conseil_fin_annee"))) {
+
+								$current_periode_note=$eleve->getPeriodeNote($periode_note->getNumPeriode());
+								// A déclarer hors de la boucle eleves
+								//$date_fin_abs=new DateTime(str_replace("/", ".", formate_date($tab_date_dernier_conseil_classe['date_conseil_classe'])));
+								$date_fin_abs=$tab_date_dernier_conseil_classe['date_conseil_classe_DateTime'];
+
+								$date_conseil_classe=formate_date($tab_date_dernier_conseil_classe['date_conseil_classe']);
+
+								$current_eleve_absences = strval($eleve->getDemiJourneesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+								$info_complementaire_abs=" <span title=\"".$current_eleve_absences." comptées jusqu'à la date du conseil de classe (".$date_conseil_classe.").\">(".$current_eleve_absences.")</span>";
+								//echo "\$current_eleve_absences = strval(\$eleve->getDemiJourneesAbsence(".$current_periode_note->getDateDebut(null)->format("d/m/Y").", ".$date_fin_abs->format("d/m/Y").")->count())=".$current_eleve_absences."<br />\n";
+					
+								$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+								$info_complementaire_nj=" <span title=\"".$current_eleve_nj." comptées jusqu'à la date du conseil de classe (".$date_conseil_classe.").\">(".$current_eleve_nj.")</span>";
+								$current_eleve_retards = strval($eleve->getRetards($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+								$info_complementaire_retards=" <span title=\"".$current_eleve_retards." comptés jusqu'à la date du conseil de classe (".$date_conseil_classe.").\">(".$current_eleve_retards.")</span>";
+							}
+						}
+
 						$alt=$alt*(-1);
 						echo "<tr class='lig$alt'>\n";
 						echo "<td>".$periode_note->getNomPeriode();
@@ -5699,13 +5735,13 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 						}
 						echo "</td>\n";
 						echo "<td>";
-						echo $eleve->getDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo $eleve->getDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count().$info_complementaire_abs;
 						echo "</td>\n";
 						echo "<td>";
-						echo $eleve->getDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo $eleve->getDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count().$info_complementaire_nj;
 						echo "</td>\n";
 						echo "<td>";
-						echo $eleve->getRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo $eleve->getRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count().$info_complementaire_retards;
 						echo "</td>\n";
 						echo "</tr>\n";
 					}

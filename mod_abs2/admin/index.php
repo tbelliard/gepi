@@ -169,6 +169,16 @@ if (($_SESSION['statut']=="administrateur")&&(isset($_POST['is_posted']))) {
 			}
 		}
 
+		if (isset($_POST['abs2_limiter_abs_date_conseil_fin_annee'])) {
+			if (!saveSetting("abs2_limiter_abs_date_conseil_fin_annee", $_POST['abs2_limiter_abs_date_conseil_fin_annee'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_limiter_abs_date_conseil_fin_annee";
+			}
+		} else {
+			if (!saveSetting("abs2_limiter_abs_date_conseil_fin_annee", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_limiter_abs_date_conseil_fin_annee";
+			}
+		}
+
 		if (isset($_POST['abs2_ne_pas_afficher_saisies_englobees'])) {
 			if (!saveSetting("abs2_ne_pas_afficher_saisies_englobees", $_POST['abs2_ne_pas_afficher_saisies_englobees'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_ne_pas_afficher_saisies_englobees";
@@ -364,21 +374,21 @@ if($_SESSION["statut"]=="administrateur") {
 		//require '../../utilitaires/updates/mod_abs2.inc.php';
 	}
 
-	if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+	if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées (".strftime("le %d/%m/%Y à %H:%M:%S").") !";
 }
 
 // A propos du TOP 10 : récupération du setting pour le select en bas de page
 $selected10 = $selected20 = $selected30 = $selected40 = $selected50 = NULL;
 
-if (getSettingValue("absence_classement_top") == '10'){
+if (getSettingValue("absence_classement_top") == '10') {
   $selected10 = ' selected="selected"';
-}elseif (getSettingValue("absence_classement_top") == '20') {
+} elseif (getSettingValue("absence_classement_top") == '20') {
   $selected20 = ' selected="selected"';
-}elseif (getSettingValue("absence_classement_top") == '30') {
+} elseif (getSettingValue("absence_classement_top") == '30') {
   $selected30 = ' selected="selected"';
-}elseif (getSettingValue("absence_classement_top") == '40') {
+} elseif (getSettingValue("absence_classement_top") == '40') {
   $selected40 = ' selected="selected"';
-}elseif (getSettingValue("absence_classement_top") == '50') {
+} elseif (getSettingValue("absence_classement_top") == '50') {
   $selected50 = ' selected="selected"';
 }
 
@@ -463,7 +473,12 @@ if($_SESSION["statut"]=="administrateur") {
 <p>
 	<input type="checkbox" name="abs2_alleger_abs_du_jour" id="abs2_alleger_abs_du_jour" value="y"
 	<?php if (getSettingValue("abs2_alleger_abs_du_jour")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
+	<label for="abs2_alleger_abs_du_jour">&nbsp;Alléger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
+</p>
+<p style='text-indent:-2.3em;margin-left:2.3em;'>
+	<input type="checkbox" name="abs2_limiter_abs_date_conseil_fin_annee" id="abs2_limiter_abs_date_conseil_fin_annee" value="y"
+	<?php if (getSettingValue("abs2_limiter_abs_date_conseil_fin_annee")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_limiter_abs_date_conseil_fin_annee">&nbsp;Pour la dernière période de l'année, arrêter les totaux d'absences à la date du conseil de classe<br /><em>(ne pas tenir compte, dans les totaux, des absences de fin d'année (après la date de conseil de classe saisie en compte <strong>scolarité</strong> dans <strong>Verrouillage des périodes</strong>))</em>.</label>
 </p>
 <br />
 <p>
@@ -575,7 +590,18 @@ else {
 		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
 	}
 	?>
-	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
+	<label for="abs2_alleger_abs_du_jour">&nbsp;Alléger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
+</p>
+<p style='text-indent:-2.3em;margin-left:2.3em;'>
+	<?php
+	if(getSettingValue("abs2_limiter_abs_date_conseil_fin_annee")=='y') {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_limiter_abs_date_conseil_fin_annee">&nbsp;Pour la dernière période de l'année, arrêter les totaux d'absences à la date du conseil de classe<br /><em>(ne pas tenir compte, dans les totaux, des absences de fin d'année (après la date de conseil de classe saisie en compte <strong>scolarité</strong> dans <strong>Verrouillage des périodes</strong>))</em>.</label>
 </p>
 <br />
 <p>

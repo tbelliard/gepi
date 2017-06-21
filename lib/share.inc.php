@@ -16569,4 +16569,272 @@ function calcule_points_DNB_enseignement_complement($ine) {
 
 	return $retour;
 }
+
+
+function adresse_postale_resp($tab_resp_adr, $mode="pdf") {
+	global $un_seul_bull_par_famille;
+
+	// $tab_resp_adr indice 0 resp_legal=1
+	// $tab_resp_adr indice 1 resp_legal=2
+
+	// Retour:
+	$tab=array();
+	$tab["nb_adr"]=0;
+
+	if (isset($tab_resp_adr[1])) {
+		if((isset($tab_resp_adr[1]['adr1']))&&
+			(isset($tab_resp_adr[1]['adr2']))&&
+			(isset($tab_resp_adr[1]['adr3']))&&
+			(isset($tab_resp_adr[1]['adr4']))&&
+			(isset($tab_resp_adr[1]['cp']))&&
+			(isset($tab_resp_adr[1]['commune']))
+		) {
+			// Le deuxième responsable existe et est renseigné
+			if (($tab_resp_adr[0]['adr_id']==$tab_resp_adr[1]['adr_id']) OR
+				(
+					(mb_strtolower($tab_resp_adr[0]['adr1'])==mb_strtolower($tab_resp_adr[1]['adr1']))&&
+					(mb_strtolower($tab_resp_adr[0]['adr2'])==mb_strtolower($tab_resp_adr[1]['adr2']))&&
+					(mb_strtolower($tab_resp_adr[0]['adr3'])==mb_strtolower($tab_resp_adr[1]['adr3']))&&
+					(mb_strtolower($tab_resp_adr[0]['adr4'])==mb_strtolower($tab_resp_adr[1]['adr4']))&&
+					($tab_resp_adr[0]['cp']==$tab_resp_adr[1]['cp'])&&
+					(mb_strtolower($tab_resp_adr[0]['commune'])==mb_strtolower($tab_resp_adr[1]['commune']))
+				)
+			) {
+				// Les adresses sont identiques
+				$tab["nb_adr"]=1;
+
+				// Les lignes d'adresse après le civilite/nom/prénom
+				$tab["adresse"][1]=lignes_adresse_postale($tab_resp_adr, $mode);
+
+				// Fabriquer la ligne Civilite Nom Prénom
+				$tab["adresse"][1][1]="";
+				if(($tab_resp_adr[0]['nom']!=$tab_resp_adr[1]['nom'])&&
+					($tab_resp_adr[1]['nom']!="")) {
+					// Les noms des responsables sont différents
+					$tab["adresse"][1][1]=$tab_resp_adr[0]['civilite']." ".$tab_resp_adr[0]['nom']." ".$tab_resp_adr[0]['prenom']." et ".$tab_resp_adr[1]['civilite']." ".$tab_resp_adr[1]['nom']." ".$tab_resp_adr[1]['prenom'];
+				}
+				else{
+					if(($tab_resp_adr[0]['civilite']!="")&&($tab_resp_adr[1]['civilite']!="")) {
+						$tab["adresse"][1][1]=$tab_resp_adr[0]['civilite']." et ".$tab_resp_adr[1]['civilite']." ".$tab_resp_adr[0]['nom']." ".$tab_resp_adr[0]['prenom'];
+					}
+					else {
+						$tab["adresse"][1][1]="M. et Mme ".$tab_resp_adr[0]['nom']." ".$tab_resp_adr[0]['prenom'];
+					}
+				}
+
+				// Le bloc complet des lignes adresse:
+				$tab["adresse"][1]["adresse"]="<b>".$tab["adresse"][1][1]."</b>\n".$tab["adresse"][1]["adresse"];
+			}
+			else {
+				// Les adresses sont différentes
+				// On teste en plus si la deuxième adresse est valide
+				if (($un_seul_bull_par_famille!="oui")&&
+					($tab_resp_adr[1]['adr1']!="")&&
+					($tab_resp_adr[1]['commune']!="")
+				) {
+					$tab["nb_adr"]=2;
+				}
+				else {
+					$tab["nb_adr"]=1;
+				}
+
+				for($cpt=0;$cpt<$tab["nb_adr"];$cpt++) {
+
+					$num_resp=$cpt+1;
+
+					// Les lignes d'adresse après le civilite/nom/prénom
+					$tab["adresse"][$num_resp]=lignes_adresse_postale($tab_resp_adr[$cpt], $mode);
+
+					// Fabriquer la ligne Civilite Nom Prénom
+					if($tab_resp_adr[$cpt]['civilite']!="") {
+						$tab["adresse"][$num_resp][1]=$tab_resp_adr[$cpt]['civilite']." ".$tab_resp_adr[$cpt]['nom']." ".$tab_resp_adr[$cpt]['prenom'];
+					}
+					else {
+						$tab["adresse"][$num_resp][1]=$tab_resp_adr[$cpt]['nom']." ".$tab_resp_adr[$cpt]['prenom'];
+					}
+
+					// Le bloc complet des lignes adresse:
+					$tab["adresse"][$num_resp]["adresse"]="<b>".$tab["adresse"][$num_resp][1]."</b>\n".$tab["adresse"][$num_resp]["adresse"];
+				}
+			}
+		}
+		else {
+			// Il n'y a pas de deuxième adresse, mais il y aurait un deuxième responsable???
+			// CA NE DEVRAIT PAS ARRIVER ETANT DONNé LA REQUETE EFFECTUEE QUI JOINT resp_pers ET resp_adr...
+			if ($un_seul_bull_par_famille!="oui") {
+				$tab["nb_adr"]=2;
+			}
+			else {
+				$tab["nb_adr"]=1;
+			}
+
+
+
+
+
+
+
+
+
+
+
+		}
+	}
+	else {
+		// Il n'y a pas de deuxième responsable
+		$tab["nb_adr"]=1;
+
+		// Les lignes d'adresse après le civilite/nom/prénom
+		$tab["adresse"][1]=lignes_adresse_postale($tab_resp_adr, $mode);
+
+		// Fabriquer la ligne Civilite Nom Prénom
+		$tab["adresse"][1][1]="";
+
+		if($tab_resp_adr[0]['civilite']!="") {
+			$tab["adresse"][1][1]=$tab_resp_adr[0]['civilite']." ".$tab_resp_adr[0]['nom']." ".$tab_resp_adr[0]['prenom'];
+		}
+		else {
+			$tab["adresse"][1][1]=$tab_resp_adr[0]['nom']." ".$tab_resp_adr[0]['prenom'];
+		}
+
+		// Le bloc complet des lignes adresse:
+		$tab["adresse"][1]["adresse"]="<b>".$tab["adresse"][1][1]."</b>\n".$tab["adresse"][1]["adresse"];
+
+	}
+
+	return $tab;
+}
+
+function lignes_adresse_postale($tab_adr, $mode="pdf") {
+	global $gepiSchoolPays;
+	if($gepiSchoolPays=="") {
+		$gepiSchoolPays=getSettingValue("gepiSchoolPays");
+	}
+
+	$retour=array();
+	//$retour["ligne"]=array();
+	//$retour[1]="ADRESSE MANQUANTE";
+	$retour[2]="";
+	$retour[3]="";
+	$retour[4]="";
+	$retour[5]="";
+	$retour[6]="";
+	$retour[7]="";
+
+	$retour["adresse"]="";
+	$retour["adresse_valide"]=false;
+
+	if((isset($tab_adr['adr1']))&&
+		(isset($tab_adr['adr2']))&&
+		(isset($tab_adr['adr3']))&&
+		(isset($tab_adr['adr4']))&&
+		(isset($tab_adr['cp']))&&
+		(isset($tab_adr['commune']))
+	) {
+
+		$retour[2]="";
+		if($tab_adr['adr1']!='') {
+			$retour[2]=$tab_adr['adr1'];
+			$retour["adresse"].="\n";
+			$retour["adresse"].=$retour[2];
+
+			$retour["adresse_valide"]=true;
+		}
+
+		if($tab_adr['adr2']!=""){
+			$retour[3]=$tab_adr['adr2'];
+
+			$retour["adresse"].="\n";
+			$retour["adresse"].=$retour[3];
+
+			$retour["adresse_valide"]=true;
+		}
+
+		if($tab_adr['adr3']!=""){
+			$retour[4]=$tab_adr['adr3'];
+
+			$retour["adresse"].="\n";
+			$retour["adresse"].=$retour[4];
+
+			$retour["adresse_valide"]=true;
+		}
+
+		if($tab_adr['adr4']!=""){
+			$retour[5]=$tab_adr['adr4'];
+
+			$retour["adresse"].="\n";
+			$retour["adresse"].=$retour[5];
+
+			$retour["adresse_valide"]=true;
+		}
+
+		$retour[6]=$tab_adr['cp']." ".$tab_adr['commune'];
+		$retour["adresse"].="\n";
+		$retour["adresse"].=$retour[6];
+
+
+		if(($tab_adr['pays']!="")&&(mb_strtolower($tab_adr['pays'])!=mb_strtolower($gepiSchoolPays))) {
+			$retour[7]=$tab_adr['pays'];
+
+			$retour["adresse"].="\n";
+			$retour["adresse"].=$retour[7];
+		}
+	}
+
+	return $retour;
+}
+
+function get_max_per($id_classe) {
+	global $mysqli;
+	$maxper=0;
+
+	$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='".$id_classe."';";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$maxper=$lig->maxper;
+	}
+	return $maxper;
+}
+
+function get_date_conseil_classe($id_classe, $periode) {
+	global $mysqli;
+	$tab=array();
+	$tab["date_conseil_classe_valide"]=false;
+
+	$sql="SELECT date_conseil_classe FROM periodes WHERE id_classe='".$id_classe."' AND num_periode='".$periode."';";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		$tab["date_conseil_classe_valide"]=true;
+
+		$tab['date_conseil_classe']=$lig->date_conseil_classe;
+
+		$tab['date_conseil_classe_valide']=true;
+		if($lig->date_conseil_classe==null) {
+			$tab['date_conseil_classe_valide']=false;
+		}
+		elseif($lig->date_conseil_classe=="0000-00-00 00:00:00") {
+			$tab['date_conseil_classe_valide']=false;
+		}
+		else {
+			$tmp_tab=explode(" ", $lig->date_conseil_classe);
+			$tmp_tab2=explode("-", $tmp_tab[0]);
+			$tmp_day=$tmp_tab2[2];
+			$tmp_month=$tmp_tab2[1];
+			$tmp_year=$tmp_tab2[0];
+			//echo "\$tmp_month=$tmp_month, \$tmp_day=$tmp_day, \$tmp_year=$tmp_year<br />";
+			if(!checkdate($tmp_month, $tmp_day, $tmp_year)) {
+				//echo "plop<br />";
+				$tab['date_conseil_classe_valide']=false;
+			}
+			else {
+				//$tab['date_conseil_classe_DateTime']=DateTime::createFromFormat('Y-m-d H:M:S', $tab['date_conseil_classe']);
+				$tab['date_conseil_classe_DateTime']=new DateTime(str_replace("/", ".", formate_date($tab['date_conseil_classe'])));
+			}
+		}
+	}
+	return $tab;
+}
 ?>

@@ -1794,6 +1794,9 @@ else {
 	// Boucle sur les classes
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 
+		// 20170620
+		$maxper=get_max_per($tab_id_classe[$loop_classe]);
+
 		// 20170608
 		$tab_bilan_cycle_eleves=array();
 		if($avec_bilan_cycle=="y") {
@@ -2329,6 +2332,34 @@ else {
 				//$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
 				$tab_bulletin[$id_classe][$periode_num]['nom_periode']=preg_replace("/&#039;/","'",$lig_per->nom_periode);
 				$tab_bulletin[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
+				// 20170620
+				$tab_bulletin[$id_classe][$periode_num]['date_fin']=$lig_per->date_fin;
+				$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe']=$lig_per->date_conseil_classe;
+
+				$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_valide']=true;
+				if($lig_per->date_conseil_classe==null) {
+					$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_valide']=false;
+				}
+				elseif($lig_per->date_conseil_classe=="0000-00-00 00:00:00") {
+					$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_valide']=false;
+				}
+				else {
+					$tmp_tab=explode(" ", $lig_per->date_conseil_classe);
+					$tmp_tab2=explode("-", $tmp_tab[0]);
+					$tmp_day=$tmp_tab2[2];
+					$tmp_month=$tmp_tab2[1];
+					$tmp_year=$tmp_tab2[0];
+					//echo "\$tmp_month=$tmp_month, \$tmp_day=$tmp_day, \$tmp_year=$tmp_year<br />";
+					if(!checkdate($tmp_month, $tmp_day, $tmp_year)) {
+						//echo "plop<br />";
+						$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_valide']=false;
+					}
+					else {
+						//$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_DateTime']=DateTime::createFromFormat('Y-m-d H:M:S', $tab_bulletin[$id_classe][$periode_num]['date_conseil_classe']);
+						$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_DateTime']=new DateTime(str_replace("/", ".", formate_date($tab_bulletin[$id_classe][$periode_num]['date_conseil_classe'])));
+					}
+				}
+				//echo "date_conseil_classe_valide=".($tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_valide'] ? "true" : "false")."<br />";
 			}
 
 			// Liste des élèves à éditer/afficher/imprimer (sélection):
@@ -3212,7 +3243,6 @@ mysql>
 
 					// Si aucun élève n'est sélectionné, on imprime que les appréciations classe, il faut alors extraire aussi les moyennes min/max/classe.
 				}
-
 
 				// Boucle élèves de la classe $id_classe pour la période $periode_num
 				$compteur_ele_classe_courante_periode_courante=0;
@@ -4247,19 +4277,6 @@ mysql>
 							$tab_ele['resp_liste_adr']=array();
 						}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 						// Rang
 						if ($affiche_rang == 'y'){
 							$rang = sql_query1("select rang from j_eleves_classes where (
@@ -4773,17 +4790,64 @@ mysql>
 							require_once("../lib/initialisationsPropel.inc.php");
 							$eleve = EleveQuery::create()->findOneByLogin($current_eleve_login[$i]);
 							if ($eleve != null) {
-								$current_eleve_absences = strval($eleve->getDemiJourneesAbsenceParPeriode($periode_num)->count());
-								$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_num)->count());
-								$current_eleve_retards = strval($eleve->getRetardsParPeriode($periode_num)->count());
+								// 20170620
+								//echo "\$periode_num=$periode_num et \$maxper=$maxper<br />\n";
+								if(($periode_num==$maxper)&&
+									($tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_valide'])&&
+									(getSettingAOui("abs2_limiter_abs_date_conseil_fin_annee"))) {
+
+									//$current_periode_note=$eleve->getPeriodeNotes($periode_num);
+									$current_periode_note=$eleve->getPeriodeNote($periode_num);
+									//$date_debut_abs=$current_periode_note->getDateDebut('d/m/Y');
+									// A déclarer hors de la boucle eleves
+									//$date_fin_abs=DateTime::createFromFormat('Y-m-d H:M:S', $tab_bulletin[$id_classe][$periode_num]['date_conseil_classe']);
+									//$date_fin_abs=new DateTime(str_replace("/", ".", formate_date($tab_bulletin[$id_classe][$periode_num]['date_conseil_classe'])));
+									$date_fin_abs=$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe_DateTime'];
+
+									/*
+									// DEBUG
+									echo "<p>".$current_eleve_login[$i]."</p>";
+									//echo "\$date_fin_abs=$date_fin_abs";
+									echo $date_fin_abs->format( 'd-m-Y' )."<br />";
+
+									echo "Date de fin des absences (conseil de classe):<pre>";
+									print_r($date_fin_abs);
+									echo "</pre>";
+									echo "\$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe']=".$tab_bulletin[$id_classe][$periode_num]['date_conseil_classe']."<br />";
+
+									echo "\$current_periode_note->getDateDebut(null)<pre>";
+									print_r($current_periode_note->getDateDebut(null));
+									echo "</pre>";
+
+									echo "<p>Liste des absences:</p>";
+
+									foreach($eleve->getDemiJourneesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs) as $abs) {
+										echo "__<pre>";
+										print_r($abs);
+										echo "</pre>";
+									}
+									*/
+
+									$current_eleve_absences = strval($eleve->getDemiJourneesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+									//echo "\$current_eleve_absences = strval(\$eleve->getDemiJourneesAbsence(".$current_periode_note->getDateDebut(null)->format("d/m/Y").", ".$date_fin_abs->format("d/m/Y").")->count())=".$current_eleve_absences."<br />\n";
+									
+									$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+									$current_eleve_retards = strval($eleve->getRetards($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+								}
+								else {
+									$current_eleve_absences = strval($eleve->getDemiJourneesAbsenceParPeriode($periode_num)->count());
+									$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_num)->count());
+									$current_eleve_retards = strval($eleve->getRetardsParPeriode($periode_num)->count());
+								}
+								// Récupération de l'appréciation liée aux absences
 								$sql="SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num');";
 								//echo "$sql< br />";
 								$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], $sql);
 								$current_eleve_appreciation_absences_objet = $current_eleve_absences_query->fetch_object();
 								$current_eleve_appreciation_absences = '';
 								if ($current_eleve_appreciation_absences_objet) { 
-								   $current_eleve_appreciation_absences = $current_eleve_appreciation_absences_objet->appreciation;
-								}								
+									$current_eleve_appreciation_absences = $current_eleve_appreciation_absences_objet->appreciation;
+								}
 							}
 						}
 						if ($current_eleve_absences === '') { $current_eleve_absences = "?"; }
@@ -5121,6 +5185,11 @@ mysql>
 */
 
 		for($j=0;$j<count($tableau_eleve['login']);$j++) {
+
+// 20170615
+// Dans le cas de parents séparés, boucler sur le nombre de parents
+// Remplir avant un tableau et des bulletins à générer: 1 pour tel élève, 2 pour tel autre.
+
 			//send_file_download_headers('application/pdf','bulletin.pdf');
 
 			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['no_gep'][$j]."_".$tableau_eleve['nom_prenom'][$j]."_".$nom_bulletin.'.pdf';

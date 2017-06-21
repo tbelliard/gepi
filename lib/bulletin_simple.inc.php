@@ -123,6 +123,8 @@ if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) 
 }
 
 global $mysqli;
+global $gepiPath;
+
 $tab_modif_app_proposees=array();
 $tab_mes_groupes=array();
 if($_SESSION['statut']=='professeur') {
@@ -217,6 +219,10 @@ if ($nb_periodes == 1) {
 
 if ($on_continue == 'yes') {
 
+	// 20170621
+	$maxper=get_max_per($id_classe);
+	$tab_date_dernier_conseil_classe=get_date_conseil_classe($id_classe, $maxper);
+
 	// Mis hors de la fonction
 	//$affiche_coef=sql_query1("SELECT display_coef FROM classes WHERE id='".$id_classe."'");
 
@@ -280,7 +286,11 @@ if ($on_continue == 'yes') {
 		if ($current_eleve_sexe == "M") echo ",&nbsp;interne&nbsp;externé"; else echo ",&nbsp;interne&nbsp;externée";
 	if ($current_eleve_doublant == 'R')
 		if ($current_eleve_sexe == "M") echo ", <b>redoublant</b>"; else echo ", <b>redoublante</b>";
-	echo "&nbsp;&nbsp;-&nbsp;&nbsp;Classe de $current_eleve_classe, année scolaire $gepiYear<br />\n";
+	echo "&nbsp;&nbsp;-&nbsp;&nbsp;Classe de $current_eleve_classe, année scolaire $gepiYear";
+	if(acces("/eleves/visu_eleve.php", $_SESSION["statut"])) {
+		echo "<span class='noprint'> <a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$current_eleve_login."' target='_blank'><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Classeur élève' /></a></span>";
+	}
+	echo "<br />\n";
 	
 	if ($current_eleve_etab_nom != '') {
 		echo "Etablissement d'origine : ";
@@ -1231,24 +1241,62 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 
 			//On vérifie si le module est activé
 			if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
-			    $current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-			    $eleve_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
-			    $eleve_abs_nj[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
-			    $eleve_retards[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
-			    $current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
-			    $eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
-			} else {
-			    // Initialisations files
-			    require_once("../lib/initialisationsPropel.inc.php");
-			    $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
-			    if ($eleve != null) {
 				$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-				$eleve_abs[$nb] = $eleve->getDemiJourneesAbsenceParPeriode($nb)->count();
-				$eleve_abs_nj[$nb] = $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count();
-				$eleve_retards[$nb] = $eleve->getRetardsParPeriode($nb)->count();
+				$eleve_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+				$eleve_abs_nj[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+				$eleve_retards[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
 				$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
 				$eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
-			    }
+			} else {
+				// Initialisations files
+				require_once("../lib/initialisationsPropel.inc.php");
+				$eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
+				if ($eleve != null) {
+
+					// 20170621
+					//echo "\$nb=$nb et \$maxper=$maxper<br />\n";
+					if(($nb==$maxper)&&
+						($tab_date_dernier_conseil_classe['date_conseil_classe_valide'])&&
+						(getSettingAOui("abs2_limiter_abs_date_conseil_fin_annee"))) {
+
+						$current_periode_note=$eleve->getPeriodeNote($nb);
+						// A déclarer hors de la boucle eleves
+						//$date_fin_abs=new DateTime(str_replace("/", ".", formate_date($tab_date_dernier_conseil_classe['date_conseil_classe'])));
+						$date_fin_abs=$tab_date_dernier_conseil_classe['date_conseil_classe_DateTime'];
+
+						$current_eleve_absences = strval($eleve->getDemiJourneesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+						//echo "\$current_eleve_absences = strval(\$eleve->getDemiJourneesAbsence(".$current_periode_note->getDateDebut(null)->format("d/m/Y").", ".$date_fin_abs->format("d/m/Y").")->count())=".$current_eleve_absences."<br />\n";
+					
+						$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+						$current_eleve_retards = strval($eleve->getRetards($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+					}
+					else {
+						$current_eleve_absences = strval($eleve->getDemiJourneesAbsenceParPeriode($nb)->count());
+						$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count());
+						$current_eleve_retards = strval($eleve->getRetardsParPeriode($nb)->count());
+					}
+					// Récupération de l'appréciation liée aux absences
+					$sql="SELECT * FROM absences WHERE (login='".$current_eleve_login."' AND periode='$nb');";
+					//echo "$sql< br />";
+					$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], $sql);
+					$current_eleve_appreciation_absences_objet = $current_eleve_absences_query->fetch_object();
+					$current_eleve_appreciation_absences = '';
+					if ($current_eleve_appreciation_absences_objet) { 
+						$current_eleve_appreciation_absences = $current_eleve_appreciation_absences_objet->appreciation;
+					}
+					/*
+					$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
+					$eleve_abs[$nb] = $eleve->getDemiJourneesAbsenceParPeriode($nb)->count();
+					$eleve_abs_nj[$nb] = $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count();
+					$eleve_retards[$nb] = $eleve->getRetardsParPeriode($nb)->count();
+					$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+					$eleve_app_abs[$nb] = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+					*/
+					$eleve_abs[$nb] = $current_eleve_absences;
+					$eleve_abs_nj[$nb] = $current_eleve_nj;
+					$eleve_retards[$nb] = $current_eleve_retards;
+					$eleve_app_abs[$nb] = $current_eleve_appreciation_absences;
+				}
 			}
 			if (($eleve_abs[$nb] !== '') and ($eleve_abs_nj[$nb] !== '')) {
 				$eleve_abs_j[$nb] = $eleve_abs[$nb]-$eleve_abs_nj[$nb];

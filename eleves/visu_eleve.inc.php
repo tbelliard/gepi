@@ -2800,6 +2800,11 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 		}
 
 		//=============================================
+		// 20170621
+		if(isset($tab_ele['classe'])) {
+			$id_derniere_classe=$tab_ele['classe'][count($tab_ele['classe'])-1]['id_classe'];
+		}
+		//=============================================
 
 		//========================
 		// Onglet CAHIER DE TEXTES
@@ -3304,6 +3309,12 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			    require_once("../lib/initialisationsPropel.inc.php");
 			    $eleve = EleveQuery::create()->findOneByLogin($ele_login);
 
+				// 20170621
+				if(isset($id_derniere_classe)) {
+					$maxper=get_max_per($id_derniere_classe);
+					$tab_date_dernier_conseil_classe=get_date_conseil_classe($id_derniere_classe, $maxper);
+				}
+
 			    echo "<table class='boireaus boireaus_alt'>\n";
 				echo "<caption>Bilan des absences</caption>\n";
 			    echo "<tr>\n";
@@ -3318,6 +3329,34 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 					//periode non commencee
 					continue;
 				    }
+
+					// 20170621
+					$info_complementaire_abs="";
+					$info_complementaire_nj="";
+					$info_complementaire_retards="";
+					if(isset($id_derniere_classe)) {
+						if(($periode_note->getNumPeriode()==$maxper)&&
+							($tab_date_dernier_conseil_classe['date_conseil_classe_valide'])&&
+							(getSettingAOui("abs2_limiter_abs_date_conseil_fin_annee"))) {
+
+							$current_periode_note=$eleve->getPeriodeNote($periode_note->getNumPeriode());
+							// A déclarer hors de la boucle eleves
+							//$date_fin_abs=new DateTime(str_replace("/", ".", formate_date($tab_date_dernier_conseil_classe['date_conseil_classe'])));
+							$date_fin_abs=$tab_date_dernier_conseil_classe['date_conseil_classe_DateTime'];
+
+							$date_conseil_classe=formate_date($tab_date_dernier_conseil_classe['date_conseil_classe']);
+
+							$current_eleve_absences = strval($eleve->getDemiJourneesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+							$info_complementaire_abs=" <span title=\"".$current_eleve_absences." comptées jusqu'à la date du conseil de classe (".$date_conseil_classe.").\">(".$current_eleve_absences.")</span>";
+							//echo "\$current_eleve_absences = strval(\$eleve->getDemiJourneesAbsence(".$current_periode_note->getDateDebut(null)->format("d/m/Y").", ".$date_fin_abs->format("d/m/Y").")->count())=".$current_eleve_absences."<br />\n";
+					
+							$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+							$info_complementaire_nj=" <span title=\"".$current_eleve_nj." comptées jusqu'à la date du conseil de classe (".$date_conseil_classe.").\">(".$current_eleve_nj.")</span>";
+							$current_eleve_retards = strval($eleve->getRetards($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+							$info_complementaire_retards=" <span title=\"".$current_eleve_retards." comptés jusqu'à la date du conseil de classe (".$date_conseil_classe.").\">(".$current_eleve_retards.")</span>";
+						}
+					}
+
 				    echo "<tr>\n";
 				    echo "<td>".$periode_note->getNomPeriode();
 				    echo " du ".$periode_note->getDateDebut('d/m/Y');
@@ -3329,13 +3368,13 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 				    }
 				    echo "</td>\n";
 				    echo "<td>";
-				    echo $eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
+				    echo $eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count().$info_complementaire_abs;
 				    echo "</td>\n";
 				    echo "<td>";
-				    echo $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
+				    echo $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count().$info_complementaire_nj;
 				    echo "</td>\n";
 				    echo "<td>";
-				    echo $eleve->getRetardsParPeriode($periode_note)->count();
+				    echo $eleve->getRetardsParPeriode($periode_note)->count().$info_complementaire_retards;
 				    echo "</td>\n";
 				    echo "<td>";
 				    // PROBLEME: On n'a plus accès à cette table si on ne remplit pas la table absences.

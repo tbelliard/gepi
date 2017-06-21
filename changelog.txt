@@ -9,6 +9,11 @@ Gepi-master (Version de développement)
 Bulletins:
 - Bulletins 2016: Possibilité d'imprimer le bulletin de fin de cycle.
 
+Absences 2:
+- Possibilité de restreindre le décompte des absences sur les bulletins pour la 
+  dernière période en limitant l'extraction du début de la période jusqu'à la 
+  date du conseil de classe déclaré en scolarité dans Verrouillage des classes.
+
 LSUN:
 - Possibilité de n'extraire qu'une ou certaines périodes.
 
