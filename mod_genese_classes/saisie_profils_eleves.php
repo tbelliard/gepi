@@ -125,7 +125,7 @@ if(isset($_POST['enregistrer_profils'])) {
 		$poursuivre="y";
 		if(isset($profil[$loop])) {
 			if(($_SESSION['statut']=="professeur")&&(!in_array($login_ele[$loop], $tab_ele_pp['login']))) {
-				$msg.="Vous n'êtes pas ".$pp." de ".get_nom_prenom_eleve($tab_ele_pp['login']).".<br />";
+				$msg.="Vous n'êtes pas ".$pp." de ".get_nom_prenom_eleve($login_ele[$loop]).".<br />";
 				$poursuivre="n";
 			}
 			if($poursuivre=="y") {
@@ -140,7 +140,7 @@ if(isset($_POST['enregistrer_profils'])) {
 						$nb_reg++;
 					}
 					else {
-						$msg.="Erreur lors de la mise à jour du profil pour ".get_nom_prenom_eleve($tab_ele_pp['login']).".<br />";
+						$msg.="Erreur lors de la mise à jour du profil pour ".get_nom_prenom_eleve($login_ele[$loop]).".<br />";
 					}
 				}
 				else {
@@ -151,13 +151,13 @@ if(isset($_POST['enregistrer_profils'])) {
 						$nb_reg++;
 					}
 					else {
-						$msg.="Erreur lors de l'enregistrement du profil pour ".get_nom_prenom_eleve($tab_ele_pp['login']).".<br />";
+						$msg.="Erreur lors de l'enregistrement du profil pour ".get_nom_prenom_eleve($login_ele[$loop]).".<br />";
 					}
 				}
 			}
 		}
 		else {
-			$msg.="Profil non précisé pour ".get_nom_prenom_eleve($tab_ele_pp['login'])."<br />";
+			$msg.="Profil non précisé pour ".get_nom_prenom_eleve($login_ele[$loop])."<br />";
 		}
 	}
 
