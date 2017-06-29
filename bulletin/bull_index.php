@@ -742,7 +742,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 		$sql="SELECT 1=1 FROM aid_config;";
 		$test_aid=mysqli_query($GLOBALS['mysqli'], $sql);
 		if(mysqli_num_rows($test_aid)>0) {
-			echo "<p style='color:red'>L'affichage des AID est désactivé.<br />
+			echo "<div id='alerte_aid_desactive' style='margin-left:2.3em;'><p style='color:red'>L'affichage des AID est désactivé.<br />
 			Ce paramétrage est peut-être une erreur <em>(notamment en collège avec des EPI, AP,...)</em>";
 			if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 			(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
@@ -756,7 +756,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 				}
 			}
 			echo "</p>";
-			echo "<p style='color:red'>Le non-affichage de certains AID peut aussi être paramétré au niveau de la configuration de la catégorie d'AID elle-même <em>(dans Gestion des bases/AID)</em>.</p>";
+			echo "<p style='color:red'>Le non-affichage de certains AID peut aussi être paramétré au niveau de la configuration de la catégorie d'AID elle-même <em>(dans Gestion des bases/AID)</em>.</p></div>";
 		}
 	}
 
@@ -818,6 +818,15 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 						document.getElementById('div_param_bull_pdf').style.display='none';
 					}
 				}
+			}
+		}
+
+		if(document.getElementById('alerte_aid_desactive')) {
+			if(document.getElementById('mode_bulletin_pdf_2016').checked==true) {
+				document.getElementById('alerte_aid_desactive').style.display='';
+			}
+			else {
+				document.getElementById('alerte_aid_desactive').style.display='none';
 			}
 		}
 
