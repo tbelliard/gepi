@@ -336,14 +336,16 @@ echo "</form>\n";
 
 //echo "</blockquote>\n";
 
-echo "<p><em>NOTES&nbsp;:</em></p>\n";
-echo "<ul>\n";
-echo "<li>Il est possible d'imposer des contraintes pour indiquer que l'on ne veut pas de LATIN en 3A2 et 3B2 (<i>les élèves faisant LATIN pourront alors être cochés dans toutes les colonnes sauf 3A2 et 3B2</i>).<br />
-Pour autant, la solution par exclusion de telle option sur telle classe ne suffit pas toujours.<br />
-Il peut être commode de créer des options comme z_3B1, z_3B2,... pour les élèves qui ne doivent pas être mis dans une autre classe.<br >
-En combinant l'option z_3B1 avec une exclusion du type pas d'option z_3B1 dans les classes autres que 3B1 vous pourrez ajouter des contraintes non gérables autrement.</li>\n";
-echo "<li>Créer une option Z_XXX pour les élèves incertains (<i>départ annoncé mais non confirmé,...</i>) permet de repérer rapidement si on a bien réparti les incertains sur les différentes classes.</li>\n";
-echo "</ul>\n";
+echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+		<li>Il est possible d'imposer des contraintes pour indiquer que l'on ne veut pas de LATIN en 3A2 et 3B2 (<i>les élèves faisant LATIN pourront alors être cochés dans toutes les colonnes sauf 3A2 et 3B2</i>).<br />
+	Pour autant, la solution par exclusion de telle option sur telle classe ne suffit pas toujours.<br />
+	Il peut être commode de créer des options comme z_3B1, z_3B2,... pour les élèves qui ne doivent pas être mis dans une autre classe.<br >
+	En combinant l'option z_3B1 avec une exclusion du type pas d'option z_3B1 dans les classes autres que 3B1 vous pourrez ajouter des contraintes non gérables autrement.</li>
+	<li>Créer une option Z_XXX pour les élèves incertains (<i>départ annoncé mais non confirmé,...</i>) permet de repérer rapidement si on a bien réparti les incertains sur les différentes classes.</li>
+	<li>Les effectifs affichés correspondent à ce qui a été enregistré à l'étape 7 dans la page 'Saisir les options des élèves'.<br />
+	Tant que le formulaire dans la page n'a pas été validé, la table correspondante est vide et les effectifs des options restent à zéro.</li>
+</ul>\n";
 
 require("../lib/footer.inc.php");
 ?>

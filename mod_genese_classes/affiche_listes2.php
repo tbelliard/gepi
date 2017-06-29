@@ -91,6 +91,13 @@ if((isset($_GET['mode']))&&($_GET['mode']=='affiche_tab_chgt_clas')&&(isset($pro
 		}
 
 		$chaine_profil="";
+		if(isset($tab_couleur_profil_assoc[$lig->profil])) {
+			$chaine_profil="<span style='color:".$tab_couleur_profil_assoc[$lig->profil]."' title=\"".$tab_profil_traduction_assoc[$lig->profil]."\"> (".$lig->profil.")</span>";
+		}
+		else {
+			$chaine_profil=" (".$lig->profil.")";
+		}
+		/*
 		if($lig->profil=='GC') {
 			$chaine_profil="<span style='color:red' title=\"Gros Cas\"> (GC)</span>";
 		}
@@ -103,6 +110,7 @@ if((isset($_GET['mode']))&&($_GET['mode']=='affiche_tab_chgt_clas')&&(isset($pro
 		elseif($lig->profil=='TB') {
 			$chaine_profil="<span style='color:blue' title=\"Très bien (action très positive pour la classe)\"> (TB)</span>";
 		}
+		*/
 
 		$chaine_moy="";
 		if($lig->moy!='') {

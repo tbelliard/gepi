@@ -71,15 +71,28 @@ if (!checkAccess()) {
 
 
 $msg = '';
-if (isset($_POST['activer'])) {
+if(isset($_POST['valider_form_activation'])) {
 	check_token();
-	if (!saveSetting("active_mod_genese_classes", $_POST['activer'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+
+	if (isset($_POST['activer'])) {
+		if (!saveSetting("active_mod_genese_classes", $_POST['activer'])) {
+			$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre activation/désactivation !</span><br />";
+		}
+		else {
+			$msg .= "Enregistrement de l'activation/désactivation effectué.<br />";
+			$post_reussi=TRUE;
+		}
 	}
-	else {
-		$msg = "Enregistrement effectué.";
-		$post_reussi=TRUE;
+
+	if (isset($_POST['mod_genese_classes_profils_v2'])) {
+		if (!saveSetting("mod_genese_classes_profils_v2", $_POST['mod_genese_classes_profils_v2'])) {
+			$msg .= "<span style='color:red'>Erreur lors de l'enregistrement du paramètre mod_genese_classes_profils_v2 !</span><br />";
+		}
+		else {
+			$msg .= "Enregistrement du paramètre mod_genese_classes_profils_v2 effectué.<br />";
+		}
 	}
+
 }
 
 //**************** EN-TETE *****************

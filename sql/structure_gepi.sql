@@ -353,15 +353,13 @@ CREATE TABLE IF NOT EXISTS gc_ele_arriv_red (login VARCHAR( 50 ) NOT NULL,statut
 DROP TABLE IF EXISTS gc_affichages;
 CREATE TABLE IF NOT EXISTS gc_affichages (id int(11) unsigned NOT NULL auto_increment,id_aff int(11) unsigned NOT NULL,id_req int(11) unsigned NOT NULL,projet VARCHAR( 255 ) NOT NULL , nom_requete VARCHAR( 255 ) NOT NULL, type VARCHAR(255) NOT NULL,valeur varchar(255) NOT NULL,PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS gc_eleves_options;
-CREATE TABLE IF NOT EXISTS gc_eleves_options (id int(11) unsigned NOT NULL auto_increment,login VARCHAR( 50 ) NOT NULL ,profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS',moy VARCHAR( 255 ) NOT NULL ,nb_absences VARCHAR( 255 ) NOT NULL ,non_justifie VARCHAR( 255 ) NOT NULL ,nb_retards VARCHAR( 255 ) NOT NULL ,projet VARCHAR( 255 ) NOT NULL ,id_classe_actuelle VARCHAR(255) NOT NULL ,classe_future VARCHAR(255) NOT NULL ,liste_opt VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS gc_eleves_options (id int(11) unsigned NOT NULL auto_increment,login VARCHAR( 50 ) NOT NULL ,profil VARCHAR(10) NOT NULL default 'RAS',moy VARCHAR( 255 ) NOT NULL ,nb_absences VARCHAR( 255 ) NOT NULL ,non_justifie VARCHAR( 255 ) NOT NULL ,nb_retards VARCHAR( 255 ) NOT NULL ,projet VARCHAR( 255 ) NOT NULL ,id_classe_actuelle VARCHAR(255) NOT NULL ,classe_future VARCHAR(255) NOT NULL ,liste_opt VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS plugins;
 CREATE TABLE IF NOT EXISTS plugins (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,nom VARCHAR( 100 ) NOT NULL,repertoire VARCHAR( 255 ) NOT NULL,description LONGTEXT NOT NULL,ouvert CHAR( 1 ) default 'n',  UNIQUE KEY `nom` (`nom`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS plugins_autorisations;
 CREATE TABLE IF NOT EXISTS plugins_autorisations (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,plugin_id INT( 11 ) NOT NULL,fichier VARCHAR( 100 ) NOT NULL,user_statut VARCHAR( 50 ) NOT NULL,auth CHAR( 1 ) default 'n') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS plugins_menus;
 CREATE TABLE IF NOT EXISTS plugins_menus (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,plugin_id INT( 11 ) NOT NULL,user_statut VARCHAR( 50 ) NOT NULL,titre_item VARCHAR ( 255 ) NOT NULL,lien_item VARCHAR( 255 ) NOT NULL,description_item VARCHAR( 255 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
-DROP TABLE IF EXISTS gc_eleves_options;
-CREATE TABLE IF NOT EXISTS gc_eleves_options (id int(11) unsigned NOT NULL auto_increment,login VARCHAR( 50 ) NOT NULL ,profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS',moy VARCHAR( 255 ) NOT NULL ,nb_absences VARCHAR( 255 ) NOT NULL ,non_justifie VARCHAR( 255 ) NOT NULL ,nb_retards VARCHAR( 255 ) NOT NULL ,projet VARCHAR( 255 ) NOT NULL ,id_classe_actuelle VARCHAR(255) NOT NULL ,classe_future VARCHAR(255) NOT NULL ,liste_opt VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS ects_credits;
 CREATE TABLE IF NOT EXISTS ects_credits (id INTEGER(11)  NOT NULL AUTO_INCREMENT, id_eleve INTEGER(11)  NOT NULL COMMENT 'Identifiant de l\'eleve', num_periode INTEGER(11)  NOT NULL COMMENT 'Identifiant de la periode', id_groupe INTEGER(11)  NOT NULL COMMENT 'Identifiant du groupe', valeur DECIMAL(3,1) COMMENT 'Nombre de credits obtenus par l\'eleve', mention VARCHAR(255) COMMENT 'Mention obtenue', `mention_prof` VARCHAR(255) COMMENT 'Mention presaisie par le prof', PRIMARY KEY (id,id_eleve,num_periode,id_groupe), INDEX ects_credits_FI_1 (id_eleve), CONSTRAINT ects_credits_FK_1 FOREIGN KEY (id_eleve) REFERENCES eleves (id_eleve), INDEX ects_credits_FI_2 (id_groupe), CONSTRAINT ects_credits_FK_2 FOREIGN KEY (id_groupe) REFERENCES groupes (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS archivage_ects;
@@ -1489,7 +1487,7 @@ id_tag int(11) unsigned NOT NULL,
 PRIMARY KEY id (id), UNIQUE KEY idct_idtag (id_ct, type_ct, id_tag));
 
 DROP TABLE IF EXISTS gc_eleves_profils;
-CREATE TABLE IF NOT EXISTS gc_eleves_profils (id int(11) unsigned NOT NULL auto_increment, login VARCHAR( 50 ) NOT NULL , profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS', PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS gc_eleves_profils (id int(11) unsigned NOT NULL auto_increment, login VARCHAR( 50 ) NOT NULL , profil VARCHAR(10) NOT NULL default 'RAS', PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 /*===== éléments de programme =====*/
 

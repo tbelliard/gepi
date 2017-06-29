@@ -135,7 +135,7 @@ $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 $sql="CREATE TABLE IF NOT EXISTS gc_eleves_options (
 id int(11) unsigned NOT NULL auto_increment,
 login VARCHAR( 255 ) NOT NULL ,
-profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS',
+profil VARCHAR(10) NOT NULL default 'RAS',
 moy VARCHAR( 255 ) NOT NULL ,
 nb_absences VARCHAR( 255 ) NOT NULL ,
 non_justifie VARCHAR( 255 ) NOT NULL ,

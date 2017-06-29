@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -663,6 +663,11 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				else {
 					$lig_profil=mysqli_fetch_object($res_profil);
 					$profil=$lig_profil->profil;
+
+					// Sécurité pour pouvoir cliquer et définir le profil si jamais le profil se retrouve vide
+					if($profil=="") {
+						$profil="-";
+					}
 				}
 				echo $profil;
 				echo "</td>\n";
@@ -850,6 +855,11 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 					$lig_profil=mysqli_fetch_object($res_profil);
 					$profil=$lig_profil->profil;
 					$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="n";
+
+					// Sécurité pour pouvoir cliquer et définir le profil si jamais le profil se retrouve vide
+					if($profil=="") {
+						$profil="-";
+					}
 				}
 
 				$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="n";
@@ -1232,9 +1242,17 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 
 	$titre="Sélection du profil";
 	$texte="<p style='text-align:center;'>";
+	if(getSettingAOui("mod_genese_classes_profils_v2")) {
+		$texte="<p style='text-align:left'>";
+	}
+	$lettre_profil_precedente="";
 	for($loop=0;$loop<count($tab_profil);$loop++) {
 		if($loop>0) {$texte.=" - ";}
+		if((getSettingAOui("mod_genese_classes_profils_v2"))&&($lettre_profil_precedente!="")&&($lettre_profil_precedente!=substr($tab_profil[$loop], 0, 1))) {
+			$texte.="<br />";
+		}
 		$texte.="<a href='#' onclick=\"set_profil('".$tab_profil[$loop]."');return false;\">$tab_profil[$loop]</a>";
+		$lettre_profil_precedente=substr($tab_profil[$loop], 0, 1);
 	}
 	$texte.="</p>\n";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_set_profil',$titre,"",$texte,"",14,0,'y','y','n','n');

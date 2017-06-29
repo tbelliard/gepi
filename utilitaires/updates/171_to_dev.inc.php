@@ -232,4 +232,49 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+/*
+
+// Cela merdouille... à creuser...
+
+$result .= "&nbsp;-> Ajout d'un champ 'id' à la table 'matieres'&nbsp;: ";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM matieres LIKE 'id';"));
+if ($test_champ==0) {
+
+	$sql="ALTER TABLE matieres DROP PRIMARY KEY, ADD UNIQUE (matiere) COMMENT '';";
+	echo "$sql<br />";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$sql="ALTER TABLE matieres ADD id int(11) NOT NULL auto_increment;";
+		echo "$sql<br />";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+}
+*/
+
+$result .= "&nbsp;-> Contrôle du champ profil de la table 'gc_eleves_options'&nbsp;: ";
+$sql="ALTER TABLE `gc_eleves_options` CHANGE `profil` `profil` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'RAS';";
+$result_inter = traite_requete($sql);
+if ($result_inter == '') {
+	$result .= msj_ok("OK !");
+}
+else {
+	$result .= msj_erreur("ERREUR !");
+}
+
+$result .= "&nbsp;-> Contrôle du champ profil de la table 'gc_eleves_profils'&nbsp;: ";
+$sql="ALTER TABLE `gc_eleves_profils` CHANGE `profil` `profil` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'RAS';";
+$result_inter = traite_requete($sql);
+if ($result_inter == '') {
+	$result .= msj_ok("OK !");
+}
+else {
+	$result .= msj_erreur("ERREUR !");
+}
+
 ?>

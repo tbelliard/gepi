@@ -99,6 +99,7 @@
 echo add_token_field();
 ?>
 	  <legend class="invisible">Activation</legend>
+	<p>
 	  <input type='radio' 
 			 name='activer' 
 			 id='activer_y' 
@@ -116,9 +117,21 @@ echo add_token_field();
 	  <label for='activer_n'>
 		Désactiver le module Génèse des classes
 	  </label>
+	</p>
+
+	<br />
+
+	<p>
+		<input type='radio' name='mod_genese_classes_profils_v2' id='mod_genese_classes_profils_v2_y' value='y' 
+		<?php if (getSettingValue('mod_genese_classes_profils_v2')=='y') echo ' checked="checked"';?> /><label for='mod_genese_classes_profils_v2_y' id='texte_mod_genese_classes_profils_v2_y'>Utiliser les nouveaux profils codant le comportement de A à E et le niveau scolaire de 1 à 5</label><br />
+		<input type='radio' name='mod_genese_classes_profils_v2' id='mod_genese_classes_profils_v2_n' value='n' 
+		<?php if (getSettingValue('mod_genese_classes_profils_v2')!='y') echo ' checked="checked"';?> /><label for='mod_genese_classes_profils_v2_n' id='texte_mod_genese_classes_profils_v2_n'>Utiliser les profils historiques TB, B, RAS, C, GC</label>.
+	</p>
+
 	</fieldset>
 	
 	<p class="center">
+	  <input type='hidden' name='valider_form_activation' value='y' />
 	  <input type='submit' name='valider' value='Valider' />
 	</p>
 

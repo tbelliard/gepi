@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -94,7 +94,10 @@ if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele'])
 if((isset($projet))&&(isset($_GET['set_profil']))&&(isset($_GET['profil']))&&(isset($_GET['login']))) {
 	check_token();
 
-	if(in_array($_GET['profil'], array('GC', 'C', 'RAS', 'B', 'TB'))) {
+	include_once("lib_gc.php");
+
+	//if(in_array($_GET['profil'], array('GC', 'C', 'RAS', 'B', 'TB'))) {
+	if(in_array($_GET['profil'], $tab_profil)) {
 		$sql="UPDATE gc_eleves_options SET profil='".$_GET['profil']."' WHERE projet='".$projet."' AND login='".$_GET['login']."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {

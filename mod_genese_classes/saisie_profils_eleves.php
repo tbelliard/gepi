@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -53,7 +53,7 @@ statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
-$sql="CREATE TABLE IF NOT EXISTS gc_eleves_profils (id int(11) unsigned NOT NULL auto_increment, login VARCHAR( 50 ) NOT NULL , profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS', PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+$sql="CREATE TABLE IF NOT EXISTS gc_eleves_profils (id int(11) unsigned NOT NULL auto_increment, login VARCHAR( 50 ) NOT NULL , profil VARCHAR(10) NOT NULL default 'RAS', PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 //======================================================================================
@@ -253,11 +253,16 @@ if(!isset($id_classe)) {
 		$res_profil=mysqli_query($GLOBALS['mysqli'], $sql);
 		if(mysqli_num_rows($res_profil)>0) {
 			$tmp_tab=array();
+			/*
 			$tmp_tab["GC"]=0;
 			$tmp_tab["C"]=0;
 			$tmp_tab["RAS"]=0;
 			$tmp_tab["B"]=0;
 			$tmp_tab["TB"]=0;
+			*/
+			for($loop_profil=0;$loop_profil<count($tab_profil);$loop_profil++) {
+				$tmp_tab[$tab_profil[$loop_profil]]=0;
+			}
 			while($lig_profil=mysqli_fetch_object($res_profil)) {
 				$tmp_tab[$lig_profil->profil]++;
 			}
@@ -323,9 +328,55 @@ if(mysqli_num_rows($res_ele)==0) {
 	echo "<p style='color:red'>Aucun élève dans cette classe.</p>";
 }
 else {
-	echo "<p>Il n'est pas question ici du niveau de l'élève, mais de son attitude, de son influence positive ou négative sur l'ambiance de classe,...<br />
-Ainsi, TB est à comprendre comme une Très Bonne attitude, un élève moteur pour la classe.</p>";
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_saisie_profils'>
+	if(!getSettingAOui("mod_genese_classes_profils_v2")) {
+		echo "<p>Il n'est pas question ici du niveau de l'élève, mais de son attitude, de son influence positive ou négative sur l'ambiance de classe,...<br />
+	Ainsi, TB est à comprendre comme une Très Bonne attitude, un élève moteur pour la classe.</p>";
+	}
+	else {
+		echo "<p>Les profils traduisent à la fois le comportement <em>(noté de A (Très bonne attitude) à E (Fortement perturbateur))</em><br />
+		et le niveau scolaire <em>(noté de 1 (Très bon élève) à 5 (Niveau faible))</em>.</p>";
+
+/*
+	$tab_lettres_profil=array("A", "B", "C", "D", "E");
+	$tab_niveau_profil=array(1, 2, 3, 4, 5);
+*/
+	echo "<table class='boireaus boireaus_alt'>
+	<tr>
+		<th colspan='2'>
+			<p style='text-align:right'>Comportement &rarr;</p>
+			<p style='text-align:left'>Niveau scolaire<br />&darr;</p>
+		</th>";
+	for($loop_profil=0;$loop_profil<count($tab_lettres_profil);$loop_profil++) {
+		echo "
+		<th>
+			".$tmp_tab_profil_traduction[$loop_profil]."<br />
+			".$tab_lettres_profil[$loop_profil]."
+		</th>";
+	}
+	echo "
+	</tr>";
+	for($loop_niveau=0;$loop_niveau<5;$loop_niveau++) {
+		echo "
+	<tr>
+		<th>".$tmp_tab_niveau_traduction[$loop_niveau]."</th>
+		<th>".$tab_niveau_profil[$loop_niveau]."</th>";
+		for($loop_profil=0;$loop_profil<count($tab_lettres_profil);$loop_profil++) {
+			echo "
+		<td style='color:".$tab_couleur_profil_assoc[$tab_lettres_profil[$loop_profil].$tab_niveau_profil[$loop_niveau]]."'>
+			".$tab_lettres_profil[$loop_profil].$tab_niveau_profil[$loop_niveau]."
+		</td>";
+		}
+		echo "
+	</tr>";
+	}
+	echo "
+</table>
+<br />";
+}
+
+echo "
+<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_saisie_profils'>
+	<fieldset class='fieldset_opacite50'>
 	".add_token_field()."
 	<input type='hidden' name='temoin_suhosin_1' value='y' />
 	<input type='hidden' name='id_classe' value='".$id_classe."' />
@@ -334,12 +385,12 @@ Ainsi, TB est à comprendre comme une Très Bonne attitude, un élève moteur po
 			<tr>
 				<th rowspan='2'>Élève</th>
 				<th rowspan='2'>Profil<br />préalablement<br />saisi</th>
-				<th colspan='5'>Choisir un profil</th>
+				<th colspan='".count($tab_profil)."'>Choisir un profil</th>
 			</tr>
 			<tr>";
 	for($loop_profil=0;$loop_profil<count($tab_profil);$loop_profil++) {
 		echo "
-				<th title=\"".$tab_profil_traduction[$loop_profil]."\">".$tab_profil[$loop_profil]."</th>";
+				<th title=\"".$tab_profil_traduction[$loop_profil]."\" style='color:".$tab_couleur_profil_assoc[$tab_profil[$loop_profil]]."'>".$tab_profil[$loop_profil]."</th>";
 	}
 	echo "
 			</tr>
@@ -376,7 +427,12 @@ Ainsi, TB est à comprendre comme une Très Bonne attitude, un élève moteur po
 			$checked[$tab_profil[$loop_profil]]="";
 		}
 		if(isset($tab_profils_saisis[$lig_ele->login])) {
-			$profil="<span style='color:".$tab_couleur_profil_assoc[$tab_profils_saisis[$lig_ele->login]]."'>".$tab_profils_saisis[$lig_ele->login]."</span>";
+			if(isset($tab_couleur_profil_assoc[$tab_profils_saisis[$lig_ele->login]])) {
+				$profil="<span style='color:".$tab_couleur_profil_assoc[$tab_profils_saisis[$lig_ele->login]]."'>".$tab_profils_saisis[$lig_ele->login]."</span>";
+			}
+			else {
+				$profil=$tab_profils_saisis[$lig_ele->login];
+			}
 			$checked[$tab_profils_saisis[$lig_ele->login]]="checked ";
 		}
 		else {
@@ -396,9 +452,12 @@ Ainsi, TB est à comprendre comme une Très Bonne attitude, un élève moteur po
 	echo "
 		</tbody>
 	</table>
-	<p><input type='submit' value='Valider' /></p>
+	<p style='margin-bottom:1em;'><input type='submit' value='Valider' /></p>
+	<br />
+	&nbsp;
 	<input type='hidden' name='enregistrer_profils' value='y' />
 	<input type='hidden' name='temoin_suhosin_2' value='y' />
+	</fieldset>
 </form>
 
 <script type='text/javascript'>

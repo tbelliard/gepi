@@ -66,6 +66,10 @@ $tab_sexe=array('M','F');
 
 $tab_profil=array('GC','C','RAS','B','TB');
 $tab_profil_traduction=array('Gros Cas','Cas','Rien à signaler','Bien','Très Bien');
+$tab_profil_traduction_assoc=array();
+for($loop=0;$loop<count($tab_profil);$loop++) {
+	$tab_profil_traduction_assoc[$tab_profil[$loop]]=$tab_profil_traduction[$loop];
+}
 // Pour le moment les valeurs testées dans les scripts javascript et les couleurs associées sont en dur dans les pages.
 // A modifier...
 //$chaine_couleur_profil="'red','orangered','gray','green','blue'";
@@ -91,6 +95,51 @@ for($loop=0;$loop<count($tab_profil);$loop++) {
 	$chaine_profil.="'".$tab_profil[$loop]."'";
 }
 
+//insert into setting set name='mod_genese_classes_profils_v2', value='y';
+if(getSettingAOui("mod_genese_classes_profils_v2")) {
+	$tab_profil=array();
+	$tab_profil_traduction=array();
+	$tab_profil_traduction_assoc=array();
+
+	$tab_lettres_profil=array("A", "B", "C", "D", "E");
+	$tab_niveau_profil=array(1, 2, 3, 4, 5);
+
+	$tmp_tab_profil_traduction=array('Très bonne attitude', 'Bonne attitude', 'Rien à signaler', 'Cas', 'Gros Cas');
+	$tmp_tab_niveau_traduction=array('Très bon niveau', 'Bon niveau', 'Moyen', 'Niveau fragile', 'Niveau faible');
+
+	$chaine_couleur_profil="";
+	$chaine_profil="";
+
+	$tmp_tab_couleur_profil=array('blue','green','gray','orangered','red');
+	$tab_couleur_profil=array();
+	$tab_couleur_profil_assoc=array();
+
+	$cpt_profil=0;
+	for($loop_profil=0;$loop_profil<count($tab_lettres_profil);$loop_profil++) {
+		for($loop_niveau=0;$loop_niveau<5;$loop_niveau++) {
+			$tab_profil[$cpt_profil]=$tab_lettres_profil[$loop_profil].$tab_niveau_profil[$loop_niveau];
+			$tab_profil_traduction[$cpt_profil]=$tmp_tab_profil_traduction[$loop_profil]." - ".$tmp_tab_niveau_traduction[$loop_niveau];
+			$tab_profil_traduction_assoc[$tab_profil[$cpt_profil]]=$tmp_tab_profil_traduction[$loop_profil]." - ".$tmp_tab_niveau_traduction[$loop_niveau];
+			$tab_couleur_profil[$cpt_profil]=$tmp_tab_couleur_profil[$loop_profil];
+			$tab_couleur_profil_assoc[$tab_profil[$cpt_profil]]=$tmp_tab_couleur_profil[$loop_profil];
+			$cpt_profil++;
+		}
+	}
+
+	for($loop=0;$loop<count($tab_profil);$loop++) {
+		$tab_couleur_profil_assoc[$tab_profil[$loop]]=$tab_couleur_profil[$loop];
+
+		if($chaine_couleur_profil!="") {
+			$chaine_couleur_profil.=",";
+		}
+		$chaine_couleur_profil.="'".$tab_couleur_profil[$loop]."'";
+
+		if($chaine_profil!="") {
+			$chaine_profil.=",";
+		}
+		$chaine_profil.="'".$tab_profil[$loop]."'";
+	}
+}
 
 function colorise_abs($abs,$nj,$ret,$mode="echo") {
 	$retour="";
