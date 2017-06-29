@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -980,9 +980,9 @@ else{
 						echo "<input type='hidden' name='elenoet[$cpt]' value='$lig->elenoet' />\n";
 						echo "<input type='hidden' name='old_ele_id[$cpt]' value='$lig->old_ele_id' />\n";
 						echo "</td>\n";
-						echo "<td>$lig->login</td>\n";
-						echo "<td>$lig->nom</td>\n";
-						echo "<td>$lig->prenom</td>\n";
+						echo "<td><label for='ele_id_$cpt'>".$lig->login."</label></td>\n";
+						echo "<td><label for='ele_id_$cpt'>".$lig->nom."</label></td>\n";
+						echo "<td><label for='ele_id_$cpt'>".$lig->prenom."</label></td>\n";
 						echo "<td>$lig->sexe</td>\n";
 						echo "<td>$lig->naissance</td>\n";
 						echo "<td>$lig->elenoet</td>\n";
@@ -1127,9 +1127,9 @@ else{
 						echo "<input type='hidden' name='naissance[$cpt]' value='$naissance' />\n";
 						echo "<input type='hidden' name='old_ele_id[$cpt]' value='$lig->old_ele_id' />\n";
 						echo "</td>\n";
-						echo "<td>$lig->login</td>\n";
-						echo "<td>$lig->nom</td>\n";
-						echo "<td>$lig->prenom</td>\n";
+						echo "<td><label for='ele_id_$cpt'>".$lig->login."</label></td>\n";
+						echo "<td><label for='ele_id_$cpt'>".$lig->nom."</label></td>\n";
+						echo "<td><label for='ele_id_$cpt'>".$lig->prenom."</label></td>\n";
 						echo "<td>$lig->sexe</td>\n";
 						echo "<td>$lig->naissance</td>\n";
 						echo "<td>$naissance</td>\n";
