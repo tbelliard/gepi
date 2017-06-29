@@ -575,8 +575,9 @@ $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $
 	<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."&id_aff=$id_aff&order_by=e.nom,e.prenom'>Trier les élèves par ordre alphabétique</a><br />
 	<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."&id_aff=$id_aff&order_by=id_classe_actuelle,e.nom,e.prenom'>Trier les élèves par classe d'origine</a><br />
 	<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."&id_aff=$id_aff&order_by=profil,e.nom,e.prenom'>Trier les élèves par profil</a><br />
-	<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."&id_aff=$id_aff&order_by=moy DESC,e.nom,e.prenom'>Trier les élèves par niveau</a><br />
+	<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."&id_aff=$id_aff&order_by=CAST(10*moy AS UNSIGNED) DESC,e.nom,e.prenom'>Trier les élèves par niveau</a><br />
 </p>";
+
 	if(!isset($order_by)) {
 		$order_by="e.nom,e.prenom";
 	}
@@ -790,13 +791,15 @@ $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $
 		foreach($tab_requete as $key=>$value) {
 			$texte_infobulle.=$value."</span>)<br />\n";
 		}
+
+		// DEBUG :
+		//$texte_infobulle.="$sql_ele<br />\n";
+
 		$texte_infobulle.="</p>
 <div align='center'>
 	<table class='boireaus boireaus_alt'>";
 		//echo "<table class='boireaus'>";
 
-		$sql_ele.=";";
-		//echo "$sql_ele<br />\n";
 		$eff_M=0;
 		$eff_F=0;
 		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
