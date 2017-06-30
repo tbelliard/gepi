@@ -255,8 +255,18 @@ if((!isset($projet))||($projet=="")) {
 // Choix des élèves à afficher:
 //if(!isset($_POST['choix_affich'])) {
 if(!isset($choix_affich)) {
-	echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
-	echo "</p>\n";
+	echo "<p class='bold'>
+	<a href='index.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a> | 
+	<a href='select_eleves_options.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des options</a> | 
+	<!--
+	<a href='affect_eleves_classes.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Affecter les élèves</a> | 
+	-->
+	<a href='affiche_listes.php.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Afficher listes</a>
+</p>\n";
 
 	echo "<h2>Projet $projet : Affectation d'élèves dans des classes</h2>\n";
 
@@ -1012,11 +1022,18 @@ else {
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"form_autre_requete\">\n";
 
-	echo "<p class='bold'><a href='index.php?projet=$projet'";
-	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo ">Retour</a>";
-
-	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'";
+	echo "<p class='bold'>
+	<a href='index.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a> | 
+	<a href='select_eleves_options.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des options</a> | 
+	<!--
+	<a href='affect_eleves_classes.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Affecter les élèves</a> | 
+	-->
+	<a href='affiche_listes.php.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Afficher listes</a>
+	 | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo ">Autre sélection</a>";
 

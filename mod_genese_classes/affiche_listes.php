@@ -220,7 +220,9 @@ if((!isset($projet))||($projet=="")) {
 }
 
 //echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
+echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a> | 
+<a href='select_eleves_options.php?projet=$projet'>Saisie des options</a> | 
+<a href='affect_eleves_classes.php?projet=$projet'>Affecter les élèves</a>";
 //echo "</div>\n";
 
 $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);

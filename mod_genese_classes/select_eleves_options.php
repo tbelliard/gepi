@@ -232,10 +232,14 @@ if((!isset($projet))||($projet=="")) {
 //debug_var();
 
 //echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='index.php?projet=$projet'";
-echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo ">Retour</a>";
-echo "</p>\n";
+echo "<p class='bold'>
+	<a href='index.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a> | 
+	<a href='affect_eleves_classes.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Affecter les élèves</a> | 
+	<a href='affiche_listes.php.php?projet=$projet'
+		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Afficher listes</a>
+</p>\n";
 //echo "</div>\n";
 
 echo "<h2>Projet $projet</h2>\n";
