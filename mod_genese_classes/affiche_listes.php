@@ -727,26 +727,30 @@ if(!isset($afficher_listes)) {
 			echo "<th>Sans</th>\n";
 			echo "<th>LV</th>\n";
 			echo "</tr>\n";
+			$cpt=0;
 			while($lig=mysqli_fetch_object($res_lv1)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv1[]' value='$lig->opt' ";
+				echo "<input type='checkbox' name='avec_lv1[]' id='avec_lv1_$cpt' value='$lig->opt' ";
 				if((isset($tab_ed_req['avec_lv1']))&&(in_array($lig->opt,$tab_ed_req['avec_lv1']))) {
 					echo "checked ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv1[]' value='$lig->opt' ";
+				echo "<input type='checkbox' name='sans_lv1[]' id='sans_lv1_$cpt' value='$lig->opt' ";
 				if((isset($tab_ed_req['sans_lv1']))&&(in_array($lig->opt,$tab_ed_req['sans_lv1']))) {
 					echo "checked ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"permute_coche('lv1_".$cpt."')\"";
+				echo ">\n";
 				echo "$lig->opt\n";
 				echo "</td>\n";
 				echo "</tr>\n";
+				$cpt++;
 			}
 			echo "</table>\n";
 		echo "</td>\n";
@@ -760,26 +764,30 @@ if(!isset($afficher_listes)) {
 			echo "<th>Sans</th>\n";
 			echo "<th>LV</th>\n";
 			echo "</tr>\n";
+			$cpt=0;
 			while($lig=mysqli_fetch_object($res_lv2)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv2[]' value='$lig->opt' ";
+				echo "<input type='checkbox' name='avec_lv2[]' id='avec_lv2_$cpt' value='$lig->opt' ";
 				if((isset($tab_ed_req['avec_lv2']))&&(in_array($lig->opt,$tab_ed_req['avec_lv2']))) {
 					echo "checked ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv2[]' value='$lig->opt' ";
+				echo "<input type='checkbox' name='sans_lv2[]' id='sans_lv2_$cpt' value='$lig->opt' ";
 				if((isset($tab_ed_req['sans_lv2']))&&(in_array($lig->opt,$tab_ed_req['sans_lv2']))) {
 					echo "checked ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"permute_coche('lv2_".$cpt."')\"";
+				echo ">\n";
 				echo "$lig->opt\n";
 				echo "</td>\n";
 				echo "</tr>\n";
+				$cpt++;
 			}
 			echo "</table>\n";
 		echo "</td>\n";
@@ -793,26 +801,30 @@ if(!isset($afficher_listes)) {
 			echo "<th>Sans</th>\n";
 			echo "<th>LV</th>\n";
 			echo "</tr>\n";
+			$cpt=0;
 			while($lig=mysqli_fetch_object($res_lv3)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv3[]' value='$lig->opt' ";
+				echo "<input type='checkbox' name='avec_lv3[]' id='avec_lv3_$cpt' value='$lig->opt' ";
 				if((isset($tab_ed_req['avec_lv3']))&&(in_array($lig->opt,$tab_ed_req['avec_lv3']))) {
 					echo "checked ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv3[]' value='$lig->opt' ";
+				echo "<input type='checkbox' name='sans_lv3[]' id='sans_lv3_$cpt' value='$lig->opt' ";
 				if((isset($tab_ed_req['sans_lv3']))&&(in_array($lig->opt,$tab_ed_req['sans_lv3']))) {
 					echo "checked ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"permute_coche('lv3_".$cpt."')\"";
+				echo ">\n";
 				echo "$lig->opt\n";
 				echo "</td>\n";
 				echo "</tr>\n";
+				$cpt++;
 			}
 			echo "</table>\n";
 		echo "</td>\n";
@@ -826,26 +838,30 @@ if(!isset($afficher_listes)) {
 			echo "<th>Sans</th>\n";
 			echo "<th>Option</th>\n";
 			echo "</tr>\n";
+			$cpt=0;
 			while($lig=mysqli_fetch_object($res_autre)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_autre[]' value='$lig->opt' ";
+				echo "<input type='checkbox' name='avec_autre[]' id='avec_autre_$cpt' value='$lig->opt' ";
 				if((isset($tab_ed_req['avec_autre']))&&(in_array($lig->opt,$tab_ed_req['avec_autre']))) {
 					echo "checked ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_autre[]' value='$lig->opt' ";
+				echo "<input type='checkbox' name='sans_autre[]'  id='sans_autre_$cpt'value='$lig->opt' ";
 				if((isset($tab_ed_req['sans_autre']))&&(in_array($lig->opt,$tab_ed_req['sans_autre']))) {
 					echo "checked ";
 				}
 				echo "/>\n";
 				echo "</td>\n";
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"permute_coche('autre_".$cpt."')\"";
+				echo ">\n";
 				echo "$lig->opt\n";
 				echo "</td>\n";
 				echo "</tr>\n";
+				$cpt++;
 			}
 			echo "</table>\n";
 		echo "</td>\n";
@@ -867,12 +883,12 @@ if(!isset($afficher_listes)) {
 		for($loop=0;$loop<count($tab_profil);$loop++) {
 			echo "<tr>\n";
 			echo "<td>\n";
-			echo "<input type='checkbox' name='avec_profil[]' value='$tab_profil[$loop]' ";
+			echo "<input type='checkbox' name='avec_profil[]' id='avec_profil_$loop' value='$tab_profil[$loop]' ";
 			if((isset($tab_ed_req['avec_profil']))&&(in_array($tab_profil[$loop],$tab_ed_req['avec_profil']))) {echo "checked ";}
 			echo "/>\n";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<input type='checkbox' name='sans_profil[]' value='$tab_profil[$loop]' ";
+			echo "<input type='checkbox' name='sans_profil[]' id='sans_profil_$loop' value='$tab_profil[$loop]' ";
 			if((isset($tab_ed_req['sans_profil']))&&(in_array($tab_profil[$loop],$tab_ed_req['sans_profil']))) {echo "checked ";}
 			echo "/>\n";
 			echo "</td>\n";
@@ -880,6 +896,7 @@ if(!isset($afficher_listes)) {
 			if(isset($tab_profil_traduction_assoc[$tab_profil[$loop]])) {
 				echo " title=\"".$tab_profil_traduction_assoc[$tab_profil[$loop]]."\"";
 			}
+			echo " onclick=\"permute_coche('profil_".$loop."')\"";
 			echo ">\n";
 			if(isset($tab_couleur_profil_assoc[$tab_profil[$loop]])) {
 				echo "<span style='color:".$tab_couleur_profil_assoc[$tab_profil[$loop]]."'>".$tab_profil[$loop]."</span>\n";
@@ -895,9 +912,29 @@ if(!isset($afficher_listes)) {
 
 	// Pouvoir faire une recherche par niveau aussi?
 
-
 	echo "</tr>\n";
 	echo "</table>\n";
+
+	echo "<script type='text/javascript'>
+	function permute_coche(motif) {
+		//alert(motif);
+		if(document.getElementById('avec_'+motif)) {
+			if(document.getElementById('avec_'+motif).checked==true) {
+				document.getElementById('avec_'+motif).checked=false;
+				document.getElementById('sans_'+motif).checked=true;
+			}
+			else {
+				if(document.getElementById('sans_'+motif).checked==true) {
+					document.getElementById('sans_'+motif).checked=false;
+					document.getElementById('avec_'+motif).checked=false;
+				}
+				else {
+					document.getElementById('avec_'+motif).checked=true;
+				}
+			}
+		}
+	}
+</script>";
 
 	echo "<input type='hidden' name='projet' value='$projet' />\n";
 	//echo "<input type='hidden' name='is_posted' value='y' />\n";
