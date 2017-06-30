@@ -264,7 +264,7 @@ if(!isset($choix_affich)) {
 	<a href='affect_eleves_classes.php?projet=$projet'
 		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Affecter les élèves</a> | 
 	-->
-	<a href='affiche_listes.php.php?projet=$projet'
+	<a href='affiche_listes.php?projet=$projet'
 		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Afficher listes</a>
 </p>\n";
 
@@ -1031,7 +1031,7 @@ else {
 	<a href='affect_eleves_classes.php?projet=$projet'
 		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Affecter les élèves</a> | 
 	-->
-	<a href='affiche_listes.php.php?projet=$projet'
+	<a href='affiche_listes.php?projet=$projet'
 		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Afficher listes</a>
 	 | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
