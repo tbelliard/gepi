@@ -104,8 +104,8 @@ if(getSettingAOui("mod_genese_classes_profils_v2")) {
 	$tab_lettres_profil=array("A", "B", "C", "D", "E");
 	$tab_niveau_profil=array(1, 2, 3, 4, 5);
 
-	$tmp_tab_profil_traduction=array('Très bonne attitude', 'Bonne attitude', 'Rien à signaler', 'Cas', 'Gros Cas');
-	$tmp_tab_niveau_traduction=array('Très bon niveau', 'Bon niveau', 'Moyen', 'Niveau fragile', 'Niveau faible');
+	$tmp_tab_profil_traduction=array('Très bonne attitude', 'Bonne attitude', 'Rien à signaler', 'Agité/Suiveur/Cas', 'Gros Cas');
+	$tmp_tab_niveau_traduction=array('Très bon niveau', 'Bon niveau', 'Moyen/Satisfaisant', 'Niveau fragile', 'Niveau faible/insuffisant');
 
 	$chaine_couleur_profil="";
 	$chaine_profil="";
