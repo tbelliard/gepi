@@ -876,8 +876,17 @@ if(!isset($afficher_listes)) {
 			if((isset($tab_ed_req['sans_profil']))&&(in_array($tab_profil[$loop],$tab_ed_req['sans_profil']))) {echo "checked ";}
 			echo "/>\n";
 			echo "</td>\n";
-			echo "<td>\n";
-			echo "$tab_profil[$loop]\n";
+			echo "<td";
+			if(isset($tab_profil_traduction_assoc[$tab_profil[$loop]])) {
+				echo " title=\"".$tab_profil_traduction_assoc[$tab_profil[$loop]]."\"";
+			}
+			echo ">\n";
+			if(isset($tab_couleur_profil_assoc[$tab_profil[$loop]])) {
+				echo "<span style='color:".$tab_couleur_profil_assoc[$tab_profil[$loop]]."'>".$tab_profil[$loop]."</span>\n";
+			}
+			else {
+				echo "$tab_profil[$loop]\n";
+			}
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
