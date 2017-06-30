@@ -333,6 +333,13 @@ else {
 	Ainsi, TB est à comprendre comme une Très Bonne attitude, un élève moteur pour la classe.</p>";
 	}
 	else {
+		if(acces("/prepa_conseil/visu_toutes_notes.php", $_SESSION['statut'])) {
+			echo "<div style='float:right; width:10em;text-align:center;' class='fieldset_opacite50'>
+	<a href='../prepa_conseil/visu_toutes_notes.php?mode=pdf&id_classe=".$id_classe."&num_periode=annee&aff_abs=y&aff_reg=y&aff_doub=y&aff_date_naiss=y&aff_moy_cat=y&aff_moy_gen=y&avec_moy_gen_periodes_precedentes=y&forcer_hauteur_ligne_pdf=y&visu_toutes_notes_h_cell_pdf=10
+' target='_blank'>Imprimer les moyennes générales annuelles des élèves pour aider à la saisie des niveaux scolaires</a>
+</div>";
+		}
+
 		echo "<p>Les profils traduisent à la fois le comportement <em>(noté de A (Très bonne attitude) à E (Fortement perturbateur))</em><br />
 		et le niveau scolaire <em>(noté de 1 (Très bon élève) à 5 (Niveau faible))</em>.</p>";
 
@@ -399,7 +406,7 @@ echo "
 	$cpt=0;
 	while($lig_ele=mysqli_fetch_object($res_ele)) {
 		echo "
-			<tr>
+			<tr onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor=''\">
 				<td>";
 
 		$designation_eleve=mb_strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom));
@@ -443,7 +450,7 @@ echo "
 		echo "</td>";
 		for($loop_profil=0;$loop_profil<count($tab_profil);$loop_profil++) {
 			echo "
-				<td title=\"".$tab_profil_traduction[$loop_profil]."\"><input type='radio' name='profil[$cpt]' value='".$tab_profil[$loop_profil]."' ".$checked[$tab_profil[$loop_profil]]."/></td>";
+				<td title=\"".$designation_eleve."\n".$tab_profil_traduction[$loop_profil]."\"><input type='radio' name='profil[$cpt]' value='".$tab_profil[$loop_profil]."' ".$checked[$tab_profil[$loop_profil]]."/></td>";
 		}
 		echo "
 			</tr>";
