@@ -454,7 +454,7 @@ else {
 $nb_users = mysqli_num_rows($call_user_info);
 
 if($debug_create_resp=="y") {
-	echo "\$call_user_info=$call_user_info<br />";
+	//echo "\$call_user_info=$call_user_info<br />";
 	echo "\$nb_users=$nb_users<br />";
 	echo "\$user_status=$user_status<br />";
 	echo "\$cas_traite=$cas_traite<br />\n";
