@@ -1031,11 +1031,14 @@ if (!$session_gepi->auth_ldap || !$session_gepi->auth_sso) {
 	echo $remarque;
 }
 
-if (($_SESSION['statut']=='administrateur') and (isset($user_login)) and ($user_login!='')) {
+//if(($_SESSION['statut']=='administrateur')&&(isset($user_login))&&($user_login!='')&&($user_login!=$_SESSION['login'])) {
+if(($_SESSION['statut']=='administrateur')&&(isset($user_login))&&($user_login!='')) {
 	echo "<div style='float:right; width:10em; margin-top: 0.5em; padding:3px; text-align:center; border: 1px solid black; background-image: url(\"../images/background/opacite50.png\");'>\n";
 	echo affiche_actions_compte($user_login, '_blank');
-	echo "<br />\n";
-	echo affiche_reinit_password($user_login);
+	if((!isset($user_statut))||($user_statut!="administrateur")) {
+		echo "<br />\n";
+		echo affiche_reinit_password($user_login);
+	}
 	echo "</div>\n";
 }
 
