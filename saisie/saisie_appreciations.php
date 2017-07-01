@@ -551,8 +551,17 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 										fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de l'enregistrement de la proposition de correction pour $correction_login_eleve\n");
 									}
 									else {
+										$url_racine_gepi=getSettingValue('url_racine_gepi');
+										if($url_racine_gepi!="") {
+											//$valider_ou_rejeter="<a href='".$url_racine_gepi."/saisie/validation_corrections.php' target='_blank'>valider ou rejeter la proposition</a>";
+											$valider_ou_rejeter="valider ou rejeter la proposition (".$url_racine_gepi."/saisie/validation_corrections.php)";
+										}
+										else {
+											$valider_ou_rejeter="valider ou rejeter la proposition";
+										}
+
 										$msg.="Enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode effectué.<br />";
-										$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+										$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez ".$valider_ou_rejeter." en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 										fich_debug_proposition_correction_app($prefixe_debug." : Proposition de correction soumise.\nTexte du mail : \n".$texte_mail."\n");
 									}
 								} else {
@@ -581,8 +590,17 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 										fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de l'enregistrement de la proposition de correction pour $correction_login_eleve\n");
 									}
 									else {
+										$url_racine_gepi=getSettingValue('url_racine_gepi');
+										if($url_racine_gepi!="") {
+											//$valider_ou_rejeter="<a href='".$url_racine_gepi."/saisie/validation_corrections.php' target='_blank'>valider ou rejeter la proposition</a>";
+											$valider_ou_rejeter="valider ou rejeter la proposition (".$url_racine_gepi."/saisie/validation_corrections.php)";
+										}
+										else {
+											$valider_ou_rejeter="valider ou rejeter la proposition";
+										}
+
 										$msg.="Enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode effectué.<br />";
-										$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+										$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez ".$valider_ou_rejeter." en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 										fich_debug_proposition_correction_app($prefixe_debug." : Proposition de correction soumise.\nTexte du mail : \n".$texte_mail."\n");
 									}
 								}
@@ -688,7 +706,16 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
 							else {
 								$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
-								$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+								$url_racine_gepi=getSettingValue('url_racine_gepi');
+								if($url_racine_gepi!="") {
+									//$valider_ou_rejeter="<a href='".$url_racine_gepi."/saisie/validation_corrections.php' target='_blank'>valider ou rejeter la proposition</a>";
+									$valider_ou_rejeter="valider ou rejeter la proposition (".$url_racine_gepi."/saisie/validation_corrections.php)";
+								}
+								else {
+									$valider_ou_rejeter="valider ou rejeter la proposition";
+								}
+
+								$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez ".$valider_ou_rejeter." la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 							}
 						} else {
 							$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
@@ -708,7 +735,15 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";}
 							else {
 								$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
-								$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+								$url_racine_gepi=getSettingValue('url_racine_gepi');
+								if($url_racine_gepi!="") {
+									//$valider_ou_rejeter="<a href='".$url_racine_gepi."/saisie/validation_corrections.php' target='_blank'>valider ou rejeter la proposition</a>";
+									$valider_ou_rejeter="valider ou rejeter la proposition (".$url_racine_gepi."/saisie/validation_corrections.php)";
+								}
+								else {
+									$valider_ou_rejeter="valider ou rejeter la proposition";
+								}
+								$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez ".$valider_ou_rejeter." en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
 							}
 						}
 					}
