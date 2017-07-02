@@ -675,7 +675,11 @@
 	if(getSettingANon("bull2016_orientation_proposee")) {
 		$param_bull2016["cadre_orientation_proposee"]=0;
 	}
+
 	$param_bull2016["X_cadre_orientation_proposee"]=60;
+	if(getSettingANon("bull2016_voeux_orientation")) {
+		$param_bull2016["X_cadre_orientation_proposee"]=11;
+	}
 
 	$param_bull2016["titre_voeux_orientation"]=getSettingValue("bull2016_titre_voeux_orientation");
 	if($param_bull2016["titre_voeux_orientation"]=="") {
