@@ -918,11 +918,17 @@ echo add_token_field();
 <p>Sous réserve que le module Orientation soit activé et que l'orientation soit activée pour les MEFS associés à la classe demandée à l'impression.</p>
 <table class='boireaus boireaus_alt' summary='Paramètres Orientation'>
 	<tr>
-		<td>Liste des périodes avec affichage du cadre orientation&nbsp;:<br />
-		<em>(laissez vide pour désactiver l'affichage de l'ensemble du cadre Orientation;<br />
-		sinon donnez les numéros de périodes, séparés par des point-virgules)</em></td>
 		<td>
-			<input type="text" name="bull2016_orientation_periodes" id="bull2016_orientation_periodes" size="20" onchange="changement()" value="<?php
+			Liste des périodes avec affichage du cadre orientation&nbsp;:<br />
+			<em>(laissez vide pour désactiver l'affichage de l'ensemble du cadre Orientation;<br />
+			sinon donnez les numéros de périodes, séparés par des point-virgules)</em>
+			<span id='alerte_desactivation_cadre_orientation' style='display:none; color:red'><br />
+			<strong>ATTENTION&nbsp;:</strong> Décocher l'affichage des cadres <strong>Voeux</strong> et <strong>Orientation proposée</strong><br />
+			ne suffit pas à faire disparaitre le cadre conteneur de ces deux cadres.<br />
+			Il faut pour cela, vider la liste des périodes d'affichage de ce cadre.</span>
+		</td>
+		<td>
+			<input type="text" name="bull2016_orientation_periodes" id="bull2016_orientation_periodes" size="20" onchange="changement();explication_cadre_orientation();" value="<?php
 				echo $bull2016_orientation_periodes;
 			?>" />
 		</td>
@@ -930,7 +936,7 @@ echo add_token_field();
 	<tr>
 		<td><label for='bull2016_voeux_orientation'>Afficher le cadre des Voeux d'orientation&nbsp;:</label></td>
 		<td>
-			<input type="checkbox" name="bull2016_voeux_orientation" id="bull2016_voeux_orientation" onchange="changement()" value="y" <?php
+			<input type="checkbox" name="bull2016_voeux_orientation" id="bull2016_voeux_orientation" onchange="changement();explication_cadre_orientation();" value="y" <?php
 			if(getSettingValue('bull2016_voeux_orientation')!="n") {
 				echo "checked ";
 			}
@@ -948,7 +954,7 @@ echo add_token_field();
 	<tr>
 		<td><label for='bull2016_orientation_proposee'>Afficher le cadre des Orientations proposées&nbsp;:</label></td>
 		<td>
-			<input type="checkbox" name="bull2016_orientation_proposee" id="bull2016_orientation_proposee" onchange="changement()" value="y" <?php
+			<input type="checkbox" name="bull2016_orientation_proposee" id="bull2016_orientation_proposee" onchange="changement();explication_cadre_orientation();" value="y" <?php
 			if(getSettingValue('bull2016_orientation_proposee')!="n") {
 				echo "checked ";
 			}
@@ -972,6 +978,22 @@ echo add_token_field();
 		</td>
 	</tr>
 </table>
+<script type='text/javascript'>
+	function explication_cadre_orientation() {
+		if(document.getElementById('bull2016_orientation_periodes').value=='') {
+			document.getElementById('alerte_desactivation_cadre_orientation').style.display='none';
+		}
+		else {
+			if((document.getElementById('bull2016_voeux_orientation').checked==false)&&(document.getElementById('bull2016_orientation_proposee').checked==false)) {
+				document.getElementById('alerte_desactivation_cadre_orientation').style.display='';
+			}
+			else {
+				document.getElementById('alerte_desactivation_cadre_orientation').style.display='none';
+			}
+		}
+	}
+	explication_cadre_orientation()
+</script>
 </blockquote>
 
 <?php
