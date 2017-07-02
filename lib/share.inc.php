@@ -16837,4 +16837,36 @@ function get_date_conseil_classe($id_classe, $periode) {
 	}
 	return $tab;
 }
+
+function get_tab_mef_avec_affichage_orientation() {
+	global $mysqli;
+
+	$tab_mef_af=array();
+	$sql="SELECT m.* FROM o_mef om, mef m WHERE om.mef_code=m.mef_code AND om.affichage='y' ORDER BY libelle_edition, libelle_long, libelle_court;";
+	$res_mef=mysqli_query($mysqli, $sql);
+	while($lig_mef=mysqli_fetch_object($res_mef)) {
+		$tab_mef_af[]=$lig_mef->mef_code;
+	}
+	return $tab_mef_af;
+}
+
+function liste_designations_courtes_mef_avec_affichage_orientation() {
+	global $mysqli;
+	global $tab_mef_af;
+	if(count($tab_mef_af)==0) {
+		$tab_mef_af=get_tab_mef_avec_affichage_orientation();
+	}
+
+	$chaine="";
+	$tab_mef=get_tab_mef();
+	foreach($tab_mef as $mef_code => $current_mef) {
+		if(in_array($mef_code, $tab_mef_af)) {
+			if($chaine!="") {
+				$chaine.=", ";
+			}
+			$chaine.=$current_mef['designation_courte'];
+		}
+	}
+	return $chaine;
+}
 ?>

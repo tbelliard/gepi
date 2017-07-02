@@ -915,7 +915,28 @@ echo add_token_field();
 
 <h3>Paramètres Orientation</h3>
 <blockquote>
-<p>Sous réserve que le module Orientation soit activé et que l'orientation soit activée pour les MEFS associés à la classe demandée à l'impression.</p>
+<?php
+	if(getSettingAOui('active_mod_orientation')) {
+		$module_orientation_active=" <span title=\"Le module est activé\">(<img src='../images/enabled.png' class='icone16' alt='Activé' />)</span>";
+	}
+	else {
+		$module_orientation_active=" <span title=\"Le module est désactivé\">(<img src='../images/disabled.png' class='icone16' alt='Désactivé' />)</span>";
+	}
+	$liste_designations_courtes_mef_avec_affichage_orientation=liste_designations_courtes_mef_avec_affichage_orientation();
+	//echo "\$liste_designations_courtes_mef_avec_affichage_orientation=".$liste_designations_courtes_mef_avec_affichage_orientation."<br />";
+	if($liste_designations_courtes_mef_avec_affichage_orientation!="") {
+		$liste_designations_courtes_mef_avec_affichage_orientation=" title=\"Le ou les MEFs associés sont : ".$liste_designations_courtes_mef_avec_affichage_orientation."\"";
+	}
+	else {
+		$liste_designations_courtes_mef_avec_affichage_orientation=" title=\"Aucun MEF n'est associé en administrateur dans le Paramétrage du module.\"";
+	}
+	if(acces("/mod_orientation/admin.php", $_SESSION["statut"])) {
+		echo "<p>Sous réserve que le <a href='../mod_orientation/admin.php' target='_blank' title=\"Accéder au paramétrage du module Orientation\">module Orientation soit activé</a>".$module_orientation_active." et que l'<span".$liste_designations_courtes_mef_avec_affichage_orientation.">orientation soit activée pour les MEFS associés à la classe demandée à l'impression <img src='../images/icons/ico_aide.png' width='15' height='25' alt='Info' /></span>.</p>";
+	}
+	else {
+		echo "<p>Sous réserve que le module Orientation soit activé".$module_orientation_active." et que l'<span".$liste_designations_courtes_mef_avec_affichage_orientation.">orientation soit activée pour les MEFS associés à la classe demandée à l'impression <img src='../images/icons/ico_aide.png' width='15' height='25' alt='Info' /></span>.</p>";
+	}
+?>
 <table class='boireaus boireaus_alt' summary='Paramètres Orientation'>
 	<tr>
 		<td>
