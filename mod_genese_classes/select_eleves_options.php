@@ -237,7 +237,7 @@ echo "<p class='bold'>
 		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour</a> | 
 	<a href='affect_eleves_classes.php?projet=$projet'
 		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Affecter les élèves</a> | 
-	<a href='affiche_listes.php.php?projet=$projet'
+	<a href='affiche_listes.php?projet=$projet'
 		 onclick=\"return confirm_abandon (this, change, '$themessage')\">Afficher listes</a>
 </p>\n";
 //echo "</div>\n";
