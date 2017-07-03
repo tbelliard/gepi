@@ -1186,6 +1186,12 @@ else {
 					}
 				}
 
+				// Non placés:
+				$sql_non_places=$sql_ele." AND classe_future='';";
+				//echo "$sql_non_places<br />\n";
+				$res_non_places=mysqli_query($GLOBALS["mysqli"], $sql_non_places);
+				$eff_ele_req_courante_non_places=mysqli_num_rows($res_non_places);
+
 				$sql_ele.=";";
 				//echo "$sql_ele<br />\n";
 				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
@@ -1200,7 +1206,7 @@ else {
 				if($eff_ele_req_courante==0) {
 					echo " style='color:grey'";
 				}
-				echo ">".$lig_req_nommee->nom_requete." (req.n°".$lig_req_nommee->id_req.") (".$eff_ele_req_courante.")</option>\n";
+				echo ">".$lig_req_nommee->nom_requete." (req.n°".$lig_req_nommee->id_req.") (eff.".$eff_ele_req_courante.") (reste ".$eff_ele_req_courante_non_places.")</option>\n";
 				$num_requete++;
 			}
 			// Il arrive que l'on perde le nom de la requête courante... je n'ai pas trouvé pourquoi...
