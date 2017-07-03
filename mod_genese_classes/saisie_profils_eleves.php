@@ -397,7 +397,7 @@ echo "
 			<tr>";
 	for($loop_profil=0;$loop_profil<count($tab_profil);$loop_profil++) {
 		echo "
-				<th title=\"".$tab_profil_traduction[$loop_profil]."\" style='color:".$tab_couleur_profil_assoc[$tab_profil[$loop_profil]]."'>".$tab_profil[$loop_profil]."</th>";
+				<th title=\"".$tab_profil[$loop_profil]." : ".$tab_profil_traduction[$loop_profil]."\" style='color:".$tab_couleur_profil_assoc[$tab_profil[$loop_profil]]."'>".$tab_profil[$loop_profil]."</th>";
 	}
 	echo "
 			</tr>
@@ -450,7 +450,7 @@ echo "
 		echo "</td>";
 		for($loop_profil=0;$loop_profil<count($tab_profil);$loop_profil++) {
 			echo "
-				<td title=\"".$designation_eleve."\n".$tab_profil_traduction[$loop_profil]."\"><input type='radio' name='profil[$cpt]' value='".$tab_profil[$loop_profil]."' ".$checked[$tab_profil[$loop_profil]]."/></td>";
+				<td title=\"".$designation_eleve."\n".$tab_profil[$loop_profil]." : ".$tab_profil_traduction[$loop_profil]."\"><input type='radio' name='profil[$cpt]' value='".$tab_profil[$loop_profil]."' ".$checked[$tab_profil[$loop_profil]]."/></td>";
 		}
 		echo "
 			</tr>";
