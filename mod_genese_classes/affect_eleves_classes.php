@@ -793,7 +793,7 @@ width='16' height='16' alt='Supprimer' /></a>";
 			echo "/><label for='clas_fut_$cpt'>$lig->classe <span style='font-size:x-small'>(<em>".mysqli_num_rows($res_test)."</em>)</span></label><br />\n";
 		}
 		else {
-			echo "_ $lig->classe<br />\n";
+			echo "<span title=\"Aucun élève n'est encore inscrit dans cette classe.\nAucun affichage n'est possible pour le moment avec ce critère.\">_ $lig->classe</span><br />\n";
 		}
 
 		$classe_fut[]=$lig->classe;
@@ -1678,6 +1678,9 @@ $_POST['projet']=	4eme_vers_3eme
 	echo "</p>\n";
 
 	if((isset($projet))&&(isset($choix_affich))&&(isset($requete_definie))&&(isset($id_aff))&&(isset($id_req))) {
+		if((preg_match("/^[0-9]{1,}$/", $id_aff))&&(preg_match("/^[0-9]{1,}$/", $id_req))) {
+			$requete_definie="y";
+		}
 		echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix_affich=$choix_affich&amp;requete_definie=$requete_definie&amp;id_aff=$id_aff&amp;id_req=$id_req'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 		echo ">Rafraichir sans enregistrer</a></p>\n";
@@ -2328,7 +2331,8 @@ $_POST['projet']=	4eme_vers_3eme
 	
 	echo "<input type='hidden' name='projet' value='$projet' />\n";
 	echo "<input type='hidden' name='is_posted' value='y' />\n";
-	echo "<input type='hidden' name='choix_affich' value='done' />\n";
+	//echo "<input type='hidden' name='choix_affich' value='done' />\n";
+	echo "<input type='hidden' name='choix_affich' value='y' />\n";
 	echo "<p align='center'><input type='submit' name='valide_aff_classe_fut' value='Valider' /></p>\n";
 	echo "<hr width='200'/>\n";
 
