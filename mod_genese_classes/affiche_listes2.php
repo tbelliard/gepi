@@ -67,6 +67,8 @@ $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $
 
 $user_temp_directory=get_user_temp_directory();
 
+$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION["statut"]);
+
 if((isset($_GET['mode']))&&($_GET['mode']=='affiche_tab_chgt_clas')&&(isset($projet))&&(isset($_GET['login_ele']))) {
 	include("gc_func.inc.php");
 
@@ -134,7 +136,7 @@ if((isset($_GET['mode']))&&($_GET['mode']=='affiche_tab_chgt_clas')&&(isset($pro
 		}
 
 		// Afficher classe et récapitulatif:
-		echo "<p>".$lig->nom." ".$lig->prenom." (".get_chaine_liste_noms_classes_from_ele_login($_GET['login_ele']).") (".trim(preg_replace("/^,/", "",preg_replace("/,$/", "",trim(strtr($lig->liste_opt,"|",", "))))).")".$chaine_profil.$chaine_moy."</p>
+		echo "<p>".$lig->nom." ".$lig->prenom.($acces_visu_eleve ? " <a href='../eleves/visu_eleve.php?ele_login=".$_GET['login_ele']."' target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' alt='Eleve' /></a>" : "")." (".get_chaine_liste_noms_classes_from_ele_login($_GET['login_ele']).") (".trim(preg_replace("/^,/", "",preg_replace("/,$/", "",trim(strtr($lig->liste_opt,"|",", "))))).")".$chaine_profil.$chaine_moy."</p>
 			<table class='boireaus'>
 				<tr>
 					".ligne_entete_classe_future()."
