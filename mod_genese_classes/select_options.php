@@ -68,7 +68,16 @@ $lv2=isset($_POST['lv2']) ? $_POST['lv2'] : NULL;
 $lv3=isset($_POST['lv3']) ? $_POST['lv3'] : NULL;
 $autre_option=isset($_POST['autre_option']) ? $_POST['autre_option'] : NULL;
 
+$msg="";
+
+if(!isset($projet)) {
+	$msg="Projet non choisi.<br />";
+	header("Location: ./index.php?msg=$msg");
+	die();
+}
+
 if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset($autre_option)))) {
+	check_token();
 	$nb_reg1=0;
 	$nb_reg2=0;
 	$nb_reg3=0;
@@ -141,6 +150,86 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 	}
 }
 
+if(isset($_POST['ajout_options_d_apres_classes'])) {
+	check_token();
+
+	$nb_reg=0;
+	$nb_err=0;
+	$prefixe=isset($_POST['prefixe']) ? $_POST['prefixe'] : "";
+	if($prefixe=="") {
+		$msg.="Le préfixe ne peut pas être vide.<br />";
+	}
+	else {
+		$test=preg_replace("/[A-Za-z0-9_]/", "", $prefixe);
+		if($test!="") {
+			$msg.="Le préfixe doit se limiter à des caractères alphanumériques non accentués et au tiret bas '_'.<br />";
+		}
+		else {
+			$prefixe=preg_replace("/[^A-Za-z0-9_]/", "", $prefixe);
+
+			// Récupérer la liste des noms de classes futures
+			$sql="SELECT * FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
+				$msg.="Aucune classe future n'a été trouvée.<br />";
+			}
+			else {
+				while($lig=mysqli_fetch_object($res)) {
+					// A VOIR : User d'un type LV3 au lieu de Autre serait intéressant
+					$sql="SELECT * FROM gc_options WHERE projet='$projet' AND opt='".$prefixe.$lig->classe."' AND type='autre';";
+					//echo "$sql<br />";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)==0) {
+						$sql="INSERT INTO gc_options SET projet='$projet', opt='".$prefixe.$lig->classe."', type='autre';";
+						//echo "$sql<br />";
+						if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {$nb_reg++;} else {$nb_err++;}
+					}
+					else {
+						// Mettre à jour les enregistrements dans gc_eleves_options en supprimant les affectations actuelles
+						$sql="SELECT * FROM gc_eleves_options WHERE projet='$projet' AND liste_opt LIKE '%|".$prefixe.$lig->classe."|%'";
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res2)==0) {
+							while($lig2=mysqli_fetch_object($res2)) {
+								$liste_opt="|";
+								$tab=explode("|", $lig2->liste_opt);
+								for($loop=0;$loop<count($tab);$loop++) {
+									if(($tab[$loop]!="")&&($tab[$loop]!=$prefixe.$lig->classe)) {
+										$liste_opt.=$tab[$loop]."|";
+									}
+								}
+								$sql="UPDATE gc_eleves_options SET liste_opt='".$liste_opt."' WHERE projet='$projet' AND id='".$lig2->id."';";
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+						}
+					}
+
+					// On remplit les (nouvelles ou pas) options au nom des prefixe.classe
+					$sql="SELECT * FROM gc_eleves_options WHERE projet='$projet' AND classe_future='".$lig->classe."';";
+					//echo "$sql<br />";
+					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res2)>0) {
+						while($lig2=mysqli_fetch_object($res2)) {
+							$sql="UPDATE gc_eleves_options SET liste_opt='".$lig2->liste_opt.$prefixe.$lig->classe."|"."' WHERE projet='$projet' AND id='".$lig2->id."';";
+							//echo "$sql<br />";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							if($update) {$nb_reg++;} else {$nb_err++;}
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	if($nb_err>0) {
+		$msg.=$nb_err." erreur(s).<br />";
+	}
+	if($nb_reg>0) {
+		$msg.=$nb_reg." enregistrement(s) effectué(s).<br />";
+	}
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Genèse classe: Choix options";
 //echo "<div class='noprint'>\n";
@@ -154,17 +243,21 @@ if((!isset($projet))||($projet=="")) {
 	die();
 }
 
+// A FAIRE : Tester les doublons dans les noms d'options
+//           J'ai eu un truc bizarre avec des coches d'options autre au nom de classes 5B, 5C,... non pris en compte
+
 //echo "<div class='noprint'>\n";
 echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
 echo "</p>\n";
 //echo "</div>\n";
 
-echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<h2>Choix des options</h2>
+		<table class='boireaus boireaus_alt' summary='Tableau des options'>\n";
 
-echo "<table class='boireaus' summary='Tableau des options'>\n";
-
-$alt=1;
-echo "<tr class='lig$alt'>\n";
+echo "<tr>\n";
 echo "<td style='vertical-align:top;'>\n";
 echo "LV1";
 echo "</td>\n";
@@ -204,8 +297,7 @@ echo creer_div_infobulle('ajout_lv1',$titre,"",$texte_checkbox_matieres,"",20,20
 echo "</td>\n";
 echo "</tr>\n";
 //===============================================================================
-$alt=$alt*(-1);
-echo "<tr class='lig$alt'>\n";
+echo "<tr>\n";
 echo "<td style='vertical-align:top;'>\n";
 echo "LV2";
 echo "</td>\n";
@@ -244,8 +336,7 @@ echo creer_div_infobulle('ajout_lv2',$titre,"",$texte_checkbox_matieres,"",20,20
 echo "</td>\n";
 echo "</tr>\n";
 //===============================================================================
-$alt=$alt*(-1);
-echo "<tr class='lig$alt'>\n";
+echo "<tr>\n";
 echo "<td style='vertical-align:top;'>\n";
 echo "LV3";
 echo "</td>\n";
@@ -284,8 +375,7 @@ echo creer_div_infobulle('ajout_lv3',$titre,"",$texte_checkbox_matieres,"",20,20
 echo "</td>\n";
 echo "</tr>\n";
 //===============================================================================
-$alt=$alt*(-1);
-echo "<tr class='lig$alt'>\n";
+echo "<tr>\n";
 echo "<td style='vertical-align:top;'>\n";
 echo "Autre option";
 echo "</td>\n";
@@ -332,11 +422,9 @@ echo "</table>\n";
 
 echo "<input type='hidden' name='projet' value='$projet' />\n";
 echo "<p><input type='submit' name='choix_options' value='Valider' /></p>\n";
-echo "</form>\n";
 
-//echo "</blockquote>\n";
 
-echo "<p><em>NOTES&nbsp;:</em></p>
+echo "<p style='margin-top:1em'><em>NOTES&nbsp;:</em></p>
 <ul>
 		<li>Il est possible d'imposer des contraintes pour indiquer que l'on ne veut pas de LATIN en 3A2 et 3B2 (<i>les élèves faisant LATIN pourront alors être cochés dans toutes les colonnes sauf 3A2 et 3B2</i>).<br />
 	Pour autant, la solution par exclusion de telle option sur telle classe ne suffit pas toujours.<br />
@@ -346,6 +434,27 @@ echo "<p><em>NOTES&nbsp;:</em></p>
 	<li>Les effectifs affichés correspondent à ce qui a été enregistré à l'étape 7 dans la page 'Saisir les options des élèves'.<br />
 	Tant que le formulaire dans la page n'a pas été validé, la table correspondante est vide et les effectifs des options restent à zéro.</li>
 </ul>\n";
+
+echo "</fieldset>\n";
+echo "</form>\n";
+
+//echo "</blockquote>\n";
+
+
+//===============================================================================
+echo "<br />
+<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+	<fieldset class='fieldset_opacite50'>".add_token_field()."
+		<h2>Autre</h2>
+		<input type='hidden' name='projet' value='$projet' />\n";
+echo "<p>Créer des options d'après les noms des classes futures et remplir les options d'après les affectactions dans ces classes pour, sur une copie du projet initial, par exemple, passer à la réalisation de groupes de langues en conservant (en option) l'information de la classe future de l'élève.<br />
+Préfixe&nbsp;:<input type='text' name='prefixe' value='_' /><br />
+Un préfixe non vide est nécessaire.</p>\n";
+echo "<p><input type='submit' name='ajout_options_d_apres_classes' value='Valider' /></p>\n";
+echo "</fieldset>\n";
+echo "</form>\n";
+//===============================================================================
+
 
 require("../lib/footer.inc.php");
 ?>
