@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -164,6 +164,10 @@ if ($affichage_final=='n') {
         $k = 0;
         $nombre_eleve_requete = $eleve_col->count();
 
+		// BIZARRE : La table d'agrégation des absences ne semble jamais synchro
+		//           On se retrouve à parcourir élève par élève
+		//           Il faudrait éplucher checkSynchroAbsenceAgregationTable pour comprendre
+
 	    $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
 	    if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
 			$eleve_col = $eleve_query->find();
@@ -195,7 +199,11 @@ if ($affichage_final=='n') {
 		PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$create_table=mysqli_query($GLOBALS['mysqli'], $sql);
 
-		// Menage
+		// Menage : On supprime les enregistrements de plus de 24h
+		// On pourrait conserver en stockant en plus les dates de début et fin pour resservir les résultats plus vites:
+		// Proposer la liste des extractions effectuées, avec leur date pour voir si des modifs de régularisation nécessitent de refaire l'extraction.
+		// Pouvoir supprimer certaines extractions pour faire du ménage
+		// Et revoir les requêtes ci-dessous pour tenir compte du $ts_extract
 		$sql="DELETE FROM temp_abs_extract WHERE date_extract<'".strftime("%Y-%m-%d %H:%M:%S", time()-24*3600)."';";
 		$del=mysqli_query($GLOBALS['mysqli'], $sql);
 
@@ -411,7 +419,7 @@ if ($affichage_final=='n') {
 						$$nom_variable = $$nom_variable + $total_motif_eleve;
 					}
 				}
-	$compteur++;
+				$compteur++;
 			}
 		}
 
@@ -478,11 +486,11 @@ if ($affichage_final=='n') {
 </script>";
 
 			//die();
-			// Pour ne pas tenter de générer une deuxième fois l'ODS dans la page web qu'on a commencer à générer.
+			// Pour ne pas tenter de générer une deuxième fois l'ODS dans la page web qu'on a commencé à générer.
 			$affichage="html";
 		}
 	}
-
+	//========================================================================
     //if ($affichage != 'ods') {
     if ($affichage_final=='n') {
 		echo "<script type='text/javascript'>
@@ -562,8 +570,10 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
             <br />       
             <?php
         }
+	//========================================================================
 
         if (($affichage == 'html')||($affichage == 'ods')) {
+		// Total des demi-journées évaluées/analysées en cumulant tous les élèves
 		$sql="SELECT sum(valeur) AS total FROM temp_abs_extract WHERE item='NbreDemiJourneesCalcul' AND date_extract='".$ts_extract."' AND login='".$_SESSION['login']."';";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS['mysqli'], $sql);
@@ -576,6 +586,7 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
 		}
 		//echo "\$demi_journees_decompte=$demi_journees_decompte<br />";
 
+		// Total des demi-journées d'absence
 		$sql="SELECT sum(valeur) AS total FROM temp_abs_extract WHERE item='DemiJourneesAbsence' AND date_extract='".$ts_extract."' AND login='".$_SESSION['login']."';";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS['mysqli'], $sql);
@@ -584,9 +595,14 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
 		}
 		else {
 			$lig=mysqli_fetch_object($res);
-			$nb_demijournees=str_replace(",",".",getTauxAbsenteisme($lig->total, $demi_journees_decompte));
+			//echo "\$lig->total=".$lig->total."<br />";
+			//$nb_demijournees=str_replace(",",".",getTauxAbsenteisme($lig->total, $demi_journees_decompte));
+			$nb_demijournees=$lig->total;
+			//$nb_demijournees=getTauxAbsenteisme($lig->total, $demi_journees_decompte);
 		}
+		//echo "\$nb_demijournees=".$nb_demijournees."<br />";
 
+		// Total des absences non justifiées
 		$sql="SELECT sum(valeur) AS total FROM temp_abs_extract WHERE item='DemiJourneesNonJustifiees' AND date_extract='".$ts_extract."' AND login='".$_SESSION['login']."';";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS['mysqli'], $sql);
@@ -595,9 +611,12 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
 		}
 		else {
 			$lig=mysqli_fetch_object($res);
-			$nb_nonjustifiees=str_replace(",",".",getTauxAbsenteisme($lig->total, $demi_journees_decompte));
+			//$nb_nonjustifiees=str_replace(",",".",getTauxAbsenteisme($lig->total, $demi_journees_decompte));
+			//$nb_nonjustifiees=getTauxAbsenteisme($lig->total, $demi_journees_decompte);
+			$nb_nonjustifiees=$lig->total;
 		}
 
+		// Total des absences justifiées
 		$sql="SELECT sum(valeur) AS total FROM temp_abs_extract WHERE item='DemiJourneesJustifiees' AND date_extract='".$ts_extract."' AND login='".$_SESSION['login']."';";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS['mysqli'], $sql);
@@ -606,7 +625,9 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
 		}
 		else {
 			$lig=mysqli_fetch_object($res);
-			$nb_justifiees=str_replace(",",".",getTauxAbsenteisme($lig->total, $demi_journees_decompte));
+			//$nb_justifiees=str_replace(",",".",getTauxAbsenteisme($lig->total, $demi_journees_decompte));
+			//$nb_justifiees=getTauxAbsenteisme($lig->total, $demi_journees_decompte);
+			$nb_justifiees=$lig->total;
 		}
 
 		if ($affichage_motifs) {
@@ -619,11 +640,30 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
 				}
 				else {
 					$lig=mysqli_fetch_object($res);
-					$total_motif[$motif->getId()]=str_replace(",",".",getTauxAbsenteisme($lig->total, $demi_journees_decompte));
+					//$total_motif[$motif->getId()]=str_replace(",",".",getTauxAbsenteisme($lig->total, $demi_journees_decompte));
+					//$total_motif[$motif->getId()]=getTauxAbsenteisme($lig->total, $demi_journees_decompte);
+					$total_motif[$motif->getId()]=$lig->total;
 				}
 			}
 		}
 
+		// Remplissage du tableau des élèves avec les différents items
+		/*
+		[emilien.azerty] => Array
+			(
+				[id_eleve] => 5559
+				[nom_prenom] => AZERTY Emilien
+				[nom] => AZERTY
+				[prenom] => Emilien
+				[NbreDemiJourneesCalcul] => 47
+				[DemiJourneesAbsence] => 11
+				[TauxDemiJourneesAbsence] => 23.4
+				[DemiJourneesNonJustifiees] => 11
+				[DemiJourneesJustifiees] => 0
+				[TauxDemiJourneesNonJustifiees] => 23.4
+				[TauxDemiJourneesJustifiees] => 0
+			)
+		*/
 		$sql="SELECT * FROM temp_abs_extract WHERE date_extract='".$ts_extract."' AND login='".$_SESSION['login']."';";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS['mysqli'], $sql);
@@ -729,36 +769,65 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
                 echo get_liste_classes_eleve($login_eleve);
                 echo '</td>';
 
-                echo '<td>';
-                if(isset($tab_ele_courant['TauxDemiJourneesAbsence'])) {
-                    echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesAbsence']);
-                }
-                echo '</td>';
+/*				[NbreDemiJourneesCalcul] => 47
+				[DemiJourneesAbsence] => 11
+				[TauxDemiJourneesAbsence] => 23.4
+				[DemiJourneesNonJustifiees] => 11
+				[DemiJourneesJustifiees] => 0
+				[TauxDemiJourneesNonJustifiees] => 23.4
+				[TauxDemiJourneesJustifiees] => 0
+*/
+			echo '<td>';
+			if(isset($tab_ele_courant['TauxDemiJourneesAbsence'])) {
+				if((isset($tab_ele_courant['NbreDemiJourneesCalcul']))&&(isset($tab_ele_courant['DemiJourneesAbsence']))) {
+					echo "<span title=\"".$tab_ele_courant['DemiJourneesAbsence']."/".$tab_ele_courant['NbreDemiJourneesCalcul']."\">".str_replace(",",".",$tab_ele_courant['TauxDemiJourneesAbsence'])."</span>";
+				}
+				else {
+					echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesAbsence']);
+				}
+			}
+			echo '</td>';
+
+			echo '<td>';
+			if(isset($tab_ele_courant['TauxDemiJourneesNonJustifiees'])) {
+				if((isset($tab_ele_courant['NbreDemiJourneesCalcul']))&&(isset($tab_ele_courant['DemiJourneesNonJustifiees']))) {
+					echo "<span title=\"".$tab_ele_courant['DemiJourneesNonJustifiees']."/".$tab_ele_courant['NbreDemiJourneesCalcul']."\">".str_replace(",",".",$tab_ele_courant['TauxDemiJourneesNonJustifiees'])."</span>";
+				}
+				else {
+					echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesNonJustifiees']);
+				}
+			}
+			echo '</td>';
+
+			echo '<td>';
+			if(isset($tab_ele_courant['TauxDemiJourneesJustifiees'])) {
+				if((isset($tab_ele_courant['NbreDemiJourneesCalcul']))&&(isset($tab_ele_courant['DemiJourneesJustifiees']))) {
+					echo "<span title=\"".$tab_ele_courant['DemiJourneesJustifiees']."/".$tab_ele_courant['NbreDemiJourneesCalcul']."\">".str_replace(",",".",$tab_ele_courant['TauxDemiJourneesJustifiees'])."</span>";
+				}
+				else {
+					echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesJustifiees']);
+				}
+			}
+			echo '</td>';
 
 
-                echo '<td>';
-                if(isset($tab_ele_courant['TauxDemiJourneesNonJustifiees'])) {
-                    echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesNonJustifiees']);
-                }
-                echo '</td>';
+			if ($affichage_motifs) {
+				foreach ($motifs_col as $motif) {
+					echo '<td>';
+						if(isset($tab_ele_courant['TauxDemiJourneesAbsenceMotif'.$motif->getId()])) {
+							//echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesAbsenceMotif'.$motif->getId()]);
+							if((isset($tab_ele_courant['NbreDemiJourneesCalcul']))&&(isset($tab_ele_courant['DemiJourneesAbsenceMotif'.$motif->getId()]))) {
+								echo "<span title=\"".$tab_ele_courant['DemiJourneesAbsenceMotif'.$motif->getId()]."/".$tab_ele_courant['NbreDemiJourneesCalcul']."\">".str_replace(",",".",$tab_ele_courant['TauxDemiJourneesAbsenceMotif'.$motif->getId()])."</span>";
+							}
+							else {
+								echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesAbsenceMotif'.$motif->getId()]);
+							}
+						}
+					echo '</td>';
+				}
+			}
 
-                echo '<td>';
-                if(isset($tab_ele_courant['TauxDemiJourneesJustifiees'])) {
-                    echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesJustifiees']);
-                }
-                echo '</td>';
-
-                if ($affichage_motifs) {
-                    foreach ($motifs_col as $motif) {
-                        echo '<td>';
-                        if(isset($tab_ele_courant['TauxDemiJourneesAbsenceMotif'.$motif->getId()])) {
-                            echo str_replace(",",".",$tab_ele_courant['TauxDemiJourneesAbsenceMotif'.$motif->getId()]);
-                        }
-                        echo '</td>';
-                    }
-                }
-
-                echo '</tr>';
+			echo '</tr>';
             }
             /*
             foreach ($eleve_col as $eleve) {
@@ -813,21 +882,21 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
             echo 'Taux moyen  ';
             echo '</th>';
 
-            echo '<th>';
+            echo '<th title="'.$nb_demijournees."/".$demi_journees_decompte.'">';
 		echo str_replace(",",".",getTauxAbsenteisme($nb_demijournees, $demi_journees_decompte));
             echo '</th>';
 
-            echo '<th>';
+            echo '<th title="'.$nb_nonjustifiees."/".$demi_journees_decompte.'">';
 		echo str_replace(",",".",getTauxAbsenteisme($nb_nonjustifiees, $demi_journees_decompte));
             echo '</th>';
 
-            echo '<th>';
+            echo '<th title="'.$nb_justifiees."/".$demi_journees_decompte.'">';
 		echo str_replace(",",".",getTauxAbsenteisme($nb_justifiees, $demi_journees_decompte));
             echo '</th>';
 
             if ($affichage_motifs) {
                 foreach ($motifs_col as $motif) {
-                    echo '<th>';
+                    echo '<th title="'.$total_motif[$motif->getId()]."/".$demi_journees_decompte.'">';
 				echo str_replace(",",".",getTauxAbsenteisme($total_motif[$motif->getId()], $demi_journees_decompte));
                     echo '</th>';
                 }
@@ -890,7 +959,7 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
             //partie si l'affichage par motif est coché
             if ($affichage_motifs) {
                 $j = 4;
-                foreach ($motifs_col as $motif) {                    
+                foreach ($motifs_col as $motif) {
                     $libelle[] = $motif->getNom();
                     $colonnes_donnes[] = 'taux_' . $j;
                     $j++;
@@ -1030,7 +1099,9 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     </script>';
 require_once("../lib/footer.inc.php");
 
+// La fonction est utilisée pour des demi journées d'absence, mais aussi des non justifiées,...
 function getTauxAbsenteisme($nbreDemiJourneesAbsences, $nbreTotalDemiJournees) {
+	//echo "<p>DEBUG : \$nbreDemiJourneesAbsences=$nbreDemiJourneesAbsences et \$nbreTotalDemiJournees=$nbreTotalDemiJournees</p>";
     if ($nbreTotalDemiJournees == 0) { //l'établissement est fermé sur toute la période
         return 0;
     } else {
