@@ -557,11 +557,11 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
                 }
                 ?>   
                 <br />    
-                <input type="checkbox" dojoType="dijit.form.CheckBox" name="affichage_motifs" value="ok" <?php
+                <input type="checkbox" dojoType="dijit.form.CheckBox" name="affichage_motifs" id="affichage_motifs" value="ok" <?php
             if ($affichage_motifs) {
                 echo'checked';
             }
-            ?> > Afficher le détail par motif (Traitement plus long sur toutes les classes). 
+            ?> > <label for='affichage_motifs'>Afficher le détail par motif (Traitement plus long sur toutes les classes). </label>
                 <br />
                 <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Valider les modifications et afficher à l'écran</button>   
                 <button type="submit" style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods" >Enregistrer au format ods</button>     
@@ -902,6 +902,36 @@ if(document.getElementById('p_eleve_en_cours_d_extraction')) {
                 }
             }
             echo '</tr>';
+
+		// Rappel de la ligne de titre
+            echo '<tr style="text-align:center;">';
+
+            echo '<th colspan="2" >';
+            echo 'Informations sur l\'élève';
+            echo '</th>';
+
+            echo '<th class="number" title="cliquez pour trier sur la colonne">';
+            echo 'total';
+            echo '</th>';
+
+            echo '<th class="number" title="cliquez pour trier sur la colonne">';
+            echo 'non justifié';
+            echo '</th>';
+
+            echo '<th class="number" title="cliquez pour trier sur la colonne">';
+            echo 'justifié';
+            echo '</th>';
+
+            if ($affichage_motifs) {
+                foreach ($motifs_col as $motif) {
+                    echo '<th class="number" title="cliquez pour trier sur la colonne">';
+                    echo $motif->getNom();
+                    echo '</th>';
+                }
+            }
+            echo '</tr>';
+
+
             echo '</tfoot>';
             echo "</table>";
             echo '<h5>Extraction faite le ' . date("d/m/Y - H:i") . '</h5>';
