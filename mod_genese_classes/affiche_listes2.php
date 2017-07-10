@@ -221,6 +221,7 @@ if((isset($projet))&&(isset($_POST['valider_enregistrement_nom_aff']))&&(isset($
 	}
 }
 
+/*
 function get_infos_gc_affichage($id_aff) {
 	global $projet;
 	$tab=array();
@@ -244,6 +245,21 @@ function get_infos_gc_affichage($id_aff) {
 
 	return $tab;
 }
+*/
+
+//===================================================
+// 20170708
+include("gc_func.inc.php");
+$classe_fut=get_classe_fut();
+$classe_fut_0=$classe_fut;
+
+$classe_fut[]="Red";
+$classe_fut[]="Dep";
+$classe_fut[]=""; // Vide pour les Non Affectés
+
+include("lib_gc.php");
+$classe_fut=$classe_fut_0;
+//===================================================
 
 $javascript_specifique[] = "lib/tablekit";
 $utilisation_tablekit="ok";
@@ -347,11 +363,13 @@ $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $
 		echo "<div id='div_ods' style='text-align:center; border:1px solid black;' class='fieldset_opacite50'>\n";
 		echo "</div>\n";
 	
+		/*
 		echo "<hr />\n";
 
 		echo "<div id='div_divers' style='text-align:center;'>\n";
 		echo "<a href='#' onclick=\"afficher_div('recap_eff','y',-100,20);return false;\">Effectifs des requêtes</a>";
 		echo "</div>\n";
+		*/
 
 		echo "</div>\n";
 	}
@@ -532,7 +550,7 @@ $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $
 </script>\n";
 
 	//=============================
-	include("lib_gc.php");
+	//include("lib_gc.php");
 	// On y initialise les couleurs
 	// Il faut que le tableaux $classe_fut soit initialisé.
 	//=============================
