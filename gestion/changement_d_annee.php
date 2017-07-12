@@ -433,7 +433,7 @@ echo "<li style='margin-top:1em;'><p>Modifier les dates de début et de fin des 
 <table>
 	<tr>
 		<td>
-		Date de début des cahiers de textes (<em>actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("begin_bookings")); ?></em>) :
+		Date de début de d'année scolaire <em>(utilisée notamment dans les cahiers de textes)</em> <em>(actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("begin_bookings")); ?>)</em>&nbsp;:
 		</td>
 		<td><?php
 		$bday = strftime("%d", getSettingValue("begin_bookings"));
@@ -445,7 +445,7 @@ echo "<li style='margin-top:1em;'><p>Modifier les dates de début et de fin des 
 	</tr>
 	<tr>
 		<td>
-		Date de fin des cahiers de textes (<em>actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("end_bookings")); ?></em>) :
+		Date de fin d'année scolaire <em>(utilisée notamment dans les cahiers de textes)</em> <em>(actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("end_bookings")); ?>)</em>&nbsp;:
 		</td>
 		<td><?php
 		$eday = strftime("%d", getSettingValue("end_bookings"));
