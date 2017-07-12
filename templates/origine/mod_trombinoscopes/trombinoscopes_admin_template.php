@@ -640,9 +640,9 @@ unset ($aid_disponible)
 		<br/>
 		<input type="checkbox"
 			name="ecraser"
-			id='ecrase_photo'
+			id='ecrase_photo_1'
 			value="yes" />
-		<label for="ecrase_photo">
+		<label for="ecrase_photo_1">
 		Ecraser les photos si les noms correspondent
 		</label>
 		<p>
@@ -680,9 +680,9 @@ unset ($aid_disponible)
 		<br/>
 		<input type="checkbox"
 			name="ecraser"
-			id='ecrase_photo'
+			id='ecrase_photo_2'
 			value="yes" />
-		<label for="ecrase_photo">
+		<label for="ecrase_photo_2">
 		Ecraser les photos si les noms correspondent
 		</label>
 		<p>
