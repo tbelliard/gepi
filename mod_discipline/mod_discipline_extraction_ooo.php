@@ -500,7 +500,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 		$tab_protagonistes_eleves=array();
 		$sql="SELECT * FROM s_protagonistes WHERE id_incident='$lig_incident->id_incident' ORDER BY statut,qualite,login;";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res)==0) {
+		if(mysqli_num_rows($res2)==0) {
 			$tab_lignes_OOo[$nb_ligne]['protagonistes']="Aucun";
 		}
 		else {
@@ -530,8 +530,8 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 					}
 				}
 			}
+			$tab_lignes_OOo[$nb_ligne]['protagonistes']=$liste_protagonistes;
 		}
-		$tab_lignes_OOo[$nb_ligne]['protagonistes']=$liste_protagonistes;
 
 		$id_incident_courant=$lig_incident->id_incident;
 
@@ -1148,8 +1148,9 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 					// Protagonistes
 					$tab_protagonistes_eleves=array();
 					$sql="SELECT * FROM s_protagonistes WHERE id_incident='$lig_incident->id_incident' ORDER BY statut,qualite,login;";
+					//echo "$sql<br />";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res)==0) {
+					if(mysqli_num_rows($res2)==0) {
 						$tab_lignes_OOo[$nb_ligne]['protagonistes']="Aucun";
 					}
 					else {
@@ -1179,8 +1180,8 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 								}
 							}
 						}
+						$tab_lignes_OOo[$nb_ligne]['protagonistes']=$liste_protagonistes;
 					}
-					$tab_lignes_OOo[$nb_ligne]['protagonistes']=$liste_protagonistes;
 
 					$id_incident_courant=$lig_incident->id_incident;
 
@@ -1604,7 +1605,7 @@ while($lig_incident=mysqli_fetch_object($res_incident)) {
 	$tab_protagonistes_eleves=array();
 	$sql="SELECT * FROM s_protagonistes WHERE id_incident='$lig_incident->id_incident' ORDER BY statut,qualite,login;";
 	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res)==0) {
+	if(mysqli_num_rows($res2)==0) {
 		$tab_lignes_OOo[$nb_ligne]['protagonistes']="Aucun";
 	}
 	else {
@@ -1623,8 +1624,8 @@ while($lig_incident=mysqli_fetch_object($res_incident)) {
 				$liste_protagonistes.=" $lig2->qualite";
 			}
 		}
+		$tab_lignes_OOo[$nb_ligne]['protagonistes']=$liste_protagonistes;
 	}
-	$tab_lignes_OOo[$nb_ligne]['protagonistes']=$liste_protagonistes;
 
 	$id_incident_courant=$lig_incident->id_incident;
 
