@@ -72,12 +72,12 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
               <p class="selected">Données complètes :
               </p>
               <p class="selected">
-                &Eacute;tablissement
-                <input type="checkbox"  name="etab_all" id="etab_all0" <?php if (isset($_SESSION['etab_all']))echo'checked'; ?>/>                
-                &Eacute;lèves
-                <input type="checkbox"  name="eleve_all" id="eleve_all" <?php if (isset($_SESSION['eleve_all']))echo'checked'; ?>/>
-                Personnels
-                <input type="checkbox"  name="pers_all" id="pers_all" <?php if (isset($_SESSION['pers_all']))echo'checked'; ?>/>                
+                <label for='etab_all0'>&Eacute;tablissement</label>
+                <input type="checkbox"  name="etab_all" id="etab_all0" <?php if (isset($_SESSION['etab_all']))echo'checked'; ?>/> - 
+                <label for='eleve_all'>&Eacute;lèves</label>
+                <input type="checkbox"  name="eleve_all" id="eleve_all" <?php if (isset($_SESSION['eleve_all']))echo'checked'; ?>/> - 
+                <label for='pers_all'>Personnels</label>
+                <input type="checkbox"  name="pers_all" id="pers_all" <?php if (isset($_SESSION['pers_all']))echo'checked'; ?>/>
                 <input type="hidden" name='posted' value='ok'/>
               </p>
               <p class="selected">et/ou :
@@ -90,9 +90,9 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
               <?php if ($_SESSION['stats_choix']=='eleves'||$_SESSION['stats_choix']=='personnels') {?>
               <div id="recherche_indiv">
                 <input type="radio" name="choix" id="choix" value="eleves" <?php if ($_SESSION['stats_choix']=='eleves'||!isset($_SESSION['choix']))echo'checked'; ?> />
-                &Eacute;lèves                  
+                <label for='choix'>&Eacute;lèves</label> - 
                 <input type="radio" name="choix" id="choix2" value="personnels" <?php if ($_SESSION['stats_choix']=='personnels')echo'checked'; ?> />
-                Personnels                 
+                <label for='choix2'>Personnels</label>
                 <br /><br />
                 <label for="nom"></label>
                 <input type="text" name="nom" id="nom" value="" />
