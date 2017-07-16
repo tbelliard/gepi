@@ -277,4 +277,31 @@ else {
 	$result .= msj_erreur("ERREUR !");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'tempo4' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'tempo4'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(255) NOT NULL default '', col4 varchar(100) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+
+	$result .= "&nbsp;-> Contrôle du champ col3 de la table 'tempo4'&nbsp;: ";
+	$sql="ALTER TABLE tempo4 CHANGE col3 col3 VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("OK !");
+	}
+	else {
+		$result .= msj_erreur("ERREUR !");
+	}
+}
+
+
+
 ?>

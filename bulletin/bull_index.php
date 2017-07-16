@@ -4723,8 +4723,7 @@ Et dans
 							}
 						}
 
-// 20170714 : Est-ce qu'on ne va pas avoir des pb avec des insertions en doublon avec les différentes adresses resp destinataires
-//            Vérifier à quoi sert tempo4
+						// La table tempo4 permet de stocker les infos utilisées pour générer les fichiers d'index HTML de l'archive produite
 						$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j])."';";
 						$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
 

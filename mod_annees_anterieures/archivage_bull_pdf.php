@@ -148,11 +148,11 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo "<p><strong>Autres paramètres&nbsp;:</strong></p>";
 
 	echo "<p style='text-indent:-2em; margin-left:2em;'>Modèle de bulletins&nbsp;:<br />";
-	echo "<input type='radio' id='mode_bulletin_pdf' name='mode_bulletin' value='pdf' onchange=\"checkbox_change('mode_bulletin_pdf');checkbox_change('mode_bulletin_pdf_2016');\" ";
+	echo "<input type='radio' id='mode_bulletin_pdf' name='mode_bulletin' value='pdf' onchange=\"checkbox_change('mode_bulletin_pdf');checkbox_change('mode_bulletin_pdf_2016');display_div_modele_bulletin_pdf();\" ";
 	$mode_bulletin=getPref($_SESSION['login'],'arch_bull_mode_bulletin', 'pdf');
 	if($mode_bulletin=='pdf') {echo " checked";}
 	echo " /><label for='mode_bulletin_pdf' id='texte_mode_bulletin_pdf'> PDF</label><br />";
-	echo "<input type='radio' id='mode_bulletin_pdf_2016' name='mode_bulletin' value='pdf_2016' onchange=\"checkbox_change('mode_bulletin_pdf');checkbox_change('mode_bulletin_pdf_2016');\" ";
+	echo "<input type='radio' id='mode_bulletin_pdf_2016' name='mode_bulletin' value='pdf_2016' onchange=\"checkbox_change('mode_bulletin_pdf');checkbox_change('mode_bulletin_pdf_2016');display_div_modele_bulletin_pdf();\" ";
 	if($mode_bulletin=='pdf_2016') {echo " checked";}
 	echo " /><label for='mode_bulletin_pdf_2016' id='texte_mode_bulletin_pdf_2016'> PDF Réforme CLG 2016</label>";
 	//echo "<br />\n";
@@ -186,10 +186,12 @@ if(!isset($generer_fichiers_pdf_archivage)){
 		echo " /><label for='arch_bull_signature' id='texte_arch_bull_signature'> Inclure le fichier signature si un tel fichier est défini pour la classe de l'élève</label></p>";
 	}
 
+	echo "<div id='div_bulletin_fin_de_cycle'>";
 	echo "<p style='text-indent:-2em;margin-left:2em;'><input type='checkbox' name='arch_bull_avec_bilan_cycle' id='arch_bull_avec_bilan_cycle' value='y' onchange='checkbox_change(this.id)' ";
 	$arch_bull_avec_bilan_cycle=getPref($_SESSION['login'],'arch_bull_avec_bilan_cycle', 'n');
 	if($arch_bull_avec_bilan_cycle=='y') {echo " checked";}
 	echo "/> <label for='arch_bull_avec_bilan_cycle' id='texte_arch_bull_avec_bilan_cycle' style='cursor: pointer;'>Intercaler le bilan de fin de cycle pour les 6èmes et 3èmes <em>(en PDF 2016 seulement pour le moment)</em></label></p>";
+	echo "</div>";
 
 	//======================================
 	echo "<p>Parcourir les élèves par tranches de&nbsp;: <input type='text' name='arch_bull_eff_tranche' size='2' value='".getPref($_SESSION['login'],'arch_bull_eff_tranche',10)."' /><br />\n";
@@ -218,6 +220,21 @@ if(!isset($generer_fichiers_pdf_archivage)){
 			checkbox_change(item[i].getAttribute('id'));
 		}
 	}
+
+	function display_div_modele_bulletin_pdf() {
+		if(document.getElementById('mode_bulletin_pdf_2016').checked==true) {
+			if(document.getElementById('div_bulletin_fin_de_cycle')) {
+				document.getElementById('div_bulletin_fin_de_cycle').style.display='';
+			}
+		}
+		else {
+			if(document.getElementById('div_bulletin_fin_de_cycle')) {
+				document.getElementById('div_bulletin_fin_de_cycle').style.display='none';
+			}
+		}
+	}
+
+	display_div_modele_bulletin_pdf();
 </script>";
 }
 else {
@@ -280,7 +297,7 @@ else {
 			fwrite($fich_index, "<p><a href='index_eleves.html'>Index alphabétique des élèves</a></p>\n");
 
 			$fich_index_eleves=fopen("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/index_eleves.html","w+");
-			fwrite($fich_index_eleves, $entete."<title>Index alphabétique des élèves".getSettingValue('gepiYear')."</title></head><body><div id='contenu'><h1>Index alphabétique des élèves".getSettingValue('gepiYear')."</h1>\n");
+			fwrite($fich_index_eleves, $entete."<title>Index alphabétique des élèves ".getSettingValue('gepiYear')."</title></head><body><div id='contenu'><h1>Index alphabétique des élèves ".getSettingValue('gepiYear')."</h1>\n");
 			while($lig_t4=mysqli_fetch_object($res_t4)) {
 				fwrite($fich_index_eleves, "<a href='".$lig_t4->col3."'>".$lig_t4->col4." (<em>".$lig_t4->col3."</em>)</a><br />\n");
 			}
@@ -301,7 +318,7 @@ else {
 					$fich_index_classe=fopen("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/classe_".$lig_t_c->id.".html","w+");
 					fwrite($fich_index_classe, $entete."<title>Classe de ".$lig_t_c->classe." ".getSettingValue('gepiYear')."</title></head><body><div id='contenu'><h1>Classe de ".$lig_t_c->classe." ".getSettingValue('gepiYear')."</h1>\n");
 					while($lig_t4=mysqli_fetch_object($res_t4)) {
-						fwrite($fich_index_classe, "<a href='".$lig_t4->col3."'>".$lig_t4->col4." (<em>".$lig_t4->col3."</em>)</a><br />\n");
+						fwrite($fich_index_classe, "<a href='".$lig_t4->col3."' target='_blank'>".$lig_t4->col4." (<em>".$lig_t4->col3."</em>)</a><br />\n");
 					}
 					fwrite($fich_index_classe, "<p><a href='index.html'>Retour</a></p>\n");
 					fwrite($fich_index_classe, "</div></body></html>\n");
@@ -503,7 +520,7 @@ else {
 		$dossier_archivage_pdf=savePref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 		@mkdir("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);
 
-		$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(255) NOT NULL default '', col4 varchar(100) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		// On va stocker la liste des id_classe,login,fichiers
