@@ -143,6 +143,14 @@ if (($_SESSION['statut']=="administrateur")&&(isset($_POST['is_posted']))) {
 			}
 		}
 
+		$valeur_abs2_afficher_onglet_scores="n";
+		if (isset($_POST['abs2_afficher_onglet_scores'])) {
+			$valeur_abs2_afficher_onglet_scores="y";
+		}
+		if (!saveSetting("abs2_afficher_onglet_scores", $valeur_abs2_afficher_onglet_scores)) {
+			$msg = "Erreur lors de l'enregistrement de abs2_afficher_onglet_scores !";
+		}
+
 		if (isset($_POST['abs2_retard_critere_duree'])) {
 			if (!saveSetting("abs2_retard_critere_duree", $_POST['abs2_retard_critere_duree'])) {
 				$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
@@ -532,6 +540,13 @@ E-mail gestion absence établissement :
 </p>
 
 
+<p>
+	<input type="checkbox" name="abs2_afficher_onglet_scores" id="abs2_afficher_onglet_scores" value="y"
+	<?php if (!getSettingANon("abs2_afficher_onglet_scores")) echo " checked='checked'"; ?> />
+	<label for="abs2_afficher_onglet_scores">&nbsp;Afficher l'onglet Scores <em>(un temps utilisé pour la note de Vie Scolaire)</em></label>
+</p>
+
+
 <?php
 }
 else {
@@ -678,6 +693,19 @@ E-mail gestion absence établissement : <?php echo(getSettingValue("gepiAbsenceE
 	<label for="abs2_afficher_alerte_abs"> manquements <em>(dans la période courante) (justifiés ou non)</em> depuis plus de </label>
 	<?php echo $abs2_afficher_alerte_abs_delai;?>
 	<label for="abs2_afficher_alerte_abs"> jours.</label>
+</p>
+
+
+<p>
+	<?php
+	if(!getSettingANon("abs2_afficher_onglet_scores")) {
+		echo "<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+	}
+	else {
+		echo "<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	?>
+	<label for="abs2_afficher_onglet_scores">&nbsp;Afficher l'onglet Scores <em>(un temps utilisé pour la note de Vie Scolaire)</em></label>
 </p>
 
 <?php
