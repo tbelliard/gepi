@@ -119,68 +119,77 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo add_token_field();
 
 	echo "<p><strong>Nommage des fichiers&nbsp;:</strong><br />Inclure dans le nom de fichier pour chaque élève&nbsp;:</p>\n";
-	echo "<input type='checkbox' id='arch_bull_nom_prenom' name='arch_bull_nom_prenom' value='yes'";
+	echo "<input type='checkbox' id='arch_bull_nom_prenom' name='arch_bull_nom_prenom' value='yes' onchange='checkbox_change(this.id)' ";
 	$arch_bull_nom_prenom=getPref($_SESSION['login'],'arch_bull_nom_prenom', 'yes');
 	if($arch_bull_nom_prenom=='yes') {echo " checked";}
-	echo " /><label for='arch_bull_nom_prenom'> Nom prénom de l'élève</label><br />\n";
+	echo " /><label for='arch_bull_nom_prenom' id='texte_arch_bull_nom_prenom'> Nom prénom de l'élève</label><br />\n";
 
-	echo "<input type='checkbox' id='arch_bull_INE' name='arch_bull_INE' value='yes'";
+	echo "<input type='checkbox' id='arch_bull_INE' name='arch_bull_INE' value='yes' onchange='checkbox_change(this.id)' ";
 	$arch_bull_INE=getPref($_SESSION['login'],'arch_bull_INE', 'yes');
 	if($arch_bull_INE=='yes') {echo " checked";}
-	echo " /><label for='arch_bull_INE'> INE (<em>numéro national de l'élève</em>)</label><br />\n";
+	echo " /><label for='arch_bull_INE' id='texte_arch_bull_INE'> INE (<em>numéro national de l'élève</em>)</label><br />\n";
 
-	echo "<input type='checkbox' id='arch_bull_annee_scolaire' name='arch_bull_annee_scolaire' value='yes'";
+	echo "<input type='checkbox' id='arch_bull_annee_scolaire' name='arch_bull_annee_scolaire' value='yes' onchange='checkbox_change(this.id)' ";
 	$arch_bull_annee_scolaire=getPref($_SESSION['login'],'arch_bull_annee_scolaire', 'yes');
 	if($arch_bull_annee_scolaire=='yes') {echo " checked";}
-	echo " /><label for='arch_bull_annee_scolaire'> Année scolaire</label><br />\n";
+	echo " /><label for='arch_bull_annee_scolaire' id='texte_arch_bull_annee_scolaire'> Année scolaire</label><br />\n";
 
-	echo "<input type='checkbox' id='arch_bull_date_edition' name='arch_bull_date_edition' value='yes'";
+	echo "<input type='checkbox' id='arch_bull_date_edition' name='arch_bull_date_edition' value='yes' onchange='checkbox_change(this.id)' ";
 	$arch_bull_date_edition=getPref($_SESSION['login'],'arch_bull_date_edition', 'yes');
 	if($arch_bull_date_edition=='yes') {echo " checked";}
-	echo " /><label for='arch_bull_date_edition'> Date d'édition</label><br />\n";
+	echo " /><label for='arch_bull_date_edition' id='texte_arch_bull_date_edition'> Date d'édition</label><br />\n";
 
-	echo "<input type='checkbox' id='arch_bull_classe' name='arch_bull_classe' value='yes'";
+	echo "<input type='checkbox' id='arch_bull_classe' name='arch_bull_classe' value='yes' onchange='checkbox_change(this.id)' ";
 	$arch_bull_classe=getPref($_SESSION['login'],'arch_bull_classe', 'yes');
 	if($arch_bull_classe=='yes') {echo " checked";}
-	echo " /><label for='arch_bull_classe'> Classe de l'élève</label><br />\n";
+	echo " /><label for='arch_bull_classe' id='texte_arch_bull_classe'> Classe de l'élève</label><br />\n";
 
 	//======================================
 	echo "<p><strong>Autres paramètres&nbsp;:</strong></p>";
 
 	echo "<p style='text-indent:-2em; margin-left:2em;'>Modèle de bulletins&nbsp;:<br />";
-	echo "<input type='radio' id='mode_bulletin_pdf' name='mode_bulletin' value='pdf'";
+	echo "<input type='radio' id='mode_bulletin_pdf' name='mode_bulletin' value='pdf' onchange=\"checkbox_change('mode_bulletin_pdf');checkbox_change('mode_bulletin_pdf_2016');\" ";
 	$mode_bulletin=getPref($_SESSION['login'],'arch_bull_mode_bulletin', 'pdf');
 	if($mode_bulletin=='pdf') {echo " checked";}
-	echo " /><label for='mode_bulletin_pdf'> PDF</label><br />";
-	echo "<input type='radio' id='mode_bulletin_pdf_2016' name='mode_bulletin' value='pdf_2016'";
+	echo " /><label for='mode_bulletin_pdf' id='texte_mode_bulletin_pdf'> PDF</label><br />";
+	echo "<input type='radio' id='mode_bulletin_pdf_2016' name='mode_bulletin' value='pdf_2016' onchange=\"checkbox_change('mode_bulletin_pdf');checkbox_change('mode_bulletin_pdf_2016');\" ";
 	if($mode_bulletin=='pdf_2016') {echo " checked";}
-	echo " /><label for='mode_bulletin_pdf_2016'> PDF Réforme CLG 2016</label>";
+	echo " /><label for='mode_bulletin_pdf_2016' id='texte_mode_bulletin_pdf_2016'> PDF Réforme CLG 2016</label>";
 	//echo "<br />\n";
 	echo "</p>\n";
 
 	echo "<p style='text-indent:-2em; margin-left:2em;'>";
-	echo "<input type='checkbox' id='arch_bull_envoi_mail' name='arch_bull_envoi_mail' value='yes'";
+	echo "<input type='checkbox' id='arch_bull_envoi_mail' name='arch_bull_envoi_mail' value='yes' onchange='checkbox_change(this.id)' ";
 	$arch_bull_envoi_mail=getPref($_SESSION['login'],'arch_bull_envoi_mail', 'no');
 	if($arch_bull_envoi_mail=='yes') {echo " checked";}
-	echo " /><label for='arch_bull_envoi_mail'> Envoyer par mail aux responsables légaux 1 pour lesquels une adresse mail est renseignée, les bulletins générés</label><br />
+	echo " /><label for='arch_bull_envoi_mail' id='texte_arch_bull_envoi_mail'> Envoyer par mail aux responsables légaux 1 pour lesquels une adresse mail est renseignée, les bulletins générés</label><br />
+	<!--
 	<em>(on limite l'envoi au responsable légal 1, parce que l'adresse apparaissant sur le bulletin PDF généré est celle du responsable légal 1)</em><br />
+	-->
 	<em>(notez également que l'envoi de mail peut ralentir l'opération d'archivage; il se peut aussi que votre fournisseur d'accès fasse des histoires avec l'envoi de nombreux mails (cela risque d'être injustement pris pour du spam))</em>";
 	//echo "<br />\n";
 	echo "</p>\n";
 
+	/*
 	echo "<p style='text-indent:-2em; margin-left:2em;'>";
 	echo "<input type='checkbox' id='arch_bull_envoi_mail_tous_resp' name='arch_bull_envoi_mail_tous_resp' value='yes'";
 	$arch_bull_envoi_mail_tous_resp=getPref($_SESSION['login'],'arch_bull_envoi_mail_tous_resp', 'no');
 	if($arch_bull_envoi_mail_tous_resp=='yes') {echo " checked";}
 	echo " /><label for='arch_bull_envoi_mail_tous_resp'> Envoyer par mail à tous les responsables légaux pour lesquels une adresse mail est renseignée, les bulletins générés</label><br /><em>(et ceci, bien que l'adresse responsable appraissant sur les bulletins sera celle du responsable légal 1)</em></p>";
+	*/
 
 	if(getSettingAOui('active_fichiers_signature')) {
 		echo "<p style='text-indent:-2em; margin-left:2em;'>";
-		echo "<input type='checkbox' id='arch_bull_signature' name='arch_bull_signature' value='yes'";
+		echo "<input type='checkbox' id='arch_bull_signature' name='arch_bull_signature' value='yes' onchange='checkbox_change(this.id)' ";
 		$arch_bull_signature=getPref($_SESSION['login'],'arch_bull_signature', 'no');
 		if($arch_bull_signature=='yes') {echo " checked";}
-		echo " /><label for='arch_bull_signature'> Inclure le fichier signature si un tel fichier est défini pour la classe de l'élève</label></p>";
+		echo " /><label for='arch_bull_signature' id='texte_arch_bull_signature'> Inclure le fichier signature si un tel fichier est défini pour la classe de l'élève</label></p>";
 	}
+
+	echo "<p style='text-indent:-2em;margin-left:2em;'><input type='checkbox' name='arch_bull_avec_bilan_cycle' id='arch_bull_avec_bilan_cycle' value='y' onchange='checkbox_change(this.id)' ";
+	$arch_bull_avec_bilan_cycle=getPref($_SESSION['login'],'arch_bull_avec_bilan_cycle', 'n');
+	if($arch_bull_avec_bilan_cycle=='y') {echo " checked";}
+	echo "/> <label for='arch_bull_avec_bilan_cycle' id='texte_arch_bull_avec_bilan_cycle' style='cursor: pointer;'>Intercaler le bilan de fin de cycle pour les 6èmes et 3èmes <em>(en PDF 2016 seulement pour le moment)</em></label></p>";
 
 	//======================================
 	echo "<p>Parcourir les élèves par tranches de&nbsp;: <input type='text' name='arch_bull_eff_tranche' size='2' value='".getPref($_SESSION['login'],'arch_bull_eff_tranche',10)."' /><br />\n";
@@ -195,6 +204,21 @@ if(!isset($generer_fichiers_pdf_archivage)){
 		<li>L'un au moins des champs permettant d'identifier l'élève doit être sélectionné.<br />Si, ni le Nom_prénom, ni l'INE ne sont sélectionnés, les deux champs seront automatiquement sélectionnés.</li>
 		<li>Si des fichiers de signature ont été définis pour les classes <em style='font-size:small'>(voir Gestion des modules/Bulletins/Définir, modifier ou supprimer un ou des fichiers de signature pour les bulletins)</em>, ils peuvent être inclus dans les PDF générés.</li>
 	</ul>\n";
+
+	echo "<script type='text/javascript'>
+	".js_checkbox_change_style()."
+
+	item=document.getElementsByTagName('input');
+	for(i=0;i<item.length;i++) {
+		if(item[i].getAttribute('type')=='radio') {
+			checkbox_change(item[i].getAttribute('id'));
+		}
+
+		if(item[i].getAttribute('type')=='checkbox') {
+			checkbox_change(item[i].getAttribute('id'));
+		}
+	}
+</script>";
 }
 else {
 	function zip_bull_pdf($dossier_a_traiter) {
@@ -467,11 +491,14 @@ else {
 		$arch_bull_envoi_mail=isset($_POST['arch_bull_envoi_mail']) ? $_POST['arch_bull_envoi_mail'] : 'no';
 		savePref($_SESSION['login'],'arch_bull_envoi_mail',$arch_bull_envoi_mail);
 
-		$arch_bull_envoi_mail_tous_resp=isset($_POST['arch_bull_envoi_mail_tous_resp']) ? $_POST['arch_bull_envoi_mail_tous_resp'] : 'no';
-		savePref($_SESSION['login'],'arch_bull_envoi_mail_tous_resp',$arch_bull_envoi_mail_tous_resp);
+		//$arch_bull_envoi_mail_tous_resp=isset($_POST['arch_bull_envoi_mail_tous_resp']) ? $_POST['arch_bull_envoi_mail_tous_resp'] : 'no';
+		//savePref($_SESSION['login'],'arch_bull_envoi_mail_tous_resp',$arch_bull_envoi_mail_tous_resp);
 
 		$arch_bull_signature=isset($_POST['arch_bull_signature']) ? $_POST['arch_bull_signature'] : 'no';
 		savePref($_SESSION['login'],'arch_bull_signature',$arch_bull_signature);
+
+		$arch_bull_avec_bilan_cycle=isset($_POST['arch_bull_avec_bilan_cycle']) ? $_POST['arch_bull_avec_bilan_cycle'] : 'no';
+		savePref($_SESSION['login'],'arch_bull_avec_bilan_cycle',$arch_bull_avec_bilan_cycle);
 
 		$dossier_archivage_pdf=savePref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 		@mkdir("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);
@@ -515,7 +542,7 @@ else {
 
 	echo "<input type='hidden' name='choix_periode_num' value='fait' />\n";
 
-	echo "<input type='hidden' name='un_seul_bull_par_famille' value='oui' />\n";
+	//echo "<input type='hidden' name='un_seul_bull_par_famille' value='oui' />\n";
 
 	echo "<input type='hidden' name='b_adr_pg' value='xx' />\n";
 
