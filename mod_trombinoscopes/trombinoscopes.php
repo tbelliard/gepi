@@ -229,6 +229,8 @@ if(isset($_POST['upload_photo'])) {
 		}
 	}
 	elseif((isset($_POST['suppr_photo']))&&(isset($_POST['login_photo']))&&($_POST['login_photo']!='')) {
+		if(!isset($msg)) {$msg="";}
+
 		$sql="SELECT elenoet FROM eleves WHERE login='".mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_photo'])."';";
 		//echo "$sql<br />";
 		$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -250,10 +252,12 @@ if(isset($_POST['upload_photo'])) {
 			$dest_file=$rep_photos.encode_nom_photo($quiestce).".jpg";
 			//echo "\$dest_file=$dest_file<br />";
 			//if (!deplacer_fichier_upload($sav_photo['tmp_name'], $rep_photos.$quiestce.".jpg")) {
-			if (!unlink($dest_file)) {
-				$msg.="Problème lors de la suppression de la photo $dest_file<br />";
-			} else {
-				$msg.="Photo supprimée.<br />";
+			if(file_exists($dest_file)) {
+				if (!unlink($dest_file)) {
+					$msg.="Problème lors de la suppression de la photo $dest_file<br />";
+				} else {
+					$msg.="Photo supprimée.<br />";
+				}
 			}
 		}
 	}
