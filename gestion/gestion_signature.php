@@ -795,7 +795,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 
 	for($loop=0;$loop<count($tab_user);$loop++) {
 		echo "
-				<th>".$tab_user[$loop]['designation']."</th>";
+				<th title=\"".$tab_user[$loop]['login']."\">".$tab_user[$loop]['designation']."</th>";
 	}
 
 	echo "
