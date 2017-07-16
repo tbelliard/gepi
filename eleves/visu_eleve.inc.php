@@ -1748,7 +1748,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 						// Engagements
 						if((getSettingAOui('active_mod_engagements'))&&(isset($tab_ele['resp'][$i]['login']))&&($tab_ele['resp'][$i]['login']!="")) {
 							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th>Engagements</th><td>";
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Engagements</th><td>";
 							if(acces("/mod_engagements/saisie_engagements_user.php", $_SESSION['statut'])) {
 								echo "
 						<div style='float: right; width:20px; height:20px;' title=\"Saisir/Modifier les engagements\"><a href='../mod_engagements/saisie_engagements_user.php?login_user=".$tab_ele['resp'][$i]['login']."&amp;retour=visu_eleve&amp;retour_eleve=".$ele_login."'><img src='../images/icons/plus_moins.png' class='icone16' alt='Ajouter/Enlever'/></a></div>";
