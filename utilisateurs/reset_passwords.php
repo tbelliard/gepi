@@ -72,6 +72,10 @@ $user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET[
 $user_status = isset($_POST["user_status"]) ? $_POST["user_status"] : (isset($_GET["user_status"]) ? $_GET["user_status"] : false);
 $user_classe = isset($_POST["user_classe"]) ? $_POST["user_classe"] : (isset($_GET["user_classe"]) ? $_GET["user_classe"] : false);
 
+$acces_modify_resp=acces("/responsables/modify_resp.php", $_SESSION["statut"]);
+$acces_modify_ele=acces("/eleves/modify_eleve.php", $_SESSION["statut"]);
+$acces_visu_ele=acces("/eleves/visu_eleve.php", $_SESSION["statut"]);
+$acces_modify_user=acces("/utilisateurs/modify_user.php", $_SESSION["statut"]);
 
 // REMARQUE:
 // C'est un peu le bazar: on a un '$user_status' et un '$user_statut' extrait plus loin dans la boucle sur la liste des utilisateurs
@@ -551,19 +555,31 @@ while ($p < $nb_users) {
 		$liste_elv_resp_non_html="";
 
 		$i = 0;
-		while ($i < $nb_elv_resp){
+		while ($lig_resp_eleves=mysqli_fetch_object($call_resp_eleves)){
 
-			$elv_resp['login'][$i] = old_mysql_result($call_resp_eleves, $i, "login");
-			$elv_resp['nom'][$i] = old_mysql_result($call_resp_eleves, $i, "nom");
-			$elv_resp['prenom'][$i] = old_mysql_result($call_resp_eleves, $i, "prenom");
-			$elv_resp['classe'][$i] = old_mysql_result($call_resp_eleves, $i, "classe");
-			$elv_resp['nom_complet_classe'][$i] = old_mysql_result($call_resp_eleves, $i, "nom_complet");
+			$elv_resp['login'][$i] = $lig_resp_eleves->login;
+			$elv_resp['nom'][$i] = $lig_resp_eleves->nom;
+			$elv_resp['prenom'][$i] = $lig_resp_eleves->prenom;
+			$elv_resp['classe'][$i] = $lig_resp_eleves->classe;
+			$elv_resp['nom_complet_classe'][$i] = $lig_resp_eleves->nom_complet;
 
 			if($i>0){
 				$liste_elv_resp.=", ";
 				$liste_elv_resp_non_html.=", ";
 			}
-			$liste_elv_resp.=casse_mot($elv_resp['nom'][$i],'maj')." ".casse_mot($elv_resp['prenom'][$i],'majf2')." (<i>".$elv_resp['classe'][$i]."</i>)";
+			$info_ele_courant=casse_mot($elv_resp['nom'][$i],'maj')." ".casse_mot($elv_resp['prenom'][$i],'majf2')." (<i>".$elv_resp['classe'][$i]."</i>)";
+			//$liste_elv_resp.=$info_ele_courant;
+
+			if($acces_modify_ele) {
+				$liste_elv_resp.="<a href='../eleves/modify_eleve.php?eleve_login=".$elv_resp['login'][$i]."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$info_ele_courant."</a>";
+			}
+			elseif($acces_visu_ele) {
+				$liste_elv_resp.="<a href='../eleves/visu_eleve.php?ele_login=".$elv_resp['login'][$i]."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$info_ele_courant."</a>";
+			}
+			else {
+				$liste_elv_resp.=$info_ele_courant;
+			}
+
 			$liste_elv_resp_non_html.=casse_mot($elv_resp['nom'][$i],'maj')." ".casse_mot($elv_resp['prenom'][$i],'majf2')." (".$elv_resp['classe'][$i].")";
 
 			$i++;
@@ -589,19 +605,30 @@ while ($p < $nb_users) {
 			if($debug_create_resp=="y") {echo "\$nb_elv_resp=$nb_elv_resp<br />\n";}
 
 			$i = 0;
-			while ($i < $nb_elv_resp){
+			while ($lig_resp_eleves=mysqli_fetch_object($call_resp_eleves)){
 
-				$elv_resp0['login'][$i] = old_mysql_result($call_resp_eleves, $i, "login");
-				$elv_resp0['nom'][$i] = old_mysql_result($call_resp_eleves, $i, "nom");
-				$elv_resp0['prenom'][$i] = old_mysql_result($call_resp_eleves, $i, "prenom");
-				$elv_resp0['classe'][$i] = old_mysql_result($call_resp_eleves, $i, "classe");
-				$elv_resp0['nom_complet_classe'][$i] = old_mysql_result($call_resp_eleves, $i, "nom_complet");
+				$elv_resp0['login'][$i] = $lig_resp_eleves->login;
+				$elv_resp0['nom'][$i] = $lig_resp_eleves->nom;
+				$elv_resp0['prenom'][$i] = $lig_resp_eleves->prenom;
+				$elv_resp0['classe'][$i] = $lig_resp_eleves->classe;
+				$elv_resp0['nom_complet_classe'][$i] = $lig_resp_eleves->nom_complet;
 
 				if($i>0){
 					$liste_elv_resp_0.=", ";
 					$liste_elv_resp_0_non_html.=", ";
 				}
-				$liste_elv_resp_0.=casse_mot($elv_resp0['nom'][$i],'maj')." ".casse_mot($elv_resp0['prenom'][$i],'majf2')." (<i>".$elv_resp0['classe'][$i]."</i>)";
+				$info_ele_courant=casse_mot($elv_resp0['nom'][$i],'maj')." ".casse_mot($elv_resp0['prenom'][$i],'majf2')." (<i>".$elv_resp0['classe'][$i]."</i>)";
+
+				if($acces_modify_ele) {
+					$liste_elv_resp_0.="<a href='../eleves/modify_eleve.php?eleve_login=".$elv_resp['login'][$i]."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$info_ele_courant."</a>";
+				}
+				elseif($acces_visu_ele) {
+					$liste_elv_resp_0.="<a href='../eleves/visu_eleve.php?ele_login=".$elv_resp['login'][$i]."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$info_ele_courant."</a>";
+				}
+				else {
+					$liste_elv_resp_0.=$info_ele_courant;
+				}
+
 				$liste_elv_resp_0_non_html.=casse_mot($elv_resp0['nom'][$i],'maj')." ".casse_mot($elv_resp0['prenom'][$i],'majf2')." (".$elv_resp0['classe'][$i].")";
 
 				$i++;
@@ -935,8 +962,25 @@ width:".$largeur1."%;\n";
 					$texte_email="A l'attention de $user_prenom $user_nom\n";
 					$texte_email.="Identifiant : $user_login\n";
 
+					// 20170717
 					echo "<table border='0' summary=\"$user_login\">\n";
-					echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
+					echo "<tr><td>A l'attention de </td><td><span class = \"bold\">";
+					if(($user_statut=="responsable")&&($acces_modify_resp)) {
+						echo "<a href='../responsables/modify_resp.php?login_resp=".$user_login."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de ce responsable.\">".$user_prenom." ".$user_nom."</a>";
+					}
+					elseif(($user_statut=="eleve")&&($acces_modify_ele)) {
+						echo "<a href='../eleves/modify_eleve.php?eleve_login=".$user_login."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$user_prenom." ".$user_nom."</a>";
+					}
+					elseif(($user_statut=="eleve")&&($acces_visu_ele)) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=".$user_login."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$user_prenom." ".$user_nom."</a>";
+					}
+					elseif($acces_modify_user) {
+						echo "<a href='../utilisateurs/modify_user.php?user_login=".$user_login."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet utilisateur.\">".$user_prenom." ".$user_nom."</a>";
+					}
+					else {
+						echo $user_prenom." ".$user_nom;
+					}
+					echo "</span></td></tr>\n";
 					//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 					echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 					if ($user_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != 'yes') {
@@ -1333,8 +1377,26 @@ width:".$largeur1."%;\n";
 	
 					}
 
+					// 20170717
 					echo "<table border='0' summary=\"$user_login\">\n";
-					echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
+					echo "<tr><td>A l'attention de </td><td><span class = \"bold\">";
+					if(($user_statut=="responsable")&&($acces_modify_resp)) {
+						echo "<a href='../responsables/modify_resp.php?login_resp=".$user_login."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de ce responsable.\">".$user_prenom." ".$user_nom."</a>";
+					}
+					elseif(($user_statut=="eleve")&&($acces_modify_ele)) {
+						echo "<a href='../eleves/modify_eleve.php?eleve_login=".$user_login."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$user_prenom." ".$user_nom."</a>";
+					}
+					elseif(($user_statut=="eleve")&&($acces_visu_ele)) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=".$user_login."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$user_prenom." ".$user_nom."</a>";
+					}
+					elseif($acces_modify_user) {
+						echo "<a href='../utilisateurs/modify_user.php?user_login=".$user_login."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet utilisateur.\">".$user_prenom." ".$user_nom."</a>";
+					}
+					else {
+						echo $user_prenom." ".$user_nom;
+					}
+					echo "</span></td></tr>\n";
+
 					//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 					echo "<tr><td>Identifiant : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
 					if ($user_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != 'yes') {
