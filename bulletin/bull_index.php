@@ -1116,6 +1116,14 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 		echo " <a href='#' onClick='cocher_tous_eleves();return false;'>Cocher tous les élèves</a> / <a href='#' onClick='decocher_tous_eleves();return false;'>Décocher tous les élèves</a></p>\n";
 	}
 
+	$maxper=0;
+	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+		$tmp_maxper=get_max_per($tab_id_classe[$loop_classe]);
+		if($tmp_maxper>$maxper) {
+			$maxper=$tmp_maxper;
+		}
+	}
+
 	$max_eff_classe=0;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		// Est-ce bien un entier?
@@ -1282,6 +1290,10 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 
 			echo "</th>\n";
 		}
+		echo "<th>";
+		// Là, on ne coche/décoche pas que la classe, mais toutes les classes
+		//echo "<a href=\"javascript:cocher_tous_eleves();changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:decocher_tous_eleves();changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+		echo "</th>\n";
 		echo "</tr>\n";
 
 		/*
@@ -1360,6 +1372,9 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 					echo "<td>-</td>\n";
 				}
 			}
+			echo "<td>";
+			echo "<a href=\"javascript:CocheLigneSelectEleve(".$i.",".$cpt.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigneSelectEleve(".$i.",".$cpt.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+			echo "</td>\n";
 			echo "</tr>\n";
 			$cpt++;
 		}
@@ -1383,6 +1398,22 @@ function CocheColonneSelectEleves(i,j) {
 
 function DecocheColonneSelectEleves(i,j) {
 	for (var k=0;k<$max_eff_classe;k++) {
+		if(document.getElementById('tab_selection_ele_'+i+'_'+j+'_'+k)){
+			document.getElementById('tab_selection_ele_'+i+'_'+j+'_'+k).checked = false;
+		}
+	}
+}
+
+function CocheLigneSelectEleve(i,k) {
+	for (var j=0;j<$maxper;j++) {
+		if(document.getElementById('tab_selection_ele_'+i+'_'+j+'_'+k)){
+			document.getElementById('tab_selection_ele_'+i+'_'+j+'_'+k).checked = true;
+		}
+	}
+}
+
+function DecocheLigneSelectEleve(i,k) {
+	for (var j=0;j<$maxper;j++) {
 		if(document.getElementById('tab_selection_ele_'+i+'_'+j+'_'+k)){
 			document.getElementById('tab_selection_ele_'+i+'_'+j+'_'+k).checked = false;
 		}
