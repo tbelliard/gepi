@@ -225,6 +225,59 @@
 				// Message alternatif depuis modify_eleve.php
 			}
 
+		} else if ($quelles_classes == 'derniers_inscrits') {
+			if ($order_type == "classe,nom,prenom") {
+				$sql="SELECT DISTINCT e.*,jer.* FROM j_eleves_regime jer, eleves e, j_eleves_classes jec, classes c 
+				WHERE jer.login=e.login AND e.login=jec.login AND jec.id_classe=c.id ORDER BY date_entree DESC, $order_type ASC LIMIT ".$nb_derniers_inscrits.";";
+			}
+			else {
+				$sql="SELECT e.*,jer.* FROM j_eleves_regime jer, eleves e 
+				WHERE jer.login=e.login ORDER BY date_entree DESC, $order_type ASC LIMIT ".$nb_derniers_inscrits.";";
+			}
+			//echo "$sql<br />";
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
+
+			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
+				echo "<p align='center'>Liste des ".$nb_derniers_inscrits." derniers élèves inscrits dans l'établissement.</p>\n";
+			}
+			else {
+				// Message alternatif depuis modify_eleve.php
+			}
+
+		} else if ($quelles_classes == 'date_entree_sup_value') {
+			// $date_entree_min
+			//select * from eleves where date_entree>='".." 00:00:00';
+			if((!isset($date_entree_min))||(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_entree_min))) {
+				echo "<p style='color:red; text-align:center'>La date '$date_entree_min' n'est pas valide.<br />";
+				$date_entree_min=strftime("%d/%m/%Y", time()-30*24*3600);
+				echo "Initialisation de la date à $date_entree_min.</p>";
+			}
+			$tmp_date=explode("/", $date_entree_min);
+			if(!checkdate($tmp_date[1], $tmp_date[0], $tmp_date[2])) {
+				echo "<p style='color:red; text-align:center'>La date '$date_entree_min' n'est pas valide.<br />";
+				$date_entree_min=strftime("%d/%m/%Y", time()-30*24*3600);
+				echo "Initialisation de la date à $date_entree_min.</p>";
+			}
+			$tmp_date=explode("/", $date_entree_min);
+
+			if ($order_type == "classe,nom,prenom") {
+				$sql="SELECT DISTINCT e.*,jer.* FROM j_eleves_regime jer, eleves e, j_eleves_classes jec, classes c 
+				WHERE jer.login=e.login AND e.login=jec.login AND jec.id_classe=c.id AND e.date_entree>='".$tmp_date[2]."-".$tmp_date[1]."-".$tmp_date[0]." 00:00:00' ORDER BY $order_type;";
+			}
+			else {
+				$sql="SELECT e.*,jer.* FROM j_eleves_regime jer, eleves e 
+				WHERE jer.login=e.login AND e.date_entree>='".$tmp_date[2]."-".$tmp_date[1]."-".$tmp_date[0]." 00:00:00' ORDER BY $order_type;";
+			}
+			//echo "$sql<br />";
+			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
+
+			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
+				echo "<p align='center'>Liste des élèves inscrits depuis le ".$date_entree_min." dans l'établissement.</p>\n";
+			}
+			else {
+				// Message alternatif depuis modify_eleve.php
+			}
+
 		} else if ($quelles_classes == 'incomplet') {
 			/*
 			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''

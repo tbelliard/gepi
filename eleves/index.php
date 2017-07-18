@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -530,6 +530,12 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 	if(($msg=="")&&($cpt_photos_mises_en_place>0)) {$msg = "Téléchargement réussi.";}
 }
 // fin de l'envoi des photos du trombinoscope
+
+// Configuration du calendrier
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des élèves";
@@ -1160,6 +1166,34 @@ Mettre à jour votre table etablissements peut être une solution.\">Vide ou non
 			}
 		}
 
+		// 20170718
+		echo "<tr>\n";
+		echo "<td style='vertical-align:top;'>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_date_entree_sup_value' value='date_entree_sup_value' onclick='verif2()' onchange='verif2()' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<label for='quelles_classes_date_entree_sup_value' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Les élèves dont la date d'entrée dans l'établissement est postérieure au </span></label>";
+		echo "<input type='text' name='date_entree_min' id='date_entree_min' size='10' value=\"".(isset($date_entree_min) ? $date_entree_min : strftime("%d/%m/%Y", time()-30*24*3600))."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" onchange=\"document.getElementById('quelles_classes_date_entree_sup_value').checked=true;\" />
+		".img_calendrier_js("date_entree_min", "img_bouton_date_entree_min");
+
+		echo ".<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td style='vertical-align:top;'>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_derniers_inscrits' value='derniers_inscrits' onclick='verif2()' onchange='verif2()' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<label for='quelles_classes_derniers_inscrits' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Les </span></label>";
+		echo "<input type='text' name='nb_derniers_inscrits' id='nb_derniers_inscrits' size='2' value=\"".(isset($nb_derniers_inscrits) ? $nb_derniers_inscrits : "5")."\" onKeyDown=\"clavier_2(this.id,event,1,100);\" AutoComplete=\"off\" onchange=\"document.getElementById('quelles_classes_derniers_inscrits').checked=true;\" />";
+		echo "<label for='quelles_classes_derniers_inscrits' style='cursor: pointer;'><span class='norme'> derniers élèves inscrits dans l'établissement.<br /><em>(extraction d'après la date d'entrée saisie)</em></span></label>";
+		echo "<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
 		$sql="SELECT 1=1 FROM eleves WHERE elenoet='' OR no_gep='';";
 		$test_incomplet=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_incomplet)==0){
@@ -1700,6 +1734,9 @@ if(isset($quelles_classes)) {
 	// 20130607
 	if(isset($motif_rech_mef)) {$ajout_param_lien.="&amp;motif_rech_mef=$motif_rech_mef";}
 	if(isset($motif_rech_etab)) {$ajout_param_lien.="&amp;motif_rech_etab=$motif_rech_etab";}
+
+	if(isset($date_entree_min)) {$ajout_param_lien.="&amp;date_entree_min=$date_entree_min";}
+	if(isset($nb_derniers_inscrits)) {$ajout_param_lien.="&amp;nb_derniers_inscrits=$nb_derniers_inscrits";}
 
 	echo "<th><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
 	echo $ajout_param_lien;
