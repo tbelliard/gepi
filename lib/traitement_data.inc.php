@@ -165,6 +165,11 @@ $config->set('HTML.SafeObject', true); //
 $config->set('HTML.SafeIframe', true); //Pour limiter les iframes uniquement à ceux acceptés
 $config->set('URI.SafeIframeRegexp', '%^//www.youtube.com/embed/|^//www.youtube.com/watch|^https://www.youtube.com/embed/|^https://www.youtube.com/watch|^http://www.dailymotion.com/embed/|^//www.dailymotion.com/embed/|^https://player.vimeo.com/video/%'); //Regex pour youtube, dailymotion et vimeo
 
+// Autorise l'attribut 'position' (nécessaire au le plugin embed configuré pour iframely)
+// http://htmlpurifier.org/phorum/read.php?3,5227,5231
+$cssDefinition = $config->getCSSDefinition();
+$cssDefinition->info["position"] = new HTMLPurifier_AttrDef_Enum(array("absolute", "fixed", "relative", "static", "inherit"), false);
+
 // Autorise la balise 'oembed' (nécessaire au plugin oembed)
 //$def = $config->getHTMLDefinition(true); // on récupère les règles 
 //$def->addElement('oembed','Inline', 'Common'); // on y ajoute la balise <oembed>
