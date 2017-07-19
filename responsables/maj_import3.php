@@ -272,7 +272,7 @@ if(isset($step)) {
 		) {
 //		($step==17)
 
-		echo "<div style='float: right; border: 1px solid black; width: 4em;' class='fieldset_opacite50'>
+		echo "<div style='float: right; border: 1px solid black; width: 4em; text-align:center;' class='fieldset_opacite50'>
 <form name='formstop' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='checkbox' name='stop' id='stop' value='y' onchange='stop_change()' ";
 //if(isset($stop)){
@@ -5191,23 +5191,120 @@ else{
 				$temoin_insert=0;
 				$j = 1;
 				while ($j < $nb_periode) {
-					$call_group = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
+					$sql="SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name";
+					//echo "$sql<br />";
+					$call_group = mysqli_query($GLOBALS["mysqli"], $sql);
 					$nombre_ligne = mysqli_num_rows($call_group);
 					$i=0;
 					while ($lig_call_group=$call_group->fetch_object()) {
 						$id_groupe = $lig_call_group->id;
 						$nom_groupe = $lig_call_group->name;
 						$id_group[$j] = $id_groupe."_".$j;
-						$test_query = mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_eleves_groupes WHERE (" .
+						$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 								"id_groupe = '" . $id_groupe . "' and " .
 								"login = '" . $login_eleve . "' and " .
-								"periode = '" . $j . "')");
+								"periode = '" . $j . "')";
+						//echo "$sql<br />";
+						$test_query = mysqli_query($GLOBALS["mysqli"], $sql);
 						$test = mysqli_num_rows($test_query);
 						if (isset($_POST[$id_group[$j]])) {
 							if ($test == 0) {
 								$sql="INSERT INTO j_eleves_groupes SET id_groupe = '" . $id_groupe . "', login = '" . $login_eleve . "', periode = '" . $j ."'";
+								//echo "$sql<br />";
 								$req = mysqli_query($GLOBALS["mysqli"], $sql);
 								$temoin_insert++;
+
+								// 20170611: A FAIRE tester matière/eleve dans sconet_ele_options et inscrire dans j_groupes_eleves_modalites
+								//                   Sinon, tester si une ou plusieurs modalités pour ce groupe.
+								//                   Si une seule, mettre cette modalité pour le nouvel élève.
+/*
+mysql> show fields from j_groupes_eleves_modalites;
++---------------------+-------------+------+-----+---------+-------+
+| Field               | Type        | Null | Key | Default | Extra |
++---------------------+-------------+------+-----+---------+-------+
+| id_groupe           | int(11)     | NO   | PRI | NULL    |       |
+| login               | varchar(50) | NO   | PRI | NULL    |       |
+| code_modalite_elect | varchar(6)  | NO   | PRI | NULL    |       |
++---------------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> show fields from sconet_ele_options;
++---------------------+------------------+------+-----+---------+----------------+
+| Field               | Type             | Null | Key | Default | Extra          |
++---------------------+------------------+------+-----+---------+----------------+
+| id                  | int(11) unsigned | NO   | PRI | NULL    | auto_increment |
+| ele_id              | varchar(10)      | NO   |     |         |                |
+| code_matiere        | varchar(255)     | NO   |     |         |                |
+| code_modalite_elect | char(1)          | NO   |     |         |                |
+| num_option          | int(2)           | NO   |     | 0       |                |
++---------------------+------------------+------+-----+---------+----------------+
+5 rows in set (0.01 sec)
+
+mysql> 
+*/
+								if($req) {
+									$tmp_grp=get_group($id_groupe, array('modalites_elect'));
+									$tmp_ele_id=get_valeur_champ("eleves","login='".$login_eleve."'","ele_id");
+
+									//echo "<span style='color:red'>DEBUG : Recherche des modalités pour le groupe n°<a href='../groupes/edit_eleves.php?id_groupe=".$id_groupe."'>".$id_groupe."</a> (".$tmp_grp['matiere']['matiere'].")</span><br />";
+									$tmp_modalite_trouvee=false;
+									$sql="SELECT * FROM sconet_ele_options WHERE ele_id='".$tmp_ele_id."' AND code_matiere='".$tmp_grp['matiere']['code_matiere']."';";
+									//echo "$sql<br />";
+									$res_mod=mysqli_query($mysqli, $sql);
+									while($lig_mod=mysqli_fetch_object($res_mod)) {
+										if(array_key_exists($lig_mod->code_modalite_elect, $tmp_grp["modalites"])) {
+											// Peut-on avoir plusieurs enseignements avec plusieurs modalités déclarées?
+											// C'est possible... mais rare?
+											// Précaution: Mais à moins d'un élève quittant l'établissement et y revenant dans la même année, ça ne devrait pas arriver!
+											$sql="SELECT * FROM j_groupes_eleves_modalites WHERE id_groupe='".$id_groupe."' AND login='".$login_eleve."';";
+											//echo "$sql<br />";
+											$test_mod=mysqli_query($mysqli, $sql);
+											if(mysqli_num_rows($test_mod)>0) {
+												$sql="UPDATE j_groupes_eleves_modalites SET code_modalite_elect='".$lig_mod->code_modalite_elect."' WHERE id_groupe='".$id_groupe."' AND login='".$login_eleve."';";
+												//echo "$sql<br />";
+												$update=mysqli_query($mysqli, $sql);
+											}
+											else {
+												$sql="INSERT INTO j_groupes_eleves_modalites SET code_modalite_elect='".$lig_mod->code_modalite_elect."', id_groupe='".$id_groupe."', login='".$login_eleve."';";
+												//echo "$sql<br />";
+												$insert=mysqli_query($mysqli, $sql);
+											}
+											$tmp_modalite_trouvee=true;
+											break;
+										}
+										else {
+											//echo "<span style='color:red'>DEBUG : La modalité ".$lig_mod->code_modalite_elect." associée à ".$login_eleve." n'est pas valide pour le groupe n°<a href='../groupes/edit_eleves.php?id_groupe=".$id_groupe."'>".$id_groupe."</a> (".$tmp_grp['matiere']['matiere'].")</span><br />";
+										}
+									}
+
+									if(!$tmp_modalite_trouvee) {
+										//echo "<span style='color:red'>DEBUG : Modalité non trouvée dans sconet_ele_options ou modalité non valable pour ce groupe.</span><br />";
+										if(count($tmp_grp["modalites"])==1) {
+											// Si une seule modalité est associée au groupe, on impose cette modalité
+											foreach($tmp_grp["modalites"] as $tmp_modalite => $tmp_tab) {
+												$sql="SELECT * FROM j_groupes_eleves_modalites WHERE id_groupe='".$id_groupe."' AND login='".$login_eleve."';";
+												//echo "$sql<br />";
+												$test_mod=mysqli_query($mysqli, $sql);
+												if(mysqli_num_rows($test_mod)>0) {
+													$sql="UPDATE j_groupes_eleves_modalites SET code_modalite_elect='".$tmp_modalite."' WHERE id_groupe='".$id_groupe."' AND login='".$login_eleve."';";
+													//echo "$sql<br />";
+													$update=mysqli_query($mysqli, $sql);
+												}
+												else {
+													$sql="INSERT INTO j_groupes_eleves_modalites SET code_modalite_elect='".$tmp_modalite."', id_groupe='".$id_groupe."', login='".$login_eleve."';";
+													//echo "$sql<br />";
+													$insert=mysqli_query($mysqli, $sql);
+												}
+												break;
+											}
+										}
+										else {
+											//echo "<span style='color:red'>Plusieurs modalités sont possibles pour ".$login_eleve." dans le groupe n°<a href='../groupes/edit_eleves.php?id_groupe=".$id_groupe."'>".$id_groupe."</a> (".$tmp_grp['matiere']['matiere']."); vous devrez contrôler</span><br />";
+											// A plutôt régler plus haut en proposant de saisir la modalité
+										}
+									}
+								}
+
 							}
 						} else {
 							$test1 = mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM matieres_notes WHERE (id_groupe = '".$id_groupe."' and login = '".$login_eleve."' and periode = '$j')");
@@ -5226,6 +5323,17 @@ else{
 				}
 
 				if($temoin_insert>0) {
+					$tmp_nom_prenom_eleve=get_nom_prenom_eleve($login_eleve);
+
+					$param_id_classe="";
+					$tmp_nom_classe="???";
+					if(isset($id_classe)) {
+						$tmp_nom_classe=get_nom_classe($id_classe);
+						$param_id_classe="&id_classe=".$id_classe;
+					}
+
+					echo "<p style='color:green;margin-bottom:2em;'><a href='../classes/eleve_options.php?login_eleve=".$login_eleve.$param_id_classe."' target='_blank' title=\"Voir, dans un nouvel onglet, les inscriptions de l'èlève\">".$tmp_nom_prenom_eleve."</a> a été inscrit(e) dans <span title=\"Si l'élève est inscrit dans 10 enseignements, sur 3 périodes, cela fera 3*10 soit 30 enregistrements.\">".$temoin_insert." enseignement(s)/période(s)</span>.</p>";
+
 					// 20161223: Envoyer un mail aux profs qui vont avoir l'élève
 					$sql = "SELECT DISTINCT u.login, u.email 
 						FROM utilisateurs u, 
@@ -5237,11 +5345,6 @@ else{
 						ORDER BY u.nom,u.prenom;";
 					$res_prof = mysqli_query($mysqli, $sql);
 					if($res_prof->num_rows > 0) {
-						$tmp_nom_classe="???";
-						if(isset($id_classe)) {
-							$tmp_nom_classe=get_nom_classe($id_classe);
-						}
-						$tmp_nom_prenom_eleve=get_nom_prenom_eleve($login_eleve);
 						$sujet_message="Nouvel élève en ".$tmp_nom_classe." : ".$tmp_nom_prenom_eleve;
 						$texte_message="";
 						$tmp_date=getdate();
@@ -5282,6 +5385,8 @@ else{
 							}
 						}
 					}
+
+					echo "<hr style='width:200px'/>";
 				}
 
 				if(isset($eleve)){

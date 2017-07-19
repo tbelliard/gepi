@@ -41,15 +41,21 @@ if (!checkAccess()) {
 	die();
 }
 
-$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
-	header("Location: ../accueil.php?msg=Classe non choisie.");
+$login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
+if((!isset($login_eleve))||(trim($login_eleve)=="")) {
+	header("Location: ../accueil.php?msg=Elève non choisi.");
 	die();
 }
 
-$login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
-if(!isset($login_eleve)) {
-	header("Location: ../accueil.php?msg=Elève non choisi.");
+$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
+	$id_classe=get_derniere_classe_from_ele_login($login_eleve);
+	//echo "\$id_classe=$id_classe<br />";
+	//die();
+}
+
+if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
+	header("Location: ../accueil.php?msg=Classe non choisie.");
 	die();
 }
 

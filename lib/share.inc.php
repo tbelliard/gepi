@@ -17028,4 +17028,20 @@ function liste_designations_courtes_mef_avec_affichage_orientation() {
 	}
 	return $chaine;
 }
+
+function get_derniere_classe_from_ele_login($ele_login){
+	global $mysqli;
+
+	$retour="";
+	$sql="SELECT jec.id_classe FROM j_eleves_classes jec, classes c, periodes p WHERE p.id_classe=c.id AND jec.periode=p.num_periode AND jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY jec.periode DESC LIMIT 1;";
+	//echo "$sql<br />";
+	$res_class=mysqli_query($mysqli, $sql);
+	if($res_class->num_rows > 0) {
+		$lig_tmp=$res_class->fetch_object();
+		$retour=$lig_tmp->id_classe;
+		$res_class->close();
+	}
+	return $retour;
+}
+
 ?>
