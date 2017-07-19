@@ -165,6 +165,10 @@ $config->set('HTML.SafeObject', true); //
 $config->set('HTML.SafeIframe', true); //Pour limiter les iframes uniquement à ceux acceptés
 $config->set('URI.SafeIframeRegexp', '%^//www.youtube.com/embed/|^//www.youtube.com/watch|^https://www.youtube.com/embed/|^https://www.youtube.com/watch|^http://www.dailymotion.com/embed/|^//www.dailymotion.com/embed/|^https://player.vimeo.com/video/%'); //Regex pour youtube, dailymotion et vimeo
 
+// Autorise la balise 'oembed' (nécessaire au plugin oembed)
+//$def = $config->getHTMLDefinition(true); // on récupère les règles 
+//$def->addElement('oembed','Inline', 'Common'); // on y ajoute la balise <oembed>
+
 $purifier = new HTMLPurifier($config);
 $magic_quotes = get_magic_quotes_gpc();
 
