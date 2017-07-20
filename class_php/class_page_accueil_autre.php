@@ -336,7 +336,7 @@ class class_page_accueil_autre {
 
   private function cahierTexte(){
 	$this->b=0;
-	if (getSettingValue("active_cahiers_texte")=='y') {
+	if (acces_cdt()) {
 		if (getSettingValue("GepiCahierTexteVersion")=='2') {
 			$url_cdt_see_all="/cahier_texte_2/see_all.php";
 		}

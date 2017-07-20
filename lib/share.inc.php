@@ -17044,4 +17044,15 @@ function get_derniere_classe_from_ele_login($ele_login){
 	return $retour;
 }
 
+function acces_cdt() {
+	if (getSettingAOui("active_cahiers_texte")) {
+		return true;
+	}
+	elseif (($_SESSION["statut"]=="professeur")&&(getSettingAOui("acces_cdt_prof"))) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 ?>

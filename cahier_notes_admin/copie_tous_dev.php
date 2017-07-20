@@ -222,7 +222,7 @@ elseif(!isset($creation_copie)) {
 	echo "<input type='hidden' name='cpt_grp' value='$cpt' />\n";
 	echo "<input type='hidden' name='creation_copie' value='y' />\n";
 	echo "<p><input type='checkbox' name='notes_aleatoires' id='notes_aleatoires' value='y' /><label for='notes_aleatoires'> Enregistrer des notes aléatoires</label></p>\n";
-	if(getSettingAOui('active_cahiers_texte')) {
+	if(acces_cdt()) {
 		echo "<p><input type='checkbox' name='copier_cdt' id='copier_cdt' value='y' /><label for='copier_cdt'> Copier aussi les Cahiers de textes</label></p>\n";
 	}
 	echo "<p><input type='submit' value='Créer/copier' /></p>\n";

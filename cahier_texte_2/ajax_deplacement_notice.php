@@ -36,6 +36,11 @@ if ($utilisateur == null) {
 	die();
 }
 
+//On vérifie si le module est activé
+if (!acces_cdt()) {
+	die("Le module n'est pas activé.");
+}
+
 check_token();
 
 //récupération des paramètres de la requète

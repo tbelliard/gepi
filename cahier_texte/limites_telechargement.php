@@ -26,16 +26,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activé.");
+if (!acces_cdt()) {
+	die("Le module n'est pas activé.");
 }
 
 //**************** EN-TETE *****************

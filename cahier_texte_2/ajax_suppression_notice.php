@@ -43,8 +43,8 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
-    die("Le module n'est pas activé.");
+if (!acces_cdt()) {
+	die("Le module n'est pas activé.");
 }
 
 // Vérification : est-ce que l'utilisateur a le droit de supprimer cette entrée ?

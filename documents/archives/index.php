@@ -87,10 +87,10 @@ require_once("../../lib/header.inc.php");
 
 echo "<p class='bold'>";
 if($_SESSION['statut']=='professeur') {
-	if((getSettingAOui("active_cahiers_texte"))&&(getSettingValue("GepiCahierTexteVersion")=='2')) {
+	if((acces_cdt())&&(getSettingValue("GepiCahierTexteVersion")=='2')) {
 		echo "<a href='../../cahier_texte_2/index.php'>";
 	}
-	elseif(getSettingAOui("active_cahiers_texte")) {
+	elseif(acces_cdt()) {
 		echo "<a href='../../cahier_texte/index.php'>";
 	}
 	else {

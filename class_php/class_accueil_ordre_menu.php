@@ -289,7 +289,7 @@ class class_accueil_ordre_menu extends class_page_accueil {
         }
 
 	if ((($this->test_prof_matiere != "0") or ($this->statutUtilisateur!='professeur'))
-			and (getSettingValue("active_cahiers_texte")=='y'))
+			and (acces_cdt()))
 	  $this->creeNouveauItem("/cahier_texte/index.php",
 			  "Cahier de textes",
 			  "Cet outil vous permet de constituer un cahier de textes pour chacune de vos classes." );

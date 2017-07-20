@@ -2023,7 +2023,7 @@ if ($dossiers_OK) {
 	echo " pas inclus dans l'archive</em>)";
 }
 echo "<br />\n";
-if(!getSettingAOui('active_cahiers_texte')) {echo "<span style='color:red; margin-left:2em;'>Le module Cahiers de textes est <a href='../cahier_texte_admin/index.php'>inactif</a>, il ne devrait pas y avoir de documents à archiver</span><br />";}
+if((!getSettingAOui('active_cahiers_texte'))&&(!getSettingAOui('acces_cdt_prof'))) {echo "<span style='color:red; margin-left:2em;'>Le module Cahiers de textes est <a href='../cahier_texte_admin/index.php'>inactif</a>, il ne devrait pas y avoir de documents à archiver</span><br />";}
 echo "<br />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
 	  <input type=\"submit\" value=\"Créer l'archive\" name=\"bouton3\" />\n

@@ -54,7 +54,7 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
+if (!acces_cdt()) {
   tentative_intrusion(1, "Tentative d'accès au cahier de textes en consultation alors que le module n'est pas activé.");
   die("Le module n'est pas activé.");
 }
@@ -211,6 +211,11 @@ $today=mktime(0,0,0,$month,$day,$year);
 $titre_page = "Cahier de textes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
+
+if(!getSettingAOui("active_cahiers_texte")) {
+	// On doit avoir acces_cdt_prof=y
+	echo "<p style='text-align:center; color:red'>Ces cahiers de textes sont personnels. Ils ne sont pas accessibles des élèves, parents,...</p>";
+}
 
 // 20130727
 $CDTPeutPointerTravailFait=getSettingAOui('CDTPeutPointerTravailFait'.ucfirst($_SESSION['statut']));

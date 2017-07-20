@@ -42,7 +42,7 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
+if (!acces_cdt()) {
 	die("Le module n'est pas activé.");
 }
 
@@ -170,8 +170,13 @@ if ($current_imprime=='y') echo "<div id='container'>\n";
 echo "<p><a href='consultation2.php'>Affichage semaine</a></p>\n";
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
+if (!acces_cdt()) {
 	die("<p class='grand centre_texte'>Le cahier de textes n'est pas accessible pour le moment.</p>");
+}
+
+if(!getSettingAOui("active_cahiers_texte")) {
+	// On doit avoir acces_cdt_prof=y
+	echo "<p style='text-align:center; color:red'>Ces cahiers de textes sont personnels. Ils ne sont pas accessibles des élèves, parents,...</p>";
 }
 
 $content="";

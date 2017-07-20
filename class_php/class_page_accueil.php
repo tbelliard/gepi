@@ -549,7 +549,7 @@ if(getSettingAOui('active_bulletins')) {
 	}
 
 	if ((($this->test_prof_matiere != "0") or ($this->statutUtilisateur!='professeur'))
-			and (getSettingValue("active_cahiers_texte")=='y'))
+			and (acces_cdt()))
 	  $this->creeNouveauItem("/cahier_texte/index.php",
 			  "Cahier de textes",
 			  "Cet outil vous permet de constituer un cahier de textes pour chacune de vos classes." );
@@ -1595,8 +1595,8 @@ if(getSettingAOui('active_bulletins')) {
 			"Consultation d'un ".$this->gepiSettings['denomination_eleve'],
 			"Ce menu vous permet de consulter dans une même page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevés de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.");
 
-	if(getSettingValue("active_cahiers_texte")=="y") {
-		if(($this->statutUtilisateur=="professeur") OR
+	if(acces_cdt()) {
+		if((($this->statutUtilisateur=="professeur")&&(acces_cdt())) OR
 			(($this->statutUtilisateur=="cpe")&&((getSettingValue("GepiAccesCdtCpe")=="yes")||(getSettingValue("GepiAccesCdtCpeRestreint")=="yes"))) OR
 			(($this->statutUtilisateur == "scolarite")&&((getSettingValue("GepiAccesCdtScol")=="yes")||(getSettingValue("GepiAccesCdtScolRestreint")=="yes")))) {
 				$this->creeNouveauItem("/cahier_texte_2/see_all.php",
@@ -1607,15 +1607,17 @@ if(getSettingAOui('active_bulletins')) {
 					"Ce menu vous permet d'extraire les notices de CDT portant tel ou tel tag (contrôle, AP, EPI,...).");
 		}
 
-		if($this->statutUtilisateur=="professeur") {
-			$this->creeNouveauItem("/documents/archives/index.php",
-				"Mes archives de cahiers de textes",
-				"Ce menu vous permet de consulter vos cahiers de textes des années précédentes.");
-		}
-		elseif(($this->statutUtilisateur=="cpe")||($this->statutUtilisateur=="scolarite")||($this->statutUtilisateur=="administrateur")) {
-			$this->creeNouveauItem("/documents/archives/index.php",
-				"Archives de cahiers de textes",
-				"Ce menu vous permet de consulter les cahiers de textes des années précédentes.");
+		if(getSettingAOui('acces_archives_cdt')) {
+			if($this->statutUtilisateur=="professeur") {
+				$this->creeNouveauItem("/documents/archives/index.php",
+					"Mes archives de cahiers de textes",
+					"Ce menu vous permet de consulter vos cahiers de textes des années précédentes.");
+			}
+			elseif(($this->statutUtilisateur=="cpe")||($this->statutUtilisateur=="scolarite")||($this->statutUtilisateur=="administrateur")) {
+				$this->creeNouveauItem("/documents/archives/index.php",
+					"Archives de cahiers de textes",
+					"Ce menu vous permet de consulter les cahiers de textes des années précédentes.");
+			}
 		}
 	}
 

@@ -184,7 +184,7 @@
 <!-- Actions à effectuer -->
 <?php
 
-	if((getSettingValue('active_cahiers_texte')=='y')&&(getSettingValue('GepiCahierTexteVersion')=='2')) {
+	if((acces_cdt())&&(getSettingValue('GepiCahierTexteVersion')=='2')) {
         if(!file_exists("./temp/info_jours.js")) {
 			creer_info_jours_js();
 			if(!file_exists("./temp/info_jours.js")) {

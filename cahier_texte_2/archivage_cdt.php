@@ -59,7 +59,7 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
+if ((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui("acces_cdt_prof"))) {
 	die("Le module n'est pas activé.");
 }
 
@@ -112,7 +112,7 @@ Dans ce cas, passer la valeur à 'n' règlera le problème.</p>\n";
 //echo "<p></p>\n";
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
+if ((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui("acces_cdt_prof"))) {
 	echo "</p>\n";
 
 	echo "<p class='grand centre_texte'>Le cahier de textes n'est pas accessible pour le moment.</p>\n";

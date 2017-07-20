@@ -49,7 +49,7 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
+if (!acces_cdt()) {
     die("Le module n'est pas activé.");
 }
 
@@ -871,7 +871,16 @@ if ($id_groupe != null) {
 }
 // Fin deuxième ou troixième cellule de la première ligne du tableau
 echo "</td>\n";
-echo "</tr>\n</table>\n<hr />\n";
+echo "</tr>\n</table>\n";
+
+$decalage_vertical=0;
+if(!getSettingAOui("active_cahiers_texte")) {
+	// On doit avoir acces_cdt_prof=y
+	echo "<p style='text-align:center; color:red'>Ces cahiers de textes sont personnels. Ils ne sont pas accessibles des élèves, parents,...</p>";
+	$decalage_vertical+=20;
+}
+
+echo "<hr />\n";
 
 // Si le choix du groupe n'a pas été fait, on affiche un texte d'explication et de mise en garde
 if (($id_groupe == null)) {
@@ -1269,7 +1278,10 @@ echo "</td>\n";
 // Début de la colonne de droite
 echo "<td valign=\"top\">\n";
 $test_ct_vide = sql_count(sql_query("SELECT id_ct FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "')"));
-if ($test_ct_vide == 0) {echo "<b><font color='red'>Actuellement ce cahier de textes est vide. Il n'est donc pas visible dans l'espace public.</font></b>\n";}
+if ($test_ct_vide == 0) {
+	echo "<b><font color='red'>Actuellement ce cahier de textes est vide. Il n'est donc pas visible dans l'espace public.</font></b>\n";
+	$decalage_vertical+=20;
+}
 
 //
 // Affichage de la notice en modification
@@ -1328,7 +1340,7 @@ if (mysqli_num_rows($appel_cahier_texte_liste) > 1) {
   }
 }
 
-echo "<div style=\"position:absolute;top:310px;left:30%;border:2px solid black;background-color:".$color_fond_notices[$type_couleur].";width:610px;height:20px;text-align:center;\">
+echo "<div style=\"position:absolute;top:".(310+$decalage_vertical)."px;left:30%;border:2px solid black;background-color:".$color_fond_notices[$type_couleur].";width:610px;height:20px;text-align:center;\">
 	<span style='font-weight:bold'>Saisie ".(($type_couleur == "t") ? "des Travaux personnels à effectuer" : "du compte-rendu de séance")."</span>
 </div>\n";
 
@@ -1336,11 +1348,11 @@ echo "<div style=\"position:absolute;top:310px;left:30%;border:2px solid black;b
 
 $reduce = isset($_POST["reduce"]) ? $_POST["reduce"] :(isset($_GET["reduce"]) ? $_GET["reduce"] :'off');
 if ($reduce == "off") {
-    echo "<div style=\"position:absolute;top:350px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">\n";
+    echo "<div style=\"position:absolute;top:".(350+$decalage_vertical)."px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">\n";
     echo "<a href=\"./index.php?reduce=on\">cacher la fenêtre de saisie</a>";
 }
 else {
-    echo "<div style=\"position:absolute;top:350px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">\n";
+    echo "<div style=\"position:absolute;top:".(310+$decalage_vertical)."px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">\n";
     echo "<a href=\"./index.php?reduce=off\">montrer la fenêtre de saisie</a>";
     echo "</div>\n";
     echo "<div style=\"display:none;\">\n";

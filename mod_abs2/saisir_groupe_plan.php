@@ -1115,7 +1115,7 @@ if ($eleve_col->isEmpty()) {
 					   onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
 			<?php
-			if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') {
+			if ($utilisateur->getStatut() == 'professeur' && acces_cdt()) { 
 				//$afficher_passer_au_cdt="y";
 				if(isset($id_groupe)) {
 					$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_texte' AND visible='n';";
@@ -1126,11 +1126,20 @@ if ($eleve_col->isEmpty()) {
 					}
 				}
 				if($afficher_passer_au_cdt=="y") {
+					if(getSettingValue("active_cahiers_texte")=='y') {
 			?>
 			<p class="choix_fin center">
 				<input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
 			</p>
 			<?php
+					}
+					else {
+			?>
+			<p class="choix_fin center">
+				<input value="Enregistrer et passer à mon CDT personnel" name="cahier_texte" type="submit" title="Ce cahier de textes est à usage personnel uniquement. Il n'est pas accessible pour les parents/élèves,..."/>
+			</p>
+			<?php
+					}
 				}
 			}
 			?>

@@ -43,6 +43,11 @@ if (!checkAccess()) {
 
 check_token();
 
+if(!acces_cdt()) {
+	header("Location: ../accueil.php?msg=CDT désactivé");
+	die();
+}
+
 header('Content-Type: text/html; charset=utf-8');
 
 $mode=isset($_GET['mode']) ? $_GET['mode'] : "";

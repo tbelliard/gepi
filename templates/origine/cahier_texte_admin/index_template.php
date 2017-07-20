@@ -3,7 +3,7 @@
 /*
 * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -231,6 +231,19 @@ echo add_token_field();
 		<label for='acces_archives_cdt' style='cursor: pointer;'>
 		  Permettre l'accès aux archives de Cahiers de textes<br />
 		  (<em>dans le cas d'un abandon du CDT Gepi pour passer à un autre CDT, il peut néanmoins être intéressant de permettre aux professeurs de consulter leurs CDT d'années passées</em>)
+		</label>
+
+	  <br />
+	  <br />
+		<input type="checkbox" 
+				 name="acces_cdt_prof" 
+				 id="acces_cdt_prof" 
+				 value="y"
+			 onchange='changement();'
+				<?php if (getSettingAOui("acces_cdt_prof")) echo " checked='checked'"; ?> />
+		<label for='acces_cdt_prof' style='cursor: pointer;'>
+		  Dans le cas où les cahiers de textes sont désactivés, permettre néanmoins aux professeurs de saisir un cahier de texte personnel.<br />
+		  <em>(il leur sera clairement indiqué que ce cahier de textes ne peut pas être consulté par les élèves, responsables,...)</em>
 		</label>
 
 	  </fieldset>

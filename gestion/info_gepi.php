@@ -154,7 +154,7 @@ if (getSettingValue("active_cahiers_texte")=='y') {
 
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != '')) {
 
-       echo " <b>En raison du caractére personnel du contenu, l'accès à l'interface de consultation publique est restreint</b>. Pour accéder aux cahiers de texte, il est nécessaire de demander auprès de l'administrateur,
+       echo " <b>En raison du caractère personnel du contenu, l'accès à l'interface de consultation publique est restreint</b>. Pour accéder aux cahiers de texte, il est nécessaire de demander auprès de l'administrateur,
 
        le nom d'utilisateur et le mot de passe valides.";
 

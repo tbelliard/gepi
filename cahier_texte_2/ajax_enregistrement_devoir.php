@@ -43,6 +43,11 @@ if ($utilisateur == null) {
 	die();
 }
 
+//On vérifie si le module est activé
+if (!acces_cdt()) {
+	die("Le module n'est pas activé.");
+}
+
 check_token();
 
 //debug_var();

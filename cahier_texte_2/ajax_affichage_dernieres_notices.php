@@ -45,7 +45,7 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
+if (!acces_cdt()) {
 	die("Le module n'est pas activé.");
 }
 
