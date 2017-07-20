@@ -2515,7 +2515,7 @@ if($_SESSION['statut']=='professeur') {
 
 	//============================================================
 	// La page d'accueil simplifiée pour les profs n'est proposée que si un des modules Notes, CDT, Trombinoscope est activé
-	if((getSettingAOui('active_carnets_notes'))||(getSettingAOui('active_cahiers_texte'))||(getSettingAOui('active_module_trombinoscopes'))) {
+	if((getSettingAOui('active_carnets_notes'))||(acces_cdt())||(getSettingAOui('active_module_trombinoscopes'))) {
 		echo "<a name='accueil_simpl_prof'></a><form name='form_accueil_simpl_prof' method='post' action='".$_SERVER['PHP_SELF']."#accueil_simpl_prof'>\n";
 		echo add_token_field();
 		echo "<fieldset style='border: 1px solid grey;";
@@ -3124,7 +3124,7 @@ if($_SESSION["statut"] == "professeur") {
 
 //==============================================================================
 
-if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "professeur")) {
+if ((acces_cdt())&&($_SESSION["statut"] == "professeur")) {
 	$ouverture_auto_WinDevoirsDeLaClasse=getPref($_SESSION['login'], 'ouverture_auto_WinDevoirsDeLaClasse', 'y');
 	echo "<a name='cdt_pref'></a><form name='form_cdt_pref' method='post' action='".$_SERVER['PHP_SELF']."#cdt_pref'>\n";
 	echo add_token_field();

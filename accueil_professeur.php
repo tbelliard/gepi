@@ -94,7 +94,8 @@ function acces($id,$statut) {
 }
 */
 
-if((getSettingValue('active_cahiers_texte')=='y')&&(getSettingValue('GepiCahierTexteVersion')=='2')) {
+//if((getSettingValue('active_cahiers_texte')=='y')&&(getSettingValue('GepiCahierTexteVersion')=='2')) {
+if((acces_cdt())&&(getSettingValue('GepiCahierTexteVersion')=='2')) {
 	if(!file_exists("./temp/info_jours.js")) {
 		creer_info_jours_js();
 		if(!file_exists("./temp/info_jours.js")) {
@@ -150,12 +151,12 @@ echo '<table align="center"><tr><td	valign=top>';
  * **********************************************************************/
 $test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeurs WHERE login = '".$_SESSION['login']."'"));
 //on test si il faut afficher le bloc
-if ((($test_prof_matiere != "0") and (getSettingValue("active_cahiers_texte")=='y')) || (($test_prof_matiere != "0") and (getSettingValue("active_carnets_notes")=='y')) || (getSettingValue("active_module_absence_professeur")=='y'  and getSettingValue("active_module_absence")=='y' )) {
+if ((($test_prof_matiere != "0") and (acces_cdt())) || (($test_prof_matiere != "0") and (getSettingValue("active_carnets_notes")=='y')) || (getSettingValue("active_module_absence_professeur")=='y'  and getSettingValue("active_module_absence")=='y' )) {
 	echo "<div class='bloc_page_acceuil_professeur'>";
 	echo '<table class="table_acceuil">';
 	echo '<tbody>';
 	echo '<th class="accueil">&nbsp;&nbsp;<img src="./images/icons/saisie.png" alt="Saisie" class="link" />&nbsp;- Au quotidien&nbsp;:</th>';
-	if (($test_prof_matiere != "0") and (getSettingValue("active_cahiers_texte")=='y')) {
+	if (($test_prof_matiere != "0") and (acces_cdt())) {
 		affiche_ligne( "/cahier_texte/index.php", "Cahier de textes",  "Cet outil vous permet de constituer un cahier de texte pour chacune de vos classes.", $_SESSION['statut']);
 	}
 	if (($test_prof_matiere != "0") and (getSettingValue("active_carnets_notes")=='y')) {
