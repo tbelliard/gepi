@@ -1360,9 +1360,24 @@ Patientez pendant l'extraction des données... merci.
 			$tab_modalites_accompagnement=get_tab_modalites_accompagnement();
 			$tmp_tab_deja=array();
 			foreach($tab_modalites_accompagnement_eleve["code"] as $current_code => $tmp_tab) {
-				if(!in_array($current_code, $tmp_tab_deja)) {
-					echo " <span title=\"".$tab_modalites_accompagnement["code"][$current_code]["libelle"]."\">".$current_code."</span>";
+				echo " <span title=\"".$tab_modalites_accompagnement["code"][$current_code]["libelle"];
+				$tmp_tab_commentaires=array();
+				for($loop=0;$loop<count($tmp_tab);$loop++) {
+					if(isset($tmp_tab[$loop]["commentaire"])) {
+						$tmp_commentaire=preg_replace('/"/', "''", trim($tmp_tab[$loop]["commentaire"]));
+						if(!in_array($tmp_commentaire, $tmp_tab_commentaires)) {
+							$tmp_tab_commentaires[]=$tmp_commentaire;
+						}
+					}
 				}
+				$liste_commentaires="";
+				for($loop=0;$loop<count($tmp_tab_commentaires);$loop++) {
+					$liste_commentaires.="\n- ".$tmp_tab_commentaires[$loop];
+				}
+				if($liste_commentaires!="") {
+					echo " :".$liste_commentaires;
+				}
+				echo "\">".$current_code."</span>";
 				$tmp_tab_deja[]=$current_code;
 			}
 		}
@@ -1370,7 +1385,7 @@ Patientez pendant l'extraction des données... merci.
 			echo "Aucune modalité d'accompagnement n'est définie.";
 		}
 
-		if(acces("/gestion/saisie_modalites_accompagnement.php", $_SESSION["statut"])) {
+		if(acces_saisie_modalites_accompagnement()) {
 			echo "<br /><a href='../gestion/saisie_modalites_accompagnement.php?login_eleve=".$ele_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" style='font-size:small; text-decoration:none; color:black;'><img src='../images/icons/add.png' class='icone16' alt='Add' />Ajouter/Modifier des modalités d'accompagnement.</a>";
 		}
 		echo "</div>\n";

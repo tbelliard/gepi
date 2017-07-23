@@ -795,7 +795,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 if($_SESSION['statut']=="administrateur") {echo " | <a href='../utilisateurs/edit_eleve.php'>Comptes d'utilisateurs élèves</a>\n";}
 
-if($_SESSION['statut']=="administrateur") {echo " | <a href='../gestion/saisie_modalites_accompagnement.php'>Modalités d'accompagnement des élèves</a>\n";}
+if(acces_saisie_modalites_accompagnement()) {echo " | <a href='../gestion/saisie_modalites_accompagnement.php'>Modalités d'accompagnement des élèves</a>\n";}
 
 if(($_SESSION['statut']=="administrateur")&&(getSettingValue('exp_imp_chgt_etab')=='yes')) {
 	// Pour activer le dispositif:

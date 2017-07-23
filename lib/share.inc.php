@@ -16503,10 +16503,12 @@ function get_tab_modalites_accompagnement_eleve($login_eleve, $periode="") {
 		//echo "$sql<br />";
 		$res=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res)>0) {
+			//$temoin_commentaire_non_vide=0;
 			$cpt=0;
 			while($lig=mysqli_fetch_assoc($res)) {
-				$tab["periode"][$lig["periode"]][]=$lig;
-				$tab["code"][$lig["code"]][]=$lig;
+				$tab["periode"][$lig["periode"]][$cpt]=$lig;
+				$tab["code"][$lig["code"]][$cpt]=$lig;
+				$cpt++;
 			}
 		}
 	}
@@ -17053,6 +17055,23 @@ function acces_cdt() {
 	}
 	else {
 		return false;
+	}
+}
+
+function acces_saisie_modalites_accompagnement() {
+	if($_SESSION["statut"]=="administrateur") {
+		return true;
+	}
+	elseif(!acces("/gestion/saisie_modalites_accompagnement.php", $_SESSION["statut"])) {
+		return false;
+	}
+	else {
+		if(($_SESSION["statut"]=="scolarite")&&(getSettingAOui("saisieModalitesAccompagnementScol"))) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
 ?>

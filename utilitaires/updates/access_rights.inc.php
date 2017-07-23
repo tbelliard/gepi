@@ -1915,7 +1915,7 @@ $tab_req[] = "INSERT INTO droits SET id='/gestion/saisie_modalites_accompagnemen
 administrateur='V',
 professeur='F',
 cpe='F',
-scolarite='F',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',

@@ -617,6 +617,11 @@ $texteItem="peut gérer les éléments de programmes apparaissant sur les bullet
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='saisieModalitesAccompagnementScol';
+$texteItem="peut saisir les modalités d'accompagnement des élèves <em>(Segpa, Ulis, PPRE,...)</em>";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';

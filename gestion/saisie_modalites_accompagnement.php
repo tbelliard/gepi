@@ -41,6 +41,11 @@ if (!checkAccess()) {
 	die();
 }
 
+if(!acces_saisie_modalites_accompagnement()) {
+	header("Location: ../accueil.php?msg=Saisie des modalités d'accompagnement non autorisée.");
+	die();
+}
+
 $msg="";
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);

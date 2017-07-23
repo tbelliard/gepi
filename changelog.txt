@@ -20,6 +20,9 @@ LSUN:
 Genèse des classes:
 - Possibilité d'utiliser un autre type de profil mêlant comportement et niveau scolaire.
 
+Général:
+- Possibilité de saisir les modalités d'accompagnement en compte scolarité
+  (conditionné par un droit à donner dans Gestion génrale/Droits d'accès).
 
 Gepi-1.7.1 (30/03/2017)
 ===========================

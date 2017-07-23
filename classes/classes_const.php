@@ -500,7 +500,7 @@ if(!isset($quitter_la_page)){
 
 	echo " | <a href='export_ele_opt.php?id_classe[0]=$id_classe'>Exporter les options suivies par les élèves</a>";
 
-	if(acces("/gestion/saisie_modalites_accompagnement.php", $_SESSION["statut"])) {
+	if(acces_saisie_modalites_accompagnement()) {
 		echo " | <a href='../gestion/saisie_modalites_accompagnement.php?id_classe=$id_classe'>Modalités d'accompagnement</a>";
 	}
 
