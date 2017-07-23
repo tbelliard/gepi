@@ -29,8 +29,8 @@ function getAPCommun() {
 		. "(SELECT lac.* FROM lsun_ap_communs AS lac "
 		. "ORDER BY intituleAP) AS t0 "
 		. "INNER JOIN lsun_j_ap_aid as l "
-		. "ON t0.id = l.id_ap";
-	//echo $sqlGetEpi;
+		. "ON t0.id = l.id_ap;";
+	//echo "getAPCommun \$sqlGetEpi<br />".$sqlGetEpi."<br /><br />";
 	$resultchargeDB = $mysqli->query($sqlGetEpi);
 	return $resultchargeDB;
 }
@@ -152,7 +152,8 @@ function disciplineAP($id) {
 
 function getDisciplines($id_ap) {
 	global $mysqli;
-	$sqlMatAP = "SELECT * FROM lsun_j_ap_matiere WHERE id_ap = '$id_ap' ";
+	$sqlMatAP = "SELECT * FROM lsun_j_ap_matiere WHERE id_ap = '$id_ap';";
+	//echo "getDisciplines($id_ap):<br />".$sqlMatAP."<br /><br />";
 	$resultchargeDB = $mysqli->query($sqlMatAP);
 	return $resultchargeDB;
 }

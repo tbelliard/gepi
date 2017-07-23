@@ -232,58 +232,169 @@ $xml->appendChild($items);
 		$tab_disciplines_global_deja=array();
 		$disciplines = $xml->createElement('disciplines');
 		while ($discipline = $listeDisciplines->fetch_object()) {
-				$noeudDiscipline = $xml->createElement('discipline');
-					//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
-				$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
-				if (!in_array($discipline->code_modalite_elect, $codesAutorises)) {
-					$msgErreur .= "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>Corriger</a>.<br /><br />";
-				}
-				if($discipline->code_matiere=="") {
-					$msgErreur .= "La matière ".$discipline->nom_complet." a un code vide <em>(non rattaché à une <strong>nomenclature</strong>)</em>. Le XML ne va pas être valide. <a href='../matieres/modify_matiere.php?current_matiere=".$discipline->id_matiere."' target='_blank'>Corriger</a>.<br /><br />";
-				}
-				else {
-
-					$matiere = "DI_".$discipline->code_matiere.$discipline->code_modalite_elect;
-					if(in_array($matiere, $tab_disciplines_global_deja)) {
-						//$sql="SELECT valeur FROM nomenclatures_valeurs WHERE code='".$discipline->code_matiere."' AND nom='libelle_edition';";
-						$nom_matiere=get_valeur_champ("nomenclatures_valeurs", "code='".$discipline->code_matiere."' AND nom='libelle_edition'", "valeur");
-						// Ca ne convient pas: On ne liste pas les matières qui ont cette nomenclature
-						//$msg_erreur_remplissage.="Plusieurs enseignements de <b><a href='../matieres/modify_matiere.php?current_matiere=".$nom_matiere."' target='_blank'>".$nom_matiere."</a></b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Ce n'est pas possible.<br />Il faut corriger.<br /><br />";
-						$info_matieres="";
-						$sql="SELECT DISTINCT m.matiere FROM matieres m, j_groupes_matieres jgm WHERE m.code_matiere='".$discipline->code_matiere."' AND jgm.id_matiere=m.matiere ORDER BY matiere;";
-						$res_mat=mysqli_query($mysqli, $sql);
-						if(mysqli_num_rows($res_mat)>0) {
-							$info_matieres.=" <em title=\"Les matières associées à la nomenclature ".$discipline->code_matiere." sont celles-ci.\">(";
-							$cpt_mat=0;
-							while($lig_mat=mysqli_fetch_object($res_mat)) {
-								if($cpt_mat>0) {$info_matieres.=", ";}
-								$info_matieres.="<a href='../matieres/modify_matiere.php?current_matiere=".$lig_mat->matiere."' target='_blank'>".$lig_mat->matiere."</a>";
-								$cpt_mat++;
-							}
-							$info_matieres.=")</em>";
-						}
-						$msg_erreur_remplissage.="Plusieurs enseignements de <b>".$nom_matiere."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Cela peut arriver quand une même nomenclature matière est associée à plusieurs matières et que les différentes matières sont extraites avec la même modalité dans un export XML".$info_matieres.".<br />Ce n'est pas possible.<br />Il faut corriger.<br /><br />";
-					}
-					$tab_disciplines_global_deja[]=$matiere;
-				}
-
-
-				if(($debug==1)&&($discipline->code_matiere==$code_matiere_debug)) {
-					echo "$matiere groupe ".(isset($discipline->id_groupe) ? $discipline->id_groupe : "Pas d'id_groupe")."<br />";
-				}
-
-
-				$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
-					'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
-				foreach ($attributsDiscipline as $cle=>$valeur) {
-					$attDiscipline = $xml->createAttribute($cle);
-					$attDiscipline->value = $valeur;
-					$noeudDiscipline->appendChild($attDiscipline);
-				}
-				$disciplines->appendChild($noeudDiscipline);
+			$noeudDiscipline = $xml->createElement('discipline');
+				//if($discipline->id < 10) {$id_discipline = "0".$discipline->id;} else {$id_discipline = $discipline->id;}
+			$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
+			if (!in_array($discipline->code_modalite_elect, $codesAutorises)) {
+				$msgErreur .= "La matière $discipline->nom_complet a pour modalité $discipline->code_modalite_elect. Cette modalité n'est pas autorisée. <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>Corriger</a>.<br /><br />";
 			}
+			if($discipline->code_matiere=="") {
+				$msgErreur .= "La matière ".$discipline->nom_complet." a un code vide <em>(non rattaché à une <strong>nomenclature</strong>)</em>. Le XML ne va pas être valide. <a href='../matieres/modify_matiere.php?current_matiere=".$discipline->id_matiere."' target='_blank'>Corriger</a>.<br /><br />";
+			}
+			else {
+
+				$matiere = "DI_".$discipline->code_matiere.$discipline->code_modalite_elect;
+				if(in_array($matiere, $tab_disciplines_global_deja)) {
+					//$sql="SELECT valeur FROM nomenclatures_valeurs WHERE code='".$discipline->code_matiere."' AND nom='libelle_edition';";
+					$nom_matiere=get_valeur_champ("nomenclatures_valeurs", "code='".$discipline->code_matiere."' AND nom='libelle_edition'", "valeur");
+					// Ca ne convient pas: On ne liste pas les matières qui ont cette nomenclature
+					//$msg_erreur_remplissage.="Plusieurs enseignements de <b><a href='../matieres/modify_matiere.php?current_matiere=".$nom_matiere."' target='_blank'>".$nom_matiere."</a></b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Ce n'est pas possible.<br />Il faut corriger.<br /><br />";
+					$info_matieres="";
+					$sql="SELECT DISTINCT m.matiere FROM matieres m, j_groupes_matieres jgm WHERE m.code_matiere='".$discipline->code_matiere."' AND jgm.id_matiere=m.matiere ORDER BY matiere;";
+					$res_mat=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_mat)>0) {
+						$info_matieres.=" <em title=\"Les matières associées à la nomenclature ".$discipline->code_matiere." sont celles-ci.\">(";
+						$cpt_mat=0;
+						while($lig_mat=mysqli_fetch_object($res_mat)) {
+							if($cpt_mat>0) {$info_matieres.=", ";}
+							$info_matieres.="<a href='../matieres/modify_matiere.php?current_matiere=".$lig_mat->matiere."' target='_blank'>".$lig_mat->matiere."</a>";
+							$cpt_mat++;
+						}
+						$info_matieres.=")</em>";
+					}
+					$msg_erreur_remplissage.="Plusieurs enseignements de <b>".$nom_matiere."</b> avec la même modalité (".$discipline->code_modalite_elect.").<br />Cela peut arriver quand une même nomenclature matière est associée à plusieurs matières et que les différentes matières sont extraites avec la même modalité dans un export XML".$info_matieres.".<br />Ce n'est pas possible.<br />Il faut corriger.<br /><br />";
+				}
+				$tab_disciplines_global_deja[]=$matiere;
+			}
+
+
+			if(($debug==1)&&($discipline->code_matiere==$code_matiere_debug)) {
+				echo "$matiere groupe ".(isset($discipline->id_groupe) ? $discipline->id_groupe : "Pas d'id_groupe")."<br />";
+			}
+
+
+			$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$discipline->code_modalite_elect,'code'=>$discipline->code_matiere,
+				'modalite-election'=>$discipline->code_modalite_elect,'libelle'=>htmlspecialchars($discipline->nom_complet));
+			foreach ($attributsDiscipline as $cle=>$valeur) {
+				$attDiscipline = $xml->createAttribute($cle);
+				$attDiscipline->value = $valeur;
+				$noeudDiscipline->appendChild($attDiscipline);
+			}
+			$disciplines->appendChild($noeudDiscipline);
+		}
+
+		//======================================================
+		// 20170722
+		// Disciplines et modalités non déclarées dans des enseignements, mais présentes dans les EPI, AP, Parcours
+		if (getSettingValue("LSU_traite_EPI") != "n") {
+			$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
+
+			$listeEPICommun = getEPICommun();
+			while ($epiCommun = $listeEPICommun->fetch_object()) { 
+				$matieres = getMatieresEPICommun($epiCommun->id);
+				foreach ($matieres as $matiere) {
+					$discipline=getMatiereOnMatiere($matiere["id_matiere"]);
+					$ref = "DI_".$discipline->code_matiere.$matiere["modalite"];
+
+					//$noeudDiscipline = $xml->createElement('discipline');
+					//assureDisciplinePresente($ref);
+
+					if (!in_array($matiere["modalite"], $codesAutorises)) {
+						$msgErreur .= "La matière ".$discipline->nom_complet." a pour modalité ".$matiere["modalite"].". Cette modalité n'est pas autorisée. <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>Corriger</a>.<br /><br />";
+					}
+					if($discipline->code_matiere=="") {
+						$msgErreur .= "La matière ".$discipline->nom_complet." a un code vide <em>(non rattaché à une <strong>nomenclature</strong>)</em>. Le XML ne va pas être valide. <a href='../matieres/modify_matiere.php?current_matiere=".$discipline->id_matiere."' target='_blank'>Corriger</a>.<br /><br />";
+					}
+					else {
+
+						if(!in_array($ref, $tab_disciplines_global_deja)) {
+							// Ajouter la matière
+
+							$noeudDiscipline = $xml->createElement('discipline');
+
+							$attributsDiscipline = array('id'=>'DI_'.$discipline->code_matiere.$matiere["modalite"],'code'=>$discipline->code_matiere,
+								'modalite-election'=>$matiere["modalite"],'libelle'=>htmlspecialchars($discipline->nom_complet));
+							foreach ($attributsDiscipline as $cle=>$valeur) {
+								$attDiscipline = $xml->createAttribute($cle);
+								$attDiscipline->value = $valeur;
+								$noeudDiscipline->appendChild($attDiscipline);
+							}
+							$disciplines->appendChild($noeudDiscipline);
+
+							$tab_disciplines_global_deja[]=$ref;
+						}
+					}
+
+				}
+			}
+		}
+		//======================================================
+		if (getSettingValue("LSU_traite_AP") != "n") {
+			$codesAutorises = array('S', 'O', 'F', 'L', 'R', 'X');
+
+			$listeApCommuns = getAPCommun();
+			if ($listeApCommuns->num_rows) {
+				while ($apCommun = $listeApCommuns->fetch_object()) {
+					$disciplinesAP = getDisciplines($apCommun->id);
+
+/*
+mysql> SELECT * FROM lsun_j_ap_matiere WHERE id_ap = '4';
++----+------------------+----------+-------+
+| id | id_enseignements | modalite | id_ap |
++----+------------------+----------+-------+
+| 15 | 030201           | S        |     4 |
+| 16 | 100100           | S        |     4 |
+| 17 | 030602           | S        |     4 |
+| 18 | 020700           | F        |     4 |
++----+------------------+----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> 
+*/
+
+					while ($matiere = $disciplinesAP->fetch_object()) {
+						$matieresAP="DI_".$matiere->id_enseignements.$matiere->modalite;
+
+						$sql="SELECT * FROM matieres WHERE code_matiere='".$matiere->id_enseignements."';";
+						$res_mat=mysqli_query($mysqli, $sql);
+						$lig_matiere=mysqli_fetch_object($res_mat);
+
+						if (!in_array($matiere->modalite, $codesAutorises)) {
+							$msgErreur .= "La matière ".$lig_matiere->nom_complet." a pour modalité ".$matiere->modalite.". Cette modalité n'est pas autorisée. <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>Corriger</a>.<br /><br />";
+						}
+						if($matiere->id_enseignements=="") {
+							$msgErreur .= "La matière ".$lig_matiere->nom_complet." a un code vide <em>(non rattaché à une <strong>nomenclature</strong>)</em>. Le XML ne va pas être valide. <a href='../matieres/modify_matiere.php?current_matiere=".$lig_matiere->matiere."' target='_blank'>Corriger</a>.<br /><br />";
+						}
+						else {
+
+							if(!in_array($matieresAP, $tab_disciplines_global_deja)) {
+								// Ajouter la matière
+
+								$noeudDiscipline = $xml->createElement('discipline');
+
+								$attributsDiscipline = array('id'=>'DI_'.$matiere->id_enseignements.$matiere->modalite,'code'=>$matiere->id_enseignements,
+									'modalite-election'=>$matiere->modalite,'libelle'=>htmlspecialchars($lig_matiere->nom_complet));
+								foreach ($attributsDiscipline as $cle=>$valeur) {
+									$attDiscipline = $xml->createAttribute($cle);
+									$attDiscipline->value = $valeur;
+									$noeudDiscipline->appendChild($attDiscipline);
+								}
+								$disciplines->appendChild($noeudDiscipline);
+
+								$tab_disciplines_global_deja[]=$matieresAP;
+							}
+						}
+
+
+					}
+				}
+			}
+		}
+		//======================================================
+
 		$donnees->appendChild($disciplines);
-		
+
+
 		/*----- Enseignants -----*/
 		$enseignants = $xml->createElement('enseignants');
 		while ($enseignant = $listeEnseignants->fetch_object()) {

@@ -301,8 +301,8 @@ function getMatiereLSUN($mefClasse = NULL) {
  */
 function getMatiereOnMatiere($matiere) {
 	global $mysqli;
-	$sqlGetMatiereOnMatiere = "SELECT * FROM matieres WHERE matiere = '$matiere' ";
-	//echo $sqlGetMatiereOnMatiere.";<br />";
+	$sqlGetMatiereOnMatiere = "SELECT * FROM matieres WHERE matiere = '$matiere';";
+	//echo "getMatiereOnMatiere($matiere):<br />".$sqlGetMatiereOnMatiere."<br /><br />";
 	$resultchargeDB = $mysqli->query($sqlGetMatiereOnMatiere);
 	$retour = $resultchargeDB->fetch_object();
 	return $retour;
@@ -1048,7 +1048,6 @@ function assureDisciplinePresente($refDisciplines) {
 			$noeudDiscipline->appendChild($attDiscipline);
 		}
 		$disciplines->appendChild($noeudDiscipline);
-			
 	}
 
 }
