@@ -2252,7 +2252,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 			if(h>0) {
 				h_min=h_min+h+'&nbsp;h';
 
-				if((m>0)||(sec>0)) {
+				if((m>0)||(s>0)) {
 					if(m<10) {
 						m='0'+m;
 					}
