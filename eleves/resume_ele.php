@@ -1028,9 +1028,9 @@ Une absence de correction de votre adresse par exemple pourrait avoir des consé
 //=================================
 echo "<script type='text/javascript'>
 	// Action lancée lors du clic dans le div_edt
-	function action_edt_cours(id_cours) {
+	function action_edt_cours(id_cours,ts) {
 		//alert(id_cours);
-		new Ajax.Updater($('div_cdt_contenu'),'".$_SERVER['PHP_SELF']."?login_eleve=".$login_eleve."&id_cours='+id_cours+'&mode=update_div_cdt&id_classe=".$id_classe."&display_date=".$display_date."',{method: 'get'});
+		new Ajax.Updater($('div_cdt_contenu'),'".$_SERVER['PHP_SELF']."?login_eleve=".$login_eleve."&id_cours='+id_cours+'&mode=update_div_cdt&id_classe=".$id_classe."&display_date=".$display_date."&ts='+ts,{method: 'get'});
 		//afficher_div('edt_classe','y',-20,20);
 
 	}

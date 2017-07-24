@@ -113,6 +113,12 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 	else {
 		$lig=mysqli_fetch_object($res);
 
+		/*
+		if(isset($_GET['ts'])) {
+			echo "<p>\$_GET['ts']=".$_GET['ts']."</p>";
+		}
+		*/
+
 		// Afficher des détails sur le créneau
 		echo "<p>Cours du ".$lig->jour_semaine;
 		if($lig->heuredeb_dec==0) {
@@ -146,6 +152,47 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 
 		}
 		echo "</p>";
+
+		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		// 20170525
+		$num_semaine_annee=isset($_POST['num_semaine_annee']) ? $_POST['num_semaine_annee'] : (isset($_GET['num_semaine_annee']) ? $_GET['num_semaine_annee'] : NULL);
+		if((isset($num_semaine_annee))&&(preg_match("/^[0-9]{1,}\|[0-9]{4}$/", $num_semaine_annee))) {
+			$tmp_tab_heure_debut=explode(":", $lig->heuredebut_definie_periode);
+			$tmp_tab=explode("|", $num_semaine_annee);
+
+// Les messages d'alerte déposés ne le sont pas pour la bonne date/heure
+/*
+echo "\$num_semaine_annee=$num_semaine_annee";
+echo "<pre>";
+print_r($lig);
+echo "</pre>";
+
+echo "<pre>";
+print_r($tmp_tab);
+echo "</pre>";
+*/
+			if(!isset($tmp_tab[1])) {
+				$display_date=strftime("%d/%m/%Y");
+				$affichage=strftime("%u");
+			}
+			else {
+				$tmp_tab2=get_days_from_week_number($tmp_tab[0] ,$tmp_tab[1]);
+				/*
+				echo "<pre>";
+				print_r($tmp_tab2);
+				echo "</pre>";
+				*/
+				if(isset($tmp_tab2['num_jour'][$affichage])) {
+					$display_date=$tmp_tab2['num_jour'][$affichage]['jjmmaaaa'];
+				}
+				else {
+					$display_date=$tmp_tab2['num_jour'][1]['jjmmaaaa'];
+					$affichage=1;
+				}
+			}
+		}
+		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 		if($lig->id_groupe!=0) {
 			$current_group=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
@@ -298,17 +345,23 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 
 		// Récupérer l'heure du créneau
 		if(peut_poster_message($_SESSION['statut'])) {
-			$ts=time();
-			if(mb_strtolower(strftime("%A"))!=$lig->jour_semaine) {
-				for($i=1;$i<7;$i++) {
-					$ts+=3600*24;
-					if(mb_strtolower(strftime("%A", $ts))==$lig->jour_semaine) {
-						break;
+			if(isset($_GET['ts'])) {
+				//echo "<p>\$_GET['ts']=".$_GET['ts']."</p>";
+				$ts=$_GET['ts'];
+			}
+			else {
+				$ts=time();
+				if(mb_strtolower(strftime("%A"))!=$lig->jour_semaine) {
+					for($i=1;$i<7;$i++) {
+						$ts+=3600*24;
+						if(mb_strtolower(strftime("%A", $ts))==$lig->jour_semaine) {
+							break;
+						}
 					}
 				}
 			}
 
-			echo "<a href='../mod_alerte/form_message.php?message_envoye=y&login_dest=".$lig->login_prof."&date_visibilite=".strftime("%d/%m/%Y", $ts)."&heure_visibilite=".strftime("%H:%M:%S").add_token_in_url()."' title=\"Déposer une alerte à destination de ".civ_nom_prenom($lig->login_prof)."\" target='_blank'><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerte' />Déposer une alerte/rappel, pour ".civ_nom_prenom($lig->login_prof).", à afficher le ".strftime("%d/%m/%Y", $ts)." à ".strftime("%H:%M")."</a><br />";
+			echo "<a href='../mod_alerte/form_message.php?message_envoye=y&login_dest=".$lig->login_prof."&date_visibilite=".strftime("%d/%m/%Y", $ts)."&heure_visibilite=".strftime("%H:%M:%S", $ts).add_token_in_url()."' title=\"Déposer une alerte à destination de ".civ_nom_prenom($lig->login_prof)."\nà afficher (par défaut) le ".strftime("%d/%m/%Y", $ts)." à ".strftime("%H:%M", $ts).",\nmais vous pourrez modifier la date de visibilité/affichage avant de valider.\" target='_blank'><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerte' />Déposer une alerte/rappel, pour ".civ_nom_prenom($lig->login_prof).", à afficher le ".strftime("%d/%m/%Y", $ts)." à ".strftime("%H:%M", $ts)."</a><br />";
 		}
 	}
 
@@ -1645,11 +1698,11 @@ echo "<!--div id='div_action_edt'></div-->
 
 <script type='text/javascript'>
 	// Action lancée lors du clic dans le div_edt
-	function action_edt_cours(id_cours) {
+	function action_edt_cours(id_cours, ts) {
 		// Actuellement, aucune action n'est lancée.
 		// La fonction est là pour éviter une erreur JavaScript
 
-		new Ajax.Updater($('div_action_edt'),'".$_SERVER['PHP_SELF']."?action_js=y&id_cours='+id_cours+'&num_semaine_annee=".$num_semaine_annee."&affichage=".$affichage."',{method: 'get'});
+		new Ajax.Updater($('div_action_edt'),'".$_SERVER['PHP_SELF']."?action_js=y&id_cours='+id_cours+'&num_semaine_annee=".$num_semaine_annee."&ts='+ts+'&affichage=".$affichage."',{method: 'get'});
 
 		afficher_div('infobulle_action_edt', 'y', 10, 10);
 		document.getElementById('infobulle_action_edt').style.zIndex=5000;

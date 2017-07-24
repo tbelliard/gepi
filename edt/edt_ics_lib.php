@@ -1147,6 +1147,7 @@ function nom_ts_vacances($ts, $id_classe) {
 	}
 }
 
+/*
 // Cette fonction fonctionne mal si l'EDT est mal remplit:
 // Si un élève a deux cours en même temps (parce qu'il y a une erreur de remplissage de l'EDT ou une erreur d'affectation dans des groupes),
 // alors on a deux cadres l'un sur l'autre.
@@ -1230,18 +1231,14 @@ function affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $afficha
 	$num_semaine=$tab[0];
 	$annee=$tab[1];
 
-	/*
-	$_SESSION['edt_ics_num_semaine']=$num_semaine;
-	$_SESSION['edt_ics_annee']=$annee;
-	*/
+	//$_SESSION['edt_ics_num_semaine']=$num_semaine;
+	//$_SESSION['edt_ics_annee']=$annee;
 
 	$jours=get_days_from_week_number($num_semaine, $annee);
 
-	/*
-	echo "<pre>";
-	print_r($jours);
-	echo "</pre>";
-	*/
+	//echo "<pre>";
+	//print_r($jours);
+	//echo "</pre>";
 
 	$info_type_semaine="";
 	$info_type_semaine_html="";
@@ -1742,6 +1739,7 @@ function affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $afficha
 
 	return $html;
 }
+*/
 
 function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	global $ts_debut_jour, $ts_debut_jour_suivant, $ts_display_date, $display_date, $tab_group_edt, $tab_couleur_matiere, $CDTPeutPointerTravailFait;
@@ -2471,7 +2469,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 
 		<div style='float:right; width:16px;'>".img_calendrier_js("display_date", "img_bouton_display_date")."</div>
 
-		<span onclick=\"action_edt_cours('')\" title=\"Cliquez...\">".ucfirst($jours['num_jour'][$affichage]['nom_jour'])."</span><br />
+		<span onclick=\"action_edt_cours('', '')\" title=\"Cliquez...\">".ucfirst($jours['num_jour'][$affichage]['nom_jour'])."</span><br />
 		<span style='font-size:x-small'>".$jours['num_jour'][$affichage]['jjmmaaaa']."</span>$info_type_semaine_html
 	</div>";
 
@@ -3181,6 +3179,12 @@ mysql>
 							}
 
 							if($afficher_l_enseignement=="y") {
+								// 20170724
+								$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['ts_debut']=$ts_debut;
+								if($debug_edt=="y") {
+									$html.="\$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['ts_debut']=".$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['ts_debut']."<br />";
+								}
+
 								$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
 
 								$current_group=$tab_group_edt[$lig->id_groupe];
@@ -3853,7 +3857,7 @@ mysql>
 								if((isset($tab2[$loop]['id_cours']))&&((!isset($tab2[$loop]['type_cours']))||($tab2[$loop]['type_cours']!="remplacement"))) {
 									//alert('".$tab2[$loop]['type_cours']."');
 									$html.="
-										onclick=\"action_edt_cours('".$tab2[$loop]['id_cours']."')\"";
+										onclick=\"action_edt_cours('".$tab2[$loop]['id_cours']."', '".(isset($tab2[$loop]['ts_debut']) ? $tab2[$loop]['ts_debut'] : "")."')\"";
 								}
 								elseif((isset($tab2[$loop]['type_cours']))&&($tab2[$loop]['type_cours']=="remplacement")) {
 									$html.="
@@ -3863,6 +3867,16 @@ mysql>
 										title=\"\"";
 									*/
 								}
+
+								if($debug_edt=="y") {
+									$html.="
+										title=\"";
+									foreach($tab2[$loop] as $key => $value) {
+										$html.="\$tab2[$loop][$key]=".(htmlentities($value))."\n";
+									}
+									$html.="\"";
+								}
+
 								$html.=">";
 								// DEBUG:
 								$chaine_debug="";
