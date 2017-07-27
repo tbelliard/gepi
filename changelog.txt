@@ -22,7 +22,9 @@ Genèse des classes:
 
 Général:
 - Possibilité de saisir les modalités d'accompagnement en compte scolarité
-  (conditionné par un droit à donner dans Gestion génrale/Droits d'accès).
+  (conditionné par un droit à donner dans Gestion générale/Droits d'accès).
+- Possibilité de saisir/corriger les numéros de téléphone et mail en compte cpe et scolarité.
+  (conditionné pour les CPE par un droit à donner dans Gestion générale/Droits d'accès).
 
 Gepi-1.7.1 (30/03/2017)
 ===========================

@@ -6662,4 +6662,71 @@ function lien_valeur_unzipped_max_filesize() {
 		return $unzipped_max_filesize." octets <img src='$gepiPath/images/icons/ico_question_petit.png' class='icone16' alt='Info' title=\"Valeur qui peut être modifiée en administrateur dans Gestion générale/Configuration générale/\" />";
 	}
 }
+
+
+function necessaire_modif_tel_resp_ele() {
+	global $tabdiv_infobulle;
+	global $gepiPath;
+
+	$retour="";
+
+	$texte_infobulle="<div id='div_modif_tel_resp_ou_ele'></div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_modif_tel_resp_ou_ele', "Modifier/corriger","",$texte_infobulle,"",40,0,'y','y','n','n');
+	$retour.="
+<script type='text/javascript'>
+	function affiche_corrige_tel_resp(pers_id) {
+		//alert('plop');
+		new Ajax.Updater($('div_modif_tel_resp_ou_ele'), '$gepiPath/gestion/saisie_contact.php?mode=js&pers_id='+pers_id,{method: 'get'});
+		afficher_div('div_infobulle_modif_tel_resp_ou_ele', 'y', 10, 10);
+	}
+	function affiche_corrige_tel_ele(login_ele) {
+		new Ajax.Updater($('div_modif_tel_resp_ou_ele'), '$gepiPath/gestion/saisie_contact.php?mode=js&login_ele='+login_ele,{method: 'get'});
+		afficher_div('div_infobulle_modif_tel_resp_ou_ele', 'y', 10, 10);
+	}
+
+	function valider_correction_tel() {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		pers_id='';
+		if(document.getElementById('pers_id')) {
+			pers_id=document.getElementById('pers_id').value;
+		}
+		login_ele='';
+		if(document.getElementById('login_ele')) {
+			login_ele=document.getElementById('login_ele').value;
+		}
+
+		tel_pers=document.getElementById('tel_pers').value;
+		tel_port=document.getElementById('tel_port').value;
+		tel_prof=document.getElementById('tel_prof').value;
+		mel='';
+		if(document.getElementById('mel')) {
+			mel=document.getElementById('mel').value;
+		}
+		email='';
+		if(document.getElementById('email')) {
+			mel=document.getElementById('email').value;
+		}
+
+		//new Ajax.Updater($('div_modif_tel_resp_ou_ele'), '$gepiPath/gestion/saisie_contact.php?mode=js&valide_correction_telephone&pers_id='+pers_id,{method: 'get'});
+		//afficher_div('div_infobulle_modif_tel_resp_ou_ele', 'y', 10, 10);
+
+		new Ajax.Updater($('div_modif_tel_resp_ou_ele'),'$gepiPath/gestion/saisie_contact.php',{method: 'post',
+		parameters: {
+			mode: 'js',
+			valide_correction_telephone: 'y',
+			pers_id: pers_id,
+			login_ele: login_ele,
+			tel_pers: tel_pers,
+			tel_port: tel_port,
+			tel_prof: tel_prof,
+			mel: mel,
+			email: email,
+			csrf_alea: csrf_alea
+		}});
+
+	}
+</script>";
+
+	return $retour;
+}
 ?>

@@ -7114,6 +7114,7 @@ function get_tel_resp_ele($ele_login) {
 	if($res->num_rows > 0) {
 		while($lig = $res->fetch_object()) {
 			$tab_tel['responsable'][$cpt_resp]=array();
+			$tab_tel['responsable'][$cpt_resp]['pers_id']=$lig->pers_id;
 			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
 			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
 			if($lig->tel_pers!='') {
@@ -7146,6 +7147,7 @@ function get_tel_resp_ele($ele_login) {
 	if($res->num_rows > 0) {
 		while($lig=$res->fetch_object()) {
 			$tab_tel['responsable'][$cpt_resp]=array();
+			$tab_tel['responsable'][$cpt_resp]['pers_id']=$lig->pers_id;
 			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
 			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
 			if($lig->tel_pers!='') {
@@ -7183,6 +7185,12 @@ function get_tel_resp_ele($ele_login) {
  * @return array Tableau HTML des numéros de tel.
  */
 function tableau_tel_resp_ele($ele_login) {
+	global $tabdiv_infobulle;
+	global $mysqli;
+	global $gepiPath;
+
+	// Appeler, avant la présente fonction necessaire_modif_tel_resp_ele() parce qu'on peut appeler plusieurs fois tableau_tel_resp_ele() dans la même page.
+
 	$retour="";
 	$tab_tel=get_tel_resp_ele($ele_login);
 
@@ -7190,6 +7198,15 @@ function tableau_tel_resp_ele($ele_login) {
 	$tab_style[-1]="pair";
 
 	if(((isset($tab_tel['responsable']))&&(count($tab_tel['responsable'])>0))||((isset($tab_tel['eleve']))&&(count($tab_tel['eleve'])>0))) {
+		// 20170724 : Ajouter le script javascript et l'infobulle, d'où des tab_div_infobulle en global,...
+		$acces_saisie_tel_resp=acces_saisie_telephone("responsable");
+		$acces_saisie_tel_ele=acces_saisie_telephone("eleve");
+		/*
+		if($acces_saisie_tel_resp||$acces_saisie_tel_ele) {
+			$retour.="";
+		}
+		*/
+
 		$retour.="<table class='boireaus' summary='Tableau des numéros de téléphone'>\n";
 		//$retour.="<table class='tb_absences' summary='Tableau des numéros de telephone'>\n";
 		$retour.="<tr>\n";
@@ -7198,6 +7215,10 @@ function tableau_tel_resp_ele($ele_login) {
 		$retour.="<th>Personnel</th>\n";
 		$retour.="<th>Portable</th>\n";
 		$retour.="<th>Professionnel</th>\n";
+		// 20170724 : Ajouter une colonne si l'utilisateur a le droit de saisir/modifier les numéros
+		if($acces_saisie_tel_resp||$acces_saisie_tel_ele) {
+			$retour.="<th title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></th>\n";
+		}
 		$retour.="</tr>\n";
 
 		$alt=1;
@@ -7217,6 +7238,14 @@ function tableau_tel_resp_ele($ele_login) {
 			$retour.="<td>";
 			if(isset($tab_tel['responsable'][$i]['tel_prof'])) {$retour.=affiche_numero_tel_sous_forme_classique($tab_tel['responsable'][$i]['tel_prof']);}
 			$retour.="</td>\n";
+			// 20170724 : Ajouter une colonne si l'utilisateur a le droit de saisir/modifier les numéros
+			if($acces_saisie_tel_resp||$acces_saisie_tel_ele) {
+				$retour.="<td title=\"Modifier/corriger les numéros de téléphone, email\">";
+				if($acces_saisie_tel_resp) {
+					$retour.="<a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_tel['responsable'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp(".$tab_tel['responsable'][$i]['pers_id'].");return false;\" target='_blank'><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a>";
+				}
+				$retour.="</td>\n";
+			}
 			$retour.="</tr>\n";
 		}
 
@@ -7236,6 +7265,15 @@ function tableau_tel_resp_ele($ele_login) {
 			$retour.="<td>";
 			if(isset($tab_tel['eleve']['tel_prof'])) {$retour.=affiche_numero_tel_sous_forme_classique($tab_tel['eleve']['tel_prof']);}
 			$retour.="</td>\n";
+
+			// 20170724 : Ajouter une colonne si l'utilisateur a le droit de saisir/modifier les numéros
+			if($acces_saisie_tel_resp||$acces_saisie_tel_ele) {
+				$retour.="<td title=\"Modifier/corriger les numéros de téléphone, email\">";
+				if($acces_saisie_tel_ele) {
+					$retour.="<a href='$gepiPath/gestion/saisie_contact.php?login_ele=".$ele_login."' onclick=\"affiche_corrige_tel_ele('".$ele_login."');return false;\" target='_blank'><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a>";
+				}
+				$retour.="</td>\n";
+			}
 
 			$retour.="</tr>\n";
 		}
@@ -17067,6 +17105,26 @@ function acces_saisie_modalites_accompagnement() {
 	}
 	else {
 		if(($_SESSION["statut"]=="scolarite")&&(getSettingAOui("saisieModalitesAccompagnementScol"))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+function acces_saisie_telephone($statut) {
+	if($_SESSION["statut"]=="administrateur") {
+		return true;
+	}
+	elseif($_SESSION["statut"]=="scolarite") {
+		return true;
+	}
+	elseif(!acces("/gestion/saisie_contact.php", $_SESSION["statut"])) {
+		return false;
+	}
+	else {
+		if(($_SESSION["statut"]=="cpe")&&(getSettingAOui("GepiAccesSaisieTelephone".ucfirst(strtolower($statut))."Cpe"))) {
 			return true;
 		}
 		else {

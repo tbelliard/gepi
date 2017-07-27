@@ -179,7 +179,7 @@ if(isset($_POST['suppr_saisies_cochees'])) {
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Absences du jour";
-$utilisation_jsdivdrag = "non";
+//$utilisation_jsdivdrag = "non";
 $utilisation_scriptaculous="ok";
 $utilisation_win = 'oui';
 $_SESSION['cacher_header'] = "y";
@@ -456,6 +456,8 @@ $eleve_col = $query
                 ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
                 ->distinct()->paginate($page_number, $item_per_page);
 
+// 20170726
+echo necessaire_modif_tel_resp_ele();
 ?>
 	<div style="text-align: center">
 		<!-- <p class="expli_page choix_fin"> -->

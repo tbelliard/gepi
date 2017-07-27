@@ -1115,6 +1115,16 @@ $texteItem="a le droit d'accéder à toutes les fiches élève<br />
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesSaisieTelephoneResponsableCpe';
+$texteItem="a le droit de saisir/corriger les numéros de téléphone et mail des responsables.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesSaisieTelephoneEleveCpe';
+$texteItem="a le droit de saisir/corriger les numéros de téléphone et mail des élèves.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='AccesDerniereConnexionEleCpe';
 $texteItem="a accès à la date de la dernière connexion des ".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))

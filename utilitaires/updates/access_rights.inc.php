@@ -1935,6 +1935,8 @@ autre='F',
 description='Création d enseignement moyenne',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/gestion/saisie_contact.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Saisie contact téléphonique, mail',statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

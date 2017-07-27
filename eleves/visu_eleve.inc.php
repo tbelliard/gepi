@@ -1229,6 +1229,11 @@ Patientez pendant l'extraction des données... merci.
 		//====================================
 
 		//=====================================================================================
+		// 20170727
+		echo necessaire_modif_tel_resp_ele();
+		$acces_saisie_tel_resp=acces_saisie_telephone("responsable");
+		$acces_saisie_tel_ele=acces_saisie_telephone("eleve");
+		//=====================================================================================
 
 		// On passe aux cadres contenu des onglets
 
@@ -1353,7 +1358,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 		}
 
-		echo "<div style='margin-top:1em; text-align:center; float:right; width:10em;' class='fieldset_opacite50' title=\"Modalités d'accompagnement\">";
+		echo "<div style='margin-top:1em; text-align:center; float:right; width:10em;margin-right:2px;' class='fieldset_opacite50' title=\"Modalités d'accompagnement\">";
 		$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($ele_login);
 
 		if(isset($tab_modalites_accompagnement_eleve["code"])) {
@@ -1389,8 +1394,9 @@ Patientez pendant l'extraction des données... merci.
 			echo "<br /><a href='../gestion/saisie_modalites_accompagnement.php?login_eleve=".$ele_login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" style='font-size:small; text-decoration:none; color:black;'><img src='../images/icons/add.png' class='icone16' alt='Add' />Ajouter/Modifier des modalités d'accompagnement.</a>";
 		}
 		echo "</div>\n";
+		// Fin des DIV float sur la droite de l'onglet
 
-
+		// Tableau des infos élève sur la gauche de l'onglet
 		echo "<table border='0' summary='Infos élève'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
@@ -1458,23 +1464,29 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo $tab_ele['mef']."</td></tr>\n";
 
+			// 20170727
+			$chaine_acces_modif_tel="";
+			if($acces_saisie_tel_ele) {
+				$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?login_ele=".$ele_login."' onclick=\"affiche_corrige_tel_ele('".$ele_login."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
+			}
+
 			if((isset($tab_ele["tel_pers"]))&&($tab_ele["tel_pers"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
 				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.pers&nbsp;:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['tel_pers'])."</td></tr>\n";
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.pers&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_pers'])."</td></tr>\n";
 			}
 
 			if((isset($tab_ele["tel_port"]))&&($tab_ele["tel_port"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
 				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.port&nbsp;:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['tel_port'])."</td></tr>\n";
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.port&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_port'])."</td></tr>\n";
 			}
 
 			if((isset($tab_ele["tel_prof"]))&&($tab_ele["tel_prof"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
 				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.prof&nbsp;:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['tel_prof'])."</td></tr>\n";
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.prof&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_prof'])."</td></tr>\n";
 			}
 
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>";
+			echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>".$chaine_acces_modif_tel;
 			$tmp_date=getdate();
 			//echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
 			echo "<a href='mailto:".$tab_ele['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
@@ -1557,22 +1569,29 @@ Patientez pendant l'extraction des données... merci.
 						echo "<tr class='lig$alt'><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
 						$alt=$alt*(-1);
 						echo "<tr class='lig$alt'><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
+
+						// 20170727
+						$chaine_acces_modif_tel="";
+						if($acces_saisie_tel_resp) {
+							$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp(".$tab_ele['resp'][$i]['pers_id'].");return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
+						}
+
 						if($tab_ele['resp'][$i]['tel_pers']!='') {
 							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
 						}
 						if($tab_ele['resp'][$i]['tel_port']!='') {
 							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
 						}
 						if($tab_ele['resp'][$i]['tel_prof']!='') {
 							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
 						}
 						if($tab_ele['resp'][$i]['mel']!='') {
 							$tmp_date=getdate();
 							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>";
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>".$chaine_acces_modif_tel;
 							echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 							echo ",%0d%0aCordialement.'>";
@@ -1826,22 +1845,29 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
+
+							// 20170727
+							$chaine_acces_modif_tel="";
+							if($acces_saisie_tel_resp) {
+								$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp(".$tab_ele['resp'][$i]['pers_id'].");return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
+							}
+
 							if($tab_ele['resp'][$i]['tel_pers']!='') {
 								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
 							}
 							if($tab_ele['resp'][$i]['tel_port']!='') {
 								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
 							}
 							if($tab_ele['resp'][$i]['tel_prof']!='') {
 								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
 							}
 							if($tab_ele['resp'][$i]['mel']!='') {
 								$tmp_date=getdate();
 								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>";
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>".$chaine_acces_modif_tel;
 								echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 								if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 								echo ",%0d%0aCordialement.'>";
