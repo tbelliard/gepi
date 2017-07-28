@@ -54,6 +54,7 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 if((isset($id_classe))&&(!preg_match("/^[0-9]{1,}$/", $id_classe))) {unset($id_classe);}
 $per=isset($_POST['per']) ? $_POST['per'] : (isset($_GET['per']) ? $_GET['per'] : NULL);
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+$mode2=isset($_POST['mode2']) ? $_POST['mode2'] : (isset($_GET['mode2']) ? $_GET['mode2'] : NULL);
 
 if(isset($valider_modele_mail)) {
 	$MsgMailVerifRemplissageBulletins=preg_replace('/(\\\n)+/',"\n",$_POST['MsgMailVerifRemplissageBulletins']);
@@ -457,6 +458,30 @@ Les saisies/modifications sont possibles.";
 	}
 	echo "</tr>\n";
 
+	$alt=1;
+	$i="1";
+	echo "<tr class='lig$alt white_hover'>\n";
+	echo "<th>Notes et appréciations<br />sans AID de type EPI/AP/Parcours</th>\n";
+	while ($i < $nb_periode) {
+		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=note_app&mode2=sans_aid_epi_ap_parcours'>";
+		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
+		echo "</td>\n";
+		$i++;
+	}
+	echo "</tr>\n";
+
+	$alt=1;
+	$i="1";
+	echo "<tr class='lig$alt white_hover'>\n";
+	echo "<th>Notes et appréciations<br />sans AID</th>\n";
+	while ($i < $nb_periode) {
+		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=note_app&mode2=sans_aid'>";
+		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
+		echo "</td>\n";
+		$i++;
+	}
+	echo "</tr>\n";
+
 	$alt=$alt*(-1);
 	$i="1";
 	echo "<tr class='lig$alt white_hover'>\n";
@@ -604,8 +629,12 @@ Les saisies/modifications sont possibles.";
 	echo "<div style='float:left;' class='bold'>
 	<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	// =================================
+	$complement_url="";
+	if(isset($mode2)) {
+		$complement_url="&mode2=".$mode2;
+	}
 	if(isset($id_class_prec)) {
-		if($id_class_prec!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode' title=\"Classe précédente : $nom_classe_prec\"><img src='../images/icons/back.png' class='icone16' alt='Précédente'></a>\n";}
+		if($id_class_prec!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode".$complement_url."' title=\"Classe précédente : $nom_classe_prec\"><img src='../images/icons/back.png' class='icone16' alt='Précédente'></a>\n";}
 	}
 	if($chaine_options_classes!="") {
 		echo " <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
@@ -613,9 +642,12 @@ Les saisies/modifications sont possibles.";
 		echo "</select>\n";
 		echo "<input type='hidden' name='per' value='$per' />\n";
 		echo "<input type='hidden' name='mode' value='$mode' />\n";
+		if(isset($mode2)) {
+			echo "<input type='hidden' name='mode2' value='$mode2' />\n";
+		}
 	}
 	if(isset($id_class_suiv)) {
-		if($id_class_suiv!=0) {echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode' title=\"Classe suivante : $nom_classe_suiv\"><img src='../images/icons/forward.png' class='icone16' alt='Suivante'></a>\n";}
+		if($id_class_suiv!=0) {echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode".$complement_url."' title=\"Classe suivante : $nom_classe_suiv\"><img src='../images/icons/forward.png' class='icone16' alt='Suivante'></a>\n";}
 	}
 	echo "
 	</form>
@@ -709,10 +741,14 @@ Les saisies/modifications sont possibles.";
 	 | 
 		<input type='hidden' name='per' value='$per' />
 		<input type='hidden' name='mode' value='$mode' />";
+		if(isset($mode2)) {
+			echo "
+		<input type='hidden' name='mode2' value='$mode2' />";
+		}
 			if(isset($id_class_prec)) {
 				if($id_class_prec!=0) {
 					echo "
-		<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode' title=\"Classe précédente (par date de conseil de classe) : $info_classe_prec\"><img src='../images/icons/back.png' class='icone16' alt='Précédente'></a>\n";}
+		<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode".$complement_url."' title=\"Classe précédente (par date de conseil de classe) : $info_classe_prec\"><img src='../images/icons/back.png' class='icone16' alt='Précédente'></a>\n";}
 			}
 			echo "
 		<select name='id_classe' onchange=\"document.forms['form2'].submit();\" title=\"Classes triées par date du prochain conseil.\">
@@ -721,7 +757,7 @@ Les saisies/modifications sont possibles.";
 			if(isset($id_class_suiv)) {
 				if($id_class_suiv!=0) {
 					echo "
-		<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode' title=\"Classe suivante (par date de conseil de classe) : $info_classe_suiv\"><img src='../images/icons/forward.png' class='icone16' alt='Suivante'></a>\n";}
+		<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode".$complement_url."' title=\"Classe suivante (par date de conseil de classe) : $info_classe_suiv\"><img src='../images/icons/forward.png' class='icone16' alt='Suivante'></a>\n";}
 			}
 			echo "
 	</form>
@@ -892,7 +928,7 @@ Les saisies/modifications sont possibles.";
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
 							//echo "<br /><br /><br />\n";
-							echo "<p style='border:1px solid black; margin-bottom:5px; background-image: url(\"../images/background/opacite50.png\");'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+							echo "<p style='border:1px solid black; margin-bottom:5px;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 							//echo "<br />\n";
 							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 						}
@@ -979,7 +1015,7 @@ Les saisies/modifications sont possibles.";
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
 							//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j] ";
-							echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+							echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 							//echo "<br />\n";
 							//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span> :";
 							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
@@ -1052,7 +1088,7 @@ Les saisies/modifications sont possibles.";
 				$bulletin_rempli = 'no';
 				if ($affiche_nom != 0) {
 					//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j]<br />\n";
-					echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+					echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 					//echo "<br />\n";
 					//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span> :";
 					echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
@@ -1093,86 +1129,44 @@ Les saisies/modifications sont possibles.";
 			//
 			//Vérification des aid
 			//
-			$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE display_bulletin!='n' ORDER BY nom");
-			$nb_aid = mysqli_num_rows($call_data);
-			$z=0;
-			while ($z < $nb_aid) {
-				$display_begin = @old_mysql_result($call_data, $z, "display_begin");
-				$display_end = @old_mysql_result($call_data, $z, "display_end");
-				if (($per >= $display_begin) and ($per <= $display_end)) {
-					$indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
-					$type_note = @old_mysql_result($call_data, $z, "type_note");
-					$call_data2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-					$nom_aid = @old_mysql_result($call_data2, 0, "nom");
-					$aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='$id_eleve[$j]' and indice_aid='$indice_aid')");
-					$aid_id = @old_mysql_result($aid_query, 0, "id_aid");
-					if ($aid_id != '') {
-						$aid_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$id_eleve[$j]' AND periode='$per' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-						$query_resp = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid = '$aid_id' and u.login = j.id_utilisateur and j.indice_aid='$indice_aid')");
-						$nb_prof = mysqli_num_rows($query_resp);
-						//
-						// Vérification des appréciations
-						//
-						$aid_app = @old_mysql_result($aid_app_query, 0, "appreciation");
-						if ($aid_app == '') {
-							$bulletin_rempli = 'no';
-							if ($affiche_nom != 0) {
-								//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j]<br />\n";
-								echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
-								//echo "<br />\n";
-								//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span>&nbsp;:";
-								echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
-							}
-							echo "<br /><br />\n";
-							echo "<b>Appréciation $nom_aid </b> non remplie (";
-							$m=0;
-							$virgule = 1;
-							while ($m < $nb_prof) {
-								$login_prof = @old_mysql_result($query_resp, $m, 'login');
-								$email = retourne_email($login_prof);
-								$nom_prof = @old_mysql_result($query_resp, $m, 'nom');
-								$prenom_prof = @old_mysql_result($query_resp, $m, 'prenom');
-								//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
-								//if($email!="") {
-								if(($email!="")&&(check_mail($email))) {
-									$sujet_mail="[Gepi]: Appreciation AID manquante: ".$eleve_nom[$j];
-									$message_mail="Bonjour,\r\n\r\nCordialement";
-									echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
-								}
-								else{
-									echo casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof);
-								}
-								$m++;
-								if ($m == $nb_prof) {$virgule = 0;}
-								if ($virgule == 1) {echo ", ";}
-							}
-							echo ")\n";
-							$affiche_nom = 0;
-
-							$temoin_aid++;
-						}
-						//
-						// Vérification des moyennes
-						//
-						$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
-						$periode_max = mysqli_num_rows($periode_query);
-						if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
-						if (($type_note=='every') or (($type_note=='last') and ($per == $last_periode_aid))) {
-							$aid_note = @old_mysql_result($aid_app_query, 0, "note");
-							$aid_statut = @old_mysql_result($aid_app_query, 0, "statut");
-
-
-							if (($aid_note == '') or ($aid_statut == 'other')) {
+			if((!isset($mode2))||($mode2!="sans_aid")) {
+				$complement_sql="";
+				if((isset($mode2))&&($mode2=="sans_aid_epi_ap_parcours")) {
+					$complement_sql=" AND type_aid='0'";
+				}
+				$sql="SELECT * FROM aid_config WHERE display_bulletin!='n'".$complement_sql." ORDER BY nom";
+				$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_aid = mysqli_num_rows($call_data);
+				$z=0;
+				while ($z < $nb_aid) {
+					$display_begin = @old_mysql_result($call_data, $z, "display_begin");
+					$display_end = @old_mysql_result($call_data, $z, "display_end");
+					if (($per >= $display_begin) and ($per <= $display_end)) {
+						$indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
+						$type_note = @old_mysql_result($call_data, $z, "type_note");
+						$call_data2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+						$nom_aid = @old_mysql_result($call_data2, 0, "nom");
+						$aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='$id_eleve[$j]' and indice_aid='$indice_aid')");
+						$aid_id = @old_mysql_result($aid_query, 0, "id_aid");
+						if ($aid_id != '') {
+							$aid_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$id_eleve[$j]' AND periode='$per' and id_aid='$aid_id' and indice_aid='$indice_aid')");
+							$query_resp = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid = '$aid_id' and u.login = j.id_utilisateur and j.indice_aid='$indice_aid')");
+							$nb_prof = mysqli_num_rows($query_resp);
+							//
+							// Vérification des appréciations
+							//
+							$aid_app = @old_mysql_result($aid_app_query, 0, "appreciation");
+							if ($aid_app == '') {
 								$bulletin_rempli = 'no';
 								if ($affiche_nom != 0) {
 									//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j]<br />\n";
-									echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+									echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 									//echo "<br />\n";
-									//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span>&nbsp;:";
+									//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span>&nbsp;:";
 									echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 								}
 								echo "<br /><br />\n";
-								echo "<b>Note $nom_aid </b>non remplie (";
+								echo "<b>Appréciation $nom_aid </b> non remplie (";
 								$m=0;
 								$virgule = 1;
 								while ($m < $nb_prof) {
@@ -1183,7 +1177,7 @@ Les saisies/modifications sont possibles.";
 									//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 									//if($email!="") {
 									if(($email!="")&&(check_mail($email))) {
-										$sujet_mail="[Gepi]: Moyenne AID manquante: ".$eleve_nom[$j];
+										$sujet_mail="[Gepi]: Appreciation AID manquante: ".$eleve_nom[$j];
 										$message_mail="Bonjour,\r\n\r\nCordialement";
 										echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
 									}
@@ -1199,10 +1193,59 @@ Les saisies/modifications sont possibles.";
 
 								$temoin_aid++;
 							}
+							//
+							// Vérification des moyennes
+							//
+							$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+							$periode_max = mysqli_num_rows($periode_query);
+							if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
+							if (($type_note=='every') or (($type_note=='last') and ($per == $last_periode_aid))) {
+								$aid_note = @old_mysql_result($aid_app_query, 0, "note");
+								$aid_statut = @old_mysql_result($aid_app_query, 0, "statut");
+
+
+								if (($aid_note == '') or ($aid_statut == 'other')) {
+									$bulletin_rempli = 'no';
+									if ($affiche_nom != 0) {
+										//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j]<br />\n";
+										echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+										//echo "<br />\n";
+										//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span>&nbsp;:";
+										echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
+									}
+									echo "<br /><br />\n";
+									echo "<b>Note $nom_aid </b>non remplie (";
+									$m=0;
+									$virgule = 1;
+									while ($m < $nb_prof) {
+										$login_prof = @old_mysql_result($query_resp, $m, 'login');
+										$email = retourne_email($login_prof);
+										$nom_prof = @old_mysql_result($query_resp, $m, 'nom');
+										$prenom_prof = @old_mysql_result($query_resp, $m, 'prenom');
+										//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
+										//if($email!="") {
+										if(($email!="")&&(check_mail($email))) {
+											$sujet_mail="[Gepi]: Moyenne AID manquante: ".$eleve_nom[$j];
+											$message_mail="Bonjour,\r\n\r\nCordialement";
+											echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
+										}
+										else{
+											echo casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof);
+										}
+										$m++;
+										if ($m == $nb_prof) {$virgule = 0;}
+										if ($virgule == 1) {echo ", ";}
+									}
+									echo ")\n";
+									$affiche_nom = 0;
+
+									$temoin_aid++;
+								}
+							}
 						}
 					}
+					$z++;
 				}
-				$z++;
 			}
 		}
 
@@ -1218,7 +1261,7 @@ Les saisies/modifications sont possibles.";
 				$bulletin_rempli = 'no';
 				if ($affiche_nom != 0) {
 					//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j]<br />\n";
-					echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+					echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 					//echo "<br />\n";
 					//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span>&nbsp;:";
 					echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
@@ -1270,7 +1313,7 @@ Les saisies/modifications sont possibles.";
                 if ($nb == 0) {
                     $bulletin_rempli = 'no';
                     if ($affiche_nom != 0) {
-                        echo "<p style='border:1px solid black;'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]</span>";
+                        echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]</span>";
                     }
                     echo "<br /><br />\n";
                     echo "<b>Crédits ECTS</b> non remplis !";
