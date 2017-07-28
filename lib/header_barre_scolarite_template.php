@@ -440,6 +440,9 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '       <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().' title="Publipostage au format openDocument.org d\'après des données élèves">Publipostage OOo</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Impression PDF listes</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Export CSV listes</a></li>'."\n";
+		if (getSettingAOui("GepiListePersonnelles")) {
+			$menus .= '       <li><a href="'.$gepiPath.'/mod_listes_perso/index.php"'.insert_confirm_abandon().' title=\"Créer et imprimer des listes personnelles\">Listes personnelles</a></li>'."\n";
+		}
 		if(getSettingValue('active_module_trombinoscopes')=='y') {
 			$menus .= '       <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a>'."\n";
 			$menus .= '            <ul class="niveau3">'."\n";

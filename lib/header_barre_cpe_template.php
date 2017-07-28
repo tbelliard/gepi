@@ -336,6 +336,9 @@ if ($barre_plugin!="") {
 		$menus .= '       <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().'>Publipostage OOo</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Impression PDF listes</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Export CSV listes</a></li>'."\n";
+		if (getSettingAOui("GepiListePersonnelles")) {
+			$menus .= '       <li><a href="'.$gepiPath.'/mod_listes_perso/index.php"'.insert_confirm_abandon().' title=\"Créer et imprimer des listes personnelles\">Listes personnelles</a></li>'."\n";
+		}
 		$menus .= '       <li><a href="'.$gepiPath.'/statistiques/index.php"'.insert_confirm_abandon().'>Statistiques</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
