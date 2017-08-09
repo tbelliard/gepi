@@ -200,11 +200,12 @@ echo add_token_field();
 	<fieldset class="no_bordure">
 	  <legend class="invisible">Activation</legend>
 
+	<p>
 		<input type="radio"
 				 name="activer"
 				 id="activer_y"
 				 value="y"
-			 onchange='changement();'
+			 onchange='changement(); modif_style_acces_cdt_prof();'
 				<?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked='checked'"; ?> />
 		<label for='activer_y' style='cursor: pointer;'>
 		  Activer les cahiers de textes (<em>consultation et édition</em>)
@@ -214,14 +215,16 @@ echo add_token_field();
 				 name="activer" 
 				 id="activer_n" 
 				 value="n"
-			 onchange='changement();'
+			 onchange='changement(); modif_style_acces_cdt_prof();'
 				<?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked='checked'"; ?> />
 		<label for='activer_n' style='cursor: pointer;'>
 		  Désactiver les cahiers de textes (<em>consultation et édition</em>)
 		</label>
+	</p>
 
 	  <br />
 	  <br />
+	<p>
 		<input type="checkbox" 
 				 name="acces_archives_cdt" 
 				 id="acces_archives_cdt" 
@@ -232,9 +235,11 @@ echo add_token_field();
 		  Permettre l'accès aux archives de Cahiers de textes<br />
 		  (<em>dans le cas d'un abandon du CDT Gepi pour passer à un autre CDT, il peut néanmoins être intéressant de permettre aux professeurs de consulter leurs CDT d'années passées</em>)
 		</label>
+	</p>
 
 	  <br />
 	  <br />
+	<p id='p_acces_cdt_prof'>
 		<input type="checkbox" 
 				 name="acces_cdt_prof" 
 				 id="acces_cdt_prof" 
@@ -245,10 +250,35 @@ echo add_token_field();
 		  Dans le cas où les cahiers de textes sont désactivés, permettre néanmoins aux professeurs de saisir un cahier de texte personnel.<br />
 		  <em>(il leur sera clairement indiqué que ce cahier de textes ne peut pas être consulté par les élèves, responsables,...)</em>
 		</label>
+		<br />
+		Chaque professeur a alors la possibilité, dans <strong>Mon compte</strong>, d'afficher/masquer le lien vers ce CDT personnel.<br />
+		Par défaut,<br />
+		<input type='radio' name='acces_cdt_prof_afficher_lien' id='acces_cdt_prof_afficher_lien_y' value='y' onchange='changement();' <?php if (getSettingAOui("acces_cdt_prof_afficher_lien")) echo " checked='checked'"; ?> /><label for='acces_cdt_prof_afficher_lien_y'>Afficher le lien <em>(le professeur qui n'en veut pas devra désactiver l'affichage dans Mon compte)</em></label><br />
+		<input type='radio' name='acces_cdt_prof_afficher_lien' id='acces_cdt_prof_afficher_lien_n' value='n' onchange='changement();' <?php if (!getSettingAOui("acces_cdt_prof_afficher_lien")) echo " checked='checked'"; ?> /><label for='acces_cdt_prof_afficher_lien_n'>Ne pas afficher le lien <em>(le professeur qui veut utiliser le CDT perso devra activer l'affichage dans Mon compte)</em></label><br />
+		Il est possible d'afficher dans le CDT personnel, un lien vers le CDT officiel consulté par les élèves,...<br />
+		  Adresse URL du CDT officiel&nbsp;: 
+		<input type="text" 
+				 name="acces_cdt_prof_url_cdt_officiel" 
+				 id="acces_cdt_prof_url_cdt_officiel" 
+				 value="<?php echo getSettingValue("acces_cdt_prof_url_cdt_officiel"); ?>"
+			 onchange='changement();' />
+		  <em>(laisser vide pour ne pas afficher de lien)</em>
+	</p>
 
 	  </fieldset>
-	  
-	  
+
+	<script type='text/javascript'>
+		function modif_style_acces_cdt_prof() {
+			if(document.getElementById('activer_y').checked==true) {
+				document.getElementById('p_acces_cdt_prof').style.color='grey';
+			}
+			else {
+				document.getElementById('p_acces_cdt_prof').style.color='black';
+			}
+		}
+		modif_style_acces_cdt_prof();
+	</script>
+
 	  <h2>Version des cahiers de textes</h2>
 <?php $extensions = get_loaded_extensions();
   if(!in_array('pdo_mysql',$extensions)) {

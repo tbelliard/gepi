@@ -1272,7 +1272,7 @@ if ($eleve_col->isEmpty()) {
 					   onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
 			<?php
-			if ($utilisateur->getStatut() == 'professeur' && acces_cdt()) { 
+			if ($utilisateur->getStatut() == 'professeur' && affiche_lien_cdt()) { 
 				//$afficher_passer_au_cdt="y";
 				if(isset($id_groupe)) {
 					$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_texte' AND visible='n';";
@@ -1749,7 +1749,7 @@ if ($eleve['creneau_courant'] == $i) { ?>
 				   onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 		</p>
 <?php
-if ($utilisateur->getStatut() == 'professeur' && acces_cdt()) {
+if ($utilisateur->getStatut() == 'professeur' && affiche_lien_cdt()) {
 	if($afficher_passer_au_cdt=="y") {
 		if(getSettingValue("active_cahiers_texte")=='y') {
 	?>

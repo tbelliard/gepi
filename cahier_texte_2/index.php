@@ -205,7 +205,11 @@ if ($groups->isEmpty()) {
 
 if(!getSettingAOui("active_cahiers_texte")) {
 	// On doit avoir acces_cdt_prof=y
-	echo "<p style='text-align:center; color:red'>Ces cahiers de textes sont personnels. Ils ne sont pas accessibles des élèves, parents,...</p>";
+	echo "<p style='text-align:center; color:red'>Ces cahiers de textes sont personnels. Ils ne sont pas accessibles des élèves, parents,...";
+	if(getSettingValue("acces_cdt_prof_url_cdt_officiel")!="") {
+		echo "<br />Les CDT officiels <em>(consultés par les élèves,...)</em> sont à l'adresse <a href='".getSettingValue("acces_cdt_prof_url_cdt_officiel")."' target='_blank'>".getSettingValue("acces_cdt_prof_url_cdt_officiel")."</a>";
+	}
+	echo "</p>";
 }
 
 $nom_ou_description_groupe_cdt=getPref($_SESSION['login'], "nom_ou_description_groupe_cdt", "name");

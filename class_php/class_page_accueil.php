@@ -549,7 +549,7 @@ if(getSettingAOui('active_bulletins')) {
 	}
 
 	if ((($this->test_prof_matiere != "0") or ($this->statutUtilisateur!='professeur'))
-			and (acces_cdt()))
+			and (affiche_lien_cdt()))
 	  $this->creeNouveauItem("/cahier_texte/index.php",
 			  "Cahier de textes",
 			  "Cet outil vous permet de constituer un cahier de textes pour chacune de vos classes." );
@@ -1595,8 +1595,8 @@ if(getSettingAOui('active_bulletins')) {
 			"Consultation d'un ".$this->gepiSettings['denomination_eleve'],
 			"Ce menu vous permet de consulter dans une même page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevés de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.");
 
-	if(acces_cdt()) {
-		if((($this->statutUtilisateur=="professeur")&&(acces_cdt())) OR
+	if(affiche_lien_cdt()) {
+		if((($this->statutUtilisateur=="professeur")&&(affiche_lien_cdt())) OR
 			(($this->statutUtilisateur=="cpe")&&((getSettingValue("GepiAccesCdtCpe")=="yes")||(getSettingValue("GepiAccesCdtCpeRestreint")=="yes"))) OR
 			(($this->statutUtilisateur == "scolarite")&&((getSettingValue("GepiAccesCdtScol")=="yes")||(getSettingValue("GepiAccesCdtScolRestreint")=="yes")))) {
 				$this->creeNouveauItem("/cahier_texte_2/see_all.php",

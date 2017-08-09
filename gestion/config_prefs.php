@@ -1152,7 +1152,7 @@ echo "<input type='hidden' name='temoin_suhosin_2' value='2' />\n";
 echo "</fieldset>\n";
 echo "</form>\n";
 
-if ((acces_cdt())&&($_SESSION["statut"] == "professeur")) {
+if ((affiche_lien_cdt())&&($_SESSION["statut"] == "professeur")) {
 	echo "<br />\n";
 	$ouverture_auto_WinDevoirsDeLaClasse=getPref($_SESSION['login'], 'ouverture_auto_WinDevoirsDeLaClasse', 'y');
 	echo "<form name='form_cdt_pref' method='post' action='./config_prefs.php'>\n";

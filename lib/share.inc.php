@@ -17132,4 +17132,37 @@ function acces_saisie_telephone($statut) {
 		}
 	}
 }
+
+function affiche_lien_cdt() {
+	if (getSettingAOui("active_cahiers_texte")) {
+		//echo 1;
+		return true;
+	}
+	elseif (($_SESSION["statut"]=="professeur")&&(getSettingAOui("acces_cdt_prof"))) {
+		$pref=getPref($_SESSION["login"],"acces_cdt_prof","");
+		if($pref=="y") {
+			//echo 2;
+			return true;
+		}
+		elseif($pref=="y") {
+			//echo 3;
+			return false;
+		}
+		else {
+			if(getSettingAOui("acces_cdt_prof_afficher_lien")) {
+				//echo 4;
+				return true;
+			}
+			else {
+				//echo 5;
+				return false;
+			}
+		}
+	}
+	else {
+		//echo 6;
+		return false;
+	}
+}
+
 ?>

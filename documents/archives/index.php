@@ -87,11 +87,13 @@ require_once("../../lib/header.inc.php");
 
 echo "<p class='bold'>";
 if($_SESSION['statut']=='professeur') {
-	if((acces_cdt())&&(getSettingValue("GepiCahierTexteVersion")=='2')) {
-		echo "<a href='../../cahier_texte_2/index.php'>";
-	}
-	elseif(acces_cdt()) {
-		echo "<a href='../../cahier_texte/index.php'>";
+	if(affiche_lien_cdt()) {
+		if(getSettingValue("GepiCahierTexteVersion")=='2') {
+			echo "<a href='../../cahier_texte_2/index.php'>";
+		}
+		else {
+			echo "<a href='../../cahier_texte/index.php'>";
+		}
 	}
 	else {
 		// Si le CDT Gepi n'est plus actif, mais que l'on a maintenu l'accès aux archives:

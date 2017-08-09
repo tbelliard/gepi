@@ -68,25 +68,34 @@ if (isset($_POST['is_posted'])) {
 	check_token();
 	//debug_var();
 	if (isset($_POST['activer'])) {
-		if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !<br />";
 	}
 
 	if (isset($_POST['acces_archives_cdt'])) {
-		if (!saveSetting("acces_archives_cdt", "y")) $msg = "Erreur lors de l'enregistrement du paramètre d'accès aux Archives CDT !";
+		if (!saveSetting("acces_archives_cdt", "y")) $msg = "Erreur lors de l'enregistrement du paramètre d'accès aux Archives CDT !<br />";
 	}
 	else {
-		if (!saveSetting("acces_archives_cdt", "n")) $msg = "Erreur lors de l'enregistrement du paramètre d'accès aux Archives CDT !";
+		if (!saveSetting("acces_archives_cdt", "n")) $msg = "Erreur lors de l'enregistrement du paramètre d'accès aux Archives CDT !<br />";
 	}
 
 	if (isset($_POST['acces_cdt_prof'])) {
-		if (!saveSetting("acces_cdt_prof", "y")) $msg = "Erreur lors de l'enregistrement du paramètre acces_cdt_prof !";
+		if (!saveSetting("acces_cdt_prof", "y")) $msg = "Erreur lors de l'enregistrement du paramètre acces_cdt_prof !<br />";
 	}
 	else {
-		if (!saveSetting("acces_cdt_prof", "n")) $msg = "Erreur lors de l'enregistrement du paramètre acces_cdt_prof !";
+		if (!saveSetting("acces_cdt_prof", "n")) $msg = "Erreur lors de l'enregistrement du paramètre acces_cdt_prof !<br />";
 	}
 
+	if (isset($_POST['acces_cdt_prof_afficher_lien'])) {
+		if (!saveSetting("acces_cdt_prof_afficher_lien", $_POST['acces_cdt_prof_afficher_lien'])) $msg = "Erreur lors de l'enregistrement du paramètre acces_cdt_prof_afficher_lien !<br />";
+	}
+
+	if (isset($_POST['acces_cdt_prof_url_cdt_officiel'])) {
+		if (!saveSetting("acces_cdt_prof_url_cdt_officiel", $_POST['acces_cdt_prof_url_cdt_officiel'])) $msg = "Erreur lors de l'enregistrement du paramètre acces_cdt_prof_url_cdt_officiel !<br />";
+	}
+
+
 	if (isset($_POST['version'])) {
-		if (!saveSetting("GepiCahierTexteVersion", $_POST['version'])) $msg = "Erreur lors de l'enregistrement du numero de version du cahier de texte !";
+		if (!saveSetting("GepiCahierTexteVersion", $_POST['version'])) $msg = "Erreur lors de l'enregistrement du numero de version du cahier de texte !<br />";
 	}
 	
 	if (isset($_POST['cahiers_texte_login_pub'])) {
@@ -95,30 +104,30 @@ if (isset($_POST['is_posted'])) {
 	
 		if ((trim($mdp)=='') and (trim($user_ct) !='')) {
 			$_POST['cahiers_texte_login_pub'] = '';
-			$msg .= "Vous devez choisir un mot de passe.";
+			$msg .= "Vous devez choisir un mot de passe.<br />";
 		}
 		if ((trim($mdp) !='')and (trim($user_ct) == '')) {
 			$_POST['cahiers_texte_passwd_pub'] = '';
-			$msg .= "Vous devez choisir un identifiant.";
+			$msg .= "Vous devez choisir un identifiant.<br />";
 		}
 	
 		if (!saveSetting("cahiers_texte_passwd_pub", $_POST['cahiers_texte_passwd_pub']))
-				$msg .= "Erreur lors de l'enregistrement du mot de passe !";
+				$msg .= "Erreur lors de l'enregistrement du mot de passe !<br />";
 	//    include_once( '../lib/class.htaccess.php' );
 		if (!saveSetting("cahiers_texte_login_pub", $_POST['cahiers_texte_login_pub']))
-				$msg .= "Erreur lors de l'enregistrement du login !";
+				$msg .= "Erreur lors de l'enregistrement du login !<br />";
 	
 	}
 	
 	if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST['begin_year'])) {
 		$begin_bookings = mktime(0,0,0,$_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year']);
 		if (!saveSetting("begin_bookings", $begin_bookings))
-				$msg .= "Erreur lors de l'enregistrement de begin_bookings !";
+				$msg .= "Erreur lors de l'enregistrement de begin_bookings !<br />";
 	}
 	if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['end_year'])) {
 		$end_bookings = mktime(0,0,0,$_POST['end_month'],$_POST['end_day'],$_POST['end_year']);
 		if (!saveSetting("end_bookings", $end_bookings))
-				$msg .= "Erreur lors de l'enregistrement de end_bookings !";
+				$msg .= "Erreur lors de l'enregistrement de end_bookings !<br />";
 	}
 	
 	if (isset($_POST['cahier_texte_acces_public'])) {
@@ -128,7 +137,7 @@ if (isset($_POST['is_posted'])) {
 			$temp = "no";
 			}
 		if (!saveSetting("cahier_texte_acces_public", $temp)) {
-			$msg .= "Erreur lors de l'enregistrement de cahier_texte_acces_public !";
+			$msg .= "Erreur lors de l'enregistrement de cahier_texte_acces_public !<br />";
 		}
 	}
 	
@@ -140,14 +149,14 @@ if (isset($_POST['is_posted'])) {
 			$temp = "no";
 			}
 		if (!saveSetting("visa_cdt_inter_modif_notices_visees", $temp)) {
-			$msg .= "Erreur lors de l'enregistrement de visa_cdt_inter_modif_notices_visees !";
+			$msg .= "Erreur lors de l'enregistrement de visa_cdt_inter_modif_notices_visees !<br />";
 		}
 	}
 	//Fin ajout Eric
 	
 	if (isset($_POST['delai_devoirs'])) {
 		if (!saveSetting("delai_devoirs", $_POST['delai_devoirs']))
-				$msg .= "Erreur lors de l'enregistrement du délai de visualisation des devoirs";
+				$msg .= "Erreur lors de l'enregistrement du délai de visualisation des devoirs<br />";
 	}
 
 
@@ -176,7 +185,7 @@ if (isset($_POST['is_posted'])) {
 
 
 	if (isset($_POST['is_posted']) && ($msg=="") ) {
-		$msg = "Les modifications ont été enregistrées !";
+		$msg = "Les modifications ont été enregistrées !<br />";
 		$post_reussi=TRUE;
 	}
 	
@@ -187,7 +196,7 @@ if (isset($_POST['is_posted'])) {
 			$temp = "no";
 		}
 		if (!saveSetting("cdt_autoriser_modif_multiprof", $temp)) {
-			$msg .= "Erreur lors de l'enregistrement de cdt_autoriser_modif_multiprof !";
+			$msg .= "Erreur lors de l'enregistrement de cdt_autoriser_modif_multiprof !<br />";
 		}
 	}
 }

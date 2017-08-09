@@ -132,7 +132,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	//=======================================================
     
 	// Module Cahier de textes
-	if (acces_cdt()) {
+	if (affiche_lien_cdt()) {
 		$tbs_menu_prof[$compteur_menu]["lien"]='/cahier_texte/index.php'.$groupe_text;
 		$tbs_menu_prof[$compteur_menu]["texte"]="C. de Textes";
 		

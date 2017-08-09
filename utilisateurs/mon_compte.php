@@ -1087,6 +1087,28 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['validation_form_cdt2'])))
 	$message_cdt="";
 	$temoin_erreur_cdt=0;
 	$temoin_reg_cdt=0;
+
+
+	if(!getSettingAOui("active_cahiers_texte")) {
+		if(isset($_POST['acces_cdt_prof'])) {
+			$valeur="y";
+		}
+		else {
+			$valeur="n";
+		}
+
+		if(!savePref($_SESSION['login'],'acces_cdt_prof',$valeur)) {
+			$msg.="Erreur lors de l'enregistrement de acces_cdt_prof.<br />";
+			$message_cdt.="<p style='color:red'>Erreur lors de l'enregistrement de acces_cdt_prof.</p>\n";
+			$temoin_erreur_cdt++;
+		}
+		else {
+			$msg.="Enregistrement de acces_cdt_prof.<br />";
+			$temoin_reg_cdt++;
+			//$message_cdt.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+	}
+
 	if(isset($_POST['ouverture_auto_WinDevoirsDeLaClasse'])) {
 		if(($_POST['ouverture_auto_WinDevoirsDeLaClasse']=='y')||($_POST['ouverture_auto_WinDevoirsDeLaClasse']=='n')) {
 			if(!savePref($_SESSION['login'],'ouverture_auto_WinDevoirsDeLaClasse',$_POST['ouverture_auto_WinDevoirsDeLaClasse'])) {
@@ -3134,6 +3156,26 @@ if ((acces_cdt())&&($_SESSION["statut"] == "professeur")) {
 	echo "<legend style='border: 1px solid grey;";
 	echo "background-color: white; ";
 	echo "'>Cahier de textes 2</legend>\n";
+
+	if(!getSettingAOui("active_cahiers_texte")) {
+		// On doit avoir acces_cdt_prof=y
+		echo "<p style='text-align:left; color:red'>Ces cahiers de textes sont personnels. Ils ne sont pas accessibles des élèves, parents,...";
+		if(getSettingValue("acces_cdt_prof_url_cdt_officiel")!="") {
+			echo "<br />Les CDT officiels <em>(consultés par les élèves,...)</em> sont à l'adresse <a href='".getSettingValue("acces_cdt_prof_url_cdt_officiel")."' target='_blank'>".getSettingValue("acces_cdt_prof_url_cdt_officiel")."</a>";
+		}
+		echo "</p>";
+
+		$acces_cdt_prof=getPref($_SESSION['login'], 'acces_cdt_prof', 'y');
+		echo "<p style='margin-bottom:2em;'>Vous pouvez néanmoins activer ou désactiver le CDT interne à Gepi pour un usage personnel uniquement.<br />";
+		echo "<input type='checkbox' name='acces_cdt_prof' id='acces_cdt_prof' value='y' ";
+		echo "onchange=\"checkbox_change('acces_cdt_prof');changement()\" ";
+		if($acces_cdt_prof=='y') {echo " checked";}
+		echo " tabindex='$tabindex' ";
+		$tabindex++;
+		echo " /><label for='acces_cdt_prof' id='texte_acces_cdt_prof'> Afficher mes CDT personnel dans Gepi.</label><br />\n";
+		echo "</p>";
+	}
+
 	echo "<p>Lors de la saisie de notices de Travaux à faire dans le CDT2,<br />\n";
 	echo "<input type='radio' name='ouverture_auto_WinDevoirsDeLaClasse' id='ouverture_auto_WinDevoirsDeLaClasse_y' value='y' ";
 	echo "onchange=\"checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_y');checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_n');changement()\" ";

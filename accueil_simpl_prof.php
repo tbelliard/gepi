@@ -52,7 +52,8 @@ if (getSettingValue("active_carnets_notes")!='y') {
 */
 
 $active_carnets_notes=getSettingValue("active_carnets_notes");
-$active_cahiers_texte=(acces_cdt() ? "y" : "n");
+$active_cahiers_texte=(affiche_lien_cdt() ? "y" : "n");
+//echo "\$active_cahiers_texte=$active_cahiers_texte<br />";
 $active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
 
 if(($active_carnets_notes!='y')&&($active_cahiers_texte!='y')&&($active_module_trombinoscopes!='y')) {
