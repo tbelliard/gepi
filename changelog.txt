@@ -14,6 +14,11 @@ Absences 2:
   dernière période en limitant l'extraction du début de la période jusqu'à la 
   date du conseil de classe déclaré en scolarité dans Verrouillage des classes.
 
+Cahiers de textes:
+- Possibilité d'ouvrir les CDT à l'usage exclusif des professeurs 
+  (pour proposer un CDT personnel aux professeurs, indépendamment d'un autre CDT
+   éventuellement rempli par les professeurs sur un ENT pour les élèves,...).
+
 LSUN:
 - Possibilité de n'extraire qu'une ou certaines périodes.
 
@@ -25,6 +30,8 @@ Général:
   (conditionné par un droit à donner dans Gestion générale/Droits d'accès).
 - Possibilité de saisir/corriger les numéros de téléphone et mail en compte cpe et scolarité.
   (conditionné pour les CPE par un droit à donner dans Gestion générale/Droits d'accès).
+- Possibilité d'afficher un message invitant les visiteurs à accepter les cookies du Gepi
+  (paramétrable en administrateur dans Gestion générale/Options de connexion).
 
 Gepi-1.7.1 (30/03/2017)
 ===========================

@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -47,19 +47,46 @@ echo "Conformément à l'article 16 de la loi 78-17 du 6 janvier 1978, dite loi 
 
 }
 
-echo "<H2>1/ Cookies</H2>";
+echo "<a name='cookies'></a><H2>1/ Cookies</H2>";
 
-echo "A chacune de vos visites GEPI tente de générer un cookie de session. L'acceptation de ce cookie par votre navigateur est obligatoire pour accéder au site. Ce cookie de session est un cookie temporaire exigé pour des
+echo "A chacune de vos visites GEPI tente de générer un cookie de session. L'acceptation de ce cookie par votre navigateur est obligatoire pour accéder au site. Ce cookie de session est un cookie temporaire exigé pour des raisons de sécurité. Ce type de cookie n'enregistre pas d'information sur votre ordinateur, il vous attribue un numéro de session qu'il communique au serveur pour pouvoir suivre votre session en toute sécurité. Il est mis temporairement dans la mémoire de votre ordinateur et est exploitable uniquement durant le temps de connexion. Il est ensuite détruit lorsque vous vous déconnectez ou lorsque vous fermez toutes les fenêtres de votre navigateur.";
 
-raisons de sécurité. Ce type de cookie n'enregistre pas d'information sur votre ordinateur, il vous attribue un numéro de session
-
- qu'il communique au serveur pour pouvoir suivre votre session en toute sécurité. Il est mis temporairement dans la mémoire de
-
-  votre ordinateur et est exploitable uniquement durant le temps de connexion. Il est ensuite détruit lorsque vous vous déconnectez ou
-
-  lorsque vous fermez toutes les fenêtres de votre navigateur.";
-
-
+echo "<div class='fieldset_opacite50' style='margin:1em; margin-left:3em; width:70em;'>";
+if((isset($_COOKIE))&&(count($_COOKIE)>0)) {
+	echo "<p style='margin-left:3em; text-indent:-3em;'>Le ou les cookies actuellement définis sont&nbsp;:<br />";
+	foreach($_COOKIE as $key => $value) {
+		if(is_array($value)) {
+			echo "<strong>$key&nbsp;:</strong><br />";
+			echo "<pre>";
+			print_r($value);
+			echo "</pre>";
+		}
+		else {
+			echo "<strong>$key&nbsp;:</strong> $value";
+			if($key=="GEPI_start_session") {
+				echo " <em>(soit le ".strftime("%d/%m/%Y à %H:%M:%S").")</em>";
+			}
+			elseif($key=="GEPI") {
+				echo " <em>(identifiant aléatoire de session, sans signification)</em>";
+			}
+			elseif($key=="RNE") {
+				echo " <em>(identifiant RNE/UAJ de l'établissement utilisé dans le cas d'une installation multisite de Gepi)</em>";
+			}
+			elseif($key=="displayCookieConsent") {
+				echo " <em>(indique que vous avez accepté les COOKIES du site)</em>";
+			}
+			echo "<br />";
+		}
+	}
+	echo "</p>";
+}
+else {
+	echo "Aucun cookie n'est défini.";
+}
+echo "</div>
+<p>Lorsqu'il en est déclaré, les cookies propres à Gepi sont GEPI, GEPI_start_session et RNE.<br />
+Si d'autres cookies apparaissent, ils correspondent à des services supplémentaires, éventuellement mis en place par l'administrateur du site.</p>";
+//debug_var();
 
 echo "<H2>2/ Informations transmises</H2>";
 
@@ -111,7 +138,8 @@ break;
 
 }
 
-echo "Pour des raisons de sécurité, ces informations sont conservées pendant <b>".$duree."</b> à partir de leur enregistrement.";
+echo "Pour des raisons de sécurité, ces informations sont conservées pendant <b>".$duree."</b> à partir de leur enregistrement.<br />
+<em>(la durée de conservation peut être modifiée en administrateur dans la rubrique Gestion générale/Options de connexion)</em>";
 
 
 

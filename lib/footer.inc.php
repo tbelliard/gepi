@@ -6,7 +6,6 @@
  * @package General
  * @subpackage Affichage
  */
-
 // iI on ne souhaite pas utiliser les js de base, on enlève tout ce qui suit :
 if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	echo "<!-- Pas de js en pied -->\n";
@@ -166,6 +165,26 @@ if (isset($mysqli) && $mysqli!=""){
 if (isset($javascript_footer_texte_specifique)) {
     echo $javascript_footer_texte_specifique;
 }
+
+if ($niveau_arbo == "0") {
+	$pref_arbo=".";
+} elseif ($niveau_arbo == "1") {
+	$pref_arbo="..";
+} elseif ($niveau_arbo == "2") {
+	$pref_arbo="../..";
+} elseif ($niveau_arbo == "3") {
+	$pref_arbo="../../..";
+}
+require("$pref_arbo/lib/footer_cookie_acceptation.php");
+/*
+if(getSettingAOui("cookie_afficher_acceptation")) {
+	echo "
+	<script type='text/javascript' src='$gepiPath/lib/cookiechoices.js'></script>
+	<script type='text/javascript'>
+		document.addEventListener('DOMContentLoaded',function(event) {cookieChoices.showCookieConsentBar(\"En poursuivant votre navigation, vous acceptez l’utilisation des cookies indispensables au fonctionnement de ce site.\", \"J’accepte\", \"En savoir plus\", \"$gepiPath/gestion/info_vie_privee.php#cookies\");});
+	</script>";
+}
+*/
 ?>
 </body>
 </html>

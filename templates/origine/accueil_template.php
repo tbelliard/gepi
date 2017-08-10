@@ -790,6 +790,7 @@
 
 <?php
 	include("./lib/footer_tab_infobulle.php");
+	include("./lib/footer_cookie_acceptation.php");
 ?>
 
 </body>

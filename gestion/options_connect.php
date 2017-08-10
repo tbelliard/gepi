@@ -63,6 +63,32 @@ if (isset($_POST['duree'])) {
     }
 }
 
+if(isset($_POST['form_cookie'])) {
+	check_token();
+	if(isset($_POST['cookie_afficher_acceptation'])) {
+		$valeur="y";
+	}
+	else {
+		$valeur="n";
+	}
+	if(!saveSetting('cookie_afficher_acceptation', $valeur)) {
+		$msg.="Erreur lors de l'enregistrement de 'cookie_afficher_acceptation' à la valeur '$valeur'.<br />";
+	}
+	else {
+		$msg.="Enregistrement de 'cookie_afficher_acceptation' à la valeur '$valeur'.<br />";
+	}
+
+	if(isset($_POST['cookie_url_explication'])) {
+		if(!saveSetting('cookie_url_explication', $_POST['cookie_url_explication'])) {
+			$msg.="Erreur lors de l'enregistrement de 'cookie_url_explication' à la valeur '".$_POST['cookie_url_explication']."'.<br />";
+		}
+		else {
+			$msg.="Enregistrement de 'cookie_url_explication' à la valeur '".$_POST['cookie_url_explication']."'.<br />";
+		}
+	}
+
+}
+
 if(isset($_POST['afficher_liaison_ent'])) {
 	check_token();
 	saveSetting('afficher_liaison_ent', $_POST['afficher_liaison_ent']);
@@ -974,6 +1000,78 @@ echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dans <strong>Gestion des bases/Comptes utilisateurs</strong>)<em><br />
 		<input type=\"submit\" name=\"Valider\" value=\"Enregistrer\" />
 		<input type=hidden name=mode_navig value='$mode_navig' />
+	</fieldset>
+</form>
+
+<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
+
+
+//===========================================================
+
+//
+// COOKIES
+//
+
+$checked_cookies="";
+if(getSettingAOui('cookie_afficher_acceptation')) {
+	$checked_cookies=" checked";
+}
+
+
+echo "<a name='afficher_acceptation_cookie'></a>\n";
+echo "<h3 class='gepi'>COOKIES</h3>\n";
+echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
+	<fieldset id='fieldset_cookies' class='fieldset_opacite50'>
+	<legend style='border: 1px solid grey; background-color: white;'>COOKIES</legend>
+		".add_token_field()."
+
+		A chacune de vos visites GEPI tente de générer un cookie de session. L'acceptation de ce cookie par votre navigateur est obligatoire pour accéder au site. Ce cookie de session est un cookie temporaire exigé pour des raisons de sécurité. Ce type de cookie n'enregistre pas d'information sur votre ordinateur, il vous attribue un numéro de session qu'il communique au serveur pour pouvoir suivre votre session en toute sécurité. Il est mis temporairement dans la mémoire de votre ordinateur et est exploitable uniquement durant le temps de connexion. Il est ensuite détruit lorsque vous vous déconnectez ou lorsque vous fermez toutes les fenêtres de votre navigateur.";
+
+		echo "<div class='fieldset_opacite50' style='margin:1em; margin-left:3em; width:70em;'>";
+		if((isset($_COOKIE))&&(count($_COOKIE)>0)) {
+			echo "<p style='margin-left:3em; text-indent:-3em;'>Le ou les cookies actuellement définis sont&nbsp;:<br />";
+			foreach($_COOKIE as $key => $value) {
+				if(is_array($value)) {
+					echo "<strong>$key&nbsp;:</strong><br />";
+					echo "<pre>";
+					print_r($value);
+					echo "</pre>";
+				}
+				else {
+					echo "<strong>$key&nbsp;:</strong> $value";
+					if($key=="GEPI_start_session") {
+						echo " <em>(soit le ".strftime("%d/%m/%Y à %H:%M:%S").")</em>";
+					}
+					elseif($key=="GEPI") {
+						echo " <em>(identifiant aléatoire de session, sans signification)</em>";
+					}
+					elseif($key=="RNE") {
+						echo " <em>(identifiant RNE/UAJ de l'établissement utilisé dans le cas d'une installation multisite de Gepi)</em>";
+					}
+					elseif($key=="displayCookieConsent") {
+						echo " <em>(indique que vous avez accepté les COOKIES du site)</em>";
+					}
+					echo "<br />";
+				}
+			}
+			echo "</p>";
+		}
+		else {
+			echo "Aucun cookie n'est défini.";
+		}
+		echo "</div>
+
+		<p>Si vous utilisez d'autres COOKIES que GEPI, GEPI_start_session et RNE <em>(par exemple si vous avez mis en place un compteur de visites,...)</em>, vous devriez afficher à vos visiteurs une demande d'acceptation des cookies.</p>
+		<p><input type=\"checkbox\" name=\"cookie_afficher_acceptation\" id=\"cookie_afficher_acceptation\" value=\"y\"$checked_cookies /><label for='cookie_afficher_acceptation'>Afficher la demande d'acceptation des cookies</label>.<br />
+		Le dispositif propose d'accepter les cookies, ou de consulter une page pour en savoir plus.<br />
+		La page est par défaut celle du lien <a href='$gepiPath/gestion/info_vie_privee.php#cookies' target='_blank'>Vie privée</a>.<br />
+		Si vous souhaitez utiliser une autre page, précisez-en l'adresse ici&nbsp;: 
+		<input type='text' name='cookie_url_explication' value=\"".getSettingValue("cookie_url_explication")."\" /><br />
+
+		<input type=\"submit\" name=\"Valider\" value=\"Enregistrer\" />
+		<input type='hidden' name='mode_navig' value='$mode_navig' />
+		<input type='hidden' name='form_cookie' value='y' />
+
 	</fieldset>
 </form>
 
