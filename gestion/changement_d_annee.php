@@ -89,7 +89,11 @@ if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
 		check_token();
 
+		$temoin_changement=0;
 		if (isset($_POST['gepiYear'])) {
+			if($_POST['gepiYear']!=getSettingValue("gepiYear")) {
+				$temoin_changement++;
+			}
 			if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
 				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
 			}
@@ -100,6 +104,9 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST['begin_year'])) {
 			$begin_bookings = mktime(0,0,0,$_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year']);
+			if($begin_bookings!=getSettingValue("begin_bookings")) {
+				$temoin_changement++;
+			}
 			if (!saveSetting("begin_bookings", $begin_bookings)) {
 				$msg .= "Erreur lors de l'enregistrement de begin_bookings !";
 			}
@@ -109,12 +116,23 @@ if (isset($_POST['is_posted'])) {
 		}
 		if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['end_year'])) {
 			$end_bookings = mktime(0,0,0,$_POST['end_month'],$_POST['end_day'],$_POST['end_year']);
+			if($end_bookings!=getSettingValue("end_bookings")) {
+				$temoin_changement++;
+			}
 			if (!saveSetting("end_bookings", $end_bookings)) {
 					$msg .= "Erreur lors de l'enregistrement de end_bookings !";
 			}
 			else {
 				$msg .= "Enregistrement de end_bookings effectué.<br />";
 			}
+		}
+
+		if($temoin_changement>0) {
+			$info_action_titre="Dates des vacances et jours fériés";
+			$info_action_texte="L'année scolaire a changé.<br />Pensez à mettre à jour les dates de vacances <a href='edt/import_vacances_ics.php'>Importer les dates depuis education.gouv.fr</a>.";
+			$info_action_destinataire=array("administrateur");
+			$info_action_mode="statut";
+			enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
 		}
 
 		// 20150810
