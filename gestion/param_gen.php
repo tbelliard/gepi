@@ -143,7 +143,12 @@ if (isset($_POST['is_posted'])) {
 				}
 			}
 		}
+		//=========================================
+		$temoin_changement=0;
 		if (isset($_POST['gepiYear'])) {
+			if($_POST['gepiYear']!=getSettingValue("gepiYear")) {
+				$temoin_changement++;
+			}
 			if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
 				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
 			}
@@ -166,6 +171,9 @@ if (isset($_POST['is_posted'])) {
 						$msg.="Date de début d'année scolaire '".$_POST['date_debut_annee']."' invalide.<br />";
 					}
 					else {
+						if($begin_bookings!=getSettingValue("begin_bookings")) {
+							$temoin_changement++;
+						}
 						if (!saveSetting("begin_bookings", $begin_bookings)) {
 							$msg .= "Erreur lors de l'enregistrement de la date de début de l'année scolaire !";
 						}
@@ -191,6 +199,9 @@ if (isset($_POST['is_posted'])) {
 						$msg.="Date de fin d'année scolaire '".$_POST['date_fin_annee']."' invalide.<br />";
 					}
 					else {
+						if($end_bookings!=getSettingValue("end_bookings")) {
+							$temoin_changement++;
+						}
 						if (!saveSetting("end_bookings", $end_bookings)) {
 							$msg .= "Erreur lors de l'enregistrement de la date de fin de l'année scolaire !";
 						}
@@ -198,6 +209,15 @@ if (isset($_POST['is_posted'])) {
 				}
 			}
 		}
+		if($temoin_changement>0) {
+			$info_action_titre="Dates des vacances et jours fériés";
+			$info_action_texte="L'année scolaire a changé.<br />Pensez à mettre à jour les dates de vacances <a href='edt/import_vacances_ics.php'>Importer les dates depuis education.gouv.fr</a>.";
+			$info_action_destinataire=array("administrateur");
+			$info_action_mode="statut";
+			enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+		}
+		//=========================================
+
 		if (isset($_POST['gepiSchoolName'])) {
 			if (!saveSetting("gepiSchoolName", $_POST['gepiSchoolName'])) {
 				$msg .= "Erreur lors de l'enregistrement du nom de l'établissement !";
