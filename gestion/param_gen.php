@@ -41,6 +41,7 @@ if (!checkAccess()) {
 	die();
 }
 
+//debug_var();
 $msg = '';
 if (isset($_POST['sup_logo'])) {
 	check_token();
@@ -2855,7 +2856,7 @@ echo add_token_field();
 		</label>
 	</p>
 	</p>
-	<p class='small' style="width: 60%;">Si la journalisation est activée alors les échanges entre Gepi et le prestataire seront enregistrés dans un fichier 'envoi_SMS.log' placé dans le dossier des sauvegardes (dossier accessible via le menu Maintenance/Sauvegarde) ceci afin de résoudre d'éventuels problèmes. Pour ne pas saturer l'espace disque, ce fichier est vidé dès qu'il atteint la taille de 512 k0.</p>
+	<p class='small' style="width: 60%;">Si la journalisation est activée alors les échanges entre Gepi et le prestataire seront enregistrés dans un fichier 'envoi_SMS.log' placé dans le dossier des sauvegardes (dossier accessible via le menu Maintenance/Sauvegarde) ceci afin de résoudre d'éventuels problèmes. Pour ne pas saturer l'espace disque, ce fichier est vidé dès qu'il atteint la taille de 512 kO.</p>
 	<p class='small' style="width: 60%; color: red;">Attention, la journalisation ralentit le processus d'envoi de SMS, et il convient donc de  ne l'activer que si nécessaire.</p>
 	<br />
 	<p class="center">
