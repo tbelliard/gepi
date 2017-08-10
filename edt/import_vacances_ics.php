@@ -96,6 +96,17 @@ if(isset($_POST['enregistrer_vacances'])) {
 
 	$nb_reg=0;
 	$date_vacances=isset($_POST['date_vacances']) ? $_POST['date_vacances'] : array();
+
+	if(count($date_vacances)>0) {
+		$sql="SELECT * FROM infos_actions WHERE titre='Dates des vacances et jours fériés';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				del_info_action($lig->id);
+			}
+		}
+	}
+
 	for($loop=0;$loop<count($date_vacances);$loop++) {
 		$tab=explode("|", $date_vacances[$loop]);
 		if(!isset($tab[2])) {
