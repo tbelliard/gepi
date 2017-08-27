@@ -17,8 +17,13 @@
  * @return array Le tableau des groupes
  * @see get_group()
  */
-function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
-    global $mysqli;
+function get_groups_for_prof($_login="",$mode=NULL,$tab_champs=array()) {
+	global $mysqli;
+
+	if($_login=="") {
+		$_login=$_SESSION['login'];
+	}
+
 	// Par discipline puis par classe
 	if(!isset($mode)){
 		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere, jgc.id_classe
