@@ -336,6 +336,9 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$gepi_denom_mention=getSettingValue('gepi_denom_mention');
 		if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
 		$menus .= '      <li><a href="'.$gepiPath.'/saisie/saisie_mentions.php" '.insert_confirm_abandon().'>'.ucfirst($gepi_denom_mention).'s</a></li>'."\n";
+
+		$menus .= '      <li><a href="'.$gepiPath.'/saisie/saisie_vocabulaire.php" '.insert_confirm_abandon().'>Lapsus</a></li>'."\n";
+
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
 		if(getSettingAOui('active_mod_engagements')) {
 			$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
