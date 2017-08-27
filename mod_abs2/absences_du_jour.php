@@ -88,6 +88,10 @@ if (isset($_POST["creation_notification"])) {
     include('creation_notification.php');
 }
 
+if((getSettingValue('abs2_absences_du_jour_filtre')=="toutes")&&(!isset($_SESSION["abs2_prise_en_compte_PrefAbsDuJour"]))) {
+	$_SESSION["filter_manqement_obligation"]="n";
+}
+
 $photo_redim_taille_max_largeur=45;
 $photo_redim_taille_max_hauteur=45;
 

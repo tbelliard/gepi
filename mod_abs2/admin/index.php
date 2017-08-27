@@ -151,6 +151,12 @@ if (($_SESSION['statut']=="administrateur")&&(isset($_POST['is_posted']))) {
 			$msg = "Erreur lors de l'enregistrement de abs2_afficher_onglet_scores !";
 		}
 
+		if (isset($_POST['abs2_absences_du_jour_filtre'])) {
+			if (!saveSetting("abs2_absences_du_jour_filtre", $_POST['abs2_absences_du_jour_filtre'])) {
+				$msg = "Erreur lors de l'enregistrement de abs2_absences_du_jour_filtre !";
+			}
+		}
+
 		if (isset($_POST['abs2_retard_critere_duree'])) {
 			if (!saveSetting("abs2_retard_critere_duree", $_POST['abs2_retard_critere_duree'])) {
 				$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
@@ -546,6 +552,15 @@ E-mail gestion absence établissement :
 	<label for="abs2_afficher_onglet_scores">&nbsp;Afficher l'onglet Scores <em>(un temps utilisé pour la note de Vie Scolaire)</em></label>
 </p>
 
+<p style='margin-top:1em;'>Absences du jour&nbsp;: <br />
+	<input type="radio" name="abs2_absences_du_jour_filtre" id="abs2_absences_du_jour_filtre_manquements" value="manquements"
+	<?php if (getSettingValue("abs2_absences_du_jour_filtre")!="toutes") {echo " checked='checked'";} ?> />
+	<label for="abs2_absences_du_jour_filtre_manquements">&nbsp;N'afficher par défaut que les manquements à l'obligation de présence.</label><br />
+	<input type="radio" name="abs2_absences_du_jour_filtre" id="abs2_absences_du_jour_filtre_toutes" value="toutes"
+	<?php if (getSettingValue("abs2_absences_du_jour_filtre")=="toutes") {echo " checked='checked'";} ?> />
+	<label for="abs2_absences_du_jour_filtre_toutes">&nbsp;Afficher toutes les saisies.</label>
+</p>
+
 
 <?php
 }
@@ -706,6 +721,25 @@ E-mail gestion absence établissement : <?php echo(getSettingValue("gepiAbsenceE
 	}
 	?>
 	<label for="abs2_afficher_onglet_scores">&nbsp;Afficher l'onglet Scores <em>(un temps utilisé pour la note de Vie Scolaire)</em></label>
+</p>
+
+<p style='margin-top:1em;'>Absences du jour&nbsp;: <br />
+	<?php
+	if(getSettingValue("abs2_absences_du_jour_filtre")!="toutes") {
+		$img_abs_du_jour_manquements="<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+		$img_abs_du_jour_toutes="<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	else {
+		$img_abs_du_jour_toutes="<img src='../../images/enabled.png' class='icone20' alt='Coché' />";
+		$img_abs_du_jour_manquements="<img src='../../images/disabled.png' class='icone20' alt='Non coché' />";
+	}
+	echo $img_abs_du_jour_manquements;
+	?>
+	<label for="abs2_absences_du_jour_filtre_manquements">&nbsp;N'afficher par défaut que les manquements à l'obligation de présence.</label><br />
+	<?php
+	echo $img_abs_du_jour_toutes;
+	?>
+	<label for="abs2_absences_du_jour_filtre_toutes">&nbsp;Afficher toutes les saisies.</label>
 </p>
 
 <?php

@@ -13,6 +13,8 @@ Absences 2:
 - Possibilité de restreindre le décompte des absences sur les bulletins pour la 
   dernière période en limitant l'extraction du début de la période jusqu'à la 
   date du conseil de classe déclaré en scolarité dans Verrouillage des classes.
+- Absences du jour : Possibilité de paramétrer l'affichage de toutes les saisies
+  par défaut plutôt que seulement les manquements à l'obligation de présence par défaut.
 
 Cahiers de textes:
 - Possibilité d'ouvrir les CDT à l'usage exclusif des professeurs 
