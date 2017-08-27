@@ -8813,11 +8813,17 @@ function get_output_mode_pdf() {
 	return getPref($_SESSION['login'], "output_mode_pdf", $output_mode_pdf);
 }
 
-function get_tab_mef($mode="indice_mef_code") {
+function get_tab_mef($mode="indice_mef_code", $restreindre="n") {
 	global $mysqli;
 	$tab_mef=array();
 	$cpt=0;
-	$sql="SELECT * FROM mef ORDER BY libelle_edition, libelle_long, libelle_court;";
+	if($restreindre=="n") {
+		$sql="SELECT * FROM mef ORDER BY libelle_edition, libelle_long, libelle_court;";
+	}
+	else {
+		// On restreint aux MEFs assocoés à des élèves
+		$sql="SELECT DISTINCT m.* FROM mef m, eleves e WHERE m.mef_code=e.mef_code ORDER BY libelle_edition, libelle_long, libelle_court;";
+	}
 	$res=mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		while($lig=$res->fetch_object()) {
@@ -17165,4 +17171,25 @@ function affiche_lien_cdt() {
 	}
 }
 
+function get_eleves_from_classe($id_classe, $periode="") {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$id_classe."'";
+	if($periode!="") {
+		$sql.=" AND jec.periode='$periode'";
+	}
+	$sql.=" ORDER BY e.nom, e.prenom;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab[]=$lig;
+			$tab["list"][]=$lig;
+			$tab["users"][$lig["login"]]=$lig;
+		}
+	}
+	return $tab;
+}
 ?>
