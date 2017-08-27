@@ -268,7 +268,11 @@
 				echo $tab['texte']."\n";
 			}
 			elseif (mb_substr($tab['lien'],0,4) == 'http') {
-				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				echo "<a href=\"".$tab['lien']."\"";
+				if((!isset($tab['js']))||(!preg_match("/onclick/i", $tab['js']))) {
+					echo insert_confirm_abandon();
+				}
+				echo $afficheTitle;
 				if(isset($tab['target'])) {
 					echo " target='".$tab['target']."'";
 				}
@@ -278,7 +282,11 @@
 				echo ">".$tab['texte']."</a>\n";
 			}
 			else {
-				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				echo "<a href=\"$gepiPath".$tab['lien']."\"";
+				if((!isset($tab['js']))||(!preg_match("/onclick/i", $tab['js']))) {
+					echo insert_confirm_abandon();
+				}
+				echo $afficheTitle;
 				if(isset($tab['target'])) {
 					echo " target='".$tab['target']."'";
 				}
@@ -307,7 +315,11 @@
 				echo $tab['texte']."\n";
 			}
 			elseif (mb_substr($tab['lien'],0,4) == 'http') {
-				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				echo "<a href=\"".$tab['lien']."\"";
+				if((!isset($tab['js']))||(!preg_match("/onclick/i", $tab['js']))) {
+					echo insert_confirm_abandon();
+				}
+				echo $afficheTitle;
 				if(isset($tab['target'])) {
 					echo " target='".$tab['target']."'";
 				}
@@ -317,7 +329,11 @@
 				echo ">".$tab['texte']."</a>\n";
 			}
 			else {
-				echo "<a href=\"$gepiPath".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle;
+				echo "<a href=\"$gepiPath".$tab['lien']."\"";
+				if((!isset($tab['js']))||(!preg_match("/onclick/i", $tab['js']))) {
+					echo insert_confirm_abandon();
+				}
+				echo $afficheTitle;
 				if(isset($tab['target'])) {
 					echo " target='".$tab['target']."'";
 				}
