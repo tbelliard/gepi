@@ -1548,8 +1548,10 @@ elseif($action=="comparer") {
 				$tab_info_grp[$lig_grp->id_groupe]=get_info_grp($lig_grp->id_groupe);
 				echo $tab_info_grp[$lig_grp->id_groupe]."<br />";
 				$tmp_tab=get_eleves_from_groupe($lig_grp->id_groupe, $num_periode);
-				$tab_ele_grp[$lig_grp->id_groupe]['list']=$tmp_tab['list'];
-				$tab_ele_grp[$lig_grp->id_groupe]['users']=$tmp_tab['users'];
+				if(isset($tab_ele_grp[$lig_grp->id_groupe]['list'])) {
+					$tab_ele_grp[$lig_grp->id_groupe]['list']=$tmp_tab['list'];
+					$tab_ele_grp[$lig_grp->id_groupe]['users']=$tmp_tab['users'];
+				}
 				$tab_prof_grp[$lig_grp->id_groupe]=get_profs_for_group($lig_grp->id_groupe);
 			}
 			echo "</p>";
