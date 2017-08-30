@@ -220,9 +220,13 @@
 			echo "</fieldset>\n";
 			echo "</form>\n";
 
-			echo "<p><i>Remarques</i>&nbsp;:</p>\n";
+			echo "<p style='margin-top:2em'><em>Remarques</em>&nbsp;:</p>\n";
 			echo "<ul>\n";
-			echo "<li>Dans EDT, la démarche est <span style='color:red'>A PRECISER</span></li>\n";
+			echo "<li>Dans EDT, la démarche est <strong>Menu Fichier/Exports et imports&nbsp;: Autres/Exporter un fichier texte</strong><br />
+			Sélectionner <strong>Type de données&nbsp;: Cours</strong>,<br />
+			Et <strong>Type d'export&nbsp;: XML</strong>,<br />
+			Cocher en bas à droite, <strong>Nom complet des groupes et des parties</strong><br />
+			Et enfin, tout en bas à droite, cliquer sur <strong>Exporter</strong>.</li>\n";
 			echo "</ul>\n";
 		}
 		else {
@@ -501,25 +505,63 @@ Heure début : ".$ligne[$loop]['h_debut']."\">".$current_mat_code_edt."&nbsp;: <
 						if($prof=="") {
 							if(!in_array($ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'], $tab_corresp_a_faire['prof'])) {
 
-								echo "
+								if(preg_match("/,/", $ligne[$loop]['prof_nom'])) {
+									// Plusieurs profs sont désignés
+									echo "
+			<tr>
+				<td>".$ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom']."&nbsp;: </td>
+				<td>
+					<input type='hidden' name=\"corresp_prof_a_enregistrer[".$ligne[$loop]['id']."]\" value='___PLUSIEURS_PROFS___' />
+					Plusieurs profs&nbsp;:<br />";
+
+									$tmp_tab_nom=explode(",", $ligne[$loop]['prof_nom']);
+									$tmp_tab_prenom=explode(",", $ligne[$loop]['prof_prenom']);
+									for($loop_prof=0;$loop_prof<count($tmp_tab_nom);$loop_prof++) {
+										if(trim($tmp_tab_nom[$loop_prof])!="") {
+											echo $tmp_tab_nom[$loop_prof];
+											if(isset($tmp_tab_prenom[$loop_prof])) {
+												echo " ".$tmp_tab_prenom[$loop_prof];
+											}
+											echo "&nbsp;: ";
+											echo "
+					<select name=\"corresp_prof_a_enregistrer_".$ligne[$loop]['id']."[]\">
+						<option value=''>---</option>";
+											for($loop2=0;$loop2<count($tab_prof);$loop2++) {
+												$selected="";
+												if(casse_mot($tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom'], "maj")==casse_mot($ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'], "maj")) {
+													$selected=" selected";
+												}
+												echo "
+						<option value='".$tab_prof[$loop2]['login']."'$selected>".$tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom']."</option>";
+											}
+											echo "
+					</select><br />";
+										}
+									}
+									echo "
+				</td>
+			</tr>";
+								}
+								else {
+									echo "
 			<tr>
 				<td>".$ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom']."&nbsp;: </td>
 				<td>
 					<select name=\"corresp_prof_a_enregistrer[".$ligne[$loop]['id']."]\">
 						<option value=''>---</option>";
-								for($loop2=0;$loop2<count($tab_prof);$loop2++) {
-									$selected="";
-									if(casse_mot($tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom'], "maj")==casse_mot($ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'], "maj")) {
-										$selected=" selected";
+									for($loop2=0;$loop2<count($tab_prof);$loop2++) {
+										$selected="";
+										if(casse_mot($tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom'], "maj")==casse_mot($ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'], "maj")) {
+											$selected=" selected";
+										}
+										echo "
+						<option value='".$tab_prof[$loop2]['login']."'$selected>".$tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom']."</option>";
 									}
 									echo "
-						<option value='".$tab_prof[$loop2]['login']."'$selected>".$tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom']."</option>";
-								}
-								echo "
 					</select>
 				</td>
 			</tr>";
-
+								}
 								$tab_corresp_a_faire['prof'][]=$ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'];
 							}
 						}
@@ -868,6 +910,17 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 
 
 				echo "
+		<p style='margin-top:2em;margin-bottom:2em;' class='fieldset_opacite50'>
+			Pour distinguer les enseignements dans l'export XML Cours d'EDT, deux modes sont possibles.<br />
+			Le premier devrait créer moins d'enseignements.<br />
+			Le deuxième, si l'export comporte des désignations diverses pour un même enseignement ou s'il comporte des scories, risque de créer de trop nombreux groupes dans Gepi.<br />
+			Néanmoins, il peut être plus commode de supprimer quelques groupes en trop que d'en créer de manquants.<br />
+			Vous pouvez tester l'un et l'autre.<br />
+			Il suffira entre deux tests d'initialisation de reprendre à l'étape 3 <em>(importation des matières)</em>.<br />
+			<input type='radio' name='distinction_groupes_mode' id='distinction_groupes_mode_1' value='1' checked /><label for='distinction_groupes_mode_1' id='texte_distinction_groupes_mode_1'> Mode 1</label><br />
+			<input type='radio' name='distinction_groupes_mode' id='distinction_groupes_mode_2' value='2' /><label for='distinction_groupes_mode_2' id='texte_distinction_groupes_mode_2'> Mode 2</label>
+		</p>
+
 		<p>
 			<input type='hidden' name='action' value='enregistrer_rapprochements' />
 			<input type='hidden' name='step' value='2' />
@@ -893,6 +946,8 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 				}
 
 				//debug_var();
+
+				$distinction_groupes_mode=isset($_POST["distinction_groupes_mode"]) ? $_POST["distinction_groupes_mode"] : 1;
 
 				// matiere
 				$corresp_matiere_a_enregistrer=isset($_POST['corresp_matiere_a_enregistrer']) ? $_POST['corresp_matiere_a_enregistrer'] : NULL;
@@ -970,6 +1025,59 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 								else {
 									$nb_del++;
 								}
+							}
+							elseif($nom_gepi=="___PLUSIEURS_PROFS___") {
+								$tmp_tab_corresp_prof_a_enregistrer=isset($_POST["corresp_prof_a_enregistrer_".$id_ligne]) ? $_POST["corresp_prof_a_enregistrer_".$id_ligne] : array();
+								$chaine_profs="";
+								for($loop_prof=0;$loop_prof<count($tmp_tab_corresp_prof_a_enregistrer);$loop_prof++) {
+									if($tmp_tab_corresp_prof_a_enregistrer[$loop_prof]!="") {
+										if($chaine_profs!="") {
+											$chaine_profs.="|";
+										}
+										$chaine_profs.=$tmp_tab_corresp_prof_a_enregistrer[$loop_prof];
+									}
+								}
+								$nom_gepi=$chaine_profs;
+
+								if($nom_gepi=="") {
+									$sql="DELETE FROM edt_corresp WHERE champ='prof' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."';";
+									$del=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$del) {
+										echo "<span style='color:red'>Erreur : $sql</span><br />";
+									}
+									else {
+										$nb_del++;
+									}
+								}
+								else {
+
+									$sql="SELECT * FROM edt_corresp WHERE champ='prof' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."';";
+									$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res2)>0) {
+										$lig2=mysqli_fetch_object($res2);
+										echo "<span style='color:red'>$lig->prof_nom $lig->prof_prenom était préalablement associée à $lig2->nom_gepi</span><br />";
+
+										$sql="UPDATE edt_corresp SET champ='prof', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."', nom_gepi='$nom_gepi' WHERE id='$lig2->id';";
+										$update=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$update) {
+											echo "<span style='color:red'>Erreur : $sql</span><br />";
+										}
+										else {
+											$nb_reg++;
+										}
+									}
+									else {
+										$sql="INSERT INTO edt_corresp SET champ='prof', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."', nom_gepi='$nom_gepi';";
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$insert) {
+											echo "<span style='color:red'>Erreur : $sql</span><br />";
+										}
+										else {
+											$nb_reg++;
+										}
+									}
+								}
+
 							}
 							else {
 								$sql="SELECT * FROM edt_corresp WHERE champ='prof' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."';";
@@ -1367,6 +1475,10 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 					echo "$nb_reg associations de semaines A/B effectuées.<br />";
 				}
 
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				// Les correspondances sont enregistrées
+				// On va passer à la relecture des lignes et à la création des groupes
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 				/*
 				$classe_udt=isset($_POST['classe_udt']) ? $_POST['classe_udt'] : array();
@@ -1471,18 +1583,35 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 						$classe=get_corresp_edt("classe", $tab['classe']);
 						$groupes=get_corresp_edt("groupe", $tab['classe']);
 						$salle=get_corresp_edt("salle", $tab['salle']);
-						$prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
+						$tmp_prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
+						if(preg_match("/|/", $tmp_prof)) {
+							$prof=array();
+							$tmp_tab=explode("|",$tmp_prof);
+							for($loop=0;$loop<count($tmp_tab);$loop++) {
+								if(trim($tmp_tab[$loop])!="") {
+									$prof[]=$tmp_tab[$loop];
+								}
+							}
+						}
+						else {
+							$prof=$tmp_prof;
+						}
 
 						$jour=get_corresp_edt("jour", $tab['jour']);
 						$h_debut=get_corresp_edt("h_debut", $tab['h_debut']);
 						$frequence=get_corresp_edt("frequence", $tab['frequence']);
 
+						// Pour éviter de nommer un groupe d'après le nom de classe
+						$tab_liste_nom_classe_du_groupe=array();
+
 						$classe_aff=$classe;
+						// S'il y a juste un id_classe:
 						if(preg_match("/^[0-9]{1,}$/", $classe)) {
 							if(!isset($tab_classe[$classe])) {
 								$tab_classe[$classe]=get_nom_classe($classe);
 							}
 							$classe_aff=$tab_classe[$classe];
+							$tab_liste_nom_classe_du_groupe[]=trim(preg_replace("/ /", "", $tab_classe[$classe]));
 						}
 
 						// Lors de l'initialisation, il n'y a pas encore de groupe enregistré... ??
@@ -1490,15 +1619,24 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 						$chaine_classes="";
 						$groupes_aff="";
 						$tmp_nom_groupe="";
+						// Si la chaine classe/groupe/regroupement contient une ou des sections contenant un nom de groupe entre crochets (par exemple [3AGL1.GR.1])
 						if(preg_match("/^\[.*\]$/", $tab['classe'])) {
 							$tmp_nom_groupe=preg_replace("/^\[/", "", preg_replace("/\]$/", "", $tab['classe']));
 							$groupes_aff=$tmp_nom_groupe;
 						}
+
+						// Si on a plusieurs id_classe délimités par des | (par exemple groupes=|33|34|)
 						$tmp_tab=explode("|", $groupes);
 						for($loop=0;$loop<count($tmp_tab);$loop++) {
 							if($tmp_tab[$loop]!="") {
 								if(!isset($tab_classe[$tmp_tab[$loop]])) {
 									$tmp_current_classe=get_nom_classe($tmp_tab[$loop]);
+
+									$tmp_chaine_test=trim(preg_replace("/ /", "", $tmp_current_classe));
+									if(!in_array($tmp_chaine_test, $tab_liste_nom_classe_du_groupe)) {
+										$tab_liste_nom_classe_du_groupe[]=$tmp_chaine_test;
+									}
+
 									$tab_classe[$tmp_tab[$loop]]=$tmp_current_classe;
 									if($chaine_classes!="") {
 										$chaine_classes.="_";
@@ -1509,25 +1647,62 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 								$groupes_aff.=$tab_classe[$tmp_tab[$loop]];
 							}
 						}
-						echo "<p style='margin-top:1em;'>Cours n°".$tab['numero']."<br />";
+						echo "<p style='margin-top:1em;'><strong>Cours n°".$tab['numero']."</strong><br />";
 						echo "matiere=$matiere<br />";
 						echo "classe=$classe<br />";
 						echo "classe_aff=$classe_aff<br />";
 						echo "groupes=$groupes<br />";
 						echo "groupes_aff=$groupes_aff<br />";
-						echo "prof=$prof<br />";
 
-						if(($matiere!="")&&($prof!="")) {
+						// Debug:
+						/*
+						echo "\$tab['classe']=".$tab['classe']."<br />";
+						echo "tab_liste_nom_classe_du_groupe:<pre>";
+						print_r($tab_liste_nom_classe_du_groupe);
+						echo "</pre>";
+						*/
 
-							$edt_cours_login_prof=$prof;
-							$prof_aff="";
-							if($prof!="") {
-								if(!isset($tab_prof[$prof])) {
-									$tab_prof[$prof]=civ_nom_prenom($prof);
-								}
-								$prof_aff=$tab_prof[$prof];
+						$temoin_prof="";
+						if(is_array($prof)) {
+							for($loop_prof=0;$loop_prof<count($prof);$loop_prof++) {
+								echo "prof[$loop_prof]=".$prof[$loop_prof]."<br />";
+								if($prof[$loop_prof]!="") {$temoin_prof="OK";}
 							}
-							echo "prof_aff=$prof_aff<br />";
+						}
+						else {
+							echo "prof=$prof<br />";
+							if($prof!="") {$temoin_prof="OK";}
+						}
+
+						//if(($matiere!="")&&($prof!="")) {
+						if(($matiere!="")&&($temoin_prof!="")) {
+
+							$chaine_profs="";
+							if(!is_array($prof)) {
+								$chaine_profs=$prof;
+								//$edt_cours_login_prof=$prof;
+								$prof_aff="";
+
+								if($prof!="") {
+									if(!isset($tab_prof[$prof])) {
+										$tab_prof[$prof]=civ_nom_prenom($prof);
+									}
+									$prof_aff=$tab_prof[$prof];
+								}
+								echo "prof_aff=$prof_aff<br />";
+							}
+							else {
+								//$tmp_tab=explode("|", $prof);
+								$tmp_tab=$prof;
+								for($loop_prof=0;$loop_prof<count($tmp_tab);$loop_prof++) {
+									if($tmp_tab[$loop_prof]!="") {
+										if($chaine_profs!="") {
+											$chaine_profs.="/";
+										}
+										$chaine_profs.=$tmp_tab[$loop_prof];
+									}
+								}
+							}
 
 							$reg_matiere=$matiere;
 							$matiere_nom_complet=get_valeur_champ('matieres', "matiere='$matiere'", "nom_complet");
@@ -1540,6 +1715,79 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 								$reg_nom_groupe=$matiere;
 								$reg_nom_complet=$matiere_nom_complet;
 								$reg_categorie=$matiere_categorie_id;
+
+								if($tab["classe"]!="") {
+									echo "Recherche d'un éventuel complément au nom de groupe dans ".$tab["classe"]."<br />";
+								}
+
+								$complement_nom_regroup="";
+								//echo "\$tab[\"classe\"]=".$tab["classe"]."<br />";
+								//if(preg_match("/\[[A-Za-z0-9 .-]\]/", $tab["classe"])) {
+								if(preg_match("/\[/", $tab["classe"])) {
+									//echo "plop<br />";
+									//$complement_nom_regroup=preg_replace("/^[A-Za-z0-9 .-<>]*\[/", "", preg_replace("/^\][A-Za-z0-9 .-<>]*/", "", $tab["classe"]));
+									$tmp_tab_complement_nom_regroup=array();
+									$tmp_tab=explode("[", $tab["classe"]);
+									for($loop=1;$loop<count($tmp_tab);$loop+=2) {
+										$tmp_tab2=explode("]", $tmp_tab[$loop]);
+										for($loop2=0;$loop2<count($tmp_tab2);$loop2+=2) {
+											if((!in_array($tmp_tab2[$loop2], $tmp_tab_complement_nom_regroup))&&(trim($tmp_tab2[$loop2])!="")) {
+												$tmp_tab_complement_nom_regroup[]=trim($tmp_tab2[$loop2]);
+											}
+										}
+									}
+									$complement_nom_regroup="";
+									for($loop=0;$loop<count($tmp_tab_complement_nom_regroup);$loop++) {
+										if($loop>0) {
+											$complement_nom_regroup.=" ";
+										}
+										$complement_nom_regroup.=$tmp_tab_complement_nom_regroup[$loop];
+									}
+
+									if($complement_nom_regroup!="") {
+										echo "<p style='color:blue'>Le nom du groupe '$reg_nom_groupe' va être étendu à '$reg_nom_groupe $complement_nom_regroup'.</p>";
+										$reg_nom_groupe.=" ".$complement_nom_regroup;
+										$reg_nom_complet.=" (".$complement_nom_regroup.")";
+									}
+								}
+								else {
+									// On va quand même essayer de trouver une chaine, en supprimant les balises
+									$liste_groupe_sans_balises=trim(preg_replace('/<(.*)>/U','', preg_replace("/&lt;/", "<", preg_replace("/&gt;/", ">", $tab["classe"]))));
+									// Debug:
+									//echo "\$liste_groupe_sans_balises=$liste_groupe_sans_balises<br />";
+									if($liste_groupe_sans_balises!="") {
+										if(preg_match("/,/", $liste_groupe_sans_balises)) {
+											$tmp_tab=explode(",", $liste_groupe_sans_balises);
+											$tmp_tab2=array();
+											$complement_nom_regroup="";
+											for($loop=0;$loop<count($tmp_tab);$loop++) {
+												if((!in_array(trim($tmp_tab[$loop]), $tmp_tab2))&&(!in_array(preg_replace("/ /", "", $tmp_tab[$loop]), $tab_liste_nom_classe_du_groupe))) {
+													$tmp_tab2[]=$tmp_tab[$loop];
+													if($complement_nom_regroup!="") {
+														$complement_nom_regroup.=" ";
+													}
+													$complement_nom_regroup.=$tmp_tab[$loop];
+												}
+											}
+											if($complement_nom_regroup!="") {
+												echo "<p style='color:blue'>Le nom du groupe '$reg_nom_groupe' va être étendu à '$reg_nom_groupe $complement_nom_regroup'.</p>";
+												$reg_nom_groupe.=" ".$complement_nom_regroup;
+												$reg_nom_complet.=" (".$complement_nom_regroup.")";
+											}
+										}
+										else {
+											// Si on a juste un nom de classe, il ne faut pas le mettre
+											if((!in_array(preg_replace("/ /", "", $liste_groupe_sans_balises), $tab_liste_nom_classe_du_groupe))&&($liste_groupe_sans_balises!="")) {
+												$complement_nom_regroup=$liste_groupe_sans_balises;
+												echo "<p style='color:blue'>Le nom du groupe '$reg_nom_groupe' va être étendu à '$reg_nom_groupe $complement_nom_regroup'.</p>";
+												$complement_nom_regroup=$liste_groupe_sans_balises;
+												$reg_nom_groupe.=" ".$complement_nom_regroup;
+												$reg_nom_complet.=" (".$complement_nom_regroup.")";
+											}
+										}
+
+									}
+								}
 
 								$chaine_id_classe="";
 								$reg_clazz=array();
@@ -1577,7 +1825,14 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 									*/
 								}
 
-								if(in_array($reg_nom_groupe."|".$reg_nom_complet."|".$reg_matiere."|".$chaine_id_classe, $enseignements_deja_traites)) {
+								//if(in_array($reg_nom_groupe."|".$reg_nom_complet."|".$reg_matiere."|".$chaine_id_classe."|".$chaine_profs."|".preg_replace("/|/", "_", $tab["classe"]), $enseignements_deja_traites)) {
+								if($distinction_groupes_mode==1) {
+									$motif_test=$reg_nom_groupe."|".$reg_nom_complet."|".$reg_matiere."|".$chaine_id_classe."|".$chaine_profs."|".$complement_nom_regroup;
+								}
+								else {
+									$motif_test=$reg_nom_groupe."|".$reg_nom_complet."|".$reg_matiere."|".$chaine_id_classe."|".$chaine_profs."|".$complement_nom_regroup."|".preg_replace("/|/", "_", $tab["classe"]);
+								}
+								if(in_array($motif_test, $enseignements_deja_traites)) {
 									echo "<span style='color:orange'>Le cours n°".$tab['numero']." correspond à un enseignement déjà traité.</span><br />\n";
 								}
 								else {
@@ -1586,10 +1841,17 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 										echo "<span style='color:red'>Erreur lors de la création du groupe.</span><br />";
 									}
 									else {
-										$enseignements_deja_traites[]=$reg_nom_groupe."|".$reg_nom_complet."|".$reg_matiere."|".$chaine_id_classe;
+										//$enseignements_deja_traites[]=$reg_nom_groupe."|".$reg_nom_complet."|".$reg_matiere."|".$chaine_id_classe."|".$chaine_profs."|".preg_replace("/|/", "_", $tab["classe"]);
+										if($distinction_groupes_mode==1) {
+											$enseignements_deja_traites[]=$reg_nom_groupe."|".$reg_nom_complet."|".$reg_matiere."|".$chaine_id_classe."|".$chaine_profs."|".$complement_nom_regroup;
+										}
+										else {
+											$enseignements_deja_traites[]=$reg_nom_groupe."|".$reg_nom_complet."|".$reg_matiere."|".$chaine_id_classe."|".$chaine_profs."|".$complement_nom_regroup."|".preg_replace("/|/", "_", $tab["classe"]);
+										}
 
 
 										$sql="INSERT INTO edt_corresp2 SET id_groupe='$create', mat_code_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['mat_code'])."', nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."';";
+										//echo "$sql<br />";
 										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if($insert) {
 											echo "Enregistrement de l'association groupe dans edt_corresp2.<br />";
@@ -1602,27 +1864,35 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 
 
 										$reg_professeurs=array();
-										$reg_professeurs[]=$prof;
 										// Et si il y a plusieurs profs associés? ça se présente comment?
+										if(!is_array($prof)) {
+											$reg_professeurs[]=$prof;
+										}
+										else {
+											$reg_professeurs=$prof;
+										}
+										unset($prof);
 
-										$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$prof' AND id_matiere='$matiere';";
-										$test=mysqli_query($GLOBALS["mysqli"], $sql);
-										if(mysqli_num_rows($test)==0) {
+										foreach($reg_professeurs as $loop_prof => $prof) {
+											$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$prof' AND id_matiere='$matiere';";
+											$test=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($test)==0) {
 
-											$sql="SELECT ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='$prof' ORDER BY ordre_matieres DESC LIMIT 1;";
-											$res_max_ordre_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
-											if(mysqli_num_rows($res_max_ordre_matiere)==0) {
-												$ordre_mat=1;
+												$sql="SELECT ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='$prof' ORDER BY ordre_matieres DESC LIMIT 1;";
+												$res_max_ordre_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(mysqli_num_rows($res_max_ordre_matiere)==0) {
+													$ordre_mat=1;
+												}
+												else {
+													$lig_ordre_mat=mysqli_fetch_object($res_max_ordre_matiere);
+													$ordre_mat=$lig_ordre_mat->ordre_matieres+1;
+												}
+
+												$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$prof', id_matiere='$matiere', ordre_matieres='$ordre_mat';";
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(!$insert) {echo "<br /><b>ERREUR</b> lors de l'association du professeur $prof avec la matière $matiere<br />\n";}
+												else {echo " (<i>association du professeur ".$prof." avec la matière $matiere</i>)<br />";}
 											}
-											else {
-												$lig_ordre_mat=mysqli_fetch_object($res_max_ordre_matiere);
-												$ordre_mat=$lig_ordre_mat->ordre_matieres+1;
-											}
-
-											$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$prof', id_matiere='$matiere', ordre_matieres='$ordre_mat';";
-											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-											if(!$insert) {echo "<br /><b>ERREUR</b> lors de l'association du professeur $prof avec la matière $matiere<br />\n";}
-											else {echo " (<i>association du professeur avec la matière $matiere</i>)<br />";}
 										}
 
 
@@ -1697,7 +1967,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				*/
 
-				echo "<center><p><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options des élèves</a></p></center>\n";
+				echo "<center><p style='margin-top:1em;margin-bottom:2em;'><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options des élèves</a></p></center><p><br /></p>\n";
 
 				//echo "<center><p><a href='init_pp.php?a=a".add_token_in_url()."'>Import des professeurs principaux</a><br />Il est probable que cette information n'était pas dans le fichier de STS, l'import des professeurs principaux risque de ne rien donner... mais qui ne tente rien...</p></center>\n";
 
