@@ -1529,14 +1529,14 @@ elseif($action=="comparer") {
 		$temoin_differences=0;
 		echo "<div id='div_regroupement_$cpt_regroupement'>";
 		echo "<a name='regroupement_$current_id_temp'></a>";
-		echo "<p class='bold'>Regroupement d'élèves ".$lig->nom_groupe_edt."</p>";
+		echo "<p class='bold'>Regroupement d'élèves ".htmlentities($lig->nom_groupe_edt)."</p>";
 		$sql="SELECT DISTINCT id_groupe FROM edt_corresp2 WHERE nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->nom_groupe_edt)."';";
 		if($debug_import_edt=="y") {
-			echo "$sql<br />";
+			echo htmlentities($sql)."<br />";
 		}
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp)==0) {
-			echo "<p>Aucun groupe n'est associé au nom EDT ".$lig->nom_groupe_edt.".</p>";
+			echo "<p>Aucun groupe n'est associé au nom EDT ".htmlentities($lig->nom_groupe_edt).".</p>";
 		}
 		else {
 			$tab_info_grp=array();
@@ -1546,16 +1546,31 @@ elseif($action=="comparer") {
 			echo "<p style='margin-left:3em;text-indent:-3em;'>Le ou les groupes suivants sont associés à ce nom de regroupement d'élèves EDT&nbsp;:<br />";
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
 				$tab_info_grp[$lig_grp->id_groupe]=get_info_grp($lig_grp->id_groupe);
-				echo $tab_info_grp[$lig_grp->id_groupe]."<br />";
+				echo $tab_info_grp[$lig_grp->id_groupe];
+				if($debug_import_edt=="y") {
+					echo " <span style='color:red' title=\"Id du groupe\">".$lig_grp->id_groupe."</span>";
+				}
 				$tmp_tab=get_eleves_from_groupe($lig_grp->id_groupe, $num_periode);
-				if(isset($tab_ele_grp[$lig_grp->id_groupe]['list'])) {
+				//if(isset($tab_ele_grp[$lig_grp->id_groupe]['list'])) {
+				if(isset($tmp_tab['list'])) {
+					if($debug_import_edt=="y") {
+						echo " <span style='color:blue' title=\"Effectif\">(".count($tmp_tab['list']).")</span>";
+					}
 					$tab_ele_grp[$lig_grp->id_groupe]['list']=$tmp_tab['list'];
 					$tab_ele_grp[$lig_grp->id_groupe]['users']=$tmp_tab['users'];
 				}
 				$tab_prof_grp[$lig_grp->id_groupe]=get_profs_for_group($lig_grp->id_groupe);
+				echo "<br />";
 			}
 			echo "</p>";
 
+			if($debug_import_edt=="y") {
+				if(isset($tab_ele_grp[4347])) {
+					echo "tab_ele_grp[4347]<pre>";
+					print_r($tab_ele_grp[4347]["list"]);
+					echo "</pre>";
+				}
+			}
 			$nom_groupe_edt=$lig->nom_groupe_edt;
 			$nom_groupe_edt_clean=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig->nom_groupe_edt));
 
@@ -1671,6 +1686,14 @@ elseif($action=="comparer") {
 					}
 					echo "</p>";
 					echo "<p class='bold'>Effectif : $cpt_ele</p>";
+
+					if($debug_import_edt=="y") {
+						if(isset($tab_ele_regroupement_edt['login'])) {
+							echo "tab_ele_regroupement_edt['login']<pre>";
+							print_r($tab_ele_regroupement_edt['login']);
+							echo "</pre>";
+						}
+					}
 
 					foreach($tab_ele_grp as $current_id_groupe => $current_tab_ele) {
 						$tab_test_association_grp_classe=array();
