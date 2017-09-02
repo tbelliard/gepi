@@ -461,7 +461,7 @@
 
 							foreach($personne->children() as $key => $value) {
 								if(in_array(my_strtoupper($key),$tab_champs_personne)) {
-									$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_-", "");
+									$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_+-", "");
 								}
 							}
 
