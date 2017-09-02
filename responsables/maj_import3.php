@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -5483,6 +5483,7 @@ mysql>
 					$tab_grp_ele[]=$lig_grp_sconet_ele->NOM_GRP;
 				}
 			}
+			//20170901
 			/*
 			echo "<pre>";
 			print_r($tab_grp_ele);
@@ -5677,6 +5678,8 @@ mysql>
 					echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 
 					echo "</th>\n";
+					//20170901
+					echo "<th></th>\n";
 					echo "</tr>\n";
 
 					//$tab_champs_grp=array('matieres','profs','classes');
@@ -5835,6 +5838,39 @@ mysql>
 						//echo "<input type='button' name='decoche_lig_$i' value='D' onClick='modif_case($i,\"lig\",false)' />\n";
 						echo "<a href='javascript:modif_case($i,\"lig\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 						echo "<a href='javascript:modif_case($i,\"lig\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+						echo "</td>\n";
+						//=========================
+						//20170901
+						echo "<td>\n";
+						for($loop_grp=0;$loop_grp<count($tab_grp_ele);$loop_grp++) {
+							//if(mb_stristr($tab_grp_ele[$loop_grp], $nom_groupe)!="") {
+							if(preg_match("/".$tab_grp_ele[$loop_grp]."/", $nom_groupe)) {
+								echo "<img src='../images/icons/flag_green.png' class='icone16' alt='Flag' />";
+							}
+							//elseif(mb_stristr($tab_grp_ele[$loop_grp], $tmp_group['description'])!="") {
+							elseif(preg_match("/".$tab_grp_ele[$loop_grp]."/", $tmp_group['description'])) {
+								echo "<img src='../images/icons/flag_green.png' class='icone16' alt='Flag' />";
+							}
+							else {
+								$sql="SELECT nom_groupe_edt FROM edt_corresp2 WHERE id_groupe='".$id_groupe."' AND nom_groupe_edt LIKE '".mysqli_real_escape_string($mysqli, $tab_grp_ele[$loop_grp])."';";
+								$test=mysqli_query($mysqli, $sql);
+								if(mysqli_num_rows($test)>0) {
+									echo "<img src='../images/icons/flag_green.png' class='icone16' alt='Flag' />";
+								}
+								/*
+								MariaDB [gepidev]> select * from edt_corresp2 where nom_groupe_edt LIKE '%3 A HAS%';
+								+------+-----------+--------------+---------------------------------+
+								| id   | id_groupe | mat_code_edt | nom_groupe_edt                  |
+								+------+-----------+--------------+---------------------------------+
+								| 1114 |      4231 | HAS          | [3 A HAS]<3 A> <SIECLE> 3 A HAS |
+								+------+-----------+--------------+---------------------------------+
+								1 row in set (0.00 sec)
+
+								MariaDB [gepidev]> 
+								*/
+							}
+
+						}
 						echo "</td>\n";
 						//=========================
 						echo "</tr>\n";
