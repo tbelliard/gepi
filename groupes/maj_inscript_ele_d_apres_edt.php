@@ -442,7 +442,8 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 			$tmp_tab_nom_groupe=explode(",", $lig_grp->nom_groupe_edt);
 			$loop2=0;
 			for($loop=0;$loop<count($tmp_tab_nom_groupe);$loop++) {
-				$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+				//$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+				$current_nom_groupe=trim(preg_replace("/\[.*\]/", "", $tmp_tab_nom_groupe[$loop]));
 				if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
 					if($loop2>0) {
 						$sql.=" OR ";
@@ -1478,6 +1479,9 @@ elseif($action=="comparer") {
 
 	//$sql="SELECT DISTINCT nom_edt FROM edt_corresp WHERE champ='groupe';";
 	$sql="SELECT DISTINCT nom_groupe_edt FROM edt_corresp2 ORDER BY nom_groupe_edt;";
+	if($debug_import_edt=="y") {
+		echo "$sql<br />";
+	}
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun enregistrement n'a été trouvé dans 'edt_corresp2'.</p>";
@@ -1509,6 +1513,9 @@ elseif($action=="comparer") {
 	*/
 
 	$sql="TRUNCATE edt_tempo;";
+	if($debug_import_edt=="y") {
+		echo "$sql<br />";
+	}
 	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	echo "
@@ -1591,7 +1598,18 @@ elseif($action=="comparer") {
 			$tmp_tab_nom_groupe=explode(",", $lig->nom_groupe_edt);
 			$loop2=0;
 			for($loop=0;$loop<count($tmp_tab_nom_groupe);$loop++) {
-				$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+				if($debug_import_edt=="y") {
+					if(preg_match("/4 ANG1/", $tmp_tab_nom_groupe[$loop])) {
+						echo "Avant modif: ".htmlentities($tmp_tab_nom_groupe[$loop])."<br />";
+					}
+				}
+				//$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+				$current_nom_groupe=trim(preg_replace("/\[.*\]/", "", $tmp_tab_nom_groupe[$loop]));
+				if($debug_import_edt=="y") {
+					if(preg_match("/4 ANG1/", $current_nom_groupe)) {
+						echo "Après modif: ".htmlentities($current_nom_groupe)."<br />";
+					}
+				}
 				if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
 					if($loop2>0) {
 						//$chaine_nom_groupe.=", ";
