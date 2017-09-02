@@ -332,7 +332,7 @@ require_once("../lib/header.inc.php");
 
 $debug_import_edt="n";
 
-echo "<p class='bold'><a href='index.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'><a href='index_edt.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 if($nb_reg_edt_corresp>0) {echo " | <a href='".$_SERVER['PHP_SELF']."?action=editer_corresp'>Editer les correspondances enregistrées</a> ";}
 if($nb_reg_edt_lignes>0) {echo " | <a href='".$_SERVER['PHP_SELF']."?action=rapprochements'>Effectuer les rapprochements d'après le dernier XML envoyé</a>";}
 if($nb_reg_edt_lignes>0) {echo " | <a href='".$_SERVER['PHP_SELF']."?action=remplir_edt_cours".add_token_in_url()."'>Remplir l'EDT d'après le dernier XML envoyé et d'après les rapprochements effectués</a>";}
