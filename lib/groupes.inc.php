@@ -969,28 +969,30 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
 		}
 	}
 
-	foreach($code_modalite_elect_eleves as $code_modalite_elect => $tab_modalite) {
-		for($loop=0;$loop<count($tab_modalite["eleves"]);$loop++) {
-			if((!isset($former_groupe["modalites"][$code_modalite_elect]["eleves"]))||(!in_array($tab_modalite["eleves"][$loop], $former_groupe["modalites"][$code_modalite_elect]["eleves"]))) {
-				// Ajouter l'élève:
-				//$sql="SELECT 1=1 FROM j_groupes_eleves_modalites WHERE code_modalite_elect='".$code_modalite_elect."' AND id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
-				$sql="SELECT 1=1 FROM j_groupes_eleves_modalites WHERE id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
-				$test = mysqli_query($GLOBALS["mysqli"], $sql);
-				if (mysqli_num_rows($test)==0) {
-					$sql="INSERT INTO j_groupes_eleves_modalites SET code_modalite_elect='".$code_modalite_elect."', id_groupe='".$_id_groupe."', login='".$tab_modalite["eleves"][$loop]."';";
-					$res = mysqli_query($GLOBALS["mysqli"], $sql);
-					if (!$res) {
-						$errors = true;
-						$msg.="ERREUR sur $sql<br />";
+	if(count($code_modalite_elect_eleves)>0) {
+		foreach($code_modalite_elect_eleves as $code_modalite_elect => $tab_modalite) {
+			for($loop=0;$loop<count($tab_modalite["eleves"]);$loop++) {
+				if((!isset($former_groupe["modalites"][$code_modalite_elect]["eleves"]))||(!in_array($tab_modalite["eleves"][$loop], $former_groupe["modalites"][$code_modalite_elect]["eleves"]))) {
+					// Ajouter l'élève:
+					//$sql="SELECT 1=1 FROM j_groupes_eleves_modalites WHERE code_modalite_elect='".$code_modalite_elect."' AND id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
+					$sql="SELECT 1=1 FROM j_groupes_eleves_modalites WHERE id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
+					$test = mysqli_query($GLOBALS["mysqli"], $sql);
+					if (mysqli_num_rows($test)==0) {
+						$sql="INSERT INTO j_groupes_eleves_modalites SET code_modalite_elect='".$code_modalite_elect."', id_groupe='".$_id_groupe."', login='".$tab_modalite["eleves"][$loop]."';";
+						$res = mysqli_query($GLOBALS["mysqli"], $sql);
+						if (!$res) {
+							$errors = true;
+							$msg.="ERREUR sur $sql<br />";
+						}
 					}
-				}
-				else {
-					// Ca ne devrait pas arriver avec la boucle foreach de nettoyage précédente.
-					$sql="UPDATE j_groupes_eleves_modalites SET code_modalite_elect='".$code_modalite_elect."' WHERE id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
-					$res = mysqli_query($GLOBALS["mysqli"], $sql);
-					if (!$res) {
-						$errors = true;
-						$msg.="ERREUR sur $sql<br />";
+					else {
+						// Ca ne devrait pas arriver avec la boucle foreach de nettoyage précédente.
+						$sql="UPDATE j_groupes_eleves_modalites SET code_modalite_elect='".$code_modalite_elect."' WHERE id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
+						$res = mysqli_query($GLOBALS["mysqli"], $sql);
+						if (!$res) {
+							$errors = true;
+							$msg.="ERREUR sur $sql<br />";
+						}
 					}
 				}
 			}

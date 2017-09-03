@@ -95,6 +95,7 @@ if (!isset($_POST["action"])) {
 	echo "<p><input type='submit' value='Valider' />\n";
 	echo "</form>\n";
 
+	/*
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 	if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -102,9 +103,19 @@ if (!isset($_POST["action"])) {
 		$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
 		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($test)==0) {
+		if(mysqli_num_rows($test)>0) {
 			echo "<p style='color:red'>Il existe un ou des comptes responsables de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes élèves (s'ils n'ont pas déjà été supprimés) et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+			echo "<p style='color:red'>Des comptes utilisateurs ont été mis en réserve.Il existe un ou des comptes responsables de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes élèves (s'ils n'ont pas déjà été supprimés) et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
 		}
+	}
+	*/
+
+	$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
+	if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo "<p style='margin:1em;padding:1em;' class='fieldset_opacite50'><strong style='color:red'>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." comptes utilisateurs responsables ont été mis en réserve, mais la procédure d'initialisation CSV ne permet pas de réattribuer à coup sûr le même login que l'année passée à un responsable.<br />Vous devriez supprimer maintenant les comptes mis en réserve pour éviter par exemple l'attribution du login de M.MARTIN Jean à Mme.DUBOIS Martine lorsque vous recréerez les compes responsables.<br />
+		<a href='../gestion/changement_d_annee.php?suppr_reserve_resp=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes responsables.\" target='_blank'>Supprimer les comptes responsables mis en réserve</a></p>";
 	}
 
 	echo "<p><i>NOTE:</i> Les champs marqués d'un <b>(*)</b> doivent être non vides.</p>\n";
