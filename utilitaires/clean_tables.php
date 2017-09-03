@@ -71,6 +71,55 @@ if((isset($_POST['mode']))&&($_POST['mode']=='suppr_assoc_doublon')) {
 	$mode="";
 }
 
+if((isset($_POST['action']))&&($_POST['action']=='suppr_comptes_responsables')) {
+	check_token();
+
+	$msg="";
+
+	$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="DELETE FROM tempo_utilisateurs WHERE statut='responsable';";
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($suppr) {
+			$msg.="Suppression de ".mysqli_num_rows($test)." comptes responsables mis en réserve.<br />";
+		}
+		else {
+			$msg.="Erreur lors de la suppression des comptes responsables mis en réserve dans la table 'tempo_utilisateurs'.<br />";
+		}
+	}
+
+	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($suppr) {
+			$msg.="Suppression de ".mysqli_num_rows($test)." comptes utilisateurs responsables.<br />";
+		}
+		else {
+			$msg.="Erreur lors de la suppression des comptes utilisateurs responsables dans la table 'utilisateurs'.<br />";
+		}
+	}
+
+	$sql="SELECT 1=1 FROM resp_pers WHERE login!='';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="UPDATE resp_pers SET login='' WHERE login!='';";
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($update) {
+			$msg.="Remise à blanc des logins responsables dans la table 'resp_pers' (".mysqli_num_rows($test)." responsables concernés).<br />";
+		}
+		else {
+			$msg.="Erreur lors de la remise à blanc des logins responsables dans la table 'resp_pers'.<br />";
+		}
+	}
+
+	if($msg=="") {
+		$msg="Aucun compte responsable n'a été trouvé.<br />";
+	}
+}
+
 
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
@@ -4464,6 +4513,23 @@ else {
 
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='clean_table_tentative_intrusion' />\n";
+		echo "</form>\n";
+	
+		//===================================================================
+
+		echo "<hr />\n";
+
+		echo "<form action=\"clean_tables.php\" method=\"post\" id='form_clean_comptes_responsables'>
+		<p>Suite à une initialisation mal faite<br />
+		<em>(par exemple, une initialisation CSV après mise en réserve des comptes responsables alors que l'initialisation CSV ne permet pas de réattribuer le bon compte à un responsable)</em><br />
+		vous vous retrouvez avec des incohérences dans les comptes responsables.<br />
+		Par exemple, M.MARTIN Jean a récupéré le login de Mme.DUBOIS Martine.<br />Vous souhaitez supprimer les comptes utilisateurs responsables pour les recréer proprement.</p>\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Supprimer les comptes responsables\" />\n";
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='suppr_comptes_responsables' />\n";
+		echo "<p style='margin-top:2em;text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> L'opération ne supprime pas les responsables, ni leurs adresses.<br />Seuls les comptes de connexion de ces utilisateurs sont supprimés.</p>";
 		echo "</form>\n";
 	
 		//===================================================================
