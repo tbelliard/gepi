@@ -67,6 +67,121 @@ require_once("../lib/header.inc.php");
 
 	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
 
+	//===========================================================
+	// Sauvegarde temporaire:
+	$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs
+(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+password VARCHAR(128) NOT NULL,
+salt VARCHAR(128) NOT NULL,
+email VARCHAR(50) NOT NULL,
+identifiant1 VARCHAR( 10 ) NOT NULL ,
+identifiant2 VARCHAR( 50 ) NOT NULL ,
+nom VARCHAR( 50 ) NOT NULL ,
+prenom VARCHAR( 50 ) NOT NULL ,
+statut VARCHAR( 20 ) NOT NULL ,
+auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+date_reserve DATE DEFAULT '1970-01-01',
+temoin VARCHAR( 50 ) NOT NULL
+);";
+	$creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
+	//if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo "<p style='margin:1em;padding:1em;' class='fieldset_opacite50'><strong style='color:red'>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." comptes responsables sont actuellement mis en réserve.<br />
+		L'initialisation CSV ne permet par d'imposer le même login à des utilisateurs responsables.<br />
+		Vous devriez supprimer maintenant les comptes mis en réserve pour éviter par exemple l'attribution du login de M.MARTIN Jean à Mme.DUBOIS Martine lorsque vous recréerez les compes responsables.<br />
+		<a href='../gestion/changement_d_annee.php?suppr_reserve_resp=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes responsables.\" target='_blank'>Supprimer les comptes responsables mis en réserve</a></p>\n";
+	}
+
+/*
+
+
+echo "<p>Pour pouvoir imposer les mêmes comptes parents et/ou élèves d'une année sur l'autre (<em>pour se connecter dans Gepi, consulter les cahiers de textes, les notes,...</em>), il convient avant d'initialiser la nouvelle année (<em>opération qui vide/nettoye un certain nombre de tables</em>) de mettre en réserve dans une table temporaire les login, mot de passe, email et statut des parents/élèves de façon à leur redonner le même login et restaurer l'accès lors de l'initialisation.</p>\n";
+
+echo "<p>";
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	echo "Il existe actuellement ".mysqli_num_rows($test)." comptes élèves.<br />";
+	$temoin_compte_ele="y";
+}
+else {
+	echo "Il n'existe actuellement aucun compte élève.<br />";
+	$temoin_compte_ele="n";
+}
+$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='eleve';";
+if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	echo mysqli_num_rows($test)." comptes élèves sont actuellement mis en réserve";
+	$sql="SELECT DISTINCT date_reserve FROM tempo_utilisateurs WHERE statut='eleve' ORDER BY date_reserve;";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo " (<em>date de mise en réserve&nbsp;: ";
+		$cpt=0;
+		while($lig_res=mysqli_fetch_object($test)) {
+			if($cpt>0) {echo ", ";}
+			echo formate_date($lig_res->date_reserve);
+			$cpt++;
+		}
+		echo "</em>)";
+	}
+	echo " - <a href='".$_SERVER['PHP_SELF']."?suppr_reserve_eleve=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes élèves. Cela ne supprime pas les comptes élèves actuellement enregistrés dans la table 'utilisateurs'. Vous pourrez donc refaire une mise en réserve des actuels comptes élèves tant que vous n'aurez pas lancé l'initialisation de la nouvelle année.\">Supprimer les comptes élèves mis en réserve</a>";
+	$temoin_reserve_compte_ele="faite";
+}
+else {
+	echo "Aucun compte élève n'est actuellement mis en réserve.<br />";
+	$temoin_reserve_compte_ele="non_faite";
+}
+echo "</p>\n";
+
+echo "<p>";
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
+if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	echo "Il existe actuellement ".mysqli_num_rows($test)." comptes responsables.<br />";
+	$temoin_compte_resp="y";
+}
+else {
+	echo "Il n'existe actuellement aucun compte responsable.<br />";
+	$temoin_compte_resp="n";
+}
+$sql="SELECT 1=1 FROM tempo_utilisateurs WHERE statut='responsable';";
+if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	echo mysqli_num_rows($test)." comptes responsables sont actuellement mis en réserve";
+	$sql="SELECT DISTINCT date_reserve FROM tempo_utilisateurs WHERE statut='responsable' ORDER BY date_reserve;";
+	if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo " (<em>date de mise en réserve&nbsp;: ";
+		$cpt=0;
+		while($lig_res=mysqli_fetch_object($test)) {
+			if($cpt>0) {echo ", ";}
+			echo formate_date($lig_res->date_reserve);
+			$cpt++;
+		}
+		echo "</em>)";
+	}
+	echo " - <a href='".$_SERVER['PHP_SELF']."?suppr_reserve_resp=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes responsables. Cela ne supprime pas les comptes responsables actuellement enregistrés dans la table 'utilisateurs'. Vous pourrez donc refaire une mise en réserve des actuels comptes responsables tant que vous n'aurez pas lancé l'initialisation de la nouvelle année.\">Supprimer les comptes responsables mis en réserve</a>";
+	$temoin_reserve_compte_resp="faite";
+}
+else {
+	echo "Aucun compte responsable n'est actuellement mis en réserve.<br />";
+	$temoin_reserve_compte_resp="non_faite";
+}
+echo "</p>\n";
+
+*/
+
+
+
 	/*
 	$sql="SELECT 1=1 FROM matieres_notes LIMIT 1;";
 	$test=mysql_query($sql);
