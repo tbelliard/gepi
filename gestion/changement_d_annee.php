@@ -539,7 +539,7 @@ nom VARCHAR( 50 ) NOT NULL ,
 prenom VARCHAR( 50 ) NOT NULL ,
 statut VARCHAR( 20 ) NOT NULL ,
 auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-date_reserve DATE DEFAULT '0000-00-00',
+date_reserve DATE DEFAULT '1970-01-01',
 temoin VARCHAR( 50 ) NOT NULL
 );";
 $creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
