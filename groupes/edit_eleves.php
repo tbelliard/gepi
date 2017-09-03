@@ -217,7 +217,7 @@ if (isset($_POST['is_posted'])) {
 	}
 	else {
 		// On ne modifie pas les modalités si la table mef_matieres est vide parce qu'alors les champ SELECT_modalite de la page étaient aussi vides
-		$reg_code_modalite_elect_eleves=$current_group["modalite"];
+		$reg_code_modalite_elect_eleves=$current_group["modalites"];
 	}
 
 	/*
