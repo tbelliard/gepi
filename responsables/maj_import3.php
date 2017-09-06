@@ -1710,6 +1710,8 @@ else{
 
 						// 20161224
 						$sql="SELECT DISTINCT u.nom, u.prenom, u.email FROM utilisateurs u, j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jeg.login='$ele_login' AND jeg.periode='$periode' AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login;";
+						// DEBUG 20170905
+						//echo "$sql<br />";
 						info_debug($sql);
 						$res_prof_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_prof_ele)>0) {
@@ -1729,6 +1731,8 @@ else{
 								}
 								// Enregistrer un message dans mod_alerte
 								if(getSettingAOui('active_mod_alerte')) {
+									// DEBUG 20170905
+									//echo "enregistre_message($sujet_message, $texte_message, ".$_SESSION['login'].", $lig_prof->login);<br />";
 									enregistre_message($sujet_message, $texte_message, $_SESSION['login'], $lig_prof->login);
 								}
 							}
@@ -5524,8 +5528,14 @@ mysql>
 					echo "</form>\n";
 				}
 				else{
+					$acces_edit_class=acces("/groupes/edit_class.php", $_SESSION['statut']);
+					$acces_edit_group=acces("/groupes/edit_group.php", $_SESSION['statut']);
 
-					echo "<p><b>$prenom_eleve $nom_eleve</b> (<i>$lig_classe->classe</i>)</p>\n";
+					echo "<p><b>$prenom_eleve $nom_eleve</b> (<i>$lig_classe->classe</i>)";
+					if($acces_edit_class) {
+						echo " <a href='../groupes/edit_class.php?id_classe=".$id_classe."' target='_blank' title=\"Voir la liste des enseignements dans un nouvel onglet.\"><img src='../images/edit16.png' class='icone16' /></a>";
+					}
+					echo "</p>\n";
 
 					//===========================
 					$tab_cpe_classe=tab_cpe($id_classe);
@@ -5648,6 +5658,7 @@ mysql>
 					$call_group=mysqli_query($GLOBALS["mysqli"], $sql);
 					$nombre_ligne=mysqli_num_rows($call_group);
 
+					$matiere_precedente="";
 					//echo "<table border = '1' cellpadding='5' cellspacing='0'>\n";
 					//echo "<table class='majimport' cellpadding='5' cellspacing='0'>\n";
 					echo "<table class='boireaus' cellpadding='5' cellspacing='0'>\n";
@@ -5694,6 +5705,17 @@ mysql>
 						$nom_groupe = $lig_call_group->name;
 
 						$tmp_group=get_group($id_groupe,$tab_champs_grp);
+
+						if($matiere_precedente=="") {
+							$matiere_precedente=$tmp_group["matiere"]["matiere"];
+						}
+						elseif($tmp_group["matiere"]["matiere"]!=$matiere_precedente) {
+							echo "<tr>
+								<td colspan='".($nb_periode+3)."' style='height:2px;background-color:grey;'></td>
+							</tr>";
+							$matiere_precedente=$tmp_group["matiere"]["matiere"];
+						}
+
 						$chaine_profs="";
 						//for($loop=0;$loop<count($tmp_group[])) {}
 						foreach($tmp_group["profs"]["users"] as $login_prof) {
@@ -5713,8 +5735,12 @@ mysql>
 						}
 						echo ";'>\n";
 						*/
-						echo "<tr class='lig$alt white_hover'>\n";
-						echo "<td>";
+						echo "<tr class='lig$alt white_hover' id='tr_".$i."'>\n";
+						echo "<td id='td_groupe_".$i."'>";
+
+						if($acces_edit_group) {
+							echo "<div style='float:left;width:16px;'><a href='../groupes/edit_group.php?id_classe=".$id_classe."&id_groupe=".$id_groupe."' target='_blank' title=\"Voir l'enseignement dans un nouvel onglet.\"><img src='../images/edit16.png' class='icone16' /></a></div>";
+						}
 
 						//20160330
 						if(in_array_i(mb_strtolower($nom_groupe), $tab_grp_ele)) {
@@ -5825,7 +5851,7 @@ mysql>
 								else {
 									$checked=" checked";
 								}
-								echo "<center><input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();'$checked /> (<em title=\"Effectif actuel en période $j : $eff_grp_periode_courante\">".$eff_grp_periode_courante."</em>)</center></td>\n";
+								echo "<center><input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement(); verif_coches_ligne($i)'$checked /> (<em title=\"Effectif actuel en période $j : $eff_grp_periode_courante\">".$eff_grp_periode_courante."</em>)</center></td>\n";
 
 								//=========================
 							}
@@ -5880,7 +5906,7 @@ mysql>
 
 
 					echo "<script type='text/javascript' language='javascript'>
-	function modif_case(rang,type,statut){
+	function modif_case(rang,type,statut) {
 		// type: col ou lig
 		// rang: le numéro de la colonne ou de la ligne
 		// statut: true ou false
@@ -5892,13 +5918,31 @@ mysql>
 			}
 		}
 		else{
-			for(k=1;k<$nb_periode;k++){
+			for(k=1;k<$nb_periode;k++) {
 				if(document.getElementById('case'+rang+'_'+k)){
 					document.getElementById('case'+rang+'_'+k).checked=statut;
 				}
 			}
+			verif_coches_ligne(rang);
 		}
 		changement();
+	}
+
+	function verif_coches_ligne(num_ligne) {
+		var nb_coche=0;
+		for(k=1;k<$nb_periode;k++) {
+			if(document.getElementById('case'+num_ligne+'_'+k)){
+				if(document.getElementById('case'+num_ligne+'_'+k).checked==true) {
+					nb_coche++;
+				}
+			}
+		}
+		if(nb_coche==0) {
+			document.getElementById('tr_'+num_ligne).style.backgroundColor='grey';
+		}
+		else {
+			document.getElementById('tr_'+num_ligne).style.backgroundColor='';
+		}
 	}
 
 	document.getElementById('div_info_effectif_max').innerHTML=\"<p style='margin-top:1em;margin-bottom:1em;'>Effectif maximum dans un enseignement de la classe avant arrivée de cet(te) élève&nbsp;: <strong>".$eff_max_enseignement."</strong><br />donc potentiellement 1 élève de plus après <em>(".($eff_max_enseignement+1).")</em>.</p>\";
