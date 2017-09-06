@@ -249,7 +249,8 @@ if(mysqli_num_rows($res_per)==0) {
 	echo "<p style='color:red'>Aucune classe avec périodes n'a été trouvée.</p>\n";
 }
 else {
-	echo "<p>Choisissez dans la page&nbsp;:</p>
+	echo "<p class='bold' style='margin-bottom:1em;margin-top:1em;'>$nb_classes classe(s) sont définies.</p>
+<p>Choisissez dans la page&nbsp;:</p>
 <ul>
 	<li><a href='#eff_classes'>Effectifs des classes par périodes</a></li>
 	<li><a href='#eff_grp'>Effectifs des enseignements/regroupements par périodes</a></li>
@@ -264,11 +265,14 @@ else {
 	for($loop=1;$loop<=$max_per;$loop++) {
 		echo "<div style='float:left; width:15em;margin:3px;'>\n";
 		echo "<p class='bold'>Effectifs en période $loop&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs&amp;num_periode=$loop'>Export CSV</a></p>\n";
-		echo "<table class='boireaus'>\n";
-		echo "<tr>\n";
-		echo "<th>Classes</th>\n";
-		echo "<th>Effectifs</th>\n";
-		echo "</tr>\n";
+		echo "<table class='boireaus resizable sortable'
+	<thead>
+		<tr>
+			<th>Classes</th>
+			<th>Effectifs</th>
+		</tr>
+	</thead>
+	<tbody>\n";
 		$alt=1;
 		for($i=0;$i<count($tab_classe);$i++) {
 			$alt=$alt*(-1);
@@ -285,18 +289,21 @@ else {
 			echo "</tr>\n";
 		}
 
-		echo "<tr>\n";
-		echo "<th>Total</th>\n";
-
-		echo "<th>";
+		echo "
+	</tbody>
+	<tfoot>
+		<tr>
+			<th>Total</th>
+			<th>";
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$loop';";
 		//echo "$sql<br />\n";
 		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 		echo mysqli_num_rows($res_eff);
-		echo "</th>\n";
-		echo "</tr>\n";
-
-		echo "</table>\n";
+		echo "
+			</th>
+		</tr>
+	</tfoot>
+</table>\n";
 		echo "</div>\n";
 	}
 	echo "<div style='clear:both;'>&nbsp;</div>\n";
@@ -317,7 +324,7 @@ else {
 		for($loop=1;$loop<=$max_per;$loop++) {
 			echo "<div style='float:left; width:25em;margin:3px;'>\n";
 			echo "<p class='bold'>Effectifs en période $loop&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs_grp&amp;num_periode=$loop'>Export CSV</a></p>\n";
-			echo "<table class='boireaus'>\n";
+			echo "<table class='boireaus resizable sortable'>\n";
 			echo "<tr>\n";
 			echo "<th>Regroupements</th>\n";
 			echo "<th>Classes</th>\n";
@@ -444,7 +451,7 @@ else {
 	for($loop=1;$loop<=$max_per;$loop++) {
 		echo "<div style='float:left; width:40em;margin:3px;'>\n";
 		echo "<p class='bold'>Effectifs par sexe en période $loop&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs_sexe&amp;num_periode=$loop'>Export CSV</a></p>\n";
-		echo "<table class='boireaus'>\n";
+		echo "<table class='boireaus resizable sortable'>\n";
 		echo "<tr>\n";
 		echo "<th>Classes</th>\n";
 		echo "<th>Effectifs garçons</th>\n";
