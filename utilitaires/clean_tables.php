@@ -1653,7 +1653,7 @@ col2 varchar(100) NOT NULL default ''
 		while($lig_ele=mysql_fetch_object($res_ele)){
 		*/
 
-		$tranche=20;
+		$tranche=100;
 		// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
 		// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
 		$sql="SELECT col1 AS login,col2 AS periode FROM tempo2 LIMIT $tranche;";
