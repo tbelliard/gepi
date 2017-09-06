@@ -3189,9 +3189,22 @@ mysql>
 
 								$current_group=$tab_group_edt[$lig->id_groupe];
 
-								$chaine_nom_enseignement=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']." avec ".$current_group['profs']['proflist_string'];
+								$chaine_nom_enseignement="Inconnu ".$lig->id_groupe;
+								$chaine_matiere="Matière Inconnue";
+								if((isset($current_group['name']))&&(isset($current_group['description']))) {
+									$chaine_nom_enseignement=$current_group['name']." (".$current_group['description'].")";
+								}
 
-								$chaine_matiere=$current_group['matiere']['matiere'];
+								if(isset($current_group['classlist_string'])) {
+									$chaine_nom_enseignement.=" en ".$current_group['classlist_string'];
+								}
+								if(isset($current_group['proflist_string'])) {
+									$chaine_nom_enseignement.=" avec ".$current_group['profs']['proflist_string'];
+								}
+
+								if(isset($current_group['matiere']['matiere'])) {
+									$chaine_matiere=$current_group['matiere']['matiere'];
+								}
 
 								// 20160919
 								//$chaine_texte_ligne_1=$chaine_matiere;
@@ -3201,12 +3214,20 @@ mysql>
 								if((!isset($lig->type_cours))||($lig->type_cours!="remplacement")) {
 									$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['type_cours']="standard";
 
-									$chaine_texte_ligne_1=preg_replace("/[_.]/"," ",$current_group['name']);
+									$chaine_texte_ligne_1="Inconnu";
+									if(isset($current_group['name'])) {
+										$chaine_texte_ligne_1=preg_replace("/[_.]/"," ",$current_group['name']);
+									}
 
-									$chaine_proflist_string=$current_group['profs']['proflist_string'];
+									$chaine_proflist_string="";
+									if(isset($current_group['profs']['proflist_string'])) {
+										$chaine_proflist_string=$current_group['profs']['proflist_string'];
+									}
 
-									if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
-										$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
+									if(isset($current_group['matiere']['matiere'])) {
+										if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
+											$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
+										}
 									}
 									// 20160919
 									if($type_affichage=="prof") {
@@ -3217,13 +3238,15 @@ mysql>
 									}
 
 									$cpt_prof=0;
-									foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
-										if($cpt_prof>0) {
-											$chaine_noms_profs.=", ";
-										}
-										$chaine_noms_profs.=$current_prof['nom'];
+									if(isset($current_group['profs']['users'])) {
+										foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
+											if($cpt_prof>0) {
+												$chaine_noms_profs.=", ";
+											}
+											$chaine_noms_profs.=$current_prof['nom'];
 
-										$cpt_prof++;
+											$cpt_prof++;
+										}
 									}
 									//DEBUG: 20170228
 									//$chaine_texte_ligne_1.=" ".$lig->id_cours;
@@ -3276,7 +3299,9 @@ mysql>
 									//$chaine_proflist_string=get_valeur_champ("utilisateurs", "login='".$lig->login_prof."'", "nom");
 								}
 
-								$chaine_liste_classes=$current_group['classlist_string'];
+								if(isset($current_group['classlist_string'])) {
+									$chaine_liste_classes=$current_group['classlist_string'];
+								}
 
 							}
 						}
