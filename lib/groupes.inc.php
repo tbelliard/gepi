@@ -1067,6 +1067,12 @@ function delete_group($_id_groupe) {
     $del10 = mysqli_query($GLOBALS["mysqli"], "DELETE from edt_cours WHERE id_groupe = '" . $_id_groupe . "'");
     if (!$del10) $errors .= "Erreur lors de la suppression des cours dans l'EDT pour ce groupe.<br/>";
 
+    $del11 = mysqli_query($GLOBALS["mysqli"], "DELETE from edt_corresp2 WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del11) $errors .= "Erreur lors de la suppression des références au groupe dans edt_corresp2.<br/>";
+
+    $del12 = mysqli_query($GLOBALS["mysqli"], "DELETE from edt_cours WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del12) $errors .= "Erreur lors de la suppression des cours du groupe dans l'emploi du temps.<br/>";
+
     $del5 = mysqli_query($GLOBALS["mysqli"], "DELETE from groupes WHERE id = '" . $_id_groupe . "'");
     if (!$del5) $errors .= "Erreur lors de la suppression du groupe.<br/>";
 
