@@ -5945,6 +5945,10 @@ mysql>
 		}
 	}
 
+	for(k=0;k<$nombre_ligne;k++){
+		verif_coches_ligne(k);
+	}
+
 	document.getElementById('div_info_effectif_max').innerHTML=\"<p style='margin-top:1em;margin-bottom:1em;'>Effectif maximum dans un enseignement de la classe avant arrivée de cet(te) élève&nbsp;: <strong>".$eff_max_enseignement."</strong><br />donc potentiellement 1 élève de plus après <em>(".($eff_max_enseignement+1).")</em>.</p>\";
 </script>\n";
 
