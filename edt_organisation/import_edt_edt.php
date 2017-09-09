@@ -2148,17 +2148,27 @@ echo "</pre>";
 
 				//20170908
 				//$sql="SELECT * FROM edt_corresp2 ec2, groupes g WHERE nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."' AND ec2.id_groupe=g.id;";
+				/*
 				$sql="SELECT * FROM edt_corresp2 ec2, 
 								groupes g 
 							WHERE (nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."' OR 
 							nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], trim(preg_replace("/\[.*\]/", "", $tab['classe'])))."') AND 
 								ec2.id_groupe=g.id;";
+				*/
 				// Le preg_replace nettoye trop: 
 				// [4 ARTS2]<4 B> <SIECLE> 4 ARTS2, [4 ARTS2]<4 C> <SIECLE> 4 ARTS2, [4 ARTS2]<4 D> <SIECLE> 4 ARTS2
 				// devient
 				// <4 D> <SIECLE> 4 ARTS2
 				// SELECT * FROM edt_corresp2 ec2, groupes g WHERE (nom_groupe_edt='[4 ARTS2]<4 B> <SIECLE> 4 ARTS2, [4 ARTS2]<4 C> <SIECLE> 4 ARTS2, [4 ARTS2]<4 D> <SIECLE> 4 ARTS2' OR nom_groupe_edt='<4 D> <SIECLE> 4 ARTS2') AND ec2.id_groupe=g.id;
-				//$lignes_ce_cours.=htmlentities($sql)."<br />";
+
+				$sql="SELECT * FROM edt_corresp2 ec2, 
+								groupes g 
+							WHERE (nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."' OR 
+							nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], trim(preg_replace("/\[[^\[\]]*\]/", "", $tab['classe'])))."') AND 
+								ec2.id_groupe=g.id;";
+
+
+				//$lignes_ce_cours.="DEBUG : ".htmlentities($sql)."<br />";
 				$res_choix_prec=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_choix_prec)>0) {
 					// 20150204 : A FAIRE DANS CE CAS : Proposer l'association avec le groupe choisi dans la liste.
