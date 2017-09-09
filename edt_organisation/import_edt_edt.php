@@ -183,7 +183,7 @@ if(isset($_GET['afficher_details_groupe_gepi'])) {
 
 		if((isset($tab_ele['users']))&&(count($tab_ele['users'])>0)) {
 			echo "<div style='margin:0.5em;'>";
-			echo "<p class='bold'>$info_grp</p><p>";
+			echo "<p class='bold'>$info_grp <a href='../groupes/edit_group.php?id_groupe=".$_GET['id_groupe']."' target='_blank' title=\"Voir le groupe/enseignement dans un nouvel onglet.\"><img src='../images/edit16.png' class='icone16' alt='Éditer' /></a></p><p>";
 			foreach($tab_ele['users'] as $current_login => $current_ele) {
 				echo $current_ele['nom']." ".$current_ele['prenom']."<br />";
 			}
@@ -705,6 +705,67 @@ Heure début : ".$ligne[$loop]['h_debut']."\">".$current_mat_code_edt."&nbsp;: <
 			if($prof=="") {
 				if(!in_array($ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'], $tab_corresp_a_faire['prof'])) {
 
+
+								if(preg_match("/,/", $ligne[$loop]['prof_nom'])) {
+									// Plusieurs profs sont désignés
+									echo "
+			<tr>
+				<td>".$ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom']."&nbsp;: </td>
+				<td>
+					<input type='hidden' name=\"corresp_prof_a_enregistrer[".$ligne[$loop]['id']."]\" value='___PLUSIEURS_PROFS___' />
+					Plusieurs profs&nbsp;:<br />";
+
+									$tmp_tab_nom=explode(",", $ligne[$loop]['prof_nom']);
+									$tmp_tab_prenom=explode(",", $ligne[$loop]['prof_prenom']);
+									for($loop_prof=0;$loop_prof<count($tmp_tab_nom);$loop_prof++) {
+										if(trim($tmp_tab_nom[$loop_prof])!="") {
+											echo $tmp_tab_nom[$loop_prof];
+											if(isset($tmp_tab_prenom[$loop_prof])) {
+												echo " ".$tmp_tab_prenom[$loop_prof];
+											}
+											echo "&nbsp;: ";
+											echo "
+					<select name=\"corresp_prof_a_enregistrer_".$ligne[$loop]['id']."[]\">
+						<option value=''>---</option>";
+											for($loop2=0;$loop2<count($tab_prof);$loop2++) {
+												$selected="";
+												if(casse_mot($tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom'], "maj")==casse_mot($ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'], "maj")) {
+													$selected=" selected";
+												}
+												echo "
+						<option value='".$tab_prof[$loop2]['login']."'$selected>".$tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom']."</option>";
+											}
+											echo "
+					</select><br />";
+										}
+									}
+									echo "
+				</td>
+			</tr>";
+								}
+								else {
+									echo "
+			<tr>
+				<td>".$ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom']."&nbsp;: </td>
+				<td>
+					<select name=\"corresp_prof_a_enregistrer[".$ligne[$loop]['id']."]\">
+						<option value=''>---</option>";
+									for($loop2=0;$loop2<count($tab_prof);$loop2++) {
+										$selected="";
+										if(casse_mot($tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom'], "maj")==casse_mot($ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'], "maj")) {
+											$selected=" selected";
+										}
+										echo "
+						<option value='".$tab_prof[$loop2]['login']."'$selected>".$tab_prof[$loop2]['nom']." ".$tab_prof[$loop2]['prenom']."</option>";
+									}
+									echo "
+					</select>
+				</td>
+			</tr>";
+								}
+
+
+					/*
 					echo "
 			<tr>
 				<td>".$ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom']."&nbsp;: </td>
@@ -723,6 +784,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">".$current_mat_code_edt."&nbsp;: <
 					</select>
 				</td>
 			</tr>";
+					*/
 
 					$tab_corresp_a_faire['prof'][]=$ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'];
 				}
@@ -1169,6 +1231,59 @@ elseif($action=="enregistrer_rapprochements") {
 					else {
 						$nb_del++;
 					}
+				}
+				elseif($nom_gepi=="___PLUSIEURS_PROFS___") {
+					$tmp_tab_corresp_prof_a_enregistrer=isset($_POST["corresp_prof_a_enregistrer_".$id_ligne]) ? $_POST["corresp_prof_a_enregistrer_".$id_ligne] : array();
+					$chaine_profs="";
+					for($loop_prof=0;$loop_prof<count($tmp_tab_corresp_prof_a_enregistrer);$loop_prof++) {
+						if($tmp_tab_corresp_prof_a_enregistrer[$loop_prof]!="") {
+							if($chaine_profs!="") {
+								$chaine_profs.="|";
+							}
+							$chaine_profs.=$tmp_tab_corresp_prof_a_enregistrer[$loop_prof];
+						}
+					}
+					$nom_gepi=$chaine_profs;
+
+					if($nom_gepi=="") {
+						$sql="DELETE FROM edt_corresp WHERE champ='prof' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."';";
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$del) {
+							echo "<span style='color:red'>Erreur : $sql</span><br />";
+						}
+						else {
+							$nb_del++;
+						}
+					}
+					else {
+
+						$sql="SELECT * FROM edt_corresp WHERE champ='prof' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."';";
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res2)>0) {
+							$lig2=mysqli_fetch_object($res2);
+							echo "<span style='color:red'>$lig->prof_nom $lig->prof_prenom était préalablement associée à $lig2->nom_gepi</span><br />";
+
+							$sql="UPDATE edt_corresp SET champ='prof', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."', nom_gepi='$nom_gepi' WHERE id='$lig2->id';";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$update) {
+								echo "<span style='color:red'>Erreur : $sql</span><br />";
+							}
+							else {
+								$nb_reg++;
+							}
+						}
+						else {
+							$sql="INSERT INTO edt_corresp SET champ='prof', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."', nom_gepi='$nom_gepi';";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$insert) {
+								echo "<span style='color:red'>Erreur : $sql</span><br />";
+							}
+							else {
+								$nb_reg++;
+							}
+						}
+					}
+
 				}
 				else {
 					$sql="SELECT * FROM edt_corresp WHERE champ='prof' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prof_nom." ".$lig->prof_prenom)."';";
@@ -1872,7 +1987,23 @@ echo "</pre>";
 			}
 			$groupes=get_corresp_edt("groupe", $tab['classe']);
 			$salle=get_corresp_edt("salle", $tab['salle']);
-			$prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
+
+			//20170907
+			//$prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
+			$tmp_prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
+			$edt_cours_login_prof=$tmp_prof;
+			if(preg_match("/|/", $tmp_prof)) {
+				$prof=array();
+				$tmp_tab=explode("|",$tmp_prof);
+				for($loop=0;$loop<count($tmp_tab);$loop++) {
+					if(trim($tmp_tab[$loop])!="") {
+						$prof[]=$tmp_tab[$loop];
+					}
+				}
+			}
+			else {
+				$prof=$tmp_prof;
+			}
 
 			$jour=get_corresp_edt("jour", $tab['jour']);
 			$h_debut=get_corresp_edt("h_debut", $tab['h_debut']);
@@ -1918,13 +2049,39 @@ echo "</pre>";
 
 			//$lignes_ce_cours.="<br />";
 			//$lignes_ce_cours.="prof=$prof<br />";
-			$edt_cours_login_prof=$prof;
+			//$edt_cours_login_prof=$prof;
 			$prof_aff="";
+			/*
 			if($prof!="") {
 				if(!isset($tab_prof[$prof])) {
 					$tab_prof[$prof]=civ_nom_prenom($prof);
 				}
 				$prof_aff=$tab_prof[$prof];
+			}
+			*/
+			$temoin_prof="";
+			if(is_array($prof)) {
+				for($loop_prof=0;$loop_prof<count($prof);$loop_prof++) {
+					//echo "prof[$loop_prof]=".$prof[$loop_prof]."<br />";
+					if($prof[$loop_prof]!="") {
+						$temoin_prof="OK";
+						if($prof_aff!="") {
+							$prof_aff.=", ";
+						}
+						if(!isset($tab_prof[$prof[$loop_prof]])) {
+							$tab_prof[$prof[$loop_prof]]=civ_nom_prenom($prof[$loop_prof]);
+						}
+						$prof_aff.=$tab_prof[$prof[$loop_prof]];
+					}
+				}
+			}
+			else {
+				if(!isset($tab_prof[$prof])) {
+					$tab_prof[$prof]=civ_nom_prenom($prof);
+				}
+				$prof_aff=$tab_prof[$prof];
+				//echo "prof=$prof<br />";
+				if($prof!="") {$temoin_prof="OK";}
 			}
 
 			//$lignes_ce_cours.="jour=$jour<br />";
@@ -1989,8 +2146,19 @@ echo "</pre>";
 				$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['lignes']="";
 				$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe']=array();
 
-				$sql="SELECT * FROM edt_corresp2 ec2, groupes g WHERE nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."' AND ec2.id_groupe=g.id;";
-				//$lignes_ce_cours.="$sql<br />";
+				//20170908
+				//$sql="SELECT * FROM edt_corresp2 ec2, groupes g WHERE nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."' AND ec2.id_groupe=g.id;";
+				$sql="SELECT * FROM edt_corresp2 ec2, 
+								groupes g 
+							WHERE (nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."' OR 
+							nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], trim(preg_replace("/\[.*\]/", "", $tab['classe'])))."') AND 
+								ec2.id_groupe=g.id;";
+				// Le preg_replace nettoye trop: 
+				// [4 ARTS2]<4 B> <SIECLE> 4 ARTS2, [4 ARTS2]<4 C> <SIECLE> 4 ARTS2, [4 ARTS2]<4 D> <SIECLE> 4 ARTS2
+				// devient
+				// <4 D> <SIECLE> 4 ARTS2
+				// SELECT * FROM edt_corresp2 ec2, groupes g WHERE (nom_groupe_edt='[4 ARTS2]<4 B> <SIECLE> 4 ARTS2, [4 ARTS2]<4 C> <SIECLE> 4 ARTS2, [4 ARTS2]<4 D> <SIECLE> 4 ARTS2' OR nom_groupe_edt='<4 D> <SIECLE> 4 ARTS2') AND ec2.id_groupe=g.id;
+				//$lignes_ce_cours.=htmlentities($sql)."<br />";
 				$res_choix_prec=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_choix_prec)>0) {
 					// 20150204 : A FAIRE DANS CE CAS : Proposer l'association avec le groupe choisi dans la liste.
@@ -2113,7 +2281,29 @@ mysql> select * from edt_cours where duree='1' limit 5;
 mysql> 
 */
 			$choix_a_faire="n";
-			if($prof!="") {
+			if((is_array($prof))||($prof!="")) {
+
+				// 20170907: Remplir un tableau tmp_tab_prof
+				if(is_array($prof)) {
+					$tmp_tab_prof=$prof;
+				}
+				else {
+					$tmp_tab_prof=array($prof);
+				}
+				/*
+				foreach($tmp_tab_prof as $key => $current_prof_login) {
+					// DEPLACER ICI CE QUI SUIT EN REMPLACANT $prof par $current_prof_login
+
+// NON : On cherche à identifier le groupe
+// S'il n'y a qu'un prof, c'est la procédure existante, s'il y en a plusieurs, il faudrait essayer de matcher le groupe qui a ces différents profs
+
+
+
+				}
+				*/
+				// On va se contenter du premier prof du groupe à ce stade
+				$current_prof_login=$tmp_tab_prof[0];
+
 				if($classe!="") {
 					$tmp_tab_id_groupe_proposes=array();
 
@@ -2124,7 +2314,7 @@ mysql>
 											jgp.id_groupe=jgm.id_groupe AND 
 											jgc.id_classe='$classe' AND 
 											jgm.id_matiere='$matiere' AND 
-											jgp.login='$prof';";
+											jgp.login='$current_prof_login';";
 					if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
 					$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_grp)==1) {
@@ -2286,7 +2476,7 @@ mysql>
 											jgp.id_groupe=jgm.id_groupe AND 
 											".$chaine_sql_id_classe." 
 											jgm.id_matiere='$matiere' AND 
-											jgp.login='$prof';";
+											jgp.login='$current_prof_login';";
 					if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
 					$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_grp)==1) {
@@ -2622,24 +2812,46 @@ mysql>
 				echo "\$edt_cours_id_groupe=$edt_cours_id_groupe<br />";
 				*/
 
-				$sql="INSERT INTO edt_cours SET id_groupe='".$edt_cours_id_groupe."',
-										id_salle='".$edt_cours_id_salle."',
-										jour_semaine='".$edt_cours_jour_semaine."',
-										id_definie_periode='".$edt_cours_id_definie_periode."',
-										duree='".$edt_cours_duree."',
-										heuredeb_dec='".$edt_cours_heuredeb_dec."',
-										id_semaine='".$edt_cours_id_semaine."',
-										login_prof='".$edt_cours_login_prof."';";
-				if($debug_import_edt=="y") {
-					echo "$sql<br />";
-				}
-				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(!$insert) {
-					echo "<div style='color:red'>".$lignes_ce_cours."</div>";
-					echo "<span style='color:red'>Erreur lors de la création du cours : $sql</span><br />";
-					echo "<hr />";
+				//20170908
+				if((is_array($prof))||($prof!="")) {
+
+					// Remplir un tableau tmp_tab_prof
+					if(is_array($prof)) {
+						$tmp_tab_prof=$prof;
+					}
+					else {
+						$tmp_tab_prof=array($prof);
+					}
 				}
 				else {
+					// Cours sans prof?
+					$tmp_tab_prof[0]="";
+				}
+
+				$temoin_erreur_insert_edt_cours=0;
+				for($loop_prof=0;$loop_prof<count($tmp_tab_prof);$loop_prof++) {
+					// On va peut-être avoir une blague sur l'EDT de salle avec deux profs pour la même salle
+					$sql="INSERT INTO edt_cours SET id_groupe='".$edt_cours_id_groupe."',
+											id_salle='".$edt_cours_id_salle."',
+											jour_semaine='".$edt_cours_jour_semaine."',
+											id_definie_periode='".$edt_cours_id_definie_periode."',
+											duree='".$edt_cours_duree."',
+											heuredeb_dec='".$edt_cours_heuredeb_dec."',
+											id_semaine='".$edt_cours_id_semaine."',
+											login_prof='".$tmp_tab_prof[$loop_prof]."';";
+					if($debug_import_edt=="y") {
+						echo "$sql<br />";
+					}
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						echo "<div style='color:red'>".$lignes_ce_cours."</div>";
+						echo "<span style='color:red'>Erreur lors de la création du cours : $sql</span><br />";
+						echo "<hr />";
+						$temoin_erreur_insert_edt_cours++;
+					}
+				}
+
+				if($temoin_erreur_insert_edt_cours>0) {
 					echo "<div style='color:green' id='div_cours_enregistre_".$nb_cours_enregistres."'>".$lignes_ce_cours."<hr /></div>";
 					$nb_cours_enregistres++;
 
@@ -2959,7 +3171,24 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 					$classe=get_corresp_edt("classe", $tab['classe']);
 					$groupes=get_corresp_edt("groupe", $tab['classe']);
 					$salle=get_corresp_edt("salle", $tab['salle']);
-					$prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
+
+					//$prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
+					//20170908
+					$tmp_prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
+					$edt_cours_login_prof=$tmp_prof;
+					if(preg_match("/|/", $tmp_prof)) {
+						$prof=array();
+						$tmp_tab=explode("|",$tmp_prof);
+						for($loop=0;$loop<count($tmp_tab);$loop++) {
+							if(trim($tmp_tab[$loop])!="") {
+								$prof[]=$tmp_tab[$loop];
+							}
+						}
+					}
+					else {
+						$prof=$tmp_prof;
+					}
+
 
 					$jour=get_corresp_edt("jour", $tab['jour']);
 					$h_debut=get_corresp_edt("h_debut", $tab['h_debut']);
@@ -2969,7 +3198,7 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 						$edt_cours_id_salle=$salle;
 					}
 
-					$edt_cours_login_prof=$prof;
+					//$edt_cours_login_prof=$prof;
 					$edt_cours_jour_semaine=$jour;
 
 					$tab_h_debut=explode("|", $h_debut);
