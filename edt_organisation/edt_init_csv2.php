@@ -56,6 +56,9 @@ $utilisation_prototype = "ok";
 // ============fin PROTOTYPE=============
 // On insère l'entête de Gepi
 require_once("../lib/header.inc.php");
+
+echo "<p class='bold'><a href='edt_initialiser.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
 // +++++++++++++++++++GESTION DU RETOUR vers absences+++++++++++++++++
