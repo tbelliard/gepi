@@ -2749,10 +2749,10 @@ mysql>
 		$ajout_sql2="";
 		if($login_eleve!="") {
 			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') AND ";
-			$ajout_sql.="(ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') OR ec.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves WHERE login = '".$login_eleve."')) AND ";
+			$ajout_sql.="(ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') OR ec.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves WHERE login = '".$login_eleve."' AND id_aid!='')) AND ";
 
 			if($afficher_remplacements=="y") {
-				$ajout_sql2.="(apr.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') OR apr.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves WHERE login = '".$login_eleve."')) AND ";
+				$ajout_sql2.="(apr.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') OR apr.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves WHERE login = '".$login_eleve."' AND id_aid!='')) AND ";
 
 				$ajout_sql.="(CONCAT(ec.id_cours,'|',ec.jour_semaine,'|',ec.id_definie_periode) NOT IN (SELECT CONCAT(id_cours_remplaced,'|',jour_semaine,'|',id_creneau) FROM abs_prof_remplacement WHERE jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."')) AND ";
 			}
@@ -2762,12 +2762,12 @@ mysql>
 			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_groupes_classes WHERE id_classe = '".$id_classe."') AND ";
 			$ajout_sql.="(ec.id_groupe IN (SELECT id_groupe from j_groupes_classes WHERE id_classe = '".$id_classe."') OR 
 					ec.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves jae, j_eleves_classes jec 
-											WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."')) AND ";
+											WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."' AND jae.id_aid!='')) AND ";
 
 			if($afficher_remplacements=="y") {
 				$ajout_sql2.="(apr.id_groupe IN (SELECT id_groupe from j_groupes_classes WHERE id_classe = '".$id_classe."') OR 
 						apr.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves jae, j_eleves_classes jec 
-												WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."')) AND ";
+												WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."' AND jae.id_aid!='')) AND ";
 
 				$ajout_sql.="(CONCAT(ec.id_cours,'|',ec.jour_semaine,'|',ec.id_definie_periode) NOT IN (SELECT CONCAT(id_cours_remplaced,'|',jour_semaine,'|',id_creneau) FROM abs_prof_remplacement WHERE jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."')) AND ";
 			}

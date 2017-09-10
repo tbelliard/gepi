@@ -732,7 +732,9 @@ function clean_tables_aid_et_autres() {
 		// $val[0] : le nom de la première table
 		// $val[1] : le nom de la deuxième table
 		// etc...
-		$req = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $key order by $val[2],$val[3]");
+		$sql="SELECT * FROM $key order by $val[2],$val[3];";
+		//$retour.=$sql."<br />";
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_lignes = mysqli_num_rows($req);
 		$i = 0;
 		$affiche = 'yes';
@@ -740,14 +742,14 @@ function clean_tables_aid_et_autres() {
 			$temp1 = old_mysql_result($req,$i,$val[2]);
 			$temp2 = old_mysql_result($req,$i,$val[3]);
 
-			$req2 = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $key j, $val[0] t1, $val[1] t2
-
+			$sql="SELECT * FROM $key j, $val[0] t1, $val[1] t2
 			where
 			j.$val[2]=t1.$val[4] and
 			j.$val[3]=t2.$val[5] and
 			j.$val[2]='$temp1' and
-			j.$val[3]='$temp2'
-			");
+			j.$val[3]='$temp2';";
+			//$retour.=$sql."<br />";
+			$req2 = mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_lignes2 = mysqli_num_rows($req2);
 			// suppression des doublons
 			if ($nb_lignes2 > "1") {
@@ -755,27 +757,35 @@ function clean_tables_aid_et_autres() {
 				// cas j_aid_eleves et j_aid_utilisateurs
 				if (($key == "j_aid_eleves") or ($key == "j_aid_utilisateurs") or ($key == "j_aid_eleves_resp") or ($key == "j_aid_utilisateurs_gest")) {
 					$indice_aid = old_mysql_result($req,$i,'indice_aid');
-					$test = sql_query1("select a.indice_aid from aid_config ac, aid a
+					$sql="select a.indice_aid from aid_config ac, aid a
 					where
 					ac.indice_aid ='$indice_aid' and
 					a.id = '$temp1'and
-					a.indice_aid = '$indice_aid' ");
+					a.indice_aid = '$indice_aid';";
+					//$retour.=$sql."<br />";
+					$test = sql_query1($sql);
 					if ($test == "-1") {
 						//echo "Suppression d'un doublon : $temp1 - $temp2<br />\n";
-						$del = mysqli_query($GLOBALS["mysqli"], "delete from $key where ($val[2]='$temp1' and $val[3]='$temp2' and indice_aid='$indice_aid')");
+						$sql="delete from $key where ($val[2]='$temp1' and $val[3]='$temp2' and indice_aid='$indice_aid');";
+						//$retour.=$sql."<br />";
+						$del = mysqli_query($GLOBALS["mysqli"], $sql);
 						$cpt++;
 					}
 					// autres cas
 				} else {
 					//echo "Suppression d'un doublon : $temp1 - $temp2<br />\n";
-					$del = mysqli_query($GLOBALS["mysqli"], "delete from $key where ($val[2]='$temp1' and $val[3]='$temp2') LIMIT $nb");
+					$sql="delete from $key where ($val[2]='$temp1' and $val[3]='$temp2') LIMIT $nb;";
+					//$retour.=$sql."<br />";
+					$del = mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt++;
 				}
 			}
 			// On supprime les lignes inutiles
 			if ($nb_lignes2 == "0") {
 				//echo "Suppression d'une ligne inutile : $temp1 - $temp2<br />\n";
-				$del = mysqli_query($GLOBALS["mysqli"], "delete from $key where $val[2]='$temp1' and $val[3]='$temp2'");
+				$sql="delete from $key where $val[2]='$temp1' and $val[3]='$temp2';";
+				//$retour.=$sql."<br />";
+				$del = mysqli_query($GLOBALS["mysqli"], $sql);
 				$cpt++;
 			}
 			$i++;
@@ -790,9 +800,11 @@ function clean_tables_aid_et_autres() {
 			// Le test plus haut ne fonctionne pas completement: s'il y a eu des collisions de logins (?) d'une année sur l'autre, et des tables non nettoyées, on peut se retrouver avec un login attribué à un parent alors que c'était le login d'un prof l'année précédente... et si j_professeurs_matieres n'a pas été nettoyée, on se retrouve avec un parent d'élève proposé comme professeur lors de l'ajout d'enseignement
 			//$sql="select * from j_professeurs_matieres j, resp_pers rp where rp.login=j.id_professeur AND j.id_professeur not in (select login from utilisateurs where statut='professeur');";
 			$sql="SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
+			//$retour.=$sql."<br />";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
 				$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
+				//$retour.=$sql."<br />";
 				$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($del) {$retour.="<font color=\"red\">Suppression de ".mysqli_num_rows($test)." enregistrements supplémentaires.</font><br />\n";}
 			}
