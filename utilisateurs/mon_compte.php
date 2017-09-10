@@ -3604,7 +3604,7 @@ if ((getSettingValue("autorise_edt_tous") == "y")&&($_SESSION['statut']=="profes
 		<legend style='border: 1px solid grey; background-color: white;'>Paramètres Emploi du temps</legend>
 		<input type='hidden' name='parametrer_edt' value='y' />
 
-		<p>Définir des couleurs pour mes enseignements dans l'EDT2&nbsp;:</p>
+		<p>Définir des couleurs pour mes enseignements dans l'EDT2&nbsp;: <a href='../edt/index2.php?login_prof=BOIREAUS&affichage=semaine&type_affichage=prof' target='_blank' title=\"Voir mon emploi du temps.\"><img src='../images/icons/edt2.png' class='icone16' alt='EDT' /></a></p>
 		<table class='boireaus boireaus_alt'>
 			<tr>
 				<th colspan='2'>Enseignement</th>
