@@ -48,6 +48,8 @@ $user_login2=isset($_POST['user_login2']) ? $_POST['user_login2'] : (isset($_GET
 
 $avec_login=isset($_POST['avec_login']) ? $_POST['avec_login'] : (isset($_GET['avec_login']) ? $_GET['avec_login'] : 'n');
 
+if(!isset($msg)) {$msg="";}
+
 if($afficher_les_alertes_d_un_compte=="y") {
 	$avec_login="y";
 }
@@ -58,25 +60,75 @@ if (isset($_GET['action'])) {
 	switch ($_GET['action']) {
 		case "activer":
 			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'actif' WHERE (login = '".$_GET['user_login']."')");
+			if($res) {
+				$msg.="Le compte ".$_GET['user_login']." a été activé.<br />";
+			}
+			else {
+				$msg.="Erreur lors de l'activation du compte ".$_GET['user_login'].".<br />";
+			}
 			break;
 		case "desactiver":
 			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$_GET['user_login']."')");
+			if($res) {
+				$msg.="Le compte ".$_GET['user_login']." a été désactivé.<br />";
+			}
+			else {
+				$msg.="Erreur lors de la désactivation du compte ".$_GET['user_login'].".<br />";
+			}
 			break;
 		case "observer":
 			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET observation_securite = '1' WHERE (login = '".$_GET['user_login']."')");
+			if($res) {
+				$msg.="Le compte ".$_GET['user_login']." a été mis en observation.<br />";
+			}
+			else {
+				$msg.="Erreur lors de la mise en observation sur le compte ".$_GET['user_login'].".<br />";
+			}
 			break;
 		case "stop_observation":
 			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET observation_securite = '0' WHERE (login = '".$_GET['user_login']."')");
+			if($res) {
+				$msg.="Le compte ".$_GET['user_login']." n'est plus en observation.<br />";
+			}
+			else {
+				$msg.="Erreur lors de la suppression de l'observation sur le compte ".$_GET['user_login'].".<br />";
+			}
 			break;
 		case "reinit_cumul":
 			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET niveau_alerte = '0' WHERE (login = '".$_GET['user_login']."')");
+			if($res) {
+				$msg.="Le compte ".$_GET['user_login']." a vu son cumul sécurité (niveau d'alerte) réinitialisé.<br />";
+			}
+			else {
+				$msg.="Erreur lors de la réinitialisation du cumul sécurité (niveau d'alerte) sur le compte ".$_GET['user_login'].".<br />";
+			}
 			break;
 		case "archiver":
 			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE tentatives_intrusion SET statut = '' WHERE (statut = 'new')");
+			if($res) {
+				$msg.="Les alertes sécurité ont été archivées.<br />";
+			}
+			else {
+				$msg.="Erreur lors de l'archivage des alertes sécurité.<br />";
+			}
 			break;
 	}
 	if (!$res) {echo mysqli_error($GLOBALS["mysqli"]);}
+
+	if((isset($_GET["mode"]))&&($_GET["mode"]=="ajax")) {
+		$test=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM utilisateurs WHERE etat = 'actif' AND login='".$_GET['user_login']."';");
+		if(mysqli_num_rows($test)>0) {
+			echo "<strong>Compte actif</strong>";
+		}
+		else {
+			echo "<strong style='color:red' title=\"L'utilisateur ne peut pas se connecter.\">Compte inactif</strong>";
+		}
+
+		echo affiche_actions_compte($_GET["user_login"], "_blank", "ajax");
+		die();
+	}
 }
+
 
 //**************** EN-TETE *****************
 $titre_page = "Sécurité Gepi";

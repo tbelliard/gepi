@@ -1783,7 +1783,7 @@ function affiche_acces_cdt() {
  * @return string La balises
  * @see add_token_in_url()
  */
-function affiche_actions_compte($login, $target="") {
+function affiche_actions_compte($login, $target="", $mode="") {
 	global $gepiPath;
 
 	$retour="";
@@ -1798,6 +1798,9 @@ function affiche_actions_compte($login, $target="") {
 			if($target!="") {
 				$retour.=" target='$target'";
 			}
+			if($mode=="ajax") {
+				$retour.=" onclick=\"action_ajax_security_panel('desactiver');return false;\"";
+			}
 			$retour.=">Désactiver le compte</a>";
 		} else {
 			$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
@@ -1805,14 +1808,21 @@ function affiche_actions_compte($login, $target="") {
 			if($target!="") {
 				$retour.=" target='$target'";
 			}
+			if($mode=="ajax") {
+				$retour.=" onclick=\"action_ajax_security_panel('activer');return false;\"";
+			}
 			$retour.=">Réactiver le compte</a>";
 		}
 		$retour.="<br />\n";
+		//==================================================
 		if ($user['observation_securite'] == 0) {
 			$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
 			$retour.=add_token_in_url()."'";
 			if($target!="") {
 				$retour.=" target='$target'";
+			}
+			if($mode=="ajax") {
+				$retour.=" onclick=\"action_ajax_security_panel('observer');return false;\"";
 			}
 			$retour.=">Placer en observation</a>";
 		} else {
@@ -1821,8 +1831,12 @@ function affiche_actions_compte($login, $target="") {
 			if($target!="") {
 				$retour.=" target='$target'";
 			}
+			if($mode=="ajax") {
+				$retour.=" onclick=\"action_ajax_security_panel('stop_observation');return false;\"";
+			}
 			$retour.=">Retirer l'observation</a>";
 		}
+		//=================================================
 		if($user['niveau_alerte']>0) {
 			$retour.="<br />\n";
 			$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
@@ -1831,6 +1845,9 @@ function affiche_actions_compte($login, $target="") {
 			$retour.=add_token_in_url()."'";
 			if($target!="") {
 				$retour.=" target='$target'";
+			}
+			if($mode=="ajax") {
+				$retour.=" onclick=\"action_ajax_security_panel('reinit_cumul');return false;\"";
 			}
 			$retour.=">Réinitialiser cumul</a>";
 
@@ -1843,6 +1860,32 @@ function affiche_actions_compte($login, $target="") {
 			$retour.=">Voir les alertes</a>";
 		}
 		$retour.="</p>\n";
+
+		if($mode=="ajax") {
+			$retour.="
+	<script type='text/javascript'>
+		// <![CDATA[
+		function action_ajax_security_panel(action) {
+			if(action=='desactiver') {
+				new Ajax.Updater($('div_affiche_actions_compte'),'$gepiPath/gestion/security_panel.php?mode=ajax&action=desactiver&afficher_les_alertes_d_un_compte=y&user_login=".$login.add_token_in_url(false)."',{method: 'get'});
+			}
+			else if(action=='activer') {
+				new Ajax.Updater($('div_affiche_actions_compte'),'$gepiPath/gestion/security_panel.php?mode=ajax&action=activer&afficher_les_alertes_d_un_compte=y&user_login=".$login.add_token_in_url(false)."',{method: 'get'});
+			}
+			else if(action=='observer') {
+				new Ajax.Updater($('div_affiche_actions_compte'),'$gepiPath/gestion/security_panel.php?mode=ajax&action=observer&afficher_les_alertes_d_un_compte=y&user_login=".$login.add_token_in_url(false)."',{method: 'get'});
+			}
+			else if(action=='stop_observation') {
+				new Ajax.Updater($('div_affiche_actions_compte'),'$gepiPath/gestion/security_panel.php?mode=ajax&action=stop_observation&afficher_les_alertes_d_un_compte=y&user_login=".$login.add_token_in_url(false)."',{method: 'get'});
+			}
+			else if(action=='reinit_cumul') {
+				new Ajax.Updater($('div_affiche_actions_compte'),'$gepiPath/gestion/security_panel.php?mode=ajax&action=reinit_cumul&afficher_les_alertes_d_un_compte=y&user_login=".$login.add_token_in_url(false)."',{method: 'get'});
+			}
+		}
+		//]]>
+	</script>\n";
+		}
+
 	}
 
 	return $retour;
