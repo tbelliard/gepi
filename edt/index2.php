@@ -1383,6 +1383,10 @@ $chaine_options_select="";
 
 $date_courante_aaaammjj=strftime("%Y%m%d");
 
+$num_semaine_en_cours=strftime("%U|%Y");
+$indice_select_semaine_courante=-1;
+$lien_retour_semaine_courante="";
+
 if(strftime("%m")>=8) {
 	$annee=strftime("%Y");
 }
@@ -1391,6 +1395,14 @@ else {
 }
 for($n=36;$n<52;$n++) {
 	$tmp_tab=get_days_from_week_number($n ,$annee);
+
+	if("$n|$annee"==$num_semaine_en_cours) {
+		$indice_select_semaine_courante=$cpt;
+		$lien_retour_semaine_courante=" <a href=\"#\" onclick=\"document.getElementById('num_semaine_annee').selectedIndex=$indice_select_semaine_courante;
+				document.getElementById('form_envoi').submit();\" 
+				title=\"Semaine en cours (courante).\nSemaine du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa']."\">
+				<img src='$gepiPath/images/icons/actualiser2.png' class='icone16' alt='Courant' /></a>";
+	}
 
 	$selected="";
 	if("$n|$annee"==$num_semaine_annee) {
@@ -1423,6 +1435,14 @@ $annee++;
 for($n=1;$n<28;$n++) {
 	$m=(($n<10) ? "0".$n : $n);
 	$tmp_tab=get_days_from_week_number($m ,$annee);
+
+	if("$n|$annee"==$num_semaine_en_cours) {
+		$indice_select_semaine_courante=$cpt;
+		$lien_retour_semaine_courante=" <a href=\"#\" onclick=\"document.getElementById('num_semaine_annee').selectedIndex=$indice_select_semaine_courante;
+				document.getElementById('form_envoi').submit();\" 
+				title=\"Semaine en cours (courante).\nSemaine du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa']."\">
+				<img src='$gepiPath/images/icons/actualiser2.png' class='icone16' alt='Courant' /></a>";
+	}
 
 	$selected="";
 	if("$m|$annee"==$num_semaine_annee) {
@@ -1472,6 +1492,7 @@ echo_selon_mode("
 				<option value=''></option>".$chaine_options_select."
 			</select>
 			$lien_semaine_suivante
+			$lien_retour_semaine_courante
 			<br />
 
 			Afficher <select name='affichage' onchange=\"document.getElementById('form_envoi').submit();\">
