@@ -273,12 +273,12 @@ if($mode_infobulle=="n") {
 	require_once("../lib/header.inc.php");
 
 	if(acces("/edt/index2.php", $_SESSION['statut'])) {
-		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2\"><a href='$gepiPath/edt/index2.php".$chaine_opt_edt2."'>".$chaine_image_edt."</a></div>";
+		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2.\nL'emploi du temps affiché par défaut 1 ou 2 se paramètre en administrateur dans Gestion des modules/Emplois du temps.\"><a href='$gepiPath/edt/index2.php".$chaine_opt_edt2."'>".$chaine_image_edt."</a></div>";
 	}
 }
 else {
 	if(acces("/edt/index2.php", $_SESSION['statut'])) {
-		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2\"><a href='$gepiPath/edt/index2.php".$chaine_opt_edt2."' target='_blank'>".$chaine_image_edt."</a></div>";
+		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2.\nL'emploi du temps affiché par défaut 1 ou 2 se paramètre en administrateur dans Gestion des modules/Emplois du temps.\"><a href='$gepiPath/edt/index2.php".$chaine_opt_edt2."' target='_blank'>".$chaine_image_edt."</a></div>";
 	}
 }
 

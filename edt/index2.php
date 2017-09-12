@@ -815,7 +815,7 @@ if($mode=="afficher_edt") {
 }
 
 if(acces("/edt_organisation/index_edt.php", $_SESSION['statut'])) {
-	echo_selon_mode("<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 1\"><a href='$gepiPath/edt_organisation/index_edt.php'><img src='$gepiPath/images/icons/edt1.png' class='icone16' alt='EDT1' /></a></div>");
+	echo_selon_mode("<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 1.\nL'emploi du temps affiché par défaut 1 ou 2 se paramètre en administrateur dans Gestion des modules/Emplois du temps.\"><a href='$gepiPath/edt_organisation/index_edt.php'><img src='$gepiPath/images/icons/edt1.png' class='icone16' alt='EDT1' /></a></div>");
 }
 
 // onclick=\"return confirm_abandon (this, change, '$themessage')\"
