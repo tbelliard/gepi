@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -878,7 +878,8 @@ if (!isset($_SESSION['defaulttimeout'])) {
 // Lors d'une sauvegarde, nombre de lignes traitées dans la base entre chaque vérification du temps restant
 $defaultrowlimit=10;
 
-
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Sauvegardes/Restauration";
 require_once("../lib/header.inc.php");
@@ -1840,17 +1841,28 @@ $tab_file=get_tab_fichiers_du_dossier_de_sauvegarde('../backup/' . $dirname);
 $n=count($tab_file);
 
 if ($n > 0) {
-    echo "<h3>Fichiers de restauration</h3>\n";
-    echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
-    // echo "<table class='boireaus centre' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><strong>Nom du fichier de sauvegarde</strong></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
-    echo "<table class='boireaus centre' style='margin:auto;' >\n<tr><th><strong>Nom du fichier de sauvegarde</strong></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
-    $m = 0;
+	echo "<h3>Fichiers de restauration</h3>\n";
+	echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
+	// echo "<table class='boireaus centre' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><strong>Nom du fichier de sauvegarde</strong></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
+	echo "<table class='boireaus centre resizable sortable' style='margin:auto;' >
+	<tr>
+		<th class='text'>
+			<strong>Nom du fichier de sauvegarde</strong>
+		</th>
+		<th class='number'>Taille</th>
+		<th class='number'>Date</th>
+		<th class='nosort'>&nbsp;</th>
+		<th class='nosort'>&nbsp;</th>
+		<th class='nosort'>&nbsp;</th>
+		<th class='nosort'>&nbsp;</th>
+	</tr>\n";
+	$m = 0;
 	$alt=1;
-    foreach($tab_file as $value) {
-        $alt=$alt*(-1);
+	foreach($tab_file as $value) {
+		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-        echo "<td style='padding:5px;'>\n";
-        echo "<em>";
+		echo "<td style='padding:5px;'>\n";
+		echo "<em>";
 		if(file_exists('../backup/'.$dirname.'/'.$value.'.txt')) {
 			$handle = fopen('../backup/'.$dirname.'/'.$value.'.txt', "r");
 			$contents = fread($handle, filesize('../backup/'.$dirname.'/'.$value.'.txt'));
@@ -1869,9 +1881,17 @@ if ($n > 0) {
 		else {
 			echo $value;
 		}
-		echo "</em>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko)\n";
-        echo "</td>\n";
-        echo "<td style='padding:5px;'><a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a></td>\n";
+		$tmp_taille=filesize("../backup/".$dirname."/".$value);
+		$tmp_taille_ko=round(($tmp_taille/1024),0);
+		echo "</em>";
+		//echo "&nbsp;&nbsp;(".$tmp_taille_ko." Ko)\n";
+		echo "</td>\n";
+		echo "<td><span style='display:none'>$tmp_taille.</span>".$tmp_taille_ko." Ko</td>\n";
+		echo "<td>";
+		$tmp_date=filemtime("../backup/".$dirname."/".$value);
+		echo "<span style='display:none'>".$tmp_date."</span>".strftime("%d/%m/%Y %H:%M:%S", $tmp_date);
+		echo "</td>\n";
+		echo "<td style='padding:5px;'><a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a></td>\n";
 		$type_sauvegarde="";
 		if (preg_match('/^_photos/i',$value)&& preg_match('/.zip$/i',$value))$type_sauvegarde="photos";
 		if (preg_match('/^_cdt/i',$value)&& preg_match('/.zip$/i',$value)) $type_sauvegarde="cdt";
