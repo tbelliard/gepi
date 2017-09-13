@@ -113,7 +113,14 @@ if (isset($_POST['isposted'])) {
 				$ok = 'no';
 			}
 		} else {
-			$msg = "L'identifiant de matière doit être constitué uniquement de lettres et de chiffres avec un maximum de 19 caractères ! <br />";
+			$msg = "L'identifiant de matière doit être constitué uniquement de lettres, de chiffres <em>(et éventuellement des tirets - et _)</em> avec un maximum de 19 caractères ! <br />";
+			if(!preg_match("/^[a-zA-Z]/", $matiere_name)) {
+				$msg.="Le nom de matière doit commencer par une lettre.<br />";
+			}
+			$caracteres_non_valides=preg_replace("/[a-zA-Z0-9_-]/", "", $matiere_name);
+			if($caracteres_non_valides!="") {
+				$msg.="Le ou les caractères (<span style='color:blue'>$caracteres_non_valides</span>) sont non valides.<br />";
+			}
 			$ok = 'no';
 		}
 	} else {
@@ -454,9 +461,9 @@ function checkbox_change(cpt) {
 <td>
 <?php
 if ((!isset($current_matiere))||($current_matiere=="")) {
-    echo "<input type=text size='19' maxlength='19' name='reg_current_matiere' onchange='changement()' /> (<span style='font-style: italic; font-size: small;'>19 caractères maximum</span>)";
+    echo "<input type=text size='19' maxlength='19' name='reg_current_matiere' id='reg_current_matiere' onchange='changement()' /> (<span style='font-style: italic; font-size: small;'>19 caractères maximum</span>)";
 } else {
-    echo "<input type=hidden name=matiere_name value=\"".$current_matiere."\" />".$current_matiere;
+    echo "<input type='hidden' name='matiere_name' value=\"".$current_matiere."\" />".$current_matiere;
 }
 ?>
 </td></tr>
@@ -566,6 +573,11 @@ echo "</select>";
 
 <input type="hidden" name="isposted" value="yes" />
 </form>
+<script type='text/javascript'>
+	if(document.getElementById('reg_current_matiere')) {
+		document.getElementById('reg_current_matiere').focus();
+	}
+</script>
 <!-- ============================================================================ -->
 <hr />
 
