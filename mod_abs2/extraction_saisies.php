@@ -60,6 +60,8 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" &
 
 include_once 'lib/function.php';
 
+//debug_var();
+
 // Initialisation des variables
 //récupération des paramètres de la requète
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] :(isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
@@ -80,6 +82,9 @@ if ($date_absence_eleve_debut != null) {
 	if (preg_match("#^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$#", $date_absence_eleve_debut)) {
 		$dt_date_absence_eleve_debut = new DateTime(str_replace("/",".",$date_absence_eleve_debut));
 	}
+	elseif (preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_debut)) {
+		$dt_date_absence_eleve_debut = new DateTime(str_replace("/",".",$date_absence_eleve_debut));
+	}
 	else {
 		$msg="Date de début invalide&nbsp;: $date_absence_eleve_debut<br />";
 		$dt_date_absence_eleve_debut = new DateTime('now');
@@ -91,7 +96,11 @@ if ($date_absence_eleve_debut != null) {
 }
 //if (($date_absence_eleve_fin != null)&&(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_fin))) {
 if ($date_absence_eleve_fin != null) {
+	//echo "\$date_absence_eleve_fin=$date_absence_eleve_fin<br />";
 	if(preg_match("#^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$#", $date_absence_eleve_fin)) {
+		$dt_date_absence_eleve_fin = new DateTime(str_replace("/",".",$date_absence_eleve_fin));
+	}
+	elseif (preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_fin)) {
 		$dt_date_absence_eleve_fin = new DateTime(str_replace("/",".",$date_absence_eleve_fin));
 	}
 	else {
