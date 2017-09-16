@@ -204,7 +204,7 @@ if ($affichage != null && $affichage != '') {
 		}
 	}
     
-    //on recommence la requetes, maintenant que la table est synchronisé, avec les données d'absence
+    //on recommence la requetes, maintenant que la table est synchronisée, avec les données d'absence
     $eleve_query = EleveQuery::create()->filterById($eleve_col->toKeyValue('Id','Id'));
     $eleve_query->useAbsenceAgregationDecompteQuery()->distinct()->filterByDateIntervalle($dt_date_absence_eleve_debut,  $dt_date_absence_eleve_fin)->endUse();
     $eleve_query->withColumn('SUM(AbsenceAgregationDecompte.ManquementObligationPresence)', 'NbAbsences')
@@ -250,6 +250,10 @@ if ($affichage == 'html') {
     echo '</th>';
 
     echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+    echo 'non valables';
+    echo '</th>';
+
+    echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'nbre de retards';
     echo '</th>';
 
@@ -261,6 +265,35 @@ if ($affichage == 'html') {
     $nb_demijournees = 0;
     $nb_nonjustifiees = 0;
     $nb_retards = 0;
+    // 20170914
+    $nb_non_valables=0;
+    $date_debut_mysql=strftime("%Y-%m-%d %H:%M:%S", $dt_date_absence_eleve_debut->format('U'));
+    $date_fin_mysql=strftime("%Y-%m-%d %H:%M:%S", $dt_date_absence_eleve_fin->format('U'));
+    /*
+    // Remplir le tableau des motifs
+    $tab_motifs=array();
+	$sql="SELECT * FROM a_motifs;";
+	//echo "$sql<br />";
+	$res_v=mysqli_query($mysqli, $sql);
+	while($lig_v=mysqli_fetch_assoc($res_v)) {
+		$tab_motifs[$lig_v["id"]]=$lig_v;
+	}
+	*/
+    // Remplir le tableau des motifs valables
+    $tab_id_motif_valable=array();
+	$sql="SELECT * FROM a_motifs WHERE valable='y';";
+	//echo "$sql<br />";
+	$res_v=mysqli_query($mysqli, $sql);
+	while($lig_v=mysqli_fetch_object($res_v)) {
+		$tab_id_motif_valable[]=$lig_v->id;
+	}
+	/*
+	echo "\$tab_id_motif_valable<pre>";
+	print_r($tab_id_motif_valable);
+	echo "</pre>";
+	*/
+
+    
     $alt=1;
     $acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
     foreach ($eleve_col as $eleve) {
@@ -300,6 +333,36 @@ if ($affichage == 'html') {
 	    echo '</td>';
 
 	    echo '<td style="border:1px; border-style: inset;">';
+
+		//echo $dt_date_absence_eleve_debut->format('U')."<br />";
+		$current_non_valable=0;
+		$sql="SELECT * FROM a_agregation_decompte WHERE eleve_id='".$eleve->getId()."' AND 
+									date_demi_jounee>='".$date_debut_mysql."' AND 
+									date_demi_jounee<'".$date_fin_mysql."' AND 
+									manquement_obligation_presence='1';";
+		//echo "$sql<br />";
+		$res_nv=mysqli_query($mysqli, $sql);
+		while($lig_nv=mysqli_fetch_object($res_nv)) {
+			//echo $lig_nv->motifs_absences." (".$lig_nv->date_demi_jounee.")<br />";
+			$current_valable=0;
+			$tmp_tab=explode("|", $lig_nv->motifs_absences);
+			for($loop_motif=0;$loop_motif<count($tmp_tab);$loop_motif++) {
+				if(in_array(trim($tmp_tab[$loop_motif]), $tab_id_motif_valable)) {
+					$current_valable=1;
+					break;
+				}
+			}
+			if($current_valable==0) {
+				$current_non_valable++;
+			}
+		}
+	    echo $current_non_valable;
+	    $csv.=$current_non_valable.";";
+	    $csv2.=$current_non_valable.";";
+	    $nb_nonjustifiees = $nb_nonjustifiees + $current_non_valable;
+	    echo '</td>';
+
+	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNbRetards();
 	    $csv.=$eleve->getNbRetards().";\n";
 	    $csv2.=$eleve->getNbRetards().";\n";
@@ -326,6 +389,10 @@ if ($affichage == 'html') {
 
     echo '<th style="border:1px; border-style: inset;">';
     echo $nb_nonjustifiees;
+    echo '</th>';
+
+    echo '<th style="border:1px; border-style: inset;">';
+    echo $nb_non_valables;
     echo '</th>';
 
     echo '<th style="border:1px; border-style: inset;">';

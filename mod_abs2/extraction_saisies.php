@@ -356,6 +356,7 @@ if ($affichage == 'html') {
 		<th class="text" title="Trier par nom d\'élève">Élèves</th>
 		<th class="text" title="Trier par classe">Classes</th>
 		<th class="text" title="Trier par date">Saisies</th>
+		<!--th class="text" title="Motif valable ou non">Valable</th-->
 	</tr>';
 	$precedent_eleve_id = null;
 	foreach ($saisie_col as $saisie) {
@@ -400,6 +401,29 @@ if ($affichage == 'html') {
 						<a href="visu_saisie.php?id_saisie='.$saisie->getId().'" title="Voir la saisie dans un nouvel onglet." target="_blank">'.$saisie->getDateDescription().'</a>
 					</td>
 					<td>'.$saisie->getTypesDescription().'</td>
+					<td>';
+		// 20170914
+		$sql="SELECT * FROM j_traitements_saisies jts 
+				WHERE jts.a_saisie_id='".$saisie->getId()."';";
+		//echo "$sql<br />";
+		$test1=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test1)>0) {
+			$sql="SELECT * FROM j_traitements_saisies jts, 
+						a_traitements at, 
+						a_motifs am
+					WHERE jts.a_saisie_id='".$saisie->getId()."' AND 
+						jts.a_traitement_id=at.id AND 
+							at.a_motif_id=am.id AND 
+							am.valable='y';";
+			$test2=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test2)>0) {
+				echo "<span style='display:none'>Valable</span><img src='../images/enabled.png' class='icone16' alt='Valable' title=\"Sur les ".mysqli_num_rows($test1)." traitement(s) associé(s) à la saisie, ".mysqli_num_rows($test2)." correspond(ent) à un motif valable.\"/>";
+			}
+			else {
+				echo "<span style='display:none'>Non valable</span><img src='../images/disabled.png' class='icone16' alt='Non valable' title=\"Motif non valable.\"/>";
+			}
+		}
+		echo '</td>
 				</tr>';
 	}
 	echo '
@@ -411,40 +435,40 @@ if ($affichage == 'html') {
 <h5>Extraction faite le '.date("d/m/Y - H:i").'</h5>';
 
 } else if ($affichage == 'ods') {
-    // load the TinyButStrong libraries    
+	// load the TinyButStrong libraries    
 	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine
-    
-    //include_once('../tbs/plugins/tbsdb_php.php');
-    $TBS = new clsTinyButStrong; // new instance of TBS
-    include_once('../tbs/plugins/tbs_plugin_opentbs.php');
-    $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
-    // Load the template
+	//include_once('../tbs/plugins/tbsdb_php.php');
+	$TBS = new clsTinyButStrong; // new instance of TBS
+	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+	$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+
+	// Load the template
 	$extraction_saisies=repertoire_modeles('absence_extraction_saisies.ods');
-    $TBS->LoadTemplate($extraction_saisies, OPENTBS_ALREADY_UTF8);
+	$TBS->LoadTemplate($extraction_saisies, OPENTBS_ALREADY_UTF8);
 
-    $titre = 'Extrait des absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
-    $classe = null;
-    if ($id_classe != null && $id_classe != '') {
-	$classe = ClasseQuery::create()->findOneById($id_classe);
-	if ($classe != null) {
-	    $titre .= ' pour la classe '.$classe->getNom();
+	$titre = 'Extrait des absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
+	$classe = null;
+	if ($id_classe != null && $id_classe != '') {
+		$classe = ClasseQuery::create()->findOneById($id_classe);
+		if ($classe != null) {
+			$titre .= ' pour la classe '.$classe->getNom();
+		}
 	}
-    }
-    if ($nom_eleve != null && $nom_eleve != '' ) {
-	$titre .= ' pour les élèves dont le nom ou le prénom contient '.$nom_eleve;
-    }
-    $TBS->MergeField('titre', $titre);
+	if ($nom_eleve != null && $nom_eleve != '' ) {
+		$titre .= ' pour les élèves dont le nom ou le prénom contient '.$nom_eleve;
+	}
+	$TBS->MergeField('titre', $titre);
 	$saisie_col = $saisie_query->find();
-    $TBS->MergeBlock('saisie_col',$saisie_col);
+	$TBS->MergeBlock('saisie_col',$saisie_col);
 
-    // Output as a download file (some automatic fields are merged here)
-    $nom_fichier = 'extrait_saisies_';
-    if ($classe != null) {
-	$nom_fichier .= $classe->getNom().'_';
-    }
-    $nom_fichier .=  $dt_date_absence_eleve_fin->format("d_m_Y").'.ods';
-    $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fichier);
+	// Output as a download file (some automatic fields are merged here)
+	$nom_fichier = 'extrait_saisies_';
+	if ($classe != null) {
+		$nom_fichier .= $classe->getNom().'_';
+	}
+	$nom_fichier .=  $dt_date_absence_eleve_fin->format("d_m_Y").'.ods';
+	$TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fichier);
 } else if ($affichage == 'csv' && $utilisateur->getStatut() == "administrateur") {
 	if ($traitement_csv_en_cours == 'false') {
 		//le traitement viens de se finir, on propose le fichier au téléchargement
@@ -466,41 +490,41 @@ if ($affichage == 'html') {
 		}
 	} else {
 		//print_r($page);die;
-	    // titre des colonnes
-    	$saisie_col = $saisie_query->paginate($page, 750);
+		// titre des colonnes
+		$saisie_col = $saisie_query->paginate($page, 750);
 		if ($page == 0) {
-		    $output = '';
-		    $date = new DateTime();
-		    $output .= ('Extraction des saisies d\'absence '.getSettingValue('gepiSchoolName').' '.getSettingValue('gepiYear')."\n");
-		    $output .= 'Extraction faite le '.date("d/m/Y - H:i")."\n";
-		    $output .= ("Nom,Prenom,Classe,Debut absence,Fin absence, Type, Manquement a l'obligation de presence, Sous responsabilite etablissement\n");
-		    $filename = 'extrait_saisies_'.date("d_m_Y_H_i").'.csv';
-		    if (!file_exists('../backup/'.getSettingValue("backup_directory").'/absences')) {
-		    	mkdir('../backup/'.getSettingValue("backup_directory").'/absences');
-		    }
+			$output = '';
+			$date = new DateTime();
+			$output .= ('Extraction des saisies d\'absence '.getSettingValue('gepiSchoolName').' '.getSettingValue('gepiYear')."\n");
+			$output .= 'Extraction faite le '.date("d/m/Y - H:i")."\n";
+			$output .= ("Nom,Prenom,Classe,Debut absence,Fin absence, Type, Manquement a l'obligation de presence, Sous responsabilite etablissement, Motif valable\n");
+			$filename = 'extrait_saisies_'.date("d_m_Y_H_i").'.csv';
+			if (!file_exists('../backup/'.getSettingValue("backup_directory").'/absences')) {
+				mkdir('../backup/'.getSettingValue("backup_directory").'/absences');
+			}
 			$myFile = '../backup/'.getSettingValue("backup_directory").'/absences/'.$filename;
 			$fh = fopen($myFile, 'w');
-		    
-		    fwrite($fh,$output);
+
+			fwrite($fh,$output);
 			fclose($fh);
-	    } else {
-	    	$filename = $_REQUEST['filename'];
-	
-		
+		} else {
+			$filename = $_REQUEST['filename'];
+
+
 			echo '<br/>Veuillez patienter, étape '.$page.' sur '.$saisie_col->getLastPage();
 			if (ob_get_contents()) {
-				ob_flush();
+			ob_flush();
 			}
 			flush();
-			
-	    	$output = '';
-	    	foreach ($saisie_col as $saisie) {
+
+			$output = '';
+			foreach ($saisie_col as $saisie) {
 				if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
-				    continue;
+					continue;
 				}
 				$output .= $saisie->getEleve()->getNom().','.$saisie->getEleve()->getPrenom().','.$saisie->getEleve()->getClasseNom().',';
 				$output .= $saisie->getDebutAbs('d/m/Y - H:i').','.$saisie->getFinAbs('d/m/Y - H:i').',';
-				
+
 				$traitement_col = $saisie->getAbsenceEleveTraitements();
 				foreach ($traitement_col as $traitement) {
 					if ($traitement->getAbsenceEleveType() != null) {
@@ -518,14 +542,42 @@ if ($affichage == 'html') {
 				} else {
 					$output .= 'non';
 				}
+
+				// 20170914
+				$output .= ',';
+				$sql="SELECT * FROM j_traitements_saisies jts 
+				WHERE jts.a_saisie_id='".$saisie->getId()."';";
+				//echo "$sql<br />";
+				$test1=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($test1)>0) {
+					$sql="SELECT * FROM j_traitements_saisies jts, 
+									a_traitements at, 
+									a_motifs am
+									WHERE jts.a_saisie_id='".$saisie->getId()."' AND 
+									jts.a_traitement_id=at.id AND 
+									at.a_motif_id=am.id AND 
+									am.valable='y';";
+					$test2=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($test2)>0) {
+						$output.="oui";
+					}
+					else {
+						$output.="non";
+					}
+				}
+				else {
+					$output.="";
+				}
+
 				$output .= "\n";
-		    }
+			}
 			$myFile = '../backup/'.getSettingValue("backup_directory").'/absences/'.$filename;
 			$fh = fopen($myFile, 'a');
-		    
-		    fwrite($fh,$output);
+
+			fwrite($fh,$output);
 			fclose($fh);
-	    }
+		}
+
 		echo '<form action="extraction_saisies.php" method="post" name="form_table" id="form_table">';
 		echo add_token_field();
 		if (isset($filename)) {
@@ -542,14 +594,15 @@ if ($affichage == 'html') {
 		if (isset($_REQUEST['retour'])) {
 			echo '<input type="hidden" name="retour" value="'.$_REQUEST['retour'].'" />';
 		}
-		echo  "<script type='text/javascript'>
-		                    document.form_table.submit();
-		                </script>  
-		                <noscript>
-		                <input type='submit' name='Submit' value='Continuer' />
-		                </noscript>
-		            ";
-		echo "</form><br/>";
+		echo  "
+		<script type='text/javascript'>
+			document.form_table.submit();
+		</script>  
+		<noscript>
+			<input type='submit' name='Submit' value='Continuer' />
+		</noscript>
+	</form>
+	<br/>";
 	}
  }
  
