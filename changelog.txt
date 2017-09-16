@@ -34,6 +34,8 @@ Général:
   (conditionné pour les CPE par un droit à donner dans Gestion générale/Droits d'accès).
 - Possibilité d'afficher un message invitant les visiteurs à accepter les cookies du Gepi
   (paramétrable en administrateur dans Gestion générale/Options de connexion).
+- Possibilité de trier la liste des sauvegardes par taille, par date.
+
 
 Gepi-1.7.1 (30/03/2017)
 ===========================
