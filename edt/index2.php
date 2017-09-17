@@ -687,6 +687,8 @@ if(isset($type_affichage)) {
 	//============================
 	$info_edt="";
 	if((isset($login_eleve))&&($type_affichage=="eleve")) {
+		$acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
+
 		$sql="SELECT 1=1 FROM eleves WHERE login='".$login_eleve."';";
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0) {
@@ -709,6 +711,9 @@ if(isset($type_affichage)) {
 				}
 			}
 			$info_edt=$info_eleve;
+			if($acces_visu_eleve) {
+				$info_edt.=" <a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$login_eleve."' title=\"Voir le classeur élève avec ses onglets élève, responsables, enseignements, notes, bulletins,...\" target='_blank'><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Classeur élève' /></a>";
+			}
 		}
 	}
 	elseif((isset($id_classe))&&($type_affichage=="classe")) {
