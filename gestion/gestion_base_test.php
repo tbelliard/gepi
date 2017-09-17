@@ -1337,7 +1337,14 @@ if ($n > 0) {
 
     echo "<h3>Fichiers de chargement des données de test</h3>\n";
     //echo "<center>\n<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">\n<tr><td><b>Nom du fichier de sauvegarde</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
-    echo "<center>\n<table class='boireaus' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><b>Nom du fichier de sauvegarde</b></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
+    echo "<center>\n
+	<table class='boireaus' cellpadding=\"5\" cellspacing=\"1\">
+		<tr>
+			<th><b>Nom du fichier de sauvegarde</b></th>
+			<th>&nbsp;</th>
+			<!--th>&nbsp;</th-->
+			<th>&nbsp;</th>
+		</tr>\n";
     $m = 0;
 	$alt=1;
     foreach($tab_file as $value) {
@@ -1352,7 +1359,10 @@ if ($n > 0) {
 		} else {
             echo "<td><a href='gestion_base_test.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Charger les données</a></td>\n";
 		}
-        echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
+	// Le téléchargement ne peut pas fonctionner comme ça.
+	// On est dans un sous-dossier des sauvegardes.
+	// Il faudrait modifier la page savebackup.php pour prendre en compte qu'on est dans un sous-dossier.
+        //echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
         echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
         echo "</tr>\n";
         $m++;
