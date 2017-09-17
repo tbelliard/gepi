@@ -134,7 +134,10 @@
 
                 function loadjQueryLibaries() {
                     if (typeof(jQuery) === 'undefined') {
-                        CKEDITOR.scriptLoader.load('http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js', function() {
+                        //CKEDITOR.scriptLoader.load('http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js', function() {
+                        //CKEDITOR.scriptLoader.load('//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js', function() {
+                        //CKEDITOR.scriptLoader.load('https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js', function() {
+                        CKEDITOR.scriptLoader.load(CKEDITOR.getUrl(CKEDITOR.plugins.getPath('oembed') + 'libs/jquery.min.js'), function() {
                             jQuery.noConflict();
                             if (typeof(jQuery.fn.oembed) === 'undefined') {
                                 CKEDITOR.scriptLoader.load(
