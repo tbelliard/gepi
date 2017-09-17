@@ -96,7 +96,8 @@ echo '
 
 	// choix du jour
 
-	$req_jour = mysqli_query($GLOBALS["mysqli"], "SELECT id_horaire_etablissement, nom_horaire_etablissement FROM horaires_etablissement");
+	// 20170917
+	$req_jour = mysqli_query($GLOBALS["mysqli"], "SELECT id_horaire_etablissement, nom_horaire_etablissement FROM horaires_etablissement ORDER BY num_jour_table_horaires_etablissement;");
 	$rep_jour = mysqli_fetch_array($req_jour);
 
 echo '

@@ -556,7 +556,8 @@ function ConstruireEDTProf($login_edt, $period)
 		echo "DEBUG: ConstruireEDTProf($login_edt, $period)<br />";
 	}
 
-$sql="SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1";
+// 20170917
+$sql="SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement='1' ORDER BY num_jour_table_horaires_etablissement;";
 //echo "$sql<br />";
 $req_jours = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 $jour_sem_tab = array();
@@ -1374,7 +1375,9 @@ function ConstruireEDTProfDuJour($login_edt, $period, $jour)
     $table_data = array();
     $type_edt = "prof";
 
-    $req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysqli_error($GLOBALS["mysqli"]));
+    // 20170917
+    $sql="SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement='1' ORDER BY num_jour_table_horaires_etablissement;";
+    $req_jours = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
     $jour_sem_tab = array();
 
     $entetes = ConstruireEnteteEDT();

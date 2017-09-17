@@ -33,6 +33,9 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
+// 20170917
+check_tables_modifiees();
+
 // fonctions edt
 require_once('./choix_langue.php');
 require_once("./fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps

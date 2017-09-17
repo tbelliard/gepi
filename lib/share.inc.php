@@ -16041,6 +16041,51 @@ function check_tables_modifiees() {
 				$query = mysqli_query($mysqli, $sql);
 			}
 		}
+
+		// 20170917
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM horaires_etablissement LIKE 'num_jour_table_horaires_etablissement';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE horaires_etablissement ADD num_jour_table_horaires_etablissement TINYINT(1) NOT NULL default '0' AFTER ouvert_horaire_etablissement;";
+			//echo "$sql<br />";
+			$query = mysqli_query($mysqli, $sql);
+			if($query) {
+				$sql="SELECT * FROM horaires_etablissement;";
+				//echo "$sql<br />";
+				$res = mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if($lig->jour_horaire_etablissement=="lundi") {
+							$valeur=0;
+						}
+						elseif($lig->jour_horaire_etablissement=="mardi") {
+							$valeur=1;
+						}
+						elseif($lig->jour_horaire_etablissement=="mercredi") {
+							$valeur=2;
+						}
+						elseif($lig->jour_horaire_etablissement=="jeudi") {
+							$valeur=3;
+						}
+						elseif($lig->jour_horaire_etablissement=="vendredi") {
+							$valeur=4;
+						}
+						elseif($lig->jour_horaire_etablissement=="samedi") {
+							$valeur=5;
+						}
+						elseif($lig->jour_horaire_etablissement=="dimanche") {
+							$valeur=6;
+						}
+						else {
+							// Bizarre
+							$valeur=8;
+						}
+						$sql="UPDATE horaires_etablissement SET num_jour_table_horaires_etablissement='".$valeur."' WHERE id_horaire_etablissement='".$lig->id_horaire_etablissement."';";
+						//echo "$sql<br />";
+						$update = mysqli_query($mysqli, $sql);
+					}
+				}
+			}
+		}
 	}
 }
 

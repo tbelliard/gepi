@@ -121,6 +121,78 @@ if((isset($_POST['action']))&&($_POST['action']=='suppr_comptes_responsables')) 
 	}
 }
 
+// 20170917
+if((isset($_POST['action']))&&($_POST['action']=='corrige_horaires_etablissement')) {
+	check_token();
+
+	$msg="";
+
+	$corriger_les_valeurs="n";
+	$nb_corrections=0;
+	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM horaires_etablissement LIKE 'num_jour_table_horaires_etablissement';"));
+	if ($test_champ==0) {
+		$sql="ALTER TABLE horaires_etablissement ADD num_jour_table_horaires_etablissement TINYINT(1) NOT NULL default '0' AFTER ouvert_horaire_etablissement;";
+		//echo "$sql<br />";
+		$query = mysqli_query($mysqli, $sql);
+		if($query) {
+			$nb_corrections++;
+			$corriger_les_valeurs="y";
+		}
+		else {
+			$msg.="Erreur lors de la mise à jour de la structure de la table.<br />";
+		}
+	}
+	else {
+		$corriger_les_valeurs="y";
+	}
+
+	if($corriger_les_valeurs=="y") {
+		$sql="SELECT * FROM horaires_etablissement;";
+		//echo "$sql<br />";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				if($lig->jour_horaire_etablissement=="lundi") {
+					$valeur=0;
+				}
+				elseif($lig->jour_horaire_etablissement=="mardi") {
+					$valeur=1;
+				}
+				elseif($lig->jour_horaire_etablissement=="mercredi") {
+					$valeur=2;
+				}
+				elseif($lig->jour_horaire_etablissement=="jeudi") {
+					$valeur=3;
+				}
+				elseif($lig->jour_horaire_etablissement=="vendredi") {
+					$valeur=4;
+				}
+				elseif($lig->jour_horaire_etablissement=="samedi") {
+					$valeur=5;
+				}
+				elseif($lig->jour_horaire_etablissement=="dimanche") {
+					$valeur=6;
+				}
+				else {
+					// Bizarre
+					$valeur=8;
+				}
+				$sql="UPDATE horaires_etablissement SET num_jour_table_horaires_etablissement='".$valeur."' WHERE id_horaire_etablissement='".$lig->id_horaire_etablissement."';";
+				//echo "$sql<br />";
+				$update = mysqli_query($mysqli, $sql);
+				if($update) {
+					$nb_corrections++;
+				}
+				else {
+					$msg.="Erreur lors de la mise à jour du numéro du jour pour le ".$lig->jour_horaire_etablissement."<br />";
+				}
+			}
+		}
+	}
+
+	$msg.=$nb_corrections." vérification(s) ou correction(s) effectuées.<br />";
+}
+
 //$total_etapes = 8;
 $total_etapes = 19;
 $duree = 8;
@@ -5186,6 +5258,22 @@ else {
 
 		//===================================================================
 
+		echo "<hr />\n";
+
+//		 20170917
+		echo "<form action=\"clean_tables.php\" method=\"post\" id='form_corrige_table_horaires_etablissement'>
+		<p>Si l'ordre des jours dans l'emploi du temps, n'est pas l'ordre naturel du lundi au dimanche, il se peut que la table 'horaires_etablissement' soit mal remplie.<br />
+		Dans ce cas, vous pouvez corriger ici ce remplissage.</p>\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Corriger la table 'horaires_etablissement'\" />\n";
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='corrige_horaires_etablissement' />\n";
+		echo "</form>\n";
+	
+		//===================================================================
+
+	echo "<p><br /></p>\n";
 	echo "</div>\n";
 
 	//echo "<hr />\n";

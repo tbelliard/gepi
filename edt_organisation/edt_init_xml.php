@@ -88,7 +88,8 @@ $s_annee=(string)$annee_xml["ANNEE"];
 
 //construction du tableau des jours de la semaine ' à partir de la table gepi
 
-$query_horaires="select id_horaire_etablissement,jour_horaire_etablissement from horaires_etablissement";
+// 20170917
+$query_horaires="select id_horaire_etablissement,jour_horaire_etablissement from horaires_etablissement ORDER BY num_jour_table_horaires_etablissement;";
 $result_horaires=mysqli_query($GLOBALS["mysqli"], $query_horaires) or die(mysqli_error($GLOBALS["mysqli"]));
 if ($result_horaires) {
 while ($row_horaires=mysqli_fetch_row($result_horaires))
