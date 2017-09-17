@@ -553,4 +553,64 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />&nbsp;-> Ajout d'un champ 'num_jour_table_horaires_etablissement' à la table 'horaires_etablissement'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM horaires_etablissement LIKE 'num_jour_table_horaires_etablissement';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE horaires_etablissement ADD num_jour_table_horaires_etablissement TINYINT(1) NOT NULL default '0' AFTER ouvert_horaire_etablissement;";
+	//echo "$sql<br />";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+
+		$result .= "Contrôle des valeurs du champ pour les enregistrements existants&nbsp;: <br />";
+		$sql="SELECT * FROM horaires_etablissement;";
+		//echo "$sql<br />";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				if($lig->jour_horaire_etablissement=="lundi") {
+					$valeur=0;
+				}
+				elseif($lig->jour_horaire_etablissement=="mardi") {
+					$valeur=1;
+				}
+				elseif($lig->jour_horaire_etablissement=="mercredi") {
+					$valeur=2;
+				}
+				elseif($lig->jour_horaire_etablissement=="jeudi") {
+					$valeur=3;
+				}
+				elseif($lig->jour_horaire_etablissement=="vendredi") {
+					$valeur=4;
+				}
+				elseif($lig->jour_horaire_etablissement=="samedi") {
+					$valeur=5;
+				}
+				elseif($lig->jour_horaire_etablissement=="dimanche") {
+					$valeur=6;
+				}
+				else {
+					// Bizarre
+					$valeur=8;
+				}
+				$sql="UPDATE horaires_etablissement SET num_jour_table_horaires_etablissement='".$valeur."' WHERE id_horaire_etablissement='".$lig->id_horaire_etablissement."';";
+				//echo "$sql<br />";
+				$result_inter = traite_requete($sql);
+				if ($result_inter == '') {
+					$result .= msj_ok($lig->jour_horaire_etablissement." ($valeur)");
+				}
+				else {
+					$result .= msj_erreur($lig->jour_horaire_etablissement." ($valeur)");
+				}
+			}
+		}
+		$result .= "<br />";
+
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 

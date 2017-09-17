@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -441,7 +441,8 @@ echo "<br />
 
 // Récupérer les jours
 
-$sql="SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1";
+// 20170917
+$sql="SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement='1' ORDER BY num_jour_table_horaires_etablissement;";
 //echo "$sql<br />";
 $req_jours = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 $jour_sem_tab = array();

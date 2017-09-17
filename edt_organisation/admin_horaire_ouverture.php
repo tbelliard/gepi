@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -116,7 +116,7 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 	{
 		if( isset($ouvert[$i]) and !empty($ouvert[$i]) )
 		{
-        	$test_jour = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."horaires_etablissement
+			$test_jour = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."horaires_etablissement
 												WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
 												date_horaire_etablissement = '0000-00-00'"),0);
 			$date_horaire_etablissement = '';
@@ -127,14 +127,15 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 			$ouvert_horaire_etablissement = $ouvert[$i];
 
 			if ( $test_jour === '0' ) {
+				// 20170917
 				$requete = "INSERT INTO ".$prefix_base."horaires_etablissement
-									(date_horaire_etablissement, jour_horaire_etablissement, ouverture_horaire_etablissement, fermeture_horaire_etablissement, pause_horaire_etablissement, ouvert_horaire_etablissement)
-									VALUES ('".$date_horaire_etablissement."', '".$jour_horaire_etablissement."', '".$ouverture_horaire_etablissement."', '".$fermeture_horaire_etablissement."', '".$pause_horaire_etablissement."', '".$ouvert_horaire_etablissement."')";
+									(date_horaire_etablissement, jour_horaire_etablissement, ouverture_horaire_etablissement, fermeture_horaire_etablissement, pause_horaire_etablissement, ouvert_horaire_etablissement, num_jour_table_horaires_etablissement)
+									VALUES ('".$date_horaire_etablissement."', '".$jour_horaire_etablissement."', '".$ouverture_horaire_etablissement."', '".$fermeture_horaire_etablissement."', '".$pause_horaire_etablissement."', '".$ouvert_horaire_etablissement."', '".$i."')";
 			}
 			if ( $test_jour != '0' ) {
-				$requete = "UPDATE ".$prefix_base."horaires_etablissement SET date_horaire_etablissement = '".$date_horaire_etablissement."', jour_horaire_etablissement = '".$jour_horaire_etablissement."', ouverture_horaire_etablissement = '".$ouverture_horaire_etablissement."', fermeture_horaire_etablissement = '".$fermeture_horaire_etablissement."', pause_horaire_etablissement = '".$pause_horaire_etablissement."', ouvert_horaire_etablissement = '".$ouvert_horaire_etablissement."' WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00'";
+				$requete = "UPDATE ".$prefix_base."horaires_etablissement SET date_horaire_etablissement = '".$date_horaire_etablissement."', jour_horaire_etablissement = '".$jour_horaire_etablissement."', ouverture_horaire_etablissement = '".$ouverture_horaire_etablissement."', fermeture_horaire_etablissement = '".$fermeture_horaire_etablissement."', pause_horaire_etablissement = '".$pause_horaire_etablissement."', ouvert_horaire_etablissement = '".$ouvert_horaire_etablissement."', num_jour_table_horaires_etablissement='".$i."' WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00'";
 			}
-	        mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
+			mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 			if($chaine_jours_ouverts!="") {$chaine_jours_ouverts.=",";}
 			if($ouverture_horaire_etablissement!=$fermeture_horaire_etablissement) {

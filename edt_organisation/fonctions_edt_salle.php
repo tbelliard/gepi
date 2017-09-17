@@ -473,8 +473,8 @@ function ConstruireEDTSalle($id_salle, $period)
     $table_data = array();
     $type_edt = "salle";
 
-
-$req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysqli_error($GLOBALS["mysqli"]));
+// 20170917
+$req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement='1' ORDER BY num_jour_table_horaires_etablissement;") or die(mysqli_error($GLOBALS["mysqli"]));
 $jour_sem_tab = array();
 while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 	$jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];

@@ -161,7 +161,8 @@ if (isset($choix_prof)) {
 
 	// On propose aussi le choix du jour
 
-	$req_jour = mysqli_query($GLOBALS["mysqli"], "SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
+	// 20170917
+	$req_jour = mysqli_query($GLOBALS["mysqli"], "SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement='1' ORDER BY num_jour_table_horaires_etablissement;");
 	$rep_jour = mysqli_fetch_array($req_jour);
 	$nbre = mysqli_num_rows($req_jour);
 
