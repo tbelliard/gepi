@@ -151,6 +151,8 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 		$total_profs = array_merge($prof_list["list"], $reg_professeurs);
 		$total_profs = array_unique($total_profs);
 
+		$acces_modify_user=acces("/utilisateurs/modify_user.php", $_SESSION['statut']);
+
 		$p = 0;
 		echo "<table class='boireaus boireaus_alt'>\n";
 		$temoin_nettoyage_requis='n';
@@ -195,6 +197,9 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 				echo "<br />\n";
 
 				echo "</td>\n";
+				if($acces_modify_user) {
+					echo "<td><a href='../utilisateurs/modify_user.php?user_login=".$prof_login."' target='_blank' title='Voir/modifier la fiche utilisateur dans un nouvel onglet'><img src='../images/icons/prof.png' class='icone16' alt='Voir' /></a></td>\n";
+				}
 				echo "</tr>\n";
 				$p++;
 			}
@@ -214,6 +219,9 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 				$temoin_nettoyage_requis='y';
 				//echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
 				echo "</td>\n";
+				if($acces_modify_user) {
+					echo "<td><a href='../utilisateurs/modify_user.php?user_login=".$prof_login."' target='_blank' title='Voir/modifier la fiche utilisateur dans un nouvel onglet'><img src='../images/icons/prof.png' class='icone16' alt='Voir' /></a></td>\n";
+				}
 				echo "</tr>\n";
 			}
 		}
