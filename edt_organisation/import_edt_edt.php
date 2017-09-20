@@ -1916,6 +1916,10 @@ echo "</pre>";
 	if(mysqli_num_rows($res)>0) {
 		while($tab=mysqli_fetch_assoc($res)) {
 
+			if($debug_import_edt=="y") {
+				echo "<hr style='width:200px; color:red;' />";
+			}
+
 			$current_nom_regroupement_edt=preg_replace("/\[/", "", preg_replace("/\]/", "", $tab['classe']));
 
 			$lignes_ce_cours="";
@@ -2166,9 +2170,10 @@ echo "</pre>";
 							WHERE (nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."' OR 
 							nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], trim(preg_replace("/\[[^\[\]]*\]/", "", $tab['classe'])))."') AND 
 								ec2.id_groupe=g.id;";
-
-
-				//$lignes_ce_cours.="DEBUG : ".htmlentities($sql)."<br />";
+				if($debug_import_edt=="y") {
+					$lignes_ce_cours.="DEBUG : ".htmlentities($sql)."<br />";
+					echo htmlentities($sql)."<br />";
+				}
 				$res_choix_prec=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_choix_prec)>0) {
 					// 20150204 : A FAIRE DANS CE CAS : Proposer l'association avec le groupe choisi dans la liste.
@@ -2183,6 +2188,14 @@ echo "</pre>";
 				}
 				
 			}
+			/*
+			else {
+				echo "\$tab_grp_associes_precedent_import[\"".$current_nom_regroupement_edt."\"] est deja defini.<br />";
+				echo "<pre>";
+				print_r($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']);
+				echo "</pre>";
+			}
+			*/
 
 
 			$lignes_ce_cours.="<table class='boireaus boireaus_alt'>
@@ -2326,6 +2339,7 @@ mysql>
 											jgm.id_matiere='$matiere' AND 
 											jgp.login='$current_prof_login';";
 					if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
+					//echo "$sql<br />";
 					$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_grp)==1) {
 						$lig=mysqli_fetch_object($res_grp);
@@ -2455,11 +2469,13 @@ mysql>
 				}
 				elseif("$groupes"!="") {
 					$tmp_tab=explode("|", preg_replace("/^\|/", "", preg_replace("/\|$/", "", $groupes)));
-					/*
-					echo "\$tmp_tab<pre>";
-					print_r($tmp_tab);
-					echo "</pre>";
-					*/
+
+					if($debug_import_edt=="y") {
+						echo "\$tmp_tab<pre>";
+						print_r($tmp_tab);
+						echo "</pre>";
+					}
+
 					$chaine_sql_id_classe="";
 					for($loop=0;$loop<count($tmp_tab);$loop++) {
 						if($loop>0) {$chaine_sql_id_classe.=" OR ";}
@@ -2487,15 +2503,19 @@ mysql>
 											".$chaine_sql_id_classe." 
 											jgm.id_matiere='$matiere' AND 
 											jgp.login='$current_prof_login';";
-					if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
+					if($debug_import_edt=="y") {
+						$lignes_ce_cours.="$sql<br />";
+						echo "$sql<br />";
+					}
 					$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_grp)==1) {
+						// Un seul groupe convient, le cours est identifié
 						$lig=mysqli_fetch_object($res_grp);
 						$lignes_ce_cours.="<span style='color:blue'>".get_info_grp($lig->id_groupe)."</span><br />";
 						$edt_cours_id_groupe=$lig->id_groupe;
+						if($debug_import_edt=="y") {echo "Un seul groupe trouvé.<br />";}
 					}
 					elseif(mysqli_num_rows($res_grp)>1) {
-
 						if(count($tmp_tab)>1) {
 							// Plusieurs classes associées à ce cours dans l'EDT
 							$tab_grp_candidat=array();
@@ -2504,15 +2524,27 @@ mysql>
 								//$current_group=get_group($lig->id_groupe);
 								$lignes_ce_cours.="<span style='color:blue'>".get_info_grp($lig->id_groupe)."</span><br />";
 								*/
-								for($loop=1;$loop<count($tmp_tab);$loop++) {
+								for($loop=0;$loop<count($tmp_tab);$loop++) {
 									$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc 
 														WHERE jgc.id_groupe='$lig->id_groupe' AND 
 															jgc.id_classe='".$tmp_tab[$loop]."';";
-									if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
+									if($debug_import_edt=="y") {
+										$lignes_ce_cours.="$sql<br />";
+										echo "$sql<br />";
+									}
 									$test_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($test_grp)>0) {
+										echo mysqli_num_rows($test_grp)." groupes trouvés";
 										if(!in_array($lig->id_groupe, $tab_grp_candidat)) {
 											$tab_grp_candidat[]=$lig->id_groupe;
+											if($debug_import_edt=="y") {
+												echo " (on ajoute ".$lig->id_groupe." à la liste des candidats)<br />";
+											}
+										}
+										else {
+											if($debug_import_edt=="y") {
+												echo " (".$lig->id_groupe." déjà dans la liste des candidats)<br />";
+											}
 										}
 									}
 								}
@@ -2521,6 +2553,9 @@ mysql>
 							if(count($tab_grp_candidat)==1) {
 								$lignes_ce_cours.="<span style='color:blue'>".get_info_grp($tab_grp_candidat[0])."</span><br />";
 								$edt_cours_id_groupe=$tab_grp_candidat[0];
+								if($debug_import_edt=="y") {
+									echo "Un seul candidat trouvé finalement (".get_info_grp($tab_grp_candidat[0])." (groupe n°".$tab_grp_candidat[0].")).<br />";
+								}
 							}
 							elseif(count($tab_grp_candidat)>1) {
 								if($debug_import_edt=="y") {
