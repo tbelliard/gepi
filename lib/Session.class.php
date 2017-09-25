@@ -411,7 +411,7 @@ class Session {
 					$load = $this->import_user_profile_from_scribe();
 
 					# Sinon, on utilise l'import classique, très basique.
-				} elseif (getSettingValue("may_import_user_profile")) {
+				} elseif (getSettingValue("may_import_user_profile")=="yes") {
 					$load = $this->import_user_profile();
 				}
 				if (!$load) {
