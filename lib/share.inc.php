@@ -12629,7 +12629,7 @@ function get_tab_jour_ouverture_etab($mode="") {
 	if($mode=="indice") {
 		// strftime("%u") : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
 		$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
-		$tmp_tab_jour_US=array("monday", "tuesday", "wednesday", "thursday", "friday", "sturday", "sunday");
+		$tmp_tab_jour_US=array("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
 		for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
 			$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."' AND ouvert_horaire_etablissement='1';";
 			$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -12655,7 +12655,7 @@ function get_tab_jour_ouverture_etab($mode="") {
 function get_tab_jour_ouverture_etab_US() {
 	$tab_jour=array();
 	$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
-	$tmp_tab_jour_US=array("monday", "tuesday", "wednesday", "thursday", "friday", "sturday", "sunday");
+	$tmp_tab_jour_US=array("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
 	for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
 		$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."' AND ouvert_horaire_etablissement='1';";
 		$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
