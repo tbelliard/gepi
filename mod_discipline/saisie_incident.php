@@ -64,6 +64,8 @@ require('sanctions_func_lib.php');
 // Paramètre pour autoriser ou non une zone de saisie de commentaires pour un incident
 $autorise_commentaires_mod_disc = getSettingValue("autorise_commentaires_mod_disc");
 
+$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION["statut"]);
+
 function recherche_protagoniste($rech_nom,$page) {
 	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸]/","",$rech_nom);
 
@@ -1698,6 +1700,9 @@ if(isset($id_incident) ) {
             if(mysqli_num_rows($res2)>0) {
                 $ele_login[]=$lig->login;
                 $lig2=mysqli_fetch_object($res2);
+                if($acces_visu_eleve) {
+                    echo "<div style='float:right;width:16px;'><a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' target='_blank' title=\"Voir le classeur/dossier élève dans un nouvel onglet.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Eleve' /></a></div>";
+                }
                 echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
             }
             else {
@@ -2170,6 +2175,11 @@ if(isset($id_incident) ) {
                                        </label>
                                        <?php add_token_field(true); ?>
                                    </td>
+<?php
+			if($acces_visu_eleve) {
+				echo "<td><a href='../eleves/visu_eleve.php?ele_login=".$lig_ele->login."' target='_blank' title=\"Voir le classeur/dossier élève dans un nouvel onglet.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Eleve' /></a></td>";
+			}
+?>
                                </tr>
 <?php
                     $i++;
