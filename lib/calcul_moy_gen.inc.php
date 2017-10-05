@@ -734,8 +734,10 @@ $nb_elv_classe=sizeof($moy_gen_eleve);
 $moy_generale_classe = 0;
 $effectif_avec_moyenne=0;
 for ( $i=0 ; $i < $nb_elv_classe ; $i++ ) {
-	$moy_generale_classe += $moy_gen_eleve[$i];
-	if($temoin_au_moins_une_matiere_avec_note[$i]=='y') {$effectif_avec_moyenne++;}
+	if($temoin_au_moins_une_matiere_avec_note[$i]=='y') {
+		$moy_generale_classe += $moy_gen_eleve[$i];
+		$effectif_avec_moyenne++;
+	}
 }
 if($effectif_avec_moyenne!=0) {
 	$moy_generale_classe=$moy_generale_classe/$effectif_avec_moyenne;
@@ -748,8 +750,10 @@ $nb_elv_classe=sizeof($moy_gen_eleve);
 $moy_generale_classe1 = 0;
 $effectif_avec_moyenne1=0;
 for ( $i=0 ; $i < $nb_elv_classe ; $i++ ) {
-	$moy_generale_classe1 += $moy_gen_eleve1[$i];
-	if($temoin_au_moins_une_matiere_avec_note[$i]=='y') {$effectif_avec_moyenne1++;}
+	if($temoin_au_moins_une_matiere_avec_note[$i]=='y') {
+		$moy_generale_classe1 += $moy_gen_eleve1[$i];
+		$effectif_avec_moyenne1++;
+	}
 }
 if($effectif_avec_moyenne1!=0) {
 	$moy_generale_classe1=$moy_generale_classe1/$effectif_avec_moyenne1;

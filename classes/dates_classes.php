@@ -937,26 +937,28 @@ function ev_classe_options_salle($id_classe) {
 
 	$retour="
 													<option value=''>---</option>";
-	for($loop=0;$loop<count($tab_salle['list']);$loop++) {
-		$selected="";
-		if((isset($tab_classe_ev[$id_classe]['id_salle']))&&($tab_salle['list'][$loop]['id_salle']==$tab_classe_ev[$id_classe]['id_salle'])) {
-			$selected=" selected";
+	if(isset($tab_salle['list'])) {
+		for($loop=0;$loop<count($tab_salle['list']);$loop++) {
+			$selected="";
+			if((isset($tab_classe_ev[$id_classe]['id_salle']))&&($tab_salle['list'][$loop]['id_salle']==$tab_classe_ev[$id_classe]['id_salle'])) {
+				$selected=" selected";
+			}
+			$retour.="
+														<option value='".$tab_salle['list'][$loop]['id_salle']."'$selected>";
+			//=============================
+			// Debug:
+			//$retour.="$loop : ";
+			//=============================
+			$retour.=$tab_salle['list'][$loop]['designation_complete'];
+			//=============================
+			// Debug:
+			/*
+			$retour.=" (id_salle=".$tab_salle['list'][$loop]['id_salle'].")";
+			$retour.=" (id_classe=".$id_classe.")";
+			*/
+			//=============================
+			$retour.="</option>";
 		}
-		$retour.="
-													<option value='".$tab_salle['list'][$loop]['id_salle']."'$selected>";
-		//=============================
-		// Debug:
-		//$retour.="$loop : ";
-		//=============================
-		$retour.=$tab_salle['list'][$loop]['designation_complete'];
-		//=============================
-		// Debug:
-		/*
-		$retour.=" (id_salle=".$tab_salle['list'][$loop]['id_salle'].")";
-		$retour.=" (id_classe=".$id_classe.")";
-		*/
-		//=============================
-		$retour.="</option>";
 	}
 
 	return $retour;

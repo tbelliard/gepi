@@ -178,26 +178,33 @@ var tab_jours_ouverture=new Array($chaine_jours_ouverts);");
 // prendre les donnees de la base
 if ( $action === 'visualiser' )
 {
-        $i = '';
-        $requete = "SELECT * FROM ".$prefix_base."horaires_etablissement WHERE date_horaire_etablissement = '0000-00-00'";
-        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
-        while ( $donnee = mysqli_fetch_array($resultat))
-		{
+	$i = '';
+	$requete = "SELECT * FROM ".$prefix_base."horaires_etablissement WHERE date_horaire_etablissement = '0000-00-00'";
+	$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
+	while ( $donnee = mysqli_fetch_array($resultat)) {
 		$jour = $donnee['jour_horaire_etablissement'];
-		$i = $tab_sem_inv[$jour];
-		if( $donnee['ouverture_horaire_etablissement'] != '00:00:00' ) { $ouverture[$i] = $donnee['ouverture_horaire_etablissement']; } else { $ouverture[$i] = ''; }
-		if( $donnee['fermeture_horaire_etablissement'] != '00:00:00' ) { $fermeture[$i] = $donnee['fermeture_horaire_etablissement']; } else { $fermeture[$i] = ''; }
-		if( $donnee['pause_horaire_etablissement'] != '00:00:00' ) { $pause[$i] = $donnee['pause_horaire_etablissement']; } else { $pause[$i] = ''; }
-		$ouvert[$i] = $donnee['ouvert_horaire_etablissement'];
-		if( $fermeture[$i] != '00:00:00' and $ouverture[$i] != '00:00:00' and $pause[$i] != '00:00:00' and $fermeture[$i] != '' and $ouverture[$i] != '' and $pause[$i] != '') {
-			$calcul = (convert_heures_minutes($fermeture[$i]) - convert_heures_minutes($ouverture[$i])) - convert_heures_minutes($pause[$i]);
-			$temps_total_ouverture[$i] = convert_minutes_heures($calcul);
-		} elseif ( $fermeture[$i] != '00:00:00' and $ouverture[$i] != '00:00:00' and $fermeture[$i] != '' and $ouverture[$i] != '') {
+		if(isset($tab_sem_inv[$jour])) {
+			$i = $tab_sem_inv[$jour];
+			if( $donnee['ouverture_horaire_etablissement'] != '00:00:00' ) { $ouverture[$i] = $donnee['ouverture_horaire_etablissement']; } else { $ouverture[$i] = ''; }
+			if( $donnee['fermeture_horaire_etablissement'] != '00:00:00' ) { $fermeture[$i] = $donnee['fermeture_horaire_etablissement']; } else { $fermeture[$i] = ''; }
+			if( $donnee['pause_horaire_etablissement'] != '00:00:00' ) { $pause[$i] = $donnee['pause_horaire_etablissement']; } else { $pause[$i] = ''; }
+			$ouvert[$i] = $donnee['ouvert_horaire_etablissement'];
+			if( $fermeture[$i] != '00:00:00' and $ouverture[$i] != '00:00:00' and $pause[$i] != '00:00:00' and $fermeture[$i] != '' and $ouverture[$i] != '' and $pause[$i] != '') {
+				$calcul = (convert_heures_minutes($fermeture[$i]) - convert_heures_minutes($ouverture[$i])) - convert_heures_minutes($pause[$i]);
+				$temps_total_ouverture[$i] = convert_minutes_heures($calcul);
+			} elseif ( $fermeture[$i] != '00:00:00' and $ouverture[$i] != '00:00:00' and $fermeture[$i] != '' and $ouverture[$i] != '') {
 				$calcul = convert_heures_minutes($fermeture[$i]) - convert_heures_minutes($ouverture[$i]);
 				$temps_total_ouverture[$i] = convert_minutes_heures($calcul);
-			 }
-		$i = '';
-        }
+			}
+			$i = '';
+		}
+		else {
+			if(!isset($msg)) {
+				$msg="";
+			}
+			$msg.="Anomalie&nbsp;: Votre table 'horaires_etablissement' parait contenir des enregistrements sans nom de jour.<br />Revalidez le paramétrage des horaires dans la page.<br />";
+		}
+	}
 }
 
 // ===================================================================
