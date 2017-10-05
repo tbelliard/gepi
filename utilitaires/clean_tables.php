@@ -43,6 +43,7 @@ $valid = isset($_POST["valid"]) ? $_POST["valid"] : 'no';
 $id_info=isset($_POST['id_info']) ? $_POST['id_info'] : (isset($_GET['id_info']) ? $_GET['id_info'] : '');
 $mode_auto=isset($_POST['mode_auto']) ? $_POST['mode_auto'] : (isset($_GET['mode_auto']) ? $_GET['mode_auto'] : 'n');
 
+debug_var();
 
 if((isset($_POST['mode']))&&($_POST['mode']=='suppr_assoc_doublon')) {
 	check_token();
@@ -93,6 +94,10 @@ if((isset($_POST['action']))&&($_POST['action']=='suppr_comptes_responsables')) 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
+		// Ménage sso_table_correspondance
+		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+
 		$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
 		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($suppr) {
@@ -239,7 +244,18 @@ function get_tab_utilisateurs_responsables_fantomes() {
 }
 
 function menage_utilisateurs_responsables() {
+	// Ménage sso_table_correspondance
+	$sql="SELECT login from utilisateurs where statut='responsable' and login not in (select login from resp_pers);";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$lig->login."';";
+		//echo "$sql<br />";
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+
 	$sql="delete from utilisateurs where statut='responsable' and login not in (select login from resp_pers);";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		return false;
@@ -410,6 +426,13 @@ function menage_droits_utilisateurs_autres() {
 	else {
 		return true;
 	}
+}
+
+function menage_sso_table_correspondance() {
+	// Ménage sso_table_correspondance
+	$sql="DELETE FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
+	//echo "$sql<br />";
+	$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 //======================================================
 
@@ -4437,6 +4460,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	<input type='checkbox' name='menage_droits_utilisateurs_autres' id='menage_droits_utilisateurs_autres' value='y' /><label for='menage_droits_utilisateurs_autres'> Supprimer ces scories.</label>";
 	}
 	echo "</p>";
+
+	menage_sso_table_correspondance();
+
 	if($temoin_scories>0) {
 		echo "<p style='margin-top:1em;'><input type='submit' value='Effectuer les nettoyages cochés' /></p>
 <p style='margin-top:1em;margin-left:4em;text-indent:-4em;'><em>NOTE&nbsp;:</em> Les actions sur les comptes utilisateurs responsables ou élèves ne supprime ni les responsables, ni les élèves.<br />Elles n'ont d'impact que sur les comptes utilisateurs permettant de se connecter dans Gepi.</p>";
