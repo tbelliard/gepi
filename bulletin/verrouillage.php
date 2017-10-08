@@ -2,7 +2,7 @@
 /*
 * @version: $Id$
 *
-* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -514,9 +514,16 @@ if (($classe != 0) AND ($periode !=0)) {
 			echo "<th><a href=\"javascript:CocheCase(2,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller partiellement\" /></a></th>\n";
 			echo "<th><a href=\"javascript:CocheCase(3,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller totalement\" /></a></th>\n";
 			if(getSettingValue("active_module_absence")=="2"){
-				echo "<th title=\"Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les dates de périodes de cours ci-dessous.\">Date Fin</th>\n";
+				echo "
+				<th title=\"Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les dates de périodes de cours ci-dessous.\">
+					Date Fin<br />
+					<a href='#' onclick=\"affiche_set_date('date_fin', $i);return false;\"><img src='../images/icons/date.png' class='icone16' alt='Date' /></a>
+				</th>\n";
 			}
-			echo "<th>Date Conseil de classe</th>\n";
+			echo "<th>
+					Date Conseil de classe<br />
+					<a href='#' onclick=\"affiche_set_date('date_conseil', $i);return false;\"><img src='../images/icons/date.png' class='icone16' alt='Date' /></a>
+				</th>\n";
 		}
 		if(count($tab_dates_prochains_conseils)>0) {
 			echo "<th title=\"Si des dates de conseil de classe ont été saisies, elles apparaîtront dans cette colonne.\">Date du prochain<br />conseil de classe</th>\n";
@@ -571,33 +578,34 @@ if (($classe != 0) AND ($periode !=0)) {
 						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_O' value=\"O\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
 						if ($row_per[1] == "O") {echo "checked";}
 						echo " /></td>\n";
-                        if(getSettingValue("active_module_absence")=="2"){
-                            if($precedente_date_fin>$row_per[2]) {
-                                echo "<td style='background-color:red' title='ANOMALIE: La date de fin de cette période semble antérieure à la date de fin de la période précédente.'>";
-                            }
-                            else {
-                                echo "<td>";
-                            }
-                            $precedente_date_fin=$row_per[2];
-                            echo "<input type=\"text\" size=\"8\" name=\"date_fin_".$nom_classe."\" id=\"date_fin_".$nom_classe."\" value=\"";
-                            if ($row_per[2] != 0) {
-                                echo date("d/m/Y", strtotime($row_per[2]));
-                            }
-                            echo "\"/>";
 
- echo '
-<script type="text/javascript">
-Calendar.setup({
-    inputField     :    "date_fin_'.$nom_classe.'",     // id of the input field
-    ifFormat       :    "%d/%m/%Y",      // format of the input field
-    button         :    "date_fin_'.$nom_classe.'",  // trigger for the calendar (button ID)
-    align          :    "Bl",           // alignment (defaults to "Bl")
-    singleClick    :    true
-});
-</script>&nbsp;';
+						if(getSettingValue("active_module_absence")=="2") {
+							if($precedente_date_fin>$row_per[2]) {
+								echo "<td style='background-color:red' title='ANOMALIE: La date de fin de cette période semble antérieure à la date de fin de la période précédente.'>";
+							}
+							else {
+								echo "<td>";
+							}
+							$precedente_date_fin=$row_per[2];
+							echo "<input type=\"text\" size=\"8\" name=\"date_fin_".$nom_classe."\" id=\"date_fin_".$nom_classe."\" value=\"";
+							if ($row_per[2] != 0) {
+								echo date("d/m/Y", strtotime($row_per[2]));
+							}
+							echo "\"/>";
 
-                            echo "</td>\n";
-                        }
+							 echo '
+								<script type="text/javascript">
+									Calendar.setup({
+									inputField     :    "date_fin_'.$nom_classe.'",     // id of the input field
+									ifFormat       :    "%d/%m/%Y",      // format of the input field
+									button         :    "date_fin_'.$nom_classe.'",  // trigger for the calendar (button ID)
+									align          :    "Bl",           // alignment (defaults to "Bl")
+									singleClick    :    true
+									});
+								</script>&nbsp;';
+
+							echo "</td>\n";
+						}
 
 
 				// Conseil de classe
@@ -644,7 +652,16 @@ Calendar.setup({
 		echo "<br />\n";
 		echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></center>\n";
 		echo "</form>\n";
-	
+
+		$titre_infobulle="Imposer la date pour toutes les classes";
+		$texte_infobulle="<p style='text-align:center;'><span id='texte_set_date'></span><br />
+<input type=\"text\" size=\"8\" name=\"set_date_fin_global\" id=\"set_date_global\" value=\"\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />
+		".img_calendrier_js("set_date_global", "img_bouton_set_date_global")."
+<input type=\"hidden\" name=\"periode_toutes_classes\" id=\"periode_toutes_classes\" value=\"\" />
+<input type=\"hidden\" name=\"motif_toutes_classes\" id=\"motif_toutes_classes\" value=\"\" />
+<input type='button' value='Appliquer pour toutes les classes' onclick=\"appliquer_date_toutes_classes();\"/></p>";
+		$tabdiv_infobulle[]=creer_div_infobulle("div_set_date",$titre_infobulle,"",$texte_infobulle,"",37,0,'y','y','n','n');
+
 		echo "<script type='text/javascript'>
 		function actualise_cell_(id_classe,i) {
 			// id_classe correspond à la ligne (pas nécessairement le numéro de ligne)
@@ -675,6 +692,61 @@ Calendar.setup({
 					}
 				}
 			}
+		}
+
+		function affiche_set_date(motif, periode) {
+			document.getElementById('motif_toutes_classes').value=motif;
+			document.getElementById('periode_toutes_classes').value=periode;
+			if(motif=='date_fin') {
+				document.getElementById('texte_set_date').innerHTML='Imposer pour toutes les classes la date de fin de période suivante&nbsp;:';
+			}
+			else {
+				document.getElementById('texte_set_date').innerHTML='Imposer pour toutes les classes la date de conseil de classe suivante&nbsp;:';
+			}
+			afficher_div('div_set_date', 'y', 10, 10);
+			zIndexcalendar();
+		}
+
+		function appliquer_date_toutes_classes() {
+			motif=document.getElementById('motif_toutes_classes').value;
+			periode=document.getElementById('periode_toutes_classes').value;
+			set_date_global=document.getElementById('set_date_global').value;
+
+			champs_input=document.getElementsByTagName('input');
+			//alert('champs_input.length='+champs_input.length)
+			for(i=0;i<champs_input.length;i++){
+				type=champs_input[i].getAttribute('type');
+				if(type==\"text\"){
+					id=champs_input[i].getAttribute('id');
+					if((motif=='date_fin')&&(id.substr(0,9)=='date_fin_')) {
+						if(id.substr(id.length-1,1)==periode) {
+							champs_input[i].value=set_date_global;
+						}
+					}
+
+					if((motif=='date_conseil')&&(id.substr(0,13)=='date_conseil_')) {
+						if(id.substr(id.length-1,1)==periode) {
+							champs_input[i].value=set_date_global;
+						}
+					}
+				}
+			}
+			//alert(champs_input[i-1])
+
+			cacher_div('div_set_date');
+		}
+
+
+		function zIndexcalendar() {
+			objets_calendar=document.getElementsByClassName('calendar');
+			//alert(objets_calendar.length);
+			//if(objets_calendar.length>0) {
+				for(i_cal=0;i_cal<objets_calendar.length;i_cal++) {
+					objets_calendar[i_cal].style.zIndex=5000;
+				}
+			//}
+
+			setTimeout('zIndexcalendar()', 1000);
 		}
 	</script>\n";
 
