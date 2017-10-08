@@ -579,6 +579,12 @@ else {
 //========================================================
 include("change_auth_mode.inc.php");
 //========================================================
+
+$active_mod_edt=false;
+if((getSettingAOui('autorise_edt_tous'))||
+	((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+	$active_mod_edt=true;
+}
 ?>
 
 <form enctype="multipart/form-data" action="index.php" name="form2" method="post">
@@ -947,6 +953,12 @@ while ($i < $nombreligne){
 
 	if(getSettingAOui('active_mod_alerte')) {
 		echo " <a href='../mod_alerte/form_message.php?login_dest=".$user_login."' title='Déposer une alerte/message dans le module Alertes.' target='_blank'><img src='../images/icons/module_alerte32.png' class='icone16' alt='Mail' /></a>";
+	}
+
+	if (($col[$i][7] == "professeur")&&($active_mod_edt)) {
+		// edt_organisation/index_edt.php?login_edt=XXXXXXXXXXXX&type_edt_2=prof&no_entete=y&no_menu=y&lien_refermer=y
+		// edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=XXXXXXXXXXXX
+		echo " <a href='../edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=".$user_login."' title=\"Voir l'EDT du professeur dans un nouvel onglet.\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
 	}
 	echo "</td>\n";
 
