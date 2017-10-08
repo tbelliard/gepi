@@ -236,6 +236,7 @@ echo add_token_field();
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
+        <td>Id</td>
         <td>Nom</td>
         <td>Commentaire</td>
         <td style="width: 25px;">Valable</td>
@@ -243,6 +244,7 @@ echo add_token_field();
 <?php 
 if($acces_saisie_admin_abs2) {
 ?>
+        <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
@@ -268,6 +270,7 @@ if($acces_saisie_admin_abs2) {
     $i = '1';
     foreach ($motif_collection as $motif) { ?>
         <tr onmouseover="this.style.backgroundColor='white';" onmouseout="this.style.backgroundColor='';">
+	  <td><?php echo $motif->getId(); ?></td>
 	  <td><?php echo $motif->getNom(); ?></td>
 	  <td><?php echo $motif->getCommentaire(); ?></td>
 	  <td><?php 
