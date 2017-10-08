@@ -126,13 +126,15 @@ require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
-//debug_var();
+debug_var();
 
 if($mode!='publiposter') {
 	echo "<p class='bold'><a href='./index.php?ctrl=cvsent#publipostage'>Retour</a></p>";
 }
 
 if($mode=="upload") {
+
+	//echo "<p class='bold'><a href='./index.php?ctrl=cvsent'>Retour</a></p>";
 
 	echo "<h2>Réception puis analyse du fichier CSV</h2>";
 
@@ -301,12 +303,21 @@ if($mode=="upload") {
 		<input type='checkbox' name='fiche_bienvenue' id='fiche_bienvenue' value='y' onchange=\"checkbox_change(this.id)\" /><label for='fiche_bienvenue' id='texte_fiche_bienvenue'> Inclure la fiche bienvenue sous les informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='mot_de_passe_deja_modifie' id='mot_de_passe_deja_modifie' value='n' onchange=\"checkbox_change(this.id)\" /><label for='mot_de_passe_deja_modifie' id='texte_mot_de_passe_deja_modifie'> Ne pas imprimer les fiches pour lesquelles le mot de passe a déjà été modifié.</label><br />
 		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>')</em><br />
-		<input type='checkbox' name='envoi_mail' id='envoi_mail' value='y' onchange=\"checkbox_change(this.id)\" /><label for='envoi_mail' id='texte_envoi_mail'> Envoyer la fiche par mail <em>(sous réserve que l'adresse mail de l'utilisateur associé au compte soit renseigné)</em>.</label>
+		<br />
+
+		<input type='checkbox' name='envoi_mail' id='envoi_mail' value='y' onchange=\"checkbox_change(this.id)\" /><label for='envoi_mail' id='texte_envoi_mail'> Envoyer la fiche par mail aux utilisateurs concernés <em>(sous réserve que l'adresse mail de l'utilisateur associé au compte soit renseigné)</em>.</label><br />
+		<br />
+
+		<label for='envoi_mail_adresse_specifiee' id='texte_envoi_mail_adresse_specifiee'> Envoyer les fiches par mail à l'adresse suivante&nbsp;: <input type='text' name='envoi_mail_adresse_specifiee' id='envoi_mail_adresse_specifiee' value='' /></label> <em>(typiquement, l'adresse mail du CPE s'il est chargé de distribuer les fiches)</em><br /><em>(et ceci que l'envoi aux responsables/élèves conservés soit demandé/coché ou non)</em><br />
+		&nbsp;&nbsp;&nbsp;<input type='radio' name='envoi_mail_autre_adresse' id='envoi_mail_autre_adresse_toujours' value='toujours' onchange=\"checkbox_change('envoi_mail_autre_adresse_sinon');checkbox_change('envoi_mail_autre_adresse_toujours')\" /><label for='envoi_mail_autre_adresse_toujours' id='texte_envoi_mail_autre_adresse_toujours'>qu'il y ait ou non une adresse mail de l'utilisateur parent/élève concerné,</label><br />
+		&nbsp;&nbsp;&nbsp;<input type='radio' name='envoi_mail_autre_adresse' id='envoi_mail_autre_adresse_sinon' value='sinon' onchange=\"checkbox_change('envoi_mail_autre_adresse_sinon');checkbox_change('envoi_mail_autre_adresse_toujours')\" checked /><label for='envoi_mail_autre_adresse_sinon' id='texte_envoi_mail_autre_adresse_sinon'>seulement s'il n'y a pas d'adresse mail pour l'utilisateur parent/élève concerné.</label><br />
+		<span style='color:red'>Attention&nbsp;:</span> Si vous générez plusieurs fiches de connexion, l'envoi à une adresse commune ne présente d'intérêt que pour envoyer au CPE qui se chargera d'imprimer et distribuer les fiches aux élèves <em>(ne mettez pas une adresse mail parent/élève dans le champ adresse ci-dessus sauf si vous ne générez <strong>que</strong> la fiche bienvenue correspondante)</em>.
+		<br />
 		</p>";
 
 				if(count($tab_profil)>0) {
 					echo "
-		<p style='text-indent:-3em;margin-left:3em;'>Profils&nbsp;:";
+		<p style='text-indent:-3em;margin-left:3em;margin-top:1em;'>Profils&nbsp;:";
 					for($loop=0;$loop<count($tab_profil);$loop++) {
 						echo "<br />
 			<input type='checkbox' name='profil[]' id='profil_$loop' value=\"".$tab_profil[$loop]."\" onchange=\"checkbox_change(this.id)\" /><label for='profil_$loop' id='texte_profil_$loop'>".$tab_profil[$loop]."</label>";
@@ -317,7 +328,7 @@ if($mode=="upload") {
 
 				if(count($tab_classe)>0) {
 					echo "
-		<p style='text-indent:-3em;margin-left:3em;'>Classes&nbsp;:";
+		<p style='text-indent:-3em;margin-left:3em;margin-top:1em;'>Classes&nbsp;:";
 					for($loop=0;$loop<count($tab_classe);$loop++) {
 						$info_classe=$tab_classe[$loop];
 						if($info_classe=="") {
@@ -412,6 +423,9 @@ if($mode=="upload") {
 	}
 
 	".js_checkbox_change_style()."
+
+	checkbox_change('envoi_mail_autre_adresse_sinon');
+	checkbox_change('envoi_mail_autre_adresse_toujours');
 </script>";
 
 			}
@@ -469,6 +483,9 @@ elseif($mode=='publiposter') {
 	$mot_de_passe_deja_modifie=isset($_POST['mot_de_passe_deja_modifie']) ? $_POST['mot_de_passe_deja_modifie'] : "y";
 	$classe=isset($_POST['classe']) ? $_POST['classe'] : NULL;
 	$profil=isset($_POST['profil']) ? $_POST['profil'] : NULL;
+	$envoi_mail_adresse_specifiee=isset($_POST['envoi_mail_adresse_specifiee']) ? $_POST['envoi_mail_adresse_specifiee'] : "";
+	$envoi_mail_autre_adresse=isset($_POST['envoi_mail_autre_adresse']) ? $_POST['envoi_mail_autre_adresse'] : "sinon";
+	$compilation_fb="";
 
 	// Ajout de l'UID pour croiser avec sso_table_correspondance et s'assurer que l'élève est encore dans l'établissement
 	$tabchamps = array("uid", "profil", "classe", "nom", "prenom", "login", "mot de passe", "prenom enfant", "nom enfant", "adresse", "code postal", "ville", "pays");
@@ -715,13 +732,31 @@ elseif($mode=='publiposter') {
 
 					echo $fb_courante;
 
+					/*
+					if($envoi_mail_adresse_specifiee!="") {
+						$compilation_fb.=$fb_courante;
+					}
+					*/
+
 					if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
 						echo "<p class='saut'></p>";
+
+						/*
+						if($envoi_mail_adresse_specifiee!="") {
+							$compilation_fb.="<p class='saut'></p>";
+						}
+						*/
 					}
 				}
 				else {
 					echo $fb_courante;
 					echo "<p>&nbsp;</p>";
+
+					/*
+					if($envoi_mail_adresse_specifiee!="") {
+						$compilation_fb.=$fb_courante."<p>&nbsp;</p>";
+					}
+					*/
 				}
 
 				// Mail 20160905
@@ -801,7 +836,41 @@ elseif($mode=='publiposter') {
 									$chaine_mail_envoye.="<span style='color:red' title=\"Échec de l'envoi des informations de connexion du compte ".$tab[$tabindice['login']].".\">".$destinataire."</span>";
 								}
 							}
+
+							if(($envoi_mail_adresse_specifiee!="")&&($envoi_mail_autre_adresse=="toujours")) {
+								//$compilation_fb.="DEBUG: Envoi à l'adresse autre saisie<br />";
+								$compilation_fb.=$fb_courante;
+
+								if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+									$compilation_fb.="<p class='saut'></p>";
+								}
+							}
 						}
+						//elseif(($envoi_mail_adresse_specifiee!="")&&($envoi_mail_autre_adresse=="sinon")) {
+						elseif($envoi_mail_adresse_specifiee!="") {
+							//$compilation_fb.="DEBUG: Envoi à l'adresse autre saisie<br />";
+							$compilation_fb.=$fb_courante;
+
+							if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+								$compilation_fb.="<p class='saut'></p>";
+							}
+						}
+					}
+					elseif($envoi_mail_adresse_specifiee!="") {
+						//$compilation_fb.="DEBUG: Envoi à l'adresse autre saisie<br />";
+						$compilation_fb.=$fb_courante;
+
+						if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+							$compilation_fb.="<p class='saut'></p>";
+						}
+					}
+				}
+				elseif($envoi_mail_adresse_specifiee!="") {
+					//$compilation_fb.="DEBUG: Envoi à l'adresse autre saisie<br />";
+					$compilation_fb.=$fb_courante;
+
+					if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+						$compilation_fb.="<p class='saut'></p>";
 					}
 				}
 
@@ -810,6 +879,24 @@ elseif($mode=='publiposter') {
 				//echo "\$compteur_pages_imprimees=$compteur_pages_imprimees<br />\n";
 			}
 		} // Fin de la boucle sur les classes
+
+		if(($compilation_fb!="")&&($envoi_mail_adresse_specifiee!="")&&(check_mail($envoi_mail_adresse_specifiee))) {
+			$tab_param_mail=array();
+			$tab_param_mail['destinataire']=array();
+			$tab_param_mail['destinataire'][]=$envoi_mail_adresse_specifiee;
+
+			$destinataire=$envoi_mail_adresse_specifiee;
+
+			if($chaine_mail_envoye!="") {
+				$chaine_mail_envoye.=", ";
+			}
+			if(envoi_mail("Compte(s) Gepi", "Bonjour(soir),\n\n".$compilation_fb, $destinataire, "", "html", $tab_param_mail)) {
+				$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion envoyées avec succès.\">".$destinataire."</span>";
+			}
+			else {
+				$chaine_mail_envoye.="<span style='color:red' title=\"Échec de l'envoi des informations de connexion.\">".$destinataire."</span>";
+			}
+		}
 
 		if($chaine_mail_envoye!="") {
 			echo "<div class='noprint'><p><strong>Liste des envois de mail&nbsp;:</strong> $chaine_mail_envoye</p></div>";
@@ -1016,20 +1103,56 @@ elseif($mode=='publiposter') {
 							}
 							*/
 							// Pour éviter les problèmes d'envoi à plusieurs adresses mail, avec des parents séparés
-							for($loop_mail=0;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
-								if($chaine_mail_envoye!="") {
-									$chaine_mail_envoye.=", ";
+							if(count($tab_param_mail['destinataire'])>0) {
+								for($loop_mail=0;$loop_mail<count($tab_param_mail['destinataire']);$loop_mail++) {
+									if($chaine_mail_envoye!="") {
+										$chaine_mail_envoye.=", ";
+									}
+
+									$destinataire=$tab_param_mail['destinataire'][$loop_mail];
+									if(envoi_mail("Compte Gepi", "Bonjour(soir),\n\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
+										$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion du compte ".$tab[$tabindice['login']]." envoyé avec succès.\">".$destinataire."</span>";
+										$nb_mail++;
+									}
+									else {
+										$chaine_mail_envoye.="<span style='color:red' title=\"Échec de l'envoi des informations de connexion du compte ".$tab[$tabindice['login']].".\">".$destinataire."</span>";
+									}
 								}
 
-								$destinataire=$tab_param_mail['destinataire'][$loop_mail];
-								if(envoi_mail("Compte Gepi", "Bonjour(soir),\n\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
-									$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion du compte ".$tab[$tabindice['login']]." envoyé avec succès.\">".$destinataire."</span>";
-									$nb_mail++;
-								}
-								else {
-									$chaine_mail_envoye.="<span style='color:red' title=\"Échec de l'envoi des informations de connexion du compte ".$tab[$tabindice['login']].".\">".$destinataire."</span>";
+								if(($envoi_mail_adresse_specifiee!="")&&($envoi_mail_autre_adresse=="toujours")) {
+									//$compilation_fb.="DEBUG: Envoi à l'adresse autre saisie<br />";
+									$compilation_fb.=$fb_courante;
+
+									if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+										$compilation_fb.="<p class='saut'></p>";
+									}
 								}
 							}
+							//elseif(($envoi_mail_adresse_specifiee!="")&&($envoi_mail_autre_adresse=="sinon")) {
+							elseif($envoi_mail_adresse_specifiee!="") {
+								//$compilation_fb.="DEBUG: Envoi à l'adresse autre saisie<br />";
+								$compilation_fb.=$fb_courante;
+
+								if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+									$compilation_fb.="<p class='saut'></p>";
+								}
+							}
+						}
+						elseif($envoi_mail_adresse_specifiee!="") {
+							//$compilation_fb.="DEBUG: Envoi à l'adresse autre saisie<br />";
+							$compilation_fb.=$fb_courante;
+
+							if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+								$compilation_fb.="<p class='saut'></p>";
+							}
+						}
+					}
+					elseif($envoi_mail_adresse_specifiee!="") {
+						//$compilation_fb.="DEBUG: Envoi à l'adresse autre saisie<br />";
+						$compilation_fb.=$fb_courante;
+
+						if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+							$compilation_fb.="<p class='saut'></p>";
 						}
 					}
 
@@ -1041,6 +1164,24 @@ elseif($mode=='publiposter') {
 			}
 			$compteur++;
 			//echo "\$compteur=$compteur<br />\n";
+		}
+
+		if(($compilation_fb!="")&&($envoi_mail_adresse_specifiee!="")&&(check_mail($envoi_mail_adresse_specifiee))) {
+			$tab_param_mail=array();
+			$tab_param_mail['destinataire']=array();
+			$tab_param_mail['destinataire'][]=$envoi_mail_adresse_specifiee;
+
+			$destinataire=$envoi_mail_adresse_specifiee;
+
+			if($chaine_mail_envoye!="") {
+				$chaine_mail_envoye.=", ";
+			}
+			if(envoi_mail("Compte(s) Gepi", "Bonjour(soir),\n\n".$compilation_fb, $destinataire, "", "html", $tab_param_mail)) {
+				$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion envoyées avec succès.\">".$destinataire."</span>";
+			}
+			else {
+				$chaine_mail_envoye.="<span style='color:red' title=\"Échec de l'envoi des informations de connexion.\">".$destinataire."</span>";
+			}
 		}
 
 		if($chaine_mail_envoye!="") {
