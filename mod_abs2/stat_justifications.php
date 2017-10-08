@@ -153,7 +153,7 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 	  $donnees[$eleve_id]['justifiees'] = $eleveNbAbs['justifiees'];
 	  $donnees[$eleve_id]['non_justifiees'] = $eleveNbAbs['non_justifiees'];
 	  $donnees[$eleve_id]['retards'] = $eleveNbAbs['retards'];
-	  //Récupérer le décompte des traitements pour chaque élève	  
+	  //Récupérer le décompte des traitements pour chaque élève
 	  $totalDemi=0;
 	foreach ($justifie_col as $justifie) {
 	  // Décompte en données brutes 
@@ -183,6 +183,8 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
                     $dm = AbsencesEleveSaisieHelper::compte_demi_journee($justif_collection, $date_debut, $date_fin);
                     $donnees[$eleve_id]['traitement'][] = $dm->count();
                     $totalDemi += $dm->count();
+                    // Probleme: Si on crée plusieurs traitements pour une même période d'absence, on arrive à un total trop élevé.
+                    // Exemple: Un traitement pour chaque jour d'une semaine d'absence et un traitement pour la semaine
 		}
 	  }
 	  $donnees[$eleve_id]['totalDemi']=$totalDemi;
@@ -461,7 +463,7 @@ if (!isset($_SESSION['statJustifie'])) {
 	}
 	creeODS($_SESSION['statJustifie']['donnees'], unserialize($_SESSION['statJustifie']['justifications']));
   } else {
-  /***** On a changer les dates ou le mode de calcul ou on ne veut que les erreurs *****/
+  /***** On a changé les dates ou le mode de calcul ou on ne veut que les erreurs *****/
 	// On initialise les données
 	unset ($_SESSION['statJustifie']['donnees']);
 	// on récupère les justifications
@@ -630,6 +632,9 @@ include('menu_bilans.inc.php');
 	  <th class="number" title ="Cliquez pour trier sur la colonne">
 		Retards
 	  </th>
+	  <!--th class="number" title ="Cliquez pour trier sur la colonne">
+		Total demi
+	  </th-->
 	  <th class="number" title ="Cliquez pour trier sur la colonne">
 		1/2 journées
 	  </th>
@@ -670,6 +675,10 @@ foreach ($donnees as $donnee) { ?>
 	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['retards']; ?>
 	  </td>
+	  
+	  <!--td style="border:1px groove #aaaaaa;text-align: center;">
+		<?php echo $donnee['totalDemi']; ?>
+	  </td-->
 	  
 	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['demi_journees']; ?>
