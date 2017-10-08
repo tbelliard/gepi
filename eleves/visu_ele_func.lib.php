@@ -556,13 +556,14 @@ function info_eleve($ele_login) {
 
 				//echo "\$lig_resp->login=".$lig_resp->login."<br />";
 				if($lig_resp->login!="") {
-					$sql="SELECT etat, auth_mode FROM utilisateurs WHERE login='".$lig_resp->login."';";
+					$sql="SELECT etat, auth_mode, email FROM utilisateurs WHERE login='".$lig_resp->login."';";
 					//echo "$sql<br />";
 					$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_u)>0) {
 						$lig_u=mysqli_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
 						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
+						$tab_ele['resp'][$cpt]['email']=$lig_u->email;
 
 						if($AccesDerniereConnexionResp) {
 							$tab_ele['resp'][$cpt]['DerniereConnexionResp']=get_last_connexion($lig_resp->login);
@@ -618,13 +619,14 @@ function info_eleve($ele_login) {
 
 				//echo "\$lig_resp->login=".$lig_resp->login."<br />";
 				if($lig_resp->login!="") {
-					$sql="SELECT etat, auth_mode FROM utilisateurs WHERE login='".$lig_resp->login."';";
+					$sql="SELECT etat, auth_mode, email FROM utilisateurs WHERE login='".$lig_resp->login."';";
 					//echo "$sql<br />";
 					$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_u)>0) {
 						$lig_u=mysqli_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
 						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
+						$tab_ele['resp'][$cpt]['email']=$lig_u->email;
 
 						if($AccesDerniereConnexionResp) {
 							$tab_ele['resp'][$cpt]['DerniereConnexionResp']=get_last_connexion($lig_resp->login);
@@ -741,6 +743,9 @@ function info_eleve($ele_login) {
 			$cpt++;
 		}
 	}
+
+	// 20170621 : Ajouter un test sur mod_absences 1
+	//            Et gérer la récup des infos abs2 avec ça
 
 	// ============================================================================= //
 	// === SUIVI des absences pour ceux qui utilisent la saisie 'fond de classe' === //

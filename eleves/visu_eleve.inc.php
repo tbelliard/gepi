@@ -1650,6 +1650,17 @@ Patientez pendant l'extraction des données... merci.
 									echo "<br />Dernière connexion&nbsp;: <img src='../images/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté (aussi loin que remontent les journaux de connexion (à savoir : $date_debut_log)).\"/>";
 								}
 							}
+
+							// Vérifier qui peut avoir accès à cette adresse
+							if((isset($tab_ele['resp'][$i]['email']))&&($tab_ele['resp'][$i]['email']!='')&&
+							((!isset($tab_ele['resp'][$i]['mel']))||($tab_ele['resp'][$i]['email']!=$tab_ele['resp'][$i]['mel']))) {
+								echo "<br />";
+								echo "<a href='mailto:".$tab_ele['resp'][$i]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+								if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+								echo ",%0d%0aCordialement.'>";
+								echo $tab_ele['resp'][$i]['email'];
+								echo "</a>";
+							}
 							echo "</td></tr>\n";
 
 							if(($_SESSION['statut']=='administrateur')||
@@ -1957,6 +1968,18 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 										echo "<br />Dernière connexion&nbsp;: <img src='../images/disabled.png' class='icone20' title=\"Cet utilisateur ne s'est jamais connecté (aussi loin que remontent les journaux de connexion (à savoir : $date_debut_log)).\"/>";
 									}
 								}
+
+								// Vérifier qui peut avoir accès à cette adresse
+								if((isset($tab_ele['resp'][$i]['email']))&&($tab_ele['resp'][$i]['email']!='')&&
+								((!isset($tab_ele['resp'][$i]['mel']))||($tab_ele['resp'][$i]['email']!=$tab_ele['resp'][$i]['mel']))) {
+									echo "<br />";
+									echo "<a href='mailto:".$tab_ele['resp'][$i]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+									if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+									echo ",%0d%0aCordialement.'>";
+									echo $tab_ele['resp'][$i]['email'];
+									echo "</a>";
+								}
+
 								echo "</td></tr>\n";
 
 
