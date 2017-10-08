@@ -156,43 +156,60 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		// 20170525
 		$num_semaine_annee=isset($_POST['num_semaine_annee']) ? $_POST['num_semaine_annee'] : (isset($_GET['num_semaine_annee']) ? $_GET['num_semaine_annee'] : NULL);
-		if((isset($num_semaine_annee))&&(preg_match("/^[0-9]{1,}\|[0-9]{4}$/", $num_semaine_annee))) {
-			$tmp_tab_heure_debut=explode(":", $lig->heuredebut_definie_periode);
-			$tmp_tab=explode("|", $num_semaine_annee);
+		if($affichage!="semaine") {
+			if((isset($num_semaine_annee))&&(preg_match("/^[0-9]{1,}\|[0-9]{4}$/", $num_semaine_annee))) {
+				$tmp_tab_heure_debut=explode(":", $lig->heuredebut_definie_periode);
+				$tmp_tab=explode("|", $num_semaine_annee);
 
-// Les messages d'alerte déposés ne le sont pas pour la bonne date/heure
-/*
-echo "\$num_semaine_annee=$num_semaine_annee";
-echo "<pre>";
-print_r($lig);
-echo "</pre>";
+	// Les messages d'alerte déposés ne le sont pas pour la bonne date/heure
+	/*
+	echo "\$num_semaine_annee=$num_semaine_annee";
+	echo "<pre>";
+	print_r($lig);
+	echo "</pre>";
 
-echo "<pre>";
-print_r($tmp_tab);
-echo "</pre>";
-*/
-			if(!isset($tmp_tab[1])) {
-				$display_date=strftime("%d/%m/%Y");
-				$affichage=strftime("%u");
-			}
-			else {
-				$tmp_tab2=get_days_from_week_number($tmp_tab[0] ,$tmp_tab[1]);
-				/*
-				echo "<pre>";
-				print_r($tmp_tab2);
-				echo "</pre>";
-				*/
-				if(isset($tmp_tab2['num_jour'][$affichage])) {
-					$display_date=$tmp_tab2['num_jour'][$affichage]['jjmmaaaa'];
+	echo "<pre>";
+	print_r($tmp_tab);
+	echo "</pre>";
+	*/
+				if(!isset($tmp_tab[1])) {
+					$display_date=strftime("%d/%m/%Y");
+					$affichage=strftime("%u");
 				}
 				else {
-					$display_date=$tmp_tab2['num_jour'][1]['jjmmaaaa'];
-					$affichage=1;
+					$tmp_tab2=get_days_from_week_number($tmp_tab[0] ,$tmp_tab[1]);
+					/*
+					echo "<pre>";
+					print_r($tmp_tab2);
+					echo "</pre>";
+					*/
+					if(isset($tmp_tab2['num_jour'][$affichage])) {
+						$display_date=$tmp_tab2['num_jour'][$affichage]['jjmmaaaa'];
+					}
+					else {
+						$display_date=$tmp_tab2['num_jour'][1]['jjmmaaaa'];
+						$affichage=1;
+					}
 				}
 			}
 		}
 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+		if(isset($_GET['ts'])) {
+			//echo "<p>\$_GET['ts']=".$_GET['ts']."</p>";
+			$ts=$_GET['ts'];
+		}
+		else {
+			$ts=time();
+			if(mb_strtolower(strftime("%A"))!=$lig->jour_semaine) {
+				for($i=1;$i<7;$i++) {
+					$ts+=3600*24;
+					if(mb_strtolower(strftime("%A", $ts))==$lig->jour_semaine) {
+						break;
+					}
+				}
+			}
+		}
 
 		if($lig->id_groupe!=0) {
 			$current_group=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
@@ -209,6 +226,8 @@ echo "</pre>";
 			if((getSettingValue("active_module_absence")=="2")&&(acces("/mod_abs2/index.php", $_SESSION['statut']))) {
 				echo " <a href='../mod_abs2/index.php?type_selection=id_groupe&id_groupe=".$lig->id_groupe."' title=\"Saisir les absences pour ce groupe.\"><img src='../images/icons/absences.png' class='icone16' alt='Abs2' /></a>";
 			}
+
+			$acces_saisie_abs_prof=acces_saisie_abs_prof("", $_SESSION["statut"]);
 
 			// 20170110
 			$lien_edt_prof=false;
@@ -234,6 +253,11 @@ echo "</pre>";
 					// Boucler sur la liste des profs
 					foreach($current_group["profs"]["users"] as $current_login_prof => $current_prof) {
 						echo " <a href='".$_SERVER['PHP_SELF']."?login_prof=".$current_login_prof."&amp;type_affichage=prof&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT de ".$current_prof["prenom"]." ".$current_prof["nom"]." seul\"><img src='../images/icons/edt2_prof.png' class='icone16' alt='EDT seul' /></a>";
+
+						if($acces_saisie_abs_prof) {
+							echo "<a href='../mod_abs_prof/saisir_absence.php?login_user[0]=".$current_login_prof."&amp;display_date_debut=".strftime("%d/%m/%Y", $ts)."&amp;display_fin_debut=".strftime("%d/%m/%Y", $ts)."&amp;display_heure_debut=".strftime("%H:%M", $ts)."' target='_blank' title=\"Saisir une absence du professeur ".$current_prof["prenom"]." ".$current_prof["nom"].".\"><img src='../images/icons/abs_prof.png' class='icone20' alt='ABS prof' /></a>";
+
+						}
 					}
 				}
 			}
@@ -345,6 +369,7 @@ echo "</pre>";
 
 		// Récupérer l'heure du créneau
 		if(peut_poster_message($_SESSION['statut'])) {
+			/*
 			if(isset($_GET['ts'])) {
 				//echo "<p>\$_GET['ts']=".$_GET['ts']."</p>";
 				$ts=$_GET['ts'];
@@ -360,6 +385,7 @@ echo "</pre>";
 					}
 				}
 			}
+			*/
 
 			echo "<a href='../mod_alerte/form_message.php?message_envoye=y&login_dest=".$lig->login_prof."&date_visibilite=".strftime("%d/%m/%Y", $ts)."&heure_visibilite=".strftime("%H:%M:%S", $ts).add_token_in_url()."' title=\"Déposer une alerte à destination de ".civ_nom_prenom($lig->login_prof)."\nà afficher (par défaut) le ".strftime("%d/%m/%Y", $ts)." à ".strftime("%H:%M", $ts).",\nmais vous pourrez modifier la date de visibilité/affichage avant de valider.\" target='_blank'><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerte' />Déposer une alerte/rappel, pour ".civ_nom_prenom($lig->login_prof).", à afficher le ".strftime("%d/%m/%Y", $ts)." à ".strftime("%H:%M", $ts)."</a><br />";
 		}

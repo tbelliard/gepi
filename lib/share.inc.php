@@ -17237,4 +17237,38 @@ function get_eleves_from_classe($id_classe, $periode="") {
 	}
 	return $tab;
 }
+
+function acces_saisie_abs_prof($login_user, $statut_user="") {
+	$retour=false;
+
+	if((getSettingAOui("active_mod_abs_prof"))&&
+	(acces("/mod_abs_prof/saisir_absence.php", $_SESSION['statut']))) {
+		if($statut_user=="") {
+			$statut_user=get_valeur_champ("utilisateurs", "login='".$login_user."'", "statut");
+		}
+
+		if(
+			($statut_user=="administrateur")||
+			(($statut_user=="scolarite")&&(getSettingAOui("AbsProfSaisieAbsScol")))||
+			(($statut_user=="cpe")&&(getSettingAOui("AbsProfSaisieAbsCpe")))
+		) {
+			$retour=true;
+		}
+	}
+
+	return $retour;
+}
+
+function my_strftime($motif, $ts='') {
+	if($ts=='') {
+		$ts=time();
+	}
+
+	if($motif=='%u') {
+		return (strftime('%w', $ts)+1);
+	}
+	else {
+		return strftime($motif, $ts);
+	}
+}
 ?>

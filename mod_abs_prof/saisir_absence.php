@@ -74,10 +74,10 @@ if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('AbsProfSaisieAbsCpe'))) {
 }
 
 $login_user=isset($_POST['login_user']) ? $_POST['login_user'] : (isset($_GET['login_user']) ? $_GET['login_user'] : NULL);
-$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : NULL;
-$display_heure_debut=isset($_POST['display_heure_debut']) ? $_POST['display_heure_debut'] : NULL;
-$display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : NULL;
-$display_heure_fin=isset($_POST['display_heure_fin']) ? $_POST['display_heure_fin'] : NULL;
+$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_GET['display_date_debut']) ? $_GET['display_date_debut'] : NULL);
+$display_heure_debut=isset($_POST['display_heure_debut']) ? $_POST['display_heure_debut'] : (isset($_GET['display_heure_debut']) ? $_GET['display_heure_debut'] : NULL);
+$display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : (isset($_GET['display_date_fin']) ? $_GET['display_date_fin'] : NULL);
+$display_heure_fin=isset($_POST['display_heure_fin']) ? $_POST['display_heure_fin'] : (isset($_GET['display_heure_fin']) ? $_GET['display_heure_fin'] : NULL);
 $titre=isset($_POST['titre']) ? $_POST['titre'] : NULL;
 $description=isset($_POST['description']) ? $_POST['description'] : NULL;
 
