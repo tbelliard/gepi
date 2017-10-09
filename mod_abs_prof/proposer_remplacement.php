@@ -1846,7 +1846,7 @@ echo "<tr><td colspan='5'>
 	$timestamp_courant+=3600*24;
 
 	$cpt_secu=0;
-	while((!in_array($tab_jour_u[strftime("%u", $timestamp_courant)], $tab_jour))&&($cpt_secu<8)) {
+	while((!in_array($tab_jour_u[id_j_semaine($timestamp_courant)], $tab_jour))&&($cpt_secu<8)) {
 		$timestamp_courant+=3600*24;
 		$cpt_secu++;
 	}

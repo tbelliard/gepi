@@ -1028,13 +1028,13 @@ if(isset($tab_classe)) {
 
 //=============================================================
 // Récupération du premier jour de la semaine:
-//$num_jour_semaine=strftime("%u",$today);
+//$num_jour_semaine=id_j_semaine($today);
 $num_jour_semaine=strftime("%w",$today);
 if($num_jour_semaine==0) {$num_jour_semaine=7;}
 //echo "\$num_jour_semaine=$num_jour_semaine<br />";
 $premier_jour_semaine=$today-(3600*24*($num_jour_semaine-1));
 //echo "strftime('%d/%m/%Y',\$today)=".strftime("%d/%m/%Y",$today)."<br />";
-//echo "strftime('%u',\$today)=".strftime("%u",$today)."<br />";
+//echo "strftime('%u',\$today)=".id_j_semaine($today)."<br />";
 //echo "strftime('%w',\$today)=".strftime("%w",$today)."<br />";
 // %u 	Représentation ISO-8601 du jour de la semaine 	De 1 (pour Lundi) à 7 (pour Dimanche)
 // %w 	Représentation numérique du jour de la semaine 	De 0 (pour Dimanche) à 6 (pour Samedi)

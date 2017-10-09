@@ -28,7 +28,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 	}
 
 	$ts=mktime(12, 0, 0, $mois, $jour, $annee);
-	$num_jsem=strftime("%u", $ts);
+	$num_jsem=id_j_semaine($ts);
 	$nom_mois=strftime("%B", $ts);
 
 	if($temoin_debug==1) {
@@ -75,7 +75,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 
 
 	$ts_j1_mois_suiv=mktime(12, 0, 0, $mois_suivant, $jour_suivant, $annee_suivante);
-	$num_jsem_suiv=strftime("%u", $ts_j1_mois_suiv);
+	$num_jsem_suiv=id_j_semaine($ts_j1_mois_suiv);
 
 	$lien_mois_suivant="";
 	$afficher_lien_mois_suivant="y";
@@ -164,7 +164,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 		$mois_courant=strftime("%m", $ts_courant);
 		$annee_courant=strftime("%Y", $ts_courant);
 
-		$num_jsem_courant=strftime("%u", $ts_courant);
+		$num_jsem_courant=id_j_semaine($ts_courant);
 		if($num_jsem_courant==1) {
 			$num_semaine=strftime("%U", $ts_courant);
 			if(isset($tab_sem[$num_semaine])) {

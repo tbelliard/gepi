@@ -173,7 +173,7 @@ echo "</pre>";
 */
 			if(!isset($tmp_tab[1])) {
 				$display_date=strftime("%d/%m/%Y");
-				$affichage=strftime("%u");
+				$affichage=id_j_semaine();
 			}
 			else {
 				$tmp_tab2=get_days_from_week_number($tmp_tab[0] ,$tmp_tab[1]);
@@ -381,7 +381,7 @@ if($affichage!="semaine") {
 			$tmp_tab=explode("|", $num_semaine_annee);
 			if(!isset($tmp_tab[1])) {
 				$display_date=strftime("%d/%m/%Y");
-				$affichage=strftime("%u");
+				$affichage=id_j_semaine();
 			}
 			else {
 				$tmp_tab2=get_days_from_week_number($tmp_tab[0] ,$tmp_tab[1]);
@@ -401,14 +401,14 @@ if($affichage!="semaine") {
 		}
 		else {
 			$display_date=strftime("%d/%m/%Y");
-			$affichage=strftime("%u");
+			$affichage=id_j_semaine();
 		}
 	}
 	elseif(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $display_date)) {
 		$msg.="Date $display_date invalide.<br />";
 		unset($display_date);
 		$display_date=strftime("%d/%m/%Y");
-		$affichage=strftime("%u");
+		$affichage=id_j_semaine();
 	}
 
 	$tmp_tab=explode("/", $display_date);
@@ -420,11 +420,11 @@ if($affichage!="semaine") {
 	$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 
 	if($affichage=="jour") {
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=id_j_semaine($ts_display_date);
 	}
-	elseif($affichage!=strftime("%u", $ts_display_date)) {
+	elseif($affichage!=id_j_semaine($ts_display_date)) {
 		$msg.="Le jour choisi '$affichage' ne correspond pas à la date $display_date<br />";
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=id_j_semaine($ts_display_date);
 	}
 
 	$tab_jour=get_tab_jour_ouverture_etab();
@@ -443,7 +443,7 @@ if($affichage!="semaine") {
 			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
 				$ts_display_date_suivante=$ts_test;
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
-				$display_date_suivante_num_jour=strftime("%u", $ts_test);
+				$display_date_suivante_num_jour=id_j_semaine($ts_test);
 				break;
 			}
 			$cpt++;
@@ -468,7 +468,7 @@ if($affichage!="semaine") {
 		$ts_display_date=$ts_debut_annee;
 
 		$display_date=strftime("%d/%m/%Y", $ts_display_date);
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=id_j_semaine($ts_display_date);
 
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
@@ -482,7 +482,7 @@ if($affichage!="semaine") {
 		$ts_display_date=$ts_fin_annee;
 
 		$display_date=strftime("%d/%m/%Y", $ts_display_date);
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=id_j_semaine($ts_display_date);
 
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);

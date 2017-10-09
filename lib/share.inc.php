@@ -6660,7 +6660,7 @@ function getDateDescription($date_debut,$date_fin, $avec_temoin_pb="n") {
 	if($avec_temoin_pb=="y") {
 		global $tab_heure_ouverture;
 
-		$num_jour=strftime("%u", $date_debut);
+		$num_jour=id_j_semaine($date_debut);
 		//echo "num_jour=$num_jour<br />";
 		if(!isset($tab_heure_ouverture_etablissement[$num_jour])) {
 
@@ -6677,7 +6677,7 @@ function getDateDescription($date_debut,$date_fin, $avec_temoin_pb="n") {
 			$res=mysqli_query($mysqli, $sql);
 			if($res->num_rows > 0) {
 				$lig=mysqli_fetch_object($res);
-				$tab_heure_ouverture_etablissement[strftime("%u", $date_debut)]=$lig->ouverture_horaire_etablissement;
+				$tab_heure_ouverture_etablissement[id_j_semaine($date_debut)]=$lig->ouverture_horaire_etablissement;
 			}
 		}
 
@@ -8775,13 +8775,13 @@ function get_next_tel_jour($jour, $decalage_aujourdhui=0) {
 		fwrite($f, "Aujourd'hui: ".strftime("%a %d/%m/%Y")."\n");
 	}
 
-	$indice_courant=strftime("%u");
+	$indice_courant=id_j_semaine();
 
 	for($i=$decalage_aujourdhui;$i<9;$i++) {
 		if($debug=="y") {
 			fwrite($f, "\n\$i=$i\n");
 		}
-		$jour_suivant=strftime("%u", time()+24*3600*$i);
+		$jour_suivant=id_j_semaine(time()+24*3600*$i);
 		if($debug=="y") {
 			fwrite($f, "\$jour_suivant=$jour_suivant\n");
 			fwrite($f, "soit ".strftime("%a %d/%m/%Y", time()+24*3600*$i)."\n");
@@ -13013,7 +13013,7 @@ function get_tab_fichiers_du_dossier_de_sauvegarde($path="", $sous_dossier="n") 
 function get_tab_jour_ouverture_etab($mode="") {
 	$tab_jour=array();
 	if($mode=="indice") {
-		// strftime("%u") : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
+		// id_j_semaine() : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
 		$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
 		$tmp_tab_jour_US=array("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
 		for($loop=0;$loop<count($tmp_tab_jour);$loop++) {

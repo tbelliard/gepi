@@ -95,7 +95,7 @@ function get_dernier_dimanche_du_mois2($mois, $annee) {
 	// Fonction utilisée pour les mois de mars et octobre (31 jours)
 	for($i=31;$i>1;$i--) {
 		$ts=mktime(0, 0, 0, $mois , $i, $annee);
-		if(strftime("%u", $ts)==7) {
+		if(id_j_semaine($ts)==7) {
 			break;
 		}
 	}

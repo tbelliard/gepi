@@ -139,7 +139,7 @@ if((isset($_POST['is_posted']))) {
 
 						// Salle
 
-						// strftime("%u") : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
+						// id_j_semaine() : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
 						$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
 
 						$tmp_date=mktime(12, 0, 0, substr($jour, 4,2), substr($jour, 6,2), substr($jour, 0,4));
