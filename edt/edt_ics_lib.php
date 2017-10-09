@@ -216,7 +216,7 @@ function get_dernier_dimanche_du_mois($mois, $annee) {
 	// Fonction utilisée pour les mois de mars et octobre (31 jours)
 	for($i=31;$i>1;$i--) {
 		$ts=mktime(0, 0, 0, $mois , $i, $annee);
-		if(strftime("%u", $ts)==7) {
+		if(id_j_semaine($ts)==7) {
 			break;
 		}
 	}
@@ -683,7 +683,7 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 			$ts_fin=mysql_date_to_unix_timestamp($lig->date_fin);
 			$horaire_fin=strftime("%H:%M", $ts_fin);
 
-			$num_jour=strftime("%u", $ts_debut)-1;
+			$num_jour=id_j_semaine($ts_debut)-1;
 
 			$jour_debut_jour=strftime("%d", $ts_debut);
 			$mois_debut_jour=strftime("%m", $ts_debut);
@@ -1386,7 +1386,7 @@ function affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $afficha
 			$ts_test-=3600*24;
 			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
 				$display_date_precedente=strftime("%d/%m/%Y", $ts_test);
-				$display_date_precedente_num_jour=strftime("%u", $ts_test);
+				$display_date_precedente_num_jour=id_j_semaine($ts_test);
 				break;
 			}
 			$cpt++;
@@ -1443,7 +1443,7 @@ function affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $afficha
 			$ts_test+=3600*24;
 			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
-				$display_date_suivante_num_jour=strftime("%u", $ts_test);
+				$display_date_suivante_num_jour=id_j_semaine($ts_test);
 				break;
 			}
 			$cpt++;
@@ -2434,7 +2434,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			$ts_test-=3600*24;
 			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
 				$display_date_precedente=strftime("%d/%m/%Y", $ts_test);
-				$display_date_precedente_num_jour=strftime("%u", $ts_test);
+				$display_date_precedente_num_jour=id_j_semaine($ts_test);
 				break;
 			}
 			$cpt++;
@@ -2491,7 +2491,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			$ts_test+=3600*24;
 			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
-				$display_date_suivante_num_jour=strftime("%u", $ts_test);
+				$display_date_suivante_num_jour=id_j_semaine($ts_test);
 				break;
 			}
 			$cpt++;
@@ -2590,7 +2590,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		$ts_fin=mysql_date_to_unix_timestamp($lig->date_fin);
 		$horaire_fin=strftime("%H:%M", $ts_fin);
 
-		$num_jour=strftime("%u", $ts_debut)-1;
+		$num_jour=id_j_semaine($ts_debut)-1;
 
 		$jour_debut_jour=strftime("%d", $ts_debut);
 		$mois_debut_jour=strftime("%m", $ts_debut);
@@ -2676,9 +2676,9 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		if(($afficher_remplacements=="y")&&($login_prof!="")&&($login_prof==$_SESSION['login'])) {
 			// Récupérer les cours remplacés par d'autres
 
-			// strftime("%u") : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
+			// id_j_semaine() : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
 			$tmp_tab_jour=array("", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
-			$nom_jour=$tmp_tab_jour[strftime("%u", $ts_debut_jour)];
+			$nom_jour=$tmp_tab_jour[id_j_semaine($ts_debut_jour)];
 
 			$sql="SELECT apr.id_cours_remplaced, apr.login_user FROM abs_prof_remplacement apr, edt_cours ec WHERE apr.jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."' AND ec.id_cours=apr.id_cours_remplaced AND ec.jour_semaine='".$nom_jour."'";
 			//echo "$sql<br />";

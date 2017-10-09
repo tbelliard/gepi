@@ -590,8 +590,8 @@ if ($step == 0) {
 							affiche_debug("Avant décompte des samedi/dimanche: \$nb_demi_jour=$nb_demi_jour<br />");
 
 							// Question de la prise en compte des demi-journées de week-end : on filtre les samedi et dimanche.
-							$jour_debut = strftime("%u", $debut_a);
-							//$jour_fin = strftime("%u", $fin_a);
+							$jour_debut = id_j_semaine($debut_a);
+							//$jour_fin = id_j_semaine($fin_a);
 							$duree_a = (($fin_a - $debut_a + $modifier)/(60*60*24)+1);
 							affiche_debug("\$duree_a=$duree_a<br />");
 
@@ -631,7 +631,7 @@ if ($step == 0) {
 								$d=0;
 								while($timestamp_debut_test_mercr+$d*3600*24<$fin_a) {
 									affiche_debug("Test du ".strftime("%a %d/%m/%Y",$timestamp_debut_test_mercr+$d*3600*24)."\n");
-									if(strftime("%u",$timestamp_debut_test_mercr+$d*3600*24)==3) {
+									if(id_j_semaine($timestamp_debut_test_mercr+$d*3600*24)==3) {
 										affiche_debug(" MERCREDI: -1 demi-journée\n");
 										$nb_demi_jour--;
 									}

@@ -141,7 +141,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 		//debug_var();
 
 		// Semaine précédente,...
-		$ts_debut_semaine=time()-strftime("%u")*24*3600;
+		$ts_debut_semaine=time()-id_j_semaine()*24*3600;
 		$ts_fin_semaine=$ts_debut_semaine+7*24*3600;
 		$ts_debut_semaine_prec=$ts_debut_semaine-7*24*3600;
 		$ts_fin_semaine_prec=$ts_debut_semaine_prec+7*24*3600;

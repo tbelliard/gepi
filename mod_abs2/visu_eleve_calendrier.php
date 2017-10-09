@@ -673,7 +673,7 @@ if(!isset($annee)) {
 }
 
 $ts=mktime(12, 0, 0, $mois, $jour, $annee);
-$num_jsem=strftime("%u", $ts);
+$num_jsem=id_j_semaine($ts);
 $nom_mois=strftime("%B", $ts);
 
 if($temoin_debug==1) {
@@ -718,7 +718,7 @@ echo "<div style='text-align:center;'>
 </p>";
 
 $ts_j1_mois_suiv=mktime(12, 0, 0, $mois_suivant, $jour_suivant, $annee_suivante);
-$num_jsem_suiv=strftime("%u", $ts_j1_mois_suiv);
+$num_jsem_suiv=id_j_semaine($ts_j1_mois_suiv);
 
 $ts_dim_suiv=$ts_j1_mois_suiv;
 if($temoin_debug==1) {
@@ -840,7 +840,7 @@ while($ts_courant-2*3600<$ts_dim_suiv) {
 	$mois_courant=strftime("%m", $ts_courant);
 	$annee_courant=strftime("%Y", $ts_courant);
 
-	$num_jsem_courant=strftime("%u", $ts_courant);
+	$num_jsem_courant=id_j_semaine($ts_courant);
 	if($num_jsem_courant==1) {
 		echo "
 		<tr>";

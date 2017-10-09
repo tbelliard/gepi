@@ -343,9 +343,9 @@
 		// Renseigner un setting avec la date du dernier envoi... calculer la date de l'envoi suivant au cas où... ou renseigner une date d'envoi suivant... et si on dépasse, on envoie.
 
 		// Paramétrage des jours d'affichage non encore implémenté
-		//$tab_jours_affichage_alerte_nj=array(1,2,3,4,5); // strftime("%u")
-		$tab_jours_affichage_alerte_nj=array(0,1,2,3,4,5,6); // strftime("%u")
-		if(in_array(strftime("%u"), $tab_jours_affichage_alerte_nj)) {
+		//$tab_jours_affichage_alerte_nj=array(1,2,3,4,5); // id_j_semaine()
+		$tab_jours_affichage_alerte_nj=array(0,1,2,3,4,5,6); // id_j_semaine()
+		if(in_array(id_j_semaine(), $tab_jours_affichage_alerte_nj)) {
 			$lignes_alerte_abs2_nj=abs2_afficher_tab_alerte_nj();
 			if($lignes_alerte_abs2_nj!="") {
 				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau des absences non justifiées depuis un certain temps.\">";
@@ -362,9 +362,9 @@
 		// Renseigner un setting avec la date du dernier envoi... calculer la date de l'envoi suivant au cas où... ou renseigner une date d'envoi suivant... et si on dépasse, on envoie.
 
 		// Paramétrage des jours d'affichage non encore implémenté
-		//$tab_jours_affichage_alerte_nj=array(1,2,3,4,5); // strftime("%u")
-		$tab_jours_affichage_alerte_abs=array(0,1,2,3,4,5,6); // strftime("%u")
-		if(in_array(strftime("%u"), $tab_jours_affichage_alerte_abs)) {
+		//$tab_jours_affichage_alerte_nj=array(1,2,3,4,5); // id_j_semaine()
+		$tab_jours_affichage_alerte_abs=array(0,1,2,3,4,5,6); // id_j_semaine()
+		if(in_array(id_j_semaine(), $tab_jours_affichage_alerte_abs)) {
 			$lignes_alerte_abs2_abs=abs2_afficher_tab_alerte_abs();
 			if($lignes_alerte_abs2_abs!="") {
 				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau des absences justifiées ou non depuis un certain temps.\">";

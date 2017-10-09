@@ -106,7 +106,7 @@ if(isset($_GET['test_heure_ouverture'])) {
 
 		$ts=mktime($h, $min, 0, $mois, $jour, $annee);
 
-		$num_jour=strftime("%u", $ts);
+		$num_jour=id_j_semaine($ts);
 
 		$tab_sem[1] = 'lundi';
 		$tab_sem[2] = 'mardi';

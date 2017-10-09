@@ -900,7 +900,7 @@ elseif(($mode=="upload")&&
 									prof_ics='$prof_ics',
 									matiere_ics='$matiere_ics',
 									salle_ics='$salle_ics',
-									jour_semaine='".$tab_nom_jour[strftime("%u", $ts_debut)]."',
+									jour_semaine='".$tab_nom_jour[id_j_semaine($ts_debut)]."',
 									num_semaine='".strftime("%V", $ts_debut)."',
 									annee='".strftime("%Y", $ts_debut)."',
 									date_debut='$date_debut',
