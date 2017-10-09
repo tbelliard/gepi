@@ -70,7 +70,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 				print_r('Il manque des marqueurs de fin de calcul<br/>');
 			}
 			//on va corriger la table pour ces élèves là
-			while ($row = mysqli_fetch_array($result, MYSQL_NUM)) {
+			while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
 				$eleve = EleveQuery::create()->findOneById($row[0]);
 				if ($debug) {
 					print_r('recalcul pour l eleve '.$eleve->getId().'<br/>');
