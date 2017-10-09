@@ -17237,4 +17237,21 @@ function get_eleves_from_classe($id_classe, $periode="") {
 	}
 	return $tab;
 }
+
+function id_j_semaine($time=0) {
+/**
+ * Renvoie l'indice du jour de la semaine
+ * comme le fait strftime('%u'... mais le
+ * paramètre %u n'est pas pris en compte
+ * dans certaines versions Window$ de strftime
+ *
+ * @param timestamp $time : par défaut le timestamp courant
+ *
+ * @return 1 pour lundi à 7 pour dimanche
+ */
+	if ($time==0) $time=time();
+	$id=(int)strftime('%w',$time);
+	if ($id==0) $id=7;
+	return $id;
+}
 ?>
