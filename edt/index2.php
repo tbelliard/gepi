@@ -328,7 +328,7 @@ if($affichage!="semaine") {
 			$tmp_tab=explode("|", $num_semaine_annee);
 			if(!isset($tmp_tab[1])) {
 				$display_date=strftime("%d/%m/%Y");
-				$affichage=strftime("%u");
+				$affichage=strftime('%u');
 			}
 			else {
 				$tmp_tab2=get_days_from_week_number($tmp_tab[0] ,$tmp_tab[1]);
@@ -348,14 +348,14 @@ if($affichage!="semaine") {
 		}
 		else {
 			$display_date=strftime("%d/%m/%Y");
-			$affichage=strftime("%u");
+			$affichage=strftime('%u');
 		}
 	}
 	elseif(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $display_date)) {
 		$msg.="Date $display_date invalide.<br />";
 		unset($display_date);
 		$display_date=strftime("%d/%m/%Y");
-		$affichage=strftime("%u");
+		$affichage=strftime('%u');
 	}
 
 	$tmp_tab=explode("/", $display_date);
@@ -367,11 +367,11 @@ if($affichage!="semaine") {
 	$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 
 	if($affichage=="jour") {
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=strftime('%u', $ts_display_date);
 	}
-	elseif($affichage!=strftime("%u", $ts_display_date)) {
+	elseif($affichage!=strftime('%u', $ts_display_date)) {
 		$msg.="Le jour choisi '$affichage' ne correspond pas à la date $display_date<br />";
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=strftime('%u', $ts_display_date);
 	}
 
 	$tab_jour=get_tab_jour_ouverture_etab();
@@ -390,7 +390,7 @@ if($affichage!="semaine") {
 			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
 				$ts_display_date_suivante=$ts_test;
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
-				$display_date_suivante_num_jour=strftime("%u", $ts_test);
+				$display_date_suivante_num_jour=strftime('%u', $ts_test);
 				break;
 			}
 			$cpt++;
@@ -415,7 +415,7 @@ if($affichage!="semaine") {
 		$ts_display_date=$ts_debut_annee;
 
 		$display_date=strftime("%d/%m/%Y", $ts_display_date);
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=strftime('%u', $ts_display_date);
 
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
@@ -429,7 +429,7 @@ if($affichage!="semaine") {
 		$ts_display_date=$ts_fin_annee;
 
 		$display_date=strftime("%d/%m/%Y", $ts_display_date);
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=strftime('%u', $ts_display_date);
 
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
@@ -801,7 +801,7 @@ if(!isset($type_affichage)) {
 
 	if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('AccesProf_EdtProfs'))) {
 		echo_selon_mode("
-<p class='bold'>Afficher un emploi du temps professeur&nbsp;: <a href='".$_SERVER['PHP_SELF']."?affichage=semaine&amp;type_affichage=prof&amp;login_prof=".$_SESSION['login']."'>".$_SESSION['civilite']." ".casse_mot($_SESSION['nom'], "maj")." ".casse_mot($_SESSION['prenom'], "majf2")."</a></p>");
+<p class='bold'>Afficher un emploi du temps professeur&nbsp;: <a href='".$_SERVER['PHP_SELF']."?affichage=semaine&amp;type_affichage=prof&amp;login_prof=".$_SESSION['login']."'>".casse_mot($_SESSION['nom'], "maj")." ".casse_mot($_SESSION['prenom'], "majf2")."</a></p>");
 	}
 	else {
 		echo_selon_mode("
@@ -1038,7 +1038,7 @@ else {
 	echo_selon_mode("
 		<p>Affichage&nbsp;: <input type='radio' name='type_affichage' id='type_affichage_prof' value='prof' ".$checked_prof."/>");
 	if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('AccesProf_EdtProfs'))) {
-		echo_selon_mode("<label for='type_affichage_prof'>".$_SESSION['civilite']." ".casse_mot($_SESSION['nom'], "maj")." ".casse_mot($_SESSION['prenom'], "majf2")."</label>
+		echo_selon_mode("<label for='type_affichage_prof'>".casse_mot($_SESSION['nom'], "maj")." ".casse_mot($_SESSION['prenom'], "majf2")."</label>
 		<input type='hidden' name='login_prof' value=\"".$_SESSION['login']."\" />");
 	}
 	else {
