@@ -3567,7 +3567,13 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 			if($onglet!="anna") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['anna']."; ";
 			echo "'>";
-			echo "<h2>Données d'années antérieures de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+
+			if(!isset($id_classe)) {
+				$id_classe=$tab_ele['classe'][0]['id_classe'];
+			}
+			$lien_annees_anterieures=" <a href='../mod_annees_anterieures/consultation_annee_anterieure.php?id_classe=".$id_classe."&logineleve=".$ele_login."' target='_blank' title=\"Voir dans un nouvel onglet les données d'années antérieures\"'><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>";
+
+			echo "<h2>Données d'années antérieures de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom'].$lien_annees_anterieures."</h2>\n";
 
 			require("../mod_annees_anterieures/fonctions_annees_anterieures.inc.php");
 
