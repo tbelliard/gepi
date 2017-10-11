@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -996,9 +996,30 @@ else {
 				$lignes_options_select_eleve=lignes_options_select_eleve($id_classe,$logineleve);
 			}
 
+			$complement_lien_suivant_precedent="";
+			if(isset($annee_scolaire)) {
+				$complement_lien_suivant_precedent.="&annee_scolaire=$annee_scolaire";
+			}
+			if(isset($num_periode)) {
+				$complement_lien_suivant_precedent.="&num_periode=$num_periode";
+			}
+			if(isset($mode)) {
+				$complement_lien_suivant_precedent.="&mode=$mode";
+			}
+
+
+			if((isset($login_ele_prec_lignes_options_select_eleve))&&($login_ele_prec_lignes_options_select_eleve!="")) {
+				echo "<a href='".$_SERVER["PHP_SELF"]."?id_classe=".$id_classe."&logineleve=".$login_ele_prec_lignes_options_select_eleve.$complement_lien_suivant_precedent."' title=\"Élève précédent\"> <img src='../images/icons/arrow-left.png' class='icone16' alt='Précédent' /> </a>";
+			}
+
 			echo "<select name='logineleve' onchange=\"document.forms['form_change_eleve'].submit();\">\n";
 			echo $lignes_options_select_eleve;
 			echo "</select>\n";
+
+			if((isset($login_ele_suiv_lignes_options_select_eleve))&&($login_ele_suiv_lignes_options_select_eleve!="")) {
+				echo "<a href='".$_SERVER["PHP_SELF"]."?id_classe=".$id_classe."&logineleve=".$login_ele_suiv_lignes_options_select_eleve.$complement_lien_suivant_precedent."' title=\"Élève suivant\"> <img src='../images/icons/arrow-right.png' class='icone16' alt='Suivant' /> </a>";
+			}
+
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
 			if(isset($annee_scolaire)) {
