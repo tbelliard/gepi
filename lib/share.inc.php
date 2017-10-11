@@ -5052,7 +5052,11 @@ function check_droit_acces($id,$statut) {
  * @return string Les balises options
  */
 function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele="") {
-    global $mysqli;
+	global $mysqli;
+	global $indice_ele_courant_lignes_options_select_eleve;
+	global $login_ele_prec_lignes_options_select_eleve;
+	global $login_ele_suiv_lignes_options_select_eleve;
+
 	if($sql_ele!="") {
 		$sql=$sql_ele;
 	}
@@ -5069,8 +5073,8 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 	$cpt_eleve=0;
 	$num_eleve=-1;
 	if($res_ele_tmp->num_rows>0){
-		$login_eleve_prec=0;
-		$login_eleve_suiv=0;
+		$login_eleve_prec="";
+		$login_eleve_suiv="";
 		$temoin_tmp=0;
 		while($lig_ele_tmp=$res_ele_tmp->fetch_object()){
 			if($lig_ele_tmp->login==$login_eleve_courant){
@@ -5084,7 +5088,7 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 					$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 				}
 				else{
-					$login_eleve_suiv=0;
+					$login_eleve_suiv="";
 				}
 			}
 			else{
@@ -5098,6 +5102,10 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 		}
 		$res_ele_tmp->close();
 	}
+
+	$indice_ele_courant_lignes_options_select_eleve=$num_eleve;
+	$login_ele_prec_lignes_options_select_eleve=$login_eleve_prec;
+	$login_ele_suiv_lignes_options_select_eleve=$login_eleve_suiv;
 
 	return $chaine_options_login_eleves;
 }
