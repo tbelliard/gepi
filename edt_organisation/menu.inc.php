@@ -4,7 +4,7 @@
  * EdT Gepi : le menu pour les includes require_once().
  *
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -25,10 +25,11 @@
 
 // Sécurité : éviter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
-$analyse = explode("/", $serveur_script);
-	if ($analyse[3] == "menu.inc.php") {
-		die();
-	}
+//$analyse = explode("/", $serveur_script);
+//if ($analyse[3] == "menu.inc.php") {
+if (preg_match("#/menu.inc.php#", $serveur_script)) {
+	die("Accès non autorisé");
+}
 
 // ========================= Récupérer le bon fichier de langue
 
