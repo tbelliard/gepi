@@ -126,7 +126,7 @@ require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 
 if($mode!='publiposter') {
 	echo "<p class='bold'><a href='./index.php?ctrl=cvsent#publipostage'>Retour</a></p>";
