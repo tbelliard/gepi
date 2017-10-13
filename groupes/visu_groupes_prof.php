@@ -441,6 +441,7 @@ else {
 	$acces_add_aid=acces("/aid/add_aid.php", $_SESSION['statut']);
 
 	$acces_edt=false;
+	$acces_edt_prof=false;
 	if(($_SESSION['statut']=="administrateur")&&(getSettingAOui("autorise_edt_admin"))) {
 		$acces_edt=true;
 		$acces_edt_prof=true;
