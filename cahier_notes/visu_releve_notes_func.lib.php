@@ -1937,7 +1937,10 @@ function releve_pdf($tab_rel,$i) {
 		$X_cadre_eleve,
 
 		$titre_du_cadre,
+
 		$largeur_cadre_matiere,
+		$largeur_cadre_matiere_0, // Pour la sauvegarde de la valeur avant de redimensionner si on affiche la colonne moyenne
+
 		$texte_observation,
 		$cadre_titre,
 		$largeur_cadre_note_global,
@@ -1976,7 +1979,9 @@ function releve_pdf($tab_rel,$i) {
 		global $retour_a_la_ligne;
 
 		// Sauvegarde de la largeur par défaut
-		$largeur_cadre_matiere_0=$largeur_cadre_matiere;
+		if((!isset($largeur_cadre_matiere_0))||($largeur_cadre_matiere_0=="")) {
+			$largeur_cadre_matiere_0=$largeur_cadre_matiere;
+		}
 
 		// Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
 		$retour_a_la_ligne="y";
@@ -2839,6 +2844,8 @@ function releve_pdf($tab_rel,$i) {
 								*/
 								$pdf->SetFont('DejaVu','B','9');
 								$nom_matiere = $tab_rel['eleve'][$i]['groupe'][$m]['matiere_nom_complet'];
+								// DEBUG largeur colonne:
+								//$nom_matiere.=" ".$largeur_cadre_matiere;
 								$hauteur_caractere = 9;
 								$pdf->SetFont('DejaVu','B',$hauteur_caractere);
 								$val = $pdf->GetStringWidth($nom_matiere);
@@ -3505,7 +3512,7 @@ function releve_pdf($tab_rel,$i) {
 					$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, 'Signature','LTR',2,'C');
 					$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, $tab_rel['gepi_prof_suivi'],'LR',2,'C');
 					$pdf->Cell($largeur_cadre_signature/$nb_col_sign,$hauteur_cachet-8, '','LR',2,'C');
-					$X_signature = $X_signature+($largeur_restant/$nb_col_sign);
+					$X_signature = $X_signature+($largeur_cadre_signature/$nb_col_sign);
 				}
 				//if($affiche_signature_parent==='1')
 				if($affiche_signature_parent==1)
