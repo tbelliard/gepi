@@ -43,7 +43,7 @@ $valid = isset($_POST["valid"]) ? $_POST["valid"] : 'no';
 $id_info=isset($_POST['id_info']) ? $_POST['id_info'] : (isset($_GET['id_info']) ? $_GET['id_info'] : '');
 $mode_auto=isset($_POST['mode_auto']) ? $_POST['mode_auto'] : (isset($_GET['mode_auto']) ? $_GET['mode_auto'] : 'n');
 
-debug_var();
+//debug_var();
 
 if((isset($_POST['mode']))&&($_POST['mode']=='suppr_assoc_doublon')) {
 	check_token();
