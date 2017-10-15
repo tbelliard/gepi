@@ -70,7 +70,7 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 $login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : "");
 $num_semaine_annee=isset($_POST['num_semaine_annee']) ? $_POST['num_semaine_annee'] : (isset($_GET['num_semaine_annee']) ? $_GET['num_semaine_annee'] : NULL);
 //$affichage=isset($_POST['affichage']) ? $_POST['affichage'] : (isset($_GET['affichage']) ? $_GET['affichage'] : "semaine");
-$affichage=isset($_POST['affichage']) ? $_POST['affichage'] : (isset($_GET['affichage']) ? $_GET['affichage'] : strftime("%u"));
+$affichage=isset($_POST['affichage']) ? $_POST['affichage'] : (isset($_GET['affichage']) ? $_GET['affichage'] : my_strftime('%u'));
 
 $display_date=isset($_POST['display_date']) ? $_POST['display_date'] : (isset($_GET['display_date']) ? $_GET['display_date'] : NULL);
 
@@ -89,7 +89,7 @@ if($affichage!="semaine") {
 			$tmp_tab=explode("|", $num_semaine_annee);
 			if(!isset($tmp_tab[1])) {
 				$display_date=strftime("%d/%m/%Y");
-				$affichage=strftime("%u");
+				$affichage=my_strftime('%u');
 			}
 			else {
 				$tmp_tab2=get_days_from_week_number($tmp_tab[0] ,$tmp_tab[1]);
@@ -106,12 +106,12 @@ if($affichage!="semaine") {
 			$res=mysqli_query($GLOBALS["mysqli"],$sql);
 			if(mysqli_num_rows($res)>0) {
 				$display_date=strftime("%d/%m/%Y");
-				$affichage=strftime("%u");
+				$affichage=my_strftime('%u');
 			}
 			else {
 				$ts_jour_suivant=time()+3600*24;
 				$display_date=strftime("%d/%m/%Y", $ts_jour_suivant);
-				$affichage=strftime("%u", $ts_jour_suivant);
+				$affichage=my_strftime('%u', $ts_jour_suivant);
 			}
 		}
 	}
@@ -119,7 +119,7 @@ if($affichage!="semaine") {
 		$msg.="Date $display_date invalide.<br />";
 		unset($display_date);
 		$display_date=strftime("%d/%m/%Y");
-		$affichage=strftime("%u");
+		$affichage=my_strftime('%u');
 	}
 
 	$tmp_tab=explode("/", $display_date);
@@ -140,11 +140,11 @@ if($affichage!="semaine") {
 	$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 
 	if($affichage=="jour") {
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=my_strftime('%u', $ts_display_date);
 	}
-	elseif($affichage!=strftime("%u", $ts_display_date)) {
+	elseif($affichage!=my_strftime('%u', $ts_display_date)) {
 		$msg.="Le jour choisi '$affichage' ne correspond pas à la date $display_date<br />";
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=my_strftime('%u', $ts_display_date);
 	}
 
 	$tab_jour=get_tab_jour_ouverture_etab();
@@ -163,7 +163,7 @@ if($affichage!="semaine") {
 			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
 				$ts_display_date_suivante=$ts_test;
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
-				$display_date_suivante_num_jour=strftime("%u", $ts_test);
+				$display_date_suivante_num_jour=my_strftime('%u', $ts_test);
 				break;
 			}
 			$cpt++;
@@ -188,7 +188,7 @@ if($affichage!="semaine") {
 		$ts_display_date=$ts_debut_annee;
 
 		$display_date=strftime("%d/%m/%Y", $ts_display_date);
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=my_strftime('%u', $ts_display_date);
 
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
@@ -202,7 +202,7 @@ if($affichage!="semaine") {
 		$ts_display_date=$ts_fin_annee;
 
 		$display_date=strftime("%d/%m/%Y", $ts_display_date);
-		$affichage=strftime("%u", $ts_display_date);
+		$affichage=my_strftime('%u', $ts_display_date);
 
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
@@ -959,7 +959,12 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 	}
 
 	if(getSettingValue('affiche_vacances_eleresp')!="no") {
-		$html_tab_vacances=affiche_tableau_vacances("", "y", "n");
+		if((isset($id_classe))&&(preg_match("/^[0-9]{1,}$/", $id_classe))) {
+			$html_tab_vacances=affiche_tableau_vacances($id_classe, "y", "n");
+		}
+		else {
+			$html_tab_vacances=affiche_tableau_vacances("", "y", "n");
+		}
 		if($html_tab_vacances!="") {
 			$html.="<div align='center' style='margin-top:1em; font-size:x-small;'>
 			<p class='bold'>Vacances et jours fériés à venir</p>
