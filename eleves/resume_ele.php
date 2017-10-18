@@ -959,7 +959,12 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 	}
 
 	if(getSettingValue('affiche_vacances_eleresp')!="no") {
-		$html_tab_vacances=affiche_tableau_vacances("", "y", "n");
+		if((isset($id_classe))&&(preg_match("/^[0-9]{1,}$/", $id_classe))) {
+			$html_tab_vacances=affiche_tableau_vacances($id_classe, "y", "n");
+		}
+		else {
+			$html_tab_vacances=affiche_tableau_vacances("", "y", "n");
+		}
 		if($html_tab_vacances!="") {
 			$html.="<div align='center' style='margin-top:1em; font-size:x-small;'>
 			<p class='bold'>Vacances et jours fériés à venir</p>
