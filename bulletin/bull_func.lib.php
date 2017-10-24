@@ -1331,7 +1331,11 @@ echo "</pre>";
 	// 20171021
 	$affiche_moyenne_generale_annuelle=0;
 	if((isset($tab_bull['affiche_moyenne_generale_annuelle']))&&($tab_bull['affiche_moyenne_generale_annuelle']=="y")) {
-		$affiche_moyenne_generale_annuelle=1;
+		if((!isset($tab_bull['affiche_moyenne_generale_annuelle_derniere_periode']))||
+		($tab_bull['affiche_moyenne_generale_annuelle_derniere_periode']=="n")||
+		(($tab_bull['affiche_moyenne_generale_annuelle_derniere_periode']=="y")&&($tab_bull['maxper']==$tab_bull['num_periode']))) {
+			$affiche_moyenne_generale_annuelle=1;
+		}
 	}
 
 	$affiche_numero_responsable=$tab_bull['affiche_numero_responsable'];

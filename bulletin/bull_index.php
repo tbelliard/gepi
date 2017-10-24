@@ -1902,6 +1902,7 @@ else {
 			$moyennes_periodes_precedentes="n";
 			// 20171021
 			$affiche_moyenne_generale_annuelle="n";
+			$affiche_moyenne_generale_annuelle_derniere_periode="n";
 
 			require_once("bulletin_pdf.inc.php");
 			foreach($val_defaut_champ_bull_pdf as $key => $value) {
@@ -1960,6 +1961,10 @@ else {
 						// Pour que l'on extraie les moyennes pour les différentes périodes si nécessaire
 						$affiche_moyenne_generale_annuelle="y";
 					}
+					if(($lig_model->nom=='affiche_moyenne_generale_annuelle_derniere_periode')&&($lig_model->valeur=='y')) {
+						// Restreindre l'affichage à la dernière période
+						$affiche_moyenne_generale_annuelle_derniere_periode="y";
+					}
 
 					if(($lig_model->nom=='evolution_moyenne_periode_precedente')&&($lig_model->valeur=='y')) {
 						// Pour que l'on extraie les moyennes pour les différentes périodes si nécessaire
@@ -1993,6 +1998,7 @@ else {
 			$moyennes_periodes_precedentes="n";
 			// 20171021: Non géré pour le moment
 			$affiche_moyenne_generale_annuelle="n";
+			$affiche_moyenne_generale_annuelle_derniere_periode="n";
 
 			require_once("bulletin_pdf_2016.inc.php");
 
@@ -2309,6 +2315,9 @@ else {
 				// On initialise un tableau qui va rester vide
 				$tab_releve[$id_classe][$periode_num]=array();
 			}
+
+			// 20171024
+			$tab_bulletin[$id_classe][$periode_num]["maxper"]=$maxper;
 
 			// 20160622
 			if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
@@ -3086,6 +3095,7 @@ else {
 					}
 
 					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_generale_annuelle']=$affiche_moyenne_generale_annuelle;
+					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_generale_annuelle_derniere_periode']=$affiche_moyenne_generale_annuelle_derniere_periode;
 				}
 				else {
 					// Pour l'instant en mode HTML, on ne propose pas les deux moyennes
