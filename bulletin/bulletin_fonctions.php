@@ -146,6 +146,9 @@ function date_fr($var)
 function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_zero)
 {
 	if ( $precision === '' or $precision === '0.0' or $precision === '0' ) { $precision = '0.01'; }
+	if(!preg_match("/^[0-9]{1,}[.]{0,1}[0-9]*$/", $precision)) {
+		$precision='0.01';
+	}
 	$nombre=number_format(round($nombre/$precision)*$precision, $nb_chiffre_virgule, ',', '');
 		$nombre_explose = explode(",",$nombre);
 	if($nombre_explose[1]==='0' and $chiffre_avec_zero==='1') { $nombre=$nombre_explose[0]; }
