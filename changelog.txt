@@ -8,6 +8,7 @@ Gepi-master (Version de développement)
 
 Bulletins:
 - Bulletins 2016: Possibilité d'imprimer le bulletin de fin de cycle.
+- Bulletins PDF classiques: Possibilité d'afficher une ligne moyenne générale annuelle.
 
 Absences 2:
 - Possibilité de restreindre le décompte des absences sur les bulletins pour la 
@@ -25,7 +26,7 @@ LSUN:
 - Possibilité de n'extraire qu'une ou certaines périodes.
 
 Genèse des classes:
-- Possibilité d'utiliser un autre type de profil mêlant comportement et niveau scolaire.
+- Possibilité d'utiliser un autre type de profil élève mêlant comportement et niveau scolaire.
 
 Général:
 - Possibilité de saisir les modalités d'accompagnement en compte scolarité
@@ -35,6 +36,9 @@ Général:
 - Possibilité d'afficher un message invitant les visiteurs à accepter les cookies du Gepi
   (paramétrable en administrateur dans Gestion générale/Options de connexion).
 - Possibilité de trier la liste des sauvegardes par taille, par date.
+
+Bibliothèques:
+- Mise à jour de HTMLPurifier en version 4.9.3
 
 
 Gepi-1.7.1 (30/03/2017)

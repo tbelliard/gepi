@@ -1900,6 +1900,8 @@ else {
 		if($mode_bulletin=="pdf") {
 			$moyennes_annee="n";
 			$moyennes_periodes_precedentes="n";
+			// 20171021
+			$affiche_moyenne_generale_annuelle="n";
 
 			require_once("bulletin_pdf.inc.php");
 			foreach($val_defaut_champ_bull_pdf as $key => $value) {
@@ -1953,6 +1955,12 @@ else {
 						$moyennes_periodes_precedentes="y";
 					}
 
+					// 20171021
+					if(($lig_model->nom=='affiche_moyenne_generale_annuelle')&&($lig_model->valeur=='y')) {
+						// Pour que l'on extraie les moyennes pour les différentes périodes si nécessaire
+						$affiche_moyenne_generale_annuelle="y";
+					}
+
 					if(($lig_model->nom=='evolution_moyenne_periode_precedente')&&($lig_model->valeur=='y')) {
 						// Pour que l'on extraie les moyennes pour les différentes périodes si nécessaire
 						$evolution_moyenne_periode_precedente="y";
@@ -1983,6 +1991,8 @@ else {
 		elseif($mode_bulletin=="pdf_2016") {
 			$moyennes_annee="n";
 			$moyennes_periodes_precedentes="n";
+			// 20171021: Non géré pour le moment
+			$affiche_moyenne_generale_annuelle="n";
 
 			require_once("bulletin_pdf_2016.inc.php");
 
@@ -2731,6 +2741,8 @@ else {
 				// 20100615
 				//$moyennes_periodes_precedentes="y";
 				if((
+						// 20171021
+						((isset($affiche_moyenne_generale_annuelle))&&($affiche_moyenne_generale_annuelle=='y'))||
 						((isset($moyennes_periodes_precedentes))&&($moyennes_periodes_precedentes=='y'))||
 						((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=='y'))
 					)&&($periode_num>1)&&(!isset($tab_bulletin[$id_classe][$periode_num]['note_prec']))) {
@@ -2750,6 +2762,7 @@ else {
 							$tab_bulletin[$id_classe][$reserve_periode_num]['statut_prec'][$periode_num]=$current_eleve_statut;
 						}
 						$tab_bulletin[$id_classe][$reserve_periode_num]['moy_gen_eleve_prec'][$periode_num]=$moy_gen_eleve;
+						$tab_bulletin[$id_classe][$reserve_periode_num]['moy_gen_classe_prec'][$periode_num]=$moy_gen_classe;
 
 						//============================
 						// On vide les variables de la boucle avant le calcul dans calcul_moy_gen.inc.php hors du dispositif périodes précédentes
@@ -2799,6 +2812,154 @@ else {
 				// On récupère la plus grande partie des infos via calcul_moy_gen.inc.php
 				// Voir en fin du fichier calcul_moy_gen.inc.php la liste des infos récupérées
 				//========================================
+
+				//========================================
+				// 20171021
+				if($affiche_moyenne_generale_annuelle=="y") {
+					// Calcul des moyennes générales annuelles
+					for($mga_loop_periode_num=1;$mga_loop_periode_num<$periode_num;$mga_loop_periode_num++) {
+						//echo "Parcours pour moy gen annuelle : mga_loop_periode_num=$mga_loop_periode_num<br />";
+						//echo "On a count(\$tab_bulletin[$id_classe][$periode_num]['login_prec'][$mga_loop_periode_num]=".count($tab_bulletin[$id_classe][$periode_num]['login_prec'][$mga_loop_periode_num])."<br />";
+						for($loop_eleve=0;$loop_eleve<count($tab_bulletin[$id_classe][$periode_num]['login_prec'][$mga_loop_periode_num]);$loop_eleve++) {
+							$tmp_login_ele=$tab_bulletin[$id_classe][$periode_num]['login_prec'][$mga_loop_periode_num][$loop_eleve];
+
+							//echo $tmp_login_ele." ";
+
+							if(!isset($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['total_moy_gen_periodes'])) {
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['total_moy_gen_periodes']=0;
+							}
+
+							if(!isset($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['nb_moy_gen_periodes'])) {
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['nb_moy_gen_periodes']=0;
+							}
+
+							if(!isset($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'])) {
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes']="";
+							}
+
+							if(isset($tab_bulletin[$id_classe][$periode_num]['moy_gen_eleve_prec'][$mga_loop_periode_num][$loop_eleve])) {
+								// Le test devrait toujours être vrai (cf.remplissage calcul_moy_gen.inc.php)
+
+								$tmp_moy_gen_ele=$tab_bulletin[$id_classe][$periode_num]['moy_gen_eleve_prec'][$mga_loop_periode_num][$loop_eleve];
+								if(preg_match("/^[0-9]{1,}[.]{0,1}[0-9]*$/", $tmp_moy_gen_ele)) {
+									$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['total_moy_gen_periodes']+=$tmp_moy_gen_ele;
+									$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['nb_moy_gen_periodes']++;
+								}
+
+								if($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes']!="") {
+									$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].=" - ";
+								}
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].="P.".$mga_loop_periode_num.": ".present_nombre($tmp_moy_gen_ele, $tab_modele_pdf["arrondie_choix"][$id_classe], $tab_modele_pdf["nb_chiffre_virgule"][$id_classe], $tab_modele_pdf["chiffre_avec_zero"][$id_classe]);
+							}
+						}
+					}
+
+					// Parcourir les notes de la période courante $periode_num
+					for($loop_eleve=0;$loop_eleve<count($current_eleve_login);$loop_eleve++) {
+						$tmp_login_ele=$current_eleve_login[$loop_eleve];
+						//echo $tmp_login_ele." ";
+
+						if(!isset($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['total_moy_gen_periodes'])) {
+							$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['total_moy_gen_periodes']=0;
+						}
+
+						if(!isset($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['nb_moy_gen_periodes'])) {
+							$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['nb_moy_gen_periodes']=0;
+						}
+
+						if(!isset($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'])) {
+							$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes']="";
+						}
+
+						if(isset($moy_gen_eleve[$loop_eleve])) {
+							// Le test devrait toujours être vrai (cf.remplissage calcul_moy_gen.inc.php)
+
+							$tmp_moy_gen_ele=$moy_gen_eleve[$loop_eleve];
+							if(preg_match("/^[0-9]{1,}[.]{0,1}[0-9]*$/", $tmp_moy_gen_ele)) {
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['total_moy_gen_periodes']+=$tmp_moy_gen_ele;
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['nb_moy_gen_periodes']++;
+							}
+
+							if($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes']!="") {
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].=" - ";
+							}
+							$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].="P.".$periode_num.": ".present_nombre($tmp_moy_gen_ele, $tab_modele_pdf["arrondie_choix"][$id_classe], $tab_modele_pdf["nb_chiffre_virgule"][$id_classe], $tab_modele_pdf["chiffre_avec_zero"][$id_classe]);
+						}
+					}
+
+					/*
+					if(!isset($tab_bulletin[$id_classe][$periode_num]["ele"])) {
+						echo "\$tab_bulletin[$id_classe][$periode_num][\"ele\"] non initialisé.<br />";
+					}
+					else {
+						echo "\$tab_bulletin[$id_classe][$periode_num][\"ele\"]<pre>";
+						print_r($tab_bulletin[$id_classe][$periode_num]["ele"]);
+						echo "</pre>";
+					}
+					*/
+
+					// Calcul des moyennes générales annuelles élèves
+					$tmp_tab_moy_gen_annuelles=array();
+					if(isset($tab_bulletin[$id_classe][$periode_num]["ele"])) {
+						foreach($tab_bulletin[$id_classe][$periode_num]["ele"] as $tmp_login_ele => $tmp_current_moy_gen_annuelles) {
+							if($tmp_current_moy_gen_annuelles['nb_moy_gen_periodes']>0) {
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]["moy_gen_annuelle"]=$tmp_current_moy_gen_annuelles['total_moy_gen_periodes']/$tmp_current_moy_gen_annuelles['nb_moy_gen_periodes'];
+								$tmp_tab_moy_gen_annuelles[]=$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]["moy_gen_annuelle"];
+							}
+						}
+						$tab_bulletin[$id_classe][$periode_num]["min_moy_gen_annuelle"]="";
+						$tab_bulletin[$id_classe][$periode_num]["max_moy_gen_annuelle"]="";
+						if(count($tmp_tab_moy_gen_annuelles)>0) {
+							$tab_bulletin[$id_classe][$periode_num]["min_moy_gen_annuelle"]=min($tmp_tab_moy_gen_annuelles);
+							$tab_bulletin[$id_classe][$periode_num]["max_moy_gen_annuelle"]=max($tmp_tab_moy_gen_annuelles);
+							$tab_bulletin[$id_classe][$periode_num]["moy_gen_annuelle_classe"]=array_sum($tmp_tab_moy_gen_annuelles)/count($tmp_tab_moy_gen_annuelles);
+						}
+					}
+
+					// ENCORE A DETERMINER : RANG
+					//echo "<div style='float:left;width:20em;'>";
+					$temp=array();
+					$rg=array();
+					$loop_rg=0;
+					foreach($tab_bulletin[$id_classe][$periode_num]["ele"] as $tmp_login_ele => $tmp_current_moy_gen_annuelles) {
+						if(isset($tmp_current_moy_gen_annuelles["moy_gen_annuelle"])) {
+							// Cas des élèves arrivés après la période $periode_num (calculés parce qu'on imprime plusieurs périodes)
+							// Et cas des élèves arrivés en fin de période $periode_num qui n'ont pas eu de notes et donc pas de moy gen calculée
+							$temp[$loop_rg]=$tmp_current_moy_gen_annuelles["moy_gen_annuelle"];
+							$rg[$loop_rg]=$tmp_login_ele;
+							//echo "\$temp[$loop_rg]=".$temp[$loop_rg]. " et \$rg[$loop_rg]=".$rg[$loop_rg]."<br />";
+							$loop_rg++;
+						}
+					}
+					//echo "</div>";
+					//echo "<div style='float:left;width:20em;'>";
+					array_multisort ($temp, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+
+
+					$loop_rg=0;
+					$rang_prec = 1;
+					$note_prec='';
+					//while ($loop_rg < count($tab_bulletin[$id_classe][$periode_num]["ele"])) {
+					while ($loop_rg < count($rg)) {
+						$ind = $rg[$loop_rg];
+						if ($temp[$loop_rg] == "-") {
+							$rang_gen = '0';
+						} else {
+							if ($temp[$loop_rg] == $note_prec) $rang_gen = $rang_prec; else $rang_gen = $loop_rg+1;
+							$note_prec = $temp[$loop_rg];
+							$rang_prec = $rang_gen;
+						}
+
+						//echo $ind.": ".$temp[$loop_rg]."<br />";
+						// En fait de rang général annuel, c'est un rang général sur les périodes écoulées jusqu'à $periode_num incluse
+						$tab_bulletin[$id_classe][$periode_num]["ele"][$ind]["rang_general_annuel"]=$rang_gen;
+
+						$loop_rg++;
+					}
+					//echo "</div>";
+				}
+				//========================================
+
 				//==============================
 				if($mode_bulletin=="html") {
 					$motif="Temoin_calcul_moy_gen".$id_classe."_".$periode_num;
@@ -2923,12 +3084,16 @@ else {
 						// Si on force les coef à 1, on n'affiche pas non plus deux lignes de moyenne générale
 						$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_general_coef_1']=0;
 					}
+
+					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_generale_annuelle']=$affiche_moyenne_generale_annuelle;
 				}
 				else {
 					// Pour l'instant en mode HTML, on ne propose pas les deux moyennes
 					// Il faut décider où on fait le paramétrage.
 					// Les paramètres HTML sont généraux à toutes les classes sauf ceux décidés directement dans bull_index.php alors que les paramètres PDF sont essentiellement liés aux modèles.
 					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_general_coef_1']=0;
+
+					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_generale_annuelle']=0;
 				}
 			
 				//ERIC
@@ -3694,7 +3859,9 @@ mysql>
 							// 20170713 : On remplit $tab_ele['resp']["adresses"] après avoir fait 
 							//            la liste des resp non légaux pour avoir la liste de tous les destinataires
 							//            Les responsables non légaux n'auront les bulletins que si on a fait ce choix dans leur fiche utilisateur et si on n'a pas demandé à n'imprimer qu'un bulletin par famille/élève
-							$tab_ele['resp']["adresses"]=adresse_postale_resp($tab_ele['resp']);
+							if(isset($tab_ele['resp'])) {
+								$tab_ele['resp']["adresses"]=adresse_postale_resp($tab_ele['resp']);
+							}
 
 							/*
 							if($tab_ele['login']=="bouyj2") {
@@ -4528,12 +4695,20 @@ mysql>
 	}
 
 	// 20160624
+
 	/*
 	echo "\$tab_bulletin<pre>";
 	print_r($tab_bulletin);
 	echo "</pre>";
 	die();
 	*/
+
+	/*
+	echo "\$tab_periode_num<pre>";
+	print_r($tab_periode_num);
+	echo "</pre>";
+	*/
+
 	//echo "\$nb_bulletins_edites=$nb_bulletins_edites<br />";
 
 	//========================================================================
@@ -5087,10 +5262,13 @@ Bien cordialement.
 				*/
 				//======================================
 
+				// 20171021
 				/*
 				echo "\$tab_bulletin[$id_classe][$periode_num]['selection_eleves']<pre>";
 				print_r($tab_bulletin[$id_classe][$periode_num]['selection_eleves']);
 				echo "</pre>";
+
+				echo "\$tab_bulletin[$id_classe][$periode_num]['eff_classe']=".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."<br />";
 				*/
 
 				//$compteur=0;

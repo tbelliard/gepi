@@ -457,6 +457,9 @@ if(isset($_POST['param_communs_pdf_html'])) {
 
 	$moyennes_annee=isset($_GET['moyennes_annee']) ? $_GET['moyennes_annee'] : (isset($_POST['moyennes_annee']) ? $_POST['moyennes_annee'] : 'n');
 
+	// 20171021
+	$affiche_moyenne_generale_annuelle=isset($_GET['affiche_moyenne_generale_annuelle']) ? $_GET['affiche_moyenne_generale_annuelle'] : (isset($_POST['affiche_moyenne_generale_annuelle']) ? $_POST['affiche_moyenne_generale_annuelle'] : 'n');
+
 	if (empty($_GET['active_coef_sousmoyene']) and empty($_POST['active_coef_sousmoyene'])) { $active_coef_sousmoyene = ''; }
 	else { if (isset($_GET['active_coef_sousmoyene'])) { $active_coef_sousmoyene = $_GET['active_coef_sousmoyene']; } if (isset($_POST['active_coef_sousmoyene'])) { $active_coef_sousmoyene = $_POST['active_coef_sousmoyene']; } }
 	if (empty($_GET['arrondie_choix']) and empty($_POST['arrondie_choix'])) { $arrondie_choix = ''; }
@@ -1720,6 +1723,19 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ce choix est sans effet, si tous les coefficients sont à 1,<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou si on force tous les coefficients à 1,<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou encore si on n'affiche pas les moyennes générales.<br />
+
+			<?php
+				// 20171021
+
+				echo $decalage_gauche;
+				echo "<input name='affiche_moyenne_generale_annuelle' id='affiche_moyenne_generale_annuelle' style='border: 1px solid #74748F;' type='checkbox' value='y' ";
+				if(!empty($affiche_moyenne_generale_annuelle) and $affiche_moyenne_generale_annuelle=='y') {
+					echo "checked='checked' ";
+				}
+				//echo "onchange='check_coherence_coches_bulletin_pdf();' ";
+				echo "/><label for='affiche_moyenne_generale_annuelle'>&nbsp;Afficher une ligne moyenne générale annuelle <em>(moyenne des moyennes générales de périodes)</em></label><br />\n";
+				//===========================================
+			?>
 
 			<br />
 
