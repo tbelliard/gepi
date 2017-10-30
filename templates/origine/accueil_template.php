@@ -54,7 +54,6 @@
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>">
 
-
 <!-- on inclut le bandeau -->
 	<?php include('templates/origine/bandeau_template.php');?>
 
@@ -63,6 +62,10 @@
 <div id='container'>
 
 <a id='haut_de_page'></a>
+
+<?php
+	insere_lien_calendrier_crob("right");
+?>
 
 <div class='fixeMilieuDroit'>
 	<a href='#haut_de_page'><img src='images/up.png' width='18' height='18' alt="haut de la page" title="Remonter en haut de la page" /></a>
