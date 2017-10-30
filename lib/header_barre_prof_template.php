@@ -556,7 +556,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 				}
 
 				if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
-					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/gerer_mep.php' , "texte"=>"Éléments de progrmmes");
+					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/gerer_mep.php' , "texte"=>"Éléments de programmes");
 					$cpt_sous_menu++;
 				}
 
