@@ -630,7 +630,11 @@ if ($cpt) {echo "			</div>\n";}
 		<?php
 
 		?>
-		<p style='margin-top:1em; margin-left:8.6em; text-indent:-8.6em;'><span style='color:red;font-weight:bold;'>Expérimental&nbsp;:</span> 
+		<p style='margin-top:1em; margin-left:8.6em; text-indent:-8.6em;'>
+			<!--
+			<span style='color:red;font-weight:bold;'>Expérimental&nbsp;:</span> 
+			-->
+			<span style='font-weight:bold;'>Période(s)&nbsp;:</span> 
 		<input type='radio' name='LSUN_periodes_a_extraire' id='LSUN_periodes_a_extraire_toutes' value='toutes'<?php echo $checked_LSUN_periodes_a_extraire_toutes?> onchange="checkbox_change('LSUN_periodes_a_extraire_toutes');checkbox_change('LSUN_periodes_a_extraire_restreindre')" /><label for='LSUN_periodes_a_extraire_toutes' id='texte_LSUN_periodes_a_extraire_toutes'> Extraire toutes les périodes</label><br />
 		<input type='radio' name='LSUN_periodes_a_extraire' id='LSUN_periodes_a_extraire_restreindre' value='restreindre'<?php echo $checked_LSUN_periodes_a_extraire_restreindre?> onchange="checkbox_change('LSUN_periodes_a_extraire_toutes');checkbox_change('LSUN_periodes_a_extraire_restreindre')" /><label for='LSUN_periodes_a_extraire_restreindre' id='texte_LSUN_periodes_a_extraire_restreindre'> Restreindre l'extraction aux périodes&nbsp;: </label>
 		<?php
