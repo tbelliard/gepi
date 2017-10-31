@@ -302,6 +302,51 @@ if ($test == -1) {
 	}
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'elements_programmes' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'elements_programmes'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS elements_programmes (id int(11) NOT NULL auto_increment, 
+		cycle TINYINT(1) NOT NULL, 
+		matiere VARCHAR(255) NOT NULL, 
+		rubrique VARCHAR(255) NOT NULL default '', 
+		item TEXT, 
+		resume VARCHAR(255) NOT NULL DEFAULT '', 
+		PRIMARY KEY (id), INDEX cycle_matiere (cycle, matiere)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 
+		$nb_elements_prog=0;
+		$fd=fopen("../sql/elements_programmes.sql","r");
+		while (!feof($fd)) {
+			$query=" ";
+			while ((mb_substr($query,-1)!=";") && (!feof($fd))) {
+				$t_query = fgets($fd, 8000);
+				if (mb_substr($t_query,0,3)!="-- ") $query.=$t_query;
+				$query = trim($query); 
+			}
+			if ($query!="") {
+				$reg = mysqli_query($GLOBALS["mysqli"], $query);
+				if (!$reg) {
+					$result.="<p><font color=red>ERROR</font> : '$query' : ";
+					$result.="<p>Erreur retournée : ".mysqli_error($GLOBALS["mysqli"])."</p>\n";
+				}
+				else {
+					$nb_elements_prog++;
+				}
+			}
+		}
+		fclose($fd);
+		if($nb_elements_prog>0) {
+			$result.=$nb_elements_prog." élément(s) de programme(s) enregistré(s).<br />";
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 
 ?>

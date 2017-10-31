@@ -1326,11 +1326,14 @@ while ($k < $nb_periode) {
 
 				$mess[$k].="<br />\n";
 			}
-			$mess[$k].="<input type='text' name='newElemGroupe$k' id='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
+			$mess[$k].="<input type='text' name='newElemGroupe$k' id='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:90%; margin-top:.3em' /> \n";
+
+			// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
+			//           Ou une préférence utilisateur?
+			$mess[$k].="<a href='#' onclick=\"affiche_liste_ele_prog('newElemGroupe$k');return false;\"><img src='../images/icons/livre.png' class='icone16' alt='Suggestions' /></a> \n";
 		}
-    }
-    
-    $k++;
+	}
+	$k++;
 }
 
 
@@ -1550,6 +1553,7 @@ foreach ($liste_eleves as $eleve_login) {
 			$eleve_sexe = $current_group["eleves"][$k]["users"][$eleve_login]["sexe"];
 			$eleve_classe = $current_group["classes"]["classes"][$current_group["eleves"]["all"]["users"][$eleve_login]["classe"]]["classe"];
 			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$eleve_login]["classe"]]["id"];
+			$ele_id=$current_group["eleves"][$k]["users"][$eleve_login]["sconet_id"];
 
 			//========================
 			// AJOUT boireaus 20071115
@@ -1913,7 +1917,7 @@ foreach ($liste_eleves as $eleve_login) {
 				if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 					$mess[$k].="</td>\n<td style='text-align:left;'>";
 				
-					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);	
+					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);
 					$cpt=FALSE;
 					if(mysqli_num_rows($elementEleve)>0) {
 						while($element = $elementEleve->fetch_object()){
@@ -1942,8 +1946,12 @@ foreach ($liste_eleves as $eleve_login) {
 						$mess[$k].="</select> \n";
 						$mess[$k].="<br />\n";
 					}
-					
-					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
+
+					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' id='newElemEleve".$k."_".$ele_id."' placeholder='Nouvel élément de programme' style='width:90%; margin-top:.3em' /> \n";
+
+					// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
+					//           Ou une préférence utilisateur?
+					$mess[$k].="<a href='#' onclick=\"affiche_liste_ele_prog('newElemEleve".$k."_".$ele_id."');return false;\"><img src='../images/icons/livre.png' class='icone16' alt='Suggestions' /></a> \n";
 
 					//$mess[$k].= var_dump($elementEleve);
 				}
@@ -2659,5 +2667,21 @@ if ((isset($insert_mass_appreciation_type))&&($insert_mass_appreciation_type=="y
 </script>\n";
 }
 //=========================
+// 20171031
+if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+	//include("./choix_elements_programmes.php");
+	$titre_infobulle="Choisir un élément de programme";
+	$texte_infobulle=choix_elements_programmes();
+	$tabdiv_infobulle[]=creer_div_infobulle('choix_elements_programmes',$titre_infobulle,"",$texte_infobulle,"",50,30,'y','y','n','y');
+
+	//function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow,$zindex_infobulle=1){
+
+	echo "<script type='text/javascript'>
+		function affiche_liste_ele_prog(id) {
+			document.getElementById('champ_dans_lequel_inserer_texte_element_programme').value=id;
+			afficher_div('choix_elements_programmes','y',10,-40);
+		}
+	</script>\n";
+}
 require("../lib/footer.inc.php");
  

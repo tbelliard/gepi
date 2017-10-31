@@ -5058,6 +5058,7 @@ function affiche_tableau_vacances($id_classe="", $griser="n", $affiche_passe="y"
 									etabferme_calendrier='2' AND 
 									etabvacances_calendrier='1' ORDER BY debut_calendrier_ts;";
 	}
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$retour.="<table class='boireaus boireaus_alt' summary='Vacances scolaires'>
@@ -6769,6 +6770,152 @@ function necessaire_modif_tel_resp_ele() {
 
 	}
 </script>";
+
+	return $retour;
+}
+
+function choix_elements_programmes() {
+	global $mysqli;
+	global $id_groupe;
+	global $periode_cn;
+
+	// Récupérer la matière et le cycle du groupe (premier cycle trouvé pour un des élèves du groupe).
+	$matiere_grp="";
+	$sql="SELECT m.nom_complet FROM matieres m, j_groupes_matieres jgm WHERE m.matiere=jgm.id_matiere AND jgm.id_groupe='$id_groupe';";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$matiere_grp=mb_strtolower(remplace_accents($lig->nom_complet,"all"));
+	}
+	//echo "matiere_grp=$matiere_grp";
+
+	$cycle_grp=4;
+	$sql="select distinct mef_code, count(mef_code) from eleves e, j_eleves_groupes jeg where jeg.login=e.login and jeg.id_groupe='$id_groupe' group by mef_code order by count(mef_code) desc;";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		$tab_cycle=calcule_cycle_et_niveau($lig->mef_code, "4");
+
+		$cycle_grp=$tab_cycle["mef_cycle"];
+	}
+
+	if($cycle_grp==3) {
+		$checked_cycle_3=" checked";
+		$checked_cycle_4="";
+	}
+	else {
+		$checked_cycle_3="";
+		$checked_cycle_4=" checked";
+	}
+
+	$retour="";
+
+	$tab_matieres=array();
+	$sql="SELECT DISTINCT matiere FROM elements_programmes ORDER BY matiere;";
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab_matieres[]=$lig->matiere;
+	}
+
+	$tab_items=array();
+	$sql="SELECT * FROM elements_programmes ORDER BY matiere, cycle, rubrique, item, resume;";
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_assoc($res)) {
+		$tab_item[]=$lig;
+	}
+
+	$retour.="<form action='".$_SERVER["PHP_SELF"]."' method='post'>
+		<fieldset class='fieldset_opacite50'>
+			<input type='hidden' name='champ_dans_lequel_inserer_texte_element_programme' id='champ_dans_lequel_inserer_texte_element_programme' value='' />
+			<table>
+				<tr>
+					<td>
+						<input type='radio' name='cycle' id='cycle_3' value='3'".$checked_cycle_3." onchange=\"maj_liste_elements_prog_affiches()\" /><label for='cycle_3' id='texte_cycle_3'>Cycle 3</label><br />
+						<input type='radio' name='cycle' id='cycle_4' value='4'".$checked_cycle_4." onchange=\"maj_liste_elements_prog_affiches()\" /><label for='cycle_4' id='texte_cycle_4'>Cycle 4</label><br />
+						<select name='matiere' id='matiere' onchange=\"maj_liste_elements_prog_affiches()\">";
+	for($loop=0;$loop<count($tab_matieres);$loop++) {
+		$selected="";
+		if(($matiere_grp!="")&&(mb_strtolower(remplace_accents($tab_matieres[$loop],"all"))==$matiere_grp)) {
+			$selected=" selected";
+		}
+		$retour.="
+							<option value=\"".$tab_matieres[$loop]."\"".$selected.">".$tab_matieres[$loop]."</option>";
+	}
+	$retour.="
+						</select>
+					</td>
+					<td style='vertical-align:top'>
+						<p>
+							<input type='button' id='button_inserer_texte_element_prog' value='Insérer' onclick=\"inserer_texte_element_prog()\" /> le texte suivant&nbsp;:<br />
+							<span id='texte_a_inserer' class='fieldset_opacite50'> </span>
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<p>Après avoir choisi ci-dessus, le cycle et la matière, cliquez sur le texte à insérer ci-dessous.</p>
+
+			<table class='boireaus boireaus_alt'>
+				<thead>
+					<tr>
+						<th style='display:none'>Matière</th>
+						<th style='display:none'>Cycle</th>
+						<th>Rubrique</th>
+						<th>Item</th>
+						<th>Résumé</th>
+					</tr>
+				</thead>
+				<tbody>";
+	for($loop=0;$loop<count($tab_item);$loop++) {
+		$retour.="
+					<tr id='tr_choix_element_prog_$loop'>
+						<td style='display:none' id='td_choix_element_prog_matiere_$loop'>".$tab_item[$loop]["matiere"]."</td>
+						<td style='display:none' id='td_choix_element_prog_cycle_$loop'>".$tab_item[$loop]["cycle"]."</td>
+						<td onclick=\"document.getElementById('texte_a_inserer').innerHTML=this.innerHTML;document.getElementById('button_inserer_texte_element_prog').focus()\">".$tab_item[$loop]["rubrique"]."</td>
+						<td onclick=\"document.getElementById('texte_a_inserer').innerHTML=this.innerHTML;document.getElementById('button_inserer_texte_element_prog').focus()\">".$tab_item[$loop]["item"]."</td>
+						<td onclick=\"document.getElementById('texte_a_inserer').innerHTML=this.innerHTML;document.getElementById('button_inserer_texte_element_prog').focus()\">".$tab_item[$loop]["resume"]."</td>
+					</tr>";
+	}
+	$retour.="
+				</tbody>
+			</table>
+
+			<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTES&nbsp;:</em> Il est possible de cliquer dans n'importe quelle colonne <em>(rubrique, item ou résumé)</em>.<br />
+			C'est le texte correspondant qui sera proposé à l'insertion.
+			</p>
+		</fieldset>
+	</form>
+
+	<script type='text/javascript'>
+		function inserer_texte_element_prog() {
+			id=document.getElementById('champ_dans_lequel_inserer_texte_element_programme').value;
+			texte=document.getElementById('texte_a_inserer').innerHTML;
+			document.getElementById(id).value=texte;
+			cacher_div('choix_elements_programmes');
+		}
+
+		function maj_liste_elements_prog_affiches() {
+			if(document.getElementById('cycle_3').checked==true) {
+				cycle=3;
+			}
+			else {
+				cycle=4;
+			}
+			matiere=document.getElementById('matiere').options[document.getElementById('matiere').selectedIndex].value;
+			for(loop=0;loop<".count($tab_item).";loop++) {
+				if((document.getElementById('td_choix_element_prog_cycle_'+loop).innerHTML==cycle)&&
+				(document.getElementById('td_choix_element_prog_matiere_'+loop).innerHTML==matiere)) {
+					document.getElementById('tr_choix_element_prog_'+loop).style.display='';
+				}
+				else {
+					document.getElementById('tr_choix_element_prog_'+loop).style.display='none';
+				}
+			}
+		}
+
+		maj_liste_elements_prog_affiches();
+	</script>";
 
 	return $retour;
 }

@@ -1652,3 +1652,13 @@ id_eleve INT(11) NOT NULL default '0',
 periode INT(11) NOT NULL default '0', 
 commentaire TEXT, 
 PRIMARY KEY code_id_eleve_periode (code, id_eleve, periode), INDEX code_id_eleve_periode (code, id_eleve, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS elements_programmes;
+CREATE TABLE IF NOT EXISTS elements_programmes (id int(11) NOT NULL auto_increment, 
+cycle TINYINT(1) NOT NULL, 
+matiere VARCHAR(255) NOT NULL, 
+rubrique VARCHAR(255) NOT NULL default '', 
+item TEXT, 
+resume VARCHAR(255) NOT NULL DEFAULT '', 
+PRIMARY KEY (id), INDEX cycle_matiere (cycle, matiere)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
