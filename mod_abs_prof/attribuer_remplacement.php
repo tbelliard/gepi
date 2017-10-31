@@ -143,7 +143,8 @@ if((isset($_POST['is_posted']))) {
 						$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
 
 						$tmp_date=mktime(12, 0, 0, substr($jour, 4,2), substr($jour, 6,2), substr($jour, 0,4));
-						$nom_jour=$tmp_tab_jour[strftime($tmp_date, "%u")];
+						//$nom_jour=$tmp_tab_jour[strftime("%u", $tmp_date)];
+						$nom_jour=$tmp_tab_jour[id_j_semaine($tmp_date)];
 
 						$sql="DELETE FROM edt_cours_remplacements WHERE id_absence='".$id_absence."' AND 
 														id_groupe='".$id_groupe."' AND 
