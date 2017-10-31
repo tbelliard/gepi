@@ -1062,6 +1062,7 @@ if($proposer_liens_enregistrement=="y") {
 }
 
 //===========================================================
+// La photo n'est pas affichée par défaut, et l'affichage est provoqué par javascript par la suite
 echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; border:1px solid black; display:none;'></div>\n";
 //echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; background-color:white; border:1px solid black; display:none;'></div>\n";
 //echo "<div id='div_photo_eleve' style='position: fixed; top: 220px; right: 200px; text-align:center; border:1px solid black;'>&nbsp;</div>\n";
@@ -1341,9 +1342,10 @@ while ($k < $nb_periode) {
         <th style="width:60%;" >
             <div style='float:right; width:16px;'>
                 <a href='javascript:affichage_div_photo();'>
-                    <img src='../images/icons/wizard.png' 
+                    <img src='../images/icons/camera-photo-barre.png' 
                          style ="width:16px; height:16px "
-                         alt='Afficher les quartiles et éventuellement la photo élève' 
+                         id="img_afficher_photo_eleve" 
+                         alt='Afficher la photo élève' 
                          title='Afficher la photo élève pendant la saisie' />
                 </a>
             </div>
@@ -2464,9 +2466,17 @@ echo "<script type='text/javascript'>
 function affichage_div_photo() {
 	if(document.getElementById('div_photo_eleve').style.display=='none') {
 		document.getElementById('div_photo_eleve').style.display='';
+
+		if(document.getElementById('img_afficher_photo_eleve')) {
+			document.getElementById('img_afficher_photo_eleve').src='../images/icons/camera-photo.png';
+		}
 	}
 	else {
 		document.getElementById('div_photo_eleve').style.display='none';
+
+		if(document.getElementById('img_afficher_photo_eleve')) {
+			document.getElementById('img_afficher_photo_eleve').src='../images/icons/camera-photo-barre.png';
+		}
 	}
 }
 
