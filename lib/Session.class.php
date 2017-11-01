@@ -565,21 +565,21 @@ class Session {
 	# On regarde si l'utilisateur existe dans la base de données,
 	# et on vérifie quel est le mode d'authentification défini.
 	public static function user_auth_mode($_login) {
-        global $mysqli;
+		global $mysqli;
 		if ($_login == null) {
 			return false;
 			die();
 		}
-        
-        $sql = "SELECT auth_mode FROM utilisateurs WHERE UPPER(login) = '".mb_strtoupper($_login)."'";
-            $resultat = mysqli_query($mysqli, $sql);  
-            $nb_lignes = $resultat->num_rows;
-            $result = $resultat->fetch_object();
-            $retour = $result->auth_mode;
-            $resultat->close();
+
+		$sql = "SELECT auth_mode FROM utilisateurs WHERE UPPER(login) = '".mb_strtoupper($_login)."'";
+		$resultat = mysqli_query($mysqli, $sql);  
+		$nb_lignes = $resultat->num_rows;
 		if ($nb_lignes == 0) {
 			return false;
 		} else {
+			$result = $resultat->fetch_object();
+			$retour = $result->auth_mode;
+			$resultat->close();
 			return $retour;
 		}
 	}
@@ -604,14 +604,14 @@ class Session {
 		if ($this->login == '') {
 			return false;
 		} else {
-            global $mysqli;
-            $sql = "SELECT login FROM utilisateurs WHERE login = '".$this->login."'";
-                    		         
-                $resultat = mysqli_query($mysqli, $sql);  
-                $nb_lignes = $resultat->num_rows;
-                $resultat->close();
-			
-			if ($test == 0) {
+			global $mysqli;
+
+			$sql = "SELECT login FROM utilisateurs WHERE login = '".$this->login."'";
+			$resultat = mysqli_query($mysqli, $sql);  
+			$nb_lignes = $resultat->num_rows;
+			$resultat->close();
+
+			if ($nb_lignes == 0) {
 				return false;
 			} else {
 				return $this->insert_log();
@@ -623,37 +623,37 @@ class Session {
 
 	// Création d'une entrée de log
 	public function insert_log() {
-        global $mysqli;
-    include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
-    $config = HTMLPurifier_Config::createDefault();
-    $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
-    $config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-    $purifier = new HTMLPurifier($config);
-    
+		global $mysqli;
+		include_once(dirname(__FILE__).'/HTMLPurifier.standalone.php');
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+		$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+		$purifier = new HTMLPurifier($config);
+
 		if (!isset($_SERVER['HTTP_REFERRER'])) $_SERVER['HTTP_REFERER'] = '';
-	    $sql = "INSERT INTO log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
-	                '" . $this->login . "',
-	                '" . $this->start . "',
-	                '" . session_id() . "',
-	                '" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
-	                '" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
-	                '" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
-	                '1',
-	                '" . $this->start . "' + interval " . $this->maxLength . " minute
-	            )
-	        ;";        
-            $res = mysqli_query($mysqli, $sql);
-	    
+
+		$sql = "INSERT INTO log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
+			'" . $this->login . "',
+			'" . $this->start . "',
+			'" . session_id() . "',
+			'" . $purifier->purify($_SERVER['REMOTE_ADDR']) . "',
+			'" . $purifier->purify($_SERVER['HTTP_USER_AGENT']) . "',
+			'" . $purifier->purify($_SERVER['HTTP_REFERER']) . "',
+			'1',
+			'" . $this->start . "' + interval " . $this->maxLength . " minute
+			)
+			;";
+		$res = mysqli_query($mysqli, $sql);
 	}
 
 	// Mise à jour du log de l'utilisateur
 	private function update_log() {
-        global $mysqli;
+		global $mysqli;
 		if ($this->is_anonymous()) {
 			return false;
 		} else {
 			$sql = "UPDATE log SET END = now() + interval " . $this->maxLength . " minute where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
-            $res = mysqli_query($mysqli, $sql); 
+			$res = mysqli_query($mysqli, $sql); 
 		}
 	}
 
@@ -666,12 +666,12 @@ class Session {
 			if (!preg_match("/^[0-9A-Za-z]*$/", $_GET["rne"])) {
 				die("RNE invalide.");
 			}
-         
-                $resultat = mysqli_query($mysqli, "SELECT now();");
-                $result = $resultat->fetch_row();
-                $this->start = $row[0];
-                $resultat->close();
-			
+
+			$resultat = mysqli_query($mysqli, "SELECT now();");
+			$result = $resultat->fetch_row();
+			$this->start = $row[0];
+			$resultat->close();
+
 			$_SESSION['start'] = $this->start;
 			$this->recreate_log();
 
@@ -680,40 +680,38 @@ class Session {
 
 	// Test pour voir si la session de l'utilisateur est en timeout
 	private function timeout() {
-    	$sql = "SELECT now() > END TIMEOUT from log where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
-    	return sql_query1($sql);
+		$sql = "SELECT now() > END TIMEOUT from log where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
+		return sql_query1($sql);
 	}
 
-  // Function appelée par phpCAS lors du logout (cf. login_sso.php), destinée
-  // à enregistrer proprement un logout initié par le serveur CAS lui-même
-  // dans le cas d'une déconnexion depuis une autre application.
-  function cas_logout_callback($ticket) {
-    // On enregistre la fin de la session dans le journal
-    $this->register_logout(0);
-    
-    // Rien d'autre à faire. C'est phpCAS qui va détruire la session totalement.
-  }
+	// Function appelée par phpCAS lors du logout (cf. login_sso.php), destinée
+	// à enregistrer proprement un logout initié par le serveur CAS lui-même
+	// dans le cas d'une déconnexion depuis une autre application.
+	function cas_logout_callback($ticket) {
+		// On enregistre la fin de la session dans le journal
+		$this->register_logout(0);
 
-  // Enregistrement de la fin de la session dans la base de données
-  private function register_logout($_auto) {
-      global $mysqli;
-      $sql = "UPDATE log SET AUTOCLOSE = '" . $_auto . "', END = now() where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
-              
-            $res = mysqli_query($mysqli, $sql);
-              
+		// Rien d'autre à faire. C'est phpCAS qui va détruire la session totalement.
+	}
 
-			if((getSettingValue('csrf_log')=='y')&&(isset($_SESSION['login']))) {
-				$csrf_log_chemin=getSettingValue('csrf_log_chemin');
-				if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
-				//$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
-				$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
-				fwrite($f,"Fin de session ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n");
-				if(isset($_SESSION['gepi_alea'])) {fwrite($f,"\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");}
-				fwrite($f,"$sql\n");
-				fwrite($f,"-----------------\n");
-				fclose($f);
-			}
-  }
+	// Enregistrement de la fin de la session dans la base de données
+	private function register_logout($_auto) {
+		global $mysqli;
+		$sql = "UPDATE log SET AUTOCLOSE = '" . $_auto . "', END = now() where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
+		$res = mysqli_query($mysqli, $sql);
+
+		if((getSettingValue('csrf_log')=='y')&&(isset($_SESSION['login']))) {
+			$csrf_log_chemin=getSettingValue('csrf_log_chemin');
+			if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
+			//$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
+			$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
+			fwrite($f,"Fin de session ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n");
+			if(isset($_SESSION['gepi_alea'])) {fwrite($f,"\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");}
+			fwrite($f,"$sql\n");
+			fwrite($f,"-----------------\n");
+			fclose($f);
+		}
+	}
 
 
 	// Remise à zéro de la session : on supprime toutes les informations présentes
@@ -724,10 +722,10 @@ class Session {
 		# 3 : logout lié à un timeout
 		# 10 : logout lié à une nouvelle connexion sous un nouveau profil
 
-	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
-	    if ($this->start) {
-        $this->register_logout($_auto);
-	    }
+		# On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
+		if ($this->start) {
+			$this->register_logout($_auto);
+		}
 
 		if ($this->auth_simpleSAML == 'yes') {
 				include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
@@ -739,18 +737,18 @@ class Session {
 					//$auth->isAuthenticated() qui vaudra false, et donc le reste du reset va être éxecuter
 				}
 		}
-		
-	    // Détruit toutes les variables de session
-	    session_unset();
-	    $_SESSION = array();
 
-	    // Détruit le cookie sur le navigateur
-	    $CookieInfo = session_get_cookie_params();
-	    @setcookie(session_name(), '', time()-3600, $CookieInfo['path']);
+		// Détruit toutes les variables de session
+		session_unset();
+		$_SESSION = array();
+
+		// Détruit le cookie sur le navigateur
+		$CookieInfo = session_get_cookie_params();
+		@setcookie(session_name(), '', time()-3600, $CookieInfo['path']);
 
 
-	    // détruit la session sur le serveur
-	    session_destroy();
+		// détruit la session sur le serveur
+		session_destroy();
 
 		//on redémarre une nouvelle session
 		session_start();
@@ -763,7 +761,6 @@ class Session {
 			header('Location:'.$_REQUEST['portal_return_url']);
 			die;
 		}
-		
 	}
 
 	private function load_session_data() {
@@ -807,10 +804,9 @@ class Session {
 	function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
 		global $debug_login_nouveaux_comptes, $loguer_nouveau_login;
-        global $mysqli;
+		global $mysqli;
 
-        $sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
-               
+            $sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
             $resultat = mysqli_query($mysqli, $sql);  
             $nb_lignes = $resultat->num_rows;
             if ($nb_lignes == "1") {
@@ -905,30 +901,30 @@ class Session {
 
 	private function authenticate_ldap($_login,$_password) {
 		if ($_login == null || $_password == null) {
-	        return false;
-	        exit();
-	    }
-	    $ldap_server = new LDAPServer;
-	    if ($ldap_server->authenticate_user($_login,$_password)) {
-	    	$this->login = $_login;
-	    	$this->current_auth_mode = "ldap";
-	    	return true;
-	    } else {
-	    	return false;
-	    }
+			return false;
+			exit();
+		}
+		$ldap_server = new LDAPServer;
+		if ($ldap_server->authenticate_user($_login,$_password)) {
+			$this->login = $_login;
+			$this->current_auth_mode = "ldap";
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private function authenticate_cas() {
-/* *****
- *  Toute la partie authentification en elle-même a été déplacée dans le
- *  fichier login_sso.php, afin de permettre à phpCAS de gérer tout seul
- *  la session PHP.
- * *****
- * 
+		/* *****
+		 *  Toute la partie authentification en elle-même a été déplacée dans le
+		 *  fichier login_sso.php, afin de permettre à phpCAS de gérer tout seul
+		 *  la session PHP.
+		 * *****
+		 * 
 		include_once('CAS.php');
 		if ($GLOBALS['mode_debug']) {
-		    phpCAS::setDebug($GLOBALS['debug_log_file']);
-    }
+			phpCAS::setDebug($GLOBALS['debug_log_file']);
+		}
 		// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
 		$path = dirname(__FILE__)."/../secure/config_cas.inc.php";
 		include($path);
@@ -958,64 +954,64 @@ class Session {
 		
 		// Authentification
 		phpCAS::forceAuthentication();
-*/
-if (getSettingValue("sso_cas_table") == 'yes') {
-            $this->login_sso = phpCAS::getUser();
-            $test = $this->test_loginsso();
-            if ($test == '0') {
-                //la correspondance n'existe pas dans gépi; on detruit la session avant de rediriger.            
-                session_destroy();
-                header("Location:login_failure.php?error=11&mode=sso_table");
-                exit;
-            } else {
-                $this->login = $test;
-            }
-        } else {
-            $this->login = phpCAS::getUser();
-        }
-		
-/* La session est gérée par phpCAS directement, en amont. On n'y touche plus.
+		*/
+		if (getSettingValue("sso_cas_table") == 'yes') {
+			$this->login_sso = phpCAS::getUser();
+			$test = $this->test_loginsso();
+			if ($test == '0') {
+				//la correspondance n'existe pas dans gépi; on detruit la session avant de rediriger.
+				session_destroy();
+				header("Location:login_failure.php?error=11&mode=sso_table");
+				exit;
+			} else {
+				$this->login = $test;
+			}
+		} else {
+			$this->login = phpCAS::getUser();
+		}
+
+		/* La session est gérée par phpCAS directement, en amont. On n'y touche plus.
 		session_name("GEPI");
 		session_start();
-*/
+		*/
 		$_SESSION['login'] = $this->login;
 
 		$this->current_auth_mode = "sso";
-    
-    // Extractions des attributs supplémentaires, le cas échéant
-    $tab = phpCAS::getAttributes();
-    $attributs = array('prenom','nom','email');
-    foreach($attributs as $attribut) {
-      $code_attribut = getSettingValue('cas_attribut_'.$attribut);
-      // Si un attribut a été spécifié, on va le chercher
-      if (!empty($code_attribut)) {
-      	if (isset($tab[$code_attribut])) {
-        	$valeur = $tab[$code_attribut];
+
+		// Extractions des attributs supplémentaires, le cas échéant
+		$tab = phpCAS::getAttributes();
+		$attributs = array('prenom','nom','email');
+		foreach($attributs as $attribut) {
+			$code_attribut = getSettingValue('cas_attribut_'.$attribut);
+			// Si un attribut a été spécifié, on va le chercher
+			if (!empty($code_attribut)) {
+				if (isset($tab[$code_attribut])) {
+					$valeur = $tab[$code_attribut];
 					if (!empty($valeur)){
-					    // L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
+						// L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
 						// On s'assure que la chaîne est bien enregistrée en UTF-8.
 						$valeur = ensure_utf8($valeur);
 						$this->cas_extra_attributes[$attribut] = trim(mysqli_real_escape_string($GLOBALS["mysqli"], $valeur));
 					}
-        }
-      }
-    }
+				}
+			}
+		}
 		return true;
 	}
 
-    private function test_loginsso()
-  {
-        global $mysqli;
-        $requete = "SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='$this->login_sso'";
-                   
-            $result = mysqli_query($mysqli, $requete);
-            $valeur = $result->fetch_row();
-            if ($valeur[0] == '') {
-                return "0";
-            } else {
-                return $valeur[0];
-            } 
-  }
+	private function test_loginsso()
+	{
+		global $mysqli;
+
+		$requete = "SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='$this->login_sso'";
+		$result = mysqli_query($mysqli, $requete);
+		$valeur = $result->fetch_row();
+		if ($valeur[0] == '') {
+			return "0";
+		} else {
+			return $valeur[0];
+		} 
+	}
 
 	public function logout_cas() {
 		include_once('CAS.php');
