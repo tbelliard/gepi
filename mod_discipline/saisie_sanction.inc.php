@@ -220,7 +220,7 @@ else {
 		}
 
 		//echo "<div id='div_liste_retenues_jour' style='float:right; border:1px solid black;background-color: honeydew;'>\n";
-		echo "<div id='div_liste_retenues_jour' style='float:right; text-align: center; border:1px solid black; margin-top: 2px; min-width: 19px;'>\n";
+		echo "<div id='div_liste_retenues_jour' style='float:right; text-align: center; border:1px solid black; margin-top: 2px; min-width: 19px; padding:2px;' class='fieldset_opacite50'>\n";
 		echo "<a href='#' onclick=\"maj_div_liste_retenues_jour();return false;\" title='Retenues du jour'><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Retenues du jour' /></a>";
 		echo "</div>\n";
 
