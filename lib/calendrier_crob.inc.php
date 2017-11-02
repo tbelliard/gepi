@@ -237,7 +237,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 			$texte_jour="<span style='color:red; font-weight:bold;' title=\"Aujourd'hui ".strftime("%A", $ts_courant)." $jour_courant/$mois_courant/$annee_courant\">".strftime("%d", $ts_courant)."</span>";
 		}
 		$tmp_mysql_date=strftime("%Y-%m-%d 00:00:00", $ts_courant);
-		if(array_key_exists($tmp_mysql_date, $tab_periodes["date_fin"])) {
+		if((isset($tab_periodes["date_fin"]))&&(array_key_exists($tmp_mysql_date, $tab_periodes["date_fin"]))) {
 			$texte_jour.="<span title=\"Fin de période pour ";
 			for($loop_date_fin=0;$loop_date_fin<count($tab_periodes["date_fin"][$tmp_mysql_date]);$loop_date_fin++) {
 				if($loop_date_fin>0) {
