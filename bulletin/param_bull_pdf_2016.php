@@ -456,7 +456,7 @@ if (isset($_POST['is_posted'])) {
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
-	$msg = "Enregistrement réussi <em>(".strftime("Le %A %d/%m/%Y à %H:%M:%S").")</em> !";
+	$msg = "Enregistrement réussi <em>(".my_strftime("Le %A %d/%m/%Y à %H:%M:%S").")</em> !";
 }
 
 

@@ -128,7 +128,7 @@ while ($i < $nombre_lignes){
 		$month = mb_substr($date, 5, 2);
 		$year = mb_substr($date, 0, 4);
 
-		$f_date = strftime("%A %d %B %Y", mktime(0,0,0,$month,$day,$year));
+		$f_date = my_strftime("%A %d %B %Y", mktime(0,0,0,$month,$day,$year));
 
 		$heure = old_mysql_result($call_data, $i, "heure");
 		$description = old_mysql_result($call_data, $i, "description");

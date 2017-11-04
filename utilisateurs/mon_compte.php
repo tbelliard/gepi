@@ -269,7 +269,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 						if((getSettingValue('envoi_mail_actif')!='n')&&(check_mail($user_email))) {
 							$sujet_mail="Mise à jour de votre adresse mail";
-							$message_mail="Vous avez procédé à la modification de votre adresse mail dans 'Gérer mon compte' le ".strftime('%A %d/%m/%Y à %H:%M:%S').". Votre nouvelle adresse est donc '$reg_email'. C'est cette adresse qui sera utilisée pour les éventuels prochains messages.";
+							$message_mail="Vous avez procédé à la modification de votre adresse mail dans 'Gérer mon compte' le ".my_strftime('%A %d/%m/%Y à %H:%M:%S').". Votre nouvelle adresse est donc '$reg_email'. C'est cette adresse qui sera utilisée pour les éventuels prochains messages.";
 							$destinataire_mail=$user_email;
 							$tab_param_mail['destinataire']=$destinataire_mail;
 							envoi_mail($sujet_mail, $message_mail, $destinataire_mail, "", "plain", $tab_param_mail);

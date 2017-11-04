@@ -61,7 +61,8 @@ if(isset($jour_sanction)) {
 	if(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $jour_sanction)) {
 		$tmp_date=explode("/", $jour_sanction);
 		$ts_jour_sanction=mktime(12, 0, 0, $tmp_date[1], $tmp_date[0], $tmp_date[2]);
-		$num_semaine=strftime("%V", $ts_jour_sanction);
+		//$num_semaine=strftime("%V", $ts_jour_sanction);
+		$num_semaine=id_num_semaine($ts_jour_sanction);
 	}
 	else {
 		$msg.="Date $jour_sanction invalide.<br />";
@@ -75,7 +76,8 @@ if($mode_jour_semaine=="semaine") {
 	}
 	else {
 		// Récupération du premier et du dernier jour de la semaine
-		$num_semaine=strftime("%V", $ts_jour_sanction);
+		//$num_semaine=strftime("%V", $ts_jour_sanction);
+		$num_semaine=id_num_semaine($ts_jour_sanction);
 		$annee=strftime("%Y", $ts_jour_sanction);
 
 		// Avec strtotime(), on récupère un timestamp du début du jour à 0h00min00s

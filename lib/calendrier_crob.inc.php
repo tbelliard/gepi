@@ -29,15 +29,15 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 
 	$ts=mktime(12, 0, 0, $mois, $jour, $annee);
 	$num_jsem=id_j_semaine($ts);
-	$nom_mois=strftime("%B", $ts);
+	$nom_mois=my_strftime("%B", $ts);
 
 	if($temoin_debug==1) {
-		$retour.="<p>Le $jour/$mois/$annee est un ".strftime("%A", $ts)."</p>";
+		$retour.="<p>Le $jour/$mois/$annee est un ".my_strftime("%A", $ts)."</p>";
 	}
 	if($num_jsem!="1") {
 		$ts=$ts-($num_jsem-1)*24*3600;
 		if($temoin_debug==1) {
-			$retour.="<p>Le lundi précédent le $jour/$mois/$annee est le ".strftime("%A %d/%m/%Y", $ts)."</p>";
+			$retour.="<p>Le lundi précédent le $jour/$mois/$annee est le ".my_strftime("%A %d/%m/%Y", $ts)."</p>";
 		}
 	}
 
@@ -97,12 +97,12 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 
 	$ts_dim_suiv=$ts_j1_mois_suiv;
 	if($temoin_debug==1) {
-		$retour.="<p>Le $jour_suivant/$mois_suivant/$annee_suivante est un ".strftime("%A", $ts_j1_mois_suiv)."</p>";
+		$retour.="<p>Le $jour_suivant/$mois_suivant/$annee_suivante est un ".my_strftime("%A", $ts_j1_mois_suiv)."</p>";
 	}
 	if($num_jsem_suiv!="1") {
 		$ts_dim_suiv=$ts_j1_mois_suiv+(7-$num_jsem_suiv)*24*3600;
 		if($temoin_debug==1) {
-			$retour.="<p>Le premier dimanche suivant le mois $mois est le ".strftime("%A %d/%m/%Y", $ts_dim_suiv)." ($ts_dim_suiv)"."</p>";
+			$retour.="<p>Le premier dimanche suivant le mois $mois est le ".my_strftime("%A %d/%m/%Y", $ts_dim_suiv)." ($ts_dim_suiv)"."</p>";
 		}
 	}
 
@@ -232,9 +232,9 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 		}
 
 		//$texte_jour=strftime("%d", $ts_courant);
-		$texte_jour="<span title=\"".strftime("%A %d/%m/%Y", $ts_courant)."\">".strftime("%d", $ts_courant)."</span>";
+		$texte_jour="<span title=\"".my_strftime("%A %d/%m/%Y", $ts_courant)."\">".strftime("%d", $ts_courant)."</span>";
 		if($YYYYmmjj_aujourdhui==$annee_courant.$mois_courant.$jour_courant) {
-			$texte_jour="<span style='color:red; font-weight:bold;' title=\"Aujourd'hui ".strftime("%A", $ts_courant)." $jour_courant/$mois_courant/$annee_courant\">".strftime("%d", $ts_courant)."</span>";
+			$texte_jour="<span style='color:red; font-weight:bold;' title=\"Aujourd'hui ".my_strftime("%A", $ts_courant)." $jour_courant/$mois_courant/$annee_courant\">".strftime("%d", $ts_courant)."</span>";
 		}
 		$tmp_mysql_date=strftime("%Y-%m-%d 00:00:00", $ts_courant);
 		if((isset($tab_periodes["date_fin"]))&&(array_key_exists($tmp_mysql_date, $tab_periodes["date_fin"]))) {

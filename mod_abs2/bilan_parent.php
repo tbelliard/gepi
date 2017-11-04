@@ -280,7 +280,7 @@ $mois_precedent="";
     </table>
 <?php
 	if($temoin_abs_ou_retard_ce_jour==0) {
-		echo "<p style='margin-top:1em;' class='bold'>Aucune absence saisie le ".strftime("%A %d/%m/%Y", $dt_debut->getTimestamp()).".</p>";
+		echo "<p style='margin-top:1em;' class='bold'>Aucune absence saisie le ".my_strftime("%A %d/%m/%Y", $dt_debut->getTimestamp()).".</p>";
 	}
 ?>
     <p style='margin-top:1em;'>
@@ -399,7 +399,7 @@ $mois_precedent="";
 			$tmp_date_actuelle=$date_actuelle->format('d/m/Y');
 			$tmp_tab=explode("/",$tmp_date_actuelle);
 			if($tmp_tab[1]!=$mois_precedent) {
-				echo '<tr class="white_hover"><td colspan="'.($creneau_col->count() + 1).'" style="text-align:center; background-color: gray;">'.ucfirst(strftime("%B %Y", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))).'</td></tr>';
+				echo '<tr class="white_hover"><td colspan="'.($creneau_col->count() + 1).'" style="text-align:center; background-color: gray;">'.ucfirst(my_strftime("%B %Y", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))).'</td></tr>';
 				$mois_precedent=$tmp_tab[1];
 			}
 
@@ -407,7 +407,7 @@ $mois_precedent="";
             <tr class='white_hover' style="background-color :<?php echo $background_couleur;?>">
               <td style="text-align:center;"><?php
               	//$tmp_date_actuelle=date("l", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))." ".$tmp_date_actuelle;
-              	$tmp_date_actuelle=strftime("%A", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))." ".$tmp_date_actuelle;
+              	$tmp_date_actuelle=my_strftime("%A", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))." ".$tmp_date_actuelle;
               	echo ucfirst($tmp_date_actuelle);
               ?></td>
       <?php

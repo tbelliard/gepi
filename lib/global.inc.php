@@ -475,4 +475,27 @@ de la justice et du droit, connaître les valeurs de la République";
 $tab_domaine_bilan_socle_description["MET_APP"]="5. Savoir organiser son travail, accéder à l’information, à la documentation et aux médias, utiliser les outils numériques, conduire des projets.";
 //===================================
 
+// Pour tester si on a des locales correctes pour les retours strftime() avec %a, %A, %b, %B (par exemple sous Window$)
+function test_strftime_us() {
+	if(in_array(strftime("%A"), array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'))) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+$temoin_strftime_us=test_strftime_us();
+
+function test_strftime_V() {
+	$V=strftime('%V');
+	if("$V"=="") {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+$temoin_strftime_V_vide=test_strftime_V();
 ?>

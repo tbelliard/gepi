@@ -437,7 +437,7 @@ else {
 ?>
 <table border="0" width="99%" summary="Tableau de saisie de notice">
 	<tr>
-		<td style="width: 80%"><b>Pour le <?php echo strftime("%A %d %B %Y", $ctTravailAFaire->getDateCt()); ?></b>&nbsp;
+		<td style="width: 80%"><b>Pour le <?php echo my_strftime("%A %d %B %Y", $ctTravailAFaire->getDateCt()); ?></b>&nbsp;
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer"
 			style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 		<button type="submit" style='font-variant: small-caps;'

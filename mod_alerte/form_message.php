@@ -120,7 +120,7 @@ if((isset($mode))&&($mode=='maj_span_nom_jour_semaine')) {
 	if((isset($jour))&&(preg_match("|[0-9]{2}/[0-9]{2}/[0-9]{4}|", $jour))) {
 		$tmp_tab=explode("/", $jour);
 		if(checkdate($tmp_tab[1],$tmp_tab[0],$tmp_tab[2])) {
-			echo strftime("%A", mktime ("12", "59" , "00" , $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]));
+			echo my_strftime("%A", mktime ("12", "59" , "00" , $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]));
 		}
 	}
 	die();

@@ -193,9 +193,10 @@ $date_ct_cours_suivant="";
 $ts_date_ct_cours_suivant="";
 $tab_jours=array('lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche');
 //echo "today=$today<br />";
-$jour_courant=strftime("%A", $today);
+$jour_courant=my_strftime("%A", $today);
 //echo "jour=".$jour_courant."<br />";
-$num_semaine=strftime("%V", $today);
+//$num_semaine=strftime("%V", $today);
+$num_semaine=id_num_semaine($today);
 //echo "num_sem=".$num_semaine."<br />";
 $sql="SELECT * FROM edt_semaines WHERE num_edt_semaine='".$num_semaine."';";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -212,8 +213,9 @@ $ts_test=$today;
 for($loop=1;$loop<21;$loop++) {
 	$ts_test+=3600*24;
 	if(!in_array(strftime("%Y%m%d", $ts_test), $tab_jours_vacances)) {
-		$jour_test=strftime("%A", $ts_test);
-		$num_semaine_test=strftime("%V", $ts_test);
+		$jour_test=my_strftime("%A", $ts_test);
+		//$num_semaine_test=strftime("%V", $ts_test);
+		$num_semaine_test=id_num_semaine($ts_test);
 
 		$ajout_sql="";
 		$sql="SELECT * FROM edt_semaines WHERE num_edt_semaine='".$num_semaine_test."';";
@@ -233,8 +235,8 @@ for($loop=1;$loop<21;$loop++) {
 
 			$lig=mysqli_fetch_object($res);
 
-			//echo "Cours suivant le ".strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")<br />";
-			$date_ct_cours_suivant="Cours suivant le ".strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")";
+			//echo "Cours suivant le ".my_strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")<br />";
+			$date_ct_cours_suivant="Cours suivant le ".my_strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")";
 			$ts_date_ct_cours_suivant=$ts_test;
 			break;
 		}
@@ -486,7 +488,7 @@ echo "\" />\n";
 if (isset($info)) {
 	$titre = "Informations Générales : ";
 } elseif (!isset($info)) {
-	$titre = strftime("%A %d %B %Y", $ctCompteRendu->getDateCt());
+	$titre = my_strftime("%A %d %B %Y", $ctCompteRendu->getDateCt());
 }
 
 //si on vient d'effectuer un enregistrement, le label du bouton enregistrer devient Succès

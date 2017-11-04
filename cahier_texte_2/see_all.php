@@ -559,7 +559,7 @@ if(($id_groupe=='Toutes_matieres')&&
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
-			$date_notice=strftime("%a %d %b %y", $lig->date_ct);
+			$date_notice=my_strftime("%a %d %b %y", $lig->date_ct);
 			$tab_timestamp_dates[$date_notice]=$lig->date_ct;
 
 			$notice_visible="y";
@@ -573,7 +573,7 @@ if(($id_groupe=='Toutes_matieres')&&
 
 			if($notice_visible=="y") {
 				//echo "$lig->date_ct<br />";
-				//$date_notice=strftime("%a %d %b %y", $lig->date_ct);
+				//$date_notice=my_strftime("%a %d %b %y", $lig->date_ct);
 				if(!in_array($date_notice,$tab_dates)) {
 					$tab_dates[]=$date_notice;
 					$tab_dates2[]=$lig->date_ct;
@@ -620,7 +620,7 @@ if(($id_groupe=='Toutes_matieres')&&
 		$cpt=0;
 		$timestamp_courant=time();
 		while($lig=mysqli_fetch_object($res)) {
-			$date_dev=strftime("%a %d %b %y", $lig->date_ct);
+			$date_dev=my_strftime("%a %d %b %y", $lig->date_ct);
 			$tab_timestamp_dates[$date_dev]=$lig->date_ct;
 
 			$notice_visible="y";
@@ -639,7 +639,7 @@ if(($id_groupe=='Toutes_matieres')&&
 					(($lig->date_visibilite_eleve!="")&&(mysql_date_to_unix_timestamp($lig->date_visibilite_eleve)<=$timestamp_courant))||
 					((verif_groupe_appartient_prof($lig->id_groupe)==1)&&($envoi_mail=="n"))) {
 					//echo "$lig->date_ct<br />";
-					//$date_dev=strftime("%a %d %b %y", $lig->date_ct);
+					//$date_dev=my_strftime("%a %d %b %y", $lig->date_ct);
 					if(!in_array($date_dev,$tab_dates)) {
 						$tab_dates[]=$date_dev;
 						$tab_dates2[]=$lig->date_ct;
@@ -773,7 +773,7 @@ if(($id_groupe=='Toutes_matieres')&&
 
 							/*
 							if($value['special']=="controle") {
-								$lignes_date_courante.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $value['date_ct'])."\" /></div>";
+								$lignes_date_courante.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $value['date_ct'])."\" /></div>";
 							}
 							*/
 							if($value['chaine_tag']!="") {
@@ -1072,7 +1072,7 @@ while (true) {
 			else {
 				echo "<a name='compte_rendu_".$not_dev->id_ct."'></a>";
 			}
-			echo(strftime("%a %d %b %y", $not_dev->date_ct));
+			echo(my_strftime("%a %d %b %y", $not_dev->date_ct));
 		echo "</strong>\n</h3>\n";
 		// Numérotation des notices si plusieurs notices sur la même journée
 		if ($not_dev->type == "c") {
@@ -1147,7 +1147,7 @@ while (true) {
 		/*
 		if($type_notice=='devoir') {
 			if($not_dev->special=="controle") {
-				echo "<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $not_dev->date_ct)."\" /></div>";
+				echo "<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $not_dev->date_ct)."\" /></div>";
 			}
 		}
 		*/

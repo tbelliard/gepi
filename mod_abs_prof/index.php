@@ -278,9 +278,9 @@ if(($_SESSION['statut']=="administrateur")||
 		$nom_prof=array();
 		while($lig=mysqli_fetch_object($res)) {
 			$ts1=mysql_date_to_unix_timestamp($lig->date_debut);
-			$date_heure=strftime("Du %A %d/%m/%Y %H:%M", $ts1);
+			$date_heure=my_strftime("Du %A %d/%m/%Y %H:%M", $ts1);
 			$ts2=mysql_date_to_unix_timestamp($lig->date_fin);
-			$date_heure.="<br />".strftime(" au %A %d/%m/%Y %H:%M", $ts2);
+			$date_heure.="<br />".my_strftime(" au %A %d/%m/%Y %H:%M", $ts2);
 			//formate_date($lig->date_debut,"y")."<br />au ".formate_date($lig->date_fin,"y")
 
 			echo "
@@ -349,7 +349,7 @@ if(($_SESSION['statut']=="administrateur")||
 						<table class='boireaus boireaus_alt'>";
 			while($lig_rempl=mysqli_fetch_object($res_rempl)) {
 				$ts1=mysql_date_to_unix_timestamp($lig_rempl->date_debut_r);
-				$date_heure=strftime("%A %d/%m/%Y de %H:%M", $ts1);
+				$date_heure=my_strftime("%A %d/%m/%Y de %H:%M", $ts1);
 				$ts2=mysql_date_to_unix_timestamp($lig_rempl->date_fin_r);
 				$date_heure.=strftime(" à %H:%M", $ts2);
 

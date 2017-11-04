@@ -5079,8 +5079,8 @@ function affiche_tableau_vacances($id_classe="", $griser="n", $affiche_passe="y"
 				$retour.="
 	<tr".$passe.">
 		<th".$passe.">".$lig->nom_calendrier."</th>
-		<td>".strftime("%a %d/%m/%Y", $lig->debut_calendrier_ts)."</td>
-		<td>".strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."</td>
+		<td>".my_strftime("%a %d/%m/%Y", $lig->debut_calendrier_ts)."</td>
+		<td>".my_strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."</td>
 	</tr>";
 				$nb_lignes++;
 			}
@@ -6404,7 +6404,7 @@ function get_liste_tag_notice_cdt($id_ct, $type_ct, $float="") {
 			}
 			else {
 				$lig_ct=mysqli_fetch_object($res_ct);
-				$chaine_complement_title="le ".strftime("%A %d/%m/%Y", $lig_ct->date_ct);
+				$chaine_complement_title="le ".my_strftime("%A %d/%m/%Y", $lig_ct->date_ct);
 			}
 			for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
 				if($float=="") {

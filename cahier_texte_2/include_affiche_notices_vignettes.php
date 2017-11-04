@@ -26,7 +26,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["t"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 
 	echo("<strong>&nbsp;A faire pour le :</strong>\n");
-	echo("<b>" . strftime("%a %d %b %y", $devoir->getDateCt()) . "</b>\n");
+	echo("<b>" . my_strftime("%a %d %b %y", $devoir->getDateCt()) . "</b>\n");
 	echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 
 	//vise
@@ -70,7 +70,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 			$html_balise .=(" ");
 
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-									suppressionDevoir('".strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$devoir->getIdGroupe()."','".add_token_in_js_func()."');
+									suppressionDevoir('".my_strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$devoir->getIdGroupe()."','".add_token_in_js_func()."');
 									new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 									return false;
 								\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
@@ -90,7 +90,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
 		if($lig->special=="controle") {
-			$html_balise .= " <img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\" />";
+			$html_balise .= " <img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $lig->date_ct)."\" />";
 		}
 	}
 	*/
@@ -99,7 +99,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 	$tab_tag_notice=get_tab_tag_notice($devoir->getIdCt(), 't');
 	if(isset($tab_tag_notice["indice"])) {
 		for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
-			$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est programmé pour le ".strftime("%A %d/%m/%Y", $devoir->getDateCt())."\" />";
+			$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est programmé pour le ".my_strftime("%A %d/%m/%Y", $devoir->getDateCt())."\" />";
 		}
 	}
 
@@ -122,7 +122,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["p"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 
 	echo("<strong>&nbsp;Notice priv&eacute;e</strong>\n");
-	echo("<b>" . strftime("%a %d %b %y", $notice_privee->getDateCt()) . "</b>\n");
+	echo("<b>" . my_strftime("%a %d %b %y", $notice_privee->getDateCt()) . "</b>\n");
 	echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 
 	//vise
@@ -157,7 +157,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 				$html_balise .=(" ");
 
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
-										suppressionNoticePrivee('".strftime("%A %d %B %Y", $notice_privee->getDateCt())."','".$notice_privee->getIdCt()."', '".$notice_privee->getIdGroupe()."','".add_token_in_js_func()."');
+										suppressionNoticePrivee('".my_strftime("%A %d %B %Y", $notice_privee->getDateCt())."','".$notice_privee->getIdCt()."', '".$notice_privee->getIdGroupe()."','".add_token_in_js_func()."');
 										new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 										return false;
 									\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
@@ -174,7 +174,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 			if(isset($tab_tag_notice["indice"])) {
 				//echo "<span style='color:green'>".count($tab_tag_notice["indice"])."</span>";
 				for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
-					$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est marqué pour le ".strftime("%A %d/%m/%Y", $notice_privee->getDateCt())."\" />";
+					$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est marqué pour le ".my_strftime("%A %d/%m/%Y", $notice_privee->getDateCt())."\" />";
 				}
 			}
 
@@ -195,7 +195,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 	global $gepiPath;
 
 		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
-		echo("<b>&nbsp;" . strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
+		echo("<b>&nbsp;" . my_strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
 
 		$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_compte_rendu_".$compte_rendu->getIdCt()."'></div>");
 		$html_balise .= '<div style="margin: 0px; float: left;">';
@@ -235,7 +235,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 				$html_balise .=(" ");
 
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								suppressionCompteRendu('".strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().",'".add_token_in_js_func()."');
+								suppressionCompteRendu('".my_strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().",'".add_token_in_js_func()."');
 								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
@@ -255,7 +255,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 		$tab_tag_notice=get_tab_tag_notice($compte_rendu->getIdCt(), 'c');
 		if(isset($tab_tag_notice["indice"])) {
 			for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
-				$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est indiqué pour le ".strftime("%A %d/%m/%Y", $compte_rendu->getDateCt())."\" />";
+				$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est indiqué pour le ".my_strftime("%A %d/%m/%Y", $compte_rendu->getDateCt())."\" />";
 			}
 		}
 

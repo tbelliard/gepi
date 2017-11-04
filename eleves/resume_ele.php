@@ -101,7 +101,7 @@ if($affichage!="semaine") {
 
 			// Tester l'heure courante dans la journée
 			$tab_horaire_etab=array();
-			$sql="SELECT * FROM horaires_etablissement WHERE jour_horaire_etablissement='".strftime("%A")."' AND fermeture_horaire_etablissement>'".strftime("%H:%M:%S")."';";
+			$sql="SELECT * FROM horaires_etablissement WHERE jour_horaire_etablissement='".my_strftime("%A")."' AND fermeture_horaire_etablissement>'".strftime("%H:%M:%S")."';";
 			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"],$sql);
 			if(mysqli_num_rows($res)>0) {
@@ -126,7 +126,8 @@ if($affichage!="semaine") {
 	$ts_display_date=mktime(12, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 	$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 	$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
-	$num_semaine=strftime("%V", $ts_display_date);
+	//$num_semaine=strftime("%V", $ts_display_date);
+	$num_semaine=id_num_semaine($ts_display_date);
 
 	// DEBUG
 	/*
@@ -149,7 +150,7 @@ if($affichage!="semaine") {
 
 	$tab_jour=get_tab_jour_ouverture_etab();
 
-	if(!in_array(strftime("%A", $ts_display_date), $tab_jour)) {
+	if(!in_array(my_strftime("%A", $ts_display_date), $tab_jour)) {
 		// Jour suivant
 		// Boucler sur 7 jours pour trouver le jour ouvré suivant
 		// Il faudrait même chercher une date hors vacances
@@ -160,7 +161,7 @@ if($affichage!="semaine") {
 		$cpt=0;
 		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
 			$ts_test+=3600*24;
-			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
+			if(in_array(my_strftime("%A", $ts_test), $tab_jour)) {
 				$ts_display_date_suivante=$ts_test;
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
 				$display_date_suivante_num_jour=id_j_semaine($ts_test);
@@ -177,7 +178,8 @@ if($affichage!="semaine") {
 			$ts_display_date=mktime(12, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 			$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 			$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
-			$num_semaine=strftime("%V", $ts_display_date);
+			//$num_semaine=strftime("%V", $ts_display_date);
+			$num_semaine=id_num_semaine($ts_display_date);
 
 			$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 		}
@@ -193,7 +195,8 @@ if($affichage!="semaine") {
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 		$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
-		$num_semaine=strftime("%V", $ts_display_date);
+		//$num_semaine=strftime("%V", $ts_display_date);
+		$num_semaine=id_num_semaine($ts_display_date);
 
 		$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 	}
@@ -207,7 +210,8 @@ if($affichage!="semaine") {
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 		$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
-		$num_semaine=strftime("%V", $ts_display_date);
+		//$num_semaine=strftime("%V", $ts_display_date);
+		$num_semaine=id_num_semaine($ts_display_date);
 
 		$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 	}

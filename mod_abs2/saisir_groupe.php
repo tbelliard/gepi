@@ -1172,7 +1172,7 @@ if ($eleve_col->isEmpty()) {
 
 			<p class="expli_page choix_fin center">
 				Saisie des absences du
-				<strong><?php echo strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
+				<strong><?php echo my_strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
 				pour 
 				<strong>
 				<?php

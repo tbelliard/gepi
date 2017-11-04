@@ -202,10 +202,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 		}
 		else {
 			$ts=time();
-			if(mb_strtolower(strftime("%A"))!=$lig->jour_semaine) {
+			if(mb_strtolower(my_strftime("%A"))!=$lig->jour_semaine) {
 				for($i=1;$i<7;$i++) {
 					$ts+=3600*24;
-					if(mb_strtolower(strftime("%A", $ts))==$lig->jour_semaine) {
+					if(mb_strtolower(my_strftime("%A", $ts))==$lig->jour_semaine) {
 						break;
 					}
 				}
@@ -377,10 +377,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 			}
 			else {
 				$ts=time();
-				if(mb_strtolower(strftime("%A"))!=$lig->jour_semaine) {
+				if(mb_strtolower(my_strftime("%A"))!=$lig->jour_semaine) {
 					for($i=1;$i<7;$i++) {
 						$ts+=3600*24;
-						if(mb_strtolower(strftime("%A", $ts))==$lig->jour_semaine) {
+						if(mb_strtolower(my_strftime("%A", $ts))==$lig->jour_semaine) {
 							break;
 						}
 					}
@@ -442,7 +442,8 @@ if($affichage!="semaine") {
 	$ts_display_date=mktime(12, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 	$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 	$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
-	$num_semaine=strftime("%V", $ts_display_date);
+	//$num_semaine=strftime("%V", $ts_display_date);
+	$num_semaine=id_num_semaine($ts_display_date);
 
 	$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 
@@ -456,7 +457,7 @@ if($affichage!="semaine") {
 
 	$tab_jour=get_tab_jour_ouverture_etab();
 
-	if(!in_array(strftime("%A", $ts_display_date), $tab_jour)) {
+	if(!in_array(my_strftime("%A", $ts_display_date), $tab_jour)) {
 		// Jour suivant
 		// Boucler sur 7 jours pour trouver le jour ouvré suivant
 		// Il faudrait même chercher une date hors vacances
@@ -467,7 +468,7 @@ if($affichage!="semaine") {
 		$cpt=0;
 		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
 			$ts_test+=3600*24;
-			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
+			if(in_array(my_strftime("%A", $ts_test), $tab_jour)) {
 				$ts_display_date_suivante=$ts_test;
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
 				$display_date_suivante_num_jour=id_j_semaine($ts_test);
@@ -484,7 +485,8 @@ if($affichage!="semaine") {
 			$ts_display_date=mktime(12, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 			$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 			$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
-			$num_semaine=strftime("%V", $ts_display_date);
+			//$num_semaine=strftime("%V", $ts_display_date);
+			$num_semaine=id_num_semaine($ts_display_date);
 
 			$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 		}
@@ -500,7 +502,8 @@ if($affichage!="semaine") {
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 		$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
-		$num_semaine=strftime("%V", $ts_display_date);
+		//$num_semaine=strftime("%V", $ts_display_date);
+		$num_semaine=id_num_semaine($ts_display_date);
 
 		$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 	}
@@ -514,7 +517,8 @@ if($affichage!="semaine") {
 		$tmp_tab=explode("/", $display_date);
 		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
 		$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
-		$num_semaine=strftime("%V", $ts_display_date);
+		//$num_semaine=strftime("%V", $ts_display_date);
+		$num_semaine=id_num_semaine($ts_display_date);
 
 		$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 	}
@@ -531,7 +535,8 @@ if((!isset($num_semaine_annee))||($num_semaine_annee=="")||(!preg_match("/[0-9]{
 		$num_semaine_annee="36|".strftime("%Y");
 	}
 	else {
-		$num_semaine_annee=strftime("%V")."|".strftime("%Y");
+		//$num_semaine_annee=strftime("%V")."|".strftime("%Y");
+		$num_semaine_annee=id_num_semaine()."|".strftime("%Y");
 	}
 }
 //===================================================
@@ -898,6 +903,45 @@ if(!isset($type_affichage)) {
 		echo_selon_mode(liens_user($page_lien, $nom_var_login, $tab_statuts, $autres_parametres_lien));
 	}
 
+/*
+// Test des différence %W, %V,...
+echo "
+	<table border='1' class='boireaus'>
+		<tr>
+			<th>Jour</th>
+			<th>%U</th>
+			<th>%V</th>
+			<th>%W</th>
+			<th>Test</th>
+			<th>Test2</th>
+		</tr>";
+$alt=1;
+$annee=2017;
+for($loop=0;$loop<10;$loop++) {
+	$mois=1;
+	$jour=1;
+	$ts=mktime(0, 0, 0, $mois , $jour, $annee);
+
+	for($loop2=0;$loop2<7;$loop2++) {
+		$num_sem=id_num_semaine($ts);
+		$num_sem2=id_s_annee($ts);
+		echo "
+		<tr class='lig$alt'>
+			<td>".strftime("%a %d/%m/%Y", $ts)."</td>
+			<td>".strftime("%U", $ts)."</td>
+			<td>".strftime("%V", $ts)."</td>
+			<td>".strftime("%W", $ts)."</td>
+			<td".(($num_sem!=strftime("%V", $ts)) ? " style='color:red'" : "").">".$num_sem."</td>
+			<td".(($num_sem2!=strftime("%V", $ts)) ? " style='color:red'" : "").">".$num_sem2."</td>
+		</tr>";
+		$ts+=24*3600;
+	}
+	$annee+=1;
+	$alt=$alt*(-1);
+}
+echo "
+	</table>";
+*/
 	require("../lib/footer.inc.php");
 	die();
 }

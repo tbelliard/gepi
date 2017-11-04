@@ -133,7 +133,7 @@ if((isset($mode))&&($mode=="details_date")&&(isset($date_rech))&&(isset($login_e
 				<td>'.$saisie->getPrimaryKey();
 				if ($saisie->getDeletedAt()!=null) {
 					echo ' <font color="red">(supprimée le ';
-					echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
+					echo (my_strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
 					$suppr_utilisateur = UtilisateurProfessionnelQuery::create()->findPK($saisie->getDeletedBy());
 					if ($suppr_utilisateur != null) {
 						echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.mb_substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
@@ -239,13 +239,13 @@ if((isset($mode))&&($mode=="details_date")&&(isset($date_rech))&&(isset($login_e
 				echo '<tr><th>';
 				echo 'Début&nbsp;: ';
 				echo '</th><td colspan="2" class="bold">';
-				echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
+				echo (my_strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
 				echo '</td></tr>';
 
 				echo '<tr><th>';
 				echo 'Fin&nbsp;: ';
 				echo '</th><td colspan="2" class="bold">';
-				echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getFinAbs('U')));
+				echo (my_strftime("%a %d/%m/%Y %H:%M", $saisie->getFinAbs('U')));
 				echo '</td></tr>';
 
 				echo '
@@ -298,9 +298,9 @@ if((isset($mode))&&($mode=="details_date")&&(isset($date_rech))&&(isset($login_e
 							<td>'."<a href='visu_notification.php?id_notification=".$notification->getId()."";
 						echo"' style='display: block; height: 100%;' target='_blank' title=\"Voir la notification dans un nouvel onglet\"> ";
 						if ($notification->getDateEnvoi() != null) {
-							echo (strftime("%a %d/%m/%Y %H:%M", $notification->getDateEnvoi('U')));
+							echo (my_strftime("%a %d/%m/%Y %H:%M", $notification->getDateEnvoi('U')));
 						} else {
-							echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
+							echo (my_strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
 						}
 						if ($notification->getTypeNotification() != null) {
 							echo ', type : '.$notification->getTypeNotification();
@@ -336,7 +336,7 @@ if((isset($mode))&&($mode=="details_date")&&(isset($date_rech))&&(isset($login_e
 			<tr>
 				<th>Enregistré le&nbsp;: </th>
 				<td colspan="2">';
-				echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
+				echo (my_strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
 				echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.mb_substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
 				echo '</td>
 			</tr>';
@@ -346,7 +346,7 @@ if((isset($mode))&&($mode=="details_date")&&(isset($date_rech))&&(isset($login_e
 			<tr>
 				<th>Modifiée le : </th>
 				<td colspan="2">';
-					echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getVersionCreatedAt('U')));
+					echo (my_strftime("%a %d/%m/%Y %H:%M", $saisie->getVersionCreatedAt('U')));
 					$modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($saisie->getVersionCreatedBy())->findOne();
 					if ($modifie_par_utilisateur != null) {
 						echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.mb_substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
@@ -429,7 +429,7 @@ if((isset($mode))&&($mode=="details_date")&&(isset($date_rech))&&(isset($login_e
 						} else {
 							echo 'Modifiée le&nbsp;: ';
 						}
-						echo (strftime("%a %d/%m/%Y %H:%M", $version->getVersionCreatedAt('U')));
+						echo (my_strftime("%a %d/%m/%Y %H:%M", $version->getVersionCreatedAt('U')));
 						$modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($version->getVersionCreatedBy())->findOne();
 						if ($modifie_par_utilisateur != null) {
 							echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.mb_substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
@@ -674,15 +674,15 @@ if(!isset($annee)) {
 
 $ts=mktime(12, 0, 0, $mois, $jour, $annee);
 $num_jsem=id_j_semaine($ts);
-$nom_mois=strftime("%B", $ts);
+$nom_mois=my_strftime("%B", $ts);
 
 if($temoin_debug==1) {
-	echo "<p>Le $jour/$mois/$annee est un ".strftime("%A", $ts)."</p>";
+	echo "<p>Le $jour/$mois/$annee est un ".my_strftime("%A", $ts)."</p>";
 }
 if($num_jsem!="1") {
 	$ts=$ts-($num_jsem-1)*24*3600;
 	if($temoin_debug==1) {
-		echo "<p>Le lundi précédent le $jour/$mois/$annee est le ".strftime("%A %d/%m/%Y", $ts)."</p>";
+		echo "<p>Le lundi précédent le $jour/$mois/$annee est le ".my_strftime("%A %d/%m/%Y", $ts)."</p>";
 	}
 }
 
@@ -722,12 +722,12 @@ $num_jsem_suiv=id_j_semaine($ts_j1_mois_suiv);
 
 $ts_dim_suiv=$ts_j1_mois_suiv;
 if($temoin_debug==1) {
-	echo "<p>Le $jour_suivant/$mois_suivant/$annee_suivante est un ".strftime("%A", $ts_j1_mois_suiv)."</p>";
+	echo "<p>Le $jour_suivant/$mois_suivant/$annee_suivante est un ".my_strftime("%A", $ts_j1_mois_suiv)."</p>";
 }
 if($num_jsem_suiv!="1") {
 	$ts_dim_suiv=$ts_j1_mois_suiv+(7-$num_jsem_suiv)*24*3600;
 	if($temoin_debug==1) {
-		echo "<p>Le premier dimanche suivant le mois $mois est le ".strftime("%A %d/%m/%Y", $ts_dim_suiv)." ($ts_dim_suiv)"."</p>";
+		echo "<p>Le premier dimanche suivant le mois $mois est le ".my_strftime("%A %d/%m/%Y", $ts_dim_suiv)." ($ts_dim_suiv)"."</p>";
 	}
 }
 

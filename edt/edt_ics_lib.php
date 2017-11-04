@@ -200,7 +200,7 @@ function get_days_from_week_number($num_semaine ,$annee) {
 		//$ts=strtotime($annee."W".$num_semaine.$num_jour);
 		//$ts=strtotime($annee."W".$num_semaine."-".$num_jour);
 		$ts=strtotime($annee."-W".sprintf("%02d",$num_semaine)."-".$num_jour);
-		$tab['num_jour'][$num_jour]['nom_jour']=strftime("%A", $ts);
+		$tab['num_jour'][$num_jour]['nom_jour']=my_strftime("%A", $ts);
 		$tab['num_jour'][$num_jour]['timestamp']=$ts;
 		$tab['num_jour'][$num_jour]['jj']=date('d', $ts);
 		$tab['num_jour'][$num_jour]['mm']=date('m', $ts);
@@ -1147,600 +1147,6 @@ function nom_ts_vacances($ts, $id_classe) {
 	}
 }
 
-/*
-// Cette fonction fonctionne mal si l'EDT est mal remplit:
-// Si un élève a deux cours en même temps (parce qu'il y a une erreur de remplissage de l'EDT ou une erreur d'affectation dans des groupes),
-// alors on a deux cadres l'un sur l'autre.
-// Plutôt utiliser affiche_edt2()
-function affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $affichage="semaine", $x0=350, $y0=150, $largeur_edt=800, $hauteur_une_heure=60) {
-	global $debug_edt;
-	global $hauteur_jour, $hauteur_entete;
-	global $tab_group_edt;
-
-	// Normalement, il ne devrait pas y avoir de collisions de cours... 
-	// sauf si l'EDT est mal rempli ou si les l'élève est inscrit à tort dans des groupes
-
-	$html="";
-
-	$ts_debut_annee=getSettingValue('begin_bookings');
-	$ts_fin_annee=getSettingValue('end_bookings');
-
-	$display_date=strftime("%d/%m/%Y", $ts_display_date);
-	$num_semaine=strftime("%V", $ts_display_date);
-	if($num_semaine<10) {
-		$num_semaine_annee="0".$num_semaine."|".strftime("%Y", $ts_display_date);
-	}
-	else {
-		$num_semaine_annee=$num_semaine."|".strftime("%Y", $ts_display_date);
-	}
-
-	$tab_jour=get_tab_jour_ouverture_etab();
-
-	if($affichage=="semaine") {
-		$largeur_jour=$largeur_edt/count($tab_jour);
-
-		$tab_jours_aff=array();
-		if(in_array("lundi", $tab_jour)) {
-			$tab_jours_aff[]=1;
-		}
-		if(in_array("mardi", $tab_jour)) {
-			$tab_jours_aff[]=2;
-		}
-		if(in_array("mercredi", $tab_jour)) {
-			$tab_jours_aff[]=3;
-		}
-		if(in_array("jeudi", $tab_jour)) {
-			$tab_jours_aff[]=4;
-		}
-		if(in_array("vendredi", $tab_jour)) {
-			$tab_jours_aff[]=5;
-		}
-		if(in_array("samedi", $tab_jour)) {
-			$tab_jours_aff[]=6;
-		}
-		if(in_array("dimanche", $tab_jour)) {
-			$tab_jours_aff[]=7;
-		}
-	}
-	else {
-		$largeur_jour=$largeur_edt;
-
-		$tab_jours_aff=array($affichage);
-	}
-
-
-	$hauteur_titre=10;
-	$hauteur_entete=40;
-	$opacity_couleur=0.5;
-
-	$marge_secu=6;
-
-	$font_size=ceil($hauteur_une_heure/5);
-	$font_size2=ceil($hauteur_une_heure/8);
-	$font_size3=ceil($hauteur_une_heure/10);
-
-	$tab_group_edt=array();
-	$tab_couleur_matiere=array();
-
-	$tab_salle=get_tab_salle_cours();
-
-	$html="";
-
-	$tab=explode("|", $num_semaine_annee);
-
-	$num_semaine=$tab[0];
-	$annee=$tab[1];
-
-	//$_SESSION['edt_ics_num_semaine']=$num_semaine;
-	//$_SESSION['edt_ics_annee']=$annee;
-
-	$jours=get_days_from_week_number($num_semaine, $annee);
-
-	//echo "<pre>";
-	//print_r($jours);
-	//echo "</pre>";
-
-	$info_type_semaine="";
-	$info_type_semaine_html="";
-	$type_semaine=get_type_semaine($num_semaine);
-	//echo "\$type_semaine=$type_semaine<br />";
-	if($type_semaine!="") {
-		$info_type_semaine=" - Semaine $type_semaine";
-		$info_type_semaine_html=" <span style='font-size:".$font_size2."pt;' title=\"Semaine $type_semaine\">($type_semaine)</span>";
-	}
-	//=================================================================================
-	$premiere_heure=8;
-	//$derniere_heure=16.5;
-	$derniere_heure=17;
-
-	// Récupérer les horaires de début et de fin de journée dans le module EDT
-	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode ASC LIMIT 1;";
-	$res_premiere_heure=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_premiere_heure)>0) {
-		$lig_premiere_heure=mysqli_fetch_object($res_premiere_heure);
-		$tmp_tab=explode(":", $lig_premiere_heure->heuredebut_definie_periode);
-		$premiere_heure=$tmp_tab[0]+$tmp_tab[1]/60;
-	}
-
-	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode DESC LIMIT 1;";
-	$res_derniere_heure=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_derniere_heure)>0) {
-		$lig_derniere_heure=mysqli_fetch_object($res_derniere_heure);
-		$tmp_tab=explode(":", $lig_derniere_heure->heurefin_definie_periode);
-		$derniere_heure=$tmp_tab[0]+$tmp_tab[1]/60;
-	}
-	//=================================================================================
-
-
-	$tmp_tab=explode(".", $premiere_heure);
-	$heure_debut_jour=$tmp_tab[0];
-	$min_debut_jour=0;
-	if(isset($tmp_tab[1])) {
-		$min_debut_jour=floor($tmp_tab[1]*60);
-	}
-	$sec_debut_jour=0;
-
-	// Hauteur du DIV de la journée
-	$hauteur_jour=($derniere_heure-$premiere_heure)*$hauteur_une_heure;
-
-	$y_max=$y0+$hauteur_entete+$hauteur_jour;
-
-	//==================================================================
-	$x_jour=array();
-	if($affichage=="semaine") {
-		// Affichage des N jours de la semaine
-		//====================================
-		// Recherche du numéro de semaine précédente
-		$num_semaine_annee_precedente="";
-		if(strftime("%V", $jours['num_jour'][1]['timestamp'])<=strftime("%V", $ts_fin_annee)) {
-			if(strftime("%V", $jours['num_jour'][7]['timestamp'])>1) {
-				if($num_semaine-1>9) {
-					$num_semaine_annee_precedente=($num_semaine-1)."|".$annee;
-				}
-				else {
-					$num_semaine_annee_precedente="0".($num_semaine-1)."|".$annee;
-				}
-			}
-			else {
-				$num_semaine_annee_precedente="52|".($annee-1);
-			}
-		}
-		elseif(strftime("%V", $jours['num_jour'][1]['timestamp'])>strftime("%V", $ts_debut_annee)) {
-			if($num_semaine-1>9) {
-				$num_semaine_annee_precedente=($num_semaine-1)."|".$annee;
-			}
-			else {
-				$num_semaine_annee_precedente="0".($num_semaine-1)."|".$annee;
-			}
-		}
-
-		// Semaine précédente
-		if($num_semaine_annee_precedente!="") {
-			//background-color:silver;
-			$x_courant=$x0-32;
-			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Semaine précédente\"><a href='".$_SERVER['PHP_SELF']."?login_eleve=$login_eleve&amp;num_semaine_annee=".$num_semaine_annee_precedente."'><img src='../images/arrow_left.png' class='icone16' alt='Précédent' /></a></div>";
-		}
-		//====================================
-
-		//====================================
-		// Bandeaux verticaux des jours
-		for($i=0;$i<count($tab_jour);$i++) {
-			$x_courant=$x0+$i*$largeur_jour;
-			$x_jour[$i]=$x_courant;
-
-			// Abscisse du jour au-dessus de l'entête (pour debug)
-			if($debug_edt=="y") {
-				$html.="<div style='position:absolute; top:".($y0-$hauteur_entete-2)."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_entete."px;'>".$x_jour[$i]."</div>";
-			}
-
-			// Nom du jour en entête
-			$html.="<div style='position:absolute; top:".$y0."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_entete."px; border:1px solid black; text-align:center; background-color:silver;' title=\"".$jours['num_jour'][$i+1]['jjmmaaaa']."\">".ucfirst($tab_jour[$i])."<br /><span style='font-size:x-small'>".$jours['num_jour'][$i+1]['jjmmaaaa']."</span></div>";
-
-			// Bande verticale de la journée
-			$y_courant=$y0+$hauteur_entete;
-			$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_jour."px; border:1px solid black; background-color:white;z-index:1;'></div>";
-			// Pour avoir les traits verticaux
-			$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_jour."px; border:1px solid black;z-index:4;'></div>";
-		}
-		//====================================
-
-		//====================================
-		// Semaine suivante
-		$num_semaine_annee_suivante="";
-		if(strftime("%V", $jours['num_jour'][1]['timestamp'])>=strftime("%V", $ts_debut_annee)) {
-
-			if(strftime("%V", $jours['num_jour'][7]['timestamp'])>=52) {
-				$num_semaine_annee_suivante="01|".($annee+1);
-			}
-			else {
-				$num_semaine_annee_suivante=($num_semaine+1)."|".$annee;
-			}
-
-		}
-		elseif(strftime("%V", $jours['num_jour'][1]['timestamp'])<strftime("%V", $ts_fin_annee)) {
-			if($num_semaine-1>9) {
-				$num_semaine_annee_suivante=($num_semaine+1)."|".$annee;
-			}
-			else {
-				$num_semaine_annee_suivante="0".($num_semaine+1)."|".$annee;
-			}
-		}
-
-		if($num_semaine_annee_suivante!="") {
-			//background-color:silver;
-			$x_courant=$x0+$largeur_edt;
-			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Semaine suivante\"><a href='".$_SERVER['PHP_SELF']."?login_eleve=$login_eleve&amp;num_semaine_annee=".$num_semaine_annee_suivante."'><img src='../images/arrow_right.png' class='icone16' alt='Suivant' /></a></div>";
-		}
-		//====================================
-
-	}
-	else {
-		//====================================
-		// Jour précédent
-		// Boucler sur 7 jours pour trouver le précédent jour ouvré
-		$display_date_precedente="";
-		$display_date_precedente_num_jour="";
-		$ts_test=$ts_display_date;
-		$cpt=0;
-		while(($cpt<7)&&($ts_test>$ts_debut_annee)) {
-			$ts_test-=3600*24;
-			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
-				$display_date_precedente=strftime("%d/%m/%Y", $ts_test);
-				$display_date_precedente_num_jour=id_j_semaine($ts_test);
-				break;
-			}
-			$cpt++;
-		}
-
-		if($display_date_precedente!="") {
-			//background-color:silver;
-			$x_courant=$x0-32;
-			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Jour précédent\"><a href='".$_SERVER['PHP_SELF']."?login_eleve=$login_eleve&amp;affichage=".$display_date_precedente_num_jour."&amp;display_date=".$display_date_precedente."'><img src='../images/arrow_left.png' class='icone16' alt='Précédent' /></a></div>";
-		}
-		//====================================
-
-		//====================================
-		// Colonne du jour
-		$x_courant=$x0;
-		$x_jour[0]=$x_courant;
-
-		// Abscisse du jour au-dessus de l'entête (pour debug)
-		if($debug_edt=="y") {
-			$html.="<div style='position:absolute; top:".($y0-$hauteur_entete-2)."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_entete."px;'>".$x_jour[0]."</div>";
-		}
-
-		// Nom du jour en entête
-		$html.="
-	<form action='".$_SERVER['PHP_SELF']."' id='form_chgt_date' method='post'>
-		<input type='hidden' name='affichage' value='jour'>
-		<input type='hidden' name='display_date' id='display_date' value='' onchange=\"document.getElementById('form_chgt_date').submit();\">
-		<!--input type='text' name='display_date' id='display_date' value=''-->
-	</form>
-
-	<div style='position:absolute; top:".$y0."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_entete."px; border:1px solid black; text-align:center; background-color:silver;' title=\"".$jours['num_jour'][$affichage]['jjmmaaaa'].$info_type_semaine."\">
-
-		<div style='float:right; width:16px;'>".img_calendrier_js("display_date", "img_bouton_display_date")."</div>
-
-		<span onclick=\"action_edt_cours('')\" title=\"Cliquez...\">".ucfirst($jours['num_jour'][$affichage]['nom_jour'])."</span><br />
-		<span style='font-size:x-small'>".$jours['num_jour'][$affichage]['jjmmaaaa']."</span>$info_type_semaine_html
-	</div>";
-
-		// Bande verticale de la journée
-		$y_courant=$y0+$hauteur_entete;
-		$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_jour."px; border:1px solid black; background-color:white;z-index:1;'></div>";
-		// Pour avoir les traits verticaux
-		$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_jour."px; border:1px solid black;z-index:4;'></div>";
-		//====================================
-
-		//====================================
-		// Jour suivant
-		// Boucler sur 7 jours pour trouver le jour ouvré suivant
-		$display_date_suivante="";
-		$display_date_suivante_num_jour="";
-		$ts_test=$ts_display_date;
-		$cpt=0;
-		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
-			$ts_test+=3600*24;
-			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
-				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
-				$display_date_suivante_num_jour=id_j_semaine($ts_test);
-				break;
-			}
-			$cpt++;
-		}
-
-		if($display_date_suivante!="") {
-			//background-color:silver;
-			$x_courant=$x0+$largeur_jour;
-			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Jour suivant\"><a href='".$_SERVER['PHP_SELF']."?login_eleve=$login_eleve&amp;affichage=".$display_date_suivante_num_jour."&amp;display_date=".$display_date_suivante."'><img src='../images/arrow_right.png' class='icone16' alt='Suivant' /></a></div>";
-		}
-		//====================================
-	}
-
-
-	//==================================================================
-	// Affichage des heures sur la droite
-	$heure_ronde_debut_jour=floor($premiere_heure);
-	$heure_courante=$heure_ronde_debut_jour;
-	$heure_ronde_debut_jour=floor($derniere_heure);
-	$hauteur_texte=12; // A la louche
-	$hauteur_demi_texte=ceil($hauteur_texte/2);
-	while($heure_courante<$heure_ronde_debut_jour) {
-		$y_courant=$y0+$hauteur_entete+($heure_courante-$premiere_heure)*$hauteur_une_heure-$hauteur_demi_texte;
-
-		$html.="<div style='position:absolute; top:".($y_courant)."px; left:".($x0+$largeur_edt)."px; width:30px; height:".$hauteur_une_heure."px; text-align:center;'>".$heure_courante."H</div>";
-
-		$heure_courante++;
-	}
-	//==================================================================
-
-	//==================================================================
-	// Affichage des noms de créneaux sur la gauche
-	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
-	$res_creneaux=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_creneaux)>0) {
-		while($lig=mysqli_fetch_object($res_creneaux)) {
-			$tab_h=explode(":", $lig->heuredebut_definie_periode);
-			$c=$tab_h[0]+$tab_h[1]/60-$premiere_heure;
-			$y1_courant=$y0+$hauteur_entete+round($c*$hauteur_une_heure);
-
-			$tab_h=explode(":", $lig->heurefin_definie_periode);
-			$c=$tab_h[0]+$tab_h[1]/60-$premiere_heure;
-			$y2_courant=$y0+$hauteur_entete+round($c*$hauteur_une_heure);
-
-			$hauteur_courante=$y2_courant-$y1_courant;
-
-			$style_fond_creneau="background-color:white;";
-			if($lig->type_creneaux=="pause") {
-				$style_fond_creneau="background-color:silver;";
-			}
-			elseif($lig->type_creneaux=="repas") {
-				$style_fond_creneau="background-color:grey;";
-			}
-
-			// Nom du créneau sur la gauche
-			$html.="<div style='position:absolute; top:".($y1_courant)."px; left:".($x0-32)."px; width:30px; height:".$hauteur_courante."px; text-align:center; border:1px solid black; vertical-align:middle;".$style_fond_creneau."' title=\"Créneau $lig->nom_definie_periode\nDe $lig->heuredebut_definie_periode à $lig->heurefin_definie_periode.\"><div style='position:relative; width:2em; height:1em;'>".$lig->nom_definie_periode."</div></div>";
-
-			// Bandes horizontales du créneau
-			$html.="<div style='position:absolute; top:".($y1_courant)."px; left:".$x0."px; width:".$largeur_edt."px; height:".$hauteur_courante."px; border:1px solid silver; z-index:2;".$style_fond_creneau."'></div>";
-
-			// Debug
-			if($debug_edt=="y") {
-				$html.="<div style='position:absolute; top:".($y1_courant)."px; left:".($x0+$largeur_edt+30)."px; width:".$largeur_edt."px; height:".$hauteur_courante."px; color:red; z-index:2;'>$y1_courant</div>";
-			}
-
-		}
-	}
-	//==================================================================
-
-	//==================================================================
-	// On passe à l'affichage du contenu du ou des jours
-	//for($num_jour=1;$num_jour<=count($tab_jour);$num_jour++) {
-	for($loop_jour=0;$loop_jour<count($tab_jours_aff);$loop_jour++) {
-		$num_jour=$tab_jours_aff[$loop_jour];
-
-		$jour_sem=$jours['num_jour'][$num_jour]['nom_jour'];
-		$jour_debut_jour=$jours['num_jour'][$num_jour]['jj'];
-		$mois_debut_jour=$jours['num_jour'][$num_jour]['mm'];
-		$annee_debut_jour=$jours['num_jour'][$num_jour]['aaaa'];
-
-		$ts_debut_jour=mktime($heure_debut_jour,$min_debut_jour,$sec_debut_jour,$mois_debut_jour,$jour_debut_jour,$annee_debut_jour);
-
-		// A REVOIR On suppose là qu'il n'y a qu'un id_calendrier.
-		//          A revoir quand on enregistrera des id_calendrier autres
-		// id_groupe, id_aid, duree, heuredeb_dec, id_semaine, id_cours
-		$sql="SELECT * FROM edt_cours ec, edt_creneaux ecr WHERE
-					ec.jour_semaine = '".$jour_sem."' AND
-					ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') AND
-					(ec.id_semaine='' OR ec.id_semaine='0' OR ec.id_semaine='$type_semaine') AND 
-					ec.id_definie_periode=ecr.id_definie_periode 
-				ORDER BY heuredebut_definie_periode;";
-		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["mysqli"], $sql);
-		while($lig=mysqli_fetch_object($res)) {
-
-			$tab_debut=explode(":", $lig->heuredebut_definie_periode);
-			$heure_debut=$tab_debut[0];
-			$min_debut=$tab_debut[1];
-			$sec_debut=0;
-			$ts_debut=mktime($heure_debut,$min_debut,$sec_debut,$mois_debut_jour,$jour_debut_jour,$annee_debut_jour);
-
-			$tab_fin=explode(":", $lig->heurefin_definie_periode);
-			$heure_fin=$tab_fin[0];
-			$min_fin=$tab_fin[1];
-			$sec_fin=0;
-			$ts_fin=mktime($heure_fin,$min_fin,$sec_fin,$mois_debut_jour,$jour_debut_jour,$annee_debut_jour);
-
-			// Problème avec les cours à cheval sur les créneaux de 1/2h du midi.
-			//$duree_courante=(($ts_fin-$ts_debut)/60)*($lig->duree/2);
-			$duree_courante=60*($lig->duree/2);
-
-			if($lig->heuredeb_dec=="0.5") {
-				$ts_debut+=ceil(($ts_fin-$ts_debut)/2);
-			}
-
-			$horaire_cours_courant="\nDébut du cours : ".strftime("%H:%M", $ts_debut)."";
-			$horaire_cours_courant.="\nDurée du cours : ".$duree_courante."minutes";
-
-			$duree_depuis_debut_journee=floor(10*($ts_debut-$ts_debut_jour)/3600)/10;
-			$y_courant=$y0+$hauteur_entete+$duree_depuis_debut_journee*$hauteur_une_heure+ceil($marge_secu/2);
-
-			//$hauteur_courante=$hauteur_une_heure*floor(10*($ts_fin-$ts_debut)/3600)/10-ceil($marge_secu/2);
-			$hauteur_courante=floor($hauteur_une_heure*$lig->duree/2)-$marge_secu;
-
-			$largeur_courante=$largeur_jour-$marge_secu;
-
-			if($affichage=="semaine") {
-				$x_courant=$x0+$largeur_jour*($num_jour-1)+ceil($marge_secu/2);
-			}
-			else {
-				$x_courant=$x0+ceil($marge_secu/2);
-			}
-
-			if(($ts_debut+600>$ts_fin_annee)||($ts_debut-600<$ts_debut_annee)) {
-				$bgcolor_courant="silver";
-
-				$contenu_cellule="Hors année scolaire";
-
-				// Cadre de couleur avec une opacité réglable
-				$html.="<div style='position:absolute; 
-						top:".$y_courant."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".$hauteur_courante."px; 
-						text-align:center; 
-						border:1px solid black; 
-						background-color:".$bgcolor_courant.";
-						opacity:$opacity_couleur; 
-						z-index:19;'></div>";
-				// Cadre du contour de la cellule
-				$html.="<div style='position:absolute; 
-						top:".$y_courant."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".$hauteur_courante."px; 
-						text-align:center; 
-						border:1px solid black; 
-						line-height:".$font_size."pt;
-						z-index:20;'>"."</div>";
-				// Cadre du contenu de la cellule
-				$decalage_vertical=floor($marge_secu/2);
-				if($hauteur_courante>$hauteur_une_heure) {
-					$decalage_vertical=floor(($hauteur_courante-$hauteur_une_heure)/2);
-				}
-				$html.="<div style='position:absolute; 
-						top:".($y_courant+$decalage_vertical)."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".($hauteur_courante-$decalage_vertical)."px; 
-						text-align:center; 
-						line-height:".$font_size."pt;
-						z-index:21;'>".$contenu_cellule."</div>";
-			}
-			elseif(($id_classe!="")&&(check_ts_vacances($ts_debut+600,$id_classe))) {
-				$bgcolor_courant="silver";
-
-				$contenu_cellule=nom_ts_vacances($ts_debut+600,$id_classe);
-
-				// Cadre de couleur avec une opacité réglable
-				$html.="<div style='position:absolute; 
-						top:".$y_courant."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".$hauteur_courante."px; 
-						text-align:center; 
-						border:1px solid black; 
-						background-color:".$bgcolor_courant.";
-						opacity:$opacity_couleur; 
-						z-index:19;'></div>";
-				// Cadre du contour de la cellule
-				$html.="<div style='position:absolute; 
-						top:".$y_courant."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".$hauteur_courante."px; 
-						text-align:center; 
-						border:1px solid black; 
-						line-height:".$font_size."pt;
-						z-index:20;'>"."</div>";
-				// Cadre du contenu de la cellule
-				$decalage_vertical=floor($marge_secu/2);
-				if($hauteur_courante>$hauteur_une_heure) {
-					$decalage_vertical=floor(($hauteur_courante-$hauteur_une_heure)/2);
-				}
-				$html.="<div style='position:absolute; 
-						top:".($y_courant+$decalage_vertical)."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".($hauteur_courante-$decalage_vertical)."px; 
-						text-align:center; 
-						line-height:".$font_size."pt;
-						z-index:21;'>".$contenu_cellule."</div>";
-
-			}
-			else {
-				if(!isset($tab_group_edt[$lig->id_groupe])) {
-					$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
-				}
-
-				$current_group=$tab_group_edt[$lig->id_groupe];
-
-				if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
-					$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
-				}
-				$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
-
-				$chaine_noms_profs="";
-				$cpt_prof=0;
-				foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
-					if($cpt_prof>0) {
-						$chaine_noms_profs.=", ";
-					}
-					$chaine_noms_profs.=$current_prof['nom'];
-					$cpt_prof++;
-				}
-
-				$chaine_salle_courante="";
-				$chaine_salle_courante_span_title="";
-				if(isset($tab_salle['indice'][$lig->id_salle])) {
-					$chaine_salle_courante_span_title=" en salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete'];
-					$chaine_salle_courante="<br /><span style='font-size:".$font_size3."pt;' title=\"Salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete']."\">".$tab_salle['indice'][$lig->id_salle]['designation_courte']."</span>";
-				}
-
-				$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']." avec ".$current_group['profs']['proflist_string'].$chaine_salle_courante_span_title.$horaire_cours_courant."\">".$current_group['matiere']['matiere']."</span><br />
-				<span style='font-size:".$font_size2."pt;' title=\"".$current_group['profs']['proflist_string']."\">".$chaine_noms_profs."</span>".$chaine_salle_courante;
-				if(($lig->id_semaine!='0')&&($lig->id_semaine!='')) {
-					$contenu_cellule.=" <span class='fieldset_opacite50' style='float:right; font-size:".$font_size2."pt;' title=\"Semaine ".$lig->id_semaine."\">".$lig->id_semaine."</span>";
-				}
-
-				//$contenu_cellule.=" ".$hauteur_courante;
-				//$contenu_cellule.=" ".$font_size;
-
-				// Cadre de couleur avec une opacité réglable
-				$html.="<div style='position:absolute; 
-						top:".$y_courant."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".$hauteur_courante."px; 
-						text-align:center; 
-						border:1px solid black; 
-						background-color:".$bgcolor_courant.";
-						opacity:$opacity_couleur; 
-						z-index:19;'></div>";
-				// Cadre du contour de la cellule
-				$html.="<div style='position:absolute; 
-						top:".$y_courant."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".$hauteur_courante."px; 
-						text-align:center; 
-						border:1px solid black; 
-						line-height:".$font_size."pt;
-						z-index:20;'>"."</div>";
-				// Cadre du contenu de la cellule
-				$decalage_vertical=floor($marge_secu/2);
-				if($hauteur_courante>$hauteur_une_heure) {
-					$decalage_vertical=floor(($hauteur_courante-$hauteur_une_heure)/2);
-				}
-				$html.="<div style='position:absolute; 
-						top:".($y_courant+$decalage_vertical)."px; 
-						left:".$x_courant."px; 
-						width:".$largeur_courante."px; 
-						height:".($hauteur_courante-$decalage_vertical)."px; 
-						text-align:center; 
-						line-height:".$font_size."pt;
-						overflow: hidden;
-						z-index:21;'
-						onclick=\"action_edt_cours('".$lig->id_cours."')\">".$contenu_cellule."</div>";
-			}
-		}
-	}
-	//==================================================================
-
-	return $html;
-}
-*/
-
 function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	global $ts_debut_jour, $ts_debut_jour_suivant, $ts_display_date, $display_date, $tab_group_edt, $tab_couleur_matiere, $CDTPeutPointerTravailFait;
 
@@ -1873,7 +1279,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					$html.=", ";
 				}
 
-				$date_courante=strftime("%A %d/%m/%Y", $lig->date_ct);
+				$date_courante=my_strftime("%A %d/%m/%Y", $lig->date_ct);
 				if(($url_cdt_prefixe!="")&&($lig->id_groupe!="")&&($lig->id_groupe!=0)) {
 					$html.="<a href=\"".$url_cdt_prefixe."&id_groupe=".$lig->id_groupe."\" title=\"Travail à faire pour le ".$date_courante.".\n\nCliquer pour voir le cahier de textes de cet enseignement.\">".$current_matiere_cdt."</a>";
 				}
@@ -1891,7 +1297,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		}
 	}
 	else {
-		$html.="<p>Travaux personnels pour le ".strftime("%a %d %b", $ts_display_date)."</p>";
+		$html.="<p>Travaux personnels pour le ".my_strftime("%a %d %b", $ts_display_date)."</p>";
 		while($lig=mysqli_fetch_object($res)) {
 			if(!isset($tab_group_edt[$lig->id_groupe])) {
 				$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
@@ -1918,7 +1324,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 
 			$temoin_controle="";
 			if($lig->special=="controle") {
-				$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
+				$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
 			}
 
 			//background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";
@@ -1979,7 +1385,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					$html.=", ";
 				}
 
-				$date_courante=strftime("%A %d/%m/%Y", $lig->date_ct);
+				$date_courante=my_strftime("%A %d/%m/%Y", $lig->date_ct);
 				if(($url_cdt_prefixe!="")&&($lig->id_groupe!="")&&($lig->id_groupe!=0)) {
 					$html.="<a href=\"".$url_cdt_prefixe."&id_groupe=".$lig->id_groupe."\" title=\"Travail à faire pour le ".$date_courante.".\n\nCliquer pour voir le cahier de textes de cet enseignement.\">".$current_matiere_cdt."</a>";
 				}
@@ -2086,7 +1492,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 		}
 		else {
 			while($lig=mysqli_fetch_object($res)) {
-				$html.="<p>Travaux personnels pour le ".strftime("%a %d %b", $lig->date_ct)."</p>";
+				$html.="<p>Travaux personnels pour le ".my_strftime("%a %d %b", $lig->date_ct)."</p>";
 
 				$class_color_fond_notice="";
 				$temoin_travail_fait_ou_non="";
@@ -2100,7 +1506,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 
 				$temoin_controle="";
 				if($lig->special=="controle") {
-					$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
+					$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
 				}
 
 				//background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";
@@ -2191,7 +1597,9 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	$ts_fin_annee=getSettingValue('end_bookings');
 
 	$display_date=strftime("%d/%m/%Y", $ts_display_date);
-	$num_semaine=strftime("%V", $ts_display_date);
+	// 20171102
+	//$num_semaine=strftime("%V", $ts_display_date);
+	$num_semaine=id_num_semaine($ts_display_date);
 	if($num_semaine<10) {
 		// Le %V a l'air de déjà renvoyer le mois sur 2 chiffres
 		$num_semaine_annee="0".$num_semaine."|".strftime("%Y", $ts_display_date);
@@ -2336,8 +1744,12 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		//====================================
 		// Recherche du numéro de semaine précédente
 		$num_semaine_annee_precedente="";
-		if(strftime("%V", $jours['num_jour'][1]['timestamp'])<=strftime("%V", $ts_fin_annee)) {
-			if(strftime("%V", $jours['num_jour'][7]['timestamp'])>1) {
+		// 20171102
+		//if(strftime("%V", $jours['num_jour'][1]['timestamp'])<=strftime("%V", $ts_fin_annee)) {
+		if(id_num_semaine($jours['num_jour'][1]['timestamp'])<=id_num_semaine($ts_fin_annee)) {
+			// 20171102
+			//if(strftime("%V", $jours['num_jour'][7]['timestamp'])>1) {
+			if(id_num_semaine($jours['num_jour'][7]['timestamp'])>1) {
 				if($num_semaine-1>9) {
 					$num_semaine_annee_precedente=($num_semaine-1)."|".$annee;
 				}
@@ -2349,7 +1761,9 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 				$num_semaine_annee_precedente="52|".($annee-1);
 			}
 		}
-		elseif(strftime("%V", $jours['num_jour'][1]['timestamp'])>strftime("%V", $ts_debut_annee)) {
+		// 20171102
+		//elseif(strftime("%V", $jours['num_jour'][1]['timestamp'])>strftime("%V", $ts_debut_annee)) {
+		elseif(id_num_semaine($jours['num_jour'][1]['timestamp'])>id_num_semaine($ts_debut_annee)) {
 			if($num_semaine-1>9) {
 				$num_semaine_annee_precedente=($num_semaine-1)."|".$annee;
 			}
@@ -2391,9 +1805,12 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		//====================================
 		// Semaine suivante
 		$num_semaine_annee_suivante="";
-		if(strftime("%V", $jours['num_jour'][1]['timestamp'])>=strftime("%V", $ts_debut_annee)) {
-
-			if(strftime("%V", $jours['num_jour'][7]['timestamp'])>=52) {
+		// 20171102
+		//if(strftime("%V", $jours['num_jour'][1]['timestamp'])>=strftime("%V", $ts_debut_annee)) {
+		if(id_num_semaine($jours['num_jour'][1]['timestamp'])>=id_num_semaine($ts_debut_annee)) {
+			// 20171102
+			//if(strftime("%V", $jours['num_jour'][7]['timestamp'])>=52) {
+			if(id_num_semaine($jours['num_jour'][7]['timestamp'])>=52) {
 				$num_semaine_annee_suivante="01|".($annee+1);
 			}
 			else {
@@ -2401,7 +1818,9 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			}
 
 		}
-		elseif(strftime("%V", $jours['num_jour'][1]['timestamp'])<strftime("%V", $ts_fin_annee)) {
+		// 20171102
+		//elseif(strftime("%V", $jours['num_jour'][1]['timestamp'])<strftime("%V", $ts_fin_annee)) {
+		elseif(id_num_semaine($jours['num_jour'][1]['timestamp'])<id_num_semaine($ts_fin_annee)) {
 			if($num_semaine-1>9) {
 				$num_semaine_annee_suivante=($num_semaine+1)."|".$annee;
 			}
@@ -2432,7 +1851,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		$cpt=0;
 		while(($cpt<7)&&($ts_test>$ts_debut_annee)) {
 			$ts_test-=3600*24;
-			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
+			if(in_array(my_strftime("%A", $ts_test), $tab_jour)) {
 				$display_date_precedente=strftime("%d/%m/%Y", $ts_test);
 				$display_date_precedente_num_jour=id_j_semaine($ts_test);
 				break;
@@ -2489,7 +1908,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		$cpt=0;
 		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
 			$ts_test+=3600*24;
-			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
+			if(in_array(my_strftime("%A", $ts_test), $tab_jour)) {
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
 				$display_date_suivante_num_jour=id_j_semaine($ts_test);
 				break;

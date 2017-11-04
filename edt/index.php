@@ -851,7 +851,7 @@ elseif(($mode=="upload")&&
 			$ts_debut=$ical2->iCalDateToUnixTimestamp($event['DTSTART'])+$decalage_horaire;
 			$ts_fin=$ical2->iCalDateToUnixTimestamp($event['DTEND'])+$decalage_horaire;
 			if($debug_edt=="y") {
-				echo "<p><span style='color:red'>Du ".strftime("%a %d/%m/%Y %H:%M:%S", $ts_debut)." au ".strftime("%a %d/%m/%Y %H:%M:%S", $ts_fin)."</span></p>";
+				echo "<p><span style='color:red'>Du ".my_strftime("%a %d/%m/%Y %H:%M:%S", $ts_debut)." au ".my_strftime("%a %d/%m/%Y %H:%M:%S", $ts_fin)."</span></p>";
 			}
 
 			if(isset($event['DESCRIPTION;LANGUAGE=fr'])) {
@@ -901,7 +901,7 @@ elseif(($mode=="upload")&&
 									matiere_ics='$matiere_ics',
 									salle_ics='$salle_ics',
 									jour_semaine='".$tab_nom_jour[id_j_semaine($ts_debut)]."',
-									num_semaine='".strftime("%V", $ts_debut)."',
+									num_semaine='".id_num_semaine($ts_debut)."',
 									annee='".strftime("%Y", $ts_debut)."',
 									date_debut='$date_debut',
 									date_fin='$date_fin',

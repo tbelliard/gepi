@@ -134,14 +134,14 @@ if(isset($_POST['enregistrer_vacances'])) {
 			$debut_calendrier_ts=mktime(0,0,0,$tab_date[1], $tab_date[0], $tab_date[2]);
 			$jourdebut_calendrier=strftime("%Y-%m-%d", $debut_calendrier_ts);
 			$heuredebut_calendrier=strftime("%H:%M:%S", $debut_calendrier_ts);
-			//echo "<p style='margin-top:1em;'>Du ".strftime("%A %d/%m/%Y à %H:%M:%S", $debut_calendrier_ts)."";
+			//echo "<p style='margin-top:1em;'>Du ".my_strftime("%A %d/%m/%Y à %H:%M:%S", $debut_calendrier_ts)."";
 
 			$tab_date=explode("/", $tab[2]);
 			// On ramène une minute avant pour passer du jour de reprise, au jour de fin des vacances à 23:59:59
 			$fin_calendrier_ts=mktime(0,0,0,$tab_date[1], $tab_date[0], $tab_date[2])-60;
 			$jourfin_calendrier=strftime("%Y-%m-%d", $fin_calendrier_ts);
 			$heurefin_calendrier=strftime("%H:%M:%S", $fin_calendrier_ts);
-			//echo " au ".strftime("%A %d/%m/%Y à %H:%M:%S", $fin_calendrier_ts)."<br />";
+			//echo " au ".my_strftime("%A %d/%m/%Y à %H:%M:%S", $fin_calendrier_ts)."<br />";
 
 			$sql="INSERT INTO edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."', 
 									nom_calendrier='".$tab[0]."',
@@ -265,14 +265,14 @@ elseif(isset($_GET['imposer_pour_toutes_les_classes'])) {
 			$debut_calendrier_ts=mktime(0,0,0,$tab_date[1], $tab_date[0], $tab_date[2]);
 			$jourdebut_calendrier=strftime("%Y-%m-%d", $debut_calendrier_ts);
 			$heuredebut_calendrier=strftime("%H:%M:%S", $debut_calendrier_ts);
-			//echo "<p style='margin-top:1em;'>Du ".strftime("%A %d/%m/%Y à %H:%M:%S", $debut_calendrier_ts)."";
+			//echo "<p style='margin-top:1em;'>Du ".my_strftime("%A %d/%m/%Y à %H:%M:%S", $debut_calendrier_ts)."";
 
 			$tab_date=explode("/", $tab[2]);
 			// On ramène une minute avant pour passer du jour de reprise, au jour de fin des vacances à 23:59:59
 			$fin_calendrier_ts=mktime(0,0,0,$tab_date[1], $tab_date[0], $tab_date[2])-60;
 			$jourfin_calendrier=strftime("%Y-%m-%d", $fin_calendrier_ts);
 			$heurefin_calendrier=strftime("%H:%M:%S", $fin_calendrier_ts);
-			//echo " au ".strftime("%A %d/%m/%Y à %H:%M:%S", $fin_calendrier_ts)."<br />";
+			//echo " au ".my_strftime("%A %d/%m/%Y à %H:%M:%S", $fin_calendrier_ts)."<br />";
 
 			$sql="INSERT INTO edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."', 
 									nom_calendrier='".mysqli_real_escape_string($mysqli, $tab[0])."',
@@ -531,9 +531,9 @@ if(isset($corriger_manuellement)) {
 			echo "
 	<tr>
 		<th>".$lig->nom_calendrier."<input type='hidden' name='id_calendrier[]' value='".$lig->id."' /></th>
-		<td>".strftime("%a %d/%m/%Y", $lig->debut_calendrier_ts)."</td>
+		<td>".my_strftime("%a %d/%m/%Y", $lig->debut_calendrier_ts)."</td>
 		<td><input type='text' name='date_debut_".$lig->id."' id='date_debut_".$lig->id."' value='".strftime("%d/%m/%Y", $lig->debut_calendrier_ts)."'  onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />".img_calendrier_js("date_debut_".$lig->id, "img_bouton_date_debut_".$lig->id)."</td>
-		<td>".strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."</td>
+		<td>".my_strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."</td>
 		<td><input type='text' name='date_fin_".$lig->id."' id='date_fin_".$lig->id."' value='".strftime("%d/%m/%Y", $lig->fin_calendrier_ts)."'  onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />".img_calendrier_js("date_fin_".$lig->id, "img_bouton_date_fin_".$lig->id)."</td>
 		<td>
 			<input type='checkbox' name='suppr[]' value='".$lig->id."' />
@@ -720,12 +720,12 @@ elseif($mode=="telech") {
 				}
 			}
 			if($debug_edt=="y") {
-				echo "<p><span style='color:red'>Du ".strftime("%a %d/%m/%Y %H:%M:%S", $ts_debut)." au ".strftime("%a %d/%m/%Y %H:%M:%S", $ts_fin)."</span></p>";
+				echo "<p><span style='color:red'>Du ".my_strftime("%a %d/%m/%Y %H:%M:%S", $ts_debut)." au ".my_strftime("%a %d/%m/%Y %H:%M:%S", $ts_fin)."</span></p>";
 			}
 
 			if(isset($event['DESCRIPTION'])) {
 				if(isset($event['DTEND'])) {
-					echo "<p><input type='checkbox' name='date_vacances[]' id='date_vacances_$cpt' value=\"".preg_replace('/"/', '', $event['DESCRIPTION'])."|".strftime("%d/%m/%Y", $ts_debut)."|".strftime("%d/%m/%Y", $ts_fin)."\" onchange=\"checkbox_change(this.id); changement();\" /><label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> ".$event['DESCRIPTION']."&nbsp;: Du ".strftime("%A %d/%m/%Y", $ts_debut)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".strftime("%A %d/%m/%Y", $ts_fin)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
+					echo "<p><input type='checkbox' name='date_vacances[]' id='date_vacances_$cpt' value=\"".preg_replace('/"/', '', $event['DESCRIPTION'])."|".strftime("%d/%m/%Y", $ts_debut)."|".strftime("%d/%m/%Y", $ts_fin)."\" onchange=\"checkbox_change(this.id); changement();\" /><label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> ".$event['DESCRIPTION']."&nbsp;: Du ".my_strftime("%A %d/%m/%Y", $ts_debut)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".my_strftime("%A %d/%m/%Y", $ts_fin)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
 				}
 			}
 
@@ -743,12 +743,12 @@ elseif($mode=="telech") {
 	echo "
 		<br />
 		<p>Dates hors du fichier ICS officiel&nbsp;:</p>
-		<p><input type='checkbox' name='date_vacances[]' id='date_vacances_$cpt' value=\"11 novembre|11/11/".$annee_0."|12/11/".$annee_0."\" onchange=\"checkbox_change(this.id); changement();\" /><label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 11 novembre (<em>Armistice</em>)&nbsp;: Du ".strftime("%A %d/%m/%Y", $ts_11_novembre)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".strftime("%A %d/%m/%Y", $ts_11_novembre+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
+		<p><input type='checkbox' name='date_vacances[]' id='date_vacances_$cpt' value=\"11 novembre|11/11/".$annee_0."|12/11/".$annee_0."\" onchange=\"checkbox_change(this.id); changement();\" /><label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 11 novembre (<em>Armistice</em>)&nbsp;: Du ".my_strftime("%A %d/%m/%Y", $ts_11_novembre)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".my_strftime("%A %d/%m/%Y", $ts_11_novembre+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
 	$cpt++;
 
 	$ts_1er_mai=mktime(0,0,0,5,1,$annee_1);
 	echo "
-		<p><input type='checkbox' name='date_vacances[]' id='date_vacances_$cpt' value=\"1er mai|01/05/".$annee_1."|02/05/".$annee_1."\" onchange=\"checkbox_change(this.id); changement();\" /><label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 1er mai (<em>Fête du travail</em>)&nbsp;: Du ".strftime("%A %d/%m/%Y", $ts_1er_mai)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".strftime("%A %d/%m/%Y", $ts_1er_mai+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
+		<p><input type='checkbox' name='date_vacances[]' id='date_vacances_$cpt' value=\"1er mai|01/05/".$annee_1."|02/05/".$annee_1."\" onchange=\"checkbox_change(this.id); changement();\" /><label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 1er mai (<em>Fête du travail</em>)&nbsp;: Du ".my_strftime("%A %d/%m/%Y", $ts_1er_mai)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".my_strftime("%A %d/%m/%Y", $ts_1er_mai+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
 	$cpt++;
 
 	$ts_8_mai=mktime(0,0,0,5,8,$annee_1);
@@ -758,7 +758,7 @@ elseif($mode=="telech") {
 					id='date_vacances_$cpt' "
 	   . "value=\"8 mai|08/05/".$annee_1."|09/05/".$annee_1."\" "
 	   . "onchange=\"checkbox_change(this.id); changement();\" />"
-	   . "<label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 8 mai (<em>Fête de la victoire de 1945</em>)&nbsp;: Du ".strftime("%A %d/%m/%Y", $ts_8_mai)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".strftime("%A %d/%m/%Y", $ts_8_mai+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
+	   . "<label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 8 mai (<em>Fête de la victoire de 1945</em>)&nbsp;: Du ".my_strftime("%A %d/%m/%Y", $ts_8_mai)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".my_strftime("%A %d/%m/%Y", $ts_8_mai+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
 	$cpt++;
 
 ?>
@@ -774,7 +774,7 @@ elseif($mode=="telech") {
 		   value="Pâques|<?php echo strftime('%d/%m/%Y', LundiPaques($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(LundiPaques($annee_1))); ?>" 
 		   onchange="checkbox_change(this.id); changement();" />
 	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
-		Lundi de Pâques : <?php echo strftime('%d %B %Y', LundiPaques($annee_1)); ?>
+		Lundi de Pâques : <?php echo my_strftime('%d %B %Y', LundiPaques($annee_1)); ?>
 	</label>
 </p>
 <?php $cpt++; ?>
@@ -785,7 +785,7 @@ elseif($mode=="telech") {
 		   value="Ascension|<?php echo strftime('%d/%m/%Y', Ascension($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(Ascension($annee_1))); ?>" 
 		   onchange="checkbox_change(this.id); changement();" />
 	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
-		Ascension : <?php echo strftime('%d %B %Y', Ascension($annee_1)); ?>
+		Ascension : <?php echo my_strftime('%d %B %Y', Ascension($annee_1)); ?>
 	</label>
 </p>
 <?php $cpt++; ?>
@@ -796,7 +796,7 @@ elseif($mode=="telech") {
 		   value="Vendredi suivant l'Ascension|<?php echo strftime('%d/%m/%Y', VendrediAscension($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(VendrediAscension($annee_1))); ?>" 
 		   onchange="checkbox_change(this.id); changement();" />
 	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
-		Vendredi de l'Ascension : <?php echo strftime('%d %B %Y', VendrediAscension($annee_1)); ?>
+		Vendredi de l'Ascension : <?php echo my_strftime('%d %B %Y', VendrediAscension($annee_1)); ?>
 	</label>
 </p>
 <?php $cpt++; ?>
@@ -807,7 +807,7 @@ elseif($mode=="telech") {
 		   value="Lundi de Pentecôte|<?php echo strftime('%d/%m/%Y', Pentecote($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(Pentecote($annee_1))); ?>" 
 		   onchange="checkbox_change(this.id); changement();" />
 	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
-		Lundi de Pentecôte : <?php echo strftime('%d %B %Y', Pentecote($annee_1)); ?>
+		Lundi de Pentecôte : <?php echo my_strftime('%d %B %Y', Pentecote($annee_1)); ?>
 	</label>
 </p>
 <?php $cpt++; ?>
