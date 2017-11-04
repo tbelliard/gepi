@@ -199,11 +199,11 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
         if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
             if ($nb_dev == '1') {
-                echo "<br /><center>Date sélectionnée : ".my_strftime("%A %d %B %Y", $today)."</center>\n";
-                echo "<br /><center><b><font style='font-variant: small-caps;'>Travaux personnels des $delai jours suivant le ".my_strftime("%d %B %Y", $today)." pour la classe de $classe_nom</font></b></center><br />\n";
+                echo "<br /><center>Date sélectionnée : ".french_strftime("%A %d %B %Y", $today)."</center>\n";
+                echo "<br /><center><b><font style='font-variant: small-caps;'>Travaux personnels des $delai jours suivant le ".french_strftime("%d %B %Y", $today)." pour la classe de $classe_nom</font></b></center><br />\n";
                 echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='5'><tr><td>\n";
             }
-            echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><font color='".$color_police_travaux."' style='font-variant: small-caps;'><b>Travaux personnels pour le ".my_strftime("%a %d %b", $jour)."</b></font>\n";
+            echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><font color='".$color_police_travaux."' style='font-variant: small-caps;'><b>Travaux personnels pour le ".french_strftime("%a %d %b", $jour)."</b></font>\n";
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
@@ -288,19 +288,19 @@ if ($delai != 0) {
         if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
             if ($nb_dev == '1') {
-                if ((my_strftime("%a",$today) == "lun") or (my_strftime("%a",$today) == "lun.")) {$debutsemaine = $today;}
-                if ((my_strftime("%a",$today) == "mar") or (my_strftime("%a",$today) == "mar.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 1), date('Y',$today) );}
-                if ((my_strftime("%a",$today) == "mer") or (my_strftime("%a",$today) == "mer.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 2), date('Y',$today) );}
-                if ((my_strftime("%a",$today) == "jeu") or (my_strftime("%a",$today) == "jeu.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 3), date('Y',$today) );}
-                if ((my_strftime("%a",$today) == "ven") or (my_strftime("%a",$today) == "ven.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 4), date('Y',$today) );}
-                if ((my_strftime("%a",$today) == "sam") or (my_strftime("%a",$today) == "sam.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 5), date('Y',$today) );}
-                if ((my_strftime("%a",$today) == "dim") or (my_strftime("%a",$today) == "dim.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 6), date('Y',$today) );}
+                if ((french_strftime("%a",$today) == "lun") or (french_strftime("%a",$today) == "lun.")) {$debutsemaine = $today;}
+                if ((french_strftime("%a",$today) == "mar") or (french_strftime("%a",$today) == "mar.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 1), date('Y',$today) );}
+                if ((french_strftime("%a",$today) == "mer") or (french_strftime("%a",$today) == "mer.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 2), date('Y',$today) );}
+                if ((french_strftime("%a",$today) == "jeu") or (french_strftime("%a",$today) == "jeu.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 3), date('Y',$today) );}
+                if ((french_strftime("%a",$today) == "ven") or (french_strftime("%a",$today) == "ven.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 4), date('Y',$today) );}
+                if ((french_strftime("%a",$today) == "sam") or (french_strftime("%a",$today) == "sam.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 5), date('Y',$today) );}
+                if ((french_strftime("%a",$today) == "dim") or (french_strftime("%a",$today) == "dim.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 6), date('Y',$today) );}
                 $finsemaine = mktime(0, 0, 0, date('m',$debutsemaine), (date('d',$debutsemaine) + 6), date('Y',$debutsemaine) );
-                echo "<p><strong><font color='blue' style='font-variant: small-caps;'>Semaine du ".my_strftime("%d %B", $debutsemaine)." au ".my_strftime("%d %B %Y", $finsemaine)."</font></strong></p>\n";
+                echo "<p><strong><font color='blue' style='font-variant: small-caps;'>Semaine du ".french_strftime("%d %B", $debutsemaine)." au ".french_strftime("%d %B %Y", $finsemaine)."</font></strong></p>\n";
                 echo "<b>Travaux personnels des $delai prochains jours</b>\n";
                 echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='2'><tr><td>\n";
             }
-            echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><div style='color: ".$color_police_travaux."; font-variant: small-caps; text-align: center; font-weight: bold;'>Travaux personnels<br />pour le ".my_strftime("%a %d %b", $jour)."</div>\n";
+            echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><div style='color: ".$color_police_travaux."; font-variant: small-caps; text-align: center; font-weight: bold;'>Travaux personnels<br />pour le ".french_strftime("%a %d %b", $jour)."</div>\n";
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
@@ -346,7 +346,7 @@ echo "<td valign=\"top\">";
 
 echo "<table border=0 width = 100%>";
 // Première ligne
-echo "<tr><td style=\"width:50%\"><b>" . my_strftime("%A %d %B %Y", $today) . "</b>";
+echo "<tr><td style=\"width:50%\"><b>" . french_strftime("%A %d %B %Y", $today) . "</b>";
 #y? sont les année, mois et jour précédents
 #t? sont les année, mois et jour suivants
 $i= mktime(0,0,0,$month,$day-1,$year);
@@ -360,7 +360,7 @@ $td = date("d",$i);
 echo "</td><td><a title=\"Aller au jour précédent\" href=\"index.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;id_groupe=$id_groupe\">&lt;&lt;</a></td><td align=center><a href=\"index.php?id_classe=$id_classe&amp;id_groupe=$id_groupe\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_classe=$id_classe&amp;id_groupe=$id_groupe\">&gt;&gt;</a></td></tr>\n";
 // affichage du texte
 echo "<tr><td colspan=\"4\">\n";
-echo "<center><b>les dix dernières séances jusqu'au ".my_strftime("%A %d %B %Y", $today)." :</b></center></td></tr>\n";
+echo "<center><b>les dix dernières séances jusqu'au ".french_strftime("%A %d %B %Y", $today)." :</b></center></td></tr>\n";
 //echo "<tr><td colspan=\"4\" style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background: rgb(199, 255, 153); padding: 2px; margin: 2px;\">";
 echo "<tr><td colspan=\"4\" style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\">\n";
 
@@ -418,7 +418,7 @@ while (true) {
     if ($not_dev->type == "t") {
         $titre .= "<strong>A faire pour le : </strong>\n";
     }
-    $titre .= "<b>" . my_strftime("%a %d %b %y", $not_dev->date_ct) . "</b>\n";
+    $titre .= "<b>" . french_strftime("%a %d %b %y", $not_dev->date_ct) . "</b>\n";
     // Numérotation des notices si plusieurs notice sur la même journée
     if ($not_dev->type == "c") {
       if ($date_ct_old == $not_dev->date_ct) {

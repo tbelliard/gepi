@@ -851,7 +851,7 @@ elseif(($mode=="upload")&&
 			$ts_debut=$ical2->iCalDateToUnixTimestamp($event['DTSTART'])+$decalage_horaire;
 			$ts_fin=$ical2->iCalDateToUnixTimestamp($event['DTEND'])+$decalage_horaire;
 			if($debug_edt=="y") {
-				echo "<p><span style='color:red'>Du ".my_strftime("%a %d/%m/%Y %H:%M:%S", $ts_debut)." au ".my_strftime("%a %d/%m/%Y %H:%M:%S", $ts_fin)."</span></p>";
+				echo "<p><span style='color:red'>Du ".french_strftime("%a %d/%m/%Y %H:%M:%S", $ts_debut)." au ".french_strftime("%a %d/%m/%Y %H:%M:%S", $ts_fin)."</span></p>";
 			}
 
 			if(isset($event['DESCRIPTION;LANGUAGE=fr'])) {

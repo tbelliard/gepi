@@ -343,7 +343,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 	if(getSettingAOui('log_envoi_mail')) {
 		$dirname="$gepiPath/backup/".getSettingValue("backup_directory");
 
-		$ts=my_strftime("%a %d/%m/%Y %H:%M:%S");
+		$ts=french_strftime("%a %d/%m/%Y %H:%M:%S");
 		$f=fopen($dirname."/debug_envoi_mail_.log");
 		fwrite($f, "==========================\n".$ts." :\r\n");
 		if(!$envoi) {
@@ -1138,7 +1138,7 @@ function genDateSelector($prefix, $day, $month, $year, $option)
 
     for($i = 1; $i <= 12; $i++)
     {
-        $m = my_strftime("%b", mktime(0, 0, 0, $i, 1, $year));
+        $m = french_strftime("%b", mktime(0, 0, 0, $i, 1, $year));
 
         echo "<option value=\"$i\"" . ($i == $month ? " selected=\"selected\"" : "") . ">$m</option>\n";
     }
@@ -2858,12 +2858,12 @@ function formate_date($date, $avec_heure="n", $avec_nom_jour="") {
 	if(isset($tab_date[2])) {
 		if($avec_nom_jour=="court") {
 			$instant=mktime(12, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]);
-			$jour=my_strftime("%a", $instant)." ";
+			$jour=french_strftime("%a", $instant)." ";
 			$retour.=$jour;
 		}
 		elseif($avec_nom_jour=="complet") {
 			$instant=mktime(12, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]);
-			$jour=my_strftime("%A", $instant)." ";
+			$jour=french_strftime("%A", $instant)." ";
 			$retour.=$jour;
 		}
 		$retour.=sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
@@ -3927,7 +3927,7 @@ function mail_connexion() {
 	$test_envoi_mail=getSettingValue("envoi_mail_connexion");
 
 	//$date = strftime("%Y-%m-%d %H:%M:%S");
-	//$date = ucfirst(my_strftime("%A %d-%m-%Y à %H:%M:%S"));
+	//$date = ucfirst(french_strftime("%A %d-%m-%Y à %H:%M:%S"));
 	//fdebug_mail_connexion("\$_SESSION['login']=".$_SESSION['login']."\n\$test_envoi_mail=$test_envoi_mail\n\$date=$date\n====================\n");
 
 	if($test_envoi_mail=="y") {
@@ -3939,7 +3939,7 @@ function mail_connexion() {
 			$lig_user = $res_user->fetch_object();
 			 if(check_mail($lig_user->email)) {
 				$adresse_ip = $_SERVER['REMOTE_ADDR'];
-				$date = ucfirst(my_strftime("%A %d-%m-%Y à %H:%M:%S"));
+				$date = ucfirst(french_strftime("%A %d-%m-%Y à %H:%M:%S"));
 
 				if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
 					$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
@@ -4013,7 +4013,7 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 
 		$adresse_ip = $_SERVER['REMOTE_ADDR'];
 		//$date = strftime("%Y-%m-%d %H:%M:%S");
-		$date = ucfirst(my_strftime("%A %d-%m-%Y à %H:%M:%S"));
+		$date = ucfirst(french_strftime("%A %d-%m-%Y à %H:%M:%S"));
 		//$url = parse_url($_SERVER['REQUEST_URI']);
 
 		if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
@@ -5628,10 +5628,10 @@ function get_date_slash_from_mysql_date($mysql_date, $avec_nom_jour="") {
 			if($avec_nom_jour!="") {
 				$instant=mktime(12, 0, 0, $tmp_tab2[1], $tmp_tab2[2], $tmp_tab2[0]);
 				if($avec_nom_jour=="court") {
-					$jour=my_strftime("%a", $instant)." ";
+					$jour=french_strftime("%a", $instant)." ";
 				}
 				else {
-					$jour=my_strftime("%A", $instant)." ";
+					$jour=french_strftime("%A", $instant)." ";
 				}
 			}
 
@@ -6700,19 +6700,19 @@ Dans le cas d'une absence ou d'un retard, il se peut qu'il ne soit pas pris en c
 	}
 
 	$message = '';
-	if (my_strftime("%a %d/%m/%Y", $date_debut)==my_strftime("%a %d/%m/%Y", $date_fin)) {
+	if (french_strftime("%a %d/%m/%Y", $date_debut)==french_strftime("%a %d/%m/%Y", $date_fin)) {
 	$message .= 'le ';
-	$message .= (my_strftime("%a %d/%m/%Y", $date_debut));
+	$message .= (french_strftime("%a %d/%m/%Y", $date_debut));
 	$message .= ' entre  ';
-	$message .= (my_strftime("%H:%M", $date_debut)).$flag;
+	$message .= (french_strftime("%H:%M", $date_debut)).$flag;
 	$message .= ' et ';
-	$message .= (my_strftime("%H:%M", $date_fin));
+	$message .= (french_strftime("%H:%M", $date_fin));
 
 	} else {
 	$message .= ' entre le ';
-	$message .= (my_strftime("%a %d/%m/%Y %H:%M", $date_debut)).$flag;
+	$message .= (french_strftime("%a %d/%m/%Y %H:%M", $date_debut)).$flag;
 	$message .= ' et le ';
-	$message .= (my_strftime("%a %d/%m/%Y %H:%M", $date_fin));
+	$message .= (french_strftime("%a %d/%m/%Y %H:%M", $date_fin));
 	}
 	return $message;
 }
@@ -8780,7 +8780,7 @@ function get_next_tel_jour($jour, $decalage_aujourdhui=0) {
 		fwrite($f, "============================================\n");
 		fwrite($f, "get_next_tel_jour($jour, $decalage_aujourdhui)\n\n");
 		fwrite($f, "Recherche du prochain: ".$tab[$jour]."\n");
-		fwrite($f, "Aujourd'hui: ".my_strftime("%a %d/%m/%Y")."\n");
+		fwrite($f, "Aujourd'hui: ".french_strftime("%a %d/%m/%Y")."\n");
 	}
 
 	$indice_courant=id_j_semaine();
@@ -8792,7 +8792,7 @@ function get_next_tel_jour($jour, $decalage_aujourdhui=0) {
 		$jour_suivant=id_j_semaine(time()+24*3600*$i);
 		if($debug=="y") {
 			fwrite($f, "\$jour_suivant=$jour_suivant\n");
-			fwrite($f, "soit ".my_strftime("%a %d/%m/%Y", time()+24*3600*$i)."\n");
+			fwrite($f, "soit ".french_strftime("%a %d/%m/%Y", time()+24*3600*$i)."\n");
 		}
 		if($jour_suivant==$jour) {
 			if($debug=="y") {
@@ -13407,7 +13407,7 @@ function get_tab_remplacements_eleve($login_eleve, $mode="") {
 			$chaine_a_traduire=preg_replace("/__PROF_REMPLACANT__/", $nom_prof[$tab[$cpt]['login_user']], $chaine_a_traduire);
 
 			$ts1=mysql_date_to_unix_timestamp($tab[$cpt]['date_debut_r']);
-			$date_heure=my_strftime("%A %d/%m/%Y de %H:%M", $ts1);
+			$date_heure=french_strftime("%A %d/%m/%Y de %H:%M", $ts1);
 			$ts2=mysql_date_to_unix_timestamp($tab[$cpt]['date_fin_r']);
 			$date_heure.=strftime(" à %H:%M", $ts2);
 			$chaine_a_traduire=preg_replace("/__DATE_HEURE__/", $date_heure, $chaine_a_traduire);
@@ -17287,7 +17287,7 @@ function id_j_semaine($time=0) {
 
 // Traduction US-FR des dates strftime() sous windows quand des locales manquent.
 // Fonction à utiliser en lieu et place de strftime() si le motif contient %A, %a, %B ou %b
-function my_strftime($motif="%A", $ts="") {
+function french_strftime($motif="%A", $ts="") {
 	global $temoin_strftime_us;
 
 	if($ts=="") {
@@ -17395,7 +17395,8 @@ function id_s_annee($ts_date) {
 	// on est obligé de s'appuyer sur %w, car %u n'est pas pris en compte sous Window$
 	$id_j_ts_date=strftime('%w',$ts_date);
 	// calcul de la date du jeudi de la même semaine que $ts_date
-	$ts_jeudi_de_la_semaine=($id_j_ts_date==0)?($ts_date-3*24*3600):($ts_date-($id_j_ts_date-4)*24*3600);
+	//$ts_jeudi_de_la_semaine=($id_j_ts_date==0)?($ts_date-3*24*3600):($ts_date-($id_j_ts_date-4)*24*3600);
+	$ts_jeudi_de_la_semaine=($id_j_ts_date==0)?($ts_date-3*86400):($ts_date-($id_j_ts_date-4)*86400);
 	// numéro du jeudi dans l'année
 	$n_ts_jeudi_de_la_semaine=strftime('%j',$ts_jeudi_de_la_semaine);
 	// finalement

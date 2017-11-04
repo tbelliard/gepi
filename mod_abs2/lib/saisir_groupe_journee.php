@@ -41,7 +41,7 @@ $dt_derniere_heure->setTime($col_creneaux->getLast()->getHeurefinDefiniePeriode(
 $derniere_heure = $dt_derniere_heure->format('U');
 $derniere_heure = min($derniere_heure, date('U'));
 
-$jour = my_strftime  ('%A',  $dt_date_absence_eleve->format('U'));
+$jour = french_strftime  ('%A',  $dt_date_absence_eleve->format('U'));
 
 if ('cours' == $coursCreneaux) {
 
@@ -321,7 +321,7 @@ if ('cours' == $coursCreneaux) {
 		</p>
 		<p class="expli_page choix_fin center">
 			Saisie des absences du
-			<strong><?php echo my_strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
+			<strong><?php echo french_strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
 			pour 
 			<strong>
 			<?php if (isset($current_groupe) && $current_groupe != null) {

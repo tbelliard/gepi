@@ -1375,7 +1375,7 @@ while($timestamp_courant<=$timestamp_fin) {
 	// Rechercher les cours du prof dans l'EDT:
 	//echo "get_cours_prof($login_user, ".strftime("%A", $timestamp_courant).", $timestamp_courant)<br />";
 	//$tab_cours_prof_absent=get_cours_prof($login_user, strftime("%A", $timestamp_courant), $timestamp_courant);
-	$tab_cours_prof_absent=get_cours_prof2($login_user, my_strftime("%A", $timestamp_courant), $timestamp_courant);
+	$tab_cours_prof_absent=get_cours_prof2($login_user, french_strftime("%A", $timestamp_courant), $timestamp_courant);
 	/*
 	echo "<pre>";
 	print_r($tab_cours_prof_absent);
@@ -1387,7 +1387,7 @@ while($timestamp_courant<=$timestamp_fin) {
 	$tab_jours_remplacements[]=$date_aaaammjj;
 	echo "
 <a name='jour_".$date_aaaammjj."'></a>
-<h4>".ucfirst(my_strftime("%A %d/%m/%Y", $timestamp_courant))."</h4>
+<h4>".ucfirst(french_strftime("%A %d/%m/%Y", $timestamp_courant))."</h4>
 
 <table class='boireaus boireaus_alt' style='margin-left:3em;'>
 	<thead>
@@ -1580,7 +1580,7 @@ echo "<tr><td colspan='5'>
 
 											if(!in_array($lig_prof->login, $tab_profs_exclus_des_propositions_de_remplacement)) {
 
-												$tab_cours_prof_courant=get_cours_prof2($lig_prof->login, my_strftime("%A", $timestamp_courant), $timestamp_courant);
+												$tab_cours_prof_courant=get_cours_prof2($lig_prof->login, french_strftime("%A", $timestamp_courant), $timestamp_courant);
 												// Il faudrait affiner avec les longueurs de cours...
 												//if(!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][$key])) {
 												if((!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][0]))&&
@@ -1717,7 +1717,7 @@ echo "<tr><td colspan='5'>
 
 										if(!in_array($lig_prof->login, $tab_profs_exclus_des_propositions_de_remplacement)) {
 
-											$tab_cours_prof_courant=get_cours_prof2($lig_prof->login, my_strftime("%A", $timestamp_courant), $timestamp_courant);
+											$tab_cours_prof_courant=get_cours_prof2($lig_prof->login, french_strftime("%A", $timestamp_courant), $timestamp_courant);
 											// Il faudrait affiner avec les longueurs de cours...
 											//if(!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][$key])) {
 											if((!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][0]))&&

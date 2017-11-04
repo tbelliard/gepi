@@ -236,7 +236,7 @@ Afficher les items :
 		$month = mb_substr($date, 5, 2);
 		$year = mb_substr($date, 0, 4);
 		
-		$f_date = my_strftime("%A %d %B %Y", mktime(0,0,0,$month,$day,$year));
+		$f_date = french_strftime("%A %d %B %Y", mktime(0,0,0,$month,$day,$year));
 
 
 		$inscrit = sql_query1("select id from inscription_j_login_items

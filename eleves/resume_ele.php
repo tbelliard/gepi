@@ -101,7 +101,7 @@ if($affichage!="semaine") {
 
 			// Tester l'heure courante dans la journée
 			$tab_horaire_etab=array();
-			$sql="SELECT * FROM horaires_etablissement WHERE jour_horaire_etablissement='".my_strftime("%A")."' AND fermeture_horaire_etablissement>'".strftime("%H:%M:%S")."';";
+			$sql="SELECT * FROM horaires_etablissement WHERE jour_horaire_etablissement='".french_strftime("%A")."' AND fermeture_horaire_etablissement>'".strftime("%H:%M:%S")."';";
 			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"],$sql);
 			if(mysqli_num_rows($res)>0) {
@@ -150,7 +150,7 @@ if($affichage!="semaine") {
 
 	$tab_jour=get_tab_jour_ouverture_etab();
 
-	if(!in_array(my_strftime("%A", $ts_display_date), $tab_jour)) {
+	if(!in_array(french_strftime("%A", $ts_display_date), $tab_jour)) {
 		// Jour suivant
 		// Boucler sur 7 jours pour trouver le jour ouvré suivant
 		// Il faudrait même chercher une date hors vacances
@@ -161,7 +161,7 @@ if($affichage!="semaine") {
 		$cpt=0;
 		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
 			$ts_test+=3600*24;
-			if(in_array(my_strftime("%A", $ts_test), $tab_jour)) {
+			if(in_array(french_strftime("%A", $ts_test), $tab_jour)) {
 				$ts_display_date_suivante=$ts_test;
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
 				$display_date_suivante_num_jour=id_j_semaine($ts_test);

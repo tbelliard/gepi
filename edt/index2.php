@@ -202,10 +202,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 		}
 		else {
 			$ts=time();
-			if(mb_strtolower(my_strftime("%A"))!=$lig->jour_semaine) {
+			if(mb_strtolower(french_strftime("%A"))!=$lig->jour_semaine) {
 				for($i=1;$i<7;$i++) {
 					$ts+=3600*24;
-					if(mb_strtolower(my_strftime("%A", $ts))==$lig->jour_semaine) {
+					if(mb_strtolower(french_strftime("%A", $ts))==$lig->jour_semaine) {
 						break;
 					}
 				}
@@ -377,10 +377,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 			}
 			else {
 				$ts=time();
-				if(mb_strtolower(my_strftime("%A"))!=$lig->jour_semaine) {
+				if(mb_strtolower(french_strftime("%A"))!=$lig->jour_semaine) {
 					for($i=1;$i<7;$i++) {
 						$ts+=3600*24;
-						if(mb_strtolower(my_strftime("%A", $ts))==$lig->jour_semaine) {
+						if(mb_strtolower(french_strftime("%A", $ts))==$lig->jour_semaine) {
 							break;
 						}
 					}
@@ -457,7 +457,7 @@ if($affichage!="semaine") {
 
 	$tab_jour=get_tab_jour_ouverture_etab();
 
-	if(!in_array(my_strftime("%A", $ts_display_date), $tab_jour)) {
+	if(!in_array(french_strftime("%A", $ts_display_date), $tab_jour)) {
 		// Jour suivant
 		// Boucler sur 7 jours pour trouver le jour ouvré suivant
 		// Il faudrait même chercher une date hors vacances
@@ -468,7 +468,7 @@ if($affichage!="semaine") {
 		$cpt=0;
 		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
 			$ts_test+=3600*24;
-			if(in_array(my_strftime("%A", $ts_test), $tab_jour)) {
+			if(in_array(french_strftime("%A", $ts_test), $tab_jour)) {
 				$ts_display_date_suivante=$ts_test;
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
 				$display_date_suivante_num_jour=id_j_semaine($ts_test);

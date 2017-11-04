@@ -274,7 +274,7 @@ echo "<div class=\"centre_table\">\n";
 			echo "new LiveClock();\n";
 			echo "//-->";
 			echo "\n</script>\n</p>\n";
-			echo "<noscript>\n<p>".my_strftime("%A %d %B %Y", $today)."</p>\n</noscript>";
+			echo "<noscript>\n<p>".french_strftime("%A %d %B %Y", $today)."</p>\n</noscript>";
 //<p class='menu_retour'>".get_date_php()."</p>\n</noscript>";
 			// On gère la sélection de l'élève
 			if ($_SESSION['statut'] == 'responsable') {
@@ -450,8 +450,8 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
           if ($nb_dev == '1') {
 
             // Correction Régis : création de classes pour gérer la mise en page par fichier CSS
-            echo "<p class=\"centre_texte no_print\">Date sélectionnée : ".my_strftime("%A %d %B %Y", $today)."\n</p>\n";
-            echo "<h2 class=\"centre_texte_pt_cap petit_h2\">Travaux personnels des $delai jours suivant le ".my_strftime("%d %B %Y", $today)."</h2>\n";
+            echo "<p class=\"centre_texte no_print\">Date sélectionnée : ".french_strftime("%A %d %B %Y", $today)."\n</p>\n";
+            echo "<h2 class=\"centre_texte_pt_cap petit_h2\">Travaux personnels des $delai jours suivant le ".french_strftime("%d %B %Y", $today)."</h2>\n";
 
             echo "<div class='cel_trav_futur couleur_bord_tableau_notice color_fond_notices_f'>\n";
 
@@ -465,7 +465,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
           //if ($i > 0) {$margin_left = 'margin-left:'.($i * 15).'%;';}else{$margin_left = NULL;}
           //echo "\n".'<div style="position relative;'.$margin_left.'width: 15%;">';
           echo "<h3 class=\"titre_a_faire couleur_bord_tableau_notice color_fond_notices_f color_police_travaux\">\n
-                  Travaux personnels pour le ".my_strftime("%a %d %b", $jour)."</h3>\n";
+                  Travaux personnels pour le ".french_strftime("%a %d %b", $jour)."</h3>\n";
 
 			// 20130727
 			$class_notice_dev_fait="matiere_a_faire couleur_bord_tableau_notice color_police_matieres color_fond_notices_t_fait";
@@ -526,7 +526,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 
 			/*
 			if($special_devoirs=="controle") {
-				$content.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $date_devoirs)."\" /></div>";
+				$content.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".french_strftime("%A %d/%m/%Y", $date_devoirs)."\" /></div>";
 			}
 			*/
 			$chaine_tag=get_liste_tag_notice_cdt($id_devoirs, 't', "right");
@@ -656,13 +656,13 @@ echo "<div class=\"centre_cont_texte\">\n";
           if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
             if ($nb_dev == '1') {
-              if ((my_strftime("%a",$today) == "lun") or (my_strftime("%a",$today) == "lun.")) {$debutsemaine = $today;}
-              if ((my_strftime("%a",$today) == "mar") or (my_strftime("%a",$today) == "mar.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 1), date('Y',$today) );}
-              if ((my_strftime("%a",$today) == "mer") or (my_strftime("%a",$today) == "mer.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 2), date('Y',$today) );}
-              if ((my_strftime("%a",$today) == "jeu") or (my_strftime("%a",$today) == "jeu.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 3), date('Y',$today) );}
-              if ((my_strftime("%a",$today) == "ven") or (my_strftime("%a",$today) == "ven.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 4), date('Y',$today) );}
-              if ((my_strftime("%a",$today) == "sam") or (my_strftime("%a",$today) == "sam.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 5), date('Y',$today) );}
-              if ((my_strftime("%a",$today) == "dim") or (my_strftime("%a",$today) == "dim.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 6), date('Y',$today) );}
+              if ((french_strftime("%a",$today) == "lun") or (french_strftime("%a",$today) == "lun.")) {$debutsemaine = $today;}
+              if ((french_strftime("%a",$today) == "mar") or (french_strftime("%a",$today) == "mar.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 1), date('Y',$today) );}
+              if ((french_strftime("%a",$today) == "mer") or (french_strftime("%a",$today) == "mer.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 2), date('Y',$today) );}
+              if ((french_strftime("%a",$today) == "jeu") or (french_strftime("%a",$today) == "jeu.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 3), date('Y',$today) );}
+              if ((french_strftime("%a",$today) == "ven") or (french_strftime("%a",$today) == "ven.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 4), date('Y',$today) );}
+              if ((french_strftime("%a",$today) == "sam") or (french_strftime("%a",$today) == "sam.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 5), date('Y',$today) );}
+              if ((french_strftime("%a",$today) == "dim") or (french_strftime("%a",$today) == "dim.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 6), date('Y',$today) );}
               $finsemaine = mktime(0, 0, 0, date('m',$debutsemaine), (date('d',$debutsemaine) + 6), date('Y',$debutsemaine) );
  //echo "<p><strong><font color='blue' style='font-variant: small-caps;'>Semaine du ".strftime("%d %B", $debutsemaine)." au ".strftime("%d %B %Y", $finsemaine)."</font></strong></p>\n";
 //echo "<strong>Travaux personnels des $delai prochains jours</strong>\n";
@@ -671,7 +671,7 @@ echo "<div class=\"centre_cont_texte\">\n";
 // ---------------------------- Affichage de la semaine et du titre  ---
 
 // Correction Régis : ajout de class pour gérer la mise en page + <strong> à la place de <strong>
-              echo "<p class=\"sem_du_au\"><strong>Semaine du ".my_strftime("%d %B", $debutsemaine)." au ".my_strftime("%d %B %Y", $finsemaine)."</strong></p>\n";
+              echo "<p class=\"sem_du_au\"><strong>Semaine du ".french_strftime("%d %B", $debutsemaine)." au ".french_strftime("%d %B %Y", $finsemaine)."</strong></p>\n";
               echo "<h2 class='h2_label'><strong>Travaux personnels des $delai prochains jours</strong></h2>\n";
 
 // ---------------------------- Affichage des travaux à faire (div div div)  ---
@@ -682,8 +682,8 @@ echo "<div class=\"centre_cont_texte\">\n";
 //                  echo "<div>\n";
             }
 
-            //echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><div style='color: ".$color_police_travaux."; font-variant: small-caps; text-align: center; font-weight: bold;'>Travaux personnels<br />pour le ".my_strftime("%a %d %b", $jour)."</div>\n";
-            echo "<h3 class='titre_a_faire color_police_travaux'>Travaux personnels pour le<br />".my_strftime("%a %d %b", $jour)."</h3>\n";
+            //echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><div style='color: ".$color_police_travaux."; font-variant: small-caps; text-align: center; font-weight: bold;'>Travaux personnels<br />pour le ".french_strftime("%a %d %b", $jour)."</div>\n";
+            echo "<h3 class='titre_a_faire color_police_travaux'>Travaux personnels pour le<br />".french_strftime("%a %d %b", $jour)."</h3>\n";
 
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
@@ -717,7 +717,7 @@ echo "<div class=\"centre_cont_texte\">\n";
 		/*
 		$temoin_controle="";
 		if($special_devoirs=="controle") {
-			$temoin_controle.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $date_devoirs)."\" /></div>";
+			$temoin_controle.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".french_strftime("%A %d/%m/%Y", $date_devoirs)."\" /></div>";
 		}
 		*/
 
@@ -775,7 +775,7 @@ if ($infos_generales != '') {
     echo "<div class=\"cct_droit\">\n";
 // ----------------------------  Titre (div div div) --
             echo "<div class='titre_notice'>\n";
-              echo "<h2 class='h2_label'><strong>les dix dernières séances jusqu'au ".my_strftime("%A %d %B %Y", $today)." :</strong></h2>\n";
+              echo "<h2 class='h2_label'><strong>les dix dernières séances jusqu'au ".french_strftime("%A %d %B %Y", $today)." :</strong></h2>\n";
             echo "</div>\n";
 // ----------------------------  Fin titre (div div /div) --
 
@@ -903,7 +903,7 @@ $td = date("d",$i);
               if ($not_dev->type == "t") {
                 $titre .= "<strong>A faire pour le : </strong>\n";
               }
-              $titre .= "<strong>" . my_strftime("%a %d %b %y", $not_dev->date_ct) . "</strong>\n";
+              $titre .= "<strong>" . french_strftime("%a %d %b %y", $not_dev->date_ct) . "</strong>\n";
               // Numérotation des notices si plusieurs notice sur la même journée
             if ($not_dev->type == "c") {
               if ($date_ct_old == $not_dev->date_ct) {
@@ -958,7 +958,7 @@ $td = date("d",$i);
 
 				/*
 				if($not_dev->special=="controle") {
-					echo "<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $not_dev->date_ct)."\" /></div>";
+					echo "<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".french_strftime("%A %d/%m/%Y", $not_dev->date_ct)."\" /></div>";
 				}
 				*/
 

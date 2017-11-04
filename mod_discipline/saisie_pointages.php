@@ -328,7 +328,7 @@ if((isset($_POST['validation_saisie']))&&(isset($id_creneau))&&(isset($tab_crene
 
 													$texte_mail="Bonjour ".$tab_u[$loop_u]['civilite']." ".$tab_u[$loop_u]['nom']." ".$tab_u[$loop_u]['prenom'].",
 
-Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".
+Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".
 
 Cordialement.
 -- 
@@ -356,7 +356,7 @@ Message automatique Gepi.";
 
 														$texte_mail="Bonjour ".$tab_resp[$loop_resp]['civilite']." ".$tab_resp[$loop_resp]['nom']." ".$tab_resp[$loop_resp]['prenom'].",
 
-Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".
+Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".
 
 Cordialement.
 -- 
@@ -382,7 +382,7 @@ Message automatique Gepi.";
 
 															$texte_mail="Bonjour ".$tab_resp[$loop_resp]['civilite']." ".$tab_resp[$loop_resp]['nom']." ".$tab_resp[$loop_resp]['prenom'].",
 
-Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".
+Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".
 
 Cordialement.
 -- 
@@ -408,7 +408,7 @@ Message automatique Gepi.";
 
 												$texte_mail="Bonjour ".$nom_prenom_eleve.",
 
-Vous avez atteint le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") le ".my_strftime("%a %d/%m/%Y")." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".
+Vous avez atteint le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") le ".french_strftime("%a %d/%m/%Y")." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".
 Il faudrait veiller à réagir.
 
 
@@ -460,7 +460,7 @@ Message automatique Gepi.";
 											}
 
 											for($loop_u=0;$loop_u<count($tab_u);$loop_u++) {
-												$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par <a href='$gepiPath/eleves/visu_eleve.php?ele_login='>".$nom_prenom_eleve."</a> pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".");
+												$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par <a href='$gepiPath/eleves/visu_eleve.php?ele_login='>".$nom_prenom_eleve."</a> pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".");
 												$id_message=set_message2($contenu_cor,time(),time()+3600*24*7,time()+3600*24*7,"_",$tab_u[$loop_u]);
 												ajout_bouton_supprimer_message($contenu_cor,$id_message);
 											}
@@ -468,7 +468,7 @@ Message automatique Gepi.";
 											if($tab_seuil_periode[$nb_pointages][$loop]['responsable']=='y') {
 												$tab_resp=get_resp_from_ele_login($login_ele,"yy");
 												for($loop_resp=0;$loop_resp<count($tab_resp);$loop_resp++) {
-													$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".");
+													$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".");
 													$id_message=set_message2($contenu_cor,time(),time()+3600*24*7,time()+3600*24*7,"_",$tab_resp[$loop_resp]['login']);
 													//if($id_message) {
 														ajout_bouton_supprimer_message($contenu_cor,$id_message);
@@ -480,7 +480,7 @@ Message automatique Gepi.";
 											}
 
 											if($tab_seuil_periode[$nb_pointages][$loop]['eleve']=='y') {
-												$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Vous avez atteint le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") le ".my_strftime("%a %d/%m/%Y")." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".<br />Il faudrait réagir.<br />");
+												$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Vous avez atteint le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") le ".french_strftime("%a %d/%m/%Y")." pour la période ".$tab_per[$current_id_classe]['nom_calendrier'].".<br />Il faudrait réagir.<br />");
 												$id_message=set_message2($contenu_cor,time(),time()+3600*24*7,time()+3600*24*7,"_",$login_ele);
 												ajout_bouton_supprimer_message($contenu_cor,$id_message);
 											}
@@ -543,7 +543,7 @@ Message automatique Gepi.";
 
 												$texte_mail="Bonjour ".$tab_u[$loop_u]['civilite']." ".$tab_u[$loop_u]['nom']." ".$tab_u[$loop_u]['prenom'].",
 
-Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve.".
+Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve.".
 
 Cordialement.
 -- 
@@ -571,7 +571,7 @@ Message automatique Gepi.";
 
 													$texte_mail="Bonjour ".$tab_resp[$loop_resp]['civilite']." ".$tab_resp[$loop_resp]['nom']." ".$tab_resp[$loop_resp]['prenom'].",
 
-Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve.".
+Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve.".
 
 Cordialement.
 -- 
@@ -597,7 +597,7 @@ Message automatique Gepi.";
 
 														$texte_mail="Bonjour ".$tab_resp[$loop_resp]['civilite']." ".$tab_resp[$loop_resp]['nom']." ".$tab_resp[$loop_resp]['prenom'].",
 
-Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve.".
+Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve.".
 
 Cordialement.
 -- 
@@ -623,7 +623,7 @@ Message automatique Gepi.";
 
 											$texte_mail="Bonjour ".$nom_prenom_eleve.",
 
-Vous avez atteint le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") le ".my_strftime("%a %d/%m/%Y").".
+Vous avez atteint le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") le ".french_strftime("%a %d/%m/%Y").".
 Il faudrait veiller à réagir.
 
 
@@ -675,7 +675,7 @@ Message automatique Gepi.";
 										}
 
 										for($loop_u=0;$loop_u<count($tab_u);$loop_u++) {
-											$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par <a href='$gepiPath/eleves/visu_eleve.php?ele_login='>".$nom_prenom_eleve."</a>.");
+											$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par <a href='$gepiPath/eleves/visu_eleve.php?ele_login='>".$nom_prenom_eleve."</a>.");
 											$id_message=set_message2($contenu_cor,time(),time()+3600*24*7,time()+3600*24*7,"_",$tab_u[$loop_u]);
 											ajout_bouton_supprimer_message($contenu_cor,$id_message);
 										}
@@ -683,14 +683,14 @@ Message automatique Gepi.";
 										if($tab_seuil_annuel[$nb_pointages][$loop]['responsable']=='y') {
 											$tab_resp=get_resp_from_ele_login($login_ele,"yy");
 											for($loop_resp=0;$loop_resp<count($tab_resp);$loop_resp++) {
-												$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".my_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve.".");
+												$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") a été atteint le ".french_strftime("%a %d/%m/%Y")." par ".$nom_prenom_eleve.".");
 												$id_message=set_message2($contenu_cor,time(),time()+3600*24*7,time()+3600*24*7,"_",$tab_resp[$loop_resp]['login']);
 												ajout_bouton_supprimer_message($contenu_cor,$id_message);
 											}
 										}
 
 										if($tab_seuil_annuel[$nb_pointages][$loop]['eleve']=='y') {
-											$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Vous avez atteint le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") le ".my_strftime("%a %d/%m/%Y").".<br />Il faudrait réagir.<br />");
+											$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Vous avez atteint le seuil de ".$nb_pointages." ".$tab_type_pointage_discipline['id_type'][$id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$id_type]['description'].") le ".french_strftime("%a %d/%m/%Y").".<br />Il faudrait réagir.<br />");
 											$id_message=set_message2($contenu_cor,time(),time()+3600*24*7,time()+3600*24*7,"_",$login_ele);
 											ajout_bouton_supprimer_message($contenu_cor,$id_message);
 										}
@@ -1117,7 +1117,7 @@ $message_creneau
 <form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_saisie_sp\">
 	<fieldset class='fieldset_opacite50'>
 		<div style='float:right; width:20em;'><input type='submit' value=\"Enregistrer les saisies pour le créneau ".$tab_creneaux[$id_creneau]['nom_creneau']."\" /></div>
-		<p class='bold'>Saisies pour le ".my_strftime("%A %d/%m/%Y", $ts_display_date)."</p>
+		<p class='bold'>Saisies pour le ".french_strftime("%A %d/%m/%Y", $ts_display_date)."</p>
 		".add_token_field()."
 		<input type='hidden' name='validation_saisie' value='y' />
 		".(isset($id_groupe) ? "<input type='hidden' name='id_groupe' value='$id_groupe' />" : "")."

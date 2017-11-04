@@ -804,7 +804,7 @@ if ($id_groupe != null) {
        echo "<br />(Identifiant : ".getSettingValue("cahiers_texte_login_pub")." - Mot de passe : ".getSettingValue("cahiers_texte_passwd_pub").")\n";
     }
 
-	echo "<p class='grand'>".my_strftime("%A %d %B %Y", $today)."</p>\n";
+	echo "<p class='grand'>".french_strftime("%A %d %B %Y", $today)."</p>\n";
 	if ($delai > 0) {
 		$cr_cours = "<p style=\"border: 1px solid grey; background-color: ".$color_fond_notices["c"]."; font-weight: bold;\">
 			<a href=\"index.php?year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=" . $current_group["id"] ."\" title=\"Cr&eacute;er/modifier les comptes rendus de s&eacute;ance de cours\">
@@ -958,7 +958,7 @@ echo "</td>\n";
 // Deuxième colonne
 echo "<td valign=\"top\" width=\"60%\">\n";
 echo "<center>\n";
-echo "<p class='grand'>".my_strftime("%A %d %B %Y", $today)."</p>";
+echo "<p class='grand'>".french_strftime("%A %d %B %Y", $today)."</p>";
 if ($delai > 0) {
     if (isset($edit_devoir)) {
     	//echo "<a href=\"index.php?edit_devoir=yes&amp;year=".$annee_lendemain."&amp;month=".$mois_lendemain."&amp;day=".$jour_lendemain."&amp;id_groupe=". $current_group["id"] ."\" title=\"Saisir un nouveau travail personnel &agrave; faire\">Nouveaux travaux personnels à effectuer</a> - \n";
@@ -1009,7 +1009,7 @@ foreach ($current_group["classes"]["list"] as $_id_classe) {
     if ($total[$_id_classe] > 0) {
         echo "<p>La classe " . $current_group["classes"]["classes"][$_id_classe]["classe"] . " a  <a href=\"javascript:centrerpopup('liste_tous_devoirs.php?classe=$_id_classe&amp;debut=$aujourdhui',260,320,'scrollbars=yes,statusbar=no,resizable=yes');\"><strong>" . $total[$_id_classe] . "</strong> ";
         echo (($total[$_id_classe] == 1) ? "travail personnel" : "travaux personnels");
-        echo "</a> jusqu'au <strong>" . my_strftime("%a %d %b %y", $date[$_id_classe]) . "</strong>.</p>\n";
+        echo "</a> jusqu'au <strong>" . french_strftime("%a %d %b %y", $date[$_id_classe]) . "</strong>.</p>\n";
     }
 }
 
@@ -1142,7 +1142,7 @@ while (true) {
     if (($not_dev->date_ct > $today) and ($not_dev->type == "t")) {
         echo("<strong>A faire pour le :</strong><br/>\n");
     }
-    echo("<b>" . my_strftime("%a %d %b %y", $not_dev->date_ct) . "</b>\n");
+    echo("<b>" . french_strftime("%a %d %b %y", $not_dev->date_ct) . "</b>\n");
 
     // Numérotation des notices si plusieurs notice sur la même journée
     if ($not_dev->type == "c") {
@@ -1180,7 +1180,7 @@ while (true) {
 				$content_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 				$content_balise .=(" ");
 				$content_balise .=(
-				"<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression de la notice du " . my_strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
+				"<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression de la notice du " . french_strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
 				);
 			}
 
@@ -1206,7 +1206,7 @@ while (true) {
 				$content_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "&amp;edit_devoir=yes\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 				$content_balise .=(" ");
 				$content_balise .=(
-				"<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_devoirs&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression du devoir du " . my_strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
+				"<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_devoirs&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression du devoir du " . french_strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
 				);
 			}
 
@@ -1382,7 +1382,7 @@ if (isset($edit_devoir)) {
     else
         echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Compte rendu ";
 	if (isset($num_notice)) echo " <b>N° ".$num_notice."</b> ";
-//    echo "de la séance du " . my_strftime("%A %d %B %Y", $today);
+//    echo "de la séance du " . french_strftime("%A %d %B %Y", $today);
     if (isset($id_ct)) {
         echo " - <b><font color=\"red\">Modification de la notice</font></b>";
         if (!isset($info))
@@ -1416,7 +1416,7 @@ else if (isset($edit_devoir)) {
     $temp .=  "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"calendrier\"/></a>\n";
     //$temp .= img_calendrier_js("display_date", "img_bouton_display_date");;
 } else {
-    $temp = my_strftime("%A %d %B %Y", $today);
+    $temp = french_strftime("%A %d %B %Y", $today);
 } ?>
 <table border="0" width="100%" summary="Tableau de saisie de notice">
 <tr>
@@ -1676,7 +1676,7 @@ if ($last_date != "-1") {
     echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\">\n";
     echo add_token_field();
 
-    echo "Date de la notice la plus ancienne : ".my_strftime("%A %d %B %Y", $last_date)."<br /><br />";
+    echo "Date de la notice la plus ancienne : ".french_strftime("%A %d %B %Y", $last_date)."<br /><br />";
 
     echo "<b>Effacer toutes les données</b> (textes et documents joints) du cahier de textes avant la date ci-dessous :<br />\n";
     genDateSelector("sup_", $sday, $smonth, $syear,"more_years");

@@ -675,7 +675,7 @@ require_once("'.$pref_arbo.'/entete.php");
 			while($lig=mysqli_fetch_object($res)) {
 		
 				//echo "$lig->date_ct<br />";
-				$date_notice=my_strftime("%a %d %b %y", $lig->date_ct);
+				$date_notice=french_strftime("%a %d %b %y", $lig->date_ct);
 				if(!in_array($date_notice,$tab_dates)) {
 					$tab_dates[]=$date_notice;
 					$tab_dates2[]=$lig->date_ct;
@@ -706,7 +706,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				(($lig->date_visibilite_eleve!="")&&(mysql_date_to_unix_timestamp($lig->date_visibilite_eleve)<=$timestamp_courant))||
 				(verif_groupe_appartient_prof($lig->id_groupe)==1)) {
 					//echo "$lig->date_ct<br />";
-					$date_dev=my_strftime("%a %d %b %y", $lig->date_ct);
+					$date_dev=french_strftime("%a %d %b %y", $lig->date_ct);
 					if(!in_array($date_dev,$tab_dates)) {
 						$tab_dates[]=$date_dev;
 						$tab_dates2[]=$lig->date_ct;
@@ -802,7 +802,7 @@ require_once("'.$pref_arbo.'/entete.php");
 								$retour.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%; background-color:".$color_fond_notices['t']."'>";
 
 								if($value['special']=="controle") {
-									$retour.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $value['date_ct'])."\" /></div>";
+									$retour.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".french_strftime("%A %d/%m/%Y", $value['date_ct'])."\" /></div>";
 								}
 
 								$retour.=$value['contenu'];
@@ -942,7 +942,7 @@ require_once("'.$pref_arbo.'/entete.php");
 					$retour .=(" ");
 
 					$retour .=("<a href=\"#\" onclick=\"javascript:
-					suppressionNoticePrivee('".my_strftime("%A %d %B %Y", $lig->date_ct)."','".$lig->id_ct."', '".$lig->id_groupe."','".add_token_in_js_func()."');
+					suppressionNoticePrivee('".french_strftime("%A %d %B %Y", $lig->date_ct)."','".$lig->id_ct."', '".$lig->id_groupe."','".add_token_in_js_func()."');
 					new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 					getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$lig->id_groupe."&today=all');
 					return false;
@@ -1013,7 +1013,7 @@ require_once("'.$pref_arbo.'/entete.php");
 					$retour .=(" ");
 
 					$retour .=("<a href=\"#\" onclick=\"javascript:
-					suppressionNoticePrivee('".my_strftime("%A %d %B %Y", $lig->date_ct)."','".$lig->id_ct."', '".$lig->id_groupe."','".add_token_in_js_func()."');
+					suppressionNoticePrivee('".french_strftime("%A %d %B %Y", $lig->date_ct)."','".$lig->id_ct."', '".$lig->id_groupe."','".add_token_in_js_func()."');
 					new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 					getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$lig->id_groupe."&today=all#liste_NP_notice_privee_".$id_ct_np_prec."');
 					return false;

@@ -200,7 +200,7 @@ function get_days_from_week_number($num_semaine ,$annee) {
 		//$ts=strtotime($annee."W".$num_semaine.$num_jour);
 		//$ts=strtotime($annee."W".$num_semaine."-".$num_jour);
 		$ts=strtotime($annee."-W".sprintf("%02d",$num_semaine)."-".$num_jour);
-		$tab['num_jour'][$num_jour]['nom_jour']=my_strftime("%A", $ts);
+		$tab['num_jour'][$num_jour]['nom_jour']=french_strftime("%A", $ts);
 		$tab['num_jour'][$num_jour]['timestamp']=$ts;
 		$tab['num_jour'][$num_jour]['jj']=date('d', $ts);
 		$tab['num_jour'][$num_jour]['mm']=date('m', $ts);
@@ -1279,7 +1279,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					$html.=", ";
 				}
 
-				$date_courante=my_strftime("%A %d/%m/%Y", $lig->date_ct);
+				$date_courante=french_strftime("%A %d/%m/%Y", $lig->date_ct);
 				if(($url_cdt_prefixe!="")&&($lig->id_groupe!="")&&($lig->id_groupe!=0)) {
 					$html.="<a href=\"".$url_cdt_prefixe."&id_groupe=".$lig->id_groupe."\" title=\"Travail à faire pour le ".$date_courante.".\n\nCliquer pour voir le cahier de textes de cet enseignement.\">".$current_matiere_cdt."</a>";
 				}
@@ -1297,7 +1297,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		}
 	}
 	else {
-		$html.="<p>Travaux personnels pour le ".my_strftime("%a %d %b", $ts_display_date)."</p>";
+		$html.="<p>Travaux personnels pour le ".french_strftime("%a %d %b", $ts_display_date)."</p>";
 		while($lig=mysqli_fetch_object($res)) {
 			if(!isset($tab_group_edt[$lig->id_groupe])) {
 				$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
@@ -1324,7 +1324,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 
 			$temoin_controle="";
 			if($lig->special=="controle") {
-				$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
+				$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".french_strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
 			}
 
 			//background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";
@@ -1385,7 +1385,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					$html.=", ";
 				}
 
-				$date_courante=my_strftime("%A %d/%m/%Y", $lig->date_ct);
+				$date_courante=french_strftime("%A %d/%m/%Y", $lig->date_ct);
 				if(($url_cdt_prefixe!="")&&($lig->id_groupe!="")&&($lig->id_groupe!=0)) {
 					$html.="<a href=\"".$url_cdt_prefixe."&id_groupe=".$lig->id_groupe."\" title=\"Travail à faire pour le ".$date_courante.".\n\nCliquer pour voir le cahier de textes de cet enseignement.\">".$current_matiere_cdt."</a>";
 				}
@@ -1492,7 +1492,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 		}
 		else {
 			while($lig=mysqli_fetch_object($res)) {
-				$html.="<p>Travaux personnels pour le ".my_strftime("%a %d %b", $lig->date_ct)."</p>";
+				$html.="<p>Travaux personnels pour le ".french_strftime("%a %d %b", $lig->date_ct)."</p>";
 
 				$class_color_fond_notice="";
 				$temoin_travail_fait_ou_non="";
@@ -1506,7 +1506,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 
 				$temoin_controle="";
 				if($lig->special=="controle") {
-					$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".my_strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
+					$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".french_strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
 				}
 
 				//background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";
@@ -1851,7 +1851,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		$cpt=0;
 		while(($cpt<7)&&($ts_test>$ts_debut_annee)) {
 			$ts_test-=3600*24;
-			if(in_array(my_strftime("%A", $ts_test), $tab_jour)) {
+			if(in_array(french_strftime("%A", $ts_test), $tab_jour)) {
 				$display_date_precedente=strftime("%d/%m/%Y", $ts_test);
 				$display_date_precedente_num_jour=id_j_semaine($ts_test);
 				break;
@@ -1908,7 +1908,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		$cpt=0;
 		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
 			$ts_test+=3600*24;
-			if(in_array(my_strftime("%A", $ts_test), $tab_jour)) {
+			if(in_array(french_strftime("%A", $ts_test), $tab_jour)) {
 				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
 				$display_date_suivante_num_jour=id_j_semaine($ts_test);
 				break;

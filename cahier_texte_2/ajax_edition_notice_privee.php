@@ -310,7 +310,7 @@ echo "\" />\n";
 if (isset($info)) {
 	$titre = "Informations Générales : ";
 } elseif (!isset($info)) {
-	$titre = my_strftime("%A %d %B %Y", $cahierTexteNoticePrivee->getDateCt());
+	$titre = french_strftime("%A %d %B %Y", $cahierTexteNoticePrivee->getDateCt());
 }
 
 //si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
