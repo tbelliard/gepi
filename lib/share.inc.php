@@ -17387,26 +17387,26 @@ function id_num_semaine($ts="") {
 	}
 }
 
-function id_s_annee($ts_date=time) {
+function id_s_annee($ts_date=0) {
 /**
- * Renvoie le numero ISO-8601:1988 de la semaine
+ * Renvoie le numéro ISO-8601:1988 de la semaine
  * comme le fait strftime('%V'... mais le
- * parametre %V n'est pas pris en compte
+ * paramètre %V n'est pas pris en compte
  * dans certaines versions Window$ de strftime
  * Source de l'algorithme : https://fr.wikipedia.org/wiki/ISO_8601#Num.C3.A9ro_de_semaine
  * A voir: https://fr.wikipedia.org/wiki/Bug_de_l%27an_2038
  *
- * @param timestamp $ts_date : par defaut le timestamp courant
+ * @param timestamp $ts_date : par défaut le timestamp courant
  *
- * @return numero ISO-8601:1988 de la semaine
+ * @return numéro ISO-8601:1988 de la semaine
 */
-
-	// numero du jour de $ts_date (0:dimanche...7:samedi)
-	// on est oblige de s'appuyer sur %w, car %u n'est pas pris en compte sous Window$
+	if ($ts_date==0) $ts_date=time();
+	// numéro du jour de $ts_date (0:dimanche...7:samedi)
+	// on est obligé de s'appuyer sur %w, car %u n'est pas pris en compte sous Window$
 	$id_j_ts_date=strftime('%w',$ts_date);
-	// calcul de la date du jeudi de la meme semaine que $ts_date
+	// calcul de la date du jeudi de la même semaine que $ts_date
 	$ts_jeudi_de_la_semaine=($id_j_ts_date==0)?($ts_date-3*24*3600):($ts_date-($id_j_ts_date-4)*24*3600);
-	// numero du jeudi dans l'annee
+	// numéro du jeudi dans l'année
 	$n_ts_jeudi_de_la_semaine=strftime('%j',$ts_jeudi_de_la_semaine);
 	// finalement
 	$r_id_s_annee=1+(int)(($n_ts_jeudi_de_la_semaine-1)/7);
