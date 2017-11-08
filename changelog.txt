@@ -10,6 +10,8 @@ Bulletins:
 - Bulletins 2016: Possibilité d'imprimer le bulletin de fin de cycle.
 - Bulletins PDF classiques: Possibilité d'afficher une ligne moyenne générale annuelle.
 - Éléments de programmes: Proposition d'une liste d'items prédéfinis.
+- Possibilité de ne pas faire apparaitre les noms des professeurs sur les bulletins 
+  et relevés de notes pour certains enseignements.
 
 Absences 2:
 - Possibilité de restreindre le décompte des absences sur les bulletins pour la 

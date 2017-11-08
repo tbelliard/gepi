@@ -996,6 +996,106 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
+					// 20171108
+					/*
+						$_POST['nom_prof_sur_bulletin_n_3']=	y
+						$_POST['nom_prof_sur_bulletin_n_enseignement_3']=	AGL1
+						$_POST['nom_prof_sur_bulletin_y_3']=	y
+						$_POST['nom_prof_sur_bulletin_y_enseignement_3']=	ALL1
+					*/
+
+					if((isset($_POST['nom_prof_sur_bulletin_n_'.$per]))&&($_POST['nom_prof_sur_bulletin_n_'.$per]=='y')) {
+						if((isset($_POST['nom_prof_sur_bulletin_n_enseignement_'.$per]))&&($_POST['nom_prof_sur_bulletin_n_enseignement_'.$per]!="")) {
+
+							$matiere=$_POST['nom_prof_sur_bulletin_n_enseignement_'.$per];
+							$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
+							//echo "$sql<br />";
+							$verif=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($verif)==0) {
+								$msg .= "<br />La matière $matiere n'existe pas.";
+							}
+							else {
+								// Récupérer les enseignements de cette matière la classe
+								$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, 
+													j_groupes_matieres jgm 
+												WHERE jgc.id_classe='$id_classe' AND 
+													jgc.id_groupe=jgm.id_groupe AND 
+													jgm.id_matiere='".$matiere."';";
+								$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_grp)>0) {
+									while($lig=mysqli_fetch_object($res_grp)) {
+										$sql="SELECT * FROM groupes_param WHERE id_groupe='".$lig->id_groupe."' AND name='nom_prof_sur_bulletin';";
+										//echo "$sql<br />";
+										$res_pram_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+										if(mysqli_num_rows($res_pram_grp)>0) {
+											$sql="UPDATE groupes_param SET value='n' WHERE id_groupe='".$lig->id_groupe."' AND name='nom_prof_sur_bulletin';";
+											//echo "$sql<br />";
+											$update=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$update) {
+												$msg.="Erreur lors de la requête<br />$sql<br />";
+											}
+											else {
+												$nb_reg_ok++;
+											}
+										}
+										else {
+											$sql="INSERT INTO groupes_param SET id_groupe='".$lig->id_groupe."', name='nom_prof_sur_bulletin', value='n';";
+											//echo "$sql<br />";
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$insert) {
+												$msg.="Erreur lors de la requête<br />$sql<br />";
+											}
+											else {
+												$nb_reg_ok++;
+											}
+										}
+									}
+								}
+
+							}
+						}
+					}
+
+					if((isset($_POST['nom_prof_sur_bulletin_y_'.$per]))&&($_POST['nom_prof_sur_bulletin_y_'.$per]=='y')) {
+						if((isset($_POST['nom_prof_sur_bulletin_y_enseignement_'.$per]))&&($_POST['nom_prof_sur_bulletin_y_enseignement_'.$per]!="")) {
+
+							$matiere=$_POST['nom_prof_sur_bulletin_y_enseignement_'.$per];
+							$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
+							//echo "$sql<br />";
+							$verif=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($verif)==0) {
+								$msg .= "<br />La matière $matiere n'existe pas.";
+							}
+							else {
+								// Récupérer les enseignements de cette matière la classe
+								$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, 
+													j_groupes_matieres jgm 
+												WHERE jgc.id_classe='$id_classe' AND 
+													jgc.id_groupe=jgm.id_groupe AND 
+													jgm.id_matiere='".$matiere."';";
+								$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_grp)>0) {
+									while($lig=mysqli_fetch_object($res_grp)) {
+										$sql="SELECT * FROM groupes_param WHERE id_groupe='".$lig->id_groupe."' AND name='nom_prof_sur_bulletin';";
+										//echo "$sql<br />";
+										$res_pram_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+										if(mysqli_num_rows($res_pram_grp)>0) {
+											$sql="DELETE FROM groupes_param WHERE id_groupe='".$lig->id_groupe."' AND name='nom_prof_sur_bulletin';";
+											//echo "$sql<br />";
+											$del=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$del) {
+												$msg.="Erreur lors de la requête<br />$sql<br />";
+											}
+											else {
+												$nb_reg_ok++;
+											}
+										}
+									}
+								}
+
+							}
+						}
+					}
 					//====================================
 				}
 			}
@@ -1917,7 +2017,68 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 </tr>
 </table>
 
-<?php
+<!-- 20171108 -->
+	<?php
+		echo "
+<table border='0' cellspacing='0'>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;</td>
+		<td style='vertical-align:top;'>
+		<input type='checkbox' name='nom_prof_sur_bulletin_n_".$per."' id='nom_prof_sur_bulletin_n_".$per."' value='y' /><label for='nom_prof_sur_bulletin_n_".$per."'> Ne pas faire apparaitre les noms de professeurs sur les bulletins et relevés de notes pour les enseignements de</label>&nbsp;:
+		</td>";
+
+		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
+		$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_mat)==0) {
+			echo "
+		<td>Aucune matière n'est encore créée.</td>";
+		}
+		else {
+			echo "
+		<td>
+			<select name='nom_prof_sur_bulletin_n_enseignement_".$per."' id='nom_prof_sur_bulletin_n_enseignement_".$per."' onchange=\"document.getElementById('nom_prof_sur_bulletin_n_".$per."').checked=true\">
+				<option value=''>---</option>";
+			while($lig_mat=mysqli_fetch_object($res_mat)) {
+				echo "
+				<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\" nom_matiere=\"$lig_mat->nom_complet\">".htmlspecialchars($lig_mat->nom_complet)."</option>";
+			}
+			echo "
+			</select>
+		</td>\n";
+		}
+	echo "
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;</td>
+		<td style='vertical-align:top;'>
+		<input type='checkbox' name='nom_prof_sur_bulletin_y_".$per."' id='nom_prof_sur_bulletin_y_".$per."' value='y' /><label for='nom_prof_sur_bulletin_y_".$per."'> Faire apparaitre les noms de professeurs sur les bulletins et relevés de notes pour les enseignements de</label>&nbsp;:
+		</td>";
+
+		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
+		$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_mat)==0) {
+			echo "
+		<td>Aucune matière n'est encore créée.</td>";
+		}
+		else {
+			echo "
+		<td>
+			<select name='nom_prof_sur_bulletin_y_enseignement_".$per."' id='nom_prof_sur_bulletin_y_enseignement_".$per."' onchange=\"document.getElementById('nom_prof_sur_bulletin_y_".$per."').checked=true\">
+				<option value=''>---</option>";
+			while($lig_mat=mysqli_fetch_object($res_mat)) {
+				echo "
+				<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\" nom_matiere=\"$lig_mat->nom_complet\">".htmlspecialchars($lig_mat->nom_complet)."</option>";
+			}
+			echo "
+			</select>
+		</td>\n";
+		}
+	echo "
+	</tr>
+</table>\n";
+
+
+
 	$titre="Recalcul des rangs";
 	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.<br />Le recalcul sera effectué lors du prochain affichage de bulletin ou de moyennes.</p>";
 	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang_'.$per,$titre,"",$texte,"",25,0,'y','y','n','n');
