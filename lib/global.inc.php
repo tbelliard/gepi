@@ -193,7 +193,7 @@ $gepiAuthors = array(
 
 // Affichage des dates en français
 //ATTENTION, changer la locale LC_NUMERIC peut faire bugger la génération pdf
-@setlocale(LC_ALL,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','C');
+@setlocale(LC_ALL,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','fr-FR','C');
 @setlocale(LC_NUMERIC,'C');
 
 $gepiShowGenTime = "no"; // Pour afficher le temps de génération de certaines pages.
@@ -498,4 +498,8 @@ function test_strftime_V() {
 }
 
 $temoin_strftime_V_vide=test_strftime_V();
+
+// Test sur l'encodage de 'Décembre'
+$strftime_utf8=mb_check_encoding(strftime('%B',mktime(12, 0, 0, 12, 1, 2000)),'utf-8')
+
 ?>

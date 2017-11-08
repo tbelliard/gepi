@@ -17287,6 +17287,7 @@ function id_j_semaine($time=0) {
 
 // Traduction US-FR des dates strftime() sous windows quand des locales manquent.
 // Fonction à utiliser en lieu et place de strftime() si le motif contient %A, %a, %B ou %b
+/*
 function french_strftime($motif="%A", $ts="") {
 	global $temoin_strftime_us;
 
@@ -17346,6 +17347,12 @@ function french_strftime($motif="%A", $ts="") {
 		$retour=strftime($motif, $ts);
 	}
 	return $retour;
+}
+*/
+function french_strftime($motif,$timestamp=0) {
+	global $strftime_utf8;
+	if ($timestamp==0) {$timestamp=time();}
+	return $strftime_utf8 ? strftime($motif,$timestamp) : utf8_encode(strftime($motif,$timestamp));
 }
 
 // Sous Window$, certains paramètres de strftime() ne sont pas implémentés (notamment le %V)
