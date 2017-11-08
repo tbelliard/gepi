@@ -1895,6 +1895,7 @@ else {
 		//$moyennes_annee="n";
 		//$moyennes_periodes_precedentes="n";
 
+		$affiche_moyenne_generale_annuelle="n";
 		$evolution_moyenne_periode_precedente="n";
 		// Remplissage des paramètres du modèle de bulletin PDF:
 		if($mode_bulletin=="pdf") {
