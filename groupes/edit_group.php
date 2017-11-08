@@ -557,6 +557,27 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
+	if(isset($_POST['nom_prof_sur_bulletin'])) {
+		$sql="SELECT * FROM groupes_param WHERE id_groupe='".$id_groupe."' AND name='nom_prof_sur_bulletin';";
+		//echo "$sql<br />";
+		$res_pram_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_pram_grp)>0) {
+			$sql="UPDATE groupes_param SET value='n' WHERE id_groupe='".$id_groupe."' AND name='nom_prof_sur_bulletin';";
+			//echo "$sql<br />";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+		else {
+			$sql="INSERT INTO groupes_param SET id_groupe='".$id_groupe."', name='nom_prof_sur_bulletin', value='n';";
+			//echo "$sql<br />";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+	}
+	else {
+		$sql="DELETE FROM groupes_param WHERE id_groupe='".$id_groupe."' AND name='nom_prof_sur_bulletin';";
+		//echo "$sql<br />";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+
 	// 20160419
 	//$code_modalite_elect=isset($_POST['code_modalite_elect']) ? $_POST['code_modalite_elect'] : array();
 	$code_modalite_elect_eleves=$current_group["modalites"];
@@ -1358,6 +1379,12 @@ echo "<p>Cochez les professeurs qui participent à cet enseignement&nbsp;: </p>\
 
 echo "<div id='div_choix_prof'>\n";
 afficher_liste_profs_du_groupe($reg_matiere);
+
+$checked_nom_prof_sur_bulletin="";
+if((isset($current_group['param']['nom_prof_sur_bulletin']))&&($current_group['param']['nom_prof_sur_bulletin']=="n")) {
+	$checked_nom_prof_sur_bulletin="checked ";
+}
+echo "<p><input type='checkbox' name='nom_prof_sur_bulletin' id='nom_prof_sur_bulletin' value='n' onchange=\"checkbox_change_divers(this.id)\" ".$checked_nom_prof_sur_bulletin."/><label for='nom_prof_sur_bulletin' id='texte_nom_prof_sur_bulletin'> Ne pas afficher le nom des professeurs sur les bulletins/relevés de notes</label></p>";
 echo "</div>\n";
 
 if (count($prof_list["list"]) != "0") {
@@ -1372,12 +1399,7 @@ function checkbox_change(cpt) {
 		}
 	}
 }
-";
 
-echo js_checkbox_change_style('checkbox_change_divers');
-echo js_checkbox_change_style('checkbox_change_visibilite');
-
-echo "
 for(i=0;i<$p;i++) {
 	checkbox_change(i);
 }
@@ -1390,6 +1412,11 @@ $res_nb_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_prof_etab=mysqli_num_rows($res_nb_prof);
 
 echo "<script type='text/javascript'>
+".js_checkbox_change_style('checkbox_change_divers')."
+".js_checkbox_change_style('checkbox_change_visibilite')."
+
+	checkbox_change_divers('nom_prof_sur_bulletin');
+
 	function init_checkbox_change() {
 		for(i=0;i<$nb_prof_etab;i++) {
 			checkbox_change(i);

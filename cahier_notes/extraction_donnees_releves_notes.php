@@ -522,10 +522,10 @@
 						$nombre_groupes = mysqli_num_rows($appel_liste_groupes);
 
 						$j = 0;
-						while ($j < $nombre_groupes) {
-							$current_groupe = old_mysql_result($appel_liste_groupes, $j, "id_groupe");
-							$current_matiere = old_mysql_result($appel_liste_groupes, $j, "matiere");
-							$current_groupe_cat = old_mysql_result($appel_liste_groupes, $j, "categorie_id");
+						while ($lig=mysqli_fetch_object($appel_liste_groupes)) {
+							$current_groupe=$lig->id_groupe;
+							$current_matiere=$lig->matiere;
+							$current_groupe_cat=$lig->categorie_id;
 
 							$tab_ele['groupe'][$j]['id_groupe']=$current_groupe;
 							$tab_ele['groupe'][$j]['matiere']=$current_matiere;
@@ -533,13 +533,17 @@
 								$tab_ele['groupe'][$j]['id_cat']=$current_groupe_cat;
 							}
 
-							$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT u.login FROM utilisateurs u, j_groupes_professeurs j WHERE ( u.login = j.login and j.id_groupe='$current_groupe') ORDER BY j.ordre_prof");
-							$nombre_profs = mysqli_num_rows($call_profs);
-							$k = 0;
-							while ($k < $nombre_profs) {
-								$current_matiere_professeur_login[$k] = old_mysql_result($call_profs, $k, "login");
-								$tab_ele['groupe'][$j]['prof_login'][$k]=$current_matiere_professeur_login[$k];
-								$k++;
+							$sql="SELECT 1=1 FROM groupes_param WHERE id_groupe='$current_groupe' AND name='nom_prof_sur_bulletin' AND value='n';";
+							$test_afficher_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test_afficher_prof)==0) {
+								$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT u.login FROM utilisateurs u, j_groupes_professeurs j WHERE ( u.login = j.login and j.id_groupe='$current_groupe') ORDER BY j.ordre_prof");
+								$nombre_profs = mysqli_num_rows($call_profs);
+								$k = 0;
+								while ($lig_prof=mysqli_fetch_object($call_profs)) {
+									$current_matiere_professeur_login[$k]=$lig_prof->login;
+									$tab_ele['groupe'][$j]['prof_login'][$k]=$current_matiere_professeur_login[$k];
+									$k++;
+								}
 							}
 
 							if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
@@ -549,8 +553,7 @@
 								$current_matiere_nom_complet = sql_query1("SELECT description FROM groupes WHERE id='$current_groupe'");
 							}
 							else {
-								$current_matiere_nom_complet_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere='$current_matiere'");
-								$current_matiere_nom_complet = old_mysql_result($current_matiere_nom_complet_query, 0, "nom_complet");
+								$current_matiere_nom_complet = sql_query1("SELECT nom_complet FROM matieres WHERE matiere='$current_matiere'");
 							}
 							$tab_ele['groupe'][$j]['matiere_nom_complet']=$current_matiere_nom_complet;
 

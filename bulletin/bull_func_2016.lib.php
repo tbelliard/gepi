@@ -1397,7 +1397,8 @@ echo "</pre>";
 
 				// nom des professeurs
 
-				if ( isset($tab_bull['groupe'][$m]["profs"]["list"]) )
+				if (((!isset($tab_bull['groupe'][$m]['param']['nom_prof_sur_bulletin']))||($tab_bull['groupe'][$m]['param']['nom_prof_sur_bulletin']!='n'))
+				&&( isset($tab_bull['groupe'][$m]["profs"]["list"])))
 				{
 					/*
 					if($tab_modele_pdf["presentation_proflist"][$classe_id]!="2") {

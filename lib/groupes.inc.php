@@ -353,6 +353,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 	$get_profs='n';
 	$get_visibilite='n';
 	$get_modalite_elect='n';
+	$get_param='n';
 	if(in_array('all',$tab_champs)) {
 		$get_matieres='y';
 		$get_classes='y';
@@ -361,6 +362,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		$get_periodes='y';
 		$get_visibilite='y';
 		$get_modalite_elect='y';
+		$get_param='y';
 	}
 	else {
 		if(in_array('matieres',$tab_champs)) {$get_matieres='y';}
@@ -370,6 +372,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		if(in_array('profs',$tab_champs)) {$get_profs='y';}
 		if(in_array('visibilite',$tab_champs)) {$get_visibilite='y';}
 		if(in_array('modalites_elect',$tab_champs)) {$get_modalite_elect='y';$get_matieres='y';$get_eleves='y';$get_classes='y';$get_periodes='y';}
+		if(in_array('param',$tab_champs)) {$get_param='y';}
 	}
 
     if (!is_numeric($_id_groupe)) {$_id_groupe = "0";}
@@ -684,6 +687,15 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			}
 		}
 
+		if($get_param=='y') {
+			$sql="SELECT * FROM groupes_param WHERE id_groupe='".$_id_groupe."';";
+			//echo "$sql<br />";
+			$res_pram_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_pram_grp)>0) {
+				$lig=mysqli_fetch_object($res_pram_grp);
+				$temp["param"][$lig->name]=$lig->value;
+			}
+		}
         }
         $resultat->close();
     return $temp;

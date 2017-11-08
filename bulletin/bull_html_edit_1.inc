@@ -358,15 +358,20 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		}
 		echo "<span class='bulletin'>".htmlspecialchars($info_nom_matiere)."</span>";
 
-		echo "<br />\n";
-		echo "<span class='bulletin'>";
-		$cpt=0;
-		foreach($tab_bull['groupe'][$j]["profs"]["list"] as $current_prof_login) {
-			if($cpt>0) {echo ", ";}
-			echo "<i>".affiche_utilisateur($current_prof_login,$tab_bull['id_classe'])."</i>";
-			$cpt++;
+
+		if (((!isset($tab_bull['groupe'][$j]['param']['nom_prof_sur_bulletin']))||($tab_bull['groupe'][$j]['param']['nom_prof_sur_bulletin']!='n'))
+		&&( isset($tab_bull['groupe'][$j]["profs"]["list"]))) {
+			echo "<br />\n";
+			echo "<span class='bulletin'>";
+			$cpt=0;
+			foreach($tab_bull['groupe'][$j]["profs"]["list"] as $current_prof_login) {
+				if($cpt>0) {echo ", ";}
+				echo "<i>".affiche_utilisateur($current_prof_login,$tab_bull['id_classe'])."</i>";
+				$cpt++;
+			}
+			echo "</span>";
 		}
-		echo "</span></td>\n";
+		echo "</td>\n";
 
 		if($tab_bull['affiche_coef']=='y') {
 			echo "<td$chaine_rowspan style='text-align: center;'><span class='bulletin'>".$tab_bull['coef_eleve'][$i][$j]."</span></td>\n";
