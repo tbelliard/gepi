@@ -154,6 +154,7 @@ $liste_tables_del_etape_matieres = array(
 "j_groupes_visibilite",
 "j_signalement",
 "eleves_groupes_settings",
+'groupes_param',
 "matieres_appreciations",
 "matieres_notes",
 "matieres_appreciations_grp",
