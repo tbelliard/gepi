@@ -1384,7 +1384,7 @@ $checked_nom_prof_sur_bulletin="";
 if((isset($current_group['param']['nom_prof_sur_bulletin']))&&($current_group['param']['nom_prof_sur_bulletin']=="n")) {
 	$checked_nom_prof_sur_bulletin="checked ";
 }
-echo "<p><input type='checkbox' name='nom_prof_sur_bulletin' id='nom_prof_sur_bulletin' value='n' onchange=\"checkbox_change_divers(this.id)\" ".$checked_nom_prof_sur_bulletin."/><label for='nom_prof_sur_bulletin' id='texte_nom_prof_sur_bulletin'> Ne pas afficher le nom des professeurs sur les bulletins/relevés de notes</label></p>";
+echo "<p style='margin-top:1em;margin-bottom:1em;'><input type='checkbox' name='nom_prof_sur_bulletin' id='nom_prof_sur_bulletin' value='n' onchange=\"checkbox_change_divers(this.id)\" ".$checked_nom_prof_sur_bulletin."/><label for='nom_prof_sur_bulletin' id='texte_nom_prof_sur_bulletin'> Ne pas afficher le nom des professeurs sur les bulletins/relevés de notes.</label></p>";
 echo "</div>\n";
 
 if (count($prof_list["list"]) != "0") {
