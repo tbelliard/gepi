@@ -2119,7 +2119,7 @@ if(isset($id_incident) ) {
  <?php
 	}
 	elseif(isset($id_classe)) {
-            $sql="SELECT DISTINCT e.login,e.nom,e.prenom FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom;";
+            $sql="SELECT DISTINCT e.login,e.nom,e.prenom,e.date_sortie FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom;";
             //echo "$sql<br />";
             $res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
             if(mysqli_num_rows($res_ele)>0) {
@@ -2145,6 +2145,7 @@ if(isset($id_incident) ) {
 ?>
                            <table class='boireaus'>
  <?php
+                $date_mysql_courante=strftime("%Y-%m-%d %H:%M:%S");
                 while ($i < $nombreligne){
                     $lig_ele=mysqli_fetch_object($res_ele);
 
@@ -2160,6 +2161,12 @@ if(isset($id_incident) ) {
 <?php
                     }
 
+                    $style_ele="";
+                    $title_ele="";
+                    if((!is_null($lig_ele->date_sortie))&&($lig_ele->date_sortie>="1980-01-01 00:00:00")&&($lig_ele->date_sortie<=$date_mysql_courante)) {
+                       $style_ele="color:grey;";
+                       $title_ele=" title=\"Élève sorti de l'établissement le ".strftime("%d/%m/%Y", mysql_date_to_unix_timestamp($lig_ele->date_sortie))."\"";
+                    }
                     $alt=$alt*(-1);
 ?>
                                <tr class='lig<?php echo $alt; ?>'>
@@ -2171,7 +2178,7 @@ if(isset($id_incident) ) {
                                    </td>
                                    <td>
                                        <label for='ele_login_<?php echo $i; ?>' 
-                                              style='cursor:pointer;'><?php echo ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom); ?>
+                                              style='cursor:pointer;<?php echo $style_ele;?>'<?php echo $title_ele;?>><?php echo ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom); ?>
                                        </label>
                                        <?php add_token_field(true); ?>
                                    </td>
