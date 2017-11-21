@@ -176,7 +176,7 @@ echo add_token_field(true);
 <br />
 <?php
 if ($choix_creneau_obj != null) {
-	echo '<br/>Voir les absences de <span style="color: blue;">'.$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i').'</span> à <span style="color: blue;">'.$choix_creneau_obj->getHeurefinDefiniePeriode('H:i').'</span>.';
+	echo '<br/>Voir les absences du <strong>'.strftime("%a %d/%m/%Y", $dt_date_absence_eleve->getTimestamp()).'</strong> de <span style="color: blue;">'.$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i').'</span> à <span style="color: blue;">'.$choix_creneau_obj->getHeurefinDefiniePeriode('H:i').'</span>.';
 ?>
 <br />
 
@@ -203,6 +203,9 @@ if ($choix_creneau_obj != null) {
 	}
 </script>\n";
 	}
+
+	// 20171120
+	$autorise_edt_tous=getSettingAOui("autorise_edt_tous");
 ?>
 
 
@@ -280,11 +283,20 @@ echo "</pre>";
 echo "<br />";
 echo "</td>";
 */
+
+	$edt_vide_ou_pas_sur_ce_creneau="";
+	if($cours_col->isEmpty()) {
+		$edt_vide_ou_pas_sur_ce_creneau="Pas de cours dans l'EDT sur ce créneau<br />";
+	}
+
 	//on teste si l'appel a été fait
 	$appel_manquant = false;
 	$echo_str = '';
 	$classe_deja_sorties = Array();//liste des appels deja affiché sous la form [id_classe, id_utilisateur]
 	$groupe_deja_sortis = Array();//liste des appels deja affiché sous la form [id_groupe, id_utilisateur]
+	// 20171120 : 
+	$num_periode_classe_courante=get_periode_from_classe_d_apres_date($classe->getId(), $dt_date_absence_eleve->getTimestamp());
+	$tab_eleves_classe_courante_creneau_courant=array();
 	foreach ($cours_col as $edtCours) {//on regarde tous les cours enregistrés dans l'edt
 		// 20130416
 		$current_cours_appel_manquant=false;
@@ -299,7 +311,7 @@ echo "</td>";
 
 		//$edtCours = new EdtEmplacementCours();
 		$abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
-													->filterByEdtEmplacementCours($edtCours)->find();
+									->filterByEdtEmplacementCours($edtCours)->find();
 		if ($abs_col->isEmpty()) {
 			//====================================================
 			// Vérifier si le prof a fait l'appel sans passer par le choix "Cours", par exemple par le choix "Groupe"
@@ -310,11 +322,11 @@ echo "</td>";
 						->find();
 				if (!$tmp_abs_col->isEmpty()) {
 					foreach ($tmp_abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
-/*
-if ($abs->getIdGroupe()!=null) {
-$echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
-}
-*/
+						/*
+						if ($abs->getIdGroupe()!=null) {
+						$echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
+						}
+						*/
 						if (($abs->getIdGroupe()!=null)&&($abs->getIdGroupe()==$edtCours->getIdGroupe())) {
 							$temoin_appel_non_fait_sur_le_groupe_courant=false;
 							break;
@@ -328,6 +340,20 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 				$echo_str .= '<span style="color: red;">Non fait</span> - ';
 				// 20130416
 				$current_cours_appel_manquant=true;
+
+				// 20171120 : 
+				// Récupérer la liste des élèves qui auraient dû être concernés et voir si l'appel a été fait par un autre prof, hors EDT
+				//$num_periode_classe_courante
+				$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$classe->getId()."' AND periode='".$num_periode_classe_courante."';";
+				//$echo_str.="$sql<br />";
+				$res_ele_clas_per=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_ele_clas_per)>0) {
+					while($lig_ele_clas_per=mysqli_fetch_object($res_ele_clas_per)) {
+						if(!in_array($lig_ele_clas_per->login, $tab_eleves_classe_courante_creneau_courant)) {
+							$tab_eleves_classe_courante_creneau_courant[]=$lig_ele_clas_per->login;
+						}
+					}
+				}
 			}
 			//====================================================
 		} else {
@@ -375,16 +401,18 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 	$abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
 			->filterByClasse($classe)->_or()->filterByGroupe($classe->getGroupes())
 			->find();
-    $test_saisies_sorti=false;
-    foreach($abs_col as $abs){
-        if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
-            $test_saisies_sorti=true;
-        }else{
-            $test_saisies_sorti=false;
-            break;
-        }
-    }
+	$test_saisies_sorti=false;
+	foreach($abs_col as $abs) {
+		if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)) {
+			$test_saisies_sorti=true;
+		} else {
+			$test_saisies_sorti=false;
+			break;
+		}
+	}
 
+	unset($appel_manquant_confirme);
+	//$appel_manquant_confirme=false;
 	if ($abs_col->isEmpty()||$test_saisies_sorti) {
 		if ($cours_col->isEmpty()) {
 			$appel_manquant = true;
@@ -395,6 +423,8 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 			$appel_manquant = false;
 		}
 
+		// 20171120 : 
+		$tab_eleves_classe_courante_creneau_courant_autres_appels=array();
 		foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
 			if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
 				continue;
@@ -405,7 +435,21 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 				$echo_str .= ' '.$abs->getClasse()->getNom().' ';
 				$classe_deja_sorties[] = Array($abs->getClasse()->getId(), $abs->getUtilisateurId());
 				$affiche = true;
+
+				// Récupérer la liste des élèves
+				$num_periode_classe_autre_appel=get_periode_from_classe_d_apres_date($abs->getClasse()->getId(), $dt_date_absence_eleve->getTimestamp());
+				$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$abs->getClasse()->getId()."' AND periode='".$num_periode_classe_autre_appel."'";
+				//$echo_str.="$sql<br />";
+				$res_ele_clas_per=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_ele_clas_per)>0) {
+					while($lig_ele_clas_per=mysqli_fetch_object($res_ele_clas_per)) {
+						if(!in_array($lig_ele_clas_per->login, $tab_eleves_classe_courante_creneau_courant_autres_appels)) {
+							$tab_eleves_classe_courante_creneau_courant_autres_appels[]=$lig_ele_clas_per->login;
+						}
+					}
+				}
 			}
+
 			//if ($abs->getIdGroupe()!=null && !in_array(Array($abs->getIdGroupe(), $abs->getUtilisateurId()), $groupe_deja_sortis) && (!$abs->getEleve())) {
 			if ($abs->getIdGroupe()!=null && !in_array(Array($abs->getIdGroupe(), $abs->getUtilisateurId()), $groupe_deja_sortis) && ($abs->getEleve()==null)) {
 				$echo_str .= "<span title=\"Saisie/appel pour le groupe n°".$abs->getIdGroupe()."\">";
@@ -417,7 +461,20 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 				$echo_str .= "</span>";
 				$groupe_deja_sortis[] = Array($abs->getIdGroupe(), $abs->getUtilisateurId());
 				$affiche = true;
+
+				// Récupérer la liste des élèves
+				$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='".$abs->getIdGroupe()."' AND periode='".$num_periode_classe_courante."';";
+				//$echo_str.="$sql<br />";
+				$res_ele_clas_per=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_ele_clas_per)>0) {
+					while($lig_ele_clas_per=mysqli_fetch_object($res_ele_clas_per)) {
+						if(!in_array($lig_ele_clas_per->login, $tab_eleves_classe_courante_creneau_courant_autres_appels)) {
+							$tab_eleves_classe_courante_creneau_courant_autres_appels[]=$lig_ele_clas_per->login;
+						}
+					}
+				}
 			}
+
 			if ($affiche) {//on affiche un appel donc on va afficher les infos du prof
 				$echo_str .= ' '.$abs->getUtilisateurProfessionnel()->getCivilite().' '
 					.$abs->getUtilisateurProfessionnel()->getNom().' '
@@ -426,12 +483,50 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 				$echo_str .= '<br/>';
 			}
 		}
+		// 20171120 : 
+		$appel_manquant_confirme=false;
+		for($loop_app=0;$loop_app<count($tab_eleves_classe_courante_creneau_courant);$loop_app++) {
+			//$echo_str.="Test ".$tab_eleves_classe_courante_creneau_courant[$loop_app]."<br />";
+			if(!in_array($tab_eleves_classe_courante_creneau_courant[$loop_app], $tab_eleves_classe_courante_creneau_courant_autres_appels)) {
+				// Debug
+				//$echo_str.="<span style='color:orange'>Au moins ".$tab_eleves_classe_courante_creneau_courant[$loop_app]." non vérifié</span>";
+				$appel_manquant_confirme=true;
+				break;
+			}
+		}
 	}
-	if ($appel_manquant) {
-		echo '<td style="min-width: 350px; background-color:#ddd">'; // correction Yan Naessens 2017-04-21
-	} else {
-		echo '<td style="min-width: 350px; background-color:#9f9">';
+
+	// 20171120: Voir les absences du mar. 07/11/2017 de 15:34 à 16:32.
+	// PB : 5B... à comparer avec 6B
+
+	if(($autorise_edt_tous)&&($edt_vide_ou_pas_sur_ce_creneau!="")) {
+		// On utilise l'EDT et aucun cours n'est enregistré sur le créneau
+		// A priori, il n'y a pas de cours, pas lieu de signaler un appel manquant.
+		echo '<td style="min-width: 350px; background-color:white">';
 	}
+	elseif(isset($appel_manquant_confirme)) {
+	//if((isset($appel_manquant_confirme))&&($edt_vide_ou_pas_sur_ce_creneau!="")) {
+		//if ($appel_manquant) {
+		if ($appel_manquant && $appel_manquant_confirme) {
+			// Appel non fait sur le cours de l'EDT, mais fait autrement et il manquait des élèves au criblage
+			echo '<td style="min-width: 350px; background-color:#ddd">';
+		} else {
+			// Appel non fait sur le cours de l'EDT, mais fait autrement
+			// Vert
+			echo '<td style="min-width: 350px; background-color:#9f9">';
+		}
+	}
+	else {
+		if ($appel_manquant) {
+			echo '<td style="min-width: 350px; background-color:#ddd">'; // correction Yan Naessens 2017-04-21
+		} else {
+			// Vert
+			echo '<td style="min-width: 350px; background-color:#9f9">';
+		}
+	}
+	//echo " ".count($tab_eleves_classe_courante_creneau_courant)." ";
+	//echo " ".count($tab_eleves_classe_courante_creneau_courant_autres_appels)." ";
+	echo $edt_vide_ou_pas_sur_ce_creneau;
 	echo $echo_str;
 
 

@@ -17420,4 +17420,63 @@ function id_s_annee($ts_date=0) {
 	return ($r_id_s_annee<10)?('0'.$r_id_s_annee):((string)$r_id_s_annee);
 }
 
+function get_resp_classe($id_classe, $login="") {
+	global $mysqli;
+
+	$tab=array();
+	$tab['pp']=array();
+	$tab['cpe']=array();
+	$tab['suivi']=array();
+	// Engagement: Représentants parents, élèves
+	//$tab['']=array();
+
+	if($id_classe!="") {
+	
+		if($login!="") {
+		}
+	}
+	elseif($login!="") {
+	}
+}
+
+
+function get_periode_from_classe_d_apres_date($id_classe, $timestamp="") {
+	global $mysqli;
+	$num_periode="";
+
+	if($timestamp=="") {
+		$timestamp=time();
+	}
+
+	$sql="SELECT * FROM edt_calendrier WHERE (classe_concerne_calendrier like '".$id_classe.";%' OR 
+								classe_concerne_calendrier like '%;".$id_classe.";%') AND 
+								numero_periode!='0' AND 
+								debut_calendrier_ts<='".$timestamp."' AND 
+								fin_calendrier_ts>='".$timestamp."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$num_periode=$lig->numero_periode;
+	}
+	else {
+		// On essaye avec la table periodes
+
+		$date_mysql=strftime("%Y-%m-%d %H:%M:%S", $timestamp);
+
+		$sql="SELECT p.num_periode FROM periodes p 
+						WHERE p.id_classe='".$id_classe."' AND 
+							p.date_fin>='".$date_mysql."'
+						ORDER BY date_fin ASC LIMIT 1;";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$num_periode=$lig->num_periode;
+		}
+	}
+
+	return $num_periode;
+}
+
 ?>
