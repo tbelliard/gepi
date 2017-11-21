@@ -246,6 +246,9 @@
 	case 3:
 		$fichier_bulletin = "bull_html_edit_2.inc";
 		break;
+	case 4:
+		$fichier_bulletin = "bull_html_edit_3.inc";
+		break;
 	default:
 		$fichier_bulletin = "bull_html_edit_1.inc";
 	}

@@ -1867,23 +1867,30 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <td style="font-variant: small-caps;">
         Choix de l'apparence du bulletin (emplacement et regroupement des moyennes de la classe)
 		<ul>
-		<li><i><label for='choix_bulletin1' style='cursor: pointer;'>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i><br />
-		<li><i><label for='choix_bulletin2' style='cursor: pointer;'>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</label></i><br />
-		<li><i><label for='choix_bulletin3' style='cursor: pointer;'>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i><br />
-        </ul>
+			<li><i><label for='choix_bulletin1' style='cursor: pointer;'>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i></li>
+			<li><i><label for='choix_bulletin2' style='cursor: pointer;'>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</label></i></li>
+			<li><i><label for='choix_bulletin3' style='cursor: pointer;'>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i></li>
+			<li><i><label for='choix_bulletin4' style='cursor: pointer;'>Sans colonnes de notes.</label></i></li>
+		</ul>
 		</td>
         <td> <br />
         <?php
 		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin1' value='1'";
 		if (getSettingValue("choix_bulletin") == '1') echo " checked";
 		echo " /> <label for='choix_bulletin1' style='cursor: pointer;'>Choix 1</label><br />";
+
 		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin2' value='2'";
 		if (getSettingValue("choix_bulletin") == '2') echo " checked";
 		echo " /> <label for='choix_bulletin2' style='cursor: pointer;'>Choix 2</label><br />";
+
 		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin3' value='3'";
 		//echo "toto".getSettingValue("choix_bulletin");
 		if (getSettingValue("choix_bulletin") == '3') echo " checked";
 		echo " /> <label for='choix_bulletin3' style='cursor: pointer;'>Choix 3</label><br />";
+
+		echo "<input type='radio' name='choix_bulletin' id='choix_bulletin4' value='4'";
+		if (getSettingValue("choix_bulletin") == '4') echo " checked";
+		echo " /> <label for='choix_bulletin4' style='cursor: pointer;'>Choix 4</label><br />";
         ?>
         </td>
     </tr>
