@@ -12,6 +12,7 @@ Bulletins:
 - Éléments de programmes: Proposition d'une liste d'items prédéfinis.
 - Possibilité de ne pas faire apparaitre les noms des professeurs sur les bulletins 
   et relevés de notes pour certains enseignements.
+- Bulletins HTML: Possibilité de générer un bulletin sans colonnes moyennes.
 
 Absences 2:
 - Possibilité de restreindre le décompte des absences sur les bulletins pour la 
