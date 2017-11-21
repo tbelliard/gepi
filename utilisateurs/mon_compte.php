@@ -3172,7 +3172,7 @@ if ((acces_cdt())&&($_SESSION["statut"] == "professeur")) {
 		if($acces_cdt_prof=='y') {echo " checked";}
 		echo " tabindex='$tabindex' ";
 		$tabindex++;
-		echo " /><label for='acces_cdt_prof' id='texte_acces_cdt_prof'> Afficher mes CDT personnel dans Gepi.</label><br />\n";
+		echo " /><label for='acces_cdt_prof' id='texte_acces_cdt_prof'> Afficher mes CDT personnels dans Gepi.</label><br />\n";
 		echo "</p>";
 	}
 

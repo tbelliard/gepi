@@ -123,7 +123,7 @@ if ($id_ct != null) {
 			$groupe = $group;
 			break;
 		}
-	}// cela economise un acces db par rapport à  $current_group = GroupePeer::retrieveByPK($id_groupe), et permet de ne pas avoir a nettoyer les reference de utilisateurs.
+	}// cela economise un acces db par rapport à  $current_group = GroupePeer::retrieveByPK($id_groupe), et permet de ne pas avoir a nettoyer les references de utilisateurs.
 	if ($groupe == null) {
 		echo("Erreur enregistrement de compte rendu : pas de groupe ou mauvais groupe spécifié");
 		die;

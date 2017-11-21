@@ -2708,7 +2708,7 @@ if(isset($eleve_login)){
 	//echo "\$reg_doublant=$reg_doublant<br />";
 
 	if(($_SESSION['statut']=="professeur")||($_SESSION['statut']=='cpe')) {
-		echo "<table border='0' summary='Infos 2'>\n";
+		echo "<table border='0' summary='Infos 2' class='fieldset_opacite50'>\n";
 
 		echo "<tr><th style='text-align:left;'>Né(e) le: </th><td>$eleve_naissance_jour/$eleve_naissance_mois/$eleve_naissance_annee</td></tr>\n";
 		if ($eleve_sexe == "M") {
@@ -2748,7 +2748,7 @@ if(isset($eleve_login)){
 	else{
 		//=========================
 		// AJOUT: boireaus 20071107
-		echo "<table style='border-collapse: collapse; border: 1px solid black;' align='center'  summary='Régime'>\n";
+		echo "<table style='border-collapse: collapse; border: 1px solid black;' align='center'  summary='Régime' class='fieldset_opacite50'>\n";
 		echo "<tr>\n";
 		echo "<th>Régime: </th>\n";
 		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='reg_regime' value='i-e' ";
@@ -2768,7 +2768,7 @@ if(isset($eleve_login)){
 		echo "<br />\n";
 		//echo "<tr><td>&nbsp;</td></tr>\n";
 
-		echo "<table style='border-collapse: collapse; border: 1px solid black;' align='center' summary='Redoublement'>\n";
+		echo "<table style='border-collapse: collapse; border: 1px solid black;' align='center' summary='Redoublement' class='fieldset_opacite50'>\n";
 		echo "<tr>\n";
 		echo "<th>Redoublant: </th>\n";
 		echo "<td style='text-align: center; border: 0px;'>O<br /><input type='radio' name='reg_doublant' value='R' ";
