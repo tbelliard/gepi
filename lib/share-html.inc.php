@@ -6331,23 +6331,28 @@ function get_chaine_matieres_prof($login, $champ="matiere", $separateur=", ") {
 function insere_lien_calendrier_crob($float="") {
 	global $gepiPath, $niveau_arbo, $tabdiv_infobulle;//, $tabid_infobulle;
 
-	//include("$gepiPath/lib/calendrier_crob.inc.php");
-	if(isset($niveau_arbo)) {
-		if($niveau_arbo==0) {
-			include("./lib/calendrier_crob.inc.php");
-		}
-		elseif($niveau_arbo==1) {
-			include("../lib/calendrier_crob.inc.php");
-		}
-		elseif($niveau_arbo==2) {
-			include("../../lib/calendrier_crob.inc.php");
-		}
-		else {
-			$abandon="y";
-		}
+	if(!acces("/lib/calendrier_crob.php", $_SESSION["statut"])) {
+		$abandon="y";
 	}
 	else {
-		include("../lib/calendrier_crob.inc.php");
+		//include("$gepiPath/lib/calendrier_crob.inc.php");
+		if(isset($niveau_arbo)) {
+			if($niveau_arbo==0) {
+				include("./lib/calendrier_crob.inc.php");
+			}
+			elseif($niveau_arbo==1) {
+				include("../lib/calendrier_crob.inc.php");
+			}
+			elseif($niveau_arbo==2) {
+				include("../../lib/calendrier_crob.inc.php");
+			}
+			else {
+				$abandon="y";
+			}
+		}
+		else {
+			include("../lib/calendrier_crob.inc.php");
+		}
 	}
 
 	if(!isset($abandon)) {

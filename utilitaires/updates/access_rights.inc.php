@@ -1937,6 +1937,18 @@ statut='';";
 
 $tab_req[] = "INSERT INTO droits SET id='/gestion/saisie_contact.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Saisie contact téléphonique, mail',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/lib/calendrier_crob.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='F',
+autre='F',
+description='Calendrier',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

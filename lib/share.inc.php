@@ -11176,7 +11176,23 @@ function get_tab_dates_evenements_classes($id_classe, $type, $avec_visible_par_s
 		else {
 			$sql_ajout_mes_classes="";
 			if($mes_classes_seulement=="y") {
-				$sql_ajout_mes_classes=" AND ddec.id_classe IN (SELECT DISTINCT id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."') ";
+				// 20171122
+				if($_SESSION["statut"]=="eleve") {
+					$sql_ajout_mes_classes=" AND ddec.id_classe IN (SELECT DISTINCT id_classe FROM j_eleves_classes jec WHERE jec.login='".$_SESSION['login']."') ";
+				}
+				elseif($_SESSION["statut"]=="responsable") {
+					$sql_ajout_mes_classes=" AND ddec.id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec,
+																	eleves e, 
+																	responsables2 r, 
+																	resp_pers rp 
+																WHERE jec.login=e.login AND 
+																	e.ele_id=r.ele_id AND 
+																	r.pers_id=rp.pers_id AND 
+																	rp.login='".$_SESSION['login']."') ";
+				}
+				else {
+					$sql_ajout_mes_classes=" AND ddec.id_classe IN (SELECT DISTINCT id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."') ";
+				}
 			}
 
 			$sql="SELECT DISTINCT dde.id_ev, dde.date_debut, dde.periode, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND dde.type='".$type."' AND c.id=ddec.id_classe ".$sql_ajout_mes_classes." ORDER BY date_evenement;";
@@ -16520,7 +16536,34 @@ function get_tab_dates_periodes() {
 
 	$tab=array();
 
-	$sql="SELECT p.*, c.classe FROM periodes p, classes c WHERE c.id=p.id_classe ORDER BY c.classe, p.num_periode, p.date_fin;";
+	if($_SESSION["statut"]=="eleve") {
+		$sql="SELECT p.*, c.classe FROM periodes p, 
+							classes c, 
+							j_eleves_classes jec 
+						WHERE c.id=p.id_classe AND 
+							c.id=jec.id_classe AND 
+							jec.periode=p.num_periode AND 
+							jec.login='".$_SESSION['login']."' 
+						ORDER BY c.classe, p.num_periode, p.date_fin;";
+	}
+	elseif($_SESSION["statut"]=="responsable") {
+		$sql="SELECT p.*, c.classe FROM periodes p, 
+							classes c, 
+							j_eleves_classes jec 
+						WHERE c.id=p.id_classe AND 
+							c.id=jec.id_classe AND 
+							jec.periode=p.num_periode AND 
+							jec.login IN (SELECT DISTINCT e.login FROM eleves e, 
+														responsables2 r, 
+														resp_pers rp 
+													WHERE e.ele_id=r.ele_id AND 
+														r.pers_id=rp.pers_id AND 
+														rp.login='".$_SESSION['login']."') 
+						ORDER BY c.classe, p.num_periode, p.date_fin;";
+	}
+	else {
+		$sql="SELECT p.*, c.classe FROM periodes p, classes c WHERE c.id=p.id_classe ORDER BY c.classe, p.num_periode, p.date_fin;";
+	}
 	$res=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_assoc($res)) {
@@ -17420,7 +17463,8 @@ function id_s_annee($ts_date=0) {
 	return ($r_id_s_annee<10)?('0'.$r_id_s_annee):((string)$r_id_s_annee);
 }
 
-function get_resp_classe($id_classe, $login="") {
+// $login_ele: Login de l'élève
+function get_resp_classe($id_classe, $login_ele="") {
 	global $mysqli;
 
 	$tab=array();
@@ -17431,12 +17475,57 @@ function get_resp_classe($id_classe, $login="") {
 	//$tab['']=array();
 
 	if($id_classe!="") {
-	
-		if($login!="") {
+		if($login_ele!="") {
+			$sql = "SELECT DISTINCT jep.professeur 
+				FROM j_eleves_professeurs jep, j_eleves_classes jec 
+				WHERE jec.id_classe='$id_classe' 
+				AND jec.login=jep.login 
+				AND jec.login='".$login_ele."' 
+				AND jec.id_classe=jep.id_classe 
+				ORDER BY professeur;";
+			$res = mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$tab['pp'][]=$lig->professeur;
+				}
+			}
+		}
+		else {
+			$tab['pp']=get_tab_prof_suivi($id_classe);
 		}
 	}
-	elseif($login!="") {
+	elseif($login_ele!="") {
+		$sql = "SELECT DISTINCT jep.professeur 
+			FROM j_eleves_professeurs jep, 
+				j_eleves_classes jec, 
+				periodes p 
+			WHERE jep.login=jec.login AND 
+				jec.id_classe=p.id_classe AND 
+				jep.login='".$login_ele."' 
+			ORDER BY p.num_periode, jep.professeur;";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab['pp'][]=$lig->professeur;
+			}
+		}
 	}
+/*
+
+MariaDB [gepidev]> select * from j_eleves_cpe limit 5;
++----------+-----------+
+| e_login  | cpe_login |
++----------+-----------+
+| adesirc  | guyomark  |
+| andrieuj | guyomark  |
+| angee-_m | guyomark  |
+| aubea    | guyomark  |
+| aubryl   | guyomark  |
++----------+-----------+
+5 rows in set (0.00 sec)
+
+MariaDB [gepidev]> 
+*/
 }
 
 
