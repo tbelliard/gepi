@@ -94,11 +94,12 @@ if ($_POST['step'] == "2") {
             // Si un nombre de periodes a ete selectionne pour cette classe, on cree les periodes
             // Pour chaque periode, jusqu'au nombre souhaite (REVOIR pour choix non faits...)
             for ($i=1; $i<=$_POST[$indice]; $i++) {
-                $req_insertion_periode = "INSERT INTO periodes VALUES ('P$i','$i','T', '$key',NULL,NULL,NULL)";
+                //$req_insertion_periode = "INSERT INTO periodes VALUES ('P$i','$i','T', '$key',NULL,NULL,NULL)";
+                $req_insertion_periode = "INSERT INTO periodes SET nom_periode='P$i', num_periode='$i', verouiller='T', id_classe='$key';";
                 mysqli_query($GLOBALS["mysqli"], $req_insertion_periode);
                 // Si tout s'est bien deroule
                 if (((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
-                    die("Une erreur s'est produite lors de la creation des p&eacute;riodes");
+                    die("Une erreur s'est produite lors de la creation des p&eacute;riodes pour la classe n°$key");
                 }
             }
 
@@ -126,7 +127,7 @@ if ($_POST['step'] == "2") {
 
         // On cree un critere pour ramener tous les liens eleve_classe/periode qui sont temporaires
         // (c'est a dire qui ont un leur periode a 0 = pas de periode associe)
-        echo "<br>";
+        echo "<br />";
         $crit = new Criteria();
         $crit->add(JEleveClassePeer::PERIODE, 0);
         // Construction d'un tableau contenant les id des classes pour lesquelles l'utilisateur
@@ -137,11 +138,11 @@ if ($_POST['step'] == "2") {
         // Pour chaque relation eleve_classe/periode
         foreach($relations_eleves_classes as $relation_ec) {
             // Recuperation des periodes correspondantes a la classe de l'eleve
-            echo "recuperation des periodes pour la classe ".$relation_ec->getIdClasse()." <br>";
+            echo "Recuperation des periodes pour la classe n°<a href='../classes/modify_nom_class.php?id_classe=".$relation_ec->getIdClasse()."' target='_blank'>".$relation_ec->getIdClasse()."</a>&nbsp;: ";
             $req_periodes_classe = "SELECT * FROM periodes WHERE id_classe = ".$relation_ec->getIdClasse();
             $periodes_de_la_classe = mysqli_query($GLOBALS["mysqli"], $req_periodes_classe);
             // Si on trouve des periodes,
-            echo mysqli_num_rows($periodes_de_la_classe)." periodes trouvees<br>";
+            echo mysqli_num_rows($periodes_de_la_classe)." periodes trouvees.<br />";
             if (mysqli_num_rows($periodes_de_la_classe) > 0) {
                 // On met d'abord a jour la relation temporaire eleve_classe deja presente
                 // (en lui affectant le numero de premiere periode (normalement 1...))
@@ -212,23 +213,55 @@ else {
         die();
     }
     else {
-        // Si des classes virtuelles sont trouvees (= classes sans periodes)
-        if (mysqli_num_rows($res) != 0) {
-            echo "<p>Voici la liste des classes présentes dans GEPI pour lesquelles aucune p&eacute;riode n'a &eacute;t&eacute; d&eacute;finie,<br>";
-            echo "<br><p><b>Choisissez pour chaque classe le nombre de p&eacute;riodes : </b></p>";
-            echo "<form enctype='multipart/form-data' action='etape2.php' method=post>";
-			echo add_token_field();
-            echo "<input type=hidden name='step' value='2'><br>";
-            $classes_concernees = array();
-            while($row = mysqli_fetch_object($res)) {
-                // On stocke l'identifiant technique (auto_inc mysql) en indice, et le nom de la classe en valeur
-                $classes_concernees[$row->id] = $row->classe;
-                echo "<p>Classe ". $row->classe." : ";
-                echo "<input type=\"radio\" name=\"classe".$row->id."\" value=\"1\"> 1&nbsp;&nbsp;\n";
-                echo "<input type=\"radio\" name=\"classe".$row->id."\" value=\"2\"> 2&nbsp;&nbsp;\n";
-                echo "<input type=\"radio\" name=\"classe".$row->id."\" value=\"3\"> 3&nbsp;&nbsp;\n";
-                echo "<input type=\"radio\" name=\"classe".$row->id."\" value=\"4\"> 4</p>\n";
-            }
+		// Si des classes virtuelles sont trouvees (= classes sans periodes)
+		if (mysqli_num_rows($res) != 0) {
+			$nb_classes=mysqli_num_rows($res);
+			echo "<p>Voici la liste des classes présentes dans GEPI pour lesquelles aucune p&eacute;riode n'a &eacute;t&eacute; d&eacute;finie,<br>";
+			echo "<br><p><b>Choisissez pour chaque classe le nombre de p&eacute;riodes : </b></p>";
+			echo "<form enctype='multipart/form-data' action='etape2.php' method=post>
+			".add_token_field()."
+			<input type=hidden name='step' value='2'>
+			<table class='boireaus boireaus_alt'>
+				<thead>
+					<tr>
+						<th rowspan='2'>Classe</th>
+						<th colspan='4'>Nombre de périodes</th>
+					</tr>
+					<tr>
+						<th><a href='#' onclick=\"cocher_colonne(1);return false;\" title=\"Cocher une période pour toutes les classes.\">1 <img src='../images/enabled.png' class='icone16' 'Cocher' /></a></th>
+						<th><a href='#' onclick=\"cocher_colonne(2);return false;\" title=\"Cocher 2 périodes pour toutes les classes.\">2 <img src='../images/enabled.png' class='icone16' 'Cocher' /></a></th>
+						<th><a href='#' onclick=\"cocher_colonne(3);return false;\" title=\"Cocher 3 périodes pour toutes les classes.\">3 <img src='../images/enabled.png' class='icone16' 'Cocher' /></a></th>
+						<th><a href='#' onclick=\"cocher_colonne(4);return false;\" title=\"Cocher 4 périodes pour toutes les classes.\">4 <img src='../images/enabled.png' class='icone16' 'Cocher' /></a></th>
+					</tr>
+				</thead>
+				<tbody>";
+		$classes_concernees = array();
+		$cpt=0;
+		while($row = mysqli_fetch_object($res)) {
+			// On stocke l'identifiant technique (auto_inc mysql) en indice, et le nom de la classe en valeur
+			$classes_concernees[$row->id] = $row->classe;
+			echo "
+					<tr>
+						<td>Classe ". $row->classe." : </td>
+						<td><input type=\"radio\" name=\"classe".$row->id."\" id='td_1_".$cpt."' value=\"1\"> 1</td>
+						<td><input type=\"radio\" name=\"classe".$row->id."\" id='td_2_".$cpt."' value=\"2\"> 2</td>
+						<td><input type=\"radio\" name=\"classe".$row->id."\" id='td_3_".$cpt."' value=\"3\"> 3</td>
+						<td><input type=\"radio\" name=\"classe".$row->id."\" id='td_4_".$cpt."' value=\"4\"> 4</td>
+					<tr>";
+			$cpt++;
+		}
+		echo "
+				</tbody>
+			</table>
+			<script type='text/javascript'>
+				function cocher_colonne(n) {
+					for(i=0;i<$cpt;i++) {
+						if(document.getElementById('td_'+n+'_'+i)) {
+							document.getElementById('td_'+n+'_'+i).checked=true;
+						}
+					}
+				}
+			</script>";
             // On sauvegarde dans la session les classes qui étaient affichées à l'utilisateur,
             $_SESSION['classesamodifier'] = $classes_concernees;
 

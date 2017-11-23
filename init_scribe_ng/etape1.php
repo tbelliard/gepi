@@ -117,8 +117,14 @@ if (isset($_POST['step'])) {
         // d'éléments présents.
         $nb_eleves = $eleves['count'];
 
-        // On parcours tous les eleves
+        // On parcourt tous les eleves
         for($nb=0; $nb<$nb_eleves; $nb++) {
+            // 20171121 :
+            $current_date_naissance=formater_date_pour_mysql($eleves[$nb]['entpersondatenaissance'][0]);
+            if($current_date_naissance=='') {
+                echo "<span style='color:red'>Date de naissance invalide pour </span>".$eleves[$nb][$ldap->champ_nom][0]." ".$eleves[$nb][$ldap->champ_prenom][0]." (".$eleves[$nb]['entpersondatenaissance'][0].")<br />";
+            }
+            else {
             /*
              * On créé l'eleve en base (avec les classes ORM)
              */
@@ -135,7 +141,7 @@ if (isset($_POST['step'])) {
             $nouvel_eleve->setNom($eleves[$nb][$ldap->champ_nom][0]);
             $nouvel_eleve->setPrenom($eleves[$nb][$ldap->champ_prenom][0]);
             $nouvel_eleve->setSexe($eleves[$nb]['entpersonsexe'][0]);
-            $nouvel_eleve->setNaissance(formater_date_pour_mysql($eleves[$nb]['entpersondatenaissance'][0]));
+            $nouvel_eleve->setNaissance($current_date_naissance);
             $nouvel_eleve->setLieuNaissance('');
             $ele_no_et = (array_key_exists('employeenumber', $eleves[$nb])) ? $eleves[$nb]['employeenumber'][0] : '';
             $nouvel_eleve->setElenoet($ele_no_et);
@@ -243,6 +249,7 @@ if (isset($_POST['step'])) {
               }
               $eleves_inseres++;
             
+          }
           }
             
             

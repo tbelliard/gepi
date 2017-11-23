@@ -54,7 +54,8 @@ $ldap = new LDAPServerScribe();
 
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
-if ($_POST['step'] == "7") {
+if (($_POST['step'] == "7")&&
+((!isset($_POST['record']))||($_POST['record']!='no'))) {
 	check_token(false);
 
     // On se connecte au LDAP

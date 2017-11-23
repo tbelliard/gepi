@@ -54,7 +54,8 @@ $ldap = new LDAPServerScribe();
 
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
-if ($_POST['step'] == "6") {
+if (($_POST['step'] == "6")&&
+((!isset($_POST['record']))||($_POST['record']!='no'))) {
 	check_token(false);
 
     /*
@@ -83,8 +84,10 @@ if ($_POST['step'] == "6") {
     for($cpt=0; $cpt<$equipes['count']; $cpt++) {
         $code_classe = str_replace('profs-','',$equipes[$cpt]['cn'][0]);
         $donnees_equipes[$code_classe] = array();
-        for($i=0;$i<$equipes[$cpt]['memberuid']['count'];$i++) {
-          $donnees_equipes[$code_classe][] = $equipes[$cpt]['memberuid'][$i];
+        if((isset($equipes[$cpt]['memberuid']))&&(isset($equipes[$cpt]['memberuid']['count']))) {
+            for($i=0;$i<$equipes[$cpt]['memberuid']['count'];$i++) {
+              $donnees_equipes[$code_classe][] = $equipes[$cpt]['memberuid'][$i];
+            }
         }
     }
     
