@@ -272,7 +272,14 @@ if ($mode=='module_discipline') {
 
 		//recherche des mesures demandées dans la table s_traitement_incident
 		$travail_demande="";
-		$sql_mesures_demandees="SELECT s_mesures.mesure,s_travail_mesure.login_ele,s_travail_mesure.travail FROM s_traitement_incident,s_mesures,s_travail_mesure WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.login_ele=s_travail_mesure.login_ele AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='demandee' AND s_travail_mesure.id_incident='$id_incident'  ORDER BY s_traitement_incident.login_ele";
+		//$sql_mesures_demandees="SELECT s_mesures.mesure,s_travail_mesure.login_ele,s_travail_mesure.travail FROM s_traitement_incident,s_mesures,s_travail_mesure WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.login_ele=s_travail_mesure.login_ele AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='demandee' AND s_travail_mesure.id_incident='$id_incident'  ORDER BY s_traitement_incident.login_ele";
+		$sql_mesures_demandees="SELECT m.mesure as mesure, m.login_ele, s_travail_mesure.travail FROM "
+		. "(SELECT s_mesures.mesure as mesure, s_traitement_incident.login_ele, s_traitement_incident.id_incident "
+		. "FROM s_mesures INNER JOIN s_traitement_incident "
+		. "ON s_traitement_incident.id_mesure=s_mesures.id "
+		. "WHERE s_traitement_incident.id_incident='$id_incident' AND s_mesures.type='demandee' ) AS m "
+		. "LEFT JOIN s_travail_mesure "
+		. "ON s_travail_mesure.id_incident = m.id_incident AND s_travail_mesure.login_ele = m.login_ele";
 		//echo "$sql_lieu<br />\n";
 		$res_mesures_demandees=mysqli_query($GLOBALS["mysqli"], $sql_mesures_demandees);
 		if(mysqli_num_rows($res_mesures_demandees)>0) {
