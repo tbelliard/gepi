@@ -87,8 +87,8 @@ if($_SESSION['statut']=='professeur'){
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 
 
-    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
-    //$tab_groups = get_groups_for_prof($_SESSION["login"]);
+	$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+	//$tab_groups = get_groups_for_prof($_SESSION["login"]);
 
 	if(!empty($tab_groups)) {
 		$id_grp_prec=0;
@@ -129,7 +129,7 @@ if($_SESSION['statut']=='professeur'){
 //====================================
 echo "</p>\n";
 
-echo "<p class = 'grand'>Importation de moyennes et appréciations - $nom_periode[$periode_num]</p>";
+echo "<p class = 'grand'>Importation de moyennes et appréciations - ".$nom_periode[$periode_num]."</p>";
 echo "<p class = 'bold'>Groupe : " . $current_group["description"] . " " . $current_group["classlist_string"] . " | Matière : " . $current_group["matiere"]["nom_complet"];
 echo "<p>";
 $modif = 'no';
@@ -199,13 +199,19 @@ for ($row=1; $row<$nb_row; $row++) {
 				}
 
 				if ($enregistrement_note != "no") {
-					$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+					$sql="SELECT * FROM matieres_notes WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')";
+					//echo "$sql<br />";
+					$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], $sql);
 					$test = mysqli_num_rows($test_eleve_note_query);
 					if ($test != "0") {
-						$reg_data1 = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_notes SET note='$reg_note',statut='$elev_statut', rang='0' WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+						$sql="UPDATE matieres_notes SET note='$reg_note',statut='$elev_statut', rang='0' WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')";
+						//echo "$sql<br />";
+						$reg_data1 = mysqli_query($GLOBALS["mysqli"], $sql);
 						$modif = 'yes';
 					} else {
-						$reg_data1 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_notes SET login='$reg_login', id_groupe='" . $id_groupe . "',periode='$periode_num',note='$reg_note',statut='$elev_statut', rang='0'");
+						$sql="INSERT INTO matieres_notes SET login='$reg_login', id_groupe='" . $id_groupe . "',periode='$periode_num',note='$reg_note',statut='$elev_statut', rang='0'";
+						//echo "$sql<br />";
+						$reg_data1 = mysqli_query($GLOBALS["mysqli"], $sql);
 						$modif = 'yes';
 					}
 				} else {
@@ -213,12 +219,18 @@ for ($row=1; $row<$nb_row; $row++) {
 				}
 
 				if ($reg_app != "") {
-					$test_eleve_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')");
+					$sql="SELECT * FROM matieres_appreciations WHERE (login='$reg_login' AND id_groupe='" . $id_groupe . "' AND periode='$periode_num')";
+					//echo "$sql<br />";
+					$test_eleve_app_query = mysqli_query($GLOBALS["mysqli"], $sql);
 					$test = mysqli_num_rows($test_eleve_app_query);
 					if ($test != 0) {
-						$reg_data2 = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_appreciations SET appreciation='" . $reg_app . "' WHERE (login='$reg_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$periode_num')");
+						$sql="UPDATE matieres_appreciations SET appreciation='" . $reg_app . "' WHERE (login='$reg_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$periode_num')";
+						//echo "$sql<br />";
+						$reg_data2 = mysqli_query($GLOBALS["mysqli"], $sql);
 					} else {
-						$reg_data2 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_appreciations set login = '" . $reg_login . "', id_groupe = '" . $id_groupe . "', periode = '" . $periode_num . "', appreciation = '" . $reg_app . "'");
+						$sql="INSERT INTO matieres_appreciations set login = '" . $reg_login . "', id_groupe = '" . $id_groupe . "', periode = '" . $periode_num . "', appreciation = '" . $reg_app . "'";
+						//echo "$sql<br />";
+						$reg_data2 = mysqli_query($GLOBALS["mysqli"], $sql);
 						echo mysqli_error($GLOBALS["mysqli"]);
 					}
 				} else {
