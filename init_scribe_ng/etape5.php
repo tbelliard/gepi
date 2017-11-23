@@ -54,7 +54,8 @@ $ldap = new LDAPServerScribe();
 
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
-if ($_POST['step'] == "5") {
+if (($_POST['step'] == "5")&&
+((!isset($_POST['record']))||($_POST['record']!='no'))) {
 	check_token(false);
 
 	// Ménage sur l'ordre des groupes dans l'affichage simplifié prof:
@@ -96,43 +97,43 @@ if ($_POST['step'] == "5") {
             $nouvelle_matiere->setNomComplet($nom_matiere);
             $nouvelle_matiere->save();
         }
-        
-        
-        // Maintenant on associe les profs à cette matiere
-        $nb_profs = $matieres[$cpt]['memberuid']['count'];
-        
-        $matiere_profs = $nouvelle_matiere->getProfesseurs();
-                
-        if ($nb_profs > 0) {
-          for ($i=0;$i<$nb_profs;$i++){
-            // On vérifie que le prof existe, quand même...
-            $prof = UtilisateurProfessionnelPeer::retrieveByPK($matieres[$cpt]['memberuid'][$i]);
-            
-            // Le prof existe, on créer l'association, si elle n'existe pas encore
-            if ($prof != null) {
-              
-              // L'association n'existe pas, on la créé
-              // Pour ça, on doit déterminer l'ordre
-              if (!$matiere_profs->contains($prof)) {
-                $assoc = JProfesseursMatieresQuery::create()
-                  ->filterByProfesseur($prof)
-                  ->orderByOrdreMatieres('desc')
-                  ->findOne();
+        // S'il y a des profs associés à la matière:
+        if((isset($matieres[$cpt]['memberuid']))&&(isset($matieres[$cpt]['memberuid']['count']))) {
+		  // Maintenant on associe les profs à cette matiere
+		  $nb_profs = $matieres[$cpt]['memberuid']['count'];
+		  
+		  $matiere_profs = $nouvelle_matiere->getProfesseurs();
+		          
+		  if ($nb_profs > 0) {
+		    for ($i=0;$i<$nb_profs;$i++){
+		      // On vérifie que le prof existe, quand même...
+		      $prof = UtilisateurProfessionnelPeer::retrieveByPK($matieres[$cpt]['memberuid'][$i]);
+		      
+		      // Le prof existe, on créer l'association, si elle n'existe pas encore
+		      if ($prof != null) {
+		        
+		        // L'association n'existe pas, on la créé
+		        // Pour ça, on doit déterminer l'ordre
+		        if (!$matiere_profs->contains($prof)) {
+		          $assoc = JProfesseursMatieresQuery::create()
+		            ->filterByProfesseur($prof)
+		            ->orderByOrdreMatieres('desc')
+		            ->findOne();
 
-                $nouvel_ordre = $assoc == null ? 1 : $assoc->getOrdreMatieres()+1;
-                
-                $new_assoc = new JProfesseursMatieres();
-                $new_assoc->setProfesseur($prof);
-                $new_assoc->setMatiere($nouvelle_matiere);
-                $new_assoc->setOrdreMatieres($nouvel_ordre);
-                $new_assoc->save();
-              }
-            } else {
-              echo "Le prof associé (".$matieres[$cpt]['memberuid'][$i].") n'existe pas dans la base !<br/>";
-            }
-          }
+		          $nouvel_ordre = $assoc == null ? 1 : $assoc->getOrdreMatieres()+1;
+		          
+		          $new_assoc = new JProfesseursMatieres();
+		          $new_assoc->setProfesseur($prof);
+		          $new_assoc->setMatiere($nouvelle_matiere);
+		          $new_assoc->setOrdreMatieres($nouvel_ordre);
+		          $new_assoc->save();
+		        }
+		      } else {
+		        echo "Le prof associé (".$matieres[$cpt]['memberuid'][$i].") n'existe pas dans la base !<br/>";
+		      }
+		    }
+		  }
         }
-        
     } // fin parcours des matières
         /*
          * Résumé des matières trouvées :

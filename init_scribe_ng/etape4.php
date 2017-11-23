@@ -54,7 +54,8 @@ $ldap = new LDAPServerScribe();
 
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
-if ($_POST['step'] == "4") {
+if (($_POST['step'] == "4")&&
+((!isset($_POST['record']))||($_POST['record']!='no'))) {
 	check_token(false);
 
     // On se connecte au LDAP
@@ -83,7 +84,7 @@ if ($_POST['step'] == "4") {
         $nom = $profs[$cpt][$ldap->champ_nom][0];
         $prenom = $profs[$cpt][$ldap->champ_prenom][0];
         $civ = $profs[$cpt]['personaltitle'][0];
-        $mail = $profs[$cpt][$ldap->champ_email][0];
+        $mail = isset($profs[$cpt][$ldap->champ_email][0]) ? $profs[$cpt][$ldap->champ_email][0] : "";
 
         // On test si l'uid est deja connu de GEPI
         $compte_utilisateur_prof = UtilisateurProfessionnelPeer::retrieveByPK($uid_as_login);
@@ -112,35 +113,35 @@ if ($_POST['step'] == "4") {
 
         // Insertion de sa qualité de prof principal si c'est le cas
         if ($profs[$cpt]['typeadmin'][0] == 2) {
-        
+          if(isset($profs[$cpt]['divcod'])) {
           for($cl=0; $cl<count($profs[$cpt]['divcod']); $cl++) {
-            $crit_classe_courante = new Criteria();
-            $crit_classe_courante->add(ClassePeer::CLASSE, $profs[$cpt]['divcod'][$cl]); // indice contient le nom de la classe (son numero)
-            $classe_courante = ClassePeer::doSelect($crit_classe_courante);
-            $error = false;
-            if ($classe_courante == null) {
-              $error = true;
-              echo "Erreur : impossible de recuperer la classe $indice<br/>";
-            }
-            if (count($classe_courante) > 1) {
-              $error = true;
-              echo "Erreur : plusieurs classes ayant le nom '$indice' sont pr&eacute;sentes.<br/>";
-            }
+		      $crit_classe_courante = new Criteria();
+		      $crit_classe_courante->add(ClassePeer::CLASSE, $profs[$cpt]['divcod'][$cl]); // indice contient le nom de la classe (son numero)
+		      $classe_courante = ClassePeer::doSelect($crit_classe_courante);
+		      $error = false;
+		      if ($classe_courante == null) {
+		        $error = true;
+		        echo "Erreur : impossible de recuperer la classe $indice<br/>";
+		      }
+		      if (count($classe_courante) > 1) {
+		        $error = true;
+		        echo "Erreur : plusieurs classes ayant le nom '$indice' sont pr&eacute;sentes.<br/>";
+		      }
 
-            // Si on trouve la classe, et qu'il y en a bien qu'une seule, on recupere son id technique
-            if (!$error) {
-              $crit_eleves_de_la_classe = new Criteria();
-              $crit_eleves_de_la_classe->add(JEleveClassePeer::ID_CLASSE, $classe_courante[0]->getId());
-              $eleves_de_la_classe = JEleveClassePeer::doSelect($crit_eleves_de_la_classe);
-              if ($eleves_de_la_classe != null) {
-                foreach($eleves_de_la_classe as $eleve) {
-                  $sql_ajout_rel_prof_princ = "INSERT INTO j_eleves_professeurs VALUES('".$eleve->getLogin()."','$uid_as_login',".$classe_courante[0]->getId().")";
-                  mysqli_query($GLOBALS["mysqli"], $sql_ajout_rel_prof_princ);
-                }
-              }
-            }
+		      // Si on trouve la classe, et qu'il y en a bien qu'une seule, on recupere son id technique
+		      if (!$error) {
+		        $crit_eleves_de_la_classe = new Criteria();
+		        $crit_eleves_de_la_classe->add(JEleveClassePeer::ID_CLASSE, $classe_courante[0]->getId());
+		        $eleves_de_la_classe = JEleveClassePeer::doSelect($crit_eleves_de_la_classe);
+		        if ($eleves_de_la_classe != null) {
+		          foreach($eleves_de_la_classe as $eleve) {
+		            $sql_ajout_rel_prof_princ = "INSERT INTO j_eleves_professeurs VALUES('".$eleve->getLogin()."','$uid_as_login',".$classe_courante[0]->getId().")";
+		            mysqli_query($GLOBALS["mysqli"], $sql_ajout_rel_prof_princ);
+		          }
+		        }
+		      }
+		    }
           }
-          
         } else {
           echo "Le prof $prenom $nom n'est pas professeur principal<br/>";
         }

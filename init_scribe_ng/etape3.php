@@ -55,7 +55,8 @@ $ldap = new LDAPServerScribe();
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 
-if ($_POST['step'] == "3") {
+if (($_POST['step'] == "3")&&
+((!isset($_POST['record']))||($_POST['record']!='no'))) {
 	check_token(false);
 
     // On se connecte au LDAP
@@ -102,8 +103,10 @@ if ($_POST['step'] == "3") {
           $resp->setLogin($responsables[$nb][$ldap->champ_login][0]);
           $resp->setNom($responsables[$nb][$ldap->champ_nom][0]);
           $resp->setPrenom($responsables[$nb][$ldap->champ_prenom][0]);
-          $resp->setCivilite($responsables[$nb]['personaltitle'][0]);
-          
+          // 20171123
+          $current_civilite=isset($responsables[$nb]['personaltitle'][0]) ? $responsables[$nb]['personaltitle'][0] : 'M.';
+          $resp->setCivilite($current_civilite);
+
           $homephone = array_key_exists('homephone', $responsables[$nb]) ? $responsables[$nb]['homephone'][0] : '';
           $resp->setTelPers($homephone);
           
@@ -194,10 +197,12 @@ if ($_POST['step'] == "3") {
               }
 
               // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
-              $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','','')";
+              $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 SET ele_id='$eleve_associe_ele_id', pers_id='".$resp->getResponsableEleveId()."', resp_legal='$numero_responsable';";
               mysqli_query($GLOBALS["mysqli"], $req_ajout_lien_eleve_resp);
               if (((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
-                  die("Une erreur s'est produite lors de l'affectation d'un &eacute;l&egrave;ve &agrave; son responsable l&eacute;gal.");
+                  $info_erreur=isset($responsables[$nb][$ldap->champ_login][0]) ? $responsables[$nb][$ldap->champ_login][0]."<br />" : "";
+                  $info_erreur.=$req_ajout_lien_eleve_resp;
+                  die("Une erreur s'est produite lors de l'affectation d'un &eacute;l&egrave;ve &agrave; son responsable l&eacute;gal.<br />".$info_erreur);
               }
               $valid_associations++;
             }

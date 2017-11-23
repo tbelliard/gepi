@@ -44,13 +44,19 @@ function vider_table_seule($table_name) {
 }
 
 function formater_date_pour_mysql($date) {
+    $retour='';
     if ($date != '') {
-        $annee = mb_substr($date, 0, 4);
-        $mois = mb_substr($date, 4, 2);
-        $jour = mb_substr($date, 6, 2);
-        return "$annee-$mois-$jour";
+        if(preg_match("/^[0-9]{8}$/", $date)) {
+            $annee = mb_substr($date, 0, 4);
+            $mois = mb_substr($date, 4, 2);
+            $jour = mb_substr($date, 6, 2);
+            if(checkdate($mois, $jour, $annee)) {
+                $retour="$annee-$mois-$jour";
+            }
+        }
     }
-    else return '';
+
+    return $retour;
 }
 
 function is_table_vide($table_name) {
