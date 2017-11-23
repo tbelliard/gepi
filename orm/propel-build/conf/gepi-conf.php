@@ -52,6 +52,10 @@ $conf = array (
           array (
             'value' => 'utf8',
           ),
+          'queries' =>
+          array (
+            'value' => "SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));",
+          ),
         ),
       ),
     ),
