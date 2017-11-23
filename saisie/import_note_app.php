@@ -320,7 +320,7 @@ if (isset($is_posted )) {
             }
             fclose($fp);
             echo "</table>\n";
-            echo "<p>Première phase de l'importation : $row entrées importées !</p>\n";
+            echo "<p>Première phase de l'importation : $row entrées seraient importées !</p>\n";
             if ($row > 0) {
                 if ($valid == '1') {
                     echo "<input type='hidden' name='nb_row' value=\"$row\" />\n";
