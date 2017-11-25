@@ -850,6 +850,11 @@ $acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
+$active_mod_engagements=getSettingAOui('active_mod_engagements');
+if($active_mod_engagements) {
+	$tab_engagements_conseil_classe=get_tab_engagements_conseil_classe("", $id_groupe);
+}
+
 ?>
 <script type="text/javascript" >
 change = 'no';
@@ -1317,7 +1322,7 @@ while ($k < $nb_periode) {
 			$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 
 			if(mysqli_num_rows($toutElemProgramme)>0) {
-				$mess[$k].="<select name='Elem_groupe$k' id='Elem_groupe$k' style='margin-top:.5em'> \n";
+				$mess[$k].="<select name='Elem_groupe$k' id='Elem_groupe$k' style='margin-top:.5em; max-width:38em;'> \n";
 				$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
 				while($element = $toutElemProgramme->fetch_object()){
 					$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
@@ -1330,7 +1335,7 @@ while ($k < $nb_periode) {
 
 			// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
 			//           Ou une préférence utilisateur?
-			$mess[$k].="<a href='#' onclick=\"affiche_liste_ele_prog('newElemGroupe$k');return false;\"><img src='../images/icons/livre.png' class='icone16' alt='Suggestions' /></a> \n";
+			$mess[$k].="<a href='#' onclick=\"affiche_liste_ele_prog('newElemGroupe$k');return false;\" title=\"Accéder à la banque des éléments de programmes.\"><img src='../images/icons/livre.png' class='icone16' alt='Suggestions' /></a> \n";
 		}
 	}
 	$k++;
@@ -1938,7 +1943,7 @@ foreach ($liste_eleves as $eleve_login) {
 					if(mysqli_num_rows($toutElemProgramme)>0) {
 						$toutElemProgramme->data_seek(0);
 
-						$mess[$k].="<select name=\"Elem_Eleve".$k."[$eleve_login]\" id='Elem_Eleve_".$k."_".$eleve_login."' style='margin-top:.5em'> \n";
+						$mess[$k].="<select name=\"Elem_Eleve".$k."[$eleve_login]\" id='Elem_Eleve_".$k."_".$eleve_login."' style='margin-top:.5em; max-width:38em;'> \n";
 						$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
 						while($element = $toutElemProgramme->fetch_object()){
 							$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
@@ -2074,6 +2079,23 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		//==========================
 
+		// 20171125
+		$current_modalites_accompagnement=liste_modalites_accompagnement_eleve($eleve_login, "");
+		if($current_modalites_accompagnement!="") {
+			echo " <em style='font-weight:normal'>(".$current_modalites_accompagnement.")</em>";
+		}
+		if($active_mod_engagements) {
+			if(array_key_exists($eleve_login, $tab_engagements_conseil_classe)) {
+				echo " <em style='font-weight:normal'>(";
+				for($cpt_eng=0;$cpt_eng<count($tab_engagements_conseil_classe[$eleve_login]);$cpt_eng++) {
+					if($cpt_eng>0) {
+						echo " - ";
+					}
+					echo $tab_engagements_conseil_classe[$eleve_login][$cpt_eng];
+				}
+				echo ")</em>";
+			}
+		}
 		//echo "</div>\n";
 		echo "\n";
                 
@@ -2202,7 +2224,7 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 <input type="hidden" name="id_groupe" value="<?php echo "$id_groupe";?>" />
 <input type="hidden" name="periode_cn" value="<?php echo "$periode_cn";?>" />
 
-    <div class="center" id="fixe">
+    <div class="center fieldset_opacite50" id="fixe" style='padding:0.5em;'>
 	<?php
             echo $chaine_date_conseil_classe."<br />";
             if($proposer_liens_enregistrement=='y') {

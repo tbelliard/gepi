@@ -12271,6 +12271,9 @@ function get_info_eleve($login_ele, $periode=1) {
 			$tab['regime']=$lig2->regime;
 		}
 
+		// 20171124: get_tab_modalites_accompagnement_eleve
+		$tab['modalites_accompagnement']=get_tab_modalites_accompagnement_eleve($login_ele);
+
 		$sql="SELECT c.id, c.classe FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login='$login_ele' AND jec.periode='$periode';";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)>0) {
@@ -17470,10 +17473,11 @@ function get_resp_classe($id_classe, $login_ele="") {
 	$tab=array();
 	$tab['pp']=array();
 	$tab['cpe']=array();
-	$tab['suivi']=array();
+	$tab['suivi_par']=array();
 	// Engagement: Représentants parents, élèves
 	//$tab['']=array();
 
+	// Professeur principal
 	if($id_classe!="") {
 		if($login_ele!="") {
 			$sql = "SELECT DISTINCT jep.professeur 
@@ -17510,22 +17514,64 @@ function get_resp_classe($id_classe, $login_ele="") {
 			}
 		}
 	}
-/*
 
-MariaDB [gepidev]> select * from j_eleves_cpe limit 5;
-+----------+-----------+
-| e_login  | cpe_login |
-+----------+-----------+
-| adesirc  | guyomark  |
-| andrieuj | guyomark  |
-| angee-_m | guyomark  |
-| aubea    | guyomark  |
-| aubryl   | guyomark  |
-+----------+-----------+
-5 rows in set (0.00 sec)
+	// CPE
+	if($login_ele!="") {
+		$sql="SELECT DISTINCT u.login FROM utilisateurs u, 
+								j_eleves_cpe jecpe 
+							WHERE u.login=jecpe.cpe_login AND 
+								u.statut='cpe' AND 
+								jecpe.e_login='".$login_ele."' 
+							ORDER BY u.nom,u.prenom;";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab['cpe'][]=$lig->login;
+			}
+		}
+	}
+	elseif($id_classe!="") {
+		$sql="SELECT DISTINCT u.login FROM utilisateurs u, 
+								j_eleves_cpe jecpe, 
+								j_eleves_classes jec 
+							WHERE u.login=jecpe.cpe_login AND 
+								u.statut='cpe' AND 
+								jecpe.e_login=jec.login AND 
+								jec.id_classe='".$id_classe."' 
+							ORDER BY u.nom,u.prenom;";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab['cpe'][]=$lig->login;
+			}
+		}
+	}
+	else {
+		$sql="SELECT DISTINCT u.login FROM utilisateurs u, 
+								j_eleves_cpe jecpe 
+							WHERE u.login=jecpe.cpe_login AND 
+								u.statut='cpe' 
+							ORDER BY u.nom,u.prenom;";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab['cpe'][]=$lig->login;
+			}
+		}
+	}
 
-MariaDB [gepidev]> 
-*/
+	// Suivi (chef ou adjoint)
+	if($id_classe!="") {
+		$sql="SELECT suivi_par FROM classes WHERE id='".$id_classe."';";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab['suivi_par'][]=$lig->login;
+			}
+		}
+	}
+
+	return $tab;
 }
 
 
@@ -17568,4 +17614,38 @@ function get_periode_from_classe_d_apres_date($id_classe, $timestamp="") {
 	return $num_periode;
 }
 
+function get_tab_engagements_conseil_classe($id_classe, $id_groupe='') {
+	global $mysqli;
+
+	$tab=array();
+
+	if($id_groupe!="") {
+		$sql="SELECT DISTINCT eu.login, nom FROM engagements_user eu, 
+									engagements e, 
+									j_eleves_groupes jeg 
+								WHERE e.id=eu.id_engagement AND 
+									e.conseil_de_classe='yes' AND 
+									e.ConcerneEleve='yes' AND 
+									jeg.login=eu.login AND 
+									jeg.id_groupe='".$id_groupe."';";
+	}
+	else {
+		$sql="SELECT DISTINCT eu.login, nom FROM engagements_user eu, 
+									engagements e, 
+									j_eleves_classes jec 
+								WHERE e.id=eu.id_engagement AND 
+									e.conseil_de_classe='yes' AND 
+									e.ConcerneEleve='yes' AND 
+									jec.login=eu.login AND 
+									jec.id_classe='".$id_classe."';";
+	}
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[$lig->login][]=$lig->nom;
+		}
+	}
+
+	return $tab;
+}
 ?>

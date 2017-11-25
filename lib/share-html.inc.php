@@ -6924,4 +6924,67 @@ function choix_elements_programmes() {
 
 	return $retour;
 }
+
+function affiche_resp_classe($id_classe, $login_ele="") {
+	global $mysqli;
+
+	$retour="";
+
+	$tab=get_resp_classe($id_classe, $login_ele);
+
+	//$tab["code"][$lig["code"]][$cpt]
+	// Appeler la fonction qui par ajax, qui en direct dans les pages avec pas trop de requêtes
+
+
+
+	return $retour;
+}
+
+// Créer fonction pour  Affichage des modalités pour un élève et l'utiliser dans modify_eleve.php
+function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet") {
+	$retour="";
+
+	$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($login_eleve);
+	//echo "<pre>";
+	//print_r($tab_modalites_accompagnement_eleve);
+	//echo "</pre>";
+	
+	if(isset($tab_modalites_accompagnement_eleve["code"])) {
+		$tab_modalites_accompagnement=get_tab_modalites_accompagnement();
+		$tmp_tab_deja=array();
+		foreach($tab_modalites_accompagnement_eleve["code"] as $current_code => $tmp_tab) {
+
+			//echo "<pre>";
+			//print_r($tmp_tab);
+			//echo "</pre>";
+
+			if(!in_array($current_code, $tmp_tab_deja)) {
+				$retour.=" <span title=\"".$tab_modalites_accompagnement["code"][$current_code]["libelle"];
+				$tmp_tab_commentaires=array();
+				for($loop=0;$loop<count($tmp_tab);$loop++) {
+					if(isset($tmp_tab[$loop]["commentaire"])) {
+						$tmp_commentaire=preg_replace('/"/', "''", trim($tmp_tab[$loop]["commentaire"]));
+						if(!in_array($tmp_commentaire, $tmp_tab_commentaires)) {
+							$tmp_tab_commentaires[]=$tmp_commentaire;
+						}
+					}
+				}
+				$liste_commentaires="";
+				for($loop=0;$loop<count($tmp_tab_commentaires);$loop++) {
+					$liste_commentaires.="\n- ".$tmp_tab_commentaires[$loop];
+				}
+				if($liste_commentaires!="") {
+					$retour.=" :".$liste_commentaires;
+				}
+				$retour.="\">".$current_code."</span>";
+			}
+			$tmp_tab_deja[]=$current_code;
+		}
+	}
+	elseif($mode=="complet") {
+		$retour.="Aucune modalité d'accompagnement n'est définie.";
+	}
+
+	return $retour;
+}
 ?>
