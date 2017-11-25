@@ -599,6 +599,20 @@ else {
 	echo "
 <form action='".$_SERVER["PHP_SELF"]."' method='post' name='form2'>
 	<fieldset class='fieldset_opacite50'>
+		<div style='float:right; width:10em; text-align:center;'>
+			<p>Cocher/décocher pour tous les élèves de la classe et toutes les périodes la modalité suivante&nbsp;:</p>
+			<table border='0'>";
+	foreach($tab_modalite_accompagnement["code"] as $code => $tmp_tab) {
+		echo "
+				<tr title=\"".$tmp_tab["libelle"]."\">
+					<td>$code&nbsp;: </td>
+					<td><a href='#' onclick=\"coche_decoche_modalite('$code', true);return false;\"><img src='../images/enabled.png' class='icone20' alt='Coche' /></a></td>
+					<td><a href='#' onclick=\"coche_decoche_modalite('$code', false);return false;\"><img src='../images/disabled.png' class='icone20' alt='Décoche' /></a></span></td>
+				</tr>";
+	}
+	echo "</table>
+		</div>
+
 		<p><input type='submit' value='Enregistrer' /></p>
 		<div class='center' id='fixe'>
 			<input type='submit' value='Enregistrer' />
@@ -670,7 +684,7 @@ else {
 
 					echo "
 					<td>
-						<input type='checkbox' name='accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."' id='accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."' value='$code' onchange=\"changement(); traite_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');\" ".$checked."/>".$chaine_textarea."
+						<input type='checkbox' name='accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."' id='accompagnement_".$current_ele['id_eleve']."_".$code."_".$i."' value=\"$code\" onchange=\"changement(); traite_ligne('accompagnement_".$current_ele['id_eleve']."_".$code."');\" ".$checked."/>".$chaine_textarea."
 					</td>";
 				}
 				else {
@@ -742,6 +756,34 @@ else {
 	}
 
 $chaine_js_traite_graisse_lignes
+
+	function coche_decoche_modalite(code, mode) {
+		//alert('plop');
+		champ_input=document.getElementsByTagName('input');
+		for(i=0;i<champ_input.length;i++) {
+			if(champ_input[i].getAttribute('type')=='checkbox') {
+				valeur=champ_input[i].getAttribute('value');
+				if(valeur==code) {
+					champ_input[i].checked=mode;
+
+					id=champ_input[i].getAttribute('id');
+					tmp=id.split('_');
+					id=tmp[0]+'_'+tmp[1]+'_'+tmp[2];
+					//alert('Test texte_'+id)
+					if(document.getElementById('texte_'+id)) {
+						if(mode==true) {
+							//alert('On met en gras texte_'+id);
+							document.getElementById('texte_'+id).style.fontWeight='bold';
+						}
+						else {
+							//alert('On met en normal texte_'+id);
+							document.getElementById('texte_'+id).style.fontWeight='normal';
+						}
+					}
+				}
+			}
+		}
+	}
 
 </script>";
 }
