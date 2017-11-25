@@ -147,6 +147,7 @@ include("menu_plugins.inc.php");
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/index.php" '.insert_confirm_abandon().'>Gestion des élèves</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import.php" '.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/gestion/saisie_modalites_accompagnement.php" '.insert_confirm_abandon().' title="Modalités d\'accompagnement des élèves (SEGPA, ULIS, PPRE, PIA,...)">Modalités d\'accompagnement</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php" '.insert_confirm_abandon().'>Consult.fiches élèves</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_mes_listes.php"'.insert_confirm_abandon().'>Listes élèves</a></li>'."\n";
 		// Les administrateurs n'ont pas ce droit:
@@ -198,6 +199,8 @@ include("menu_plugins.inc.php");
 		if(mysqli_num_rows($test)>0) {
 			$menus .= '                        <li><a href="'.$gepiPath.'/groupes/maj_inscript_ele_d_apres_edt.php" '.insert_confirm_abandon().' title="Si vous avez importé votre emploi du temps depuis le fichier EXP_Cours.xml d\'EDT, vous pouvez mettre à jour les inscriptions d\'élèves dans les groupes Gepi à l\'aide de l\'export EXP_Eleves.xml d\'EDT.">Mise à jour inscript. élèves d\'après EDT</a></li>'."\n";
 		}
+
+		$menus .= '                        <li><a href="'.$gepiPath.'/gestion/saisie_modalites_accompagnement.php" '.insert_confirm_abandon().' title="Modalités d\'accompagnement des élèves (SEGPA, ULIS, PPRE, PIA,...)">Modalités d\'accompagnement</a></li>'."\n";
 
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/prof_suivi.php" '.insert_confirm_abandon().' title="Définition des '.getSettingValue('gepi_prof_suivi').' des élèves dans les différentes classes.">Param.'.getSettingValue('gepi_prof_suivi').'</a></li>'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/cpe_resp.php" '.insert_confirm_abandon().' title="Définition du CPE responsable des élèves de telle ou telle classe.'.getSettingValue('gepi_prof_suivi').' des élèves dans les différentes classes.">Param.CPE resp</a></li>'."\n";
