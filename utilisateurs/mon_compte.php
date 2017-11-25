@@ -3997,6 +3997,10 @@ if(getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut']))) {
 	".(isset($message_AlertesAvecSon) ? $message_AlertesAvecSon : "")."
 
 			<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' tabindex='$tabindex' /></p>
+
+			<p style='margin-top:1em; margin-left:6.5em; text-indent:-6.5em;'><em>Remarque&nbsp;:</em> Si vous souhaitez supprimer l'alerte sonore, par exemple pour éviter qu'une alerte ne sonne quand vous diffusez une vidéo, ou pendant un contrôle, songez qu'avec les navigateurs modernes <em>(firefox, chrome,...)</em> vous pouvez d'un clic-droit sur l'onglet du navigateur, rendre l'onglet muet <em>(sans pour autant rendre les autres onglets muets (si la vidéo diffusée s'y trouve), ni faire taire complètement votre ordinateur au niveau du système d'exploitation ou des enceintes)</em>.<br />
+			Conserver l'alerte sonore n'est pas forcément une mauvaise chose... à moins que vous passiez souvent au bureau devant l'écran.</p>
+
 		</fieldset>
 	</form>\n";
 	$tabindex++;
