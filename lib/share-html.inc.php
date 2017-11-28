@@ -5127,8 +5127,17 @@ function affiche_tableau_periodes_ouvertes() {
 			while($lig_clas=mysqli_fetch_object($res_clas)) {
 				$tab_clas[$lig_clas->id_classe]=$lig_clas->classe;
 
+				if(mb_strlen($lig_clas->classe)>3) {
+					$aff_classe="<div class='texte_td_a_la_verticale'>".$lig_clas->classe."</div>";
+				}
+				else {
+					//$aff_classe="<p>".$lig_clas->classe."</p>";
+					$aff_classe=$lig_clas->classe;
+				}
+
 			$retour.="
-		<th>".$lig_clas->classe."</th>";
+		<th>".$aff_classe."</th>";
+
 			}
 			$retour.="
 	</tr>";
@@ -5324,8 +5333,16 @@ function affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins($mode
 						$title.="\"";
 					}
 
+				if(mb_strlen($lig_clas->classe)>3) {
+					$aff_classe="<div class='texte_td_a_la_verticale'>".$lig_clas->classe."</div>";
+				}
+				else {
+					//$aff_classe="<p>".$lig_clas->classe."</p>";
+					$aff_classe=$lig_clas->classe;
+				}
+
 				$retour.="
-		<th".$title.">".$lig_clas->classe."</th>";
+		<th".$title.">".$aff_classe."</th>";
 				}
 				$retour.="
 	</tr>";
