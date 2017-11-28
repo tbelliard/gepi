@@ -116,28 +116,39 @@ if ($nb_aid == 0) {
 		</tr>
 <?php
 
-    $i=0;
+	$i=0;
 	$alt=1;
-    while ($i < $nb_aid) {
-        $nom_aid = @old_mysql_result($call_data, $i, "nom");
-        $nom_complet_aid = @old_mysql_result($call_data, $i, "nom_complet");
-        $indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
-        $outils_complementaires  = @old_mysql_result($call_data, $i, "outils_complementaires");
-        if ($outils_complementaires=='y') {
+	while ($i < $nb_aid) {
+		$nom_aid = @old_mysql_result($call_data, $i, "nom");
+		$nom_complet_aid = @old_mysql_result($call_data, $i, "nom_complet");
+		$indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
+		$outils_complementaires  = @old_mysql_result($call_data, $i, "outils_complementaires");
+		if ($outils_complementaires=='y') {
 			$display_outils = "<br /><span class='small'>(Outils complémentaires activés)</span>";
 		} else {
-            $display_outils="";
+			$display_outils="";
 		}
-		
-        if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
-            $display_trombino = "<br /><span class='small'>(Gestion des accès élèves au trombinoscope)</span>";
-        } else {
-            $display_trombino="";
-        }
-		
+
+		if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
+			$display_trombino = "<br /><span class='small'>(Gestion des accès élèves au trombinoscope)</span>";
+		} else {
+			$display_trombino="";
+		}
+
+		$sql="SELECT 1=1 FROM aid WHERE indice_aid = '$indice_aid';";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)==0) {
+			$title_tr=" title=\"Aucun AID n'est créé dans la catégorie.\"";
+			$style_tr=" style='background-color:grey'";
+		}
+		else {
+			$title_tr="";
+			$style_tr="";
+		}
+
 		$alt=$alt*(-1);
 ?>
-		<tr class='lig<?php echo $alt; ?>'>
+		<tr class='lig<?php echo $alt; ?>'<?php echo $title_tr.$style_tr;?>>
 			<td>
 				<a href='config_aid.php?indice_aid=<?php echo $indice_aid; ?>'><?php echo $nom_aid; ?> <img src='../images/edit16.png' class='icone16' alt='Éditer' /></a><br /><span style='font-size:x-small'><?php echo $nom_complet_aid;?></span>
 				<?php echo $display_outils; ?> <?php echo $display_trombino; ?>

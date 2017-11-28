@@ -383,8 +383,28 @@ if (isset($indice_aid)) {
 							$selected=" selected='true'";
 							$indice_form_chgt_aid=$cpt_cat_aid;
 						}
+
+						//20171128
+						$sql="SELECT 1=1 FROM aid WHERE indice_aid = '".$lig_cat_aid->indice_aid."';";
+						$res=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res)==0) {
+							$title_opt=" title=\"Aucun AID n'est créé dans la catégorie.\"";
+							$style_opt=" style='color:red";
+							if($selected!="") {
+								$style_opt.=";font-weight:bold;";
+							}
+							$style_opt.="'";
+						}
+						else {
+							$title_opt="";
+							$style_opt="";
+							if($selected!="") {
+								$style_opt=" style='font-weight:bold;'";
+							}
+						}
+
 						echo "
-				<option value='".$lig_cat_aid->indice_aid."'".$selected.">".$lig_cat_aid->nom." (".$lig_cat_aid->nom_complet.")</option>";
+				<option value='".$lig_cat_aid->indice_aid."'".$style_opt.$title_opt.$selected.">".$lig_cat_aid->nom." (".$lig_cat_aid->nom_complet.")</option>";
 						$cpt_cat_aid++;
 					}
 					echo "
