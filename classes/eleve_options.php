@@ -278,6 +278,8 @@ $nom_eleve=$tab_info_ele['nom'];
 $prenom_eleve=$tab_info_ele['prenom'];
 $ine_eleve=$tab_info_ele['no_gep'];
 
+$acces_bull_simp=acces_impression_bulletins_simplifies($login_eleve);
+
 $temoin_noms_edt_groupes="n";
 $tab_grp_edt=array();
 $sql="SELECT * FROM edt_corresp2 ec, j_groupes_classes jgc WHERE jgc.id_groupe=ec.id_groupe AND jgc.id_classe='".$id_classe."';";
@@ -737,7 +739,13 @@ while ($i < $nombre_ligne) {
 
 			// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 			if (!test_before_eleve_removal($login_eleve, $id_groupe, $j)) {
-				echo "<img id='img_bull_non_vide_".$i."_".$j."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+				// 20171127: Ajouter lien vers bull_simp si droit ou en infobulle.
+				if($acces_bull_simp) {
+					echo "<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&periode1=$j&periode2=$j&choix_edit=2&login_eleve=".$login_eleve."' onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$login_eleve','".addslashes($nom_eleve." ".$prenom_eleve)."','$id_classe','$j','$j');return false;\" title=\"Bulletin non vide.\n\nCliquez pour voir le bulletin simplifié dans un nouvel onglet.\" target='_blank'><img id='img_bull_non_vide_".$i."_".$j."' src='../images/icons/bulletin_16.png' width='16' height='16' alt='Bulletin non vide' /></a>";
+				}
+				else {
+					echo "<img id='img_bull_non_vide_".$i."_".$j."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+				}
 			}
 
 			$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$login_eleve."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$id_groupe."' AND ccn.periode = '".$j."')";
@@ -874,7 +882,24 @@ echo "</table>\n";
 
 
 //============================================
-// AJOUT: boireaus
+// 20171127
+echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+
+	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+		echo "<img src='../images/icons/close16.png' style=\"width:16px; height:16px\" alt='Fermer' />\n";
+		echo "</a>\n";
+		echo "</div>\n";
+
+		echo "<div id='titre_entete_bull_simp'></div>\n";
+	echo "</div>\n";
+	
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "</div>\n";
+
+echo "</div>\n";
+//============================================
 echo "<script type='text/javascript' language='javascript'>
 
 	function DecocheColonne_si_bull_et_cn_vide(i) {
@@ -954,6 +979,14 @@ echo "<script type='text/javascript' language='javascript'>
 	for (var ki=0;ki<$nombre_ligne;ki++) {
 		colore_td_eleve_options(ki);
 	}
+
+	// <![CDATA[
+	// 20171127
+	function affiche_bull_simp(login_eleve,designation_eleve,id_classe,num_per1,num_per2) {
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+designation_eleve+' période '+num_per1+' à '+num_per2;
+		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+	}
+	//]]>
 
 </script>\n";
 

@@ -1338,9 +1338,10 @@ if(count($total_eleves)>0) {
 
 						// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 						if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
-							if($acces_prepa_conseil_edit_limite=="y") {
-								echo "<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$e_login."&id_classe=".$eleves_list["users"][$e_login]["id_classe"]."&periode1=".$period["num_periode"]."&periode2=".$period["num_periode"]."' target='_blank'>";
-								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+							if(($acces_prepa_conseil_edit_limite=="y")&&(isset($current_group["eleves"]["all"]["users"][$e_login]))) {
+								// 20171128
+								echo "<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$e_login."&id_classe=".$current_group["eleves"]["all"]["users"][$e_login]["id_classe"]."&periode1=".$period["num_periode"]."&periode2=".$period["num_periode"]."' onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$e_login','".addslashes($current_group["eleves"]["all"]["users"][$e_login]["nom"]." ".$current_group["eleves"]["all"]["users"][$e_login]["prenom"])."','".$current_group["eleves"]["all"]["users"][$e_login]["classe"]."','".$period["num_periode"]."','".$period["num_periode"]."');return false;\" title=\"Bulletin non vide.\n\nCliquez pour voir le bulletin simplifié dans un nouvel onglet.\" target='_blank'>";
+								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' alt='Bulletin non vide' />";
 								echo "</a>";
 							}
 							else {
@@ -1465,6 +1466,27 @@ if(count($total_eleves)>0) {
 	
 	$nb_eleves=count($total_eleves);
 	//echo $nb_eleves;
+
+//============================================
+// 20171127
+echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+
+	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+		echo "<img src='../images/icons/close16.png' style=\"width:16px; height:16px\" alt='Fermer' />\n";
+		echo "</a>\n";
+		echo "</div>\n";
+
+		echo "<div id='titre_entete_bull_simp'></div>\n";
+	echo "</div>\n";
+	
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "</div>\n";
+
+echo "</div>\n";
+//============================================
+
 	echo "<script type='text/javascript'>
 	var etat_grisage='griser';
 
@@ -1728,6 +1750,16 @@ document.getElementById('button_submit_Enregistrer_1').value='Rejeter la proposi
 document.getElementById('button_submit_Enregistrer_2').value='Rejeter la proposition de correction du professeur';
 ";
 	}
+
+	echo "
+	// <![CDATA[
+	// 20171127
+	function affiche_bull_simp(login_eleve,designation_eleve,id_classe,num_per1,num_per2) {
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+designation_eleve+' période '+num_per1+' à '+num_per2;
+		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+	}
+	//]]>";
+
 
 	echo "</script>\n";
 
