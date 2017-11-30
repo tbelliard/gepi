@@ -6958,10 +6958,12 @@ function affiche_resp_classe($id_classe, $login_ele="") {
 }
 
 // Créer fonction pour  Affichage des modalités pour un élève et l'utiliser dans modify_eleve.php
-function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet") {
+function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet", $tab_modalites_accompagnement_eleve=NULL) {
 	$retour="";
 
-	$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($login_eleve);
+	if((!isset($tab_modalites_accompagnement_eleve))||(!is_array($tab_modalites_accompagnement_eleve))) {
+		$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($login_eleve);
+	}
 	//echo "<pre>";
 	//print_r($tab_modalites_accompagnement_eleve);
 	//echo "</pre>";
@@ -7004,4 +7006,5 @@ function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet") {
 
 	return $retour;
 }
+
 ?>

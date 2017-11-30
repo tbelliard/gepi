@@ -1025,6 +1025,26 @@ if (!$classe_col->isEmpty()) {
 }
 
 //**************** ELEVES *****************
+// 20171129
+// Il faudrait récupérer le numéro de période...
+//$tab_modalites_accompagnement_groupe=get_tab_modalites_accompagnement_classe_ou_groupe("", $id_groupe, $periode);
+$tab_modalites_accompagnement_groupe=array();
+if(isset($id_groupe)) {
+	$tab_modalites_accompagnement_groupe=get_tab_modalites_accompagnement_classe_ou_groupe("", $id_groupe);
+}
+elseif(isset($id_classe)) {
+	$tab_modalites_accompagnement_groupe=get_tab_modalites_accompagnement_classe_ou_groupe($id_classe);
+}
+
+$active_mod_engagements=getSettingAOui("active_mod_engagements");
+if($active_mod_engagements) {
+	if(isset($id_groupe)) {
+		$tab_engagements=get_tab_engagements_user('', '', 'eleve', $id_groupe);
+	}
+	elseif(isset($id_classe)) {
+		$tab_engagements=get_tab_engagements_user('', $id_classe, 'eleve');
+	}
+}
 
 $tab_types=array();
 $sql="select * from a_types;";
@@ -1473,7 +1493,38 @@ if ($eleve_col->isEmpty()) {
 							<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve['accesFiche']; ?>&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >
 								(voir&nbsp;fiche)
 							</a>
-<?php } ?>
+<?php } 
+
+	//================================================
+	// 20171129: Tester si (modalites_accompagnement, ou engagement?)
+	$infos_complementaires="";
+	if(isset($tab_modalites_accompagnement_groupe["login"][$eleve['accesFiche']])) {
+		$current_modalites_accompagnement=liste_modalites_accompagnement_eleve($eleve['accesFiche'], "", $tab_modalites_accompagnement_groupe["login"][$eleve['accesFiche']]);
+
+		if($current_modalites_accompagnement!="") {
+			$infos_complementaires.="<em style='font-weight:normal'>(".$current_modalites_accompagnement.")</em>";
+		}
+
+	}
+	if($active_mod_engagements) {
+		if(array_key_exists($eleve['accesFiche'], $tab_engagements['login_user'])) {
+			$infos_complementaires.=" <em style='font-weight:normal'>(";
+			for($cpt_eng=0;$cpt_eng<count($tab_engagements['login_user'][$eleve['accesFiche']]);$cpt_eng++) {
+				if($cpt_eng>0) {
+					$infos_complementaires.=" - ";
+				}
+				$indice_courant=$tab_engagements['login_user'][$eleve['accesFiche']][$cpt_eng];
+				$infos_complementaires.=$tab_engagements['indice'][$indice_courant]["nom_engagement"];
+			}
+			$infos_complementaires.=")</em>";
+		}
+	}
+	if($infos_complementaires!="") {
+		echo "<br /><span style='font-size:small;'>".$infos_complementaires."</span>";
+	}
+	//================================================
+?>
+
 						</td>
 <?php 
 // Boucle sur les créneaux horaires

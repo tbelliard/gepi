@@ -13530,7 +13530,7 @@ function get_tab_engagements($statut_concerne="", $statut_saisie="") {
 	return $tab_engagements;
 }
 
-function get_tab_engagements_user($login_user="", $id_classe='', $statut_concerne="") {
+function get_tab_engagements_user($login_user="", $id_classe='', $statut_concerne="", $id_groupe='') {
 	/*
 	global $tab_engagements;
 
@@ -13545,17 +13545,24 @@ function get_tab_engagements_user($login_user="", $id_classe='', $statut_concern
 	$tab_engagements_user['id_engagement']=array();
 	$tab_engagements_user['id_engagement_user']=array();
 	$sql="SELECT eu.*, e.nom AS nom_engagement, e.description AS engagement_description, e.type, e.conseil_de_classe, e.code AS code_engagement FROM engagements_user eu, engagements e WHERE eu.id_engagement=e.id";
+
 	if($login_user!="") {
 		$sql.=" AND eu.login='".$login_user."'";
 	}
+
 	if($id_classe!="") {
 		$sql.=" AND eu.id_type='id_classe' AND valeur='".$id_classe."'";
 	}
+
 	if($statut_concerne=="eleve") {
 		$sql.=" AND e.ConcerneEleve='yes'";
 	}
 	elseif($statut_concerne=="responsable") {
 		$sql.=" AND e.ConcerneResponsable='yes'";
+	}
+
+	if($id_groupe!='') {
+		$sql.=" AND eu.id_type='id_classe' AND valeur IN (SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='".$id_groupe."')";
 	}
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -17648,4 +17655,78 @@ function get_tab_engagements_conseil_classe($id_classe, $id_groupe='') {
 
 	return $tab;
 }
+
+function get_tab_modalites_accompagnement_classe_ou_groupe($id_classe, $id_groupe="", $periode="") {
+	global $mysqli;
+
+	$tab=array();
+
+	if($id_groupe!="") {
+		if($periode=="") {
+			$sql="SELECT DISTINCT e.login, jmae.*, ma.libelle FROM modalites_accompagnement ma, j_modalite_accompagnement_eleve jmae, eleves e, j_eleves_groupes jeg WHERE ma.code=jmae.code AND jmae.id_eleve=e.id_eleve AND e.login=jeg.login AND jeg.id_groupe='".$id_groupe."' AND jeg.periode=jmae.periode ORDER BY e.login, ma.code, jmae.periode;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				//$temoin_commentaire_non_vide=0;
+				$cpt=0;
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab["login"][$lig["login"]]["periode"][$lig["periode"]][$cpt]=$lig;
+					$tab["login"][$lig["login"]]["code"][$lig["code"]][$cpt]=$lig;
+
+					$tab["periode"][$lig["periode"]]["login"][$lig["login"]][$cpt]=$lig;
+					$tab["code"][$lig["code"]]["login"][$lig["login"]][$cpt]=$lig;
+
+					$cpt++;
+				}
+			}
+		}
+		else {
+			$sql="SELECT DISTINCT e.login, jmae.*, ma.libelle FROM modalites_accompagnement ma, j_modalite_accompagnement_eleve jmae, eleves e, j_eleves_groupes jeg WHERE ma.code=jmae.code AND jmae.id_eleve=e.id_eleve AND e.login=jeg.login AND jeg.id_groupe='".$id_groupe."' AND jeg.periode=jmae.periode AND jmae.periode='".$periode."' ORDER BY e.login, ma.code, jmae.periode;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				$cpt=0;
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab["login"][$lig["login"]][]=$lig;
+					$tab["code"][$lig["code"]][]=$lig;
+				}
+			}
+		}
+	}
+	else {
+		if($periode=="") {
+			$sql="SELECT DISTINCT e.login, jmae.*, ma.libelle FROM modalites_accompagnement ma, j_modalite_accompagnement_eleve jmae, eleves e, j_eleves_classes jec WHERE ma.code=jmae.code AND jmae.id_eleve=e.id_eleve AND e.login=jec.login AND jec.id_classe='".$id_classe."' AND jec.periode=jmae.periode ORDER BY e.login, ma.code, jmae.periode;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				//$temoin_commentaire_non_vide=0;
+				$cpt=0;
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab["login"][$lig["login"]]["periode"][$lig["periode"]][$cpt]=$lig;
+					$tab["login"][$lig["login"]]["code"][$lig["code"]][$cpt]=$lig;
+
+					$tab["periode"][$lig["periode"]]["login"][$lig["login"]][$cpt]=$lig;
+					$tab["code"][$lig["code"]]["login"][$lig["login"]][$cpt]=$lig;
+
+					$cpt++;
+				}
+			}
+		}
+		else {
+			$sql="SELECT DISTINCT e.login, jmae.*, ma.libelle FROM modalites_accompagnement ma, j_modalite_accompagnement_eleve jmae, eleves e, j_eleves_classes jec WHERE ma.code=jmae.code AND jmae.id_eleve=e.id_eleve AND e.login=jeg.login AND jec.id_classe='".$id_classe."' AND jec.periode=jmae.periode AND jmae.periode='".$periode."' ORDER BY e.login, ma.code, jmae.periode;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				$cpt=0;
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab["login"][$lig["login"]][]=$lig;
+					$tab["code"][$lig["code"]][]=$lig;
+				}
+			}
+		}
+	}
+
+	return $tab;
+}
+
 ?>
