@@ -6958,7 +6958,7 @@ function affiche_resp_classe($id_classe, $login_ele="") {
 }
 
 // Créer fonction pour  Affichage des modalités pour un élève et l'utiliser dans modify_eleve.php
-function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet", $tab_modalites_accompagnement_eleve=NULL) {
+function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet", $tab_modalites_accompagnement_eleve=NULL, $tab_restriction_code_accompagnement=NULL) {
 	$retour="";
 
 	if((!isset($tab_modalites_accompagnement_eleve))||(!is_array($tab_modalites_accompagnement_eleve))) {
@@ -6978,24 +6978,26 @@ function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet", $ta
 			//echo "</pre>";
 
 			if(!in_array($current_code, $tmp_tab_deja)) {
-				$retour.=" <span title=\"".$tab_modalites_accompagnement["code"][$current_code]["libelle"];
-				$tmp_tab_commentaires=array();
-				for($loop=0;$loop<count($tmp_tab);$loop++) {
-					if(isset($tmp_tab[$loop]["commentaire"])) {
-						$tmp_commentaire=preg_replace('/"/', "''", trim($tmp_tab[$loop]["commentaire"]));
-						if(!in_array($tmp_commentaire, $tmp_tab_commentaires)) {
-							$tmp_tab_commentaires[]=$tmp_commentaire;
+				if((!isset($tab_restriction_code_accompagnement))||(!is_array($tab_restriction_code_accompagnement))||in_array($current_code,$tab_restriction_code_accompagnement)) {
+					$retour.=" <span title=\"".$tab_modalites_accompagnement["code"][$current_code]["libelle"];
+					$tmp_tab_commentaires=array();
+					for($loop=0;$loop<count($tmp_tab);$loop++) {
+						if(isset($tmp_tab[$loop]["commentaire"])) {
+							$tmp_commentaire=preg_replace('/"/', "''", trim($tmp_tab[$loop]["commentaire"]));
+							if(!in_array($tmp_commentaire, $tmp_tab_commentaires)) {
+								$tmp_tab_commentaires[]=$tmp_commentaire;
+							}
 						}
 					}
+					$liste_commentaires="";
+					for($loop=0;$loop<count($tmp_tab_commentaires);$loop++) {
+						$liste_commentaires.="\n- ".$tmp_tab_commentaires[$loop];
+					}
+					if($liste_commentaires!="") {
+						$retour.=" :".$liste_commentaires;
+					}
+					$retour.="\">".$current_code."</span>";
 				}
-				$liste_commentaires="";
-				for($loop=0;$loop<count($tmp_tab_commentaires);$loop++) {
-					$liste_commentaires.="\n- ".$tmp_tab_commentaires[$loop];
-				}
-				if($liste_commentaires!="") {
-					$retour.=" :".$liste_commentaires;
-				}
-				$retour.="\">".$current_code."</span>";
 			}
 			$tmp_tab_deja[]=$current_code;
 		}

@@ -370,6 +370,38 @@ if (($_SESSION['statut']=="administrateur")&&(isset($_POST['is_posted']))) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_jouer_sound_erreur !";
 			}
 		}
+
+		// Engagements
+		$sql="DELETE FROM setting WHERE name LIKE 'abs2_grp_engagement_%'";
+		$del=mysqli_query($mysqli, $sql);
+
+		$tab_engagements=get_tab_engagements("eleve");
+
+		if((isset($tab_engagements['indice']))&&(count($tab_engagements['indice'])>0)) {
+			foreach($tab_engagements['id_engagement'] as $current_id => $engagement) {
+				if(isset($_POST['abs2_grp_engagement_'.$current_id])) {
+					if (!saveSetting('abs2_grp_engagement_'.$current_id, 'y')) {
+						$msg = "Erreur lors de l'enregistrement du paramètre 'abs2_grp_engagement_$current_id' !";
+					}
+				}
+			}
+		}
+
+		// Modalités d'accompagnement
+		$sql="DELETE FROM setting WHERE name LIKE 'abs2_grp_accompagnement_%'";
+		$del=mysqli_query($mysqli, $sql);
+
+		$tab_modalite_accompagnement=get_tab_modalites_accompagnement();
+		if((isset($tab_modalite_accompagnement["code"]))&&(count($tab_modalite_accompagnement["code"])>0)) {
+
+			foreach($tab_modalite_accompagnement["code"] as $current_code => $accompagnement) {
+				if(isset($_POST['abs2_grp_accompagnement_'.$current_code])) {
+					if (!saveSetting('abs2_grp_accompagnement_'.$current_code, 'y')) {
+						$msg = "Erreur lors de l'enregistrement du paramètre 'abs2_grp_accompagnement_$current_code' !";
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -1202,6 +1234,66 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 </div>
 
 <br/>
+
+<!-- ========================================================================== -->
+
+<h2>Engagements et modalités d'accompagnement</h2>
+<div style='margin-left:3em;'>
+<p style="font-style: italic;">Lors de la saisie groupe/classe, il est possible de faire apparaître à titre d'information, les engagements <em>(sous réserve que le module soit activé<?php
+	if($_SESSION["statut"]=="administrateur") {
+		echo "<a href='../../mod_engagements/index_admin.php' target='_blank' title=\"Configurer le module dans un nouvel onglet\"><img src='../../images/".((getSettingAOui('active_mod_engagements')) ? "enabled.png" : "disable.png")."' class='icone20' alt='État' /></a>";
+	}
+?>)</em> et modalités d'accompagnement des élèves.</p>
+
+<?php
+if($_SESSION["statut"]=="administrateur") {
+	// ADMINISTRATEUR
+
+	// Engagements (faut-il choisir la liste des engagements à faire apparaitre?)
+	$tab_engagements=get_tab_engagements("eleve");
+
+	if((!isset($tab_engagements['indice']))||(count($tab_engagements['indice'])==0)) {
+		echo "<p style='color:red;margin-top:1em;'>Aucun type d'engagement n'est défini<br /><em>(<a href='../../mod_engagements/index_admin.php' target='_blank' title=\"Paramétrer le module dans un nouvel onglet\">paramétrer le module Engagements</a>)</em>.</p>";
+	}
+	else {
+		echo "<p style='margin-top:1em;'>Liste des engagements élèves à faire apparaître lors de la saisie des absences de groupes/classes <em>(onglet Saisir groupe)</em>&nbsp;:<br />";
+		foreach($tab_engagements['id_engagement'] as $current_id => $engagement) {
+			$checked='';
+			if(getSettingAOui('abs2_grp_engagement_'.$current_id)) {
+				$checked=' checked';
+			}
+			echo "<input type='checkbox' name='abs2_grp_engagement_".$current_id."' id='abs2_grp_engagement_".$current_id."' value=\"y\"$checked /><label for='abs2_grp_engagement_".$current_id."' id='texte_abs2_grp_engagement_".$current_id."' />".$engagement['nom']." <em>(".$engagement['description'].")</em></label><br />";
+		}
+	}
+
+
+	// Modalités d'accompagnement
+	$tab_modalite_accompagnement=get_tab_modalites_accompagnement();
+	if((!isset($tab_modalite_accompagnement["code"]))||(count($tab_modalite_accompagnement["code"])==0)) {
+		echo "<p style='color:red;margin-top:1em'>Aucune modalité d'accompagnement n'est définie<br /><em>(une <a href='../../utlitaires/maj.php' target='_blank' title=\"Effectuer la mise à jour de la base dans un nouvel onglet\">mise à jour de la base</a> est requise)</em>.</p>";
+	}
+	else {
+		echo "<p style='margin-top:1em;'>Liste des modalités d'accompagnement à faire apparaître lors de la saisie des absences de groupes/classes <em>(onglet Saisir groupe)</em>&nbsp;:<br />";
+		foreach($tab_modalite_accompagnement["code"] as $current_code => $accompagnement) {
+			$checked='';
+			if(getSettingAOui('abs2_grp_accompagnement_'.$current_code)) {
+				$checked=' checked';
+			}
+			echo "<input type='checkbox' name='abs2_grp_accompagnement_".$current_code."' id='abs2_grp_accompagnement_".$current_code."' value=\"y\"$checked /><label for='abs2_grp_accompagnement_".$current_code."' id='texte_abs2_grp_accompagnement_".$current_code."' />".$current_code." <em>(".$accompagnement['libelle'].")</em></label><br />";
+		}
+	}
+}
+else {
+	// NON-ADMINISTRATEUR
+
+
+
+
+
+}
+//==========================================================================
+?>
+
 <?php
 if($_SESSION["statut"]=="administrateur") {
 	// ADMINISTRATEUR

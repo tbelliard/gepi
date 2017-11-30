@@ -20,6 +20,8 @@ Absences 2:
   date du conseil de classe déclaré en scolarité dans Verrouillage des classes.
 - Absences du jour : Possibilité de paramétrer l'affichage de toutes les saisies
   par défaut plutôt que seulement les manquements à l'obligation de présence par défaut.
+- Possibilité de faire apparaitre les engagements et modalités d'accompagnement
+  des élèves lors de la saisie groupe/classe.
 
 Cahiers de textes:
 - Possibilité d'ouvrir les CDT à l'usage exclusif des professeurs 

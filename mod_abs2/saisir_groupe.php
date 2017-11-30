@@ -1028,6 +1028,7 @@ if (!$classe_col->isEmpty()) {
 // 20171129
 // Il faudrait récupérer le numéro de période...
 //$tab_modalites_accompagnement_groupe=get_tab_modalites_accompagnement_classe_ou_groupe("", $id_groupe, $periode);
+// 20171130:
 $tab_modalites_accompagnement_groupe=array();
 if(isset($id_groupe)) {
 	$tab_modalites_accompagnement_groupe=get_tab_modalites_accompagnement_classe_ou_groupe("", $id_groupe);
@@ -1035,9 +1036,12 @@ if(isset($id_groupe)) {
 elseif(isset($id_classe)) {
 	$tab_modalites_accompagnement_groupe=get_tab_modalites_accompagnement_classe_ou_groupe($id_classe);
 }
+$tab_modalite_accompagnement_abs2=get_tab_modalites_accompagnement_abs2();
 
 $active_mod_engagements=getSettingAOui("active_mod_engagements");
 if($active_mod_engagements) {
+	$tab_engagements_abs2=get_tab_engagements_abs2();
+
 	if(isset($id_groupe)) {
 		$tab_engagements=get_tab_engagements_user('', '', 'eleve', $id_groupe);
 	}
@@ -1045,7 +1049,15 @@ if($active_mod_engagements) {
 		$tab_engagements=get_tab_engagements_user('', $id_classe, 'eleve');
 	}
 }
+/*
+echo "<pre>";
+print_r($tab_engagements_abs2);
+echo "</pre>";
 
+echo "<pre>";
+print_r($tab_engagements);
+echo "</pre>";
+*/
 $tab_types=array();
 $sql="select * from a_types;";
 $res_types=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1496,30 +1508,47 @@ if ($eleve_col->isEmpty()) {
 <?php } 
 
 	//================================================
+	/*
+	echo "<pre>";
+	print_r($eleve);
+	echo "</pre>";
+	*/
 	// 20171129: Tester si (modalites_accompagnement, ou engagement?)
+	$compteur_accompagnement=0;
 	$infos_complementaires="";
-	if(isset($tab_modalites_accompagnement_groupe["login"][$eleve['accesFiche']])) {
-		$current_modalites_accompagnement=liste_modalites_accompagnement_eleve($eleve['accesFiche'], "", $tab_modalites_accompagnement_groupe["login"][$eleve['accesFiche']]);
+	if(isset($tab_modalites_accompagnement_groupe["login"][$eleve['login']])) {
+		$current_modalites_accompagnement=liste_modalites_accompagnement_eleve($eleve['login'], "", $tab_modalites_accompagnement_groupe["login"][$eleve['login']], $tab_modalite_accompagnement_abs2);
 
 		if($current_modalites_accompagnement!="") {
 			$infos_complementaires.="<em style='font-weight:normal'>(".$current_modalites_accompagnement.")</em>";
+			$compteur_accompagnement++;
 		}
 
 	}
+	$compteur_engagements=0;
 	if($active_mod_engagements) {
-		if((isset($tab_engagements['login_user']))&&(array_key_exists($eleve['accesFiche'], $tab_engagements['login_user']))) {
-			$infos_complementaires.=" <em style='font-weight:normal'>(";
-			for($cpt_eng=0;$cpt_eng<count($tab_engagements['login_user'][$eleve['accesFiche']]);$cpt_eng++) {
-				if($cpt_eng>0) {
-					$infos_complementaires.=" - ";
+		if((isset($tab_engagements['login_user']))&&(array_key_exists($eleve['login'], $tab_engagements['login_user']))) {
+			$infos_engagements="";
+			for($cpt_eng=0;$cpt_eng<count($tab_engagements['login_user'][$eleve['login']]);$cpt_eng++) {
+				$indice_courant=$tab_engagements['login_user'][$eleve['login']][$cpt_eng];
+				if(array_key_exists($tab_engagements['indice'][$indice_courant]["id_engagement"] ,$tab_engagements_abs2)) {
+					// 20171130:
+					if($compteur_engagements>0) {
+						$infos_engagements.=" - ";
+					}
+					$infos_engagements.=$tab_engagements['indice'][$indice_courant]["nom_engagement"];
+					$compteur_engagements++;
 				}
-				$indice_courant=$tab_engagements['login_user'][$eleve['accesFiche']][$cpt_eng];
-				$infos_complementaires.=$tab_engagements['indice'][$indice_courant]["nom_engagement"];
 			}
-			$infos_complementaires.=")</em>";
+			if($compteur_engagements>0) {
+				$infos_complementaires.=" <em style='font-weight:normal'>(";
+				$infos_complementaires.=$infos_engagements;
+				$infos_complementaires.=")</em>";
+			}
 		}
 	}
-	if($infos_complementaires!="") {
+	//if($infos_complementaires!="") {
+	if(($compteur_accompagnement>0)||($compteur_engagements>0)) {
 		echo "<br /><span style='font-size:small;'>".$infos_complementaires."</span>";
 	}
 	//================================================

@@ -17729,4 +17729,41 @@ function get_tab_modalites_accompagnement_classe_ou_groupe($id_classe, $id_group
 	return $tab;
 }
 
+
+function get_tab_engagements_abs2() {
+	global $mysqli;
+
+	// Engagements
+	$tab_engagements=get_tab_engagements("eleve");
+	$tab_engagements_abs2=array();
+
+	if((isset($tab_engagements['indice']))&&(count($tab_engagements['indice'])>0)) {
+		foreach($tab_engagements['id_engagement'] as $current_id => $engagement) {
+			if(getSettingAOui('abs2_grp_engagement_'.$current_id)) {
+				$tab_engagements_abs2[]=$current_id;
+			}
+		}
+	}
+
+	return $tab_engagements_abs2;
+}
+
+function get_tab_modalites_accompagnement_abs2() {
+	global $mysqli;
+
+	// Modalités d'accompagnement
+	$tab_modalite_accompagnement=get_tab_modalites_accompagnement();
+	$tab_modalite_accompagnement_abs2=array();
+
+	if((isset($tab_modalite_accompagnement["code"]))&&(count($tab_modalite_accompagnement["code"])>0)) {
+		foreach($tab_modalite_accompagnement["code"] as $current_code => $accompagnement) {
+			if(getSettingAOui('abs2_grp_accompagnement_'.$current_code)) {
+				$tab_modalite_accompagnement_abs2[]=$current_code;
+			}
+		}
+	}
+
+	return $tab_modalite_accompagnement_abs2;
+}
+
 ?>
