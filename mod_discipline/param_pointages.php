@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -42,7 +42,7 @@ if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/mod_discipline/param_pointages.php',
 administrateur='V',
 professeur='F',
-cpe='F',
+cpe='V',
 scolarite='F',
 eleve='F',
 responsable='F',
@@ -60,6 +60,15 @@ if (!checkAccess()) {
 if(!getSettingAOui('active_mod_discipline')) {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+$create=mysqli_query($GLOBALS["mysqli"], $sql);
+
+if(!acces_param_pointage_discipline()) {
+	$mess=rawurlencode("Vous tentez d accéder indument au paramétrage du pointage des menus incidents !");
+	tentative_intrusion(1, "Tentative d'accès indu au paramétrage du pointage des menus incidents.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -101,6 +110,8 @@ $id_type=isset($_GET['id_type']) ? $_GET['id_type'] : NULL;
 $move=isset($_GET['move']) ? $_GET['move'] : NULL;
 
 $msg="";
+
+//debug_var();
 
 function corrige_rangs_types_saisies() {
 	global $msg;
@@ -465,6 +476,49 @@ if(isset($_POST['save_params'])) {
 
 	if($msg=="") {
 		$msg="Enregistrement effectué : ".strftime("%d/%m/%Y à %H:%M:%S")."<br />";
+	}
+}
+
+
+if((isset($_POST['valider_droit_param']))&&($_SESSION['statut']=='administrateur')) {
+	check_token();
+
+	$cpt_suppr=0;
+	$login_user=isset($_POST['login_user']) ? $_POST['login_user'] : array();
+	$tab_autorise=array();
+	$sql="SELECT login FROM b_droits_divers WHERE nom_droit='mod_discipline_param_pointages';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if(!in_array($lig->login, $login_user)) {
+				$sql="DELETE FROM b_droits_divers WHERE nom_droit='mod_discipline_param_pointages' AND login='".$lig->login."';";
+				//echo "$sql<br />";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				$cpt_suppr++;
+			}
+			else {
+				$tab_autorise[]=$lig->login;
+			}
+		}
+	}
+
+	$cpt_ajout=0;
+	for($loop=0;$loop<count($login_user);$loop++) {
+		if(!in_array($login_user[$loop], $tab_autorise)) {
+			$sql="INSERT INTO b_droits_divers SET nom_droit='mod_discipline_param_pointages', valeur_droit='y', login='".$login_user[$loop]."';";
+			//echo "$sql<br />";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			$cpt_ajout++;
+		}
+	}
+
+	if($cpt_suppr>0) {
+		$msg.=$cpt_suppr." droit(s) de paramétrage supprimé(s) (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+	}
+
+	if($cpt_ajout>0) {
+		$msg.=$cpt_ajout." droit(s) de paramétrage ajouté(s) (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 	}
 }
 
@@ -841,6 +895,43 @@ echo "<table class='boireaus boireaus_alt' border='1' summary='Nouveau seuil'>
 </blockquote>
 </fieldset>
 </form>\n";
+echo "<p><br /></p>\n";
+
+
+//=============================================
+
+if($_SESSION['statut']=="administrateur") {
+	echo "<a name='droits_param'></a>
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#saisie_types' method='post' name='form_droit_param'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='valider_droit_param' value='y' />
+		<p class='bold'>Droit de paramétrer le pointages de menus ".$mod_disc_terme_incident."s&nbsp;:</p>
+		<blockquote>
+			<p style='margin-top:1em;'>Vous pouvez autoriser certains utilisateurs à paramétrer le présent module de pointage&nbsp;:</p>
+			<div style='margin-left:3em;'>";
+
+	$tab_autorise=array();
+	$sql="SELECT login FROM b_droits_divers WHERE nom_droit='mod_discipline_param_pointages' AND valeur_droit='y';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_autorise[]=$lig->login;
+		}
+	}
+	echo liste_checkbox_utilisateurs(array('scolarite', 'cpe', 'professeur'), $tab_autorise);
+
+	echo "
+			</div>
+			<p class='center'><input type='submit' name='valider' value='Valider' /></p>
+			<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> Vous donnez des droits sur la présentre page, à l'exception du présent formulaire.</p>
+		</blockquote>
+	</fieldset>
+</form>
+<p><br /></p>\n";
+}
+//=============================================
+
 
 
 echo "<p style='color:red; margin-top:1em;'><em>A FAIRE&nbsp;:</em></p>

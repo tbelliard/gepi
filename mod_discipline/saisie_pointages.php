@@ -793,7 +793,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $ajout_lien="";
-if(acces("/mod_discipline/param_pointages.php", $_SESSION['statut'])) {
+if(acces_param_pointage_discipline()) {
 	$ajout_lien=" | <a href='param_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer, définir les types de pointages</a>";
 }
 //debug_var();

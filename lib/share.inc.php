@@ -17766,4 +17766,26 @@ function get_tab_modalites_accompagnement_abs2() {
 	return $tab_modalite_accompagnement_abs2;
 }
 
+function acces_param_pointage_discipline() {
+	global $mysqli;
+	if($_SESSION['statut']=='administrateur') {
+		return true;
+	}
+	elseif(acces("/mod_discipline/param_pointages.php", $_SESSION['statut'])) {
+		$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$create=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='mod_discipline_param_pointages' AND valeur_droit='y';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
 ?>
