@@ -504,6 +504,8 @@ if(!isset($quitter_la_page)){
 		echo " | <a href='../gestion/saisie_modalites_accompagnement.php?id_classe=$id_classe'>Modalités d'accompagnement</a>";
 	}
 
+	echo " | <a href='../groupes/visu_profs_class.php?id_classe=$id_classe'>Équipe pédagogique</a>";
+
 	echo "</p>\n";
 	echo "</form>\n";
 
@@ -910,8 +912,8 @@ au sens Absences/appartenance de l'élève
 						$motif_bloquant.="un avis du conseil de classe";
 					}
 
-					//onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$login_eleve','$id_classe','$i','$i');return false;\" 
-					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$login_eleve."&id_classe=$id_classe&periode1=$i&periode2=$i\" target=\"_blank\">";
+					//20171129
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$login_eleve."&id_classe=$id_classe&periode1=$i&periode2=$i\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$login_eleve','".addslashes($nom_eleve." ".$prenom_eleve)."','".$id_classe."','".$i."','".$i."');return false;\" title=\"Bulletin non vide.\n\nCliquez pour voir le bulletin simplifié dans un nouvel onglet.\" target=\"_blank\">";
 					echo "<img src='../images/icons/bulletin_16.png' width='16' height='16' title=\"Bulletin non vide ($motif_bloquant): L'élève ne peut pas être retiré de la classe\" alt=\"Bulletin non vide ($motif_bloquant): L'élève ne peut pas être retiré de la classe\" />";
 					echo "</a>";
 
@@ -960,6 +962,27 @@ au sens Absences/appartenance de l'élève
 	echo "<p align='center'><input type='submit' value='Enregistrer' style='margin: 30px 0 60px 0;'/></p>\n";
 	echo "<br />\n";
 
+
+//============================================
+// 20171129
+echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+
+	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+		echo "<img src='../images/icons/close16.png' style=\"width:16px; height:16px\" alt='Fermer' />\n";
+		echo "</a>\n";
+		echo "</div>\n";
+
+		echo "<div id='titre_entete_bull_simp'></div>\n";
+	echo "</div>\n";
+	
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "</div>\n";
+
+echo "</div>\n";
+//============================================
+
 	echo "<script type='text/javascript'>
 
 function CocheColonne(i) {
@@ -977,6 +1000,14 @@ function DecocheColonne(i) {
 		}
 	}
 }
+
+	// <![CDATA[
+	// 20171129
+	function affiche_bull_simp(login_eleve,designation_eleve,id_classe,num_per1,num_per2) {
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+designation_eleve+' période '+num_per1+' à '+num_per2;
+		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+	}
+	//]]>
 
 </script>
 ";
