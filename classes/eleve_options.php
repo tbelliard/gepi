@@ -659,7 +659,7 @@ while ($i < $nombre_ligne) {
 				}
 				//if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=mb_substr($liste_classes_du_groupe,2);}
 
-				echo "<td style='text-align:center'>";
+				echo "<td style='text-align:center' id='td_case".$i."_".$j."'>";
 				if($temoin!="") {
 					echo $temoin;
 					if(($_SESSION['statut']=="administrateur")||
@@ -967,11 +967,13 @@ echo "<script type='text/javascript' language='javascript'>
 		}
 
 		for(i=1;i<".$nb_periode.";i++) {
-			if(document.getElementById('case'+ligne+'_'+i).checked) {
-				document.getElementById('td_case'+ligne+'_'+i).style.backgroundColor='';
-			}
-			else {
-				document.getElementById('td_case'+ligne+'_'+i).style.backgroundColor='grey';
+			if(document.getElementById('case'+ligne+'_'+i)) {
+				if(document.getElementById('case'+ligne+'_'+i).checked) {
+					document.getElementById('td_case'+ligne+'_'+i).style.backgroundColor='';
+				}
+				else {
+					document.getElementById('td_case'+ligne+'_'+i).style.backgroundColor='grey';
+				}
 			}
 		}
 	}
