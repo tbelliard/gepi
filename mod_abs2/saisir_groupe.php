@@ -1507,7 +1507,7 @@ if ($eleve_col->isEmpty()) {
 
 	}
 	if($active_mod_engagements) {
-		if(array_key_exists($eleve['accesFiche'], $tab_engagements['login_user'])) {
+		if((isset($tab_engagements['login_user']))&&(array_key_exists($eleve['accesFiche'], $tab_engagements['login_user']))) {
 			$infos_complementaires.=" <em style='font-weight:normal'>(";
 			for($cpt_eng=0;$cpt_eng<count($tab_engagements['login_user'][$eleve['accesFiche']]);$cpt_eng++) {
 				if($cpt_eng>0) {
