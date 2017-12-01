@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -258,6 +258,8 @@ if (!(isset($id_classe))) {
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else {
+		$tab_pp=get_tab_prof_suivi();
+
 		echo "<div style='margin-left:3em;'>\n";
 
 		unset($lien_classe);
@@ -285,6 +287,9 @@ if (!(isset($id_classe))) {
 		echo "</div>\n";
 
 		if(count($tab_date_conseil)>0) {
+			$active_mod_alerte=getSettingAOui('active_mod_alerte');
+			$active_mod_edt=getSettingAOui('autorise_edt_tous');
+
 			echo "<br />
 <p class='bold'>Classes triées par dates de conseil de classe&nbsp;:</p>
 <div style='margin-left:3em;'>";
@@ -294,6 +299,22 @@ if (!(isset($id_classe))) {
 	<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."'><strong>".$tab_date_conseil[$id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-variant:italic;font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$id_classe]['date'], "y", "complet").")</span></a>";
 					if(isset($tab_etat_periodes[$id_classe])) {
 						echo " <span style='font-size:small;'>(".$tab_etat_periodes[$id_classe].")</span>";
+					}
+
+					if(isset($tab_pp[$id_classe])) {
+						for($loop=0;$loop<count($tab_pp[$id_classe]);$loop++) {
+							if($loop>0) {echo ",";}
+							echo " ".affiche_utilisateur($tab_pp[$id_classe][$loop], $id_classe);
+
+							if($active_mod_alerte) {
+								echo " <a href='../mod_alerte/form_message.php?login_dest=".$tab_pp[$id_classe][$loop]."' title='Déposer une alerte/message dans le module Alertes.' target='_blank'><img src='../images/icons/module_alerte32.png' class='icone16' alt='Mail' /></a>";
+							}
+
+							if($active_mod_edt) {
+								echo " <a href='../edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=".$tab_pp[$id_classe][$loop]."' title=\"Voir l'EDT du professeur dans un nouvel onglet.\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
+							}
+
+						}
 					}
 					echo "<br />";
 				}
@@ -1557,6 +1578,47 @@ Les saisies/modifications sont possibles.";
 
 	//echo "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
 	echo add_token_field(true);
+
+	//==============================================
+	// 20171201
+	if($ver_periode[$per]=="P") {
+		$sql="SELECT ac.* FROM acces_cn ac,j_groupes_classes jgc WHERE jgc.id_groupe=ac.id_groupe AND id_classe='$id_classe' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
+		//echo "$sql<br />";
+		$test = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<p style='margin-top:1em;'>Un ou des accès exceptionnels à la saisie de notes dans le <strong>carnet de notes</strong> <em>(bien que la période soit partiellement close)</em> sont ouverts&nbsp;:<br />";
+			while($lig=mysqli_fetch_object($test)) {
+				echo "
+					".get_info_grp($lig->id_groupe)."&nbsp;: Accès ouvert jusqu'au ".formate_date($lig->date_limite, "y", "court")."<br />";
+			}
+			echo "</p>";
+		}
+
+		$sql="SELECT aemn.* FROM acces_exceptionnel_matieres_notes aemn,j_groupes_classes jgc WHERE jgc.id_groupe=aemn.id_groupe AND id_classe='$id_classe' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
+		//echo "$sql<br />";
+		$test = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<p style='margin-top:1em;'>Un ou des accès exceptionnels à la saisie de <strong>notes</strong> dans les <strong>bulletins</strong> <em>(bien que la période soit partiellement close)</em> sont ouverts&nbsp;:<br />";
+			while($lig=mysqli_fetch_object($test)) {
+				echo "
+					".get_info_grp($lig->id_groupe)."&nbsp;: Accès ouvert jusqu'au ".formate_date($lig->date_limite, "y", "court")."<br />";
+			}
+			echo "</p>";
+		}
+
+		$sql="SELECT mad.* FROM matieres_app_delais mad,j_groupes_classes jgc WHERE jgc.id_groupe=mad.id_groupe AND id_classe='$id_classe' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
+		//echo "$sql<br />";
+		$test = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<p style='margin-top:1em;'>Un ou des accès exceptionnels à la saisie d'<strong>appréciations</strong> dans les <strong>bulletins</strong> <em>(bien que la période soit partiellement close)</em> sont ouverts&nbsp;:<br />";
+			while($lig=mysqli_fetch_object($test)) {
+				echo "
+					".get_info_grp($lig->id_groupe)."&nbsp;: Accès ouvert jusqu'au ".formate_date($lig->date_limite, "y", "court")."<br />";
+			}
+			echo "</p>";
+		}
+	}
+	//==============================================
 
 	echo "<script type='text/javascript'>
 	// <![CDATA[
