@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -466,7 +466,7 @@ else {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 		echo add_token_field();
 		$group=get_group($id_groupe);
-		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'appréciations pour l'enseignement ".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']."</span>) en période $periode.</p>\n";
+		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'appréciations pour l'enseignement <strong>".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']." avec ".$group['proflist_string']."</span>)</strong> en <strong>période $periode</strong>.</p>\n";
 
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$group['id']."' AND periode='$periode';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
