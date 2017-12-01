@@ -1949,6 +1949,18 @@ autre='F',
 description='Calendrier',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_discipline/extraire_pointages.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Discipline: Pointages petits incidents: Extraction',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

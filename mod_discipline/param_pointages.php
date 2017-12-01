@@ -535,9 +535,15 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
-".((getSettingAOui('active_mod_disc_pointage')) ? " | <a href='saisie_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Pointer de ".$mod_disc_terme_menus_incidents."</a>" : "")."
-</p>\n";
+echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+
+if((getSettingAOui('active_mod_disc_pointage'))&&(acces("/mod_discipline/saisie_pointages.php", $_SESSION["statut"]))) {
+	echo " | <a href='saisie_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Pointer de ".$mod_disc_terme_menus_incidents."</a>";
+}
+if(acces_extraire_pointage_discipline()) {
+	echo " | <a href='extraire_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Extraire les pointages</a>";
+}
+echo "</p>\n";
 
 //=============================================
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire2'>

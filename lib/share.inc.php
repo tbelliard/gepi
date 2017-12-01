@@ -17788,4 +17788,10 @@ function acces_param_pointage_discipline() {
 		return false;
 	}
 }
+
+function acces_extraire_pointage_discipline() {
+	global $mysqli;
+	// Ajouter des paramétrages supplémentaires de restrictions d'accès par la suite?
+	return acces("/mod_discipline/saisie_pointages.php", $_SESSION['statut']);
+}
 ?>

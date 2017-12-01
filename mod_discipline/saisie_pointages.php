@@ -793,8 +793,11 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $ajout_lien="";
+if(acces_extraire_pointage_discipline()) {
+	$ajout_lien.=" | <a href='extraire_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Extraire les pointages</a>";
+}
 if(acces_param_pointage_discipline()) {
-	$ajout_lien=" | <a href='param_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer, définir les types de pointages</a>";
+	$ajout_lien.=" | <a href='param_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer, définir les types de pointages</a>";
 }
 //debug_var();
 
@@ -806,7 +809,7 @@ if(!isset($jour)) {
 // Choix de l'enseignement ou de la classe ou d'un élève
 if(!isset($mode)) {
 		echo "
-<p style='margin-bottom:1em;'>
+<p class='bold' style='margin-bottom:1em;'>
 	<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 	$ajout_lien
 </p>";
@@ -852,7 +855,7 @@ if(($mode=="groupe")||($mode=="classe")) {
 		if($mode=='groupe') {
 			$tab_ele=get_group($id_groupe);
 			if(count($tab_ele)==0) {
-				echo "<p style='margin-bottom:1em;'>
+				echo "<p class='bold' style='margin-bottom:1em;'>
 	<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Choisir une autre classe</a>
 	$ajout_lien
 </p>
@@ -868,7 +871,7 @@ if(($mode=="groupe")||($mode=="classe")) {
 		else {
 			$tab_ele=get_tab_eleves_classe($id_classe);
 			if(count($tab_ele)==0) {
-				echo "<p style='margin-bottom:1em;'>
+				echo "<p class='bold' style='margin-bottom:1em;'>
 	<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Choisir une autre classe</a>
 	$ajout_lien
 </p>
@@ -1087,7 +1090,7 @@ if(($mode=="groupe")||($mode=="classe")) {
 		echo "
 <form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_choix_date\">
 	<!--fieldset class='fieldset_opacite50' style='margin-bottom:1em;'-->
-	<p style='margin-bottom:1em;'>
+	<p class='bold' style='margin-bottom:1em;'>
 		<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 		 | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>
 		$ajout_lien

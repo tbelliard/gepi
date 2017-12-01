@@ -31,6 +31,7 @@ Cahiers de textes:
 Discipline:
 - Possibilité d'ouvrir le paramétrage du pointage des menus incidents à des 
   utilisateurs non administrateur (typiquement tel CPE).
+- Possibilité d'extraire en CSV les bilans de pointages de menus incidents.
 
 LSUN:
 - Possibilité de n'extraire qu'une ou certaines périodes.
