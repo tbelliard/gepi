@@ -114,9 +114,11 @@ $liste_tables_del_etape_eleves = array(
 "eb_epreuves",
 "eb_groupes",
 "eb_profs",
+
 // Génèse des classes
 "gc_ele_arriv_red",
 "gc_eleves_options",
+
 // mod_discipline
 "s_avertissements",
 "s_communication",
@@ -130,6 +132,9 @@ $liste_tables_del_etape_eleves = array(
 "s_traitement_incident",
 "s_travail",
 "s_travail_mesure",
+// mod_discipline: Pointage de menus incidents:
+"sp_saisies",
+
 // Module remplacements/absences de professeurs
 "abs_prof",
 "abs_prof_remplacement",
