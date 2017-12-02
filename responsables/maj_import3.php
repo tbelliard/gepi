@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -82,6 +82,11 @@ $ne_pas_tester_les_changements_de_classes=getSettingValue("no_test_chgt_clas");
 if($ne_pas_tester_les_changements_de_classes=="") {$ne_pas_tester_les_changements_de_classes="n";}
 // INSERT INTO setting SET name='no_test_chgt_clas', value='n';
 // UPDATE setting SET value='n' WHERE name='no_test_chgt_clas';
+
+$nom_champ_INE=getSettingValue("nom_champ_INE");
+if($nom_champ_INE=="") {
+	$nom_champ_INE="ine_bea";
+}
 
 $gepi_non_plugin_lcs_mais_recherche_ldap=false;
 if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("../secure/config_ldap.inc.php"))) {
@@ -588,6 +593,30 @@ sinon, Gepi le considère comme \"<em>établissement d'origine</em>\".";
 		echo "</p>\n";
 	}
 
+	if($nom_champ_INE=="ine_bea") {
+		$checked_ine_bea=" checked";
+		$checked_id_national="";
+	}
+	else {
+		$checked_ine_bea="";
+		$checked_id_national=" checked";
+	}
+	echo "<div class='fieldset_opacite50' style='margin-top:1em;margin-bottom:1em;padding:0.5em;'>
+		<p style='text-indent:-7em;margin-left:7em;'><strong style='color:red'>ATTENTION&nbsp;:</strong> Un nouvel identifiant a été introduit dans Siècle/Sconet pour identifier un élève au niveau national.<br />
+		L'ancien INE <em>(codé ID_NATIONAL dans l'export XML Eleves de Siècle)</em> est remplacé par un nouveau.<br />
+		L'ancien INE reste stocké <em>(pour combien de temps encore?)</em> dans l'export XML sous le code INE_BEA.<br />
+		L'ancien INE était utilisé dans plusieurs tables de Gepi pour la liaison avec LSU, avec APB, pour identifier les élèves dans l'archivage Années antérieures.<br />
+		Il est recommandé pour le moment d'utiliser l'ancien INE <em>(devenu INE_BEA)</em> en attendant de savoir quel identifiant sera réclamé pour les exports LSU, APB,...<br />
+		Il sera bien temps alors de faire une mise à jour d'après Siècle/Sconet en important les nouveaux identifiants si c'est eux qui sont réclamés.<br />
+		<input type='radio' name='nom_champ_INE' id='nom_champ_INE_ine_bea' value='ine_bea'".$checked_ine_bea." />
+		<label for='nom_champ_INE_ine_bea'> utiliser l'ancien champ INE, c'est-à-dire celui qui apparaît maintenant sous le code INE_BEA dans l'export <strong>(recommandé)</strong>,</label><br />
+		ou<br />
+		<input type='radio' name='nom_champ_INE' id='nom_champ_INE_id_national' value='id_national'".$checked_id_national." />
+		<label for='nom_champ_INE_id_national'> utiliser le nouveau champ INE, c'est-à-dire celui qui apparaît sous le code ID_NATIONAL dans l'export.</label><br />
+		</p>
+	</div>\n";
+
+
 	echo "<br />\n";
 	echo "<p>";
 	echo "<label for='id_form_stop' style='cursor: pointer;'> Parcourir les élèves par tranches de &nbsp;: </label><input type='text' name='eff_tranche_recherche_diff' id='eff_tranche_recherche_diff' value='$eff_tranche_recherche_diff' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' />\n";
@@ -645,6 +674,14 @@ else{
 		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Mise à jour Sconet</a>";
 	}
 	echo "</p>\n";
+
+	if(isset($_POST['nom_champ_INE'])) {
+		saveSetting('nom_champ_INE', $_POST['nom_champ_INE']);
+	}
+	$nom_champ_INE=getSettingValue("nom_champ_INE");
+	if($nom_champ_INE=="") {
+		$nom_champ_INE="ine_bea";
+	}
 
 	$eff_tranche_recherche_diff=isset($_POST['eff_tranche_recherche_diff']) ? $_POST['eff_tranche_recherche_diff'] : getSettingValue('maj_sconet_eff_tranche');
 	if(($eff_tranche_recherche_diff=='')||(!is_numeric($eff_tranche_recherche_diff))||($eff_tranche_recherche_diff<1)) {
@@ -1138,6 +1175,7 @@ else{
 			$i=-1;
 
 			$tab_champs_eleve=array("ID_NATIONAL",
+			"INE_BEA",
 			"ELENOET",
 			"NOM_DE_FAMILLE",
 			"NOM_USAGE",
@@ -1331,7 +1369,8 @@ else{
 						// On complète:
 						$sql="UPDATE temp_gep_import2 SET ";
 						$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
-						if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
+						//if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
+						if(isset($eleves[$i][$nom_champ_INE])) {$sql.="elenonat='".$eleves[$i][$nom_champ_INE]."', ";}
 						$sql.="elenom='".mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($eleves[$i]['nom']))."', ";
 
 						// On ne retient que le premier prénom:
@@ -4219,6 +4258,82 @@ else{
 						}
 						$login_eleve=$lig_tmp->login;
 
+						//==========================================
+						$sql_test_ine="SELECT no_gep FROM eleves WHERE ele_id='".$lig->ELE_ID."' AND no_gep!='".$lig->ELENONAT."' AND no_gep!='' AND no_gep IS NOT NULL;";
+						//echo "$sql_test_ine<br />";
+						$test_modif_ine=mysqli_query($GLOBALS["mysqli"], $sql_test_ine);
+						if(mysqli_num_rows($test_modif_ine)>0) {
+							//echo "mysqli_num_rows(\$test_modif_ine)=".mysqli_num_rows($test_modif_ine)."<br />";
+							$lig_old_ine=mysqli_fetch_object($test_modif_ine);
+							$old_ine=$lig_old_ine->no_gep;
+
+							// Mettre aussi à jour les tables 
+							$sql_update_ine="UPDATE archivage_disciplines SET INE='".$lig->ELENONAT."' WHERE INE='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$sql_update_ine="UPDATE archivage_eleves SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$sql_update_ine="UPDATE archivage_eleves2 SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$sql_update_ine="UPDATE archivage_ects SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$sql_update_ine="UPDATE archivage_engagements SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$sql_update_ine="UPDATE archivage_aid_eleve SET id_eleve='".$lig->ELENONAT."' WHERE id_eleve='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$sql_update_ine="UPDATE archivage_appreciations_aid SET id_eleve='".$lig->ELENONAT."' WHERE id_eleve='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$sql_update_ine="UPDATE edt_eleves_lignes SET n_national='".$lig->ELENONAT."' WHERE n_national='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$sql_update_ine="UPDATE socle_eleves_composantes SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+							//echo "$sql_update_ine<br />";
+							$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+							$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_archAPB_eleves'");
+							if(mysqli_num_rows($test_table)>0) {
+								$sql_update_ine="UPDATE plugin_archAPB_eleves SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+							}
+
+							$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_archAPB_eleves_mef'");
+							if(mysqli_num_rows($test_table)>0) {
+								$sql_update_ine="UPDATE plugin_archAPB_eleves_mef SET no_gep='".$lig->ELENONAT."' WHERE no_gep='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+							}
+
+							$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_archAPB_notes'");
+							if(mysqli_num_rows($test_table)>0) {
+								$sql_update_ine="UPDATE plugin_archAPB_notes SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+							}
+
+							$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_lsl_avis_annuels'");
+							if(mysqli_num_rows($test_table)>0) {
+								$sql_update_ine="UPDATE plugin_lsl_avis_annuels SET code_ine='".$lig->ELENONAT."' WHERE code_ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+							}
+						}
+						//==========================================
+
 						$sql.=" WHERE ele_id='".$lig->ELE_ID."';";
 						//echo "============<br />";
 						//echo "$sql<br />";
@@ -4280,6 +4395,81 @@ else{
 							}
 
 							$login_eleve=$lig_tmp->login;
+
+							//==========================================
+							$sql_test_ine="SELECT no_gep FROM eleves WHERE elenoet='".$lig->ELENOET."' AND no_gep!='".$lig->ELENONAT."' AND no_gep!='' AND no_gep IS NOT NULL;";
+							//echo "$sql_test_ine<br />";
+							$test_modif_ine=mysqli_query($GLOBALS["mysqli"], $sql_test_ine);
+							if(mysqli_num_rows($test_modif_ine)>0) {
+								$lig_old_ine=mysqli_fetch_object($test_modif_ine);
+								$old_ine=$lig_old_ine->no_gep;
+
+								// Mettre aussi à jour les tables 
+								$sql_update_ine="UPDATE archivage_disciplines SET INE='".$lig->ELENONAT."' WHERE INE='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE archivage_eleves SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE archivage_eleves2 SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE archivage_ects SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE archivage_engagements SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE archivage_aid_eleve SET id_eleve='".$lig->ELENONAT."' WHERE id_eleve='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE archivage_appreciations_aid SET id_eleve='".$lig->ELENONAT."' WHERE id_eleve='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE edt_eleves_lignes SET n_national='".$lig->ELENONAT."' WHERE n_national='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE socle_eleves_composantes SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_archAPB_eleves'");
+								if(mysqli_num_rows($test_table)>0) {
+									$sql_update_ine="UPDATE plugin_archAPB_eleves SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+									//echo "$sql_update_ine<br />";
+									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+								}
+
+								$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_archAPB_eleves_mef'");
+								if(mysqli_num_rows($test_table)>0) {
+									$sql_update_ine="UPDATE plugin_archAPB_eleves_mef SET no_gep='".$lig->ELENONAT."' WHERE no_gep='".$old_ine."';";
+									//echo "$sql_update_ine<br />";
+									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+								}
+
+								$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_archAPB_notes'");
+								if(mysqli_num_rows($test_table)>0) {
+									$sql_update_ine="UPDATE plugin_archAPB_notes SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+									//echo "$sql_update_ine<br />";
+									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+								}
+
+								$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_lsl_avis_annuels'");
+								if(mysqli_num_rows($test_table)>0) {
+									$sql_update_ine="UPDATE plugin_lsl_avis_annuels SET code_ine='".$lig->ELENONAT."' WHERE code_ine='".$old_ine."';";
+									//echo "$sql_update_ine<br />";
+									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+								}
+							}
+							//==========================================
 
 							$sql.=" WHERE elenoet='".$lig->ELENOET."';";
 							//echo "============<br />";
