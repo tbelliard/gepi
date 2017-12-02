@@ -1,6 +1,26 @@
 <?php
 	@set_time_limit(0);
 
+/*
+ *
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
@@ -18,6 +38,11 @@
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=1");
 		die();
+	}
+
+	$nom_champ_INE=getSettingValue("nom_champ_INE");
+	if($nom_champ_INE=="") {
+		$nom_champ_INE="ine_bea";
 	}
 
 	//**************** EN-TETE *****************
@@ -582,6 +607,7 @@
 				$i=-1;
 
 				$tab_champs_eleve=array("ID_NATIONAL",
+				"INE_BEA",
 				"ELENOET",
 				"NOM",
 				"NOM_USAGE",
@@ -748,7 +774,8 @@
 
 							$sql="UPDATE temp_gep_import2 SET ";
 							$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
-							if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
+							//if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
+							if(isset($eleves[$i][$nom_champ_INE])) {$sql.="elenonat='".$eleves[$i][$nom_champ_INE]."', ";}
 							$sql.="elenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]['nom'])."', ";
 							$sql.="elepre='".mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]['prenom'])."', ";
 							if(!isset($eleves[$i]["code_sexe"])) {
