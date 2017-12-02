@@ -1174,6 +1174,9 @@ else{
 			//Compteur élève:
 			$i=-1;
 
+			// Pour le cas où on fait des tests avec un vieux fichier XML Eleves sans présence du INE_BEA
+			$temoin_ine_bea=false;
+
 			$tab_champs_eleve=array("ID_NATIONAL",
 			"INE_BEA",
 			"ELENOET",
@@ -1247,6 +1250,9 @@ else{
 
 				foreach($eleve->children() as $key => $value) {
 					if(in_array(my_strtoupper($key),$tab_champs_eleve)) {
+						if(my_strtoupper($key)=="INE_BEA") {
+							$temoin_ine_bea=true;
+						}
 						//$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
 						$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'$/","",preg_replace("/^'/","",trim($value))));
 						//echo "\$eleve->$key=".$value."<br />";
@@ -1310,6 +1316,13 @@ else{
 
 			affiche_debug("count(\$eleves)=".count($eleves)."<br />\n");
 			affiche_debug("count(\$tab_ele_id)=".count($tab_ele_id)."<br />\n");
+
+			//echo "\$nom_champ_INE=$nom_champ_INE<br />";
+			if(!$temoin_ine_bea) {
+				// On a un fichier sans INE_BEA, il faut utiliser l'ID_NATIONAL
+				$nom_champ_INE="id_national";
+			}
+			//echo "\$nom_champ_INE=$nom_champ_INE<br />";
 
 			//===========================
 			// A FAIRE: boireaus 20071115
