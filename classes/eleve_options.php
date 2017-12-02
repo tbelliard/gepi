@@ -883,7 +883,7 @@ echo "</table>\n";
 
 //============================================
 // 20171127
-echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
 
 	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
 		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
@@ -986,6 +986,7 @@ echo "<script type='text/javascript' language='javascript'>
 	// 20171127
 	function affiche_bull_simp(login_eleve,designation_eleve,id_classe,num_per1,num_per2) {
 		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+designation_eleve+' période '+num_per1+' à '+num_per2;
+		document.getElementById('corps_bull_simp').innerHTML=\"<div style='width:5em;height:5em;padding:2.5em;text-align:center'><img src='../images/spinner.gif' class='icone16' alt='Patientez' /></div>\";
 		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
 	}
 	//]]>
