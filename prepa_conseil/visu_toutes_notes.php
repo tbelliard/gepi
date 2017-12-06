@@ -2616,7 +2616,9 @@ echo "\n";
 		// Il faut ajouter les trois lignes Min/Moy/Max
 		//$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1+3)));
 		if($hauteur_ligne_imposee!="y") {
-			$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)+3)));
+			// Il faut trois lignes de plus pour les moyennes Min/Classe/Max
+			// Si la ligne coef y est, il faut encore une ligne de plus.
+			$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)+4)));
 		}
 
 		/*
