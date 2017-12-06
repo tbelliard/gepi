@@ -135,13 +135,14 @@ if((isset($id_classe))&&(is_array($id_classe))&&(isset($_POST['export_csv']))) {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$eleve=get_info_eleve($login_ele);
-			$csv="Élève;Date mysql;Date;Type;Commentaire;\r\n";
+			$csv="Élève;Date mysql;Date;Type;Commentaire;Saisi par;\r\n";
 			while($lig=mysqli_fetch_object($res)) {
 				$csv.=$eleve['nom'].' '.$eleve['prenom'].';';
 				$csv.=$lig->date_sp.';';
 				$csv.=formate_date($lig->date_sp, "y", "court").';';
 				$csv.=$tab_type_pointage_discipline['id_type'][$lig->id_type]['nom'].';';
 				$csv.=str_replace(';', '.,', $lig->commentaire).';';
+				$csv.=civ_nom_prenom($lig->created_by).';';
 				$csv.="\r\n";
 			}
 
@@ -533,7 +534,7 @@ elseif(isset($login_ele)) {
 		<input type='hidden' name='display_date_debut' value='$display_date_debut' />
 		<input type='hidden' name='display_date_fin' value='$display_date_fin' />
 		<input type='hidden' name='id_classe' value='$id_classe' />
-		<select name='login_ele' id='login_ele' onchange=\"document.getElementById('form_choix_ele').submit();\">";
+		<select name='login_ele' id='login_ele' onchange=\"document.getElementById('form_choix_ele_classe').submit();\">";
 			while($lig_ele=mysqli_fetch_object($res_ele)) {
 				$selected='';
 				if($lig_ele->login==$login_ele) {
@@ -582,6 +583,7 @@ elseif(isset($login_ele)) {
 					<th class='text'>Date</th>
 					<th class='text'>Type</th>
 					<th class='text'>Commentaire</th>
+					<th class='text'>Saisi par</th>
 				</tr>
 			</thead>
 			<tbody>";
@@ -601,6 +603,7 @@ elseif(isset($login_ele)) {
 					<td><span style='display:none'>".$lig->date_sp."</span>".formate_date($lig->date_sp, "y", "court")."</td>
 					<td>".$tab_type_pointage_discipline['id_type'][$lig->id_type]['nom']."</td>
 					<td>".$lig->commentaire."</td>
+					<td>".civ_nom_prenom($lig->created_by)."</td>
 				</tr>";
 		}
 	}
