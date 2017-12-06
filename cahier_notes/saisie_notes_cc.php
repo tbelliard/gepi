@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -229,71 +229,72 @@ if (isset($_POST['is_posted'])) {
 			if(isset($current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"])){
 				$id_classe = $current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"];
 				//if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
-					$note=$note_eleve[$i];
-					$elev_statut='';
+					if(isset($note_eleve[$i])) {
+						$note=$note_eleve[$i];
+						$elev_statut='';
 
-					//==============================
-					// PREPARATIFS boireaus 20080422
-					// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
-					if($mode_commentaire_20080422!="no_anti_inject") {
-						// Problème: les accents sont codés en HTML...
-						$comment=$comment_eleve[$i];
-						// Cela fonctionne chez moi avec cette correction (accents, apostrophes et retours à la ligne):
-						$comment=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($comment))));
-					}
-					else {
-						if (isset($NON_PROTECT["comment_eleve".$i])){
-							$comment = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["comment_eleve".$i]));
+						//==============================
+						// PREPARATIFS boireaus 20080422
+						// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
+						if($mode_commentaire_20080422!="no_anti_inject") {
+							// Problème: les accents sont codés en HTML...
+							$comment=$comment_eleve[$i];
+							// Cela fonctionne chez moi avec cette correction (accents, apostrophes et retours à la ligne):
+							$comment=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($comment))));
 						}
-						else{
-							$comment = "";
+						else {
+							if (isset($NON_PROTECT["comment_eleve".$i])){
+								$comment = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["comment_eleve".$i]));
+							}
+							else{
+								$comment = "";
+							}
+							//echo "$i: $comment<br />";
+							// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+							$comment=my_ereg_replace('(\\\r\\\n)+',"\r\n",$comment);
 						}
-						//echo "$i: $comment<br />";
-						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-						$comment=my_ereg_replace('(\\\r\\\n)+',"\r\n",$comment);
-					}
-					//==============================
+						//==============================
 
-					//echo "$reg_eleve_login : $note <br />";
+						//echo "$reg_eleve_login : $note <br />";
 
-					if (($note == 'disp')||($note == 'd')) {
-						$note = '0';
-						$elev_statut = 'disp';
-					}
-					elseif (($note == 'abs')||($note == 'a')) {
-						$note = '0';
-						$elev_statut = 'abs';
-					}
-					elseif (($note == '-')||($note == 'n')) {
-						$note = '0';
-						$elev_statut = '-';
-					}
-					elseif (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
-						$note = str_replace(",", ".", "$note");
-						$appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT note_sur FROM cc_eval WHERE id='$id_eval'");
-						$note_sur_verif = old_mysql_result($appel_note_sur,0 ,'note_sur');
-						if (($note < 0) or ($note > $note_sur_verif)) {
+						if (($note == 'disp')||($note == 'd')) {
+							$note = '0';
+							$elev_statut = 'disp';
+						}
+						elseif (($note == 'abs')||($note == 'a')) {
+							$note = '0';
+							$elev_statut = 'abs';
+						}
+						elseif (($note == '-')||($note == 'n')) {
+							$note = '0';
+							$elev_statut = '-';
+						}
+						elseif (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
+							$note = str_replace(",", ".", "$note");
+							$appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT note_sur FROM cc_eval WHERE id='$id_eval'");
+							$note_sur_verif = old_mysql_result($appel_note_sur,0 ,'note_sur');
+							if (($note < 0) or ($note > $note_sur_verif)) {
+								$note = '';
+								$elev_statut = 'v';
+							}
+						}
+						else {
 							$note = '';
 							$elev_statut = 'v';
 						}
-					}
-					else {
-						$note = '';
-						$elev_statut = 'v';
-					}
 
-					$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cc_notes_eval WHERE (login='$reg_eleve_login' AND id_eval = '$id_eval')");
-					$test = mysqli_num_rows($test_eleve_note_query);
-					if ($test != "0") {
-						$sql="UPDATE cc_notes_eval SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_eval='".$id_eval."')";
-						//echo "$sql<br />";
-						$register = mysqli_query($GLOBALS["mysqli"], $sql);
-					} else {
-						$sql="INSERT INTO cc_notes_eval SET login='".$reg_eleve_login."', id_eval='".$id_eval."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'";
-						//echo "$sql<br />";
-						$register = mysqli_query($GLOBALS["mysqli"], $sql);
+						$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cc_notes_eval WHERE (login='$reg_eleve_login' AND id_eval = '$id_eval')");
+						$test = mysqli_num_rows($test_eleve_note_query);
+						if ($test != "0") {
+							$sql="UPDATE cc_notes_eval SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_eval='".$id_eval."')";
+							//echo "$sql<br />";
+							$register = mysqli_query($GLOBALS["mysqli"], $sql);
+						} else {
+							$sql="INSERT INTO cc_notes_eval SET login='".$reg_eleve_login."', id_eval='".$id_eval."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'";
+							//echo "$sql<br />";
+							$register = mysqli_query($GLOBALS["mysqli"], $sql);
+						}
 					}
-
 				//}
 			}
 		}
@@ -599,11 +600,13 @@ foreach ($liste_eleves as $eleve) {
 	$eleve_id_classe[$i] = $current_group["classes"]["classes"][$eleve["classe"]]["id"];
 
 	$elenoet="";
-	$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login[$i]."';";
+	$date_sortie="";
+	$sql="SELECT elenoet, date_sortie FROM eleves WHERE login='".$eleve_login[$i]."';";
 	$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_elenoet)>0) {
 		$tmp_lig=mysqli_fetch_object($res_elenoet);
 		$elenoet=$tmp_lig->elenoet;
+		$date_sortie=$tmp_lig->date_sortie;
 	}
 
 	$alt=$alt*(-1);
@@ -613,43 +616,49 @@ foreach ($liste_eleves as $eleve) {
 	echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' title=\"Voir la fiche élève dans un nouvel onglet.\" target='_blank'>".$eleve_nom[$i]." ".$eleve_prenom[$i]."</a></td>\n";
 	echo "<td>$eleve_classe[$i]</td>\n";
 
-	echo "<td id='td_$num_id'>\n";
-	/*
-	if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
-		echo "\$note_import[$current_displayed_line]=$note_import[$current_displayed_line]<br />";
+	if(($date_sortie!="")&&($date_sortie<$display_date)) {
+		$date_sortie_formatee=formate_date($date_sortie);
+		echo "<td colspan='2' title=\"L'élève a quitté l'établissement le $date_sortie_formatee.\" style='background-color:orange'>".$date_sortie_formatee."</td>";
 	}
-	echo "\$eleve_login[$i]=$eleve_login[$i]<br />";
-	if(isset($note_enr[$eleve_login[$i]])) {echo "\$note_enr[$eleve_login[$i]]=".$note_enr["$eleve_login[$i]"]."<br />";}
-	*/
-
-	$designation_eleve_js=addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'));
-	echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()";
-	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".$designation_eleve_js."')";}
 	else {
-		echo ";document.getElementById('div_photo_eleve').innerHTML='Pas de photo pour ".$designation_eleve_js."'";
-	}
-	echo "\" onchange=\"verifcol($num_id);changement();\" value='";
-	if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
-		echo $note_import[$current_displayed_line];
-	}
-	elseif(isset($note_enr[$eleve_login[$i]])) {
-		echo $note_enr[$eleve_login[$i]];
-	}
-	echo "' />\n";
-	"</td>\n";
+		echo "<td id='td_$num_id'>\n";
+		/*
+		if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
+			echo "\$note_import[$current_displayed_line]=$note_import[$current_displayed_line]<br />";
+		}
+		echo "\$eleve_login[$i]=$eleve_login[$i]<br />";
+		if(isset($note_enr[$eleve_login[$i]])) {echo "\$note_enr[$eleve_login[$i]]=".$note_enr["$eleve_login[$i]"]."<br />";}
+		*/
 
-	echo "<td>\n";
-	echo "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows='1' cols='60' class='wrap' onfocus=\"javascript:this.select()";
-	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";}
-	else {
-		echo ";document.getElementById('div_photo_eleve').innerHTML='Pas de photo pour ".$designation_eleve_js."'";
+		$designation_eleve_js=addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'));
+		echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()";
+		if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".$designation_eleve_js."')";}
+		else {
+			echo ";document.getElementById('div_photo_eleve').innerHTML='Pas de photo pour ".$designation_eleve_js."'";
+		}
+		echo "\" onchange=\"verifcol($num_id);changement();\" value='";
+		if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
+			echo $note_import[$current_displayed_line];
+		}
+		elseif(isset($note_enr[$eleve_login[$i]])) {
+			echo $note_enr[$eleve_login[$i]];
+		}
+		echo "' />\n";
+		"</td>\n";
+
+		echo "<td>\n";
+		echo "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows='1' cols='60' class='wrap' onfocus=\"javascript:this.select()";
+		if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";}
+		else {
+			echo ";document.getElementById('div_photo_eleve').innerHTML='Pas de photo pour ".$designation_eleve_js."'";
+		}
+		echo "\" onchange=\"changement()\">";
+		if(isset($commentaire[$eleve_login[$i]])) {echo $commentaire[$eleve_login[$i]];}
+		echo "</textarea>\n";
+		"</td>\n";
+		echo "</tr>\n";
+		$num_id++;
 	}
-	echo "\" onchange=\"changement()\">";
-	if(isset($commentaire[$eleve_login[$i]])) {echo $commentaire[$eleve_login[$i]];}
-	echo "</textarea>\n";
-	"</td>\n";
-	echo "</tr>\n";
-	$num_id++;
 	$i++;
 	$current_displayed_line++;
 }
