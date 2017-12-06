@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -660,133 +660,7 @@ if (isset($id_classe)) {
 	echo "</script>\n";
 //}
 
-
-	// 20140331
-	echo "<br /><p><strong>Paramètres de l'export PDF&nbsp;:</strong><br /><input type='checkbox' id='forcer_hauteur_ligne_pdf' name='forcer_hauteur_ligne_pdf' value='y' ";
-	if(getPref($_SESSION["login"], "visu_toutes_notes_forcer_h_cell_pdf", "n")=="y") {
-		echo "checked ";
-	}
-	echo "/><label for='forcer_hauteur_ligne_pdf'> Forcer la hauteur des lignes du tableau PDF à </label><input type='text' name='visu_toutes_notes_h_cell_pdf' size='2' value='".getPref($_SESSION["login"], "visu_toutes_notes_h_cell_pdf", 10)."' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete=\"off\" /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<em>sinon Gepi calcule au mieux la hauteur de ligne</em>)</p>\n";
-
-
-
-
-/*
-	$tab_couleur_texte_defaut=array('red', 'orange', 'green');
-	$tab_couleur_cellule_defaut=array('', '', '');
-
-	$j=0;
-	$alt=1;
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
-	echo "<td><input type='checkbox' name='utiliser_couleur[$j]' value='y' checked /></td>\n";
-	echo "<td>Jusqu'à <input type='text' name='borne_couleur[$j]' value='8' size='2' /></td>\n";
-	echo "<td>";
-	echo "<select name=\"couleur_texte[]\">\n";
-	for($i=0;$i<count($tabcouleur);$i++){
-		if($tabcouleur[$i]=="$tab_couleur_texte_defaut[$j]"){
-			$checked=" selected=\"true\"";
-		}
-		else{
-			$checked="";
-		}
-		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td>\n";
-
-	echo "<td>";
-	echo "<select name=\"couleur_cellule[]\">\n";
-	echo "<option value=''>---</option>\n";
-	for($i=0;$i<count($tabcouleur);$i++){
-		if($tabcouleur[$i]=="$tab_couleur_cellule_defaut[$j]"){
-			$checked=" selected=\"true\"";
-		}
-		else{
-			$checked="";
-		}
-		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	$j=1;
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
-	echo "<td><input type='checkbox' name='utiliser_couleur[$j]' value='y' checked /></td>\n";
-	echo "<td>Jusqu'à <input type='text' name='borne_couleur[$j]' value='12' size='2' /></td>\n";
-	echo "<td>";
-	echo "<select name=\"couleur_texte[]\">\n";
-	for($i=0;$i<count($tabcouleur);$i++){
-		if($tabcouleur[$i]=="$tab_couleur_texte_defaut[$j]"){
-			$checked=" selected=\"true\"";
-		}
-		else{
-			$checked="";
-		}
-		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td>\n";
-
-	echo "<td>";
-	echo "<select name=\"couleur_cellule[]\">\n";
-	echo "<option value=''>---</option>\n";
-	for($i=0;$i<count($tabcouleur);$i++){
-		if($tabcouleur[$i]=="$tab_couleur_cellule_defaut[$j]"){
-			$checked=" selected=\"true\"";
-		}
-		else{
-			$checked="";
-		}
-		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-
-	$j=2;
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
-	echo "<td><input type='checkbox' name='utiliser_couleur[$j]' value='y' checked /></td>\n";
-	echo "<td>Jusqu'à <input type='text' name='borne_couleur[$j]' value='20' size='2' /></td>\n";
-	echo "<td>";
-	echo "<select name=\"couleur_texte[]\">\n";
-	for($i=0;$i<count($tabcouleur);$i++){
-		if($tabcouleur[$i]=="$tab_couleur_texte_defaut[$j]"){
-			$checked=" selected=\"true\"";
-		}
-		else{
-			$checked="";
-		}
-		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td>\n";
-
-	echo "<td>";
-	echo "<select name=\"couleur_cellule[]\">\n";
-	echo "<option value=''>---</option>\n";
-	for($i=0;$i<count($tabcouleur);$i++){
-		if($tabcouleur[$i]=="$tab_couleur_cellule_defaut[$j]"){
-			$checked=" selected=\"true\"";
-		}
-		else{
-			$checked="";
-		}
-		echo "<option style=\"background-color: $tabcouleur[$i]\" value=\"$tabcouleur[$i]\"$checked>$tabcouleur[$i]</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-
-	echo "</table>\n";
-*/
 	//echo "<p><i>Remarque:</i> ...</p>\n";
-	echo "<p><br /></p>\n";
 	echo "</div>\n";
 
 	echo "<script type='text/javascript'>
@@ -812,6 +686,14 @@ document.getElementById('div_coloriser').style.display='none';
 display_div_coloriser();
 </script>\n";
 
+	// 20140331
+	echo "<br /><p><strong>Paramètres de l'export PDF&nbsp;:</strong><br /><input type='checkbox' id='forcer_hauteur_ligne_pdf' name='forcer_hauteur_ligne_pdf' value='y' ";
+	if(getPref($_SESSION["login"], "visu_toutes_notes_forcer_h_cell_pdf", "n")=="y") {
+		echo "checked ";
+	}
+	echo "/><label for='forcer_hauteur_ligne_pdf'> Forcer la hauteur des lignes du tableau PDF à </label><input type='text' name='visu_toutes_notes_h_cell_pdf' size='2' value='".getPref($_SESSION["login"], "visu_toutes_notes_h_cell_pdf", 10)."' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete=\"off\" /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<em>sinon Gepi calcule au mieux la hauteur de ligne</em>)</p>\n";
+
+	echo "<p><br /></p>\n";
 	echo "</form>\n";
 } else {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>";
