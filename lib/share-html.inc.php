@@ -4589,7 +4589,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 
 		$lien_verif="";
 		if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
-			$lien_verif=" <em style='font-weight:normal;'>(<a href='bulletin/verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\">Vérification</a>)</em>";
+			$lien_verif=" <em style='font-weight:normal;'>(<a href='bulletin/verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\"".$target."><img src='".$gepiPath."/images/icons/bulletin_verif_20.png' class='icone20' alt='Vérif' /> Vérification</a>)</em>";
 		}
 
 		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: $nom_classe".$lien_verif."</p>
@@ -4606,6 +4606,10 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 	</thead>
 	<tbody>";
 
+		// 20171205: Compte scolarité: Ajouter une ligne Verrouiller en ajax avec rafraichissement du DIV contenant le tableau
+		//           Et un lien vers vérifier (mais quoi: donc étape choix: https://127.0.0.1/steph/gepi_git_trunk/bulletin/verif_bulletins.php?id_classe=34)
+		// Comme le lien vérifier les le même pour toutes les périodes, un seul lien quelque part... ou enregistrer la préférence.
+
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='secours')||
 		(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $id_classe)))) {
 			$acces_bull_index="y";
@@ -4620,7 +4624,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			foreach($tab_per as $current_num_periode => $periode) {
 				if($periode['verouiller']!='O') {
 					$retour.="
-			<td><a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$id_classe'$target><img src='$gepiPath/images/saisie_avis1.png' class='icone32' alt='Saisir' /></a></td>";
+			<td><a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$id_classe'$target title=\"Saisir l'avis du conseil de classe.\"><img src='$gepiPath/images/saisie_avis1.png' class='icone32' alt='Saisir' /></a></td>";
 				}
 				else {
 					$retour.="
@@ -4643,7 +4647,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 				}
 				else {
 					$retour.="
-			<td><a href='$gepiPath/impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$current_num_periode'$target><img src='$gepiPath/images/icons/pdf.png' class='icone32' alt='Saisir' /></a></td>";
+			<td><a href='$gepiPath/impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$current_num_periode'$target title=\"Imprimer l'avis du conseil de classe, ou générer un PDF des avis du conseil.\"><img src='$gepiPath/images/icons/pdf.png' class='icone32' alt='Saisir' /></a></td>";
 				}
 			}
 			$retour.="
@@ -4652,7 +4656,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			// Affichage Appréciations sur le groupe classe
 			$retour.="
 		<tr>
-			<td><a href='$gepiPath/prepa_conseil/index3.php?id_classe=$id_classe'$target>Imprimer les appréciations des professeurs sur le groupe classe&nbsp;:</a></td>";
+			<td><a href='$gepiPath/prepa_conseil/index3.php?id_classe=$id_classe'$target title=\"Imprimer les appréciations des professeurs sur le groupe classe.\">Imprimer les appréciations des professeurs sur le groupe classe&nbsp;:</a></td>";
 			foreach($tab_per as $current_num_periode => $periode) {
 				$sql="SELECT DISTINCT mag.id_groupe FROM matieres_appreciations_grp mag, j_groupes_classes jgc WHERE jgc.id_groupe=mag.id_groupe AND jgc.id_classe='$id_classe' AND mag.periode='$current_num_periode' AND appreciation!='' AND appreciation!='-';";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -4664,10 +4668,10 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 					$retour.="
 			<td>";
 					$retour.="
-				<a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=4&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank'><img src='$gepiPath/images/icons/bulletin.png' class='icone32' alt='AppGrp' /></a>";
+				<a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=4&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank' title=\"Imprimer le bulletin simplifié du groupe classe.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone32' alt='AppGrp' /></a>";
 					if($acces_bull_index=="y") {
 						$retour.="
-				<a href='$gepiPath/bulletin/bull_index.php?mode_bulletin=pdf&intercaler_releve_notes=y&rn_param_auto=y&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&&tab_id_classe[0]=$id_classe&tab_periode_num[0]=$current_num_periode&intercaler_app_classe=y' target='_blank'><img src='$gepiPath/images/icons/pdf32.png' class='icone32' alt='AppGrpPDF' /></a>";
+				<a href='$gepiPath/bulletin/bull_index.php?mode_bulletin=pdf&intercaler_releve_notes=y&rn_param_auto=y&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&&tab_id_classe[0]=$id_classe&tab_periode_num[0]=$current_num_periode&intercaler_app_classe=y' target='_blank' title=\"Générer un PDF/imprimer un bulletin des appréciations sur le groupe classe.\"><img src='$gepiPath/images/icons/pdf32.png' class='icone32' alt='AppGrpPDF' /></a>";
 					}
 					$retour.="
 			</td>";
@@ -4683,7 +4687,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			<td><a href='$gepiPath/mod_engagements/imprimer_documents.php?id_classe[0]=$id_classe' title=\"Imprimer les documents pour le conseil de classe : Convocations, grilles,...\"$target>Imprimer les grilles/listes destinées à la prise de notes pendant le conseil de classe&nbsp;:</a></td>";
 				foreach($tab_per as $current_num_periode => $periode) {
 					$retour.="
-			<td><a href='$gepiPath/mod_engagements/imprimer_documents.php?id_classe[0]=$id_classe&amp;periode=$current_num_periode&amp;imprimer_liste_eleve=y&destinataire=".add_token_in_url()."'$target><img src='$gepiPath/images/icons/ods.png' class='icone32' alt='ODS' /></a></td>";
+			<td><a href='$gepiPath/mod_engagements/imprimer_documents.php?id_classe[0]=$id_classe&amp;periode=$current_num_periode&amp;imprimer_liste_eleve=y&destinataire=".add_token_in_url()."'$target title=\"Imprimer les grilles/listes destinées à la prise de notes pendant le conseil de classe.\"><img src='$gepiPath/images/icons/ods.png' class='icone32' alt='ODS' /></a></td>";
 				}
 				$retour.="
 		</tr>";
@@ -4697,14 +4701,14 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			// Graphes
 			$retour.="
 		<tr>
-			<td><a href='$gepiPath/prepa_conseil/index2.php?id_classe=$id_classe'$target>Toutes les moyennes de la classe&nbsp;:</a></td>";
+			<td><a href='$gepiPath/prepa_conseil/index2.php?id_classe=$id_classe'$target title=\"Imprimer toutes les moyennes de la classe.\">Toutes les moyennes de la classe&nbsp;:</a></td>";
 			foreach($tab_per as $current_num_periode => $periode) {
 				/*
 				$retour.="
 			<td><a href='$gepiPath/prepa_conseil/index2.php?id_classe=$id_classe'$target><img src='$gepiPath/images/icons/releve.png' class='icone32' alt='Moyennes' /></a></td>";
 				*/
 				$retour.="
-			<td><a href='$gepiPath/prepa_conseil/visu_toutes_notes.php?id_classe=$id_classe&amp;num_periode=$current_num_periode&amp;couleur_alterne=y' target='_blank'><img src='$gepiPath/images/icons/releve.png' class='icone32' alt='Moyennes' /></a></td>";
+			<td><a href='$gepiPath/prepa_conseil/visu_toutes_notes.php?id_classe=$id_classe&amp;num_periode=$current_num_periode&amp;couleur_alterne=y' target='_blank' title=\"Imprimer toutes les moyennes de la classe en période $current_num_periode.\"><img src='$gepiPath/images/icons/releve.png' class='icone32' alt='Moyennes' /></a></td>";
 			}
 			$retour.="
 		</tr>
@@ -4717,7 +4721,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			<td><a href='$gepiPath/prepa_conseil/index3.php?id_classe=$id_classe&couleur_alterne=y'$target><img src='$gepiPath/images/icons/bulletin_simp.png' class='icone32' alt='BullSimp' /></a></td>";
 				*/
 				$retour.="
-			<td><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=1&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank'><img src='$gepiPath/images/icons/bulletin_simp.png' class='icone32' alt='BullSimp' /></a></td>";
+			<td><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=1&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank' title=\"Afficher les bulletins simplifiés la période $current_num_periode.\"><img src='$gepiPath/images/icons/bulletin_simp.png' class='icone32' alt='BullSimp' /></a></td>";
 			}
 			$retour.="
 		</tr>
@@ -4759,17 +4763,17 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 					if($periode['verouiller']=='N') {
 						$retour.="
 			<td>
-				<a href='$gepiPath/saisie/saisie_notes.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target><img src='$gepiPath/images/icons/bulletin_note_saisie.png' class='icone32' alt='Saisir note' /></a> 
-				<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target><img src='$gepiPath/images/icons/bulletin_app_saisie.png' class='icone32' alt='Saisir app' /></a> 
-				<a href='$gepiPath/prepa_conseil/index1.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir/imprimer mes moyennes et appréciations\"><img src='$gepiPath/images/icons/bulletin_visu.png' class='icone32' alt='Mes moy et app' /></a> 
+				<a href='$gepiPath/saisie/saisie_notes.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Saisir mes moyennes des bulletins en période $current_num_periode.\"><img src='$gepiPath/images/icons/bulletin_note_saisie.png' class='icone32' alt='Saisir note' /></a> 
+				<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Saisir mes appréciations des bulletins en période $current_num_periode.\"><img src='$gepiPath/images/icons/bulletin_app_saisie.png' class='icone32' alt='Saisir app' /></a> 
+				<a href='$gepiPath/prepa_conseil/index1.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir/imprimer mes moyennes et appréciations en période $current_num_periode\"><img src='$gepiPath/images/icons/bulletin_visu.png' class='icone32' alt='Mes moy et app' /></a> 
 			</td>";
 					}
 					else {
 						$retour.="
 			<td style='background-color:gray' title=\"Période close\">
-				<a href='$gepiPath/saisie/saisie_notes.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir mes moyennes\"><img src='$gepiPath/images/icons/bulletin_note_visu.png' class='icone32' alt='Visu note' /></a> 
-				<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir mes appréciations".$ajout_title_saisie_app."\"><img src='$gepiPath/images/icons/bulletin_app_visu.png' class='icone32' alt='Visu app' /></a> 
-				<a href='$gepiPath/prepa_conseil/index1.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir/imprimer mes moyennes et appréciations\"><img src='$gepiPath/images/icons/bulletin_visu.png' class='icone32' alt='Mes moy et app' /></a> 
+				<a href='$gepiPath/saisie/saisie_notes.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir mes moyennes en période $current_num_periode\"><img src='$gepiPath/images/icons/bulletin_note_visu.png' class='icone32' alt='Visu note' /></a> 
+				<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir mes appréciations en période $current_num_periode".$ajout_title_saisie_app."\"><img src='$gepiPath/images/icons/bulletin_app_visu.png' class='icone32' alt='Visu app' /></a> 
+				<a href='$gepiPath/prepa_conseil/index1.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir/imprimer mes moyennes et appréciations en période $current_num_periode\"><img src='$gepiPath/images/icons/bulletin_visu.png' class='icone32' alt='Mes moy et app' /></a> 
 			</td>";
 					}
 				}
