@@ -1220,59 +1220,86 @@ $k=1;
 $num_id = 10;
 while ($k < $nb_periode) {
 
-    $app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations_grp WHERE (id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-    $app_grp[$k] = @old_mysql_result($app_query, 0, "appreciation");
+	$app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations_grp WHERE (id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+	$app_grp[$k] = @old_mysql_result($app_query, 0, "appreciation");
 
-    $call_moyenne_t[$k] = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM matieres_notes n, j_eleves_groupes j " .
-                                                            "WHERE (" .
-                                                            "n.id_groupe='" . $current_group["id"] ."' AND " .
-                                                            "n.login = j.login AND " .
-                                                            "n.statut='' AND " .
-                                                            "j.id_groupe = n.id_groupe AND " .
-                                                            "n.periode='$k' AND j.periode='$k'" .
-                                                            ")");
-    $moyenne_t[$k] = old_mysql_result($call_moyenne_t[$k], 0, "moyenne");
+	$sql="SELECT round(avg(n.note),1) moyenne FROM matieres_notes n, j_eleves_groupes j " .
+					"WHERE (" .
+						"n.id_groupe='" . $current_group["id"] ."' AND " .
+						"n.login = j.login AND " .
+						"n.statut='' AND " .
+						"j.id_groupe = n.id_groupe AND " .
+						"n.periode='$k' AND j.periode='$k'" .
+					")";
+	$call_moyenne_t[$k] = mysqli_query($GLOBALS["mysqli"], $sql);
+	$moyenne_t[$k] = old_mysql_result($call_moyenne_t[$k], 0, "moyenne");
 
-    if ($moyenne_t[$k]=='') {
-            $moyenne_t[$k]="&nbsp;";
-    }
+	if ($moyenne_t[$k]=='') {
+		$moyenne_t[$k]="&nbsp;";
+	}
 
-    $mess[$k]="";
-    $mess[$k].="<td>".$moyenne_t[$k]."</td>\n";
-    $mess[$k].="<td>\n";
-    if((($current_group["classe"]["ver_periode"]['all'][$k] != 3)&&($_SESSION['statut']!='secours'))||
-    (($current_group["classe"]["ver_periode"]['all'][$k]==0)&&($_SESSION['statut']=='secours'))) {
 
-        $mess[$k].=nl2br($app_grp[$k]);
+	// Accès exceptionnel sur l'appréciation de groupe donnée dès qu'une classe du groupe est ouverte
+	$acces_exceptionnel_complet="n";
+	// TEST A REVOIR: Si une des classes du groupe est ouverte ou partiellement close, in faut autoriser pour l'appréciation de groupe
+	$une_classe_ouverte_ou_seulement_partiellement_close=false;
+	foreach($current_group["classe"]["ver_periode"] as $key => $value) {
+		if(($value[$k]=='P')||($value[$k]=='N')) {
+			$une_classe_ouverte_ou_seulement_partiellement_close=true;
+			break;
+		}
+	}
+	//if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"]['all'][$k]>=2)&&($tab_autorisation_exceptionnelle_de_saisie[$k]=='yy')) {
+	if(($_SESSION['statut']=='professeur')&&($une_classe_ouverte_ou_seulement_partiellement_close)&&($tab_autorisation_exceptionnelle_de_saisie[$k]=='yy')) {
+		$acces_exceptionnel_complet="y";
+	}
 
-        $sql="SELECT * FROM matieres_app_corrections WHERE (login='' AND id_groupe='".$current_group["id"]."' AND periode='$k');";
-        $correct_app_query=mysqli_query($GLOBALS["mysqli"], $sql);
-        if(mysqli_num_rows($correct_app_query)>0) {
-            $lig_correct_app=mysqli_fetch_object($correct_app_query);
-            $mess[$k].="<div style='color:darkgreen; border: 1px solid red;'><b>Proposition de correction en attente&nbsp;:</b><br />".nl2br($lig_correct_app->appreciation)."</div>\n";
-        }
 
-        if(
-            (
-                ($current_group["classe"]["ver_periode"]['all'][$k] == 1)&&
-                (
-                    ($app_grp[$k]!='')||
-                    (mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
-                )
-                &&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')
-            )||
-            ($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
-        ) {
-            $mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' style=\"width:16px; height:16px\" alt='Proposer une correction' title='Proposer une correction' /></a>";
-            $chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_grp_$k' id='reserve_correction_app_grp_$k'>".$app_grp[$k]."</textarea>\n";
-            $mess[$k].="</div>\n";
+	$mess[$k]="";
 
-            $cpt_correction++;
-        }
+	$mess[$k].="<td>".$moyenne_t[$k];
+	// 20171204: Debug:
+	//$mess[$k].="<p>\$current_group[\"classe\"][\"ver_periode\"]['all'][$k]=\"".$current_group["classe"]["ver_periode"]['all'][$k]."</p>";
+	//$mess[$k].="<p>\$acces_exceptionnel_complet=".$acces_exceptionnel_complet."</p>";
+	//$mess[$k].="<p>\$tab_autorisation_exceptionnelle_de_saisie[$k]=".$tab_autorisation_exceptionnelle_de_saisie[$k]."</p>";
+	$mess[$k].="</td>\n";
+
+	$mess[$k].="<td>\n";
+
+	if((($current_group["classe"]["ver_periode"]['all'][$k]<2)&&($_SESSION['statut']!='secours')&&($acces_exceptionnel_complet=='n'))||
+	(($current_group["classe"]["ver_periode"]['all'][$k]==0)&&($_SESSION['statut']=='secours'))) {
+
+		$mess[$k].=nl2br($app_grp[$k]);
+		//$mess[$k].='DEBUG 20171206';
+
+		$sql="SELECT * FROM matieres_app_corrections WHERE (login='' AND id_groupe='".$current_group["id"]."' AND periode='$k');";
+		$correct_app_query=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($correct_app_query)>0) {
+			$lig_correct_app=mysqli_fetch_object($correct_app_query);
+			$mess[$k].="<div style='color:darkgreen; border: 1px solid red;'><b>Proposition de correction en attente&nbsp;:</b><br />".nl2br($lig_correct_app->appreciation)."</div>\n";
+		}
+
+		if(
+			(
+				($current_group["classe"]["ver_periode"]['all'][$k] == 1)&&
+				(
+					($app_grp[$k]!='')||
+					(getSettingAOui('autoriser_correction_bulletin_hors_delais')=='y')
+				)
+				&&(getSettingAOui('autoriser_correction_bulletin')=='y')
+			)||
+			($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
+		) {
+			$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' style=\"width:16px; height:16px\" alt='Proposer une correction' title='Proposer une correction' /></a>";
+			$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_grp_$k' id='reserve_correction_app_grp_$k'>".$app_grp[$k]."</textarea>\n";
+			$mess[$k].="</div>\n";
+
+			$cpt_correction++;
+		}
 
 		if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 			$mess[$k].="</td>\n<td style='text-align:left;'>\n";
-		
+
 			$elemProgramme = getGroupElemProg($current_group["id"], $anneeScolaire, $k);
 			$cpt=FALSE;
 			if(mysqli_num_rows($elemProgramme)>0) {
@@ -1286,18 +1313,19 @@ while ($k < $nb_periode) {
 			}
 			$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 		}
-    }
-    else {
-        if(!isset($id_premier_textarea)) {
-            $id_premier_textarea=$k.$num_id;
-        }
+	}
+	else {
+		if(!isset($id_premier_textarea)) {
+			$id_premier_textarea=$k.$num_id;
+		}
 
-        $mess[$k].="<input type='hidden' name='app_grp_".$k."' value=\"".$app_grp[$k]."\" />\n";
-        $mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='$saisie_app_nb_cols_textarea' onchange=\"changement()\"";
-        $mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
-        $mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
-        $mess[$k].="\"";
-        $mess[$k].=">".$app_grp[$k]."</textarea>\n";
+		$mess[$k].="<input type='hidden' name='app_grp_".$k."' value=\"".$app_grp[$k]."\" />\n";
+		$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='$saisie_app_nb_cols_textarea' onchange=\"changement()\"";
+		$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
+		$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
+		$mess[$k].="\"";
+		$mess[$k].=">".$app_grp[$k]."</textarea>\n";
+
 		// 20160617
 		$mess[$k].="<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
 	
