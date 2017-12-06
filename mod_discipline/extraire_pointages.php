@@ -69,6 +69,12 @@ if(!getSettingAOui("active_mod_disc_pointage")) {
 }
 
 $tab_type_pointage_discipline=get_tab_type_pointage_discipline();
+/*
+echo "<pre>";
+print_r($tab_type_pointage_discipline);
+echo "</pre>";
+*/
+//debug_var();
 
 if(count($tab_type_pointage_discipline)==0) {
 	$sql="INSERT INTO sp_types_saisies SET nom='Travail', description='Travail non fait';";
@@ -85,6 +91,8 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : (isset($_GET['display_date_debut']) ? $_GET['display_date_debut'] : NULL);
 $display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : (isset($_GET['display_date_fin']) ? $_GET['display_date_fin'] : NULL);
 $id_creneau=isset($_POST['id_creneau']) ? $_POST['id_creneau'] : (isset($_GET['id_creneau']) ? $_GET['id_creneau'] : NULL);
+
+$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : (isset($_GET['login_ele']) ? $_GET['login_ele'] : NULL);
 
 //==================================
 if(!isset($display_date_debut)) {
@@ -116,77 +124,117 @@ if((isset($id_classe))&&(is_array($id_classe))&&(isset($_POST['export_csv']))) {
 		$tab_nom_classe[$id_classe[$loop]]=get_valeur_champ("classes", "id='".$id_classe[$loop]."'", "classe");
 	}
 
-	$tab_deja=array();
-	$tab_eff=array();
-	for($loop=0;$loop<count($id_classe);$loop++) {
-		$sql="SELECT DISTINCT sps.*, jec.id_classe, e.nom, e.prenom
-						FROM sp_saisies sps, 
-							j_eleves_classes jec, 
-							eleves e 
-						WHERE jec.login=e.login AND 
-							jec.login=sps.login AND 
+	if(isset($login_ele)) {
+		$sql="SELECT DISTINCT sps.*
+						FROM sp_saisies sps 
+						WHERE sps.login='".$login_ele."' AND 
 							date_sp>='".strftime("%Y-%m-%d 00:00:00", $ts_display_date_debut)."' AND 
-							date_sp<='".strftime("%Y-%m-%d 23:59:00", $ts_display_date_fin)."' AND 
-							jec.id_classe='".$id_classe[$loop]."' 
-						ORDER BY login, date_sp;";
+							date_sp<='".strftime("%Y-%m-%d 23:59:00", $ts_display_date_fin)."' 
+						ORDER BY date_sp, id_type;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
+			$eleve=get_info_eleve($login_ele);
+			$csv="Élève;Date mysql;Date;Type;Commentaire;\r\n";
 			while($lig=mysqli_fetch_object($res)) {
-				if(!in_array($lig->id, $tab_deja)) {
-					$tab_eff[$lig->login]['nom']=$lig->nom;
-					$tab_eff[$lig->login]['prenom']=$lig->prenom;
-					$tab_eff[$lig->login]['id_classe']=$lig->id_classe;
-
-					if(!isset($tab_eff[$lig->login]['type'][$lig->id_type])) {
-						$tab_eff[$lig->login]['type'][$lig->id_type]=0;
-					}
-					$tab_eff[$lig->login]['type'][$lig->id_type]++;
-
-					if(!isset($tab_eff[$lig->login]['total'])) {
-						$tab_eff[$lig->login]['total']=0;
-					}
-					$tab_eff[$lig->login]['total']++;
-
-					$tab_deja[]=$lig->id;
-				}
+				$csv.=$eleve['nom'].' '.$eleve['prenom'].';';
+				$csv.=$lig->date_sp.';';
+				$csv.=formate_date($lig->date_sp, "y", "court").';';
+				$csv.=$tab_type_pointage_discipline['id_type'][$lig->id_type]['nom'].';';
+				$csv.=str_replace(';', '.,', $lig->commentaire).';';
+				$csv.="\r\n";
 			}
+
+			$designation_eleve=remplace_accents($eleve['nom'].' '.$eleve['prenom'],'all');
+
+			$nom_fic="extraction_pointages_menus_incidents_".$designation_eleve."_du_".strftime("%Y%m%d", $ts_display_date_debut)."_au_".strftime("%Y%m%d", $ts_display_date_fin)."_effectuee_le_".strftime("%Y%m%d_%H%M%S").".csv";
+			send_file_download_headers('text/x-csv',$nom_fic);
+			echo echo_csv_encoded($csv);
+			die();
 		}
-	}
-
-	if(count($tab_eff)>0) {
-
-		$tab_type_pointage_discipline=get_tab_type_pointage_discipline();
-
-		$csv="Élève;Classe;Total;";
-
-		for($loop=0;$loop<count($tab_type_pointage_discipline['indice']);$loop++) {
-			$csv.=$tab_type_pointage_discipline['indice'][$loop]['nom'].";";
+		else {
+			$msg.="Aucune donnée n'est extraite.<br />";
 		}
-		$csv.="\r\n";
-
-		foreach($tab_eff as $login_ele => $eleve) {
-			$csv.=$eleve['nom']." ".$eleve['prenom'].";";
-			$csv.=$tab_nom_classe[$eleve['id_classe']].";";
-			$csv.=$eleve['total'].";";
-
-			for($loop=0;$loop<count($tab_type_pointage_discipline['indice']);$loop++) {
-				$valeur=0;
-				if(isset($eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']])) {
-					$valeur=$eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']];
-				}
-				$csv.=$valeur.";";
-			}
-			$csv.="\r\n";
-		}
-
-		$nom_fic="extraction_pointages_menus_incidents_du_".strftime("%Y%m%d", $ts_display_date_debut)."_au_".strftime("%Y%m%d", $ts_display_date_fin)."_effectuee_le_".strftime("%Y%m%d_%H%M%S").".csv";
-		send_file_download_headers('text/x-csv',$nom_fic);
-		echo echo_csv_encoded($csv);
-		die();
 	}
 	else {
-		$msg.="Aucune donnée n'est extraite.<br />";
+		$designation_classes='';
+
+		$tab_deja=array();
+		$tab_eff=array();
+		for($loop=0;$loop<count($id_classe);$loop++) {
+			$sql="SELECT DISTINCT sps.*, jec.id_classe, e.nom, e.prenom
+							FROM sp_saisies sps, 
+								j_eleves_classes jec, 
+								eleves e 
+							WHERE jec.login=e.login AND 
+								jec.login=sps.login AND 
+								date_sp>='".strftime("%Y-%m-%d 00:00:00", $ts_display_date_debut)."' AND 
+								date_sp<='".strftime("%Y-%m-%d 23:59:00", $ts_display_date_fin)."' AND 
+								jec.id_classe='".$id_classe[$loop]."' 
+							ORDER BY login, date_sp;";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				if($designation_classes!='') {$designation_classes.='_';}
+				$designation_classes.=get_nom_classe($id_classe[$loop]);
+				while($lig=mysqli_fetch_object($res)) {
+					if(!in_array($lig->id, $tab_deja)) {
+						$tab_eff[$lig->login]['nom']=$lig->nom;
+						$tab_eff[$lig->login]['prenom']=$lig->prenom;
+						$tab_eff[$lig->login]['id_classe']=$lig->id_classe;
+
+						if(!isset($tab_eff[$lig->login]['type'][$lig->id_type])) {
+							$tab_eff[$lig->login]['type'][$lig->id_type]=0;
+						}
+						$tab_eff[$lig->login]['type'][$lig->id_type]++;
+
+						if(!isset($tab_eff[$lig->login]['total'])) {
+							$tab_eff[$lig->login]['total']=0;
+						}
+						$tab_eff[$lig->login]['total']++;
+
+						$tab_deja[]=$lig->id;
+					}
+				}
+			}
+		}
+
+		if(count($tab_eff)>0) {
+
+			$tab_type_pointage_discipline=get_tab_type_pointage_discipline();
+
+			$csv="Élève;Classe;Total;";
+
+			for($loop=0;$loop<count($tab_type_pointage_discipline['indice']);$loop++) {
+				$csv.=$tab_type_pointage_discipline['indice'][$loop]['nom'].";";
+			}
+			$csv.="\r\n";
+
+			foreach($tab_eff as $login_ele => $eleve) {
+				$csv.=$eleve['nom']." ".$eleve['prenom'].";";
+				$csv.=$tab_nom_classe[$eleve['id_classe']].";";
+				$csv.=$eleve['total'].";";
+
+				for($loop=0;$loop<count($tab_type_pointage_discipline['indice']);$loop++) {
+					$valeur=0;
+					if(isset($eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']])) {
+						$valeur=$eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']];
+					}
+					$csv.=$valeur.";";
+				}
+				$csv.="\r\n";
+			}
+
+			$designation_classes=remplace_accents($designation_classes,'all');
+
+			$nom_fic="extraction_pointages_menus_incidents_".$designation_classes."_du_".strftime("%Y%m%d", $ts_display_date_debut)."_au_".strftime("%Y%m%d", $ts_display_date_fin)."_effectuee_le_".strftime("%Y%m%d_%H%M%S").".csv";
+			send_file_download_headers('text/x-csv',$nom_fic);
+			echo echo_csv_encoded($csv);
+			die();
+		}
+		else {
+			$msg.="Aucune donnée n'est extraite.<br />";
+		}
 	}
 }
 
@@ -219,12 +267,12 @@ if(!isset($jour)) {
 	//$ts_jour=;
 }
 // Choix de l'enseignement ou de la classe ou d'un élève
-if((!isset($id_classe))&&(!isset($id_groupe))) {
+if((!isset($id_classe))&&(!isset($id_groupe))&&(!isset($login_ele))) {
 
 	echo "
 <p class='bold' style='margin-bottom:1em;'>
 	<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
-	 | <a href='param_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir</a>
+	 | <a href='saisie_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir</a>
 	$ajout_lien
 </p>
 
@@ -332,7 +380,7 @@ if((!isset($id_classe))&&(!isset($id_groupe))) {
 // Affichage des classes/dates choisies et ce qui est extrait
 
 //if(($mode=="groupe")||($mode=="classe")) {
-if(isset($id_classe)) {
+if((isset($id_classe))&&(!isset($login_ele))) {
 	echo "<p class='bold' style='margin-bottom:1em;'>
 <a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Choisir d'autres classes</a>
 $ajout_lien
@@ -427,6 +475,7 @@ $ajout_lien
 				$valeur=0;
 				if(isset($eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']])) {
 					$valeur=$eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']];
+					$valeur="<a href='".$_SERVER['PHP_SELF']."?id_classe=".$eleve['id_classe']."&display_date_debut=$display_date_fin&display_date_debut=$display_date_fin&login_ele=$login_ele'>".$valeur."</a>";
 				}
 				echo "
 			<td>".$valeur."</td>";
@@ -454,6 +503,124 @@ $ajout_lien
 		<input type='hidden' name='id_classe[]' value='".$id_classe[$loop]."' />";
 	}
 	echo "
+		<input type='submit' value='Exporter en CSV' />
+	</p>
+	</fieldset>
+</form>";
+
+}
+elseif(isset($login_ele)) {
+	// Ajouter un lien autres élèves de la même classe si id_classe est défini
+	$ajout_form="";
+	$champ_id_classe="";
+	if(isset($id_classe)) {
+		$champ_id_classe="<input type='hidden' name='id_classe' value='$id_classe' />";
+		$champ_id_classe2="<input type='hidden' name='id_classe[]' value='$id_classe' />";
+		$sql="SELECT DISTINCT jec.login, e.nom, e.prenom
+						FROM sp_saisies sps, 
+							j_eleves_classes jec, 
+							eleves e 
+						WHERE jec.login=e.login AND 
+							jec.login=sps.login AND 
+							date_sp>='".strftime("%Y-%m-%d 00:00:00", $ts_display_date_debut)."' AND 
+							date_sp<='".strftime("%Y-%m-%d 23:59:00", $ts_display_date_fin)."' AND 
+							jec.id_classe='".$id_classe."' 
+						ORDER BY e.nom, e.prenom;";
+		$res_ele=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_ele)>0) {
+			$ajout_form.="
+		 | 
+		<input type='hidden' name='display_date_debut' value='$display_date_debut' />
+		<input type='hidden' name='display_date_fin' value='$display_date_fin' />
+		<input type='hidden' name='id_classe' value='$id_classe' />
+		<select name='login_ele' id='login_ele' onchange=\"document.getElementById('form_choix_ele').submit();\">";
+			while($lig_ele=mysqli_fetch_object($res_ele)) {
+				$selected='';
+				if($lig_ele->login==$login_ele) {
+					$selected=' selected';
+				}
+				$ajout_form.="
+			<option value='".$lig_ele->login."'".$selected.">".$lig_ele->nom." ".$lig_ele->prenom."</option>";
+			}
+			$ajout_form.="
+		</select>";
+		}
+	}
+
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_choix_ele_classe'>
+	<p class='bold' style='margin-bottom:1em;'>
+		<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Choisir une classe</a>
+		$ajout_lien
+		$ajout_form
+	</p>
+</form>";
+
+	$eleve=get_info_eleve($login_ele);
+	echo "
+<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_extraction\">
+	<fieldset class='fieldset_opacite50' style='margin-bottom:1em;'>
+		$champ_id_classe
+
+		<p class='bold'>
+			Élève&nbsp;: ".$eleve['nom'].' '.$eleve['prenom']."
+			<input type='hidden' name='login_ele' value='".$login_ele."' />
+		</p>
+
+		<p>Du
+			<input type='text' name='display_date_debut' id='display_date_debut' size='10' value='$display_date_debut' 
+						onkeydown='clavier_date_plus_moins(this.id,event);' />".img_calendrier_js("display_date_debut", "img_bouton_display_date_debut")." 
+			au 
+			<input type='text' name='display_date_fin' id='display_date_fin' size='10' value='$display_date_fin' 
+						onkeydown='clavier_date_plus_moins(this.id,event);' />".img_calendrier_js("display_date_fin", "img_bouton_display_date_fin")."
+				<input type='submit' value='Valider' />
+		</p>";
+
+	echo "
+		<table class='boireaus boireaus_alt resizable sortable'>
+			<thead>
+				<tr>
+					<th class='text'>Date</th>
+					<th class='text'>Type</th>
+					<th class='text'>Commentaire</th>
+				</tr>
+			</thead>
+			<tbody>";
+
+	$sql="SELECT DISTINCT sps.*
+					FROM sp_saisies sps 
+					WHERE sps.login='".$login_ele."' AND 
+						date_sp>='".strftime("%Y-%m-%d 00:00:00", $ts_display_date_debut)."' AND 
+						date_sp<='".strftime("%Y-%m-%d 23:59:00", $ts_display_date_fin)."' 
+					ORDER BY date_sp, id_type;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			echo "
+				<tr>
+					<td><span style='display:none'>".$lig->date_sp."</span>".formate_date($lig->date_sp, "y", "court")."</td>
+					<td>".$tab_type_pointage_discipline['id_type'][$lig->id_type]['nom']."</td>
+					<td>".$lig->commentaire."</td>
+				</tr>";
+		}
+	}
+	echo "
+			</tbody>
+		</table>
+	</fieldset>
+</form>";
+
+
+
+	echo "
+<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_export\">
+	<fieldset class='fieldset_opacite50' style='margin-bottom:1em;margin-top:1em;'>
+	<p style='margin-bottom:1em;margin-top:1em;'>
+		<input type='hidden' name='export_csv' value='y' />
+		<input type='hidden' name='display_date_debut' value='$display_date_debut' />
+		<input type='hidden' name='display_date_fin' value='$display_date_fin' />
+		$champ_id_classe2
+		<input type='hidden' name='login_ele' value='".$login_ele."' />
 		<input type='submit' value='Exporter en CSV' />
 	</p>
 	</fieldset>
