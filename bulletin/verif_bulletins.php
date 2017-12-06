@@ -322,6 +322,36 @@ if (!(isset($id_classe))) {
 			echo "<div>\n";
 		}
 	}
+
+
+	// 20171205
+	if (in_array($_SESSION['statut'], array("scolarite", "administrateur"))) {
+		$chaine_tableaux_page_accueil="";
+		//if(getPref($_SESSION['login'], "accueil_tableau_ouverture_periode", "y")!="n") {
+			$sql="SELECT * FROM classes c, periodes p WHERE c.id=p.id_classe LIMIT 1;";
+			$test=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test)>0) {
+				if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+					$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'ouverture/verrouillage des périodes.";
+					$chaine_tableaux_page_accueil.="\n\n";
+					$chaine_tableaux_page_accueil.=chaine_title_explication_verrouillage_periodes();
+					$chaine_tableaux_page_accueil.="\n\n";
+					$chaine_tableaux_page_accueil.="Vous pouvez supprimer l'affichage de ce tableau dans 'Gérer mon compte'.\"><a href='$gepiPath/bulletin/verrouillage.php' title=\"Modifier l'ouverture/verrouillage des périodes.\" style='color:black;'><strong>Tableau de l'ouverture/verrouillage des périodes</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
+				}
+				else {
+					$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'ouverture/verrouillage des périodes.";
+					$chaine_tableaux_page_accueil.="\n\n";
+					$chaine_tableaux_page_accueil.=chaine_title_explication_verrouillage_periodes();
+					$chaine_tableaux_page_accueil.="\n\n";
+					$chaine_tableaux_page_accueil.="Vous pouvez supprimer l'affichage de ce tableau dans 'Gérer mon compte'.\"><strong>Tableau de l'ouverture/verrouillage des périodes</strong>";
+				}
+				$chaine_tableaux_page_accueil.=affiche_tableau_periodes_ouvertes();
+				$chaine_tableaux_page_accueil.="</div>";
+			}
+		//}
+		echo $chaine_tableaux_page_accueil;
+	}
+
 } else if (!(isset($per))) {
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
@@ -1683,6 +1713,7 @@ Les saisies/modifications sont possibles.";
 		echo "<li><p class='bold'>Accéder directement au verrouillage de la période en <a href='verrouillage.php?classe=$id_classe&periode=$per&action=imprime_pdf'>cliquant ici.</a> puis aller à la page impression des bulletins PDF.</p></li></ul>";
 			*/
 	}
+
 }
 require("../lib/footer.inc.php");
 ?>
