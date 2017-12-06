@@ -262,6 +262,40 @@
 		}
 	}
 
+
+	// 20171204
+	//$afficher_correction_validation="n";
+	$message_correction_app_en_attente_de_validation="";
+	if($_SESSION['statut']=='scolarite') {
+		// Il faut détecter les corrections d'appréciation de groupe et pas seulement celles d'élèves:
+		$sql_correction_app="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jgc.id_classe AND jgc.id_groupe=mac.id_groupe AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+	}
+	elseif(($_SESSION['statut']=='professeur')&&(getSettingAOui('autoriser_valider_correction_app_pp'))&&(is_pp($_SESSION['login']))) {
+		$sql_correction_app="SELECT DISTINCT c.id, c.classe 
+						FROM classes c, 
+							j_eleves_classes jec, 
+							j_eleves_professeurs jep, 
+							matieres_app_corrections mac 
+						WHERE c.id=jec.id_classe AND 
+							jec.login=mac.login AND 
+							jep.login=mac.login AND 
+							jep.professeur='".$_SESSION['login']."' ORDER BY classe;";
+	}
+	elseif(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='secours')) {
+		$sql_correction_app="SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, j_groupes_classes jgc, classes c WHERE mac.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY classe;";
+	}
+	if(isset($sql_correction_app)) {
+		//echo "$sql_correction_app<br />";
+		$resultat = mysqli_query($mysqli, $sql_correction_app);
+		if($resultat AND ($resultat->num_rows > 0)) {
+			//$afficher_correction_validation="y";
+			$message_correction_app_en_attente_de_validation="<p>Une ou des propositions de corrections d'appréciations des bulletins requièrent votre attention pour une <a href='./saisie/validation_corrections.php'>validation sollicitée</a>.</p>\n";
+		}
+		//echo "\$afficher_correction_validation=$afficher_correction_validation<br />";
+	}
+
+
+
 	if(getSettingAOui('active_mod_disc_pointage')) {
 		$affichage_pointages="";
 		if(($_SESSION['statut']=='eleve')&&(getSettingAOui('disc_pointage_aff_totaux_ele'))) {
@@ -385,7 +419,8 @@
 	((isset($message_remplacements_a_valider))&&($message_remplacements_a_valider!=""))||
 	((isset($message_remplacements_confirmes))&&($message_remplacements_confirmes!=""))||
 	((isset($affichage_pointages))&&($affichage_pointages!=""))||
-	((isset($message_nouvelle_version_gepi))&&($message_nouvelle_version_gepi!=""))) :
+	((isset($message_nouvelle_version_gepi))&&($message_nouvelle_version_gepi!=""))||
+	($message_correction_app_en_attente_de_validation!='')) :
 ?>
 
 	<div class="panneau_affichage">
@@ -427,6 +462,10 @@
 
 				if((isset($message_remplacements))&&($message_remplacements!="")) {
 					echo $message_remplacements;
+				}
+
+				if((isset($message_correction_app_en_attente_de_validation))&&($message_correction_app_en_attente_de_validation!="")) {
+					echo "<div class=\"postit\"><strong style='color:red;'>Propositions de corrections d'appréciations&nbsp;:</strong> ".$message_correction_app_en_attente_de_validation."</div>";
 				}
 
 				if((isset($affichage_pointages))&&($affichage_pointages!="")) {
