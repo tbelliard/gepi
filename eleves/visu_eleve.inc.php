@@ -3512,8 +3512,10 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 
 			echo "<h2>".ucfirst($mod_disc_terme_incident)."s \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
-			if(getSettingAOui('disc_pointage_aff_totaux_visu_ele')) {
-				echo retourne_tab_html_pointages_disc($ele_login);
+			if(getSettingAOui('active_mod_disc_pointage')) {
+				if(getSettingAOui('disc_pointage_aff_totaux_visu_ele')) {
+					echo retourne_tab_html_pointages_disc($ele_login);
+				}
 			}
 
 			//=======================
