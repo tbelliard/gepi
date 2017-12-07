@@ -4425,6 +4425,14 @@ function retourne_tab_html_pointages_disc($login_ele) {
 							$tab_u[$lig->created_by]=affiche_utilisateur($lig->created_by, $id_classe);
 						}
 						$chaine_detail="- ".formate_date($lig->date_sp, "n", "complet")." (".$tab_u[$lig->created_by].")\n";
+						if($lig->commentaire!='') {
+							$chaine_detail.=str_replace('"', "'", $lig->commentaire);
+							/*
+							$chaine_tmp=str_replace('"', "'", $lig->commentaire);
+							$chaine_tmp=htmlentities($chaine_tmp);
+							$chaine_detail.=$chaine_tmp;
+							*/
+						}
 						$tab_totaux[$num_per][$lig->id_type]['detail'].=$chaine_detail;
 
 						if(!isset($tab_totaux['all'][$lig->id_type])) {
@@ -4440,7 +4448,11 @@ function retourne_tab_html_pointages_disc($login_ele) {
 	}
 
 	if(count($tab_totaux)>0) {
-		$retour.="<p class='bold'>Pointage des ".$mod_disc_terme_menus_incidents."&nbsp;:</p>
+		$ajout_lien='';
+		if(acces('/mod_discipline/extraire_pointages.php', $_SESSION['statut'])) {
+			$ajout_lien=" <a href='../mod_discipline/extraire_pointages.php?login_ele=".$login_ele."&id_classe=$id_classe'><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>";
+		}
+		$retour.="<p class='bold'>Pointage des ".$mod_disc_terme_menus_incidents."&nbsp;:".$ajout_lien."</p>
 <table class='boireaus boireaus_alt' style='margin-left:1em;'>
 	<thead>
 		<tr>
