@@ -1762,7 +1762,7 @@ else{
 						$texte.="Désinscription des classes et des enseignements de ".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')." pour la période $periode: ";
 
 						// 20161224
-						$sql="SELECT DISTINCT u.nom, u.prenom, u.email FROM utilisateurs u, j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jeg.login='$ele_login' AND jeg.periode='$periode' AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login;";
+						$sql="SELECT DISTINCT u.nom, u.prenom, u.email, u.login FROM utilisateurs u, j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jeg.login='$ele_login' AND jeg.periode='$periode' AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login;";
 						info_debug($sql);
 						$res_prof_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_prof_ele)>0) {
