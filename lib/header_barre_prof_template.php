@@ -53,15 +53,23 @@ $nom_ou_description_groupe_barre_h=getPref($_SESSION['login'], "nom_ou_descripti
 $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light"))?"yes":"no";
 
 $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
+$tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 
 	//=======================================================
 	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes', 'visibilite'));
 	$tmp_mes_classes=array();
 	$tmp_mes_classes_pp=array();
+	$tmp_mes_classes_per=array();
 	foreach($mes_groupes as $tmp_group) {
 		foreach($tmp_group["classes"]["classes"] as $key_id_classe => $value_tab_classe) {
 			if(!in_array($value_tab_classe['classe'], $tmp_mes_classes)) {
 				$tmp_mes_classes[$key_id_classe]=$value_tab_classe['classe'];
+				$tmp_mes_classes_per[$key_id_classe]['maxper']=$tmp_group["nb_periode"];
+				for($loop=0;$loop<$tmp_group["nb_periode"];$loop++) {
+					if(isset($tmp_group["periodes"][$loop+1])) {
+						$tmp_mes_classes_per[$key_id_classe]["periodes"][$loop+1]=$tmp_group["periodes"][$loop+1]["nom_periode"];
+					}
+				}
 
 				$tmp_mes_classes_pp[$key_id_classe]="";
 				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' AND jec.id_classe=jep.id_classe ORDER BY u.nom,u.prenom;";
@@ -491,6 +499,44 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 						$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$value;
 						$cpt_sous_menu2++;
 					}
+
+					// 20171207
+					//foreach($tmp_mes_classes_pp as $key => $value) {
+					foreach($tab_pp as $key) {
+						$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/prepa_conseil/edit_limite.php?choix_edit=4&periode1=1&periode2='.$tmp_mes_classes_per[$key]['maxper'].'&couleur_alterne=y&id_classe='.$key;
+						$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Appr.groupe ".$tmp_mes_classes[$key];
+						$tmp_sous_menu2[$cpt_sous_menu2]['title']="Appréciations des professeurs sur le groupe-classe ".$tmp_mes_classes[$key].'.';
+
+						if(isset($tmp_mes_classes_per[$key]["periodes"])) {
+							$tmp_sous_menu3=array();
+							$cpt_sous_menu3=0;
+							foreach($tmp_mes_classes_per[$key]["periodes"] as $key_per => $nom_per) {
+								$tmp_sous_menu3[$cpt_sous_menu3]['lien']='/prepa_conseil/edit_limite.php?choix_edit=4&periode1='.$key_per.'&periode2='.$key_per.'&couleur_alterne=y&id_classe='.$key;
+								$tmp_sous_menu3[$cpt_sous_menu3]['texte']=$nom_per;
+								$tmp_sous_menu3[$cpt_sous_menu3]['title']="Appréciations des professeurs sur le groupe-classe ".$tmp_mes_classes[$key]." en période $key_per.";
+								$cpt_sous_menu3++;
+							}
+							$tmp_sous_menu2[$cpt_sous_menu2]['sous_menu']=$tmp_sous_menu3;
+							$tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;
+						}
+						/*
+						$sql="SELECT * FROM periodes WHERE id_classe='".$key."' ORDER BY num_periode;";
+						$res_per = mysqli_query($mysqli, $sql);
+						if($res_per->num_rows > 0) {
+							$tmp_sous_menu3=array();
+							$cpt_sous_menu3=0;
+							while($lig_per=$res_per->fetch_object()) {
+								$tmp_sous_menu3[$cpt_sous_menu3]['lien']='/prepa_conseil/edit_limite.php?choix_edit=4&periode1='.$lig_per->num_periode.'&periode2='.$lig_per->num_periode.'&couleur_alterne=y&id_classe='.$key;
+								$tmp_sous_menu3[$cpt_sous_menu3]['texte']=$lig_per->nom_periode;
+								$cpt_sous_menu3++;
+							}
+							$tmp_sous_menu2[$cpt_sous_menu2]['sous_menu']=$tmp_sous_menu3;
+							$tmp_sous_menu2[$cpt_sous_menu2]['niveau_sous_menu']=4;
+						}
+						*/
+						$cpt_sous_menu2++;
+					}
+
 					$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 					$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 					$cpt_sous_menu++;
