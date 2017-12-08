@@ -109,6 +109,12 @@ else{
 	$bull_intitule_app=getSettingValue("bull_intitule_app");
 }
 
+// Ajout d'une sécurité
+$maxper=get_max_per($id_classe);
+if($periode2>$maxper) {
+	$periode2=$maxper;
+}
+
 $nb_periodes = $periode2 - $periode1 + 1;
 
 //============================
