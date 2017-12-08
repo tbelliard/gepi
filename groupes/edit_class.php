@@ -767,8 +767,15 @@ if(acces("/groupes/modify_grp_group.php", $_SESSION['statut'])) {
 echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/actualiser.png' class='icone16' alt='Rafraichir' />Rafraichir la page sans enregistrer</a></p>\n";
 echo "</form>\n";
 
-
-echo "<h3>Gestion des enseignements pour la classe&nbsp;: " . $classe["classe"]."<span id='span_asterisque'></span>";
+// 20171208 Ajouter un lien sur le nom de la classe vers classes/classes_const.php?id_classe=32 avec un title.
+echo "<h3>Gestion des enseignements pour la classe&nbsp;: ";
+if(acces('/classes/classes_const.php', $_SESSION['statut'])) {
+	echo '<strong><a href="" title="Gérer les régime, statut de redoublant, CPE, '.getSettingValue('gepi_prof_suivi').',... des élèves de la classe.">'.$classe["classe"].'</a></strong>';
+}
+else {
+	echo '<strong>'.$classe["classe"].'</strong>';
+}
+echo "<span id='span_asterisque'></span>";
 if(acces("/eleves/index.php", $_SESSION['statut'])) {
 	echo " (<a href='../eleves/index.php?quelles_classes=certaines&amp;id_classe=".$id_classe."' title=\"Voir la liste des élèves de cette classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves</a>)";
 }
