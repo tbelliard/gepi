@@ -24,6 +24,7 @@ $liste_tables_del_etape_eleves = array(
 // AID
 "aid",
 "aid_appreciations",
+"aid_appreciations_grp",
 "avis_conseil_classe",
 "j_aid_eleves",
 "j_aid_utilisateurs",
