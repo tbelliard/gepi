@@ -85,9 +85,13 @@ if(($aid_id!="")&&(preg_match("/^[0-9]{1,}$/", $aid_id))&&(isset($_POST['indice_
 	}
 }
 
+if((!isset($indice_aid))||(!preg_match("/^[0-9]{1,}$/", $indice_aid))) {
+	$indice_aid=get_valeur_champ("aid", "id='".$aid_id."'", "indice_aid");
+}
+
 // Vérification de la validité de $indice_aid et $aid_id
 if (!VerifAidIsActive($indice_aid,$aid_id,$annee)) {
-	echo $aid_id.' '.$indice_aid;
+	echo 'AID n°'.$aid_id.' Catégorie AID n°'.$indice_aid;
 	echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
 	die();
 }
