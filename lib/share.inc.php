@@ -2958,11 +2958,11 @@ function traite_regime_sconet($code_regime){
  * @return string La valeur de l'item
  */
 function getPref($login,$item,$default){
-    global $mysqli;
-    $sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
-           
+	global $mysqli;
+	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
+	//echo "$sql<br />";
 	$res_prefs = mysqli_query($mysqli, $sql);
-	if($res_prefs->num_rows > 0){
+	if(mysqli_num_rows($res_prefs)> 0){
 		$ligne = $res_prefs->fetch_object();
 		$res_prefs->close();
 		return $ligne->value;
@@ -2980,21 +2980,21 @@ function getPref($login,$item,$default){
  * @return boolean TRUE si tout c'est bien passé
  */
 function savePref($login,$item,$valeur){
-    global $mysqli;
+	global $mysqli;
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
-           
+
 	$res_prefs=mysqli_query($mysqli, $sql); 
 	$nb_lignes = $res_prefs->num_rows;
 	$res_prefs->close();
-    
+
 	if($nb_lignes>0){
 		$sql="UPDATE preferences SET value='$valeur' WHERE login='$login' AND name='$item';";
 	}
 	else{
 		$sql="INSERT INTO preferences SET login='$login', name='$item', value='$valeur';";
 	}
-        $res=mysqli_query($mysqli, $sql);
-	
+	$res=mysqli_query($mysqli, $sql);
+
 	if($res) {return TRUE;} else {return FALSE;}
 }
 

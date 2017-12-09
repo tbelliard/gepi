@@ -390,7 +390,7 @@ function restoreMySqlDump($duree) {
 
 		$cpt_insert=0;
 
-	    $formattedQuery = "";
+		$formattedQuery = "";
 		$old_offset = $offset;
 		while(!gzeof($fileHandle)) {
 			current_time();
@@ -461,13 +461,21 @@ function restoreMySqlDump($duree) {
 		}
 		gzclose($fileHandle);
 
+		$sql="LOCK TABLES a_tmp_setting WRITE;";
+		$lock=mysqli_query($GLOBALS["mysqli"], $sql);
+
 		$sql="DELETE FROM a_tmp_setting WHERE name='table_".$num_table."';";
 		if($debug_restaure=='y') {
-			if($nettoyage=mysqli_query($GLOBALS["mysqli"], $sql)) {
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($nettoyage) {
 				echo "Succès de la suppression dans a_tmp_setting.<br />\n";
 			}
 			else {
-				echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting'.</p>\n";
+				echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting': $sql</p>\n";
+				if (mysqli_error($GLOBALS["mysqli"])) {
+					echo "ERREUR: ".mysqli_error($GLOBALS["mysqli"])."<hr />\n";
+					$erreur_mysql=TRUE;
+				}
 			}
 
 			if(unlink($dumpFile)) {
@@ -478,7 +486,8 @@ function restoreMySqlDump($duree) {
 			}
 		}
 		else {
-			if(!$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql)) {
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$nettoyage) {
 				echo "<p style='color:red;'>Erreur lors de la suppression dans 'a_tmp_setting'.</p>\n";
 			}
 
@@ -588,7 +597,10 @@ function restoreMySqlDump($duree) {
 					}
 	
 					gzclose($fileHandle);
-	
+
+					$sql="LOCK TABLES a_tmp_setting WRITE;";
+					$lock=mysqli_query($GLOBALS["mysqli"], $sql);
+
 					$sql="DELETE FROM a_tmp_setting WHERE name='table_".$num_table."';";
 					if($debug_restaure=='y') {
 						if($nettoyage=mysqli_query($GLOBALS["mysqli"], $sql)) {
@@ -620,7 +632,7 @@ function restoreMySqlDump($duree) {
 
 	}
 
-    return TRUE;
+	return TRUE;
 }
 
 function extractMySqlDump($dumpFile,$duree) {
@@ -1041,9 +1053,9 @@ if (isset($action) and ($action == 'restaure'))  {
 			echo "<div class=\"center\"><table class='tab_cadre' width='400'><tr><td width='400'  class=\"center\"><strong>Restauration en cours</strong><br /><br />Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n";
 		}
 		if (ob_get_contents()) {
-                    ob_flush();
-                }
-                flush();
+			ob_flush();
+		}
+		flush();
 		if ($offset!=-1) {
 			$erreur_mysql=FALSE;
 			if (restoreMySqlDump_old($path.$file,$duree)) {
@@ -1076,6 +1088,10 @@ if (isset($action) and ($action == 'restaure'))  {
 			$h=floor($t_duree/60);
 
 			echo "<div class=\"center\"><p>Restauration terminée en ".$h." h ".$m." min ".$s." s.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
+
+			$sql="UNLOCK TABLES;";
+			$lock=mysqli_query($GLOBALS["mysqli"], $sql);
+
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -1278,6 +1294,9 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 
 				echo "<div  class=\"center\"><strong><p>Restauration terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
 
+				$sql="UNLOCK TABLES;";
+				$lock=mysqli_query($GLOBALS["mysqli"], $sql);
+
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1323,13 +1342,16 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 
 				// Il ne faut pas recharger la page après restauration des tables log, setting, utilisateurs.
 
+				$sql="UNLOCK TABLES;";
+				$lock=mysqli_query($GLOBALS["mysqli"], $sql);
+
 				require("../lib/footer.inc.php");
 				die();
 			}
 
 			// RESOUMETTRE
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='get' id='form_suite'>\n";
-            echo "<p>\n";
+			echo "<p>\n";
 			echo "<input type='hidden' name='suite_restauration' value='y' />\n";
 			echo "<input type='hidden' name='action' value='restaure' />\n";
 			echo "<input type='hidden' name='debug_restaure' value='$debug_restaure' />\n";
@@ -1337,7 +1359,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			echo "<input type='hidden' name='ne_pas_restaurer_log' value='$ne_pas_restaurer_log' />\n";
 			echo "<input type='hidden' name='ne_pas_restaurer_tentatives_intrusion' value='$ne_pas_restaurer_tentatives_intrusion' />\n";
 			echo "<input type='hidden' name='t_debut' value='$t_debut' />\n";
-            echo "</p>\n";
+			echo "</p>\n";
 			echo "</form>\n";
 			if (((isset($erreur_mysql) && !$erreur_mysql)) || !isset($erreur_mysql)) echo "<script type='text/javascript'>
 	setTimeout(\"document.forms['form_suite'].submit();\",500);
@@ -1355,6 +1377,9 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			echo "#suite\">ici</a> pour poursuivre la restauration</b>\n";
 		}
 	}
+
+	$sql="UNLOCK TABLES;";
+	$lock=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	require("../lib/footer.inc.php");
 	die();
@@ -1505,15 +1530,19 @@ if (isset($action) and ($action == 'dump'))  {
 				clearstatcache();
 			}
 
-            echo "<br/><p class=grand><a href='savebackup.php?fileid=$fileid'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
-            echo "<br/><br/><a href=\"accueil_sauve.php";
+			echo "<br/><p class=grand><a href='savebackup.php?fileid=$fileid'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
+			echo "<br/><br/><a href=\"accueil_sauve.php";
 			if(isset($quitter_la_page)) {echo "?quitter_la_page=y";}
 			echo "\">Retour vers l'interface de sauvegarde/restauration</a><br /></div>\n";
-			require("../lib/footer.inc.php");
-            die();
-        }
 
-    }
+			//$sql="UNLOCK TABLES;";
+			//$lock=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+	}
 }
 
 if (isset($action) and ($action == 'system_dump'))  {
