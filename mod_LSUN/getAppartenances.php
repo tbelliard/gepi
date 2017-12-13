@@ -49,46 +49,50 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 	$nomXMLclasse=filter_input(INPUT_POST, 'nomXMLclasse', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 
 	// $key est l'id_classe (champ classes.id)
-	foreach ($classeBase as $key=>$classeActuelle) {
-		//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
-		$sql = "UPDATE classes SET mef_code = '$codeMefFichier[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase[$key]';";
-		//echo $sql.'<br>';
-		$mysqli->query($sql);
-
-		$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
-		//echo $sql.'<br>';
-		$test=mysqli_query($GLOBALS['mysqli'], $sql);
-		if(mysqli_num_rows($test)==0) {
-			$sql="INSERT INTO classes_param SET name='nom_classe_sts', value='".$classeXML[$key]."', id_classe='".$key."';";
+	if(is_array($classeBase)) {
+		foreach ($classeBase as $key=>$classeActuelle) {
+			//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
+			$sql = "UPDATE classes SET mef_code = '$codeMefFichier[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase[$key]';";
 			//echo $sql.'<br>';
-			$insert=mysqli_query($GLOBALS['mysqli'], $sql);
-		}
-		else {
-			$sql="UPDATE classes_param SET name='nom_classe_sts', value='".$classeXML[$key]."' WHERE id_classe='".$key."';";
-			//echo $sql.'<br>';
-			$update=mysqli_query($GLOBALS['mysqli'], $sql);
-		}
-	}
+			$mysqli->query($sql);
 
-	foreach ($classeBase2 as $key=>$classeActuelle) {
-		//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
-		$sql = "UPDATE classes SET mef_code = '$mefAppartenance2[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase2[$key]';";
-		//echo $sql.'<br>';
-		$mysqli->query($sql);
-
-		if(isset($nomXMLclasse[$key])) {
 			$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
 			//echo $sql.'<br>';
 			$test=mysqli_query($GLOBALS['mysqli'], $sql);
 			if(mysqli_num_rows($test)==0) {
-				$sql="INSERT INTO classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."', id_classe='".$key."';";
+				$sql="INSERT INTO classes_param SET name='nom_classe_sts', value='".$classeXML[$key]."', id_classe='".$key."';";
 				//echo $sql.'<br>';
 				$insert=mysqli_query($GLOBALS['mysqli'], $sql);
 			}
 			else {
-				$sql="UPDATE classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."' WHERE id_classe='".$key."';";
+				$sql="UPDATE classes_param SET name='nom_classe_sts', value='".$classeXML[$key]."' WHERE id_classe='".$key."';";
 				//echo $sql.'<br>';
 				$update=mysqli_query($GLOBALS['mysqli'], $sql);
+			}
+		}
+	}
+
+	if(is_array($classeBase2)) {
+		foreach ($classeBase2 as $key=>$classeActuelle) {
+			//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
+			$sql = "UPDATE classes SET mef_code = '$mefAppartenance2[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase2[$key]';";
+			//echo $sql.'<br>';
+			$mysqli->query($sql);
+
+			if(isset($nomXMLclasse[$key])) {
+				$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
+				//echo $sql.'<br>';
+				$test=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($test)==0) {
+					$sql="INSERT INTO classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."', id_classe='".$key."';";
+					//echo $sql.'<br>';
+					$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+				}
+				else {
+					$sql="UPDATE classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."' WHERE id_classe='".$key."';";
+					//echo $sql.'<br>';
+					$update=mysqli_query($GLOBALS['mysqli'], $sql);
+				}
 			}
 		}
 	}
