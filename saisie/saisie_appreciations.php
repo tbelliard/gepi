@@ -188,6 +188,8 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 	}
 }
 //echo "\$forcer_focus_element_prog_groupe=$forcer_focus_element_prog_groupe<br />";
+
+$explications_ajout_element_de_programme="Il est possible de définir/ajouter plusieurs éléments de programmes d'un coup en les séparant d'un | ('pipe' que l'on obtient généralement sur PC par la combinaison de touches altgr+6).\n";
 /* ===== Fin élément de programme pour un élève =====*/
 
 if (count($current_group["classes"]["list"]) > 1) {
@@ -1377,7 +1379,7 @@ while ($k < $nb_periode) {
 
 				$mess[$k].="<br />\n";
 			}
-			$mess[$k].="<input type='text' name='newElemGroupe$k' id='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:90%; margin-top:.3em' /> \n";
+			$mess[$k].="<input type='text' name='newElemGroupe$k' id='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:90%; margin-top:.3em' title=\"".$explications_ajout_element_de_programme."\" /> \n";
 
 			// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
 			//           Ou une préférence utilisateur?
@@ -1998,7 +2000,7 @@ foreach ($liste_eleves as $eleve_login) {
 						$mess[$k].="<br />\n";
 					}
 
-					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' id='newElemEleve".$k."_".$ele_id."' placeholder='Nouvel élément de programme' style='width:90%; margin-top:.3em' /> \n";
+					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' id='newElemEleve".$k."_".$ele_id."' placeholder='Nouvel élément de programme' style='width:90%; margin-top:.3em' title=\"".$explications_ajout_element_de_programme."\" /> \n";
 
 					// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
 					//           Ou une préférence utilisateur?
