@@ -103,6 +103,7 @@ if($pref_accueil_visu=="y") {
 
 if($pref_accueil_liste_pdf=="y"){$colspan++;}
 
+$tab_mes_groupes_grp_admin=get_tab_groupes_grp_groupes();
 
 $afficher_col_notanet="n";
 if (getSettingValue("active_notanet") == "y") {
@@ -622,6 +623,12 @@ for($i=0;$i<count($groups);$i++){
 		echo "<td>";
 	}
 	*/
+
+	//if(acces_modif_liste_eleves_grp_groupes($groups[$i]['id'])) {
+	if(in_array($groups[$i]['id'],$tab_mes_groupes_grp_admin)) {
+		echo "<div style='float:right;width:16px;'><a href='./groupes/grp_groupes_edit_eleves.php?id_groupe=".$groups[$i]['id']."' title=\"Si la liste des élèves du groupe n'est pas correcte, vous êtes autorisé à modifier la liste.\"><img src='./images/icons/edit_user.png' class='icone16' alt=\"Modifier.\" /></a></div>";
+	}
+
 	echo htmlspecialchars($groups[$i]['description'])."</td>\n";
 
 	//echo "<td>".htmlspecialchars($groups[$i]['classlist_string'])."</td>\n";

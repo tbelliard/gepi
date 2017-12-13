@@ -17794,4 +17794,20 @@ function acces_extraire_pointage_discipline() {
 	// Ajouter des paramétrages supplémentaires de restrictions d'accès par la suite?
 	return acces("/mod_discipline/saisie_pointages.php", $_SESSION['statut']);
 }
+
+function get_tab_groupes_grp_groupes() {
+	global $mysqli;
+
+	$tab=array();
+	$sql="SELECT DISTINCT ggg.id_groupe FROM grp_groupes_admin gga, grp_groupes_groupes ggg WHERE gga.login='".$_SESSION['login']."' AND gga.id_grp_groupe=ggg.id_grp_groupe;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[]=$lig->id_groupe;
+		}
+	}
+	return $tab;
+}
+
 ?>
