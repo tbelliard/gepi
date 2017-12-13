@@ -107,7 +107,12 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 				// Guillemets non autorisés:
 				$newElemGroupe=preg_replace('/"/', '', $newElemGroupe);
 				if($newElemGroupe!="") {
-					saveNewElemGroupe($id_groupe, $newElemGroupe, $anneeScolaire, $periode);
+					$tmp_tab=explode("|", $newElemGroupe);
+					foreach($tmp_tab as $current_elprog) {
+						if(trim($current_elprog)!='') {
+							saveNewElemGroupe($id_groupe, $current_elprog, $anneeScolaire, $periode);
+						}
+					}
 					$forcer_focus_element_prog_groupe='newElemGroupe'.$tmp_num_per;
 				}
 			}
@@ -119,6 +124,7 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 			if ($elemGroupe != NULL) {
 				associeElemGroupe($id_groupe, $elemGroupe, $anneeScolaire, $periode);
 				//echo "associeElemGroupe($id_groupe, $elemGroupe, $anneeScolaire, $periode);<br />";
+				$forcer_focus_element_prog_groupe='newElemGroupe'.$tmp_num_per;
 			}
 		}
 
@@ -145,10 +151,15 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 		if(isset($_POST['Elem_Eleve'.$tmp_num_per])) {
 			$associeElem_Eleve = filter_input(INPUT_POST, 'Elem_Eleve'.$tmp_num_per, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
 			if ($associeElem_Eleve) {
+				$tmp_login_el_prog="";
 				foreach ($associeElem_Eleve as $loginEleve=>$idElem) {
 					if ($idElem) {
 						saveJointureEleveEP($loginEleve, $idElem, $anneeScolaire, $periode, $id_groupe);
+						$tmp_login_el_prog=$loginEleve;
 					}
+				}
+				if($tmp_login_el_prog!='') {
+					$forcer_focus_element_prog_groupe='newElemEleve'.$tmp_num_per.'_'.get_valeur_champ('eleves', "login='".$tmp_login_el_prog."'", 'ele_id');
 				}
 			}
 		}
@@ -161,8 +172,14 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 						// Guillemets non autorisés:
 						$texteElem=preg_replace('/"/', '', $texteElem);
 						if($texteElem!="") {
-							//echo "On crée l'élément ".$texteElem." pour ".$loginEleve." dans le groupe ".$id_groupe ;
-							creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $anneeScolaire, $periode);
+							$tmp_tab=explode("|", $texteElem);
+							foreach($tmp_tab as $current_elprog) {
+								if(trim($current_elprog)!='') {
+									//echo "On crée l'élément ".$current_elprog." pour ".$loginEleve." dans le groupe ".$id_groupe ;
+									creeElementPourEleve($loginEleve, $id_groupe, $current_elprog, $anneeScolaire, $periode);
+								}
+							}
+							$forcer_focus_element_prog_groupe='newElemEleve'.$tmp_num_per.'_'.get_valeur_champ('eleves', "login='".$loginEleve."'", 'ele_id');
 						}
 					}
 				}
@@ -170,6 +187,7 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 		}
 	}
 }
+//echo "\$forcer_focus_element_prog_groupe=$forcer_focus_element_prog_groupe<br />";
 /* ===== Fin élément de programme pour un élève =====*/
 
 if (count($current_group["classes"]["list"]) > 1) {
