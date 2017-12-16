@@ -114,6 +114,23 @@ echo "</p>";
     <h2>Définition des mef</h2>
 <?php 
 
+$sql="show fields from mef;";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	while($lig=mysqli_fetch_assoc($test)) {
+		/*
+		echo "<pre>";
+		print_r($lig);
+		echo "</pre>";
+		*/
+		if((isset($lig['Field']))&&($lig['Field']=='mef_code')) {
+			if((isset($lig['Type']))&&($lig['Type']!='varchar(50)')) {
+				echo "<p style='color:red; margin:1em; padding:1em;' class='fieldset_opacite50'>ANOMALIE&nbsp;: Le type du champ 'mef_code' la table 'mef' n'est pas correct.<br />Une <a href='../utilitaires/maj.php'>Mise à jour des tables</a> est requise.<br />Effectuez la en <strong>Forçant la mise à jour des tables</strong>.</p>";
+			}
+		}
+	}
+}
+
 if ($action=="importnomenclature") {
 	echo "<div style=\"text-align:center\">
 <h2>Importer les mef</h2>
@@ -529,6 +546,14 @@ echo add_token_field();
 $tab_mef=get_tab_mef();
 ?>
     	</p>
+
+    	<?php
+    	/*
+    	echo "<pre>";
+    	print_r($tab_mef);
+    	echo "</pre>";
+    	*/
+    	?>
       <table style='border-spacing: 2px;' class="menu">
         <tr>
           <td style='padding : 2px;'>Id extérieur (nomenclature EN)</td>
@@ -756,6 +781,7 @@ function ajoutMefParDefaut() {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			$sql="INSERT INTO mef SET mef_code='".$tab[0]."', libelle_court='".$tab[1]."', libelle_long='".$tab[2]."', libelle_edition='".$tab[3]."', code_mefstat='".$tab[4]."', mef_rattachement='".$tab[5]."';";
+			//echo "$sql<br />";
 			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}

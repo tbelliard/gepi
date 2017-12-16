@@ -222,61 +222,79 @@ $temoin_modif_mef_code="n";
 $result .= "<br />";
 $result .= "<strong>MEF :</strong><br />";
 $result .= "Contrôle du champ 'mef_code' dans la table 'mef' : ";
-$sql="show columns from mef where type like 'bigint%' and field='mef_code';";
-$test=mysqli_query($GLOBALS["mysqli"], $sql);
+//$sql="show columns from mef where type like 'bigint%' and field='mef_code';";
 //echo "$sql<br />";
+//$test=mysqli_query($GLOBALS["mysqli"], $sql);
+//$tab=mysqli_fetch_array($test);
+//echo "<pre>";
+//print_r($tab);
+//echo "</pre>";
 //echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
-if(mysqli_num_rows($test)>0) {
-	$tab=mysqli_fetch_array($test);
-	/*
-	echo "<pre>";
-	print_r($tab);
-	echo "</pre>";
-	*/
-	$sql ="ALTER TABLE mef CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';";
-	//echo "$sql<br />";
-	$query = mysqli_query($GLOBALS["mysqli"], $sql);
-	if ($query) {
-			$result .= msj_ok("Ok !");
-	} else {
-			$result .= msj_erreur();
-	}
-	$temoin_modif_mef_code="y";
-
-	/*
-	$sql="show columns from mef where type like 'bigint%' and field='mef_code';";
-	$test=mysql_query($sql);
-	echo "$sql<br />";
-	echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
-	if(mysql_num_rows($test)>0) {
-		$tab=mysql_fetch_array($test);
-		echo "<pre>";
-		print_r($tab);
-		echo "</pre>";
-	}
-	*/
-}
-else {
-	$result .= msj_present("Le champ a le bon type");
-}
-
-$result .= "Contrôle du champ 'mef_code' dans la table 'eleves' : ";
-$sql="show columns from eleves where type like 'bigint%' and field='mef_code';";
+$sql="show fields from mef;";
 $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)>0) {
-	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE eleves CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';");
-	if ($query) {
-			$result .= msj_ok("Ok !");
-	} else {
-			$result .= msj_erreur();
+	while($lig=mysqli_fetch_assoc($test)) {
+		/*
+		echo "<pre>";
+		print_r($lig);
+		echo "</pre>";
+		*/
+		if((isset($lig['Field']))&&($lig['Field']=='mef_code')) {
+			if((isset($lig['Type']))&&($lig['Type']!='varchar(50)')) {
+				$result.="<br />Une correction doit être effectuée&nbsp;: ";
+				$sql ="ALTER TABLE mef CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';";
+				//echo "$sql<br />";
+				$query = mysqli_query($GLOBALS["mysqli"], $sql);
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+				$temoin_modif_mef_code="y";
+			}
+		}
 	}
-	$temoin_modif_mef_code="y";
 }
-else {
+
+if($temoin_modif_mef_code=="n") {
 	$result .= msj_present("Le champ a le bon type");
 }
 
-if(	$temoin_modif_mef_code=="y") {
+$temoin_modif_mef_code_eleves="n";
+$result .= "Contrôle du champ 'mef_code' dans la table 'eleves' : ";
+//$sql="show columns from eleves where type like 'bigint%' and field='mef_code';";
+$sql="show columns from eleves where field='mef_code';";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	while($lig=mysqli_fetch_assoc($test)) {
+		/*
+		echo "<pre>";
+		print_r($lig);
+		echo "</pre>";
+		*/
+		if((isset($lig['Field']))&&($lig['Field']=='mef_code')) {
+			if((isset($lig['Type']))&&($lig['Type']!='varchar(50)')) {
+				$result.="<br />Une correction doit être effectuée&nbsp;: ";
+				$sql="ALTER TABLE eleves CHANGE mef_code mef_code VARCHAR( 50 ) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l''eleve';";
+				//echo "$sql<br />";
+				$query = mysqli_query($GLOBALS["mysqli"], $sql);
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+				$temoin_modif_mef_code_eleves="y";
+				$temoin_modif_mef_code="y";
+			}
+		}
+	}
+}
+
+if($temoin_modif_mef_code_eleves=="n") {
+	$result .= msj_present("Le champ a le bon type");
+}
+
+if($temoin_modif_mef_code=="y") {
 	$info_action_titre="Contenu de la table mef";
 	$info_action_texte="Le champ mef_code de la table 'mef' ou de la table 'eleves' n'avait pas le bon format lors de la mise à jour de la base du ".strftime("%d/%m/%Y à %H:%M:%S").". Vous devriez <a href='./mef/admin_mef.php'>contrôler le contenu de la table 'mef'</a> et faire une <a href='./responsables/maj_import.php'>Mise à jour d'après Sconet</a>.";
 	$info_action_destinataire="administrateur";
