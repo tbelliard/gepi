@@ -158,6 +158,7 @@ $liste_tables_del_etape_matieres = array(
 "j_groupes_professeurs",
 "j_groupes_classes",
 "j_groupes_visibilite",
+"j_groupes_enseignements_complement",
 "j_signalement",
 "eleves_groupes_settings",
 'groupes_param',
