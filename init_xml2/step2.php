@@ -234,7 +234,8 @@ if (isset($is_posted)) {
 		$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
 		if ($test == "0") {
 			$insert_ou_update_classe="insert";
-			$reg_classe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni'");
+			$tmp_nom_classe=mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""));
+			$reg_classe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe='".$tmp_nom_classe."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni'");
 
 			$id_classe=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 			for($loop=0;$loop<count($tab_user_scol);$loop++) {
@@ -272,6 +273,37 @@ if (isset($is_posted)) {
 				$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
+			// Associer aux mentions
+			$sql="SELECT * FROM mentions;";
+			$res_mentions = mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_mentions)>0) {
+				$ordre=0;
+				$sql="DELETE FROM j_mentions_classes WHERE id_classe='".$id_classe."';";
+				$del = mysqli_query($GLOBALS["mysqli"], $sql);
+
+				while($lig_mention=mysqli_fetch_object($res_mentions)) {
+					$sql="INSERT INTO j_mentions_classes SET id_classe='".$id_classe."', id_mention='".$lig_mention->id."', ordre='".$ordre."';";
+					$insert_mention = mysqli_query($GLOBALS["mysqli"], $sql);
+					$ordre++;
+				}
+			}
+
+			$info_action_titre="Mentions associées à la nouvelle classe ".$tmp_nom_classe;
+			$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='saisie/saisie_mentions.php?associer_mentions_classes=y'>contrôler les mentions associées.</a>.";
+			$info_action_destinataire=array("administrateur");
+			$info_action_mode="statut";
+			enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+
+			// Associer aux fichiers signature
+			if(getSettingAOui('active_fichiers_signature')) {
+				$info_action_titre="Fichiers signature associés à la nouvelle classe ".$tmp_nom_classe;
+
+				$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='gestion/gestion_signature.php?mode=choix_assoc_fichier_user_classe'>choisir/définir un fichier signature pour les bulletins</a>.";
+
+				$info_action_destinataire=array("administrateur");
+				$info_action_mode="statut";
+				enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+			}
         } else {
             $insert_ou_update_classe="update";
             $reg_classe = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET classe='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni' WHERE classe='$classe'");
