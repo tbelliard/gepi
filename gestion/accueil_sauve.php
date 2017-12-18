@@ -676,7 +676,7 @@ function extractMySqlDump($dumpFile,$duree) {
             if ($old_offset == $offset) {
                 echo "<p  class=\"rouge center\"><strong>La procédure de restauration ne peut pas continuer.
                 <br />Un problème est survenu lors du traitement d'une requête près de :.
-                <br />".$debut_req."</strong></p><hr />\n";
+                <br />".$buffer."</strong></p><hr />\n";
                 return FALSE;
             }
             $old_offset = $offset;
@@ -1270,9 +1270,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			echo "<p>Extraction de l'archive...<br />";
-			if(extractMySqlDump($path.$file,$duree)) {
-				$succes_etape="y";
-			}
+			$succes_etape=extractMySqlDump($path.$file,$duree)?'y':'n';
 
 		}
 		else {
@@ -1283,9 +1281,8 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 				$erreur_mysql=FALSE;
 				// Il reste des tables à restaurer
 				//if (restoreMySqlDump($path."/base_extraite.sql",$duree)) {
-				if (restoreMySqlDump($duree)) {
-					$succes_etape="y";
-				}
+				$succes_etape=restoreMySqlDump($duree)?'y':'n';
+
 			}
 			else {
 				// La restauration est achevée
