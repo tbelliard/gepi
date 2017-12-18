@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2016 Régis Bouguin
+* Copyright 2016-2018 Régis Bouguin
 *
 * This file is part of GEPI.
 *
@@ -2024,7 +2024,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					<li>
 						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y"
 							   <?php if (getSettingValue("LSU_commentaire_vie_sco") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaires</label>
+						<label for="traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaire</label>
 					</li>
 				</ul>
 			</div>
@@ -2103,7 +2103,28 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 </form>
 
 <?php
+
 echo $msg_erreur;
+
+$sql="SELECT jgec.id_groupe FROM j_groupes_enseignements_complement jgec, groupes g WHERE jgec.id_groupe=g.id;";
+$res=mysqli_query($mysqli, $sql);
+$nb_ens_compl=mysqli_num_rows($res);
+if($nb_ens_compl==0) {
+	echo "<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Aucun enseignement n'est déclaré enseignement de complément.<br />
+	Serait-ce un oubli de paramétrage.<br />";
+}
+elseif($nb_ens_compl==1) {
+	echo "<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Un seul enseignement de complément est déclaré.<br />
+	Cela parait peu.<br />";
+}
+else {
+	echo "<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> ".$nb_ens_compl." enseignements sont déclarés enseignements de complément.<br />";
+}
+echo "Habituellement, des enseignements de latin, euro,... sont tagués enseignements de complément.<br />
+Ces enseignements rapportent alors des points supplémentaires aux élèves dans le bilan de fin de cycle.<br />
+Le marquage 'enseignement de complément' se fait en administrateur dans <strong>Gestion des bases/Gestion des classes/&lt;Telle classe&gt; Enseignements</strong> colonne <strong>Ens.compl</strong>.<br />
+Le marquage peut être effectué par lots via <strong>Gestion des bases/Gestion des classes/<a href='../classes/classes_param.php' target='_blank'>Paramétrage par lots</a>/Modifier le type d'enseignement de complément des enseignements de...</strong></p>";
+
 ?>
 
 </div>
