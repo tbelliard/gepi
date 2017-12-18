@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2016 Régis Bouguin
+* Copyright 2016-2018 Régis Bouguin
 *
 * This file is part of GEPI.
 *
@@ -652,6 +652,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				
 						// Commentaire → Résumé + appréciation du groupe
 						$CommentaireEPI1 = trim(getResumeAid($episGroupe->id));
+						//echo "\$CommentaireEPI1=$CommentaireEPI1<br />";
 						$commentairesGroupe = getCommentaireGroupe($episGroupe->id,$episGroupe->periode);
 						if ($commentairesGroupe->num_rows) {
 							//echo "coucou ".trim($commentairesGroupe->fetch_object()->appreciation)."<br>";
@@ -659,8 +660,19 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					
 						}
 						$tmp_chaine=nettoye_texte_vers_chaine($CommentaireEPI1);
-						$CommentaireEPI = ensure_utf8(mb_substr($tmp_chaine, 0, 600,'UTF-8'));
-						//echo $CommentaireEPI;
+						// 20171208
+						//$CommentaireEPI = ensure_utf8(mb_substr($tmp_chaine, 0, 600,'UTF-8'));
+						$CommentaireEPI=tronque_chaine($tmp_chaine, 0, 600,'UTF-8');
+						if(mb_strlen($CommentaireEPI,'UTF-8')!=mb_strlen($tmp_chaine,'UTF-8')) {
+							$msg_erreur_remplissage.="Le commentaire/description de l'EPI n°".$episGroupe->id." 'intitulé ".$tmp_nom_AID." est trop long.<br />
+							Il a été tronqué dans le XML pour&nbsp;:<br />
+							<span style='color:orange'>".$CommentaireEPI."</span><br />
+							<a href='../aid/modif_fiches.php?aid_id=".$episGroupe->id."&action=modif&retour=index2.php' target='_blank'>Modifiez le résumé dans les fiches des AID</a> si cela ne vous convient pas et refaites l'export.<br />
+							NOTE&nbsp;: Ce commentaire est la concaténation du résumé de description de l'AID et de l'appréciation saisie pour le groupe-classe dans les bulletins.<br />";
+						}
+						//$CommentaireEPI = "AAA".ensure_utf8(mb_substr($tmp_chaine, 0, 500,'UTF-8'));
+						//$CommentaireEPI = mb_substr(ensure_utf8(mb_substr($tmp_chaine, 0, 600,'UTF-8')), 0, 600,'UTF-8');
+						//echo "<p style='color:orange'>DEBUG : ".$CommentaireEPI."</p><hr />";
 						if ($CommentaireEPI) {
 							$noeudEpisGroupesCommentaire = $xml->createElement('commentaire',$CommentaireEPI);
 							$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
@@ -950,6 +962,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					while ($profMatiere = $donneesProfs->fetch_object()) {
 						$prof .= "ENS_".$profMatiere->numind." ";
 					}
+					// Pour virer l'espace de fin:
+					$prof=trim($prof);
 				
 					$elementsProgramme = getEPeleve ($eleve->login, $acquisEleve->id_groupe,$eleve->periode );
 					$elementProgramme = "";
@@ -1036,7 +1050,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					while ($profMatiere = $donneesProfs->fetch_object()) {
 						$prof .= "ENS_".$profMatiere->numind." ";
 					}
-				
+					// Pour virer l'espace de fin:
+					$prof=trim($prof);
+
 					$elementsProgramme = getEPeleve ($eleve->login, $acquisEleve->id_groupe,$eleve->periode );
 					$elementProgramme = "";
 					while ($elemProgramme = $elementsProgramme->fetch_object()) {
@@ -1160,6 +1176,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						while ($profMatiere = $donneesProfs->fetch_object()) {
 							$prof .= "ENS_".$profMatiere->numind." ";
 						}
+						// Pour virer l'espace de fin:
+						$prof=trim($prof);
 
 						$elementsProgramme = getEPeleve ($eleve->login, $acquisEleve->id_groupe,$eleve->periode );
 						$elementProgramme = "";
@@ -1271,6 +1289,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						while ($profMatiere = $donneesProfs->fetch_object()) {
 							$prof .= "ENS_".$profMatiere->numind." ";
 						}
+						// Pour virer l'espace de fin:
+						$prof=trim($prof);
 
 						$elementsProgramme = getEPeleve ($eleve->login, $acquisEleve->id_groupe,$eleve->periode );
 						$elementProgramme = "";
@@ -1355,6 +1375,8 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 								if ($commentaireEpiElv->num_rows) {
 									$tmp_chaine=nettoye_texte_vers_chaine($commentaireEpiElv->fetch_object()->appreciation);
 									$comm = ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8'));
+									// 20171208
+									//$comm = "BBB".ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8'));
 									if ($comm) {
 										$noeudComEpiEleve = $xml->createElement('commentaire', $comm);
 										$noeudEpiEleve->appendChild($noeudComEpiEleve);

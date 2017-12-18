@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2016 Régis Bouguin
+* Copyright 2016-2018 Régis Bouguin
 *
 * This file is part of GEPI.
 *
@@ -1160,3 +1160,18 @@ function parcoursOuvert($id_aid, $periode) {
 	return $retour;
 }
 
+function tronque_chaine($chaine, $debut, $longueur, $encodage='UTF-8') {
+
+	$tmp_chaine=ensure_utf8(mb_substr(trim($chaine),$debut,$longueur,$encodage));
+	/*
+	if(strlen($tmp_chaine)>$longueur) {
+		$longueur_reduite=$longueur;
+		while(strlen($tmp_chaine)>$longueur) {
+			$longueur_reduite--;
+			$tmp_chaine=ensure_utf8(mb_substr(trim($chaine),$debut,$longueur_reduite,$encodage));
+		}
+	}
+	*/
+
+	return $tmp_chaine;
+}
