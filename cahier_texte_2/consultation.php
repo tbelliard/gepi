@@ -656,14 +656,8 @@ echo "<div class=\"centre_cont_texte\">\n";
           if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
             if ($nb_dev == '1') {
-              if ((french_strftime("%a",$today) == "lun") or (french_strftime("%a",$today) == "lun.")) {$debutsemaine = $today;}
-              if ((french_strftime("%a",$today) == "mar") or (french_strftime("%a",$today) == "mar.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 1), date('Y',$today) );}
-              if ((french_strftime("%a",$today) == "mer") or (french_strftime("%a",$today) == "mer.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 2), date('Y',$today) );}
-              if ((french_strftime("%a",$today) == "jeu") or (french_strftime("%a",$today) == "jeu.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 3), date('Y',$today) );}
-              if ((french_strftime("%a",$today) == "ven") or (french_strftime("%a",$today) == "ven.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 4), date('Y',$today) );}
-              if ((french_strftime("%a",$today) == "sam") or (french_strftime("%a",$today) == "sam.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 5), date('Y',$today) );}
-              if ((french_strftime("%a",$today) == "dim") or (french_strftime("%a",$today) == "dim.")) {$debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - 6), date('Y',$today) );}
-              $finsemaine = mktime(0, 0, 0, date('m',$debutsemaine), (date('d',$debutsemaine) + 6), date('Y',$debutsemaine) );
+              $debutsemaine = mktime(0, 0, 0, date('m',$today), (date('d',$today) - id_j_semaine($today)+1), date('Y',$today) );
+			  $finsemaine = mktime(0, 0, 0, date('m',$debutsemaine), (date('d',$debutsemaine) + 6), date('Y',$debutsemaine) );
  //echo "<p><strong><font color='blue' style='font-variant: small-caps;'>Semaine du ".strftime("%d %B", $debutsemaine)." au ".strftime("%d %B %Y", $finsemaine)."</font></strong></p>\n";
 //echo "<strong>Travaux personnels des $delai prochains jours</strong>\n";
 //echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='2'><tr><td>\n";
