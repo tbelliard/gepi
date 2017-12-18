@@ -507,6 +507,10 @@ if (($classe != 0) AND ($periode !=0)) {
 		for ($i = 0; $i < $max_per; $i++) {
 			echo "<th colspan='2'>\n";
 			echo "<a href=\"javascript:CocheCase(1,".$i.")\">Tout déverrouiller</a><br />\n";
+			// 20171213
+			if($i>0) {
+				echo "<a href=\"javascript:CocheCaseConseilPasse(".$i.")\">Déverrouiller les classes dont le conseil de classe est passé</a><br />\n";
+			}
 			echo "<a href=\"javascript:CocheCase(2,".$i.")\">Tout verrouiller partiellement</a><br />\n";
 			echo "<a href=\"javascript:CocheCase(3,".$i.")\">Tout verrouiller  totalement</a>\n";
 			echo "</th>\n";
@@ -748,6 +752,89 @@ if (($classe != 0) AND ($periode !=0)) {
 
 			setTimeout('zIndexcalendar()', 1000);
 		}
+
+		// 20171213
+		function CocheCaseConseilPasse(periode) {
+			// periode=1 quand la période 1 (1er trimestre) se termine
+			// On va comparer avec la date_conseil de la colonne 0 (T1)
+
+			// periode=2 quand la période 2 (2è trimestre) se termine
+			// On va comparer avec la date_conseil de la colonne 1 (T2)
+
+			// date_conseil_cl_32_0 
+			// id_classe=32
+			// periode=0+1
+			// Champ à déverrouiller: radio_cl_32_1_N (où le 1 donne la période 2)
+
+			periode_qui_se_termine=eval(periode-1);
+
+			periode_qui_debute=periode;
+
+			var date_courante=new Date();
+			annee=date_courante.getFullYear();
+			if(annee<100) {
+				annee=eval(2000+annee)
+			}
+			mois=eval(date_courante.getMonth()+1);
+			jour=date_courante.getDate();
+			date_courante_formatee=eval(annee*10000+mois*100+jour);
+			//date_courante_formatee=jour+'/'+mois+'/'+annee;
+
+			//alert('annee='+annee+' mois='+mois+' jour='+jour+' date_courante_formatee='+date_courante_formatee);
+			//exit;
+
+			champs_input=document.getElementsByTagName('input');
+			//alert('champs_input.length='+champs_input.length)
+			for(i=0;i<champs_input.length;i++) {
+				type=champs_input[i].getAttribute('type');
+				if(type==\"text\"){
+					id=champs_input[i].getAttribute('id');
+
+					tmp_id_classe=id.replace('date_conseil_cl_','');
+					id_classe=tmp_id_classe.substr(0,tmp_id_classe.length-2);
+					if(id.substr(0,16)=='date_conseil_cl_') {
+
+						/*
+						if(i<100) {
+							alert('champ='+id+' et période trouvée='+id.substr(id.length-1,1));
+						}
+						*/
+
+						if(id.substr(id.length-1,1)==periode_qui_se_termine) {
+
+							// Tester si la date du conseil est passée.
+							date_conseil=document.getElementById(id).value;
+							tab=date_conseil.split('/');
+							//alert('tab[2]='+tab[2]+' '+'tab[1]='+tab[1]+' '+'tab[0]='+tab[0]);
+							//date_conseil=eval(eval(tab[2]*10000)+eval(tab[1]*100)+tab[0]);
+							date_conseil=eval(eval(tab[2])*10000+eval(tab[1])*100+eval(tab[0]));
+
+							/*
+							if(i<100) {
+								alert('date_courante_formatee='+date_courante_formatee+' et date_conseil='+date_conseil);
+							}
+							*/
+							if(date_courante_formatee>date_conseil) {
+
+								tmp_id_classe=id.replace('date_conseil_cl_','');
+								id_classe=tmp_id_classe.substr(0,tmp_id_classe.length-2);
+								/*
+								if(i<100) {
+									alert('tmp_id_classe='+tmp_id_classe+' et on va tester radio_cl_'+id_classe+'_'+periode_qui_debute+'_N');
+								}
+								*/
+								if(document.getElementById('radio_cl_'+id_classe+'_'+periode_qui_debute+'_N')) {
+									document.getElementById('radio_cl_'+id_classe+'_'+periode_qui_debute+'_N').checked=true;
+									actualise_cell_(id_classe,periode_qui_debute);
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+
 	</script>\n";
 
 		echo "<br />\n";
