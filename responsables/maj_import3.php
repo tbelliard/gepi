@@ -257,6 +257,7 @@ if (mysqli_num_rows($test) == 0) {
 	die();
 }
 
+// 20171216
 //debug_var();
 if(getSettingValue('maj_import2_debug_var')=='y') {
 	debug_var();
@@ -1187,7 +1188,6 @@ else{
 			"PRENOM",
 			"DATE_NAISS",
 			"DOUBLEMENT",
-			"DATE_ENTREE",
 			"DATE_SORTIE",
 			"CODE_REGIME",
 			"DATE_ENTREE",
