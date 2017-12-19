@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -39,6 +39,10 @@ if ($resultat_session == 'c') {
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
+}
+
+if(isset($_SESSION['ad_retour_imports_communs'])) {
+	unset($_SESSION['ad_retour_imports_communs']);
 }
 
 //debug_var();
@@ -1012,12 +1016,12 @@ require_once("../lib/header.inc.php");
 <form action="param_gen.php" method="post" id="form1" style="width: 100%;">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 
-	<p>
 <?php
-echo add_token_field();
+	echo add_token_field();
+
+	echo "<div style='float:right; width:10em; text-align:center' class='fieldset_opacite50'><a href='../init_xml2/import_communs_xml.php?ad_retour_imports_communs=../gestion/param_gen.php' \"onclick=\"return confirm_abandon (this, change, '$themessage')\">Importer depuis Siècle/Sconet</a></div>";
 ?>
-	</p>
-	
+
 	<p class="ligneCaps">
 		<label for='gepiSchoolRne' class="cellTab70">
 			Année scolaire&nbsp;:

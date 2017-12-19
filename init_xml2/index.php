@@ -131,6 +131,11 @@ if ((getSettingValue("use_ent") == "y")&&(getSettingValue('afficher_liaison_ent'
 		</ul>
 	</li>
 	<li style='margin-top:1em;'>
+		<p>Facultatif mais recommandé&nbsp;: Vous pouvez mettre à jour les dates de début et de fin d'année, l'identité du chef d'établissement,... depuis le fichier XML Communs de Siècle/Sconet.<br />
+		Une valeur erronée de la date de début d'année peut se solder par des erreurs lors d'un import LSU <em>(les élèves ne paraissent alors pas scolarisés dans l'établissement pour LSU)</em>.<br />
+		<a href='import_communs_xml.php'>Importer le XML Communs de Siècle/Sconet</a></p>
+	</li>
+	<li style='margin-top:1em;'>
 		<p>Pour procéder aux importations, quatre fichiers sont requis:</p>
 		<p>Les trois premiers, 'ElevesAvecAdresses.xml', 'Nomenclature.xml', 'ResponsablesAvecAdresses.xml', doivent être récupérés depuis l'application web Sconet.<br />
 		Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers 'ElevesAvecAdresses.xml', 'Nomenclature.xml' et 'ResponsablesAvecAdresses.xml'.</p>

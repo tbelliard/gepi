@@ -4409,7 +4409,7 @@ function get_nom_prenom_eleve_from_ele_id($ele_id, $mode='simple') {
  * @param int $mode
  * @return string La commune
  */
-function get_commune($code_commune_insee,$mode){
+function get_commune($code_commune_insee,$mode=0) {
     global $mysqli;
 	$retour="";
 
@@ -17808,6 +17808,27 @@ function get_tab_groupes_grp_groupes() {
 		}
 	}
 	return $tab;
+}
+
+/**
+ * Retourne un pays à partir de son code_pays
+ * 
+ * @param string $code_pays
+ * @return string Le pays
+ */
+function get_pays($code_pays) {
+	global $mysqli;
+	$retour="PAYS INCONNU";
+
+	$sql="SELECT * FROM pays WHERE code_pays='$code_pays';";
+	//echo "$sql<br />";
+	$res_pays = mysqli_query($mysqli, $sql);
+	if($res_pays->num_rows>0) {
+		$lig_pays = $res_pays->fetch_object();
+		$res_pays->close();
+		$retour=$lig_pays->nom_pays;
+	}
+	return $retour;
 }
 
 ?>

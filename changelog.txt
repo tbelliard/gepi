@@ -15,6 +15,8 @@ Bulletins:
 - Possibilité de ne pas faire apparaitre les noms des professeurs sur les bulletins 
   et relevés de notes pour certains enseignements.
 - Bulletins HTML: Possibilité de générer un bulletin sans colonnes moyennes.
+- Verrouillage des périodes: Possibilité d'ouvrir d'un clic les classes 
+  dont le conseil de classe de la période précédente est passé.
 
 Absences 2:
 - Possibilité de restreindre le décompte des absences sur les bulletins pour la 
@@ -49,6 +51,9 @@ Général:
 - Possibilité d'afficher un message invitant les visiteurs à accepter les cookies du Gepi
   (paramétrable en administrateur dans Gestion générale/Options de connexion).
 - Possibilité de trier la liste des sauvegardes par taille, par date.
+- Possibilité d'importer le fichier Communs.xml de Siècle pour avoir 
+  la bonne date de début d'année (pour LSUN) et mettre à jour diverses informations 
+  générales sur l'établissement.
 
 Bibliothèques:
 - Mise à jour de HTMLPurifier en version 4.9.3
