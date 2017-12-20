@@ -527,6 +527,43 @@ if($mod_disc_terme_menus_incidents=="") {
 	$mod_disc_terme_menus_incidents="menus incidents";
 }
 
+if(($_SESSION['statut']=='administrateur')&&(isset($_POST['valider_suppr_pointage_date']))) {
+	check_token();
+
+	$msg_suppr="";
+	$date_limite=isset($_POST['date_limite']) ? $_POST['date_limite'] : NULL;
+	if((!isset($date_limite))||($date_limite=="")) {
+		$msg_suppr.="Suppression des $mod_disc_terme_menus_incidents impossible&nbp;: date invalide.<br />";
+	}
+	elseif(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_limite)) {
+		$msg_suppr.="Suppression des $mod_disc_terme_menus_incidents impossible&nbp;: date '$date_limite' invalide.<br />";
+	}
+	else {
+		$msg_suppr.="<b>Suppression des $mod_disc_terme_menus_incidents pour une date antérieure à ".$date_limite."&nbsp;:</b><br />\n";
+		$mysql_date_limite=get_mysql_date_from_slash_date($date_limite, "n");
+
+		$sql="SELECT * FROM sp_saisies WHERE date_sp<='".$mysql_date_limite."';";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$msg_suppr.=mysqli_num_rows($res)." $mod_disc_terme_menus_incidents&nbsp;: ";
+			$sql="DELETE FROM sp_saisies WHERE date_sp<='".$mysql_date_limite."';";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				$msg_suppr.=" <span style='color:green'>supprimés</span>.<br />";
+			}
+			else {
+				$msg_suppr.=" <span style='color:red'>erreur lors de la suppression</span>.<br />";
+			}
+		}
+		else {
+			$msg_suppr.=" Aucun $mod_disc_terme_menus_incidents pour la date choisie.<br />";
+		}
+	}
+	$msg.=$msg_suppr;
+}
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Définition des pointages";
@@ -907,8 +944,45 @@ echo "<p><br /></p>\n";
 //=============================================
 
 if($_SESSION['statut']=="administrateur") {
+	$annee=strftime("%Y");
+	$mois=strftime("%m");
+	if($mois<=7) {$annee--;}
+
+	$sql="SELECT * FROM sp_saisies ORDER BY date_sp LIMIT 1;";
+	//echo "$sql<br />\n";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$msg_sp="<p>Le ".$mod_disc_terme_menus_incidents." le plus ancien date du ".formate_date($lig->date_sp).".</p>";
+	}
+	else {
+		$msg_sp="<p>Aucun ".$mod_disc_terme_menus_incidents." n'est enregistré dans la base.</p>";
+	}
+
+	echo "<a name='suppr_pointage_date'></a>
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#suppr_pointage_date' method='post' name='form_suppr_pointage_date'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='valider_suppr_pointage_date' value='y' />
+
+		".((isset($msg_suppr)) ? "<span style='color:blue'>".$msg_suppr."</span>" : "")."
+
+		<p>Les $mod_disc_terme_menus_incidents de l'année passée sont en principe supprimés lors de l'initialisation de l'année.<br />
+		Si ce n'était pas le cas, vous pouvez effectuer le ménage manuellement ci-dessous.</p>
+
+		$msg_sp
+
+		<p>Supprimer les $mod_disc_terme_menus_incidents antérieurs au <input type='text' name='date_limite' id='date_limite_disc' size='10' value='31/07/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />
+		".img_calendrier_js("date_limite_disc", "img_bouton_date_limite_disc")."<br />
+		<input type=submit value=\"Supprimer les $mod_disc_terme_menus_incidents antérieurs à la date ci-dessus\" />
+	</fieldset>
+</form>
+<p><br /></p>\n";
+
+	//+++++++++++++
+
 	echo "<a name='droits_param'></a>
-	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#saisie_types' method='post' name='form_droit_param'>
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#droits_param' method='post' name='form_droit_param'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field()."
 		<input type='hidden' name='valider_droit_param' value='y' />
@@ -930,7 +1004,7 @@ if($_SESSION['statut']=="administrateur") {
 	echo "
 			</div>
 			<p class='center'><input type='submit' name='valider' value='Valider' /></p>
-			<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> Vous donnez des droits sur la présentre page, à l'exception du présent formulaire.</p>
+			<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> Vous donnez des droits sur la présentre page, à l'exception du présent formulaire et de celui de suppression des pointages antérieurs à telle date.</p>
 		</blockquote>
 	</fieldset>
 </form>
