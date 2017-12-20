@@ -864,8 +864,11 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 					$tab_aid_parcours[]=$lig_aid;
 				}
 				echo "
+		<!--
 		<div id='div_ajout_plusieurs_parcours' onmouseover=\"document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';\" onmouseout=\"document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';\">
-		<p style='margin-top:1em;'><img src='../images/icons/add.png' class='icone16' alt='Ajouter' />Ajouter plusieurs Parcours d'un coup</p>
+		-->
+		<div id='div_ajout_plusieurs_parcours' onclick=\"if(document.getElementById('tableau_ajout_plusieurs_parcours').style.display=='none') {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';} else {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';}\">
+		<p style='margin-top:1em;' title=\"Cliquez pour afficher/masquer le tableau d'ajout par lots\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' />Ajouter plusieurs Parcours d'un coup</p>
 		<div id='tableau_ajout_plusieurs_parcours' style='display:none;'>
 		<table class='boireaus boireaus_alt'>
 			<thead>
