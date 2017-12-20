@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2016 Régis Bouguin
+* Copyright 2016-2018 Régis Bouguin
 *
 * This file is part of GEPI.
 *
@@ -23,7 +23,13 @@
 
 include_once 'lib/chargeXML.php';
 
-$nomFichier = "LSU_".date("d-m-Y_H:i").".xml";
+// INSERT INTO setting SET name='LSU_export_historique_heure_deux_points', value='yes';
+if(getSettingAOui('LSU_export_historique_heure_deux_points')) {
+	$nomFichier = "LSU_".date("d-m-Y_H:i").".xml";
+}
+else {
+	$nomFichier = "LSU_".date("d-m-Y_Hi").".xml";
+}
 
 $dirTemp = "../temp/";
 $dirTemp .= get_user_temp_directory()."/";
