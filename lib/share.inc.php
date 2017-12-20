@@ -12283,6 +12283,7 @@ function get_info_eleve($login_ele, $periode=1) {
 			$tab['classe']=$lig2->classe;
 		}
 
+		$tab['id_classes']=array();
 		$tab['classes']="";
 		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login='$login_ele' ORDER BY jec.periode;";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -12293,6 +12294,9 @@ function get_info_eleve($login_ele, $periode=1) {
 					$tab['classes'].=", ";
 				}
 				$tab['classes'].=$lig2->classe;
+				if(!in_array($lig2->id, $tab['id_classes'])) {
+					$tab['id_classes'][]=$lig2->id;
+				}
 				$cpt++;
 			}
 		}

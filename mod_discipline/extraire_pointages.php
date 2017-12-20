@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2017 Stephane Boireau
+ * Copyright 2017-2018 Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -141,7 +141,7 @@ if((isset($id_classe))&&(is_array($id_classe))&&(isset($_POST['export_csv']))) {
 				$csv.=$lig->date_sp.';';
 				$csv.=formate_date($lig->date_sp, "y", "court").';';
 				$csv.=$tab_type_pointage_discipline['id_type'][$lig->id_type]['nom'].';';
-				$csv.=str_replace(';', '.,', $lig->commentaire).';';
+				$csv.=preg_replace('/[ ]{2,}/', ' ', str_replace("\n", ' ',str_replace("\r", ' ', str_replace(';', '.,', $lig->commentaire)))).';';
 				$csv.=civ_nom_prenom($lig->created_by).';';
 				$csv.="\r\n";
 			}
@@ -476,7 +476,7 @@ $ajout_lien
 				$valeur=0;
 				if(isset($eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']])) {
 					$valeur=$eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']];
-					$valeur="<a href='".$_SERVER['PHP_SELF']."?id_classe=".$eleve['id_classe']."&display_date_debut=$display_date_fin&display_date_debut=$display_date_fin&login_ele=$login_ele'>".$valeur."</a>";
+					$valeur="<a href='".$_SERVER['PHP_SELF']."?id_classe=".$eleve['id_classe']."&display_date_debut=$display_date_debut&display_date_fin=$display_date_fin&login_ele=$login_ele'>".$valeur."</a>";
 				}
 				echo "
 			<td>".$valeur."</td>";
@@ -557,13 +557,24 @@ elseif(isset($login_ele)) {
 </form>";
 
 	$eleve=get_info_eleve($login_ele);
+	$chaine_liens_classes='';
+	if(isset($eleve['id_classes'])) {
+		$chaine_liens_classes=' (';
+		for($loop=0;$loop<count($eleve['id_classes']);$loop++) {
+			if($loop>0) {$chaine_liens_classes.=', ';}
+			$chaine_liens_classes.="<a href='".$_SERVER['PHP_SELF']."?id_classe[0]=".$eleve['id_classes'][$loop]."&display_date_debut=$display_date_debut&display_date_fin=$display_date_fin' title=\"Voir les pointages pour cette classe.\">".get_nom_classe($eleve['id_classes'][$loop])."</a>";
+			
+		}
+		$chaine_liens_classes.=')';
+	}
+
 	echo "
 <form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_extraction\">
 	<fieldset class='fieldset_opacite50' style='margin-bottom:1em;'>
 		$champ_id_classe
 
 		<p class='bold'>
-			Élève&nbsp;: ".$eleve['nom'].' '.$eleve['prenom']."
+			Élève&nbsp;: ".$eleve['nom'].' '.$eleve['prenom'].$chaine_liens_classes."
 			<input type='hidden' name='login_ele' value='".$login_ele."' />
 		</p>
 
