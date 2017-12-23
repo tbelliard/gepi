@@ -17,6 +17,10 @@ Bulletins:
 - Bulletins HTML: Possibilité de générer un bulletin sans colonnes moyennes.
 - Verrouillage des périodes: Possibilité d'ouvrir d'un clic les classes 
   dont le conseil de classe de la période précédente est passé.
+- Possibilité d'ouvrir par lots d'enseignements, pour une classe donnée, la 
+  saisie/modification exceptionnelle d'appréciations alors que la période est 
+  partiellement close (pour dépanner ou pouvoir modifier des appréciations alors 
+  que les notes sont verrouillées).
 
 Absences 2:
 - Possibilité de restreindre le décompte des absences sur les bulletins pour la 
