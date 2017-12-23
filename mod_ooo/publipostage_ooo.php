@@ -624,11 +624,11 @@ L'impression ne se fait pas depuis la page courante, mais depuis le module.">
 		<p class='center'><input type='submit' name='btn' value='Envoyer' /></p>
 		</fieldset>
 	</form>
-	<p>
+	<p style='margin-top:1em;'>
 		<em>NOTES&nbsp;:</em>
 	</p>
 	<ul>
-		<li>
+		<li style='margin-top:1em;'>
 			Le fichier fourni peut utiliser les champs suivants&nbsp;:
 			<ul style='margin-left:3em;'>
 				<li>[eleves.nom]</li>
@@ -649,12 +649,19 @@ L'impression ne se fait pas depuis la page courante, mais depuis le module.">
 				<li>[eleves.login]</li>
 			</ul>
 		</li>
-		<li>
+		<li style='margin-top:1em;'>
 			Des exemples de modèles sont disponibles&nbsp;: 
 			<a href='http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo'>
 				http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo
 			</a>
-		</li>
+		</li><?php
+			if(acces_impression_avertissement_fin_periode()) {
+				echo "
+		<li style='margin-top:1em;'>
+			Vous pouvez uploader un fichier personnalisé nommé <strong>avertissement_fin_periode.odt</strong> pour utiliser un modèle personnalisé pour l'impression des ".getSettingValue('mod_disc_terme_avertissement_fin_periode').".
+		</li>";
+			}
+		?>
 	</ul>
 	
 	<script type='text/javascript'>

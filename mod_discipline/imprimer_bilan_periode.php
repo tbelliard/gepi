@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -437,6 +437,10 @@ else {
 	}
 }
 echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+
+if(acces_upload_modele_ooo($_SESSION['login'], $_SESSION['statut'])) {
+	echo " | <a href='../mod_ooo/publipostage_ooo.php'>Modifier votre modèle d'".$mod_disc_terme_avertissement_fin_periode."</a>";
+}
 
 if(!isset($periode)) {
 	// Choix de la (des?) période(s)

@@ -11823,7 +11823,7 @@ function acces_saisie_avertissement_fin_periode($login_ele) {
  *
  * @return boolean Accès ou non
  */
-function acces_impression_avertissement_fin_periode($login_ele, $id_classe="") {
+function acces_impression_avertissement_fin_periode($login_ele="", $id_classe="") {
 	if(getSettingValue('mod_disc_acces_avertissements')=="n") {
 		return false;
 	}
@@ -11833,15 +11833,16 @@ function acces_impression_avertissement_fin_periode($login_ele, $id_classe="") {
 				if(getSettingAOui('imprDiscProfAvtOOo')) {
 					return true;
 				}
-
-				if($login_ele!="") {
-					if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
-						return true;
-					}
-				}
 				else {
-					if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], $id_classe, ""))) {
-						return true;
+					if($login_ele!="") {
+						if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+							return true;
+						}
+					}
+					else {
+						if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], $id_classe, ""))) {
+							return true;
+						}
 					}
 				}
 			}

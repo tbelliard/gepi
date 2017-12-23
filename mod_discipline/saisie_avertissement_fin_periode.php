@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -254,6 +254,10 @@ if((isset($periode))&&(isset($login_ele))) {
 			if((isset($periode))&&(isset($id_classe))) {
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$periode'>Choisir un autre élève</a>";
 			}
+
+			if(acces_upload_modele_ooo($_SESSION['login'], $_SESSION['statut'])) {
+				echo " | <a href='../mod_ooo/publipostage_ooo.php'>Modifier votre modèle d'".$mod_disc_terme_avertissement_fin_periode."</a>";
+			}
 			echo "</p>";
 		}
 	}
@@ -345,6 +349,9 @@ else {
 		$tab_classes_ele=get_class_periode_from_ele_login($login_ele);
 
 		echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
+		if(acces_upload_modele_ooo($_SESSION['login'], $_SESSION['statut'])) {
+			echo " | <a href='../mod_ooo/publipostage_ooo.php'>Modifier votre modèle d'".$mod_disc_terme_avertissement_fin_periode."</a>";
+		}
 		echo "</p>
 
 		<p class='bold'>Saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode." pour ".get_nom_prenom_eleve($login_ele)."</p>
@@ -377,6 +384,9 @@ else {
 	// Choix de la classe
 
 	if(!isset($id_classe)) {
+		if(acces_upload_modele_ooo($_SESSION['login'], $_SESSION['statut'])) {
+			echo " | <a href='../mod_ooo/publipostage_ooo.php'>Modifier votre modèle d'".$mod_disc_terme_avertissement_fin_periode."</a>";
+		}
 		echo "</p>";
 
 		if($_SESSION['statut']=='administrateur') {
@@ -468,6 +478,10 @@ else {
 		*/
 			echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 
+			if(acces_upload_modele_ooo($_SESSION['login'], $_SESSION['statut'])) {
+				echo " | <a href='../mod_ooo/publipostage_ooo.php'>Modifier votre modèle d'".$mod_disc_terme_avertissement_fin_periode."</a>";
+			}
+
 			$nom_classe=get_nom_classe($id_classe);
 
 			echo "</p>
@@ -512,8 +526,14 @@ else {
 		$param_lien_s_periode="&amp;s_periode=y";
 	}
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a> | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période</a></p>
-	
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a> | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période</a>";
+
+	if(acces_upload_modele_ooo($_SESSION['login'], $_SESSION['statut'])) {
+		echo " | <a href='../mod_ooo/publipostage_ooo.php'>Modifier votre modèle d'".$mod_disc_terme_avertissement_fin_periode."</a>";
+	}
+
+	echo "</p>
+
 	<p class='bold'>Classe de ".get_nom_classe($id_classe)." en période ".$periode.$chaine_s_periode."</p>
 	<p>Choix de l'élève&nbsp;:<br />";
 
