@@ -402,6 +402,7 @@ if($gepi_prof_suivi==""){
 		$res_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleves=mysqli_num_rows($res_eleves);
 
+		$mysql_date_courante=strftime("%Y-%m-%d %H:%M:%S");
 		echo "<p>Effectif de la classe: $nb_eleves</p>\n";
 		if($nb_eleves>0){
 			//echo "<p>";
@@ -409,8 +410,13 @@ if($gepi_prof_suivi==""){
 			$alt=1;
 			while($lig_eleve=mysqli_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
-				echo "<tr valign='top' class='lig$alt white_hover'>\n";
-				echo "<td>\n";
+				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie<$mysql_date_courante)) {
+					echo "<tr valign='top' class='white_hover' style='background-color:grey' title=\"Sorti(e) de l'établissement le ".formate_date($lig_eleve->date_sortie)."\">\n";
+				}
+				else {
+					echo "<tr valign='top' class='lig$alt white_hover'>\n";
+				}
+				echo '<td>';
 
 				if($avec_icone_visu_ele=="y") {
 					echo "
@@ -518,6 +524,7 @@ if($gepi_prof_suivi==""){
 		$res_tous_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_tous_eleves=mysqli_num_rows($res_tous_eleves);
 
+		$mysql_date_courante=strftime("%Y-%m-%d %H:%M:%S");
 		echo "<p>Effectif de l'enseignement: $nb_eleves/$nb_tous_eleves</p>\n";
 		if($nb_eleves>0){
 			//echo "<p>";
@@ -525,8 +532,13 @@ if($gepi_prof_suivi==""){
 			$alt=1;
 			while($lig_eleve=mysqli_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
-				echo "<tr valign='top' class='lig$alt white_hover'>\n";
-				echo "<td>\n";
+				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie<$mysql_date_courante)) {
+					echo "<tr valign='top' class='white_hover' style='background-color:grey' title=\"Sorti(e) de l'établissement le ".formate_date($lig_eleve->date_sortie)."\">\n";
+				}
+				else {
+					echo "<tr valign='top' class='lig$alt white_hover'>\n";
+				}
+				echo '<td>';
 
 				if($avec_icone_visu_ele=="y") {
 					echo "
@@ -635,6 +647,9 @@ if($gepi_prof_suivi==""){
 		$res_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_eleves=mysqli_num_rows($res_eleves);
 		echo "<p>Effectif: $nb_eleves</p>\n";
+
+		$mysql_date_courante=strftime("%Y-%m-%d %H:%M:%S");
+
 		if($nb_eleves>0){
 			echo "<table class='boireaus' border='1'>\n";
 			echo "<tr><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom";
@@ -652,7 +667,13 @@ if($gepi_prof_suivi==""){
 			$alt=1;
 			while($lig_eleve=mysqli_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
-				echo "<tr class='lig$alt white_hover'><td>";
+				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie<$mysql_date_courante)) {
+					echo "<tr valign='top' class='white_hover' style='background-color:grey' title=\"Sorti(e) de l'établissement le ".formate_date($lig_eleve->date_sortie)."\">\n";
+				}
+				else {
+					echo "<tr valign='top' class='lig$alt white_hover'>\n";
+				}
+				echo '<td>';
 
 				if($avec_icone_visu_ele=="y") {
 					echo "
