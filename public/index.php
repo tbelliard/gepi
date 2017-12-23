@@ -21,7 +21,7 @@
  */
 
 // Initialisations files
-$niveau_arbo = 1;
+$niveau_arbo = "public";
 require_once("../lib/initialisations.inc.php");
 
 require_once("../lib/mincals.inc");

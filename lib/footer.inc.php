@@ -174,6 +174,8 @@ if ($niveau_arbo == "0") {
 	$pref_arbo="../..";
 } elseif ($niveau_arbo == "3") {
 	$pref_arbo="../../..";
+} elseif ($niveau_arbo == "public") {
+	$pref_arbo="..";
 }
 require("$pref_arbo/lib/footer_cookie_acceptation.php");
 /*
