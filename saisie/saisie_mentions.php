@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -339,7 +339,7 @@ if(!isset($associer_mentions_classes)) {
 </ul>\n";
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Saisir des ".$gepi_denom_mention."s</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Définir des ".$gepi_denom_mention."s</a>";
 
 	if(!isset($id_classe)) {
 		echo "</p>\n";
@@ -390,7 +390,7 @@ else {
 		//echo "<input type='hidden' name='is_posted' value='2' />\n";
 
 		echo "<input type='hidden' name='associer_mentions_classes' value='y' />\n";
-		echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
+		echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
 		echo "</form>\n";
 
 		echo "<p><a href=\"javascript:cocher_toutes_classes('cocher')\">Cocher</a> / <a href=\"javascript:cocher_toutes_classes('decocher')\">décocher</a> toutes les classes.</p>\n";
@@ -560,7 +560,8 @@ function cocher_toutes_classes(mode) {
 
 		echo "<input type='hidden' name='associer_mentions_classes' value='y' />\n";
 		echo "<input type='hidden' name='saisie_association_mentions_classes' value='y' />\n";
-		echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
+		echo "<p><input type='submit' name='valider' value=\"Valider et passer à l'ordre des mentions\" /></p>\n";
+		echo "<p style=\"text-indent:-3.8em;margin-left:3.8em;margin-top:1em;\"><em>NOTE&nbsp;:</em> Dans la présente page vous pouvez associer de nouvelles classes aux mentions définies.<br />Dans la page suivante, vous pourrez choisir dans quel ordre les mentions sont proposées sur les bulletins et lors de la saisie.</p>";
 		echo "</form>\n";
 	}
 	else {
