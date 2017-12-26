@@ -6975,6 +6975,7 @@ function affiche_resp_classe($id_classe, $login_ele="") {
 
 // Créer fonction pour  Affichage des modalités pour un élève et l'utiliser dans modify_eleve.php
 function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet", $tab_modalites_accompagnement_eleve=NULL, $tab_restriction_code_accompagnement=NULL) {
+	global $tab_modalites_accompagnement;
 	$retour="";
 
 	if((!isset($tab_modalites_accompagnement_eleve))||(!is_array($tab_modalites_accompagnement_eleve))) {
@@ -6985,7 +6986,10 @@ function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet", $ta
 	//echo "</pre>";
 	
 	if(isset($tab_modalites_accompagnement_eleve["code"])) {
-		$tab_modalites_accompagnement=get_tab_modalites_accompagnement();
+		if((!is_array($tab_modalites_accompagnement))||(count($tab_modalites_accompagnement)==0)) {
+			$tab_modalites_accompagnement=get_tab_modalites_accompagnement();
+		}
+
 		$tmp_tab_deja=array();
 		foreach($tab_modalites_accompagnement_eleve["code"] as $current_code => $tmp_tab) {
 
@@ -6995,7 +6999,7 @@ function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet", $ta
 
 			if(!in_array($current_code, $tmp_tab_deja)) {
 				if((!isset($tab_restriction_code_accompagnement))||(!is_array($tab_restriction_code_accompagnement))||in_array($current_code,$tab_restriction_code_accompagnement)) {
-					$retour.=" <span title=\"".$tab_modalites_accompagnement["code"][$current_code]["libelle"];
+					$retour.="<span title=\"".$tab_modalites_accompagnement["code"][$current_code]["libelle"];
 					$tmp_tab_commentaires=array();
 					for($loop=0;$loop<count($tmp_tab);$loop++) {
 						if(isset($tmp_tab[$loop]["commentaire"])) {
@@ -7025,4 +7029,66 @@ function liste_modalites_accompagnement_eleve($login_eleve, $mode="complet", $ta
 	return $retour;
 }
 
+function affiche_tableau_resp_classe($id_classe, $login_ele="") {
+	$retour="";
+	$tab=get_resp_classe($id_classe, $login_ele);
+
+	if((count($tab['pp'])>0)||(count($tab['cpe'])>0)||(count($tab['suivi_par'])>0)) {
+		if(($id_classe=='')&&($login_ele!='')) {
+			$id_classe=get_id_classe_ele_d_apres_date($login_ele);
+		}
+
+		$retour="<table class='boireaus boireaus_alt' style='font-weight:normal;'>";
+
+		if(count($tab['pp'])>0) {
+			$retour.="
+	<tr>
+		<td>".ucfirst(retourne_denomination_pp($id_classe))."&nbsp;:</td>
+		<td>";
+			for($loop=0;$loop<count($tab['pp']);$loop++) {
+				if($loop>0) {
+					$retour.=', ';
+				}
+				$retour.=affiche_utilisateur($tab['pp'][$loop], $id_classe);
+			}
+			$retour.="</td>
+	</tr>";
+		}
+
+		if(count($tab['cpe'])>0) {
+			$retour.="
+	<tr>
+		<td>CPE&nbsp;:</td>
+		<td>";
+			for($loop=0;$loop<count($tab['cpe']);$loop++) {
+				if($loop>0) {
+					$retour.=', ';
+				}
+				$retour.=affiche_utilisateur($tab['cpe'][$loop], $id_classe);
+			}
+			$retour.="</td>
+	</tr>";
+		}
+
+		if(count($tab['suivi_par'])>0) {
+			$retour.="
+	<tr>
+		<td>Suivi&nbsp;:</td>
+		<td>";
+			for($loop=0;$loop<count($tab['suivi_par']);$loop++) {
+				if($loop>0) {
+					$retour.=', ';
+				}
+				$retour.=affiche_utilisateur($tab['suivi_par'][$loop], $id_classe);
+			}
+			$retour.="</td>
+	</tr>";
+		}
+
+		$retour.="
+</table>";
+	}
+
+	return $retour;
+}
 ?>

@@ -421,7 +421,7 @@ function reactiver(mavar) {
 		}
 		if($chaine_options_classes!="") {
 			//echo " | Classe : <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
-			echo " | Classe : <select name='classe' onchange=\"document.forms['form1'].submit();\">\n";
+			echo " | Classe&nbsp;: <select name='classe' onchange=\"document.forms['form1'].submit();\">\n";
 			echo $chaine_options_classes;
 			echo "</select>\n";
 			echo "<input type='hidden' name='etape' value='2' />\n";
@@ -927,7 +927,35 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	echo "<div style='text-align: center;'>\n";
 	echo "<table width='100%' border='0' cellspacing='0' cellpadding='2' style='border : thin dashed #242424; background-color: #FFFFB8;' summary='Choix'>\n";
 	echo "<tr valign='top'>\n";
-	echo "<td align='left'><font>TROMBINOSCOPE ";
+	echo "<td align='left'>";
+	if($classe!='') {
+		echo "<div style='float:right; width:30em; font-size:x-small;'>".affiche_tableau_resp_classe($classe)."</div>";
+
+		if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+			$tab_modalites_accompagnement_classe_ou_groupe=get_tab_modalites_accompagnement_classe_ou_groupe($id_classe);
+
+			$tab_engagements_user=get_tab_engagements_user('', $id_classe);
+		}
+	}
+	elseif($groupe!='') {
+		if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+			$tab_modalites_accompagnement_classe_ou_groupe=get_tab_modalites_accompagnement_classe_ou_groupe('', $groupe);
+
+			$tab_engagements_user=get_tab_engagements_user('', '', '', $groupe);
+		}
+	}
+	/*
+	// 20171225
+	echo "<pre>";
+	print_r($tab_modalites_accompagnement_classe_ou_groupe);
+	echo "</pre>";
+
+	echo "<pre>";
+	print_r($tab_engagements_user);
+	echo "</pre>";
+	*/
+
+	echo "<font>TROMBINOSCOPE ";
 
 	$datej = date('Y-m-d');
 	$annee_en_cours_t=annee_en_cours_t($datej);
@@ -1013,12 +1041,10 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				require("../lib/footer.inc.php");
 				die();
 			}
-		   
 		}
 		else {
 			$requete_qui = "SELECT id , nom FROM aid WHERE id = '".$aid."'";
 		}
-	   
 	}
 
 	if ( $action_affiche === 'equipepeda' ) {
@@ -1082,7 +1108,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 	if ( $action_affiche === 'classe' ) {
-		echo "Classe : ".$donnees_qui['nom_complet'];
+		echo "Classe&nbsp;: ".$donnees_qui['nom_complet'];
 		echo ' ('.ucwords($donnees_qui['classe']).')';
 
 		$repertoire = 'eleves';
@@ -1407,6 +1433,32 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 						$valeur[1]=$largeur_photo;
 					}
 
+					// 20171225
+					if(isset($tab_modalites_accompagnement_classe_ou_groupe['login'][$login_trombinoscope[$i]]['code'])) {
+						$alt_nom_prenom_aff.="\n(";
+						$cpt_acc=0;
+						foreach($tab_modalites_accompagnement_classe_ou_groupe['login'][$login_trombinoscope[$i]]['code'] as $code_accompagnement => $accompagnement_courant) {
+							if($cpt_acc>0) {
+								$alt_nom_prenom_aff.=', ';
+							}
+							$alt_nom_prenom_aff.=$code_accompagnement;
+							$cpt_acc++;
+						}
+						$alt_nom_prenom_aff.=")";
+					}
+
+					if(isset($tab_engagements_user['login_user'][$login_trombinoscope[$i]])) {
+						$alt_nom_prenom_aff.="\n(";
+						for($loop_eng=0;$loop_eng<count($tab_engagements_user['login_user'][$login_trombinoscope[$i]]);$loop_eng++) {
+							if($loop_eng>0) {
+								$alt_nom_prenom_aff.=', ';
+							}
+							$indice_eng=$tab_engagements_user['login_user'][$login_trombinoscope[$i]][$loop_eng];
+							$alt_nom_prenom_aff.=$tab_engagements_user['indice'][$indice_eng]['nom_engagement'];
+						}
+						$alt_nom_prenom_aff.=")";
+					}
+
 					echo "<img src='";
 					if (($nom_photo) and (file_exists($photo))) {
 						echo $photo;
@@ -1477,6 +1529,32 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					$alt_nom_prenom_aff=$nom_es." ".$prenom_es;
 				}
 
+				// 20171225
+				if(isset($tab_modalites_accompagnement_classe_ou_groupe['login'][$login_trombinoscope[$i]]['code'])) {
+					$alt_nom_prenom_aff.="\n(";
+					$cpt_acc=0;
+					foreach($tab_modalites_accompagnement_classe_ou_groupe['login'][$login_trombinoscope[$i]]['code'] as $code_accompagnement => $accompagnement_courant) {
+						if($cpt_acc>0) {
+							$alt_nom_prenom_aff.=', ';
+						}
+						$alt_nom_prenom_aff.=$code_accompagnement;
+						$cpt_acc++;
+					}
+					$alt_nom_prenom_aff.=")";
+				}
+
+				if(isset($tab_engagements_user['login_user'][$login_trombinoscope[$i]])) {
+					$alt_nom_prenom_aff.="\n(";
+					for($loop_eng=0;$loop_eng<count($tab_engagements_user['login_user'][$login_trombinoscope[$i]]);$loop_eng++) {
+						if($loop_eng>0) {
+							$alt_nom_prenom_aff.=', ';
+						}
+						$indice_eng=$tab_engagements_user['login_user'][$login_trombinoscope[$i]][$loop_eng];
+						$alt_nom_prenom_aff.=$tab_engagements_user['indice'][$indice_eng]['nom_engagement'];
+					}
+					$alt_nom_prenom_aff.=")";
+				}
+
 				$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
 				$photo = $nom_photo;
 
@@ -1491,7 +1569,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				if(($action_affiche=='classe')||($action_affiche=='groupe')) {
 					if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))) {
-						echo "<a href=\"#\" onclick=\"afficher_div_upload_photo('".$login_trombinoscope[$i]."','".addslashes($nom_es." ".$prenom_es)."');afficher_div('div_upload_photo','y',-20,20);return false;\" title=\"Téléverser une (nouvelle) photo pour $alt_nom_prenom_aff\">";
+						echo "<a href=\"#\" onclick=\"afficher_div_upload_photo('".$login_trombinoscope[$i]."','".addslashes($nom_es." ".$prenom_es)."');afficher_div('div_upload_photo','y',-20,20);return false;\" title=\"Téléverser une (nouvelle) photo pour\n$alt_nom_prenom_aff\">";
 						$lien_upload_propose="y";
 					}
 				}

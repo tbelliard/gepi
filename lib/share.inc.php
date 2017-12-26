@@ -17578,7 +17578,7 @@ function get_resp_classe($id_classe, $login_ele="") {
 		$res = mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_object($res)) {
-				$tab['suivi_par'][]=$lig->login;
+				$tab['suivi_par'][]=$lig->suivi_par;
 			}
 		}
 	}
