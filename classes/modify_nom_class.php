@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -59,6 +59,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (isset($display_mat_cat)) $display_mat_cat = 'y'; else $display_mat_cat = 'n';
 	if (isset($display_nbdev)) $display_nbdev = 'y'; else $display_nbdev = 'n';
 	if (isset($display_moy_gen)) $display_moy_gen = 'y'; else $display_moy_gen = 'n';
+	if (isset($display_moy_gen_saisie_avis2)) $display_moy_gen_saisie_avis2 = 'y'; else $display_moy_gen_saisie_avis2 = 'n';
 
 	//if (!isset($modele_bulletin)) $$modele_bulletin = 1;
 	if (!isset($modele_bulletin)) {$modele_bulletin = 1;}
@@ -191,7 +192,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -295,7 +296,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -504,7 +505,7 @@ if (isset($id_classe)) {
 	// =========================
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
@@ -547,6 +548,7 @@ if (isset($id_classe)) {
 	// =========================
 	$rn_abs_2='n';
 	// =========================
+	$display_moy_gen_saisie_avis2='y';
 	// 20121027
 	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
 	for($loop=0;$loop<count($tab_param);$loop++) {
@@ -819,6 +821,15 @@ td {
 	</td>
 	<td>
 		<input type="checkbox" value="y" name="display_moy_gen" id="display_moy_gen"  <?php   if ($display_moy_gen=="y") echo " checked='checked ' "; ?> onchange='changement()' />
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		<label for='display_moy_gen_saisie_avis2' style='cursor: pointer;'>Afficher les moyennes générales lors de la saisie des avis du conseil de classe<br /><em>(saisie avec affichage du bulletin simplifiée)</em>&nbsp;:</label>
+	</td>
+	<td>
+		<input type="checkbox" value="y" name="display_moy_gen_saisie_avis2" id="display_moy_gen_saisie_avis2"  <?php   if ($display_moy_gen_saisie_avis2!="n") echo " checked='checked ' "; ?> onchange='changement()' />
 	</td>
 </tr>
 <tr>

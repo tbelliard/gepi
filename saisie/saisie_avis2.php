@@ -972,7 +972,7 @@ if (isset($fiche)) {
 		// On réinitialise $current_eleve_login qui est modifié dans le calcul de moyennes générales
 		unset($current_eleve_login);
 
-		$display_moy_gen="y";
+		$display_moy_gen=getParamClasse($id_classe, 'display_moy_gen_saisie_avis2', 'y');
 		$coefficients_a_1="n";
 		$affiche_graph="n";
 
