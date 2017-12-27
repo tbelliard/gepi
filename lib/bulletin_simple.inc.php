@@ -27,6 +27,11 @@ global $affiche_colonne_moy_classe;
 global $affiche_moy_gen;
 global $affiche_moy_cat;
 
+// Dans la page saisie/saisie_avis2.php, c'est la variable $display_moy_gen qui est passée.
+// Dans la page prepa_conseil/index3.php, c'est aussi la variable $display_moy_gen qui est passée par défaut, mais on peut forcer le non affichage de la moyenne générale et c'est alors $affiche_moy_gen qui est passée.
+//echo "\$display_moy_gen=$display_moy_gen<br />";
+//echo "\$affiche_moy_gen=$affiche_moy_gen<br />";
+
 if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenEleve'))) {
 	$affiche_moy_gen="n";
 }

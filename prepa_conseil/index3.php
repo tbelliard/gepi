@@ -788,18 +788,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 		echo "<br />\n";
-		echo "<label for='pas_de_moy_gen' id='texte_pas_de_moy_gen' style='cursor:pointer;";
-		if(!getSettingAOui('bullNoMoyGenParDefaut')) {
-			echo "font-weight:bold;";
+		if(get_valeur_champ('classes', "id='".$id_classe."'", 'display_moy_gen')=='y') {
+			echo "<label for='pas_de_moy_gen' id='texte_pas_de_moy_gen' style='cursor:pointer;";
+			if(!getSettingAOui('bullNoMoyGenParDefaut')) {
+				echo "font-weight:bold;";
+			}
+			echo "'>\n";
+			echo "Ne pas afficher la ligne Moyenne générale&nbsp;: \n";
+			echo "</label>\n";
+			echo "<input type=\"checkbox\" name=\"pas_de_moy_gen\" id=\"pas_de_moy_gen\" value='y' onchange=\"changement();checkbox_change(this.id);\" ";
+			if(!getSettingAOui('bullNoMoyGenParDefaut')) {
+				echo "checked ";
+			}
+			echo " />\n";
 		}
-		echo "'>\n";
-		echo "Ne pas afficher la ligne Moyenne générale&nbsp;: \n";
-		echo "</label>\n";
-		echo "<input type=\"checkbox\" name=\"pas_de_moy_gen\" id=\"pas_de_moy_gen\" value='y' onchange=\"changement();checkbox_change(this.id);\" ";
-		if(!getSettingAOui('bullNoMoyGenParDefaut')) {
-			echo "checked ";
+		else {
+			echo "<label for='pas_de_moy_gen' id='texte_pas_de_moy_gen' style='cursor:pointer; font-weight:bold;' title=\"L'affichage des moyennes générales n'est pas autorisé pour cette classe\n(Gestion des bases/Gestion des classes/$nom_classe Paramètres).\nContactez l'administrateur si cela doit être modifié.\">
+			Ne pas afficher la ligne Moyenne générale&nbsp;: </label>
+			<input type=\"checkbox\" name=\"pas_de_moy_gen\" id=\"pas_de_moy_gen\" value='y' onchange=\"changement();checkbox_change(this.id);\" checked disabled />\n";
 		}
-		echo " />\n";
 
 		echo "<br />\n";
 		echo "<label for='pas_de_moy_cat' id='texte_pas_de_moy_cat' style='cursor:pointer;";
