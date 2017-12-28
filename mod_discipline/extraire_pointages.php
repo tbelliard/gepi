@@ -256,6 +256,8 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+
 $ajout_lien="";
 if(acces_param_pointage_discipline()) {
 	$ajout_lien=" | <a href='param_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer, définir les types de pointages</a>";
@@ -453,7 +455,8 @@ $ajout_lien
 		echo "<table class='boireaus boireaus_alt resizable sortable'>
 	<thead>
 		<tr>
-			<th class='text'>Élève</th>
+			<th class='text'>Élève</th>".($acces_visu_eleve ? "
+			<th class='nosort'></th>" : "")."
 			<th class='text'>Classe</th>
 			<th class='number'>Total</th>";
 
@@ -468,7 +471,8 @@ $ajout_lien
 		foreach($tab_eff as $login_ele => $eleve) {
 			echo "
 		<tr>
-			<td>".$eleve['nom']." ".$eleve['prenom']."</td>
+			<td>".$eleve['nom']." ".$eleve['prenom']."</td>".($acces_visu_eleve ? "
+			<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$login_ele."&onglet=discipline' title=\"Voir les incidents disciplinaires de l'élève dans le classeur élève.\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a></td>" : "")."
 			<td>".$tab_nom_classe[$eleve['id_classe']]."</td>
 			<td>".$eleve['total']."</td>";
 
@@ -476,7 +480,7 @@ $ajout_lien
 				$valeur=0;
 				if(isset($eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']])) {
 					$valeur=$eleve['type'][$tab_type_pointage_discipline['indice'][$loop]['id_type']];
-					$valeur="<a href='".$_SERVER['PHP_SELF']."?id_classe=".$eleve['id_classe']."&display_date_debut=$display_date_debut&display_date_fin=$display_date_fin&login_ele=$login_ele'>".$valeur."</a>";
+					$valeur="<a href='".$_SERVER['PHP_SELF']."?id_classe=".$eleve['id_classe']."&display_date_debut=$display_date_debut&display_date_fin=$display_date_fin&login_ele=$login_ele' title=\"Voir/extraire les $mod_disc_terme_menus_incidents de cet élève sur l'intervalle de dates choisi.\">".$valeur."</a>";
 				}
 				echo "
 			<td>".$valeur."</td>";
@@ -568,13 +572,17 @@ elseif(isset($login_ele)) {
 		$chaine_liens_classes.=')';
 	}
 
+	if($acces_visu_eleve) {
+		$lien_visu_eleve=" <a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$login_ele."&onglet=discipline' title=\"Voir les incidents disciplinaires de l'élève dans le classeur élève.\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a>";
+	}
+
 	echo "
 <form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_extraction\">
 	<fieldset class='fieldset_opacite50' style='margin-bottom:1em;'>
 		$champ_id_classe
 
 		<p class='bold'>
-			Élève&nbsp;: ".$eleve['nom'].' '.$eleve['prenom'].$chaine_liens_classes."
+			Élève&nbsp;: ".$eleve['nom'].' '.$eleve['prenom'].$chaine_liens_classes.$lien_visu_eleve."
 			<input type='hidden' name='login_ele' value='".$login_ele."' />
 		</p>
 

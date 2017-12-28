@@ -324,13 +324,16 @@ else {
 		}
 
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
-			echo " | <a href='modify_eleve.php?eleve_login=".$ele_login."'>Gestion de l'élève</a>";
+			echo " | <a href='modify_eleve.php?eleve_login=".$ele_login."' title=\"Modifier les nom, prénom, date de naissance, régime,... de l'élève.\">Gestion de l'élève</a>";
 		}
 
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
 		unset($id_classe);
 	}
+
+	// Bizarre : c'est masqué par le javascript de fin de page avant même la fin du chargement des onglets ???
+	//echo "<span id='spinner_chargement' style='margin-left:3em;' title=\"Veuillez patienter le temps du chargement des différents onglets...\"> <img src='../images/spinner.gif' class='icone16' alt='Patientez' /> Patientez...</span>";
 
 	echo "</p>\n";
 	echo "</div>\n";
@@ -3806,6 +3809,12 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 	}
 	
 	window.focus();
+
+	/*
+	if(document.getElementById('spinner_chargement')) {
+		document.getElementById('spinner_chargement').style.display='none';
+	}
+	*/
 </script>\n";
 
 		/*

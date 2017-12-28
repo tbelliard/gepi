@@ -4450,7 +4450,7 @@ function retourne_tab_html_pointages_disc($login_ele) {
 	if(count($tab_totaux)>0) {
 		$ajout_lien='';
 		if(acces('/mod_discipline/extraire_pointages.php', $_SESSION['statut'])) {
-			$ajout_lien=" <a href='../mod_discipline/extraire_pointages.php?login_ele=".$login_ele."&id_classe=$id_classe'><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>";
+			$ajout_lien=" <a href='../mod_discipline/extraire_pointages.php?login_ele=".$login_ele."&id_classe=$id_classe' title=\"Extraire/afficher les $mod_disc_terme_menus_incidents pour cet élève.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>";
 		}
 		$retour.="<p class='bold'>Pointage des ".$mod_disc_terme_menus_incidents."&nbsp;:".$ajout_lien."</p>
 <table class='boireaus boireaus_alt' style='margin-left:1em;'>
