@@ -5971,6 +5971,7 @@ mysql>
 									"login = '" . $login_eleve . "' and " .
 									"periode = '" . $j . "')");
 
+							/*
 							if(isset($tmp_group['eleves'][$j]["list"])) {
 								$eff_grp_periode_courante=count($tmp_group['eleves'][$j]["list"]);
 								if($eff_grp_periode_courante>$eff_max_enseignement) {
@@ -5980,6 +5981,7 @@ mysql>
 							else {
 								$eff_grp_periode_courante="-";
 							}
+							*/
 
 							$sql="SELECT * FROM j_eleves_classes WHERE login='$login_eleve' AND periode='$j' AND id_classe='$id_classe'";
 							// CA NE VA PAS... SUR LES GROUPES A REGROUPEMENT, IL FAUT PRENDRE DES PRECAUTIONS...
@@ -5990,6 +5992,16 @@ mysql>
 									echo "<td>&nbsp;</td>\n";
 								}
 								else{
+									if(isset($tmp_group['eleves'][$j]["list"])) {
+										$eff_grp_periode_courante=count($tmp_group['eleves'][$j]["list"]);
+										if($eff_grp_periode_courante>$eff_max_enseignement) {
+											$eff_max_enseignement=$eff_grp_periode_courante;
+										}
+									}
+									else {
+										$eff_grp_periode_courante="-";
+									}
+
 									$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='$id_groupe'";
 									info_debug($sql);
 									$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -6038,6 +6050,16 @@ mysql>
 									echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' checked /></center></td>\n";
 								}
 								*/
+
+								if(isset($tmp_group['eleves'][$j]["list"])) {
+									$eff_grp_periode_courante=count($tmp_group['eleves'][$j]["list"]);
+									if($eff_grp_periode_courante>$eff_max_enseignement) {
+										$eff_max_enseignement=$eff_grp_periode_courante;
+									}
+								}
+								else {
+									$eff_grp_periode_courante="-";
+								}
 
 								echo "<td>";
 								$current_code_matiere=$tmp_group['matiere']['code_matiere'];
