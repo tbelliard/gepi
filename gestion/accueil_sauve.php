@@ -1949,12 +1949,12 @@ if($temoin_dossier_backup_absences=="y") {
 	if($n>0) {
 		echo "<h3>Fichiers export des absences</h3>\n";
 		echo "<p>Les fichiers d'export des absences en fin d'année sont générés dans le sous-dossier 'absences' du dossier de stockage des sauvegardes.</p>";
-		echo "<table class='boireaus boireaus_alt centre' style='margin:auto;' >
+		echo "<table class='boireaus boireaus_alt centre sortable resizable' style='margin:auto;' >
 	<tr>
-		<th>Nom du fichier d'export</th>
-		<th>&nbsp;</th>
-		<th>&nbsp;</th>
-		<th>&nbsp;</th>
+		<th class='text'>Nom du fichier d'export</th>
+		<th class='nosort'>&nbsp;</th>
+		<th class='nosort'>&nbsp;</th>
+		<th class='nosort'>&nbsp;</th>
 	</tr>";
 		$m = 0;
 		foreach($tab_file as $value) {
