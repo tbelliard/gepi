@@ -5858,10 +5858,10 @@ mysql>
 
 
 					$sql="SELECT DISTINCT g.id, g.name FROM groupes g,
-															j_groupes_classes jgc
-									WHERE (g.id = jgc.id_groupe AND
-											jgc.id_classe = '" . $id_classe ."')
-									ORDER BY jgc.priorite, g.name";
+												j_groupes_classes jgc
+											WHERE (g.id = jgc.id_groupe AND
+													jgc.id_classe = '" . $id_classe ."')
+											ORDER BY jgc.priorite, g.name";
 					info_debug($sql);
 					$call_group=mysqli_query($GLOBALS["mysqli"], $sql);
 					$nombre_ligne=mysqli_num_rows($call_group);
@@ -5904,6 +5904,8 @@ mysql>
 					//$tab_champs_grp=array('matieres','profs','classes');
 					$tab_champs_grp=array('matieres','profs','classes','eleves');
 
+					$tab_enseignements_matiere=array();
+
 					$eff_max_enseignement=0;
 					$nb_erreurs=0;
 					$i=0;
@@ -5923,6 +5925,8 @@ mysql>
 							</tr>";
 							$matiere_precedente=$tmp_group["matiere"]["matiere"];
 						}
+
+						$tab_enseignements_matiere[$tmp_group["matiere"]["matiere"]][]=$i;
 
 						$chaine_profs="";
 						//for($loop=0;$loop<count($tmp_group[])) {}
@@ -6101,17 +6105,17 @@ mysql>
 						for($loop_grp=0;$loop_grp<count($tab_grp_ele);$loop_grp++) {
 							//if(mb_stristr($tab_grp_ele[$loop_grp], $nom_groupe)!="") {
 							if(preg_match("/".$tab_grp_ele[$loop_grp]."/", $nom_groupe)) {
-								echo "<img src='../images/icons/flag_green.png' class='icone16' alt='Flag' />";
+								echo "<a href=\"javascript:decoche_autres_enseignements_de_la_matiere('".$tmp_group["matiere"]["matiere"]."', $i)\" title=\"Décocher les autres enseignements de cette matière\"><img src='../images/icons/flag_green.png' class='icone16' alt='Flag' /></a>";
 							}
 							//elseif(mb_stristr($tab_grp_ele[$loop_grp], $tmp_group['description'])!="") {
 							elseif(preg_match("/".$tab_grp_ele[$loop_grp]."/", $tmp_group['description'])) {
-								echo "<img src='../images/icons/flag_green.png' class='icone16' alt='Flag' />";
+								echo "<a href=\"javascript:decoche_autres_enseignements_de_la_matiere('".$tmp_group["matiere"]["matiere"]."', $i)\" title=\"Décocher les autres enseignements de cette matière\"><img src='../images/icons/flag_green.png' class='icone16' alt='Flag' /></a>";
 							}
 							else {
 								$sql="SELECT nom_groupe_edt FROM edt_corresp2 WHERE id_groupe='".$id_groupe."' AND nom_groupe_edt LIKE '".mysqli_real_escape_string($mysqli, $tab_grp_ele[$loop_grp])."';";
 								$test=mysqli_query($mysqli, $sql);
 								if(mysqli_num_rows($test)>0) {
-									echo "<img src='../images/icons/flag_green.png' class='icone16' alt='Flag' />";
+									echo "<a href=\"javascript:decoche_autres_enseignements_de_la_matiere('".$tmp_group["matiere"]["matiere"]."', $i)\" title=\"Décocher les autres enseignements de cette matière\"><img src='../images/icons/flag_green.png' class='icone16' alt='Flag' /></a>";
 								}
 								/*
 								MariaDB [gepidev]> select * from edt_corresp2 where nom_groupe_edt LIKE '%3 A HAS%';
@@ -6177,9 +6181,36 @@ mysql>
 
 	for(kk=0;kk<$nombre_ligne;kk++){
 		verif_coches_ligne(kk);
-	}
+	}	document.getElementById('div_info_effectif_max').innerHTML=\"<p style='margin-top:1em;margin-bottom:1em;'>Effectif maximum dans un enseignement de la classe avant arrivée de cet(te) élève&nbsp;: <strong>".$eff_max_enseignement."</strong><br />donc potentiellement 1 élève de plus après <em>(".($eff_max_enseignement+1).")</em>.</p>\";";
 
-	document.getElementById('div_info_effectif_max').innerHTML=\"<p style='margin-top:1em;margin-bottom:1em;'>Effectif maximum dans un enseignement de la classe avant arrivée de cet(te) élève&nbsp;: <strong>".$eff_max_enseignement."</strong><br />donc potentiellement 1 élève de plus après <em>(".($eff_max_enseignement+1).")</em>.</p>\";
+					// 20171229
+					//$tab_enseignements_matiere
+					if(count($tab_enseignements_matiere)>0) {
+						echo "
+	function decoche_autres_enseignements_de_la_matiere(matiere, num_ligne) {";
+						foreach($tab_enseignements_matiere as $matiere => $tab) {
+							echo "
+		if(matiere=='".$matiere."') {";
+							for($loop=0;$loop<count($tab);$loop++) {
+								echo "
+			if(num_ligne!=".$tab[$loop].") {
+				for(k=1;k<$nb_periode;k++) {
+					if(document.getElementById('case'+".$tab[$loop]."+'_'+k)) {
+						document.getElementById('case'+".$tab[$loop]."+'_'+k).checked=false;
+					}
+				}
+				verif_coches_ligne(".$tab[$loop].");
+			}";
+							}
+							echo "
+		}";
+						}
+						echo "
+	}";
+					}
+
+					echo "
+
 </script>\n";
 
 					echo "<input type='hidden' name='step' value='8' />\n";
