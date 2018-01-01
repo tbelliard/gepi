@@ -39,10 +39,15 @@ $msg_requetesAdmin="";
 
 if ($soumetSelection) {
 	$_SESSION['afficheClasse']=array();
-	foreach ($classesSelectionnee as $key=>$value) {
-		$_SESSION['afficheClasse'][]=$key;
+	if((isset($classesSelectionnee))&&(is_array($classesSelectionnee))) {
+		foreach ($classesSelectionnee as $key=>$value) {
+			$_SESSION['afficheClasse'][]=$key;
+		}
+		$msg_requetesAdmin.="<span style='color:green'>".count($classesSelectionnee)." classe(s) sélectionnée(s).</span><br />";
 	}
-	$msg_requetesAdmin.="<span style='color:green'>".count($classesSelectionnee)." classe(s) sélectionnée(s).</span><br />";
+	else {
+		$msg_requetesAdmin.="<span style='color:red'>Aucune classe n'a été séléctionnée.</span><br />";
+	}
 }
 
 
