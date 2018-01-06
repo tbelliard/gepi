@@ -103,6 +103,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (!isset($rn_adr_resp)) $rn_adr_resp = 'n';
 	if (!isset($rn_bloc_obs)) $rn_bloc_obs = 'n';
 	if (!isset($rn_col_moy)) $rn_col_moy = 'n';
+	if (!isset($rn_moy_gen)) $rn_moy_gen = 'n';
 
 	if (!isset($type_classe)) $type_classe = 'standard';
 
@@ -192,7 +193,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -296,7 +297,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -505,7 +506,7 @@ if (isset($id_classe)) {
 	// =========================
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
@@ -545,12 +546,13 @@ if (isset($id_classe)) {
 	$rn_sign_nblig=3;
 
 	$rn_col_moy="n";
+	$rn_moy_gen='n';
 	// =========================
 	$rn_abs_2='n';
 	// =========================
 	$display_moy_gen_saisie_avis2='y';
 	// 20121027
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'rn_moy_gen');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		/*
@@ -1054,6 +1056,28 @@ Notez que tant que la période n'est pas close, cette moyenne peut évoluer
 (ajout de notes, modifications de coefficients,...)">du CN</em>) de l'élève&nbsp;:</label>
 	</td>
 	<td><input type="checkbox" value="y" name="rn_col_moy" id="rn_col_moy"  <?php   if ($rn_col_moy=="y") echo " checked='checked ' "; ?>  onchange='changement()' /></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		<label for='rn_moy_gen' style='cursor: pointer;'>Avec la ligne Moyenne générale (<em title="Moyenne générale du carnet de notes :
+Notez que tant que la période n'est pas close, cette moyenne peut évoluer
+(ajout de notes, modifications de coefficients,...).
+Le professeur peut aussi modifier la moyenne lors du transfert du carnet de notes vers les bulletins.">du CN</em>) de l'élève&nbsp;:</label>
+	</td>
+	<td><input type="checkbox" value="y" name="rn_moy_gen" id="rn_moy_gen"  <?php   if ($rn_moy_gen=="y") echo " checked='checked ' "; ?>  onchange='changement()' /><?php
+		if(!getSettingAOui('cn_affiche_moy_gen')) {
+			echo " <span style='color:red'>La fonctionnalité est désactivée en administrateur dans ";
+			if($_SESSION['statut']=='administrateur') {
+				echo "<a href='../cahier_notes_admin/index.php' target='_blank'>Gestion des modules/Carnets de notes</a>";
+			}
+			else {
+				echo "<strong>Gestion des modules/Carnets de notes</strong>";
+			}
+			echo ".</span>";
+		}
+	?></td>
 </tr>
 
 <tr>

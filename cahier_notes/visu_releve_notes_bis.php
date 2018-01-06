@@ -1815,6 +1815,14 @@ else {
 </script>\n";
 		}
 
+		// 20171229
+		if(getSettingAOui('cn_affiche_moy_gen')) {
+			$afficher_ligne_moy_gen=getParamClasse($id_classe, 'rn_col_moy', 'n');
+		}
+		else {
+			$afficher_ligne_moy_gen='n';
+		}
+
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 
 			$periode_num=$tab_periode_num[$loop_periode_num];
@@ -1827,6 +1835,50 @@ else {
 				flush();
 			}
 			//==============================
+
+			// 20171229
+			if(($periode_num!='intervalle')&&(isset($afficher_ligne_moy_gen))&&($afficher_ligne_moy_gen=='y')) {
+				//============================
+				// On vide les variables de la boucle précédente avant le calcul dans calcul_moy_gen.inc.php
+				unset($moy_gen_eleve);
+				unset($moy_gen_classe);
+				unset($moy_generale_classe);
+				unset($moy_max_classe);
+				unset($moy_min_classe);
+
+				unset($moy_cat_classe);
+				unset($moy_cat_eleve);
+
+				unset($quartile1_classe_gen);
+				unset($quartile2_classe_gen);
+				unset($quartile3_classe_gen);
+				unset($quartile4_classe_gen);
+				unset($quartile5_classe_gen);
+				unset($quartile6_classe_gen);
+				unset($place_eleve_classe);
+
+				unset($current_eleve_login);
+				unset($current_group);
+				unset($current_eleve_note);
+				unset($current_eleve_statut);
+				unset($current_coef);
+				unset($categories);
+				unset($current_classe_matiere_moyenne);
+
+				unset($current_coef_eleve);
+				unset($moy_min_classe_grp);
+				unset($moy_max_classe_grp);
+				unset($current_eleve_rang);
+
+				unset($current_group_effectif_avec_note);
+
+				unset($current_eleve_app);
+				//============================
+
+				$affiche_graph='n';
+				$calculer_moy_gen_pour_carnets_de_notes=true;
+				include("../lib/calcul_moy_gen.inc.php");
+			}
 
 			if(($mode_bulletin!="pdf")&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";

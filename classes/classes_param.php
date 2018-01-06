@@ -268,7 +268,7 @@ if (isset($_POST['is_posted'])) {
 
 					// 20121027
 					//$tab_param=array('rn_aff_classe_nom');
-					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
+					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'rn_moy_gen');
 					for($loop=0;$loop<count($tab_param);$loop++) {
 						if (isset($_POST[$tab_param[$loop].'_'.$per])) {
 							if ($_POST[$tab_param[$loop].'_'.$per]!='') {
@@ -2405,8 +2405,8 @@ td {
 		Afficher l'appréciation/commentaire du professeur<br />(<em>sous réserve d'autorisation par le professeur dans les paramètres du devoir</em>)&nbsp;:
 	</td>
 	<td>
-		<input type="radio" value="y" name="rn_app_<?php echo $per;?>" id="rn_app_y" onchange='changement()' /><label for='rn_app_y' style='cursor: pointer;'>Oui</label> 
-		<input type="radio" value="n" name="rn_app_<?php echo $per;?>" id="rn_app_n" onchange='changement()' /><label for='rn_app_n' style='cursor: pointer;'>Non</label>
+		<input type="radio" value="y" name="rn_app_<?php echo $per;?>" id="rn_app_y_<?php echo $per;?>" onchange='changement()' /><label for='rn_app_y_<?php echo $per;?>' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_app_<?php echo $per;?>" id="rn_app_n_<?php echo $per;?>" onchange='changement()' /><label for='rn_app_n_<?php echo $per;?>' style='cursor: pointer;'>Non</label>
 	</td>
 </tr>
 
@@ -2418,8 +2418,34 @@ Notez que tant que la période n'est pas close, cette moyenne peut évoluer
 (ajout de notes, modifications de coefficients,...)">du CN</em>) de l'élève&nbsp;:
 	</td>
 	<td>
-		<input type="radio" value="y" name="rn_col_moy_<?php echo $per;?>" id="rn_col_moy_y" onchange='changement()' /><label for='rn_col_moy_y' style='cursor: pointer;'>Oui</label> 
-		<input type="radio" value="n" name="rn_col_moy_<?php echo $per;?>" id="rn_col_moy_n" onchange='changement()' /><label for='rn_col_moy_n' style='cursor: pointer;'>Non</label>
+		<input type="radio" value="y" name="rn_col_moy_<?php echo $per;?>" id="rn_col_moy_y_<?php echo $per;?>" onchange='changement()' /><label for='rn_col_moy_y_<?php echo $per;?>' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_col_moy_<?php echo $per;?>" id="rn_col_moy_n_<?php echo $per;?>" onchange='changement()' /><label for='rn_col_moy_n_<?php echo $per;?>' style='cursor: pointer;'>Non</label>
+	</td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Avec la ligne Moyenne générale (<em title="Moyenne générale du carnet de notes :
+Notez que tant que la période n'est pas close, cette moyenne peut évoluer
+(ajout de notes, modifications de coefficients,...).
+Le professeur peut aussi modifier la moyenne lors du transfert du carnet de notes vers les bulletins.">du CN</em>) de l'élève&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="y" name="rn_moy_gen_<?php echo $per;?>" id="rn_moy_gen_y_<?php echo $per;?>" onchange='changement()' /><label for='rn_moy_gen_y_<?php echo $per;?>' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_moy_gen_<?php echo $per;?>" id="rn_moy_gen_n_<?php echo $per;?>" onchange='changement()' /><label for='rn_moy_gen_n_<?php echo $per;?>' style='cursor: pointer;'>Non</label>
+		<?php
+		if(!getSettingAOui('cn_affiche_moy_gen')) {
+			echo " <span style='color:red'>La fonctionnalité est désactivée en administrateur dans ";
+			if($_SESSION['statut']=='administrateur') {
+				echo "<a href='../cahier_notes_admin/index.php' target='_blank'>Gestion des modules/Carnets de notes</a>";
+			}
+			else {
+				echo "<strong>Gestion des modules/Carnets de notes</strong>";
+			}
+			echo ".</span>";
+		}
+		?>
 	</td>
 </tr>
 
@@ -2429,8 +2455,8 @@ Notez que tant que la période n'est pas close, cette moyenne peut évoluer
 		Avec la moyenne de la classe pour chaque devoir&nbsp;:
 	</td>
 	<td>
-		<input type="radio" value="y" name="rn_moy_classe_<?php echo $per;?>" id="rn_moy_classe_y" onchange='changement()' /><label for='rn_moy_classe_y' style='cursor: pointer;'>Oui</label> 
-		<input type="radio" value="n" name="rn_moy_classe_<?php echo $per;?>" id="rn_moy_classe_n" onchange='changement()' /><label for='rn_moy_classe_n' style='cursor: pointer;'>Non</label>
+		<input type="radio" value="y" name="rn_moy_classe_<?php echo $per;?>" id="rn_moy_classe_y_<?php echo $per;?>" onchange='changement()' /><label for='rn_moy_classe_y_<?php echo $per;?>' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_moy_classe_<?php echo $per;?>" id="rn_moy_classe_n_<?php echo $per;?>" onchange='changement()' /><label for='rn_moy_classe_n_<?php echo $per;?>' style='cursor: pointer;'>Non</label>
 	</td>
 </tr>
 
@@ -2440,8 +2466,8 @@ Notez que tant que la période n'est pas close, cette moyenne peut évoluer
 		Avec les moyennes min/classe/max de chaque devoir&nbsp;:
 	</td>
 	<td>
-		<input type="radio" value="y" name="rn_moy_min_max_classe_<?php echo $per;?>" id="rn_moy_min_max_classe_y" onchange='changement()' /><label for='rn_moy_min_max_classe_y' style='cursor: pointer;'>Oui</label> 
-		<input type="radio" value="n" name="rn_moy_min_max_classe_<?php echo $per;?>" id="rn_moy_min_max_classe_n" onchange='changement()' /><label for='rn_moy_min_max_classe_n' style='cursor: pointer;'>Non</label>
+		<input type="radio" value="y" name="rn_moy_min_max_classe_<?php echo $per;?>" id="rn_moy_min_max_classe_y_<?php echo $per;?>" onchange='changement()' /><label for='rn_moy_min_max_classe_y_<?php echo $per;?>' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_moy_min_max_classe_<?php echo $per;?>" id="rn_moy_min_max_classe_n_<?php echo $per;?>" onchange='changement()' /><label for='rn_moy_min_max_classe_n_<?php echo $per;?>' style='cursor: pointer;'>Non</label>
 	</td>
 </tr>
 
@@ -2451,8 +2477,8 @@ Notez que tant que la période n'est pas close, cette moyenne peut évoluer
 		Avec retour à la ligne après chaque devoir si on affiche le nom du devoir ou le commentaire&nbsp;:
 	</td>
 	<td>
-		<input type="radio" value="y" name="rn_retour_ligne_<?php echo $per;?>" id="rn_retour_ligne_y" onchange='changement()' /><label for='rn_retour_ligne_y' style='cursor: pointer;'>Oui</label> 
-		<input type="radio" value="y" name="rn_retour_ligne_<?php echo $per;?>" id="rn_retour_ligne_n" onchange='changement()' /><label for='rn_retour_ligne_n' style='cursor: pointer;'>Non</label>
+		<input type="radio" value="y" name="rn_retour_ligne_<?php echo $per;?>" id="rn_retour_ligne_y_<?php echo $per;?>" onchange='changement()' /><label for='rn_retour_ligne_y_<?php echo $per;?>' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="y" name="rn_retour_ligne_<?php echo $per;?>" id="rn_retour_ligne_n_<?php echo $per;?>" onchange='changement()' /><label for='rn_retour_ligne_n_<?php echo $per;?>' style='cursor: pointer;'>Non</label>
 	</td>
 </tr>
 
@@ -2479,8 +2505,8 @@ Notez que tant que la période n'est pas close, cette moyenne peut évoluer
 		Afficher le bloc adresse du responsable de l'élève&nbsp;:
 	</td>
 	<td>
-		<input type="radio" value="y" name="rn_adr_resp_<?php echo $per;?>" id="rn_adr_resp_y" onchange='changement()' /><label for='rn_adr_resp_y' style='cursor: pointer;'>Oui</label> 
-		<input type="radio" value="n" name="rn_adr_resp_<?php echo $per;?>" id="rn_adr_resp_n" onchange='changement()' /><label for='rn_adr_resp_n' style='cursor: pointer;'>Non</label>
+		<input type="radio" value="y" name="rn_adr_resp_<?php echo $per;?>" id="rn_adr_resp_y_<?php echo $per;?>" onchange='changement()' /><label for='rn_adr_resp_y_<?php echo $per;?>' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_adr_resp_<?php echo $per;?>" id="rn_adr_resp_n_<?php echo $per;?>" onchange='changement()' /><label for='rn_adr_resp_n_<?php echo $per;?>' style='cursor: pointer;'>Non</label>
 	</td>
 </tr>
 
@@ -2501,8 +2527,8 @@ Notez que tant que la période n'est pas close, cette moyenne peut évoluer
 	?>&nbsp;:
 	</td>
 	<td>
-		<input type="radio" value="y" name="rn_bloc_obs_<?php echo $per;?>" id="rn_bloc_obs_y" onchange='changement()' /><label for='rn_bloc_obs_y' style='cursor: pointer;'>Oui</label> 
-		<input type="radio" value="n" name="rn_bloc_obs_<?php echo $per;?>" id="rn_bloc_obs_n" onchange='changement()' /><label for='rn_bloc_obs_n' style='cursor: pointer;'>Non</label>
+		<input type="radio" value="y" name="rn_bloc_obs_<?php echo $per;?>" id="rn_bloc_obs_y_<?php echo $per;?>" onchange='changement()' /><label for='rn_bloc_obs_y_<?php echo $per;?>' style='cursor: pointer;'>Oui</label> 
+		<input type="radio" value="n" name="rn_bloc_obs_<?php echo $per;?>" id="rn_bloc_obs_n_<?php echo $per;?>" onchange='changement()' /><label for='rn_bloc_obs_n_<?php echo $per;?>' style='cursor: pointer;'>Non</label>
 	</td>
 </tr>
 <!-- ================================================================= -->

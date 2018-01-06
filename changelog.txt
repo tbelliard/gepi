@@ -6,6 +6,11 @@
 Gepi-master (Version de développement)
 ===========================
 
+Carnets de notes:
+- Possibilité de faire apparaitre une moyenne générale sur les relevés de notes 
+  (malgré toutes les réserves sur la représentativité de cette moyenne).
+
+
 Gepi-1.7.2 (06/01/2018)
 ===========================
 

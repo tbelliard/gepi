@@ -156,6 +156,38 @@
 	  </label>
 	</fieldset>
 
+	<p class="grandEspaceHaut">
+		Le calcul de moyennes générales sur les carnets de notes est discutable&nbsp;:<br />
+		Les moyennes des carnets de notes peuvent être modifiées lors de la copie/transfert vers les bulletins selon l'appréciation du professeur<br />
+		<em>(un élève absent à toutes les grosses évaluations et présent seulement à un petit contrôle de cours n'aura pas une moyenne traduisant son niveau&nbsp;;<br />
+		le professeur pourra modifier voire vider la moyenne sur les bulletins&nbsp;;<br />
+		a contrario, un élève seulement présent à une évaluation particulièrement difficile pourra voir sa moyenne modifiée manuellement à la hausse lors du remplissage du bulletin)</em>.<br />
+		Les moyennes des carnets de notes, si elles sont calculées avant la fin de période ne tiendront pas compte des éventuelles évaluations non encore saisies par les professeurs&nbsp;; pas plus qu'elles ne tiendront compte d'éventuelles modifications de coefficients en fin de période pour prendre en compte le nombre d'évaluations de chaque type que le professeur aura réussi à mener.<br />
+		Les moyennes générales calculées sur ces moyennes, elles-mêmes discutables, risquent d'être du même acabit.<br />
+		Cet avertissement effectué&nbsp;:
+	</p>
+	<fieldset class="no_bordure">
+	  <legend class="invisible">Affichage de la moyenne générale sur les carnets de notes</legend>
+	  <input type="radio" 
+			 name="cn_affiche_moy_gen" 
+			 id='cn_affiche_moy_gen_y' 
+			 value="y" 
+			<?php if (getSettingValue("cn_affiche_moy_gen")=='y') echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='cn_affiche_moy_gen_y' style='cursor: pointer;'>
+		Permettre l'affichage de la moyenne générale sur les carnets de notes
+	  </label>
+	<br />
+	  <input type="radio" 
+			 name="cn_affiche_moy_gen" 
+			 id='cn_affiche_moy_gen_n' 
+			 value="n" 
+			<?php if (getSettingValue("cn_affiche_moy_gen")!='y') echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='cn_affiche_moy_gen_n' style='cursor: pointer;'>
+		Ne pas permettre l'affichage de la moyenne générale sur les carnets de notes
+	  </label>
+	</fieldset>
 
 	<p class="grandEspaceHaut">
 <?php
@@ -222,7 +254,7 @@
 			 value="V" 
 			 <?php if(getSettingValue("note_autre_que_sur_referentiel")=="V"){echo "checked='checked'";} ?> />
 	  <label for='note_sur_referentiel'> 
-		Autoriser les notes autre que sur le référentiel par défaut
+		Autoriser les notes sur des référentiels autres que le référentiel par défaut
 	  </label>
 	  <br />
 	  <input type="radio" 

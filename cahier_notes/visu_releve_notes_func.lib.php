@@ -3,7 +3,7 @@
 /*
 *
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -514,6 +514,8 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		global $retour_a_la_ligne;
 
 		global $rn_couleurs_alternees;
+
+		global $calculer_moy_gen_pour_carnets_de_notes;
 
 		$debug_releve="n";
 		$debug_ele_login="ahnjinwon";
@@ -1043,7 +1045,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			// sans bloc adresse responsable
 			//-------------------------------
 
-            echo "<div class='center'>\n";
+			echo "<div class='center'>\n";
 			echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'";
 			echo " summary=\"Tableau de l'entête\"";
 			echo ">\n";
@@ -1199,7 +1201,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 
 
-        //=============================================
+		//=============================================
 
 		// Tableau des matieres/devoirs/notes/appréciations
 
@@ -1711,8 +1713,72 @@ Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\">
 				$j++;
 			}
 		}
+
+		if((isset($calculer_moy_gen_pour_carnets_de_notes))&&($calculer_moy_gen_pour_carnets_de_notes)) {
+			global $current_eleve_login, $moy_gen_eleve, $moy_min_classe, $moy_max_classe, $moy_gen_classe;
+			unset($indice_ele);
+			for($loop_ele=0;$loop_ele<count($current_eleve_login);$loop_ele++) {
+				if($current_eleve_login[$loop_ele]==$tab_rel['eleve'][$i]['login']) {
+					$indice_ele=$loop_ele;
+					break;
+				}
+			}
+			if(isset($indice_ele)) {
+				// Afficher la ligne moyenne générale
+				$commentaire_moyenne_generale="ATTENTION : Les moyennes calculées dans les carnets de notes
+                    peuvent être modifiées selon l'appréciation du professeur.
+                    Un élève absent à toutes les grosses évaluations
+                    et présent seulement pour un contrôle de cours pourra 
+                    voir sa moyenne modifiée par le professeur.
+                    Il pourra en résulter une différence entre la moyenne du 
+                    carnet de notes et celle des bulletins.";
+
+				$commentaire_periode_non_close="ATTENTION : La période n'est pas close.
+                    La moyenne affichée est susceptible de
+                    changer d'ici à la fin de la période.
+                    Des notes peuvent encore être ajoutées,
+                    des coefficients de devoirs peuvent être
+                    modifiés,...";
+
+				if (($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
+					if($tab_rel['verouiller']=='N') {
+						echo "
+	<tr>
+		<th class='releve'>Moyenne générale</th>
+		<td title=\"".$commentaire_periode_non_close."\">".$moy_gen_eleve[$indice_ele]."</td>
+		<td></td>
+	</tr>";
+					}
+					else {
+						echo "
+	<tr>
+		<th class='releve'>Moyenne générale</th>
+		<td title=\"".$commentaire_moyenne_generale."\">".$moy_gen_eleve[$indice_ele]."</td>
+		<td></td>
+	</tr>";
+					}
+				}
+				else {
+					if($tab_rel['verouiller']=='N') {
+						echo "
+	<tr>
+		<th class='releve'>Moyenne générale</th>
+		<td title=\"".$commentaire_periode_non_close."\">".$moy_gen_eleve[$indice_ele]."</td>
+	</tr>";
+					}
+					else {
+						echo "
+	<tr>
+		<th class='releve'>Moyenne générale</th>
+		<td title=\"".$commentaire_moyenne_generale."\">".$moy_gen_eleve[$indice_ele]."</td>
+	</tr>";
+					}
+				}
+			}
+		}
+
 		echo "</table>\n";
-        //=============================================
+		//=============================================
 
 		/*
 		// Avis du conseil de classe à ramener par là
@@ -1977,6 +2043,8 @@ function releve_pdf($tab_rel,$i) {
 
 		// Pour être pris en compte dans les boites/conteneurs:
 		global $retour_a_la_ligne;
+
+		global $calculer_moy_gen_pour_carnets_de_notes;
 
 		// Sauvegarde de la largeur par défaut
 		if((!isset($largeur_cadre_matiere_0))||($largeur_cadre_matiere_0=="")) {
@@ -2795,6 +2863,12 @@ function releve_pdf($tab_rel,$i) {
 				//s'il y des notes alors on affiche le cadre avec les notes
 				//if(isset($nb_matiere[$eleve_select]) and !empty($nb_matiere[$eleve_select])) {
 				if($nb_matiere>0) {
+
+					// 20171229
+					if((isset($calculer_moy_gen_pour_carnets_de_notes))&&($calculer_moy_gen_pour_carnets_de_notes)) {
+						$nb_matiere++;
+					}
+
 					// Hauteur d'une ligne pour une matière
 					/*
 					if($active_entete_regroupement === '1') {
@@ -2804,7 +2878,7 @@ function releve_pdf($tab_rel,$i) {
 					*/
 						$hauteur_cadre_matiere=$hauteur_cadre_note_global/$nb_matiere;
 					//}
-		
+
 					// Tableau des matières et des notes de l'élève
 					$cpt_i='1';
 					$nom_regroupement_passer='';
@@ -3003,6 +3077,28 @@ function releve_pdf($tab_rel,$i) {
 							}
 						}
 						$cpt_i=$cpt_i+1;
+					}
+
+					// 20171229
+					if((isset($calculer_moy_gen_pour_carnets_de_notes))&&($calculer_moy_gen_pour_carnets_de_notes)) {
+						$pdf->SetFont('DejaVu','B','9');
+						$texte = 'Moyenne générale';
+						$hauteur_caractere = 9;
+						$pdf->SetFont('DejaVu','B',$hauteur_caractere);
+						$val = $pdf->GetStringWidth($texte);
+						$taille_texte = $largeur_cadre_matiere;
+						$grandeur_texte='test';
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val) {
+								$hauteur_caractere = $hauteur_caractere-0.3;
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere);
+								$val = $pdf->GetStringWidth($texte);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere, $texte, 'LRBT', 2, '');
 					}
 				}
 		
@@ -3443,6 +3539,58 @@ function releve_pdf($tab_rel,$i) {
 						$hauteur_utilise=$hauteur_utilise+$hauteur_cadre_matiere;
 					}
 					//$cpt_i=$cpt_i+1;
+				}
+
+				// 20171229
+				if((isset($calculer_moy_gen_pour_carnets_de_notes))&&($calculer_moy_gen_pour_carnets_de_notes)) {
+					global $current_eleve_login, $moy_gen_eleve, $moy_min_classe, $moy_max_classe, $moy_gen_classe;
+					unset($indice_ele);
+					for($loop_ele=0;$loop_ele<count($current_eleve_login);$loop_ele++) {
+						if($current_eleve_login[$loop_ele]==$tab_rel['eleve'][$i]['login']) {
+							$indice_ele=$loop_ele;
+							break;
+						}
+					}
+					if(isset($indice_ele)) {
+
+						if(($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
+							$pdf->SetFont('DejaVu','',8);
+							$pdf->SetXY($X_col_moy,$Y_cadre_note+$hauteur_utilise);
+
+							$valeur=$moy_gen_eleve[$indice_ele];
+							$pdf->Cell($largeur_cadre_moy, $hauteur_cadre_matiere, $valeur, 'LRBT', 2, 'C');
+
+							$pdf->SetXY($X_col_note,$Y_cadre_note+$hauteur_utilise);
+							$pdf->Cell($largeur_cadre_note, $hauteur_cadre_matiere, '', 'LRBT', 2, 'C');
+						}
+						else {
+							$pdf->SetXY($X_col_note,$Y_cadre_note+$hauteur_utilise);
+							$pdf->SetFont('DejaVu','',8);
+							$valeur=$moy_gen_eleve[$indice_ele];
+							$pdf->Cell($largeur_cadre_note, $hauteur_cadre_matiere, $valeur, 'LRBT', 2, 'C');
+						}
+					}
+
+					/*
+					$pdf->SetFont('DejaVu','B','9');
+					$texte = 'Moyenne générale';
+					$hauteur_caractere = 9;
+					$pdf->SetFont('DejaVu','B',$hauteur_caractere);
+					$val = $pdf->GetStringWidth($texte);
+					$taille_texte = $largeur_cadre_matiere;
+					$grandeur_texte='test';
+					while($grandeur_texte!='ok') {
+						if($taille_texte<$val) {
+							$hauteur_caractere = $hauteur_caractere-0.3;
+							$pdf->SetFont('DejaVu','B',$hauteur_caractere);
+							$val = $pdf->GetStringWidth($texte);
+						}
+						else {
+							$grandeur_texte='ok';
+						}
+					}
+					$pdf->Cell($largeur_cadre_matiere, $hauteur_cadre_matiere, $texte, 'LRT', 2, '');
+					*/
 				}
 
 			}

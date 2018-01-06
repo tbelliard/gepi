@@ -254,14 +254,26 @@ while ($j < $nombre_groupes) {
 	}
 
 	// Moyenne de la classe dans la matière $current_matiere[$j]
-	$sql="SELECT round(avg(note),$nb_chiffres_moy) moyenne
-		FROM matieres_notes
-		WHERE (
-		statut ='' AND
-		id_groupe='".$current_group[$j]["id"]."' AND
-		periode='$periode_num'
-		)
-		";
+	if((!isset($calculer_moy_gen_pour_carnets_de_notes))||(!$calculer_moy_gen_pour_carnets_de_notes)) {
+		$sql="SELECT round(avg(note),$nb_chiffres_moy) moyenne
+			FROM matieres_notes
+			WHERE (
+			statut ='' AND
+			id_groupe='".$current_group[$j]["id"]."' AND
+			periode='$periode_num'
+			);";
+	}
+	else {
+		// Récupérer l'id_cahier_notes
+		$id_cahier_notes=get_valeur_champ('cn_cahier_notes', "id_groupe='".$group_id."' AND periode='".$periode_num."'", 'id_cahier_notes');
+
+		$sql="SELECT round(avg(note),$nb_chiffres_moy) moyenne
+			FROM cn_notes_conteneurs 
+			WHERE (
+			statut ='y' AND
+			id_conteneur='".$id_cahier_notes."'
+			);";
+	}
 	calc_moy_debug("$sql\n");
 	$current_classe_matiere_moyenne_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -270,14 +282,23 @@ while ($j < $nombre_groupes) {
 
 	//===================================
 	// Effectif du groupe pour le rang:
-	$sql="SELECT 1=1
-		FROM matieres_notes
-		WHERE (
-		statut ='' AND
-		id_groupe='".$current_group[$j]["id"]."' AND
-		periode='$periode_num'
-		)
-		";
+	if((!isset($calculer_moy_gen_pour_carnets_de_notes))||(!$calculer_moy_gen_pour_carnets_de_notes)) {
+		$sql="SELECT 1=1
+			FROM matieres_notes
+			WHERE (
+			statut ='' AND
+			id_groupe='".$current_group[$j]["id"]."' AND
+			periode='$periode_num'
+			);";
+	}
+	else {
+		$sql="SELECT 1=1
+			FROM cn_notes_conteneurs
+			WHERE (
+			statut ='y' AND
+			id_conteneur='".$id_cahier_notes."'
+			);";
+	}
 	calc_moy_debug("$sql\n");
 	$req_current_group_effectif_avec_note = mysqli_query($GLOBALS["mysqli"], $sql);
 	$current_group_effectif_avec_note[$j] = mysqli_num_rows($req_current_group_effectif_avec_note);
@@ -286,57 +307,104 @@ while ($j < $nombre_groupes) {
 	// Calcul de la moyenne des élèves et de la moyenne de la classe pour l'enseignement courant ($j)
 	$i=0;
 
-	$sql="SELECT MIN(note) note_min, MAX(note) note_max FROM matieres_notes
-		WHERE (
-		periode='$periode_num' AND
-		id_groupe='".$current_group[$j]["id"]."' AND
-		statut=''
-		)";
+	if((!isset($calculer_moy_gen_pour_carnets_de_notes))||(!$calculer_moy_gen_pour_carnets_de_notes)) {
+		$sql="SELECT MIN(note) note_min, MAX(note) note_max FROM matieres_notes
+			WHERE (
+			periode='$periode_num' AND
+			id_groupe='".$current_group[$j]["id"]."' AND
+			statut=''
+			)";
+	}
+	else {
+		$sql="SELECT MIN(note) note_min, MAX(note) note_max FROM cn_notes_conteneurs
+			WHERE (
+			id_conteneur='".$id_cahier_notes."' AND 
+			statut='y'
+			)";
+	}
 	$res_note_min_max=mysqli_query($GLOBALS["mysqli"], $sql);
 	$moy_min_classe_grp[$j]= @old_mysql_result($res_note_min_max, 0, "note_min");
 	$moy_max_classe_grp[$j]= @old_mysql_result($res_note_min_max, 0, "note_max");
 	//======================================
 
-	$sql="SELECT COUNT(note) as quartile1 FROM matieres_notes WHERE (periode='$periode_num' AND
-								id_groupe='".$current_group[$j]["id"]."' AND
-								statut='' AND
-								note>=15)";
-	//echo "$sql<br />";
-	$quartile1_grp[$j]=sql_query1($sql);
-	$sql="SELECT COUNT(note) as quartile2 FROM matieres_notes WHERE (periode='$periode_num' AND
-								id_groupe='".$current_group[$j]["id"]."' AND
-								statut='' AND
-								note>=12 AND
-								note<15)";
-	//echo "$sql<br />";
-	$quartile2_grp[$j]=sql_query1($sql);
-	$sql="SELECT COUNT(note) as quartile3 FROM matieres_notes WHERE (periode='$periode_num' AND
-								id_groupe='".$current_group[$j]["id"]."' AND
-								statut='' AND
-								note>=10 AND
-								note<12)";
-	//echo "$sql<br />";
-	$quartile3_grp[$j]=sql_query1($sql);
-	$sql="SELECT COUNT(note) as quartile4 FROM matieres_notes WHERE (periode='$periode_num' AND
-								id_groupe='".$current_group[$j]["id"]."' AND
-								statut='' AND
-								note>=8 AND
-								note<10)";
-	//echo "$sql<br />";
-	$quartile4_grp[$j]=sql_query1($sql);
-	$sql="SELECT COUNT(note) as quartile5 FROM matieres_notes WHERE (periode='$periode_num' AND
-								id_groupe='".$current_group[$j]["id"]."' AND
-								statut='' AND
-								note>=5 AND
-								note<8)";
-	//echo "$sql<br />";
-	$quartile5_grp[$j]=sql_query1($sql);
-	$sql="SELECT COUNT(note) as quartile6 FROM matieres_notes WHERE (periode='$periode_num' AND
-								id_groupe='".$current_group[$j]["id"]."' AND
-								statut='' AND
-								note<5)";
-	//echo "$sql<br />";
-	$quartile6_grp[$j]=sql_query1($sql);
+	if((!isset($calculer_moy_gen_pour_carnets_de_notes))||(!$calculer_moy_gen_pour_carnets_de_notes)) {
+		$sql="SELECT COUNT(note) as quartile1 FROM matieres_notes WHERE (periode='$periode_num' AND
+									id_groupe='".$current_group[$j]["id"]."' AND
+									statut='' AND
+									note>=15)";
+		//echo "$sql<br />";
+		$quartile1_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile2 FROM matieres_notes WHERE (periode='$periode_num' AND
+									id_groupe='".$current_group[$j]["id"]."' AND
+									statut='' AND
+									note>=12 AND
+									note<15)";
+		//echo "$sql<br />";
+		$quartile2_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile3 FROM matieres_notes WHERE (periode='$periode_num' AND
+									id_groupe='".$current_group[$j]["id"]."' AND
+									statut='' AND
+									note>=10 AND
+									note<12)";
+		//echo "$sql<br />";
+		$quartile3_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile4 FROM matieres_notes WHERE (periode='$periode_num' AND
+									id_groupe='".$current_group[$j]["id"]."' AND
+									statut='' AND
+									note>=8 AND
+									note<10)";
+		//echo "$sql<br />";
+		$quartile4_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile5 FROM matieres_notes WHERE (periode='$periode_num' AND
+									id_groupe='".$current_group[$j]["id"]."' AND
+									statut='' AND
+									note>=5 AND
+									note<8)";
+		//echo "$sql<br />";
+		$quartile5_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile6 FROM matieres_notes WHERE (periode='$periode_num' AND
+									id_groupe='".$current_group[$j]["id"]."' AND
+									statut='' AND
+									note<5)";
+		//echo "$sql<br />";
+		$quartile6_grp[$j]=sql_query1($sql);
+	}
+	else {
+		$sql="SELECT COUNT(note) as quartile1 FROM cn_notes_conteneurs WHERE (id_conteneur='$id_cahier_notes' AND
+									statut='y' AND
+									note>=15)";
+		//echo "$sql<br />";
+		$quartile1_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile2 FROM cn_notes_conteneurs WHERE (id_conteneur='$id_cahier_notes' AND
+									statut='y' AND
+									note>=12 AND
+									note<15)";
+		//echo "$sql<br />";
+		$quartile2_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile3 FROM cn_notes_conteneurs WHERE (id_conteneur='$id_cahier_notes' AND
+									statut='y' AND
+									note>=10 AND
+									note<12)";
+		//echo "$sql<br />";
+		$quartile3_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile4 FROM cn_notes_conteneurs WHERE (id_conteneur='$id_cahier_notes' AND
+									statut='y' AND
+									note>=8 AND
+									note<10)";
+		//echo "$sql<br />";
+		$quartile4_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile5 FROM cn_notes_conteneurs WHERE (id_conteneur='$id_cahier_notes' AND
+									statut='y' AND
+									note>=5 AND
+									note<8)";
+		//echo "$sql<br />";
+		$quartile5_grp[$j]=sql_query1($sql);
+		$sql="SELECT COUNT(note) as quartile6 FROM cn_notes_conteneurs WHERE (id_conteneur='$id_cahier_notes' AND
+									statut='y' AND
+									note<5)";
+		//echo "$sql<br />";
+		$quartile6_grp[$j]=sql_query1($sql);
+	}
 
 	if ((isset($affiche_rang))&&($affiche_rang=='y')) {
 		$current_eleve_rang[$j]=array();
@@ -361,27 +429,57 @@ while ($j < $nombre_groupes) {
 
 			//=====================================
 			// Récupération de la note et du statut
-			$sql="SELECT distinct * FROM matieres_notes
-			WHERE (
-			login='".$current_eleve_login[$i]."' AND
-			periode='$periode_num' AND
-			id_groupe='".$current_group[$j]["id"]."'
-			)";
-			calc_moy_debug("$sql\n");
-			$current_eleve_note_query = mysqli_query($GLOBALS["mysqli"], $sql);
+			if((!isset($calculer_moy_gen_pour_carnets_de_notes))||(!$calculer_moy_gen_pour_carnets_de_notes)) {
+				$sql="SELECT distinct * FROM matieres_notes
+				WHERE (
+				login='".$current_eleve_login[$i]."' AND
+				periode='$periode_num' AND
+				id_groupe='".$current_group[$j]["id"]."'
+				);";
 
-			if(mysqli_num_rows($current_eleve_note_query)>0) {
-				$lig_tmp=mysqli_fetch_object($current_eleve_note_query);
-				$current_eleve_note[$j][$i]=$lig_tmp->note;
-				calc_moy_debug("\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."\n");
+				calc_moy_debug("$sql\n");
+				$current_eleve_note_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
-				$current_eleve_statut[$j][$i]=$lig_tmp->statut;
-				calc_moy_debug("\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."\n");
+				if(mysqli_num_rows($current_eleve_note_query)>0) {
+					$lig_tmp=mysqli_fetch_object($current_eleve_note_query);
+					$current_eleve_note[$j][$i]=$lig_tmp->note;
+					calc_moy_debug("\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."\n");
 
+					$current_eleve_statut[$j][$i]=$lig_tmp->statut;
+					calc_moy_debug("\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."\n");
+				}
+				else {
+					$current_eleve_note[$j][$i]="-";
+					$current_eleve_statut[$j][$i]="";
+				}
 			}
 			else {
-				$current_eleve_note[$j][$i]="-";
-				$current_eleve_statut[$j][$i]="";
+				$sql="SELECT distinct * FROM cn_notes_conteneurs
+				WHERE (
+				login='".$current_eleve_login[$i]."' AND
+				id_conteneur='".$id_cahier_notes."'
+				);";
+				calc_moy_debug("$sql\n");
+				$current_eleve_note_query = mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($current_eleve_note_query)>0) {
+					$lig_tmp=mysqli_fetch_object($current_eleve_note_query);
+					$current_eleve_note[$j][$i]=$lig_tmp->note;
+					calc_moy_debug("\$current_eleve_note[$j][$i]=".$current_eleve_note[$j][$i]."\n");
+
+					if($lig_tmp->statut=='y') {
+						$current_eleve_statut[$j][$i]='';
+					}
+					else {
+						$current_eleve_note[$j][$i]='-';
+						$current_eleve_statut[$j][$i]='';
+					}
+					calc_moy_debug("\$current_eleve_statut[$j][$i]=".$current_eleve_statut[$j][$i]."\n");
+				}
+				else {
+					$current_eleve_note[$j][$i]="-";
+					$current_eleve_statut[$j][$i]="";
+				}
 			}
 
 			if($current_eleve_login[$i]==$ele_login_debug) {
@@ -393,12 +491,12 @@ while ($j < $nombre_groupes) {
 			//echo "\$current_eleve_login[$i]=$current_eleve_login[$i]<br />";
 
 			//=====================================
-			// On teste si l'élève a un coef spécifique pour cette matière
-			calc_moy_debug("\$coefficients_a_1=$coefficients_a_1\n");
 			if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")) {
+				calc_moy_debug("\$coefficients_a_1=$coefficients_a_1\n");
 				$coef_eleve=1;
 			}
 			else{
+				// On teste si l'élève a un coef spécifique pour cette matière
 				$sql="SELECT value FROM eleves_groupes_settings WHERE (" .
 						"login = '".$current_eleve_login[$i]."' AND " .
 						"id_groupe = '".$current_group[$j]["id"]."' AND " .

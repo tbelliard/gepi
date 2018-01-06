@@ -73,6 +73,12 @@ if(isset($_POST['is_posted'])) {
 		if (!saveSetting("active_carnets_notes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 	}
 
+	if (isset($_POST['cn_affiche_moy_gen'])) {
+		if (!saveSetting("cn_affiche_moy_gen", $_POST['cn_affiche_moy_gen'])) {
+			$msg .= "Erreur lors de l'enregistrement de l'autorisation ou non d'affichage de la moyenne générale sur les relevés CN !";
+		}
+	}
+
 	if (isset($_POST['export_cn_ods'])) {
 		//if (!saveSetting("export_cn_ods", $_POST['export_cn_ods'])) {
 		if (!saveSetting("export_cn_ods", 'y')) {
