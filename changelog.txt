@@ -71,6 +71,7 @@ Général:
 
 Bibliothèques:
 - Mise à jour de HTMLPurifier en version 4.9.3
+- Mise à jour de phpCAS en version 1.3.5
 
 
 Gepi-1.7.1 (30/03/2017)
