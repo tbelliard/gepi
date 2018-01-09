@@ -3029,9 +3029,9 @@ function getAllParamClasse($id_classe) {
  * @return string La valeur de l'item
  */
 function getParamClasse($id_classe,$item,$default) {
-    global $mysqli;
+	global $mysqli;
 	$sql="SELECT value FROM classes_param WHERE id_classe='$id_classe' AND name='$item'";
-    
+
 	$res_param=mysqli_query($mysqli, $sql);
 	if($res_param->num_rows>0){
 		$ligne=$res_param->fetch_object();
@@ -3039,7 +3039,7 @@ function getParamClasse($id_classe,$item,$default) {
 		return $ligne->value;
 	}
 	else{
-		return $default;            
+		return $default;
 	}
 }
 
@@ -17834,6 +17834,37 @@ function get_pays($code_pays) {
 		$retour=$lig_pays->nom_pays;
 	}
 	return $retour;
+}
+
+function get_last_class_ele($ele_login, $champs="all") {
+	global $mysqli;
+
+	$sql="SELECT c.classe, j.id_classe FROM classes c, j_eleves_classes j WHERE (j.login = '$ele_login' and j.id_classe = c.id) order by j.periode DESC LIMIT 1;";
+	$res_class=mysqli_query($mysqli, $sql);
+	if($res_class->num_rows > 0) {
+		$lig_tmp=$res_class->fetch_object();
+		if($champs=="all") {
+			$tab_classe=array();
+			$tab_classe['id_classe']=$lig_tmp->id_classe;
+			$tab_classe['classe']=$lig_tmp->classe;
+			$res_class->close();
+			return $tab_classe;
+		}
+		elseif($champs=="id_classe") {
+			return $lig_tmp->id_classe;
+		}
+		else {
+			return $lig_tmp->classe;
+		}
+	}
+	else {
+		if($champs=="all") {
+			return $tab_classe;
+		}
+		else {
+			return "";
+		}
+	}
 }
 
 ?>

@@ -41,6 +41,8 @@ if (!checkAccess()) {
 
 //debug_var();
 
+$msg='';
+
 // Initialisation des variables
 $flag = filter_input(INPUT_GET,'flag') ? filter_input(INPUT_GET,'flag') : (filter_input(INPUT_POST, 'flag') ? filter_input(INPUT_POST, 'flag') : NULL);
 $aid_id = filter_input(INPUT_GET,'aid_id') !== NULL ? filter_input(INPUT_GET,'aid_id') : (filter_input(INPUT_POST, 'aid_id') !== NULL ? filter_input(INPUT_POST, 'aid_id') : NULL);
@@ -102,23 +104,34 @@ $autoriser_inscript_multiples = old_mysql_result($call_data, 0, "autoriser_inscr
 if (isset($add_eleve) and ($add_eleve == "yes")) {
 	check_token();
 
-    // Les élèves responsable : à chercher parmi les élèves de l'AID
-    // On commence par supprimer les élèves responsables
-    // sql_query("DELETE FROM j_aid_eleves_resp WHERE id_aid='$aid_id' AND indice_aid='$indice_aid'");
+	if(isset($_POST['suppr_ele'])) {
+		$suppr_ele=$_POST['suppr_ele'];
+		for($loop=0;$loop<count($suppr_ele);$loop++) {
+			$retour_suppr=suppr_ele_aid($suppr_ele[$loop], $aid_id, $indice_aid);
+			$msg.=$retour_suppr;
+		}
+	}
+
+	// Les élèves responsable : à chercher parmi les élèves de l'AID
+	// On commence par supprimer les élèves responsables
+	// sql_query("DELETE FROM j_aid_eleves_resp WHERE id_aid='$aid_id' AND indice_aid='$indice_aid'");
 	Supprime_eleve_responsable($aid_id, $indice_aid);
-	
-    // Les élèves responsable sont à sélectionner parmi les élèves de l'AID
-    $call_eleves = Extrait_eleves_deja_membres ($aid_id, $indice_aid);
-    $nombre = mysqli_num_rows($call_eleves);
-    $i = "0";
-    while ($i < $nombre) {
-        $login_eleve = old_mysql_result($call_eleves, $i, "login");
-        if (isset($_POST[$login_eleve."_resp"])) {
-            //sql_query("INSERT INTO j_aid_eleves_resp SET id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'");
-			Sauve_eleve_responsable($aid_id, $indice_aid, $login_eleve);
-        }
-        $i++;
-    }
+
+	$eleve_resp=isset($_POST['eleve_resp']) ? $_POST['eleve_resp'] : NULL;
+	if(isset($eleve_resp)) {
+		// Les élèves responsable sont à sélectionner parmi les élèves de l'AID
+		$call_eleves = Extrait_eleves_deja_membres ($aid_id, $indice_aid);
+		$nombre = mysqli_num_rows($call_eleves);
+		$i = "0";
+		while ($lig_ele=mysqli_fetch_object($call_eleves)) {
+			$login_eleve=$lig_ele->login;
+			if (in_array($login_eleve, $eleve_resp)) {
+				//sql_query("INSERT INTO j_aid_eleves_resp SET id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'");
+				Sauve_eleve_responsable($aid_id, $indice_aid, $login_eleve);
+			}
+			$i++;
+		}
+	}
 
     // On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
     if ($autoriser_inscript_multiples == 'y') {
@@ -657,7 +670,7 @@ Cliquer pour masquer les photos.' /></a>
 	<?php echo add_token_field(); ?>
 	<div id='fixe'></div>
 	<div style='float:left; width:30em;'>
-	<table class="aid_tableau">
+	<table class="aid_tableau boireaus boireaus_alt" style='margin-right:1em;'>
     <?php
     // appel de la liste des élèves de l'AID :
     $sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
@@ -685,7 +698,8 @@ Cliquer pour masquer les photos.' /></a>
 				<?php echo $nombre; ?> élève<?php echo $s; ?>
 			</td>
 			<td>
-				
+			<!--td colspan='2'-->
+				Suppr.
 			</td>
 <?php 
     if ($activer_outils_comp == "y") {
@@ -698,15 +712,17 @@ Cliquer pour masquer les photos.' /></a>
 <?php 
 	$active_module_trombinoscopes=getSettingAOui("active_module_trombinoscopes");
 	$i = "0";
-	while ($i < $nombre) {
+	while($lig_ele=mysqli_fetch_object($call_liste_data)) {
 		$vide = 0;
-		$login_eleve = old_mysql_result($call_liste_data, $i, "login");
-		$nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
-		$prenom_eleve = old_mysql_result($call_liste_data, $i, "prenom");
+
+		$login_eleve=$lig_ele->login;
+		$nom_eleve=$lig_ele->nom;
+		$prenom_eleve=$lig_ele->prenom;
+		$v_elenoet=$lig_ele->elenoet;
+
 		$eleve_resp = sql_query1("select login from j_aid_eleves_resp where id_aid='$aid_id' and login ='$login_eleve' and indice_aid='$indice_aid'");
-		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-		$classe_eleve = old_mysql_result($call_classe, '0', "classe");
-		$v_elenoet=old_mysql_result($call_liste_data, $i, 'elenoet');
+
+		$classe_eleve=get_last_class_ele($login_eleve, "classe");
 		if($active_module_trombinoscopes) {
 			echo "
 		<tr onmouseover=\"affiche_photo_courante('".nom_photo($v_elenoet)."')\" onmouseout=\"vide_photo_courante();\">";
@@ -719,11 +735,16 @@ Cliquer pour masquer les photos.' /></a>
 			<td>
 				<strong><?php echo $nom_eleve; ?> <?php echo $prenom_eleve; ?></strong>, <?php echo $classe_eleve ; ?>
 			</td>
-			<td>
+			<!--td>
 				<a href='../lib/confirm_query.php?liste_cible=<?php echo $login_eleve; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_eleve_aid<?php echo add_token_in_url(); ?>'>
 					<img src="../images/icons/delete.png" title="Supprimer cet élève" alt="Supprimer" />
 				</a>
+			</td-->
+			<td>
 <?php 
+		echo "
+				<input type='checkbox' name='suppr_ele[]' value=\"$login_eleve\" title=\"Supprimer cet élève de l'AID\" />";
+
 		// Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
 		if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) && (getSettingValue("active_module_trombinoscopes")=='y')) {
 			$info="<div align='center'>\n";
@@ -757,7 +778,10 @@ Cliquer pour masquer les photos.' /></a>
         if ($activer_outils_comp == "y") {
 ?>
 			<td class="center">
+				<!--
 				<input type="checkbox" name="<?php echo $login_eleve; ?>_resp" value="y" onchange="changement()"
+				-->
+				<input type="checkbox" name="eleve_resp[]" value="<?php echo $login_eleve; ?>" onchange="changement()"
 					   <?php if ($eleve_resp!=-1) {echo " checked = 'checked' ";} ?>
 					   />
 			</td>

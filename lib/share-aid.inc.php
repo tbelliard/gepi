@@ -748,4 +748,33 @@ function get_tab_aid_prof($login_prof, $id_classe="", $periode_num="", $order_by
 
 	return $tab;
 }
+
+function suppr_ele_aid($login_ele, $id_aid, $indice_aid) {
+	global $mysqli;
+
+	$retour='';
+
+	$sql="DELETE FROM aid_appreciations WHERE login='".$login_ele."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."';";
+	$del=mysqli_query($mysqli, $sql);
+	if(!$del) {
+		$retour.='Erreur lors de la suppression d\'enregistrements de la table des appréciations aid.<br />';
+	}
+	else {
+		$sql="DELETE FROM j_aid_eleves_resp WHERE login='".$login_ele."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."';";
+		$del=mysqli_query($mysqli, $sql);
+		if(!$del) {
+			$retour.='Erreur lors de la suppression de l\'élève de la table de correspondance aid&lt;-&gt;eleves responsable.<br />';
+		}
+		else {
+			$sql="DELETE FROM j_aid_eleves WHERE login='".$login_ele."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."';";
+			$del=mysqli_query($mysqli, $sql);
+			if(!$del) {
+				$retour.='Erreur lors de la suppression de l\'élève de la table de correspondance aid&lt;-&gt;eleves.<br />';
+			}
+
+		}
+	}
+
+	return $retour;
+}
 ?>
