@@ -615,6 +615,13 @@ sinon, Gepi le considère comme \"<em>établissement d'origine</em>\".";
 		<input type='radio' name='nom_champ_INE' id='nom_champ_INE_id_national' value='id_national'".$checked_id_national." />
 		<label for='nom_champ_INE_id_national'> utiliser le nouveau champ INE, c'est-à-dire celui qui apparaît sous le code ID_NATIONAL dans l'export.</label><br />
 		</p>
+
+		<p style='margin-top:2em; margin-left:7em;'>Dans certains fichiers, le nouvel identifiant est présent et l'ancien absent, ou vice-versa.<br />
+		Pour éviter de supprimer un identifiant qui fait la liaison dans Gepi avec les données d'années antérieures, il est proposé, par défaut, de ne pas vider un INE.<br />
+		Vous pouvez néanmoins forcer la prise en compte d'une suppression d'INE, mais soyez conscient de l'impact.<br />
+		<input type='checkbox' name='ne_pas_supprimer_INE' id='ne_pas_supprimer_INE' value='y' checked />
+		<label for='ne_pas_supprimer_INE'> Ne pas supprimer/vider l'identifiant INE d'un élève.</label>
+		</p>
 	</div>\n";
 
 
@@ -684,7 +691,24 @@ else{
 		$nom_champ_INE="ine_bea";
 	}
 	//echo "<p>\$nom_champ_INE=$nom_champ_INE</p>";
-	
+
+	if($debug_import=='y') {
+		echo "<p>\$step=$step</p>";
+	}
+	if("$step"=="0"){
+		if(isset($_POST['ne_pas_supprimer_INE'])) {
+			$valeur='y';
+		}
+		else {
+			$valeur='n';
+		}
+		saveSetting('ne_pas_supprimer_INE', $valeur);
+		if($debug_import=='y') {
+			echo "saveSetting('ne_pas_supprimer_INE', $valeur)<br />";
+		}
+	}
+	$ne_pas_supprimer_INE=getSettingAOui('ne_pas_supprimer_INE');
+
 	$eff_tranche_recherche_diff=isset($_POST['eff_tranche_recherche_diff']) ? $_POST['eff_tranche_recherche_diff'] : getSettingValue('maj_sconet_eff_tranche');
 	if(($eff_tranche_recherche_diff=='')||(!is_numeric($eff_tranche_recherche_diff))||($eff_tranche_recherche_diff<1)) {
 		$eff_tranche_recherche_diff=100;
@@ -3528,8 +3552,13 @@ else{
 								//echo "<td style='text-align: center;";
 								echo "<td";
 								if($lig_ele->no_gep!=$affiche[7]){
-									//echo " background-color:lightgreen;'>";
-									echo " class='modif'>";
+									if(($affiche[7]=='')&&($ne_pas_supprimer_INE)) {
+									//if(($affiche[7]=='')&&(getSettingAOui('ne_pas_supprimer_INE'))) {
+										echo " style='background-color:orange' title=\"L'identifiant ne sera pas vidé.\">";
+									}
+									else {
+										echo " class='modif'>";
+									}
 									if($lig_ele->no_gep!=''){
 										echo "$lig_ele->no_gep <font color='red'>-&gt;</font>\n";
 									}
@@ -4224,8 +4253,11 @@ else{
 					$sql="UPDATE eleves SET nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELENOM)."',
 											prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELEPRE)."',
 											sexe='".$lig->ELESEXE."',
-											naissance='".$naissance."',
+											naissance='".$naissance."'";
+					if(($lig->ELENONAT!='')||(!$ne_pas_supprimer_INE)) {
+						$sql.=",
 											no_gep='".$lig->ELENONAT."'";
+					}
 
 					if($ele_lieu_naissance=="y") {
 						$sql.=", lieu_naissance='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->LIEU_NAISSANCE)."'";
