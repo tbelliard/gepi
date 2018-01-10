@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -428,6 +428,13 @@ echo "<pre>";
 print_r($tab_modalites);
 echo "</pre>";
 */
+
+// 20180110
+echo "<div id='liens_masquer_lignes_non_cochees' style='float:right;width:10em;text-align:center;' class='fieldset_opacite50'>
+	Enseignements&nbsp;:<br />
+	<a href=\"javascript:masquer_lignes_non_cochees(true);\" title=\"Masquer les enseignements non associés à l'élève.\">Masquer</a><br />
+	<a href=\"javascript:masquer_lignes_non_cochees(false);\" title=\"Afficher tous les enseignements associés à la classe de l'élève, même ceux dans lesquels l'élève n'est pas inscrit.\">Afficher</a>
+</div>";
 
 echo "<h3>";
 if(acces("/eleves/modify_eleve.php", $_SESSION['statut'])) {
@@ -991,6 +998,34 @@ echo "<script type='text/javascript' language='javascript'>
 	}
 	//]]>
 
+
+	function masquer_lignes_non_cochees(mode) {
+		if(mode==true) {
+			for (var ligne=0;ligne<$nombre_ligne;ligne++) {
+
+				temoin='n';
+				for(i=1;i<".$nb_periode.";i++) {
+					if(document.getElementById('case'+ligne+'_'+i)){
+						if(document.getElementById('case'+ligne+'_'+i).checked) {
+							// Au moins une période cochée
+							temoin='y';
+						}
+					}
+				}
+
+				if(temoin=='n') {
+					if(document.getElementById('tr_'+ligne)) {
+						document.getElementById('tr_'+ligne).style.display='none';
+					}
+				}
+			}
+		}
+		else {
+			for (var ligne=0;ligne<$nombre_ligne;ligne++) {
+				document.getElementById('tr_'+ligne).style.display='';
+			}
+		}
+	}
 </script>\n";
 
 if($nb_erreurs>0){

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1004,8 +1004,16 @@ Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 <a href="javascript:CocheFrac(true, 2);changement();">Cocher la seconde moitié</a> - 
 <a href="javascript:CocheFrac(false, 2);changement();">Décocher la seconde moitié</a> - <br />
 
-<a href="javascript:griser_degriser('griser');changement();">Griser</a> - 
-<a href="javascript:griser_degriser('degriser');changement();">Dégriser</a>
+<a href="javascript:griser_degriser('griser');">Griser</a> - 
+<a href="javascript:griser_degriser('degriser');">Dégriser</a>
+
+<br />
+
+<span id='liens_masquer_lignes_non_cochees'>
+	<a href="javascript:masquer_lignes_non_cochees(true);" title="Masquer les élèves qui ne sont pas inscrits dans cet enseignement.">Masquer</a> - 
+	<a href="javascript:masquer_lignes_non_cochees(false);" title="Afficher tous les élèves des classes associées à l'enseignement, même si certains de ces élèves ne sont pas inscrits dans cet enseignement.">Afficher</a>
+</span>
+
 </p>
 
 <?php
@@ -1761,6 +1769,35 @@ document.getElementById('button_submit_Enregistrer_2').value='Rejeter la proposi
 	}
 	//]]>";
 
+	// 20180110
+	echo "
+	function masquer_lignes_non_cochees(mode) {
+		if(mode==true) {
+			for (var ki=0;ki<$nb_eleves;ki++) {
+				temoin='n';
+				for(i=0;i<=".count($current_group["periodes"]).";i++) {
+					if(document.getElementById('case_'+i+'_'+ki)){
+						if(document.getElementById('case_'+i+'_'+ki).checked == true) {
+							temoin='y';
+						}
+					}
+				}
+
+				if(temoin=='n') {
+					if(document.getElementById('tr_'+ki)) {
+						document.getElementById('tr_'+ki).style.display='none';
+					}
+				}
+			}
+		}
+		else {
+			for (var ki=0;ki<$nb_eleves;ki++) {
+				if(document.getElementById('tr_'+ki)) {
+					document.getElementById('tr_'+ki).style.display='';
+				}
+			}
+		}
+	}";
 
 	echo "</script>\n";
 
