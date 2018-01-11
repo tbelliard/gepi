@@ -35,6 +35,7 @@ Cahiers de textes:
 - Possibilité d'ouvrir les CDT à l'usage exclusif des professeurs 
   (pour proposer un CDT personnel aux professeurs, indépendamment d'un autre CDT
    éventuellement rempli par les professeurs sur un ENT pour les élèves,...).
+- Possibilité d'inclure des vidéos Youtube, Dailymotion et Vimeo.
 
 Discipline:
 - Possibilité d'ouvrir le paramétrage du pointage des menus incidents à des 
