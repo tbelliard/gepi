@@ -699,7 +699,9 @@ Cliquer pour masquer les photos.' /></a>
 			</td>
 			<td>
 			<!--td colspan='2'-->
-				Suppr.
+				Suppr.<br />
+				<a href='javascript:suppr_cocher_decocher(true)' title='Tout cocher'><img src='../images/enabled.png' class='icone16' alt='Tous'></a>/
+				<a href='javascript:suppr_cocher_decocher(false)' title='Tout décocher'><img src='../images/disabled.png' class='icone16' alt='Aucun'></a>
 			</td>
 <?php 
     if ($activer_outils_comp == "y") {
@@ -743,7 +745,7 @@ Cliquer pour masquer les photos.' /></a>
 			<td>
 <?php 
 		echo "
-				<input type='checkbox' name='suppr_ele[]' value=\"$login_eleve\" title=\"Supprimer cet élève de l'AID\" />";
+				<input type='checkbox' name='suppr_ele[]' id='suppr_$i' value=\"$login_eleve\" title=\"Supprimer cet élève de l'AID\" />";
 
 		// Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
 		if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) && (getSettingValue("active_module_trombinoscopes")=='y')) {
@@ -809,6 +811,14 @@ Cliquer pour masquer les photos.' /></a>
 			else {
 				document.getElementById('fixe').style.display='';
 				document.getElementById('temoin_photo').innerHTML="<img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.\\nCliquer pour masquer les photos.' />";
+			}
+		}
+
+		function suppr_cocher_decocher(mode) {
+			for(i=0;i<<?php echo $nombre;?>;i++) {
+				if(document.getElementById('suppr_'+i)) {
+					document.getElementById('suppr_'+i).checked=mode;
+				}
 			}
 		}
 	</script>
