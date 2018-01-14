@@ -209,17 +209,17 @@ if(isset($choix_donnees)) {
 							$res_clas=mysqli_query($GLOBALS["mysqli"],$sql);
 							$cpt_clas=0;
 							while($lig_clas=mysqli_fetch_object($res_clas)) {
-								if($cpt_clas>0) {
-									$lignes_csv.=", ";
-								}
 								if((isset($_POST['num_periode_'.$lig_clas->id_classe]))&&($_POST['num_periode_'.$lig_clas->id_classe]==$lig_clas->periode)) {
+									if($cpt_clas>0) {
+										$lignes_csv.=", ";
+									}
 									$lignes_csv.=$lig_clas->id_classe;
 									$cpt_clas++;
 								}
 							}
 						}
 						//echo "$lignes_csv<br /><hr />";
-						$lignes_csv=preg_replace("/, $/","",$lignes_csv);
+						//$lignes_csv=preg_replace("/, $/","",$lignes_csv);
 						$lignes_csv.=";";
 					}
 					elseif($tab_champs_retenus[$loop]=='classe') {
@@ -248,16 +248,17 @@ if(isset($choix_donnees)) {
 							$res_clas=mysqli_query($GLOBALS["mysqli"],$sql);
 							$cpt_clas=0;
 							while($lig_clas=mysqli_fetch_object($res_clas)) {
-								if($cpt_clas>0) {
-									$lignes_csv.=", ";
-								}
 								if((isset($_POST['num_periode_'.$lig_clas->id_classe]))&&($_POST['num_periode_'.$lig_clas->id_classe]==$lig_clas->periode)) {
+									if($cpt_clas>0) {
+										$lignes_csv.=", ";
+									}
+
 									$lignes_csv.=$lig_clas->classe;
 									$cpt_clas++;
 								}
 							}
 						}
-						$lignes_csv=preg_replace("/, $/","",$lignes_csv);
+						//$lignes_csv=preg_replace("/, $/","",$lignes_csv);
 						$lignes_csv.=";";
 					}
 					else {
