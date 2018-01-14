@@ -218,6 +218,8 @@ if(isset($choix_donnees)) {
 								}
 							}
 						}
+						//echo "$lignes_csv<br /><hr />";
+						$lignes_csv=preg_replace("/, $/","",$lignes_csv);
 						$lignes_csv.=";";
 					}
 					elseif($tab_champs_retenus[$loop]=='classe') {
@@ -255,6 +257,7 @@ if(isset($choix_donnees)) {
 								}
 							}
 						}
+						$lignes_csv=preg_replace("/, $/","",$lignes_csv);
 						$lignes_csv.=";";
 					}
 					else {
