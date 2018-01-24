@@ -237,7 +237,16 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
     echo "<center><h3 class='gepi'>".getSettingValue("gepiSchoolName"). " - année scolaire " . getSettingValue("gepiYear")."</H3>\n";
     echo "<h3 class='gepi'><font color='red'>Choisissez une classe et une matière.</font></h3>\n";
     $nom_fic_logo = getSettingValue("logo_etab");
-    $nom_fic_logo_c = "../images/".$nom_fic_logo;
+	//======================================
+	// 20180124
+	if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+		$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+	}
+	else {
+		$chemin_logo = '../images/';
+	}
+	$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
+	//======================================
     if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
         echo "<img src=\"".$nom_fic_logo_c."\" style=\"border: 0;\" ALT=\"\" /><br />\n";
     }

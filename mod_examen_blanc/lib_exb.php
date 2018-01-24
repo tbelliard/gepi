@@ -288,7 +288,16 @@ function bull_exb($tab_ele,$i) {
 		//= = = == = = == = = == = = == = = == = = == = = == = = == = = == = = ==
 
 		// Bloc identification etablissement
-		$logo = '../images/'.getSettingValue('logo_etab');
+		//======================================
+		// 20180124
+		if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+			$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+		}
+		else {
+			$chemin_logo = '../images/';
+		}
+		$logo = $chemin_logo.getSettingValue('logo_etab');
+		//======================================
 		$format_du_logo = strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
 
 		// Logo

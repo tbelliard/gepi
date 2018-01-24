@@ -547,7 +547,16 @@ width:".$largeur1."%;\n";
 			echo "<tr>\n";
 
 			$nom_fic_logo = $logo_etab;
-			$nom_fic_logo_c = "../images/".$nom_fic_logo;
+			//======================================
+			// 20180124
+			if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+				$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+			}
+			else {
+				$chemin_logo = '../images/';
+			}
+			$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
+			//======================================
 
 			if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 				echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" /></td>\n";
@@ -826,7 +835,16 @@ width:".$largeur1."%;\n";
 			}
 
 			$nom_fic_logo = $logo_etab;
-			$nom_fic_logo_c = "../images/".$nom_fic_logo;
+			//======================================
+			// 20180124
+			if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+				$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+			}
+			else {
+				$chemin_logo = '../images/';
+			}
+			$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
+			//======================================
 			if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 				echo "</td>\n<td style=\"text-align: right;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" />";
 			} else {
@@ -1596,7 +1614,16 @@ echo "</pre>";
 		// ============= DEBUT BLOC ETABLISSEMENT ==========================
 
 		// Bloc identification etablissement
-		$logo = '../images/'.getSettingValue('logo_etab');
+		//======================================
+		// 20180124
+		if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+			$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+		}
+		else {
+			$chemin_logo = '../images/';
+		}
+		$logo = $chemin_logo.getSettingValue('logo_etab');
+		//======================================
 		$format_du_logo = my_strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
 
 		// Logo
@@ -6917,7 +6944,16 @@ function bulletin_pdf_classe($tab_bull, $i="") {
 	// ============= DEBUT BLOC ETABLISSEMENT ==========================
 
 	// Bloc identification etablissement
-	$logo = '../images/'.getSettingValue('logo_etab');
+	//======================================
+	// 20180124
+	if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+		$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+	}
+	else {
+		$chemin_logo = '../images/';
+	}
+	$logo = $chemin_logo.getSettingValue('logo_etab');
+	//======================================
 	$format_du_logo = my_strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
 
 	// Logo
