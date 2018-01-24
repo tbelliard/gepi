@@ -227,7 +227,16 @@ $pdf->AddPage();
 	// information logo
 	$L_max_logo='75'; // Longeur maxi du logo
 	$H_max_logo='75'; // hauteur maxi du logo
-	$logo = '../../images/'.getSettingValue('logo_etab');
+	//======================================
+	// 20180124
+	if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+		$chemin_logo = '../../images/'.$_COOKIE['RNE'].'/';
+	}
+	else {
+		$chemin_logo = '../../images/';
+	}
+	$logo = $chemin_logo.getSettingValue('logo_etab');
+	//======================================
 	$valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
 	$X_logo='23';
 	$Y_logo='10';

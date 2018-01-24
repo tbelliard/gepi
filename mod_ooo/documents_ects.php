@@ -505,7 +505,16 @@ $OOo->MergeBlock('resultats','array','resultats[%p1%]');
 $OOo->MergeBlock('recap_annees','array','recap_annees[%p1%]');
 
 $nom_fic_logo = getSettingValue("logo_etab");
-$nom_fic_logo_c = "../images/".$nom_fic_logo;
+//======================================
+// 20180124
+if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+	$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+}
+else {
+	$chemin_logo = '../images/';
+}
+$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
+//======================================
 if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
     $OOo->MergeField('logo',$nom_fic_logo_c);
 } else {

@@ -45,18 +45,28 @@ $msg = '';
 if (isset($_POST['sup_logo'])) {
 	check_token();
 
-	$dest = '../images/';
+	//======================================
+	// 20180124
+	if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+		$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+		@mkdir($chemin_logo);
+	}
+	else {
+		$chemin_logo = '../images/';
+	}
+	//======================================
+
 	$ok = false;
-	if ($f = @fopen("$dest/.test", "w")) {
+	if ($f = @fopen("$chemin_logo/.test", "w")) {
 		@fputs($f, '<'.'?php $ok = true; ?'.'>');
 		@fclose($f);
-		include("$dest/.test");
+		include("$chemin_logo/.test");
 	}
 	if (!$ok) {
 		$msg = "Problème d'écriture sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
 	} else {
 		$old = getSettingValue("logo_etab");
-		if (($old != '') and (file_exists($dest.$old))) unlink($dest.$old);
+		if (($old != '') and (file_exists($chemin_logo.$old))) unlink($chemin_logo.$old);
 		$msg = "Le logo a été supprimé.";
 		if (!saveSetting("logo_etab", '')) $msg .= "Erreur lors de l'enregistrement dans la table setting !";
 
@@ -77,23 +87,32 @@ if (isset($_POST['valid_logo'])) {
 		//if ($ext!='jpg' and $ext!='jpeg' and $ext!='png'and $ext!='gif') {
 			$msg = "les seules extensions autorisées sont gif, png et jpg";
 		} else {
-			$dest = '../images/';
+			//======================================
+			// 20180124
+			if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+				$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+				@mkdir($chemin_logo);
+			}
+			else {
+				$chemin_logo = '../images/';
+			}
+			//======================================
+
 			$ok = false;
-			if ($f = @fopen("$dest/.test", "w")) {
+			if ($f = @fopen("$chemin_logo/.test", "w")) {
 				@fputs($f, '<'.'?php $ok = true; ?'.'>');
 				@fclose($f);
-				include("$dest/.test");
+				include("$chemin_logo/.test");
 			}
 			if (!$ok) {
 				$msg = "Problème d'écriture sur le répertoire IMAGES. Veuillez signaler ce problème à l'administrateur du site";
 			} else {
 				$old = getSettingValue("logo_etab");
-				if (file_exists($dest.$old)) @unlink($dest.$old);
-				//if (file_exists($dest.$doc_file)) @unlink($dest.$doc_file);
-				if (file_exists($dest.$doc_file['name'])) @unlink($dest.$doc_file['name']);
+				if (file_exists($chemin_logo.$old)) @unlink($chemin_logo.$old);
+				if (file_exists($chemin_logo.$doc_file['name'])) @unlink($chemin_logo.$doc_file['name']);
 				// le fichier téléchargé est renommé log_etab.xxx
-				$ok = @copy($doc_file['tmp_name'], $dest."logo_etab.".$ext);
-				if (!$ok) $ok = @move_uploaded_file($doc_file['tmp_name'], $dest."logo_etab.".$ext);
+				$ok = @copy($doc_file['tmp_name'], $chemin_logo."logo_etab.".$ext);
+				if (!$ok) $ok = @move_uploaded_file($doc_file['tmp_name'], $chemin_logo."logo_etab.".$ext);
 				if (!$ok) {
 					$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire IMAGES. Veuillez signaler ce problème à l'administrateur du site";
 				} else {
@@ -2319,7 +2338,17 @@ echo add_token_field();
 <?php
 $nom_fic_logo = getSettingValue("logo_etab");
 
-$nom_fic_logo_c = "../images/".$nom_fic_logo;
+	//======================================
+	// 20180124
+	if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+		$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+	}
+	else {
+		$chemin_logo = '../images/';
+	}
+	$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
+	//======================================
+
 if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 ?>
 		<br />

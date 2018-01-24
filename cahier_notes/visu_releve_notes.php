@@ -456,7 +456,16 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 
 			// ----- logo
 		$nom_fic_logo = getSettingValue("logo_etab");
-		$nom_fic_logo_c = "../images/".$nom_fic_logo;
+		//======================================
+		// 20180124
+		if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+			$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+		}
+		else {
+			$chemin_logo = '../images/';
+		}
+		$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
+		//======================================
 		if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 				//echo "</td><td width=* align=\"right\"><IMG SRC=\"".$nom_fic_logo_c."\" BORDER=0 ALT=\"\">";
 				//echo "</td><td width='100%' align=\"right\"><IMG SRC=\"".$nom_fic_logo_c."\" BORDER=0 ALT=\"\" />";

@@ -1390,7 +1390,17 @@ echo "'>\n";
 		echo "<tr>\n";
 
 		$nom_fic_logo = $logo_etab;
-		$nom_fic_logo_c = "../images/".$nom_fic_logo;
+		//======================================
+		// 20180124
+		$pref_multi="";
+		if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+			$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+		}
+		else {
+			$chemin_logo = '../images/';
+		}
+		$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
+		//======================================
 
 		if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 			echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" /></td>\n";
@@ -1717,7 +1727,18 @@ echo "'>\n";
 		}
 
 		$nom_fic_logo = $logo_etab;
-		$nom_fic_logo_c = "../images/".$nom_fic_logo;
+		//======================================
+		// 20180124
+		$pref_multi="";
+		if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+			$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+		}
+		else {
+			$chemin_logo = '../images/';
+		}
+		$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
+		//======================================
+
 		if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 		echo "</td>\n<td style=\"text-align: right;\"><IMG SRC=\"".$nom_fic_logo_c."\" BORDER=\"0\" ALT=\"Logo\" />";
 		} else {
