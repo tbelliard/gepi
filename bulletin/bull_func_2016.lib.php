@@ -653,7 +653,16 @@ echo "</pre>";
 
 		// Cadre Logo établissement
 
-		$logo = '../images/'.getSettingValue('logo_etab');
+		//======================================
+		// 20180124
+		if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+			$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+		}
+		else {
+			$chemin_logo = '../images/';
+		}
+		$logo = $chemin_logo.getSettingValue('logo_etab');
+		//======================================
 		$format_du_logo = mb_strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
 
 		// Logo
@@ -5560,7 +5569,16 @@ function bulletin_pdf_classe($tab_bull, $i="") {
 
 	// Cadre Logo établissement
 
-	$logo = '../images/'.getSettingValue('logo_etab');
+	//======================================
+	// 20180124
+	if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+		$chemin_logo = '../images/'.$_COOKIE['RNE'].'/';
+	}
+	else {
+		$chemin_logo = '../images/';
+	}
+	$logo = $chemin_logo.getSettingValue('logo_etab');
+	//======================================
 	$format_du_logo = mb_strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
 
 	// Logo

@@ -428,7 +428,16 @@ while(!empty($id_eleve[$i])) {
 	$affiche_logo_etab = '1';
 	$L_max_logo='75'; // Longeur maxi du logo
 	$H_max_logo='75'; // hauteur maxi du logo
-	$logo = '../../images/'.getSettingValue('logo_etab');
+	//======================================
+	// 20180124
+	if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')&&(isset($_COOKIE['RNE']))) {
+		$chemin_logo = '../../images/'.$_COOKIE['RNE'].'/';
+	}
+	else {
+		$chemin_logo = '../../images/';
+	}
+	$logo = $chemin_logo.getSettingValue('logo_etab');
+	//======================================
 	$format_du_logo = str_replace('.','',strstr(getSettingValue('logo_etab'), '.'));
 	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 	{
