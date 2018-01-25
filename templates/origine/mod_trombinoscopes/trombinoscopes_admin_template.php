@@ -91,6 +91,8 @@
 <div id='container'>
 <!-- Fin haut de page -->
 
+	<div id='fixe' class='fieldset_opacite50' style='padding:0.5em;'><a href='../mod_trombinoscopes/trombinoscopes.php' target='_blank' title="Accéder aux trombinoscopes dans un nouvel onglet.">Trombinoscopes</a></div>
+
 	<h2 class="colleHaut">Configuration générale</h2>
 	<p>
 	<em>
@@ -566,7 +568,9 @@ unset ($aid_disponible)
 <p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (<em>et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer</em>) d'accéder aux fichiers du dossier photos/eleves. Cet encodage, facultatif, consiste à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires.<br />
 <span class="bold">Attention : </span><br />
 &nbsp;- si l'encodage est activé alors pour transférer directement par FTP les fichiers photo des élèves (<em>nommés sous la forme elenoet.jpg, ou login.jpg dans le cas du multisite</em>) dans le dossier photos/eleves il faut au préalable désactiver l'encodage, procéder au transfert, puis activer l'encodage ;<br />
-&nbsp;- lors d'une restauration de la base il faut veiller à maintenir la cohérence entre la base à restaurer et l'état présent de l'encodage, par exemple si la sauvegarde a été effectuée alors que l'encodage était désactivé et qu'en l'état présent l'encodage est activé alors il faut le désactiver avant de restaurer la base (<em>et réciproquement</em>).</p>
+&nbsp;- lors d'une restauration de la base il faut veiller à maintenir la cohérence entre la base à restaurer et l'état présent de l'encodage, par exemple si la sauvegarde a été effectuée alors que l'encodage était désactivé et qu'en l'état présent l'encodage est activé alors il faut le désactiver avant de restaurer la base (<em>et réciproquement</em>).<br />
+&nbsp;- En cas d'incohérence, toujours commencer par faire une sauvegarde des photos avant de décoder puir ré-encoder.<br />
+Il y a un risque de perte des photos.</p>
 	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && !getSettingAOui('encodage_nom_photo') && $etat_present['type_incoherence']==0) {?>
 	<form action="trombinoscopes_admin.php" id="form9" method="post" title="Encoder les noms des fichiers photo élèves">
 	<?php echo add_token_field(); ?>
