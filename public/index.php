@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -62,7 +62,12 @@ unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 if (is_numeric($id_groupe)) {
     $current_group = get_group($id_groupe);
-    if ($id_classe == NULL) $id_classe = $current_group["classes"]["list"][0];
+    if(!isset($current_group['name'])) {
+        $current_group = false;
+    }
+    elseif (($id_classe == NULL)||(!in_array($id_classe, $current_group["classes"]["list"]))) {
+        $id_classe = $current_group["classes"]["list"][0];
+    }
 } else {
     $current_group = false;
 }
@@ -75,11 +80,17 @@ if ($rne != 'aucun') {
 }
 
 // Nom complet de la classe
-$appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
-$classe_nom = @old_mysql_result($appel_classe, 0, "classe");
+if(isset($id_classe)) {
+	$appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
+	$classe_nom = @old_mysql_result($appel_classe, 0, "classe");
+}
+
 // Nom complet de la matière
-$matiere_nom = $current_group["matiere"]["nom_complet"];
-$matiere_nom_court = $current_group["matiere"]["matiere"];
+if(isset($current_group["matiere"])) {
+	$matiere_nom = $current_group["matiere"]["nom_complet"];
+	$matiere_nom_court = $current_group["matiere"]["matiere"];
+}
+
 // Vérification
 settype($month,"integer");
 settype($day,"integer");
@@ -137,7 +148,7 @@ if ($test_login > 0) {
 echo "</td>\n";
 echo "<td style=\"text-align:center;\">\n";
 echo "<p><span class='grand'>Cahier de textes";
-if ($id_classe != -1) echo "<br />$classe_nom";
+if((isset($id_classe))&&($id_classe != -1)) echo "<br />$classe_nom";
 if ($id_matiere != -1) echo "- $matiere_nom ($matiere_nom_court)";
 echo "</span>\n";
 // Test si le cahier de texte est partagé

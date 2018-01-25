@@ -1,8 +1,6 @@
 <?php
 /*
- * Last modification  : 23/11/2006
- *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -39,21 +37,43 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id
 unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 
+//debug_var();
+
 if (is_numeric($id_groupe)) {
     $current_group = get_group($id_groupe);
+    if(!isset($current_group['name'])) {
+        $current_group = false;
+    }
+    elseif (($id_classe == -1)||(!in_array($id_classe, $current_group["classes"]["list"]))) {
+        $id_classe = $current_group["classes"]["list"][0];
+    }
 } else {
     $current_group = false;
 }
 
-// Nom complet de la classe
-$appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
-$classe_nom = @old_mysql_result($appel_classe, 0, "classe");
-// Nom complet de la matière
+/*
+if($id_classe == -1) {
+	//header("Location: index.php?msg=Groupe invalide");
+	header("Location: index.php");
+	die();
+}
+*/
+if((is_numeric($id_classe))&&($id_classe != -1)) {
+	// Nom complet de la classe
+	$appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
+	$classe_nom = @old_mysql_result($appel_classe, 0, "classe");
+}
 
-$matiere_nom = $current_group["matiere"]["nom_complet"];
+// Nom complet de la matière
+if(isset($current_group["matiere"]["nom_complet"])) {
+	$matiere_nom = $current_group["matiere"]["nom_complet"];
+}
+
 (!isset($_GET['ordre']) or (($_GET['ordre'] != '') and ($_GET['ordre']!= 'DESC')))?$current_ordre='':$current_ordre=$_GET['ordre'];
 ($current_ordre == '')?$ordre='DESC':$ordre='';
+
 (!isset($_GET['imprime']) or (($_GET['imprime'] != 'y') and ($_GET['imprime']!= 'n')))?$current_imprime='n':$current_imprime=$_GET['imprime'];
+
 if ($current_imprime == 'n') {
   $imprime='y';
   $text_imprime="Version imprimable";
