@@ -707,23 +707,46 @@ Il y a un risque de perte des photos.</p>
 
 <?php }
 if (isset ($eleves_sans_photo)){
+	$acces_modify_eleve=acces('/eleves/modify_eleve.php', $_SESSION['statut']);
+
+	if($acces_modify_eleve) {
 ?>
-	<table class="boireaus">
+	<table class="boireaus boireaus_alt">
 	<caption>Élèves sans photos</caption>
 	<tr>
-		<th>Nom</th>
-		<th>Prénom</th>
+		<th style='color:black;'>Nom</th>
+		<th style='color:black;'>Prénom</th>
+		<th style='color:black;'>Modifier</th>
 	</tr>
 <?php
-		$lig="lig1";
 	foreach ($eleves_sans_photo as $pas_photo){
-	if ($lig=="lig1"){
-		$lig="lig-1";
-	} else{
-		$lig="lig1";
-	}
 ?>
-	<tr class="<?php echo $lig ;?>" >
+	<tr onmouseover="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor=''">
+		<td><?php echo $pas_photo->nom ;?></td>
+		<td><?php echo $pas_photo->prenom ;?></td>
+		<td>
+			<a href='../eleves/modify_eleve.php?eleve_login=<?php echo $pas_photo->login;?>&quelles_classes=photo&order_type=nom,prenom&motif_rech=' target='_blank'><img src='../images/icons/edit16_ele.png' class='icone16' alt='Élève' /></a>
+		</td>
+	</tr>
+<?php
+	}
+	unset($pas_photo);
+?>
+	</table>
+<?php
+	}
+	else {
+?>
+	<table class="boireaus boireaus_alt">
+	<caption>Élèves sans photos</caption>
+	<tr>
+		<th style='color:black;'>Nom</th>
+		<th style='color:black;'>Prénom</th>
+	</tr>
+<?php
+	foreach ($eleves_sans_photo as $pas_photo){
+?>
+	<tr>
 		<td><?php echo $pas_photo->nom ;?></td>
 		<td><?php echo $pas_photo->prenom ;?></td>
 	</tr>
@@ -732,6 +755,10 @@ if (isset ($eleves_sans_photo)){
 	unset($pas_photo);
 ?>
 	</table>
+<?php
+}
+?>
+	<p align='center'><a href='../eleves/index.php?quelles_classes=photo' target='_blank'>Consulter la liste et uploader des photos</a></a>
 <?php
 }
 
