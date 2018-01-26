@@ -1806,6 +1806,9 @@ if(isset($quelles_classes)) {
 	//$csv.=";";
 
 	echo "</tr>\n";
+	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")) {
+		$csv.="Elenoet;";
+	}
 	$csv.="\r\n";
 
 	if(!isset($tab_eleve)){
@@ -2102,6 +2105,9 @@ if(isset($quelles_classes)) {
 		}
 
 		echo "</tr>\n";
+		if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")) {
+			$csv.=$elenoet.";";
+		}
 		$csv.="\r\n";
 
 		$i++;
