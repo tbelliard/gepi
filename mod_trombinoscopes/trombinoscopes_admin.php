@@ -585,12 +585,13 @@ if (count($_POST)>0)
 
 // Affichage des élèves sans photo
 	if (isset ($_POST['voirEleve']) && $_POST['voirEleve']=="yes"){
-	check_token();
-	if (!recherche_eleves_sans_photo()){
-		$msg .= "Erreur lors de la sélection des élèves sans photo";
-	}else{
-		$eleves_sans_photo=recherche_eleves_sans_photo();
-		$msg.="liste des élèves sans photo en bas de page";
+		check_token();
+		if (!recherche_eleves_sans_photo()){
+			$msg .= "Erreur lors de la sélection des élèves sans photo";
+		}
+		else{
+			$eleves_sans_photo=recherche_eleves_sans_photo();
+			$msg.="liste des élèves sans photo en bas de page";
 		}
 	}
 
