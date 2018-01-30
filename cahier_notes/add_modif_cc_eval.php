@@ -3,7 +3,7 @@
  * Ajouter, modifier une évaluation cumule
  * 
  * 
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * @package Carnet_de_notes
  * @subpackage Evaluation_cumule
@@ -165,7 +165,7 @@ if (isset($_POST['ok'])) {
 	$nom_complet=traitement_magic_quotes($_POST['nom_complet']);
 	$description=traitement_magic_quotes($_POST['description']);
 
-	$note_sur=preg_replace('/[^0-9]/','',$_POST['note_sur']);
+	$note_sur=preg_replace('/[^0-9.]/','',$_POST['note_sur']);
 
 	if($nom_court=='') {
 		$msg="Le nom_court de l'évaluation ne peut pas être vide.";
@@ -227,6 +227,7 @@ if (isset($_POST['ok'])) {
 		$vision_famille  = $annee."-".$mois."-".$jour." 00:00:00";
 
 		$sql="UPDATE cc_eval SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', note_sur='$note_sur', date='".$date."', vision_famille ='".$vision_famille ."' WHERE id='$id_eval';";
+		//echo "$sql<br />";
 		$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$update) {
 			$msg="Erreur lors de la création ou mise à jour de l'évaluation associée au ".stripslashes($nom_cc)." n°$id_dev. ".stripslashes($sql);

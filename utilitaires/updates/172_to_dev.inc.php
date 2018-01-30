@@ -71,5 +71,26 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$result .= "&nbsp;-> Contrôle du type du champ 'note_sur' de la table 'cc_eval'<br />";
+$sql="show fields from cc_eval where field='note_sur';";
+$query=mysqli_query($mysqli, $sql);
+if (mysqli_num_rows($query)>0) {
+	$lig=mysqli_fetch_assoc($query);
+	if(strtolower($lig["Type"])!='float(10,1)') {
+		$result .= "Correction du type du champ 'note_sur' de la table 'cc_eval'&nbsp;: ";
+		$sql="ALTER TABLE cc_eval CHANGE note_sur note_sur FLOAT(10,1) NULL DEFAULT '5';";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !")."<br />";
+		}
+		else {
+			$result .= msj_erreur("ECHEC !")."<br />";
+		}
+	} else {
+		$result .= msj_present("Le champ 'note_sur' a le bon type")."<br />";
+	}
+} else {
+	$result .= msj_erreur("Le champ 'note_sur' n'existe pas")."<br />";
+}
 
 ?>
