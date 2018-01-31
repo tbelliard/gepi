@@ -174,6 +174,62 @@ if (isset($_GET['action'])) {
 		}
 	}
 }
+//debug_var();
+if(
+	(isset($id_groupe))&&
+	(isset($current_group))&&
+	(isset($id_racine))&&
+	(isset($_GET['id_dev']))&&
+	(preg_match("/^[0-9]{1,}$/", $_GET['id_dev']))&&
+	(isset($_GET['mode']))&&
+	($_GET['mode']=='change_visibilite_dev')&&
+	(isset($_GET['visible']))&&
+	(($_GET['visible']=='y')||($_GET['visible']=='n'))
+) {
+	check_token();
+
+	$sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe' AND id='".$_GET['id_dev']."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		$sql="UPDATE cc_dev SET vision_famille='".(($_GET['visible']=='y') ? 'yes' : 'no')."' WHERE id_groupe='$id_groupe' AND id='".$_GET['id_dev']."';";
+		//echo "$sql<br />";
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		if((isset($_GET['mode_js']))&&
+		($_GET['mode_js']=='y')) {
+			if(!$update) {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			else {
+
+				if($_GET['visible']=='y') {
+					echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=".$_GET['id_dev']."&amp;mode=change_visibilite_dev&amp;visible=n".add_token_in_url()."' onclick=\"change_visibilite_dev(".$_GET['id_dev'].",'n');return false;\"><img src='../images/icons/visible.png' width='19' height='16' title='".ucfirst($nom_cc)." visible des familles à compter des dates définies dans les évaluations.
+
+		Cliquez pour ne pas rendre visible cette ".$nom_cc." des familles.' alt='Evaluation visible des familles' /></a>";
+				}
+				else {
+					echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=".$_GET['id_dev']."&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev(".$_GET['id_dev'].",'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='".ucfirst($nom_cc)." non visible des familles.
+
+		Cliquez pour rendre visible cette ".$nom_cc." des familles.' alt='Evaluation non visible des familles' /></a>";
+				}
+			}
+
+			die();
+		}
+		else {
+			// On va poursuivre et afficher le $msg
+			if(!$update) {
+				$msg="Erreur lors de la modification de la visbilité ".$nom_cc." n°".$_GET['id_dev']."<br />";
+			}
+			else {
+				$msg="Visbilité ".$nom_cc." n°".$_GET['id_dev']." modifiée.<br />";
+			}
+		}
+	}
+}
 
 $message_dev = "Etes-vous sûr de vouloir supprimer ce(tte) $nom_cc, les évaluations et les notes qu\\'elle contient ?";
 $message_eval = "Etes-vous sûr de vouloir supprimer cette évaluation et les notes qu\\'elle contient ?";
@@ -272,7 +328,22 @@ else {
 		echo "$lig->nom_court ";
 		echo "<a href='visu_cc.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Visualisation</a>";
 		echo " | ";
-		echo "<a href='add_modif_cc_dev.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Configuration</a>";
+		echo "<a href='add_modif_cc_dev.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Configuration</a> (";
+
+		echo "<span id='span_visibilite_".$lig->id."'>";
+		if($lig->vision_famille=='yes') {
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=".$lig->id."&amp;mode=change_visibilite_dev&amp;visible=n".add_token_in_url()."' onclick=\"change_visibilite_dev(".$lig->id.",'n');return false;\"><img src='../images/icons/visible.png' width='19' height='16' title='".ucfirst($nom_cc)." visible des familles à compter des dates définies dans les évaluations.
+
+Cliquez pour ne pas rendre visible cette ".$nom_cc." des familles.' alt='Evaluation visible des familles' /></a>";
+		}
+		else {
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=".$lig->id."&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev(".$lig->id.",'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='".ucfirst($nom_cc)." non visible des familles.
+
+Cliquez pour rendre visible cette ".$nom_cc." des familles.' alt='Evaluation non visible des familles' /></a>";
+		}
+		echo "</span>";
+		echo ")";
+
 		echo " | ";
 		echo "<a href='add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Ajouter une évaluation</a>";
 		echo " | ";
@@ -309,6 +380,21 @@ else {
 				echo "<a href='saisie_notes_cc.php?id_racine=$id_racine&amp;id_dev=$lig->id&amp;id_eval=$lig2->id'>Saisir</a> (<span style='color:$couleur'>$nb_notes/$nb_eleves</span>)";
 				echo " | ";
 				echo "<a href='add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$lig->id&amp;id_eval=$lig2->id'>Configuration</a>";
+
+				echo " (";
+				$date_ev=formate_date($lig2->date);
+				echo "<span title=\"".ucfirst($nom_cc)." du ".$date_ev."\">".$date_ev."</span>";
+				if($lig->vision_famille=='yes') {
+					if($lig2->vision_famille<=$lig2->date) {
+						echo " <img src='../images/icons/visible.png' width='19' height='16' title='".ucfirst($nom_cc)." visible des familles.' />";
+					}
+					else {
+						echo " <img src='../images/icons/invisible.png' width='19' height='16' title=\"Cette ".$nom_cc." ne sera visible des familles qu'à compter du ".formate_date($lig2->vision_famille).".\" />";
+					}
+				}
+				echo ")";
+
+
 				echo " | ";
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;id_eval=$lig2->id&amp;action=suppr_eval".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($lig->nom_court)."', '".$message_eval."')\">Supprimer</a>";
 				echo "</li>\n";
@@ -325,6 +411,14 @@ else {
 
 echo "</form>\n";
 echo "<br />\n";
+
+echo "
+<script type='text/javascript'>
+	function change_visibilite_dev(id_dev, visible) {
+		new Ajax.Updater($('span_visibilite_'+id_dev),'".$_SERVER['PHP_SELF']."?id_racine=$id_racine&id_dev='+id_dev+'&mode=change_visibilite_dev&visible='+visible+'&mode_js=y&".add_token_in_url(false)."',{method: 'get'});
+	}
+</script>";
+
 
 echo "<p style='text-indent:-3em; margin-left:3em;'><em>NOTE&nbsp;:</em><br />Les $nom_cc ne sont pas rattachées à une période.<br />Elles peuvent être à cheval sur plusieurs périodes.<br />Cependant, le transfert des notes vers un carnet de notes n'est possible que vers une période ouverte en saisie.</p>\n";
 
