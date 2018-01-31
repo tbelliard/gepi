@@ -209,11 +209,11 @@ if (isset($_POST['ok'])) {
 		$date=$annee."-".$mois."-".$jour." 00:00:00";
 
 
-		if ($_POST['vision_famille ']) {
-			if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['vision_famille '])) {
-				$annee=mb_substr($_POST['vision_famille '],6,4);
-				$mois=mb_substr($_POST['vision_famille '],3,2);
-				$jour=mb_substr($_POST['vision_famille '],0,2);
+		if ($_POST['vision_famille']) {
+			if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['vision_famille'])) {
+				$annee=mb_substr($_POST['vision_famille'],6,4);
+				$mois=mb_substr($_POST['vision_famille'],3,2);
+				$jour=mb_substr($_POST['vision_famille'],0,2);
 			} else {
 				$annee=strftime("%Y");
 				$mois=strftime("%m");
