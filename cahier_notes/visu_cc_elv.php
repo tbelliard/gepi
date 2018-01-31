@@ -40,8 +40,16 @@ $tbs_pmv = '';
  * mysql_query est obsolète depuis PHP 5.5.0, on utilise mysqli à la place
  */
 
+// Fonction inutilisée, mais pouvant poser problème avec un port mySQL modifié.
+// Patch à tester.
 function connectMysqli ($dbHost, $dbUser, $dbPass, $dbDb) {
-    $connection = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+    global $dbPort;
+    if((!isset($dbPort))||($dbPort=="")) {
+        $connection = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+    }
+    else {
+        $connection = new mysqli($dbHost, $dbUser, $dbPass, $dbDb, $dbPort);
+    }
 /* Modification du jeu de résultats en utf8 */
     if (!$connection->set_charset("utf8")) {
         printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $connection->error);
@@ -180,8 +188,8 @@ $query = "SELECT DISTINCT `cc_dev`.* , `jgm`.id_matiere FROM `cc_dev`
         WHERE jeg.login = '".$eleve->getLogin()."'
             AND `cc_dev`.vision_famille = 'yes'
         ORDER BY cc_dev.id_cn_dev ASC, cc_dev.id_groupe ASC
-    ";
-// echo $query;
+    ;";
+//echo $query."<br />";
 
 if ($result = $mysqli->query($query)) {
 
