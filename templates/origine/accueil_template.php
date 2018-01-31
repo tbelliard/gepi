@@ -315,6 +315,12 @@
 		}
 	}
 
+	$messages_divers_accueil="";
+	if(($_SESSION['statut']=='administrateur')&&(getSettingAOui('active_module_trombinoscopes'))&&(!getSettingAOui('encodage_nom_photo'))) {
+		$messages_divers_accueil.="<div class='postit'><p style='color:red'>Le module Trombinoscopes est activé et l'encodage des photos n'y est pas mis en place.<br />Cela signifie qu'un intrus peut tenter de récupérer les photos des élèves,...<br />Vous devriez <a href='./mod_trombinoscopes/trombinoscopes_admin.php#encodage'>activer l'encodage des noms de photos</a> pour ne pas être accusés d'un manque de précautions pour limiter les accès aux photos.<br />Un tel manquement à des précautions élémentaires pourrait vous être reproché.<p></div>";
+	}
+
+
 	$chaine_tableaux_page_accueil="";
 	if (in_array($_SESSION['statut'], array("scolarite", "administrateur"))) {
 		if(getPref($_SESSION['login'], "accueil_tableau_ouverture_periode", "y")!="n") {
@@ -420,7 +426,8 @@
 	((isset($message_remplacements_confirmes))&&($message_remplacements_confirmes!=""))||
 	((isset($affichage_pointages))&&($affichage_pointages!=""))||
 	((isset($message_nouvelle_version_gepi))&&($message_nouvelle_version_gepi!=""))||
-	($message_correction_app_en_attente_de_validation!='')) :
+	($message_correction_app_en_attente_de_validation!='')||
+	($messages_divers_accueil!='')) :
 ?>
 
 	<div class="panneau_affichage">
@@ -470,6 +477,10 @@
 
 				if((isset($affichage_pointages))&&($affichage_pointages!="")) {
 					echo $affichage_pointages;
+				}
+
+				if((isset($messages_divers_accueil))&&($messages_divers_accueil!="")) {
+					echo $messages_divers_accueil;
 				}
 
 				if (count($afficheAccueil->message)) :
