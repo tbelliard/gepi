@@ -310,6 +310,8 @@ echo "<h2>".$current_group['name']." (<i>".$current_group['description']."</i>) 
 $liste_eleves = $current_group["eleves"][$periode_num]["users"];
 $nb_eleves=count($current_group["eleves"][$periode_num]["users"]);
 
+$date_courante=strftime("%Y-%m-%d");
+
 //echo "<p>Liste des $nom_cc non rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
 echo "<p>Liste des $nom_cc&nbsp;: <br />\n";
 //$sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe' AND id_cn_dev NOT IN (SELECT id FROM cn_devoirs);";
@@ -385,7 +387,7 @@ Cliquez pour rendre visible cette ".$nom_cc." des familles.' alt='Evaluation non
 				$date_ev=formate_date($lig2->date);
 				echo "<span title=\"".ucfirst($nom_cc)." du ".$date_ev."\">".$date_ev."</span>";
 				if($lig->vision_famille=='yes') {
-					if($lig2->vision_famille<=$lig2->date) {
+					if($lig2->vision_famille<=$date_courante) {
 						echo " <img src='../images/icons/visible.png' width='19' height='16' title='".ucfirst($nom_cc)." visible des familles.' />";
 					}
 					else {
