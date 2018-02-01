@@ -3,7 +3,7 @@
  * Ajouter, modifier une évaluation cumule
  * 
  * 
- * @copyright Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * @package Carnet_de_notes
  * @subpackage Evaluation_cumule
@@ -262,6 +262,8 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 insere_lien_calendrier_crob("right");
 
+$designation_groupe=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 echo add_token_field();
 
@@ -271,7 +273,8 @@ echo "<a href='index_cc.php?id_racine=$id_racine'><img src='../images/icons/back
 echo "</p>\n";
 echo "</div>\n";
 
-echo "<h2 class='gepi'>Configuration d'une évaluation de $nom_court_dev (<i>$nom_complet_dev</i>)&nbsp;:</h2>\n";
+echo "<h2 class='gepi'>$designation_groupe</h2>\n";
+echo "<h3 class='gepi'>Configuration d'une évaluation de $nom_court_dev (<i>$nom_complet_dev</i>)&nbsp;:</h3>\n";
 
 $aff_nom_court="y";
 $aff_nom_complet="y";
