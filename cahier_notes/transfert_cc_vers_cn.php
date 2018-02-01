@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * @package Carnet_de_notes
  * @subpackage affichage
  */
@@ -517,6 +517,8 @@ echo "<a href=\"index_cc.php?id_racine=$id_racine\" onclick=\"return confirm_aba
 if(!isset($id_dev_cc)) {
 	echo "</p>\n";
 
+	echo "<h2>".$designation_groupe."</h2>";
+
 	echo "<p>Aucun $nom_cc n'a été choisi.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
@@ -525,6 +527,8 @@ if(!isset($id_dev_cc)) {
 //==================================================================
 
 echo "</p>\n";
+
+echo "<h2>".$designation_groupe."</h2>";
 
 echo "<p class='bold'>$nom_cc n°$id_dev_cc</p>\n";
 
