@@ -720,7 +720,8 @@ if($etat_incident!='clos') {
 
 					$sql.="nature='".traitement_magic_quotes(corriger_caracteres($nature))."' ,";
 					//on vérifie si une catégorie est définie pour cette nature
-					$sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' GROUP BY id_categorie";
+					$sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' AND id_categorie IS NOT NULL GROUP BY id_categorie";
+					//echo "$sql2<br />";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql2);
 					//if($res2) {
 					if(mysqli_num_rows($res2)>0) {
