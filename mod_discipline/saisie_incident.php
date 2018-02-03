@@ -1673,7 +1673,7 @@ if(isset($id_incident) ) {
         if($etat_incident!='clos') {
 ?>
                 <th>
-                    <input type='submit' name='supprimer' value='Supprimer' />
+                    <input type='submit' name='supprimer' id='supprimer_protagoniste' value='Supprimer' />
                     <!-- A FAIRE: Ajouter des liens Tout cocher/décocher-->
                 </th>           
 <?php
@@ -1939,7 +1939,7 @@ if(isset($id_incident) ) {
         <td>
             <input type='checkbox' 
                    name='suppr_ele_incident[]' 
-                   id='suppr_<?php echo $cpt; ?>' 
+                   id='suppr_protagoniste_<?php echo $cpt; ?>' 
                    value="<?php echo $lig->login; ?>" />
         </td>
  <?php
@@ -1954,6 +1954,7 @@ if(isset($id_incident) ) {
  <?php
               if($cpt>0) {
 ?>
+<div id='debug_suppr_prot' style='display:none'></div>
         <script type='text/javascript'>
 //<![CDATA[
 	function check_protagonistes_sans_qualite() {
@@ -1980,6 +1981,57 @@ if(isset($id_incident) ) {
 	}
 
 	setTimeout('check_protagonistes_sans_qualite()',10000);
+
+	//supprimer_protagoniste
+	//suppr_protagoniste_$cpt
+	function check_suppr_protagonistes() {
+
+		/*
+		document.getElementById('debug_suppr_prot').style.display='';
+		document.getElementById('debug_suppr_prot').innerHTML='DEBUG';
+		compteur_protagonistes_coches=0;
+		tab=document.getElementsByTagName('input');
+		document.getElementById('debug_suppr_prot').innerHTML+=tab.length+'<br />';
+		for(i=0;i<tab.length;i++) {
+			type_input=tab[i].getAttribute('type');
+			//alert('type_input='+type_input);
+			document.getElementById('debug_suppr_prot').innerHTML+=type_input+'<br />';
+			if(type_input=='checkbox') {
+				//alert('type_input='+type_input);
+				id_input=tab[i].getAttribute('id');
+				//alert('id_input.substring(0,19)='+id_input.substring(0,19));
+				if(id_input.substring(0,19)=='suppr_protagoniste_') {
+					if(tab[i].checked==true) {
+						compteur_protagonistes_coches++;
+						break;
+					}
+				}
+			}
+		}
+		*/
+
+		compteur_protagonistes_coches=0;
+		for(i=0;i<<?php echo $cpt;?>;i++) {
+			if(document.getElementById('suppr_protagoniste_'+i)) {
+				if(document.getElementById('suppr_protagoniste_'+i).checked==true) {
+					compteur_protagonistes_coches++;
+					break;
+				}
+			}
+		}
+
+		//alert(compteur_protagonistes_coches);
+		if(compteur_protagonistes_coches==0) {
+			document.getElementById('supprimer_protagoniste').disabled=true;
+		}
+		else {
+			document.getElementById('supprimer_protagoniste').disabled=false;
+		}
+
+		setTimeout('check_suppr_protagonistes()',2000);
+	}
+
+	setTimeout('check_suppr_protagonistes()',2000);
 //]]>
 </script>
  <?php
