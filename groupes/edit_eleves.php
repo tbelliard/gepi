@@ -1010,8 +1010,12 @@ Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 <br />
 
 <span id='liens_masquer_lignes_non_cochees'>
-	<a href="javascript:masquer_lignes_non_cochees(true);" title="Masquer les élèves qui ne sont pas inscrits dans cet enseignement.">Masquer</a> - 
-	<a href="javascript:masquer_lignes_non_cochees(false);" title="Afficher tous les élèves des classes associées à l'enseignement, même si certains de ces élèves ne sont pas inscrits dans cet enseignement.">Afficher</a>
+	<a href="javascript:masquer_lignes_non_cochees(true);" title="Masquer les élèves qui ne sont pas inscrits dans cet enseignement.">
+		<img src='../images/icons/invisible.png' class='icone16' alt='Masquer' /> Masquer
+	</a> - 
+	<a href="javascript:masquer_lignes_non_cochees(false);" title="Afficher tous les élèves des classes associées à l'enseignement, même si certains de ces élèves ne sont pas inscrits dans cet enseignement.">
+		<img src='../images/icons/visible.png' class='icone16' alt='Afficher' /> Afficher
+	</a>
 </span>
 
 </p>
