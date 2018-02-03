@@ -1146,6 +1146,9 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 						$temoin=true;
 						$adresse_sup = $lig->adresse;
 					}
+					elseif(($lig->destinataire=='')&&($lig->login!='')) {
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u WHERE u.login='".$lig->login."' AND u.email!='';";
+					}
 
 					//echo "$sql<br />";
 					if ($temoin) { //Cas d'une adresse mail autre
@@ -1228,6 +1231,9 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 					}
 					elseif($lig->destinataire=='scolarite') {
 						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_scol_classes jsc WHERE jsc.id_classe='".$tab_id_classe[$i]."' AND jsc.login=u.login AND u.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
+					}
+					elseif(($lig->destinataire=='')&&($lig->login!='')) {
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u WHERE u.login='".$lig->login."' AND u.email!='' AND u.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
 					}
 					//echo "$sql<br />";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);

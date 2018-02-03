@@ -93,4 +93,19 @@ if (mysqli_num_rows($query)>0) {
 	$result .= msj_erreur("Le champ 'note_sur' n'existe pas")."<br />";
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'login' à la table 's_alerte_mail'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM s_alerte_mail LIKE 'login';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE s_alerte_mail ADD login varchar(50) NOT NULL default '' AFTER destinataire;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>
