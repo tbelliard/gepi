@@ -2600,7 +2600,7 @@ function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranche
 	return $retour;
 }
 
-function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=array(), $nom_champ='login_user', $nom_func_js_tout_cocher_decocher='cocher_decocher', $avec_titre_statut="y", $sql="") {
+function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=array(), $nom_champ='login_user', $nom_func_js_tout_cocher_decocher='cocher_decocher', $avec_titre_statut="y", $sql="", $nom_func_js_checkbox_change="checkbox_change") {
 	$retour="";
 
 	if($sql=="") {
@@ -2640,7 +2640,7 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 			}
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
-			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			$retour.="onchange=\"".$nom_func_js_checkbox_change."('".$nom_champ."_$cpt')\" ";
 			if(in_array_i($lig->login, $tab_user_preselectionnes)) {
 				$retour.="checked ";
 				$temp_style=" style='font-weight: bold;'";
@@ -2661,7 +2661,7 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	for (var k=0;k<$cpt;k++) {
 		if(document.getElementById('".$nom_champ."_'+k)){
 			document.getElementById('".$nom_champ."_'+k).checked=mode;
-			checkbox_change('".$nom_champ."_'+k);
+			".$nom_func_js_checkbox_change."('".$nom_champ."_'+k);
 		}
 	}
 }
@@ -6544,7 +6544,7 @@ function get_liste_classes_eleve($login_ele) {
 }
 
 
-function liste_checkbox_classes($tab_classes_preselectionnees=array(), $nom_champ='id_classe', $nom_func_js_tout_cocher_decocher='cocher_decocher', $sql="") {
+function liste_checkbox_classes($tab_classes_preselectionnees=array(), $nom_champ='id_classe', $nom_func_js_tout_cocher_decocher='cocher_decocher', $sql="", $nom_func_js_checkbox_change="checkbox_change") {
 	$retour="";
 
 	if($sql=="") {
@@ -6569,7 +6569,7 @@ function liste_checkbox_classes($tab_classes_preselectionnees=array(), $nom_cham
 			}
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->id' ";
-			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			$retour.="onchange=\"".$nom_func_js_checkbox_change."('".$nom_champ."_$cpt')\" ";
 			if(in_array($lig->id, $tab_classes_preselectionnees)) {
 				$retour.="checked ";
 				$temp_style=" style='font-weight: bold;'";
@@ -6590,7 +6590,7 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	for (var k=0;k<$cpt;k++) {
 		if(document.getElementById('".$nom_champ."_'+k)){
 			document.getElementById('".$nom_champ."_'+k).checked=mode;
-			checkbox_change('".$nom_champ."_'+k);
+			".$nom_func_js_checkbox_change."('".$nom_champ."_'+k);
 		}
 	}
 }
