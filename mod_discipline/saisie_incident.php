@@ -1294,7 +1294,7 @@ if (!isset($return_url) || $return_url == null) {
 
 // ===== On construit le menu spécifique de la page =====
 
-echo "<a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
+echo "<a href='./index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Retour à l'index du Module Discipline\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
 if(isset($id_incident)) {
 	echo "<a href='".$_SERVER["PHP_SELF"]."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Créer un autre incident</a> | ";
 }
