@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -3268,7 +3268,7 @@ if(($_SESSION['statut']=='professeur')&&(getSettingAOui('active_mod_abs_prof'))&
 //==============================================================================
 //debug_var();
 $chaine_champs_checkbox_mod_discipline="";
-$tab_statuts_mod_discipline=array('professeur', 'administrateur', 'scolarite', 'cpe');
+$tab_statuts_mod_discipline=array('professeur', 'administrateur', 'scolarite', 'cpe', 'autre');
 if ((getSettingValue('active_mod_discipline')!='n')&&(in_array($_SESSION['statut'], $tab_statuts_mod_discipline))) {
 	$mod_discipline_travail_par_defaut=getPref($_SESSION['login'], 'mod_discipline_travail_par_defaut', 'Travail : ');
 	echo "<a name='mod_discipline'></a><form name='form_mod_discipline' method='post' action='".$_SERVER['PHP_SELF']."#mod_discipline'>\n";
@@ -3435,6 +3435,14 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 																	jsc.login='".$_SESSION['login']."'
 																ORDER BY c.classe)";
 		$qualite="compte Scolarité";
+	}
+	elseif($_SESSION['statut']=='autre') {
+		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.login FROM s_alerte_mail sam, 
+																	classes c 
+																WHERE sam.id_classe=c.id AND 
+																	sam.login='".$_SESSION['login']."'
+																ORDER BY c.classe)";
+		$qualite="compte statut personnalisé";
 	}
 	$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_mail)>0) {
