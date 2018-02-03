@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*  Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -813,7 +813,10 @@ else {
 		<tr>
 			<th>Classe</th>
 			<th>
-				<div style='float:right; width:16px'><a href='".$_SERVER['PHP_SELF']."?export_prof_suivi=y&amp;export=csv' class='noprint' title=\"Exporter la liste des ".$gepi_prof_suivi." au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>
+				<div style='float:right; width:16px; margin-left:3px;'>
+					<a href='".$_SERVER['PHP_SELF']."?export_prof_suivi=y&amp;export=csv' class='noprint' title=\"Exporter la liste des ".$gepi_prof_suivi." au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
+				</div>
+				<div id='div_mailto_pp' style='float:right; width:16px'></div>
 				".ucfirst(getSettingValue('gepi_prof_suivi'))."
 			</th>";
 	if($active_mod_engagements) {
@@ -854,6 +857,8 @@ else {
 	$acces_modify_resp=acces("/responsables/modify_resp.php", $_SESSION['statut']);
 	$acces_trombi=(acces("/mod_trombinoscopes/trombinoscopes.php", $_SESSION['statut'])&&(getSettingAOui("active_module_trombinoscopes")));
 
+	$liste_mailto_pp="";
+	$tab_mailto_pp=array();
 	$tab_pp=get_tab_prof_suivi();
 	foreach($tab_classe as $current_id_classe => $current_classe) {
 		$html_current_classe="";
@@ -879,6 +884,16 @@ else {
 				if($loop>0) {echo "<br />";}
 				$designation_user=civ_nom_prenom($tab_pp[$current_id_classe][$loop]);
 				echo "<div style='float:right; width:16px'>".affiche_lien_mailto_si_mail_valide($tab_pp[$current_id_classe][$loop], $designation_user)."</div>";
+
+				$current_mail=get_mail_user($tab_pp[$current_id_classe][$loop]);
+				if((!in_array($current_mail, $tab_mailto_pp))&&(check_mail($current_mail))) {
+					if($liste_mailto_pp!="") {
+						$liste_mailto_pp.=',';
+					}
+					$liste_mailto_pp.=$current_mail;
+					$tab_mailto_pp[]=$current_mail;
+				}
+
 				if($acces_modify_user) {
 					echo "<a href='../utilisateurs/modify_user.php?user_login=".$tab_pp[$current_id_classe][$loop]."' title=\"Voir la fiche utilisateur.\">".$designation_user."</a>";
 				}
@@ -941,7 +956,18 @@ else {
 		</tr>";
 	}
 	echo "
-	</table>
+	</table>";
+
+	if($liste_mailto_pp!='') {
+		echo "
+	<script type='text/javascript'>
+
+		document.getElementById('div_mailto_pp').innerHTML=\"<a href='mailto:$liste_mailto_pp?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] ")."' class='noprint' title='Envoyer un mail à la liste des ".$gepi_prof_suivi."' target='_blank'><img src='../images/icons/mail.png' class='icone16' alt='Mail' /></a>\";
+
+	</script>";
+	}
+
+	echo "
 </div>";
 
 }
