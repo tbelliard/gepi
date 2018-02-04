@@ -119,9 +119,7 @@ function encode_nom_photo_des_eleves($re_encoder=false,$alea_nom_photo="")
 						// mais d'autres fichiers non encodés peuvent être affectés
 						if ($re_encoder) $nom_photo=substr($nom_photo,5);
 					}
-					//echo "\$nom_photo=$nom_photo<br />";
 					// on en profite pour normaliser l'extension en .jpg
-					//echo "rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).\".jpg\")=rename(".$dossier_photos_eleves.$photo.",".$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg)<br />";
 					if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
 					else 
 						{
@@ -223,9 +221,6 @@ function verifie_coherence_encodage()
 				$fic_temoin=fopen($dossier_photos_eleves."encodage_active.txt","r");
 				$temoin=fgets($fic_temoin);
 				fclose($fic_temoin);
-
-				// 20180125
-				//echo "\$temoin=$temoin<br />encode_nom_photo(\"nom_photo\")=".encode_nom_photo("nom_photo")."<br />";
 
 				if ($temoin==encode_nom_photo("nom_photo"))
 					return array('message'=>"<span style='color: blue'>l'encodage est activé</span>.",'type_incoherence'=>0);
@@ -651,11 +646,7 @@ if  ((isset($_POST['encoder_noms_photo']) and ($_POST['encoder_noms_photo']=='ou
 	$nb_modifs=0; $nb_erreurs=0;
 	$re_encode=false;
 	$re_encoder=(isset($_POST['re_encoder_noms_photo']) && ($_POST['re_encoder_noms_photo']=='oui'));
-	// 20180125
-	//echo "re_encoder=$re_encoder<br />";
 	$retour=encode_nom_photo_des_eleves($re_encoder);
-	// 20180125
-	//echo "retour=$retour<br />";
 	if ($retour!="" && $nb_erreurs==0) $msg=$retour;
 	else 
 		if ($nb_erreurs==0)
@@ -725,7 +716,6 @@ if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
 
 	$nom_fic="eleves_".getSettingValue("gepiYear").".csv";
 	send_file_download_headers('text/x-csv',$nom_fic);
-	//echo $csv;
 	echo echo_csv_encoded($csv);
 	die();
 }
