@@ -99,7 +99,7 @@ function encode_nom_photo_des_eleves($re_encoder=false,$alea_nom_photo="")
 				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 					while ($photo=readdir($R_dossier_photos_eleves))
 						{
-						if (is_file($dossier_photos_eleves.$photo) && pathinfo($dossier_photos_eleves.$photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html")
+						if (is_file($dossier_photos_eleves.$photo) && pathinfo($photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html")
 							{
 								$t_noms_photos[]=$photo;
 							}
@@ -112,7 +112,7 @@ function encode_nom_photo_des_eleves($re_encoder=false,$alea_nom_photo="")
 				// on renomme les fichiers photo
 				foreach($t_noms_photos as $photo)
 					{
-					$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
+					$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
 					// si on re-encode les noms de fichiers il faut supprimer l'ancien encodage
 					//echo "\$nom_photo=$nom_photo<br />";
 					if(strlen($nom_photo)>5) {
@@ -162,7 +162,7 @@ function des_encode_nom_photo_des_eleves() {
 				$dossier_photos_eleves="../photos/".$rne."eleves/";
 				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 				while ($photo=readdir($R_dossier_photos_eleves)) {
-					if (is_file($dossier_photos_eleves.$photo) && pathinfo($dossier_photos_eleves.$photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html") {
+					if (is_file($dossier_photos_eleves.$photo) && pathinfo($photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html") {
 						$t_noms_photos[]=$photo;
 					}
 				}
@@ -172,7 +172,7 @@ function des_encode_nom_photo_des_eleves() {
 
 				// on renomme les fichiers photo
 				foreach($t_noms_photos as $photo) {
-					$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
+					$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
 					// supprimer l'ancien encodage
 					$nom_photo_ini=$nom_photo;
 					$nom_photo=substr($nom_photo,5);
@@ -264,7 +264,6 @@ function purge_dossier_photos($type_utilisateurs) {
 	$R_identifiants=mysqli_query($GLOBALS["mysqli"], $r_sql);
 	if ($R_identifiants)
 		{
-
 		while ($pt<mysqli_num_rows($R_identifiants))
 			{
 			$identifiant=old_mysql_result($R_identifiants,$pt++);
@@ -309,9 +308,9 @@ function purge_dossier_photos($type_utilisateurs) {
 	$R_dossier_photos=opendir($repertoire_photos."/".$type_utilisateurs);
 	while ($photo=readdir($R_dossier_photos))
 		{
-		if (is_file($repertoire_photos."/".$type_utilisateurs."/".$photo) && $photo!="index.html" && $photo!="encodage_active.txt")
+		if (is_file($repertoire_photos."/".$type_utilisateurs."/".$photo) && $photo!="index.html")
 			{
-			$nom_photo=pathinfo($repertoire_photos."/".$type_utilisateurs."/".$photo,PATHINFO_FILENAME);
+			$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
 			// en principe on ne trouve que des fichiers JPEG dans le dossier
 			// et on en profite pour normaliser l'extension
 			@rename($repertoire_photos."/".$type_utilisateurs."/".$photo,$repertoire_photos."/".$type_utilisateurs."/".$nom_photo.".jpg");
