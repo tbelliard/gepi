@@ -4609,7 +4609,8 @@ function test_ecriture_style_screen_ajout() {
  * Ajoute au début d'un nom de fichier une chaîne 10 caractères pseudo alétaoires
  * le but étant d'empêcher l'accès aux photos élèves.
  *
- * Renvoie le nom de fichier modifié si la valeur 'alea_nom_photo' est définie
+ * Renvoie le nom de fichier modifié si les valeurs 'alea_nom_photo' 
+ * et 'longueur_encodage_photo' sont définies
  * dans la table 'setting', sinon renvoie le nom de fichier inchangé.
  *
  * @param string $nom_photo le nom du fichier
@@ -4618,8 +4619,8 @@ function test_ecriture_style_screen_ajout() {
  * 
  */
 function encode_nom_photo($nom_photo) {
-	if (getSettingValue('alea_nom_photo')===null) return $nom_photo;
-	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,10).$nom_photo;
+	if ((getSettingValue('alea_nom_photo')===null || getSettingValue('longueur_encodage_photo')===null) return $nom_photo;
+	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,getSettingValue('longueur_encodage_photo')).$nom_photo;
 }
 
 /**
