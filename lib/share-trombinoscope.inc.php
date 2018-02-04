@@ -47,20 +47,18 @@ function cree_repertoire_multisite() {
 
 
 /**
- * Crée si nécessaire l'entrée 'encodage_nom_photo' dans la table 'setting'
  * Crée ou modifie la valeur aléatoire 'alea_nom_photo' utilisée pour encoder
- *  le nom des fichiers photo des élèves et l'enregistre dans la table 'setting'
- * Renvoie true si l'encodage est activé ou réactivé, false sinon.
+ * le nom des fichiers photo des élèves et l'enregistre dans la table 'setting'
+ * Renvoie true si aucun problème, false sinon.
  *
- * @param string $alea_nom_photo Si non vide détermine la valeur à donner à 'alea_nom_photo'
+ * @param string $alea_nom_photo Si non vide  la valeur à donner à 'alea_nom_photo'
  * @return boolean true : succès, false : échec
  * @see encode_nom_photo()
  */
-function active_encodage_nom_photo($alea_nom_photo="") {
+function initialise_alea_nom_photo($alea_nom_photo='') {
 	$retour=true;
-	if ((getSettingValue('encodage_nom_photo')==NULL) || !getSettingAOui('encodage_nom_photo')) $retour=$retour && saveSetting('encodage_nom_photo','yes');
-	if ($alea_nom_photo=="") $alea_nom_photo=md5(time());
-	return $retour && saveSetting('alea_nom_photo',$alea_nom_photo);
+	if ($alea_nom_photo=='') $alea_nom_photo=md5(time());
+	return saveSetting('alea_nom_photo',$alea_nom_photo);
 }
 
 

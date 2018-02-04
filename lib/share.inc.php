@@ -4606,20 +4606,20 @@ function test_ecriture_style_screen_ajout() {
 
 
 /**
- * Ajoute au début d'un nom de fichier une chaîne 5 caractères pseudo alétaoires
+ * Ajoute au début d'un nom de fichier une chaîne 10 caractères pseudo alétaoires
  * le but étant d'empêcher l'accès aux photos élèves.
  *
- * Renvoie le nom de fichier modifié si la valeur '$alea_nom_photo' est définie
+ * Renvoie le nom de fichier modifié si la valeur 'alea_nom_photo' est définie
  * dans la table 'setting', sinon renvoie le nom de fichier inchangé.
  *
  * @param string $nom_photo le nom du fichier
- * @return string le nom du fichier éventuellement modifié
+ * @return string le nom du fichier modifié
  * @see active_encodage_nom_photo()
  * 
  */
 function encode_nom_photo($nom_photo) {
-	if (!getSettingAOui('encodage_nom_photo')) return $nom_photo; // la valeur est déjà définie
-	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,5).$nom_photo;
+	if (getSettingValue('alea_nom_photo')===null) return $nom_photo;
+	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,10).$nom_photo;
 }
 
 /**
@@ -4648,7 +4648,8 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 		return NULL;
 		die();
 	}
-		$photo=NULL;
+	
+	$photo=NULL;
 
 	// En multisite, on ajoute le répertoire RNE
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -4913,13 +4914,10 @@ function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
 		else return "RNE invalide&nbsp;:&nbsp;".$_COOKIE['RNE'];
 	  }
 	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
-	  // Si l'encodage des noms de photos est activé on sauvegarde la valeur 'alea_nom_photo'
-	  if (getSettingAOui('encodage_nom_photo'))
-		{
+	  // 0n sauvegarde la valeur 'alea_nom_photo'
 		$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
 		fwrite($fic_alea,getSettingValue("alea_nom_photo"));
 		fclose($fic_alea);
-		}
 	  break;
 	default:
 	  $chemin_stockage = '';
@@ -4930,8 +4928,6 @@ function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
 	  $v_list = $archive->create($dossier_a_traiter,
 			  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
 			  PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
-	  // Si l'encodage des noms de photos est activé on supprime le fichier alea_nom_photo.txt
-	  if (getSettingAOui('encodage_nom_photo') && file_exists($dossier_a_traiter."alea_nom_photo.txt")) @unlink($dossier_a_traiter."alea_nom_photo.txt");
 	  if ($v_list == 0) {
 		 return "Erreur : ".$archive->errorInfo(TRUE);
 	  }else {
