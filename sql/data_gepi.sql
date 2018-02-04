@@ -959,7 +959,7 @@ INSERT INTO droits SET id='/groupes/check_enseignements.php',administrateur='V',
 INSERT INTO droits VALUES ('/bulletin/index.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');
 INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrateur='F',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Correction appreciation',statut='';
 INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_bull_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Génération archives bulletins PDF', '');
-INSERT INTO setting VALUES ('encodage_nom_photo', 'yes');
+INSERT INTO setting VALUES ('longueur_encodage_photo', 10);
 INSERT INTO setting VALUES ('alea_nom_photo', MD5(UNIX_TIMESTAMP()));
 INSERT INTO droits VALUES ('/mod_abs2/liste_eleves.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Liste des élèves avec les filtes absence', '');
 INSERT INTO lettres_cadres VALUES (1,'adresse responsable',100,40,100,5,'A l\'attention de\r\n<civilitee_court_responsable> <nom_responsable> <prenom_responsable>\r\n<adresse_responsable>\r\n<cp_responsable> <commune_responsable>\r\n',0,'||');
