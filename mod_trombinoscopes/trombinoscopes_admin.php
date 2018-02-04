@@ -114,8 +114,9 @@ function encode_nom_photo_des_eleves($re_encoder=false,$alea_nom_photo="")
 					{
 					$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
 					// si on re-encode les noms de fichiers il faut supprimer l'ancien encodage
-					//echo "\$nom_photo=$nom_photo<br />";
 					if(strlen($nom_photo)>5) {
+						// test pour éviter de supprimer un fichier non encodé qui en principe ne devrait pas être présent,
+						// mais d'autres fichiers non encodés peuvent être affectés
 						if ($re_encoder) $nom_photo=substr($nom_photo,5);
 					}
 					//echo "\$nom_photo=$nom_photo<br />";
@@ -185,8 +186,10 @@ function des_encode_nom_photo_des_eleves() {
 						}
 					}
 					else {
+						// pour éviter de supprimer un fichier non encodé qui en principe ne devrait pas être présent,
+						// mais d'autres fichiers non encodés peuvent être affectés
 						$nb_erreurs++;
-						if ($nb_erreurs<=10) $bilan.="Un nom de photo se retrouverait vide ".$nom_photo_ini.".jpg (on ne renomme pas)<br />";
+						if ($nb_erreurs<=10) $bilan.="Le fichier ".$nom_photo_ini.".jpg dont le nom n'était pas encodé n'aurait pas dû se trouver dans le dossier photos/eleves.<br />";
 					}
 				}
 			}
