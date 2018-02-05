@@ -1106,12 +1106,13 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 	global $tab_param_mail;
 	$retour="";
 
-	$id_nature="";
+	$id_categorie="";
 	if($nature!="") {
-		$sql="SELECT sn.id FROM s_natures sn WHERE sn.nature='".mysqli_real_escape_string($GLOBALS["mysqli"], $nature)."';";
-		$res_nature=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_nature)) {
-			$id_nature=old_mysql_result($res_nature, 0, "id");
+		$sql="SELECT sc.id FROM s_natures sn, s_categories sc WHERE sc.id=sn.id_categorie AND sn.nature='".mysqli_real_escape_string($GLOBALS["mysqli"], $nature)."';";
+		//echo "$sql<br />";
+		$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_cat)) {
+			$id_categorie=old_mysql_result($res_cat, 0, "id");
 		}
 	}
 
@@ -1156,8 +1157,8 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 						if(mysqli_num_rows($res2)>0) {
 							while($lig2=mysqli_fetch_object($res2)) {
 								$ajouter_mail="y";
-								if($id_nature!="") {
-									$sql="SELECT * FROM preferences WHERE login='$lig2->login' AND name='mod_discipline_natures_exclues_mail' AND value LIKE '%|$id_nature|%';";
+								if($id_categorie!="") {
+									$sql="SELECT * FROM preferences WHERE login='$lig2->login' AND name='mod_discipline_natures_exclues_mail' AND value LIKE '%|$id_categorie|%';";
 									$test_nat=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($test_nat)>0) {
 										$ajouter_mail="n";
@@ -1234,8 +1235,8 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 					if(mysqli_num_rows($res2)>0) {
 						while($lig2=mysqli_fetch_object($res2)) {
 							$ajouter_login="y";
-							if($id_nature!="") {
-								$sql="SELECT * FROM preferences WHERE login='$lig2->login' AND name='mod_discipline_natures_exclues_mod_alerte' AND value LIKE '%|$id_nature|%';";
+							if($id_categorie!="") {
+								$sql="SELECT * FROM preferences WHERE login='$lig2->login' AND name='mod_discipline_natures_exclues_mod_alerte' AND value LIKE '%|$id_categorie|%';";
 								$test_nat=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test_nat)>0) {
 									$ajouter_login="n";
