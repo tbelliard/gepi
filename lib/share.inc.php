@@ -4899,6 +4899,22 @@ function path_niveau($niveau=1){
 }
 
 /**
+ * Fonction call back pour dés-encoder les noms de fichier photo élève
+ * avant archivage avec PCLZIP
+ * Voir : http://www.phpconcept.net/pclzip/user-guide/50
+ */
+function des_encode_4_PCLZIP($p_event, &$p_header) {
+	$info = pathinfo($p_header['stored_filename']); print_r($info);
+	if (isset($info['dirname']) && isset($info['extension']) && ($info['extension'] == 'jpg' || $info['extension'] == 'JPG') && $info['dirname']=='photos/eleves') {
+		$p_header['stored_filename'] = $info['dirname'].'/'.des_encode_nom_photo($info['basename']);
+		return 1;
+		}
+	else {
+		return 1;
+		}
+    }
+
+/**
  * Crée une archive Zip des dossiers documents ou photos
  *
  * @param string $dossier_a_archiver limité à documents ou photos
@@ -4907,51 +4923,60 @@ function path_niveau($niveau=1){
  * @see cree_zip_archive_msg()
  */
 function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
-  $path = path_niveau();
-  $dirname = "backup/".getSettingValue("backup_directory")."/";
-  if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$path.$dirname) {
-    @define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
-  }
+	$path = path_niveau();
+	$dirname = "backup/".getSettingValue("backup_directory")."/";
+	if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$path.$dirname) {
+		@define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+	}
 
-  require_once($path.'lib/pclzip.lib.php');
+	require_once($path.'lib/pclzip.lib.php');
 
-  if (isset($dossier_a_archiver)) {
+	if (isset($dossier_a_archiver)) {
 	$suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
 	switch ($dossier_a_archiver) {
-	case "documents":
-	  $chemin_stockage = $path.$dirname."_cdt".$suffixe_zip.".zip"; //l'endroit où sera stockée l'archive
-	  $dossier_a_traiter = $path.'documents/'; //le dossier à traiter
-	  $dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
-	  break;
-	case "photos":
-	  $chemin_stockage = $path.$dirname."_photos".$suffixe_zip.".zip";
-	  $dossier_a_traiter = $path.'photos/'; //le dossier à traiter
-	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) $dossier_a_traiter .=$_COOKIE['RNE']."/";
-		else return "RNE invalide&nbsp;:&nbsp;".$_COOKIE['RNE'];
-	  }
-	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
-	  // 0n sauvegarde la valeur 'alea_nom_photo'
-		$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
-		fwrite($fic_alea,getSettingValue("alea_nom_photo"));
-		fclose($fic_alea);
-	  break;
-	default:
-	  $chemin_stockage = '';
+		case "documents":
+			$chemin_stockage = $path.$dirname."_cdt".$suffixe_zip.".zip"; //l'endroit où sera stockée l'archive
+			$dossier_a_traiter = $path.'documents/'; //le dossier à traiter
+			$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
+			break;
+		case "photos":
+			$chemin_stockage = $path.$dirname."_photos".$suffixe_zip.".zip";
+			$dossier_a_traiter = $path.'photos/'; //le dossier à traiter
+			if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) $dossier_a_traiter .=$_COOKIE['RNE']."/";
+			else return "RNE invalide&nbsp;:&nbsp;".$_COOKIE['RNE'];
+			}
+			$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
+			// 0n sauvegarde la valeur 'alea_nom_photo'
+			$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
+			fwrite($fic_alea,getSettingValue("alea_nom_photo"));
+			fclose($fic_alea);
+			break;
+		default:
+			$chemin_stockage = '';
 	}
 
 	if ($chemin_stockage !='') {
-	  $archive = new PclZip($chemin_stockage);
-	  $v_list = $archive->create($dossier_a_traiter,
-			  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
-			  PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
-	  if ($v_list == 0) {
+		$archive = new PclZip($chemin_stockage);
+		switch ($dossier_a_archiver) {
+			case "photos":
+				$v_list = $archive->create($dossier_a_traiter,
+						PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+						PCLZIP_OPT_ADD_PATH, $dossier_dans_archive,
+						PCLZIP_CB_PRE_ADD, 'des_encode_4_PCLZIP');
+				break;
+			default:
+				$v_list = $archive->create($dossier_a_traiter,
+					PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+					PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+		}
+		if ($v_list == 0) {
 		 return "Erreur : ".$archive->errorInfo(TRUE);
-	  }else {
+		}else {
 		return "";
-	  }
+		}
 	}
-  }
+	}
 }
 
 
