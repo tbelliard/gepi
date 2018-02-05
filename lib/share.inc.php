@@ -4904,7 +4904,7 @@ function path_niveau($niveau=1){
  * Voir : http://www.phpconcept.net/pclzip/user-guide/50
  */
 function des_encode_4_PCLZIP($p_event, &$p_header) {
-	$info = pathinfo($p_header['stored_filename']); print_r($info);
+	$info = pathinfo($p_header['stored_filename']);
 	if (isset($info['dirname']) && isset($info['extension']) && ($info['extension'] == 'jpg' || $info['extension'] == 'JPG') && $info['dirname']=='photos/eleves') {
 		$p_header['stored_filename'] = $info['dirname'].'/'.des_encode_nom_photo($info['basename']);
 		return 1;
