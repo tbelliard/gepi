@@ -4635,7 +4635,7 @@ function encode_nom_photo($nom_photo) {
  * 
  */
 function des_encode_nom_photo($nom_photo) {
-	if ((getSettingValue('longueur_encodage_photo')===null) return $nom_photo;
+	if (getSettingValue('longueur_encodage_photo')===null) return $nom_photo;
 	else return substr($nom_photo,getSettingValue('longueur_encodage_photo')).$nom_photo;
 }
 
