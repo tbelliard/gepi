@@ -48,7 +48,7 @@
  * @return $niveau_arbo
  * @return $gepiPathJava
  * @return $msg
- * @return $repertoire
+ * @return $repertoire_rne
  *
  */
 
@@ -915,9 +915,9 @@ if ((isset($_POST['action']) && $_POST['action'] == 'upload') || (isset($_GET['a
 // En multisite, on ajoute le répertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	  // On récupère le RNE de l'établissement
-  $repertoire=$_COOKIE['RNE']."/";
+  $repertoire_rne=$_COOKIE['RNE']."/";
 }else{
-  $repertoire="";
+  $repertoire_rne="";
 }
 
 /****************************************************************
