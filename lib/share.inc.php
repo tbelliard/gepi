@@ -4615,7 +4615,6 @@ function test_ecriture_style_screen_ajout() {
  *
  * @param string $nom_photo le nom du fichier
  * @return string le nom du fichier modifié
- * @see active_encodage_nom_photo()
  * 
  */
 function encode_nom_photo($nom_photo) {
