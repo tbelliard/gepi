@@ -458,7 +458,7 @@ unset ($aid_disponible)
 		<legend class="bold">Encodage des noms de fichier des photos élèves</legend>
 
 		<p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (<em>et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer</em>) d'accéder aux fichiers du dossier photos/eleves. Cet encodage consiste à ajouter au début des noms des fichiers un préfixe de <?php echo getSettingValue('longueur_encodage_photo'); ?> caractères aléatoires.<br />
-		<span class="bold">Attention : </span>Ne jamais transférer directement (par FTP ou autre) les fichiers photo des élèves dans le dossier photos/eleves, passer obligatoirement par  <a href='#telecharger_photos_eleves'>"Télécharger les photos"</a>.</p>
+		<span class="bold">Attention : </span>Ne jamais transférer directement (par FTP ou autre) les fichiers photo des élèves dans le dossier photos/eleves, passer obligatoirement par  <a href='#telecharger_photos_eleves'>"Télécharger les photos des élèves"</a>.</p>
 		<?php $etat_present=verifie_coherence_encodage(); ?>
 		<p class="bold" style="margin-left:10px;";>Etat présent : <?php echo $etat_present['message']; ?></p>
 	</fieldset>
@@ -601,9 +601,9 @@ unset ($aid_disponible)
 
 		<p>Le fichier ZIP doit contenir :<br/>
 		<span style="margin-left: 40px;">
-		- soit les photosencodées au format JPEG nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou pour, un GEPI multisite, les login des élèves (<em>login.jpg</em>) ;<br/>
+		- soit les photos au format JPEG nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou, pour un GEPI multisite, les login des élèves (<em>login.jpg</em>) ;<br/>
 		</span><span style="margin-left: 40px;">
-		- soit les photos  encodées au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impérativement nommé <em>correspondances.csv</em>, avec des virgules comme séparateur de champs</b>, établissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des élèves ou, pour un GEPI multisite, les login des élèves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour générer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">récupérer la liste</a> des élèves avec prénom, nom, eleonet et login.<br/>
+		- soit les photos au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impérativement nommé <em>correspondances.csv</em>, avec des virgules comme séparateur de champs</b>, établissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des élèves ou, pour un GEPI multisite, les login des élèves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour générer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">récupérer la liste</a> des élèves avec prénom, nom, eleonet et login.<br/>
 		</span>
 		</p>
 
@@ -639,7 +639,7 @@ unset ($aid_disponible)
 		</em>
 		</p>
 
-		<p>Le fichier de sauvegarde à restaurer doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les fichiers photo des élèves et des personnels. Si la restauration a pour but de transférer les données sur une autre machine, la base doit être également restaurée sinon les noms des fichiers photo ne seront pas corrcetement associés aux personnes.</p>
+		<p>Le fichier de sauvegarde à restaurer doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les fichiers photo des élèves et des personnels. Si la restauration a pour but de transférer les données sur une autre machine, la base doit être également restaurée sinon les noms des fichiers photo ne seront pas correctement associés aux personnes.</p>
 
 		<p>La <b>taille maximale</b> d'un fichier téléchargé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nécessaire votre téléchargement en plusieurs fichiers ZIP.</p>
 
