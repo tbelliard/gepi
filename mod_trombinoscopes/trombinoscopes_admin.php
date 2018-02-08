@@ -73,7 +73,6 @@ require_once("../lib/share-trombinoscope.inc.php");
  */
 function re_encode_nom_photo_eleves() {
 	global $nb_modifs,$nb_erreurs;
-	
 	$bilan='';
 	
 	// Cas du multisite
@@ -104,7 +103,7 @@ function re_encode_nom_photo_eleves() {
 		if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
 		else {
 				$nb_erreurs++;
-				if ($nb_erreurs<=10) $bilan.="Impossible d'encoder ".$nom_photo.".jpg<br />";
+				if ($nb_erreurs<=10) $bilan.="Impossible de ré-encoder ".$nom_photo.".jpg<br />";
 		}
 	}
 	return $bilan;
@@ -198,10 +197,10 @@ function verifie_coherence_encodage() {
 		}
 	}
 	closedir($R_dossier_photos_eleves);
-	if ($nb_erreurs==0) $bilan='Pas d\'incohérence d\'encodage parmi les fichiers photo élève (d\'extension jpg ou JPG)';
+	if ($nb_erreurs==0) $bilan='Etat présent : pas d\'incohérence d\'encodage parmi les fichiers photo élève (d\'extension jpg ou JPG).';
 	else 
-		if ($nb_erreurs==$total_fichiers) $bilan='<span class="bold" style="color:red">Attention : </span>l\'encodage des fichiers photo élève est incorrect, il faut les ré-encoder en cliquant sur ce <a href="?re_encoder_noms_photo=true'.add_token_in_url().'">lien</a>';
-		else $bilan='<span class="bold" style="color:red">Attention : </span>'.$nb_erreurs.'fichiers photo élève (d\'extension jpg ou JPG) sur'.$total_fichiers.'sont mal encodés.';
+		if ($nb_erreurs==$total_fichiers) $bilan='<span class="bold" style="color:red">Attention : l\'encodage des fichiers photo élève est incorrect, il faut les ré-encoder en cliquant sur ce <a href="?re_encoder_noms_photo=oui'.add_token_in_url().'">lien.</a></span>';
+		else $bilan='<span class="bold" style="color:red">Attention : des fichier(s) photo élève (d\'extension jpg ou JPG) sont mal encodés ('.$nb_erreurs.' sur '.$total_fichiers.').</span>';
 	
 	return $bilan;
 }
@@ -609,25 +608,21 @@ if (count($_POST)>0)
 		}
 
 // Re-encodage des noms des fichiers photo des élèves
-if  (isset($_POST['encoder_noms_photo']) || isset($_POST['re_encoder_noms_photo'])|| isset($_GET['re_encoder_noms_photo']))
-	{
+if  (isset($_GET['re_encoder_noms_photo'])) {
 	$msg="";
 	check_token();
 	$nb_erreurs=0;
 
 	$retour=re_encode_nom_photo_eleves();
-
-	if ($retour!='' && $nb_erreurs==0) $msg=$retour;
-	else 
-		if ($nb_erreurs==0)
-			if ($nb_modifs>0)
-				if ($nb_modifs>1) $msg=$nb_modifs." noms de fichiers photo ont été encodés.<br/>";
-				else $msg="Un nom de fichier photo a été encodé.<br/>";
-			else $msg="Aucun nom de fichier photo n'a été encodé (le dossier est probablement vide).<br/>";
-		else
-			if ($nb_erreurs<=10) $msg=$retour;
-			else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être encodés.<br/>";
-	}
+	if ($nb_erreurs==0)
+		if ($nb_modifs>0)
+			if ($nb_modifs>1) $msg=$nb_modifs." noms de fichiers photo ont été ré-encodés.<br/>";
+			else $msg="Un nom de fichier photo a été ré-encodé.<br/>";
+		else $msg="Aucun nom de fichier photo n'a été ré-encodé (le dossier est peut-être vide).<br/>";
+	else
+		if ($nb_erreurs<=10) $msg=$retour;
+		else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être encodés.<br/>";
+}
 
 // Dés-encodage des noms des fichiers photo des élèves
 if  ((isset($_POST['des_encoder_noms_photo']) and ($_POST['des_encoder_noms_photo']=='oui')))
