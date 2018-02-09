@@ -4904,7 +4904,7 @@ function path_niveau($niveau=1){
  */
 function des_encode_4_PCLZIP($p_event, &$p_header) {
 	$info = pathinfo($p_header['stored_filename']);
-	if (isset($info['dirname']) && isset($info['extension']) && ($info['extension'] == 'jpg' || $info['extension'] == 'JPG') && $info['dirname']=='photos/eleves') {
+	if (isset($info['dirname']) && isset($info['extension']) && ($info['extension'] == 'jpg' || $info['extension'] == 'JPG') && substr(strrchr($info['dirname'],DIRECTORY_SEPARATOR), 1 )=='eleves') {
 		$p_header['stored_filename'] = $info['dirname'].'/'.des_encode_nom_photo($info['basename']);
 		return 1;
 		}
@@ -4918,7 +4918,7 @@ function des_encode_4_PCLZIP($p_event, &$p_header) {
  *
  * @param string $dossier_a_archiver limité à documents ou photos
  * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
- * @return striung message d'erreur, vide si aucune erreur
+ * @return string message d'erreur, vide si aucune erreur
  * @see cree_zip_archive_msg()
  */
 function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
@@ -4946,10 +4946,6 @@ function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
 			else return "RNE invalide&nbsp;:&nbsp;".$_COOKIE['RNE'];
 			}
 			$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
-			// 0n sauvegarde la valeur 'alea_nom_photo'
-			$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
-			fwrite($fic_alea,getSettingValue("alea_nom_photo"));
-			fclose($fic_alea);
 			break;
 		default:
 			$chemin_stockage = '';

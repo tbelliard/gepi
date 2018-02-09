@@ -565,8 +565,9 @@ if (count($_POST)>0)
 	if (isset($_POST['sauvegarder_dossier_photos']) && $_POST['sauvegarder_dossier_photos']=="oui")
 		{
 		check_token();
-		if (cree_zip_archive('photos')) $msg="Le dossier 'photos' a été sauvegardé, vous pouvez le récupérer dans le <a href=\"../gestion/accueil_sauve.php\">module de gestion des sauvegardes</a>.";
-		else $msg="Echec de la sauvegarde du dossier 'photos'";
+		$retour=cree_zip_archive_avec_msg_erreur('photos');
+		if ($retour=='') $msg='Le dossier photos a été sauvegardé, vous pouvez le récupérer dans le <a href="../gestion/accueil_sauve.php">module de gestion des sauvegardes</a>.';
+		else $msg='Echec de la sauvegarde du dossier photos : '.$retour;
 		}
 
 // Purge du dossier photos
