@@ -142,26 +142,17 @@ function des_encode_nom_photo_des_eleves() {
 					}
 				}
 				closedir($R_dossier_photos_eleves);
-				// on supprime le fichier témoin d'encodage activé
-				if (file_exists($dossier_photos_eleves."encodage_active.txt")) unlink($dossier_photos_eleves."encodage_active.txt");
 
 				// on renomme les fichiers photo
 				foreach($t_noms_photos as $photo) {
 					$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
 					// supprimer l'ancien encodage
-					$nom_photo_ini=$nom_photo;
-					$nom_photo=substr($nom_photo,5);
-					if("$nom_photo"!="") {
-						// on en profite pour normaliser l'extension en .jpg
-						if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.$nom_photo.".jpg")) {$nb_modifs++;}
-						else {
-							$nb_erreurs++;
-							if ($nb_erreurs<=10) $bilan.="Impossible de dés-encoder ".$nom_photo.".jpg<br />";
-						}
-					}
+					$nom_photo=des_encode_nom_photo($nom_photo);
+					// on en profite pour normaliser l'extension en .jpg
+					if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.$nom_photo.".jpg")) {$nb_modifs++;}
 					else {
 						$nb_erreurs++;
-						if ($nb_erreurs<=10) $bilan.="Un nom de photo se retrouverait vide ".$nom_photo_ini.".jpg (on ne renomme pas)<br />";
+						if ($nb_erreurs<=10) $bilan.="Impossible de dés-encoder ".$nom_photo.".jpg<br />";
 					}
 				}
 			}
@@ -409,10 +400,11 @@ if (!checkAccess()) {
  *    Enregistrement des variables passées en $_POST si besoin
  ******************************************************************/
 
-$msg="";
+$msg=""; $modification_parametres=false;
 $msg_parametres="";
 
 if (isset($_POST['num_aid_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if ($_POST['num_aid_trombinoscopes']!='') {
 		if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes']))
@@ -424,6 +416,7 @@ if (isset($_POST['num_aid_trombinoscopes'])) {
 }
 
 if (isset($_POST['activer'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("active_module_trombinoscopes", $_POST['activer']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre activation/désactivation !<br />";
@@ -432,65 +425,75 @@ if (isset($_POST['activer'])) {
 }
 
 if (isset($_POST['activer_personnels'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("active_module_trombino_pers", $_POST['activer_personnels']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre activation/désactivation du trombinoscope des personnels !";
 }
 
 if (isset($_POST['activer_redimensionne'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("active_module_trombinoscopes_rd", $_POST['activer_redimensionne']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre de redimenssionement des photos !<br />";
 }
 
 if (isset($_POST['activer_rotation'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("active_module_trombinoscopes_rt", $_POST['activer_rotation']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre rotation des photos !<br />";
 }
 
 if (isset($_POST['l_max_aff_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("l_max_aff_trombinoscopes", $_POST['l_max_aff_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre largeur maximum !<br />";
 }
 if (isset($_POST['h_max_aff_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("h_max_aff_trombinoscopes", $_POST['h_max_aff_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre hauteur maximum !<br />";
 }
 
 if (isset($_POST['l_max_imp_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("l_max_imp_trombinoscopes", $_POST['l_max_imp_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre largeur maximum !<br />";
 }
 
 if (isset($_POST['h_max_imp_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre hauteur maximum !<br />";
 }
 
 if (isset($_POST['nb_col_imp_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("nb_col_imp_trombinoscopes", $_POST['nb_col_imp_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimés !<br />";
 }
 
 if (isset($_POST['l_resize_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !<br />";
 }
 if (isset($_POST['h_resize_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("h_resize_trombinoscopes", $_POST['h_resize_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre h_resize_trombinoscopes !<br />";
 }
 
-if (count($_POST)>0)
-	$msg=($msg_parametres!="")?$msg_parametres:"Modifications enregistrées";
+
+	$msg=($msg_parametres!='')?$msg_parametres:(($modification_parametres)?'Modifications enregistrées.</br>':'');
 
 /******************************************************************
  *    Enregistrement des variables (fin)
@@ -528,24 +531,23 @@ if (count($_POST)>0)
 	if(isset($_POST['sup_pers']) && $_POST['sup_pers']=="oui"){
 		check_token();
 		// suppression des photos du personnel
-		if (!efface_photos("personnels"))
-		$msg.="Erreur lors de la suppression des photos du personnel";
+		$msg.=(efface_photos("personnels"))?"Photos du personnel supprimées<br/>":"Erreur lors de la suppression des photos du personnel<br/>";
+		
 	}
 	if (isset($_POST['supp_eleve']) && $_POST['supp_eleve']=="oui"){
 		check_token();
 		// suppression des photos des élèves
-		if (!efface_photos("eleves"))
-		$msg.="Erreur lors de la suppression des photos des élèves";
+		$msg.=(efface_photos("eleves"))?"Photos des élèves supprimées<br/>":"Erreur lors de la suppression des photos des élèves<br/>";
 	}
 
 // Affichage du personnel sans photo
 	if(isset ($_POST['voirPerso']) && $_POST['voirPerso']=="yes"){
 		check_token();
 		if (!recherche_personnel_sans_photo()){
-		$msg .= "Erreur lors de la sélection de professeur(s) sans photo";
+		$msg .= "Erreur lors de la sélection de professeur(s) sans photo<br/>";
 		}else{
 			$personnel_sans_photo=recherche_personnel_sans_photo();
-			$msg.="liste des professeurs sans photo en bas de page <br/>";
+			$msg.="liste des professeurs sans photo en bas de page<br/>";
 			}
 	}
 
@@ -553,11 +555,11 @@ if (count($_POST)>0)
 	if (isset ($_POST['voirEleve']) && $_POST['voirEleve']=="yes"){
 		check_token();
 		if (!recherche_eleves_sans_photo()){
-			$msg .= "Erreur lors de la sélection des élèves sans photo";
+			$msg .= "Erreur lors de la sélection des élèves sans photo<br/>";
 		}
 		else{
 			$eleves_sans_photo=recherche_eleves_sans_photo();
-			$msg.="liste des élèves sans photo en bas de page";
+			$msg.="liste des élèves sans photo en bas de page<br/>";
 		}
 	}
 
@@ -566,8 +568,8 @@ if (count($_POST)>0)
 		{
 		check_token();
 		$retour=cree_zip_archive_avec_msg_erreur('photos');
-		if ($retour=='') $msg='Le dossier photos a été sauvegardé, vous pouvez le récupérer dans le <a href="../gestion/accueil_sauve.php">module de gestion des sauvegardes</a>.';
-		else $msg='Echec de la sauvegarde du dossier photos : '.$retour;
+		if ($retour=='') $msg='Le dossier photos a été sauvegardé, vous pouvez le récupérer dans le <a href="../gestion/accueil_sauve.php">module de gestion des sauvegardes</a>.<br/>';
+		else $msg='Echec de la sauvegarde du dossier photos : '.$retour.'<br/>';
 		}
 
 // Purge du dossier photos
@@ -644,13 +646,6 @@ if  ((isset($_POST['des_encoder_noms_photo']) and ($_POST['des_encoder_noms_phot
 			else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être dés-encodés.<br/>";
 	}
 
-// Modification par url de la valeur de 'encodage_nom_photo' dans la table 'setting'
-if (isset($_GET['set_encodage_nom_photo']))
-	{
-	$msg="";
-	check_token();
-	if (!saveSetting('encodage_nom_photo',$_GET['set_encodage_nom_photo'])) $msg="Impossible de modifier la valeur de 'encodage_nom_photo' dans la table 'setting'.<br />";
-	}
 
 // Liste des données élève
 if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
@@ -687,7 +682,7 @@ if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
 	die();
 }
 	
-// Chargement des photos élèves
+// Téléchargement des photos élèves
 function erreur_rename_correspondances_csv()
 	{
 	global $msg,$une_ligne;
@@ -826,7 +821,7 @@ if ((isset($_POST['action']) && $_POST['action'] == 'restaurer_sauvegarde') || (
 						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',$ecraser,true,true);
 						//Personnels
 						copie_temp_vers_photos($nb_photos_personnels,'personnels','personnel',$ecraser,true);
-						if ($msg_nb_trts=="") $msg_nb_trts="Aucune photo n'a été transférée.<br/>\n";
+						if ($msg_nb_trts=="") $msg_nb_trts="Aucune photo n'a été restaurée.<br/>\n";
 						if ($msg==""){
 							$msg= $msg_nb_trts.$avertissement;
 							} else $msg= $msg_nb_trts.$avertissement.$msg;
