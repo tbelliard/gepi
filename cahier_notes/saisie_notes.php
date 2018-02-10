@@ -1114,7 +1114,12 @@ if (($id_devoir!=0)&&(isset($date_devoir))) {
 	$tmp_liste_eleves=$liste_eleves;
 	unset($liste_eleves);
 	foreach($tmp_liste_eleves as $eleve) {
-		if((!isset($eleve["date_sortie"]))||($eleve["date_sortie"]=="0000-00-00 00:00:00")||($eleve["date_sortie"]>$date_devoir)) {
+		//if((!isset($eleve["date_sortie"]))||($eleve["date_sortie"]=="0000-00-00 00:00:00")||($eleve["date_sortie"]>$date_devoir)) {
+		if(((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_devoir))||
+		((isset($eleve["date_entree"]))&&(($eleve["date_entree"]>$date_devoir)))) {
+			// On n'ajoute pas
+		}
+		else {
 			$liste_eleves[$eleve['login']]=$tmp_liste_eleves[$eleve['login']];
 		}
 	}
@@ -1154,8 +1159,12 @@ foreach ($liste_eleves as $eleve) {
 
 				// 20151024
 				//echo "$sql<br />";
+				//if((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_dev[$k])) {
 				if((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_dev[$k])) {
 					$eleve_title="Élève sorti de l'établissement (".formate_date($eleve["date_sortie"]).") avant la date du devoir (".formate_date($date_dev[$k]).").";
+				}
+				elseif((isset($eleve["date_entree"]))&&(($eleve["date_entree"]>$date_dev[$k]))) {
+					$eleve_title="Élève entré dans l'établissement (".formate_date($eleve["date_entree"]).") après la date du devoir (".formate_date($date_dev[$k]).").";
 				}
 			}
 		}
@@ -1167,6 +1176,9 @@ foreach ($liste_eleves as $eleve) {
 			// 20151024
 			if((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_dev[$k])) {
 				$eleve_title="Élève sorti de l'établissement (".formate_date($eleve["date_sortie"]).") avant la date du devoir (".formate_date($date_dev[$k]).").";
+			}
+			elseif((isset($eleve["date_entree"]))&&($eleve["date_entree"]>$date_dev[$k])) {
+				$eleve_title="Élève entré dans l'établissement (".formate_date($eleve["date_entree"]).") après la date du devoir (".formate_date($date_dev[$k]).").";
 			}
 		}
 		if ($eleve_comment != '') { $nocomment[$k]='no'; }

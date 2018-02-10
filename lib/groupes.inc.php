@@ -561,7 +561,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                         $temp["eleves"][$key]["telle_classe"][$tmp_id_classe] = array();
                     }
                     
-                    $sql_eleves = "SELECT distinct j.login, e.nom, e.prenom, e.ele_id, e.elenoet, e.sexe, e.date_sortie FROM eleves e, j_eleves_groupes j WHERE (" .
+                    $sql_eleves = "SELECT distinct j.login, e.nom, e.prenom, e.ele_id, e.elenoet, e.sexe, e.date_sortie, e.date_entree FROM eleves e, j_eleves_groupes j WHERE (" .
                                                 "e.login = j.login and j.id_groupe = '" . $_id_groupe . "' and j.periode = '" . $period["num_periode"] . "') " .
                                                 "ORDER BY e.nom, e.prenom";
                     $get_eleves = mysqli_query($mysqli, $sql_eleves);
@@ -572,6 +572,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                         $e_prenom = $obj_eleve->prenom;
                         $e_sexe = $obj_eleve->sexe;
                         $e_date_sortie = $obj_eleve->date_sortie;
+                        $e_date_entree = $obj_eleve->date_entree;
                         $sql="SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')";
                         $res_classe_eleve_periode =  mysqli_query($mysqli, $sql);
                         if($res_classe_eleve_periode->num_rows > 0) {
@@ -584,7 +585,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                         $e_sconet_id = $obj_eleve->ele_id;
                         $e_elenoet = $obj_eleve->elenoet;
                         $temp["eleves"][$key]["list"][] = $e_login;
-                        $temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "id_classe" => $e_classe, "classe" => $e_classe, "sconet_id" => $e_sconet_id, "elenoet" => $e_elenoet, "sexe" => $e_sexe, "date_sortie" => $e_date_sortie);
+                        $temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "id_classe" => $e_classe, "classe" => $e_classe, "sconet_id" => $e_sconet_id, "elenoet" => $e_elenoet, "sexe" => $e_sexe, "date_sortie" => $e_date_sortie, "date_entree" => $e_date_entree);
                         $res_classe_eleve_periode->close();
                     }
                     

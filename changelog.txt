@@ -9,11 +9,14 @@ Gepi-master (Version de développement)
 Carnets de notes:
 - Possibilité de faire apparaitre une moyenne générale sur les relevés de notes 
   (malgré toutes les réserves sur la représentativité de cette moyenne).
+- Prise en compte de la date d'entrée dans l'établissement pour ne pas proposer 
+  la saisie de note si le devoir est antérieur à l'entrée de l'élève.
 
 Discipline:
 - Possibilité de définir des utilisateurs spécifiques individuels comme destinataires 
   des alertes sur les incidents disciplinaires 
   (par exemple les comptes Assistante sociale, Infirmière,...).
+
 
 Gepi-1.7.2 (06/01/2018)
 ===========================
