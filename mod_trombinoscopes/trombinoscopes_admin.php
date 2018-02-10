@@ -772,8 +772,8 @@ if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 	}
 }
 
-// Restauration d'une sauvegarde, ceci peut-ête appelé depuis gestion/acceuil_sauve.php (on a alors isset($_POST['action']) à false)
-if ((isset($_POST['action']) && $_POST['action'] == 'upload') || (isset($_GET['action']) && $_GET['action'] == 'restaurer_photos' &&  isset($_GET['file']))) {
+// Restauration d'une sauvegarde, ceci peut-ête appelé depuis gestion/accueil_sauve.php (on a alors isset($_POST['action']) à false)
+if ((isset($_POST['action']) && $_POST['action'] == 'restaurer_sauvegarde') || (isset($_GET['action']) && $_GET['action'] == 'restaurer_photos' &&  isset($_GET['file']))) {
 	check_token();
 	$msg="";
 	// Le fichier sauvegarde est-il téléchargé ou défini ?
@@ -818,39 +818,12 @@ if ((isset($_POST['action']) && $_POST['action'] == 'upload') || (isset($_GET['a
 						$repertoire_temp_photos=$dir_temp."/photos/".$repertoire_photos;
 						$repertoire_photos="../photos/".$repertoire_photos;
 
-						if (file_exists($repertoire_temp_photos."alea_nom_photo.txt"))
-							{
-							// si le fichier alea_nom_photo.txt est présent
-							// les noms de fichier sont encodés dans la sauvegarde
-							// on récupère la valeur alea_nom_photo
-							$f_alea=fopen($repertoire_temp_photos."alea_nom_photo.txt","r");
-							$alea_nom_photo=fgets($f_alea);
-							fclose($f_alea);
-							// l'encodage est-il activé
-							$re_encoder=getSettingAOui('encodage_nom_photo');
-							// on encode ou on ré-encode les noms des photos élèves présentes avec cette nouvelle valeur
-							encode_nom_photo_des_eleves($re_encoder,$alea_nom_photo);
-							// les noms des fichiers restaurés n'ont pas à être encodés
-							$post_restauration_encodage=false;
-							}
-						else
-							{
-							// les noms de fichier ne sont pas encodés dans la sauvegarde
-							// faudra-t-il encoder les noms des fichiers restaurés
-							$post_restauration_encodage=getSettingAOui('encodage_nom_photo');
-							// si l'encodage est activé il faut désencoder les noms des photos élèves présentes
-							if ($post_restauration_encodage)
-								{$retour=des_encode_nom_photo_des_eleves()."<br />"; if ($retour!="") $msg.=$retour;}
-							}
-
 						// copie des fichiers vers /photos
 						$msg_nb_trts=""; // nb de fichiers traités
 						$avertissement=""; // si l'arborescence est incomplète
 						$ecraser=(isset($_POST['action']))?(isset ($_POST["ecraser"]) && $_POST["ecraser"]=="yes"):true;
 						//Elèves
-						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',$ecraser,true);
-						if ($post_restauration_encodage)
-							{$retour=encode_nom_photo_des_eleves()."<br />"; if ($retour!="") $msg.=$retour;}
+						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',$ecraser,true,true);
 						//Personnels
 						copie_temp_vers_photos($nb_photos_personnels,'personnels','personnel',$ecraser,true);
 						if ($msg_nb_trts=="") $msg_nb_trts="Aucune photo n'a été transférée.<br/>\n";

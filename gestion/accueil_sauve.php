@@ -1924,7 +1924,7 @@ if ($n > 0) {
 		if ((preg_match('/.sql.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
 		switch ($type_sauvegarde) {
 			case "photos" :
-				echo "<td></td>\n";
+				echo "<td style='padding:5px;'><a href='../mod_trombinoscopes/trombinoscopes_admin.php?action=restaurer_photos&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n</td>\n";
 				break;
 			case "base" :
 				echo "<td style='padding:5px;'><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."#restaurer'>Restaurer</a></td>\n";

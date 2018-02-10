@@ -620,7 +620,7 @@ unset ($aid_disponible)
 		<legend class="bold">
 			Restaurer les photos à partir d'une sauvegarde
 		</legend>
-		<input type="hidden" name="action" value="upload" />
+		<input type="hidden" name="action" value="restaurer_sauvegarde" />
 		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger" />
 		<input type="submit" value="Restaurer"/>
 		<br/>
