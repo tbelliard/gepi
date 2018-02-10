@@ -316,10 +316,6 @@
 	}
 
 	$messages_divers_accueil="";
-	if(($_SESSION['statut']=='administrateur')&&(getSettingAOui('active_module_trombinoscopes'))&&(!getSettingAOui('encodage_nom_photo'))) {
-		$messages_divers_accueil.="<div class='postit'><p style='color:red'>Le module Trombinoscopes est activé et l'encodage des photos n'y est pas mis en place.<br />Cela signifie qu'un intrus peut tenter de récupérer les photos des élèves,...<br />Vous devriez <a href='./mod_trombinoscopes/trombinoscopes_admin.php#encodage'>activer l'encodage des noms de photos</a> pour ne pas être accusés d'un manque de précautions pour limiter les accès aux photos.<br />Un tel manquement à des précautions élémentaires pourrait vous être reproché.<p></div>";
-	}
-
 
 	$chaine_tableaux_page_accueil="";
 	if (in_array($_SESSION['statut'], array("scolarite", "administrateur"))) {
