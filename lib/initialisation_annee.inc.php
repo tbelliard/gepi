@@ -175,6 +175,7 @@ $liste_tables_del_etape_matieres = array(
 "socle_eleves_enseignements_complements",
 //==========================
 "sconet_ele_options",
+"socle_eleves_enseignements_complements",
 "tempo2",
 "tempo",
 "cc_dev",
