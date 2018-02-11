@@ -4958,7 +4958,8 @@ function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
 				$v_list = $archive->create($dossier_a_traiter,
 						PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
 						PCLZIP_OPT_ADD_PATH, $dossier_dans_archive,
-						PCLZIP_CB_PRE_ADD, 'des_encode_4_PCLZIP');
+						PCLZIP_CB_PRE_ADD, 'des_encode_4_PCLZIP',
+						PCLZIP_OPT_NO_COMPRESSION);
 				break;
 			default:
 				$v_list = $archive->create($dossier_a_traiter,
