@@ -108,6 +108,8 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+// Modifications méthode encodage photo
+$result .= "&nbsp;-> Ajout d'un champ 'longueur_encodage_photo' à la table 'setting'<br />";
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='longueur_encodage_photo'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
@@ -120,6 +122,53 @@ if ($res_test == 0){
 	else {
 		$result .= msj_erreur("ECHEC !");
 	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'modifs_encodage_1_7_2_vers_1_7_3' à la table 'setting'<br />";
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='modifs_encodage_1_7_2_vers_1_7_3'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$result .= "Initialisation du paramètre 'modifs_encodage_1_7_2_vers_1_7_3' à non : ";
+	$sql="INSERT INTO setting SET name='modifs_encodage_1_7_2_vers_1_7_3', value='non';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+		$modifs_encodage_1_7_2_vers_1_7_3='non';
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+		$modifs_encodage_1_7_2_vers_1_7_3='oui'; // inutile d'aller plus loin
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+	$une_ligne=mysqli_fetch_assoc($req_test);
+	$modifs_encodage_1_7_2_vers_1_7_3=$une_ligne['VALUE'];
+}
+
+if ($modifs_encodage_1_7_2_vers_1_7_3=='non') {
+	
+	// Sauvegarde du dossier photos
+	$result .= '&nbsp;-> Sauvegarde du dossier photos<br />';
+	$retour=cree_zip_archive_avec_msg_erreur('photos');
+	if ($retour=='') {
+		msj_ok('Le dossiers photos a bien été archivé.');
+	}
+	else {
+		msj_erreur('ECHEC ! '.$retour);
+	}
+	
+	$result .= "&nbsp;-> Mise à jour du champ 'modifs_encodage_1_7_2_vers_1_7_3' à la table 'setting'<br />";
+	$sql="UPDATE `setting` SET `value`='oui' WHERE `name`='modifs_encodage_1_7_2_vers_1_7_3'";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
+// Modifications méthode encodage photo (fin)
 ?>
