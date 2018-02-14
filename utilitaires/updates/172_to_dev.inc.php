@@ -157,28 +157,28 @@ mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='encodage_nom_p
 mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='alea_nom_photo'");
 
 
-$result .= "&nbsp;-> Ajout d'un champ 'modifs_encodage_1_7_2_vers_1_7_3' à la table 'setting'<br />";
-$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='modifs_encodage_1_7_2_vers_1_7_3'");
+$result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_1_7_2_vers_1_7_3' à la table 'setting'<br />";
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_1_7_2_vers_1_7_3'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$result .= "Initialisation du paramètre 'modifs_encodage_1_7_2_vers_1_7_3' à non : ";
-	$sql="INSERT INTO setting SET name='modifs_encodage_1_7_2_vers_1_7_3', value='non';";
+	$result .= "Initialisation du paramètre 'encodage_photos_1_7_2_vers_1_7_3' à non : ";
+	$sql="INSERT INTO setting SET name='encodage_photos_1_7_2_vers_1_7_3', value='non';";
 	$result_inter = traite_requete($sql);
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
-		$modifs_encodage_1_7_2_vers_1_7_3='non';
+		$encodage_photos_1_7_2_vers_1_7_3='non';
 	}
 	else {
 		$result .= msj_erreur("ECHEC !");
-		$modifs_encodage_1_7_2_vers_1_7_3='oui'; // inutile d'aller plus loin
+		$encodage_photos_1_7_2_vers_1_7_3='oui'; // inutile d'aller plus loin
 	}
 } else {
 	$result .= msj_present("Le champ existe déjà");
 	$une_ligne=mysqli_fetch_assoc($req_test);
-	$modifs_encodage_1_7_2_vers_1_7_3=$une_ligne['VALUE'];
+	$encodage_photos_1_7_2_vers_1_7_3=$une_ligne['VALUE'];
 }
 
-if ($modifs_encodage_1_7_2_vers_1_7_3=='non') {
+if ($encodage_photos_1_7_2_vers_1_7_3=='non') {
 	
 	// Sauvegarde du dossier photos
 	$result .= '&nbsp;-> Sauvegarde du dossier photos<br />';
@@ -190,8 +190,8 @@ if ($modifs_encodage_1_7_2_vers_1_7_3=='non') {
 		msj_erreur('ECHEC ! '.$retour);
 	}
 	
-	$result .= "&nbsp;-> Mise à jour du champ 'modifs_encodage_1_7_2_vers_1_7_3' à la table 'setting'<br />";
-	$sql="UPDATE `setting` SET `value`='oui' WHERE `name`='modifs_encodage_1_7_2_vers_1_7_3'";
+	$result .= "&nbsp;-> Mise à jour du champ 'encodage_photos_1_7_2_vers_1_7_3' dans la table 'setting'<br />";
+	$sql="UPDATE `setting` SET `value`='oui' WHERE `name`='encodage_photos_1_7_2_vers_1_7_3'";
 	$result_inter = traite_requete($sql);
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
