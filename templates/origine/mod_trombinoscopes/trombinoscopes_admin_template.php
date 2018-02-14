@@ -457,7 +457,7 @@ unset ($aid_disponible)
 	<fieldset>
 		<legend class="bold">Encodage des noms de fichier des photos élèves</legend>
 
-		<p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (<em>et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer</em>) d'accéder aux fichiers du dossier photos/eleves. Cet encodage consiste à ajouter au début des noms des fichiers un préfixe de <?php echo getSettingValue('longueur_encodage_photo'); ?> caractères aléatoires.<br />
+		<p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (<em>et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer</em>) d'accéder aux fichiers du dossier photos/eleves. Cet encodage consiste à ajouter au début des noms des fichiers un préfixe de <?php echo getSettingValue('encodage_photos_eleves_longueur'); ?> caractères aléatoires.<br />
 		<span class="bold">Attention : </span>Ne jamais transférer directement (par FTP ou autre) les fichiers photo des élèves dans le dossier photos/eleves, passer obligatoirement par  <a href='#telecharger_photos_eleves'>"Télécharger les photos des élèves"</a>.</p>
 		<p><?php echo verifie_coherence_encodage(); ?></p>
 	</fieldset>

@@ -109,12 +109,12 @@ if ($test_champ==0) {
 }
 
 // Modifications méthode encodage photo
-$result .= "&nbsp;-> Ajout d'un champ 'longueur_encodage_photo' à la table 'setting'<br />";
-$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='longueur_encodage_photo'");
+$result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_eleves_longueur' à la table 'setting'<br />";
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_eleves_longueur'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$result .= "Initialisation du paramètre 'longueur_encodage_photo' à 10 : ";
-	$sql="INSERT INTO setting SET name='longueur_encodage_photo', value='10';";
+	$result .= "Initialisation du paramètre 'encodage_photos_eleves_longueur' à 10 : ";
+	$sql="INSERT INTO setting SET name='encodage_photos_eleves_longueur', value='10';";
 	$result_inter = traite_requete($sql);
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");

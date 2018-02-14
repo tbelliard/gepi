@@ -98,7 +98,7 @@ function re_encode_nom_photo_eleves() {
 	foreach($t_noms_photos as $photo){
 		$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
 		// suppression l'ancien encodage
-		$nom_photo=substr($nom_photo,getSettingValue('longueur_encodage_photo'));
+		$nom_photo=substr($nom_photo,getSettingValue('encodage_photos_eleves_longueur'));
 		// on en profite pour normaliser l'extension en .jpg
 		if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
 		else {

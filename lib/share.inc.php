@@ -4606,11 +4606,11 @@ function test_ecriture_style_screen_ajout() {
 
 
 /**
- * Ajoute au début d'un nom de fichier une chaîne de 'longueur_encodage_photo' caractères pseudo alétaoires
+ * Ajoute au début d'un nom de fichier une chaîne de 'encodage_photos_eleves_longueur' caractères pseudo alétaoires
  * le but étant d'empêcher l'accès aux photos élèves.
  *
- * Renvoie le nom de fichier modifié si les valeurs 'alea_nom_photo' 
- * et 'longueur_encodage_photo' sont définies
+ * Renvoie le nom de fichier modifié si les valeurs 'encodage_photos_eleves_alea' 
+ * et 'encodage_photos_eleves_longueur' sont définies
  * dans la table 'setting', sinon renvoie le nom de fichier inchangé.
  *
  * @param string $nom_photo le nom du fichier
@@ -4618,15 +4618,15 @@ function test_ecriture_style_screen_ajout() {
  * 
  */
 function encode_nom_photo($nom_photo) {
-	if (getSettingValue('alea_nom_photo')===null || getSettingValue('longueur_encodage_photo')===null) return $nom_photo;
-	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,getSettingValue('longueur_encodage_photo')).$nom_photo;
+	if (getSettingValue('encodage_photos_eleves_alea')===null || getSettingValue('encodage_photos_eleves_longueur')===null) return $nom_photo;
+	else return substr(md5(getSettingValue('encodage_photos_eleves_alea').$nom_photo),0,getSettingValue('encodage_photos_eleves_longueur')).$nom_photo;
 }
 
 /**
- * Supprime 'longueur_encodage_photo' au début d'un nom de fichier
+ * Supprime 'encodage_photos_eleves_longueur' au début d'un nom de fichier
  *
  * Renvoie le nom de fichier modifié si
- * et 'longueur_encodage_photo' est définie
+ * et 'encodage_photos_eleves_longueur' est définie
  * dans la table 'setting', sinon renvoie le nom de fichier inchangé.
  *
  * @param string $nom_photo le nom du fichier
@@ -4634,8 +4634,8 @@ function encode_nom_photo($nom_photo) {
  * 
  */
 function des_encode_nom_photo($nom_photo) {
-	if (getSettingValue('longueur_encodage_photo')===null) return $nom_photo;
-	else return substr($nom_photo,getSettingValue('longueur_encodage_photo'));
+	if (getSettingValue('encodage_photos_eleves_longueur')===null) return $nom_photo;
+	else return substr($nom_photo,getSettingValue('encodage_photos_eleves_longueur'));
 }
 
 /**
