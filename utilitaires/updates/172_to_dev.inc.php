@@ -107,13 +107,39 @@ if ($test_champ==0) {
 } else {
 	$result .= msj_present("Le champ existe déjà");
 }
-
+// ------------------------------------
 // Modifications méthode encodage photo
+// ------------------------------------
+
+$titre="Encodage des noms de fichier des photos élèves";
+$texte="La méthode d'encodage a été modifiée, vérifier qu'il n'y a pas d'incohérence.<br />Voir <a href='./mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a>";
+$destinataire="administrateur";
+$mode="statut";
+enregistre_infos_actions($titre,$texte,$destinataire,$mode);
+
+$result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_eleves_alea' à la table 'setting'<br />";
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_eleves_alea'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$result .= "Initialisation du paramètre 'encodage_photos_eleves_alea'";
+	$sql="INSERT INTO setting SET name='encodage_photos_eleves_alea', value=MD5(UNIX_TIMESTAMP());";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+
 $result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_eleves_longueur' à la table 'setting'<br />";
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_eleves_longueur'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$result .= "Initialisation du paramètre 'encodage_photos_eleves_longueur' à 10 : ";
+	$result .= "Initialisation du paramètre 'encodage_photos_eleves_longueur'";
 	$sql="INSERT INTO setting SET name='encodage_photos_eleves_longueur', value='10';";
 	$result_inter = traite_requete($sql);
 	if ($result_inter == '') {
@@ -125,6 +151,11 @@ if ($res_test == 0){
 } else {
 	$result .= msj_present("Le champ existe déjà");
 }
+
+// un peu de ménage, si échec des requêtes cela n'a pas d'importance
+mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='encodage_nom_photo'");
+mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='alea_nom_photo'");
+
 
 $result .= "&nbsp;-> Ajout d'un champ 'modifs_encodage_1_7_2_vers_1_7_3' à la table 'setting'<br />";
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='modifs_encodage_1_7_2_vers_1_7_3'");
@@ -169,6 +200,7 @@ if ($modifs_encodage_1_7_2_vers_1_7_3=='non') {
 		$result .= msj_erreur("ECHEC !");
 	}
 }
-
+// ------------------------------------------
 // Modifications méthode encodage photo (fin)
+// ------------------------------------------
 ?>
