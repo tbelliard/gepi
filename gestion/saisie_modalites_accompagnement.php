@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -305,7 +305,7 @@ if(mysqli_num_rows($res_class_tmp)>0){
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 //**************** EN-TETE **************************************
-$titre_page = "Modalités d'enseignement";
+$titre_page = "Modalités d'accompagnement";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
