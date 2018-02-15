@@ -1294,6 +1294,72 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 		$nb_reg++;
 	}
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//debug_var();
+	/*
+	$_POST['mod_disc_alerte_cat_incluse']=	Array (*)
+	$_POST[mod_disc_alerte_cat_incluse]['0']=	5
+	$_POST[mod_disc_alerte_cat_incluse]['1']=	6
+	*/
+	$chaine="";
+	$mod_disc_alerte_cat_incluse=isset($_POST['mod_disc_alerte_cat_incluse']) ? $_POST['mod_disc_alerte_cat_incluse'] : array();
+
+	$sql="SELECT * FROM s_categories ORDER BY categorie;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if(!in_array($lig->id, $mod_disc_alerte_cat_incluse)) {
+				$chaine.="|".$lig->id;
+			}
+		}
+		$chaine.="|";
+
+		if(!savePref($_SESSION['login'],'mod_discipline_natures_exclues_mod_alerte', $chaine)) {
+			$msg.="Erreur lors de l'enregistrement de mod_discipline_natures_exclues_mod_alerte.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de mod_discipline_natures_exclues_mod_alerte.<br />";
+			//$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+			$nb_reg++;
+		}
+	}
+
+
+	if(isset($_POST['mod_disc_alerte_cat_incluse_NC'])) {
+		$value="n";
+	}
+	else {
+		$value="y";
+	}
+
+	if(!savePref($_SESSION['login'],'mod_discipline_natures_non_categorisees_exclues_mod_alerte', $value)) {
+		$msg.="Erreur lors de l'enregistrement de mod_discipline_natures_non_categorisees_exclues_mod_alerte.<br />";
+		$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
+	else {
+		$msg.="Enregistrement de mod_discipline_natures_non_categorisees_exclues_mod_alerte.<br />";
+		//$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$nb_reg++;
+	}
+
+	if ($_SESSION['statut'] === 'professeur') {
+		$moduleDiscipline = filter_input(INPUT_POST, 'module') === 'discipline' ? TRUE : FALSE;
+		$limiteAGroupeModAlerte = filter_input(INPUT_POST, 'limiteAGroupeModAlerte') ? filter_input(INPUT_POST, 'limiteAGroupeModAlerte') : "n";
+	
+		if ($moduleDiscipline && $limiteAGroupeModAlerte) {
+			savePref($_SESSION['login'], 'limiteAGroupeModAlerte', $limiteAGroupeModAlerte);
+			$msg.="Module discipline -> ";
+			if ($limiteAGroupeModAlerte === 'y') {
+				$msg.="seul les alertes de vos groupes vous seront envoyés.<br />";
+			} else {
+				$msg.="vous recevrez tous les alertes des classes dont vous avez des élèves.<br />";
+			}
+		
+		}
+	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	if($_SESSION['statut']=='professeur') {
 		if(isset($_POST['DiscTemoinIncidentProf'])) {
 			$value="y";
@@ -3384,7 +3450,8 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 																	classes c, 
 																	j_eleves_cpe jecpe, 
 																	j_eleves_classes jec 
-																WHERE sam.id_classe=c.id AND 
+																WHERE sam.type='mail' AND 
+																	sam.id_classe=c.id AND 
 																	sam.destinataire='cpe' AND
 																	jec.id_classe=sam.id_classe AND
 																	jec.login=jecpe.e_login AND
@@ -3398,7 +3465,8 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 																	j_eleves_groupes jeg, 
 																	j_eleves_classes jec, 
 																	j_groupes_professeurs jgp 
-																WHERE sam.id_classe=c.id AND 
+																WHERE sam.type='mail' AND 
+																	sam.id_classe=c.id AND 
 																	sam.destinataire='professeurs' AND 
 																	jec.id_classe=sam.id_classe AND 
 																	jec.login=jeg.login AND 
@@ -3412,7 +3480,8 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 																	classes c, 
 																	j_eleves_professeurs jep, 
 																	j_eleves_classes jec 
-																WHERE sam.id_classe=c.id AND 
+																WHERE sam.type='mail' AND 
+																	sam.id_classe=c.id AND 
 																	sam.destinataire='professeur' AND 
 																	jec.id_classe=sam.id_classe AND 
 																	jec.login=jep.login AND 
@@ -3422,14 +3491,15 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		}
 	}
 	elseif($_SESSION['statut']=='administrateur') {
-		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.id_classe=c.id AND destinataire='administrateur' ORDER BY c.classe)";
+		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.type='mail' AND sam.id_classe=c.id AND destinataire='administrateur' ORDER BY c.classe)";
 		$qualite="Administrateur";
 	}
 	elseif($_SESSION['statut']=='scolarite') {
 		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
 																	classes c, 
 																	j_scol_classes jsc 
-																WHERE sam.id_classe=c.id AND 
+																WHERE sam.type='mail' AND 
+																	sam.id_classe=c.id AND 
 																	sam.destinataire='scolarite' AND
 																	jsc.id_classe=sam.id_classe AND
 																	jsc.login='".$_SESSION['login']."'
@@ -3439,7 +3509,8 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 	elseif($_SESSION['statut']=='autre') {
 		$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.login FROM s_alerte_mail sam, 
 																	classes c 
-																WHERE sam.id_classe=c.id AND 
+																WHERE sam.type='mail' AND 
+																	sam.id_classe=c.id AND 
 																	sam.login='".$_SESSION['login']."'
 																ORDER BY c.classe)";
 		$qualite="compte statut personnalisé";
@@ -3554,7 +3625,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 	}
 	//$sql.=" UNION (SELECT c.id, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.id_classe=c.id AND destinataire='mail' AND adresse='".$_SESSION['adresse']."' ORDER BY c.classe))";
 
-	$sql="(SELECT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.id_classe=c.id AND destinataire='mail' AND adresse='".$_SESSION['email']."' ORDER BY c.classe)";
+	$sql="(SELECT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.type='mail' AND sam.id_classe=c.id AND destinataire='mail' AND adresse='".$_SESSION['email']."' ORDER BY c.classe)";
 	//echo "$sql<br />";
 	$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_mail)>0) {
@@ -3575,6 +3646,192 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 
 		echo "<p>Il n'est pas possible actuellement de restreindre les signalements par mail à certaines catégories d'incidents avec ce mode.</p>";
 	}
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	if(getSettingAOui('active_mod_alerte')) {
+		echo "<p class='bold' style='margin-top:1em;'>Signalement d'incidents par module Alertes&nbsp;:</p>\n";
+		$sql2="";
+		if($_SESSION['statut']=='cpe') {
+			$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
+																		classes c, 
+																		j_eleves_cpe jecpe, 
+																		j_eleves_classes jec 
+																	WHERE sam.type='mod_alerte' AND 
+																		sam.id_classe=c.id AND 
+																		sam.destinataire='cpe' AND
+																		jec.id_classe=sam.id_classe AND
+																		jec.login=jecpe.e_login AND
+																		jecpe.cpe_login='".$_SESSION['login']."'
+																	ORDER BY c.classe)";
+			$qualite="CPE";
+		}
+		elseif($_SESSION['statut']=='professeur') {
+			$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
+																		classes c, 
+																		j_eleves_groupes jeg, 
+																		j_eleves_classes jec, 
+																		j_groupes_professeurs jgp 
+																	WHERE sam.type='mod_alerte' AND 
+																		sam.id_classe=c.id AND 
+																		sam.destinataire='professeurs' AND 
+																		jec.id_classe=sam.id_classe AND 
+																		jec.login=jeg.login AND 
+																		jeg.id_groupe=jgp.id_groupe AND 
+																		jgp.login='".$_SESSION['login']."'
+																	ORDER BY c.classe)";
+			$qualite="professeur";
+			//echo $sql;
+			if(is_pp($_SESSION['login'])) {
+				$sql2="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
+																		classes c, 
+																		j_eleves_professeurs jep, 
+																		j_eleves_classes jec 
+																	WHERE sam.type='mod_alerte' AND 
+																		sam.id_classe=c.id AND 
+																		sam.destinataire='professeur' AND 
+																		jec.id_classe=sam.id_classe AND 
+																		jec.login=jep.login AND 
+																		jep.id_classe=jec.id_classe AND 
+																		jep.professeur='".$_SESSION['login']."'
+																	ORDER BY c.classe)";
+			}
+		}
+		elseif($_SESSION['statut']=='administrateur') {
+			$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.id_classe=c.id AND destinataire='administrateur' ORDER BY c.classe)";
+			$qualite="Administrateur";
+		}
+		elseif($_SESSION['statut']=='scolarite') {
+			$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
+																		classes c, 
+																		j_scol_classes jsc 
+																	WHERE sam.type='mod_alerte' AND 
+																		sam.id_classe=c.id AND 
+																		sam.destinataire='scolarite' AND
+																		jsc.id_classe=sam.id_classe AND
+																		jsc.login='".$_SESSION['login']."'
+																	ORDER BY c.classe)";
+			$qualite="compte Scolarité";
+		}
+		elseif($_SESSION['statut']=='autre') {
+			$sql="(SELECT DISTINCT c.classe, sam.id_classe, sam.login FROM s_alerte_mail sam, 
+																		classes c 
+																	WHERE sam.type='mod_alerte' AND 
+																		sam.id_classe=c.id AND 
+																		sam.login='".$_SESSION['login']."'
+																	ORDER BY c.classe)";
+			$qualite="compte statut personnalisé";
+		}
+		$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_mail)>0) {
+			echo "<p>Vous êtes destinataire, en tant que $qualite, des alertes concernant les incidents impliquant des élèves des classes suivantes&nbsp;: <br />";
+			$cpt=0;
+			$tab_classe_mail=array();
+			while($lig_mail=mysqli_fetch_object($res_mail)) {
+				if(!in_array($lig_mail->id_classe, $tab_classe_mail)) {
+					if($cpt>0) {
+						echo ", ";
+					}
+					echo $lig_mail->classe;
+					$tab_classe_mail[]=$lig_mail->id_classe;
+				}
+				$cpt++;
+			}
+
+		}
+		else {
+			echo "<p>Vous n'êtes destinataire, en tant que $qualite, d'aucune alerte signalant des incidents.<br />Si vous pensez que c'est une erreur, contactez l'administrateur.</p>";
+		}
+	
+		if($_SESSION['statut']=='professeur') {
+			if(getPref($_SESSION['login'], 'mod_discipline_mod_alerte_que_groupe', "")=="y") {
+			
+			}
+	?>
+			<p>
+				<input type="checkbox" 
+					   name="limiteAGroupeModAlerte" 
+					   id='limiteAGroupeModAlerte'
+					   <?php 
+						if(getPref($_SESSION['login'], 'limiteAGroupeModAlerte', "") == "y") {echo "checked = 'checked' ";} 
+						echo " tabindex='$tabindex' ";
+						$tabindex++;
+					   ?>
+					   value="y"
+					   />
+				<label for="limiteAGroupeModAlerte">Limiter les alertes aux élèves que j'ai effectivement en cours</label>
+			</p>
+	<?php
+		}
+
+		echo "<p style='margin-top:1em;'>Dans le cas où vous recevez des signalements par module Alertes, vous pouvez restreindre les catégories d'incidents pour lesquelles vous souhaitez être informé&nbsp;: <br />\n";
+		$tab_id_categories_exclues=array();
+		$mod_discipline_natures_exclues_mod_alerte=getPref($_SESSION['login'], 'mod_discipline_natures_exclues_mod_alerte', '');
+		if($mod_discipline_natures_exclues_mod_alerte!="") {
+			$tmp_tab=explode("|", $mod_discipline_natures_exclues_mod_alerte);
+			for($loop=0;$loop<count($tmp_tab);$loop++) {
+				if($tmp_tab[$loop]!="") {
+					$tab_id_categories_exclues[]=$tmp_tab[$loop];
+				}
+			}
+		}
+		$sql="SELECT * FROM s_categories ORDER BY categorie;";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			echo "<p>Aucune catégorie n'est définie&nbsp;???</p>";
+		}
+		else {
+			while($lig=mysqli_fetch_object($res)) {
+				echo "<input type='checkbox' id='mod_disc_alerte_cat_incluse_$lig->id' name='mod_disc_alerte_cat_incluse[]' value='$lig->id' onchange=\"checkbox_change('mod_disc_alerte_cat_incluse_$lig->id')\" ";
+				if(!in_array($lig->id, $tab_id_categories_exclues)) {
+					echo "checked ";
+				}
+				echo " tabindex='$tabindex' ";
+				$tabindex++;
+				echo " /><label for='mod_disc_alerte_cat_incluse_$lig->id' id='texte_mod_disc_alerte_cat_incluse_$lig->id'>$lig->categorie</label><br />";
+				if($chaine_champs_checkbox_mod_discipline!="") {$chaine_champs_checkbox_mod_discipline.=", ";}
+				$chaine_champs_checkbox_mod_discipline.="'mod_disc_alerte_cat_incluse_$lig->id'";
+			}
+
+			echo "<input type='checkbox' id='mod_disc_alerte_cat_incluse_NC' name='mod_disc_alerte_cat_incluse_NC' value='y' onchange=\"checkbox_change('mod_disc_alerte_cat_incluse_NC')\" ";
+			if(getPref($_SESSION['login'], 'mod_discipline_natures_non_categorisees_exclues_mod_alerte', "")!="y") {
+				echo "checked = 'checked' ";
+			}
+			echo " tabindex='$tabindex' ";
+			$tabindex++;
+			echo " /><label for='mod_disc_alerte_cat_incluse_NC' id='texte_mod_disc_alerte_cat_incluse_NC'>Incidents dont la nature n'est pas catégorisée.</label><br />";
+			if($chaine_champs_checkbox_mod_discipline!="") {$chaine_champs_checkbox_mod_discipline.=", ";}
+			$chaine_champs_checkbox_mod_discipline.="'mod_disc_alerte_cat_incluse_NC'";
+
+			if(getSettingValue('DisciplineNaturesRestreintes')=='2') {
+				echo "<p>Vous utilisez une liste figée/restreinte de natures d'incidents.<br />Vous ne devriez pas avoir d'incidents de nature non catégorisée.</p>\n";
+			}
+		}
+
+		if($sql2!="") {
+			$res_mail=mysqli_query($GLOBALS["mysqli"], $sql2);
+			if(mysqli_num_rows($res_mail)>0) {
+				echo "<p style='margin-top:1em;'>Vous êtes destinataire, en tant que ".getSettingValue('gepi_prof_suivi').", des alertes concernant les incidents impliquant des élèves des classes suivantes&nbsp;: ";
+				$cpt=0;
+				$tab_classe_mail=array();
+				while($lig_mail=mysqli_fetch_object($res_mail)) {
+					if(!in_array($lig_mail->id_classe, $tab_classe_mail)) {
+						if($cpt>0) {
+							echo ", ";
+						}
+						echo $lig_mail->classe;
+						$tab_classe_mail[]=$lig_mail->id_classe;
+					}
+					$cpt++;
+				}
+				echo "</p>\n";
+			}
+			else {
+				echo "<p>Vous n'êtes destinataire, en tant que ".getSettingValue('gepi_prof_suivi').", d'aucune alerte signalant des incidents.<br />Si vous pensez que c'est une erreur, contactez l'administrateur.</p>";
+			}
+		}
+	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 	echo "<p style='text-align:center;'>\n";
 	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";

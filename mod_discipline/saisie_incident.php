@@ -1199,7 +1199,8 @@ $headers);
 							//}
 
 							if($destinataires!="") {
-
+								// 20180215
+								//$msg.=$destinataires."<br />";
 								$headers = "";
 								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 									$headers.="Reply-to:".$_SESSION['email']."\r\n";
@@ -1230,6 +1231,8 @@ $headers);
 							$subject.=" (incident n°".$id_incident.")";
 							$destinataires_mod_alerte=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature, "mod_alerte");
 							for($loop=0;$loop<count($destinataires_mod_alerte);$loop++) {
+								// 20180215
+								//$msg.=$destinataires_mod_alerte[$loop]."<br />";
 								$retour_mod_alerte=enregistre_message($subject, $texte_mail, $_SESSION['login'], $destinataires_mod_alerte[$loop]);
 								if($retour_mod_alerte!="") {
 									$nb_msg++;

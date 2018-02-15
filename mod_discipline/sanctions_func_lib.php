@@ -1104,6 +1104,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 
 function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $type="mail") {
 	global $tab_param_mail;
+	global $id_incident;
+
 	$retour="";
 
 	$id_categorie="";
@@ -1162,6 +1164,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 								$ajouter_mail="y";
 								if($id_categorie!="") {
 									$sql="SELECT * FROM preferences WHERE login='$lig2->login' AND name='mod_discipline_natures_exclues_mail' AND value LIKE '%|$id_categorie|%';";
+									//echo "$sql<br />";
 									$test_nat=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($test_nat)>0) {
 										$ajouter_mail="n";
@@ -1173,10 +1176,11 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 										$ajouter_mail="n";
 									}
 								}
-								
+								//echo "\$ajouter_mail=$ajouter_mail<br />";
+
 								// si prof, il faut vérifier au besoin, si l'élève (un des élèves) est bien dans un des groupes d'enseignement
 								if(($lig2->statut ==='professeur') && (getPref($lig2->login, 'limiteAGroupe', "y"))) {
-									global $id_incident;
+									//global $id_incident;
 									$protagonistes = get_protagonistes($id_incident);
 									if(!ElvGroupeProf($lig2->login, $protagonistes)) {
 										$ajouter_mail="n";
@@ -1184,8 +1188,8 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 									} else {
 										// echo ('<br />un prof '.$lig2->login.' va recevoir un courriel<br />');
 									}
-									
 								}
+								//echo "\$ajouter_mail=$ajouter_mail<br />";
 
 								if($ajouter_mail!="n") {
 									if(!in_array($lig2->email,$tab_dest)) {
@@ -1243,6 +1247,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 							$ajouter_login="y";
 							if($id_categorie!="") {
 								$sql="SELECT * FROM preferences WHERE login='$lig2->login' AND name='mod_discipline_natures_exclues_mod_alerte' AND value LIKE '%|$id_categorie|%';";
+								//echo "$sql<br />";
 								$test_nat=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test_nat)>0) {
 									$ajouter_login="n";
@@ -1254,6 +1259,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 									$ajouter_login="n";
 								}
 							}
+							//echo "\$ajouter_login=$ajouter_login<br />";
 
 							if($ajouter_login!="n") {
 								if(!in_array($lig2->login,$tab_dest)) {
