@@ -62,6 +62,11 @@ if(getSettingAOui('active_module_LSUN')) {
 	$tab_type_enseignements_complement=get_tab_types_enseignements_complement();
 }
 
+// 20180210
+if(getSettingAOui('langue_vivante_regionale')) {
+	$tab_type_LVR=get_tab_types_LVR();
+}
+
 $reg_nom_groupe = $current_group["name"];
 $reg_nom_complet = $current_group["description"];
 $reg_matiere = $current_group["matiere"]["matiere"];
@@ -645,6 +650,42 @@ if (isset($_POST['is_posted'])) {
 
 			}
 
+			// 20180210
+			if((getSettingAOui('langue_vivante_regionale'))&&(isset($_POST["lvr"]))) {
+
+				if($_POST["lvr"]=="") {
+					$sql="DELETE FROM j_groupes_lvr WHERE id_groupe='".$id_groupe."';";
+					//echo "$sql<br />";
+					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($menage) {
+						//$nb_reg_ok++;
+					}
+					else {
+						$msg.="Erreur lors de la suppression du type de langue vivante régionale.<br />";
+					}
+				}
+				else {
+					$sql="SELECT * FROM j_groupes_lvr WHERE id_groupe='".$id_groupe."';";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)==0) {
+						$sql="INSERT INTO j_groupes_lvr SET id_groupe='".$id_groupe."', code='".$_POST["lvr"]."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de la définition du type de langue vivante régionale ".$_POST["lvr"].".<br />";
+						}
+					}
+					else {
+						$sql="UPDATE j_groupes_lvr SET code='".$_POST["lvr"]."' WHERE id_groupe='".$id_groupe."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de la définition du type de langue vivante régionale ".$_POST["lvr"].".<br />";
+						}
+					}
+				}
+
+			}
 
 			if(isset($_POST['creer_sous_groupes'])) {
 				if((!isset($_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']=='')||(!preg_match("/^[0-9]*$/", $_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']<1)) {
@@ -1071,6 +1112,26 @@ if(getSettingAOui('active_module_LSUN')) {
 				echo " selected";
 			}
 			echo " title=\"".$tab_type_enseignements_complement["indice"][$loop_grp_type]["valeur"]."\">".$tab_type_enseignements_complement["indice"][$loop_grp_type]["code"]." (".$tab_type_enseignements_complement["indice"][$loop_grp_type]["valeur"].")"."</option>\n";
+		}
+		echo "</select></p>\n";
+	}
+}
+
+
+// 20180210
+if(getSettingAOui('langue_vivante_regionale')) {
+	if(count($tab_type_LVR["indice"])>0) {
+		echo "<br /><p><strong>Sélectionnez la qualité de langue vivante régionale (ou non) de cet enseignement&nbsp;:</strong><br />";
+		echo "<select onchange=\"changement()\" size=1 id='lvr' name='lvr'>\n";
+		echo "<option value='' title=\"Ce n'est pas un enseignement de langue vivante régionale.\"";
+		if ((!isset($current_group["lvr"]))||(count($current_group["lvr"])=="0")) {echo " SELECTED";}
+		echo ">---</option>\n";
+		for($loop_grp_type=0;$loop_grp_type<count($tab_type_LVR["indice"]);$loop_grp_type++) {
+			echo "<option value='".$tab_type_LVR["indice"][$loop_grp_type]["code"] . "' title=\"".$tab_type_LVR["indice"][$loop_grp_type]["libelle"] . "\"";
+			if((isset($current_group["lvr"]["code"]))&&($current_group["lvr"]["code"]==$tab_type_LVR["indice"][$loop_grp_type]["code"])) {
+				echo " selected";
+			}
+			echo " title=\"".$tab_type_LVR["indice"][$loop_grp_type]["libelle"]."\">".$tab_type_LVR["indice"][$loop_grp_type]["code"]." (".$tab_type_LVR["indice"][$loop_grp_type]["libelle"].")"."</option>\n";
 		}
 		echo "</select></p>\n";
 	}

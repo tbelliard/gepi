@@ -290,6 +290,10 @@ $tab_type_aid[3]["nom_court"]="Parcours";
 $tab_type_aid[3]["nom_complet"]="Parcours éducatif";
 $tab_type_aid[3]["nom_complet_pluriel"]="Parcours éducatifs";
 
+$tab_type_aid[4]["nom_court"]="DevFaits";
+$tab_type_aid[4]["nom_complet"]="Devoirs faits";
+$tab_type_aid[4]["nom_complet_pluriel"]="Devoirs faits";
+
 $tab_type_parcours=array("PAR_AVN" => "Parcours avenir",
 				"PAR_CIT"=>"Parcours citoyen",
 				"PAR_ART"=>"Parcours d'éducation artistique et culturelle",

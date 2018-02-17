@@ -688,6 +688,17 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			}
 		}
 
+		// 20180210
+		if(getSettingAOui('langue_vivante_regionale')) {
+			$sql="SELECT * FROM j_groupes_lvr WHERE id_groupe='".$_id_groupe."';";
+			//echo "$sql<br />";
+			$res_type_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_type_grp)>0) {
+				$lig_type=mysqli_fetch_object($res_type_grp);
+				$temp["lvr"]["code"]=$lig_type->code;
+			}
+		}
+
 		if($get_param=='y') {
 			$sql="SELECT * FROM groupes_param WHERE id_groupe='".$_id_groupe."';";
 			//echo "$sql<br />";

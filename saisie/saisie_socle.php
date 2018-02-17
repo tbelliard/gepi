@@ -164,6 +164,11 @@ $tab_traduction_niveau_couleur[4]="<span style='color:blue' title=\"\">TBM</span
 //20170302
 $tab_types_enseignements_complement=get_tab_types_enseignements_complement();
 
+// 20180210
+if(getSettingAOui('langue_vivante_regionale')) {
+	$tab_type_LVR=get_tab_types_LVR();
+}
+
 // 20170521: Ménage:
 //===========================================
 $sql="DELETE FROM socle_eleves_composantes WHERE ine='';";
@@ -370,6 +375,58 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 								if($positionnement!=$lig->positionnement) {
 									$sql="UPDATE socle_eleves_enseignements_complements SET 
+													positionnement='".$positionnement."', 
+													login_saisie='".$_SESSION['login']."', 
+													date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
+												WHERE ine='".$ine."' AND id_groupe='".$id_groupe."';";
+									//echo "$sql<br />";
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+									if($update) {
+										$cpt_reg++;
+									}
+									else {
+										$msg.="Erreur lors de la mise à jour $sql<br />";
+										$nb_err++;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				// 20180211
+				$lvr=isset($_POST["lvr"]) ? $_POST["lvr"] : NULL;
+				if(isset($lvr)) {
+					foreach($lvr as $ine => $positionnement) {
+						// 20170521 : 
+						if($ine=="") {
+							$msg.="LVR&nbsp;: Un identifiant INE est vide pour un élève. Il ne peut pas être pris en compte.<br />";
+						}
+						else {
+							$sql="SELECT * FROM socle_eleves_lvr WHERE ine='".$ine."' AND id_groupe='".$id_groupe."';";
+							//echo "$sql<br />";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql="INSERT INTO socle_eleves_lvr SET ine='".$ine."', 
+											id_groupe='".$id_groupe."', 
+											positionnement='".$positionnement."', 
+											login_saisie='".$_SESSION['login']."', 
+											date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if($insert) {
+									$cpt_reg++;
+								}
+								else {
+									$msg.="Erreur lors de l'enregistrement $sql<br />";
+									$nb_err++;
+								}
+							}
+							else {
+								$lig=mysqli_fetch_object($test);
+
+								if($positionnement!=$lig->positionnement) {
+									$sql="UPDATE socle_eleves_lvr SET 
 													positionnement='".$positionnement."', 
 													login_saisie='".$_SESSION['login']."', 
 													date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
@@ -886,6 +943,10 @@ if($_SESSION['statut']=="professeur") {
 			echo "</p>";
 		}
 
+		echo "<p style='margin-top:2em; text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le verrouillage/ouverture de saisie sont effectuées en compte scolarité dans le menu Socle.<br />
+		Ce n'est pas lié à l'ouverture des périodes pour la saisie des notes et appréciations des bulletins.<br />
+		La saisie pour le socle peut être ouverte alors que toutes les périodes de bulletins sont closes.</p>";
+
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -1144,6 +1205,33 @@ if(isset($id_groupe)) {
 			}
 		}
 
+		//20180211
+		$is_lvr=false;
+		$sql="SELECT jgl.* FROM j_groupes_lvr jgl, 
+							j_groupes_professeurs jgp 
+						WHERE jgl.id_groupe=jgp.id_groupe AND 
+							jgl.id_groupe='".$id_groupe."' AND 
+							jgp.login='".$_SESSION["login"]."' AND 
+							jgl.code!='';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$is_lvr=true;
+			$lig_test=mysqli_fetch_object($test);
+			$code_lvr=$lig_test->code;
+
+			$tab_niveaux_eleves_LVR=array();
+
+			// A VOIR : Si on fait un TRUNCATE au lieu d'un DELETE sur les groupes au changement d'année, on risque de ré-attribuer des id_groupe correspondant à des valeurs de socle_eleves_lvr
+			$sql="SELECT * FROM socle_eleves_lvr 
+							WHERE id_groupe='".$id_groupe."' AND ine!='';";
+			$res_ec=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_ec)>0) {
+				while($lig_ec=mysqli_fetch_assoc($res_ec)) {
+					$tab_niveaux_eleves_LVR[$lig_ec['ine']]=$lig_ec;
+				}
+			}
+		}
+
 		echo "<p><em>Notes&nbsp;:</em></p>
 <ul>
 	<li><p>Pour les bilans de fin de cycle en 6ème et 3ème, la saisie d'une synthèse est requise.<br />
@@ -1390,6 +1478,43 @@ if(isset($id_groupe)) {
 
 				$nb_points_enseignement_complement=calcule_points_DNB_enseignement_complement($lig->no_gep);
 				$nb_pts_dnb+=$nb_points_enseignement_complement;
+
+				//20180210
+				if(($tab_cycle[$mef_code_ele]==4)&&($periode==$max_per)) {
+					if($is_lvr) {
+						//$tab_type_LVR
+						$checked[0]=" checked";
+						$checked[1]="";
+
+						$style[0]=" style='font-weight:bold'";
+						$style[1]="";
+						if(isset($tab_niveaux_eleves_LVR[$lig->no_gep]["positionnement"])) {
+							$style[0]="";
+							$style[1]="";
+
+							$checked[0]="";
+							$checked[1]="";
+
+							$checked[$tab_niveaux_eleves_LVR[$lig->no_gep]["positionnement"]]=" checked";
+							$style[$tab_niveaux_eleves_LVR[$lig->no_gep]["positionnement"]]=" style='font-weight:bold'";
+						}
+
+						echo "
+		<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de la Langue vivante régionale (".$tab_type_LVR["code"][$code_lvr].")\">
+			<strong>Langue vivante régionale&nbsp;:</strong> ".$tab_type_LVR["code"][$code_lvr]." (".$tab_type_LVR["code"][$code_lvr].")<br />
+			<input type='radio' name='lvr[".$lig->no_gep."]' id='lvr_".$id_groupe."_".$lig->no_gep."_0' value='0'".$checked[0]." 
+					onchange=\"checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_0');
+							checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_1');\" />
+			<label for='lvr_".$id_groupe."_".$lig->no_gep."_0' id='texte_lvr_".$id_groupe."_".$lig->no_gep."_0'".$style[0]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
+
+			<input type='radio' name='lvr[".$lig->no_gep."]' id='lvr_".$id_groupe."_".$lig->no_gep."_1' value='1'".$checked[1]." 
+					onchange=\"checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_0');
+							checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_1');\" />
+			<label for='lvr_".$id_groupe."_".$lig->no_gep."_1' id='texte_lvr_".$id_groupe."_".$lig->no_gep."_1'".$style[1]."> Niveau A2 atteint</label>
+		</p>";
+					}
+				}
+
 
 				$commentaire_nb_points="";
 				$style_nb_points="";

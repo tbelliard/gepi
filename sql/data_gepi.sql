@@ -1829,6 +1829,7 @@ INSERT INTO modalites_accompagnement SET code='PPS', libelle='Projet personnalis
 INSERT INTO modalites_accompagnement SET code='ULIS', libelle='Unité localisée pour l\’inclusion scolaire', avec_commentaire='n';
 INSERT INTO modalites_accompagnement SET code='UPE2A', libelle='Unité pédagogique pour élèves allophones arrivants', avec_commentaire='n';
 INSERT INTO modalites_accompagnement SET code='SEGPA', libelle='Section d\’enseignement général adapté', avec_commentaire='n';
+INSERT INTO modalites_accompagnement SET code='CTR', libelle='Contrat de réussite', avec_commentaire='y';
 INSERT INTO droits SET id='/groupes/remplir_enseignement_moyenne.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Création d enseignement moyenne', statut='';
 INSERT INTO droits SET id='/gestion/saisie_contact.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Saisie contact téléphonique, mail',statut='';
 INSERT INTO elements_programmes SET cycle='3', matiere='Arts plastiques', rubrique='Expérimenter, produire, créer', item='Choisir, organiser et mobiliser des gestes, des outils et des matériaux en fonction des effets qu\'ils produisent.', resume='';

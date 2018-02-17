@@ -76,6 +76,10 @@ $tab_type_grp=get_tab_types_groupe();
 if(getSettingAOui('active_module_LSUN')) {
 	$tab_type_enseignements_complement=get_tab_types_enseignements_complement();
 }
+// 20180210
+if(getSettingAOui('langue_vivante_regionale')) {
+	$tab_type_LVR=get_tab_types_LVR();
+}
 
 // =================================
 // AJOUT: boireaus
@@ -406,6 +410,63 @@ if (isset($_POST['is_posted'])) {
 					/*
 					else {
 						echo "Type d'enseignement de complément inchangé<br />";
+					}
+					*/
+				}
+			}
+		}
+	}
+
+	// 20180210
+	if(getSettingAOui('langue_vivante_regionale')) {
+		//echo "plop<br />";
+		$lvr=array();
+		foreach ($_POST as $key => $value) {
+			$pattern = "/^lvr\_/";
+			if (preg_match($pattern, $key)) {
+				$group_id = preg_replace($pattern, "", $key);
+				$lvr[$group_id] = "$value";
+				//echo "\$lvr[$group_id] = \"$value\";<br />";
+
+				$sql="SELECT * FROM j_groupes_lvr WHERE id_groupe='".$group_id."';";
+				//echo "$sql<br />";
+				$res_type_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res_type_grp)==0) {
+					if($lvr[$group_id]!="") {
+						$sql="INSERT INTO j_groupes_lvr SET id_groupe='".$group_id."', code='".$value."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de l'enregistrement du type de langue vivante régionale pour le groupe n°".$tab_id_groupe[$loop].".<br />";
+						}
+					}
+				}
+				else {
+					$lig_type=mysqli_fetch_object($res_type_grp);
+					/*
+					echo "<pre>";
+					print_r($lig_type);
+					echo "</pre>";
+					*/
+					if($lvr[$group_id]=="") {
+						$sql="DELETE FROM j_groupes_lvr WHERE id_groupe='".$group_id."';";
+						//echo "$sql<br />";
+						$suppr=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$suppr) {
+							$msg.="Erreur lors de la remise à vide du type de langue vivante régionale pour le groupe n°".$tab_id_groupe[$loop].".<br />";
+						}
+					}
+					elseif($lvr[$group_id]!=$lig_type->code) {
+						$sql="UPDATE j_groupes_lvr SET code='".$value."' WHERE id_groupe='".$group_id."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(!$update) {
+							$msg.="Erreur lors de la mise à jour du type de langue vivante régionale pour le groupe n°".$tab_id_groupe[$loop].".<br />";
+						}
+					}
+					/*
+					else {
+						echo "LVR inchangée<br />";
 					}
 					*/
 				}
@@ -1108,6 +1169,11 @@ for($i=0;$i<30;$i++){
 		echo "<th rowspan='2' title=\"Enseignement de complément (ou non)\">Ens.<br />Compl.</th>\n";
 		$nb_total_col++;
 	}
+	// 20180210
+	if(getSettingAOui('langue_vivante_regionale')) {
+		echo "<th rowspan='2' title=\"Langue vivante régionale (ou non)\">LVR</th>\n";
+		$nb_total_col++;
+	}
 	echo "<th colspan='".count($tab_domaines)."'>Visibilité</th>\n";
 	echo "<th rowspan='2'>Coefficient</th>\n";
 	echo "<th colspan='3'>Mode moy</th>\n";
@@ -1375,6 +1441,24 @@ for($i=0;$i<30;$i++){
 					echo " selected";
 				}
 				echo " title=\"".$tab_type_enseignements_complement["indice"][$loop_grp_type]["valeur"]."\">".$tab_type_enseignements_complement["indice"][$loop_grp_type]["code"]."</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+		}
+
+		// 20180210
+		if(getSettingAOui('langue_vivante_regionale')) {
+			echo "<td>";
+			echo "<select onchange=\"changement()\" size=1 id='lvr_".$cpt_grp."' name='lvr_" .$current_group["id"]. "'>\n";
+			echo "<option value='' title=\"Ce n'est pas un enseignement de langue vivante régionale.\"";
+			if ((!isset($current_group["lvr"]))||(count($current_group["lvr"])=="0")) {echo " SELECTED";}
+			echo ">---</option>\n";
+			for($loop_grp_type=0;$loop_grp_type<count($tab_type_LVR["indice"]);$loop_grp_type++) {
+				echo "<option value='".$tab_type_LVR["indice"][$loop_grp_type]["code"] . "' title=\"".$tab_type_LVR["indice"][$loop_grp_type]["libelle"] . "\"";
+				if((isset($current_group["lvr"]["code"]))&&($current_group["lvr"]["code"]==$tab_type_LVR["indice"][$loop_grp_type]["code"])) {
+					echo " selected";
+				}
+				echo " title=\"".$tab_type_LVR["indice"][$loop_grp_type]["libelle"]."\">".$tab_type_LVR["indice"][$loop_grp_type]["code"]."</option>\n";
 			}
 			echo "</select>\n";
 			echo "</td>\n";

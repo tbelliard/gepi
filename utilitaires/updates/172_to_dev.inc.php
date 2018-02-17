@@ -108,4 +108,58 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'une modalité d'accompagnement 'Contrat de réussite'&nbsp;: ";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT 1=1 FROM modalites_accompagnement WHERE code='CTR';"));
+if ($test_champ==0) {
+	$sql="INSERT INTO modalites_accompagnement SET code='CTR', libelle='Contrat de réussite', avec_commentaire='y';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La modalité existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'j_groupes_lvr' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_groupes_lvr';");
+if ($test == -1) {
+$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_lvr (
+						id int(11) unsigned NOT NULL auto_increment, 
+						id_groupe int(11) NOT NULL,
+						code VARCHAR(50) NOT NULL,
+						PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'socle_eleves_lvr' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'socle_eleves_lvr'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE socle_eleves_lvr (id int(11) NOT NULL auto_increment, 
+	ine varchar(50) NOT NULL, 
+	id_groupe INT(11) NOT NULL, 
+	positionnement varchar(10) NOT NULL DEFAULT '', 
+	login_saisie varchar(50) NOT NULL DEFAULT '', 
+	date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+	PRIMARY KEY (id), INDEX ine_id_groupe (ine, id_groupe), UNIQUE(ine, id_groupe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

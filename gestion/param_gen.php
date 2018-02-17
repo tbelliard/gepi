@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -605,6 +605,17 @@ if (isset($_POST['is_posted'])) {
 		}
 	
 	
+		if (isset($_POST['langue_vivante_regionale'])) {
+			if (!saveSetting("langue_vivante_regionale", 'y')) {
+				$msg .= "Erreur lors de l'enregistrement de 'langue_vivante_regionale' !";
+			}
+		}
+		else {
+			if (!saveSetting("langue_vivante_regionale", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement de 'langue_vivante_regionale' !";
+			}
+		}
+
 		//===============================================================
 	
 	
@@ -1364,6 +1375,15 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		</label>
 		<span class="cellTab plusPetit">
 			<input type="text" name="longmin_pwd" id="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,50)" />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<label for='langue_vivante_regionale' class="cellTab70">
+			L'établissement propose l'enseignement de langue(s) vivante(s) régionale(s)&nbsp;:
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="checkbox" name="langue_vivante_regionale" id="langue_vivante_regionale" value="y" <?php if(getSettingAOui("langue_vivante_regionale")) {echo "checked ";}?>" onchange='changement()' />
 		</span>
 	</p>
 

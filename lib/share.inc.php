@@ -5210,9 +5210,8 @@ function get_tab_ele_clas_pp($login_prof) {
  * @return boolean 
  */
 function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
-	global $mysqli;
+    global $mysqli;
 	$retour=FALSE;
-
 	if($login_eleve!='') {
 		$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='$login_cpe' AND e_login='$login_eleve';";
 	}
@@ -5223,7 +5222,6 @@ function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
 		$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='$login_cpe';";
 	}
 	if(isset($sql)) {
-		//echo "$sql<br />";
 		$test=mysqli_query($mysqli, $sql);
 		if($test->num_rows > 0) {
 			$test->close();
@@ -17867,6 +17865,65 @@ function get_last_class_ele($ele_login, $champs="all") {
 			return "";
 		}
 	}
+}
+
+function get_tab_types_LVR() {
+	global $mysqli;
+
+	/*
+	<!-- Liste des langues régionales possibles pour le niveau A2 -->
+	<langues-culture-regionale>
+		<langue-culture-regionale code="BAS" libelle="Basque"/>
+		<langue-culture-regionale code="BRE" libelle="Breton"/>
+		<langue-culture-regionale code="COR" libelle="Corse"/>
+		<langue-culture-regionale code="OCC" libelle="Occitan langue d'oc"/>
+		<langue-culture-regionale code="ALS" libelle="Langue régionale d'Alsace"/>
+		<langue-culture-regionale code="MOS" libelle="Langue régionale des pays mosellans"/>
+	</langues-culture-regionale>
+	*/
+
+	$tab=array();
+	$tab["indice"]=array();
+	$tab["code"]=array();
+
+	$tab["indice"][0]["code"]='BAS';
+	$tab["indice"][0]["libelle"]='Basque';
+	$tab["code"]['BAS']='Basque';
+
+	$tab["indice"][1]["code"]='BRE';
+	$tab["indice"][1]["libelle"]='Breton';
+	$tab["code"]['BRE']='Breton';
+
+	$tab["indice"][2]["code"]='COR';
+	$tab["indice"][2]["libelle"]='Corse';
+	$tab["code"]['COR']='Corse';
+
+	$tab["indice"][3]["code"]='OCC';
+	$tab["indice"][3]["libelle"]="Occitan langue d'oc";
+	$tab["code"]['OCC']="Occitan langue d'oc";
+
+	$tab["indice"][4]["code"]='ALS';
+	$tab["indice"][4]["libelle"]="Langue régionale d'Alsace";
+	$tab["code"]['ALS']="Langue régionale d'Alsace";
+
+	$tab["indice"][5]["code"]='MOS';
+	$tab["indice"][5]["libelle"]="Langue régionale des pays mosellans";
+	$tab["code"]['MOS']="Langue régionale des pays mosellans";
+
+	/*
+	$sql="SELECT * FROM nomenclatures_valeurs WHERE type='langue_vivante_regionale' ORDER BY code;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab["indice"][$cpt]=$lig;
+			$tab["code"][$lig["code"]]=$lig;
+			$cpt++;
+		}
+	}
+	*/
+	return $tab;
 }
 
 ?>
