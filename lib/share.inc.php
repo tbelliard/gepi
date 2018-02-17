@@ -5210,9 +5210,10 @@ function get_tab_ele_clas_pp($login_prof) {
  * @return boolean 
  */
 function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
-    global $mysqli;
+	global $mysqli;
 	$retour=FALSE;
-	if($login_eleve=='') {
+
+	if($login_eleve!='') {
 		$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='$login_cpe' AND e_login='$login_eleve';";
 	}
 	elseif($id_classe!='') {
@@ -5222,6 +5223,7 @@ function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
 		$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='$login_cpe';";
 	}
 	if(isset($sql)) {
+		//echo "$sql<br />";
 		$test=mysqli_query($mysqli, $sql);
 		if($test->num_rows > 0) {
 			$test->close();

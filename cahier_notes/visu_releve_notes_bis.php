@@ -1149,6 +1149,10 @@ function ToutCocher() {
 		}
 		echo "	CocheLigne('rn_app');
 	CocheLigne('rn_adr_resp');
+	CocheLigne('rn_moy_classe');
+	CocheLigne('rn_moy_min_max_classe');
+	CocheLigne('rn_retour_ligne');
+	CocheLigne('rn_bloc_obs');
 }
 
 function ToutDeCocher() {
@@ -1158,6 +1162,10 @@ function ToutDeCocher() {
 		}
 		echo "	DecocheLigne('rn_app');
 	DecocheLigne('rn_adr_resp');
+	DecocheLigne('rn_moy_classe');
+	DecocheLigne('rn_moy_min_max_classe');
+	DecocheLigne('rn_retour_ligne');
+	DecocheLigne('rn_bloc_obs');
 }";
 
 

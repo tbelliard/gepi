@@ -29,7 +29,7 @@ $autorise[0] = array('/accueil.php',
 //$autorise[1] = array('/cahier_notes/visu_releve_notes.php');
 $autorise[1] = array('/cahier_notes/visu_releve_notes_bis.php');
 $autorise[2] = array('/cahier_notes/index2.php', '/cahier_notes/visu_toutes_notes2.php', '/visualisation/draw_graphe.php');
-$autorise[3] = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php');
+$autorise[3] = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php', '/bulletin/bulletins_et_conseils_classes.php', '/lib/ajax_action.php', '/visualisation/draw_graphe.php', '/prepa_conseil/visu_toutes_notes.php');
 $autorise[4] = array('/mod_absences/gestion/voir_absences_viescolaire.php',
 						'/mod_absences/gestion/bilan_absences_quotidien.php',
 						'/mod_absences/gestion/bilan_absences_classe.php',
@@ -79,7 +79,13 @@ $autorise[21]= array('/mod_abs2/saisir_eleve.php',
 					 '/mod_abs2/visu_traitement.php');
 $autorise[22]= array('/mod_abs2/bilan_individuel.php' );
 $autorise[23]= array('/mod_abs2/totaux_du_jour.php' );
-$autorise[24]= array('/bulletin/bull_index.php', '/prepa_conseil/index2.php', '/prepa_conseil/visu_toutes_notes.php', '/visualisation/draw_graphe.php');
+
+// 20180217
+// Problème: Si on donne le droit de voir les bulletins simplifiés, mais pas celui d'imprimer les bulletins, on bloque l'accès aux pages '/bulletin/bulletins_et_conseils_classes.php', '/lib/ajax_action.php' parce que c'est le dernier test qui l'emporte et la valeur passe à F sur ces pages faute du droit n°24
+//$autorise[24]= array('/bulletin/bull_index.php', '/prepa_conseil/index2.php', '/prepa_conseil/visu_toutes_notes.php', '/visualisation/draw_graphe.php');
+$autorise[24]= array('/bulletin/bull_index.php', '/prepa_conseil/index2.php', '/prepa_conseil/visu_toutes_notes.php', '/visualisation/draw_graphe.php', '/bulletin/bulletins_et_conseils_classes.php', '/lib/ajax_action.php', '/saisie/impression_avis.php', '/impression/avis_pdf.php');
+// Corrigé par l'ajout d'un test dans creer_statut.php
+
 $autorise[25]= array('/groupes/visu_profs_class.php', '/groupes/popup.php', '/aid/popup.php');
 $autorise[26]= array('/groupes/visu_mes_listes.php', '/groupes/popup.php', '/aid/popup.php', '/impression/liste_pdf.php', '/impression/impression.php', '/impression/impression_serie.php', '/impression/parametres_impression_pdf.php');
 $autorise[27]= array('/groupes/mes_listes.php', '/groupes/get_csv.php', '/groupes/update_champs_periode.php');
