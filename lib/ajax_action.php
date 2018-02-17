@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -77,7 +77,7 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mo
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $target=isset($_POST['target']) ? $_POST['target'] : (isset($_GET['target']) ? $_GET['target'] : "");
 
-if(($mode=="actions_conseil_classe")&&(isset($id_classe))&&(preg_match("/^[0-9]{1,}$/", $id_classe))&&(in_array($_SESSION['statut'], array('professeur', 'scolarite')))) {
+if(($mode=="actions_conseil_classe")&&(isset($id_classe))&&(preg_match("/^[0-9]{1,}$/", $id_classe))&&(in_array($_SESSION['statut'], array('professeur', 'scolarite', 'cpe', 'autre')))) {
 	echo affiche_choix_action_conseil_de_classe($id_classe, $target);
 	die();
 }

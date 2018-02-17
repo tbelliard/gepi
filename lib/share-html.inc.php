@@ -4592,6 +4592,10 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: <span style='color:red'>Classe n+$id_classe inconnue</span></p>";
 	}
 	else {
+		if ($_SESSION['statut'] == 'professeur') {
+			$is_pp_classe=is_pp($_SESSION['login'], $id_classe);
+		}
+
 		$tab_per=array();
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_per[$lig->num_periode]['nom_periode']=$lig->nom_periode;
@@ -4601,7 +4605,19 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 
 		$lien_verif="";
 		if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
-			$lien_verif=" <em style='font-weight:normal;'>(<a href='bulletin/verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\"".$target."><img src='".$gepiPath."/images/icons/bulletin_verif_20.png' class='icone20' alt='Vérif' /> Vérification</a>)</em>";
+			$lien_verif=" <em style='font-weight:normal;'>(<a href='./verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\"".$target."><img src='".$gepiPath."/images/icons/bulletin_verif_20.png' class='icone20' alt='Vérif' /> Vérification</a>)</em>";
+
+			if ($_SESSION['statut'] == 'professeur') {
+				if(getSettingValue("GepiProfImprBul")!='yes') {
+					$lien_verif="";
+				}
+				elseif(!$is_pp_classe) {
+					$lien_verif="";
+				}
+			}
+			elseif (($_SESSION['statut'] == 'cpe') and getSettingValue("GepiCpeImprBul")!='yes') {
+				$lien_verif="";
+			}
 		}
 
 		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: $nom_classe".$lien_verif."</p>
@@ -4623,11 +4639,9 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 		// Comme le lien vérifier les le même pour toutes les périodes, un seul lien quelque part... ou enregistrer la préférence.
 
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='secours')||
-		(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $id_classe)))) {
-			$acces_bull_index="y";
-			if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiProfImprBul'))) {
-				$acces_bull_index="n";
-			}
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiRubConseilCpeTous')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiRubConseilCpe'))&&(is_cpe($_SESSION['login'], $id_classe)))||
+		(($_SESSION['statut']=='professeur')&&($is_pp_classe)&&(getSettingAOui('GepiRubConseilProf')))) {
 
 			// Saisie de l'avis du conseil
 			$retour.="
@@ -4645,7 +4659,13 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			}
 			$retour.="
 		</tr>";
+		}
 
+
+		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='secours')||
+		(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'], $id_classe)))||
+		(($_SESSION['statut']=='professeur')&&($is_pp_classe))||
+		(($_SESSION['statut']=='autre')&&(acces('/saisie/impression_avis.php', $_SESSION['statut'])))) {
 			// Impression avis du conseil
 			$retour.="
 		<tr>
@@ -4665,6 +4685,14 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			$retour.="
 		</tr>";
 
+			// Accès à l'impression des bulletins en CPE ou PROFPRINCIPAL
+			$acces_bull_index="y";
+			if((($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiProfImprBul')))||
+			(($_SESSION['statut']=='cpe')&&(!getSettingAOui('GepiCpeImprBul'))))
+			 {
+				$acces_bull_index="n";
+			}
+
 			// Affichage Appréciations sur le groupe classe
 			$retour.="
 		<tr>
@@ -4681,10 +4709,12 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			<td>";
 					$retour.="
 				<a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=4&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank' title=\"Imprimer le bulletin simplifié du groupe classe.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone32' alt='AppGrp' /></a>";
+
 					if($acces_bull_index=="y") {
 						$retour.="
 				<a href='$gepiPath/bulletin/bull_index.php?mode_bulletin=pdf&intercaler_releve_notes=y&rn_param_auto=y&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&&tab_id_classe[0]=$id_classe&tab_periode_num[0]=$current_num_periode&intercaler_app_classe=y' target='_blank' title=\"Générer un PDF/imprimer un bulletin des appréciations sur le groupe classe.\"><img src='$gepiPath/images/icons/pdf32.png' class='icone32' alt='AppGrpPDF' /></a>";
 					}
+
 					$retour.="
 			</td>";
 				}
@@ -4707,44 +4737,66 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 		}
 
 		// Bulletins,... 
-		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')) {
+		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')||($_SESSION['statut']=='cpe')||($_SESSION['statut']=='autre')) {
 			//Toutes les moyennes d'une classe
 			// Bulletins simplifiés
 			// Graphes
-			$retour.="
+
+			if(acces('/prepa_conseil/index2.php', $_SESSION['statut'])) {
+				$retour.="
 		<tr>
 			<td><a href='$gepiPath/prepa_conseil/index2.php?id_classe=$id_classe'$target title=\"Imprimer toutes les moyennes de la classe.\">Toutes les moyennes de la classe&nbsp;:</a></td>";
-			foreach($tab_per as $current_num_periode => $periode) {
-				/*
-				$retour.="
-			<td><a href='$gepiPath/prepa_conseil/index2.php?id_classe=$id_classe'$target><img src='$gepiPath/images/icons/releve.png' class='icone32' alt='Moyennes' /></a></td>";
-				*/
-				$retour.="
+				if(acces('/prepa_conseil/visu_toutes_notes.php', $_SESSION['statut'])) {
+					foreach($tab_per as $current_num_periode => $periode) {
+						$retour.="
 			<td><a href='$gepiPath/prepa_conseil/visu_toutes_notes.php?id_classe=$id_classe&amp;num_periode=$current_num_periode&amp;couleur_alterne=y' target='_blank' title=\"Imprimer toutes les moyennes de la classe en période $current_num_periode.\"><img src='$gepiPath/images/icons/releve.png' class='icone32' alt='Moyennes' /></a></td>";
+					}
+				}
+				else {
+					foreach($tab_per as $current_num_periode => $periode) {
+						$retour.="
+			<td></td>";
+					}
+				}
+				$retour.="
+		</tr>";
 			}
-			$retour.="
-		</tr>
+			elseif(acces('/prepa_conseil/visu_toutes_notes.php', $_SESSION['statut'])) {
+				$retour.="
+		<tr>
+			<td>Toutes les moyennes de la classe&nbsp;:</td>";
+				foreach($tab_per as $current_num_periode => $periode) {
+					$retour.="
+			<td><a href='$gepiPath/prepa_conseil/visu_toutes_notes.php?id_classe=$id_classe&amp;num_periode=$current_num_periode&amp;couleur_alterne=y' target='_blank' title=\"Imprimer toutes les moyennes de la classe en période $current_num_periode.\"><img src='$gepiPath/images/icons/releve.png' class='icone32' alt='Moyennes' /></a></td>";
+				}
+				$retour.="
+		</tr>";
+			}
+
+			if(acces('/prepa_conseil/edit_limite.php', $_SESSION['statut'])) {
+				$retour.="
 		<tr>
 			<td><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=1&id_classe=$id_classe&periode1=1&periode2=".count($tab_per)."&couleur_alterne=y' target='_blank' title=\"Afficher les bulletins simplifiés de toutes les périodes.\">Bulletins simplifiés&nbsp;:</a></td>";
-			foreach($tab_per as $current_num_periode => $periode) {
-				//https://127.0.0.1/steph/gepi_git_trunk/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=boivinj&id_classe=42&periode1=3&periode2=3
-				/*
-				$retour.="
-			<td><a href='$gepiPath/prepa_conseil/index3.php?id_classe=$id_classe&couleur_alterne=y'$target><img src='$gepiPath/images/icons/bulletin_simp.png' class='icone32' alt='BullSimp' /></a></td>";
-				*/
-				$retour.="
+				foreach($tab_per as $current_num_periode => $periode) {
+					//https://127.0.0.1/steph/gepi_git_trunk/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=boivinj&id_classe=42&periode1=3&periode2=3
+					$retour.="
 			<td><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=1&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank' title=\"Afficher les bulletins simplifiés la période $current_num_periode.\"><img src='$gepiPath/images/icons/bulletin_simp.png' class='icone32' alt='BullSimp' /></a></td>";
+				}
+				$retour.="
+		</tr>";
 			}
-			$retour.="
-		</tr>
+
+			if(acces('/visualisation/affiche_eleve.php', $_SESSION['statut'])) {
+				$retour.="
 		<tr>
 			<td><a href='$gepiPath/visualisation/affiche_eleve.php?id_classe=$id_classe&amp;choix_periode=toutes_periodes' title=\"Afficher les graphes en mode Évolution sur l'année\"$target>Graphes&nbsp;:</a></td>";
-			foreach($tab_per as $current_num_periode => $periode) {
-				$retour.="
+				foreach($tab_per as $current_num_periode => $periode) {
+					$retour.="
 			<td><a href='$gepiPath/visualisation/affiche_eleve.php?id_classe=$id_classe&amp;num_periode_choisie=$current_num_periode'$target title=\"Voir les graphes de la classe en période $current_num_periode\"><img src='$gepiPath/images/icons/graphes.png' class='icone32' alt='Graphes' /></a></td>";
 			}
-			$retour.="
+				$retour.="
 		</tr>";
+			}
 		}
 
 		if($_SESSION['statut']=='professeur') {

@@ -139,7 +139,9 @@ if ($action == 'ajouter') {
 				}
 			}
 
- 			$autorise_b = mysqli_query($GLOBALS["mysqli"], "INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b."")
+			$sql="INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b.";";
+			//echo "$sql<br />";
+ 			$autorise_b = mysqli_query($GLOBALS["mysqli"], $sql)
 			 										OR trigger_error('Impossible d\'enregistrer : '.$values_b.' : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
 
 			if ($autorise_b) {
@@ -197,6 +199,8 @@ if ($action == 'modifier') {
 		$test[$a][26] = isset($_POST["visu_listes_ele|".$b]) ? $_POST["visu_listes_ele|".$b] : NULL;
 		$test[$a][27] = isset($_POST["listes_ele_csv|".$b]) ? $_POST["listes_ele_csv|".$b] : NULL;
 
+		$tab_deja=array();
+
 		// On assure les différents traitements
 		if ($test[$a][0] == 'on') {
 			// On supprime le statut demandé
@@ -229,23 +233,35 @@ if ($action == 'modifier') {
 					$vf = 'F';
 				}
 				// On n'oublie pas de mettre à jour tous les fichiers adéquats
-				for($i = 0 ; $i < $nbre2 ; $i++){
-					//$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
-					//$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
-					$sql="SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
-					//echo "$sql<br />";
-					$query_select = mysqli_query($GLOBALS["mysqli"], $sql);
-					$result = mysqli_fetch_array($query_select);
-					if (!empty ($result)){
-						$sql="UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
-					}else{
-						$sql="INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')";
-					}
-					//echo "$sql<br />";
-					$query_maj = mysqli_query($GLOBALS["mysqli"], $sql);
+				for($i = 0 ; $i < $nbre2 ; $i++) {
+					// Pour ne pas enlever un droit donné préalablement
+					if(!in_array($autorise[$m][$i], $tab_deja)) {
+						//$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+						//$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
+						$sql="SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+						//echo "$sql<br />";
+						$query_select = mysqli_query($GLOBALS["mysqli"], $sql);
+						$result = mysqli_fetch_array($query_select);
+						if (!empty ($result)){
+							$sql="UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+						}else{
+							$sql="INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')";
+						}
+						// 20180217
+						//echo "$sql<br />";
+						//$f=fopen('../backup/debug_statut_perso.txt', 'a+');
+						//fwrite($f, $sql."\n");
+						//fclose($f);
+						$query_maj = mysqli_query($GLOBALS["mysqli"], $sql);
 
-					if (!$query_maj) {
-						$msg3 .= '<span class="red">Erreur</span>';
+						if (!$query_maj) {
+							$msg3 .= '<span class="red">Erreur</span>';
+						}
+						else {
+							if($vf=='V') {
+								$tab_deja[]=$autorise[$m][$i];
+							}
+						}
 					}
 				}
 			} // for($m = 1 ; $m < $iter ; $m++){

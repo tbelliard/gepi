@@ -196,15 +196,17 @@ if ($barre_plugin!="") {
 			if($acces_cahier_notes_visu_releve_notes_2||$acces_cahier_notes_visu_releve_notes||$acces_cahier_notes_visu_releve_notes_bis||$acces_cahier_notes_index2) {
 				$menus .= '<li class="li_inline">&nbsp;Carnet de notes'."\n";
 				$menus .= '   <ul class="niveau2">'."\n";
-				if($acces_cahier_notes_visu_releve_notes_2) {
-					$menus .= '     <li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_2.php"'.insert_confirm_abandon().'>Relevé de notes</a></li>'."\n";
-				}
-				if($acces_cahier_notes_visu_releve_notes) {
-					$menus .= '     <li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes.php"'.insert_confirm_abandon().'>Relevé de notes</a></li>'."\n";
-				}
+
 				if($acces_cahier_notes_visu_releve_notes_bis) {
 					$menus .= '     <li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_bis.php"'.insert_confirm_abandon().'>Relevé de notes</a></li>'."\n";
 				}
+				elseif($acces_cahier_notes_visu_releve_notes_2) {
+					$menus .= '     <li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_2.php"'.insert_confirm_abandon().'>Relevé de notes</a></li>'."\n";
+				}
+				elseif($acces_cahier_notes_visu_releve_notes) {
+					$menus .= '     <li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes.php"'.insert_confirm_abandon().'>Relevé de notes</a></li>'."\n";
+				}
+
 				if($acces_cahier_notes_index2) {
 					$menus .= '     <li><a href="'.$gepiPath.'/cahier_notes/index2.php"'.insert_confirm_abandon().'>Visu.moy.CN</a></li>'."\n";
 				}
@@ -235,7 +237,12 @@ if ($barre_plugin!="") {
 			//$acces_=acces("/.php", $_SESSION['statut']);
 
 			if($acces_bulletin_verif_bulletins||$acces_bulletin_verrouillage||$acces_classes_acces_appreciations||$acces_bulletin_param_bull_pdf||$acces_bulletin_param_bull||$acces_bulletin_bull_index||$acces_prepa_conseil_index3||$acces_prepa_conseil_index2||$acces_absences_index||$acces_mod_abs2_saisie_bulletin||$acces_visualisation_index||$acces_visualisation_affiche_eleve||$acces_visualisation_eleve_classe||$acces_visualisation_eleve_eleve||$acces_visualisation_evol_eleve||$acces_visualisation_evol_eleve_classe||$acces_visualisation_stats_classe||$acces_visualisation_classe_classe) {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/bulletin/bulletins_et_conseils_classes.php"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
+				if(acces('/bulletin/bulletins_et_conseils_classes.php', $_SESSION['statut'])) {
+					$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/bulletin/bulletins_et_conseils_classes.php"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
+				}
+				else {
+					$menus .= '<li class="li_inline">&nbsp;Bulletins'."\n";
+				}
 				$menus .= '   <ul class="niveau2">'."\n";
 
 				if($acces_bulletin_verif_bulletins) {
