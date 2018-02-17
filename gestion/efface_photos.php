@@ -71,7 +71,8 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 		if((pre_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
 
 			$prefixe=pathinfo($file,PATHINFO_FILENAME);
-			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=mb_substr($prefixe,5);
+			if((isset($gepiSettings['encodage_nom_photo'])&&($gepiSettings['encodage_nom_photo']='yes')) {$prefixe=mb_substr($prefixe,5);}
+
 			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
