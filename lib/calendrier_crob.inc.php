@@ -166,7 +166,8 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 
 		$num_jsem_courant=id_j_semaine($ts_courant);
 		if($num_jsem_courant==1) {
-			$num_semaine=strftime("%U", $ts_courant);
+			//$num_semaine=strftime("%U", $ts_courant);
+			$num_semaine=id_s_annee($ts_courant);
 			if(isset($tab_sem[$num_semaine])) {
 				$type_semaine=$tab_sem[$num_semaine];
 			}
