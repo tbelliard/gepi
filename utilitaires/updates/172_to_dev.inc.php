@@ -121,8 +121,29 @@ $result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_eleves_alea' à la table 
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_eleves_alea'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
+	$encodage_photos_eleves_alea=md5(time());
 	$result .= "Initialisation du paramètre 'encodage_photos_eleves_alea'";
-	$sql="INSERT INTO setting SET name='encodage_photos_eleves_alea', value=MD5(UNIX_TIMESTAMP());";
+	$sql="INSERT INTO setting SET name='encodage_photos_eleves_alea', value='".$encodage_photos_eleves_alea."';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$row = mysqli_fetch_row($req_test);
+	$encodage_photos_eleves_alea=$row[0];
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_eleves_longueur' à la table 'setting'<br />";
+$encodage_photos_eleves_longueur=10;
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_eleves_longueur'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$result .= "Initialisation du paramètre 'encodage_photos_eleves_longueur'";
+	$sql="INSERT INTO setting SET name='encodage_photos_eleves_longueur', value='$encodage_photos_eleves_longueur';";
 	$result_inter = traite_requete($sql);
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
@@ -134,72 +155,100 @@ if ($res_test == 0){
 	$result .= msj_present("Le champ existe déjà");
 }
 
-
-$result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_eleves_longueur' à la table 'setting'<br />";
-$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_eleves_longueur'");
-$res_test = mysqli_num_rows($req_test);
-if ($res_test == 0){
-	$result .= "Initialisation du paramètre 'encodage_photos_eleves_longueur'";
-	$sql="INSERT INTO setting SET name='encodage_photos_eleves_longueur', value='10';";
-	$result_inter = traite_requete($sql);
-	if ($result_inter == '') {
-		$result .= msj_ok("SUCCES !");
-	}
-	else {
-		$result .= msj_erreur("ECHEC !");
-	}
-} else {
-	$result .= msj_present("Le champ existe déjà");
+// on ne peut pas utiliser la fonction équivalente de share.inc.php tant que $gepiSettings n'est pas mis à jour
+function encode_nom_photo_4maj($filename_photo) {
+	global $encodage_photos_eleves_alea,$encodage_photos_eleves_longueur;
+	return substr(md5($encodage_photos_eleves_alea.$filename_photo),0,$encodage_photos_eleves_longueur).$filename_photo;
 }
 
 // un peu de ménage, si échec des requêtes cela n'a pas d'importance
 mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='encodage_nom_photo'");
 mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='alea_nom_photo'");
 
-
-$result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_1_7_2_vers_1_7_3' à la table 'setting'<br />";
-$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_1_7_2_vers_1_7_3'");
-$res_test = mysqli_num_rows($req_test);
-if ($res_test == 0){
-	$result .= "Initialisation du paramètre 'encodage_photos_1_7_2_vers_1_7_3' à non : ";
-	$sql="INSERT INTO setting SET name='encodage_photos_1_7_2_vers_1_7_3', value='non';";
-	$result_inter = traite_requete($sql);
-	if ($result_inter == '') {
-		$result .= msj_ok("SUCCES !");
-		$encodage_photos_1_7_2_vers_1_7_3='non';
-	}
-	else {
-		$result .= msj_erreur("ECHEC !");
-		$encodage_photos_1_7_2_vers_1_7_3='oui'; // inutile d'aller plus loin
-	}
-} else {
-	$result .= msj_present("Le champ existe déjà");
-	$une_ligne=mysqli_fetch_assoc($req_test);
-	$encodage_photos_1_7_2_vers_1_7_3=$une_ligne['VALUE'];
-}
-
-if ($encodage_photos_1_7_2_vers_1_7_3=='non') {
+if ($version_old<='1.7.2' && $gepiVersion>='master' && $force_maj!='yes') {
+	// Il faut gérer le changement d'encodage des fichiers photo élèves
 	
+	// tableau stockant les noms des fichiers photo
+	$dossier_photos_eleves=dossier_photo_eleves();
+	$t_files_photos=array();
+	$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
+	while ($file_photo=readdir($R_dossier_photos_eleves)) {
+		if (is_file($dossier_photos_eleves.$file_photo) && strtolower(pathinfo($file_photo,PATHINFO_EXTENSION))=='jpg') {
+				$t_files_photos[]=$file_photo;
+		}
+	}
+	closedir($R_dossier_photos_eleves);
+
+	// tableau des elenoet ou login des élèves
+	$t_identifiants=array();
+	$identifiant=(isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y')?'login':'elenoet';
+	$sql='SELECT `'.$identifiant.'` FROM `eleves`';
+	$query=mysqli_query($mysqli,$sql);
+	while ($un_eleve=mysqli_fetch_assoc($query)) $t_identifiants[]=$un_eleve[$identifiant];
+
 	// Sauvegarde du dossier photos
 	$result .= '&nbsp;-> Sauvegarde du dossier photos<br />';
 	$retour=cree_zip_archive_avec_msg_erreur('photos');
 	if ($retour=='') {
-		msj_ok('Le dossiers photos a bien été archivé.');
+		$result .= msj_ok('Le dossiers photos a bien été archivé.');
 	}
 	else {
-		msj_erreur('ECHEC ! '.$retour);
+		$result .= msj_erreur('ECHEC ! '.$retour);
 	}
 	
-	$result .= "&nbsp;-> Mise à jour du champ 'encodage_photos_1_7_2_vers_1_7_3' dans la table 'setting'<br />";
-	$sql="UPDATE `setting` SET `value`='oui' WHERE `name`='encodage_photos_1_7_2_vers_1_7_3'";
-	$result_inter = traite_requete($sql);
-	if ($result_inter == '') {
-		$result .= msj_ok("SUCCES !");
+	// on renomme éventuellement les fichiers
+	foreach($t_files_photos as $file_photo) {
+		$filename_photo=pathinfo($file_photo,PATHINFO_FILENAME);
+		// pas d'encodage ?
+		if (in_array($filename_photo,$t_identifiants)) {
+			rename($dossier_photos_eleves.$file_photo,$dossier_photos_eleves.encode_nom_photo_4maj($filename_photo).'.jpg');
+		}
+		// ancien encodage ?
+		elseif (in_array(substr($filename_photo,5),$t_identifiants)) {
+			rename($dossier_photos_eleves.$file_photo,$dossier_photos_eleves.encode_nom_photo_4maj(substr($filename_photo,5)).'.jpg');
+		}
+		// nouvel encodage ?
+		elseif (in_array(substr($filename_photo,$encodage_photos_eleves_longueur),$t_identifiants)) {
+			rename($dossier_photos_eleves.$file_photo,$dossier_photos_eleves.encode_nom_photo_4maj(substr($filename_photo,$encodage_photos_eleves_longueur)).'.jpg');
+		}
+		else {
+			// supprimer le fichier $dossier_photos_eleves.$file_photo?
+		}
 	}
-	else {
-		$result .= msj_erreur("ECHEC !");
+	
+} elseif ($gepiVersion>='master' && $force_maj=='yes') {
+	// Il faudrait vérifier la cohérence entre 'encodage_photos_eleves_alea' 
+	// et l'encodage des fichiers photo élèves
+	// mais c'est pratiquement aussi rapide de réencoder
+	
+	// tableau stockant les noms des fichiers photo
+	$dossier_photos_eleves=dossier_photo_eleves();
+	$t_files_photos=array();
+	$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
+	while ($file_photo=readdir($R_dossier_photos_eleves)) {
+		if (is_file($dossier_photos_eleves.$file_photo) && strtolower(pathinfo($file_photo,PATHINFO_EXTENSION))=='jpg') {
+				$t_files_photos[]=$file_photo;
+		}
 	}
+	closedir($R_dossier_photos_eleves);
+
+	// tableau des elenoet ou login des élèves
+	$t_identifiants=array();
+	$identifiant=(isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y')?'login':'elenoet';
+	$sql='SELECT `'.$identifiant.'` FROM `eleves`';
+	$query=mysqli_query($mysqli,$sql);
+	while ($un_eleve=mysqli_fetch_assoc($query)) $t_identifiants[]=$un_eleve[$identifiant];
+
+	foreach($t_files_photos as $file_photo) {
+		$filename_photo=pathinfo($file_photo,PATHINFO_FILENAME);
+		if (in_array(substr($filename_photo,$encodage_photos_eleves_longueur),$t_identifiants)) {
+			rename($dossier_photos_eleves.$file_photo,$dossier_photos_eleves.encode_nom_photo_4maj(substr($filename_photo,$encodage_photos_eleves_longueur)).'.jpg');
+		}
+	}
+} else {
+	// dans tous les autres cas de mise à jour "normale" on ne traite pas le dossier des photos élève
 }
+
 // ------------------------------------------
 // Modifications méthode encodage photo (fin)
 // ------------------------------------------
