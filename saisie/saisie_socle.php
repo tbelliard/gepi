@@ -895,6 +895,7 @@ if($_SESSION['statut']=="professeur") {
 		die();
 	}
 	elseif(!isset($periode)) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir un autre groupe ou classe</a>";
 
 		echo "<h2>Saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
 
@@ -952,6 +953,7 @@ if($_SESSION['statut']=="professeur") {
 	}
 }
 else {
+
 	if(!isset($id_classe)) {
 		echo "</p>";
 
@@ -1016,6 +1018,7 @@ else {
 		die();
 	}
 	elseif(!isset($periode)) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre classe</a>";
 
 		echo "<h2>Saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
 
