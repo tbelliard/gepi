@@ -993,6 +993,7 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 	document.getElementById('button_mail_personnel').style.display='';
 	function recherche_envoi_mail(categorie) {
 		var liste_mail='';
+		var compteur_select=0;
 		for(k=0;k<$compteur_max_personnes_trouvees;k++){
 			if(document.getElementById('checkbox_'+categorie+'_'+k)){
 				if(document.getElementById('checkbox_'+categorie+'_'+k).checked==true) {
@@ -1000,13 +1001,19 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 						if(document.getElementById('email_'+categorie+'_'+k).innerHTML!='') {
 							if(liste_mail!='') {liste_mail=liste_mail+', ';}
 							liste_mail=liste_mail+document.getElementById('email_'+categorie+'_'+k).innerHTML;
+							compteur_select++;
 						}
 					}
 				}
 			}
 		}
-		//alert(liste_mail);
-		document.getElementById('span_mail_infobulle').innerHTML=\"<a href='mailto:\"+liste_mail+\"?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI'>\"+liste_mail+\"</a>\";
+		if(compteur_select==0) {
+			document.getElementById('span_mail_infobulle').innerHTML=\"<br /><span style='color:red'>Aucun utilisateur n'a été sélectionné ou aucune adresse mail n'était disponible pour les personnes choisies.</span>\";
+		}
+		else {
+			//alert(liste_mail);
+			document.getElementById('span_mail_infobulle').innerHTML=\"<a href='mailto:\"+liste_mail+\"?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI'>\"+liste_mail+\"</a>\";
+		}
 		afficher_div('div_envoi_email','y',10,10);
 	}
 
@@ -1028,8 +1035,10 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 
 		$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_photo',$titre_infobulle,"",$texte_infobulle,"",14,0,'y','y','n','n');
 
-		require("../lib/footer.inc.php");
-		die();
+//		require("../lib/footer.inc.php");
+//		die();
+		echo "<hr />";
+
 	}
 }
 
