@@ -179,7 +179,7 @@ function verifie_coherence_encodage() {
 	
 	$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 	while ($photo=readdir($R_dossier_photos_eleves)) {
-		if (is_file($dossier_photos_eleves.$photo) && (pathinfo($photo,PATHINFO_EXTENSION)=='jpg' || pathinfo($photo,PATHINFO_EXTENSION)=='JPG')) {
+		if (is_file($dossier_photos_eleves.$photo) && strtolower(pathinfo($photo,PATHINFO_EXTENSION))=='jpg') {
 				$total_fichiers++;
 				$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
 				if ($nom_photo!=encode_nom_photo(des_encode_nom_photo($nom_photo))) {
