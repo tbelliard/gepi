@@ -227,6 +227,8 @@ $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
 	echo "<p style='color:red'>Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre (<em>cocher trop de cases</em>) trop de variables.<br />Vous devriez tenter d'afficher moins de lignes à la fois.</p>\n";
 	echo alerte_config_suhosin();
@@ -2821,6 +2823,11 @@ else{
 			else{
 				echo "<p>Le parcours des différences est terminé.</p>\n";
 
+				// 20180222
+				$sql="SELECT 1=1 FROM tempo4 WHERE col3='modif' OR col3='new';";
+				$test_modif_ou_new=mysqli_query($mysqli, $sql);
+				$cpt_tab_ele_id_diff=max($cpt_tab_ele_id_diff, mysqli_num_rows($test_modif_ou_new));
+
 				echo "<input type='hidden' name='step' value='4' />\n";
 				echo "<p>Afficher les différences par tranches de <input type='text' id='eff_tranche' name='eff_tranche' value='".min($cpt_tab_ele_id_diff,10)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur $cpt_tab_ele_id_diff<br />\n";
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
@@ -2847,8 +2854,10 @@ else{
 			echo "</pre>";
 			*/
 
+			//debug_var();
+
 			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 10;
-			if(preg_match("/[^0-9]/",$eff_tranche)) {$eff_tranche=10;}
+			if((preg_match("/[^0-9]/", $eff_tranche))||($eff_tranche==0)) {$eff_tranche=10;}
 
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
@@ -2891,6 +2900,8 @@ else{
 			}
 			else{
 				echo "<p>".count($tab_ele_id_diff)." élève(s) restant à parcourir (<i>nouveau(x) ou modifié(s)</i>).</p>\n";
+
+				// 20180222: debug
 				/*
 				echo "<p>Liste des différences repérées: <br />\n";
 				for($i=0;$i<count($tab_ele_id_diff);$i++){
@@ -2942,11 +2953,14 @@ else{
 					}
 				}
 
+				// 20180222: debug
+				//echo "\$eff_tranche=$eff_tranche<br />";
 				$nblignes=$eff_tranche;
 				// Dédoublonnage
 				//for($loop=0;$loop<count($tab_ele_id_diff);$loop++) {echo "\$tab_ele_id_diff[$loop]=$tab_ele_id_diff[$loop]<br />";}
 				if(isset($tab_ele_id_diff)) {
 					$tab_ele_id_diff=array_unique($tab_ele_id_diff);
+					// 20180222: debug
 					//echo "<p>Après array_unique():<br />";
 					//for($loop=0;$loop<count($tab_ele_id_diff);$loop++) {echo "\$tab_ele_id_diff[$loop]=$tab_ele_id_diff[$loop]<br />";}
 
@@ -2957,6 +2971,7 @@ else{
 					*/
 					$nblignes=min($eff_tranche,count($tab_ele_id_diff));
 				}
+				// 20180222: debug
 				//echo "\$nblignes=$nblignes<br />";
 
 
