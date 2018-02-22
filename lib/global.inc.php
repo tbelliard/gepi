@@ -504,6 +504,6 @@ function test_strftime_V() {
 $temoin_strftime_V_vide=test_strftime_V();
 
 // Test sur l'encodage de 'Décembre'
-$strftime_utf8=mb_check_encoding(strftime('%B',mktime(12, 0, 0, 12, 1, 2000)),'utf-8')
+$strftime_utf8=mb_check_encoding(strftime('%B',mktime(12, 0, 0, 12, 1, 2000)),'utf-8');
 
 ?>
