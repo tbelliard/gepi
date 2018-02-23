@@ -88,7 +88,7 @@ function re_encode_nom_photo_eleves() {
 	$t_noms_photos=array();
 	$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 	while ($photo=readdir($R_dossier_photos_eleves)) {
-		if (is_file($dossier_photos_eleves.$photo) && (pathinfo($photo,PATHINFO_EXTENSION)=='jpg' || pathinfo($photo,PATHINFO_EXTENSION)=='JPG')) {
+		if (is_file($dossier_photos_eleves.$photo) && (strtolower(pathinfo($photo,PATHINFO_EXTENSION))=='jpg')) {
 				$t_noms_photos[]=$photo;
 		}
 	}
@@ -137,7 +137,7 @@ function des_encode_nom_photo_des_eleves() {
 				$dossier_photos_eleves="../photos/".$rne."eleves/";
 				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 				while ($photo=readdir($R_dossier_photos_eleves)) {
-					if (is_file($dossier_photos_eleves.$photo) && pathinfo($photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html") {
+					if (is_file($dossier_photos_eleves.$photo) && strtolower(pathinfo($photo,PATHINFO_EXTENSION))=="jpg" && $photo!="index.html") {
 						$t_noms_photos[]=$photo;
 					}
 				}
@@ -368,7 +368,7 @@ function redimensionne_photos($dossier)
 	$h_dossier = opendir($dossier);
 	while ($fichier=readdir($h_dossier)) 
 		{
-		if (mb_strtolower(pathinfo($fichier,PATHINFO_EXTENSION))=="jpg") 
+		if (strtolower(pathinfo($fichier,PATHINFO_EXTENSION))=="jpg") 
 			{
 			if (getSettingValue("active_module_trombinoscopes_rt")!='')
 				$redim_OK=redim_photo($dossier.$fichier,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"),getSettingValue("active_module_trombinoscopes_rt"));

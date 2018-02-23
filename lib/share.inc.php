@@ -4618,9 +4618,6 @@ function test_ecriture_style_screen_ajout() {
  * 
  */
 function encode_nom_photo($nom_photo) {
-	// Précaution
-	$nom_photo=pathinfo($nom_photo,PATHINFO_FILENAME);
-	
 	if (getSettingValue('encodage_photos_eleves_alea')===null || getSettingValue('encodage_photos_eleves_longueur')===null) return $nom_photo;
 	else return substr(md5(getSettingValue('encodage_photos_eleves_alea').$nom_photo),0,getSettingValue('encodage_photos_eleves_longueur')).$nom_photo;
 }
