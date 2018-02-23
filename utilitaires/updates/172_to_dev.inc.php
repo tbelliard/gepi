@@ -165,7 +165,7 @@ function encode_nom_photo_4maj($filename_photo) {
 mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='encodage_nom_photo'");
 mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='alea_nom_photo'");
 
-if ($version_old<='1.7.2' && $gepiVersion>='master' && $force_maj!='yes') {
+if ($gepiVersion<='master' || $force_maj!='yes') {
 	// Il faut gérer le changement d'encodage des fichiers photo élèves
 	
 	// tableau stockant les noms des fichiers photo
@@ -215,38 +215,6 @@ if ($version_old<='1.7.2' && $gepiVersion>='master' && $force_maj!='yes') {
 			// supprimer le fichier $dossier_photos_eleves.$file_photo?
 		}
 	}
-	
-} elseif ($gepiVersion>='master' && $force_maj=='yes') {
-	// Il faudrait vérifier la cohérence entre 'encodage_photos_eleves_alea' 
-	// et l'encodage des fichiers photo élèves
-	// mais c'est pratiquement aussi rapide de réencoder
-	
-	// tableau stockant les noms des fichiers photo
-	$dossier_photos_eleves=dossier_photo_eleves();
-	$t_files_photos=array();
-	$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
-	while ($file_photo=readdir($R_dossier_photos_eleves)) {
-		if (is_file($dossier_photos_eleves.$file_photo) && strtolower(pathinfo($file_photo,PATHINFO_EXTENSION))=='jpg') {
-				$t_files_photos[]=$file_photo;
-		}
-	}
-	closedir($R_dossier_photos_eleves);
-
-	// tableau des elenoet ou login des élèves
-	$t_identifiants=array();
-	$identifiant=(isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y')?'login':'elenoet';
-	$sql='SELECT `'.$identifiant.'` FROM `eleves`';
-	$query=mysqli_query($mysqli,$sql);
-	while ($un_eleve=mysqli_fetch_assoc($query)) $t_identifiants[]=$un_eleve[$identifiant];
-
-	foreach($t_files_photos as $file_photo) {
-		$filename_photo=pathinfo($file_photo,PATHINFO_FILENAME);
-		if (in_array(substr($filename_photo,$encodage_photos_eleves_longueur),$t_identifiants)) {
-			rename($dossier_photos_eleves.$file_photo,$dossier_photos_eleves.encode_nom_photo_4maj(substr($filename_photo,$encodage_photos_eleves_longueur)).'.jpg');
-		}
-	}
-} else {
-	// dans tous les autres cas de mise à jour "normale" on ne traite pas le dossier des photos élève
 }
 
 // ------------------------------------------
