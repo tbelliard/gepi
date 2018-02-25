@@ -4906,9 +4906,15 @@ function affiche_tableau_notes_ele($login_ele, $id_groupe, $mode=1) {
 						if($current_devoir['statut']=="") {
 							$detail_note.="\nNote : ".$current_devoir['note']."/".$current_devoir['note_sur'];
 						}
+
+						$complement_style='';
+						if($current_devoir['coef']==0) {
+							$complement_style='color:grey;';
+						}
+
 						$retour.="
 					<tr title=\"".$current_devoir['nom_court']." (".$current_devoir['nom_complet'].")".$detail_note."\nCoefficient : ".$current_devoir['coef']."\nDate : ".formate_date($current_devoir['date'])."\">
-						<td style='text-align:left;border:0px solid black;'>
+						<td style='text-align:left;border:0px solid black;".$complement_style."'>
 							<strong>".$current_devoir['nom_court']."&nbsp;:</strong> 
 						</td>
 						<td style='text-align:right;border:0px solid black;'>";
@@ -4923,6 +4929,9 @@ function affiche_tableau_notes_ele($login_ele, $id_groupe, $mode=1) {
 						}
 						else {
 							$retour.=$current_devoir['statut'];
+						}
+						if($current_devoir['display_parents']==0) {
+							$retour.="<img src='../images/icons/invisible.png' class='icone16' alt='Invisible' />";
 						}
 						$retour.="</td>
 					</tr>";

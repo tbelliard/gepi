@@ -1855,27 +1855,44 @@ foreach ($liste_eleves as $eleve_login) {
 				$liste_notes_detaillees='';
 				$conteneur_precedent='';
 				if ($result_nbct) {
-                                    while ($snnote=mysqli_fetch_assoc($result_nbct)) {
-                                        if ($liste_notes != '') {$liste_notes .= ", ";}
-                                        $liste_notes.=$snnote['note'];
-                                        if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
-                                            $liste_notes .= "/".$snnote['note_sur'];
-                                        }
+					while ($snnote=mysqli_fetch_assoc($result_nbct)) {
+						if ($liste_notes != '') {$liste_notes .= ", ";}
+						$liste_notes.=$snnote['note'];
+						if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+							$liste_notes .= "/".$snnote['note_sur'];
+						}
 
-                                        if($conteneur_precedent!=$snnote['nom_court_conteneur']) {
-                                            $liste_notes_detaillees.="<p><strong>".$snnote['nom_court_conteneur']."&nbsp;:</strong> <br />";
-                                            $conteneur_precedent=$snnote['nom_court_conteneur'];
-                                        }
+						if($conteneur_precedent!=$snnote['nom_court_conteneur']) {
+							$liste_notes_detaillees.="<p><strong>".$snnote['nom_court_conteneur']."&nbsp;:</strong> <br />";
+							$conteneur_precedent=$snnote['nom_court_conteneur'];
+						}
 
-                                        //if ($liste_notes_detaillees!='') {$liste_notes_detaillees.=", ";}
-                                        $liste_notes_detaillees.=$snnote['nom_court']."&nbsp;: ";
-                                        $liste_notes_detaillees.="<strong>".$snnote['note'];
-                                        if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
-                                                $liste_notes_detaillees.= "/".$snnote['note_sur'];
-                                        }
-                                        $liste_notes_detaillees.="</strong> (coef&nbsp;".$snnote['coef'].")";
-                                        $liste_notes_detaillees.=" (".formate_date($snnote['date']).")<br />";
-                                    }
+						//if ($liste_notes_detaillees!='') {$liste_notes_detaillees.=", ";}
+						if($snnote['coef']==0) {
+							$liste_notes_detaillees.="<span style='color:grey' title='Coefficient 0. Il ne compte pas dans la moyenne.'>";
+							$liste_notes_detaillees.=$snnote['nom_court']."&nbsp;: ";
+							$liste_notes_detaillees.="<strong>".$snnote['note'];
+							if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+							$liste_notes_detaillees.= "/".$snnote['note_sur'];
+							}
+							$liste_notes_detaillees.="</strong> (coef&nbsp;".$snnote['coef'].")";
+							$liste_notes_detaillees.=" (".formate_date($snnote['date']).")";
+							$liste_notes_detaillees.="</span>";
+						}
+						else {
+							$liste_notes_detaillees.=$snnote['nom_court']."&nbsp;: ";
+							$liste_notes_detaillees.="<strong>".$snnote['note'];
+							if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+							$liste_notes_detaillees.= "/".$snnote['note_sur'];
+							}
+							$liste_notes_detaillees.="</strong> (coef&nbsp;".$snnote['coef'].")";
+							$liste_notes_detaillees.=" (".formate_date($snnote['date']).")";
+						}
+						if($snnote['display_parents']==0) {
+							$liste_notes_detaillees.="<img src='../images/icons/invisible.png' class='icone16' alt='Invisible' />";
+						}
+						$liste_notes_detaillees.="<br />";
+					}
 				}
 
 				if ($current_eleve_nbct ==0) {
