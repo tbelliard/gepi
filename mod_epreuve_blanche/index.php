@@ -362,57 +362,61 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				
 
 				$msg="";
+				$tab_deja_groupe=array();
 				for($i=0;$i<count($id_groupe);$i++) {
-					$sql="INSERT INTO eb_groupes SET id_epreuve='$id_epreuve', id_groupe='$id_groupe[$i]';";
-					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(!$insert) {
-						$msg.="Erreur lors de l'ajout du groupe n°$id_groupe[$i]<br />";
-					}
+					if(!in_array($id_groupe[$i], $tab_deja_groupe)) {
+						$sql="INSERT INTO eb_groupes SET id_epreuve='$id_epreuve', id_groupe='$id_groupe[$i]';";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de l'ajout du groupe n°$id_groupe[$i]<br />";
+						}
 
-					if(($type_anonymat=='alea') ||($type_anonymat=='chrono')) {
-						//$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$id_groupe[$i]';";
-						$sql="SELECT DISTINCT j.login, e.date_sortie FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login AND (e.date_sortie='0000-00-00 00:00:00' OR e.date_sortie IS NULL);";
-						//echo "$sql<br />\n";
-					}
-					else {
-						//$sql="SELECT DISTINCT j.login,e.$type_anonymat FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login;";
-						$sql="SELECT DISTINCT j.login,e.$type_anonymat, e.date_sortie FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login AND (e.date_sortie='0000-00-00 00:00:00' OR e.date_sortie IS NULL);";
-						//echo "$sql<br />\n";
-					}
-					// Il faudra voir comment gérer le cas d'élèves partis en cours d'année... faire choisir la période?
-					// Eric le 9-4-11 ==> utilisation de la date de sortie pour l'élève. Elève présent ==> date_sortie=0 ou null
-					$res=mysqli_query($GLOBALS["mysqli"], $sql);
-					$cpt_ano = 1;
-					while($lig=mysqli_fetch_object($res)) {
-						$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login';";
-						$test=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($test)==0) {
-							if($type_anonymat=='alea') {
-								$n_anonymat=chaine_alea(3,4);
-								while(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$n_anonymat=chaine_alea(3,4);}
-								$tab_n_anonymat_affectes[]=$n_anonymat;
-							} else if ($type_anonymat=='chrono'){
-								// Eric Ajout du numéro d'anonymat chronologique
-								$n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
-								$tab_n_anonymat_affectes[]=$n_anonymat;
-								$cpt_ano += 1;
-							}
-							else {
-								$n_anonymat=$lig->$type_anonymat;
-								if(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$msg.="Erreur: Le numéro '$n_anonymat' de $lig->login est déjà affecté à un autre élève.<br />";}
-								$tab_n_anonymat_affectes[]=$n_anonymat;
-							}
+						if(($type_anonymat=='alea') ||($type_anonymat=='chrono')) {
+							//$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$id_groupe[$i]';";
+							$sql="SELECT DISTINCT j.login, e.date_sortie FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login AND (e.date_sortie='0000-00-00 00:00:00' OR e.date_sortie IS NULL);";
+							//echo "$sql<br />\n";
+						}
+						else {
+							//$sql="SELECT DISTINCT j.login,e.$type_anonymat FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login;";
+							$sql="SELECT DISTINCT j.login,e.$type_anonymat, e.date_sortie FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login AND (e.date_sortie='0000-00-00 00:00:00' OR e.date_sortie IS NULL);";
+							//echo "$sql<br />\n";
+						}
+						// Il faudra voir comment gérer le cas d'élèves partis en cours d'année... faire choisir la période?
+						// Eric le 9-4-11 ==> utilisation de la date de sortie pour l'élève. Elève présent ==> date_sortie=0 ou null
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						$cpt_ano = 1;
+						while($lig=mysqli_fetch_object($res)) {
+							$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login';";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								if($type_anonymat=='alea') {
+									$n_anonymat=chaine_alea(3,4);
+									while(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$n_anonymat=chaine_alea(3,4);}
+									$tab_n_anonymat_affectes[]=$n_anonymat;
+								} else if ($type_anonymat=='chrono'){
+									// Eric Ajout du numéro d'anonymat chronologique
+									$n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
+									$tab_n_anonymat_affectes[]=$n_anonymat;
+									$cpt_ano += 1;
+								}
+								else {
+									$n_anonymat=$lig->$type_anonymat;
+									if(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$msg.="Erreur: Le numéro '$n_anonymat' de $lig->login est déjà affecté à un autre élève.<br />";}
+									$tab_n_anonymat_affectes[]=$n_anonymat;
+								}
 							
-							$sql="INSERT INTO eb_copies SET id_epreuve='$id_epreuve', login_ele='$lig->login', n_anonymat='$n_anonymat', statut='v';";
-							//echo "$sql<br />";
-							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-							if(!$insert) {
-								$msg.="Erreur lors de l'ajout de l'élève $lig->login<br />";
-							}
-							else {
-								$temoin_n_anonymat='y';
+								$sql="INSERT INTO eb_copies SET id_epreuve='$id_epreuve', login_ele='$lig->login', n_anonymat='$n_anonymat', statut='v';";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$insert) {
+									$msg.="Erreur lors de l'ajout de l'élève $lig->login<br />";
+								}
+								else {
+									$temoin_n_anonymat='y';
+								}
 							}
 						}
+						$tab_deja_groupe[]=$id_groupe[$i];
 					}
 				}
 				if($msg=='') {$msg="Ajout de(s) groupe(s) effectué.<br />";}
