@@ -372,7 +372,9 @@ if(!isset($mode)) {
 			}
 
 			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;; padding:3px;' class='fieldset_opacite50'>\n";
-			$menu_a_droite.="<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
+			$menu_a_droite.="<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.</p>\n";
+			$menu_a_droite.="<div style='float:right; width:5em;margin-left:0.5em;margin-right:2em;'><input type='submit' value='Valider' /></div>";
+			$menu_a_droite.="<p>";
 			$menu_a_droite.=$chaine_salles_existantes;
 			$menu_a_droite.="</p>\n";
 			$menu_a_droite.="</div>\n";
@@ -408,7 +410,9 @@ if(!isset($mode)) {
 			}
 
 			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;; padding:3px;' class='fieldset_opacite50'>\n";
-			$menu_a_droite.="<p>Sélectionner des salles parmi les salles de cours définies dans un autre module.<br />\n";
+			$menu_a_droite.="<p>Sélectionner des salles parmi les salles de cours définies dans un autre module.</p>\n";
+			$menu_a_droite.="<div style='float:right; width:5em;margin-left:0.5em;margin-right:2em;'><input type='submit' value='Valider' /></div>";
+			$menu_a_droite.="<p>";
 			$menu_a_droite.=$chaine_salles_cours_existantes;
 			$menu_a_droite.="</p>\n";
 			$menu_a_droite.="</div>\n";
@@ -572,6 +576,8 @@ else {
 	echo ">Définition des salles</a>";
 	echo "</p>\n";
 
+	$acces_visu_eleves=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+
 	echo "<p class='bold'>Epreuve n°$id_epreuve</p>\n";
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -714,11 +720,18 @@ else {
 				if(!in_array($current_group["eleves"]["all"]["list"][$j],$tab_eleves_deja_affiches)) {
 					$tab_eleves_deja_affiches[]=$current_group["eleves"]["all"]["list"][$j];
 					$alt=$alt*(-1);
-					echo "<tr class='lig$alt'>\n";
+					echo "<tr class='lig$alt' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
 					echo "<td style='text-align:left;'>\n";
+
 					$login_ele=$current_group["eleves"]["all"]["list"][$j];
+
+					if($acces_visu_eleves) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=".$login_ele."' target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /></a>";
+					}
+
 					echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
-					echo get_nom_prenom_eleve($login_ele);
+					$designation_eleve=get_nom_prenom_eleve($login_ele);
+					echo $designation_eleve;
 					echo "</td>\n";
 	
 					echo "<td>\n";
@@ -731,6 +744,7 @@ else {
 						echo "<td>\n";
 						echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='$id_salle[$i]' ";
 						echo "onchange='calcule_effectif();changement()' ";
+						echo "title=\"Affecter $designation_eleve en ".$salle[$i]."\" ";
 						// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
 						if($tab_ele_id_salle[$login_ele]==$id_salle[$i]) {echo "checked ";$affect="y";}
 						echo "/>\n";
@@ -916,10 +930,17 @@ function coche(colonne,rang_groupe,mode) {
 
 
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr class='lig$alt' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
 			echo "<td style='text-align:left;'>\n";
 			echo "<input type='hidden' name='login_ele[$cpt]' value='$lig->login' />\n";
-			echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+
+			if($acces_visu_eleves) {
+				echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /></a>";
+			}
+
+			//echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+			$designation_eleve=get_nom_prenom_eleve($lig->login);
+			echo $designation_eleve;
 			echo "</td>\n";
 
 			echo "<td>\n";
@@ -932,6 +953,7 @@ function coche(colonne,rang_groupe,mode) {
 				echo "<td>\n";
 				echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='$id_salle[$i]' ";
 				echo "onchange='calcule_effectif();changement()' ";
+				echo "title=\"Affecter $designation_eleve en ".$salle[$i]."\" ";
 				// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
 				if($lig->id_salle==$id_salle[$i]) {echo "checked ";$affect="y";}
 				echo "/>\n";
