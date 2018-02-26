@@ -48,7 +48,7 @@
  * @return $niveau_arbo
  * @return $gepiPathJava
  * @return $msg
- * @return $repertoire
+ * @return $repertoire_rne
  *
  */
 
@@ -66,72 +66,48 @@ require_once("../lib/share-trombinoscope.inc.php");
 
 
 /**
- * Encode ou re-encode les noms des fichiers photo des élèves en ajoutant une chaîne 5 caractères pseudo alétaoires
- * le but étant d'empêcher l'accès aux photos élèves
+ * Ré-encode les noms des fichiers photo des élèves
+ * Cette fonction suppose que tous les noms des fichiers photo des élèves sont correctement encodés
  * Cette fonction ne peut être utilisée que si la valeur 'alea_nom_fichier' n'est pas définie dans la table setting
  * Renvoie un chaîne vide si tout s'est bien passé, les erreurs rencontrées sinon 
  */
-function encode_nom_photo_des_eleves($re_encoder=false,$alea_nom_photo="")
-	{
-	global $nb_modifs,$nb_erreurs,$gepiSettings;
-	$bilan="";
+function re_encode_nom_photo_eleves() {
+	global $nb_modifs,$nb_erreurs;
+	$bilan='';
+	
+	// Cas du multisite
+	$rne="";
+	if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
+			return "Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
+	$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE'].'/':'';
+	$dossier_photos_eleves="../photos/".$rne."eleves/";
+	
 	// tableau stockant les noms des fichiers photo
 	// on ne peut pas renommer les fichiers tout en parcourant le dossier photos
 	// sinon des fichiers peuvent être renommés plusieurs fois
 	$t_noms_photos=array();
-
-	if (getSettingAOui('encodage_nom_photo') && $re_encoder==false) return "L'encodage est déjà activé.<br />";
-	else
-		{
-		// on active ou réactive l'encodage
-		if (!active_encodage_nom_photo($alea_nom_photo)) $bilan="Impossible d'activer l'encodage dans la table 'setting').<br />";
-		else
-			{
-			// Cas du multisite
-			$rne="";
-			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
-					$bilan="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
-
-			if ($bilan=="")
-				{
-				$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE']."/":"";
-				$dossier_photos_eleves="../photos/".$rne."eleves/";
-				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
-					while ($photo=readdir($R_dossier_photos_eleves))
-						{
-						if (is_file($dossier_photos_eleves.$photo) && pathinfo($dossier_photos_eleves.$photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html")
-							{
-								$t_noms_photos[]=$photo;
-							}
-						}
-				closedir($R_dossier_photos_eleves);
-				// on crée (ou recrée) un fichier témoin d'encodage activé
-				$fic_temoin=fopen($dossier_photos_eleves."encodage_active.txt","w");
-				fwrite($fic_temoin,encode_nom_photo("nom_photo"));
-				fclose($fic_temoin);
-				// on renomme les fichiers photo
-				foreach($t_noms_photos as $photo)
-					{
-					$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
-					// si on re-encode les noms de fichiers il faut supprimer l'ancien encodage
-					if(strlen($nom_photo)>5) {
-						// test pour éviter de supprimer un fichier non encodé qui en principe ne devrait pas être présent,
-						// mais d'autres fichiers non encodés peuvent être affectés
-						if ($re_encoder) $nom_photo=substr($nom_photo,5);
-					}
-					// on en profite pour normaliser l'extension en .jpg
-					if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
-					else 
-						{
-							$nb_erreurs++;
-							if ($nb_erreurs<=10) $bilan.="Impossible d'encoder ".$nom_photo.".jpg<br />";
-						}
-					}
-				}
-			}
+	$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
+	while ($photo=readdir($R_dossier_photos_eleves)) {
+		if (is_file($dossier_photos_eleves.$photo) && (strtolower(pathinfo($photo,PATHINFO_EXTENSION))=='jpg')) {
+				$t_noms_photos[]=$photo;
 		}
-	return $bilan;
 	}
+	closedir($R_dossier_photos_eleves);
+
+	// on renomme les fichiers photo
+	foreach($t_noms_photos as $photo){
+		$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
+		// suppression l'ancien encodage
+		$nom_photo=substr($nom_photo,getSettingValue('encodage_photos_eleves_longueur'));
+		// on en profite pour normaliser l'extension en .jpg
+		if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
+		else {
+				$nb_erreurs++;
+				if ($nb_erreurs<=10) $bilan.="Impossible de ré-encoder ".$nom_photo.".jpg<br />";
+		}
+	}
+	return $bilan;
+}
 
 /**
  * Désactive l'encodage des noms des fichiers photo
@@ -161,33 +137,22 @@ function des_encode_nom_photo_des_eleves() {
 				$dossier_photos_eleves="../photos/".$rne."eleves/";
 				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 				while ($photo=readdir($R_dossier_photos_eleves)) {
-					if (is_file($dossier_photos_eleves.$photo) && pathinfo($dossier_photos_eleves.$photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html") {
+					if (is_file($dossier_photos_eleves.$photo) && strtolower(pathinfo($photo,PATHINFO_EXTENSION))=="jpg" && $photo!="index.html") {
 						$t_noms_photos[]=$photo;
 					}
 				}
 				closedir($R_dossier_photos_eleves);
-				// on supprime le fichier témoin d'encodage activé
-				if (file_exists($dossier_photos_eleves."encodage_active.txt")) unlink($dossier_photos_eleves."encodage_active.txt");
 
 				// on renomme les fichiers photo
 				foreach($t_noms_photos as $photo) {
-					$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
+					$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
 					// supprimer l'ancien encodage
-					$nom_photo_ini=$nom_photo;
-					$nom_photo=substr($nom_photo,5);
-					if("$nom_photo"!="") {
-						// on en profite pour normaliser l'extension en .jpg
-						if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.$nom_photo.".jpg")) {$nb_modifs++;}
-						else {
-							$nb_erreurs++;
-							if ($nb_erreurs<=10) $bilan.="Impossible de dés-encoder ".$nom_photo.".jpg<br />";
-						}
-					}
+					$nom_photo=des_encode_nom_photo($nom_photo);
+					// on en profite pour normaliser l'extension en .jpg
+					if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.$nom_photo.".jpg")) {$nb_modifs++;}
 					else {
-						// pour éviter de supprimer un fichier non encodé qui en principe ne devrait pas être présent,
-						// mais d'autres fichiers non encodés peuvent être affectés
 						$nb_erreurs++;
-						if ($nb_erreurs<=10) $bilan.="Le fichier ".$nom_photo_ini.".jpg dont le nom n'était pas encodé n'aurait pas dû se trouver dans le dossier photos/eleves.<br />";
+						if ($nb_erreurs<=10) $bilan.="Impossible de dés-encoder ".$nom_photo.".jpg<br />";
 					}
 				}
 			}
@@ -202,39 +167,34 @@ function des_encode_nom_photo_des_eleves() {
  * Renvoie un chaîne donnant l'état présent de l'encodage si tout est correct
  * ou un descriptif de l'incohérence et de la solution éventuelle
  */
-function verifie_coherence_encodage()
-	{
+function verifie_coherence_encodage() {
+
 	// Cas du multisite
-	$rne=""; $bilan="";
+	$rne=''; $bilan=''; $nb_erreurs=0; $total_fichiers=0;
+	
 	if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
-			$bilan="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
-
-	if ($bilan=="")
-		{
-		$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE']."/":"";
-		$dossier_photos_eleves="../photos/".$rne."eleves/";
-		
-		if (getSettingAOui('encodage_nom_photo'))
-			if (file_exists($dossier_photos_eleves."encodage_active.txt"))
-				{
-				// on vérifie la cohérence entre son contenu et la valeur de 'alea_nom_photo'
-				$fic_temoin=fopen($dossier_photos_eleves."encodage_active.txt","r");
-				$temoin=fgets($fic_temoin);
-				fclose($fic_temoin);
-
-				if ($temoin==encode_nom_photo("nom_photo"))
-					return array('message'=>"<span style='color: blue'>l'encodage est activé</span>.",'type_incoherence'=>0);
-				else return array('message'=>"<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut ré-encoder les noms des fichiers photo des élèves</span>.",'type_incoherence'=>1);
+			return "Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
+	$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE']."/":"";
+	$dossier_photos_eleves="../photos/".$rne."eleves/";
+	
+	$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
+	while ($photo=readdir($R_dossier_photos_eleves)) {
+		if (is_file($dossier_photos_eleves.$photo) && strtolower(pathinfo($photo,PATHINFO_EXTENSION))=='jpg') {
+				$total_fichiers++;
+				$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
+				if ($nom_photo!=encode_nom_photo(des_encode_nom_photo($nom_photo))) {
+					$nb_erreurs++;
 				}
-			else return array('message'=>"<span style='color: red'>l'encodage n'est pas activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=no".add_token_in_url()."\">sur ce lien</a></span>.",'type_incoherence'=>2);
-		else
-			if (file_exists($dossier_photos_eleves."encodage_active.txt"))
-				{
-				return array('message'=>"<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=yes".add_token_in_url()."\">sur ce lien</a> puis, si nécessaire, ré-encoder les noms des fichiers photo des élèves</span>.",'type_incoherence'=>3);
-				}
-			else return array('message'=>"<span style='color: blue'>l'encodage est désactivé</span>.",'type_incoherence'=>0);
 		}
 	}
+	closedir($R_dossier_photos_eleves);
+	if ($nb_erreurs==0) $bilan='Etat présent : pas d\'incohérence d\'encodage parmi les fichiers photo élève (d\'extension jpg ou JPG).';
+	else 
+		if ($nb_erreurs==$total_fichiers) $bilan='<span class="bold" style="color:red">Attention : l\'encodage des fichiers photo élève est incorrect, il faut les ré-encoder en cliquant sur ce <a href="?re_encoder_noms_photo=oui'.add_token_in_url().'">lien.</a></span>';
+		else $bilan='<span class="bold" style="color:red">Attention : des fichier(s) photo élève (d\'extension jpg ou JPG) sont mal encodés ('.$nb_erreurs.' sur '.$total_fichiers.').</span>';
+	
+	return $bilan;
+}
 
 function purge_dossier_photos($type_utilisateurs) {
 
@@ -262,7 +222,6 @@ function purge_dossier_photos($type_utilisateurs) {
 	$R_identifiants=mysqli_query($GLOBALS["mysqli"], $r_sql);
 	if ($R_identifiants)
 		{
-
 		while ($pt<mysqli_num_rows($R_identifiants))
 			{
 			$identifiant=old_mysql_result($R_identifiants,$pt++);
@@ -307,9 +266,9 @@ function purge_dossier_photos($type_utilisateurs) {
 	$R_dossier_photos=opendir($repertoire_photos."/".$type_utilisateurs);
 	while ($photo=readdir($R_dossier_photos))
 		{
-		if (is_file($repertoire_photos."/".$type_utilisateurs."/".$photo) && $photo!="index.html" && $photo!="encodage_active.txt")
+		if (is_file($repertoire_photos."/".$type_utilisateurs."/".$photo) && $photo!="index.html")
 			{
-			$nom_photo=pathinfo($repertoire_photos."/".$type_utilisateurs."/".$photo,PATHINFO_FILENAME);
+			$nom_photo=pathinfo($photo,PATHINFO_FILENAME);
 			// en principe on ne trouve que des fichiers JPEG dans le dossier
 			// et on en profite pour normaliser l'extension
 			@rename($repertoire_photos."/".$type_utilisateurs."/".$photo,$repertoire_photos."/".$type_utilisateurs."/".$nom_photo.".jpg");
@@ -409,7 +368,7 @@ function redimensionne_photos($dossier)
 	$h_dossier = opendir($dossier);
 	while ($fichier=readdir($h_dossier)) 
 		{
-		if (mb_strtolower(pathinfo($fichier,PATHINFO_EXTENSION))=="jpg") 
+		if (strtolower(pathinfo($fichier,PATHINFO_EXTENSION))=="jpg") 
 			{
 			if (getSettingValue("active_module_trombinoscopes_rt")!='')
 				$redim_OK=redim_photo($dossier.$fichier,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"),getSettingValue("active_module_trombinoscopes_rt"));
@@ -441,10 +400,11 @@ if (!checkAccess()) {
  *    Enregistrement des variables passées en $_POST si besoin
  ******************************************************************/
 
-$msg="";
+$msg=""; $modification_parametres=false;
 $msg_parametres="";
 
 if (isset($_POST['num_aid_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if ($_POST['num_aid_trombinoscopes']!='') {
 		if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes']))
@@ -456,6 +416,7 @@ if (isset($_POST['num_aid_trombinoscopes'])) {
 }
 
 if (isset($_POST['activer'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("active_module_trombinoscopes", $_POST['activer']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre activation/désactivation !<br />";
@@ -464,65 +425,75 @@ if (isset($_POST['activer'])) {
 }
 
 if (isset($_POST['activer_personnels'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("active_module_trombino_pers", $_POST['activer_personnels']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre activation/désactivation du trombinoscope des personnels !";
 }
 
 if (isset($_POST['activer_redimensionne'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("active_module_trombinoscopes_rd", $_POST['activer_redimensionne']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre de redimenssionement des photos !<br />";
 }
 
 if (isset($_POST['activer_rotation'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("active_module_trombinoscopes_rt", $_POST['activer_rotation']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre rotation des photos !<br />";
 }
 
 if (isset($_POST['l_max_aff_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("l_max_aff_trombinoscopes", $_POST['l_max_aff_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre largeur maximum !<br />";
 }
 if (isset($_POST['h_max_aff_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("h_max_aff_trombinoscopes", $_POST['h_max_aff_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre hauteur maximum !<br />";
 }
 
 if (isset($_POST['l_max_imp_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("l_max_imp_trombinoscopes", $_POST['l_max_imp_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre largeur maximum !<br />";
 }
 
 if (isset($_POST['h_max_imp_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre hauteur maximum !<br />";
 }
 
 if (isset($_POST['nb_col_imp_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("nb_col_imp_trombinoscopes", $_POST['nb_col_imp_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimés !<br />";
 }
 
 if (isset($_POST['l_resize_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !<br />";
 }
 if (isset($_POST['h_resize_trombinoscopes'])) {
+	$modification_parametres=true;
 	check_token();
 	if (!saveSetting("h_resize_trombinoscopes", $_POST['h_resize_trombinoscopes']))
 			$msg_parametres .= "Erreur lors de l'enregistrement du paramètre h_resize_trombinoscopes !<br />";
 }
 
-if (count($_POST)>0)
-	$msg=($msg_parametres!="")?$msg_parametres:"Modifications enregistrées";
+
+	$msg=($msg_parametres!='')?$msg_parametres:(($modification_parametres)?'Modifications enregistrées.</br>':'');
 
 /******************************************************************
  *    Enregistrement des variables (fin)
@@ -560,24 +531,23 @@ if (count($_POST)>0)
 	if(isset($_POST['sup_pers']) && $_POST['sup_pers']=="oui"){
 		check_token();
 		// suppression des photos du personnel
-		if (!efface_photos("personnels"))
-		$msg.="Erreur lors de la suppression des photos du personnel";
+		$msg.=(efface_photos("personnels"))?"Photos du personnel supprimées<br/>":"Erreur lors de la suppression des photos du personnel<br/>";
+		
 	}
 	if (isset($_POST['supp_eleve']) && $_POST['supp_eleve']=="oui"){
 		check_token();
 		// suppression des photos des élèves
-		if (!efface_photos("eleves"))
-		$msg.="Erreur lors de la suppression des photos des élèves";
+		$msg.=(efface_photos("eleves"))?"Photos des élèves supprimées<br/>":"Erreur lors de la suppression des photos des élèves<br/>";
 	}
 
 // Affichage du personnel sans photo
 	if(isset ($_POST['voirPerso']) && $_POST['voirPerso']=="yes"){
 		check_token();
 		if (!recherche_personnel_sans_photo()){
-		$msg .= "Erreur lors de la sélection de professeur(s) sans photo";
+		$msg .= "Erreur lors de la sélection de professeur(s) sans photo<br/>";
 		}else{
 			$personnel_sans_photo=recherche_personnel_sans_photo();
-			$msg.="liste des professeurs sans photo en bas de page <br/>";
+			$msg.="liste des professeurs sans photo en bas de page<br/>";
 			}
 	}
 
@@ -585,11 +555,11 @@ if (count($_POST)>0)
 	if (isset ($_POST['voirEleve']) && $_POST['voirEleve']=="yes"){
 		check_token();
 		if (!recherche_eleves_sans_photo()){
-			$msg .= "Erreur lors de la sélection des élèves sans photo";
+			$msg .= "Erreur lors de la sélection des élèves sans photo<br/>";
 		}
 		else{
 			$eleves_sans_photo=recherche_eleves_sans_photo();
-			$msg.="liste des élèves sans photo en bas de page";
+			$msg.="liste des élèves sans photo en bas de page<br/>";
 		}
 	}
 
@@ -597,8 +567,9 @@ if (count($_POST)>0)
 	if (isset($_POST['sauvegarder_dossier_photos']) && $_POST['sauvegarder_dossier_photos']=="oui")
 		{
 		check_token();
-		if (cree_zip_archive('photos')) $msg="Le dossier 'photos' a été sauvegardé, vous pouvez le récupérer dans le <a href=\"../gestion/accueil_sauve.php\">module de gestion des sauvegardes</a>.";
-		else $msg="Echec de la sauvegarde du dossier 'photos'";
+		$retour=cree_zip_archive_avec_msg_erreur('photos');
+		if ($retour=='') $msg='Le dossier photos a été sauvegardé, vous pouvez le récupérer dans le <a href="../gestion/accueil_sauve.php">module de gestion des sauvegardes</a>.<br/>';
+		else $msg='Echec de la sauvegarde du dossier photos : '.$retour.'<br/>';
 		}
 
 // Purge du dossier photos
@@ -639,26 +610,22 @@ if (count($_POST)>0)
 		else $msg.="Erreur lors de la création de la sauvegarde.<br/>";
 		}
 
-// Encodage ou re-encodage des noms des fichiers photo des élèves
-if  ((isset($_POST['encoder_noms_photo']) and ($_POST['encoder_noms_photo']=='oui')) || (isset($_POST['re_encoder_noms_photo']) and ($_POST['re_encoder_noms_photo']=='oui')))
-	{
+// Re-encodage des noms des fichiers photo des élèves
+if  (isset($_GET['re_encoder_noms_photo'])) {
 	$msg="";
 	check_token();
-	$nb_modifs=0; $nb_erreurs=0;
-	$re_encode=false;
-	$re_encoder=(isset($_POST['re_encoder_noms_photo']) && ($_POST['re_encoder_noms_photo']=='oui'));
-	$retour=encode_nom_photo_des_eleves($re_encoder);
-	if ($retour!="" && $nb_erreurs==0) $msg=$retour;
-	else 
-		if ($nb_erreurs==0)
-			if ($nb_modifs>0)
-				if ($nb_modifs>1) $msg=$nb_modifs." noms de fichiers photo ont été encodés.<br/>";
-				else $msg="Un nom de fichier photo a été encodé.<br/>";
-			else $msg="Aucun nom de fichier photo n'a été encodé (le dossier est probablement vide).<br/>";
-		else
-			if ($nb_erreurs<=10) $msg=$retour;
-			else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être encodés.<br/>";
-	}
+	$nb_erreurs=0;
+
+	$retour=re_encode_nom_photo_eleves();
+	if ($nb_erreurs==0)
+		if ($nb_modifs>0)
+			if ($nb_modifs>1) $msg=$nb_modifs." noms de fichiers photo ont été ré-encodés.<br/>";
+			else $msg="Un nom de fichier photo a été ré-encodé.<br/>";
+		else $msg="Aucun nom de fichier photo n'a été ré-encodé (le dossier est peut-être vide).<br/>";
+	else
+		if ($nb_erreurs<=10) $msg=$retour;
+		else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être encodés.<br/>";
+}
 
 // Dés-encodage des noms des fichiers photo des élèves
 if  ((isset($_POST['des_encoder_noms_photo']) and ($_POST['des_encoder_noms_photo']=='oui')))
@@ -679,13 +646,6 @@ if  ((isset($_POST['des_encoder_noms_photo']) and ($_POST['des_encoder_noms_phot
 			else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être dés-encodés.<br/>";
 	}
 
-// Modification par url de la valeur de 'encodage_nom_photo' dans la table 'setting'
-if (isset($_GET['set_encodage_nom_photo']))
-	{
-	$msg="";
-	check_token();
-	if (!saveSetting('encodage_nom_photo',$_GET['set_encodage_nom_photo'])) $msg="Impossible de modifier la valeur de 'encodage_nom_photo' dans la table 'setting'.<br />";
-	}
 
 // Liste des données élève
 if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
@@ -717,11 +677,12 @@ if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
 
 	$nom_fic="eleves_".getSettingValue("gepiYear").".csv";
 	send_file_download_headers('text/x-csv',$nom_fic);
+	//echo $csv;
 	echo echo_csv_encoded($csv);
 	die();
 }
 	
-// Chargement des photos élèves
+// Téléchargement des photos élèves
 function erreur_rename_correspondances_csv()
 	{
 	global $msg,$une_ligne;
@@ -806,8 +767,8 @@ if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 	}
 }
 
-// Restauration d'une sauvegarde, ceci peut-ête appelé depuis gestion/acceuil_sauve.php (on a alors isset($_POST['action']) à false)
-if ((isset($_POST['action']) && $_POST['action'] == 'upload') || (isset($_GET['action']) && $_GET['action'] == 'restaurer_photos' &&  isset($_GET['file']))) {
+// Restauration d'une sauvegarde, ceci peut-ête appelé depuis gestion/accueil_sauve.php (on a alors isset($_POST['action']) à false)
+if ((isset($_POST['action']) && $_POST['action'] == 'restaurer_sauvegarde') || (isset($_GET['action']) && $_GET['action'] == 'restaurer_photos' &&  isset($_GET['file']))) {
 	check_token();
 	$msg="";
 	// Le fichier sauvegarde est-il téléchargé ou défini ?
@@ -852,42 +813,15 @@ if ((isset($_POST['action']) && $_POST['action'] == 'upload') || (isset($_GET['a
 						$repertoire_temp_photos=$dir_temp."/photos/".$repertoire_photos;
 						$repertoire_photos="../photos/".$repertoire_photos;
 
-						if (file_exists($repertoire_temp_photos."alea_nom_photo.txt"))
-							{
-							// si le fichier alea_nom_photo.txt est présent
-							// les noms de fichier sont encodés dans la sauvegarde
-							// on récupère la valeur alea_nom_photo
-							$f_alea=fopen($repertoire_temp_photos."alea_nom_photo.txt","r");
-							$alea_nom_photo=fgets($f_alea);
-							fclose($f_alea);
-							// l'encodage est-il activé
-							$re_encoder=getSettingAOui('encodage_nom_photo');
-							// on encode ou on ré-encode les noms des photos élèves présentes avec cette nouvelle valeur
-							encode_nom_photo_des_eleves($re_encoder,$alea_nom_photo);
-							// les noms des fichiers restaurés n'ont pas à être encodés
-							$post_restauration_encodage=false;
-							}
-						else
-							{
-							// les noms de fichier ne sont pas encodés dans la sauvegarde
-							// faudra-t-il encoder les noms des fichiers restaurés
-							$post_restauration_encodage=getSettingAOui('encodage_nom_photo');
-							// si l'encodage est activé il faut désencoder les noms des photos élèves présentes
-							if ($post_restauration_encodage)
-								{$retour=des_encode_nom_photo_des_eleves()."<br />"; if ($retour!="") $msg.=$retour;}
-							}
-
 						// copie des fichiers vers /photos
 						$msg_nb_trts=""; // nb de fichiers traités
 						$avertissement=""; // si l'arborescence est incomplète
 						$ecraser=(isset($_POST['action']))?(isset ($_POST["ecraser"]) && $_POST["ecraser"]=="yes"):true;
 						//Elèves
-						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',$ecraser,true);
-						if ($post_restauration_encodage)
-							{$retour=encode_nom_photo_des_eleves()."<br />"; if ($retour!="") $msg.=$retour;}
+						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',$ecraser,true,true);
 						//Personnels
 						copie_temp_vers_photos($nb_photos_personnels,'personnels','personnel',$ecraser,true);
-						if ($msg_nb_trts=="") $msg_nb_trts="Aucune photo n'a été transférée.<br/>\n";
+						if ($msg_nb_trts=="") $msg_nb_trts="Aucune photo n'a été restaurée.<br/>\n";
 						if ($msg==""){
 							$msg= $msg_nb_trts.$avertissement;
 							} else $msg= $msg_nb_trts.$avertissement.$msg;
@@ -909,9 +843,9 @@ if ((isset($_POST['action']) && $_POST['action'] == 'upload') || (isset($_GET['a
 // En multisite, on ajoute le répertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	  // On récupère le RNE de l'établissement
-  $repertoire=$_COOKIE['RNE']."/";
+  $repertoire_rne=$_COOKIE['RNE']."/";
 }else{
-  $repertoire="";
+  $repertoire_rne="";
 }
 
 /****************************************************************

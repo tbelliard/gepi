@@ -327,7 +327,7 @@ if (getSettingValue("active_module_trombinoscopes_rd")=='y')
 			<label for="supprime">Redimensionner les photos</label>
 			</legend>
 			Les photos seront redimensionnées avec les dimensions définies pour le stockage sur le serveur.<br />
-	<?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
+	<?php if( file_exists('../photos/'.$repertoire_rne.'personnels/') ) { ?>
 			<input type="checkbox"
 				name="redim_photos_pers"
 				id='redim_photos_personnels'
@@ -336,7 +336,7 @@ if (getSettingValue("active_module_trombinoscopes_rd")=='y')
 			<label for="redim_photos_personnels" id='redim_pers'>
 			Redimensionner les photos des personnels
 			</label>
-	<?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
+	<?php } if( file_exists('../photos/'.$repertoire_rne.'eleves/') ) {?>
 			<br/>
 			<input type="checkbox"
 				name="redim_photos_eleve"
@@ -443,16 +443,27 @@ unset ($aid_disponible)
 ?>
 
 
-	<a name="gestion_fichiers"></a>
+	<a name="gestion_fichiers"></a></br>
 	<h2>Gestion des fichiers</h2>
-<?php if(!file_exists('../photos/'.$repertoire.'eleves/') && !file_exists('../photos/'.$repertoire.'eleves/')) {?>
+<?php if(!file_exists('../photos/'.$repertoire_rne.'eleves/') || !file_exists('../photos/'.$repertoire_rne.'personnels/')) {?>
 	<p>
-		Les dossiers photos n'existent pas
+		<span class="bold">Attention : </span> au moins un des dossiers <?php echo 'photos/'.$repertoire_rne.'eleves/'; ?> ou <?php echo 'photos/'.$repertoire_rne.'personnels/'; ?> est absent de l'arborescence Gepi.
 	</p>
 <?php } else 
 { ?>
 
-	<a name="sauvegarde_dossier_photos"></a>
+	<a name='encodage'></a></br>
+	<form action="trombinoscopes_admin.php" id="formEncodage" method="post" title="Sauvegarder le dossier 'photos'">
+	<fieldset>
+		<legend class="bold">Encodage des noms de fichier des photos élèves</legend>
+
+		<p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (<em>et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer</em>) d'accéder aux fichiers du dossier photos/eleves. Cet encodage consiste à ajouter au début des noms des fichiers un préfixe de <?php echo getSettingValue('encodage_photos_eleves_longueur'); ?> caractères aléatoires.<br />
+		<span class="bold">Attention : </span>Ne jamais transférer directement (par FTP ou autre) les fichiers photo des élèves dans le dossier photos/eleves, passer obligatoirement par  <a href='#telecharger_photos_eleves'>"Télécharger les photos des élèves"</a>.</p>
+		<p><?php echo verifie_coherence_encodage(); ?></p>
+	</fieldset>
+	</form>
+
+	<a name="sauvegarde_dossier_photos"></a></br>
 	<form action="trombinoscopes_admin.php" id="form5" method="post" title="Sauvegarder le dossier 'photos'">
 	<?php echo add_token_field(); ?>
 	<p>
@@ -468,14 +479,14 @@ unset ($aid_disponible)
 	</p>
 	</form>
 
-
+	<a name="suppression de photos"></a></br>
 	<form action="trombinoscopes_admin.php" id="form6" method="post" title="Gestion des fichiers">
 	<?php echo add_token_field(); ?>
 	<fieldset>
 		<legend class="bold">
 		<label for="supprime">Suppression de photos</label>
 		</legend>
-<?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
+<?php if( file_exists('../photos/'.$repertoire_rne.'personnels/') ) { ?>
 		<input type="checkbox"
 			name="sup_pers"
 			id='supprime_personnels'
@@ -484,7 +495,7 @@ unset ($aid_disponible)
 		<label for="supprime_personnels" id='sup_pers'>
 		Vider le dossier photos des personnels
 		</label>
-<?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
+<?php } if( file_exists('../photos/'.$repertoire_rne.'eleves/') ) {?>
 		<br/>
 		<input type="checkbox"
 			name="supp_eleve"
@@ -503,12 +514,12 @@ unset ($aid_disponible)
 	</p>
 	 </form>
 
-
+	<a name="gestion_du_dossier_photos"></a></br>
 	<form action="trombinoscopes_admin.php" id="form7" method="post" title="Gestion des fichiers">
 	<?php echo add_token_field(); ?>
 	<fieldset>
 		<legend class="bold">Gestion du dossier 'photos'</legend>
-<?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
+<?php if( file_exists('../photos/'.$repertoire_rne.'personnels/') ) { ?>
 		<input type="checkbox"
 			name="voirPerso"
 			id='voir_personnel'
@@ -516,7 +527,7 @@ unset ($aid_disponible)
 		<label for="voir_personnel">
 		Lister les professeurs n'ayant pas de photos
 		</label>
-<?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
+<?php } if( file_exists('../photos/'.$repertoire_rne.'eleves/') ) {?>
 		<br/>
 		<input type="checkbox"
 			name="voirEleve"
@@ -534,8 +545,8 @@ unset ($aid_disponible)
 	</p>
 	</form>
 
-	<a name="purge"></a>
-	<?php if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
+	<a name="purge"></a></br>
+	<?php if( file_exists('../photos/'.$repertoire_rne.'eleves/') ) {?>
 	<form action="trombinoscopes_admin.php" id="form8" method="post" title="Purger les photos">
 	<?php echo add_token_field(); ?>
 	<p>
@@ -561,76 +572,8 @@ unset ($aid_disponible)
  <?php 
  } ?>
 
-<a name='encodage'></a>
-<h2>Encodage des noms de fichier des photos élèves</h2>
-<?php $etat_present=verifie_coherence_encodage(); ?>
-<p class="bold" style="margin-left:10px;";>Etat présent : <?php echo $etat_present['message']; ?></p>
-<p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (<em>et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer</em>) d'accéder aux fichiers du dossier photos/eleves. Cet encodage, bien que facultatif est fortement conseillé pour éviter un piratage des données, et consiste à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires.<br />
-<span class="bold" style='color:red'>Attention : </span><br />
-&nbsp;- dès lors que l'encodage est activé il ne faut plus transférer directement (par FTP ou autres) des fichiers photo dans le dossier photos/eleves, mais le faire via <a href='#telecharger_photos_eleves'>"Télécharger les photos"</a> ;<br />
-&nbsp;- lors d'une restauration de la base il faut veiller à maintenir la cohérence entre la base à restaurer et l'état présent de l'encodage, par exemple si la sauvegarde a été effectuée alors que l'encodage était désactivé et qu'en l'état présent l'encodage est activé alors il faut le désactiver avant de restaurer la base (<em>et réciproquement</em>).<br />
-</p>
-	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && !getSettingAOui('encodage_nom_photo') && $etat_present['type_incoherence']==0) {?>
-	<form action="trombinoscopes_admin.php" id="form9" method="post" title="Encoder les noms des fichiers photo élèves">
-	<?php echo add_token_field(); ?>
-	<p>
-	<fieldset>
-		<legend class="bold">Activer l'encodage des noms des fichiers photo des élèves</legend>
-		Cette opération, consistant à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires, peut-être longue si le nombre de photos est important.<br/>
-		<input type="hidden" name="encoder_noms_photo" value="oui">
-		<em style='color:red'>Par précaution faire au préalable une <a href='trombinoscopes_admin.php#sauvegarde_dossier_photos' title="Sauvegarde du dossier 'photos'">sauvegarde du dossier 'photos'</a>.</em>
- 	</fieldset>
-	<p class="center">
-		<input type="submit" 
-			value="Activer l'encodage"
-			style="font-variant: small-caps;" />
-	</p>
-	</form>
- <?php 
- } ?>
 
-	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && getSettingAOui('encodage_nom_photo')) {?>
-
-		<?php if ($etat_present['type_incoherence']==0) { ?>
-		<form action="trombinoscopes_admin.php" id="form10" method="post" title="Désactiver l'encodage des noms des fichiers photo élèves">
-		<?php echo add_token_field(); ?>
-		<p>
-		<fieldset>
-			<legend class="bold">Désactiver l'encodage des noms des fichiers photo élèves</legend>
-			Cette opération, consistant à renommer les fichiers photo des élèves sous la forme elenoet.jpg ou login.jpg, peut-être longue si le nombre de photos est important.<br />
-			<input type="hidden" name="des_encoder_noms_photo" value="oui">
-			<em style='color:red'>Par précaution faire au préalable une <a href='trombinoscopes_admin.php#sauvegarde_dossier_photos' title="Sauvegarde du dossier 'photos'">sauvegarde du dossier 'photos'</a>.</em>
-		</fieldset>
-		<p class="center">
-			<input type="submit" 
-				value="Désactiver l'encodage"
-				style="font-variant: small-caps;" />
-		</p>
-		</form>
-		<?php } ?>
-
-		<?php if ($etat_present['type_incoherence']==0 || $etat_present['type_incoherence']==1) { ?>
-		<form action="trombinoscopes_admin.php" id="form11" method="post" title="Ré-encoder les noms des fichiers photo élèves">
-		<?php echo add_token_field(); ?>
-		<p>
-		<fieldset>
-			<legend class="bold">Ré-encoder les noms des fichiers photo des élèves</legend>
-			Cette opération est nécessaire uniquement s'il y a des problèmes d'accès aux photos des élèves.<br/>
-			<input type="hidden" name="re_encoder_noms_photo" value="oui">
-			<em style='color:red'>Par précaution faire au préalable une <a href='trombinoscopes_admin.php#sauvegarde_dossier_photos' title="Sauvegarde du dossier 'photos'"'>sauvegarde du dossier 'photos'</a>.</em>
-		</fieldset>
-		<p class="center">
-			<input type="submit" 
-				value="Re-encoder"
-				style="font-variant: small-caps;" />
-		</p>
-		</form>
-		<?php } ?>
- <?php } ?>
-
-
-	<a name="telecharger_photos_eleves"></a>
-	<h2>Télécharger les photos</h2>
+	<a name="telecharger_photos_eleves"></a></br>
 	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi1" enctype="multipart/form-data">
 	<?php echo add_token_field(); ?>
 	<fieldset>
@@ -657,9 +600,9 @@ unset ($aid_disponible)
 
 		<p>Le fichier ZIP doit contenir :<br/>
 		<span style="margin-left: 40px;">
-		- soit les photosencodées au format JPEG nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou pour, un GEPI multisite, les login des élèves (<em>login.jpg</em>) ;<br/>
+		- soit les photos au format JPEG nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou, pour un GEPI multisite, les login des élèves (<em>login.jpg</em>) ;<br/>
 		</span><span style="margin-left: 40px;">
-		- soit les photos  encodées au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impérativement nommé <em>correspondances.csv</em>, avec des virgules comme séparateur de champs</b>, établissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des élèves ou, pour un GEPI multisite, les login des élèves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour générer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">récupérer la liste</a> des élèves avec prénom, nom, eleonet et login.<br/>
+		- soit les photos au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impérativement nommé <em>correspondances.csv</em>, avec des virgules comme séparateur de champs</b>, établissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des élèves ou, pour un GEPI multisite, les login des élèves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour générer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">récupérer la liste</a> des élèves avec prénom, nom, eleonet et login.<br/>
 		</span>
 		</p>
 
@@ -677,7 +620,7 @@ unset ($aid_disponible)
 		<legend class="bold">
 			Restaurer les photos à partir d'une sauvegarde
 		</legend>
-		<input type="hidden" name="action" value="upload" />
+		<input type="hidden" name="action" value="restaurer_sauvegarde" />
 		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger" />
 		<input type="submit" value="Restaurer"/>
 		<br/>
@@ -695,7 +638,7 @@ unset ($aid_disponible)
 		</em>
 		</p>
 
-		<p>Le fichier de sauvegarde à restaurer doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les fichiers photo des élèves et des personnels. Si la restauration a pour but de transférer les données sur une autre machine, la base doit être également restaurée sinon les noms des fichiers photo ne seront pas corrcetement associés aux personnes.</p>
+		<p>Le fichier de sauvegarde à restaurer doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les fichiers photo des élèves et des personnels. Si la restauration a pour but de transférer les données sur une autre machine, la base doit être également restaurée sinon les noms des fichiers photo ne seront pas correctement associés aux personnes.</p>
 
 		<p>La <b>taille maximale</b> d'un fichier téléchargé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nécessaire votre téléchargement en plusieurs fichiers ZIP.</p>
 

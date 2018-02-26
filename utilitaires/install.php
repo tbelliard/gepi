@@ -248,38 +248,6 @@ if ($etape == 4) {
 			if (!@fclose($f)) $ok='no';
 		}
 
-		// si 'encodage_nom_photo'=="yes" création du fichier témoin 
-		// pour l'encodage des noms de fichier des photos élèves
-		if ($result_ok == 'yes') {
-		// on récupère la valeur de 'encodage_nom_photo' dans la table 'setting'
-			$R_encodage=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='encodage_nom_photo' LIMIT 1");
-			if (!$R_encodage) {$ok='no';
-			} else {
-					if ($t_encodage=@mysqli_fetch_assoc($R_encodage)) {
-					$encodage=$t_encodage["VALUE"];
-						if ($encodage=="yes") {
-							// on récupère la valeur de 'alea_nom_photo' dans la table 'setting'
-							$R_alea=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
-							if (!$R_alea) {$ok='no';
-							} else {
-								if ($t_alea=@mysqli_fetch_assoc($R_alea)) {
-									$alea=$t_alea["VALUE"];
-									// on crée le fichier témoin
-									$fic_temoin=@fopen("../photos/eleves/encodage_active.txt","w");
-									if (!$fic_temoin) {
-										$ok = 'no';
-									} else {
-										// la valeur à écrire doit être conforme à la fonction 'encode_nom_photo()' de 'lib/share.inc.php'
-										$retour=@fwrite($fic_temoin,substr(md5($alea."nom_photo"),0,5)."nom_photo");
-										if ($retour===false || !@fclose($fic_temoin)) $ok='no';
-										}
-									}
-								}
-							}
-						}
-					}
-		}
-
 		if ($ok == 'yes') {
 			echo "<B>La structure de votre base de données est installée.</B>\n<p>Vous pouvez passer à l'étape suivante.</p>\n";
 			echo "<FORM ACTION='install.php' METHOD='post'>\n";

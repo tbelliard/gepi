@@ -70,10 +70,9 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 	while ($file = readdir($handle)) {
 		if((pre_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
 
-			$prefixe=pathinfo($file,PATHINFO_FILENAME);
-			if((isset($gepiSettings['encodage_nom_photo'])&&($gepiSettings['encodage_nom_photo']='yes')) {$prefixe=mb_substr($prefixe,5);}
-
-			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
+			$file_name=pathinfo($file,PATHINFO_FILENAME);
+			$file_name=mb_substr($file_name,$gepiSettings['encodage_photos_eleves_longueur']);
+			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$file_name."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -116,9 +115,9 @@ else {
 		if((preg_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
 			$nbjpg++;
 
-			$prefixe=pathinfo($file,PATHINFO_FILENAME);
-			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=mb_substr($prefixe,5);
-			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
+			$file_name=pathinfo($file,PATHINFO_FILENAME);
+			$file_name=mb_substr($file_name,$gepiSettings['encodage_photos_eleves_longueur']);
+			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$file_name."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 

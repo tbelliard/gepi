@@ -71,4 +71,14 @@ function msj_present($message){
   return "<span class='msj_present'> $message.</span><br />";
 }
 
+/**
+ * @return string dossier photos des élèves ou '' si erreur
+ */
+function dossier_photo_eleves() {
+	$rne="";
+	if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
+		return '';
+	$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE'].'/':'';
+	return '../photos/'.$rne.'eleves/';
+}
 ?>
