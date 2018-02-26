@@ -17,6 +17,9 @@ Discipline:
   des alertes sur les incidents disciplinaires 
   (par exemple les comptes Assistante sociale, Infirmière,...).
 
+Trombinoscopes:
+- Encodage par défaut des photos avec extension de la chaine aléatoire.
+
 
 Gepi-1.7.2 (06/01/2018)
 ===========================
