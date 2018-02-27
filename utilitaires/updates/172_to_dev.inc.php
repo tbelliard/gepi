@@ -276,4 +276,114 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+// Augmenter les champs eleves.nom, eleves.prenom en VARCHAR(100)
+
+$result .= "&nbsp;-> Contrôle du champ 'nom' de la table 'eleves'&nbsp;:<br />";
+$sql="show fields from eleves where field='nom';";
+$query=mysqli_query($mysqli, $sql);
+if (mysqli_num_rows($query)>0) {
+	$lig=mysqli_fetch_assoc($query);
+	if(strtolower($lig["Type"])!='varchar(100)') {
+		$result .= "&nbsp;-> Extension à 100 du champ 'nom' de la table 'eleves'&nbsp;: ";
+		$sql="ALTER TABLE eleves CHANGE nom nom VARCHAR(100) NULL DEFAULT '';";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	} else {
+		$result .= msj_present("Le champ 'nom' a le bon type");
+	}
+} else {
+	$result .= msj_erreur("Le champ 'nom' n'existe pas")."<br />";
+}
+
+$result .= "&nbsp;-> Contrôle du champ 'prenom' de la table 'eleves'&nbsp;:<br />";
+$sql="show fields from eleves where field='prenom';";
+$query=mysqli_query($mysqli, $sql);
+if (mysqli_num_rows($query)>0) {
+	$lig=mysqli_fetch_assoc($query);
+	if(strtolower($lig["Type"])!='varchar(100)') {
+		$result .= "&nbsp;-> Extension à 100 du champ 'prenom' de la table 'eleves'&nbsp;: ";
+		$sql="ALTER TABLE eleves CHANGE prenom prenom VARCHAR(100) NULL DEFAULT '';";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	} else {
+		$result .= msj_present("Le champ 'prenom' a le bon type");
+	}
+} else {
+	$result .= msj_erreur("Le champ 'prenom' n'existe pas")."<br />";
+}
+
+// Ajouter un champ eleves.adr_id et une table ele_adr calquée sur resp_adr
+
+$result .= "&nbsp;-> Ajout d'un champ 'adr_id' à la table 'eleves'&nbsp;: ";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM eleves LIKE 'adr_id';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE eleves ADD adr_id VARCHAR(10) NOT NULL default '';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'ele_adr'&nbsp;:</strong>";
+$test = sql_query1("SHOW TABLES LIKE 'ele_adr'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS ele_adr (adr_id varchar(10) NOT NULL,adr1 varchar(100) NOT NULL,adr2 varchar(100) NOT NULL,adr3 varchar(100) NOT NULL,adr4 varchar(100) NOT NULL,cp varchar(6) NOT NULL,pays varchar(50) NOT NULL,commune varchar(50) NOT NULL,PRIMARY KEY  (adr_id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+// Ajouter des champs responsables2.niveau_responsabilite et responsables2.code_parente
+
+$result .= "&nbsp;-> Ajout d'un champ 'niveau_responsabilite' à la table 'responsables2'&nbsp;: ";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM responsables2 LIKE 'niveau_responsabilite';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE responsables2 ADD niveau_responsabilite VARCHAR(10) NOT NULL default '';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'code_parente' à la table 'responsables2'&nbsp;: ";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM responsables2 LIKE 'code_parente';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE responsables2 ADD code_parente VARCHAR(10) NOT NULL default '';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

@@ -1174,7 +1174,8 @@ if(isset($pers_id)){
 	//$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$pers_id'";
 	//$sql="SELECT e.nom,e.prenom,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id='$pers_id' ORDER BY e.nom,e.prenom;";
 	//$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id' AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY e.nom,e.prenom;";
-	$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal, r.acces_sp, r.envoi_bulletin FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id') ORDER BY e.nom,e.prenom;";
+	//$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal, r.acces_sp, r.envoi_bulletin FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id') ORDER BY e.nom,e.prenom;";
+	$sql="SELECT e.nom,e.prenom,e.login,r.* FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id') ORDER BY e.nom,e.prenom;";
 	//echo "$sql<br />\n";
 	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res1)==0){
@@ -1187,6 +1188,9 @@ if(isset($pers_id)){
 		echo "<tr>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Elève</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='3'>Responsable legal</td>\n";
+		// 20180222
+		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Niv.resp</td>\n";
+		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Parenté</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Supprimer</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' rowspan='2'>Autre responsable</td>\n";
 		echo "</tr>\n";
@@ -1278,6 +1282,18 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 				}
 			}
 			echo "</td>\n";
+
+			// 20180222
+			$niveau_responsabilite='';
+			if(isset($tab_niveau_responsabilite[$lig_ele->niveau_responsabilite])) {
+				$niveau_responsabilite=$tab_niveau_responsabilite[$lig_ele->niveau_responsabilite]['libelle'];
+			}
+			echo "<td style='text-align:center;'>".$niveau_responsabilite."</td>\n";
+			$code_parente='';
+			if(isset($tab_code_parente[$lig_ele->code_parente])) {
+				$code_parente=$tab_code_parente[$lig_ele->code_parente]['libelle_court'];
+			}
+			echo "<td style='text-align:center;'>".$code_parente."</td>\n";
 
 			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ele_id[$cpt]' value='$lig_ele->ele_id' onchange='changement();' /></td>\n";
 

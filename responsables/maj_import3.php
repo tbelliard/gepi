@@ -218,7 +218,7 @@ $sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve' AND etat='actif' LIMIT 1
 $res_comptes_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_comptes_eleves=mysqli_num_rows($res_comptes_eleves);
 
-$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve' AND etat='actif' LIMIT 1;";
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable' AND etat='actif' LIMIT 1;";
 $res_comptes_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_comptes_resp=mysqli_num_rows($res_comptes_resp);
 
@@ -6849,7 +6849,9 @@ mysql>
 						`ele_id` varchar(10) $chaine_mysql_collate NOT NULL,
 						`pers_id` varchar(10) $chaine_mysql_collate NOT NULL,
 						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL,
-						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL
+						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL,
+						niveau_responsabilite VARCHAR(10) NOT NULL default '',
+						code_parente VARCHAR(10) NOT NULL default ''
 						) ENGINE=MyISAM;";
 				info_debug($sql);
 				$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -6877,6 +6879,7 @@ mysql>
 				"PERSONNE_ID",
 				"RESP_LEGAL",
 				"CODE_PARENTE",
+				"NIVEAU_RESPONSABILITE",
 				"RESP_FINANCIER",
 				"PERS_PAIMENT",
 				"PERS_CONTACT"
@@ -6914,9 +6917,20 @@ mysql>
 					$sql="INSERT INTO temp_responsables2_import SET ";
 					//$sql="INSERT INTO responsables2 SET ";
 					$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
-					$sql.="pers_id='".$responsables[$i]["personne_id"]."', ";
-					$sql.="resp_legal='".$responsables[$i]["resp_legal"]."', ";
-					$sql.="pers_contact='".$responsables[$i]["pers_contact"]."';";
+					$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+					if(isset($responsables[$i]["resp_legal"])) {
+						$sql.=", resp_legal='".$responsables[$i]["resp_legal"]."'";
+					}
+					if(isset($responsables[$i]["pers_contact"])) {
+						$sql.=", pers_contact='".$responsables[$i]["pers_contact"]."'";
+					}
+					if(isset($responsables[$i]["code_parente"])) {
+						$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
+					}
+					if(isset($responsables[$i]["niveau_responsabilite"])) {
+						$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+					}
+					$sql.=";";
 					affiche_debug("$sql<br />\n");
 					info_debug($sql);
 					$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -7613,23 +7627,13 @@ mysql>
 
 							// Élève associé dans le XML
 							echo "<td>\n";
-							/*
-							$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
-																	temp_responsables2_import r,
-																	temp_resp_pers_import rp
-																WHERE e.ele_id=r.ele_id AND
-																	rp.pers_id=r.pers_id AND
-																	rp.login='$lig_rp->login' AND
-																	(r.resp_legal='1' OR r.resp_legal='2')
-																ORDER BY e.nom,e.prenom;";
-							*/
 							$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
 																	temp_responsables2_import r,
 																	temp_resp_pers_import rp
 																WHERE e.ele_id=r.ele_id AND
 																	rp.pers_id=r.pers_id AND
 																	rp.pers_id='$lig_rp->pers_id' AND
-																	(r.resp_legal='1' OR r.resp_legal='2')
+																	(r.resp_legal='1' OR r.resp_legal='2' OR r.niveau_responsabilite='1')
 																ORDER BY e.nom,e.prenom;";
 							$res_ele_xml=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -7973,6 +7977,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						}
 						$sql.="					)
 												AND rp.pers_id='".$lig->pers_id."';";
+						// 20180227: debug
 						//echo "$sql<br />\n";
 						//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql<br />\n";}
 						info_debug($sql);
@@ -8003,12 +8008,14 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 							// Il faut voir si l'adresse a changé
 							$sql2="SELECT pers_id, ta.* FROM temp_resp_adr_import ta, temp_resp_pers_import tp WHERE tp.adr_id=ta.adr_id AND tp.adr_id='$lig->adr_id';";
 							//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql2<br />\n";}
+							// 20180227: debug
 							//echo "$sql2<br />";
 							$res_temp_adr=mysqli_query($GLOBALS["mysqli"], $sql2);
 							if(mysqli_num_rows($res_temp_adr)>0) {
 								while($lig_temp_adr=mysqli_fetch_object($res_temp_adr)) {
 									//$sql3="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id';";
 									$sql3="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id' AND rp.adr_id!='$lig->adr_id';";
+									// 20180227: debug
 									//echo "$sql3<br />";
 									//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql3<br />\n";}
 									$res_adr=mysqli_query($GLOBALS["mysqli"], $sql3);
@@ -8022,6 +8029,8 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 											($lig_temp_adr->commune==$lig_adr->commune)&&
 											($lig_temp_adr->pays==$lig_adr->pays)) {
 												$temoin_doublon_adr="y";
+												// 20180227: debug
+												//echo "\$temoin_doublon_adr=$temoin_doublon_adr<br />";
 												//echo "Ce n'est pas une nouvelle adresse.<br />";
 												break;
 											}
@@ -8039,9 +8048,14 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 											rp.pers_id=t.pers_id AND 
 											rp.login=u.login AND 
 											t.MEL!=u.email;";
+							// 20180227: debug
+							//echo "$sql<br />";
 							info_debug($sql);
 							$test_diff_mail_compte_vs_sconet=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test_diff_mail_compte_vs_sconet)>0) {
+								// 20180227: debug
+								//echo "$sql<br />";
+
 								$temoin_diff_mail_compte_vs_sconet="y";
 							}
 						}
@@ -8056,6 +8070,8 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 							echo "<span style='color:green;'>".$lig->pers_id."</span>";
 							//echo "<input type='hidden' name='tab_pers_id_diff[]' value='$lig->pers_id' />\n";
 							$sql="UPDATE temp_resp_pers_import SET statut='modif' WHERE pers_id='$lig->pers_id';";
+							// 20180227: debug
+							//echo "$sql<br />";
 							//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql<br />\n";}
 							info_debug($sql);
 							$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -8263,11 +8279,13 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						$temoin_nouvelle_adresse="y";
 						if(getSettingValue('ne_pas_proposer_redoublonnage_adresse')=='y') {
 							$sql="SELECT pers_id, ta.* FROM temp_resp_adr_import ta, temp_resp_pers_import tp WHERE tp.adr_id=ta.adr_id AND tp.adr_id='$lig->adr_id';";
+							// 20180227: debug
 							//echo "$sql<br />";
 							$res_temp_adr=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_temp_adr)>0) {
 								while($lig_temp_adr=mysqli_fetch_object($res_temp_adr)) {
 									$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id'";
+									// 20180227: debug
 									//echo "$sql<br />";
 									$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_adr)>0) {
@@ -8280,6 +8298,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 											($lig_temp_adr->commune==$lig_adr->commune)&&
 											($lig_temp_adr->pays==$lig_adr->pays)) {
 												$temoin_nouvelle_adresse="n";
+												// 20180227: debug
 												//echo "Ce n'est pas une nouvelle adresse.<br />";
 												break;
 											}
@@ -8296,6 +8315,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 							}
 							echo "<span style='color:blue;'>".$lig->adr_id."</span>";
 							$sql="UPDATE temp_resp_adr_import SET statut='nouveau' WHERE adr_id='$lig->adr_id';";
+							// 20180227: debug
 							//echo "$sql<br />";
 							info_debug($sql);
 							$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -8327,7 +8347,8 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 													ra.pays!=t.pays
 												)
 												AND ra.adr_id='".$lig->adr_id."';";
-						//echo "$sql<br />\n";
+						// 20180227: debug
+						//echo "$sql<br />";
 						info_debug($sql);
 						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						$diff_debug_time=time()-$debug_time;
@@ -8338,6 +8359,8 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 								}
 								echo "<span style='color:green;'>".$lig->adr_id."</span>";
 								$sql="UPDATE temp_resp_adr_import SET statut='modif' WHERE adr_id='$lig->adr_id';";
+								// 20180227: debug
+								//echo "$sql<br />";
 								info_debug($sql);
 								//echo "$sql<br />";
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -8580,7 +8603,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						$ligne_parent.="</label></td>\n";
 
 						$ligne_parent.="<td><label for='check_".$cpt."'>\n";
-						$sql="SELECT e.login, e.nom, e.prenom, r.resp_legal FROM eleves e, responsables2 r WHERE r.pers_id='$pers_id' AND r.ele_id=e.ele_id ORDER BY e.prenom;";
+						$sql="SELECT e.login, e.nom, e.prenom, r.resp_legal, r.niveau_responsabilite FROM eleves e, responsables2 r WHERE r.pers_id='$pers_id' AND r.ele_id=e.ele_id ORDER BY e.prenom;";
 						info_debug($sql);
 						//$ligne_parent.="$sql<br />";
 						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -8601,9 +8624,14 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 								else {
 									$info_classe='Aucune classe';
 								}
-								if($lig2->resp_legal==0) {$ligne_parent.="<span style='font-size:x-small;'>";}
-								$ligne_parent.="$lig2->nom $lig2->prenom (".$info_classe.")";
-								if($lig2->resp_legal==0) {$ligne_parent.="</span>";}
+								if(($lig2->resp_legal==0)&&($lig2->niveau_responsabilite!=1)) {
+									$ligne_parent.="<span style='font-size:x-small;'>";
+									$ligne_parent.="$lig2->nom $lig2->prenom (".$info_classe.")";
+									$ligne_parent.="</span>";
+								}
+								else {
+									$ligne_parent.="$lig2->nom $lig2->prenom (".$info_classe.")";
+								}
 								$cpt_tmp++;
 							}
 							$ligne_parent.="</span>";
@@ -8617,7 +8645,16 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						echo $ligne_parent;
 
 						// Détection d'une situation de doublon:
-						$sql="SELECT tp.* FROM temp_resp_pers_import tp, temp_responsables2_import tr WHERE tp.pers_id!='$pers_id' AND tp.pers_id=tr.pers_id AND tp.nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom1)."' AND tp.prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prenom1)."' AND tr.ele_id IN (SELECT ele_id FROM responsables2 WHERE pers_id='$pers_id' AND (resp_legal='1' OR resp_legal='2')) AND tp.pers_id NOT IN (SELECT pers_id FROM resp_pers);";
+						$sql="SELECT tp.* FROM temp_resp_pers_import tp, 
+										temp_responsables2_import tr 
+									WHERE tp.pers_id!='$pers_id' AND 
+										tp.pers_id=tr.pers_id AND 
+										tp.nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom1)."' AND 
+										tp.prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prenom1)."' AND 
+										tr.ele_id IN (SELECT ele_id FROM responsables2 
+														WHERE pers_id='$pers_id' AND 
+															(resp_legal='1' OR resp_legal='2' OR niveau_responsabilite='1')) AND 
+															tp.pers_id NOT IN (SELECT pers_id FROM resp_pers);";
 						//echo "$sql<br />";
 						$verif_d=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($verif_d)>0) {
@@ -8651,7 +8688,16 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 								$ligne_parent.="<td></td>\n";
 
 								$ligne_parent.="<td><label for='check_".$cpt."'>\n";
-								$sql="SELECT e.login, e.nom, e.prenom, r.resp_legal FROM eleves e, temp_responsables2_import r WHERE r.pers_id='$lig_d->pers_id' AND r.ele_id=e.ele_id ORDER BY e.prenom;";
+								$sql="SELECT e.login, 
+										e.nom, 
+										e.prenom, 
+										r.resp_legal, 
+										r.niveau_responsabilite 
+									FROM eleves e, 
+										temp_responsables2_import r 
+									WHERE r.pers_id='$lig_d->pers_id' AND 
+										r.ele_id=e.ele_id 
+									ORDER BY e.prenom;";
 								info_debug($sql);
 								//$ligne_parent.="$sql<br />";
 								$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -8671,9 +8717,16 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 										else {
 											$info_classe='Aucune classe';
 										}
-										if($lig2->resp_legal==0) {$ligne_parent.="<span style='font-size:x-small;'>";}
-										$ligne_parent.="$lig2->nom $lig2->prenom (".$info_classe.")";
-										if($lig2->resp_legal==0) {$ligne_parent.="</span>";}
+
+										if(($lig2->resp_legal==0)&&($lig2->niveau_responsabilite!=1)) {
+											$ligne_parent.="<span style='font-size:x-small;'>";
+											$ligne_parent.="$lig2->nom $lig2->prenom (".$info_classe.")";
+											$ligne_parent.="</span>";
+										}
+										else {
+											$ligne_parent.="$lig2->nom $lig2->prenom (".$info_classe.")";
+										}
+
 										$cpt_tmp++;
 									}
 									$ligne_parent.="</span>";
@@ -8920,6 +8973,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			// 20121020
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
+			// Rapprochements de personnes en cas de changements de pers_id par création de doublons dans Siècle,...
 
 			if(isset($_POST['rapprocher_pers_id'])) {
 				$texte="<p class='bold'>Prise en compte des modifications&nbsp;:</p>\n";
@@ -8974,7 +9028,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			}
 
 
-
+			// On cherche des nouveaux responsables dans temp_resp_pers_import, non déjà présents dans resp_pers
 			$sql="SELECT DISTINCT col2 FROM tempo2 t, temp_resp_pers_import tp WHERE tp.pers_id=t.col2 AND t.col1='pers_id' AND t.col2 NOT IN (SELECT pers_id FROM resp_pers) ORDER BY tp.nom, tp.prenom;";
 			info_debug($sql);
 			//echo "$sql<br />";
@@ -8986,10 +9040,18 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			if(mysqli_num_rows($test)>0){
 				while($lig=mysqli_fetch_object($test)) {
 					// On recherche si le nouveau est associé en resp_legal 1 ou 2 à un élève qui a déjà un resp_legal 1 ou 2 dans la base.
-					$sql="SELECT ele_id FROM temp_responsables2_import WHERE pers_id='$lig->col2' AND (resp_legal='1' OR resp_legal='2') AND ele_id IN (SELECT ele_id FROM responsables2 WHERE resp_legal='1' OR resp_legal='2');";
+					// Il s'agit de proposer de supprimer une ancienne responsabilité pour la remplacer par la nouvelle
+					// ou rapprocher en cas de changements ayant provoqué un nouveau responsable éventuellement doublon dans Sconet.
+					$sql="SELECT ele_id FROM temp_responsables2_import 
+								WHERE pers_id='$lig->col2' AND 
+									(resp_legal='1' OR resp_legal='2' OR niveau_responsabilite='1') AND 
+									ele_id IN (SELECT ele_id FROM responsables2 
+													WHERE resp_legal='1' OR resp_legal='2' OR niveau_responsabilite='1');";
+													// Fallait-il chercher seulement resp_legal='1' OR resp_legal='2'?
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res2)>0){
 
+						// Infos sur la personne
 						$sql="SELECT * FROM temp_resp_pers_import WHERE pers_id='$lig->col2';";
 						$res_n=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_n)>0){
@@ -9050,9 +9112,10 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 							$chaine.="</tr>\n";
 						}
 
+						// Responsabilités de la personne
 						$tab_pers_id_affiche=array();
 						while($lig2=mysqli_fetch_object($res2)) {
-							$sql="SELECT rp.* FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig2->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2');";
+							$sql="SELECT rp.* FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig2->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2' OR niveau_responsabilite='1');";
 							//echo "$sql<br />";
 							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res3)>0){
@@ -9060,7 +9123,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 									if(!in_array($lig3->pers_id, $tab_pers_id_affiche)) {
 										$chaine.="<tr class='lig$alt white_hover'>\n";
 
-										$chaine.="<td title=\"Attribuer le pers_id $lig->col2 du 'nouveau' responsable à cet 'ancien' responsable pour qu'il conserve ses compte d'utilisateur et mot de passe tout en collant aux informations actuellement saisies dans Sconet/Siècle.\">\n";
+										$chaine.="<td title=\"Attribuer le pers_id ".$lig->col2." du 'nouveau' responsable à cet 'ancien' responsable pour qu'il conserve ses compte d'utilisateur et mot de passe tout en collant aux informations actuellement saisies dans Sconet/Siècle.\">\n";
 										$chaine.="<input type='checkbox' name='rapprocher_pers_id[]' id='rapprocher_pers_id_$cpt_resp' value='$lig->col2|$lig3->pers_id' />\n";
 										$chaine.="</td>\n";
 
@@ -9685,7 +9748,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$ligne_parent.="</td>\n";
 						$ligne_parent.="</tr>\n";
 
-						if($alert_diff_mail_resp=="y") {
+						//if($alert_diff_mail_resp=="y") {
 							$ajout_email_compte="";
 							$ligne_parent.="<tr>\n";
 							$ligne_parent.="<td style='text-align:center; font-weight:bold;'>mel</td>\n";
@@ -9694,7 +9757,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								if($lig_pers2->mel!=$mel1) {
 									if(($lig_pers2->mel!='')||($mel1!='')){
 	
-										if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
+										if(($alert_diff_mail_resp=="y")&&
+										(getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
 	
 											if($login_resp1!='') {
 												$sql="SELECT email FROM utilisateurs WHERE login='$login_resp1';";
@@ -9780,7 +9844,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$ligne_parent.=$ajout_email_compte;
 							$ligne_parent.="</td>\n";
 							$ligne_parent.="</tr>\n";
-						}
+						//}
 						$ligne_parent.="</table>\n";
 
 						//$ligne_parent.="\$lig_pers2->adr_id=$lig_pers2->adr_id";
@@ -10258,8 +10322,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$texte.="$lig->prenom $lig->nom";
 								$texte.="</span></a>";
 
+								// S'il y a au moins un responsable avec compte utilisateur (testé en début de page ligne 223 environ)
 								if($nb_comptes_resp>0) {
-									$sql="SELECT 1=1 FROM temp_responsables2_import WHERE pers_id='".$lig1->col2."' AND (resp_legal='1' OR resp_legal='2');";
+									$sql="SELECT 1=1 FROM temp_responsables2_import WHERE pers_id='".$lig1->col2."' AND (resp_legal='1' OR resp_legal='2' OR niveau_responsabilite='1');";
 									$test_resp_legal=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($test_resp_legal)>0) {
 										$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." (".$lig1->col2.")";
@@ -10275,11 +10340,16 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 												$info_action_texte.="<a href='eleves/modify_eleve.php?eleve_login=".$lig_ele_resp->login."'>".get_nom_prenom_eleve($lig_ele_resp->login, 'avec_classe')." <span title=\"";
 												if(($lig_ele_resp->resp_legal==1)||($lig_ele_resp->resp_legal==2)) {
 													$info_action_texte.="en responsable légal $lig_ele_resp->resp_legal";
+													$info_action_texte.="\">($lig_ele_resp->resp_legal)</span></a>";
+												}
+												elseif($lig_ele_resp->niveau_responsabilite==1) {
+													$info_action_texte.="avec en responsable légal (niveau_responsabilite=1)";
+													$info_action_texte.="\">($lig_ele_resp->resp_legal (1))</span></a>";
 												}
 												else {
 													$info_action_texte.="en responsable non légal (contact,...)";
+													$info_action_texte.="\">($lig_ele_resp->resp_legal)</span></a>";
 												}
-												$info_action_texte.="\">($lig_ele_resp->resp_legal)</span></a>";
 												$cpt_ele_resp++;
 											}
 											$info_action_texte.="<br />";
@@ -10661,7 +10731,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			//$chaine="";
 			$cpt=0;
 			//for($i=0;$i<min($eff_tranche,count($tab_resp));$i++){
-			for($i=0;$i<count($tab_resp);$i++){
+			for($i=0;$i<count($tab_resp);$i++) {
 				//if($i>0){$chaine.=" OR ";}
 
 				$tab_tmp=explode("_",$tab_resp[$i]);
@@ -10692,21 +10762,29 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					// FAIRE UN echo POUR INDIQUER CES NOUVEAUX RESPONSABLES REPéRéS
 					// REMPLIR UNE CHAINE ET L'AJOUTER A LA FIN DE LA LISTE AFFICHéE PLUS BAS
 				}
-				else{
-
-					$sql="SELECT t.ele_id,t.pers_id FROM responsables2 r, temp_responsables2_import t
-									WHERE r.pers_id=t.pers_id AND
-											r.ele_id=t.ele_id AND
+				else {
+					$sql="(SELECT t.ele_id,t.pers_id FROM responsables2 r, temp_responsables2_import t
+									WHERE r.pers_id=t.pers_id AND 
+											r.ele_id=t.ele_id AND 
+											t.resp_legal!='' AND 
 											(
-												r.resp_legal!=t.resp_legal OR
+												r.resp_legal!=t.resp_legal OR 
 												r.pers_contact!=t.pers_contact
-											)
-											AND (t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]')
-											";
+											) 
+											AND (t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]')) 
+						UNION (SELECT t.ele_id,t.pers_id FROM responsables2 r, temp_responsables2_import t
+									WHERE r.pers_id=t.pers_id AND 
+											r.ele_id=t.ele_id AND 
+											t.niveau_responsabilite!='' AND 
+											(
+												r.niveau_responsabilite!=t.niveau_responsabilite OR 
+												r.code_parente!=t.code_parente
+											) 
+											AND (t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]'));";
 					info_debug($sql);
 					//echo "$sql<br />\n";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($test)>0){
+					if(mysqli_num_rows($test)>0) {
 						if($cpt==0){
 							echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
 							echo "<br />\n";
@@ -10934,8 +11012,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					}
 				}
 
+				// 20180226 J'en suis là sur les resp_legal et niveau_responsabilite
 				// FAIRE LES ENREGISTREMENTS A CE NIVEAU!!!
-				if(isset($modif)){
+				if(isset($modif)) {
 					$compteur_modifs=0;
 					for($i=0;$i<count($modif);$i++){
 						$tab_tmp=explode("_",$modif[$i]);
@@ -10943,6 +11022,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$pers_id=$tab_tmp[2];
 
 						$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+						// 20180227
+						//echo "$sql<br />";
 						info_debug($sql);
 						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res1)>0){
@@ -10950,13 +11031,19 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 							$resp_legal=$lig1->resp_legal;
 							$pers_contact=$lig1->pers_contact;
+							$niveau_responsabilite=$lig1->niveau_responsabilite;
+							$code_parente=$lig1->code_parente;
 
 							$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+							// 20180227
+							//echo "$sql<br />";
 							info_debug($sql);
 							$test1=mysqli_query($GLOBALS["mysqli"], $sql);
 							// Pour une modif, ce test doit toujours être vrai.
 							if(mysqli_num_rows($test1)>0){
 								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+								// 20180227
+								//echo "$sql<br />";
 								info_debug($sql);
 								$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
@@ -10964,11 +11051,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							// Il ne peut pas y avoir 2 resp_legal 1, ni 2 resp_legal 2 pour un même élève.
 							if(($resp_legal==1)||($resp_legal==2)) {
 								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='$resp_legal';";
+								// 20180227
+								//echo "$sql<br />";
 								info_debug($sql);
 								$test2=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test2)>0){
 									$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND
 																	resp_legal='$resp_legal';";
+									// 20180227
+									//echo "$sql<br />";
 									info_debug($sql);
 									$delete=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
@@ -10976,20 +11067,48 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
 																pers_contact='$pers_contact',
 																ele_id='$ele_id',
-																resp_legal='$resp_legal';";
+																resp_legal='$resp_legal',
+																niveau_responsabilite='$niveau_responsabilite',
+																code_parente='$code_parente';";
+								// 20180227
+								//echo "$sql<br />";
 								info_debug($sql);
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($insert) {enregistre_log_maj_sconet("Enregistrement de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
 							}
-							else{
-								// Cas de resp_legal=0
-								$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
-																pers_contact='$pers_contact',
-																ele_id='$ele_id',
-																resp_legal='$resp_legal';";
-								info_debug($sql);
-								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-								if($insert) {enregistre_log_maj_sconet("Enregistrement de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
+							else {
+								// Cas de resp_legal=0 ou vide
+								if($niveau_responsabilite==1) {
+									// S'il n'y a pas déjà de resp_legal 1 ou 2, il faudrait attribuer ce rang.
+									// On va le faire plus loin
+									$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
+																	pers_contact='$pers_contact',
+																	ele_id='$ele_id',
+																	resp_legal='$resp_legal',
+																niveau_responsabilite='$niveau_responsabilite',
+																code_parente='$code_parente';";
+									// 20180227
+									//echo "$sql<br />";
+									info_debug($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if($insert) {enregistre_log_maj_sconet("Enregistrement de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
+
+								}
+								else {
+									$resp_legal=0;
+
+									$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
+																	pers_contact='$pers_contact',
+																	ele_id='$ele_id',
+																	resp_legal='$resp_legal',
+																niveau_responsabilite='$niveau_responsabilite',
+																code_parente='$code_parente';";
+									// 20180227
+									//echo "$sql<br />";
+									info_debug($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if($insert) {enregistre_log_maj_sconet("Enregistrement de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
+								}
 							}
 						}
 					}
@@ -11006,6 +11125,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$pers_id=$tab_tmp[2];
 
 						$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+						// 20180227
+						//echo "$sql<br />";
 						info_debug($sql);
 						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res1)>0){
@@ -11013,13 +11134,19 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 							$resp_legal=$lig1->resp_legal;
 							$pers_contact=$lig1->pers_contact;
+							$niveau_responsabilite=$lig1->niveau_responsabilite;
+							$code_parente=$lig1->code_parente;
 
 							$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+							// 20180227
+							//echo "$sql<br />";
 							info_debug($sql);
 							$test1=mysqli_query($GLOBALS["mysqli"], $sql);
 							// Pour une 'new', ce test doit toujours être faux.
 							if(mysqli_num_rows($test1)>0){
 								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+								// 20180227
+								//echo "$sql<br />";
 								info_debug($sql);
 								$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
@@ -11027,11 +11154,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							// Il ne peut pas y avoir 2 resp_legal 1, ni 2 resp_legal 2 pour un même élève.
 							if(($resp_legal==1)||($resp_legal==2)) {
 								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='$resp_legal';";
+								// 20180227
+								//echo "$sql<br />";
 								info_debug($sql);
 								$test2=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test2)>0){
 									$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND
 																	resp_legal='$resp_legal';";
+									// 20180227
+									//echo "$sql<br />";
 									info_debug($sql);
 									$delete=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
@@ -11039,7 +11170,11 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
 																pers_contact='$pers_contact',
 																ele_id='$ele_id',
-																resp_legal='$resp_legal';";
+																resp_legal='$resp_legal',
+																niveau_responsabilite='$niveau_responsabilite',
+																code_parente='$code_parente';";
+								// 20180227
+								//echo "$sql<br />";
 								info_debug($sql);
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($insert) {enregistre_log_maj_sconet("Enregistrement de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
@@ -11050,7 +11185,11 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$sql="INSERT INTO responsables2 SET pers_id='$pers_id',
 																pers_contact='$pers_contact',
 																ele_id='$ele_id',
-																resp_legal='$resp_legal';";
+																resp_legal='$resp_legal',
+																niveau_responsabilite='$niveau_responsabilite',
+																code_parente='$code_parente';";
+								// 20180227
+								//echo "$sql<br />";
 								info_debug($sql);
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($update) {enregistre_log_maj_sconet("Mise à jour de la responsabilité du responsable n°<a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a> (".civ_nom_prenom_from_pers_id($pers_id).") en tant que responsable légal $resp_legal de l'élève n°$ele_id (".get_nom_prenom_eleve_from_ele_id($ele_id).").<br />");}
@@ -11115,7 +11254,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 				echo "<td rowspan='2'>&nbsp;</td>\n";
 
-				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' colspan='5'>Responsable</td>\n";
+				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' colspan='7'>Responsable</td>\n";
 
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;' colspan='3'>Elève</td>\n";
 
@@ -11132,6 +11271,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Prénom</td>\n";
 				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>resp_legal</td>\n";
 				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>pers_contact</td>\n";
+				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Niv.resp</td>\n";
+				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Code parenté</td>\n";
 
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Nom</td>\n";
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Prénom</td>\n";
@@ -11169,6 +11310,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 						$resp_legal=$lig0b->resp_legal;
 						$pers_contact=$lig0b->pers_contact;
+
+						$niveau_responsabilite=$lig0b->niveau_responsabilite;
+						$code_parente=$lig0b->code_parente;
 					}
 
 
@@ -11179,7 +11323,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					info_debug($sql);
 					//echo "$sql<br />";
 					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res1)==0){
+					if(mysqli_num_rows($res1)==0) {
 						// L'association responsable/eleve n'existe pas encore
 						$resp_new[]="$ele_id:$pers_id";
 						info_debug("Nouvelle association $ele_id:$pers_id\n");
@@ -11209,7 +11353,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 							$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
 							//$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
-							$ligne_courante.="<td colspan='7'>Aucune personne associée ou personne non ajoutée dans l'étape PERSONNES\n";
+							$ligne_courante.="<td colspan='9'>Aucune personne associée ou personne non ajoutée dans l'étape PERSONNES\n";
 
 							$sql="SELECT * FROM temp_resp_pers_import WHERE pers_id='$pers_id';";
 							$res_temp_pers=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -11269,25 +11413,93 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							//$ligne_courante.="<td style='text-align:center;";
 							$ligne_courante.="<td";
 							//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
-							$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
-							info_debug($sql);
-							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
-							if(mysqli_num_rows($res3)==0){
-								//$ligne_courante.="'>\n";
-								$ligne_courante.=">\n";
-							}
-							else{
-								//$ligne_courante.=" background-color: lightgreen;'>\n";
-								$ligne_courante.=" class='modif'>\n";
-							}
-							$ligne_courante.="$resp_legal";
-							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_legal' value='$resp_legal' />\n";
-							$ligne_courante.="</td>\n";
 
-							$ligne_courante.="<td style='text-align:center;'>\n";
-							$ligne_courante.="$pers_contact";
-							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_pers_contact' value='$pers_contact' />\n";
-							$ligne_courante.="</td>\n";
+							// Si $resp_legal est non vide, on a un XML avec les infos d'avant fin mars 2018
+							if($resp_legal!='') {
+								// Y a-t-il un autre responsable légal 1 ou 2 de même rang?
+								$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
+								info_debug($sql);
+								$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res3)==0){
+									//$ligne_courante.="'>\n";
+									$ligne_courante.=">\n";
+								}
+								else{
+									//$ligne_courante.=" background-color: lightgreen;'>\n";
+									$ligne_courante.=" class='modif'>\n";
+								}
+								$ligne_courante.="$resp_legal";
+								//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_legal' value='$resp_legal' />\n";
+								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="$pers_contact";
+								//$ligne_courante.="<input type='hidden' name='new_".$cpt."_pers_contact' value='$pers_contact' />\n";
+								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td";
+								if(isset($tab_niveau_responsabilite[$niveau_responsabilite])) {
+									$ligne_courante.=" title=\"".$tab_niveau_responsabilite[$niveau_responsabilite]['libelle_edition']."\"";
+								}
+								$ligne_courante.=">\n";
+								$ligne_courante.=$niveau_responsabilite;
+								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td>\n";
+								if(isset($tab_code_parente[$code_parente])) {
+									$ligne_courante.=$tab_code_parente[$code_parente]["libelle"];
+								}
+								else {
+									$ligne_courante.=$code_parente;
+								}
+								$ligne_courante.="</td>\n";
+							}
+							else {
+								// Il faut tester.
+								// Si on a un niveau_responsabilite=1, c'est resp_legal=1, 2 ou 0+acces_sp+envoi_bulletin
+
+								if($niveau_responsabilite==1) {
+									// Y a-t-il à la fois un autre responsable légal 1 et un autre responsable légal ou 2?
+									$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND (resp_legal='1' OR resp_legal='2'))";
+									info_debug($sql);
+									$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res3)==0){
+										//$ligne_courante.="'>\n";
+										$ligne_courante.=">\n";
+									}
+									else{
+										$ligne_courante.=" class='conflit' title=\"Cette personne est responsable légale et il y a déjà deux responsables légaux 1 et 2 dans la base Gepi.\">\n";
+									}
+								}
+								else {
+									$ligne_courante.=">\n";
+								}
+
+								$ligne_courante.=$resp_legal;
+								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.=$pers_contact;
+								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td";
+								if(isset($tab_niveau_responsabilite[$niveau_responsabilite])) {
+									$ligne_courante.=" title=\"".$tab_niveau_responsabilite[$niveau_responsabilite]['libelle_edition']."\"";
+								}
+								$ligne_courante.=">\n";
+								$ligne_courante.=$niveau_responsabilite;
+								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td>\n";
+								if(isset($tab_code_parente[$code_parente])) {
+									$ligne_courante.=$tab_code_parente[$code_parente]["libelle"];
+								}
+								else {
+									$ligne_courante.=$code_parente;
+								}
+								$ligne_courante.="</td>\n";
+
+							}
 
 							// Elève(s) associé(s)
 							if(mysqli_num_rows($res4)==0){
@@ -11394,7 +11606,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$ligne_courante.="<td>&nbsp;</td>\n";
 
 								$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
-								$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
+								$ligne_courante.="<td colspan='7'>Aucune personne associée???</td>\n";
 								info_debug("Aucune personne associée???\n");
 
 								//=========================
@@ -11441,26 +11653,70 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 								//$ligne_courante.="<td style='text-align:center;";
 								$ligne_courante.="<td";
-								//$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal')";
-								$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
-								info_debug($sql);
-								$res3=mysqli_query($GLOBALS["mysqli"], $sql);
-								if(mysqli_num_rows($res3)==0){
-									//$ligne_courante.="'>\n";
+
+								if($resp_legal!='') {
+									$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND resp_legal='$resp_legal' AND (resp_legal='1' OR resp_legal='2'))";
+									info_debug($sql);
+									$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res3)==0){
+										$ligne_courante.=">\n";
+									}
+									else{
+										//$ligne_courante.=" background-color: lightgreen;'>\n";
+										$ligne_courante.=" class='modif'>\n";
+									}
+								}
+								elseif($niveau_responsabilite==1) {
+									$sql="SELECT 1=1 FROM responsables2 WHERE (pers_id!='$pers_id' AND ele_id='$ele_id' AND (resp_legal='1' OR resp_legal='2'))";
+									info_debug($sql);
+									$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res3)==0) {
+										$ligne_courante.=" class='modif'>\n";
+									}
+									elseif(mysqli_num_rows($res3)==2) {
+										$ligne_courante.=" class='conflit' title=\"Il y a déjà des responsables légaux 1 et 2.\">\n";
+									}
+									else {
+										// Le responsable va prendre la place resp_legal libre...
+										// sauf que si on ajoute plusieurs responsables avec niveau_responsabilite=1
+										// le test ne va suffire à le détecter
+										$ligne_courante.=">\n";
+									}
+								}
+								else {
 									$ligne_courante.=">\n";
 								}
-								else{
-									//$ligne_courante.=" background-color: lightgreen;'>\n";
-									$ligne_courante.=" class='modif'>\n";
-								}
-								$ligne_courante.="$resp_legal";
-								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_legal' value='$resp_legal' />\n";
+								$ligne_courante.=$resp_legal;
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
-								$ligne_courante.="$pers_contact";
-								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_pers_contact' value='$pers_contact' />\n";
+								$ligne_courante.=$pers_contact;
 								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td";
+								if(isset($tab_niveau_responsabilite[$niveau_responsabilite])) {
+									$ligne_courante.=" title=\"".$tab_niveau_responsabilite[$niveau_responsabilite]['libelle_edition']."\"";
+								}
+								if($lig1->niveau_responsabilite!=$niveau_responsabilite) {
+									$ligne_courante.=" class='modif'";
+								}
+								$ligne_courante.=">\n";
+								$ligne_courante.=$niveau_responsabilite;
+								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td";
+								if($lig1->niveau_responsabilite!=$niveau_responsabilite) {
+									$ligne_courante.=" class='modif'";
+								}
+								$ligne_courante.=">\n";
+								if(isset($tab_code_parente[$code_parente])) {
+									$ligne_courante.=$tab_code_parente[$code_parente]["libelle"];
+								}
+								else {
+									$ligne_courante.=$code_parente;
+								}
+								$ligne_courante.="</td>\n";
+
 
 								// Elève(s) associé(s)
 								if(mysqli_num_rows($res4)==0){
@@ -11663,7 +11919,89 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				echo "<p>Toutes les associations inscrites dans votre table de responsabilités sont bien présentes dans le fichier XML importé.<br />
 				Il ne reste donc pas d'association indésirable (<i>sous réserve que vous ayez bien tenu compte des éventuelles modifications proposées lors de la phase Responsabilités</i>).</p>\n";
 
-				echo "<p>Retour à:</p>\n";
+
+				// 20180226
+				// Rechercher des responsabilités sans responsables légaux 1 et 2
+				// Y rechercher des niveau_responsabilité=1 ordonnées suivant code_parente pour définir les resp_legal 1 et 2
+
+				$sql="SELECT DISTINCT ele_id, COUNT(resp_legal) AS nb_resp FROM responsables2 WHERE resp_legal='1' OR resp_legal='2' GROUP BY ele_id HAVING COUNT(resp_legal)<2;";
+				$res=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)>0) {
+					echo "<p>Contrôle supplémentaire lié à la modifications Siècle qui abandonne les <strong>responsables légaux 1 et 2</strong> pour les critères <strong>Niveau de responsabilité</strong> et <strong>Code parenté</strong>.</p>
+					<p>".mysqli_num_rows($res)." élèves n'ont pas deux responsables légaux.<br />
+					Nous allons parcourir les responsables de Niveau de responsabilité 1 pour leur attribuer le rôle de responsable légal.</p>";
+
+					$liste_modif='';
+					while($lig=mysqli_fetch_object($res)) {
+						$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND resp_legal!='1' AND resp_legal!='2' AND niveau_responsabilite='1' ORDER BY code_parente;";
+						$res2=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res2)>0) {
+							//$nb_resp_deja=$lig->nb_resp;
+
+							// Si un resp_legal défini est resp_legal=2, il faut savoir quelle valeur est libre.
+							$nb_resp_deja=0;
+							$resp_legal_1=false;
+							$resp_legal_2=false;
+							$sql="SELECT DISTINCT resp_legal FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND (resp_legal='1' OR resp_legal='2');";
+							$test=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($test)>0) {
+								while($lig_test=mysqli_fetch_object($test)) {
+									if($lig_test->resp_legal==1) {
+										$resp_legal_1=true;
+									}
+									if($lig_test->resp_legal==2) {
+										$resp_legal_2=true;
+									}
+									$nb_resp_deja++;
+								}
+							}
+
+							while($lig2=mysqli_fetch_object($res2)) {
+								if(!$resp_legal_1) {
+									$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig2->pers_id."';";
+									$resp_legal_1=true;
+								}
+								elseif(!$resp_legal_2) {
+									$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig2->pers_id."';";
+									$resp_legal_2=true;
+								}
+								else {
+									$sql="UPDATE responsables2 SET resp_legal='0', envoi_bulletin='y', acces_sp='y' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig2->pers_id."';";
+								}
+								$update=mysqli_query($mysqli, $sql);
+								if(!$update) {
+									echo "<span style='color:red'>ERREUR lors de la mise à jour de la responsabilité pour <a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a> sur l'élève <a href='../eleves/modify_eleve.php?ele_id=".$lig->ele_id."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a></span><br />";
+								}
+								else {
+									if($liste_modif!='') {
+										$liste_modif.=', ';
+									}
+									$liste_modif.="<a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a>/<a href='../eleves/modify_eleve.php?ele_id=".$lig->ele_id."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a>";
+								}
+								$nb_resp_deja++;
+							}
+						}
+					}
+					if($liste_modif!='') {
+						echo "<p>Les responsabilités ont été modifiées pour le ou les couples suivants&nbsp;: \"".$liste_modif."\"</p>";
+					}
+					else {
+						echo "<p>Aucune modification n'a été effectuée.</p>";
+					}
+				}
+
+
+
+				// Et ceux qui restent, sont resp_legal=0+envoi_bulletin+acces_sp
+				$sql="UPDATE responsables2 SET envoi_bulletin='y', acces_sp='y' WHERE niveau_responsabilite='1' AND resp_legal!='1' AND resp_legal!='2';";
+				$update=mysqli_query($mysqli, $sql);
+				if(!$update) {
+					echo "<p><span style='color:red'>ERREUR lors de l'attribution du droit de consultation et de l'envoi des bulletins vers les responsables légaux non responsable légal 1 ou 2.</span></p>";
+				}
+
+
+
+				echo "<p style='margin-top:1em;'>Retour à:</p>\n";
 				echo "<ul>\n";
 				echo "<li><a href='../accueil.php'>l'accueil</a></li>\n";
 				echo "<li><a href='index.php'>l'index Responsables</a></li>\n";
@@ -11846,7 +12184,89 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				echo "<p><br /></p>\n";
 			}
 
-			echo "<p>Retour à:</p>\n";
+
+			// 20180226
+			// Rechercher des responsabilités sans responsables légaux 1 et 2
+			// Y rechercher des niveau_responsabilité=1 ordonnées suivant code_parente pour définir les resp_legal 1 et 2
+
+			$sql="SELECT DISTINCT ele_id, COUNT(resp_legal) AS nb_resp FROM responsables2 WHERE resp_legal='1' OR resp_legal='2' GROUP BY ele_id HAVING COUNT(resp_legal)<2;";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				echo "<p>Contrôle supplémentaire lié à la modifications Siècle qui abandonne les <strong>responsables légaux 1 et 2</strong> pour les critères <strong>Niveau de responsabilité</strong> et <strong>Code parenté</strong>.</p>
+				<p>".mysqli_num_rows($res)." élèves n'ont pas deux responsables légaux.<br />
+				Nous allons parcourir les responsables de Niveau de responsabilité 1 pour leur attribuer le rôle de responsable légal.</p>";
+
+				$liste_modif='';
+				while($lig=mysqli_fetch_object($res)) {
+					$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND resp_legal!='1' AND resp_legal!='2' AND niveau_responsabilite='1' ORDER BY code_parente;";
+					$res2=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res2)>0) {
+						//$nb_resp_deja=$lig->nb_resp;
+
+						// Si un resp_legal défini est resp_legal=2, il faut savoir quelle valeur est libre.
+						$nb_resp_deja=0;
+						$resp_legal_1=false;
+						$resp_legal_2=false;
+						$sql="SELECT DISTINCT resp_legal FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND (resp_legal='1' OR resp_legal='2');";
+						$test=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($test)>0) {
+							while($lig_test=mysqli_fetch_object($test)) {
+								if($lig_test->resp_legal==1) {
+									$resp_legal_1=true;
+								}
+								if($lig_test->resp_legal==2) {
+									$resp_legal_2=true;
+								}
+								$nb_resp_deja++;
+							}
+						}
+
+						while($lig2=mysqli_fetch_object($res2)) {
+							if(!$resp_legal_1) {
+								$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig2->pers_id."';";
+								$resp_legal_1=true;
+							}
+							elseif(!$resp_legal_2) {
+								$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig2->pers_id."';";
+								$resp_legal_2=true;
+							}
+							else {
+								$sql="UPDATE responsables2 SET resp_legal='0', envoi_bulletin='y', acces_sp='y' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig2->pers_id."';";
+							}
+							$update=mysqli_query($mysqli, $sql);
+							if(!$update) {
+								echo "<span style='color:red'>ERREUR lors de la mise à jour de la responsabilité pour <a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a> sur l'élève <a href='../eleves/modify_eleve.php?ele_id=".$lig->ele_id."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a></span><br />";
+							}
+							else {
+								if($liste_modif!='') {
+									$liste_modif.=', ';
+								}
+								$liste_modif.="<a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a>/<a href='../eleves/modify_eleve.php?ele_id=".$lig->ele_id."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a>";
+							}
+							$nb_resp_deja++;
+						}
+					}
+				}
+				if($liste_modif!='') {
+					echo "<p>Les responsabilités ont été modifiées pour le ou les couples suivants&nbsp;: \"".$liste_modif."\"</p>";
+				}
+				else {
+					echo "<p>Aucune modification n'a été effectuée.</p>";
+				}
+			}
+
+
+
+			// Et ceux qui restent, sont resp_legal=0+envoi_bulletin+acces_sp
+			$sql="UPDATE responsables2 SET envoi_bulletin='y', acces_sp='y' WHERE niveau_responsabilite='1' AND resp_legal!='1' AND resp_legal!='2';";
+			$update=mysqli_query($mysqli, $sql);
+			if(!$update) {
+				echo "<p><span style='color:red'>ERREUR lors de l'attribution du droit de consultation et de l'envoi des bulletins vers les responsables légaux non responsable légal 1 ou 2.</span></p>";
+			}
+
+
+
+			echo "<p style='margin-top:1em;>Retour à:</p>\n";
 			echo "<ul>\n";
 			echo "<li><a href='../accueil.php'>l'accueil</a></li>\n";
 			echo "<li><a href='index.php'>l'index Responsables</a></li>\n";

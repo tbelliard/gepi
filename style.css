@@ -774,6 +774,9 @@ table.boireaus {
 .boireaus .modif {
 	background-color: #eeaaff;
 }
+.boireaus .conflit {
+	background-color: #f77070;
+}
 
 .padd_et_bordg td {
 	padding: 5px;

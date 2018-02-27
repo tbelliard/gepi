@@ -75,8 +75,8 @@ CREATE TABLE eleves
 (
 	no_gep VARCHAR(50) NOT NULL COMMENT 'Ancien numero GEP, Numero national de l\'eleve',
 	login VARCHAR(50) NOT NULL COMMENT 'Login de l\'eleve, est conserve pour le login utilisateur',
-	nom VARCHAR(50) NOT NULL COMMENT 'Nom eleve',
-	prenom VARCHAR(50) NOT NULL COMMENT 'Prenom eleve',
+	nom VARCHAR(100) NOT NULL COMMENT 'Nom eleve',
+	prenom VARCHAR(100) NOT NULL COMMENT 'Prenom eleve',
 	sexe VARCHAR(1) NOT NULL COMMENT 'M ou F',
 	naissance DATE NOT NULL COMMENT 'Date de naissance AAAA-MM-JJ',
 	lieu_naissance VARCHAR(50) DEFAULT '' NOT NULL COMMENT 'Code de Sconet',
@@ -91,6 +91,7 @@ CREATE TABLE eleves
 	date_entree DATETIME COMMENT 'Timestamp d\'entrée de l\'élève de l\'établissement (début d\'inscription)',
 	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)',
 	mef_code VARCHAR(50) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l\'eleve',
+	adr_id VARCHAR(10) NOT NULL default '',
 	PRIMARY KEY (id_eleve),
 	INDEX eleves_FI_1 (mef_code),
 	INDEX I_referenced_j_eleves_classes_FK_1_1 (login),
@@ -197,7 +198,7 @@ CREATE TABLE `miseajour` (`id_miseajour` int(11) NOT NULL auto_increment, `fichi
 DROP TABLE IF EXISTS absences_actions;
 CREATE TABLE `absences_actions` (`id_absence_action` int(11) NOT NULL auto_increment, `init_absence_action` char(2) NOT NULL default '', `def_absence_action` varchar(255) NOT NULL default '', PRIMARY KEY  (`id_absence_action`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `responsables2`;
-CREATE TABLE IF NOT EXISTS `responsables2` (`ele_id` varchar(10) NOT NULL, `pers_id` varchar(10) NOT NULL, `resp_legal` varchar(1) NOT NULL, `pers_contact` varchar(1) NOT NULL, `acces_sp` varchar(1) NOT NULL, envoi_bulletin char(1) NOT NULL default 'n' COMMENT 'Envoi des bulletins pour les resp_legal=0', INDEX pers_id ( `pers_id` ), INDEX ele_id ( `ele_id` ), INDEX resp_legal ( `resp_legal` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS `responsables2` (`ele_id` varchar(10) NOT NULL, `pers_id` varchar(10) NOT NULL, `resp_legal` varchar(1) NOT NULL, `pers_contact` varchar(1) NOT NULL, `acces_sp` varchar(1) NOT NULL, envoi_bulletin char(1) NOT NULL default 'n' COMMENT 'Envoi des bulletins pour les resp_legal=0', niveau_responsabilite VARCHAR(10) NOT NULL default '', code_parente VARCHAR(10) NOT NULL default '', INDEX pers_id ( `pers_id` ), INDEX ele_id ( `ele_id` ), INDEX resp_legal ( `resp_legal` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `resp_adr`;
 CREATE TABLE IF NOT EXISTS `resp_adr` (`adr_id` varchar(10) NOT NULL,`adr1` varchar(100) NOT NULL,`adr2` varchar(100) NOT NULL,`adr3` varchar(100) NOT NULL,`adr4` varchar(100) NOT NULL,`cp` varchar(6) NOT NULL,`pays` varchar(50) NOT NULL,`commune` varchar(50) NOT NULL,PRIMARY KEY  (`adr_id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `resp_pers`;
@@ -1661,4 +1662,23 @@ rubrique VARCHAR(255) NOT NULL default '',
 item TEXT, 
 resume VARCHAR(255) NOT NULL DEFAULT '', 
 PRIMARY KEY (id), INDEX cycle_matiere (cycle, matiere)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS j_groupes_lvr;
+CREATE TABLE IF NOT EXISTS j_groupes_lvr (
+id int(11) unsigned NOT NULL auto_increment, 
+id_groupe int(11) NOT NULL,
+code VARCHAR(50) NOT NULL,
+PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS socle_eleves_lvr;
+CREATE TABLE socle_eleves_lvr (id int(11) NOT NULL auto_increment, 
+ine varchar(50) NOT NULL, 
+id_groupe INT(11) NOT NULL, 
+positionnement varchar(10) NOT NULL DEFAULT '', 
+login_saisie varchar(50) NOT NULL DEFAULT '', 
+date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+PRIMARY KEY (id), INDEX ine_id_groupe (ine, id_groupe), UNIQUE(ine, id_groupe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS ele_adr;
+CREATE TABLE IF NOT EXISTS ele_adr (adr_id varchar(10) NOT NULL,adr1 varchar(100) NOT NULL,adr2 varchar(100) NOT NULL,adr3 varchar(100) NOT NULL,adr4 varchar(100) NOT NULL,cp varchar(6) NOT NULL,pays varchar(50) NOT NULL,commune varchar(50) NOT NULL,PRIMARY KEY  (adr_id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 

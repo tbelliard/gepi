@@ -624,7 +624,9 @@
 						`ele_id` varchar(10) NOT NULL,
 						`pers_id` varchar(10) NOT NULL,
 						`resp_legal` varchar(1) NOT NULL,
-						`pers_contact` varchar(1) NOT NULL
+						`pers_contact` varchar(1) NOT NULL,
+						niveau_responsabilite VARCHAR(10) NOT NULL default '',
+						code_parente VARCHAR(10) NOT NULL default ''
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -643,6 +645,7 @@
 				"PERSONNE_ID",
 				"RESP_LEGAL",
 				"CODE_PARENTE",
+				"NIVEAU_RESPONSABILITE",
 				"RESP_FINANCIER",
 				"PERS_PAIMENT",
 				"PERS_CONTACT"
@@ -676,67 +679,173 @@
 				$nb_err=0;
 				$stat=0;
 				$i=0;
-				while($i<count($responsables)){
-					// VERIFICATION: Il arrive que Sconet contienne des anomalies
-					$sql="SELECT 1=1 FROM responsables2 WHERE ";
-					$sql.="ele_id='".$responsables[$i]["eleve_id"]."' AND ";
-					$sql.="resp_legal='".$responsables[$i]["resp_legal"]."' AND ";
-					$sql.="(resp_legal='1' OR resp_legal='2');";
-					affiche_debug("$sql<br />\n");
-					$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_test)==0){
-						//$sql="INSERT INTO temp_responsables2_import SET ";
-						$sql="INSERT INTO responsables2 SET ";
-						$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
-						$sql.="pers_id='".$responsables[$i]["personne_id"]."', ";
-						$sql.="resp_legal='".$responsables[$i]["resp_legal"]."', ";
-						$sql.="pers_contact='".$responsables[$i]["pers_contact"]."';";
-						affiche_debug("$sql<br />\n");
-						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(!$res_insert){
-							echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
-							flush();
-							$nb_err++;
+				while($i<count($responsables)) {
+					if((isset($responsables[$i]["resp_legal"]))||
+					((isset($responsables[$i]["niveau_responsabilite"]))&&(isset($responsables[$i]["code_parente"])))) {
+
+						// VERIFICATION: Il arrive que Sconet contienne des anomalies
+
+						if(isset($responsables[$i]["resp_legal"])) {
+							$sql="SELECT 1=1 FROM responsables2 WHERE ";
+							$sql.="ele_id='".$responsables[$i]["eleve_id"]."' ";
+							$sql.="AND resp_legal='".$responsables[$i]["resp_legal"]."' AND ";
+							$sql.="(resp_legal='1' OR resp_legal='2') ";
+							$sql.=";";
+							affiche_debug("$sql<br />\n");
+							$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_test)==0){
+								//$sql="INSERT INTO temp_responsables2_import SET ";
+								$sql="INSERT INTO responsables2 SET ";
+								$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+								$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+								if(isset($responsables[$i]["resp_legal"])) {
+									$sql.=", resp_legal='".$responsables[$i]["resp_legal"]."'";
+								}
+								if(isset($responsables[$i]["niveau_responsabilite"])) {
+									$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+								}
+								if(isset($responsables[$i]["pers_contact"])) {
+									$sql.=", pers_contact='".$responsables[$i]["pers_contact"]."'";
+								}
+								$sql.=";";
+								affiche_debug("$sql<br />\n");
+								$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$res_insert){
+									echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+									flush();
+									$nb_err++;
+								}
+								else{
+									$stat++;
+								}
+							}
+							else {
+								$sql="SELECT nom, prenom FROM eleves WHERE ele_id='".$responsables[$i]["eleve_id"]."';";
+								affiche_debug("$sql<br />\n");
+								$res_ele_anomalie=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_ele_anomalie)>0){
+									$lig_ele_anomalie=mysqli_fetch_object($res_ele_anomalie);
+									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->prenom." ".$lig_ele_anomalie->nom."<br />Seule la première responsabilité a été enregistrée.<br />Vous devriez faire le ménage dans Sconet et faire une mise à jour par la suite.</p>\n";
+
+									$nb_err++;
+								}
+								else {
+
+									$sql="SELECT ELENOM, ELEPRE, DIVCOD FROM temp_gep_import2 WHERE ELE_ID='".$responsables[$i]["eleve_id"]."';";
+									affiche_debug("$sql<br />\n");
+									$res_ele_anomalie=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_ele_anomalie)>0){
+										// Si l'élève associé n'est ni dans 'eleves', ni dans 'temp_gep_import2', on ne s'en occupe pas.
+
+										$sql="SELECT civilite,nom,prenom FROM temp_resp_pers_import WHERE pers_id='".$responsables[$i]["personne_id"]."';";
+										$res_resp_anomalie=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_resp_anomalie)>0){
+											$lig_resp_anomalie=mysqli_fetch_object($res_resp_anomalie);
+
+											echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>).<br />L'un d'eux est: ".$lig_resp_anomalie->civilite." ".$lig_resp_anomalie->nom." ".$lig_resp_anomalie->prenom."</p>\n";
+										}
+										else {
+											echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>)<br />L'élève n'a semble-t-il pas été ajouté à la table 'eleves'.<br />Par ailleurs, la personne responsable semble inexistante, mais l'association avec l'identifiant de responsable n°".$responsables[$i]["personne_id"]." existe dans le XML fourni???<br />L'anomalie n'est pas grave pour Gepi; par contre il serait bon de corriger dans Sconet.</p>\n";
+										}
+
+										$nb_err++;
+									}
+								}
+								//$nb_err++;
+							}
 						}
-						else{
-							$stat++;
+						elseif(isset($responsables[$i]["niveau_responsabilite"])) {
+							// Si c'est un responsable légal $responsables[$i]["niveau_responsabilite"]==1
+							// on vérifie si le resp_legal 1 ou 2 existe déjà dans la base et on met resp_legal=1, 2 ou 0 selon les cas
+							if($responsables[$i]["niveau_responsabilite"]==1) {
+								//$tmp_resp_legal=array();
+								$tmp_resp_legal_1_deja=false;
+								$tmp_resp_legal_2_deja=false;
+								// Relever les champs resp_legal déjà attribués
+								$sql="SELECT DISTINCT resp_legal FROM responsables2 WHERE ";
+								$sql.="ele_id='".$responsables[$i]["eleve_id"]."';";
+								$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_test)>0) {
+									while($lig_resp_legal=mysqli_fetch_object($tmp_resp_legal)) {
+										//$tmp_resp_legal[]=$lig_resp_legal->resp_legal;
+										if($lig_resp_legal->resp_legal==1) {
+											$tmp_resp_legal_1_deja=true;
+										}
+										if($lig_resp_legal->resp_legal==2) {
+											$tmp_resp_legal_2_deja=true;
+										}
+									}
+								}
+
+								$tmp_resp_legal=0;
+								if(!$tmp_resp_legal_1_deja) {
+									$tmp_resp_legal=1;
+								}
+								elseif(!$tmp_resp_legal_2_deja) {
+									$tmp_resp_legal=2;
+								}
+
+								// Faut-il tester s'il y a plusieurs enregistrements pour le même couple élève/responsable?
+
+								$sql="INSERT INTO responsables2 SET ";
+								$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+								$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+								$sql.=", resp_legal='".$responsables[$i]["resp_legal"]."'";
+								$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+								$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
+								$sql.=";";
+								affiche_debug("$sql<br />\n");
+								$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$res_insert){
+									echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+									flush();
+									$nb_err++;
+								}
+								else{
+									$stat++;
+								}
+
+							}
+							/*
+							elseif($responsables[$i]["niveau_responsabilite"]==2) {
+								// EN CHARGE?
+								// Quel rôle? resp_legal=0 mais pas CONTACT
+							}
+							elseif($responsables[$i]["niveau_responsabilite"]==3) {
+								// On ajoute les responsables CONTACT
+							}
+							*/
+							else {
+								$tmp_resp_legal=0;
+
+								$tmp_pers_contact=0;
+								if($responsables[$i]["niveau_responsabilite"]==3) {
+									$tmp_pers_contact=1;
+								}
+
+								$sql="INSERT INTO responsables2 SET ";
+								$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+								$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+								$sql.=", resp_legal='".$tmp_resp_legal."'";
+								$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+								$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
+								$sql.=";";
+								affiche_debug("$sql<br />\n");
+								$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$res_insert){
+									echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+									flush();
+									$nb_err++;
+								}
+								else{
+									$stat++;
+								}
+							}
 						}
 					}
 					else {
-						$sql="SELECT nom, prenom FROM eleves WHERE ele_id='".$responsables[$i]["eleve_id"]."';";
-						affiche_debug("$sql<br />\n");
-						$res_ele_anomalie=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res_ele_anomalie)>0){
-							$lig_ele_anomalie=mysqli_fetch_object($res_ele_anomalie);
-							echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->prenom." ".$lig_ele_anomalie->nom."<br />Seule la première responsabilité a été enregistrée.<br />Vous devriez faire le ménage dans Sconet et faire une mise à jour par la suite.</p>\n";
-
-							$nb_err++;
-						}
-						else {
-
-							$sql="SELECT ELENOM, ELEPRE, DIVCOD FROM temp_gep_import2 WHERE ELE_ID='".$responsables[$i]["eleve_id"]."';";
-							affiche_debug("$sql<br />\n");
-							$res_ele_anomalie=mysqli_query($GLOBALS["mysqli"], $sql);
-							if(mysqli_num_rows($res_ele_anomalie)>0){
-								// Si l'élève associé n'est ni dans 'eleves', ni dans 'temp_gep_import2', on ne s'en occupe pas.
-
-								$sql="SELECT civilite,nom,prenom FROM temp_resp_pers_import WHERE pers_id='".$responsables[$i]["personne_id"]."';";
-								$res_resp_anomalie=mysqli_query($GLOBALS["mysqli"], $sql);
-								if(mysqli_num_rows($res_resp_anomalie)>0){
-									$lig_resp_anomalie=mysqli_fetch_object($res_resp_anomalie);
-
-									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>).<br />L'un d'eux est: ".$lig_resp_anomalie->civilite." ".$lig_resp_anomalie->nom." ".$lig_resp_anomalie->prenom."</p>\n";
-								}
-								else {
-									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>)<br />L'élève n'a semble-t-il pas été ajouté à la table 'eleves'.<br />Par ailleurs, la personne responsable semble inexistante, mais l'association avec l'identifiant de responsable n°".$responsables[$i]["personne_id"]." existe dans le XML fourni???<br />L'anomalie n'est pas grave pour Gepi; par contre il serait bon de corriger dans Sconet.</p>\n";
-								}
-
-								$nb_err++;
-							}
-						}
-						//$nb_err++;
+						echo "<p><b style='color:red;'>Anomalie sconet:</b> Ni le champ 'resp_legal', ni le champ 'niveau_responsabilite' ne sont renseigné pour le responsable n°".$responsables[$i]["pers_id"]." sur l'élève n°".$responsables[$i]["eleve_id"]."</p>";
 					}
-
 					$i++;
 				}
 

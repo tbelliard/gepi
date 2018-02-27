@@ -505,5 +505,53 @@ $temoin_strftime_V_vide=test_strftime_V();
 
 // Test sur l'encodage de 'Décembre'
 $strftime_utf8=mb_check_encoding(strftime('%B',mktime(12, 0, 0, 12, 1, 2000)),'utf-8');
+//===================================
+$tab_code_parente=array();
 
+$tab_code_parente[10]["titre"]="MERE";
+$tab_code_parente[10]["libelle"]="Mère";
+
+$tab_code_parente[20]["titre"]="PERE";
+$tab_code_parente[20]["libelle"]="Père";
+
+$tab_code_parente[50]["titre"]="TUTEUR";
+$tab_code_parente[50]["libelle"]="Tuteur";
+
+$tab_code_parente[39]["titre"]="AUTRE MEMBRE";
+$tab_code_parente[39]["libelle"]="Autre membre";
+
+$tab_code_parente[90]["titre"]="AUTRE CAS";
+$tab_code_parente[90]["libelle"]="Autre cas";
+
+$tab_code_parente[51]["titre"]="ASE";
+$tab_code_parente[51]["libelle"]="ASE";
+
+$tab_code_parente[70]["titre"]="ELEVE LUI-MEME";
+$tab_code_parente[70]["libelle"]="Élève lui-même";
+
+$tab_code_parente[37]["titre"]="FRATRIE";
+$tab_code_parente[37]["libelle"]="Fratrie";
+
+$tab_code_parente[38]["titre"]="ASCENDANT";
+$tab_code_parente[38]["libelle"]="Ascendant";
+
+$tab_code_parente[41]["titre"]="EDUCATEUR";
+$tab_code_parente[41]["libelle"]="Éducateur";
+
+$tab_code_parente[42]["titre"]="ASSISTANT FAMILIAL";
+$tab_code_parente[42]["libelle"]="Assistant familial";
+
+$tab_niveau_responsabilite=array();
+$tab_niveau_responsabilite[1]['libelle_court']='LEGAL';
+$tab_niveau_responsabilite[1]['libelle_long']='REPRESENTANT LEGAL';
+$tab_niveau_responsabilite[1]['libelle_edition']='Représentant légal';
+
+$tab_niveau_responsabilite[2]['libelle_court']='EN CHARGE';
+$tab_niveau_responsabilite[2]['libelle_long']="PERSONNE EN CHARGE DE L'ELEVE";
+$tab_niveau_responsabilite[2]['libelle_edition']="Personne en charge de l'élève";
+
+$tab_niveau_responsabilite[3]['libelle_court']='CONTACT';
+$tab_niveau_responsabilite[3]['libelle_long']='PERSONNE A CONTACTER';
+$tab_niveau_responsabilite[3]['libelle_edition']='Personne à contacter';
+//===================================
 ?>
