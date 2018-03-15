@@ -2600,7 +2600,7 @@ function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranche
 	return $retour;
 }
 
-function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=array(), $nom_champ='login_user', $nom_func_js_tout_cocher_decocher='cocher_decocher', $avec_titre_statut="y", $sql="", $nom_func_js_checkbox_change="checkbox_change") {
+function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=array(), $nom_champ='login_user', $nom_func_js_tout_cocher_decocher='cocher_decocher', $avec_titre_statut="y", $sql="", $nom_func_js_checkbox_change="checkbox_change", $avec_changement='n') {
 	$retour="";
 
 	if($sql=="") {
@@ -2640,7 +2640,11 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 			}
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
-			$retour.="onchange=\"".$nom_func_js_checkbox_change."('".$nom_champ."_$cpt')\" ";
+			$retour.="onchange=\"";
+			if($avec_changement=='y') {
+				$retour.="changement();";
+			}
+			$retour.=$nom_func_js_checkbox_change."('".$nom_champ."_$cpt')\" ";
 			if(in_array_i($lig->login, $tab_user_preselectionnes)) {
 				$retour.="checked ";
 				$temp_style=" style='font-weight: bold;'";
@@ -2671,7 +2675,7 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	return $retour;
 }
 
-function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_champ='matiere', $nom_func_js_tout_cocher_decocher='cocher_decocher', $matieres_enseignees="y", $order_by="") {
+function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_champ='matiere', $nom_func_js_tout_cocher_decocher='cocher_decocher', $matieres_enseignees="y", $order_by="", $avec_changement='n') {
 
 	$retour="";
 
@@ -2704,7 +2708,11 @@ function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_ch
 			}
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->matiere' ";
-			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			$retour.="onchange=\"";
+			if($avec_changement=='y') {
+				$retour.="changement();";
+			}
+			$retour.="checkbox_change('".$nom_champ."_$cpt')\" ";
 			if(in_array($lig->matiere, $tab_matieres_preselectionnees)) {
 				$retour.="checked ";
 				$temp_style=" style='font-weight: bold;'";
@@ -6605,7 +6613,7 @@ function get_liste_classes_eleve($login_ele) {
 }
 
 
-function liste_checkbox_classes($tab_classes_preselectionnees=array(), $nom_champ='id_classe', $nom_func_js_tout_cocher_decocher='cocher_decocher', $sql="", $nom_func_js_checkbox_change="checkbox_change") {
+function liste_checkbox_classes($tab_classes_preselectionnees=array(), $nom_champ='id_classe', $nom_func_js_tout_cocher_decocher='cocher_decocher', $sql="", $nom_func_js_checkbox_change="checkbox_change", $avec_changement='n') {
 	$retour="";
 
 	if($sql=="") {
@@ -6630,7 +6638,11 @@ function liste_checkbox_classes($tab_classes_preselectionnees=array(), $nom_cham
 			}
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->id' ";
-			$retour.="onchange=\"".$nom_func_js_checkbox_change."('".$nom_champ."_$cpt')\" ";
+			$retour.="onchange=\"";
+			if($avec_changement=='y') {
+				$retour.="changement();";
+			}
+			$retour.=$nom_func_js_checkbox_change."('".$nom_champ."_$cpt')\" ";
 			if(in_array($lig->id, $tab_classes_preselectionnees)) {
 				$retour.="checked ";
 				$temp_style=" style='font-weight: bold;'";
