@@ -1097,7 +1097,8 @@ if(($mode=="groupe")||($mode=="classe")) {
 		 | 
 		<input type='text' name='display_date' id='display_date' size='10' value='$display_date' 
 					onkeydown='clavier_date_plus_moins(this.id,event);' />".img_calendrier_js("display_date", "img_bouton_display_date")."
-		<input type='submit' value='Changer de date' />";
+		<input type='submit' id='submit_chg_date' value='Changer de date' />
+		<input type='button' id='button_chg_date' style='display:none' value='Changer de date' onclick=\"confirm_changement_date(change, '$themessage');\" />";
 		if(isset($id_groupe)) {
 			echo "
 		<input type='hidden' name='id_groupe' value='$id_groupe' />";
@@ -1112,6 +1113,31 @@ if(($mode=="groupe")||($mode=="classe")) {
 	</p>
 	<!--/fieldset-->
 </form>
+
+<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	document.getElementById('submit_chg_date').style.display='none';
+	document.getElementById('button_chg_date').style.display='';
+
+	function confirm_changement_date(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.formulaire_choix_date.submit();
+		}
+		else {
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed) {
+				document.formulaire_choix_date.submit();
+			}
+			else{
+				document.getElementById('display_date').value='$display_date';
+			}
+		}
+	}
+</script>
 
 $message_groupe_ou_classe
 
