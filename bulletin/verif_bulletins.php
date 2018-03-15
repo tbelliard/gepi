@@ -641,9 +641,11 @@ Les saisies/modifications sont possibles.";
 
 			if(isset($tab_verrouillage_periodes[$lig_class_tmp->id][$per])) {
 				$style_option_courante=" style='color:".$couleur_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]]."' title=\"Période ".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]]."\"";
+				$complement_option_courante=" (".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]].")";
 			}
 			else {
 				$style_option_courante="";
+				$complement_option_courante="";
 			}
 
 			$info_conseil_classe="";
@@ -652,7 +654,7 @@ Les saisies/modifications sont possibles.";
 			}
 
 			if($lig_class_tmp->id==$id_classe) {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe.$complement_option_courante."</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
 					$tab_id_classe[]=$lig_class_tmp->id;
@@ -662,7 +664,7 @@ Les saisies/modifications sont possibles.";
 						$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date'],"n","court").")";
 					}
 
-					$chaine_options_classes.="<option value='$lig_class_tmp->id'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe.$complement_option_courante."</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 					$nom_classe_suiv=$lig_class_tmp->classe;
 				}
@@ -671,7 +673,7 @@ Les saisies/modifications sont possibles.";
 				}
 			}
 			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe.$complement_option_courante."</option>\n";
 			}
 
 			if($temoin_tmp==0) {
@@ -752,9 +754,11 @@ Les saisies/modifications sont possibles.";
 
 			if(isset($tab_verrouillage_periodes[$current_id_classe][$per])) {
 				$style_option_courante=" style='color:".$couleur_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]]."' title=\"Période ".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]]."\"";
+				$complement_option_courante=" (".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]].")";
 			}
 			else {
 				$style_option_courante="";
+				$complement_option_courante="";
 			}
 
 			$chaine_changement_classe_date_conseil.="
@@ -764,7 +768,7 @@ Les saisies/modifications sont possibles.";
 				$classe_courante_trouvee++;
 			}
 			$info_date_courante=formate_date($tab_date_conseil[$current_id_classe]['date'], "n", "court");
-			$chaine_changement_classe_date_conseil.=">".$tab_date_conseil[$current_id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".$info_date_courante.")</option>";
+			$chaine_changement_classe_date_conseil.=">".$tab_date_conseil[$current_id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".$info_date_courante.")".$complement_option_courante."</option>";
 
 			if($classe_courante_trouvee==0) {
 				$id_class_prec=$current_id_classe;
