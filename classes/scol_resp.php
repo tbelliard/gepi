@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -170,6 +170,7 @@ else{
 <p>Affectez les classes aux comptes scolarité.</p>
 <!--p><a href="scol_resp.php?disp_filter=all">Afficher toutes les classes</a> || <a href="scol_resp.php?disp_filter=only_undefined">Afficher les classes non-paramétrées</a></p-->
 <?php
+	$acces_utilisateur_modify=acces("/utilisateurs/modify_user.php", $_SESSION['statut']);
 
 	//echo "<table border='1'>\n";
 	echo "<table class='boireaus'>\n";
@@ -183,7 +184,12 @@ else{
 	$scol_login=array();
 	while($lig_scol=mysqli_fetch_object($call_scol)){
 		//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>$lig_scol->prenom $lig_scol->nom</td>\n";
-		$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>$lig_scol->prenom $lig_scol->nom</th>\n";
+		if($acces_utilisateur_modify) {
+			$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'><a href='../utilisateurs/modify_user.php?user_login=".$lig_scol->login."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Accéder à la fiche utilisateur.\">$lig_scol->prenom $lig_scol->nom</a></th>\n";
+		}
+		else {
+			$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>$lig_scol->prenom $lig_scol->nom</th>\n";
+		}
 		$scol_login[$i]=$lig_scol->login;
 		$i++;
 	}
