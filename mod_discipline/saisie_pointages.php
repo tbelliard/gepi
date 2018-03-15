@@ -778,6 +778,48 @@ Message automatique Gepi.";
 
 }
 
+// =================================
+$chaine_options_classes="";
+if(isset($id_classe)) {
+	$sql="SELECT DISTINCT c.id, c.classe FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe";
+	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_class_tmp)>0) {
+		$id_class_prec=0;
+		$id_class_suiv=0;
+		$temoin_tmp=0;
+
+		$cpt_classe=0;
+		$num_classe=-1;
+
+		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
+			if($lig_class_tmp->id==$id_classe){
+				// Index de la classe dans les <option>
+				$num_classe=$cpt_classe;
+
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+				$temoin_tmp=1;
+				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+					$id_class_suiv=$lig_class_tmp->id;
+				}
+				else{
+					$id_class_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+			}
+
+			if($temoin_tmp==0){
+				$id_class_prec=$lig_class_tmp->id;
+			}
+
+			$cpt_classe++;
+		}
+	}
+}
+// =================================
+
 $active_module_trombinoscopes=getSettingAOui('active_module_trombinoscopes');
 
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
@@ -1093,6 +1135,11 @@ if(($mode=="groupe")||($mode=="classe")) {
 	<p class='bold' style='margin-bottom:1em;'>
 		<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 		 | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre classe</a>
+
+		".(($chaine_options_classes!='') ? " <select name='select_id_classe' id='select_id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">
+		$chaine_options_classes
+		</select>" : "")."
+
 		$ajout_lien
 		 | 
 		<input type='text' name='display_date' id='display_date' size='10' value='$display_date' 
@@ -1105,7 +1152,7 @@ if(($mode=="groupe")||($mode=="classe")) {
 		}
 		if(isset($id_classe)) {
 			echo "
-		<input type='hidden' name='id_classe' value='$id_classe' />";
+		<input type='hidden' name='id_classe' id='id_classe' value='$id_classe' />";
 		}
 		echo "
 		<input type='hidden' name='id_creneau' value='$id_creneau' />
@@ -1137,6 +1184,27 @@ if(($mode=="groupe")||($mode=="classe")) {
 			}
 		}
 	}
+
+".(($chaine_options_classes!="") ? "
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+				document.getElementById('id_classe').value=document.getElementById('select_id_classe').options[document.getElementById('select_id_classe').selectedIndex].value;
+			document.formulaire_choix_date.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.getElementById('id_classe').value=document.getElementById('select_id_classe').options[document.getElementById('select_id_classe').selectedIndex].value;
+				document.formulaire_choix_date.submit();
+			}
+			else{
+				document.getElementById('select_id_classe').selectedIndex=$num_classe;
+			}
+		}
+	}" : "")."
+
 </script>
 
 $message_groupe_ou_classe
