@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2015 Stephane Boireau
+ * Copyright 2018 Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -856,7 +856,7 @@ if(($mode=="groupe")||($mode=="classe")) {
 			$tab_ele=get_group($id_groupe);
 			if(count($tab_ele)==0) {
 				echo "<p class='bold' style='margin-bottom:1em;'>
-	<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Choisir une autre classe</a>
+	<a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link' />Choisir une autre classe</a>
 	$ajout_lien
 </p>
 
@@ -872,7 +872,7 @@ if(($mode=="groupe")||($mode=="classe")) {
 			$tab_ele=get_tab_eleves_classe($id_classe);
 			if(count($tab_ele)==0) {
 				echo "<p class='bold' style='margin-bottom:1em;'>
-	<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Choisir une autre classe</a>
+	<a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Choisir une autre classe</a>
 	$ajout_lien
 </p>
 
@@ -1091,13 +1091,14 @@ if(($mode=="groupe")||($mode=="classe")) {
 <form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_choix_date\">
 	<!--fieldset class='fieldset_opacite50' style='margin-bottom:1em;'-->
 	<p class='bold' style='margin-bottom:1em;'>
-		<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
-		 | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>
+		<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+		 | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre classe</a>
 		$ajout_lien
 		 | 
 		<input type='text' name='display_date' id='display_date' size='10' value='$display_date' 
 					onkeydown='clavier_date_plus_moins(this.id,event);' />".img_calendrier_js("display_date", "img_bouton_display_date")."
-		<input type='submit' value='Changer de date' />";
+		<input type='submit' id='submit_chg_date' value='Changer de date' />
+		<input type='button' id='button_chg_date' style='display:none' value='Changer de date' onclick=\"confirm_changement_date(change, '$themessage');\" />";
 		if(isset($id_groupe)) {
 			echo "
 		<input type='hidden' name='id_groupe' value='$id_groupe' />";
@@ -1112,6 +1113,31 @@ if(($mode=="groupe")||($mode=="classe")) {
 	</p>
 	<!--/fieldset-->
 </form>
+
+<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	document.getElementById('submit_chg_date').style.display='none';
+	document.getElementById('button_chg_date').style.display='';
+
+	function confirm_changement_date(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.formulaire_choix_date.submit();
+		}
+		else {
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed) {
+				document.formulaire_choix_date.submit();
+			}
+			else{
+				document.getElementById('display_date').value='$display_date';
+			}
+		}
+	}
+</script>
 
 $message_groupe_ou_classe
 
