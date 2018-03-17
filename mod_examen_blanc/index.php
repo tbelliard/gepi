@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -2075,6 +2075,61 @@ function checkbox_change(cpt) {
 
 			echo "<p class='bold'>Choix des matières pour l'examen $id_exam&nbsp;:</p>\n";
 
+			// Liste des matières déjà associées à l'examen
+			$tab_matiere=array();
+			$sql="SELECT DISTINCT matiere FROM ex_matieres WHERE id_exam='$id_exam';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$tab_matiere[]=$lig->matiere;
+				}
+			}
+
+			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>
+			<fieldset class='fieldset_opacite50'>\n";
+			echo add_token_field();
+
+			$matiere_deja=array();
+			$nb_matiere=0;
+			$sql="SELECT DISTINCT m.* FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY matiere, nom_complet";
+			$matieres_list = mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb=mysqli_num_rows($matieres_list);
+			if($nb>0) {
+				$nb_matier_par_colonne=round($nb/4);
+
+				// Choix des matières
+				echo "<p style='margin-top:1em;'>Liste des matières avec enseignement(s) associé(s)&nbsp;:</p>\n";
+				echo "<table width='100%' summary='Choix des matières'>\n";
+				echo "<tr valign='top' align='center'>\n";
+
+				$i=0;
+				echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+				echo "<td align='left'>\n";
+	
+				while($lig=mysqli_fetch_object($matieres_list)) {
+					$matiere=$lig->matiere;
+
+					if(($i>0)&&(round($i/$nb_matier_par_colonne)==$i/$nb_matier_par_colonne)){
+						echo "</td>\n";
+						echo "<td align='left'>\n";
+					}
+	
+					echo "<input type='checkbox' name='matiere[]' id='matiere_".$nb_matiere."' value='$matiere' ";
+
+					echo "onchange=\"checkbox_change($nb_matiere);changement();\" ";
+
+					if(in_array($matiere,$tab_matiere)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+
+					echo "/><label for='matiere_".$nb_matiere."'><span id='texte_matiere_$nb_matiere'$temp_style>Matière : ".$matiere."</span></label><br />\n";
+					$i++;
+					$matiere_deja[]=$matiere;
+					$nb_matiere++;
+				}
+				echo "</td>\n";
+				echo "</tr>\n";
+				echo "</table>\n";
+			}
+
 			$sql="SELECT DISTINCT m.* FROM matieres m ORDER BY matiere, nom_complet";
 			$matieres_list = mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb=mysqli_num_rows($matieres_list);
@@ -2082,19 +2137,9 @@ function checkbox_change(cpt) {
 				echo "<p>Aucune matières ne semble définie.</p>\n";
 			}
 			else {
-				// Liste des matières déjà associées à l'examen
-				$tab_matiere=array();
-				$sql="SELECT DISTINCT matiere FROM ex_matieres WHERE id_exam='$id_exam';";
-				$res=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res)>0) {
-					while($lig=mysqli_fetch_object($res)) {
-						$tab_matiere[]=$lig->matiere;
-					}
-				}
 
 				// Choix des matières
-				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
-				echo add_token_field();
+				echo "<p style='margin-top:1em;'>Liste des matières sans enseignement associé actuellement&nbsp;:</p>\n";
 
 				$nb_matier_par_colonne=round($nb/3);
 				echo "<table width='100%' summary='Choix des matières'>\n";
@@ -2104,39 +2149,41 @@ function checkbox_change(cpt) {
 				echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 				echo "<td align='left'>\n";
 	
-				while($i<$nb) {
-					$matiere=old_mysql_result($matieres_list,$i,'matiere');
-					//$temp="case_".$matiere;
+				while($lig=mysqli_fetch_object($matieres_list)) {
+					$matiere=$lig->matiere;
+					if(!in_array($matiere, $matiere_deja)) {
+
+						if(($i>0)&&(round($i/$nb_matier_par_colonne)==$i/$nb_matier_par_colonne)){
+							echo "</td>\n";
+							echo "<td align='left'>\n";
+						}
 	
-					if(($i>0)&&(round($i/$nb_matier_par_colonne)==$i/$nb_matier_par_colonne)){
-						echo "</td>\n";
-						//echo "<td style='padding: 0 10px 0 10px'>\n";
-						echo "<td align='left'>\n";
+						echo "<input type='checkbox' name='matiere[]' id='matiere_".$nb_matiere."' value='$matiere' ";
+
+						echo "onchange=\"checkbox_change($nb_matiere);changement();\" ";
+
+						if(in_array($matiere,$tab_matiere)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+
+						echo "/><label for='matiere_".$nb_matiere."'><span id='texte_matiere_$nb_matiere'$temp_style>Matière : ".$matiere."</span></label><br />\n";
+						$i++;
+						$matiere_deja[]=$matiere;
+						$nb_matiere++;
 					}
-	
-					//echo "<input type='checkbox' name='matiere[]' id='$temp' value='$matiere' ";
-					echo "<input type='checkbox' name='matiere[]' id='matiere_$i' value='$matiere' ";
-
-					echo "onchange=\"checkbox_change($i);changement();\" ";
-
-					if(in_array($matiere,$tab_matiere)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-
-					echo "/><label for='matiere_$i'><span id='texte_matiere_$i'$temp_style>Matière : ".$matiere."</span></label><br />\n";
-					$i++;
 				}
 				echo "</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
+			}
 
-				//echo "<input type='hidden' name='is_posted' value='2' />\n";
-
+			if($nb_matiere>0) {
 				echo "<input type='hidden' name='id_exam' value='$id_exam' />\n";
 				echo "<input type='hidden' name='mode' value='ajout_matieres' />\n";
-				//echo "<input type='hidden' name='aff' value='groupes' />\n";
 				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
-				echo "</form>\n";
+			}
 
-				echo "<script type='text/javascript'>
+			echo "</fieldset></form>\n";
+
+			echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
 	if(document.getElementById('matiere_'+cpt)) {
 		if(document.getElementById('matiere_'+cpt).checked) {
@@ -2148,8 +2195,6 @@ function checkbox_change(cpt) {
 	}
 }
 </script>\n";
-
-			}
 		}
 		//=============================================================================
 		elseif($aff=='groupes') {

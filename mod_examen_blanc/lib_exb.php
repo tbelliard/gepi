@@ -38,6 +38,11 @@ function bull_exb($tab_ele,$i) {
 
 		$use_cell_ajustee,
 
+		$signer,
+		//$tab_signature,
+		$signature_bull,
+
+
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
 		//= = = == = = == = = == = = == = = == = = == = = == = = == = = == = = ==
@@ -1951,11 +1956,53 @@ function bull_exb($tab_ele,$i) {
 
 			// = = = == = = == = = == = = = bloc du président du conseil de classe = = = == = = ===
 			if( $tab_modele_pdf["active_bloc_chef"][$classe_id] == '1' ) {
+
+				//===================================
+				//$tab_modele_pdf["X_sign_chef"][$classe_id]
+				if((isset($signature_bull[$classe_id]))&&($signature_bull[$classe_id]!="")&&(file_exists($signature_bull[$classe_id]))) {
+					$fich_sign=$signature_bull[$classe_id];
+
+					$X_sign = $tab_modele_pdf["X_sign_chef"][$classe_id];
+					$Y_sign = $Y_sign_chef_init;
+
+					$largeur_dispo=$tab_modele_pdf["longeur_sign_chef"][$classe_id]-10;
+					// On ajuste mieux la hauteur de l'image, quitte à ce que le tampon/signature soit en surimpression (ou plutôt sous-impression) avec le Nom du chef en première ligne du cadre.
+					$hauteur_dispo=$hauteur_sign_chef_init-2;
+
+					$tmp_dim_photo=getimagesize($fich_sign);
+					$ratio_l=$tmp_dim_photo[0]/$largeur_dispo;
+					$ratio_h=$tmp_dim_photo[1]/$hauteur_dispo;
+					if($ratio_l>$ratio_h) {
+						$L_sign = $largeur_dispo;
+						$H_sign = $largeur_dispo*$tmp_dim_photo[1]/$tmp_dim_photo[0];
+					}
+					else {
+						$H_sign = $hauteur_dispo;
+						$L_sign = $hauteur_dispo*$tmp_dim_photo[0]/$tmp_dim_photo[1];
+					}
+
+					/*
+					echo "\$X_sign=$X_sign<br />\n";
+					echo "\$Y_sign=$Y_sign<br />\n";
+					echo "\$L_sign=$L_sign<br />\n";
+					echo "\$H_sign=$H_sign<br />\n";
+					*/
+
+					$X_sign += ($tab_modele_pdf["longeur_sign_chef"][$classe_id]-$L_sign) / 2;
+					$Y_sign += ($hauteur_sign_chef_init-$H_sign) / 2;
+
+					$tmp_dim_photo=getimagesize($fich_sign);
+
+					if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+						//$pdf->Image($fich_sign, $X_sign, $Y_sign, $L_sign, $H_sign);
+						$pdf->Image($fich_sign, round($X_sign), round($Y_sign), round($L_sign), round($H_sign));
+					}
+				}
+				//===================================
+
 				if( $tab_modele_pdf["cadre_sign_chef"][$classe_id] != 0 ) {
-					//$pdf->Rect($tab_modele_pdf["X_sign_chef"][$classe_id], $tab_modele_pdf["Y_sign_chef"][$classe_id], $tab_modele_pdf["longeur_sign_chef"][$classe_id], $tab_modele_pdf["hauteur_sign_chef"][$classe_id], 'D');
 					$pdf->Rect($tab_modele_pdf["X_sign_chef"][$classe_id], $Y_sign_chef_init, $tab_modele_pdf["longeur_sign_chef"][$classe_id], $hauteur_sign_chef_init, 'D');
 				}
-				//$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$tab_modele_pdf["Y_sign_chef"][$classe_id]);
 				$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$Y_sign_chef_init);
 
 				$pdf->SetFont('DejaVu','',10);

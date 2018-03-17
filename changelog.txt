@@ -20,6 +20,9 @@ Discipline:
 Trombinoscopes:
 - Encodage par défaut des photos avec extension de la chaine aléatoire.
 
+Examens blancs:
+- Possibilité d'insérer le fichier signature comme dans les bulletins.
+
 
 Gepi-1.7.2 (06/01/2018)
 ===========================
