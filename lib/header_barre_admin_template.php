@@ -342,6 +342,10 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 
 		$menus .= '      <li><a href="'.$gepiPath.'/saisie/saisie_vocabulaire.php" '.insert_confirm_abandon().'>Lapsus</a></li>'."\n";
 
+		if(getSettingAOui('active_fichiers_signature')) {
+			$menus .= '      <li><a href="'.$gepiPath.'/gestion/gestion_signature.php" '.insert_confirm_abandon().'>Fichiers signature</a></li>'."\n";
+		}
+
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
 		if(getSettingAOui('active_mod_engagements')) {
 			$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
