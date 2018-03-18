@@ -1,5 +1,4 @@
 <?php
-
 /*
 *
 *
@@ -28,9 +27,17 @@ function fich_debug($texte) {
 	fclose($fich);
 }
 
-function redimensionne_image_releve($photo){
+function redimensionne_image_releve($photo, $L_max=0, $H_max=0) {
 	//global $bull_photo_largeur_max, $bull_photo_hauteur_max;
 	global $releve_photo_largeur_max, $releve_photo_hauteur_max;
+
+	if($L_max==0) {
+		$L_max=$releve_photo_largeur_max;
+	}
+
+	if($H_max==0) {
+		$H_max=$releve_photo_hauteur_max;
+	}
 
 	// prendre les informations sur l'image
 	$info_image=getimagesize($photo);
@@ -39,8 +46,10 @@ function redimensionne_image_releve($photo){
 	$hauteur=$info_image[1];
 
 	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$releve_photo_largeur_max;
-	$ratio_h=$hauteur/$releve_photo_hauteur_max;
+	//$ratio_l=$largeur/$releve_photo_largeur_max;
+	//$ratio_h=$hauteur/$releve_photo_hauteur_max;
+	$ratio_l=$largeur/$L_max;
+	$ratio_h=$hauteur/$H_max;
 	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
 	// définit largeur et hauteur pour la nouvelle image
@@ -893,7 +902,12 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			//======================================
 
 			if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
-				echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" /></td>\n";
+				$releve_logo_max_size=getSettingValue('releve_logo_max_size');
+				if((!preg_match("/^[0-9]{1,}$/", $releve_logo_max_size))||($releve_logo_max_size==0)) {
+					$releve_logo_max_size=100;
+				}
+				$valeur=redimensionne_image_releve($nom_fic_logo_c, $releve_logo_max_size, $releve_logo_max_size);
+				echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" width=\"".$valeur[0]."\" height=\"".$valeur[1]."\" border=\"0\" alt=\"Logo\" /></td>\n";
 			}
 			echo "<td style='text-align: center;'>";
 			echo "<p class='bulletin'>";
@@ -1180,7 +1194,13 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			$nom_fic_logo_c = $chemin_logo.$nom_fic_logo;
 			//======================================
 			if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
-				echo "</td>\n<td style=\"text-align: right;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" />";
+				$releve_logo_max_size=getSettingValue('releve_logo_max_size');
+				if((!preg_match("/^[0-9]{1,}$/", $releve_logo_max_size))||($releve_logo_max_size==0)) {
+					$releve_logo_max_size=100;
+				}
+				$valeur=redimensionne_image_releve($nom_fic_logo_c, $releve_logo_max_size, $releve_logo_max_size);
+				echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" width=\"".$valeur[0]."\" height=\"".$valeur[1]."\" border=\"0\" alt=\"Logo\" /></td>\n";
+				//echo "</td>\n<td style=\"text-align: right;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" />";
 			} else {
 				echo "</td>\n<td>&nbsp;";
 			}

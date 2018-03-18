@@ -11,6 +11,10 @@ Carnets de notes:
   (malgré toutes les réserves sur la représentativité de cette moyenne).
 - Prise en compte de la date d'entrée dans l'établissement pour ne pas proposer 
   la saisie de note si le devoir est antérieur à l'entrée de l'élève.
+- Possibilité de limiter la taille du logo établissement sur le relevé de notes HTML.
+
+Bulletins:
+- Possibilité de limiter la taille du logo établissement sur le bulletin HTML.
 
 Discipline:
 - Possibilité de définir des utilisateurs spécifiques individuels comme destinataires 
@@ -22,6 +26,11 @@ Trombinoscopes:
 
 Examens blancs:
 - Possibilité d'insérer le fichier signature comme dans les bulletins.
+
+Général:
+- Prise en compte des modifications Siècle (30/03/18) pour les NIVEAU_RESPONSABILITE 
+  et CODE_PARENTE des responsables (avec suppression des responsables légaux 1 
+  et 2 dans Siècle).
 
 
 Gepi-1.7.2 (06/01/2018)

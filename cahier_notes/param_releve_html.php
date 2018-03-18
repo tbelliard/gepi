@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -413,10 +413,11 @@ if (isset($_POST['ok'])) {
 	}
 	
 	if(isset($_POST['releve_categ_font_size'])) {
-		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_categ_font_size']))) {
-			$_POST['releve_categ_font_size'] = 10;
+		$releve_categ_font_size=$_POST['releve_categ_font_size'];
+		if (!(preg_match("/^[0-9]{1,}$/", $_POST['releve_categ_font_size']))) {
+			$releve_categ_font_size = 10;
 		}
-		if (!saveSetting("releve_categ_font_size", $_POST['releve_categ_font_size'])) {
+		if (!saveSetting("releve_categ_font_size", $releve_categ_font_size)) {
 			$msg .= "Erreur lors de l'enregistrement de releve_categ_font_size !";
 			$reg_ok = 'no';
 		}
@@ -480,7 +481,20 @@ if (isset($_POST['ok'])) {
 			}
 		}
 	}
-	
+
+	if(isset($_POST['releve_logo_max_size'])) {
+		$releve_logo_max_size=$_POST['releve_logo_max_size'];
+		if((!(preg_match("/^[0-9]{1,}$/", $releve_logo_max_size)))||($releve_logo_max_size==0)) {
+			$msg .= "Valeur de releve_logo_max_size invalide. Valeur par défaut 100 affectée.<br />";
+			$releve_logo_max_size = 100;
+		}
+
+		if (!saveSetting("releve_logo_max_size", $releve_logo_max_size)) {
+			$msg .= "Erreur lors de l'enregistrement de releve_logo_max_size !";
+			$reg_ok = 'no';
+		}
+	}
+
 	if (isset($_POST['releve_affich_nom_etab'])) {
 		if($_POST['releve_affich_nom_etab']=="n") {
 			$releve_affich_nom_etab="n";
@@ -780,6 +794,26 @@ echo add_token_field();
 			echo "<option value='$tabcouleur[$i]'$selected>$tabcouleur[$i]</option>\n";
 		}
 		echo "</select>\n";
+        ?>
+	</td>
+    </tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Taille maximale en pixels du logo sur le relevé HTML&nbsp;:
+        </td>
+	<?php
+		$releve_logo_max_size=getSettingValue("releve_logo_max_size");
+		if((preg_match("/^[0-9]{1,}$/", $releve_logo_max_size))&&($releve_logo_max_size>0)) {
+			$releve_logo_max_size=getSettingValue("releve_logo_max_size");
+		}
+		else{
+			$releve_logo_max_size=100;
+		}
+	?>
+        <td>
+	<?php
+		echo "<input type=\"text\" name=\"releve_logo_max_size\" id=\"releve_logo_max_size\" value=\"".$releve_logo_max_size."\" onKeyDown=\"clavier_2(this.id,event,0,500);\"/>";
         ?>
 	</td>
     </tr>
