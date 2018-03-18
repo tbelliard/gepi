@@ -109,7 +109,6 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	//==================================
-	// AJOUT: boireaus
 	if (isset($_POST['p_bulletin_margin'])) {
 	
 		if (!(preg_match ("/^[0-9]{1,}$/", $_POST['p_bulletin_margin'])) || $_POST['p_bulletin_margin'] < 1) {
@@ -134,8 +133,21 @@ if (isset($_POST['is_posted'])) {
 	
 	
 	//==================================
-	
-	
+
+
+	if(isset($_POST['bulletin_logo_max_size'])) {
+		$bulletin_logo_max_size=$_POST['bulletin_logo_max_size'];
+		if((!(preg_match("/^[0-9]{1,}$/", $bulletin_logo_max_size)))||($bulletin_logo_max_size==0)) {
+			$msg .= "Valeur de bulletin_logo_max_size invalide. Valeur par défaut 100 affectée.<br />";
+			$bulletin_logo_max_size = 100;
+		}
+
+		if (!saveSetting("bulletin_logo_max_size", $bulletin_logo_max_size)) {
+			$msg .= "Erreur lors de l'enregistrement de bulletin_logo_max_size !";
+			$reg_ok = 'no';
+		}
+	}
+
 	if (isset($_POST['titlesize'])) {
 	
 		if (!(preg_match ("/^[0-9]{1,}$/", $_POST['titlesize'])) || $_POST['titlesize'] < 1) {
@@ -1237,6 +1249,7 @@ if(getSettingAOui('active_bulletins')) {
 			echo "<option value=\"$tab_styles_avis[$i]\" $selected>$tab_styles_avis[$i]</option>\n";
 		}
 		echo "</select>\n";
+		$nb_ligne++;
         ?>
 	</td>
     </tr>
@@ -1269,6 +1282,26 @@ if(getSettingAOui('active_bulletins')) {
 	</td>
     </tr>
     -->
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Taille maximale en pixels du logo sur le bulletin HTML&nbsp;:
+        </td>
+	<?php
+		$bulletin_logo_max_size=getSettingValue("bulletin_logo_max_size");
+		if((preg_match("/^[0-9]{1,}$/", $bulletin_logo_max_size))&&($bulletin_logo_max_size>0)) {
+			$bulletin_logo_max_size=getSettingValue("bulletin_logo_max_size");
+		}
+		else{
+			$bulletin_logo_max_size=100;
+		}
+	?>
+        <td>
+	<?php
+		echo "<input type=\"text\" name=\"bulletin_logo_max_size\" id=\"bulletin_logo_max_size\" value=\"".$bulletin_logo_max_size."\" onKeyDown=\"clavier_2(this.id,event,0,500);\"/>";
+        ?>
+	</td>
+    </tr>
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">

@@ -66,8 +66,16 @@ function regime($id_reg) {
 	return $regime;
 }
 
-function redimensionne_image_b($photo){
+function redimensionne_image_b($photo, $L_max=0, $H_max=0) {
 	global $bull_photo_largeur_max, $bull_photo_hauteur_max;
+
+	if($L_max==0) {
+		$L_max=$bull_photo_largeur_max;
+	}
+
+	if($H_max==0) {
+		$H_max=$bull_photo_hauteur_max;
+	}
 
 	// prendre les informations sur l'image
 	$info_image=getimagesize($photo);
@@ -76,8 +84,8 @@ function redimensionne_image_b($photo){
 	$hauteur=$info_image[1];
 
 	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$bull_photo_largeur_max;
-	$ratio_h=$hauteur/$bull_photo_hauteur_max;
+	$ratio_l=$largeur/$L_max;
+	$ratio_h=$hauteur/$H_max;
 	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
 	// définit largeur et hauteur pour la nouvelle image
@@ -559,7 +567,12 @@ width:".$largeur1."%;\n";
 			//======================================
 
 			if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
-				echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" /></td>\n";
+				$bulletin_logo_max_size=getSettingValue('bulletin_logo_max_size');
+				if((!preg_match("/^[0-9]{1,}$/", $bulletin_logo_max_size))||($bulletin_logo_max_size==0)) {
+					$bulletin_logo_max_size=100;
+				}
+				$valeur=redimensionne_image_b($nom_fic_logo_c, $bulletin_logo_max_size, $bulletin_logo_max_size);
+				echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" width=\"".$valeur[0]."\" height=\"".$valeur[1]."\" border=\"0\" alt=\"Logo\" /></td>\n";
 			}
 			echo "<td style='text-align: center;'>";
 			echo "<p class='bulletin'>";
