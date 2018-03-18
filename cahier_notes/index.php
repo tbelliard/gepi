@@ -795,6 +795,16 @@ var tab_per_cn=new Array();\n";
 
 	//if(isset($current_group)) { echo "DEBUG 5 : ".$current_group['classlist_string']."<br />";}
 
+	//if((isset($current_group["classes"]["list"]))&&(count($current_group["classes"]["list"])==1)) {
+	if(isset($current_group["classes"]["list"])) {
+		echo "<div style='float:right; width:30em; font-size:x-small;'>";
+		foreach($current_group["classes"]["classes"] as $current_id_classe => $current_classe) {
+			echo "<p class='bold'>".$current_classe['classe']."</p>".affiche_tableau_resp_classe($current_id_classe)."<br />";
+		}
+		echo "</div>";
+	}
+
+
     echo "<h2 class='gepi'>Carnet de notes : ". htmlspecialchars($current_group["description"]) . " (<em>".$nom_periode[$periode_num];
     if(getSettingAOui('cn_affiche_date_fin_periode')) {
         echo " <span title='Fin de période' style='font-size:xx-small'>-&gt; ".formate_date($date_fin_periode[$periode_num])."</span>";

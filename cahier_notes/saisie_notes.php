@@ -907,6 +907,10 @@ echo "|<a href=\"index_cc.php?id_racine=$id_racine\"> ".ucfirst($nom_cc)."</a>";
 echo "</p>\n";
 echo "</form>\n";
 
+if((isset($current_group["classes"]["list"]))&&(count($current_group["classes"]["list"])==1)) {
+	echo "<div style='float:right; width:30em; font-size:x-small;'>".affiche_tableau_resp_classe($current_group["classes"]["list"][0])."</div>";
+}
+
 if(isset($num_devoir)) {
 	echo "<script type='text/javascript' language='JavaScript'>
 	if(document.getElementById('span_chgt_dev')) {document.getElementById('span_chgt_dev').style.display='';}

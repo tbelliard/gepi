@@ -549,6 +549,18 @@ if(isset($periode_cn)) {
 }
 echo "</form>\n";
 
+/*
+if((isset($current_group["classes"]["list"]))&&(count($current_group["classes"]["list"])==1)) {
+	echo "<div style='float:right; width:30em; font-size:x-small;'>".affiche_tableau_resp_classe($current_group["classes"]["list"][0])."</div>";
+}
+*/
+if(isset($current_group["classes"]["list"])) {
+	echo "<div style='float:right; width:30em; font-size:x-small;'>";
+	foreach($current_group["classes"]["classes"] as $current_id_classe => $current_classe) {
+		echo "<p class='bold'>".$current_classe['classe']."</p>".affiche_tableau_resp_classe($current_id_classe)."<br />";
+	}
+	echo "</div>";
+}
 
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des moyennes</h2>\n";
 

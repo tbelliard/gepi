@@ -1111,6 +1111,10 @@ echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute;
 echo "</div>\n";
 //===========================================================
 
+if((isset($current_group["classes"]["list"]))&&(count($current_group["classes"]["list"])==1)) {
+	echo "<div style='float:right; width:30em; font-size:x-small;'>".affiche_tableau_resp_classe($current_group["classes"]["list"][0])."</div>";
+}
+
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 
 if($proposer_liens_enregistrement=="y") {
