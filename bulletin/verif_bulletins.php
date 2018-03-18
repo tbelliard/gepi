@@ -853,6 +853,13 @@ Les saisies/modifications sont possibles.";
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = old_mysql_result($call_classe, "0", "classe");
 
+	//=========================
+	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe);
+	if($chaine_date_conseil_classe!='') {
+		echo "<div style='float:right; width: 8em; margin:0.5em; padding:0.2em;' class='fieldset_opacite50'>".$chaine_date_conseil_classe."</div>";
+	}
+	//=========================
+
 	echo "<p><strong>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</strong><br />
 (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$per]].";'><span id='span_etat_verrouillage_classe'>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</span>";
 	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
