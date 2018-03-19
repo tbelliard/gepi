@@ -813,6 +813,29 @@ if ((isset($_POST['action']) && $_POST['action'] == 'restaurer_sauvegarde') || (
 						$repertoire_temp_photos=$dir_temp."/photos/".$repertoire_photos;
 						$repertoire_photos="../photos/".$repertoire_photos;
 
+						// Si on restaure une des fichiers encodés Gepi version <= 1.7.2
+						// il faut les dés-encoder
+						if (file_exists($repertoire_temp_photos."alea_nom_photo.txt")) {
+							$t_noms_photos=array();
+							$dossier_temp_photos_eleves=$repertoire_temp_photos.'/eleves/';
+							$R_dossier_temp_photos_eleves=opendir($dossier_temp_photos_eleves);
+							while ($photo=readdir($R_dossier_temp_photos_eleves)) {
+								if (is_file($dossier_temp_photos_eleves.$photo) && strtolower(pathinfo($dossier_temp_photos_eleves.$photo,PATHINFO_EXTENSION))=='jpg' && $photo!="index.html") {
+									$t_noms_photos[]=$photo;
+								}
+							}
+							closedir($R_dossier_temp_photos_eleves);
+							foreach($t_noms_photos as $photo) {
+								$nom_photo=pathinfo($dossier_temp_photos_eleves.$photo,PATHINFO_FILENAME);
+								// supprimer l'ancien encodage
+								$nom_photo=substr($nom_photo,5);
+								if($nom_photo!='') {
+									// on en profite pour normaliser l'extension en .jpg
+									rename($dossier_temp_photos_eleves.$photo,$dossier_temp_photos_eleves.$nom_photo.".jpg");
+								}
+							}
+						}
+
 						// copie des fichiers vers /photos
 						$msg_nb_trts=""; // nb de fichiers traités
 						$avertissement=""; // si l'arborescence est incomplète
