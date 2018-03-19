@@ -813,8 +813,8 @@ if ((isset($_POST['action']) && $_POST['action'] == 'restaurer_sauvegarde') || (
 						$repertoire_temp_photos=$dir_temp."/photos/".$repertoire_photos;
 						$repertoire_photos="../photos/".$repertoire_photos;
 
-						// Si on restaure une des fichiers encodés Gepi version <= 1.7.2
-						// il faut les dés-encoder
+						// Si on restaure une sauvegarde contenant des fichiers
+						// encodés Gepi version <= 1.7.2 il faut les dés-encoder
 						if (file_exists($repertoire_temp_photos."alea_nom_photo.txt")) {
 							$t_noms_photos=array();
 							$dossier_temp_photos_eleves=$repertoire_temp_photos.'/eleves/';
