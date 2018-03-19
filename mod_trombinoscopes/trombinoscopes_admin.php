@@ -191,7 +191,7 @@ function verifie_coherence_encodage() {
 	if ($nb_erreurs==0) $bilan='Etat présent : pas d\'incohérence d\'encodage parmi les fichiers photo élève (d\'extension jpg ou JPG).';
 	else 
 		if ($nb_erreurs==$total_fichiers) $bilan='<span class="bold" style="color:red">Attention : l\'encodage des fichiers photo élève est incorrect, il faut les ré-encoder en cliquant sur ce <a href="?re_encoder_noms_photo=oui'.add_token_in_url().'">lien.</a></span>';
-		else $bilan='<span class="bold" style="color:red">Attention : des fichier(s) photo élève (d\'extension jpg ou JPG) sont mal encodés ('.$nb_erreurs.' sur '.$total_fichiers.').</span>';
+		else $bilan='<span class="bold" style="color:red">Attention : un ou des fichiers du dossier photos/eleves (d\'extension jpg ou JPG) ne correspondent à aucun élève ('.$nb_erreurs.' sur '.$total_fichiers.').</span><span class="bold"> Vous pouvez les supprimer en <a href="#purge">purgeant le dossier photo</a>.<span>';
 	
 	return $bilan;
 }
