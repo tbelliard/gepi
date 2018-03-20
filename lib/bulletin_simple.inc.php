@@ -1265,15 +1265,22 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 						(getSettingAOui("abs2_limiter_abs_date_conseil_fin_annee"))) {
 
 						$current_periode_note=$eleve->getPeriodeNote($nb);
-						// A déclarer hors de la boucle eleves
-						//$date_fin_abs=new DateTime(str_replace("/", ".", formate_date($tab_date_dernier_conseil_classe['date_conseil_classe'])));
-						$date_fin_abs=$tab_date_dernier_conseil_classe['date_conseil_classe_DateTime'];
+						if($current_periode_note!=null) {
+							// A déclarer hors de la boucle eleves
+							//$date_fin_abs=new DateTime(str_replace("/", ".", formate_date($tab_date_dernier_conseil_classe['date_conseil_classe'])));
+							$date_fin_abs=$tab_date_dernier_conseil_classe['date_conseil_classe_DateTime'];
 
-						$current_eleve_absences = strval($eleve->getDemiJourneesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
-						//echo "\$current_eleve_absences = strval(\$eleve->getDemiJourneesAbsence(".$current_periode_note->getDateDebut(null)->format("d/m/Y").", ".$date_fin_abs->format("d/m/Y").")->count())=".$current_eleve_absences."<br />\n";
+							$current_eleve_absences = strval($eleve->getDemiJourneesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+							//echo "\$current_eleve_absences = strval(\$eleve->getDemiJourneesAbsence(".$current_periode_note->getDateDebut(null)->format("d/m/Y").", ".$date_fin_abs->format("d/m/Y").")->count())=".$current_eleve_absences."<br />\n";
 					
-						$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
-						$current_eleve_retards = strval($eleve->getRetards($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+							$current_eleve_nj = strval($eleve->getDemiJourneesNonJustifieesAbsence($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+							$current_eleve_retards = strval($eleve->getRetards($current_periode_note->getDateDebut(null), $date_fin_abs)->count());
+						}
+						else {
+							$current_eleve_absences='-';
+							$current_eleve_nj='-';
+							$current_eleve_retards='-';
+						}
 					}
 					else {
 						$current_eleve_absences = strval($eleve->getDemiJourneesAbsenceParPeriode($nb)->count());
