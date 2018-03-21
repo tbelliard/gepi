@@ -191,7 +191,7 @@ function verifie_coherence_encodage() {
 	if ($nb_erreurs==0) $bilan='Etat présent : pas d\'incohérence d\'encodage parmi les fichiers photo élève (d\'extension jpg ou JPG).';
 	else 
 		if ($nb_erreurs==$total_fichiers) $bilan='<span class="bold" style="color:red">Attention : l\'encodage des fichiers photo élève est incorrect, il faut les ré-encoder en cliquant sur ce <a href="?re_encoder_noms_photo=oui'.add_token_in_url().'">lien.</a></span>';
-		else $bilan='<span class="bold" style="color:red">Attention : des fichier(s) photo élève (d\'extension jpg ou JPG) sont mal encodés ('.$nb_erreurs.' sur '.$total_fichiers.').</span>';
+		else $bilan='<span class="bold" style="color:red">Attention : un ou des fichiers du dossier photos/eleves (d\'extension jpg ou JPG) ne correspondent à aucun élève ('.$nb_erreurs.' sur '.$total_fichiers.').</span><span class="bold"> Vous pouvez les supprimer en <a href="#purge">purgeant le dossier photo</a>.<span>';
 	
 	return $bilan;
 }
@@ -812,6 +812,29 @@ if ((isset($_POST['action']) && $_POST['action'] == 'restaurer_sauvegarde') || (
 						if ($repertoire_photos!="") $repertoire_photos.="/";
 						$repertoire_temp_photos=$dir_temp."/photos/".$repertoire_photos;
 						$repertoire_photos="../photos/".$repertoire_photos;
+
+						// Si on restaure une sauvegarde contenant des fichiers
+						// encodés Gepi version <= 1.7.2 il faut les dés-encoder
+						if (file_exists($repertoire_temp_photos."alea_nom_photo.txt")) {
+							$t_noms_photos=array();
+							$dossier_temp_photos_eleves=$repertoire_temp_photos.'/eleves/';
+							$R_dossier_temp_photos_eleves=opendir($dossier_temp_photos_eleves);
+							while ($photo=readdir($R_dossier_temp_photos_eleves)) {
+								if (is_file($dossier_temp_photos_eleves.$photo) && strtolower(pathinfo($dossier_temp_photos_eleves.$photo,PATHINFO_EXTENSION))=='jpg' && $photo!="index.html") {
+									$t_noms_photos[]=$photo;
+								}
+							}
+							closedir($R_dossier_temp_photos_eleves);
+							foreach($t_noms_photos as $photo) {
+								$nom_photo=pathinfo($dossier_temp_photos_eleves.$photo,PATHINFO_FILENAME);
+								// supprimer l'ancien encodage
+								$nom_photo=substr($nom_photo,5);
+								if($nom_photo!='') {
+									// on en profite pour normaliser l'extension en .jpg
+									rename($dossier_temp_photos_eleves.$photo,$dossier_temp_photos_eleves.$nom_photo.".jpg");
+								}
+							}
+						}
 
 						// copie des fichiers vers /photos
 						$msg_nb_trts=""; // nb de fichiers traités
