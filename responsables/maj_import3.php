@@ -6848,7 +6848,7 @@ mysql>
 				$sql="CREATE TABLE IF NOT EXISTS temp_responsables2_import (
 						`ele_id` varchar(10) $chaine_mysql_collate NOT NULL,
 						`pers_id` varchar(10) $chaine_mysql_collate NOT NULL,
-						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL,
+						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL DEFAULT '9',
 						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL
 						) ENGINE=MyISAM;";
 				info_debug($sql);
@@ -6914,9 +6914,14 @@ mysql>
 					$sql="INSERT INTO temp_responsables2_import SET ";
 					//$sql="INSERT INTO responsables2 SET ";
 					$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
-					$sql.="pers_id='".$responsables[$i]["personne_id"]."', ";
-					$sql.="resp_legal='".$responsables[$i]["resp_legal"]."', ";
-					$sql.="pers_contact='".$responsables[$i]["pers_contact"]."';";
+					$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+					if(isset($responsables[$i]["resp_legal"])) {
+						$sql.=", resp_legal='".$responsables[$i]["resp_legal"]."'";
+					}
+					if(isset($responsables[$i]["pers_contact"])) {
+						$sql.=", pers_contact='".$responsables[$i]["pers_contact"]."'";
+					}
+					$sql.=";";
 					affiche_debug("$sql<br />\n");
 					info_debug($sql);
 					$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -7389,6 +7394,19 @@ mysql>
 				}
 
 				echo "<hr />\n";
+			}
+
+			$sql="SELECT 1=1 FROM temp_responsables2_import WHERE resp_legal='9';";
+			$test_resp_legal_9=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test_resp_legal_9)>0) {
+				echo "<p style='color:red; margin-left: 7.5em; text-indent:-7.5em; padding:0.5em; margin-bottom:1em;' class='fieldset_opacite50'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test_resp_legal_9)." responsable(s) n'a(ont) pas de champ RESP_LEGAL dans la XML Responsables.<br />
+				Cela signifie que votre XML est incorrect ou qu'il correspond à une mise à jour de Siècle nécessitant une mise à jour de Gepi.<br />
+				La suite du script risque de ne pas fonctionner.<br />
+				Vous risquez de supprimer tous les responsables dans Gepi.<br />
+				Ne poursuivez-pas&nbsp;!<br />
+				<br />
+				Recherchez une mise à jour sur <a href='http://gepi.mutualibre.org/fr/download' target='_blank'>http://gepi.mutualibre.org/fr/download</a><br />
+				Contactez la liste Gepi (<a href='mailto:gepi-users@lists.sylogix.net'>gepi-users@lists.sylogix.net</a>) si vous y êtes inscrit.</p>";
 			}
 
 			$cpt_suppressions_supposees_souhaitables=0;
