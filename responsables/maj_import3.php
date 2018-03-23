@@ -7416,7 +7416,7 @@ mysql>
 				Ne poursuivez-pas&nbsp;!<br />
 				<br />
 				Recherchez une mise à jour sur <a href='http://gepi.mutualibre.org/fr/download' target='_blank'>http://gepi.mutualibre.org/fr/download</a><br />
-				Contactez la liste Gepi (<a href='mailto:gepi-users@lists.sylogix.net'>gepi-users@lists.sylogix.net</a>) si vous y êtes inscrit.</p>";
+				Contactez la liste Gepi-users si vous y êtes inscrit <em>(ou inscrivez-vous <a href='http://lists.sylogix.net/mailman/listinfo/gepi-users' target='_blank'>http://lists.sylogix.net/mailman/listinfo/gepi-users</a>)</em>.</p>";
 			}
 			*/
 
