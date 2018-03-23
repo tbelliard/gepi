@@ -113,7 +113,7 @@ if ($test_champ==0) {
 // ------------------------------------
 
 $titre="Encodage des noms de fichier des photos élèves";
-$texte="La méthode d'encodage a été modifiée, vérifier qu'il n'y a pas d'incohérence.<br />Voir <a href='./mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a>";
+$texte="La méthode d'encodage a été modifiée, vérifier qu'il n'y a pas d'incohérence.<br />Voir <a href='./mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a><br /><span style='font-weight: bold;'>Attention : </span>désormais il ne faut plus transférer les photos des élèves directement sur le serveur (FTP ou autre), mais passer par \"Télécharger les photos des élèves\" dans le module d'administration du trombinoscope<br />";
 $destinataire="administrateur";
 $mode="statut";
 enregistre_infos_actions($titre,$texte,$destinataire,$mode);
