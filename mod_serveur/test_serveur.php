@@ -311,7 +311,27 @@ Renseigner ici le couple IP_PROXY:PORT_PROXY peut régler le problème.</p>
             echo "<span style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est manquant. Il faut en créer un vide qui doit être accessible en écriture.</span>\n";
         } 
 	echo "</p>\n";
+	echo "<hr />\n";
+	echo "<h4>Potection des dossiers photos: </h4>\n";
+	echo "Les dossiers photos/eleves et photos/personnels doivent contenir chacun un fichier index.html qui en protège l'accès : <br />\n";
+	$dossier_photos='../photos/';
+	$rne="";
+	if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
+			echo 'Multisite : erreur lors de la récupération du dossier photos de l\'établissement.<br/>\n';
+	$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE'].'/':'';
+	$dossier_photos='../photos/'.$rne;
+	$OK=true;
+	if (!is_file($dossier_photos.'eleves/index.html')) {
+		echo "<span style='color:red'>il n'y a pas de fichier index.html dans le dossier photos/eleves</span><br />\n";
+		$OK=false;
+	}
+	if (!is_file($dossier_photos.'personnels/index.html')) {
+		echo "<span style='color:red'>il n'y a pas de fichier index.html dans le dossier photos/personnels</span><br />\n";
+		$OK=false;
+	}
+	if ($OK) echo "le fichier index.html est bien présent dans les dossiers photos/eleves et photos/personnels.\n";
 
+		
 echo '<br /><br /><br />';
 
 /**
