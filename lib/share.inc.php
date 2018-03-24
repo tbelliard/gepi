@@ -4904,13 +4904,14 @@ function path_niveau($niveau=1){
  */
 function des_encode_4_PCLZIP($p_event, &$p_header) {
 	$info = pathinfo($p_header['stored_filename']);
-	if (isset($info['dirname']) && isset($info['extension']) && ($info['extension'] == 'jpg' || $info['extension'] == 'JPG') && substr(strrchr($info['dirname'],DIRECTORY_SEPARATOR), 1 )=='eleves') {
+	if (isset($info['dirname']) && isset($info['extension']) && (strtolower($info['extension'])=='jpg') && substr(strrchr($info['dirname'],DIRECTORY_SEPARATOR), 1 )=='eleves') {
 		$p_header['stored_filename'] = $info['dirname'].'/'.des_encode_nom_photo($info['basename']);
 		return 1;
 		}
-	else {
+	elseif (isset($info['dirname']) && isset($info['extension']) && (strtolower($info['extension'])=='jpg') && substr(strrchr($info['dirname'],DIRECTORY_SEPARATOR), 1 )=='personnels') {
 		return 1;
 		}
+	else return 0;
     }
 
 /**
