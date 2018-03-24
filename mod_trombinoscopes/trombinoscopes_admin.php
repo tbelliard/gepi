@@ -339,8 +339,7 @@ function copie_temp_vers_photos(&$nb_photos,$dossier_a_traiter,$type_a_traiter,$
 		$nb_photos=0;
 		$dossier = opendir($folder);
 		while ($Fichier = readdir($dossier)) {
-			//if ($Fichier != "index.html" && $Fichier != "." && $Fichier != ".." && ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier)))) {
-			if ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier))) {
+			if (strtolower(pathinfo($Fichier,PATHINFO_EXTENSION))=='jpg') {
 				$Fichier_dest=pathinfo($Fichier,PATHINFO_FILENAME);
 				if ($encodage) $Fichier_dest=encode_nom_photo($Fichier_dest);
 				$Fichier_dest.=".jpg";
@@ -820,7 +819,7 @@ if ((isset($_POST['action']) && $_POST['action'] == 'restaurer_sauvegarde') || (
 							$dossier_temp_photos_eleves=$repertoire_temp_photos.'/eleves/';
 							$R_dossier_temp_photos_eleves=opendir($dossier_temp_photos_eleves);
 							while ($photo=readdir($R_dossier_temp_photos_eleves)) {
-								if (is_file($dossier_temp_photos_eleves.$photo) && strtolower(pathinfo($dossier_temp_photos_eleves.$photo,PATHINFO_EXTENSION))=='jpg' && $photo!="index.html") {
+								if (is_file($dossier_temp_photos_eleves.$photo) && strtolower(pathinfo($photo,PATHINFO_EXTENSION))=='jpg') {
 									$t_noms_photos[]=$photo;
 								}
 							}
