@@ -558,11 +558,12 @@ foreach ($results as $notification) {
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
-	
-	
-	echo "<a href='liste_traitements.php?filter_classe=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>";
-	echo ($eleve->getClasse()->getNom());
-	echo "</a>";
+
+	if($eleve->getClasse()!=null) {
+		echo "<a href='liste_traitements.php?filter_classe=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>";
+		echo ($eleve->getClasse()->getNom());
+		echo "</a>";
+	}
 	/*
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
 	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' title=\"Voir dans un nouvel onglet les fiches du dossier de ".$eleve->getNom()." ".$eleve->getPrenom().".\">";
