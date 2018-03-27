@@ -516,9 +516,13 @@ if($mode=='choix_utilisateurs') {
 
 		<p class='bold' style='margin-top:1em;margin-bottom:1em;'>Choisissez les utilisateurs autorisés à utiliser des fichiers de signature.</p>
 
-		".liste_checkbox_utilisateurs(array('administrateur', 'scolarite', 'cpe', 'professeur'), $tab_user_preselectionnes)."
+		".liste_checkbox_utilisateurs(array('administrateur', 'scolarite', 'cpe', 'professeur'), $tab_user_preselectionnes, 'login_user', 'cocher_decocher', "y", "", "checkbox_change", 'y')."
 
 		".add_token_field()."
+
+		<script type='text/javascript'>
+		".js_checkbox_change_style()."
+		</script>
 
 		<input type='hidden' name='mode' value='choix_utilisateurs' />
 		<input type='hidden' name='enregistrer_choix_utilisateurs' value='y' />
