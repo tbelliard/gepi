@@ -2724,21 +2724,36 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 	}
 </script>\n";
 
-		$droit_saisie_avis="y";
+		$droit_saisie_avis="n";
 		// Contrôler si le prof est PP de l'élève
 		if($_SESSION['statut']=='professeur') {
-			$droit_saisie_avis="n";
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$eleve1."' AND id_classe='$id_classe';";
 			$verif_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($verif_pp)>0) {
 				$droit_saisie_avis="y";
 			}
 		}
-		elseif(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiRubConseilCpeTous')!="yes")) {
-			$droit_saisie_avis="n";
-			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$eleve1."';";
-			$verif_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($verif_cpe)>0) {
+		elseif($_SESSION['statut']=='cpe') {
+			if(getSettingAOui('GepiRubConseilCpeTous')) {
+				$droit_saisie_avis="y";
+			}
+			else {
+				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$eleve1."';";
+				$verif_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($verif_cpe)>0) {
+					$droit_saisie_avis="y";
+				}
+			}
+		}
+		elseif(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiRubConseilScol'))) {
+			// Compte scolarité
+			$sql="SELECT 1=1 FROM j_scol_classes jsc,
+								j_eleves_classes jec
+							WHERE jsc.id_classe=jec.id_classe AND 
+								jec.login='$eleve1' AND
+								jsc.login='".$_SESSION['login']."';";
+			$verif_scol=mysqli_query($GLOBALS["mysqli"], $sql);
+			if (mysqli_num_rows($verif_scol)>0) {
 				$droit_saisie_avis="y";
 			}
 		}
