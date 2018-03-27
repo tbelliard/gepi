@@ -150,7 +150,7 @@ if ($barre_plugin!="") {
 			WHERE rp.pers_id=r.pers_id AND
 			r.ele_id=e.ele_id AND
 			rp.login='".$_SESSION['login']."';";
-			$resultat = mysqli_query($mysqli, $sql);  
+			$resultat = mysqli_query($mysqli, $sql);
 			$nb_lignes = $resultat->num_rows;
 			$resultat->close();
 			if($nb_lignes>0) {
@@ -162,9 +162,12 @@ if ($barre_plugin!="") {
 
 		$menus .= $barre_plugin;
 
-		$tbs_menu_responsable[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php"'.insert_confirm_abandon().'>Accueil</a></li>'."\n");		
-		$tbs_menu_responsable[]=array("li"=> $menus);
+		$menus.='<li class="li_inline"><a href="'.$gepiPath.'/utilisateurs/mon_compte.php"'.insert_confirm_abandon().' title="Gérer mon compte.">&nbsp;Mon compte</a></li>'."\n";
 
+		$tbs_menu_responsable[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php"'.insert_confirm_abandon().'>Accueil</a></li>'."\n");		
+
+
+		$tbs_menu_responsable[]=array("li"=> $menus);
 	}
 	//print_r($tbs_menu_responsable);
 ?>

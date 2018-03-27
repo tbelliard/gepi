@@ -138,6 +138,8 @@ if ($barre_plugin!="") {
 
 		$menus .= $barre_plugin;
 
+		$menus.='<li class="li_inline"><a href="'.$gepiPath.'/utilisateurs/mon_compte.php"'.insert_confirm_abandon().' title="Gérer mon compte.">&nbsp;Mon compte</a></li>'."\n";
+
 		$tbs_menu_eleve[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php"'.insert_confirm_abandon().'>Accueil</a></li>'."\n");		
 		$tbs_menu_eleve[]=array("li"=> $menus);
 
