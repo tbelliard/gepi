@@ -312,7 +312,7 @@ Renseigner ici le couple IP_PROXY:PORT_PROXY peut régler le problème.</p>
         } 
 	echo "</p>\n";
 	echo "<hr />\n";
-	echo "<h4>Potection des dossiers photos: </h4>\n";
+	echo "<h4>Protection des dossiers photos: </h4>\n";
 	echo "Les dossiers photos/eleves et photos/personnels doivent contenir chacun un fichier index.html qui en protège l'accès : <br />\n";
 	$dossier_photos='../photos/';
 	$rne="";
