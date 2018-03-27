@@ -3297,7 +3297,7 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 				echo "</a>";
 			}
 			if(($acces_visu_eleve)||(getSettingAOui('active_mod_orientation'))) {
-			echo "<br />";
+				echo "<br />";
 			}
 		}
 
@@ -3317,9 +3317,11 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 
 		if((getSettingAOui('active_mod_orientation'))&&(acces("/mod_orientation/index.php", $_SESSION['statut']))) {
 			//&id_classe=".$id_classe."
-			echo "<a href=\"../mod_orientation/index.php\" target=\"_blank\" title=\"Voir/saisie les voeux d'orientation et l'orientation proposée/conseillée par le conseil de classe.\" onclick=\"afficher_infobulle_orientation();return false;\">";
-			echo "Orientation";
-			echo "</a>";
+			if((isset($eleve1))&&(mef_avec_proposition_orientation('','',$eleve1))) {
+				echo "<a href=\"../mod_orientation/index.php\" target=\"_blank\" title=\"Voir/saisie les voeux d'orientation et l'orientation proposée/conseillée par le conseil de classe.\" onclick=\"afficher_infobulle_orientation();return false;\">";
+				echo "Orientation";
+				echo "</a>";
+			}
 		}
 		echo "</div>";
 	}
