@@ -229,7 +229,7 @@ while($lig_date=mysqli_fetch_object($res)) {
 
 // Selection de la classe
 if (!(isset($id_classe))) {
-	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 	if($_SESSION['statut']=='scolarite') {
 		echo " | <a href='bull_index.php'>Visualisation et impression des bulletins</a>";
