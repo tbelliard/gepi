@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -901,7 +901,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// Pour proposer de passer à la classe suivante ou à la précédente
 		//$sql="SELECT id, classe FROM classes ORDER BY classe";
 		if($_SESSION['statut']=='scolarite') {
-			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+			if(getSettingAOui("GepiAccesReleveScol")) {
+				$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe=c.id ORDER BY classe";
+			}
+			else {
+				$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+			}
 		}
 		elseif($_SESSION['statut']=='professeur') {
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
@@ -919,7 +924,23 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$chaine_options_classes="";
 
 		$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_class_tmp)>0) {
+		if(mysqli_num_rows($res_class_tmp)==1) {
+			$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
+
+			// Afficher la classe courante et un lien de retour au choix des classes
+			if(isset($id_classe)) {
+				// On devrait passer là
+				echo "<strong>".get_nom_classe($id_classe)."</strong>";
+				if($lig_class_tmp->id!=$id_classe) {
+					echo " | <a href='".$_SERVER['PHP_SELF']."?type_graphe=$type_graphe'>Autre classe</a>";
+				}
+			}
+			else {
+				// Ca ne devrait pas se produire.
+				echo " | <a href='".$_SERVER['PHP_SELF']."?type_graphe=$type_graphe'>Choix classe</a>";
+			}
+		}
+		elseif(mysqli_num_rows($res_class_tmp)>1) {
 			$id_class_prec=0;
 			$id_class_suiv=0;
 			$temoin_tmp=0;
@@ -950,7 +971,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
 				echo "&amp;type_graphe=$type_graphe";
 				echo "&amp;mode_graphe=$mode_graphe";
-				echo "'>Classe précédente</a> | ";
+				echo "'><img src='../images/arrow_left.png' class='icone16' title='Classe précédente' /></a> | ";
 			}
 		}
 
@@ -968,8 +989,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
 				echo "&amp;type_graphe=$type_graphe";
 				echo "&amp;mode_graphe=$mode_graphe";
-				echo "'>Classe suivante</a>";
-				}
+				echo "'><img src='../images/arrow_right.png' class='icone16' title='Classe suivante' /></a>";
+			}
 		}
 
 		// 20130319
