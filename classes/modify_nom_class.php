@@ -576,6 +576,9 @@ if (isset($id_classe)) {
 	$ects_domaines_etude = '';
 }
 
+if(isset($id_classe)) {
+	echo "<div style='float:right; width:30em; font-size:x-small;'>".affiche_tableau_resp_classe($id_classe)."</div>";
+}
 ?>
 <form enctype="multipart/form-data" action="modify_nom_class.php" method="post">
 <?php
