@@ -92,6 +92,12 @@ else {
 	}
 }
 //+++++++++++++++++++++++++++++++++++++++++
+if(isset($_POST['LSUN_version_xsd'])) {
+	$LSUN_version_xsd=$_POST['LSUN_version_xsd'];
+	if(!saveSetting('LSUN_version_xsd', $LSUN_version_xsd)) {
+		echo "<p style='color:red'>ERREUR lors de l'enregistrement du choix de format d'export XSD.</p>";
+	}
+}
 
 //debug_var();
 
@@ -2095,7 +2101,36 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 				</ul>
 			</div>
 		</div>
-		
+
+		<?php
+			$LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
+			if($LSUN_version_xsd=='') {
+				//if(strftime('%d/%m/%Y')>'27/04/2018') {
+				$ts=mktime(0, 0, 0, 4, 27, 2018);
+				if(time()>$ts) {
+					$checked_version_20180427=' checked';
+					$checked_version_20171009='';
+				}
+				else {
+					$checked_version_20180427='';
+					$checked_version_20171009=' checked';
+				}
+			}
+			elseif($LSUN_version_xsd=='20171009') {
+					$checked_version_20180427='';
+					$checked_version_20171009=' checked';
+			}
+			else {
+					$checked_version_20180427=' checked';
+					$checked_version_20171009='';
+			}
+			echo "<p><strong>Schéma de l'export&nbsp;:</strong><br />
+			<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20171009' value='20171009' ".$checked_version_20171009."/><label for='LSUN_version_xsd_20171009'>Version octobre 2017</label><br />
+			<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' ".$checked_version_20180427."/><label for='LSUN_version_xsd_20180427'>Version fin avril 2018 (LSU 18.2.0.0)</label>
+			</p>";
+		?>
+
+
 		<p class="lsun_cadre fieldset_opacite50" >
 			<a href="lib/creeXML.php" target="exportLSUN.xml" title="Affiche le fichier dans un nouvel onglet en interceptant les erreurs" >Afficher l'export</a>
 		</p>

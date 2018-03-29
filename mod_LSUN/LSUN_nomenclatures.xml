@@ -6,7 +6,6 @@
 		<parcours code="PAR_ART" libelle="Parcours d'éducation artistique et culturelle" />
 		<parcours code="PAR_SAN" libelle="Parcours éducatif de santé" />
 	</liste-parcours>
-	<!-- Les EPIs ne sont utilisées qu'au cycle 4 (5EME, 4EME et 3EME) -->
 	<thematiques-epis>
 		<thematique-epi code="EPI_SAN" libelle="Corps, santé, bien-être et sécurité" />
 		<thematique-epi code="EPI_ART" libelle="Culture et création artistiques" />
@@ -25,6 +24,7 @@
 		<modalite-accompagnement code="ULIS" libelle="Unité localisée pour l’inclusion scolaire" />
 		<modalite-accompagnement code="UPE2A" libelle="Unité pédagogique pour élèves allophones arrivants" />
 		<modalite-accompagnement code="SEGPA" libelle="Section d’enseignement général adapté" />
+		<modalite-accompagnement code="CTR" libelle="Contrat de réussite"/>
 	</modalites-accompagnement>
 	<domaines-socle>
 		<domaine-socle code="CPD_FRA" libelle="Comprendre, s'exprimer en utilisant la langue française à l'oral et à l'écrit" />
@@ -36,4 +36,23 @@
         <domaine-socle code="SYS_NAT" libelle="Les systèmes naturels et les systèmes techniques" />
         <domaine-socle code="REP_MND" libelle="Les représentations du monde et l'activité humaine" />
 	</domaines-socle>
+	<!-- Les enseignements de compléments ne sont utilisés que dans le bilan de fin de cycle 4 (3EME) -->
+	<enseignements-complement>
+		<enseignement-complement code="AUC" libelle="Aucun" />
+		<enseignement-complement code="LCA" libelle="Langues et cultures de l'Antiquité" />
+        <enseignement-complement code="LCR" libelle="Langue et culture régionale" />
+        <enseignement-complement code="PRO" libelle="Découverte professionnelle" />
+        <enseignement-complement code="LSF" libelle="Langue des signes française" />
+        <enseignement-complement code="LVE" libelle="Langue vivante étrangère" />
+	</enseignements-complement>
+	<!-- Liste des langues régionales possibles pour le niveau A2 -->
+	<langues-culture-regionale>
+		<langue-culture-regionale code="AUC" libelle="Aucun"/>
+		<langue-culture-regionale code="BAQ" libelle="Basque"/>
+		<langue-culture-regionale code="BRE" libelle="Breton"/>
+		<langue-culture-regionale code="CAT" libelle="Catalan"/>
+		<langue-culture-regionale code="COS" libelle="Corse"/>
+		<langue-culture-regionale code="GSW" libelle="Langue régionale d'Alsace"/>
+		<langue-culture-regionale code="OCI" libelle="Occitan langue d'oc"/>
+	</langues-culture-regionale>
 </nomenclatures>

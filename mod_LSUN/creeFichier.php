@@ -39,8 +39,17 @@ $file = $dirTemp.$nomFichier;
 
 $xml->save($file);
 
+$LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
+if($LSUN_version_xsd=='') {
+	$LSUN_version_xsd=20171009;
+}
 
-$schema = "xsd/import-bilan-complet.xsd";
+if($LSUN_version_xsd==20171009) {
+	$schema = "xsd/import-bilan-complet_20171009.xsd";
+}
+else {
+	$schema = "xsd/import-bilan-complet.xsd";
+}
 
 // active la gestion d'erreur personnalisée
 libxml_use_internal_errors(true);

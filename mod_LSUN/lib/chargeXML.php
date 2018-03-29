@@ -68,11 +68,32 @@ $items = $xml->createElementNS('urn:fr:edu:scolarite:lsun:bilans:import','lsun-b
 	
 $xml->appendChild($items);
 
-	$items->setAttributeNS(
-		'http://www.w3.org/2001/XMLSchema-instance', // xmlns namespace URI
-		'xsi:schemaLocation',
-		'urn:fr:edu:scolarite:lsun:bilans:import import-bilan-complet.xsd'
-	);
+	$LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
+	if($LSUN_version_xsd=='') {
+		$LSUN_version_xsd=20171009;
+	}
+
+	if($LSUN_version_xsd==20171009) {
+		/*
+		$items->setAttributeNS(
+			'http://www.w3.org/2001/XMLSchema-instance', // xmlns namespace URI
+			'xsi:schemaLocation',
+			'urn:fr:edu:scolarite:lsun:bilans:import import-bilan-complet_20171009.xsd'
+		);
+		*/
+		$items->setAttributeNS(
+			'http://www.w3.org/2001/XMLSchema-instance', // xmlns namespace URI
+			'xsi:schemaLocation',
+			'urn:fr:edu:scolarite:lsun:bilans:import import-bilan-complet.xsd'
+		);
+	}
+	else {
+		$items->setAttributeNS(
+			'http://www.w3.org/2001/XMLSchema-instance', // xmlns namespace URI
+			'xsi:schemaLocation',
+			'urn:fr:edu:scolarite:lsun:bilans:import import-bilan-complet.xsd'
+		);
+	}
 
 	$items->setAttribute(
 		'schemaVersion',
@@ -856,7 +877,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 		/*----- Bilans périodiques -----*/
 		$bilansPeriodiques = $xml->createElement('bilans-periodiques');
-		
+
 		$tab_id_eleve=array();
 		$tab_eleve_sans_pp=array();
 		$tab_classe_periode_sans_date_conseil=array();
@@ -1509,6 +1530,19 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 								$modaliteAcc->appendChild($complement_ppre);
 							}
 						}
+
+						if($LSUN_version_xsd!=20171009) {
+							// 20180210 : Modalité d'accompagnement CTR Contrat de réussite
+							if(($tab_modalites_accompagnement_eleve[$loop_modalite]["code"]=="CTR")&&
+							($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]!="")) {
+								$tmp_chaine=nettoye_texte_vers_chaine($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]);
+								if(trim($tmp_chaine)!="") {
+									$complement_CTR=$xml->createElement('complement-contrat-reussite' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
+									$modaliteAcc->appendChild($complement_CTR);
+								}
+							}
+						}
+
 						$modalitesAccompagnement->appendChild($modaliteAcc);
 					}
 
@@ -1541,7 +1575,58 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						$noeudBilanElevePeriodique->appendChild($acquisConseils);
 					}
 				}
-			
+
+				// Ajouter un paramètre avec-devoirs-faits
+				if($LSUN_version_xsd!=20171009) {
+					// 20180210: Devoirs faits
+					$tmp_chaine='';
+					// Chercher un AID de type Devoirs faits...
+					// aid_config where type_aid='4'
+					$sql="SELECT aa.appreciation FROM aid_appreciations aa, 
+								aid a, 
+								aid_config ac 
+							WHERE aa.id_aid=a.id AND 
+								aa.indice_aid=a.indice_aid AND 
+								a.indice_aid=ac.indice_aid AND 
+								ac.type_aid='4' AND 
+								aa.periode='".$eleve->periode."' AND 
+								aa.login='".$eleve->login."' AND 
+								aa.appreciation!='' 
+							ORDER BY a.numero, a.nom;";
+					/*
+					if($eleve->login=='delalonq') {
+						echo "$sql<br />";
+					}
+					*/
+					//echo "$sql<br />";
+					$res_df=mysqli_query($mysqli, $sql);
+					/*
+					if(mysqli_num_rows($res_df)==0) {
+						$tmp_chaine='-';
+					}
+					else {
+					*/
+					if(mysqli_num_rows($res_df)>0) {
+						$tmp_chaine='';
+						while($lig_df=mysqli_fetch_object($res_df)) {
+							if($tmp_chaine!='') {
+								if(preg_match("/\.$/", $tmp_chaine)) {
+									$tmp_chaine.=' ';
+								}
+								else {
+									$tmp_chaine.='. ';
+								}
+							}
+							$tmp_chaine.=$lig_df->appreciation;
+						}
+						//echo "tmp_chaine=$tmp_chaine<br />";
+					}
+					if($tmp_chaine!='') {
+						$noeudDevoirsFaits = $xml->createElement('devoirs-faits', ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
+						//echo "PLOP<br />";
+						$noeudBilanElevePeriodique->appendChild($noeudDevoirsFaits);
+					}
+				}
 
 				//$retardEleve = getRetardsEleve($eleve->login , $eleve->periode)->fetch_object();
 				$retardEleve = getAbsencesEleve($eleve->login , $eleve->periode);
@@ -1678,10 +1763,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						$noeudBilanElevePeriodique->appendChild($noeudResponsables);
 					}
 				}
-			
-			
-			
+
 				if ($desAcquis && $exporteEleve) {
+					//echo "PLIP<br />";
 					if(in_array("EL_".$eleve->id_eleve."_".$eleve->periode, $tab_id_eleve)) {
 						$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> (EL_".$eleve->id_eleve."_".$eleve->periode.") est inscrit plusieurs fois en période EL_".$eleve->id_eleve.".<br />Cela correspond probablement à un changement de classe en cours d'année.<br />Il faudrait exporter les différentes classes de l'élève en plusieurs fois&nbsp;: un fichier XML par classe de l'élève.<br /><br />";
 					}
@@ -1989,6 +2073,7 @@ echo "</pre>";
 									}
 									$noeudBilanEleveFinCycle->appendChild($noeudEnseignementComplement);
 								}
+
 							}
 
 							if (getSettingValue("LSU_Donnees_responsables") != "n") {
@@ -2032,6 +2117,47 @@ echo "</pre>";
 
 								if ($responsablesEleve->num_rows) {
 									$noeudBilanEleveFinCycle->appendChild($noeudResponsables);
+								}
+							}
+
+							if($LSUN_version_xsd!=20171009) {
+								if(($tableau_des_cycles_pour_lesquels_generer_bilan[$loop_cycle]==4)&&($niveau_eleve_courant==3)) {
+									// <langue-culture-regionale code="BAS" niveau-atteint="true"/>
+									if(getSettingAOui('langue_vivante_regionale')) {
+										$sql="SELECT DISTINCT jgl.code, sel.positionnement FROM socle_eleves_lvr sel, 
+													j_groupes_lvr jgl, 
+													groupes g 
+												WHERE sel.ine='".$eleve->no_gep."' AND 
+													sel.positionnement>'0' AND 
+													jgl.id_groupe=sel.id_groupe AND 
+													g.id=jgl.id_groupe 
+												ORDER BY sel.positionnement DESC 
+												LIMIT 1;";
+										//echo "$sql<br />";
+										$res_lvr=mysqli_query($mysqli, $sql);
+										if(mysqli_num_rows($res_lvr)>0) {
+											while($lig_lvr=mysqli_fetch_object($res_lvr)) {
+												$noeudLVR=$xml->createElement('langue-culture-regionale');
+
+												/*
+												Entier compris entre 1 et 2
+												1 : Objectif non atteint
+												2 : Objectif atteint
+												*/
+
+												$attributsLVR = array('code'=>$lig_lvr->code , 
+																'positionnement'=>$lig_lvr->positionnement);
+												foreach ($attributsLVR as $cle=>$valeur) {
+													$attsEleveLVR = $xml->createAttribute($cle);
+													$attsEleveLVR->value = $valeur;
+
+													$noeudLVR->appendChild($attsEleveLVR);
+												}
+
+												$noeudBilanEleveFinCycle->appendChild($noeudLVR);
+											}
+										}
+									}
 								}
 							}
 

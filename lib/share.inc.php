@@ -17915,35 +17915,47 @@ function get_tab_types_LVR() {
 		<langue-culture-regionale code="ALS" libelle="Langue régionale d'Alsace"/>
 		<langue-culture-regionale code="MOS" libelle="Langue régionale des pays mosellans"/>
 	</langues-culture-regionale>
+
+	Devenu
+
+	<langues-culture-regionale>
+		<langue-culture-regionale code="AUC" libelle="Aucun"/>
+		<langue-culture-regionale code="BAQ" libelle="Basque"/>
+		<langue-culture-regionale code="BRE" libelle="Breton"/>
+		<langue-culture-regionale code="CAT" libelle="Catalan"/>
+		<langue-culture-regionale code="COS" libelle="Corse"/>
+		<langue-culture-regionale code="GSW" libelle="Langue régionale d'Alsace"/>
+		<langue-culture-regionale code="OCI" libelle="Occitan langue d'oc"/>
+	</langues-culture-regionale>
 	*/
 
 	$tab=array();
 	$tab["indice"]=array();
 	$tab["code"]=array();
 
-	$tab["indice"][0]["code"]='BAS';
+	$tab["indice"][0]["code"]='BAQ';
 	$tab["indice"][0]["libelle"]='Basque';
-	$tab["code"]['BAS']='Basque';
+	$tab["code"]['BAQ']='Basque';
 
 	$tab["indice"][1]["code"]='BRE';
 	$tab["indice"][1]["libelle"]='Breton';
 	$tab["code"]['BRE']='Breton';
 
-	$tab["indice"][2]["code"]='COR';
-	$tab["indice"][2]["libelle"]='Corse';
-	$tab["code"]['COR']='Corse';
+	$tab["indice"][2]["code"]='CAT';
+	$tab["indice"][2]["libelle"]='Catalan';
+	$tab["code"]['CAT']='Catalan';
 
-	$tab["indice"][3]["code"]='OCC';
-	$tab["indice"][3]["libelle"]="Occitan langue d'oc";
-	$tab["code"]['OCC']="Occitan langue d'oc";
+	$tab["indice"][3]["code"]='COS';
+	$tab["indice"][3]["libelle"]='Corse';
+	$tab["code"]['COS']='Corse';
 
-	$tab["indice"][4]["code"]='ALS';
+	$tab["indice"][4]["code"]='GSW';
 	$tab["indice"][4]["libelle"]="Langue régionale d'Alsace";
-	$tab["code"]['ALS']="Langue régionale d'Alsace";
+	$tab["code"]['GSW']="Langue régionale d'Alsace";
 
-	$tab["indice"][5]["code"]='MOS';
-	$tab["indice"][5]["libelle"]="Langue régionale des pays mosellans";
-	$tab["code"]['MOS']="Langue régionale des pays mosellans";
+	$tab["indice"][5]["code"]='OCI';
+	$tab["indice"][5]["libelle"]="Occitan langue d'oc";
+	$tab["code"]['OCI']="Occitan langue d'oc";
 
 	/*
 	$sql="SELECT * FROM nomenclatures_valeurs WHERE type='langue_vivante_regionale' ORDER BY code;";
