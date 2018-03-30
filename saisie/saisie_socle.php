@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1485,35 +1485,47 @@ if(isset($id_groupe)) {
 				//20180210
 				if(($tab_cycle[$mef_code_ele]==4)&&($periode==$max_per)) {
 					if($is_lvr) {
+						//echo "\$is_lvr=true.<br />";
 						//$tab_type_LVR
-						$checked[0]=" checked";
-						$checked[1]="";
+						$checked[1]=" checked";
+						$checked[2]="";
 
-						$style[0]=" style='font-weight:bold'";
-						$style[1]="";
+						$style[1]=" style='font-weight:bold'";
+						$style[2]="";
 						if(isset($tab_niveaux_eleves_LVR[$lig->no_gep]["positionnement"])) {
-							$style[0]="";
-							$style[1]="";
 
-							$checked[0]="";
+							//echo "\$tab_niveaux_eleves_LVR[$lig->no_gep][\"positionnement\"] est défini.<br />";
+
+							$style[1]="";
+							$style[2]="";
+
 							$checked[1]="";
+							$checked[2]="";
 
 							$checked[$tab_niveaux_eleves_LVR[$lig->no_gep]["positionnement"]]=" checked";
 							$style[$tab_niveaux_eleves_LVR[$lig->no_gep]["positionnement"]]=" style='font-weight:bold'";
 						}
 
+						/*
+						echo "<pre>";
+						echo "\$style[0]=".$style[0]."\n";
+						echo "\$style[1]=".$style[1]."\n";
+						echo "\$style[2]=".$style[2]."\n";
+						echo "</pre>";
+						*/
+
 						echo "
 		<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de la Langue vivante régionale (".$tab_type_LVR["code"][$code_lvr].")\">
 			<strong>Langue vivante régionale&nbsp;:</strong> ".$tab_type_LVR["code"][$code_lvr]." (".$tab_type_LVR["code"][$code_lvr].")<br />
-			<input type='radio' name='lvr[".$lig->no_gep."]' id='lvr_".$id_groupe."_".$lig->no_gep."_0' value='0'".$checked[0]." 
-					onchange=\"checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_0');
-							checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_1');\" />
-			<label for='lvr_".$id_groupe."_".$lig->no_gep."_0' id='texte_lvr_".$id_groupe."_".$lig->no_gep."_0'".$style[0]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
-
 			<input type='radio' name='lvr[".$lig->no_gep."]' id='lvr_".$id_groupe."_".$lig->no_gep."_1' value='1'".$checked[1]." 
-					onchange=\"checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_0');
-							checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_1');\" />
-			<label for='lvr_".$id_groupe."_".$lig->no_gep."_1' id='texte_lvr_".$id_groupe."_".$lig->no_gep."_1'".$style[1]."> Niveau A2 atteint</label>
+					onchange=\"checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_1');
+							checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_2');\" />
+			<label for='lvr_".$id_groupe."_".$lig->no_gep."_1' id='texte_lvr_".$id_groupe."_".$lig->no_gep."_1'".$style[1]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
+
+			<input type='radio' name='lvr[".$lig->no_gep."]' id='lvr_".$id_groupe."_".$lig->no_gep."_2' value='2'".$checked[2]." 
+					onchange=\"checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_1');
+							checkbox_change('lvr_".$id_groupe."_".$lig->no_gep."_2');\" />
+			<label for='lvr_".$id_groupe."_".$lig->no_gep."_2' id='texte_lvr_".$id_groupe."_".$lig->no_gep."_2'".$style[2]."> Niveau A2 atteint</label>
 		</p>";
 					}
 				}

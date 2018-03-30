@@ -1005,7 +1005,7 @@
     
     <xs:simpleType name="PositionnementLangueCultureRegionale">
         <xs:annotation>
-            <xs:documentation>Type utilisé pour le positionnement de l'élève sur les langue et culture régionales (1 : atteints, 2 : dépassés)
+            <xs:documentation>Type utilisé pour le positionnement de l'élève sur les langue et culture régionales (1 : niveau non atteint, 2 : niveau atteint)
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:positiveInteger">
