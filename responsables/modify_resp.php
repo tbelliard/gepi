@@ -1285,13 +1285,26 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 
 			// 20180222
 			$niveau_responsabilite='';
+			$title_niveau_responsabilite='';
 			if(isset($tab_niveau_responsabilite[$lig_ele->niveau_responsabilite])) {
-				$niveau_responsabilite=$tab_niveau_responsabilite[$lig_ele->niveau_responsabilite]['libelle'];
+				if(isset($tab_niveau_responsabilite[$lig_ele->niveau_responsabilite]['libelle_court'])) {
+					$niveau_responsabilite=$tab_niveau_responsabilite[$lig_ele->niveau_responsabilite]['libelle_court'];
+					$title_niveau_responsabilite=" title=\"".$tab_niveau_responsabilite[$lig_ele->niveau_responsabilite]['libelle_edition']."\"";
+				}
+				else {
+					$niveau_responsabilite=$lig_ele->niveau_responsabilite;
+				}
 			}
-			echo "<td style='text-align:center;'>".$niveau_responsabilite."</td>\n";
+			echo "<td style='text-align:center;'".$title_niveau_responsabilite.">".$niveau_responsabilite."</td>\n";
+
 			$code_parente='';
 			if(isset($tab_code_parente[$lig_ele->code_parente])) {
-				$code_parente=$tab_code_parente[$lig_ele->code_parente]['libelle_court'];
+				if(isset($tab_code_parente[$lig_ele->code_parente]['libelle'])) {
+					$code_parente=$tab_code_parente[$lig_ele->code_parente]['libelle'];
+				}
+				else {
+					$code_parente=$lig_ele->code_parente;
+				}
 			}
 			echo "<td style='text-align:center;'>".$code_parente."</td>\n";
 
