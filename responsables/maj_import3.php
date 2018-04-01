@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -275,6 +275,7 @@ if(isset($step)) {
 		($step=="11")||
 		($step=="12")||
 		($step=="13")||
+		($step=="13a")||
 		($step=="14")||
 		($step=="18")
 		) {
@@ -5820,6 +5821,8 @@ mysql>
 						}
 						echo "</select>\n";
 						echo "</td>\n";
+						echo "<td>\n";
+						echo "</td>\n";
 						echo "</tr>\n";
 					}
 
@@ -5833,13 +5836,17 @@ mysql>
 						$gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
 						echo "<tr><td>".ucfirst($gepi_prof_suivi).": </td><td><select name='pp_resp'>\n";
 						echo "<option value=''>---</option>\n";
+						$liste_pp="<span title=\"Liste des $gepi_prof_suivi de la classe\">";
 						while($lig_pp=mysqli_fetch_object($res_pp)){
 							echo "<option value='$lig_pp->login'";
 							if(mysqli_num_rows($res_pp)==1) {echo " selected";}
 							echo ">$lig_pp->nom $lig_pp->prenom</option>\n";
+							$liste_pp.=$lig_pp->nom." ".$lig_pp->prenom."<br />";
 						}
+						$liste_pp.="</span>";
 						echo "</select>\n";
 						echo "</td>\n";
+						echo "<td>$liste_pp</td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -10345,7 +10352,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 										$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." (".$lig1->col2.")";
 										// 20130405
 										$info_action_texte="";
-										$sql="SELECT e.login, t.resp_legal FROM eleves e, temp_responsables2_import t WHERE e.ele_id=t.ele_id AND t.pers_id='".$lig1->col2."' ORDER BY e.nom, e.prenom;";
+										$sql="SELECT e.login, t.resp_legal, t.niveau_responsabilite FROM eleves e, temp_responsables2_import t WHERE e.ele_id=t.ele_id AND t.pers_id='".$lig1->col2."' ORDER BY e.nom, e.prenom;";
 										$res_ele_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_ele_resp)>0) {
 											$info_action_texte.="Le nouveau responsable <a href='responsables/modify_resp.php?pers_id=".$lig1->col2."'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." (".$lig1->col2.")</a> est associé d'après vos fichiers Sconet à ";
@@ -10553,46 +10560,20 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 				echo "<p><br /></p>\n";
 
-				$sql="SELECT 1=1 FROM temp_responsables2_import WHERE resp_legal='9';";
-				$test_resp_legal_9=mysqli_query($mysqli, $sql);
-				if(mysqli_num_rows($test_resp_legal_9)>0) {
-					switch($erreur){
-						case 0:
-							echo "<p>Pas d'erreur dans les dernières opérations réalisées.</p>\n";
-							break;
-						case 1:
-							echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause.</p>\n";
-							break;
-						default:
-							echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause.</p>\n";
-							break;
-					}
+				switch($erreur){
+					case 0:
+						//echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
+						break;
+					case 1:
+						//echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
+						break;
 
-					echo "<p style='color:red; margin-left: 7.5em; text-indent:-7.5em; padding:0.5em; margin-bottom:1em;' class='fieldset_opacite50'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test_resp_legal_9)." responsable(s) n'a(ont) pas de champ RESP_LEGAL dans la XML Responsables.<br />
-					Cela signifie que votre XML est incorrect ou qu'il correspond à une mise à jour de Siècle nécessitant une mise à jour de Gepi.<br />
-					La suite du script risque de ne pas fonctionner.<br />
-					Vous risquez de supprimer tous les responsables dans Gepi.<br />
-					Ne poursuivez-pas&nbsp;!<br />
-					<br />
-					Recherchez une mise à jour sur <a href='http://gepi.mutualibre.org/fr/download' target='_blank'>http://gepi.mutualibre.org/fr/download</a><br />
-					Contactez la liste Gepi-users si vous y êtes inscrit <em>(ou inscrivez-vous <a href='http://lists.sylogix.net/mailman/listinfo/gepi-users' target='_blank'>http://lists.sylogix.net/mailman/listinfo/gepi-users</a>)</em>.</p>";
-				}
-				else {
-					switch($erreur){
-						case 0:
-							//echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-							echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
-							break;
-						case 1:
-							//echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-							echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
-							break;
-
-						default:
-							//echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-							echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
-							break;
-					}
+					default:
+						//echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
+						break;
 				}
 			}
 
@@ -10807,12 +10788,12 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					$sql="(SELECT t.ele_id,t.pers_id FROM responsables2 r, temp_responsables2_import t
 									WHERE r.pers_id=t.pers_id AND 
 											r.ele_id=t.ele_id AND 
-											t.resp_legal!='' AND 
+											(t.resp_legal='1' OR t.resp_legal='2' OR t.resp_legal='0') AND 
 											(
 												r.resp_legal!=t.resp_legal OR 
 												r.pers_contact!=t.pers_contact
 											) 
-											AND (t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]')) 
+											AND (t.ele_id='".$tab_tmp[1]."' AND t.pers_id='".$tab_tmp[2]."')) 
 						UNION (SELECT t.ele_id,t.pers_id FROM responsables2 r, temp_responsables2_import t
 									WHERE r.pers_id=t.pers_id AND 
 											r.ele_id=t.ele_id AND 
@@ -10821,27 +10802,49 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 												r.niveau_responsabilite!=t.niveau_responsabilite OR 
 												r.code_parente!=t.code_parente
 											) 
-											AND (t.ele_id='$tab_tmp[1]' AND t.pers_id='$tab_tmp[2]'));";
+											AND (t.ele_id='".$tab_tmp[1]."' AND t.pers_id='".$tab_tmp[2]."'));";
 					info_debug($sql);
 					//echo "$sql<br />\n";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
-						if($cpt==0){
-							echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
-							echo "<br />\n";
-							echo "En voici le(s) couple(s) ELE_ID/PERS_ID: ";
-						}
-						else{
-							echo ", ";
-						}
-						$lig=mysqli_fetch_object($test);
+						$difference_confirmee=true;
+						$sql="SELECT * FROM responsables2 WHERE ele_id='".$tab_tmp[1]."' AND pers_id='".$tab_tmp[2]."';";
+						$res_resp=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res_resp)>0) {
+							$lig_resp=mysqli_fetch_object($res_resp);
 
-						echo $lig->ele_id."/".$lig->pers_id;
-						echo "<input type='hidden' name='tab_resp_diff[]' value='t_".$lig->ele_id."_".$lig->pers_id."' />\n";
-						//echo "<br />\n";
-						// Pour le cas où on est dans la dernière tranche:
-						$tab_resp_diff[]="t_".$lig->ele_id."_".$lig->pers_id;
-						$cpt++;
+							$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='".$tab_tmp[1]."' AND pers_id='".$tab_tmp[2]."';";
+							$res_temp_resp=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($res_temp_resp)>0) {
+								$lig_temp_resp=mysqli_fetch_object($res_temp_resp);
+
+								if($lig_temp_resp->resp_legal==9) {
+									if(($lig_temp_resp->code_parente==$lig_resp->code_parente)&&
+										($lig_temp_resp->niveau_responsabilite==$lig_resp->niveau_responsabilite)) {
+										$difference_confirmee=false;
+									}
+								}
+							}
+						}
+
+						if($difference_confirmee) {
+							if($cpt==0){
+								echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+								echo "<br />\n";
+								echo "En voici le(s) couple(s) ELE_ID/PERS_ID: ";
+							}
+							else{
+								echo ", ";
+							}
+							$lig=mysqli_fetch_object($test);
+
+							echo $lig->ele_id."/".$lig->pers_id;
+							echo "<input type='hidden' name='tab_resp_diff[]' value='t_".$lig->ele_id."_".$lig->pers_id."' />\n";
+							//echo "<br />\n";
+							// Pour le cas où on est dans la dernière tranche:
+							$tab_resp_diff[]="t_".$lig->ele_id."_".$lig->pers_id;
+							$cpt++;
+						}
 					}
 				}
 			}
@@ -10959,6 +10962,11 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				}
 				else{
 					echo "<p>".$nb_associations_a_consulter." associations ELE_ID/PERS_ID requièrent votre attention.</p>\n";
+
+					echo "<p style='margin-top:1em; margin-bottom:1em;'>Si des <strong>RESP_LEGAL 9</strong> sont affichés, il s'agit de responsabilités qui seront calculées plus loin d'après les colonnes <strong>Niveau responsabilité</strong> et <strong>Code_parenté</strong><br />
+					Siècle/Sconet abandonne en effet l'information RESP_LEGAL pour ne retenir que les champs NIVEAU_RESPONSABILITE et CODE_PARENTE.<br />
+					Gepi utilise (encore) l'information RESP_LEGAL pour la création des comptes utilisateurs et pour la détermination des destinataires de  bulletins,...<br />
+					Il convient de prendre en compte les modifications Siècle et de contrôler si nécessaire les modifications effectuées/listées par la suite.</p>";
 				}
 				//echo "<input type='hidden' name='total_pers_diff' value='".count($tab_pers_id_diff)."' />\n";
 				echo "<input type='hidden' name='total_diff' value='".$nb_associations_a_consulter."' />\n";
@@ -11074,14 +11082,32 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$pers_contact=$lig1->pers_contact;
 							$niveau_responsabilite=$lig1->niveau_responsabilite;
 							$code_parente=$lig1->code_parente;
-
+							/*
+							echo "Etat courant<br />
+							\$resp_legal=$resp_legal<br />
+							\$niveau_responsabilite=$niveau_responsabilite<br />
+							\$code_parente=$code_parente<br />";
+							*/
 							$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
 							// 20180227
 							//echo "$sql<br />";
 							info_debug($sql);
 							$test1=mysqli_query($GLOBALS["mysqli"], $sql);
 							// Pour une modif, ce test doit toujours être vrai.
-							if(mysqli_num_rows($test1)>0){
+							if(mysqli_num_rows($test1)>0) {
+								// Relever l'état antérieur  dans le cas où on passe à resp_legal=9, pour rétablir automatiquement les responsables légaux à leur rang initial
+								if($resp_legal==9) {
+									if($niveau_responsabilite==1) {
+										$lig_tmp_resp_avant_suppr=mysqli_fetch_object($test1);
+										if($lig_tmp_resp_avant_suppr->resp_legal==1) {
+											$resp_legal=1;
+										}
+										elseif($lig_tmp_resp_avant_suppr->resp_legal==2) {
+											$resp_legal=2;
+										}
+									}
+								}
+
 								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
 								// 20180227
 								//echo "$sql<br />";
@@ -11927,7 +11953,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					echo "<p>$cpt_nett associations aberrantes supprimées.</p>\n";
 				}
 
-				echo "<p align='center'><input type=submit value='Contrôler les suppressions de responsabilités' /></p>\n";
+				echo "<p align='center'><input type=submit value='Contrôler les niveaux de responsabilité' /></p>\n";
 
 				//echo "<p align='center'><input type=submit value='Terminer' /></p>\n";
 				/*
@@ -11965,16 +11991,138 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				// Rechercher des responsabilités sans responsables légaux 1 et 2
 				// Y rechercher des niveau_responsabilité=1 ordonnées suivant code_parente pour définir les resp_legal 1 et 2
 
+				// Élèves sans responsable légal 1
+				echo "<p style='font-weight:bold; margin-top:1em;'>Recherche des élèves sans responsable légal 1.</p>";
+				$sql="SELECT DISTINCT ele_id, login FROM eleves WHERE ele_id NOT IN (SELECT ele_id FROM responsables2 WHERE resp_legal='1') ORDER BY nom, prenom;";
+				//echo "$sql<br />";
+				$res=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)==0) {
+					echo "<p>Tous les élèves ont un responsable légal 1.<br />";
+				}
+				else {
+					echo "<p>".mysqli_num_rows($res)." élève(s) n'ont pas de responsable légal 1.<br />";
+					while($lig=mysqli_fetch_object($res)) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' title='Voir le dossier élève dans un nouvel onglet.' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id, 'avec_classe')."</a>&nbsp;: ";
+						// Parcourir les responsables et chercher les NIVEAU_RESPONSABILITE=1 triés par ordre de CODE_PARENTE
+						// Si il y en a
+						//	Si l'un est resp_legal 2, chercher s'il y a un autre NIVEAU_RESPONSABILITE=1 à déclarer resp_legal 1 sinon passer de resp_legal 2 à 1
+						// 	Si il n'y a ni resp_legal 1 no resp_legal 2 parmi les NIVEAU_RESPONSABILITE=1, déclarer resp_legal 1 et 2 dans l'ordre des CODE_PARENTE
+						//$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND niveau_responsabilite='1' ORDER BY niveau_responsabilite*100+code_parente;";
+						$resp_1_deja_defini=false;
+						$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND niveau_responsabilite='1' ORDER BY code_parente;";
+						//echo "$sql<br />";
+						$res_resp=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res_resp)>0) {
+							//echo mysqli_num_rows($res_resp)." responsable(s) avec NIVEAU_RESPONSABILITE='1'.<br />";
+							while($lig_resp=mysqli_fetch_object($res_resp)) {
+								if(!$resp_1_deja_defini) {
+									if($lig_resp->resp_legal==2) {
+										//if($deja_resp_2) {
+											// Bizarre : Il y a un resp_legal 2 sans resp_legal 1
+											$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig_resp->pers_id."';";
+											//echo "$sql<br />";
+											$update=mysqli_query($mysqli, $sql);
+											if($update) {
+												$resp_1_deja_defini=true;
+												echo civ_nom_prenom_from_pers_id($lig_resp->pers_id)." devient <em>(de RESP_LEGAL ".$lig_resp->resp_legal.")</em> RESP_LEGAL 1.";
+												// Le resp_legal 1 est défini, on passe à l'élève sans resp_legal 1 suivant
+												//break;
+											}
+											else {
+												echo "<span style='color:red'>ERREUR</span>";
+											}
+										/*
+										}
+										else {
+										}
+										*/
+									}
+									else {
+										// On a resp_legal 0 ou 9 avec NIVEAU_RESPONSABILITE='1'
+										$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig_resp->pers_id."';";
+										//echo "$sql<br />";
+										$update=mysqli_query($mysqli, $sql);
+										if($update) {
+											echo civ_nom_prenom_from_pers_id($lig_resp->pers_id)." devient <em>(de RESP_LEGAL ".$lig_resp->resp_legal.")</em> RESP_LEGAL 1.";
+											$resp_1_deja_defini=true;
+											// Le resp_legal 1 est défini, on passe à l'élève sans resp_legal 1 suivant
+											break;
+										}
+										else {
+											echo "<span style='color:red'>ERREUR</span>";
+										}
+									}
+								}
+							}
+						}
+						if(!$resp_1_deja_defini) {
+							echo "<span style='color:red'>Aucun responsable n'a été trouvé.</span>";
+						}
+						echo "<br />";
+					}
+				}
+				// Là, on devrait avoir un resp_legal 1 pour tous les élèves, ou alors, il n'y a pas non plus de resp_legal 2
+
+				// Élèves sans responsable légal 2
+				echo "<p style='font-weight:bold; margin-top:1em;'>Recherche des élèves sans responsable légal 2.</p>";
+				$sql="SELECT DISTINCT ele_id, login FROM eleves WHERE ele_id NOT IN (SELECT ele_id FROM responsables2 WHERE resp_legal='2') ORDER BY nom, prenom;";
+				//echo "$sql<br />";
+				$res=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)==0) {
+					echo "<p>Tous les élèves ont un responsable légal 2.<br />";
+				}
+				else {
+					echo "<p>".mysqli_num_rows($res)." élève(s) n'ont pas de responsable légal 2.<br />";
+					while($lig=mysqli_fetch_object($res)) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' title='Voir le dossier élève dans un nouvel onglet.' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id, 'avec_classe')."</a>&nbsp;: ";
+						// Parcourir les responsables et chercher les NIVEAU_RESPONSABILITE=1 triés par ordre de CODE_PARENTE
+						// Si il y en a
+						//	S'il n'est pas resp_legal 1, le déclarer resp_legal 2
+						$resp_2_deja_defini=false;
+						$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND niveau_responsabilite='1' AND resp_legal!='1' ORDER BY code_parente;";
+						//echo "$sql<br />";
+						$res_resp=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res_resp)>0) {
+							//echo mysqli_num_rows($res_resp)." responsable(s) avec NIVEAU_RESPONSABILITE='1'.<br />";
+							while($lig_resp=mysqli_fetch_object($res_resp)) {
+								if(!$resp_2_deja_defini) {
+									$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig_resp->pers_id."';";
+									//echo "$sql<br />";
+									$update=mysqli_query($mysqli, $sql);
+									if($update) {
+										echo civ_nom_prenom_from_pers_id($lig_resp->pers_id)." devient <em>(de RESP_LEGAL ".$lig_resp->resp_legal.")</em> RESP_LEGAL 2.";
+										$resp_2_deja_defini=true;
+										// Le resp_legal 2 est défini, on passe à l'élève sans resp_legal 2 suivant
+										//break;
+									}
+									else {
+										echo "<span style='color:red'>ERREUR</span>";
+									}
+								}
+							}
+						}
+						if(!$resp_2_deja_defini) {
+							echo "<span style='color:red'>Aucun responsable n'a été trouvé.</span>";
+						}
+						echo "<br />";
+					}
+				}
+
+				// Cette partie ne devrait sauf erreur plus être parcourue
+				// Élèves qui n'ont qu'un responsable légal
+				echo "<p style='font-weight:bold; margin-top:1em;'>Recherche des élèves qui n'ont pas deux responsables légaux.</p>";
 				$sql="SELECT DISTINCT ele_id, COUNT(resp_legal) AS nb_resp FROM responsables2 WHERE resp_legal='1' OR resp_legal='2' GROUP BY ele_id HAVING COUNT(resp_legal)<2;";
+				//echo "$sql<br />";
 				$res=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res)>0) {
-					echo "<p>Contrôle supplémentaire lié à la modifications Siècle qui abandonne les <strong>responsables légaux 1 et 2</strong> pour les critères <strong>Niveau de responsabilité</strong> et <strong>Code parenté</strong>.</p>
-					<p>".mysqli_num_rows($res)." élèves n'ont pas deux responsables légaux.<br />
+					//echo "<p>Contrôle supplémentaire lié à la modifications Siècle qui abandonne les <strong>responsables légaux 1 et 2</strong> pour les critères <strong>Niveau de responsabilité</strong> et <strong>Code parenté</strong>.</p>";
+					echo "<p>".mysqli_num_rows($res)." élèves n'ont pas deux responsables légaux.<br />
 					Nous allons parcourir les responsables de Niveau de responsabilité 1 pour leur attribuer le rôle de responsable légal.</p>";
 
 					$liste_modif='';
 					while($lig=mysqli_fetch_object($res)) {
 						$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND resp_legal!='1' AND resp_legal!='2' AND niveau_responsabilite='1' ORDER BY code_parente;";
+						//echo "$sql<br />";
 						$res2=mysqli_query($mysqli, $sql);
 						if(mysqli_num_rows($res2)>0) {
 							//$nb_resp_deja=$lig->nb_resp;
@@ -12009,6 +12157,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								else {
 									$sql="UPDATE responsables2 SET resp_legal='0', envoi_bulletin='y', acces_sp='y' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig2->pers_id."';";
 								}
+								//echo "$sql<br />";
 								$update=mysqli_query($mysqli, $sql);
 								if(!$update) {
 									echo "<span style='color:red'>ERREUR lors de la mise à jour de la responsabilité pour <a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a> sur l'élève <a href='../eleves/modify_eleve.php?ele_id=".$lig->ele_id."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a></span><br />";
@@ -12031,15 +12180,33 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					}
 				}
 
+				// Si parmi les resp_legal=9, il y a des NIVEAUX_RESPONSABILITE 1
+				//	Si les resp_legal 1 ou 2 ne sont pas attribués, les passer resp_legal 1 ou 2 selon les places dispo.
+				//	Sinon, les mettre resp_legal 0 avec acces_sp et envoi_bulletin
 
+				// Et parmi les NIVEAU_RESPONSABILITE='1' qui restent, on passe à resp_legal=0+envoi_bulletin+acces_sp
+				$sql="SELECT * FROM responsables2 WHERE niveau_responsabilite='1' AND resp_legal!='1' AND resp_legal!='2';";
+				//echo "$sql<br />";
+				$res=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)>0) {
+					echo "<p style='font-weight:bold; margin-top:1em;'>".mysqli_num_rows($res)." responsables avec NIVEAU_RESPONSABILITE='1' ne sont pas déclarés responsables légaux.<br />
+					On leur donne un accès aux notes, CDT,... sous réserve qu'ils aient un compte utilisateur <em>(et que ces modules soient acitfs dans Gepi)</em>.<br />Mise en place d'un témoin pour ces responsables de façon à générer un bulletin à leur adresse.</p>";
 
-				// Et ceux qui restent, sont resp_legal=0+envoi_bulletin+acces_sp
-				$sql="UPDATE responsables2 SET envoi_bulletin='y', acces_sp='y' WHERE niveau_responsabilite='1' AND resp_legal!='1' AND resp_legal!='2';";
-				$update=mysqli_query($mysqli, $sql);
-				if(!$update) {
-					echo "<p><span style='color:red'>ERREUR lors de l'attribution du droit de consultation et de l'envoi des bulletins vers les responsables légaux non responsable légal 1 ou 2.</span></p>";
+					$sql="UPDATE responsables2 SET envoi_bulletin='y', acces_sp='y', resp_legal='0' WHERE niveau_responsabilite='1' AND resp_legal!='1' AND resp_legal!='2';";
+					//echo "$sql<br />";
+					$update=mysqli_query($mysqli, $sql);
+					if(!$update) {
+						echo "<p><span style='color:red'>ERREUR lors de l'attribution du droit de consultation et de l'envoi des bulletins vers les responsables légaux non responsable légal 1 ou 2.</span></p>";
+					}
 				}
 
+				// S'il reste des resp_legal 9
+				$sql="SELECT DISTINCT r.* FROM responsables2 r, eleves e, j_eleves_classes jec WHERE r.resp_legal='9' AND e.ele_id=r.ele_id AND jec.login=e.login;";
+				//echo "$sql<br />";
+				$res=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)>0) {
+					echo "<p style='color:red; margin-top:1em;'>Il reste ".mysqli_num_rows($res)." responsables non traités (codés RESP_LEGAL 9).</p>";
+				}
 
 
 				echo "<p style='margin-top:1em;'>Retour à:</p>\n";
