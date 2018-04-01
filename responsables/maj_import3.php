@@ -10553,20 +10553,46 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 				echo "<p><br /></p>\n";
 
-				switch($erreur){
-					case 0:
-						//echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-						echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
-						break;
-					case 1:
-						//echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-						echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
-						break;
+				$sql="SELECT 1=1 FROM temp_responsables2_import WHERE resp_legal='9';";
+				$test_resp_legal_9=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($test_resp_legal_9)>0) {
+					switch($erreur){
+						case 0:
+							echo "<p>Pas d'erreur dans les dernières opérations réalisées.</p>\n";
+							break;
+						case 1:
+							echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause.</p>\n";
+							break;
+						default:
+							echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause.</p>\n";
+							break;
+					}
 
-					default:
-						//echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
-						echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
-						break;
+					echo "<p style='color:red; margin-left: 7.5em; text-indent:-7.5em; padding:0.5em; margin-bottom:1em;' class='fieldset_opacite50'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test_resp_legal_9)." responsable(s) n'a(ont) pas de champ RESP_LEGAL dans la XML Responsables.<br />
+					Cela signifie que votre XML est incorrect ou qu'il correspond à une mise à jour de Siècle nécessitant une mise à jour de Gepi.<br />
+					La suite du script risque de ne pas fonctionner.<br />
+					Vous risquez de supprimer tous les responsables dans Gepi.<br />
+					Ne poursuivez-pas&nbsp;!<br />
+					<br />
+					Recherchez une mise à jour sur <a href='http://gepi.mutualibre.org/fr/download' target='_blank'>http://gepi.mutualibre.org/fr/download</a><br />
+					Contactez la liste Gepi-users si vous y êtes inscrit <em>(ou inscrivez-vous <a href='http://lists.sylogix.net/mailman/listinfo/gepi-users' target='_blank'>http://lists.sylogix.net/mailman/listinfo/gepi-users</a>)</em>.</p>";
+				}
+				else {
+					switch($erreur){
+						case 0:
+							//echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+							echo "<p>Passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
+							break;
+						case 1:
+							//echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+							echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
+							break;
+
+						default:
+							//echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=17&amp;stop=y'>mise à jour des responsabilités</a>.</p>\n";
+							echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape de <a href='".$_SERVER['PHP_SELF']."?step=18&amp;stop=$stop'>mise à jour des responsabilités</a>.</p>\n";
+							break;
+					}
 				}
 			}
 
