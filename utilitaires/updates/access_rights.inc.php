@@ -705,7 +705,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_groupe
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_saisies.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Liste des saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_traitements.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des traitements', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_notifications.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des notifications', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_saisies_selection_traitement.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des saisits pour faire les traitement', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_saisies_selection_traitement.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des saisies pour faire les traitement', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/visu_saisie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/visu_traitement.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisie', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/visu_notification.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Visualisation d une notification', '');";
@@ -1960,6 +1960,8 @@ secours='F',
 autre='F',
 description='Discipline: Pointages petits incidents: Extraction',
 statut='';";
+
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_saisies_selection_traitement_decompte_matiere.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des saisies pour faire les traitements avec décompte matière', '');";
 
 //$tab_req[] = "";
 
