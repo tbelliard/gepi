@@ -90,7 +90,9 @@ for($i=0; $i<$nb; $i++) {
     }
 }
 if ($id_notif_col->isEmpty() && isset($_SESSION['id_notif_col'])) {
-    $id_notif_col = $_SESSION['id_notif_col'];
+	// 20180402
+	//$id_notif_col = $_SESSION['id_notif_col'];
+	$id_notif_col = unserialize($_SESSION['id_notif_col']);
 }
 if (isset($_GET['retirer_id_notification'])) {
     $key = $id_notif_col->search($_GET['retirer_id_notification']);
@@ -98,7 +100,9 @@ if (isset($_GET['retirer_id_notification'])) {
 	$id_notif_col->remove($key);
     }
 }
-$_SESSION['id_notif_col'] = $id_notif_col;
+// 20180402
+//$_SESSION['id_notif_col'] = $id_notif_col;
+$_SESSION['id_notif_col'] = serialize($id_notif_col); 
 $notifications_col = AbsenceEleveNotificationQuery::create()->filterByPrimaryKeys($id_notif_col)->find();
 
 if (isset ($_POST['valide']) && ('confirmer' == $_POST['valide'])) {
