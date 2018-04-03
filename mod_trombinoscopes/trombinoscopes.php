@@ -1566,9 +1566,14 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				}
 
 				$lien_upload_propose="n";
+				
+				$sql="SELECT * FROM j_eleves_professeurs WHERE login='".$login_trombinoscope[$i]."' AND professeur='".$_SESSION['login']."'";
+				$r_pp=mysqli_query($mysqli, $sql);
+				$est_PP=(mysqli_num_rows($r_pp)>0)?true:false;
+
 				if(($action_affiche=='classe')||($action_affiche=='groupe')) {
 					if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
-					(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))) {
+					(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves'))) || (($_SESSION['statut']=='professeur') && (getSettingValue("GepiAccesGestElevesProfP")=='yes' && getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes') && $est_PP)) {
 						echo "<a href=\"#\" onclick=\"afficher_div_upload_photo('".$login_trombinoscope[$i]."','".addslashes($nom_es." ".$prenom_es)."');afficher_div('div_upload_photo','y',-20,20);return false;\" title=\"Téléverser une (nouvelle) photo pour\n$alt_nom_prenom_aff\">";
 						$lien_upload_propose="y";
 					}
@@ -1585,7 +1590,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				echo " />\n";
 				if(($action_affiche=='classe')||($action_affiche=='groupe')) {
 					if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
-					(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))) {
+					(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves'))) || (($_SESSION['statut']=='professeur') && (getSettingValue("GepiAccesGestElevesProfP")=='yes' && getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes') && $est_PP)) {
 						echo "</a>";
 					}
 				}
