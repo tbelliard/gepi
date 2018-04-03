@@ -480,6 +480,7 @@ $tab_domaine_bilan_socle_description["MET_APP"]="5. Savoir organiser son travail
 //===================================
 
 // Pour tester si on a des locales correctes pour les retours strftime() avec %a, %A, %b, %B (par exemple sous Window$)
+/*
 function test_strftime_us() {
 	if(in_array(strftime("%A"), array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'))) {
 		return true;
@@ -502,6 +503,7 @@ function test_strftime_V() {
 }
 
 $temoin_strftime_V_vide=test_strftime_V();
+*/
 
 // Test sur l'encodage de 'Décembre'
 $strftime_utf8=mb_check_encoding(strftime('%B',mktime(12, 0, 0, 12, 1, 2000)),'utf-8');
