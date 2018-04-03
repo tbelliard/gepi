@@ -168,8 +168,8 @@ if(isset($_POST['upload_photo'])) {
 			$msg.="Erreur de téléchargement niveau 2.<br />";
 		} else if (my_strtolower($sav_photo['type'])!="image/jpeg") {
 			$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name']."&nbsp;: ".$sav_photo['type']."</i>)<br />";
-		} else if (!(preg_match('/jpg$/i',$sav_photo['name']) || preg_match('/jpeg$/i',$sav_photo['name']))) {
-			$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés (<i>".$sav_photo['name']."</i>)<br />";
+		} else if (!(preg_match('/jpg$/i',$sav_photo['name']))) {
+			$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name']."</i>)<br />";
 		} else {
 			$dest = $rep_photos;
 

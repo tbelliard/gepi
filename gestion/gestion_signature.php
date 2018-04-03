@@ -157,7 +157,7 @@ if (isset($_POST['ajout_fichier'])) {
 	elseif((isset($sign_file['error']))&&($sign_file['error']==4)) {
 		$msg.= "Aucun fichier n'a été proposé.<br />";
 	}
-	elseif((!preg_match("/\.jpeg$/i", $sign_file['name']))&&(!preg_match("/\.jpg$/i", $sign_file['name']))) {
+	elseif(!preg_match("/\.jpg$/i", $sign_file['name'])) {
 		$msg.= "Seule l'extension JPG est autorisée.<br />";
 	}
 	else {
@@ -623,7 +623,7 @@ if($mode=='choix_fichier') {
 		<input type='submit' value='Valider' />
 		</p>
 
-		<p style='margin-top:1em'><em>NOTE&nbsp;:</em> Seuls les fichiers JPEG sont autorisés.</p>
+		<p style='margin-top:1em'><em>NOTE&nbsp;:</em> Seuls les fichiers jpg sont autorisés.</p>
 
 	</fieldset>
 </form>

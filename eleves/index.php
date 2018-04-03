@@ -502,8 +502,8 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 					$msg.="Erreur de téléchargement niveau 2 (<i>photo n°$cpt_photo</i>).<br />";
 				} else if (my_strtolower($sav_photo['type'][$cpt_photo])!="image/jpeg") {
 					$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
-				} else if (!(preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo]) || preg_match('/jpeg$/i',$sav_photo['name'][$cpt_photo]))) {
-					$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
+				} else if (!(preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo]))) {
+					$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
 				} else {
 					$dest = $rep_photos;
 					$n = 0;

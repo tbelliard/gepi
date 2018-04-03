@@ -666,7 +666,7 @@ check_token();
 							$filephoto_size=$_FILES['filephoto']['size'];
 							$filephoto_type=$_FILES['filephoto']['type']; 
 							// Tester la taille max de la photo?
-							if ((preg_match('/jpg$/',strtolower($filephoto_name)) || preg_match('/jpeg$/',strtolower($filephoto_name))) && ($filephoto_type == "image/jpeg" || $filephoto_type == "image/pjpeg")) {
+							if ((preg_match('/jpg$/',strtolower($filephoto_name))) && ($filephoto_type == "image/jpeg" || $filephoto_type == "image/pjpeg")) {
 								if(is_uploaded_file($filephoto_tmp)){
 									$dest_file = $repertoire.$code_photo.".jpg";
 									$source_file = $filephoto_tmp;
@@ -691,7 +691,7 @@ check_token();
 								}
 							}
 							else {
-								$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés.";
+								$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
 							}
 						}
 					}

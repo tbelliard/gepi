@@ -408,9 +408,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 						$filephoto_name=$_FILES['filephoto']['name'];
 						$filephoto_size=$_FILES['filephoto']['size'];
 						$filephoto_type=$_FILES['filephoto']['type'];
-						if (!(preg_match('/jpg$/',strtolower($filephoto_name)) || preg_match('/jpeg$/',strtolower($filephoto_name))) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ) {
+						if (!(preg_match('/jpg$/',strtolower($filephoto_name))) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ) {
 							if($msg!="") {$msg.="<br />";}
-							$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés.\n";
+							$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
 						} else {
 							// Tester la taille max de la photo?
 							if(is_uploaded_file($filephoto_tmp)) {
@@ -4347,7 +4347,7 @@ if(getSettingAOui("active_bulletins")) {
 
 		echo (isset($message_signature_bulletins_ajout) ? $message_signature_bulletins_ajout : "")."
 
-		<p style='margin-top:1em'><em>NOTE&nbsp;:</em> Seuls les fichiers JPEG sont autorisés.</p>";
+		<p style='margin-top:1em'><em>NOTE&nbsp;:</em> Seuls les fichiers JPG sont autorisés.</p>";
 
 		if((isset($tab_signature['classe']))&&(count($tab_signature['classe'])>0)) {
 				echo "

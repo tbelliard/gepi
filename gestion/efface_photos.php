@@ -150,7 +150,7 @@ else {
 			echo "<p>Aucune photo ne répond à ce critère.</p>\n";
 		}
 		else{
-			echo "<p>Aucune photo JPEG n'a été trouvée.</p>\n";
+			echo "<p>Aucune photo n'a été trouvée.</p>\n";
 		}
 	}
 }
