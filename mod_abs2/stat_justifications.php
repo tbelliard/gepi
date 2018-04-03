@@ -204,7 +204,7 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 function afficheChargement($indice,$nbEleves) {
 	global $mysqli;
   global $session_gepi; 
-  require("../lib/global.inc.php");
+  require_once("../lib/global.inc.php");
   $gepiPath = "../";
   $niveau_arbo = 1;
   $titre_page = "Répartition des justifications (chargement des données)";
