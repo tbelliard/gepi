@@ -27,10 +27,18 @@ Trombinoscopes:
 Examens blancs:
 - Possibilité d'insérer le fichier signature comme dans les bulletins.
 
+LSUN:
+- Possibilité d'exporter au format 2017 comme au format (LSU 18.2.0.0) qui doit
+  être déployé à compter du 27/04/2018.
+  Cela comprend le dispositif devoirs-faits et les langue_vivante_regionale.
+
 Général:
 - Prise en compte des modifications Siècle (30/03/18) pour les NIVEAU_RESPONSABILITE 
   et CODE_PARENTE des responsables (avec suppression des responsables légaux 1 
   et 2 dans Siècle).
+- Possibilité de paramétrer (dans Gestion générale/Configuration générale) le 
+  fait que des langues vivantes régionales enseignées dans l'établissement
+  et possibilité d'en saisir le niveau atteint ou non pour un export en fin de cycle 4.
 
 
 Gepi-1.7.2 (06/01/2018)
