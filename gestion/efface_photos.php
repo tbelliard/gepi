@@ -68,7 +68,7 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 	$nberreur=0;
 	$chaine="";
 	while ($file = readdir($handle)) {
-		if((pre_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
+		if((preg_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
 
 			$file_name=pathinfo($file,PATHINFO_FILENAME);
 			$file_name=mb_substr($file_name,$gepiSettings['encodage_photos_eleves_longueur']);
