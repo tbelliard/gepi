@@ -62,6 +62,18 @@ if(($_SESSION['statut']=='cpe')||
     }
     echo "title='Saisir pour un eleve'>Saisir élève</a></li>\n";
 
+	// INSERT INTO setting SET name='abs2_liste_decompte_mariere', value='yes';
+	if((getSettingAOui('abs2_liste_decompte_mariere'))&&
+	(($_SESSION['statut']=="cpe")||($_SESSION['statut']=="scolarite"))) {
+		echo "<li><a href='liste_saisies_selection_traitement_decompte_matiere.php' ";
+		if($url_end=='liste_saisies_selection_traitement_decompte_matiere.php'
+		|| $url_end=='visu_saisie.php' ||
+		$url_end=='enregistrement_modif_saisie.php') {echo "class='current'
+		style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+		else {echo "style='background-color:#e6f8e7;' ";}
+		echo "title='Bilan des Absences'>Absences / crénaux </a></li>\n";
+	}
+
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
     if($url_end=='liste_saisies_selection_traitement.php' || $url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
