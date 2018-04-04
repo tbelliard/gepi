@@ -1,4 +1,4 @@
-GEPI-master (version de développement)
+GEPI-1.7.3 (04/04/2018)
 ==============
 
 Eric ABGRALL <eric.abgrall@free.fr>

@@ -166,7 +166,7 @@ function encode_nom_photo_4maj($filename_photo) {
 mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='encodage_nom_photo'");
 mysqli_query($GLOBALS["mysqli"], "DELETE FROM setting WHERE NAME='alea_nom_photo'");
 
-if ($gepiVersion<='master' || $force_maj!='yes') {
+if ($gepiVersion<='1.7.3' || $force_maj!='yes') {
 	// Il faut gérer le changement d'encodage des fichiers photo élèves
 	
 	// tableau stockant les noms des fichiers photo
