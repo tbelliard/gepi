@@ -421,7 +421,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 								if($res_copy) {
 									//$msg.="Mise en place de la photo effectuée.";
 									if($msg!="") {$msg.="<br />";}
-									$msg.="Mise en place de la photo effectuée. <br />Il peut être nécessaire de rafraîchir la page, voire de vider le cache du navigateur<br />pour qu'un changement de photo soit pris en compte.";
+									$msg.="Mise en place de la photo effectuée. <br />Il peut être nécessaire de <a href='".$_SERVER['PHP_SELF']."'>rafraîchir la page</a>, voire de vider le cache du navigateur<br />pour qu'un changement de photo soit pris en compte.";
 									$no_modif="no";
 
 									if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
@@ -2064,12 +2064,8 @@ if(($_SESSION['statut']=='administrateur')||
 	if((($_SESSION['statut']=='eleve')&&(getSettingValue("active_module_trombinoscopes")=='y'))||
 		(($_SESSION['statut']!='eleve')&&(getSettingValue("active_module_trombino_pers")=='y'))) {
 
-
-
-
-
 		$GepiAccesModifMaPhoto='GepiAccesModifMaPhoto'.ucfirst(mb_strtolower($_SESSION['statut']));
-
+		//echo "$GepiAccesModifMaPhoto<br />";
 		if($_SESSION['statut']=='eleve') {
 			$sql="SELECT elenoet FROM eleves WHERE login='".$_SESSION['login']."';";
 			$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
