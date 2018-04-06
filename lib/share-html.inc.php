@@ -2613,6 +2613,7 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 		}
 		$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
 	}
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$nombreligne=mysqli_num_rows($res);
@@ -5564,7 +5565,7 @@ function chaine_title_explication_verrouillage_periodes() {
 	return $chaine;
 }
 
-function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_seulement="y") {
+function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_seulement="y", $avec_csv=false) {
 	global $mysqli, $gepiPath;
 
 	$chaine_lien_alerte_nj="";
@@ -5641,7 +5642,7 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 			$date_absence_eleve_fin=$date_test;
 
 			$lignes_alerte.=$chaine_lien_alerte_nj;
-			$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_nj." demi-journées d'absence non justifiées depuis plus de ".$abs2_afficher_alerte_nj_delai." jour(s).</p>".$msg_switch_mode_periode."
+			$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_nj." demi-journées d'absence non justifiées depuis plus de ".$abs2_afficher_alerte_nj_delai." jour(s)".($avec_csv ? " ___MOTIF_EXPORT_CSV___" : "").".</p>".$msg_switch_mode_periode."
 			<table class='boireaus boireaus_alt resizable sortable' border='1'>
 				<thead>
 					<tr>";
@@ -5656,6 +5657,10 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 					</tr>
 				</thead>
 				<tbody>";
+
+			if($avec_csv) {
+				$csv="Élève;Classe;Nombre de demi-journées;\n";
+			}
 
 			while($lig=mysqli_fetch_object($res_alerte)) {
 				$nom_prenom_ele=get_nom_prenom_eleve($lig->login);
@@ -5674,7 +5679,7 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 					<tr>";
 				if($acces_visu_eleve) {
 					$lignes_alerte.="
-						<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$lig->login."&onglet=absences' title=\"Voir les absences de l'élève dans le classeur élève.\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a></td>";
+						<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$lig->login."&onglet=absences' title=\"Voir les absences de l'élève dans le classeur élève.\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a>".($avec_csv ? " ___MOTIF_EXPORT_CSV___" : "")."</td>";
 				}
 				$lignes_alerte.="
 						<td>".$nom_prenom_ele."</td>
@@ -5689,6 +5694,10 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 				}
 				$lignes_alerte.="</td>
 					</tr>";
+
+				if($avec_csv) {
+					$csv.=$nom_prenom_ele.";".$classe.";".$lig->nb_nj.";\n";
+				}
 
 				$temoin_au_moins_une_alerte++;
 			}
@@ -5763,13 +5772,13 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 					//if($lignes_alerte=="") {
 					if($temoin_au_moins_une_alerte==0) {
 						$lignes_alerte.=$chaine_lien_alerte_nj;
-						$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_nj." demi-journées d'absence non justifiées depuis plus de ".$abs2_afficher_alerte_nj_delai." jour(s) (<em>dans la période courante</em>).</p>
+						$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_nj." demi-journées d'absence non justifiées depuis plus de ".$abs2_afficher_alerte_nj_delai." jour(s) (<em>dans la période courante</em>)".($avec_csv ? " ___MOTIF_EXPORT_CSV___" : "").".</p>
 				<table class='boireaus boireaus_alt resizable sortable' border='1'>
 					<thead>
 						<tr>";
 						if($acces_visu_eleve) {
 							$lignes_alerte.="
-							<th class='nosort'></th>";
+							<th class='nosort'>".($avec_csv ? "___MOTIF_EXPORT_CSV___" : "")."</th>";
 						}
 						$lignes_alerte.="
 							<th class='text' title=\"Cliquez pour trier d'après le nom de l'élève\">Élève</th>
@@ -5778,7 +5787,12 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 						</tr>
 					</thead>
 					<tbody>";
+
+						if($avec_csv) {
+							$csv="Élève;Classe;Nombre de demi-journées NJ;\n";
+						}
 					}
+
 					$lignes_alerte.="
 						<tr>";
 					if($acces_visu_eleve) {
@@ -5799,6 +5813,10 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 					$lignes_alerte.="</td>
 						</tr>";
 
+					if($avec_csv) {
+						$csv.=$nom_prenom_ele.";".$classe.";".$lig->nb_nj.";\n";
+					}
+
 					$temoin_au_moins_une_alerte++;
 				}
 			}
@@ -5813,11 +5831,21 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 			}
 		}
 	}
+
+	if($avec_csv) {
+		$tmp_fich="../temp/".get_user_temp_directory()."/Absences_non_justifiees_".strftime("%Y%m%d_%H%M%S").".csv";
+		$f=file_put_contents($tmp_fich, $csv);
+
+		// Modifier le $lignes_alerte
+		$lignes_alerte=str_replace('___MOTIF_EXPORT_CSV___', "<a href='".$tmp_fich."' target='_blank' title=\"Télécharger l'export CSV.\"><img src='".$gepiPath."/images/icons/csv.png' class='icone16' alt='CSV' /></a>", $lignes_alerte);
+		//$lignes_alerte.="PLOP";
+	}
+
 	return $lignes_alerte;
 }
 
 
-function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_courante_seulement="y") {
+function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_courante_seulement="y", $avec_csv=false) {
 	global $mysqli, $gepiPath;
 
 	$chaine_lien_alerte_abs="";
@@ -5893,13 +5921,13 @@ function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_couran
 			$date_absence_eleve_fin=$date_test;
 
 			$lignes_alerte.=$chaine_lien_alerte_abs;
-			$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_abs." demi-journées d'absence justifiées ou non depuis plus de ".$abs2_afficher_alerte_abs_delai." jour(s).</p>".$msg_switch_mode_periode."
+			$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_abs." demi-journées d'absence justifiées ou non depuis plus de ".$abs2_afficher_alerte_abs_delai." jour(s)".($avec_csv ? " ___MOTIF_EXPORT_CSV___" : "").".</p>".$msg_switch_mode_periode."
 			<table class='boireaus boireaus_alt resizable sortable' border='1'>
 				<thead>
 					<tr>";
 			if($acces_visu_eleve) {
 				$lignes_alerte.="
-						<th class='nosort'></th>";
+						<th class='nosort'>".($avec_csv ? "___MOTIF_EXPORT_CSV___" : "")."</th>";
 			}
 			$lignes_alerte.="
 						<th class='text' title=\"Cliquez pour trier d'après le nom de l'élève\">Élève</th>
@@ -5909,6 +5937,10 @@ function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_couran
 					</tr>
 				</thead>
 				<tbody>";
+
+			if($avec_csv) {
+				$csv="Élève;Classe;Nombre de demi-journées;NJ;\n";
+			}
 
 			while($lig=mysqli_fetch_object($res_alerte)) {
 				$nom_prenom_ele=get_nom_prenom_eleve($lig->login);
@@ -5951,6 +5983,10 @@ function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_couran
 				}
 				$lignes_alerte.="</td>
 					</tr>";
+
+				if($avec_csv) {
+					$csv.=$nom_prenom_ele.";".$classe.";".$lig->nb_abs.";".$lig->nb_nj.";\n";
+				}
 
 				$temoin_au_moins_une_alerte++;
 			}
@@ -6021,15 +6057,15 @@ function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_couran
 					}
 
 					//if($lignes_alerte=="") {
-					if($temoin_au_moins_une_alerte==0) {
+					if($temoin_au_moins_une_alerte==0) {	// BIZARRE A VERIFIER 20180403
 						$lignes_alerte.=$chaine_lien_alerte_abs;
-						$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_abs." demi-journées d'absence justifiées ou non depuis plus de ".$abs2_afficher_alerte_abs_delai." jour(s) (<em>dans la période courante</em>).</p>
+						$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_abs." demi-journées d'absence justifiées ou non depuis plus de ".$abs2_afficher_alerte_abs_delai." jour(s) (<em>dans la période courante</em>).".($avec_csv ? " ___MOTIF_EXPORT_CSV___" : "")."</p>
 				<table class='boireaus boireaus_alt resizable sortable' border='1'>
 					<thead>
 						<tr>";
 						if($acces_visu_eleve) {
 							$lignes_alerte.="
-							<th class='nosort'></th>";
+							<th class='nosort'>".($avec_csv ? "___MOTIF_EXPORT_CSV___" : "")."</th>";
 						}
 						$lignes_alerte.="
 							<th class='text' title=\"Cliquez pour trier d'après le nom de l'élève\">Élève</th>
@@ -6039,7 +6075,12 @@ function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_couran
 						</tr>
 					</thead>
 					<tbody>";
+
+						if($avec_csv) {
+							$csv="Élève;Classe;Nombre de demi-journées;NJ;\n";
+						}
 					}
+
 					$lignes_alerte.="
 						<tr>";
 					if($acces_visu_eleve) {
@@ -6069,6 +6110,10 @@ function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_couran
 					$lignes_alerte.="</td>
 						</tr>";
 
+					if($avec_csv) {
+						$csv.=$nom_prenom_ele.";".$classe.";".$lig->nb_abs.";".$lig->nb_nj.";\n";
+					}
+
 					$temoin_au_moins_une_alerte++;
 				}
 			}
@@ -6083,6 +6128,15 @@ function abs2_afficher_tab_alerte_abs($nb_abs="", $abs_delai="", $periode_couran
 			}
 		}
 	}
+
+	if($avec_csv) {
+		$tmp_fich="../temp/".get_user_temp_directory()."/Absences_non_justifiees_".strftime("%Y%m%d_%H%M%S").".csv";
+		$f=file_put_contents($tmp_fich, $csv);
+
+		// Modifier le $lignes_alerte
+		$lignes_alerte=str_replace('___MOTIF_EXPORT_CSV___', "<a href='".$tmp_fich."' target='_blank' title=\"Télécharger l'export CSV.\"><img src='".$gepiPath."/images/icons/csv.png' class='icone16' alt='CSV' /></a>", $lignes_alerte);
+	}
+
 	return $lignes_alerte;
 }
 

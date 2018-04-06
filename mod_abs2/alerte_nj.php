@@ -167,7 +167,7 @@ if($mode=="abs") {
 		</fieldset>
 	</form>";
 
-	$lignes_alerte_abs2_abs=abs2_afficher_tab_alerte_abs($nb_abs, $abs_delai, $periode_courante_seulement);
+	$lignes_alerte_abs2_abs=abs2_afficher_tab_alerte_abs($nb_abs, $abs_delai, $periode_courante_seulement, true);
 	if($lignes_alerte_abs2_abs!="") {
 		echo $lignes_alerte_abs2_abs;
 	}
@@ -219,7 +219,7 @@ else {
 		</fieldset>
 	</form>";
 
-	$lignes_alerte_abs2_nj=abs2_afficher_tab_alerte_nj($nb_nj, $nj_delai, $periode_courante_seulement);
+	$lignes_alerte_abs2_nj=abs2_afficher_tab_alerte_nj($nb_nj, $nj_delai, $periode_courante_seulement, true);
 	if($lignes_alerte_abs2_nj!="") {
 		echo $lignes_alerte_abs2_nj;
 	}
