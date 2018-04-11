@@ -1825,11 +1825,12 @@ else {
 
 		// 20171229
 		if(getSettingAOui('cn_affiche_moy_gen')) {
-			$afficher_ligne_moy_gen=getParamClasse($id_classe, 'rn_col_moy', 'n');
+			$afficher_ligne_moy_gen=getParamClasse($id_classe, 'rn_moy_gen', 'n');
 		}
 		else {
 			$afficher_ligne_moy_gen='n';
 		}
+		//echo "\$afficher_ligne_moy_gen=$afficher_ligne_moy_gen<br />";
 
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 
