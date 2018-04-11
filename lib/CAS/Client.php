@@ -946,12 +946,12 @@ class CAS_Client
         	throw new CAS_TypeMismatchException($server_uri, '$server_uri', 'string');
         if (gettype($changeSessionID) != 'boolean')
         	throw new CAS_TypeMismatchException($changeSessionID, '$changeSessionID', 'boolean');
-        // à voir :  tester le type de $service_address 
+        // à voir :  tester le type de $service_address
 
         phpCAS::traceBegin();
-        
+
         $this->_server_base_url = $service_address; // patch GEPI
-        
+
         // true : allow to change the session_id(), false session_id won't be
         // change and logout won't be handle because of that
         $this->_setChangeSessionID($changeSessionID);
@@ -3557,11 +3557,17 @@ class CAS_Client
         // the URL is built when needed only
         if ( empty($this->_url) ) {
             $final_uri = '';
-            // remove the ticket if present in the URL
-            $final_uri = ($this->_isHttps()) ? 'https' : 'http';
-            $final_uri .= '://';
 
-            $final_uri .= $this->_getClientUrl();
+            // Patch GEPI
+            if ($this->_server_base_url != null) {
+              $final_uri .= $this->_server_base_url;
+            } else {
+              $final_uri = ($this->_isHttps()) ? 'https' : 'http';
+              $final_uri .= '://';
+              $final_uri .= $this->_getClientUrl();
+            }
+
+            // remove the ticket if present in the URL
             $request_uri	= explode('?', $_SERVER['REQUEST_URI'], 2);
             $final_uri		.= $request_uri[0];
 
