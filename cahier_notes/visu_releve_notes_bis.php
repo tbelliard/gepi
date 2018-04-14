@@ -1007,7 +1007,7 @@ echo "</p>";
 		//echo "<br />\n";
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' ";
 		if((isset($_SESSION['pref_use_cell_ajustee']))&&($_SESSION['pref_use_cell_ajustee']=='n')) {echo "checked='checked' ";}
-		echo "/><label for='use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
+		echo "/><label for='use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
 
 		$titre_infobulle="Fonction cell_ajustee()\n";
 		$texte_infobulle="Pour les appréciations sur les bulletins, relevés,... on utilisait auparavant la fonction DraxTextBox() de FPDF.<br />Cette fonction avait parfois un comportement curieux avec des textes tronqués ou beaucoup plus petits dans la cellule que ce qui semblait pouvoir tenir dans la case.<br />La fonction cell_ajustee() est une fonction que mise au point pour tenter de faire mieux que DraxTextBox().<br />Comme elle n'a pas été expérimentée par suffisamment de monde sur trunk, nous avons mis une case à cocher qui permet d'utiliser l'ancienne fonction DrawTextBox() si cell_ajustee() ne se révélait pas aussi bien fichue que nous l'espèrons;o).<br />\n";
@@ -1887,6 +1887,18 @@ else {
 				$affiche_graph='n';
 				$calculer_moy_gen_pour_carnets_de_notes=true;
 				include("../lib/calcul_moy_gen.inc.php");
+
+				/*
+				// DEBUG: 20180414
+				if($periode_num==3) {
+					echo "<div style='float:left;width:30em;'><pre>";
+					print_r($current_eleve_login);
+					echo "</pre></div>";
+					echo "<div style='float:left;width:30em;'><pre>";
+					print_r($moy_gen_eleve);
+					echo "</pre></div>";
+				}
+				*/
 			}
 
 			if(($mode_bulletin!="pdf")&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
@@ -1918,12 +1930,12 @@ else {
 	
 					echo "</div>\n";
 				}
-/*
-echo "DEBUG : 1837
-<pre>";
-print_r($tab_releve);
-echo "</pre>";
-*/
+				/*
+				echo "DEBUG : 1837
+				<pre>";
+				print_r($tab_releve);
+				echo "</pre>";
+				*/
 				//$compteur_releve=0;
 				if(isset($tab_releve[$id_classe][$periode_num]['eleve'])) {
 					unset($tmp_tab);

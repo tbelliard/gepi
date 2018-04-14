@@ -396,6 +396,24 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 	return $retour;
 }
 
+function arrondir_moyenne($chaine) {
+	$retour=$chaine;
+	if(($chaine=='-')||(strtolower($chaine)=='disp')||(strtolower($chaine)=='abs')||(strtolower($chaine)=='n.not')) {
+		$retour=$chaine;
+	}
+	elseif(preg_match("/^[0-9]*$/", $chaine)) {
+		$retour=$chaine;
+	}
+	elseif(preg_match("/^[0-9]*.[0-9]*$/", $chaine)) {
+		$retour=round(10*$chaine)/10;
+	}
+	elseif(preg_match("/^[0-9]*,[0-9]*$/", $chaine)) {
+		$retour=round(10*strtr($chaine, ",", "."))/10;
+	}
+	// DEBUG 20180414
+	//$retour=$chaine."|".$retour;
+	return $retour;
+}
 
 // $tab_reletin[$id_classe][$periode_num]
 // $i indice élève
@@ -1755,12 +1773,21 @@ Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\">
 		if((isset($calculer_moy_gen_pour_carnets_de_notes))&&($calculer_moy_gen_pour_carnets_de_notes)) {
 			global $current_eleve_login, $moy_gen_eleve, $moy_min_classe, $moy_max_classe, $moy_gen_classe;
 			unset($indice_ele);
+			/*
+			// DEBUG 20180414
+			echo "<tr><td colspan='5'>Recherche de ".$tab_rel['eleve'][$i]['login']." dans \$current_eleve_login<br />";
+			echo "<pre>";
+			print_r($current_eleve_login);
+			echo "</pre>";
+			*/
 			for($loop_ele=0;$loop_ele<count($current_eleve_login);$loop_ele++) {
 				if($current_eleve_login[$loop_ele]==$tab_rel['eleve'][$i]['login']) {
 					$indice_ele=$loop_ele;
 					break;
 				}
 			}
+			// DEBUG 20180414
+			//echo "\$indice_ele=$indice_ele</td></tr>";
 			if(isset($indice_ele)) {
 				// Afficher la ligne moyenne générale
 				$commentaire_moyenne_generale="ATTENTION : Les moyennes calculées dans les carnets de notes
@@ -1783,7 +1810,7 @@ Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\">
 						echo "
 	<tr>
 		<th class='releve'>Moyenne générale</th>
-		<td title=\"".$commentaire_periode_non_close."\">".$moy_gen_eleve[$indice_ele]."</td>
+		<td title=\"".$commentaire_periode_non_close."\">".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
 		<td></td>
 	</tr>";
 					}
@@ -1791,7 +1818,7 @@ Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\">
 						echo "
 	<tr>
 		<th class='releve'>Moyenne générale</th>
-		<td title=\"".$commentaire_moyenne_generale."\">".$moy_gen_eleve[$indice_ele]."</td>
+		<td title=\"".$commentaire_moyenne_generale."\">".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
 		<td></td>
 	</tr>";
 					}
@@ -1801,14 +1828,14 @@ Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\">
 						echo "
 	<tr>
 		<th class='releve'>Moyenne générale</th>
-		<td title=\"".$commentaire_periode_non_close."\">".$moy_gen_eleve[$indice_ele]."</td>
+		<td title=\"".$commentaire_periode_non_close."\">".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
 	</tr>";
 					}
 					else {
 						echo "
 	<tr>
 		<th class='releve'>Moyenne générale</th>
-		<td title=\"".$commentaire_moyenne_generale."\">".$moy_gen_eleve[$indice_ele]."</td>
+		<td title=\"".$commentaire_moyenne_generale."\">".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
 	</tr>";
 					}
 				}
@@ -3604,7 +3631,7 @@ function releve_pdf($tab_rel,$i) {
 							$pdf->SetFont('DejaVu','',8);
 							$pdf->SetXY($X_col_moy,$Y_cadre_note+$hauteur_utilise);
 
-							$valeur=$moy_gen_eleve[$indice_ele];
+							$valeur=arrondir_moyenne($moy_gen_eleve[$indice_ele]);
 							$pdf->Cell($largeur_cadre_moy, $hauteur_cadre_matiere, $valeur, 'LRBT', 2, 'C');
 
 							$pdf->SetXY($X_col_note,$Y_cadre_note+$hauteur_utilise);
@@ -3613,7 +3640,7 @@ function releve_pdf($tab_rel,$i) {
 						else {
 							$pdf->SetXY($X_col_note,$Y_cadre_note+$hauteur_utilise);
 							$pdf->SetFont('DejaVu','',8);
-							$valeur=$moy_gen_eleve[$indice_ele];
+							$valeur=arrondir_moyenne($moy_gen_eleve[$indice_ele]);
 							$pdf->Cell($largeur_cadre_note, $hauteur_cadre_matiere, $valeur, 'LRBT', 2, 'C');
 						}
 					}
