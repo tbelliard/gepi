@@ -1,6 +1,6 @@
 <?php
 /**
- * calcul de la moyenne générale
+ * Calcul de la moyenne générale
  * 
  * 
  * Script à appeler dans le code
@@ -13,7 +13,7 @@
  * - $id_classe : la classe concernée
  * - $periode_num : la période concernée
  * 
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * @license GNU/GPL
  * @package Notes
  * @subpackage scripts
@@ -21,7 +21,10 @@
  * @see get_group()
  */
 
-
+// =======================================================
+// Moyennes des bulletins ou moyennes des carnets de notes
+// Selon que $calculer_moy_gen_pour_carnets_de_notes est initialisé ou non, on recherchera les moyennes dans cn_notes_conteneurs ou dans matieres_notes
+// =======================================================
 
 // Ce parametre n'est pas pris en compte... si on l'augmente, des filtrages ont lieu plus loin hors de ce fichier
 $nb_chiffres_moy=1;
