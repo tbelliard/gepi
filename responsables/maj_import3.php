@@ -12201,11 +12201,20 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				}
 
 				// S'il reste des resp_legal 9
-				$sql="SELECT DISTINCT r.* FROM responsables2 r, eleves e, j_eleves_classes jec WHERE r.resp_legal='9' AND e.ele_id=r.ele_id AND jec.login=e.login;";
+				$sql="SELECT DISTINCT rp.nom, rp.prenom, r.* FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE rp.pers_id=r.pers_id AND r.resp_legal='9' AND e.ele_id=r.ele_id AND jec.login=e.login;";
 				//echo "$sql<br />";
 				$res=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res)>0) {
-					echo "<p style='color:red; margin-top:1em;'>Il reste ".mysqli_num_rows($res)." responsables non traités (codés RESP_LEGAL 9).</p>";
+					echo "<p style='color:red; margin-top:1em;'>Il reste ".mysqli_num_rows($res)." responsables non traités <em>(codés RESP_LEGAL 9)</em>&nbsp;:<br />";
+					$cpt_r9=0;
+					while($lig=mysqli_fetch_object($res)) {
+						if($cpt_r9>0) {
+							echo ", ";
+						}
+						echo "<a href='modify_resp.php?pers_id=".$lig->pers_id."' target='_blank'>".$lig->nom." ".$lig->prenom."</a>";
+						$cpt_r9++;
+					}
+					echo "</p>";
 				}
 
 
