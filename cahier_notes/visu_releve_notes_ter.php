@@ -448,7 +448,44 @@ $chaine_coef="coef:";
 //========================================
 // Extraction des données externalisée pour permettre un appel depuis la génération de bulletins de façon à intercaler les relevés de notes entre les bulletins
 include("extraction_donnees_releves_notes.php");
+// En sortie, $current_eleve_login ne contient que l'élève choisi.
 //========================================
+
+if(getSettingAOui('cn_affiche_moy_gen')) {
+	$afficher_ligne_moy_gen=getParamClasse($id_classe, 'rn_moy_gen', 'n');
+
+	if($afficher_ligne_moy_gen=='y') {
+		// Il faut placer calcul_moy_gen.inc.php après extraction_donnees_releves_notes.php 
+		// pour avoir le $current_eleve_login avec tous ses indices pour récupérer le bon indice 
+		// dans visu_releve_notes_func.lib.php pour $moy_gen_eleve
+		$periode_num=$num_periode;
+		$affiche_categories=false;
+		$affiche_graph=false;
+		$afficher_ligne_moy_gen='y';
+		$calculer_moy_gen_pour_carnets_de_notes=true;
+		include("../lib/calcul_moy_gen.inc.php");
+
+		/*
+		// DEBUG: 20180414
+		if($periode_num==3) {
+			echo "<div style='float:left;width:30em;'><pre>";
+			print_r($current_eleve_login);
+			echo "</pre></div>";
+			echo "<div style='float:left;width:30em;'><pre>";
+			print_r($moy_gen_eleve);
+			echo "</pre></div>";
+
+			echo "<div style='float:left;width:30em;'><pre>";
+			print_r($tab_releve);
+			echo "</pre></div>";
+		}
+		*/
+	}
+}
+else {
+	$afficher_ligne_moy_gen='n';
+}
+
 
 //========================================================================
 // A CE STADE LE TABLEAU $tab_releve EST RENSEIGNé
