@@ -838,6 +838,31 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 					}
 					echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
+
+					// 20180423
+					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$lig->id';";
+					$test1=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_copies=mysqli_num_rows($test1);
+
+					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$lig->id' AND statut!='v';";
+					$test3=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_copies_saisies=mysqli_num_rows($test3);
+					if($nb_copies==$nb_copies_saisies) {
+						$color_saisies='green';
+					}
+					else {
+						$color_saisies='red';
+					}
+					echo " <em style='color:$color_saisies' title=\"Nombre de notes saisies.\">(".$nb_copies_saisies."/".$nb_copies.")</em>";
+
+					if($nb_copies==$nb_copies_saisies) {
+						$sql="SELECT 1=1 FROM eb_groupes WHERE transfert!='y' AND id_epreuve='$lig->id';";
+						$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test2)==0) {
+							echo " <img src='../images/icons/chaine.png' class='icone16' alt='Transfert' title='Transfert vers le carnet de notes effectué.' />";
+						}
+					}
+
 					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=suppr_epreuve".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer l épreuve?')\">Supprimer</a><br />\n";
 				}
 				echo "</li>\n";
@@ -2136,17 +2161,10 @@ eb_salles
 				// Espace pour que les infobulles CSS puissent s'afficher.
 				echo "<div style='height:10em;'>&nbsp;</div>";
 
-
-
 			}
 		}
 
-
 	}
-
-
-
-
 
 }
 //=============================================================================
@@ -2203,7 +2221,59 @@ elseif($_SESSION['statut']=='professeur') {
 					$tabdiv_infobulle[]=creer_div_infobulle('div_epreuve_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');
 	
 				}
-				echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)<br />\n";
+				echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
+
+				// 20180423
+				$sql="SELECT * FROM eb_copies WHERE id_epreuve='$lig->id' AND login_prof='".$_SESSION['login']."';";
+				$test4=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_mes_copies=mysqli_num_rows($test4);
+				$sql="SELECT * FROM eb_copies WHERE id_epreuve='$lig->id' AND login_prof='".$_SESSION['login']."' AND statut!='v';";
+				$test5=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_mes_copies_saisies=mysqli_num_rows($test5);
+
+				if($nb_mes_copies==$nb_mes_copies_saisies) {
+					$color_saisies='green';
+				}
+				else {
+					$color_saisies='red';
+				}
+				echo " <em style='color:$color_saisies' title=\"Nombre de notes saisies parmi mes copies.\">(".$nb_mes_copies_saisies."/".$nb_mes_copies.")</em>";
+
+				$nb_copies=mysqli_num_rows($test1);
+
+				if($nb_copies!=$nb_mes_copies) {
+
+					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$lig->id' AND statut!='v';";
+					$test3=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_copies_saisies=mysqli_num_rows($test3);
+
+					if($nb_copies==$nb_copies_saisies) {
+						$color_saisies='green';
+					}
+					else {
+						$color_saisies='red';
+					}
+					echo " <em style='color:$color_saisies' title=\"Nombre de notes saisies sur l'épreuve.\">(".$nb_copies_saisies."/".$nb_copies.")</em>";
+
+					if($nb_copies==$nb_copies_saisies) {
+						$sql="SELECT 1=1 FROM eb_groupes WHERE transfert!='y' AND id_epreuve='$lig->id';";
+						$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test2)==0) {
+							echo " <img src='../images/icons/chaine.png' class='icone16' alt='Transfert' title='Transfert vers le carnet de notes effectué.' />";
+						}
+					}
+				}
+				else {
+					if($nb_mes_copies==$nb_mes_copies_saisies) {
+						$sql="SELECT 1=1 FROM eb_groupes WHERE transfert!='y' AND id_epreuve='$lig->id';";
+						$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test2)==0) {
+							echo " <img src='../images/icons/chaine.png' class='icone16' alt='Transfert' title='Transfert vers le carnet de notes effectué.' />";
+						}
+					}
+				}
+
+				echo "<br />\n";
 			}
 			echo "</li>\n";
 		}
