@@ -248,7 +248,7 @@ echo "<form enctype=\"multipart/form-data\" name= \"form0\" action=\"".$_SERVER[
 echo "<div class='norme'>\n";
 echo "<p class='bold'>\n";
 echo "<a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-echo " | <a href='add_modif_cc_dev.php?id_racine=$id_racine'>Ajouter une $nom_cc</a>";
+echo " | <a href='add_modif_cc_dev.php?id_racine=$id_racine' title=\"Ajouter une $nom_cc\">Ajouter une $nom_cc <img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a>";
 
 $sql="SELECT DISTINCT ccn.id_cahier_notes, g.*, c.classe FROM cn_cahier_notes ccn, groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classes c WHERE (login='".$_SESSION['login']."'
 						AND jgp.id_groupe=ccn.id_groupe
@@ -313,7 +313,7 @@ $nb_eleves=count($current_group["eleves"][$periode_num]["users"]);
 $date_courante=strftime("%Y-%m-%d");
 
 //echo "<p>Liste des $nom_cc non rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
-echo "<p>Liste des $nom_cc&nbsp;: <br />\n";
+echo "<p>Liste des $nom_cc&nbsp;: <a href='add_modif_cc_dev.php?id_racine=$id_racine' title=\"Ajouter une $nom_cc\"><a href='add_modif_cc_dev.php?id_racine=$id_racine'><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a><br />\n";
 //$sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe' AND id_cn_dev NOT IN (SELECT id FROM cn_devoirs);";
 $sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe';";
 //echo "$sql<br />\n";
@@ -347,7 +347,7 @@ Cliquez pour rendre visible cette ".$nom_cc." des familles.' alt='Evaluation non
 		echo ")";
 
 		echo " | ";
-		echo "<a href='add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Ajouter une évaluation</a>";
+		echo "<a href='add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Ajouter une évaluation <img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a>";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;action=suppr_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($lig->nom_court)."', '".$message_dev."')\">Supprimer</a>";
 		echo " | ";
@@ -422,7 +422,20 @@ echo "
 </script>";
 
 
-echo "<p style='text-indent:-3em; margin-left:3em;'><em>NOTE&nbsp;:</em><br />Les $nom_cc ne sont pas rattachées à une période.<br />Elles peuvent être à cheval sur plusieurs périodes.<br />Cependant, le transfert des notes vers un carnet de notes n'est possible que vers une période ouverte en saisie.</p>\n";
+echo "<p style='text-indent:-3em; margin-left:3em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>
+		<p>Une $nom_cc est une sorte de conteneur dans lequel vous créérez plusieurs évaluations.<br />
+	Les points cumulés de ces évaluations donneront une note ramenée sur 20 pour l'$nom_cc.<br />
+	Vous devez donc commencer par créer l'$nom_cc puis y créer une première évaluation correspondant à votre premier paquet de copies.<br />
+	Vous saisissez ainsi les différentes évaluations et quand l'$nom_cc est achevé, vous pouvez transférer les notes obtenues par cumul vers une évaluation du carnet de notes <em>(soit vers une évaluation existante dans le carnet de notes, soit vers une nouvelle évaluation dont il faudra éventuellement penser à adapter le coefficient à vos souhaits)</em>.</p>
+	</li>
+	<li>
+		<p>Les $nom_cc ne sont pas rattachées à une période.<br />Elles peuvent être à cheval sur plusieurs périodes.<br />Cependant, le transfert des notes vers un carnet de notes n'est possible que vers une période ouverte en saisie.</p>
+		<p><strong>Astuce&nbsp;:</strong> Lorsque toutes les périodes sont closes <em>(passage entre deux périodes)</em>, vous pouvez créer une $nom_cc pour le contrôle qui est tombé à ce moment particulier de fermeture.<br />
+		Vous y saisissez temporairement les notes dans une unique évaluation et quand la période suivante s'ouvre, vous pouvez transférer les notes vers une évaluation du carnet de notes.</p>
+	</li>
+</ul>\n";
 
 /**
  * inclusion du pied de page
