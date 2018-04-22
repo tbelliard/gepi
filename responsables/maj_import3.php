@@ -2057,6 +2057,13 @@ else{
 					}
 				}
 
+				echo "<p>";
+				echo "<a href=\"javascript:modifcase('coche')\">";
+				echo "Cocher tous les élèves qu'il est possible de désinscrire</a>";
+				echo " / ";
+				echo "<a href=\"javascript:modifcase('decoche')\">";
+				echo "Tout décocher</a></p>\n";
+
 				//echo "<input type='hidden' name='step' value='2c' />\n";
 				echo "<input type='hidden' name='parcours_desinscriptions' value='y' />\n";
 				echo "<input type='hidden' name='step' value='2b' />\n";
@@ -12214,6 +12221,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						echo "<a href='modify_resp.php?pers_id=".$lig->pers_id."' target='_blank'>".$lig->nom." ".$lig->prenom."</a>";
 						$cpt_r9++;
 					}
+					echo "<br />Vous devriez contrôler ces responsables pour éventuellement les taguer RESP_LEGAL 0 (pour qu'ils soient considérés comme 'contact' pour des appels téléphoniques en cas d'absence de l'élève, de problème de santé,...) et leur attribuer éventuellement aussi un accès aux notes/bulletins selon les cas.";
 					echo "</p>";
 				}
 
@@ -12286,13 +12294,16 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					echo "</td>\n";
 
 					echo "<td>\n";
-					$sql="SELECT nom,prenom FROM eleves WHERE ele_id='$lig->ele_id';";
+					$sql="SELECT login, nom, prenom FROM eleves WHERE ele_id='$lig->ele_id';";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res2)==0) {
 						echo "Elève inconnu";
 					}
 					else {
 						$lig2=mysqli_fetch_object($res2);
+
+						echo "<div style='float:right; width:16px;'><a href='../eleves/visu_eleve.php?ele_login=".$lig2->login."' target='_blank' title=\"Voir le dossier élève dans un nouvel onglet.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Fiche' /></a></div>";
+
 						echo casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2');
 					}
 					echo "</td>\n";
@@ -12300,7 +12311,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 					echo "<td>\n";
 					// Civilite Nom Prenom du responsable
-					$sql="SELECT civilite,nom,prenom,resp_legal FROM resp_pers rp, responsables2 r WHERE rp.pers_id='$lig->pers_id' AND rp.pers_id=r.pers_id AND r.ele_id='$lig->ele_id';";
+					$sql="SELECT rp.pers_id, civilite, nom, prenom, resp_legal FROM resp_pers rp, responsables2 r WHERE rp.pers_id='$lig->pers_id' AND rp.pers_id=r.pers_id AND r.ele_id='$lig->ele_id';";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res2)==0) {
 						echo "Reponsable inconnu";
@@ -12311,6 +12322,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					}
 					else {
 						$lig2=mysqli_fetch_object($res2);
+
+						echo "<div style='float:right; width:16px;'><a href='../responsables/modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank' title=\"Voir la fiche responsable dans un nouvel onglet.\"><img src='../images/icons/responsable.png' class='icone16' alt='Responsable' /></a></div>";
+
 						echo $lig2->civilite." ".casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2');
 						echo "</td>\n";
 						echo "<td>\n";
@@ -12323,11 +12337,13 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					echo "</tr>\n";
 					$cpt++;
 				}
-
+				echo "</table>";
 
 				echo "<input type='hidden' name='step' value='21' />\n";
-				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				echo "<p style='margin-top:0.5em;'><input type=submit value='Valider' /></p>\n";
 				echo "</form>\n";
+
+				echo "<p style='margin-top:1em;'>Si vous ne souhaitez pas effectuer cette/ces suppression(s), vous pouvez néanmoins accéder à la <a href='".$_SERVER['PHP_SELF']."?step=21".add_token_in_url()."'>dernière étape de traitement.</a></p>\n";
 
 				echo "<script type='text/javascript'>
 	function modifcase(mode){
