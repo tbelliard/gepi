@@ -438,9 +438,11 @@ if($tri=='groupe') {
 
 				$login_ele=$current_group["eleves"]["all"]["list"][$j];
 				echo "<td>\n";
+				$numero_anonymat='';
 				if(isset($tab_ele_anonymat[$login_ele])) {
-					echo $tab_ele_anonymat[$login_ele];
+					$numero_anonymat=$tab_ele_anonymat[$login_ele];
 				}
+				echo $numero_anonymat;
 				echo "</td>\n";
 
 				echo "<td style='text-align:left;'>\n";
@@ -462,6 +464,7 @@ if($tri=='groupe') {
 					else {
 						echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
 						echo "onchange='calcule_effectif();changement();' ";
+						echo "title=\"Attribuer la copie n°".$numero_anonymat." à ".$info_prof[$i]."\" ";
 						// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
 						if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "checked ";$affect="y";}
 						echo "/>\n";
@@ -476,6 +479,7 @@ if($tri=='groupe') {
 				}
 				else {
 					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='' ";
+					echo "title=\"Supprimer l'attribution de la copie n°".$numero_anonymat." à tel ou tel professeur.\" ";
 					echo "onchange='calcule_effectif();changement();' ";
 					if($affect=="n") {echo "checked ";}
 					echo "/>\n";
@@ -759,7 +763,13 @@ elseif($tri=='n_anonymat') {
 		echo "<tr class='white_hover'>\n";
 		echo "<td>";
 		//echo $loop." "; //DEBUG
-		echo $tab_eleves[$loop]['n_anonymat']."</td>\n";
+		$numero_anonymat='';
+		if(isset($tab_eleves[$loop]['n_anonymat'])) {
+			$numero_anonymat=$tab_eleves[$loop]['n_anonymat'];
+		}
+		echo $numero_anonymat;
+		echo "</td>\n";
+
 		echo "<td style='text-align:left;'>\n";
 		$login_ele=$tab_eleves[$loop]['login_ele'];
 		echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
@@ -793,6 +803,7 @@ elseif($tri=='n_anonymat') {
 
 			if($etat!='clos') {
 				echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
+				echo "title=\"Attribuer la copie n°".$numero_anonymat." à ".$info_prof[$i]."\" ";
 				echo "onchange='calcule_effectif();changement();' ";
 				// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
 				if($tab_eleves[$loop]['login_prof']==$login_prof[$i]) {echo "checked ";$affect="y";}
@@ -807,6 +818,7 @@ elseif($tri=='n_anonymat') {
 		echo "<td>\n";
 		if($etat!='clos') {
 			echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='' ";
+			echo "title=\"Supprimer l'attribution de la copie n°".$numero_anonymat." à tel ou tel professeur.\" ";
 			echo "onchange='calcule_effectif();changement();' ";
 			if($affect=="n") {echo "checked ";}
 			echo "/>\n";
@@ -1068,7 +1080,8 @@ elseif($tri=='salle') {
 			echo "<tr class='lig$alt white_hover'>\n";
 
 			echo "<td>\n";
-			echo $lig2->n_anonymat;
+			$numero_anonymat=$lig2->n_anonymat;
+			echo $numero_anonymat;
 			echo "</td>\n";
 
 			echo "<td style='text-align:left;'>\n";
@@ -1094,6 +1107,7 @@ elseif($tri=='salle') {
 
 				if($etat!='clos') {
 					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
+					echo "title=\"Attribuer la copie n°".$numero_anonymat." à ".$info_prof[$i]."\" ";
 					echo "onchange='calcule_effectif();changement();' ";
 					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
 					if($lig2->login_prof==$login_prof[$i]) {echo "checked ";$affect="y";}
@@ -1108,6 +1122,7 @@ elseif($tri=='salle') {
 			echo "<td>\n";
 			if($etat!='clos') {
 				echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='' ";
+				echo "title=\"Supprimer l'attribution de la copie n°".$numero_anonymat." à tel ou tel professeur.\" ";
 				echo "onchange='calcule_effectif();changement();' ";
 				if($affect=="n") {echo "checked ";}
 				echo "/>\n";
