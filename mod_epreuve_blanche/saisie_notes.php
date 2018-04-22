@@ -673,9 +673,22 @@ function verifcol(num_id){
 	note=document.getElementById('n'+num_id).value;
 
 	if((note!='-')&&(note!='disp')&&(note!='abs')&&(note!='')){
-		//if((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0))){
-		if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
-	((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
+		if((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0))) {
+			if((note>$note_sur)||(note<0)){
+				couleur='red';
+				if(document.getElementById('td_sur_20_'+num_id)) {
+					document.getElementById('td_sur_20_'+num_id).innerHTML='';
+				}
+			}
+			else{
+				couleur='$couleur_devoirs';
+				if(document.getElementById('td_sur_20_'+num_id)) {
+					document.getElementById('td_sur_20_'+num_id).innerHTML=eval(note*20/$note_sur);
+				}
+			}
+		}
+		else if((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0))) {
+			note=note.replace(',', '.');
 			if((note>$note_sur)||(note<0)){
 				couleur='red';
 				if(document.getElementById('td_sur_20_'+num_id)) {
