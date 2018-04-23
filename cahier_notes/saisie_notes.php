@@ -2,7 +2,7 @@
 /**
  * saisie des Notes
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun; Stephane Boireau
 *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -414,6 +414,14 @@ if (isset($_POST['is_posted'])) {
 	}
 	else {
 		unset($cn_precision);
+	}
+
+	$cn_mode_saisie=isset($_POST['cn_mode_saisie']) ? $_POST['cn_mode_saisie'] : 0;
+	if(in_array($cn_mode_saisie, array(0, 1, 2))) {
+		savePref($_SESSION['login'],'cn_mode_saisie',$cn_mode_saisie);
+	}
+	else {
+		unset($cn_mode_saisie);
 	}
 
 	$log_eleve=$_POST['log_eleve'];
@@ -1250,7 +1258,8 @@ foreach ($liste_eleves as $eleve) {
 			if (($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N")||($acces_exceptionnel_saisie)) {
 				
 				$indice_ele_saisie[$i]=$num_id;
-				$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve[$i]\" ";
+				//$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve[$i]\" ";
+				$mess_note[$i][$k] .= "<input id=\"n".$num_id."\" onKeyUp=\"clavier_note(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve[$i]\" ";
 				$mess_note[$i][$k] .= "autocomplete='off' ";
 				$mess_note[$i][$k] .= "value=\"";
 			}
@@ -1487,8 +1496,9 @@ echo "<td class=cn valign='top'>";
 echo "<p id='p_ramener_sur_N' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a>";
 // 20120509
 //if(getSettingAOui('cn_increment_notes')) {
-	echo " - <a href='#' onclick=\"affichage_modif_note();return false;\" title='Incrémenter/décrémenter les notes de $delta_modif_note'>+/-</a>";
+	echo " . <a href='#' onclick=\"affichage_modif_note();return false;\" title='Incrémenter/décrémenter les notes de $delta_modif_note'>+/-</a>";
 //}
+echo " . <a href='#' onclick=\"afficher_div('div_facilite_saisie','y',20,20); return false;\" target=\'_blank\' title=\"Afficher la fenêtre de choix du mode de saisie.\"><img src='../images/icons/wizard.png' class='icone16' alt='Facilité de saisie' /></a>";
 echo "</p>";
 echo "<input type='hidden' name='cn_precision' id='cn_precision' value='' />\n";
 echo "</td>\n";
@@ -2402,6 +2412,9 @@ if(getPref($_SESSION['login'], 'cn_avec_sup10', 'y')=='y') {
 }
 echo "</table>\n";
 
+$cn_mode_saisie=getPref($_SESSION['login'], 'cn_mode_saisie', 0);
+echo "<input type='hidden' name='cn_mode_saisie' id='cn_mode_saisie' value='".$cn_mode_saisie."' />";
+
 if((isset($id_devoir))&&($id_devoir!=0)) {
 	echo "<div id='div_q_p' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
 		echo "<div id='div_quartiles' style='text-align:center; display:none;'>\n";
@@ -2602,9 +2615,56 @@ if ($id_devoir) {
 	echo "<span id='p_ramener_sur_N2' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a></span>";
 
 	//=====================================================
+	// Facilité de saisie
+	//$cn_mode_saisie=getPref($_SESSION['login'], 'cn_mode_saisie', 0);
+
+	$titre_infobulle="Facilités de saisie";
+	$texte_infobulle="<p>Vous pouvez choisir parmi plusieurs modes de saisies&nbsp;:</p>
+
+<p style='text-indent:-2em; margin-left:2em;'>
+	<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_0' value='0' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==0 ? "checked " : "")."/>
+	<label for='cn_mode_saisie_0' id='texte_cn_mode_saisie_0'".($cn_mode_saisie==0 ? " style='font-weight:bold'" : "").">On passe au champ suivant (en dessous) en pressant la flèche vers le bas.</label>
+</p>
+
+<p style='text-indent:-2em; margin-left:2em;'>
+	<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_1' value='1' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==1 ? "checked " : "")."/>
+	<label for='cn_mode_saisie_1' id='texte_cn_mode_saisie_1'".($cn_mode_saisie==1 ? " style='font-weight:bold'" : "").">On passe au champ suivant (en dessous) en pressant la flèche vers le bas ou en tapant un nombre à un chiffre après la virgule.<br />
+	<em>Exemple&nbsp;:</em> Si vous tapez <strong>12.5</strong> ou <strong>8.0</strong>, vous passerez à la note suivante.</label>
+</p>
+<p style='text-indent:-2em; margin-left:2em;'>
+	<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_2' value='2' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==2 ? "checked " : "")."/>
+	<label for='cn_mode_saisie_2' id='texte_cn_mode_saisie_2'".($cn_mode_saisie==2 ? " style='font-weight:bold'" : "").">On passe au champ suivant (en dessous) en pressant la flèche vers le bas ou en tapant un nombre à trois chiffres pour le nombre de dixièmes de la note.<br />
+	<em>Exemple&nbsp;:</em> Pour 12.5, vous pouvez taper <strong>125</strong>, la note sera corrigée en 12.5 et le pointeur passera à la note suivante.<br />
+	Pour 8/20, il faudra taper <strong>080</strong></label>
+<p>
+<p><input type='button' name='valider_choix_mode_saisie' value='Valider' onclick='effectuer_choix_mode_saisie()' /></p>
+
+<p style='margin-top:1em; text-indent:-3.8em; margin-left:3.8em;'><em>NOTE&nbsp;:</em> Dans tous les cas, on passe à la note suivante <em>(en dessous)</em> ou précédente en pressant les flèches Bas/Haut du pavé de direction.<br />
+	Et on passe à la note suivante lorsqu'on presse <strong>a</strong> pour absent, <strong>d</strong> pour dispensé ou <strong>-</strong> pour non noté.</p>";
+
+	$tabdiv_infobulle[]=creer_div_infobulle('div_facilite_saisie',$titre_infobulle,"",$texte_infobulle,"",45,0,'y','y','n','n');
+
+	echo "<span id='p_facilite_saisie_2' style='display:none'> <a href='#' onclick=\"afficher_div('div_facilite_saisie','y',20,20); return false;\" target=\'_blank\'>Modes de saisie</a></span>";
+
+	//=====================================================
 
 	echo "<script type='text/javascript'>
 	".js_checkbox_change_style()."
+
+	function effectuer_choix_mode_saisie() {
+		if(document.getElementById('cn_mode_saisie')) {
+			if(document.getElementById('cn_mode_saisie_0').checked) {
+				document.getElementById('cn_mode_saisie').value=0;
+			}
+			if(document.getElementById('cn_mode_saisie_1').checked) {
+				document.getElementById('cn_mode_saisie').value=1;
+			}
+			if(document.getElementById('cn_mode_saisie_2').checked) {
+				document.getElementById('cn_mode_saisie').value=2;
+			}
+		}
+		cacher_div('div_facilite_saisie');
+	}
 
 	function effectuer_ramener_sur_N() {
 		if((document.getElementById('ramener_sur_N'))&&(document.getElementById('ramener_sur_N').value!='')&&(document.getElementById('total_bareme'))&&(document.getElementById('total_bareme').value!='')) {
@@ -2745,6 +2805,7 @@ if ($id_devoir) {
 
 	document.getElementById('p_ramener_sur_N').style.display='';
 	document.getElementById('p_ramener_sur_N2').style.display='';
+	document.getElementById('p_facilite_saisie_2').style.display='';
 	
 	function recopier_notes_vers_textarea() {
 		if(document.getElementById('textarea_notes')) {
