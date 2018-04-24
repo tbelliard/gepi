@@ -2619,21 +2619,21 @@ if ($id_devoir) {
 	//$cn_mode_saisie=getPref($_SESSION['login'], 'cn_mode_saisie', 0);
 
 	$titre_infobulle="Facilités de saisie";
-	$texte_infobulle="<p>Vous pouvez choisir parmi plusieurs modes de saisies&nbsp;:</p>
+	$texte_infobulle="<p>Vous pouvez choisir parmi plusieurs modes de saisie des notes&nbsp;:</p>
 
 <p style='text-indent:-2em; margin-left:2em;'>
 	<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_0' value='0' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==0 ? "checked " : "")."/>
-	<label for='cn_mode_saisie_0' id='texte_cn_mode_saisie_0'".($cn_mode_saisie==0 ? " style='font-weight:bold'" : "").">On passe au champ suivant (en dessous) en pressant la flèche vers le bas.</label>
+	<label for='cn_mode_saisie_0' id='texte_cn_mode_saisie_0'".($cn_mode_saisie==0 ? " style='font-weight:bold'" : "").">On passe au champ suivant <em>(en dessous)</em> en pressant la flèche vers le bas.</label>
 </p>
 
 <p style='text-indent:-2em; margin-left:2em;'>
 	<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_1' value='1' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==1 ? "checked " : "")."/>
-	<label for='cn_mode_saisie_1' id='texte_cn_mode_saisie_1'".($cn_mode_saisie==1 ? " style='font-weight:bold'" : "").">On passe au champ suivant (en dessous) en pressant la flèche vers le bas ou en tapant un nombre à un chiffre après la virgule.<br />
+	<label for='cn_mode_saisie_1' id='texte_cn_mode_saisie_1'".($cn_mode_saisie==1 ? " style='font-weight:bold'" : "").">On passe au champ suivant <em>(en dessous)</em> en pressant la flèche vers le bas ou en tapant un nombre à un chiffre après la virgule.<br />
 	<em>Exemple&nbsp;:</em> Si vous tapez <strong>12.5</strong> ou <strong>8.0</strong>, vous passerez à la note suivante.</label>
 </p>
 <p style='text-indent:-2em; margin-left:2em;'>
 	<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_2' value='2' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==2 ? "checked " : "")."/>
-	<label for='cn_mode_saisie_2' id='texte_cn_mode_saisie_2'".($cn_mode_saisie==2 ? " style='font-weight:bold'" : "").">On passe au champ suivant (en dessous) en pressant la flèche vers le bas ou en tapant un nombre à trois chiffres pour le nombre de dixièmes de la note.<br />
+	<label for='cn_mode_saisie_2' id='texte_cn_mode_saisie_2'".($cn_mode_saisie==2 ? " style='font-weight:bold'" : "").">On passe au champ suivant <em>(en dessous)</em> en pressant la flèche vers le bas ou en tapant un nombre à trois chiffres pour le nombre de dixièmes de la note.<br />
 	<em>Exemple&nbsp;:</em> Pour 12.5, vous pouvez taper <strong>125</strong>, la note sera corrigée en 12.5 et le pointeur passera à la note suivante.<br />
 	Pour 8/20, il faudra taper <strong>080</strong></label>
 <p>
@@ -2644,7 +2644,7 @@ if ($id_devoir) {
 
 	$tabdiv_infobulle[]=creer_div_infobulle('div_facilite_saisie',$titre_infobulle,"",$texte_infobulle,"",45,0,'y','y','n','n');
 
-	echo "<span id='p_facilite_saisie_2' style='display:none'> <a href='#' onclick=\"afficher_div('div_facilite_saisie','y',20,20); return false;\" target=\'_blank\'>Modes de saisie</a></span>";
+	echo "<span id='p_facilite_saisie_2' style='display:none'> - <a href='#' onclick=\"afficher_div('div_facilite_saisie','y',20,20); return false;\" target=\'_blank\'>Modes de saisie <img src='../images/icons/wizard.png' class='icone16' alt='Facilité de saisie' /></a></span>";
 
 	//=====================================================
 
