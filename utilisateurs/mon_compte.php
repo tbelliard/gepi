@@ -977,6 +977,17 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 		$nb_reg++;
 	}
 
+	$cn_mode_saisie=isset($_POST['cn_mode_saisie']) ? $_POST['cn_mode_saisie'] : 0;
+	if(in_array($cn_mode_saisie, array(0, 1, 2))) {
+		if(!savePref($_SESSION['login'],'cn_mode_saisie',$cn_mode_saisie)) {
+			$msg.="Erreur lors de l'enregistrement de 'cn_mode_saisie'<br />\n";
+			$message_cn.="Erreur lors de l'enregistrement de 'cn_mode_saisie'.<br />";
+		}
+		else {
+			$nb_reg++;
+		}
+	}
+
 	if($message_cn!='') {
 		$message_cn="<p style='color:red'>".$message_cn."</p>";
 	}
@@ -2955,7 +2966,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 
 	echo "<br />\n";
 
-	echo "<p>Paramétrage de la page de <b>création d'évaluation</b></p>\n";
+	echo "<p style='margin-top:2em; font-weight:bold;'>Interfaces simplifiées/allégées</p>";
+
+	echo "<p style='margin-top:1em;'>Paramétrage de la page de <b>création d'évaluation</b></p>\n";
 	echo "<div style='margin-left:3em;'>\n";
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite', 'add_modif_dev_display_parents', 'add_modif_dev_display_parents_app');
@@ -3071,9 +3084,42 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "</table>\n";
 	echo "</div>\n";
 
+	//+++++++++++++++++++++
+
+	echo "<p><br /></p>";
+
+	// Facilités de saisie
+	$cn_mode_saisie=getPref($_SESSION['login'], 'cn_mode_saisie', 0);
+	echo "<p style='font-weight:bold; margin-top:2em;'>Facilités de saisie</p>
+
+	<p>Vous pouvez choisir parmi plusieurs modes de saisie des notes&nbsp;:</p>
+
+	<p style='text-indent:-2em; margin-left:2em;'>
+		<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_0' value='0' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==0 ? "checked " : "")."/>
+		<label for='cn_mode_saisie_0' id='texte_cn_mode_saisie_0'".($cn_mode_saisie==0 ? " style='font-weight:bold'" : "").">On passe au champ suivant <em>(en dessous)</em> en pressant la flèche vers le bas.</label>
+	</p>
+
+	<p style='text-indent:-2em; margin-left:2em;'>
+		<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_1' value='1' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==1 ? "checked " : "")."/>
+		<label for='cn_mode_saisie_1' id='texte_cn_mode_saisie_1'".($cn_mode_saisie==1 ? " style='font-weight:bold'" : "").">On passe au champ suivant <em>(en dessous)</em> en pressant la flèche vers le bas ou en tapant un nombre à un chiffre après la virgule.<br />
+		<em>Exemple&nbsp;:</em> Si vous tapez <strong>12.5</strong> ou <strong>8.0</strong>, vous passerez à la note suivante.</label>
+	</p>
+	<p style='text-indent:-2em; margin-left:2em;'>
+		<input type='radio' name='cn_mode_saisie' id='cn_mode_saisie_2' value='2' onchange=\"changement(); checkbox_change('cn_mode_saisie_0');checkbox_change('cn_mode_saisie_1');checkbox_change('cn_mode_saisie_2');\" ".($cn_mode_saisie==2 ? "checked " : "")."/>
+		<label for='cn_mode_saisie_2' id='texte_cn_mode_saisie_2'".($cn_mode_saisie==2 ? " style='font-weight:bold'" : "").">On passe au champ suivant <em>(en dessous)</em> en pressant la flèche vers le bas ou en tapant un nombre à trois chiffres pour le nombre de dixièmes de la note.<br />
+		<em>Exemple&nbsp;:</em> Pour 12.5, vous pouvez taper <strong>125</strong>, la note sera corrigée en 12.5 et le pointeur passera à la note suivante.<br />
+		Pour 8/20, il faudra taper <strong>080</strong></label>
+	</p>
+
+	<p style='margin-top:1em; text-indent:-3.8em; margin-left:3.8em;'><em>NOTE&nbsp;:</em> Dans tous les cas, on passe à la note suivante <em>(en dessous)</em> ou précédente en pressant les flèches Bas/Haut du pavé de direction.<br />
+	Et on passe à la note suivante lorsqu'on presse <strong>a</strong> pour absent, <strong>d</strong> pour dispensé ou <strong>-</strong> pour non noté.</p>";
+
+	//+++++++++++++++++++++
+
 	$cnBoitesModeMoy=getPref($_SESSION['login'], 'cnBoitesModeMoy', '');
 	echo "<p><br /></p>
 <a name='cnBoitesModeMoy'></a>
+<p style='margin-top:2em; font-weight:bold;'>Mode de calcul de la moyenne des carnets de notes</p>
 <p>Mode de calcul <strong title='Vous pourrez effectuer un autre choix pour certains carnets de notes en suivant le lien Configuration dans votre carnet de notes.'>par défaut</strong> des moyennes de carnets de notes dans le cas où vous créez des ".getSettingValue("gepi_denom_boite")."s&nbsp;:</p>
 <div style='margin-left:3em;'>
 
