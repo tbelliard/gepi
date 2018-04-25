@@ -226,6 +226,8 @@ $chaine_son_alerte="
 if ($message_erreur != '') {
     $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.$message_erreur.'</span>';
 
+    $message_enregistrement.=' ('.strftime('%d/%m/%Y à %H:%M:%S').')';
+
 	if(getSettingAOui("abs2_jouer_sound_erreur")) {
 		$message_enregistrement .= $chaine_son_alerte;
 	}
@@ -271,27 +273,35 @@ if ($message_erreur != '') {
 		$test=mysqli_query($GLOBALS['mysqli'], $sql);
 		if(mysqli_num_rows($test)>0) {
 			$lig_saisie=mysqli_fetch_object($test);
-			$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$lig_saisie->id."'>Marqueur d'appel déjà enregistré</a><br/>";
+			$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$lig_saisie->id."'>Marqueur d'appel déjà enregistré</a>";
+			$message_enregistrement.=' ('.strftime('%d/%m/%Y à %H:%M:%S').')';
+			$message_enregistrement.='<br/>';
 
 			// Y a -t-il moyen de détruire la saisie initiée? $saisie->destroy()?
 		}
 		else {
 			$saisie->save();
-			$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a><br/>";
+			$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a>";
+			$message_enregistrement.=' ('.strftime('%d/%m/%Y à %H:%M:%S').')';
+			$message_enregistrement.='<br/>';
 		}
 	}
 	else {
 		$saisie->save();
-		$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a><br/>";
+		$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a>";
+		$message_enregistrement.=' ('.strftime('%d/%m/%Y à %H:%M:%S').')';
+		$message_enregistrement.='<br/>';
 	}
 
 } else {
 	//on arrete la saisie
 	$message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.format_verif_failures($saisie).'</span>';
+	$message_enregistrement.=' ('.strftime('%d/%m/%Y à %H:%M:%S').')';
 
 	if(getSettingAOui("abs2_jouer_sound_erreur")) {
 		$message_enregistrement .= $chaine_son_alerte;
 	}
+	$message_enregistrement.='<br/>';
 
 	include("saisir_groupe.php");
 	die();
