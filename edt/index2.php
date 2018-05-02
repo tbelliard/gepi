@@ -523,6 +523,24 @@ if($affichage!="semaine") {
 		$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 	}
 }
+elseif(isset($display_date)) {
+	if(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $display_date)) {
+		$msg.="Date $display_date invalide.<br />";
+		unset($display_date);
+		$display_date=strftime("%d/%m/%Y");
+		$affichage=id_j_semaine();
+	}
+
+	$tmp_tab=explode("/", $display_date);
+	$ts_display_date=mktime(12, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
+	$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
+	$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
+	//$num_semaine=strftime("%V", $ts_display_date);
+	$num_semaine=id_num_semaine($ts_display_date);
+
+	$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
+}
+
 //===================================================
 if((!isset($num_semaine_annee))||($num_semaine_annee=="")||(!preg_match("/[0-9]{2}\|[0-9]{4}/", $num_semaine_annee))) {
 	//$num_semaine_annee="36|".((strftime("%m")>7) ? strftime("%Y") : (strftime("%Y")-1));
