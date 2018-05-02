@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Bouguin Régis
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Bouguin Régis, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -852,6 +852,12 @@ if (!isset($periode_cn)) $periode_cn = 0;
 
 $themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_enregistrement = "Les modifications ont été enregistrées !";
+
+if(($message_enregistrement!='')&&(isset($affiche_message))&&($affiche_message=='yes')) {
+	$message_enregistrement.=" (".strftime("%d/%m/%Y à %H:%M:%S").")";
+	$msg.=$message_enregistrement;
+}
+
 $utilisation_prototype = "ok";
 $javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************

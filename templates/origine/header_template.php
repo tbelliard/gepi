@@ -97,6 +97,9 @@
 		var change = 'no';
 		function changement() {
 			change = 'yes';
+			if(document.getElementById('p_bandeau_template_tbs_msg')) {
+				document.getElementById('p_bandeau_template_tbs_msg').style.display='none';
+			}
 		}
 		//]]>
 	</script>

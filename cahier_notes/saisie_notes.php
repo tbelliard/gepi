@@ -594,6 +594,11 @@ if (isset($_POST['import_sacoche'])) {
 	$message_enregistrement = "Les modifications ont été enregistrées !";
 }
 
+if(($message_enregistrement!='')&&(isset($affiche_message))&&($affiche_message=='yes')) {
+	$message_enregistrement.=" (".strftime("%d/%m/%Y à %H:%M:%S").")";
+	$msg.=$message_enregistrement;
+}
+
 require('cc_lib.php');
 
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';

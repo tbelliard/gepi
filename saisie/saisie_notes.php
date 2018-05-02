@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -294,6 +294,15 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 if (!isset($is_posted)) {$is_posted = '';}
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_enregistrement = "Les modifications ont été enregistrées !";
+
+if(($message_enregistrement!='')&&(isset($affiche_message))&&($affiche_message=='yes')) {
+	$message_enregistrement.=" (".strftime("%d/%m/%Y à %H:%M:%S").")";
+	if(!isset($msg)) {
+		$msg='';
+	}
+	$msg.=$message_enregistrement;
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Saisie des moyennes";
 require_once("../lib/header.inc.php");

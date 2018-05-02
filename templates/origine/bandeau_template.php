@@ -463,7 +463,7 @@
 <?php
 			if ($tbs_msg !="") {
 ?>
-	<p class='headerMessage bold<?php if(isset($post_reussi) && $post_reussi) echo " vert" ;?>'>
+	<p id='p_bandeau_template_tbs_msg' class='headerMessage bold<?php if(isset($post_reussi) && $post_reussi) echo " vert" ;?>'>
 <?php
 		echo $tbs_msg;
 ?>
