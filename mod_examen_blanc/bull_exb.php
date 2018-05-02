@@ -1291,7 +1291,8 @@ function ModifCase(mode) {
 </script>\n";
 
 	//echo "<p style='color:red;'><b>A FAIRE&nbsp;:</b> Calculer les moyennes par matières,...</p>\n";
-	echo "<p style='color:red; margin-top:1em;'><i>NOTES&nbsp;:</i> Les moyennes supposent actuellement que le référentiel des devoirs est 20.<br />Il faudra modifier pour prendre en compte des notes sur autre chose que 20.<br />Les 'bonus' consistent à ne compter que les points supérieurs à 10.<br />Ex.: Pour 12 (coef 3), 14 (coef 1) et 13 (coef 2 et bonus), le calcul est (12*3+14*1+(13-10)*2)/(3+1)</p>\n";
+	// CA A ETE CORRIGE : Les moyennes supposent actuellement que le référentiel des devoirs est 20.<br />Il faudra modifier pour prendre en compte des notes sur autre chose que 20.<br />
+	echo "<p style='margin-top:1em;'><i>NOTES&nbsp;:</i> Les 'bonus' consistent à ne compter que les points supérieurs à 10.<br />Ex.: Pour 12 (coef 3), 14 (coef 1) et 13 (coef 2 et bonus), le calcul est (12*3+14*1+(13-10)*2)/(3+1)</p>\n";
 
 	//echo "<p><br /></p>\n";
 	//echo "<p style='color:red;'><i>PROBLEME&nbsp;:</i> 3B1 moyenne min  '-' alors que cela devrait être '0' ???</p>\n";
