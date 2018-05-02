@@ -470,13 +470,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 												// 20170326
 												if($lig_note->statut=="") {
-													if(!isset($tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
-														$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
-														$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
+													if(!isset($tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
+														$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
+														$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
 													}
 
-													$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=20*$lig_dev->note/$note_sur;
-													$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
+													$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=20*$lig_note->note/$note_sur;
+													$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
 												}
 											}
 										}
