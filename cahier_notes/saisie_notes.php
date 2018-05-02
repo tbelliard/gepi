@@ -2974,13 +2974,16 @@ $aff_quartiles_par_defaut=getPref($_SESSION['login'],'aff_quartiles_cn',"n");
 $aff_photo_cn_par_defaut=getPref($_SESSION['login'],'aff_photo_cn',"n");
 
 echo "<br />";
-echo $message_cnil_commentaires."<br />";
-
-if((isset($temoin_remarque_nb_notes_sup_10_autre_referentiel))&&($temoin_remarque_nb_notes_sup_10_autre_referentiel>0)) {
-	echo "** Le nombre de notes supérieures ou égales à la note moitié du référentiel est affiché.<br />
+echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li style='margin-bottom:1em;'><p>La page de saisie de notes dans le carnet de notes permet de choisir des <a href='#' onclick=\"afficher_div('div_facilite_saisie','y',20,20); return false;\" target=\'_blank\'>Modes de saisie <img src='../images/icons/wizard.png' class='icone16' alt='Facilité de saisie' /></a>.<br />
+	Selon vos préférences, vous opterez pour le mode historique de passage d'un champ note au suivant, ou vous opterez pour une des automatisations proposées.<br />
+	Cliquez sur le lien <strong>Modes de saisie</strong> ci-dessus pour plus de précisions.</p></li>
+	<li style='margin-bottom:1em;'><p>$message_cnil_commentaires</p></li>
+	".(((isset($temoin_remarque_nb_notes_sup_10_autre_referentiel))&&($temoin_remarque_nb_notes_sup_10_autre_referentiel>0)) ? "<li style='margin-bottom:1em;'><p>** Le nombre de notes supérieures ou égales à la note moitié du référentiel est affiché.<br />
 	Pour les notes sur 20, ce sera le nombre de notes supérieures ou égales (<em >respectivement inférieures</em>) à 10.<br />
-	Pour d'autres référentiels, par exemple sur 30, on comptera les notes supérieures ou égales à 15.<br />\n";
-}
+	Pour d'autres référentiels, par exemple sur 30, on comptera les notes supérieures ou égales à 15.</p></li>" : "")."
+</ul>";
 
 // 20141103
 foreach($tab_ele_dev as $current_id_dev => $current_tab_notes) {
