@@ -353,13 +353,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["infobulle"]=$chaine_mpp;
 
 												if($lig_note->statut=="") {
-													if(!isset($tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
-														$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
-														$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
+													if(!isset($tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
+														$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]=0;
+														$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]=0;
 													}
 
-													$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=20*$lig_dev->note/$note_sur;
-													$tab_note["$lig_note->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
+													$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]+=20*$lig_note->note/$note_sur;
+													$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nb_notes"]++;
 												}
 											}
 										}
@@ -1212,7 +1212,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	}
 }
 //echo "<p style='color:red;'><i>PROBLEME&nbsp;:</i> Pour les élèves qui ont changé de classe, si on a sélectionné des devoirs de périodes différentes, on peut ne pas récupérer la note souhaitée.</p>\n";
-echo "<p style='color:red;'><i>NOTES&nbsp;:</i> Les moyennes supposent actuellement que le référentiel des devoirs est 20.<br />Il faudra modifier pour prendre en compte des notes sur autre chose que 20.<br />Les 'bonus' consistent à ne compter que les points supérieurs à 10.<br />Ex.: Pour 12 (coef 3), 14 (coef 1) et 13 (coef 2 et bonus), le calcul est (12*3+14*1+(13-10)*2)/(3+1)</p>\n";
+// CA A ETE CORRIGE : Les moyennes supposent actuellement que le référentiel des devoirs est 20.<br />Il faudra modifier pour prendre en compte des notes sur autre chose que 20.<br />
+echo "<p style='margin-top: 1em;'><i>NOTES&nbsp;:</i> Les 'bonus' consistent à ne compter que les points supérieurs à 10.<br />Ex.: Pour 12 (coef 3), 14 (coef 1) et 13 (coef 2 et bonus), le calcul est (12*3+14*1+(13-10)*2)/(3+1)</p>\n";
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
