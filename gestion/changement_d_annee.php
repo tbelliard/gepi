@@ -438,7 +438,7 @@ if(getSettingValue('active_module_absence')=='2') {
 	echo " puis <a onclick=\"return(confirm('Voulez vous vider les tables d\'absences ?'));\" href='../utilitaires/clean_tables.php?action=clean_absences&amp;date_limite=31/07/".date('Y')."&amp;chgt_annee=y".add_token_in_url()."'/>purger les tables absences pour les absences antérieures au 31/07/".date('Y')."</a></p></li>";
 }
 if((getSettingAOui('active_mod_discipline'))&&(nombre_de_dossiers_docs_joints_a_des_sanctions()>0)) {
-	echo "<li><a href='../mod_discipline/discipline_admin.php?chgt_annee=y#suppr_docs_joints'>Supprimer les dossier(s) de documents joints à des ".getSettingValue('mod_disc_terme_sanction')."s</a>.</li>\n";
+	echo "<li><p><a href='../mod_discipline/discipline_admin.php?chgt_annee=y#suppr_docs_joints'>Supprimer les dossier(s) de documents joints à des ".getSettingValue('mod_disc_terme_sanction')."s</a>.</p></li>\n";
 }
 echo "</ol>\n";
 
@@ -451,7 +451,9 @@ echo "<li style='margin-top:1em;'><p>Modifier les dates de début et de fin des 
 <table>
 	<tr>
 		<td>
+		<p>
 		Date de début de d'année scolaire <em>(utilisée notamment dans les cahiers de textes)</em> <em>(actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("begin_bookings")); ?>)</em>&nbsp;:
+		</p>
 		</td>
 		<td><?php
 		$bday = strftime("%d", getSettingValue("begin_bookings"));
@@ -463,7 +465,9 @@ echo "<li style='margin-top:1em;'><p>Modifier les dates de début et de fin des 
 	</tr>
 	<tr>
 		<td>
+		<p>
 		Date de fin d'année scolaire <em>(utilisée notamment dans les cahiers de textes)</em> <em>(actuellement <?php echo strftime("%d/%m/%Y", getSettingValue("end_bookings")); ?>)</em>&nbsp;:
+		</p>
 		</td>
 		<td><?php
 		$eday = strftime("%d", getSettingValue("end_bookings"));
@@ -505,8 +509,8 @@ if(mysqli_num_rows($res)>0) {
 	</ul>
 	<p style='margin-top:1em;'>NOTES&nbsp;:</p>
 	<ul>
-		<li>Vous pourrez modifier ces dates par la suite s'il faut affiner ou corriger.</li>
-		<li>Seules les périodes cochées verront leurs dates de début et fin modifiées.</li>
+		<li><p>Vous pourrez modifier ces dates par la suite s'il faut affiner ou corriger.</p></li>
+		<li><p>Seules les périodes cochées verront leurs dates de début et fin modifiées.</p></li>
 	</ul>
 </li>\n";
 }
@@ -649,7 +653,7 @@ echo "/><label for='reserve_comptes_eleves'>Mettre en réserve une copie des com
 if(($temoin_compte_resp=='y')&&($temoin_reserve_compte_resp=='non_faite')) {echo "checked ";}
 echo "/><label for='reserve_comptes_responsables'>Mettre en réserve une copie des comptes responsables.</label></label></p>\n";
 
-echo "<p><em>NOTE&nbsp;:</em> En cochant les cases ci-dessus, on commence par vider les comptes précédemment mis en réserve avant d'insérer les comptes actuellement présents dans la table 'utilisateurs'.</p>\n";
+echo "<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> En cochant les cases ci-dessus, on commence par vider les comptes précédemment mis en réserve avant d'insérer les comptes actuellement présents dans la table 'utilisateurs'.</p>\n";
 echo "</li>\n";
 echo "</ol>\n";
 
@@ -733,7 +737,7 @@ echo "</p>
 		<input type='hidden' name='is_posted' value='2' />
 		<input type='submit' name='Valider' value='Valider' />
 
-		<p><em>NOTE&nbsp;:</em> La CNIL recommande de ne pas conserver plus de 6 mois de journaux de connexion.</p>
+		<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> La CNIL recommande de ne pas conserver plus de 6 mois de journaux de connexion.</p>
 	</fieldset>
 </form>\n";
 
