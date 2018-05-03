@@ -589,6 +589,10 @@ Les messages destinés à une classe, une matière ou un individu ne peuvent pas
 			$chaine_statuts_destinataires.="responsables";
 		}
 		echo $chaine_statuts_destinataires;
+
+		// Pour forcer le target='_blank' sur ces messages en page d'accueil
+		$content=preg_replace("/<a href/i","<a target='_blank' href",$content);
+
 		//echo "<br /><b><i>Login du destinataire </i></b> : ".$login_destinataire1;
 		echo "<br /><a href='index.php?id_mess=$id_message' onclick=\"return confirm_abandon (this, change, '$themessage')\">modifier</a>
 		- <a href='index.php?id_del=$id_message&action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
