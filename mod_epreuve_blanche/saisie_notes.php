@@ -135,7 +135,7 @@ if(isset($_POST['saisie_notes'])) {
 			}
 		
 			if(($msg=='')&&(count($n_anonymat)>0)) {
-				$msg="Enregistrement effectué.";
+				$msg="Enregistrement effectué (".strftime("%d/%m/%Y à %H:%M:%S").").";
 			}
 		}
 		else {
@@ -487,7 +487,18 @@ echo "</blockquote>\n";
 
 //========================================================
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
-	$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' ORDER BY n_anonymat";
+
+	$non_aff=isset($_POST['non_aff']) ? $_POST['non_aff'] : (isset($_GET['non_aff']) ? $_GET['non_aff'] : NULL);
+	$restreindre_prof=isset($_POST['restreindre_prof']) ? $_POST['restreindre_prof'] : (isset($_GET['restreindre_prof']) ? $_GET['restreindre_prof'] : NULL);
+	if(isset($non_aff)) {
+		$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='' ORDER BY n_anonymat";
+	}
+	elseif(isset($restreindre_prof)) {
+		$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$restreindre_prof."' ORDER BY n_anonymat";
+	}
+	else {
+		$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' ORDER BY n_anonymat";
+	}
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 	if(mysqli_num_rows($res)==0) {
@@ -588,6 +599,42 @@ $couleur_moy_cn = '#96C8F0';
 if($etat!='clos') {
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 	echo add_token_field();
+
+	if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+		if(isset($non_aff)) {
+			echo "
+			<p class='bold'>Saisie des copies non affectées&nbsp;:</p>
+			<input type='hidden' name='non_aff' value='y' />";
+		}
+		elseif(isset($restreindre_prof)) {
+			echo "
+			<p class='bold'>Saisie des copies de ".civ_nom_prenom($restreindre_prof)."&nbsp;:</p>
+			<input type='hidden' name='restreindre_prof' value=\"".$restreindre_prof."\" />";
+		}
+
+		$sql="SELECT DISTINCT u.nom, u.prenom, u.civilite, u.login FROM utilisateurs u, eb_profs ep, eb_copies ec WHERE ec.id_epreuve='".$id_epreuve."' AND ec.login_prof=ep.login_prof AND ep.login_prof=u.login AND ep.id_epreuve='".$id_epreuve."' ORDER BY u.nom, u.prenom;";
+		$res_restr=mysqli_query($mysqli, $sql);
+		$nb_profs=mysqli_num_rows($res_restr);
+
+		$sql="SELECT * FROM eb_copies WHERE id_epreuve='".$id_epreuve."' AND login_prof='';";
+		$test_non_aff=mysqli_query($mysqli, $sql);
+		$nb_non_aff=mysqli_num_rows($test_non_aff);
+
+		if(($nb_profs>1)||($nb_restr>0)) {
+			echo "<div style='float:right; width:12em; padding:0.3em;' class='fieldset_opacite50'>
+	<p>Saisir<br />
+	<a href='".$_SERVER['PHP_SELF']."?id_epreuve=".$id_epreuve."'>toutes les notes</a>,<br />
+	<a href='".$_SERVER['PHP_SELF']."?id_epreuve=".$id_epreuve."&non_aff=y'>les élèves non affectés</a>,<br />
+	ou les copies de tel professeur<br />";
+			while($lig_prof=mysqli_fetch_object($res_restr)) {
+				echo "
+	<a href='".$_SERVER['PHP_SELF']."?id_epreuve=".$id_epreuve."&restreindre_prof=".$lig_prof->login."'>".$lig_prof->civilite." ".casse_mot($lig_prof->nom, 'maj')." ".casse_mot($lig_prof->prenom, 'majf2')."</a><br />";
+			}
+			echo "
+	</p>
+</div>";
+		}
+	}
 }
 
 echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus boireaus_alt sortable resizable' summary='Saisie'>\n";
@@ -646,14 +693,15 @@ while($lig=mysqli_fetch_object($res)) {
 }
 echo "</table>\n";
 
-echo "<div style='position: fixed; top: 200px; right: 200px;'>\n";
+//echo "<div style='position: fixed; top: 200px; right: 200px;'>\n";
+echo "<div style='position: fixed; top: 200px; right: 14em;'>\n";
 javascript_tab_stat('tab_stat_',$cpt);
 echo "</div>\n";
 
 
 if($etat!='clos') {
 	echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
-	echo "<p><input type='submit' name='saisie_notes' value='Valider' /></p>\n";
+	echo "<p style='margin-top:0.5em;'><input type='submit' name='saisie_notes' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 	echo "
