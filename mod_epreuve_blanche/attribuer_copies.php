@@ -140,9 +140,11 @@ $lig=mysqli_fetch_object($res);
 $etat=$lig->etat;
 
 $note_sur=$lig->note_sur;
+$mysql_date_epreuve=$lig->date;
+$date_epreuve=formate_date($lig->date);
 
 echo "<blockquote>\n";
-echo "<p><b>".$lig->intitule."</b> (<i>".formate_date($lig->date)."</i>)<br />\n";
+echo "<p><b>".$lig->intitule."</b> (<i>".$date_epreuve."</i>)<br />\n";
 if($lig->description!='') {
 	echo nl2br(trim($lig->description))."<br />\n";
 }
@@ -432,11 +434,21 @@ if($tri=='groupe') {
 		$alt=1;
 		for($j=0;$j<count($current_group["eleves"]["all"]["list"]);$j++) {
 			if(!in_array($current_group["eleves"]["all"]["list"][$j],$tab_eleves_deja_affiches)) {
-				$tab_eleves_deja_affiches[]=$current_group["eleves"]["all"]["list"][$j];
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt white_hover'>\n";
-
 				$login_ele=$current_group["eleves"]["all"]["list"][$j];
+
+				$tab_eleves_deja_affiches[]=$login_ele;
+
+				$alt=$alt*(-1);
+				if((isset($current_group["eleves"]["all"]["users"][$login_ele]['date_sortie']))&&(!is_null($current_group["eleves"]["all"]["users"][$login_ele]['date_sortie']))&&($current_group["eleves"]["all"]["users"][$login_ele]['date_sortie']!='0000-00-00 00:00:00')&&($current_group["eleves"]["all"]["users"][$login_ele]['date_sortie']<$mysql_date_epreuve)) {
+					echo "<tr class='white_hover' style='background-color:grey' title=\"Élève sorti de l'établissement (".formate_date($current_group["eleves"]["all"]["users"][$login_ele]['date_sortie']).") avant l'épreuve ($date_epreuve).\">\n";
+				}
+				elseif((isset($current_group["eleves"]["all"]["users"][$login_ele]['date_entree']))&&(!is_null($current_group["eleves"]["all"]["users"][$login_ele]['date_entree']))&&($current_group["eleves"]["all"]["users"][$login_ele]['date_entree']!='0000-00-00 00:00:00')&&($current_group["eleves"]["all"]["users"][$login_ele]['date_entree']>$mysql_date_epreuve)) {
+					echo "<tr class='white_hover' style='background-color:grey' title=\"Élève entré dans l'établissement (".formate_date($current_group["eleves"]["all"]["users"][$login_ele]['date_entree']).") après l'épreuve ($date_epreuve).\">\n";
+				}
+				else {
+					echo "<tr class='lig$alt white_hover'>\n";
+				}
+
 				echo "<td>\n";
 				$numero_anonymat='';
 				if(isset($tab_ele_anonymat[$login_ele])) {
@@ -447,7 +459,7 @@ if($tri=='groupe') {
 
 				echo "<td style='text-align:left;'>\n";
 				echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
-				echo get_nom_prenom_eleve($login_ele);
+				echo "<a href='../eleves/visu_eleve.php?ele_login=".$login_ele."' title=\"Voir la fiche élève dans un nouvel onglet.\" target='_blank'>".get_nom_prenom_eleve($login_ele)."</a>";
 				echo "</td>\n";
 	
 				echo "<td>\n";
@@ -642,7 +654,7 @@ elseif($tri=='n_anonymat') {
 		}
 	}
 
-	$sql="SELECT ec.*, e.nom, e.prenom FROM eb_copies ec,eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login ORDER BY ec.n_anonymat;";
+	$sql="SELECT ec.*, e.nom, e.prenom, e.date_sortie, e.date_entree FROM eb_copies ec,eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login ORDER BY ec.n_anonymat;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucun élève n'est encore associé à l'épreuve.</p>\n";
@@ -657,6 +669,8 @@ elseif($tri=='n_anonymat') {
 		$tab_eleves[$cpt]['login_ele']=$lig->login_ele;
 		$tab_eleves[$cpt]['nom']=$lig->nom;
 		$tab_eleves[$cpt]['prenom']=$lig->prenom;
+		$tab_eleves[$cpt]['date_entree']=$lig->date_entree;
+		$tab_eleves[$cpt]['date_sortie']=$lig->date_sortie;
 		$tab_eleves[$cpt]['n_anonymat']=$lig->n_anonymat;
 
 		$tab_eleves[$cpt]['note']=$lig->note;
@@ -760,7 +774,15 @@ elseif($tri=='n_anonymat') {
 			}
 		}
 
-		echo "<tr class='white_hover'>\n";
+		if((isset($tab_eleves[$loop]['date_sortie']))&&(!is_null($tab_eleves[$loop]['date_sortie']))&&($tab_eleves[$loop]['date_sortie']!='0000-00-00 00:00:00')&&($tab_eleves[$loop]['date_sortie']<$mysql_date_epreuve)) {
+			echo "<tr class='white_hover' style='background-color:grey' title=\"Élève sorti de l'établissement (".formate_date($tab_eleves[$loop]['date_sortie']).") avant l'épreuve ($date_epreuve).\">\n";
+		}
+		elseif((isset($tab_eleves[$loop]['date_entree']))&&(!is_null($tab_eleves[$loop]['date_entree']))&&($tab_eleves[$loop]['date_entree']!='0000-00-00 00:00:00')&&($tab_eleves[$loop]['date_entree']>$mysql_date_epreuve)) {
+			echo "<tr class='white_hover' style='background-color:grey' title=\"Élève entré dans l'établissement (".formate_date($tab_eleves[$loop]['date_entree']).") après l'épreuve ($date_epreuve).\">\n";
+		}
+		else {
+			echo "<tr class='white_hover'>\n";
+		}
 		echo "<td>";
 		//echo $loop." "; //DEBUG
 		$numero_anonymat='';
@@ -774,7 +796,7 @@ elseif($tri=='n_anonymat') {
 		$login_ele=$tab_eleves[$loop]['login_ele'];
 		echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
 		//echo get_nom_prenom_eleve($login_ele);
-		echo casse_mot($tab_eleves[$loop]['nom'])." ".casse_mot($tab_eleves[$loop]['prenom'],'majf2');
+		echo "<a href='../eleves/visu_eleve.php?ele_login=".$tab_eleves[$loop]['login_ele']."' title=\"Voir la fiche élève dans un nouvel onglet.\" target='_blank'>".casse_mot($tab_eleves[$loop]['nom'])." ".casse_mot($tab_eleves[$loop]['prenom'],'majf2')."</a>";
 		echo "</td>\n";
 
 		echo "<td>\n";
@@ -1068,7 +1090,7 @@ elseif($tri=='salle') {
 			echo "</tr>\n";
 		}
 
-		$sql="SELECT ec.*, e.nom, e.prenom FROM eb_copies ec,eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login AND ec.id_salle='$lig->id' ORDER BY e.nom,e.prenom;";
+		$sql="SELECT ec.*, e.nom, e.prenom, e.date_entree, e.date_sortie FROM eb_copies ec,eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login AND ec.id_salle='$lig->id' ORDER BY e.nom,e.prenom;";
 		//echo "$sql<br />";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 	
@@ -1077,7 +1099,16 @@ elseif($tri=='salle') {
 		$compteur_eleves_dans_la_salle=0;
 		while($lig2=mysqli_fetch_object($res2)) {
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt white_hover'>\n";
+			//echo "<tr class='lig$alt white_hover'>\n";
+			if((isset($lig2->date_sortie))&&(!is_null($lig2->date_sortie))&&($lig2->date_sortie!='0000-00-00 00:00:00')&&($lig2->date_sortie<$mysql_date_epreuve)) {
+				echo "<tr class='white_hover' style='background-color:grey' title=\"Élève sorti de l'établissement (".formate_date($lig2->date_sortie).") avant l'épreuve ($date_epreuve).\">\n";
+			}
+			elseif((isset($lig2->date_entree))&&(!is_null($lig2->date_entree))&&($lig2->date_entree!='0000-00-00 00:00:00')&&($lig2->date_entree>$mysql_date_epreuve)) {
+				echo "<tr class='white_hover' style='background-color:grey' title=\"Élève entré dans l'établissement (".formate_date($lig2->date_entree).") après l'épreuve ($date_epreuve).\">\n";
+			}
+			else {
+				echo "<tr class='lig$alt white_hover'>\n";
+			}
 
 			echo "<td>\n";
 			$numero_anonymat=$lig2->n_anonymat;
@@ -1088,7 +1119,7 @@ elseif($tri=='salle') {
 			$login_ele=$lig2->login_ele;
 			echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
 			//echo get_nom_prenom_eleve($login_ele);
-			echo casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2');
+			echo "<a href='../eleves/visu_eleve.php?ele_login=".$login_ele."' title=\"Voir la fiche élève dans un nouvel onglet.\" target='_blank'>".casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2')."</a>";
 			echo "</td>\n";
 
 			echo "<td>\n";
@@ -1158,7 +1189,7 @@ elseif($tri=='salle') {
 	$tab_salle[]="Non affecté";
 	$tab_id_salle[]='na';
 
-	$sql="SELECT ec.*, e.nom, e.prenom FROM eb_copies ec,eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login AND ec.id_salle='-1' ORDER BY e.nom,e.prenom;";
+	$sql="SELECT ec.*, e.nom, e.prenom, e.date_entree, e.date_sortie FROM eb_copies ec,eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login AND ec.id_salle='-1' ORDER BY e.nom,e.prenom;";
 	//echo "$sql<br />";
 	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -1219,12 +1250,21 @@ elseif($tri=='salle') {
 		//$tab_ele_prof=array();
 		while($lig2=mysqli_fetch_object($res2)) {
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			//echo "<tr class='lig$alt'>\n";
+			if((isset($lig2->date_sortie))&&(!is_null($lig2->date_sortie))&&($lig2->date_sortie!='0000-00-00 00:00:00')&&($lig2->date_sortie<$mysql_date_epreuve)) {
+				echo "<tr class='white_hover' style='background-color:grey' title=\"Élève sorti de l'établissement (".formate_date($lig2->date_sortie).") avant l'épreuve ($date_epreuve).\">\n";
+			}
+			elseif((isset($lig2->date_entree))&&(!is_null($lig2->date_entree))&&($lig2->date_entree!='0000-00-00 00:00:00')&&($lig2->date_entree>$mysql_date_epreuve)) {
+				echo "<tr class='white_hover' style='background-color:grey' title=\"Élève entré dans l'établissement (".formate_date($lig2->date_entree).") après l'épreuve ($date_epreuve).\">\n";
+			}
+			else {
+				echo "<tr class='lig$alt white_hover'>\n";
+			}
+
 			echo "<td style='text-align:left;'>\n";
 			$login_ele=$lig2->login_ele;
 			echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
-			//echo get_nom_prenom_eleve($login_ele);
-			echo casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2');
+			echo "<a href='../eleves/visu_eleve.php?ele_login=".$login_ele."' title=\"Voir la fiche élève dans un nouvel onglet.\" target='_blank'>".casse_mot($lig2->nom)." ".casse_mot($lig2->prenom,'majf2')."</a>";
 			echo "</td>\n";
 	
 			echo "<td>\n";
