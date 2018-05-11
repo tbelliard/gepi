@@ -98,7 +98,10 @@
 		function changement() {
 			change = 'yes';
 			if(document.getElementById('p_bandeau_template_tbs_msg')) {
-				document.getElementById('p_bandeau_template_tbs_msg').style.display='none';
+				//document.getElementById('p_bandeau_template_tbs_msg').style.display='none';
+				document.getElementById('p_bandeau_template_tbs_msg').title="Des modifications (non enregistrées) ont eu lieu dans la page depuis l'affichage de ce message.";
+				document.getElementById('p_bandeau_template_tbs_msg').style.opacity=0.5;
+				document.getElementById('p_bandeau_template_tbs_msg').style.textDecoration='line-through';
 			}
 		}
 		//]]>
