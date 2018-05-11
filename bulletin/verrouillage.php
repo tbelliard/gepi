@@ -533,6 +533,31 @@ if (($classe != 0) AND ($periode !=0)) {
 			echo "<th title=\"Si des dates de conseil de classe ont été saisies, elles apparaîtront dans cette colonne.\">Date du prochain<br />conseil de classe</th>\n";
 		}
 		echo "</tr>\n";
+
+		// 20180510
+		$compteur_periode_etat=array();
+		//  style='display:none;'
+		echo "<tr id='tr_totaux' class='fond_sombre'><th>&nbsp;</th>\n";
+		for ($i = 0; $i < $max_per; $i++) {
+			$compteur_periode_etat[$i]['deverrouille']=0;
+			$compteur_periode_etat[$i]['verrouille_part']=0;
+			$compteur_periode_etat[$i]['verrouille']=0;
+			echo "<th colspan='2'></th>\n";
+			echo "<th id='p_".$i."_deverrouille' style='color:green' title=\"Nombre de classes pour lesquelles la période ".($i+1)." est ouverte en saisie.\"></th>\n";
+			echo "<th id='p_".$i."_verrouille_part' style='color:orange' title=\"Nombre de classes pour lesquelles la période ".($i+1)." est partiellement close.\"></th>\n";
+			echo "<th id='p_".$i."_verrouille' style='color:red' title=\"Nombre de classes pour lesquelles la période ".($i+1)." est close.\"></th>\n";
+			if(getSettingValue("active_module_absence")=="2"){
+				echo "
+				<th></th>\n";
+			}
+			echo "<th></th>\n";
+		}
+		if(count($tab_dates_prochains_conseils)>0) {
+			echo "<th></th>\n";
+		}
+		echo "</tr>\n";
+
+
 		//$flag = 0;
 			$alt=1;
 		if ($calldata) {
@@ -558,12 +583,15 @@ if (($classe != 0) AND ($periode !=0)) {
 			
 						if ($row_per[1] == "N") {
 							echo "<td id='c_".$id_classe."_".$i."' style='font-size:small; color:green;'>Ouvert</td>\n";
+							$compteur_periode_etat[$i]['deverrouille']++;
 						}
 						elseif ($row_per[1] == "P") {
 							echo "<td id='c_".$id_classe."_".$i."' style='font-size:small; color:orange;'>Partiel.clos</td>\n";
+							$compteur_periode_etat[$i]['verrouille_part']++;
 						}
 						elseif ($row_per[1] == "O") {
 							echo "<td id='c_".$id_classe."_".$i."' style='font-size:small; color:red;'>Clos</td>\n";
+							$compteur_periode_etat[$i]['verrouille']++;
 						}
 						else {
 							// Ca ne devrait pas arriver
@@ -573,13 +601,13 @@ if (($classe != 0) AND ($periode !=0)) {
 						//echo "<input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
 						echo "<td><input type=\"hidden\" name=\"numperiode\" value=\"$i\" />";
 						//echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"N\" ";
-						echo "<input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_N' value=\"N\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+						echo "<input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_N' value=\"N\" onchange=\"changement();actualise_cell_($id_classe,$i);calcule_totaux_etats();\" ";
 						if ($row_per[1] == "N") {echo "checked";}
 						echo " /></td>\n";
-						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_P' value=\"P\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_P' value=\"P\" onchange=\"changement();actualise_cell_($id_classe,$i);calcule_totaux_etats();\" ";
 						if ($row_per[1] == "P") {echo "checked";}
 						echo " /></td>\n";
-						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_O' value=\"O\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
+						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" id='radio_".$nom_classe."_O' value=\"O\" onchange=\"changement();actualise_cell_($id_classe,$i);calcule_totaux_etats();\" ";
 						if ($row_per[1] == "O") {echo "checked";}
 						echo " /></td>\n";
 
@@ -833,6 +861,79 @@ if (($classe != 0) AND ($periode !=0)) {
 				}
 			}
 
+		}";
+		// 20180510
+		foreach($compteur_periode_etat as $numper => $tab) {
+			echo "
+		if(document.getElementById('p_".$numper."_deverrouille')) {
+			//alert('p_".$numper."_deverrouille');
+			document.getElementById('p_".$numper."_deverrouille').innerHTML=".$tab['deverrouille'].";
+		}
+		if(document.getElementById('p_".$numper."_verrouille_part')) {
+			document.getElementById('p_".$numper."_verrouille_part').innerHTML=".$tab['verrouille_part'].";
+		}
+		if(document.getElementById('p_".$numper."_verrouille')) {
+			document.getElementById('p_".$numper."_verrouille').innerHTML=".$tab['verrouille'].";
+		}";
+		}
+		echo "
+		if(document.getElementById('tr_totaux')) {
+			document.getElementById('tr_totaux').style.display='';
+		}
+
+		function calcule_totaux_etats() {
+			totaux_N=new Array();
+			totaux_P=new Array();
+			totaux_O=new Array();";
+
+		for ($i = 0; $i < $max_per; $i++) {
+			echo "
+			totaux_N[$i]=0;
+			totaux_P[$i]=0;
+			totaux_O[$i]=0;";
+		}
+
+		echo "
+			tab=document.getElementsByTagName('input');
+			for(i=0;i<tab.length;i++) {
+				type=tab[i].getAttribute('type');
+				if(type=='radio') {
+					if(tab[i].checked==true) {
+						id=tab[i].getAttribute('id');
+						tmp_tab=id.split('_');
+						// Période - 1
+						periode=tmp_tab[3];
+						etat=tmp_tab[4];
+
+						if(etat=='N') {
+							totaux_N[periode]++;
+						}
+
+						if(etat=='P') {
+							totaux_P[periode]++;
+						}
+
+						if(etat=='O') {
+							totaux_O[periode]++;
+						}
+					}
+				}
+			}";
+
+		for ($i = 0; $i < $max_per; $i++) {
+			echo "
+			if(document.getElementById('p_".$i."_deverrouille')) {
+				document.getElementById('p_".$i."_deverrouille').innerHTML=totaux_N[$i];
+			}
+			if(document.getElementById('p_".$i."_verrouille_part')) {
+				document.getElementById('p_".$i."_verrouille_part').innerHTML=totaux_P[$i];
+			}
+			if(document.getElementById('p_".$i."_verrouille')) {
+				document.getElementById('p_".$i."_verrouille').innerHTML=totaux_O[$i];
+			}";
+		}
+
+		echo "
 		}
 
 	</script>\n";
