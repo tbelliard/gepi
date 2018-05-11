@@ -590,7 +590,8 @@ if($_SESSION['statut']=="administrateur") {
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Paramétrer le pointage de ".$mod_disc_terme_menus_incidents;
-		$nouveauItem->expli="Paramétrer le dispositif de pointage des ".$mod_disc_terme_menus_incidents.".";
+		$nouveauItem->expli="Paramétrer le dispositif de pointage des ".$mod_disc_terme_menus_incidents.".<br />
+		Les ".$mod_disc_terme_menus_incidents." sont destinés à compter des oublis de matériel, travaux non faits, petit comportements gênants <em>(ou autres selon les choix de l'établissement)</em> dont le cumul peut amener une déclaration d'".$mod_disc_terme_incident." plus important qui potentiellement amènera ou non une sanction.";
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
