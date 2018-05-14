@@ -609,11 +609,10 @@ sinon, Gepi le considère comme \"<em>établissement d'origine</em>\".";
 		<p style='text-indent:-7em;margin-left:7em;'><strong style='color:red'>ATTENTION&nbsp;:</strong> Un nouvel identifiant a été introduit dans Siècle/Sconet pour identifier un élève au niveau national.<br />
 		L'ancien INE <em>(codé ID_NATIONAL dans l'export XML Eleves de Siècle)</em> est remplacé par un nouveau.<br />
 		L'ancien INE reste stocké <em>(pour combien de temps encore?)</em> dans l'export XML sous le code INE_BEA.<br />
-		L'ancien INE était utilisé dans plusieurs tables de Gepi pour la liaison avec LSU, avec APB, pour identifier les élèves dans l'archivage Années antérieures.<br />
-		Il est recommandé pour le moment d'utiliser l'ancien INE <em>(devenu INE_BEA)</em> en attendant de savoir quel identifiant sera réclamé pour les exports LSU, APB,...<br />
-		Il sera bien temps alors de faire une mise à jour d'après Siècle/Sconet en important les nouveaux identifiants si c'est eux qui sont réclamés.<br />
+		L'ancien INE était utilisé dans plusieurs tables de Gepi pour la liaison avec APB, pour identifier les élèves dans l'archivage Années antérieures, mais la Mise à jour d'après Sconet/Siècle assure la bascule avec correction des liaisons pour tenir compte de l'identifiant choisi.<br />
+		Les nouveaux élèves n'ont pas l'ancien identifiant, il faut donc maintenant passer au nouvel identifiant.<br />
 		<input type='radio' name='nom_champ_INE' id='nom_champ_INE_ine_bea' value='ine_bea'".$checked_ine_bea." />
-		<label for='nom_champ_INE_ine_bea'> utiliser l'ancien champ INE, c'est-à-dire celui qui apparaît maintenant sous le code INE_BEA dans l'export <strong>(recommandé)</strong>,</label><br />
+		<label for='nom_champ_INE_ine_bea'> utiliser l'ancien champ INE, c'est-à-dire celui qui apparaît maintenant sous le code INE_BEA dans l'export,</label><br />
 		ou<br />
 		<input type='radio' name='nom_champ_INE' id='nom_champ_INE_id_national' value='id_national'".$checked_id_national." />
 		<label for='nom_champ_INE_id_national'> utiliser le nouveau champ INE, c'est-à-dire celui qui apparaît sous le code ID_NATIONAL dans l'export.</label><br />
