@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -68,6 +68,8 @@ if (!checkAccess()) {
 include('lib_eb.php');
 
 //=========================================================
+
+//debug_var();
 
 // Création des tables
 
@@ -159,7 +161,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	}
 
 	// Témoin d'une modification de numéros anonymat (pour informer qu'il faut regénérer les étiquettes,...)
-	$temoin_n_anonymat='n';
+	//$temoin_n_anonymat='n';
+	$temoin_n_anonymat=0;
 	// Témoin d'une erreur anonymat pour un élève au moins
 	$temoin_erreur_n_anonymat='n';
 
@@ -252,7 +255,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						} else if ($type_anonymat=='chrono'){// Eric Ajout du numéro d'anonymat chronologique
 							 $n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
 							$tab_n_anonymat_affectes[]=$n_anonymat;
-							$cpt_ano += 1;		
+							$cpt_ano += 1;
 						}
 						else {
 							$n_anonymat=$lig->$type_anonymat;
@@ -269,7 +272,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							//echo "$sql<br />";
 							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($update) {
-								$temoin_n_anonymat='y';
+								//$temoin_n_anonymat='y';
+								$temoin_n_anonymat++;
 							}
 						}
 					}
@@ -319,6 +323,18 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 		// Ajout de groupes pour l'épreuve sélectionnée
 		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : array());
+
+		// 20180514
+		if(isset($_GET['rafraichir_groupes'])) {
+			$sql="SELECT * FROM eb_groupes WHERE id_epreuve='$id_epreuve';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$id_groupe=array();
+				while($lig=mysqli_fetch_object($res)) {
+					$id_groupe[]=$lig->id_groupe;
+				}
+			}
+		}
 
 		$sql="DELETE FROM eb_groupes WHERE id_epreuve='$id_epreuve';";
 		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -412,7 +428,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 									$msg.="Erreur lors de l'ajout de l'élève $lig->login<br />";
 								}
 								else {
-									$temoin_n_anonymat='y';
+									//$temoin_n_anonymat='y';
+									$temoin_n_anonymat++;
 								}
 							}
 						}
@@ -761,9 +778,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		if(!isset($msg)) {$msg="";}
 		$msg.="<br />Une ou des erreurs se sont produites sur l'anonymat.<br />Vous devriez contrôler les numéros anonymat.";
 	}
-	elseif($temoin_n_anonymat=='y') {
+	//elseif($temoin_n_anonymat=='y') {
+	elseif($temoin_n_anonymat>0) {
 		if(!isset($msg)) {$msg="";}
-		$msg.="<br />Des numéros anonymat ont été modifiés. Regénérez si nécessaire les étiquettes/listes d'émargement.";
+		$msg.="<br />".$temoin_n_anonymat." numéro(s) anonymat a(ont) été modifié(s).<br />Regénérez si nécessaire les étiquettes/listes d'émargement.";
 	}
 }
 
@@ -1412,7 +1430,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			//$sql="SELECT g.* FROM eb_groupes eg, groupes g WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name;";
 			//$res_groupes=mysql_query($sql);
 			if(mysqli_num_rows($res_groupes)>0) {
-				echo "<p><b>Liste des groupes inscrits à l'épreuve&nbsp;:</b></p>\n";
+				// 20180514
+				echo "<p><b>Liste des groupes inscrits à l'épreuve&nbsp;:</b>";
+				if($etat!='clos') {
+					echo " <a href='".$_SERVER['PHP_SELF']."?id_epreuve=".$id_epreuve."&mode=ajout_groupes&rafraichir_groupes=y".add_token_in_url()."' 
+					onclick=\"return confirm_abandon (this, change, '$themessage')\" 
+					title=\"Rafraichir la liste des élèves\"><img src='../images/icons/actualiser.png' class='icone16' /></a>";
+				}
+				echo "</p>\n";
 				echo "<blockquote>\n";
 				while($lig=mysqli_fetch_object($res_groupes)) {
 
@@ -1498,6 +1523,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				if($etat!='clos') {
 					echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve&amp;aff=profs'>Ajouter des professeurs correcteurs</a></p>\n";
 				}
+			}
+			// 20180414
+			$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='';";
+			//echo "$sql<br />";
+			$compte_total=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
+			if($compte_total>0) {
+				echo "<p style='margin-top:1em; color:red'>".$compte_total." copie(s) non attribuée(s).</p>";
 			}
 			//echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=modif_epreuve&amp;id_epreuve=$id_epreuve&amp;aff=profs'>Ajouter des professeurs correcteurs</a></p>\n";
 			echo "</blockquote>\n";
