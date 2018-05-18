@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1088,6 +1088,45 @@ echo "
 
 }
 elseif((isset($mode))&&($mode=="positionner")) {
+
+	// 20180518 : Afficher en float right, un tableau des suivi_par et prof_suivi pour les classes choisies.
+	$tab_prof_suivi=get_tab_prof_suivi();
+	$tab_suivi_par=array();
+	$sql="SELECT id,classe,suivi_par FROM classes ORDER BY classe;";
+	$res_suivi=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_suivi)>0) {
+		while($lig_suivi=mysqli_fetch_object($res_suivi)) {
+			$tab_suivi_par[$lig_suivi->id]['classe']=$lig_suivi->classe;
+			$tab_suivi_par[$lig_suivi->id]['suivi_par']=$lig_suivi->suivi_par;
+		}
+	}
+	if(count($tab_suivi_par)>0) {
+		echo "<div style='float:right; width:25em; font-size:small; margin:0.5em;'>
+	<table class='boireaus boireaus_alt sortable resizable'>
+		<tr>
+			<th>Classe</th>
+			<th>Suivi</th>
+			<th>PP</th>
+		</tr>";
+		foreach($tab_suivi_par as $id_classe => $tmp_tab) {
+			$liste_pp='';
+			if(isset($tab_prof_suivi[$id_classe])) {
+				for($loop=0;$loop<count($tab_prof_suivi[$id_classe]);$loop++) {
+					if($loop>0) {$liste_pp.=', ';}
+					$liste_pp.=affiche_utilisateur($tab_prof_suivi[$id_classe][$loop], $id_classe);
+				}
+			}
+			echo "
+		<tr>
+			<td>".$tmp_tab['classe']."</td>
+			<td>".$tmp_tab['suivi_par']."</td>
+			<td>".$liste_pp."</td>
+		</tr>";
+		}
+		echo "
+	</table>
+</div>";
+	}
 
 	echo "<p class='bold'>Rappel des données saisies pour l'événement n°$id_ev&nbsp;:</p>
 <div style='margin-left:3em;'>".affiche_details_evenement($id_ev, "y")."
