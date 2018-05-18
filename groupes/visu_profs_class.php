@@ -330,6 +330,8 @@ if((isset($_GET['export_prof_suivi']))&&(isset($export))&&($export=='csv')) {
 	}
 }
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 //**************** EN-TETE **************************************
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
@@ -450,7 +452,7 @@ if(isset($id_classe)){
 			}
 		}
 
-		echo "<h3>Equipe pédagogique de la classe de ".$classe["classe"]." <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>";
+		echo "<h3>Equipe pédagogique de la classe de <strong>".$classe["classe"]."</strong> <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>";
 		echo "<span id='span_mail'></span>";
 		if(peut_poster_message($_SESSION["statut"])) {
 			echo "<span id='span_mod_alerte'></span>";
@@ -459,7 +461,7 @@ if(isset($id_classe)){
 
 		$suivi_par=get_valeur_champ("classes", "id='$id_classe'", "suivi_par");
 		if($suivi_par!="") {
-			echo "<p>Classe suivie par&nbsp: $suivi_par</p>";
+			echo "<p>Classe suivie par&nbsp;: <strong>$suivi_par</strong></p>";
 		}
 
 		echo "<script type='text/javascript' language='JavaScript'>
@@ -809,7 +811,7 @@ else {
 	$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 	echo "<a name='liste_pp'></a>
 <div align='center'>
-	<table class='boireaus boireaus_alt'>
+	<table class='boireaus boireaus_alt resizable sortable'>
 		<tr>
 			<th>Classe</th>
 			<th>
@@ -847,6 +849,18 @@ else {
 			<th>".$tab_engagements['id_engagement'][$id_type_courant]['nom']."</th>";
 		}
 	}
+
+	// 20180518
+	$tab_suivi_par=array();
+	$sql="SELECT id,suivi_par FROM classes;";
+	$res_suivi=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_suivi)>0) {
+		while($lig_suivi=mysqli_fetch_object($res_suivi)) {
+			$tab_suivi_par[$lig_suivi->id]=$lig_suivi->suivi_par;
+		}
+	}
+	echo "
+		<th>Suivie par</th>";
 
 	echo "
 		</tr>";
@@ -951,6 +965,10 @@ else {
 			echo "</td>";
 		}
 */
+
+		// 20180518
+		echo "
+			<td>".(isset($tab_suivi_par[$current_id_classe]) ? $tab_suivi_par[$current_id_classe] : '')."</td>";
 
 		echo "
 		</tr>";
