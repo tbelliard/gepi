@@ -1309,6 +1309,9 @@ if(isset($id_groupe)) {
 				$tab_cycle[$mef_code_ele]=$cycle;
 			}
 
+			// 20180518
+			echo "<div style='margin:0.5em; padding:0.5em;' class='fieldset_opacite50'>";
+
 			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
@@ -1545,7 +1548,7 @@ if(isset($id_groupe)) {
 
 				if($SocleSaisieSyntheses) {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
+		<p style='margin-top:0.5em;' ".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
 			<strong>Synthèse&nbsp;:</strong> 
 			<input type='hidden' name='indice_synthese[]' value=\"".$lig->no_gep."|".$cycle."\" />
 			<textarea style='vertical-align:top;' 
@@ -1558,11 +1561,14 @@ if(isset($id_groupe)) {
 				}
 				else {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
+		<p style='margin-top:0.5em;' ".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
 				}
 
 				$cpt_ele++;
 			}
+
+			// 20180518
+			echo "</div>";
 		}
 
 		if($SocleOuvertureSaisieComposantes=="y") {
@@ -1792,6 +1798,9 @@ elseif(isset($id_classe)) {
 				$tab_cycle[$mef_code_ele]=$cycle;
 			}
 
+			// 20180518
+			echo "<div style='margin:0.5em; padding:0.5em;' class='fieldset_opacite50'>";
+
 			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
@@ -1937,7 +1946,7 @@ elseif(isset($id_classe)) {
 
 				if($SocleSaisieSyntheses) {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
+		<p style='margin-top:0.5em;'".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
 			<strong>Synthèse&nbsp;:</strong> 
 			<input type='hidden' name='indice_synthese[]' value=\"".$lig->no_gep."|".$cycle."\" />
 			<textarea style='vertical-align:top;' 
@@ -1950,11 +1959,15 @@ elseif(isset($id_classe)) {
 				}
 				else {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
+		<p style='margin-top:0.5em;' ".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
 				}
 
 				$cpt_ele++;
 			}
+
+			// 20180518
+			echo "</div>";
+
 		}
 
 		if($SocleOuvertureSaisieComposantes=="y") {
