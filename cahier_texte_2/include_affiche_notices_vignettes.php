@@ -69,6 +69,9 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
                         $html_balise .=("\" alt=\"Copier\" title=\"Copier\" /></a>\n");
 			$html_balise .=(" ");
 
+			// 20180519 : Afficher la notice dans une nouvelle fenêtre
+			$html_balise.="<a href='affiche_notice.php?id_ct=".$devoir->getIdCt()."&type_notice=t' target='_blank' title=\"Afficher la notice dans un nouvel onglet.\"><img src='../images/icons/chercher.png' class='icone16' alt='Afficher' /></a> ";
+
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 									suppressionDevoir('".french_strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$devoir->getIdGroupe()."','".add_token_in_js_func()."');
 									new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
@@ -105,7 +108,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 
 	$html_balise .= '</div>';
 	echo($html_balise);
-	echo "<br/>";
+	echo "<br/>\n";
 	//affichage contenu
 	echo ($devoir->getContenu());
 
@@ -156,6 +159,9 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
                                 $html_balise .=("\" alt=\"Copier\" title=\"Copier\" /></a>\n");
 				$html_balise .=(" ");
 
+				// 20180519 : Afficher la notice dans une nouvelle fenêtre
+				$html_balise.="<a href='affiche_notice.php?id_ct=".$notice_privee->getIdCt()."&type_notice=p' target='_blank' title=\"Afficher la notice dans un nouvel onglet.\"><img src='../images/icons/chercher.png' class='icone16' alt='Afficher' /></a> ";
+
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
 										suppressionNoticePrivee('".french_strftime("%A %d %B %Y", $notice_privee->getDateCt())."','".$notice_privee->getIdCt()."', '".$notice_privee->getIdGroupe()."','".add_token_in_js_func()."');
 										new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
@@ -184,7 +190,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 
 	echo($html_balise);
 
-	echo "<br/>";
+	echo "<br/>\n";
 	//affichage contenu
 	echo ($notice_privee->getContenu());
 
@@ -232,7 +238,11 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
                                     $html_balise .=("../images/icons/copy-16.png");
                                 }
                                 $html_balise .=("\" alt=\"Copier\" title=\"Copier\" /></a>\n");
+
 				$html_balise .=(" ");
+
+				// 20180519 : Afficher la notice dans une nouvelle fenêtre
+				$html_balise.="<a href='affiche_notice.php?id_ct=".$compte_rendu->getIdCt()."&type_notice=c' target='_blank' title=\"Afficher la notice dans un nouvel onglet.\"><img src='../images/icons/chercher.png' class='icone16' alt='Afficher' /></a> ";
 
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								suppressionCompteRendu('".french_strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().",'".add_token_in_js_func()."');
@@ -264,7 +274,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 		echo($html_balise);
 
 		//affichage contenu
-		echo "<br/>";
+		echo "<br/>\n";
     // On ajoute le nom de la séquence si elle existe
     $aff_seq = NULL;
     if ($compte_rendu->getIdSequence() != "0"){

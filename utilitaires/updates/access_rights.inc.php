@@ -1963,6 +1963,18 @@ statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_saisies_selection_traitement_decompte_matiere.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des saisies pour faire les traitements avec décompte matière', '');";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/affiche_notice.php',
+administrateur='F',
+professeur='V',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Cahier de texte 2 : Affichage notice',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
