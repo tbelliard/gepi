@@ -4613,7 +4613,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 
 		$lien_verif="";
 		if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
-			$lien_verif=" <em style='font-weight:normal;'>(<a href='./verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\"".$target."><img src='".$gepiPath."/images/icons/bulletin_verif_20.png' class='icone20' alt='Vérif' /> Vérification</a>)</em>";
+			$lien_verif=" <em style='font-weight:normal;'>(<a href='".$gepiPath."/bulletin/verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\"".$target."><img src='".$gepiPath."/images/icons/bulletin_verif_20.png' class='icone20' alt='Vérif' /> Vérification</a>)</em>";
 
 			if ($_SESSION['statut'] == 'professeur') {
 				if(getSettingValue("GepiProfImprBul")!='yes') {
