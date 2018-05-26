@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -583,11 +583,23 @@ if(!isset($_POST['choix_param'])) {
 			$cpt=0;
 			echo "<div style='width: 20em; height: 20em; overflow: auto;'>\n";
 			while($lig=mysqli_fetch_object($res)) {
+				$sql="SELECT 1=1 FROM j_groupes_matieres WHERE id_matiere='".$lig->matiere."';";
+				$res_ens=mysqli_query($GLOBALS["mysqli"], $sql);
+				$eff_ens=mysqli_num_rows($res_ens);
+				if($eff_ens==0) {
+					$style_mat=" style='color:grey;'";
+					$eff_mat=" <em title=\"Aucun enseignement n'existe dans cette matière.\">(0)</em>";
+				}
+				else {
+					$style_mat='';
+					$eff_mat=" <em title=\"".$eff_ens." enseignement(s) existe(nt) toutes classes confondues dans cette matière.\">(".$eff_ens.")</em>";
+				}
+
 				if($cpt>0) {$chaine_champs_matiere.=", ";}
-				echo "<input type='checkbox' name='matiere[]' id='matiere_$cpt' value='$lig->matiere' ";
+				echo "<input type='checkbox' name='matiere[]' id='matiere_$cpt' value='".$lig->matiere."' ";
 				if(in_array($lig->matiere,$tab_options)) {echo "checked ";}
 				echo "onchange=\"checkbox_champ_change('matiere_$cpt')\" ";
-				echo "/><label for='matiere_$cpt'><span id='texte_matiere_$cpt'>$lig->matiere</span></label><br />\n";
+				echo "/><label for='matiere_$cpt'".$style_mat."><span id='texte_matiere_$cpt'>".$lig->matiere."</span>".$eff_mat."</label><br />\n";
 				$chaine_champs_matiere.="'matiere_$cpt'";
 				$cpt++;
 			}
