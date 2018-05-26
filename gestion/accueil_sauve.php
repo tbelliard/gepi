@@ -356,6 +356,7 @@ function restoreMySqlDump($duree) {
 	//global $table_log_passee;
 	global $dirname;
 	global $debug_restaure;
+	global $effectuer_unlock_tables;
 
 	$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='log' AND value!='setting' AND value!='utilisateurs' AND value!='a_tmp_setting' ORDER BY name LIMIT 1;";
 	if($debug_restaure=='y') {echo "<span style='color:red; font-size: x-small;'>$sql</span><br />\n";}
@@ -520,71 +521,166 @@ function restoreMySqlDump($duree) {
 					}
 	
 					echo "<p>Traitement de la table <span style='color:green;'>$nom_table</span><br />";
+
+					$test_autre_mode_lecture="n";
+					if($test_autre_mode_lecture=="y") {
+
+						$fileHandle = fopen($dumpFile, "r");
 	
-					$fileHandle = gzopen($dumpFile, "rb");
+						$cpt_insert=0;
 	
-					$cpt_insert=0;
-	
-					$formattedQuery = "";
-					$old_offset = $offset;
-					while(!gzeof($fileHandle)) {
-						current_time();
-						if ($duree>0 and $TPSCOUR>=$duree) {  //on atteint la fin du temps imparti
-							if ($old_offset == $offset) {
-								echo "<p class=\"rouge center\"><strong>La procédure de restauration ne peut pas continuer.
-								<br />Un problème est survenu lors du traitement d'une requête près de :.
-								<br />".$debut_req."</strong></p><hr />\n";
-								return FALSE;
+						$formattedQuery = "";
+						$old_offset = $offset;
+						while(!feof($fileHandle)) {
+							current_time();
+							if ($duree>0 and $TPSCOUR>=$duree) {  //on atteint la fin du temps imparti
+								if ($old_offset == $offset) {
+									echo "<p class=\"rouge center\"><strong>La procédure de restauration ne peut pas continuer.
+									<br />Un problème est survenu lors du traitement d'une requête près de :.
+									<br />".$debut_req."</strong></p><hr />\n";
+									return FALSE;
+								}
+								$old_offset = $offset;
+								return TRUE;
 							}
-							$old_offset = $offset;
-							return TRUE;
-						}
 	
-						//echo $TPSCOUR."<br />";
-						$buffer=gzgets($fileHandle);
-						if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
-							$buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
-						}
-						//echo $buffer."<br />";
+							//echo $TPSCOUR."<br />";
+							//$buffer=gzgets($fileHandle);
+							$buffer=fgets($fileHandle);
+							if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
+								$buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
+							}
+							//echo $buffer."<br />";
 	
-						if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
-							if (!isset($debut_req))  $debut_req = $buffer;
-							$formattedQuery .= $buffer;
-							//echo $formattedQuery."<hr />";
-							if ($formattedQuery) {
-								$sql = $formattedQuery;
-								if (mysqli_query($GLOBALS["mysqli"], $sql)) {//réussie sinon continue à concaténer
-									if(preg_match("/^DROP TABLE /",$sql)) {
-										echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
+							if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
+								if (!isset($debut_req))  $debut_req = $buffer;
+								$formattedQuery .= $buffer;
+								echo $formattedQuery."<hr />";
+								if ($formattedQuery) {
+									$sql = $formattedQuery;
+
+									if($effectuer_unlock_tables=='y') {
+										$sql_unlock="UNLOCK TABLES;";
+										$lock=mysqli_query($GLOBALS["mysqli"], $sql_unlock);
 									}
-									elseif(preg_match("/^CREATE TABLE /",$sql)) {
-										echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
-									}
-									else {
-										if($cpt_insert==0) {
-											//echo "<div style='width:100%'>";
-											echo "Restauration des enregistrements de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde: ";
+
+									if (mysqli_query($GLOBALS["mysqli"], $sql)) {//réussie sinon continue à concaténer
+										if(preg_match("/^DROP TABLE /",$sql)) {
+											echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
+										}
+										elseif(preg_match("/^CREATE TABLE /",$sql)) {
+											echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
 										}
 										else {
-											echo "<span style='font-size: xx-small;'>. </span>";
+											if($cpt_insert==0) {
+												//echo "<div style='width:100%'>";
+												echo "Restauration des enregistrements de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde: ";
+											}
+											else {
+												echo "<span style='font-size: xx-small;'>. </span>";
+											}
+											$cpt_insert++;
 										}
-										$cpt_insert++;
+										flush();
+	
+										debug_pb($sql);
+	
+										//$offset=gztell($fileHandle);
+										//echo $offset;
+										$formattedQuery = "";
+										unset($debut_req);
+										$cpt++;
+										//echo $cpt;
 									}
-									flush();
+									else {
+										//if(preg_match("/^INSERT INTO /",$sql)) {
+										if($debug_restaure=='y') {
+											echo "<p style='color:red'>$sql<br />\n".mysqli_error($GLOBALS["mysqli"])."</p>";
+										}
+									}
+								}
+							}
+						}
+
+
+					}
+					else {
+						$fileHandle = gzopen($dumpFile, "rb");
 	
-									debug_pb($sql);
+						$cpt_insert=0;
 	
-									$offset=gztell($fileHandle);
-									//echo $offset;
-									$formattedQuery = "";
-									unset($debut_req);
-									$cpt++;
-									//echo $cpt;
+						$formattedQuery = "";
+						$old_offset = $offset;
+						while(!gzeof($fileHandle)) {
+							current_time();
+							if ($duree>0 and $TPSCOUR>=$duree) {  //on atteint la fin du temps imparti
+								if ($old_offset == $offset) {
+									echo "<p class=\"rouge center\"><strong>La procédure de restauration ne peut pas continuer.
+									<br />Un problème est survenu lors du traitement d'une requête près de :.
+									<br />".$debut_req."</strong></p><hr />\n";
+									return FALSE;
+								}
+								$old_offset = $offset;
+								return TRUE;
+							}
+	
+							//echo $TPSCOUR."<br />";
+							$buffer=gzgets($fileHandle);
+							if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
+								$buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
+							}
+							//echo $buffer."<br />";
+	
+							if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
+								if (!isset($debut_req))  $debut_req = $buffer;
+								$formattedQuery .= $buffer;
+								//echo $formattedQuery."<hr />";
+								if ($formattedQuery) {
+									if($effectuer_unlock_tables=='y') {
+										$sql_unlock="UNLOCK TABLES;";
+										$lock=mysqli_query($GLOBALS["mysqli"], $sql_unlock);
+									}
+
+									$sql = $formattedQuery;
+									if (mysqli_query($GLOBALS["mysqli"], $sql)) {//réussie sinon continue à concaténer
+										if(preg_match("/^DROP TABLE /",$sql)) {
+											echo "Suppression de la table <span style='color:green;'>$nom_table</span> si elle existe.<br />";
+										}
+										elseif(preg_match("/^CREATE TABLE /",$sql)) {
+											echo "Création de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde.<br />";
+										}
+										else {
+											if($cpt_insert==0) {
+												//echo "<div style='width:100%'>";
+												echo "Restauration des enregistrements de la table <span style='color:green;'>$nom_table</span> d'après la sauvegarde: ";
+											}
+											else {
+												echo "<span style='font-size: xx-small;'>. </span>";
+											}
+											$cpt_insert++;
+										}
+										flush();
+	
+										debug_pb($sql);
+	
+										$offset=gztell($fileHandle);
+										//echo $offset;
+										$formattedQuery = "";
+										unset($debut_req);
+										$cpt++;
+										//echo $cpt;
+									}
+									else {
+										//if(preg_match("/^INSERT INTO /",$sql)) {
+										if($debug_restaure=='y') {
+											echo "<p style='color:red'>$sql<br />\n".mysqli_error($GLOBALS["mysqli"])."</p>";
+										}
+									}
 								}
 							}
 						}
 					}
-	
+
 					if($cpt_insert>0) {
 						echo "<br />";
 						echo "$cpt_insert enregistrement(s) restauré(s).";
@@ -646,6 +742,7 @@ function extractMySqlDump($dumpFile,$duree) {
 
 	global $ne_pas_restaurer_log;
 	global $ne_pas_restaurer_tentatives_intrusion;
+	global $effectuer_unlock_tables;
 
     if(!file_exists($dumpFile)) {
          echo "$dumpFile non trouvé<br />\n";
@@ -938,14 +1035,21 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); margin-bottom:1em;'>";
 		echo "--Restauration par tables (option par défaut)--<br />";
 		echo "<blockquote>\n";
+
         echo "<p>\n";
 		echo "<input type=\"checkbox\" name=\"debug_restaure\" id=\"debug_restaure\" value=\"y\" onchange='document.getElementById(\"restauration_old_way\").checked=false;' /><label for='debug_restaure' style='cursor:pointer;'> Activer le mode debug</label>\n";
         echo "</p>\n";
+
         echo "<p>\n";
 		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_log\" id=\"ne_pas_restaurer_log\" value=\"y\"  onchange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_log' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'log'.</label>\n";
 		echo "</p>\n";
+
         echo "<p>\n";
 		echo "<input type=\"checkbox\" name=\"ne_pas_restaurer_tentatives_intrusion\" id=\"ne_pas_restaurer_tentatives_intrusion\" value=\"y\"  onchange='document.getElementById(\"restauration_mysql\").checked=false;document.getElementById(\"restauration_old_way\").checked=false;' /><label for='ne_pas_restaurer_tentatives_intrusion' style='cursor:pointer;'> Ne pas restaurer les enregistrements de la table 'tentatives_intrusion'.</label>\n";
+		echo "</p>\n";
+
+        echo "<p>\n";
+		echo "<input type=\"checkbox\" name=\"effectuer_unlock_tables\" id=\"effectuer_unlock_tables\" value=\"y\" /><label for='effectuer_unlock_tables' style='cursor:pointer;'> Effectuer des 'unlock tables' dans le cas où des erreurs se produiraient <em style='color:red'>(expérimental)</em>.</label>\n";
 		echo "</p>\n";
         echo "</blockquote>\n";
 		echo "</div>";
@@ -1221,6 +1325,8 @@ if (isset($action) and ($action == 'restaure'))  {
 
 		$ne_pas_restaurer_tentatives_intrusion=isset($_POST["ne_pas_restaurer_tentatives_intrusion"]) ? $_POST["ne_pas_restaurer_tentatives_intrusion"] : (isset($_GET["ne_pas_restaurer_tentatives_intrusion"]) ? $_GET["ne_pas_restaurer_tentatives_intrusion"] : "n");
 
+		$effectuer_unlock_tables=isset($_POST["effectuer_unlock_tables"]) ? $_POST["effectuer_unlock_tables"] : (isset($_GET["effectuer_unlock_tables"]) ? $_GET["effectuer_unlock_tables"] : "n");
+
 		init_time(); //initialise le temps
 
 		//début de fichier
@@ -1355,6 +1461,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			echo add_token_field();
 			echo "<input type='hidden' name='ne_pas_restaurer_log' value='$ne_pas_restaurer_log' />\n";
 			echo "<input type='hidden' name='ne_pas_restaurer_tentatives_intrusion' value='$ne_pas_restaurer_tentatives_intrusion' />\n";
+			echo "<input type='hidden' name='effectuer_unlock_tables' value='$effectuer_unlock_tables' />\n";
 			echo "<input type='hidden' name='t_debut' value='$t_debut' />\n";
 			echo "</p>\n";
 			echo "</form>\n";
@@ -1370,6 +1477,7 @@ value VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_gener
 			echo "&amp;debug_restaure=$debug_restaure";
 			echo "&amp;ne_pas_restaurer_log=$ne_pas_restaurer_log";
 			echo "&amp;ne_pas_restaurer_tentatives_intrusion=$ne_pas_restaurer_tentatives_intrusion";
+			echo "&amp;effectuer_unlock_tables=$effectuer_unlock_tables";
 			echo "&amp;t_debut=$t_debut";
 			echo "#suite\">ici</a> pour poursuivre la restauration</b>\n";
 		}
