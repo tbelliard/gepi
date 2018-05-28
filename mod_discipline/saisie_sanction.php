@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1210,6 +1210,9 @@ if(isset($odt)&&
 
 			$motif=get_valeur_champ("s_incidents", "id_incident='".$id_incident."'", "description");
 			$nature_incident=get_valeur_champ("s_incidents", "id_incident='".$id_incident."'", "nature");
+			if(trim($motif)=='') {
+				$motif=$nature_incident;
+			}
 
 			$nb_report=nombre_reports($id_sanction,0);
 			if ($nb_report<>0) {

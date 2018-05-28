@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -103,12 +103,15 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 	$res_incident=mysqli_query($GLOBALS["mysqli"], $sql_incident);
 	if(mysqli_num_rows($res_incident)>0) {
 		$lig_incident=mysqli_fetch_object($res_incident);
-		
+
 		//traitement de la date mysql
 		$date=datemysql_to_jj_mois_aaaa($lig_incident->date,'-','o');
-		
+
 		//traitement du motif et du travail
 		$motif = $lig_incident->description;
+		if(trim($motif)=='') {
+			$motif=$lig_incident->nature;
+		}
 		$travail ='Donné sur place'; // texte par défaut, c'est un enseignant qui rédige l'incident, il n'y a pas de possibilité de saisir le travail.
 
 		$nature_incident=$lig_incident->nature;
@@ -121,7 +124,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 		if(isset($tmp_tab['liste'])) {
 			$classe= $tmp_tab['liste'];
 		} else {
-		    $classe = '';
+			$classe = '';
 		}
 
 		if(isset($pers_id)) {
@@ -169,7 +172,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 											AND du.id_statut = ds.id;";
 			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$result = mysqli_fetch_array($query);
-	        
+
 			//var retenue
 			$fct_resp = $result['nom_statut'] ;
 		}
@@ -188,7 +191,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 	$num_incident = $id_incident;
 
 	//On Traite ici la date et l'heure de la retenue posée
-	if ($mode=='module_retenue') {	
+	if ($mode=='module_retenue') {
 	     $sql_sanction = "SELECT * FROM `s_retenues` WHERE `id_sanction`=$id_sanction";
 	     $res_sanction=mysqli_query($GLOBALS["mysqli"], $sql_sanction);
 	    if(mysqli_num_rows($res_sanction)>0) {
