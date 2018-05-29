@@ -187,7 +187,10 @@ if(isset($tab_tag_notice["indice"])) {
 		</div>";
 }
 
-echo $lig_ct->contenu;
+//echo $lig_ct->contenu;
+//echo preg_replace("#<img #i", "<img onclick=\"affiche_div_img(this.src)\" ", $lig_ct->contenu);
+//echo preg_replace("#<img #i", "<img onclick=\"affiche_div_img(this.src, this.width, this.height)\" ", $lig_ct->contenu);
+echo preg_replace("#<img #i", "<img onclick=\"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width=400,height=400');\" ", $lig_ct->contenu);
 
 $adj=affiche_docs_joints($lig_ct->id_ct, $type_notice);
 if($adj!='') {
