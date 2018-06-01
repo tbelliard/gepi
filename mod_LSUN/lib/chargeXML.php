@@ -937,6 +937,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						$tab_classe_periode_sans_date_conseil[]=$eleve->id_classe."|".$num_periode;
 					}
 				}
+				elseif($date_conseil_classe<$datecolarite) {
+						$msg_erreur_remplissage.="La date du conseil de classe de <strong>".get_nom_classe($eleve->id_classe)."</strong> en période <strong>".$num_periode."</strong> (".formate_date($date_conseil_classe).") est antérieure à la date de scolarité (".formate_date($datecolarite).").<br />Vous devriez corriger en <strong>compte scolarité</strong> dans la page de <strong>Verrouillage/déverrouillage des périodes</strong>.<br /><br />";
+				}
 				$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$date_conseil_classe , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
 				foreach ($attributsElevePeriode as $cle=>$valeur) {
 					$attsElevePeriode = $xml->createAttribute($cle);
