@@ -680,6 +680,84 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 					}
 				}
 
+				// 20180603
+				$sql="SELECT DISTINCT jgec.* FROM j_groupes_enseignements_complement jgec, 
+								j_groupes_classes jgc 
+							WHERE jgec.id_groupe=jgc.id_groupe AND 
+								jgc.id_classe='".$id_classe."' AND 
+								jgec.code!='';";
+				//echo "$sql<br />";
+				$res_jgec=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_jgec)>0) {
+					while($lig_jgec=mysqli_fetch_object($res_jgec)) {
+						$id_groupe=$lig_jgec->id_groupe;
+
+						$enseignement_complement=isset($_POST["enseignement_complement".$id_groupe]) ? $_POST["enseignement_complement".$id_groupe] : NULL;
+						if(isset($enseignement_complement)) {
+							foreach($enseignement_complement as $ine => $positionnement) {
+								// 20170521 : 
+								if($ine=="") {
+									$msg.="Enseignement de complément&nbsp;: Un identifiant INE est vide pour un élève. Il ne peut pas être pris en compte.<br />";
+								}
+								elseif(!preg_match("/^[0-9]{1,}$/", $positionnement)) {
+									$msg.="Positionnement ".$positionnement." invalide pour l'enseignement de complément $id_groupe pour l'élève $ine.<br />";
+								}
+								else {
+									$sql="SELECT jgec.* FROM j_groupes_enseignements_complement jgec 
+													WHERE jgec.id_groupe='".$id_groupe."' AND 
+														jgec.code!='';";
+									$test=mysqli_query($mysqli, $sql);
+									if(mysqli_num_rows($test)>0) {
+
+										$sql="SELECT * FROM socle_eleves_enseignements_complements WHERE ine='".$ine."' AND id_groupe='".$id_groupe."';";
+										//echo "$sql<br />";
+										$test=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test)==0) {
+											$sql="INSERT INTO socle_eleves_enseignements_complements SET ine='".$ine."', 
+														id_groupe='".$id_groupe."', 
+														positionnement='".$positionnement."', 
+														login_saisie='".$_SESSION['login']."', 
+														date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
+											//echo "$sql<br />";
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+											if($insert) {
+												$cpt_reg++;
+											}
+											else {
+												$msg.="Erreur lors de l'enregistrement $sql<br />";
+												$nb_err++;
+											}
+										}
+										else {
+											$lig=mysqli_fetch_object($test);
+
+											if($positionnement!=$lig->positionnement) {
+												$sql="UPDATE socle_eleves_enseignements_complements SET 
+																positionnement='".$positionnement."', 
+																login_saisie='".$_SESSION['login']."', 
+																date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
+															WHERE ine='".$ine."' AND id_groupe='".$id_groupe."';";
+												//echo "$sql<br />";
+												$update=mysqli_query($GLOBALS["mysqli"], $sql);
+												if($update) {
+													$cpt_reg++;
+												}
+												else {
+													$msg.="Erreur lors de la mise à jour $sql<br />";
+													$nb_err++;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					unset($id_groupe);
+				}
+
+				// 20180603 : A FAIRE : Permettre aussi la saisie LVR
+
 
 				$indice_synthese=isset($_POST['indice_synthese']) ? $_POST['indice_synthese'] : array();
 				if(($SocleSaisieSyntheses)&&(count($indice_synthese)>0)) {
@@ -1183,7 +1261,7 @@ if(isset($id_groupe)) {
 							jeg.login='".$lig->login."';";
 */
 		$enseignement_complement=false;
-		$sql="SELECT jgec.* FROM j_groupes_enseignements_complement jgec, 
+		$sql="SELECT DISTINCT jgec.* FROM j_groupes_enseignements_complement jgec, 
 							j_groupes_professeurs jgp 
 						WHERE jgec.id_groupe=jgp.id_groupe AND 
 							jgec.id_groupe='".$id_groupe."' AND 
@@ -1309,6 +1387,9 @@ if(isset($id_groupe)) {
 				$tab_cycle[$mef_code_ele]=$cycle;
 			}
 
+			// 20180518
+			echo "<div style='margin:0.5em; padding:0.5em;' class='fieldset_opacite50'>";
+
 			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
 		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
@@ -1394,35 +1475,35 @@ if(isset($id_groupe)) {
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_0' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value=''".$checked[0]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_1'".$title[1].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_1' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='1'".$checked[1]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2'".$title[2].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='2'".$checked[2]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_3'".$title[3].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_3' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='3'".$checked[3]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_4'".$title[4].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_4' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='4'".$checked[4]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
 					<td>
 						$valeur_precedente
@@ -1469,6 +1550,7 @@ if(isset($id_groupe)) {
 							$checked[$tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"]]=" checked";
 							$style[$tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"]]=" style='font-weight:bold'";
 						}
+						/*
 						echo "
 		<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de l'enseignement de complément (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")\">
 			<strong>Enseignement de complément&nbsp;:</strong> ".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["code"]." (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")<br />
@@ -1476,8 +1558,19 @@ if(isset($id_groupe)) {
 			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$lig->no_gep."_1' value='1'".$checked[1]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_2');\" /><label for='enseignement_complement_".$id_groupe."_".$lig->no_gep."_1' id='texte_enseignement_complement_".$id_groupe."_".$lig->no_gep."_1'".$style[1]."> Objectif atteint</label><br />
 			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$lig->no_gep."_2' value='2'".$checked[2]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$lig->no_gep."_2');\" /><label for='enseignement_complement_".$id_groupe."_".$lig->no_gep."_2' id='texte_enseignement_complement_".$id_groupe."_".$lig->no_gep."_2'".$style[2].">Objectif dépassé</label>
 		</p>";
+						*/
+						echo "
+		<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de l'enseignement de complément (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")\">
+			<strong>Enseignement de complément&nbsp;:</strong> ".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["code"]." (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")<br />
+			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$cpt_ele."_0' value='0'".$checked[0]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_2');\" /><label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_0' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_0'".$style[0]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
+			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$cpt_ele."_1' value='1'".$checked[1]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_2');\" /><label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_1' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_1'".$style[1]."> Objectif atteint</label><br />
+			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$cpt_ele."_2' value='2'".$checked[2]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_2');\" /><label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_2' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_2'".$style[2].">Objectif dépassé</label>
+		</p>";
 					}
 				}
+
+				// 20180603
+
 
 				$nb_points_enseignement_complement=calcule_points_DNB_enseignement_complement($lig->no_gep);
 				$nb_pts_dnb+=$nb_points_enseignement_complement;
@@ -1545,7 +1638,7 @@ if(isset($id_groupe)) {
 
 				if($SocleSaisieSyntheses) {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
+		<p style='margin-top:0.5em;' ".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
 			<strong>Synthèse&nbsp;:</strong> 
 			<input type='hidden' name='indice_synthese[]' value=\"".$lig->no_gep."|".$cycle."\" />
 			<textarea style='vertical-align:top;' 
@@ -1558,11 +1651,14 @@ if(isset($id_groupe)) {
 				}
 				else {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
+		<p style='margin-top:0.5em;' ".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
 				}
 
 				$cpt_ele++;
 			}
+
+			// 20180518
+			echo "</div>";
 		}
 
 		if($SocleOuvertureSaisieComposantes=="y") {
@@ -1586,10 +1682,12 @@ if(isset($id_groupe)) {
 			checkbox_change('forcer');
 
 			function coche_colonne_ele(cpt_ele, niveau_maitrise) {
+				var i;
 				for(i=0;i<8;i++) {
 					if(document.getElementById('niveau_maitrise_'+cpt_ele+'_'+i+'_'+niveau_maitrise)) {
 						document.getElementById('niveau_maitrise_'+cpt_ele+'_'+i+'_'+niveau_maitrise).checked=true;
 						maj_couleurs_maitrise(cpt_ele,i);
+						calcule_score_socle(cpt_ele);
 					}
 				}
 			}
@@ -1633,6 +1731,77 @@ if(isset($id_groupe)) {
 				new Ajax.Updater($('div_bull_simp'),'../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve='+login_ele+'&id_classe='+id_classe+'&periode1='+periode1+'&periode2='+periode2+'&couleur_alterne=y',{method: 'get'});
 
 				afficher_div('div_bulletin_simplifie', 'y', 10, 10);
+			}
+
+			var points=new Array(0, 10, 25, 40, 50);
+
+			function calcule_score_socle(num_ele) {
+				var score=0;
+
+				//alert('num_ele='+num_ele);
+
+				if(document.getElementById('nb_points_'+num_ele)) {
+					for(j=0;j<8;j++) {
+						for(niveau=0;niveau<5;niveau++) {
+							if(document.getElementById('niveau_maitrise_'+num_ele+'_'+j+'_'+niveau)) {
+								if(document.getElementById('niveau_maitrise_'+num_ele+'_'+j+'_'+niveau).checked==true) {
+									score+=points[niveau];
+									//alert(score);
+								}
+							}
+						}
+					}
+
+					// 20180601
+					// 'enseignement_complement_'+id_groupe+'_'+cpt_ele+'_0'
+					// 'enseignement_complement_'+id_groupe+'_'+cpt_ele+'_1' Objectif atteint (10 points)
+					// 'enseignement_complement_'+id_groupe+'_'+cpt_ele+'_2' Objectif dépassé (20 points)
+
+					var input=document.getElementsByTagName('input');
+					for(k=0;k<input.length;k++) {
+						current_type=input[k].getAttribute('type');
+						if(current_type=='radio') {
+							current_id=input[k].getAttribute('id');
+							if(document.getElementById(current_id)) {
+								if(document.getElementById(current_id).checked==true) {
+									if(current_id.substr(0,24)=='enseignement_complement_') {
+										var tab=current_id.split('_');
+										/*
+										var tmp_chaine='';
+										for(l=0;l<tab.length;l++) {
+											tmp_chaine=tmp_chaine+'tab['+l+']='+tab[l]+' ';
+										}
+										tmp_chaine='current_id='+current_id+' et sous-chaine='+current_id.substr(0,24)+' '+tmp_chaine;
+										if((k>90)&&(k<100)) {
+											alert(tmp_chaine);
+										}
+										*/
+										//current_id=enseignement_complement_4377_1_2 et sous-chaine=enseignement_complement_ tab[0]=enseignement tab[1]=complement tab[2]=4377 tab[3]=1 tab[4]=2 
+
+										if(tab[3]==num_ele) {
+											if(tab[4]==0) {
+												// Pas de modif
+											}
+											else if(tab[4]==1) {
+												score+=10;
+											}
+											else if(tab[4]==2) {
+												score+=20;
+											}
+											else {
+												// Pas de modif
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+
+					// Et idem pour LVR
+
+					document.getElementById('nb_points_'+num_ele).innerHTML='<span title=\'Non enregistré\'>'+score+' (*)</span>';
+				}
 			}
 
 			checkbox_change('cycle_VIDE');
@@ -1760,6 +1929,8 @@ elseif(isset($id_classe)) {
 		echo "
 </ul>";
 
+		$tab_id_groupe_enseignement_complement=array();
+
 		$acces_bull_simp=acces("/prepa_conseil/edit_limite.php", $_SESSION['statut']);
 
 		$titre_infobulle="Bulletin simplifié";
@@ -1791,6 +1962,9 @@ elseif(isset($id_classe)) {
 				$niveau=$tmp_tab_cycle_niveau["mef_niveau"];
 				$tab_cycle[$mef_code_ele]=$cycle;
 			}
+
+			// 20180518
+			echo "<div style='margin:0.5em; padding:0.5em;' class='fieldset_opacite50'>";
 
 			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
@@ -1868,35 +2042,35 @@ elseif(isset($id_classe)) {
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_0' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value=''".$checked[0]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_1'".$title[1].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_1' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='1'".$checked[1]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2'".$title[2].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='2'".$checked[2]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_3'".$title[3].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_3' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='3'".$checked[3]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>
 					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_4'".$title[4].">
 						<input type='radio' 
 							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_4' 
 							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
 							value='4'".$checked[4]." 
-							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);\" />"."
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
 					</td>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
 					<td>
 						$valeur_precedente
@@ -1920,16 +2094,96 @@ elseif(isset($id_classe)) {
 			</tbody>
 		</table>";
 
+				// 20180603
+				/*
+				// Afficher l'enseignement de complément
+				$sql="SELECT seec.* FROM socle_eleves_enseignements_complements seec, 
+								j_groupes_enseignements_complement jgec
+							WHERE seec.ine='".$lig->no_gep."' AND 
+								jgec.id_groupe=seec.id_groupe 
+							ORDER BY positionnement DESC;";
+				//echo "$sql<br />";
+				$res_ens_comp=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_ens_comp)>0) {
+					while($lig_ens_comp=mysqli_fetch_object($res_ens_comp)) {
+						echo get_info_grp($lig_ens_comp->id_groupe)."&nbsp;: ";
+						if($lig_ens_comp->positionnement==1) {
+							echo "Objectif atteint (10 points)";
+							echo "<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$lig_ens_comp->id_groupe."_".$cpt_ele."_1' value='1' style='display:none' checked />";
+						}
+						elseif($lig_ens_comp->positionnement==2) {
+							echo "Objectif dépassé (20 points)";
+							echo "<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$lig_ens_comp->id_groupe."_".$cpt_ele."_2' value='2' style='display:none' checked />";
+						}
+						else {
+							echo "Objectif non atteint";
+						}
+						echo "<br />";
+					}
+				}
+				*/
+
+				if(($tab_cycle[$mef_code_ele]==4)&&($periode==$max_per)) {
+					$sql="SELECT DISTINCT jgec.* FROM j_groupes_enseignements_complement jgec, 
+										j_eleves_groupes jeg 
+									WHERE jgec.id_groupe=jeg.id_groupe AND 
+										jeg.login='".$lig->login."' AND 
+										jgec.code!='';";
+					//echo "$sql<br />";
+					$test=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($test)>0) {
+						while($lig_test=mysqli_fetch_object($test)) {
+							if(!in_array($lig_test->id_groupe, $tab_id_groupe_enseignement_complement)) {
+								$tab_id_groupe_enseignement_complement[]=$lig_test->id_groupe;
+							}
+
+							$code_enseignement_complement=$lig_test->code;
+
+							$niveau_enseignement_complement_eleve_courant=0;
+
+							$sql="SELECT * FROM socle_eleves_enseignements_complements 
+											WHERE id_groupe='".$lig_test->id_groupe."' AND ine='".$lig->no_gep."';";
+							//echo "$sql<br />";
+							$res_ec=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($res_ec)>0) {
+								$lig_ec=mysqli_fetch_object($res_ec);
+								$niveau_enseignement_complement_eleve_courant=$lig_ec->positionnement;
+							}
+
+							$style[0]="";
+							$style[1]="";
+							$style[2]="";
+
+							$checked[0]="";
+							$checked[1]="";
+							$checked[2]="";
+
+							$checked[$niveau_enseignement_complement_eleve_courant]=" checked";
+							$style[$niveau_enseignement_complement_eleve_courant]=" style='font-weight:bold'";
+
+							echo "
+			<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de l'enseignement de complément (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")\">
+				<strong>Enseignement de complément&nbsp;:</strong> ".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["code"]." (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")<br />
+				".get_info_grp($lig_test->id_groupe)."&nbsp;: <br />
+				<input type='radio' name='enseignement_complement".$lig_test->id_groupe."[".$lig->no_gep."]' id='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0' value='0'".$checked[0]." onchange=\"checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2');calcule_score_socle($cpt_ele);\" /><label for='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0' id='texte_enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0'".$style[0]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
+				<input type='radio' name='enseignement_complement".$lig_test->id_groupe."[".$lig->no_gep."]' id='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1' value='1'".$checked[1]." onchange=\"checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2');calcule_score_socle($cpt_ele);\" /><label for='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1' id='texte_enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1'".$style[1]."> Objectif atteint</label><br />
+				<input type='radio' name='enseignement_complement".$lig_test->id_groupe."[".$lig->no_gep."]' id='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2' value='2'".$checked[2]." onchange=\"checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2');calcule_score_socle($cpt_ele);\" /><label for='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2' id='texte_enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2'".$style[2].">Objectif dépassé</label>
+			</p>";
+						}
+					}
+				}
+
 				$nb_points_enseignement_complement=calcule_points_DNB_enseignement_complement($lig->no_gep);
 				$nb_pts_dnb+=$nb_points_enseignement_complement;
 
 				$commentaire_nb_points="";
 				$style_nb_points="";
-				if($nb_pts_dnb>=420) {
+				// 20180603
+				if($nb_pts_dnb>=480) {
 					$style_nb_points="font-weight:bold; color:blue;";
 					$commentaire_nb_points=".\nDNB d'ores et déjà obtenu *avec mention*";
 				}
-				elseif($nb_pts_dnb>=350) {
+				elseif($nb_pts_dnb>=400) {
 					$style_nb_points="font-weight:bold; color:green;";
 					$commentaire_nb_points=".\nDNB d'ores et déjà obtenu";
 				}
@@ -1937,7 +2191,7 @@ elseif(isset($id_classe)) {
 
 				if($SocleSaisieSyntheses) {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
+		<p style='margin-top:0.5em;'".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "").">
 			<strong>Synthèse&nbsp;:</strong> 
 			<input type='hidden' name='indice_synthese[]' value=\"".$lig->no_gep."|".$cycle."\" />
 			<textarea style='vertical-align:top;' 
@@ -1950,12 +2204,22 @@ elseif(isset($id_classe)) {
 				}
 				else {
 					echo "
-		<p".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
+		<p style='margin-top:0.5em;' ".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
 				}
 
 				$cpt_ele++;
 			}
+
+			// 20180518
+			echo "</div>";
+
 		}
+		/*
+		for($loop_grp_compl=0;$loop_grp_compl<count($tab_id_groupe_enseignement_complement);$loop_grp_compl++) {
+			echo "
+		<input type='hidden' name='id_groupe_enseignement_complement[]' value='".$tab_id_groupe_enseignement_complement[$loop_grp_compl]."' />";
+		}
+		*/
 
 		if($SocleOuvertureSaisieComposantes=="y") {
 
@@ -1979,10 +2243,12 @@ elseif(isset($id_classe)) {
 			checkbox_change('forcer');
 
 			function coche_colonne_ele(cpt_ele, niveau_maitrise) {
+				var i;
 				for(i=0;i<8;i++) {
 					if(document.getElementById('niveau_maitrise_'+cpt_ele+'_'+i+'_'+niveau_maitrise)) {
 						document.getElementById('niveau_maitrise_'+cpt_ele+'_'+i+'_'+niveau_maitrise).checked=true;
 						maj_couleurs_maitrise(cpt_ele,i);
+						calcule_score_socle(cpt_ele);
 					}
 				}
 			}
@@ -2026,6 +2292,96 @@ elseif(isset($id_classe)) {
 				new Ajax.Updater($('div_bull_simp'),'../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve='+login_ele+'&id_classe='+id_classe+'&periode1='+periode1+'&periode2='+periode2+'&couleur_alterne=y',{method: 'get'});
 
 				afficher_div('div_bulletin_simplifie', 'y', 10, 10);
+			}
+
+			var points=new Array(0, 10, 25, 40, 50);
+
+			function calcule_score_socle(num_ele) {
+				var score=0;
+
+				if(document.getElementById('nb_points_'+num_ele)) {
+					for(j=0;j<8;j++) {
+						for(niveau=0;niveau<5;niveau++) {
+							if(document.getElementById('niveau_maitrise_'+num_ele+'_'+j+'_'+niveau)) {
+								if(document.getElementById('niveau_maitrise_'+num_ele+'_'+j+'_'+niveau).checked==true) {
+									score+=points[niveau];
+									//alert(score);
+								}
+							}
+						}
+					}
+
+
+					// 20180601
+					// 'enseignement_complement_'+id_groupe+'_'+cpt_ele+'_0'
+					// 'enseignement_complement_'+id_groupe+'_'+cpt_ele+'_1' Objectif atteint (10 points)
+					// 'enseignement_complement_'+id_groupe+'_'+cpt_ele+'_2' Objectif dépassé (20 points)
+
+					var score_enseignement_complement=0;
+					var input=document.getElementsByTagName('input');
+					for(k=0;k<input.length;k++) {
+						current_type=input[k].getAttribute('type');
+						if(current_type=='radio') {
+							current_id=input[k].getAttribute('id');
+							if(document.getElementById(current_id)) {
+								if(document.getElementById(current_id).checked==true) {
+									if(current_id.substr(0,24)=='enseignement_complement_') {
+										var tab=current_id.split('_');
+										/*
+										var tmp_chaine='';
+										for(l=0;l<tab.length;l++) {
+											tmp_chaine=tmp_chaine+'tab['+l+']='+tab[l]+' ';
+										}
+										tmp_chaine='current_id='+current_id+' et sous-chaine='+current_id.substr(0,24)+' '+tmp_chaine;
+										if((k>90)&&(k<100)) {
+											alert(tmp_chaine);
+										}
+										*/
+										//current_id=enseignement_complement_4377_1_2 et sous-chaine=enseignement_complement_ tab[0]=enseignement tab[1]=complement tab[2]=4377 tab[3]=1 tab[4]=2 
+
+										if(tab[3]==num_ele) {
+											if(tab[4]==0) {
+												// Pas de modif
+											}
+											else if(tab[4]==1) {
+												if(score_enseignement_complement<10) {
+													score_enseignement_complement=10;
+												}
+											}
+											else if(tab[4]==2) {
+												if(score_enseignement_complement<20) {
+													score_enseignement_complement=20;
+												}
+											}
+											else {
+												// Pas de modif
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					score+=score_enseignement_complement;
+
+					// Et idem pour LVR
+
+					document.getElementById('nb_points_'+num_ele).innerHTML='<span title=\'Non enregistré\'>'+score+' (*)</span>';
+
+					if(score>=480) {
+						document.getElementById('nb_points_'+num_ele).style.color='blue';
+						document.getElementById('nb_points_'+num_ele).title='DNB d ores et déjà obtenu *avec mention*';
+					}
+					else if(score>=400) {
+						document.getElementById('nb_points_'+num_ele).style.color='green';
+						document.getElementById('nb_points_'+num_ele).title='DNB d ores et déjà obtenu';
+					}
+					else {
+						document.getElementById('nb_points_'+num_ele).style.color='black';
+						document.getElementById('nb_points_'+num_ele).title='';
+					}
+
+				}
 			}
 
 			checkbox_change('cycle_VIDE');
