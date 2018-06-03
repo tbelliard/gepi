@@ -255,7 +255,15 @@ if((acces("/saisie/saisie_socle.php", $_SESSION["statut"]))&&(getSettingAOui("So
 		echo " | <a href=\"saisie_socle.php?id_classe=$id_classe&periode=$periode\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
 	}
 	else {
-		echo " | <a href=\"saisie_socle.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+		if(!isset($id_classe)) {
+			echo " | <a href=\"saisie_socle.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+		}
+		elseif(!isset($periode)) {
+			echo " | <a href=\"saisie_socle.php?id_classe=$id_classe\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+		}
+		else {
+			echo " | <a href=\"saisie_socle.php?id_classe=$id_classe&periode=$periode\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des bilans de composantes du socle</a>";
+		}
 	}
 }
 
