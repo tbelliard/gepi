@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -53,10 +53,25 @@ $add_prof_gest = filter_input(INPUT_POST, 'add_prof_gest') ? filter_input(INPUT_
 $reg_prof_login = filter_input(INPUT_POST, 'reg_prof_login') ? filter_input(INPUT_POST, 'reg_prof_login') : NULL ;
 $reg_add_eleve_login = filter_input(INPUT_POST, 'reg_add_eleve_login') ? filter_input(INPUT_POST, 'reg_add_eleve_login') : NULL ;
 
+if((!isset($indice_aid))&&
+(isset($aid_id))) {
+	$indice_aid=get_valeur_champ("aid", "id='".$aid_id."'", "indice_aid");
+}
+
+if((isset($indice_aid))&&
+(isset($aid_id))) {
+	$sql="SELECT 1=1 FROM aid WHERE indice_aid='".$indice_aid."' AND id='".$aid_id."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)==0) {
+		header("Location: ../accueil.php?msg=Incohérence indice_aid/id_aid.");
+		die();
+	}
+}
+
 // Vérification du niveau de gestion des AIDs
 if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 include_once 'fonctions_aid.php';
