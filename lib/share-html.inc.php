@@ -5345,11 +5345,11 @@ function affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins($mode
 							$retour.="
 		<td style='background-color:grey'></td>";
 						}
-						elseif($tab_classe_pp['acces'][$loop][$i]=="y") {
+						elseif((isset($tab_classe_pp['acces'][$loop][$i]))&&($tab_classe_pp['acces'][$loop][$i]=="y")) {
 							$retour.="
 		<td style='background-color:green' title=\"Classe de ".$tab_classe_pp['classe'][$loop]." en période $i : Les appréciations et avis du conseil de classe sont visibles des parents et élèves.\"></td>";
 						}
-						elseif($tab_classe_pp['acces'][$loop][$i]=="n") {
+						elseif((isset($tab_classe_pp['acces'][$loop][$i]))&&($tab_classe_pp['acces'][$loop][$i]=="n")) {
 							$retour.="
 		<td style='background-color:red' title=\"Classe de ".$tab_classe_pp['classe'][$loop]." en période $i : Les appréciations et avis du conseil de classe ne sont pas visibles des parents et élèves.\"></td>";
 						}
