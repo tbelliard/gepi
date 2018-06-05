@@ -137,7 +137,8 @@
 																	"/gestion/accueil_sauve.php",
 																	// Dans les pages d'initialisation de l'année
 																	"/init",
-																	"/edt_organisation/edt_init");
+																	"/edt_organisation/edt_init",
+																	"/saisie/saisie_socle.php");
 						$cpt_tab_pages_temoin_fixe_messagerie_exclu=0;
 						for($loop=0;$loop<count($tab_pages_temoin_fixe_messagerie_exclu);$loop++) {
 							if(preg_match("@$tab_pages_temoin_fixe_messagerie_exclu[$loop]@", $_SERVER['SCRIPT_NAME'])) {
