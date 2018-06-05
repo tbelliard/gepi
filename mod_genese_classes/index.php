@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -220,6 +220,9 @@ $creer_projet=isset($_POST['creer_projet']) ? $_POST['creer_projet'] : (isset($_
 $copie_projet=isset($_POST['copie_projet']) ? $_POST['copie_projet'] : (isset($_GET['copie_projet']) ? $_GET['copie_projet'] : NULL);
 $projet_new=isset($_POST['projet_new']) ? $_POST['projet_new'] : (isset($_GET['projet_new']) ? $_GET['projet_new'] : NULL);
 
+$vider_saisies=isset($_POST['vider_saisies']) ? $_POST['vider_saisies'] : (isset($_GET['vider_saisies']) ? $_GET['vider_saisies'] : NULL);
+
+
 if(isset($projet)) {
 	if(isset($creer_projet)) {
 		$projet=my_ereg_replace("[^A-Za-z0-9_]","",$projet);
@@ -373,6 +376,26 @@ if($truncate_tables=='y') {
 	//$del=mysql_query($sql);
 }
 
+if(isset($_GET['confirmer_vider_saisies'])) {
+	check_token();
+
+	$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='".$projet."';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb=mysqli_num_rows($res);
+	if($nb==0) {
+		$msg="Aucun enregistrement n'est encore présent dans 'gc_eleves_options' (".strftime("le %d/%m/%Y à %H:%M:%S").").<br />";
+	}
+	else {
+		$sql="DELETE FROM gc_eleves_options WHERE projet='".$projet."';";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($del) {
+			$msg=$nb." enregistrement(s) supprimé(s) de la table 'gc_eleves_options' (".strftime("le %d/%m/%Y à %H:%M:%S").").<br />";
+		}
+		else {
+			$msg="Erreur lors de la suppresion des enregistrements de la table 'gc_eleves_options' (".strftime("le %d/%m/%Y à %H:%M:%S").").<br />";
+		}
+	}
+}
 
 //**************** EN-TETE *****************
 $titre_page = "Genèse classe: Accueil";
@@ -469,6 +492,32 @@ if(!isset($projet)) {
 	echo "</blockquote>\n";
 
 }
+elseif(isset($vider_saisies)) {
+	echo " | <a href='index.php'>Autre projet</a>&nbsp;: ";
+	$sql="SELECT DISTINCT projet FROM gc_projets ORDER BY projet;";
+	$res_proj=mysqli_query($GLOBALS["mysqli"], $sql);
+	echo "<select onchange='document.form1.submit();' name='projet'>\n";
+	while ($lig_proj=mysqli_fetch_object($res_proj)) {
+		echo "<option value='$lig_proj->projet'";
+		if($lig_proj->projet==$projet) {echo "selected";}
+		echo ">$lig_proj->projet</option>\n";
+	}
+	echo "</select>\n";
+	echo " | <a href='saisie_profils_eleves.php'>Saisir les profils des élèves</a>";
+	echo "</p>\n";
+	echo "</form>\n";
+
+	echo "<h2>Projet $projet</h2>\n";
+	echo "<blockquote>\n";
+	echo "<p>Vous avez demandé à vider les saisies d'options <em>(et affectations dans des classes futures)</em>.<br />
+	Pour juste, réinitialiser les classes futures, vous pourriez procéder autrement, sans perte des options <em>(LV1, LV2,...)</em> en cochant la colonne <strong>Classe future Vide</strong> dans <a href='./select_eleves_options.php?projet=".$projet."'>Saisir les options des élèves</a><br />
+	Confirmer ici ne présente d'intérêt que pour reprendre les options héritées de la classe actuelle des élèves<br />
+	<em>(vous perdrez les modifications d'options des élèves éventuellement effectuées à la main dans <strong>Saisir les options des élèves</strong>)</em>.</p>
+
+	<p style='margin-top:1em;'><a href='".$_SERVER['PHP_SELF']."?projet=".$projet."&confirmer_vider_saisies=y".add_token_in_url()."'>Confirmer le souhait de remettre à zéro les saisies</a>.</p>";
+
+	echo "<blockquote/>\n";
+}
 else {
 	echo " | <a href='index.php'>Autre projet</a>&nbsp;: ";
 	$sql="SELECT DISTINCT projet FROM gc_projets ORDER BY projet;";
@@ -493,6 +542,7 @@ else {
 
 	echo "<ol>\n";
 	echo "<li><a href='select_classes.php?projet=$projet'>Choisir les classes (<i>actuelles et futures</i>)</a></li>\n";
+	echo "<li><a href='index.php?projet=$projet&vider_saisies=y'>Vider les options futures enregistrées pour les élèves et les affectations déjà effectuées dans des classes futures</a> <em>(optionnel)</em></li>\n";
 	echo "<li><a href='select_options.php?projet=$projet'>Choisir les options</a></li>\n";
 	echo "<li><a href='liste_options.php?projet=$projet'>Lister les options actuelles des élèves</a></li>\n";
 	echo "<li><a href='import_options.php?projet=$projet'>Importer les options futures des élèves d'après un CSV</a></li>\n";
@@ -530,7 +580,7 @@ echo "<li><p style='margin-bottom:0.5em;'>Le principal indique les contraintes (
 Faire participer les professeurs et cpe permet d'avoir les points de vue en classe et hors des classes.</p></li>\n";
 echo "<li><p style='margin-bottom:0.5em;'>Quelques éléments sur l'utilisation du dispositif&nbsp;:<br />
 Les points 1 à 7 doivent être suivis dans l'ordre.<br />
-Le point <strong>7.&nbsp;Saisir les options des élèves</strong> doit être validé au moins une fois pour enregistrer les moyennes générales,... dans la table 'gc_eleves_options'.<br />
+Le point <strong>8.&nbsp;Saisir les options des élèves</strong> doit être validé au moins une fois pour enregistrer les moyennes générales,... dans la table 'gc_eleves_options'.<br />
 Ensuite seulement, cette moyenne apparaitra dans les pages suivantes.<br />
 Ces préparatifs effectués, on peut générer des listes d'élèves groupés par options afin de préparer sur papier les destinations possibles des élèves des différents groupes.<br />
 Certains élèves doivent être affectés dans certaines classes de façon impérative du fait de leur jeu d'options.<br />
@@ -545,7 +595,7 @@ if((getSettingValue("active_module_absence")=='2')&&(getSettingValue("abs2_impor
 	echo "
 <li>
 <p style='margin-bottom:0.5em;'>Pour que les totaux d'absences, retards,... soient correctement affichés, il convient de <a href='../mod_abs2/admin/admin_table_totaux_absences.php'>remplir la table des totaux d'absences</a>.<br />
-Après cette opération de remplissage, il faut valider une fois le formulaire du point numéro <strong>7.&nbsp;Saisir les options des élèves</strong></p>
+Après cette opération de remplissage, il faut valider une fois le formulaire du point numéro <strong>8.&nbsp;Saisir les options des élèves</strong></p>
 </li>\n";
 }
 
