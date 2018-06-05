@@ -250,6 +250,8 @@ $xml->appendChild($items);
 		$donnees->appendChild($periodes);
 		
 		/*----- Disciplines -----*/
+		// 20180601
+		$tab_disciplines_modalites=array();
 		$tab_disciplines_global_deja=array();
 		$disciplines = $xml->createElement('disciplines');
 		while ($discipline = $listeDisciplines->fetch_object()) {
@@ -265,6 +267,10 @@ $xml->appendChild($items);
 			else {
 
 				$matiere = "DI_".$discipline->code_matiere.$discipline->code_modalite_elect;
+
+				// 20180601
+				$tab_disciplines_modalites[$matiere]=$discipline->nom_complet." (".$discipline->code_modalite_elect.")";
+
 				if(in_array($matiere, $tab_disciplines_global_deja)) {
 					//$sql="SELECT valeur FROM nomenclatures_valeurs WHERE code='".$discipline->code_matiere."' AND nom='libelle_edition';";
 					$nom_matiere=get_valeur_champ("nomenclatures_valeurs", "code='".$discipline->code_matiere."' AND nom='libelle_edition'", "valeur");
@@ -570,6 +576,9 @@ if (getSettingAOui("LSU_commentaire_vie_sco")) {
 
 			/*----- epis -----*/
 if (getSettingValue("LSU_traite_EPI") != "n") {
+			// 20180601
+			$tab_EPI_disciplines=array();
+			$tab_EPI_nom=array();
 			$epis = $xml->createElement('epis');
 			$listeEPICommun = getEPICommun();
 			while ($epiCommun = $listeEPICommun->fetch_object()) { 
@@ -582,6 +591,12 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					assureDisciplinePresente($ref);
 					$refDisciplines .= $ref." ";
 					$cpt_disc_epi++;
+
+					// 20180601 : Liste des disciplines associées à l'EPI dans le module LSU de Gepi
+					if((!isset($tab_EPI_disciplines["EPI_".$epiCommun->id]))||
+					(!in_array($ref, $tab_EPI_disciplines["EPI_".$epiCommun->id]))) {
+						$tab_EPI_disciplines["EPI_".$epiCommun->id][]=$ref;
+					}
 				}
 				if($cpt_disc_epi<=1) {
 					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Un EPI nécessite au moins 2 matières associées. <a href='#ancre_EPI_".$epiCommun->id."'>Corriger</a> plus bas dans la page.<br /><br />";
@@ -603,6 +618,8 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 					$msg_erreur_remplissage.="EPI n°".$epiCommun->id."&nbsp;: Description vide. <a href='#ancre_EPI_".$epiCommun->id."'>Corrigez</a> dans la présente page.<br /><br />";
 				}
 
+				// 20180601
+				$tab_EPI_nom["EPI_".$epiCommun->id]=$epiCommun->intituleEpi;
 				$attributsEpiCommun = array('id'=>"EPI_$epiCommun->id", 'intitule'=>"$epiCommun->intituleEpi", 'thematique'=>"$epiCommun->codeEPI", 'discipline-refs'=>"$refDisciplines");
 				foreach ($attributsEpiCommun as $cle=>$valeur) {
 					$attsEpiCommun = $xml->createAttribute($cle);
@@ -645,6 +662,8 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 						}
 					}
 					if($epi_grp_a_prendre_en_compte) {
+						$tab_EPI_groupe_disciplines=array();
+
 						$noeudEpisGroupes = $xml->createElement('epi-groupe');
 						//id="EPI_GROUPE_02"
 						/*
@@ -667,7 +686,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 							$noeudEpisGroupes->appendChild($attsEpiGroupe);
 						}
 						if(in_array("EPI_GROUPE_".$episGroupe->id, $tab_id_epi_groupes)) {
-							$msg_erreur_remplissage.="<strong>".get_valeur_champ("lsun_epi_communs", "id='".$episGroupe->id_epi."'", "intituleEpi")."&nbsp;:</strong> L'AID ".$episGroupe->nom." est déjà associé à un autre EPI.<br />Un même AID ne peut pas être associé à plusieurs EPI; vous devez créer des catégories AID distinctes, y associer les AID correspondant et n'associer à l'EPI que les catégories AID appropriées.<br /><br />";
+							$msg_erreur_remplissage.="<strong>".get_valeur_champ("lsun_epi_communs", "id='".$episGroupe->id_epi."'", "intituleEpi")."&nbsp;:</strong> L'AID <a href='../aid/modify_aid.php?aid_id=".$episGroupe->id_epi."' target='_blank'>".$episGroupe->nom."</a> est déjà associé à un autre EPI.<br />Un même AID ne peut pas être associé à plusieurs EPI; vous devez créer des catégories AID distinctes, y associer les AID correspondant et n'associer à l'EPI que les catégories AID appropriées.<br /><br />";
 						}
 						$tab_id_epi_groupes[]="EPI_GROUPE_".$episGroupe->id;
 				
@@ -707,7 +726,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 						//$modaliteEns = getModaliteGroupeAP($episGroupe->id);
 						$modaliteEns = getModaliteGroupe($episGroupe->id);
 
-						if ($modaliteEns->num_rows) {
+						if ($modaliteEns->num_rows>0) {
 							while ($ensModalite = $modaliteEns->fetch_object()) {
 								$noeudProf = $xml->createElement('enseignant-discipline');
 								$attsMat =  $xml->createAttribute('discipline-ref');
@@ -718,6 +737,12 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 								$attsProf->value = 'ENS_'.$prof;
 								$noeudProf->appendChild($attsProf);
 								$noeudEnseigneDis->appendChild($noeudProf);
+
+								// 20180601 : Liste des disciplines associées à l'AID correspondant à l'EPI courant
+								if(!in_array($attsMat->value, $tab_EPI_groupe_disciplines)) {
+									$tab_EPI_groupe_disciplines[]=$attsMat->value;
+									//echo "\$tab_EPI_groupe_disciplines[]=$attsMat->value;<br />";
+								}
 							}
 						}
 						else {
@@ -749,8 +774,65 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 								}
 							}
 						}
-				
+
+						// 20180601 : Comparaison de la liste des disciplines associées à l'EPI dans le module LSU de Gepi
+						//            avec la liste des disciplines associées à l'AID correspondant à l'EPI courant
+
+							// L'alimentation du $tab_EPI_groupe_disciplines semble foirer.
+							// Il manque des disciplines correspondant à des ENS_... effectivement inscrits dans le noeud $noeudEnseigneDis
+
+								/*
+								echo "\$tab_EPI_groupe_disciplines<pre>";
+								print_r($tab_EPI_groupe_disciplines);
+								echo "</pre>";
+
+								echo "\$tab_EPI_disciplines['EPI_$episGroupe->id_epi']<pre>";
+								print_r($tab_EPI_disciplines['EPI_'.$episGroupe->id_epi]);
+								echo "</pre>";
+
+								echo "\$noeudEnseigneDis<pre>";
+								print_r($noeudEnseigneDis);
+								echo "</pre>";
+								*/
+
+
 						$noeudEpisGroupes->appendChild($noeudEnseigneDis);
+
+
+						for($loop_epi=0;$loop_epi<count($tab_EPI_groupe_disciplines);$loop_epi++) {
+							if(!in_array($tab_EPI_groupe_disciplines[$loop_epi], $tab_EPI_disciplines['EPI_'.$episGroupe->id_epi])) {
+								$msg_erreur_remplissage.="La matière/modalité ".$tab_disciplines_modalites[$tab_EPI_groupe_disciplines[$loop_epi]]." associée à l'<a href='../aid/modify_aid.php?flag=prof&aid_id=".$episGroupe->id."' target='_blank'>AID ".$episGroupe->nom."</a> correspondant à l'EPI n°".'EPI_'.$episGroupe->id_epi." n'est pas déclarée dans la liste des matières associées à l'EPI <strong>".$tab_EPI_nom["EPI_".$episGroupe->id_epi]."</strong> dans le module LSU de Gepi <em>(<a href='#ancre_EPI_".$episGroupe->id_epi."'>plus bas dans la page</a>)</em><br />";
+								// <a href='../utilisateurs/modify_user.php?user_login=".$lig_prof_aid->id_utilisateur."' target='_blank'>".civ_nom_prenom($lig_prof_aid->id_utilisateur)."</a> - 
+								//aid/modify_aid.php?flag=prof&aid_id=22&indice_aid=11
+							}
+						}
+
+						for($loop_epi=0;$loop_epi<count($tab_EPI_disciplines['EPI_'.$episGroupe->id_epi]);$loop_epi++) {
+							if(!in_array($tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi], $tab_EPI_groupe_disciplines)) {
+								//$msg_erreur_remplissage.="La matière/modalité ".$tab_disciplines_modalites[$tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi]]." déclarée dans la liste des matières associées à l'EPI <strong>".$tab_EPI_nom["EPI_".$episGroupe->id_epi]."</strong> dans le module LSU de Gepi <em>(<a href='#ancre_EPI_".$episGroupe->id_epi."'>plus bas dans la page</a>)</em> n'est assurée par aucun des professeurs déclarés dans l'<a href='../aid/modify_aid.php?flag=prof&aid_id=".$episGroupe->id."' target='_blank'>AID ".$episGroupe->nom."</a>.<br />";
+
+								if(!isset($tab_disciplines_modalites[$tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi]])) {
+									$tmp_code_matiere=substr(substr($tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi],0, strlen($tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi])-1), 3);
+									//$msg_erreur_remplissage.="\$tmp_code_matiere=$tmp_code_matiere<br />";
+									$tab_disciplines_modalites[$tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi]]=get_valeur_champ("matieres", "code_matiere='".$tmp_code_matiere."'", "nom_complet");
+								}
+
+								$msg_erreur_remplissage.="La matière/modalité ";
+								//$msg_erreur_remplissage.='EPI_'.$episGroupe->id_epi.'<br />';
+								//$msg_erreur_remplissage.="\$tab_EPI_disciplines['EPI_".$episGroupe->id_epi."'][$loop_epi]=".$tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi].'<br />';
+								//$msg_erreur_remplissage.=$tab_disciplines_modalites[$tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi]].'<br />';
+								//$msg_erreur_remplissage.="\$tab_EPI_nom['EPI_".$episGroupe->id_epi."']=".$tab_EPI_nom["EPI_".$episGroupe->id_epi].'<br />';
+								$msg_erreur_remplissage.="<strong>".$tab_disciplines_modalites[$tab_EPI_disciplines['EPI_'.$episGroupe->id_epi][$loop_epi]]."</strong> déclarée dans la liste des matières associées à l'EPI <strong>".$tab_EPI_nom["EPI_".$episGroupe->id_epi]."</strong> dans le module LSU de Gepi <em>(<a href='#ancre_EPI_".$episGroupe->id_epi."'>plus bas dans la page</a>)</em> n'est assurée par aucun des professeurs déclarés dans l'<a href='../aid/modify_aid.php?flag=prof&aid_id=".$episGroupe->id."' target='_blank'>AID ".$episGroupe->nom."</a>.<br />";
+
+								/*
+								echo "<pre>";
+								print_r($episGroupe);
+								echo "</pre>";
+								*/
+								// <a href='../utilisateurs/modify_user.php?user_login=".$lig_prof_aid->id_utilisateur."' target='_blank'>".civ_nom_prenom($lig_prof_aid->id_utilisateur)."</a> - 
+								//aid/modify_aid.php?flag=prof&aid_id=".$episGroupe->id."&indice_aid=11
+							}
+						}
 					}
 				}
 			}
@@ -938,7 +1020,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 				}
 				elseif($date_conseil_classe<$datecolarite) {
-						$msg_erreur_remplissage.="La date du conseil de classe de <strong>".get_nom_classe($eleve->id_classe)."</strong> en période <strong>".$num_periode."</strong> (".formate_date($date_conseil_classe).") est antérieure à la date de scolarité (".formate_date($datecolarite).").<br />Vous devriez corriger en <strong>compte scolarité</strong> dans la page de <strong>Verrouillage/déverrouillage des périodes</strong>.<br /><br />";
+					$msg_erreur_remplissage.="La date du conseil de classe de <strong>".get_nom_classe($eleve->id_classe)."</strong> en période <strong>".$num_periode."</strong> (".formate_date($date_conseil_classe).") est antérieure à la date de scolarité (".formate_date($datecolarite).") de ".$eleve->prenom." ".$eleve->nom.".<br />Vous devriez corriger en <strong>compte scolarité</strong> dans la page de <strong>Verrouillage/déverrouillage des périodes</strong>.<br /><br />";
 				}
 				$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$date_conseil_classe , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
 				foreach ($attributsElevePeriode as $cle=>$valeur) {
