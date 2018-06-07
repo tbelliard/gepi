@@ -118,6 +118,14 @@ if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
 //==============================================================
 // Pour tenir compte d'un ajout de champ 'annee' oublié en 1.7.1
 check_tables_modifiees();
+
+// Suppression de l'index sur ine+cycle pour ne conserver que celui sur ine+cycle+annee
+$sql="show index from socle_eleves_syntheses where key_name='ine';";
+$test_index=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($test_index)>0) {
+	$sql="ALTER TABLE socle_eleves_syntheses DROP INDEX ine;";
+	$del=mysqli_query($mysqli, $sql);
+}
 //==============================================================
 
 // Etat d'ouverture ou non des saisies
