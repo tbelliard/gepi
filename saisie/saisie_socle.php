@@ -1386,8 +1386,8 @@ if(isset($id_groupe)) {
 		$cpt_ele=0;
 		$tab_cycle=array();
 		while($lig=mysqli_fetch_object($res)) {
-
 			$mef_code_ele=$lig->mef_code;
+
 			if(!isset($tab_cycle[$mef_code_ele])) {
 				$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
 				$cycle=$tmp_tab_cycle_niveau["mef_cycle"];
@@ -1400,7 +1400,7 @@ if(isset($id_groupe)) {
 
 			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
-		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
+		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identifié&nbsp;???</p>";
 			}
 			else {
 				if(isset($cycle_particulier)) {
@@ -1956,6 +1956,8 @@ elseif(isset($id_classe)) {
 		while($lig=mysqli_fetch_object($res)) {
 
 			$mef_code_ele=$lig->mef_code;
+			// 20180608
+			//echo "\$mef_code_ele=$mef_code_ele<br />";
 			if(!isset($tab_cycle[$mef_code_ele])) {
 				$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
 				$cycle=$tmp_tab_cycle_niveau["mef_cycle"];
@@ -1968,7 +1970,7 @@ elseif(isset($id_classe)) {
 
 			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
-		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identitfié&nbsp;???</p>";
+		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identifié&nbsp;???</p>";
 			}
 			else {
 				if(isset($cycle_particulier)) {
