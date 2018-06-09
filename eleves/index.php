@@ -1001,10 +1001,10 @@ if (!isset($quelles_classes)) {
 		echo "</td>\n";
 		echo "<td>\n";
 		//echo "<label for='' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Elève dont le MEF est ";
+		echo "<span class='norme'>Elève dont le <span title='Module Élémentaire de Formation'>MEF</span> est ";
 		echo "<select name='motif_rech_mef' onchange='verif8()'>
-		<option value='' title=\"Par non référencée, il est entendu que le code MEF n'est pas dans la liste des MEF identifiés.
-Mettre à jour votre table mef peut être une solution.\">Vide ou non référencée</option>";
+		<option value='' title=\"Par non référencé, il est entendu que le code MEF n'est pas dans la liste des MEF identifiés.
+Mettre à jour votre table mef peut être une solution.\">Vide ou non référencé</option>";
 		$sql="SELECT * FROM mef ORDER BY libelle_court, libelle_edition, libelle_long;";
 		$res_mef=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_mef)>0) {
@@ -1043,8 +1043,8 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		//echo "<label for='' style='cursor: pointer;'>\n";
 		echo "<span class='norme'>Elève dont l'établissement d'origine est ";
 		echo "<select name='motif_rech_etab' onchange='verif9()'>
-		<option value='' title=\"Par non référencée, il est entendu que le code établissement n'est pas dans la liste des établissements identifiés.
-Mettre à jour votre table etablissements peut être une solution.\">Vide ou non référencée</option>";
+		<option value='' title=\"Par non référencé, il est entendu que le code établissement n'est pas dans la liste des établissements identifiés.
+Mettre à jour votre table etablissements peut être une solution.\">Vide ou non référencé</option>";
 		$sql="SELECT DISTINCT e.* FROM etablissements e, j_eleves_etablissements jee WHERE e.id=jee.id_etablissement ORDER BY ville, niveau, nom;";
 		$res_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_etab)>0) {
