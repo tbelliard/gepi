@@ -16347,6 +16347,11 @@ function calcule_cycle_et_niveau($mef_code_ele, $valeur_par_defaut_cycle="", $va
 
 	if((!is_array($tab_mef))||(count($tab_mef)==0)) {
 		$tab_mef=get_tab_mef();
+		/*
+		echo "<pre>";
+		print_r($tab_mef);
+		echo "</pre>";
+		*/
 	}
 
 	$tab=array();
@@ -16390,6 +16395,11 @@ function calcule_cycle_et_niveau($mef_code_ele, $valeur_par_defaut_cycle="", $va
 		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="16710002110") {
 			// C'est une classe de 3ème SEGPA
 			$cycle=3;
+			$niveau=3;
+		}
+		elseif($tab_mef[$mef_code_ele]["mef_rattachement"]=="10310026110") {
+			// C'est une classe de 3ème prepa pro
+			$cycle=4;
 			$niveau=3;
 		}
 		else {
