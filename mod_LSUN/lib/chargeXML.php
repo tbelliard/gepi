@@ -1055,7 +1055,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				
 
 					if(in_array($matiere, $tab_disciplines_deja)) {
-						$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a>.<br /><br />";
+						$msg_erreur_remplissage.="L'élève <strong>".get_nom_prenom_eleve($eleve->login)."</strong> a plusieurs enseignements de ".get_valeur_champ("matieres", "code_matiere='".$acquisEleve->code_matiere."'", "matiere")." avec la même modalité (".$modalite.").<br />Ce n'est pas possible.<br />Il faut <a href='../classes/eleve_options.php?login_eleve=".$eleve->login."&id_classe=".$eleve->id_classe."' target='_blank'>corriger</a> ou <a href='../gestion/gerer_modalites_election_enseignements.php#forcer_modalites_telles_matieres' target='_blank'>forcer les modalités globalement</a>.<br /><br />";
 					}
 					$tab_disciplines_deja[]=$matiere;
 
