@@ -587,7 +587,9 @@ if(isset($corriger_manuellement)) {
 
 if(!isset($zone)) {
 	echo "
-</p>
+</p>";
+
+	echo "
 <h2>Choix de la zone</h2>
 <p>De quelle zone souhaitez-vous télécharger les dates de vacances&nbsp;?</p>
 <ul>
@@ -596,6 +598,44 @@ if(!isset($zone)) {
 	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=C&amp;mode=telech'>Zone C</a>&nbsp;: Créteil, Montpellier, Paris, Toulouse, Versailles</p></li>
 </ul>";
 
+	$allow_url_fopen=ini_get('allow_url_fopen');
+	//echo "allow_url_fopen=".$allow_url_fopen."<br />";
+	if(("$allow_url_fopen"!="")&&($allow_url_fopen)) {
+		echo "
+		<fieldset class='fieldset_opacite50'>
+			<p style='color:red; margin-left:6.2em; text-indent:-6.2em;'><strong>Attention&nbsp;:</strong> Le téléchargement de fichiers sur le net par Gepi semble désactivé dans la configuration PHP du serveur <em>(paramètre 'allow_url_fopen')</em>.<br />
+			Le téléchargement proposé ci-dessus va probablement échouer.</p>
+			<p>Vous pouvez télécharger manuellement le fichier sur votre ordinateur, puis le fournir dans le formulaire ci-dessous.<br />
+			Récupérer le fichier de zone par <strong>Clic-droit/Enregistrer la cible du lien sous</strong> <em>(Zone
+			<a href='http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_A.ics' target='_blank'>A</a> - 
+			<a href='http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_B.ics' target='_blank'>B</a> - 
+			<a href='http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_C.ics' target='_blank'>C</a>
+			)</em></p>
+			<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_ics' enctype='multipart/form-data'>
+				<input type='hidden' name='zone' value='fichier_fourni' />
+				<input type='hidden' name='mode' value='fichier_fourni' />
+				<input type='file' name='input_ics_file' id='input_ics_file' /><br />
+				<input type='submit' id='input_submit' value='Envoyer' />
+				<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+			</form>
+		</fieldset>
+
+		<script type='text/javascript'>
+			document.getElementById('input_submit').style.display='none';
+			document.getElementById('input_button').style.display='';
+
+			function check_champ_file() {
+				fichier=document.getElementById('input_ics_file').value;
+				//alert(fichier);
+				if(fichier=='') {
+					alert('Vous n\'avez pas sélectionné de fichier ICS à envoyer.');
+				}
+				else {
+					document.getElementById('form_envoi_ics').submit();
+				}
+			}
+		</script>\n";
+	}
 
 	$html_tab_vacances=affiche_tableau_vacances("", "n", "y");
 	if($html_tab_vacances!="") {
@@ -617,6 +657,9 @@ if(!isset($zone)) {
 	En principe cependant, toutes les classes devraient tout de même avoir les mêmes vacances et dans ce cas, en important les dates depuis un fichier ICS officiel, vous imposerez les dates de vacances et jours fériés par défaut à toutes les classes.<br />
 	Libre à vous d'ajuster ensuite si nécessaire pour telle ou telle classe, par exemple pour ajouter une semaine de stage durant laquelle les élèves ne seront pas considérés comme absents dans le module Absences 2.</p></li>
 	</ul>";
+
+	require("../lib/footer.inc.php");
+	die();
 
 }
 elseif($mode=="telech") {
@@ -660,6 +703,88 @@ elseif($mode=="telech") {
 	require("./edt_ics_lib.php");
 	require("../lib/class.iCalReader.php");
 	$ical2 = new ICal($temp_perso."/fichier_vacances_scolaires.ics");
+
+	// Suite du traitement plus bas dans la partie 
+	// if(($mode=="telech")||($mode=="fichier_fourni")) {
+
+}
+elseif($mode=="fichier_fourni") {
+	echo "
+	 | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre zone</a>
+</p>";
+
+	$post_max_size=ini_get('post_max_size');
+	$upload_max_filesize=ini_get('upload_max_filesize');
+	$max_execution_time=ini_get('max_execution_time');
+	$memory_limit=ini_get('memory_limit');
+
+	$ics_file = isset($_FILES["input_ics_file"]) ? $_FILES["input_ics_file"] : NULL;
+
+	if(!is_uploaded_file($ics_file['tmp_name'])) {
+		echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+
+		echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+		echo "post_max_size=$post_max_size<br />\n";
+		echo "upload_max_filesize=$upload_max_filesize<br />\n";
+		echo "</p>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	if(!file_exists($ics_file['tmp_name'])){
+		echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+
+		echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+		echo "post_max_size=$post_max_size<br />\n";
+		echo "upload_max_filesize=$upload_max_filesize<br />\n";
+		echo "et le volume de ".$ics_file['name']." serait<br />\n";
+		echo "\$ics_file['size']=".volume_human($ics_file['size'])."<br />\n";
+		echo "</p>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	echo "<p>Le fichier a été uploadé.</p>\n";
+
+	$temp_perso="../temp/".get_user_temp_directory();
+
+	$source_file=$ics_file['tmp_name'];
+	$dest_file=$temp_perso."/fichier_vacances_scolaires.ics";
+	$res_copy=copy("$source_file" , "$dest_file");
+
+	if(!$res_copy){
+		echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier $temp_perso</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	echo "
+<h2>Traitement du fichier fourni<br />
+	<span style='font-size:xx-small'>(<a href='".$dest_file."' target='_blank'>".basename($dest_file)."</a>)</span>
+</h2>";
+
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<p style='margin-bottom:1em;'>L'année scolaire telle que saisie dans <a href='../gestion/param_gen.php'>Gestion générale/Configuration générale</a> court du ".strftime("%d/%m/%Y", $begin_bookings)." au ".strftime("%d/%m/%Y", $end_bookings)."</p>
+		<p>Choisissez les dates à importer&nbsp;</p>";
+
+	require("./edt_ics_lib.php");
+	require("../lib/class.iCalReader.php");
+	$ical2 = new ICal($dest_file);
+
+	// Suite du traitement plus bas dans la partie 
+	// if(($mode=="telech")||($mode=="fichier_fourni")) {
+}
+else {
+	echo "<p style='color:red;text-indent:-4.8em; margin-left:4.8em; margin-top:1em;'>Mode inconnu.</p>";
+}
+
+//====================================================
+// Suite du traitement après téléchargement ou envoi du fichier
+if(($mode=="telech")||($mode=="fichier_fourni")) {
 
 	// Mode debug:
 	$debug_edt="n";
@@ -857,10 +982,6 @@ elseif($mode=="telech") {
 		</script>
 	</fieldset>
 </form>";
-
-}
-else {
-	echo "<p style='color:red;text-indent:-4.8em; margin-left:4.8em; margin-top:1em;'>Mode inconnu.</p>";
 }
 
 require("../lib/footer.inc.php");
