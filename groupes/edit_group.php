@@ -223,6 +223,13 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 				echo "<br />\n";
 				$temoin_nettoyage_requis='y';
 				//echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
+
+				echo "<input type='checkbox' name='associer_prof_matiere[]' 
+									id='prof_$p'
+									value=\"$prof_login\"
+									onchange='checkbox_change($p);changement();' />
+					<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>Associer ce professeur à la matière</label>";
+
 				echo "</td>\n";
 				if($acces_modify_user) {
 					echo "<td><a href='../utilisateurs/modify_user.php?user_login=".$prof_login."' target='_blank' title='Voir/modifier la fiche utilisateur dans un nouvel onglet'><img src='../images/icons/prof.png' class='icone16' alt='Voir' /></a></td>\n";
@@ -458,9 +465,37 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
-
 	// Professeurs
 	$reg_professeurs = array();
+
+	if(isset($_POST['associer_prof_matiere'])) {
+		$associer_prof_matiere=$_POST['associer_prof_matiere'];
+		for($loop=0;$loop<count($associer_prof_matiere);$loop++) {
+
+			$reg_professeurs[] = $associer_prof_matiere[$loop];
+			/*
+			$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='".$associer_prof_matiere[$loop]."' AND id_matiere='$reg_matiere';";
+			$test_prof_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_prof_matiere)==0) {
+				$max_mat=1;
+				$sql="SELECT MAX(ordre_matieres) AS max_mat FROM j_professeurs_matieres WHERE id_professeur='".$associer_prof_matiere[$loop]."';";
+				$test_prof_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test_prof_matiere)>0) {
+					$lig_mat=mysqli_fetch_object($test_prof_matiere);
+					$max_mat=$lig_mat->max_mat+1;
+				}
+
+				$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$associer_prof_matiere[$loop]."', id_matiere='$reg_matiere', ordre_matieres='".$max_mat."';";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {$msg.="Erreur lors de l'association de ".$associer_prof_matiere[$loop]." avec la matière ".$reg_matiere.".<br />";}
+				else {
+					$reg_professeurs[] = $associer_prof_matiere[$loop];
+				}
+			}
+			*/
+		}
+	}
+
 	foreach ($_POST as $key => $value) {
 		if (preg_match("/^prof\_/", $key)) {
 			$id = preg_replace("/^prof\_/", "", $key);
