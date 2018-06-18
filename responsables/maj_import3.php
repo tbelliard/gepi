@@ -4377,7 +4377,15 @@ else{
 								//echo "$sql_update_ine<br />";
 								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
 
+								$sql_update_ine="UPDATE socle_eleves_syntheses SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
 								$sql_update_ine="UPDATE socle_eleves_enseignements_complements SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+								$sql_update_ine="UPDATE socle_eleves_lvr SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
 								//echo "$sql_update_ine<br />";
 								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
 
@@ -4520,7 +4528,15 @@ else{
 									//echo "$sql_update_ine<br />";
 									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
 
+									$sql_update_ine="UPDATE socle_eleves_syntheses SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+									//echo "$sql_update_ine<br />";
+									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
 									$sql_update_ine="UPDATE socle_eleves_enseignements_complements SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+									//echo "$sql_update_ine<br />";
+									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+									$sql_update_ine="UPDATE socle_eleves_lvr SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
 									//echo "$sql_update_ine<br />";
 									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
 
