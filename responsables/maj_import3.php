@@ -4385,6 +4385,10 @@ else{
 								//echo "$sql_update_ine<br />";
 								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
 
+								$sql_update_ine="UPDATE socle_eleves_lvr SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+								//echo "$sql_update_ine<br />";
+								$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
 								$test_table=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'plugin_archAPB_eleves'");
 								if(mysqli_num_rows($test_table)>0) {
 									$sql_update_ine="UPDATE plugin_archAPB_eleves SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
@@ -4529,6 +4533,10 @@ else{
 									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
 
 									$sql_update_ine="UPDATE socle_eleves_enseignements_complements SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
+									//echo "$sql_update_ine<br />";
+									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
+
+									$sql_update_ine="UPDATE socle_eleves_lvr SET ine='".$lig->ELENONAT."' WHERE ine='".$old_ine."';";
 									//echo "$sql_update_ine<br />";
 									$update_ine=mysqli_query($GLOBALS["mysqli"], $sql_update_ine);
 
