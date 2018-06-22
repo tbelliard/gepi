@@ -90,40 +90,42 @@ if (isset($_POST['is_posted'])) {
 		check_token();
 
 		$temoin_changement=0;
-		if (isset($_POST['gepiYear'])) {
-			if($_POST['gepiYear']!=getSettingValue("gepiYear")) {
-				$temoin_changement++;
+		if(isset($_POST['modif_dates_manuellement'])) {
+			if (isset($_POST['gepiYear'])) {
+				if($_POST['gepiYear']!=getSettingValue("gepiYear")) {
+					$temoin_changement++;
+				}
+				if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
+					$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
+				}
+				else {
+					$msg .= "Enregistrement de l'année scolaire effectué.<br />";
+				}
 			}
-			if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
-				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
-			}
-			else {
-				$msg .= "Enregistrement de l'année scolaire effectué.<br />";
-			}
-		}
 
-		if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST['begin_year'])) {
-			$begin_bookings = mktime(0,0,0,$_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year']);
-			if($begin_bookings!=getSettingValue("begin_bookings")) {
-				$temoin_changement++;
+			if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST['begin_year'])) {
+				$begin_bookings = mktime(0,0,0,$_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year']);
+				if($begin_bookings!=getSettingValue("begin_bookings")) {
+					$temoin_changement++;
+				}
+				if (!saveSetting("begin_bookings", $begin_bookings)) {
+					$msg .= "Erreur lors de l'enregistrement de begin_bookings !";
+				}
+				else {
+					$msg .= "Enregistrement de begin_bookings effectué.<br />";
+				}
 			}
-			if (!saveSetting("begin_bookings", $begin_bookings)) {
-				$msg .= "Erreur lors de l'enregistrement de begin_bookings !";
-			}
-			else {
-				$msg .= "Enregistrement de begin_bookings effectué.<br />";
-			}
-		}
-		if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['end_year'])) {
-			$end_bookings = mktime(0,0,0,$_POST['end_month'],$_POST['end_day'],$_POST['end_year']);
-			if($end_bookings!=getSettingValue("end_bookings")) {
-				$temoin_changement++;
-			}
-			if (!saveSetting("end_bookings", $end_bookings)) {
-					$msg .= "Erreur lors de l'enregistrement de end_bookings !";
-			}
-			else {
-				$msg .= "Enregistrement de end_bookings effectué.<br />";
+			if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['end_year'])) {
+				$end_bookings = mktime(0,0,0,$_POST['end_month'],$_POST['end_day'],$_POST['end_year']);
+				if($end_bookings!=getSettingValue("end_bookings")) {
+					$temoin_changement++;
+				}
+				if (!saveSetting("end_bookings", $end_bookings)) {
+						$msg .= "Erreur lors de l'enregistrement de end_bookings !";
+				}
+				else {
+					$msg .= "Enregistrement de end_bookings effectué.<br />";
+				}
 			}
 		}
 
@@ -443,8 +445,14 @@ if((getSettingAOui('active_mod_discipline'))&&(nombre_de_dossiers_docs_joints_a_
 echo "</ol>\n";
 
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";
-echo "<ol>\n";
-echo "<li style='margin-top:1em;'><p>Modifier l'année scolaire&nbsp; (<em>actuellement ".getSettingValue('gepiYear')."</em>) : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange='changement()' /></li>\n";
+echo "<ol>
+	<li style='margin-top:1em;'>
+		<p><a href='../init_xml2/import_communs_xml.php?ad_retour_imports_communs=../gestion/changement_annee.php'>Mettre à jour les informations établissement/année scolaire à l'aide de l'export Communs de Siècle/Sconet</a>.<br />
+		<em>(le fichier comporte également les informations adresse établissement, chef d'établissement,...)</em><br />
+		&nbsp;<br />
+		Ou, <input type='checkbox' id='modif_dates_manuellement' name='modif_dates_manuellement' value='y' onchange=\"checkbox_change(this.id); changement();\" /><label for='modif_dates_manuellement' id='texte_modif_dates_manuellement'>modifier manuellement</label>&nbsp;:</p>
+		<ul>
+			<li style='margin-top:1em;'><p>Modifier l'année scolaire&nbsp; (<em>actuellement ".getSettingValue('gepiYear')."</em>) : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange=\"changement(); document.getElementById('modif_dates_manuellement').checked=true;checkbox_change('modif_dates_manuellement')\" /></li>\n";
 echo "<li style='margin-top:1em;'><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:<br />";
 ?>
 
@@ -481,6 +489,9 @@ echo "<li style='margin-top:1em;'><p>Modifier les dates de début et de fin des 
 
 <?php
 echo "</li>\n";
+echo "
+		</ul>
+	</li>\n";
 
 // 20150810
 $sql="SELECT * FROM edt_calendrier WHERE numero_periode!='0' AND etabferme_calendrier='1' ORDER BY numero_periode;";
@@ -653,7 +664,17 @@ echo "/><label for='reserve_comptes_eleves'>Mettre en réserve une copie des com
 if(($temoin_compte_resp=='y')&&($temoin_reserve_compte_resp=='non_faite')) {echo "checked ";}
 echo "/><label for='reserve_comptes_responsables'>Mettre en réserve une copie des comptes responsables.</label></label></p>\n";
 
-echo "<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> En cochant les cases ci-dessus, on commence par vider les comptes précédemment mis en réserve avant d'insérer les comptes actuellement présents dans la table 'utilisateurs'.</p>\n";
+echo "<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>
+			<p>En cochant les cases ci-dessus, on commence par vider les comptes précédemment mis en réserve avant d'insérer les comptes actuellement présents dans la table 'utilisateurs'.</p>
+		</li>
+		<li>
+			<p>Dans le cas où les élèves/parents se connectent via un Environnement Numérique de Travail (ENT), l'intérêt de conserver le même login Gepi pour les élèves/parents est généralement nul.<br />
+			Les comptes sont alors déclarés en mode 'sso' et aucun mot de passe élève/parent n'est alors enregistré dans la base Gepi.<br />
+			Si vos comptes élèves/parents sont en SSO/CAS, vous pouvez effectuer la mise en réserve, mais elle n'aura en principe aucun intérêt.</p>
+		</li>
+	</ul>\n";
 echo "</li>\n";
 echo "</ol>\n";
 
