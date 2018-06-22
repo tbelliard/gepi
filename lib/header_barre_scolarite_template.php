@@ -120,7 +120,9 @@ if ($barre_plugin!="") {
 				if(getSettingValue('GepiAccesCdtVisa')=='yes') {
 					$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php"'.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
 				}
-				$menus .= '     <li><a href="'.$gepiPath.'/documents/archives/index.php"'.insert_confirm_abandon().'>Archives CDT</a></li>'."\n";
+				if(getSettingAOui('acces_archives_cdt')) {
+					$menus .= '     <li><a href="'.$gepiPath.'/documents/archives/index.php"'.insert_confirm_abandon().'>Archives CDT</a></li>'."\n";
+				}
 				$menus .= '   </ul>'."\n";
 				$menus .= '</li>'."\n";
 			}

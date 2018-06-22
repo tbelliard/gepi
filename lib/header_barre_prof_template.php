@@ -183,16 +183,18 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 		$tmp_sous_menu[$cpt_sous_menu]['title']="Extraire les notices portant tel ou tel tag (contrôle, EPI, AP,...)";
 		$cpt_sous_menu++;
 
-		$tmp_sous_menu[$cpt_sous_menu]['lien']='/documents/archives/index.php';
-		$tmp_sous_menu[$cpt_sous_menu]['texte']="Mes archives CDT";
-		$cpt_sous_menu++;
+		if(getSettingAOui('acces_archives_cdt')) {
+			$tmp_sous_menu[$cpt_sous_menu]['lien']='/documents/archives/index.php';
+			$tmp_sous_menu[$cpt_sous_menu]['texte']="Mes archives CDT";
+			$cpt_sous_menu++;
+		}
 
 		$tbs_menu_prof[$compteur_menu]["sous_menu"]=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]["niveau_sous_menu"]=2;
 
 		$compteur_menu++;
 	}
-	elseif ((getSettingValue("acces_archives_cdt")=='')||(getSettingValue("acces_archives_cdt")=='y')) {
+	elseif ((getSettingValue("acces_archives_cdt")=='')||(getSettingAOui("acces_archives_cdt"))) {
 		$tbs_menu_prof[$compteur_menu]["lien"]='/documents/archives/index.php';
 		$tbs_menu_prof[$compteur_menu]["texte"]="Arch.CDT";
 		$compteur_menu++;
