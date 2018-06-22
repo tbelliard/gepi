@@ -4848,6 +4848,11 @@ Et dans
 							}
 						}
 					}
+
+					if("$indice_eleve"!="") {
+						break;
+					}
+
 				}
 				if("$indice_eleve"!="") {
 					break;
@@ -4855,128 +4860,143 @@ Et dans
 			}
 
 			if("$indice_eleve"=="") {
-				echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> L'élève ".$tableau_eleve['login']." n'a pas été trouvé.</p>";
+				echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> L'élève ".$tableau_eleve['login'][$j]." n'a pas été trouvé.</p>";
 			}
 			else {
-				// Les $id_classe et $periode_num vont changer dans la boucle qui suit
-				$tmp_tab_arch_ele_courant=$tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['resp']["adresses"]["adresse"];
 
-				/*
-				if(in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['login'] ,array("baillyc","bouyj2","caborete","barbatty"))) {
-					echo "<hr /><p>\$tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['resp'][\"adresses\"][\"adresse\"]</p>";
-					echo "<pre>";
-					print_r($tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['resp']["adresses"]["adresse"]);
+				if((!is_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['resp']["adresses"]["adresse"]))||(count($tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['resp']["adresses"]["adresse"])==0)) {
+					echo "<p style='color:red'>Pas d'adresse responsable pour ".$tableau_eleve['login'][$j]."</p>";
+					/*
+					echo "id_classe=$id_classe<br />
+					periode_num=$periode_num<br />
+					\$tableau_eleve['login'][$j]=".$tableau_eleve['login'][$j]."<br />
+					indice_eleve=$indice_eleve<br />
+					<pre>";
+					print_r($tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]);
 					echo "</pre>";
+					*/
 				}
-				*/
+				else {
 
-				foreach($tmp_tab_arch_ele_courant as $tmp_num_resp_destinataire => $current_resp_adr) {
+					// Les $id_classe et $periode_num vont changer dans la boucle qui suit
+					$tmp_tab_arch_ele_courant=$tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['resp']["adresses"]["adresse"];
 
 					/*
-					// DEBUG
-					if(in_array($current_resp_adr["pers_id"] ,array(2365546,2326854,2365548,2359658,2359652,1633024,1632990,1155276,1433002,1163867))) {
-						echo "<br /><p>".$current_resp_adr["pers_id"]." ".$current_resp_adr[1]." : ".$tmp_num_resp_destinataire."</p>";
-						echo "\$current_resp_adr<pre>";
-						print_r($current_resp_adr);
+					if(in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['login'] ,array("baillyc","bouyj2","caborete","barbatty"))) {
+						echo "<hr /><p>\$tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['resp'][\"adresses\"][\"adresse\"]</p>";
+						echo "<pre>";
+						print_r($tab_bulletin[$id_classe][$periode_num]['eleve'][$indice_eleve]['resp']["adresses"]["adresse"]);
 						echo "</pre>";
 					}
 					*/
 
-					$nom_fichier_bulletin='bulletin';
-					if($arch_bull_nom_prenom=='yes') {$nom_fichier_bulletin.='_'.$tableau_eleve['nom_prenom'][$j];}
-					if($arch_bull_INE=='yes') {$nom_fichier_bulletin.='_'.$tableau_eleve['no_gep'][$j];}
-					if($arch_bull_annee_scolaire=='yes') {$nom_fichier_bulletin.="_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all");}
-					if($arch_bull_date_edition=='yes') {$nom_fichier_bulletin.="_".strftime("%Y%m%d");}
-					if($arch_bull_classe=='yes') {
-						if(isset($_POST['ele_chgt_classe'])) {
-							$tab_tmp_classe=get_class_from_ele_login($tableau_eleve['login']);
-							if(isset($tab_tmp_classe['liste'])) {
-								$nom_fichier_bulletin.="_".remplace_accents($tab_tmp_classe['liste'], 'all');
-							}
+					foreach($tmp_tab_arch_ele_courant as $tmp_num_resp_destinataire => $current_resp_adr) {
+
+						/*
+						// DEBUG
+						if(in_array($current_resp_adr["pers_id"] ,array(2365546,2326854,2365548,2359658,2359652,1633024,1632990,1155276,1433002,1163867))) {
+							echo "<br /><p>".$current_resp_adr["pers_id"]." ".$current_resp_adr[1]." : ".$tmp_num_resp_destinataire."</p>";
+							echo "\$current_resp_adr<pre>";
+							print_r($current_resp_adr);
+							echo "</pre>";
 						}
-						elseif(isset($classe)) {
-							$nom_fichier_bulletin.="_".remplace_accents($classe, "all");
-						}
-					}
+						*/
 
-					$nom_fichier_bulletin.='_resp_legal_'.$current_resp_adr["resp_legal"]."_".$current_resp_adr["pers_id"];
-					$nom_fichier_bulletin.='.pdf';
-
-					//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
-					$pdf=new bul_PDF('p', 'mm', 'A4');
-					$nb_eleve_aff = 1;
-					$categorie_passe = '';
-					$categorie_passe_count = 0;
-					$pdf->SetCreator($gepiSchoolName);
-					$pdf->SetAuthor($gepiSchoolName);
-					$pdf->SetKeywords('');
-					$pdf->SetSubject('Bulletin');
-					$pdf->SetTitle('Bulletin');
-					$pdf->SetDisplayMode('fullwidth', 'single');
-					$pdf->SetCompression(TRUE);
-					$pdf->SetAutoPageBreak(TRUE, 5);
-
-					$responsable_place = 0;
-
-					// A faire: Forcer 1 seul bulletin par parent
-
-
-					for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
-						$id_classe=$tab_id_classe[$loop_classe];
-						$classe=get_class_from_id($id_classe);
-
-						if($arch_bull_signature=="yes") {
-							if(!isset($tab_signature_classe[$id_classe])) {
-								$tab_signature_classe[$id_classe]=get_tab_signature_bull_archivage($id_classe);
+						$nom_fichier_bulletin='bulletin';
+						if($arch_bull_nom_prenom=='yes') {$nom_fichier_bulletin.='_'.$tableau_eleve['nom_prenom'][$j];}
+						if($arch_bull_INE=='yes') {$nom_fichier_bulletin.='_'.$tableau_eleve['no_gep'][$j];}
+						if($arch_bull_annee_scolaire=='yes') {$nom_fichier_bulletin.="_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all");}
+						if($arch_bull_date_edition=='yes') {$nom_fichier_bulletin.="_".strftime("%Y%m%d");}
+						if($arch_bull_classe=='yes') {
+							if(isset($_POST['ele_chgt_classe'])) {
+								$tab_tmp_classe=get_class_from_ele_login($tableau_eleve['login']);
+								if(isset($tab_tmp_classe['liste'])) {
+									$nom_fichier_bulletin.="_".remplace_accents($tab_tmp_classe['liste'], 'all');
+								}
 							}
-
-							if(isset($tab_signature_classe[$id_classe]['fichier'][0]['chemin'])) {
-								$signature_bull[$id_classe]=$tab_signature_classe[$id_classe]['fichier'][0]['chemin'];
-								/*
-								echo "\$signature_bull[$id_classe]<pre>";
-								print_r($signature_bull[$id_classe]);
-								echo "</pre>";
-								*/
+							elseif(isset($classe)) {
+								$nom_fichier_bulletin.="_".remplace_accents($classe, "all");
 							}
 						}
 
-						// La table tempo4 permet de stocker les infos utilisées pour générer les fichiers d'index HTML de l'archive produite
-						$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j])."';";
-						$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
+						$nom_fichier_bulletin.='_resp_legal_'.$current_resp_adr["resp_legal"]."_".$current_resp_adr["pers_id"];
+						$nom_fichier_bulletin.='.pdf';
 
-						for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
-							$periode_num=$tab_periode_num[$loop_periode_num];
+						//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+						$pdf=new bul_PDF('p', 'mm', 'A4');
+						$nb_eleve_aff = 1;
+						$categorie_passe = '';
+						$categorie_passe_count = 0;
+						$pdf->SetCreator($gepiSchoolName);
+						$pdf->SetAuthor($gepiSchoolName);
+						$pdf->SetKeywords('');
+						$pdf->SetSubject('Bulletin');
+						$pdf->SetTitle('Bulletin');
+						$pdf->SetDisplayMode('fullwidth', 'single');
+						$pdf->SetCompression(TRUE);
+						$pdf->SetAutoPageBreak(TRUE, 5);
 
-							// Recherche de l'indice $i de l'élève dans le tableau tab_bulletin pour la période considérée.
-							for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
+						$responsable_place = 0;
 
-								if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
-									if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']))&&($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']==$tableau_eleve['login'][$j])) {
-										bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+						// A faire: Forcer 1 seul bulletin par parent
+
+
+						for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+							$id_classe=$tab_id_classe[$loop_classe];
+							$classe=get_class_from_id($id_classe);
+
+							if($arch_bull_signature=="yes") {
+								if(!isset($tab_signature_classe[$id_classe])) {
+									$tab_signature_classe[$id_classe]=get_tab_signature_bull_archivage($id_classe);
+								}
+
+								if(isset($tab_signature_classe[$id_classe]['fichier'][0]['chemin'])) {
+									$signature_bull[$id_classe]=$tab_signature_classe[$id_classe]['fichier'][0]['chemin'];
+									/*
+									echo "\$signature_bull[$id_classe]<pre>";
+									print_r($signature_bull[$id_classe]);
+									echo "</pre>";
+									*/
+								}
+							}
+
+							// La table tempo4 permet de stocker les infos utilisées pour générer les fichiers d'index HTML de l'archive produite
+							$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j])."';";
+							$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+								$periode_num=$tab_periode_num[$loop_periode_num];
+
+								// Recherche de l'indice $i de l'élève dans le tableau tab_bulletin pour la période considérée.
+								for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
+
+									if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+										if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']))&&($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']==$tableau_eleve['login'][$j])) {
+											bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+										}
 									}
 								}
 							}
 						}
-					}
 
-					echo $pdf->Output($dirname."/".$nom_fichier_bulletin,'F');
-					echo "<p><a href='$dirname/$nom_fichier_bulletin' target='_blank'>$nom_fichier_bulletin</a>";
-					//if(($arch_bull_envoi_mail=="yes")||($arch_bull_envoi_mail_tous_resp=="yes")) {
-					if(($arch_bull_envoi_mail=="yes")&&(isset($current_resp_adr["email"]))) {
-						// 20170714 : On envoie les bulletins pour $current_resp_adr["email"][]
-						//$arch_bull_envoi_mail_tous_resp n'a plus d'intérêt si les adresses sont individualisées
-						for($loop_mail=0;$loop_mail<count($current_resp_adr["email"]);$loop_mail++) {
+						echo $pdf->Output($dirname."/".$nom_fichier_bulletin,'F');
+						echo "<p><a href='$dirname/$nom_fichier_bulletin' target='_blank'>$nom_fichier_bulletin</a>";
+						//if(($arch_bull_envoi_mail=="yes")||($arch_bull_envoi_mail_tous_resp=="yes")) {
+						if(($arch_bull_envoi_mail=="yes")&&(isset($current_resp_adr["email"]))) {
+							// 20170714 : On envoie les bulletins pour $current_resp_adr["email"][]
+							//$arch_bull_envoi_mail_tous_resp n'a plus d'intérêt si les adresses sont individualisées
+							for($loop_mail=0;$loop_mail<count($current_resp_adr["email"]);$loop_mail++) {
 
-							$destinataire_mail="";
-							$tab_param_mail=array();
-							if(check_mail($current_resp_adr["email"][$loop_mail])) {
-								$destinataire_mail.=$current_resp_adr["email"][$loop_mail];
-								$tab_param_mail['destinataire'][]=$current_resp_adr["email"][$loop_mail];
-							}
+								$destinataire_mail="";
+								$tab_param_mail=array();
+								if(check_mail($current_resp_adr["email"][$loop_mail])) {
+									$destinataire_mail.=$current_resp_adr["email"][$loop_mail];
+									$tab_param_mail['destinataire'][]=$current_resp_adr["email"][$loop_mail];
+								}
 
-							if($destinataire_mail!="") {
-								$sujet_mail="Envoi du bulletin ".$nom_fichier_bulletin;
-								$message_mail="Bonjour ".$current_resp_adr[1].",
+								if($destinataire_mail!="") {
+									$sujet_mail="Envoi du bulletin ".$nom_fichier_bulletin;
+									$message_mail="Bonjour ".$current_resp_adr[1].",
 
 Veuillez trouver en pièce jointe le bulletin ".$nom_fichier_bulletin."
 
@@ -4985,73 +5005,74 @@ Bien cordialement.
 -- 
 ".getSettingValue('gepiSchoolName');
 
-								// On enlève le préfixe ../ parce que le chemin absolu est reconstruit via SERVER_ROOT dans envoi_mail()
-								if(envoi_mail($sujet_mail, $message_mail, $destinataire_mail, '', "plain", $tab_param_mail, preg_replace("#^\.\./#", "", $dirname."/".$nom_fichier_bulletin))) {
-									echo " <em style='color:green' title=\"Mail envoyé avec succès pour ".$current_resp_adr[1]."\">(".$destinataire_mail.")</em>";
-								}
-								else {
-									echo " <em style='color:red' title=\"Échec de l'envoi du mail ".$current_resp_adr[1]."\">(".$destinataire_mail.")</em>";
-								}
-							}
-						}
-
-
-						/*
-
-						//$tmp_tab_resp=get_resp_from_ele_login($tableau_eleve['login'][$j], "n", "y");
-						if($arch_bull_envoi_mail_tous_resp=="yes") {
-							$sql="(SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2')) UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.envoi_bulletin='y')";
-						}
-						else {
-							$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='1';";
-						}
-						$res_mail_resp=mysqli_query($mysqli, $sql);
-						if(mysqli_num_rows($res_mail_resp)>0) {
-							while($lig_mail_resp=mysqli_fetch_object($res_mail_resp)) {
-								$destinataire_mail="";
-								if(check_mail($lig_mail_resp->mel)) {
-									$destinataire_mail.=$lig_mail_resp->mel;
-									$tab_param_mail['destinataire'][]=$lig_mail_resp->mel;
-								}
-								$sql="SELECT email FROM utilisateurs WHERE login='".$lig_mail_resp->login."' AND statut='responsable';";
-								$res_mail_resp_user=mysqli_query($mysqli, $sql);
-								if(mysqli_num_rows($res_mail_resp_user)>0) {
-									$lig_mail_resp_user=mysqli_fetch_object($res_mail_resp_user);
-									if(($lig_mail_resp_user->email!=$lig_mail_resp->mel)&&(check_mail($lig_mail_resp_user->email))) {
-										if($destinataire_mail!="") {
-											$destinataire_mail.=",";
-										}
-										$destinataire_mail.=$lig_mail_resp_user->email;
-										$tab_param_mail['destinataire'][]=$lig_mail_resp_user->email;
-									}
-								}
-
-								if($destinataire_mail!="") {
-									$sujet_mail="Envoi du bulletin ".$nom_fichier_bulletin;
-									$message_mail="Bonjour ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom.",
-
-		Veuillez trouver en pièce jointe le bulletin ".$nom_fichier_bulletin."
-
-
-		Bien cordialement.
-		-- 
-		".getSettingValue('gepiSchoolName');
-
 									// On enlève le préfixe ../ parce que le chemin absolu est reconstruit via SERVER_ROOT dans envoi_mail()
 									if(envoi_mail($sujet_mail, $message_mail, $destinataire_mail, '', "plain", $tab_param_mail, preg_replace("#^\.\./#", "", $dirname."/".$nom_fichier_bulletin))) {
-										echo " <em style='color:green' title=\"Mail envoyé avec succès pour ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom."\">(".$destinataire_mail.")</em>";
+										echo " <em style='color:green' title=\"Mail envoyé avec succès pour ".$current_resp_adr[1]."\">(".$destinataire_mail.")</em>";
 									}
 									else {
-										echo " <em style='color:red' title=\"Échec de l'envoi du mail ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom."\">(".$destinataire_mail.")</em>";
+										echo " <em style='color:red' title=\"Échec de l'envoi du mail ".$current_resp_adr[1]."\">(".$destinataire_mail.")</em>";
 									}
 								}
 							}
-						}
-						*/
-					}
-					echo "</p>\n";
 
-					flush();
+
+							/*
+
+							//$tmp_tab_resp=get_resp_from_ele_login($tableau_eleve['login'][$j], "n", "y");
+							if($arch_bull_envoi_mail_tous_resp=="yes") {
+								$sql="(SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2')) UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.envoi_bulletin='y')";
+							}
+							else {
+								$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='1';";
+							}
+							$res_mail_resp=mysqli_query($mysqli, $sql);
+							if(mysqli_num_rows($res_mail_resp)>0) {
+								while($lig_mail_resp=mysqli_fetch_object($res_mail_resp)) {
+									$destinataire_mail="";
+									if(check_mail($lig_mail_resp->mel)) {
+										$destinataire_mail.=$lig_mail_resp->mel;
+										$tab_param_mail['destinataire'][]=$lig_mail_resp->mel;
+									}
+									$sql="SELECT email FROM utilisateurs WHERE login='".$lig_mail_resp->login."' AND statut='responsable';";
+									$res_mail_resp_user=mysqli_query($mysqli, $sql);
+									if(mysqli_num_rows($res_mail_resp_user)>0) {
+										$lig_mail_resp_user=mysqli_fetch_object($res_mail_resp_user);
+										if(($lig_mail_resp_user->email!=$lig_mail_resp->mel)&&(check_mail($lig_mail_resp_user->email))) {
+											if($destinataire_mail!="") {
+												$destinataire_mail.=",";
+											}
+											$destinataire_mail.=$lig_mail_resp_user->email;
+											$tab_param_mail['destinataire'][]=$lig_mail_resp_user->email;
+										}
+									}
+
+									if($destinataire_mail!="") {
+										$sujet_mail="Envoi du bulletin ".$nom_fichier_bulletin;
+										$message_mail="Bonjour ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom.",
+
+			Veuillez trouver en pièce jointe le bulletin ".$nom_fichier_bulletin."
+
+
+			Bien cordialement.
+			-- 
+			".getSettingValue('gepiSchoolName');
+
+										// On enlève le préfixe ../ parce que le chemin absolu est reconstruit via SERVER_ROOT dans envoi_mail()
+										if(envoi_mail($sujet_mail, $message_mail, $destinataire_mail, '', "plain", $tab_param_mail, preg_replace("#^\.\./#", "", $dirname."/".$nom_fichier_bulletin))) {
+											echo " <em style='color:green' title=\"Mail envoyé avec succès pour ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom."\">(".$destinataire_mail.")</em>";
+										}
+										else {
+											echo " <em style='color:red' title=\"Échec de l'envoi du mail ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom."\">(".$destinataire_mail.")</em>";
+										}
+									}
+								}
+							}
+							*/
+						}
+						echo "</p>\n";
+
+						flush();
+					}
 				}
 			}
 		}
