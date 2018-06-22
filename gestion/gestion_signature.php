@@ -779,6 +779,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 		while($lig_classe=mysqli_fetch_object($res_classe)) {
 			$tab_classe[$cpt]['id_classe']=$lig_classe->id;
 			$tab_classe[$cpt]['classe']=$lig_classe->classe;
+			$tab_classe[$cpt]['suivi_par']=$lig_classe->suivi_par;
 			$cpt++;
 		}
 	}
@@ -809,7 +810,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 	for($loop_c=0;$loop_c<count($tab_classe);$loop_c++) {
 		echo "
 			<tr>
-				<td>".$tab_classe[$loop_c]['classe']."</td>";
+				<td title=\"".$tab_classe[$loop_c]['suivi_par']."\">".$tab_classe[$loop_c]['classe']."</td>";
 		for($loop=0;$loop<count($tab_user);$loop++) {
 			echo "
 				<td>
