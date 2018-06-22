@@ -122,6 +122,9 @@ if ($barre_plugin!="") {
 		if (getSettingValue("active_cahiers_texte") == 'y') {
 			$acces_cahier_texte_2_extract_tag=acces("/cahier_texte_2/extract_tag.php", $_SESSION['statut']);
 			$acces_documents_archives_index=acces("/documents/archives/index.php", $_SESSION['statut']);
+			if(!getSettingAOui('acces_archives_cdt')) {
+				$acces_documents_archives_index=false;
+			}
 
 			if(getSettingValue('GepiCahierTexteVersion')==2) {
 				$acces_cahier_texte_2_see_all=acces("/cahier_texte_2/see_all.php", $_SESSION['statut']);

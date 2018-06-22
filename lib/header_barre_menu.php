@@ -120,7 +120,9 @@ echo '<!--[if lt IE 7]>
 			else {
 				$barre_textes.= '		<li><a href="'.$gepiPath.'/cahier_texte/see_all.php"'.insert_confirm_abandon().'>Consultation des cahiers de textes</a></li>'."\n";
 			}
-			$barre_textes.= '		<li><a href="'.$gepiPath.'/documents/archives/index.php"'.insert_confirm_abandon().'>Mes archives CDT</a></li>'."\n";
+			if(getSettingAOui('acces_archives_cdt')) {
+				$barre_textes.= '		<li><a href="'.$gepiPath.'/documents/archives/index.php"'.insert_confirm_abandon().'>Mes archives CDT</a></li>'."\n";
+			}
 		$barre_textes .= '	</ul>'."\n";
 		$barre_textes .= '</li>'."\n";
 	}else{$barre_textes = '';}
