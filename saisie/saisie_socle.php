@@ -1400,7 +1400,9 @@ if(isset($id_groupe)) {
 
 			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
 				echo "
-		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identifié&nbsp;???</p>";
+		<p style='color:red'>Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identifié&nbsp;???";
+				echo " <a href='http://www.sylogix.org/projects/gepi/wiki/LSUN#Socle-Cycle-non-identifi%C3%A9' target='_blank' title=\"Voir les explications possibles sur le wiki.\"><img src='../images/icons/ico_aide.png' width='15' height='25' alt='Info' /></a>";
+				echo "</p>";
 			}
 			else {
 				if(isset($cycle_particulier)) {
