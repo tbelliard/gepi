@@ -90,7 +90,7 @@ if (MefAppartenanceAbsent()) {
 //$style_specifique[] = "lib/style";
 //$tbs_CSS_spe[] = "lib/style";
 $tbs_CSS_spe[] = array('rel'=>"stylesheet", 'type'=>"text/css", 'fichier'=>"lib/style.css", 'media'=>"screen");
-$titre_page = "AP - EPI - parcours";
+$titre_page = "LSU";
 if (!suivi_ariane($_SERVER['PHP_SELF'],'AP-EPI')) {
 	echo "erreur lors de la création du fil d'ariane";
 }

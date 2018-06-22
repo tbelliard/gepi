@@ -67,6 +67,21 @@ if((isset($msgErreur))&&($msgErreur!="")) {
 	echo "<p class='rouge center gras' style='margin-bottom:1em;'>".$msgErreur."</p>";
 }
 
+if((isset($tab_periodes_extraites))&&(count($tab_periodes_extraites)>0)) {
+	echo "<p style='color:blue' title=\"L'absence de telle classe/période peut s'expliquer par l'absence d'avis du conseil de classe pour les élèves sur la période en question.\">Des données sont extraites pour les classes/périodes suivantes&nbsp;:<br />";
+	foreach($tab_periodes_extraites as $current_classe => $current_tab_periode) {
+		echo $current_classe." période(s) ";
+		for($loop=0;$loop<count($current_tab_periode);$loop++) {
+			if($loop>0) {
+				echo ", ";
+			}
+			echo $current_tab_periode[$loop];
+		}
+		echo ".<br />";
+	}
+	echo "</p>";
+}
+
 // A désactiver peut-être pour ne pas faire peur inutilement?
 $afficher_liste_absence_EP=false;
 if (isset($absenceEP))  {

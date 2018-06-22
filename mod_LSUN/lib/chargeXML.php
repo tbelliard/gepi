@@ -36,6 +36,7 @@ $_PARCOURS = 3;
 //++++++++++++++++++++++++++++++++++
 // Initialisations
 $msg_erreur_remplissage="";
+$tab_periodes_extraites=array();
 $liste_creation_auto_element_programme="";
 $tab_classes_avec_date_debut_periode_manquante=array();
 
@@ -1856,6 +1857,11 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 
 					$tab_id_eleve[]="EL_".$eleve->id_eleve."_".$eleve->periode;
+
+					// 20180619
+					if((!isset($tab_periodes_extraites[$tmp_classe]))||(!in_array($eleve->periode, $tab_periodes_extraites[$tmp_classe]))) {
+						$tab_periodes_extraites[$tmp_classe][]=$eleve->periode;
+					}
 
 					$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);
 				}
