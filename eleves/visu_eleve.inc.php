@@ -1554,7 +1554,23 @@ Patientez pendant l'extraction des données... merci.
 				for($i=0;$i<count($tab_ele['resp']);$i++) {
 					if($tab_ele['resp'][$i]['resp_legal']!=0) {
 						echo "<td valign='top'>\n";
-						echo "<p>Responsable légal <strong>".$tab_ele['resp'][$i]['resp_legal']."</strong></p>\n";
+						echo "<p>Responsable légal <strong>".$tab_ele['resp'][$i]['resp_legal']."</strong>";
+
+						// 20180623
+						$code_parente='';
+						if(($tab_ele['resp'][$i]['code_parente']!='')&&(isset($tab_code_parente[$tab_ele['resp'][$i]['code_parente']]))) {
+							if(isset($tab_code_parente[$tab_ele['resp'][$i]['code_parente']]['libelle'])) {
+								$code_parente=$tab_code_parente[$tab_ele['resp'][$i]['code_parente']]['libelle'];
+							}
+							else {
+								$code_parente=$tab_ele['resp'][$i]['code_parente'];
+							}
+						}
+						if($code_parente!='') {
+							echo " <em>($code_parente)</em>";
+						}
+
+						echo "</p>\n";
 
 						echo "<table class='boireaus' summary='Infos responsables (1)'>\n";
 						$alt=-1;
@@ -1841,7 +1857,23 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 
 						if($tab_ele['resp'][$i]['resp_legal']==0) {
 							echo "<td valign='top'>\n";
-							echo "<p>Contact (<em>non responsable légal</em>)</p>\n";
+							echo "<p>Contact (<em>non responsable légal</em>)";
+
+							// 20180623
+							$code_parente='';
+							if(($tab_ele['resp'][$i]['code_parente']!='')&&(isset($tab_code_parente[$tab_ele['resp'][$i]['code_parente']]))) {
+								if(isset($tab_code_parente[$tab_ele['resp'][$i]['code_parente']]['libelle'])) {
+									$code_parente=$tab_code_parente[$tab_ele['resp'][$i]['code_parente']]['libelle'];
+								}
+								else {
+									$code_parente=$tab_ele['resp'][$i]['code_parente'];
+								}
+							}
+							if($code_parente!='') {
+								echo " <em>($code_parente)</em>";
+							}
+
+							echo "</p>\n";
 
 							echo "<table class='boireaus' summary='Infos responsables (0)'>\n";
 							$alt=-1;

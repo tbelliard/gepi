@@ -535,7 +535,7 @@ function info_eleve($ele_login) {
 
 	if($acces_responsables=='y') {
 		// Récup infos responsables
-		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal, r.code_parente FROM resp_pers rp,
 										resp_adr ra,
 										responsables2 r
 					WHERE r.ele_id='".$tab_ele['ele_id']."' AND
@@ -572,6 +572,7 @@ function info_eleve($ele_login) {
 				$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
 
 				$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+				$tab_ele['resp'][$cpt]['code_parente']=$lig_resp->code_parente;
 
 				//echo "\$lig_resp->login=".$lig_resp->login."<br />";
 				if($lig_resp->login!="") {
@@ -596,7 +597,7 @@ function info_eleve($ele_login) {
 		}
 
 		// Récup infos responsables resp_legal=0
-		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal, r.acces_sp, r.envoi_bulletin FROM resp_pers rp,
+		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal, r.acces_sp, r.envoi_bulletin, r.code_parente FROM resp_pers rp,
 										resp_adr ra,
 										responsables2 r
 					WHERE r.ele_id='".$tab_ele['ele_id']."' AND
@@ -633,6 +634,8 @@ function info_eleve($ele_login) {
 				$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
 
 				$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+				$tab_ele['resp'][$cpt]['code_parente']=$lig_resp->code_parente;
+
 				$tab_ele['resp'][$cpt]['acces_sp']=$lig_resp->acces_sp;
 				$tab_ele['resp'][$cpt]['envoi_bulletin']=$lig_resp->envoi_bulletin;
 
