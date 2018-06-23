@@ -800,7 +800,22 @@ if($mode=='choix_assoc_fichier_user_classe') {
 
 	for($loop=0;$loop<count($tab_user);$loop++) {
 		echo "
-				<th title=\"".$tab_user[$loop]['login']."\">".$tab_user[$loop]['designation']."</th>";
+				<th title=\"".$tab_user[$loop]['login']."\">".$tab_user[$loop]['designation'];
+
+		if(isset($tab_fichiers_utilisateurs[$tab_user[$loop]['login']])) {
+			echo "<br />
+				<select name='id_fichier_col[$loop]' id='id_fichier_col_$loop' style='max-width:15em;'>
+					<option value=''>---</option>";
+			for($i=0;$i<count($tab_fichiers_utilisateurs[$tab_user[$loop]['login']]);$i++) {
+				echo "
+					<option value='".$tab_fichiers_utilisateurs[$tab_user[$loop]['login']][$i]['id_fichier']."'>".$tab_fichiers_utilisateurs[$tab_user[$loop]['login']][$i]['fichier']."</option>";
+			}
+			echo "
+				</select>
+				<a href='#' onclick=\"changement(); choisir_fichier_col($loop);\" title=\"Choisir ce fichier pour toutes les classes.\"><img src='../images/icons/wizard.png' class='icone16' /></a></span>";
+		}
+
+		echo "</th>";
 	}
 
 	echo "
@@ -810,7 +825,10 @@ if($mode=='choix_assoc_fichier_user_classe') {
 	for($loop_c=0;$loop_c<count($tab_classe);$loop_c++) {
 		echo "
 			<tr>
-				<td title=\"".$tab_classe[$loop_c]['suivi_par']."\">".$tab_classe[$loop_c]['classe']."</td>";
+				<td title=\"".$tab_classe[$loop_c]['suivi_par']."\">
+					".$tab_classe[$loop_c]['classe']."<br />
+					<span style='font-size:small'>".$tab_classe[$loop_c]['suivi_par']."</span>
+				</td>";
 		for($loop=0;$loop<count($tab_user);$loop++) {
 			echo "
 				<td>
@@ -833,7 +851,7 @@ if($mode=='choix_assoc_fichier_user_classe') {
 
 			if(isset($tab_fichiers_utilisateurs[$tab_user[$loop]['login']])) {
 				echo "<br />
-					<select name='id_fichier[$cpt]' id='id_fichier_$cpt' onchange='changement(); update_checkbox($cpt)'>
+					<select name='id_fichier[$cpt]' id='id_fichier_$cpt' onchange='changement(); update_checkbox($cpt)' style='max-width:15em;'>
 						<option value=''>---</option>";
 				for($i=0;$i<count($tab_fichiers_utilisateurs[$tab_user[$loop]['login']]);$i++) {
 					echo "
@@ -867,6 +885,26 @@ if($mode=='choix_assoc_fichier_user_classe') {
 				(document.getElementById('droit_'+i))) {
 					if(document.getElementById('id_fichier_'+i).selectedIndex!=0) {
 						document.getElementById('droit_'+i).checked=true;
+					}
+				}
+			}
+
+			function choisir_fichier_col(colonne) {
+				if(document.getElementById('id_fichier_col_'+colonne)) {
+					for(i=0;i<$cpt;i++) {
+						cpt=i*".count($tab_user)."+colonne;
+						if(document.getElementById('id_fichier_'+cpt)) {
+							document.getElementById('id_fichier_'+cpt).selectedIndex=document.getElementById('id_fichier_col_'+colonne).selectedIndex;
+						}
+
+						if(document.getElementById('droit_'+cpt)) {
+							if(document.getElementById('id_fichier_col_'+colonne).selectedIndex==0) {
+								document.getElementById('droit_'+cpt).checked=false;
+							}
+							else {
+								document.getElementById('droit_'+cpt).checked=true;
+							}
+						}
 					}
 				}
 			}
