@@ -218,6 +218,7 @@ function info_eleve($ele_login) {
 				$tab_ele['periodes'][$cpt]['id_classe']=$lig_per->id_classe;
 				$tab_ele['periodes'][$cpt]['classe']=$lig_per->classe;
 				$tab_ele['periodes'][$cpt]['nom_complet']=$lig_per->nom_complet;
+				$tab_ele['periodes'][$cpt]['verouiller']=$lig_per->verouiller;
 
 				$tab_ele['periodes'][$cpt]['gepi_prof_suivi']=retourne_denomination_pp($lig_per->id_classe);
 
@@ -339,6 +340,24 @@ function info_eleve($ele_login) {
 							// On ne récupère pas le nom long du devoir?
 
 							$m++;
+						}
+
+						// 20180623
+						// Moyenne
+						$sql="SELECT cnc.* FROM cn_notes_conteneurs cnc, cn_cahier_notes ccn WHERE login='".$ele_login."' AND cnc.id_conteneur=ccn.id_cahier_notes AND ccn.id_groupe='".$lig_grp->id."' AND ccn.periode='".$lig_per->num_periode."';";
+						//echo "$sql<br />\n";
+						$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_moy)>0) {
+							$lig_moy=mysqli_fetch_object($res_moy);
+							if($lig_moy->statut=='y') {
+								$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['moyenne'][$lig_per->num_periode]=$lig_moy->note;
+							}
+							else {
+								$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['moyenne'][$lig_per->num_periode]="-";
+							}
+						}
+						else {
+							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['moyenne'][$lig_per->num_periode]="-";
 						}
 
 						$cpt2++;
@@ -1004,6 +1023,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 	echo "</pre>";
 	*/
 
+
 	echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."' summary='Relevé de notes'>\n";
 
 	echo "<tr>\n";
@@ -1166,6 +1186,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 		//echo "<table width=\"$larg_tab\"$releve_class_bordure border='1' cellspacing='3' cellpadding='3'>\n";
 		echo "<tr>\n";
 		echo "<td width=\"$larg_col1\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
+		echo "<td>Moy.</td>";
 		echo "<td width=\"$larg_col2\" class='releve'>Notes sur 20</td>\n";
 		echo "</tr>\n";
 
@@ -1197,7 +1218,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 						$prev_cat_id = $tab_rel['periodes'][$index_per]['groupes'][$j]['id_cat'];
 
 						echo "<tr>\n";
-						echo "<td colspan='2'>\n\n";
+						echo "<td colspan='3'>\n\n";
 						//echo "<p style='padding: 0; margin:0; font-size: 10px;'>".$tab_rel['categorie'][$prev_cat_id]."</p>\n";
 						echo "<p style='padding: 0; margin:0; font-size: ".$releve_categ_font_size."px;";
 						if($releve_categ_bgcolor!="") {echo "background-color:$releve_categ_bgcolor;";}
@@ -1221,6 +1242,31 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 					$k++;
 				}
 				echo "</td>\n";
+
+				//=======================================
+				// 20180623
+				echo "<td class='releve'>\n";
+				//echo "\$tab_rel['groupes'][".$index_grp."]['moyenne'][".$num_periode."]<br />";
+				if(!isset($tab_rel['periodes'][$index_per]['groupes'][$j]['moyenne'][$num_periode])) {
+					echo "&nbsp;AA";
+				}
+				else {
+					if($tab_rel['periodes'][$index_per]['verouiller']=='N') {
+						echo "<span title=\"ATTENTION : La période n'est pas close.
+                    La moyenne affichée est susceptible de
+                    changer d'ici à la fin de la période.
+                    Des notes peuvent encore être ajoutées,
+                    des coefficients de devoirs peuvent être
+                    modifiés,...\">";
+						echo $tab_rel['periodes'][$index_per]['groupes'][$j]['moyenne'][$num_periode];
+						echo "</span>";
+					}
+					else {
+						echo $tab_rel['periodes'][$index_per]['groupes'][$j]['moyenne'][$num_periode];
+					}
+				}
+				echo "</td>\n";
+				//=======================================
 
 				echo "<td class='releve' style='text-align:left;'>\n";
 

@@ -2784,6 +2784,9 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				// Liste des infos à faire apparaitre sur le relevé de notes:
 				// Si des appréciations ont été saisies et que dans les paramètres du devoir il est précisé qu'elles doivent être visibles des parents, il n'y a pas de raison de ne pas les afficher
 				$tab_ele['rn_app']='y';
+				// Non pris en compte: directement extrait dans visu_ele_func.lib.php
+				//$tab_ele['rn_col_moy']='y';
+
 				/*
 				$tab_ele['rn_app']='n';
 				$tab_ele['rn_nomdev']='y';
