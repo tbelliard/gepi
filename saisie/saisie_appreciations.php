@@ -1946,7 +1946,12 @@ foreach ($liste_eleves as $eleve_login) {
 				// 20150316: Désactivé parce que ce la provoque une série de requêtes ajax au chargement de la page.
 				//$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\n";
 
+				//$mess[$k].="verifAppVide('".$k.$num_id."');";
+
 				$mess[$k].="\"";
+
+				// 20180623
+				//$mess[$k].=" onblur=\"verifAppVide('".$k.$num_id."');\"";
 
 				//==================================
 				// Rétablissement: boireaus 20080219
@@ -2560,6 +2565,33 @@ echo "
 		}
 		//alert(chaine);
 	}
+
+	// 20180623
+	function verif_saisies_non_vides() {
+		for(num_per=1;num_per<".$nb_periode.";num_per++) {
+			for(i=10;i<".(count($liste_eleves)+10).";i++) {
+				textId='n'+num_per+i;
+				if(document.getElementById(textId)) {
+					contenu=document.getElementById(textId).value;
+					if(contenu=='') {
+						document.getElementById(textId).title=\"En fin de période, l'appréciation ne devrait pas être vide sauf si cet élève n'est pas affecté dans votre enseignement. Vous devriez alors signaler l'erreur d'inscription à l'administrateur.\";
+						document.getElementById(textId).style.borderWidth='10px';
+						document.getElementById(textId).style.borderStyle='solid';
+						document.getElementById(textId).style.borderColor='red';
+						//alert('plop');
+					}
+					else {
+						document.getElementById(textId).title=\"\";
+						//document.getElementById(textId).style.border='';
+						document.getElementById(textId).style.borderWidth='0px';
+						document.getElementById(textId).style.borderStyle='solid';
+						document.getElementById(textId).style.borderColor='';
+					}
+				}
+			}
+		}
+	}
+	verif_saisies_non_vides();
 
 </script>\n";
 
