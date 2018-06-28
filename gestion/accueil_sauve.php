@@ -452,7 +452,7 @@ function restoreMySqlDump($duree) {
 
 		if($cpt_insert>0) {
 			echo "<br />";
-			echo "$cpt_insert enregistrement(s) restauré(s).";
+			echo "$cpt_insert enregistrement(s) restauré(s).<br />";
 		}
 
 		if (mysqli_error($GLOBALS["mysqli"])) {
@@ -587,7 +587,7 @@ function restoreMySqlDump($duree) {
 	
 					if($cpt_insert>0) {
 						echo "<br />";
-						echo "$cpt_insert enregistrement(s) restauré(s).";
+						echo "$cpt_insert enregistrement(s) restauré(s).<br />";
 						//echo "</div>\n";
 					}
 	
@@ -690,11 +690,11 @@ function extractMySqlDump($dumpFile,$duree) {
 			if(preg_match("/^DROP TABLE /",$buffer)) {
 				if(isset($fich)) {fclose($fich);}
 				//$fich=fopen("../backup/".$dirname."/base_extraite_table_".$num_table.".sql","w+");
-				$fich=fopen("../backup/".$dirname."/base_extraite_table_".sprintf("%03d",$num_table).".sql","w+");
+				$fich=fopen("../backup/".$dirname."/base_extraite_table_".sprintf("%08d",$num_table).".sql","w+");
 
 				$nom_table=trim(preg_replace("/[ `;]/","",preg_replace("/^DROP TABLE /","",preg_replace("/^DROP TABLE IF EXISTS /","",$buffer))));
 
-				$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%03d",$num_table)."', value='$nom_table';";
+				$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%08d",$num_table)."', value='$nom_table';";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$cpt_lignes_fichier=0;
@@ -715,9 +715,9 @@ function extractMySqlDump($dumpFile,$duree) {
 				else {
 					if($cpt_lignes_fichier>1000) {
 						if(isset($fich)) {fclose($fich);}
-						$fich=fopen("../backup/".$dirname."/base_extraite_table_".sprintf("%03d",$num_table).".sql","w+");
+						$fich=fopen("../backup/".$dirname."/base_extraite_table_".sprintf("%08d",$num_table).".sql","w+");
 						// Le nom de table n'a pas changé:	
-						$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%03d",$num_table)."', value='$nom_table';";
+						$sql="INSERT INTO a_tmp_setting SET name='table_".sprintf("%08d",$num_table)."', value='$nom_table';";
 						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$cpt_lignes_fichier=0;
