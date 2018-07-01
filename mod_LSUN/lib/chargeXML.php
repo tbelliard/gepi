@@ -1858,9 +1858,25 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 					$tab_id_eleve[]="EL_".$eleve->id_eleve."_".$eleve->periode;
 
+					// DEBUG 20180625
+					//echo $eleve->id_eleve." période ".$eleve->periode." (";
+					//echo $tmp_classe;
+					$classe_ele_courant='';
+					if(isset($tab_ele_derniere_classe[$eleve->login])) {
+						$classe_ele_courant=$tab_ele_derniere_classe[$eleve->login];
+						//echo $classe_ele_courant;
+					}
+					//echo ")<br />";
+
 					// 20180619
+					/*
 					if((!isset($tab_periodes_extraites[$tmp_classe]))||(!in_array($eleve->periode, $tab_periodes_extraites[$tmp_classe]))) {
 						$tab_periodes_extraites[$tmp_classe][]=$eleve->periode;
+					}
+					*/
+					if(($classe_ele_courant!='')&&
+					((!isset($tab_periodes_extraites[$classe_ele_courant]))||(!in_array($eleve->periode, $tab_periodes_extraites[$classe_ele_courant])))) {
+						$tab_periodes_extraites[$classe_ele_courant][]=$eleve->periode;
 					}
 
 					$bilansPeriodiques->appendChild($noeudBilanElevePeriodique);
