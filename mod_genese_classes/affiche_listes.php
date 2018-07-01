@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -675,6 +675,9 @@ function change_display(id) {
 - afficher pour répartition
 - juste afficher la liste des élèves concernés.\">".$tab_aff_courant['nom']."</a>";
 			echo " <a href='affiche_listes.php?projet=".$projet."&id_aff=".$lig_req_aff->id_aff."' title=\"Ajouter une requête à cet affichage.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a>";
+
+			echo " <a href='affiche_listes.php?id_aff=$lig_req_aff->id_aff&amp;projet=$projet&amp;afficher_listes=y' title=\"Ajouter une requête à cet affichage.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir les listes et exports CSV/ODS' /></a>";
+
 			echo "</p>\n";
 
 			echo "<div id='id_aff_$lig_req_aff->id_aff' style='display:none;'>\n";
