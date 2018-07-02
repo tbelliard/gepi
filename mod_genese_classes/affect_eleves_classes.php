@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -871,6 +871,8 @@ else {
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
 	$id_req=isset($_POST['id_req']) ? $_POST['id_req'] : (isset($_GET['id_req']) ? $_GET['id_req'] : NULL);
 
+	$colorisation=isset($_POST['colorisation']) ? $_POST['colorisation'] : (isset($_GET['colorisation']) ? $_GET['colorisation'] : NULL);
+
 	echo "<div class='noprint'>\n"; // Debut de l'entête à ne pas imprimer
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"form_autre_requete\">\n";
@@ -1477,11 +1479,11 @@ $_POST['projet']=	4eme_vers_3eme
 	// Colorisation
 	echo "<p>Colorisation&nbsp;: ";
 	echo "<select name='colorisation' onchange='lance_colorisation()'>
-	<option value='classe_fut' selected>Classe future</option>
-	<option value='lv1'>LV1</option>
-	<option value='lv2'>LV2</option>
-	<option value='profil'>Profil</option>
-	<option value='aucune'>Aucune</option>
+	<option value='classe_fut' ".(((!isset($colorisation))||($colorisation=='classe_fut')) ? "selected" : "").">Classe future</option>
+	<option value='lv1'".((isset($colorisation))&&($colorisation=='lv1') ? "selected" : "").">LV1</option>
+	<option value='lv2'".((isset($colorisation))&&($colorisation=='lv2') ? "selected" : "").">LV2</option>
+	<option value='profil'".((isset($colorisation))&&($colorisation=='profil') ? "selected" : "").">Profil</option>
+	<option value='aucune'".((isset($colorisation))&&($colorisation=='aucune') ? "selected" : "").">Aucune</option>
 	</select>\n";
 	
 	echo "</p>\n";
@@ -2194,6 +2196,7 @@ $_POST['projet']=	4eme_vers_3eme
 		new Ajax.Updater($('div_test_aff_classe2'),'liste_classe_fut.php?ele_login='+login+'&classe_fut='+classe_fut+'&projet=$projet&avec_classe_origine=y',{method: 'get'});
 		delais_afficher_div('div_test_aff_classe2','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);
 	}
+
 </script>\n";
 
 	echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:absolute; border:1px solid black;'>Classes futures</div>\n";
@@ -2511,6 +2514,8 @@ echo "
 		// Lancer un recalcul des effectifs
 		calcule_effectif('classe_fut',".count($classe_fut).");
 	}
+
+	lance_colorisation();
 
 </script>\n";
 
