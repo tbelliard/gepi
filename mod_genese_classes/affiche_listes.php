@@ -868,7 +868,7 @@ width='16' height='16' alt='Supprimer' /></a>";
 	$texte_infobulle="<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"form_autre_requete\">
 	".add_token_field()."
 	<input type='hidden' name='nommer_requete' value=\"y\" />
-	<p>Nommer la requête n°<span id='id_req_actuelle'></span>&nbsp;:<br /><input type='text' name='nom_requete' value=\"\" /></p>
+	<p>Nommer la requête n°<span id='id_req_actuelle'></span>&nbsp;:<br /><input type='text' name='nom_requete' id='nommer_requete_nom_requete' value=\"\" /></p>
 	<input type='hidden' name='projet' value=\"".$projet."\" />
 	<input type='hidden' name='id_aff' id='id_aff_nommage' value=\"\" />
 	<input type='hidden' name='id_req' id='id_req_nommage' value=\"\" />
@@ -882,6 +882,8 @@ width='16' height='16' alt='Supprimer' /></a>";
 		document.getElementById('id_req_nommage').value=id_req;
 		document.getElementById('id_aff_nommage').value=id_aff;
 		afficher_div('div_set_nom_requete', 'y', 10, 10);
+
+		document.getElementById('nommer_requete_nom_requete').focus();
 
 		//new Ajax.Updater($('div_profil_'+cpt),'affiche_listes.php?set_profil=y&login='+current_login_ele+'&projet=$projet&profil='+profil+'".add_token_in_url(false)."',{method: 'get'});
 	}
@@ -1703,9 +1705,15 @@ else {
 		}
 	}
 
-
-
-
+	// 20180702
+	$nom_affichage=get_valeur_champ('gc_noms_affichages',"id_aff='".$id_aff."' AND projet='".$projet."'", "nom");
+	$description_affichage=get_valeur_champ('gc_noms_affichages',"id_aff='".$id_aff."' AND projet='".$projet."'", "description");
+	if($nom_affichage=='') {
+		echo "<p class='bold'>Affichage n°".$id_aff." <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff&amp;mode=nommer_aff' title=\"Nommer/décrire l'affichage.\"><img src='../images/icons/wizard.png' class='icone16' alt='Modifier' /></a></p>";
+	}
+	else {
+		echo "<p class='bold' title=\"".str_replace('"', "'", $description_affichage)."\">Affichage ".$nom_affichage." <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff&amp;mode=nommer_aff' title=\"Nommer/décrire l'affichage.\"><img src='../images/icons/wizard.png' class='icone16' alt='Modifier' /></a></p>";
+	}
 
 
 // 20140623
