@@ -1228,17 +1228,30 @@ if ($affichage == 'ods') {
                     $classe = $eleve['classe'];
 
 				if(isset($export_avec_resp)) {
-                    // 20141105
-                    $resp_1_nom=$eleve['resp_legal'][1]['nom'];
-                    $resp_1_prenom=$eleve['resp_legal'][1]['prenom'];
-                    $resp_1_civilite=$eleve['resp_legal'][1]['civilite'];
-                    $resp_1_adr1=$eleve['resp_legal'][1]['adr1'];
-                    $resp_1_adr2=$eleve['resp_legal'][1]['adr2'];
-                    $resp_1_adr3=$eleve['resp_legal'][1]['adr3'];
-                    $resp_1_cp=$eleve['resp_legal'][1]['cp'];
-                    $resp_1_commune=$eleve['resp_legal'][1]['commune'];
-                    $resp_1_pays=$eleve['resp_legal'][1]['pays'];
-                    $resp_1_adr_en_ligne=$eleve['resp_legal'][1]['en_ligne'];
+					$resp_1_nom=$eleve['resp_legal'][1]['nom'];
+					$resp_1_prenom=$eleve['resp_legal'][1]['prenom'];
+					$resp_1_civilite=$eleve['resp_legal'][1]['civilite'];
+					$resp_1_adr1=$eleve['resp_legal'][1]['adr1'];
+					$resp_1_adr2=$eleve['resp_legal'][1]['adr2'];
+					$resp_1_adr3=$eleve['resp_legal'][1]['adr3'];
+					$resp_1_cp=$eleve['resp_legal'][1]['cp'];
+					$resp_1_commune=$eleve['resp_legal'][1]['commune'];
+					$resp_1_pays=$eleve['resp_legal'][1]['pays'];
+					$resp_1_adr_en_ligne=$eleve['resp_legal'][1]['en_ligne'];
+				}
+				else {
+					$resp_1_nom='';
+					$resp_1_prenom='';
+					$resp_1_civilite='';
+					$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.id_eleve='".$id."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='1';";
+					//echo "$sql<br />";
+					$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_resp)>0) {
+						$lig_resp=mysqli_fetch_object($res_resp);
+						$resp_1_nom=$lig_resp->nom;
+						$resp_1_prenom=$lig_resp->prenom;
+						$resp_1_civilite=$lig_resp->civilite;
+					}
 				}
 
                     $total_demi_journees = strval($eleve['demi_journees']);
@@ -1299,7 +1312,11 @@ if ($affichage == 'ods') {
                             'total_demi_journees' => $total_demi_journees,
                             'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
                             'total_demi_journees_non_justifiees' => $total_demi_journees_non_justifiees,
-                            'retards' => $retards);
+                            'retards' => $retards,
+                            'resp_1_nom'=>$resp_1_nom,
+                            'resp_1_prenom'=>$resp_1_prenom,
+                            'resp_1_civilite'=>$resp_1_civilite
+                            );
 				}
                     }
                     // 20180712
