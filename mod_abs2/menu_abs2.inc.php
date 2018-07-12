@@ -95,6 +95,14 @@ if(($_SESSION['statut']=='cpe')||
 		echo '<li style="float :right"><a href="admin/index.php'.(($_SESSION['statut']!="administrateur") ? '#config_avancee' : '').'" target="_blank" title="Paramétrer le module"><img src="../images/icons/configure.png" class="icone16" alt="Config" /></a></li>';
 	}
 
+	if(
+		($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OOoUploadScolAbs2')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('OOoUploadCpeAbs2')))
+	) {
+		echo '<li style="float :right"><a href="../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE" target="_blank" title="Gestion des modèles OpenDocument ODT/ODS du module Absences 2"><img src="../images/icons/odt.png" class="icone16" alt="Modèles ODT/ODS" /></a></li>';
+	}
+
     if($url_end=='saisir_eleve.php' || $url_end=='enregistrement_saisie_eleve.php' || $url_end=='saisir_groupe.php' || $url_end=='enregistrement_saisie_groupe.php') {
 	echo '<li style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe" target="_blank">wiki</a></li>';
     } else if($url_end=='liste_notifications.php') {

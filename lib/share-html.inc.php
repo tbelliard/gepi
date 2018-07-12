@@ -7218,4 +7218,18 @@ function affiche_tableau_resp_classe($id_classe, $login_ele="") {
 
 	return $retour;
 }
+
+function get_designation_inspection_academique() {
+	global $mysqli;
+
+	$designation_inspection_academique=getSettingValue('gepiSchoolInspectionAcademique');
+	if(trim($designation_inspection_academique)=='') {
+		$designation_inspection_academique="l’Inspection Académique de ";
+		if(getSettingValue("gepiSchoolAcademie")!='') {
+			$designation_inspection_academique.=getSettingValue("gepiSchoolAcademie");
+		}
+	}
+
+	return $designation_inspection_academique;
+}
 ?>

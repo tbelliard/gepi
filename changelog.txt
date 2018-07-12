@@ -9,6 +9,9 @@ Gepi-master (Version de développement)
 Carnets de notes:
 - Ajout de modes de saisie de notes pour passer plus vite à la saisie de la note suivante.
 
+Absences 2: 
+- Possibilité de générer un fichier ODT de rappel à la loi (depuis Bilan individuel).
+  Possibilité proposée au-delà d'un seuil d'absences paramétrable dans le module Abs2.
 
 Gepi-1.7.3 (04/04/2018)
 ===========================

@@ -85,6 +85,8 @@ $type_filtrage=isset($_POST["type_filtrage"]) ? $_POST["type_filtrage"] : (isset
 $raz=isset($_POST["raz"]) ? $_POST["raz"] : (isset($_GET["raz"]) ? $_GET["raz"] : null);
 $texte_conditionnel=isset($_POST["texte_conditionnel"]) ? $_POST["texte_conditionnel"] : (isset($_GET["texte_conditionnel"]) ? $_GET["texte_conditionnel"] : null);
 
+$export_avec_resp=isset($_POST['export_avec_resp']) ? $_POST['export_avec_resp'] : (isset($_GET['export_avec_resp']) ? $_GET['export_avec_resp'] : NULL);
+
 if($ndj=="" || $raz=="ok") $ndj=Null;
 if($ndjnj=="" || $raz=="ok") $ndjnj=Null;
 if($nr=="" || $raz=="ok") $nr=Null;
@@ -218,7 +220,7 @@ if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="o
 
 // pas de header ou menu dans le cas de l'export odt 
 // début de l'affichage des options
-if ($affichage != 'ods' && $affichage != 'odt' ) {
+if ($affichage != 'ods' && $affichage != 'odt' && $affichage != 'odt_rappel_loi' ) {
     require_once("../lib/header.inc.php");
     include('menu_abs2.inc.php');
     include('menu_bilans.inc.php');
@@ -339,7 +341,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
 			> Ne pas répéter les informations globales de l'élève par ligne dans l'export tableur (pour totaux par colonne)
             <br />
 
-		<input type='checkbox' name='afficher_strictement_englobee' id='afficher_strictement_englobee' value='y' <?php
+		<input dojoType="dijit.form.CheckBox" type='checkbox' name='afficher_strictement_englobee' id='afficher_strictement_englobee' value='y' <?php
 			if($afficher_strictement_englobee=="y") {echo "checked ";}
 		?>/><label for='afficher_strictement_englobee' style='font-variant: normal;'>Afficher les saisies englobées</label>
 		<br />
@@ -356,7 +358,7 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             } ?>
 			> Afficher le texte optionnel en bas de l'export odt
             <br />
-            <input dojoType="dijit.form.CheckBox" type='checkbox' name='export_avec_resp' id='export_avec_resp' value='y' <?php if(isset($_POST['export_avec_resp'])) {echo "checked ";}?> /><label for='export_avec_resp'> Inclure les informations responsable légal 1 dans l'export ODS/ODT.</label><br />
+            <input dojoType="dijit.form.CheckBox" type='checkbox' name='export_avec_resp' id='export_avec_resp' value='y' <?php if(isset($export_avec_resp)) {echo "checked ";}?> /><label for='export_avec_resp'> Inclure les informations responsable légal 1 dans l'export ODS/ODT.</label><br />
             <?php endif; ?>            
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Valider les modifications et afficher à l'écran</button>
         </fieldset>
@@ -486,7 +488,7 @@ foreach ($eleve_col as $eleve) {
 		}
 
 		// 20141105
-		if(isset($_POST['export_avec_resp'])) {
+		if(isset($export_avec_resp)) {
 			//get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n")
 			//get_adresse_responsable($pers_id, $login_resp="")
 			//responsables_adresses_separees($login_eleve)
@@ -720,7 +722,7 @@ $_SESSION['donnees_bilan']=serialize($donnees);
 }
 // fin de la mise en session des données extraites
 // On fais une copie des données en session pour affichage
-if($affichage !="odt" && $affichage!="ods"){
+if($affichage !="odt" && $affichage!="ods" && $affichage!="odt_rappel_loi"){
     if(isset($_SESSION['donnees_bilan'])){
         $_SESSION['donnees_bilan_affichage']=$_SESSION['donnees_bilan'];
     }    
@@ -764,7 +766,7 @@ if ($filtrage == "ok" && ($ndj != null || $ndjnj != null || $nr != null)) {
             break;
     }
 
-    if($affichage !="odt" && $affichage!="ods"){
+    if($affichage !="odt" && $affichage!="ods" && $affichage!="odt_rappel_loi"){
         echo'<p class="red">Les données affichées ci-dessous ont été filtrées. ';
         echo'Le nombre d\'élèves affiché est de '.($cpt_eleve-$cpt_eleve_filtre).' sur un total initial de '.$cpt_eleve.'</p>';
     } 
@@ -774,6 +776,13 @@ if ($filtrage == "ok" && ($ndj != null || $ndjnj != null || $nr != null)) {
 // début des export
   //export html
 if ($affichage == 'html') {
+	// 20180712
+	// Permettre via un paramètre de choisir le seuil du nombre d'absences à partir duquel proposer ce lien :
+	$abs2_RappelLoiNbAbs=getSettingValue('abs2_RappelLoiNbAbs');
+	if((trim($abs2_RappelLoiNbAbs)=='')||(!preg_match("/^[0-9]{1,}$/", $abs2_RappelLoiNbAbs))||($abs2_RappelLoiNbAbs<1)) {
+		$abs2_RappelLoiNbAbs=100;
+	}
+
 echo'<div id="sortie_ecran">';
 echo '<table border="1" cellspacing="0" align="center">';
 echo '<tr >';
@@ -841,7 +850,14 @@ foreach ($donnees as $id => $eleve) {
 						echo'<span style="color:red">Date de sortie de l\'établissement : '.$eleve['sortie'].'</span>';
 					}
                     echo'<br />';
-                    echo '<ins><em>Absences :</em></ins> <br />';
+                    echo '<ins><em>Absences :</em></ins> ';
+                    //if ($type_extrait == '1') {
+                    if((($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite'))&&
+                    (strval($eleve['demi_journees'])>$abs2_RappelLoiNbAbs)) {
+                        // 20180712
+                        echo "<a href='".$_SERVER['PHP_SELF']."?date_absence_eleve_debut=2017-09-04&date_absence_eleve_fin=2018-07-05&id_eleve=".$propel_eleve->getId()."&affichage=odt_rappel_loi&id_classe=-1&type_extrait=1".(isset($export_avec_resp) ? "&export_avec_resp=y" : "")."' target='_blank' title='Imprimer un rappel à la loi'><img src='../images/icons/odt_exclamation.png' class='icone16' /></a>";
+                    }
+                    echo '<br />';
                     if (strval($eleve['demi_journees']) == 0) {
                         echo 'Aucune demi-journée';
                     } else {
@@ -933,10 +949,11 @@ foreach ($donnees as $id => $eleve) {
 echo '<h5>Extraction réalisée le '.date("d/m/Y - H:i").'</h5>';
 echo'</div>';
 //fin export html; debut export odt et ods
-} else if ($affichage == 'ods' || $affichage == 'odt') {
-include_once '../orm/helpers/AbsencesNotificationHelper.php';
-if(isset($_SESSION['donnees_bilan_affichage'])){
-    $donnees=unserialize($_SESSION['donnees_bilan_affichage']);
+//====================================================
+} else if ($affichage == 'ods' || $affichage == 'odt' || $affichage == 'odt_rappel_loi') {
+	include_once '../orm/helpers/AbsencesNotificationHelper.php';
+	if(isset($_SESSION['donnees_bilan_affichage'])){
+	$donnees=unserialize($_SESSION['donnees_bilan_affichage']);
 }
 if ($affichage == 'ods') {
 
@@ -969,7 +986,7 @@ if ($affichage == 'ods') {
                         $prenom = $eleve['prenom'];
                         $classe = $eleve['classe'];
 
-				if(isset($_POST['export_avec_resp'])) {
+				if(isset($export_avec_resp)) {
                         // 20141105
                         $resp_1_nom=$eleve['resp_legal'][1]['nom'];
                         $resp_1_prenom=$eleve['resp_legal'][1]['prenom'];
@@ -992,7 +1009,7 @@ if ($affichage == 'ods') {
                         $prenom = '';
                         $classe = '';
 
-				if(isset($_POST['export_avec_resp'])) {
+				if(isset($export_avec_resp)) {
                         $resp_1_nom="";
                         $resp_1_prenom="";
                         $resp_1_civilite="";
@@ -1031,7 +1048,7 @@ if ($affichage == 'ods') {
                         }
                     }
                     // 20141105
-				if(isset($_POST['export_avec_resp'])) {
+				if(isset($export_avec_resp)) {
                     $export[] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
 
                         'total_demi_journees' => $total_demi_journees,
@@ -1082,7 +1099,8 @@ if ($affichage == 'ods') {
             }
         }
     }    
-} else {
+} elseif ($affichage == 'odt') {
+
     $extension = 'odt';
     $export = array();
     foreach ($donnees as $id => $eleve) {
@@ -1102,7 +1120,7 @@ if ($affichage == 'ods') {
                     $prenom = $eleve['prenom'];
                     $classe = $eleve['classe'];
 
-				if(isset($_POST['export_avec_resp'])) {
+				if(isset($export_avec_resp)) {
                     // 20141105
                     $resp_1_nom=$eleve['resp_legal'][1]['nom'];
                     $resp_1_prenom=$eleve['resp_legal'][1]['prenom'];
@@ -1151,7 +1169,7 @@ if ($affichage == 'ods') {
                     }
                     if (!isset($export[$id])) {
                         // 20141105
-				if(isset($_POST['export_avec_resp'])) {
+				if(isset($export_avec_resp)) {
                         $export[$id] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
                             'total_demi_journees' => $total_demi_journees,
                             'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
@@ -1187,14 +1205,137 @@ if ($affichage == 'ods') {
                 }
             }
         }
-    }    
+    }
+} else {
+    $extension = 'odt';
+    $date_edition=strftime("%d/%m/%Y");
+    $export = array();
+    foreach ($donnees as $id => $eleve) {
+        if(!isset($eleve['infos_saisies'])){
+        continue;
+        }
+        if($id_eleve!=null && $id_eleve !='' && $id!=$id_eleve ){
+            continue;
+        }
+        if($tri!=null && $tri!='') {
+            ksort($eleve['infos_saisies']);
+        }
+        foreach ($eleve['infos_saisies'] as $type_tab) {
+            foreach ($type_tab as $journee) {
+                foreach ($journee as $key => $value) {
+                    $nom = $eleve['nom'];
+                    $prenom = $eleve['prenom'];
+                    $classe = $eleve['classe'];
+
+				if(isset($export_avec_resp)) {
+                    // 20141105
+                    $resp_1_nom=$eleve['resp_legal'][1]['nom'];
+                    $resp_1_prenom=$eleve['resp_legal'][1]['prenom'];
+                    $resp_1_civilite=$eleve['resp_legal'][1]['civilite'];
+                    $resp_1_adr1=$eleve['resp_legal'][1]['adr1'];
+                    $resp_1_adr2=$eleve['resp_legal'][1]['adr2'];
+                    $resp_1_adr3=$eleve['resp_legal'][1]['adr3'];
+                    $resp_1_cp=$eleve['resp_legal'][1]['cp'];
+                    $resp_1_commune=$eleve['resp_legal'][1]['commune'];
+                    $resp_1_pays=$eleve['resp_legal'][1]['pays'];
+                    $resp_1_adr_en_ligne=$eleve['resp_legal'][1]['en_ligne'];
+				}
+
+                    $total_demi_journees = strval($eleve['demi_journees']);
+                    $total_demi_journees_justifiees = strval($eleve['demi_journees'] - $eleve['non_justifiees']);
+                    $total_demi_journees_non_justifiees = strval($eleve['non_justifiees']);
+                    $retards = $eleve['retards'];
+                    $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);
+                    $ligne_demi_journees =$value['demi_journees'];
+                    if($ligne_demi_journees >0){
+                        $ligne_demi_journees_non_justifiees = $value['demi_journees_non_justifiees'];
+                        if($ligne_demi_journees_non_justifiees==0){
+                            $ligne_demi_journees_non_justifiees='';
+                        }
+                        $ligne_demi_journees_justifiees = $value['demi_journees_justifiees'];;
+                        if($ligne_demi_journees_justifiees==0){
+                            $ligne_demi_journees_justifiees='';
+                        }
+                    }else{
+                        $ligne_demi_journees_non_justifiees = '-';
+                        $ligne_demi_journees_justifiees = '-';
+                    }                    
+                    $type = $value['type'];
+                    $motif = $value['motif'];
+                    $justification = $value['justification'];
+                    $export_commentaire = '';
+                    if (isset($value['commentaires']) && (is_null($sans_commentaire) || $sans_commentaire=='')) {
+                        $besoin_echo_virgule = false;
+                        foreach ($value['commentaires'] as $commentaire) {
+                            if ($besoin_echo_virgule) {
+                                $export_commentaire.= ', ';
+                            }
+                            $export_commentaire.=$commentaire;
+                            $besoin_echo_virgule = true;
+                        }
+                    }
+                    if (!isset($export[$id])) {
+                        // 20141105
+				if(isset($export_avec_resp)) {
+                        $export[$id] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
+                            'total_demi_journees' => $total_demi_journees,
+                            'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
+                            'total_demi_journees_non_justifiees' => $total_demi_journees_non_justifiees,
+                            'retards' => $retards,
+                            'resp_1_nom'=>$resp_1_nom,
+                            'resp_1_prenom'=>$resp_1_prenom,
+                            'resp_1_civilite'=>$resp_1_civilite,
+                            'resp_1_adr1'=>$resp_1_adr1,
+                            'resp_1_adr2'=>$resp_1_adr2,
+                            'resp_1_adr3'=>$resp_1_adr3,
+                            'resp_1_cp'=>$resp_1_cp,
+                            'resp_1_commune'=>$resp_1_commune,
+                            'resp_1_pays'=>$resp_1_pays,
+                            'resp_1_adr_en_ligne'=>$resp_1_adr_en_ligne
+                            );
+				}
+				else {
+                        $export[$id] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
+                            'total_demi_journees' => $total_demi_journees,
+                            'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
+                            'total_demi_journees_non_justifiees' => $total_demi_journees_non_justifiees,
+                            'retards' => $retards);
+				}
+                    }
+                    // 20180712
+                    $export[$id]['date_edition']=$date_edition;
+
+                    $export[$id]['lignes'][] = Array('dates' => $dates,
+                        'ligne_demi_journees_non_justifiees' => $ligne_demi_journees_non_justifiees,
+                        'ligne_demi_journees_justifiees' => $ligne_demi_journees_justifiees,
+                        'type' => $type,
+                        'motif' => $motif,
+                        'justification' => $justification,
+                        'export_commentaire' => $export_commentaire);
+                }
+            }
+        }
+    }
 }
-if(isset($_POST['export_avec_resp'])) {
-	$extraction_bilans = repertoire_modeles('absence_extraction_bilan_resp.'.$extension);
+
+if ($affichage == 'ods' || $affichage == 'odt') {
+	if(isset($export_avec_resp)) {
+		$extraction_bilans = repertoire_modeles('absence_extraction_bilan_resp.'.$extension);
+	}
+	else {
+		$extraction_bilans = repertoire_modeles('absence_extraction_bilan.'.$extension);
+	}
 }
 else {
-	$extraction_bilans = repertoire_modeles('absence_extraction_bilan.'.$extension);
+	if(isset($export_avec_resp)) {
+		$extraction_bilans = repertoire_modeles('absence_rappel_a_la_loi_resp.'.$extension);
+		//echo "plop";
+	}
+	else {
+		$extraction_bilans = repertoire_modeles('absence_rappel_a_la_loi.'.$extension);
+	}
 }
+//debug_var();
 $TBS = AbsencesNotificationHelper::MergeInfosEtab($extraction_bilans);
 $titre = 'Bilan individuel du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
 $classe = null;
@@ -1216,8 +1357,23 @@ $TBS->MergeField('date_debut', $dt_date_absence_eleve_debut->format("d/m/Y"));
 $TBS->MergeField('date_fin', $dt_date_absence_eleve_fin->format("d/m/Y"));
 $TBS->MergeBlock('export', $export);
 $TBS->MergeField('texte', $texte_conditionnel);
+
+// 20180712
+$designation_inspection_academique=get_designation_inspection_academique();
+$TBS->MergeField('inspection_academique', $designation_inspection_academique);
+
 // Output as a download file (some automatic fields are merged here)
-$nom_fichier = 'extrait_bilan_';
+if ($affichage == 'ods' || $affichage == 'odt') {
+	$nom_fichier = 'extrait_bilan_';
+}
+else {
+	if(isset($export_avec_resp)) {
+		$nom_fichier = 'rappel_a_la_loi_resp_';
+	}
+	else {
+		$nom_fichier = 'rappel_a_la_loi_';
+	}
+}
 if ($classe != null) {
     $nom_fichier .= $classe->getNom() . '_';
 }

@@ -281,6 +281,11 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement de l'académie !";
 			}
 		}
+		if (isset($_POST['gepiSchoolInspectionAcademique'])) {
+			if (!saveSetting("gepiSchoolInspectionAcademique", $_POST['gepiSchoolInspectionAcademique'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'inspection académique !";
+			}
+		}
 		if (isset($_POST['gepiSchoolTel'])) {
 			if (!saveSetting("gepiSchoolTel", $_POST['gepiSchoolTel'])) {
 				$msg .= "Erreur lors de l'enregistrement du numéro de téléphone !";
@@ -1179,6 +1184,19 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		</span>
 	</p>
 	
+	<p class="ligneCaps">
+		<label for='gepiSchoolInspectionAcademique' class="cellTab70">
+			Inspection académique :<br />
+		(<span style='font-style:italic;font-size:x-small'>utilisé pour certains documents officiels</span>)
+		</label>
+		<span class="cellTab">
+			<?php
+				$designation_inspection_academique=get_designation_inspection_academique();
+			?>
+			<input type="text" name="gepiSchoolInspectionAcademique" size="20" value="<?php echo $designation_inspection_academique; ?>" onchange='changement()' />
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<label for='gepiSchoolTel' style='cursor: pointer;display: table-cell; width: 70%; vertical-align: middle;'>
 			Téléphone établissement :

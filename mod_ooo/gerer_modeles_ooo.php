@@ -170,6 +170,18 @@ if(($_SESSION['statut']=='administrateur')||
 	$special[]="";
 
     $lien_wiki[]='';
+    $entete_section[]="";
+    $fich[]="absence_rappel_a_la_loi.odt";
+    $utilisation[]="ABS2 : Rappel à la loi en cas d'un trop grand nombre d'absences.<br />Avec après la page de rappel à la loi, le tableau bilan par jour par élève au format traitement de textes.";
+	$special[]="";
+
+    $lien_wiki[]='';
+    $entete_section[]="";
+    $fich[]="absence_rappel_a_la_loi_resp.odt";
+    $utilisation[]="ABS2 : Rappel à la loi en cas d'un trop grand nombre d'absences<br />(<em>avec informations responsable légal 1</em>).<br />Avec après la page de rappel à la loi, le tableau bilan par jour par élève au format traitement de textes.";
+	$special[]="";
+
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_modele_lettre_parents.odt";
     $utilisation[]="ABS2 : Modèle de lettre aux parents";

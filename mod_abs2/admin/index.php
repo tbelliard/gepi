@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2010-2017 Josselin Jacquard, Stephane Boireau
+ * Copyright 2010-2018 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -371,6 +371,17 @@ if (($_SESSION['statut']=="administrateur")&&(isset($_POST['is_posted']))) {
 			}
 		}
 
+		if (isset($_POST['abs2_RappelLoiNbAbs'])) {
+			if((trim($_POST['abs2_RappelLoiNbAbs'])=='')||(!preg_match("/^[0-9]{1,}$/", $_POST['abs2_RappelLoiNbAbs']))||($_POST['abs2_RappelLoiNbAbs']<1)) {
+				$msg = "Valeur invalide pour 'abs2_RappelLoiNbAbs' !";
+			}
+			else {
+				if (!saveSetting("abs2_RappelLoiNbAbs", $_POST['abs2_RappelLoiNbAbs'])) {
+					$msg = "Erreur lors de l'enregistrement du paramètre 'abs2_RappelLoiNbAbs' !";
+				}
+			}
+		}
+
 		// Engagements
 		$sql="DELETE FROM setting WHERE name LIKE 'abs2_grp_engagement_%'";
 		$del=mysqli_query($mysqli, $sql);
@@ -491,6 +502,11 @@ if($abs2_afficher_alerte_abs_delai=="") {
 	$abs2_afficher_alerte_abs_delai=30;
 }
 
+$abs2_RappelLoiNbAbs=getSettingValue("abs2_RappelLoiNbAbs");
+if($abs2_RappelLoiNbAbs=='') {
+	$abs2_RappelLoiNbAbs=100;
+}
+
 if($_SESSION["statut"]=="administrateur") {
 	// ADMINISTRATEUR
 ?>
@@ -593,6 +609,10 @@ E-mail gestion absence établissement :
 	<label for="abs2_absences_du_jour_filtre_toutes">&nbsp;Afficher toutes les saisies.</label>
 </p>
 
+<p>
+Nombre d'absences à partir duquel proposer <em>(depuis la page Bilan individuel)</em> la génération d'un rappel à la loi&nbsp;:
+<input type="text" name="abs2_RappelLoiNbAbs" size="5" value="<?php echo $abs2_RappelLoiNbAbs; ?>"/>
+</p>
 
 <?php
 }
@@ -772,6 +792,10 @@ E-mail gestion absence établissement : <?php echo(getSettingValue("gepiAbsenceE
 	echo $img_abs_du_jour_toutes;
 	?>
 	<label for="abs2_absences_du_jour_filtre_toutes">&nbsp;Afficher toutes les saisies.</label>
+</p>
+
+<p>
+Nombre d'absences à partir duquel proposer <em>(depuis la page Bilan individuel)</em> la génération d'un rappel à la loi&nbsp;: <?php echo $abs2_RappelLoiNbAbs; ?>
 </p>
 
 <?php
