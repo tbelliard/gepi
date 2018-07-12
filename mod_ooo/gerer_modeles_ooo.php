@@ -397,7 +397,7 @@ if (!isset($btn)) { //premier passage : formulaire
 
 	  echo "<td>$fich[$i]</td>\n<td>\n";
 	  echo "$utilisation[$i]</td>\n<td>\n";
-	  echo "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";
+	  echo "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1024000\">";
 	  echo "<input type='file' name='monfichier' value='il a cliqué le bougre'>&nbsp;</td><td>\n";
 	  echo "&nbsp;&nbsp;<input type='submit' name='btn' Align='middle' value='Envoyer' />&nbsp;&nbsp;  \n";
 	  echo "</td>\n</form>\n";
@@ -407,7 +407,9 @@ if (!isset($btn)) { //premier passage : formulaire
 
 }
 else { // passage 2 : le nom du fichier a été choisi
-    //print_r($_FILES['monfichier']);
+	//print_r($_FILES['monfichier']);
+	//debug_var();
+
 	echo "<h2>fichier envoyé : ".$_FILES['monfichier']['name']." </h2>\n";
 	check_token();
     $desterreur=$PHP_SELF;
@@ -423,7 +425,18 @@ else { // passage 2 : le nom du fichier a été choisi
     $monfichiersize=$t['size'];
     $monfichiertmp_name=$t['tmp_name'];
 
-    if ($monfichiername=="") {
+    if((isset($t['error']))&&($t['error']==2)) {
+       alert ("Le fichier envoyé est trop volumineux. Sa taille excède la limite définie dans le formulaire.");
+       $dest=$desterreur;
+       echo "<script language='JavaScript'>\n";
+       echo "<!-- \n";
+       echo "w=window.open('','mafenetre');\n"; //récupérer le même objet fenêtre
+       echo "w.document.writeln('<h3>Fermeture en cours...</h3>');\n";
+       echo "// - JavaScript - -->\n";
+       echo "</script>\n";
+       aller_a($dest);
+    }
+    elseif ($monfichiername=="") {
        alert ("Pas de fichier indiqué ! Il faut recommencer...");
        $dest=$desterreur;
        echo "<script language='JavaScript'>\n";
@@ -453,7 +466,7 @@ else { // passage 2 : le nom du fichier a été choisi
             echo "origine     : $monfichiername <br />\n";
 
             echo "destination : ".$nom_dossier_modeles_ooo_mes_modeles.$rne.$fichiercopie;
-            $me="La copie ne s'est pas effectuée !\n Vérifiez la taille du fichier (max 512ko)\n";
+            $me="La copie ne s'est pas effectuée !\n Vérifiez la taille du fichier (max 1Mo)\n";
             alert($me);
             $dest=$desterreur;
         }
