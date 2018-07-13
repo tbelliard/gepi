@@ -780,7 +780,7 @@ if ($affichage == 'html') {
 	// Permettre via un paramètre de choisir le seuil du nombre d'absences à partir duquel proposer ce lien :
 	$abs2_RappelLoiNbAbs=getSettingValue('abs2_RappelLoiNbAbs');
 	if((trim($abs2_RappelLoiNbAbs)=='')||(!preg_match("/^[0-9]{1,}$/", $abs2_RappelLoiNbAbs))||($abs2_RappelLoiNbAbs<1)) {
-		$abs2_RappelLoiNbAbs=100;
+		$abs2_RappelLoiNbAbs=30;
 	}
 
 echo'<div id="sortie_ecran">';
@@ -1240,6 +1240,7 @@ if ($affichage == 'ods') {
 					$resp_1_adr_en_ligne=$eleve['resp_legal'][1]['en_ligne'];
 				}
 				else {
+					// On récupère quand même le nom/prénom du resp_legal 1
 					$resp_1_nom='';
 					$resp_1_prenom='';
 					$resp_1_civilite='';

@@ -504,7 +504,7 @@ if($abs2_afficher_alerte_abs_delai=="") {
 
 $abs2_RappelLoiNbAbs=getSettingValue("abs2_RappelLoiNbAbs");
 if($abs2_RappelLoiNbAbs=='') {
-	$abs2_RappelLoiNbAbs=100;
+	$abs2_RappelLoiNbAbs=30;
 }
 
 if($_SESSION["statut"]=="administrateur") {
