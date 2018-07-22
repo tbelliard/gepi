@@ -1682,3 +1682,11 @@ PRIMARY KEY (id), INDEX ine_id_groupe (ine, id_groupe), UNIQUE(ine, id_groupe)) 
 DROP TABLE IF EXISTS ele_adr;
 CREATE TABLE IF NOT EXISTS ele_adr (adr_id varchar(10) NOT NULL,adr1 varchar(100) NOT NULL,adr2 varchar(100) NOT NULL,adr3 varchar(100) NOT NULL,adr4 varchar(100) NOT NULL,cp varchar(6) NOT NULL,pays varchar(50) NOT NULL,commune varchar(50) NOT NULL,PRIMARY KEY  (adr_id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS a_droits;
+CREATE TABLE a_droits (id int(11) NOT NULL auto_increment, 
+login varchar(50) NOT NULL, 
+page varchar(255) NOT NULL, 
+consultation varchar(10) NOT NULL DEFAULT 'n', 
+saisie varchar(10) NOT NULL DEFAULT 'n', 
+PRIMARY KEY (id), INDEX login_page (login,page)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
