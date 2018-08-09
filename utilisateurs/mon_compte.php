@@ -1878,6 +1878,7 @@ $user_statut = old_mysql_result($call_user_info, "0", "statut");
 $user_email = old_mysql_result($call_user_info, "0", "email");
 $user_show_email = old_mysql_result($call_user_info, "0", "show_email");
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gérer son compte";
 require_once("../lib/header.inc.php");
@@ -2010,9 +2011,10 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                             Email : 
                         </td>
                         <td>
-                            <input type=text 
-                                   name=reg_email 
-                                   size=30
+                            <input type='text' 
+                                   name='reg_email' 
+                                   size='30'
+                                   onchange='changement()'
                                    <?php if ($user_email) { echo " value=\"".$user_email."\"";} ?>
                                     <?php echo " tabindex='$tabindex'";$tabindex++;?>
                                    />
@@ -2035,7 +2037,7 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                         </td>
                         <td>
                             <?php echo $user_email ?>
-                            <input type="hidden" name="reg_email" value="<?php echo $user_email ?>" />
+                            <input type="hidden" name="reg_email" value="<?php echo $user_email ?>" onchange='changement()' />
                             <?php
                                 if((getSettingValue('cas_attribut_email')!='')&&(getSettingValue('sso_url_portail')!='')) {
                                     echo " <a href='".getSettingValue('sso_url_portail')."' title=\"Vous pouvez renseigner/modifier votre adresse de courriel là : ".getSettingValue('sso_url_portail')."\" target='_blank'><img src='../images/icons/ico_question.png' width='19' height='19' /></a>";
@@ -2052,6 +2054,7 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
 	if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe") {
 		$affiche_bouton_submit = 'yes';
 		echo "<tr><td></td><td><label for='reg_show_email' style='cursor: pointer;'><input type='checkbox' name='reg_show_email' id='reg_show_email' value='yes'";
+		echo " onchange='changement()'";
 		if ($user_show_email == "yes") echo " CHECKED";
 		echo " tabindex='$tabindex'";
 		$tabindex++;
@@ -2150,9 +2153,9 @@ if(($_SESSION['statut']=='administrateur')||
 					//echo "</span>\n";
 					echo "</div>\n";
 					echo "<div id='div_upload_photo' style='display:none; width:400px;'>";
-					echo "<input type='file' name='filephoto' size='30' tabindex='$tabindex' />\n";
+					echo "<input type='file' name='filephoto' size='30' tabindex='$tabindex' onchange='changement()' />\n";
 					$tabindex++;
-					echo "<input type='submit' name='Envoi_photo' value='Envoyer' tabindex='$tabindex' />\n";
+					echo "<input type='submit' name='Envoi_photo' value='Envoyer' tabindex='$tabindex' onchange='changement()' />\n";
 					$tabindex++;
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 						echo "<br /><span style='font-size:x-small;'><b>Remarque : </b>Les photographies sont automatiquement redimensionnées (largeur : ".getSettingValue("l_resize_trombinoscopes")." pixels, hauteur : ".getSettingValue("h_resize_trombinoscopes")." pixels). Afin que votre photographie ne soit pas trop réduite, les dimensions de celle-ci (respectivement largeur et hauteur) doivent être de préférence proportionnelles à ".getSettingValue("l_resize_trombinoscopes")." et ".getSettingValue("h_resize_trombinoscopes").".</span>"."<br /><span style='font-size:x-small;'>Les photos doivent de plus être au format JPEG avec l'extension '<strong>.jpg</strong>'.</span>";
@@ -2162,7 +2165,7 @@ if(($_SESSION['statut']=='administrateur')||
 						if(file_exists($photo)) {
 							echo "<br />\n";
 							//echo "<input type='checkbox' name='suppr_filephoto' value='y' /> Supprimer la photo existante\n";
-							echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' tabindex='$tabindex' />\n";
+							echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' tabindex='$tabindex' onchange='changement()' />\n";
 							$tabindex++;
 							echo "&nbsp;<label for='suppr_filephoto' style='cursor: pointer; cursor: hand;'>Supprimer la photo existante</label>\n";
 						}
@@ -2216,7 +2219,7 @@ if(($_SESSION['statut']=='administrateur')||
 					}
 
 					echo "<div id='div_upload_photo' style='display: none; width:400px;'>\n";
-					echo "<input type='file' name='filephoto' size='30' tabindex='$tabindex' />\n";
+					echo "<input type='file' name='filephoto' size='30' tabindex='$tabindex' onchange='changement()' />\n";
 					$tabindex++;
 
 					echo "<input type='submit' name='Envoi_photo' value='Envoyer' tabindex='$tabindex' />\n";
@@ -2227,7 +2230,7 @@ if(($_SESSION['statut']=='administrateur')||
 					}
 					echo "<br />\n";
 					echo "<span style='text-align:right'>";
-					echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' tabindex='$tabindex' />\n";
+					echo "<input type='checkbox' name='suppr_filephoto' id='suppr_filephoto' value='y' tabindex='$tabindex' onchange='changement()' />\n";
 					$tabindex++;
 					echo "&nbsp;<label for='suppr_filephoto' style='cursor: pointer; cursor: hand; '>Supprimer la photo existante</label>\n";
 					echo "</span>\n";
@@ -2270,7 +2273,7 @@ if (empty($groups)) {
 	$nb=mysqli_num_rows($test);
 	//echo "\$nb=$nb<br />";
 	if ($nb>1) {
-		echo "Matière principale&nbsp;: <select name='matiere_principale' tabindex='$tabindex'>\n";
+		echo "Matière principale&nbsp;: <select name='matiere_principale' tabindex='$tabindex' onchange='changement();'>\n";
 		$tabindex++;
 		while($lig_mat=mysqli_fetch_object($test)) {
 			echo "<option value='$lig_mat->id_matiere'";
@@ -2364,7 +2367,7 @@ if ($editable_user) {
 <table summary='Mot de passe'>
     <tr>
         <td>Ancien mot de passe : </td>
-        <td><input type='password' name='no_anti_inject_password_a' id='no_anti_inject_password_a' size='20' tabindex='<?php echo $tabindex;$tabindex++;?>' /><?php echo input_password_to_text('no_anti_inject_password_a');?></td>
+        <td><input type='password' name='no_anti_inject_password_a' id='no_anti_inject_password_a' size='20' onchange='changement()' tabindex='<?php echo $tabindex;$tabindex++;?>' /><?php echo input_password_to_text('no_anti_inject_password_a');?></td>
     </tr>
     <tr>
         <td>Nouveau mot de passe (<em><?php echo getSettingValue("longmin_pwd") ;?> caractères minimum</em>) :</td>
@@ -2374,6 +2377,7 @@ if ($editable_user) {
                     name="no_anti_inject_password1" 
                     size="20" 
                     onkeyup="runPassword(this.value, 'mypassword');" 
+                    onchange='changement()' 
                     tabindex='<?php echo $tabindex;$tabindex++;?>' />
                     <?php
                         // Cela merdoie: Il doit y avoir un conflit entre le test de solidité et le changement de type.
@@ -2390,7 +2394,7 @@ if ($editable_user) {
     </tr>
     <tr>
         <td>Nouveau mot de passe (<em>à confirmer</em>) : </td>
-        <td><input type='password' name='reg_password2' id='reg_password2' size='20' tabindex='<?php echo $tabindex;$tabindex++;?>' /><?php echo input_password_to_text('reg_password2');?></td>
+        <td><input type='password' name='reg_password2' id='reg_password2' size='20' onchange='changement()' tabindex='<?php echo $tabindex;$tabindex++;?>' /><?php echo input_password_to_text('reg_password2');?></td>
     </tr>
 </table>
 <?php
@@ -2546,10 +2550,10 @@ if(($_SESSION['statut']=='responsable')||($_SESSION['statut']=='eleve')) {
 		".add_token_field()."
 		<input type='hidden' name='valide_accueil_simpl' value='y' />
 
-		<p><input type='radio' name='accueil_simpl' id='accueil_simpl_y' value='y' tabindex='$tabindex'$checked_accueil_simpl_y /><label for='accueil_simpl_y'>Utiliser la page d'accueil \"simplifiée\"</label><br />";
+		<p><input type='radio' name='accueil_simpl' id='accueil_simpl_y' value='y' onchange='changement()' tabindex='$tabindex'$checked_accueil_simpl_y /><label for='accueil_simpl_y'>Utiliser la page d'accueil \"simplifiée\"</label><br />";
 	$tabindex++;
 	echo "
-		<input type='radio' name='accueil_simpl' id='accueil_simpl_n' value='n' tabindex='$tabindex'$checked_accueil_simpl_n /><label for='accueil_simpl_n'>Utiliser la page d'accueil avec le menu classique</label></p>";
+		<input type='radio' name='accueil_simpl' id='accueil_simpl_n' value='n' onchange='changement()' tabindex='$tabindex'$checked_accueil_simpl_n /><label for='accueil_simpl_n'>Utiliser la page d'accueil avec le menu classique</label></p>";
 	$tabindex++;
 
 	echo "
@@ -2577,18 +2581,18 @@ if($_SESSION['statut']=='professeur') {
 			<p>Vous pouvez choisir d'afficher le Nom ou la Description des enseignements/groupes dans différents modules&nbsp;:<br />
 
 				Barre de menu horizontale (<em>si elle est affichée</em>)&nbsp;: 
-				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_name' value='name' ".($nom_ou_description_groupe_barre_h=='name' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_barre_h_name'>Nom</label> - ";
+				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_name' value='name' onchange='changement()' ".($nom_ou_description_groupe_barre_h=='name' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_barre_h_name'>Nom</label> - ";
 	$tabindex++;
 	echo "
-				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_description' value='description' ".($nom_ou_description_groupe_barre_h=='description' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_barre_h_description'>Description</label>
+				<input type='radio' name='nom_ou_description_groupe_barre_h' id='nom_ou_description_groupe_barre_h_description' value='description' onchange='changement()' ".($nom_ou_description_groupe_barre_h=='description' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_barre_h_description'>Description</label>
 				<br />";
 	$tabindex++;
 	echo "
 				Cahiers de textes&nbsp;: 
-				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_name' value='name' ".($nom_ou_description_groupe_cdt=='name' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_cdt_name'>Nom</label> - ";
+				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_name' value='name' onchange='changement()' ".($nom_ou_description_groupe_cdt=='name' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_cdt_name'>Nom</label> - ";
 	$tabindex++;
 	echo "
-				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_description' value='description' ".($nom_ou_description_groupe_cdt=='description' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_cdt_description'>Description</label>
+				<input type='radio' name='nom_ou_description_groupe_cdt' id='nom_ou_description_groupe_cdt_description' value='description' onchange='changement()' ".($nom_ou_description_groupe_cdt=='description' ? "checked " : "")." tabindex='$tabindex' /><label for='nom_ou_description_groupe_cdt_description'>Description</label>
 				<br />";
 	$tabindex++;
 	echo "
@@ -2709,7 +2713,7 @@ if($_SESSION['statut']=='professeur') {
 					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
 		</td>
 		<td>
-					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+					<select name='accueil_simpl_afficher_grp_rang[$cpt]' onchange='changement();'>
 						<option value='-1'>Ne pas afficher ce groupe</option>";
 						for($loop2=1;$loop2<count($groups)+1;$loop2++) {
 							if($loop2==$cpt) {
@@ -2753,7 +2757,7 @@ if($_SESSION['statut']=='professeur') {
 			<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
 		</td>
 		<td>
-			<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+			<select name='accueil_simpl_afficher_grp_rang[$cpt]' onchange='changement();'>
 				<option value='-1' selected>Ne pas afficher ce groupe</option>";
 				for($loop2=1;$loop2<count($groups)+1;$loop2++) {
 						if($loop2==$cpt) {
@@ -2795,7 +2799,7 @@ if($_SESSION['statut']=='professeur') {
 					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
 		</td>
 		<td>
-					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+					<select name='accueil_simpl_afficher_grp_rang[$cpt]' onchange='changement();'>
 						<option value='-1' selected>Ne pas afficher ce groupe</option>";
 						for($loop2=1;$loop2<count($groups)+1;$loop2++) {
 							echo "
@@ -2933,7 +2937,7 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "</td>";
 	echo "<td>";
 	$cn_default_nom_court=getPref($_SESSION['login'], 'cn_default_nom_court', 'Nouvelle évaluation');
-	echo "<input type='text' name='cn_default_nom_court' id='cn_default_nom_court' value='$cn_default_nom_court' tabindex='$tabindex' />\n";
+	echo "<input type='text' name='cn_default_nom_court' id='cn_default_nom_court' value='$cn_default_nom_court' tabindex='$tabindex' onchange='changement()' />\n";
 	$tabindex++;
 	echo "</td>";
 	echo "</tr>";
@@ -2944,7 +2948,7 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "</td>";
 	echo "<td>";
 	$cn_default_nom_complet=getPref($_SESSION['login'], 'cn_default_nom_complet', 'Nouvelle évaluation');
-	echo "<input type='text' name='cn_default_nom_complet' id='cn_default_nom_complet' value='$cn_default_nom_complet' tabindex='$tabindex' />\n";
+	echo "<input type='text' name='cn_default_nom_complet' id='cn_default_nom_complet' value='$cn_default_nom_complet' tabindex='$tabindex' onchange='changement()' />\n";
 	$tabindex++;
 	echo "</td>";
 	echo "</tr>";
@@ -2955,7 +2959,7 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	$cn_default_coef=getPref($_SESSION['login'], 'cn_default_coef', '1.0');
 	echo "</td>";
 	echo "<td>";
-	echo "<input type='text' name='cn_default_coef' id='cn_default_coef' value='$cn_default_coef' size='3' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete='off' tabindex='$tabindex' />\n";
+	echo "<input type='text' name='cn_default_coef' id='cn_default_coef' value='$cn_default_coef' size='3' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete='off' tabindex='$tabindex' onchange='changement()' />\n";
 	$tabindex++;
 	echo "</td>";
 	echo "</tr>";
@@ -3123,13 +3127,13 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 <p>Mode de calcul <strong title='Vous pourrez effectuer un autre choix pour certains carnets de notes en suivant le lien Configuration dans votre carnet de notes.'>par défaut</strong> des moyennes de carnets de notes dans le cas où vous créez des ".getSettingValue("gepi_denom_boite")."s&nbsp;:</p>
 <div style='margin-left:3em;'>
 
-<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_1' value='1' ";
+<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_1' value='1' onchange='changement()' ";
 	if($cnBoitesModeMoy=='1') {echo "checked ";}
 	echo "tabindex='$tabindex' ";
 	$tabindex++;
 	echo "/><label for='cnBoitesModeMoy_1'>la moyenne s'effectue sur toutes les notes contenues à la racine et dans les ".my_strtolower(getSettingValue("gepi_denom_boite"))."s sans tenir compte des options définies dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
 
-<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_2' value='2' ";
+<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_2' value='2' onchange='changement()' ";
 	if($cnBoitesModeMoy=='2') {echo "checked ";}
 	echo "tabindex='$tabindex' ";
 	$tabindex++;
@@ -3305,9 +3309,9 @@ if ((acces_cdt())&&($_SESSION["statut"] == "professeur")) {
 	$tabindex3=$tabindex+2;
 	echo "<br /><br />
 <p style='text-indent:-3em;margin-left:3em;'>Nombre de notices de chaque type à afficher par défaut dans la fenêtre intitulée 'Liste des notices'.<br />
-Compte-rendus&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_compte_rendus' id='cdt2_WinListeNotices_nb_compte_rendus' value='$cdt2_WinListeNotices_nb_compte_rendus' tabindex='$tabindex' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' /><br />
-Devoirs à faire&nbsp;:&nbsp;&nbsp;&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_devoirs' id='cdt2_WinListeNotices_nb_devoirs' value='$cdt2_WinListeNotices_nb_devoirs' tabindex='$tabindex2' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' /><br />
-Notices privées&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_notices_privees' id='cdt2_WinListeNotices_nb_notices_privees' value='$cdt2_WinListeNotices_nb_notices_privees' tabindex='$tabindex3' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' /><br />
+Compte-rendus&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_compte_rendus' id='cdt2_WinListeNotices_nb_compte_rendus' value='$cdt2_WinListeNotices_nb_compte_rendus' tabindex='$tabindex' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' onchange='changement()' /><br />
+Devoirs à faire&nbsp;:&nbsp;&nbsp;&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_devoirs' id='cdt2_WinListeNotices_nb_devoirs' value='$cdt2_WinListeNotices_nb_devoirs' tabindex='$tabindex2' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' onchange='changement()' /><br />
+Notices privées&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_notices_privees' id='cdt2_WinListeNotices_nb_notices_privees' value='$cdt2_WinListeNotices_nb_notices_privees' tabindex='$tabindex3' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' onchange='changement()' /><br />
 <p>(<em>en cliquant sur 'Afficher toutes les notices' en bas de la fenêtre 'Liste des notices', vous pourrez tout de même afficher toutes les notices</em>)</p>";
 	$tabindex=$tabindex3+1;
 
@@ -3323,13 +3327,13 @@ Notices privées&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_no
 	echo "<br /><br /><p>Si l'emploi du temps est rempli, il est possible d'afficher un bouton <strong>Enregistrer et passer aux devoirs du Cours suivant</strong> en recherchant ce cours dans l'emploi du temps.<br />
 	Si l'emploi du temps est mal rempli ou incomplet, il vaut mieux conserver le bouton classique <strong>Enregistrer et passer aux devoirs du lendemain</strong>.</p>
 	<p>
-		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_1' value='les_deux' tabindex='$tabindex' $checked_1/>
+		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_1' value='les_deux' onchange='changement()' tabindex='$tabindex' $checked_1/>
 		<label for='cdt2_afficher_passer_au_cours_suivant_1' id='texte_cdt2_afficher_passer_au_cours_suivant_1'>Afficher les deux boutons (<em title=\"Par précaution... mais il est toujours possible de choisir la date d'une notice dans le calendrier.\">par précaution, le temps de s'assurer que l'emploi du temps est bien complet</em>)</label><br />
 
-		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_2' value='lendemain' tabindex='$tabindex2' $checked_2/>
+		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_2' value='lendemain' onchange='changement()' tabindex='$tabindex2' $checked_2/>
 		<label for='cdt2_afficher_passer_au_cours_suivant_2' id='texte_cdt2_afficher_passer_au_cours_suivant_2'>Afficher seulement le bouton classique <strong>Enregistrer et passer aux devoirs du lendemain</strong></label><br />
 
-		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_3' value='cours_suivant' tabindex='$tabindex3' $checked_3/>
+		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_3' value='cours_suivant' onchange='changement()' tabindex='$tabindex3' $checked_3/>
 		<label for='cdt2_afficher_passer_au_cours_suivant_3' id='texte_cdt2_afficher_passer_au_cours_suivant_3'>Afficher seulement le bouton classique <strong>Enregistrer et passer aux devoirs du cours suivant</strong></label><br />
 	</p>";
 	$tabindex=$tabindex3+1;
@@ -3402,6 +3406,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
                id="cpePeuChanger" 
                name="cpePeuChanger" 
                value="yes" 
+               onchange='changement()' 
                <?php
                    if (getPref($_SESSION['login'],'cpePeuChanger' ,'yes' ) && getPref($_SESSION['login'],'cpePeuChanger' ,'no' ) == "yes") {
                        echo " checked='checked'";
@@ -3424,7 +3429,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		if(getPref($_SESSION['login'], 'DiscTemoinIncidentProf',"n")=="y") {
 			$checked="checked ";
 		}
-		echo "<p><input type='checkbox' name='DiscTemoinIncidentProf' id='DiscTemoinIncidentProf' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentProf')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentProf' id='texte_DiscTemoinIncidentProf'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant mes classes/groupes.</label>";
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentProf' id='DiscTemoinIncidentProf' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentProf');changement();\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentProf' id='texte_DiscTemoinIncidentProf'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant mes classes/groupes.</label>";
 		$tabindex++;
 		if(is_pp($_SESSION['login'])) {
 			$checked="";
@@ -3433,7 +3438,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 			}
 
 			echo "<br />
-<input type='checkbox' name='DiscTemoinIncidentPP' id='DiscTemoinIncidentPP' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentPP')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentPP' id='texte_DiscTemoinIncidentPP'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant la ou les classes dont je suis ".getSettingValue('gepi_prof_suivi').".</label>";
+<input type='checkbox' name='DiscTemoinIncidentPP' id='DiscTemoinIncidentPP' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentPP');changement();\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentPP' id='texte_DiscTemoinIncidentPP'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant la ou les classes dont je suis ".getSettingValue('gepi_prof_suivi').".</label>";
 			$tabindex++;
 		}
 		echo "</p>";
@@ -3443,13 +3448,13 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		if(getPref($_SESSION['login'], 'DiscTemoinIncidentCpe',"n")=="y") {
 			$checked="checked ";
 		}
-		echo "<p><input type='checkbox' name='DiscTemoinIncidentCpe' id='DiscTemoinIncidentCpe' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentCpe')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentCpe' id='texte_DiscTemoinIncidentCpe'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant les élèves dont je suis le CPE responsable.</label>";
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentCpe' id='DiscTemoinIncidentCpe' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentCpe');changement();\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentCpe' id='texte_DiscTemoinIncidentCpe'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant les élèves dont je suis le CPE responsable.</label>";
 		$tabindex++;
 		$checked="";
 		if(getPref($_SESSION['login'], 'DiscTemoinIncidentCpeTous',"n")=="y") {
 			$checked="checked ";
 		}
-		echo "<p><input type='checkbox' name='DiscTemoinIncidentCpeTous' id='DiscTemoinIncidentCpeTous' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentCpeTous')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentCpeTous' id='texte_DiscTemoinIncidentCpeTous'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents quels que soient les élèves.</label>";
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentCpeTous' id='DiscTemoinIncidentCpeTous' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentCpeTous');changement();\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentCpeTous' id='texte_DiscTemoinIncidentCpeTous'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents quels que soient les élèves.</label>";
 		$tabindex++;
 		echo "</p>";
 	}
@@ -3458,13 +3463,13 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		if(getPref($_SESSION['login'], 'DiscTemoinIncidentScol',"n")=="y") {
 			$checked="checked ";
 		}
-		echo "<p><input type='checkbox' name='DiscTemoinIncidentScol' id='DiscTemoinIncidentScol' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentScol')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentScol' id='texte_DiscTemoinIncidentScol'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant les élèves des classes auxquelles je suis associé en tant que compte 'scolarité'.</label>";
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentScol' id='DiscTemoinIncidentScol' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentScol');changement();\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentScol' id='texte_DiscTemoinIncidentScol'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant les élèves des classes auxquelles je suis associé en tant que compte 'scolarité'.</label>";
 		$tabindex++;
 		$checked="";
 		if(getPref($_SESSION['login'], 'DiscTemoinIncidentScolTous',"n")=="y") {
 			$checked="checked ";
 		}
-		echo "<p><input type='checkbox' name='DiscTemoinIncidentScolTous' id='DiscTemoinIncidentScolTous' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentScolTous')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentScolTous' id='texte_DiscTemoinIncidentScolTous'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents quels que soient les élèves.</label>";
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentScolTous' id='DiscTemoinIncidentScolTous' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentScolTous');changement();\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentScolTous' id='texte_DiscTemoinIncidentScolTous'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents quels que soient les élèves.</label>";
 		$tabindex++;
 		echo "</p>";
 	}
@@ -3473,7 +3478,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		if(getPref($_SESSION['login'], 'DiscTemoinIncidentAdmin',"n")=="y") {
 			$checked="checked ";
 		}
-		echo "<p><input type='checkbox' name='DiscTemoinIncidentAdmin' id='DiscTemoinIncidentAdmin' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentAdmin')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentAdmin' id='texte_DiscTemoinIncidentAdmin'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> lorsque de nouveaux incidents sont saisis.</label>";
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentAdmin' id='DiscTemoinIncidentAdmin' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentAdmin');changement();\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentAdmin' id='texte_DiscTemoinIncidentAdmin'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> lorsque de nouveaux incidents sont saisis.</label>";
 		$tabindex++;
 		echo "</p>";
 	}
@@ -3587,6 +3592,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 			<input type="checkbox" 
 				   name="limiteAGroupe" 
 				   id='limiteAGroupe'
+				   onchange='changement();'
 				   <?php 
 				      if(getPref($_SESSION['login'], 'limiteAGroupe', "") == "y") {echo "checked = 'checked' ";} 
 				      echo " tabindex='$tabindex' ";
@@ -3617,7 +3623,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 	}
 	else {
 		while($lig=mysqli_fetch_object($res)) {
-			echo "<input type='checkbox' id='mod_disc_mail_cat_incluse_$lig->id' name='mod_disc_mail_cat_incluse[]' value='$lig->id' onchange=\"checkbox_change('mod_disc_mail_cat_incluse_$lig->id')\" ";
+			echo "<input type='checkbox' id='mod_disc_mail_cat_incluse_$lig->id' name='mod_disc_mail_cat_incluse[]' value='$lig->id' onchange=\"checkbox_change('mod_disc_mail_cat_incluse_$lig->id');changement();\" ";
 			if(!in_array($lig->id, $tab_id_categories_exclues)) {
 				echo "checked ";
 			}
@@ -3628,7 +3634,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 			$chaine_champs_checkbox_mod_discipline.="'mod_disc_mail_cat_incluse_$lig->id'";
 		}
 
-		echo "<input type='checkbox' id='mod_disc_mail_cat_incluse_NC' name='mod_disc_mail_cat_incluse_NC' value='y' onchange=\"checkbox_change('mod_disc_mail_cat_incluse_NC')\" ";
+		echo "<input type='checkbox' id='mod_disc_mail_cat_incluse_NC' name='mod_disc_mail_cat_incluse_NC' value='y' onchange=\"checkbox_change('mod_disc_mail_cat_incluse_NC');changement();\" ";
 		if(getPref($_SESSION['login'], 'mod_discipline_natures_non_categorisees_exclues_mail', "")!="y") {
 			echo "checked = 'checked' ";
 		}
@@ -3793,6 +3799,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 				<input type="checkbox" 
 					   name="limiteAGroupeModAlerte" 
 					   id='limiteAGroupeModAlerte'
+					   onchange='changement();'
 					   <?php 
 						if(getPref($_SESSION['login'], 'limiteAGroupeModAlerte', "") == "y") {echo "checked = 'checked' ";} 
 						echo " tabindex='$tabindex' ";
@@ -3823,7 +3830,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		}
 		else {
 			while($lig=mysqli_fetch_object($res)) {
-				echo "<input type='checkbox' id='mod_disc_alerte_cat_incluse_$lig->id' name='mod_disc_alerte_cat_incluse[]' value='$lig->id' onchange=\"checkbox_change('mod_disc_alerte_cat_incluse_$lig->id')\" ";
+				echo "<input type='checkbox' id='mod_disc_alerte_cat_incluse_$lig->id' name='mod_disc_alerte_cat_incluse[]' value='$lig->id' onchange=\"checkbox_change('mod_disc_alerte_cat_incluse_$lig->id');changement();\" ";
 				if(!in_array($lig->id, $tab_id_categories_exclues)) {
 					echo "checked ";
 				}
@@ -3834,7 +3841,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 				$chaine_champs_checkbox_mod_discipline.="'mod_disc_alerte_cat_incluse_$lig->id'";
 			}
 
-			echo "<input type='checkbox' id='mod_disc_alerte_cat_incluse_NC' name='mod_disc_alerte_cat_incluse_NC' value='y' onchange=\"checkbox_change('mod_disc_alerte_cat_incluse_NC')\" ";
+			echo "<input type='checkbox' id='mod_disc_alerte_cat_incluse_NC' name='mod_disc_alerte_cat_incluse_NC' value='y' onchange=\"checkbox_change('mod_disc_alerte_cat_incluse_NC');changement();\" ";
 			if(getPref($_SESSION['login'], 'mod_discipline_natures_non_categorisees_exclues_mod_alerte', "")!="y") {
 				echo "checked = 'checked' ";
 			}
@@ -3926,7 +3933,7 @@ if ((getSettingValue("autorise_edt_tous") == "y")&&($_SESSION['statut']=="profes
 				<td>".$groups[$loop]['description']."</td>
 				<td>".$groups[$loop]['classlist_string']."</td>
 				<td>
-					<select name='edt2_couleur_grp[".$groups[$loop]["id"]."]' id='edt2_couleur_grp_".$groups[$loop]["id"]."' onchange=\"document.getElementById('div_edt2_couleur_grp_".$groups[$loop]["id"]."').style.backgroundColor=this.options[this.selectedIndex].value;\">
+					<select name='edt2_couleur_grp[".$groups[$loop]["id"]."]' id='edt2_couleur_grp_".$groups[$loop]["id"]."' onchange=\"document.getElementById('div_edt2_couleur_grp_".$groups[$loop]["id"]."').style.backgroundColor=this.options[this.selectedIndex].value;\" onchange='changement();'>
 						<option value=''>---</option>";
 
 		$pref_couleur=getPref($_SESSION['login'], "edt2_couleur_grp_".$groups[$loop]["id"], "");
@@ -4227,7 +4234,7 @@ if(count($tab_sound)>=0) {
 	//echo "background-image: url(\"../images/background/opacite50.png\"); ";
 	echo "background-color: white; ";
 	echo "'>Choix de l'alerte sonore de fin de session</legend>
-	<p><select name='footer_sound' id='footer_sound' onchange='test_play_footer_sound()' tabindex='$tabindex'>\n";
+	<p><select name='footer_sound' id='footer_sound' onchange='test_play_footer_sound();changement();' tabindex='$tabindex'>\n";
 	$tabindex++;
 	echo "	<option value=''";
 	if($footer_sound_actuel=='') {echo " selected='true'";}
