@@ -584,6 +584,12 @@ echo "</td>\n";
 echo "</tr></table><hr />\n";
 
 //==========================================================
+$tab_resp_class=get_resp_classe();
+/*
+echo "<pre>";
+print_r($tab_resp_class);
+echo "</pre>";
+*/
 // Liste des classes de l'établissement
 $sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe;";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -597,6 +603,51 @@ else {
 	while($obj_classe=mysqli_fetch_object($res)) {
 		$tab_classe[$obj_classe->id]['classe']=$obj_classe->classe;
 		$tab_classe[$obj_classe->id]['nom_complet']=$obj_classe->nom_complet;
+
+		$titre_infobulle="Responsables de ".$obj_classe->classe;
+		$texte_infobulle="<div align='center'>
+		<table class='boireaus boireaus_alt'>";
+		if((isset($tab_resp_class[$obj_classe->id]['suivi_par']))&&(count($tab_resp_class[$obj_classe->id]['suivi_par'])>0)) {
+			$texte_infobulle.="
+			<tr>
+				<td>Classe suivie par</td>
+				<td>".$tab_resp_class[$obj_classe->id]['suivi_par']."</td>
+			</tr>";
+		}
+		if((isset($tab_resp_class[$obj_classe->id]['pp']))&&(count($tab_resp_class[$obj_classe->id]['pp'])>0)) {
+			$texte_infobulle.="
+			<tr>
+				<td>".casse_mot(retourne_denomination_pp($obj_classe->id),'majf2')."</td>
+				<td>";
+			for($loop=0;$loop<count($tab_resp_class[$obj_classe->id]['pp']);$loop++) {
+				if($loop>0) {
+					$texte_infobulle.="<br />";
+				}
+				$texte_infobulle.=civ_nom_prenom($tab_resp_class[$obj_classe->id]['pp'][$loop]);
+			}
+			$texte_infobulle.="</td>
+			</tr>";
+		}
+		if((isset($tab_resp_class[$obj_classe->id]['cpe']))&&(count($tab_resp_class[$obj_classe->id]['cpe'])>0)) {
+			$texte_infobulle.="
+			<tr>
+				<td>CPE</td>
+				<td>";
+			for($loop=0;$loop<count($tab_resp_class[$obj_classe->id]['cpe']);$loop++) {
+				if($loop>0) {
+					$texte_infobulle.="<br />";
+				}
+				$texte_infobulle.=civ_nom_prenom($tab_resp_class[$obj_classe->id]['cpe'][$loop]);
+			}
+			$texte_infobulle.="</td>
+			</tr>";
+		}
+		$texte_infobulle.="
+		</table>
+		</div>";
+
+		$tabdiv_infobulle[]=creer_div_infobulle('resp_classe_'.$obj_classe->id, $titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+
 	}
 }
 //==========================================================
@@ -999,7 +1050,7 @@ foreach($tab_classe as $id_classe => $classe) {
 	}
 
 	echo "
-										<tr id='div_ligne_$id_classe' onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor=''\">
+										<tr id='div_ligne_$id_classe' onmouseover=\"this.style.backgroundColor='white';afficher_div('resp_classe_$id_classe', 'y', 10, 40)\" onmouseout=\"this.style.backgroundColor='';cacher_div('resp_classe_$id_classe')\">
 										<td>
 										<span style='display:none' title='Pour le tri.'>".$classe['classe']."</span>
 										<input type=\"checkbox\" id=\"id_classe_".$id_classe."\" name=\"id_classe[$cpt]\" value=\"$id_classe\" ".((array_key_exists($id_classe, $tab_classe_ev)) ? " checked" : "")." onchange=\"modif_affichage_ligne_classe($id_classe);changement2();\" /><label for='id_classe_".$id_classe."' id='texte_id_classe_".$id_classe."' style='cursor: pointer;'>".$classe['classe']."</label>

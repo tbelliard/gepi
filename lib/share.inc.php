@@ -17524,7 +17524,7 @@ function id_s_annee($ts_date=0) {
 }
 
 // $login_ele: Login de l'élève
-function get_resp_classe($id_classe, $login_ele="") {
+function get_resp_classe($id_classe='', $login_ele='') {
 	global $mysqli;
 
 	$tab=array();
@@ -17571,6 +17571,15 @@ function get_resp_classe($id_classe, $login_ele="") {
 			}
 		}
 	}
+	else {
+		$sql="SELECT DISTINCT id FROM classes ORDER BY classe;";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab[$lig->id]['pp']=get_tab_prof_suivi($lig->id);
+			}
+		}
+	}
 
 	// CPE
 	if($login_ele!="") {
@@ -17604,6 +17613,7 @@ function get_resp_classe($id_classe, $login_ele="") {
 		}
 	}
 	else {
+		/*
 		$sql="SELECT DISTINCT u.login FROM utilisateurs u, 
 								j_eleves_cpe jecpe 
 							WHERE u.login=jecpe.cpe_login AND 
@@ -17615,6 +17625,21 @@ function get_resp_classe($id_classe, $login_ele="") {
 				$tab['cpe'][]=$lig->login;
 			}
 		}
+		*/
+		$sql="SELECT DISTINCT u.login, jec.id_classe FROM utilisateurs u, 
+								j_eleves_cpe jecpe, 
+								j_eleves_classes jec
+							WHERE u.login=jecpe.cpe_login AND 
+								u.statut='cpe' AND 
+								jec.login=jecpe.e_login 
+							ORDER BY u.nom,u.prenom;";
+		//echo "$sql<br />";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab[$lig->id_classe]['cpe'][]=$lig->login;
+			}
+		}
 	}
 
 	// Suivi (chef ou adjoint)
@@ -17624,6 +17649,24 @@ function get_resp_classe($id_classe, $login_ele="") {
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_object($res)) {
 				$tab['suivi_par'][]=$lig->suivi_par;
+			}
+		}
+	}
+	elseif($login_ele!="") {
+		$sql="SELECT DISTINCT c.suivi_par FROM c.classes, j_eleves_classes jec WHERE jec.login='".$login_ele."' AND c.id=jec.id_classe ORDER BY jec.periode;";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab['suivi_par'][]=$lig->suivi_par;
+			}
+		}
+	}
+	else {
+		$sql="SELECT DISTINCT id, suivi_par FROM classes ORDER BY classe;";
+		$res = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab[$lig->id]['suivi_par']=$lig->suivi_par;
 			}
 		}
 	}
