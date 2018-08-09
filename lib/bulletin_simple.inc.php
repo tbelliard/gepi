@@ -1714,6 +1714,7 @@ $necessaire_signalement_fautes_insere="n";
 function lib_signalement_fautes() {
 	global $necessaire_signalement_fautes_insere, $id_classe;
 	global $inclusion_depuis_graphes;
+	global $gepiPath;
 
 	if($necessaire_signalement_fautes_insere=="n") {
 
@@ -1861,6 +1862,7 @@ $necessaire_corriger_appreciation_insere="n";
 function lib_corriger_appreciation() {
 	global $necessaire_corriger_appreciation_insere, $id_classe;
 	global $inclusion_depuis_graphes;
+	global $gepiPath;
 
 	if($necessaire_corriger_appreciation_insere=="n") {
 
@@ -1938,7 +1940,9 @@ echo "</form>\n";
 
 		//alert('message='+message);
 
-		document.getElementById('div_corriger_appreciation').innerHTML='<textarea name=\'app\' id=\'app\' cols=\'50\' rows=\'11\'>'+message+'</textarea>';
+		// 20180809
+		//document.getElementById('div_corriger_appreciation').innerHTML='<textarea name=\'app\' id=\'app\' cols=\'50\' rows=\'11\'>'+message+'</textarea>';
+		document.getElementById('div_corriger_appreciation').innerHTML='<textarea name=\'app\' id=\'app\' cols=\'50\' rows=\'11\'>'+message+'</textarea> <a href=\'#\' onclick=\\\"document.getElementById(\'app\').value=corriger_espaces_et_casse_ponctuation(document.getElementById(\'app\').value);return false;\\\" title=\'Corriger la ponctuation\'><img src=\'$gepiPath/images/icons/wizard_ponctuation.png\' class=\'icone16\' alt=\'Ponctuation\' /></a>';
 
 		//document.getElementById('signalement_message').innerHTML=message;
 ";
@@ -1991,6 +1995,10 @@ echo "
 		cacher_div('div_corriger_app');
 
 	}
+
+	// 20180809
+
+
 	//]]>
 </script>\n";
 		//========================================================
@@ -2002,6 +2010,7 @@ function afficher_liens_modif_app($id_classe, $periode1, $periode2) {
 	//global $tab_afficher_liens_modif_app;
 	//global $tab_afficher_liens_valider_modif_app;
 	global $mysqli;
+	global $gepiPath;
 
 	$tab_afficher_liens_modif_app=array();
 	$tab_afficher_liens_valider_modif_app=array();
@@ -2100,6 +2109,7 @@ function affiche_lien_proposition_ou_correction_appreciation($current_eleve_logi
 	//global $tab_afficher_liens_modif_app;
 
 	global $inclusion_depuis_graphes;
+	global $gepiPath;
 
 	$ajout="";
 	if($inclusion_depuis_graphes=="y") {
