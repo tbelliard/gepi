@@ -1424,7 +1424,10 @@ if(isset($id_groupe)) {
 
 				$nb_pts_dnb=0;
 				echo "
-		<p style='margin-top:2em;'><strong>".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;:".$chaine_bull_simp."</p>
+		<p style='margin-top:2em;'><strong";
+				// 20180812
+				echo " onmouseover=\"affiche_photo_courante('".nom_photo($lig->elenoet)."')\" onmouseout=\"vide_photo_courante();\"";
+				echo ">".$lig->nom." ".$lig->prenom."</strong> <em>(".get_liste_classes_eleve($lig->login).")</em> cycle ".$tab_cycle[$mef_code_ele]."&nbsp;:".$chaine_bull_simp."</p>
 		<table class='boireaus boireaus_alt'>
 			<thead>
 				<tr>
@@ -1676,6 +1679,7 @@ if(isset($id_groupe)) {
 		<p><input type='submit' value='Enregistrer' /></p>
 
 		<div id='fixe'>
+			<div id='div_photo'></div>
 			<input type='submit' value='Enregistrer' />
 		</div>
 
@@ -1811,6 +1815,16 @@ if(isset($id_groupe)) {
 			checkbox_change('cycle_3');
 			checkbox_change('cycle_4');
 			document.getElementById('form_choix_cycle').style.display='';
+
+			// 20180812
+			function affiche_photo_courante(photo) {
+				document.getElementById('div_photo').innerHTML=\"<img src='\"+photo+\"' width='150' alt='Photo' />\";
+			}
+
+			function vide_photo_courante() {
+				document.getElementById('div_photo').innerHTML='';
+			}
+
 		</script>";
 		}
 		echo "
@@ -2239,6 +2253,7 @@ elseif(isset($id_classe)) {
 		<p><input type='submit' value='Enregistrer' /></p>
 
 		<div id='fixe'>
+			<div id='div_photo'></div>
 			<input type='submit' value='Enregistrer' />
 		</div>
 
@@ -2393,6 +2408,15 @@ elseif(isset($id_classe)) {
 			checkbox_change('cycle_3');
 			checkbox_change('cycle_4');
 			document.getElementById('form_choix_cycle').style.display='';
+
+			// 20180812
+			function affiche_photo_courante(photo) {
+				document.getElementById('div_photo').innerHTML=\"<img src='\"+photo+\"' width='150' alt='Photo' />\";
+			}
+
+			function vide_photo_courante() {
+				document.getElementById('div_photo').innerHTML='';
+			}
 		</script>";
 		}
 		echo "
