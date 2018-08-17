@@ -13,6 +13,11 @@ Absences 2:
 - Possibilité de générer un fichier ODT de rappel à la loi (depuis Bilan individuel).
   Possibilité proposée au-delà d'un seuil d'absences paramétrable dans le module Abs2.
 
+Bulletins:
+- Possibilité d'autorisation exceptionnelle de saisie/modification d'appréciation 
+  Vie scolaire en période partiellement close.
+
+
 Gepi-1.7.3 (04/04/2018)
 ===========================
 

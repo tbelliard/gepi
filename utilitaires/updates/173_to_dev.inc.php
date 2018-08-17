@@ -71,5 +71,20 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'abs_bull_delais' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'abs_bull_delais'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE abs_bull_delais (periode int(11) NOT NULL default '0', id_classe int(11) NOT NULL default '0', totaux CHAR(1) NOT NULL default 'n', appreciation CHAR(1) NOT NULL default 'n',date_limite TIMESTAMP NOT NULL, mode VARCHAR(100) NOT NULL DEFAULT '', PRIMARY KEY  (periode, id_classe), INDEX id_classe (id_classe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 
 ?>

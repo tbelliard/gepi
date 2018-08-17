@@ -1690,3 +1690,6 @@ consultation varchar(10) NOT NULL DEFAULT 'n',
 saisie varchar(10) NOT NULL DEFAULT 'n', 
 PRIMARY KEY (id), INDEX login_page (login,page)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS abs_bull_delais;
+CREATE TABLE abs_bull_delais (periode int(11) NOT NULL default '0', id_classe int(11) NOT NULL default '0', totaux CHAR(1) NOT NULL default 'n', appreciation CHAR(1) NOT NULL default 'n',date_limite TIMESTAMP NOT NULL, mode VARCHAR(100) NOT NULL DEFAULT '', PRIMARY KEY  (periode, id_classe), INDEX id_classe (id_classe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

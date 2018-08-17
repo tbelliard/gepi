@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -57,8 +57,64 @@ $msg="";
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
 
-if((isset($id_classe))&&(isset($num_periode))&&(getSettingAOui("abs2_import_manuel_bulletin"))) {
-	if(etat_verrouillage_classe_periode($id_classe, $num_periode)=="N") {
+//=====================================
+/*
+if((isset($id_classe))&&(preg_match("/^[0-9]{1,}$/", $id_classe))) {
+	//include('../lib/periodes.inc.php');
+
+	// Tableau pour les autorisations exceptionnelles de saisie
+	// Il n'est pris en compte comme le getSettingValue('autoriser_correction_bulletin') que pour une période partiellement close
+	$une_autorisation_exceptionnelle_de_saisie_au_moins='n';
+	$tab_autorisation_exceptionnelle_de_saisie=array();
+	$date_courante=time();
+	//echo "\$date_courante=$date_courante<br />";
+	$k=1;
+	while ($k < $nb_periode) {
+		$tab_autorisation_exceptionnelle_de_saisie[$k]['totaux']='n';
+		$tab_autorisation_exceptionnelle_de_saisie[$k]['appreciation']='n';
+
+		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM abs_bull_delais WHERE id_classe='$id_classe' AND periode='$k';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$date_limite=$lig->date_limite;
+			//echo "\$date_limite=$date_limite en période $k.<br />";
+			//echo "\$date_courante=$date_courante.<br />";
+
+			if($date_courante<$date_limite) {
+				$tab_autorisation_exceptionnelle_de_saisie[$k]['totaux']=$lig->totaux;
+				$tab_autorisation_exceptionnelle_de_saisie[$k]['appreciation']=$lig->appreciation;
+				//if($lig->mode=='acces_complet') {
+				//	$tab_autorisation_exceptionnelle_de_saisie[$k]='yy';
+					$proposer_liens_enregistrement="y";
+				//}
+				$une_autorisation_exceptionnelle_de_saisie_au_moins='y';
+			}
+		}
+		//echo "\$tab_autorisation_exceptionnelle_de_saisie[$k]=".$tab_autorisation_exceptionnelle_de_saisie[$k]."<br />";
+		$k++;
+	}
+}
+*/
+
+// Tableau pour les autorisations exceptionnelles de saisie
+$tab_autorisation_exceptionnelle_de_saisie=array();
+$date_courante=time();
+//echo "\$date_courante=$date_courante<br />";
+$sql="SELECT * FROM abs_bull_delais WHERE UNIX_TIMESTAMP(date_limite)>'".time()."';";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
+	while ($lig=mysqli_fetch_object($res)) {
+		$tab_autorisation_exceptionnelle_de_saisie[$lig->id_classe][$lig->periode]['totaux']=$lig->totaux;
+		$tab_autorisation_exceptionnelle_de_saisie[$lig->id_classe][$lig->periode]['appreciation']=$lig->appreciation;
+	}
+}
+//=====================================
+
+if((isset($id_classe))&&(preg_match("/^[0-9]{1,}$/", $id_classe))&&(isset($num_periode))&&(preg_match("/^[0-9]{1,}$/", $num_periode))&&(getSettingAOui("abs2_import_manuel_bulletin"))) {
+	if(((isset($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$num_periode]['totaux']))&&($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$num_periode]['totaux']=='y'))||
+	((isset($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$num_periode]['appreciation']))&&($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$num_periode]['appreciation']=='y'))||
+	(etat_verrouillage_classe_periode($id_classe, $num_periode)=="N")) {
 		header("Location: ../absences/saisie_absences.php?id_classe=$id_classe&periode_num=$num_periode");
 	}
 	else {
@@ -70,7 +126,8 @@ if((isset($id_classe))&&(isset($num_periode))&&(getSettingAOui("abs2_import_manu
 if(isset($_POST['enregistrement_saisie'])) {
 	check_token();
 
-	if(etat_verrouillage_classe_periode($id_classe, $num_periode)!="N") {
+	if((etat_verrouillage_classe_periode($id_classe, $num_periode)!="N")&&
+	((!isset($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$num_periode]['appreciation']))||($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$num_periode]['appreciation']!='y'))) {
 		$msg="La période est close.<br />";
 	}
 	else {
@@ -216,12 +273,21 @@ if((!isset($id_classe))||(!isset($num_periode))) {
 			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=".$lig_classe->id."&amp;num_periode=".$lig_per->num_periode."'>";
 			if($lig_per->verouiller=="N") {
 				echo "<img src='../images/edit16.png' class='icone16' alt='Saisir' />&nbsp;";
+				echo "<span style='color:".$couleur_verrouillage_periode[$lig_per->verouiller]."' title=\"Période ".$traduction_verrouillage_periode[$lig_per->verouiller]."
+".$explication_verrouillage_periode[$lig_per->verouiller]."\">".$lig_per->nom_periode."</span></a>";
+			}
+			elseif(((isset($tab_autorisation_exceptionnelle_de_saisie[$lig_classe->id][$lig_per->num_periode]['totaux']))&&($tab_autorisation_exceptionnelle_de_saisie[$lig_classe->id][$lig_per->num_periode]['totaux']=='y'))||
+			((isset($tab_autorisation_exceptionnelle_de_saisie[$lig_classe->id][$lig_per->num_periode]['appreciation']))&&($tab_autorisation_exceptionnelle_de_saisie[$lig_classe->id][$lig_per->num_periode]['appreciation']=='y'))) {
+				echo "<img src='../images/edit16.png' class='icone16' alt='Saisir' />&nbsp;";
+				echo "<span style='background-color:orange' title=\"Autorisation exceptionnelle de saisie.\">".$lig_per->nom_periode;
+				echo "<img src='../images/icons/flag2.gif' class='icone16' alt='Attention' />";
+				echo "</span></a>";
 			}
 			else {
 				echo "<img src='../images/icons/chercher.png' class='icone16' alt='Consulter' />&nbsp;";
-			}
-			echo "<span style='color:".$couleur_verrouillage_periode[$lig_per->verouiller]."' title=\"Période ".$traduction_verrouillage_periode[$lig_per->verouiller]."
+				echo "<span style='color:".$couleur_verrouillage_periode[$lig_per->verouiller]."' title=\"Période ".$traduction_verrouillage_periode[$lig_per->verouiller]."
 ".$explication_verrouillage_periode[$lig_per->verouiller]."\">".$lig_per->nom_periode."</span></a>";
+			}
 			$cpt++;
 		}
 		echo "</p>\n";
@@ -236,7 +302,14 @@ if((!isset($id_classe))||(!isset($num_periode))) {
 
 // Classe et période sont choisies
 
+$acces_saisie=false;
 $etat_periode=etat_verrouillage_classe_periode($id_classe, $num_periode);
+if($etat_periode=='N') {
+	$acces_saisie=true;
+}
+elseif((isset($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$num_periode]['appreciation']))&&($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$num_periode]['appreciation']=='y')) {
+	$acces_saisie=true;
+}
 
 echo "<p><a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe/période</a></p>";
 
@@ -275,7 +348,7 @@ if(getSettingAOui("abs2_import_manuel_bulletin")) {
 	// Mais au cas où...
 
 	$colspan_abs=" colspan='2'";
-	$explication_remplissage_table_absences=".\nVous avez fait le choix dans le paramétrage du module Absences 2 de remplir manuellement (ou par import CSV) les ttaux destinés aux bulletins.\nSi deux valeurs sont proposées ci-dessous, c'est peut-être pas que le remplissage n'est à jour.";
+	$explication_remplissage_table_absences=".\nVous avez fait le choix dans le paramétrage du module Absences 2 de remplir manuellement (ou par import CSV) les totaux destinés aux bulletins.\nSi deux valeurs sont proposées ci-dessous, c'est peut-être pas que le remplissage n'est à jour.";
 }
 
 echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -346,14 +419,26 @@ echo "
 		".add_token_field(true)."
 		<input type='hidden' name='enregistrement_saisie' value='y' />
 		<input type='hidden' name='id_classe' value='".$id_classe."' />
-		<input type='hidden' name='num_periode' value='".$num_periode."' />
+		<input type='hidden' name='num_periode' value='".$num_periode."' />";
 
+
+if($acces_saisie) {
+	echo "
 		<p>
 			Appréciation sur le groupe classe pour la période $num_periode&nbsp;:<br />
 			<textarea id='n0' name='no_anti_inject_app_grp' rows='2' cols='80'  wrap=\"virtual\" 
 							onKeyDown=\"clavier(this.id,event);\" 
 							onchange=\"changement()\">$appreciation_absences_grp</textarea>
-		</p>
+		</p>";
+}
+else {
+	echo "
+		<p>
+			Appréciation sur le groupe classe pour la période $num_periode&nbsp;:<br />
+			<div class='fieldset_opacite50'>".(trim($appreciation_absences_grp)!='' ? $appreciation_absences_grp : "(vide)")."</div>
+		</p>";
+}
+echo "
 
 		<div id='div_verif_grp".$num_periode."' style='color:red;'>";
 		if(!getSettingANon('active_recherche_lapsus')) {
@@ -452,7 +537,8 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 					<td>";
 	}
 
-	if($etat_periode=="N") {
+	//if($etat_periode=="N") {
+	if($acces_saisie) {
 		//$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$lig_ele->login."', '".$id_classe."', 'n3".$num_id."');\n";
 
 		echo "
@@ -483,7 +569,8 @@ echo "
 			</tbody>
 		</table>";
 
-	if($etat_periode=="N") {
+	//if($etat_periode=="N") {
+	if($acces_saisie) {
 		echo "
 			<p><input type='submit' value='Enregistrer' /></p>";
 	}

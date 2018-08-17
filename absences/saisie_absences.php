@@ -1,7 +1,7 @@
 <?php
 
 /*
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -47,13 +47,13 @@ if (!checkAccess()) {
 	die();
 }
 
-include "../lib/periodes.inc.php";
-
 // Vérifications
-if((!isset($id_classe))||(!isset($id_classe))) {
+if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))||(!isset($periode_num))||(!preg_match("/^[0-9]{1,}$/", $periode_num))) {
 	$msg="Il faut choisir une classe et une période.";
 	header("Location:index.php?msg=$msg");
 }
+
+include "../lib/periodes.inc.php";
 
 // Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
 $aff_temoin_serveur_hors_entete="y";
@@ -66,7 +66,37 @@ elseif(($ver_periode[$periode_num]=="P")&&($_SESSION['statut']=='secours')) {
 	$acces="y";
 }
 
-if($acces=="n") {
+$saisie_totaux=false;
+$saisie_app=false;
+if($acces=='y') {
+	$saisie_totaux=true;
+	$saisie_app=true;
+}
+else {
+	$date_courante=time();
+
+	$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, totaux, appreciation, mode FROM abs_bull_delais WHERE id_classe='$id_classe' AND periode='$periode_num';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$date_limite=$lig->date_limite;
+		//echo "\$date_limite=$date_limite en période $k.<br />";
+		//echo "\$date_courante=$date_courante.<br />";
+
+		if($date_courante<$date_limite) {
+			if($lig->totaux=='y') {
+				$saisie_totaux=true;
+			}
+			if($lig->appreciation=='y') {
+				$saisie_app=true;
+			}
+		}
+	}
+}
+
+//if($acces=="n") {
+if((!$saisie_app)&&(!$saisie_totaux)) {
 	$msg="La période $periode_num est close pour cette classe.";
 	header("Location:index.php?id_classe=$id_classe&msg=$msg");
 }
@@ -77,28 +107,30 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	$msg="";
 	$nb_reg=0;
 	$nb_err=0;
-	if (isset($NON_PROTECT["app_grp"])){
-		$ap = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp"]));
-	}
-	else{
-		$ap = "";
-	}
-	$ap=nettoyage_retours_ligne_surnumeraires($ap);
+	if($saisie_app) {
+		if (isset($NON_PROTECT["app_grp"])){
+			$ap = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp"]));
+		}
+		else{
+			$ap = "";
+		}
+		$ap=nettoyage_retours_ligne_surnumeraires($ap);
 
-	$sql="SELECT * FROM absences_appreciations_grp WHERE (id_classe='".$id_classe."' AND periode='$periode_num')";
-	$test=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($test)>0) {
-		$sql="UPDATE absences_appreciations_grp SET appreciation='$ap' WHERE (id_classe='".$id_classe."' AND periode='$periode_num');";
-	} else {
-		$sql="INSERT INTO absences_appreciations_grp SET id_classe='".$id_classe."', periode='$periode_num', appreciation='$ap';";
-	}
-	//echo "$sql<br />";
-	$register = mysqli_query($GLOBALS["mysqli"], $sql);
-	if (!$register) {
-		$nb_err++;
-	}
-	else {
-		$nb_reg++;
+		$sql="SELECT * FROM absences_appreciations_grp WHERE (id_classe='".$id_classe."' AND periode='$periode_num')";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$sql="UPDATE absences_appreciations_grp SET appreciation='$ap' WHERE (id_classe='".$id_classe."' AND periode='$periode_num');";
+		} else {
+			$sql="INSERT INTO absences_appreciations_grp SET id_classe='".$id_classe."', periode='$periode_num', appreciation='$ap';";
+		}
+		//echo "$sql<br />";
+		$register = mysqli_query($GLOBALS["mysqli"], $sql);
+		if (!$register) {
+			$nb_err++;
+		}
+		else {
+			$nb_reg++;
+		}
 	}
 
 	if ((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']!="cpe")) {
@@ -169,19 +201,34 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 				$nb_retard = '';
 			}
 
-			$test_eleve_nb_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
-			$test_nb = mysqli_num_rows($test_eleve_nb_absences_query);
-			if ($test_nb != "0") {
-				$register = mysqli_query($GLOBALS["mysqli"], "UPDATE absences SET nb_absences='$nb_absences', non_justifie='$nb_nj', nb_retards='$nb_retard', appreciation='$ap' WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
-			} else {
-				$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO absences SET login='$reg_eleve_login', periode='$periode_num',nb_absences='$nb_absences',non_justifie='$nb_nj', nb_retards='$nb_retard',appreciation='$ap'");
+			$sql_ajout='';
+			if($saisie_totaux) {
+				$sql_ajout.=" nb_absences='$nb_absences', non_justifie='$nb_nj', nb_retards='$nb_retard'";
 			}
-			if (!$register) {
-				$msg.="Erreur lors de l'enregistrement des données pour $reg_eleve_login.<br />";
-				$nb_err++;
+			if($saisie_app) {
+				if($sql_ajout!='') {
+					$sql_ajout.=', ';
+				}
+				$sql_ajout.=" appreciation='$ap'";
 			}
-			else {
-				$nb_reg++;
+
+			if($sql_ajout!='') {
+				$test_eleve_nb_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
+				$test_nb = mysqli_num_rows($test_eleve_nb_absences_query);
+				if ($test_nb != "0") {
+					$sql="UPDATE absences SET".$sql_ajout." WHERE (login='$reg_eleve_login' AND periode='$periode_num');";
+					$register = mysqli_query($GLOBALS["mysqli"], $sql);
+				} else {
+					$sql="INSERT INTO absences SET '$reg_eleve_login', periode='$periode_num', ".$sql_ajout.";";
+					$register = mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+				if (!$register) {
+					$msg.="Erreur lors de l'enregistrement des données pour $reg_eleve_login.<br />";
+					$nb_err++;
+				}
+				else {
+					$nb_reg++;
+				}
 			}
 		}
 		$j++;
@@ -229,7 +276,7 @@ if(mysqli_num_rows($res_abs_grp_clas)>0) {
 }
 
 $insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
-if ($insert_mass_appreciation_type=="y") {
+if (($saisie_app)&&($insert_mass_appreciation_type=="y")) {
 	// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
 
 	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
@@ -336,22 +383,22 @@ while($i < $nombre_lignes) {
 			<input type='hidden' name='log_eleve[$i]' id='login_eleve_3$num_id' value='$current_eleve_login' />
 		</td>
 		<td align='center'>
-			<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_abs_ele[$i]' value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" />
+			".($saisie_totaux ? "<input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_abs_ele[$i]' value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" />" : $current_eleve_nb_absences)."
 		</td>
 		<td align='center'>
-			<input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" />
+			".($saisie_totaux ? "<input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" />" : $current_eleve_nb_nj)."
 		</td>
 		<td align='center'>
-			<input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" />
+			".($saisie_totaux ? "<input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" />" : $current_eleve_nb_retards)."
 		</td>
 		<td>
-			<textarea id=\"n3".$num_id."\" 
+			".($saisie_app ? "<textarea id=\"n3".$num_id."\" 
 				name='no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\" 
 				onKeyDown=\"clavier(this.id,event);\" 
 				onchange=\"changement()\" 
 				onfocus=\"focus_suivant(3".$num_id.");document.getElementById('focus_courant').value='3".$num_id."'; repositionner_commtype();\" 
 				onblur=\"ajaxVerifAppreciations('".$current_eleve_login."_t".$periode_num."', '".$id_classe."', 'n3".$num_id."');\"
-				>$current_eleve_ap_absences</textarea>
+				>$current_eleve_ap_absences</textarea>" : nl2br($current_eleve_ap_absences))."
 			<div id='div_verif_n3".$num_id."' style='color:red;'>";
 	// Pour afficher au chargement de la page le résultat du test de lapsus sur ce qui a été précédemment enregistré:
 	if(!getSettingANon('active_recherche_lapsus')) {
@@ -399,17 +446,18 @@ Si vous n'avez rempli que les champs non nuls, vous pouvez compléter d'un coup 
 echo "<a href='javascript:complete_a_zero_champs_vides()'>Compléter les champs vides par des zéros</a>";
 echo "</p>\n";
 
-echo "<br />
+if(($saisie_app)||($saisie_totaux)) {
+	echo "<br />
 <p>Vous pouvez aussi vider les saisies, si vous voulez repartir à blanc.<br />
 <span style='color:red'>Attention&nbsp;: L'opération est irréversible<br />
 (<em>mais rien n'est pris en compte tant que vous ne cliquez pas sur Enregistrer</em>).</span></p>
 <ul>
-	<li><a href=\"javascript:vider_les_champs('');\">Vider la colonne Nombre de demi-journées d'absences</a></li>
+	".($saisie_totaux ? "<li><a href=\"javascript:vider_les_champs('');\">Vider la colonne Nombre de demi-journées d'absences</a></li>
 	<li><a href=\"javascript:vider_les_champs('1');\">Vider la colonne Nombre d'absences non justifiées</a></li>
-	<li><a href=\"javascript:vider_les_champs('2');\">Vider la colonne Nombre de retards</a></li>
-	<li><a href=\"javascript:vider_les_champs('3');\">Vider la colonne Observations</a></li>
+	<li><a href=\"javascript:vider_les_champs('2');\">Vider la colonne Nombre de retards</a></li>" : "")."
+	".($saisie_app ? "<li><a href=\"javascript:vider_les_champs('3');\">Vider la colonne Observations</a></li>" : "")."
 </ul>\n";
-
+}
 echo "<script type='text/javascript'>\n";
 
 if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {

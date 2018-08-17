@@ -71,6 +71,8 @@ if((isset($mode))&&(!in_array($mode, array('proposition', 'acces_complet')))) {
 	unset($mode);
 }
 
+//debug_var();
+
 if((isset($is_posted))&&(isset($_POST['no_anti_inject_message_autorisation_exceptionnelle']))&&($_SESSION['statut']=='administrateur')) {
 	check_token();
 	//echo "BLIP";
@@ -242,13 +244,13 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 	}
 }
 
-if((isset($is_posted))&&(isset($id_classe))&&(isset($enseignement_periode))&&(isset($display_date_limite))&&(isset($display_heure_limite))) {
+if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_classe))&&(isset($enseignement_periode))&&(isset($display_date_limite))&&(isset($display_heure_limite))) {
 	check_token();
 	if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_limite'])) {
 		$annee = mb_substr($_POST['display_date_limite'],6,4);
 		$mois = mb_substr($_POST['display_date_limite'],3,2);
 		$jour = mb_substr($_POST['display_date_limite'],0,2);
-		//echo "$jourd/$moisd/$anneed<br />";
+		//echo "$jour/$mois/$annee<br />";
 
 		if(!checkdate($mois, $jour, $annee)) {
 			$msg.="ERREUR : La date $jour/$mois/$annee n'est pas valide.<br />";
@@ -271,7 +273,129 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($enseignement_periode))&&(is
 
 					for($loop=0;$loop<count($enseignement_periode);$loop++) {
 						$tab_ens_per=explode('|', $enseignement_periode[$loop]);
-						if((isset($tab_ens_per[1]))&&(preg_match('/^[0-9]*$/', $tab_ens_per[0]))&&(preg_match('/^[0-9]*$/', $tab_ens_per[1]))) {
+						if((isset($tab_ens_per[1]))&&($tab_ens_per[0]=='viescolaire')&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
+
+							$periode=$tab_ens_per[1];
+							$mode='acces_complet';
+
+							$sql="DELETE FROM abs_bull_delais WHERE id_classe='$id_classe' AND periode='$periode';";
+							//echo "$sql<br />";
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							$date_limite_email="$annee/$mois/$jour à $heure:$minute";
+							$sql="INSERT INTO abs_bull_delais SET id_classe='$id_classe', periode='$periode', appreciation='y', ";
+
+							$complement_texte_mail="";
+							if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
+								if((getSettingAOui('abs2_import_manuel_bulletin'))&&(isset($_POST['donner_acces_modif_totaux_abs']))&&($_POST['donner_acces_modif_totaux_abs']=='y')) {
+									// Dans le cas où il y a une autorisation de modif de totaux et qu'on fait ensuite une autorisation sans modif de totaux, l'autorisation sur les totaux est perdue.
+									// La situation ne devrait se produire que si plusieurs personnes donnent des droits.
+									$sql.="totaux='y', ";
+									$complement_texte_mail="Vous pourrez aussi corriger les totaux d'absences sur les bulletins.\n\n";
+								}
+							}
+
+							$sql.="date_limite='$annee-$mois-$jour $heure:$minute:00', mode='$mode';";
+							//echo "$sql<br />";
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$res) {
+								$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
+							}
+							else {
+								$msg.="Enregistrement de l'autorisation effectué.<br />";
+
+								$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+								if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+									$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+								}
+		
+								if($envoi_mail_actif=='y') {
+									$email_personne_autorisant="";
+									$nom_personne_autorisant="";
+									$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+									//echo "$sql<br />";
+									$req=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($req)>0) {
+										$lig_u=mysqli_fetch_object($req);
+										$nom_personne_autorisant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
+										$email_personne_autorisant=$lig_u->email;
+										$tab_param_mail['cc'][]=$email_personne_autorisant;
+										$tab_param_mail['cc_name'][]=$nom_personne_autorisant;
+										$tab_param_mail['replyto']=$email_personne_autorisant;
+										$tab_param_mail['replyto_name']=$nom_personne_autorisant;
+									}
+	
+									$email_destinataires="";
+									$designation_destinataires="";
+									// Recherche des CPE de la classe
+
+									$liste_cpe='';
+									$sql="SELECT DISTINCT u.login, u.email, u.nom, u.prenom, civilite FROM j_eleves_cpe jecpe, 
+																		j_eleves_classes jec, 
+																		utilisateurs u 
+																	WHERE jecpe.e_login=jec.login AND 
+																		jecpe.cpe_login=u.login AND 
+																		jec.id_classe='".$id_classe."'
+																	ORDER BY u.nom,u.prenom;";
+									//echo "$sql<br />";
+									$req=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($req)>0) {
+										$lig_u=mysqli_fetch_object($req);
+										$designation_destinataire_courant=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
+										$designation_destinataires.=$designation_destinataire_courant;
+										$email_destinataires.=$designation_destinataires." <".$lig_u->email.">";
+
+										$tab_param_mail['destinataire'][]=$lig_u->email;
+										$tab_param_mail['destinataire_name'][]=$designation_destinataire_courant;
+
+										while($lig_u=mysqli_fetch_object($req)) {
+											$designation_destinataire_courant=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
+											$designation_destinataires.=", ".$designation_destinataire_courant;
+											// Il se passe un truc bizarre avec les suivants
+											//$email_destinataires.=$designation_destinataires." <".$lig_u->email.">";
+											$email_destinataires.=", ".$lig_u->email;
+
+											$tab_param_mail['destinataire'][]=$lig_u->email;
+											$tab_param_mail['destinataire_name'][]=$designation_destinataire_courant;
+										}
+
+										$sujet_mail="[GEPI] Autorisation exceptionnelle de saisie/correction d'appréciation";
+			
+										//$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+										//if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+				
+										$ajout_header="";
+										if($email_personne_autorisant!="") {
+											$ajout_header.="Cc: $nom_personne_autorisant <".$email_personne_autorisant.">";
+											$ajout_header.="\r\n";
+											$ajout_header.="Reply-to: $nom_personne_autorisant <".$email_personne_autorisant.">\r\n";
+										}
+
+										$texte_mail="Vous avez jusqu'au $date_limite_email pour saisir/corriger une ou des appréciations de Vie Scolaire pour la classe de ".get_nom_classe($id_classe)." en période $periode.\n\n";
+										$message_autorisation_exceptionnelle=getSettingValue('message_autorisation_exceptionnelle');
+
+										if($message_autorisation_exceptionnelle=='') {
+											$texte_mail.="Cette autorisation est exceptionnelle.\nIl conviendra de veiller à effectuer les saisies dans les temps une prochaine fois.\n";
+										}
+										else {
+											$texte_mail.=$message_autorisation_exceptionnelle."\n";
+										}
+
+										$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+										$texte_mail=$salutation." ".$designation_destinataires.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_personne_autorisant;
+
+										$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
+
+										if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
+									}
+		
+								}
+								unset($id_groupe);
+								unset($periode);
+							}
+
+						}
+						elseif((isset($tab_ens_per[1]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[0]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
 							$id_groupe=$tab_ens_per[0];
 							$periode=$tab_ens_per[1];
 
@@ -606,13 +730,11 @@ elseif(
 			$get_profs=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$nb = mysqli_num_rows($get_profs);
-			for ($i=0;$i<$nb;$i++){
+			$i=0;
+			while($lig_prof=mysqli_fetch_object($get_profs)) {
 				if($i>0) {echo ",<br />\n";}
-				$p_login = old_mysql_result($get_profs, $i, "login");
-				$p_nom = old_mysql_result($get_profs, $i, "nom");
-				$p_prenom = old_mysql_result($get_profs, $i, "prenom");
-				$civilite = old_mysql_result($get_profs, $i, "civilite");
-				echo "$civilite $p_nom $p_prenom";
+				echo $lig_prof->civilite." ".casse_mot($lig_prof->nom, 'maj').' '.casse_mot($lig_prof->prenom, 'majf2');
+				$i++;
 			}
 			echo "</td>\n";
 
@@ -643,9 +765,78 @@ elseif(
 			echo "</tr>\n";
 		}
 	}
-	echo "</table>
+	echo "</table>";
+
+	// Récupérer la liste des CPE associés à la classe
+	$liste_cpe='';
+	$sql="SELECT DISTINCT u.login, nom, prenom, civilite FROM j_eleves_cpe jecpe, 
+										j_eleves_classes jec, 
+										utilisateurs u 
+									WHERE jecpe.e_login=jec.login AND 
+										jecpe.cpe_login=u.login AND 
+										jec.id_classe='".$id_classe."'
+									ORDER BY u.nom,u.prenom;";
+	//echo "$sql<br />";
+	$res_cpe=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_cpe)>0) {
+		while($lig_cpe=mysqli_fetch_object($res_cpe)) {
+			if($liste_cpe!='') {
+				$liste_cpe.='<br/>';
+			}
+			$liste_cpe.=$lig_cpe->civilite." ".casse_mot($lig_cpe->nom, 'maj').' '.casse_mot($lig_cpe->prenom, 'majf2');
+		}
+	}
+	if($liste_cpe!='') {
+		echo "
+	<p class='bold' style='margin-top:1em';>Saisie des appréciations vie scolaire.</p>
+	<table class='boireaus boireaus_alt' summary='Tableau Vie Scolaire'>
+		<tr>
+			<th rowspan='2'>Vie scolaire</th>\n
+			<th colspan='$nb_periode'>Périodes</th>
+		</tr>
+		<tr>";
+		for($i=1;$i<$nb_periode;$i++) {
+			echo "
+			<th>
+				P.$i
+			</th>";
+		}
+		echo "
+		</tr>
+		<tr>
+			<td>".$liste_cpe."</td>";
+		for($i=1;$i<$nb_periode;$i++) {
+			echo "
+			<td>";
+			if($ver_periode[$i]=='P') {
+				echo "<input type='checkbox' name='enseignement_periode[]' id='case_".$i."_viescolaire' value='viescolaire|".$i."' onchange=\"checkbox_change(this.id)\" />";
+				$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM abs_bull_delais WHERE id_classe='".$id_classe."' AND periode='$i' AND appreciation='y';";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$lig=mysqli_fetch_object($res);
+					if($lig->date_limite>$date_courante) {
+						echo "<br />";
+						echo "Autorisation jusqu'au<br />".strftime("%d/%m/%Y à %H:%M",$lig->date_limite);
+					}
+				}
+			}
+			elseif($ver_periode[$i]=='O') {
+				echo "<img src='../images/disabled.png' width='20' height='20' alt='Période $i close' title='Période $i close' />";
+			}
+			else {
+				echo "<img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title='Période $i ouverte en saisie' />";
+			}
+			echo "
+			</td>";
+		}
+		echo "
+		</tr>
+	</table>";
+	}
+
+	echo "
 		<input type='hidden' name='id_classe' value='$id_classe' />
-		<p><input type='submit' value='Autoriser tous les professeurs sélectionnés' /></p>
+		<p><input type='submit' value='Autoriser tous les personnels sélectionnés' /></p>
 	</fieldset>
 </form>
 
@@ -820,10 +1011,16 @@ else {
 		".add_token_field();
 
 		echo "<p style='margin-left:3em; text-indent:-3em;'>Vous souhaitez autoriser exceptionnellement un ou des enseignants à proposer des saisies/corrections d'appréciations pour le ou les enseignements suivants&nbsp;:<br />";
-
+		$temoin_vie_scolaire=false;
+		$temoin_enseignement=false;
 		for($loop=0;$loop<count($enseignement_periode);$loop++) {
 			$tab_ens_per=explode('|', $enseignement_periode[$loop]);
-			if((isset($tab_ens_per[1]))&&(preg_match('/^[0-9]*$/', $tab_ens_per[0]))&&(preg_match('/^[0-9]*$/', $tab_ens_per[1]))) {
+			if((isset($tab_ens_per[1]))&&($tab_ens_per[0]=='viescolaire')&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
+				// On le traite dans une deuxième partie
+				$temoin_vie_scolaire=true;
+			}
+			elseif((isset($tab_ens_per[1]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[0]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
+				$temoin_enseignement=true;
 				$id_groupe=$tab_ens_per[0];
 				$periode=$tab_ens_per[1];
 
@@ -902,7 +1099,7 @@ else {
 			$display_heure_limite=strftime("%H:%M", $_SESSION['autorisation_saisie_date_limite']);
 		}
 
-		echo "<p style='margin-top:1em;'>Quelle doit être la date/heure limite de cette autorisation de proposition d'appréciation&nbsp;?<br />\n";
+		echo "<p style='margin-top:1em;'>Quelle doit être la date/heure limite de l'autorisation de proposition d'appréciation&nbsp;?<br />\n";
 		//include("../lib/calendrier/calendrier.class.php");
 		//$cal = new Calendrier("formulaire", "display_date_limite");
 
@@ -919,30 +1116,76 @@ else {
 		echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
 		echo "<br />";
 
-		echo "<p style='margin-top:1em;'>";
-		echo "<input type='radio' name='mode' id='mode_proposition' value='proposition' checked /><label for='mode_proposition'> Permettre la proposition de corrections (<em>proposition qui devront ensuite être validées par un compte scolarité ou administrateur</em>).</label>\n";
-		echo "<br />";
-		if(getSettingAOui('autoriser_correction_bulletin')) {
-			echo "<span style='color:red'>Ce premier mode ne présente pas d'intérêt ici puisque vous avez donné globalement le droit (<em>en administrateur dans Gestion générale/Droits d'accès</em>) de proposer des corrections tant que la période n'est pas complètement close</span>.<br /><span style='color:red'>Seul le mode ci-dessous apporte quelque chose dans votre configuration.</span><br />";
-		}
-		echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' /><label for='mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
-		echo "<br />";
+		if($temoin_enseignement) {
+			echo "<p style='margin-top:1em;'>";
+			echo "<input type='radio' name='mode' id='mode_proposition' value='proposition' checked /><label for='mode_proposition'> Permettre la proposition de corrections (<em>proposition qui devront ensuite être validées par un compte scolarité ou administrateur</em>).</label>\n";
+			echo "<br />";
+			if(getSettingAOui('autoriser_correction_bulletin')) {
+				echo "<span style='color:red'>Ce premier mode ne présente pas d'intérêt ici puisque vous avez donné globalement le droit (<em>en administrateur dans Gestion générale/Droits d'accès</em>) de proposer des corrections tant que la période n'est pas complètement close</span>.<br /><span style='color:red'>Seul le mode ci-dessous apporte quelque chose dans votre configuration.</span><br />";
+			}
+			echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' /><label for='mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
+			echo "<br />";
 
-		if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
-			echo "<p style='margin-top:1em;'>\n";
-			echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' /><label for='donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés.</label>";
-			echo "</p>\n";
+			if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
+				echo "<p style='margin-top:1em;'>\n";
+				echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' /><label for='donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés.</label>";
+				echo "</p>\n";
+			}
+		}
+
+		if($temoin_vie_scolaire) {
+
+			echo "<p style='margin-top:1em;margin-left:3em; text-indent:-3em;'>Vous souhaitez autoriser exceptionnellement un ou des CPE à effectuer des saisies/corrections d'appréciations Vie Scolaire&nbsp;:<br />";
+
+			for($loop=0;$loop<count($enseignement_periode);$loop++) {
+				$tab_ens_per=explode('|', $enseignement_periode[$loop]);
+				if((isset($tab_ens_per[1]))&&($tab_ens_per[0]=='viescolaire')&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
+
+					$periode=$tab_ens_per[1];
+
+					echo "<input type='hidden' name='enseignement_periode[]' value='".$enseignement_periode[$loop]."' />\n";
+
+					echo "<strong>Vie Scolaire</strong> en <strong>période $periode</strong>";
+
+					$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='-1' AND periode='$periode';";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						$lig=mysqli_fetch_object($res);
+						$date_limite=$lig->date_limite;
+
+						$date_courante=time();
+
+						if($date_courante>$date_limite) {
+							//echo "<span style='color:red;'>Le délais imparti pour la proposition de saisie/correction est dépassé.</span><br />\n";
+							// On fait le ménage:
+							$sql="DELETE FROM matieres_app_delais WHERE id_groupe='-1' AND periode='$periode';";
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						}
+						else {
+							echo "<br /><span style='color:blue'>Une autorisation exceptionnelle de proposition de saisie existe pour la période&nbsp;: ".strftime("%d/%m/%Y à %H:%M",$date_limite)."</span><br />\n";
+						}
+						$display_date_limite=strftime("%d/%m/%Y",$date_limite);
+						$display_heure_limite=strftime("%H:%M",$date_limite);
+					}
+					echo "<br />";
+				}
+			}
+
+			if((getSettingAOui('abs2_import_manuel_bulletin'))&&
+			(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol'))))) {
+				echo "<p style='margin-top:1em;'>\n";
+				echo "<input type='checkbox' name='donner_acces_modif_totaux_abs' id='donner_acces_modif_totaux_abs' value='y' /><label for='donner_acces_modif_totaux_abs'> Donner aussi l'accès à la modification des totaux d'absences, non justifiées et retards sur les bulletins associés.</label>";
+				echo "</p>\n";
+			}
 		}
 
 		echo "<p style='margin-top:1em;'><input type='submit' name='Valider' value='Valider' /></p>\n";
-	
-		// Mail
 
 		echo "</form>\n";
 
 		echo "<br />
 <p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Par défaut, lorsque vous donnez un accès exceptionnel, c'est juste la possibilité pour le professeur de proposer des corrections en cliquant sur l'icone <img src='../images/edit16.png' class='icone16' alt='Modifier' /> dans sa page de saisie d'appréciations.<br />Les propositions formulées peuvent ensuite être contrôlées et validées par un compte scolarité ou administrateur.<br />
-		Vous pouvez, en cochant, la case ci-dessus</p>";
+		Dans le cas où vous donnez une autorisation de modification Vie scolaire aux CPE de la classe, la modification effectuée par un CPE est immédiate, sans attente de confirmation/validation par un compte scolarité ou administrateur.</p>";
 }
 
 echo "<p><br /></p>\n";

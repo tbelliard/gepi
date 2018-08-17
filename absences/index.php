@@ -1,7 +1,7 @@
 <?php
 
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -49,6 +49,19 @@ $titre_page = "Saisie des absences";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+// Tableau pour les autorisations exceptionnelles de saisie
+$tab_autorisation_exceptionnelle_de_saisie=array();
+$date_courante=time();
+//echo "\$date_courante=$date_courante<br />";
+$sql="SELECT * FROM abs_bull_delais WHERE UNIX_TIMESTAMP(date_limite)>'".time()."';";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
+	while ($lig=mysqli_fetch_object($res)) {
+		$tab_autorisation_exceptionnelle_de_saisie[$lig->id_classe][$lig->periode]['totaux']=$lig->totaux;
+		$tab_autorisation_exceptionnelle_de_saisie[$lig->id_classe][$lig->periode]['appreciation']=$lig->appreciation;
+	}
+}
+
 if (!isset($id_classe)) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href='import_absences_sconet.php'>Importer les absences de Sconet par lots</a>\n";
@@ -87,9 +100,9 @@ if (!isset($id_classe)) {
 	unset($tab_txt);
 	$tab_txt=array();
 	$tab_lien=array();
-	while ($i < $nombreligne){
-		$tab_lien[$i] = "index.php?id_classe=".old_mysql_result($calldata, $i, "id");
-		$tab_txt[$i] = old_mysql_result($calldata, $i, "classe");
+	while ($lig=mysqli_fetch_object($calldata)) {
+		$tab_lien[$i] = "index.php?id_classe=".$lig->id;
+		$tab_txt[$i] = $lig->classe;
 		$i++;
 	}
 	tab_liste($tab_txt,$tab_lien,3);
@@ -98,6 +111,7 @@ if (!isset($id_classe)) {
 
 	echo "<br />\n";
 } else {
+
 	// On choisit la période :
 	echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre classe</a>";
 
@@ -131,7 +145,12 @@ if (!isset($id_classe)) {
 		 (($ver_periode[$i]!="O")&&($_SESSION['statut']=='secours'))) {
 		  echo "<td><a href='saisie_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/edit16.png' width='16' height='16' alt='Saisir' title='Saisir' /></a></td>\n";
 		  //echo "<td><a href='saisir_groupe.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/edit16.png' width='16' height='16' alt='Saisir' title='Saisir' /></a></td>\n";
-		} else {
+		}
+		elseif(((isset($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$i]['totaux']))&&($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$i]['totaux']=='y'))||
+		((isset($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$i]['appreciation']))&&($tab_autorisation_exceptionnelle_de_saisie[$id_classe][$i]['appreciation']=='y'))) {
+			echo "<td title=\"Autorisation exceptionnelle de saisie.\" style='background-color:orange'><a href='saisie_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/edit16.png' width='16' height='16' alt='Saisir' title='Saisir' /></a></td>\n";
+		}
+		else {
 			echo "<td style='color:red;'><img src='../images/disabled.png' width='20' height='20' alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."' /></td>\n";
 		}
 		echo "<td><a href='consulter_absences.php?id_classe=$id_classe&amp;periode_num=$i'><img src='../images/icons/chercher.png' width='16' height='16' alt='Consulter' title='Consulter' /></a></td>\n";
