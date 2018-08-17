@@ -1085,6 +1085,106 @@ if(($mode=="suppr_sanction")&&(isset($id_sanction))) {
 	if($suppression_sanction_possible=="y") {
 		$msg.=suppr_doc_joints_sanction($id_sanction);
 
+		// 20180815 : Obtenir les infos sur la sanction et envoyer un mail
+
+		//affiche_sanction($id_sanction), get_incident_from_sanction($id_sanction) et rappel_incident($id_incident, '')
+		$id_incident=get_incident_from_sanction($id_sanction);
+		$nom_prenom=civ_nom_prenom($_SESSION['login']);
+		$message_mail="La sanction n°".$id_sanction." est supprimée le ".strftime("%d/%m/%Y à %H:%m/%S")." par ".$nom_prenom.".<br />
+<br />
+".affiche_sanction($id_sanction)."<br />\n";
+		if(preg_match("/^[0-9]{1,}$/", $id_incident)) {
+			$message_mail.="L'incident associé est le n°".$id_incident."<br />\n".rappel_incident($id_incident, '');
+		}
+
+		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+		if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+			$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+		}
+
+		if($envoi_mail_actif=='y') {
+			$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig_incident=mysqli_fetch_object($res);
+				$nature=$lig_incident->nature;
+
+				$message_id_incident=$lig_incident->message_id;
+				if($message_id_incident=="") {
+					$message_id_incident=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
+					$sql="UPDATE s_incidents SET message_id='$message_id_incident' WHERE id_incident='$id_incident';";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+
+				$references_mail=$message_id_incident;
+
+				$tab_alerte_mail=array();
+				if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+					$tab_alerte_mail[]=$_SESSION['email'];
+				}
+				if($lig_incident->declarant!=$_SESSION['login']) {
+					$current_mail=get_valeur_champ("utilisateurs", "login='".$lig_incident->declarant."'", "email");
+					if((!in_array($current_mail, $tab_alerte_mail))&&(check_mail($current_mail))) {
+						$tab_alerte_mail[]=$current_mail;
+					}
+				}
+
+				$info_classe_prot="";
+				$liste_protagonistes_responsables="";
+				$tab_alerte_classe=array();
+				$sql="SELECT login FROM s_protagonistes WHERE id_incident='$id_incident' AND qualite='responsable';";
+				$res_prot=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_prot)) {
+					while($lig_prot=mysqli_fetch_object($res_prot)) {
+				
+						if(getSettingValue('mod_disc_sujet_mail_sans_nom_eleve')!="n") {
+							if($liste_protagonistes_responsables!="") {$liste_protagonistes_responsables.=", ";}
+							$liste_protagonistes_responsables.=$lig_prot->login;
+							//echo "\$liste_protagonistes_responsables=$liste_protagonistes_responsables<br />";
+						}
+
+						// On va avoir des personnes alertees inutilement pour les élèves qui ont changé de classe.
+						// NON
+						$sql="SELECT DISTINCT id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.login='$lig_prot->login' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1;";
+						$res_clas_prot=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_clas_prot)>0) {
+							$lig_clas_prot=mysqli_fetch_object($res_clas_prot);
+							if((!in_array($lig_clas_prot->id_classe,$tab_alerte_classe))&&(!in_array($lig_clas_prot->id_classe,$tab_alerte_mail))) {
+								$tab_alerte_classe[]=$lig_clas_prot->id_classe;
+							}
+
+							$info_classe_prot="[$lig_clas_prot->classe]";
+						}
+					}
+				}
+
+
+				if(count($tab_alerte_classe)>0) {
+					$tab_param_mail=array();
+					$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature);
+					if($destinataires!="") {
+						$subject = "[GEPI][".ucfirst($mod_disc_terme_incident)." n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
+
+						$headers = "";
+						if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+							$headers.="Reply-to:".$_SESSION['email']."\r\n";
+							$tab_param_mail['replyto']=$_SESSION['email'];
+						}
+
+						if(isset($references_mail)) {
+							$headers .= "References: $references_mail\r\n";
+							$tab_param_mail['references']=$references_mail;
+						}
+
+						$texte_mail="Bonjour,<br />\n<br />\n".$message_mail."\nCordialement.\n-- \n".civ_nom_prenom($_SESSION['login']);
+
+						// On envoie le mail
+						$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers, "html", $tab_param_mail);
+					}
+				}
+			}
+		}
+
 		$sql="DELETE FROM s_travail WHERE id_sanction='$id_sanction';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM s_exclusions WHERE id_sanction='$id_sanction';";
@@ -1102,6 +1202,9 @@ if(($mode=="suppr_sanction")&&(isset($id_sanction))) {
 
 if(($mode=="suppr_report")&&(isset($id_report))) {
 	check_token();
+
+	// 20180815 : Obtenir les infos sur la sanction et le report et envoyer un mail
+	//affiche_sanction($id_sanction), get_incident_from_sanction($id_sanction) et rappel_incident($id_incident, '')
 
 	$sql="DELETE FROM s_reports WHERE id_report='$id_report';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);

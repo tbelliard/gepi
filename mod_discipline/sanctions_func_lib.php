@@ -355,11 +355,11 @@ function rappel_incident($id_incident, $mode_retour='echo') {
 	if(mysqli_num_rows($res_incident)>0) {
 		$lig_incident=mysqli_fetch_object($res_incident);
 
-		$retour.="<table class='boireaus' border='1' summary='".ucfirst($mod_disc_terme_incident)."'>\n";
-		$retour.="<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Date: </td><td style='text-align:left;'>".formate_date($lig_incident->date)."</td></tr>\n";
-		$retour.="<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure: </td><td style='text-align:left;'>$lig_incident->heure</td></tr>\n";
+		$retour.="<table class='boireaus boireaus_alt' border='1' summary='".ucfirst($mod_disc_terme_incident)."'>\n";
+		$retour.="<tr><td style='font-weight:bold;vertical-align:top;text-align:left;'>Date: </td><td style='text-align:left;'>".formate_date($lig_incident->date)."</td></tr>\n";
+		$retour.="<tr><td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure: </td><td style='text-align:left;'>$lig_incident->heure</td></tr>\n";
 
-		$retour.="<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu: </td><td style='text-align:left;'>";
+		$retour.="<tr><td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu: </td><td style='text-align:left;'>";
 		/*
 		$sql="SELECT lieu FROM s_lieux_incidents WHERE id='$lig_incident->id_lieu';";
 		$res_lieu_incident=mysql_query($sql);
@@ -371,14 +371,14 @@ function rappel_incident($id_incident, $mode_retour='echo') {
 		$retour.=get_lieu_from_id($lig_incident->id_lieu);
 		$retour.="</td></tr>\n";
 
-		$retour.="<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature: </td><td style='text-align:left;'>$lig_incident->nature</td></tr>\n";
-		$retour.="<tr class='lig1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Description: </td><td style='text-align:left;'>".nl2br($lig_incident->description)."</td></tr>\n";
+		$retour.="<tr><td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature: </td><td style='text-align:left;'>$lig_incident->nature</td></tr>\n";
+		$retour.="<tr><td style='font-weight:bold;vertical-align:top;text-align:left;'>Description: </td><td style='text-align:left;'>".nl2br($lig_incident->description)."</td></tr>\n";
 
 		/*
 		$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$id_incident' AND sti.id_mesure=s.id;";
 		$res_t_incident=mysql_query($sql);
 		if(mysql_num_rows($res_t_incident)>0) {
-			$retour.="<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Mesures&nbsp;: </td>\n";
+			$retour.="<tr><td style='font-weight:bold;vertical-align:top;text-align:left;'>Mesures&nbsp;: </td>\n";
 			$retour.="<td style='text-align:left;'>";
 			while($lig_t_incident=mysql_fetch_object($res_t_incident)) {
 				$retour.="$lig_t_incident->mesure (<em style='color:green;'>mesure $lig_t_incident->type</em>)<br />";
@@ -387,9 +387,19 @@ function rappel_incident($id_incident, $mode_retour='echo') {
 			$retour.="</tr>\n";
 		}
 		*/
+
+		$texte=rappel_protagonistes($id_incident, '');
+		if($texte!='') {
+			$retour.="<tr><td style='font-weight:bold;vertical-align:top;text-align:left;'>Protagonistes&nbsp;: </td>\n";
+			$retour.="<td style='text-align:left;'>";
+			$retour.=$texte;
+			$retour.="</td>\n";
+			$retour.="</tr>\n";
+		}
+
 		$texte=affiche_mesures_incident($lig_incident->id_incident);
 		if($texte!='') {
-			$retour.="<tr class='lig-1'><td style='font-weight:bold;vertical-align:top;text-align:left;'>Mesures&nbsp;: </td>\n";
+			$retour.="<tr><td style='font-weight:bold;vertical-align:top;text-align:left;'>Mesures&nbsp;: </td>\n";
 			$retour.="<td style='text-align:left;'>";
 			$retour.=$texte;
 			$retour.="</td>\n";
@@ -1297,39 +1307,43 @@ function get_login_declarant_incident($id_incident) {
 }
 
 //Fonction dressant la liste des reports pour une sanction ($id_type_sanction)
-function afficher_tableau_des_reports($id_sanction) {
+function afficher_tableau_des_reports($id_sanction, $avec_suppr='y', $avec_indication_pas_de_report='y') {
 	global $mod_disc_terme_sanction;
 	global $id_incident;
+
 	$retour="";
 	$sql="SELECT * FROM s_reports WHERE id_sanction='$id_sanction' ORDER BY id_report;";
-	//echo $sql;
+	//$retour.=$sql;
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
-		echo "<table class='boireaus' border='1' summary='Liste des reports' style='margin:2px;'>\n";
-		echo "<tr>\n";
-		echo "<th>Report N°</th>\n";
-		echo "<th>Date</th>\n";
-		echo "<th>Information</th>\n";
-		echo "<th>motif</th>\n";
-		echo "<th>Suppr</th>\n";
-		echo "</tr>\n";
+		$retour.="<table class='boireaus' border='1' summary='Liste des reports' style='margin:2px;'>\n";
+		$retour.="<tr>\n";
+		$retour.="<th>Report N°</th>\n";
+		$retour.="<th>Date</th>\n";
+		$retour.="<th>Information</th>\n";
+		$retour.="<th>motif</th>\n";
+		if($avec_suppr=='y') {
+			$retour.="<th>Suppr</th>\n";
+		}
+		$retour.="</tr>\n";
 		$alt_b=1;
 		$cpt=1;
 		while($lig=mysqli_fetch_object($res)) {
 			$alt_b=$alt_b*(-1);
-			echo "<tr class='lig$alt_b'>\n";
-			echo "<td>".$cpt."</td>\n";
+			$retour.="<tr class='lig$alt_b'>\n";
+			$retour.="<td>".$cpt."</td>\n";
 			$tab_date=explode("-",$lig->date);
-			echo "<td>".$tab_date[2]."-".sprintf("%02d",$tab_date[1])."-".sprintf("%02d",$tab_date[0])."</td>\n";
-			echo "<td>".$lig->informations."</td>\n";
-			echo "<td>".$lig->motif_report."</td>\n";
-			echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_report&amp;id_report=$lig->id_report&amp;id_sanction=$lig->id_sanction&amp;id_incident=$id_incident&amp;".add_token_in_url()."' title='Supprimer le report n°$lig->id_report'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer le report n°$lig->id_report' /></a></td>\n";
-
-			echo "<tr/>";
+			$retour.="<td>".$tab_date[2]."-".sprintf("%02d",$tab_date[1])."-".sprintf("%02d",$tab_date[0])."</td>\n";
+			$retour.="<td>".$lig->informations."</td>\n";
+			$retour.="<td>".$lig->motif_report."</td>\n";
+			if($avec_suppr=='y') {
+				$retour.="<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_report&amp;id_report=$lig->id_report&amp;id_sanction=$lig->id_sanction&amp;id_incident=$id_incident&amp;".add_token_in_url()."' title='Supprimer le report n°$lig->id_report'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer le report n°$lig->id_report' /></a></td>\n";
+			}
+			$retour.="<tr/>";
 			$cpt++;
 		}
-		echo "</table>\n";
-	} else {
+		$retour.="</table>\n";
+	} elseif($avec_indication_pas_de_report=='y') {
 		$retour = "Aucun report actuellement pour cette ".$mod_disc_terme_sanction.".";
 	}	
 	return $retour;
@@ -1829,7 +1843,7 @@ function liste_sanctions($id_incident, $ele_login) {
 		$declarant=$lig_inc->declarant;
 
 		// Retenues
-		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident=$id_incident AND s.login='".$ele_login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
+		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident='$id_incident' AND s.login='".$ele_login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
 		//$retour.="$sql<br />\n";
 		$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 		$res_sanction_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1986,7 +2000,7 @@ function liste_sanctions($id_incident, $ele_login) {
 		}
 
 		// Exclusions
-		$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE s.id_incident=$id_incident AND s.login='".$ele_login."' AND se.id_sanction=s.id_sanction ORDER BY se.date_debut, se.heure_debut;";
+		$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE s.id_incident='$id_incident' AND s.login='".$ele_login."' AND se.id_sanction=s.id_sanction ORDER BY se.date_debut, se.heure_debut;";
 		//$retour.="$sql<br />\n";
 		$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_sanction)>0) {
@@ -2101,7 +2115,7 @@ function liste_sanctions($id_incident, $ele_login) {
 		}
 
 		// Simple travail
-		$sql="SELECT * FROM s_sanctions s, s_travail st WHERE s.id_incident=$id_incident AND s.login='".$ele_login."' AND st.id_sanction=s.id_sanction ORDER BY st.date_retour;";
+		$sql="SELECT * FROM s_sanctions s, s_travail st WHERE s.id_incident='$id_incident' AND s.login='".$ele_login."' AND st.id_sanction=s.id_sanction ORDER BY st.date_retour;";
 		//$retour.="$sql<br />\n";
 		$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_sanction)>0) {
@@ -2326,4 +2340,209 @@ function sanction_check_delegue($id_sanction, $login) {
 		return true;
 	}
 }
+
+function rappel_protagonistes($id_incident, $mode_retour='echo') {
+	global $mod_disc_terme_incident;
+
+	$retour='';
+
+	$sql="SELECT * FROM s_protagonistes sp, eleves e WHERE sp.id_incident='$id_incident' AND sp.login=e.login ORDER BY sp.qualite, sp.statut, e.nom, e.prenom;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$retour="
+<p>Protagonistes de l'incident n°".$id_incident."</p>
+<table class='boireaus boireaus_alt2 resizable sortable'>
+	<thead>
+		<tr>
+			<th>Nom prénom</th>
+			<th>Rôle</th>
+		</tr>
+	</thead>
+	<tbody>";
+		while($lig=mysqli_fetch_object($res)) {
+			$retour.="
+		<tr>
+			<td>".$lig->nom." ".$lig->prenom."</td>
+			<td>".$lig->qualite."</td>
+		</tr>";
+		}
+		$retour.="
+	</tbody>
+</table>";
+	}
+
+	if($mode_retour=='echo') {
+		echo $retour;
+	}
+	else {
+		return $retour;
+	}
+}
+
+function affiche_sanction($id_sanction, $avec_reports='y') {
+	global $mod_disc_terme_incident;
+	global $mod_disc_terme_sanction;
+
+	$retour='';
+
+	$sql="SELECT ss.login, 
+			ss.description, 
+			ss.effectuee, 
+			sts.* 
+		FROM s_sanctions ss, 
+			s_types_sanctions2 sts 
+		WHERE ss.id_sanction='".$id_sanction."' AND 
+			ss.id_nature_sanction=sts.id_nature;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$retour.=ucfirst($mod_disc_terme_sanction)." n°".$id_sanction."&nbsp;: ";
+
+		if($lig->type=='retenue') {
+			$sql="SELECT * FROM s_retenues WHERE id_sanction='".$id_sanction."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)==0) {
+				$retour.=$lig->nature." (non trouvée)";
+			}
+			else {
+				$retour.=$lig->nature."<br />\n";
+
+				$lig2=mysqli_fetch_object($res2);
+				$retour.="Le ".formate_date($lig2->date);
+				if(preg_match("/^[A-Za-z]/", $lig2->heure_debut)) {
+					$retour.=" en ".$lig2->heure_debut;
+				}
+				else {
+					$retour.=" à ".$lig2->heure_debut;
+				}
+				$retour.=" (durée&nbsp;: ".$lig2->duree."h)<br />\n";
+				if($lig2->travail!='') {
+					if(!preg_match("/^travail/i", $lig2->travail)) {
+						$retour.="Travail&nbsp;: ";
+					}
+					$retour.=$lig2->travail."<br />\n";
+				}
+				if($lig2->lieu!='') {
+					$retour.="Lieu&nbsp;: ".$lig2->lieu."<br />\n";
+				}
+				if($lig2->materiel!='') {
+					$retour.="Matériel&nbsp;: ".$lig2->materiel."<br />\n";
+				}
+			}
+		}
+		elseif($lig->type=='exclusion') {
+			$sql="SELECT * FROM s_exclusions WHERE id_sanction='".$id_sanction."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)==0) {
+				$retour.=$lig->nature." (non trouvée)";
+			}
+			else {
+				$retour.=$lig->nature."<br />\n";
+
+				$lig2=mysqli_fetch_object($res2);
+				$retour.=" (".$lig2->type_exclusion.")<br />\n";
+				$retour.="Du ".formate_date($lig2->date_debut);
+				if(preg_match("/^[A-Za-z]/", $lig2->heure_debut)) {
+					$retour.=" en ".$lig2->heure_debut;
+				}
+				else {
+					$retour.=" à ".$lig2->heure_debut;
+				}
+
+				$retour.=" au ".formate_date($lig2->date_fin);
+				if(preg_match("/^[A-Za-z]/", $lig2->heure_fin)) {
+					$retour.=" en ".$lig2->heure_fin;
+				}
+				else {
+					$retour.=" à ".$lig2->heure_fin;
+				}
+				$retour.="<br />\n";
+
+				if($lig2->travail!='') {
+					if(!preg_match("/^travail/i", $lig2->travail)) {
+						$retour.="Travail&nbsp;: ";
+					}
+					$retour.=$lig2->travail."<br />\n";
+				}
+				if($lig2->lieu!='') {
+					$retour.="Lieu&nbsp;: ".$lig2->lieu."<br />\n";
+				}
+
+				if($lig2->nombre_jours!='') {
+					$retour.="Nombre de jours&nbsp;: ".$lig2->nombre_jours."<br />\n";
+				}
+
+				if($lig2->qualification_faits!='') {
+					$retour.="Qualification des faits&nbsp;: ".$lig2->qualification_faits."<br />\n";
+				}
+			}
+		}
+		elseif($lig->type=='travail') {
+			$sql="SELECT * FROM s_travail WHERE id_sanction='".$id_sanction."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)==0) {
+				$retour.=$lig->nature." (non trouvée)";
+			}
+			else {
+				$retour.=$lig->nature."<br />\n";
+
+				$lig2=mysqli_fetch_object($res2);
+				$retour.="A rendre pour le ".formate_date($lig2->date_retour);
+				if(preg_match("/^[A-Za-z]/", $lig2->heure_retour)) {
+					$retour.=" en ".$lig2->heure_retour;
+				}
+				else {
+					$retour.=" à ".$lig2->heure_retour;
+				}
+				$retour.="<br />\n";
+
+				if($lig2->travail!='') {
+					if(!preg_match("/^travail/i", $lig2->travail)) {
+						$retour.="Travail&nbsp;: ";
+					}
+					$retour.=$lig2->travail."<br />\n";
+				}
+			}
+		}
+		elseif($lig->type=='autre') {
+			$sql="SELECT * FROM s_autres_sanctions WHERE id_sanction='".$id_sanction."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)==0) {
+				$retour.=$lig->nature." (non trouvée)";
+			}
+			else {
+				$retour.=$lig->nature."<br />\n";
+
+				$lig2=mysqli_fetch_object($res2);
+				$retour.=$lig2->description."<br />\n";
+			}
+		}
+		else {
+			// Anomalie
+			$retour.=" (type de ".$mod_disc_terme_sanction." inconnu???)";
+		}
+
+		// Récupérer les reports
+		if($avec_reports=='y') {
+			$retour.=afficher_tableau_des_reports($id_sanction, 'n', 'n');
+		}
+
+		return $retour;
+	}
+}
+
+function get_incident_from_sanction($id_sanction) {
+	$retour='';
+
+	$sql="SELECT id_incident FROM s_sanctions
+		WHERE id_sanction='".$id_sanction."';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$retour=$lig->id_incident;
+	}
+
+	return $retour;
+}
+
 ?>
