@@ -2,7 +2,7 @@
 /*
  $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Stephane Boireau, Julien Jocal
+ * Copyright 2001, 2018 Thomas Belliard, Stephane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -20,10 +20,14 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+/*
 require_once("../secure/connect.inc.php");
 require_once("../lib/global.inc.php");
 require_once("../lib/share.inc.php");
 require_once("../lib/mysql.inc");
+*/
+require_once("../lib/initialisations.inc.php");
 require_once "../artichow/BarPlot.class.php";
 
 $place_eleve= $_GET['place_eleve'];

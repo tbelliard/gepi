@@ -2903,7 +2903,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 
 		//=============================================
 		// 20170621
-		if(isset($tab_ele['classe'])) {
+		if((isset($tab_ele['classe']))&&(count($tab_ele['classe'])>0)) {
 			$id_derniere_classe=$tab_ele['classe'][count($tab_ele['classe'])-1]['id_classe'];
 		}
 		//=============================================
@@ -2923,10 +2923,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 			if($onglet!="cdt") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
 			echo "'>";
-			//echo "a";
-			if(isset($tab_ele['classe'])) {
-				//echo "b";
-				$id_derniere_classe=$tab_ele['classe'][count($tab_ele['classe'])-1]['id_classe'];
+			if(isset($id_derniere_classe)) {
 				if(acces("/cahier_texte_2/consultation2.php", $_SESSION['statut'])) {
 					//echo "c";
 					echo "<div style='float:right; width:16'><a href='../cahier_texte_2/consultation2.php?mode=eleve&amp;login_eleve=$ele_login&amp;id_classe=$id_derniere_classe' title='Affichage semaine du cahier de textes'><img src='../images/icons/date.png' width='16' height='16' /></a></div>\n";
@@ -3608,10 +3605,15 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 			echo "background-color: ".$tab_couleur['anna']."; ";
 			echo "'>";
 
-			if(!isset($id_classe)) {
+			if((!isset($id_classe))&&(isset($tab_ele['classe'][0]['id_classe']))) {
 				$id_classe=$tab_ele['classe'][0]['id_classe'];
 			}
-			$lien_annees_anterieures=" <a href='../mod_annees_anterieures/consultation_annee_anterieure.php?id_classe=".$id_classe."&logineleve=".$ele_login."' target='_blank' title=\"Voir dans un nouvel onglet les données d'années antérieures\"'><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>";
+			if(isset($id_classe)) {
+				$lien_annees_anterieures=" <a href='../mod_annees_anterieures/consultation_annee_anterieure.php?id_classe=".$id_classe."&logineleve=".$ele_login."' target='_blank' title=\"Voir dans un nouvel onglet les données d'années antérieures\"'><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>";
+			}
+			else {
+				$lien_annees_anterieures='';
+			}
 
 			echo "<h2>Données d'années antérieures de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom'].$lien_annees_anterieures."</h2>\n";
 
@@ -3634,7 +3636,7 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 			// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans archivage_disciplines
 			//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
 			//$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC;";
-			$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='".$tab_ele['no_gep']."' ORDER BY annee ASC;";
+			$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='".$tab_ele['no_gep']."' AND ine!='' ORDER BY annee ASC;";
 			$res_ant=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_ant)==0){
@@ -3672,18 +3674,20 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 					}
 					else{
 
-						if(!isset($id_classe)) {
+						if((!isset($id_classe))&&(isset($tab_ele['classe'][0]['id_classe']))) {
 							$id_classe=$tab_ele['classe'][0]['id_classe'];
 						}
 
-						$cpt=0;
-						while($lig_ant2=mysqli_fetch_object($res_ant2)){
-							//if($cpt>0){echo "<td> - </td>\n";}
+						if(isset($id_classe)) {
+							$cpt=0;
+							while($lig_ant2=mysqli_fetch_object($res_ant2)){
+								//if($cpt>0){echo "<td> - </td>\n";}
 
-							// $id_classe=$tab_ele['periodes'][$index_per]['id_classe']
+								// $id_classe=$tab_ele['periodes'][$index_per]['id_classe']
 
-							echo "<td style='text-align:center;'><a href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=".$id_classe."&amp;logineleve=".$ele_login."&amp;annee_scolaire=".$lig_ant->annee."&amp;num_periode=".$lig_ant2->num_periode."&amp;mode=bull_simp' onclick=\"ajax_annee_anterieure_bull_simp('".$ele_login."', ".$id_classe.", '".$lig_ant->annee."', ".$lig_ant2->num_periode.");return false;\" target='_blank'>$lig_ant2->nom_periode</a></td>\n";
-							$cpt++;
+								echo "<td style='text-align:center;'><a href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=".$id_classe."&amp;logineleve=".$ele_login."&amp;annee_scolaire=".$lig_ant->annee."&amp;num_periode=".$lig_ant2->num_periode."&amp;mode=bull_simp' onclick=\"ajax_annee_anterieure_bull_simp('".$ele_login."', ".$id_classe.", '".$lig_ant->annee."', ".$lig_ant2->num_periode.");return false;\" target='_blank'>$lig_ant2->nom_periode</a></td>\n";
+								$cpt++;
+							}
 						}
 					}
 					echo "</tr>\n";
