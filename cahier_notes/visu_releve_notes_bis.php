@@ -1853,7 +1853,7 @@ else {
 							if(mysqli_num_rows($res_clas_ele_per)>0) {
 								$lig_clas_ele_per=mysqli_fetch_object($res_clas_ele_per);
 
-								$tab_acces_app[$lig_clas_ele->id_classe]=acces_appreciations(1, $lig_clas_ele_per->tmp_max_per, $lig_clas_ele->id_classe, '', $_SESSION['login']);
+								$tab_acces_app[$lig_clas_ele->id_classe]=acces_appreciations(1, $lig_clas_ele_per->tmp_max_per, $lig_clas_ele->id_classe, '', $tmp_tab_resp_ele[$loop_ele]);
 
 								foreach($tab_acces_app[$lig_clas_ele->id_classe] as $tmp_per => $tmp_acces) {
 									$tab_acces_moy[$tmp_tab_resp_ele[$loop_ele]][$lig_clas_ele->id_classe][$tmp_per]=$tab_acces_app[$lig_clas_ele->id_classe][$tmp_per];
@@ -1862,6 +1862,11 @@ else {
 						}
 					}
 				}
+				/*
+				echo "<pre>";
+				print_r($tab_acces_moy);
+				echo "</pre>";
+				*/
 			}
 			else {
 				$acces_moy='y';
