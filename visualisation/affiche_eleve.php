@@ -717,11 +717,26 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		//$tab_acces_app=acces_appreciations(1, $nb_periode, $id_classe, $_SESSION['statut']);
 		$tab_acces_app=acces_appreciations(1, $nb_periode, $id_classe, $_SESSION['statut'], $login_eleve);
+
+		$tab_acces_moy=array();
+		$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+		if($acces_moy_ele_resp!='immediat') {
+			$message_acces_non_ouvert="<img src='$gepiPath/images/disabled.png' class='icone16' title='Accès non encore ouvert aux élèves/parents' />";
+			foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+				$tab_acces_moy[$tmp_per]=$tab_acces_app[$tmp_per];
+			}
+		}
+		else {
+			for($i=1;$i<=$nb_periode;$i++) {
+				$tab_acces_moy[$i]="y";
+			}
+		}
 	}
 	else {
 		// Pas de limitations d'accès pour les autres statuts.
 		for($i=1;$i<=$nb_periode;$i++) {
 			$tab_acces_app[$i]="y";
+			$tab_acces_moy[$i]="y";
 		}
 	}
 	//==========================================================
@@ -3745,54 +3760,75 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 			}
 
 			if($affiche_mgen!="non") {
-				$mgen[1]=$moy_gen_eleve[$indice_eleve1];
-				if(preg_match("/^[0-9.,]*$/", $mgen[1])) {
-					$mgen[1]=round(preg_replace('/,/', '.', $mgen[1]),1);
-				}
+				// On aura quelque chose comme:
+				// $mgen[1]=13.8 moyenne générale de l'élève 1
+				// $mgen[2]=11.5 moyenne générale de l'élève 2 ou moymin, moyclasse ou moymax
+
+				if((isset($tab_acces_moy[$num_periode]))&&($tab_acces_moy[$num_periode]=='y')) {
+					$mgen[1]=$moy_gen_eleve[$indice_eleve1];
+					if(preg_match("/^[0-9.,]*$/", $mgen[1])) {
+						$mgen[1]=round(preg_replace('/,/', '.', $mgen[1]),1);
+					}
 
 
-				// On recherche l'élève2 et on récupère la moyenne générale 2:
-				$indice_eleve2=-1;
-				//echo "\$eleve2=$eleve2<br />";
-				// 20121205
-				if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')&&($eleve2!='rang_eleve')) {
-					for($loop=0;$loop<count($current_eleve_login);$loop++) {
-						if($current_eleve_login[$loop]==$eleve2) {
-							$indice_eleve2=$loop;
-							break;
+					// On recherche l'élève2 et on récupère la moyenne générale 2:
+					$indice_eleve2=-1;
+					//echo "\$eleve2=$eleve2<br />";
+
+					if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')&&($eleve2!='rang_eleve')) {
+						for($loop=0;$loop<count($current_eleve_login);$loop++) {
+							if($current_eleve_login[$loop]==$eleve2) {
+								$indice_eleve2=$loop;
+								break;
+							}
+						}
+
+						$mgen[2]=$moy_gen_eleve[$indice_eleve2];
+					}
+					elseif($eleve2=='moyclasse') {
+						$mgen[2]=$moy_generale_classe;
+					}
+					elseif($eleve2=='moymin') {
+						$mgen[2]=$moy_min_classe;
+					}
+					elseif($eleve2=='moymax') {
+						$mgen[2]=$moy_max_classe;
+					}
+					elseif($eleve2=='rang_eleve') {
+						if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+						(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+						(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+							$mgen[2]=get_rang_eleve($eleve1, $id_classe, $periode_num, "n", "y");
+						}
+						else {
+							$mgen[2]="-";
 						}
 					}
 
-					$mgen[2]=$moy_gen_eleve[$indice_eleve2];
-				}
-				elseif($eleve2=='moyclasse') {
-					$mgen[2]=$moy_generale_classe;
-					//$mgen[2]=5;
-				}
-				elseif($eleve2=='moymin') {
-					$mgen[2]=$moy_min_classe;
-				}
-				elseif($eleve2=='moymax') {
-					$mgen[2]=$moy_max_classe;
-				}
-				// 20121205
-				elseif($eleve2=='rang_eleve') {
-					if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-					(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
-					(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
-						$mgen[2]=get_rang_eleve($eleve1, $id_classe, $periode_num, "n", "y");
+					if(preg_match("/^[0-9.,]*$/", $mgen[2])) {
+						$mgen[2]=round(preg_replace('/,/', '.', $mgen[2]),1);
 					}
-					else {
-						$mgen[2]="-";
-					}
+				}
+				else {
+					$mgen[1]='-';
+					$mgen[2]='-';
 				}
 
-				if(preg_match("/^[0-9.,]*$/", $mgen[2])) {
-					$mgen[2]=round(preg_replace('/,/', '.', $mgen[2]),1);
-				}
+				/*
+				// 20180819:
+				echo "mgen<pre>";
+				print_r($mgen);
+				echo "</pre>";
+				*/
 			}
 
 			// On remplit $liste_matieres, $serie[1], les tableaux d'appréciations et on génère les infobulles
+			// On aura quelque chose comme:
+			// $liste_matieres="|MATHS|FRANC|HIGEO|EPS|";
+			// $serie[1]="|12.5|11.7|15.3|14.2|";
+			// $serie[2]="|11.2|13.3|12.2|12.1|";
+			// $seriemin="|8.0|7.2|8.1|6.3|";
+			// $seriemax="|17.2|16.3|15.8|17.4|";
 			$cpt=0;
 			for($loop=0;$loop<count($current_group);$loop++) {
 				if(isset($current_eleve_note[$loop][$indice_eleve1])) {
@@ -3823,51 +3859,57 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 					}
 
 					// Elève 1:
-					if($current_eleve_statut[$loop][$indice_eleve1]!="") {
-						// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
-						//$serie[1].=$current_eleve_statut[$loop][$indice_eleve1];
-						$serie[1].="-";
-					}
-					else {
-						$serie[1].=$current_eleve_note[$loop][$indice_eleve1];
-					}
-
-					// Elève 2:
-					if($indice_eleve2!=-1) {
-						// Si le deuxième élève suit le même enseignement:
-						if(isset($current_eleve_note[$loop][$indice_eleve2])) {
-							if($current_eleve_statut[$loop][$indice_eleve2]!="") {
-								// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
-								//$serie[2].=$current_eleve_statut[$loop][$indice_eleve2];
-								$serie[2].="-";
-							}
-							else {
-								$serie[2].=$current_eleve_note[$loop][$indice_eleve2];
-							}
+					if((isset($tab_acces_moy[$num_periode]))&&($tab_acces_moy[$num_periode]=='y')) {
+						if($current_eleve_statut[$loop][$indice_eleve1]!="") {
+							// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
+							//$serie[1].=$current_eleve_statut[$loop][$indice_eleve1];
+							$serie[1].="-";
 						}
 						else {
-								$serie[2].="-";
+							$serie[1].=$current_eleve_note[$loop][$indice_eleve1];
 						}
-					}
-					elseif($eleve2=='moyclasse') {
-						$serie[2].=$current_classe_matiere_moyenne[$loop];
-					}
-					elseif($eleve2=='moymin') {
-						//$serie[2].=min($current_eleve_note[$loop]);
-						$serie[2].=$moy_min_classe_grp[$loop];
-					}
-					elseif($eleve2=='moymax') {
-						//$serie[2].=max($current_eleve_note[$loop]);
-						$serie[2].=$moy_max_classe_grp[$loop];
-					}
-					elseif($eleve2=='rang_eleve') {
-						if(isset($current_eleve_rang[$loop][$indice_eleve1])) {
-							if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-							(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
-							(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
-								$serie[2].=$current_eleve_rang[$loop][$indice_eleve1];
+
+						// Elève 2:
+						if($indice_eleve2!=-1) {
+							// Si le deuxième élève suit le même enseignement:
+							if(isset($current_eleve_note[$loop][$indice_eleve2])) {
+								if($current_eleve_statut[$loop][$indice_eleve2]!="") {
+									// Mettre le statut pose des problèmes pour le tracé de la courbe... abs, disp,... passent pour des zéros
+									//$serie[2].=$current_eleve_statut[$loop][$indice_eleve2];
+									$serie[2].="-";
+								}
+								else {
+									$serie[2].=$current_eleve_note[$loop][$indice_eleve2];
+								}
+							}
+							else {
+									$serie[2].="-";
 							}
 						}
+						elseif($eleve2=='moyclasse') {
+							$serie[2].=$current_classe_matiere_moyenne[$loop];
+						}
+						elseif($eleve2=='moymin') {
+							//$serie[2].=min($current_eleve_note[$loop]);
+							$serie[2].=$moy_min_classe_grp[$loop];
+						}
+						elseif($eleve2=='moymax') {
+							//$serie[2].=max($current_eleve_note[$loop]);
+							$serie[2].=$moy_max_classe_grp[$loop];
+						}
+						elseif($eleve2=='rang_eleve') {
+							if(isset($current_eleve_rang[$loop][$indice_eleve1])) {
+								if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+								(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+								(($_SESSION['statut']='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+									$serie[2].=$current_eleve_rang[$loop][$indice_eleve1];
+								}
+							}
+						}
+					}
+					else {
+						$serie[1].='-';
+						$serie[2].='-';
 					}
 
 					// Série min et série max pour les bandes min/max:
@@ -4768,7 +4810,12 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 				else {
 					// Moyenne générale de l'élève $eleve1 sur la période $cpt
 					if($affiche_mgen=="oui") {
-						$mgen[$cpt]=$moy_gen_eleve[$indice_eleve1];
+						if((isset($tab_acces_moy[$num_periode[$cpt]]))&&($tab_acces_moy[$num_periode[$cpt]]=='y')) {
+							$mgen[$cpt]=$moy_gen_eleve[$indice_eleve1];
+						}
+						else {
+							$mgen[$cpt]="-";
+						}
 					}
 					else {
 						$mgen[$cpt]="-";
@@ -4807,7 +4854,12 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 									$serie[$cpt].="-";
 								}
 								else {
-									$serie[$cpt].=$current_eleve_note[$indice_groupe][$indice_eleve1];
+									if((isset($tab_acces_moy[$num_periode[$cpt]]))&&($tab_acces_moy[$num_periode[$cpt]]=='y')) {
+										$serie[$cpt].=$current_eleve_note[$indice_groupe][$indice_eleve1];
+									}
+									else {
+										$serie[$cpt].="-";
+									}
 								}
 
 								// REMPLIR $tab_imagemap[$k_num_periode][$m_num_groupe]

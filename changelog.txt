@@ -16,7 +16,8 @@ Absences 2:
 Bulletins:
 - Possibilité d'autorisation exceptionnelle de saisie/modification d'appréciation 
   Vie scolaire en période partiellement close.
-
+- Possibilité de restreindre l'accès aux moyennes des bulletins pour les parents/élèves,
+  comme on peut déjà le faire pour les appréciations et avis du conseil de classe.
 
 Gepi-1.7.3 (04/04/2018)
 ===========================

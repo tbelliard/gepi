@@ -133,6 +133,235 @@
 
 <br />
 
+  <form action="index_admin.php" id="form_acces_moy" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
+<?php
+	echo add_token_field();
+?>
+	
+	<h2 class="colleHaut">Accès aux moyennes et appréciations</h2>
+
+	<p>
+	  L'accès élève/parent aux appréciations des bulletins et avis du conseil de classe définis d'une des façons suivantes&nbsp;:<br />
+<?php
+$acces_app_ele_resp=getSettingValue("acces_app_ele_resp");
+if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';}
+?>
+		<input type='radio' 
+			   name='acces_app_ele_resp' 
+			   id='acces_app_ele_resp_manuel' 
+			   value='manuel' 
+			   onchange='changement()'
+			   <?php if($acces_app_ele_resp=='manuel') {echo "checked='checked'";} ?>
+			   />
+		<label for='acces_app_ele_resp_manuel'>
+			manuel (<em>ouvert par la scolarité, classe par classe</em>)
+		</label>
+		<br />
+		<input type='radio' 
+			   name='acces_app_ele_resp' 
+			   id='acces_app_ele_resp_manuel_individuel' 
+			   value='manuel_individuel' 
+			   onchange='changement()'
+			   <?php if($acces_app_ele_resp=='manuel_individuel') {echo "checked='checked'";} ?>
+			   />
+		<label for='acces_app_ele_resp_manuel_individuel' title="Ce choix, s'il est fastidieux permet de traiter la situation suivante:
+Si les bulletins sont remis en mains propres aux familles par le professeur principal, on peut souhaiter ne pas donner acccès aux appréciations et avis tant que la famille ne s'est pas déplacée.
+Il peut en effet être intéressant de voir les familles des élèves pour lesquels une réaction est attendue.">
+			manuel élève par élève (<em>ouvert par la scolarité</em>) <img src='../images/icons/ico_question_petit.png' class='icone16' alt='Info' />
+		</label>
+		<br />
+		<input type='radio' 
+			   name='acces_app_ele_resp' 
+			   id='acces_app_ele_resp_date' 
+			   value='date' 
+			   <?php if($acces_app_ele_resp=='date') {echo "checked='checked'";} ?>
+			   onchange='changement()' />
+		<label for='acces_app_ele_resp_date'>à une date choisie (<em>par la scolarité</em>)</label>
+		<br />
+<?php 
+$delais_apres_cloture=getSettingValue("delais_apres_cloture");
+if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
+?>
+		<input type='radio' 
+			   name='acces_app_ele_resp' 
+			   id='acces_app_ele_resp_periode_close' 
+			   value='periode_close' 
+			   onchange='changement()' 
+			   <?php if($acces_app_ele_resp=='periode_close') {echo "checked='checked'";} ?>
+			    />
+		<input type='text' 
+			   name='delais_apres_cloture' 
+			   id='delais_apres_cloture' 
+			   value='<?php echo $delais_apres_cloture; ?>'
+			   size='1' 
+			   onchange="changement();document.getElementById('acces_app_ele_resp_periode_close').checked=true;" onkeydown="clavier_2(this.id,event,1,600);document.getElementById('acces_app_ele_resp_periode_close').checked=true;" />
+		<label for='acces_app_ele_resp_periode_close'>
+			jours après la clôture de la période
+		</label>
+	</p>
+
+	<br />
+
+	<p>Par défaut, l'accès parent/élève aux moyennes des enseignements est possible dès que le professeur a rempli les bulletins.<br />
+	Si vous souhaitez restreindre l'accès, vous pouvez opter pour une des alternatives&nbsp;:<br />
+	</p>
+
+<?php
+$acces_moy_ele_resp=getSettingValue("acces_moy_ele_resp");
+if($acces_moy_ele_resp=="") {$acces_moy_ele_resp='immediat';}
+$acces_moy_ele_resp_cn=getSettingValue("acces_moy_ele_resp_cn");
+if($acces_moy_ele_resp_cn=="") {$acces_moy_ele_resp_cn='immediat';}
+?>
+	<p>
+		<input type='radio' 
+			   name='acces_moy_ele_resp' 
+			   id='acces_moy_ele_resp_immediat' 
+			   value='immediat' 
+			   onchange='changement()'
+			   <?php if($acces_moy_ele_resp=='immediat') {echo "checked='checked'";} ?>
+			   />
+		<label for='acces_moy_ele_resp_immediat'>
+			immédiat (<em>dès que la moyenne est renseignée par le professeur sur le bulletin</em>)
+		</label>
+		<br />
+		<input type='radio' 
+			   name='acces_moy_ele_resp' 
+			   id='acces_moy_ele_resp_comme_app' 
+			   value='comme_app' 
+			   onchange='changement()'
+			   <?php if($acces_moy_ele_resp=='comme_app') {echo "checked='checked'";} ?>
+			   />
+		<label for='acces_moy_ele_resp_comme_app'>
+			comme l'accès aux appréciations (<em>dans ce cas, l'accès aux moyennes est donné lors de l'ouverture de l'accès aux appréciations comme paramétré ci-dessus</em>)
+		</label>
+		<br />
+	</p>
+
+	<br />
+
+	<p>Si les élèves/parents ont accès aux moyennes des carnets de notes, ils peuvent connaitre les moyennes même si l'accès aux moyennes des bulletins est bloqué.<br />
+	<em>(les moyennes des bulletins sont en effet généralement un simple transfert/recopie des moyennes des carnets de notes vers les bulletins).</em><br />
+	<br />
+	Vous pouvez conditionner l'accès aux moyennes des carnets de notes à l'accès aux moyennes des bulletins&nbsp;:<br />
+		<input type='radio' 
+			   name='acces_moy_ele_resp_cn' 
+			   id='acces_moy_ele_resp_cn_immediat' 
+			   value='immediat' 
+			   onchange='changement()'
+			   <?php if($acces_moy_ele_resp_cn=='immediat') {echo "checked='checked'";} ?>
+			   />
+		<label for='acces_moy_ele_resp_cn_immediat'>
+			donner l'accès aux moyennes des carnets de notes même si les moyennes des bulletins ne sont pas encore accessibles.
+		</label>
+		<br />
+		<input type='radio' 
+			   name='acces_moy_ele_resp_cn' 
+			   id='acces_moy_ele_resp_cn_comme_bull' 
+			   value='comme_bull' 
+			   onchange='changement()'
+			   <?php if($acces_moy_ele_resp_cn=='comme_bull') {echo "checked='checked'";} ?>
+			   />
+		<label for='acces_moy_ele_resp_cn_comme_bull'>
+			Ne pas donner l'accès aux moyennes des carnets de notes si les moyennes des bulletins ne sont pas encore accessibles.
+		</label>
+	</p>
+
+	<br />
+
+	<p><em>NOTES&nbsp;:</em></p>
+	<ul>
+<?php
+	$GepiAccesColMoyReleveEleve=getSettingAOui('GepiAccesColMoyReleveEleve');
+	$GepiAccesColMoyReleveParent=getSettingAOui('GepiAccesColMoyReleveParent');
+
+	$cn_affiche_moy_gen=getSettingAOui('cn_affiche_moy_gen');
+	if($cn_affiche_moy_gen) {
+		echo "
+		<li>L'affichage des moyennes d'enseignements sur les carnets de notes est autorisé.<br />
+			Voir 
+			<a href='../cahier_notes_admin/index.php'
+			   onclick=\"return confirm_abandon (this, change, '".$themessage."')\">
+				Droits d'accès
+			</a></li>";
+	}
+	else {
+		echo "
+		<li>L'affichage des moyennes d'enseignements sur les carnets de notes est globalement désactivé.<br />
+			Le paramétrage ci-dessus est donc sans effet.<br />
+			Voir 
+			<a href='../cahier_notes_admin/index.php'
+			   onclick=\"return confirm_abandon (this, change, '".$themessage."')\">
+				Droits d'accès
+			</a>
+		</li>";
+	}
+
+	if($GepiAccesColMoyReleveEleve) {
+		echo "
+		<li>Les élèves sont autorisés à afficher les moyennes d'enseignements sur les carnets de notes.<br />
+			Voir 
+			<a href='../droits_acces.php#eleve'
+			   onclick=\"return confirm_abandon (this, change, '".$themessage."')\">
+				Droits d'accès
+			</a>
+		</li>";
+	}
+	else {
+		echo "
+		<li>Les élèves ne sont pas autorisés à afficher les moyennes d'enseignements sur les carnets de notes.<br />
+			Le paramétrage ci-dessus est donc sans effet.<br />
+			Voir 
+			<a href='../droits_acces.php#eleve'
+			   onclick=\"return confirm_abandon (this, change, '".$themessage."')\">
+				Droits d'accès
+			</a>
+		</li>";
+	}
+
+	if($GepiAccesColMoyReleveParent) {
+		echo "
+		<li>Les responsables (parents) sont autorisés à afficher les moyennes d'enseignements sur les carnets de notes.<br />
+			Voir 
+			<a href='../droits_acces.php#responsable'
+			   onclick=\"return confirm_abandon (this, change, '".$themessage."')\">
+				Droits d'accès
+			</a>
+		</li>";
+	}
+	else {
+		echo "
+		<li>Les responsables (parents) ne sont pas autorisés à afficher les moyennes d'enseignements sur les carnets de notes.<br />
+			Le paramétrage ci-dessus est donc sans effet.<br />
+			Voir 
+			<a href='../droits_acces.php#responsable'
+			   onclick=\"return confirm_abandon (this, change, '".$themessage."')\">
+				Droits d'accès
+			</a>
+		</li>";
+	}
+?>
+		<li>Les accès paramétrés ci-dessus sont possibles, sous réserve&nbsp;:<br />
+			<ul style='font-variant: normal; font-style: italic; font-size: small;'>
+				<li style='font-variant: normal; font-style: italic; font-size: small;'>
+					de créer des comptes pour les responsables et élèves,
+				</li>
+				<li style='font-variant: normal; font-style: italic; font-size: small;'>
+					d'autoriser l'accès aux bulletins simplifiés ou aux graphes dans 
+					<a href='droits_acces.php#bull_simp_ele'
+					   onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+						Droits d'accès
+					</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+
+	<p style='text-align:center'><input type="submit" value="Enregistrer" /></p>
+
+</form>
+
+<br />
+
   <form action="index_admin.php" id="form3" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
 <?php
 	echo add_token_field();

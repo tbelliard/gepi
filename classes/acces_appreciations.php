@@ -402,6 +402,19 @@ Il est souvent apprécié de pouvoir interdire l'accès aux élèves et responsa
 Cet accès est conditionné par l'existence des comptes responsables et élèves.</p>\n";
 echo "<br />\n";
 
+// 20180819
+$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+if($acces_moy_ele_resp=="") {$acces_moy_ele_resp='immediat';saveSetting('acces_moy_ele_resp','immediat');}
+if($acces_moy_ele_resp=='immediat') {
+	echo "<p>L'accès aux moyennes sur les bulletins est en revanche immédiat.<br />
+	Dès que le professeur a saisi/renseigné les moyennes pour les bulletins, ces moyennes sont visibles des élèves/parents.</p>";
+}
+else {
+	echo "<p>L'accès aux moyennes sur les bulletins est également conditionné par l'accès aux appréciations et avis du conseil de classe.<br />
+	Les moyennes pour les bulletins ne seront visibles des élèves/parents qu'une fois l'accès aux appréciations ouvert.</p>";
+}
+echo "<br />\n";
+
 if($acces_app_ele_resp=='manuel') {
 	echo "<p>Cliquez sur la clef <img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /> pour donner ou supprimer l'accès aux appréciations.</p>\n";
 }

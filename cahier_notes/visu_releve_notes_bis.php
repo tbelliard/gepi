@@ -1807,6 +1807,76 @@ else {
 		return $regime;
 	}
 
+	// 20180819
+	$message_acces_non_ouvert="<img src='$gepiPath/images/disabled.png' class='icone16' title='Accès non encore ouvert aux élèves/parents' />";
+
+	$acces_moy_ele_resp_cn=getSettingValue('acces_moy_ele_resp_cn');
+	if($acces_moy_ele_resp_cn!='immediat') {
+		$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+
+		if($acces_moy_ele_resp!='immediat') {
+			if($_SESSION['statut']=='eleve') {
+				$acces_moy='n';
+
+				// Récupérer les id_classe de l'élève
+				$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$_SESSION['login']."';";
+				$res_clas_ele=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res_clas_ele)>0) {
+					while($lig_clas_ele=mysqli_fetch_object($res_clas_ele)) {
+
+						$sql="SELECT MAX(num_periode) AS tmp_max_per FROM periodes WHERE id_classe='".$lig_clas_ele->id_classe."';";
+						//echo "$sql<br />";
+						$res_clas_ele_per=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(mysqli_num_rows($res_clas_ele_per)>0) {
+							$lig_clas_ele_per=mysqli_fetch_object($res_clas_ele_per);
+
+							$tab_acces_app[$lig_clas_ele->id_classe]=acces_appreciations(1, $lig_clas_ele_per->tmp_max_per, $lig_clas_ele->id_classe, '', $_SESSION['login']);
+
+							foreach($tab_acces_app[$lig_clas_ele->id_classe] as $tmp_per => $tmp_acces) {
+								$tab_acces_moy[$_SESSION['login']][$lig_clas_ele->id_classe][$tmp_per]=$tab_acces_app[$lig_clas_ele->id_classe][$tmp_per];
+							}
+						}
+					}
+				}
+			}
+			elseif($_SESSION['statut']=='responsable') {
+				$tmp_tab_resp_ele=get_enfants_from_resp_login($_SESSION['login'], 'simple', 'y');
+				for($loop_ele=0;$loop_ele<count($tmp_tab_resp_ele);$loop_ele+=2) {
+					// Récupérer les id_classe de l'élève
+					$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$tmp_tab_resp_ele[$loop_ele]."';";
+					$res_clas_ele=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(mysqli_num_rows($res_clas_ele)>0) {
+						while($lig_clas_ele=mysqli_fetch_object($res_clas_ele)) {
+
+							$sql="SELECT MAX(num_periode) AS tmp_max_per FROM periodes WHERE id_classe='".$lig_clas_ele->id_classe."';";
+							$res_clas_ele_per=mysqli_query($GLOBALS['mysqli'], $sql);
+							if(mysqli_num_rows($res_clas_ele_per)>0) {
+								$lig_clas_ele_per=mysqli_fetch_object($res_clas_ele_per);
+
+								$tab_acces_app[$lig_clas_ele->id_classe]=acces_appreciations(1, $lig_clas_ele_per->tmp_max_per, $lig_clas_ele->id_classe, '', $_SESSION['login']);
+
+								foreach($tab_acces_app[$lig_clas_ele->id_classe] as $tmp_per => $tmp_acces) {
+									$tab_acces_moy[$tmp_tab_resp_ele[$loop_ele]][$lig_clas_ele->id_classe][$tmp_per]=$tab_acces_app[$lig_clas_ele->id_classe][$tmp_per];
+								}
+							}
+						}
+					}
+				}
+			}
+			else {
+				$acces_moy='y';
+			}
+		}
+		else {
+			$acces_moy='y';
+		}
+	}
+	else {
+		$acces_moy='y';
+	}
+
+
+
 	// Compteur pour gérer les 2 relevés par page en PDF
 	$compteur_releve=0;
 	// Compteur pour les insertions de saut de page en HTML
@@ -1831,6 +1901,43 @@ else {
 			$afficher_ligne_moy_gen='n';
 		}
 		//echo "\$afficher_ligne_moy_gen=$afficher_ligne_moy_gen<br />";
+
+		//==========================================
+		/*
+		// 20180819
+		// $tmp_max_per à récupérer pour $id_classe
+		if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+			$acces_moy_ele_resp_cn=getSettingValue('acces_moy_ele_resp_cn');
+			if($acces_moy_ele_resp_cn!='immediat') {
+				$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+
+				if($acces_moy_ele_resp!='immediat') {
+
+					// PB: il faudrait extraire les tableaux pour chacun des élèves du responsable
+					$tab_acces_app[$id_classe]=acces_appreciations(1, $tmp_max_per, $id_classe, '', $ele_login);
+
+					foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+						$tab_acces_moy[$tmp_per]=$tab_acces_app[$tmp_per];
+					}
+
+				}
+				else {
+					foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+						$tab_acces_moy[$tmp_per]='y';
+					}
+				}
+			}
+			else {
+				$tab_acces_moy[$num_periode]='y';
+			}
+		}
+		else {
+			$tab_acces_app[$id_classe]=acces_appreciations(1, $tmp_max_per, $id_classe, '', $ele_login);
+		}
+		*/
+		//==========================================
+
+
 
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -876,6 +876,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$msg_acces_app_ele_resp="???";
 		}
 
+		$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+		if($acces_moy_ele_resp=='immediat') {
+			$msg_acces_moy_ele_resp="Les moyennes sont visibles dès qu'elles sont saisies/renseignées par les professeurs.";
+		}
+		elseif($acces_moy_ele_resp=='comme_app') {
+			$msg_acces_moy_ele_resp="Les moyennes sont visibles sous les mêmes conditions que les appréciations.";
+		}
+
 		/*
 		echo "<pre>";
 		print_r($tab_acces_app_classe);
@@ -885,17 +893,28 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "A la date du jour (".$date_du_jour.")&nbsp;:</p>\n";
 		echo "<ul>\n";
 		foreach($tab_acces_app_classe[$id_classe] as $periode_num => $value) {
-			echo "<li> les appréciations de la période ".$periode_num." ";
+			if($acces_moy_ele_resp=='comme_app') {
+				echo "<li> les moyennes et appréciations de la période ".$periode_num." ";
+			}
+			else {
+				echo "<li> les appréciations de la période ".$periode_num." ";
+			}
 			if($value=="y") {
 				echo "sont visibles des parents/élèves.";
 			}
 			elseif($value=="n") {
 				echo "ne sont pas encore visibles des parents/élèves.<br />";
 				echo $msg_acces_app_ele_resp;
+				if($acces_moy_ele_resp=='immediat') {
+					echo $msg_acces_moy_ele_resp;
+				}
 			}
 			else {
 				echo "ne sont visibles que pour ".$value." élèves.<br />";
 				echo $msg_acces_app_ele_resp;
+				if($acces_moy_ele_resp=='immediat') {
+					echo $msg_acces_moy_ele_resp;
+				}
 			}
 			echo "</li>\n";
 		}

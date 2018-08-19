@@ -207,10 +207,49 @@ elseif($_SESSION['statut']=='scolarite') {
 //echo "\$periode1=$periode1<br />";
 //echo "\$periode2=$periode2<br />";
 
+$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 unset($tab_acces_app);
 $tab_acces_app=array();
 //$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, '', $current_eleve_login);
+
+$tab_acces_moy=array();
+$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+
+if($acces_moy_ele_resp!='immediat') {
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+			$tab_acces_moy[$tmp_per]=$tab_acces_app[$tmp_per];
+		}
+	}
+	else {
+		foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+			$tab_acces_moy[$tmp_per]='y';
+		}
+	}
+}
+else {
+	foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+		$tab_acces_moy[$tmp_per]='y';
+	}
+}
+
+if($acces_app_ele_resp=='manuel_individuel') {
+	$message_acces_non_ouvert="<img src='$gepiPath/images/disabled.png' class='icone16' title=\"Accès non encore ouvert aux élèves/parents pour ".get_nom_prenom_eleve($current_eleve_login)."\" />";
+}
+else {
+	$message_acces_non_ouvert="<img src='$gepiPath/images/disabled.png' class='icone16' title='Accès non encore ouvert aux élèves/parents' />";
+}
+/*
+foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		$tab_acces_moy[$tmp_per]=$tab_acces_app[$tmp_per];
+	}
+	else {
+		$tab_acces_moy[$tmp_per]='y';
+	}
+}
+*/
 //==========================================================
 
 $nb_periodes = $periode2 - $periode1 + 1;
@@ -708,20 +747,32 @@ if ($on_continue == 'yes') {
 					//=========================
 					//echo "\$nb=$nb<br />";
 					$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
-					if ($note != "0,0")  {echo $note;} else {echo "-";}
+					if ($note != "0,0") {
+						if ($tab_acces_moy[$nb]=="y") {
+							echo $note;
+						}
+						else {
+							echo $message_acces_non_ouvert;
+						}
+					} else {echo "-";}
 					echo "</td>\n";
 				}
 
 				echo "<td width=\"$larg_col3\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'>\n<b>";
 				$flag_moy[$nb] = 'no';
 				if ($current_eleve_note[$nb] != '') {
-					if ($current_eleve_statut[$nb] != '') {
-						echo $current_eleve_statut[$nb];
-					} else {
-						//$note=number_format($current_eleve_note[$nb],1, ',', ' ');
-						$note=nf($current_eleve_note[$nb]);
-						echo "$note";
-						$flag_moy[$nb] = 'yes';
+					if ($tab_acces_moy[$nb]=="y") {
+						if ($current_eleve_statut[$nb] != '') {
+							echo $current_eleve_statut[$nb];
+						} else {
+							//$note=number_format($current_eleve_note[$nb],1, ',', ' ');
+							$note=nf($current_eleve_note[$nb]);
+							echo "$note";
+							$flag_moy[$nb] = 'yes';
+						}
+					}
+					else {
+						echo $message_acces_non_ouvert;
 					}
 				} else {
 					echo '-';
@@ -750,6 +801,7 @@ if ($on_continue == 'yes') {
 
 					$rang="-";
 					if(isset($tab_login_indice[$nb])) {
+						// 20180818
 						if(isset($tab_moy['periodes'][$nb]['current_eleve_rang'][$j][$tab_login_indice[$nb]])) {
 							// Si l'élève n'est dans le groupe que sur une période (cas des IDD), son rang n'existera pas sur certaines périodes
 							//echo "\$tab_moy['periodes'][$nb]['current_eleve_rang'][$j][".$tab_login_indice[$nb]."]=";
@@ -762,8 +814,23 @@ if ($on_continue == 'yes') {
 						$rang.="/$eff_grp_avec_note";
 					}
 
-					echo "<td width=\"$larg_col4\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'><i>".$rang."</i></td>\n";
+					echo "<td width=\"$larg_col4\" align=\"center\" class='bull_simpl' style='$style_bordure_cell'><i>";
+					if ($tab_acces_moy[$nb]=="y") {
+						echo $rang;
+					}
+					else {
+						echo $message_acces_non_ouvert;
+					}
+					echo "</i></td>\n";
 				}
+
+/*
+					if ($tab_acces_moy[$nb]=="y") {
+					}
+					else {
+						echo $message_acces_non_ouvert;
+					}
+*/
 
 				// Affichage des cases appréciations
 				echo "<td width=\"$larg_col5\" class='bull_simpl' style='$style_bordure_cell; text-align:left;'>\n";
@@ -776,7 +843,12 @@ if ($on_continue == 'yes') {
 						if ($cn_statut == 'y') {
 							$cn_note = @old_mysql_result($appel_cn,0,'note');
 							if ($tiret == 'yes')   echo " - ";
-							echo $cn_nom[$nb][$cn]."&nbsp;:&nbsp;".$cn_note;
+							if ($tab_acces_moy[$nb]=="y") {
+								echo $cn_nom[$nb][$cn]."&nbsp;:&nbsp;".$cn_note;
+							}
+							else {
+								echo $cn_nom[$nb][$cn]."&nbsp;:&nbsp;".$message_acces_non_ouvert;
+							}
 							$tiret = 'yes';
 						}
 					}
@@ -821,6 +893,10 @@ if ($on_continue == 'yes') {
 
 					}
 					//======================================
+				} elseif ($tab_acces_app[$nb]!="y") {
+					echo "<div id='app_".$current_id_eleve."_".$current_group['id']."_$nb'>";
+					echo $message_acces_non_ouvert;
+					echo "</div>\n";
 				} else {
 					// 20120409
 					echo "<div id='app_".$current_id_eleve."_".$current_group['id']."_$nb'>";
@@ -1032,11 +1108,22 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 					echo nf($moy_classe);
 					*/
 
-					echo nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2);
+					if ($tab_acces_moy[$nb]=="y") {
+						echo nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2);
+					}
+					else {
+						echo $message_acces_non_ouvert;
+					}
+
 					if ($affiche_deux_moy_gen==1) {
 						echo "<br />\n";
 						$moy_classe1=$tab_moy['periodes'][$nb]['moy_generale_classe1'];
-						echo "<i>".nf($moy_classe1,2)."</i>\n";
+						if ($tab_acces_moy[$nb]=="y") {
+							echo "<i>".nf($moy_classe1,2)."</i>\n";
+						}
+						else {
+							echo $message_acces_non_ouvert;
+						}
 					}
 					echo "</td>\n";
 				}
@@ -1052,12 +1139,22 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 				*/
 				if(isset($tab_login_indice[$nb])) {
 					$moy_eleve=$tab_moy['periodes'][$nb]['moy_gen_eleve'][$tab_login_indice[$nb]];
-					echo "<b>".nf($moy_eleve,2)."</b>\n";
+					if ($tab_acces_moy[$nb]=="y") {
+						echo "<b>".nf($moy_eleve,2)."</b>\n";
+					}
+					else {
+						echo $message_acces_non_ouvert;
+					}
 
 					if ($affiche_deux_moy_gen==1) {
 						echo "<br />\n";
 						$moy_eleve1=$tab_moy['periodes'][$nb]['moy_gen_eleve1'][$tab_login_indice[$nb]];
-						echo "<i><b>".nf($moy_eleve1,2)."</b></i>\n";
+						if ($tab_acces_moy[$nb]=="y") {
+							echo "<i><b>".nf($moy_eleve1,2)."</b></i>\n";
+						}
+						else {
+							echo $message_acces_non_ouvert;
+						}
 					}
 				}
 				else {
@@ -1074,7 +1171,14 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 
 					$nombre_eleves=count($tab_moy['periodes'][$nb]['current_eleve_login']);
 					if (($rang == 0) or ($rang == -1)) {$rang = "-";} else  {$rang .="/".$nombre_eleves;}
-						echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>".$rang."</td>\n";
+						echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>";
+						if ($tab_acces_moy[$nb]=="y") {
+							echo $rang;
+						}
+						else {
+							echo $message_acces_non_ouvert;
+						}
+						echo "</td>\n";
 				}
 
 				if ($affiche_categories) {
@@ -1096,8 +1200,13 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 								if(isset($tab_login_indice[$nb])) {
 									$moy_eleve=$tab_moy['periodes'][$nb]['moy_cat_eleve'][$tab_login_indice[$nb]][$cat_id];
 									$moy_classe=$tab_moy['periodes'][$nb]['moy_cat_classe'][$tab_login_indice[$nb]][$cat_id];
-	
-									echo $cat_names[$cat_id] . " - <b>".nf($moy_eleve,2)."</b> (classe : " . nf($moy_classe,2) . ")<br/>\n";
+
+									if ($tab_acces_moy[$nb]=="y") {
+										echo $cat_names[$cat_id] . " - <b>".nf($moy_eleve,2)."</b> (classe : " . nf($moy_classe,2) . ")<br/>\n";
+									}
+									else {
+										echo $cat_names[$cat_id] . " - <b>".$message_acces_non_ouvert."</b> (classe : " . $message_acces_non_ouvert . ")<br/>\n";
+									}
 								}
 							}
 						}
@@ -1214,7 +1323,12 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 							$moy_eleve=$tab_moy['periodes'][$nb]['moy_cat_eleve'][$tab_login_indice[$nb]][$cat_id];
 							$moy_classe=$tab_moy['periodes'][$nb]['moy_cat_classe'][$tab_login_indice[$nb]][$cat_id];
 
-							echo $cat_names[$cat_id] . " - <b>".nf($moy_eleve,2)."</b> (classe : " . nf($moy_classe,2) . ")<br/>\n";
+							if ($tab_acces_moy[$nb]=="y") {
+								echo $cat_names[$cat_id] . " - <b>".nf($moy_eleve,2)."</b> (classe : " . nf($moy_classe,2) . ")<br/>\n";
+							}
+							else {
+								echo $cat_names[$cat_id] . " - <b>".$message_acces_non_ouvert."</b> (classe : " . $message_acces_non_ouvert . ")<br/>\n";
+							}
 						}
 					}
 				}
@@ -1479,10 +1593,15 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 		$current_eleve_mention[$nb] = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 		// **** FIN D'AJOUT POUR LA MENTION ****
 
-		// Test pour savoir si l'élève appartient à la classe pour la période considérée
-		$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
-		if (($current_eleve_avis[$nb]== '') or ($tab_acces_app[$nb]!="y") or ($test_eleve_app == 0)) {$current_eleve_avis[$nb] = ' -';}
-		
+		if ($tab_acces_app[$nb]=="y") {
+			// Test pour savoir si l'élève appartient à la classe pour la période considérée
+			$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
+			if (($current_eleve_avis[$nb]== '') or ($test_eleve_app == 0)) {$current_eleve_avis[$nb] = ' -';}
+		}
+		else {
+			$current_eleve_avis[$nb]=$message_acces_non_ouvert;
+		}
+
 		echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$nom_periode[$nb]</td>\n";
 		
 		echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell' title=\"Avis du conseil de classe en période n°$nb pour ".$current_eleve_prenom." ".$current_eleve_nom."\">";

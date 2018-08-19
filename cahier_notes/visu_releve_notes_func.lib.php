@@ -530,6 +530,11 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$type_etablissement,
 		$type_etablissement2,
 
+		// 20180819
+		$acces_moy,
+		$message_acces_non_ouvert,
+		$tab_acces_moy,
+
 		//============================================
 		// Paramètre du module trombinoscope
 		// En admin, dans Gestion des modules
@@ -1367,23 +1372,30 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 					//if ($tab_rel['rn_col_moy']=="y") {
 					//if ($tab_rel['rn_col_moy']=="y") {$colspan=3;} else {$colspan=2;}
 					if (($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
-						echo "<td class='releve'>\n";
+						echo "<td class='releve' style='text-align:center'>\n";
 						if(!isset($tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']])) {
 							echo "&nbsp;";
 						}
 						else {
-							if($tab_rel['verouiller']=='N') {
-								echo "<span title=\"ATTENTION : La période n'est pas close.
+							// 20180819
+							if(($acces_moy=='y')||
+							((isset($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]))&&($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]=='y'))) {
+								if($tab_rel['verouiller']=='N') {
+									echo "<span title=\"ATTENTION : La période n'est pas close.
                     La moyenne affichée est susceptible de
                     changer d'ici à la fin de la période.
                     Des notes peuvent encore être ajoutées,
                     des coefficients de devoirs peuvent être
                     modifiés,...\">";
-								echo $tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']];
-								echo "</span>";
+									echo $tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']];
+									echo "</span>";
+								}
+								else {
+									echo $tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']];
+								}
 							}
 							else {
-								echo $tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']];
+								echo $message_acces_non_ouvert;
 							}
 						}
 						echo "</td>\n";
@@ -1806,36 +1818,57 @@ Note maximale  : ".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."\">
                     modifiés,...";
 
 				if (($tab_rel['rn_col_moy']=="y")&&(isset($tab_rel['num_periode']))) {
-					if($tab_rel['verouiller']=='N') {
-						echo "
+					if(($acces_moy=='y')||
+					((isset($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]))&&($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]=='y'))) {
+						if($tab_rel['verouiller']=='N') {
+							echo "
 	<tr>
 		<th class='releve'>Moyenne générale</th>
-		<td title=\"".$commentaire_periode_non_close."\">".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
+		<td title=\"".$commentaire_periode_non_close."\" style='text-align:center'>".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
 		<td></td>
 	</tr>";
+						}
+						else {
+							echo "
+	<tr>
+		<th class='releve'>Moyenne générale</th>
+		<td title=\"".$commentaire_moyenne_generale."\" style='text-align:center'>".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
+		<td></td>
+	</tr>";
+						}
 					}
 					else {
 						echo "
 	<tr>
 		<th class='releve'>Moyenne générale</th>
-		<td title=\"".$commentaire_moyenne_generale."\">".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
+		<td style='text-align:center'>".$message_acces_non_ouvert."</td>
 		<td></td>
 	</tr>";
 					}
 				}
 				else {
-					if($tab_rel['verouiller']=='N') {
-						echo "
+					if(($acces_moy=='y')||
+					((isset($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]))&&($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]=='y'))) {
+						if($tab_rel['verouiller']=='N') {
+							echo "
 	<tr>
 		<th class='releve'>Moyenne générale</th>
-		<td title=\"".$commentaire_periode_non_close."\">".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
+		<td title=\"".$commentaire_periode_non_close."\" style='text-align:center'>".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
 	</tr>";
+						}
+						else {
+							echo "
+	<tr>
+		<th class='releve'>Moyenne générale</th>
+		<td title=\"".$commentaire_moyenne_generale."\" style='text-align:center'>".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
+	</tr>";
+						}
 					}
 					else {
 						echo "
 	<tr>
 		<th class='releve'>Moyenne générale</th>
-		<td title=\"".$commentaire_moyenne_generale."\">".arrondir_moyenne($moy_gen_eleve[$indice_ele])."</td>
+		<td style='text-align:center'>".$message_acces_non_ouvert."</td>
 	</tr>";
 					}
 				}
@@ -2088,6 +2121,11 @@ function releve_pdf($tab_rel,$i) {
 		$releve_affiche_mail,
 
 		// A AJOUTER: ine et ancien étab
+
+		// 20180819
+		$acces_moy,
+		$message_acces_non_ouvert,
+		$tab_acces_moy,
 
 		$affiche_releve_formule,
 		$releve_formule_bas,
@@ -3195,8 +3233,12 @@ function releve_pdf($tab_rel,$i) {
 							$pdf->SetXY($X_col_moy,$Y_cadre_note+$hauteur_utilise);
 
 							$valeur="";
-							if(isset($tab_rel['eleve'][$i]['groupe'][$m]['moyenne'][$tab_rel['num_periode']])) {
-								$valeur=$tab_rel['eleve'][$i]['groupe'][$m]['moyenne'][$tab_rel['num_periode']];
+							// 20180819
+							if(($acces_moy=='y')||
+							((isset($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]))&&($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]=='y'))) {
+								if(isset($tab_rel['eleve'][$i]['groupe'][$m]['moyenne'][$tab_rel['num_periode']])) {
+									$valeur=$tab_rel['eleve'][$i]['groupe'][$m]['moyenne'][$tab_rel['num_periode']];
+								}
 							}
 							$pdf->Cell($largeur_cadre_moy, $hauteur_cadre_matiere, $valeur, 'LRBT', 2, 'C');
 						}
@@ -3631,7 +3673,12 @@ function releve_pdf($tab_rel,$i) {
 							$pdf->SetFont('DejaVu','',8);
 							$pdf->SetXY($X_col_moy,$Y_cadre_note+$hauteur_utilise);
 
-							$valeur=arrondir_moyenne($moy_gen_eleve[$indice_ele]);
+							$valeur='';
+							// 20180819
+							if(($acces_moy=='y')||
+							((isset($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]))&&($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]=='y'))) {
+								$valeur=arrondir_moyenne($moy_gen_eleve[$indice_ele]);
+							}
 							$pdf->Cell($largeur_cadre_moy, $hauteur_cadre_matiere, $valeur, 'LRBT', 2, 'C');
 
 							$pdf->SetXY($X_col_note,$Y_cadre_note+$hauteur_utilise);
@@ -3640,7 +3687,12 @@ function releve_pdf($tab_rel,$i) {
 						else {
 							$pdf->SetXY($X_col_note,$Y_cadre_note+$hauteur_utilise);
 							$pdf->SetFont('DejaVu','',8);
-							$valeur=arrondir_moyenne($moy_gen_eleve[$indice_ele]);
+							$valeur='';
+							// 20180819
+							if(($acces_moy=='y')||
+							((isset($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]))&&($tab_acces_moy[$tab_rel['eleve'][$i]['login']][$id_classe][$tab_rel['num_periode']]=='y'))) {
+								$valeur=arrondir_moyenne($moy_gen_eleve[$indice_ele]);
+							}
 							$pdf->Cell($largeur_cadre_note, $hauteur_cadre_matiere, $valeur, 'LRBT', 2, 'C');
 						}
 					}

@@ -2,7 +2,7 @@
 /*
 *
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -335,6 +335,45 @@ if((!isset($id_classe))||(!isset($num_periode))||(!isset($ele_login))) {
 	require("../lib/footer.inc.php");
 	die();
 }
+
+//==========================================
+// 20180819
+if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+	$acces_moy_ele_resp_cn=getSettingValue('acces_moy_ele_resp_cn');
+	if($acces_moy_ele_resp_cn!='immediat') {
+		$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+		if($acces_moy_ele_resp!='immediat') {
+
+			$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
+			if($acces_app_ele_resp=='manuel_individuel') {
+				$message_acces_non_ouvert="<img src='$gepiPath/images/disabled.png' class='icone16' title=\"Accès non encore ouvert aux élèves/parents pour ".get_nom_prenom_eleve($ele_login)."\" />";
+			}
+			else {
+				$message_acces_non_ouvert="<img src='$gepiPath/images/disabled.png' class='icone16' title='Accès non encore ouvert aux élèves/parents' />";
+			}
+
+			$tab_acces_app = acces_appreciations($num_periode, $num_periode, $id_classe, '', $ele_login);
+			$acces_moy=$tab_acces_app[$num_periode];
+			/*
+			echo "acces_appreciations($num_periode, $num_periode, $id_classe, '', $ele_login)<pre>";
+			print_r($tab_acces_app);
+			echo "</pre>";
+
+			echo "\$acces_moy=$acces_moy<br />";
+			*/
+		}
+		else {
+			$acces_moy='y';
+		}
+	}
+	else {
+		$acces_moy='y';
+	}
+}
+else {
+	$acces_moy='y';
+}
+//==========================================
 
 // Pour ne pas remettre un deuxième entête HTML dans header_releve_html.php
 $sans_header_html="y";

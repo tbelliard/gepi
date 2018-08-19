@@ -2288,3 +2288,5 @@ INSERT INTO droits SET id='/lib/calendrier_crob.php', administrateur='V', profes
 INSERT INTO droits SET id='/mod_discipline/extraire_pointages.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Discipline: Pointages petits incidents: Extraction', statut='';
 INSERT INTO droits VALUES ('/mod_abs2/liste_saisies_selection_traitement_decompte_matiere.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des saisies pour faire les traitements avec décompte matière', '');
 INSERT INTO droits SET id='/cahier_texte_2/affiche_notice.php', administrateur='F', professeur='V', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Cahier de texte 2 : Affichage notice', statut='';
+INSERT INTO setting SET name='acces_moy_ele_resp', value='immediat';
+INSERT INTO setting SET name='acces_moy_ele_resp_cn', value='immediat';

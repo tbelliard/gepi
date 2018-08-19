@@ -86,5 +86,32 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+$result .= "&nbsp;-> Initialisation de 'acces_moy_ele_resp' pour l'accès élève/responsable aux moyennes des bulletins&nbsp;: ";
+if ($acces_moy_ele_resp=='') {
+	$result_inter=saveSetting('acces_moy_ele_resp', 'immediat');
+	if ($result_inter) {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Valeur déjà renseignée.");
+}
+
+$acces_moy_ele_resp_cn=getSettingValue('acces_moy_ele_resp_cn');
+$result .= "&nbsp;-> Initialisation de 'acces_moy_ele_resp_cn' pour l'accès élève/responsable aux moyennes des carnets de notes&nbsp;: ";
+if ($acces_moy_ele_resp_cn=='') {
+	$result_inter=saveSetting('acces_moy_ele_resp_cn', 'immediat');
+	if ($result_inter) {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Valeur déjà renseignée.");
+}
 
 ?>

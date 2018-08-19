@@ -7,6 +7,7 @@
 //function bulletin_classe_bis($tab_moy,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories) {
 function bulletin_classe($tab_moy,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories,$couleur_lignes=NULL) {
 global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
+global $gepiPath;
 
 global $affiche_colonne_moy_classe;
 //$affiche_colonne_moy_classe="n";
@@ -152,6 +153,39 @@ elseif($_SESSION['statut']=='responsable') {
 else {
 	$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 }
+
+$tab_acces_moy=array();
+$acces_moy_ele_resp=getSettingValue('acces_moy_ele_resp');
+$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
+$message_acces_non_ouvert="<img src='$gepiPath/images/disabled.png' class='icone16' title='Accès non encore ouvert aux élèves/parents' />";
+
+if($acces_moy_ele_resp!='immediat') {
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+			$tab_acces_moy[$tmp_per]=$tab_acces_app[$tmp_per];
+		}
+	}
+	else {
+		foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+			$tab_acces_moy[$tmp_per]='y';
+		}
+	}
+}
+else {
+	foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+		$tab_acces_moy[$tmp_per]='y';
+	}
+}
+/*
+foreach($tab_acces_app as $tmp_per => $tmp_acces) {
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		$tab_acces_moy[$tmp_per]=$tab_acces_app[$tmp_per];
+	}
+	else {
+		$tab_acces_moy[$tmp_per]='y';
+	}
+}
+*/
 
 $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id='$id_classe'");
 $classe = old_mysql_result($call_classe, 0, "classe");
@@ -505,12 +539,17 @@ for($j=0;$j<$nombre_groupes;$j++) {
 				//$note=number_format($current_classe_matiere_moyenne[$nb],1, ',', ' ');
 				$note=nf($current_classe_matiere_moyenne[$nb]);
 				if ($note != "0,0") {
-					if($avec_moy_min_max_classe=='y') {
-						echo "<span title=\"Moyenne minimale sur l'enseignement\">".nf($moy_min_classe_grp[$nb])."</span> ";
+					if($tab_acces_moy[$nb]=='y') {
+						if($avec_moy_min_max_classe=='y') {
+							echo "<span title=\"Moyenne minimale sur l'enseignement\">".nf($moy_min_classe_grp[$nb])."</span> ";
+						}
+						echo "<span style='font-weight:bold' title=\"Moyenne du groupe sur l'enseignement\">".$note."</span>";
+						if($avec_moy_min_max_classe=='y') {
+							echo " <span title=\"Moyenne maximale sur l'enseignement\">".nf($moy_max_classe_grp[$nb])."</span>";
+						}
 					}
-					echo "<span style='font-weight:bold' title=\"Moyenne du groupe sur l'enseignement\">".$note."</span>";
-					if($avec_moy_min_max_classe=='y') {
-						echo " <span title=\"Moyenne maximale sur l'enseignement\">".nf($moy_max_classe_grp[$nb])."</span>";
+					else {
+						echo $message_acces_non_ouvert;
 					}
 				}
 				else {echo "-";}
@@ -536,6 +575,8 @@ for($j=0;$j<$nombre_groupes;$j++) {
 					echo "<textarea name='appreciation_grp_".$current_group['id']."[$nb]' id='appreciation_grp_".$current_group['id']."_$nb' style='display:none;'>".$current_grp_appreciation[$nb]."</textarea>\n";
 				}
 				//======================================
+			} elseif($tab_acces_app[$nb]!="y") {
+				echo $message_acces_non_ouvert;
 			} else {
 				echo " -";
 			}
@@ -642,12 +683,17 @@ if($display_moy_gen=="y") {
 				*/
 
 				// 20121209
-				if($avec_moy_min_max_classe=='y') {
-					echo "<span title=\"Moyenne générale minimale\">".nf($tab_moy['periodes'][$nb]['moy_min_classe'],2)."</span> ";
+				if($tab_acces_moy[$nb]=="y") {
+					if($avec_moy_min_max_classe=='y') {
+						echo "<span title=\"Moyenne générale minimale\">".nf($tab_moy['periodes'][$nb]['moy_min_classe'],2)."</span> ";
+					}
+					echo "<span style='font-weight:bold' title=\"Moyenne des moyennes générales de la classe\">".nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2)."</span>";
+					if($avec_moy_min_max_classe=='y') {
+						echo " <span title=\"Moyenne générale maximale\">".nf($tab_moy['periodes'][$nb]['moy_max_classe'],2)."</span>";
+					}
 				}
-				echo "<span style='font-weight:bold' title=\"Moyenne des moyennes générales de la classe\">".nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2)."</span>";
-				if($avec_moy_min_max_classe=='y') {
-					echo " <span title=\"Moyenne générale maximale\">".nf($tab_moy['periodes'][$nb]['moy_max_classe'],2)."</span>";
+				else {
+					echo $message_acces_non_ouvert;
 				}
 
 				if ($affiche_deux_moy_gen==1) {
@@ -658,7 +704,12 @@ if($display_moy_gen=="y") {
 						echo "<span title=\"Moyenne générale minimale avec tous les coefficients à 1\">".nf($tab_moy['periodes'][$nb]['moy_min_classe1'],2)."</span> ";
 					}
 					*/
-					echo "<span style='font-weight:bold' title=\"Moyenne des moyennes générales de la classe avec tous les coefficients à 1\">".nf($tab_moy['periodes'][$nb]['moy_generale_classe1'])."</span>";
+					if($tab_acces_moy[$nb]=="y") {
+						echo "<span style='font-weight:bold' title=\"Moyenne des moyennes générales de la classe avec tous les coefficients à 1\">".nf($tab_moy['periodes'][$nb]['moy_generale_classe1'])."</span>";
+					}
+					else {
+						echo $message_acces_non_ouvert;
+					}
 					/*
 					if($avec_moy_min_max_classe=='y') {
 						echo " <span title=\"Moyenne générale maximale avec tous les coefficients à 1\">".nf($tab_moy['periodes'][$nb]['moy_max_classe1'],2)."</span>";
@@ -730,7 +781,14 @@ if($display_moy_gen=="y") {
 								$loop_i++;
 							}
 
-							echo $cat_names[$cat_id] . " - <b>".nf($moy_classe,2)."</b><br/>\n";
+							echo $cat_names[$cat_id] . " - <b>";
+							if($tab_acces_moy[$nb]=="y") {
+								echo nf($moy_classe,2);
+							}
+							else {
+								echo $message_acces_non_ouvert;
+							}
+							echo "</b><br/>\n";
 
 						}
 					}
@@ -834,7 +892,7 @@ elseif(($affiche_categories)&&($affiche_moy_cat!="n")) {
 						$affiche_cat_moyenne = old_mysql_result($affiche_cat_moyenne_query, 0);
 					}
 
-					if($affiche_cat_moyenne){
+					if($affiche_cat_moyenne) {
 						$moy_classe="-";
 						$loop_i=0;
 						while($loop_i<count($tab_moy['periodes'][$nb]['current_eleve_login'])) {
@@ -845,7 +903,14 @@ elseif(($affiche_categories)&&($affiche_moy_cat!="n")) {
 							$loop_i++;
 						}
 
-						echo $cat_names[$cat_id] . " - <b>".nf($moy_classe,2)."</b><br/>\n";
+						echo $cat_names[$cat_id] . " - <b>";
+						if($tab_acces_moy[$nb]=="y") {
+							echo nf($moy_classe,2);
+						}
+						else {
+							echo $message_acces_non_ouvert;
+						}
+						echo "</b><br/>\n";
 
 					}
 				}
@@ -978,6 +1043,9 @@ while ($nb < $periode2+1) {
 	echo "<td valign=\"top\" width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>";
 	if ($tab_acces_app[$nb]=="y") {
 		echo nl2br($current_synthese[$nb]);
+	}
+	else {
+		echo $message_acces_non_ouvert;
 	}
 	echo "</td>\n";
 	//=====================

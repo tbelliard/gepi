@@ -142,6 +142,34 @@ if(isset($_POST['is_posted'])) {
 	}
 }
 
+if (isset($_POST['acces_app_ele_resp'])) {
+	$acces_app_ele_resp=$_POST['acces_app_ele_resp'];
+	if (!saveSetting("acces_app_ele_resp", $acces_app_ele_resp)) {
+		$msg .= "Erreur lors de l'enregistrement de 'acces_app_ele_resp' !<br />";
+	}
+	else {
+		$msg .= "Enregistrement de 'acces_app_ele_resp' effectué.<br />";
+	}
+}
+if (isset($_POST['acces_moy_ele_resp'])) {
+	$acces_moy_ele_resp=$_POST['acces_moy_ele_resp'];
+	if (!saveSetting("acces_moy_ele_resp", $acces_moy_ele_resp)) {
+		$msg .= "Erreur lors de l'enregistrement de 'acces_moy_ele_resp' !<br />";
+	}
+	else {
+		$msg .= "Enregistrement de 'acces_moy_ele_resp' effectué.<br />";
+	}
+}
+if (isset($_POST['acces_moy_ele_resp_cn'])) {
+	$acces_moy_ele_resp_cn=$_POST['acces_moy_ele_resp_cn'];
+	if (!saveSetting("acces_moy_ele_resp_cn", $acces_moy_ele_resp_cn)) {
+		$msg .= "Erreur lors de l'enregistrement de 'acces_moy_ele_resp_cn' !<br />";
+	}
+	else {
+		$msg .= "Enregistrement de 'acces_moy_ele_resp_cn' effectué.<br />";
+	}
+}
+
 if (isset($_POST['is_posted']) and ($msg=='')){
   $msg = "Les modifications ont été enregistrées (".strftime("le %d/%m/%Y à %H:%M:%S").") !";
   $post_reussi=TRUE;
