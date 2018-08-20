@@ -2,6 +2,11 @@
 /**
  * $Id$
 */
+
+if(!isset($themessage)) {
+	$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+}
+
 ?>
 
 <!-- ************************* -->
