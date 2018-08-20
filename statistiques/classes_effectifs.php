@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -711,7 +711,7 @@ echo "
 			}
 			echo "
 		<tr>
-			<td>".$tab_mef[$lig_mef->mef_rattachement]['designation_courte']."</td>
+			<td>".(isset($tab_mef[$lig_mef->mef_rattachement]['designation_courte']) ? $tab_mef[$lig_mef->mef_rattachement]['designation_courte'] : "<span title=\"MAF_rattachement inconnu ? Contrôlez les MEF.\" style='color:red'>???</span>")."</td>
 			<td>".$liste_classes."</td>
 			<td>".$lig_mef->effectif."</td>
 		</tr>";
