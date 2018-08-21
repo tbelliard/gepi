@@ -244,7 +244,8 @@
 			 name="referentiel_note" 
 			 size="8"
 			 title="notes sur"
-			 value="<?php echo(getSettingValue("referentiel_note")); ?>" />
+			 value="<?php echo(getSettingValue("referentiel_note")); ?>" 
+			 onchange='changement();' />
 	</p>
 	<fieldset class="no_bordure">
 	  <legend class="invisible">Référentiel ou non</legend>
@@ -252,7 +253,8 @@
 			 name="note_autre_que_sur_referentiel" 
 			 id="note_sur_referentiel" 
 			 value="V" 
-			 <?php if(getSettingValue("note_autre_que_sur_referentiel")=="V"){echo "checked='checked'";} ?> />
+			 <?php if(getSettingValue("note_autre_que_sur_referentiel")=="V"){echo "checked='checked'";} ?> 
+			 onchange='changement();' />
 	  <label for='note_sur_referentiel'> 
 		Autoriser les notes sur des référentiels autres que le référentiel par défaut
 	  </label>
@@ -261,7 +263,8 @@
 			 name="note_autre_que_sur_referentiel" 
 			 id="note_autre_que_referentiel" 
 			 value="F" 
-			 <?php if(getSettingValue("note_autre_que_sur_referentiel")=="F"){echo "checked='checked'";} ?> />
+			 <?php if(getSettingValue("note_autre_que_sur_referentiel")=="F"){echo "checked='checked'";} ?>
+			 onchange='changement();' />
 	  <label for='note_autre_que_referentiel'> 
 		Notes uniquement sur le référentiel par défaut
 	  </label>
@@ -279,11 +282,11 @@
 <p>Mode de calcul <strong title='Vous pourrez effectuer un autre choix pour certains carnets de notes en suivant le lien Configuration dans votre carnet de notes.'>par défaut</strong> des moyennes de carnets de notes dans le cas où vous créez des ".getSettingValue("gepi_denom_boite")."s&nbsp;:</p>
 <div style='margin-left:3em;'>
 
-<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_1' value='1' ";
+<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_1' value='1' onchange='changement();' ";
 		if($cnBoitesModeMoy=='1') {echo "checked ";}
 		echo "/><label for='cnBoitesModeMoy_1'>la moyenne s'effectue sur toutes les notes contenues à la racine et dans les ".my_strtolower(getSettingValue("gepi_denom_boite"))."s sans tenir compte des options définies dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
 
-<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_2' value='2' ";
+<input type='radio' name='cnBoitesModeMoy' id='cnBoitesModeMoy_2' value='2' onchange='changement();' ";
 		if($cnBoitesModeMoy=='2') {echo "checked ";}
 		echo "/><label for='cnBoitesModeMoy_2'>la moyenne s'effectue sur toutes les notes contenues à la racine et sur les moyennes des ".my_strtolower(getSettingValue("gepi_denom_boite"))."s en tenant compte des options dans ces ".my_strtolower(getSettingValue("gepi_denom_boite"))."s.</label><br />
 
@@ -315,16 +318,17 @@
 			 name="utiliser_sacoche" 
 			 size="8"
 			 title="utiliser_sacoche"
-			 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {echo 'checked="checked"';} ?> />
+			 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {echo 'checked="checked"';} ?> 
+			 onchange='changement();' />
 	 <br/>
 	 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {
 	 	echo '<a href="'.getSettingValue("sacocheUrl").'?id='.getSettingValue('sacoche_base').'">Accéder à l\'administration de l\'Évaluation par compétence</a>';
 	 } ?>
 	 <br/>
 	 <label for='sacocheUrl' style='cursor: pointer;'>Adresse du service d'évaluation par compétence si possible en https (exemple : https://localhost/panier) </label>
-	 <input type='text' size='60' name='sacocheUrl' value='<?php echo(getSettingValue("sacocheUrl")); ?>' id='sacocheUrl' /><br/>
+	 <input type='text' size='60' name='sacocheUrl' value='<?php echo(getSettingValue("sacocheUrl")); ?>' id='sacocheUrl' onchange='changement();' /><br/>
 	 <label for='sacoche_base' style='cursor: pointer;'>Numéro technique de «base» (laisser vide si votre instalation du logiciel d'évaluation par compétence est mono établissement)</label>
-	 <input type='text' size='5' name='sacoche_base' value='<?php echo(getSettingValue("sacoche_base")); ?>' id='sacoche_base' /><br/>
+	 <input type='text' size='5' name='sacoche_base' value='<?php echo(getSettingValue("sacoche_base")); ?>' id='sacoche_base' onchange='changement();' /><br/>
          Empreinte du certificat actuellement intallé dans gepi : <?php
          $file_path = dirname(__FILE__).'/../../../lib/simplesaml/cert/server.crt';
          if (file_exists($file_path)) {
