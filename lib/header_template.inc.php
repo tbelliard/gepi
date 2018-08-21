@@ -2,7 +2,7 @@
 /**
  * Construit les tableaux nécessaires au header des gabarits
  * 
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul, Bouguin Régis
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul, Bouguin Régis, Stephane Boireau
  * 
  * Variables envoyées au gabarit
  * - $tbs_gepiSchoolName : nom de l'établissement
@@ -59,7 +59,10 @@
  */
 
 // Based off of code from:header.inc
- 
+
+if((!isset($themessage))||($themessage=='')) {
+	$themessage='Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+}
 
 $donnees_enfant=array();
 

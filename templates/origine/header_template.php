@@ -2,6 +2,9 @@
 /*
  * $Id$
 */
+if((!isset($themessage))||($themessage=='')) {
+	$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+}
 ?>
  
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
