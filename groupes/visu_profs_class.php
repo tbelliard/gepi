@@ -57,6 +57,7 @@ else {
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
 $export=isset($_GET['export']) ? $_GET["export"] : (isset($_POST['export']) ? $_POST["export"] : NULL);
 
+$tabmail=array();
 $acces_classe="n";
 // Remplissage d'un tableau pour la classe choisie
 if((isset($id_classe))&&(is_numeric($id_classe))) {
