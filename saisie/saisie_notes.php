@@ -564,7 +564,7 @@ if((isset($current_group["classes"]["list"]))&&(count($current_group["classes"][
 }
 */
 if(isset($current_group["classes"]["list"])) {
-	echo "<div style='float:right; width:30em; font-size:x-small;'>";
+	echo "<div style='float:right; width:30em; font-size:x-small; margin:3px;'>";
 	foreach($current_group["classes"]["classes"] as $current_id_classe => $current_classe) {
 		echo "<p class='bold'>".$current_classe['classe']."</p>".affiche_tableau_resp_classe($current_id_classe)."<br />";
 	}
