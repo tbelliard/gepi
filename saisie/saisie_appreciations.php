@@ -1809,7 +1809,7 @@ foreach ($liste_eleves as $eleve_login) {
 						($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
 					) {
 
-						$mess[$k].="<div style='float:right; widthheight:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' style=\"width:16px; height:16px;\" alt='Proposer une correction' title='Proposer une correction' /></a>";
+						$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' style=\"width:16px; height:16px;\" alt='Proposer une correction' title='Proposer une correction' /></a>";
 	
 						$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>$eleve_app</textarea>\n";
 						$chaine_champs_input_correction.="<input type='hidden' name='nom_prenom_eleve_$cpt_correction' id='nom_prenom_eleve_$cpt_correction' value=\"$eleve_nom $eleve_prenom\" />\n";
@@ -1944,8 +1944,10 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 
 				$mess[$k]="<td>".$note;
+				// 20180822
 				if($note_seule!='') {
-					$mess[$k].="<span style='display:none' id='note_n".$k.$num_id."'>".$note_seule."</span>";
+					$mess[$k].="\n<span style='display:none' id='note_n".$k.$num_id."'>".$note_seule."</span>\n";
+					$mess[$k].="<span style='display:none' id='prenom_eleve_n".$k.$num_id."'>".$eleve_prenom."</span>\n";
 				}
 				$mess[$k].="</td>\n";
 				$mess[$k].="<td>Contenu du carnet de notes : ";
@@ -1969,7 +1971,7 @@ foreach ($liste_eleves as $eleve_login) {
 					$mess[$k].="<br />\n";
 					$mess[$k].=$notes_conteneurs;
 				}
-				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
+				$mess[$k].="\n<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
 				$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 				$chaine_champs_input_nom.="<input type='hidden' name='nom_eleve_".$k."[$i]' id='nom_eleve_".$k.$num_id."' value=\"".$eleve_nom."\" />\n";
@@ -2686,6 +2688,10 @@ function ctp_app_moy_traiter(mode) {
 	}
 	echo "
 					if(app!='') {
+						if(document.getElementById('prenom_eleve_'+id)) {
+							app=app.replace(/_PRENOM_/g, document.getElementById('prenom_eleve_'+id).innerHTML);
+						}
+
 						if(document.getElementById('ctp_app_moy_debut').checked==true) {
 							if(textarea[i].value!='') {
 								textarea[i].value=app+' '+textarea[i].value;
@@ -2900,4 +2906,5 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 	</script>\n";
 }
 require("../lib/footer.inc.php");
+ 
  
