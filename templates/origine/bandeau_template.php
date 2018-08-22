@@ -2,11 +2,6 @@
 /**
  * $Id$
 */
-
-if(!isset($themessage)) {
-	$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-}
-
 ?>
 
 <!-- ************************* -->
@@ -170,6 +165,7 @@ if(!isset($themessage)) {
 				}
 			}
 
+			// Menu 1: Accueil, Gérer mon compte, Déconnexion
 			if (count($tbs_premier_menu)) {
 				foreach ($tbs_premier_menu as $value) {
 					if ("$value[texte]"!="") {
@@ -181,8 +177,7 @@ if(!isset($themessage)) {
 				&nbsp;$value[texte]
 			</span>
 		</a>
-	</li>
-						";
+	</li>";
 					}
 				}
 				unset($value);
@@ -195,17 +190,17 @@ if(!isset($themessage)) {
 	<!-- menu contact	 -->
 		<ol id="bandeau_menu_deux">
 		<?php
+			// Menu Visiter le site Gepi, Informations générales, Vie privée
 			if (count($tbs_deux_menu)) {
 				foreach ($tbs_deux_menu as $value) {
 					if ("$value[texte]"!="") {
 						// Là le (js) insert_confirm_abandon() est inutile parce que c'est une ouverture dans une autre fenêtre
 						echo "
 	<li class='ligne_deux_menu'>
-		<a href='$value[lien]' $value[onclick] title=\"Nouvelle fenêtre\">
+		<a href='$value[lien]' $value[onclick] title=\"Ouvrir dans une nouvelle fenêtre\">
 			$value[texte]
 		</a>
-	</li>
-						";
+	</li>";
 					}
 				}
 				unset($value);
@@ -253,6 +248,15 @@ if(!isset($themessage)) {
      */
 	function ligne_menu_barre($tab,$niveau) {
 		global $gepiPath, $themessage;
+		/*
+		global $messageEnregistrer;
+
+		if((!isset($themessage))||($themessage=='')) {
+			if((isset($messageEnregistrer))&&($messageEnregistrer!='')) {
+				$themessage=$messageEnregistrer;
+			}
+		}
+		*/
 
 		$afficheTitle='';
 		if (isset ($tab['title']) && $tab['title'] !='') {
@@ -372,9 +376,14 @@ if(!isset($themessage)) {
 	<div class="menu_barre_bottom"></div>
 	<div class="menu_barre_container">
 		<ul class="niveau1">
-			<?php foreach ($tbs_menu_admin as $value) { if ("$value[li]"!="") { ?>
-			<?php echo $value['li']; ?>
-			<?php }} unset($value); ?>
+			<?php
+				foreach ($tbs_menu_admin as $value) { 
+					if ("$value[li]"!="") {
+						echo $value['li'];
+					}
+				}
+				unset($value);
+			?>
 		</ul>
 	</div>
 </div>
