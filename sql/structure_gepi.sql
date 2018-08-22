@@ -1693,3 +1693,15 @@ PRIMARY KEY (id), INDEX login_page (login,page)) ENGINE=MyISAM CHARACTER SET utf
 DROP TABLE IF EXISTS abs_bull_delais;
 CREATE TABLE abs_bull_delais (periode int(11) NOT NULL default '0', id_classe int(11) NOT NULL default '0', totaux CHAR(1) NOT NULL default 'n', appreciation CHAR(1) NOT NULL default 'n',date_limite TIMESTAMP NOT NULL, mode VARCHAR(100) NOT NULL DEFAULT '', PRIMARY KEY  (periode, id_classe), INDEX id_classe (id_classe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS b_droits_divers;
+CREATE TABLE b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS commentaires_types_d_apres_moy;
+CREATE TABLE commentaires_types_d_apres_moy (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+login VARCHAR( 50 ) NOT NULL ,
+note_min float(10,2) NOT NULL DEFAULT '0.0' ,
+note_max float(10,2) NOT NULL DEFAULT '20.1' ,
+app TEXT NOT NULL
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

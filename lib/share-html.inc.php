@@ -2661,7 +2661,8 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 		$retour.="</tr>\n";
 		$retour.="</table>\n";
 
-		$retour.="<script type='text/javascript'>
+		if($nom_func_js_tout_cocher_decocher!='') {
+			$retour.="<script type='text/javascript'>
 function $nom_func_js_tout_cocher_decocher(mode) {
 	for (var k=0;k<$cpt;k++) {
 		if(document.getElementById('".$nom_champ."_'+k)){
@@ -2671,6 +2672,7 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	}
 }
 </script>\n";
+		}
 	}
 
 	return $retour;
@@ -2729,7 +2731,8 @@ function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_ch
 		$retour.="</tr>\n";
 		$retour.="</table>\n";
 
-		$retour.="<script type='text/javascript'>
+		if($nom_func_js_tout_cocher_decocher!='') {
+			$retour.="<script type='text/javascript'>
 function $nom_func_js_tout_cocher_decocher(mode) {
 	for (var k=0;k<$cpt;k++) {
 		if(document.getElementById('".$nom_champ."_'+k)){
@@ -2739,6 +2742,7 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	}
 }
 </script>\n";
+		}
 	}
 
 	return $retour;

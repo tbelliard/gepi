@@ -1043,6 +1043,40 @@ if(getSettingValue('active_recherche_lapsus')!='n') {
 	$tab_lapsus_et_correction=retourne_tableau_lapsus_et_correction();
 }
 
+echo "
+<script type='text/javascript'>
+	".js_checkbox_change_style()."
+</script>";
+
+if($proposer_liens_enregistrement=="y") {
+	//20180822
+	$insert_mass_appreciation_type_d_apres_moyenne=check_b_droit($_SESSION['login'], 'insert_mass_appreciation_type_d_apres_moyenne');
+	if($insert_mass_appreciation_type_d_apres_moyenne) {
+		$tab_app_d_apres_moy=get_tab_app_d_apres_moy($_SESSION['login']);
+		echo "<div style='float:right; width:30em; border: 1px solid black; background-color: white; font-size: small; text-align:center; margin:3px;'>
+		<p><a href='ct_app_moy.php' target='_blank'>Consulter/éditer les appréciations-types</a></p><br />";
+		//onclick=\"return confirm_abandon (this, change, '$themessage')\"
+		if(count($tab_app_d_apres_moy)>0) {
+			// Insérer au début de l'appréciation, à la fin, seulement si il n'y a pas déjà d'appréciation ou écraser
+			echo "<form>
+			<p>Insérer les appréciations définies&nbsp;:<br />
+			<input type='radio' name='ctp_app_moy' id='ctp_app_moy_debut' onchange=\"checkbox_change('ctp_app_moy_debut');checkbox_change('ctp_app_moy_fin');checkbox_change('ctp_app_moy_remplacer');\" value='debut' checked /><label for='ctp_app_moy_debut' id='texte_ctp_app_moy_debut' style='font-weight:bold'>au début de l'appréciation existante</label><br />
+			<input type='radio' name='ctp_app_moy' id='ctp_app_moy_fin' onchange=\"checkbox_change('ctp_app_moy_debut');checkbox_change('ctp_app_moy_fin');checkbox_change('ctp_app_moy_remplacer');\"  value='fin' /><label for='ctp_app_moy_fin' id='texte_ctp_app_moy_fin'>à l a fin de l'appréciation existante</label><br />
+			<input type='radio' name='ctp_app_moy' id='ctp_app_moy_remplacer' onchange=\"checkbox_change('ctp_app_moy_debut');checkbox_change('ctp_app_moy_fin');checkbox_change('ctp_app_moy_remplacer');\"  value='remplacer' /><label for='ctp_app_moy_remplacer' id='texte_ctp_app_moy_remplacer'>remplacer l'appréciation existante</label><br />
+			<br />
+			Domaine d'application&nbsp;:<br />
+			<input type='button' name='ctp_app_moy_vides' value='Seulement les appréciations vides' onclick=\"ctp_app_moy_traiter('vides')\" /><br />
+			<input type='button' name='ctp_app_moy_toutes' value='Toutes les appréciations' onclick=\"ctp_app_moy_traiter('toutes')\" /></p>
+		</form>";
+			/*
+			echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
+			echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
+			echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
+			*/
+		}
+		echo "</div>\n";
+	}
+}
 ?>
 <form enctype="multipart/form-data" action="saisie_appreciations.php" method="post">
 <?php
@@ -1064,9 +1098,7 @@ if($proposer_liens_enregistrement=="y") {
 			$droit_insert_mass_appreciation_type="y";
 		}
 		else {
-			$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
-			$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_droit)>0) {
+			if(check_b_droit($_SESSION['login'], 'insert_mass_appreciation_type')) {
 				$droit_insert_mass_appreciation_type="y";
 			}
 			else {
@@ -1075,7 +1107,7 @@ if($proposer_liens_enregistrement=="y") {
 		}
 
 		if($droit_insert_mass_appreciation_type=="y") {
-			echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
+			echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center; margin:3px;'>\n";
 			echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
 			echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
 			echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
@@ -1725,6 +1757,7 @@ foreach ($liste_eleves as $eleve_login) {
 			$eleve_note = @old_mysql_result($note_query, 0, "note");
 			// Formatage de la note
 			$note ="";
+			$note_seule='';
 			//$note .="<center>";
 			$note.="<a href='saisie_notes.php?id_groupe=".$current_group["id"]."&amp;periode_cn=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Accéder aux notes du bulletin en période $k\">";
 			if ($eleve_statut != '') {
@@ -1733,6 +1766,7 @@ foreach ($liste_eleves as $eleve_login) {
 				if ($eleve_note != '') {
 					$note .= $eleve_note;
 					$tab_per_notes[$k][]=$eleve_note;
+					$note_seule=$eleve_note;
 				} else {
 					$note .= "&nbsp;";
 				}
@@ -1909,7 +1943,11 @@ foreach ($liste_eleves as $eleve_login) {
 					$liste_notes='Pas de note dans le carnet pour cette période.';
 				}
 
-				$mess[$k]="<td>".$note."</td>\n";
+				$mess[$k]="<td>".$note;
+				if($note_seule!='') {
+					$mess[$k].="<span style='display:none' id='note_n".$k.$num_id."'>".$note_seule."</span>";
+				}
+				$mess[$k].="</td>\n";
 				$mess[$k].="<td>Contenu du carnet de notes : ";
 				if($liste_notes_detaillees!='') {
 
@@ -2626,6 +2664,54 @@ if($aff_photo_par_defaut=='y') {
 	echo "affichage_div_photo();\n";
 }
 //echo "affichage_div_photo();\n";
+
+// 20180822
+if(($proposer_liens_enregistrement=="y")&&($insert_mass_appreciation_type_d_apres_moyenne)&&(count($tab_app_d_apres_moy)>0)) {
+	echo "
+function ctp_app_moy_traiter(mode) {
+	textarea=document.getElementsByTagName('textarea');
+	for(i=0;i<textarea.length;i++) {
+		id=textarea[i].getAttribute('id');
+		if(id) {
+			if(document.getElementById('note_'+id)) {
+				// Il y a une note (pas abs, disp,...)
+				if((mode=='toutes')||(textarea[i].value!='')) {
+					app='';
+					note=document.getElementById('note_'+id).innerHTML;";
+	foreach($tab_app_d_apres_moy as $note_min => $current_app_moy) {
+		echo "
+					if((note>=".$current_app_moy['note_min'].")&&(note<".$current_app_moy['note_max'].")) {
+						app='".addslashes($current_app_moy['app'])."';
+					}";
+	}
+	echo "
+					if(app!='') {
+						if(document.getElementById('ctp_app_moy_debut').checked==true) {
+							if(textarea[i].value!='') {
+								textarea[i].value=app+' '+textarea[i].value;
+							}
+							else {
+								textarea[i].value=app+textarea[i].value;
+							}
+						}
+						if(document.getElementById('ctp_app_moy_fin').checked==true) {
+							if(textarea[i].value!='') {
+								textarea[i].value=textarea[i].value+' '+app;
+							}
+							else {
+								textarea[i].value=textarea[i].value+app;
+							}
+						}
+						if(document.getElementById('ctp_app_moy_remplacer').checked==true) {
+							textarea[i].value=app;
+						}
+					}
+				}
+			}
+		}
+	}
+}";
+}
 echo "</script>\n";
 
 

@@ -114,4 +114,40 @@ if ($acces_moy_ele_resp_cn=='') {
 	$result .= msj_present("Valeur déjà renseignée.");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'b_droits_divers' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'b_droits_divers'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'commentaires_types_d_apres_moy' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'commentaires_types_d_apres_moy'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS commentaires_types_d_apres_moy (
+						id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+						login VARCHAR( 255 ) NOT NULL ,
+						note_min float(10,2) NOT NULL DEFAULT '0.0' ,
+						note_max float(10,2) NOT NULL DEFAULT '20.1' ,
+						app TEXT NOT NULL
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

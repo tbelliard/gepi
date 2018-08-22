@@ -383,6 +383,14 @@ if($acces_moy_ele_resp_cn=="") {$acces_moy_ele_resp_cn='immediat';}
 	if(getSettingAOui("bullNoSaisieElementsProgrammes")) {echo "checked ";}
 	?>/><label for='bullNoSaisieElementsProgrammes'> Ne pas afficher la colonne de saisie des éléments de programmes dans la saisie d'appréciations, et donc dans les bulletins</label></p>
 
+	<p style='margin-top:1em;'><em>NOTES&nbsp;: à propos des moyennes générales</em></p>
+	<ul>
+		<li><p>N'oubliez pas de paramétrer l'autorisation/interdiction d'accès pour les élèves/responsables dans Gestion générale/Droits d'accès.</p></li>
+		<li><p>Pour les graphes, vous pouvez choisir de ne pas afficher la moyenne générale via le Paramétrage des graphes.</p></li>
+	</ul>
+
+	<br />
+
 	<p style='margin-left:2em;text-indent:-2em;'><input type='checkbox' name='insert_mass_appreciation_type' id='insert_mass_appreciation_type' value='y' <?php
 	if(getSettingAOui("insert_mass_appreciation_type")) {echo "checked ";}
 	?>/><label for='insert_mass_appreciation_type'> Permettre l'insertion d'appréciations par lots pour les comptes de statut <strong>secours</strong>.<br />
@@ -405,21 +413,47 @@ if($acces_moy_ele_resp_cn=="") {$acces_moy_ele_resp_cn='immediat';}
 		print_r($tab_user_preselectionnes);
 		echo "</pre>";
 		*/
-		echo liste_checkbox_utilisateurs(array("professeur", "scolarite", "cpe"), $tab_user_preselectionnes, 'login_user_mass_app', 'cocher_decocher', "y");
+		echo liste_checkbox_utilisateurs(array("professeur", "scolarite", "cpe"), $tab_user_preselectionnes, 'login_user_mass_app', 'cocher_decocher', 'y', '', 'checkbox_change', 'y');
 		echo "</div>";
 	?>
 
-	<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
-	<ul>
-		<li><p>N'oubliez pas de paramétrer l'autorisation/interdiction d'accès pour les élèves/responsables dans Gestion générale/Droits d'accès.</p></li>
-		<li><p>Pour les graphes, vous pouvez choisir de ne pas afficher la moyenne générale via le Paramétrage des graphes.</p></li>
-	</ul>
+	<br />
+	
+	<p>Permettre l'insertion automatique d'appréciations type d'après la moyenne de l'élève.<br />
+	Ce dispositif n'est pas recommandé.<br />
+	Il convient d'individualiser les appréciations sans se limiter à statuer sur une moyenne obtenue.<br />
+	Le dispositif peut néanmoins présenter un intérêt pour des tests.</p>
+	<?php
+		$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		echo "<p>Donner le droit correspondant aux utilisateurs suivants&nbsp;:</p>";
+		echo "<div style='margin-left:5em;'>";
+		$tab_user_preselectionnes=array();
+		$sql="SELECT * FROM b_droits_divers WHERE nom_droit='insert_mass_appreciation_type_d_apres_moyenne' AND valeur_droit='y';";
+		$res_mass=mysqli_query($mysqli, $sql);
+		while($lig_mass=mysqli_fetch_object($res_mass)) {
+			$tab_user_preselectionnes[]=$lig_mass->login;
+		}
+		/*
+		echo "<pre>";
+		print_r($tab_user_preselectionnes);
+		echo "</pre>";
+		*/
+		echo liste_checkbox_utilisateurs(array("professeur", "secours"), $tab_user_preselectionnes, 'login_user_mass_app_moy', 'cocher_decocher', 'y', '', 'checkbox_change', 'y');
+		echo "</div>";
+	?>
 
 	<p class="center">
 	  <input type="hidden" name="is_posted" value="param_divers" />
 	  <input type="submit" value="Enregistrer" />
 	</p>
 
+	<script type='text/javascript'>
+	<?php
+		echo js_checkbox_change_style();
+	?>
+	</script>
 </form>
 
 <br />

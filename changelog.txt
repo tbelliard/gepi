@@ -18,6 +18,7 @@ Bulletins:
   Vie scolaire en période partiellement close.
 - Possibilité de restreindre l'accès aux moyennes des bulletins pour les parents/élèves,
   comme on peut déjà le faire pour les appréciations et avis du conseil de classe.
+- Dispositif optionnel d'appréciations-types en fonction de la moyenne.
 
 Gepi-1.7.3 (04/04/2018)
 ===========================

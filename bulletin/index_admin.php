@@ -139,6 +139,24 @@ if(isset($_POST['is_posted'])) {
 		if($nb_mass>0) {
 			$msg.="$nb_mass droit(s) insert_mass_appreciation_type enregistré(s).<br />";
 		}
+
+		$sql="DELETE FROM b_droits_divers WHERE nom_droit='insert_mass_appreciation_type_d_apres_moyenne';";
+		$del=mysqli_query($mysqli, $sql);
+		$nb_mass=0;
+		$login_user_mass_app_moy=isset($_POST['login_user_mass_app_moy']) ? $_POST['login_user_mass_app_moy'] : array();
+		for($loop=0;$loop<count($login_user_mass_app_moy);$loop++) {
+			$sql="INSERT INTO b_droits_divers SET nom_droit='insert_mass_appreciation_type_d_apres_moyenne', valeur_droit='y', login='".$login_user_mass_app_moy[$loop]."';";
+			$insert=mysqli_query($mysqli, $sql);
+			if(!$insert) {
+				$msg.="Erreur lors de l'enregistrement du droit insert_mass_appreciation_type_d_apres_moyenne pour ".civ_nom_prenom($login_user_mass_app_moy[$loop]).".<br />";
+			}
+			else {
+				$nb_mass++;
+			}
+		}
+		if($nb_mass>0) {
+			$msg.="$nb_mass droit(s) insert_mass_appreciation_type_d_apres_moyenne enregistré(s).<br />";
+		}
 	}
 }
 

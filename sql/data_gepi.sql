@@ -2290,3 +2290,4 @@ INSERT INTO droits VALUES ('/mod_abs2/liste_saisies_selection_traitement_decompt
 INSERT INTO droits SET id='/cahier_texte_2/affiche_notice.php', administrateur='F', professeur='V', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Cahier de texte 2 : Affichage notice', statut='';
 INSERT INTO setting SET name='acces_moy_ele_resp', value='immediat';
 INSERT INTO setting SET name='acces_moy_ele_resp_cn', value='immediat';
+INSERT INTO droits VALUES ('/saisie/ct_app_moy.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', 'Saisie de commentaires-types d apres moyenne', '');

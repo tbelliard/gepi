@@ -18026,4 +18026,33 @@ function get_tab_types_LVR() {
 	return $tab;
 }
 
+function check_b_droit($login, $droit) {
+	global $mysqli;
+
+	$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$login."' AND nom_droit='".$droit."' AND (valeur_droit='y' OR valeur_droit='yes');";
+	$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_droit)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function get_tab_app_d_apres_moy($login) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT * FROM commentaires_types_d_apres_moy WHERE login='".$login."' ORDER BY note_min, note_max;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab[$lig['note_min']]=$lig;
+		}
+	}
+
+	return $tab;
+}
+
 ?>
