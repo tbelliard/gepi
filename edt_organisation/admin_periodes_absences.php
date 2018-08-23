@@ -43,6 +43,8 @@ if (!checkAccess()) {
     die();
 }
 
+//debug_var();
+
 if (empty($_GET['action_sql']) and empty($_POST['action_sql'])) {$action_sql="";}
    else { if (isset($_GET['action_sql'])) {$action_sql=$_GET['action_sql'];} if (isset($_POST['action_sql'])) {$action_sql=$_POST['action_sql'];} }
 if (empty($_GET['action']) and empty($_POST['action'])) {exit();}
@@ -208,13 +210,24 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 
 if ($action_sql == "supprimer") {
 	//Requete d'insertion MYSQL
-	$requete = "DELETE FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode ='$id_periode'";
+	if(is_array($id_periode)) {
+		$requete = "DELETE FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode ='".$id_periode[0]."'";
+	}
+	else {
+		$requete = "DELETE FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode ='$id_periode'";
+	}
 	// Execution de cette requete
 	mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 }
 
 if ($action == "modifier") {
-	$requete_modif_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' WHERE id_definie_periode="'.$id_periode.'"';
+	if(is_array($id_periode)) {
+		$requete_modif_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' WHERE id_definie_periode="'.$id_periode[0].'";';
+	}
+	else {
+		$requete_modif_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' WHERE id_definie_periode="'.$id_periode.'";';
+	}
+	//echo "$requete_modif_periode<br />";
 	$resultat_modif_periode = mysqli_query($GLOBALS["mysqli"], $requete_modif_periode) or die('Erreur SQL !'.$requete_modif_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	$data_modif_periode = mysqli_fetch_array($resultat_modif_periode);
 }
@@ -234,9 +247,12 @@ echo "<p class=\"bold\">\n";
 if ($cren == "diff") {
 	$cherche_table = '';
 	$texte_lien = ' Voir les créneaux de tous les jours';
-}else{
+	$cherche_table_courante = '&amp;cren=diff';
+}
+else{
 	$cherche_table = '&amp;cren=diff';
 	$texte_lien = ' Voir les cr&eacute;neaux du jour diff&eacute;rent';
+	$cherche_table_courante = '';
 }
 echo "<a href='admin_periodes_absences.php?action=visualiser".$cherche_table."'>".$texte_lien."</a>";
 echo "</p>\n";
@@ -341,7 +357,11 @@ if ($compter >= 1) {
 <?php } ?>
 
 
-<?php if ($action == "ajouter" or $action == "modifier") { ?>
+<?php
+	if ($action == "ajouter" or $action == "modifier") { 
+		echo "<strong><a href='admin_periodes_absences.php?action=visualiser".$cherche_table_courante."'>Retour à la liste des créneaux sans enregistrer</a></strong><br />";
+
+?>
 <div style="text-align:center">
   <?php if ($action == "ajouter") { ?>
 
