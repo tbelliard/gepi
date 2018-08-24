@@ -607,10 +607,15 @@ sinon, Gepi le considère comme \"<em>établissement d'origine</em>\".";
 	}
 	echo "<div class='fieldset_opacite50' style='margin-top:1em;margin-bottom:1em;padding:0.5em;'>
 		<p style='text-indent:-7em;margin-left:7em;'><strong style='color:red'>ATTENTION&nbsp;:</strong> Un nouvel identifiant a été introduit dans Siècle/Sconet pour identifier un élève au niveau national.<br />
+
+		<!--
 		L'ancien INE <em>(codé ID_NATIONAL dans l'export XML Eleves de Siècle)</em> est remplacé par un nouveau.<br />
 		L'ancien INE reste stocké <em>(pour combien de temps encore?)</em> dans l'export XML sous le code INE_BEA.<br />
 		L'ancien INE était utilisé dans plusieurs tables de Gepi pour la liaison avec APB, pour identifier les élèves dans l'archivage Années antérieures, mais la Mise à jour d'après Sconet/Siècle assure la bascule avec correction des liaisons pour tenir compte de l'identifiant choisi.<br />
+		-->
+
 		Les nouveaux élèves n'ont pas l'ancien identifiant, il faut donc maintenant passer au nouvel identifiant.<br />
+		<strong>Sauf cas particulier, vous devriez utiliser les nouveaux identifiants INE</strong>.<br />
 		<input type='radio' name='nom_champ_INE' id='nom_champ_INE_ine_bea' value='ine_bea'".$checked_ine_bea." />
 		<label for='nom_champ_INE_ine_bea'> utiliser l'ancien champ INE, c'est-à-dire celui qui apparaît maintenant sous le code INE_BEA dans l'export,</label><br />
 		ou<br />
@@ -1899,169 +1904,174 @@ else{
 			else {
 				echo "<p>La date de sortie de l'établissement notés dans Sconet est enregistrée dans GEPI.</p>\n";
 				echo "<p>Les élèves notés dans Sconet comme ayant quitté l'établissement peuvent être désinscrits des classes et enseignements sur les périodes futures. On recherche ci-dessous les périodes sur lesquelles les élèves n'ont pas de note ni quoi que ce soit sur le bulletin.</p>\n";
-	
-				echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n";
-	
-				echo "<p>";
-				echo "<a href=\"javascript:modifcase('coche')\">";
-				echo "Cocher tous les élèves qu'il est possible de désinscrire</a>";
-				echo " / ";
-				echo "<a href=\"javascript:modifcase('decoche')\">";
-				echo "Tout décocher</a></p>\n";
-	
-				$cpt=0;
-				while($lig=mysqli_fetch_object($res)) {
-					// Marquer comme parcouru pour ne pas les reparcourir au tour suivant dans la boucle:
-					$sql="UPDATE tempo2 SET col1='ele_id_eleve_parti_vu' WHERE col1='ele_id_eleve_parti' AND col2='$lig->col2';";
-					$update_parcours=mysqli_query($GLOBALS["mysqli"], $sql);
 
-					$ele_id=$lig->col2;
-					//Eric traitement de la date de sortie
-					// Recherche de la date de sortie pour l'élève
-					$sql_date_sortie="SELECT col2 FROM tempo2 WHERE col1='$ele_id';";
-					$res_date_sortie=mysqli_query($GLOBALS["mysqli"], $sql_date_sortie);
-					if(mysqli_num_rows($res_date_sortie)>0) {
-						$lig_date_sortie=mysqli_fetch_object($res_date_sortie); 
-						// MAJ de la date de sortie pour l'élève $ele_id
-						$sql_maj="UPDATE eleves SET `date_sortie` ='".traite_date_sortie_to_timestamp($lig_date_sortie->col2)."' WHERE `ele_id`='$ele_id';";
-						$res_date_sortie=mysqli_query($GLOBALS["mysqli"], $sql_maj);
-					}
-					// Fin Eric
-					$sql="SELECT * FROM eleves WHERE ele_id='$ele_id';";
-					info_debug($sql);
-					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_ele)>0) {
-						$lig_ele=mysqli_fetch_object($res_ele);
+				if(mysqli_num_rows($res)==0) {
+					echo "<br /><p>Aucune désinscription n'est relevée, cliquez sur Valider pour passer à la suite.</p>\n";
+				}
+				else {
+					echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n";
+
+					echo "<p>";
+					echo "<a href=\"javascript:modifcase('coche')\">";
+					echo "Cocher tous les élèves qu'il est possible de désinscrire</a>";
+					echo " / ";
+					echo "<a href=\"javascript:modifcase('decoche')\">";
+					echo "Tout décocher</a></p>\n";
 	
-						echo "<p>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</p>\n";
-						echo "<blockquote>\n";
-						// On cherche les périodes pour lesquelles l'élève n'a pas de notes ni d'appréciations ni dans le carnet de notes ni sur le bulletin.
-						$sql="SELECT DISTINCT jec.id_classe, c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$lig_ele->login' ORDER BY periode,classe;";
+					$cpt=0;
+					while($lig=mysqli_fetch_object($res)) {
+						// Marquer comme parcouru pour ne pas les reparcourir au tour suivant dans la boucle:
+						$sql="UPDATE tempo2 SET col1='ele_id_eleve_parti_vu' WHERE col1='ele_id_eleve_parti' AND col2='$lig->col2';";
+						$update_parcours=mysqli_query($GLOBALS["mysqli"], $sql);
+
+						$ele_id=$lig->col2;
+						//Eric traitement de la date de sortie
+						// Recherche de la date de sortie pour l'élève
+						$sql_date_sortie="SELECT col2 FROM tempo2 WHERE col1='$ele_id';";
+						$res_date_sortie=mysqli_query($GLOBALS["mysqli"], $sql_date_sortie);
+						if(mysqli_num_rows($res_date_sortie)>0) {
+							$lig_date_sortie=mysqli_fetch_object($res_date_sortie); 
+							// MAJ de la date de sortie pour l'élève $ele_id
+							$sql_maj="UPDATE eleves SET `date_sortie` ='".traite_date_sortie_to_timestamp($lig_date_sortie->col2)."' WHERE `ele_id`='$ele_id';";
+							$res_date_sortie=mysqli_query($GLOBALS["mysqli"], $sql_maj);
+						}
+						// Fin Eric
+						$sql="SELECT * FROM eleves WHERE ele_id='$ele_id';";
 						info_debug($sql);
-						$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res_class)==0){
-							if(mb_strtoupper($lig_ele->sexe)=='F') {
-								echo "Elle n'est inscrite dans aucune classe.";
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_ele)>0) {
+							$lig_ele=mysqli_fetch_object($res_ele);
+	
+							echo "<p>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</p>\n";
+							echo "<blockquote>\n";
+							// On cherche les périodes pour lesquelles l'élève n'a pas de notes ni d'appréciations ni dans le carnet de notes ni sur le bulletin.
+							$sql="SELECT DISTINCT jec.id_classe, c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$lig_ele->login' ORDER BY periode,classe;";
+							info_debug($sql);
+							$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_class)==0){
+								if(mb_strtoupper($lig_ele->sexe)=='F') {
+									echo "Elle n'est inscrite dans aucune classe.";
+								}
+								else {
+									echo "Il n'est inscrit dans aucune classe.";
+								}
 							}
 							else {
-								echo "Il n'est inscrit dans aucune classe.";
-							}
-						}
-						else {
-							$alt=1;
-							echo "<table class='boireaus' summary='Elève n°$ele_id'>\n";
-							echo "<tr class='lig$alt'>\n";
-							echo "<th>Classe</th>\n";
-							echo "<th>Période</th>\n";
-							echo "<th>Carnet de notes</th>\n";
-							echo "<th>Notes sur le bulletin</th>\n";
-							echo "<th>Appréciations sur le bulletin</th>\n";
-							echo "<th>Avis du conseil de classe</th>\n";
-							echo "<th>\n";
-							echo "Désinscrire\n";
-							echo "</th>\n";
-							echo "</tr>\n";
-	
-							while($lig_clas=mysqli_fetch_object($res_class)) {
-								$temoin_periode="y";
-	
-								$alt=$alt*(-1);
+								$alt=1;
+								echo "<table class='boireaus' summary='Elève n°$ele_id'>\n";
 								echo "<tr class='lig$alt'>\n";
-								echo "<td>$lig_clas->classe</td>\n";
-								echo "<td>$lig_clas->periode</td>\n";
-								echo "<td>\n";
-								$sql="SELECT 1=1 FROM cn_cahier_notes ccn, 
-														cn_conteneurs cc, 
-														cn_devoirs cd, 
-														cn_notes_devoirs cnd WHERE
-													ccn.periode='$lig_clas->periode' AND
-													ccn.id_cahier_notes=cc.id_racine AND
-													cc.id=cd.id_conteneur AND
-													cd.id=cnd.id_devoir AND
-													cnd.login='$lig_ele->login';";
-								info_debug($sql);
-								$test1=mysqli_query($GLOBALS["mysqli"], $sql);
-								$nb_notes=mysqli_num_rows($test1);
-								if($nb_notes==0) {
-									echo "<span style='color:green;'>Vide</span>";
-								}
-								else {
-									echo "<span style='color:red;'>$nb_notes notes</span>";
-									$temoin_periode="n";
-								}
-								echo "</td>\n";
-		
-								echo "<td>\n";
-								$sql="SELECT 1=1 FROM matieres_notes WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
-								info_debug($sql);
-								$test2=mysqli_query($GLOBALS["mysqli"], $sql);
-								$nb_notes_bull=mysqli_num_rows($test2);
-								if($nb_notes_bull==0) {
-									echo "<span style='color:green;'>Vide</span>";
-								}
-								else {
-									echo "<span style='color:red;'>$nb_notes_bull notes</span>";
-									$temoin_periode="n";
-								}
-								echo "</td>\n";
-		
-								echo "<td>\n";
-								$sql="SELECT 1=1 FROM matieres_appreciations WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
-								info_debug($sql);
-								$test3=mysqli_query($GLOBALS["mysqli"], $sql);
-								$nb_app_bull=mysqli_num_rows($test3);
-								if($nb_app_bull==0) {
-									echo "<span style='color:green;'>Vide</span>";
-								}
-								else {
-									echo "<span style='color:red;'>$nb_app_bull appréciations</span>";
-									$temoin_periode="n";
-								}
-								echo "</td>\n";
-	
-								echo "<td>\n";
-								$sql="SELECT 1=1 FROM avis_conseil_classe WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
-								info_debug($sql);
-								$test4=mysqli_query($GLOBALS["mysqli"], $sql);
-								$nb_avis=mysqli_num_rows($test4);
-								if($nb_avis==0) {
-									echo "<span style='color:green;'>Vide</span>";
-								}
-								else {
-									echo "<span style='color:red;'>$nb_avis avis</span>";
-									$temoin_periode="n";
-								}
-								echo "</td>\n";
-	
-								echo "<td>\n";
-								if($temoin_periode=='y') {
-									// On propose de désinscrire des classes et des groupes
-									echo "<input type='checkbox' name='desinscription[]' id='desinscription_$cpt' value=\"$lig_ele->login|$lig_clas->periode\" />\n";
-								}
-								else {
-									echo "&nbsp;";
-								}
-								echo "</td>\n";
-	
+								echo "<th>Classe</th>\n";
+								echo "<th>Période</th>\n";
+								echo "<th>Carnet de notes</th>\n";
+								echo "<th>Notes sur le bulletin</th>\n";
+								echo "<th>Appréciations sur le bulletin</th>\n";
+								echo "<th>Avis du conseil de classe</th>\n";
+								echo "<th>\n";
+								echo "Désinscrire\n";
+								echo "</th>\n";
 								echo "</tr>\n";
 	
-								$cpt++;
+								while($lig_clas=mysqli_fetch_object($res_class)) {
+									$temoin_periode="y";
+	
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'>\n";
+									echo "<td>$lig_clas->classe</td>\n";
+									echo "<td>$lig_clas->periode</td>\n";
+									echo "<td>\n";
+									$sql="SELECT 1=1 FROM cn_cahier_notes ccn, 
+															cn_conteneurs cc, 
+															cn_devoirs cd, 
+															cn_notes_devoirs cnd WHERE
+														ccn.periode='$lig_clas->periode' AND
+														ccn.id_cahier_notes=cc.id_racine AND
+														cc.id=cd.id_conteneur AND
+														cd.id=cnd.id_devoir AND
+														cnd.login='$lig_ele->login';";
+									info_debug($sql);
+									$test1=mysqli_query($GLOBALS["mysqli"], $sql);
+									$nb_notes=mysqli_num_rows($test1);
+									if($nb_notes==0) {
+										echo "<span style='color:green;'>Vide</span>";
+									}
+									else {
+										echo "<span style='color:red;'>$nb_notes notes</span>";
+										$temoin_periode="n";
+									}
+									echo "</td>\n";
+		
+									echo "<td>\n";
+									$sql="SELECT 1=1 FROM matieres_notes WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+									info_debug($sql);
+									$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+									$nb_notes_bull=mysqli_num_rows($test2);
+									if($nb_notes_bull==0) {
+										echo "<span style='color:green;'>Vide</span>";
+									}
+									else {
+										echo "<span style='color:red;'>$nb_notes_bull notes</span>";
+										$temoin_periode="n";
+									}
+									echo "</td>\n";
+		
+									echo "<td>\n";
+									$sql="SELECT 1=1 FROM matieres_appreciations WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+									info_debug($sql);
+									$test3=mysqli_query($GLOBALS["mysqli"], $sql);
+									$nb_app_bull=mysqli_num_rows($test3);
+									if($nb_app_bull==0) {
+										echo "<span style='color:green;'>Vide</span>";
+									}
+									else {
+										echo "<span style='color:red;'>$nb_app_bull appréciations</span>";
+										$temoin_periode="n";
+									}
+									echo "</td>\n";
+	
+									echo "<td>\n";
+									$sql="SELECT 1=1 FROM avis_conseil_classe WHERE periode='$lig_clas->periode' AND login='$lig_ele->login';";
+									info_debug($sql);
+									$test4=mysqli_query($GLOBALS["mysqli"], $sql);
+									$nb_avis=mysqli_num_rows($test4);
+									if($nb_avis==0) {
+										echo "<span style='color:green;'>Vide</span>";
+									}
+									else {
+										echo "<span style='color:red;'>$nb_avis avis</span>";
+										$temoin_periode="n";
+									}
+									echo "</td>\n";
+	
+									echo "<td>\n";
+									if($temoin_periode=='y') {
+										// On propose de désinscrire des classes et des groupes
+										echo "<input type='checkbox' name='desinscription[]' id='desinscription_$cpt' value=\"$lig_ele->login|$lig_clas->periode\" />\n";
+									}
+									else {
+										echo "&nbsp;";
+									}
+									echo "</td>\n";
+	
+									echo "</tr>\n";
+	
+									$cpt++;
+	
+								}
+								echo "</table>\n";
 	
 							}
-							echo "</table>\n";
-	
-						}
-						echo "</blockquote>\n";
+							echo "</blockquote>\n";
 		
+						}
 					}
-				}
 
-				echo "<p>";
-				echo "<a href=\"javascript:modifcase('coche')\">";
-				echo "Cocher tous les élèves qu'il est possible de désinscrire</a>";
-				echo " / ";
-				echo "<a href=\"javascript:modifcase('decoche')\">";
-				echo "Tout décocher</a></p>\n";
+					echo "<p>";
+					echo "<a href=\"javascript:modifcase('coche')\">";
+					echo "Cocher tous les élèves qu'il est possible de désinscrire</a>";
+					echo " / ";
+					echo "<a href=\"javascript:modifcase('decoche')\">";
+					echo "Tout décocher</a></p>\n";
+				}
 
 				//echo "<input type='hidden' name='step' value='2c' />\n";
 				echo "<input type='hidden' name='parcours_desinscriptions' value='y' />\n";
