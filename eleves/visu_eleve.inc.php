@@ -105,6 +105,15 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 		}
 	}
 
+	function affichage_sans_action(type) {
+		if(document.getElementById('rech_'+type).value=='') {
+			document.getElementById('Recherche_'+type).style.display='none';
+		}
+		else {
+			document.getElementById('Recherche_'+type).style.display='';
+		}
+	}
+
 	/*
 	function cherche_eleves(type) {
 		rech_nom_ou_prenom=document.getElementById('rech_'+type).value;
@@ -121,7 +130,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('nom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
 	//echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='".(isset($_SESSION['rech_nom']) ? $_SESSION['rech_nom'] : "")."' onchange=\"affichage_et_action('nom')\" />\n";
-	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onchange=\"affichage_et_action('nom')\" />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onkeyup=\"affichage_sans_action('nom')\" onchange=\"affichage_et_action('nom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_nom' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
 	//echo "<a href=\"#\" onclick=\"document.getElementById('rech_nom').value=''; return false;\" title='Vider le critère de recherche sur le nom.'><img src='../images/icons/balai.png' class='icone16' alt='Vider' /></a>";
@@ -132,7 +141,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('prenom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
 	//echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='".(isset($_SESSION['rech_prenom']) ? $_SESSION['rech_prenom'] : "")."' onchange=\"affichage_et_action('prenom')\" />\n";
-	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onkeyup=\"affichage_sans_action('prenom')\" onchange=\"affichage_et_action('prenom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
 	//echo "<a href=\"#\" onclick=\"document.getElementById('rech_prenom').value=''; return false;\" title='Vider le critère de recherche sur le prénom.'><img src='../images/icons/balai.png' class='icone16' alt='Vider' /></a>";
