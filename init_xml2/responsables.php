@@ -766,7 +766,7 @@
 								$sql.="ele_id='".$responsables[$i]["eleve_id"]."';";
 								$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_test)>0) {
-									while($lig_resp_legal=mysqli_fetch_object($tmp_resp_legal)) {
+									while($lig_resp_legal=mysqli_fetch_object($res_test)) {
 										//$tmp_resp_legal[]=$lig_resp_legal->resp_legal;
 										if($lig_resp_legal->resp_legal==1) {
 											$tmp_resp_legal_1_deja=true;
@@ -790,7 +790,7 @@
 								$sql="INSERT INTO responsables2 SET ";
 								$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
 								$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
-								$sql.=", resp_legal='".$responsables[$i]["resp_legal"]."'";
+								$sql.=", resp_legal='".$tmp_resp_legal."'";
 								$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
 								$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
 								$sql.=";";
