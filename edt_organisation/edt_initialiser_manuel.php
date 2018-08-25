@@ -80,15 +80,15 @@ en v&eacute;rifiant si deux cours ne se chevauchent pas.</p>
 	</div>
 
 	<h4 style=\"color: red\">Attention ! seuls les enseignements
-d&eacute;finis dans Gepi peuvent appara&icirc;tre dans l'emploi du temps. Si vous avez des cours sans notes (soutien, ATP,...), vous pouvez utiliser les AID.</h4>
-<br />";
+d&eacute;finis dans Gepi peuvent appara&icirc;tre dans l'emploi du temps. Si vous avez des cours sans notes (soutien, ATP,...), vous pouvez utiliser les AID.</h4>";
 
 
 	// Saisie manuelle de l'emploi du temps
 echo '
+	<a name="formulaire_choix_prof"></a>
 	<span class="legend">Vous ne devriez utiliser ce menu que pour de rares occasions car il n\'est pas aussi
 	performant que la méthode décrite plus haut.</span>
-	<form action="edt_initialiser_manuel.php" name="choix_prof" method="post">
+	<form action="edt_initialiser_manuel.php#formulaire_choix_prof" name="choix_prof" method="post">
 	<fieldset id="init_edt1">
 		<legend>Saisie manuelle</legend>
 
@@ -116,8 +116,7 @@ echo '
  		</select>
 			<input type="hidden" name="initialiser" value="ok" />
 	</fieldset>
-	</form>
-	<br />';
+	</form>';
 
 	// Ensuite, on propose la liste des enseignements de ce professeur associés à la matière
 if (isset($choix_prof)) {
@@ -339,19 +338,19 @@ if (isset($choix_prof)) {
 
 	if (isset($choix_prof) AND $enseignement == "rien") {
 		echo '
-	<p class="refus" style="color:red">Enseignement non choisi.<br />Vous devez renseigner tous les champs !</p><br />';
+	<p class="refus" style="color:red">Enseignement non choisi.<br />Vous devez renseigner tous les champs !</p>';
 	}
 	elseif (isset($choix_prof) AND $login_salle == "rien") {
 		echo '
-	<p class="refus" style="color:red">Salle non choisie.<br />Vous devez renseigner tous les champs !</p><br />';
+	<p class="refus" style="color:red">Salle non choisie.<br />Vous devez renseigner tous les champs !</p>';
 	}
 	elseif (isset($choix_prof) AND $ch_heure == "rien") {
 		echo '
-	<p class="refus" style="color:red">Horaire non choisie.<br />Vous devez renseigner tous les champs !</p><br />';
+	<p class="refus" style="color:red">Horaire non choisie.<br />Vous devez renseigner tous les champs !</p>';
 	}
 	elseif (isset($choix_prof) AND $ch_jour_semaine == "rien") {
 		echo '
-	<p class="refus" style="color:red">Jour non choisi.<br />Vous devez renseigner tous les champs !</p><br />';
+	<p class="refus" style="color:red">Jour non choisi.<br />Vous devez renseigner tous les champs !</p>';
 	}
 	else {
 		if (isset($choix_prof) AND $enseignement != NULL) {
@@ -359,26 +358,30 @@ if (isset($choix_prof)) {
 
 
 			// Vérification que la salle est libre à ce jour cette heure
-			$verif_salle = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours FROM edt_cours WHERE
+			$sql="SELECT id_cours FROM edt_cours WHERE
 						id_salle ='".$login_salle."' AND
 						jour_semaine = '".$ch_jour_semaine."' AND
 						id_definie_periode = '".$ch_heure."' AND
-						(id_semaine = '0' OR id_semaine = '".$choix_semaine."')")
+						(id_semaine = '0' OR id_semaine = '".$choix_semaine."');";
+			//echo "$sql<br />";
+			$verif_salle = mysqli_query($GLOBALS["mysqli"], $sql)
 							 or die ('Erreur dans la verif salle');
 
 			$nbre_verif_s = mysqli_num_rows($verif_salle);
 			if ($nbre_verif_s != 0) {
 				$rep_verif_s = mysqli_fetch_array($verif_salle);
 
-				$req_present_s = mysqli_query($GLOBALS["mysqli"], "SELECT id_groupe id_aid, FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
+				$sql="SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."';";
+				//echo "$sql<br />";
+				$req_present_s = mysqli_query($GLOBALS["mysqli"], $sql);
 				$rep_present_s = mysqli_fetch_array($req_present_s);
 				// On vérifie si ce n'est pas une AID
 				if ($rep_present_s['id_aid'] != "") {
 					$aid = $rep_present_s['id_aid'];
-					echo "<p class=\"refus\">Cette salle est déjà occupée par un groupe AID( ".$aid." ).</p>";
+					echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par un groupe AID( ".$aid." ).</p>";
 				}else{
 					$tab_present_s = get_group($rep_present_s["id_groupe"]);
-					echo "<p class=\"refus\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p><br />";
+					echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p>";
 				}
 
 			}
@@ -399,12 +402,12 @@ if (isset($choix_prof)) {
 				$rep_verif_prof = mysqli_fetch_array($verif_prof);
 
 				// On vérifie si ce n'est pas une AID
-				if ($verif_prof['id_aid'] != "") {
-					$aid = $verif_prof['id_aid'];
-					echo "<p class=\"refus\">Ce professeur a déjà cours avec un groupe AID ( ".$aid." ).</p>";
+				if ($rep_verif_prof['id_aid'] != "") {
+					$aid = $rep_verif_prof['id_aid'];
+					echo "<p class=\"refus\" style=\"color:red\">Ce professeur a déjà cours avec un groupe AID ( ".$aid." ).</p>";
 				}else{
 					$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
-					echo "<p class=\"refus\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
+					echo "<p class=\"refus\" style=\"color:red\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p>";
 				}
 			}
 
@@ -447,7 +450,7 @@ if (isset($choix_prof)) {
 
 				$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('nouveau_cours','Y',10,10);return false;\">Liste</a>
 					".creer_div_infobulle("nouveau_cours", $titre_listeleve, "#330033", $contenu, "#FFFFFF", '15em',0,"n","n","y","n");
-				echo "<p>Ce cours est enregistré :<font color=\"green\" size=\"1\">
+				echo "<p style='color:green'>Ce cours est enregistré&nbsp;:<font color=\"green\" size=\"1\">
 					Les ".$tab_infos["classlist_string"]." en ".$tab_infos["description"]." avec ".$choix_prof." (".$classe_js.").</font></p>";
 			}
 		}

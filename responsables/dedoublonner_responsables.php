@@ -56,7 +56,7 @@ if (!checkAccess()) {
 }
 
 function fwrite_sql($chaine) {
-	$generer_sql="y";
+	$generer_sql="n";
 	if($generer_sql=="y") {
 		$f=fopen("/tmp/dedoublonnage_comptes_parents.sql", "a+");
 		fwrite($f, $chaine."\n");
@@ -228,7 +228,7 @@ Cela peut aussi se produire dans le cas d'une initialisation CSV.</p>
 $sql="SELECT pers_id,nom,prenom,COUNT(*) AS nb_doublons FROM resp_pers GROUP BY nom,prenom HAVING COUNT(*)>1 ORDER BY nom,prenom;";
 $test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test_resp)==0) {
-	echo "<p style='color:red'>Aucun cas d'homonymie susceptible de correspondre à un doublon responsable n'a été détectéé.</p>";
+	echo "<p style='color:red'>Aucun cas d'homonymie susceptible de correspondre à un doublon responsable n'a été détecté.</p>";
 	require("../lib/footer.inc.php");
 	die();
 }
