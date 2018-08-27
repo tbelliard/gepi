@@ -375,7 +375,8 @@ if($action=="") {
 		<li>
 			Le fichier d'export EDT doit être obtenu en veillant à sélectionner toutes les classes<br />
 			<em>(on obtient assez facilement l'export d'une classe seulement)</em><br />
-			via le menu <strong>Fichier/Autres/Export texte</strong>.<br />
+			via le menu <strong>Imports/Exports &gt; TXT/CSV/XML/SQL &gt; Exporter un fichier texte</strong><br />
+			<em style='font-size:x-small'>(avec une précédente version d'EDT, c'était <strong>Fichiers &gt; Imports/Exports &gt; Autres &gt; Exporter un fichier texte</strong>)</em>.<br />
 			Dans la fenêtre obtenue, sélectionner un export <strong>Cours</strong>.<br />
 			Pour le type, sélectionner <strong>XML</strong>.<br />
 			En bas à droite, cocher <strong>Nom complet des groupes et des parties</strong> et enfin cliquer sur <strong>Exporter</strong>.

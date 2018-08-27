@@ -222,7 +222,8 @@
 
 			echo "<p style='margin-top:2em'><em>Remarques</em>&nbsp;:</p>\n";
 			echo "<ul>\n";
-			echo "<li>Dans EDT, la démarche est <strong>Menu Fichier/Exports et imports&nbsp;: Autres/Exporter un fichier texte</strong><br />
+			echo "<li>Dans EDT, la démarche est <strong>Imports/Exports &gt; TXT/CSV/XML/SQL &gt; Exporter un fichier texte</strong><br />
+<em style='font-size:x-small'>(avec une précédente version d'EDT, c'était <strong>Fichiers &gt; Imports/Exports &gt; Autres &gt; Exporter un fichier texte</strong>)</em>.<br />
 			Sélectionner <strong>Type de données&nbsp;: Cours</strong>,<br />
 			Et <strong>Type d'export&nbsp;: XML</strong>,<br />
 			Cocher en bas à droite, <strong>Nom complet des groupes et des parties</strong><br />
