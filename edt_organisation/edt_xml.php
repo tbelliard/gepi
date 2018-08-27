@@ -156,7 +156,8 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 <p><strong>Extraction proprement dite du XML&nbsp;:</strong></p>
 <ol>
 <li>Se placer dans l'onglet Cours et extraire les cours que l'on veut voir figurer dans l'edt de Gepi. Si l'on veut exporter l'ensemble de l'emploi du temps, faire une extraction complète (<strong>Extraire > Tout extraire</strong>).</li>
-<li>Se rendre dans <strong>Fichiers > Imports/Exports > Autres > Exporter un fichier texte</strong></li>
+<li>Se rendre dans <strong>Imports/Exports &gt; TXT/CSV/XML/SQL &gt; Exporter un fichier texte</strong><br />
+<em style='font-size:x-small'>(avec une précédente version d'EDT, c'était <strong>Fichiers &gt; Imports/Exports &gt; Autres &gt; Exporter un fichier texte</strong>)</em>.</li>
 <li>Dans la fenêtre qui apparaît, les paramètres par défaut sont corrects mais s'assurer quand même des suivants&nbsp;:<br />
 	<ul>
 	<li>Type de données à exporter : <strong>Cours</strong></li>
