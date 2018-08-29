@@ -367,7 +367,23 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		echo "<td style='padding: 5px;'><input type='text' id='date_fin_period_$k' name='date_fin_period[$k]'";
 		echo " onchange='changement()'";
 		echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
-		echo " value=\"".strftime("%d/%m/%Y", mysql_date_to_unix_timestamp($date_fin_periode[$k]))."\" size='10' />";
+		$tmp_date_fin=$date_fin_periode[$k];
+		$temoin_date_invalide=" <img src='../images/icons/flag2.gif' class='icone16' title='Date invalide. Elle doit être de la forme jj/mm/aaaa.' />";
+		if(preg_match('#^[0-9]{4}-[0-9]{2}-[0-9]{2}#', $date_fin_periode[$k])) {
+			$tmp_tab=explode(' ', $date_fin_periode[$k]);
+			$tmp_tab2=explode('-', $tmp_tab[0]);
+			if(checkdate($tmp_tab2[1], $tmp_tab2[2], $tmp_tab2[0])) {
+				$tmp_date=mysql_date_to_unix_timestamp($date_fin_periode[$k]);
+				if(preg_match('/^[0-9]{1,}$/', $tmp_date)) {
+					$tmp_date_fin=strftime("%d/%m/%Y", $tmp_date);
+					$temoin_date_invalide='';
+				}
+				if(($tmp_date<getSettingValue('begin_bookings'))||($tmp_date>getSettingValue('end_bookings'))) {
+					$temoin_date_invalide=" <img src='../images/icons/flag2.gif' class='icone16' title=\"Date invalide. Elle n'est pas entre les dates de début et fin d'année paramétrées dans Gestion générale/Configuration générale.\" />";
+				}
+			}
+		}
+		echo " value=\"".$tmp_date_fin."\" size='10' />".$temoin_date_invalide;
 
 		//echo "<a href=\"#calend\" onClick=\"".$cal[$k]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 		echo img_calendrier_js("date_fin_period_".$k, "img_bouton_date_fin_period_".$k);
@@ -376,7 +392,22 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		echo "<td style='padding: 5px;'><input type='text' id='date_conseil_period_$k' name='date_conseil_period[$k]'";
 		echo " onchange='changement()'";
 		echo " onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\"";
-		echo " value=\"".strftime("%d/%m/%Y", mysql_date_to_unix_timestamp($date_conseil_periode[$k]))."\" size='10' />";
+		$tmp_date_conseil=$date_conseil_periode[$k];
+		if(preg_match('#^[0-9]{4}-[0-9]{2}-[0-9]{2}#', $date_conseil_periode[$k])) {
+			$tmp_tab=explode(' ', $date_conseil_periode[$k]);
+			$tmp_tab2=explode('-', $tmp_tab[0]);
+			if(checkdate($tmp_tab2[1], $tmp_tab2[2], $tmp_tab2[0])) {
+				$tmp_date=mysql_date_to_unix_timestamp($date_conseil_periode[$k]);
+				if(preg_match('/^[0-9]{1,}$/', $tmp_date)) {
+					$tmp_date_conseil=strftime("%d/%m/%Y", $tmp_date);
+					$temoin_date_invalide='';
+				}
+				if(($tmp_date<getSettingValue('begin_bookings'))||($tmp_date>getSettingValue('end_bookings'))) {
+					$temoin_date_invalide=" <img src='../images/icons/flag2.gif' class='icone16' title=\"Date invalide. Elle n'est pas entre les dates de début et fin d'année paramétrées dans Gestion générale/Configuration générale.\" />";
+				}
+			}
+		}
+		echo " value=\"".$tmp_date_conseil."\" size='10' />".$temoin_date_invalide;
 		echo img_calendrier_js("date_conseil_period_".$k, "img_bouton_date_conseil_period_".$k);
 		echo "</td>\n";
 
