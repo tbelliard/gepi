@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -64,7 +64,7 @@ if(isset($confirmer)) {
 	$nb_suppr=0;
 	$nb_err=0;
 	for($i=0;$i<count($suppr);$i++){
-    $sql="DELETE FROM archivage_eleves WHERE ine='$suppr[$i]';";
+		$sql="DELETE FROM archivage_eleves WHERE ine='$suppr[$i]';";
 		$res_suppr1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$sql="DELETE FROM archivage_eleves2 WHERE ine='$suppr[$i]';";
@@ -77,10 +77,11 @@ if(isset($confirmer)) {
 		$res_suppr5=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="DELETE FROM archivage_ects WHERE INE='$suppr[$i]';";
 		$res_suppr6=mysqli_query($GLOBALS["mysqli"], $sql);
-    if (isset($flag_port_folio)) {
-      $sql="DELETE FROM port_folio_validations_archives  WHERE login='$suppr[$i]';";
-  		mysqli_query($GLOBALS["mysqli"], $sql);
-    }
+
+		if (isset($flag_port_folio)) {
+			$sql="DELETE FROM port_folio_validations_archives  WHERE login='$suppr[$i]';";
+			mysqli_query($GLOBALS["mysqli"], $sql);
+		}
 
 		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) and ($res_suppr6)) {
 			$nb_suppr++;
@@ -100,7 +101,83 @@ if(isset($confirmer)) {
 	}
 }
 
-$style_specifique="mod_annees_anterieures/annees_anterieures";
+if((isset($_POST['confirmer2']))&&(isset($_POST['date_limite']))) {
+	check_token();
+
+	if(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $_POST['date_limite'])) {
+		$msg="La date proposée '".$_POST['date_limite']."' est invalide.<br />";
+	}
+	else {
+		$tmp_tab=explode('/', $_POST['date_limite']);
+		if(!checkdate($tmp_tab[1], $tmp_tab[0], $tmp_tab[2])) {
+			$msg="La date proposée '".$_POST['date_limite']."' est invalide.<br />";
+		}
+		else {
+
+			$nb_suppr=0;
+			$nb_err=0;
+
+			$sql="SELECT DISTINCT ine FROM archivage_eleves WHERE naissance<'".$tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]."';";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_ele=mysqli_num_rows($res);
+			if($nb_ele>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$sql="DELETE FROM archivage_eleves WHERE ine='".$lig->ine."';";
+					//echo "$sql<br />";
+					$res_suppr1=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$sql="DELETE FROM archivage_eleves2 WHERE ine='".$lig->ine."';";
+					//echo "$sql<br />";
+					$res_suppr2=mysqli_query($GLOBALS["mysqli"], $sql);
+					$sql="DELETE FROM archivage_aid_eleve WHERE id_eleve='".$lig->ine."';";
+					//echo "$sql<br />";
+					$res_suppr3=mysqli_query($GLOBALS["mysqli"], $sql);
+					$sql="DELETE FROM archivage_appreciations_aid WHERE id_eleve='".$lig->ine."';";
+					//echo "$sql<br />";
+					$res_suppr4=mysqli_query($GLOBALS["mysqli"], $sql);
+					$sql="DELETE FROM archivage_disciplines WHERE INE='".$lig->ine."';";
+					//echo "$sql<br />";
+					$res_suppr5=mysqli_query($GLOBALS["mysqli"], $sql);
+					$sql="DELETE FROM archivage_ects WHERE INE='".$lig->ine."';";
+					//echo "$sql<br />";
+					$res_suppr6=mysqli_query($GLOBALS["mysqli"], $sql);
+					if (isset($flag_port_folio)) {
+						$sql="DELETE FROM port_folio_validations_archives  WHERE login='".$lig->ine."';";
+						//echo "$sql<br />";
+						mysqli_query($GLOBALS["mysqli"], $sql);
+					}
+
+					if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) and ($res_suppr6)) {
+						$nb_suppr++;
+					}
+					else{
+						$nb_err++;
+					}
+				}
+			}
+			if($nb_suppr>0){
+				if($nb_suppr==1){$s="";}else{$s="s";}
+				$msg.="Les données antérieures de $nb_suppr ancien$s élève$s ont été supprimées.";
+			}
+			if($nb_err>0){
+				if($nb_err==1){$s="";}else{$s="s";}
+				if($msg!=""){$msg.="<br />";}
+				$msg.="Pour $nb_err ancien$s élève$s, des problèmes ont été rencontrés.";
+			}
+		}
+	}
+}
+
+$style_specifique[]="mod_annees_anterieures/annees_anterieures";
+
+$style_specifique[]="lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 
 $themessage="Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer?";
 
@@ -126,7 +203,12 @@ $nb_ele=mysqli_num_rows($res1);
 if($nb_ele==0){
 	echo "<p>Tous les élèves présents dans la table 'annees_anterieures' sont dans la table 'eleves'.</p>\n";
 }
-else{
+else {
+
+	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo "<fieldset class='fieldset_opacite50'>\n";
+	echo add_token_field();
+
 	echo "<p>Voici la liste des élèves présents dans la table 'archivage_eleves', mais absents de la table 'eleves'.<br />
 	Il s'agit normalement d'élèves ayant quitté l'établissement.<br />
 	Il peut cependant arriver que des élèves dont le numéro INE n'était pas (<i>correctement</i>) rempli lors de la conservation de l'année soit proposés dans la liste ci-dessous.<br />
@@ -134,18 +216,15 @@ else{
 	Ce n'est pas un identifiant correct parce que le login d'un élève n'est pas nécessairement fixe d'une année sur l'autre (<i>dans le cas des doublons</i>).<br />
 	Vous pouvez également choisir de <a href='corriger_ine.php'>corriger des INE non renseignés ou mal renseignés</a></p>\n";
 
-	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
-	echo add_token_field();
-
-	echo "<table align='center' class='table_annee_anterieure boireaus' summary='Tableau des élèves'>\n";
+	echo "<table align='center' class='table_annee_anterieure boireaus boireaus_alt resizable sortable' summary='Tableau des élèves'>\n";
 	echo "<tr style='background-color:white;'>\n";
-	echo "<th>Supprimer<br />";
+	echo "<th class='nosort'>Supprimer<br />";
 	echo "<a href='javascript:modif_coche(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 	echo "<a href='javascript:modif_coche(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 	echo "</th>\n";
-	echo "<th>Elève</th>\n";
-	echo "<th>Date de naissance</th>\n";
-	echo "<th>N°INE</th>\n";
+	echo "<th class='text'>Elève</th>\n";
+	echo "<th class='text'>Date de naissance</th>\n";
+	echo "<th class='text'>N°INE</th>\n";
 	echo "</tr>\n";
 	$cpt=0;
 	$alt=1;
@@ -153,8 +232,11 @@ else{
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover' style='text-align:center;' id='tr_$cpt'>\n";
 		echo "<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig_ele->ine' onchange=\"modif_une_coche('$cpt');\" /></td>\n";
-		echo "<td>".mb_strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom))."</td>\n";
-		echo "<td>".formate_date($lig_ele->naissance)."</td>\n";
+		echo "<td><label for='suppr_$cpt'>".mb_strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom))."</label></td>\n";
+		echo "<td>
+			<span style='display:none'>".$lig_ele->naissance."</span>
+			".formate_date($lig_ele->naissance)."
+		</td>\n";
 		echo "<td>";
 		echo "<a href='consultation_annee_anterieure.php?ine=$lig_ele->ine'>";
 		if(mb_substr($lig_ele->ine,0,6)=="LOGIN_") {echo "<span style='color:red;'>";}
@@ -168,6 +250,24 @@ else{
 	echo "</table>\n";
 
 	echo "<p align='center'><input type='submit' name='confirmer' value='Supprimer' /></p>\n";
+	echo "</fieldset>\n";
+	echo "</form>\n";
+
+	echo "<br />\n";
+
+	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo "<fieldset class='fieldset_opacite50'>\n";
+	echo add_token_field();
+
+	echo "<p>Supprimer les enregistrement d'élèves dont la date de naissance est antérieure au ";
+
+	$annee=strftime("%Y", time()-16*365.25*24*3600);
+
+	echo " <input type='text' name='date_limite' id='date_limite' size='10' value='01/09/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+	echo img_calendrier_js("date_limite", "img_bouton_date_limite");
+
+	echo "<p align='center'><input type='submit' name='confirmer2' value='Supprimer' /></p>\n";
+	echo "</fieldset>\n";
 	echo "</form>\n";
 
 	echo "<script type='text/javascript' language='javascript'>
