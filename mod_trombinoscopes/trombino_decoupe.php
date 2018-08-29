@@ -304,11 +304,20 @@ if(isset($_POST['upload_scan'])) {
 							//echo "<p>Le fichier ".$image['name']." sous ".$image['tmp_name']." a été uploadé.</p>\n";
 							if($image['name']=="") {$msg.="Il s'est passé un problème lors de l'upload/traitement.<br />Le fichier uploadé était-il bien de type JPEG? (type trouvé&nbsp;: ".$image['type'].")<br />";}
 
+							/*
+							echo "<pre>";
+							print_r($image);
+							echo "</pre>";
+							*/
+
 							$source_file=$image['tmp_name'];
 							$dest_file="../temp/".$tempdir."/image_$i.jpg";
 							$res_copy=copy("$source_file" , "$dest_file");
 							if(!$res_copy) {
 								$msg.="Erreur lors du transfert de ".$image['name']." vers le dossier temporaire de l'utilisateur.<br />\n";
+							}
+							elseif((isset($image['type']))&&($image['type']!='')&&(!preg_match("#^image/jp[e]{0,1}g$#", $image['type']))) {
+								$msg.="Erreur ".$image['name']." n'est pas une image JPEG, mais ".$image['type'].".<br />\n";
 							}
 							else {
 								$num_page=$i+1;
