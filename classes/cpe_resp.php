@@ -153,16 +153,25 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 			$classe = old_mysql_result($call_data, $i, "classe");
 			$nb_per = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select id_classe from periodes where id_classe = '$id_classe'"));
 
-			$test_existing = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(*) total" .
-										" from j_eleves_cpe e, j_eleves_classes c" .
-										" where (" .
-										"e.e_login = c.login" .
-										" and " .
-										"c.id_classe = '" . $id_classe . "'" .
-										")"), "0", "total");
-			if ($disp_filter == "all" OR ($disp_filter == "only_undefined" AND $test_existing == "0")) {
-
+			if ($disp_filter == "all") {
 				if ($nb_per != "0") {
+					$chaine_cpe='';
+					$sql="SELECT DISTINCT u.login, civilite, nom, prenom FROM utilisateurs u, 
+												j_eleves_cpe jecpe, 
+												j_eleves_classes jec 
+											WHERE u.login=jecpe.cpe_login AND 
+												jecpe.e_login=jec.login AND 
+												jec.id_classe='".$id_classe."';";
+					//echo "$sql<br />";
+					$res_cpe=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_cpe)>0) {
+						while($lig_cpe=mysqli_fetch_object($res_cpe)) {
+							if($chaine_cpe!='') {
+								$chaine_cpe.=', ';
+							}
+							$chaine_cpe.=$lig_cpe->civilite.' '.casse_mot($lig_cpe->nom, 'maj').' '.casse_mot($lig_cpe->prenom, 'majf2');
+						}
+					}
 					echo "<tr";
 					if ($flag=="1") {
 						echo " class='fond_sombre'";
@@ -173,15 +182,49 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 					echo ">\n";
 					echo "<td><input type='checkbox' name='".$id_classe."' id='id".$id_classe."' value='yes' /></td>\n";
-					echo "<td><label for='id".$id_classe."' style='cursor: pointer;'><b>$classe</b></label></td>\n";
+					echo "<td>
+						<label for='id".$id_classe."' style='cursor: pointer;'><b>$classe</b></label>
+						".($chaine_cpe!='' ? '<span title="CPE associé à une partie au moins des élèves de la classe.">('.$chaine_cpe.')<span>' : '')."
+					</td>\n";
 				}
 				echo "</tr>\n";
 			}
+			else {
+				$test_existing = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(*) total" .
+											" from j_eleves_cpe e, j_eleves_classes c" .
+											" where (" .
+											"e.e_login = c.login" .
+											" and " .
+											"c.id_classe = '" . $id_classe . "'" .
+											")"), "0", "total");
+
+				if($disp_filter == "only_undefined" AND $test_existing == "0") {
+
+					if ($nb_per != "0") {
+						echo "<tr";
+						if ($flag=="1") {
+							echo " class='fond_sombre'";
+							$flag = "0";
+						} else {
+							$flag=1;
+						}
+
+						echo ">\n";
+						echo "<td><input type='checkbox' name='".$id_classe."' id='id".$id_classe."' value='yes' /></td>\n";
+						echo "<td><label for='id".$id_classe."' style='cursor: pointer;'><b>$classe</b></label></td>\n";
+					}
+					echo "</tr>\n";
+				}
+			}
+
+
 			$i++;
 		}
 		echo "</table>\n";
 		echo "<input type='hidden' name='action' value='reg_cperesp' />\n";
 		echo "<p><input type='submit' value='Enregistrer' /></p>\n";
+
+		echo "<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> Pour identifier les élèves sans CPE, consultez la page <a href='../eleves/index.php#eleves_sans_cpe'>Gestion des élèves</a>.</p>";
 
 	} else {
 		echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";

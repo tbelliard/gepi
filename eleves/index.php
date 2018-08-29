@@ -1301,7 +1301,7 @@ Mettre à jour votre table etablissements peut être une solution.\">Vide ou non
 		if($test_no_cpe_effectif==0){
 			echo "<tr>\n";
 			echo "<td>\n";
-			echo "&nbsp;\n";
+			echo "&nbsp;<a name='eleves_sans_cpe'></a>\n";
 			echo "</td>\n";
 			echo "<td>\n";
 
@@ -1314,7 +1314,8 @@ Mettre à jour votre table etablissements peut être une solution.\">Vide ou non
 		else{
 			echo "<tr>\n";
 			echo "<td>\n";
-			echo "<input type='radio' name='quelles_classes' id='quelles_classes_no_cpe' value='no_cpe' onclick='verif2()' />\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_no_cpe' value='no_cpe' onclick='verif2()' />
+			<a name='eleves_sans_cpe'></a>\n";
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "<label for='quelles_classes_no_cpe' style='cursor: pointer;'>\n";
