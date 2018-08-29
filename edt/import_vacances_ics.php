@@ -600,7 +600,9 @@ if(!isset($zone)) {
 
 	$allow_url_fopen=ini_get('allow_url_fopen');
 	//echo "allow_url_fopen=".$allow_url_fopen."<br />";
-	if(("$allow_url_fopen"!="")&&($allow_url_fopen)) {
+	if(("$allow_url_fopen"!="")&&
+	($allow_url_fopen!='1')&&
+	(strtolower($allow_url_fopen)!='on')) {
 		echo "
 		<fieldset class='fieldset_opacite50'>
 			<p style='color:red; margin-left:6.2em; text-indent:-6.2em;'><strong>Attention&nbsp;:</strong> Le téléchargement de fichiers sur le net par Gepi semble désactivé dans la configuration PHP du serveur <em>(paramètre 'allow_url_fopen')</em>.<br />
