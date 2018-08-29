@@ -75,6 +75,7 @@ $liste_tables_del_etape_eleves = array(
 'notanet_verrou',
 'notanet_socles',
 'notanet_ele_type',
+'notanet_saisie',
 //==========================
 "socle_eleves_enseignements_complements",
 //==========================
@@ -84,6 +85,9 @@ $liste_tables_del_etape_eleves = array(
 
 "o_orientations",
 "o_voeux",
+"o_avis",
+
+"t_plan_de_classe_ele",
 
 "tempo2",
 "tempo",
