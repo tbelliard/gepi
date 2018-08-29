@@ -321,8 +321,7 @@ if(isset($_POST['upload_scan'])) {
 							}
 							else {
 								$num_page=$i+1;
-								//$msg.="Traitement de la page n°$i<br />\n";
-								$msg.="Traitement de la page n°$num_page<br />\n";
+								//$msg.="Traitement de la page n°$num_page<br />\n";
 	
 								if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 									$sql="SELECT t.*, e.login FROM trombino_decoupe t, eleves e WHERE t.page_global='$i' AND t.id_grille='$id_grille' AND t.elenoet=e.elenoet;";
@@ -330,6 +329,7 @@ if(isset($_POST['upload_scan'])) {
 								else {
 									$sql="SELECT * FROM trombino_decoupe WHERE page_global='$i' AND id_grille='$id_grille';";
 								}
+								//echo "$sql<br />";
 								$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res2)>0) {
 									$img_source=imagecreatefromjpeg($dest_file);
@@ -342,8 +342,22 @@ if(isset($_POST['upload_scan'])) {
 	
 									$larg_cadre_img=round($larg_cadre*$ratio);
 									$haut_cadre_img=round($haut_cadre*$ratio);
-	
+
+									$cpt_ele_dans_page=0;
 									while($lig2=mysqli_fetch_object($res2)) {
+										if($cpt_ele_dans_page==0) {
+											$sql="SELECT * FROM classes WHERE classe='".mysqli_real_escape_string($mysqli, $lig2->classe)."';";
+											//echo "$sql<br />";
+											$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($res3)>0) {
+												$lig3=mysqli_fetch_object($res3);
+												$msg.="Traitement de la page n°$num_page (<a href='../mod_trombinoscopes/trombinoscopes.php?classe=".$lig3->id."&etape=2' title=\"Voir le trombinoscope de la classe dans une nouvelle fenêtre.\" target='_blank'>Trombi $lig3->classe</a>)<br />\n";
+											}
+											else {
+												$msg.="Traitement de la page n°$num_page<br />\n";
+											}
+										}
+
 										// Coordonnées dans le PDF multipliées par le ratio
 										$x=round(($x0+$lig2->x*($larg_cadre+$dx))*$ratio);
 										$y=round(($y0+$lig2->y*($haut_cadre+$dy)+$hauteur_classe+$ecart_sous_classe)*$ratio)*$correctif_vertical;
@@ -358,6 +372,7 @@ if(isset($_POST['upload_scan'])) {
 											imagejpeg($img, "../photos/eleves/".encode_nom_photo($lig2->elenoet).'.jpg');
 										}
 										imagedestroy($img);
+										$cpt_ele_dans_page++;
 									}
 								}
 							}
