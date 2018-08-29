@@ -1252,7 +1252,7 @@ if (!(isset($user_login)) or ($user_login=='')) {
 	echo "</div>";
 }
 ?>
-<br />Statut (consulter l'<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>aide</a>) : <SELECT name="reg_statut" size="1" onchange="changement()">
+<br />Statut (consulter l'<a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>aide</a>) : <SELECT name="reg_statut" id="reg_statut" size="1" onchange="changement(); maj_champ_action_statut();">
 <?php if (!isset($user_statut)) $user_statut = "professeur"; ?>
 <option value="professeur" <?php if ($user_statut == "professeur") { echo ' selected="selected"';}?>>Professeur</option>
 <option value="administrateur" <?php if ($user_statut == "administrateur") { echo ' selected="selected"';}?>>Administrateur</option>
@@ -1267,7 +1267,7 @@ if (getSettingValue("statuts_prives") == "y") {
 }
 ?>
 
-</select>
+</select><span id='span_action_statut'>
 <?php
 if(($user_statut == "professeur")&&(isset($user_nom))&&(isset($user_prenom))) {
 	echo affiche_lien_edt_prof($user_login, $user_prenom." ".$user_nom);
@@ -1285,6 +1285,7 @@ if (getSettingValue("statuts_prives") == "y") {
 	}
 }
 ?>
+</span>
 <br />
 
 <br />
@@ -1401,6 +1402,55 @@ echo "<input type='hidden' name='max_mat' value='$nb_mat' />\n";
 <script type='text/javascript'>
 	if(document.getElementById('reg_login')) {
 		document.getElementById('reg_login').focus();
+	}
+
+	function maj_champ_action_statut() {
+		<?php
+			if (isset($user_login) and ($user_login!='')) {
+				$nom_prenom_sans_apostrophe=strtr(strtr($user_nom.' '.$user_prenom, '"', ' '), "'", " ");
+		?>
+		if(document.getElementById('span_action_statut')) {
+			statut=document.getElementById('reg_statut').options[document.getElementById('reg_statut').selectedIndex].value;
+			//alert(statut);
+			if(statut=='scolarite') {
+				document.getElementById('span_action_statut').innerHTML=" <a href='../classes/scol_resp.php' title='Paramétrer les classes dont ce compte scolarité est responsable.' onclick=\"return confirm_abandon (this, change, '<?php echo $themessage;?>')\"><img src='../images/icons/configure.png' class='icone16' alt='Config' /></a>";
+			}
+
+			if(statut=='professeur') {
+				document.getElementById('span_action_statut').innerHTML=" <a href='../edt_organisation/index_edt.php?login_edt="+document.getElementById('reg_login').value+"&type_edt_2=prof&no_entete=y&no_menu=y&lien_refermer=y' onclick=\"affiche_edt_en_infobulle('"+document.getElementById('reg_login').value+"', '<?php echo $nom_prenom_sans_apostrophe;?>');return false;\"  title='Voir l emploi du temps en infobulle.'><img src='../images/icons/edt1.png' class='icone16' alt='EDT' /></a>";
+			}
+
+			if(statut=='cpe') {
+				document.getElementById('span_action_statut').innerHTML=" <a href='../classes/cpe_resp.php' onclick=\"return confirm_abandon (this, change, '<?php echo $themessage;?>')\" title='Paramétrer les classes dont ce compte CPE est responsable.'><img src='../images/icons/configure.png' class='icone16' alt='Config' /></a>";
+			}
+
+			if(statut=='administrateur') {
+				document.getElementById('span_action_statut').innerHTML="";
+			}
+
+			if(statut=='secours') {
+				document.getElementById('span_action_statut').innerHTML="";
+			}
+
+			if(statut=='autre') {
+				<?php
+					if (getSettingValue("statuts_prives") == "y") {
+				?>
+				document.getElementById('span_action_statut').innerHTML=" <a href='creer_statut.php' onclick=\"return confirm_abandon (this, change, '<?php echo $themessage;?>')\"  title='Préciser le statut.'><img src='../images/icons/configure.png' class='icone16' alt='Config' /></a>";
+				<?php
+					}
+					else {
+				?>
+				document.getElementById('span_action_statut').innerHTML="";
+				<?php
+					}
+				?>
+			}
+
+		}
+		<?php
+			}
+		?>
 	}
 </script>
 </fieldset>
