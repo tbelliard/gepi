@@ -81,10 +81,10 @@ if (isset($_POST['is_posted'])) {
 						}
 
 						$temp2 = "date_fin_".$per."_".$k;
-						if ($_POST[$temp2] != '') {
-							$tmp_tab=explode("/", $_POST[$temp2]);
+						if (trim($_POST[$temp2]) != '') {
+							$tmp_tab=explode("/", trim($_POST[$temp2]));
 							if((!isset($tmp_tab[2]))||(!checkdate($tmp_tab[1], $tmp_tab[0], $tmp_tab[2]))) {
-								$msg.="Erreur sur la modification de date de fin de période : ".$_POST[$temp2]."<br />";
+								$msg.="Erreur sur la modification de date de fin de période : '".$_POST[$temp2]."'<br />";
 							}
 							else {
 								$sql="UPDATE periodes SET date_fin='".$tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00'";
