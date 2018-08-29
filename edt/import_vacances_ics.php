@@ -84,10 +84,10 @@ if(isset($_POST['enregistrer_vacances'])) {
 		}
 	}
 
+	$chaine_id_classe="";
 	$sql="SELECT id FROM classes ORDER BY classe;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
-		$chaine_id_classe="";
 		while($lig=mysqli_fetch_object($res)) {
 			if($chaine_id_classe!="") {
 				$chaine_id_classe.=";";
