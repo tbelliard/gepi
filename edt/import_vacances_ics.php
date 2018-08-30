@@ -268,8 +268,9 @@ elseif(isset($_GET['imposer_pour_toutes_les_classes'])) {
 			//echo "<p style='margin-top:1em;'>Du ".french_strftime("%A %d/%m/%Y à %H:%M:%S", $debut_calendrier_ts)."";
 
 			$tab_date=explode("/", $tab[2]);
-			// On ramène une minute avant pour passer du jour de reprise, au jour de fin des vacances à 23:59:59
-			$fin_calendrier_ts=mktime(0,0,0,$tab_date[1], $tab_date[0], $tab_date[2])-60;
+			// On ramène une minute avant pour passer du jour de reprise, au jour de fin des vacances à 23:59:00 -> ERREUR
+			//$fin_calendrier_ts=mktime(0,0,0,$tab_date[1], $tab_date[0], $tab_date[2])-60;
+			$fin_calendrier_ts=mktime(23,59,0,$tab_date[1], $tab_date[0], $tab_date[2]);
 			$jourfin_calendrier=strftime("%Y-%m-%d", $fin_calendrier_ts);
 			$heurefin_calendrier=strftime("%H:%M:%S", $fin_calendrier_ts);
 			//echo " au ".french_strftime("%A %d/%m/%Y à %H:%M:%S", $fin_calendrier_ts)."<br />";
@@ -655,7 +656,7 @@ if(!isset($zone)) {
 		<li><p>Les dates de vacances et jours fériés sont enregistrés ici dans une table 'edt_vacances'.<br />
 		Les dates de cette table sont utilisées dans les calendriers affichés pour les personnels de l'établissement.<br />
 		Les élèves ont pour leur part des calendriers par classe <em>(table 'edt_calendrier')</em>.</p></li>
-		<li><p>La table 'edt_vacances' sert de modèle pour remplir le calendrier par classe, mais pour chaque classe, vous pouvez modifier ,via <strong>Emplois du temps/Gestion/Gestion du calendrier</strong>, les dates de vacances et jours fériés pour telle ou telle classe.<br />
+		<li><p>La table 'edt_vacances' sert de modèle pour remplir le calendrier par classe, mais pour chaque classe, vous pouvez modifier, via <strong>Emplois du temps/Gestion/Gestion du calendrier</strong>, les dates de vacances et jours fériés pour telle ou telle classe.<br />
 	En principe cependant, toutes les classes devraient tout de même avoir les mêmes vacances et dans ce cas, en important les dates depuis un fichier ICS officiel, vous imposerez les dates de vacances et jours fériés par défaut à toutes les classes.<br />
 	Libre à vous d'ajuster ensuite si nécessaire pour telle ou telle classe, par exemple pour ajouter une semaine de stage durant laquelle les élèves ne seront pas considérés comme absents dans le module Absences 2.</p></li>
 	</ul>";
