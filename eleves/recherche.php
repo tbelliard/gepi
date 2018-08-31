@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -326,8 +326,8 @@ function extract_eleves($tab_login) {
 }
 
 
-$rech_nom=isset($_POST['rech_nom']) ? $_POST['rech_nom'] : "";
-$rech_prenom=isset($_POST['rech_prenom']) ? $_POST['rech_prenom'] : "";
+$rech_nom=isset($_POST['rech_nom']) ? $_POST['rech_nom'] : (isset($_GET['rech_nom']) ? $_GET['rech_nom'] : "");
+$rech_prenom=isset($_POST['rech_prenom']) ? $_POST['rech_prenom'] : (isset($_GET['rech_prenom']) ? $_GET['rech_prenom'] : "");
 
 $acces_photo="n";
 if(getSettingAOui('active_module_trombinoscopes')) {
@@ -335,7 +335,7 @@ if(getSettingAOui('active_module_trombinoscopes')) {
 }
 
 // Recherche sur nom/prénom parmi les élèves/responsables/personnels
-$is_posted_recherche=isset($_POST['is_posted_recherche']) ? isset($_POST['is_posted_recherche']) : NULL;
+$is_posted_recherche=isset($_POST['is_posted_recherche']) ? isset($_POST['is_posted_recherche']) : (isset($_GET['is_posted_recherche']) ? isset($_GET['is_posted_recherche']) : NULL);
 if(isset($is_posted_recherche)) {
 	check_token();
 

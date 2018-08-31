@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1076,6 +1076,16 @@ elseif($action=="upload") {
 			echo "</pre>";
 			*/
 
+			if(isset($tab_ele[$cpt]["n_national"])) {
+				$sql="SELECT login FROM eleves WHERE no_gep='".$tab_ele[$cpt]["n_national"]."';";
+				//echo "$sql<br />";
+				$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_login)>0) {
+					$lig_login=mysqli_fetch_object($res_login);
+					$tab_ele[$cpt]["login"]=$lig_login->login;
+				}
+			}
+
 			if($fichier_xml_complet=="n") {
 				if(isset($tab_ele[$cpt]["n_national"])) {
 					$sql="DELETE FROM edt_eleves_lignes WHERE n_national='".$tab_ele[$cpt]["n_national"]."';";
@@ -1342,11 +1352,18 @@ elseif($action=="upload") {
 	<tbody>";
 
 			for($loop=0;$loop<count($tab_ele);$loop++) {
-				if($tab_ele[$loop]["n_national"]=="") {
+				if((!isset($tab_ele[$loop]["n_national"]))||($tab_ele[$loop]["n_national"]=="")) {
 					echo "
 		<tr>
 			<td style='color:red'>INE vide</td>
-			<td>".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."</td>
+			<td>
+				<div style='float:right;width:16px;'>
+					<a href='../eleves/recherche.php?is_posted_recherche=y&rech_nom=".remplace_accents($tab_ele[$loop]["nom"], 'all')."&rech_prenom=".remplace_accents($tab_ele[$loop]["prenom"], 'all').add_token_in_url()."' target='_blank' title=\"Rechercher dans un nouvel onglet.\">
+						<img src='../images/icons/chercher.png' class='icone16' />
+					</a>
+				</div>
+				".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]." 
+			</td>
 			<td style='color:red'>Élève non identifié dans la base</td>
 			<td>".htmlentities($tab_ele[$loop]["classe"])."</td>
 		</tr>";
@@ -1357,8 +1374,18 @@ elseif($action=="upload") {
 					if(mysqli_num_rows($res_ele)==0) {
 						echo "
 		<tr>
-			<td>".$tab_ele[$loop]["n_national"]."</td>
-			<td>".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."</td>
+			<td>".(isset($tab_ele[$loop]["n_national"]) ? $tab_ele[$loop]["n_national"] : '')."</td>
+			<td>
+				<div style='float:right;width:16px;'>".(isset($tab_ele[$loop]["login"]) ? "
+					<a href='../eleves/visu_eleve.php?ele_login=".$tab_ele[$loop]["login"]."' target='_blank' title=\"Afficher dans un nouvel onglet.\">
+						<img src='../images/icons/ele_onglets.png' class='icone16' />
+					</a>" : "
+					<a href='../eleves/recherche.php?is_posted_recherche=y&rech_nom=".remplace_accents($tab_ele[$loop]["nom"], 'all')."&rech_prenom=".remplace_accents($tab_ele[$loop]["prenom"], 'all').add_token_in_url()."' target='_blank' title=\"Rechercher dans un nouvel onglet.\">
+						<img src='../images/icons/chercher.png' class='icone16' />
+					</a>")."
+				</div>
+				".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."
+			</td>
 			<td style='color:red'>Élève non identifié dans la base</td>
 			<td>".htmlentities($tab_ele[$loop]["classe"])."</td>
 		</tr>";
@@ -1369,7 +1396,17 @@ elseif($action=="upload") {
 						echo "
 		<tr>
 			<td>".$tab_ele[$loop]["n_national"]."</td>
-			<td>".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."</td>
+			<td>
+				<div style='float:right;width:16px;'>".(isset($tab_ele[$loop]["login"]) ? "
+					<a href='../eleves/visu_eleve.php?ele_login=".$tab_ele[$loop]["login"]."' target='_blank' title=\"Afficher dans un nouvel onglet.\">
+						<img src='../images/icons/ele_onglets.png' class='icone16' />
+					</a>" : "
+					<a href='../eleves/recherche.php?is_posted_recherche=y&rech_nom=".remplace_accents($tab_ele[$loop]["nom"], 'all')."&rech_prenom=".remplace_accents($tab_ele[$loop]["prenom"], 'all').add_token_in_url()."' target='_blank' title=\"Rechercher dans un nouvel onglet.\">
+						<img src='../images/icons/chercher.png' class='icone16' />
+					</a>")."
+				</div>
+				".$tab_ele[$loop]["nom"]." ".$tab_ele[$loop]["prenom"]."
+			</td>
 			<td>";
 						$tmp_tab_clas=get_class_periode_from_ele_login($lig_ele->login);
 						if(!isset($tmp_tab_clas['classe'])) {
