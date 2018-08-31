@@ -50,6 +50,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 | <a href='classes_param.php'>Paramétrage de plusieurs classes par lots</a>
 | <a href='../init_xml2/init_alternatif.php?cat=classes' title="Création d'enseignements par lots">Créations par lots</a>
 | <a href='cpe_resp.php'>Paramétrage rapide CPE Responsable</a>
+| <a href='prof_suivi.php'>Paramétrage rapide <?php echo getSettingValue('gepi_prof_suivi');?> Responsable</a>
 | <a href='scol_resp.php' title="Définir les comptes scolarité associés à telles et telles classes.
 Ce choix permet de limiter la liste des classes proposées aux différents comptes scolarité quand le suivi est réparti entre plusieurs personnes.">Paramétrage scolarité</a>
 | <a href='acces_appreciations.php'>Paramétrage de l'accès aux appréciations</a>
