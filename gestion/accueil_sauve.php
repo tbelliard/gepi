@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1021,7 +1021,18 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 	check_token();
 
     echo "<h3>Confirmation de la restauration de la base</h3>\n";
-    echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b>\n";
+    echo "<p>Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b></p>\n";
+
+	// 20180831 : Tester s'il existe une fichier de description et si oui l'afficher
+	if(file_exists('../backup/'.$dirname.'/'.$_GET['file'].'.txt')) {
+		$handle = fopen('../backup/'.$dirname.'/'.$_GET['file'].'.txt', "r");
+		$contents = fread($handle, filesize('../backup/'.$dirname.'/'.$_GET['file'].'.txt'));
+		fclose($handle);
+		$contents=preg_replace('/"/', "", $contents);
+
+		echo "<div class='fieldset_opacite50' style='margin:0.5em; padding:0.5em;'><strong>Description&nbsp;:</strong> ".nl2br($contents)."</div>";
+	}
+
     echo "<p><b>ATTENTION :</b> La procédure de restauration de la base est <b>irréversible</b>. Le fichier de restauration doit être valide. Selon le contenu de ce fichier, tout ou partie de la structure actuelle de la base ainsi que des données existantes peuvent être supprimées et remplacées par la structure et les données présentes dans le fichier.
     <br /><br />\n<b>AVERTISSEMENT :</b> Cette procédure peut être très longue selon la quantité de données à restaurer.</p>\n";
 	echo "<br />Options de restauration :\n";
