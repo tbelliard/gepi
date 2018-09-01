@@ -12088,7 +12088,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							}
 						}
 						if(!$resp_1_deja_defini) {
-							echo "<span style='color:red'>Aucun responsable n'a été trouvé.</span>";
+							echo "<span style='color:red'>Aucun responsable 1 n'a été trouvé.</span>";
 						}
 						echo "<br />";
 					}
@@ -12134,7 +12134,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							}
 						}
 						if(!$resp_2_deja_defini) {
-							echo "<span style='color:red'>Aucun responsable n'a été trouvé.</span>";
+							echo "<span style='color:red'>Aucun responsable 2 n'a été trouvé.</span>";
 						}
 						echo "<br />";
 					}
