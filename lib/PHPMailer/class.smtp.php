@@ -312,7 +312,7 @@ class SMTP
         $this->edebug('Connection: opened', self::DEBUG_CONNECTION);
         // SMTP server can take longer to respond, give longer timeout for first read
         // Windows does not have support for this timeout function
-        if (substr(PHP_OS, 0, 3) != 'WIN') {
+        if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {
             $max = ini_get('max_execution_time');
             // Don't bother if unlimited
             if ($max != 0 && $timeout > $max) {
