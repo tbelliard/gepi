@@ -20,6 +20,9 @@ Bulletins:
   comme on peut déjà le faire pour les appréciations et avis du conseil de classe.
 - Dispositif optionnel d'appréciations-types en fonction de la moyenne.
 
+- Général:
+- Possibilité de mettre à jour globalement les groupes d'après l'export EXP_ELEVES.xml
+
 Gepi-1.7.3 (04/04/2018)
 ===========================
 

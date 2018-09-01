@@ -56,6 +56,7 @@ if (!checkAccess()) {
 	die();
 }
 
+//debug_var();
 
 $sql="CREATE TABLE IF NOT EXISTS edt_eleves_lignes (
 id int(11) NOT NULL AUTO_INCREMENT,
@@ -710,6 +711,373 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 
 	}
 	die();
+}
+
+// 20180831
+if((isset($_POST['maj_tous_les_groupes']))&&(isset($_POST['groupe_a_mettre_a_jour']))&&(isset($_POST['periode']))) {
+
+	//echo "plop";
+	$groupe_a_mettre_a_jour=$_POST['groupe_a_mettre_a_jour'];
+	$periode=$_POST['periode'];
+
+	$ts0=time();
+	//echo "ts0=$ts0<br />";
+	$msg="";
+
+	for($loop_grp_edt=0;$loop_grp_edt<count($groupe_a_mettre_a_jour);$loop_grp_edt++) {
+		//echo "\$groupe_a_mettre_a_jour[$loop_grp_edt]=".$groupe_a_mettre_a_jour[$loop_grp_edt]."<br />";
+		$tmp_tab=explode('|', $groupe_a_mettre_a_jour[$loop_grp_edt]);
+		$id_groupe=$tmp_tab[0];
+		$id_edt_tempo=$tmp_tab[1];
+		$num_periode=$tmp_tab[2];
+		if((preg_match('/^[0-9]{1,}$/', $id_groupe))&&(preg_match('/^[0-9]{1,}$/', $id_edt_tempo))&&(preg_match('/^[0-9]{1,}$/', $num_periode))&&(in_array($num_periode, $periode))) {
+			$msg.="<hr />Traitement du groupe n°".$id_groupe." (<a href='../groupes/edit_eleves.php?id_groupe=".$id_groupe."' target='_blank' title=\"Voir la composition du groupe dans un nouvel onglet\">".get_info_grp($id_groupe)."</a>) sur la période ".$num_periode." avec l'identifiant EDT n°".$id_edt_tempo."<br />";
+			// Test pour vérifier que l'on a bien une correspondance
+			$sql="SELECT 1=1 FROM edt_corresp2 ec2, edt_tempo et WHERE ec2.nom_groupe_edt=et.col1 AND et.id='".$id_edt_tempo."' AND ec2.id_groupe='".$id_groupe."';";
+			//$msg.="$sql<br />";
+			$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_grp)==0) {
+				$msg.="<p style='color:red'>L'identifiant de groupe Gepi et celui EDT ne correspondent pas.</p>";
+			}
+			else {
+				$ts=time();
+				//$msg.="<br />Temps écoulé ".($ts-$ts0)."<br />";
+
+				$tab_corresp_classe=array();
+				$sql="select * from edt_corresp where champ='classe';";
+				$res_corresp_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_corresp_classe)>0) {
+					while($lig_corresp_classe=mysqli_fetch_object($res_corresp_classe)) {
+						$tab_corresp_classe[]=$lig_corresp_classe->nom_edt;
+					}
+				}
+
+				$msg.="<p style='color:green'>L'identifiant de groupe Gepi et celui EDT correspondent.</p>";
+
+				// Problème: On peut avoir plusieurs regroupements EDT associés à un id_groupe selon ce qui a été sélectionné dans l'import EDT
+				//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$id_groupe."';";
+				//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$id_groupe."' AND nom_groupe_edt LIKE '[%]';";
+				//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$id_groupe."' AND nom_groupe_edt LIKE '[%]' AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
+				$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$id_groupe."' AND (nom_groupe_edt LIKE '[%]' OR nom_groupe_edt LIKE '%<%>%') AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
+				// Si on a plusieurs enregistrements, ça ne convient pas.
+				//$msg.="$sql<br />";
+				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+				$ts=time();
+				//$msg.="<br />Temps écoulé ".($ts-$ts0)."<br />";
+				if(mysqli_num_rows($res_grp)==0) {
+					$msg.="<p style='color:red'>Aucun regroupement EDT n'est associé au groupe Gepi n°".$id_groupe.".</p>";
+				}
+				elseif(mysqli_num_rows($res_grp)>1) {
+					$msg.="<p style='color:red'>Plusieurs regroupements EDT sont associés au groupe Gepi n°".$id_groupe.".<br />Vous devez commencer par supprimer la ou les associations en trop.<br />Les regroupements associés sont&nbsp;:<br />";
+					while($lig_grp=mysqli_fetch_object($res_grp)) {
+						$sql="SELECT id FROM edt_tempo WHERE col1='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_grp->nom_groupe_edt)."';";
+						//$msg.="$sql<br />";
+						$res_id=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_id)>0) {
+							$lig_id=mysqli_fetch_object($res_id);
+							$msg.="<a href='#regroupement_".$lig_id->id."' title=\"Voir le regroupement (plus haut ou plus bas) dans la page.\" onclick=\"afficher_tous_div_regroup('');return true;\">$lig_grp->nom_groupe_edt</a><br />";
+						}
+						else {
+							$msg.="$lig_grp->nom_groupe_edt<br />";
+						}
+						//$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
+						//$msg.="\$current_nom_groupe=$current_nom_groupe<br />";
+					}
+					$msg.="</p>";
+				}
+				else {
+					$tab_info_grp=array();
+					$tab_ele_grp=array();
+
+					// 20180831 A REVOIR : il manque des infos après ce texte
+					$msg.="<p style='margin-left:3em;text-indent:-3em;'>Le ou les groupes suivants sont associés à ce nom de regroupement d'élèves EDT&nbsp;:<br />";
+
+					$lig_grp=mysqli_fetch_object($res_grp);
+
+					//$msg.="\$lig_grp->nom_groupe_edt=$lig_grp->nom_groupe_edt<br />";
+					//$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
+					//$msg.="\$current_nom_groupe=$current_nom_groupe<br />";
+
+					$nom_groupe_edt=$lig_grp->nom_groupe_edt;
+					$nom_groupe_edt_clean=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
+
+					//$chaine_nom_groupe="";
+
+					//$sql="";
+					$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+						WHERE (";
+					$tmp_tab_nom_groupe=explode(",", $lig_grp->nom_groupe_edt);
+					$loop2=0;
+					for($loop=0;$loop<count($tmp_tab_nom_groupe);$loop++) {
+						//$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+						$current_nom_groupe=trim(preg_replace("/\[.*\]/", "", $tmp_tab_nom_groupe[$loop]));
+						if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
+							if($loop2>0) {
+								$sql.=" OR ";
+							}
+							$sql.="classe like '$current_nom_groupe' OR 
+								classe like '$current_nom_groupe, %' OR 
+								classe like '%, $current_nom_groupe, %' OR 
+								classe like '%, $current_nom_groupe'";
+							$sql.=" OR groupes like '$current_nom_groupe' OR 
+								groupes like '$current_nom_groupe, %' OR 
+								groupes like '%, $current_nom_groupe, %' OR 
+								groupes like '%, $current_nom_groupe'";
+							$loop2++;
+						}
+					}
+					$sql.=");";
+					if($debug_import_edt=="y") {
+						$msg.="$sql<br />";
+					}
+
+					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$ts=time();
+					//$msg.="<br />Temps écoulé ".($ts-$ts0)."<br />";
+
+					if(mysqli_num_rows($res_ele)==0) {
+						$msg.="<p style='color:plum'>Le regroupement EDT est vide.</p>";
+						// Faut-il vider le groupe Gepi?
+					}
+					else {
+
+						// Le groupe Gepi actuel:
+						$current_group=get_group($id_groupe);
+
+						$reg_nom_groupe = $current_group["name"];
+						$reg_nom_complet = $current_group["description"];
+						$reg_matiere = $current_group["matiere"]["matiere"];
+						$reg_clazz = $current_group["classes"]["list"];
+						$reg_professeurs = (array)$current_group["profs"]["list"];
+
+						// Mettre à jour le $reg_eleves
+						$old_reg_eleves = array();
+						$reg_eleves = array();
+						foreach ($current_group["periodes"] as $period) {
+							if($period["num_periode"]!=""){
+								if($period["num_periode"]!=$num_periode) {
+									$reg_eleves[$period["num_periode"]] = $current_group["eleves"][$period["num_periode"]]["list"];
+								}
+								$old_reg_eleves[$period["num_periode"]] = $current_group["eleves"][$period["num_periode"]]["list"];
+							}
+						}
+
+
+						$texte_mail="Le groupe ".$reg_nom_groupe." ($reg_nom_complet) en ".$current_group["classlist_string"]." a été mis à jour d'après EDT pour la période n°$num_periode.\nLes élèves inscrits étaient:\n";
+						for($loop=0;$loop<count($old_reg_eleves[$num_periode]);$loop++) {
+							$current_login_ele=$old_reg_eleves[$num_periode][$loop];
+							$texte_mail.=get_nom_prenom_eleve($current_login_ele)."\n";
+						}
+						$texte_mail.="Effectif ".count($old_reg_eleves[$num_periode])."\n";
+
+
+						$reserves_sur_maj=0;
+						$msg.="<p style='color:blue'>Les élèves du regroupement EDT sont&nbsp;: <br />";
+						$cpt_ele=0;
+						while($lig_ele=mysqli_fetch_object($res_ele)) {
+							if($cpt_ele>0) {
+								$msg.=", ";
+								$msg.="<br />";
+							}
+							$msg.=$lig_ele->nom." ".$lig_ele->prenom." (".$lig_ele->date_naiss.") (".$lig_ele->n_national.")";
+
+		// Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
+							if($lig_ele->n_national!="") {
+								$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+							}
+							else {
+								$sql="SELECT login, date_sortie FROM eleves WHERE nom='".$lig_ele->nom."' AND prenom='".$lig_ele->prenom."';";
+							}
+							//$msg.="$sql<br />";
+							$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							$ts=time();
+							//$msg.="<br />Temps écoulé ".($ts-$ts0)."<br />";
+
+							if(mysqli_num_rows($res_nn)==0) {
+								$msg.=" <span style='color:red'>INE ".$lig_ele->n_national." non trouvé dans la table 'eleves'</span>";
+								$reserves_sur_maj++;
+							}
+							elseif(mysqli_num_rows($res_nn)==1) {
+								$lig_nn=mysqli_fetch_object($res_nn);
+
+								$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
+								$tab_ele_regroupement_edt['date_sortie'][]=$lig_nn->date_sortie;
+								$tab_ele_regroupement_edt['nom'][]=$lig_ele->nom;
+								$tab_ele_regroupement_edt['prenom'][]=$lig_ele->prenom;
+								$tab_ele_regroupement_edt['date_naiss'][]=$lig_ele->date_naiss;
+								$tab_ele_regroupement_edt['n_national'][]=$lig_ele->n_national;
+
+								//$msg.="<br />\$lig_nn->login=$lig_nn->login<br />";
+								//$msg.="<br />\$num_periode=$num_periode<br />";
+								$id_classe="";
+								$classe="";
+								$tmp_tab=get_class_periode_from_ele_login($lig_nn->login);
+
+								//$msg.="<pre>";
+								//print_r($tmp_tab);
+								//$msg.="</pre>";
+
+								if(isset($tmp_tab['periode'][$num_periode]['id_classe'])) {
+									$id_classe=$tmp_tab['periode'][$num_periode]['id_classe'];
+
+									$inscrire="y";
+									// Contrôler que le $id_classe est bien associé au groupe
+									if(!in_array($id_classe, $reg_clazz)) {
+										// Il faudrait vérifier que le nombre de périodes de la classe est le même que pour les classes déjà inscrites.
+										$sql="SELECT MAX(num_periode) AS maxper FROM periodes WHERE id_classe='$id_classe';";
+										$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_per)==0) {
+											$inscrire="n";
+											$msg.="<br /><span style='color:red'>La classe de l'élève ".$lig_ele->nom." ".$lig_ele->prenom." n'a pas de période (<em>l'élève ne peut pas être ajouté au groupe Gepi</em>)</span>";
+											$texte_mail.="Ajout de ".$lig_ele->nom." ".$lig_ele->prenom." impossible (élève non trouvé).\n";
+											$reserves_sur_maj++;
+										}
+										else {
+											$lig_per=mysqli_fetch_object($res_per);
+											if($lig_per->maxper==count($current_group["periodes"])) {
+												$reg_clazz[]=$id_classe;
+											}
+											else {
+												$inscrire="n";
+												$msg.="<br /><span style='color:red'>La classe de l'élève ".$lig_ele->nom." ".$lig_ele->prenom." n'a pas le même nombre de périodes que les autres classes du groupe (<em>l'élève ne peut pas être ajouté au groupe Gepi</em>)</span>";
+												$texte_mail.="Ajout de ".$lig_ele->nom." ".$lig_ele->prenom." impossible (nombre de périodes incompatible).\n";
+												$reserves_sur_maj++;
+											}
+										}
+									}
+									if($inscrire=="y") {
+										$reg_eleves[$num_periode][]=$lig_nn->login;
+									}
+								}
+								else {
+									$msg.="<br /><span style='color:red'>L'élève ".$lig_ele->nom." ".$lig_ele->prenom." n'est dans aucune classe (<em>il ne peut pas être ajouté au groupe Gepi</em>)</span>";
+									$texte_mail.="Ajout de ".$lig_ele->nom." ".$lig_ele->prenom." impossible (élève inscrit dans aucune classe).\n";
+									$reserves_sur_maj++;
+								}
+
+								$tab_ele_regroupement_edt['id_classe'][]=$id_classe;
+								if(isset($tmp_tab['periode'][$num_periode]['classe'])) {$classe=$tmp_tab['periode'][$num_periode]['classe'];}
+								$tab_ele_regroupement_edt['classe'][]=$classe;
+							}
+							else {
+								$msg.=" <span style='color:red'>Plusieurs élèves trouvés dans la table 'eleves' pour cet INE (???)</span>";
+								$reserves_sur_maj++;
+							}
+							$cpt_ele++;
+						}
+
+						$msg.="</p>";
+
+						for($loop=0;$loop<count($old_reg_eleves[$num_periode]);$loop++) {
+							if(!in_array($old_reg_eleves[$num_periode][$loop], $reg_eleves[$num_periode])) {
+								// Un élève est supprimé du groupe Gepi
+								// On vérifie que la suppression est possible.
+
+								$temoin_bull_ou_cn_non_vide=0;
+								$current_login_ele=$old_reg_eleves[$num_periode][$loop];
+								$current_id_groupe=$id_groupe;
+
+								$temoin="";
+								if (!test_before_eleve_removal($current_login_ele, $current_id_groupe, $num_periode)) {
+									if(($acces_prepa_conseil_edit_limite=="y")&&($current_ele['classe']!="")) {
+										$temoin.="<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$current_login_ele."&id_classe=".$current_ele['classe']."&periode1=".$num_periode."&periode2=".$num_periode."' target='_blank'>";
+										$temoin.="<img src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+										$temoin.="</a>";
+									}
+									else {
+										$temoin.="<img src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+									}
+									$temoin_bull_ou_cn_non_vide++;
+								}
+
+								$nb_notes_cn=nb_notes_ele_dans_tel_enseignement($current_login_ele, $current_id_groupe, $num_periode);
+								if($nb_notes_cn>0) {
+									$temoin.="<img src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+									$temoin_bull_ou_cn_non_vide++;
+								}
+
+								if($temoin_bull_ou_cn_non_vide>0) {
+									$current_nom_prenom_eleve=get_nom_prenom_eleve($current_login_ele);
+									$msg.="<br /><span style='color:red'>Désinscription de l'élève ".$current_nom_prenom_eleve." impossible&nbsp;: $temoin</span>";
+									$texte_mail.="Désinscription de ".$current_nom_prenom_eleve." impossible (carnet de notes ou bulletin non vide).\n";
+									$reg_eleves[$num_periode][]=$current_login_ele;
+									$reserves_sur_maj++;
+								}
+
+							}
+						}
+
+						$ts=time();
+						//$msg.="<br />Temps écoulé ".($ts-$ts0)."<br />";
+
+						// 20160420: On ne modifie pas les modalités:
+						$code_modalite_elect_eleves=$current_group["modalites"];
+
+						$msg.="<p class='bold' style='margin-top:1em;'>Mise à jour du groupe en période $num_periode&nbsp;: ";
+						$update = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
+						if($update) {
+							$msg.="<span style='color:green'>SUCCES</span>";
+							if($reserves_sur_maj>0) {$msg.="<span style='color:red'> avec les réserves mentionnées plus haut</span>.";}
+
+							$texte_mail.="\nNouvelle composition du groupe en période $num_periode:\n";
+							for($loop=0;$loop<count($reg_eleves[$num_periode]);$loop++) {
+								$current_login_ele=$reg_eleves[$num_periode][$loop];
+								$texte_mail.=get_nom_prenom_eleve($current_login_ele)."\n";
+							}
+							$texte_mail.="Effectif ".count($reg_eleves[$num_periode])."\n";
+
+
+							$texte_mail="Bonjour(soir),\n\n".$texte_mail."\nCordialement.\n-- \n".$_SESSION['prenom']." ".$_SESSION['nom'];
+
+							$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+							// 20160908
+							if(getSettingANon("MajInscriptEleEdtEnvoiMail")) {
+								$envoi_mail_actif="n";
+							}
+							if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+								$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+							}
+							if($envoi_mail_actif=='y') {
+
+								$ajout_header="";
+								if(($_SESSION['email']!="")&&(check_mail($_SESSION['email']))) {
+									$ajout_header.="Cc: ".$_SESSION['prenom']." ".$_SESSION['nom']." <".$_SESSION['email'].">\r\n";
+									$tab_param_mail['cc']=$_SESSION['email'];
+									$tab_param_mail['cc_name']=$_SESSION['prenom']." ".$_SESSION['nom'];
+								}
+
+								$destinataire_mail="";
+								$gepiAdminAdress=getSettingValue("gepiAdminAdress");
+								if(($gepiAdminAdress!="")&&(check_mail($gepiAdminAdress))) {
+									$destinataire_mail=$gepiAdminAdress;
+									$tab_param_mail['destinataire'][]=$destinataire_mail;
+								}
+								for($loop=0;$loop<count($current_group['profs']['list']);$loop++) {
+									$mail_user=get_mail_user($current_group['profs']['list'][$loop]);
+									if(($mail_user!="")&&(check_mail($mail_user))) {
+										if($destinataire_mail!="") {$destinataire_mail.=",";}
+										$destinataire_mail.=$mail_user;
+										$tab_param_mail['destinataire'][]=$mail_user;
+									}
+								}
+
+								if($destinataire_mail!="") {
+									$sujet_mail="[GEPI] Modification des affectations élèves dans un de vos enseignements";
+									$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header, "plain", $tab_param_mail);
+								}
+							}
+
+						} else {$msg.="<span style='color:red'>ECHEC</span>";}
+						$msg.="</p>";
+
+					}
+				}
+
+			}
+		}
+	}
 }
 
 $avec_js_et_css_edt="y";
@@ -1559,6 +1927,27 @@ elseif($action=="comparer") {
 <p id='p_affichage_masquage_div_regroupements' style='margin-top:1em; margin-bottom:1em; display:none;'><a href=\"javascript:afficher_tous_div_regroup('')\">Afficher tous les regroupements</a><br />
 <a href=\"javascript:afficher_tous_div_regroup('none')\">N'afficher que les regroupements avec différence trouvée</a></p>";
 
+	// 20180831
+	$max_per_global=0;
+	$tab_groupes_a_mettre_a_jour=array();
+	echo "<div id='div_choix_periodes_maj_tous_groupes' class='fieldset_opacite50' style='display:none;margin:1em;padding:0.5em;'>
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml' method='post'>
+		<fieldset class='fieldset_opacite50'>
+			".add_token_field()."
+			<input type='hidden' name='maj_tous_les_groupes' value='y' />
+			<p>Prendre en compte les modifications proposées pour tous les groupes, sur les périodes suivantes&nbsp;:</p>
+			<div style='float:right;text-align:center;color:red; width:20em; padding:0.5em;' class='fieldset_opacite50'>
+				<p>
+					Si les correspondances regroupement EDT/groupe Gepi sont correctes, vous pouvez utiliser ce formulaire.<br />
+					Sinon, il vaut mieux parcourir la page pour mettre à jour ce qui doit l'être.
+				</p>
+			</div>
+			<p id='p_periodes_maj_tous_groupes'></p>
+			<p><input type='submit' value='Valider' /></p>
+		</fieldset>
+	</form>
+</div>";
+
 	$tab_nom_classe=array();
 	$cpt_regroupement=0;
 	$chaine_js_div="";
@@ -2036,9 +2425,15 @@ elseif($action=="comparer") {
 								$maxper=$lig_per->maxper;
 							}
 
+							if($maxper>$max_per_global) {
+								$max_per_global=$maxper;
+							}
+
 							for($loop_per=$num_periode;$loop_per<=$maxper;$loop_per++) {
 								echo "
 						<a href='#' target=\"_blank\" onclick=\"maj_composition_groupe($current_id_groupe, $current_id_temp, $loop_per);return false;\">Mettre à jour en période $loop_per</a><br />";
+								// 20180831
+								$tab_groupes_a_mettre_a_jour[]=$current_id_groupe."|".$current_id_temp."|".$loop_per;
 							}
 							echo "
 					</p>
@@ -2066,6 +2461,28 @@ elseif($action=="comparer") {
 			$chaine_js_div.="'$cpt_regroupement'";
 		}
 		$cpt_regroupement++;
+	}
+
+	// 20180831
+	if(count($tab_groupes_a_mettre_a_jour)>0) {
+		$chaine='';
+		for($loop=0;$loop<count($tab_groupes_a_mettre_a_jour);$loop++) {
+			$chaine.="<input type='hidden' name='groupe_a_mettre_a_jour[]' value='".$tab_groupes_a_mettre_a_jour[$loop]."' />";
+		}
+		//echo "\$num_periode=$num_periode<br />";
+		for($loop=$num_periode;$loop<=$max_per_global;$loop++) {
+			$chaine.="<input type='checkbox' name='periode[]' id='periode_groupes_a_mettre_a_jour".$loop."' value='".$loop."' /><label for='periode_groupes_a_mettre_a_jour".$loop."' id='texte_periode_groupes_a_mettre_a_jour".$loop."'>Période $loop</label><br />";
+		}
+		
+		echo "<script type='text/javascript'>
+	if(document.getElementById('p_periodes_maj_tous_groupes')) {
+		document.getElementById('p_periodes_maj_tous_groupes').innerHTML=\"".$chaine."\";
+
+		if(document.getElementById('div_choix_periodes_maj_tous_groupes')) {
+			document.getElementById('div_choix_periodes_maj_tous_groupes').style.display='';
+		}
+	}
+</script>";
 	}
 
 	if($chaine_js_div!="") {
