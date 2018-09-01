@@ -3918,6 +3918,14 @@ if ((getSettingValue("autorise_edt_tous") == "y")&&($_SESSION['statut']=="profes
 		<legend style='border: 1px solid grey; background-color: white;'>Paramètres Emploi du temps</legend>
 		<input type='hidden' name='parametrer_edt' value='y' />
 
+		<div style='float:right;width:220px;text-align:center;padding:10px;' class='fieldset_opacite50'>
+			<p>Survolez un carré pour afficher le nom de la couleur&nbsp;:</p>";
+	for($loop2=0;$loop2<count($tab_couleurs_html);$loop2++) {
+		echo "<div style='float:left; background-color:".$tab_couleurs_html[$loop2].";width:20px;height:20px;margin:1px;' title=\"".$tab_couleurs_html[$loop2]."\"></div>";
+	}
+	echo "
+		</div>
+
 		<p>Définir des couleurs pour mes enseignements dans l'EDT2&nbsp;: <a href='../edt/index2.php?login_prof=BOIREAUS&affichage=semaine&type_affichage=prof' target='_blank' title=\"Voir mon emploi du temps.\"><img src='../images/icons/edt2.png' class='icone16' alt='EDT' /></a></p>
 		<table class='boireaus boireaus_alt'>
 			<tr>
