@@ -1068,7 +1068,7 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 		echo "<blockquote>\n";
 		echo "<p>\n";
 		echo "<input type=\"checkbox\" name=\"restauration_mysql\" id=\"restauration_mysql\" value=\"y\"";
-		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
+		if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN') && (!file_exists("mysql.exe"))) echo " disabled";
 		echo " onchange='document.getElementById(\"restauration_old_way\").checked=false;document.getElementById(\"ne_pas_restaurer_tentatives_intrusion\").checked=false;document.getElementById(\"ne_pas_restaurer_log\").checked=false;'";
 		echo "/><label for='restauration_mysql' style='cursor:pointer;'> Restaurer la sauvegarde par un appel à la commande système mysql<br />(<i>plus rapide mais il n'y a aucune indication de progression durant le processus</i>)</label><br /><br />\n";
 		echo "</p>\n";
@@ -1092,9 +1092,9 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 				ou en ISO (sauvegarde GEPI &lt;=1.5.5)
 			</label>
 		</li>
-	</ul>
-';
-		if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) {
+	</ul>';
+
+		if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN') && (!file_exists("mysql.exe"))) {
 		echo "<p><b><font color=\"#FF0000\">Attention : </font></b>pour utiliser la commande système mysql lorsque Gepi est hébergé sous Windows il faut au préalable copier le fichier \"mysql.exe\" dans le dossier \"gestion\" de Gepi. Ce fichier \"mysql.exe\" se trouve généralement dans le sous-dossier \"bin\" du dossier d'installation de MySQL.</p>";
 		}
 		echo "</blockquote>\n";
@@ -1248,7 +1248,7 @@ if (isset($action) and ($action == 'restaure'))  {
 
 
 	// on teste l'accès à mysql
-	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe")) @exec("mysql.exe --help",$t_retour,$retour);
+	if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN') && file_exists("mysqldump.exe")) @exec("mysql.exe --help",$t_retour,$retour);
 	else @exec("mysql --help",$t_retour,$retour);
 	if ($retour!=0) {
 		echo "<script>document.getElementById('restau_en_cours').innerHTML='<a href=\"accueil_sauve.php\"><img src=\"../images/icons/back.png\" alt=\"Retour\">Retour</a>'</script>";
@@ -1303,7 +1303,7 @@ if (isset($action) and ($action == 'restaure'))  {
 
 	// C'est parti pour la restauration
 	register_shutdown_function('shutdown');
-	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysql.exe")) {
+	if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN') && file_exists("mysql.exe")) {
 		$cmd="mysql.exe -v --default_character_set ".$char_set." -p".$dbPass." -u ".$dbUser." ".$dbDb." --host=".$dbHost;
 		if (isset($dbPort)) {$cmd.=" --port=".$dbPort;}
 		$cmd.=" < ../backup/".$dirname."/".$file ." > ../backup/".$dirname."/bilan_restauration_".$file.".txt";
@@ -1690,7 +1690,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 	if (ob_get_contents()) ob_flush(); flush();
 
 	$t_debut=time();
-	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe")) {
+	if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN') && file_exists("mysqldump.exe")) {
 		// on est sous Window$ et on a $filename : "xxxx.sql.gz"
 		$filename=substr($filename,0,-3); // $filename : "xxxx.sql"
 		$command = "mysqldump.exe --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass";
@@ -1919,7 +1919,7 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
 La première méthode (mysqldump) est vigoureusement recommandée car beaucoup moins lourde en ressources, mais ne fonctionnera que sur certaines configurations serveurs.<br />
 La seconde méthode est lourde en ressources mais passera sur toutes les configurations.</p>
 <?php
-if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysqldump.exe"))
+if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN') && !file_exists("mysqldump.exe"))
 	{
 ?>
 <p>
@@ -1943,12 +1943,12 @@ if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysqldump.exe"))
         <select id='action' name='action' size='1'>
             <option value='dump'<?php if (getSettingValue("mode_sauvegarde") == "gepi") echo " selected='selected'";?>>sans mysqldump</option>
 <?php
-if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
-	(substr(PHP_OS,0,3) != 'WIN'))
+if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN' && file_exists("mysqldump.exe"))||
+	(strtoupper(substr(PHP_OS,0,3)) != 'WIN'))
 	{
 ?>
             <option value='system_dump' 
-			<?php if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
+			<?php if (strtoupper(substr(PHP_OS,0,3)) == 'WIN' && !file_exists("mysql.exe")) echo " disabled";
 			 else if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " selected='selected'";?>
 			>avec mysqldump</option>
 <?php

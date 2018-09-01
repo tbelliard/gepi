@@ -2268,7 +2268,7 @@ function check_utf8 ($str) {
     // Longueur maximale de la chaîne pour éviter un stack overflow
 	// dans le test à base d'expression régulière
 	$long_max=1000;
-	if (substr(PHP_OS,0,3) == 'WIN') $long_max=300; // dans le cas de Window$
+	if (strtoupper(substr(PHP_OS,0,3)) == 'WIN') $long_max=300; // dans le cas de Window$
     if (mb_strlen($str) < $long_max) {
     // From http://w3.org/International/questions/qa-forms-utf-8.html
     $preg_match_result = 1 == preg_match('%^(?:
