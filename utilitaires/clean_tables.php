@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -5181,10 +5181,102 @@ else {
 	
 		echo "<hr />\n";
 	
-		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module abs1 de Gepi, ainsi que les tables a_agregation_decompte, a_notifications, a_saisies, a_saisies_version, a_traitements du module abs2 : </p>\n";
+		echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'absences_rb', 'absences_repas' et 'absences_eleves' du module abs1 de Gepi, ainsi que les tables 'a_agregation_decompte', 'a_notifications', 'a_saisies', 'a_saisies_version', 'a_traitements' du module abs2 : </p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\" id='form_suppr_abs'>\n";
 		echo add_token_field();
 		echo "<center>\n";
+
+		// 20180901
+		$temoin_abs=false;
+		$plus_vieil_enregistrement=strftime("%Y-%m-%d");
+		$sql="SELECT debut_ts FROM absences_rb ORDER BY debut_ts ASC LIMIT 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$temoin_abs=true;
+			$lig=mysqli_fetch_object($test);
+			$tmp_date=strftime("%Y-%m-%d", $lig-date_ts);
+			if($tmp_date<$plus_vieil_enregistrement) {
+				$plus_vieil_enregistrement=$tmp_date;
+			}
+		}
+
+		$sql="SELECT date_repas FROM absences_repas ORDER BY date_repas ASC LIMIT 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$temoin_abs=true;
+			$lig=mysqli_fetch_object($test);
+			if($lig->date_repas<$plus_vieil_enregistrement) {
+				$plus_vieil_enregistrement=$lig->date_repas;
+			}
+		}
+
+		$sql="SELECT d_date_absence_eleve FROM absences_eleves ORDER BY d_date_absence_eleve ASC LIMIT 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$temoin_abs=true;
+			$lig=mysqli_fetch_object($test);
+			if($lig->d_date_absence_eleve<$plus_vieil_enregistrement) {
+				$plus_vieil_enregistrement=$lig->d_date_absence_eleve;
+			}
+		}
+
+		$sql="SELECT date_demi_jounee FROM a_agregation_decompte ORDER BY date_demi_jounee ASC LIMIT 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$temoin_abs=true;
+			$lig=mysqli_fetch_object($test);
+			if($lig->date_demi_jounee<$plus_vieil_enregistrement) {
+				$plus_vieil_enregistrement=$lig->date_demi_jounee;
+			}
+		}
+
+		$sql="SELECT created_at FROM a_notifications ORDER BY created_at ASC LIMIT 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$temoin_abs=true;
+			$lig=mysqli_fetch_object($test);
+			if($lig->created_at<$plus_vieil_enregistrement) {
+				$plus_vieil_enregistrement=$lig->created_at;
+			}
+		}
+
+		$sql="SELECT created_at FROM a_traitements ORDER BY created_at ASC LIMIT 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$temoin_abs=true;
+			$lig=mysqli_fetch_object($test);
+			if($lig->created_at<$plus_vieil_enregistrement) {
+				$plus_vieil_enregistrement=$lig->created_at;
+			}
+		}
+
+		$sql="SELECT debut_abs FROM a_saisies ORDER BY debut_abs ASC LIMIT 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$temoin_abs=true;
+			$lig=mysqli_fetch_object($test);
+			if($lig->debut_abs<$plus_vieil_enregistrement) {
+				$plus_vieil_enregistrement=$lig->debut_abs;
+			}
+		}
+
+		$sql="SELECT debut_abs FROM a_saisies_version ORDER BY debut_abs ASC LIMIT 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$temoin_abs=true;
+			$lig=mysqli_fetch_object($test);
+			if($lig->debut_abs<$plus_vieil_enregistrement) {
+				$plus_vieil_enregistrement=$lig->debut_abs;
+			}
+		}
+
+		if($temoin_abs) {
+			echo "Les enregistrement d'absences actuellement dans la base remontent au plus loin au ".formate_date($plus_vieil_enregistrement).".<br />";
+		}
+		else {
+			echo "Aucun enregistrement d'absence n'est actuellement présent.<br />";
+		}
+
 		echo "<input type=submit value=\"Vider les tables enregistrements du module absences\" />\n";
 
 		//include("../lib/calendrier/calendrier.class.php");
@@ -5208,6 +5300,7 @@ else {
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
+
 		echo "<input type=submit value=\"Vider les tables du module Discipline\" />\n";
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='vidage_mod_discipline' />\n";
@@ -5225,6 +5318,18 @@ else {
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
 		echo "<center>\n";
+
+		// 20180901
+		$sql="SELECT date FROM s_incidents order by date asc limit 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)==0) {
+			// Ca ne devrait pas arriver.
+			echo "Aucun incident n'est actuellement enregistré.<br />";
+		}
+		else {
+			$lig=mysqli_fetch_object($test);
+			echo "Les incidents actuellement dans la base remontent au plus loin au ".formate_date($lig->date).".<br />";
+		}
 
 		$annee=strftime("%Y");
 		$mois=strftime("%m");
@@ -5303,6 +5408,18 @@ else {
 		echo "<form action=\"clean_tables.php\" method=\"post\" id='form_clean_log'>\n";
 		echo add_token_field();
 		echo "<center>\n";
+		
+		// 20180901
+		$sql="SELECT START FROM log ORDER BY START ASC limit 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)==0) {
+			// Ca ne devrait pas arriver.
+			echo "Les logs de connexion sont vides.<br />";
+		}
+		else {
+			$lig=mysqli_fetch_object($test);
+			echo "Les logs de connexion actuellement dans la base remontent au plus loin au ".formate_date($lig->START).".<br />";
+		}
 		echo "<input type=submit value=\"Vider les logs de connexion\" />\n";
 
 		$annee=strftime("%Y");
@@ -5322,6 +5439,19 @@ else {
 		echo "<form action=\"clean_tables.php\" method=\"post\" id='form_clean_tentative_intrusion'>\n";
 		echo add_token_field();
 		echo "<center>\n";
+		
+		// 20180901
+		$sql="select date from tentatives_intrusion order by date asc limit 1;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)==0) {
+			// Ca ne devrait pas arriver.
+			echo "Les logs de tentative d'intrusion sont vides.<br />";
+		}
+		else {
+			$lig=mysqli_fetch_object($test);
+			echo "Les logs de tentative d'intrusion actuellement dans la base remontent au plus loin au ".formate_date($lig->date).".<br />";
+		}
+
 		echo "<input type=submit value=\"Vider les logs de tentatives d'intrusion\" />\n";
 
 		$annee=strftime("%Y");
