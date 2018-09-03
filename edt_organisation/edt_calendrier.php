@@ -90,6 +90,7 @@ $data['mois_actu'] = date("m"); // mois sous la forme 01 à 12
 $data['jour_actu'] = date("d"); // jour sous la forme 01 à 31
 $data['date_jour'] = date("d/m/Y"); //jour/mois/année
 
+require_once("./fonctions_calendrier.php");
 
 // =======================================================================
 //
