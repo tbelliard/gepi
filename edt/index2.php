@@ -559,10 +559,18 @@ if((!isset($num_semaine_annee))||($num_semaine_annee=="")||(!preg_match("/[0-9]{
 }
 //===================================================
 if($affichage=="semaine") {
+	// 20180904
+	//echo "Affichage semaine avec \$num_semaine_annee=$num_semaine_annee<br />";
 	$tmp_tab=explode("|", $num_semaine_annee);
 	$num_semaine=$tmp_tab[0];
 	$annee=$tmp_tab[1];
 	$jours=get_days_from_week_number($num_semaine, $annee);
+	// 20180904
+	/*
+	echo "<pre>";
+	print_r($jours);
+	echo "</pre>";
+	*/
 
 	$ts_display_date=$jours['num_jour'][1]['timestamp'];
 }
@@ -1487,7 +1495,7 @@ if(strftime("%m")>=8) {
 else {
 	$annee=strftime("%Y")-1;
 }
-for($n=36;$n<52;$n++) {
+for($n=36;$n<=52;$n++) {
 	$tmp_tab=get_days_from_week_number($n ,$annee);
 
 	if("$n|$annee"==$num_semaine_en_cours) {
@@ -1704,6 +1712,9 @@ $hauteur_une_heure=60;
 
 //$html=affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
 $html=affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
+// 20180904
+//echo "affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);<br />";
+//echo "strftime('%d/%m/%Y', $ts_display_date)=".strftime('%d/%m/%Y', $ts_display_date)."<br />";
 
 $x1=10;
 //$y1=150;

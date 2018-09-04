@@ -1597,17 +1597,26 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	$ts_fin_annee=getSettingValue('end_bookings');
 
 	$display_date=strftime("%d/%m/%Y", $ts_display_date);
-	// 20171102
+	//echo strftime("%a %d/%m/%Y à %H:%M:%S", $ts_display_date)."<br />";
 	//$num_semaine=strftime("%V", $ts_display_date);
 	$num_semaine=id_num_semaine($ts_display_date);
+	//echo "\$num_semaine=$num_semaine<br />";
 	if($num_semaine<10) {
+		$tmp_annee_test=strftime("%Y", $ts_display_date+6*25*3600);
+		//echo strftime("%a %d/%m/%Y à %H:%M:%S", $ts_display_date+6*24*3600)."<br />";
+		if($tmp_annee_test!=strftime("%Y", $ts_display_date)) {
+			$num_semaine_annee="0".$num_semaine."|".$tmp_annee_test;
+		}
+		else {
+			$num_semaine_annee="0".$num_semaine."|".strftime("%Y", $ts_display_date);
+		}
 		// Le %V a l'air de déjà renvoyer le mois sur 2 chiffres
-		$num_semaine_annee="0".$num_semaine."|".strftime("%Y", $ts_display_date);
 		$num_semaine_annee=preg_replace("/^[0]{2,}/","0", $num_semaine_annee);
 	}
 	else {
 		$num_semaine_annee=$num_semaine."|".strftime("%Y", $ts_display_date);
 	}
+	//echo "\$num_semaine_annee=$num_semaine_annee<br />";
 
 	$tab_jour=get_tab_jour_ouverture_etab();
 
