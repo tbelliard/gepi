@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1601,7 +1601,7 @@ Patientez pendant l'extraction des données... merci.
 						// 20170727
 						$chaine_acces_modif_tel="";
 						if($acces_saisie_tel_resp) {
-							$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp(".$tab_ele['resp'][$i]['pers_id'].");return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
+							$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp('".$tab_ele['resp'][$i]['pers_id']."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
 						}
 
 						if($tab_ele['resp'][$i]['tel_pers']!='') {
@@ -1904,7 +1904,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 							// 20170727
 							$chaine_acces_modif_tel="";
 							if($acces_saisie_tel_resp) {
-								$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp(".$tab_ele['resp'][$i]['pers_id'].");return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
+								$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp('".$tab_ele['resp'][$i]['pers_id']."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
 							}
 
 							if($tab_ele['resp'][$i]['tel_pers']!='') {

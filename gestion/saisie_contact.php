@@ -163,7 +163,7 @@ if($mode=="js") {
 	}
 
 	// Affichage du formulaire
-	if(($pers_id!="")&&(preg_match("/^[0-9]{1,}$/", $pers_id))) {
+	if(($pers_id!="")&&(preg_match("/^[p]{0,1}[0-9]{1,}$/", $pers_id))) {
 		if(!acces_saisie_telephone("responsable")) {
 			echo "<p style='color:red'>Vous n'avez pas accès à la saisie des numéros de téléphone des responsables.</p>";
 		}
@@ -384,7 +384,7 @@ echo "<p class='bold'>
 <h2>Saisie contact téléphonique et mail</h2>";
 
 	// Affichage du formulaire
-	if(($pers_id!="")&&(preg_match("/^[0-9]{1,}$/", $pers_id))) {
+	if(($pers_id!="")&&(preg_match("/^^[p]{0,1}[0-9]{1,}$/", $pers_id))) {
 		if(!acces_saisie_telephone("responsable")) {
 			echo "<p style='color:red'>Vous n'avez pas accès à la saisie des numéros de téléphone des responsables.</p>";
 		}
