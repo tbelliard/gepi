@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -33,11 +33,12 @@ if ($resultat_session == 'c') {
     die();
 }
 
-
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+//debug_var();
 
 // Initialisation des variables
 $mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : false);
@@ -765,10 +766,17 @@ if(count($critere_sso_corresp)>0) {
 	$chaine_sso_corresp="";
 
 	if(in_array("manquante", $critere_sso_corresp)) {
+		/*
 		if($chaine_sso_corresp!="") {
 			$chaine_sso_corresp.=" OR ";
 		}
-		$chaine_sso_corresp.="u.login NOT IN ((SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='') UNION ())";
+		*/
+		//$chaine_sso_corresp.="u.login NOT IN ((SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='') UNION ())";
+		$chaine_sso_corresp.=" AND (u.login IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='') OR (u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!='')))";
+	}
+	//echo "\$chaine_sso_corresp=$chaine_sso_corresp<br />";
+	if($chaine_sso_corresp!='') {
+		$sql.=$chaine_sso_corresp;
 	}
 	/*
 	for($loop=0;$loop<count($critere_sso_corresp);$loop++) {
