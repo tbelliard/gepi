@@ -17458,6 +17458,7 @@ function french_strftime($motif,$timestamp=0) {
 	return $strftime_utf8 ? strftime($motif,$timestamp) : utf8_encode(strftime($motif,$timestamp));
 }
 
+/*
 // Sous Window$, certains paramètres de strftime() ne sont pas implémentés (notamment le %V)
 // Cf. https://msdn.microsoft.com/en-us/library/fe06s4ak.aspx
 function id_num_semaine($ts="") {
@@ -17468,36 +17469,15 @@ function id_num_semaine($ts="") {
 	}
 
 	if($temoin_strftime_V_vide) {
-		/*
-		$annee=strftime('%Y', $ts);
-
-		//echo "<p style='margin-top:1em'><strong>".strftime("%a %d/%m/%Y", $ts)."</strong><br />";
-
-		$decalage_semaine=0;
-		for($num_jour=1;$num_jour<8;$num_jour++) {
-			$ts_test=mktime(0,0,0, 1, $num_jour, $annee);
-			$nom_jour=mb_strtolower(strftime('%A', $ts_test));
-			//echo "Test du $num_jour/1/$annee : $nom_jour <br />";
-			if(($nom_jour=='lundi')||($nom_jour=='monday')) {
-				// On a trouvé le lundi
-				if($num_jour>4) {
-					$decalage_semaine=1;
-				}
-				//echo "Le lundi est le $num_jour/1/$annee<br />";
-				break;
-			}
-		}
-
-		return sprintf('%02d', (strftime('%W', $ts)+$decalage_semaine));
-		*/
 		return id_s_annee($ts);
 	}
 	else {
 		return strftime('%V', $ts);
 	}
 }
+*/
 
-function id_s_annee($ts_date=0) {
+function id_num_semaine($ts_date=0) {
 /**
  * Renvoie le numéro ISO-8601:1988 de la semaine
  * comme le fait strftime('%V'... mais le

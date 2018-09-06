@@ -929,45 +929,6 @@ if(!isset($type_affichage)) {
 		echo_selon_mode(liens_user($page_lien, $nom_var_login, $tab_statuts, $autres_parametres_lien));
 	}
 
-/*
-// Test des différence %W, %V,...
-echo "
-	<table border='1' class='boireaus'>
-		<tr>
-			<th>Jour</th>
-			<th>%U</th>
-			<th>%V</th>
-			<th>%W</th>
-			<th>Test</th>
-			<th>Test2</th>
-		</tr>";
-$alt=1;
-$annee=2017;
-for($loop=0;$loop<10;$loop++) {
-	$mois=1;
-	$jour=1;
-	$ts=mktime(0, 0, 0, $mois , $jour, $annee);
-
-	for($loop2=0;$loop2<7;$loop2++) {
-		$num_sem=id_num_semaine($ts);
-		$num_sem2=id_s_annee($ts);
-		echo "
-		<tr class='lig$alt'>
-			<td>".strftime("%a %d/%m/%Y", $ts)."</td>
-			<td>".strftime("%U", $ts)."</td>
-			<td>".strftime("%V", $ts)."</td>
-			<td>".strftime("%W", $ts)."</td>
-			<td".(($num_sem!=strftime("%V", $ts)) ? " style='color:red'" : "").">".$num_sem."</td>
-			<td".(($num_sem2!=strftime("%V", $ts)) ? " style='color:red'" : "").">".$num_sem2."</td>
-		</tr>";
-		$ts+=24*3600;
-	}
-	$annee+=1;
-	$alt=$alt*(-1);
-}
-echo "
-	</table>";
-*/
 	require("../lib/footer.inc.php");
 	die();
 }
