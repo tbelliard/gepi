@@ -3,7 +3,7 @@
 
 /*
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -328,6 +328,7 @@
 						$sql="DROP TABLE IF EXISTS temp_gep_import2;";
 						$suppr_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
+						// 20180907
 						$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
 						`ID_TEMPO` varchar(40) NOT NULL default '',
 						`LOGIN` varchar(40) $chaine_mysql_collate NOT NULL default '',
@@ -337,6 +338,7 @@
 						`ELEDATNAIS` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELENOET` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELE_ID` varchar(40) $chaine_mysql_collate NOT NULL default '',
+						`id_eleve` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELEDOUBL` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELENONAT` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELEREG` varchar(40) $chaine_mysql_collate NOT NULL default '',
@@ -527,8 +529,14 @@
 							}
 
 							if($temoin_div_trouvee=='oui'){
+								// 20180907
+								$id_eleve=get_valeur_champ('eleves', "ele_id='".$eleves[$i]['eleve_id']."'", 'id_eleve');
+
 								$sql="INSERT INTO temp_gep_import2 SET id_tempo='$id_tempo', ";
 								$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
+								if($id_eleve!='') {
+									$sql.="id_eleve='".$id_eleve."', ";
+								}
 								$sql.="divcod='".$eleves[$i]['classe']."';";
 								//echo "$sql<br />\n";
 								$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
