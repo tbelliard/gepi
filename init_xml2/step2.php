@@ -579,7 +579,7 @@ Si vous partagez les classes entre le chef d'établissement et son adjoint, vous
         echo "<tr class='lig$alt'>\n";
         echo "<td><center><input type=\"checkbox\" id='ligne_$i' name='ligne_$i' value='' /></center></td>\n";
         echo "<td>\n";
-        echo "<p align='center'><b>$nom_court</b></p>\n";
+        echo "<label for='ligne_$i'><p align='center'><b>$nom_court</b></p></label>\n";
         //echo "";
         echo "</td>\n";
         echo "<td>\n";
