@@ -2375,7 +2375,9 @@ echo add_token_field();
 	<br />
 	Le logo est visible sur les bulletins officiels, ainsi que sur la page d'accueil publique des cahiers de texte
 	<br />
-	Modifier le Logo (<em>png, jpg et gif uniquement</em>) :
+	Modifier le Logo (<em>jpg, png et gif uniquement,<br />
+	mais seules les images JPG peuvent être incorporées<br />
+	aux documents PDF produits par Gepi</em>) :
 	<br />
 	<input type="file" name="doc_file" onchange='changement()' />
 	<input type="submit" name="valid_logo" value="Enregistrer" /></p>
