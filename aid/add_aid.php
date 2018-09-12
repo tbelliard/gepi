@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -53,6 +53,8 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
 	header("Location: ../accueil.php?msg=NiveauGestion AID insuffisant.");
 	die();
 }
+
+//debug_var();
 
 //=======================================
 $sql="SELECT * FROM aid_config WHERE indice_aid='$indice_aid';";
@@ -143,6 +145,8 @@ if (isset($is_posted) && $is_posted) {
 	else {
 		if(($is_posted==1)&&(isset($_POST['creer_un_aid_par_classe']))&&($_POST['creer_un_aid_par_classe']=="y")&&(count($id_classe)>1)) {
 
+			//echo "<strong>On va créer un AID par classe.</strong><br />";
+
 			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
 			$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
 			$prof_matiere=isset($_POST['prof_matiere']) ? $_POST['prof_matiere'] : array();
@@ -164,6 +168,7 @@ if (isset($is_posted) && $is_posted) {
 					$reg_parent = Sauve_sous_groupe($aid_id, $parent);
 					if (!$reg_parent) {
 						$mess = rawurlencode("Erreur lors de l'enregistrement des données pour $aid_nom.");
+						//echo "<a href='index2.php?msg=$mess&indice_aid=$indice_aid'>Redir vers index2.php?msg=$mess&indice_aid=$indice_aid</a><br />";
 						header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 						die();
 					}
@@ -186,6 +191,7 @@ if (isset($is_posted) && $is_posted) {
 				$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
 				if (!$reg_data) {
 					$mess = rawurlencode("Erreur lors de l'enregistrement des données pour $aid_nom.");
+					//echo "<a href='index2.php?msg=$mess&indice_aid=$indice_aid'>Redir vers index2.php?msg=$mess&indice_aid=$indice_aid</a><br />";
 					header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 					die();
 				}
@@ -216,6 +222,7 @@ if (isset($is_posted) && $is_posted) {
 					}
 
 					$nb_ele_inscrits=0;
+					$nb_ele_inscrits_autre_aid=0;
 					//for($loop=0;$loop<count($id_classe);$loop++) {
 						$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$id_classe[$loop]."';";
 						//echo "$sql<br />";
@@ -230,13 +237,15 @@ if (isset($is_posted) && $is_posted) {
 									$filtre =  "";
 								}
 								$sql = "SELECT * FROM j_aid_eleves WHERE (login='".$lig_ele->login."' AND indice_aid='".$indice_aid."'".$filtre.")";
-								//echo $sql;
+								//echo "$sql<br />";
 								$test = mysqli_query($GLOBALS["mysqli"], $sql);
 								$test2 = mysqli_num_rows($test);
 								//$msg = "";
 								if ($test2=="0") {
 									if($lig_ele->login!='') {
-										$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$lig_ele->login."', id_aid='$aid_id', indice_aid='$indice_aid'");
+										$sql="INSERT INTO j_aid_eleves SET login='".$lig_ele->login."', id_aid='$aid_id', indice_aid='$indice_aid';";
+										//echo "$sql<br />";
+										$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 										if (!$reg_data) {
 											$msg.="Erreur lors de l'ajout de l'élève ".$lig_ele->login."<br />";
 										}
@@ -245,6 +254,13 @@ if (isset($is_posted) && $is_posted) {
 										}
 									}
 								}
+								else {
+									$nb_ele_inscrits_autre_aid++;
+								}
+							}
+
+							if (($autoriser_inscript_multiples != 'y')&&($nb_ele_inscrits_autre_aid>0)) {
+								$msg.=$nb_ele_inscrits_autre_aid." déjà inscrits dans un autre AID de la catégorie et vous n'avez pas autorisé les inscriptions multiples dans le paramétrage de la catégorie AID.<br />";
 							}
 						}
 					//}
@@ -350,39 +366,34 @@ if (isset($is_posted) && $is_posted) {
 				} else if ($count > 1) {
 					$msg=$msg." Attention, plusieurs AID ($nom_famille_aid) portant le même nom ($aid_nom) existaient déja !<br />";
 				}
-				if ($mode == "multiple") {
-					$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />" ;
 
-					if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
-						$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
-					}
+				$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />" ;
 
-					if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
-						$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
-					}
+				if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
+					$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
+				}
 
-					$mess = rawurlencode($msg);
-					header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
-					die();
-				} else{
-					$msg .= "AID ($nom_famille_aid) $aid_nom enregistrée !<br />";
-
-					if((isset($nb_ele_inscrits))&&($nb_ele_inscrits>0)) {
-						$msg.=$nb_ele_inscrits." élève(s) inscrit(s).<br />";
-					}
-
-					if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
-						$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
-					}
+				if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
+					$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
 				}
 			}
 
+			if ($mode == "multiple") {
+				$mess = rawurlencode($msg);
+				//echo "<a href='add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid'>Redir vers add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid</a><br />";
+				header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
+				die();
+			} else{
+				$mess = rawurlencode($msg);
+				//echo "<a href='index2.php?msg=$mess&indice_aid=$indice_aid'>Redir vers index2.php?msg=$mess&indice_aid=$indice_aid</a><br />";
+				header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+				die();
+			}
 
-			$mess = rawurlencode($msg);
-			header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
-			die();
 		}
 		else {
+			//echo "<strong>On va créer un seul AID.</strong><br />";
+
 			if ("n" == $sous_groupe) {
 				Efface_sous_groupe($aid_id);
 				//die($aid_id);
@@ -391,6 +402,7 @@ if (isset($is_posted) && $is_posted) {
 				$reg_parent = Sauve_sous_groupe($aid_id, $parent);
 				if (!$reg_parent) {
 					$mess = rawurlencode("Erreur lors de l'enregistrement des données.");
+					//echo "<a href='index2.php?msg=$mess&indice_aid=$indice_aid'>Redir vers index2.php?msg=$mess&indice_aid=$indice_aid</a><br />";
 					header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 					die();
 				}
@@ -410,6 +422,7 @@ if (isset($is_posted) && $is_posted) {
 			$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
 			if (!$reg_data) {
 				$mess = rawurlencode("Erreur lors de l'enregistrement des données.");
+				//echo "<a href='index2.php?msg=$mess&indice_aid=$indice_aid'>Redir vers index2.php?msg=$mess&indice_aid=$indice_aid</a><br />";
 				header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 				die();
 			}
@@ -417,8 +430,10 @@ if (isset($is_posted) && $is_posted) {
 				$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
 
 				$nb_ele_inscrits=0;
+				$nb_ele_inscrits_autre_aid=0;
 				for($loop=0;$loop<count($id_classe);$loop++) {
 					$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$id_classe[$loop]."';";
+					//echo "$sql<br />";
 					$res_ele_clas=mysqli_query($GLOBALS['mysqli'], $sql);
 					if(mysqli_num_rows($res_ele_clas)>0) {
 						while($lig_ele=mysqli_fetch_object($res_ele_clas)) {
@@ -430,13 +445,15 @@ if (isset($is_posted) && $is_posted) {
 								$filtre =  "";
 							}
 							$sql = "SELECT * FROM j_aid_eleves WHERE (login='".$lig_ele->login."' AND indice_aid='".$indice_aid."'".$filtre.")";
-							//echo $sql;
+							//echo "$sql<br />";
 							$test = mysqli_query($GLOBALS["mysqli"], $sql);
 							$test2 = mysqli_num_rows($test);
 							$msg = "";
 							if ($test2=="0") {
 								if($lig_ele->login!='') {
-									$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$lig_ele->login."', id_aid='$aid_id', indice_aid='$indice_aid'");
+									$sql="INSERT INTO j_aid_eleves SET login='".$lig_ele->login."', id_aid='$aid_id', indice_aid='$indice_aid';";
+									//echo "$sql<br />";
+									$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!$reg_data) {
 										$msg.="Erreur lors de l'ajout de l'élève ".$lig_ele->login."<br />";
 									}
@@ -445,6 +462,13 @@ if (isset($is_posted) && $is_posted) {
 									}
 								}
 							}
+							else {
+								$nb_ele_inscrits_autre_aid++;
+							}
+						}
+
+						if (($autoriser_inscript_multiples != 'y')&&($nb_ele_inscrits_autre_aid>0)) {
+							$msg.=$nb_ele_inscrits_autre_aid." déjà inscrits dans un autre AID de la catégorie et vous n'avez pas autorisé les inscriptions multiples dans le paramétrage de la catégorie AID.<br />";
 						}
 					}
 				}
@@ -469,7 +493,7 @@ if (isset($is_posted) && $is_posted) {
 					}
 				}
 
-				if((count($prof_matiere)>0)&&(isset($_POST['restreindre_aux_profs_de_la_classe']))) {
+				if((isset($prof_matiere))&&(count($prof_matiere)>0)&&(isset($_POST['restreindre_aux_profs_de_la_classe']))) {
 					if($_POST['restreindre_aux_profs_de_la_classe']=="y") {
 						$chaine_classes="";
 						for($loop=0;$loop<count($id_classe);$loop++) {
@@ -600,6 +624,7 @@ if (isset($is_posted) && $is_posted) {
 				}
 
 				$mess = rawurlencode($msg);
+				//echo "<a href='add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid'>Redir vers add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid</a><br />";
 				header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
 				die();
 			} else {
@@ -614,6 +639,7 @@ if (isset($is_posted) && $is_posted) {
 				}
 
 				$mess = rawurlencode($msg);
+				//echo "<a href='index2.php?msg=$mess&indice_aid=$indice_aid'>Redir vers index2.php?msg=$mess&indice_aid=$indice_aid</a><br />";
 				header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 				die();
 			}
@@ -734,6 +760,9 @@ if ($_SESSION['statut'] == 'professeur') {
 		echo "
 	| <a href='config_aid.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
 	}
+
+		echo "
+	| <a href='index2.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID de la catégorie</a>";
 ?>
 
 </p>
