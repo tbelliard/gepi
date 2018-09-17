@@ -641,41 +641,65 @@ if (!$cours_col->isEmpty()) {
 
 	$col = EdtSemaineQuery::create()->find();
 	if (isset($_GET["affiche_toute_semaine"])) {
-    echo '<p>';
-	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
-	    for ($i = 0; $i < $col->count(); $i++) {
-		$pos = ($i + 30) % $col->count();
-		$semaine = $col[$pos];
-		//$semaine = new EdtSemaine();
-		    echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
-		    echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
-		    if (date('W') == $semaine->getPrimaryKey())  {
-			echo " (courante) ";
-		    } else {
-			echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
-		    }
-		    echo "<br/>\n";
-	    }
-	    echo '<a href="./saisir_eleve.php">Ne pas afficher toutes les semaines</a>';
-    echo '</p>';
+		echo '<p>';
+		//on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
+		for ($i = 0; $i < $col->count(); $i++) {
+			$pos = ($i + 30) % $col->count();
+			$semaine = $col[$pos];
+			//$semaine = new EdtSemaine();
+			echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
+			echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
+			if (date('W') == $semaine->getPrimaryKey())  {
+				echo " (courante) ";
+			} else {
+				echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
+			}
+			echo "<br/>\n";
+		}
+		echo '<a href="./saisir_eleve.php">Ne pas afficher toutes les semaines</a>';
+		echo '</p>';
 	} else {
-    echo '<p>';
-	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
-	    for ($i = 0; $i < 10; $i++) {
-		$pos = ($i + date('W') + 2*$col->count() - 5) % $col->count();
-		$semaine = $col[$pos];
-		//$semaine = new EdtSemaine();
-		    echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
-		    echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
-		    if (date('W') == $semaine->getPrimaryKey())  {
-			echo " (courante) ";
-		    } else {
-			echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
-		    }
-		    echo "<br/>\n";
-	    }
-	    echo '<a href="./saisir_eleve.php?affiche_toute_semaine=oui">Afficher toutes les semaines</a>';
-    echo '</p>';
+		echo '<p>';
+		//on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
+		$compteur_semaines=0;
+		//for ($i = 0; $i < 10; $i++) {
+		for ($i = 0; $i < 52; $i++) {
+
+			if($compteur_semaines>10) {
+				break;
+			}
+
+			$pos = ($i + date('W') + 2*$col->count() - 5) % $col->count();
+			$semaine = $col[$pos];
+			/*
+			echo "<pre>";
+			print_r($semaine);
+			echo "</pre>";
+			*/
+			// A FAIRE tester si $semaine->getSamedi('U') $semaine->getLundi('U') est bien entre begin_bookings et end_bookings (accepter une semaine avant et une semaine après)
+			if(($semaine->getLundi('U')>=getSettingValue('begin_bookings')-24*3600*7)&&
+			($semaine->getSamedi('U')<=getSettingValue('end_bookings')+24*3600*7)) {
+				//$semaine = new EdtSemaine();
+				echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
+				echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
+				if (date('W') == $semaine->getPrimaryKey())  {
+					echo " (courante) ";
+				} else {
+					echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
+				}
+				echo "<br/>\n";
+				$compteur_semaines++;
+			}
+			/*
+			else {
+				echo "getSettingValue('begin_bookings')-24*3600*7=".(getSettingValue('begin_bookings')-24*3600*7)." soit ".strftime("%d/%m/%Y %H:%M:%S", getSettingValue('begin_bookings')-24*3600*7)."<br />
+				\$semaine->getLundi('U')=".$semaine->getLundi('U')." soit ".strftime("%d/%m/%Y %H:%M:%S", $semaine->getLundi('U'))."<br />
+				getSettingValue('end_bookings')+24*3600*7=".(getSettingValue('end_bookings')+24*3600*7)." soit ".strftime("%d/%m/%Y %H:%M:%S", getSettingValue('end_bookings')+24*3600*7)."<br />";
+			}
+			*/
+		}
+		echo '<a href="./saisir_eleve.php?affiche_toute_semaine=oui">Afficher toutes les semaines</a>';
+		echo '</p>';
 	}
 	echo '</div>';
 
