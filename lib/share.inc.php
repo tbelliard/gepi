@@ -13863,7 +13863,27 @@ function cdt_copie_fichiers_archive_vers_cdt_courant($texte, $type_notice, $id_g
 
 	$contenu_cor=$texte;
 
-	if(preg_match_all('| src="\.\./documents/archives/[^"]*"|', $contenu_cor, $tab_match)) {
+	$url_racine_gepi=trim(preg_replace("#/$#", '', getSettingValue('url_racine_gepi')));
+	$url_racine_gepi_interne=trim(preg_replace("#/$#", '', getSettingValue('url_racine_gepi_interne')));
+
+	preg_match_all('# src="\.\./documents/archives/[^"]*"| src="'.$url_racine_gepi_interne.'/documents/archives/[^"]*"| src="'.$url_racine_gepi.'/documents/archives/[^"]*"#', $contenu_cor, $tab_match);
+
+	/*
+	$f=fopen("../backup/contenu_cdt.txt", "a+");
+	foreach($tab_match as $key => $value) {
+		if(is_array($value)) {
+			foreach($value as $key2 => $value2) {
+				fwrite($f, "\$tab_match[$key][$key2]=$value2\n");
+			}
+		}
+		else {
+			fwrite($f, "\$tab_match[$key]=$value\n");
+		}
+	}
+	fclose($f);
+	*/
+
+	if(count($tab_match)>0) {
 		// Dans le cas où une même image est plusieurs fois dans la même notice:
 		$tab_deja=array();
 		for($loop=0;$loop<count($tab_match[0]);$loop++) {
@@ -13907,8 +13927,21 @@ function cdt_copie_fichiers_archive_vers_cdt_courant($texte, $type_notice, $id_g
 				}
 				$chemin_fichier_dest=$dossier_dest."/".$fichier_dest;
 
+				/*
+				$f=fopen("../backup/contenu_cdt.txt", "a+");
+				fwrite($f, "\n");
+				fwrite($f, "\$chemin_fichier_src=$chemin_fichier_src\n");
+				$chemin_fichier_src_chemin_copie=preg_replace("#^$url_racine_gepi_interne#", "..", $chemin_fichier_src);
+				fwrite($f, "\$chemin_fichier_src_chemin_copie=$chemin_fichier_src_chemin_copie\n");
+				$chemin_fichier_src_chemin_copie=preg_replace("#^$url_racine_gepi#", "..", $chemin_fichier_src_chemin_copie);
+				fwrite($f, "\$chemin_fichier_src_chemin_copie=$chemin_fichier_src_chemin_copie\n\n");
+				fclose($f);
+				*/
+				$chemin_fichier_src_chemin_copie=preg_replace("#^$url_racine_gepi_interne#", "..", $chemin_fichier_src);
+				$chemin_fichier_src_chemin_copie=preg_replace("#^$url_racine_gepi#", "..", $chemin_fichier_src_chemin_copie);
+
 				// Copier le fichier
-				if(copy($chemin_fichier_src, $chemin_fichier_dest)) {
+				if((file_exists($chemin_fichier_src_chemin_copie))&&(copy($chemin_fichier_src_chemin_copie, $chemin_fichier_dest))) {
 					// Corriger la notice pour pointer sur le document du CDT courant
 					$contenu_cor=preg_replace('| src="'.$chemin_fichier_src.'"|', ' src="'.$chemin_fichier_dest.'"', $contenu_cor);
 				}
