@@ -89,6 +89,9 @@ if ($id_devoir)  {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+$interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : getPref($_SESSION['login'],'add_modif_dev_simpl','n'));
+
 /**
  * Configuration des calendriers
  */
@@ -135,7 +138,7 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
-isset($id_devoir);
+//isset($id_devoir);
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id_devoir"]) ? $_GET["id_devoir"] : NULL);
 
 //debug_var();
@@ -148,13 +151,13 @@ if (isset($_POST['ok'])) {
 
 	$msg="";
 
-    $reg_ok = "yes";
-    $new='no';
-    if ((isset($_POST['new_devoir'])) and ($_POST['new_devoir'] == 'yes')) {
-        $reg = mysqli_query($GLOBALS["mysqli"], "insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$id_racine','$id_conteneur','nouveau')");
-        $id_devoir = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
-        $new='yes';
-        if (!$reg) {$reg_ok = "no";}
+	$reg_ok = "yes";
+	$new='no';
+	if ((isset($_POST['new_devoir'])) and ($_POST['new_devoir'] == 'yes')) {
+		$reg = mysqli_query($GLOBALS["mysqli"], "insert into cn_devoirs (id_racine,id_conteneur,nom_court) values ('$id_racine','$id_conteneur','nouveau')");
+		$id_devoir = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+		$new='yes';
+		if (!$reg) {$reg_ok = "no";}
 
 		$creation_dev_autres_groupes=isset($_POST['creation_dev_autres_groupes']) ? $_POST['creation_dev_autres_groupes'] : 'n';
 		$id_autre_groupe=isset($_POST['id_autre_groupe']) ? $_POST['id_autre_groupe'] : array();
@@ -274,7 +277,7 @@ if (isset($_POST['ok'])) {
 			}
 		}
 
-    }
+	}
 
 	// Pour loguer les modifications en période close:
 	$temoin_log="n";
@@ -302,7 +305,10 @@ if (isset($_POST['ok'])) {
 		$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
-	if (isset($_POST['nom_complet'])) {
+	if(($interface_simplifiee=="y")&&(getPref($_SESSION['login'],'add_modif_dev_nom_complet','n')=='n')&&(isset($_POST['new_devoir'])) and ($_POST['new_devoir'] == 'yes')) {
+		$nom_complet = $nom_court;
+	}
+	elseif (isset($_POST['nom_complet'])) {
 		$nom_complet = $_POST['nom_complet'];
 	} else {
 		$nom_complet = $nom_court;
