@@ -74,7 +74,7 @@ function AfficheDatesDebutFinSemaine() {
         $ts-=86400;
         }
         echo strftime("%d %b ", $ts);
-        $ts+=86400*5;
+        $ts+=86400*6;
         echo " - ";
         echo strftime("%d %b %Y", $ts);
 }
