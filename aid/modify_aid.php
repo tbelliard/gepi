@@ -363,9 +363,13 @@ while($infos = mysqli_fetch_array($query)){
 		echo "
 		| <a href='".$_SERVER['PHP_SELF']."?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves de l'AID</a>";
 	}
+	if(acces("/groupes/get_csv.php", $_SESSION['statut'])) {
+		echo "
+		| <a href='../groupes/get_csv.php?id_aid=".$aid_id."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export CSV classique</a>";
+	}
 	if(acces("/groupes/mes_listes.php", $_SESSION['statut'])) {
 		echo "
-		| <a href='../groupes/mes_listes.php#aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export CSV</a>";
+		| <a href='../groupes/mes_listes.php#aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export CSV spécifique</a>";
 	}
 	if((getSettingAOui('active_module_trombinoscopes'))&&(acces("/mod_trombinoscopes/trombinoscopes.php", $_SESSION['statut']))) {
 		echo "
