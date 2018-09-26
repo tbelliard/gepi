@@ -2535,7 +2535,9 @@ mysql>
 									}
 									$test_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($test_grp)>0) {
-										echo mysqli_num_rows($test_grp)." groupes trouvés";
+										if($debug_import_edt=="y") {
+											echo mysqli_num_rows($test_grp)." groupes trouvés";
+										}
 										if(!in_array($lig->id_groupe, $tab_grp_candidat)) {
 											$tab_grp_candidat[]=$lig->id_groupe;
 											if($debug_import_edt=="y") {
