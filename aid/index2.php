@@ -127,6 +127,16 @@ if (($NiveauGestionAid >= 10) and (isset($_POST["is_posted"]))) {
         };
         if (!$register)
 			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée en_construction de l'aid $aid_id <br />\n";
+
+        // Enregistrement de visibilite_eleve
+        if (isset($_POST["visibilite_eleve_".$aid_id])) {
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set visibilite_eleve='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        } else {
+            $register = mysqli_query($GLOBALS["mysqli"], "update aid set visibilite_eleve='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
+        };
+        if (!$register)
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée visibilite_eleve de l'aid $aid_id <br />\n";
+
         $i++;
     }
     if ($msg_inter == "") {
@@ -333,6 +343,18 @@ if (($NiveauGestionAid >= 10) and ($activer_outils_comp == "y")) {
 					</a>				
 				</span>
 			</th>
+			<th class="small" style="font-weight: normal;">
+				L'AID est visible des élèves<br />
+				<span class="noprint">
+					<a href="javascript:CocheColonne(7);changement();">
+						<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
+					</a>
+					/
+					<a href="javascript:DecocheColonne(7);changement();">
+						<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
+					</a>				
+				</span>
+			</th>
 <?php
 }
 // Colonne "supprimer
@@ -360,6 +382,7 @@ while ($i < $nombreligne) {
     $fiche_publique = @old_mysql_result($calldata, $i, "fiche_publique");
     $affiche_adresse1 = @old_mysql_result($calldata, $i, "affiche_adresse1");
     $en_construction = @old_mysql_result($calldata, $i, "en_construction");
+    $visibilite_eleve = @old_mysql_result($calldata, $i, "visibilite_eleve");
     if ($aid_num =='') {$aid_num='&nbsp;';}
     $aid_id = @old_mysql_result($calldata, $i, "id");
     $alt=$alt*(-1);
@@ -508,6 +531,15 @@ while ($i < $nombreligne) {
 					   value="y" 
 					   id="case_6_<?php echo $i; ?>"
 <?php					if ($en_construction == "y") {echo " checked = 'checked' ";} ?>
+					   />
+			</td>
+<?php	// Visibilité élève/parent ?>
+			<td class="center">
+				<input type="checkbox" 
+					   name="visibilite_eleve_<?php echo $aid_id; ?>" 
+					   value="y" 
+					   id="case_7_<?php echo $i; ?>"
+<?php					if ($visibilite_eleve == "y") {echo " checked = 'checked' ";} ?>
 					   />
 			</td>
 <?php

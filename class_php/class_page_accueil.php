@@ -1324,18 +1324,29 @@ if(getSettingAOui('active_bulletins')) {
 	}
   }
 
-  private function AfficheAid($indice_aid){
-    if ($this->statutUtilisateur == "eleve") {
-        $test = sql_query1("SELECT count(login) FROM j_aid_eleves
-				  WHERE login='".$this->loginUtilisateur."'
-				  AND indice_aid='".$indice_aid."' ");
-        if ($test == 0)
-            return false;
-        else
-            return true;
-    } else
-        return true;
-  }
+	private function AfficheAid($indice_aid) {
+		if ($this->statutUtilisateur == "eleve") {
+			/*
+			$test = sql_query1("SELECT count(login) FROM j_aid_eleves
+			WHERE login='".$this->loginUtilisateur."'
+			AND indice_aid='".$indice_aid."' ");
+			*/
+			$sql="SELECT 1=1 FROM j_aid_eleves jae, aid a 
+					WHERE jae.login='".$this->loginUtilisateur."' AND 
+						jae.indice_aid='".$indice_aid."' AND 
+						a.indice_aid=jae.indice_aid AND 
+						a.visibilite_eleve='y';";
+			//echo "$sql<br />";
+			$test=mysqli_num_rows(mysqli_query($GLOBALS['mysqli'], $sql));
+			if ($test == 0)
+				return false;
+			else
+				return true;
+		}
+		else {
+			return true;
+		}
+	}
 
   protected function bulletins(){
       global $mysqli;

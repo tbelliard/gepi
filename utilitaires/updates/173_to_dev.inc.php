@@ -150,4 +150,19 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'visibilite_eleve' à la table 'aid'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM aid LIKE 'visibilite_eleve';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE aid ADD visibilite_eleve ENUM( 'y', 'n' ) NOT NULL DEFAULT 'y';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

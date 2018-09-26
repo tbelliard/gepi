@@ -39,13 +39,13 @@ function Multiples_possible ($indice_aid) {
 
 /*===== aid =====*/
 
-function Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe, $inscrit_direct) {
+function Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe, $inscrit_direct, $visibilite_eleve='y') {
 	global $mysqli;
 	$sql = "INSERT INTO aid "
 	   . "SET id = '$aid_id', nom='$aid_nom', numero='$aid_num', indice_aid='$indice_aid', "
-	   . "sous_groupe='$sous_groupe', inscrit_direct='$inscrit_direct' "
+	   . "sous_groupe='$sous_groupe', inscrit_direct='$inscrit_direct', visibilite_eleve='$visibilite_eleve' "
 	   . "ON DUPLICATE KEY "
-	   . "UPDATE nom='$aid_nom', numero='$aid_num', sous_groupe='$sous_groupe', inscrit_direct='$inscrit_direct'";
+	   . "UPDATE nom='$aid_nom', numero='$aid_num', sous_groupe='$sous_groupe', inscrit_direct='$inscrit_direct', visibilite_eleve='$visibilite_eleve'";
 	//die($sql) ;
 	$retour = mysqli_query($mysqli, $sql); 
 	return $retour;

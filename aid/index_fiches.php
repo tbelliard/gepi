@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -43,6 +43,39 @@ if (!VerifAidIsActive($indice_aid,"")) {
     die();
 }
 
+if($_SESSION['statut']=='eleve') {
+	$sql="SELECT 1=1 FROM j_aid_eleves jae, aid a 
+			WHERE jae.login='".$_SESSION['login']."' AND 
+				jae.indice_aid='".$indice_aid."' AND 
+				a.indice_aid=jae.indice_aid AND 
+				a.visibilite_eleve='y';";
+	//echo "$sql<br />";
+	$test=mysqli_num_rows(mysqli_query($GLOBALS['mysqli'], $sql));
+	if ($test == 0) {
+		header("Location: ../accueil.php?msg=Accès non autorisé.");
+		die();
+	}
+}
+elseif($_SESSION['statut']=='responsable') {
+	$sql="SELECT 1=1 FROM j_aid_eleves jae, 
+					aid a, 
+					eleves e, 
+					responsables2 r, 
+					resp_pers rp 
+			WHERE rp.login='".$_SESSION['login']."' AND 
+				rp.pers_id=r.pers_id AND 
+				r.ele_id=e.ele_id AND 
+				e.login=jae.login AND 
+				jae.indice_aid='".$indice_aid."' AND 
+				a.indice_aid=jae.indice_aid AND 
+				a.visibilite_eleve='y';";
+	//echo "$sql<br />";
+	$test=mysqli_num_rows(mysqli_query($GLOBALS['mysqli'], $sql));
+	if ($test == 0) {
+		header("Location: ../accueil.php?msg=Accès non autorisé.");
+		die();
+	}
+}
 
 $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice_aid."'");
 $feuille_presence = sql_query1("select feuille_presence from aid_config where indice_aid='".$indice_aid."'");

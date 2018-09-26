@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -307,7 +307,9 @@ if (isset($_POST["is_posted"])) {
         $sql_aid .= "eleve_peut_modifier = '".$reg_eleve_peut_modifier."'";
         $met_virgule='y';
     }
+    //echo "PLIP";
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'prof_peut_modifier','W',$annee)) and ($annee=='')) {
+    //echo "PLOP";
         if (isset($_POST["reg_prof_peut_modifier"]))
             $reg_prof_peut_modifier = "y";
         else
@@ -355,7 +357,20 @@ if (isset($_POST["is_posted"])) {
         $sql_aid .= "en_construction = '".$reg_en_construction."'";
         $met_virgule='y';
     }
-	
+
+	//reg_visibilite_eleve
+	if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'visibilite_eleve','W',$annee)) {
+		if (isset($_POST["reg_visibilite_eleve"])) {
+			$reg_visibilite_eleve = "y";
+		}
+		else {
+			$reg_visibilite_eleve = "n";
+		}
+		if ($met_virgule=='y') {$sql_aid .=",";}
+		$sql_aid .= "visibilite_eleve = '".$reg_visibilite_eleve."'";
+		$met_virgule='y';
+	}
+
 	// Sous-groupe de
 	if ($met_virgule=='y') {$sql_aid .=",";}
 	if ($sous_groupe ==="y") {
@@ -365,7 +380,7 @@ if (isset($_POST["is_posted"])) {
 		$sql_aid .= " sous_groupe = 'n' ";
 		Efface_sous_groupe($aid_id);
 	}
-    $met_virgule='y';
+	$met_virgule='y';
 	
 	// inscription directe
 	if ($met_virgule=='y') {$sql_aid .=",";}
@@ -374,7 +389,7 @@ if (isset($_POST["is_posted"])) {
 	} else {
 		$sql_aid .= " inscrit_direct = 'n' ";
 	}
-    $met_virgule='y';
+	$met_virgule='y';
 	
     // Fin de la requête
     if ($annee=='') {
@@ -384,7 +399,7 @@ if (isset($_POST["is_posted"])) {
         $sql_aid .= " WHERE (id = '".$aid_id."' AND id_type_aid='".$indice_aid."' AND annee='".$annee."')";
     }
 	
-	//echo $sql_aid;
+	//echo $sql_aid."<br />";
 
     $enr_aid = sql_query($sql_aid);
     if ($msg != "")  {$msg .= "<br />";}
@@ -421,6 +436,7 @@ $reg_num = old_mysql_result($call_data_projet,0,"numero");
 $reg_fiche_publique = old_mysql_result($call_data_projet,0,"fiche_publique");
 $reg_affiche_adresse1 = old_mysql_result($call_data_projet,0,"affiche_adresse1");
 $reg_en_construction = old_mysql_result($call_data_projet,0,"en_construction");
+$reg_visibilite_eleve = old_mysql_result($call_data_projet,0,"visibilite_eleve");
 if ($annee=='') {
   $reg_perso1 = old_mysql_result($call_data_projet,0,"perso1");
   $reg_perso2 = old_mysql_result($call_data_projet,0,"perso2");
@@ -448,6 +464,8 @@ else
     $titre_page = "Modification d'une fiche projet ".$nom_projet;
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+//echo "annee=$annee<br />";
+//echo "reg_prof_peut_modifier=$reg_prof_peut_modifier<br />";
 
 $NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
 $NiveauGestionAid_AID_courant=NiveauGestionAid($_SESSION["login"],$indice_aid, $aid_id);
@@ -815,11 +833,13 @@ if ($_SESSION["statut"]=="administrateur") {
         if ($annee=='') {
           //numero
           echo "<p>Numéro (fac.) : <input type=\"text\" name=\"reg_num\" size=\"4\" value=\"".$reg_num."\" onchange=\"changement()\" /></p>\n";
+
           //eleve_peut_modifier
           echo "<p><input type=\"checkbox\" name=\"reg_eleve_peut_modifier\" id=\"reg_eleve_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
           if ($reg_eleve_peut_modifier == 'y') echo " checked ";
           echo "/> \n";
           echo "<label for='reg_eleve_peut_modifier'>Les élèves responsables peuvent modifier la fiche.</label></p>\n";
+
           //prof_peut_modifier
           echo "<p><input type=\"checkbox\" name=\"reg_prof_peut_modifier\" id=\"reg_prof_peut_modifier\" value=\"y\" onchange=\"changement()\" ";
           if ($reg_prof_peut_modifier == 'y') echo " checked ";
@@ -846,6 +866,12 @@ if ($_SESSION["statut"]=="administrateur") {
         if ($reg_en_construction == 'y') echo " checked ";
         echo "/> \n";
         echo "<label for='reg_en_construction'>L'adresse publique est déclarée \"en construction\" sur la fiche publique.</label></p>\n";
+
+          //AID visible des eleves
+          echo "<p><input type=\"checkbox\" name=\"reg_visibilite_eleve\" id=\"reg_visibilite_eleve\" value=\"y\" onchange=\"changement()\" ";
+          if ($reg_visibilite_eleve == 'y') echo " checked ";
+          echo "/> \n";
+          echo "<label for='reg_visibilite_eleve'>Les élèves voient cet AID.</label></p>\n";
     } else {
         echo "<ul>";
         if ($annee=='') {
@@ -880,6 +906,13 @@ if ($_SESSION["statut"]=="administrateur") {
             echo "<li>L'adresse publique est déclarée \"en construction\" sur la fiche publique.</li>\n";
         else
             echo "<li>L'adresse publique n'est pas déclarée \"en construction\" sur la fiche publique.</li>\n";
+
+          //AID visible des eleves
+        if ($reg_visibilite_eleve == 'y')
+            echo "<li>L'AID est visible des élèves.</li>\n";
+        else
+            echo "<li>L'AID n'est pas visible des élèves.</li>\n";
+
         echo "</ul>\n";
 
     }

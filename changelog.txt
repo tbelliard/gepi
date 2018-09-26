@@ -6,6 +6,11 @@
 Gepi-master (Version de développement)
 ===========================
 
+AID:
+- Possibilité de rendre des AID non visibles des élèves 
+  (pour par exemple préparer un voyage scolaire, et ne le rendre visible 
+  qu'une fois le voyage prêt).
+
 Carnets de notes:
 - Ajout de modes de saisie de notes pour passer plus vite à la saisie de la note suivante.
 

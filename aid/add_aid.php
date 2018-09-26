@@ -84,7 +84,8 @@ $action = isset($action) ? $action : "";
 $sous_groupe = isset($sous_groupe) ? $sous_groupe : "n";
 $parent = isset($parent) ? $parent : "";
 $sous_groupe_de =isset($sous_groupe_de) ? $sous_groupe_de : NULL;
-$inscrit_direct =isset($inscrit_direct) ? $inscrit_direct : NULL;
+$inscrit_direct=isset($inscrit_direct) ? $inscrit_direct : NULL;
+$visibilite_eleve=isset($visibilite_eleve) ? $visibilite_eleve : 'n';
 
 if(($aid_id!="")&&(preg_match("/^[0-9]{1,}$/", $aid_id))&&($outils_complementaires=="y")) {
 	// Rediriger vers la fiche projet
@@ -188,7 +189,7 @@ if (isset($is_posted) && $is_posted) {
 				//if ($inscrit_direct) die ($inscrit_direct);
 
 
-				$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
+				$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct, $visibilite_eleve);
 				if (!$reg_data) {
 					$mess = rawurlencode("Erreur lors de l'enregistrement des données pour $aid_nom.");
 					//echo "<a href='index2.php?msg=$mess&indice_aid=$indice_aid'>Redir vers index2.php?msg=$mess&indice_aid=$indice_aid</a><br />";
@@ -392,6 +393,7 @@ if (isset($is_posted) && $is_posted) {
 
 		}
 		else {
+			// Création ou modif
 			//echo "<strong>On va créer un seul AID.</strong><br />";
 
 			if ("n" == $sous_groupe) {
@@ -419,7 +421,7 @@ if (isset($is_posted) && $is_posted) {
 			}
 		//if ($inscrit_direct) die ($inscrit_direct);
 
-			$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
+			$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct, $visibilite_eleve);
 			if (!$reg_data) {
 				$mess = rawurlencode("Erreur lors de l'enregistrement des données.");
 				//echo "<a href='index2.php?msg=$mess&indice_aid=$indice_aid'>Redir vers index2.php?msg=$mess&indice_aid=$indice_aid</a><br />";
@@ -843,6 +845,27 @@ if ($_SESSION['statut'] == 'professeur') {
 				   id='inscrit_direct'
 				   value="y"
 					<?php if (eleve_inscrit_direct($aid_id, $indice_aid)) {echo " checked='checked' ";} ?>
+				   />
+		</p>
+		<?php
+			$sql="SELECT 1=1 FROM aid WHERE id='".$aid_id."' AND indice_aid='".$indice_aid."' AND visibilite_eleve='y';";
+			$test=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test)>0) {
+				$visibilite_eleve=true;
+			}
+			else {
+				$visibilite_eleve=false;
+			}
+		?>
+		<p>
+			<label for="visibilite_eleve">
+				L'AID est visible des élèves
+			</label>
+			<input type="checkbox"
+				   name='visibilite_eleve'
+				   id='visibilite_eleve'
+				   value="y"
+					<?php if ($visibilite_eleve) {echo " checked='checked' ";} ?>
 				   />
 		</p>
 		</div>
