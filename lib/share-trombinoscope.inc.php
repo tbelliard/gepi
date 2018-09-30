@@ -65,7 +65,7 @@ function initialise_encodage_photos_eleves_alea($encodage_photos_eleves_alea='')
 /**
  * Recherche les élèves sans photos
  *
- * @return array tableau de login - nom - prénom - classe - classe court - eleonet
+ * @return array tableau de login - nom - prénom - classe - classe court - elenoet
  * @see nom_photo()
  */
 function recherche_eleves_sans_photo() {
