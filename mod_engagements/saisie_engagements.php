@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -652,7 +652,7 @@ if($engagement_statut=="eleve") {
 
 	$cpt=0;
 	for($i=0;$i<count($id_classe);$i++) {
-		$sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.sexe, e.naissance FROM eleves e, j_eleves_classes jec WHERE (e.login=jec.login AND jec.id_classe='".$id_classe[$i]."') ORDER BY e.nom, e.prenom;";
+		$sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.sexe, e.naissance, e.elenoet FROM eleves e, j_eleves_classes jec WHERE (e.login=jec.login AND jec.id_classe='".$id_classe[$i]."') ORDER BY e.nom, e.prenom;";
 		//echo "$sql<br />";
 		$call_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nombre_ligne=mysqli_num_rows($call_eleves);
@@ -670,7 +670,13 @@ if($engagement_statut=="eleve") {
 			echo "<th>\n";
 			echo "Classe de ".get_class_from_id($id_classe[$i])."\n";
 			echo "</th>\n";
-			echo "<th colspan='$nb_tous_engagements'>Engagements</th>\n";
+			echo "<th colspan='$nb_tous_engagements'>
+					<div style='float:right; width:16px;'>
+						<a href='javascript:affichage_des_photos_ou_non()' id='temoin_photo'><img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.\nCliquer pour masquer les photos.' /></a>
+					</div>
+
+				Engagements
+			</th>\n";
 			echo "</tr>\n";
 
 			echo "<tr>\n";
@@ -691,7 +697,11 @@ if($engagement_statut=="eleve") {
 			$alt=1;
 			while($lig_ele=mysqli_fetch_object($call_eleves)) {
 				$alt=$alt*(-1);
-				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<tr class='lig$alt white_hover'";
+				if(isset($lig_ele->elenoet)) {
+					echo " onmouseover=\"affiche_photo_courante('".nom_photo($lig_ele->elenoet)."')\" onmouseout=\"vide_photo_courante();\"";
+				}
+				echo ">\n";
 				/*
 				echo "<td>\n";
 				echo "<input type='checkbox' name='login_eleve_".$id_classe[$i]."[]' id='login_eleve_$cpt' value='$lig_ele->login' onchange='change_style_eleve($cpt)' checked />\n";
@@ -735,8 +745,33 @@ if($engagement_statut=="eleve") {
 	echo "
 	<input type='hidden' name='engagement_statut' value='eleve' />
 	<p><input type='submit' value='Valider' /></p>
-	<div id='fixe'><input type='submit' value='Valider' /></div>
-	</form>";
+	<div id='fixe' style='text-align:center;'>
+		<div id='photo_fixe' title=\"Il est possible de désactiver l'affichage des photos à l'aide de l'icone en haut à droite dans l'entête du tableau.\">
+		</div>
+		<input type='submit' value='Valider' />
+	</div>
+	</form>
+
+	<script type='text/javascript'>
+		function affiche_photo_courante(photo) {
+			document.getElementById('photo_fixe').innerHTML=\"<img src='\"+photo+\"' width='150' alt='Photo' />\";
+		}
+
+		function vide_photo_courante() {
+			document.getElementById('photo_fixe').innerHTML='';
+		}
+
+		function affichage_des_photos_ou_non() {
+			if(document.getElementById('photo_fixe').style.display=='') {
+				document.getElementById('photo_fixe').style.display='none';
+				document.getElementById('temoin_photo').innerHTML=\"<img src='../images/icons/camera-photo-barre.png' class='icone16' alt='Photo masquée' title='Photo masquée.\\nCliquer pour afficher les photos.' />\";
+			}
+			else {
+				document.getElementById('photo_fixe').style.display='';
+				document.getElementById('temoin_photo').innerHTML=\"<img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.\\nCliquer pour masquer les photos.' />\";
+			}
+		}
+	</script>";
 }
 else {
 	echo "<p class='bold'>Choix des responsables&nbsp;:</p>\n";
