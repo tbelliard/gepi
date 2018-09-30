@@ -540,7 +540,7 @@ if ($order_by != "classe") {
 	$tab_classes = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
 		$tab_classes[$classe_id] = array();
-        //echo "\$tab_classes[$classe_id]=".$tab_classes[$classe_id]."<br />";
+		//echo "\$tab_classes[$classe_id]=".$tab_classes[$classe_id]."<br />";
 	}
 	// On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
 	foreach($current_group["eleves"][$periode_num]["list"] as $e_login) {
@@ -581,17 +581,25 @@ if(isset($note_import)) {
 	}
 }
 */
-echo "<table class='boireaus' summary='Notes'>\n";
-echo "<tr>\n";
-echo "<th><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;id_eval=$id_eval&amp;order_by=nom' onclick=\"return confirm_abandon (this, change,'$themessage')\">Nom Prénom</a></th>\n";
-echo "<th><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;id_eval=$id_eval&amp;order_by=classe' onclick=\"return confirm_abandon (this, change,'$themessage')\">Classe</a></th>\n";
-echo "<th>Note</th>\n";
-echo "<th>Commentaire</th>\n";
-echo "</tr>\n";
 
-// A FAIRE: AJOUTER EN ENTETE Note_sur, lien vers config de l'évaluation,...
+$edt_et_abs2=false;
+if((acces('/edt/index2.php', $_SESSION['statut']))&&(getSettingValue('active_module_absence')=='2')) {
+	$edt_et_abs2=true;
 
-$alt=1;
+	$date_dev_formatee=formate_date($display_date);
+}
+
+echo "<table class='boireaus boireaus_alt' summary='Notes'>
+	<tr>
+		<th><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;id_eval=$id_eval&amp;order_by=nom' onclick=\"return confirm_abandon (this, change,'$themessage')\">Nom Prénom</a></th>
+		<th><a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;id_eval=$id_eval&amp;order_by=classe' onclick=\"return confirm_abandon (this, change,'$themessage')\">Classe</a></th>
+		<th>
+			Note<br />
+			<em>(sur $note_sur)</em>
+		</th>
+		<th>Commentaire</th>
+	</tr>\n";
+
 foreach ($liste_eleves as $eleve) {
 	$eleve_login[$i] = $eleve["login"];
 	$eleve_nom[$i] = $eleve["nom"];
@@ -609,8 +617,7 @@ foreach ($liste_eleves as $eleve) {
 		$date_sortie=$tmp_lig->date_sortie;
 	}
 
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt white_hover'>\n";
+	echo "<tr class='white_hover'>\n";
 	echo "<td>";
 	echo "<input type='hidden' name=\"log_eleve[$i]\" id='log_eleve_$i' value='$eleve_login[$i]' />\n";
 	echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' title=\"Voir la fiche élève dans un nouvel onglet.\" target='_blank'>".$eleve_nom[$i]." ".$eleve_prenom[$i]."</a></td>\n";
@@ -655,6 +662,11 @@ foreach ($liste_eleves as $eleve) {
 		echo "\" onchange=\"changement()\">";
 		if(isset($commentaire[$eleve_login[$i]])) {echo $commentaire[$eleve_login[$i]];}
 		echo "</textarea>\n";
+
+		if($edt_et_abs2) {
+			echo  "<a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$eleve_login[$i]."&affichage_complementaire_sur_edt=absences2&display_date=".$date_dev_formatee."' target='_blank' title=\"Affichage des absences sur un EDT version 2\"><img src='$gepiPath/images/icons/edt2_abs2.png' width='24' height='24' alt='EDT2' /></a>";
+		}
+
 		"</td>\n";
 		echo "</tr>\n";
 		$num_id++;
