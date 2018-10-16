@@ -1724,11 +1724,20 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	}
 
 	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode DESC LIMIT 1;";
+	if($debug_edt=="y") {
+		echo "$sql<br />";
+	}
 	$res_derniere_heure=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_derniere_heure)>0) {
 		$lig_derniere_heure=mysqli_fetch_object($res_derniere_heure);
+		if($debug_edt=="y") {
+			echo "Dernière heure du jour&nbsp;: ".$lig_derniere_heure->heurefin_definie_periode;
+		}
 		$tmp_tab=explode(":", $lig_derniere_heure->heurefin_definie_periode);
 		$derniere_heure=$tmp_tab[0]+$tmp_tab[1]/60;
+		if($debug_edt=="y") {
+			echo " soit ".$derniere_heure."<br />";
+		}
 	}
 	//=================================================================================
 
@@ -1938,7 +1947,10 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	// Affichage des heures sur la droite
 	$heure_ronde_debut_jour=floor($premiere_heure);
 	$heure_courante=$heure_ronde_debut_jour;
-	$heure_ronde_debut_jour=floor($derniere_heure);
+	$heure_ronde_debut_jour=ceil($derniere_heure);
+	if($debug_edt=="y") {
+		echo "\$derniere_heure=$derniere_heure<br />";
+	}
 	$hauteur_texte=12; // A la louche
 	$hauteur_demi_texte=ceil($hauteur_texte/2);
 	while($heure_courante<$heure_ronde_debut_jour) {
