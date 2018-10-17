@@ -52,9 +52,11 @@ class infos{
 		$test = phpversion();
 		// on teste le premier chiffre
 		$version = mb_substr($test, 0, 1);
-		if ($version == 5) {
+		if ($version == 7) {
 			$retour = '<span style="color: green;">'.phpversion().' (Gepi nécessite php 5.2.x minimum)</span>';
-		}elseif($version == 4 AND mb_substr($test, 2, 2) >= 3){
+		} elseif ($version == 5) {
+			$retour = '<span style="color: green;">'.phpversion().' (Gepi nécessite php 5.2.x minimum)</span>';
+		} elseif($version == 4 AND mb_substr($test, 2, 2) >= 3){
 			$retour = '<span style="color: green;">'.phpversion().'(Attention, Gepi ne fonctionne pas avec cette version, elle est trop ancienne)</span>';
 		}else{
 			$retour = '<span style="color: red;">'.phpversion().'(version ancienne !)</span>';
