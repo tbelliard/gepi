@@ -18,7 +18,6 @@ class class_droit_acces_template {
   private  $item="";
   private $enregistre="";
 
-
 /**
  * Contenu à afficher dans /gestion/droit_acces.php
  *
@@ -52,9 +51,11 @@ class class_droit_acces_template {
   public function set_entree($statutPasse, $namePasse, $textePasse){
 
 	if ($this->enregistre){
-	  $this->enregistre($namePasse);
+		$this->enregistre($namePasse);
 	}
-	
+	if((!isset($this->item))||(!is_array($this->item))) {
+		$this->item=array();
+	}
 	$this->item[]=array('statut' => $statutPasse, 'name' => $namePasse, 'texte' => $textePasse);
 
 	return TRUE;
@@ -102,7 +103,7 @@ class class_droit_acces_template {
 	  $sql="UPDATE `droits` SET `".$statutPasse."` =  'F'
 		WHERE `id` = '".$namePasse."'";
 	}
-    $res = sql_query($sql);
+	$res = sql_query($sql);
 
 	return TRUE;
   }
