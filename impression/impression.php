@@ -112,7 +112,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 	}
 	else{
 		$nb_classes=mysqli_num_rows($result_classes);
-		$nb_class_par_colonne=round($nb_classes/3);
+		$nb_class_par_colonne=ceil($nb_classes/3);
 		echo "<table width='100%'>\n";
 		echo "<tr valign='top' align='left'>\n";
 		$cpt=0;
@@ -136,9 +136,9 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 			}
 			else{
 				echo "<tr>\n";
-				echo "<td>$lig_class->classe</td>\n";
+				echo "<td>".str_replace(" ", "&nbsp;", $lig_class->classe)."</td>\n";
 				while($lig_per=mysqli_fetch_object($res_per)){
-					echo "<td> - <a href='liste_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
+					echo "<td> - <a href='liste_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".str_replace(" ", "&nbsp;", $lig_per->nom_periode)."</a></td>\n";
 				}
 				echo "</tr>\n";
 			}
