@@ -497,7 +497,12 @@
 
 		} else if ($quelles_classes == 'rech_prenom') {
 			if(isset($motif_rech_p)) {
-				$motif_rech=$motif_rech_p;
+				if(trim($motif_rech_p)!='') {
+					$motif_rech=trim($motif_rech_p);
+				}
+				else {
+					$motif_rech=$motif_rech_p;
+				}
 			}
 
 			$pref_motif="";
@@ -548,6 +553,10 @@
 				$mode_rech_nom="contient";
 
 				$mode_rech="contient";
+			}
+
+			if(trim($motif_rech)!='') {
+				$motif_rech=trim($motif_rech);
 			}
 
 			/*
