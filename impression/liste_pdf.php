@@ -29,6 +29,8 @@
 
 //=============================
 // REMONTé:
+session_cache_limiter('private');
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -53,7 +55,8 @@ require_once ("./liste.inc.php");
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
-session_cache_limiter('private');
+//session_cache_limiter('private');
+// Avec php 7.2 <b>Warning</b>:  session_cache_limiter(): Cannot change cache limiter when session is active in <b>.../impression/liste_pdf.php</b> on line <b>56</b><br />
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -265,7 +268,7 @@ if ($id_liste_aid!=NULL) {
 	//echo $nb_pages;
 }
 //+++++++++++++++++++++++++++++++++++++++++
-
+//echo "nb_pages=$nb_pages<br />";
 
 //+++++++++++++++++++++++++++++++++++++++++
 if ($id_groupe != NULL) {
@@ -275,7 +278,7 @@ elseif((isset($id_liste_groupes))&&(count($id_liste_groupes)==1)) {
 	$current_group = get_group($id_liste_groupes[0]);
 }
 $flag_groupe_plusieurs_classes = "n";
-if(count($current_group['classes']['list'])>1) {
+if((is_array($current_group))&&(isset($current_group['classes']['list']))&&(count($current_group['classes']['list'])>1)) {
 	$flag_groupe_plusieurs_classes = "y";
 }
 //$info_tmp=count($current_group['classes']['list']);
@@ -314,10 +317,16 @@ if(isset($current_aid)) {
 				$id_classe=$donnees_eleves[0]['id_classe'];
 			}
 		} elseif ($id_classe!=NULL) { // C'est une classe
+			//echo "traite_donnees_classe($id_classe,$id_periode,$nb_eleves)<br />";
 			$donnees_eleves = traite_donnees_classe($id_classe,$id_periode,$nb_eleves);
 		} elseif ($id_aid!=NULL) { // C'est unAID
 			$donnees_eleves = traite_donnees_aid($id_aid,$id_periode,$nb_eleves,$tri);
 		} //fin c'est un AID
+		/*
+		echo "<pre>";
+		print_r($donnees_eleves);
+		echo "</pre>";
+		*/
 
 		//IMPRESSION A LA CHAINE
 		if ($id_liste_groupes!=NULL) {
@@ -349,7 +358,7 @@ if(isset($current_aid)) {
 		*/
 
 		//echo "count(\$donnees_eleves)=".count($donnees_eleves)."<br />";
-		if(count($donnees_eleves)==0) {
+		if((!isset($donnees_eleves))||(count($donnees_eleves)==0)) {
 			$pdf->AddPage("P"); //ajout d'une page au document
 			$pdf->SetDrawColor(0,0,0);
 			$pdf->SetFont('DejaVu');
