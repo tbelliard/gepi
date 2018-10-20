@@ -404,7 +404,12 @@ if(isset($generer_pdf)) {
 		//define('FPDF_FONTPATH','../fpdf/font/');
 		define('LargeurPage',$largeur_page);
 		define('HauteurPage',$hauteur_page);
-		session_cache_limiter('private');
+		// Pb avec php 7.2:
+		$test = phpversion();
+		$version = mb_substr($test, 0, 1);
+		if ($version<7) {
+			session_cache_limiter('private');
+		}
 		//======================================
 		class trombino_PDF extends FPDF
 		//class rel_PDF extends FPDF
