@@ -29,6 +29,8 @@
 
 //=============================
 // REMONTé:
+session_cache_limiter('private');
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -53,7 +55,8 @@ require_once ("./liste.inc.php");
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
-session_cache_limiter('private');
+//session_cache_limiter('private');
+// Avec php 7.2 <b>Warning</b>:  session_cache_limiter(): Cannot change cache limiter when session is active in <b>.../impression/liste_pdf.php</b> on line <b>56</b><br />
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
