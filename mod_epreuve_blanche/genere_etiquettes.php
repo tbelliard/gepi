@@ -190,7 +190,12 @@ if((isset($mode))&&($mode=='imprime')) {
 		//$MargeGauche=10;
 		//$MargeBas=10;
 
-		session_cache_limiter('private');
+		// Pb avec php 7.2:
+		$test = phpversion();
+		$version = mb_substr($test, 0, 1);
+		if ($version<7) {
+			session_cache_limiter('private');
+		}
 
 		class rel_PDF extends FPDF
 		{

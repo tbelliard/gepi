@@ -50,7 +50,12 @@ require_once ("./liste.inc.php");
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
-session_cache_limiter('private');
+// Pb avec php 7.2:
+$test = phpversion();
+$version = mb_substr($test, 0, 1);
+if ($version<7) {
+	session_cache_limiter('private');
+}
 
 // Resume session
 $resultat_session = $session_gepi->security_check();

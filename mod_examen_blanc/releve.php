@@ -517,9 +517,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						// Ensemble des données communes
 						require_once("../bulletin/bulletin_donnees.php");
 					
-						
-					
-						session_cache_limiter('private');
+						// Pb avec php 7.2:
+						$test = phpversion();
+						$version = mb_substr($test, 0, 1);
+						if ($version<7) {
+							session_cache_limiter('private');
+						}
 					
 						$X1 = 0; $Y1 = 0; $X2 = 0; $Y2 = 0;
 						$X3 = 0; $Y3 = 0; $X4 = 0; $Y4 = 0;
