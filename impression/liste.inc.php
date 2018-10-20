@@ -9,6 +9,16 @@ function traite_donnees_classe($id_classe,$id_periode,&$nombre_eleves)
 {
 global $prefix_base ;
 
+if((isset($id_periode))&&(!is_array($id_periode))) {
+	$tmp_id_periode=$id_periode;
+	$id_periode=array($tmp_id_periode);
+}
+
+if(!isset($id_periode)) {
+	$id_periode=array(1);
+}
+$donnees_eleves=array();
+
 $cpt_i = 0;
 for ($i=0; $i<sizeof($id_periode) ; $i++) {
 
