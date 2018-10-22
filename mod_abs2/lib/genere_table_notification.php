@@ -288,11 +288,11 @@ class AbsencesNotificationHelper {
   public static function EnvoiNotification($notification, $message){
     $return_message = '';
     if ($notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL && $notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL) {
-	return 'Seul une notification de statut initial ou prete à envoyer peut être envoyée avec cette méthode';
+	return 'Seule une notification de statut initial ou prete à envoyer peut être envoyée avec cette méthode';
     }
     if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL &&
 	    $notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS) {
-	return 'Seul une notification de type email ou sms peut être envoyée avec cette méthode';
+	return 'Seule une notification de type email ou sms peut être envoyée avec cette méthode';
     } elseif ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL) {
 	if ($notification->getEmail() == null || $notification->getEmail() == '') {
 	    $notification->setErreurMessageEnvoi('email non renseigné');
@@ -311,11 +311,18 @@ class AbsencesNotificationHelper {
 	if ($email_abs_etab == null || $email_abs_etab == '') {
 	    $email_abs_etab = getSettingValue("gepiSchoolEmail");
 	}
+
+	/*
 	$envoi = mail($notification->getEmail(),
 		"Notification d'absence ".getSettingValue("gepiSchoolName").' - Ref : '.$notification->getId().' -',
 		$message,
 	       "From: ".$email_abs_etab."\r\n"
 	       ."X-Mailer: PHP/" . phpversion());
+	*/
+	$envoi=envoi_mail("Notification d'absence ".getSettingValue("gepiSchoolName").' - Ref : '.$notification->getId().' -', 
+				$message, 
+				$notification->getEmail(), 
+				"From: ".$email_abs_etab);
 
 	$notification->setDateEnvoi('now');
 	if ($envoi) {
