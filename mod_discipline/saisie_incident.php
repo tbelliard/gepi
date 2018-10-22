@@ -738,14 +738,15 @@ if($etat_incident!='clos') {
 				}
 	
 				if (isset($NON_PROTECT["description"])){
-					$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
+					//$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
+					$description=corriger_caracteres($NON_PROTECT["description"]);
 	
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 					$description=preg_replace('/(\\\r\\\n)+/',"\r\n",$description);
 					$description=preg_replace('/(\\\r)+/',"\r",$description);
 					$description=preg_replace('/(\\\n)+/',"\n",$description);
 
-					$sql.="description='".$description."' ,";
+					$sql.="description='".traitement_magic_quotes($description)."' ,";
 					$temoin_modif="y";
 				}
 
@@ -756,14 +757,15 @@ if($etat_incident!='clos') {
 
 				// Ajout Eric zone de commentaire
 				if (isset($NON_PROTECT["commentaire"])){
-					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
+					//$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
+					$commentaire=corriger_caracteres($NON_PROTECT["commentaire"]);
 	
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 					$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
 					$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
 					$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
 
-					$sql.="commentaire='".$commentaire."' ,";
+					$sql.="commentaire='".traitement_magic_quotes($commentaire)."' ,";
 					$temoin_modif="y";
 				}
 				// Fin ajout Eric

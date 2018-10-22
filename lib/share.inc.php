@@ -6475,7 +6475,7 @@ function acces_ele_disc($login_ele) {
  */
 function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n", $envoi_bulletin="") {
 	global $mysqli;
-	$tab="";
+	$tab=array();
 
 	$sql="(SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2'))";
 	if($meme_en_resp_legal_0=="y") {
