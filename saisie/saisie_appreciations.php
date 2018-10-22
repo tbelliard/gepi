@@ -1615,6 +1615,24 @@ else{
 }
 //=================================
 
+// 20181022
+if(getSettingAOui('active_annees_anterieures')) {
+	$tab_ele_aa=array();
+	$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, 
+							eleves e, 
+							archivage_disciplines ad 
+						WHERE ad.matiere LIKE '".$current_group["matiere"]["nom_complet"]."' AND 
+							ad.INE=e.no_gep AND 
+							e.login=jeg.login AND 
+							jeg.id_groupe='".$id_groupe."';";
+	$res_aa=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_aa)>0) {
+		while($lig_aa=mysqli_fetch_object($res_aa)) {
+			$tab_ele_aa[]=$lig_aa->login;
+		}
+	}
+}
+
 // Tableau des notes pour chaque période
 $tab_per_notes=array();
 
@@ -2163,6 +2181,12 @@ foreach ($liste_eleves as $eleve_login) {
             <th class="center" style="width:60%">
                     <strong>
 <?php
+		// 20181022
+		if((getSettingAOui('active_annees_anterieures'))&&(in_array($eleve_login, $tab_ele_aa))) {
+			echo "<div style='float:right; width:16px;'><a href='../mod_annees_anterieures/consultation_annee_anterieure.php?id_classe=".$id_premiere_classe."&logineleve=".$eleve_login."' onclick=\"affiche_div_aa_ele_matiere('".$eleve_login."', '".str_replace('"', "%", str_replace("'", "%", $current_group['matiere']['nom_complet']))."', '".str_replace('"', " ", str_replace("'", " ", $eleve_nom." ".$eleve_prenom))."');return false;\" target='_blank' title=\"Visualiser en infobulle les moyennes et appréciations des années antérieures.\"><img src='../images/icons/annees_anterieures.png' class='icone16' alt='AA' /></a></div>";
+		}
+
+
 		//echo "</th>\n";
 		//echo "<th style=\"width:30px\"><div class=\"center\"><strong>Moy.</strong></div></th>\n";
 		//echo "<th>\n";
@@ -2377,10 +2401,15 @@ ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n
 </form>
 
 <?php
-
+	// 20181022
 	$titre_infobulle="Notes <span id='span_titre_notes_ele'></span>";
 	$texte_infobulle="<div id='div_notes_cn'></div>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_notes_cn',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+
+	$titre_infobulle="Années antérieures <span id='span_titre_aa_ele_matiere'></span>";
+	$texte_infobulle="<div id='div_aa_ele_matiere'></div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_aa_ele_matiere',$titre_infobulle,"",$texte_infobulle,"",50,0,'y','y','n','n');
+
 	echo "<script type='text/javascript'>
 	function affiche_div_notes_cn(id_groupe, login_ele, num_per, num_id_ele) {
 		designation_ele='';
@@ -2398,6 +2427,16 @@ ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n
 		afficher_div('div_infobulle_notes_cn', 'y', 10, 10);
 
 		document.getElementById('login_ele_courant').value=login_ele;
+	}
+
+
+	function affiche_div_aa_ele_matiere(login_ele, matiere, designation_ele) {
+
+		document.getElementById('span_titre_aa_ele_matiere').innerHTML=designation_ele;
+
+		new Ajax.Updater($('div_aa_ele_matiere'),'../lib/ajax_action.php?mode=notes_ele_aa_matiere&ele_login='+login_ele+'&matiere='+matiere,{method: 'get'});
+
+		afficher_div('div_infobulle_aa_ele_matiere', 'y', 10, 10);
 	}
 </script>";
 

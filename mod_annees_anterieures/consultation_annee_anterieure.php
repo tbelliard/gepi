@@ -64,7 +64,33 @@ $mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 
 $aff_classe=isset($_GET['aff_classe']) ? $_GET['aff_classe'] : NULL;
 
+if((isset($logineleve))&&(trim($logineleve)!='')&&(!isset($id_classe))) {
+	$id_classe=get_derniere_classe_from_ele_login($logineleve);
+	if($id_classe=='') {
+		unset($id_classe);
+	}
+}
 
+if((isset($logineleve))&&
+	(trim($logineleve)!='')&&
+	(isset($mode))&&
+	($mode=='bull_simp')&&
+	(!isset($annee_scolaire))) {
+
+	$sql="SELECT annee, num_periode FROM archivage_disciplines ad, 
+							eleves e 
+						WHERE ad.INE=e.no_gep AND 
+							e.login='".$logineleve."' 
+						ORDER BY annee, num_periode 
+						LIMIT 1;";
+	//echo "$sql<br />";
+	$test_aa=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test_aa)>0) {
+		$lig_aa=mysqli_fetch_object($test_aa);
+		$annee_scolaire=$lig_aa->annee;
+		$num_periode=$lig_aa->num_periode;
+	}
+}
 
 $acces="n";
 if($_SESSION['statut']=="administrateur"){

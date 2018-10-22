@@ -7238,15 +7238,32 @@ function get_designation_inspection_academique() {
 }
 
 function affiche_tableau_annee_anterieure_ele_matiere($login_ele, $matiere) {
+	global $gepiPath;
+
 	$retour="";
 
 	if(getSettingAOui('active_annees_anterieures')) {
 		$tab=get_tab_annees_anterieures_ele_matiere($login_ele, $matiere);
 		if(count($tab)==0) {
-			$retour="<p>Aucune donnée d'année antérieure n'a été trouvée pour ".get_nom_prenom_eleve($login_ele)." en ".$matiere.".</p>";
+			$sql="SELECT annee, num_periode FROM archivage_disciplines ad, 
+									eleves e 
+								WHERE ad.INE=e.no_gep AND 
+									e.login='".$login_ele."' 
+								ORDER BY annee, num_periode 
+								LIMIT 1;";
+			//echo "$sql<br />";
+			$test_aa=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test_aa)>0) {
+				$retour.="<p>Aucune donnée d'année antérieure n'a été trouvée pour ".get_nom_prenom_eleve($login_ele)." en ".$matiere.",<br />
+				mais il y a des données dans d'autres matières&nbsp;:<br /><a href='".$gepiPath."/mod_annees_anterieures/consultation_annee_anterieure.php?logineleve=".$login_ele."&mode=bull_simp' target='_blank'>Voir les archives de bulletins complets</a>.</p>";
+			}
+			else {
+				$retour.="<p>Aucune donnée d'année antérieure n'a été trouvée pour ".get_nom_prenom_eleve($login_ele)." en ".$matiere.".</p>";
+			}
 		}
 		else {
-			$retour="<table class='boireaus boireaus_alt' style='font-size:small'>
+			$retour.="<p><a href='".$gepiPath."/mod_annees_anterieures/consultation_annee_anterieure.php?logineleve=".$login_ele."&mode=bull_simp' target='_blank'>Voir les archives de bulletins complets</a></p>
+		<table class='boireaus boireaus_alt' style='font-size:small'>
 			<thead>
 				<tr>
 					<th>Période</th>
