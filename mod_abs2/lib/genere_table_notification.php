@@ -36,6 +36,9 @@ class AbsencesNotificationHelper {
    */
   public static function MergeNotification($notification, $modele){
 	  global $tableNotifications;
+	  if((!isset($tableNotifications))||(!is_array($tableNotifications))) {
+	    $tableNotifications=array();
+	  }
 	  $indice = count($tableNotifications);
 	  //on charge le modele et on merge les données de l'établissement
     $TBS=self::MergeInfosEtab($modele);
@@ -125,16 +128,16 @@ class AbsencesNotificationHelper {
 			$str = 'Le ';
 			$str .= (strftime("%a %d/%m/%Y", $date->format('U')));
 			if ($date->format('H') < 12) {
-			$next_date = $demi_j->getNext();
-			if ($next_date != null && $next_date->format('Y-m-d') == $date->format('Y-m-d')) {
-				$str .= ' la journée';
+				$next_date = $demi_j->getNext();
+				if ($next_date != null && $next_date->format('Y-m-d') == $date->format('Y-m-d')) {
+					$str .= ' la journée';
+				} else {
+					$str .= ' le matin';
+					//on recule le pointeur car on l'a avancé avec $demi_j->getNext()
+					$demi_j->getPrevious();
+				}
 			} else {
-				$str .= ' le matin';
-				//on recule le pointeur car on l'a avancé avec $demi_j->getNext()
-				$demi_j->getPrevious();
-			}
-			} else {
-			$str .= ' l\'après midi';
+				$str .= ' l\'après midi';
 			}
 			$demi_journee_string_col->append($str);
 		}
