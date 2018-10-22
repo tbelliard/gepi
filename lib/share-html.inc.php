@@ -4926,7 +4926,7 @@ function affiche_tableau_notes_ele($login_ele, $id_groupe, $mode=1) {
 						}
 
 						$retour.="
-					<tr title=\"".$current_devoir['nom_court']." (".$current_devoir['nom_complet'].")".$detail_note."\nCoefficient : ".$current_devoir['coef']."\nDate : ".formate_date($current_devoir['date'])."\">
+					<tr title=\"".$current_devoir['nom_court']." ".($current_devoir['nom_court']!=$current_devoir['nom_complet'] ? "(".$current_devoir['nom_complet'].")" : "").($current_devoir['description']!='' ? "\n".str_replace('"', "'", $current_devoir['description']) : "").$detail_note."\n"."Coefficient : ".$current_devoir['coef']."\nDate : ".formate_date($current_devoir['date'])."\">
 						<td style='text-align:left;border:0px solid black;".$complement_style."'>
 							<strong>".$current_devoir['nom_court']."&nbsp;:</strong> 
 						</td>
@@ -7236,4 +7236,58 @@ function get_designation_inspection_academique() {
 
 	return $designation_inspection_academique;
 }
+
+function affiche_tableau_annee_anterieure_ele_matiere($login_ele, $matiere) {
+	$retour="";
+
+	if(getSettingAOui('active_annees_anterieures')) {
+		$tab=get_tab_annees_anterieures_ele_matiere($login_ele, $matiere);
+		if(count($tab)==0) {
+			$retour="<p>Aucune donnée d'année antérieure n'a été trouvée pour ".get_nom_prenom_eleve($login_ele)." en ".$matiere.".</p>";
+		}
+		else {
+			$retour="<table class='boireaus boireaus_alt' style='font-size:small'>
+			<thead>
+				<tr>
+					<th>Période</th>
+					<th>Classe</th>
+					<th>Enseignant</th>
+					<th>Moy.clas.</th>
+					<th>Moyenne</th>
+					<th>Appréciation</th>
+				</tr>
+			</thead>
+			<tbody>";
+			$annee_precedente='';
+			foreach($tab as $key => $current_aa) {
+				if($annee_precedente!=$current_aa['annee']) {
+					$retour.="
+				<tr>
+					<th colspan='6'>Année scolaire ".$current_aa['annee']."</th>
+				</tr>";
+				}
+				$retour.="
+				<tr>
+					<td>".str_replace(' ', '&nbsp;', $current_aa['nom_periode'])."</td>
+					<td>".$current_aa['classe']."</td>
+					<td>".$current_aa['prof']."</td>
+					<td>
+						<span style='font-size:x-small'>".$current_aa['moymin']."</span><br />
+						".$current_aa['moyclasse']."<br />
+						<span style='font-size:x-small'>".$current_aa['moymax']."</span>
+					</td>
+					<td style='font-weight:bold;'>".$current_aa['note']."</td>
+					<td>".nl2br($current_aa['appreciation'])."</td>
+				</tr>";
+				$annee_precedente=$current_aa['annee'];
+			}
+			$retour.="
+			</tbody>
+		</table>";
+		}
+	}
+
+	return $retour;
+}
+
 ?>

@@ -84,6 +84,7 @@ if(($mode=="actions_conseil_classe")&&(isset($id_classe))&&(preg_match("/^[0-9]{
 
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL);
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
+$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : NULL);
 //$periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
 
 //if(($mode=="notes_ele_grp_per")&&(isset($ele_login))&&(isset($id_groupe))&&(isset($periode))) {
@@ -91,6 +92,13 @@ if(($mode=="notes_ele_grp_per")&&(isset($ele_login))&&(isset($id_groupe))) {
 	echo "<div align='center'>
 	<p>".get_info_grp($id_groupe)."</p>
 	".affiche_tableau_notes_ele($ele_login, $id_groupe)."
+</div>";
+	die();
+}
+
+if(($mode=="notes_ele_aa_matiere")&&(isset($ele_login))&&(isset($matiere))) {
+	echo "<div align='center'>
+	".affiche_tableau_annee_anterieure_ele_matiere($ele_login, $matiere)."
 </div>";
 	die();
 }

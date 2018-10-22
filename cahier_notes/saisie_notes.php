@@ -1152,7 +1152,30 @@ if((acces('/edt/index2.php', $_SESSION['statut']))&&(getSettingValue('active_mod
 	$edt_et_abs2=true;
 }
 
+if(getSettingAOui('active_annees_anterieures')) {
+	$tab_ele_aa=array();
+	$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, 
+							eleves e, 
+							archivage_disciplines ad 
+						WHERE ad.matiere LIKE '".$current_group["matiere"]["nom_complet"]."' AND 
+							ad.INE=e.no_gep AND 
+							e.login=jeg.login AND 
+							jeg.id_groupe='".$id_groupe."' AND 
+							jeg.periode='".$periode_num."';";
+	$res_aa=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_aa)>0) {
+		while($lig_aa=mysqli_fetch_object($res_aa)) {
+			$tab_ele_aa[]=$lig_aa->login;
+		}
+	}
+}
+
 foreach ($liste_eleves as $eleve) {
+	/*
+	echo "<pre>";
+	print_r($eleve);
+	echo "</pre>";
+	*/
 	$eleve_login[$i] = $eleve["login"];
 	$eleve_nom[$i] = $eleve["nom"];
 	$eleve_prenom[$i] = $eleve["prenom"];
@@ -1357,9 +1380,17 @@ foreach ($liste_eleves as $eleve) {
 				}
 				$mess_comment[$i][$k] .= ">".$eleve_comment."</textarea>";
 
+				// 20181022
+				//$mess_comment[$i][$k] .=affiche_tableau_annee_anterieure_ele_matiere($eleve_login[$i], $current_group['matiere']['nom_complet']);
+				$mess_comment[$i][$k] .=" <a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=".$periode_num."' onclick=\"affiche_div_notes_cn(".$current_group['id'].", '".$eleve_login[$i]."', '".str_replace('"', " ", str_replace("'", " ", $eleve_nom[$i]." ".$eleve_prenom[$i]))."');return false;\" target='_blank' title=\"Visualiser en infobulle les notes du carnet de notes.\"><img src='../images/icons/cn_16.png' class='icone16' alt='Visualiser' /></a>";
+
+				if((getSettingAOui('active_annees_anterieures'))&&(in_array($eleve_login[$i], $tab_ele_aa))) {
+					$mess_comment[$i][$k] .=" <a href='../mod_annees_anterieures/consultation_annee_anterieure.php?id_classe=".$eleve["id_classe"]."&logineleve=".$eleve_login[$i]."' onclick=\"affiche_div_aa_ele_matiere('".$eleve_login[$i]."', '".str_replace('"', "%", str_replace("'", "%", $current_group['matiere']['nom_complet']))."', '".str_replace('"', " ", str_replace("'", " ", $eleve_nom[$i]." ".$eleve_prenom[$i]))."');return false;\" target='_blank' title=\"Visualiser en infobulle les moyennes et appréciations des années antérieures.\"><img src='../images/icons/annees_anterieures.png' class='icone16' alt='AA' /></a>";
+				}
+
 				// 20180225
 				if($edt_et_abs2) {
-					$mess_comment[$i][$k] .= "<a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$eleve_login[$i]."&affichage_complementaire_sur_edt=absences2&display_date=".$date_dev_formatee."' target='_blank' title=\"Affichage des absences sur un EDT version 2\"><img src='$gepiPath/images/icons/edt2_abs2.png' width='24' height='24' alt='EDT2' /></a>";
+					$mess_comment[$i][$k] .= " <a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$eleve_login[$i]."&affichage_complementaire_sur_edt=absences2&display_date=".$date_dev_formatee."' target='_blank' title=\"Affichage des absences sur un EDT version 2\"><img src='$gepiPath/images/icons/edt2_abs2.png' width='24' height='24' alt='EDT2' /></a>";
 				}
 
 				$mess_comment[$i][$k] .= "</td>\n";
@@ -1377,6 +1408,38 @@ foreach ($liste_eleves as $eleve) {
 }
 // 20120509
 $max_indice_eleve=$i;
+
+//========================================
+// 20181022
+
+$titre_infobulle="Notes <span id='span_titre_notes_ele'></span>";
+$texte_infobulle="<div id='div_notes_cn'></div>";
+$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_notes_cn',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+
+$titre_infobulle="Années antérieures <span id='span_titre_aa_ele_matiere'></span>";
+$texte_infobulle="<div id='div_aa_ele_matiere'></div>";
+$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_aa_ele_matiere',$titre_infobulle,"",$texte_infobulle,"",50,0,'y','y','n','n');
+echo "<script type='text/javascript'>
+	function affiche_div_notes_cn(id_groupe, login_ele, designation_ele) {
+
+		document.getElementById('span_titre_notes_ele').innerHTML=designation_ele;
+
+		new Ajax.Updater($('div_notes_cn'),'../lib/ajax_action.php?mode=notes_ele_grp_per&ele_login='+login_ele+'&id_groupe='+id_groupe,{method: 'get'});
+
+		afficher_div('div_infobulle_notes_cn', 'y', 10, 10);
+	}
+
+	function affiche_div_aa_ele_matiere(login_ele, matiere, designation_ele) {
+
+		document.getElementById('span_titre_aa_ele_matiere').innerHTML=designation_ele;
+
+		new Ajax.Updater($('div_aa_ele_matiere'),'../lib/ajax_action.php?mode=notes_ele_aa_matiere&ele_login='+login_ele+'&matiere='+matiere,{method: 'get'});
+
+		afficher_div('div_infobulle_aa_ele_matiere', 'y', 10, 10);
+	}
+</script>";
+//========================================
+
 
 // Affichage du tableau
 

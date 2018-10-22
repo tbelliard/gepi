@@ -276,11 +276,11 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 
 	}
 	else {
-			$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
-			$headers .= "MIME-Version: 1.0\r\n";
-			$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
-			if (strpos($ajout_headers,'From:')===false) $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
-			$headers .= $ajout_headers;
+		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
+		if (strpos($ajout_headers,'From:')===false) $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+		$headers .= $ajout_headers;
 
 		if($piece_jointe=="") {
 			$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
@@ -18062,6 +18062,29 @@ function get_tab_app_d_apres_moy($login) {
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_assoc($res)) {
 			$tab[$lig['note_min']]=$lig;
+		}
+	}
+
+	return $tab;
+}
+
+/**
+ * Retourne le tableau des moyennes et appréciations dans le module années antérieures pour un élève donné dans une matière donnée
+ *
+ * @param string $login_ele login de l'élève
+ * @param strinf $matiere nom complet de matière
+ *
+ * @return array
+ */
+function get_tab_annees_anterieures_ele_matiere($login_ele, $matiere) {
+	$tab=array();
+
+	$sql="SELECT ad.* FROM archivage_disciplines ad, eleves e WHERE ad.matiere LIKE '".$matiere."' AND ad.INE=e.no_gep AND e.login='".$login_ele."' ORDER BY annee, num_periode;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab[]=$lig;
 		}
 	}
 
