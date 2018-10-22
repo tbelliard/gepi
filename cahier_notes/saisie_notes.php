@@ -676,6 +676,7 @@ $j = 0;
 //while ($j < $nb_dev) {
 while ($obj_dev=$appel_dev->fetch_object()) {
 	$nom_dev[$j] = $obj_dev->nom_court;
+	$description_dev[$j] = $obj_dev->description;
 	$id_dev[$j] = $obj_dev->id;
 	$coef[$j] = $obj_dev->coef;
 	$note_sur[$j] = $obj_dev->note_sur;
@@ -1522,7 +1523,7 @@ while ($i < $nb_dev) {
 		$header_pdf[] = ($nom_dev[$i]." (".$display_date[$i].")");
 		$w_pdf[] = $w2;
 		if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
-			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Modifier les paramètres de cette évaluation (nom, coefficient, date, date de visibilité,...)\">$nom_dev[$i]</a></b><br /><font size=-2>(<em title=\"Date de l'évaluation\">$display_date[$i]</em>)</font>\n";
+			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"".($description_dev[$i]!='' ? str_replace('"', "'", $description_dev[$i])."\n\n" : "")."Cliquer pour modifier les paramètres de cette évaluation (nom, coefficient, date, date de visibilité,...)\">$nom_dev[$i]</a></b><br /><font size=-2>(<em title=\"Date de l'évaluation\">$display_date[$i]</em>)</font>\n";
 			echo "<span id='span_visibilite_".$id_dev[$i]."'>";
 			if($display_parents[$i]!=0) {
 				/*
