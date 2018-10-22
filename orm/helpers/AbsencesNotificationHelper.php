@@ -225,11 +225,17 @@ class AbsencesNotificationHelper {
 	if ($email_abs_etab == null || $email_abs_etab == '') {
 	    $email_abs_etab = getSettingValue("gepiSchoolEmail");
 	}
+	/*
 	$envoi = mail($notification->getEmail(),
 		"Notification d'absence ".getSettingValue("gepiSchoolName").' - Ref : '.$notification->getId().' -',
 		$message,
 	       "From: ".$email_abs_etab."\r\n"
-	       ."X-Mailer: PHP/" . phpversion());
+	       ."X-Mailer: PHP/" . phpversion().";charset=UTF-8");
+	*/
+	$envoi=envoi_mail("Notification d'absence ".getSettingValue("gepiSchoolName").' - Ref : '.$notification->getId().' -', 
+				$message, 
+				$notification->getEmail(), 
+				"From: ".$email_abs_etab);
 
 	$notification->setDateEnvoi('now');
 	if ($envoi) {
