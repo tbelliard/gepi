@@ -158,6 +158,7 @@ function getClasses($classeId = NULL) {
  */
 function creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte, $newParcoursId = '') {
 	global $mysqli;
+	global $id_new_parcours;
 	$newParcoursTexte = $mysqli->real_escape_string($newParcoursTexte);
 	if ($newParcoursId) {
 		$newParcoursId = "'".$newParcoursId."'";
@@ -167,6 +168,8 @@ function creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $n
 	$sqlNewParcours = "INSERT INTO lsun_parcours_communs (id,periode,classe,codeParcours,description)  VALUES ($newParcoursId, $newParcoursTrim, $newParcoursClasse, '$newParcoursCode', '$newParcoursTexte') ON DUPLICATE KEY UPDATE periode = '$newParcoursTrim' ,classe = '$newParcoursClasse',codeParcours = '$newParcoursCode',description = '$newParcoursTexte' ";
 	//echo $sqlNewParcours;
 	$resultchargeDB = $mysqli->query($sqlNewParcours);
+	$id_new_parcours=mysqli_insert_id($mysqli);
+
 	return $resultchargeDB;	
 }
 
