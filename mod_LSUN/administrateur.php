@@ -607,7 +607,7 @@ while ($afficheClasse = $toutesClasses->fetch_object()) {
 				<p>
 					<input type="checkbox" 
 						   name="afficheClasse[<?php echo $afficheClasse->id; ?>]"
-						   <?php if(count($selectionClasse) && in_array($afficheClasse->id, $selectionClasse)){echo 'checked';} ?>
+						   <?php if(isset($selectionClasse) && count($selectionClasse)>0 && in_array($afficheClasse->id, $selectionClasse)){echo 'checked';} ?>
 						   id="afficheClasse_<?php echo $cptClasse; ?>"
 						   onchange="checkbox_change(this.id)"
 						   />
@@ -722,22 +722,34 @@ if ($cpt) {echo "			</div>\n";}
 									lsun_parcours_communs lpc 
 								WHERE lpc.id='".$parcoursCommun->id."' AND 
 									lpc.id=ljap.id_parcours";
+						//echo "$sql<br />";
 						$test=mysqli_query($mysqli, $sql);
 						if(mysqli_num_rows($test)>0) {
 							$lig_test=mysqli_fetch_object($test);
-							$sql="SELECT * FROM aid a, 
-										aid_config ac, 
-										lsun_j_aid_parcours ljap, 
-										lsun_parcours_communs lpc 
-									WHERE lpc.id='".$parcoursCommun->id."' AND 
-										lpc.id=ljap.id_parcours AND 
-											ljap.id_aid=a.id AND 
-											a.indice_aid=ac.indice_aid AND 
-											ac.display_begin<=lpc.periode AND 
-											ac.display_end>=lpc.periode";
+
+							$id_aid=$lig_test->id_aid;
+							$sql="SELECT * FROM aid a WHERE id='".$id_aid."';";
+							//echo "$sql<br />";
 							$test=mysqli_query($mysqli, $sql);
 							if(mysqli_num_rows($test)==0) {
-								echo "<div style='float:right; width:16px' title=\"Le Parcours a été déclaré pour la classe sur une période\nnon couverte par les périodes de la catégorie AID.\n(aucune extraction ne sera réalisée, sauf à modifier le paramétrage de la catégorie)\"><a href='../aid/config_aid.php?aid_id=".$lig_test->id_aid."' target='_blank'><img src='../images/icons/flag2.gif' class='icone16' alt='Attention' /></a></div>";
+								echo "<div style='float:right; width:16px' title=\"L'AID initialement associé n'existe pas.\nIl a pu être supprimé lors de l'initialisation de l'année.\nIl faut soit (re)créer un AID pour ce Parcours\nsoit sélectionner un AID dans la colonne Liaison AID du tableau.\"><a href='../aid/index.php' target='_blank'><img src='../images/icons/flag2.gif' class='icone16' alt='Attention' /></a></div>";
+							}
+							else {
+								$sql="SELECT * FROM aid a, 
+											aid_config ac, 
+											lsun_j_aid_parcours ljap, 
+											lsun_parcours_communs lpc 
+										WHERE lpc.id='".$parcoursCommun->id."' AND 
+											lpc.id=ljap.id_parcours AND 
+												ljap.id_aid=a.id AND 
+												a.indice_aid=ac.indice_aid AND 
+												ac.display_begin<=lpc.periode AND 
+												ac.display_end>=lpc.periode";
+								//echo "$sql<br />";
+								$test=mysqli_query($mysqli, $sql);
+								if(mysqli_num_rows($test)==0) {
+									echo "<div style='float:right; width:16px' title=\"Le Parcours a été déclaré pour la classe sur une période\nnon couverte par les périodes de la catégorie AID.\n(aucune extraction ne sera réalisée, sauf à modifier le paramétrage de la catégorie)\"><a href='../aid/config_aid.php?aid_id=".$lig_test->id_aid."' target='_blank'><img src='../images/icons/flag2.gif' class='icone16' alt='Attention' /></a></div>";
+								}
 							}
 						}
 
@@ -873,8 +885,8 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 		<!--
 		<div id='div_ajout_plusieurs_parcours' onmouseover=\"document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';\" onmouseout=\"document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';\">
 		-->
-		<div id='div_ajout_plusieurs_parcours' onclick=\"if(document.getElementById('tableau_ajout_plusieurs_parcours').style.display=='none') {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';} else {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';}\">
-		<p style='margin-top:1em;' title=\"Cliquez pour afficher/masquer le tableau d'ajout par lots\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' />Ajouter plusieurs Parcours d'un coup</p>
+		<div id='div_ajout_plusieurs_parcours'>
+		<p style='margin-top:1em;' onclick=\"if(document.getElementById('tableau_ajout_plusieurs_parcours').style.display=='none') {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';} else {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';}\" title=\"Cliquez pour afficher/masquer le tableau d'ajout par lots\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' />Ajouter plusieurs Parcours d'un coup</p>
 		<div id='tableau_ajout_plusieurs_parcours' style='display:none;'>
 		<table class='boireaus boireaus_alt'>
 			<thead>
@@ -907,7 +919,9 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 				<tr>";
 						}
 						echo "
-					<td>".$texte_type_parcours."</td>";
+					<td><a href='#' onclick=\"if(document.getElementById('nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_description').value=='') {
+						document.getElementById('nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_description').value=this.innerHTML;
+					};return false;\" title='Si la description est vide, prendre le contenu de cette colonne comme description.'>".$texte_type_parcours."<a/></td>";
 
 						// Boucle sur les périodes
 						for($loop_per=1;$loop_per<=$maxper;$loop_per++) {
