@@ -69,6 +69,9 @@ if ($supprimeResponsable) {
 	$msg_requetesAdmin.="<span style='color:green'>Suppression de ".civ_nom_prenom($supprimeResponsable)." comme responsable établissement.</span><br />";
 }
 
+//=======================================================
+// PARCOURS
+
 // on crée un parcours
 $newParcours = filter_input(INPUT_POST, 'ajouteParcours');
 if ('y' == $newParcours) {
@@ -139,6 +142,43 @@ if ($modifieParcours) {
 	}
 }
 
+if(isset($_POST["modifiePlusieursParcours"])) {
+
+	$modifieParcoursPeriode = filter_input(INPUT_POST, 'modifieParcoursPeriode', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursClasse = filter_input(INPUT_POST, 'modifieParcoursClasse', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursCode = filter_input(INPUT_POST, 'modifieParcoursCode', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursTexte = filter_input(INPUT_POST, 'modifieParcoursTexte', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursId = filter_input(INPUT_POST, 'modifieParcoursId', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursLien = filter_input(INPUT_POST, 'modifieParcoursLien', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+
+	$cpt_modif_parcours=0;
+	foreach($modifieParcoursId as $ParcoursId) {
+		if(modifieParcours($modifieParcoursId[$ParcoursId], $modifieParcoursCode[$ParcoursId], $modifieParcoursTexte[$ParcoursId], $modifieParcoursLien[$ParcoursId])) {
+			$cpt_modif_parcours++;
+			//$msg_requetesAdmin.="<span style='color:green'>Parcours modifié.</span><br />";
+		}
+		else {
+			$msg_requetesAdmin.="<span style='color:red'>Échec lors de la modification du parcours n°".$ParcoursId.".</span><br />";
+		}
+	}
+	if($cpt_modif_parcours>0) {
+		$msg_requetesAdmin.="<span style='color:green'>".$cpt_modif_parcours." ligne(s) Parcours enregistrée(s).</span><br />";
+	}
+
+	if((isset($_POST['suppr_parcours']))&&(is_array($_POST['suppr_parcours']))) {
+		$suppr_parcours=$_POST['suppr_parcours'];
+		for($loop=0;$loop<count($suppr_parcours);$loop++) {
+			$key=$suppr_parcours[$loop];
+			if(supprimeParcours($key)) {
+				$msg_requetesAdmin.="<span style='color:green'>Parcours n°$key supprimé.</span><br />";
+			}
+			else {
+				$msg_requetesAdmin.="<span style='color:red'>Échec lors de la suppresion du parcours n°$key.</span><br />";
+			}
+		}
+	}
+}
+
 if(isset($_POST["ajoutePlusieursParcours"])) {
 	if(isset($_SESSION['afficheClasse'])) {
 		$tmp_classesSelectionnee=$_SESSION['afficheClasse'];
@@ -167,15 +207,18 @@ if(isset($_POST["ajoutePlusieursParcours"])) {
 								//$newParcoursCode = filter_input(INPUT_POST, 'newParcoursCode');
 								$newParcoursTexte = filter_input(INPUT_POST, 'nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_description');
 
+								//creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte, $newParcoursId = '')
 								$res_creation_parcours=creeParcours($loop_per, $tmp_classesSelectionnee[$loop], $code_parcours, $newParcoursTexte);
 								if($res_creation_parcours) {
-									$msg_requetesAdmin.="<br /><span style='color:green;'>Nouveau parcours ($newParcoursTexte) créé pour la classe de ".get_nom_classe($tmp_classesSelectionnee[$loop])." en période $loop_per.</span><br />";
+									//$id_new_parcours=mysqli_insert_id($mysqli);
+									$msg_requetesAdmin.="<span style='color:green;'>Nouveau parcours ($newParcoursTexte) créé pour la classe de ".get_nom_classe($tmp_classesSelectionnee[$loop])." en période $loop_per.</span><br />";
 
 									$newParcoursLien = filter_input(INPUT_POST, 'nouveau_parcours_classe_'.$tmp_classesSelectionnee[$loop].'_type_'.$code_parcours.'_liaison');
 									//echo "\$newParcoursLien=$newParcoursLien<br />";
-									$id_new_parcours=mysqli_insert_id($mysqli);
+									//$id_new_parcours=mysqli_insert_id($mysqli);
 									//echo "\$id_new_parcours=$id_new_parcours<br />";
 									if(preg_match("/^[0-9]{1,}$/", $id_new_parcours)) {
+										//echo "modifieParcours($id_new_parcours, $code_parcours, $newParcoursTexte, $newParcoursLien)<br /><br />";
 										if(!modifieParcours($id_new_parcours, $code_parcours, $newParcoursTexte, $newParcoursLien)) {
 											$msg_requetesAdmin.="<span style='color:red'>Échec lors de la liaison AID pour la classe ".get_nom_classe($tmp_classesSelectionnee[$loop])." en période $loop_per pour le parcours de type $code_parcours.</span><br />";
 										}
@@ -204,6 +247,9 @@ if(isset($_POST["ajoutePlusieursParcours"])) {
 		}
 	}
 }
+
+//=======================================================
+// EPIS
 
 if ($ajouteEPI) {
 	$newEpiPeriode = filter_input(INPUT_POST, 'newEpiPeriode');
@@ -278,6 +324,9 @@ echo "</pre>";
 	}
 }
 
+//=======================================================
+// AP
+
 if ($ajouteAP) {
 	$newApIntitule = filter_input(INPUT_POST, 'newApIntituleAP');
 	$newApDescription = filter_input(INPUT_POST, 'newApDescription');
@@ -313,6 +362,7 @@ if(isset($_GET['nettoyer_doublons_AP'])) {
 	}
 }
 
+//=======================================================
 
 //===== Forcer l'export des données incomplètes =====
 $forceAppreciations = filter_input(INPUT_POST, 'forceAppreciations');

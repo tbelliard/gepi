@@ -255,9 +255,9 @@ $msg_erreur="";
 	<div style='margin-left:3em;'>
 		<p>L'opération de génération d'un fichier export XML à destination de l'application Livret Scolaire Unique <em title="Livret Scolaire Unique Numérique">(LSUN)</em> se déroule en plusieurs étapes&nbsp;:</p>
 		<ol>
-			<li>Sélection des classes</li>
-			<li>Sélection/définition des EPI, AP et Parcours</li>
-			<li>Sélection des éléments à exporter <em>(Bilans périodiques, positionnement sur le Socle de composantes, Bilan de fin de cycle,...)</em><br />
+			<li><a href='#form_classes_a_exporter'>Sélection des classes</a></li>
+			<li>Sélection/définition des <a href='#form_EPIs'>EPI</a>, <a href='#form_AP'>AP</a> et <a href='#form_parcours_communs'>Parcours</a></li>
+			<li><a href='#form_export_des_donnees'>Sélection des éléments à exporter</a> <em>(Bilans périodiques, positionnement sur le Socle de composantes, Bilan de fin de cycle,...)</em><br />
 			Certains éléments cochés/grisés doivent impérativement être présents <em>(d'où les champs cochés et grisés)</em>.</li>
 		</ol>
 		<p>Si lors de l'export des erreurs sont signalées, vous devrez compléter/corriger dans Gepi <em>(nomenclatures ou modalités de matières manquantes, identifiants de professeurs manquants,...)</em></p>
@@ -594,6 +594,7 @@ $msg_erreur="";
 
 <form action="index.php" method="post" id="selectionClasse">
 	<fieldset class='fieldset_opacite50'>
+		<a name='form_classes_a_exporter'></a>
 		<legend class='fieldset_opacite50'>Classes à exporter</legend>
 		<div class="lsun3colonnes" >
 <?php 
@@ -695,6 +696,7 @@ if ($cpt) {echo "			</div>\n";}
 <!-- Formulaire Parcours -->
 
 <form action="index.php" method="post" id="parcours">
+	<a name='form_parcours_communs'></a>
 	<fieldset class='fieldset_opacite50'>
 		<legend class='fieldset_opacite50' title="Contient l’ensemble des informations relatives aux parcours éducatifs communs à une classe (contrainte d’unicité sur les combinaison de champs 'periodes', 'division' et 'Type de parcours').">
 				Parcours communs
@@ -708,10 +710,16 @@ if ($cpt) {echo "			</div>\n";}
 					<th>Type de parcours éducatifs</th>
 					<th>Description</th>
 					<th>liaison AID</th>
-					<th>Action</th>
+					<th title="Seule la ligne choisie est traitée. Les autres modifications ne sont pas prises en compte.">Action<br />individuelle</th>
+					<th>Suppression<br />
+					<a href='#' onclick="suppr_parcours(true);return false;" title='Cocher tous les Parcours comme devant être supprimés.'><img src='../images/delete16.png' class='icone16' /></a> / 
+					<a href='#' onclick="suppr_parcours(false);return false;" title='Décocher tous les Parcours.'><img src='../images/case_blanche.png' class='icone16' /></a>
+					</th>
 				</tr>
 			</thead>
-<?php while ($parcoursCommun = $parcoursCommuns->fetch_object()) { ?>
+<?php 
+	$cpt_ligne_parcours=0;
+	while ($parcoursCommun = $parcoursCommuns->fetch_object()) { ?>
 			<tr>
 				<td>
 					<input type="hidden" name="modifieParcoursId[<?php echo $parcoursCommun->id; ?>]" value="<?php echo $parcoursCommun->id; ?>" />
@@ -770,7 +778,7 @@ if ($cpt) {echo "			</div>\n";}
 					</select>
 				</td>
 				<td>
-					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="70" value="<?php echo htmlspecialchars($parcoursCommun->description); ?>"/>
+					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="60" value="<?php echo htmlspecialchars($parcoursCommun->description); ?>"/>
 				</td>
 				<td>
 				
@@ -804,9 +812,14 @@ while ($AidParc = $AidParcours->fetch_object()) { ?>
 						   value="y"
 						   title="Supprimer ce parcours" />
 				</td>
+				<td>
+					<input type='checkbox' name='suppr_parcours[]' id='suppr_parcours_<?php echo $cpt_ligne_parcours; ?>' value='<?php echo $parcoursCommun->id; ?>' />
+				</td>
 			</tr>
-<?php } ?>
-				
+<?php
+		$cpt_ligne_parcours++;
+	 } ?>
+			<!-- Ajout d'un nouveau parcours-->
 			<tr>
 				<td>
 					<select name="newParcoursPeriode">
@@ -862,11 +875,28 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 						   value="y"
 						   title="Ajouter ce parcours" />
 				</td>
+				<td>
+				</td>
 			</tr>
 		</table> 
+		<p><input type="submit" 
+			   alt="Submit button" 
+			   name="modifiePlusieursParcours" 
+			   value="Valider les modifications ci-dessus"
+			   title="Valider les modifications ci-dessus" />
+		</p>
 		<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Les parcours affichés sont ceux des classes sélectionnées.<br />
 		Si vous voulez voir tous les parcours saisis, sélectionnez toutes les classes dans le premier formulaire et validez la sélection.</p>
 
+		<script type='text/javascript'>
+			function suppr_parcours(mode) {
+				for(i=0;i<<?php echo $cpt_ligne_parcours;?>;i++) {
+					if(document.getElementById('suppr_parcours_'+i)) {
+						document.getElementById('suppr_parcours_'+i).checked=mode;
+					}
+				}
+			}
+		</script>
 
 		<?php
 			if(isset($selectionClasse)) {
@@ -878,29 +908,48 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 					ORDER BY ac.nom, a.numero, a.nom;";
 				//echo "$sql<br />";
 				$res_aid=mysqli_query($mysqli, $sql);
+				$cpt_aid_parcours=0;
 				while($lig_aid=mysqli_fetch_assoc($res_aid)) {
-					$tab_aid_parcours[]=$lig_aid;
+					$tab_aid_parcours[$cpt_aid_parcours]=$lig_aid;
+					$tab_aid_parcours[$cpt_aid_parcours]['id_classe']=array();
+					$sql="SELECT DISTINCT id_classe FROM j_eleves_classes jec, 
+											j_aid_eleves jae 
+										WHERE jec.login=jae.login AND 
+											jae.id_aid='".$lig_aid['id']."';";
+					//echo "$sql<br />";
+					$res_aid_classe=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_aid_classe)>0) {
+						while($lig_aid_classe=mysqli_fetch_object($res_aid_classe)) {
+							$tab_aid_parcours[$cpt_aid_parcours]['id_classe'][]=$lig_aid_classe->id_classe;
+						}
+					}
+					$cpt_aid_parcours++;
 				}
 				echo "
 		<!--
 		<div id='div_ajout_plusieurs_parcours' onmouseover=\"document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';\" onmouseout=\"document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';\">
 		-->
-		<div id='div_ajout_plusieurs_parcours'>
-		<p style='margin-top:1em;' onclick=\"if(document.getElementById('tableau_ajout_plusieurs_parcours').style.display=='none') {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';} else {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';}\" title=\"Cliquez pour afficher/masquer le tableau d'ajout par lots\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' />Ajouter plusieurs Parcours d'un coup</p>
+		<div id='div_ajout_plusieurs_parcours' class='fieldset_opacite50' style='margin-top:1em; padding:1em;'>
+		<p style='margin-top:1em; font-weight:bold;' onclick=\"if(document.getElementById('tableau_ajout_plusieurs_parcours').style.display=='none') {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='';} else {document.getElementById('tableau_ajout_plusieurs_parcours').style.display='none';}\" title=\"Cliquez pour afficher/masquer le tableau d'ajout par lots\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' />Ajouter plusieurs Parcours d'un coup</p>
+		<br />
 		<div id='tableau_ajout_plusieurs_parcours' style='display:none;'>
 		<table class='boireaus boireaus_alt'>
 			<thead>
 				<tr>
 					<th rowspan='2'>Classe</th>
 					<th rowspan='2'>Type</th>
-					<th colspan='$maxper'>Période</th>
-					<th rowspan='2'>Description</th>
+					<th colspan='$maxper'><a href='#' onclick=\"";
+				for($loop_per=1;$loop_per<=$maxper;$loop_per++) {
+					echo "change_coche_parcours_periode($loop_per);";
+				}
+				echo "return false;\">Période</a></th>
+					<th rowspan='2'>Description <a href='#' onclick=\"parcours_remplir_description();return false;\" title=\"Si la description est vide, prendre le contenu de la colonne Type comme description.\"><img src='../images/icons/wizard.png' class='icone16' /></a></th>
 					<th rowspan='2'>Liaison</th>
 				</tr>
 				<tr>";
 				for($loop_per=1;$loop_per<=$maxper;$loop_per++) {
 					echo "
-					<th title='Période $loop_per'>P.$loop_per</th>";
+					<th title='Période $loop_per'><a href='#' onclick=\"change_coche_parcours_periode($loop_per);return false;\">P.$loop_per</a></th>";
 				}
 				echo "
 				</tr>
@@ -919,7 +968,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 				<tr>";
 						}
 						echo "
-					<td><a href='#' onclick=\"if(document.getElementById('nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_description').value=='') {
+					<td><a href='#' id='nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_type' onclick=\"if(document.getElementById('nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_description').value=='') {
 						document.getElementById('nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_description').value=this.innerHTML;
 					};return false;\" title='Si la description est vide, prendre le contenu de cette colonne comme description.'>".$texte_type_parcours."<a/></td>";
 
@@ -946,12 +995,14 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 						*/
 
 						echo "
-					<td>
+					<td title=\"Seuls les AID (de type Parcours) avec des élèves de la classe inscrits sont proposés ici.\">
 						<select name='nouveau_parcours_classe_".$selectionClasse[$loop]."_type_".$code_parcours."_liaison'>
 							<option value=''></option>";
 						for($loop_aid=0;$loop_aid<count($tab_aid_parcours);$loop_aid++) {
-							echo "
+							if(in_array($selectionClasse[$loop], $tab_aid_parcours[$loop_aid]['id_classe'])) {
+								echo "
 							<option value='".$tab_aid_parcours[$loop_aid]['id']."'>".$tab_aid_parcours[$loop_aid]['nom']."</option>";
+							}
 						}
 						echo "
 						</select>
@@ -977,6 +1028,49 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 	</fieldset>
 </form>
 
+<script type='text/javascript'>
+
+	function change_coche_parcours_periode(periode) {
+		var etat_releve=0;
+		var etat;
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++) {
+			type=champs_input[i].getAttribute('type');
+			if(type=='checkbox'){
+				id=champs_input[i].getAttribute('id');
+				if((id.substring(0,24)=='nouveau_parcours_classe_')&&(id.indexOf('periode_'+periode)!=-1)) {
+					
+					if(etat_releve==0) {
+						etat=champs_input[i].checked;
+						etat_releve=1;
+					}
+					if(etat) {
+						champs_input[i].checked=false;
+					}
+					else {
+						champs_input[i].checked=true;
+					}
+				}
+			}
+		}
+	}
+
+	function parcours_remplir_description() {
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++) {
+			type=champs_input[i].getAttribute('type');
+			if(type=='text'){
+				id=champs_input[i].getAttribute('id');
+				if((id)&&(id.substring(0,24)=='nouveau_parcours_classe_')&&(id.indexOf('_description')!=-1)) {
+					if(champs_input[i].value=='') {
+						champs_input[i].value=document.getElementById(id.replace('_description', '_type')).innerHTML;
+					}
+				}
+			}
+		}
+	}
+</script>
+
 <style type='text/css'>
 	.table_no_border {
 		border:0px;
@@ -996,6 +1090,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 <!-- Formulaire EPI -->
 
 <form action="index.php" method="post" id="definitionEPI">
+	<a name='form_EPIs'></a>
 	<fieldset class='fieldset_opacite50'>
 		<legend class='fieldset_opacite50'>EPIs</legend>
 		<div id="div_epi">
@@ -1591,6 +1686,7 @@ while ($classe = $classes->fetch_object()) { ?>
 <!-- Formulaire AP -->
 
 <form action="index.php" method="post" id="definitionAP">
+	<a name='form_AP'></a>
 	<fieldset class='fieldset_opacite50'>
 		<legend class='fieldset_opacite50'>AP</legend>
 		<div id="div_ap">
@@ -1986,6 +2082,7 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 <!-- Formulaire Export des données -->
 
 <form action="index.php" method="post" id="exportDonnees">
+	<a name='form_export_des_donnees'></a>
 	<fieldset class='fieldset_opacite50'>
 		<legend class='fieldset_opacite50'>Export des données</legend>
 
