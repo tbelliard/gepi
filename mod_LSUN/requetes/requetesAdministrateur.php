@@ -106,7 +106,7 @@ if ('y' == $newParcours) {
 // on supprime un parcours
 $deleteParcours = filter_input(INPUT_POST, 'supprimeParcours', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 
-if (count($deleteParcours)) {
+if((isset($deleteParcours))&&(is_array($deleteParcours))&&(count($deleteParcours)>0)) {
 	//var_dump($deleteParcours);
 	//echo '<br>';
 	foreach ($deleteParcours as $key=>$value) {
