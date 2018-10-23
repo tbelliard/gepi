@@ -59,7 +59,8 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (!acces_cdt()) {
+//if (!acces_cdt()) {
+if((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui('acces_cdt_prof'))) {
 	die("Le module n'est pas activé.");
 }
 
@@ -154,6 +155,7 @@ else {
 //echo "<p></p>\n";
 
 //On vérifie si le module est activé
+/*
 if (!acces_cdt()) {
 	echo "</p>\n";
 
@@ -161,6 +163,7 @@ if (!acces_cdt()) {
 	require("../lib/footer.inc.php");
 	die();
 }
+*/
 
 // 20130722
 if(isset($id_groupe)) {
@@ -869,7 +872,7 @@ if($action=='acces2') {
 	fwrite($f,'<?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
 *
 * This file is part of GEPI.
 *

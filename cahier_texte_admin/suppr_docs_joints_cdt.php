@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stepĥane Boireau
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stepĥane Boireau
 *
 * This file is part of GEPI.
 *
@@ -59,7 +59,7 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (getSettingValue("active_cahiers_texte")!='y') {
+if((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui('acces_cdt_prof'))) {
 	die("Le module n'est pas activé.");
 }
 

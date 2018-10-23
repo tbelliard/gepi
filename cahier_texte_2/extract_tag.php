@@ -65,7 +65,8 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (!acces_cdt()) {
+//if (!acces_cdt()) {
+if((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui('acces_cdt_prof'))) {
 	tentative_intrusion(1, "Tentative d'accès au cahier de textes en consultation alors que le module n'est pas activé.");
 	die("Le module n'est pas activé.");
 }

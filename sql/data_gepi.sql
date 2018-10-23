@@ -2300,3 +2300,4 @@ INSERT INTO droits SET id='/cahier_texte_2/affiche_notice.php', administrateur='
 INSERT INTO setting SET name='acces_moy_ele_resp', value='immediat';
 INSERT INTO setting SET name='acces_moy_ele_resp_cn', value='immediat';
 INSERT INTO droits VALUES ('/saisie/ct_app_moy.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', 'Saisie de commentaires-types d apres moyenne', '');
+INSERT INTO droits SET id='/cahier_texte_admin/admin_tag.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Définition des tags pour les notices de Cahiers de textes', statut='';

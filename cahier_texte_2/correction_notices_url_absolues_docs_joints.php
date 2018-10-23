@@ -60,7 +60,8 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (!acces_cdt()) {
+//if (!acces_cdt()) {
+if((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui('acces_cdt_prof'))) {
 	die("Le module n'est pas activé.");
 }
 

@@ -1977,6 +1977,18 @@ statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/ct_app_moy.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', 'Saisie de commentaires-types d apres moyenne', '');";
 
+$tab_req[]="INSERT INTO droits SET id='/cahier_texte_admin/admin_tag.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Définition des tags pour les notices de Cahiers de textes',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
