@@ -5,6 +5,9 @@
 
 //$min_max_moyclas=1;
 
+// Indice $i -> Elève
+// Indice $j -> Groupe
+
 // On initialise le tableau des notes et appréciations :
 echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et appréciations'>\n";
 echo "<thead>\n";
@@ -395,35 +398,44 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 
 		echo "<td$chaine_rowspan style='font-weight:bold; text-align: center;'><span class='bulletin'>";
 
-		if(($moyennes_periodes_precedentes=="y")&&(isset($tab_bull['moy_annee'][$j][$i]))) {
+		// 20181024
+		//echo "\$moyennes_periodes_precedentes=$moyennes_periodes_precedentes<br />";
+		if($moyennes_periodes_precedentes=="y") {
+
 			if(isset($tab_bull['login_prec'])) {
 				foreach($tab_bull['login_prec'] as $key => $value) {
+					// $key est le numéro de période.
 					// Il faut récupérer l'id_groupe et l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
 					// Tableaux d'indices [$j][$i] (groupe, élève)
 					//		$tab_bull['note_prec'][$loop_p]=$current_eleve_note;
 					//		$tab_bull['statut_prec'][$loop_p]=$current_eleve_statut;
-					$indice_eleve=-1;
-					for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$key]);$loop_l++) {
-						if($tab_bull['login_prec'][$key][$loop_l]==$tab_bull['eleve'][$i]['login']) {$indice_eleve=$loop_l;break;}
-					}
 
-					if($indice_eleve!=-1) {
-						// Recherche du groupe
-						$indice_grp=-1;
-						for($loop_l=0;$loop_l<count($tab_bull['group_prec'][$key]);$loop_l++) {
-							if($tab_bull['group_prec'][$key][$loop_l]['id']==$tab_bull['groupe'][$j]['id']) {$indice_grp=$loop_l;break;}
+					if(isset($tab_bull['group_prec'])) {
+						$indice_eleve=-1;
+						for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$key]);$loop_l++) {
+							if($tab_bull['login_prec'][$key][$loop_l]==$tab_bull['eleve'][$i]['login']) {$indice_eleve=$loop_l;break;}
 						}
+						//echo "\$indice_eleve=$indice_eleve<br />";
 
-						if($indice_grp!=-1) {
-							if(isset($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve])) {
-								if ($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve]!="") {
-									$valeur = $tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve];
+						if($indice_eleve!=-1) {
+							// Recherche du groupe
+							$indice_grp=-1;
+							for($loop_l=0;$loop_l<count($tab_bull['group_prec'][$key]);$loop_l++) {
+								if($tab_bull['group_prec'][$key][$loop_l]['id']==$tab_bull['groupe'][$j]['id']) {$indice_grp=$loop_l;break;}
+							}
+
+							//echo "\$indice_grp=$indice_grp<br />";
+							if($indice_grp!=-1) {
+								if(isset($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve])) {
+									if ($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve]!="") {
+										$valeur = $tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve];
+									}
+									else {
+										$valeur = nf($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]);
+									}
+									echo "<span style='font-size:x-small; font-weight:normal;' title=\"Moyenne sur la période $key\">P$key:&nbsp;".$valeur."</span>";
+									echo "<br />\n";
 								}
-								else {
-									$valeur = nf($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]);
-								}
-								echo "<span style='font-size:x-small; font-weight:normal;' title=\"Moyenne sur la période $key\">P$key:&nbsp;".$valeur."</span>";
-								echo "<br />\n";
 							}
 						}
 					}
