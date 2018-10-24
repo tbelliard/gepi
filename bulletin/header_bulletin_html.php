@@ -256,8 +256,13 @@
 	// Pour afficher les trois colonnes en une seule, on transmet '1':
 	$min_max_moyclas=getSettingValue("min_max_moyclas") ? getSettingValue("min_max_moyclas") : 0;
 
+	// Moyennes précédentes et annuelles des enseignements
 	$moyennes_periodes_precedentes=getSettingValue("moyennes_periodes_precedentes") ? getSettingValue("moyennes_periodes_precedentes") : "n";
 	$moyennes_annee=getSettingValue("moyennes_annee") ? getSettingValue("moyennes_annee") : "n";
+
+	// Moyenne générale annuelle
+	$bull_moyenne_generale_annuelle=getSettingValue("bull_moyenne_generale_annuelle") ? getSettingValue("bull_moyenne_generale_annuelle") : "n";
+	$bull_moyenne_generale_annuelle_derniere_periode=getSettingValue("bull_moyenne_generale_annuelle_derniere_periode") ? getSettingValue("bull_moyenne_generale_annuelle_derniere_periode") : "n";
 
 	echo "</style>
     <link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />

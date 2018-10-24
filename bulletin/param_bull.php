@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -635,6 +635,20 @@ if (isset($_POST['is_posted'])) {
 	if (isset($_POST['moyennes_annee'])) {
 		if (!saveSetting("moyennes_annee", $_POST['moyennes_annee'])) {
 			$msg .= "Erreur lors de l'enregistrement de moyennes_annee !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_moyenne_generale_annuelle'])) {
+		if (!saveSetting("bull_moyenne_generale_annuelle", $_POST['bull_moyenne_generale_annuelle'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_moyenne_generale_annuelle !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_moyenne_generale_annuelle_derniere_periode'])) {
+		if (!saveSetting("bull_moyenne_generale_annuelle_derniere_periode", $_POST['bull_moyenne_generale_annuelle_derniere_periode'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_moyenne_generale_annuelle_derniere_periode !";
 			$reg_ok = 'no';
 		}
 	}
@@ -1959,7 +1973,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     </tr>
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
-        <td style="font-variant: small-caps;">Afficher les moyennes annuelles des enseignements dans la cellule Moyenne de l'élève :<br />
+        <td style="font-variant: small-caps;">Afficher les moyennes annuelles des enseignements dans la cellule Moyenne de l'élève&nbsp;:<br />
             <!--(<em>choix incompatible avec l'affichage des moyennes minimale, classe et maximale dans une seule colonne</em>)-->
         </td>
         <td>
@@ -1973,6 +1987,38 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         ?>
         </td>
     </tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+		<td style="font-variant: small-caps;">Afficher une ligne Moyennes générales annuelles&nbsp;:<br />
+		<em>(pour chaque période, la moyenne \"annuelle\" est la moyenne des périodes, jusqu'à la période courante)</em>
+		</td>
+		<td>
+			<?php
+			echo "<input type=\"radio\" name=\"bull_moyenne_generale_annuelle\" id=\"bull_moyenne_generale_annuelle_y\" value='y' ";
+			if (getSettingValue("bull_moyenne_generale_annuelle") == 'y') echo " checked";
+			echo " /><label for='bull_moyenne_generale_annuelle_y' style='cursor: pointer;'>&nbsp;Oui</label>";
+			echo "<input type=\"radio\" name=\"bull_moyenne_generale_annuelle\" id=\"bull_moyenne_generale_annuelle_n\" value='n' ";
+			if (getSettingValue("bull_moyenne_generale_annuelle") != 'y') echo " checked";
+			echo " /><label for='bull_moyenne_generale_annuelle_n' style='cursor: pointer;'>&nbsp;Non</label>";
+			?>
+		</td>
+	</tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+		<td style="font-variant: small-caps;">Restreindre à la dernière période, l'affichage de la ligne moyenne générale annuelle&nbsp;:<br />
+		<em>(sous réserve que l'affichage des moyennes générales annuelles soit demandé ci-dessus)</em>
+		</td>
+		<td>
+			<?php
+			echo "<input type=\"radio\" name=\"bull_moyenne_generale_annuelle_derniere_periode\" id=\"bull_moyenne_generale_annuelle_derniere_periode_y\" value='y' ";
+			if (getSettingValue("bull_moyenne_generale_annuelle_derniere_periode") == 'y') echo " checked";
+			echo " /><label for='bull_moyenne_generale_annuelle_derniere_periode_y' style='cursor: pointer;'>&nbsp;Oui</label>";
+			echo "<input type=\"radio\" name=\"bull_moyenne_generale_annuelle_derniere_periode\" id=\"bull_moyenne_generale_annuelle_derniere_periode_n\" value='n' ";
+			if (getSettingValue("bull_moyenne_generale_annuelle_derniere_periode") != 'y') echo " checked";
+			echo " /><label for='bull_moyenne_generale_annuelle_derniere_periode_n' style='cursor: pointer;'>&nbsp;Non</label>";
+			?>
+		</td>
+	</tr>
 
 	<?php
 		// Affichage du cadre Orientation

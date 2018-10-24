@@ -2015,6 +2015,12 @@ else {
 			//================================
 			//================================
 		}
+		elseif($mode_bulletin=="html") {
+			// 20181024 : Paramètres ajoutés dans les Paramètres des bulletins HTML
+			// Valeurs récupérées depuis header_bulletin_html.php
+			$affiche_moyenne_generale_annuelle=$bull_moyenne_generale_annuelle;
+			$affiche_moyenne_generale_annuelle_derniere_periode=$bull_moyenne_generale_annuelle_derniere_periode;
+		}
 
 		//echo "\$moyennes_annee=$moyennes_annee<br />";
 
@@ -2859,7 +2865,14 @@ else {
 								if($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes']!="") {
 									$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].=" - ";
 								}
-								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].="P.".$mga_loop_periode_num.": ".present_nombre($tmp_moy_gen_ele, $tab_modele_pdf["arrondie_choix"][$id_classe], $tab_modele_pdf["nb_chiffre_virgule"][$id_classe], $tab_modele_pdf["chiffre_avec_zero"][$id_classe]);
+
+								if($mode_bulletin=='html') {
+									$val_tmp=nf($tmp_moy_gen_ele);
+								}
+								else {
+									$val_tmp=present_nombre($tmp_moy_gen_ele, $tab_modele_pdf["arrondie_choix"][$id_classe], $tab_modele_pdf["nb_chiffre_virgule"][$id_classe], $tab_modele_pdf["chiffre_avec_zero"][$id_classe]);
+								}
+								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].="P.".$mga_loop_periode_num.": ".$val_tmp;
 							}
 						}
 					}
@@ -2893,7 +2906,14 @@ else {
 							if($tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes']!="") {
 								$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].=" - ";
 							}
-							$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].="P.".$periode_num.": ".present_nombre($tmp_moy_gen_ele, $tab_modele_pdf["arrondie_choix"][$id_classe], $tab_modele_pdf["nb_chiffre_virgule"][$id_classe], $tab_modele_pdf["chiffre_avec_zero"][$id_classe]);
+
+							if($mode_bulletin=='html') {
+								$val_tmp=nf($tmp_moy_gen_ele);
+							}
+							else {
+								$val_tmp=present_nombre($tmp_moy_gen_ele, $tab_modele_pdf["arrondie_choix"][$id_classe], $tab_modele_pdf["nb_chiffre_virgule"][$id_classe], $tab_modele_pdf["chiffre_avec_zero"][$id_classe]);
+							}
+							$tab_bulletin[$id_classe][$periode_num]["ele"][$tmp_login_ele]['chaine_moy_gen_periodes'].="P.".$periode_num.": ".$val_tmp;
 						}
 					}
 
@@ -3104,7 +3124,8 @@ else {
 					// Les paramètres HTML sont généraux à toutes les classes sauf ceux décidés directement dans bull_index.php alors que les paramètres PDF sont essentiellement liés aux modèles.
 					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_general_coef_1']=0;
 
-					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_generale_annuelle']=0;
+					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_generale_annuelle']=$affiche_moyenne_generale_annuelle;
+					$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_generale_annuelle_derniere_periode']=$affiche_moyenne_generale_annuelle_derniere_periode;
 				}
 			
 				//ERIC
@@ -4705,13 +4726,14 @@ mysql>
 		}
 	}
 
-	// 20160624
-
+	// 20181024
 	/*
-	echo "\$tab_bulletin<pre>";
-	print_r($tab_bulletin);
-	echo "</pre>";
-	die();
+	if($mode_bulletin=="html") {
+		echo "\$tab_bulletin<pre>";
+		print_r($tab_bulletin);
+		echo "</pre>";
+	}
+	//die();
 	*/
 
 	/*

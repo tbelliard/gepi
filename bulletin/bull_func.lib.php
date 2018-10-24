@@ -248,8 +248,25 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 	// et le passer via global
 	//================================
 
+	// 20181024
+	$affiche_moyenne_generale_annuelle=0;
+	if((isset($tab_bull['affiche_moyenne_generale_annuelle']))&&($tab_bull['affiche_moyenne_generale_annuelle']=="y")) {
+		if((!isset($tab_bull['affiche_moyenne_generale_annuelle_derniere_periode']))||
+		($tab_bull['affiche_moyenne_generale_annuelle_derniere_periode']=="n")||
+		(($tab_bull['affiche_moyenne_generale_annuelle_derniere_periode']=="y")&&($tab_bull['maxper']==$tab_bull['num_periode']))) {
+			$affiche_moyenne_generale_annuelle=1;
+		}
+	}
+
 	// Initialisation:
 	$nb_bulletins=1;
+
+	/*
+	echo "<pre>";
+	print_r($tab_bull['eleve'][$i]);
+	echo "</pre>";
+	echo "<hr />";
+	*/
 
 	unset($tab_adr_ligne1);
 	unset($tab_adr_ligne2);

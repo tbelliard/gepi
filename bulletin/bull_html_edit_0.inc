@@ -864,6 +864,134 @@ if($affiche_deux_moy_gen==1) {
 }
 //===============================================================================
 
+
+//===============================================================================
+// Début de la partie moyenne générale annuelle
+if($affiche_moyenne_generale_annuelle==1) {
+	// Affichage des moyennes générales annuelles
+	if ($tab_bull['test_coef']!=0) {
+
+		$total_coeff_eleve=0;
+		for($j=0;$j<count($tab_bull['groupe']);$j++) {
+			// Si l'élève suit l'option
+			if(isset($tab_bull['coef_eleve'][$i][$j])) {
+				$total_coeff_eleve+=$tab_bull['coef_eleve'][$i][$j];
+			}
+		}
+
+		if ($total_coeff_eleve) {
+			echo "<tr>\n";
+			echo "<td style='text-align: left;'><span class='bulletin'><b>Moy.gén.annuelle</b></span></td>\n";
+
+			// Coef
+			if($tab_bull['affiche_coef']=='y') {
+				echo "<td style='text-align: center;'><span class='bulletin'>-</span></td>\n";
+			}
+
+			// Nb dev
+			if($tab_bull['affiche_nbdev']=='y') {
+				echo "<td style='text-align: center;'><span class='bulletin'>-</span></td>\n";
+			}
+
+			//====================================
+			if((!isset($tab_bull["moy_gen_annuelle_classe"]))||($tab_bull["moy_gen_annuelle_classe"]=="")||($tab_bull["moy_gen_annuelle_classe"]=="-")) {
+				$moy_classe_annuelle = '-';
+			}
+			else{
+				$moy_classe_annuelle = nf($tab_bull["moy_gen_annuelle_classe"]);
+			}
+
+			if((!isset($tab_bull["min_moy_gen_annuelle"]))||($tab_bull["min_moy_gen_annuelle"]=="")||($tab_bull["min_moy_gen_annuelle"]=="-")) {
+				$moy_classe_annuelle_min = '-';
+			} else {
+				$moy_classe_annuelle_min = nf($tab_bull['min_moy_gen_annuelle']);
+			}
+
+			if((!isset($tab_bull["max_moy_gen_annuelle"]))||($tab_bull["max_moy_gen_annuelle"]=="")||($tab_bull["max_moy_gen_annuelle"]=="-")) {
+				$moy_classe_annuelle_max = '-';
+			} else {
+				$moy_classe_annuelle_max = nf($tab_bull['max_moy_gen_annuelle']);
+			}
+			//====================================
+
+			if($min_max_moyclas!=1) {
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Moyenne générale annuelle minimale de la classe\">".$moy_classe_annuelle_min."</span></td>\n";
+				//$tab_bull['moy_gen_classe'][$i]
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Moyenne générale annuelle de la classe\"><b>".$moy_classe_annuelle."</b></span></td>\n";
+				echo "<td style='text-align: center;'><span class='bulletin' title=\"Moyenne générale annuelle maximale de la classe\">".$moy_classe_annuelle_max."</span></td>\n";
+			}
+			else {
+				echo "<td style='text-align: center;'><span class='bullminclasmax' title=\"Moyenne générale annuelle minimale de la classe\">".$moy_classe_annuelle_min."</span><br />\n";
+				//$tab_bull['moy_gen_classe'][$i]
+				echo "<span class='bullminclasmax' title=\"Moyenne générale annuelle de la classe\"><b>".$moy_classe_annuelle."</b></span><br />\n";
+				echo "<span class='bullminclasmax' title=\"Moyenne générale annuelle maximale de la classe\">".$moy_classe_annuelle_max."</span></td>\n";
+			}
+
+			if((!isset($tab_bull["ele"][$tab_bull['eleve'][$i]['login']]["moy_gen_annuelle"]))||
+			($tab_bull["ele"][$tab_bull['eleve'][$i]['login']]["moy_gen_annuelle"]=="")||
+			($tab_bull["ele"][$tab_bull['eleve'][$i]['login']]["moy_gen_annuelle"]=="-")) {
+				$val_tmp="-";
+			}
+			else {
+				$val_tmp=nf($tab_bull["ele"][$tab_bull['eleve'][$i]['login']]["moy_gen_annuelle"]);
+			}
+			echo "<td style='text-align: center; font-weight:bold;'><span class='bulletin'>".$val_tmp."</span></td>\n";
+
+			if ($tab_bull['affiche_graph']=='y') {
+				echo "<td style='text-align: center;'>";
+				/*
+				if((isset($tab_bull['place_eleve_classe'][$i]))&&($tab_bull['place_eleve_classe'][$i]!="")) {
+					//echo $place_eleve_classe[$i]." ";
+					echo "<img height='40' width='40' src='../visualisation/draw_artichow4.php?place_eleve=".$tab_bull['place_eleve_classe'][$i].
+						"&amp;temp1=".$tab_bull['quartile1_classe_gen'].
+						"&amp;temp2=".$tab_bull['quartile2_classe_gen'].
+						"&amp;temp3=".$tab_bull['quartile3_classe_gen'].
+						"&amp;temp4=".$tab_bull['quartile4_classe_gen'].
+						"&amp;temp5=".$tab_bull['quartile5_classe_gen'].
+						"&amp;temp6=".$tab_bull['quartile6_classe_gen'].
+						"&amp;nb_data=7' alt='Quartiles' />\n";
+				}
+				else {
+				*/
+					echo "-";
+				//}
+
+				echo "</td>\n";
+			}
+
+			// Rang
+			if($tab_bull['affiche_rang']=='y') {
+				echo "<td style='text-align: center;'><span class='bulletin'>";
+
+				if ((isset($tab_bull["ele"][$tab_bull['eleve'][$i]['login']]["rang_general_annuel"]))&&
+				($tab_bull["ele"][$tab_bull['eleve'][$i]['login']]["rang_general_annuel"]!= 0)) {
+					$rang_a_afficher=$tab_bull["ele"][$tab_bull['eleve'][$i]['login']]["rang_general_annuel"].'/'.$tab_bull['eff_classe'];
+				} else {
+					$rang_a_afficher = "-";
+				}
+
+				echo $rang_a_afficher;
+
+				echo "</span></td>\n";
+			}
+
+			echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>\n";
+
+			if((isset($tab_bull["ele"][$tab_bull['eleve'][$i]['login']]['chaine_moy_gen_periodes']))&&
+			($tab_bull["ele"][$tab_bull['eleve'][$i]['login']]['chaine_moy_gen_periodes']!="")) {
+				echo $tab_bull["ele"][$tab_bull['eleve'][$i]['login']]['chaine_moy_gen_periodes'];
+			}
+			else {
+				echo "-";
+			}
+			echo "</span></td>\n";
+			echo "</tr>\n";
+		}
+	}
+}
+// Fin de la partie moyenne générale annuelle
+//===============================================================================
+
 echo "</table>\n";
 
 ?>

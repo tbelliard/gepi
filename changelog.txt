@@ -13,6 +13,8 @@ AID:
 
 Carnets de notes:
 - Ajout de modes de saisie de notes pour passer plus vite à la saisie de la note suivante.
+- Possibilité, lors de la saisie de notes, d'afficher les notes précédentes et 
+  les moyennes et appréciations des bulletins des années précédentes.
 
 Absences 2: 
 - Possibilité de générer un fichier ODT de rappel à la loi (depuis Bilan individuel).
@@ -24,6 +26,9 @@ Bulletins:
 - Possibilité de restreindre l'accès aux moyennes des bulletins pour les parents/élèves,
   comme on peut déjà le faire pour les appréciations et avis du conseil de classe.
 - Dispositif optionnel d'appréciations-types en fonction de la moyenne.
+- Bulletins HTML: Possibilité d'afficher une ligne des moyennes générales annuelles.
+- Possibilité, lors de la saisie des appréciations, d'afficher les moyennes et 
+  appréciations des bulletins des années précédentes.
 
 - Général:
 - Possibilité de mettre à jour globalement les groupes d'après l'export EXP_ELEVES.xml
