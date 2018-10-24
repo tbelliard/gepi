@@ -5,6 +5,11 @@
 
 //$min_max_moyclas=1;
 
+// Indice $i -> Elève
+// Indice $j -> Groupe
+
+// Modèle sans colonnes de notes
+
 // On initialise le tableau des notes et appréciations :
 echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et appréciations'>\n";
 echo "<thead>\n";
