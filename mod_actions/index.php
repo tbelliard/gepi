@@ -1070,6 +1070,7 @@ A FAIRE :
 // Pouvoir pointer comme présent en même temps que l'on fait les inscriptions
 </pre>
 <pre style='color:green'>
+FAIT :
 // Afficher la liste des catégories		FAIT
 // Afficher les actions de la catégorie choisie	FAIT
 // Consulter une action dans la catégorie	FAIT
