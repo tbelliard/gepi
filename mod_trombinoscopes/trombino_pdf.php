@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -81,10 +81,16 @@ else { if (isset($_GET['statusgepi'])) { $statusgepi = $_GET['statusgepi']; } if
 if (empty($_GET['affdiscipline']) and empty($_POST['affdiscipline'])) { $affdiscipline = ''; }
 else { if (isset($_GET['affdiscipline'])) { $affdiscipline = $_GET['affdiscipline']; } if (isset($_POST['affdiscipline'])) { $affdiscipline = $_POST['affdiscipline']; } }
 
+// 20181102
+$id_action = isset($_POST['id_action']) ? $_POST['id_action'] : ( isset($_GET['id_action']) ? $_GET['id_action'] : '' );
 
-
-if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $aid != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
+if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $aid != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' or $id_action!='') ) {
 	// on regarde ce qui a été choisi
+
+	// 20181102
+	if ($id_action!='') { $action_affiche = 'action'; }
+	if ( $action_affiche === 'action' ) { $requete_qui = 'SELECT mac.nom AS nom_categorie, maa.nom AS nom_action, date_action FROM '.$prefix_base.'mod_actions_action maa, '.$prefix_base.'mod_actions_categories mac WHERE maa.id_categorie=mac.id AND maa.id="'.$id_action.'";'; }
+
 	// c'est une classe
 	if ( $classe != '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'classe'; }
 	// c'est un groupe
@@ -111,7 +117,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 
-	if ( $action_affiche === 'classe' ) { $entete = "Classe : ".$donnees_qui['nom_complet']." (".$donnees_qui['classe'].")";}
+	if ( $action_affiche === 'classe' ) { $entete = "Classe : ".$donnees_qui['nom_complet'];}
 	if ( $action_affiche === 'groupe' ) {
 		//$entete = "Groupe : ".$donnees_qui['name'];
 		$current_group=get_group($groupe);
@@ -122,6 +128,16 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	if ( $action_affiche === 'discipline' ) { $entete = "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
 	if ( $action_affiche === 'statusgepi' ) { $entete = "Statut : ".my_ereg_replace("scolarite","scolarité",$statusgepi); }
 
+	// 20181102
+	if ( $action_affiche === 'action' ) { 
+		$entete = $donnees_qui['nom_categorie'].' : '.$donnees_qui['nom_action']." (".formate_date($donnees_qui['date_action'], 'y').")";
+		$repertoire='eleves';
+		$requete_trombi = "SELECT e.login, e.nom, e.prenom, e.elenoet 
+						FROM ".$prefix_base."eleves e, ".$prefix_base."mod_actions_inscriptions mai 
+						WHERE e.login = mai.login_ele
+						AND mai.id_action = '".$id_action."' 
+						ORDER BY nom, prenom"; 
+	}
 
 	// choix du répertoire ou chercher les photos entre professeur ou élève
 	if ( $action_affiche === 'classe' ) { $repertoire = 'eleves'; }
@@ -195,7 +211,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 										AND a.id = '".$aid."'
 										AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 										GROUP BY e.login , e.nom , e.prenom
-										ORDER BY $grp_order_by;";	
+										ORDER BY $grp_order_by;";
 
 			}
 			else {
@@ -207,7 +223,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 										AND a.id = '".$aid."'
 										AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 										GROUP BY e.nom, e.prenom
-										ORDER BY $grp_order_by;";			
+										ORDER BY $grp_order_by;";
 			}
 		}
 
@@ -283,6 +299,9 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 		if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 		if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
+
+		// 20181102
+		if ( $action_affiche === 'action' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['elenoet']; }
 	
 		$matiere_prof[$cpt_photo] = '';
 		if ( $action_affiche === 'equipepeda' and $affdiscipline === 'oui' ) {
@@ -385,6 +404,9 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		$pdf->SetFont('DejaVu','B',$fonte_size_classe);
 		//$texte="Trombinoscope ".$gepiYear." - Classe : $classe";
 		$texte="Trombinoscope ".$gepiYear." - $entete";
+
+		// 20181102 : A FAIRE : TESTER LA LONGUEUR DE LA CHAINE ET REDUIRE LA POLICE
+
 		$pdf->Cell($largeur_utile_page,$hauteur_classe,$texte,$bordure,1,'C');
 
 		$pdf->SetFont('DejaVu','',$fonte_size);

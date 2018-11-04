@@ -287,6 +287,8 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_listes_perso/index_admin.php" '.insert_confirm_abandon().'>Listes personnelles</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_orientation/admin.php" '.insert_confirm_abandon().'>Orientation</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_LSUN/admin.php" '.insert_confirm_abandon().'>Livret Scolaire Unique</a></li>'."\n";
+		$terme_mod_action=getSettingValue('terme_mod_action');
+		$menus .= '  <li><a href="'.$gepiPath.'/mod_actions/index_admin.php" '.insert_confirm_abandon().'>'.$terme_mod_action.'s</a></li>'."\n";
 		$menus .= '    </ul>'."\n";
 		$menus .= '  </li>'."\n";
 
@@ -414,6 +416,13 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		}
 		if(getSettingAOui('active_module_LSUN')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_LSUN/index.php" '.insert_confirm_abandon().'>Livret Scolaire Unique</a></li>'."\n";
+		}
+		if(getSettingAOui('active_mod_actions')) {
+			$terme_mod_action=getSettingValue('terme_mod_action');
+			$tab_actions_categories=get_tab_actions_categories();
+			if(count($tab_actions_categories)>0) {
+				$menus .= '  <li><a href="'.$gepiPath.'/mod_actions/index.php" '.insert_confirm_abandon().'>'.$terme_mod_action.'s</a></li>'."\n";
+			}
 		}
 		$menus .= '</ul>'."\n";	
 		$menus .= '</li>'."\n";

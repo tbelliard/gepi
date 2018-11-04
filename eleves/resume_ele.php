@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -979,6 +979,31 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 
 	echo "
 <div id='div_panneau_aff' style='float:left; width:".$largeur_panneau_aff."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px;' class='infobulle_corps'>".$html."</div>";
+}
+//=================================
+
+//=================================
+// 20181102
+if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&(getSettingAOui('active_mod_actions'))) {
+	$largeur_actions=500;
+
+	$terme_mod_action=getSettingValue('terme_mod_action');
+	$terme_mod_action_nettoye=str_replace("'", " ", str_replace('"', " ", $terme_mod_action));
+
+	$html="";
+
+	$tableau_html=tableau_actions_eleve('light');
+	if($tableau_html!='') {
+		$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>
+	<div align='center' style='margin-top:1em; font-size:x-small;'>
+		<p class='bold'>".$terme_mod_action."s</p>
+		".$tableau_html."
+	</div>
+</div>";
+
+		echo "
+<div id='div_actions' style='float:left; width:".$largeur_actions."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color: antiquewhite; overflow:auto;' class='infobulle_corps'>".$html."</div>";
+	}
 }
 //=================================
 

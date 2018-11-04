@@ -1706,3 +1706,41 @@ note_max float(10,2) NOT NULL DEFAULT '20.1' ,
 app TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS mod_actions_categories;
+CREATE TABLE IF NOT EXISTS mod_actions_categories (
+id INT( 11 ) NOT NULL AUTO_INCREMENT, 
+nom VARCHAR( 255 ) NOT NULL DEFAULT '', 
+description TEXT NOT NULL DEFAULT '', 
+PRIMARY KEY ( id ), 
+UNIQUE KEY ( nom )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS mod_actions_gestionnaires;
+CREATE TABLE IF NOT EXISTS mod_actions_gestionnaires (
+id INT( 11 ) NOT NULL AUTO_INCREMENT, 
+id_categorie INT( 11 ) NOT NULL DEFAULT '0', 
+login_user VARCHAR( 50 ) NOT NULL DEFAULT '', 
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS mod_actions_action;
+CREATE TABLE IF NOT EXISTS mod_actions_action (
+id INT( 11 ) NOT NULL AUTO_INCREMENT, 
+id_categorie INT( 11 ) NOT NULL DEFAULT '0', 
+nom VARCHAR( 255 ) NOT NULL DEFAULT '', 
+description TEXT NOT NULL DEFAULT '', 
+date_action DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00', 
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS mod_actions_inscriptions;
+CREATE TABLE IF NOT EXISTS mod_actions_inscriptions (
+id INT( 11 ) NOT NULL AUTO_INCREMENT, 
+id_action INT( 11 ) NOT NULL DEFAULT '0', 
+login_ele VARCHAR( 50 ) NOT NULL DEFAULT '', 
+presence VARCHAR(10) NOT NULL DEFAULT '', 
+date_pointage DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00', 
+login_pointage VARCHAR( 50 ) NOT NULL DEFAULT '', 
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

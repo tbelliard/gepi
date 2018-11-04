@@ -18091,4 +18091,194 @@ function get_tab_annees_anterieures_ele_matiere($login_ele, $matiere) {
 	return $tab;
 }
 
+function get_tab_actions_categories($id_categorie='') {
+	global $mysqli;
+
+	$tab_categories_actions=array();
+
+	if($_SESSION['statut']=='administrateur') {
+		if($id_categorie=='') {
+			$sql="SELECT * FROM mod_actions_categories ORDER BY nom, description;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab_categories_actions[$lig['id']]=$lig;
+					$tab_categories_actions[$lig['id']]['gestionnaire']=array();
+					$sql="SELECT * FROM mod_actions_gestionnaires WHERE id_categorie='".$lig['id']."';";
+					//echo "$sql<br />";
+					$res2=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res2)>0) {
+						while($lig2=mysqli_fetch_assoc($res2)) {
+							$tab_categories_actions[$lig['id']]['gestionnaire'][]=$lig2['login_user'];
+						}
+					}
+				}
+			}
+		}
+		else {
+			$sql="SELECT * FROM mod_actions_categories WHERE id='".$id_categorie."';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab_categories_actions=$lig;
+					$tab_categories_actions['gestionnaire']=array();
+					$sql="SELECT * FROM mod_actions_gestionnaires WHERE id_categorie='".$lig['id']."';";
+					//echo "$sql<br />";
+					$res2=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res2)>0) {
+						while($lig2=mysqli_fetch_assoc($res2)) {
+							$tab_categories_actions['gestionnaire'][]=$lig2['login_user'];
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='eleve') {
+		$sql="SELECT mac.* FROM mod_actions_categories mac, 
+						mod_actions_action maa, 
+						mod_actions_inscriptions mai
+					WHERE mai.id_action=maa.id AND 
+						maa.id_categorie=mac.id AND 
+						mai.login_ele='".$_SESSION['login']."' 
+					ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_assoc($res)) {
+				$tab_categories_actions[$lig['id']]=$lig;
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='responsable') {
+		$sql="SELECT mac.* FROM mod_actions_categories mac, 
+						mod_actions_action maa, 
+						mod_actions_inscriptions mai
+					WHERE mai.id_action=maa.id AND 
+						maa.id_categorie=mac.id AND 
+						mai.login_ele IN (SELECT e.login FROM eleves e, 
+												responsables2 r, 
+												resp_pers rp 
+											WHERE e.ele_id=r.ele_id AND 
+												r.pers_id=rp.pers_id AND 
+												rp.login='".$_SESSION['login']."') 
+					ORDER BY nom, description;";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_assoc($res)) {
+				$tab_categories_actions[$lig['id']]=$lig;
+			}
+		}
+	}
+	else {
+		if($id_categorie=='') {
+			$sql="SELECT mac.* FROM mod_actions_categories mac, 
+							mod_actions_gestionnaires mag 
+						WHERE mac.id=mag.id_categorie AND 
+							mag.login_user='".$_SESSION['login']."' 
+						ORDER BY nom, description;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab_categories_actions[$lig['id']]=$lig;
+					$tab_categories_actions[$lig['id']]['gestionnaire']=array();
+					$sql="SELECT * FROM mod_actions_gestionnaires WHERE id_categorie='".$lig['id']."';";
+					//echo "$sql<br />";
+					$res2=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res2)>0) {
+						while($lig2=mysqli_fetch_assoc($res2)) {
+							$tab_categories_actions[$lig['id']]['gestionnaire'][]=$lig2['login_user'];
+						}
+					}
+				}
+			}
+		}
+		else {
+			$sql="SELECT mac.* FROM mod_actions_categories mac, 
+							mod_actions_gestionnaires mag 
+						WHERE mac.id='".$id_categorie."' AND 
+							mac.id=mag.id_categorie AND 
+							mag.login_user='".$_SESSION['login']."' 
+						ORDER BY nom, description;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+					$tab_categories_actions=$lig;
+					$tab_categories_actions['gestionnaire']=array();
+					$sql="SELECT * FROM mod_actions_gestionnaires WHERE id_categorie='".$lig['id']."';";
+					//echo "$sql<br />";
+					$res2=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res2)>0) {
+						while($lig2=mysqli_fetch_assoc($res2)) {
+							$tab_categories_actions['gestionnaire'][]=$lig2['login_user'];
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return $tab_categories_actions;
+}
+
+function acces_mod_action($id_categorie='') {
+	global $mysqli;
+
+	if($_SESSION['statut']=='administrateur') {
+		return true;
+	}
+	else {
+		if(getSettingAOui('active_mod_actions')) {
+			if($id_categorie=='') {
+				$sql="SELECT 1=1 FROM mod_actions_gestionnaires WHERE login_user='".$_SESSION['login']."';";
+				$test=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($test)>0) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				$sql="SELECT 1=1 FROM mod_actions_gestionnaires WHERE id_categorie='".$id_categorie."' AND login_user='".$_SESSION['login']."';";
+				$test=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($test)>0) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+function check_date($date) {
+	if(!preg_match('|^[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}$|', $date)) {
+		return false;
+	}
+	else {
+		$tmp_tab=explode("/", $date);
+		$day=$tmp_tab[0];
+		$month=$tmp_tab[1];
+		$year=$tmp_tab[2];
+		if($year<100) {
+			$year="20".$year;
+		}
+		if(!checkdate($month, $day, $year)) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+}
 ?>

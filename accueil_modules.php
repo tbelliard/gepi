@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -435,7 +435,18 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
-	
+
+// Actions
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_actions/index_admin.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('active_mod_actions') ;
+		$nouveauItem->titre="Actions" ;
+		$nouveauItem->expli="Gérer les actions dans l'établissement (UNSS,...)." ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
 
 
 $tbs_microtime="";

@@ -2301,3 +2301,8 @@ INSERT INTO setting SET name='acces_moy_ele_resp', value='immediat';
 INSERT INTO setting SET name='acces_moy_ele_resp_cn', value='immediat';
 INSERT INTO droits VALUES ('/saisie/ct_app_moy.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', 'Saisie de commentaires-types d apres moyenne', '');
 INSERT INTO droits SET id='/cahier_texte_admin/admin_tag.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Définition des tags pour les notices de Cahiers de textes', statut='';
+INSERT INTO setting SET name='active_mod_actions', value='n';
+INSERT INTO setting SET name='terme_mod_action', value='Action';
+INSERT INTO droits SET id='/mod_actions/index_admin.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Actions : Administration', statut='';
+INSERT INTO droits SET id='/mod_actions/index.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='V', description='Actions : Consultation/saisie', statut='';
+INSERT INTO droits SET id='/mod_actions/accueil.php', administrateur='F', professeur='F', cpe='F', scolarite='F', eleve='V', responsable='V', secours='F', autre='F', description='Actions : Consultation parent/élève', statut='';

@@ -329,6 +329,17 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		//=======================================================
 
 		//=======================================================
+		// Module Actions
+		if(getSettingAOui('active_mod_actions')) {
+			$tab_actions_categories=get_tab_actions_categories();
+			if(count($tab_actions_categories)>0) {
+				$terme_mod_action=getSettingValue('terme_mod_action');
+				$menus .= '  <li class="li_inline"><a href="'.$gepiPath.'/mod_actions/index.php" '.insert_confirm_abandon().'>'.$terme_mod_action.'s</a></li>'."\n";
+			}
+		}
+		//=======================================================
+
+		//=======================================================
 		// Gestion
 		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Gestion</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";

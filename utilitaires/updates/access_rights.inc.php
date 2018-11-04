@@ -46,6 +46,7 @@ function traite_requete($requete = "") {
 	if (!$erreur_no) {
 		$retour = "";
 	} else {
+		//echo "\$erreur_no=$erreur_no<br />";
 		switch ($erreur_no) {
 			case "1060" :
 				// le champ existe déjà : pas de problème
@@ -1987,6 +1988,42 @@ responsable='F',
 secours='F',
 autre='F',
 description='Définition des tags pour les notices de Cahiers de textes',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_actions/index_admin.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Actions : Administration',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_actions/index.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='V',
+description='Actions : Consultation/saisie',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_actions/accueil.php',
+administrateur='F',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='V',
+responsable='V',
+secours='F',
+autre='F',
+description='Actions : Consultation parent/élève',
 statut='';";
 
 //$tab_req[] = "";

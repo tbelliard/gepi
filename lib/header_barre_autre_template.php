@@ -521,6 +521,17 @@ if ($barre_plugin!="") {
 		}
 		//=======================================================
 
+		//=======================================================
+		// Module Actions
+		if(getSettingAOui('active_mod_actions')) {
+			$tab_actions_categories=get_tab_actions_categories();
+			if(count($tab_actions_categories)>0) {
+				$terme_mod_action=getSettingValue('terme_mod_action');
+				$menus .= '  <li class="li_inline"><a href="'.$gepiPath.'/mod_actions/index.php" '.insert_confirm_abandon().'>'.$terme_mod_action.'s</a></li>'."\n";
+			}
+		}
+		//=======================================================
+
 		$menus .= $barre_plugin;
 
 		$tbs_menu_autre[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php"'.insert_confirm_abandon().'>Accueil</a></li>'."\n");		

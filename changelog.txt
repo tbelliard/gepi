@@ -30,6 +30,10 @@ Bulletins:
 - Possibilité, lors de la saisie des appréciations, d'afficher les moyennes et 
   appréciations des bulletins des années précédentes.
 
+Actions:
+- Ajout d'un module Actions pour gérer des inscriptions/présence élèves,
+  par exemple sur les sorties/actions UNSS.
+
 - Général:
 - Possibilité de mettre à jour globalement les groupes d'après l'export EXP_ELEVES.xml
 

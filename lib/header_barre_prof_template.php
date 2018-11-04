@@ -1016,6 +1016,18 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 	$compteur_menu++;
 
 	//=======================================================
+	// Module Actions
+	if(getSettingAOui('active_mod_actions')) {
+		$tab_actions_categories=get_tab_actions_categories();
+		if(count($tab_actions_categories)>0) {
+			$terme_mod_action=getSettingValue('terme_mod_action');
+			$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_actions/index.php' , "texte"=>$terme_mod_action.'s');
+			$compteur_menu++;
+		}
+	}
+	//=======================================================
+
+	//=======================================================
 	// plugin
 
 	$menu_plugins=tbs_menu_plugins();

@@ -7307,4 +7307,105 @@ function affiche_tableau_annee_anterieure_ele_matiere($login_ele, $matiere) {
 	return $retour;
 }
 
+function tableau_actions_eleve($mode='complet') {
+	global $mysqli;
+
+	$terme_mod_action=getSettingValue('terme_mod_action');
+	$terme_mod_action_nettoye=str_replace("'", " ", str_replace('"', " ", $terme_mod_action));
+
+	$retour='';
+	$remplir_tableau=true;
+	if($_SESSION['statut']=='eleve') {
+		$sql="SELECT maa.*, 
+			mai.presence, 
+			mai.date_pointage, 
+			mai.login_pointage 
+		FROM mod_actions_action maa, 
+			mod_actions_inscriptions mai 
+		WHERE mai.id_action=maa.id AND 
+			mai.login_ele='".$_SESSION['login']."' 
+		ORDER BY date_action DESC;";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)==0) {
+			$retour="<p style='color:red'>Vous n'êtes inscrit(e) dans aucun(e) ".$terme_mod_action.".</p>";
+			$remplir_tableau=false;
+		}
+	}
+	elseif($_SESSION['statut']=='responsable') {
+		$sql="SELECT maa.*, 
+			mai.presence, 
+			mai.date_pointage, 
+			mai.login_pointage 
+		FROM mod_actions_action maa, 
+			mod_actions_inscriptions mai 
+		WHERE mai.id_action=maa.id AND 
+			mai.login_ele IN (SELECT e.login FROM eleves e, 
+									responsables2 r, 
+									resp_pers rp 
+								WHERE e.ele_id=r.ele_id AND 
+									r.pers_id=rp.pers_id AND 
+									rp.login='".$_SESSION['login']."')
+		ORDER BY date_action DESC;";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)==0) {
+			$retour="<p style='color:red'>Aucun des élèves/enfants qui vous sont associés n'est inscrit(e) dans un(e) ".$terme_mod_action.".</p>";
+			$remplir_tableau=false;
+		}
+	}
+	elseif($mode=='complet') {
+		$retour="<p style='color:red'>Tableau non implémenté pour le statut ".$_SESSION['statut']."</p>";
+		$remplir_tableau=false;
+	}
+
+	if($remplir_tableau) {
+		$tab_actions_categories=get_tab_actions_categories();
+
+		$retour.="
+		<table class='boireaus boireaus_alt sortable resizable'>
+			<thead>
+				<tr>
+					<th>Catégorie</th>
+					<th>Action</th>
+					<th>Description</th>
+					<th>Date</th>
+					<th>Présence</th>
+				</tr>
+			</thead>
+			<tbody>";
+		while($lig=mysqli_fetch_object($res)) {
+			$retour.="
+				<tr>
+					<td title=\"".str_replace('"', "'", $tab_actions_categories[$lig->id_categorie]['description'])."\">".$tab_actions_categories[$lig->id_categorie]['nom']."</td>
+					<td>".$lig->nom."</td>
+					<td>".nl2br($lig->description)."</td>
+					<td>".formate_date($lig->date_action, 'y')."</td>
+					<td>";
+			if($lig->presence=='y') {
+				$retour.="<img src='../images/enabled.png' class='icone20' title=\"Pointé(e) présent le ".formate_date($lig->date_pointage, 'y')." par ".civ_nom_prenom($lig->login_pointage)."\" />";
+			}
+			elseif($lig->presence=='n') {
+				$retour.="<img src='../images/disabled.png' class='icone20' title=\"Pointé(e) absent le ".formate_date($lig->date_pointage, 'y')." par ".civ_nom_prenom($lig->login_pointage)."\" />";
+			}
+			else {
+				$sql="SELECT MAX(date_pointage) FROM mod_actions_inscriptions WHERE id_action='".$id_action."' AND presence!='';";
+				//echo "$sql<br />";
+				$res2=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res2)>0) {
+					$lig2=mysqli_fetch_object($res2);
+					if($lig2->date_pointage!='1970-01-01 00:00:00') {
+						$retour.="<img src='../images/disabled.png' class='icone20' title=\"Non relevé présent le ".formate_date($lig->date_pointage, 'y')."\" />";
+					}
+				}
+			}
+			$retour.="</td>
+				</tr>";
+		}
+		$retour.="
+			</tbody>
+		</table>";
+	}
+	return $retour;
+}
 ?>
