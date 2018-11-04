@@ -401,13 +401,34 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 		$bordure='LRBT';
 		//$bordure='';
-		$pdf->SetFont('DejaVu','B',$fonte_size_classe);
 		//$texte="Trombinoscope ".$gepiYear." - Classe : $classe";
-		$texte="Trombinoscope ".$gepiYear." - $entete";
+		if ( $action_affiche === 'action' ) { 
+			$texte=$entete;
+		}
+		else {
+			$texte="Trombinoscope ".$gepiYear." - $entete";
+		}
 
-		// 20181102 : A FAIRE : TESTER LA LONGUEUR DE LA CHAINE ET REDUIRE LA POLICE
-
-		$pdf->Cell($largeur_utile_page,$hauteur_classe,$texte,$bordure,1,'C');
+		// 20181102 : Test de la longueur du titre avec réduction la taille de la police
+		$largeur_dispo = $largeur_utile_page;
+		/*
+		$chercher_taille_police=true;
+		$tmp_taille_police=$fonte_size_classe;
+		$pdf->SetFont('DejaVu','B',$tmp_taille_police);
+		$tmp_taille_texte = $pdf->GetStringWidth($texte);
+		while($chercher_taille_police) {
+			if($tmp_taille_texte>$largeur_dispo) {
+				$tmp_taille_police-=0.3;
+				$pdf->SetFont('DejaVu','B',$tmp_taille_police);
+				$tmp_taille_texte = $pdf->GetStringWidth($texte);
+			}
+			else {
+				$chercher_taille_police=false;
+			}
+		}
+		$pdf->Cell($largeur_dispo,$hauteur_classe,$texte,$bordure,1,'C');
+		*/
+		cell_ajustee_une_ligne($texte,$x0,$y0,$largeur_dispo,$hauteur_classe,$fonte_size_classe,'DejaVu','B','C',$bordure);
 
 		$pdf->SetFont('DejaVu','',$fonte_size);
 
