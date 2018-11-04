@@ -248,6 +248,12 @@ class class_accueil_ordre_menu extends class_page_accueil {
 	if ($this->examenBlanc())
 	$this->chargeAutreNom('bloc_examen_blanc');
 
+// 20181102
+/***** Module Actions *****/
+	$this->verif_exist_ordre_menu('bloc_mod_actions');
+	if ($this->mod_actions())
+	$this->chargeAutreNom('bloc_mod_actions');
+
 /***** Module Admissions Post-Bac *****/
 	$this->verif_exist_ordre_menu('bloc_admissions_post_bac');
 	if ($this->adminPostBac())

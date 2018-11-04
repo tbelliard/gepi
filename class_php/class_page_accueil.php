@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -336,6 +336,12 @@ if(getSettingAOui('active_bulletins')) {
 	$this->verif_exist_ordre_menu('bloc_examen_blanc');
 	if ($this->examenBlanc())
 	$this->chargeAutreNom('bloc_examen_blanc');
+
+// 20181102
+/***** Module Actions *****/
+	$this->verif_exist_ordre_menu('bloc_mod_actions');
+	if ($this->mod_actions())
+	$this->chargeAutreNom('bloc_mod_actions');
 
 /***** Module Admissions Post-Bac *****/
 	$this->verif_exist_ordre_menu('bloc_admissions_post_bac');
@@ -2404,7 +2410,7 @@ if(getSettingAOui('active_bulletins')) {
 
   }
   
-  protected function livret(){
+  protected function livret() {
 	  $this->b=0;
 	  if (getSettingAOui("active_module_LSUN")) {
 		  $this->creeNouveauItem("/mod_LSUN/index.php","LSU", "LSU : remplir et voir les APs, les EPIs, les parcours");
@@ -2415,6 +2421,25 @@ if(getSettingAOui('active_bulletins')) {
 	  
   }
 
+	// 20181102
+	protected function mod_actions() {
+		$this->b=0;
+		if (getSettingAOui("active_mod_actions")) {
+			$terme_mod_action=getSettingValue('terme_mod_action');
+			if(acces_mod_action()) {
+				$this->creeNouveauItem("/mod_actions/index.php", $terme_mod_action.'s', $terme_mod_action.'s'."&nbsp;: Définir, consulter, pointer les ".$terme_mod_action.'s');
+			}
+			elseif($_SESSION['statut']=='responsable') {
+				$this->creeNouveauItem("/mod_actions/accueil.php", $terme_mod_action.'s', $terme_mod_action.'s'."&nbsp;: Consulter les ".$terme_mod_action."s dans lesquelles votre enfant est inscrit(e).");
+			}
+			elseif($_SESSION['statut']=='eleve') {
+				$this->creeNouveauItem("/mod_actions/accueil.php", $terme_mod_action.'s', $terme_mod_action.'s'."&nbsp;: Consulter les ".$terme_mod_action."s dans lesquelles vous êtes inscrit(e).");
+			}
+		}
+		if ($this->b > 0 ){
+			$this->creeNouveauTitre('accueil', $terme_mod_action.'s', 'images/icons/document.png');
+		}
+	}
 
   protected function verif_exist_ordre_menu($_item){
 	if (!isset($this->ordre_menus[$_item]))

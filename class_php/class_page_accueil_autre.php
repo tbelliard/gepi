@@ -168,6 +168,12 @@ class class_page_accueil_autre {
 	if ($this->epreuvesBlanches())
 	$this->chargeAutreNom('bloc_epreuve_blanche');
 
+// 20181102
+/***** Module Actions *****/
+	$this->verif_exist_ordre_menu('bloc_mod_actions');
+	if ($this->mod_actions())
+	$this->chargeAutreNom('bloc_mod_actions');
+
 /***** Module Admissions Post-Bac *****/
 	$this->verif_exist_ordre_menu('bloc_admissions_post_bac');
 	if ($this->adminPostBac())
@@ -805,6 +811,18 @@ class class_page_accueil_autre {
 	  return true;
 	}
   }
+
+// 20181102
+protected function mod_actions() {
+	$this->b=0;
+	if ((getSettingAOui("active_mod_actions"))&&(acces_mod_action())) {
+		$terme_mod_action=getSettingValue('terme_mod_action');
+		$this->creeNouveauItem("/mod_actions/index.php", $terme_mod_action.'s', $terme_mod_action."s&nbsp;: Définir, consulter, pointer les ".$terme_mod_action);
+	}
+	if ($this->b > 0 ){
+		$this->creeNouveauTitre('accueil', $terme_mod_action.'s', 'images/icons/document.png');
+	}
+}
 
   protected function adminPostBac(){
 	$this->b=0;
