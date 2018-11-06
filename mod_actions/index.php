@@ -287,6 +287,37 @@ if((isset($id_action))&&(isset($mode))&&($mode=='inscriptions')&&(isset($_GET['l
 }
 
 //==============================================================================
+// Inscription d'une liste d'élèves
+if((isset($id_action))&&(isset($mode))&&($mode=='inscriptions')&&(isset($_POST['tab_login_ele']))&&(is_array($_POST['tab_login_ele']))) {
+	check_token();
+	
+	$tab_login_ele=$_POST['tab_login_ele'];
+
+	$cpt_reg=0;
+	foreach($tab_login_ele as $key => $value) {
+		$sql="SELECT 1=1 FROM mod_actions_inscriptions WHERE id_action='".$id_action."' AND login_ele='".$value."';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$msg.=get_nom_prenom_eleve($value)." est déjà inscrit(e).<br />";
+		}
+		else {
+			$sql="INSERT INTO mod_actions_inscriptions SET id_action='".$id_action."', login_ele='".$value."';";
+			$insert=mysqli_query($mysqli, $sql);
+			if(!$insert) {
+				$msg.="Erreur lors de l'inscription de ".get_nom_prenom_eleve($value)."&nbsp;:<br />".$sql."<br />";
+			}
+			else {
+				//$msg.=get_nom_prenom_eleve($value)." est inscrit(e).<br />";
+				$cpt_reg++;
+			}
+		}
+	}
+	if($cpt_reg>0) {
+				$msg.=$cpt_reg." élève(s) inscrit(s).<br />";
+	}
+}
+
+//==============================================================================
 // Désinscription d'un élève
 if((isset($id_action))&&(isset($mode))&&(($mode=='inscriptions')||($mode=='presence'))&&(isset($_GET['suppr_ele']))&&(trim($_GET['suppr_ele'])!='')) {
 	check_token();
@@ -838,46 +869,62 @@ elseif($mode=='inscriptions') {
 	if (isset($id_classe)) {
 		echo "
 	<div style='float:left; width:20em;'>
-		<p class=\"red\">Classe de ".get_nom_classe($id_classe)."&nbsp;:</p>
-		<table class=\"aid_tableau\" summary=\"Liste des élèves\">
-			<tr class=\"aid_lignepaire\">
-				<td>
-					<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_classe=".$id_classe."&amp;ajouter_toute_la_classe=y".add_token_in_url()."\">
-					<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> Toute la classe
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Liste des élèves</td>
-			</tr>";
+		<form action='".$_SERVER['PHP_SELF']."#pointer_presence' method='post' style='text-align:left;'>
+			<fieldset class='fieldset_opacite50'>
+				".add_token_field()."
+				<p class=\"red\">Classe de ".get_nom_classe($id_classe)."&nbsp;:</p>
+				<table class=\"aid_tableau\" summary=\"Liste des élèves\">
+					<tr class=\"aid_lignepaire\">
+						<td>
+							<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_classe=".$id_classe."&amp;ajouter_toute_la_classe=y".add_token_in_url()."\">
+							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> Toute la classe
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Liste des élèves</td>
+					</tr>";
 
-		$sql="SELECT DISTINCT e.login, e.id_eleve, nom, prenom, elenoet, sexe 
-				FROM j_eleves_classes jec, eleves e 
-				WHERE id_classe = '".$id_classe."' AND 
-					jec.login = e.login 
-				ORDER BY nom, prenom";
-		$req_ele = mysqli_query($GLOBALS["mysqli"], $sql) OR die('Erreur dans la requête '.$req_ele.' : '.mysqli_error($GLOBALS["mysqli"]));
-		while($lig_ele=mysqli_fetch_object($req_ele)) {
-			if(in_array($lig_ele->login, $action['eleves_list'])) {
+				$sql="SELECT DISTINCT e.login, e.id_eleve, nom, prenom, elenoet, sexe 
+						FROM j_eleves_classes jec, eleves e 
+						WHERE id_classe = '".$id_classe."' AND 
+							jec.login = e.login 
+						ORDER BY nom, prenom";
+				$req_ele = mysqli_query($GLOBALS["mysqli"], $sql) OR die('Erreur dans la requête '.$req_ele.' : '.mysqli_error($GLOBALS["mysqli"]));
+				$cpt_ele=0;
+				while($lig_ele=mysqli_fetch_object($req_ele)) {
+					if(in_array($lig_ele->login, $action['eleves_list'])) {
+						echo "
+					<tr class=\"aid_ligneimpaire\">
+						<td>
+						</td>
+					</tr>";
+					}
+					else {
+						echo "
+					<tr class=\"aid_lignepaire\">
+						<td onmouseover=\"affiche_photo_courante('".nom_photo($lig_ele->elenoet)."')\" onmouseout=\"vide_photo_courante();\">
+							<!--
+							<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_classe=".$id_classe."&amp;login_ele=".$lig_ele->login.add_token_in_url()."\">
+							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$lig_ele->nom." ".$lig_ele->prenom."
+							</a>
+							-->
+							<input type='checkbox' name='tab_login_ele[]' id='tab_login_ele_".$cpt_ele."' value=\"".$lig_ele->login."\" /><label for='tab_login_ele_".$cpt_ele."' id='texte_tab_login_ele_".$cpt_ele."'> ".$lig_ele->nom." ".$lig_ele->prenom."</label>
+						</td>
+					</tr>";
+					}
+					$cpt_ele++;
+				}
 				echo "
-			<tr class=\"aid_ligneimpaire\">
-				<td>
-				</td>
-			</tr>";
-			}
-			else {
-				echo "
-			<tr class=\"aid_lignepaire\">
-				<td onmouseover=\"affiche_photo_courante('".nom_photo($lig_ele->elenoet)."')\" onmouseout=\"vide_photo_courante();\">
-					<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_classe=".$id_classe."&amp;login_ele=".$lig_ele->login.add_token_in_url()."\">
-					<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$lig_ele->nom." ".$lig_ele->prenom."
-					</a>
-				</td>
-			</tr>";
-			}
-		}
-		echo "
-		</table>
+				</table>
+				<input type='hidden' name='id_classe' value='$id_classe' />
+				<input type='hidden' name='id_categorie' value='$id_categorie' />
+				<input type='hidden' name='id_action' value='$id_action' />
+				<input type='hidden' name='mode' value='$mode' />
+				<p><a href=\"javascript:tout_cocher()\">Tout cocher</a> / <a href=\"javascript:tout_decocher()\">Tout décocher</a></p>
+				<p><input type='submit' value='Valider' /></p>
+			</fieldset>
+		</form>
 	</div>";
 	}
 
@@ -893,6 +940,31 @@ elseif($mode=='inscriptions') {
 		function vide_photo_courante() {
 			document.getElementById('div_photo').innerHTML='';
 		}
+
+		function tout_cocher(){
+			champs_input=document.getElementsByTagName('input');
+			for(i=0;i<champs_input.length;i++){
+				type=champs_input[i].getAttribute('type');
+				if(type=='checkbox'){
+					champs_input[i].checked=true;
+					checkbox_change(champs_input[i].getAttribute('id'));
+				}
+			}
+		}
+
+		function tout_decocher(){
+			champs_input=document.getElementsByTagName('input');
+			for(i=0;i<champs_input.length;i++){
+
+				type=champs_input[i].getAttribute('type');
+				if(type=='checkbox'){
+					champs_input[i].checked=false;
+					checkbox_change(champs_input[i].getAttribute('id'));
+				}
+			}
+		}
+		
+		".js_checkbox_change_style()."
 	</script>";
 /*
 	if(isset($eleves_list["users"][$e_login]['elenoet'])) {
@@ -1066,8 +1138,8 @@ echo "
 A FAIRE :
 // Pouvoir générer une fiche récapitulative: Intitulé de l'action, description, inscrits,...
 // Pouvoir effectuer les inscriptions dans la liste alphabétique de tous les élèves de l'établissement (avec des ancres sur l'initiale du nom)
-// Pouvoir faire les inscriptions par lots (formulaire) plutôt que élève par élève
 // Pouvoir pointer comme présent en même temps que l'on fait les inscriptions
+// Pouvoir envoyer des mails aux parents pour indiquer que l'appel a été fait
 </pre>
 <pre style='color:green'>
 FAIT :
@@ -1080,5 +1152,6 @@ FAIT :
 // Supprimer une action				FAIT
 // Effectuer l'affichage parent/élève		FAIT
 // Pouvoir générer un trombi des inscrits	FAIT
+// Pouvoir faire les inscriptions par lots (formulaire) plutôt que élève par élève	FAIT
 </pre>";
 require("../lib/footer.inc.php");
