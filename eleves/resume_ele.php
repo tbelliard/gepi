@@ -984,7 +984,7 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 
 //=================================
 // 20181102
-if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&(getSettingAOui('active_mod_actions'))) {
+if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&(getSettingAOui('active_mod_actions'))&&(getSettingAOui('mod_actions_affichage_familles'))) {
 	$largeur_actions=500;
 
 	$terme_mod_action=getSettingValue('terme_mod_action');

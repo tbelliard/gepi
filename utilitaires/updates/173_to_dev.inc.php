@@ -288,4 +288,17 @@ if ($terme_mod_action=='') {
 	$result .= msj_present("Valeur déjà renseignée");
 }
 
+$result .= "&nbsp;-> Initialisation de 'mod_actions_affichage_familles'&nbsp;: ";
+if (getSettingValue('mod_actions_affichage_familles')=='') {
+	$result_inter=saveSetting('mod_actions_affichage_familles', 'y');
+	if ($result_inter) {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Valeur déjà renseignée");
+}
+
 ?>

@@ -2306,3 +2306,4 @@ INSERT INTO setting SET name='terme_mod_action', value='Action';
 INSERT INTO droits SET id='/mod_actions/index_admin.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Actions : Administration', statut='';
 INSERT INTO droits SET id='/mod_actions/index.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='V', description='Actions : Consultation/saisie', statut='';
 INSERT INTO droits SET id='/mod_actions/accueil.php', administrateur='F', professeur='F', cpe='F', scolarite='F', eleve='V', responsable='V', secours='F', autre='F', description='Actions : Consultation parent/élève', statut='';
+INSERT INTO setting SET name='mod_actions_affichage_familles', value='y';

@@ -98,6 +98,10 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==1)) {
 	if ((isset($_POST['terme_mod_action']))&&($_POST['terme_mod_action']!='')) {
 		if (!saveSetting("terme_mod_action", $_POST['terme_mod_action'])) $msg = "Erreur lors de l'enregistrement du terme pour désigner les actions !";
 	}
+
+	if ((isset($_POST['mod_actions_affichage_familles']))&&($_POST['mod_actions_affichage_familles']!='')) {
+		if (!saveSetting("mod_actions_affichage_familles", $_POST['mod_actions_affichage_familles'])) $msg = "Erreur lors de l'enregistrement de l'affichage aux familles !";
+	}
 }
 
 if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {

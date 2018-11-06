@@ -7315,7 +7315,7 @@ function tableau_actions_eleve($mode='complet') {
 
 	$retour='';
 	$remplir_tableau=true;
-	if($_SESSION['statut']=='eleve') {
+	if((getSettingAOui('mod_actions_affichage_familles'))&&($_SESSION['statut']=='eleve')) {
 		$sql="SELECT maa.*, 
 			mai.presence, 
 			mai.date_pointage, 
@@ -7332,7 +7332,7 @@ function tableau_actions_eleve($mode='complet') {
 			$remplir_tableau=false;
 		}
 	}
-	elseif($_SESSION['statut']=='responsable') {
+	elseif((getSettingAOui('mod_actions_affichage_familles'))&&($_SESSION['statut']=='responsable')) {
 		$sql="SELECT maa.*, 
 			mai.presence, 
 			mai.date_pointage, 

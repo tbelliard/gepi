@@ -124,6 +124,26 @@
 	  </label>
 	<br />
 	  Terme pour désigner une action&nbsp;: <input type='text' name='terme_mod_action' value="<?php echo $terme_mod_action;?>" />
+	<br />
+	  <input type="radio" 
+			 name="mod_actions_affichage_familles" 
+			 id='mod_actions_affichage_familles_y' 
+			 value="y" 
+			<?php if (getSettingAOui("mod_actions_affichage_familles")) echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='mod_actions_affichage_familles_y' style='cursor: pointer;'>
+		Lorsque la présence/absence d'un enfant est pointée, rendre la présence/absence visible des élèves/familles.
+	  </label>
+	<br />
+	  <input type="radio" 
+			 name="mod_actions_affichage_familles" 
+			 id='mod_actions_affichage_familles_n' 
+			 value="n" 
+			<?php if (!getSettingAOui("mod_actions_affichage_familles")) echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='mod_actions_affichage_familles_n' style='cursor: pointer;'>
+		Lorsque la présence/absence d'un enfant est pointée, ne pas rendre la présence/absence visible des élèves/familles.
+	  </label>
 	</fieldset>
 
 	<p class="center">

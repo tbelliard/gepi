@@ -2429,11 +2429,13 @@ if(getSettingAOui('active_bulletins')) {
 			if(acces_mod_action()) {
 				$this->creeNouveauItem("/mod_actions/index.php", $terme_mod_action.'s', $terme_mod_action.'s'."&nbsp;: Définir, consulter, pointer les ".$terme_mod_action.'s');
 			}
-			elseif($_SESSION['statut']=='responsable') {
-				$this->creeNouveauItem("/mod_actions/accueil.php", $terme_mod_action.'s', $terme_mod_action.'s'."&nbsp;: Consulter les ".$terme_mod_action."s dans lesquelles votre enfant est inscrit(e).");
-			}
-			elseif($_SESSION['statut']=='eleve') {
-				$this->creeNouveauItem("/mod_actions/accueil.php", $terme_mod_action.'s', $terme_mod_action.'s'."&nbsp;: Consulter les ".$terme_mod_action."s dans lesquelles vous êtes inscrit(e).");
+			elseif(getSettingAOui('mod_actions_affichage_familles')) {
+				if($_SESSION['statut']=='responsable') {
+					$this->creeNouveauItem("/mod_actions/accueil.php", $terme_mod_action.'s', $terme_mod_action.'s'."&nbsp;: Consulter les ".$terme_mod_action."s dans lesquelles votre enfant est inscrit(e).");
+				}
+				elseif($_SESSION['statut']=='eleve') {
+					$this->creeNouveauItem("/mod_actions/accueil.php", $terme_mod_action.'s', $terme_mod_action.'s'."&nbsp;: Consulter les ".$terme_mod_action."s dans lesquelles vous êtes inscrit(e).");
+				}
 			}
 		}
 		if ($this->b > 0 ){
