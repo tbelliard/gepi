@@ -326,6 +326,10 @@ echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('d
 
 echo " <a href=\"#\" onclick=\"fen=window.open('../groupes/popup.php?id_groupe=".$groupe->getId()."&avec_icone_visu_ele=y','','width=400,height=400,menubar=yes,scrollbars=yes'); setTimeout('fen.focus()',500); return false;\" title='Afficher en popup la liste des élèves pour accéder aux fiches élèves (et vérifier par exemple les absences de tel élève,...)'><img src='../images/icons/ele_onglets.png' width='16' height='16' alt='Popup' /></a>";
 
+if((isset($ctCompteRendu))&&($ctCompteRendu->getIdCt()!=null)) {
+	echo " <a href='affiche_notice.php?id_ct=".$ctCompteRendu->getIdCt()."&type_notice=c' target='_blank' title=\"Afficher la notice dans un nouvel onglet.\"><img src='../images/icons/chercher.png' class='icone16' alt='Afficher' /></a>";
+}
+
 if(getSettingAOui('cdt_afficher_volume_docs_joints')) {
 	$volume_cdt_groupe=volume_docs_joints($groupe->getId());
 	if($volume_cdt_groupe!=0) {
