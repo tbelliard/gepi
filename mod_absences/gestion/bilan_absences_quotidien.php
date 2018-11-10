@@ -23,14 +23,14 @@ if ($resultat_session == 'c') {
 	header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../../logout.php?auto=1");
-die();
-};
+	header("Location: ../../logout.php?auto=1");
+	die();
+}
 
 // Sécurité
 if (!checkAccess()) {
-    header("Location: ../../logout.php?auto=1");
-die();
+	header("Location: ../../logout.php?auto=1");
+	die();
 }
 
 // Insertion du style spécifique
@@ -51,7 +51,12 @@ $date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2])
 
 $creneaux = retourne_creneaux();
 // On récupère le nombre de créneaux
-$nb_creneaux = count($creneaux);
+if(is_array($creneaux)) {
+	$nb_creneaux = count($creneaux);
+}
+else {
+	$nb_creneaux=0;
+}
 
 // Fonctions des absences
 	function suivi_absence($creneau_id, $eleve_id, $date_choisie){

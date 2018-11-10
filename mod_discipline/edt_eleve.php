@@ -135,22 +135,24 @@ if ($reglages_creneaux == "noms") {
 	// par défaut
 	$tab_creneaux = retourne_creneaux();
 }
-	$i=0;
-	$nbre = count($tab_creneaux);
-	while($i < $nbre){
 
-		$tab_id_creneaux = retourne_id_creneaux();
-		$c=0;
-		$nbre2 = count($tab_id_creneaux);
-
-		while($c < $nbre2){
-
-		echo("<tr><th rowspan=\"2\"><br />".$tab_creneaux[$i]."<br /><br /></th>".(construction_tab_edt($tab_id_creneaux[$c], "0"))."\n");
-		echo("<tr>".(construction_tab_edt($tab_id_creneaux[$c], "0.5"))."\n");
-		$i ++;
-		$c ++;
+if(is_array($tab_creneaux)) {
+	$tab_id_creneaux = retourne_id_creneaux();
+	if(is_array($tab_id_creneaux)) {
+		$i=0;
+		$nbre = count($tab_creneaux);
+		while($i < $nbre){
+			$c=0;
+			$nbre2 = count($tab_id_creneaux);
+			while($c < $nbre2){
+				echo("<tr><th rowspan=\"2\"><br />".$tab_creneaux[$i]."<br /><br /></th>".(construction_tab_edt($tab_id_creneaux[$c], "0"))."\n");
+				echo("<tr>".(construction_tab_edt($tab_id_creneaux[$c], "0.5"))."\n");
+				$i ++;
+				$c ++;
+			}
 		}
 	}
+}
 
 echo '
 </tbody>
