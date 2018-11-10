@@ -2113,19 +2113,73 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		}
 
 		$tab_mes_cours_remplaces_par_d_autres=array();
-		if(($afficher_remplacements=="y")&&($login_prof!="")&&($login_prof==$_SESSION['login'])) {
+		$tab_abs_prof=array();
+		//if(($afficher_remplacements=="y")&&($login_prof!="")&&($login_prof==$_SESSION['login'])) {
+		// Pour les parents et élèves, il faut prendre en compte un paramètre "famille avertie" avant de permettre l'affichage
+		if(($afficher_remplacements=="y")&&($login_prof!="")&&(in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite', 'administrateur')))) {
 			// Récupérer les cours remplacés par d'autres
 
 			// id_j_semaine() : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
 			$tmp_tab_jour=array("", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
 			$nom_jour=$tmp_tab_jour[id_j_semaine($ts_debut_jour)];
 
-			$sql="SELECT apr.id_cours_remplaced, apr.login_user FROM abs_prof_remplacement apr, edt_cours ec WHERE apr.jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."' AND ec.id_cours=apr.id_cours_remplaced AND ec.jour_semaine='".$nom_jour."'";
+			$sql="SELECT apr.id_cours_remplaced, apr.login_user, apr.date_debut_r, apr.date_fin_r FROM abs_prof_remplacement apr, edt_cours ec WHERE apr.jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."' AND ec.id_cours=apr.id_cours_remplaced AND ec.jour_semaine='".$nom_jour."' AND login_prof='".$login_prof."' ORDER BY apr.date_debut_r;";
 			//echo "$sql<br />";
 			$res_mes_cours_remplaced=mysqli_query($GLOBALS["mysqli"], $sql);
-			while($lig_mes_cours_remplaced=mysqli_fetch_object($res_mes_cours_remplaced)) {
-				$tab_mes_cours_remplaces_par_d_autres[$lig_mes_cours_remplaced->id_cours_remplaced]=$lig_mes_cours_remplaced->login_user;
+			while($lig_mes_cours_remplaced=mysqli_fetch_assoc($res_mes_cours_remplaced)) {
+				$tab_mes_cours_remplaces_par_d_autres[$lig_mes_cours_remplaced['id_cours_remplaced']][]=$lig_mes_cours_remplaced;
 			}
+
+			$sql="SELECT ec.* FROM abs_prof ap, 
+							edt_cours ec, 
+							edt_creneaux ecr 
+					WHERE ap.date_debut<='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour." 23:59:00' AND 
+						ap.date_fin>='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour." 00:00:00' AND 
+						ec.id_definie_periode=ecr.id_definie_periode AND 
+						CONCAT('".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour." ', ecr.heuredebut_definie_periode)>=ap.date_debut AND 
+						CONCAT('".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour." ', ecr.heurefin_definie_periode)<=ap.date_fin AND 
+						ec.jour_semaine='".$nom_jour."' AND 
+						ap.login_user=ec.login_prof AND 
+						ap.login_user='".$login_prof."';";
+			//echo "$sql<br />";
+			$res_abs_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_abs_prof=mysqli_fetch_assoc($res_abs_prof)) {
+				$tab_abs_prof[]=$lig_abs_prof['id_cours'];
+			}
+
+			// Il va manquer aussi les cours en AID
+			// A FAIRE : Compléter $tab_abs_prof avec les cours en AID
+			//           Et distinguer les AID avec un seul prof et avec plusieurs profs?
+		}
+		elseif(($afficher_remplacements=="y")&&($id_classe!="")&&(in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite', 'administrateur')))) {
+			// id_j_semaine() : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
+			$tmp_tab_jour=array("", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
+			$nom_jour=$tmp_tab_jour[id_j_semaine($ts_debut_jour)];
+
+			$sql="SELECT ec.* FROM abs_prof ap, 
+							edt_cours ec, 
+							edt_creneaux ecr, 
+							j_groupes_classes jgc, 
+							j_groupes_professeurs jgp 
+					WHERE ap.date_debut<='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour." 23:59:00' AND 
+						ap.date_fin>='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour." 00:00:00' AND 
+						ec.id_definie_periode=ecr.id_definie_periode AND 
+						CONCAT('".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour." ', ecr.heuredebut_definie_periode)>=ap.date_debut AND 
+						CONCAT('".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour." ', ecr.heurefin_definie_periode)<=ap.date_fin AND 
+						ec.jour_semaine='".$nom_jour."' AND 
+						ap.login_user=ec.login_prof AND 
+						jgc.id_classe='".$id_classe."' AND 
+						jgc.id_groupe=jgp.id_groupe AND 
+						ap.login_user=jgp.login;";
+			//echo "$sql<br />";
+			$res_abs_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_abs_prof=mysqli_fetch_assoc($res_abs_prof)) {
+				$tab_abs_prof[]=$lig_abs_prof['id_cours'];
+			}
+
+			// Il va manquer aussi les cours en AID
+			// A FAIRE : Compléter $tab_abs_prof avec les cours en AID
+			//           Et distinguer les AID avec un seul prof et avec plusieurs profs?
 		}
 
 		$tab_cours_non_remplaces=array();
@@ -2166,6 +2220,9 @@ Blibloblu | oui                     | blabla
 mysql> 
 
 */
+
+
+
 
 			$sql="SELECT * FROM abs_prof WHERE DATE(date_debut)<='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour."' AND 
 									DATE(date_fin)>='".$annee_debut_jour."-".$mois_debut_jour."-".$jour_debut_jour."';";
@@ -2691,7 +2748,47 @@ mysql>
 									//DEBUG: 20170228
 									//$chaine_texte_ligne_1.=" ".$lig->id_cours;
 									if(array_key_exists($lig->id_cours,$tab_mes_cours_remplaces_par_d_autres)) {
-										$chaine_texte_ligne_1="Remplacé";
+										$chaine_infos_remplacement='';
+										foreach($tab_mes_cours_remplaces_par_d_autres[$lig->id_cours] as $current_id_cours => $current_remplacement) {
+											if(($current_remplacement['login_user']!='')&&(!isset($tab_prof[$current_remplacement['login_user']]))) {
+												$sql="SELECT * FROM utilisateurs WHERE login='".$current_remplacement['login_user']."';";
+												$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(mysqli_num_rows($res_prof)>0) {
+													$lig_prof=mysqli_fetch_object($res_prof);
+													$tab_prof[$current_remplacement['login_user']]['nom']=$lig_prof->nom;
+													$tab_prof[$current_remplacement['login_user']]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+												}
+												else {
+													$tab_prof[$current_remplacement['login_user']]['nom']="...";
+													$tab_prof[$current_remplacement['login_user']]['designation']="...";
+												}
+											}
+
+											$chaine_infos_remplacement.="Remplacé par ".$tab_prof[$current_remplacement['login_user']]['designation']."\nentre ".formate_date($current_remplacement['date_debut_r'], 'y2')."\net ".formate_date($current_remplacement['date_fin_r'], 'y2').".\n";
+										}
+
+										$chaine_texte_ligne_1="<span title=\"".$chaine_infos_remplacement."\">Remplacé</span>";
+
+										if(!isset($tab_prof[$lig->login_prof])) {
+											$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
+											$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($res_prof)>0) {
+												$lig_prof=mysqli_fetch_object($res_prof);
+												$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
+												$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+											}
+											else {
+												$tab_prof[$lig->login_prof]['nom']="...";
+												$tab_prof[$lig->login_prof]['designation']="...";
+											}
+										}
+										$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+										$chaine_proflist_string=$chaine_noms_profs;
+
+										$bgcolor_courant=$couleur_remplaced;
+									}
+									elseif(in_array($lig->id_cours, $tab_abs_prof)) {
+										$chaine_texte_ligne_1="<span title=\"Le professeur est absent.\">Absence</span>";
 
 										if(!isset($tab_prof[$lig->login_prof])) {
 											$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
@@ -2859,7 +2956,24 @@ mysql>
 									$chaine_texte_ligne_1=$chaine_matiere;
 
 									if(array_key_exists($lig->id_cours,$tab_mes_cours_remplaces_par_d_autres)) {
-										$chaine_texte_ligne_1="Remplacé";
+										$chaine_infos_remplacement='';
+										foreach($tab_mes_cours_remplaces_par_d_autres[$lig->id_cours] as $current_id_cours => $current_remplacement) {
+											if(($current_remplacement['login_user']!='')&&(!isset($tab_prof[$current_remplacement['login_user']]))) {
+												$sql="SELECT * FROM utilisateurs WHERE login='".$current_remplacement['login_user']."';";
+												$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(mysqli_num_rows($res_prof)>0) {
+													$lig_prof=mysqli_fetch_object($res_prof);
+													$tab_prof[$current_remplacement['login_user']]['nom']=$lig_prof->nom;
+													$tab_prof[$current_remplacement['login_user']]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+												}
+												else {
+													$tab_prof[$current_remplacement['login_user']]['nom']="...";
+													$tab_prof[$current_remplacement['login_user']]['designation']="...";
+												}
+											}
+
+											$chaine_infos_remplacement.="Remplacé par ".$tab_prof[$current_remplacement['login_user']]['designation']."\nentre ".formate_date($current_remplacement['date_debut_r'], 'y2')."\net ".formate_date($current_remplacement['date_fin_r'], 'y2').".\n";
+										}
 
 										if(!isset($tab_prof[$lig->login_prof])) {
 											$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
@@ -2929,7 +3043,25 @@ mysql>
 							$chaine_texte_ligne_1=$chaine_matiere;
 
 							if(array_key_exists($lig->id_cours,$tab_mes_cours_remplaces_par_d_autres)) {
-								$chaine_texte_ligne_1="Remplacé";
+
+								$chaine_infos_remplacement='';
+								foreach($tab_mes_cours_remplaces_par_d_autres[$lig->id_cours] as $current_id_cours => $current_remplacement) {
+									if(($current_remplacement['login_user']!='')&&(!isset($tab_prof[$current_remplacement['login_user']]))) {
+										$sql="SELECT * FROM utilisateurs WHERE login='".$current_remplacement['login_user']."';";
+										$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_prof)>0) {
+											$lig_prof=mysqli_fetch_object($res_prof);
+											$tab_prof[$current_remplacement['login_user']]['nom']=$lig_prof->nom;
+											$tab_prof[$current_remplacement['login_user']]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+										}
+										else {
+											$tab_prof[$current_remplacement['login_user']]['nom']="...";
+											$tab_prof[$current_remplacement['login_user']]['designation']="...";
+										}
+									}
+
+									$chaine_infos_remplacement.="Remplacé par ".$tab_prof[$current_remplacement['login_user']]['designation']."\nentre ".formate_date($current_remplacement['date_debut_r'], 'y2')."\net ".formate_date($current_remplacement['date_fin_r'], 'y2').".\n";
+								}
 
 								if(!isset($tab_prof[$lig->login_prof])) {
 									$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
