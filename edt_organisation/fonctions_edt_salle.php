@@ -326,25 +326,24 @@ function ConstruireColonneSalle($elapse_time, $req_creneau, $duree_max, $jour_se
             while (isset($tab_id_creneaux[$k]) AND (!$end_process) AND ($duree1<$duree_max)) {
                 //if ($id_semaine_previous == '0') {
                 if (isset($id_semaine)) {
-                    $req_demicreneau = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
+                    $sql="SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
                                                 jour_semaine = '".$jour_sem."' AND
                                                 id_salle = '".$id_salle."' AND
                                                 id_definie_periode = '".$tab_id_creneaux[$k]."' AND
                                                 id_semaine = '".$id_semaine."' AND
-                                                (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                                ") or die(mysqli_error($GLOBALS["mysqli"]));
+                                                (id_calendrier = '".$period."' OR id_calendrier = '0');";
                 }
                 else {
-                    $req_demicreneau = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
+                    $sql="SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
                                                 jour_semaine = '".$jour_sem."' AND
                                                 id_salle = '".$id_salle."' AND
                                                 id_definie_periode = '".$tab_id_creneaux[$k]."' AND
                                                 id_semaine <> '".$id_semaine_previous."' AND
                                                 id_semaine <> '0' AND
-                                                (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                                ") or die(mysqli_error($GLOBALS["mysqli"]));
-
+                                                (id_calendrier = '".$period."' OR id_calendrier = '0');";
                 }
+                //echo "$sql<br />";
+                $req_demicreneau = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
                 $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
                 if (mysqli_num_rows($req_demicreneau) == 2) {
                     // =========== récupérer les deux cours
@@ -378,7 +377,7 @@ function ConstruireColonneSalle($elapse_time, $req_creneau, $duree_max, $jour_se
                        }
                     }
                     $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColorClass($rep_creneau['id_groupe']), $contenu);
+                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColorClass($rep_demicreneau['id_groupe']), $contenu);
 
                     $duree1 += (int)$rep_demicreneau['duree'];
                     $elapse_time1 += (int)$rep_demicreneau['duree'];
@@ -397,7 +396,7 @@ function ConstruireColonneSalle($elapse_time, $req_creneau, $duree_max, $jour_se
  
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColorClass($rep_creneau['id_groupe']), $contenu);
+                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColorClass($rep_demicreneau['id_groupe']), $contenu);
                     $duree1 += (int)$rep_demicreneau['duree'];
                     $elapse_time1 += (int)$rep_demicreneau['duree'];
 
@@ -500,7 +499,7 @@ if ($type_edt=="salle") {
     $tab_id_creneaux = retourne_id_creneaux();
     $j = 0;
     $elapse_time = 0;
-    while (isset($tab_id_creneaux[$j])) {
+    while ((is_array($tab_id_creneaux))&&(isset($tab_id_creneaux[$j]))) {
         $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours, id_aid, duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
                                     jour_semaine = '".$jour_sem_tab[$jour]."' AND
                                     id_salle = '".$id_salle."' AND
@@ -1196,15 +1195,19 @@ $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
 //Cas où le nom des créneaux sont inscrits à gauche
 if ($reglages_creneaux == "noms") {
 	$tab_creneaux = retourne_creneaux();
-	$i=0;
-	while($i<count($tab_creneaux)){
+	if(is_array($tab_creneaux)) {
 		$tab_id_creneaux = retourne_id_creneaux();
-		$c=0;
-		while($c<count($tab_id_creneaux)){
-            //echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_creneaux[$i]."</strong></div></div>\n");
-            $tab_data['creneaux'][$jour] = $tab_creneaux[$jour];
-			$i ++;
-			$c ++;
+		if(is_array($tab_id_creneaux)) {
+			$i=0;
+			while($i<count($tab_creneaux)) {
+				$c=0;
+				while($c<count($tab_id_creneaux)){
+					//echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_creneaux[$i]."</strong></div></div>\n");
+					$tab_data['creneaux'][$jour] = $tab_creneaux[$jour];
+					$i ++;
+					$c ++;
+				}
+			}
 		}
 	}
 }
@@ -1212,15 +1215,18 @@ if ($reglages_creneaux == "noms") {
 // Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
 elseif ($reglages_creneaux == "heures") {
 	$tab_horaire = retourne_horaire();
-	for($i=0; $i<count($tab_horaire); ) {
-
-	$tab_id_creneaux = retourne_id_creneaux();
-		$c=0;
-		while($c<count($tab_id_creneaux)){
-            //echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"]."</strong></div></div>\n");
-            $tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
-			$i++;
-			$c ++;
+	if(is_array($tab_horaire)) {
+		$tab_id_creneaux = retourne_id_creneaux();
+		if(is_array($tab_id_creneaux)) {
+			for($i=0; $i<count($tab_horaire); ) {
+				$c=0;
+				while($c<count($tab_id_creneaux)){
+				//echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"]."</strong></div></div>\n");
+				$tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
+					$i++;
+					$c ++;
+				}
+			}
 		}
 	}
 }

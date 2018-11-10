@@ -542,37 +542,44 @@ function ConstruireCreneauxEDT()
     }
     $tab_data['nb_creneaux'] = $nbre_lignes;
 
-    $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
-    //Cas où le nom des créneaux sont inscrits à gauche
-    if ($reglages_creneaux == "noms") {
-	    $tab_creneaux = retourne_creneaux();
-	    $i=0;
-	    while($i<count($tab_creneaux)){
-		    $tab_id_creneaux = retourne_id_creneaux();
-		    $c=0;
-		    while($c<count($tab_id_creneaux)){
-                $tab_data['creneaux'][$i] = $tab_creneaux[$i];
-			    $i ++;
-			    $c ++;
-		    }
-	    }
-    }
-    
-    // Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
-    elseif ($reglages_creneaux == "heures") {
-	    $tab_horaire = retourne_horaire();
-	    for($i=0; $i<count($tab_horaire); ) {
-    
-	    $tab_id_creneaux = retourne_id_creneaux();
-		    $c=0;
-		    while($c<count($tab_id_creneaux)){
-                $tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
-			    $i++;
-			    $c ++;
-		    }
-	    }
-    }
-    return $tab_data;
+	$reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
+	//Cas où le nom des créneaux sont inscrits à gauche
+	if ($reglages_creneaux == "noms") {
+		$tab_creneaux = retourne_creneaux();
+		$i=0;
+		if(is_array($tab_creneaux)) {
+			$tab_id_creneaux = retourne_id_creneaux();
+			if(is_array($tab_id_creneaux)) {
+				while($i<count($tab_creneaux)) {
+					$c=0;
+					while($c<count($tab_id_creneaux)){
+						$tab_data['creneaux'][$i] = $tab_creneaux[$i];
+						$i ++;
+						$c ++;
+					}
+				}
+			}
+		}
+	}
+
+	// Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
+	elseif ($reglages_creneaux == "heures") {
+		$tab_horaire = retourne_horaire();
+		if(is_array($tab_horaire)) {
+			$tab_id_creneaux = retourne_id_creneaux();
+			if(is_array($tab_id_creneaux)) {
+				for($i=0; $i<count($tab_horaire); ) {
+					$c=0;
+					while($c<count($tab_id_creneaux)) {
+						$tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
+						$i++;
+						$c ++;
+					}
+				}
+			}
+		}
+	}
+	return $tab_data;
 }
 
 // =============================================================================
@@ -627,7 +634,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
         $index_creneau--;
     }
     $index_creneau = $index_creneau / 2;
-    if ($index_creneau >= count($tab_creneaux)) {
+    if ((!is_array($tab_creneaux))||($index_creneau >= count($tab_creneaux))) {
         $index_creneau = 0;
     }
     $tab_data_jour['affiche_creneau'][$index_box] = $tab_creneaux[$index_creneau];
@@ -1099,7 +1106,7 @@ function retourne_creneaux(){
 
 // Fonction qui retourne la liste des horaires 08h00 - 09h00 au lieu des M1 M2 et Cie
 
-function retourne_horaire(){
+function retourne_horaire() {
 
 	$req_nom_horaire = mysqli_query($GLOBALS["mysqli"], "SELECT heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
 
@@ -1126,20 +1133,21 @@ function retourne_horaire(){
 
 function retourne_id_creneaux(){
 
-	$req_id_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux
+	$sql="SELECT id_definie_periode FROM edt_creneaux
 								WHERE type_creneaux != 'pause'
-								ORDER BY heuredebut_definie_periode");
+								ORDER BY heuredebut_definie_periode";
+	$req_id_creneaux = mysqli_query($GLOBALS["mysqli"], $sql);
 	// On compte alors le nombre de réponses et on renvoie en fonction de la réponse
-	$nbre_rep = count($req_id_creneaux);
+	$nbre_rep=mysqli_num_rows($req_id_creneaux);
 	if ($nbre_rep == 0) {
 		return "aucun";
-	}elseif ($req_id_creneaux) {
+	} elseif ($req_id_creneaux) {
 		$rep_id_creneaux = array();
 		while($data_id_creneaux = mysqli_fetch_array($req_id_creneaux)) {
 			$rep_id_creneaux[] = $data_id_creneaux["id_definie_periode"];
 		}
-	}else{
-		Die('Erreur sur retourne_id_creneaux 1');
+	} else {
+		die('Erreur sur retourne_id_creneaux 1');
 	}
 	return $rep_id_creneaux;
 }

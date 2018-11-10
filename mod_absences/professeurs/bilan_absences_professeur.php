@@ -21,11 +21,11 @@ require_once("../../edt_organisation/fonctions_edt.php");
 $resultat_session = $session_gepi->security_check();
 	if ($resultat_session == 'c') {
 	header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../../logout.php?auto=1");
-die();
-};
+	header("Location: ../../logout.php?auto=1");
+	die();
+}
 
 // Sécurité
 if (!checkAccess()) {

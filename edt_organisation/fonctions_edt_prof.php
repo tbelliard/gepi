@@ -596,7 +596,7 @@ if ($type_edt=="prof") {
 	}
 
 	$nb_tours=0;
-    while (isset($tab_id_creneaux[$j])) {
+    while ((is_array($tab_id_creneaux))&&(isset($tab_id_creneaux[$j]))) {
     //while ((isset($tab_id_creneaux[$j]))&&($nb_tours<10)) {
         $req_creneau = LessonsFromDayTeacherSlotPeriod($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux[$j], $period);
 
@@ -1318,15 +1318,19 @@ $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
 //Cas où le nom des créneaux sont inscrits à gauche
 if ($reglages_creneaux == "noms") {
 	$tab_creneaux = retourne_creneaux();
-	$i=0;
-	while($i<count($tab_creneaux)){
+	if(is_array($tab_creneaux)) {
+		$i=0;
 		$tab_id_creneaux = retourne_id_creneaux();
-		$c=0;
-		while($c<count($tab_id_creneaux)){
-            //echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_creneaux[$i]."</strong></div></div>\n");
-            $tab_data['creneaux'][$jour] = $tab_creneaux[$jour];
-			$i ++;
-			$c ++;
+		if(is_array($tab_id_creneaux)) {
+			while($i<count($tab_creneaux)){
+				$c=0;
+				while($c<count($tab_id_creneaux)){
+					//echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_creneaux[$i]."</strong></div></div>\n");
+					$tab_data['creneaux'][$jour] = $tab_creneaux[$jour];
+					$i ++;
+					$c ++;
+				}
+			}
 		}
 	}
 }
@@ -1334,15 +1338,18 @@ if ($reglages_creneaux == "noms") {
 // Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
 elseif ($reglages_creneaux == "heures") {
 	$tab_horaire = retourne_horaire();
-	for($i=0; $i<count($tab_horaire); ) {
-
-	$tab_id_creneaux = retourne_id_creneaux();
-		$c=0;
-		while($c<count($tab_id_creneaux)){
-            //echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"]."</strong></div></div>\n");
-            $tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
-			$i++;
-			$c ++;
+	if(is_array($tab_horaire)) {
+		$tab_id_creneaux = retourne_id_creneaux();
+		if(is_array($tab_id_creneaux)) {
+			for($i=0; $i<count($tab_horaire); ) {
+				$c=0;
+				while($c<count($tab_id_creneaux)){
+				//echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"]."</strong></div></div>\n");
+				$tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
+					$i++;
+					$c ++;
+				}
+			}
 		}
 	}
 }
@@ -1404,7 +1411,7 @@ if ($type_edt=="prof") {
     $tab_id_creneaux = retourne_id_creneaux();
     $j = 0;
     $elapse_time = 0;
-    while (isset($tab_id_creneaux[$j])) {
+    while ((is_array($tab_id_creneaux))&&(isset($tab_id_creneaux[$j]))) {
         $req_creneau = LessonsFromDayTeacherSlotPeriod($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux[$j], $period);
         $rep_creneau = mysqli_fetch_array($req_creneau);
         $nb_rows = mysqli_num_rows($req_creneau);
@@ -2114,15 +2121,19 @@ $reglages_creneaux = GetSettingEdt("edt_aff_creneaux");
 //Cas où le nom des créneaux sont inscrits à gauche
 if ($reglages_creneaux == "noms") {
 	$tab_creneaux = retourne_creneaux();
-	$i=0;
-	while($i<count($tab_creneaux)){
+	if(is_array($tab_creneaux)) {
 		$tab_id_creneaux = retourne_id_creneaux();
-		$c=0;
-		while($c<count($tab_id_creneaux)){
-            //echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_creneaux[$i]."</strong></div></div>\n");
-            $tab_data['creneaux'][$jour] = $tab_creneaux[$jour];
-			$i ++;
-			$c ++;
+		if(is_array($tab_id_creneaux)) {
+			$i=0;
+			while($i<count($tab_creneaux)){
+				$c=0;
+				while($c<count($tab_id_creneaux)){
+					//echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_creneaux[$i]."</strong></div></div>\n");
+					$tab_data['creneaux'][$jour] = $tab_creneaux[$jour];
+					$i ++;
+					$c ++;
+				}
+			}
 		}
 	}
 }
@@ -2130,15 +2141,18 @@ if ($reglages_creneaux == "noms") {
 // Cas où les heures sont inscrites à gauche au lieu du nom des créneaux
 elseif ($reglages_creneaux == "heures") {
 	$tab_horaire = retourne_horaire();
-	for($i=0; $i<count($tab_horaire); ) {
-
-	$tab_id_creneaux = retourne_id_creneaux();
-		$c=0;
-		while($c<count($tab_id_creneaux)){
-            //echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"]."</strong></div></div>\n");
-            $tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
-			$i++;
-			$c ++;
+	if(is_array($tab_horaire)) {
+		$tab_id_creneaux = retourne_id_creneaux();
+		if(is_array($tab_id_creneaux)) {
+			for($i=0; $i<count($tab_horaire); ) {
+				$c=0;
+				while($c<count($tab_id_creneaux)) {
+					//echo("                <div class=\"horaires\"><div class=\"cadre\"><strong>".$tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"]."</strong></div></div>\n");
+					$tab_data['creneaux'][$i] = $tab_horaire[$i]["heure_debut"]."<br />".$tab_horaire[$i]["heure_fin"];
+					$i++;
+					$c ++;
+				}
+			}
 		}
 	}
 }

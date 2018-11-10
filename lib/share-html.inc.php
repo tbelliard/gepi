@@ -1138,33 +1138,36 @@ function affiche_docs_joints($id_ct,$type_notice) {
       $sql = "SELECT titre, emplacement, visible_eleve_parent FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
   }
 
-  $res = sql_query($sql);
-    if (($res) and (sql_count($res)!=0)) {
-      $html .= "<span class='petit'>Document(s) joint(s):</span>";
-      $html .= "<ul style=\"padding-left: 15px;\">";
-      for ($i=0; ($row = sql_row($res,$i)); $i++) {
-          if(((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y'))||
-              ((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE))||
-              ((isset($_SESSION['statut']))&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')&&($contexte_affichage_docs_joints!="visu_eleve"))||
-              (($contexte_affichage_docs_joints=="visu_eleve")&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE))||
-              ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
-              ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
-          ) {
-                $titre = $row[0];
-                $emplacement = $row[1];
+  // On n'a pas de docs joints sur les notices privées.
+  if(isset($sql)) {
+	  $res = sql_query($sql);
+	    if (($res) and (sql_count($res)!=0)) {
+		$html .= "<span class='petit'>Document(s) joint(s):</span>";
+		$html .= "<ul style=\"padding-left: 15px;\">";
+		for ($i=0; ($row = sql_row($res,$i)); $i++) {
+		    if(((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y'))||
+		        ((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE))||
+		        ((isset($_SESSION['statut']))&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')&&($contexte_affichage_docs_joints!="visu_eleve"))||
+		        (($contexte_affichage_docs_joints=="visu_eleve")&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE))||
+		        ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
+		        ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+		    ) {
+		          $titre = $row[0];
+		          $emplacement = $row[1];
 
-                if((isset($envoi_mail))&&($envoi_mail=="y")&&(getSettingValue("url_racine_gepi")!="")) {
-                    $emplacement=preg_replace("#^\.\./#", getSettingValue("url_racine_gepi")."/", $emplacement);
-                }
+		          if((isset($envoi_mail))&&($envoi_mail=="y")&&(getSettingValue("url_racine_gepi")!="")) {
+		              $emplacement=preg_replace("#^\.\./#", getSettingValue("url_racine_gepi")."/", $emplacement);
+		          }
 
-              // Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
-              // alternative, utiliser un javascript
-                //$html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
-                $html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a href=\"$emplacement\" target='_blank'>$titre</a></li>";
-          }
-      }
-      $html .= "</ul>";
-     }
+		        // Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
+		        // alternative, utiliser un javascript
+		          //$html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
+		          $html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a href=\"$emplacement\" target='_blank'>$titre</a></li>";
+		    }
+		}
+		$html .= "</ul>";
+	     }
+	}
    return $html;
  }
 
