@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010-2014 Josselin Jacquard - Bouguin Régis
+ * Copyright 2010-2018 Josselin Jacquard - Bouguin Régis, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -110,12 +110,12 @@ if (isFiltreRechercheParam('filter_eleve')) {
 //$id_classe = 14;
 //$classe = ClasseQuery::create()->findPk($id_classe);
 if (isFiltreRechercheParam('filter_classe')) {
-    if (in_array('SANS',getFiltreRechercheParam('filter_classe'))) {
+    if ((is_array(getFiltreRechercheParam('filter_classe')))&&(in_array('SANS',getFiltreRechercheParam('filter_classe')))) {
 	   $_SESSION['filtre_recherche']['filter_classe']=array('SANS');
     } else {
 	  $query->useAbsenceEleveTraitementQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
 		 ->useJEleveClasseQuery()->filterByIdClasse(getFiltreRechercheParam('filter_classe'))->endUse()
-		 ->endUse()->endUse()->endUse()->endUse();		 
+		 ->endUse()->endUse()->endUse()->endUse();
     }
 }
 
@@ -307,7 +307,7 @@ echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRecherchePa
 		echo "<option value='SANS'>Toutes les classes</option>\n";
 		foreach ($classe_col as $classe) {
 			echo "<option value='".$classe->getId()."'";
-			if (isFiltreRechercheParam('filter_classe') && (getFiltreRechercheParam('filter_classe') != "SANS")) {
+			if (isFiltreRechercheParam('filter_classe') && (getFiltreRechercheParam('filter_classe') != "SANS") && (is_array(getFiltreRechercheParam('filter_classe')))) {
 			   if (in_array($classe->getId(), getFiltreRechercheParam('filter_classe'))) {
 				  echo " selected='selected' ";
 			   }
