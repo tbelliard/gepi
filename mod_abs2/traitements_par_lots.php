@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010-2013 Josselin Jacquard, Stephane Boireau
+ * Copyright 2010-2018 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -201,6 +201,9 @@ if(isset($_POST['validation_creation_lot_traitements'])) {
 		if ($saisie != null) {
 			$tab_ele[$saisie->getEleve()->getPrimaryKey()][]=$select_saisie[$loop];
 			$tab_nom_prenom_ele[$saisie->getEleve()->getPrimaryKey()]=$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+
+// A FAIRE : Extraire le premier jour et le dernier jour des saisies pour filtrer les recherches de rattachement plus bas.
+
 		}
 	}
 
@@ -211,6 +214,7 @@ if(isset($_POST['validation_creation_lot_traitements'])) {
 	$nb_notifications=0;
 	$tab_traitement_cree=array();
 	$tab_notification_creee=array();
+	$chaine_input_notifications='';
 	foreach($tab_ele as $key_ele => $tab_saisies_ele) {
 		$traitement = new AbsenceEleveTraitement();
 		$traitement->setUtilisateurProfessionnel($utilisateur);
@@ -278,6 +282,9 @@ if(isset($_POST['validation_creation_lot_traitements'])) {
 				$results = $tmp_saisies_col->getResults();
 				if($results->count()!=0) {
 					foreach ($results as $tmp_saisie) {
+
+// A FAIRE : Il faudrait ajouter ici un test sur le fait que la saisie n'est pas antérieure ou postérieure aux dates limites (début/fin journée) des saisies sélectionnées.
+// Nécessaire parce que l'extraction récupère les saisies de la veille et du lendemain
 
 						$saisies_conflit = $tmp_saisie->getSaisiesContradictoiresManquementObligation();
 						if($saisies_conflit->isEmpty()) {
@@ -356,6 +363,7 @@ if(isset($_POST['validation_creation_lot_traitements'])) {
 				}
 				$notification->save();
 				$tab_notification_creee[$key_ele]=$notification->getId();
+				$chaine_input_notifications.="<input type='hidden' name='select_notification[]' value='".$notification->getId()."' />";
 				$nb_notifications++;
 
 				//$url='./visu_notification.php?id_notification='.$notification->getId().'';
@@ -459,7 +467,20 @@ if(isset($_POST['validation_creation_lot_traitements'])) {
 		$message_enregistrement.=".<br />";
 	}
 	if($nb_notifications>0) {
-		$message_enregistrement.=$nb_notifications." notification(s) créée(s).<br />";
+		$message_enregistrement.=$nb_notifications." notification(s) créée(s).<br />
+		<form action='generer_notifications_par_lot.php' method='POST' target='_blank'>
+			<input type='hidden' name='order' value='des_id' />
+			<input type='hidden' name='item_per_page' value='14' />
+			<input type='hidden' name='filter_utilisateur' value='' />
+			<input type='hidden' name='filter_eleve' value='' />
+			<input type='hidden' name='filter_type_notification' value='".$_POST['type_notification']."' />
+			<input type='hidden' name='filter_statut_notification' value='etat initial' />
+			<input type='hidden' name='filter_date_creation_notification_debut_plage' value='' />
+			<input type='hidden' name='filter_date_creation_notification_fin_plage' value='' />
+			".$chaine_input_notifications."
+			<input type='hidden' name='generer_notifications_par_lot' value='y' />
+			<input type='submit' value='Générer ces notifications par lots' />
+		</form>";
 	}
 }
 /*
@@ -506,19 +527,23 @@ if(!$menu){
 echo "<div class='css-panes' style='background-color:#ebedb5;' id='containDiv' style='overflow : auto;'>\n";
 
 $temoin_submit=0;
-if (isset($message_erreur_traitement)) {
-    echo "<span style='color:red'>".$message_erreur_traitement."</span>";
-    $temoin_submit++;
-}
+if ((isset($message_erreur_traitement))||(isset($message_enregistrement))) {
+	echo "<div class='fieldset_opacite50' style='margin-bottom:1em; padding:0.5em;'>";
+	if (isset($message_erreur_traitement)) {
+		echo "<span style='color:red'>".$message_erreur_traitement."</span>";
+		$temoin_submit++;
+	}
 
-if (isset($message_enregistrement)) {
-    echo "<span style='color:green'>".$message_enregistrement."</span>";
-    $temoin_submit++;
-}
+	if (isset($message_enregistrement)) {
+		echo "<span style='color:green'>".$message_enregistrement."</span>";
+		$temoin_submit++;
+	}
 
-// Ajouter des liens de retour vers les Absences du jour et les Traitements
-if($temoin_submit>0) {
-    echo "<p>Retour vers <a href='absences_du_jour.php'>les absences du jour</a></p>";
+	// Ajouter des liens de retour vers les Absences du jour et les Traitements
+	if($temoin_submit>0) {
+		echo "<p>Retour vers <a href='absences_du_jour.php'>les absences du jour</a></p>";
+	}
+	echo "</div>";
 }
 
 if(!isset($select_saisie)) {
@@ -700,7 +725,7 @@ echo "		</td>
 
 echo "
 <form method='post' action='traitements_par_lots.php'>
-<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+<fieldset style='margin-top:1em;' class='fieldset_opacite50'>
 <input type='hidden' name='menu' value='".$menu."'/>
 <input type='hidden' name='creation_lot_traitements' value='yes'/>
 <input type='hidden' name='validation_creation_lot_traitements' value='yes'/>
