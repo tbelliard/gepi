@@ -385,121 +385,151 @@ maj_type_extrait();
 
 
 <div id="sortie_ecran">
-  <table class="sortable resizable" 
-		 id="saisie" 
-		 style="border:1px; cellspacing:0; text-align: center; width:100%; background-color: #e5e3e1;"
-		 >
-	<tr >
-	  <th class="number" title='cliquez pour trier sur la colonne'>
-		N°
-	  </th>
-	  <th title='cliquez pour trier sur la colonne' >
-		Saisies
-	  </th>
-	  <th title='cliquez pour trier sur la colonne'>
-		Type
-	  </th>
-	  <th title='cliquez pour trier sur la colonne'>
-		Motif
-	  </th>
-	  <th title='cliquez pour trier sur la colonne'>
-		Justification
-	  </th>
-	  <th title='cliquez pour trier sur la colonne'>
-		Commentaire(s)
-	  </th>
-	</tr>
+	<table class="sortable resizable" 
+		id="saisie" 
+		style="border:1px; cellspacing:0; text-align: center; width:100%; background-color: #e5e3e1;"
+		>
+			<tr>
+				<th class="number" title='cliquez pour trier sur la colonne'>
+					N°
+				</th>
+				<th title='cliquez pour trier sur la colonne' >
+					Saisies
+				</th>
+				<th title='cliquez pour trier sur la colonne'>
+					Type
+				</th>
+				<th title='cliquez pour trier sur la colonne'>
+					Motif
+				</th>
+				<th title='cliquez pour trier sur la colonne'>
+					Justification
+				</th>
+				<th title='cliquez pour trier sur la colonne'>
+					Commentaire(s)
+				</th>
+			</tr>
 
 <?php
 $ligne = 0;
 $jour_debut_ligne_precedente="";
 $jour_debut_ligne_courante="";
+
+$col_saisies_prec='';
+$col_type_prec='';
+$col_motif_prec='';
+$col_justification_prec='';
+$col_commentaires_prec='';
+
 $alt=1;
 foreach ($donnees as $id => $eleve) {
-    if(!isset($eleve['infos_saisies'])){
-        continue;
-    }
+	if(!isset($eleve['infos_saisies'])) {
+		continue;
+	}
 
-    foreach ($eleve['infos_saisies'] as $type_tab=>$value2) {
-        foreach ($value2 as $journee) {
-            foreach ($journee as $key => $value) {                
-                $style=$value['type_css'];
-                /*
-                echo "<tr><td colspan='6' style='background-color:white; text-align:left;'><pre>";
-                print_r($value);
-                echo "</pre></td></tr>";
-                */
-?>
-	<tr<?php
-		$jour_debut_ligne_courante=strftime("%Y%m%d", $value['dates']['debut']);
-		if($jour_debut_ligne_courante!=$jour_debut_ligne_precedente) {
-			$alt=$alt*(-1);
-		}
-		$jour_debut_ligne_precedente=$jour_debut_ligne_courante;
+	foreach ($eleve['infos_saisies'] as $type_tab=>$value2) {
+		foreach ($value2 as $journee) {
+			foreach ($journee as $key => $value) {
+				$style=$value['type_css'];
 
-		$style_ajout="";
-		if($alt==1) {
-			//echo " style='background-color:plum'";
-			$style_ajout='" style="background-color:plum;';
-		}
-		$style.=$style_ajout;
-	?>>
-	  <?php $ligne++; ?>
+				$ligne_courante="
+			<tr>";
 
-	  
-	  <td  align="center" class="<?php echo $style; ?>">
-		<?php echo $ligne;?>
-	  </td>
-	  <td  align="center" class="<?php echo $style; ?>">
-		<?php echo getDateDescription($value['dates']['debut'], $value['dates']['fin'], 'y') ; ?>
-	  </td>
-	  
-	  <td align="center" class="<?php echo $style; ?>">
-		  <?php
-			$contenu_cellule=$value['type'];
-			if ($value['type'] !== 'Non traitée(s)') {
-				$class = '';
-				if ($value['type'] == 'Non défini') {
-					$class = 'orange';
+				$jour_debut_ligne_courante=strftime("%Y%m%d", $value['dates']['debut']);
+				if($jour_debut_ligne_courante!=$jour_debut_ligne_precedente) {
+					$alt=$alt*(-1);
+				}
+				$jour_debut_ligne_precedente=$jour_debut_ligne_courante;
+
+				$style_ajout="";
+				if($alt==1) {
+					$style_ajout='" style="background-color:plum;';
+				}
+				$style.=$style_ajout;
+
+
+
+				$col_saisies_courantes=getDateDescription($value['dates']['debut'], $value['dates']['fin'], 'y');
+				$col_type_courant=$value['type'];
+				$col_motif_courant=$value['motif'];
+				$col_justification_courant=$value['justification'];
+
+				$col_commentaires_courant='';
+				if (isset($value['commentaires'])) {
+					$besoin_echo_virgule = false;
+					foreach ($value['commentaires'] as $commentaire) {
+						if ($besoin_echo_virgule) {
+							$col_commentaires_courant.=', ';
+						}
+						$col_commentaires_courant.=$commentaire;
+						$besoin_echo_virgule = true;
+					}
+				}
+
+				if(($col_saisies_prec!=$col_saisies_courantes)||
+				($col_type_prec!=$col_type_courant)||
+				($col_motif_prec!=$col_motif_courant)||
+				($col_justification_prec!=$col_justification_courant)||
+				($col_commentaires_prec!=$col_commentaires_courant)) {
+
+					$col_saisies_prec=$col_saisies_courantes;
+					$col_type_prec=$col_type_courant;
+					$col_motif_prec=$col_motif_courant;
+					$col_justification_prec=$col_justification_courant;
+					$col_commentaires_prec=$col_commentaires_courant;
+
+					$ligne++;
+
+					$ligne_courante.="
+					<td  align=\"center\" class=\"".$style."\">
+						".$ligne."
+					</td>
+					<td align=\"center\" class=\"".$style."\">
+						".$col_saisies_courantes."
+					</td>
+					<td align=\"center\" class=\"".$style."\">";
+
+					$contenu_cellule=$value['type'];
+					if ($value['type'] !== 'Non traitée(s)') {
+						$class = '';
+						if ($value['type'] == 'Non défini') {
+							$class = 'orange';
+						}
+					}
+					else {
+						$class="orange";
+					}
+
+					if(($_SESSION['statut']=='cpe')&&(isset($value['saisies'][0]))) {
+						$contenu_cellule="<a href='../mod_abs2/visu_saisie.php?id_saisie=".$value['saisies'][0]."' target='_blank'><span class='$class'>".$value['type']."</span></a>";
+					}
+
+					$ligne_courante.=$contenu_cellule."
+					</td>
+
+					<td class=\"".$style."\">
+						".$col_motif_courant."
+					</td>
+
+					<td class=\"".$style."\">
+						".$col_justification_courant."
+					</td>
+
+					<td class=\"".$style."\">
+						".$col_commentaires_courant."
+					</td>
+				</tr>";
+
+					/*
+					echo "<tr><td colspan='6' style='background-color:white; text-align:left;'><pre>";
+					print_r($value);
+					echo "</pre></td></tr>";
+					*/
+					echo $ligne_courante;
 				}
 			}
-			else {
-				$class="orange";
-			}
-
-			if(($_SESSION['statut']=='cpe')&&(isset($value['saisies'][0]))) {
-				$contenu_cellule="<a href='../mod_abs2/visu_saisie.php?id_saisie=".$value['saisies'][0]."' target='_blank'><span class='$class'>".$value['type']."</span></a>";
-			}
-
-			echo $contenu_cellule;
-		  ?>
-	  </td>
-	  
-	  <td class="<?php echo $style; ?>">
-		  <?php echo $value['motif']; ?>
-	  </td>
-	  
-	  <td class="<?php echo $style; ?>">
-		<?php echo $value['justification']; ?>
-	  </td>
-	  
-	  <td class="<?php echo $style; ?>">
-<?php if (isset($value['commentaires'])) {
-  $besoin_echo_virgule = false;
-  foreach ($value['commentaires'] as $commentaire) {
-	if ($besoin_echo_virgule) {
-	  echo ', ';
+		}
 	}
-	echo $commentaire;
-	$besoin_echo_virgule = true;
-  }
-} ?>
-	  </td>
-	</tr>
-<?php
-            }
-        }
-    }
 }
 ?>
 	
