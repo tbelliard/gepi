@@ -407,7 +407,14 @@ maj_type_extrait();
 				</th>
 				<th title='cliquez pour trier sur la colonne'>
 					Commentaire(s)
-				</th>
+				</th><?php
+					if(($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite')) {
+						echo "
+				<th>
+					Notification(s)
+				</th>";
+					}
+				?>
 			</tr>
 
 <?php
@@ -517,7 +524,95 @@ foreach ($donnees as $id => $eleve) {
 
 					<td class=\"".$style."\">
 						".$col_commentaires_courant."
-					</td>
+					</td>";
+
+					if(($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite')&&(isset($value['saisies'][0]))) {
+						// type_notification : 0:courrier, 1:email, 2: sms? , 3:telephone
+						// * Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)
+						$sql="SELECT * FROM a_notifications an WHERE...";
+						// Récupérer les traitements associés à la saisie... et les notifications associées aux traitements
+						// images/icons/mail_succes.png
+						// images/icons/mail_echec.png
+						// images/icons/no_mail.png
+
+						$liste_notifications='';
+
+						$tab_traitements_deja_affiches=array();
+						$tab_notifications_deja_affichees=array();
+						$saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($value['saisies'][0]);
+						if ($saisie!=null) {
+							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+								if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+									$tab_traitements_deja_affiches[]=$traitement->getId();
+									foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
+										if(!in_array($notification->getId(), $tab_notifications_deja_affichees)) {
+											$tab_notifications_deja_affichees[]=$notification->getId();
+
+											if ($notification->getTypeNotification() != null) {
+												if ($notification->getDateEnvoi() != null) {
+													$date_notification=(strftime("%a %d/%m/%Y %H:%M", $notification->getDateEnvoi('U')));
+												} else {
+													$date_notification=(strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
+												}
+
+												$liste_notifications.=' ';
+
+												//style='display: block; height: 100%;' 
+												if($notification->getTypeNotification()=='email') {
+													if($notification->getStatutEnvoi()=='succes') {
+														$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"Mail n°".$notification->getId()." envoyé avec succès le ".$date_notification."\" target='_blank'><img src='../images/icons/mail_succes.png' class='icone16' /></a>";
+													}
+													elseif($notification->getStatutEnvoi()=='echec') {
+														$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"Echec de l'envoi du mail n°".$notification->getId()." le ".$date_notification."\" target='_blank'><img src='../images/icons/mail_echec.png' class='icone16' /></a>";
+													}
+													else {
+														$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"Message n°".$notification->getId()." en attente préparé le ".$date_notification." (".$notification->getStatutEnvoi().")\" target='_blank'><img src='../images/icons/no_mail.png' class='icone16' /></a>";
+													}
+												}
+												elseif($notification->getTypeNotification()=='courrier') {
+													if($notification->getStatutEnvoi()=='succes') {
+														$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"Courrier n°".$notification->getId()." envoyé avec succès le ".$date_notification."\" target='_blank'><img src='../images/icons/courrier_succes.png' class='icone16' /></a>";
+													}
+													elseif($notification->getStatutEnvoi()=='echec') {
+														$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"Echec de l'envoi du courrier n°".$notification->getId()." le ".$date_notification."\" target='_blank'><img src='../images/icons/courrier_echec.png' class='icone16' /></a>";
+													}
+													else {
+														$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"Courrier n°".$notification->getId()." du ".$date_notification." (".$notification->getStatutEnvoi().")\" target='_blank'><img src='../images/icons/courrier.png' class='icone16' /></a>";
+													}
+												}
+												elseif($notification->getTypeNotification()=='sms') {
+													$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"SMS n°".$notification->getId()." le ".$date_notification." (".$notification->getStatutEnvoi().")\" target='_blank'>SMS</a>";
+												}
+												elseif($notification->getTypeNotification()=='communication telephonique') {
+													$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"Communication téléphonique n°".$notification->getId()." le ".$date_notification." (".$notification->getStatutEnvoi().")\" target='_blank'><img src='../images/imabulle/tel2.jpg' class='icone16' />";
+													if($notification->getStatutEnvoi()=='succes') {
+														$liste_notifications.="<img src='../images/enabled.png' class='icone16' title=\"Succès de l'appel.\">";
+													}
+													elseif($notification->getStatutEnvoi()=='echec') {
+														$liste_notifications.="<img src='../images/disabled.png' class='icone16' title=\"Échec de l'appel.\">";
+													}
+													$liste_notifications.="</a>";
+												}
+												else {
+													$liste_notifications.="<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."' title=\"Autre notification n°".$notification->getId()." le ".$date_notification." (".$notification->getStatutEnvoi().")\" target='_blank'>".$notification->getTypeNotification()."</a>";
+												}
+											}
+										}
+
+									}
+								}
+							}
+						}
+
+
+						$ligne_courante.="
+				<td class=\"".$style."\">
+					".$liste_notifications."
+				</td>";
+					}
+					
+
+					$ligne_courante.="
 				</tr>";
 
 					/*

@@ -19,6 +19,8 @@ Carnets de notes:
 Absences 2: 
 - Possibilité de générer un fichier ODT de rappel à la loi (depuis Bilan individuel).
   Possibilité proposée au-delà d'un seuil d'absences paramétrable dans le module Abs2.
+- Affichage en CPE/Scolarité des notifications dans l'onglet Absences de la page
+  de Consultation élève.
 
 Bulletins:
 - Possibilité d'autorisation exceptionnelle de saisie/modification d'appréciation 
