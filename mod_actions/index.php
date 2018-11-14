@@ -123,6 +123,12 @@ if((isset($id_classe))&&(!preg_match('/^[0-9]{1,}$/', $id_classe))) {
 	unset($id_classe);
 }
 
+$id_action_inscriptions=isset($_POST['id_action_inscriptions']) ? $_POST['id_action_inscriptions'] : (isset($_GET['id_action_inscriptions']) ? $_GET['id_action_inscriptions'] : NULL);
+if((isset($id_action_inscriptions))&&(!preg_match('/^[0-9]{1,}$/', $id_action_inscriptions))) {
+	$msg.="Identifiant d'action/inscriptions invalide&nbsp;: $id_action_inscriptions<br />";
+	unset($id_action_inscriptions);
+}
+
 // A ce stade, si un id_classe est choisi/correct, c'est forcément un nombre entier.
 
 /*
@@ -313,7 +319,7 @@ if((isset($id_action))&&(isset($mode))&&($mode=='inscriptions')&&(isset($_POST['
 		}
 	}
 	if($cpt_reg>0) {
-				$msg.=$cpt_reg." élève(s) inscrit(s).<br />";
+		$msg.=$cpt_reg." élève(s) inscrit(s).<br />";
 	}
 }
 
@@ -364,6 +370,34 @@ if((isset($id_action))&&(isset($mode))&&($mode=='inscriptions')&&(isset($id_clas
 			$insert=mysqli_query($mysqli, $sql);
 			if(!$insert) {
 				$msg.="Erreur lors de l'inscription de ".get_nom_prenom_eleve($lig_ele->login)."&nbsp;:<br />".$sql."<br />";
+			}
+			else {
+				$cpt_ele++;
+			}
+		}
+
+		$msg.=$cpt_ele." élève(s) inscrit(s).<br />";
+	}
+}
+
+//==============================================================================
+// Inscription de tous les élèves précédemment inscrits pour une autre action
+if((isset($id_action))&&(isset($mode))&&($mode=='inscriptions')&&(isset($id_action_inscriptions))&&(isset($_GET['ajouter_toute_l_action']))&&($_GET['ajouter_toute_l_action']=='y')) {
+	check_token();
+
+	$sql="SELECT DISTINCT login_ele FROM mod_actions_inscriptions WHERE id_action='".$id_action_inscriptions."' AND login_ele NOT IN (SELECT login_ele FROM mod_actions_inscriptions WHERE id_action='".$id_action."');";
+	echo "$sql<br />";
+	$res_ele=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_ele)==0) {
+		$msg.="L'action modèle choisie est vide ou tous ses élèves sont déjà inscrits.<br />";
+	}
+	else {
+		$cpt_ele=0;
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
+			$sql="INSERT INTO mod_actions_inscriptions SET id_action='".$id_action."', login_ele='".$lig_ele->login_ele."';";
+			$insert=mysqli_query($mysqli, $sql);
+			if(!$insert) {
+				$msg.="Erreur lors de l'inscription de ".get_nom_prenom_eleve($lig_ele->login_ele)."&nbsp;:<br />".$sql."<br />";
 			}
 			else {
 				$cpt_ele++;
@@ -863,7 +897,28 @@ elseif($mode=='inscriptions') {
 			<tr><td style=\"width: 196px;\"><a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_classe=".$lig->id."\">Elèves de la ".$lig->classe."</a></td></tr>";
 	}
 	echo "
-		</table>
+		</table>";
+
+	$sql="SELECT maa.*, COUNT(mai.login_ele) AS effectif 
+		FROM mod_actions_action maa, 
+			mod_actions_inscriptions mai 
+		WHERE maa.id=mai.id_action 
+		HAVING COUNT(mai.login_ele)>0 
+		ORDER BY maa.date_action;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		echo "
+		<p class=\"bold\">Liste des ".$terme_mod_action."s</p>
+		<table>";
+		while($lig=mysqli_fetch_object($res)) {
+			echo "
+			<tr><td style=\"width: 196px;\"><a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_action_inscriptions=".$lig->id."\" title=\"Afficher les élèves de ce(tte) ".$terme_mod_action_nettoye."\">".$lig->nom."<span style='font-size:x-small'> (".formate_date($lig->date_action, 'y2').") <span title='Effectif ".$lig->effectif."'>(".$lig->effectif.")</span></span></a></td></tr>";
+		}
+		echo "
+		</table>";
+	}
+	echo "
 	</div>";
 
 	if (isset($id_classe)) {
@@ -925,6 +980,79 @@ elseif($mode=='inscriptions') {
 				<p><input type='submit' value='Valider' /></p>
 			</fieldset>
 		</form>
+	</div>";
+	}
+
+	if (isset($id_action_inscriptions)) {
+		echo "
+	<div style='float:left; width:20em;'>";
+		$sql="SELECT * FROM mod_actions_action WHERE id='".$id_action_inscriptions."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			echo "<p style='color:red'>".$terme_mod_action." n°".$id_action_inscriptions." inconnu(e).</p>";
+		}
+		else {
+			$lig=mysqli_fetch_object($res);
+			echo "
+		<form action='".$_SERVER['PHP_SELF']."#pointer_presence' method='post' style='text-align:left;'>
+			<fieldset class='fieldset_opacite50'>
+				".add_token_field()."
+				<p class=\"red\">".$lig->nom."<span style='font-size:x-small'> (".formate_date($lig->date_action, 'y').")</span>&nbsp;:</p>
+				<table class=\"aid_tableau\" summary=\"Liste des élèves\">
+					<tr class=\"aid_lignepaire\">
+						<td>
+							<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_action_inscriptions=".$id_action_inscriptions."&amp;ajouter_toute_l_action=y".add_token_in_url()."\">
+							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> Tous les élèves de ce(tte) ".$terme_mod_action."
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Liste des élèves</td>
+					</tr>";
+
+				$sql="SELECT DISTINCT e.login, e.id_eleve, nom, prenom, elenoet, sexe 
+						FROM eleves e, 
+							mod_actions_inscriptions mai 
+						WHERE mai.id_action = '".$id_action_inscriptions."' AND 
+							mai.login_ele = e.login 
+						ORDER BY nom, prenom";
+				$req_ele = mysqli_query($GLOBALS["mysqli"], $sql) OR die('Erreur dans la requête '.$req_ele.' : '.mysqli_error($GLOBALS["mysqli"]));
+				$cpt_ele=0;
+				while($lig_ele=mysqli_fetch_object($req_ele)) {
+					if(in_array($lig_ele->login, $action['eleves_list'])) {
+						echo "
+					<tr class=\"aid_ligneimpaire\">
+						<td>
+						</td>
+					</tr>";
+					}
+					else {
+						echo "
+					<tr class=\"aid_lignepaire\">
+						<td onmouseover=\"affiche_photo_courante('".nom_photo($lig_ele->elenoet)."')\" onmouseout=\"vide_photo_courante();\">
+							<!--
+							<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_classe=".$id_classe."&amp;login_ele=".$lig_ele->login.add_token_in_url()."\">
+							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$lig_ele->nom." ".$lig_ele->prenom."
+							</a>
+							-->
+							<input type='checkbox' name='tab_login_ele[]' id='tab_login_ele_".$cpt_ele."' value=\"".$lig_ele->login."\" /><label for='tab_login_ele_".$cpt_ele."' id='texte_tab_login_ele_".$cpt_ele."'> ".$lig_ele->nom." ".$lig_ele->prenom."</label>
+						</td>
+					</tr>";
+					}
+					$cpt_ele++;
+				}
+				echo "
+				</table>
+				<input type='hidden' name='id_action_inscriptions' value='$id_action_inscriptions' />
+				<input type='hidden' name='id_categorie' value='$id_categorie' />
+				<input type='hidden' name='id_action' value='$id_action' />
+				<input type='hidden' name='mode' value='$mode' />
+				<p><a href=\"javascript:tout_cocher()\">Tout cocher</a> / <a href=\"javascript:tout_decocher()\">Tout décocher</a></p>
+				<p><input type='submit' value='Valider' /></p>
+			</fieldset>
+		</form>";
+		}
+		echo "
 	</div>";
 	}
 
@@ -1025,14 +1153,22 @@ elseif($mode=='presence') {
 			<tr>
 				<th style='text-align:left; vertical-align:top;'>Présence&nbsp;: </th>
 				<td style='text-align:left;'>";
+	if(count($action['eleves'])>0) {
+		echo "
+					<div style='float:right; width:16px;' title=\"Notifier les familles par mail de la présence de leur enfant sur ce(tte) ".$terme_mod_action_nettoye."\">
+						<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;mode=mail_presence' target='_blank'>
+							<img src='../images/icons/mail.png' class='icone16' />
+						</a>
+					</div>";
+	}
 	foreach($action['presents'] as $login_ele => $current_ele) {
 		echo "
-			<span onmouseover=\"affiche_photo_courante('".nom_photo($current_ele['elenoet'])."')\" onmouseout=\"vide_photo_courante();\">
-			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;absence=".$current_ele["login_ele"].add_token_in_url()."#pointer_presence' title=\"Supprimer le pointage de présence&nbsp;: Marquer comme absent.\">
-				<img src=\"../images/icons/delete.png\" class='icone16' alt='Suppr' /> 
-				".$current_ele["nom"]." ".$current_ele["prenom"]."
-			</a>
-			</span><br />";
+					<span onmouseover=\"affiche_photo_courante('".nom_photo($current_ele['elenoet'])."')\" onmouseout=\"vide_photo_courante();\">
+					<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;absence=".$current_ele["login_ele"].add_token_in_url()."#pointer_presence' title=\"Supprimer le pointage de présence&nbsp;: Marquer comme absent.\">
+						<img src=\"../images/icons/delete.png\" class='icone16' alt='Suppr' /> 
+						".$current_ele["nom"]." ".$current_ele["prenom"]."
+					</a>
+					</span><br />";
 	}
 	echo "
 				</td>
@@ -1127,6 +1263,85 @@ elseif($mode=='presence') {
 	</script>";
 }
 //==============================================================================
+elseif($mode=='mail_presence') {
+
+	$tmp_tab=explode(' ', $action['date_action']);
+	$date_action=formate_date($tmp_tab[0]);
+	$heure_action=preg_replace('/:00$/', '', $tmp_tab[1]);
+
+	echo "<h2>".$action['nom']." du ".formate_date($date_action)." à ".$heure_action."</h2>
+	<h3>Envoi de mails de notification de présence&nbsp;:</h3>";
+	foreach($action['presents'] as $login_ele => $current_ele) {
+		/*
+		echo "<pre>";
+		print_r($current_ele);
+		echo "</pre><hr/>";
+		*/
+		echo '
+		<p style="margin-bottom:1em;"><strong>'.$current_ele['nom'].' '.$current_ele['prenom'].'&nbsp;:</strong><br />';
+
+		$sujet='Presence de '.$current_ele['nom'].' '.$current_ele['prenom'].' à '.$action['nom'].' du '.formate_date($date_action);
+		$message="Bonjour, 
+
+Les organisateurs de l'".$terme_mod_action_nettoye." ".$action['nom'].' du '.formate_date($date_action)." souhaitent confirmer que ".$current_ele['nom'].' '.$current_ele['prenom']." est bien présent(e) lors du pointage effectué.
+
+Cordialement.";
+
+		$tab_resp=get_resp_from_ele_login($current_ele['login_ele']);
+		$tab_deja=array();
+		foreach($tab_resp as $cpt_resp => $current_resp) {
+			echo $current_resp['designation'].'&nbsp;: ';
+			if((isset($current_resp['mel']))&&(check_mail($current_resp['mel']))) {
+				if(!in_array($current_resp['mel'], $tab_deja)) {
+					$tab_deja[]=$current_resp['mel'];
+					if(envoi_mail($sujet, $message, $current_resp['mel'])) {
+						echo " <img src='../images/icons/mail_succes.png' class='icone16' title=\"Mail envoyé avec succès à ".$current_resp['mel']."\" />";
+					}
+					else {
+						echo " <img src='../images/icons/mail_echec.png' class='icone16' title=\"Échec de l'envoi du mail à ".$current_resp['mel']."\" />";
+					}
+				}
+				else {
+					echo " <span title='Adresse mail ".$current_resp['mel']." déjà contactée'>déjà</span> - ";
+				}
+
+				if((isset($current_resp['email']))&&(check_mail($current_resp['email']))) {
+					if($current_resp['email']!=$current_resp['mel']) {
+						$tab_deja[]=$current_resp['email'];
+						if(envoi_mail($sujet, $message, $current_resp['email'])) {
+							echo " <img src='../images/icons/mail_succes.png' class='icone16' title=\"Mail envoyé avec succès à ".$current_resp['email']."\" />";
+						}
+						else {
+							echo " <img src='../images/icons/mail_echec.png' class='icone16' title=\"Échec de l'envoi du mail à ".$current_resp['email']."\" />";
+						}
+					}
+				}
+			}
+			else {
+				if((isset($current_resp['email']))&&(check_mail($current_resp['email']))) {
+					if(!in_array($current_resp['email'], $tab_deja)) {
+						$tab_deja[]=$current_resp['email'];
+						if(envoi_mail($sujet, $message, $current_resp['email'])) {
+							echo " <img src='../images/icons/mail_succes.png' class='icone16' title=\"Mail envoyé avec succès à ".$current_resp['email']."\" />";
+						}
+						else {
+							echo " <img src='../images/icons/mail_echec.png' class='icone16' title=\"Échec de l'envoi du mail à ".$current_resp['email']."\" />";
+						}
+					}
+					else {
+						echo " <span title='Adresse mail ".$current_resp['email']." déjà contactée'>déjà</span> - ";
+					}
+				}
+			}
+
+
+			echo "<br />";
+		}
+		echo '</p>';
+		ob_flush();
+		flush();
+	}
+}
 else {
 	echo "<p style='color:red'>Mode '$mode' inconnu.</p>";
 }
@@ -1139,7 +1354,7 @@ A FAIRE :
 // Pouvoir générer une fiche récapitulative: Intitulé de l'action, description, inscrits,...
 // Pouvoir effectuer les inscriptions dans la liste alphabétique de tous les élèves de l'établissement (avec des ancres sur l'initiale du nom)
 // Pouvoir pointer comme présent en même temps que l'on fait les inscriptions
-// Pouvoir envoyer des mails aux parents pour indiquer que l'appel a été fait
+// Pouvoir générer un trombi des présents
 </pre>
 <pre style='color:green'>
 FAIT :
@@ -1153,5 +1368,6 @@ FAIT :
 // Effectuer l'affichage parent/élève		FAIT
 // Pouvoir générer un trombi des inscrits	FAIT
 // Pouvoir faire les inscriptions par lots (formulaire) plutôt que élève par élève	FAIT
+// Pouvoir envoyer des mails aux parents pour indiquer que l'appel a été fait	FAIT
 </pre>";
 require("../lib/footer.inc.php");
