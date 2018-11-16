@@ -117,6 +117,60 @@ if(isset($id_action)) {
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
+//=================================================
+// Impression
+if((isset($id_action))&&(isset($mode))&&($mode=='print')) {
+	$actions_categories=get_tab_actions_categories($id_categorie);
+
+	$action=get_action($id_action);
+
+	//$titre_page='';
+	require_once("../lib/header.inc.php");
+
+	echo "<div style='border: 1px solid black; margin:1em; padding:0.5em;' class='fieldset_opacite50'>
+	<h1 style='text-align:center;'>".getSettingValue('gepiSchoolName')." (".getSettingValue('gepiYear').")</h1>
+	<h2 style='text-align:center;'>".$actions_categories['nom']."&nbsp;: ".$action['nom']."</h2>
+	<p class='bold'>".$action['nom']." du ".formate_date($action['date_action'], 'y2')."</p>
+	".($action['description']!='' ? "
+	<p class='fieldset_opacite50' style='margin:0.5em; padding:0.5em;'>".nl2br($action['description'])."</p>" : "");
+
+	if(count($action['presents'])>0) {
+		echo "
+	<p>Liste des (".count($action['presents']).") élèves présents&nbsp;:</p>
+	<ul>";
+		foreach($action['presents'] as $cpt_ele => $eleve) {
+			echo "
+		<li>".$eleve['nom']." ".$eleve['prenom']."</li>";
+		}
+		echo "
+	</ul>";
+	}
+	elseif(count($action['eleves'])>0) {
+		echo "
+	<p>Liste des (".count($action['eleves']).") élèves inscrits&nbsp;:</p>
+	<ul>";
+		foreach($action['eleves'] as $cpt_ele => $eleve) {
+			echo "
+		<li>".$eleve['nom']." ".$eleve['prenom']."</li>";
+		}
+		echo "
+	</ul>";
+	}
+	echo "
+</div>";
+
+/*
+			$sql="SELECT * FROM mod_actions_categories ORDER BY nom, description;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_assoc($res)) {
+*/
+
+	die();
+}
+//=================================================
+
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 if((isset($id_classe))&&(!preg_match('/^[0-9]{1,}$/', $id_classe))) {
 	$msg.="Identifiant de classe invalide&nbsp;: $id_classe<br />";
@@ -784,6 +838,7 @@ if(!isset($id_action)) {
 				<th>Date</th>
 				<th>Inscription</th>
 				<th>Présence</th>
+				<th>Imprimer</th>
 				<th>Supprimer</th>
 			</tr>
 		</thead>
@@ -805,6 +860,9 @@ if(!isset($id_action)) {
 				<td>
 			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=presence' title=\"Pointer les présents/absents\"><img src='../images/icons/absences_edit.png' class='icone16' /> 
 					".count($action['presents'])." présent(s)</a>
+				</td>
+				<td>
+					<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
 				</td>
 				<td>
 			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=suppr".add_token_in_url()."' onclick=\"return confirm('Êtes vous sûr de vouloir supprimer ce(tte) ".$terme_mod_action_nettoye."')\" title=\"Supprimer ce(tte) ".$terme_mod_action_nettoye."\"><img src='../images/delete16.png' class='icone16' /></a>
@@ -876,7 +934,10 @@ if($mode=='afficher') {
 	$heure_action=preg_replace('/:00$/', '', $tmp_tab[1]);
 
 	echo "<h2>".$action['nom']."</h2>
-	<h3>Consulter l'action&nbsp;:</h3>
+	<h3>
+		Consulter l'action&nbsp;: 
+		<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
+	</h3>
 	<form action='".$_SERVER['PHP_SELF']."' method='post'>
 		<fieldset class='fieldset_opacite50'>
 			".add_token_field()."
@@ -939,7 +1000,10 @@ elseif($mode=='inscriptions') {
 	$date_action=formate_date($tmp_tab[0]);
 	$heure_action=preg_replace('/:00$/', '', $tmp_tab[1]);
 
-	echo "<h2>".$action['nom']." du ".formate_date($date_action)." à ".$heure_action."</h2>
+	echo "<h2>
+		".$action['nom']." du ".formate_date($date_action)." à ".$heure_action." 
+		<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
+	</h2>
 	<h3>Effectuer les inscriptions&nbsp;:</h3>
 	<div style='float:left; min-width:25em; max-width:45em;'>
 		<table class='boireaus boireaus_alt'>
@@ -1234,7 +1298,10 @@ elseif($mode=='presence') {
 	$date_action=formate_date($tmp_tab[0]);
 	$heure_action=preg_replace('/:00$/', '', $tmp_tab[1]);
 
-	echo "<h2>".$action['nom']." du ".formate_date($date_action)." à ".$heure_action."</h2>
+	echo "<h2>
+		".$action['nom']." du ".formate_date($date_action)." à ".$heure_action." 
+		<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
+	</h2>
 	<h3>Pointer les présents&nbsp;:</h3>
 	<div style='float:left; min-width:25em; max-width:45em;'>
 		<table class='boireaus boireaus_alt'>
@@ -1480,7 +1547,6 @@ echo "
 <div style='clear:both'></div>
 <pre style='color:red'>
 A FAIRE :
-// Pouvoir générer une fiche récapitulative: Intitulé de l'action, description, inscrits,...
 // Pouvoir effectuer les inscriptions dans la liste alphabétique de tous les élèves de l'établissement (avec des ancres sur l'initiale du nom)
 // Pouvoir pointer comme présent en même temps que l'on fait les inscriptions
 </pre>
@@ -1499,5 +1565,6 @@ FAIT :
 // Pouvoir envoyer des mails aux parents pour indiquer que l'appel a été fait	FAIT
 // Parcourir les mod_actions_inscriptions_defaut_* dans setting et tester si la catégorie existe puis si l'action existe pour faire le ménage	FAIT
 // Pouvoir générer un trombi des présents
+// Pouvoir générer une fiche récapitulative: Intitulé de l'action, description, inscrits,...
 </pre>";
 require("../lib/footer.inc.php");

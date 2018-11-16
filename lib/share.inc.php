@@ -18281,4 +18281,42 @@ function check_date($date) {
 		}
 	}
 }
+
+
+function get_action($id_action) {
+	global $mysqli;
+
+	$action=array();
+
+	$sql="SELECT * FROM mod_actions_action WHERE id='".$id_action."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_assoc($res);
+
+		$action=$lig;
+		$action['eleves']=array();
+		$action['eleves_list']=array();
+		$action['presents']=array();
+
+		// Récupérer les inscrits?
+		$sql="SELECT e.nom, e.prenom, e.elenoet, mai.* FROM mod_actions_inscriptions mai, 
+									eleves e 
+								WHERE mai.id_action='".$lig['id']."' AND 
+									mai.login_ele=e.login 
+								ORDER BY e.nom, e.prenom;";
+		$res2=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res2)>0) {
+			while($lig2=mysqli_fetch_assoc($res2)) {
+				$action['eleves'][]=$lig2;
+				$action['eleves_list'][]=$lig2['login_ele'];
+				if($lig2['presence']=='y') {
+					$action['presents'][$lig2['login_ele']]=$lig2;
+				}
+			}
+		}
+	}
+
+	return $action;
+}
 ?>
