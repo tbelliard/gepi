@@ -131,6 +131,49 @@ if((isset($id_action_inscriptions))&&(!preg_match('/^[0-9]{1,}$/', $id_action_in
 
 // A ce stade, si un id_classe est choisi/correct, c'est forcément un nombre entier.
 
+function get_mod_actions_liste_inscriptions_par_defaut($id_categorie) {
+	global $mysqli;
+
+	$tab=array();
+	if(preg_match('/^[0-9]{1,}$/', $id_categorie)) {
+		$sql="SELECT * FROM setting WHERE NAME='mod_actions_inscriptions_defaut_".$id_categorie."';";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$id_action=$lig->VALUE;
+
+			$sql="SELECT * FROM mod_actions_inscriptions WHERE id_action='".$id_action."';";
+			$res2=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res2)>0) {
+				while($lig2=mysqli_fetch_object($res2)) {
+					$tab[]=$lig2->login_ele;
+				}
+			}
+		}
+	}
+	return $tab;
+}
+
+// Ménage :
+$sql="SELECT * FROM setting WHERE NAME LIKE 'mod_actions_inscriptions_defaut_%';";
+//echo "$sql<br />";
+$res=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res)>0) {
+	while($lig=mysqli_fetch_object($res)) {
+		$tmp_id_action=$lig->VALUE;
+
+		$sql="SELECT 1=1 FROM mod_actions_inscriptions WHERE id_action='".$tmp_id_action."';";
+		$res2=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res2)==0) {
+			$sql="DELETE FROM setting WHERE NAME='".$lig->NAME."';";
+			//echo "$sql<br />";
+			$del=mysqli_query($mysqli, $sql);
+		}
+	}
+}
+
+
 /*
 echo "id_action=$id_action<br />
 mode=$mode<br />";
@@ -204,7 +247,28 @@ if(isset($_POST['valider_ajout_action'])) {
 		}
 		else {
 			$id_action=mysqli_insert_id($mysqli);
-			$msg.="Action enregistrée (".strftime('%d/%m/%Y à %H:%M:%S').").<br />";
+
+			$complement_msg='';
+			if((isset($_POST['inscrire_eleves_liste_defaut']))&&($_POST['inscrire_eleves_liste_defaut']=='y')) {
+				$tab=get_mod_actions_liste_inscriptions_par_defaut($id_categorie);
+				$cpt_reg_ele=0;
+				foreach($tab as $cpt_ele => $login_ele) {
+					$sql="INSERT INTO mod_actions_inscriptions SET id_action='".$id_action."', login_ele='".$login_ele."';";
+					$insert=mysqli_query($mysqli, $sql);
+					if(!$insert) {
+						$msg.="Erreur lors de l'inscription de ".get_nom_prenom_eleve($login_ele)."&nbsp;:<br />".$sql."<br />";
+					}
+					else {
+						$cpt_reg_ele++;
+					}
+				}
+
+				if($cpt_reg_ele>0) {
+					$complement_msg=' ('.$cpt_reg_ele.' élève(s) inscrit(s))';
+				}
+			}
+
+			$msg.="Action enregistrée".$complement_msg." (".strftime('%d/%m/%Y à %H:%M:%S').").<br />";
 			$mode='afficher';
 		}
 	}
@@ -352,7 +416,39 @@ if((isset($id_action))&&(isset($mode))&&(($mode=='inscriptions')||($mode=='prese
 		}
 	}
 }
+//==============================================================================
+// Désinscription de tous
+if((isset($id_action))&&(isset($mode))&&(($mode=='inscriptions')||($mode=='presence'))&&(isset($_GET['vider_inscriptions']))&&(trim($_GET['vider_inscriptions'])=='y')) {
+	check_token();
 
+	$sql="SELECT 1=1 FROM mod_actions_inscriptions WHERE id_action='".$id_action."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)==0) {
+		$msg.="Aucun élève n'était inscrit.<br />";
+	}
+	else {
+		$sql="DELETE FROM mod_actions_inscriptions WHERE id_action='".$id_action."';";
+		$del=mysqli_query($mysqli, $sql);
+		if(!$del) {
+			$msg.="Erreur lors de la suppression des inscriptions&nbsp;:<br />".$sql."<br />";
+		}
+		else {
+			$msg.="Désinscriptions effectuées.<br />";
+		}
+	}
+}
+//==============================================================================
+// Définir la liste des inscriptions par défaut
+if((isset($id_action))&&(isset($mode))&&(($mode=='inscriptions')||($mode=='presence'))&&(isset($_GET['definir_inscriptions_defaut']))&&(trim($_GET['definir_inscriptions_defaut'])=='y')) {
+	check_token();
+
+	if(!saveSetting('mod_actions_inscriptions_defaut_'.$id_categorie, $id_action)) {
+		$msg.="Erreur lors de l'enregistrement de 'mod_actions_inscriptions_defaut' à la valeur ".$id_action."<br />";
+	}
+	else {
+		$msg.="Préférence enregistrée.<br />";
+	}
+}
 //==============================================================================
 // Inscription de tous les élèves d'une classe
 if((isset($id_action))&&(isset($mode))&&($mode=='inscriptions')&&(isset($id_classe))&&(isset($_GET['ajouter_toute_la_classe']))&&($_GET['ajouter_toute_la_classe']=='y')) {
@@ -590,6 +686,7 @@ if (!isset($id_categorie)) {
 //==============================================================================
 // Ajouter une action dans la catégorie
 if((isset($mode))&&($mode=='ajout_action')) {
+	$tab_inscriptions_defaut=get_mod_actions_liste_inscriptions_par_defaut($id_categorie);
 	echo "
 <!--
 	 | <a href=''></a>
@@ -605,37 +702,39 @@ if((isset($mode))&&($mode=='ajout_action')) {
 				<tr>
 					<th style='text-align:left; vertical-align:top;'>Nom&nbsp;: </th>
 					<td style='text-align:left;'>
-						<input type='text' name='nom_action' value=\"".(isset($nom_action) ? $nom_action : $categorie['nom'])."\" onfocus='this.select()' />
+						<input type='text' name='nom_action' value=\"".(isset($nom_action) ? $nom_action : $categorie['nom'])."\" onfocus='this.select()' onchange='changement();' />
 					</td>
 				</tr>
 				<tr>
 					<th style='text-align:left; vertical-align:top;'>Description&nbsp;: </th>
 					<td style='text-align:left;'>
-						<textarea name='description' cols='50' rows='4'>".(isset($description) ? trim($description) : '')."</textarea>
+						<textarea name='description' cols='50' rows='4' onchange='changement();'>".(isset($description) ? trim($description) : '')."</textarea>
 					</td>
 				</tr>
 				<tr>
 					<th style='text-align:left; vertical-align:top;'>Date&nbsp;: </th>
 					<td style='text-align:left;'>
-						<input type='text' name='date_action' id='date_action' value=\"".(isset($date_action) ? $date_action : strftime("%d/%m/%Y"))."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />
+						<input type='text' name='date_action' id='date_action' value=\"".(isset($date_action) ? $date_action : strftime("%d/%m/%Y"))."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" onchange='changement();' />
 						".img_calendrier_js("date_action", "img_bouton_date_action")."
 					</td>
 				</tr>
 				<tr>
 					<th style='text-align:left; vertical-align:top;'>Heure&nbsp;: </th>
 					<td style='text-align:left;'>
-						<input type='text' name = 'heure_action' id= 'heure_action' size='5' value = \"".(isset($heure_action) ? $heure_action : strftime("%H:%M"))."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />
+						<input type='text' name = 'heure_action' id= 'heure_action' size='5' value = \"".(isset($heure_action) ? $heure_action : strftime("%H:%M"))."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" onchange='changement();' />
 						<!--
 						".choix_heure('heure_action','div_choix_heure_action', 'return')."
 						-->
 					</td>
 				</tr>
 			</table>
+			".((count($tab_inscriptions_defaut)>0) ? "<input type='checkbox' name='inscrire_eleves_liste_defaut' id='inscrire_eleves_liste_defaut' value='y' onchange='changement(); checkbox_change(this.id);' /><label for='inscrire_eleves_liste_defaut' id='texte_inscrire_eleves_liste_defaut'> Inscrire les élèves de la liste par défaut <em>(".count($tab_inscriptions_defaut)." élèves)</em>.</label><br />" : "")."
 			<input type='hidden' name='id_categorie' value='".$id_categorie."' />
 			<input type='hidden' name='valider_ajout_action' value='y' />
 			<p><input type='submit' value='Valider' /></p>
 		</fieldset>
-	</form>";
+	</form>
+	".js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 	require("../lib/footer.inc.php");
 	die();
@@ -653,6 +752,8 @@ if(!isset($id_action)) {
 			$tab_actions[$lig['id']]=$lig;
 
 			// Récupérer les inscrits?
+			$tab_actions[$lig['id']]['eleves']=array();
+			$tab_actions[$lig['id']]['presents']=array();
 			$sql="SELECT e.nom, e.prenom, mai.* FROM mod_actions_inscriptions mai, 
 										eleves e 
 									WHERE mai.id_action='".$lig['id']."' AND 
@@ -662,13 +763,16 @@ if(!isset($id_action)) {
 			if(mysqli_num_rows($res2)>0) {
 				while($lig2=mysqli_fetch_assoc($res2)) {
 					$tab_actions[$lig['id']]['eleves']=$lig2;
+					if($lig2['presence']=='y') {
+						$tab_actions[$lig['id']]['presents'][]=$lig2['login_ele'];
+					}
 				}
 			}
 		}
 	}
 
 	echo "<h2>".$categorie['nom']."</h2>
-	<p>Choisissez&nbsp;: <a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&mode=ajout_action'><img src='../images/icons/add.png' class='icone16' title='Ajouter une action' /></a></p>";
+	<p>Choisissez&nbsp;: <a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&mode=ajout_action'><img src='../images/icons/add.png' class='icone16' title='Ajouter une action' /> Ajouter une action</a></p>";
 	if(count($tab_actions)>0) {
 		echo "
 	<table class='boireaus boireaus_alt resizable sortable'>
@@ -695,10 +799,12 @@ if(!isset($id_action)) {
 					".formate_date($action['date_action'], 'y')."
 				</td>
 				<td>
-			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=inscriptions' title=\"Consulter/effectuer les inscriptions\"><img src='../images/icons/add_user.png' class='icone16' /></a><br />
+					<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=inscriptions' title=\"Consulter/effectuer les inscriptions\"><img src='../images/icons/add_user.png' class='icone16' /> 
+					".count($action['eleves'])." inscrit(s)</a>
 				</td>
 				<td>
-			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=presence' title=\"Pointer les présents/absents\"><img src='../images/icons/absences_edit.png' class='icone16' /></a><br />
+			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=presence' title=\"Pointer les présents/absents\"><img src='../images/icons/absences_edit.png' class='icone16' /> 
+					".count($action['presents'])." présent(s)</a>
 				</td>
 				<td>
 			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=suppr".add_token_in_url()."' onclick=\"return confirm('Êtes vous sûr de vouloir supprimer ce(tte) ".$terme_mod_action_nettoye."')\" title=\"Supprimer ce(tte) ".$terme_mod_action_nettoye."\"><img src='../images/delete16.png' class='icone16' /></a>
@@ -814,7 +920,8 @@ if($mode=='afficher') {
 					<th>Présence/absence</th>
 					<td style='text-align:left;'>
 						<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=presence' title=\"Pointer les présents/absents\"><img src='../images/icons/absences_edit.png' class='icone16' /> 
-						".count($action['presents'])." élève(s) pointé(s) présent(s).</a>
+						".count($action['presents'])." élève(s) pointé(s) présent(s)</a>
+						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")."
 					</td>
 				</tr>
 			</table>
@@ -849,7 +956,20 @@ elseif($mode=='inscriptions') {
 				<td style='text-align:left;'>".$date_action." à ".$heure_action."</td>
 			</tr>
 			<tr>
-				<th style='text-align:left; vertical-align:top;'>Élèves inscrits&nbsp;: </th>
+				<th style='text-align:left; vertical-align:top;'>Élèves inscrits&nbsp;: ";
+	if(count($action['eleves_list'])>0) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode".(isset($id_classe) ? "&amp;id_classe=".$id_classe : '')."&amp;vider_inscriptions=y".add_token_in_url()."' onclick=\"return confirm('Êtes-vous sûr de vouloir vider toutes les inscriptions de cette ".$terme_mod_action_nettoye."?');\">
+							<img src=\"../images/icons/delete.png\" title=\"Supprimer/vider toutes les inscriptions\" alt=\"Supprimer\" />
+						</a>";
+
+		echo "
+					<div style='text-align:center; padding:2em;'>
+						<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode".(isset($id_classe) ? "&amp;id_classe=".$id_classe : '')."&amp;definir_inscriptions_defaut=y".add_token_in_url()."' title=\"Définir cette liste d'élèves comme liste par défaut pour les futures ".$terme_mod_action_nettoye."s.\">
+							<img src='../images/icons/wizard.png' class='icone16' alt='Par défaut' />
+						</a>
+					</div>";
+	}
+	echo "</th>
 				<td style='text-align:left;'>
 					<p>".count($action['eleves_list'])." élève(s)
 					".((getSettingAOui('active_module_trombinoscopes') && count($action['eleves_list'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."' target='_blank' title=\"Générer un trombinoscope PDF.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")."
@@ -873,7 +993,9 @@ elseif($mode=='inscriptions') {
 					<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=presence' title=\"Pointer les présents/absents\"><img src='../images/icons/absences_edit.png' class='icone16' /> Pointer les présences/absences</a>";
 					if(count($action['presents'])>0) {
 						echo "<br />
-						".count($action['presents'])." élève(s) pointé(s) présent(s)&nbsp;:<br />";
+						".count($action['presents'])." élève(s) pointé(s) présent(s)&nbsp;:
+						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")."
+						<br />";
 						foreach($action['presents'] as $login_ele => $current_ele) {
 							echo "
 							<span onmouseover=\"affiche_photo_courante('".nom_photo($current_ele['elenoet'])."')\" onmouseout=\"vide_photo_courante();\">
@@ -921,6 +1043,7 @@ elseif($mode=='inscriptions') {
 	echo "
 	</div>";
 
+	$cpt_ele=0;
 	if (isset($id_classe)) {
 		echo "
 	<div style='float:left; width:20em;'>
@@ -946,7 +1069,7 @@ elseif($mode=='inscriptions') {
 							jec.login = e.login 
 						ORDER BY nom, prenom";
 				$req_ele = mysqli_query($GLOBALS["mysqli"], $sql) OR die('Erreur dans la requête '.$req_ele.' : '.mysqli_error($GLOBALS["mysqli"]));
-				$cpt_ele=0;
+				//$cpt_ele=0;
 				while($lig_ele=mysqli_fetch_object($req_ele)) {
 					if(in_array($lig_ele->login, $action['eleves_list'])) {
 						echo "
@@ -964,7 +1087,7 @@ elseif($mode=='inscriptions') {
 							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$lig_ele->nom." ".$lig_ele->prenom."
 							</a>
 							-->
-							<input type='checkbox' name='tab_login_ele[]' id='tab_login_ele_".$cpt_ele."' value=\"".$lig_ele->login."\" /><label for='tab_login_ele_".$cpt_ele."' id='texte_tab_login_ele_".$cpt_ele."'> ".$lig_ele->nom." ".$lig_ele->prenom."</label>
+							<input type='checkbox' name='tab_login_ele[]' id='tab_login_ele_".$cpt_ele."' value=\"".$lig_ele->login."\" onchange=\"changement(); checkbox_change(this.id);\" /><label for='tab_login_ele_".$cpt_ele."' id='texte_tab_login_ele_".$cpt_ele."'> ".$lig_ele->nom." ".$lig_ele->prenom."</label>
 						</td>
 					</tr>";
 					}
@@ -978,6 +1101,7 @@ elseif($mode=='inscriptions') {
 				<input type='hidden' name='mode' value='$mode' />
 				<p><a href=\"javascript:tout_cocher()\">Tout cocher</a> / <a href=\"javascript:tout_decocher()\">Tout décocher</a></p>
 				<p><input type='submit' value='Valider' /></p>
+				<div id='fixe'><input type='submit' value='Valider' /></div>
 			</fieldset>
 		</form>
 	</div>";
@@ -1017,7 +1141,7 @@ elseif($mode=='inscriptions') {
 							mai.login_ele = e.login 
 						ORDER BY nom, prenom";
 				$req_ele = mysqli_query($GLOBALS["mysqli"], $sql) OR die('Erreur dans la requête '.$req_ele.' : '.mysqli_error($GLOBALS["mysqli"]));
-				$cpt_ele=0;
+				//$cpt_ele=0;
 				while($lig_ele=mysqli_fetch_object($req_ele)) {
 					if(in_array($lig_ele->login, $action['eleves_list'])) {
 						echo "
@@ -1035,7 +1159,7 @@ elseif($mode=='inscriptions') {
 							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$lig_ele->nom." ".$lig_ele->prenom."
 							</a>
 							-->
-							<input type='checkbox' name='tab_login_ele[]' id='tab_login_ele_".$cpt_ele."' value=\"".$lig_ele->login."\" /><label for='tab_login_ele_".$cpt_ele."' id='texte_tab_login_ele_".$cpt_ele."'> ".$lig_ele->nom." ".$lig_ele->prenom."</label>
+							<input type='checkbox' name='tab_login_ele[]' id='tab_login_ele_".$cpt_ele."' value=\"".$lig_ele->login."\" onchange=\"changement(); checkbox_change(this.id);\" /><label for='tab_login_ele_".$cpt_ele."' id='texte_tab_login_ele_".$cpt_ele."'> ".$lig_ele->nom." ".$lig_ele->prenom."</label>
 						</td>
 					</tr>";
 					}
@@ -1049,6 +1173,7 @@ elseif($mode=='inscriptions') {
 				<input type='hidden' name='mode' value='$mode' />
 				<p><a href=\"javascript:tout_cocher()\">Tout cocher</a> / <a href=\"javascript:tout_decocher()\">Tout décocher</a></p>
 				<p><input type='submit' value='Valider' /></p>
+				<div id='fixe'><input type='submit' value='Valider' /></div>
 			</fieldset>
 		</form>";
 		}
@@ -1155,11 +1280,14 @@ elseif($mode=='presence') {
 				<td style='text-align:left;'>";
 	if(count($action['eleves'])>0) {
 		echo "
-					<div style='float:right; width:16px;' title=\"Notifier les familles par mail de la présence de leur enfant sur ce(tte) ".$terme_mod_action_nettoye."\">
+					<div style='float:right; width:16px; margin:0.3em;' title=\"Notifier les familles par mail de la présence de leur enfant sur ce(tte) ".$terme_mod_action_nettoye."\">
 						<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;mode=mail_presence' target='_blank'>
 							<img src='../images/icons/mail.png' class='icone16' />
 						</a>
-					</div>";
+					</div>
+					<div style='float:right; width:16px; margin:0.3em;' title=\"Générer un trombinoscope des présents sur ce(tte) ".$terme_mod_action_nettoye."\">
+						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>
+					</div>" : "");
 	}
 	foreach($action['presents'] as $login_ele => $current_ele) {
 		echo "
@@ -1202,6 +1330,7 @@ elseif($mode=='presence') {
 				<input type='hidden' name='mode' value='$mode' />
 				<p><a href=\"javascript:tout_cocher()\">Tout cocher</a> / <a href=\"javascript:tout_decocher()\">Tout décocher</a></p>
 				<p><input type='submit' value='Valider' /></p>
+				<div id='fixe'><input type='submit' value='Valider' /></div>
 			</fieldset>
 		</form>
 	</div>
@@ -1354,7 +1483,6 @@ A FAIRE :
 // Pouvoir générer une fiche récapitulative: Intitulé de l'action, description, inscrits,...
 // Pouvoir effectuer les inscriptions dans la liste alphabétique de tous les élèves de l'établissement (avec des ancres sur l'initiale du nom)
 // Pouvoir pointer comme présent en même temps que l'on fait les inscriptions
-// Pouvoir générer un trombi des présents
 </pre>
 <pre style='color:green'>
 FAIT :
@@ -1369,5 +1497,7 @@ FAIT :
 // Pouvoir générer un trombi des inscrits	FAIT
 // Pouvoir faire les inscriptions par lots (formulaire) plutôt que élève par élève	FAIT
 // Pouvoir envoyer des mails aux parents pour indiquer que l'appel a été fait	FAIT
+// Parcourir les mod_actions_inscriptions_defaut_* dans setting et tester si la catégorie existe puis si l'action existe pour faire le ménage	FAIT
+// Pouvoir générer un trombi des présents
 </pre>";
 require("../lib/footer.inc.php");
