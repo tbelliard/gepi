@@ -83,6 +83,7 @@ else { if (isset($_GET['affdiscipline'])) { $affdiscipline = $_GET['affdisciplin
 
 // 20181102
 $id_action = isset($_POST['id_action']) ? $_POST['id_action'] : ( isset($_GET['id_action']) ? $_GET['id_action'] : '' );
+$presents_action = isset($_POST['presents_action']) ? $_POST['presents_action'] : ( isset($_GET['presents_action']) ? $_GET['presents_action'] : 'n' );
 
 if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $aid != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' or $id_action!='') ) {
 	// on regarde ce qui a été choisi
@@ -130,12 +131,13 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	// 20181102
 	if ( $action_affiche === 'action' ) { 
-		$entete = $donnees_qui['nom_categorie'].' : '.$donnees_qui['nom_action']." (".formate_date($donnees_qui['date_action'], 'y').")";
+		$entete = $donnees_qui['nom_categorie'].' : '.$donnees_qui['nom_action'].(($presents_action=='y' ? '(présents)' : ''))." (".formate_date($donnees_qui['date_action'], 'y').")";
 		$repertoire='eleves';
 		$requete_trombi = "SELECT e.login, e.nom, e.prenom, e.elenoet 
 						FROM ".$prefix_base."eleves e, ".$prefix_base."mod_actions_inscriptions mai 
 						WHERE e.login = mai.login_ele
-						AND mai.id_action = '".$id_action."' 
+						AND mai.id_action = '".$id_action."' ".(($presents_action=='y' ? "
+						AND mai.presence='y' " : ''))."
 						ORDER BY nom, prenom"; 
 	}
 
