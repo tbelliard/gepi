@@ -329,7 +329,7 @@ if($_SESSION['statut']=='professeur') {
 							echo " 
 					(
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=dareic' target='_blank' title=\"Export des informations élève au format CSV DAREIC.\">DAREIC</a> - 
-						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\">Ariane</a> - 
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\n\nIl se peut qu'il faille réenregistrer le fichier au format XLS pour qu'il soit accepté par le site sur lequel vous êtes appelé à fournir le fichier.\">Ariane</a> - 
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>
 					)";
 							$cpt++;
@@ -693,7 +693,7 @@ if(mysqli_num_rows($res_aid_config)>0) {
 						echo " 
 					(
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=dareic' target='_blank' title=\"Export des informations élève au format CSV DAREIC.\">DAREIC</a> - 
-						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\">Ariane</a> - 
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\n\nIl se peut qu'il faille réenregistrer le fichier au format XLS pour qu'il soit accepté par le site sur lequel vous êtes appelé à fournir le fichier.\"\">Ariane</a> - 
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>
 					)";
 						$cpt++;

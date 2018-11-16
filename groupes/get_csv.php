@@ -128,8 +128,10 @@ $fd = '';
 
 //==============================================================================
 if((isset($_GET['type_export']))&&($_GET['type_export']=="ariane")&&(isset($tab_aid))) {
+	$fd.=";;;;;NOM DU PROJET;".$tab_aid['nom_aid'].";;;;\n";
+	$fd.=";;;;;LISTE DES PARTICIPANTS;;;;;\n";
+	$fd.=";;;;;;;;;;\n";
 	$fd.="Classe;Nom de famille;Prénom;Date de naissance;Lieu naissance;Nom Responsable légal 1;Prénom responsable légal 1;Adresse;CP;Commune;Tel portable resp. légal 1\n";
-
 	/*
 	echo "<pre>";
 	print_r($tab_aid);
