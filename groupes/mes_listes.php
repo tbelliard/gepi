@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -327,8 +327,11 @@ if($_SESSION['statut']=='professeur') {
 							echo "<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' target='_blank'>Période $i</a>\n";
 							// Faut-il limiter l'accès?
 							echo " 
-					(<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\">Ariane</a> - 
-					<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>)";
+					(
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=dareic' target='_blank' title=\"Export des informations élève au format CSV DAREIC.\">DAREIC</a> - 
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\">Ariane</a> - 
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>
+					)";
 							$cpt++;
 						}
 					}
@@ -688,8 +691,11 @@ if(mysqli_num_rows($res_aid_config)>0) {
 						echo "<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' title=\"Listing des élèves en période $i\" target='_blank'>Période $i</a>\n";
 						// Faut-il limiter l'accès?
 						echo " 
-					(<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\">Ariane</a> - 
-					<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>)";
+					(
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=dareic' target='_blank' title=\"Export des informations élève au format CSV DAREIC.\">DAREIC</a> - 
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\">Ariane</a> - 
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>
+					)";
 						$cpt++;
 					}
 				}

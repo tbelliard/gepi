@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -284,6 +284,29 @@ elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdier")&&(isset(
 			//$ligne=preg_replace('/;$/','',$ligne);
 
 			$fd.=$ligne."\n";
+		}
+	}
+
+	echo echo_csv_encoded($fd);
+	die();
+}
+elseif((isset($_GET['type_export']))&&($_GET['type_export']=="dareic")&&(isset($tab_aid))) {
+	$fd.="N°;Titre de civilité;Prénom;Nom;Date de naissance;\n";
+
+	if(isset($tab_aid["eleves"][$periode_num]["users"])) {
+		$cpt_ele=1;
+		foreach($tab_aid["eleves"][$periode_num]["users"] as $current_eleve) {
+			$eleve_login = $current_eleve["login"];
+			$eleve_nom = $current_eleve["nom"];
+			$eleve_prenom = $current_eleve["prenom"];
+			$eleve_sexe = $current_eleve["sexe"];
+			$eleve_naissance = formate_date($current_eleve["naissance"]);
+			$eleve_civilite = (($current_eleve["sexe"]=='F' || $current_eleve["sexe"]=='f') ? 'Mlle' : 'M');
+
+			$ligne=$cpt_ele.';'.$eleve_civilite.';'.$eleve_prenom.";".$eleve_nom.";".$eleve_naissance;
+
+			$fd.=$ligne."\n";
+			$cpt_ele++;
 		}
 	}
 
