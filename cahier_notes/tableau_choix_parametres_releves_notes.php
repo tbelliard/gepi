@@ -139,7 +139,9 @@
 					if(mysqli_num_rows($res_class_tmp)>0){
 						$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
 
-						if($lig_class_tmp->$tab_item[$k]=="y") {echo "checked ='checked' ";}
+						$current_item=$tab_item[$k];
+						//if($lig_class_tmp->$tab_item[$k]=="y") {echo "checked ='checked' ";}
+						if($lig_class_tmp->$current_item=="y") {echo "checked ='checked' ";}
 						//$tmp_champ=$tab_item[$k];
 						//if($lig_class_tmp->$tmp_champ=="y") {echo "checked ='checked' ";}
 					}
