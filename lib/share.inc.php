@@ -10430,7 +10430,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 
 	$retour="";
 
-	if(count($tab_salle)==0) {
+	if((!isset($tab_salle))||(!is_array($tab_salle))||(count($tab_salle)==0)) {
 		$tab_salle=get_tab_salle_cours();
 	}
 
