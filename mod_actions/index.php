@@ -183,6 +183,8 @@ if((isset($id_action_inscriptions))&&(!preg_match('/^[0-9]{1,}$/', $id_action_in
 	unset($id_action_inscriptions);
 }
 
+$afficher_tous=isset($_POST['afficher_tous']) ? $_POST['afficher_tous'] : (isset($_GET['afficher_tous']) ? $_GET['afficher_tous'] : NULL);
+
 // A ce stade, si un id_classe est choisi/correct, c'est forcément un nombre entier.
 
 function get_mod_actions_liste_inscriptions_par_defaut($id_categorie) {
@@ -788,7 +790,15 @@ if((isset($mode))&&($mode=='ajout_action')) {
 			<p><input type='submit' value='Valider' /></p>
 		</fieldset>
 	</form>
-	".js_checkbox_change_style('checkbox_change', 'texte_', 'y');
+
+	<script type='text/javascript'>
+		".js_checkbox_change_style()."
+
+		if(document.getElementById('inscrire_eleves_liste_defaut')) {
+			document.getElementById('inscrire_eleves_liste_defaut').checked=true;
+			checkbox_change('inscrire_eleves_liste_defaut');
+		}
+	</script>";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -816,7 +826,7 @@ if(!isset($id_action)) {
 			$res2=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($res2)>0) {
 				while($lig2=mysqli_fetch_assoc($res2)) {
-					$tab_actions[$lig['id']]['eleves']=$lig2;
+					$tab_actions[$lig['id']]['eleves'][]=$lig2;
 					if($lig2['presence']=='y') {
 						$tab_actions[$lig['id']]['presents'][]=$lig2['login_ele'];
 					}
@@ -868,6 +878,12 @@ if(!isset($id_action)) {
 			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=suppr".add_token_in_url()."' onclick=\"return confirm('Êtes vous sûr de vouloir supprimer ce(tte) ".$terme_mod_action_nettoye."')\" title=\"Supprimer ce(tte) ".$terme_mod_action_nettoye."\"><img src='../images/delete16.png' class='icone16' /></a>
 				</td>
 			</tr>";
+			/*
+					<pre>";
+					print_r($action);
+					echo "
+					</pre>
+			*/
 		}
 		echo "
 	</table>";
@@ -1027,9 +1043,10 @@ elseif($mode=='inscriptions') {
 						</a>";
 
 		echo "
-					<div style='text-align:center; padding:2em;'>
+					<div style='text-align:center; padding:2em; font-weight: normal;'>
 						<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode".(isset($id_classe) ? "&amp;id_classe=".$id_classe : '')."&amp;definir_inscriptions_defaut=y".add_token_in_url()."' title=\"Définir cette liste d'élèves comme liste par défaut pour les futures ".$terme_mod_action_nettoye."s.\">
-							<img src='../images/icons/wizard.png' class='icone16' alt='Par défaut' />
+							<img src='../images/icons/wizard.png' class='icone16' alt='Par défaut' /> Définir<br />cette liste<br />comme liste<br />
+							par défaut
 						</a>
 					</div>";
 	}
@@ -1074,6 +1091,8 @@ elseif($mode=='inscriptions') {
 	</div>
 
 	<div style='float:left; width:10em;'>
+		<p><a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;afficher_tous=y\">Afficher tous les élèves par ordre alphabétique</a><br />
+		ou choisir ci-dessous&nbsp;:</p>
 		<p class=\"bold\">Liste des classes</p>
 		<table>";
 	$sql="SELECT id, classe FROM classes ORDER BY classe";
@@ -1108,7 +1127,61 @@ elseif($mode=='inscriptions') {
 	</div>";
 
 	$cpt_ele=0;
-	if (isset($id_classe)) {
+	if(isset($afficher_tous)) {
+		echo "
+	<div style='float:left; width:20em;'>
+		<form action='".$_SERVER['PHP_SELF']."#pointer_presence' method='post' style='text-align:left;'>
+			<fieldset class='fieldset_opacite50'>
+				".add_token_field()."
+				<p class=\"red\">Tous les élèves&nbsp;:</p>
+				<table class=\"aid_tableau\" summary=\"Liste des élèves\">
+					<tr>
+						<td>Liste des élèves</td>
+					</tr>";
+
+				$sql="SELECT DISTINCT e.login, e.id_eleve, nom, prenom, elenoet, sexe 
+						FROM j_eleves_classes jec, eleves e 
+						WHERE jec.login = e.login 
+						ORDER BY nom, prenom";
+				$req_ele = mysqli_query($GLOBALS["mysqli"], $sql) OR die('Erreur dans la requête '.$req_ele.' : '.mysqli_error($GLOBALS["mysqli"]));
+				//$cpt_ele=0;
+				while($lig_ele=mysqli_fetch_object($req_ele)) {
+					if(in_array($lig_ele->login, $action['eleves_list'])) {
+						echo "
+					<tr class=\"aid_ligneimpaire\">
+						<td>
+						</td>
+					</tr>";
+					}
+					else {
+						echo "
+					<tr class=\"aid_lignepaire\">
+						<td onmouseover=\"affiche_photo_courante('".nom_photo($lig_ele->elenoet)."')\" onmouseout=\"vide_photo_courante();\">
+							<!--
+							<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_classe=".$id_classe."&amp;login_ele=".$lig_ele->login.add_token_in_url()."\">
+							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$lig_ele->nom." ".$lig_ele->prenom."
+							</a>
+							-->
+							<input type='checkbox' name='tab_login_ele[]' id='tab_login_ele_".$cpt_ele."' value=\"".$lig_ele->login."\" onchange=\"changement(); checkbox_change(this.id);\" /><label for='tab_login_ele_".$cpt_ele."' id='texte_tab_login_ele_".$cpt_ele."'> ".$lig_ele->nom." ".$lig_ele->prenom."</label>
+						</td>
+					</tr>";
+					}
+					$cpt_ele++;
+				}
+				echo "
+				</table>
+				<input type='hidden' name='afficher_tous' value='y' />
+				<input type='hidden' name='id_categorie' value='$id_categorie' />
+				<input type='hidden' name='id_action' value='$id_action' />
+				<input type='hidden' name='mode' value='$mode' />
+				<p><a href=\"javascript:tout_cocher()\">Tout cocher</a> / <a href=\"javascript:tout_decocher()\">Tout décocher</a></p>
+				<p><input type='submit' value='Valider' /></p>
+				<div id='fixe'><input type='submit' value='Valider' /></div>
+			</fieldset>
+		</form>
+	</div>";
+	}
+	elseif (isset($id_classe)) {
 		echo "
 	<div style='float:left; width:20em;'>
 		<form action='".$_SERVER['PHP_SELF']."#pointer_presence' method='post' style='text-align:left;'>
@@ -1170,8 +1243,7 @@ elseif($mode=='inscriptions') {
 		</form>
 	</div>";
 	}
-
-	if (isset($id_action_inscriptions)) {
+	elseif (isset($id_action_inscriptions)) {
 		echo "
 	<div style='float:left; width:20em;'>";
 		$sql="SELECT * FROM mod_actions_action WHERE id='".$id_action_inscriptions."';";
@@ -1219,7 +1291,7 @@ elseif($mode=='inscriptions') {
 					<tr class=\"aid_lignepaire\">
 						<td onmouseover=\"affiche_photo_courante('".nom_photo($lig_ele->elenoet)."')\" onmouseout=\"vide_photo_courante();\">
 							<!--
-							<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_classe=".$id_classe."&amp;login_ele=".$lig_ele->login.add_token_in_url()."\">
+							<a href=\"".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&amp;id_action=".$id_action."&amp;mode=$mode&amp;id_action_inscriptions=".$id_action_inscriptions."&amp;login_ele=".$lig_ele->login.add_token_in_url()."\">
 							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$lig_ele->nom." ".$lig_ele->prenom."
 							</a>
 							-->
