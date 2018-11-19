@@ -400,7 +400,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 /**
  * @todo  Pour $mode==1, il faudrait faire la liste de tous les devoirs situés dans le conteneur et les sous-conteneurs triés par date et parcourir ces devoirs plus haut au lieu de faire une boucle sur la liste des sous-conteneurs
  */
-        if ($exist_dev_fac == 'yes') {
+        if (($exist_dev_fac == 'yes')&&(isset($points))&&(is_array($points))) {
 			fdebug("\$exist_dev_fac=".$exist_dev_fac."\n");
 			
 			$m=0;

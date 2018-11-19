@@ -3506,7 +3506,7 @@ function debug_var() {
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 	echo "<p>Variables envoyées en POST: ";
-	if(count($_POST)==0) {
+	if((!isset($_POST))||(count($_POST)==0)) {
 		echo "aucune";
 	}
 	else {
@@ -3596,7 +3596,7 @@ function debug_var() {
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 	echo "<p>Variables envoyées en GET: ";
-	if(count($_GET)==0) {
+	if((!isset($_GET))||(count($_GET)==0)) {
 		echo "aucune";
 	}
 	else {
@@ -3672,7 +3672,7 @@ function debug_var() {
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 	echo "<p>Variables envoyées en SESSION: ";
-	if(count($_SESSION)==0) {
+	if((!isset($_SESSION))||(count($_SESSION)==0)) {
 		echo "aucune";
 	}
 	else {
@@ -3708,7 +3708,7 @@ function debug_var() {
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 	echo "<p>Variables envoyées en SERVER: ";
-	if(count($_SERVER)==0) {
+	if((!isset($_SERVER))||(count($_SERVER)==0)) {
 		echo "aucune";
 	}
 	else {
@@ -3768,7 +3768,7 @@ function debug_var() {
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
 	echo "<p>Variables COOKIES: ";
-	if(count($_COOKIE)==0) {
+	if((!isset($_COOKIE))||(count($_COOKIE)==0)) {
 		echo "aucune";
 	}
 	else {
@@ -5986,27 +5986,27 @@ function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
 	else {
 		$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$id_groupe."' AND periode='".$periode_num."';";
 	}
-        $test = mysqli_query($mysqli, $sql);
-        $nb_saisies_bulletin = $test->num_rows;
-		$test->close();
-        $tab_champs=array('eleves');
-        $current_group=get_group($id_groupe, $tab_champs);
-        $effectif_groupe=count($current_group["eleves"][$periode_num]["users"]);
-        if($mode=="couleur") {
-            if($nb_saisies_bulletin==$effectif_groupe){
-                $retour="<span style='font-size: x-small;' title='Saisies complètes'>";
-                $retour.="($nb_saisies_bulletin/$effectif_groupe)";
-                $retour.="</span>";
-            }
-            else {
-                $retour="<span style='font-size: x-small; background-color: orangered;' title='Saisies incomplètes ou non encore effectuées'>";
-                $retour.="($nb_saisies_bulletin/$effectif_groupe)";
-                $retour.="</span>";
-            }
-        }
-        else {
-            $retour="($nb_saisies_bulletin/$effectif_groupe)";
-        }
+	$test = mysqli_query($mysqli, $sql);
+	$nb_saisies_bulletin = $test->num_rows;
+	$test->close();
+	$tab_champs=array('eleves');
+	$current_group=get_group($id_groupe, $tab_champs);
+	$effectif_groupe=count($current_group["eleves"][$periode_num]["users"]);
+	if($mode=="couleur") {
+		if($nb_saisies_bulletin==$effectif_groupe){
+			$retour="<span style='font-size: x-small;' title='Saisies complètes'>";
+			$retour.="($nb_saisies_bulletin/$effectif_groupe)";
+			$retour.="</span>";
+		}
+		else {
+			$retour="<span style='font-size: x-small; background-color: orangered;' title='Saisies incomplètes ou non encore effectuées'>";
+			$retour.="($nb_saisies_bulletin/$effectif_groupe)";
+			$retour.="</span>";
+		}
+	}
+	else {
+		$retour="($nb_saisies_bulletin/$effectif_groupe)";
+	}
 
 	return $retour;
 }
@@ -12110,7 +12110,7 @@ function tableau_des_avertissements_de_fin_de_periode_eleve($login_ele) {
 	global $tab_type_avertissement_fin_periode;
 	global $mod_disc_terme_avertissement_fin_periode;
 
-	if(count($tab_type_avertissement_fin_periode)==0) {
+	if((!isset($tab_type_avertissement_fin_periode))||(!is_array($tab_type_avertissement_fin_periode))||(count($tab_type_avertissement_fin_periode)==0)) {
 		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
 	}
 
@@ -16378,7 +16378,7 @@ function acces_trombinoscope() {
 function calcule_cycle_et_niveau($mef_code_ele, $valeur_par_defaut_cycle="", $valeur_par_defaut_niveau="") {
 	global $tab_mef;
 
-	if((!is_array($tab_mef))||(count($tab_mef)==0)) {
+	if((!isset($tab_mef))||(!is_array($tab_mef))||(count($tab_mef)==0)) {
 		$tab_mef=get_tab_mef();
 		/*
 		echo "<pre>";
@@ -17248,7 +17248,7 @@ function get_tab_mef_avec_affichage_orientation() {
 function liste_designations_courtes_mef_avec_affichage_orientation() {
 	global $mysqli;
 	global $tab_mef_af;
-	if(count($tab_mef_af)==0) {
+	if((!isset($tab_mef_af))||(!is_array($tab_mef_af))||(count($tab_mef_af)==0)) {
 		$tab_mef_af=get_tab_mef_avec_affichage_orientation();
 	}
 

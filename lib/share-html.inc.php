@@ -2008,7 +2008,7 @@ function champs_radio_choix_format_login($nom_champ, $default_login_gen_type="na
 
 	$retour="";
 
-	for($i=0;$i<count($type_login);$i++) {
+	for($i=0;$i<count($tableau_type_login);$i++) {
 		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_".$tableau_type_login[$i]."' value='".$tableau_type_login[$i]."' ";
 		if($default_login_gen_type==$tableau_type_login[$i]) {
 			$retour.="checked='checked' ";
@@ -3832,17 +3832,21 @@ function affiche_edt_en_infobulle() {
 }
 
 
-function liens_user($page_lien, $nom_var_login, $tab_statuts, $autres_parametres_lien="") {
+function liens_user($page_lien, $nom_var_login, $tab_statuts=array(), $autres_parametres_lien="") {
 	$retour="";
 
-	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
-	for($loop=0;$loop<count($tab_statuts);$loop++) {
-		if($loop>0) {
-			$sql.=" OR ";
+	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE ";
+	if(count($tab_statuts)>0) {
+		$sql.="(";
+		for($loop=0;$loop<count($tab_statuts);$loop++) {
+			if($loop>0) {
+				$sql.=" OR ";
+			}
+			$sql.="statut='".$tab_statuts[$loop]."'";
 		}
-		$sql.="statut='".$tab_statuts[$loop]."'";
+		$sql.=") AND ";
 	}
-	$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
+	$sql.="etat='actif' ORDER BY statut, nom, prenom, login;";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
@@ -3881,14 +3885,18 @@ function liens_user($page_lien, $nom_var_login, $tab_statuts, $autres_parametres
 function liste_radio_utilisateurs($tab_statuts, $login_user_preselectionne="", $nom_champ='login_user', $nom_js_func_radio_change='radio_change_style') {
 	$retour="";
 
-	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
-	for($loop=0;$loop<count($tab_statuts);$loop++) {
-		if($loop>0) {
-			$sql.=" OR ";
+	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE ";
+	if(count($tab_statuts)>0) {
+		$sql.="(";
+		for($loop=0;$loop<count($tab_statuts);$loop++) {
+			if($loop>0) {
+				$sql.=" OR ";
+			}
+			$sql.="statut='".$tab_statuts[$loop]."'";
 		}
-		$sql.="statut='".$tab_statuts[$loop]."'";
+		$sql.=") AND ";
 	}
-	$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
+	$sql.="etat='actif' ORDER BY statut, nom, prenom, login;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$nombreligne=mysqli_num_rows($res);
@@ -4059,7 +4067,7 @@ function teste_lapsus($chaine) {
 
 	$chaine_retour="";
 
-	if(count($tab_lapsus_et_correction)>0) {
+	if((isset($tab_lapsus_et_correction))&&(is_array($tab_lapsus_et_correction))&&(count($tab_lapsus_et_correction)>0)) {
 		$tab_voc=$tab_lapsus_et_correction['lapsus'];
 		$tab_voc_corrige=$tab_lapsus_et_correction['correction'];
 
@@ -4407,7 +4415,7 @@ function retourne_tab_html_pointages_disc($login_ele) {
 	global $tab_type_pointage_discipline;
 	global $mod_disc_terme_menus_incidents;
 
-	if(count($tab_type_pointage_discipline)==0) {
+	if((!isset($tab_type_pointage_discipline))||(!is_array($tab_type_pointage_discipline))||(count($tab_type_pointage_discipline)==0)) {
 		$tab_type_pointage_discipline=get_tab_type_pointage_discipline();
 	}
 
@@ -6990,7 +6998,7 @@ function choix_elements_programmes() {
 		$tab_matieres[]=$lig->matiere;
 	}
 
-	$tab_items=array();
+	$tab_item=array();
 	$sql="SELECT * FROM elements_programmes ORDER BY matiere, cycle, rubrique, item, resume;";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_assoc($res)) {
