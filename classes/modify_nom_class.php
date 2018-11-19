@@ -552,7 +552,9 @@ if (isset($id_classe)) {
 	// =========================
 	$display_moy_gen_saisie_avis2='y';
 	// 20121027
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'rn_moy_gen');
+	$suivi_par_alt='';
+	$suivi_par_alt_fonction='';
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'type_classe', 'rn_moy_gen');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		/*
