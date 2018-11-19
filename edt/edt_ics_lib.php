@@ -2120,7 +2120,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			$tmp_tab_jour=array("", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
 			$nom_jour=$tmp_tab_jour[id_j_semaine($ts_debut_jour)];
 
-			$sql="SELECT apr.id_cours_remplaced, apr.login_user FROM abs_prof_remplacement apr, edt_cours ec WHERE apr.jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."' AND ec.id_cours=apr.id_cours_remplaced AND ec.jour_semaine='".$nom_jour."'";
+			$sql="SELECT apr.id_cours_remplaced, apr.login_user FROM abs_prof_remplacement apr, edt_cours ec WHERE apr.jour='".$annee_debut_jour.$mois_debut_jour.$jour_debut_jour."' AND ec.id_cours=apr.id_cours_remplaced AND ec.jour_semaine='".$nom_jour."' AND login_prof='".$login_prof."';";
 			//echo "$sql<br />";
 			$res_mes_cours_remplaced=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig_mes_cours_remplaced=mysqli_fetch_object($res_mes_cours_remplaced)) {
