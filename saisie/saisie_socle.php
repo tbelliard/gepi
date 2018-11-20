@@ -1441,12 +1441,14 @@ if(isset($id_groupe)) {
 			<tbody>";
 				$cpt_domaine=0;
 				foreach($tab_domaine_socle as $code => $libelle) {
+					$checked=array();
 					$checked[0]=" checked";
 					$checked[1]="";
 					$checked[2]="";
 					$checked[3]="";
 					$checked[4]="";
 
+					$title=array();
 					$title[0]="";
 					$title[1]="";
 					$title[2]="";
@@ -1539,10 +1541,12 @@ if(isset($id_groupe)) {
 				if(($tab_cycle[$mef_code_ele]==4)&&($periode==$max_per)) {
 					if($enseignement_complement) {
 						//$tab_types_enseignements_complement
+						$checked=array();
 						$checked[0]=" checked";
 						$checked[1]="";
 						$checked[2]="";
 
+						$style=array();
 						$style[0]=" style='font-weight:bold'";
 						$style[1]="";
 						$style[2]="";
@@ -1580,9 +1584,11 @@ if(isset($id_groupe)) {
 					if($is_lvr) {
 						//echo "\$is_lvr=true.<br />";
 						//$tab_type_LVR
+						$checked=array();
 						$checked[1]=" checked";
 						$checked[2]="";
 
+						$style=array();
 						$style[1]=" style='font-weight:bold'";
 						$style[2]="";
 						if(isset($tab_niveaux_eleves_LVR[$lig->no_gep]["positionnement"])) {
@@ -2011,12 +2017,14 @@ elseif(isset($id_classe)) {
 			<tbody>";
 				$cpt_domaine=0;
 				foreach($tab_domaine_socle as $code => $libelle) {
+					$checked=array();
 					$checked[0]=" checked";
 					$checked[1]="";
 					$checked[2]="";
 					$checked[3]="";
 					$checked[4]="";
 
+					$title=array();
 					$title[0]="";
 					$title[1]="";
 					$title[2]="";
@@ -2152,10 +2160,12 @@ elseif(isset($id_classe)) {
 								$niveau_enseignement_complement_eleve_courant=$lig_ec->positionnement;
 							}
 
+							$style=array();
 							$style[0]="";
 							$style[1]="";
 							$style[2]="";
 
+							$checked=array();
 							$checked[0]="";
 							$checked[1]="";
 							$checked[2]="";
