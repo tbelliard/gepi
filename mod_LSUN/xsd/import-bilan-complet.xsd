@@ -974,6 +974,8 @@
             <xs:enumeration value="PRO" />
             <xs:enumeration value="LSF" />
             <xs:enumeration value="LVE" />
+            <xs:enumeration value="CHK" />
+            <xs:enumeration value="LCE" />
         </xs:restriction>
     </xs:simpleType>
     

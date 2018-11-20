@@ -2034,12 +2034,18 @@ echo "</pre>";
 							    <enseignement-complement code="AUC" />
 							*/
 							if(($tableau_des_cycles_pour_lesquels_generer_bilan[$loop_cycle]==4)&&($niveau_eleve_courant==3)) {
+								// 20181119
+								$sql_restriction_date_enseignements_complement_CHK_et_LCE='';
+								if($date_creation<'2019-05-01') {
+									$sql_restriction_date_enseignements_complement_CHK_et_LCE=" AND jgec.code!='CHK' AND jgec.code!='LCE' ";
+								}
+
 								// Il ne faut retenir qu'un enseignement de complément
 								$sql="SELECT seec.*, jgec.code FROM j_groupes_enseignements_complement jgec, 
 											socle_eleves_enseignements_complements seec 
 										WHERE jgec.id_groupe=seec.id_groupe AND 
 											(seec.positionnement='1' OR seec.positionnement='2') AND 
-											seec.ine='".$eleve->no_gep."' 
+											seec.ine='".$eleve->no_gep."' ".$sql_restriction_date_enseignements_complement_CHK_et_LCE."
 										ORDER BY seec.positionnement DESC LIMIT 1;";
 								//echo "$sql<br />";
 								$res_seec=mysqli_query($mysqli, $sql);
