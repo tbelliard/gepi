@@ -1839,12 +1839,14 @@
  
     if($last == 'g')
         //$v_memory_limit = $v_memory_limit*1024*1024*1024;
-        $v_memory_limit = $v_memory_limit*1073741824;
+        $v_memory_limit = preg_replace('/g$/i', '', $v_memory_limit)*1073741824;
     if($last == 'm')
         //$v_memory_limit = $v_memory_limit*1024*1024;
-        $v_memory_limit = $v_memory_limit*1048576;
+        //echo "\$v_memory_limit=$v_memory_limit<br />";
+        // $v_memory_limit=128M
+        $v_memory_limit = preg_replace('/m$/i', '', $v_memory_limit)*1048576;
     if($last == 'k')
-        $v_memory_limit = $v_memory_limit*1024;
+        $v_memory_limit = preg_replace('/k$/i', '', $v_memory_limit)*1024;
             
     $p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD] = floor($v_memory_limit*PCLZIP_TEMPORARY_FILE_RATIO);
     
