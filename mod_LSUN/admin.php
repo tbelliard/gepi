@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2016-2017 Régis Bouguin, Stephane Boireau
+* Copyright 2016-2018 Régis Bouguin, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -242,6 +242,8 @@ $tab_enseignements_complement["LCR"]="Langue et culture régionale";
 $tab_enseignements_complement["PRO"]="Découverte professionnelle";
 $tab_enseignements_complement["LSF"]="Langue des signes française";
 $tab_enseignements_complement["LVE"]="Langue vivante étrangère";
+$tab_enseignements_complement["CHK"]="Chant Choral";
+$tab_enseignements_complement["LCE"]="Langues et cultures européennes";
 echo "<p>Contrôle de l'initialisation des codes et intitulés d'enseignements de complément&nbsp;:";
 $temoin_modif_reg_enseignements_complement=0;
 foreach($tab_enseignements_complement as $code => $libelle) {

@@ -2235,10 +2235,14 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 					$checked_version_20180427=' checked';
 					$checked_version_20171009='';
 			}
-			echo "<p><strong>Schéma de l'export&nbsp;:</strong><br />
-			<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20171009' value='20171009' ".$checked_version_20171009."/><label for='LSUN_version_xsd_20171009'>Version octobre 2017</label><br />
-			<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' ".$checked_version_20180427."/><label for='LSUN_version_xsd_20180427'>Version fin avril 2018 (LSU 18.2.0.0)</label>
-			</p>";
+			echo "
+			<!--
+				<p><strong>Schéma de l'export&nbsp;:</strong><br />
+				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20171009' value='20171009' ".$checked_version_20171009."/><label for='LSUN_version_xsd_20171009'>Version octobre 2017</label><br />
+				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' ".$checked_version_20180427."/><label for='LSUN_version_xsd_20180427'>Version fin avril 2018 (LSU 18.2.0.0)</label>
+			</p>
+			-->
+			<input type='hidden' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' />";
 		?>
 
 
