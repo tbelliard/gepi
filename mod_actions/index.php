@@ -734,6 +734,26 @@ if (!isset($id_categorie)) {
 		<li><a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."'>".$categorie['nom']."</a></li>";
 	}
 	echo "
+	</ul>
+
+	<p style='margin-top:1em; margin-left:4.5em; text-indent:-4.5em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>
+			<p>Le module ".$terme_mod_action."s est destiné à gérer les inscriptions des élèves sur des ".$terme_mod_action."s dans des catégories comme UNSS,... et le pointage de présence effective des élèves lors de l'".$terme_mod_action.".<br />
+			Les parents ont alors une indication de présence de l'élève dans Gepi.<br />
+			Il est également possible d'envoyer aux parents des mails informant de la présence des élèves <em>(sous réserve que les parents aient fourni des adresses mail)</em>.</p>
+		</li>
+		<li>
+			<p>Le module permet d'afficher/imprimer un récapitulatif de l'".$terme_mod_action.", mais aussi un trombinoscope PDF des élèves inscrits ou présents <em>(si le module Trombinoscope est actif)</em>.</p>
+		</li>
+		<li>
+			<p>Les catégories doivent être définies par un administrateur, et des personnels <em>(professeurs, cpe, scolarité)</em> définis comme gestionnaires de ces ".$terme_mod_action."s pour qu'ils puissent les créer/gérer.</p>
+		</li>
+		<li>
+			<p>Tous les images/icones sont cliquables.<br />
+			S'il y a un icone, c'est qu'une action y est associée.<br />
+			Un survol de l'icone affichera des précisions sur l'action associée.</p>
+		</li>
 	</ul>";
 	require("../lib/footer.inc.php");
 	die();
@@ -750,7 +770,7 @@ if((isset($mode))&&($mode=='ajout_action')) {
 </p>
 
 	<h2>".$categorie['nom']."</h2>
-	<h3>Ajouter une action&nbsp;:</h3>
+	<h3>Ajouter une ".$terme_mod_action."&nbsp;:</h3>
 	<form action='".$_SERVER['PHP_SELF']."' method='post'>
 		<fieldset class='fieldset_opacite50'>
 			".add_token_field()."
@@ -836,7 +856,7 @@ if(!isset($id_action)) {
 	}
 
 	echo "<h2>".$categorie['nom']."</h2>
-	<p>Choisissez&nbsp;: <a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&mode=ajout_action'><img src='../images/icons/add.png' class='icone16' title='Ajouter une action' /> Ajouter une action</a></p>";
+	<p>Choisissez&nbsp;: <a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&mode=ajout_action'><img src='../images/icons/add.png' class='icone16' title='Ajouter une ".$terme_mod_action_nettoye."' /> Ajouter une action</a></p>";
 	if(count($tab_actions)>0) {
 		echo "
 	<table class='boireaus boireaus_alt resizable sortable'>
@@ -888,6 +908,27 @@ if(!isset($id_action)) {
 		echo "
 	</table>";
 	}
+
+	echo "
+	<p style='margin-top:1em; margin-left:4.5em; text-indent:-4.5em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>
+			<p>Le module ".$terme_mod_action."s est destiné à gérer les inscriptions des élèves sur des ".$terme_mod_action."s dans des catégories comme UNSS,... et le pointage de présence effective des élèves lors de l'".$terme_mod_action.".<br />
+			Les parents ont alors une indication de présence de l'élève dans Gepi.<br />
+			Il est également possible d'envoyer aux parents des mails informant de la présence des élèves <em>(sous réserve que les parents aient fourni des adresses mail)</em>.</p>
+		</li>
+		<li>
+			<p>Le module permet d'afficher/imprimer un récapitulatif de l'".$terme_mod_action.", mais aussi un trombinoscope PDF des élèves inscrits ou présents <em>(si le module Trombinoscope est actif)</em>.</p>
+		</li>
+		<li>
+			<p>Les catégories doivent être définies par un administrateur, et des personnels <em>(professeurs, cpe, scolarité)</em> définis comme gestionnaires de ces ".$terme_mod_action."s pour qu'ils puissent les créer/gérer.</p>
+		</li>
+		<li>
+			<p>Tous les images/icones sont cliquables.<br />
+			S'il y a un icone, c'est qu'une action y est associée.<br />
+			Un survol de l'icone affichera des précisions sur l'action associée.</p>
+		</li>
+	</ul>";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -1321,6 +1362,10 @@ elseif($mode=='inscriptions') {
 	<div id='div_photo' style='float:left; width:100px;'>
 	</div>
 
+	<div style='clear:both'></div>
+	<p style='margin-top:1em; margin-left:4.5em; text-indent:-4.5em;'><em>NOTES&nbsp;:</em> Une fois une ".$terme_mod_action." définie avec des élèves inscrits, il est possible de définir cette liste d'inscriptions comme liste par défaut pour les futures ".$terme_mod_action."s.<br />
+	Par exemple, en UNSS, on peut définir une liste correspondant à tous les élèves inscrits à l'Association Sportive, et le mercredi, pointer les présents à l'UNSS.</p>
+
 	<script type='text/javascript'>
 		function affiche_photo_courante(photo) {
 			document.getElementById('div_photo').innerHTML=\"<img src='\"+photo+\"' width='150' alt='Photo' />\";
@@ -1495,6 +1540,7 @@ elseif($mode=='presence') {
 	echo js_checkbox_change_style('checkbox_change', 'texte_', "y");
 
 	echo "
+	<div style='clear:both;'></div>
 	<p style='margin-top:1em; margin-left:4em; text-indent:4em;'><em>NOTES&nbsp;:</em> Lorsque les élèves sont pointés présents, les parents/élèves disposant d'un compte voient le pointage effectué.</p>
 
 	<script type='text/javascript'>
@@ -1615,11 +1661,11 @@ else {
 }
 //==============================================================================
 
+/*
 echo "
 <div style='clear:both'></div>
 <pre style='color:red'>
 A FAIRE :
-// Pouvoir effectuer les inscriptions dans la liste alphabétique de tous les élèves de l'établissement (avec des ancres sur l'initiale du nom)
 // Pouvoir pointer comme présent en même temps que l'on fait les inscriptions
 </pre>
 <pre style='color:green'>
@@ -1638,5 +1684,7 @@ FAIT :
 // Parcourir les mod_actions_inscriptions_defaut_* dans setting et tester si la catégorie existe puis si l'action existe pour faire le ménage	FAIT
 // Pouvoir générer un trombi des présents
 // Pouvoir générer une fiche récapitulative: Intitulé de l'action, description, inscrits,...
+// Pouvoir effectuer les inscriptions dans la liste alphabétique de tous les élèves de l'établissement (avec des ancres sur l'initiale du nom)
 </pre>";
+*/
 require("../lib/footer.inc.php");
