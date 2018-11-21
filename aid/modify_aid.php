@@ -365,23 +365,45 @@ while($infos = mysqli_fetch_array($query)){
 	}
 	if(acces("/groupes/get_csv.php", $_SESSION['statut'])) {
 		echo "
-		| <a href='../groupes/get_csv.php?id_aid=".$aid_id."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export CSV classique</a>";
+		| <a href='../groupes/get_csv.php?id_aid=".$aid_id."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/csv.png' class='icone16' /> 
+			Export CSV classique
+		</a>";
 	}
 	if(acces("/groupes/mes_listes.php", $_SESSION['statut'])) {
 		echo "
-		| <a href='../groupes/mes_listes.php#aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export CSV spécifique</a>";
+		| <a href='../groupes/mes_listes.php#aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/csv_enabled.png' class='icone16' /> 
+			Export CSV spécifique
+		</a>";
+	}
+	if(acces("/impression/impression.php", $_SESSION['statut'])) {
+		echo "
+		| <a href='../impression/impression.php#aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/pdf.png' class='icone16' /> 
+			PDF
+		</a>";
 	}
 	if((getSettingAOui('active_module_trombinoscopes'))&&(acces("/mod_trombinoscopes/trombinoscopes.php", $_SESSION['statut']))) {
 		echo "
-		| <a href='../mod_trombinoscopes/trombinoscopes.php?aid=$aid_id&etape=2' onclick=\"return confirm_abandon (this, change, '$themessage')\">Trombinoscope</a>";
+		| <a href='../mod_trombinoscopes/trombinoscopes.php?aid=$aid_id&etape=2' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/trombinoscope.png' class='icone16' /> 
+			Trombinoscope
+		</a>";
 	}
 	if(((!isset($flag))||($flag!="prof"))&&(($NiveauGestionAid_AID_courant>=2))) {
 		echo "
-		| <a href='".$_SERVER['PHP_SELF']."?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Professeurs de l'AID</a>";
+		| <a href='".$_SERVER['PHP_SELF']."?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/edit_user.png' class='icone16' /> 
+			Professeurs de l'AID
+		</a>";
 	}
 	if(((!isset($flag))||($flag!="prof_gest"))&&(($NiveauGestionAid_AID_courant>=5))) {
 		echo "
-		| <a href='".$_SERVER['PHP_SELF']."?flag=prof_gest&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gestionnaires de l'AID</a>";
+		| <a href='".$_SERVER['PHP_SELF']."?flag=prof_gest&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/configure.png' class='icone16' /> 
+			Gestionnaires de l'AID
+		</a>";
 	}
 	if($NiveauGestionAid_categorie==10) {
 		echo "
