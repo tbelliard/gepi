@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -230,7 +230,9 @@ else {
 }
 $res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_aid_config)>0){
-	$html_aid="<h3>Liste des AID&nbsp;: </h3>
+	$html_aid="
+<a name='aid'></a>
+<h3>Liste des AID&nbsp;: </h3>
 <div style='margin-left:3em; margin-bottom:1em;'>
 	<p>Séléctionnez l'AID pour lequel vous souhaitez imprimer une liste alphabétique d'élèves au format PDF :</p>
 	<table>\n";
