@@ -301,4 +301,35 @@ if (getSettingValue('mod_actions_affichage_familles')=='') {
 	$result .= msj_present("Valeur déjà renseignée");
 }
 
+$result .= "&nbsp;-> Contrôle de l'initialisation des codes et intitulés d'enseignements de complément&nbsp;: ";
+$tab_enseignements_complement=array();
+// Aucun, c'est si on ne remonte rien.
+//$tab_enseignements_complement["AUC"]="Aucun";
+$tab_enseignements_complement["LCA"]="Langues et cultures de l'Antiquité";
+$tab_enseignements_complement["LCR"]="Langue et culture régionale";
+$tab_enseignements_complement["PRO"]="Découverte professionnelle";
+$tab_enseignements_complement["LSF"]="Langue des signes française";
+$tab_enseignements_complement["LVE"]="Langue vivante étrangère";
+$tab_enseignements_complement["CHK"]="Chant Choral";
+$tab_enseignements_complement["LCE"]="Langues et cultures européennes";
+$temoin_modif_reg_enseignements_complement=0;
+foreach($tab_enseignements_complement as $code => $libelle) {
+	$sql="SELECT * FROM nomenclatures_valeurs WHERE type='enseignement_complement' AND code='".$code."';";
+	$test=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($test)==0) {
+		$sql="INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='".$code."', nom='".$code."', valeur='".mysqli_real_escape_string($GLOBALS['mysqli'], $libelle)."';";
+		$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+		if($insert) {
+			$result.="<br /><span style='color:green'>Enregistrement du code <strong>$code</strong> pour <em>$libelle</em> effectué.</span>";
+		}
+		else {
+			$result .= msj_erreur("<br /><span style='color:red'>Erreur lors de l'enregistrement du code <strong>$code</strong> pour <em>$libelle</em>.</span>");
+		}
+		$temoin_modif_reg_enseignements_complement++;
+	}
+}
+if($temoin_modif_reg_enseignements_complement==0) {
+	$result.=" ";
+}
+
 ?>
