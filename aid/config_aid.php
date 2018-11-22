@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -134,16 +134,17 @@ if (isset($is_posted) and ($is_posted == "1")) {
 		$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE (indice_aid='$indice_aid')");
 		$nb_profs = mysqli_num_rows($call_profs);
 		$i = 0;
-		// while($i < $nb_profs) {
+		$delete_prof=isset($_POST["delete_prof"]) ? $_POST["delete_prof"] : array();
 		while ($aid_prof = mysqli_fetch_object($call_profs)) {
-		    // $login_prof = old_mysql_result($call_profs,$i);
-		    $login_prof = $aid_prof->id_utilisateur;
-		    if (isset($_POST["delete_".$login_prof])) {
-		       $reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
-			   if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur ".$login_prof." !<br />";
-		    }
-		    $i++;
+			// $login_prof = old_mysql_result($call_profs,$i);
+			$login_prof = $aid_prof->id_utilisateur;
+			if(in_array($login_prof, $delete_prof)) {
+				$reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
+				if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur ".$login_prof." !<br />";
+			}
+			$i++;
 		} // while
+
     if (isset($_POST["reg_prof_login"]) and ($_POST["reg_prof_login"] !="")) {
         // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
         $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_utilisateurs WHERE (id_utilisateur = '".$_POST["reg_prof_login"]."' and indice_aid='$indice_aid')");
@@ -158,15 +159,15 @@ if (isset($is_posted) and ($is_posted == "1")) {
 		$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE (indice_aid='$indice_aid')");
 		$nb_profs = mysqli_num_rows($call_profs);
 		$i = 0;
-		// while($i < $nb_profs) {
+		$delete_gestionnaire=isset($_POST["delete_gestionnaire"]) ? $_POST["delete_gestionnaire"] : array();
 		while ($aid_prof = mysqli_fetch_object($call_profs)) {
-		    // $login_gestionnaire = old_mysql_result($call_profs,$i);
-		    $login_gestionnaire = $aid_prof->id_utilisateur;
-		    if (isset($_POST["delete_gestionnaire_".$login_gestionnaire])) {
-		        $reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$login_gestionnaire' and indice_aid='$indice_aid')");
-            if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_gestionnaire!<br />";
-		    }
-		    $i++;
+			// $login_gestionnaire = old_mysql_result($call_profs,$i);
+			$login_gestionnaire = $aid_prof->id_utilisateur;
+			if(in_array($login_gestionnaire, $delete_gestionnaire)) {
+				$reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$login_gestionnaire' and indice_aid='$indice_aid')");
+				if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_gestionnaire!<br />";
+			}
+			$i++;
 		} // while
 
 
@@ -687,10 +688,11 @@ while ($obj_liste_data = $call_liste_data->fetch_object()) {
 			</td>
 			<td>
 				<input type="checkbox" 
-					   name="delete_gestionnaire_<?php echo $login_gestionnaire; ?>" 
+					   id="delete_gestionnaire_<?php echo $i;?>" 
+					   name="delete_gestionnaire[]" 
 					   onchange="changement();" 
-					   value="y" />
-				(cocher pour supprimer)
+					   value="<?php echo $login_gestionnaire; ?>" />
+				<label for='delete_gestionnaire_<?php echo $i;?>'>(cocher pour supprimer)</label>
 			</td>
 		</tr>
 <?php
@@ -807,8 +809,8 @@ while ($obj_call_data = $call_liste_data->fetch_object()) {
 				<td>
 					<em><?php echo $obj_call_data->statut; ?></em>
 				</td>
-				<td> <input type="checkbox" name="delete_<?php echo $login_prof; ?>" value="y" onchange="changement();" />
-					(cocher pour supprimer)
+				<td> <input type="checkbox" name="delete_prof[]" id="delete_prof_<?php echo $i;?>" value="<?php echo $login_prof; ?>" onchange="changement(); checkbox_change(this.id);" />
+					<label for='delete_prof_<?php echo $i;?>'>(cocher pour supprimer)</label>
 				</td>
 			</tr>
 <?php
