@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -59,6 +59,10 @@ $activer_outils_comp = isset($_POST["activer_outils_comp"]) ? $_POST["activer_ou
 $feuille_presence = isset($_POST["feuille_presence"]) ? $_POST["feuille_presence"] : 'n';
 $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 
+// 20181121
+$resume = isset($_POST["resume"]) ? $_POST["resume"] : '';
+$imposer_resume = isset($_POST["imposer_resume"]) ? $_POST["imposer_resume"] : 'n';
+
 if((isset($_GET['mode']))&&($_GET['mode']=="ajout")) {
 	unset($_SESSION["indice_aid"]);
 }
@@ -81,16 +85,17 @@ $mysqli = $GLOBALS["mysqli"];
 // ========== fin initialisation ===================
 
 if (isset($is_posted) and ($is_posted == "1")) {
-  check_token();
-  $msg_inter = "";
-  if ($autoriser_inscript_multiples != 'y') {
-    $test = sql_query1("select count(login) c from j_aid_eleves where indice_aid='".$indice_aid."' group by login order by c desc limit 1");
-    if ($test > 1) {
-      $msg_inter = "Actuellement, un ou plusieurs élèves sont inscrits dans plusieurs AID à la fois.
-      Impossible donc de supprimer l'autorisation d'inscrire un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.";
-      $autoriser_inscript_multiples = 'y';
-    }
-  }
+	check_token();
+	$msg_inter = "";
+	if ($autoriser_inscript_multiples != 'y') {
+		$test = sql_query1("select count(login) c from j_aid_eleves where indice_aid='".$indice_aid."' group by login order by c desc limit 1");
+		if ($test > 1) {
+			$msg_inter = "Actuellement, un ou plusieurs élèves sont inscrits dans plusieurs AID à la fois.
+			Impossible donc de supprimer l'autorisation d'inscrire un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.";
+			$autoriser_inscript_multiples = 'y';
+		}
+	}
+
 	if ($display_end < $display_begin) {$display_end = $display_begin;}
 	$del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."'");
 	echo "<!-- DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."' -->";
@@ -109,7 +114,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
 		$activer_outils_comp="y";
 	}
 
-	$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid_config SET
+	$sql="INSERT INTO aid_config SET
 			nom='".$reg_nom."',
 			nom_complet='".$reg_nom_complet."',
 			note_max='".$note_max."',
@@ -126,68 +131,79 @@ if (isset($is_posted) and ($is_posted == "1")) {
 			autoriser_inscript_multiples='".$autoriser_inscript_multiples."',
 			bull_simplifie = '".$bull_simplifie."',
 			feuille_presence = '".$feuille_presence."',
-			outils_complementaires = '".$activer_outils_comp."'");
-	  if (!$reg_data)
-		  $msg_inter .= "Erreur lors de l'enregistrement des données !<br />";
+			outils_complementaires = '".$activer_outils_comp."', 
+			resume='".$resume."', 
+			imposer_resume='".$imposer_resume."';";
+	//echo "$sql<br />";
+	$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (!$reg_data) {
+		$msg_inter .= "Erreur lors de l'enregistrement des données !<br />";
+	}
+	elseif($imposer_resume=='y') {
+		$sql="UPDATE aid SET resume='".$resume."' WHERE indice_aid='".$indice_aid."';";
+		//echo "$sql<br />";
+		$update_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
 
-		// Suppression de professeurs dans le cas des outils complémentaires
-		$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE (indice_aid='$indice_aid')");
-		$nb_profs = mysqli_num_rows($call_profs);
-		$i = 0;
-		$delete_prof=isset($_POST["delete_prof"]) ? $_POST["delete_prof"] : array();
-		while ($aid_prof = mysqli_fetch_object($call_profs)) {
-			// $login_prof = old_mysql_result($call_profs,$i);
-			$login_prof = $aid_prof->id_utilisateur;
-			if(in_array($login_prof, $delete_prof)) {
-				$reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
-				if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur ".$login_prof." !<br />";
-			}
-			$i++;
-		} // while
+	// Suppression de professeurs dans le cas des outils complémentaires
+	$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE (indice_aid='$indice_aid')");
+	$nb_profs = mysqli_num_rows($call_profs);
+	$i = 0;
+	$delete_prof=isset($_POST["delete_prof"]) ? $_POST["delete_prof"] : array();
+	while ($aid_prof = mysqli_fetch_object($call_profs)) {
+		// $login_prof = old_mysql_result($call_profs,$i);
+		$login_prof = $aid_prof->id_utilisateur;
+		if(in_array($login_prof, $delete_prof)) {
+			$reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
+			if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur ".$login_prof." !<br />";
+		}
+		$i++;
+	} // while
 
-    if (isset($_POST["reg_prof_login"]) and ($_POST["reg_prof_login"] !="")) {
-        // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
-        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_utilisateurs WHERE (id_utilisateur = '".$_POST["reg_prof_login"]."' and indice_aid='$indice_aid')");
-        if ($test != "0") {
-            $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
-        } else {
-            $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aidcateg_utilisateurs SET id_utilisateur= '".$_POST["reg_prof_login"]."', indice_aid='".$indice_aid."'");
-            if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
-        }
-    }
-		// Suppression de "super-gestionaires"
-		$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE (indice_aid='$indice_aid')");
-		$nb_profs = mysqli_num_rows($call_profs);
-		$i = 0;
-		$delete_gestionnaire=isset($_POST["delete_gestionnaire"]) ? $_POST["delete_gestionnaire"] : array();
-		while ($aid_prof = mysqli_fetch_object($call_profs)) {
-			// $login_gestionnaire = old_mysql_result($call_profs,$i);
-			$login_gestionnaire = $aid_prof->id_utilisateur;
-			if(in_array($login_gestionnaire, $delete_gestionnaire)) {
-				$reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$login_gestionnaire' and indice_aid='$indice_aid')");
-				if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_gestionnaire!<br />";
-			}
-			$i++;
-		} // while
+	if (isset($_POST["reg_prof_login"]) and ($_POST["reg_prof_login"] !="")) {
+		// On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+		$test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_utilisateurs WHERE (id_utilisateur = '".$_POST["reg_prof_login"]."' and indice_aid='$indice_aid')");
+		if ($test != "0") {
+			$msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+		} else {
+			$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aidcateg_utilisateurs SET id_utilisateur= '".$_POST["reg_prof_login"]."', indice_aid='".$indice_aid."'");
+			if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
+		}
+	}
 
-
-    if (isset($_POST["reg_gestionnaire_login"]) and ($_POST["reg_gestionnaire_login"] !="")) {
-        // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
-        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '".$_POST["reg_gestionnaire_login"]."' and indice_aid='$indice_aid')");
-        if ($test != "0") {
-            $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
-        } else {
-            $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aidcateg_super_gestionnaires SET id_utilisateur= '".$_POST["reg_gestionnaire_login"]."', indice_aid='".$indice_aid."'");
-            if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
-        }
-    }
+	// Suppression de "super-gestionaires"
+	$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE (indice_aid='$indice_aid')");
+	$nb_profs = mysqli_num_rows($call_profs);
+	$i = 0;
+	$delete_gestionnaire=isset($_POST["delete_gestionnaire"]) ? $_POST["delete_gestionnaire"] : array();
+	while ($aid_prof = mysqli_fetch_object($call_profs)) {
+		// $login_gestionnaire = old_mysql_result($call_profs,$i);
+		$login_gestionnaire = $aid_prof->id_utilisateur;
+		if(in_array($login_gestionnaire, $delete_gestionnaire)) {
+			$reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$login_gestionnaire' and indice_aid='$indice_aid')");
+			if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_gestionnaire!<br />";
+		}
+		$i++;
+	} // while
 
 
-    if ($msg_inter !="") {
-        $msg = $msg_inter;
-    } else {
-        $msg = "Enregistrement réussi !";
-    }
+	if (isset($_POST["reg_gestionnaire_login"]) and ($_POST["reg_gestionnaire_login"] !="")) {
+		// On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+		$test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '".$_POST["reg_gestionnaire_login"]."' and indice_aid='$indice_aid')");
+		if ($test != "0") {
+			$msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+		} else {
+			$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aidcateg_super_gestionnaires SET id_utilisateur= '".$_POST["reg_gestionnaire_login"]."', indice_aid='".$indice_aid."'");
+			if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
+		}
+	}
+
+
+	if ($msg_inter !="") {
+		$msg = $msg_inter;
+	} else {
+		$msg = "Enregistrement réussi !";
+	}
 }
 
 $themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -266,49 +282,68 @@ function checkFormElementInRange(formulaire,champ,vmin,vmax){
 </script>
 
 <?php
+$nouvelle_categorie=true;
 if (isset($indice_aid)) {
-    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+	$sql="SELECT * FROM aid_config WHERE indice_aid = '$indice_aid';";
+	//echo "$sql<br />";
+	$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($call_data)>0) {
+		$nouvelle_categorie=false;
+		$obj_data = $call_data->fetch_object();
+		$reg_nom = $obj_data->nom;
+		$reg_nom_complet = $obj_data->nom_complet;
+		$note_max = $obj_data->note_max;
+		$order_display1 = $obj_data->order_display1;
+		$order_display2 = $obj_data->order_display2;
+		$type_note = $obj_data->type_note;
+		$type_aid = $obj_data->type_aid;
+		$display_begin = $obj_data->display_begin;
+		$display_end = $obj_data->display_end;
+		$message = $obj_data->message;
+		$display_nom = $obj_data->display_nom;
+		$display_bulletin = $obj_data->display_bulletin;
+		$autoriser_inscript_multiples = $obj_data->autoriser_inscript_multiples;
+		$bull_simplifie = $obj_data->bull_simplifie;
+		$activer_outils_comp = $obj_data->outils_complementaires;
+		$feuille_presence = $obj_data->feuille_presence;
+		// 20181121
+		$resume=$obj_data->resume;
+		$imposer_resume=$obj_data->imposer_resume;
+
+		// Compatibilité avec version
+		if ($display_bulletin=='')  $display_bulletin = "y";
+		if ($autoriser_inscript_multiples=='')  $autoriser_inscript_multiples = "n";
+	}
+	else {
+		$nouvelle_categorie=true;
+	}
+}
+
+if($nouvelle_categorie) {
+	$sql="SELECT max(indice_aid) max FROM aid_config;";
+	//echo "$sql<br />";
+	$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
 	$obj_data = $call_data->fetch_object();
-	$reg_nom = $obj_data->nom;
-    $reg_nom_complet = $obj_data->nom_complet;
-    $note_max = $obj_data->note_max;
-    $order_display1 = $obj_data->order_display1;
-    $order_display2 = $obj_data->order_display2;
-    $type_note = $obj_data->type_note;
-    $type_aid = $obj_data->type_aid;
-    $display_begin = $obj_data->display_begin;
-    $display_end = $obj_data->display_end;
-    $message = $obj_data->message;
-    $display_nom = $obj_data->display_nom;
-    $display_bulletin = $obj_data->display_bulletin;
-    $autoriser_inscript_multiples = $obj_data->autoriser_inscript_multiples;
-    $bull_simplifie = $obj_data->bull_simplifie;
-    $activer_outils_comp = $obj_data->outils_complementaires;
-    $feuille_presence = $obj_data->feuille_presence;
-	
-    // Compatibilité avec version
-    if ($display_bulletin=='')  $display_bulletin = "y";
-    if ($autoriser_inscript_multiples=='')  $autoriser_inscript_multiples = "n";
-} else {
-    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT max(indice_aid) max FROM aid_config");
-	$obj_data = $call_data->fetch_object();
-    // $indice_aid = @old_mysql_result($call_data, 0, "max");
-    $indice_aid = $obj_data->max;
-    $indice_aid++;
-    $note_max = 20;
-    $display_begin = '';
-    $display_end = '';
-    $display_nom = '';
-    $message = '';
-    $order_display1 = '';
-    $order_display2 = '';
-    $type_note = "every";
-    $type_aid = 0;
-    $display_bulletin = "y";
-    $autoriser_inscript_multiples = "n";
-    $bull_simplifie = "y";
-    $activer_outils_comp = "n";
-    $feuille_presence = "n";
+	// $indice_aid = @old_mysql_result($call_data, 0, "max");
+	$indice_aid = $obj_data->max;
+	$indice_aid++;
+	$note_max = 20;
+	$display_begin = '';
+	$display_end = '';
+	$display_nom = '';
+	$message = '';
+	$order_display1 = '';
+	$order_display2 = '';
+	$type_note = "every";
+	$type_aid = 0;
+	$display_bulletin = "y";
+	$autoriser_inscript_multiples = "n";
+	$bull_simplifie = "y";
+	$activer_outils_comp = "n";
+	$feuille_presence = "n";
+	// 20181121
+	$resume='';
+	$imposer_resume='n';
 }
 ?>
 
@@ -327,43 +362,46 @@ if (isset($indice_aid)) {
 		<!--input type="hidden" name="indice_aid" value="<?php echo $indice_aid ?>" /-->
 		<a href="index.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>
 		<?php
-			$sql="SELECT * FROM aid WHERE indice_aid='".$indice_aid."';";
-			$res_aid_cat=mysqli_query($mysqli, $sql);
-			if(mysqli_num_rows($res_aid_cat)>0) {
-				echo "
-		 | <a href='index2.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Accéder à la liste des (".mysqli_num_rows($res_aid_cat).") AID de la catégorie</a>";
-			}
-
-
-			// On affiche un select avec la liste des aid de cette catégorie
-			if ($NiveauGestionAid_categorie>=5) {
-				// Normalement dans la page de config Catégorie, on a NiveauGestionAid à 10
-				$sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
-			}
-			else if ($NiveauGestionAid_categorie>=1) {
-				$sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
-			}
-			$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]));
-
-	echo "</div>";
-
-			if(mysqli_num_rows($query)>0) {
-				echo "
-		<form enctype='multipart/form-data' name='form_tel_aid' action='add_aid.php' method='post' style='float:left; margin-left:1em;'>
-			".add_token_field()."
-
-			<input type='hidden' name='indice_aid' value='".$indice_aid."' />
-			<input type='hidden' name='action' value='modif_aid' />
-			<select name='aid_id' id='aid_id_tel_aid' onchange=\"confirm_changement_aid(change, '$themessage');\">
-				<option value=''>Accéder à un AID particulier</option>";
-					while($lig_aid=mysqli_fetch_object($query)) {
-						echo "
-				<option value='".$lig_aid->id."'>".$lig_aid->nom."</option>";
-					}
+			if(!$nouvelle_categorie) {
+				$sql="SELECT * FROM aid WHERE indice_aid='".$indice_aid."';";
+				$res_aid_cat=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_aid_cat)>0) {
 					echo "
-			</select>
-		</form>";
+			 | <a href='index2.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Accéder à la liste des (".mysqli_num_rows($res_aid_cat).") AID de la catégorie</a>";
+				}
+
+
+				// On affiche un select avec la liste des aid de cette catégorie
+				if ($NiveauGestionAid_categorie>=5) {
+					// Normalement dans la page de config Catégorie, on a NiveauGestionAid à 10
+					$sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
+				}
+				else if ($NiveauGestionAid_categorie>=1) {
+					$sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
+				}
+				$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]));
+				echo "
+	</div>";
+
+				if(mysqli_num_rows($query)>0) {
+					echo "
+			<form enctype='multipart/form-data' name='form_tel_aid' action='add_aid.php' method='post' style='float:left; margin-left:1em;'>
+				".add_token_field()."
+
+				<input type='hidden' name='indice_aid' value='".$indice_aid."' />
+				<input type='hidden' name='action' value='modif_aid' />
+				<select name='aid_id' id='aid_id_tel_aid' onchange=\"confirm_changement_aid(change, '$themessage');\">
+					<option value=''>Accéder à un AID particulier</option>";
+						while($lig_aid=mysqli_fetch_object($query)) {
+							echo "
+					<option value='".$lig_aid->id."'>".$lig_aid->nom."</option>";
+						}
+						echo "
+				</select>
+			</form>";
+				}
 			}
+			echo "</div>";
 
 			$sql="SELECT * FROM aid_config ORDER BY nom, nom_complet;";
 			$query = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -374,8 +412,11 @@ if (isset($indice_aid)) {
 
 			<input type='hidden' name='action' value='modif_aid' />
 			 | Catégorie 
-			<select name='indice_aid' id='form_chgt_categorie_indice_aid' onchange=\"confirm_changement_categorie_aid(change, '$themessage');\">
-				<!--option value=''>Accéder à une autre catégorie AID</option-->";
+			<select name='indice_aid' id='form_chgt_categorie_indice_aid' onchange=\"confirm_changement_categorie_aid(change, '$themessage');\">";
+				if($nouvelle_categorie) {
+					echo "
+				<option value=''>Accéder à une autre catégorie AID</option>";
+				}
 					$indice_form_chgt_aid=-1;
 					$cpt_cat_aid=0;
 					while($lig_cat_aid=mysqli_fetch_object($query)) {
@@ -446,7 +487,7 @@ if (isset($indice_aid)) {
 <?php
 echo add_token_field();
 ?>
-<div class='norme'>
+<div class='norme' style='margin-left:0.5em;'>
 	<p style='margin-top:1em;'>
 		<strong>Configuration de la catégorie d'AID <em>(Activités Inter-Disciplinaires)</em>&nbsp;:</strong>
 		<hr />
@@ -474,17 +515,17 @@ echo add_token_field();
 		<hr />
 		Type de notation :
 		<br />
-		<input type="radio" name="type_note" id="type_note_every" value="every" onchange="changement();" 
+		<input type="radio" name="type_note" id="type_note_every" value="every" onchange="changement(); change_style_radio('type_note');" 
 			<?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> 
 			   />
-		<label for='type_note_every'> Une note pour chaque période</label>
-		<input type="radio" name="type_note" id="type_note_last" value="last" onchange="changement();" 
+		<label for='type_note_every' id='texte_type_note_every'> Une note pour chaque période</label>
+		<input type="radio" name="type_note" id="type_note_last" value="last" onchange="changement(); change_style_radio('type_note');" 
 			<?php if ($type_note == "last") { echo ' checked="checked"';} ?> />
-		<label for='type_note_last'> Une note uniquement pour la dernière période</label>
-		<input type="radio" name="type_note" id="type_note_no" value="no" onchange="changement();" 
+		<label for='type_note_last' id='texte_type_note_last'> Une note uniquement pour la dernière période</label>
+		<input type="radio" name="type_note" id="type_note_no" value="no" onchange="changement(); change_style_radio('type_note');" 
 			<?php if ($type_note == "no") { echo ' checked="checked"';} ?> 
 			   onclick="mise_a_zero()" />
-		<label for='type_note_no'> Pas de note</label>
+		<label for='type_note_no' id='texte_type_note_no'> Pas de note</label>
 		<hr />
 
 <?php
@@ -565,21 +606,21 @@ while ($i < $max_periode) {
 		<hr />
 
 		Dans le bulletin final<br />
-		<input type="radio" name="display_nom" id='display_nom_n' value="n" onchange="changement();" 
+		<input type="radio" name="display_nom" id='display_nom_n' value="n" onchange="changement(); change_style_radio('display_nom');" 
 			<?php if ($display_nom == "n") { echo ' checked="checked"';} ?> />
-		<label for='display_nom_n'> Ne faire apparaître que le nom <em>(complet)</em> de la catégorie d'AID en colonne Matière/enseignement,</label><br />
+		<label for='display_nom_n' id='texte_display_nom_n'> Ne faire apparaître que le nom <em>(complet)</em> de la catégorie d'AID en colonne Matière/enseignement,</label><br />
 
-		<input type="radio" name="display_nom" id='display_nom_y' value="y" onchange="changement();" 
+		<input type="radio" name="display_nom" id='display_nom_y' value="y" onchange="changement(); change_style_radio('display_nom');" 
 			<?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> />
-		<label for='display_nom_y'> Faire apparaître en colonne Matière/enseignement le nom <em>(complet)</em> de la catégorie d'AID et faire précéder l'appréciation du nom de l'AID,</label><br />
+		<label for='display_nom_y' id='texte_display_nom_y'> Faire apparaître en colonne Matière/enseignement le nom <em>(complet)</em> de la catégorie d'AID et faire précéder l'appréciation du nom de l'AID,</label><br />
 
-		<input type="radio" name="display_nom" id='display_nom_z' value="z" onchange="changement();" 
+		<input type="radio" name="display_nom" id='display_nom_z' value="z" onchange="changement(); change_style_radio('display_nom');" 
 			<?php if ($display_nom == "z") { echo ' checked="checked"';} ?> />
-		<label for='display_nom_z'> Faire apparaître en colonne Matière/enseignement le nom de l'AID plutôt que le nom de la catégorie d'AID,</label><br />
+		<label for='display_nom_z' id='texte_display_nom_z'> Faire apparaître en colonne Matière/enseignement le nom de l'AID plutôt que le nom de la catégorie d'AID,</label><br />
 
-		<input type="radio" name="display_nom" id='display_nom_x' value="x" onchange="changement();" 
+		<input type="radio" name="display_nom" id='display_nom_x' value="x" onchange="changement(); change_style_radio('display_nom');" 
 			<?php if ($display_nom == "x") { echo ' checked="checked"';} ?> />
-		<label for='display_nom_x'> Faire apparaître en colonne Matière/enseignement le nom court de la catégorie d'AID suivi du nom de l'AID.</label><br />
+		<label for='display_nom_x' id='texte_display_nom_x'> Faire apparaître en colonne Matière/enseignement le nom court de la catégorie d'AID suivi du nom de l'AID.</label><br />
 
 
 		<!--
@@ -594,24 +635,25 @@ while ($i < $max_periode) {
 		-->
 		<hr />
 
-		Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :
-		<br />
-		<input type="text" name="message" size="40" maxlength="40" onchange="changement();" 
-			<?php if ($message) { echo "value=\"".$message."\"";}?> />
-		<br />
-		<span style='font-size:small;'>(Ce message prendra de la place dans la case appréciation sur le bulletin)</span>
+		<p>
+			Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :
+			<br />
+			<input type="text" name="message" size="40" maxlength="40" onchange="changement();" 
+				<?php if ($message) { echo "value=\"".$message."\"";}?> />
+			<br />
+			<span style='font-size:small;'>(Ce message prendra de la place dans la case appréciation sur le bulletin)</span>
+		</p>
 
 		<hr />
 
-	</p>
 	<p>Place de la case réservée à cette catégorie d'aid dans le bulletin final :</p>
 	<p>
-		<input type="radio" id="orderDisplay1Y" name="order_display1" value="b" onchange="changement();" 
+		<input type="radio" id="orderDisplay1Y" name="order_display1" value="b" onchange="changement(); change_style_radio('order_display1');" 
 			<?php if (($order_display1 == "b") or (!$order_display1)) { echo ' checked="checked"' ;} ?> />
-		<label for="orderDisplay1Y"> En début du bulletin</label>
-		<input type="radio" id="orderDisplay1N" name="order_display1" value="e" onchange="changement();" 
+		<label for="orderDisplay1Y" id="texte_orderDisplay1Y"> En début du bulletin</label>
+		<input type="radio" id="orderDisplay1N" name="order_display1" value="e" onchange="changement(); change_style_radio('order_display1');" 
 			<?php if ($order_display1 == "e") { echo ' checked="checked"';} ?> />
-		<label for="orderDisplay1N"> En fin de bulletin</label>
+		<label for="orderDisplay1N" id="texte_orderDisplay1N"> En fin de bulletin</label>
 	</p>
 	<p>
 		Position par rapport aux autres catégories d'aid (entrez un nombre entre 1 et 100) :
@@ -621,15 +663,31 @@ while ($i < $max_periode) {
 	<hr />
 	<p><strong>Affichage :  </strong></p>
 	<p>
-		<input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" onchange="changement();" 
+		<input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" onchange="changement(); checkbox_change(this.id);" 
 			<?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
-		<label for="display_Bulletin">Les AID de cette catégorie apparaissent dans le bulletin officiel</label>
+		<label for="display_Bulletin" id="texte_display_Bulletin">Les AID de cette catégorie apparaissent dans le bulletin officiel</label>
 	</p>
 	<p>
-		<input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' onchange="changement();" 
+		<input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' onchange="changement(); checkbox_change(this.id);" 
 			<?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
-		<label for="bullSimplifie">Les AID de cette catégorie apparaissent dans le bulletin simplifi&eacute;.</label>
+		<label for="bullSimplifie" id="texte_bullSimplifie">Les AID de cette catégorie apparaissent dans le bulletin simplifi&eacute;.</label>
 	</p>
+
+	<hr />
+
+	<?php
+		// 20181024 :	Dans les catégories AID, ajouter un texte modèle pour imposer dans les AID.
+		//			Avec un lien: Imposer sur tous les AID de la catégorie.
+
+
+
+
+
+
+
+
+	?>
+
 	<hr />
 	<p><strong>Inscriptions multiples :  </strong></p>
 	<p>
@@ -639,9 +697,9 @@ while ($i < $max_periode) {
 		d'un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.
 	</p>
 	<p>
-		<input type="checkbox" id="autoriser_inscript_multiples" name="autoriser_inscript_multiples" value="y" onchange="changement();" 
+		<input type="checkbox" id="autoriser_inscript_multiples" name="autoriser_inscript_multiples" value="y" onchange="changement(); checkbox_change(this.id);" 
 			<?php if ($autoriser_inscript_multiples == "y") { echo ' checked="checked"';} ?> />
-		<label for="autoriser_inscript_multiples">Autoriser les inscriptions multiples</label>
+		<label for="autoriser_inscript_multiples" id="texte_autoriser_inscript_multiples">Autoriser les inscriptions multiples</label>
 	</p>
 	<hr />
 <?php
@@ -673,12 +731,12 @@ if ($nombre !=0){
 $i = "0";
 // while ($i < $nombre) {
 while ($obj_liste_data = $call_liste_data->fetch_object()) {
-    // $login_gestionnaire = old_mysql_result($call_liste_data, $i, "login");
-    $login_gestionnaire = $obj_liste_data->login;
-    // $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
-    $nom_prof =  $obj_liste_data->nom;
-    // $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
-    $prenom_prof = $obj_liste_data->prenom;
+	// $login_gestionnaire = old_mysql_result($call_liste_data, $i, "login");
+	$login_gestionnaire = $obj_liste_data->login;
+	// $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
+	$nom_prof =  $obj_liste_data->nom;
+	// $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
+	$prenom_prof = $obj_liste_data->prenom;
 ?>
 		<tr>
 			<td>
@@ -696,7 +754,7 @@ while ($obj_liste_data = $call_liste_data->fetch_object()) {
 			</td>
 		</tr>
 <?php
-    $i++;
+	$i++;
 }
 //if ($nombre !=0)
 ?>
@@ -742,14 +800,14 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
 	<p>
 		<!--  onclick="javascript:Element.show('outils_comp');" -->
 		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_y" value="y" 
-			   onchange="changement(); js_adapte_outil_comp()" 
+			   onchange="changement(); js_adapte_outil_comp(); change_style_radio('activer_outils_comp');" 
 				   <?php if ($activer_outils_comp=='y') echo " checked='checked' "; ?> />
-		<label for='activer_outils_comp_y'>&nbsp;Activer les outils compl&eacute;mentaires</label>
+		<label for='activer_outils_comp_y' id='texte_activer_outils_comp_y'>&nbsp;Activer les outils compl&eacute;mentaires</label>
 		<br />
 		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_n" value="n" 
-			   onchange="changement();js_adapte_outil_comp()" 
+			   onchange="changement();js_adapte_outil_comp(); change_style_radio('activer_outils_comp');" 
 				   <?php if ($activer_outils_comp=='n') echo " checked='checked' "; ?> />
-		<label for='activer_outils_comp_n'>&nbsp;Désactiver les outils compl&eacute;mentaires</label>
+		<label for='activer_outils_comp_n' id='texte_activer_outils_comp_n'>&nbsp;Désactiver les outils compl&eacute;mentaires</label>
 	</p>
 <script type="text/javascript">
 function js_adapte_outil_comp() {
@@ -795,12 +853,12 @@ if ($nombre !=0) { ?>
 $i = "0";
 // while ($i < $nombre) {
 while ($obj_call_data = $call_liste_data->fetch_object()) {
-    // $login_prof = old_mysql_result($call_liste_data, $i, "login");
-    $login_prof = $obj_call_data->login;
-    // $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
-    $nom_prof = $obj_call_data->nom;
-    // $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
-    $prenom_prof = $obj_call_data->prenom;
+	// $login_prof = old_mysql_result($call_liste_data, $i, "login");
+	$login_prof = $obj_call_data->login;
+	// $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
+	$nom_prof = $obj_call_data->nom;
+	// $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
+	$prenom_prof = $obj_call_data->prenom;
 ?>
 			<tr title="<?php echo $obj_call_data->login;?>">
 				<td>
@@ -814,7 +872,7 @@ while ($obj_call_data = $call_liste_data->fetch_object()) {
 				</td>
 			</tr>
 <?php
-    $i++;
+	$i++;
 }
 //if ($nombre !=0) ?>
 		</table>
@@ -841,13 +899,46 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
 
 ?>
 </select>
-<hr /><p><b>Feuille de présence : </b></p>
+<hr /><p><b>Feuille de présence&nbsp;: </b></p>
 <p>En cochant la case présence ci-dessous, vous avez la possibilité, dans l'interface de visualisation, d'afficher un lien permettant d'imprimer des feuilles de présence.</p>
 <p>
-<input type="checkbox" id="feuillePresence" name="feuille_presence" value="y" <?php if ($feuille_presence == "y") { echo ' checked="checked"';} ?> onchange="changement();" />
-<label for="feuillePresence"> Afficher un lien permettant l'impression de feuilles de pr&eacute;sence</label>
+<input type="checkbox" id="feuillePresence" name="feuille_presence" value="y" <?php if ($feuille_presence == "y") { echo ' checked="checked"';} ?> onchange="changement(); checkbox_change(this.id);" />
+<label for="feuillePresence" id="texte_feuillePresence"> Afficher un lien permettant l'impression de feuilles de pr&eacute;sence</label>
 </p>
-</div>
+<?php
+// 20181121
+// Résumé par défaut
+echo "
+<hr />
+<p><b>Résumé&nbsp;: </b> <em>(Présentation du projet, objectifs, réalisations,...)</em><br />
+Il est possible de définir un résumé par défaut à appliquer à tous les AID de la catégorie.</p>
+<p>
+	<input type='checkbox' name='imposer_resume' id='imposer_resume' value='y' ".($imposer_resume=='y' ? "checked " : '')."onchange=\"changement(); checkbox_change(this.id);\" /><label for='imposer_resume' id='texte_imposer_resume'>Utiliser le même résumé pour toutes les AID de la catégorie.</label><br />
+	<textarea name=\"resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlspecialchars($resume)."</textarea>
+</p>
+<script type='text/javascript'>
+	".js_checkbox_change_style()."
+
+	".js_change_style_radio2()."
+
+	checkbox_change('display_Bulletin');
+	checkbox_change('bullSimplifie');
+	checkbox_change('autoriser_inscript_multiples');
+	checkbox_change('feuillePresence');
+	checkbox_change('imposer_resume');
+
+	change_style_radio('');
+
+	function CaracMax(texte, max) {
+		if (texte.value.length >= max) {
+			alert('Pas plus de ' + max + ' caractère(s) !!!') ;
+			texte.value = texte.value.substr(0, max - 1) ;
+		}
+	}
+</script>";
+
+?>
+</div><!-- Fin du DIV Outils Complémentaires -->
 
 </div>
 <input type="hidden" name="is_posted" value="1" />

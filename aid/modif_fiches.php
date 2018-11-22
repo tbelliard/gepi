@@ -142,21 +142,35 @@ if (isset($_POST["is_posted"])) {
         $sql_aid = "UPDATE archivage_aids SET ";
 	}
 
-    $met_virgule='n';
-    // Résumé
-    if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume','W',$annee)) and (isset($_POST["reg_resume"]))) {
-      $reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
-	  $resumeSurBulletin = filter_input(INPUT_POST, 'integreResume'); // ligne 740
-	  saveResumeSurBulletin($resumeSurBulletin, $aid_id) ;
-	  
-      if (mb_strlen($reg_resume) > 600) {
-        $reg_resume = mb_substr($reg_resume,0,597)."...";
-        $msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
-      }
-      if ($met_virgule=='y') {$sql_aid .=",";}
-      $sql_aid .= "resume = '".$reg_resume."'";
-      $met_virgule='y';
-    }
+	$met_virgule='n';
+
+	//========================================================================
+	// Résumé
+	$reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
+	//=====================================
+	// Résumé imposé depuis la catégorie
+	$sql="SELECT resume FROM aid_config WHERE indice_aid='$indice_aid' AND imposer_resume='y';";
+	$test_resume_aid_config=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test_resume_aid_config)>0) {
+		$lig_resume=mysqli_fetch_object($test_resume_aid_config);
+		$reg_resume=addslashes(trim($lig_resume->resume));
+	}
+	//=====================================
+	if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume','W',$annee)) and (isset($reg_resume))) {
+
+		$resumeSurBulletin = filter_input(INPUT_POST, 'integreResume'); // ligne 740
+		saveResumeSurBulletin($resumeSurBulletin, $aid_id) ;
+
+		if (mb_strlen($reg_resume) > 600) {
+			$reg_resume = mb_substr($reg_resume,0,597)."...";
+			$msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
+		}
+		if ($met_virgule=='y') {$sql_aid .=",";}
+		$sql_aid .= "resume = '".$reg_resume."'";
+		$met_virgule='y';
+	}
+	//========================================================================
+
     // Divers
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'divers','W',$annee)) and (isset($_POST["reg_divers"]))) {
       $reg_divers = isset($_POST["reg_divers"]) ? $_POST["reg_divers"] : NULL;
@@ -935,12 +949,25 @@ $epiApParcours = estEpiApParcours($indice_aid);
 
 
 if ($action != "visu") {
-  If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"W",$annee)) {
-    echo "<div class='bloc'><span class = 'bold'>Résumé</span> (limité à 600 caractères) :\n";
-    echo "<p><i>Présentation du projet, objectifs, réalisations, ....</i></p>\n";
-    echo "<p><textarea name=\"reg_resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlspecialchars($reg_resume)."</textarea></p>\n";
-	if ($epiApParcours) {
-	?>
+	if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"W",$annee)) {
+		echo "<div class='bloc'><span class = 'bold'>Résumé</span> (limité à 600 caractères)&nbsp;:\n";
+		echo "<p><i>Présentation du projet, objectifs, réalisations, ....</i></p>\n";
+		$sql="SELECT resume FROM aid_config WHERE indice_aid='$indice_aid' AND imposer_resume='y';";
+		$test_resume_aid_config=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_resume_aid_config)==0) {
+			echo "<p><textarea name=\"reg_resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlspecialchars($reg_resume)."</textarea></p>\n";
+		}
+		else {
+			$lig_resume=mysqli_fetch_object($test_resume_aid_config);
+			if(trim($lig_resume->resume)=='') {
+				echo "<p class='fieldset_opacite50' title=\"Résumé défini au niveau de la catégorie d'AID.\" style='padding:0.3em;'>".$non_defini."</p>\n";
+			}
+			else {
+				echo "<p class='fieldset_opacite50' title=\"Résumé défini au niveau de la catégorie d'AID.\" style='padding:0.3em;'>".htmlspecialchars($lig_resume->resume)."</p>\n";
+			}
+		}
+		if ($epiApParcours) {
+?>
 	<p>
 		<label for="integreResume">Intégrer le résumé aux appréciations élève du bulletin</label> 
 		<input type="checkbox" name="integreResume" id="integreResume" value="y" onchange="changement()" <?php if (aidEstAfficheBulletin($aid_id)) {echo " checked ='checked' ";} ?>/>
@@ -949,8 +976,8 @@ if ($action != "visu") {
 	}
   }
 } else {
-  If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"R",$annee)) {
-    echo "<div class='bloc'><span class = 'bold'>Résumé</span> (Présentation du projet, objectifs, réalisations, ....)\n";
+  if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"R",$annee)) {
+    echo "<div class='bloc'><span class = 'bold'>Résumé</span> <em>(Présentation du projet, objectifs, réalisations,...)</em>\n";
     if ($reg_resume == "") {
         echo "<br />".$non_defini."\n";
     } else {
@@ -962,9 +989,9 @@ echo "</div>\n";
 
 // Famille
 echo "<div class='bloc'>";
-If ($action != "visu") {
-  If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'famille',"W",$annee)) {
-    echo "<span class = 'bold'>Classez votre projet parmi la liste suivante (classification Dewey) : </span><br />\n";
+if ($action != "visu") {
+  if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'famille',"W",$annee)) {
+    echo "<span class = 'bold'>Classez votre projet parmi la liste suivante <em>(classification Dewey)</em>&nbsp;: </span><br />\n";
     $call_famille = mysqli_query($GLOBALS["mysqli"], "select * from aid_familles order by ordre_affichage");
     $nb_famille = mysqli_num_rows($call_famille);
     echo "<select name=\"reg_famille\" size=\"1\" onchange=\"changement()\">\n";

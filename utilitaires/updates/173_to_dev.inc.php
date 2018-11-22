@@ -329,7 +329,39 @@ foreach($tab_enseignements_complement as $code => $libelle) {
 	}
 }
 if($temoin_modif_reg_enseignements_complement==0) {
-	$result.=" ";
+	$result.=msj_present("Les valeurs sont déjà correctes");
+}
+else {
+	$result.="<br />";
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'resume' à la table 'aid_config'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM aid_config LIKE 'resume';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE aid_config ADD resume text NOT NULL;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+$result .= "&nbsp;-> Ajout d'un champ 'imposer_resume' à la table 'aid_config'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM aid_config LIKE 'imposer_resume';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE aid_config ADD imposer_resume CHAR(1) NOT NULL DEFAULT 'n';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
 }
 
 ?>
