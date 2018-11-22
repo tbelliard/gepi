@@ -4690,7 +4690,7 @@ echo "</pre>";
 
 
 		$largeur_dispo_app_abs=$param_bull2016["largeur_communication_famille"];
-		if((isset($tab_bull['eleve'][$i]['engagements']["id_engagement"]))&&(count($tab_bull['eleve'][$i]['engagements']["id_engagement"]>0))) {
+		if((isset($tab_bull['eleve'][$i]['engagements']["id_engagement"]))&&(count($tab_bull['eleve'][$i]['engagements']["id_engagement"])>0)) {
 
 			$texte="";
 			for($loop_eng=0;$loop_eng<count($tab_bull['eleve'][$i]['engagements']["indice"]);$loop_eng++) {
