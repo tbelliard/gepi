@@ -569,7 +569,7 @@ else {
 
 	$tab_ele=array();
 	$tab_ele_per=array();
-	$sql="SELECT DISTINCT e.*, jec.periode FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' ORDER BY jec.periode, e.nom, e.prenom;";
+	$sql="SELECT DISTINCT e.*, jec.periode FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' ORDER BY e.nom, e.prenom, jec.periode;";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_assoc($res)) {
 		$tab_ele[$lig['login']]=$lig;
