@@ -1026,27 +1026,36 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['valide_form_bull']))) {
 	$aff_photo_saisie_app=isset($_POST['aff_photo_saisie_app']) ? $_POST['aff_photo_saisie_app'] : "n";
 	$insert=savePref($_SESSION['login'], 'aff_photo_saisie_app', $aff_photo_saisie_app);
 	if($insert) {
-		$msg.="Enregistrement de aff_photo_saisie_app effectué.<br />\n";
+		$msg.="Enregistrement de 'aff_photo_saisie_app' effectué.<br />\n";
 	}
 	else {
-		$msg.="Erreur lors de l'enregistrement de aff_photo_saisie_app à $aff_photo_saisie_app.<br />\n";
-		$message_bulletins.="Erreur lors de l'enregistrement de aff_photo_saisie_app à $aff_photo_saisie_app.<br />";
+		$msg.="Erreur lors de l'enregistrement de 'aff_photo_saisie_app' à $aff_photo_saisie_app.<br />\n";
+		$message_bulletins.="Erreur lors de l'enregistrement de 'aff_photo_saisie_app' à $aff_photo_saisie_app.<br />";
 	}
 
 	$saisie_app_nb_cols_textarea=isset($_POST['saisie_app_nb_cols_textarea']) ? $_POST['saisie_app_nb_cols_textarea'] : 100;
 	if((!is_numeric($saisie_app_nb_cols_textarea))||($saisie_app_nb_cols_textarea<=0)) {
-		$msg.="Valeur invalide sur saisie_app_nb_cols_textarea pour ".$_SESSION['login']."<br />\n";
-		$message_bulletins.="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$msg.="Valeur invalide sur 'saisie_app_nb_cols_textarea' pour ".$_SESSION['login']."<br />\n";
+		$message_bulletins.="<p style='color:red'>Erreur lors de l'enregistrement de 'saisie_app_nb_cols_textarea'&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 	elseif(!savePref($_SESSION['login'], 'saisie_app_nb_cols_textarea', $saisie_app_nb_cols_textarea)) {
-		$msg.="Erreur lors de l'enregistrement de saisie_app_nb_cols_textarea pour ".$_SESSION['login']."<br />\n";
-		$message_bulletins.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$msg.="Erreur lors de l'enregistrement de 'saisie_app_nb_cols_textarea' pour ".$_SESSION['login']."<br />\n";
+		$message_bulletins.="<p style='color:red'>Erreur lors de l'enregistrement de 'saisie_app_nb_cols_textarea'&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 	else {
-		$msg.="Enregistrement de saisie_app_nb_cols_textarea effectué.<br />\n";
-		$message_bulletins.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$msg.="Enregistrement de 'saisie_app_nb_cols_textarea' effectué.<br />\n";
+		$message_bulletins.="<p style='color:green'>Enregistrement effectué de 'saisie_app_nb_cols_textarea'&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 
+	$saisie_app_bordure_app_vide=isset($_POST['saisie_app_bordure_app_vide']) ? $_POST['saisie_app_bordure_app_vide'] : 'n';
+	if(!savePref($_SESSION['login'], 'saisie_app_bordure_app_vide', $saisie_app_bordure_app_vide)) {
+		$msg.="Erreur lors de l'enregistrement de 'saisie_app_bordure_app_vide' pour ".$_SESSION['login']."<br />\n";
+		$message_bulletins.="<p style='color:red'>Erreur lors de l'enregistrement de 'saisie_app_bordure_app_vide'&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
+	else {
+		$msg.="Enregistrement de 'saisie_app_bordure_app_vide' effectué.<br />\n";
+		$message_bulletins.="<p style='color:green'>Enregistrement effectué de 'saisie_app_bordure_app_vide'&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
 
 
 	$id_groupe_AppPP=isset($_POST['id_groupe_AppPP']) ? $_POST['id_groupe_AppPP'] : array();
@@ -1085,10 +1094,11 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['valide_form_bull']))) {
 	}
 
 	$msg.="$cpt_modif modification(s) d'autorisation de correction d'appréciation par le ".getSettingValue('gepi_prof_suivi')."<br />";
-	$msg.="$cpt_err erreur(s) lors de l'opération.<br />";
-
 	$message_bulletins.="<span style='color:green'>$cpt_modif modification(s) d'autorisation de correction d'appréciation par le ".getSettingValue('gepi_prof_suivi')."</span><br />";
-	$message_bulletins.="<span style='color:red'>$cpt_err erreur(s) lors de l'opération.</span><br />";
+	if($cpt_err>0) {
+		$msg.="$cpt_err erreur(s) lors de l'opération.<br />";
+		$message_bulletins.="<span style='color:red'>$cpt_err erreur(s) lors de l'opération.</span><br />";
+	}
 }
 
 
@@ -3197,6 +3207,17 @@ if($_SESSION["statut"] == "professeur") {
 	$tabindex++;
 	echo " />";
 
+	// 20181123
+	$saisie_app_bordure_app_vide=getPref($_SESSION["login"], 'saisie_app_bordure_app_vide', 'y');
+	echo "<p>\n";
+	echo "<input type='checkbox' name='saisie_app_bordure_app_vide' id='saisie_app_bordure_app_vide' value='y' ";
+	echo "onchange=\"checkbox_change('saisie_app_bordure_app_vide');changement()\" ";
+	if($saisie_app_bordure_app_vide=='y') {echo 'checked';}
+	echo " tabindex='$tabindex' ";
+	$tabindex++;
+	echo " /><label for='saisie_app_bordure_app_vide' id='texte_saisie_app_bordure_app_vide'> Mise en exergue des oublis de saisie d'appréciation&nbsp;: Afficher une bordure rouge autour des champs de saisie vides lors de la saisie des appréciations sur les bulletins.</label>\n";
+	echo "</p>";
+
 	// 20140502
 	if((getSettingAOui('PeutAutoriserPPaCorrigerSesApp'))&&(count($groups)>0)) {
 		echo "<p style='margin-top:1em;'>Vous pouvez autoriser le ".getSettingValue('gepi_prof_suivi')." à corriger vos appréciations sur les bulletins.<br />
@@ -4477,7 +4498,7 @@ if(getSettingAOui("active_bulletins")) {
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_avec_sup10', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', 'accueil_tableau_ouverture_periode_y', 'accueil_tableau_ouverture_periode_n', 'accueil_tableau_acces_app_bull_ele_resp_y', 'accueil_tableau_acces_app_bull_ele_resp_n', $chaine_champs_checkbox_mod_discipline);
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'saisie_app_bordure_app_vide', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_avec_sup10', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', 'accueil_tableau_ouverture_periode_y', 'accueil_tableau_ouverture_periode_n', 'accueil_tableau_acces_app_bull_ele_resp_y', 'accueil_tableau_acces_app_bull_ele_resp_n', $chaine_champs_checkbox_mod_discipline);
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);

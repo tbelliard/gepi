@@ -872,6 +872,8 @@ $quePerso=getPref($_SESSION['login'], "ElementsProgrammesQuePerso", false);
 $queMat=getPref($_SESSION['login'], "ElementsProgrammesQueMat", false);
 $queNiveau=getPref($_SESSION['login'], "ElementsProgrammesQueNiveau", false);
 
+$saisie_app_bordure_app_vide=getPref($_SESSION['login'], "saisie_app_bordure_app_vide", 'y');
+
 $acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
@@ -2653,18 +2655,18 @@ echo "
 				if(document.getElementById(textId)) {
 					contenu=document.getElementById(textId).value;
 					if(contenu=='') {
-						document.getElementById(textId).title=\"En fin de période, l'appréciation ne devrait pas être vide sauf si cet élève n'est pas affecté dans votre enseignement. Vous devriez alors signaler l'erreur d'inscription à l'administrateur.\";
+						document.getElementById(textId).title=\"En fin de période, l'appréciation ne devrait pas être vide sauf si cet élève n'est pas affecté dans votre enseignement. Vous devriez alors signaler l'erreur d'inscription à l'administrateur.\";".(($saisie_app_bordure_app_vide=='y') ? "
 						document.getElementById(textId).style.borderWidth='10px';
 						document.getElementById(textId).style.borderStyle='solid';
-						document.getElementById(textId).style.borderColor='red';
+						document.getElementById(textId).style.borderColor='red';" : "")."
 						//alert('plop');
 					}
 					else {
-						document.getElementById(textId).title=\"\";
+						document.getElementById(textId).title=\"\";".(($saisie_app_bordure_app_vide=='y') ? "
 						//document.getElementById(textId).style.border='';
 						document.getElementById(textId).style.borderWidth='0px';
 						document.getElementById(textId).style.borderStyle='solid';
-						document.getElementById(textId).style.borderColor='';
+						document.getElementById(textId).style.borderColor='';" : "")."
 					}
 				}
 			}
@@ -2672,6 +2674,20 @@ echo "
 	}
 	verif_saisies_non_vides();
 
+	function mise_en_exergue_textarea_vide(textId, mode) {
+		".(($saisie_app_bordure_app_vide=='y') ? "
+		if(mode==true) {
+			document.getElementById(textId).style.borderWidth='10px';
+			document.getElementById(textId).style.borderStyle='solid';
+			document.getElementById(textId).style.borderColor='red';
+		}
+		else {
+			document.getElementById(textId).style.borderWidth='0px';
+			document.getElementById(textId).style.borderStyle='solid';
+			document.getElementById(textId).style.borderColor='';
+		}
+		" : "")."
+	}
 </script>\n";
 
 
