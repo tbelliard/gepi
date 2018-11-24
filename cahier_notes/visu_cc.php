@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -256,7 +256,8 @@ if(isset($_GET['export_pdf'])) {
 			$tab_eval[$cpt]['id_eval']=$lig_eval->id;
 			$tab_eval[$cpt]['note_sur']=$lig_eval->note_sur;
 
-			$sql="SELECT cc.* FROM cc_notes_eval cc WHERE cc.id_eval='$lig_eval->id' ORDER BY cc.login;";
+			//$sql="SELECT cc.* FROM cc_notes_eval cc WHERE cc.id_eval='$lig_eval->id' ORDER BY cc.login;";
+			$sql="SELECT cc.* FROM cc_notes_eval cc, eleves e WHERE cc.id_eval='$lig_eval->id' AND cc.login=e.login ORDER BY e.nom, e.prenom, cc.login;";
 			//echo "$sql<br />";
 			$res_en=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_en)>0) {
