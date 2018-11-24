@@ -18,26 +18,7 @@ function ajaxAppreciations(eleveperiode, enseignement, textId){
 	//  ou alors résupérer un retour par Ajax.Request avec onSuccess ou onFailure
 	//alert(enseignement+' \n'+eleveperiode+' \n'+textId+' \n Essai = ' +essai+' \nContenu = '+contenu);
 
-	if(contenu=='') {
-		document.getElementById(textId).title="En fin de période, l'appréciation ne devrait pas être vide sauf si cet élève n'est pas affecté dans votre enseignement. Vous devriez alors signaler l'erreur d'inscription à l'administrateur.";
-		/*
-		document.getElementById(textId).style.borderWidth='10px';
-		document.getElementById(textId).style.borderStyle='solid';
-		document.getElementById(textId).style.borderColor='red';
-		*/
-		mise_en_exergue_textarea_vide(textId, true);
-		//alert('plop');
-	}
-	else {
-		document.getElementById(textId).title="";
-		//document.getElementById(textId).style.border='';
-		/*
-		document.getElementById(textId).style.borderWidth='0px';
-		document.getElementById(textId).style.borderStyle='solid';
-		document.getElementById(textId).style.borderColor='';
-		*/
-		mise_en_exergue_textarea_vide(textId, false);
-	}
+	mise_en_exergue_textarea_vide(textId);
 
 	document.getElementById('div_verif_'+textId).innerHTML="<img src='../images/spinner.gif' class='icone16' alt='Enregistrement temp...' title='Enregistrement de l appréciation dans une table temporaire.' />";
 	new Ajax.Updater($('div_verif_'+textId),url,o_options);

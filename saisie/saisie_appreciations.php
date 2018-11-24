@@ -2647,47 +2647,39 @@ echo "
 		//alert(chaine);
 	}
 
-	// 20180623
+	function mise_en_exergue_textarea_vide(textId) {
+		if(document.getElementById(textId)) {
+			contenu=document.getElementById(textId).value;
+			if(contenu=='') {
+				".(($saisie_app_bordure_app_vide=='y') ? "
+
+				document.getElementById(textId).title=\"En fin de période, l'appréciation ne devrait pas être vide\\nsauf si cet élève n'est pas affecté dans votre enseignement.\\nVous devriez dans ce dernier cas signaler l'erreur d'inscription à l'administrateur.\\n\\nNote : il est possible de désactiver l'affichage de la bordure rouge dans 'Gérer mon compte' (en haut à droite).\";
+				document.getElementById(textId).style.borderWidth='10px';
+				document.getElementById(textId).style.borderStyle='solid';
+				document.getElementById(textId).style.borderColor='red';
+
+				" : "
+					document.getElementById(textId).title=\"En fin de période, l'appréciation ne devrait pas être vide\\nsauf si cet élève n'est pas affecté dans votre enseignement.\\nVous devriez dans ce dernier cas signaler l'erreur d'inscription à l'administrateur.\";")."
+			}
+			else {
+				document.getElementById(textId).title=\"\";
+				document.getElementById(textId).style.borderWidth='0px';
+				document.getElementById(textId).style.borderStyle='solid';
+				document.getElementById(textId).style.borderColor='';
+			}
+		}
+	}
+
 	function verif_saisies_non_vides() {
 		for(num_per=1;num_per<".$nb_periode.";num_per++) {
 			for(i=10;i<".(count($liste_eleves)+10).";i++) {
 				textId='n'+num_per+i;
-				if(document.getElementById(textId)) {
-					contenu=document.getElementById(textId).value;
-					if(contenu=='') {
-						document.getElementById(textId).title=\"En fin de période, l'appréciation ne devrait pas être vide sauf si cet élève n'est pas affecté dans votre enseignement. Vous devriez alors signaler l'erreur d'inscription à l'administrateur.\";".(($saisie_app_bordure_app_vide=='y') ? "
-						document.getElementById(textId).style.borderWidth='10px';
-						document.getElementById(textId).style.borderStyle='solid';
-						document.getElementById(textId).style.borderColor='red';" : "")."
-						//alert('plop');
-					}
-					else {
-						document.getElementById(textId).title=\"\";".(($saisie_app_bordure_app_vide=='y') ? "
-						//document.getElementById(textId).style.border='';
-						document.getElementById(textId).style.borderWidth='0px';
-						document.getElementById(textId).style.borderStyle='solid';
-						document.getElementById(textId).style.borderColor='';" : "")."
-					}
-				}
+				mise_en_exergue_textarea_vide(textId);
 			}
 		}
 	}
-	verif_saisies_non_vides();
 
-	function mise_en_exergue_textarea_vide(textId, mode) {
-		".(($saisie_app_bordure_app_vide=='y') ? "
-		if(mode==true) {
-			document.getElementById(textId).style.borderWidth='10px';
-			document.getElementById(textId).style.borderStyle='solid';
-			document.getElementById(textId).style.borderColor='red';
-		}
-		else {
-			document.getElementById(textId).style.borderWidth='0px';
-			document.getElementById(textId).style.borderStyle='solid';
-			document.getElementById(textId).style.borderColor='';
-		}
-		" : "")."
-	}
+	verif_saisies_non_vides();
 </script>\n";
 
 
