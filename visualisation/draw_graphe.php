@@ -88,7 +88,8 @@
 	}
 
 	//============================================
-	writinfo('/tmp/infos_graphe.txt','w+',"Avant la récupération des moyennes.\n");
+	$fichier_debug="../backup/infos_graphe.txt";
+	writinfo($fichier_debug,'w+',"Avant la récupération des moyennes.\n");
 
 	// Récupération des moyennes:
 	$moytmp=array();
@@ -106,7 +107,7 @@
 			//fwrite($fich,"\$moyenne[$k][$i]=".$moyenne[$k][$i]."\n");
 			// PROBLEME: en register_global=on, les 2ème, 3ème,... séries ne sont pas récupérées.
 			//           On obtient juste moyenne[2][1]=- et rien après.
-			writinfo('/tmp/infos_graphe.txt','a+',"\$moyenne[$k][$i]=".$moyenne[$k][$i]."\n");
+			writinfo($fichier_debug,'a+',"\$moyenne[$k][$i]=".$moyenne[$k][$i]."\n");
 		}
 	}
 	//============================================
@@ -129,11 +130,11 @@
 	}
 
 	$tronquer_nom_court=isset($_GET['tronquer_nom_court']) ? $_GET['tronquer_nom_court'] : '0';
-	writinfo('/tmp/infos_graphe.txt','a+',"\$tronquer_nom_court=$tronquer_nom_court\n");
+	writinfo($fichier_debug,'a+',"\$tronquer_nom_court=$tronquer_nom_court\n");
 	if((!ctype_digit($tronquer_nom_court))||($tronquer_nom_court<0)||($tronquer_nom_court>10)){
 		$tronquer_nom_court=0;
 	}
-	writinfo('/tmp/infos_graphe.txt','a+',"\$tronquer_nom_court=$tronquer_nom_court\n");
+	writinfo($fichier_debug,'a+',"\$tronquer_nom_court=$tronquer_nom_court\n");
 
 	//settype($largeurTotale,'integer');
 	//settype($hauteurTotale,'integer');
@@ -145,7 +146,7 @@
 		$taille_police=3;
 	}
 
-	writinfo('/tmp/infos_graphe.txt','a+',"\n\$taille_police=$taille_police<br />\n");
+	writinfo($fichier_debug,'a+',"\n\$taille_police=$taille_police<br />\n");
 
 	//$epaisseur_traits=2;
 	$epaisseur_traits=isset($_GET['epaisseur_traits']) ? $_GET['epaisseur_traits'] : '2';
@@ -160,7 +161,7 @@
 	$epaisseur_grad=1;
 
 
-	writinfo('/tmp/infos_graphe.txt','a+',"\nAvant la récupération des matières.\n");
+	writinfo($fichier_debug,'a+',"\nAvant la récupération des matières.\n");
 
 	$eleve=array();
 
@@ -185,10 +186,10 @@
 				$matiere_nom_long[$i]=$matiere[$i];
 			}
 		}
-		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=".$matiere[$i]."\n");
+		writinfo($fichier_debug,'a+',"\$matiere[$i]=".$matiere[$i]."\n");
 	}
 
-	writinfo('/tmp/infos_graphe.txt','a+',"\nAvant les titres...\n");
+	writinfo($fichier_debug,'a+',"\nAvant les titres...\n");
 	$titre = unslashes($_GET['titre']);
 	$k = 1;
 	//while ($k < $nb_data) {
@@ -201,7 +202,7 @@
 		}
 		// $eleve peut en fait être une moyenne de classe ou même un trimestre...
 		$eleve[$k]=$legendy[$k];
-		writinfo('/tmp/infos_graphe.txt','a+',"\$eleve[$k]=".$eleve[$k]."\n");
+		writinfo($fichier_debug,'a+',"\$eleve[$k]=".$eleve[$k]."\n");
 		//$k++;
 	}
 	//============================================
@@ -242,7 +243,7 @@
 
 		// Si la moyenne annuelle est demandée, on calcule:
 		if(isset($_GET['affiche_moy_annuelle'])){
-			writinfo('/tmp/infos_graphe.txt','a+',"\nAvant la moyenne annuelle...\n");
+			writinfo($fichier_debug,'a+',"\nAvant la moyenne annuelle...\n");
 
 			// La moyenne annuelle amène une série de plus:
 			$nb_series_bis++;
@@ -255,7 +256,7 @@
 				for($k=1;$k<=$nb_periode;$k++){
 
 
-					writinfo('/tmp/infos_graphe.txt','a+',"mb_strlen(preg_replace(\"/[0-9\.]/\",\"\",\$moyenne[".$k."][".$i."]))=mb_strlen(preg_replace(\"/[0-9\.]/\",\"\",".$moyenne[$k][$i]."))=".mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))."\n");
+					writinfo($fichier_debug,'a+',"mb_strlen(preg_replace(\"/[0-9\.]/\",\"\",\$moyenne[".$k."][".$i."]))=mb_strlen(preg_replace(\"/[0-9\.]/\",\"\",".$moyenne[$k][$i]."))=".mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))."\n");
 
 					//if(($moyenne[$k][$i]!='-')&&(mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
 					//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&(mb_strtoupper($moyenne[$k][$i])!="ABS")&&(mb_strtoupper($moyenne[$k][$i])!="AB")&&(mb_strtoupper($moyenne[$k][$i])!="DIS")&&(mb_strtoupper($moyenne[$k][$i])!="DISP")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i]))){
@@ -272,7 +273,7 @@
 				}
 				$moyenne[$nb_periode+1][$i]=$moy_annee[$i];
 				$indice_per_suppl=$nb_periode+1;
-				writinfo('/tmp/infos_graphe.txt','a+',"\$moyenne[".$indice_per_suppl."][$i]=".$moyenne[$indice_per_suppl][$i]."\n");
+				writinfo($fichier_debug,'a+',"\$moyenne[".$indice_per_suppl."][$i]=".$moyenne[$indice_per_suppl][$i]."\n");
 			}
 		}
 	}
@@ -327,7 +328,7 @@
 	}
 
 
-	writinfo('/tmp/infos_graphe.txt','a+',"\nAvant seriemin, seriemax,...\n");
+	writinfo($fichier_debug,'a+',"\nAvant seriemin, seriemax,...\n");
 
 	// Récupération des moyennes minimales et maximales
 	// si elles ont été transmises:
@@ -337,7 +338,7 @@
 		// On décale pour commencer à compter à 1:
 		for($i=1;$i<=count($moy_min_tmp);$i++){
 			$moy_min[$i]=$moy_min_tmp[$i-1];
-			writinfo('/tmp/infos_graphe.txt','a+',"\$moy_min[$i]=".$moy_min[$i]."\n");
+			writinfo($fichier_debug,'a+',"\$moy_min[$i]=".$moy_min[$i]."\n");
 		}
 	}
 
@@ -347,7 +348,7 @@
 		// On décale pour commencer à compter à 1:
 		for($i=1;$i<=count($moy_max_tmp);$i++){
 			$moy_max[$i]=$moy_max_tmp[$i-1];
-			writinfo('/tmp/infos_graphe.txt','a+',"\$moy_max[$i]=".$moy_max[$i]."\n");
+			writinfo($fichier_debug,'a+',"\$moy_max[$i]=".$moy_max[$i]."\n");
 		}
 	}
 
@@ -395,7 +396,7 @@
 	imagesetthickness($img,2);
 	//============================================
 
-	writinfo('/tmp/infos_graphe.txt','a+',"\nAprès imageCreate, imagethickness...\n");
+	writinfo($fichier_debug,'a+',"\nAprès imageCreate, imagethickness...\n");
 
 
 
@@ -548,13 +549,17 @@
 	else{
 		// Ou affichage des bandes min-max
 		for($i=1;$i<$nbMat+1;$i++){
-			// Les +2 et -2 servent à laisser un jour entre les bandes pour une meilleure lisibilité
-			$x1=round($largeurGrad+($i-1)*$largeurMat)+2;
-			$x2=round($largeurGrad+$i*$largeurMat)-2;
-			$ordonneemin=round($hauteurMoy+$hauteur-$moy_min[$i]*$hauteur/20);
-			$ordonneemax=round($hauteurMoy+$hauteur-$moy_max[$i]*$hauteur/20);
-			//Note: Il faut veiller à ce que la bande2 ressorte sur le fond!
-			imageFilledRectangle($img,$x1,$ordonneemax,$x2,$ordonneemin,$bande2);
+			if((isset($moy_min[$i]))&&(isset($moy_max[$i]))&&(is_numeric($moy_min[$i]))&&(is_numeric($moy_max[$i]))) {
+				// Les +2 et -2 servent à laisser un jour entre les bandes pour une meilleure lisibilité
+				$x1=round($largeurGrad+($i-1)*$largeurMat)+2;
+				$x2=round($largeurGrad+$i*$largeurMat)-2;
+				$ordonneemin=round($hauteurMoy+$hauteur-$moy_min[$i]*$hauteur/20);
+				writinfo($fichier_debug,'a+',$matiere[$i].": \$ordonneemin=round($hauteurMoy+$hauteur-".$moy_min[$i]."*$hauteur/20)=".$ordonneemin.";\n");
+				$ordonneemax=round($hauteurMoy+$hauteur-$moy_max[$i]*$hauteur/20);
+				writinfo($fichier_debug,'a+',$matiere[$i].":\$ordonneemax=round($hauteurMoy+$hauteur-".$moy_max[$i]."*$hauteur/20)=".$ordonneemax.";\n");
+				//Note: Il faut veiller à ce que la bande2 ressorte sur le fond!
+				imageFilledRectangle($img,$x1,$ordonneemax,$x2,$ordonneemin,$bande2);
+			}
 		}
 	}
 	//===========================================
@@ -670,14 +675,14 @@
 			$matiere_tronquee=mb_substr($matiere[$i],0,$tronquer_nom_court);
 		}
 
-		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=$matiere[$i]\n");
-		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere_tronquee=$matiere_tronquee\n");
+		writinfo($fichier_debug,'a+',"\$matiere[$i]=$matiere[$i]\n");
+		writinfo($fichier_debug,'a+',"\$matiere_tronquee=$matiere_tronquee\n");
 
 		$largeur_texte = mb_strlen($matiere_tronquee) * ImageFontWidth($taille_police);
 		imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_tronquee);
 
-		writinfo('/tmp/infos_graphe.txt','a+',"\$taille_police=$taille_police\n");
-		writinfo('/tmp/infos_graphe.txt','a+',"\$largeur_texte=$largeur_texte\n");
+		writinfo($fichier_debug,'a+',"\$taille_police=$taille_police\n");
+		writinfo($fichier_debug,'a+',"\$largeur_texte=$largeur_texte\n");
 
 		for($k=1;$k<=$nb_series_bis;$k++) {
 			//if(($k==1)||($avec_moy_classe!='n')||($legendy[2]=='Toutes_les_périodes')) {
@@ -712,7 +717,7 @@
 					$largeur_texte = mb_strlen($texte_courant) * ImageFontWidth($taille_police);
 
 					$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-					writinfo('/tmp/infos_graphe.txt','a+',"imagettftext($img, ".($taille_police*$rapport_imageString_imagettftext).", 0, ".($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)).", ".($ytmp+10).", $couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, ".$texte_courant.")\n");
+					writinfo($fichier_debug,'a+',"imagettftext($img, ".($taille_police*$rapport_imageString_imagettftext).", 0, ".($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)).", ".($ytmp+10).", $couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, ".$texte_courant.")\n");
 					imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
 				}
 			//}
@@ -939,7 +944,7 @@
 
 
 
-	writinfo('/tmp/infos_graphe.txt','a+',"\nJuste avant imagePNG\n");
+	writinfo($fichier_debug,'a+',"\nJuste avant imagePNG\n");
 
 	imagePNG($img);
 
