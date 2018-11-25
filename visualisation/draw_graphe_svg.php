@@ -593,26 +593,27 @@
 	else{
 		// Ou affichage des bandes min-max
 		for($i=1;$i<$nbMat+1;$i++){
-			// Les +2 et -2 servent à laisser un jour entre les bandes pour une meilleure lisibilité
-			$x1=round($largeurGrad+($i-1)*$largeurMat)+2;
-			$x2=round($largeurGrad+$i*$largeurMat)-2;
-			$ordonneemin=round($hauteurMoy+$hauteur-$moy_min[$i]*$hauteur/20);
-			$ordonneemax=round($hauteurMoy+$hauteur-$moy_max[$i]*$hauteur/20);
-			//Note: Il faut veiller à ce que la bande2 ressorte sur le fond!
-			//imageFilledRectangle($img,$x1,$ordonneemax,$x2,$ordonneemin,$bande2);
+			if((isset($moy_min[$i]))&&(isset($moy_max[$i]))&&(is_numeric($moy_min[$i]))&&(is_numeric($moy_max[$i]))) {
+				// Les +2 et -2 servent à laisser un jour entre les bandes pour une meilleure lisibilité
+				$x1=round($largeurGrad+($i-1)*$largeurMat)+2;
+				$x2=round($largeurGrad+$i*$largeurMat)-2;
+				$ordonneemin=round($hauteurMoy+$hauteur-$moy_min[$i]*$hauteur/20);
+				$ordonneemax=round($hauteurMoy+$hauteur-$moy_max[$i]*$hauteur/20);
+				//Note: Il faut veiller à ce que la bande2 ressorte sur le fond!
+				//imageFilledRectangle($img,$x1,$ordonneemax,$x2,$ordonneemin,$bande2);
 
-			//echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"".$hauteur+$hauteurMoy."\" style=\"fill:blue; stroke-width:1; stroke:black\" />";
-			//echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"100\" style=\"fill:blue; stroke-width:1; stroke:lime\" />";
-			$hauteur_rect=$ordonneemin-$ordonneemax;
-			//echo "<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:blue; stroke-width:1; stroke:lime\" />\n";
-			//echo "<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:$bande2; stroke-width:1; stroke:lime\" />\n";
-			echo "<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:$bande2; stroke-width:1; stroke:$fond\" />\n";
+				//echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"".$hauteur+$hauteurMoy."\" style=\"fill:blue; stroke-width:1; stroke:black\" />";
+				//echo "<rect x=\"$x1\" y=\"$hauteurMoy\" width=\"$largeurMat\" height=\"100\" style=\"fill:blue; stroke-width:1; stroke:lime\" />";
+				$hauteur_rect=$ordonneemin-$ordonneemax;
+				//echo "<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:blue; stroke-width:1; stroke:lime\" />\n";
+				//echo "<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:$bande2; stroke-width:1; stroke:lime\" />\n";
+				echo "<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:$bande2; stroke-width:1; stroke:$fond\" />\n";
 
-			//$fich_tmp=fopen("/tmp/svg.txt","a+");
-			//fwrite($fich_tmp,"<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:blue; stroke-width:1; stroke:lime\" />\n");
-			//fwrite($fich_tmp,"<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:$bande2; stroke-width:1; stroke:lime\" />\n");
-			//fclose($fich_tmp);
-
+				//$fich_tmp=fopen("/tmp/svg.txt","a+");
+				//fwrite($fich_tmp,"<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:blue; stroke-width:1; stroke:lime\" />\n");
+				//fwrite($fich_tmp,"<rect x=\"$x1\" y=\"$ordonneemax\" width=\"$largeurMat\" height=\"$hauteur_rect\" style=\"fill:$bande2; stroke-width:1; stroke:lime\" />\n");
+				//fclose($fich_tmp);
+			}
 		}
 	}
 
