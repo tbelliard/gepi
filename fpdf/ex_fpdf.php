@@ -645,7 +645,7 @@ echo "</pre>";
             $l+=$cw["a"];
         }
         */
-        if(isset($cw[$c])) {
+        if((isset($cw[$c]))&&(is_numeric($cw[$c]))) {
             $l+=$cw[$c];
         }
         if($l>$wmax)
