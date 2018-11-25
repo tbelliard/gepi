@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -994,7 +994,7 @@ Les saisies/modifications sont possibles.";
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
 							//echo "<br /><br /><br />\n";
-							echo "<p style='border:1px solid black; margin-bottom:5px;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+							echo "<p style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 							//echo "<br />\n";
 							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 						}
