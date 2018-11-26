@@ -324,7 +324,8 @@ if (isset($_POST['is_posted'])) {
                 //f_write_tmp("\$_POST['app_grp_'.$k]=".$_POST['app_grp_'.$k]);
                 //f_write_tmp("\$current_group[\"classe\"][\"ver_periode\"]['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]);
                 if(($current_group["classe"]["ver_periode"]['all'][$k]>=2)||
-                    (($current_group["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+                    (($current_group["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))||
+                    (($acces_exceptionnel_complet=="y")&&($_SESSION['statut']=='professeur'))) {
 
                     if (isset($NON_PROTECT["app_grp_".$k])){
                         $app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["app_grp_".$k]));
