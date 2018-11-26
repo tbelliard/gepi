@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -823,7 +823,8 @@ if($_SESSION['statut']=='professeur') {
 			$res_clas=mysqli_query($GLOBALS['mysqli'], $sql);
 			$loop=0;
 			while($lig_clas=mysqli_fetch_object($res_clas)) {
-				echo "<label id='label_tab_id_classe_$loop' for='tab_id_classe_$loop' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$loop' value='".$lig_clas->id_classe."' onchange='change_style_classe($loop)' /> ".$lig_clas->classe."</label>";
+				echo "<label id='label_tab_id_classe_$loop' for='tab_id_classe_$loop' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$loop' value='".$lig_clas->id_classe."' onchange='change_style_classe($loop)' /> ".$lig_clas->classe."</label> <span style='font-size:x-small'>".affiche_date_prochain_conseil_de_classe_classe($lig_clas->id_classe, '', 'span_light')."</span>";
+
 				echo "<br />\n";
 				$loop++;
 			}
@@ -874,7 +875,7 @@ if($_SESSION['statut']=='professeur') {
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
 				for($loop=0;$loop<count($tab_pp['id_classe']);$loop++) {
-					echo "<label id='label_tab_id_classe_$loop' for='tab_id_classe_$loop' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$loop' value='".$tab_pp['id_classe'][$loop]."' onchange='change_style_classe($loop)' /> ".$tab_pp['classe'][$loop]."</label>";
+					echo "<label id='label_tab_id_classe_$loop' for='tab_id_classe_$loop' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$loop' value='".$tab_pp['id_classe'][$loop]."' onchange='change_style_classe($loop)' /> ".$tab_pp['classe'][$loop]."</label> <span style='font-size:x-small'>".affiche_date_prochain_conseil_de_classe_classe($tab_pp['id_classe'][$loop], '', 'span_light')."</span>";
 					echo "<br />\n";
 				}
 
@@ -926,7 +927,7 @@ if(!isset($id_classe)) {
 			echo "<td align='left'>\n";
 		}
 
-		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe</label>";
+		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$cpt' value='".$lig_clas->id."' onchange='change_style_classe($cpt)' /> ".$lig_clas->classe."</label> <span style='font-size:x-small'>".affiche_date_prochain_conseil_de_classe_classe($lig_clas->id, '', 'span_light')."</span>";
 		echo "<br />\n";
 		$cpt++;
 	}
