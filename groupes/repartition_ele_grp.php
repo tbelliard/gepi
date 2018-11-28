@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -95,14 +95,16 @@ if($_SESSION['statut']!='administrateur') {
 		unset($num_periode);
 	}
 	else {
-		for($i=0;$i<count($id_groupe);$i++) {
-			if(!is_groupe_du_grp_groupes($id_groupe[$i], $id_grp_groupe)) {
-				$msg.="Accès non autorisé&nbsp;: Le groupe n°".$id_groupe." (".get_info_grp($id_groupe[$i]).") ne fait pas partie du ".$groupe_de_groupes." n°".$id_grp_groupe.".<br />";
-				unset($id_grp_groupe);
-				unset($id_groupe);
-				unset($id_classe);
-				unset($num_periode);
-				break;
+		if((isset($id_groupe))&&(is_array($id_groupe))) {
+			for($i=0;$i<count($id_groupe);$i++) {
+				if(!is_groupe_du_grp_groupes($id_groupe[$i], $id_grp_groupe)) {
+					$msg.="Accès non autorisé&nbsp;: Le groupe n°".$id_groupe." (".get_info_grp($id_groupe[$i]).") ne fait pas partie du ".$groupe_de_groupes." n°".$id_grp_groupe.".<br />";
+					unset($id_grp_groupe);
+					unset($id_groupe);
+					unset($id_classe);
+					unset($num_periode);
+					break;
+				}
 			}
 		}
 	}
