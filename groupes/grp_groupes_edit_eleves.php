@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -384,10 +384,13 @@ $chaine_periode_ouverte.="</p>";
 	echo "
 </select>
 <!--input type='hidden' name='id_groupe' value='$id_groupe' /-->
-<input type='hidden' name='id_grp_groupe' value='$id_grp_groupe' />
+<input type='hidden' name='id_grp_groupe' value='$id_grp_groupe' />";
 
- | <a href='repartition_ele_grp.php?id_grp_groupe=$id_grp_groupe'>Répartir les élèves entre les groupes du $groupe_de_groupes</a>
-
+	if(count($current_grp_groupes['groupes'])>1) {
+		echo "
+ | <a href='repartition_ele_grp.php?id_grp_groupe=$id_grp_groupe'>Répartir les élèves entre les groupes du $groupe_de_groupes</a>";
+ 	}
+ 	echo "
 </p>
 </form>
 
@@ -408,7 +411,7 @@ $chaine_periode_ouverte.="</p>";
 		}
 	}
 
-	if(count($current_grp_groupes['groupes']>1)) {
+	if(count($current_grp_groupes['groupes'])>1) {
 		echo "<div style='float:right; text-align:center; width:40em;margin-top:3em;'>\n";
 		echo "
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='form_copie_ele' method='post'>
