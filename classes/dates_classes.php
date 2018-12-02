@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -607,7 +607,7 @@ else {
 		$titre_infobulle="Responsables de ".$obj_classe->classe;
 		$texte_infobulle="<div align='center'>
 		<table class='boireaus boireaus_alt'>";
-		if((isset($tab_resp_class[$obj_classe->id]['suivi_par']))&&(count($tab_resp_class[$obj_classe->id]['suivi_par'])>0)) {
+		if(isset($tab_resp_class[$obj_classe->id]['suivi_par'])) {
 			$texte_infobulle.="
 			<tr>
 				<td>Classe suivie par</td>
