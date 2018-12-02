@@ -517,16 +517,21 @@ if (($classe != 0) AND ($periode !=0)) {
 			echo "<th><a href=\"javascript:CocheCase(1,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" width=\"22\" border=0 alt=\"Déverrouiller\" /></a></th>\n";
 			echo "<th><a href=\"javascript:CocheCase(2,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller partiellement\" /></a></th>\n";
 			echo "<th><a href=\"javascript:CocheCase(3,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller totalement\" /></a></th>\n";
-			if(getSettingValue("active_module_absence")=="2"){
+			if(getSettingValue("active_module_absence")=="2") {
 				echo "
-				<th title=\"Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les dates de périodes de cours ci-dessous.\">
+				<th title=\"Il est aussi possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les dates de périodes de cours ci-dessous.\">
 					Date Fin<br />
-					<a href='#' onclick=\"affiche_set_date('date_fin', $i);return false;\"><img src='../images/icons/date.png' class='icone16' alt='Date' /></a>
+					<a href='#' onclick=\"affiche_set_date('date_fin', $i);return false;\" title=\"Imposer une date de fin de période ".($i+1)." pour toutes les classes.\"><img src='../images/icons/date.png' class='icone16' alt='Date' /></a>
+					<br />
+					<a href='#' onclick=\"date_fin_a_valeur_date_conseil($i);return false;\" title=\"Prendre pour date de fin de période la date du conseil de classe.\"><img src='../images/icons/wizard.png' class='icone16' alt='Date' /></a>
 				</th>\n";
 			}
 			echo "<th>
 					Date Conseil de classe<br />
-					<a href='#' onclick=\"affiche_set_date('date_conseil', $i);return false;\"><img src='../images/icons/date.png' class='icone16' alt='Date' /></a>
+					<a href='#' onclick=\"affiche_set_date('date_conseil', $i);return false;\" title=\"Imposer une date pour tous les conseils de classe de période ".($i+1).".\"><img src='../images/icons/date.png' class='icone16' alt='Date' /></a><br />
+					<a href='../classes/dates_classes.php' title=\"Créer un événement pour faire apparaitre les dates de conseils de classe en page d'accueil.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/clock.png' class='icone16' alt='Conseil' /></a>".((getSettingValue("active_module_absence")=="2") ? "
+					<br />
+					<a href='#' onclick=\"date_conseil_a_valeur_date_fin($i);return false;\" title=\"Prendre pour date de conseil de classe la date de fin de période.\"><img src='../images/icons/wizard.png' class='icone16' alt='Date' /></a>" : "")."
 				</th>\n";
 		}
 		if(count($tab_dates_prochains_conseils)>0) {
@@ -557,13 +562,14 @@ if (($classe != 0) AND ($periode !=0)) {
 		}
 		echo "</tr>\n";
 
-
+		$chaine_js_classes='';
 		//$flag = 0;
-			$alt=1;
+		$alt=1;
 		if ($calldata) {
 			for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
 				$precedente_date_fin="0000-00-00 00:00:00";
 				$id_classe = $row[0];
+				$chaine_js_classes.=$id_classe.', ';
 				$classe = $row[1];
 				$alt=$alt*(-1);
 					echo "<tr class='lig$alt white_hover'";
@@ -934,6 +940,30 @@ if (($classe != 0) AND ($periode !=0)) {
 		}
 
 		echo "
+		}
+
+		var tab_id_classe=new Array(".substr($chaine_js_classes, 0, strlen($chaine_js_classes)-2).");
+
+		function date_fin_a_valeur_date_conseil(i) {
+			for(j=0;j<tab_id_classe.length;j++) {
+				if(document.getElementById('date_fin_cl_'+tab_id_classe[j]+'_'+i)) {
+					if(document.getElementById('date_conseil_cl_'+tab_id_classe[j]+'_'+i)) {
+						// Tester si la date du conseil est correctement formatée?
+						document.getElementById('date_fin_cl_'+tab_id_classe[j]+'_'+i).value=document.getElementById('date_conseil_cl_'+tab_id_classe[j]+'_'+i).value;
+					}
+				}
+			}
+		}
+
+		function date_conseil_a_valeur_date_fin(i) {
+			for(j=0;j<tab_id_classe.length;j++) {
+				if(document.getElementById('date_fin_cl_'+tab_id_classe[j]+'_'+i)) {
+					if(document.getElementById('date_conseil_cl_'+tab_id_classe[j]+'_'+i)) {
+						// Tester si la date du conseil est correctement formatée?
+						document.getElementById('date_conseil_cl_'+tab_id_classe[j]+'_'+i).value=document.getElementById('date_fin_cl_'+tab_id_classe[j]+'_'+i).value;
+					}
+				}
+			}
 		}
 
 	</script>\n";
