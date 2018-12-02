@@ -897,7 +897,7 @@ Les saisies/modifications sont possibles.";
 		$bulletin_rempli = 'no';
 		echo "<p>La formule à la fin de chaque bulletin n'est pas définie !</p>\n";
 	}
-	$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login and j.periode='$per') ORDER BY login");
+	$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login and j.periode='$per') ORDER BY e.nom, e.prenom;");
 	$nb_eleves = mysqli_num_rows($appel_donnees_eleves);
 	$j = 0;
 	//
@@ -939,6 +939,19 @@ Les saisies/modifications sont possibles.";
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 	echo "<td align='left'>\n";
 
+	$tab_grp_classe=array();
+	if(($mode=="note_app")||($mode=="tout")||($mode=="tout_sauf_avis")) {
+		$sql="SELECT DISTINCT id_groupe FROM j_eleves_groupes jeg, 
+								j_eleves_classes jec 
+							WHERE id_classe='".$id_classe."';";
+		$groupeinfo = mysqli_query($GLOBALS["mysqli"], $sql);
+		$lignes_groupes = mysqli_num_rows($groupeinfo);
+		if($lignes_groupes>0) {
+			while($lig_grp=mysqli_fetch_object($groupeinfo)) {
+				$tab_grp_classe[$lig_grp->id_groupe]=get_group($lig_grp->id_groupe, array('matieres', 'classes', 'eleves', 'periodes', 'profs', 'visibilite'));
+			}
+		}
+	}
 
 	$temoin_note_app=0;
 	$temoin_avis=0;
@@ -954,21 +967,18 @@ Les saisies/modifications sont possibles.";
 			echo "<td align='left'>\n";
 		}
 
-
-		$id_eleve[$j] = old_mysql_result($appel_donnees_eleves, $j, "login");
-		$eleve_nom[$j] = old_mysql_result($appel_donnees_eleves, $j, "nom");
-		$eleve_prenom[$j] = old_mysql_result($appel_donnees_eleves, $j, "prenom");
+		$lig_ele=mysqli_fetch_object($appel_donnees_eleves);
+		$id_eleve[$j] = $lig_ele->login;
+		$eleve_nom[$j] = $lig_ele->nom;
+		$eleve_prenom[$j] = $lig_ele->prenom;
 
 
 		$affiche_nom = 1;
 		if(($mode=="note_app")||($mode=="tout")||($mode=="tout_sauf_avis")) {
-			$groupeinfo = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT id_groupe FROM j_eleves_groupes WHERE login='" . $id_eleve[$j] ."'");
-			$lignes_groupes = mysqli_num_rows($groupeinfo);
 			//
 			//Vérification des appréciations
 			//
 
-			$i= 0;
 			//
 			//Début de la boucle matière
 			//
@@ -977,24 +987,30 @@ Les saisies/modifications sont possibles.";
 			//$affiche_nom = 1;
 			$affiche_mess_app = 1;
 			$affiche_mess_note = 1;
-			while($i < $lignes_groupes) {
-				$group_id = old_mysql_result($groupeinfo, $i, "id_groupe");
-				$current_group = get_group($group_id);
+			foreach($tab_grp_classe as $current_group) {
 
-				//if (in_array($id_eleve[$j], $current_group["eleves"][$per]["list"])) { // Si l'élève suit cet enseignement pour la période considérée
 				if (((!isset($current_group['visibilite']['bulletins']))||($current_group['visibilite']['bulletins']!='n'))&&(in_array($id_eleve[$j], $current_group["eleves"][$per]["list"]))) { // Si l'élève suit cet enseignement pour la période considérée
+
+					$group_id=$current_group['id'];
+
 					//
 					//Vérification des appréciations :
 					//
-					$test_app = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per')");
-					//$app = @old_mysql_result($test_app, 0, 'appreciation');
+					//$sql="SELECT * FROM matieres_appreciations WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per' AND appreciation='');";
+					$sql="SELECT * FROM matieres_appreciations WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per');";
+					//echo "$sql<br />";
+					$test_app = mysqli_query($GLOBALS["mysqli"], $sql);
+					// Il peut n'y avoir aucun enregistrement pour aucun élève du groupe (rien dans 'matieres_appreciations'), comme il peut juste y avoir un enregistrement avec appreciation='' pour un élève.
 					$app="";
-					if(mysqli_num_rows($test_app)>0) {$app=old_mysql_result($test_app, 0, 'appreciation');}
+					if(mysqli_num_rows($test_app)>0) {
+						$lig_app=mysqli_fetch_object($test_app);
+						$app=$lig_app->appreciation;
+					}
 					if ($app == '') {
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
 							//echo "<br /><br /><br />\n";
-							echo "<p style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+							echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 							//echo "<br />\n";
 							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 						}
@@ -1031,8 +1047,6 @@ Les saisies/modifications sont possibles.";
 
 							}
 
-
-
 							$eleve_nom_prenom=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
 							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=$eleve_nom_prenom;
 							if(($email!="")&&(check_mail($email))) {
@@ -1054,34 +1068,47 @@ Les saisies/modifications sont possibles.";
 						$temoin_note_app++;
 					}
 				}
-				$i++;
 			}
 
 			//
 			//Vérification des moyennes
 			//
-			$i= 0;
+
 			//
 			//Début de la boucle matière
 			//
-			while($i < $lignes_groupes) {
-				$group_id = old_mysql_result($groupeinfo, $i, "id_groupe");
-				$current_group = get_group($group_id);
+			foreach($tab_grp_classe as $current_group) {
+				$group_id = $current_group['id'];
 
 				//if (in_array($id_eleve[$j], $current_group["eleves"][$per]["list"])) { // Si l'élève suit cet enseignement pour la période considérée
 				if (((!isset($current_group['visibilite']['bulletins']))||($current_group['visibilite']['bulletins']!='n'))&&(in_array($id_eleve[$j], $current_group["eleves"][$per]["list"]))) { // Si l'élève suit cet enseignement pour la période considérée
 					//
 					//Vérification des moyennes :
 					//
-					$test_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per')");
-					//$note = @old_mysql_result($test_notes, 0, 'note');
-					$note="";
-					if(mysqli_num_rows($test_notes)>0) {$note=old_mysql_result($test_notes, 0, 'note');}
+					//$sql="SELECT * FROM matieres_notes WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per' AND statut='-');";
+					$sql="SELECT * FROM matieres_notes WHERE (login = '$id_eleve[$j]' and id_groupe = '" . $current_group["id"] . "' and periode = '$per');";
+					//echo "$sql<br />";
+					$test_notes = mysqli_query($GLOBALS["mysqli"], $sql);
+					// Il peut n'y avoir aucun enregistrement pour aucun élève du groupe (rien dans 'matieres_appreciations'), comme il peut juste y avoir un enregistrement avec appreciation='' pour un élève.
+					$note='';
+					if(mysqli_num_rows($test_notes)>0) {
+						$lig_note=mysqli_fetch_object($test_notes);
+						if($lig_note->statut!='-') {
+							$note='ok';
+							// Pour debug on détaille
+							if($lig_note->statut=='') {
+								$note=$lig_note->note;
+							}
+							else {
+								$note=$lig_note->statut;
+							}
+						}
+					}
 					if ($note == '') {
 						$bulletin_rempli = 'no';
 						if ($affiche_nom != 0) {
 							//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j] ";
-							echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+							echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 							//echo "<br />\n";
 							//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span> :";
 							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
@@ -1154,7 +1181,7 @@ Les saisies/modifications sont possibles.";
 				$bulletin_rempli = 'no';
 				if ($affiche_nom != 0) {
 					//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j]<br />\n";
-					echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+					echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 					//echo "<br />\n";
 					//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span> :";
 					echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
@@ -1226,7 +1253,7 @@ Les saisies/modifications sont possibles.";
 								$bulletin_rempli = 'no';
 								if ($affiche_nom != 0) {
 									//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j]<br />\n";
-									echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+									echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 									//echo "<br />\n";
 									//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span>&nbsp;:";
 									echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
@@ -1327,7 +1354,7 @@ Les saisies/modifications sont possibles.";
 				$bulletin_rempli = 'no';
 				if ($affiche_nom != 0) {
 					//echo "<p><span class='bold'> $eleve_prenom[$j] $eleve_nom[$j]<br />\n";
-					echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
+					echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 					//echo "<br />\n";
 					//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span>&nbsp;:";
 					echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
@@ -1370,48 +1397,52 @@ Les saisies/modifications sont possibles.";
 			//Vérification des ECTS
 			//
 
-            // On commence par regarder si l'élève a des groupes qui ouvrent droit à des ECTS.
-            $query_groupes_ects = mysqli_query($GLOBALS["mysqli"], "SELECT jgc.* FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.saisie_ects = '1' AND jgc.id_classe = '$id_classe' AND jgc.id_groupe = jeg.id_groupe AND jeg.login = '".$id_eleve[$j]."' AND jeg.periode = '$per'");
-            if (mysqli_num_rows($query_groupes_ects) > 0) {
-                $temoin_has_ects = true;
-                $query_conseil = mysqli_query($GLOBALS["mysqli"], "SELECT ec.* FROM ects_credits ec, eleves e WHERE ec.id_eleve = e.id_eleve AND e.login = '$id_eleve[$j]' AND num_periode = '$per'");
-                $nb = mysqli_num_rows($query_conseil);
-                if ($nb == 0) {
-                    $bulletin_rempli = 'no';
-                    if ($affiche_nom != 0) {
-                        echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]</span>";
-                    }
-                    echo "<br /><br />\n";
-                    echo "<b>Crédits ECTS</b> non remplis !";
+			// On commence par regarder si l'élève a des groupes qui ouvrent droit à des ECTS.
+			$query_groupes_ects = mysqli_query($GLOBALS["mysqli"], "SELECT jgc.* FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.saisie_ects = '1' AND jgc.id_classe = '$id_classe' AND jgc.id_groupe = jeg.id_groupe AND jeg.login = '".$id_eleve[$j]."' AND jeg.periode = '$per'");
+			if (mysqli_num_rows($query_groupes_ects) > 0) {
+				$temoin_has_ects = true;
+				$query_conseil = mysqli_query($GLOBALS["mysqli"], "SELECT ec.* FROM ects_credits ec, eleves e WHERE ec.id_eleve = e.id_eleve AND e.login = '$id_eleve[$j]' AND num_periode = '$per'");
+				$nb = mysqli_num_rows($query_conseil);
+				if ($nb == 0) {
+					$bulletin_rempli = 'no';
+					if ($affiche_nom != 0) {
+						echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]</span>";
+					}
+					echo "<br /><br />\n";
+					echo "<b>Crédits ECTS</b> non remplis !";
 
-                    // On récupère le prof principal, si celui-ci est autorisé à saisir les ECTS
-                    if ($gepiSettings['GepiAccesSaisieEctsPP'] == 'yes') {
-                        $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login = '$id_eleve[$j]' and j.id_classe='$id_classe' and u.login=j.professeur)");
-                        $nb_result = mysqli_num_rows($call_prof);
-                        if ($nb_result != 0) {
-                            $login_prof = old_mysql_result($call_prof, 0, 'login');
-                            $email = retourne_email($login_prof);
-                            $nom_prof = old_mysql_result($call_prof, 0, 'nom');
-                            $prenom_prof = old_mysql_result($call_prof, 0, 'prenom');
-                            //echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
-                            //if($email!="") {
-                            if(($email!="")&&(check_mail($email))) {
-								$sujet_mail="[Gepi]: ECTS non remplis: ".$eleve_nom[$j];
-								$message_mail="Bonjour,\r\n\r\nCordialement";
-								echo " (<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>)";
-                            }
-                            else{
-                                echo " (".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof).")";
-                            }
+					// On récupère le prof principal, si celui-ci est autorisé à saisir les ECTS
+					if ($gepiSettings['GepiAccesSaisieEctsPP'] == 'yes') {
+						$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login = '$id_eleve[$j]' and j.id_classe='$id_classe' and u.login=j.professeur)");
+						$nb_result = mysqli_num_rows($call_prof);
+						if ($nb_result != 0) {
+						$login_prof = old_mysql_result($call_prof, 0, 'login');
+						$email = retourne_email($login_prof);
+						$nom_prof = old_mysql_result($call_prof, 0, 'nom');
+						$prenom_prof = old_mysql_result($call_prof, 0, 'prenom');
+						//echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
+						//if($email!="") {
+						if(($email!="")&&(check_mail($email))) {
+							$sujet_mail="[Gepi]: ECTS non remplis: ".$eleve_nom[$j];
+							$message_mail="Bonjour,\r\n\r\nCordialement";
+							echo " (<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>)";
+						}
+						else{
+							echo " (".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof).")";
+						}
 
-                        } else {
-                            echo " (pas de ".$gepi_prof_suivi.")";
-                        }
-                    }
-                    $affiche_nom = 0;
-                    $temoin_ects++;
-                }
-            }
+						} else {
+							echo " (pas de ".$gepi_prof_suivi.")";
+						}
+					}
+					$affiche_nom = 0;
+					$temoin_ects++;
+				}
+			}
+		}
+
+		if($affiche_nom==0) {
+			echo "</div>";
 		}
 
 		$j++;
@@ -1419,8 +1450,8 @@ Les saisies/modifications sont possibles.";
 
 		$cpt_i++;
 
-		//flush();
-
+		flush();
+		ob_flush();
 	}
 
 	echo "</td>\n";
