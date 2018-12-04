@@ -930,7 +930,7 @@ echo "<div style='clear:both;'></div>\n";
 		//echo "<option value=''>---</option>\n";
 		while($lig_grp_avec_eleves=mysqli_fetch_object($res_grp_avec_eleves)) {
 
-			$tmp_grp=get_group($lig_grp_avec_eleves->id_groupe);
+			$tmp_grp=get_group($lig_grp_avec_eleves->id_groupe, array('classes', 'periodes', 'profs', 'eleves', 'matieres'));
 
 			$temoin_classe_entiere="y";
 			for($loop=0;$loop<count($tmp_grp["classes"]["list"]);$loop++) {
