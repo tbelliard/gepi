@@ -1026,7 +1026,8 @@ echo "<input type='text' name='debut' value='$debut' size='5' /> \n";
 
 
 
-if(isset($cpt)){
+if((isset($cpt))&&($limit!='TOUS')) {
+	//echo "<br />\$limit=$limit<br />\$debut=$debut<br />\$cpt=$cpt<br />";
 	//echo "<p>limit=$limit debut=$debut cpt=$cpt</p>";
 	if($limit+$debut<$cpt){
 		echo "<input type='button' value='>>' onClick='suivant()' /> \n";
