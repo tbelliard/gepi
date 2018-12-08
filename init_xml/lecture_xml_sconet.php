@@ -1520,6 +1520,8 @@ function extr_valeur($lig){
 							"PERSONNE_ID",
 							"RESP_LEGAL",
 							"CODE_PARENTE",
+							"NIVEAU_RESPONSABILITE",
+							"PAIE_FRAIS_SCOLAIRES",
 							"RESP_FINANCIER",
 							"PERS_PAIMENT",
 							"PERS_CONTACT"

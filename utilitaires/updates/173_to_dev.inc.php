@@ -364,4 +364,19 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'paie_frais_scolaires' à la table 'responsables2'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM responsables2 LIKE 'paie_frais_scolaires';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE responsables2 ADD paie_frais_scolaires VARCHAR(10) NOT NULL default '';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

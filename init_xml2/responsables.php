@@ -32,8 +32,14 @@
 
 	$verif_tables_non_vides=isset($_POST['verif_tables_non_vides']) ? $_POST['verif_tables_non_vides'] : NULL;
 
+	//===================================
+	// DEBUG: 20181208
 	// Passer à 'y' pour afficher les requêtes
 	$debug_resp='n';
+	// Ou pour un élève particulier:
+	$debug_ele='n';
+	$debug_ele_id=1423008;
+	//===================================
 
 	if(isset($_GET['ad_retour'])){
 		$_SESSION['ad_retour']=$_GET['ad_retour'];
@@ -626,7 +632,8 @@
 						`resp_legal` varchar(1) NOT NULL,
 						`pers_contact` varchar(1) NOT NULL,
 						niveau_responsabilite VARCHAR(10) NOT NULL default '',
-						code_parente VARCHAR(10) NOT NULL default ''
+						code_parente VARCHAR(10) NOT NULL default '',
+						paie_frais_scolaires VARCHAR(10) NOT NULL default ''
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -646,6 +653,7 @@
 				"RESP_LEGAL",
 				"CODE_PARENTE",
 				"NIVEAU_RESPONSABILITE",
+				"PAIE_FRAIS_SCOLAIRES",
 				"RESP_FINANCIER",
 				"PERS_PAIMENT",
 				"PERS_CONTACT"
@@ -704,6 +712,9 @@
 								if(isset($responsables[$i]["niveau_responsabilite"])) {
 									$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
 								}
+								if(isset($responsables[$i]["paie_frais_scolaires"])) {
+									$sql.=", paie_frais_scolaires='".$responsables[$i]["paie_frais_scolaires"]."'";
+								}
 								if(isset($responsables[$i]["pers_contact"])) {
 									$sql.=", pers_contact='".$responsables[$i]["pers_contact"]."'";
 								}
@@ -759,52 +770,247 @@
 							// on vérifie si le resp_legal 1 ou 2 existe déjà dans la base et on met resp_legal=1, 2 ou 0 selon les cas
 							if($responsables[$i]["niveau_responsabilite"]==1) {
 								//$tmp_resp_legal=array();
-								$tmp_resp_legal_1_deja=false;
-								$tmp_resp_legal_2_deja=false;
-								// Relever les champs resp_legal déjà attribués
-								$sql="SELECT DISTINCT resp_legal FROM responsables2 WHERE ";
-								$sql.="ele_id='".$responsables[$i]["eleve_id"]."';";
-								$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
-								if(mysqli_num_rows($res_test)>0) {
-									while($lig_resp_legal=mysqli_fetch_object($res_test)) {
-										//$tmp_resp_legal[]=$lig_resp_legal->resp_legal;
-										if($lig_resp_legal->resp_legal==1) {
-											$tmp_resp_legal_1_deja=true;
-										}
-										if($lig_resp_legal->resp_legal==2) {
-											$tmp_resp_legal_2_deja=true;
+
+								if((!isset($responsables[$i]["paie_frais_scolaires"]))||($responsables[$i]["paie_frais_scolaires"]!=1)) {
+									// Si le champ PAIE_FRAIS_SCOLAIRES n'est pas renseigné
+									// ou si on n'a pas ici le responsable financier, on nomme responsable 1 
+									// le premier niveau_responsabilite=1, 
+									// quitte à corriger plus tard si on trouve un (niveau_responsabilite=1)&(paie_frais_scolaires=1)
+									$tmp_resp_legal_1_deja=false;
+									$tmp_resp_legal_2_deja=false;
+									// Relever les champs resp_legal déjà attribués
+									$sql="SELECT DISTINCT resp_legal FROM responsables2 WHERE ";
+									$sql.="ele_id='".$responsables[$i]["eleve_id"]."';";
+									// 20181208
+									if(($debug_ele=='y')&&($responsables[$i]["eleve_id"]==$debug_ele_id)) {
+										echo "$sql<br />";
+									}
+									$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_test)>0) {
+										while($lig_resp_legal=mysqli_fetch_object($res_test)) {
+											//$tmp_resp_legal[]=$lig_resp_legal->resp_legal;
+											if($lig_resp_legal->resp_legal==1) {
+												$tmp_resp_legal_1_deja=true;
+											}
+											if($lig_resp_legal->resp_legal==2) {
+												$tmp_resp_legal_2_deja=true;
+											}
 										}
 									}
-								}
 
-								$tmp_resp_legal=0;
-								if(!$tmp_resp_legal_1_deja) {
-									$tmp_resp_legal=1;
-								}
-								elseif(!$tmp_resp_legal_2_deja) {
-									$tmp_resp_legal=2;
-								}
+									$tmp_resp_legal=0;
+									if(!$tmp_resp_legal_1_deja) {
+										$tmp_resp_legal=1;
+									}
+									elseif(!$tmp_resp_legal_2_deja) {
+										$tmp_resp_legal=2;
+									}
 
-								// Faut-il tester s'il y a plusieurs enregistrements pour le même couple élève/responsable?
+									// Faut-il tester s'il y a plusieurs enregistrements pour le même couple élève/responsable?
 
-								$sql="INSERT INTO responsables2 SET ";
-								$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
-								$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
-								$sql.=", resp_legal='".$tmp_resp_legal."'";
-								$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
-								$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
-								$sql.=";";
-								affiche_debug("$sql<br />\n");
-								$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
-								if(!$res_insert){
-									echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
-									flush();
-									$nb_err++;
+									$sql="INSERT INTO responsables2 SET ";
+									$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+									$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+									$sql.=", resp_legal='".$tmp_resp_legal."'";
+									$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+									$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
+									if(isset($responsables[$i]["paie_frais_scolaires"])) {
+										$sql.=", paie_frais_scolaires='".$responsables[$i]["paie_frais_scolaires"]."'";
+									}
+									$sql.=";";
+									affiche_debug("$sql<br />\n");
+									// 20181208
+									if(($debug_ele=='y')&&($responsables[$i]["eleve_id"]==$debug_ele_id)) {
+										echo "$sql<br />";
+									}
+									$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$res_insert){
+										echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+										flush();
+										$nb_err++;
+									}
+									else{
+										$stat++;
+									}
 								}
-								else{
-									$stat++;
-								}
+								else {
+									// On va mettre autant que possible celui qui paie les frais de scolarité comme responsable légal 1
+									// On a $responsables[$i]["paie_frais_scolaires"]=1
 
+									// On le fait passer resp_legal=1
+									// On teste s'il y avait déjà un resp_legal=1
+									$sql="SELECT DISTINCT resp_legal, pers_id FROM responsables2 WHERE ele_id='".$responsables[$i]["eleve_id"]."' AND resp_legal='1';";
+									// 20181208
+									if(($debug_ele=='y')&&($responsables[$i]["eleve_id"]==$debug_ele_id)) {
+										echo "$sql<br />";
+									}
+									$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_test)>0) {
+										$lig_resp_legal=mysqli_fetch_object($res_test);
+
+										// Il ne devrait pas y avoir de resp_legal=2
+										// On vérifie quand même
+										$sql="SELECT DISTINCT resp_legal, pers_id FROM responsables2 WHERE ele_id='".$responsables[$i]["eleve_id"]."' AND resp_legal='2';";
+										// 20181208
+										if(($debug_ele=='y')&&($responsables[$i]["eleve_id"]==$debug_ele_id)) {
+											echo "$sql<br />";
+										}
+										$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_test)>0) {
+											$lig_resp_legal2=mysqli_fetch_object($res_test);
+											// On le passe resp_legal=0 avec une alerte en page d'accueil
+											$sql="UPDATE responsables2 SET resp_legal='0' WHERE pers_id='".$lig_resp_legal2->pers_id."' AND ele_id='".$responsables[$i]["eleve_id"]."';";
+											// 20181208
+											if(($debug_ele=='y')&&($responsables[$i]["eleve_id"]==$debug_ele_id)) {
+												echo "$sql<br />";
+											}
+											affiche_debug("$sql<br />\n");
+											$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$res_update){
+												echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+												flush();
+												$nb_err++;
+											}
+
+											// INFO EN PAGE D ACCUEIL A METTRE L'élève ... s'est retrouvé avec plusieurs responsables légaux n°2.
+											// Vous devriez contrôler la liste des responsables légaux.
+
+											$current_ele=get_nom_prenom_eleve_from_ele_id($responsables[$i]["eleve_id"], 'avec_classe');
+											$info_action_titre="Plusieurs responsables légaux n°2 pour ".$current_ele;
+
+											$info_action_texte="L'élève <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".$current_ele." a un nombre de responsables avec niveau de responsabilité 1 trop élevé.<br />Un choix a dû être effectué lors de la mise à jour pour en désigner un <a href='responsables/modify_resp.php?pers_id=".$responsables[$i]["personne_id"]."'>responsable légal 1</a>, un autre <a href='responsables/modify_resp.php?pers_id=".$lig_resp_legal->pers_id."'>responsable légal 2</a> et <a href='responsables/modify_resp.php?pers_id=".$lig_resp_legal2->pers_id."'>le ou les autres</a> ont dû être déclarés non responsables légaux.<br />Vous devriez peut-être y jeter un oeil pour corriger éventuellement.";
+
+											$info_action_destinataire=array("administrateur","scolarite");
+											$info_action_mode="statut";
+											enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+
+										}
+										// Et on déclare resp_legal=2 le responsable qui était précédemment resp_legal=1
+										$sql="UPDATE responsables2 SET resp_legal='2' WHERE pers_id='".$lig_resp_legal->pers_id."' AND ele_id='".$responsables[$i]["eleve_id"]."';";
+										// 20181208
+										if(($debug_ele=='y')&&($responsables[$i]["eleve_id"]==$debug_ele_id)) {
+											echo "$sql<br />";
+										}
+										affiche_debug("$sql<br />\n");
+										$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$res_update){
+											echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+											flush();
+											$nb_err++;
+										}
+
+
+										// Et on déclare resp_legal=1 le responsable courant
+										$tmp_resp_legal=1;
+
+										$sql="INSERT INTO responsables2 SET ";
+										$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+										$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+										$sql.=", resp_legal='".$tmp_resp_legal."'";
+										$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+										$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
+										if(isset($responsables[$i]["paie_frais_scolaires"])) {
+											$sql.=", paie_frais_scolaires='".$responsables[$i]["paie_frais_scolaires"]."'";
+										}
+										$sql.=";";
+										// 20181208
+										if(($debug_ele=='y')&&($responsables[$i]["eleve_id"]==$debug_ele_id)) {
+											echo "$sql<br />";
+										}
+										affiche_debug("$sql<br />\n");
+										$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$res_insert){
+											echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+											flush();
+											$nb_err++;
+										}
+										else{
+											$stat++;
+										}
+									}
+									else {
+										// Il n'y a pas encore de resp_legal=1
+										$tmp_resp_legal=1;
+
+										$sql="INSERT INTO responsables2 SET ";
+										$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+										$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+										$sql.=", resp_legal='".$tmp_resp_legal."'";
+										$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+										$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
+										if(isset($responsables[$i]["paie_frais_scolaires"])) {
+											$sql.=", paie_frais_scolaires='".$responsables[$i]["paie_frais_scolaires"]."'";
+										}
+										$sql.=";";
+										// 20181208
+										if(($debug_ele=='y')&&($responsables[$i]["eleve_id"]==$debug_ele_id)) {
+											echo "$sql<br />";
+										}
+										affiche_debug("$sql<br />\n");
+										$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$res_insert){
+											echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+											flush();
+											$nb_err++;
+										}
+										else{
+											$stat++;
+										}
+									}
+
+									/*
+
+									$tmp_resp_legal_1_deja=false;
+									$tmp_resp_legal_2_deja=false;
+									// Relever les champs resp_legal déjà attribués
+									$sql="SELECT DISTINCT resp_legal FROM responsables2 WHERE ";
+									$sql.="ele_id='".$responsables[$i]["eleve_id"]."';";
+									$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_test)>0) {
+										while($lig_resp_legal=mysqli_fetch_object($res_test)) {
+											//$tmp_resp_legal[]=$lig_resp_legal->resp_legal;
+											if($lig_resp_legal->resp_legal==1) {
+												$tmp_resp_legal_1_deja=true;
+											}
+											if($lig_resp_legal->resp_legal==2) {
+												$tmp_resp_legal_2_deja=true;
+											}
+										}
+									}
+
+									$tmp_resp_legal=0;
+									if(!$tmp_resp_legal_1_deja) {
+										$tmp_resp_legal=1;
+									}
+									elseif(!$tmp_resp_legal_2_deja) {
+										$tmp_resp_legal=2;
+									}
+
+									// Faut-il tester s'il y a plusieurs enregistrements pour le même couple élève/responsable?
+
+									$sql="INSERT INTO responsables2 SET ";
+									$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+									$sql.="pers_id='".$responsables[$i]["personne_id"]."'";
+									$sql.=", resp_legal='".$tmp_resp_legal."'";
+									$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+									$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
+									if(isset($responsables[$i]["paie_frais_scolaires"])) {
+										$sql.=", paie_frais_scolaires='".$responsables[$i]["paie_frais_scolaires"]."'";
+									}
+									$sql.=";";
+									affiche_debug("$sql<br />\n");
+									$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$res_insert){
+										echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
+										flush();
+										$nb_err++;
+									}
+									else{
+										$stat++;
+									}
+									*/
+
+								}
 							}
 							/*
 							elseif($responsables[$i]["niveau_responsabilite"]==2) {
@@ -829,6 +1035,9 @@
 								$sql.=", resp_legal='".$tmp_resp_legal."'";
 								$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
 								$sql.=", code_parente='".$responsables[$i]["code_parente"]."'";
+								if(isset($responsables[$i]["paie_frais_scolaires"])) {
+									$sql.=", paie_frais_scolaires='".$responsables[$i]["paie_frais_scolaires"]."'";
+								}
 								$sql.=";";
 								affiche_debug("$sql<br />\n");
 								$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -852,7 +1061,7 @@
 				$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)>0){
-					echo "<p>Suppression de responsabilités sans élève.\n";
+					echo "<p>Suppression de responsabilités sans élève&nbsp;:\n";
 					flush();
 					$cpt_nett=0;
 					while($lig_nett=mysqli_fetch_object($test)){

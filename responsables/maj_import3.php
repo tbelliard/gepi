@@ -6890,7 +6890,8 @@ mysql>
 						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL DEFAULT '9',
 						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL,
 						niveau_responsabilite VARCHAR(10) NOT NULL default '',
-						code_parente VARCHAR(10) NOT NULL default ''
+						code_parente VARCHAR(10) NOT NULL default '', 
+						paie_frais_scolaires VARCHAR(10) NOT NULL default ''
 						) ENGINE=MyISAM;";
 				info_debug($sql);
 				$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -6919,6 +6920,7 @@ mysql>
 				"RESP_LEGAL",
 				"CODE_PARENTE",
 				"NIVEAU_RESPONSABILITE",
+				"PAIE_FRAIS_SCOLAIRES",
 				"RESP_FINANCIER",
 				"PERS_PAIMENT",
 				"PERS_CONTACT"
@@ -6968,6 +6970,9 @@ mysql>
 					}
 					if(isset($responsables[$i]["niveau_responsabilite"])) {
 						$sql.=", niveau_responsabilite='".$responsables[$i]["niveau_responsabilite"]."'";
+					}
+					if(isset($responsables[$i]["paie_frais_scolaires"])) {
+						$sql.=", paie_frais_scolaires='".$responsables[$i]["paie_frais_scolaires"]."'";
 					}
 					$sql.=";";
 					affiche_debug("$sql<br />\n");
@@ -10782,6 +10787,17 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				}
 			}
 
+
+
+			//============================================================
+			// 20181206 : MODIFIER
+			// Tester s'il y a d'autres resp_legal
+			// Tester qui a paie_frais_scolaires=1
+			//============================================================
+
+
+
+
 			//$chaine="";
 			$cpt=0;
 			//for($i=0;$i<min($eff_tranche,count($tab_resp));$i++){
@@ -10817,6 +10833,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					// REMPLIR UNE CHAINE ET L'AJOUTER A LA FIN DE LA LISTE AFFICHéE PLUS BAS
 				}
 				else {
+					// On compare la responsabilité existante dans responsables2 avec ce qui est trouvé dans le XML soit temp_resp_adr_import2
 					$sql="(SELECT t.ele_id,t.pers_id FROM responsables2 r, temp_responsables2_import t
 									WHERE r.pers_id=t.pers_id AND 
 											r.ele_id=t.ele_id AND 
@@ -10830,29 +10847,36 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 									WHERE r.pers_id=t.pers_id AND 
 											r.ele_id=t.ele_id AND 
 											t.niveau_responsabilite!='' AND 
+											t.paie_frais_scolaires!='' AND 
 											(
 												r.niveau_responsabilite!=t.niveau_responsabilite OR 
+												r.paie_frais_scolaires!=t.paie_frais_scolaires OR 
 												r.code_parente!=t.code_parente
 											) 
 											AND (t.ele_id='".$tab_tmp[1]."' AND t.pers_id='".$tab_tmp[2]."'));";
 					info_debug($sql);
+					// 20181208
 					//echo "$sql<br />\n";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
+						// Il y a bien une différence
 						$difference_confirmee=true;
 						$sql="SELECT * FROM responsables2 WHERE ele_id='".$tab_tmp[1]."' AND pers_id='".$tab_tmp[2]."';";
+						//echo "$sql<br />\n";
 						$res_resp=mysqli_query($mysqli, $sql);
 						if(mysqli_num_rows($res_resp)>0) {
 							$lig_resp=mysqli_fetch_object($res_resp);
 
 							$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='".$tab_tmp[1]."' AND pers_id='".$tab_tmp[2]."';";
+							//echo "$sql<br />\n";
 							$res_temp_resp=mysqli_query($mysqli, $sql);
 							if(mysqli_num_rows($res_temp_resp)>0) {
 								$lig_temp_resp=mysqli_fetch_object($res_temp_resp);
 
 								if($lig_temp_resp->resp_legal==9) {
 									if(($lig_temp_resp->code_parente==$lig_resp->code_parente)&&
-										($lig_temp_resp->niveau_responsabilite==$lig_resp->niveau_responsabilite)) {
+										($lig_temp_resp->niveau_responsabilite==$lig_resp->niveau_responsabilite)&&
+										($lig_temp_resp->paie_frais_scolaires==$lig_resp->paie_frais_scolaires)) {
 										$difference_confirmee=false;
 									}
 								}
@@ -11103,61 +11127,124 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$pers_id=$tab_tmp[2];
 
 						$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
-						// 20180227
+						if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
 						//echo "$sql<br />";
 						info_debug($sql);
 						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res1)>0){
 							$lig1=mysqli_fetch_object($res1);
+							if($ele_id==$eleve_id_debug) {echo "<pre>";print_r($lig1);echo "</pre>";}
 
 							$resp_legal=$lig1->resp_legal;
 							$pers_contact=$lig1->pers_contact;
 							$niveau_responsabilite=$lig1->niveau_responsabilite;
 							$code_parente=$lig1->code_parente;
-							/*
-							echo "Etat courant<br />
-							\$resp_legal=$resp_legal<br />
-							\$niveau_responsabilite=$niveau_responsabilite<br />
-							\$code_parente=$code_parente<br />";
-							*/
-							$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
-							// 20180227
-							//echo "$sql<br />";
-							info_debug($sql);
-							$test1=mysqli_query($GLOBALS["mysqli"], $sql);
-							// Pour une modif, ce test doit toujours être vrai.
-							if(mysqli_num_rows($test1)>0) {
-								// Relever l'état antérieur  dans le cas où on passe à resp_legal=9, pour rétablir automatiquement les responsables légaux à leur rang initial
-								if($resp_legal==9) {
-									if($niveau_responsabilite==1) {
-										$lig_tmp_resp_avant_suppr=mysqli_fetch_object($test1);
-										if($lig_tmp_resp_avant_suppr->resp_legal==1) {
-											$resp_legal=1;
-										}
-										elseif($lig_tmp_resp_avant_suppr->resp_legal==2) {
-											$resp_legal=2;
-										}
-									}
-								}
+							$paie_frais_scolaires=$lig1->paie_frais_scolaires;
 
+							if($ele_id==$eleve_id_debug) {
+								echo "Etat courant<br />
+								\$resp_legal=$resp_legal<br />
+								\$niveau_responsabilite=$niveau_responsabilite<br />
+								\$code_parente=$code_parente<br />
+								\$paie_frais_scolaires=$paie_frais_scolaires<br />";
+							}
+
+							if(($niveau_responsabilite)&&($paie_frais_scolaires==1)) {
+								$resp_legal=1;
+
+								// Ménage avant ré-insertion plus bas
 								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
-								// 20180227
+								if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
 								//echo "$sql<br />";
 								info_debug($sql);
 								$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+
+								if($ele_id==$eleve_id_debug) {
+									echo "Avec niveau_responsabilite=1 et paie_frais_scolaires=1, on a calculé \$resp_legal=$resp_legal<br />";
+								}
+							}
+							else {
+								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+								if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
+								//echo "$sql<br />";
+								info_debug($sql);
+								$test1=mysqli_query($GLOBALS["mysqli"], $sql);
+								// Pour une modif, ce test doit toujours être vrai.
+								if(mysqli_num_rows($test1)>0) {
+									$lig_tmp_resp_avant_suppr=mysqli_fetch_object($test1);
+
+									$sql="SELECT * FROM temp_responsables2_import WHERE ele_id='$ele_id' AND niveau_responsabilite='1' AND paie_frais_scolaires='1';";
+									if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
+									info_debug($sql);
+									$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($test2)>0) {
+										// L'info niveau_responsabilite='1' + paie_frais_scolaires='1' est présente.
+										// On s'en sert pour déterminer resp_legal=1 et resp_legal=2
+										if($lig1->niveau_responsabilite==1) {
+											if($lig1->paie_frais_scolaires==1) {
+												$resp_legal=1;
+											}
+											else {
+												// On devrait toujours passer là avec le test fait plus haut
+												$resp_legal=2;
+											}
+										}
+									}
+									else {
+										// Relever l'état antérieur dans le cas où on passe à resp_legal=9, 
+										// pour rétablir automatiquement les responsables légaux à leur rang initial
+										if($resp_legal==9) {
+											if($niveau_responsabilite==1) {
+												if($lig_tmp_resp_avant_suppr->resp_legal==1) {
+													$resp_legal=1;
+												}
+												elseif($lig_tmp_resp_avant_suppr->resp_legal==2) {
+													$resp_legal=2;
+												}
+											}
+										}
+									}
+
+									if($ele_id==$eleve_id_debug) {
+										echo "On a calculé \$resp_legal=$resp_legal<br />";
+									}
+
+									// Ménage avant ré-insertion plus bas
+									$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
+									if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
+									//echo "$sql<br />";
+									info_debug($sql);
+									$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
 							}
 
 							// Il ne peut pas y avoir 2 resp_legal 1, ni 2 resp_legal 2 pour un même élève.
 							if(($resp_legal==1)||($resp_legal==2)) {
+								// Si il existe un autre resp_legal 1 ou 2, au moins le déclarer temporairement resp_legal 9
+								// Son rang sera recalculé plus tard
+								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='$resp_legal' AND pers_id!='$pers_id';";
+								if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
+								//echo "$sql<br />";
+								info_debug($sql);
+								$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test2)>0) {
+									$sql="UPDATE responsables2 SET resp_legal='9' WHERE ele_id='$ele_id' AND resp_legal='$resp_legal' AND pers_id!='$pers_id';";
+									if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
+									//echo "$sql<br />";
+									info_debug($sql);
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
+
+
 								$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='$resp_legal';";
-								// 20180227
+								if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
 								//echo "$sql<br />";
 								info_debug($sql);
 								$test2=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test2)>0){
 									$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND
 																	resp_legal='$resp_legal';";
-									// 20180227
+									if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
 									//echo "$sql<br />";
 									info_debug($sql);
 									$delete=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -11168,8 +11255,9 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																ele_id='$ele_id',
 																resp_legal='$resp_legal',
 																niveau_responsabilite='$niveau_responsabilite',
+																paie_frais_scolaires='$paie_frais_scolaires',
 																code_parente='$code_parente';";
-								// 20180227
+								if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
 								//echo "$sql<br />";
 								info_debug($sql);
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -11184,9 +11272,10 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																	pers_contact='$pers_contact',
 																	ele_id='$ele_id',
 																	resp_legal='$resp_legal',
-																niveau_responsabilite='$niveau_responsabilite',
-																code_parente='$code_parente';";
-									// 20180227
+																	niveau_responsabilite='$niveau_responsabilite',
+																	paie_frais_scolaires='$paie_frais_scolaires',
+																	code_parente='$code_parente';";
+									if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
 									//echo "$sql<br />";
 									info_debug($sql);
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -11200,9 +11289,10 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																	pers_contact='$pers_contact',
 																	ele_id='$ele_id',
 																	resp_legal='$resp_legal',
-																niveau_responsabilite='$niveau_responsabilite',
-																code_parente='$code_parente';";
-									// 20180227
+																	niveau_responsabilite='$niveau_responsabilite',
+																	paie_frais_scolaires='$paie_frais_scolaires',
+																	code_parente='$code_parente';";
+									if($ele_id==$eleve_id_debug) {echo "$sql<br />\n";}
 									//echo "$sql<br />";
 									info_debug($sql);
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -11235,6 +11325,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$pers_contact=$lig1->pers_contact;
 							$niveau_responsabilite=$lig1->niveau_responsabilite;
 							$code_parente=$lig1->code_parente;
+							$paie_frais_scolaires=$lig1->paie_frais_scolaires;
 
 							$sql="SELECT * FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$pers_id';";
 							// 20180227
@@ -11271,6 +11362,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																ele_id='$ele_id',
 																resp_legal='$resp_legal',
 																niveau_responsabilite='$niveau_responsabilite',
+																paie_frais_scolaires='$paie_frais_scolaires',
 																code_parente='$code_parente';";
 								// 20180227
 								//echo "$sql<br />";
@@ -11286,6 +11378,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 																ele_id='$ele_id',
 																resp_legal='$resp_legal',
 																niveau_responsabilite='$niveau_responsabilite',
+																paie_frais_scolaires='$paie_frais_scolaires',
 																code_parente='$code_parente';";
 								// 20180227
 								//echo "$sql<br />";
@@ -11353,7 +11446,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 				echo "<td rowspan='2'>&nbsp;</td>\n";
 
-				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' colspan='7'>Responsable</td>\n";
+				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' colspan='8'>Responsable</td>\n";
 
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;' colspan='3'>Elève</td>\n";
 
@@ -11372,6 +11465,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>pers_contact</td>\n";
 				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Niv.resp</td>\n";
 				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Code parenté</td>\n";
+				echo "<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);' title=\"Paie les frais de scolarité\">Frais</td>\n";
 
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Nom</td>\n";
 				echo "<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Prénom</td>\n";
@@ -11412,6 +11506,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 						$niveau_responsabilite=$lig0b->niveau_responsabilite;
 						$code_parente=$lig0b->code_parente;
+						$paie_frais_scolaires=$lig0b->paie_frais_scolaires;
 					}
 
 
@@ -11442,6 +11537,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$ligne_courante.="<tr class='lig$alt'>\n";
 
 						$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
+						// 20181208
+						//echo "$sql<br />";
 						info_debug($sql);
 						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)==0){
@@ -11452,7 +11549,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 							$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
 							//$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
-							$ligne_courante.="<td colspan='9'>Aucune personne associée ou personne non ajoutée dans l'étape PERSONNES\n";
+							$ligne_courante.="<td colspan='10'>Aucune personne associée ou personne non ajoutée dans l'étape PERSONNES\n";
 
 							$sql="SELECT * FROM temp_resp_pers_import WHERE pers_id='$pers_id';";
 							$res_temp_pers=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -11551,6 +11648,14 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								else {
 									$ligne_courante.=$code_parente;
 								}
+
+								$ligne_courante.="<td>\n";
+								if($paie_frais_scolaires==1) {
+									$ligne_courante.="Oui";
+								}
+								else {
+									$ligne_courante.="Non";
+								}
 								$ligne_courante.="</td>\n";
 							}
 							else {
@@ -11595,6 +11700,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								}
 								else {
 									$ligne_courante.=$code_parente;
+								}
+								$ligne_courante.="</td>\n";
+
+								$ligne_courante.="<td>\n";
+								if($paie_frais_scolaires==1) {
+									$ligne_courante.="Oui";
+								}
+								else {
+									$ligne_courante.="Non";
 								}
 								$ligne_courante.="</td>\n";
 
@@ -11696,6 +11810,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$ligne_courante.="<tr class='lig$alt'>\n";
 
 							$sql="SELECT nom,prenom FROM resp_pers WHERE (pers_id='$pers_id')";
+							// 20181208
+							//echo "$sql<br />";
 							info_debug($sql);
 							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res2)==0){
@@ -11705,7 +11821,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$ligne_courante.="<td>&nbsp;</td>\n";
 
 								$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
-								$ligne_courante.="<td colspan='7'>Aucune personne associée???</td>\n";
+								$ligne_courante.="<td colspan='8'>Aucune personne associée???</td>\n";
 								info_debug("Aucune personne associée???\n");
 
 								//=========================
@@ -11815,6 +11931,21 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 									$ligne_courante.=$code_parente;
 								}
 								$ligne_courante.="</td>\n";
+
+								// 20181206
+								$ligne_courante.="<td";
+								if($lig1->paie_frais_scolaires!=$paie_frais_scolaires) {
+									$ligne_courante.=" class='modif'";
+								}
+								$ligne_courante.=">\n";
+								if($paie_frais_scolaires==1) {
+									$ligne_courante.='Oui';
+								}
+								else {
+									$ligne_courante.='Non';
+								}
+								$ligne_courante.="</td>\n";
+
 
 
 								// Elève(s) associé(s)

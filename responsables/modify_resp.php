@@ -1191,6 +1191,7 @@ if(isset($pers_id)){
 		// 20180222
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Niv.resp</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Parenté</td>\n";
+		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2' title=\"Paie les frais de scolarité\">Frais</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Supprimer</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' rowspan='2'>Autre responsable</td>\n";
 		echo "</tr>\n";
@@ -1307,6 +1308,7 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 				}
 			}
 			echo "<td style='text-align:center;'>".$code_parente."</td>\n";
+			echo "<td style='text-align:center;'>".($lig_ele->paie_frais_scolaires==1 ? 'Oui' : 'Non')."</td>\n";
 
 			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ele_id[$cpt]' value='$lig_ele->ele_id' onchange='changement();' /></td>\n";
 

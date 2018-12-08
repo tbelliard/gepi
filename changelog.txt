@@ -39,6 +39,8 @@ Actions:
 
 - Général:
 - Possibilité de mettre à jour globalement les groupes d'après l'export EXP_ELEVES.xml
+- Prise en compte du champ PAIE_FRAIS_SCOLAIRES de Siècle pour déterminer 
+  le responsable légal 1 par rapport au responsable légal 2.
 
 Gepi-1.7.3 (04/04/2018)
 ===========================
