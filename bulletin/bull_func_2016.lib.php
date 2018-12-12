@@ -68,6 +68,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		// Paramètre transmis depuis la page d'impression des bulletins
 		$un_seul_bull_par_famille,
+		$seulement_resp_2_autre_adresse,
 
 		$compteur_bulletins,
 
@@ -200,8 +201,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 	//=====================================
 	// Préparation des lignes d'adresse
 
-	// 20170714
 	/*
+	echo "<hr />\n";
+	echo "nb_bulletins=$nb_bulletins<br />\n";
 	echo $tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']." (\$tab_bull['eleve'][$i]['resp'])";
 	echo "<pre>";
 	print_r($tab_bull['eleve'][$i]['resp']);
@@ -214,6 +216,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$tab_adr_lignes[]=$current_resp_adr["adresse"];
 	}
 	$nb_bulletins=$tab_bull['eleve'][$i]['resp']["adresses"]["nb_adr"];
+	//echo "nb_bulletins=$nb_bulletins<br />\n";
 
 	// Impression avec désignation du responsable (archivage bulletins PDF ou autre)
 	if((isset($tmp_num_resp_destinataire))&&(preg_match("/^[0-9]{1,}$/", $tmp_num_resp_destinataire))&&(isset($tab_bull['eleve'][$i]['resp']["adresses"]["adresse"][$tmp_num_resp_destinataire]))) {
@@ -223,6 +226,17 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		$nb_bulletins=1;
 	}
+
+	if((isset($seulement_resp_2_autre_adresse))&&($seulement_resp_2_autre_adresse=='oui')&&(isset($tab_bull['eleve'][$i]['resp']["adresses"]["adresse"][2]))) {
+		// On imprime pour le responsable n°2 seulement
+		$tab_adr_lignes=array();
+		$tab_adr_lignes[2]=$tab_bull['eleve'][$i]['resp']["adresses"]["adresse"][2]["adresse"];
+		$tmp_num_resp_destinataire=2;
+
+		$nb_bulletins=1;
+	}
+
+	//echo "nb_bulletins=$nb_bulletins<br />\n";
 
 	/*
 	if(in_array($tab_bull['eleve'][$i]['login'] ,array("baillyc","bouyj2","caborete","barbatty"))) {
@@ -11930,6 +11944,7 @@ function bulletin_pdf_bilan_cycle($tab_bull, $i, $num_resp_bull="", $cycle="") {
 
 		// Paramètre transmis depuis la page d'impression des bulletins
 		$un_seul_bull_par_famille,
+		$seulement_resp_2_autre_adresse,
 
 		$compteur_bulletins,
 
@@ -12072,6 +12087,16 @@ function bulletin_pdf_bilan_cycle($tab_bull, $i, $num_resp_bull="", $cycle="") {
 		// On imprime pour un responsable particulier (éventuellement un couple à la même adresse)
 		$tab_adr_lignes=array();
 		$tab_adr_lignes[$tmp_num_resp_destinataire]=$tab_bull['eleve'][$i]['resp']["adresses"]["adresse"][$tmp_num_resp_destinataire]["adresse"];
+
+		$nb_bulletins=1;
+	}
+
+
+	if((isset($seulement_resp_2_autre_adresse))&&($seulement_resp_2_autre_adresse=='oui')&&(isset($tab_bull['eleve'][$i]['resp']["adresses"]["adresse"][2]))) {
+		// On imprime pour le responsable n°2 seulement
+		$tab_adr_lignes=array();
+		$tab_adr_lignes[2]=$tab_bull['eleve'][$i]['resp']["adresses"]["adresse"][2]["adresse"];
+		$tmp_num_resp_destinataire=2;
 
 		$nb_bulletins=1;
 	}

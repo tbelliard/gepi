@@ -816,6 +816,13 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 					document.getElementById('div_bulletin_fin_de_cycle').style.display='none';
 				}
 
+				if(document.getElementById('tr_seulement_resp_2_autre_adresse_0')) {
+					document.getElementById('tr_seulement_resp_2_autre_adresse_0').style.display='none';
+				}
+				if(document.getElementById('tr_seulement_resp_2_autre_adresse')) {
+					document.getElementById('tr_seulement_resp_2_autre_adresse').style.display='none';
+				}
+
 			}
 			else {
 				document.getElementById('div_modele_bulletin_pdf').style.display='none';
@@ -827,6 +834,13 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 					if(document.getElementById('div_bulletin_fin_de_cycle')) {
 						document.getElementById('div_bulletin_fin_de_cycle').style.display='';
 					}
+
+					if(document.getElementById('tr_seulement_resp_2_autre_adresse_0')) {
+						document.getElementById('tr_seulement_resp_2_autre_adresse_0').style.display='';
+					}
+					if(document.getElementById('tr_seulement_resp_2_autre_adresse')) {
+						document.getElementById('tr_seulement_resp_2_autre_adresse').style.display='';
+					}
 				}
 				else {
 					if(document.getElementById('div_param_bull_pdf')) {
@@ -834,6 +848,13 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 					}
 					if(document.getElementById('div_bulletin_fin_de_cycle')) {
 						document.getElementById('div_bulletin_fin_de_cycle').style.display='none';
+					}
+
+					if(document.getElementById('tr_seulement_resp_2_autre_adresse_0')) {
+						document.getElementById('tr_seulement_resp_2_autre_adresse_0').style.display='none';
+					}
+					if(document.getElementById('tr_seulement_resp_2_autre_adresse')) {
+						document.getElementById('tr_seulement_resp_2_autre_adresse').style.display='none';
 					}
 				}
 			}
@@ -875,6 +896,16 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	echo "<div id='div_parametres'>\n";
 	echo "<table border='0' summary='Tableau des paramètres'>\n";
 	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' onchange=\"checkbox_change(this.id)\" /></td><td><label for='un_seul_bull_par_famille' id='texte_un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
+
+	echo "
+	<tr id='tr_seulement_resp_2_autre_adresse_0'><td valign='top'></td><td>
+	Ou au contraire&nbsp;: </td></tr>";
+
+	echo "<tr id='tr_seulement_resp_2_autre_adresse'><td valign='top'>
+	<input type='checkbox' name='seulement_resp_2_autre_adresse' id='seulement_resp_2_autre_adresse' value='oui' onchange=\"checkbox_change(this.id)\" /></td><td><label for='seulement_resp_2_autre_adresse' id='texte_seulement_resp_2_autre_adresse' style='cursor: pointer;'>N'imprimer que le bulletin pour le 2è responsable s'il n'a pas la même adresse que le responsable n°1.</label></td></tr>\n";
+
+	echo "
+	<tr><td valign='top'></td><td><br /></td></tr>";
 
 	echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' onchange=\"checkbox_change(this.id)\" /></td><td><label for='coefficients_a_1' id='texte_coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 
@@ -1504,6 +1535,8 @@ else {
 
 	//$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
 	$un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un_seul_bull_par_famille'] : "non";
+	$seulement_resp_2_autre_adresse=isset($_POST['seulement_resp_2_autre_adresse']) ? $_POST['seulement_resp_2_autre_adresse'] : "non";
+
 	$coefficients_a_1=isset($_POST['coefficients_a_1']) ? $_POST['coefficients_a_1'] : "non";
 
 	$use_cell_ajustee=isset($_POST['use_cell_ajustee']) ? $_POST['use_cell_ajustee'] : "y";
@@ -1511,6 +1544,8 @@ else {
 	$tri_par_etab_orig=isset($_POST['tri_par_etab_orig']) ? $_POST['tri_par_etab_orig'] : "n";
 
 	$signer=isset($_POST['signer']) ? $_POST['signer'] : array();
+
+	//echo "un_seul_bull_par_famille=$un_seul_bull_par_famille<br />";
 
 	//$avec_coches_mentions=isset($_POST['avec_coches_mentions']) ? $_POST['avec_coches_mentions'] : "n";
 
@@ -5230,31 +5265,36 @@ Bien cordialement.
 				$periode_num=$tmp_tab[1];
 				$k=$tmp_tab[2];
 
-				if($mode_bulletin=="html") {
-					$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$k;
-					decompte_debug($motif,"$motif élève $k avant");
-					flush();
+				if((!isset($seulement_resp_2_autre_adresse))||
+					($seulement_resp_2_autre_adresse=='non')||
+					((isset($tab_ele['resp']["adresses"]['nb_adr']))&&($tab_ele['resp']["adresses"]['nb_adr']>=2))) {
 
-					// Saut de page si jamais ce n'est pas le premier bulletin
-					if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+					if($mode_bulletin=="html") {
+						$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$k;
+						decompte_debug($motif,"$motif élève $k avant");
+						flush();
 
-					// Génération du bulletin de l'élève
-					bulletin_html($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+						// Saut de page si jamais ce n'est pas le premier bulletin
+						if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
 
-					$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$k;
-					decompte_debug($motif,"$motif élève $k après");
-					flush();
-				}
-				else {
-					// 20170611
-					if($bulletin_fin_cycle_seulement=="y") {
-						bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$k);
+						// Génération du bulletin de l'élève
+						bulletin_html($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+
+						$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$k;
+						decompte_debug($motif,"$motif élève $k après");
+						flush();
 					}
 					else {
-						bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+						// 20170611
+						if($bulletin_fin_cycle_seulement=="y") {
+							bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$k);
+						}
+						else {
+							bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+						}
 					}
+					$compteur_bulletins++;
 				}
-				$compteur_bulletins++;
 			}
 		}
 
@@ -5349,70 +5389,75 @@ Bien cordialement.
 								// ++++++++++++++++++++++++++++++++++++++
 								// ++++++++++++++++++++++++++++++++++++++
 
-								if($mode_bulletin=="html") {
-									echo "<script type='text/javascript'>
-	document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']."';
-</script>\n";
-								}
+								if((!isset($seulement_resp_2_autre_adresse))||
+									($seulement_resp_2_autre_adresse=='non')||
+									((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['resp']["adresses"]['nb_adr']))&&($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['resp']["adresses"]['nb_adr']>=2))) {
+
+									if($mode_bulletin=="html") {
+										echo "<script type='text/javascript'>
+		document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']."';
+	</script>\n";
+									}
 
 
-								if($mode_bulletin=="html") {
-									//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-									//decompte_debug($motif,"$motif élève $i avant");
-									$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
-									decompte_debug($motif,"$motif élève $rg[$i] avant");
-									flush();
+									if($mode_bulletin=="html") {
+										//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+										//decompte_debug($motif,"$motif élève $i avant");
+										$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
+										decompte_debug($motif,"$motif élève $rg[$i] avant");
+										flush();
 
-									// Saut de page si jamais ce n'est pas le premier bulletin
-									if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+										// Saut de page si jamais ce n'est pas le premier bulletin
+										if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
 
-									// Génération du bulletin de l'élève
-									//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
-									//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
-									bulletin_html($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+										// Génération du bulletin de l'élève
+										//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
+										//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+										bulletin_html($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
 
-									//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-									//decompte_debug($motif,"$motif élève $i après");
-									$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
-									decompte_debug($motif,"$motif élève $rg[$i] après");
-									flush();
-								}
-								else {
-									// 20170611
-									if($bulletin_fin_cycle_seulement=="y") {
-										//bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$k);
-										bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$rg[$i]);
+										//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+										//decompte_debug($motif,"$motif élève $i après");
+										$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
+										decompte_debug($motif,"$motif élève $rg[$i] après");
+										flush();
 									}
 									else {
-										//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
-										bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+										// 20170611
+										if($bulletin_fin_cycle_seulement=="y") {
+											//bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$k);
+											bulletin_pdf_bilan_cycle($tab_bulletin[$id_classe][$periode_num],$rg[$i]);
+										}
+										else {
+											//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+											bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+										}
 									}
-								}
 
-		/*
-		echo "Tableau de la classe $id_classe en période $periode_num<br />
-		<pre>";
-		print_r($tab_bulletin[$id_classe][$periode_num]);
-		echo "</pre>";
+			/*
+			echo "Tableau de la classe $id_classe en période $periode_num<br />
+			<pre>";
+			print_r($tab_bulletin[$id_classe][$periode_num]);
+			echo "</pre>";
 
-		echo "Tableau du modèle PDF<br />
-		<pre>";
-		print_r($tab_modele_pdf);
-		echo "</pre>";
-		*/
+			echo "Tableau du modèle PDF<br />
+			<pre>";
+			print_r($tab_modele_pdf);
+			echo "</pre>";
+			*/
 
-								//==============================================================================================
-								// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE
-								//==============================================================================================
+									//==============================================================================================
+									// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE
+									//==============================================================================================
 
-								if($mode_bulletin=="html") {
-									echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
-								}
+									if($mode_bulletin=="html") {
+										echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
+									}
 
-								$compteur_bulletins++;
+									$compteur_bulletins++;
 
-								if($mode_bulletin=="html") {
-									flush();
+									if($mode_bulletin=="html") {
+										flush();
+									}
 								}
 							}
 						}
