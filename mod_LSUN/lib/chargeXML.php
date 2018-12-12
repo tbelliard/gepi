@@ -968,7 +968,19 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 		// Si retour vide, ajouter un test sur les éléments de la requête pour trouver où cela plante.
 		if(mysqli_num_rows($eleves)==0) {
-			$msg_erreur_remplissage.="Aucun élève n'a été trouvé. Commencez par valider le formulaire <strong>Responsables de l'établissement</strong> en cliquant sur <strong>Mettre à jour</strong><br />";
+			$msg_erreur_remplissage.="Aucun élève n'a été trouvé. Commencez par valider le formulaire <strong><a href='index.php#responsables'>Responsables de l'établissement</a></strong> en cliquant sur <strong>Mettre à jour</strong><br />";
+		}
+
+		// 20181209
+		if (isset($selectionClasse) && count($selectionClasse)){
+			for($loop_tmp=0;$loop_tmp<count($selectionClasse);$loop_tmp++) {
+				$sql="select 1=1 from lsun_responsables lr, classes c where lr.login=c.suivi_par and c.id='".$selectionClasse[$loop_tmp]."';";
+				//echo "$sql<br />";
+				$test=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($test)==0) {
+					$msg_erreur_remplissage.="Le <strong>Responsable du suivi</strong> de la classe de <strong>".get_nom_classe($selectionClasse[$loop_tmp])."</strong> n'est pas à jour dans le module LSUN.<br />Commencez par valider le formulaire <strong><a href='index.php#responsables'>Responsables de l'établissement</a></strong> en cliquant sur <strong>Mettre à jour</strong><br />";
+				}
+			}
 		}
 
 		while ($eleve = $eleves->fetch_object()) {
