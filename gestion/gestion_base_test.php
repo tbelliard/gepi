@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -706,7 +706,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 
 		$tab_aid=get_tab_aid_ele_clas("", $id_classe[$loop]);
 
-		$sql="SELECT e.nom, e.prenom, e.login, jec.periode 
+		$sql="SELECT e.nom, e.prenom, e.login, e.sexe, jec.periode 
 			FROM j_eleves_classes jec, 
 				eleves e 
 			WHERE jec.login=e.login AND 
@@ -716,6 +716,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 		if(mysqli_num_rows($res_ele)>0) {
 			echo "<p>Élèves&nbsp;: ";
 			while($lig_ele=mysqli_fetch_object($res_ele)) {
+				$il_ou_elle=(mb_strtoupper($lig_ele->sexe)=='F' ? 'Elle' : 'Il');
 				echo $lig_ele->prenom." ".$lig_ele->nom." <span title='Période ".$lig_ele->periode."'>(P".$lig_ele->periode.")</span>";
 				$sql="SELECT jeg.*, g.name FROM j_eleves_groupes jeg, groupes g WHERE login='".$lig_ele->login."' AND jeg.id_groupe=g.id AND jeg.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n');";
 				//echo "$sql<br />";
@@ -753,7 +754,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 									$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut s'accrocher, s'investir davantage.";
 								}
 								elseif($note<14) {
-									$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il peut mieux faire avec plus d'attention.";
+									$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". ".$il_ou_elle." peut mieux faire avec plus d'attention.";
 								}
 								else {
 									$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en ".$lig_grp->name.". Il faut continuer.";
@@ -910,7 +911,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 										$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
 									}
 									elseif($note<14) {
-										$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il peut mieux faire avec plus d'attention.";
+										$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
 									}
 									else {
 										$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
@@ -982,7 +983,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 											$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
 										}
 										elseif($note<14) {
-											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il peut mieux faire avec plus d'attention.";
+											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
 										}
 										else {
 											$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
@@ -1017,7 +1018,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 											$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
 										}
 										elseif($note<14) {
-											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il peut mieux faire avec plus d'attention.";
+											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
 										}
 										else {
 											$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
@@ -1049,7 +1050,6 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 
 								$sql="INSERT INTO aid_appreciations SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', id_aid='".$tab_aid[$loop]['id_aid']."', indice_aid='".$tab_aid[$loop]['indice_aid']."', note='".$note."', statut='".$statut."', appreciation='".mysqli_real_escape_string($mysqli, $app)."';";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-
 
 							}
 						}
