@@ -2,7 +2,7 @@
 /** Fonctions accessibles dans toutes les pages
  * 
  * 
- * @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * 
  * @package Initialisation
  * @subpackage general
@@ -16899,7 +16899,7 @@ function adresse_postale_resp($tab_resp_adr, $mode="pdf") {
 				// Les adresses sont différentes
 				// On teste en plus si la deuxième adresse est valide
 				if (($un_seul_bull_par_famille!="oui")&&
-					($tab_resp_adr[1]['adr1']!="")&&
+					(($tab_resp_adr[1]['adr1']!="")||($tab_resp_adr[1]['adr2']!="")||($tab_resp_adr[1]['adr3']!="")||($tab_resp_adr[1]['adr4']!=""))&&
 					($tab_resp_adr[1]['commune']!="")
 				) {
 					$tab["nb_adr"]=2;
