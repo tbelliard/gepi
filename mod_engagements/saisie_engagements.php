@@ -293,7 +293,13 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='elev
 					$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
 					//echo "$chaine<br />";
 					//if(!in_array($chaine, $engagement)) {
-					$tmp_info_user=get_info_user($current_login[$loop2]);
+					//$tmp_info_user=get_info_user($current_login[$loop2]);
+					$tmp_info_user=get_info_eleve($current_login[$loop2]);
+					/*
+					echo "<pre>";
+					print_r($tmp_info_user);
+					echo "</pre>";
+					*/
 					if((!in_array($chaine, $engagement))&&($tmp_info_user['statut']=='eleve')) {
 						$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
 						//echo "$sql<br />";
@@ -450,7 +456,8 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='resp
 
 					//echo "$chaine<br />";
 					// Il ne faut pas désinscrire les élèves ici
-					$tmp_info_user=get_info_user($current_login[$loop2]);
+					//$tmp_info_user=get_info_user($current_login[$loop2]);
+					$tmp_info_user=get_info_responsable($current_login[$loop2]);
 					if((!in_array($chaine, $engagement))&&($tmp_info_user['statut']=='responsable')) {
 						$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
 						//echo "$sql<br />";
