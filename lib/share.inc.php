@@ -12270,6 +12270,7 @@ function get_info_eleve($login_ele, $periode=1) {
 	$tab=array();
 
 	$sql="SELECT * FROM eleves WHERE login='$login_ele';";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
@@ -12299,6 +12300,7 @@ function get_info_eleve($login_ele, $periode=1) {
 		$tab['mef_code']=$lig->mef_code;
 
 		$sql="SELECT * FROM j_eleves_regime WHERE login='$login_ele';";
+		//echo "$sql<br />";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)>0) {
 			$lig2=mysqli_fetch_object($res2);
@@ -12311,6 +12313,7 @@ function get_info_eleve($login_ele, $periode=1) {
 		$tab['modalites_accompagnement']=get_tab_modalites_accompagnement_eleve($login_ele);
 
 		$sql="SELECT c.id, c.classe FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login='$login_ele' AND jec.periode='$periode';";
+		//echo "$sql<br />";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)>0) {
 			$lig2=mysqli_fetch_object($res2);
@@ -12322,6 +12325,7 @@ function get_info_eleve($login_ele, $periode=1) {
 		$tab['id_classes']=array();
 		$tab['classes']="";
 		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login='$login_ele' ORDER BY jec.periode;";
+		//echo "$sql<br />";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)>0) {
 			$cpt=0;
@@ -12353,6 +12357,7 @@ function get_info_responsable($login_resp, $pers_id="") {
 		elseif($pers_id!="") {
 			$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id';";
 		}
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$lig=mysqli_fetch_object($res);
@@ -12387,6 +12392,7 @@ function get_info_user($login_user, $tab_champs=array()) {
 	$tab=array();
 
 	$sql="SELECT * FROM utilisateurs WHERE login='$login_user';";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
