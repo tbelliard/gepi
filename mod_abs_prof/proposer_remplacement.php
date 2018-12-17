@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1559,7 +1559,7 @@ echo "<tr><td colspan='5'>
 									//echo "$sql<br />";
 									$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_prof)>0) {
-										if(count($groups[$id_groupe_courant]['classes']['classes']>1)) {
+										if(count($groups[$id_groupe_courant]['classes']['classes'])>1) {
 											echo "
 								<a name='jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."_classe_".$current_id_classe."'></a>
 								<span class='bold'>".$current_tab_classe['classe']."</span>";
@@ -1696,7 +1696,7 @@ echo "<tr><td colspan='5'>
 								//echo "$sql<br />";
 								$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_prof)>0) {
-									if(count($aid[$id_aid_courant]['classes']['classes']>1)) {
+									if(count($aid[$id_aid_courant]['classes']['classes'])>1) {
 										echo "
 							<a name='jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."_classe_".$current_id_classe."'></a>
 							<span class='bold'>".$current_tab_classe['classe']."</span>";
