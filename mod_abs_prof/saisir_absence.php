@@ -273,6 +273,11 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();
+$active_mod_edt=false;
+if((getSettingAOui('autorise_edt_tous'))||
+	((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+	$active_mod_edt=true;
+}
 
 ?>
 <script src="../ckeditor_4/ckeditor.js"></script>
@@ -391,6 +396,10 @@ for($loop=0;$loop<count($login_user);$loop++) {
 
 	echo "<input type='hidden' name='login_user[]' value='".$login_user[$loop]."' />";
 	echo $tab_prof[$loop]['denomination'];
+	if($active_mod_edt) {
+		echo " <a href='../edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=".$login_user[$loop]."' title=\"Voir l'EDT du professeur dans un nouvel onglet.\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
+	}
+
 }
 echo "</span></p>
 
