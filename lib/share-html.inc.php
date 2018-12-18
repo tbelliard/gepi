@@ -3390,7 +3390,7 @@ function affiche_remplacements_confirmes($login_user) {
 	$tab=get_tab_propositions_remplacements($login_user, "futures_validees");
 	for($loop=0;$loop<count($tab);$loop++) {
 		$tab_creneau=get_infos_creneau($tab[$loop]['id_creneau']);
-		$retour.="<div class='postit' style='text-align:center;'>Un remplacement vous est attribué&nbsp;:<br /><strong>".get_nom_classe($tab[$loop]['id_classe'])."&nbsp;:</strong> ".formate_date($tab[$loop]['date_debut_r'])." en ".$tab_creneau['info_html'];
+		$retour.="<div class='postit' style='text-align:center;'>Un remplacement vous est attribué&nbsp;:<br /><strong>".get_nom_classe($tab[$loop]['id_classe'])."&nbsp;:</strong> ".formate_date($tab[$loop]['date_debut_r'], 'n', 'court')." en ".$tab_creneau['info_html'];
 		if($tab[$loop]['salle']!="") {
 			$retour.=" (<em>salle ".$tab[$loop]['salle']."</em>)";
 		}
