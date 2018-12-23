@@ -22,6 +22,8 @@ Absences 2:
   Possibilité proposée au-delà d'un seuil d'absences paramétrable dans le module Abs2.
 - Affichage en CPE/Scolarité des notifications dans l'onglet Absences de la page
   de Consultation élève.
+- Possibilité dans les notifications d'extraire le détail des absences plutôt 
+  que les mentions matin/après-midi/journée (voir paramétrage du module Abs2).
 
 Bulletins:
 - Possibilité d'autorisation exceptionnelle de saisie/modification d'appréciation 

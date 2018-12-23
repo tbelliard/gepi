@@ -382,6 +382,17 @@ if (($_SESSION['statut']=="administrateur")&&(isset($_POST['is_posted']))) {
 			}
 		}
 
+		if (isset($_POST['abs2_notifications_detaillees'])) {
+			if((($_POST['abs2_notifications_detaillees'])=='y')||($_POST['abs2_notifications_detaillees']=='n')) {
+				if (!saveSetting("abs2_notifications_detaillees", $_POST['abs2_notifications_detaillees'])) {
+					$msg = "Erreur lors de l'enregistrement du paramètre 'abs2_notifications_detaillees' !";
+				}
+			}
+			else {
+				$msg = "Valeur invalide pour 'abs2_notifications_detaillees' !";
+			}
+		}
+
 		// Engagements
 		$sql="DELETE FROM setting WHERE name LIKE 'abs2_grp_engagement_%'";
 		$del=mysqli_query($mysqli, $sql);
@@ -614,6 +625,15 @@ Nombre d'absences à partir duquel proposer <em>(depuis la page Bilan individuel
 <input type="text" name="abs2_RappelLoiNbAbs" size="5" value="<?php echo $abs2_RappelLoiNbAbs; ?>"/>
 </p>
 
+<p>
+	<input type="radio" name="abs2_notifications_detaillees" id="abs2_notifications_detaillees_y" value="y"
+	<?php if (getSettingValue("abs2_notifications_detaillees")=="y") {echo " checked='checked'";} ?> />
+	<label for="abs2_notifications_detaillees_y">&nbsp;Afficher le détail des retards et absences dans les notifications <em style='color:red'>(expérimental)</em>.</label><br />
+	<input type="radio" name="abs2_notifications_detaillees" id="abs2_notifications_detaillees_n" value="n"
+	<?php if (getSettingValue("abs2_notifications_detaillees")!="y") {echo " checked='checked'";} ?> />
+	<label for="abs2_notifications_detaillees_n">&nbsp;Se contenter des indications d'absences par demi-journées <em>("le matin" ou "l'après-midi")</em>.</label>
+</p>
+
 <?php
 }
 else {
@@ -794,8 +814,19 @@ E-mail gestion absence établissement : <?php echo(getSettingValue("gepiAbsenceE
 	<label for="abs2_absences_du_jour_filtre_toutes">&nbsp;Afficher toutes les saisies.</label>
 </p>
 
+<br />
+
 <p>
 Nombre d'absences à partir duquel proposer <em>(depuis la page Bilan individuel)</em> la génération d'un rappel à la loi&nbsp;: <?php echo $abs2_RappelLoiNbAbs; ?>
+</p>
+
+<br />
+
+<p>
+	<?php if (getSettingValue("abs2_notifications_detaillees")=="y") {echo "<img src='../../images/enabled.png' class='icone20' />";}else {echo "<img src='../../images/disabled.png' class='icone20' />";} ?>
+	<label for="abs2_notifications_detaillees_y">&nbsp;Afficher le détail des retards et absences dans les notifications <em style='color:red'>(expérimental)</em>.</label><br />
+	<?php if (getSettingValue("abs2_notifications_detaillees")!="y") {echo "<img src='../../images/enabled.png' class='icone20' />";}else {echo "<img src='../../images/disabled.png' class='icone20' />";} ?>
+	<label for="abs2_notifications_detaillees_n">&nbsp;Se contenter des indications d'absences par demi-journées <em>("le matin" ou "l'après-midi")</em>.</label>
 </p>
 
 <?php

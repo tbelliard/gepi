@@ -74,6 +74,10 @@ $retour_envoi = '';
 $icone_succes_envoi="";
 $icone_echec_envoi="";
 
+if(!isset($message_enregistrement)) {
+	$message_enregistrement='';
+}
+
 if ($notification == null && !isset($_POST["creation_notification"])) {
     $message_enregistrement .= '<span style="color:red">Generation impossible : notification non trouvée.</span> ';
     include("visu_notification.php");
