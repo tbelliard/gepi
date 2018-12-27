@@ -147,7 +147,32 @@ if (isset($is_posted) and ($is_posted == 1)) {
 								if(mysqli_num_rows($test)==0){
 									$sql="INSERT INTO j_eleves_groupes SET login='$login_eleve',id_groupe='$lig_tmp->id_groupe',periode='$i'";
 									$insert_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-									if (!($insert_grp))  {$reg_ok = 'no';}
+									if (!$insert_grp)  {$reg_ok = 'no';}
+									else {
+										$sql="SELECT DISTINCT code_modalite_elect FROM j_groupes_eleves_modalites WHERE id_groupe='".$lig_tmp->id_groupe."';";
+										$test_grp_mod=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test_grp_mod)==1) {
+											$lig_grp_mod=mysqli_fetch_object($test_grp_mod);
+
+											$sql="SELECT 1=1 FROM j_groupes_eleves_modalites WHERE login='".$login_eleve."' AND id_groupe='".$lig_tmp->id_groupe."';";
+											$test_deja=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($test_deja)>0) {
+												// Ca ne devrait pas arriver
+												$sql="UPDATE j_groupes_eleves_modalites SET code_modalite_elect='".$lig_grp_mod->code_modalite_elect."' WHERE login='".$login_eleve."' AND id_groupe='".$lig_tmp->id_groupe."';";
+												$update=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(!$update) {
+													$reg_ok = 'no';
+												}
+											}
+											else {
+												$sql="INSERT INTO j_groupes_eleves_modalites SET code_modalite_elect='".$lig_grp_mod->code_modalite_elect."', login='".$login_eleve."', id_groupe='".$lig_tmp->id_groupe."';";
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(!$insert) {
+													$reg_ok = 'no';
+												}
+											}
+										}
+									}
 								}
 							}
 						}
