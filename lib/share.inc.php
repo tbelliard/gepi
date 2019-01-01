@@ -3140,9 +3140,8 @@ $GLOBALS['class_special_infobulle'] = '';
  * @return string 
  */
 function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow,$zindex_infobulle=1){
-	/*	
-		
-		$overflow:		
+	/*
+		$overflow:
 	*/
 	global $posDiv_infobulle;
 	global $tabid_infobulle;
@@ -3282,7 +3281,9 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	if (isset($pas_de_decalage_infobulle) AND $pas_de_decalage_infobulle == "oui") {
 		// on ne décale pas les div des infobulles
 		$posDiv_infobulle = $posDiv_infobulle;
-	}else{
+	}
+	else {
+		$largeur=str_replace('px', '', $largeur);
 		$posDiv_infobulle = $posDiv_infobulle+$largeur;
 	}
 
@@ -3291,9 +3292,8 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 
 // Fonction de création d'infobulle redimensionnable (http://www.twinhelix.com/javascript/dragresize/)
 function creer_div_infobulle2($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow,$zindex_infobulle=1){
-	/*	
-		
-		$overflow:		
+	/*
+		$overflow:
 	*/
 	global $posDiv_infobulle;
 	global $tabid_infobulle;
@@ -3446,7 +3446,9 @@ function creer_div_infobulle2($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$ha
 	if (isset($pas_de_decalage_infobulle) AND $pas_de_decalage_infobulle == "oui") {
 		// on ne décale pas les div des infobulles
 		$posDiv_infobulle = $posDiv_infobulle;
-	}else{
+	}
+	else {
+		$largeur=str_replace('px', '', $largeur);
 		$posDiv_infobulle = $posDiv_infobulle+$largeur;
 	}
 
