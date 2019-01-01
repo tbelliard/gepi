@@ -131,7 +131,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesMoyennesProfToutesClasses';
-$texteItem="a accès aux moyennes des ".$gepiSettings['denomination_eleves']." de toutes les classes";
+$texteItem="a accès aux moyennes des ".$gepiSettings['denomination_eleves']." de toutes les classes.<br /><em>(cela peut être utile pour des dispositifs d'aide aux devoirs, d'AP faisant intervenir des professeurs d'autres classes que celle de l'élève)</em>";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
