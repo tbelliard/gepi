@@ -379,4 +379,34 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$sql="SHOW INDEX FROM j_groupes_eleves_modalites WHERE Key_name='login';";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
+	$result .= "&nbsp;-> Ajout d'un index 'login' sur la table 'j_groupes_eleves_modalites'&nbsp;: ";
+	$sql="ALTER TABLE j_groupes_eleves_modalites ADD INDEX login (login);";
+	//echo "$sql<br />";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
+$sql="SHOW INDEX FROM j_groupes_eleves_modalites WHERE Key_name='id_groupe';";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
+	$result .= "&nbsp;-> Ajout d'un index 'id_groupe' sur la table 'j_groupes_eleves_modalites'&nbsp;: ";
+	$sql="ALTER TABLE j_groupes_eleves_modalites ADD INDEX id_groupe (id_groupe);";
+	//echo "$sql<br />";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
 ?>
