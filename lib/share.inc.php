@@ -12827,7 +12827,8 @@ function renseigner_tab_rn($tab_id_classe) {
 				if(mysqli_num_rows($res_class_tmp)>0){
 					$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
 
-					if($lig_class_tmp->$tab_item[$k]=="y") {
+					$current_item=$tab_item[$k];
+					if($lig_class_tmp->$current_item=="y") {
 						${$chaine_tab}[$i]="y";
 
 						//echo "\${".$chaine_tab."}[$i]=".${$chaine_tab}[$i]."<br />";

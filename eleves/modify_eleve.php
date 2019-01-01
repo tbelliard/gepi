@@ -3389,9 +3389,12 @@ if(isset($eleve_login)){
 				}
 			}
 		}
-		echo "
-<a href='modify_eleve.php?eleve_login=".$eleve_login."&amp;ajout_resp_legal_0=y' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /> Ajouter un responsable non légal</a><br />
-<br />
+		// 20190101
+		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+			echo "
+<a href='modify_eleve.php?eleve_login=".$eleve_login."&amp;ajout_resp_legal_0=y' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /> Ajouter un responsable non légal</a><br />";
+		}
+		echo "<br />
 (*) Les responsables non légaux ne sont pas destinataires par défaut des bulletins.<br />
 Vous pouvez toutefois autoriser la génération de bulletins pour certains responsables non légaux<br />
 (<em>cela peut se révéler utile dans des cas compliqués, par exemple avec des enfants en famille d'accueil</em>).<br />
