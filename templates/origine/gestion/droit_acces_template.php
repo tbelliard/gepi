@@ -144,8 +144,8 @@
 		<input type="checkbox" name="<?php echo $AfficheItem['name'] ; ?>"
 			   id="<?php echo $AfficheItem['name'] ; ?>"
 			   value="yes" <?php if (getSettingValue($AfficheItem['name'])=='yes') echo 'checked="checked"'; ?>
-			   onchange='changement();' />
-		<label for='<?php echo $AfficheItem['name'] ; ?>'
+			   onchange="changement();checkbox_change(this.id);" />
+		<label for='<?php echo $AfficheItem['name'] ; ?>' id='texte_<?php echo $AfficheItem['name'] ; ?>'
 			   style='cursor: pointer;'>
 		<?php echo $AfficheItem['texte'] ; ?>
 		</label>
@@ -170,6 +170,19 @@
 //<!--
 //document.getElementByClassNames('contenu_onglet2').ClassNames = 'contenu_onglet';
 	<?php
+		echo js_checkbox_change_style();
+		echo "
+		input=document.getElementsByTagName('input');
+		for(i=0;i<input.length;i++) {
+			type=input[i].getAttribute('type');
+			if(type=='checkbox') {
+				id=input[i].getAttribute('id');
+				if(id) {
+					checkbox_change(id);
+				}
+			}
+		}";
+
 		$anc_onglet=isset($_POST['onglet_courant']) ? $_POST['onglet_courant'] : 'Enseignant';
 		if($anc_onglet=='') {$anc_onglet='Enseignant';}
 	?>
