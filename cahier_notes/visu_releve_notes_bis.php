@@ -2,7 +2,7 @@
 /*
 *
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -1906,6 +1906,11 @@ else {
 			$afficher_ligne_moy_gen='n';
 		}
 		//echo "\$afficher_ligne_moy_gen=$afficher_ligne_moy_gen<br />";
+
+		//20190101
+		//$acces_adresse_responsable;
+		$acces_adresse_responsable=get_acces_adresse_resp('', $id_classe);
+		//echo "\$acces_adresse_responsable=$acces_adresse_responsable<br />";
 
 		//==========================================
 		/*

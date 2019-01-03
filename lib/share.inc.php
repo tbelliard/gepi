@@ -2,7 +2,7 @@
 /** Fonctions accessibles dans toutes les pages
  * 
  * 
- * @copyright Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * @copyright Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * 
  * @package Initialisation
  * @subpackage general
@@ -5188,6 +5188,7 @@ function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="", $logi
 		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}
 		$sql.="professeur='$login_prof' AND login='$login_eleve';";
 	}
+	//echo "$sql<br />";
 	$resultat = mysqli_query($mysqli, $sql); 
 	if($resultat->num_rows > 0) {
 		$resultat->close();
@@ -5755,7 +5756,8 @@ function mysql_date_to_unix_timestamp($mysql_date) {
 		return "Date '$mysql_date' mal formatée?";
 	}
 	else {
-		$tmp_tab3=explode(":",$tmp_tab[1]);
+		//$tmp_tab3=explode(":", $tmp_tab[1]);
+		$tmp_tab3=explode(":",str_ireplace('m', ':', str_ireplace('h', ':', $tmp_tab[1])));
 
 		if(!isset($tmp_tab3[2])) {
 			// Ces retours ne sont pas adaptés... on fait généralement une comparaison sur le retour de cette fonction
@@ -18327,5 +18329,736 @@ function get_action($id_action) {
 	}
 
 	return $action;
+}
+
+// 20190101
+function get_acces_adresse_resp($login_ele, $id_classe='', $login_resp='') {
+	global $mysqli;
+
+	$retour=false;
+
+	if($_SESSION['statut']=='administrateur') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesAdresseTousParentsProf')) {
+			$retour=true;
+		}
+
+		if(!$retour) {
+			$eleve_classe_prof=false;
+			$eleve_groupe_prof=false;
+
+			if($login_ele!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.login='".$login_ele."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+										j_groupes_professeurs jgp
+									WHERE jeg.login='".$login_ele."' AND
+											jeg.id_groupe=jgp.id_groupe AND
+											jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+			elseif($id_classe!='') {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.id_classe='".$id_classe."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+			}
+			elseif($login_resp!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM eleves e,
+									j_eleves_classes jec, 
+									j_groupes_classes jgc, 
+									j_groupes_professeurs jgp, 
+									responsables2 r, 
+									resp_pers rp 
+								WHERE rp.login='".$login_resp."' AND 
+									r.pers_id=rp.pers_id AND 
+									(r.resp_legal='1' OR r.resp_legal='2') AND 
+									e.ele_id=r.ele_id AND 
+									jec.login=e.login AND 
+									jec.id_classe=jgc.id_classe AND 
+									jgc.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM eleves e,
+									j_eleves_groupes jeg,
+									j_groupes_professeurs jgp, 
+									responsables2 r, 
+									resp_pers rp 
+								WHERE rp.login='".$login_resp."' AND 
+									r.pers_id=rp.pers_id AND 
+									(r.resp_legal='1' OR r.resp_legal='2') AND 
+									e.ele_id=r.ele_id AND 
+									jec.login=e.login AND 
+									jeg.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+
+			if(($eleve_classe_prof)||($eleve_groupe_prof)) {
+				/*
+				if(getSettingAOui('GepiAccesGestElevesProf')) {
+					$retour=true;
+				}
+				*/
+
+				if(getSettingAOui('GepiAccesAdresseParentsRespProf')) {
+					$retour=true;
+				}
+			}
+
+			if(!$retour) {
+				//echo "is_pp(".$_SESSION['login'].", '', '', '', $login_resp)<br />";
+				if((($login_ele!='')&&(is_pp($_SESSION['login'], '', $login_ele)))||
+				(($id_classe!='')&&(is_pp($_SESSION['login'], $id_classe)))||
+				(($login_resp!='')&&(is_pp($_SESSION['login'], '', '', '', $login_resp)))) {
+					if(getSettingAOui('GepiAccesGestElevesProfP')) {
+						$acces_adresse_responsable=true;
+					}
+
+					if(getSettingAOui('GepiAccesAdresseParentsRespPP')) {
+						$retour=true;
+					}
+				}
+			}
+		}
+	}
+
+	return $retour;
+}
+
+function get_acces_tel_resp($login_ele, $id_classe='', $login_resp='') {
+	global $mysqli;
+
+	$retour=false;
+
+	if($_SESSION['statut']=='administrateur') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesTelTousParentsProf')) {
+			$retour=true;
+		}
+
+		if(!$retour) {
+			$eleve_classe_prof=false;
+			$eleve_groupe_prof=false;
+
+
+			if($login_ele!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.login='".$login_ele."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+										j_groupes_professeurs jgp
+									WHERE jeg.login='".$login_ele."' AND
+											jeg.id_groupe=jgp.id_groupe AND
+											jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+			elseif($id_classe!='') {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.id_classe='".$id_classe."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+			}
+			elseif($login_resp!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM eleves e,
+									j_eleves_classes jec, 
+									j_groupes_classes jgc, 
+									j_groupes_professeurs jgp, 
+									responsables2 r, 
+									resp_pers rp 
+								WHERE rp.login='".$login_resp."' AND 
+									r.pers_id=rp.pers_id AND 
+									(r.resp_legal='1' OR r.resp_legal='2') AND 
+									e.ele_id=r.ele_id AND 
+									jec.login=e.login AND 
+									jec.id_classe=jgc.id_classe AND 
+									jgc.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM eleves e,
+									j_eleves_groupes jeg,
+									j_groupes_professeurs jgp, 
+									responsables2 r, 
+									resp_pers rp 
+								WHERE rp.login='".$login_resp."' AND 
+									r.pers_id=rp.pers_id AND 
+									(r.resp_legal='1' OR r.resp_legal='2') AND 
+									e.ele_id=r.ele_id AND 
+									jec.login=e.login AND 
+									jeg.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+
+			if(($eleve_classe_prof)||($eleve_groupe_prof)) {
+				/*
+				if(getSettingAOui('GepiAccesGestElevesProf')) {
+					$retour=true;
+				}
+				*/
+
+				if(!$retour) {
+					if(getSettingAOui('GepiAccesTelParentsRespProf')) {
+						$retour=true;
+					}
+				}
+			}
+
+			if(!$retour) {
+				if((($login_ele!='')&&(is_pp($_SESSION['login'], '', $login_ele)))||
+				(($id_classe!='')&&(is_pp($_SESSION['login'], $id_classe)))||
+				(($login_resp!='')&&(is_pp($_SESSION['login'], '', '', '', $login_resp)))) {
+					if(getSettingAOui('GepiAccesTelParentsRespPP')) {
+						$retour=true;
+					}
+				}
+			}
+		}
+	}
+
+	return $retour;
+}
+
+function get_acces_mail_resp($login_ele, $id_classe='', $login_resp='') {
+	global $mysqli;
+
+	$retour=false;
+
+	if($_SESSION['statut']=='administrateur') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesMailTousParentsProf')) {
+			$retour=true;
+		}
+
+		if(!$retour) {
+			$eleve_classe_prof=false;
+			$eleve_groupe_prof=false;
+
+
+			if($login_ele!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.login='".$login_ele."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+										j_groupes_professeurs jgp
+									WHERE jeg.login='".$login_ele."' AND
+											jeg.id_groupe=jgp.id_groupe AND
+											jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+			elseif($id_classe!='') {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.id_classe='".$id_classe."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+			}
+			elseif($login_resp!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM eleves e,
+									j_eleves_classes jec, 
+									j_groupes_classes jgc, 
+									j_groupes_professeurs jgp, 
+									responsables2 r, 
+									resp_pers rp 
+								WHERE rp.login='".$login_resp."' AND 
+									r.pers_id=rp.pers_id AND 
+									(r.resp_legal='1' OR r.resp_legal='2') AND 
+									e.ele_id=r.ele_id AND 
+									jec.login=e.login AND 
+									jec.id_classe=jgc.id_classe AND 
+									jgc.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM eleves e,
+									j_eleves_groupes jeg,
+									j_groupes_professeurs jgp, 
+									responsables2 r, 
+									resp_pers rp 
+								WHERE rp.login='".$login_resp."' AND 
+									r.pers_id=rp.pers_id AND 
+									(r.resp_legal='1' OR r.resp_legal='2') AND 
+									e.ele_id=r.ele_id AND 
+									jec.login=e.login AND 
+									jeg.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+
+
+			if(($eleve_classe_prof=="y")||($eleve_groupe_prof=="y")) {
+				if(getSettingAOui('GepiAccesMailParentsRespProf')) {
+					$retour=true;
+				}
+			}
+
+			if(!$retour) {
+				if((($login_ele!='')&&(is_pp($_SESSION['login'], '', $login_ele)))||
+				(($id_classe!='')&&(is_pp($_SESSION['login'], $id_classe)))||
+				(($login_resp!='')&&(is_pp($_SESSION['login'], '', '', '', $login_resp)))) {
+					if(getSettingAOui('GepiAccesMailParentsRespPP')) {
+						$retour=true;
+					}
+				}
+			}
+		}
+	}
+
+	return $retour;
+}
+
+// Les adresses élèves ne sont pas enregistrées dans Gepi pour le moment
+// Les droits associés ne sont pas activés dans gestion/droits_acces.php
+function get_acces_adresse_ele($login_ele, $id_classe='') {
+	global $mysqli;
+
+	$retour=false;
+
+	if($_SESSION['statut']=='administrateur') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesAdresseTousElevesProf')) {
+			$retour=true;
+		}
+
+		if(!$retour) {
+			$eleve_classe_prof=false;
+			$eleve_groupe_prof=false;
+
+			if($login_ele!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.login='".$login_ele."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+										j_groupes_professeurs jgp
+									WHERE jeg.login='".$login_ele."' AND
+											jeg.id_groupe=jgp.id_groupe AND
+											jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+			elseif($id_classe!='') {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.id_classe='".$id_classe."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+			}
+
+			if(($eleve_classe_prof)||($eleve_groupe_prof)) {
+				/*
+				if(getSettingAOui('GepiAccesGestElevesProf')) {
+					$retour=true;
+				}
+				*/
+
+				if(getSettingAOui('GepiAccesAdresseElevesRespProf')) {
+					$retour=true;
+				}
+			}
+
+			if(!$retour) {
+				if((($login_ele!='')&&(is_pp($_SESSION['login'], '', $login_ele)))||
+				(($id_classe!='')&&(is_pp($_SESSION['login'], $id_classe)))) {
+					/*
+					if(getSettingAOui('GepiAccesGestElevesProfP')) {
+						$acces_adresse_responsable=true;
+					}
+					*/
+
+					if(getSettingAOui('GepiAccesAdresseElevesRespPP')) {
+						$retour=true;
+					}
+				}
+			}
+		}
+	}
+
+	return $retour;
+}
+
+function get_acces_tel_ele($login_ele, $id_classe='') {
+	global $mysqli;
+
+	$retour=false;
+
+	if($_SESSION['statut']=='administrateur') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesTelTousElevesProf')) {
+			$retour=true;
+		}
+
+		if(!$retour) {
+			$eleve_classe_prof=false;
+			$eleve_groupe_prof=false;
+
+
+			if($login_ele!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.login='".$login_ele."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+										j_groupes_professeurs jgp
+									WHERE jeg.login='".$login_ele."' AND
+											jeg.id_groupe=jgp.id_groupe AND
+											jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+			elseif($id_classe!='') {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.id_classe='".$id_classe."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+			}
+
+			if(($eleve_classe_prof)||($eleve_groupe_prof)) {
+				/*
+				if(getSettingAOui('GepiAccesGestElevesProf')) {
+					$retour=true;
+				}
+				*/
+
+				if(!$retour) {
+					if(getSettingAOui('GepiAccesTelElevesRespProf')) {
+						$retour=true;
+					}
+				}
+			}
+
+			if(!$retour) {
+				if((($login_ele!='')&&(is_pp($_SESSION['login'], '', $login_ele)))||
+				(($id_classe!='')&&(is_pp($_SESSION['login'], $id_classe)))) {
+					if(getSettingAOui('GepiAccesTelElevesRespPP')) {
+						$retour=true;
+					}
+				}
+			}
+		}
+	}
+
+	return $retour;
+}
+
+function get_acces_mail_ele($login_ele, $id_classe='') {
+	global $mysqli;
+
+	$retour=false;
+
+	if($_SESSION['statut']=='administrateur') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesMailTousElevesProf')) {
+			$retour=true;
+		}
+
+		if(!$retour) {
+			$eleve_classe_prof=false;
+			$eleve_groupe_prof=false;
+
+
+			if($login_ele!='') {
+				//=====================================
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.login='".$login_ele."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+				//=====================================
+				if(!$eleve_classe_prof) {
+					$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+										j_groupes_professeurs jgp
+									WHERE jeg.login='".$login_ele."' AND
+											jeg.id_groupe=jgp.id_groupe AND
+											jgp.login='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
+						$eleve_groupe_prof=true;
+					}
+				}
+				//=====================================
+			}
+			elseif($id_classe!='') {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec,
+									j_groupes_classes jgc,
+									j_groupes_professeurs jgp
+								WHERE jec.id_classe='".$id_classe."' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($test_eleve_classe_prof)>0) {
+					$eleve_classe_prof=true;
+				}
+			}
+
+			if(($eleve_classe_prof=="y")||($eleve_groupe_prof=="y")) {
+				if(getSettingAOui('GepiAccesMailElevesRespProf')) {
+					$retour=true;
+				}
+			}
+
+			if(!$retour) {
+				if((($login_ele!='')&&(is_pp($_SESSION['login'], '', $login_ele)))||
+				(($id_classe!='')&&(is_pp($_SESSION['login'], $id_classe)))) {
+					if(getSettingAOui('GepiAccesMailElevesRespPP')) {
+						$retour=true;
+					}
+				}
+			}
+		}
+	}
+
+	return $retour;
 }
 ?>

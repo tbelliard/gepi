@@ -4085,31 +4085,56 @@ function teste_lapsus($chaine) {
 }
 
 function affiche_infos_adresse_et_tel($login_user, $tab_user=array()) {
+	//global $acces_mail_resp, $acces_mail_ele, $acces_tel_ele, $acces_tel_responsable, $acces_adresse_responsable;
+
 	$retour="";
 	if($login_user!="") {
 		$tab_user=get_info_user($login_user);
 	}
+	elseif(isset($tab_user['login'])) {
+		$login_user=$tab_user['login'];
+	}
 
-	$retour.="<table class='boireaus boireaus_alt2'>
+	$afficher_colonne_mail=true;
+	$afficher_colonne_tel=true;
+	$afficher_colonne_adresse=true;
+	if($tab_user['statut']=='eleve') {
+		$afficher_colonne_tel=get_acces_tel_ele($login_user);
+		$afficher_colonne_mail=get_acces_mail_ele($login_user);
+
+		$afficher_colonne_adresse=false;
+	}
+	elseif($tab_user['statut']=='responsable') {
+		$afficher_colonne_adresse=get_acces_adresse_resp('', '', $login_user);
+		$afficher_colonne_tel=get_acces_tel_resp('', '', $login_user);
+		$afficher_colonne_mail=get_acces_mail_resp('', '', $login_user);
+	}
+
+	if((!$afficher_colonne_mail)&&(!$afficher_colonne_tel)&&(!$afficher_colonne_adresse)) {
+		$retour.="Aucune information ne peut être affichée.";
+	}
+	else {
+		$retour.="<table class='boireaus boireaus_alt2'>
 	<thead>
-		<tr>
-			<th>Téléphone</th>
-			<th>Mail</th>
-			<th>Adresse</th>
+		<tr>".($afficher_colonne_tel ? "
+			<th>Téléphone</th>":"").($afficher_colonne_mail ? "
+			<th>Mail</th>":"").($afficher_colonne_adresse ? "
+			<th>Adresse</th>":"")."
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
+		<tr>".($afficher_colonne_tel ? "
 			<td>
 				".((isset($tab_user['tel_pers'])&&($tab_user['tel_pers']!="")) ? "Tel.pers&nbsp;:".affiche_numero_tel_sous_forme_classique($tab_user['tel_pers'])."<br />" : "")."
 				".((isset($tab_user['tel_port'])&&($tab_user['tel_port']!="")) ? "Tel.port&nbsp;:".affiche_numero_tel_sous_forme_classique($tab_user['tel_port'])."<br />" : "")."
 				".((isset($tab_user['tel_pers'])&&($tab_user['tel_prof']!="")) ? "Tel.prof&nbsp;:".affiche_numero_tel_sous_forme_classique($tab_user['tel_prof']) : "")."
-			</td>
-			<td>".(isset($tab_user['email']) ? "<a href='mailto:".$tab_user['email']."?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail'>".$tab_user['email']."</a>" : "")."</td>
-			<td>".(isset($tab_user['adresse']['en_ligne']) ? $tab_user['adresse']['en_ligne'] : "")."</td>
+			</td>":"").($afficher_colonne_mail ? "
+			<td>".(isset($tab_user['email']) ? "<a href='mailto:".$tab_user['email']."?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail'>".$tab_user['email']."</a>" : "")."</td>":"").($afficher_colonne_adresse ? "
+			<td>".(isset($tab_user['adresse']['en_ligne']) ? $tab_user['adresse']['en_ligne'] : "")."</td>":"")."
 		</tr>
 	</tbody>
 </table>";
+	}
 
 	return $retour;
 }

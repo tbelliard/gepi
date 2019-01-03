@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -152,21 +152,27 @@ $duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if(!isset($eleve_login)) {
-    header("Location: ./index.php?msg=Élève non choisi.");
-    die();
+	if(acces('/eleves/index.php', $_SESSION['statut'])) {
+		header("Location: ./index.php?msg=Élève non choisi.");
+		die();
+	}
+	else {
+		header("Location: ../accueil.php?msg=Élève non choisi.");
+		die();
+	}
 }
 
 if($_SESSION['statut']=='professeur') {
@@ -1169,10 +1175,10 @@ elseif((($_SESSION['statut']=="professeur")&&($is_pp))||($_SESSION['statut']=="c
 
 // On appelle les informations de l'utilisateur pour les afficher :
 if (isset($eleve_login)) {
-    $call_eleve_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$eleve_login'");
-    $eleve_nom = old_mysql_result($call_eleve_info, "0", "nom");
-    $eleve_prenom = old_mysql_result($call_eleve_info, "0", "prenom");
-    $eleve_email = old_mysql_result($call_eleve_info, "0", "email");
+	$call_eleve_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$eleve_login'");
+	$eleve_nom = old_mysql_result($call_eleve_info, "0", "nom");
+	$eleve_prenom = old_mysql_result($call_eleve_info, "0", "prenom");
+	$eleve_email = old_mysql_result($call_eleve_info, "0", "email");
 
 	if(getSettingValue('mode_email_ele')=='mon_compte') {
 		$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
@@ -1260,9 +1266,9 @@ if (isset($eleve_login)) {
 	}
 	//=======================================
 
-    //$eleve_no_resp = old_mysql_result($call_eleve_info, "0", "ereno");
-    $reg_no_nat = old_mysql_result($call_eleve_info, "0", "no_gep");
-    $reg_no_gep = old_mysql_result($call_eleve_info, "0", "elenoet");
+	//$eleve_no_resp = old_mysql_result($call_eleve_info, "0", "ereno");
+	$reg_no_nat = old_mysql_result($call_eleve_info, "0", "no_gep");
+	$reg_no_gep = old_mysql_result($call_eleve_info, "0", "elenoet");
 	$reg_ele_id = old_mysql_result($call_eleve_info, "0", "ele_id");
 	$reg_mef_code = old_mysql_result($call_eleve_info, "0", "mef_code");
 
@@ -1270,11 +1276,11 @@ if (isset($eleve_login)) {
 	$reg_tel_port = old_mysql_result($call_eleve_info, "0", "tel_port");
 	$reg_tel_prof = old_mysql_result($call_eleve_info, "0", "tel_prof");
 
-    //$call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
-    $id_etab=0;
+	//$call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
+	$id_etab=0;
 	if($reg_no_gep!="") {
 		$call_etab = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$reg_no_gep' and e.id = j.id_etablissement)");
-	    $id_etab = @old_mysql_result($call_etab, "0", "id");
+		$id_etab = @old_mysql_result($call_etab, "0", "id");
 	}
 
 	//echo "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)<br />";
@@ -1325,22 +1331,22 @@ if (isset($eleve_login)) {
 
 
 } else {
-    if (isset($reg_nom)) {$eleve_nom = $reg_nom;}
-    if (isset($reg_prenom)) {$eleve_prenom = $reg_prenom;}
-    if (isset($reg_email)) {$eleve_email = $reg_email;}
-    if (isset($reg_sexe)) {$eleve_sexe = $reg_sexe;}
-    if (isset($reg_no_nat)) {$reg_no_nat = $reg_no_nat;}
-    if (isset($reg_no_gep)) {$reg_no_gep = $reg_no_gep;}
-    if (isset($birth_year)) {$eleve_naissance_annee = $birth_year;}
-    if (isset($birth_month)) {$eleve_naissance_mois = $birth_month;}
-    if (isset($birth_day)) {$eleve_naissance_jour = $birth_day;}
+	if (isset($reg_nom)) {$eleve_nom = $reg_nom;}
+	if (isset($reg_prenom)) {$eleve_prenom = $reg_prenom;}
+	if (isset($reg_email)) {$eleve_email = $reg_email;}
+	if (isset($reg_sexe)) {$eleve_sexe = $reg_sexe;}
+	if (isset($reg_no_nat)) {$reg_no_nat = $reg_no_nat;}
+	if (isset($reg_no_gep)) {$reg_no_gep = $reg_no_gep;}
+	if (isset($birth_year)) {$eleve_naissance_annee = $birth_year;}
+	if (isset($birth_month)) {$eleve_naissance_mois = $birth_month;}
+	if (isset($birth_day)) {$eleve_naissance_jour = $birth_day;}
 
-    if (isset($reg_lieu_naissance)) {$eleve_lieu_naissance=$reg_lieu_naissance;}
+	if (isset($reg_lieu_naissance)) {$eleve_lieu_naissance=$reg_lieu_naissance;}
 
-    //$eleve_no_resp = 0;
-    $eleve_no_resp1 = 0;
-    $eleve_no_resp2 = 0;
-    $id_etab = 0;
+	//$eleve_no_resp = 0;
+	$eleve_no_resp1 = 0;
+	$eleve_no_resp2 = 0;
+	$id_etab = 0;
 
 	//=========================
 	// AJOUT: boireaus 20071107
@@ -2252,6 +2258,16 @@ if(isset($eleve_login)) {
 	}
 }
 
+// 20190101
+if (isset($eleve_login)) {
+	$acces_tel_ele=get_acces_tel_ele($eleve_login);
+	$acces_mail_ele=get_acces_mail_ele($eleve_login);
+
+	$acces_adresse_responsable=get_acces_adresse_resp($eleve_login);
+	$acces_tel_responsable=get_acces_tel_resp($eleve_login);
+	$acces_mail_responsable=get_acces_mail_resp($eleve_login);
+}
+
 //echo "<table border='1'>\n";
 echo "<table summary='Informations élève'>\n";
 echo "<tr>\n";
@@ -2298,7 +2314,7 @@ if (isset($eleve_login)) {
 }
 echo "</tr>\n";
 
-if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 
 	if($compte_eleve_existe=="y") {
 		echo "<tr><th style='text-align:left;'>Authentification&nbsp;:</th>\n";
@@ -2434,24 +2450,24 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 	echo "<tr>\n";
 	echo "<th style='text-align:left;'>Identifiant National : </th>\n";
-    echo "<td><input type='text' name='reg_no_nat' size='20' ";
-    if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
-    echo " onchange='changement();' /></td>\n";
+	echo "<td><input type='text' name='reg_no_nat' size='20' ";
+	if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
+	echo " onchange='changement();' /></td>\n";
 
 	echo "</tr>\n";
 
-    //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
-    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>elenoet</em>) : </th><td><input type='text' name='reg_no_gep' size='20' ";
-    if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
-    echo " onchange='changement();' /></td>\n";
+	//echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
+	echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>elenoet</em>) : </th><td><input type='text' name='reg_no_gep' size='20' ";
+	if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
+	echo " onchange='changement();' /></td>\n";
 	echo "</tr>\n";
 	
-    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>ele_id</em>) : </th><td>";
-    if (isset($reg_ele_id)) {echo $reg_ele_id;}
-    echo "</td>\n";
+	echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>ele_id</em>) : </th><td>";
+	if (isset($reg_ele_id)) {echo $reg_ele_id;}
+	echo "</td>\n";
 	echo "</tr>\n";
 
-    echo "<tr>
+	echo "<tr>
 	<th style='text-align:left;'>MEF : </th>
 	<td>
 		<select name='reg_mef_code' onchange='changement();'>
@@ -2577,41 +2593,84 @@ else {
 		echo "$eleve_prenom";
 	}
 	echo "</td>
-	</tr>
+	</tr>";
+	if($acces_mail_ele) {
+		echo "
 	<tr>
 		<th style='text-align:left;'>Email : </th>
 		<td>";
-	if (isset($eleve_email)) {
-		echo "$eleve_email";
+		if (isset($eleve_email)) {
+			echo "$eleve_email";
+		}
+		if((isset($eleve_email))&&($eleve_email!='')) {
+			$tmp_date=getdate();
+			echo " <a href='mailto:".$eleve_email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+			if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+			echo ",%0d%0aCordialement.' title=\"Envoyer un courriel\">";
+			echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
+			echo "</a>";
+		}
+		echo "</td>
+	</tr>";
 	}
-	if((isset($eleve_email))&&($eleve_email!='')) {
-		$tmp_date=getdate();
-		echo " <a href='mailto:".$eleve_email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
-		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-		echo ",%0d%0aCordialement.' title=\"Envoyer un courriel\">";
-		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
-		echo "</a>";
+
+	if($acces_tel_ele) {
+		if(getSettingAOui('ele_tel_pers')) {
+			echo "<tr>\n";
+			echo "<th style='text-align:left;'>Tel personnel&nbsp;: </th>\n";
+			echo "<td>";
+			if (isset($reg_tel_pers)) echo $reg_tel_pers;
+			if((isset($reg_tel_pers))&&(mb_substr($reg_tel_pers,0,3)=="+33")) {
+				echo "<br />soit ".affiche_numero_tel_sous_forme_classique($reg_tel_pers);
+			}
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+
+		if(getSettingAOui('ele_tel_port')) {
+			echo "<tr>\n";
+			echo "<th style='text-align:left;'>Tel portable&nbsp;: </th>\n";
+			echo "<td>";
+			if (isset($reg_tel_port)) echo $reg_tel_port;
+			if((isset($reg_tel_port))&&(mb_substr($reg_tel_port,0,3)=="+33")) {
+				echo "<br />soit ".affiche_numero_tel_sous_forme_classique($reg_tel_port);
+			}
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+
+		if(getSettingAOui('ele_tel_prof')) {
+			echo "<tr>\n";
+			echo "<th style='text-align:left;'>Tel professionnel&nbsp;: </th>\n";
+			echo "<td>";
+			if (isset($reg_tel_prof)) echo $reg_tel_prof;
+			if((isset($reg_tel_prof))&&(mb_substr($reg_tel_prof,0,3)=="+33")) {
+				echo "<br />soit ".affiche_numero_tel_sous_forme_classique($reg_tel_prof);
+			}
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
 	}
-	echo "</td>
-	</tr>
+
+	echo "
 	<tr>
-    <th style='text-align:left;'>Identifiant National : </th>\n";
-    echo "<td>";
-    if (isset($reg_no_nat)) echo "$reg_no_nat";
-    echo "</td>\n";
+	<th style='text-align:left;'>Identifiant National : </th>\n";
+	echo "<td>";
+	if (isset($reg_no_nat)) echo "$reg_no_nat";
+	echo "</td>\n";
 
 	echo "</tr>\n";
 
-    //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
-    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<i>elenoet</i>) : </th><td>";
-    if (isset($reg_no_gep)) {
+	//echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
+	echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<i>elenoet</i>) : </th><td>";
+	if (isset($reg_no_gep)) {
 		echo "$reg_no_gep";
 		if(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes'){
 			// Nécessaire pour les photos:
 			echo "<input type='hidden' name='reg_no_gep' size='20' value=\"".$reg_no_gep."\" />\n";
 		}
 	}
-    echo "</td>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	if ((isset($eleve_date_entree))&&($eleve_date_entree!=0)) {
@@ -3134,50 +3193,58 @@ if(isset($eleve_login)){
 				}
 				echo "</tr>\n";
 
-				echo "<tr valign='top'>\n";
-				// La 1ère colonne est dans le rowspan
+				if($acces_adresse_responsable) {
+					echo "<tr valign='top'>\n";
+					// La 1ère colonne est dans le rowspan
 
-				$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$eleve_no_resp1' AND rp.adr_id=ra.adr_id";
-				$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res_adr)==0){
-					// L'adresse du responsable 1 n'est pas définie:
-					echo "<td colspan='2'>\n";
-					//if($_SESSION['statut']=="professeur") {
-					if(!in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
-						echo "L'adresse du responsable légal 1 n'est pas définie.\n";
+					$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$eleve_no_resp1' AND rp.adr_id=ra.adr_id";
+					$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_adr)==0){
+						// L'adresse du responsable 1 n'est pas définie:
+						echo "<td colspan='2'>\n";
+						//if($_SESSION['statut']=="professeur") {
+						if(!in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
+							echo "L'adresse du responsable légal 1 n'est pas définie.\n";
+						}
+						else{
+							//echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
+							//echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 1</a>\n";
+							echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 1</a>\n";
+						}
+						echo "</td>\n";
+						$adr_id_1er_resp="";
 					}
 					else{
-						//echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Définir l'adresse du responsable légal 1</a>\n";
-						//echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 1</a>\n";
-						echo "L'adresse du responsable légal 1 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 1</a>\n";
-					}
-					echo "</td>\n";
-					$adr_id_1er_resp="";
-				}
-				else{
-					echo "<td>\n";
-					$lig_adr=mysqli_fetch_object($res_adr);
-					$adr_id_1er_resp=$lig_adr->adr_id;
-					if("$lig_adr->adr1"!=""){$chaine_adr1.="$lig_adr->adr1, ";}
-					if("$lig_adr->adr2"!=""){$chaine_adr1.="$lig_adr->adr2, ";}
-					if("$lig_adr->adr3"!=""){$chaine_adr1.="$lig_adr->adr3, ";}
-					if("$lig_adr->adr4"!=""){$chaine_adr1.="$lig_adr->adr4, ";}
-					if("$lig_adr->cp"!=""){$chaine_adr1.="$lig_adr->cp, ";}
-					if("$lig_adr->commune"!=""){$chaine_adr1.="$lig_adr->commune";}
-					if("$lig_adr->pays"!=""){$chaine_adr1.=" (<i>$lig_adr->pays</i>)";}
-					echo $chaine_adr1;
-					echo "</td>\n";
-					//if($_SESSION['statut']!="professeur") {
-					if(in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
 						echo "<td>\n";
-						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
-						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onClick='affiche_message_raffraichissement();' target='_blank'>Modifier l'adresse du responsable</a>\n";
-						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
-						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+						$lig_adr=mysqli_fetch_object($res_adr);
+						$adr_id_1er_resp=$lig_adr->adr_id;
+						if("$lig_adr->adr1"!=""){$chaine_adr1.="$lig_adr->adr1, ";}
+						if("$lig_adr->adr2"!=""){$chaine_adr1.="$lig_adr->adr2, ";}
+						if("$lig_adr->adr3"!=""){$chaine_adr1.="$lig_adr->adr3, ";}
+						if("$lig_adr->adr4"!=""){$chaine_adr1.="$lig_adr->adr4, ";}
+						if("$lig_adr->cp"!=""){$chaine_adr1.="$lig_adr->cp, ";}
+						if("$lig_adr->commune"!=""){$chaine_adr1.="$lig_adr->commune";}
+						if("$lig_adr->pays"!=""){$chaine_adr1.=" (<i>$lig_adr->pays</i>)";}
+						echo $chaine_adr1;
 						echo "</td>\n";
+						//if($_SESSION['statut']!="professeur") {
+						if(in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
+							echo "<td>\n";
+							//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
+							//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onClick='affiche_message_raffraichissement();' target='_blank'>Modifier l'adresse du responsable</a>\n";
+							//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+							echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp1&amp;quitter_la_page=y#adresse' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+							echo "</td>\n";
+						}
 					}
+					echo "</tr>\n";
 				}
-				echo "</tr>\n";
+				else {
+					echo "<tr valign='top'>\n";
+					// La 1ère colonne est dans le rowspan
+					echo "<td colspan='2'></td>\n";
+					echo "</tr>\n";
+				}
 				//echo "</table>\n";
 			}
 		}
@@ -3250,76 +3317,84 @@ if(isset($eleve_login)){
 				}
 				echo "</tr>\n";
 
-				echo "<tr valign='top'>\n";
-				// La 1ère colonne est dans le rowspan
+				if($acces_adresse_responsable) {
+					echo "<tr valign='top'>\n";
+					// La 1ère colonne est dans le rowspan
 
-				$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$eleve_no_resp2' AND rp.adr_id=ra.adr_id";
-				$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res_adr)==0){
-					// L'adresse du responsable 2 n'est pas définie:
-					echo "<td colspan='2'>\n";
-					//if($_SESSION['statut']=="professeur") {
-					if(!in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
-						echo "L'adresse du responsable légal 2 n'est pas définie.\n";
-					}
-					else{
-						//echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
-						//echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 2</a>\n";
-						echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 2</a>\n";
-					}
-					echo "</td>\n";
-				}
-				else{
-					echo "<td>\n";
-					$lig_adr=mysqli_fetch_object($res_adr);
-
-					if(!isset($adr_id_1er_resp)) {$adr_id_1er_resp='';}
-					if(($lig_adr->adr_id!="")&&($lig_adr->adr_id!=$adr_id_1er_resp)){
-						$adr_id_2eme_resp=$lig_adr->adr_id;
-						if("$lig_adr->adr1"!=""){$chaine_adr2.="$lig_adr->adr1, ";}
-						if("$lig_adr->adr2"!=""){$chaine_adr2.="$lig_adr->adr2, ";}
-						if("$lig_adr->adr3"!=""){$chaine_adr2.="$lig_adr->adr3, ";}
-						if("$lig_adr->adr4"!=""){$chaine_adr2.="$lig_adr->adr4, ";}
-						if("$lig_adr->cp"!=""){$chaine_adr2.="$lig_adr->cp, ";}
-						if("$lig_adr->commune"!=""){$chaine_adr2.="$lig_adr->commune";}
-						if("$lig_adr->pays"!=""){$chaine_adr2.=" (<i>$lig_adr->pays</i>)";}
-
-						//if("$chaine_adr1"=="$chaine_adr2"){
-						if(casse_mot("$chaine_adr1",'min')==casse_mot("$chaine_adr2",'min')){
-							echo "$chaine_adr2<br />\n<span style='color: red;'>Les adresses sont identiques, mais sont enregistrées sous deux identifiants différents (<i>$adr_id_1er_resp et $lig_adr->adr_id</i>); vous devriez modifier l'adresse pour pointer vers le même identifiant d'adresse.</span>";
+					$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.pers_id='$eleve_no_resp2' AND rp.adr_id=ra.adr_id";
+					$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_adr)==0){
+						// L'adresse du responsable 2 n'est pas définie:
+						echo "<td colspan='2'>\n";
+						//if($_SESSION['statut']=="professeur") {
+						if(!in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
+							echo "L'adresse du responsable légal 2 n'est pas définie.\n";
 						}
 						else{
-							echo "$chaine_adr2";
-						}
-					}
-					else{
-						echo "Même adresse.";
-					}
-					echo "</td>\n";
-					//if($_SESSION['statut']!="professeur") {
-					if(in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
-						echo "<td>\n";
-						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
-						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onClick='affiche_message_raffraichissement();' target='_blank'>Modifier l'adresse du responsable</a>\n";
-						//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
-						echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
-						if((isset($adr_id_1er_resp))&&(isset($adr_id_2eme_resp))){
-							if("$adr_id_1er_resp"!="$adr_id_2eme_resp"){
-								echo "<br />";
-								echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;modif_adr_pers_id=$eleve_no_resp2&amp;adr_id=$adr_id_1er_resp";
-								if (isset($order_type)) {echo "&amp;order_type=$order_type";}
-								if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
-								if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-								if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
-								//echo "'>Prendre l'adresse de l'autre responsable</a>";
-								echo add_token_in_url();
-								echo "' onclick=\"return confirm_abandon (this, change, '$themessage');\">Prendre l'adresse de l'autre responsable</a>";
-							}
+							//echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Définir l'adresse du responsable légal 2</a>\n";
+							//echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 2</a>\n";
+							echo "L'adresse du responsable légal 2 n'est pas définie: <a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' target='_blank' onclick=\"return confirm_abandon (this, change, '$themessage');\">Définir l'adresse du responsable légal 2</a>\n";
 						}
 						echo "</td>\n";
 					}
+					else{
+						echo "<td>\n";
+						$lig_adr=mysqli_fetch_object($res_adr);
+
+						if(!isset($adr_id_1er_resp)) {$adr_id_1er_resp='';}
+						if(($lig_adr->adr_id!="")&&($lig_adr->adr_id!=$adr_id_1er_resp)){
+							$adr_id_2eme_resp=$lig_adr->adr_id;
+							if("$lig_adr->adr1"!=""){$chaine_adr2.="$lig_adr->adr1, ";}
+							if("$lig_adr->adr2"!=""){$chaine_adr2.="$lig_adr->adr2, ";}
+							if("$lig_adr->adr3"!=""){$chaine_adr2.="$lig_adr->adr3, ";}
+							if("$lig_adr->adr4"!=""){$chaine_adr2.="$lig_adr->adr4, ";}
+							if("$lig_adr->cp"!=""){$chaine_adr2.="$lig_adr->cp, ";}
+							if("$lig_adr->commune"!=""){$chaine_adr2.="$lig_adr->commune";}
+							if("$lig_adr->pays"!=""){$chaine_adr2.=" (<i>$lig_adr->pays</i>)";}
+
+							//if("$chaine_adr1"=="$chaine_adr2"){
+							if(casse_mot("$chaine_adr1",'min')==casse_mot("$chaine_adr2",'min')){
+								echo "$chaine_adr2<br />\n<span style='color: red;'>Les adresses sont identiques, mais sont enregistrées sous deux identifiants différents (<i>$adr_id_1er_resp et $lig_adr->adr_id</i>); vous devriez modifier l'adresse pour pointer vers le même identifiant d'adresse.</span>";
+							}
+							else{
+								echo "$chaine_adr2";
+							}
+						}
+						else{
+							echo "Même adresse.";
+						}
+						echo "</td>\n";
+						//if($_SESSION['statut']!="professeur") {
+						if(in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
+							echo "<td>\n";
+							//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2#adresse' target='_blank'>Modifier l'adresse du responsable</a>\n";
+							//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onClick='affiche_message_raffraichissement();' target='_blank'>Modifier l'adresse du responsable</a>\n";
+							//echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+							echo "<a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y#adresse' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>Modifier l'adresse du responsable</a>\n";
+							if((isset($adr_id_1er_resp))&&(isset($adr_id_2eme_resp))){
+								if("$adr_id_1er_resp"!="$adr_id_2eme_resp"){
+									echo "<br />";
+									echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;modif_adr_pers_id=$eleve_no_resp2&amp;adr_id=$adr_id_1er_resp";
+									if (isset($order_type)) {echo "&amp;order_type=$order_type";}
+									if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
+									if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
+									if (isset($mode_rech)) {echo "&amp;mode_rech=$mode_rech";}
+									//echo "'>Prendre l'adresse de l'autre responsable</a>";
+									echo add_token_in_url();
+									echo "' onclick=\"return confirm_abandon (this, change, '$themessage');\">Prendre l'adresse de l'autre responsable</a>";
+								}
+							}
+							echo "</td>\n";
+						}
+					}
+					echo "</tr>\n";
 				}
-				echo "</tr>\n";
+				else {
+					echo "<tr valign='top'>\n";
+					// La 1ère colonne est dans le rowspan
+					echo "<td colspan='2'></td>\n";
+					echo "</tr>\n";
+				}
 				//echo "</table>\n";
 			}
 		}
@@ -3394,7 +3469,8 @@ if(isset($eleve_login)){
 			echo "
 <a href='modify_eleve.php?eleve_login=".$eleve_login."&amp;ajout_resp_legal_0=y' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /> Ajouter un responsable non légal</a><br />";
 		}
-		echo "<br />
+		echo "
+<br />
 (*) Les responsables non légaux ne sont pas destinataires par défaut des bulletins.<br />
 Vous pouvez toutefois autoriser la génération de bulletins pour certains responsables non légaux<br />
 (<em>cela peut se révéler utile dans des cas compliqués, par exemple avec des enfants en famille d'accueil</em>).<br />

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -209,9 +209,76 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesGestElevesProf';
-$texteItem="a accès aux fiches des ".$gepiSettings['denomination_eleves']." dont il est professeur.<br />(<em>ce droit donne aussi accès à l'adresse des parents, à l'INE de l'élève, à l'établissement d'origine,...</em>)";
+$texteItem="a accès aux fiches des ".$gepiSettings['denomination_eleves']." dont il est professeur.<br />(<em>ce droit donne aussi accès à l'INE de l'élève, à l'établissement d'origine,...</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+// 20190101
+$titreItem='GepiAccesAdresseParentsRespProf';
+$texteItem="a accès aux adresses postales des responsables des ".$gepiSettings['denomination_eleves']." dont il est professeur.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesAdresseTousParentsProf';
+$texteItem="a accès aux adresses postales des responsables de tous les ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesTelParentsRespProf';
+$texteItem="a accès aux numéros de téléphone des responsables des ".$gepiSettings['denomination_eleves']." dont il est professeur.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesTelTousParentsProf';
+$texteItem="a accès aux numéros de téléphone des responsables de tous les ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMailParentsRespProf';
+$texteItem="a accès aux adresses mail des responsables des ".$gepiSettings['denomination_eleves']." dont il est professeur.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMailTousParentsProf';
+$texteItem="a accès aux adresses mail des responsables de tous les ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+/*
+// Non enregistrées dans Gepi pour le moment
+$titreItem='GepiAccesAdresseElevesRespProf';
+$texteItem="a accès aux adresses postales des ".$gepiSettings['denomination_eleves']." dont il est professeur.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesAdresseTousElevesProf';
+$texteItem="a accès aux adresses postales de tous les ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+*/
+
+$titreItem='GepiAccesTelElevesRespProf';
+$texteItem="a accès aux numéros de téléphone des ".$gepiSettings['denomination_eleves']." dont il est professeur.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesTelTousElevesProf';
+$texteItem="a accès aux numéros de téléphone de tous les ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMailElevesRespProf';
+$texteItem="a accès aux adresses mail des ".$gepiSettings['denomination_eleves']." dont il est professeur.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMailTousElevesProf';
+$texteItem="a accès aux adresses mail de tous les ".$gepiSettings['denomination_eleves'].".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
 
 
 $titreItem='AccesDerniereConnexionEleProfesseur';
@@ -391,7 +458,8 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiProfImprBul';
 $texteItem="édite/imprime les bulletins périodiques des classes dont il a la charge.<br />
-			(<em>Par défaut, seul un utilisateur ayant le statut scolarité peut éditer les bulletins</em>)";
+			(<em>Par défaut, seul un utilisateur ayant le statut scolarité peut éditer les bulletins</em>)<br />
+			(<em>ce droit donne aussi l'accès aux adresses postales des responsables associés/em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -480,9 +548,46 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesGestElevesProfP';
-$texteItem="a accès aux fiches des ".$gepiSettings['denomination_eleves']." dont il est ".getSettingValue("gepi_prof_suivi")."<br />(<em>ce droit donne aussi accès à l'adresse des parents, à l'INE de l'élève, à l'établissement d'origine,...</em>)";
+$texteItem="a accès aux fiches des ".$gepiSettings['denomination_eleves']." dont il est ".getSettingValue("gepi_prof_suivi")."<br />(<em>ce droit donne aussi accès à l'INE de l'élève, à l'établissement d'origine,...</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+// 20190101
+$titreItem='GepiAccesAdresseParentsRespPP';
+$texteItem="a accès aux adresses postales des responsables des ".$gepiSettings['denomination_eleves']." dont il est ".getSettingValue("gepi_prof_suivi").".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesTelParentsRespPP';
+$texteItem="a accès aux numéros de téléphone des responsables des ".$gepiSettings['denomination_eleves']." dont il est ".getSettingValue("gepi_prof_suivi").".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesMailParentsRespPP';
+$texteItem="a accès aux adresses mail des responsables des ".$gepiSettings['denomination_eleves']." dont il est ".getSettingValue("gepi_prof_suivi").".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+/*
+$titreItem='GepiAccesAdresseElevesRespPP';
+$texteItem="a accès aux adresses postales des ".$gepiSettings['denomination_eleves']." dont il est ".getSettingValue("gepi_prof_suivi").".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+*/
+
+if((getSettingAOui('ele_tel_pers'))||(getSettingAOui('ele_tel_port'))||(getSettingAOui('ele_tel_prof'))) {
+	$titreItem='GepiAccesTelElevesRespPP';
+	$texteItem="a accès aux numéros de téléphone des ".$gepiSettings['denomination_eleves']." dont il est ".getSettingValue("gepi_prof_suivi").".";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
+
+$titreItem='GepiAccesMailElevesRespPP';
+$texteItem="a accès aux adresses mail des ".$gepiSettings['denomination_eleves']." dont il est ".getSettingValue("gepi_prof_suivi").".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
 
 $titreItem='GepiAccesGestPhotoElevesProfP';
 $texteItem="a accès à l'upload des photos de ses ".$gepiSettings['denomination_eleves']." si le module

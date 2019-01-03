@@ -549,6 +549,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 
 		global $calculer_moy_gen_pour_carnets_de_notes;
 
+		//20190101
+		global $acces_adresse_responsable;
+
 		$debug_releve="n";
 		$debug_ele_login="ahnjinwon";
 		$debug_id_groupe=237;
@@ -841,6 +844,11 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 
 	//echo "\$num_premier_releve=$num_premier_releve<br />";
 	//echo "\$nb_releves=$nb_releves<br />";
+
+	// 20190101
+	if(!$acces_adresse_responsable) {
+		$tab_rel['affiche_adresse']='n';
+	}
 
 	// Début des bulletins
 	for ($num_releve=$num_premier_releve; $num_releve<$nb_releves; $num_releve++) {
@@ -2149,6 +2157,9 @@ function releve_pdf($tab_rel,$i) {
 
 		global $calculer_moy_gen_pour_carnets_de_notes;
 
+		//20190101
+		global $acces_adresse_responsable;
+
 		// Sauvegarde de la largeur par défaut
 		if((!isset($largeur_cadre_matiere_0))||($largeur_cadre_matiere_0=="")) {
 			$largeur_cadre_matiere_0=$largeur_cadre_matiere;
@@ -2457,6 +2468,11 @@ function releve_pdf($tab_rel,$i) {
 	// il ne faut qu'un relevé par page, mais si on devait utiliser cette fonction
 	// pour remplacer un jour le dispositif relevé PDF, il faudrait revoir cela:
 	//$nb_releve_par_page=2;
+
+	// 20190101
+	if(!$acces_adresse_responsable) {
+		$tab_rel['rn_adr_resp']='n';
+	}
 
 	//for($loop_rel=0;$loop_rel<$nb_bulletins;$loop_rel++) {
 	for($loop_rel=0;$loop_rel<$nb_releves;$loop_rel++) {

@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -414,6 +414,10 @@ __ADR_ETAB__
 	for($loop=0;$loop<count($id_classe);$loop++) {
 		$mail=isset($_POST['mail_'.$id_classe[$loop]]) ? $_POST['mail_'.$id_classe[$loop]] : array();
 
+		// 20190103
+		$acces_mail_resp=get_acces_mail_resp('', $id_classe[$loop]);
+		$acces_mail_ele=get_acces_mail_ele('', $id_classe[$loop]);
+
 		$classe=get_nom_classe($id_classe[$loop]);
 		for($i=0;$i<count($mail);$i++) {
 			$tmp_tab=get_info_user($mail[$i]);
@@ -421,7 +425,14 @@ __ADR_ETAB__
 				$mail_erreur.="Erreur ($classe) : Le destinataire ".$mail[$i]." n'a pas été trouvé.\n";
 			}
 			elseif(!check_mail($tmp_tab['email'])) {
-				$mail_erreur.="Erreur ($classe) : Email invalide (".$tmp_tab['email'].") pour le destinataire ".$mail[$i].".\n";
+				// 20190103
+				if((($tmp_tab['statut']=='responsable')&&($acces_mail_resp))||
+				(($tmp_tab['statut']=='eleve')&&($acces_mail_ele))) {
+					$mail_erreur.="Erreur ($classe) : Email invalide (".$tmp_tab['email'].") pour le destinataire ".$mail[$i].".\n";
+				}
+				else {
+					$mail_erreur.="Erreur ($classe) : Email invalide pour le destinataire ".$mail[$i].".\n";
+				}
 			}
 			else {
 				if(isset($date_conseil[$id_classe[$loop]])) {
@@ -1042,6 +1053,10 @@ echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' meth
 $cpt1=0;
 $cpt2=0;
 for($i=0;$i<count($id_classe);$i++) {
+	// 20190103
+	$acces_mail_resp=get_acces_mail_resp('', $id_classe[$i]);
+	$acces_mail_ele=get_acces_mail_ele('', $id_classe[$i]);
+
 	$tab_engagements_classe=get_tab_engagements_user("", $id_classe[$i]);
 	/*
 	echo "<pre>";
@@ -1129,8 +1144,12 @@ for($i=0;$i<count($id_classe);$i++) {
 								if(check_mail($current_mail)) {
 									echo "<input type='checkbox' name='mail_".$id_classe[$i]."[]' id='mail_$cpt1' value=\"$value\" />";
 								}
-								else {
+								elseif((($current_mail['statut']=='eleve')&&($acces_mail_ele))||
+								(($current_mail['statut']=='responsable')&&($acces_mail_resp))) {
 									echo "<img src='../images/disabled.png' class='icone20' alt='Mail non valide' title=\"Mail non valide : '".$current_mail."'\" >";
+								}
+								else {
+									echo "<img src='../images/disabled.png' class='icone20' alt='Mail non valide' title=\"Mail non valide.\" >";
 								}
 							}
 							else {

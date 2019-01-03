@@ -503,6 +503,11 @@ Patientez pendant l'extraction des données... merci.
 		$acces_discipline="n";
 		$acces_fp="n";
 
+		// 20190101
+		$acces_tel_responsable=false;
+		$acces_adresse_responsable=false;
+		$acces_email_responsable=false;
+
 		$active_annees_anterieures=getSettingValue('active_annees_anterieures');
 
 		if($_SESSION['statut']=='administrateur') {
@@ -517,6 +522,11 @@ Patientez pendant l'extraction des données... merci.
 			}
 			$acces_discipline="y";
 			$acces_fp="y";
+
+			// 20190101
+			$acces_tel_responsable=true;
+			$acces_adresse_responsable=true;
+			$acces_email_responsable=true;
 		}
 		elseif($_SESSION['statut']=='scolarite') {
 			if (getSettingValue("GepiAccesTouteFicheEleveScolarite")!='yes') {
@@ -539,6 +549,12 @@ Patientez pendant l'extraction des données... merci.
 			$acces_discipline="y";
 			// Le droit n'y est pas.
 			$acces_fp="n";
+
+			// 20190101
+			$acces_tel_responsable=true;
+			$acces_adresse_responsable=true;
+			$acces_email_responsable=true;
+
 
 			$GepiAccesReleveScol=getSettingValue('GepiAccesReleveScol');
 			if($GepiAccesReleveScol=="yes") {
@@ -579,6 +595,11 @@ Patientez pendant l'extraction des données... merci.
 
 			$acces_discipline="y";
 			$acces_fp="y";
+
+			// 20190101
+			$acces_tel_responsable=true;
+			$acces_adresse_responsable=true;
+			$acces_email_responsable=true;
 
 			$GepiAccesReleveCpeTousEleves=getSettingValue('GepiAccesReleveCpeTousEleves');
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
@@ -793,6 +814,54 @@ Patientez pendant l'extraction des données... merci.
 					$acces_anna="y";
 				}
 			}
+
+			// 20190101
+			if(getSettingAOui('GepiAccesAdresseTousParentsProf')) {
+				$acces_adresse_responsable=true;
+			}
+			if(getSettingAOui('GepiAccesTelTousParentsProf')) {
+				$acces_tel_responsable=true;
+			}
+			if(getSettingAOui('GepiAccesMailTousParentsProf')) {
+				$acces_email_responsable=true;
+			}
+
+			if(($eleve_classe_prof=="y")||($eleve_groupe_prof=="y")) {
+				if(getSettingAOui('GepiAccesGestElevesProf')) {
+					$acces_adresse_responsable=true;
+				}
+
+				if(getSettingAOui('GepiAccesAdresseParentsRespProf')) {
+					$acces_adresse_responsable=true;
+				}
+
+				if(getSettingAOui('GepiAccesTelParentsRespProf')) {
+					$acces_tel_responsable=true;
+				}
+
+				if(getSettingAOui('GepiAccesMailParentsRespProf')) {
+					$acces_email_responsable=true;
+				}
+			}
+
+			if((is_pp($_SESSION['login'], '', $ele_login))) {
+				if(getSettingAOui('GepiAccesGestElevesProfP')) {
+					$acces_adresse_responsable=true;
+				}
+
+				if(getSettingAOui('GepiAccesAdresseParentsRespPP')) {
+					$acces_adresse_responsable=true;
+				}
+
+				if(getSettingAOui('GepiAccesTelParentsRespPP')) {
+					$acces_tel_responsable=true;
+				}
+
+				if(getSettingAOui('GepiAccesMailParentsRespPP')) {
+					$acces_email_responsable=true;
+				}
+			}
+
 		}
 		elseif($_SESSION['statut'] == 'autre'){
 
@@ -800,6 +869,11 @@ Patientez pendant l'extraction des données... merci.
 			$sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
 			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d);
 			$auth_other = array();
+
+			// 20190101 : Droits à gérer/éplucher
+			$acces_tel_responsable=false;
+			$acces_adresse_responsable=false;
+			$acces_email_responsable=false;
 
 			while($rep_d = mysqli_fetch_array($query_d)){
 
@@ -1604,28 +1678,47 @@ Patientez pendant l'extraction des données... merci.
 							$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp('".$tab_ele['resp'][$i]['pers_id']."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
 						}
 
-						if($tab_ele['resp'][$i]['tel_pers']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
+						/*
+						GepiAccesAdresseParentsRespProf
+						GepiAccesAdresseTousParentsProf
+						GepiAccesTelParentsRespProf
+						GepiAccesTelTousParentsProf
+						GepiAccesMailParentsRespProf
+						GepiAccesMailTousParentsProf
+
+						GepiAccesAdresseParentsRespPP
+						GepiAccesTelParentsRespPP
+						GepiAccesMailParentsRespPP
+						*/
+						// 20190101
+						if($acces_tel_responsable) {
+							if($tab_ele['resp'][$i]['tel_pers']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
+							}
+							if($tab_ele['resp'][$i]['tel_port']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
+							}
+							if($tab_ele['resp'][$i]['tel_prof']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
+							}
 						}
-						if($tab_ele['resp'][$i]['tel_port']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
-						}
-						if($tab_ele['resp'][$i]['tel_prof']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
-						}
-						if($tab_ele['resp'][$i]['mel']!='') {
-							$tmp_date=getdate();
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>".$chaine_acces_modif_tel;
-							echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
-							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-							echo ",%0d%0aCordialement.'>";
-							echo $tab_ele['resp'][$i]['mel'];
-							echo "</a>";
-							echo "</td></tr>\n";
+
+						// 20190101
+						if($acces_email_responsable) {
+							if($tab_ele['resp'][$i]['mel']!='') {
+								$tmp_date=getdate();
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>".$chaine_acces_modif_tel;
+								echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+								if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+								echo ",%0d%0aCordialement.'>";
+								echo $tab_ele['resp'][$i]['mel'];
+								echo "</a>";
+								echo "</td></tr>\n";
+							}
 						}
 
 						if(!isset($tab_ele['resp'][$i]['etat'])) {
@@ -1680,14 +1773,17 @@ Patientez pendant l'extraction des données... merci.
 							}
 
 							// Vérifier qui peut avoir accès à cette adresse
-							if((isset($tab_ele['resp'][$i]['email']))&&($tab_ele['resp'][$i]['email']!='')&&
-							((!isset($tab_ele['resp'][$i]['mel']))||($tab_ele['resp'][$i]['email']!=$tab_ele['resp'][$i]['mel']))) {
-								echo "<br />";
-								echo "<a href='mailto:".$tab_ele['resp'][$i]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
-								if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-								echo ",%0d%0aCordialement.'>";
-								echo $tab_ele['resp'][$i]['email'];
-								echo "</a>";
+							// 20190101
+							if($acces_email_responsable) {
+								if((isset($tab_ele['resp'][$i]['email']))&&($tab_ele['resp'][$i]['email']!='')&&
+								((!isset($tab_ele['resp'][$i]['mel']))||($tab_ele['resp'][$i]['email']!=$tab_ele['resp'][$i]['mel']))) {
+									echo "<br />";
+									echo "<a href='mailto:".$tab_ele['resp'][$i]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+									if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+									echo ",%0d%0aCordialement.'>";
+									echo $tab_ele['resp'][$i]['email'];
+									echo "</a>";
+								}
 							}
 							echo "</td></tr>\n";
 
@@ -1718,43 +1814,46 @@ Patientez pendant l'extraction des données... merci.
 
 						}
 
-						if($tab_ele['resp'][$i]['adr1']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 1 adresse:</th><td>".$tab_ele['resp'][$i]['adr1']."</td></tr>\n";
-						}
-						if($tab_ele['resp'][$i]['adr2']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 2 adresse:</th><td>".$tab_ele['resp'][$i]['adr2']."</td></tr>\n";
-						}
-						if($tab_ele['resp'][$i]['adr3']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 3 adresse:</th><td>".$tab_ele['resp'][$i]['adr3']."</td></tr>\n";
-						}
-						if($tab_ele['resp'][$i]['adr4']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 4 adresse:</th><td>".$tab_ele['resp'][$i]['adr4']."</td></tr>\n";
-						}
-						if($tab_ele['resp'][$i]['cp']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Code postal:</th><td>".$tab_ele['resp'][$i]['cp']."</td></tr>\n";
-						}
-						if($tab_ele['resp'][$i]['commune']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Commune:</th><td>".$tab_ele['resp'][$i]['commune']."</td></tr>\n";
-						}
-						if($tab_ele['resp'][$i]['pays']!='') {
-							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";
+						// 20190101
+						if($acces_adresse_responsable) {
+							if($tab_ele['resp'][$i]['adr1']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 1 adresse:</th><td>".$tab_ele['resp'][$i]['adr1']."</td></tr>\n";
+							}
+							if($tab_ele['resp'][$i]['adr2']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 2 adresse:</th><td>".$tab_ele['resp'][$i]['adr2']."</td></tr>\n";
+							}
+							if($tab_ele['resp'][$i]['adr3']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 3 adresse:</th><td>".$tab_ele['resp'][$i]['adr3']."</td></tr>\n";
+							}
+							if($tab_ele['resp'][$i]['adr4']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 4 adresse:</th><td>".$tab_ele['resp'][$i]['adr4']."</td></tr>\n";
+							}
+							if($tab_ele['resp'][$i]['cp']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Code postal:</th><td>".$tab_ele['resp'][$i]['cp']."</td></tr>\n";
+							}
+							if($tab_ele['resp'][$i]['commune']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Commune:</th><td>".$tab_ele['resp'][$i]['commune']."</td></tr>\n";
+							}
+							if($tab_ele['resp'][$i]['pays']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";
+							}
 						}
 
 						// 20140522
-						if($acces_bulletins=="y") {
+						if(($acces_bulletins=="y")&&($acces_impression_bulletin)) {
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Bulletins:</th><td>";
 							// Imprimer le bulletin avec l'adresse de ce parent en particulier.
 
 
-							if(($acces_impression_bulletin)&&(isset($tab_ele['periodes']))) {
+							if(isset($tab_ele['periodes'])) {
 								$type_bulletin_par_defaut="pdf";
 								if(getSettingValue("type_bulletin_par_defaut")=="pdf_2016") {
 									$type_bulletin_par_defaut="pdf_2016";
@@ -1907,28 +2006,34 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 								$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."' onclick=\"affiche_corrige_tel_resp('".$tab_ele['resp'][$i]['pers_id']."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
 							}
 
-							if($tab_ele['resp'][$i]['tel_pers']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
+							// 20190101
+							if($acces_tel_responsable) {
+								if($tab_ele['resp'][$i]['tel_pers']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
+								}
+								if($tab_ele['resp'][$i]['tel_port']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
+								}
+								if($tab_ele['resp'][$i]['tel_prof']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
+								}
 							}
-							if($tab_ele['resp'][$i]['tel_port']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
-							}
-							if($tab_ele['resp'][$i]['tel_prof']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
-							}
-							if($tab_ele['resp'][$i]['mel']!='') {
-								$tmp_date=getdate();
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>".$chaine_acces_modif_tel;
-								echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
-								if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-								echo ",%0d%0aCordialement.'>";
-								echo $tab_ele['resp'][$i]['mel'];
-								echo "</a>";
-								echo "</td></tr>\n";
+							// 20190101
+							if($acces_email_responsable) {
+								if($tab_ele['resp'][$i]['mel']!='') {
+									$tmp_date=getdate();
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>".$chaine_acces_modif_tel;
+									echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+									if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+									echo ",%0d%0aCordialement.'>";
+									echo $tab_ele['resp'][$i]['mel'];
+									echo "</a>";
+									echo "</td></tr>\n";
+								}
 							}
 
 							if($tab_ele['resp'][$i]['envoi_bulletin']!='') {
@@ -2013,17 +2118,19 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 									}
 								}
 
-								// Vérifier qui peut avoir accès à cette adresse
-								if((isset($tab_ele['resp'][$i]['email']))&&($tab_ele['resp'][$i]['email']!='')&&
-								((!isset($tab_ele['resp'][$i]['mel']))||($tab_ele['resp'][$i]['email']!=$tab_ele['resp'][$i]['mel']))) {
-									echo "<br />";
-									echo "<a href='mailto:".$tab_ele['resp'][$i]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
-									if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-									echo ",%0d%0aCordialement.'>";
-									echo $tab_ele['resp'][$i]['email'];
-									echo "</a>";
+								// 20190101
+								if($acces_email_responsable) {
+									// Vérifier qui peut avoir accès à cette adresse
+									if((isset($tab_ele['resp'][$i]['email']))&&($tab_ele['resp'][$i]['email']!='')&&
+									((!isset($tab_ele['resp'][$i]['mel']))||($tab_ele['resp'][$i]['email']!=$tab_ele['resp'][$i]['mel']))) {
+										echo "<br />";
+										echo "<a href='mailto:".$tab_ele['resp'][$i]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+										if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+										echo ",%0d%0aCordialement.'>";
+										echo $tab_ele['resp'][$i]['email'];
+										echo "</a>";
+									}
 								}
-
 								echo "</td></tr>\n";
 
 
@@ -2054,33 +2161,36 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 
 							}
 
-							if($tab_ele['resp'][$i]['adr1']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 1 adresse:</th><td>".$tab_ele['resp'][$i]['adr1']."</td></tr>\n";
-							}
-							if($tab_ele['resp'][$i]['adr2']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 2 adresse:</th><td>".$tab_ele['resp'][$i]['adr2']."</td></tr>\n";
-							}
-							if($tab_ele['resp'][$i]['adr3']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 3 adresse:</th><td>".$tab_ele['resp'][$i]['adr3']."</td></tr>\n";
-							}
-							if($tab_ele['resp'][$i]['adr4']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 4 adresse:</th><td>".$tab_ele['resp'][$i]['adr4']."</td></tr>\n";
-							}
-							if($tab_ele['resp'][$i]['cp']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Code postal:</th><td>".$tab_ele['resp'][$i]['cp']."</td></tr>\n";
-							}
-							if($tab_ele['resp'][$i]['commune']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Commune:</th><td>".$tab_ele['resp'][$i]['commune']."</td></tr>\n";
-							}
-							if($tab_ele['resp'][$i]['pays']!='') {
-								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";
+							// 20190101
+							if($acces_adresse_responsable) {
+								if($tab_ele['resp'][$i]['adr1']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 1 adresse:</th><td>".$tab_ele['resp'][$i]['adr1']."</td></tr>\n";
+								}
+								if($tab_ele['resp'][$i]['adr2']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 2 adresse:</th><td>".$tab_ele['resp'][$i]['adr2']."</td></tr>\n";
+								}
+								if($tab_ele['resp'][$i]['adr3']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 3 adresse:</th><td>".$tab_ele['resp'][$i]['adr3']."</td></tr>\n";
+								}
+								if($tab_ele['resp'][$i]['adr4']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 4 adresse:</th><td>".$tab_ele['resp'][$i]['adr4']."</td></tr>\n";
+								}
+								if($tab_ele['resp'][$i]['cp']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Code postal:</th><td>".$tab_ele['resp'][$i]['cp']."</td></tr>\n";
+								}
+								if($tab_ele['resp'][$i]['commune']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Commune:</th><td>".$tab_ele['resp'][$i]['commune']."</td></tr>\n";
+								}
+								if($tab_ele['resp'][$i]['pays']!='') {
+									$alt=$alt*(-1);
+									echo "<tr class='lig$alt'><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";
+								}
 							}
 
 

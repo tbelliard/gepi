@@ -394,44 +394,23 @@ if((isset($mode))&&($mode=="enregistrer")&&(isset($id_ev))) {
 				$current_id_classe=$tab[0];
 				$tab_id_classe_placees[]=$current_id_classe;
 				$current_ts=$tab[1];
-				$current_mysql_date=strftime("%Y-%m-%d %H:%M:%S", $current_ts);
-				$current_id_salle=$tab[2];
-
-				$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe='".$current_id_classe."';";
-				//echo "$sql<br />";
-				$res=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res)==0) {
-					$sql="INSERT INTO d_dates_evenements_classes SET id_ev='$id_ev', id_classe='".$current_id_classe."', date_evenement='".$current_mysql_date."', id_salle='".$current_id_salle."';";
-					//echo "$sql<br />";
-					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-					if($insert) {
-						$nb_insert++;
-
-						if(($type=="conseil_de_classe")&&(preg_match("/^[0-9]{1,}$/", $periode))&&($periode>=1)) {
-							$sql="UPDATE periodes SET date_conseil_classe='".$current_mysql_date."' WHERE id_classe='".$current_id_classe."' AND num_periode='".$periode."' ";
-							//echo "$sql<br />";
-							$update=mysqli_query($GLOBALS["mysqli"], $sql);
-							if(!$update) {
-								$msg_erreur.="Erreur lors de la mise à jour de la date du conseil de classe pour la classe de ".get_nom_classe($current_id_classe)." en période ".$periode."<br />";
-							}
-						}
-					}
-					else {
-						$nb_err++;
-					}
+				// 20190103
+				if(!preg_match('/^[0-9]{1,}$/', $current_ts)) {
+					$msg_erreur.="Timestamp invalide $current_ts sur l'événement ".$reg_id_classe_ev[$loop]."<br />";
 				}
 				else {
-					$lig=mysqli_fetch_object($res);
-					if(($lig->date_evenement!=$current_mysql_date)||
-					($lig->id_salle!=$current_id_salle)) {
-						$sql="UPDATE d_dates_evenements_classes SET date_evenement='".$current_mysql_date."', 
-												id_salle='".$current_id_salle."' 
-											WHERE id_ev='$id_ev' AND 
-												id_classe='".$current_id_classe."';";
+					$current_mysql_date=strftime("%Y-%m-%d %H:%M:%S", $current_ts);
+					$current_id_salle=$tab[2];
+
+					$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe='".$current_id_classe."';";
+					//echo "$sql<br />";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)==0) {
+						$sql="INSERT INTO d_dates_evenements_classes SET id_ev='$id_ev', id_classe='".$current_id_classe."', date_evenement='".$current_mysql_date."', id_salle='".$current_id_salle."';";
 						//echo "$sql<br />";
-						$update=mysqli_query($GLOBALS["mysqli"], $sql);
-						if($update) {
-							$nb_update++;
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if($insert) {
+							$nb_insert++;
 
 							if(($type=="conseil_de_classe")&&(preg_match("/^[0-9]{1,}$/", $periode))&&($periode>=1)) {
 								$sql="UPDATE periodes SET date_conseil_classe='".$current_mysql_date."' WHERE id_classe='".$current_id_classe."' AND num_periode='".$periode."' ";
@@ -444,6 +423,33 @@ if((isset($mode))&&($mode=="enregistrer")&&(isset($id_ev))) {
 						}
 						else {
 							$nb_err++;
+						}
+					}
+					else {
+						$lig=mysqli_fetch_object($res);
+						if(($lig->date_evenement!=$current_mysql_date)||
+						($lig->id_salle!=$current_id_salle)) {
+							$sql="UPDATE d_dates_evenements_classes SET date_evenement='".$current_mysql_date."', 
+													id_salle='".$current_id_salle."' 
+												WHERE id_ev='$id_ev' AND 
+													id_classe='".$current_id_classe."';";
+							//echo "$sql<br />";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							if($update) {
+								$nb_update++;
+
+								if(($type=="conseil_de_classe")&&(preg_match("/^[0-9]{1,}$/", $periode))&&($periode>=1)) {
+									$sql="UPDATE periodes SET date_conseil_classe='".$current_mysql_date."' WHERE id_classe='".$current_id_classe."' AND num_periode='".$periode."' ";
+									//echo "$sql<br />";
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$update) {
+										$msg_erreur.="Erreur lors de la mise à jour de la date du conseil de classe pour la classe de ".get_nom_classe($current_id_classe)." en période ".$periode."<br />";
+									}
+								}
+							}
+							else {
+								$nb_err++;
+							}
 						}
 					}
 				}
@@ -1046,7 +1052,9 @@ echo "
 		annee=date_ev.substr(6,4);
 
 		// Il faudrait tester le format de l'heure
-		heure_ev=document.getElementById('heure_ev').value;
+		// 20190103
+		//heure_ev=document.getElementById('heure_ev').value;
+		heure_ev=document.getElementById('heure_ev').value.replace(/h/i, ':');
 
 		tmp_date=new Date().getTime();
 		//alert(tmp_date);
@@ -1244,6 +1252,13 @@ elseif((isset($mode))&&($mode=="positionner")) {
 	}
 	ksort($tab_ts);
 
+	//20190103
+	/*
+	echo "<pre>";
+	print_r($tab_ts);
+	echo "</pre>";
+	*/
+
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 ".add_token_field()."
 <input type='hidden' name='id_ev' value='$id_ev' />
@@ -1253,9 +1268,15 @@ elseif((isset($mode))&&($mode=="positionner")) {
 		<tr>
 			<th></th>";
 	foreach($tab_ts as $ts => $mysql_date) {
-		echo "
+		//20190103
+		if(!preg_match('/^[0-9]{1,}$/', $ts)) {
+			echo "
+			<th style='color:red' title=\"Date invalide\">".$ts."</th>";
+		}
+		else {
+			echo "
 			<th>".strftime("%a %d/%m/%Y à %H:%M", $ts)."</th>";
-
+		}
 	}
 		echo "
 		</tr>
@@ -1278,25 +1299,31 @@ elseif((isset($mode))&&($mode=="positionner")) {
 		<tr>
 			<th>".$lieu."</th>";
 		foreach($tab_ts as $ts => $mysql_date) {
-			echo "
+			//20190103
+			if(!preg_match('/^[0-9]{1,}$/', $ts)) {
+				echo "
+			<td></td>";
+			}
+			else {
+				echo "
 			<td>
 				<div style='float:right; width:16px;'>
 					<a href=\"javascript:afficher_div_placer_classe_ev($ts, $current_id_salle);\" title=\"Choisir des classes pour ce créneau.\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a>
 				</div>
 				<div id='div_".$ts."_".$current_id_salle."'>";
 
-			if(isset($tab_deja[$ts][$current_id_salle])) {
-				for($loop2=0;$loop2<count($tab_deja[$ts][$current_id_salle]);$loop2++) {
-					$current_id_classe=$tab_deja[$ts][$current_id_salle][$loop2];
-					echo "
+				if(isset($tab_deja[$ts][$current_id_salle])) {
+					for($loop2=0;$loop2<count($tab_deja[$ts][$current_id_salle]);$loop2++) {
+						$current_id_classe=$tab_deja[$ts][$current_id_salle][$loop2];
+						echo "
 					<p id='p_classe_".$current_id_classe."_".$ts."_".$current_id_salle."'><input type='hidden' name='reg_id_classe_ev[]' value='".$current_id_classe."|".$ts."|".$current_id_salle."' />".$tab_nom_classe_deja[$current_id_classe]."<a href=\"javascript:enlever_classe_ev($current_id_classe,$ts,$current_id_salle)\" title='Supprimer cette classe'><img src='../images/icons/remove.png' class='icone16' alt='Supprimer' /></a></p>";
 					$chaine_js_classes_deja.="document.getElementById('p_lien_ajout_classe_".$current_id_classe."').style.display='none';\n";
+					}
 				}
-			}
-
-			echo "
+				echo "
 				</div>
 			</td>";
+			}
 		}
 		echo "
 		</tr>";
