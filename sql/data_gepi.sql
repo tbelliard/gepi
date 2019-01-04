@@ -2307,3 +2307,5 @@ INSERT INTO droits SET id='/mod_actions/index_admin.php', administrateur='V', pr
 INSERT INTO droits SET id='/mod_actions/index.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='V', description='Actions : Consultation/saisie', statut='';
 INSERT INTO droits SET id='/mod_actions/accueil.php', administrateur='F', professeur='F', cpe='F', scolarite='F', eleve='V', responsable='V', secours='F', autre='F', description='Actions : Consultation parent/élève', statut='';
 INSERT INTO setting SET name='mod_actions_affichage_familles', value='y';
+INSERT INTO droits SET id='/gestion/registre_traitements.php',
+administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='V', autre='V', description='Registre des traitements', statut='';

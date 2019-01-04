@@ -2026,6 +2026,18 @@ autre='F',
 description='Actions : Consultation parent/élève',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/gestion/registre_traitements.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='V',
+autre='V',
+description='Registre des traitements',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

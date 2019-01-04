@@ -131,30 +131,60 @@
 	  Paramétrage des droits d'accès
 	</h3>
 	<ul class='div_tableau'>
-	<?php foreach ($droitAffiche->get_item() as $AfficheItem){ 
-	//if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)){
-	  if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)) {
-		// Pour faire des rubriques/espaces
-		if($AfficheItem['name']=='') {
-			echo "<hr />\n";
+	<?php
+		if(isset($tab_droits_acces[my_strtolower($StatutItem)])) {
+			$rubrique_precedente='';
+			foreach($tab_droits_acces[my_strtolower($StatutItem)] as $titreItem => $current_item) {
+				$texteItem=$current_item['texteItem'];
+
+				if($current_item['rubrique']!=$rubrique_precedente) {
+					echo "</ul>\n";
+					echo "<hr />\n";
+					echo "<h4>".$current_item['rubrique']."</h4>";
+					echo "<ul class='div_tableau'>";
+					$rubrique_precedente=$current_item['rubrique'];
+				}
+
+				echo "
+		<li style='margin-left:2em;text-indent:-2em;'>
+			<input type='checkbox' name='".$titreItem."' 
+				id='".$titreItem."' 
+				value='yes' ".((getSettingValue($titreItem)=='yes') ? 'checked="checked"' : '')." 
+				onchange=\"changement();checkbox_change(this.id);\" />
+			<label for='".$titreItem."' id='texte_".$titreItem."'
+				style='cursor: pointer;'>
+					".$current_item['texteItem'].(isset($current_item['texteItemComplement']) ? $current_item['texteItemComplement'] : '')."
+			</label>
+		</li>";
+			}
 		}
-		else {
-	?>
-	  <li style='margin-left:2em;text-indent:-2em;'>
-		<input type="checkbox" name="<?php echo $AfficheItem['name'] ; ?>"
-			   id="<?php echo $AfficheItem['name'] ; ?>"
-			   value="yes" <?php if (getSettingValue($AfficheItem['name'])=='yes') echo 'checked="checked"'; ?>
-			   onchange="changement();checkbox_change(this.id);" />
-		<label for='<?php echo $AfficheItem['name'] ; ?>' id='texte_<?php echo $AfficheItem['name'] ; ?>'
-			   style='cursor: pointer;'>
-		<?php echo $AfficheItem['texte'] ; ?>
-		</label>
-	  </li>
-	  <?php
+		unset($current_statut_item);
+
+		/*
+		foreach ($droitAffiche->get_item() as $AfficheItem) {
+			if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)) {
+				// Pour faire des rubriques/espaces
+				if($AfficheItem['name']=='') {
+					echo "<hr />\n";
+				}
+				else {
+					echo "
+		<li style='margin-left:2em;text-indent:-2em;'>
+			<input type='checkbox' name='".$AfficheItem['name']."' 
+				id='".$AfficheItem['name']."' 
+				value='yes' ".((getSettingValue($AfficheItem['name'])=='yes') ? 'checked="checked"' : '')." 
+				onchange=\"changement();checkbox_change(this.id);\" />
+			<label for='".$AfficheItem['name']."' id='texte_".$AfficheItem['name']."'
+				style='cursor: pointer;'>
+					".$AfficheItem['texte']."
+			</label>
+		</li>";
+
+				}
+			}
 		}
-	  }
-	}
-	unset ($AfficheItem);
+		unset ($AfficheItem);
+		*/
 	?>
 	</ul>
 	</div>

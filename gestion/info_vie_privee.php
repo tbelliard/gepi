@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -37,14 +37,17 @@ echo "<br/>A ce titre, il est soumis à un encadrement légal particulier. Nous 
 
 if (getSettingValue("num_enregistrement_cnil") != '')  {
 
-echo "<h2>Déclaration à la CNIL</h2>";
+	echo "<h2>Déclaration à la CNIL</h2>";
 
-echo "Conformément à l'article 16 de la loi 78-17 du 6 janvier 1978, dite loi informatique et liberté, nous vous informons
+	echo "Conformément à l'article 16 de la loi 78-17 du 6 janvier 1978, dite loi informatique et liberté, nous vous informons
+	 que le présent site a fait l'objet d'une déclaration de traitement automatisé d'informations nominatives auprès de la CNIL
+	  : le site est enregistré sous le n° ".getSettingValue("num_enregistrement_cnil");
 
- que le présent site a fait l'objet d'une déclaration de traitement automatisé d'informations nominatives auprès de la CNIL
+}
 
-  : le site est enregistré sous le n° ".getSettingValue("num_enregistrement_cnil");
-
+if(getSettingAOui('registre_traitements')) {
+	echo "<h2>Registre des traitements</h2>
+	<p><a href='registre_traitements.php'>Accéder au registre des traitements</a></p>";
 }
 
 echo "<a name='cookies'></a><H2>1/ Cookies</H2>";
