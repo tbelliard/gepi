@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -703,6 +703,12 @@ if (isset($_POST['is_posted'])) {
 		if (isset($_POST['num_enregistrement_cnil'])) {
 			if (!saveSetting("num_enregistrement_cnil", $_POST['num_enregistrement_cnil'])) {
 				$msg .= "Erreur lors de l'enregistrement du numéro d'enregistrement à la CNIL !";
+			}
+		}
+
+		if (isset($_POST['registre_traitements'])) {
+			if (!saveSetting("registre_traitements", $_POST['registre_traitements'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'accès ou non au Registre des traitements !";
 			}
 		}
 
@@ -2233,6 +2239,39 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 		</span>
 	</p>
 
+	<div style="display: table-row;">
+		<div class="cellTab70">
+			<p style="font-variant: small-caps;">
+				<a name='output_mode_pdf'></a>
+				Accès au Registre des traitements dans Gepi&nbsp;:<br />
+				<em style='color:red'>(encore incomplet), il est accessible via le lien <strong>Informations de Vie Privée</strong> dans le bandeau d'entête</em><br />
+				<em>(en Europe, sur un Gepi en production, cet accès devrait être ouvert)</em>
+			</p>
+		</div>
+		<p class="cellTab plusPetit">
+			<input type='radio' 
+				   name='registre_traitements' 
+				   id='registre_traitements_y' 
+				   value='y' 
+				   onchange='changement()'
+				   <?php if(getSettingAOui('registre_traitements')) {echo "checked='checked'";} ?>
+				   />
+			<label for='registre_traitements_y'>
+				Oui
+			</label>
+			<br />
+			<input type='radio' 
+				   name='registre_traitements' 
+				   id='registre_traitements_n' 
+				   value='n' 
+				   onchange='changement()'
+				   <?php if(!getSettingAOui('registre_traitements')) {echo "checked='checked'";} ?>
+				   />
+			<label for='registre_traitements_n'>
+				Non
+			</label>
+		</p>
+	</div>
 
 	<p class="center">
 		<input type="hidden" name="is_posted" value="1" />
