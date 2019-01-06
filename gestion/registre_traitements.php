@@ -29,6 +29,7 @@ $gepiPathJava="./..";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+include("../lib/initialisationsPropel.inc.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -222,6 +223,64 @@ Les comptes administrateurs, scolarité <em>(chef d'établissement, adjoint, sec
 Les professeurs ont accès à leurs listes d'élèves avec leurs nom, prénom, genre (M/F), date de naissance et classe.<br />
 Il peuvent exporter ces listes en fichiers CSV et PDF.</p>
 
+<pre style='color:red'>
+- Les statuts, leur rôle et les droits associés (http://www.sylogix.org/projects/gepi/wiki/Gepi_admin).
+- Imports XML, quelles infos stockées, qui y a accès...
+- ...
+
+</pre>
+
+
+<pre>Dans Gepi, chaque utilisateur a un compte qui a un statut (et un seul) parmi :
+
+    &quot;administrateur&quot; : Les comptes administrateurs ne servent que pour:
+        le paramétrage général (nom de l'établissement, adresse,...)
+        l'initialisation de l'année (création des utilisateurs, des classes, des élèves,...)
+        les sauvegardes/restaurations
+        les réglages des droits d'accès (les professeurs peuvent ou non voir telle ou telle chose, les CPEs peuvent ou non...)
+        définir les modules de Gepi à activer
+        etc.
+    &quot;scolarité&quot; : Ces comptes permettent de:
+        Ouvrir/fermer des périodes en saisie pour telle ou telle classe
+        Paramétrer et imprimer les bulletins
+        Imprimer les relevés de notes
+        Saisir les avis des conseils de classe
+        Visualiser les graphiques
+        etc.
+    &quot;CPE&quot; : Les comptes CPE se paramètrent en fonction des besoins :
+        Ils peuvent saisir les absences sur les bulletins (import possible depuis Sconet absences)
+        Ils peuvent gérer les absences dans l'établissement (suivi et mise en place d'un suivi)
+        Faire un suivi de la saisie des absences par les professeurs
+        etc.
+    &quot;professeur&quot; : Ces comptes peuvent saisir selon ce qui a été paramétré par l'administrateur :
+        des devoirs (notes)
+        des appréciations (bulletin)
+        le cahier de textes
+        les absences
+        les fiches du brevet (collège)
+        etc.
+    &quot;secours&quot; : Le statut secours peut :
+        Saisir/corriger les appréciations et moyennes sur les bulletins (par exemple pour dépanner un professeur malade au moment du remplissage des bulletins...)
+        Saisir les absences à la place d'un CPE indisponible
+    &quot;élève&quot; : Ces comptes, quand ils sont créés, permettent à leur titulaire de (suivant les réglages de l'admin) :
+        visualiser leur relevé de notes
+        visualiser leur cahier de textes
+        télécharger leur photo sur le trombinoscope
+        visualiser leur équipe pédagogique
+        etc.
+    &quot;responsable&quot; : Ces comptes, quand ils sont créés, permettent à leur titulaire de (suivant les réglages de l'admin) :
+        visualiser le relevé de notes de leur enfant
+        visualiser le cahier de textes de leur enfant
+        visualiser l'équipe pédagogique de leur enfant
+        etc.
+
+    &quot;autre&quot; : Ce statut, dit &quot;personnalisé&quot;, permet à l'admin de paramétrer plus finement les droits confiés à un (ou des) utilisateur(s). Cette gestion particulière se fait à partir de la page de gestion des utilisateurs, onglet &quot;statuts personnalisés&quot;. Cette fonctionnalité permet notamment de créer un statut &quot;Chef d'établissement&quot;, ou bien &quot;Inspecteur&quot;, ou encore &quot;C.O.P.&quot;, en fonction des besoins mais aussi des usages de l'établissement.
+
+C'est un peu résumé, mais voilà pour les grandes lignes.
+
+Le compte administrateur ne doit normalement être utilisé qu'en début d'année.
+Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont les droits appropriés.</pre>
+
 
 <a name='modules_actives'></a><h3>Modules activés</h3>
 <table class='boireaus boireaus_alt resizable sortable'>
@@ -232,14 +291,26 @@ Il peuvent exporter ces listes en fichiers CSV et PDF.</p>
 	</tr>".(getSettingValue('active_module_absence')=='y' ? "
 	<tr>
 		<td>Absences</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gestion des absences et retards des élèves</td>
+		<td style='text-align:left'>
+			Le module absences permet de saisir les absences et retards des élèves.
+		</td>
 	</tr>" : "").(getSettingValue('active_module_absence')=='2' ? "
 	<tr>
 		<td>Absences 2</td>
-		<td></td>
-		<td>
-			".(getSettingAOui('active_absences_parents') ? "" : "")."
+		<td>Gestion des absences et retards des élèves</td>
+		<td style='text-align:left'>
+			Le module absences permet de saisir les absences et retards des élèves.<br />
+			Les professeurs constatent l'absence en classe à un moment donné.<br />
+			Les personnels de Vie Scolaire (CPE) traitent les absences <em>(pour les catégoriser absence, retard inter-cours, retard extérieur, passage à l'infirmerie,...)</em> et contactent le cas échéant les responsables <em>(parents, tuteurs,...)</em>.<br />
+			Les personnels de Vie Scolaire ont donc accès aux adresses postales, téléphoniques et mail.<br />
+			Ils peuvent effectuer des extractions CSV/ODT des absences pour par exemple discuter des absences de tel élève ou dans telle classe.<br />
+
+			Des absences répétées, non justifiées (non valides), peuvent amener les CPE à effectuer un signalement à l'Inspection académique.<br />
+			Des extractions statistiques peuvent aussi être demandées par l'Éducation Nationale.<br />
+
+			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Le délai de ...h permet à la Vie Scolaire de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "")."
+
 		</td>
 	</tr>" : "").(getSettingAOui('active_module_absence_professeur') ? "
 	<tr>
@@ -249,7 +320,7 @@ Il peuvent exporter ces listes en fichiers CSV et PDF.</p>
 	</tr>" : "").(getSettingAOui('active_mod_actions') ? "
 	<tr>
 		<td>Actions</td>
-		<td></td>
+		<td>Gestion des inscriptions/présence élèves sur, par exemple, les sorties/actions UNSS.</td>
 		<td style='text-align:left'></td>
 	</tr>" : "").(getSettingAOui('active_annees_anterieures') ? "
 	<tr>
@@ -269,8 +340,23 @@ Il peuvent exporter ces listes en fichiers CSV et PDF.</p>
 	</tr>" : "").(getSettingAOui('active_carnets_notes') ? "
 	<tr>
 		<td>Carnets de notes</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer les notes des élèves</td>
+		<td style='text-align:left'>Le module permet aux professeurs de saisir des notes, avec commentaire ou non.<br />
+		Les professeurs peuvent choisir si les commentaires sur une évaluation doivent être visibles ou non des responsables <em>(les professeurs sont alertés qu'ils ne doivent pas saisir de commentaire déplacé)</em>.<br />
+
+		<span style='color:red'>A FAIRE : Permettre de générer un export commentaires inclus pour le cas où un responsable réclamerait le détail des saisies.<br />
+		Les parents peuvent aussi réclamer un export du module Discipline et d'autres... revoir ces possibilités d'export</span><br />
+
+		Les professeurs peuvent choisir à partir de quelle date les notes seront visibles, définir des coefficients,...<br />
+		Il est possible de créer des boîtes ou sous-matières dans les carnets de notes.<br />
+
+		Les comptes scolarité peuvent générer des relevés de notes.<br />
+		Les autres comptes voient ces droits d'accès définis dans la rubrique <a href='#droits_acces'>droits d'accès</a>.<br />
+
+		".(getSettingAOui('GepiAccesEvalCumulEleve') ? "Les professeurs peuvent aussi créer des évaluations cumulées.<br />
+		Il s'agit d'évaluations successives dont le cumul des points donne une note sur le cumul des référentiels.<br />
+		Les professeurs peuvent choisir si telle évaluation-cumul est visible ou non des élèves/responsables.<br />
+		Dans le cas où l'évaluation n'est pas visible dans le module évaluations-cumul, le cumul obtenu sera visible une fois transféré dans le carnet de notes." : "")."</td>
 	</tr>" : "").(getSettingAOui('active_mod_ects') ? "
 	<tr>
 		<td>Crédits ECTS</td>
@@ -384,13 +470,33 @@ echo (getSettingAOui('active_mod_engagements') ? "
 	</tr>" : "").(getSettingAOui('active_mod_orientation') ? "
 	<tr>
 		<td>Orientation</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Orientation des élèves</td>
+		<td style='text-align:left'>
+
+
+
+			Donner l'accès à la saisie des voeux et orientations proposées.
+		
+
+
+		</td>
 	</tr>" : "").(getSettingAOui('statuts_prives') ? "
 	<tr>
 		<td>Statuts perso.</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Créer des statuts utilisateurs avec des droits particuliers</td>
+		<td style='text-align:left'>
+
+			Ces statuts, dit &quot;personnalisés&quot;, permettent à l'admin de paramétrer finement les droits confiés à un (ou des) utilisateur(s).<br />
+			Cette gestion particulière se fait à partir de la page de gestion des utilisateurs, onglet &quot;statuts personnalisés&quot;.<br />
+			Cette fonctionnalité permet notamment de créer un statut &quot;Chef d'établissement&quot;,<br />
+			ou bien &quot;Inspecteur&quot;,<br />
+			ou encore &quot;C.O.P.&quot;,<br />
+			en fonction des besoins mais aussi des usages de l'établissement.<br />
+			Il s'agit généralement de comptes avec des besoins limités, qui ne nécessitent pas un accès à toutes les fonctionnalités de Gepi et dont le foisonnement peut perdre un utilisateur qui n'en fait pas un usage très régulier.<br />
+
+		<span style='color:red'>Détailler les droits des statuts existants (ceux avec utilisateur actif associé)</span><br />
+
+		</td>
 	</tr>" : "").(getSettingAOui('active_module_trombinoscopes') ? "
 	<tr>
 		<td>Trombinoscopes</td>
@@ -409,8 +515,68 @@ echo (getSettingAOui('active_mod_engagements') ? "
 
 <a name='plugins'></a><h3>Plugins</h3>
 <p>Des plugins peuvent être développés pour ajouter des fonctionnalités à Gepi.</p>
-<p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>
+<p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>";
 
+include '../mod_plugins/traiterXml.class.php';
+include '../mod_plugins/traiterRequetes.class.php';
+//include '../mod_plugins/plugins.class.php';
+
+# On liste les plugins
+$liste_plugins  = array();
+$open_dir       = scandir("../mod_plugins");
+
+foreach ($open_dir as $dir) {
+	// On vérifie la présence d'un point dans le nom retourné
+	$test = explode(".", $dir);
+	if (count($test) <= 1) {
+		$test2 = PlugInPeer::getPluginByNom($dir);
+
+		if (is_object($test2)) {
+			$liste_plugins[] = $test2;
+		}
+		else {
+			$liste_plugins[] = $dir;
+		}
+	}
+}
+/*
+echo "<pre>";
+print_r($liste_plugins);
+echo "</pre>";
+*/
+
+echo "
+<table class='boireaus boireaus_alt resizable sortable'>
+	<tr>
+		<th>Plugin</th>
+		<th>Description</th>
+		<th>Auteur</th>
+		<th>Description détaillée</th>
+	</tr>";
+foreach ($liste_plugins as $plugin) {
+	if (is_object($plugin)){
+		// le plugin est installé
+
+		$xml = simplexml_load_file("../mod_plugins/".$plugin->getNom() . "/plugin.xml");
+		$versiongepi=$xml->versiongepi;
+		// On teste s'il est ouvert
+		if ($plugin->getOuvert() == 'y') {
+			echo "
+	<tr>
+		<td>".str_replace("_", " ", $plugin->getNom())."</td>
+		<td>".$xml->description."</td>
+		<td>".$xml->auteur."</td>
+		<td style='text-align:left'>".(isset($xml->description_detaillee) ? nl2br($xml->description_detaillee) : "-")."</td>
+	</tr>";
+		}
+	}
+}
+echo "
+</table>";
+
+//==============================================================================
+
+echo "
 <a name='droits_acces'></a><h3>Droits d'accès</h3>
 <p>Des droits d'accès permettent de personnaliser des autorisations dans divers modules de Gepi&nbsp;:</p>
 <table class='boireaus boireaus_alt resizable sortable'>
