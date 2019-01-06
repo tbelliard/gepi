@@ -65,6 +65,11 @@ if (!checkAccess()) {
 	die();
 }
 
+if(!getSettingAOui('registre_traitements')) {
+	header("Location: ../accueil.php?msg=Accès non ouvert");
+	die();
+}
+
 include('droits_acces.inc.php');
 
 $javascript_specifique[] = "lib/tablekit";
@@ -430,8 +435,11 @@ echo (getSettingAOui('active_mod_engagements') ? "
 	</tr>" : "").(getSettingAOui('rss_cdt_eleve') ? "
 	<tr>
 		<td>Flux RSS</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Générer un flux RSS du contenu du Cahier de textes</td>
+		<td style='text-align:left'>
+			Ce module est associé au module Cahier de textes.<br />
+			Il permet, sans devoir se connecter avec son compte utilisateur, de fournir aux élèves une adresse (url) donnant accès aux travaux à faire donnés dans le Cahiers de textes.
+		</td>
 	</tr>" : "").(getSettingAOui('active_mod_genese_classes') ? "
 	<tr>
 		<td>Genèse des classes</td>
@@ -455,8 +463,11 @@ echo (getSettingAOui('active_mod_engagements') ? "
 	</tr>" : "").(getSettingAOui('active_module_LSUN') ? "
 	<tr>
 		<td>Livret Scolaire Unique</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Remontée des bulletins vers l'application nationale LSU</td>
+		<td style='text-align:left'>
+			Ce module permet de remonter vers l'application nationale LSU, les données saisies dans les bulletins des élèves.<br />
+			L'application nationale LSU est destinée à conserver les bulletins au-delà de la scolarité de l'élève dans l'établissement <em>(et donc retrouver ses bulletins numériques après un changement d'établissement et même après la fin de sa scolarité au collège)</em>.<br />
+		</td>
 	</tr>" : "").(getSettingAOui('active_mod_ooo') ? "
 	<tr>
 		<td>Modèles openDocument</td>
@@ -465,20 +476,15 @@ echo (getSettingAOui('active_mod_engagements') ? "
 	</tr>" : "").(getSettingAOui('active_notanet') ? "
 	<tr>
 		<td>Notanet/Brevet</td>
-		<td></td>
+		<td>Remontée des notes moyennes annuelles, appréciations et compétences du socle vers l'application nationale Notanet.<br />
+		Ce module n'est en principe plus utilisé depuis la mise en place de LSU <em>(voir module LSU)</em>.</td>
 		<td style='text-align:left'></td>
 	</tr>" : "").(getSettingAOui('active_mod_orientation') ? "
 	<tr>
 		<td>Orientation</td>
 		<td>Orientation des élèves</td>
 		<td style='text-align:left'>
-
-
-
-			Donner l'accès à la saisie des voeux et orientations proposées.
-		
-
-
+			Ce module permet aux comptes scolarité de définir les orientations possibles et aux comptes scolarité et ".getSettingValue('gepi_prof_suivi')." de saisir les voeux d'orientation, de suggérer des orientations pour les faire apparaitre sur les bulletins.
 		</td>
 	</tr>" : "").(getSettingAOui('statuts_prives') ? "
 	<tr>
