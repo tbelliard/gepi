@@ -1456,10 +1456,14 @@ if(strftime("%m")>=8) {
 else {
 	$annee=strftime("%Y")-1;
 }
+//echo "\$num_semaine_en_cours=$num_semaine_en_cours<br />";
 for($n=36;$n<=52;$n++) {
 	$tmp_tab=get_days_from_week_number($n ,$annee);
 
 	if("$n|$annee"==$num_semaine_en_cours) {
+		//echo "\$n|\$annee=$n|$annee<br />";
+		//echo "\$tmp_tab['num_jour'][1]['jjmmaaaa']=".$tmp_tab['num_jour'][1]['jjmmaaaa']."<br />";
+
 		$indice_select_semaine_courante=$cpt;
 		$lien_retour_semaine_courante=" <a href=\"#\" onclick=\"document.getElementById('num_semaine_annee').selectedIndex=$indice_select_semaine_courante;
 				document.getElementById('form_envoi').submit();\" 
@@ -1590,7 +1594,8 @@ if(in_array("dimanche" , $tab_jour)) {
 }
 echo_selon_mode("
 
-			</select>");
+			</select>
+		</p>");
 
 // Pour afficher l'EDT seul sans titre, menu,... et l'EDT des semaines A/B
 echo_selon_mode("<div style='float:right; width:5em;'>
@@ -1601,6 +1606,7 @@ echo_selon_mode("<div style='float:right; width:5em;'>
 
 
 echo_selon_mode("
+		<p>
 			<input type='submit' id='input_submit' value='Valider' />
 		</p>
 
