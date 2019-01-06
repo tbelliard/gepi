@@ -47,7 +47,7 @@ if (getSettingValue("num_enregistrement_cnil") != '')  {
 
 if(getSettingAOui('registre_traitements')) {
 	echo "<h2>Registre des traitements</h2>
-	<p><a href='registre_traitements.php'>Accéder au registre des traitements</a></p>";
+	<p><a href='registre_traitements.php'>Accéder au registre des traitements</a> <em>(nécessite d'être connecté)</em></p>";
 }
 
 echo "<a name='cookies'></a><H2>1/ Cookies</H2>";
