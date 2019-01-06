@@ -215,11 +215,12 @@ Pouvoir éditer/modifier certaines des lignes qui suivent, en ajouter, supprimer
 </table>
 <br />
 
-
-
-
-
-
+<h3>Généralités</h3>
+<p>Indépendamment des modules activés et des droits d'accès donnés, Gepi permet aux utilisateurs d'accéder à un certain nombre d'informations.<br />
+<span style='color:red'>A détailler...</span><br />
+Les comptes administrateurs, scolarité <em>(chef d'établissement, adjoint, secrétaire)</em>, cpe on accès à... <span style='color:red'>à détailler...</span><br />
+Les professeurs ont accès à leurs listes d'élèves avec leurs nom, prénom, genre (M/F), date de naissance et classe.<br />
+Il peuvent exporter ces listes en fichiers CSV et PDF.</p>
 
 
 <a name='modules_actives'></a><h3>Modules activés</h3>
@@ -228,13 +229,190 @@ Pouvoir éditer/modifier certaines des lignes qui suivent, en ajouter, supprimer
 		<th>Module</th>
 		<th>Finalité</th>
 		<th>Explications</th>
-	</tr>
+	</tr>".(getSettingValue('active_module_absence')=='y' ? "
+	<tr>
+		<td>Absences</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingValue('active_module_absence')=='2' ? "
+	<tr>
+		<td>Absences 2</td>
+		<td></td>
+		<td>
+			".(getSettingAOui('active_absences_parents') ? "" : "")."
+		</td>
+	</tr>" : "").(getSettingAOui('active_module_absence_professeur') ? "
+	<tr>
+		<td>Abs/remplacements profs</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_actions') ? "
+	<tr>
+		<td>Actions</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_annees_anterieures') ? "
+	<tr>
+		<td>Années antérieures</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_bulletins') ? "
+	<tr>
+		<td>Bulletins</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_cahiers_texte') ? "
+	<tr>
+		<td>Cahiers de textes</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_carnets_notes') ? "
+	<tr>
+		<td>Carnets de notes</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_ects') ? "
+	<tr>
+		<td>Crédits ECTS</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_discipline') ? "
+	<tr>
+		<td>Discipline</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_disc_pointage') ? "
+	<tr>
+		<td>Discipline/pointage</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_alerte') ? "
+	<tr>
+		<td>Dispositif d'alerte</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_edt_ical') ? "
+	<tr>
+		<td>EDT Ical/Ics</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "");
 
+if((getSettingAOui('autorise_edt'))||(getSettingAOui('autorise_edt_eleve'))||(getSettingAOui('autorise_edt_admin'))) {
+	echo "
+	<tr>
+		<td>Emplois du temps</td>
+		<td>Permet de saisir/consulter les emplois du temps des classes, élèves, professeurs, salles.</td>
+		<td style='text-align:left'>";
+	if(getSettingAOui('autorise_edt_admin')) {
+		echo "Les comptes administrateurs ont accès à la consultation, l'import, la saisie des emplois du temps dans Gepi, indépendamment de l'ouverture de l'accès aux emplois du temps aux autres utilisateurs de Gepi.<br />";
+	}
+	if(getSettingAOui('autorise_edt_tous')) {
+		echo "Si les emplois du temps sont remplis, les professeurs, CPE et comptes scolarité on accès aux emplois du temps des classes, élèves, professeurs, salles dans Gepi.<br />
+			Par défaut, les professeurs n'ont accès qu'à leur emploi du temps, pas à ce lui de leurs collègues.<br />
+			Ce paramètre peut être modifié dans la rubrique <a href='#droits_acces'>droits d'accès</a>.";
+			if(getSettingAOui('edt_remplir_prof')) {
+				echo "<br />
+			Les professeurs sont autorisés à remplir leur emploi du temps eux-mêmes <em>(ce n'est pas une autorisation à modifier son emploi du temps à sa convenance&nbsp;; l'Administration a simplement délègué la saisie dans Gepi)</em>.";
+			}
+	}
+	if(getSettingAOui('autorise_edt_eleve2')) {
+		echo "Les élèves et responsables ont accès à leurs emplois du temps et à celui de leur classe dans Gepi.";
+	}
+	elseif(getSettingAOui('autorise_edt_eleve')) {
+		echo "Les élèves et responsables ont accès à leurs emplois du temps dans Gepi.";
+	}
+	echo "</td>
+	</tr>";
+}
+
+echo (getSettingAOui('active_mod_engagements') ? "
+	<tr>
+		<td>Engagements</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_epreuve_blanche') ? "
+	<tr>
+		<td>Epreuves blanches</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_examen_blanc') ? "
+	<tr>
+		<td>Examens blancs</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('rss_cdt_eleve') ? "
+	<tr>
+		<td>Flux RSS</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_genese_classes') ? "
+	<tr>
+		<td>Genèse des classes</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_gest_aid') ? "
+	<tr>
+		<td>Gestionnaires AID</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_inscription') ? "
+	<tr>
+		<td>Inscription</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('GepiListePersonnelles') ? "
+	<tr>
+		<td>Listes personnelles</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_module_LSUN') ? "
+	<tr>
+		<td>Livret Scolaire Unique</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_ooo') ? "
+	<tr>
+		<td>Modèles openDocument</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_notanet') ? "
+	<tr>
+		<td>Notanet/Brevet</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_mod_orientation') ? "
+	<tr>
+		<td>Orientation</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('statuts_prives') ? "
+	<tr>
+		<td>Statuts perso.</td>
+		<td></td>
+		<td style='text-align:left'></td>
+	</tr>" : "").(getSettingAOui('active_module_trombinoscopes') ? "
+	<tr>
+		<td>Trombinoscopes</td>
+		<td>Permet de consulter les photos des élèves d'une classe, d'un enseignement, d'une activité inter-disciplinaire (AID).</td>
+		<td style='text-align:left'>
+			Permet, selon les droits accordés dans <a href='#droits_acces'>droits d'accès</a>, aux utilisateurs de consulter les photos des élèves d'une classe, d'un enseignement, d'une activité inter-disciplinaire (AID).<br />
+			Les comptes de tous les personnels de l'établissement ont accès en consultation aux photos des élèves de toutes les classes.<br />
+			Les élèves ont accès à leur photo dans <a href='../utilisateurs/mon_compte.php'>Gérer mon compte</a>.<br />
+			Les personnes autorisées à téléverser les photos des élèves sur le serveur Gepi sont par défaut les comptes 'administrateur' et 'scolarité'.<br />
+			Le téléversement peut être ouvert aux CPE et ".getSettingValue('gepi_prof_suivi')." via des <a href='#droits_acces'>droits d'accès</a> supplémentaires.<br />
+			".(getSettingAOui('GepiAccesEleTrombiPersonnels') ? "<br />
+			Le trombinoscope des personnels de l'établissement est activé<br /><em>(cela ne signifie pas pour autant que la photo a nécessairement été téléversée sur le serveur Gepi)</em>." : "")."
+		</td>
+	</tr>" : "")."
 </table>
 
-
+<a name='plugins'></a><h3>Plugins</h3>
+<p>Des plugins peuvent être développés pour ajouter des fonctionnalités à Gepi.</p>
+<p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>
 
 <a name='droits_acces'></a><h3>Droits d'accès</h3>
+<p>Des droits d'accès permettent de personnaliser des autorisations dans divers modules de Gepi&nbsp;:</p>
 <table class='boireaus boireaus_alt resizable sortable'>
 	<tr>
 		<th>Rubrique ou module</th>
