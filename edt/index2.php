@@ -1142,7 +1142,7 @@ elseif($_SESSION['statut']=="eleve") {
 	$tab_classes_ele=get_class_periode_from_ele_login($_SESSION['login']);
 	echo_selon_mode("
 		<p>Affichage&nbsp;: <label for='type_affichage_eleve'>".$_SESSION['nom']." ".$_SESSION['prenom']."</label><input type='radio' name='type_affichage' id='type_affichage_eleve' value='eleve' ".$checked_eleve."/> ou <input type='radio' name='type_affichage' id='type_affichage_classe' value='classe' ".$checked_classe."/>");
-	if(count($tab_classes_ele['classe']==1)) {
+	if(count($tab_classes_ele['classe'])==1) {
 		foreach($tab_classes_ele['classe'] as $current_id_classe => $tab_clas) {
 			$current_nom_classe=$tab_clas['classe'];
 		}
