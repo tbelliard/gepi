@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2019 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -29,12 +29,12 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-  header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-  die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-  header("Location: ../logout.php?auto=1");
-  die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 /*
   // mise à jour des droits dans la table droits
@@ -46,36 +46,39 @@ if ($resultat_session == 'c') {
  */
 
 if (!checkAccess()) {
-  header("Location: ../logout.php?auto=1");
-  die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //recherche de l'utilisateur avec propel
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {
-  header("Location: ../logout.php?auto=1");
-  die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //On vérifie si le module est activé
 if (getSettingValue("active_module_absence") != '2') {
-  die("Le module n'est pas activé.");
+	header("Location: ../accueil.php?msg=Le module n'est pas activé.");
+	die();
 }
 
-if ($utilisateur->getStatut() != "responsable") {
-  die("acces interdit");
+if (($utilisateur->getStatut() != "responsable")||(!getSettingAOui('active_absences_parents'))) {
+	header("Location: ../accueil.php?msg=Accès interdit");
+	die();
 }
+
 require_once("helpers/EdtHelper.php");
 // Initialisation des variables
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] : (isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] : (isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
 if ($date_absence_eleve != null) {
-  $_SESSION["date_absence_eleve"] = $date_absence_eleve;
+	$_SESSION["date_absence_eleve"] = $date_absence_eleve;
 }
 
 if ($date_absence_eleve != null) {
-  $dt_date_absence_eleve = new DateTime(str_replace("/", ".", $date_absence_eleve));
+	$dt_date_absence_eleve = new DateTime(str_replace("/", ".", $date_absence_eleve));
 } else {
-  $dt_date_absence_eleve = new DateTime('now');
+	$dt_date_absence_eleve = new DateTime('now');
 }
 
 
