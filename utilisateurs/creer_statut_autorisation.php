@@ -90,6 +90,12 @@ $autorise[25]= array('/groupes/visu_profs_class.php', '/groupes/popup.php', '/ai
 $autorise[26]= array('/groupes/visu_mes_listes.php', '/groupes/popup.php', '/aid/popup.php', '/impression/liste_pdf.php', '/impression/impression.php', '/impression/impression_serie.php', '/impression/parametres_impression_pdf.php');
 $autorise[27]= array('/groupes/mes_listes.php', '/groupes/get_csv.php', '/groupes/update_champs_periode.php');
 
+$autorise[28]= array('/AccesAdresseParents');
+$autorise[29]= array('/AccesTelParents');
+$autorise[30]= array('/AccesMailParents');
+$autorise[31]= array('/AccesTelEleves');
+$autorise[32]= array('/AccesMailEleves');
+
 
 $iter = count($autorise);
 $nbre_menu = $iter - 1;
@@ -123,5 +129,10 @@ $menu_accueil[25] = array('Visualisation équipes', 'Visualisation des équipes 
 $menu_accueil[26] = array('Visualisation listes élèves et grilles PDF', 'Visualisation listes élèves et grilles PDF', 'visu_listes_ele');
 $menu_accueil[27] = array('Accès aux listes CSV élèves', 'Accès aux listes CSV élèves', 'listes_ele_csv');
 
+$menu_accueil[28] = array('Accès aux adresses postales responsables', 'Accès aux adresses postales responsables (parents,...)', 'AccesAdresseParents');
+$menu_accueil[29] = array('Accès aux numéros téléphones responsables', 'Accès aux numéros de téléphone des responsables (parents,...)', 'AccesTelParents');
+$menu_accueil[30] = array('Accès aux adresses mail responsables ', 'Accès aux adresses mail des responsables (parents,...)', 'AccesMailParents');
+$menu_accueil[31] = array('Accès aux numéros téléphones élèves', 'Accès aux numéros de téléphone des élèves', 'AccesTelEleves');
+$menu_accueil[32] = array('Accès aux adresses mail élèves', 'Accès aux adresses mail des élèves', 'AccesMailEleves');
 
 ?>

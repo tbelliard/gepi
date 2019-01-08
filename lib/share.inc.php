@@ -1262,11 +1262,11 @@ function checkAccess() {
 					WHERE id = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
 					AND ".$_SESSION['statut']."='V';";
 		}
-            
+
 		$resultat = mysqli_query($mysqli, $sql);  
 		$nb_lignes = $resultat->num_rows;
 		$resultat->close();
-        
+
 		if ($nb_lignes > 0) {
 			return (TRUE);
 		}
@@ -18476,6 +18476,9 @@ function get_acces_adresse_resp($login_ele, $id_classe='', $login_resp='') {
 			}
 		}
 	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesAdresseParents', $_SESSION['statut']))) {
+		$retour=true;
+	}
 
 	return $retour;
 }
@@ -18622,6 +18625,9 @@ function get_acces_tel_resp($login_ele, $id_classe='', $login_resp='') {
 			}
 		}
 	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesTelParents', $_SESSION['statut']))) {
+		$retour=true;
+	}
 
 	return $retour;
 }
@@ -18761,6 +18767,9 @@ function get_acces_mail_resp($login_ele, $id_classe='', $login_resp='') {
 			}
 		}
 	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesMailParents', $_SESSION['statut']))) {
+		$retour=true;
+	}
 
 	return $retour;
 }
@@ -18866,6 +18875,10 @@ function get_acces_adresse_ele($login_ele, $id_classe='') {
 			}
 		}
 	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesAdresseEleves', $_SESSION['statut']))) {
+		$retour=true;
+		//Le droit AccesAdresseEleves dans droits_speciaux n'existe pas actuellement
+	}
 
 	return $retour;
 }
@@ -18966,6 +18979,9 @@ function get_acces_tel_ele($login_ele, $id_classe='') {
 			}
 		}
 	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesTelEleves', $_SESSION['statut']))) {
+		$retour=true;
+	}
 
 	return $retour;
 }
@@ -19057,6 +19073,9 @@ function get_acces_mail_ele($login_ele, $id_classe='') {
 				}
 			}
 		}
+	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesMailEleves', $_SESSION['statut']))) {
+		$retour=true;
 	}
 
 	return $retour;

@@ -900,6 +900,22 @@ Patientez pendant l'extraction des données... merci.
 					$acces_discipline="y";
 				}
 
+				if ($rep_d['nom_fichier'] == '/AccesAdresseParents' AND $rep_d['autorisation'] == 'V') {
+					$acces_adresse_responsable=true;
+				}
+				if ($rep_d['nom_fichier'] == '/AccesTelParents' AND $rep_d['autorisation'] == 'V') {
+					$acces_tel_responsable=true;
+				}
+				if ($rep_d['nom_fichier'] == '/AccesMailParents' AND $rep_d['autorisation'] == 'V') {
+					$acces_email_responsable=true;
+				}
+				if ($rep_d['nom_fichier'] == '/AccesTelEleves' AND $rep_d['autorisation'] == 'V') {
+					$acces_tel_ele=true;
+				}
+				if ($rep_d['nom_fichier'] == '/AccesMailEleves' AND $rep_d['autorisation'] == 'V') {
+					$acces_email_ele=true;
+				}
+
 			}
 
 			// A GERER $acces_discipline="y";

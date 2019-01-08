@@ -3,7 +3,7 @@
 /**
  *
  * Modif table `droits` : ALTER TABLE `droits` ADD `autre` VARCHAR( 1 ) NOT NULL DEFAULT 'F' AFTER `secours` ;
- * @copyright 2008-2013
+ * @copyright 2008-2019
  */
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
@@ -198,6 +198,12 @@ if ($action == 'modifier') {
 		$test[$a][25] = isset($_POST["visu_equipes_peda|".$b]) ? $_POST["visu_equipes_peda|".$b] : NULL;
 		$test[$a][26] = isset($_POST["visu_listes_ele|".$b]) ? $_POST["visu_listes_ele|".$b] : NULL;
 		$test[$a][27] = isset($_POST["listes_ele_csv|".$b]) ? $_POST["listes_ele_csv|".$b] : NULL;
+
+		$test[$a][28] = isset($_POST["AccesAdresseParents|".$b]) ? $_POST["AccesAdresseParents|".$b] : NULL;
+		$test[$a][29] = isset($_POST["AccesTelParents|".$b]) ? $_POST["AccesTelParents|".$b] : NULL;
+		$test[$a][30] = isset($_POST["AccesMailParents|".$b]) ? $_POST["AccesMailParents|".$b] : NULL;
+		$test[$a][31] = isset($_POST["AccesTelEleves|".$b]) ? $_POST["AccesTelEleves|".$b] : NULL;
+		$test[$a][32] = isset($_POST["AccesMailEleves|".$b]) ? $_POST["AccesMailEleves|".$b] : NULL;
 
 		$tab_deja=array();
 
@@ -521,6 +527,7 @@ echo add_token_field();
 
 <br />
 <hr />
+<p style='margin-left:4em;text-indent:-4em;'><em>NOTES&nbsp;:</em> Le droit "<strong>Visualisation et impression des bulletins</strong>" ouvre aussi le droit "<strong>Accès aux adresses postales responsables (parents,...)</strong>".</p>
 <br />
 
 
