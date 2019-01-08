@@ -93,7 +93,7 @@ et https://www.reseau-canope.fr/fileadmin/user_upload/Projets/RGPD/RGPD_WEB.pdf
 
 
 
-A FAIRE :
+A FAIRE apparaitre :
 
 - la déclaration CNIL
 - les responsables de Gepi
@@ -107,6 +107,17 @@ Les exports CSV, PDF,...
 Pouvoir cocher ce que l'on souhaite faire apparaitre selon ce qui est utilisé dans l'établissement.
 
 Pouvoir éditer/modifier certaines des lignes qui suivent, en ajouter, supprimer selon les usages.
+
+Pour chaque module, plugin, pouvoir saisir un commentaire à stocker dans une table 'registre_traitements' avec des champs nom et commentaire.
+
+
+Vérifier les accès aux adresses parents dans des listes, exports,...
+Droits aussi dans des AID... sur tel et mail élève,...
+
+groupes/mes_listes.php
+Voir si on a accès au sexe, à la date de naissance.
+Sur les bulletins simplifiés, on a accès aux dates de naissance.
+
 </pre>
 
 <p class='bold'>Description du traitement</p>
@@ -299,6 +310,9 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 		<td>Gestion des absences et retards des élèves</td>
 		<td style='text-align:left'>
 			Le module absences permet de saisir les absences et retards des élèves.
+
+			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "")."
+
 		</td>
 	</tr>" : "").(getSettingValue('active_module_absence')=='2' ? "
 	<tr>
@@ -311,10 +325,10 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 			Les personnels de Vie Scolaire ont donc accès aux adresses postales, téléphoniques et mail.<br />
 			Ils peuvent effectuer des extractions CSV/ODT des absences pour par exemple discuter des absences de tel élève ou dans telle classe.<br />
 
-			Des absences répétées, non justifiées (non valides), peuvent amener les CPE à effectuer un signalement à l'Inspection académique.<br />
+			Des absences répétées, non justifiées <em>(non valides)</em>, peuvent amener les CPE à effectuer un signalement à l'Inspection académique.<br />
 			Des extractions statistiques peuvent aussi être demandées par l'Éducation Nationale.<br />
 
-			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Le délai de ...h permet à la Vie Scolaire de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "")."
+			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "")."
 
 		</td>
 	</tr>" : "").(getSettingAOui('active_module_absence_professeur') ? "
