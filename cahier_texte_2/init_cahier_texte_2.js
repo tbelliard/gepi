@@ -41,11 +41,17 @@ function initPage () {
 	    getWinDernieresNotices().hide();
 	    getWinListeNotices();
 
+		//alert('plip');
+		// id_groupe_init=4821 type_notice_init=c id_ct_init=39841
+		//alert('id_groupe_init='+id_groupe_init+' type_notice_init='+type_notice_init+' id_ct_init='+id_ct_init);
+
 		// On ajoute un délais pour que le calendrier soit chargé avant
 		//alert('initFenetreNoticePrecise('+id_groupe_init+','+id_ct_init+',"'+type_notice_init+'")')
-		setTimeout('initFenetreNoticePrecise('+id_groupe_init+','+id_ct_init+',"'+type_notice_init+'")',500);
+		setTimeout('initFenetreNoticePrecise('+id_groupe_init+','+id_ct_init+',"'+type_notice_init+'")',1000);
 	}
 	else {
+		//alert('plop');
+
 		// Si id_group_init est renseigné on affiche le groupe concerné, sinon on affiche les dernieres notices
 		var id_groupe_init = $('id_groupe_init').value;
 		if (id_groupe_init != '') {
@@ -65,7 +71,9 @@ function initPage () {
 			);
 			*/
 			// On ajoute un délais pour que le calendrier soit chargé avant
-			setTimeout('initFenetreNotice('+id_groupe_init+',"'+type_notice_init+'")',500);
+			//setTimeout('initFenetreNotice('+id_groupe_init+',"'+type_notice_init+'")',500);
+			// BIZARRE Est-ce que ça ne devrait pas etre
+			setTimeout('initFenetreNotice('+id_groupe_init+')',500);
 		} else {
 			getWinDernieresNotices().hide();
 		}
@@ -232,7 +240,7 @@ function getWinEditionNotice() {
 				width:GetWidth()-310,
 				height:GetHeight() - 220}
 			);
-		$('win_edition_notice_content').setStyle({	
+		$('win_edition_notice_content').setStyle({
 			backgroundColor: '#d0d0d0',
 			fontSize: '14px',
 			color: '#000000'
@@ -1176,6 +1184,28 @@ function insere_lien_ggb_dans_ckeditor(titre, url) {
 
 var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\r\n/g,"\n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
 
+function check_presence_CKEDITOR_cr(id_groupe) {
+	if(document.getElementById('cke_contenu')) {
+		// OK
+	}
+	else {
+		recharge_notice_cr(id_groupe);
+	}
+}
+
+function recharge_notice_cr(id_groupe) {
+	getWinDernieresNotices().hide();
+	getWinListeNotices();
+	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe='+id_groupe, {encoding: 'utf-8'});
+	getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+id_groupe+'&today='+getCalendarUnixDate(), { 
+		encoding: 'utf-8',
+		onComplete : 
+		function() {
+			initWysiwyg();
+			}
+		}
+	);
+}
 
 /**
 *

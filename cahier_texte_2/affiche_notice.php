@@ -151,6 +151,19 @@ else {
 	}
 }
 
+if($type_notice=='c') {
+	$type_notice_2='cr';
+}
+elseif($type_notice=='t') {
+	$type_notice_2='dev';
+}
+else {
+	$type_notice_2='priv';
+}
+
+echo "
+		 <a href='index.php?id_groupe=".$lig_ct->id_groupe."&id_ct=".$id_ct."&type_notice=".$type_notice_2."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct)."\"><img src='../images/edit16.png' class='icone16' alt='Séance' /></a> ";
+
 $sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct>'".$id_ct."' AND date_ct='".$lig_ct->date_ct."' ORDER BY id_ct ASC;";
 $res_mult=mysqli_query($mysqli, $sql);
 if(mysqli_num_rows($res_mult)>0) {

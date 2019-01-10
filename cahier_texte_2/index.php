@@ -130,6 +130,7 @@ if ($type_notice != NULL) {
 	echo $type_notice;
 }
 echo "' />\n";
+//echo "\$type_notice=$type_notice<br />";
 
 echo "<input type='hidden' name='id_ct_init' id='id_ct_init' value='";
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
@@ -137,6 +138,7 @@ if ($id_ct != NULL) {
 	echo $id_ct;
 }
 echo "' />\n";
+//echo "\$id_ct=$id_ct<br />";
 //============================================
 
 echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entète\">\n";

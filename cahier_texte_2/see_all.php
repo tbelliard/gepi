@@ -984,6 +984,8 @@ else {
 	$ts_limite_dev=getSettingValue("end_bookings");
 }
 
+$groupe_appartient_prof=verif_groupe_appartient_prof($id_groupe)==1 ? true : false;
+
 //"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve, special
 $req_devoirs =
 	"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve
@@ -1095,30 +1097,6 @@ while (true) {
 			$class_color_fond_notice="color_fond_notices_t";
 			if($CDTPeutPointerTravailFait) {
 				get_etat_et_img_cdt_travail_fait($not_dev->id_ct);
-				/*
-				if(array_key_exists($not_dev->id_ct, $tab_etat_travail_fait)) {
-					if($tab_etat_travail_fait[$not_dev->id_ct]['etat']=='fait') {
-						$image_etat="../images/edit16b.png";
-						$texte_etat_travail="FAIT: Le travail est actuellement pointé comme fait.\n";
-						if($tab_etat_travail_fait[$not_dev->id_ct]['date_modif']!=$tab_etat_travail_fait[$not_dev->id_ct]['date_initiale']) {
-							$texte_etat_travail.="Le travail a été pointé comme fait la première fois le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_initiale'], "y")."\net modifié pour la dernière fois par la suite le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_modif'], "y")."\n";
-						}
-						else {
-							$texte_etat_travail.="Le travail a été pointé comme fait le ".formate_date($tab_etat_travail_fait[$not_dev->id_ct]['date_initiale'], "y")."\n";
-						}
-						$texte_etat_travail.="Cliquer pour corriger si le travail n'est pas encore fait.";
-						$class_color_fond_notice="color_fond_notices_t_fait";
-					}
-					else {
-						$image_etat="../images/edit16.png";
-						$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\nCliquer pour pointer le travail comme fait.";
-					}
-				}
-				else {
-					$image_etat="../images/edit16.png";
-					$texte_etat_travail="NON FAIT: Le travail n'est actuellement pas fait.\nCliquer pour pointer le travail comme fait.";
-				}
-				*/
 			}
 
 			echo "<div id='div_travail_".$not_dev->id_ct."' class='see_all_notice couleur_bord_tableau_notice $class_color_fond_notice' style='min-height:2em;'>";
@@ -1142,6 +1120,11 @@ while (true) {
 
 		if(($type_notice=='devoir')&&($CDTPeutPointerTravailFait)) {
 			echo "<div id='div_etat_travail_".$not_dev->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$not_dev->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+		}
+
+		// A FAIRE : ajouter un test sur prof
+		if($groupe_appartient_prof) {
+			echo "<div style='float:right; width:16px; margin:2px;' title=\"Éditer la notice.\"><a href='index.php?id_groupe=".$id_groupe."&type_notice=".($not_dev->type=='c' ? 'cr' : ($not_dev->type=='t' ? 'dev' : 'priv'))."&id_ct=".$not_dev->id_ct."'><img src='../images/edit16.png' class='icone16' /></a></div>";
 		}
 
 		/*

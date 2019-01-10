@@ -185,6 +185,15 @@ if($url_absolues_gepi!="") {
 	$contenu_cor=cdt_changer_chemin_absolu_en_relatif($contenu_cor);
 }
 //=============================
+/*
+$f=fopen("../backup/contenu_cdt.txt", "a+");
+fwrite($f, "=======================================\n");
+fwrite($f, strftime('%d/%M:%Y à %H:%M:%S')."\n");
+fwrite($f, "\$contenu_cor=$contenu_cor\n\n");
+$contenu_cor=cdt_copie_fichiers_archive_vers_cdt_courant($contenu_cor, "compte_rendu", $id_groupe);
+fwrite($f, "\$contenu_cor=$contenu_cor\n\n");
+fclose($f);
+*/
 $contenu_cor=cdt_copie_fichiers_archive_vers_cdt_courant($contenu_cor, "compte_rendu", $id_groupe);
 
 $contenu_cor=a_href_target_blank($contenu_cor);

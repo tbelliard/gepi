@@ -123,6 +123,23 @@ if(mysqli_num_rows($test_grp_visib)!=0) {
 $_SESSION['id_groupe_session'] = $cahierTexteNoticePrivee->getIdGroupe();
 
 // **********************************************
+
+echo "<div style='float:right; width:16px;'><a href=\"#\" style=\"font-size: 11pt;\" title=\"Recharger la page. Cela peut être utile si le champ de saisie ne s'affiche pas.\" onclick=\"javascript:
+				id_groupe = '".$id_groupe."';
+				getWinDernieresNotices().hide();
+				getWinListeNotices();
+				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
+				getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe=".$id_groupe."&today='+getCalendarUnixDate(), { 
+				    		encoding: 'utf-8',
+				    		onComplete : 
+				    		function() {
+				    			initWysiwyg();
+							}
+						}
+				);
+				return false;
+			\"><img src='../images/icons/actualiser.png' class='icone16' /></a></div>\n";
+
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
 echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" style=\"border: 0px; vertical-align : middle\" HEIGHT=\"16\" WIDTH=\"16\" src=\"../images/blank.gif\" alt=\"Lier\" title=\"Lier la liste avec la fenetre la liste des notices\" /></div>&nbsp;\n";
@@ -365,6 +382,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		</td>
 	<td><?php
 	if (!isset($info)) {
+		//echo "\$today=$today<br />";
 		$hier = $today - 3600*24;
 		$demain = $today + 3600*24;
 
