@@ -38,6 +38,16 @@ if (!checkAccess()) {
 	die();
 }
 
+// Ménage:
+$sql="SELECT du.* FROM droits_utilisateurs du LEFT JOIN utilisateurs u ON u.login=du.login_user WHERE u.login IS NULL;";
+//echo "$sql<br />";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+while($lig=mysqli_fetch_object($res)) {
+	$sql="DELETE FROM droits_utilisateurs WHERE login_user='".$lig->login_user."';";
+	//echo "$sql<br />";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+}
+
 $valid = isset($_POST["valid"]) ? $_POST["valid"] : 'no';
 
 $id_info=isset($_POST['id_info']) ? $_POST['id_info'] : (isset($_GET['id_info']) ? $_GET['id_info'] : '');

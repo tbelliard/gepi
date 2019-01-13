@@ -246,6 +246,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 	$req[] = "DELETE FROM engagements_user WHERE e_login ='$cible1'";
 	$nombre_req++;
 
+	$mess[] = "Table des statuts personnalisés :";
+	$test_nb[] = "SELECT * FROM droits_utilisateurs WHERE login_user='$cible1';";
+	$req[] = "DELETE FROM droits_utilisateurs WHERE login_user='$cible1';";
+	$nombre_req++;
+
     break;
 
     // Suppression d'une matière

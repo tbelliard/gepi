@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -157,6 +157,16 @@ function test_ecriture_backup() {
         $del = @unlink($rep_photos."test");
     }
     return $ok;
+}
+
+// Ménage:
+$sql="SELECT du.* FROM droits_utilisateurs du LEFT JOIN utilisateurs u ON u.login=du.login_user WHERE u.login IS NULL;";
+//echo "$sql<br />";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+while($lig=mysqli_fetch_object($res)) {
+	$sql="DELETE FROM droits_utilisateurs WHERE login_user='".$lig->login_user."';";
+	//echo "$sql<br />";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 // fonction de sécurité
