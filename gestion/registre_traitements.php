@@ -70,6 +70,8 @@ if(!getSettingAOui('registre_traitements')) {
 	die();
 }
 
+include_once "../class_php/gestion/class_droit_acces_template.php";
+$droitAffiche= new class_droit_acces_template();
 include('droits_acces.inc.php');
 
 $javascript_specifique[] = "lib/tablekit";
@@ -105,6 +107,7 @@ Les fichiers XML exploités avec quelles infos de Siècle/Sconet, logiciel d'emp
 Les exports CSV, PDF,...
 
 Pouvoir cocher ce que l'on souhaite faire apparaitre selon ce qui est utilisé dans l'établissement.
+Ne pas permettre de choisir pour les généralités, les modules activés, les plugins et les droits.
 
 Pouvoir éditer/modifier certaines des lignes qui suivent, en ajouter, supprimer selon les usages.
 
@@ -334,28 +337,52 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 	</tr>" : "").(getSettingAOui('active_module_absence_professeur') ? "
 	<tr>
 		<td>Abs/remplacements profs</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer les absences de courte durée et remplacements de professeurs</td>
+		<td style='text-align:left'>
+			Le module est destiné à saisir des absences de courte durée (journée de stage,...) de professeurs.<br />
+			Les créneaux libérés peuvent alors être proposés aux professeurs pour effectuer un remplacement.
+		</td>
 	</tr>" : "").(getSettingAOui('active_mod_actions') ? "
 	<tr>
 		<td>Actions</td>
 		<td>Gestion des inscriptions/présence élèves sur, par exemple, les sorties/actions UNSS.</td>
-		<td style='text-align:left'></td>
+		<td style='text-align:left'>
+			Ce module permet de gérer les inscriptions d'élèves sur des actions, de pointer leur présence.<br />
+			Les familles peuvent contrôler que la présence de leur enfant a bien été pointée.<br />
+			Si les adresses mail des familles sont dans la base Gepi, une confirmation de présence peut être envoyée par mail.
+		</td>
 	</tr>" : "").(getSettingAOui('active_annees_anterieures') ? "
 	<tr>
 		<td>Années antérieures</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Conserver les bulletins simplifiés des années antérieures des élèves</td>
+		<td style='text-align:left'>
+			Le module permet de conserver les bulletins simplifiés des années passées.<br />
+			L'accès en consultation aux bulletins simplifiés des années passées est géré par des droits définis dans <a href='#droits_acces'>droits d'accès</a>.
+			Les données sont conservées le temps de la scolarité de l'élève dans l'établissement.
+		</td>
 	</tr>" : "").(getSettingAOui('active_bulletins') ? "
 	<tr>
 		<td>Bulletins</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer les bulletins scolaires</td>
+		<td style='text-align:left'>
+			Le module permet aux professeurs de saisir les notes et appréciations qui apparaitront sur les bulletins, d'afficher ces informations dans des tableaux récapitulatifs, des graphiques.<br />
+			Il permet aux comptes scolarité et éventuellement <em>(selon les droits donnés)</em> aux cpe et aux comptes professeurs désignés ".getSettingValue('gepi_prof_suivi')." de saisir les avis du conseil de classe.<br />
+			Si des mentions sont définies, il est possible d'en attribuer aux élèves pour un bulletin de fin de période.<br />
+			Selon les droits définis, les élèves/responsables peuvent consulter leurs bulletins/les bulletins de leurs enfants, une fois l'accès ouvert <em>(manuellement, ou à une date donnée,... en fin de période)</em>.
+			L'accès en consultation aux bulletins simplifiés, à l'impression des bulletins,... est géré par des droits définis dans <a href='#droits_acces'>droits d'accès</a> pour les différentes catégories d'utilisateurs.
+		</td>
 	</tr>" : "").(getSettingAOui('active_cahiers_texte') ? "
 	<tr>
 		<td>Cahiers de textes</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer les cahiers de textes</td>
+		<td style='text-align:left'>
+			Le module permet aux enseignants de saisir leurs cahiers de textes <em>(compte-rendus de séance, travaux à faire pour la séance suivante)</em>.<br />
+			".(getSettingAOui('cahier_texte_acces_public') ? "L'accès au cahiers de textes est public <em>(".(getSettingValue('cahiers_texte_passwd_pub')=='' ? "sans mot de passe" : "protégé par un mot de passe").")</em>.<br />
+			Un lien en page de login permet de consulter tous les cahiers de textes de toutes les classes.<br />" : "")."
+			Selon les droits donnés dans <a href='#droits_acces'>droits d'accès</a>, les différents statuts ont ou non accès aux cahiers de textes.<br />
+			Lorsque le droit est donné, les élèves/parents n'ont accès qu'aux cahiers de textes les concernant <em>(leurs classes et enseignements)</em>.<br />
+			Ils peuvent aussi si le droit leur est donné pointer les travaux faits ou non du CDT.
+		</td>
 	</tr>" : "").(getSettingAOui('active_carnets_notes') ? "
 	<tr>
 		<td>Carnets de notes</td>
@@ -514,8 +541,7 @@ echo (getSettingAOui('active_mod_engagements') ? "
 			en fonction des besoins mais aussi des usages de l'établissement.<br />
 			Il s'agit généralement de comptes avec des besoins limités, qui ne nécessitent pas un accès à toutes les fonctionnalités de Gepi et dont le foisonnement peut perdre un utilisateur qui n'en fait pas un usage très régulier.<br />
 
-		<span style='color:red'>Détailler les droits des statuts existants (ceux avec utilisateur actif associé)</span><br />
-
+			<a href='#droits_statuts_personnalises'>Voir les droits pour les statuts personnalisés existants</a>.
 		</td>
 	</tr>" : "").(getSettingAOui('active_module_trombinoscopes') ? "
 	<tr>
@@ -535,7 +561,8 @@ echo (getSettingAOui('active_mod_engagements') ? "
 
 <a name='plugins'></a><h3>Plugins</h3>
 <p>Des plugins peuvent être développés pour ajouter des fonctionnalités à Gepi.</p>
-<p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>";
+<p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>
+<p style='color:red'>Ajouter la possibilité pour l'administrateur de saisir un commentaire.</p>";
 
 include '../mod_plugins/traiterXml.class.php';
 include '../mod_plugins/traiterRequetes.class.php';
@@ -586,7 +613,18 @@ foreach ($liste_plugins as $plugin) {
 		<td>".str_replace("_", " ", $plugin->getNom())."</td>
 		<td>".$xml->description."</td>
 		<td>".$xml->auteur."</td>
-		<td style='text-align:left'>".(isset($xml->description_detaillee) ? nl2br($xml->description_detaillee) : "-")."</td>
+		<td style='text-align:left'>
+		".(isset($xml->description_detaillee) ? nl2br($xml->description_detaillee) : "-");
+		$commentaire_plug=getSettingValue('RGPD_plug_'.str_replace("_", " ", $plugin->getNom()));
+		if($_SESSION['statut']=='administrateur') {
+			// Permettre la modification du commentaire
+			echo "<br /><textarea name='".'RGPD_plug_'.str_replace("_", " ", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître.\">$commentaire_plug</textarea>";
+		}
+		elseif($commentaire_plug!='') {
+			echo "<br />".nl2br($commentaire_plug);
+		}
+		echo "
+		</td>
 	</tr>";
 		}
 	}
@@ -621,6 +659,56 @@ foreach($tab_droits_acces as $statutItem => $current_statut_item) {
 echo "
 </table>";
 
+//==============================================================================
+if(getSettingAOui('statuts_prives')) {
+	include_once("../utilisateurs/creer_statut_autorisation.php");
+
+	echo "
+<a name='droits_statuts_personnalises'></a><h3>Statuts personnalisés</h3>";
+
+	// Problème: Actuellement, on enregistre les url des pages accessibles, pas ce à quoi elles correspondent.
+	// Ajouter une colonne à $menu_accueil pour préciser concrètement les droits donnés
+	// Il va y avoir une colonne de plus dans droits_speciaux
+	// Et faire un SELECT DISTINCT commentaire associé FROM droits_speciaux WHERE id_statut='...' AND autorisation='V';
+
+	// Modifier les tableau $autorise et $menu_accueil en $autorise_statuts_personnalise et $menu_accueil_statuts_personnalise pour ne pas avoir de pb avec les include.
+
+	$sql="SELECT du.login_user, ds.* FROM droits_utilisateurs du, 
+							droits_statut ds 
+						WHERE u.login=du.login_user;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "<p>Il n'existe actuellement aucun compte associé à un statut personnalisé.</p>";
+	}
+	else {
+		echo "
+<p>Voici la liste des statuts personnalisés et des droits qui leur sont donnés&nbsp;:</p>
+<table class='boireaus boireaus_alt resizable sortable'>
+	<tr>
+		<th>Statut</th>
+		<th>Droit</th>
+	</tr>";
+		/*
+		$rubrique_precedente='';
+		foreach($menu_accueil as $cpt => $current_item) {
+			foreach($current_statut_item as $titreItem => $current_item) {
+				if((in_array($_SESSION['statut'], $current_item['visibilite']))&&(getSettingAOui($titreItem))) {
+					echo "
+			<tr>
+				<td style='text-align:left'>".$current_item['rubrique']."</td>
+				<td>".ucfirst($statutItem)."</td>
+				<td style='text-align:left'>".$current_item['texteItem']."</td>
+			</tr>";
+				}
+			}
+		}
+		*/
+		echo "
+</table>";
+	}
+
+
+}
 
 require("../lib/footer.inc.php");
 ?>
