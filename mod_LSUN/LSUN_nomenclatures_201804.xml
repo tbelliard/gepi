@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nomenclatures>
-	<version>2.10</version>
 	<liste-parcours>
 		<parcours code="PAR_AVN" libelle="Parcours avenir" />
 		<parcours code="PAR_CIT" libelle="Parcours citoyen" />
@@ -41,9 +40,7 @@
 	<enseignements-complement>
 		<enseignement-complement code="AUC" libelle="Aucun" />
 		<enseignement-complement code="LCA" libelle="Langues et cultures de l'Antiquité" />
-        <enseignement-complement code="LCE" libelle="Langues et cultures européennes" />
-        <enseignement-complement code="LCR" libelle="Langues et cultures régionales" />
-        <enseignement-complement code="CHK" libelle="Chant choral" />
+        <enseignement-complement code="LCR" libelle="Langue et culture régionale" />
         <enseignement-complement code="PRO" libelle="Découverte professionnelle" />
         <enseignement-complement code="LSF" libelle="Langue des signes française" />
         <enseignement-complement code="LVE" libelle="Langue vivante étrangère" />
@@ -55,14 +52,7 @@
 		<langue-culture-regionale code="BRE" libelle="Breton"/>
 		<langue-culture-regionale code="CAT" libelle="Catalan"/>
 		<langue-culture-regionale code="COS" libelle="Corse"/>
-		<langue-culture-regionale code="CPF" libelle="Créole" />
-		<langue-culture-regionale code="FUD" libelle="Futunien" />
-		<langue-culture-regionale code="GAL" libelle="Gallo" />
 		<langue-culture-regionale code="GSW" libelle="Langue régionale d'Alsace"/>
-		<langue-culture-regionale code="MEL" libelle="Langues mélanésiennes" />
-		<langue-culture-regionale code="MOL" libelle="Langues régionales des pays mosellans" />
 		<langue-culture-regionale code="OCI" libelle="Occitan langue d'oc"/>
-		<langue-culture-regionale code="TAH" libelle="Tahitien" />
-		<langue-culture-regionale code="WLS" libelle="Wallisien" />
 	</langues-culture-regionale>
 </nomenclatures>

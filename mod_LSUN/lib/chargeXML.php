@@ -1600,51 +1600,53 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 				}
 
-	/*
-		          <modalites-accompagnement>
-		              <modalite-accompagnement code="PAP" />
-		              <modalite-accompagnement code="PPS" />
-		              <modalite-accompagnement code="PPRE">
-		                  <complement-ppre>Complément de la modalité PPRE</complement-ppre>
-		              </modalite-accompagnement>
-		          </modalites-accompagnement>
-	*/
-			
+				if ((getSettingAOui("traiteModSpeElv")) {
 
-				$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($eleve->login, $eleve->periode);
-				if(count($tab_modalites_accompagnement_eleve)>0) {
-					$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
-					for($loop_modalite=0;$loop_modalite<count($tab_modalites_accompagnement_eleve);$loop_modalite++) {
-						$modaliteAcc = $xml->createElement('modalite-accompagnement');
-						$attsModaliteAcc = $xml->createAttribute('code');
-						$attsModaliteAcc->value = $tab_modalites_accompagnement_eleve[$loop_modalite]["code"];
-						$modaliteAcc->appendChild($attsModaliteAcc);
+					/*
+						<modalites-accompagnement>
+							<modalite-accompagnement code="PAP" />
+							<modalite-accompagnement code="PPS" />
+							<modalite-accompagnement code="PPRE">
+								<complement-ppre>Complément de la modalité PPRE</complement-ppre>
+							</modalite-accompagnement>
+						</modalites-accompagnement>
+					*/
 
-						if(($tab_modalites_accompagnement_eleve[$loop_modalite]["code"]=="PPRE")&&
-						($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]!="")) {
-							$tmp_chaine=nettoye_texte_vers_chaine($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]);
-							if(trim($tmp_chaine)!="") {
-								$complement_ppre=$xml->createElement('complement-ppre' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
-								$modaliteAcc->appendChild($complement_ppre);
-							}
-						}
+					$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($eleve->login, $eleve->periode);
+					if(count($tab_modalites_accompagnement_eleve)>0) {
+						$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
+						for($loop_modalite=0;$loop_modalite<count($tab_modalites_accompagnement_eleve);$loop_modalite++) {
+							$modaliteAcc = $xml->createElement('modalite-accompagnement');
+							$attsModaliteAcc = $xml->createAttribute('code');
+							$attsModaliteAcc->value = $tab_modalites_accompagnement_eleve[$loop_modalite]["code"];
+							$modaliteAcc->appendChild($attsModaliteAcc);
 
-						if($LSUN_version_xsd!=20171009) {
-							// 20180210 : Modalité d'accompagnement CTR Contrat de réussite
-							if(($tab_modalites_accompagnement_eleve[$loop_modalite]["code"]=="CTR")&&
+							if(($tab_modalites_accompagnement_eleve[$loop_modalite]["code"]=="PPRE")&&
 							($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]!="")) {
 								$tmp_chaine=nettoye_texte_vers_chaine($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]);
 								if(trim($tmp_chaine)!="") {
-									$complement_CTR=$xml->createElement('complement-contrat-reussite' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
-									$modaliteAcc->appendChild($complement_CTR);
+									$complement_ppre=$xml->createElement('complement-ppre' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
+									$modaliteAcc->appendChild($complement_ppre);
 								}
 							}
+
+							if($LSUN_version_xsd!=20171009) {
+								// 20180210 : Modalité d'accompagnement CTR Contrat de réussite
+								if(($tab_modalites_accompagnement_eleve[$loop_modalite]["code"]=="CTR")&&
+								($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]!="")) {
+									$tmp_chaine=nettoye_texte_vers_chaine($tab_modalites_accompagnement_eleve[$loop_modalite]["commentaire"]);
+									if(trim($tmp_chaine)!="") {
+										$complement_CTR=$xml->createElement('complement-contrat-reussite' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
+										$modaliteAcc->appendChild($complement_CTR);
+									}
+								}
+							}
+
+							$modalitesAccompagnement->appendChild($modaliteAcc);
 						}
 
-						$modalitesAccompagnement->appendChild($modaliteAcc);
+						$noeudBilanElevePeriodique->appendChild($modalitesAccompagnement);
 					}
-
-					$noeudBilanElevePeriodique->appendChild($modalitesAccompagnement);
 				}
 
 				$avis_conseil_extrait=true;

@@ -41,11 +41,14 @@ $xml->save($file);
 
 $LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
 if($LSUN_version_xsd=='') {
-	$LSUN_version_xsd=20171009;
+	$LSUN_version_xsd=20180427;
 }
 
 if($LSUN_version_xsd==20171009) {
 	$schema = "xsd/import-bilan-complet_20171009.xsd";
+}
+elseif($LSUN_version_xsd==20190427) {
+	$schema = "xsd/import-bilan-complet_20190427.xsd";
 }
 else {
 	$schema = "xsd/import-bilan-complet.xsd";

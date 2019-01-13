@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2016-2018 Régis Bouguin
+* Copyright 2016-2019 Régis Bouguin, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -97,6 +97,7 @@ if(isset($_POST['LSUN_version_xsd'])) {
 	if(!saveSetting('LSUN_version_xsd', $LSUN_version_xsd)) {
 		echo "<p style='color:red'>ERREUR lors de l'enregistrement du choix de format d'export XSD.</p>";
 	}
+	//echo "LSUN_version_xsd=$LSUN_version_xsd<br />".getSettingValue('LSUN_version_xsd')."<br />";
 }
 
 //debug_var();
@@ -1182,7 +1183,7 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 		while ($classe = $classes->fetch_object()) { 
 			if(estClasseEPI($epiCommun->id,$classe->id)) {
 				echo "
-									<input type='checkbox' name='modifieEpiClasse".$epiCommun->id."[]' id='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."' value='".$classe->id."' checked /><label for='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."'>".$classe->classe." <em>(".$classe->classe.")</em></label><br />";
+									<input type='checkbox' name='modifieEpiClasse".$epiCommun->id."[]' id='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."' value='".$classe->id."' checked onchange=\"checkbox_change(this.id)\" /><label for='modifieEpiClasse".$epiCommun->id."_".$cpt_classe."' id='texte_modifieEpiClasse".$epiCommun->id."_".$cpt_classe."'>".$classe->classe." <em>(".$classe->classe.")</em></label><br />";
 				$cpt_classe_associees++;
 			}
 			else {
@@ -1337,10 +1338,10 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 				// Matières déjà associées:
 				echo "
 								<td style='border:0px;'>
-									<input type='checkbox' name='modifieEpiMatiere".$epiCommun->id."[]' id='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."' value=\"".$matEPI['matiere'].$matEPI['modalite']."\" checked />
+									<input type='checkbox' name='modifieEpiMatiere".$epiCommun->id."[]' id='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."' value=\"".$matEPI['matiere'].$matEPI['modalite']."\" onchange=\"checkbox_change(this.id)\" checked />
 								</td>
 								<td style='text-align:left; border:0px;'>
-									<label for='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."'>";
+									<label for='modifieEpiMatiere".$epiCommun->id."_".$cpt_row."' id='texte_modifieEpiMatiere".$epiCommun->id."_".$cpt_row."'>";
 				echo $matEPI['matiere']." (";
 				echo getMatiereOnMatiere($matEPI['matiere'])->nom_complet;
 				echo "<span style='color:grey'>";
@@ -1510,10 +1511,10 @@ $tab_span_champs_select[]='span_ajout_modifieEpiClasse_'.$epiCommun->id;
 
 					echo "
 							<td>
-								<input type='checkbox' name='modifieEpiLiaison".$epiCommun->id."[]' id='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."' value=\"aid-".$liaison->id_enseignements."\" checked />
+								<input type='checkbox' name='modifieEpiLiaison".$epiCommun->id."[]' id='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."' value=\"aid-".$liaison->id_enseignements."\" onchange=\"checkbox_change(this.id)\" checked />
 							</td>
 							<td>
-								<label for='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."'>AID - ".getAID($liaison->id_enseignements)->nom."</label>".$chaine_erreurs_aid."
+								<label for='modifieEpiLiaison".$epiCommun->id."_".$cpt_row."' id='texte_modifieEpiLiaison".$epiCommun->id."_".$cpt_row."'>AID - ".getAID($liaison->id_enseignements)->nom."</label>".$chaine_erreurs_aid."
 							</td>";
 
 					if($cpt_row==0) {
@@ -1866,10 +1867,10 @@ while ($classe = $classes->fetch_object()) { ?>
 					$matiere_courante=getMatiereSurMEF($matiereAP->id_enseignements)->fetch_object();
 					echo "
 									<td style='border:0px;'>
-										<input type='checkbox' name='ApDisciplines".$ap->id."[]' id='ApDisciplines".$ap->id."_".$cpt_row."' value=\"".$matiere_courante->matiere.$matiereAP->modalite."\" checked />
+										<input type='checkbox' name='ApDisciplines".$ap->id."[]' id='ApDisciplines".$ap->id."_".$cpt_row."' value=\"".$matiere_courante->matiere.$matiereAP->modalite."\" onchange=\"checkbox_change(this.id)\" checked />
 									</td>
 									<td style='text-align:left; border:0px;'>
-										<label for='ApDisciplines".$ap->id."_".$cpt_row."'>";
+										<label for='ApDisciplines".$ap->id."_".$cpt_row."' id='texte_ApDisciplines".$ap->id."_".$cpt_row."'>";
 					echo $matiere_courante->matiere." (";
 					echo $matiere_courante->nom_complet;
 					echo "<span style='color:grey'>";
@@ -2113,73 +2114,73 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
 					<li>
-						<input type="checkbox" name="traiteEPI" id="traiteEPI" value="y" 
+						<input type="checkbox" name="traiteEPI" id="traiteEPI" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if (getSettingValue("LSU_traite_EPI") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteEPI" label="Exporter les données générales des EPI">enseignements pratiques interdisciplinaires (EPI)</label>
+						<label for="traiteEPI" id="texte_traiteEPI" label="Exporter les données générales des EPI">enseignements pratiques interdisciplinaires (EPI)</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y"
+						<input type="checkbox" name="traiteEpiElv" id="traiteEpiElv" value="y" onchange="checkbox_change(this.id)" 
 							   
 							   <?php if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_Elv") != "n")) {echo ' checked '; }  ?> />
-						<label for="traiteEpiElv">données élèves des EPI</label>
+						<label for="traiteEpiElv" id="texte_traiteEpiElv">données élèves des EPI</label>
 					</li>
 					<li>
 						<input type="checkbox" name="traiteElemProg" id="traiteElemProg" value="y" checked disabled />
-						<label for="traiteElemProg">éléments de programme</label>
+						<label for="traiteElemProg" class="desactive" id="texte_traiteElemProg">éléments de programme</label>
 					</li>
 					<li>
-						<input type="checkbox" name="forceNotes" id="forceNotes" value="y"
+						<input type="checkbox" name="forceNotes" id="forceNotes" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if ($_SESSION['forceNotes'] == "y") {echo ' checked '; }  ?> />
-						<label for="forceNotes" title="Exporter les Acquis même si la note n'est pas remplie. L'élève est déclaré 'non-noté'">
+						<label for="forceNotes" id="texte_forceNotes" title="Exporter les Acquis même si la note n'est pas remplie. L'élève est déclaré 'non-noté'">
 							forcer l'export des appréciations sans note
 						</label>
 					</li>
 					<li>
-						<input type="checkbox" name="forceAppreciations" id="forceAppreciations" value="y"
+						<input type="checkbox" name="forceAppreciations" id="forceAppreciations" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if ($_SESSION['forceAppreciations'] == "y") {echo ' checked '; }  ?> />
-						<label for="forceAppreciations" title="Exporter les Acquis même si le commentaire n'est pas rempli. Un - est mis en commentaire">
+						<label for="forceAppreciations" id="texte_forceAppreciations" title="Exporter les Acquis même si le commentaire n'est pas rempli. Un - est mis en commentaire">
 							forcer l'export des notes sans appréciation
 						</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y"
+						<input type="checkbox" name="traiteVieSco" id="traiteVieSco" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if (getSettingValue("LSU_commentaire_vie_sco") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaire</label>
+						<label for="traiteVieSco" id="texte_traiteVieSco" title="Exporter les commentaires de vie scolaire en plus des absences">commentaires de vie scolaire</label>
 					</li>
 				</ul>
 			</div>
 			<div style='text-align:left;'>
 				<ul class='pasPuces' disable>
 					<li>
-						<input type="checkbox" name="traiteAP" id="traiteAP" value="y"     
+						<input type="checkbox" name="traiteAP" id="traiteAP" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if (getSettingValue("LSU_traite_AP") != "n") {echo ' checked '; }  ?>  />
-						<label for="traiteAP">accompagnements personnalisés (AP)</label>
+						<label for="traiteAP" id="texte_traiteAP">accompagnements personnalisés (AP)</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y"      
+						<input type="checkbox" name="traiteAPElv" id="traiteAPElv" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if ((getSettingValue("LSU_traite_AP") != "n") && (getSettingValue("LSU_traite_AP_Elv") != "n")) {echo ' checked '; }  ?>  />
-						<label for="traiteAPElv">données élèves des AP</label>
+						<label for="traiteAPElv" id="texte_traiteAPElv">données élèves des AP</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" checked disabled />
-						<label for="traiteModSpeElv"  class="desactive" title="À saisir directement dans LSU" >modalités spécifiques d’accompagnement des élèves</label>
+						<input type="checkbox" name="traiteModSpeElv" id="traiteModSpeElv" value="y" checked />
+						<label for="traiteModSpeElv" id="texte_traiteModSpeElv">modalités spécifiques d’accompagnement des élèves</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteParent" id="traiteParent" value="y"  
+						<input type="checkbox" name="traiteParent" id="traiteParent" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if (getSettingValue("LSU_Donnees_responsables") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteParent" title="Exporter les informations relatives aux responsables (nom prénom adresse">
+						<label for="traiteParent" id="texte_traiteParent" title="Exporter les informations relatives aux responsables (nom prénom adresse">
 							informations relatives aux responsables de l’élève
 						</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteParcours" id="traiteParcours" value="y"  
+						<input type="checkbox" name="traiteParcours" id="traiteParcours" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if (getSettingValue("LSU_Parcours") != "n") {echo ' checked '; }  ?> />
-						<label for="traiteParcours">parcours éducatifs</label>
+						<label for="traiteParcours" id="texte_traiteParcours">parcours éducatifs</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteParcoursElv" id="traiteParcoursElv" value="y"   
+						<input type="checkbox" name="traiteParcoursElv" id="traiteParcoursElv" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if ((getSettingValue("LSU_Parcours") != "n") && (getSettingValue("LSU_ParcoursElv") != "n")) {echo ' checked '; }  ?>  />
-						<label for="traiteParcoursElv">données élèves des Parcours</label>
+						<label for="traiteParcoursElv" id="texte_traiteParcoursElv">données élèves des Parcours</label>
 					</li>
 				</ul>
 			</div>
@@ -2187,27 +2188,27 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 				<ul class='pasPuces' disable>
 					<li>
 						<input type="checkbox" name="traiteProfP" id="traiteProfP" value="y" checked disabled />
-						<label for="traiteAP">professeur(s) principal(aux)</label>
+						<label for="traiteProfP" id="texte_traiteProfP" class="desactive" >professeur(s) principal(aux)</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteSocle" id="traiteSocle" value="y"  
+						<input type="checkbox" name="traiteSocle" id="traiteSocle" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if (getSettingValue("LSU_Donnees_socle") == "y") {echo ' checked '; }  ?> />
-						<label for="traiteSocle" title="Le positionnement n'est remonté pour un élève donné sur une période donnée que si le positionnement sur les 8 domaines est renseigné.">positionnement des élèves sur les domaines du socle commun</label>
+						<label for="traiteSocle" id="texte_traiteSocle" title="Le positionnement n'est remonté pour un élève donné sur une période donnée que si le positionnement sur les 8 domaines est renseigné.">positionnement des élèves sur les domaines du socle commun</label>
 					</li>
 					<li>
-						<input type="checkbox" name="traiteBilanFinCycle" id="traiteBilanFinCycle" value="y"  
+						<input type="checkbox" name="traiteBilanFinCycle" id="traiteBilanFinCycle" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if (getSettingValue("LSU_Donnees_BilanFinCycle") == "y") {echo ' checked '; }  ?> />
-						<label for="traiteBilanFinCycle" title="Le Bilan n'est remonté n'est remonté pour un élève donné que si le positionnement sur les 8 domaines est renseigné et si la synthèse est renseignée.">Bilan de fin de Cycle</label>
+						<label for="traiteBilanFinCycle" id="texte_traiteBilanFinCycle" title="Le Bilan n'est remonté n'est remonté pour un élève donné que si le positionnement sur les 8 domaines est renseigné et si la synthèse est renseignée.">Bilan de fin de Cycle</label>
 					</li>
 					<li>
-						<input type="checkbox" name="BilanFinCycle3" id="BilanFinCycle3" value="y"  
+						<input type="checkbox" name="BilanFinCycle3" id="BilanFinCycle3" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if ((isset($_SESSION['BilanFinCycle3']))&&($_SESSION['BilanFinCycle3'] == "y")) {echo ' checked '; }  ?> />
-						<label for="BilanFinCycle3" title="">Générer, si les saisies existent, un bilan de fin de cycle 3, indépendamment du cycle courant de l'élève</label>
+						<label for="BilanFinCycle3" id="texte_BilanFinCycle3" title="">Générer, si les saisies existent, un bilan de fin de cycle 3, indépendamment du cycle courant de l'élève</label>
 					</li>
 					<li>
-						<input type="checkbox" name="BilanFinCycle4" id="BilanFinCycle4" value="y"  
+						<input type="checkbox" name="BilanFinCycle4" id="BilanFinCycle4" value="y" onchange="checkbox_change(this.id)" 
 							   <?php if ((isset($_SESSION['BilanFinCycle4']))&&($_SESSION['BilanFinCycle4'] == "y")) {echo ' checked '; }  ?> />
-						<label for="BilanFinCycle4" title="">Générer, si les saisies existent, un bilan de fin de cycle 4, indépendamment du cycle courant de l'élève</label>
+						<label for="BilanFinCycle4" id="texte_BilanFinCycle4" title="">Générer, si les saisies existent, un bilan de fin de cycle 4, indépendamment du cycle courant de l'élève</label>
 					</li>
 				</ul>
 			</div>
@@ -2217,32 +2218,55 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			$LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
 			if($LSUN_version_xsd=='') {
 				//if(strftime('%d/%m/%Y')>'27/04/2018') {
-				$ts=mktime(0, 0, 0, 4, 27, 2018);
+				$ts=mktime(0, 0, 0, 4, 27, 2019);
+				$ts2=mktime(0, 0, 0, 4, 27, 2018);
 				if(time()>$ts) {
+					$checked_version_20190427=' checked';
+					$checked_version_20180427=' checked';
+					$checked_version_20171009='';
+				}
+				elseif(time()>$ts2) {
+					$checked_version_20190427='';
 					$checked_version_20180427=' checked';
 					$checked_version_20171009='';
 				}
 				else {
+					$checked_version_20190427='';
 					$checked_version_20180427='';
 					$checked_version_20171009=' checked';
 				}
 			}
 			elseif($LSUN_version_xsd=='20171009') {
+					$checked_version_20190427='';
 					$checked_version_20180427='';
 					$checked_version_20171009=' checked';
 			}
+			elseif($LSUN_version_xsd=='20180427') {
+					$checked_version_20190427='';
+					$checked_version_20180427=' checked';
+					$checked_version_20171009='';
+			}
+			elseif($LSUN_version_xsd=='20190427') {
+					$checked_version_20190427=' checked';
+					$checked_version_20180427='';
+					$checked_version_20171009='';
+			}
 			else {
+					$checked_version_20190427='';
 					$checked_version_20180427=' checked';
 					$checked_version_20171009='';
 			}
 			echo "
-			<!--
 				<p><strong>Schéma de l'export&nbsp;:</strong><br />
-				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20171009' value='20171009' ".$checked_version_20171009."/><label for='LSUN_version_xsd_20171009'>Version octobre 2017</label><br />
-				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' ".$checked_version_20180427."/><label for='LSUN_version_xsd_20180427'>Version fin avril 2018 (LSU 18.2.0.0)</label>
+				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20171009' value='20171009' onchange=\"change_style_radio()\"".$checked_version_20171009."/><label for='LSUN_version_xsd_20171009' id='texte_LSUN_version_xsd_20171009'>Version octobre 2017</label>
+				<br />
+				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' onchange=\"change_style_radio()\"".$checked_version_20180427."/><label for='LSUN_version_xsd_20180427' id='texte_LSUN_version_xsd_20180427'>Version fin avril 2018 (LSU 18.2.0.0)</label>
+				<br />
+				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20190427' value='20190427'  onchange=\"change_style_radio()\"".$checked_version_20190427."/><label for='LSUN_version_xsd_20190427' id='texte_LSUN_version_xsd_20190427'>Version fin avril 2019 (LSU 19.2.0.0)</label>
 			</p>
-			-->
-			<input type='hidden' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' />";
+			<!--
+			<input type='hidden' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' />
+			-->";
 		?>
 
 
@@ -2282,13 +2306,17 @@ Le marquage peut être effectué par lots via <strong>Gestion des bases/Gestion 
 
 </div>
 
+<script type='text/javascript'>
+	<?php 
+		echo js_change_style_all_checkbox("n", "y");
+		echo js_change_style_radio();
+	?>
+	change_style_radio();
+</script>
+
 <?php if (!$selectionClasse) { ?>
 
 <script type='text/javascript'>
 	document.getElementById("defAid").style.display='none';
 </script>
 <?php } ?>
-
-
-
-

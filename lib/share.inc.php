@@ -18004,6 +18004,24 @@ function get_tab_types_LVR() {
 		<langue-culture-regionale code="GSW" libelle="Langue régionale d'Alsace"/>
 		<langue-culture-regionale code="OCI" libelle="Occitan langue d'oc"/>
 	</langues-culture-regionale>
+
+	// A partir de fin avril 2019
+	<langues-culture-regionale>
+		<langue-culture-regionale code="AUC" libelle="Aucun"/>
+		<langue-culture-regionale code="BAQ" libelle="Basque"/>
+		<langue-culture-regionale code="BRE" libelle="Breton"/>
+		<langue-culture-regionale code="CAT" libelle="Catalan"/>
+		<langue-culture-regionale code="COS" libelle="Corse"/>
+		<langue-culture-regionale code="CPF" libelle="Créole" />
+		<langue-culture-regionale code="FUD" libelle="Futunien" />
+		<langue-culture-regionale code="GAL" libelle="Gallo" />
+		<langue-culture-regionale code="GSW" libelle="Langue régionale d'Alsace"/>
+		<langue-culture-regionale code="MEL" libelle="Langues mélanésiennes" />
+		<langue-culture-regionale code="MOL" libelle="Langues régionales des pays mosellans" />
+		<langue-culture-regionale code="OCI" libelle="Occitan langue d'oc"/>
+		<langue-culture-regionale code="TAH" libelle="Tahitien" />
+		<langue-culture-regionale code="WLS" libelle="Wallisien" />
+	</langues-culture-regionale>
 	*/
 
 	$tab=array();
@@ -18026,13 +18044,41 @@ function get_tab_types_LVR() {
 	$tab["indice"][3]["libelle"]='Corse';
 	$tab["code"]['COS']='Corse';
 
-	$tab["indice"][4]["code"]='GSW';
-	$tab["indice"][4]["libelle"]="Langue régionale d'Alsace";
+	$tab["indice"][4]["code"]='CPF';
+	$tab["indice"][4]["libelle"]="Créole";
+	$tab["code"]['CPF']="Créole";
+
+	$tab["indice"][5]["code"]='FUD';
+	$tab["indice"][5]["libelle"]="Futunien";
+	$tab["code"]['FUD']="Futunien";
+
+	$tab["indice"][6]["code"]='GAL';
+	$tab["indice"][6]["libelle"]="Gallo";
+	$tab["code"]['GAL']="Gallo";
+
+	$tab["indice"][7]["code"]='GSW';
+	$tab["indice"][7]["libelle"]="Langue régionale d'Alsace";
 	$tab["code"]['GSW']="Langue régionale d'Alsace";
 
-	$tab["indice"][5]["code"]='OCI';
-	$tab["indice"][5]["libelle"]="Occitan langue d'oc";
+	$tab["indice"][8]["code"]='MEL';
+	$tab["indice"][8]["libelle"]="Langues mélanésiennes";
+	$tab["code"]['MEL']="Langues mélanésiennes";
+
+	$tab["indice"][9]["code"]='MOL';
+	$tab["indice"][9]["libelle"]="Langues régionales des pays mosellans";
+	$tab["code"]['MOL']="Langues régionales des pays mosellans";
+
+	$tab["indice"][10]["code"]='OCI';
+	$tab["indice"][10]["libelle"]="Occitan langue d'oc";
 	$tab["code"]['OCI']="Occitan langue d'oc";
+
+	$tab["indice"][11]["code"]='TAH';
+	$tab["indice"][11]["libelle"]="Tahitien";
+	$tab["code"]['TAH']="Tahitien";
+
+	$tab["indice"][12]["code"]='WLS';
+	$tab["indice"][12]["libelle"]="Wallisien";
+	$tab["code"]['WLS']="Wallisien";
 
 	/*
 	$sql="SELECT * FROM nomenclatures_valeurs WHERE type='langue_vivante_regionale' ORDER BY code;";

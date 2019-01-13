@@ -990,8 +990,15 @@
             <xs:enumeration value="BRE" />
             <xs:enumeration value="CAT" />
             <xs:enumeration value="COS" />
+            <xs:enumeration value="CPF" />
+            <xs:enumeration value="FUD" />
+            <xs:enumeration value="GAL" />
             <xs:enumeration value="GSW" />
+            <xs:enumeration value="MEL" />
+            <xs:enumeration value="MOL" />
             <xs:enumeration value="OCI" />
+            <xs:enumeration value="TAH" />
+            <xs:enumeration value="WLS" />
         </xs:restriction>
     </xs:simpleType>
     
