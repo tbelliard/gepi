@@ -62,6 +62,7 @@ if ($barre_plugin!="") {
  *******************************************************************/
 
 	if ($_SESSION['statut'] == "scolarite") {
+		$acces_saisie_modalites_accompagnement=acces_saisie_modalites_accompagnement();
 
 		$tmp_liste_classes_scol=array();
 		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;";
@@ -348,6 +349,9 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		$menus .= '           <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/index.php"'.insert_confirm_abandon().'>Gestion élèves</a></li>'."\n";
 		//$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import2.php"'.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
+		if($acces_saisie_modalites_accompagnement) {
+			$menus .= '                <li><a href="'.$gepiPath.'/gestion/saisie_modalites_accompagnement.php"'.insert_confirm_abandon().' title="Saisir les modalités d accompagnement des élèves (PPRE, SEGPA, ULIS,...).">Modalités d\'accompagnement</a></li>'."\n";
+		}
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consultation elève</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès appréciations</a></li>'."\n";
 		$menus .= '       <li class="niveau3"><a href="'.$gepiPath.'/eleves/recherche.php"'.insert_confirm_abandon().' title="Effectuer une recherche sur une personne (élève, responsable ou personnel)">Rechercher</a>'."</li>\n";
@@ -367,6 +371,9 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		$menus .= '           <ul class="niveau3">'."\n";
 		$menus .= '               <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Visu. équipes péda</a></li>'."\n";
 		$menus .= '               <li><a href="'.$gepiPath.'/groupes/visu_groupes_prof.php" '.insert_confirm_abandon().' title="Consulter les enseignements d\'un prof.">Enseign.tel prof</a></li>'."\n";
+		if($acces_saisie_modalites_accompagnement) {
+			$menus .= '               <li><a href="'.$gepiPath.'/gestion/saisie_modalites_accompagnement.php"'.insert_confirm_abandon().' title="Saisir les modalités d accompagnement des élèves (PPRE, SEGPA, ULIS,...).">Modalités d\'accompagnement</a></li>'."\n";
+		}
 		$menus .= '            </ul>'."\n";
 
 		if(acces_modif_liste_eleves_grp_groupes()) {
