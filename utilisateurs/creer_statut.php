@@ -47,18 +47,18 @@ $values_b = '';
 // La liste des fichiers à traiter
 require_once('./creer_statut_autorisation.php');
 
-//print_r($autorise);
+//print_r($autorise_statuts_personnalise);
 
 // Fonction qui permet d'afficher  le selected de l'affichage
 function verifChecked($id){
 
 	// On utilise les variables définies dans /creer_statut_autorisation.php
-	global $autorise;
+	global $autorise_statuts_personnalise;
 	global $iter;
 
 	for($i = 1 ; $i < $iter ; $i++){
 		// On récupère les droits de ce statut privé
-		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise[$i][0]."'";
+		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise_statuts_personnalise[$i][0]."'";
 		//echo "\$sql_ds=$sql_ds<br />";
 		$query_ds = mysqli_query($GLOBALS["mysqli"], $sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
 		$count = mysqli_num_rows($query_ds);
@@ -114,10 +114,10 @@ if ($action == 'ajouter') {
 
 			// On enregistre les droits généraux adéquats avec la virgule qui va bien entre chaque value
 			// Chaque droit correspond à un ensemble d'autorisations sur un ou plusieurs fichiers
-			// Pour ajouter des droits, il suffit d'ajouter des branches au tableau $autorise du fichier creer_statut_autorisation avec tous les fichiers utiles
+			// Pour ajouter des droits, il suffit d'ajouter des branches au tableau $autorise_statuts_personnalise du fichier creer_statut_autorisation avec tous les fichiers utiles
 
 			for($a = 0 ; $a < $iter ; $a++){ // $iter est définie dans creer_statut_autorisation.php
-				$nbre = count($autorise[$a]);
+				$nbre = count($autorise_statuts_personnalise[$a]);
 				// On met V pour les autorisations de base mais F pour les autres
 				if ($a != 0) {
 					$vf = 'F';
@@ -126,7 +126,7 @@ if ($action == 'ajouter') {
 				}
 				for($c = 0 ; $c < $nbre ; $c++){
 
-					$values_b .= '("", "'.$last_id.'", "'.$autorise[$a][$c].'", "'.$vf.'")';
+					$values_b .= '("", "'.$last_id.'", "'.$autorise_statuts_personnalise[$a][$c].'", "'.$vf.'")';
 
 					if ($c <= ($nbre - 2)) {
 						$values_b .= ', ';
@@ -141,10 +141,10 @@ if ($action == 'ajouter') {
 
 			$sql="INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b.";";
 			//echo "$sql<br />";
- 			$autorise_b = mysqli_query($GLOBALS["mysqli"], $sql)
+ 			$autorise_statuts_personnalise_b = mysqli_query($GLOBALS["mysqli"], $sql)
 			 										OR trigger_error('Impossible d\'enregistrer : '.$values_b.' : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
 
-			if ($autorise_b) {
+			if ($autorise_statuts_personnalise_b) {
 				$msg .= '<h4 style="color: green;">Ce statut est enregistr&eacute !</h4>';
 			}
 
@@ -231,7 +231,7 @@ if ($action == 'modifier') {
 
 			for($m = 1 ; $m < $iter ; $m++){
 
-				$nbre2 = count($autorise[$m]);
+				$nbre2 = count($autorise_statuts_personnalise[$m]);
 				// On vérifie si le droit est coché ou non
 				if ($test[$a][$m] == 'on') {
 					$vf = 'V';
@@ -241,17 +241,17 @@ if ($action == 'modifier') {
 				// On n'oublie pas de mettre à jour tous les fichiers adéquats
 				for($i = 0 ; $i < $nbre2 ; $i++) {
 					// Pour ne pas enlever un droit donné préalablement
-					if(!in_array($autorise[$m][$i], $tab_deja)) {
-						//$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+					if(!in_array($autorise_statuts_personnalise[$m][$i], $tab_deja)) {
+						//$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise_statuts_personnalise[$m][$i]."'";
 						//$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
-						$sql="SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+						$sql="SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise_statuts_personnalise[$m][$i]."'";
 						//echo "$sql<br />";
 						$query_select = mysqli_query($GLOBALS["mysqli"], $sql);
 						$result = mysqli_fetch_array($query_select);
 						if (!empty ($result)){
-							$sql="UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+							$sql="UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise_statuts_personnalise[$m][$i]."'";
 						}else{
-							$sql="INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')";
+							$sql="INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise_statuts_personnalise[$m][$i]."','".$vf."')";
 						}
 						// 20180217
 						//echo "$sql<br />";
@@ -265,7 +265,7 @@ if ($action == 'modifier') {
 						}
 						else {
 							if($vf=='V') {
-								$tab_deja[]=$autorise[$m][$i];
+								$tab_deja[]=$autorise_statuts_personnalise[$m][$i];
 							}
 						}
 					}
@@ -303,7 +303,7 @@ if ($query) {
 
 		}else{
 
-			$aff_tableau2[$b] = '<tr style="border: 1px solid white; text-align: center;"><td>'.$menu_accueil[$b][1].'</td>';
+			$aff_tableau2[$b] = '<tr style="border: 1px solid white; text-align: center;"><td>'.$menu_accueil_statuts_personnalise[$b][1].'</td>';
 
 		}
 	}
@@ -337,7 +337,7 @@ if ($query) {
 
 			}else{
 
-				$aff_tableau2[$b] .= '<td><input type="checkbox" name="'.$menu_accueil[$b][2].'|'.$rep["id"].'"'.$checked[$b].' /></td>';
+				$aff_tableau2[$b] .= '<td><input type="checkbox" name="'.$menu_accueil_statuts_personnalise[$b][2].'|'.$rep["id"].'"'.$checked[$b].' /></td>';
 
 			}
 		}
