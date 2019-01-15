@@ -59,7 +59,7 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
     $current_group = false;
 }
 
-if (count($current_group["classes"]["list"]) > 1) {
+if((isset($current_group["classes"]["list"]))&&(count($current_group["classes"]["list"]) > 1)) {
     $multiclasses = true;
 } else {
     $multiclasses = false;
