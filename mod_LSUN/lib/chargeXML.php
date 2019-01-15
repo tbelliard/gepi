@@ -1600,7 +1600,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 				}
 
-				if ((getSettingAOui("traiteModSpeElv")) {
+				if (getSettingAOui("traiteModSpeElv")) {
 
 					/*
 						<modalites-accompagnement>
