@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+*  Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -127,9 +127,53 @@ if(mysqli_num_rows($res)==0) {
 echo "
 	<div style='float:right; width:16px; margin:0.5em;'>
 		<a href='../cahier_texte_2/see_all.php?id_groupe=".$lig_ct->id_groupe."'><img src='../images/icons/cahier_textes.png' class='icone16' alt='CDT' /></a>
-	</div>
+	</div>";
 
-	<h2>".get_info_grp($lig_ct->id_groupe)."</h2>
+echo "
+	<h2>".get_info_grp($lig_ct->id_groupe)."</h2>";
+
+//echo "\$type_notice=$type_notice<br />";
+
+if($type_notice!='c') {
+	$sql="SELECT * FROM ct_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct='".$lig_ct->date_ct."';";
+	$test_autre_notice=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test_autre_notice)>0) {
+		while($lig_autre_notice=mysqli_fetch_object($test_autre_notice)) {
+			echo "
+	<div style='float:right; width:16px; margin:0.2em;'>
+		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=c' title=\"Consulter le compte-rendu de séance n°".$lig_autre_notice->id_ct." pour le même jour.\"><img src='../images/icons/notices_CDT_compte_rendu.png' class='icone16' alt='CDT' /></a>
+	</div>";
+		}
+	}
+}
+
+if($type_notice!='t') {
+	$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct='".$lig_ct->date_ct."';";
+	$test_autre_notice=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test_autre_notice)>0) {
+		while($lig_autre_notice=mysqli_fetch_object($test_autre_notice)) {
+			echo "
+	<div style='float:right; width:16px; margin:0.2em;'>
+		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=t' title=\"Consulter la notice de travail à faire à la maison n°".$lig_autre_notice->id_ct." pour le même jour.\"><img src='..//images/icons/notices_CDT_travail.png' class='icone16' alt='CDT' /></a>
+	</div>";
+		}
+	}
+}
+
+if($type_notice!='p') {
+	$sql="SELECT * FROM ct_private_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct='".$lig_ct->date_ct."';";
+	$test_autre_notice=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test_autre_notice)>0) {
+		while($lig_autre_notice=mysqli_fetch_object($test_autre_notice)) {
+			echo "
+	<div style='float:right; width:16px; margin:0.2em;'>
+		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=p' title=\"Consulter la notice privée n°".$lig_autre_notice->id_ct." pour le même jour.\"><img src='../images/icons/notices_CDT_privee.png' class='icone16' alt='CDT' /></a>
+	</div>";
+		}
+	}
+}
+
+echo "
 	<h3>Séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct);
 
 // Lien séance précédente/suivante
