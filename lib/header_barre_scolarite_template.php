@@ -396,6 +396,46 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 			$menus .= '       </li>'."\n";
 		}
 
+		// AID
+		/*
+		$sql="SELECT ac.* FROM j_aid_utilisateurs_gest jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid;";
+		$test_aid1=mysqli_query($mysqli, $sql);
+		$sql="SELECT * FROM j_aidcateg_super_gestionnaires WHERE id_utilisateur='".$_SESSION['login']."';";
+		$test_aid2=mysqli_query($mysqli, $sql);
+		if((mysqli_num_rows($test_aid1)>0)||(mysqli_num_rows($test_aid2)>0)) {
+			$menus .= '       <li class="plus">AID'."\n";
+			$menus .= '       <ul class="niveau3">'."\n";
+			while() {
+				$menus .= '           <li><a href="'.$gepiPath.'/groupes/grp_groupes_edit_eleves.php"'.insert_confirm_abandon().' title="Administrer les '.$groupes_de_groupes.' pour modifier les inscriptions élèves.">'.ucfirst($groupes_de_groupes).'</a></li>'."\n";
+			}
+			$menus .= '       </ul>'."\n";
+			$menus .= '       </li>'."\n";
+
+			//$nom_aid = @old_mysql_result($call_data, $i, "nom");
+			$nom_aid = $obj->nom;
+			if ($nb_result2 != 0)
+			$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+			$nom_aid,
+		}
+		*/
+
+		$sql="(SELECT ac.* FROM j_aid_utilisateurs_gest jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid)
+		UNION (SELECT ac.* FROM j_aidcateg_super_gestionnaires jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid);";
+		$test_aid_tmp=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_aid_tmp)>0) {
+			$menus .= '       <li class="plus">AID'."\n";
+			$menus .= '       <ul class="niveau3">'."\n";
+			$tmp_aid_deja=array();
+			while($lig_aid_tmp=mysqli_fetch_object($test_aid_tmp)) {
+				if(!in_array($lig_aid_tmp->indice_aid, $tmp_aid_deja)) {
+					$menus .= '           <li><a href="'.$gepiPath.'/aid/index2.php?indice_aid='.$lig_aid_tmp->indice_aid.'"'.insert_confirm_abandon().' title="Gérer l AID.">'.$lig_aid_tmp->nom.'</a></li>'."\n";
+					$tmp_aid_deja[]=$lig_aid_tmp->indice_aid;
+				}
+			}
+			$menus .= '       </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
+
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/responsables/index.php"'.insert_confirm_abandon().'>Responsables</a>'."\n";
 		$menus .= '           <ul class="niveau3">'."\n";

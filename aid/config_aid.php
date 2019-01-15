@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -713,13 +713,13 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
 		<strong>Ajout/suppression de "super-gestionnaires"</strong>
 	</p>
 	<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous 
-		des utilisateurs (professeurs ou CPE) ayant le droit de g&eacute;rer les AIDs 
+		des utilisateurs (professeurs, CPE ou scolarité) ayant le droit de g&eacute;rer les AIDs 
 		de cette cat&eacute;gorie (ajout, suppression, modification d'AID, de professeurs ou d'&eacute;l&egrave;ves)
 	</p>
 <?php
 $sql_liste_data = "SELECT u.login, u.prenom, u.nom, u.statut "
    . "FROM utilisateurs u, j_aidcateg_super_gestionnaires j "
-   . "WHERE (j.indice_aid='".$indice_aid."' AND u.login=j.id_utilisateur AND (statut='professeur' or statut='cpe'))  "
+   . "WHERE (j.indice_aid='".$indice_aid."' AND u.login=j.id_utilisateur AND (statut='professeur' or statut='cpe' or statut='scolarite'))  "
    . "ORDER BY u.nom, u.prenom";
 // echo $sql_liste_data;
 $call_liste_data = mysqli_query($GLOBALS["mysqli"], $sql_liste_data);
@@ -765,7 +765,7 @@ while ($obj_liste_data = $call_liste_data->fetch_object()) {
 	<select size=1 name="reg_gestionnaire_login" onchange="changement();">
 		<option value=''>(aucun)</option>
 <?php
-$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut  FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
+$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut  FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe' or statut='scolarite') order by nom");
 $nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
 // while ($i < $nombreligne) {

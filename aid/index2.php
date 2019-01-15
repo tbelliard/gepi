@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrunn, Régis Bouguin
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrunn, Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -51,8 +51,14 @@ if ($NiveauGestionAid <= 0) {
 
 
 if ($indice_aid =='') {
-    header("Location: index.php");
-    die();
+	if(acces("/aid/index.php", $_SESSION['statut'])) {
+		header("Location: index.php?msg=AID non choisi");
+		die();
+	}
+	else {
+		header("Location: ../accueil.php?msg=AID non choisi");
+		die();
+	}
 }
 
 include_once 'fonctions_aid.php';
@@ -171,6 +177,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // debug_var();
+//echo "\$NiveauGestionAid=$NiveauGestionAid<br />";
 ?>
 <p class="bold noprint">
 <?php 
@@ -183,7 +190,7 @@ require_once("../lib/header.inc.php");
 	|";
 	}
 	//if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
-	if ($NiveauGestionAid >= 5) {
+	if (($NiveauGestionAid >= 5)&&(acces('/aid/add_aid.php', $_SESSION['statut']))) {
 ?>
 	<!-- | -->
 	<a href="add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=<?php echo $indice_aid; ?>">

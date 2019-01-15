@@ -39,6 +39,9 @@ Actions:
 - Ajout d'un module Actions pour gérer des inscriptions/présence élèves,
   par exemple sur les sorties/actions UNSS.
 
+AID:
+- Possibilité de définir des super-gestionnaires de statut scolarité.
+
 - Général:
 - Possibilité de mettre à jour globalement les groupes d'après l'export EXP_ELEVES.xml
 - Prise en compte du champ PAIE_FRAIS_SCOLAIRES de Siècle pour déterminer 
