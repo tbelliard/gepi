@@ -2206,15 +2206,61 @@ if(getSettingAOui('active_bulletins')) {
 	}
 
   protected function statutAutre(){
-      global $mysqli;
+	global $mysqli;
 
 	$this->b=0;
 
 	if ($_SESSION["statut"] == 'autre') {
-	  // On récupère la liste des fichiers à autoriser
-	  require_once("utilisateurs/creer_statut_autorisation.php");
-	  $nbre_a = count($autorise_statuts_personnalise);
+		// On récupère la liste des fichiers à autoriser
+		require_once("utilisateurs/creer_statut_autorisation.php");
+		$nbre_a = count($autorise_statuts_personnalise);
 
+		// On démarre à 1, parce que l'indice 0 correspond à la page d'accueil, à Gérer mon compte,...
+		for($i=1;$i<count($autorise_statuts_personnalise);$i++) {
+			$droit_courant=$autorise_statuts_personnalise[$i];
+			foreach($droit_courant as $nom_fichier => $commentaire) {
+				// On récupère le droit sur le fichier
+				$sql_f = "SELECT autorisation FROM droits_speciaux
+						  WHERE id_statut = '".$_SESSION["statut_special_id"]."'
+						  AND nom_fichier = '".$nom_fichier."'
+						  ORDER BY id";
+				$query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
+				if ($query_f->num_rows>=1) {
+					$rep_f = old_mysql_result($query_f, 0, "autorisation");
+				}
+				else {
+					$rep_f = '';
+				}
+
+				if ($rep_f == 'V') {
+					$test = explode(".", $nom_fichier); // On teste pour voir s'il y a un .php à la fin de la chaîne
+
+					if (!isset($test[1])) {
+						// rien, la vérification se fait dans le module EdT
+						// ou alors dans les autres modules spécifiés
+					}
+					else {
+						if($i == 4) {
+							// Dans le cas de la saisie des absences, il faut ajouter une variable pour le GET
+							$var = '?type=A';
+						}
+						else{
+							$var = '';
+						}
+
+						$this->creeNouveauItem($_SESSION["gepiPath"].$nom_fichier.$var,
+						$menu_accueil[$i][0],
+						$menu_accueil[$i][1]);
+					}
+
+				}
+
+				// On ne teste que le premier fichier associé à un droit particulier
+				break;
+			}
+		}
+
+	/*
 	  $a = 1;
 	  while($a < $nbre_a){
 		$numitem=$a;
@@ -2223,10 +2269,10 @@ if(getSettingAOui('active_bulletins')) {
 				  WHERE id_statut = '".$_SESSION["statut_special_id"]."'
 				  AND nom_fichier = '".$autorise_statuts_personnalise[$a][0]."'
 				  ORDER BY id";
-        
-            $query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
-            $nbre = $query_f->num_rows;
-		
+
+		$query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
+		$nbre = $query_f->num_rows;
+	
 		if ($nbre >= 1) {
 		  $rep_f = old_mysql_result($query_f, 0, "autorisation");
 		}else{
@@ -2256,6 +2302,7 @@ if(getSettingAOui('active_bulletins')) {
 
 		$a++;
 	  }
+	*/
 
 	}
 

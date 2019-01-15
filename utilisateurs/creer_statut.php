@@ -23,8 +23,8 @@ if ($resultat_session == 'c') {
 
 // Sécurité
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=2");
-    die();
+	header("Location: ../logout.php?auto=2");
+	die();
 }
 
 //debug_var();
@@ -49,13 +49,45 @@ require_once('./creer_statut_autorisation.php');
 
 //print_r($autorise_statuts_personnalise);
 
-// Fonction qui permet d'afficher  le selected de l'affichage
+// Fonction qui permet d'afficher le selected de l'affichage
 function verifChecked($id){
 
 	// On utilise les variables définies dans /creer_statut_autorisation.php
 	global $autorise_statuts_personnalise;
 	global $iter;
 
+	//foreach($autorise_statuts_personnalise as $i => $droit_courant) {
+	for($i = 1 ; $i < $iter ; $i++){
+		$droit_courant=$autorise_statuts_personnalise[$i];
+		foreach($droit_courant as $nom_fichier => $commentaire) {
+
+			// On récupère les droits de ce statut privé
+			$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$nom_fichier."';";
+			//echo "\$sql_ds=$sql_ds<br />";
+			$query_ds = mysqli_query($GLOBALS["mysqli"], $sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
+			$count = mysqli_num_rows($query_ds);
+			//echo "\$count=$count<br />";
+			if ($count >= 1) {
+				$lig=mysqli_fetch_object($query_ds);
+				$rep = $lig->autorisation;
+			}else{
+				$rep = 'F';
+			}
+
+			// echo $sql_ds.' '.$rep.'<br />'; // debug
+			if ($rep == 'V') {
+				$retour[$i] = ' checked="checked"';
+			}else{
+				$retour[$i] = '';
+			}
+
+			// On ne récupère que le premier de la liste
+			// (il faut juste veiller à ce que plusieurs $droit_courant faisant intervenir un même fichier ne placent pas ce tous ce fichier en première position)
+			break;
+		}
+	}
+
+	/*
 	for($i = 1 ; $i < $iter ; $i++){
 		// On récupère les droits de ce statut privé
 		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise_statuts_personnalise[$i][0]."'";
@@ -76,12 +108,15 @@ function verifChecked($id){
 			$retour[$i] = '';
 		}
 	}
+	*/
 
 	return $retour;
 }
 
 if ($action == 'ajouter') {
 	check_token();
+
+	$msg="";
 
 	// on fait quelques vérifications sur le nom du statut (si il existe déjà, longueur du nom, enlever les ' et les ",...)
 	// On ne garde que les 12 premières lettres
@@ -115,8 +150,30 @@ if ($action == 'ajouter') {
 			// On enregistre les droits généraux adéquats avec la virgule qui va bien entre chaque value
 			// Chaque droit correspond à un ensemble d'autorisations sur un ou plusieurs fichiers
 			// Pour ajouter des droits, il suffit d'ajouter des branches au tableau $autorise_statuts_personnalise du fichier creer_statut_autorisation avec tous les fichiers utiles
-
+			$nb_err=0;
 			for($a = 0 ; $a < $iter ; $a++){ // $iter est définie dans creer_statut_autorisation.php
+				// On met V pour les autorisations de base mais F pour les autres
+				if ($a != 0) {
+					$vf = 'F';
+				}else{
+					$vf = 'V';
+				}
+
+				$droit_courant=$autorise_statuts_personnalise[$i];
+				foreach($droit_courant as $nom_fichier => $commentaire) {
+					$sql="INSERT INTO droits_speciaux SET id_statut='".$last_id."',
+											nom_fichier='".$nom_fichier."',
+											autorisation='".$vf."',
+											commentaire='".$commentaire."';";
+					//echo "$sql<br />";
+		 			$autorise_statuts_personnalise_b = mysqli_query($GLOBALS["mysqli"], $sql);
+		 			if(!$autorise_statuts_personnalise_b) {
+		 				$msg.="Impossible d\'enregistrer&nbsp;: ".$sql."<br />";
+		 				$nb_err++;
+		 			}
+				}
+
+				/*
 				$nbre = count($autorise_statuts_personnalise[$a]);
 				// On met V pour les autorisations de base mais F pour les autres
 				if ($a != 0) {
@@ -137,8 +194,14 @@ if ($action == 'ajouter') {
 				if ($a < ($iter - 1)) {
 					$values_b .= ', ';
 				}
+				*/
 			}
 
+			if ($nb_err==0) {
+				$msg .= '<h4 style="color: green;">Ce statut est enregistr&eacute !</h4>';
+			}
+
+			/*
 			$sql="INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b.";";
 			//echo "$sql<br />";
  			$autorise_statuts_personnalise_b = mysqli_query($GLOBALS["mysqli"], $sql)
@@ -147,7 +210,7 @@ if ($action == 'ajouter') {
 			if ($autorise_statuts_personnalise_b) {
 				$msg .= '<h4 style="color: green;">Ce statut est enregistr&eacute !</h4>';
 			}
-
+			*/
 		}
 
 	}
@@ -167,8 +230,8 @@ if ($action == 'modifier') {
 	for($a = 0; $a < $nbre; $a++){
 
 		$b = old_mysql_result($query, $a, "id");
-		//$current_statut = old_mysql_result($query, $a, "nom_statut");
-		//echo "<br />Statut n°$b : $current_statut<br />";
+		$current_statut = old_mysql_result($query, $a, "nom_statut");
+		//echo "<hr />Statut n°$b : $current_statut<br />";
 
 		$test[$a][0] = isset($_POST["suppr|".$b]) ? $_POST["suppr|".$b] : NULL;
 		$test[$a][1] = isset($_POST["ne|".$b]) ? $_POST["ne|".$b] : NULL;
@@ -229,15 +292,65 @@ if ($action == 'modifier') {
 			// ne = notes élèves ; bs = bulletins simplifiés ; va = voir absences ; sa = saisir absences
 			// cdt = cahier de textes ; ee = emploi du temps des élèves ; te = tous les emplois du temps
 
-			for($m = 1 ; $m < $iter ; $m++){
 
-				$nbre2 = count($autorise_statuts_personnalise[$m]);
-				// On vérifie si le droit est coché ou non
-				if ($test[$a][$m] == 'on') {
+// 20190115
+// A REVOIR
+// On commence à $m=0... pb pour mettre à jour les commentaires
+
+
+			//for($m = 1 ; $m < $iter ; $m++) {
+			for($m=0;$m<$iter;$m++) {
+				// Nombre de fichiers pour l'autorisation courante:
+				//$nbre2 = count($autorise_statuts_personnalise[$m]);
+
+				if($m==0) {
 					$vf = 'V';
-				}else{
-					$vf = 'F';
 				}
+				else {
+					// On vérifie si le droit est coché ou non
+					if ($test[$a][$m] == 'on') {
+						$vf = 'V';
+					}else{
+						$vf = 'F';
+					}
+				}
+
+				// 20190114
+				$droit_courant=$autorise_statuts_personnalise[$m];
+				foreach($droit_courant as $nom_fichier => $commentaire) {
+					if(!in_array($nom_fichier, $tab_deja)) {
+						$sql_ajout=" ";
+
+						$sql="SELECT id FROM droits_speciaux WHERE id_statut='".$b."' AND nom_fichier = '".$nom_fichier."'";
+						//echo "$sql<br />";
+						$query_select = mysqli_query($GLOBALS["mysqli"], $sql);
+						$result = mysqli_fetch_array($query_select);
+						if (!empty ($result)) {
+							$sql="UPDATE droits_speciaux SET autorisation = '".$vf."', commentaire='".mysqli_real_escape_string($mysqli, $commentaire)."' WHERE id_statut = '".$b."' AND nom_fichier = '".$nom_fichier."';";
+						}
+						else {
+							$sql="INSERT INTO droits_speciaux SET id_statut = '".$b."', nom_fichier = '".$nom_fichier."', autorisation = '".$vf."', commentaire='".mysqli_real_escape_string($mysqli, $commentaire)."';";
+						}
+						//echo "$sql<br />";
+						//$f=fopen('../backup/debug_statut_perso.txt', 'a+');
+						//fwrite($f, $sql."\n");
+						//fclose($f);
+						$query_maj = mysqli_query($GLOBALS["mysqli"], $sql);
+
+						if (!$query_maj) {
+							$msg3 .= '<span class="red" title="'.$sql.'">Erreur</span>';
+							//echo '<span class="red">Erreur</span><br />';
+						}
+						else {
+							if($vf=='V') {
+								$tab_deja[]=$nom_fichier;
+							}
+						}
+					}
+
+				}
+
+				/*
 				// On n'oublie pas de mettre à jour tous les fichiers adéquats
 				for($i = 0 ; $i < $nbre2 ; $i++) {
 					// Pour ne pas enlever un droit donné préalablement
@@ -270,6 +383,7 @@ if ($action == 'modifier') {
 						}
 					}
 				}
+				*/
 			} // for($m = 1 ; $m < $iter ; $m++){
 		}
 	}
@@ -290,21 +404,16 @@ $nbre_statuts = mysqli_num_rows($query);
 
 if ($query) {
 
-	for($b = 0 ; $b <= $iter ; $b++){
-
+	for($b = 0 ; $b <= $iter ; $b++) {
 		if ($b == 0) {
-
 			$aff_tableau2[$b] = '<tr style="border: 1px solid white; text-align: center;"><td style="font-weight: bold;">Liste des droits</td>';
-
-		}elseif($b == $iter){
-
+		}
+		elseif($b == $iter) {
 			// On ajoute une ligne pour la suppression
 			$aff_tableau2[$b] = '<tr style="border: 1px solid white; background-color: silver; text-align: center;"><td>Supprimer ce statut</td>';
-
-		}else{
-
+		}
+		else{
 			$aff_tableau2[$b] = '<tr style="border: 1px solid white; text-align: center;"><td>'.$menu_accueil_statuts_personnalise[$b][1].'</td>';
-
 		}
 	}
 

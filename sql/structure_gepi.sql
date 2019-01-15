@@ -287,7 +287,7 @@ CREATE TABLE IF NOT EXISTS droits_statut (`id` int(11) NOT NULL auto_increment, 
 DROP TABLE IF EXISTS droits_utilisateurs;
 CREATE TABLE IF NOT EXISTS droits_utilisateurs (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `login_user` varchar(50) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS droits_speciaux;
-CREATE TABLE IF NOT EXISTS droits_speciaux (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `nom_fichier` varchar(200) NOT NULL, `autorisation` char(1) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS droits_speciaux (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `nom_fichier` varchar(200) NOT NULL, `autorisation` char(1) NOT NULL, commentaire VARCHAR(255) NOT NULL default '', PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS notanet_socles;
 CREATE TABLE IF NOT EXISTS notanet_socles (login VARCHAR( 50 ) NOT NULL, b2i ENUM( 'MS', 'ME', 'MN', 'AB' ) NOT NULL ,a2 ENUM( 'MS', 'ME', 'AB' ) NOT NULL ,lv VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( login )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS notanet_avis;

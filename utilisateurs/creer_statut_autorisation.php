@@ -19,82 +19,116 @@ if(!isset($_SESSION["statut"]) OR $_SESSION["statut"]=='') {
 }
 
 // droits généraux et communs à tous les utilisateurs
-$autorise_statuts_personnalise[0] = array('/accueil.php',
-				'/utilisateurs/mon_compte.php',
-				'/gestion/contacter_admin.php',
-				'/gestion/info_gepi.php',
-				'/mod_alerte/form_message.php',
-				'/eleves/ajax_consultation.php');
+$autorise_statuts_personnalise[0] = array('/accueil.php'=>"Page d'accueil (aucun droit particulier).",
+				'/utilisateurs/mon_compte.php'=>"Accès à la gestion de son compte personnel (préférences, mot de passe,...).",
+				'/gestion/contacter_admin.php'=>"Accès à la page Contacter l'administrateur.",
+				'/gestion/info_gepi.php'=>"Accès à la page d'informations sur Gepi.",
+				'/mod_alerte/form_message.php'=>"Accès au module Alerte (consultation/saisie d'alertes).",
+				'/eleves/ajax_consultation.php'=>"Accès à une page de Recherche d'élève d'après son nom, son prénom ou sa classe.");
 // droits spécifiques sur les pages relatives aux droits possibles
 //$autorise_statuts_personnalise[1] = array('/cahier_notes/visu_releve_notes.php');
-$autorise_statuts_personnalise[1] = array('/cahier_notes/visu_releve_notes_bis.php');
-$autorise_statuts_personnalise[2] = array('/cahier_notes/index2.php', '/cahier_notes/visu_toutes_notes2.php', '/visualisation/draw_graphe.php');
-$autorise_statuts_personnalise[3] = array('/prepa_conseil/index3.php', '/prepa_conseil/edit_limite.php', '/bulletin/bulletins_et_conseils_classes.php', '/lib/ajax_action.php', '/visualisation/draw_graphe.php', '/prepa_conseil/visu_toutes_notes.php');
-$autorise_statuts_personnalise[4] = array('/mod_absences/gestion/voir_absences_viescolaire.php',
-						'/mod_absences/gestion/bilan_absences_quotidien.php',
-						'/mod_absences/gestion/bilan_absences_classe.php',
-						'/mod_absences/gestion/bilan_absences_quotidien_pdf.php',
-						'/mod_absences/lib/tableau.php',
-						'/mod_absences/lib/export_csv.php');
-$autorise_statuts_personnalise[5] = array('/mod_absences/gestion/select.php',
-						'/mod_absences/gestion/ajout_abs.php',
-						'/mod_absences/lib/liste_absences.php');
+$autorise_statuts_personnalise[1] = array('/cahier_notes/visu_releve_notes_bis.php'=>"Visualisation des relevés de notes de tous les élèves.");
+$autorise_statuts_personnalise[2] = array('/cahier_notes/index2.php'=>"Visualisation des moyennes des carnets de notes de tous les élèves.", 
+				'/cahier_notes/visu_toutes_notes2.php'=>"Visualisation des moyennes des carnets de notes de tous les élèves.", 
+				'/visualisation/draw_graphe.php'=>"Présentation en courbe des moyennes des carnets de notes de tous les élèves.");
+$autorise_statuts_personnalise[3] = array('/prepa_conseil/index3.php'=>"Visionner tous les bulletins simplifiés de tous les élèves.", 
+				'/prepa_conseil/edit_limite.php'=>"Visionner tous les bulletins simplifiés de tous les élèves", 
+				'/bulletin/bulletins_et_conseils_classes.php'=>"Visionner tous les bulletins simplifiés de tous les élèves", 
+				'/lib/ajax_action.php'=>"Visionner tous les bulletins simplifiés de tous les élèves", 
+				'/visualisation/draw_graphe.php'=>"Accès aux graphiques des moyennes et appréciations des bulletins de tous les élèves.", 
+				'/prepa_conseil/visu_toutes_notes.php'=>"Visionner tous les bulletins simplifiés de tous les élèves");
+$autorise_statuts_personnalise[4] = array('/mod_absences/gestion/voir_absences_viescolaire.php'=>"Visionner toutes les absences de l'établissement.",
+						'/mod_absences/gestion/bilan_absences_quotidien.php'=>"Visionner toutes les absences de l'établissement.",
+						'/mod_absences/gestion/bilan_absences_classe.php'=>"Visionner toutes les absences de l'établissement.",
+						'/mod_absences/gestion/bilan_absences_quotidien_pdf.php'=>"Visionner toutes les absences de l'établissement.",
+						'/mod_absences/lib/tableau.php'=>"Visionner toutes les absences de l'établissement.",
+						'/mod_absences/lib/export_csv.php'=>"Export CSV des absences.");
+$autorise_statuts_personnalise[5] = array('/mod_absences/gestion/select.php'=>"Accès à la saisie des absences de tous les élèves de l'établissement.",
+						'/mod_absences/gestion/ajout_abs.php'=>"Accès à la saisie des absences de tous les élèves de l'établissement.",
+						'/mod_absences/lib/liste_absences.php'=>"Accès à la saisie des absences de tous les élèves de l'établissement.");
 if(getSettingValue('GepiCahierTexteVersion')=="2") {
-	$autorise_statuts_personnalise[6] = array('/cahier_texte/see_all.php', '/cahier_texte_2/see_all.php');
+	$autorise_statuts_personnalise[6] = array('/cahier_texte/see_all.php'=>"Visionner tous les cahiers de textes de l'établissement.", 
+						'/cahier_texte_2/see_all.php'=>"Visionner tous les cahiers de textes de l'établissement.");
 }
 else {
-	$autorise_statuts_personnalise[6] = array('/cahier_texte/see_all.php');
+	$autorise_statuts_personnalise[6] = array('/cahier_texte/see_all.php'=>"Visionner tous les cahiers de textes de l'établissement.");
 }
-$autorise_statuts_personnalise[7] = array('/cahier_texte_admin/visa_ct.php');
-$autorise_statuts_personnalise[8] = array('/edt_organisation/index_edt.php', '/edt/index2.php', '/lib/ajax_action.php');
+$autorise_statuts_personnalise[7] = array('/cahier_texte_admin/visa_ct.php'=>"Signer (viser) les cahiers de textes.");
+$autorise_statuts_personnalise[8] = array('/edt_organisation/index_edt.php'=>"Visionner les emplois du temps de tous les élèves.", 
+						'/edt/index2.php'=>"Visionner les emplois du temps de tous les élèves.", 
+						'/lib/ajax_action.php'=>"Visionner les emplois du temps de tous les élèves.");
 //$autorise_statuts_personnalise[9] = array('/tous_les_edt');
-$autorise_statuts_personnalise[9] = array('/tous_les_edt', '/edt_organisation/index_edt.php', '/edt/index2.php', '/lib/ajax_action.php');
-$autorise_statuts_personnalise[10] = array('/messagerie/index.php');
-$autorise_statuts_personnalise[11]= array('/eleves/visu_eleve.php',
-						'/eleves/liste_eleves.php');
-$autorise_statuts_personnalise[12]= array('/voir_resp');
-$autorise_statuts_personnalise[13]= array('/voir_ens');
-$autorise_statuts_personnalise[14]= array('/voir_notes');
-$autorise_statuts_personnalise[15]= array('/voir_bulle');
-$autorise_statuts_personnalise[16]= array('/voir_abs');
-$autorise_statuts_personnalise[17]= array('/mod_annees_anterieures/consultation_annee_anterieure.php', '/mod_annees_anterieures/popup_annee_anterieure.php');
-$autorise_statuts_personnalise[18]= array('/mod_trombinoscopes/trombinoscopes.php', '/mod_trombinoscopes/trombi_impr.php', '/mod_trombinoscopes/trombino_pdf.php');
-$autorise_statuts_personnalise[19]= array('/mod_discipline/index.php',
-					 '/mod_discipline/saisie_incident.php',
-					 '/mod_discipline/check_nature_incident.php',
-					 '/mod_discipline/incidents_sans_protagonistes.php',
-					 '/mod_discipline/sauve_role.php',
-					 '/mod_discipline/update_colonne_retenue.php',
-					 '/mod_discipline/traiter_incident.php',
-					 '/mod_ooo/retenue.php',
-					 '/mod_ooo/rapport_incident.php');
-$autorise_statuts_personnalise[20]= array('/mod_abs2/index.php');
-$autorise_statuts_personnalise[21]= array('/mod_abs2/saisir_eleve.php',
-					 '/mod_abs2/saisir_groupe.php',
-					 '/mod_abs2/visu_saisie.php',
-					 '/mod_abs2/enregistrement_modif_saisie.php',
-					 '/mod_abs2/liste_saisies.php',
-					 '/mod_abs2/enregistrement_saisie_eleve.php',
-					 '/mod_abs2/enregistrement_saisie_groupe.php',
-					 '/mod_abs2/visu_traitement.php');
-$autorise_statuts_personnalise[22]= array('/mod_abs2/bilan_individuel.php' );
-$autorise_statuts_personnalise[23]= array('/mod_abs2/totaux_du_jour.php' );
+$autorise_statuts_personnalise[9] = array('/tous_les_edt'=>"Visionner tous les emplois du temps de l'établissement.", 
+						'/edt_organisation/index_edt.php'=>"Visionner tous les emplois du temps de l'établissement.", 
+						'/edt/index2.php'=>"Visionner tous les emplois du temps de l'établissement.", 
+						'/lib/ajax_action.php'=>"Visionner tous les emplois du temps de l'établissement.");
+$autorise_statuts_personnalise[10] = array('/messagerie/index.php'=>"Gestion des messages à afficher sur la page d'accueil des utilisateurs.");
+$autorise_statuts_personnalise[11]= array('/eleves/visu_eleve.php'=>"Accès général sur les fiches des élèves. Consultation des listes d'élèves avec nom, prénom, sexe, date de naissance et classe.",
+						'/eleves/liste_eleves.php'=>"Accès général sur les fiches des élèves. Consultation des listes d'élèves avec nom, prénom, sexe, date de naissance et classe.");
+$autorise_statuts_personnalise[12]= array('/voir_resp'=>"Fiches : voir les responsables d'élèves (nom, prénom).");
+$autorise_statuts_personnalise[13]= array('/voir_ens'=>"Fiches : voir les enseignements");
+$autorise_statuts_personnalise[14]= array('/voir_notes'=>"Fiches : voir les relevés de notes");
+$autorise_statuts_personnalise[15]= array('/voir_bulle'=>"Fiches : voir les bulletins simplifiés");
+$autorise_statuts_personnalise[16]= array('/voir_abs'=>"Fiches : voir les absences");
+$autorise_statuts_personnalise[17]= array('/mod_annees_anterieures/consultation_annee_anterieure.php'=>"Fiches : voir les bulletins simplifiés des années antérieures des élèves.", 
+						'/mod_annees_anterieures/popup_annee_anterieure.php'=>"Fiches : voir les bulletins simplifiés des années antérieures des élèves.");
+$autorise_statuts_personnalise[18]= array('/mod_trombinoscopes/trombinoscopes.php'=>"Accès aux trombinoscopes des élèves et personnels.", 
+						'/mod_trombinoscopes/trombi_impr.php'=>"Accès aux trombinoscopes des élèves et personnels.", 
+						'/mod_trombinoscopes/trombino_pdf.php'=>"Accès aux trombinoscopes des élèves et personnels (PDF).");
+$autorise_statuts_personnalise[19]= array('/mod_discipline/index.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents",
+					 '/mod_discipline/saisie_incident.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents",
+					 '/mod_discipline/check_nature_incident.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents",
+					 '/mod_discipline/incidents_sans_protagonistes.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents",
+					 '/mod_discipline/sauve_role.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents",
+					 '/mod_discipline/update_colonne_retenue.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents",
+					 '/mod_discipline/traiter_incident.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents",
+					 '/mod_ooo/retenue.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents",
+					 '/mod_ooo/rapport_incident.php'=>"Accéder au module Discipline : Déclarer et gérer ses incidents");
+$autorise_statuts_personnalise[20]= array('/mod_abs2/index.php'=>"Absence2 : accéder au module.");
+$autorise_statuts_personnalise[21]= array('/mod_abs2/saisir_eleve.php'=>"Absence2 : saisir les absences.",
+					 '/mod_abs2/saisir_groupe.php'=>"Absence2 : saisir les absences.",
+					 '/mod_abs2/visu_saisie.php'=>"Absence2 : saisir les absences.",
+					 '/mod_abs2/enregistrement_modif_saisie.php'=>"Absence2 : saisir les absences.",
+					 '/mod_abs2/liste_saisies.php'=>"Absence2 : saisir les absences.",
+					 '/mod_abs2/enregistrement_saisie_eleve.php'=>"Absence2 : saisir les absences.",
+					 '/mod_abs2/enregistrement_saisie_groupe.php'=>"Absence2 : saisir les absences.",
+					 '/mod_abs2/visu_traitement.php'=>"Absence2 : saisir les absences.");
+$autorise_statuts_personnalise[22]= array('/mod_abs2/bilan_individuel.php'=>"Absence2 : accéder à la page bilan individuel." );
+$autorise_statuts_personnalise[23]= array('/mod_abs2/totaux_du_jour.php'=>"Absence2 : accéder à la page totaux du jour." );
 
 // 20180217
 // Problème: Si on donne le droit de voir les bulletins simplifiés, mais pas celui d'imprimer les bulletins, on bloque l'accès aux pages '/bulletin/bulletins_et_conseils_classes.php', '/lib/ajax_action.php' parce que c'est le dernier test qui l'emporte et la valeur passe à F sur ces pages faute du droit n°24
 //$autorise_statuts_personnalise[24]= array('/bulletin/bull_index.php', '/prepa_conseil/index2.php', '/prepa_conseil/visu_toutes_notes.php', '/visualisation/draw_graphe.php');
-$autorise_statuts_personnalise[24]= array('/bulletin/bull_index.php', '/prepa_conseil/index2.php', '/prepa_conseil/visu_toutes_notes.php', '/visualisation/draw_graphe.php', '/bulletin/bulletins_et_conseils_classes.php', '/lib/ajax_action.php', '/saisie/impression_avis.php', '/impression/avis_pdf.php');
+$autorise_statuts_personnalise[24]= array('/bulletin/bull_index.php'=>"Visualisation et impression des bulletins (donne l'accès aux adresses des responsables d'élèves).", 
+						'/prepa_conseil/index2.php'=>"Visualisation et impression des bulletins (donne l'accès aux adresses des responsables d'élèves).", 
+						'/prepa_conseil/visu_toutes_notes.php'=>"Visualisation et impression des bulletins (donne l'accès aux adresses des responsables d'élèves).", 
+						'/visualisation/draw_graphe.php'=>"Visualisation et impression des bulletins (donne l'accès aux adresses des responsables d'élèves).", 
+						'/bulletin/bulletins_et_conseils_classes.php'=>"Visualisation et impression des bulletins (donne l'accès aux adresses des responsables d'élèves).", 
+						'/lib/ajax_action.php'=>"Visualisation et impression des bulletins (donne l'accès aux adresses des responsables d'élèves).", 
+						'/saisie/impression_avis.php'=>"Visualisation et impression des bulletins (donne l'accès aux adresses des responsables d'élèves).", 
+						'/impression/avis_pdf.php'=>"Visualisation et impression des bulletins (donne l'accès aux adresses des responsables d'élèves).");
 // Corrigé par l'ajout d'un test dans creer_statut.php
 
-$autorise_statuts_personnalise[25]= array('/groupes/visu_profs_class.php', '/groupes/popup.php', '/aid/popup.php');
-$autorise_statuts_personnalise[26]= array('/groupes/visu_mes_listes.php', '/groupes/popup.php', '/aid/popup.php', '/impression/liste_pdf.php', '/impression/impression.php', '/impression/impression_serie.php', '/impression/parametres_impression_pdf.php');
-$autorise_statuts_personnalise[27]= array('/groupes/mes_listes.php', '/groupes/get_csv.php', '/groupes/update_champs_periode.php');
+$autorise_statuts_personnalise[25]= array('/groupes/visu_profs_class.php'=>"Visualisation des équipes pédagogiques", 
+						'/groupes/popup.php'=>"Visualisation des équipes pédagogiques", 
+						'/aid/popup.php'=>"Visualisation des équipes pédagogiques");
+$autorise_statuts_personnalise[26]= array('/groupes/visu_mes_listes.php'=>"Visualisation listes élèves et grilles PDF", 
+						'/groupes/popup.php'=>"Visualisation listes élèves et grilles PDF", 
+						'/aid/popup.php'=>"Visualisation listes élèves et grilles PDF", 
+						'/impression/liste_pdf.php'=>"Visualisation listes élèves et grilles PDF", 
+						'/impression/impression.php'=>"Visualisation listes élèves et grilles PDF", 
+						'/impression/impression_serie.php'=>"Visualisation listes élèves et grilles PDF", 
+						'/impression/parametres_impression_pdf.php'=>"Visualisation listes élèves et grilles PDF");
+$autorise_statuts_personnalise[27]= array('/groupes/mes_listes.php'=>"Accès aux listes CSV élèves", 
+						'/groupes/get_csv.php'=>"Accès aux listes CSV élèves", 
+						'/groupes/update_champs_periode.php'=>"Accès aux listes CSV élèves");
 
-$autorise_statuts_personnalise[28]= array('/AccesAdresseParents');
-$autorise_statuts_personnalise[29]= array('/AccesTelParents');
-$autorise_statuts_personnalise[30]= array('/AccesMailParents');
-$autorise_statuts_personnalise[31]= array('/AccesTelEleves');
-$autorise_statuts_personnalise[32]= array('/AccesMailEleves');
+$autorise_statuts_personnalise[28]= array('/AccesAdresseParents'=>"Accès aux adresses postales responsables (parents,...)");
+$autorise_statuts_personnalise[29]= array('/AccesTelParents'=>"Accès aux numéros de téléphone des responsables (parents,...)");
+$autorise_statuts_personnalise[30]= array('/AccesMailParents'=>"Accès aux adresses mail des responsables (parents,...)");
+$autorise_statuts_personnalise[31]= array('/AccesTelEleves'=>"Accès aux numéros de téléphone des élèves						
+");
+$autorise_statuts_personnalise[32]= array('/AccesMailEleves'=>"Accès aux adresses mail des élèves	");
 
 
 $iter = count($autorise_statuts_personnalise);
@@ -134,5 +168,9 @@ $menu_accueil_statuts_personnalise[29] = array('Accès aux numéros téléphones
 $menu_accueil_statuts_personnalise[30] = array('Accès aux adresses mail responsables ', 'Accès aux adresses mail des responsables (parents,...)', 'AccesMailParents');
 $menu_accueil_statuts_personnalise[31] = array('Accès aux numéros téléphones élèves', 'Accès aux numéros de téléphone des élèves', 'AccesTelEleves');
 $menu_accueil_statuts_personnalise[32] = array('Accès aux adresses mail élèves', 'Accès aux adresses mail des élèves', 'AccesMailEleves');
-
+/*
+echo "<pre>";
+print_r($autorise_statuts_personnalise);
+echo "</pre>";
+*/
 ?>

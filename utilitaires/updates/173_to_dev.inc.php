@@ -409,4 +409,22 @@ if(mysqli_num_rows($test)==0) {
 	}
 }
 
+// insert into setting set name='registre_traitements', value='y';
+// Attirer l'attention sur le choix à effectuer.
+
+$result .= "&nbsp;-> Ajout d'un champ 'commentaire' à la table 'droits_speciaux'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM droits_speciaux LIKE 'commentaire';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE droits_speciaux ADD commentaire VARCHAR(255) NOT NULL default '';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

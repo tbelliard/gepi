@@ -121,6 +121,8 @@ groupes/mes_listes.php
 Voir si on a accès au sexe, à la date de naissance.
 Sur les bulletins simplifiés, on a accès aux dates de naissance.
 
+Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec droits d'accès (bulletins, cahiers de textes,...)
+
 </pre>
 
 <p class='bold'>Description du traitement</p>
@@ -618,7 +620,7 @@ foreach ($liste_plugins as $plugin) {
 		$commentaire_plug=getSettingValue('RGPD_plug_'.str_replace("_", " ", $plugin->getNom()));
 		if($_SESSION['statut']=='administrateur') {
 			// Permettre la modification du commentaire
-			echo "<br /><textarea name='".'RGPD_plug_'.str_replace("_", " ", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître.\">$commentaire_plug</textarea>";
+			echo "<br /><textarea name='".'RGPD_plug_'.str_replace("_", " ", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">$commentaire_plug</textarea>";
 		}
 		elseif($commentaire_plug!='') {
 			echo "<br />".nl2br($commentaire_plug);
@@ -675,7 +677,7 @@ if(getSettingAOui('statuts_prives')) {
 
 	$sql="SELECT du.login_user, ds.* FROM droits_utilisateurs du, 
 							droits_statut ds 
-						WHERE u.login=du.login_user;";
+						WHERE du.id_statut=ds.id;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Il n'existe actuellement aucun compte associé à un statut personnalisé.</p>";
@@ -688,6 +690,20 @@ if(getSettingAOui('statuts_prives')) {
 		<th>Statut</th>
 		<th>Droit</th>
 	</tr>";
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="SELECT DISTINCT commentaire FROM droits_speciaux WHERE id_statut='".$lig->id."' AND autorisation='V' ORDER BY commentaire;";
+			//echo "$sql<br />";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)>0) {
+				while($lig2=mysqli_fetch_object($res2)) {
+					echo "
+	<tr>
+		<td>".$lig->nom_statut."</td>
+		<td style='text-align:left'>".$lig2->commentaire."</td>
+	</tr>";
+				}
+			}
+		}
 		/*
 		$rubrique_precedente='';
 		foreach($menu_accueil as $cpt => $current_item) {
