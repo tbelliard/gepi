@@ -141,11 +141,17 @@ if ($creeFichier == 'y') {
 	}	else {
 		saveSetting('LSU_traite_AP', "n");
 	}
-	
+
 	if(filter_input(INPUT_POST, 'traiteAPElv')) {
 		saveSetting('LSU_traite_AP_Elv', filter_input(INPUT_POST, 'traiteAPElv'));
 	}	else {
 		saveSetting('LSU_traite_AP_Elv', "n");
+	}
+
+	if(filter_input(INPUT_POST, 'traiteModSpeElv')) {
+		saveSetting('LSU_traiteModSpeElv', filter_input(INPUT_POST, 'traiteModSpeElv'));
+	}	else {
+		saveSetting('LSU_traiteModSpeElv', "n");
 	}
 
 	if(filter_input(INPUT_POST, 'traiteSocle')) {

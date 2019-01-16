@@ -1600,7 +1600,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 				}
 
-				if (getSettingAOui("traiteModSpeElv")) {
+				if (getSettingAOui("LSU_traiteModSpeElv")) {
 
 					/*
 						<modalites-accompagnement>
@@ -1611,9 +1611,10 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							</modalite-accompagnement>
 						</modalites-accompagnement>
 					*/
-
+					//echo "Modalités d'accompagnement pour ".$eleve->login." en période ".$eleve->periode."<br />";
 					$tab_modalites_accompagnement_eleve=get_tab_modalites_accompagnement_eleve($eleve->login, $eleve->periode);
 					if(count($tab_modalites_accompagnement_eleve)>0) {
+						//echo count($tab_modalites_accompagnement_eleve);
 						$modalitesAccompagnement = $xml->createElement('modalites-accompagnement');
 						for($loop_modalite=0;$loop_modalite<count($tab_modalites_accompagnement_eleve);$loop_modalite++) {
 							$modaliteAcc = $xml->createElement('modalite-accompagnement');
@@ -1647,6 +1648,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 
 						$noeudBilanElevePeriodique->appendChild($modalitesAccompagnement);
 					}
+					//echo "<br />";
 				}
 
 				$avis_conseil_extrait=true;
