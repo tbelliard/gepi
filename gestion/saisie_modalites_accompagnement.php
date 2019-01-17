@@ -309,9 +309,16 @@ $titre_page = "Modalités d'accompagnement";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
+if((!isset($login_eleve))&&(!isset($id_classe))) {
+	$page_retour='../eleves/index.php';
+}
+else {
+	$page_retour=$_SERVER['PHP_SELF'];
+}
+
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>
 	<p class='bold'>
-		<a href='../eleves/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+		<a href='".$page_retour."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 
 if($id_class_prec!=0){
 	echo "
@@ -372,6 +379,71 @@ if((!isset($login_eleve))&&(!isset($id_classe))) {
 	}
 	$nbcol=3;
 	echo tab_liste($tab_txt,$tab_lien,$nbcol);
+
+	$sql="SELECT MAX(num_periode) AS maxper FROM periodes;";
+	$res=mysqli_query($mysqli, $sql);
+	$lig=mysqli_fetch_object($res);
+	echo "<p>Modalités d'accompagnement actuellement enregistrées.</p>
+<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Modalité d'accompagnement</th>";
+	for($i=1;$i<$lig->maxper+1;$i++) {
+		echo "
+		<th>Période $i</th>";
+	}
+	echo "
+	</tr>";
+	foreach($tab_modalite_accompagnement["code"] as $code => $current_modalite) {
+		echo "
+	<tr>
+		<td style='text-align:left'>".$current_modalite['libelle']." ($code)</td>";
+		for($i=1;$i<$lig->maxper+1;$i++) {
+			echo "
+		<td>";
+			$sql="SELECT * FROM j_modalite_accompagnement_eleve jmae, 
+					eleves e, 
+					j_eleves_classes jec 
+				WHERE jmae.id_eleve=e.id_eleve AND 
+					e.login=jec.login AND 
+					jmae.periode=jec.periode AND 
+					jec.periode='".$i."' AND 
+					jmae.code='".$code."';";
+			//echo "$sql<br />";
+			$test=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test)==0) {
+				echo "<span style='color:red'>0</span>";
+			}
+			else {
+				echo mysqli_num_rows($test);
+
+				$sql="SELECT DISTINCT jec.id_classe, classe FROM classes c, 
+						j_modalite_accompagnement_eleve jmae, 
+						eleves e, 
+						j_eleves_classes jec 
+					WHERE jec.id_classe=c.id AND 
+						jmae.id_eleve=e.id_eleve AND 
+						e.login=jec.login AND 
+						jmae.periode=jec.periode AND 
+						jec.periode='".$i."' AND 
+						jmae.code='".$code."' 
+					ORDER BY classe;";
+				//echo "$sql<br />";
+				$test=mysqli_query($mysqli, $sql);
+				$lig_test=mysqli_fetch_object($test);
+				echo "<br /><span style='font-size:x-small'><a href='".$_SERVER["PHP_SELF"]."?id_classe=".$lig_test->id_classe."'>".$lig_test->classe."</a>";
+				while($lig_test=mysqli_fetch_object($test)) {
+					echo ", <a href='".$_SERVER["PHP_SELF"]."?id_classe=".$lig_test->id_classe."'>".$lig_test->classe."</a>";
+				}
+				echo "</span>";
+			}
+			echo "
+		</td>";
+		}
+		echo "
+	</tr>";
+	}
+	echo "
+</table>";
 
 }
 elseif(isset($login_eleve)) {
@@ -564,8 +636,8 @@ else {
 	print_r($tab_modalite_accompagnement);
 	echo "</pre>";
 	*/
-
-	echo "<h2>Modalités d'accompagnement en ".get_nom_classe($id_classe)."</h2>";
+	$classe=get_nom_classe($id_classe);
+	echo "<h2>Modalités d'accompagnement en ".$classe."</h2>";
 
 	$tab_ele=array();
 	$tab_ele_per=array();
@@ -611,8 +683,61 @@ else {
 				</tr>";
 	}
 	echo "</table>
-		</div>
+		</div>";
 
+
+
+	//===========================================
+	$sql="SELECT MAX(num_periode) AS maxper FROM periodes;";
+	$res=mysqli_query($mysqli, $sql);
+	$lig=mysqli_fetch_object($res);
+	echo "<p>Modalités d'accompagnement actuellement enregistrées en ".$classe.".</p>
+<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Modalité d'accompagnement</th>";
+	for($i=1;$i<$lig->maxper+1;$i++) {
+		echo "
+		<th>Période $i</th>";
+	}
+	echo "
+	</tr>";
+	foreach($tab_modalite_accompagnement["code"] as $code => $current_modalite) {
+		echo "
+	<tr>
+		<td style='text-align:left'>".$current_modalite['libelle']." ($code)</td>";
+		for($i=1;$i<$lig->maxper+1;$i++) {
+			echo "
+		<td>";
+			$sql="SELECT * FROM j_modalite_accompagnement_eleve jmae, 
+					eleves e, 
+					j_eleves_classes jec 
+				WHERE jmae.id_eleve=e.id_eleve AND 
+					e.login=jec.login AND 
+					jmae.periode=jec.periode AND 
+					jec.periode='".$i."' AND 
+					jec.id_classe='".$id_classe."' AND 
+					jmae.code='".$code."';";
+			//echo "$sql<br />";
+			$test=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test)==0) {
+				echo "<span style='color:red'>0</span>";
+			}
+			else {
+				echo mysqli_num_rows($test);
+			}
+			echo "
+		</td>";
+		}
+		echo "
+	</tr>";
+	}
+	echo "
+</table>
+<br />";
+	//===========================================
+
+
+	echo "
 		<p><input type='submit' value='Enregistrer' /></p>
 		<div class='center' id='fixe'>
 			<input type='submit' value='Enregistrer' />
