@@ -6503,7 +6503,7 @@ function js_change_style_all_checkbox($avec_balise_script="n", $avec_js_checkbox
 	item=document.getElementsByTagName('input');
 	for(i=0;i<item.length;i++) {
 		if(item[i].getAttribute('type')=='checkbox') {
-			checkbox_change(item[i].getAttribute('id'));
+			".$nom_js_func_checkbox_change."(item[i].getAttribute('id'));
 		}
 	}\n";
 	if($avec_balise_script!="n") {$retour.="</script>\n";}
