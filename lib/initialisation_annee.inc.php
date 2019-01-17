@@ -38,6 +38,7 @@ $liste_tables_del_etape_eleves = array(
 "responsables",
 
 "sconet_ele_options",
+"j_modalite_accompagnement_eleve",
 /*
 // NE FAUDRAIT-IL PAS VIDER ICI responsables2, resp_pers et reps_adr?
 // NON: Cela empêche de conserver les comptes utilisateurs pour les responsables
