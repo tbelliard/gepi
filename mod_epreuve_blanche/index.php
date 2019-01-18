@@ -570,7 +570,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$msg="ERREUR lors de la cloture de l'épreuve $id_epreuve";
 			unset($id_epreuve);
 			unset($mode);
-			break;
+			//break;
 		}
 		else {$msg="Cloture de l'épreuve n°$id_epreuve effectuée.";}
 		unset($id_epreuve);
@@ -586,7 +586,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$msg="ERREUR lors de la réouverture de l'épreuve $id_epreuve";
 			unset($id_epreuve);
 			unset($mode);
-			break;
+			//break;
 		}
 		else {
 			$msg="Réouverture de l'épreuve n°$id_epreuve effectuée.";
