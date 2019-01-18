@@ -332,6 +332,7 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 
 			Des absences répétées, non justifiées <em>(non valides)</em>, peuvent amener les CPE à effectuer un signalement à l'Inspection académique.<br />
 			Des extractions statistiques peuvent aussi être demandées par l'Éducation Nationale.<br />
+			<span style='color:red'>Préciser les champs extraits dans ces exports statistiques.</span><br />
 
 			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "")."
 
@@ -563,7 +564,7 @@ echo (getSettingAOui('active_mod_engagements') ? "
 
 <a name='plugins'></a><h3>Plugins</h3>
 <p>Des plugins peuvent être développés pour ajouter des fonctionnalités à Gepi.</p>
-<p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>
+<p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml existants sur <a href='http://www.sylogix.org/projects/gepi/files' target='_blank'>http://www.sylogix.org/projects/gepi/files</a> pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>
 <p style='color:red'>Ajouter la possibilité pour l'administrateur de saisir un commentaire.</p>";
 
 include '../mod_plugins/traiterXml.class.php';
@@ -704,26 +705,9 @@ if(getSettingAOui('statuts_prives')) {
 				}
 			}
 		}
-		/*
-		$rubrique_precedente='';
-		foreach($menu_accueil as $cpt => $current_item) {
-			foreach($current_statut_item as $titreItem => $current_item) {
-				if((in_array($_SESSION['statut'], $current_item['visibilite']))&&(getSettingAOui($titreItem))) {
-					echo "
-			<tr>
-				<td style='text-align:left'>".$current_item['rubrique']."</td>
-				<td>".ucfirst($statutItem)."</td>
-				<td style='text-align:left'>".$current_item['texteItem']."</td>
-			</tr>";
-				}
-			}
-		}
-		*/
 		echo "
 </table>";
 	}
-
-
 }
 
 require("../lib/footer.inc.php");
