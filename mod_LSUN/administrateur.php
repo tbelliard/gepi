@@ -788,11 +788,30 @@ if ($cpt) {echo "			</div>\n";}
 					<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="60" value="<?php echo htmlspecialchars($parcoursCommun->description); ?>"/>
 				</td>
 				<td>
-				
+<?php
+/*
+$AidParcours->data_seek(0);
+$AidParc = $AidParcours->fetch_object();
+echo "<pre>";
+print_r($AidParc);
+echo "</pre>";
+*/
+?>
 					<select name="modifieParcoursLien[<?php echo $parcoursCommun->id; ?>]">
 						<option value=""></option>
-<?php $AidParcours->data_seek(0);
-while ($AidParc = $AidParcours->fetch_object()) { ?>
+<?php
+	$AidParcours->data_seek(0);
+	while ($AidParc = $AidParcours->fetch_object()) { 
+		$sql="SELECT DISTINCT id_classe FROM aid a, 
+								j_aid_eleves jae, 
+								j_eleves_classes jec 
+							WHERE id='".$AidParc->idAid."' AND 
+								jec.login=jae.login AND 
+								jae.id_aid=a.id AND 
+								jec.id_classe='".$parcoursCommun->classe."';";
+		$test_id_classe_aid=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_id_classe_aid)>0) {
+?>
 						<option value="<?php echo $AidParc->idAid; ?>" <?php if (getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->num_rows && getLiaisonsAidParcours($AidParc->idAid, $parcoursCommun->id)->fetch_object()->id_aid) {echo " selected";} ?> title="<?php echo $AidParc->nom_complet;?>">
 							<?php
 								echo $AidParc->aid;
@@ -801,7 +820,10 @@ while ($AidParc = $AidParcours->fetch_object()) { ?>
 								//echo " (".$AidParc->nom_complet.")";
 							?>
 						</option>
-<?php } ?>
+<?php
+		}
+	}
+?>
 					</select>
 				
 				</td>

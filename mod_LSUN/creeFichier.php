@@ -85,6 +85,31 @@ if((isset($tab_periodes_extraites))&&(count($tab_periodes_extraites)>0)) {
 	echo "</p>";
 }
 
+if((isset($tab_effectifs))&&(count($tab_effectifs)>0)) {
+	echo "<p style='color:blue; margin-top:1em;' title=\"Parcours.\">Des données de <strong>Parcours</strong> sont extraites&nbsp;:<br />";
+	//$tab_effectifs['parcours'][$parcoursClasse][$num_periode][$parcours->codeParcours]++;
+	/*
+	echo "<pre>";
+	print_r($tab_effectifs);
+	echo "</pre>";
+	*/
+	foreach($tab_effectifs['parcours'] as $current_id_classe => $current_tab_periode) {
+		foreach($current_tab_periode as $tmp_num_periode => $current_tab_parcours) {
+			echo "<strong>".get_nom_classe($current_id_classe)." en période ".$tmp_num_periode."&nbsp;:</strong><br />";
+			foreach($current_tab_parcours as $current_code_parcours => $current_eff) {
+				/*
+				echo "$current_eff<pre>";
+				print_r($current_eff);
+				echo "</pre>";
+				*/
+				echo "<span title=\"Nombre d'élèves avec commentaire de parcours.\">".$current_code_parcours."&nbsp;: ".$current_eff." élèves</span><br />";
+			}
+		}
+		echo "<br />";
+	}
+	echo "</p>";
+}
+
 // A désactiver peut-être pour ne pas faire peur inutilement?
 $afficher_liste_absence_EP=false;
 if (isset($absenceEP))  {

@@ -40,6 +40,8 @@ $tab_periodes_extraites=array();
 $liste_creation_auto_element_programme="";
 $tab_classes_avec_date_debut_periode_manquante=array();
 
+$tab_effectifs=array();
+
 //$gepiYear=getSettingValue("gepiYear");
 //$millesime=preg_replace("/[^0-9]{1,}[0-9]*/","",$gepiYear);
 $date_creation=strftime("%Y-%m-%d");
@@ -59,6 +61,21 @@ $login_debug="bouamar_f";
 $code_matiere_debug="030102";
 //========================
 //++++++++++++++++++++++++++++++++++
+
+//========================
+// 20190118
+$tab_classe_ele=array();
+if (isset($selectionClasse) && count($selectionClasse)) {
+	$myData=implode(",", $selectionClasse);
+	$sql="SELECT * FROM j_eleves_classes WHERE id_classe IN ($myData);";
+	$tmp_res_clas=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($tmp_res_clas)>0) {
+		while($lig_tmp_clas=mysqli_fetch_object($tmp_res_clas)) {
+			$tab_classe_ele[$lig_tmp_clas->login][$lig_tmp_clas->periode]=$lig_tmp_clas->id_classe;
+		}
+	}
+}
+//========================
 
 $xml = new DOMDocument('1.0', 'utf-8');
 
@@ -171,7 +188,7 @@ $xml->appendChild($items);
 				//||(in_array($vieScoCommun->periode, $LSUN_periodes))) {
 				$prendre_en_compte_cet_eleve=false;
 
-				if (isset($selectionClasse) && count($selectionClasse)){
+				if (isset($selectionClasse) && count($selectionClasse)) {
 					$myData=implode(",", $selectionClasse);
 					$sql_ajout_classes="id_classe IN ($myData) ";
 
@@ -524,6 +541,9 @@ if (getSettingValue("LSU_Parcours") != "n") {
 							$attParcours->value = $valeur;
 							$noeudParcours->appendChild($attParcours);
 						}
+						// 20190118
+						//$tab_effectifs['parcours'][$parcoursClasse][$parcoursCommun->periode][$parcours->codeParcours]=0;
+						$tab_effectifs['parcours'][$parcoursCommun->classe][$parcoursCommun->periode][$parcours->codeParcours]=0;
 						$noeudParcoursCommun->appendChild($noeudParcours);
 					}
 					
@@ -1588,6 +1608,12 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 										$noeudParcoursEleve->appendChild($attsParcoursEleve);
 										$listeParcoursEleve->appendChild($noeudParcoursEleve);
 										$creeParcours = TRUE;
+
+										// 20190118
+										if(isset($tab_classe_ele[$eleve->login][$eleve->periode])) {
+											$tmp_id_classe=$tab_classe_ele[$eleve->login][$eleve->periode];
+											$tab_effectifs['parcours'][$tmp_id_classe][$eleve->periode][$typeParcoursEleve->codeParcours]++;
+										}
 									}
 
 								}
