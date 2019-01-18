@@ -167,7 +167,11 @@ if ($current_imprime=='y') echo "<div id='container'>\n";
 // Création d'un espace entre le bandeau et le reste 
 //echo "<p></p>\n";
 //echo "<div style='float:right; width:10em;z-index:10000;'><a href='consultation2.php'>Affichage semaine</a></div>\n";
-echo "<p><a href='consultation2.php'>Affichage semaine</a></p>\n";
+echo "<p class='bold'><a href='consultation2.php'>Affichage semaine</a>";
+if(acces('/cahier_texte_2/extract_tag.php', $_SESSION['statut'])) {
+	echo " | <a href='extract_tag.php' title=\"Extraire/affiche les notices portant certains Tags.\">Extraction Tag</a>";
+}
+echo "</p>\n";
 
 //On vérifie si le module est activé
 if (!acces_cdt()) {

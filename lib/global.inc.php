@@ -271,7 +271,7 @@ $message_cnil_bons_usages.="Pour plus de détails, consultez <a href='http://www
 $icone_deposer_alerte="module_alerte32.png";
 
 // Liste des drapeaux/icones autorisés pour les tag CDT
-$tab_drapeaux_tag_cdt=array("images/bulle_bleue.png", "images/bulle_verte.png", "images/bulle_rouge.png", "images/icons/flag.png", "images/icons/flag_green.png", "images/icons/flag_yellow.png", "images/icons/flag2.gif", "images/icons/ap.png", "images/icons/epi.png");
+$tab_drapeaux_tag_cdt=array("images/bulle_bleue.png", "images/bulle_verte.png", "images/bulle_rouge.png", "images/icons/flag.png", "images/icons/flag_green.png", "images/icons/flag_yellow.png", "images/icons/flag2.gif", "images/icons/ap.png", "images/icons/epi.png", "images/icons/ordinateur.png");
 
 // Types d'AID:
 $tab_type_aid=array();
