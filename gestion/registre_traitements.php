@@ -121,7 +121,7 @@ groupes/mes_listes.php
 Voir si on a accès au sexe, à la date de naissance.
 Sur les bulletins simplifiés, on a accès aux dates de naissance.
 
-Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec droits d'accès (bulletins, cahiers de textes,...)
+Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec droits d'accès (bulletins, cahiers de textes,...) (acces_sp|envoi_bulletin)
 
 </pre>
 
@@ -210,7 +210,8 @@ Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec dr
 		<th>Finalité statistique</th>
 		<td>
 			OUI/<strong>NON</strong><br />
-			<span style='color:red'>A voir avec les possibilités d'extractions statistiques anonymées</span>
+			<span style='color:red'>A voir avec les possibilités d'extractions statistiques anonymées de bulletins<br />
+			Les extractions statistiques d'absences, de discipline,...</span>
 		</td>
 	</tr>
 </table>
@@ -414,23 +415,41 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 	</tr>" : "").(getSettingAOui('active_mod_discipline') ? "
 	<tr>
 		<td>Discipline</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer les incidents et sanctions</td>
+		<td style='text-align:left'>
+			Le module Discipline est destiné à gérer les incidents, sanctions, avertissements (mises en garde) dans l'établissement.<br />
+			Les comptes CPE et Scolarité ont le droit de saisir et consulter les incidents, sanctions, avertissements (mises en garde) pour tous les élèves.<br />
+			Les comptes professeurs peuvent avoir des droits plus restreints.<br />
+			Voir la rubrique <a href='#droits_acces'>droits d'accès</a>.<br />
+			Le module permet aux comptes scolarité/cpe d'effectuer des extractions statistiques par classe, globale,... et des exports tableur si le module OpenOffice.org est activé.<br />
+		</td>
 	</tr>" : "").(getSettingAOui('active_mod_disc_pointage') ? "
 	<tr>
 		<td>Discipline/pointage</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Pointage des menus incidents disciplinaires.</td>
+		<td style='text-align:left'>
+			Ce module permet de pointer de menus incidents ou manquements (travail non fait, oublis de matériel, comportements gênants).<br />
+			Il permet de définir des seuils d'alerte par mail ou message en page d'accueil à destination des différentes catégories d'utilisateurs.
+		</td>
 	</tr>" : "").(getSettingAOui('active_mod_alerte') ? "
 	<tr>
 		<td>Dispositif d'alerte</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Dispositif d'alerte</td>
+		<td style='text-align:left'>
+			Ce module permet aux personnels de l'établissement disposant d'un compte de déposer des messages d'alerte à destination d'autres personnels choisis pour par exemple signaler à la Vie scolaire qu'un élève présent l'heure précédente n'a pas rejoint la salle suivante.
+		</td>
 	</tr>" : "").(getSettingAOui('active_edt_ical') ? "
 	<tr>
 		<td>EDT Ical/Ics</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Emploi du temps importé depuis un fichier ICAL</td>
+		<td style='text-align:left'>
+			Le module permet de remplir les emplois de classes d'après un fichier ICAL provenant d'une autre application.<br />
+			Les comptes scolarité et cpe ont accès aux emplois du temps de toutes les classes pour lesquelles un import a été effectué.<br />
+			".(getSettingAOui('EdtIcalProf') ? "Les professeurs ont accès aux emplois du temps de leurs classes.<br />" : "")."
+			".(getSettingAOui('EdtIcalProfTous') ? "Les professeurs ont accès aux emplois du temps de toutes les classes.<br />" : "")."
+			".(getSettingAOui('EdtIcalEleve') ? "Les élèves ont accès aux emplois du temps de leurs classes.<br />" : "")."
+			".(getSettingAOui('EdtIcalResponsable') ? "Les responsables ont accès aux emplois du temps des classes de leurs enfants.<br />" : "")."
+		</td>
 	</tr>" : "");
 
 if((getSettingAOui('autorise_edt'))||(getSettingAOui('autorise_edt_eleve'))||(getSettingAOui('autorise_edt_admin'))) {
@@ -464,36 +483,62 @@ if((getSettingAOui('autorise_edt'))||(getSettingAOui('autorise_edt_eleve'))||(ge
 echo (getSettingAOui('active_mod_engagements') ? "
 	<tr>
 		<td>Engagements</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer les engagements des élèves/parents</td>
+		<td style='text-align:left'>
+			Ce module permet de définir des engagements, de les saisir, de les consulter.<br />
+			Les engagements élèves sont en général Délégué de classe, suppléant, membre de l'association sportive...<br />
+			Les engagements responsables/parents sont en général Représentant des élèves aux conseil de classe,...<br />
+			Le module permet, dans d'autres modules, de cibler tels élèves/parents pour une communication, l'envoi de convocation au conseil de classe,...<br />
+			Les engagements élèves, s'ils sont saisis dans Gepi, sont extraits et remontés vers les Livrets scolaire collège (LSU) et lycée (LSL) si les module/plugin correspondants sont activés dans Gepi.
+		</td>
 	</tr>" : "").(getSettingAOui('active_mod_epreuve_blanche') ? "
 	<tr>
 		<td>Epreuves blanches</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer des épreuves blanches</td>
+		<td style='text-align:left'>
+			Le module permet de sélectionner des enseignements (les élèves inscrits dans ces enseignements), de choisir des professeurs correcteurs, de choisir les salles d'épreuve, d'y affecter les élèves, de générer les listes d'émargemement, liste d'affichage, les vignettes à coller sur les copies pour les anonymer, les vignettes à coller sur les tables, d'attribuer des copies aux professeurs (qui ne voient que le numéro d'anonymat lors de la saisie).<br />
+			Les professeurs n'ont accès qu'à la saisie anonymée des copies qui leurs ont été attribuées.<br />
+			Les comptes scolarité ou administrateurs peuvent générer les bilans et transférer les notes obtenues dans les carnets de notes des enseignements sélectionnés au départ.<br />
+		</td>
 	</tr>" : "").(getSettingAOui('active_mod_examen_blanc') ? "
 	<tr>
 		<td>Examens blancs</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer des examens blancs</td>
+		<td style='text-align:left'>
+			Le module permet aux comptes scolarité ou administrateurs de sélectionner des classes, des enseignements, de leur affecter des coefficients pour générer des bulletins d'examen par élève.<br />
+			Dans chaque enseignement, le gestionnaire choisit une évaluation ou la moyenne d'une ou plusieurs périodes comme note à prendre en compte dans les bulletins.<br />
+			Il est également possible de saisir des notes ne correspondant pas à des saisies déjà effectuées.<br />
+			".(getSettingAOui('modExbPP') ? "Les comptes ".getSettingValue('gepi_prof_suivi')." sont autorisés à créer des examens blancs pour par exemple simuler des bilans d'examen d'après les résultats obtenus en cours d'année." : "")."
+		</td>
 	</tr>" : "").(getSettingAOui('rss_cdt_eleve') ? "
 	<tr>
 		<td>Flux RSS</td>
 		<td>Générer un flux RSS du contenu du Cahier de textes</td>
 		<td style='text-align:left'>
 			Ce module est associé au module Cahier de textes.<br />
-			Il permet, sans devoir se connecter avec son compte utilisateur, de fournir aux élèves une adresse (url) donnant accès aux travaux à faire donnés dans le Cahiers de textes.
+			Il permet aux élèves, sans qu'ils doivent se connecter avec leur compte utilisateur, d'accéder via une adresse (url) aux travaux à faire donnés dans les Cahiers de textes les concernant.
 		</td>
 	</tr>" : "").(getSettingAOui('active_mod_genese_classes') ? "
 	<tr>
 		<td>Genèse des classes</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Gérer les affectations des élèves dans des classes au changement d'année.</td>
+		<td style='text-align:left'>
+			Le module permet de choisir sur quelles classes futures on aura telles options.<br />
+			Le module empêche l'inscription d'élèves avec des options non autorisées sur certaines classes.<br />
+			Il permet de définir des profils d'élèves d'après leur niveau scolaire et leur attitude pour voir une fois les répartitions d'élèves effectuées si on arrive à une certaine hétérogénéité ou si on a une concentration d'élèves faibles ou difficiles dans une classe.<br />
+			Le module est conçu pour qu'une fois les contraintes posées, un groupe de professeurs, personnels de Vie scolaire,... répartissent petit à petit les élèves dans les classes pour ne pas isoler des élèves et éviter des cocktails malheureux d'élèves.
+		</td>
 	</tr>" : "").(getSettingAOui('active_mod_gest_aid') ? "
 	<tr>
 		<td>Gestionnaires AID</td>
-		<td></td>
-		<td style='text-align:left'></td>
+		<td>Étendre les possibilités sur les AID (Activités Inter-Disciplinaires)</td>
+		<td style='text-align:left'>
+			Le module permet de définir des gestionnaires d'AID pour effectuer les inscriptions d'élèves dans les AID à la place des comptes administrateurs.<br />
+			Les gestionnaires peuvent être des comptes professeur, cpe ou scolarité.<br />
+			Il est possible de générer des exports CSV".(getSettingAOui('active_module_trombinoscopes') ? ", de générer des trombinoscopes <em>(si le module Trombinoscopes est activé)</em>." : "")."<br />
+			<span style='color:red'>à voir CSV droits pour exports DAREIC, Verdier,... accès aux mail, tel, adresses élèves/responsables</span><br />
+			En collège, les AID sont utilisés pour gérer les EPI, AP et Parcours (Parcours avenir, Parcours santé,...) destinés à remonter vers le Livret Scolaire Collège (LSU).<br />
+		</td>
 	</tr>" : "").(getSettingAOui('active_inscription') ? "
 	<tr>
 		<td>Inscription</td>
