@@ -70,6 +70,7 @@ if((isset($msgErreur))&&($msgErreur!="")) {
 	echo "<p class='rouge center gras' style='margin-bottom:1em;'>".$msgErreur."</p>";
 }
 
+$tmp_tab_periodes_extraites=array();
 if((isset($tab_periodes_extraites))&&(count($tab_periodes_extraites)>0)) {
 	echo "<p style='color:blue' title=\"L'absence de telle classe/période peut s'expliquer par l'absence d'avis du conseil de classe pour les élèves sur la période en question.\">Des données sont extraites pour les classes/périodes suivantes&nbsp;:<br />";
 	foreach($tab_periodes_extraites as $current_classe => $current_tab_periode) {
@@ -79,21 +80,23 @@ if((isset($tab_periodes_extraites))&&(count($tab_periodes_extraites)>0)) {
 				echo ", ";
 			}
 			echo $current_tab_periode[$loop];
+			$tmp_tab_periodes_extraites[]=$current_classe.'|'.$current_tab_periode[$loop];
 		}
 		echo ".<br />";
 	}
 	echo "</p>";
 }
 
-if((isset($tab_effectifs))&&(count($tab_effectifs)>0)) {
+if((isset($tab_effectifs['parcours']))&&(count($tab_effectifs['parcours'])>0)) {
 	echo "<p style='color:blue; margin-top:1em;' title=\"Parcours.\">Des données de <strong>Parcours</strong> sont extraites&nbsp;:<br />";
 	//$tab_effectifs['parcours'][$parcoursClasse][$num_periode][$parcours->codeParcours]++;
 	/*
 	echo "<pre>";
-	print_r($tab_effectifs);
+	print_r($tab_effectifs['parcours']);
 	echo "</pre>";
 	*/
 	foreach($tab_effectifs['parcours'] as $current_id_classe => $current_tab_periode) {
+		echo "<div style='float:left; width:15em; margin:1em; color:blue;' title=\"Parcours.\">";
 		foreach($current_tab_periode as $tmp_num_periode => $current_tab_parcours) {
 			echo "<strong>".get_nom_classe($current_id_classe)." en période ".$tmp_num_periode."&nbsp;:</strong><br />";
 			foreach($current_tab_parcours as $current_code_parcours => $current_eff) {
@@ -106,6 +109,83 @@ if((isset($tab_effectifs))&&(count($tab_effectifs)>0)) {
 			}
 		}
 		echo "<br />";
+		echo "</div>";
+	}
+	//echo "</p>";
+	echo "<div style='clear:both;'></div>";
+}
+
+if((isset($tab_effectifs['epi']))&&(count($tab_effectifs['epi'])>0)) {
+	//$tab_effectifs['epi']["EPI_GROUPE_".$epiEleve->id_aid]['intitule']
+	//$tab_effectifs['epi']["EPI_GROUPE_".$epiEleve->id_aid]['periodes'][$eleve->periode]['classes'][$tab_classe_ele[$eleve->login][$eleve->periode]]['effectif']
+	//echo "<p style='color:blue; margin-top:1em;' title=\"Parcours.\">Des données d'<strong>EPI</strong> sont extraites&nbsp;:<br />";
+	/*
+	echo "<pre>";
+	print_r($tab_effectifs['epi']);
+	echo "</pre>";
+	*/
+	// Boucler sur les classes
+	$chaine_rapport_EPI='';
+	foreach($selectionClasse as $key => $current_id_classe) {
+		foreach($tab_effectifs['epi'] as $current_id_epi => $current_EPI) {
+			if(isset($current_EPI['periodes'])) {
+				foreach($current_EPI['periodes'] as $tmp_num_periode => $current_tab_periode) {
+					if(in_array(get_nom_classe($current_id_classe).'|'.$tmp_num_periode, $tmp_tab_periodes_extraites)) {
+						if(isset($current_tab_periode['classes'][$current_id_classe]['effectif'])) {
+							$chaine_rapport_EPI.="<strong>".get_nom_classe($current_id_classe)." en période ".$tmp_num_periode."&nbsp;:</strong> ".$current_EPI['intitule']."&nbsp;: 
+							<span title=\"Nombre d'élèves.\">".$current_tab_periode['classes'][$current_id_classe]['effectif']." élèves</span><br />";
+						}
+					}
+				}
+			}
+		}
+	}
+	if($chaine_rapport_EPI!='') {
+		echo "<p style='color:blue; margin-top:1em;' title=\"EPI.\">Des données d'<strong>EPI</strong> sont extraites&nbsp;:<br />".$chaine_rapport_EPI."</p>";
+	}
+}
+
+if((isset($tab_effectifs['ap']))&&(count($tab_effectifs['ap'])>0)) {
+	/*
+	echo "<pre>";
+	print_r($tab_effectifs['ap']);
+	echo "</pre>";
+	*/
+	// Boucler sur les classes
+	$chaine_rapport_AP='';
+	foreach($selectionClasse as $key => $current_id_classe) {
+		foreach($tab_effectifs['ap'] as $current_id_ap => $current_AP) {
+			if(isset($current_AP['periodes'])) {
+				foreach($current_AP['periodes'] as $tmp_num_periode => $current_tab_periode) {
+					if(in_array(get_nom_classe($current_id_classe).'|'.$tmp_num_periode, $tmp_tab_periodes_extraites)) {
+						if(isset($current_tab_periode['classes'][$current_id_classe]['effectif'])) {
+							$chaine_rapport_AP.="<strong>".get_nom_classe($current_id_classe)." en période ".$tmp_num_periode."&nbsp;:</strong> ".$current_AP['intitule']."&nbsp;: 
+							<span title=\"Nombre d'élèves.\">".$current_tab_periode['classes'][$current_id_classe]['effectif']." élèves</span><br />";
+						}
+					}
+				}
+			}
+		}
+	}
+	if($chaine_rapport_AP!='') {
+		echo "<p style='color:blue; margin-top:1em;' title=\"AP.\">Des données d'<strong>AP</strong> sont extraites&nbsp;:<br />".$chaine_rapport_AP."</p>";
+	}
+}
+
+if(isset($tab_effectifs['devoirs_faits'])) {
+	echo "<p style='color:blue; margin-top:1em;' title=\"Devoirs faits.\">Des données de <strong>Devoirs faits</strong> sont extraites pour ".$tab_effectifs['devoirs_faits']." élève(s).</p>";
+}
+
+if(isset($tab_effectifs['accompagnement'])) {
+	//$tab_effectifs['accompagnement'][$tab_modalites_accompagnement_eleve[$loop_modalite]["code"]][$eleve->periode]
+	echo "<p style='color:blue; margin-top:1em; margin-bottom:1em;' title=\"Modalités d'accompagnement.\">Des données d'<strong>accompagnement</strong> sont extraites&nbsp;: <br />";
+	foreach($tab_effectifs['accompagnement'] as $current_code_accompagnement => $tab_periodes) {
+		echo "<strong>".$current_code_accompagnement."</strong>&nbsp;: ";
+		foreach($tab_periodes as $current_periode => $tmp_effectif) {
+			echo "<span title=\"Période ".$current_periode." ".$tmp_effectif." élève(s).\">P".$current_periode."&nbsp;: ".$tmp_effectif." élève(s)</span> - ";
+		}
+		echo "<br />";
+		
 	}
 	echo "</p>";
 }

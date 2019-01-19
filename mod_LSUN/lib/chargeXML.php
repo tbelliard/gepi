@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2016-2018 Régis Bouguin
+* Copyright 2016-2019 Régis Bouguin, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -542,7 +542,6 @@ if (getSettingValue("LSU_Parcours") != "n") {
 							$noeudParcours->appendChild($attParcours);
 						}
 						// 20190118
-						//$tab_effectifs['parcours'][$parcoursClasse][$parcoursCommun->periode][$parcours->codeParcours]=0;
 						$tab_effectifs['parcours'][$parcoursCommun->classe][$parcoursCommun->periode][$parcours->codeParcours]=0;
 						$noeudParcoursCommun->appendChild($noeudParcours);
 					}
@@ -663,7 +662,7 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				$creeEpisGroupes = TRUE;
 			}
 			$tab_id_epi_groupes=array();
-			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
+			while ($episGroupe = $listeEpisGroupes->fetch_object()) {
 				if($episGroupe->id=="") {
 					// 20170404
 					$msg_erreur_remplissage.="<strong>ANOMALIE&nbsp;:</strong> Un AID a un identifiant vide&nbsp;: ".$episGroupe->nom." (<a href='../utilitaires/clean_tables.php#correction_tables_aid' target='_blank'>Corriger</a>)<br />";
@@ -741,6 +740,10 @@ if (getSettingValue("LSU_traite_EPI") != "n") {
 				
 
 						$episGroupes->appendChild($noeudEpisGroupes);
+
+						// 20190119
+						$tab_effectifs['epi']["EPI_GROUPE_".$episGroupe->id]['intitule']=$tmp_nom_AID;
+
 						// enseignants
 						$noeudEnseigneDis = $xml->createElement('enseignants-disciplines');
 
@@ -892,7 +895,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$noeudApDescription = $xml->createElement('description', nettoye_texte_vers_chaine($tmp_descriptionAP));
 				$noeudApCommun->appendChild($noeudApDescription);
 			}
-			
+
 			//descriptionAP
 			$accPersos->appendChild($noeudApCommun);
 		}
@@ -965,6 +968,9 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 				$noeudApGroupes->appendChild($noeudProfs);
 				
 				$accPersosGroupes->appendChild($noeudApGroupes);
+
+				// 20190119
+				$tab_effectifs['ap']["ACC_PERSO_GROUPE_".$apGroupe->id]['intitule']=$apGroupe->nom;
 
 				$tab_acc_perso_groupes[]="ACC_PERSO_GROUPE_".$apGroupe->id;
 			}
@@ -1522,7 +1528,14 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 									}
 								}
 								$listeEpisEleve->appendChild($noeudEpiEleve);
-							
+
+								// 20190119
+								if(isset($tab_classe_ele[$eleve->login][$eleve->periode])) {
+									if(!isset($tab_effectifs['epi']["EPI_GROUPE_".$epiEleve->id_aid]['periodes'][$eleve->periode]['classes'][$tab_classe_ele[$eleve->login][$eleve->periode]]['effectif'])) {
+										$tab_effectifs['epi']["EPI_GROUPE_".$epiEleve->id_aid]['periodes'][$eleve->periode]['classes'][$tab_classe_ele[$eleve->login][$eleve->periode]]['effectif']=0;
+									}
+									$tab_effectifs['epi']["EPI_GROUPE_".$epiEleve->id_aid]['periodes'][$eleve->periode]['classes'][$tab_classe_ele[$eleve->login][$eleve->periode]]['effectif']++;
+								}
 							}
 						
 						}
@@ -1557,6 +1570,16 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 									}
 
 								}
+
+								// 20190119
+								if(isset($tab_classe_ele[$eleve->login][$eleve->periode])) {
+									if(!isset($tab_effectifs['ap']["ACC_PERSO_GROUPE_".$accPersosEleve->id_aid]['periodes'][$eleve->periode]['classes'][$tab_classe_ele[$eleve->login][$eleve->periode]]['effectif'])) {
+										$tab_effectifs['ap']["ACC_PERSO_GROUPE_".$accPersosEleve->id_aid]['periodes'][$eleve->periode]['classes'][$tab_classe_ele[$eleve->login][$eleve->periode]]['effectif']=0;
+									}
+									$tab_effectifs['ap']["ACC_PERSO_GROUPE_".$accPersosEleve->id_aid]['periodes'][$eleve->periode]['classes'][$tab_classe_ele[$eleve->login][$eleve->periode]]['effectif']++;
+								}
+
+
 								$listeAccPersosEleve->appendChild($noeudAPEleve);
 							}
 							elseif(!in_array($eleve->login."_".$accPersosEleve->id_aid, $tab_acc_perso_groupes_ele_msg)) {
@@ -1670,6 +1693,12 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							}
 
 							$modalitesAccompagnement->appendChild($modaliteAcc);
+
+							// 20190119
+							if(!isset($tab_effectifs['accompagnement'][$tab_modalites_accompagnement_eleve[$loop_modalite]["code"]][$eleve->periode])) {
+								$tab_effectifs['accompagnement'][$tab_modalites_accompagnement_eleve[$loop_modalite]["code"]][$eleve->periode]=0;
+							}
+							$tab_effectifs['accompagnement'][$tab_modalites_accompagnement_eleve[$loop_modalite]["code"]][$eleve->periode]++;
 						}
 
 						$noeudBilanElevePeriodique->appendChild($modalitesAccompagnement);
@@ -1753,6 +1782,12 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 						$noeudDevoirsFaits = $xml->createElement('devoirs-faits', ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
 						//echo "PLOP<br />";
 						$noeudBilanElevePeriodique->appendChild($noeudDevoirsFaits);
+
+						// 20190119
+						if(!isset($tab_effectifs['devoirs_faits'])) {
+							$tab_effectifs['devoirs_faits']=0;
+						}
+						$tab_effectifs['devoirs_faits']++;
 					}
 				}
 
