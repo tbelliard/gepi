@@ -1169,7 +1169,11 @@ if(getSettingAOui('active_annees_anterieures')) {
 		}
 	}
 }
-
+/*
+echo "<pre>";
+print_r($liste_eleves);
+echo "</pre>";
+*/
 foreach ($liste_eleves as $eleve) {
 	/*
 	echo "<pre>";
@@ -1191,6 +1195,13 @@ foreach ($liste_eleves as $eleve) {
 		$sql="SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')";
 		$note_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
+		if((isset($eleve["sexe"]))&&($eleve["sexe"]=='F')) {
+			$suffixe_accord='e';
+		}
+		else {
+			$suffixe_accord='';
+		}
+
 		// 20151024: Pour des explications
 		$eleve_title="";
 		if($note_query){
@@ -1208,11 +1219,12 @@ foreach ($liste_eleves as $eleve) {
 				// 20151024
 				//echo "$sql<br />";
 				//if((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_dev[$k])) {
+
 				if((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_dev[$k])) {
-					$eleve_title="Élève sorti de l'établissement (".formate_date($eleve["date_sortie"]).") avant la date du devoir (".formate_date($date_dev[$k]).").";
+					$eleve_title="Élève sorti".$suffixe_accord." de l'établissement (".formate_date($eleve["date_sortie"]).") avant la date du devoir (".formate_date($date_dev[$k]).").";
 				}
 				elseif((isset($eleve["date_entree"]))&&(($eleve["date_entree"]>$date_dev[$k]))) {
-					$eleve_title="Élève entré dans l'établissement (".formate_date($eleve["date_entree"]).") après la date du devoir (".formate_date($date_dev[$k]).").";
+					$eleve_title="Élève entré".$suffixe_accord." dans l'établissement (".formate_date($eleve["date_entree"]).") après la date du devoir (".formate_date($date_dev[$k]).").";
 				}
 			}
 		}
@@ -1223,10 +1235,10 @@ foreach ($liste_eleves as $eleve) {
 
 			// 20151024
 			if((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_dev[$k])) {
-				$eleve_title="Élève sorti de l'établissement (".formate_date($eleve["date_sortie"]).") avant la date du devoir (".formate_date($date_dev[$k]).").";
+				$eleve_title="Élève sorti".$suffixe_accord." de l'établissement (".formate_date($eleve["date_sortie"]).") avant la date du devoir (".formate_date($date_dev[$k]).").";
 			}
 			elseif((isset($eleve["date_entree"]))&&($eleve["date_entree"]>$date_dev[$k])) {
-				$eleve_title="Élève entré dans l'établissement (".formate_date($eleve["date_entree"]).") après la date du devoir (".formate_date($date_dev[$k]).").";
+				$eleve_title="Élève entré".$suffixe_accord." dans l'établissement (".formate_date($eleve["date_entree"]).") après la date du devoir (".formate_date($date_dev[$k]).").";
 			}
 		}
 		if ($eleve_comment != '') { $nocomment[$k]='no'; }
