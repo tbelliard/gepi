@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -62,6 +62,7 @@ if (!checkAccess()) {
 }
 //======================================================================================
 
+//debug_var();
 $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['id_epreuve']) ? $_GET['id_epreuve'] : NULL);
 
 $definition_salles=isset($_POST['definition_salles']) ? $_POST['definition_salles'] : (isset($_GET['definition_salles']) ? $_GET['definition_salles'] : NULL);
@@ -553,7 +554,8 @@ if(!isset($mode)) {
 		echo "(<i>pour saisir plusieurs salles, mettre une virgule entre les salles<br />Exemple&nbsp;: '<b>Salle 1, Salle 2, Salle 3</b>'</i>)</p>\n";
 		
 		echo " <input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
-		echo "<p><input type='submit' name='definition_salles' value='Valider' /></p>\n";
+		echo "<input type='hidden' name='definition_salles' value='y' />\n";
+		echo "<p><input type='submit' name='button_definition_salles' value='Valider' /></p>\n";
 		echo "</form>\n";
 	}
 
