@@ -786,7 +786,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 			}
 			$tmp_descriptionAP=trim(ensure_utf8(mb_substr(trim($apCommun->descriptionAP),0,600,'UTF-8')));
 			if ($tmp_descriptionAP!="") {
-				$noeudApDescription = $xml->createElement('description', $tmp_descriptionAP);
+				$noeudApDescription = $xml->createElement('description', nettoye_texte_vers_chaine($tmp_descriptionAP));
 				$noeudApCommun->appendChild($noeudApDescription);
 			}
 			
