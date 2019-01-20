@@ -501,6 +501,8 @@ function get_tab_aid($id_aid, $order_by_ele="",$tab_champs=array('all')) {
 		if($get_eleves=='y') {
 
 			$tab_aid['eleves']=array();
+			$tab_aid['eleves']["all"]['list']=array();
+			$tab_aid['eleves']["all"]['users']=array();
 
 			// Périodes: Peut-on faire un AID avec des classes à nombre de périodes différent? Oui
 			$sql="SELECT max(num_periode) AS maxper FROM periodes p, 
@@ -516,90 +518,89 @@ function get_tab_aid($id_aid, $order_by_ele="",$tab_champs=array('all')) {
 				$maxper=$lig->maxper;
 
 				$tab_aid['maxper']=$maxper;
-				$nb_periode=$maxper+1;
+				if(is_numeric($maxper)) {
+					$nb_periode=$maxper+1;
 
-				// Verrouillage
-				// Initialisation
-				$i = "1";
-				$all_clos = "";
-				$all_open = "";
-				$all_clos_part = "";
-				while ($i < $nb_periode) {
-					$liste_ver_per[$i] = "";
-					$i++;
-				}
-
-				foreach ($tab_aid["classes"]["list"] as $c_id) {
-					$sql_periode2 = "SELECT * FROM periodes WHERE id_classe = '". $tab_aid["classes"]["classes"][$c_id]["id"] ."' ORDER BY num_periode";
-					$periode_query2 = mysqli_query($GLOBALS["mysqli"], $sql_periode2);
-					$nb_periode = $periode_query2->num_rows + 1 ;
+					// Verrouillage
+					// Initialisation
 					$i = "1";
-					while ($obj_period2 = $periode_query2->fetch_object()) {
-						$tab_aid["classe"]["ver_periode"][$c_id][$i] = $obj_period2->verouiller;
-						$liste_ver_per[$i] .= $tab_aid["classe"]["ver_periode"][$c_id][$i];
+					$all_clos = "";
+					$all_open = "";
+					$all_clos_part = "";
+					while ($i < $nb_periode) {
+						$liste_ver_per[$i] = "";
 						$i++;
 					}
-					$all_clos .= "O";
-					$all_open .= "N";
-					$all_clos_part .= "P";
-					$periode_query2->close();
-				}
-				$i = "1";
-				while ($i < $nb_periode) {
-					if ($liste_ver_per[$i] == $all_clos) {
-						// Toutes les classes sont closes
-						$tab_aid["classe"]["ver_periode"]["all"][$i] = 0;
-					}
-					else if ($liste_ver_per[$i] == $all_clos_part) {
-						// Toutes les classes sont partiellement closes
-						$tab_aid["classe"]["ver_periode"]["all"][$i] = 1;
-					}
-					else if ($liste_ver_per[$i] == $all_open) {
-						// Toutes les classes sont ouvertes
-						$tab_aid["classe"]["ver_periode"]["all"][$i] = 3;
-					}
-					else if (substr_count($liste_ver_per[$i], "N") > 0) {
-						// Au moins une classe est ouverte
-						$tab_aid["classe"]["ver_periode"]["all"][$i] = 2;
-					}
-					else {
-						$tab_aid["classe"]["ver_periode"]["all"][$i] = -1;
-					}
-					$i++;
-				}
 
-				// Elèves
+					foreach ($tab_aid["classes"]["list"] as $c_id) {
+						$sql_periode2 = "SELECT * FROM periodes WHERE id_classe = '". $tab_aid["classes"]["classes"][$c_id]["id"] ."' ORDER BY num_periode";
+						$periode_query2 = mysqli_query($GLOBALS["mysqli"], $sql_periode2);
+						$nb_periode = $periode_query2->num_rows + 1 ;
+						$i = "1";
+						while ($obj_period2 = $periode_query2->fetch_object()) {
+							$tab_aid["classe"]["ver_periode"][$c_id][$i] = $obj_period2->verouiller;
+							$liste_ver_per[$i] .= $tab_aid["classe"]["ver_periode"][$c_id][$i];
+							$i++;
+						}
+						$all_clos .= "O";
+						$all_open .= "N";
+						$all_clos_part .= "P";
+						$periode_query2->close();
+					}
+					$i = "1";
+					while ($i < $nb_periode) {
+						if ($liste_ver_per[$i] == $all_clos) {
+							// Toutes les classes sont closes
+							$tab_aid["classe"]["ver_periode"]["all"][$i] = 0;
+						}
+						else if ($liste_ver_per[$i] == $all_clos_part) {
+							// Toutes les classes sont partiellement closes
+							$tab_aid["classe"]["ver_periode"]["all"][$i] = 1;
+						}
+						else if ($liste_ver_per[$i] == $all_open) {
+							// Toutes les classes sont ouvertes
+							$tab_aid["classe"]["ver_periode"]["all"][$i] = 3;
+						}
+						else if (substr_count($liste_ver_per[$i], "N") > 0) {
+							// Au moins une classe est ouverte
+							$tab_aid["classe"]["ver_periode"]["all"][$i] = 2;
+						}
+						else {
+							$tab_aid["classe"]["ver_periode"]["all"][$i] = -1;
+						}
+						$i++;
+					}
 
-				$tab_aid['eleves']["all"]['list']=array();
-				$tab_aid['eleves']["all"]['users']=array();
+					// Elèves
 
-				if($order_by_ele=="") {
-					$order_by_ele=" ORDER BY e.nom, e.prenom, e.naissance";
-				}
+					if($order_by_ele=="") {
+						$order_by_ele=" ORDER BY e.nom, e.prenom, e.naissance";
+					}
 
-				for($i=1;$i<=$maxper;$i++) {
-					$tab_aid['eleves'][$i]['list']=array();
-					$tab_aid['eleves'][$i]['users']=array();
+					for($i=1;$i<=$maxper;$i++) {
+						$tab_aid['eleves'][$i]['list']=array();
+						$tab_aid['eleves'][$i]['users']=array();
 
-					if(($i>=$tab_aid['display_begin'])&&($i<=$tab_aid['display_end'])) {
-						$sql="SELECT DISTINCT e.*, jec.id_classe, c.classe FROM classes c,
-														eleves e,
-														j_eleves_classes jec, 
-														j_aid_eleves jae 
-													WHERE c.id=jec.id_classe AND 
-														e.login=jec.login AND 
-														jec.login=jae.login AND 
-														jec.periode='".$i."' AND 
-														jae.id_aid='".$id_aid."'".$order_by_ele.";";
-						//echo "$sql<br />";
-						$res=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res)>0) {
-							while($lig=mysqli_fetch_object($res)) {
-								$tab_aid["eleves"][$i]["list"][] = $lig->login;
-								$tab_aid["eleves"][$i]["users"][$lig->login] = array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "id_classe" => $lig->id_classe, "classe" => $lig->id_classe, "nom_classe" => $lig->classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe, "email" => $lig->email, "naissance" => $lig->naissance);
-								if(!in_array($lig->login, $tab_aid['eleves']["all"]['list'])) {
-									$tab_aid['eleves']["all"]['list'][]=$lig->login;
-									$tab_aid['eleves']["all"]["users"][$lig->login]=$tab_aid["eleves"][$i]["users"][$lig->login];
+						if(($i>=$tab_aid['display_begin'])&&($i<=$tab_aid['display_end'])) {
+							$sql="SELECT DISTINCT e.*, jec.id_classe, c.classe FROM classes c,
+															eleves e,
+															j_eleves_classes jec, 
+															j_aid_eleves jae 
+														WHERE c.id=jec.id_classe AND 
+															e.login=jec.login AND 
+															jec.login=jae.login AND 
+															jec.periode='".$i."' AND 
+															jae.id_aid='".$id_aid."'".$order_by_ele.";";
+							//echo "$sql<br />";
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res)>0) {
+								while($lig=mysqli_fetch_object($res)) {
+									$tab_aid["eleves"][$i]["list"][] = $lig->login;
+									$tab_aid["eleves"][$i]["users"][$lig->login] = array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "id_classe" => $lig->id_classe, "classe" => $lig->id_classe, "nom_classe" => $lig->classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe, "email" => $lig->email, "naissance" => $lig->naissance);
+									if(!in_array($lig->login, $tab_aid['eleves']["all"]['list'])) {
+										$tab_aid['eleves']["all"]['list'][]=$lig->login;
+										$tab_aid['eleves']["all"]["users"][$lig->login]=$tab_aid["eleves"][$i]["users"][$lig->login];
+									}
 								}
 							}
 						}
