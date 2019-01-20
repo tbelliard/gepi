@@ -193,18 +193,31 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 			$nb_classes = mysqli_num_rows($call_classes);
 			$j = 0;
 			while ($j < $nb_classes) {
-			$classe = old_mysql_result($call_classes, $j, "classe");
-			if ($reg_classe == $classe) {
-			$id_classe = old_mysql_result($call_classes, $j, "id");
-			$number_periodes = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe='$id_classe'"),0);
-			$u = 1;
-			while ($u <= $number_periodes) {
-			$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
-			if (!$reg) echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à la classe $classe pour la période $u</p>\n";
-			$u++;
-			}
-			}
-			$j++;
+				$classe = old_mysql_result($call_classes, $j, "classe");
+				if ($reg_classe == $classe) {
+					$id_classe = old_mysql_result($call_classes, $j, "id");
+					$number_periodes = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe='$id_classe'"),0);
+					$u = 1;
+					while ($u <= $number_periodes) {
+						$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
+						if (!$reg) {
+							echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à la classe $classe pour la période $u</p>\n";
+						}
+						elseif((isset($reg_mef_code))&&($reg_mef_code!='')&&(in_array($reg_mef_code, array('16410002110', '16510002110', '16610002110', '16710002110')))) {
+							$reg_id_eleve=get_valeur_champ("eleves", "login='".$reg_login."'", "id_eleve");
+							if($reg_id_eleve!='') {
+								$sql="SELECT 1=1 FROM j_modalite_accompagnement_eleve WHERE id_eleve='".$reg_id_eleve."' AND periode='".$u."' AND code='SEGPA';";
+								$test_accomp=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test_accomp)==0) {
+									$sql="INSERT INTO j_modalite_accompagnement_eleve SET id_eleve='".$reg_id_eleve."', periode='".$u."', code='SEGPA';";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
+							}
+						}
+						$u++;
+					}
+				}
+				$j++;
 			}
 
 			if (($reg_etab != '')&&($reg_elenoet != '')) {

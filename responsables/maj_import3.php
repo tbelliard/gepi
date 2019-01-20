@@ -4879,10 +4879,11 @@ else{
 									$sql.=", tel_prof='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PROF)."'";
 								}
 
-								// 20130607
-								if(getSettingAOui('alert_diff_mef')) {
+								// 20190120
+								//if(getSettingAOui('alert_diff_mef')) {
+								// Il faut bien initialiser la valeur.
 									$sql.=", mef_code='".$lig->MEF_CODE."'";
-								}
+								//}
 
 								if(getSettingAOui('alert_diff_date_entree')) {
 									$sql.=", date_entree='".$lig->DATE_ENTREE."'";
@@ -5253,7 +5254,7 @@ else{
 
 				$texte.="<p>\n";
 				for($i=0;$i<count($login_eleve);$i++){
-					$sql="SELECT nom, prenom FROM eleves WHERE login='$login_eleve[$i]'";
+					$sql="SELECT nom, prenom, mef_code, id_eleve FROM eleves WHERE login='$login_eleve[$i]'";
 					//echo $sql."<br />";
 					info_debug($sql);
 					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -5306,6 +5307,16 @@ else{
 																							rang='0'";
 														info_debug($sql);
 														$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+														if($insert) {
+															if(in_array($lig_ele->mef_code, array('16410002110', '16510002110', '16610002110', '16710002110'))) {
+																$sql="SELECT 1=1 FROM j_modalite_accompagnement_eleve WHERE id_eleve='".$lig_ele->id_eleve."' AND periode='".$tab_periode[$j]."' AND code='SEGPA';";
+																$test_accomp=mysqli_query($GLOBALS["mysqli"], $sql);
+																if(mysqli_num_rows($test_accomp)==0) {
+																	$sql="INSERT INTO j_modalite_accompagnement_eleve SET id_eleve='".$lig_ele->id_eleve."', periode='".$tab_periode[$j]."', code='SEGPA';";
+																	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+																}
+															}
+														}
 														$nb_insert++;
 													}
 													if($cpt_per>0){$texte.=", ";}
