@@ -6319,8 +6319,10 @@ mysql>
 							echo "
 								<tr id='tr_aid_".$i."'>
 									<td>
+										<label for='case_aid".$i."_".$j."'>
 										".$current_aid['nom_general_complet']."<br />
 										(".$current_aid['nom_aid'].")
+										</label>
 									</td>
 									<td>
 										<center><input type='checkbox' id='case_aid".$i."_".$j."' name=\"aid[]\" value='".$lig_aid->id_aid."' onchange='changement(); verif_coches_ligne_aid($i)'$checked />".(isset($current_aid['eleves']['all']['list']) ? " (<em title=\"Effectif actuel : ".count($current_aid['eleves']['all']['list'])."\">".count($current_aid['eleves']['all']['list'])."</em>)" : '')."</center>
