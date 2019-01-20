@@ -5633,6 +5633,42 @@ mysql>
 					$j++;
 				}
 
+				//========================================================================================
+				// 20190120
+				$nb_reg_aid=0;
+				if(isset($_POST['aid'])) {
+					$sql="SELECT DISTINCT jae.indice_aid, jae.id_aid FROM j_aid_eleves jae, 
+														j_eleves_classes jec, 
+														aid_config ac, 
+														aid a 
+													WHERE a.id=jae.id_aid AND 
+														a.indice_aid=ac.indice_aid AND 
+														ac.indice_aid=jae.indice_aid AND 
+														jae.login=jec.login AND 
+														jec.id_classe='".$id_classe."' AND 
+														jec.periode>=ac.display_begin AND 
+														jec.periode<=ac.display_end;";
+					//echo "$sql<br />";
+					$res_aid=mysqli_query($mysqli, $sql);
+					$nombre_aid=mysqli_num_rows($res_aid);
+					//echo "$nb_periode<br />";
+					if($nombre_aid>0) {
+						while($lig_aid=mysqli_fetch_object($res_aid)) {
+							if(in_array($lig_aid->id_aid, $_POST['aid'])) {
+								$sql="INSERT INTO j_aid_eleves SET id_aid='".$lig_aid->id_aid."', 
+														indice_aid='".$lig_aid->indice_aid."', 
+														login='".$login_eleve."';";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if($insert) {
+									$nb_reg_aid++;
+								}
+							}
+						}
+					}
+				}
+				//========================================================================================
+
 				if($temoin_insert>0) {
 					$tmp_nom_prenom_eleve=get_nom_prenom_eleve($login_eleve);
 
@@ -5643,7 +5679,11 @@ mysql>
 						$param_id_classe="&id_classe=".$id_classe;
 					}
 
-					echo "<p style='color:green;margin-bottom:2em;'><a href='../classes/eleve_options.php?login_eleve=".$login_eleve.$param_id_classe."' target='_blank' title=\"Voir, dans un nouvel onglet, les inscriptions de l'èlève\">".$tmp_nom_prenom_eleve."</a> a été inscrit(e) dans <span title=\"Si l'élève est inscrit dans 10 enseignements, sur 3 périodes, cela fera 3*10 soit 30 enregistrements.\">".$temoin_insert." enseignement(s)/période(s)</span>.</p>";
+					echo "<p style='color:green;margin-bottom:2em;'><a href='../classes/eleve_options.php?login_eleve=".$login_eleve.$param_id_classe."' target='_blank' title=\"Voir, dans un nouvel onglet, les inscriptions de l'èlève\">".$tmp_nom_prenom_eleve."</a> a été inscrit(e) dans <span title=\"Si l'élève est inscrit dans 10 enseignements, sur 3 périodes, cela fera 3*10 soit 30 enregistrements.\">".$temoin_insert." enseignement(s)/période(s)</span>";
+					if($nb_reg_aid>0) {
+						echo " et dans ".$nb_reg_aid." AID";
+					}
+					echo ".</p>";
 
 					// 20161223: Envoyer un mail aux profs qui vont avoir l'élève
 					$sql = "SELECT DISTINCT u.login, u.email 
@@ -6093,7 +6133,6 @@ mysql>
 							*/
 
 							$sql="SELECT * FROM j_eleves_classes WHERE login='$login_eleve' AND periode='$j' AND id_classe='$id_classe'";
-							// CA NE VA PAS... SUR LES GROUPES A REGROUPEMENT, IL FAUT PRENDRE DES PRECAUTIONS...
 							info_debug($sql);
 							$res_test_class_per=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_test_class_per)==0){
@@ -6243,6 +6282,56 @@ mysql>
 					}
 					echo "</table>\n";
 
+					// 20190120
+					// Ajouter la liste des AID associés à la classe de l'élève
+					$i=0;
+					$sql="SELECT DISTINCT jae.indice_aid, jae.id_aid FROM j_aid_eleves jae, 
+														j_eleves_classes jec, 
+														aid_config ac, 
+														aid a 
+													WHERE a.id=jae.id_aid AND 
+														a.indice_aid=ac.indice_aid AND 
+														ac.indice_aid=jae.indice_aid AND 
+														jae.login=jec.login AND 
+														jec.id_classe='".$id_classe."' AND 
+														jec.periode>=ac.display_begin AND 
+														jec.periode<=ac.display_end;";
+					//echo "$sql<br />";
+					$res_aid=mysqli_query($mysqli, $sql);
+					$nombre_aid=mysqli_num_rows($res_aid);
+					if($nombre_aid>0) {
+						$j=1;
+						echo "<p style='font-weight:bold; margin-top:1em;'>AID associés à des élèves de la classe de ".$lig_classe->classe."&nbsp;:</p>
+						<table class='boireaus boireaus_alt sortable resizable'>
+							<thead>
+								<tr>
+									<th>AID</th>
+									<th>
+										<b>Inscrire</b><br />
+										<a href='javascript:modif_case_aid($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/
+										<a href='javascript:modif_case_aid($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>
+									</th>
+								</tr>
+							</thead>
+							<tbody>";
+						while($lig_aid=mysqli_fetch_object($res_aid)) {
+							$current_aid=get_tab_aid($lig_aid->id_aid);
+							echo "
+								<tr id='tr_aid_".$i."'>
+									<td>
+										".$current_aid['nom_general_complet']."<br />
+										(".$current_aid['nom_aid'].")
+									</td>
+									<td>
+										<center><input type='checkbox' id='case_aid".$i."_".$j."' name=\"aid[]\" value='".$lig_aid->id_aid."' onchange='changement(); verif_coches_ligne_aid($i)'$checked />".(isset($current_aid['eleves']['all']['list']) ? " (<em title=\"Effectif actuel : ".count($current_aid['eleves']['all']['list'])."\">".count($current_aid['eleves']['all']['list'])."</em>)" : '')."</center>
+									</td>
+								</tr>";
+							$i++;
+						}
+						echo "
+							</tbody>
+						</table>";
+					}
 
 					echo "<script type='text/javascript' language='javascript'>
 	function modif_case(rang,type,statut) {
@@ -6315,6 +6404,48 @@ mysql>
 					}
 
 					echo "
+
+	function modif_case_aid(rang,type,statut) {
+		// type: col ou lig
+		// rang: le numéro de la colonne ou de la ligne
+		// statut: true ou false
+		if(type=='col'){
+			for(k=0;k<$nombre_aid;k++){
+				if(document.getElementById('case_aid'+k+'_'+rang)){
+					document.getElementById('case_aid'+k+'_'+rang).checked=statut;
+				}
+			}
+		}
+		else{
+			k=1;
+			//for(k=1;k<$nb_periode;k++) {
+				if(document.getElementById('case_aid'+rang+'_'+k)){
+					document.getElementById('case_aid'+rang+'_'+k).checked=statut;
+				}
+			//}
+			verif_coches_ligne(rang);
+		}
+		changement();
+	}
+
+	function verif_coches_ligne_aid(num_ligne) {
+		var nb_coche=0;
+		k=1;
+		//for(k=1;k<$nb_periode;k++) {
+			if(document.getElementById('case_aid'+num_ligne+'_'+k)){
+				if(document.getElementById('case_aid'+num_ligne+'_'+k).checked==true) {
+					nb_coche++;
+				}
+			}
+		//}
+		if(nb_coche==0) {
+			document.getElementById('tr_aid_'+num_ligne).style.backgroundColor='grey';
+		}
+		else {
+			document.getElementById('tr_aid_'+num_ligne).style.backgroundColor='';
+		}
+	}
+
 
 </script>\n";
 
