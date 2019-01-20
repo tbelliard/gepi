@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -78,6 +78,7 @@ include_once 'fonctions_aid.php';
 global $mysqli;
 
 $NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
+$is_super_gestionnaire_aid=is_super_gestionnaire_aid($indice_aid, $_SESSION["login"]);
 
 if (($NiveauGestionAid_categorie >= 5) and (isset($add_prof) and ($add_prof == "yes"))) {
 	check_token();
@@ -94,7 +95,7 @@ if (($NiveauGestionAid_categorie >= 5) and (isset($add_prof) and ($add_prof == "
     $flag = "prof";
 }
 
-if (($NiveauGestionAid_categorie >= 10) and (isset($add_prof_gest) and ($add_prof_gest == "yes"))) {
+if ((($NiveauGestionAid_categorie >= 10)||($is_super_gestionnaire_aid)) and (isset($add_prof_gest) and ($add_prof_gest == "yes"))) {
 	check_token();
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
     $test2 = Prof_deja_gestionnaire ($reg_prof_login, $aid_id, $indice_aid)->num_rows;

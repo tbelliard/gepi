@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2015 Régis Bouguin
+ * Copyright 2015-2019 Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -282,6 +282,16 @@ function Sauve_eleve_responsable($aid_id, $indice_aid, $login_eleve) {
 	return $retour;	
 }
 
-
+function is_super_gestionnaire_aid($indice_aid, $login_user) {
+	global $mysqli;
+	$sql = "SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE (indice_aid='".$indice_aid."' AND id_utilisateur='".$login_user."');";
+	$test = mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 
