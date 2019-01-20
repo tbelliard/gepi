@@ -152,7 +152,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
 	$mess[] = "Table engagements_user :";
 	$test_nb[] = "SELECT * FROM engagements_user WHERE login ='$cible1'";
-	$req[] = "DELETE FROM engagements_user WHERE e_login ='$cible1'";
+	$req[] = "DELETE FROM engagements_user WHERE login ='$cible1'";
 
     break;
 
@@ -243,7 +243,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
 	$mess[] = "Table engagements_user :";
 	$test_nb[] = "SELECT * FROM engagements_user WHERE login ='$cible1'";
-	$req[] = "DELETE FROM engagements_user WHERE e_login ='$cible1'";
+	$req[] = "DELETE FROM engagements_user WHERE login ='$cible1'";
 	$nombre_req++;
 
 	$mess[] = "Table des statuts personnalisés :";
@@ -434,7 +434,16 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
 	$mess[] = "Table engagements_user :";
 	$test_nb[] = "SELECT * FROM engagements_user WHERE login ='$cible1'";
-	$req[] = "DELETE FROM engagements_user WHERE e_login ='$cible1'";
+	$req[] = "DELETE FROM engagements_user WHERE login ='$cible1'";
+	$nombre_req++;
+
+
+	$mess[] = "Table j_modalite_accompagnement_eleve :";
+	$test_nb[] = "SELECT jmae.* FROM j_modalite_accompagnement_eleve jmae, 
+							eleves e 
+						WHERE e.login ='$cible1' AND 
+							jmae.id_eleve=e.id_eleve";
+	$req[] = "DELETE FROM j_modalite_accompagnement_eleve WHERE id_eleve IN (SELECT id_eleve FROM eleves WHERE login='$cible1');";
 	$nombre_req++;
 
     break;
