@@ -437,7 +437,7 @@ function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NU
 
 function ChargeColonnesEleves($idListe, $eleve_choisi_col) {
 	$tableauRetour = array();
-	if (count($eleve_choisi_col)) {
+	if (isset($eleve_choisi_col) && is_array($eleve_choisi_col) && count($eleve_choisi_col)) {
 		foreach ($eleve_choisi_col as $elv) {
 			$tableauRetour[$elv->getLogin()] = ChargeCasesEleves($idListe, $elv);
 		}
