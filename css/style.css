@@ -389,3 +389,9 @@ table.boireaus {
 	margin-right:1em;
 }
 
+#fixe2 {
+position:fixed;
+top: 10em;
+right: 4em;
+}
+

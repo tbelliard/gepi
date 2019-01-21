@@ -23,6 +23,9 @@
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
 
+// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+$variables_non_protegees = 'yes';
+
 // Begin standart header
 $niveau_arbo = 1;
 $gepiPathJava="./..";
@@ -70,6 +73,106 @@ if(!getSettingAOui('registre_traitements')) {
 	die();
 }
 
+if($_SESSION['statut']=='administrateur') {
+	if(isset($_POST['enregistrer'])) {
+		check_token();
+
+		$nb_reg=0;
+		$msg='';
+
+		$tab_param=array('RGPD_cnil_creation', 
+				'RGPD_cnil_maj', 
+				'RGPD_ref_cnil');
+		foreach($tab_param as $param) {
+			if(isset($_POST[$param])) {
+				if(!saveSetting($param, 'y')) {
+					$msg.="Erreur lors de l'enregistrement du paramètre '".$param."'.<br />";
+				}
+				else {
+					$nb_reg++;
+				}
+			}
+			else {
+				if(!saveSetting($param, 'n')) {
+					$msg.="Erreur lors de l'enregistrement du paramètre '".$param."'.<br />";
+				}
+				else {
+					$nb_reg++;
+				}
+			}
+		}
+
+		$tab_param=array('RGPD_cnil_creation_date', 
+				'RGPD_cnil_maj_date');
+		foreach($tab_param as $param) {
+			if(isset($_POST[$param])) {
+				if(!saveSetting($param, $_POST[$param])) {
+					$msg.="Erreur lors de l'enregistrement du paramètre '".$param."'.<br />";
+				}
+				else {
+					$nb_reg++;
+				}
+			}
+		}
+
+		$modules=array('RGPD_mod_absences', 
+				'RGPD_mod_abs2', 
+				'RGPD_mod_abs_prof', 
+				'RGPD_mod_actions', 
+				'RGPD_annees_anterieures', 
+				'RGPD_mod_bulletins', 
+				'RGPD_mod_CDT', 
+				'RGPD_mod_CN', 
+				'RGPD_mod_discipline', 
+				'RGPD_mod_disc_pointage', 
+				'RGPD_mod_alerte', 
+				'RGPD_mod_edt_ical', 
+				'RGPD_mod_EDT', 
+				'RGPD_mod_engagements', 
+				'RGPD_mod_EPB', 
+				'RGPD_mod_EXB', 
+				'RGPD_mod_RSS_CDT', 
+				'RGPD_mod_genese_classes', 
+				'RGPD_mod_gest_aid', 
+				'RGPD_mod_inscriptions', 
+				'RGPD_mod_ListesPerso', 
+				'RGPD_mod_LSUN', 
+				'RGPD_mod_OOO', 
+				'RGPD_mod_notanet', 
+				'RGPD_mod_orientation', 
+				'RGPD_statuts_prives', 
+				'RGPD_mod_trombinoscopes');
+		foreach($modules as $current_module) {
+			if(isset($NON_PROTECT[$current_module])) {
+				$commentaire=nettoyage_retours_ligne_surnumeraires(traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$current_module])));
+				if(!saveSetting($current_module, $commentaire)) {
+					$msg.="Erreur lors de l'enregistrement du commentaire sur le module '".$current_module."'.<br />";
+				}
+				else {
+					$nb_reg++;
+				}
+			}
+		}
+
+		foreach($NON_PROTECT as $key => $commentaire) {
+			if(preg_match('/^RGPD_plug_/', $key)) {
+				$commentaire=nettoyage_retours_ligne_surnumeraires(traitement_magic_quotes(corriger_caracteres($commentaire)));
+				if(!saveSetting($key, $commentaire)) {
+					$msg.="Erreur lors de l'enregistrement du commentaire sur le plugin '".$key."'.<br />";
+				}
+				else {
+					$nb_reg++;
+				}
+			}
+		}
+
+		if($nb_reg>0) {
+			$msg.=$nb_reg." enregistrement(s) effectué(s).<br />";
+		}
+
+	}
+}
+
 include_once "../class_php/gestion/class_droit_acces_template.php";
 $droitAffiche= new class_droit_acces_template();
 include('droits_acces.inc.php');
@@ -84,7 +187,22 @@ require_once("../lib/header.inc.php");
 
 echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
+if($_SESSION['statut']=='administrateur') {
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='enregistrer' value='y' />";
+}
+
 echo "<h2>Registre des traitements</h2>
+
+<div id='fixe2' class='fieldset_opacite50' style='padding:0.5em;'>
+	<a href='#generalites'>Généralités</a><br />
+	<a href='#modules_actives'>Modules</a><br />
+	<a href='#plugins'>Plugins</a><br />
+	<a href='#droits_acces'>Droits d'accès</a><br />".(getSettingAOui('statuts_prives') ? "
+	<a href='#droits_statuts_personnalises'>Droits statuts personnalisés</a><br />" :"")."
+</div>
 
 <p>La présente page est destinée à informer les utilisateurs sur les modules activés, les données traitées,...</p>
 
@@ -93,15 +211,7 @@ echo "<h2>Registre des traitements</h2>
 Voir https://www.cnil.fr/fr/comprendre-le-rgpd
 et https://www.reseau-canope.fr/fileadmin/user_upload/Projets/RGPD/RGPD_WEB.pdf
 
-
-
-A FAIRE apparaitre :
-
-- la déclaration CNIL
-- les responsables de Gepi
-- Faire apparaitre les modules activés (et ce que chaque module implique)
-- les droits donnés
-- Statuts personnalisés à gérer (statut=autre (COP, Infirmière,...))
+A FAIRE apparaître :
 
 Les fichiers XML exploités avec quelles infos de Siècle/Sconet, logiciel d'emploi du temps, STS.
 Les exports CSV, PDF,...
@@ -110,9 +220,6 @@ Pouvoir cocher ce que l'on souhaite faire apparaitre selon ce qui est utilisé d
 Ne pas permettre de choisir pour les généralités, les modules activés, les plugins et les droits.
 
 Pouvoir éditer/modifier certaines des lignes qui suivent, en ajouter, supprimer selon les usages.
-
-Pour chaque module, plugin, pouvoir saisir un commentaire à stocker dans une table 'registre_traitements' avec des champs nom et commentaire.
-
 
 Vérifier les accès aux adresses parents dans des listes, exports,...
 Droits aussi dans des AID... sur tel et mail élève,...
@@ -123,20 +230,90 @@ Sur les bulletins simplifiés, on a accès aux dates de naissance.
 
 Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec droits d'accès (bulletins, cahiers de textes,...) (acces_sp|envoi_bulletin)
 
-</pre>
+</pre>";
 
+$colspan='';
+if($_SESSION['statut']=='administrateur') {
+	$colspan=" colspan='2'";
+}
+
+$RGPD_ref_cnil=getSettingAOui('RGPD_ref_cnil');
+$RGPD_cnil_creation=getSettingAOui('RGPD_cnil_creation');
+$RGPD_cnil_maj=getSettingAOui('RGPD_cnil_maj');
+
+echo "
 <p class='bold'>Description du traitement</p>
 <table class='boireaus boireaus_alt'>
-	<tr><th>Nom / sigle</th><td>GEPI <em>(Gestion des élèves par internet)</em></td></tr>
-	<tr><th>Établissement</th><td>".getSettingValue('gepiSchoolName')."<br />
-	".getSettingValue('gepiSchoolAdress1')."<br />
-	".getSettingValue('gepiSchoolAdress2')."<br />
-	".getSettingValue('gepiSchoolZipCode')." ".getSettingValue('gepiSchoolCity')."</td></tr>
-	<tr><th>Réf CNIL</th><td>".getSettingValue('num_enregistrement_cnil')."</td></tr>
-	<tr><th>Date de création</th><td></td></tr>
-	<tr><th>Mise à jour</th><td></td></tr>
-	<tr><th></th><td></td></tr>
+	<tr>
+		<th>Nom / sigle</th>
+		<td".$colspan.">GEPI <em>(Gestion des élèves par internet)</em></td>
+	</tr>
+	<tr>
+		<th>Établissement</th>
+		<td".$colspan.">".getSettingValue('gepiSchoolName')."<br />
+			".getSettingValue('gepiSchoolAdress1')."<br />
+			".getSettingValue('gepiSchoolAdress2')."<br />
+			".getSettingValue('gepiSchoolZipCode')." ".getSettingValue('gepiSchoolCity')."
+		</td>
+	</tr>";
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_ref_cnil'>
+		<th>Réf CNIL</th>
+		<td>".getSettingValue('num_enregistrement_cnil')."</td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_ref_cnil' id='RGPD_ref_cnil' value='y' onchange=\"RGPD_griser_lignes_a_masquer('ref_cnil')\" ".($RGPD_ref_cnil ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_ref_cnil) {
+	echo "
+	<tr id='tr_ref_cnil'>
+		<th>Réf CNIL</th>
+		<td>".getSettingValue('num_enregistrement_cnil')."</td>
+	</tr>";
+}
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_cnil_creation'>
+		<th>Date de création</th>
+		<td><input type='text' name='RGPD_cnil_creation_date' value=\"".getSettingValue('RGPD_cnil_creation_date')."\" /></td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_cnil_creation' id='RGPD_cnil_creation' value='y' onchange=\"RGPD_griser_lignes_a_masquer('cnil_creation')\" ".($RGPD_cnil_creation ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_cnil_creation) {
+	echo "
+	<tr id='tr_cnil_creation'>
+		<th>Date de création</th>
+		<td>".getSettingValue('RGPD_cnil_creation_date')."</td>
+	</tr>";
+}
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_cnil_maj'>
+		<th>Mise à jour</th>
+		<td><input type='text' name='RGPD_cnil_maj_date' value=\"".getSettingValue('RGPD_cnil_maj_date')."\" /></td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_cnil_maj' id='RGPD_cnil_maj' value='y' onchange=\"RGPD_griser_lignes_a_masquer('cnil_maj')\" ".($RGPD_cnil_maj ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_cnil_creation) {
+	echo "
+	<tr id='tr_cnil_maj'>
+		<th>Mise à jour</th>
+		<td>".getSettingValue('RGPD_cnil_creation_date')."</td>
+	</tr>";
+}
+
+echo "
 </table>
+
 <br />
 
 <p class='bold'>Acteurs</p>
@@ -238,6 +415,35 @@ Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec dr
 </table>
 <br />
 
+<script type='text/javascript'>
+	function RGPD_griser_lignes_a_masquer(suffixe_id) {
+		if(document.getElementById('RGPD_'+suffixe_id)) {
+			if(document.getElementById('RGPD_'+suffixe_id).checked==true) {
+				document.getElementById('tr_'+suffixe_id).style.backgroundColor='';
+			}
+			else {
+				document.getElementById('tr_'+suffixe_id).style.backgroundColor='grey';
+			}
+		}
+	}
+
+	RGPD_griser_lignes_a_masquer('ref_cnil');
+	RGPD_griser_lignes_a_masquer('cnil_creation');
+	RGPD_griser_lignes_a_masquer('cnil_maj');
+	/*
+	RGPD_griser_lignes_a_masquer('');
+	RGPD_griser_lignes_a_masquer('');
+	RGPD_griser_lignes_a_masquer('');
+	RGPD_griser_lignes_a_masquer('');
+	*/
+</script>";
+
+
+//			<input type='checkbox' name='RGPD_ref_cnil' id='RGPD_ref_cnil' value='y' onchange=\"if(document.getElementById('RGPD_ref_cnil').checked==true) {document.getElementById('tr_ref_cnil').style.backgroundColor='';}else{document.getElementById('tr_ref_cnil').style.backgroundColor='grey';}\" />
+
+
+echo "
+<a name='generalites'></a>
 <h3>Généralités</h3>
 <p>Indépendamment des modules activés et des droits d'accès donnés, Gepi permet aux utilisateurs d'accéder à un certain nombre d'informations.<br />
 <span style='color:red'>A détailler...</span><br />
@@ -252,75 +458,136 @@ Il peuvent exporter ces listes en fichiers CSV et PDF.</p>
 
 </pre>
 
+<p>Dans Gepi, chaque utilisateur a un compte qui a un statut (et un seul) parmi&nbsp;:</p>
+<ul>
+	<li>
+		<strong>administrateur</strong>&nbsp;: Les comptes administrateurs ne servent que pour&nbsp;:<br />
+		le paramétrage général (nom de l'établissement, adresse,...)<br />
+		l'initialisation de l'année (création des utilisateurs, des classes, des élèves,...)<br />
+		les sauvegardes/restaurations<br />
+		les réglages des droits d'accès (les professeurs peuvent ou non voir telle ou telle chose, les CPEs peuvent ou non...)<br />
+		définir les modules de Gepi à activer<br />
+		etc.
+	</li>
+	<li>
+		<strong>scolarité</strong>&nbsp;: Ces comptes permettent de&nbsp;:<br />
+		Ouvrir/fermer des périodes en saisie pour telle ou telle classe<br />
+		Paramétrer et imprimer les bulletins<br />
+		Imprimer les relevés de notes<br />
+		Saisir les avis des conseils de classe<br />
+		Visualiser les graphiques<br />
+		etc.
+	</li>
+	<li>
+		<strong>CPE</strong>&nbsp;: Les comptes CPE se paramètrent en fonction des besoins&nbsp;:<br />
+		Ils peuvent saisir les absences sur les bulletins (import possible depuis Sconet absences)<br />
+		Ils peuvent gérer les absences dans l'établissement (suivi et mise en place d'un suivi)<br />
+		Faire un suivi de la saisie des absences par les professeurs<br />
+		etc.
+	</li>
+	<li>
+		<strong>professeur</strong>&nbsp;: Ces comptes peuvent saisir selon ce qui a été paramétré par l'administrateur&nbsp;:<br />
+		des devoirs (notes)<br />
+		des appréciations (bulletin)<br />
+		le cahier de textes<br />
+		les absences<br />
+		les fiches du brevet (collège)<br />
+		etc.
+	</li>
+	<li>
+		<strong>secours</strong>&nbsp;: Le statut secours peut&nbsp;:<br />
+		Saisir/corriger les appréciations et moyennes sur les bulletins (par exemple pour dépanner un professeur malade au moment du remplissage des bulletins...)<br />
+		Saisir les absences à la place d'un CPE indisponible<br />
+	</li>
+	<li>
+		<strong>élève</strong>&nbsp;: Ces comptes, quand ils sont créés, permettent à leur titulaire de (suivant les réglages de l'admin)&nbsp;:<br />
+		visualiser leur relevé de notes<br />
+		visualiser leur cahier de textes<br />
+		télécharger leur photo sur le trombinoscope<br />
+		visualiser leur équipe pédagogique<br />
+		etc.
+	</li>
+	<li>
+		<strong>responsable</strong>&nbsp;: Ces comptes, quand ils sont créés, permettent à leur titulaire de (suivant les réglages de l'admin)&nbsp;:<br />
+		visualiser le relevé de notes de leur enfant<br />
+		visualiser le cahier de textes de leur enfant<br />
+		visualiser l'équipe pédagogique de leur enfant<br />
+		etc.
+	</li>
+	<li>
+		<strong>autre</strong>&nbsp;: Ce statut, dit &quot;personnalisé&quot;, permet à l'admin de paramétrer plus finement les droits confiés à un (ou des) utilisateur(s).<br />
+		Cette gestion particulière se fait à partir de la page de gestion des utilisateurs, onglet &quot;statuts personnalisés&quot;.<br />
+		Cette fonctionnalité permet notamment de créer un statut &quot;Chef d'établissement&quot;, ou bien &quot;Inspecteur&quot;, ou encore &quot;C.O.P.&quot;, en fonction des besoins mais aussi des usages de l'établissement.
+	</li>
+</ul>
 
-<pre>Dans Gepi, chaque utilisateur a un compte qui a un statut (et un seul) parmi :
+<p>C'est un peu résumé, mais voilà pour les grandes lignes.<br />
+Le compte administrateur ne doit normalement être utilisé qu'en début d'année.<br />
+Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont les droits appropriés.</p>";
 
-    &quot;administrateur&quot; : Les comptes administrateurs ne servent que pour:
-        le paramétrage général (nom de l'établissement, adresse,...)
-        l'initialisation de l'année (création des utilisateurs, des classes, des élèves,...)
-        les sauvegardes/restaurations
-        les réglages des droits d'accès (les professeurs peuvent ou non voir telle ou telle chose, les CPEs peuvent ou non...)
-        définir les modules de Gepi à activer
-        etc.
-    &quot;scolarité&quot; : Ces comptes permettent de:
-        Ouvrir/fermer des périodes en saisie pour telle ou telle classe
-        Paramétrer et imprimer les bulletins
-        Imprimer les relevés de notes
-        Saisir les avis des conseils de classe
-        Visualiser les graphiques
-        etc.
-    &quot;CPE&quot; : Les comptes CPE se paramètrent en fonction des besoins :
-        Ils peuvent saisir les absences sur les bulletins (import possible depuis Sconet absences)
-        Ils peuvent gérer les absences dans l'établissement (suivi et mise en place d'un suivi)
-        Faire un suivi de la saisie des absences par les professeurs
-        etc.
-    &quot;professeur&quot; : Ces comptes peuvent saisir selon ce qui a été paramétré par l'administrateur :
-        des devoirs (notes)
-        des appréciations (bulletin)
-        le cahier de textes
-        les absences
-        les fiches du brevet (collège)
-        etc.
-    &quot;secours&quot; : Le statut secours peut :
-        Saisir/corriger les appréciations et moyennes sur les bulletins (par exemple pour dépanner un professeur malade au moment du remplissage des bulletins...)
-        Saisir les absences à la place d'un CPE indisponible
-    &quot;élève&quot; : Ces comptes, quand ils sont créés, permettent à leur titulaire de (suivant les réglages de l'admin) :
-        visualiser leur relevé de notes
-        visualiser leur cahier de textes
-        télécharger leur photo sur le trombinoscope
-        visualiser leur équipe pédagogique
-        etc.
-    &quot;responsable&quot; : Ces comptes, quand ils sont créés, permettent à leur titulaire de (suivant les réglages de l'admin) :
-        visualiser le relevé de notes de leur enfant
-        visualiser le cahier de textes de leur enfant
-        visualiser l'équipe pédagogique de leur enfant
-        etc.
-
-    &quot;autre&quot; : Ce statut, dit &quot;personnalisé&quot;, permet à l'admin de paramétrer plus finement les droits confiés à un (ou des) utilisateur(s). Cette gestion particulière se fait à partir de la page de gestion des utilisateurs, onglet &quot;statuts personnalisés&quot;. Cette fonctionnalité permet notamment de créer un statut &quot;Chef d'établissement&quot;, ou bien &quot;Inspecteur&quot;, ou encore &quot;C.O.P.&quot;, en fonction des besoins mais aussi des usages de l'établissement.
-
-C'est un peu résumé, mais voilà pour les grandes lignes.
-
-Le compte administrateur ne doit normalement être utilisé qu'en début d'année.
-Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont les droits appropriés.</pre>
+//no_anti_inject_
 
 
-<a name='modules_actives'></a><h3>Modules activés</h3>
+$RGPD_mod_absences=strtr(stripslashes(getSettingValue('RGPD_mod_absences')), '"', "'");
+$RGPD_mod_abs2=strtr(stripslashes(getSettingValue('RGPD_mod_abs2')), '"', "'");
+$RGPD_mod_abs_prof=strtr(stripslashes(getSettingValue('RGPD_mod_abs_prof')), '"', "'");
+$RGPD_mod_actions=strtr(stripslashes(getSettingValue('RGPD_mod_actions')), '"', "'");
+$RGPD_annees_anterieures=strtr(stripslashes(getSettingValue('RGPD_annees_anterieures')), '"', "'");
+$RGPD_mod_bulletins=strtr(stripslashes(getSettingValue('RGPD_mod_bulletins')), '"', "'");
+$RGPD_mod_CDT=strtr(stripslashes(getSettingValue('RGPD_mod_CDT')), '"', "'");
+$RGPD_mod_CN=strtr(stripslashes(getSettingValue('RGPD_mod_CN')), '"', "'");
+$RGPD_mod_discipline=strtr(stripslashes(getSettingValue('RGPD_mod_discipline')), '"', "'");
+$RGPD_mod_disc_pointage=strtr(stripslashes(getSettingValue('RGPD_mod_disc_pointage')), '"', "'");
+$RGPD_mod_alerte=strtr(stripslashes(getSettingValue('RGPD_mod_alerte')), '"', "'");
+$RGPD_mod_edt_ical=strtr(stripslashes(getSettingValue('RGPD_mod_edt_ical')), '"', "'");
+$RGPD_mod_EDT=strtr(stripslashes(getSettingValue('RGPD_mod_EDT')), '"', "'");
+$RGPD_mod_engagements=strtr(stripslashes(getSettingValue('RGPD_mod_engagements')), '"', "'");
+$RGPD_mod_EPB=strtr(stripslashes(getSettingValue('RGPD_mod_EPB')), '"', "'");
+$RGPD_mod_EXB=strtr(stripslashes(getSettingValue('RGPD_mod_EXB')), '"', "'");
+$RGPD_mod_RSS_CDT=strtr(stripslashes(getSettingValue('RGPD_mod_RSS_CDT')), '"', "'");
+$RGPD_mod_genese_classes=strtr(stripslashes(getSettingValue('RGPD_mod_genese_classes')), '"', "'");
+$RGPD_mod_gest_aid=strtr(stripslashes(getSettingValue('RGPD_mod_gest_aid')), '"', "'");
+$RGPD_mod_inscriptions=strtr(stripslashes(getSettingValue('RGPD_mod_inscriptions')), '"', "'");
+$RGPD_mod_ListesPerso=strtr(stripslashes(getSettingValue('RGPD_mod_ListesPerso')), '"', "'");
+$RGPD_mod_LSUN=strtr(stripslashes(getSettingValue('RGPD_mod_LSUN')), '"', "'");
+$RGPD_mod_OOO=strtr(stripslashes(getSettingValue('RGPD_mod_OOO')), '"', "'");
+$RGPD_mod_notanet=strtr(stripslashes(getSettingValue('RGPD_mod_notanet')), '"', "'");
+$RGPD_mod_orientation=strtr(stripslashes(getSettingValue('RGPD_mod_orientation')), '"', "'");
+$RGPD_statuts_prives=strtr(stripslashes(getSettingValue('RGPD_statuts_prives')), '"', "'");
+$RGPD_mod_trombinoscopes=strtr(stripslashes(getSettingValue('RGPD_mod_trombinoscopes')), '"', "'");
+
+echo "
+<a name='modules_actives'></a>
+<h3>Modules activés</h3>
 <table class='boireaus boireaus_alt resizable sortable'>
 	<tr>
-		<th>Module</th>
-		<th>Finalité</th>
-		<th>Explications</th>
-	</tr>".(getSettingValue('active_module_absence')=='y' ? "
+		<th style='width:10em;'>Module</th>
+		<th style='width:20em;'>Finalité</th>
+		<th style='width:50em;'>Explications</th>
+	</tr>";
+
+if(getSettingValue('active_module_absence')=='y') {
+	echo "
 	<tr>
 		<td>Absences</td>
 		<td>Gestion des absences et retards des élèves</td>
 		<td style='text-align:left'>
 			Le module absences permet de saisir les absences et retards des élèves.
 
-			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "")."
-
+			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "");
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_absences' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_absences."</textarea>";
+	}
+	elseif($RGPD_mod_absences!='') {
+		echo "<br />".nl2br($RGPD_mod_absences);
+	}
+echo "
 		</td>
-	</tr>" : "").(getSettingValue('active_module_absence')=='2' ? "
+	</tr>";
+}
+
+if(getSettingValue('active_module_absence')=='2') {
+	echo "
 	<tr>
 		<td>Absences 2</td>
 		<td>Gestion des absences et retards des élèves</td>
@@ -335,36 +602,80 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 			Des extractions statistiques peuvent aussi être demandées par l'Éducation Nationale.<br />
 			<span style='color:red'>Préciser les champs extraits dans ces exports statistiques.</span><br />
 
-			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "")."
+			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "");
 
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_abs2' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_abs2."</textarea>";
+	}
+	elseif($RGPD_mod_abs2!='') {
+		echo "<br />".nl2br($RGPD_mod_abs2);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_module_absence_professeur') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_module_absence_professeur')) {
+	echo "
 	<tr>
 		<td>Abs/remplacements profs</td>
 		<td>Gérer les absences de courte durée et remplacements de professeurs</td>
 		<td style='text-align:left'>
 			Le module est destiné à saisir des absences de courte durée (journée de stage,...) de professeurs.<br />
-			Les créneaux libérés peuvent alors être proposés aux professeurs pour effectuer un remplacement.
+			Les créneaux libérés peuvent alors être proposés aux professeurs pour effectuer un remplacement.;";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_abs_prof' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_abs_prof."</textarea>";
+	}
+	elseif($RGPD_mod_abs_prof!='') {
+		echo "<br />".nl2br($RGPD_mod_abs_prof);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_mod_actions') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_actions')) { 
+	echo "
 	<tr>
 		<td>Actions</td>
 		<td>Gestion des inscriptions/présence élèves sur, par exemple, les sorties/actions UNSS.</td>
 		<td style='text-align:left'>
 			Ce module permet de gérer les inscriptions d'élèves sur des actions, de pointer leur présence.<br />
 			Les familles peuvent contrôler que la présence de leur enfant a bien été pointée.<br />
-			Si les adresses mail des familles sont dans la base Gepi, une confirmation de présence peut être envoyée par mail.
+			Si les adresses mail des familles sont dans la base Gepi, une confirmation de présence peut être envoyée par mail.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_actions' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_actions."</textarea>";
+	}
+	elseif($RGPD_mod_actions!='') {
+		echo "<br />".nl2br($RGPD_mod_actions);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_annees_anterieures') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_annees_anterieures')) { 
+	echo "
 	<tr>
 		<td>Années antérieures</td>
 		<td>Conserver les bulletins simplifiés des années antérieures des élèves</td>
 		<td style='text-align:left'>
 			Le module permet de conserver les bulletins simplifiés des années passées.<br />
 			L'accès en consultation aux bulletins simplifiés des années passées est géré par des droits définis dans <a href='#droits_acces'>droits d'accès</a>.
-			Les données sont conservées le temps de la scolarité de l'élève dans l'établissement.
+			Les données sont conservées le temps de la scolarité de l'élève dans l'établissement.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_annees_anterieures' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_annees_anterieures."</textarea>";
+	}
+	elseif($RGPD_annees_anterieures!='') {
+		echo "<br />".nl2br($RGPD_annees_anterieures);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_bulletins') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_bulletins')) { 
+	echo "
 	<tr>
 		<td>Bulletins</td>
 		<td>Gérer les bulletins scolaires</td>
@@ -373,9 +684,20 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 			Il permet aux comptes scolarité et éventuellement <em>(selon les droits donnés)</em> aux cpe et aux comptes professeurs désignés ".getSettingValue('gepi_prof_suivi')." de saisir les avis du conseil de classe.<br />
 			Si des mentions sont définies, il est possible d'en attribuer aux élèves pour un bulletin de fin de période.<br />
 			Selon les droits définis, les élèves/responsables peuvent consulter leurs bulletins/les bulletins de leurs enfants, une fois l'accès ouvert <em>(manuellement, ou à une date donnée,... en fin de période)</em>.
-			L'accès en consultation aux bulletins simplifiés, à l'impression des bulletins,... est géré par des droits définis dans <a href='#droits_acces'>droits d'accès</a> pour les différentes catégories d'utilisateurs.
+			L'accès en consultation aux bulletins simplifiés, à l'impression des bulletins,... est géré par des droits définis dans <a href='#droits_acces'>droits d'accès</a> pour les différentes catégories d'utilisateurs.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_bulletins' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_bulletins."</textarea>";
+	}
+	elseif($RGPD_mod_bulletins!='') {
+		echo "<br />".nl2br($RGPD_mod_bulletins);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_cahiers_texte') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_cahiers_texte')) { 
+	echo "
 	<tr>
 		<td>Cahiers de textes</td>
 		<td>Gérer les cahiers de textes</td>
@@ -385,9 +707,20 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 			Un lien en page de login permet de consulter tous les cahiers de textes de toutes les classes.<br />" : "")."
 			Selon les droits donnés dans <a href='#droits_acces'>droits d'accès</a>, les différents statuts ont ou non accès aux cahiers de textes.<br />
 			Lorsque le droit est donné, les élèves/parents n'ont accès qu'aux cahiers de textes les concernant <em>(leurs classes et enseignements)</em>.<br />
-			Ils peuvent aussi si le droit leur est donné pointer les travaux faits ou non du CDT.
+			Ils peuvent aussi si le droit leur est donné pointer les travaux faits ou non du CDT.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_CDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_CDT."</textarea>";
+	}
+	elseif($RGPD_mod_CDT!='') {
+		echo "<br />".nl2br($RGPD_mod_CDT);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_carnets_notes') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_carnets_notes')) { 
+	echo "
 	<tr>
 		<td>Carnets de notes</td>
 		<td>Gérer les notes des élèves</td>
@@ -406,13 +739,40 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 		".(getSettingAOui('GepiAccesEvalCumulEleve') ? "Les professeurs peuvent aussi créer des évaluations cumulées.<br />
 		Il s'agit d'évaluations successives dont le cumul des points donne une note sur le cumul des référentiels.<br />
 		Les professeurs peuvent choisir si telle évaluation-cumul est visible ou non des élèves/responsables.<br />
-		Dans le cas où l'évaluation n'est pas visible dans le module évaluations-cumul, le cumul obtenu sera visible une fois transféré dans le carnet de notes." : "")."</td>
-	</tr>" : "").(getSettingAOui('active_mod_ects') ? "
+		Dans le cas où l'évaluation n'est pas visible dans le module évaluations-cumul, le cumul obtenu sera visible une fois transféré dans le carnet de notes." : "");
+
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_CN' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_CN."</textarea>";
+	}
+	elseif($RGPD_mod_CN!='') {
+		echo "<br />".nl2br($RGPD_mod_CN);
+	}
+
+	echo "</td>
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_ects')) { 
+	echo "
 	<tr>
 		<td>Crédits ECTS</td>
 		<td></td>
-		<td style='text-align:left'></td>
-	</tr>" : "").(getSettingAOui('active_mod_discipline') ? "
+		<td style='text-align:left'>";
+
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_ECTS' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_ECTS."</textarea>";
+	}
+	elseif($RGPD_mod_ECTS!='') {
+		echo "<br />".nl2br($RGPD_mod_ECTS);
+	}
+
+	echo "
+		</td>
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_discipline')) { 
+	echo "
 	<tr>
 		<td>Discipline</td>
 		<td>Gérer les incidents et sanctions</td>
@@ -421,24 +781,57 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 			Les comptes CPE et Scolarité ont le droit de saisir et consulter les incidents, sanctions, avertissements (mises en garde) pour tous les élèves.<br />
 			Les comptes professeurs peuvent avoir des droits plus restreints.<br />
 			Voir la rubrique <a href='#droits_acces'>droits d'accès</a>.<br />
-			Le module permet aux comptes scolarité/cpe d'effectuer des extractions statistiques par classe, globale,... et des exports tableur si le module OpenOffice.org est activé.<br />
+			Le module permet aux comptes scolarité/cpe d'effectuer des extractions statistiques par classe, globale,... et des exports tableur si le module OpenOffice.org est activé.<br />";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_discipline' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_discipline."</textarea>";
+	}
+	elseif($RGPD_mod_discipline!='') {
+		echo "<br />".nl2br($RGPD_mod_discipline);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_mod_disc_pointage') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_disc_pointage')) { 
+	echo "
 	<tr>
 		<td>Discipline/pointage</td>
 		<td>Pointage des menus incidents disciplinaires.</td>
 		<td style='text-align:left'>
 			Ce module permet de pointer de menus incidents ou manquements (travail non fait, oublis de matériel, comportements gênants).<br />
-			Il permet de définir des seuils d'alerte par mail ou message en page d'accueil à destination des différentes catégories d'utilisateurs.
+			Il permet de définir des seuils d'alerte par mail ou message en page d'accueil à destination des différentes catégories d'utilisateurs.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_disc_pointage' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_disc_pointage."</textarea>";
+	}
+	elseif($RGPD_mod_disc_pointage!='') {
+		echo "<br />".nl2br($RGPD_mod_disc_pointage);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_mod_alerte') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_alerte')) { 
+	echo "
 	<tr>
 		<td>Dispositif d'alerte</td>
 		<td>Dispositif d'alerte</td>
 		<td style='text-align:left'>
-			Ce module permet aux personnels de l'établissement disposant d'un compte de déposer des messages d'alerte à destination d'autres personnels choisis pour par exemple signaler à la Vie scolaire qu'un élève présent l'heure précédente n'a pas rejoint la salle suivante.
+			Ce module permet aux personnels de l'établissement disposant d'un compte de déposer des messages d'alerte à destination d'autres personnels choisis pour par exemple signaler à la Vie scolaire qu'un élève présent l'heure précédente n'a pas rejoint la salle suivante.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_alerte' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_alerte."</textarea>";
+	}
+	elseif($RGPD_mod_alerte!='') {
+		echo "<br />".nl2br($RGPD_mod_alerte);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_edt_ical') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_edt_ical')) { 
+	echo "
 	<tr>
 		<td>EDT Ical/Ics</td>
 		<td>Emploi du temps importé depuis un fichier ICAL</td>
@@ -448,9 +841,17 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 			".(getSettingAOui('EdtIcalProf') ? "Les professeurs ont accès aux emplois du temps de leurs classes.<br />" : "")."
 			".(getSettingAOui('EdtIcalProfTous') ? "Les professeurs ont accès aux emplois du temps de toutes les classes.<br />" : "")."
 			".(getSettingAOui('EdtIcalEleve') ? "Les élèves ont accès aux emplois du temps de leurs classes.<br />" : "")."
-			".(getSettingAOui('EdtIcalResponsable') ? "Les responsables ont accès aux emplois du temps des classes de leurs enfants.<br />" : "")."
+			".(getSettingAOui('EdtIcalResponsable') ? "Les responsables ont accès aux emplois du temps des classes de leurs enfants.<br />" : "")."";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_edt_ical' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_edt_ical."</textarea>";
+	}
+	elseif($RGPD_mod_edt_ical!='') {
+		echo "<br />".nl2br($RGPD_mod_edt_ical);
+	}
+	echo "
 		</td>
-	</tr>" : "");
+	</tr>";
+}
 
 if((getSettingAOui('autorise_edt'))||(getSettingAOui('autorise_edt_eleve'))||(getSettingAOui('autorise_edt_admin'))) {
 	echo "
@@ -476,11 +877,19 @@ if((getSettingAOui('autorise_edt'))||(getSettingAOui('autorise_edt_eleve'))||(ge
 	elseif(getSettingAOui('autorise_edt_eleve')) {
 		echo "Les élèves et responsables ont accès à leurs emplois du temps dans Gepi.";
 	}
+
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_EDT."</textarea>";
+	}
+	elseif($RGPD_mod_EDT!='') {
+		echo "<br />".nl2br($RGPD_mod_EDT);
+	}
 	echo "</td>
 	</tr>";
 }
 
-echo (getSettingAOui('active_mod_engagements') ? "
+if(getSettingAOui('active_mod_engagements')) {
+	echo "
 	<tr>
 		<td>Engagements</td>
 		<td>Gérer les engagements des élèves/parents</td>
@@ -489,18 +898,40 @@ echo (getSettingAOui('active_mod_engagements') ? "
 			Les engagements élèves sont en général Délégué de classe, suppléant, membre de l'association sportive...<br />
 			Les engagements responsables/parents sont en général Représentant des élèves aux conseil de classe,...<br />
 			Le module permet, dans d'autres modules, de cibler tels élèves/parents pour une communication, l'envoi de convocation au conseil de classe,...<br />
-			Les engagements élèves, s'ils sont saisis dans Gepi, sont extraits et remontés vers les Livrets scolaire collège (LSU) et lycée (LSL) si les module/plugin correspondants sont activés dans Gepi.
+			Les engagements élèves, s'ils sont saisis dans Gepi, sont extraits et remontés vers les Livrets scolaire collège (LSU) et lycée (LSL) si les module/plugin correspondants sont activés dans Gepi.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_engagements' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_engagements."</textarea>";
+	}
+	elseif($RGPD_mod_engagements!='') {
+		echo "<br />".nl2br($RGPD_mod_engagements);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_mod_epreuve_blanche') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_epreuve_blanche')) { 
+	echo "
 	<tr>
 		<td>Epreuves blanches</td>
 		<td>Gérer des épreuves blanches</td>
 		<td style='text-align:left'>
 			Le module permet de sélectionner des enseignements (les élèves inscrits dans ces enseignements), de choisir des professeurs correcteurs, de choisir les salles d'épreuve, d'y affecter les élèves, de générer les listes d'émargemement, liste d'affichage, les vignettes à coller sur les copies pour les anonymer, les vignettes à coller sur les tables, d'attribuer des copies aux professeurs (qui ne voient que le numéro d'anonymat lors de la saisie).<br />
 			Les professeurs n'ont accès qu'à la saisie anonymée des copies qui leurs ont été attribuées.<br />
-			Les comptes scolarité ou administrateurs peuvent générer les bilans et transférer les notes obtenues dans les carnets de notes des enseignements sélectionnés au départ.<br />
+			Les comptes scolarité ou administrateurs peuvent générer les bilans et transférer les notes obtenues dans les carnets de notes des enseignements sélectionnés au départ.<br />";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EPB' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_EPB."</textarea>";
+	}
+	elseif($RGPD_mod_EPB!='') {
+		echo "<br />".nl2br($RGPD_mod_EPB);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_mod_examen_blanc') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_examen_blanc')) { 
+	echo "
 	<tr>
 		<td>Examens blancs</td>
 		<td>Gérer des examens blancs</td>
@@ -508,17 +939,39 @@ echo (getSettingAOui('active_mod_engagements') ? "
 			Le module permet aux comptes scolarité ou administrateurs de sélectionner des classes, des enseignements, de leur affecter des coefficients pour générer des bulletins d'examen par élève.<br />
 			Dans chaque enseignement, le gestionnaire choisit une évaluation ou la moyenne d'une ou plusieurs périodes comme note à prendre en compte dans les bulletins.<br />
 			Il est également possible de saisir des notes ne correspondant pas à des saisies déjà effectuées.<br />
-			".(getSettingAOui('modExbPP') ? "Les comptes ".getSettingValue('gepi_prof_suivi')." sont autorisés à créer des examens blancs pour par exemple simuler des bilans d'examen d'après les résultats obtenus en cours d'année." : "")."
+			".(getSettingAOui('modExbPP') ? "Les comptes ".getSettingValue('gepi_prof_suivi')." sont autorisés à créer des examens blancs pour par exemple simuler des bilans d'examen d'après les résultats obtenus en cours d'année." : "")."";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EXB' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_EXB."</textarea>";
+	}
+	elseif($RGPD_mod_EXB!='') {
+		echo "<br />".nl2br($RGPD_mod_EXB);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('rss_cdt_eleve') ? "
+	</tr>";
+}
+
+if(getSettingAOui('rss_cdt_eleve')) { 
+	echo "
 	<tr>
 		<td>Flux RSS</td>
 		<td>Générer un flux RSS du contenu du Cahier de textes</td>
 		<td style='text-align:left'>
 			Ce module est associé au module Cahier de textes.<br />
-			Il permet aux élèves, sans qu'ils doivent se connecter avec leur compte utilisateur, d'accéder via une adresse (url) aux travaux à faire donnés dans les Cahiers de textes les concernant.
+			Il permet aux élèves, sans qu'ils doivent se connecter avec leur compte utilisateur, d'accéder via une adresse (url) aux travaux à faire donnés dans les Cahiers de textes les concernant.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_RSS_CDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_RSS_CDT."</textarea>";
+	}
+	elseif($RGPD_mod_RSS_CDT!='') {
+		echo "<br />".nl2br($RGPD_mod_RSS_CDT);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_mod_genese_classes') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_genese_classes')) { 
+	echo "
 	<tr>
 		<td>Genèse des classes</td>
 		<td>Gérer les affectations des élèves dans des classes au changement d'année.</td>
@@ -526,9 +979,20 @@ echo (getSettingAOui('active_mod_engagements') ? "
 			Le module permet de choisir sur quelles classes futures on aura telles options.<br />
 			Le module empêche l'inscription d'élèves avec des options non autorisées sur certaines classes.<br />
 			Il permet de définir des profils d'élèves d'après leur niveau scolaire et leur attitude pour voir une fois les répartitions d'élèves effectuées si on arrive à une certaine hétérogénéité ou si on a une concentration d'élèves faibles ou difficiles dans une classe.<br />
-			Le module est conçu pour qu'une fois les contraintes posées, un groupe de professeurs, personnels de Vie scolaire,... répartissent petit à petit les élèves dans les classes pour ne pas isoler des élèves et éviter des cocktails malheureux d'élèves.
+			Le module est conçu pour qu'une fois les contraintes posées, un groupe de professeurs, personnels de Vie scolaire,... répartissent petit à petit les élèves dans les classes pour ne pas isoler des élèves et éviter des cocktails malheureux d'élèves.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_genese_classes' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_genese_classes."</textarea>";
+	}
+	elseif($RGPD_mod_genese_classes!='') {
+		echo "<br />".nl2br($RGPD_mod_genese_classes);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_mod_gest_aid') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_gest_aid')) { 
+	echo "
 	<tr>
 		<td>Gestionnaires AID</td>
 		<td>Étendre les possibilités sur les AID (Activités Inter-Disciplinaires)</td>
@@ -537,45 +1001,132 @@ echo (getSettingAOui('active_mod_engagements') ? "
 			Les gestionnaires peuvent être des comptes professeur, cpe ou scolarité.<br />
 			Il est possible de générer des exports CSV".(getSettingAOui('active_module_trombinoscopes') ? ", de générer des trombinoscopes <em>(si le module Trombinoscopes est activé)</em>." : "")."<br />
 			<span style='color:red'>à voir CSV droits pour exports DAREIC, Verdier,... accès aux mail, tel, adresses élèves/responsables</span><br />
-			En collège, les AID sont utilisés pour gérer les EPI, AP et Parcours (Parcours avenir, Parcours santé,...) destinés à remonter vers le Livret Scolaire Collège (LSU).<br />
+			En collège, les AID sont utilisés pour gérer les EPI, AP et Parcours (Parcours avenir, Parcours santé,...) destinés à remonter vers le Livret Scolaire Collège (LSU).<br />";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_gest_aid' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_gest_aid."</textarea>";
+	}
+	elseif($RGPD_mod_gest_aid!='') {
+		echo "<br />".nl2br($RGPD_mod_gest_aid);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_inscription') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_inscription')) { 
+	echo "
 	<tr>
 		<td>Inscription</td>
-		<td></td>
-		<td style='text-align:left'></td>
-	</tr>" : "").(getSettingAOui('GepiListePersonnelles') ? "
+		<td>Gérer des inscriptions de personnels sur des actions</td>
+		<td style='text-align:left'>
+			Le module Inscription vous permet de définir un ou plusieurs items (stage, intervention, ...), au(x)quel(s) les utilisateurs <em>(personnels de l'établissement)</em> pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_inscriptions' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_inscriptions."</textarea>";
+	}
+	elseif($RGPD_mod_inscriptions!='') {
+		echo "<br />".nl2br($RGPD_mod_inscriptions);
+	}
+	echo "
+		</td>
+	</tr>";
+}
+
+if(getSettingAOui('GepiListePersonnelles')) { 
+	echo "
 	<tr>
 		<td>Listes personnelles</td>
-		<td></td>
-		<td style='text-align:left'></td>
-	</tr>" : "").(getSettingAOui('active_module_LSUN') ? "
+		<td>Génération de listes personnelles</td>
+		<td style='text-align:left'>
+			Le module permet aux enseignants de créer des listes personnelles d'élèves avec possibilité de saisir des commentaires.<br />
+			Cela peut par exemple servir à un ".getSettingValue('gepi_prof_suivi')." pour pointer les documents transmis/récupérés.<br />
+			Les professeurs ont accès dans ce module aux nom, prénom, genre (M/F) et classe des élèves choisis parmi leurs élèves <em>(Enseignements et AID)</em>.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_ListesPerso' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_ListesPerso."</textarea>";
+	}
+	elseif($RGPD_mod_ListesPerso!='') {
+		echo "<br />".nl2br($RGPD_mod_ListesPerso);
+	}
+	echo "
+		</td>
+	</tr>";
+}
+
+if(getSettingAOui('active_module_LSUN')) { 
+	echo "
 	<tr>
 		<td>Livret Scolaire Unique</td>
 		<td>Remontée des bulletins vers l'application nationale LSU</td>
 		<td style='text-align:left'>
 			Ce module permet de remonter vers l'application nationale LSU, les données saisies dans les bulletins des élèves.<br />
-			L'application nationale LSU est destinée à conserver les bulletins au-delà de la scolarité de l'élève dans l'établissement <em>(et donc retrouver ses bulletins numériques après un changement d'établissement et même après la fin de sa scolarité au collège)</em>.<br />
+			L'application nationale LSU est destinée à conserver les bulletins au-delà de la scolarité de l'élève dans l'établissement <em>(et donc retrouver ses bulletins numériques après un changement d'établissement et même après la fin de sa scolarité au collège)</em>.<br />";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_LSUN' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_LSUN."</textarea>";
+	}
+	elseif($RGPD_mod_LSUN!='') {
+		echo "<br />".nl2br($RGPD_mod_LSUN);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_mod_ooo') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_ooo')) { 
+	echo "
 	<tr>
 		<td>Modèles openDocument</td>
-		<td></td>
-		<td style='text-align:left'></td>
-	</tr>" : "").(getSettingAOui('active_notanet') ? "
+		<td>Génération/exportation de documents au format openDocument (OpenOffice.org, LibreOffice,...)</td>
+		<td style='text-align:left'>
+			Le module permet d'exporter des listes, de générer des documents Traitement de texte et Tableur au format openDocument (ODT/ODS) dans divers modules <em>(Discipline, Absences2,... s'ils sont activés)</em>.<br />
+			Le module permet aussi le Publipostage pour générer des fichiers ODS/ODS d'après des listes d'élèves de classes, groupes,...<br />";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_OOO' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_OOO."</textarea>";
+	}
+	elseif($RGPD_mod_OOO!='') {
+		echo "<br />".nl2br($RGPD_mod_OOO);
+	}
+	echo "
+		</td>
+	</tr>";
+}
+
+if(getSettingAOui('active_notanet')) { 
+	echo "
 	<tr>
 		<td>Notanet/Brevet</td>
-		<td>Remontée des notes moyennes annuelles, appréciations et compétences du socle vers l'application nationale Notanet.<br />
-		Ce module n'est en principe plus utilisé depuis la mise en place de LSU <em>(voir module LSU)</em>.</td>
-		<td style='text-align:left'></td>
-	</tr>" : "").(getSettingAOui('active_mod_orientation') ? "
+		<td>Remontée des notes moyennes annuelles, appréciations et compétences du socle vers l'application nationale Notanet.</td>
+		<td style='text-align:left'>
+			Ce module n'est en principe plus utilisé depuis la mise en place de LSU <em>(voir module LSU)</em>.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_notanet' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_notanet."</textarea>";
+	}
+	elseif($RGPD_mod_notanet!='') {
+		echo "<br />".nl2br($RGPD_mod_notanet);
+	}
+	echo "
+		</td>
+	</tr>";
+}
+
+if(getSettingAOui('active_mod_orientation')) { 
+	echo "
 	<tr>
 		<td>Orientation</td>
 		<td>Orientation des élèves</td>
 		<td style='text-align:left'>
-			Ce module permet aux comptes scolarité de définir les orientations possibles et aux comptes scolarité et ".getSettingValue('gepi_prof_suivi')." de saisir les voeux d'orientation, de suggérer des orientations pour les faire apparaitre sur les bulletins.
+			Ce module permet aux comptes scolarité de définir les orientations possibles et aux comptes scolarité et ".getSettingValue('gepi_prof_suivi')." de saisir les voeux d'orientation, de suggérer des orientations pour les faire apparaitre sur les bulletins.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_orientation' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_orientation."</textarea>";
+	}
+	elseif($RGPD_mod_orientation!='') {
+		echo "<br />".nl2br($RGPD_mod_orientation);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('statuts_prives') ? "
+	</tr>";
+}
+
+if(getSettingAOui('statuts_prives')) { 
+	echo "
 	<tr>
 		<td>Statuts perso.</td>
 		<td>Créer des statuts utilisateurs avec des droits particuliers</td>
@@ -589,9 +1140,20 @@ echo (getSettingAOui('active_mod_engagements') ? "
 			en fonction des besoins mais aussi des usages de l'établissement.<br />
 			Il s'agit généralement de comptes avec des besoins limités, qui ne nécessitent pas un accès à toutes les fonctionnalités de Gepi et dont le foisonnement peut perdre un utilisateur qui n'en fait pas un usage très régulier.<br />
 
-			<a href='#droits_statuts_personnalises'>Voir les droits pour les statuts personnalisés existants</a>.
+			<a href='#droits_statuts_personnalises'>Voir les droits pour les statuts personnalisés existants</a>.";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_statuts_prives' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_statuts_prives."</textarea>";
+	}
+	elseif($RGPD_statuts_prives!='') {
+		echo "<br />".nl2br($RGPD_statuts_prives);
+	}
+	echo "
 		</td>
-	</tr>" : "").(getSettingAOui('active_module_trombinoscopes') ? "
+	</tr>";
+}
+
+if(getSettingAOui('active_module_trombinoscopes')) { 
+	echo "
 	<tr>
 		<td>Trombinoscopes</td>
 		<td>Permet de consulter les photos des élèves d'une classe, d'un enseignement, d'une activité inter-disciplinaire (AID).</td>
@@ -602,12 +1164,22 @@ echo (getSettingAOui('active_mod_engagements') ? "
 			Les personnes autorisées à téléverser les photos des élèves sur le serveur Gepi sont par défaut les comptes 'administrateur' et 'scolarité'.<br />
 			Le téléversement peut être ouvert aux CPE et ".getSettingValue('gepi_prof_suivi')." via des <a href='#droits_acces'>droits d'accès</a> supplémentaires.<br />
 			".(getSettingAOui('GepiAccesEleTrombiPersonnels') ? "<br />
-			Le trombinoscope des personnels de l'établissement est activé<br /><em>(cela ne signifie pas pour autant que la photo a nécessairement été téléversée sur le serveur Gepi)</em>." : "")."
+			Le trombinoscope des personnels de l'établissement est activé<br /><em>(cela ne signifie pas pour autant que la photo a nécessairement été téléversée sur le serveur Gepi)</em>." : "")."";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_trombinoscopes' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_trombinoscopes."</textarea>";
+	}
+	elseif($RGPD_mod_trombinoscopes!='') {
+		echo "<br />".nl2br($RGPD_mod_trombinoscopes);
+	}
+	echo "
 		</td>
-	</tr>" : "")."
+	</tr>";
+}
+echo "
 </table>
 
-<a name='plugins'></a><h3>Plugins</h3>
+<a name='plugins'></a>
+<h3>Plugins</h3>
 <p>Des plugins peuvent être développés pour ajouter des fonctionnalités à Gepi.</p>
 <p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml existants sur <a href='http://www.sylogix.org/projects/gepi/files' target='_blank'>http://www.sylogix.org/projects/gepi/files</a> pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>
 <p style='color:red'>Ajouter la possibilité pour l'administrateur de saisir un commentaire.</p>";
@@ -663,10 +1235,10 @@ foreach ($liste_plugins as $plugin) {
 		<td>".$xml->auteur."</td>
 		<td style='text-align:left'>
 		".(isset($xml->description_detaillee) ? nl2br($xml->description_detaillee) : "-");
-		$commentaire_plug=getSettingValue('RGPD_plug_'.str_replace("_", " ", $plugin->getNom()));
+		$commentaire_plug=strtr(stripslashes(getSettingValue('RGPD_plug_'.str_replace(" ", "_", $plugin->getNom()))), '"', "'");
 		if($_SESSION['statut']=='administrateur') {
 			// Permettre la modification du commentaire
-			echo "<br /><textarea name='".'RGPD_plug_'.str_replace("_", " ", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">$commentaire_plug</textarea>";
+			echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_plug_".str_replace(" ", "_", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$commentaire_plug."</textarea>";
 		}
 		elseif($commentaire_plug!='') {
 			echo "<br />".nl2br($commentaire_plug);
@@ -683,7 +1255,8 @@ echo "
 //==============================================================================
 
 echo "
-<a name='droits_acces'></a><h3>Droits d'accès</h3>
+<a name='droits_acces'></a>
+<h3>Droits d'accès</h3>
 <p>Des droits d'accès permettent de personnaliser des autorisations dans divers modules de Gepi&nbsp;:</p>
 <table class='boireaus boireaus_alt resizable sortable'>
 	<tr>
@@ -712,7 +1285,8 @@ if(getSettingAOui('statuts_prives')) {
 	include_once("../utilisateurs/creer_statut_autorisation.php");
 
 	echo "
-<a name='droits_statuts_personnalises'></a><h3>Statuts personnalisés</h3>";
+<a name='droits_statuts_personnalises'></a>
+<h3>Statuts personnalisés</h3>";
 
 	// Problème: Actuellement, on enregistre les url des pages accessibles, pas ce à quoi elles correspondent.
 	// Ajouter une colonne à $menu_accueil pour préciser concrètement les droits donnés
@@ -753,6 +1327,16 @@ if(getSettingAOui('statuts_prives')) {
 		echo "
 </table>";
 	}
+}
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+		<div id='fixe'>
+			<input type='submit' value='Enregistrer' />
+		</div>
+		<p><input type='submit' value='Enregistrer' /></p>
+	</fieldset>
+</form>";
 }
 
 require("../lib/footer.inc.php");
