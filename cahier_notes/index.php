@@ -71,6 +71,8 @@ if (getSettingValue("active_carnets_notes")!='y') {
     die("Le module n'est pas activé.");
 }
 
+//debug_var();
+
 $msg="";
 
 unset($id_groupe);
@@ -91,30 +93,33 @@ if ($id_groupe != NULL) {
 
 if (is_numeric($id_groupe) && $id_groupe > 0) {
 
-    $sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='".$_SESSION['login']."';";
-    $test_prof_groupe=mysqli_query($GLOBALS["mysqli"], $sql);
-    if(mysqli_num_rows($test_prof_groupe)==0) {
-        $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+	$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='".$_SESSION['login']."';";
+	$test_prof_groupe=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_prof_groupe)==0) {
+		$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
 		unset($_SESSION['id_groupe_session']);
 		tentative_intrusion(1, "Tentative d'accès à un carnet de notes qui ne lui appartient pas (id_groupe=$id_groupe)");
-        // Sans le unset($_SESSION['id_groupe_session']) avec ces tentative_intrusion(), une modif d'id_groupe en barre d'adresse me provoquait 7 insertions... d'où un score à +7 et une déconnexion
-        header("Location: index.php?msg=$mess");
-        die();
-    }
+		// Sans le unset($_SESSION['id_groupe_session']) avec ces tentative_intrusion(), une modif d'id_groupe en barre d'adresse me provoquait 7 insertions... d'où un score à +7 et une déconnexion
+		header("Location: index.php?msg=$mess");
+		die();
+	}
 
-    $current_group = get_group($id_groupe);
+	$current_group = get_group($id_groupe);
 }
 
 // On teste si le carnet de notes appartient bien à la personne connectée
 if ((isset($_POST['id_racine'])) or (isset($_GET['id_racine']))) {
-    $id_racine = isset($_POST['id_racine']) ? $_POST['id_racine'] : (isset($_GET['id_racine']) ? $_GET['id_racine'] : NULL);
-    if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
-        $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+	$id_racine = isset($_POST['id_racine']) ? $_POST['id_racine'] : (isset($_GET['id_racine']) ? $_GET['id_racine'] : NULL);
+	if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
+		$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
 		unset($_SESSION['id_groupe_session']);
 		tentative_intrusion(1, "Tentative d'accès à un carnet de notes qui ne lui appartient pas (id_racine=$id_racine)");
-        header("Location: index.php?msg=$mess");
-        die();
-    }
+		header("Location: index.php?msg=$mess");
+		die();
+	}
+
+	// 20180515 : Contrôler qu'il y a cohérence id_racine et id_groupe
+	//            Si ça ne colle pas, forcer id_groupe et recalculer current_group
 }
 
 if(
@@ -781,7 +786,7 @@ var tab_per_cn=new Array();\n";
 	// ou alors stocker ici l'info en session pour la période...
 
 	if(acces_modif_liste_eleves_grp_groupes($id_groupe)) {
-		echo "<a href='../groupes/grp_groupes_edit_eleves.php?id_groupe=$id_groupe' title=\"Si la liste des élèves du groupe affiché n'est pas correcte, vous êtes autorisé à modifier la liste.\">Modifier le groupe <img src='../images/icons/edit_user.png' class='icone16' alt=\"Modifier.\" /></a></div>";
+		echo "<a href='../groupes/grp_groupes_edit_eleves.php?id_groupe=$id_groupe' title=\"Si la liste des élèves du groupe affiché n'est pas correcte, vous êtes autorisé à modifier la liste.\">Modifier le groupe <img src='../images/icons/edit_user.png' class='icone16' alt=\"Modifier.\" /></a>";
 	}
 	else {
 		echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
@@ -795,6 +800,14 @@ var tab_per_cn=new Array();\n";
 
 	//if(isset($current_group)) { echo "DEBUG 5 : ".$current_group['classlist_string']."<br />";}
 
+// 20180515
+/*
+echo "<div style='width:30em;float:left;'>";
+echo "<pre>";
+print_r($current_group);
+echo "</pre>";
+echo "</div>";
+*/
 	//if((isset($current_group["classes"]["list"]))&&(count($current_group["classes"]["list"])==1)) {
 	if(isset($current_group["classes"]["list"])) {
 		echo "<div style='float:right; width:30em; font-size:x-small;'>";
@@ -830,6 +843,14 @@ var tab_per_cn=new Array();\n";
     }
     echo "</p>\n";
 
+// 20180515
+/*
+echo "<div style='width:30em;float:left;'>";
+echo "<pre>";
+print_r($current_group);
+echo "</pre>";
+echo "</div>";
+*/
 //=========================
 $chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group, "left");
 echo $chaine_date_conseil_classe;
@@ -879,6 +900,12 @@ echo $chaine_date_conseil_classe;
 
 		echo $info_anomalie;
 	}
+
+// 20180515
+/*
+echo "<p>\$id_racine=$id_racine<br />
+id_groupe=".$current_group["id"]."</p>";
+*/
 
 	echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
 	$empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
