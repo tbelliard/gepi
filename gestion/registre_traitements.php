@@ -95,6 +95,7 @@ if($_SESSION['statut']=='administrateur') {
 				);
 		foreach($tab_param as $param) {
 			if(isset($_POST[$param])) {
+				//echo "$param -&gt; y<br />";
 				if(!saveSetting($param, 'y')) {
 					$msg.="Erreur lors de l'enregistrement du paramètre '".$param."'.<br />";
 				}
@@ -103,6 +104,7 @@ if($_SESSION['statut']=='administrateur') {
 				}
 			}
 			else {
+				//echo "$param -&gt; n<br />";
 				if(!saveSetting($param, 'n')) {
 					$msg.="Erreur lors de l'enregistrement du paramètre '".$param."'.<br />";
 				}
@@ -227,12 +229,13 @@ include('droits_acces.inc.php');
 $javascript_specifique[] = "lib/tablekit";
 $utilisation_tablekit="ok";
 
+$themessage = 'Des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Registre des traitements";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+echo "<p class='bold'><a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
 if($_SESSION['statut']=='administrateur') {
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -271,7 +274,7 @@ if($_SESSION['statut']=='administrateur') {
 </ul>
 <p>Ces liens ne sont pas proposés par défaut dans Gepi pour les non-administrateurs.<br />
 Libre à vous de les mentionner dans le petit texte facultatif de présentation qui suit&nbsp;:<br />
-<textarea cols='60' name='no_anti_inject_RGPD_texte_presentation' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_texte_presentation."</textarea>
+<textarea cols='60' name='no_anti_inject_RGPD_texte_presentation' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_texte_presentation."</textarea>
 </p>";
 
 }
@@ -324,7 +327,7 @@ if($_SESSION['statut']=='administrateur') {
 		<th>Réf CNIL</th>
 		<td>".getSettingValue('num_enregistrement_cnil')."</td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_ref_cnil' id='RGPD_ref_cnil' value='y' onchange=\"RGPD_griser_lignes_a_masquer('ref_cnil')\" ".($RGPD_ref_cnil ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_ref_cnil' id='RGPD_ref_cnil' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('ref_cnil')\" ".($RGPD_ref_cnil ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -340,9 +343,9 @@ if($_SESSION['statut']=='administrateur') {
 	echo "
 	<tr id='tr_cnil_creation'>
 		<th>Date de création</th>
-		<td><input type='text' name='RGPD_cnil_creation_date' value=\"".getSettingValue('RGPD_cnil_creation_date')."\" /></td>
+		<td><input type='text' name='RGPD_cnil_creation_date' value=\"".getSettingValue('RGPD_cnil_creation_date')."\" onchange=\"changement();\" /></td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_cnil_creation' id='RGPD_cnil_creation' value='y' onchange=\"RGPD_griser_lignes_a_masquer('cnil_creation')\" ".($RGPD_cnil_creation ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_cnil_creation' id='RGPD_cnil_creation' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('cnil_creation')\" ".($RGPD_cnil_creation ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -358,9 +361,9 @@ if($_SESSION['statut']=='administrateur') {
 	echo "
 	<tr id='tr_cnil_maj'>
 		<th>Mise à jour</th>
-		<td><input type='text' name='RGPD_cnil_maj_date' value=\"".getSettingValue('RGPD_cnil_maj_date')."\" /></td>
+		<td><input type='text' name='RGPD_cnil_maj_date' value=\"".getSettingValue('RGPD_cnil_maj_date')."\" onchange=\"changement();\" /></td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_cnil_maj' id='RGPD_cnil_maj' value='y' onchange=\"RGPD_griser_lignes_a_masquer('cnil_maj')\" ".($RGPD_cnil_maj ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_cnil_maj' id='RGPD_cnil_maj' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('cnil_maj')\" ".($RGPD_cnil_maj ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -445,9 +448,9 @@ if($_SESSION['statut']=='administrateur') {
 	<tr>
 		<th>Maîtrise d'ouvrage
 		</th>
-		<td><input type='text' name='RGPD_maitrise_ouvrage_nom' value=\"".$RGPD_maitrise_ouvrage_nom."\" /></td>
-		<td><input type='text' name='RGPD_maitrise_ouvrage_adresse' value=\"".$RGPD_maitrise_ouvrage_adresse."\" /></td>
-		<td><input type='text' name='RGPD_maitrise_ouvrage_tel' value=\"".$RGPD_maitrise_ouvrage_tel."\" /></td>
+		<td><input type='text' name='RGPD_maitrise_ouvrage_nom' value=\"".$RGPD_maitrise_ouvrage_nom."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_maitrise_ouvrage_adresse' value=\"".$RGPD_maitrise_ouvrage_adresse."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_maitrise_ouvrage_tel' value=\"".$RGPD_maitrise_ouvrage_tel."\" onchange=\"changement();\" /></td>
 		<td><img src='../images/enabled.png' class='icone20' /></td>
 	</tr>";
 }
@@ -466,11 +469,11 @@ if($_SESSION['statut']=='administrateur') {
 	echo "
 	<tr id='tr_delegue_protection_donnees'>
 		<th>Délégué à la protection des données</th>
-		<td><input type='text' name='RGPD_delegue_protection_donnees_nom' value=\"".$RGPD_delegue_protection_donnees_nom."\" /></td>
-		<td><input type='text' name='RGPD_delegue_protection_donnees_adresse' value=\"".$RGPD_delegue_protection_donnees_adresse."\" /></td>
-		<td><input type='text' name='RGPD_delegue_protection_donnees_tel' value=\"".$RGPD_delegue_protection_donnees_tel."\" /></td>
+		<td><input type='text' name='RGPD_delegue_protection_donnees_nom' value=\"".$RGPD_delegue_protection_donnees_nom."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_delegue_protection_donnees_adresse' value=\"".$RGPD_delegue_protection_donnees_adresse."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_delegue_protection_donnees_tel' value=\"".$RGPD_delegue_protection_donnees_tel."\" onchange=\"changement();\" /></td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_delegue_protection_donnees' id='RGPD_delegue_protection_donnees' value='y' onchange=\"RGPD_griser_lignes_a_masquer('delegue_protection_donnees')\" ".($RGPD_delegue_protection_donnees ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_delegue_protection_donnees' id='RGPD_delegue_protection_donnees' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('delegue_protection_donnees')\" ".($RGPD_delegue_protection_donnees ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -488,11 +491,11 @@ if($_SESSION['statut']=='administrateur') {
 	echo "
 	<tr id='tr_representant'>
 		<th>Représentant</th>
-		<td><input type='text' name='RGPD_representant_nom' value=\"".$RGPD_representant_nom."\" /></td>
-		<td><input type='text' name='RGPD_representant_adresse' value=\"".$RGPD_representant_adresse."\" /></td>
-		<td><input type='text' name='RGPD_representant_tel' value=\"".$RGPD_representant_tel."\" /></td>
+		<td><input type='text' name='RGPD_representant_nom' value=\"".$RGPD_representant_nom."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_representant_adresse' value=\"".$RGPD_representant_adresse."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_representant_tel' value=\"".$RGPD_representant_tel."\" onchange=\"changement();\" /></td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_representant' id='RGPD_representant' value='y' onchange=\"RGPD_griser_lignes_a_masquer('representant')\" ".($RGPD_representant ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_representant' id='RGPD_representant' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('representant')\" ".($RGPD_representant ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -510,11 +513,11 @@ if($_SESSION['statut']=='administrateur') {
 	echo "
 	<tr id='tr_resp_conjoint_1'>
 		<th>Responsable conjoint 1</th>
-		<td><input type='text' name='RGPD_resp_conjoint_1_nom' value=\"".$RGPD_resp_conjoint_1_nom."\" /></td>
-		<td><input type='text' name='RGPD_resp_conjoint_1_adresse' value=\"".$RGPD_resp_conjoint_1_adresse."\" /></td>
-		<td><input type='text' name='RGPD_resp_conjoint_1_tel' value=\"".$RGPD_resp_conjoint_1_tel."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_1_nom' value=\"".$RGPD_resp_conjoint_1_nom."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_1_adresse' value=\"".$RGPD_resp_conjoint_1_adresse."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_1_tel' value=\"".$RGPD_resp_conjoint_1_tel."\" onchange=\"changement();\" /></td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_resp_conjoint_1' id='RGPD_resp_conjoint_1' value='y' onchange=\"RGPD_griser_lignes_a_masquer('resp_conjoint_1')\" ".($RGPD_resp_conjoint_1 ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_resp_conjoint_1' id='RGPD_resp_conjoint_1' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('resp_conjoint_1')\" ".($RGPD_resp_conjoint_1 ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -533,11 +536,11 @@ if($_SESSION['statut']=='administrateur') {
 	echo "
 	<tr id='tr_resp_conjoint_2'>
 		<th>Responsable conjoint 2</th>
-		<td><input type='text' name='RGPD_resp_conjoint_2_nom' value=\"".$RGPD_resp_conjoint_2_nom."\" /></td>
-		<td><input type='text' name='RGPD_resp_conjoint_2_adresse' value=\"".$RGPD_resp_conjoint_2_adresse."\" /></td>
-		<td><input type='text' name='RGPD_resp_conjoint_2_tel' value=\"".$RGPD_resp_conjoint_2_tel."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_2_nom' value=\"".$RGPD_resp_conjoint_2_nom."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_2_adresse' value=\"".$RGPD_resp_conjoint_2_adresse."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_2_tel' value=\"".$RGPD_resp_conjoint_2_tel."\" onchange=\"changement();\" /></td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_resp_conjoint_2' id='RGPD_resp_conjoint_2' value='y' onchange=\"RGPD_griser_lignes_a_masquer('resp_conjoint_2')\" ".($RGPD_resp_conjoint_2 ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_resp_conjoint_2' id='RGPD_resp_conjoint_2' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('resp_conjoint_2')\" ".($RGPD_resp_conjoint_2 ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -556,11 +559,11 @@ if($_SESSION['statut']=='administrateur') {
 	echo "
 	<tr id='tr_resp_conjoint_3'>
 		<th>Responsable conjoint 3</th>
-		<td><input type='text' name='RGPD_resp_conjoint_3_nom' value=\"".$RGPD_resp_conjoint_3_nom."\" /></td>
-		<td><input type='text' name='RGPD_resp_conjoint_3_adresse' value=\"".$RGPD_resp_conjoint_3_adresse."\" /></td>
-		<td><input type='text' name='RGPD_resp_conjoint_3_tel' value=\"".$RGPD_resp_conjoint_3_tel."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_3_nom' value=\"".$RGPD_resp_conjoint_3_nom."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_3_adresse' value=\"".$RGPD_resp_conjoint_3_adresse."\" onchange=\"changement();\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_3_tel' value=\"".$RGPD_resp_conjoint_3_tel."\" onchange=\"changement();\" /></td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_resp_conjoint_3' id='RGPD_resp_conjoint_3' value='y' onchange=\"RGPD_griser_lignes_a_masquer('resp_conjoint_3')\" ".($RGPD_resp_conjoint_3 ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_resp_conjoint_3' id='RGPD_resp_conjoint_3' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('resp_conjoint_3')\" ".($RGPD_resp_conjoint_3 ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -580,7 +583,7 @@ $RGPD_explication_acteurs=strtr(stripslashes(getSettingValue('RGPD_explication_a
 if($_SESSION['statut']=='administrateur') {
 	echo "
 <p>Vous pouvez ajouter un petit texte d'explication sur les rôles des acteurs mentionnés <em>(facultatif)</em>&nbsp;:<br />
-<textarea cols='60' name='no_anti_inject_RGPD_explication_acteurs' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_explication_acteurs."</textarea>
+<textarea cols='60' name='no_anti_inject_RGPD_explication_acteurs' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_explication_acteurs."</textarea>
 </p>";
 }
 elseif($RGPD_explication_acteurs!='') {
@@ -610,7 +613,7 @@ echo "
 			Gestion de la scolarité des élèves.<br />";
 if($_SESSION['statut']=='administrateur') {
 	echo "
-			<textarea cols='60' name='no_anti_inject_RGPD_finalites' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_finalites."</textarea>
+			<textarea cols='60' name='no_anti_inject_RGPD_finalites' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_finalites."</textarea>
 		</td>
 		<td>";
 }
@@ -626,10 +629,10 @@ if($_SESSION['statut']=='administrateur') {
 	<tr id='tr_finalite_statistique'>
 		<th>Finalité statistique</th>
 		<td>
-			<textarea cols='60' name='no_anti_inject_RGPD_finalite_statistique_texte' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_finalite_statistique_texte."</textarea>
+			<textarea cols='60' name='no_anti_inject_RGPD_finalite_statistique_texte' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_finalite_statistique_texte."</textarea>
 		</td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_finalite_statistique' id='RGPD_finalite_statistique' value='y' onchange=\"RGPD_griser_lignes_a_masquer('finalite_statistique')\" ".($RGPD_finalite_statistique ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_finalite_statistique' id='RGPD_finalite_statistique' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('finalite_statistique')\" ".($RGPD_finalite_statistique ? 'checked ' : '')."/>
 		</td>
 	</tr>";
 }
@@ -649,10 +652,7 @@ echo "
 // =============================================================================
 // Mesures de sécurité
 
-$RGPD_mesures_securite=getSettingValue('RGPD_mesures_securite');
-if($RGPD_mesures_securite=='') {
-	$RGPD_mesures_securite=false;
-}
+$RGPD_mesures_securite=getSettingAOui('RGPD_mesures_securite');
 
 $RGPD_mesures_securite_techniques=getSettingAOui('RGPD_mesures_securite_techniques');
 $RGPD_mesures_securite_techniques_texte=strtr(stripslashes(getSettingValue('RGPD_mesures_securite_techniques_texte')), '"', "'");
@@ -675,31 +675,31 @@ if($_SESSION['statut']=='administrateur') {
 Cela peut être mentionné,...</p>
 <p>Ce préambule n'apparaît pas en compte administrateur pour vous permettre d'adapter ce que vous avez à dire.</p>
 <p>Vous pouvez également ne pas faire apparaître du tout le paragraphe <strong>Mesures de sécurité</strong>, même si ce n'est pas recommandé&nbsp;:<br />
-<input type='checkbox' name='RGPD_mesures_securite' id='RGPD_mesures_securite' value='n' onchange=\"changement(); checkbox_change(this.id)\" /><label for='RGPD_mesures_securite' id='texte_RGPD_mesures_securite'>Ne pas faire apparaître le paragraphe Mesures de sécurité pour les non-administrateurs.</label></p>
+<input type='checkbox' name='RGPD_mesures_securite' id='RGPD_mesures_securite' value='y' onchange=\"changement(); checkbox_change(this.id)\" ".($RGPD_mesures_securite ? 'checked ' : '')."/><label for='RGPD_mesures_securite' id='texte_RGPD_mesures_securite'>Faire apparaître le paragraphe Mesures de sécurité pour les non-administrateurs.</label></p>
 
 <table class='boireaus boireaus_alt'>
 	<tr id='tr_mesures_securite_techniques'>
 		<th>Mesures de sécurité techniques</th>
 		<td>
-			<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_techniques_texte'>".$RGPD_mesures_securite_techniques_texte."</textarea>
+			<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_techniques_texte' onchange=\"changement();\">".$RGPD_mesures_securite_techniques_texte."</textarea>
 		</td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_mesures_securite_techniques' id='RGPD_mesures_securite_techniques' value='y' onchange=\"RGPD_griser_lignes_a_masquer('mesures_securite_techniques')\" ".($RGPD_mesures_securite_techniques ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_mesures_securite_techniques' id='RGPD_mesures_securite_techniques' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('mesures_securite_techniques')\" ".($RGPD_mesures_securite_techniques ? 'checked ' : '')."/>
 		</td>
 	</tr>
 	<tr id='tr_mesures_securite_organisationnelles'>
 		<th>Mesures de sécurité organisationnelles</th>
 		<td>
-			<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_organisationnelles_texte'>".$RGPD_mesures_securite_organisationnelles_texte."</textarea>
+			<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_organisationnelles_texte' onchange=\"changement();\">".$RGPD_mesures_securite_organisationnelles_texte."</textarea>
 		</td>
 		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
-			<input type='checkbox' name='RGPD_mesures_securite_organisationnelles' id='RGPD_mesures_securite_organisationnelles' value='y' onchange=\"RGPD_griser_lignes_a_masquer('mesures_securite_organisationnelles')\" ".($RGPD_mesures_securite_organisationnelles ? 'checked ' : '')."/>
+			<input type='checkbox' name='RGPD_mesures_securite_organisationnelles' id='RGPD_mesures_securite_organisationnelles' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('mesures_securite_organisationnelles')\" ".($RGPD_mesures_securite_organisationnelles ? 'checked ' : '')."/>
 		</td>
 	</tr>
 </table>
 
 <p>Vous pouvez ajouter un petit texte d'explication supplémentaire <em>(facultatif)</em>&nbsp;:<br />
-<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_explications' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mesures_securite_explications."</textarea>
+<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_explications' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mesures_securite_explications."</textarea>
 </p>
 <br />";
 }
@@ -886,7 +886,7 @@ if(getSettingValue('active_module_absence')=='y') {
 
 			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "");
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_absences' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_absences."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_absences' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_absences."</textarea>";
 	}
 	elseif($RGPD_mod_absences!='') {
 		echo "<br />".nl2br($RGPD_mod_absences);
@@ -915,7 +915,7 @@ if(getSettingValue('active_module_absence')=='2') {
 			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "");
 
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_abs2' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_abs2."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_abs2' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_abs2."</textarea>";
 	}
 	elseif($RGPD_mod_abs2!='') {
 		echo "<br />".nl2br($RGPD_mod_abs2);
@@ -934,7 +934,7 @@ if(getSettingAOui('active_module_absence_professeur')) {
 			Le module est destiné à saisir des absences de courte durée (journée de stage,...) de professeurs.<br />
 			Les créneaux libérés peuvent alors être proposés aux professeurs pour effectuer un remplacement.;";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_abs_prof' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_abs_prof."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_abs_prof' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_abs_prof."</textarea>";
 	}
 	elseif($RGPD_mod_abs_prof!='') {
 		echo "<br />".nl2br($RGPD_mod_abs_prof);
@@ -954,7 +954,7 @@ if(getSettingAOui('active_mod_actions')) {
 			Les familles peuvent contrôler que la présence de leur enfant a bien été pointée.<br />
 			Si les adresses mail des familles sont dans la base Gepi, une confirmation de présence peut être envoyée par mail.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_actions' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_actions."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_actions' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_actions."</textarea>";
 	}
 	elseif($RGPD_mod_actions!='') {
 		echo "<br />".nl2br($RGPD_mod_actions);
@@ -974,7 +974,7 @@ if(getSettingAOui('active_annees_anterieures')) {
 			L'accès en consultation aux bulletins simplifiés des années passées est géré par des droits définis dans <a href='#droits_acces'>droits d'accès</a>.
 			Les données sont conservées le temps de la scolarité de l'élève dans l'établissement.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_annees_anterieures' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_annees_anterieures."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_annees_anterieures' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_annees_anterieures."</textarea>";
 	}
 	elseif($RGPD_annees_anterieures!='') {
 		echo "<br />".nl2br($RGPD_annees_anterieures);
@@ -996,7 +996,7 @@ if(getSettingAOui('active_bulletins')) {
 			Selon les droits définis, les élèves/responsables peuvent consulter leurs bulletins/les bulletins de leurs enfants, une fois l'accès ouvert <em>(manuellement, ou à une date donnée,... en fin de période)</em>.
 			L'accès en consultation aux bulletins simplifiés, à l'impression des bulletins,... est géré par des droits définis dans <a href='#droits_acces'>droits d'accès</a> pour les différentes catégories d'utilisateurs.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_bulletins' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_bulletins."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_bulletins' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_bulletins."</textarea>";
 	}
 	elseif($RGPD_mod_bulletins!='') {
 		echo "<br />".nl2br($RGPD_mod_bulletins);
@@ -1019,7 +1019,7 @@ if(getSettingAOui('active_cahiers_texte')) {
 			Lorsque le droit est donné, les élèves/parents n'ont accès qu'aux cahiers de textes les concernant <em>(leurs classes et enseignements)</em>.<br />
 			Ils peuvent aussi si le droit leur est donné pointer les travaux faits ou non du CDT.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_CDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_CDT."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_CDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_CDT."</textarea>";
 	}
 	elseif($RGPD_mod_CDT!='') {
 		echo "<br />".nl2br($RGPD_mod_CDT);
@@ -1052,7 +1052,7 @@ if(getSettingAOui('active_carnets_notes')) {
 		Dans le cas où l'évaluation n'est pas visible dans le module évaluations-cumul, le cumul obtenu sera visible une fois transféré dans le carnet de notes." : "");
 
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_CN' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_CN."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_CN' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_CN."</textarea>";
 	}
 	elseif($RGPD_mod_CN!='') {
 		echo "<br />".nl2br($RGPD_mod_CN);
@@ -1070,7 +1070,7 @@ if(getSettingAOui('active_mod_ects')) {
 		<td style='text-align:left'>";
 
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_ECTS' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_ECTS."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_ECTS' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_ECTS."</textarea>";
 	}
 	elseif($RGPD_mod_ECTS!='') {
 		echo "<br />".nl2br($RGPD_mod_ECTS);
@@ -1093,7 +1093,7 @@ if(getSettingAOui('active_mod_discipline')) {
 			Voir la rubrique <a href='#droits_acces'>droits d'accès</a>.<br />
 			Le module permet aux comptes scolarité/cpe d'effectuer des extractions statistiques par classe, globale,... et des exports tableur si le module OpenOffice.org est activé.<br />";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_discipline' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_discipline."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_discipline' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_discipline."</textarea>";
 	}
 	elseif($RGPD_mod_discipline!='') {
 		echo "<br />".nl2br($RGPD_mod_discipline);
@@ -1112,7 +1112,7 @@ if(getSettingAOui('active_mod_disc_pointage')) {
 			Ce module permet de pointer de menus incidents ou manquements (travail non fait, oublis de matériel, comportements gênants).<br />
 			Il permet de définir des seuils d'alerte par mail ou message en page d'accueil à destination des différentes catégories d'utilisateurs.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_disc_pointage' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_disc_pointage."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_disc_pointage' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_disc_pointage."</textarea>";
 	}
 	elseif($RGPD_mod_disc_pointage!='') {
 		echo "<br />".nl2br($RGPD_mod_disc_pointage);
@@ -1130,7 +1130,7 @@ if(getSettingAOui('active_mod_alerte')) {
 		<td style='text-align:left'>
 			Ce module permet aux personnels de l'établissement disposant d'un compte de déposer des messages d'alerte à destination d'autres personnels choisis pour par exemple signaler à la Vie scolaire qu'un élève présent l'heure précédente n'a pas rejoint la salle suivante.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_alerte' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_alerte."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_alerte' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_alerte."</textarea>";
 	}
 	elseif($RGPD_mod_alerte!='') {
 		echo "<br />".nl2br($RGPD_mod_alerte);
@@ -1153,7 +1153,7 @@ if(getSettingAOui('active_edt_ical')) {
 			".(getSettingAOui('EdtIcalEleve') ? "Les élèves ont accès aux emplois du temps de leurs classes.<br />" : "")."
 			".(getSettingAOui('EdtIcalResponsable') ? "Les responsables ont accès aux emplois du temps des classes de leurs enfants.<br />" : "")."";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_edt_ical' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_edt_ical."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_edt_ical' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_edt_ical."</textarea>";
 	}
 	elseif($RGPD_mod_edt_ical!='') {
 		echo "<br />".nl2br($RGPD_mod_edt_ical);
@@ -1189,7 +1189,7 @@ if((getSettingAOui('autorise_edt'))||(getSettingAOui('autorise_edt_eleve'))||(ge
 	}
 
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_EDT."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_EDT."</textarea>";
 	}
 	elseif($RGPD_mod_EDT!='') {
 		echo "<br />".nl2br($RGPD_mod_EDT);
@@ -1210,7 +1210,7 @@ if(getSettingAOui('active_mod_engagements')) {
 			Le module permet, dans d'autres modules, de cibler tels élèves/parents pour une communication, l'envoi de convocation au conseil de classe,...<br />
 			Les engagements élèves, s'ils sont saisis dans Gepi, sont extraits et remontés vers les Livrets scolaire collège (LSU) et lycée (LSL) si les module/plugin correspondants sont activés dans Gepi.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_engagements' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_engagements."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_engagements' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_engagements."</textarea>";
 	}
 	elseif($RGPD_mod_engagements!='') {
 		echo "<br />".nl2br($RGPD_mod_engagements);
@@ -1230,7 +1230,7 @@ if(getSettingAOui('active_mod_epreuve_blanche')) {
 			Les professeurs n'ont accès qu'à la saisie anonymée des copies qui leurs ont été attribuées.<br />
 			Les comptes scolarité ou administrateurs peuvent générer les bilans et transférer les notes obtenues dans les carnets de notes des enseignements sélectionnés au départ.<br />";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EPB' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_EPB."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EPB' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_EPB."</textarea>";
 	}
 	elseif($RGPD_mod_EPB!='') {
 		echo "<br />".nl2br($RGPD_mod_EPB);
@@ -1251,7 +1251,7 @@ if(getSettingAOui('active_mod_examen_blanc')) {
 			Il est également possible de saisir des notes ne correspondant pas à des saisies déjà effectuées.<br />
 			".(getSettingAOui('modExbPP') ? "Les comptes ".getSettingValue('gepi_prof_suivi')." sont autorisés à créer des examens blancs pour par exemple simuler des bilans d'examen d'après les résultats obtenus en cours d'année." : "")."";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EXB' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_EXB."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_EXB' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_EXB."</textarea>";
 	}
 	elseif($RGPD_mod_EXB!='') {
 		echo "<br />".nl2br($RGPD_mod_EXB);
@@ -1270,7 +1270,7 @@ if(getSettingAOui('rss_cdt_eleve')) {
 			Ce module est associé au module Cahier de textes.<br />
 			Il permet aux élèves, sans qu'ils doivent se connecter avec leur compte utilisateur, d'accéder via une adresse (url) aux travaux à faire donnés dans les Cahiers de textes les concernant.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_RSS_CDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_RSS_CDT."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_RSS_CDT' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_RSS_CDT."</textarea>";
 	}
 	elseif($RGPD_mod_RSS_CDT!='') {
 		echo "<br />".nl2br($RGPD_mod_RSS_CDT);
@@ -1291,7 +1291,7 @@ if(getSettingAOui('active_mod_genese_classes')) {
 			Il permet de définir des profils d'élèves d'après leur niveau scolaire et leur attitude pour voir une fois les répartitions d'élèves effectuées si on arrive à une certaine hétérogénéité ou si on a une concentration d'élèves faibles ou difficiles dans une classe.<br />
 			Le module est conçu pour qu'une fois les contraintes posées, un groupe de professeurs, personnels de Vie scolaire,... répartissent petit à petit les élèves dans les classes pour ne pas isoler des élèves et éviter des cocktails malheureux d'élèves.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_genese_classes' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_genese_classes."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_genese_classes' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_genese_classes."</textarea>";
 	}
 	elseif($RGPD_mod_genese_classes!='') {
 		echo "<br />".nl2br($RGPD_mod_genese_classes);
@@ -1313,7 +1313,7 @@ if(getSettingAOui('active_mod_gest_aid')) {
 			<span style='color:red'>à voir CSV droits pour exports DAREIC, Verdier,... accès aux mail, tel, adresses élèves/responsables</span><br />
 			En collège, les AID sont utilisés pour gérer les EPI, AP et Parcours (Parcours avenir, Parcours santé,...) destinés à remonter vers le Livret Scolaire Collège (LSU).<br />";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_gest_aid' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_gest_aid."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_gest_aid' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_gest_aid."</textarea>";
 	}
 	elseif($RGPD_mod_gest_aid!='') {
 		echo "<br />".nl2br($RGPD_mod_gest_aid);
@@ -1331,7 +1331,7 @@ if(getSettingAOui('active_inscription')) {
 		<td style='text-align:left'>
 			Le module Inscription vous permet de définir un ou plusieurs items (stage, intervention, ...), au(x)quel(s) les utilisateurs <em>(personnels de l'établissement)</em> pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_inscriptions' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_inscriptions."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_inscriptions' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_inscriptions."</textarea>";
 	}
 	elseif($RGPD_mod_inscriptions!='') {
 		echo "<br />".nl2br($RGPD_mod_inscriptions);
@@ -1351,7 +1351,7 @@ if(getSettingAOui('GepiListePersonnelles')) {
 			Cela peut par exemple servir à un ".getSettingValue('gepi_prof_suivi')." pour pointer les documents transmis/récupérés.<br />
 			Les professeurs ont accès dans ce module aux nom, prénom, genre (M/F) et classe des élèves choisis parmi leurs élèves <em>(Enseignements et AID)</em>.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_ListesPerso' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_ListesPerso."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_ListesPerso' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_ListesPerso."</textarea>";
 	}
 	elseif($RGPD_mod_ListesPerso!='') {
 		echo "<br />".nl2br($RGPD_mod_ListesPerso);
@@ -1370,7 +1370,7 @@ if(getSettingAOui('active_module_LSUN')) {
 			Ce module permet de remonter vers l'application nationale LSU, les données saisies dans les bulletins des élèves.<br />
 			L'application nationale LSU est destinée à conserver les bulletins au-delà de la scolarité de l'élève dans l'établissement <em>(et donc retrouver ses bulletins numériques après un changement d'établissement et même après la fin de sa scolarité au collège)</em>.<br />";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_LSUN' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_LSUN."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_LSUN' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_LSUN."</textarea>";
 	}
 	elseif($RGPD_mod_LSUN!='') {
 		echo "<br />".nl2br($RGPD_mod_LSUN);
@@ -1389,7 +1389,7 @@ if(getSettingAOui('active_mod_ooo')) {
 			Le module permet d'exporter des listes, de générer des documents Traitement de texte et Tableur au format openDocument (ODT/ODS) dans divers modules <em>(Discipline, Absences2,... s'ils sont activés)</em>.<br />
 			Le module permet aussi le Publipostage pour générer des fichiers ODS/ODS d'après des listes d'élèves de classes, groupes,...<br />";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_OOO' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_OOO."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_OOO' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_OOO."</textarea>";
 	}
 	elseif($RGPD_mod_OOO!='') {
 		echo "<br />".nl2br($RGPD_mod_OOO);
@@ -1407,7 +1407,7 @@ if(getSettingAOui('active_notanet')) {
 		<td style='text-align:left'>
 			Ce module n'est en principe plus utilisé depuis la mise en place de LSU <em>(voir module LSU)</em>.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_notanet' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_notanet."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_notanet' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_notanet."</textarea>";
 	}
 	elseif($RGPD_mod_notanet!='') {
 		echo "<br />".nl2br($RGPD_mod_notanet);
@@ -1425,7 +1425,7 @@ if(getSettingAOui('active_mod_orientation')) {
 		<td style='text-align:left'>
 			Ce module permet aux comptes scolarité de définir les orientations possibles et aux comptes scolarité et ".getSettingValue('gepi_prof_suivi')." de saisir les voeux d'orientation, de suggérer des orientations pour les faire apparaitre sur les bulletins.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_orientation' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_orientation."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_orientation' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_orientation."</textarea>";
 	}
 	elseif($RGPD_mod_orientation!='') {
 		echo "<br />".nl2br($RGPD_mod_orientation);
@@ -1452,7 +1452,7 @@ if(getSettingAOui('statuts_prives')) {
 
 			<a href='#droits_statuts_personnalises'>Voir les droits pour les statuts personnalisés existants</a>.";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_statuts_prives' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_statuts_prives."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_statuts_prives' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_statuts_prives."</textarea>";
 	}
 	elseif($RGPD_statuts_prives!='') {
 		echo "<br />".nl2br($RGPD_statuts_prives);
@@ -1476,7 +1476,7 @@ if(getSettingAOui('active_module_trombinoscopes')) {
 			".(getSettingAOui('GepiAccesEleTrombiPersonnels') ? "<br />
 			Le trombinoscope des personnels de l'établissement est activé<br /><em>(cela ne signifie pas pour autant que la photo a nécessairement été téléversée sur le serveur Gepi)</em>." : "")."";
 	if($_SESSION['statut']=='administrateur') {
-		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_trombinoscopes' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mod_trombinoscopes."</textarea>";
+		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_trombinoscopes' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_trombinoscopes."</textarea>";
 	}
 	elseif($RGPD_mod_trombinoscopes!='') {
 		echo "<br />".nl2br($RGPD_mod_trombinoscopes);
@@ -1551,7 +1551,7 @@ foreach ($liste_plugins as $plugin) {
 		$commentaire_plug=strtr(stripslashes(getSettingValue('RGPD_plug_'.str_replace(" ", "_", $plugin->getNom()))), '"', "'");
 		if($_SESSION['statut']=='administrateur') {
 			// Permettre la modification du commentaire
-			echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_plug_".str_replace(" ", "_", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$commentaire_plug."</textarea>";
+			echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_plug_".str_replace(" ", "_", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$commentaire_plug."</textarea>";
 		}
 		elseif($commentaire_plug!='') {
 			echo "<br />".nl2br($commentaire_plug);
