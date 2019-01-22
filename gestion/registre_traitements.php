@@ -82,7 +82,17 @@ if($_SESSION['statut']=='administrateur') {
 
 		$tab_param=array('RGPD_cnil_creation', 
 				'RGPD_cnil_maj', 
-				'RGPD_ref_cnil');
+				'RGPD_ref_cnil',
+				'RGPD_delegue_protection_donnees',
+				'RGPD_representant',
+				'RGPD_resp_conjoint_1',
+				'RGPD_resp_conjoint_2',
+				'RGPD_resp_conjoint_3',
+				'RGPD_finalite_statistique',
+				'RGPD_mesures_securite',
+				'RGPD_mesures_securite_techniques',
+				'RGPD_mesures_securite_organisationnelles'
+				);
 		foreach($tab_param as $param) {
 			if(isset($_POST[$param])) {
 				if(!saveSetting($param, 'y')) {
@@ -103,10 +113,47 @@ if($_SESSION['statut']=='administrateur') {
 		}
 
 		$tab_param=array('RGPD_cnil_creation_date', 
-				'RGPD_cnil_maj_date');
+				'RGPD_cnil_maj_date',
+				'RGPD_maitrise_ouvrage_nom',
+				'RGPD_maitrise_ouvrage_adresse',
+				'RGPD_maitrise_ouvrage_tel',
+				'RGPD_delegue_protection_donnees_nom',
+				'RGPD_delegue_protection_donnees_adresse',
+				'RGPD_delegue_protection_donnees_tel',
+				'RGPD_representant_nom',
+				'RGPD_representant_adresse',
+				'RGPD_representant_tel',
+				'RGPD_resp_conjoint_1_nom',
+				'RGPD_resp_conjoint_1_adresse',
+				'RGPD_resp_conjoint_1_tel',
+				'RGPD_resp_conjoint_2_nom',
+				'RGPD_resp_conjoint_2_adresse',
+				'RGPD_resp_conjoint_2_tel',
+				'RGPD_resp_conjoint_3_nom',
+				'RGPD_resp_conjoint_3_adresse',
+				'RGPD_resp_conjoint_3_tel',
+				'RGPD_finalites',
+				'RGPD_finalite_statistique_texte',
+				'RGPD_mesures_securite_techniques_texte',
+				'RGPD_mesures_securite_organisationnelles_texte',
+				'RGPD_mesures_securite_explications'
+				);
 		foreach($tab_param as $param) {
 			if(isset($_POST[$param])) {
 				if(!saveSetting($param, $_POST[$param])) {
+					$msg.="Erreur lors de l'enregistrement du paramètre '".$param."'.<br />";
+				}
+				else {
+					$nb_reg++;
+				}
+			}
+		}
+
+		$tab_param=array('RGPD_texte_presentation');
+		foreach($tab_param as $param) {
+			if(isset($NON_PROTECT[$param])) {
+				$commentaire=nettoyage_retours_ligne_surnumeraires(traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$param])));
+				if(!saveSetting($param, $commentaire)) {
 					$msg.="Erreur lors de l'enregistrement du paramètre '".$param."'.<br />";
 				}
 				else {
@@ -194,39 +241,53 @@ if($_SESSION['statut']=='administrateur') {
 		<input type='hidden' name='enregistrer' value='y' />";
 }
 
-echo "<h2>Registre des traitements</h2>
+echo "
+<a name='presentation'></a>
+<h2>Registre des traitements</h2>
+<h3>Présentation</h3>
 
 <div id='fixe2' class='fieldset_opacite50' style='padding:0.5em;'>
-	<a href='#generalites'>Généralités</a><br />
+	<a href='#presentation'>Présentation</a><br />
+	<a href='#generalites'>Généralités sur Gepi</a><br />
 	<a href='#modules_actives'>Modules</a><br />
 	<a href='#plugins'>Plugins</a><br />
 	<a href='#droits_acces'>Droits d'accès</a><br />".(getSettingAOui('statuts_prives') ? "
 	<a href='#droits_statuts_personnalises'>Droits statuts personnalisés</a><br />" :"")."
 </div>
 
-<p>La présente page est destinée à informer les utilisateurs sur les modules activés, les données traitées,...</p>
+<p>La présente page est destinée à informer les utilisateurs sur les modules activés, les données traitées,...</p>";
+
+$RGPD_texte_presentation=strtr(stripslashes(getSettingValue('RGPD_texte_presentation')), '"', "'");
+if($_SESSION['statut']=='administrateur') {
+	echo "
+<p>Quelques liens pour comprendre la RGPD&nbsp;:</p>
+<ul>
+	<li><a href='https://www.cnil.fr/fr/comprendre-le-rgpd' target='_blank'>https://www.cnil.fr/fr/comprendre-le-rgpd</a></li>
+	<li><a href='https://www.reseau-canope.fr/fileadmin/user_upload/Projets/RGPD/RGPD_WEB.pdf' target='_blank'>https://www.reseau-canope.fr/fileadmin/user_upload/Projets/RGPD/RGPD_WEB.pdf</a></li>
+	<!--
+	<li><a href='' target='_blank'></a></li>
+	<li><a href='' target='_blank'></a></li>
+	-->
+</ul>
+<p>Ces liens ne sont pas proposés par défaut dans Gepi pour les non-administrateurs.<br />
+Libre à vous de les mentionner dans le petit texte facultatif de présentation qui suit&nbsp;:<br />
+<textarea cols='60' name='no_anti_inject_RGPD_texte_presentation' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_texte_presentation."</textarea>
+</p>";
+
+}
+elseif($RGPD_texte_presentation!='') {
+	echo $RGPD_texte_presentation;
+}
+
+echo "
 
 <pre style='color:red'>
-
-Voir https://www.cnil.fr/fr/comprendre-le-rgpd
-et https://www.reseau-canope.fr/fileadmin/user_upload/Projets/RGPD/RGPD_WEB.pdf
-
 A FAIRE apparaître :
-
-Les fichiers XML exploités avec quelles infos de Siècle/Sconet, logiciel d'emploi du temps, STS.
-Les exports CSV, PDF,...
-
-Pouvoir cocher ce que l'on souhaite faire apparaitre selon ce qui est utilisé dans l'établissement.
-Ne pas permettre de choisir pour les généralités, les modules activés, les plugins et les droits.
 
 Pouvoir éditer/modifier certaines des lignes qui suivent, en ajouter, supprimer selon les usages.
 
 Vérifier les accès aux adresses parents dans des listes, exports,...
 Droits aussi dans des AID... sur tel et mail élève,...
-
-groupes/mes_listes.php
-Voir si on a accès au sexe, à la date de naissance.
-Sur les bulletins simplifiés, on a accès aux dates de naissance.
 
 Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec droits d'accès (bulletins, cahiers de textes,...) (acces_sp|envoi_bulletin)
 
@@ -313,108 +374,345 @@ elseif($RGPD_cnil_creation) {
 
 echo "
 </table>
+<br />";
 
-<br />
+// =============================================================================
+// Acteurs
+$RGPD_maitrise_ouvrage_nom=getSettingValue('RGPD_maitrise_ouvrage_nom');
+if($RGPD_maitrise_ouvrage_nom=='') {
+	$RGPD_maitrise_ouvrage_nom=getSettingValue('gepiAdminPrenom')." ".getSettingValue('gepiAdminNom')." (".getSettingValue('gepiAdminFonction').")";
+}
+$RGPD_maitrise_ouvrage_adresse=getSettingValue('RGPD_maitrise_ouvrage_adresse');
+if($RGPD_maitrise_ouvrage_adresse=='') {
+	$RGPD_maitrise_ouvrage_adresse=getSettingValue('gepiSchoolAdress1').", ".getSettingValue('gepiSchoolAdress2').",".getSettingValue('gepiSchoolZipCode').",".getSettingValue('gepiSchoolCity').",".getSettingValue('gepiSchoolPays');
+}
+$RGPD_maitrise_ouvrage_tel=getSettingValue('RGPD_maitrise_ouvrage_tel');
+if($RGPD_maitrise_ouvrage_tel=='') {
+	$RGPD_maitrise_ouvrage_tel=getSettingValue('gepiSchoolTel');
+}
 
+$RGPD_delegue_protection_donnees=getSettingValue('RGPD_delegue_protection_donnees');
+$RGPD_delegue_protection_donnees_nom=getSettingValue('RGPD_delegue_protection_donnees_nom');
+if($RGPD_delegue_protection_donnees_nom=='') {
+	$RGPD_delegue_protection_donnees_nom=$RGPD_maitrise_ouvrage_nom;
+}
+$RGPD_delegue_protection_donnees_adresse=getSettingValue('RGPD_maitrise_ouvrage_adresse');
+if($RGPD_delegue_protection_donnees_adresse=='') {
+	$RGPD_delegue_protection_donnees_adresse=$RGPD_maitrise_ouvrage_adresse;
+}
+$RGPD_delegue_protection_donnees_tel=getSettingValue('RGPD_delegue_protection_donnees_tel');
+if($RGPD_delegue_protection_donnees_tel=='') {
+	$RGPD_delegue_protection_donnees_tel=$RGPD_maitrise_ouvrage_tel;
+}
+
+$RGPD_representant=getSettingValue('RGPD_representant');
+$RGPD_representant_nom=getSettingValue('RGPD_representant_nom');
+$RGPD_representant_adresse=getSettingValue('RGPD_representant_adresse');
+$RGPD_representant_tel=getSettingValue('RGPD_representant_tel');
+
+$RGPD_resp_conjoint_1=getSettingValue('RGPD_resp_conjoint_1');
+$RGPD_resp_conjoint_1_nom=getSettingValue('RGPD_resp_conjoint_1_nom');
+$RGPD_resp_conjoint_1_adresse=getSettingValue('RGPD_resp_conjoint_1_adresse');
+$RGPD_resp_conjoint_1_tel=getSettingValue('RGPD_resp_conjoint_1_tel');
+
+$RGPD_resp_conjoint_2=getSettingValue('RGPD_resp_conjoint_2');
+$RGPD_resp_conjoint_2_nom=getSettingValue('RGPD_resp_conjoint_2_nom');
+$RGPD_resp_conjoint_2_adresse=getSettingValue('RGPD_resp_conjoint_2_adresse');
+$RGPD_resp_conjoint_2_tel=getSettingValue('RGPD_resp_conjoint_2_tel');
+
+$RGPD_resp_conjoint_3=getSettingValue('RGPD_resp_conjoint_3');
+$RGPD_resp_conjoint_3_nom=getSettingValue('RGPD_resp_conjoint_3_nom');
+$RGPD_resp_conjoint_3_adresse=getSettingValue('RGPD_resp_conjoint_3_adresse');
+$RGPD_resp_conjoint_3_tel=getSettingValue('RGPD_resp_conjoint_3_tel');
+
+echo "
 <p class='bold'>Acteurs</p>
 <table class='boireaus boireaus_alt'>
 	<tr>
 		<th>Acteurs</th>
 		<th>Nom</th>
 		<th>Adresse</th>
-		<th>CP</th>
-		<th>Ville</th>
-		<th>Pays</th>
-		<th>Tél</th>
-	</tr>
+		<th>Tél</th>";
+if($_SESSION['statut']=='administrateur') {
+	echo "
+		<th></th>";
+}
+echo "
+	</tr>";
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
 	<tr>
 		<th>Maîtrise d'ouvrage
-			<br />
-			<span style='color:red'>
-			Renvoyer vers la page de<br />
-			https://www.reseau-canope.fr/fileadmin/user_upload/Projets/RGPD/RGPD_WEB.pdf<br />
-			expliquant ce dont il s'agit
-			</span>
 		</th>
-		<td>".getSettingValue('gepiAdminPrenom')." ".getSettingValue('gepiAdminNom')."<br />(".getSettingValue('gepiAdminFonction').")</td>
-		<td>".getSettingValue('gepiSchoolAdress1')."<br />
-			".getSettingValue('gepiSchoolAdress2')."</td>
-		<td>".getSettingValue('gepiSchoolZipCode')."</td>
-		<td>".getSettingValue('gepiSchoolCity')."</td>
-		<td>".getSettingValue('gepiSchoolPays')."</td>
-		<td>".getSettingValue('gepiSchoolTel')."</td>
-	</tr>
+		<td><input type='text' name='RGPD_maitrise_ouvrage_nom' value=\"".$RGPD_maitrise_ouvrage_nom."\" /></td>
+		<td><input type='text' name='RGPD_maitrise_ouvrage_adresse' value=\"".$RGPD_maitrise_ouvrage_adresse."\" /></td>
+		<td><input type='text' name='RGPD_maitrise_ouvrage_tel' value=\"".$RGPD_maitrise_ouvrage_tel."\" /></td>
+		<td><img src='../images/enabled.png' class='icone20' /></td>
+	</tr>";
+}
+else {
+	echo "
 	<tr>
-		<th>Délégué à la protection des données</th>
-		<td>".getSettingValue('gepiAdminPrenom')." ".getSettingValue('gepiAdminNom')."<br />(".getSettingValue('gepiAdminFonction').")</td>
-		<td>".getSettingValue('gepiSchoolAdress1')."<br />
-			".getSettingValue('gepiSchoolAdress2')."</td>
-		<td>".getSettingValue('gepiSchoolZipCode')."</td>
-		<td>".getSettingValue('gepiSchoolCity')."</td>
-		<td>".getSettingValue('gepiSchoolPays')."</td>
-		<td>".getSettingValue('gepiSchoolTel')."</td>
-	</tr>
-	<tr>
-		<th>Représentant</th>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th>Responsables conjoints</th>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-	</tr>
-</table>
-<br />
+		<th>Maîtrise d'ouvrage
+		</th>
+		<td>".$RGPD_maitrise_ouvrage_nom."</td>
+		<td>".$RGPD_maitrise_ouvrage_adresse."</td>
+		<td>".$RGPD_maitrise_ouvrage_tel."</td>
+	</tr>";
+}
 
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_delegue_protection_donnees'>
+		<th>Délégué à la protection des données</th>
+		<td><input type='text' name='RGPD_delegue_protection_donnees_nom' value=\"".$RGPD_delegue_protection_donnees_nom."\" /></td>
+		<td><input type='text' name='RGPD_delegue_protection_donnees_adresse' value=\"".$RGPD_delegue_protection_donnees_adresse."\" /></td>
+		<td><input type='text' name='RGPD_delegue_protection_donnees_tel' value=\"".$RGPD_delegue_protection_donnees_tel."\" /></td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_delegue_protection_donnees' id='RGPD_delegue_protection_donnees' value='y' onchange=\"RGPD_griser_lignes_a_masquer('delegue_protection_donnees')\" ".($RGPD_delegue_protection_donnees ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_delegue_protection_donnees) {
+	echo "
+	<tr id='tr_delegue_protection_donnees'>
+		<th>Délégué à la protection des données</th>
+		<td>".$RGPD_delegue_protection_donnees_nom."</td>
+		<td>".$RGPD_delegue_protection_donnees_adresse."</td>
+		<td>".$RGPD_delegue_protection_donnees_tel."</td>
+	</tr>";
+}
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_representant'>
+		<th>Représentant</th>
+		<td><input type='text' name='RGPD_representant_nom' value=\"".$RGPD_representant_nom."\" /></td>
+		<td><input type='text' name='RGPD_representant_adresse' value=\"".$RGPD_representant_adresse."\" /></td>
+		<td><input type='text' name='RGPD_representant_tel' value=\"".$RGPD_representant_tel."\" /></td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_representant' id='RGPD_representant' value='y' onchange=\"RGPD_griser_lignes_a_masquer('representant')\" ".($RGPD_representant ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_representant) {
+	echo "
+	<tr id='tr_representant'>
+		<th>Représentant</th>
+		<td>".$RGPD_representant_nom."</td>
+		<td>".$RGPD_representant_adresse."</td>
+		<td>".$RGPD_representant_tel."</td>
+	</tr>";
+}
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_resp_conjoint_1'>
+		<th>Responsable conjoint 1</th>
+		<td><input type='text' name='RGPD_resp_conjoint_1_nom' value=\"".$RGPD_resp_conjoint_1_nom."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_1_adresse' value=\"".$RGPD_resp_conjoint_1_adresse."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_1_tel' value=\"".$RGPD_resp_conjoint_1_tel."\" /></td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_resp_conjoint_1' id='RGPD_resp_conjoint_1' value='y' onchange=\"RGPD_griser_lignes_a_masquer('resp_conjoint_1')\" ".($RGPD_resp_conjoint_1 ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_resp_conjoint_1) {
+	echo "
+	<tr id='tr_resp_conjoint_1'>
+		<th>Responsable conjoint 1</th>
+		<td>".$RGPD_resp_conjoint_1_nom."</td>
+		<td>".$RGPD_resp_conjoint_1_adresse."</td>
+		<td>".$RGPD_resp_conjoint_1_tel."</td>
+	</tr>";
+}
+
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_resp_conjoint_2'>
+		<th>Responsable conjoint 2</th>
+		<td><input type='text' name='RGPD_resp_conjoint_2_nom' value=\"".$RGPD_resp_conjoint_2_nom."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_2_adresse' value=\"".$RGPD_resp_conjoint_2_adresse."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_2_tel' value=\"".$RGPD_resp_conjoint_2_tel."\" /></td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_resp_conjoint_2' id='RGPD_resp_conjoint_2' value='y' onchange=\"RGPD_griser_lignes_a_masquer('resp_conjoint_2')\" ".($RGPD_resp_conjoint_2 ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_resp_conjoint_2) {
+	echo "
+	<tr id='tr_resp_conjoint_2'>
+		<th>Responsable conjoint 2</th>
+		<td>".$RGPD_resp_conjoint_2_nom."</td>
+		<td>".$RGPD_resp_conjoint_2_adresse."</td>
+		<td>".$RGPD_resp_conjoint_2_tel."</td>
+	</tr>";
+}
+
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_resp_conjoint_3'>
+		<th>Responsable conjoint 3</th>
+		<td><input type='text' name='RGPD_resp_conjoint_3_nom' value=\"".$RGPD_resp_conjoint_3_nom."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_3_adresse' value=\"".$RGPD_resp_conjoint_3_adresse."\" /></td>
+		<td><input type='text' name='RGPD_resp_conjoint_3_tel' value=\"".$RGPD_resp_conjoint_3_tel."\" /></td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_resp_conjoint_3' id='RGPD_resp_conjoint_3' value='y' onchange=\"RGPD_griser_lignes_a_masquer('resp_conjoint_3')\" ".($RGPD_resp_conjoint_3 ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_resp_conjoint_3) {
+	echo "
+	<tr id='tr_resp_conjoint_3'>
+		<th>Responsable conjoint 3</th>
+		<td>".$RGPD_resp_conjoint_3_nom."</td>
+		<td>".$RGPD_resp_conjoint_3_adresse."</td>
+		<td>".$RGPD_resp_conjoint_3_tel."</td>
+	</tr>";
+}
+echo "
+</table>";
+
+$RGPD_explication_acteurs=strtr(stripslashes(getSettingValue('RGPD_explication_acteurs')), '"', "'");
+if($_SESSION['statut']=='administrateur') {
+	echo "
+<p>Vous pouvez ajouter un petit texte d'explication sur les rôles des acteurs mentionnés <em>(facultatif)</em>&nbsp;:<br />
+<textarea cols='60' name='no_anti_inject_RGPD_explication_acteurs' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_explication_acteurs."</textarea>
+</p>";
+}
+elseif($RGPD_explication_acteurs!='') {
+	echo $RGPD_explication_acteurs;
+}
+// =============================================================================
+// Finalités
+
+$RGPD_finalites=strtr(stripslashes(getSettingValue('RGPD_finalites')), '"', "'");
+if($RGPD_finalites=='') {
+	$RGPD_finalites="Selon les modules activés (voir plus bas), cela peut concerner les notes, les bulletins, les cahiers de textes, les absences,...";
+}
+
+$RGPD_finalite_statistique=getSettingAOui('RGPD_finalite_statistique');
+$RGPD_finalite_statistique_texte=strtr(stripslashes(getSettingValue('RGPD_finalite_statistique_texte')), '"', "'");
+if($RGPD_finalite_statistique_texte=='') {
+	$RGPD_finalite_statistique_texte="Gepi n'a pas de finalité statistique a priori, mais des exports statistiques sont possibles (statistiques anonymées de résultats scolaires, statistiques d'absences, statistiques d'incidents disciplinaires).";
+}
+
+echo "
+<br />
 <p class='bold'>Finalité(s) du traitement effectué</p>
 <table class='boireaus boireaus_alt'>
 	<tr>
 		<th>Finalité</th>
 		<td>
-			Gestion de la scolarité des élèves.<br />
-			Selon les modules activés <a href='#modules_actives'>(voir plus bas)</a>, cela peut concerner les notes, les bulletins, les cahiers de textes, les absences,...
+			Gestion de la scolarité des élèves.<br />";
+if($_SESSION['statut']=='administrateur') {
+	echo "
+			<textarea cols='60' name='no_anti_inject_RGPD_finalites' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_finalites."</textarea>
 		</td>
-	</tr>
+		<td>";
+}
+else {
+	echo $RGPD_finalites;
+}
+echo "
+		</td>
+	</tr>";
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
+	<tr id='tr_finalite_statistique'>
 		<th>Finalité statistique</th>
 		<td>
-			OUI/<strong>NON</strong><br />
-			<span style='color:red'>A voir avec les possibilités d'extractions statistiques anonymées de bulletins<br />
-			Les extractions statistiques d'absences, de discipline,...</span>
+			<textarea cols='60' name='no_anti_inject_RGPD_finalite_statistique_texte' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_finalite_statistique_texte."</textarea>
 		</td>
-	</tr>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_finalite_statistique' id='RGPD_finalite_statistique' value='y' onchange=\"RGPD_griser_lignes_a_masquer('finalite_statistique')\" ".($RGPD_finalite_statistique ? 'checked ' : '')."/>
+		</td>
+	</tr>";
+}
+elseif($RGPD_finalite_statistique) {
+	echo "
+	<tr id='tr_finalite_statistique'>
+		<th>Finalité statistique</th>
+		<td>
+			$RGPD_finalite_statistique_texte
+		</td>
+	</tr>";
+}
+echo "
 </table>
-<br />
+<br />";
 
+// =============================================================================
+// Mesures de sécurité
+
+$RGPD_mesures_securite=getSettingValue('RGPD_mesures_securite');
+if($RGPD_mesures_securite=='') {
+	$RGPD_mesures_securite=false;
+}
+
+$RGPD_mesures_securite_techniques=getSettingAOui('RGPD_mesures_securite_techniques');
+$RGPD_mesures_securite_techniques_texte=strtr(stripslashes(getSettingValue('RGPD_mesures_securite_techniques_texte')), '"', "'");
+
+$RGPD_mesures_securite_organisationnelles=getSettingAOui('RGPD_mesures_securite_organisationnelles');
+$RGPD_mesures_securite_organisationnelles_texte=strtr(stripslashes(getSettingValue('RGPD_mesures_securite_organisationnelles_texte')), '"', "'");
+
+$RGPD_mesures_securite_explications=strtr(stripslashes(getSettingValue('RGPD_mesures_securite_explications')), '"', "'");
+
+if($_SESSION['statut']=='administrateur') {
+	echo "
 <p class='bold'>Mesures de sécurité</p>
+<p>Les mesures de sécurité recommandées sont détaillées dans les documents suivants&nbsp;:</p>
+<ul>
+	<li><a href='https://www.cnil.fr/fr/principes-cles/guide-de-la-securite-des-donnees-personnelles' target='_blank'>https://www.cnil.fr/fr/principes-cles/guide-de-la-securite-des-donnees-personnelles</a></li>
+	<li><a href='https://www.ssi.gouv.fr/administration/reglementation/rgpd-renforcer-la-securite-des-donnees-a-caractere-personnel' target='_blank'>https://www.ssi.gouv.fr/administration/reglementation/rgpd-renforcer-la-securite-des-donnees-a-caractere-personnel</a></li>
+</ul>
+<p>L'hébergement de Gepi sur une machine qui n'est pas ouverte à tous les vents, dans un local fermé, sur une machine dédiée, avec des comptes protégés par mot de passe,... est souhaitable et peut être mentionné.</p>
+<p>La sensibilisation des utilisateurs à la solidité des mots de passe est plus que recommandée pour les personnels, élèves et parents.<br />
+Cela peut être mentionné,...</p>
+<p>Ce préambule n'apparaît pas en compte administrateur pour vous permettre d'adapter ce que vous avez à dire.</p>
+<p>Vous pouvez également ne pas faire apparaître du tout le paragraphe <strong>Mesures de sécurité</strong>, même si ce n'est pas recommandé&nbsp;:<br />
+<input type='checkbox' name='RGPD_mesures_securite' id='RGPD_mesures_securite' value='n' onchange=\"changement(); checkbox_change(this.id)\" /><label for='RGPD_mesures_securite' id='texte_RGPD_mesures_securite'>Ne pas faire apparaître le paragraphe Mesures de sécurité pour les non-administrateurs.</label></p>
+
 <table class='boireaus boireaus_alt'>
-	<tr>
+	<tr id='tr_mesures_securite_techniques'>
 		<th>Mesures de sécurité techniques</th>
 		<td>
-			Serveur dans un local fermé,...<br />
-			Prise en main de la machine serveur uniquement via un compte administrateur, pas d'autre compte pour se connecter directement sur la machine serveur.<br />
-			Voir pour suggestions https://www.cnil.fr/fr/principes-cles/guide-de-la-securite-des-donnees-personnelles<br />
-			et https://www.ssi.gouv.fr/administration/reglementation/rgpd-renforcer-la-securite-des-donnees-a-caractere-personnel<br />
-			Pouvoir en cocher, et aussi en ajouter qui ne seraient pas dans la liste suggérée
+			<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_techniques_texte'>".$RGPD_mesures_securite_techniques_texte."</textarea>
+		</td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_mesures_securite_techniques' id='RGPD_mesures_securite_techniques' value='y' onchange=\"RGPD_griser_lignes_a_masquer('mesures_securite_techniques')\" ".($RGPD_mesures_securite_techniques ? 'checked ' : '')."/>
 		</td>
 	</tr>
+	<tr id='tr_mesures_securite_organisationnelles'>
 		<th>Mesures de sécurité organisationnelles</th>
 		<td>
-			Accès uniquement avec un compte utilisateur authentifié<br />
-			Sensibilisation à la solidité des mots de passe,...
+			<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_organisationnelles_texte'>".$RGPD_mesures_securite_organisationnelles_texte."</textarea>
+		</td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_mesures_securite_organisationnelles' id='RGPD_mesures_securite_organisationnelles' value='y' onchange=\"RGPD_griser_lignes_a_masquer('mesures_securite_organisationnelles')\" ".($RGPD_mesures_securite_organisationnelles ? 'checked ' : '')."/>
 		</td>
 	</tr>
 </table>
-<br />
 
+<p>Vous pouvez ajouter un petit texte d'explication supplémentaire <em>(facultatif)</em>&nbsp;:<br />
+<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_explications' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\">".$RGPD_mesures_securite_explications."</textarea>
+</p>
+<br />";
+}
+elseif(($RGPD_mesures_securite)&&
+(($RGPD_mesures_securite_techniques)||($RGPD_mesures_securite_organisationnelles)||($RGPD_mesures_securite_explications!=''))) {
+	echo "";
+
+	if($RGPD_mesures_securite_explications!='') {
+		echo $RGPD_mesures_securite_explications;
+	}
+}
+
+echo "
 <script type='text/javascript'>
 	function RGPD_griser_lignes_a_masquer(suffixe_id) {
 		if(document.getElementById('RGPD_'+suffixe_id)) {
@@ -430,21 +728,31 @@ echo "
 	RGPD_griser_lignes_a_masquer('ref_cnil');
 	RGPD_griser_lignes_a_masquer('cnil_creation');
 	RGPD_griser_lignes_a_masquer('cnil_maj');
+	//RGPD_griser_lignes_a_masquer('maitrise_ouvrage');
+	RGPD_griser_lignes_a_masquer('delegue_protection_donnees');
+	RGPD_griser_lignes_a_masquer('representant');
+	RGPD_griser_lignes_a_masquer('resp_conjoint_1');
+	RGPD_griser_lignes_a_masquer('resp_conjoint_2');
+	RGPD_griser_lignes_a_masquer('resp_conjoint_3');
+	RGPD_griser_lignes_a_masquer('finalite_statistique');
+	RGPD_griser_lignes_a_masquer('mesures_securite_techniques');
+	RGPD_griser_lignes_a_masquer('mesures_securite_organisationnelles');
 	/*
 	RGPD_griser_lignes_a_masquer('');
 	RGPD_griser_lignes_a_masquer('');
 	RGPD_griser_lignes_a_masquer('');
 	RGPD_griser_lignes_a_masquer('');
 	*/
+
+	".js_checkbox_change_style()."
+	".js_change_style_all_checkbox()."
 </script>";
 
-
-//			<input type='checkbox' name='RGPD_ref_cnil' id='RGPD_ref_cnil' value='y' onchange=\"if(document.getElementById('RGPD_ref_cnil').checked==true) {document.getElementById('tr_ref_cnil').style.backgroundColor='';}else{document.getElementById('tr_ref_cnil').style.backgroundColor='grey';}\" />
-
-
+// =============================================================================
+// Généralités
 echo "
 <a name='generalites'></a>
-<h3>Généralités</h3>
+<h3>Généralités sur Gepi</h3>
 <p>Indépendamment des modules activés et des droits d'accès donnés, Gepi permet aux utilisateurs d'accéder à un certain nombre d'informations.<br />
 <span style='color:red'>A détailler...</span><br />
 Les comptes administrateurs, scolarité <em>(chef d'établissement, adjoint, secrétaire)</em>, cpe on accès à... <span style='color:red'>à détailler...</span><br />
@@ -454,6 +762,7 @@ Il peuvent exporter ces listes en fichiers CSV et PDF.</p>
 <pre style='color:red'>
 - Les statuts, leur rôle et les droits associés (http://www.sylogix.org/projects/gepi/wiki/Gepi_admin).
 - Imports XML, quelles infos stockées, qui y a accès...
+Les fichiers XML exploités avec quelles infos de Siècle/Sconet, logiciel d'emploi du temps, STS.
 - ...
 
 </pre>
@@ -527,7 +836,8 @@ Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont 
 
 //no_anti_inject_
 
-
+// =============================================================================
+// Modules
 $RGPD_mod_absences=strtr(stripslashes(getSettingValue('RGPD_mod_absences')), '"', "'");
 $RGPD_mod_abs2=strtr(stripslashes(getSettingValue('RGPD_mod_abs2')), '"', "'");
 $RGPD_mod_abs_prof=strtr(stripslashes(getSettingValue('RGPD_mod_abs_prof')), '"', "'");
@@ -1176,8 +1486,11 @@ if(getSettingAOui('active_module_trombinoscopes')) {
 	</tr>";
 }
 echo "
-</table>
+</table>";
 
+// =============================================================================
+// Plugins:
+echo "<br />
 <a name='plugins'></a>
 <h3>Plugins</h3>
 <p>Des plugins peuvent être développés pour ajouter des fonctionnalités à Gepi.</p>
@@ -1253,7 +1566,7 @@ echo "
 </table>";
 
 //==============================================================================
-
+// Droits
 echo "
 <a name='droits_acces'></a>
 <h3>Droits d'accès</h3>
@@ -1281,6 +1594,7 @@ echo "
 </table>";
 
 //==============================================================================
+// Droits statuts personnalisés
 if(getSettingAOui('statuts_prives')) {
 	include_once("../utilisateurs/creer_statut_autorisation.php");
 
