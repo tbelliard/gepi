@@ -73,6 +73,8 @@ if(!getSettingAOui('registre_traitements')) {
 	die();
 }
 
+//debug_var();
+
 if($_SESSION['statut']=='administrateur') {
 	if(isset($_POST['enregistrer'])) {
 		check_token();
@@ -91,8 +93,7 @@ if($_SESSION['statut']=='administrateur') {
 				'RGPD_finalite_statistique',
 				'RGPD_mesures_securite',
 				'RGPD_mesures_securite_techniques',
-				'RGPD_mesures_securite_organisationnelles'
-				);
+				'RGPD_mesures_securite_organisationnelles');
 		foreach($tab_param as $param) {
 			if(isset($_POST[$param])) {
 				//echo "$param -&gt; y<br />";
@@ -138,8 +139,7 @@ if($_SESSION['statut']=='administrateur') {
 				'RGPD_finalite_statistique_texte',
 				'RGPD_mesures_securite_techniques_texte',
 				'RGPD_mesures_securite_organisationnelles_texte',
-				'RGPD_mesures_securite_explications'
-				);
+				'RGPD_mesures_securite_explications');
 		foreach($tab_param as $param) {
 			if(isset($_POST[$param])) {
 				if(!saveSetting($param, $_POST[$param])) {
@@ -394,7 +394,7 @@ if($RGPD_maitrise_ouvrage_tel=='') {
 	$RGPD_maitrise_ouvrage_tel=getSettingValue('gepiSchoolTel');
 }
 
-$RGPD_delegue_protection_donnees=getSettingValue('RGPD_delegue_protection_donnees');
+$RGPD_delegue_protection_donnees=getSettingAOui('RGPD_delegue_protection_donnees');
 $RGPD_delegue_protection_donnees_nom=getSettingValue('RGPD_delegue_protection_donnees_nom');
 if($RGPD_delegue_protection_donnees_nom=='') {
 	$RGPD_delegue_protection_donnees_nom=$RGPD_maitrise_ouvrage_nom;
@@ -408,22 +408,22 @@ if($RGPD_delegue_protection_donnees_tel=='') {
 	$RGPD_delegue_protection_donnees_tel=$RGPD_maitrise_ouvrage_tel;
 }
 
-$RGPD_representant=getSettingValue('RGPD_representant');
+$RGPD_representant=getSettingAOui('RGPD_representant');
 $RGPD_representant_nom=getSettingValue('RGPD_representant_nom');
 $RGPD_representant_adresse=getSettingValue('RGPD_representant_adresse');
 $RGPD_representant_tel=getSettingValue('RGPD_representant_tel');
 
-$RGPD_resp_conjoint_1=getSettingValue('RGPD_resp_conjoint_1');
+$RGPD_resp_conjoint_1=getSettingAOui('RGPD_resp_conjoint_1');
 $RGPD_resp_conjoint_1_nom=getSettingValue('RGPD_resp_conjoint_1_nom');
 $RGPD_resp_conjoint_1_adresse=getSettingValue('RGPD_resp_conjoint_1_adresse');
 $RGPD_resp_conjoint_1_tel=getSettingValue('RGPD_resp_conjoint_1_tel');
 
-$RGPD_resp_conjoint_2=getSettingValue('RGPD_resp_conjoint_2');
+$RGPD_resp_conjoint_2=getSettingAOui('RGPD_resp_conjoint_2');
 $RGPD_resp_conjoint_2_nom=getSettingValue('RGPD_resp_conjoint_2_nom');
 $RGPD_resp_conjoint_2_adresse=getSettingValue('RGPD_resp_conjoint_2_adresse');
 $RGPD_resp_conjoint_2_tel=getSettingValue('RGPD_resp_conjoint_2_tel');
 
-$RGPD_resp_conjoint_3=getSettingValue('RGPD_resp_conjoint_3');
+$RGPD_resp_conjoint_3=getSettingAOui('RGPD_resp_conjoint_3');
 $RGPD_resp_conjoint_3_nom=getSettingValue('RGPD_resp_conjoint_3_nom');
 $RGPD_resp_conjoint_3_adresse=getSettingValue('RGPD_resp_conjoint_3_adresse');
 $RGPD_resp_conjoint_3_tel=getSettingValue('RGPD_resp_conjoint_3_tel');
@@ -701,11 +701,35 @@ Cela peut être mentionné,...</p>
 <p>Vous pouvez ajouter un petit texte d'explication supplémentaire <em>(facultatif)</em>&nbsp;:<br />
 <textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_explications' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mesures_securite_explications."</textarea>
 </p>
+<p>Si il n'y a ni ligne cochée dans le tableau, ni texte d'explication supplémentaire, la rubrique sécurité n'apparait pas pour les non-administrateurs.</p>
 <br />";
 }
 elseif(($RGPD_mesures_securite)&&
 (($RGPD_mesures_securite_techniques)||($RGPD_mesures_securite_organisationnelles)||($RGPD_mesures_securite_explications!=''))) {
-	echo "";
+	echo "<p class='bold'>Mesures de sécurité</p>";
+	if($RGPD_mesures_securite_techniques||$RGPD_mesures_securite_organisationnelles) {
+		echo "
+<table class='boireaus boireaus_alt'>".($RGPD_mesures_securite_techniques ? "
+	<tr id='tr_mesures_securite_techniques'>
+		<th>Mesures de sécurité techniques</th>
+		<td>
+			<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_techniques_texte' onchange=\"changement();\">".$RGPD_mesures_securite_techniques_texte."</textarea>
+		</td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_mesures_securite_techniques' id='RGPD_mesures_securite_techniques' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('mesures_securite_techniques')\" ".($RGPD_mesures_securite_techniques ? 'checked ' : '')."/>
+		</td>
+	</tr>" : "").($RGPD_mesures_securite_organisationnelles ? "
+	<tr id='tr_mesures_securite_organisationnelles'>
+		<th>Mesures de sécurité organisationnelles</th>
+		<td>
+			<textarea cols='60' name='no_anti_inject_RGPD_mesures_securite_organisationnelles_texte' onchange=\"changement();\">".$RGPD_mesures_securite_organisationnelles_texte."</textarea>
+		</td>
+		<td title=\"Faire apparaître cette ligne pour les non-administrateurs.\">
+			<input type='checkbox' name='RGPD_mesures_securite_organisationnelles' id='RGPD_mesures_securite_organisationnelles' value='y' onchange=\"changement(); RGPD_griser_lignes_a_masquer('mesures_securite_organisationnelles')\" ".($RGPD_mesures_securite_organisationnelles ? 'checked ' : '')."/>
+		</td>
+	</tr>" : "")."
+</table>";
+	}
 
 	if($RGPD_mesures_securite_explications!='') {
 		echo $RGPD_mesures_securite_explications;
@@ -867,6 +891,7 @@ $RGPD_statuts_prives=strtr(stripslashes(getSettingValue('RGPD_statuts_prives')),
 $RGPD_mod_trombinoscopes=strtr(stripslashes(getSettingValue('RGPD_mod_trombinoscopes')), '"', "'");
 
 echo "
+<br />
 <a name='modules_actives'></a>
 <h3>Modules activés</h3>
 <table class='boireaus boireaus_alt resizable sortable'>
@@ -1493,9 +1518,7 @@ echo "
 echo "<br />
 <a name='plugins'></a>
 <h3>Plugins</h3>
-<p>Des plugins peuvent être développés pour ajouter des fonctionnalités à Gepi.</p>
-<p style='color:red'>Ajouter un champ 'description_detaillee' aux plugin.xml existants sur <a href='http://www.sylogix.org/projects/gepi/files' target='_blank'>http://www.sylogix.org/projects/gepi/files</a> pour expliquer les fonctionnalités, qui a le droit de faire quoi,...</p>
-<p style='color:red'>Ajouter la possibilité pour l'administrateur de saisir un commentaire.</p>";
+<p>Des plugins peuvent être développés pour ajouter des fonctionnalités à Gepi.</p>";
 
 include '../mod_plugins/traiterXml.class.php';
 include '../mod_plugins/traiterRequetes.class.php';
@@ -1565,9 +1588,14 @@ foreach ($liste_plugins as $plugin) {
 echo "
 </table>";
 
+if($_SESSION['statut']=='administrateur') {
+	echo "<p style='margin-top:1em; margin-bottom:1em;'><em>NOTE pour les développeurs de plugins&nbsp;:</em> Il faut ajouter un champ 'description_detaillee' aux fichiers plugin.xml des plugins existants sur <a href='http://www.sylogix.org/projects/gepi/files' target='_blank'>http://www.sylogix.org/projects/gepi/files</a> pour expliquer les fonctionnalités, qui a le droit de faire quoi,...<br />
+A défaut, il reste possible de préciser l'usage du plugin dans les champs proposés ci-dessus.</p>";
+}
 //==============================================================================
 // Droits
 echo "
+<br />
 <a name='droits_acces'></a>
 <h3>Droits d'accès</h3>
 <p>Des droits d'accès permettent de personnaliser des autorisations dans divers modules de Gepi&nbsp;:</p>
@@ -1599,6 +1627,7 @@ if(getSettingAOui('statuts_prives')) {
 	include_once("../utilisateurs/creer_statut_autorisation.php");
 
 	echo "
+<br />
 <a name='droits_statuts_personnalises'></a>
 <h3>Statuts personnalisés</h3>";
 
