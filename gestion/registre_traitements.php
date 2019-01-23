@@ -282,12 +282,6 @@ elseif($RGPD_texte_presentation!='') {
 	echo $RGPD_texte_presentation;
 }
 
-echo "
-
-<pre style='color:red'>
-Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec droits d'accès (bulletins, cahiers de textes,...) (acces_sp|envoi_bulletin)
-</pre>";
-
 $colspan='';
 if($_SESSION['statut']=='administrateur') {
 	$colspan=" colspan='2'";
@@ -1342,7 +1336,6 @@ if(getSettingAOui('active_mod_gest_aid')) {
 			Le module permet de définir des gestionnaires d'AID pour effectuer les inscriptions d'élèves dans les AID à la place des comptes administrateurs.<br />
 			Les gestionnaires peuvent être des comptes professeur, cpe ou scolarité.<br />
 			Il est possible de générer des exports CSV".(getSettingAOui('active_module_trombinoscopes') ? ", de générer des trombinoscopes <em>(si le module Trombinoscopes est activé)</em>." : "")."<br />
-			<span style='color:red'>à voir CSV droits pour exports DAREIC, Verdier,... accès aux mail, tel, adresses élèves/responsables</span><br />
 			En collège, les AID sont utilisés pour gérer les EPI, AP et Parcours (Parcours avenir, Parcours santé,...) destinés à remonter vers le Livret Scolaire Collège (LSU).<br />";
 	if($_SESSION['statut']=='administrateur') {
 		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_gest_aid' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_gest_aid."</textarea>";

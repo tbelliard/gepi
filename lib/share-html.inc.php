@@ -4400,6 +4400,60 @@ function affiche_tableau_infos_eleves_associes_au_resp($pers_id, $login_resp="")
 					</tr>";
 			}
 
+			$ligne_sup1='';
+			$sql="SELECT rp.*, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM resp_pers rp, 
+						responsables2 r, 
+						utilisateurs u 
+					WHERE u.login=rp.login AND 
+						r.pers_id=rp.pers_id AND 
+						(r.acces_sp='y' OR r.resp_legal='1' OR r.resp_legal='2') AND 
+						r.ele_id='".$lig_ele->ele_id."';";
+			$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_u)>0) {
+				$ligne_sup1="
+					<tr>
+						<th title=\"Parents/responsables pouvant consulter les données de ".$lig_ele->nom." ".$lig_ele->prenom."\">Accès familles</th>
+						<td>";
+				$GepiMemesDroitsRespNonLegaux=getSettingAOui('GepiMemesDroitsRespNonLegaux');
+				while($lig_u=mysqli_fetch_object($res_u)) {
+					if(($lig_u->resp_legal==0)&&($GepiMemesDroitsRespNonLegaux)) {
+						$ligne_sup1.=$lig_u->civilite." ".$lig_u->nom." ".$lig_u->prenom."<br />";
+					}
+					else {
+						$ligne_sup1.=$lig_u->civilite." ".$lig_u->nom." ".$lig_u->prenom."<br />";
+					}
+				}
+				$ligne_sup1.="
+						</td>
+					</tr>";
+			}
+
+			$ligne_sup2='';
+			$sql="SELECT rp.*, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM resp_pers rp, 
+						responsables2 r, 
+						utilisateurs u 
+					WHERE u.login=rp.login AND 
+						r.pers_id=rp.pers_id AND 
+						(r.envoi_bulletin='y' OR r.resp_legal='1' OR r.resp_legal='2') AND 
+						r.ele_id='".$lig_ele->ele_id."';";
+			//echo "$sql<br />";
+			$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_u)>0) {
+				$ligne_sup2="
+					<tr>
+						<!--
+						<th title=\"Destinataires des bulletins en plus des responsables légaux\">Destinataires<br />des bulletins</th>
+						-->
+						<th title=\"Destinataires des bulletins\">Destinataires<br />des bulletins</th>
+						<td>";
+				while($lig_u=mysqli_fetch_object($res_u)) {
+					$ligne_sup2.=$lig_u->civilite." ".$lig_u->nom." ".$lig_u->prenom."<br />";
+				}
+				$ligne_sup2.="
+						</td>
+					</tr>";
+			}
+
 			$retour.="
 			<div style='float:left; width:25em; margin-left:2em;'>
 				<table class='boireaus boireaus_alt boireaus_th_left' summary='Tableau de vos informations personnelles'>
@@ -4427,7 +4481,7 @@ function affiche_tableau_infos_eleves_associes_au_resp($pers_id, $login_resp="")
 					<tr>
 						<th>Classe</th>
 						<td>".$tab_clas['liste_nbsp']."</td>
-					</tr>".$ligne_regime."
+					</tr>".$ligne_regime.$ligne_sup1.$ligne_sup2."
 				</table>
 			</div>";
 		}
