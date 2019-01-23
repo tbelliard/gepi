@@ -537,7 +537,7 @@ while ($p < $nb_users) {
 							AND r2.ele_id = e.ele_id
 							AND e.login = jec.login
 							AND jec.id_classe = c.id
-							AND r2.resp_legal!='0'
+							AND (r2.resp_legal='1' OR r2.resp_legal='2')
 							)";
 		//echo "<br />\$sql_resp_eleves=".$sql_resp_eleves."<br />";
 		if($debug_create_resp=="y") {echo "<br />$sql_resp_eleves<br />\n";}
@@ -620,10 +620,10 @@ while ($p < $nb_users) {
 				$info_ele_courant=casse_mot($elv_resp0['nom'][$i],'maj')." ".casse_mot($elv_resp0['prenom'][$i],'majf2')." (<i>".$elv_resp0['classe'][$i]."</i>)";
 
 				if($acces_modify_ele) {
-					$liste_elv_resp_0.="<a href='../eleves/modify_eleve.php?eleve_login=".$elv_resp['login'][$i]."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$info_ele_courant."</a>";
+					$liste_elv_resp_0.="<a href='../eleves/modify_eleve.php?eleve_login=".$elv_resp0['login'][$i]."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$info_ele_courant."</a>";
 				}
 				elseif($acces_visu_ele) {
-					$liste_elv_resp_0.="<a href='../eleves/visu_eleve.php?ele_login=".$elv_resp['login'][$i]."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$info_ele_courant."</a>";
+					$liste_elv_resp_0.="<a href='../eleves/visu_eleve.php?ele_login=".$elv_resp0['login'][$i]."' target='_blank' style='text-decoration:none; color:black;' title=\"Accéder, dans un nouvel onglet, à la fiche de cet élève.\">".$info_ele_courant."</a>";
 				}
 				else {
 					$liste_elv_resp_0.=$info_ele_courant;
