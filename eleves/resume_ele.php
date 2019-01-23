@@ -1049,10 +1049,15 @@ if($_SESSION['statut']=='responsable') {
 ".affiche_tableau_infos_resp($_SESSION['login'])."
 
 <p style='margin-top:1em; text-align:justify;'>Si certaines informations, coordonnées sont erronées, pensez à alerter l'Administration de l'établissement pour qu'elles soient corrigées.<br />
-Une absence de correction de votre adresse par exemple pourrait avoir des conséquences sur la réception de courriers de l'établissement (<em>bulletins,...</em>).</p>
+Une absence de correction de votre adresse par exemple pourrait avoir des conséquences sur la réception de courriers de l'établissement (<em>bulletins,...</em>).</p>";
 
+	$tableau_infos_eleves_associes_au_resp=affiche_tableau_infos_eleves_associes_au_resp("", $_SESSION['login']);
+	if($tableau_infos_eleves_associes_au_resp!='') {
+		$html.="
 <p class='bold' style='margin-top:2em;'>Enfants/élèves dont vous êtes responsable légal&nbsp;:</p>
-".affiche_tableau_infos_eleves_associes_au_resp("", $_SESSION['login'])."
+".affiche_tableau_infos_eleves_associes_au_resp("", $_SESSION['login']);
+	}
+	$html.="
 </div>";
 
 	echo "
