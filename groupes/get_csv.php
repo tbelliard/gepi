@@ -26,20 +26,29 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 
 //INSERT INTO droits VALUES ('/groupes/get_csv.php', 'F', 'V', 'V', 'V', 'F', 'V', 'Génération de CSV élèves', '');
 //INSERT INTO droits VALUES ('/groupes/get_csv.php', 'V', 'V', 'V', 'V', 'F', 'V', 'Génération de CSV élèves', '');
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
+
+/*
+	get_acces_adresse_resp($login_ele, $id_classe='', $login_resp='') {
+	get_acces_tel_resp($login_ele, $id_classe='', $login_resp='') {
+	get_acces_mail_resp($login_ele, $id_classe='', $login_resp='') {
+	get_acces_adresse_ele($login_ele, $id_classe='') {
+	get_acces_tel_ele($login_ele, $id_classe='') {
+	get_acces_mail_ele($login_ele, $id_classe='') {
+*/
 
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -138,6 +147,13 @@ if((isset($_GET['type_export']))&&($_GET['type_export']=="ariane")&&(isset($tab_
 	echo "</pre>";
 	*/
 
+	// Décommenter les lignes requises dans l'export:
+	//$tab_acces_tel_ele=get_tab_acces_tel_ele();
+	//$tab_acces_mail_ele=get_tab_acces_mail_ele();
+	$tab_acces_adresse_resp=get_tab_acces_adresse_resp();
+	$tab_acces_tel_resp=get_tab_acces_tel_resp();
+	//$tab_acces_mail_resp=get_tab_acces_mail_resp();
+
 	if(isset($tab_aid["eleves"][$periode_num]["users"])) {
 		foreach($tab_aid["eleves"][$periode_num]["users"] as $current_eleve) {
 			$eleve_login = $current_eleve["login"];
@@ -167,7 +183,14 @@ if((isset($_GET['type_export']))&&($_GET['type_export']=="ariane")&&(isset($tab_
 				$lig_tmp=mysqli_fetch_object($res_tmp);
 				$eleve_sexe=$lig_tmp->sexe;
 				$eleve_naissance=formate_date($lig_tmp->naissance);
-				$eleve_email=$lig_tmp->email;
+				/*
+				if(($tab_acces_mail_ele['acces_global'])||(in_array($eleve_login, $tab_acces_mail_ele['login_ele']))) {
+					$eleve_email=$lig_tmp->email;
+				}
+				else {
+					$eleve_email='';
+				}
+				*/
 				$eleve_no_gep=$lig_tmp->no_gep;
 				$eleve_elenoet=$lig_tmp->elenoet;
 				$eleve_ele_id=$lig_tmp->ele_id;
@@ -184,24 +207,33 @@ if((isset($_GET['type_export']))&&($_GET['type_export']=="ariane")&&(isset($tab_
 				// Il n'y a qu'un resp_legal=1, donc on ne va faire qu'un tour dans la boucle.
 				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 
-					$tmp_tab_adr=get_adresse_responsable($lig_tmp->pers_id);
+					if(($tab_acces_adresse_resp['acces_global'])||(in_array($lig_tmp->pers_id, $tab_acces_adresse_resp['pers_id']))) {
+						$tmp_tab_adr=get_adresse_responsable($lig_tmp->pers_id);
 
-					$adresse=$tmp_tab_adr["adresse_sans_cp_commune"];
+						$adresse=$tmp_tab_adr["adresse_sans_cp_commune"];
 
-					if(($tmp_tab_adr['pays']!="")&&(casse_mot($tmp_tab_adr['pays'],"maj")!=casse_mot(getSettingValue("gepiSchoolPays")))) {
-						$tmp_tab_adr['commune'].=" (".$tmp_tab_adr['pays'].")";
+						if(($tmp_tab_adr['pays']!="")&&(casse_mot($tmp_tab_adr['pays'],"maj")!=casse_mot(getSettingValue("gepiSchoolPays")))) {
+							$tmp_tab_adr['commune'].=" (".$tmp_tab_adr['pays'].")";
+						}
+						$ligne.=$lig_tmp->nom.";".$lig_tmp->prenom.";".$adresse.";".$tmp_tab_adr['cp'].";".$tmp_tab_adr['commune'].";";
+					}
+					else {
+						$ligne.=$lig_tmp->nom.";".$lig_tmp->prenom.";;;;";
 					}
 
-					$ligne.=$lig_tmp->nom.";".$lig_tmp->prenom.";".$adresse.";".$tmp_tab_adr['cp'].";".$tmp_tab_adr['commune'].";";
-
-					if($lig_tmp->tel_port!='') {
-						$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_port);
+					if(($tab_acces_tel_resp['acces_global'])||(in_array($lig_tmp->pers_id, $tab_acces_tel_resp['pers_id']))) {
+						if($lig_tmp->tel_port!='') {
+							$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_port);
+						}
+						elseif($lig_tmp->tel_pers!='') {
+							$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_pers);
+						}
+						elseif($lig_tmp->tel_prof!='') {
+							$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_prof);
+						}
 					}
-					elseif($lig_tmp->tel_pers!='') {
-						$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_pers);
-					}
-					elseif($lig_tmp->tel_prof!='') {
-						$ligne.=affiche_numero_tel_sous_forme_classique($lig_tmp->tel_prof);
+					else {
+						$ligne.=";";
 					}
 				}
 			}
@@ -220,6 +252,14 @@ if((isset($_GET['type_export']))&&($_GET['type_export']=="ariane")&&(isset($tab_
 	die();
 }
 elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdier")&&(isset($tab_aid))) {
+
+	// Décommenter les lignes requises dans l'export:
+	//$tab_acces_tel_ele=get_tab_acces_tel_ele();
+	$tab_acces_mail_ele=get_tab_acces_mail_ele();
+	//$tab_acces_adresse_resp=get_tab_acces_adresse_resp();
+	//$tab_acces_tel_resp=get_tab_acces_tel_resp();
+	$tab_acces_mail_resp=get_tab_acces_mail_resp();
+
 	$fd.="Nom;Prénom;Statut (A/E);Sexe (M/F);E-mail\n";
 
 	$sql="SELECT u.login, u.nom, u.prenom, u.email, u.civilite, u.numind FROM utilisateurs u, j_aid_utilisateurs jau WHERE jau.id_utilisateur=u.login AND jau.id_aid='$id_aid';";
@@ -252,9 +292,12 @@ elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdier")&&(isset(
 			$eleve_nom = $current_eleve["nom"];
 			$eleve_prenom = $current_eleve["prenom"];
 			$eleve_sexe = $current_eleve["sexe"];
-			$eleve_email = $current_eleve["email"];
-			if($eleve_email=="") {
-				$eleve_mail=get_valeur_champ("utilisateurs", "login='".$eleve_login."'", "email");
+			$eleve_email='';
+			if(($tab_acces_mail_ele['acces_global'])||(in_array($eleve_login, $tab_acces_mail_ele['login_ele']))) {
+				$eleve_email = $current_eleve["email"];
+				if($eleve_email=="") {
+					$eleve_mail=get_valeur_champ("utilisateurs", "login='".$eleve_login."'", "email");
+				}
 			}
 			if($eleve_email=="") {
 				// Récupérer l'adresse mail parent
@@ -265,15 +308,17 @@ elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdier")&&(isset(
 				$res = mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
-						if(check_mail($lig->mel)) {
-							$eleve_email=$lig->mel;
-							break;
-						}
-						elseif($lig->login!="") {
-							$tmp_mail=get_mail_user($lig->login);
-							if(check_mail($tmp_mail)) {
-								$eleve_email=$tmp_mail;
+						if(($tab_acces_mail_resp['acces_global'])||(in_array($lig->pers_id, $tab_acces_mail_resp['pers_id']))) {
+							if(check_mail($lig->mel)) {
+								$eleve_email=$lig->mel;
 								break;
+							}
+							elseif($lig->login!="") {
+								$tmp_mail=get_mail_user($lig->login);
+								if(check_mail($tmp_mail)) {
+									$eleve_email=$tmp_mail;
+									break;
+								}
 							}
 						}
 					}
@@ -335,7 +380,13 @@ else {
 	if((isset($avec_naiss))&&($avec_naiss=='y')) {$fd.="DATE_NAISS;";}
 	if((isset($avec_lieu_naiss))&&($avec_lieu_naiss=='y')) {$fd.="LIEU_NAISS;";}
 
-	if((isset($avec_email))&&($avec_email=='y')) {$fd.="EMAIL;";}
+	if((isset($avec_email))&&($avec_email=='y')) {
+		$tab_acces_mail_ele=get_tab_acces_mail_ele();
+		echo "<pre>";
+		print_r($tab_acces_mail_ele);
+		echo "</pre>";
+		$fd.="EMAIL;";
+	}
 	if((isset($avec_statut))&&($avec_statut=='y')) {$fd.="STATUT;";}
 	if($_SESSION['statut']!='professeur') {
 		//if((isset($avec_ine))&&($avec_ine=='y')) {$fd.="INE;";}
@@ -346,7 +397,10 @@ else {
 
 	if((isset($avec_doublant))&&($avec_doublant=='y')) {$fd.="REDOUBLANT;";}
 	if((isset($avec_regime))&&($avec_regime=='y')) {$fd.="REGIME;";}
-	if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {$fd.="RESP_LEGAL_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;RESP_LEGAL_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;RESP_LEGAL_0;TEL_PERS_0;TEL_PROF_0;TEL_PORT_0;RESP_LEGAL_0b;TEL_PERS_0b;TEL_PROF_0b;TEL_PORT_0b;";}
+	if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {
+		$fd.="RESP_LEGAL_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;RESP_LEGAL_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;RESP_LEGAL_0;TEL_PERS_0;TEL_PROF_0;TEL_PORT_0;RESP_LEGAL_0b;TEL_PERS_0b;TEL_PROF_0b;TEL_PORT_0b;";
+		$tab_acces_tel_resp=get_tab_acces_tel_resp();
+	}
 
 	// Suppression du ; en fin de ligne
 	$fd=preg_replace('/;$/','',$fd);
@@ -371,8 +425,9 @@ if($current_group) {
 					if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$lig->civilite;";}
 					if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.=";";}
 					if((isset($avec_lieu_naiss))&&($avec_lieu_naiss=='y')) {$ligne.=";";}
-				
+
 					if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$lig->email;";}
+
 					if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="professeur;";}
 					if($_SESSION['statut']!='professeur') {
 						//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.=";";}
@@ -469,15 +524,29 @@ if($current_group) {
 			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_tmp)>0) {
 				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
-					if($lig_tmp->resp_legal=='1') {
-						$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
-					}
-					elseif($lig_tmp->resp_legal=='2') {
-						$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+					if(($tab_acces_tel_resp['acces_global'])||(in_array($lig_tmp->pers_id, $tab_acces_tel_resp['pers_id']))) {
+						if($lig_tmp->resp_legal=='1') {
+							$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						}
+						elseif($lig_tmp->resp_legal=='2') {
+							$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						}
+						else {
+							if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+							$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						}
 					}
 					else {
-						if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
-						$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						if($lig_tmp->resp_legal=='1') {
+							$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+						}
+						elseif($lig_tmp->resp_legal=='2') {
+							$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+						}
+						else {
+							if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+							$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+						}
 					}
 				}
 			}
@@ -494,7 +563,15 @@ if($current_group) {
 		if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
 		if($avec_lieu_naiss=='y') {$ligne.="$eleve_lieu_naissance;";}
 
-		if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
+		if((isset($avec_email))&&($avec_email=='y')) {
+			if(($tab_acces_mail_ele['acces_global'])||(in_array($eleve_login, $tab_acces_mail_ele['login_ele']))) {
+				$ligne.="$eleve_email;";
+			}
+			else {
+				$ligne.=";";
+			}
+		}
+
 		if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
 		if($_SESSION['statut']!='professeur') {
 			//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
@@ -528,7 +605,6 @@ if($current_group) {
 					if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$lig->civilite;";}
 					if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.=";";}
 					if((isset($avec_lieu_naiss))&&($avec_lieu_naiss=='y')) {$ligne.=";";}
-				
 					if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$lig->email;";}
 					if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="professeur;";}
 					if($_SESSION['statut']!='professeur') {
@@ -623,15 +699,29 @@ if($current_group) {
 				$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_tmp)>0) {
 					while($lig_tmp=mysqli_fetch_object($res_tmp)) {
-						if($lig_tmp->resp_legal=='1') {
-							$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
-						}
-						elseif($lig_tmp->resp_legal=='2') {
-							$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						if(($tab_acces_tel_resp['acces_global'])||(in_array($lig_tmp->pers_id, $tab_acces_tel_resp['pers_id']))) {
+							if($lig_tmp->resp_legal=='1') {
+								$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+							}
+							elseif($lig_tmp->resp_legal=='2') {
+								$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+							}
+							else {
+								if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+								$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+							}
 						}
 						else {
-							if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
-							$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+							if($lig_tmp->resp_legal=='1') {
+								$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+							}
+							elseif($lig_tmp->resp_legal=='2') {
+								$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+							}
+							else {
+								if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+								$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+							}
 						}
 					}
 				}
@@ -648,7 +738,15 @@ if($current_group) {
 			if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
 			if($avec_lieu_naiss=='y') {$ligne.="$eleve_lieu_naissance;";}
 
-			if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
+			if((isset($avec_email))&&($avec_email=='y')) {
+				if(($tab_acces_mail_ele['acces_global'])||(in_array($eleve_login, $tab_acces_mail_ele['login_ele']))) {
+					$ligne.="$eleve_email;";
+				}
+				else {
+					$ligne.=";";
+				}
+			}
+
 			if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
 			if($_SESSION['statut']!='professeur') {
 				//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
@@ -750,15 +848,29 @@ if($current_group) {
 				$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_tmp)>0) {
 					while($lig_tmp=mysqli_fetch_object($res_tmp)) {
-						if($lig_tmp->resp_legal=='1') {
-							$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
-						}
-						elseif($lig_tmp->resp_legal=='2') {
-							$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						if(($tab_acces_tel_resp['acces_global'])||(in_array($lig_tmp->pers_id, $tab_acces_tel_resp['pers_id']))) {
+							if($lig_tmp->resp_legal=='1') {
+								$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+							}
+							elseif($lig_tmp->resp_legal=='2') {
+								$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+							}
+							else {
+								if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+								$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+							}
 						}
 						else {
-							if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
-							$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+							if($lig_tmp->resp_legal=='1') {
+								$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+							}
+							elseif($lig_tmp->resp_legal=='2') {
+								$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+							}
+							else {
+								if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+								$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;;;";
+							}
 						}
 					}
 				}
@@ -773,7 +885,15 @@ if($current_group) {
 			if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
 			if((isset($avec_lieu_naiss))&&($avec_lieu_naiss=='y')) {$ligne.="$eleve_lieu_naissance;";}
 
-			if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
+			if((isset($avec_email))&&($avec_email=='y')) {
+				if(($tab_acces_mail_ele['acces_global'])||(in_array($eleve_login, $tab_acces_mail_ele['login_ele']))) {
+					$ligne.="$eleve_email;";
+				}
+				else {
+					$ligne.=";";
+				}
+			}
+
 			if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
 			if($_SESSION['statut']!='professeur') {
 				//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}

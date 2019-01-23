@@ -19126,4 +19126,330 @@ function get_acces_mail_ele($login_ele, $id_classe='') {
 
 	return $retour;
 }
+
+// Tableau des élèves pour lesquels l'utilisateur a accès au numéro de téléphone élève
+function get_tab_acces_tel_ele() {
+	global $mysqli;
+
+	$tab=array();
+	$tab['acces_global']=false;
+	$tab['login_ele']=array();
+
+	if($_SESSION['statut']=='administrateur') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesTelTousElevesProf')) {
+			$tab['acces_global']=true;
+		}
+		else {
+			if(getSettingAOui('GepiAccesTelElevesRespProf')) {
+				$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg,
+									j_groupes_professeurs jgp
+								WHERE jeg.id_groupe=jgp.lid_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						$tab['login_ele'][]=$lig->login;
+					}
+				}
+			}
+
+			if(getSettingAOui('GepiAccesTelElevesRespPP')) {
+				$sql="SELECT DISTINCT login FROM j_eleves_professeurs
+								WHERE professeur='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if(!in_array($lig->login, $tab['login_ele'])) {
+							$tab['login_ele'][]=$lig->login;
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesTelEleves', $_SESSION['statut']))) {
+		$tab['acces_global']=true;
+	}
+
+	return $tab;
+}
+
+function get_tab_acces_mail_ele() {
+	global $mysqli;
+
+	$tab=array();
+	$tab['acces_global']=false;
+	$tab['login_ele']=array();
+
+	if($_SESSION['statut']=='administrateur') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesMailTousElevesProf')) {
+			$tab['acces_global']=true;
+		}
+		else {
+			if(getSettingAOui('GepiAccesMailElevesRespProf')) {
+				$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg,
+									j_groupes_professeurs jgp
+								WHERE jeg.id_groupe=jgp.lid_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						$tab['login_ele'][]=$lig->login;
+					}
+				}
+			}
+
+			if(getSettingAOui('GepiAccesMailElevesRespPP')) {
+				$sql="SELECT DISTINCT login FROM j_eleves_professeurs
+								WHERE professeur='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if(!in_array($lig->login, $tab['login_ele'])) {
+							$tab['login_ele'][]=$lig->login;
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesMailEleves', $_SESSION['statut']))) {
+		$tab['acces_global']=true;
+	}
+
+	return $tab;
+}
+
+function get_tab_acces_adresse_resp() {
+	global $mysqli;
+
+	$tab=array();
+	$tab['acces_global']=false;
+	$tab['pers_id']=array();
+
+	if($_SESSION['statut']=='administrateur') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesAdresseTousParentsProf')) {
+			$tab['acces_global']=true;
+		}
+		else {
+			if(getSettingAOui('GepiAccesAdresseParentsRespProf')) {
+				$sql="SELECT DISTINCT r.pers_id FROM responsables2 r,
+									eleves e,
+									j_eleves_groupes jeg,
+									j_groupes_professeurs jgp
+								WHERE r.ele_id=e.ele_id AND 
+									e.login=jeg.login AND 
+									jeg.id_groupe=jgp.lid_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						$tab['pers_id'][]=$lig->pers_id;
+					}
+				}
+			}
+
+			if(getSettingAOui('GepiAccesAdresseParentsRespPP')) {
+				$sql="SELECT DISTINCT r.pers_id FROM responsables2 r,
+									eleves e,
+									j_eleves_professeurs jep 
+								WHERE r.ele_id=e.ele_id AND 
+									e.login=jep.login AND 
+									jep.professeur='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if(!in_array($lig->pers_id, $tab['pers_id'])) {
+							$tab['pers_id'][]=$lig->pers_id;
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesAdresseParents', $_SESSION['statut']))) {
+		$tab['acces_global']=true;
+	}
+
+	return $tab;
+}
+
+function get_tab_acces_tel_resp() {
+	global $mysqli;
+
+	$tab=array();
+	$tab['acces_global']=false;
+	$tab['pers_id']=array();
+
+	if($_SESSION['statut']=='administrateur') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesTelTousParentsProf')) {
+			$tab['acces_global']=true;
+		}
+		else {
+			if(getSettingAOui('GepiAccesTelTousParentsProf')) {
+				$sql="SELECT DISTINCT r.pers_id FROM responsables2 r,
+									eleves e,
+									j_eleves_groupes jeg,
+									j_groupes_professeurs jgp
+								WHERE r.ele_id=e.ele_id AND 
+									e.login=jeg.login AND 
+									jeg.id_groupe=jgp.lid_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						$tab['pers_id'][]=$lig->pers_id;
+					}
+				}
+			}
+
+			if(getSettingAOui('GepiAccesTelParentsRespPP')) {
+				$sql="SELECT DISTINCT r.pers_id FROM responsables2 r,
+									eleves e,
+									j_eleves_professeurs jep 
+								WHERE r.ele_id=e.ele_id AND 
+									e.login=jep.login AND 
+									jep.professeur='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if(!in_array($lig->pers_id, $tab['pers_id'])) {
+							$tab['pers_id'][]=$lig->pers_id;
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesTelParents', $_SESSION['statut']))) {
+		$tab['acces_global']=true;
+	}
+
+	return $tab;
+}
+
+function get_tab_acces_mail_resp() {
+	global $mysqli;
+
+	$tab=array();
+	$tab['acces_global']=false;
+	$tab['pers_id']=array();
+
+	if($_SESSION['statut']=='administrateur') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$tab['acces_global']=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+
+		if(getSettingAOui('GepiAccesMailTousParentsProf')) {
+			$tab['acces_global']=true;
+		}
+		else {
+			if(getSettingAOui('GepiAccesMailParentsRespProf')) {
+				$sql="SELECT DISTINCT r.pers_id FROM responsables2 r,
+									eleves e,
+									j_eleves_groupes jeg,
+									j_groupes_professeurs jgp
+								WHERE r.ele_id=e.ele_id AND 
+									e.login=jeg.login AND 
+									jeg.id_groupe=jgp.lid_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						$tab['pers_id'][]=$lig->pers_id;
+					}
+				}
+			}
+
+			if(getSettingAOui('GepiAccesMailParentsRespPP')) {
+				$sql="SELECT DISTINCT r.pers_id FROM responsables2 r,
+									eleves e,
+									j_eleves_professeurs jep 
+								WHERE r.ele_id=e.ele_id AND 
+									e.login=jep.login AND 
+									jep.professeur='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if(!in_array($lig->pers_id, $tab['pers_id'])) {
+							$tab['pers_id'][]=$lig->pers_id;
+						}
+					}
+				}
+			}
+		}
+	}
+	elseif(($_SESSION['statut']=='autre')&&(acces('/AccesMailParents', $_SESSION['statut']))) {
+		$tab['acces_global']=true;
+	}
+
+	return $tab;
+}
+
 ?>

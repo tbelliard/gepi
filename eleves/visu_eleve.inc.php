@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -507,6 +507,8 @@ Patientez pendant l'extraction des données... merci.
 		$acces_tel_responsable=false;
 		$acces_adresse_responsable=false;
 		$acces_email_responsable=false;
+		$acces_email_ele=false;
+		$acces_tel_ele=false;
 
 		$active_annees_anterieures=getSettingValue('active_annees_anterieures');
 
@@ -527,6 +529,9 @@ Patientez pendant l'extraction des données... merci.
 			$acces_tel_responsable=true;
 			$acces_adresse_responsable=true;
 			$acces_email_responsable=true;
+
+			$acces_email_ele=true;
+			$acces_tel_ele=true;
 		}
 		elseif($_SESSION['statut']=='scolarite') {
 			if (getSettingValue("GepiAccesTouteFicheEleveScolarite")!='yes') {
@@ -555,6 +560,8 @@ Patientez pendant l'extraction des données... merci.
 			$acces_adresse_responsable=true;
 			$acces_email_responsable=true;
 
+			$acces_email_ele=true;
+			$acces_tel_ele=true;
 
 			$GepiAccesReleveScol=getSettingValue('GepiAccesReleveScol');
 			if($GepiAccesReleveScol=="yes") {
@@ -600,6 +607,9 @@ Patientez pendant l'extraction des données... merci.
 			$acces_tel_responsable=true;
 			$acces_adresse_responsable=true;
 			$acces_email_responsable=true;
+
+			$acces_email_ele=true;
+			$acces_tel_ele=true;
 
 			$GepiAccesReleveCpeTousEleves=getSettingValue('GepiAccesReleveCpeTousEleves');
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
@@ -861,6 +871,9 @@ Patientez pendant l'extraction des données... merci.
 					$acces_email_responsable=true;
 				}
 			}
+
+			$acces_email_ele=get_acces_mail_ele($ele_login);
+			$acces_tel_ele=get_acces_tel_ele($ele_login);
 
 		}
 		elseif($_SESSION['statut'] == 'autre'){
@@ -1566,37 +1579,40 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo $tab_ele['mef']."</td></tr>\n";
 
-			// 20170727
 			$chaine_acces_modif_tel="";
-			if($acces_saisie_tel_ele) {
-				$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?login_ele=".$ele_login."' onclick=\"affiche_corrige_tel_ele('".$ele_login."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
+			if($acces_tel_ele) {
+				if($acces_saisie_tel_ele) {
+					$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?login_ele=".$ele_login."' onclick=\"affiche_corrige_tel_ele('".$ele_login."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
+				}
+
+				if((isset($tab_ele["tel_pers"]))&&($tab_ele["tel_pers"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.pers&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_pers'])."</td></tr>\n";
+				}
+
+				if((isset($tab_ele["tel_port"]))&&($tab_ele["tel_port"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.port&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_port'])."</td></tr>\n";
+				}
+
+				if((isset($tab_ele["tel_prof"]))&&($tab_ele["tel_prof"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.prof&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_prof'])."</td></tr>\n";
+				}
 			}
 
-			if((isset($tab_ele["tel_pers"]))&&($tab_ele["tel_pers"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
+			if($acces_email_ele) {
 				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.pers&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_pers'])."</td></tr>\n";
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>".$chaine_acces_modif_tel;
+				$tmp_date=getdate();
+				//echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
+				echo "<a href='mailto:".$tab_ele['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+				if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+				echo ",%0d%0aCordialement.'>";
+				echo $tab_ele['email'];
+				echo "</a>";
+				echo "</td></tr>\n";
 			}
-
-			if((isset($tab_ele["tel_port"]))&&($tab_ele["tel_port"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.port&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_port'])."</td></tr>\n";
-			}
-
-			if((isset($tab_ele["tel_prof"]))&&($tab_ele["tel_prof"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.prof&nbsp;:</th><td>".$chaine_acces_modif_tel.affiche_numero_tel_sous_forme_classique($tab_ele['tel_prof'])."</td></tr>\n";
-			}
-
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>".$chaine_acces_modif_tel;
-			$tmp_date=getdate();
-			//echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
-			echo "<a href='mailto:".$tab_ele['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
-			if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-			echo ",%0d%0aCordialement.'>";
-			echo $tab_ele['email'];
-			echo "</a>";
-			echo "</td></tr>\n";
 
 			//echo "<tr><th>:</th><td>".$tab_ele['']."</td></tr>\n";
 			echo "</table>\n";

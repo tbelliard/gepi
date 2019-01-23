@@ -40,6 +40,15 @@ if (!checkAccess()) {
     die();
 }
 
+/*
+	get_acces_adresse_resp($login_ele, $id_classe='', $login_resp='') {
+	get_acces_tel_resp($login_ele, $id_classe='', $login_resp='') {
+	get_acces_mail_resp($login_ele, $id_classe='', $login_resp='') {
+	get_acces_adresse_ele($login_ele, $id_classe='') {
+	get_acces_tel_ele($login_ele, $id_classe='') {
+	get_acces_mail_ele($login_ele, $id_classe='') {
+*/
+
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
 $titre_page = "Listes CSV";
@@ -264,7 +273,10 @@ if($_SESSION['statut']=='professeur') {
 
 			echo "<input type='checkbox' id='avec_email' name='avec_email' value='y' ";
 			if((isset($_SESSION['mes_listes_avec_email']))&&($_SESSION['mes_listes_avec_email']=='y')) {echo "checked ";}
-			echo "/><label for='avec_email'> l'email</label><br />\n";
+			echo "/><label for='avec_email'> l'email</label>
+			<span title=\"L'accès à l'adresse mail peut être restreint pour certaines catégories d'utilisateurs.\nCela dépend de la politique de l'établissement.\"><img src='../images/icons/ico_aide.png' class='icone16' /></span>
+			<!--width='15' height='25'-->
+			<br />\n";
 
 			echo "<input type='checkbox' id='avec_doublant' name='avec_doublant' value='y' ";
 			if((isset($_SESSION['mes_listes_avec_doublant']))&&($_SESSION['mes_listes_avec_doublant']=='y')) {echo "checked ";}
@@ -331,7 +343,10 @@ if($_SESSION['statut']=='professeur') {
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=dareic' target='_blank' title=\"Export des informations élève au format CSV DAREIC.\">DAREIC</a> - 
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\n\nIl se peut qu'il faille réenregistrer le fichier au format XLS pour qu'il soit accepté par le site sur lequel vous êtes appelé à fournir le fichier.\">Ariane</a> - 
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>
-					)";
+					)
+								<span title=\"L'accès à l'adresse postale des parents, à l'adresse mail élève ou parent, aux numéros de téléphones peuvent être restreint pour certaines catégories d'utilisateurs.\nCela dépend de la politique de l'établissement.\"><img src='../images/icons/ico_aide.png' class='icone16' /></span>
+			<!--width='15' height='25'-->
+";
 							$cpt++;
 						}
 					}
