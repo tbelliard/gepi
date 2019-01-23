@@ -285,15 +285,7 @@ elseif($RGPD_texte_presentation!='') {
 echo "
 
 <pre style='color:red'>
-A FAIRE apparaître :
-
-Pouvoir éditer/modifier certaines des lignes qui suivent, en ajouter, supprimer selon les usages.
-
-Vérifier les accès aux adresses parents dans des listes, exports,...
-Droits aussi dans des AID... sur tel et mail élève,...
-
 Pour les responsables légaux, avoir la liste des resp_legal=0 associés avec droits d'accès (bulletins, cahiers de textes,...) (acces_sp|envoi_bulletin)
-
 </pre>";
 
 $colspan='';
@@ -777,19 +769,27 @@ echo "
 echo "
 <a name='generalites'></a>
 <h3>Généralités sur Gepi</h3>
-<p>Indépendamment des modules activés et des droits d'accès donnés, Gepi permet aux utilisateurs d'accéder à un certain nombre d'informations.<br />
-<span style='color:red'>A détailler...</span><br />
-Les comptes administrateurs, scolarité <em>(chef d'établissement, adjoint, secrétaire)</em>, cpe on accès à... <span style='color:red'>à détailler...</span><br />
-Les professeurs ont accès à leurs listes d'élèves avec leurs nom, prénom, genre (M/F), date de naissance et classe.<br />
-Il peuvent exporter ces listes en fichiers CSV et PDF.</p>
+<p>Indépendamment des modules activés et des droits d'accès donnés, Gepi permet aux utilisateurs d'accéder à un certain nombre d'informations.</p>
 
-<pre style='color:red'>
-- Les statuts, leur rôle et les droits associés (http://www.sylogix.org/projects/gepi/wiki/Gepi_admin).
-- Imports XML, quelles infos stockées, qui y a accès...
-Les fichiers XML exploités avec quelles infos de Siècle/Sconet, logiciel d'emploi du temps, STS.
-- ...
+<p>Les comptes administrateurs, scolarité <em>(chef d'établissement, adjoint, secrétaire)</em> et cpe ont&nbsp;:</p>
+<ul>
+	<li>accès aux listes d'élèves par classes, avec leur nom, prénom, genre <em>(M/F)</em>, date et lieu de naissance, login, régime <em>(demi-pensionnaire, externe, interne)</em>, statut de redoublant ou non&nbsp;;</li>
+	<li>accès aux identités responsables (parents) associés aux élèves avec leur civilité, nom, prénom, adresse postale, adresse mail&nbsp;;<br />
+	accès également au niveau de responsabilité <em>(responsable légal, en charge, simple contact,...)</em> et leur code parenté <em>(père, mère,...)</em>.</li>
 
-</pre>
+	<!--
+	<li>&nbsp;;</li>
+	<li>&nbsp;;</li>
+	<li></li>
+	-->
+</ul>
+
+<p>Les professeurs ont&nbsp;:</p>
+<ul>
+	<li>accès à leurs listes d'élèves par classes, avec leur nom, prénom, genre <em>(M/F)</em>, date et lieu de naissance, login, régime <em>(demi-pensionnaire, externe, interne)</em>, statut de redoublant ou non <em>(via les exports CSV notamment)</em>.</li>
+</ul>
+
+<p>Les autres droits attribués sont définis dans la partie <a href='#droits_acces'>droits d'accès</a>.</p>
 
 <p>Dans Gepi, chaque utilisateur a un compte qui a un statut (et un seul) parmi&nbsp;:</p>
 <ul>
@@ -856,9 +856,16 @@ Les fichiers XML exploités avec quelles infos de Siècle/Sconet, logiciel d'emp
 
 <p>C'est un peu résumé, mais voilà pour les grandes lignes.<br />
 Le compte administrateur ne doit normalement être utilisé qu'en début d'année.<br />
-Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont les droits appropriés.</p>";
+Par la suite, en gestion courante, c'est plutôt les comptes scolarité qui ont les droits appropriés.</p>
 
-//no_anti_inject_
+<br />
+
+<p style='margin-top:1em;'>L'initialisation de l'année est généralement effectuée à l'aide des fichiers d'export des applications Éducation Nationale Siècle <em>(Gestion des élèves, parents)</em> et STSWeb <em>(Gestion des personnels)</em>.<br />
+Via ces exports, la personne qui effectue les imports dans Gepi peut avoir accès aux informations élèves, parents <em>(adresse postale, adresse mail, téléphone inclus)</em> et aux civilité, nom, prénom, date de naissance, grade des personnels de Direction, de Vie Scolaire et d'enseignement <em>(professeurs)</em>.</p>
+
+<br />
+
+<p>Les personnels de l'établissement disposant d'un compte Gepi, et notamment les professeurs ont accès aux adresses mail des autres professeurs <em>(via les exports CSV AID, via l'onglet Enseignement de la page Consultation élève, via la page de Visualisation des équipes pédagogiques)</em>.</p>";
 
 // =============================================================================
 // Modules
