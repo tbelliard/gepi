@@ -276,7 +276,6 @@ if($_SESSION['statut']=='administrateur') {
 Libre à vous de les mentionner dans le petit texte facultatif de présentation qui suit&nbsp;:<br />
 <textarea cols='60' name='no_anti_inject_RGPD_texte_presentation' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_texte_presentation."</textarea>
 </p>";
-
 }
 elseif($RGPD_texte_presentation!='') {
 	echo $RGPD_texte_presentation;
@@ -292,7 +291,7 @@ $RGPD_cnil_creation=getSettingAOui('RGPD_cnil_creation');
 $RGPD_cnil_maj=getSettingAOui('RGPD_cnil_maj');
 
 echo "
-<p class='bold'>Description du traitement</p>
+<p class='bold' style='margin-top:1em;'>Description du traitement</p>
 <table class='boireaus boireaus_alt'>
 	<tr>
 		<th>Nom / sigle</th>
@@ -930,9 +929,16 @@ if(getSettingValue('active_module_absence')=='2') {
 		<td style='text-align:left'>
 			Le module absences permet de saisir les absences et retards des élèves.<br />
 			Les professeurs constatent l'absence en classe à un moment donné.<br />
+
 			Les personnels de Vie Scolaire (CPE) traitent les absences <em>(pour les catégoriser absence, retard inter-cours, retard extérieur, passage à l'infirmerie,...)</em> et contactent le cas échéant les responsables <em>(parents, tuteurs,...)</em>.<br />
+			<br />
+
+			Les professeurs peuvent saisir/consulter les absences, mais n'ont pas de possibilités d'extractions ou de statistiques.<br />
+			<br />
+
 			Les personnels de Vie Scolaire ont donc accès aux adresses postales, téléphoniques et mail.<br />
 			Ils peuvent effectuer des extractions CSV/ODT des absences pour par exemple discuter des absences de tel élève ou dans telle classe.<br />
+			Les taux d'absences (justifiées ou non) peuvent être calculés globalement pour une classe, un élève, éventuellement détaillé par motif d'absence.<br />
 
 			Des absences répétées, non justifiées <em>(non valides)</em>, peuvent amener les CPE à effectuer un signalement à l'Inspection académique.<br />
 			Des extractions statistiques peuvent aussi être demandées par l'Éducation Nationale.<br />
