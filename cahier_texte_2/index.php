@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2012 Josselin Jacquard
+ * Copyright 2009-2019 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -76,7 +76,7 @@ $titre_page = "Cahier de textes";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "cahier_texte_2/init_cahier_texte_2";
 $utilisation_win = 'oui';
-$utilisation_jsdivdrag = "non";
+//$utilisation_jsdivdrag = "non";
 $windows_effects = "non";
 $message_deconnexion = "non";
 
@@ -106,11 +106,14 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6' ) !== FALSE) {
 $edt_liens_target_blank="y";
 include("../edt_organisation/cdt_initialisation.php");
 $pas_de_message_deconnexion = 1;
+
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 //-----------------------------------------------------------------------------------
 
 //debug_var();
+
+insere_lien_calendrier_crob("right");
 
 // si l'id d'un groupe est spécifié, on l'enregistre dans un champ hidden, il sera utilisé par le javascript d'initialisation pour basculer vers le groupe concerné
 echo "<input type='hidden' name='id_groupe_init' id='id_groupe_init' value='";
