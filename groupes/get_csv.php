@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -53,6 +53,7 @@ if (!checkAccess()) {
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $id_aid = isset($_POST['id_aid']) ? $_POST['id_aid'] : (isset($_GET['id_aid']) ? $_GET['id_aid'] : NULL);
+$id_action = isset($_POST['id_action']) ? $_POST['id_action'] : (isset($_GET['id_action']) ? $_GET['id_action'] : NULL);
 
 $mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
@@ -112,6 +113,24 @@ if ($current_group) {
 	}
 	$nom_fic=remplace_accents($tab_aid['nom_aid']."_".$tab_aid['nom_general_complet'].$complement."_periode_".$periode_num,"all") . ".csv";
 	if ((!isset($periode_num))||(!is_numeric($periode_num))) {$periode_num="all";}
+} elseif(isset($id_action)) {
+
+	if(preg_match('/^[0-9]{1,}$/', $id_action)) {
+		$action=get_action($id_action);
+		if(count($action)==0) {
+			die('Action non valide.');
+		}
+
+		if(isset($mode)&&$mode=='presents') {
+			$nom_fic=remplace_accents('action_'.$action['nom'].'_'.$action['date_action'].'_presents', 'all').".csv";
+		}
+		else {
+			$nom_fic=remplace_accents('action_'.$action['nom'].'_'.$action['date_action'], 'all').".csv";
+		}
+	}
+	else {
+		die('Action non valide.');
+	}
 } else {
 	if($id_classe=='toutes') {
 		$classe = "Toutes_les_classes";
@@ -362,7 +381,7 @@ elseif((isset($_GET['type_export']))&&($_GET['type_export']=="dareic")&&(isset($
 }
 //==============================================================================
 
-if(!isset($mode)) {
+if((!isset($mode))||($mode=='presents')) {
 	$fd.="CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS\n";
 	$avec_classe="y";
 	$avec_login="y";
@@ -764,6 +783,71 @@ if($current_group) {
 
 			$fd.=$ligne."\n";
 		}
+	}
+} elseif((getSettingAOui('active_mod_actions'))&&(isset($id_action))&&(preg_match('/^[0-9]{1,}$/', $id_action))) {
+	// Contrôler si on a accès à l'action?
+	if($_SESSION['statut']=='professeur') {
+		$sql="SELECT 1=1 FROM mod_actions_gestionnaires mag, 
+						mod_actions_action maa 
+					WHERE maa.id_categorie=mag.id_categorie AND 
+						mag.login_user='".$_SESSION['login']."' AND 
+						maa.id='".$id_action."';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)==0) {
+			$fd="Accès non autorisé.";
+		}
+		else {
+			$sql="SELECT e.* FROM mod_actions_inscriptions mai, 
+							eleves e 
+						WHERE mai.login_ele=e.login AND 
+							mai.id_action='".$id_action."'";
+			if(isset($mode)&&$mode=='presents') {
+				$sql.=" AND 
+							mai.presence='y'";
+			}
+			$sql.=";";
+			$test=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test)>0) {
+				$mysql_date=strftime('%Y-%m-%d %H:%M:%S');
+				while($lig=mysqli_fetch_object($test)) {
+					//$fd.="CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS\n";
+					$classe='';
+					$current_classe=get_clas_ele_telle_date($lig->login, $mysql_date);
+					if(isset($current_classe['classe'])) {
+						$classe=$current_classe['classe'];
+					}
+					$fd.=$classe.';'.$lig->login.';'.$lig->nom.';'.$lig->prenom.';'.$lig->sexe.';'.formate_date($lig->naissance).';'."\r\n";
+				}
+			}
+		}
+	}
+	elseif(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+		$sql="SELECT e.* FROM mod_actions_inscriptions mai, 
+						eleves e 
+					WHERE mai.login_ele=e.login AND 
+						mai.id_action='".$id_action."'";
+		if(isset($mode)&&$mode=='presents') {
+			$sql.=" AND 
+						mai.presence='y'";
+		}
+		$sql.=";";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$mysql_date=strftime('%Y-%m-%d %H:%M:%S');
+			while($lig=mysqli_fetch_object($test)) {
+				//$fd.="CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS\n";
+				$classe='';
+				$current_classe=get_clas_ele_telle_date($lig->login, $mysql_date);
+				if(isset($current_classe['classe'])) {
+					$classe=$current_classe['classe'];
+				}
+				$fd.=$classe.';'.$lig->login.';'.$lig->nom.';'.$lig->prenom.';'.$lig->sexe.';'.formate_date($lig->naissance).';'."\r\n";
+			}
+		}
+
+	}
+	else {
+		$fd="Accès non autorisé.";
 	}
 } else {
 	$tab_classe=array();

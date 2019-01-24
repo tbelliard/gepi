@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -885,14 +885,17 @@ if(!isset($id_action)) {
 				</td>
 				<td>
 					<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=inscriptions' title=\"Consulter/effectuer les inscriptions\"><img src='../images/icons/add_user.png' class='icone16' /> 
-					".count($action['eleves'])." inscrit(s)</a>
+					".count($action['eleves'])." inscrit(s)</a> 
+					<a href='../groupes/get_csv.php?id_action=".$id_action."' target='_blank' title=\"Exporter la liste des inscrits en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
+
 				</td>
 				<td>
 			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=presence' title=\"Pointer les présents/absents\"><img src='../images/icons/absences_edit.png' class='icone16' /> 
-					".count($action['presents'])." présent(s)</a>
+					".count($action['presents'])." présent(s)</a> 
+					<a href='../groupes/get_csv.php?id_action=".$id_action."&mode=presents' target='_blank' title=\"Exporter la liste des présents en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
 				</td>
 				<td>
-					<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
+					<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a> 
 				</td>
 				<td>
 			<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=suppr".add_token_in_url()."' onclick=\"return confirm('Êtes vous sûr de vouloir supprimer ce(tte) ".$terme_mod_action_nettoye."')\" title=\"Supprimer ce(tte) ".$terme_mod_action_nettoye."\"><img src='../images/delete16.png' class='icone16' /></a>
@@ -1031,7 +1034,8 @@ if($mode=='afficher') {
 					<th>Inscriptions</th>
 					<td style='text-align:left;'>
 						<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=inscriptions' title=\"Consulter/effectuer les inscriptions\"><img src='../images/icons/add_user.png' class='icone16' /> ".count($action['eleves'])." élève(s) inscrit(s)</a>
-					".((getSettingAOui('active_module_trombinoscopes') && count($action['eleves_list'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."' target='_blank' title=\"Générer un trombinoscope PDF.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")."
+					".((getSettingAOui('active_module_trombinoscopes') && count($action['eleves_list'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."' target='_blank' title=\"Générer un trombinoscope PDF.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")." 
+						<a href='../groupes/get_csv.php?id_action=".$id_action."' target='_blank' title=\"Exporter la liste des inscrits en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
 					</td>
 				</tr>
 				<tr>
@@ -1039,7 +1043,8 @@ if($mode=='afficher') {
 					<td style='text-align:left;'>
 						<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=presence' title=\"Pointer les présents/absents\"><img src='../images/icons/absences_edit.png' class='icone16' /> 
 						".count($action['presents'])." élève(s) pointé(s) présent(s)</a>
-						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")."
+						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")." 
+						<a href='../groupes/get_csv.php?id_action=".$id_action."&mode=presents' target='_blank' title=\"Exporter la liste des présents en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
 					</td>
 				</tr>
 			</table>
@@ -1059,7 +1064,8 @@ elseif($mode=='inscriptions') {
 
 	echo "<h2>
 		".$action['nom']." du ".formate_date($date_action)." à ".$heure_action." 
-		<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
+		<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a> 
+		<a href='../groupes/get_csv.php?id_action=".$id_action."' target='_blank' title=\"Exporter la liste des inscrits en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
 	</h2>
 	<h3>Effectuer les inscriptions&nbsp;:</h3>
 	<div style='float:left; min-width:25em; max-width:45em;'>
@@ -1094,7 +1100,9 @@ elseif($mode=='inscriptions') {
 	echo "</th>
 				<td style='text-align:left;'>
 					<p>".count($action['eleves_list'])." élève(s)
-					".((getSettingAOui('active_module_trombinoscopes') && count($action['eleves_list'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."' target='_blank' title=\"Générer un trombinoscope PDF.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")."
+					".((getSettingAOui('active_module_trombinoscopes') && count($action['eleves_list'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."' target='_blank' title=\"Générer un trombinoscope PDF.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")." 
+						<a href='../groupes/get_csv.php?id_action=".$id_action."' target='_blank' title=\"Exporter la liste des inscrits en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
+
 					</p>
 					<p>";
 					foreach($action['eleves'] as $cpt_ele => $current_ele) {
@@ -1116,7 +1124,8 @@ elseif($mode=='inscriptions') {
 					if(count($action['presents'])>0) {
 						echo "<br />
 						".count($action['presents'])." élève(s) pointé(s) présent(s)&nbsp;:
-						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")."
+						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")." 
+						<a href='../groupes/get_csv.php?id_action=".$id_action."&mode=presents' target='_blank' title=\"Exporter la liste des présents en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
 						<br />";
 						foreach($action['presents'] as $login_ele => $current_ele) {
 							echo "
@@ -1417,7 +1426,8 @@ elseif($mode=='presence') {
 
 	echo "<h2>
 		".$action['nom']." du ".formate_date($date_action)." à ".$heure_action." 
-		<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
+		<a href='".$_SERVER['PHP_SELF']."?id_action=".$id_action."&mode=print' target='_blank' title=\"Imprimer l'".$terme_mod_action_nettoye.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a> 
+		<a href='../groupes/get_csv.php?id_action=".$id_action."' target='_blank' title=\"Exporter la liste des inscrits en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
 	</h2>
 	<h3>Pointer les présents&nbsp;:</h3>
 	<div style='float:left; min-width:25em; max-width:45em;'>
@@ -1444,7 +1454,9 @@ elseif($mode=='presence') {
 				<td style='text-align:left;'>
 					<p>
 						<a href='".$_SERVER['PHP_SELF']."?id_categorie=".$id_categorie."&id_action=".$id_action."&mode=inscriptions' title=\"Consulter/effectuer les inscriptions\"><img src='../images/icons/add_user.png' class='icone16' /> ".count($action['eleves_list'])." élève(s) inscrit(s)</a>
-						".((getSettingAOui('active_module_trombinoscopes') && count($action['eleves_list'])>0) ? "<a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."' target='_blank' title=\"Générer un trombinoscope PDF.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")."
+						".((getSettingAOui('active_module_trombinoscopes') && count($action['eleves_list'])>0) ? "<a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."' target='_blank' title=\"Générer un trombinoscope PDF.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>" : "")." 
+						<a href='../groupes/get_csv.php?id_action=".$id_action."' target='_blank' title=\"Exporter la liste des inscrits en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
+
 					</p>
 					<p>";
 					foreach($action['eleves'] as $cpt_ele => $current_ele) {
@@ -1470,7 +1482,11 @@ elseif($mode=='presence') {
 						</a>
 					</div>
 					<div style='float:right; width:16px; margin:0.3em;' title=\"Générer un trombinoscope des présents sur ce(tte) ".$terme_mod_action_nettoye."\">
-						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a>
+						".((getSettingAOui('active_module_trombinoscopes') && count($action['presents'])>0) ? " <a href='../mod_trombinoscopes/trombino_pdf.php?id_action=".$id_action."&presents_action=y' target='_blank' title=\"Générer un trombinoscope PDF des présents.\"><img src='../images/icons/trombinoscope.png' class='icone16' /></a> 
+					</div>
+					<div style='float:right; width:16px; margin:0.3em;'>
+						<a href='../groupes/get_csv.php?id_action=".$id_action."&mode=presents' target='_blank' title=\"Exporter la liste des présents en CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>
+
 					</div>" : "");
 	}
 	foreach($action['presents'] as $login_ele => $current_ele) {
