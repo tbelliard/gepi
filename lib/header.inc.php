@@ -91,7 +91,7 @@ include_once 'header_template.inc.php';
 
 <!-- Style_screen_ajout.css -->
 	<?php
-		if (count($Style_CSS)) {
+		if ((isset($Style_CSS))&&(is_array($Style_CSS))&&(count($Style_CSS)>0)) {
 			foreach ($Style_CSS as $value) {
 				if ($value!="") {
 					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
