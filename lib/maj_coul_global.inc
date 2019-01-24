@@ -7,23 +7,47 @@
 */
 
 function getCouleurGlobal($couleur,$coul_origine) {
-    global $mysqli;
-   $sql = "select VALUE from setting where NAME='".$couleur."'";
-           
-        $coul = mysqli_query($mysqli, $sql); 
-        if (!$coul) return ($coul_origine); 
-        if ($coul->num_rows == 0) {
-             return ($coul_origine);
-         } else {
-             $row = $coul->fetch_row();
-             if ($row == "") {
-                 return ($coul_origine);
-             } else {
-             return ("#".$row[0]);
-             }             
-         }  
+	global $mysqli;
+	$sql = "select VALUE from setting where NAME='".$couleur."'";
+
+	$coul = mysqli_query($mysqli, $sql);
+	if (!$coul) return ($coul_origine);
+	if ($coul->num_rows == 0) {
+		return ($coul_origine);
+	} else {
+		$row = $coul->fetch_row();
+		if ($row == "") {
+			return ($coul_origine);
+		} else {
+			return ("#".$row[0]);
+		}
+	}
 }
 
+// c: Notices de type compte-rendu
+// t: Notices de type travail à faire
+// i: Notice informations générales
+// f: Travaux à faire "futurs"
+$tmp_tab_type_notices=array('c', 't', 'i', 'f');
+foreach($tmp_tab_type_notices as $tmp_type_notice) {
+	if(!isset($color_fond_notices[$tmp_type_notice])) {
+		$color_fond_notices[$tmp_type_notice]='';
+	}
+	if(!isset($couleur_entete_fond[$tmp_type_notice])) {
+		$couleur_entete_fond[$tmp_type_notice]='';
+	}
+	if(!isset($couleur_cellule[$tmp_type_notice])) {
+		$couleur_cellule[$tmp_type_notice]='';
+	}
+	if(!isset($couleur_cellule_alt[$tmp_type_notice])) {
+		$couleur_cellule_alt[$tmp_type_notice]='';
+	}
+}
+
+if(!isset($color_police_travaux)) {$color_police_travaux='';}
+if(!isset($color_police_matieres)) {$color_police_matieres='';}
+if(!isset($couleur_bord_tableau_notice)) {$couleur_bord_tableau_notice='';}
+if(!isset($couleur_cellule_gen)) {$couleur_cellule_gen='';}
 
 // Notices de type compte-rendu
 $color_fond_notices["c"] = getCouleurGlobal("fond_notices_c",$color_fond_notices["c"]);
