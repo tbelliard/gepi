@@ -1094,8 +1094,9 @@ if(getSettingAOui('active_mod_ects')) {
 	echo "
 	<tr>
 		<td>Crédits ECTS</td>
-		<td></td>
-		<td style='text-align:left'>";
+		<td>Gérer les crédits ECTS</td>
+		<td style='text-align:left'>
+			Voir les droits dans la rubrique <a href='#droits_acces'>droits d'accès</a>.";
 
 	if($_SESSION['statut']=='administrateur') {
 		echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_mod_ECTS' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$RGPD_mod_ECTS."</textarea>";
