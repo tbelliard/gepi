@@ -933,16 +933,15 @@ if(getSettingValue('active_module_absence')=='2') {
 			Les personnels de Vie Scolaire (CPE) traitent les absences <em>(pour les catégoriser absence, retard inter-cours, retard extérieur, passage à l'infirmerie,...)</em> et contactent le cas échéant les responsables <em>(parents, tuteurs,...)</em>.<br />
 			<br />
 
-			Les professeurs peuvent saisir/consulter les absences, mais n'ont pas de possibilités d'extractions ou de statistiques.<br />
+			Les professeurs peuvent saisir/consulter les absences, mais n'ont pas de possibilités d'extractions statistiques.<br />
 			<br />
 
-			Les personnels de Vie Scolaire ont donc accès aux adresses postales, téléphoniques et mail.<br />
+			Les personnels de Vie Scolaire, comptes scolarité et administrateur ont donc accès aux adresses postales, téléphoniques et mail.<br />
 			Ils peuvent effectuer des extractions CSV/ODT des absences pour par exemple discuter des absences de tel élève ou dans telle classe.<br />
 			Les taux d'absences (justifiées ou non) peuvent être calculés globalement pour une classe, un élève, éventuellement détaillé par motif d'absence.<br />
 
 			Des absences répétées, non justifiées <em>(non valides)</em>, peuvent amener les CPE à effectuer un signalement à l'Inspection académique.<br />
 			Des extractions statistiques peuvent aussi être demandées par l'Éducation Nationale.<br />
-			<span style='color:red'>Préciser les champs extraits dans ces exports statistiques.</span><br />
 
 			".(getSettingAOui('active_absences_parents') ? "<br />Les parents ont accès aux signalements d'absences enregistrés.<br />Les absences non traitées par la Vie Scolaire n'apparaissent que 4h après leur déclaration pour permettre de traiter une éventuelle erreur de saisie ou un défaut d'information sur une modification dans une activité." : "");
 
@@ -1069,14 +1068,11 @@ if(getSettingAOui('active_carnets_notes')) {
 		<td style='text-align:left'>Le module permet aux professeurs de saisir des notes, avec commentaire ou non.<br />
 		Les professeurs peuvent choisir si les commentaires sur une évaluation doivent être visibles ou non des responsables <em>(les professeurs sont alertés qu'ils ne doivent pas saisir de commentaire déplacé)</em>.<br />
 
-		<span style='color:red'>A FAIRE : Permettre de générer un export commentaires inclus pour le cas où un responsable réclamerait le détail des saisies.<br />
-		Les parents peuvent aussi réclamer un export du module Discipline et d'autres... revoir ces possibilités d'export</span><br />
-
 		Les professeurs peuvent choisir à partir de quelle date les notes seront visibles, définir des coefficients,...<br />
 		Il est possible de créer des boîtes ou sous-matières dans les carnets de notes.<br />
 
 		Les comptes scolarité peuvent générer des relevés de notes.<br />
-		Les autres comptes voient ces droits d'accès définis dans la rubrique <a href='#droits_acces'>droits d'accès</a>.<br />
+		Les autres comptes voient leurs droits d'accès définis dans la rubrique <a href='#droits_acces'>droits d'accès</a>.<br />
 
 		".(getSettingAOui('GepiAccesEvalCumulEleve') ? "Les professeurs peuvent aussi créer des évaluations cumulées.<br />
 		Il s'agit d'évaluations successives dont le cumul des points donne une note sur le cumul des référentiels.<br />

@@ -2244,7 +2244,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 			<p style="font-variant: small-caps;">
 				<a name='output_mode_pdf'></a>
 				Accès au Registre des traitements dans Gepi&nbsp;:<br />
-				<em style='color:red'>(encore incomplet), il est accessible via le lien <strong>Informations de Vie Privée</strong> dans le bandeau d'entête</em><br />
+				<em>il est accessible via le lien <strong>Informations de Vie Privée</strong> dans le bandeau d'entête</em><br />
 				<em>(en Europe, sur un Gepi en production, cet accès devrait être ouvert)</em>
 			</p>
 		</div>
