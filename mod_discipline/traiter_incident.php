@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
@@ -643,7 +643,8 @@ echo "		}
 </script>\n";
 //======================================
 
-
+	$acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
+	$acces_visu_eleve=true;
 
 	echo "<p align='center'><input type='submit' name='valider' value='Valider' /></p>\n";
 
@@ -1130,7 +1131,7 @@ echo "		}
 				$cpt=0;
 				$tab_protagonistes=array();
 				while($lig2=mysqli_fetch_object($res2)) {
-					
+					//echo $lig2->statut;
 					$tab_protagonistes[]=$lig2->login;
 					if (is_pp($_SESSION['login'],"",$lig2->login)) {
 						$peutImprimer = TRUE;
@@ -1139,10 +1140,17 @@ echo "		}
 					if($lig2->statut=='eleve') {
 						if(in_array($lig2->login, array_keys($tab_individu))) {
 							if(isset($tab_individu[$lig2->login]['designation2'])) {
-								echo $tab_individu[$lig2->login]['designation2'];
+								$tmp_designation=$tab_individu[$lig2->login]['designation2'];
 							}
 							else {
-								echo $tab_individu[$lig2->login]['designation'];
+								$tmp_designation=$tab_individu[$lig2->login]['designation'];
+							}
+
+							if($acces_visu_eleve) {
+								echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig2->login."&onglet=discipline' target='_blank' title=\"Voir la fiche élève dans un nouvel onglet.\">".$tmp_designation."</a>";
+							}
+							else {
+								echo $tmp_designation;
 							}
 
 							if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
@@ -1150,14 +1158,19 @@ echo "		}
 						}
 						else {
 							$sql="SELECT nom,prenom,email FROM eleves WHERE login='$lig2->login';";
-							//echo "$sql<br />\n";
+							echo "$sql<br />\n";
 							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res3)>0) {
 								$lig3=mysqli_fetch_object($res3);
 								$chaine=casse_mot($lig3->nom,'maj')." ".casse_mot($lig3->prenom, 'majf2');
 								$tab_individu[$lig2->login]['designation']=$chaine;
 								$tab_individu[$lig2->login]['email']=$lig3->email;
-								echo $chaine;
+								if($acces_visu_eleve) {
+									echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig2->login."&onglet=discipline' target='_blank' title=\"Voir la fiche élève dans un nouvel onglet.\">".$chaine['designation']."</a>";
+								}
+								else {
+									echo $chaine;
+								}
 
 								if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
 								$liste_protagonistes.=$chaine;
