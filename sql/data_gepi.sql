@@ -2307,5 +2307,11 @@ INSERT INTO droits SET id='/mod_actions/index_admin.php', administrateur='V', pr
 INSERT INTO droits SET id='/mod_actions/index.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='V', description='Actions : Consultation/saisie', statut='';
 INSERT INTO droits SET id='/mod_actions/accueil.php', administrateur='F', professeur='F', cpe='F', scolarite='F', eleve='V', responsable='V', secours='F', autre='F', description='Actions : Consultation parent/élève', statut='';
 INSERT INTO setting SET name='mod_actions_affichage_familles', value='y';
-INSERT INTO droits SET id='/gestion/registre_traitements.php',
-administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='V', autre='V', description='Registre des traitements', statut='';
+INSERT INTO droits SET id='/gestion/registre_traitements.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='V', autre='V', description='Registre des traitements', statut='';
+INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LCA', nom='LCA', valeur='Langues et cultures de l\'Antiquité';
+INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LCR', nom='LCR', valeur='Langue et culture régionale';
+INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='PRO', nom='PRO', valeur='Découverte professionnelle';
+INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LSF', nom='LSF', valeur='Langue des signes française';
+INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LVE', nom='LVE', valeur='Langue vivante étrangère';
+INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='CHK', nom='CHK', valeur='Chant Choral';
+INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LCE', nom='LCE', valeur='Langues et cultures européennes';
