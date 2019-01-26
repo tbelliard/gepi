@@ -74,6 +74,14 @@ function hex2nb($carac) {
 }
 
 function tab_rvb($couleur) {
+	global $code_couleur_html;
+
+	//echo "couleur=$couleur<br />";
+
+	if(array_key_exists($couleur, $code_couleur_html)) {
+		$couleur=$code_couleur_html[$couleur];
+	}
+
 	$compR=mb_substr($couleur,0,2);
 	$compV=mb_substr($couleur,2,2);
 	$compB=mb_substr($couleur,4,2);
@@ -87,6 +95,12 @@ function tab_rvb($couleur) {
 	$tabcomp['R']=hex2nb(mb_substr($compR,0,1))*16+hex2nb(mb_substr($compR,1,1));
 	$tabcomp['V']=hex2nb(mb_substr($compV,0,1))*16+hex2nb(mb_substr($compV,1,1));
 	$tabcomp['B']=hex2nb(mb_substr($compB,0,1))*16+hex2nb(mb_substr($compB,1,1));
+
+	/*
+	echo "<pre>";
+	print_r($tabcomp);
+	echo "</pre>";
+	*/
 
 	return $tabcomp;
 }
@@ -194,6 +208,146 @@ function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img,$mode=""
 	imagepng($im,$chemin_img);
 }
 
+$code_couleur_html['aliceblue']='F0F8FF';
+$code_couleur_html['antiquewhite']='FAEBD7';
+$code_couleur_html['aqua']='00FFFF';
+$code_couleur_html['aquamarine']='7FFFD4';
+$code_couleur_html['azure']='F0FFFF';
+$code_couleur_html['beige']='F5F5DC';
+$code_couleur_html['bisque']='FFE4C4';
+$code_couleur_html['black']='000000';
+$code_couleur_html['blanchedalmond']='FFEBCD';
+$code_couleur_html['blue']='0000FF';
+$code_couleur_html['blueviolet']='8A2BE2';
+$code_couleur_html['brown']='A52A2A';
+$code_couleur_html['burlywood']='DEB887';
+$code_couleur_html['cadetblue']='5F9EA0';
+$code_couleur_html['chartreuse']='7FFF00';
+$code_couleur_html['chocolate']='D2691E';
+$code_couleur_html['coral']='FF7F50';
+$code_couleur_html['cornflowerblue']='6495ED';
+$code_couleur_html['cornsilk']='FFF8DC';
+$code_couleur_html['crimson']='DC143C';
+$code_couleur_html['cyan']='00FFFF';
+$code_couleur_html['darkblue']='00008B';
+$code_couleur_html['darkcyan']='008B8B';
+$code_couleur_html['darkgoldenrod']='B8860B';
+$code_couleur_html['darkgray']='A9A9A9';
+$code_couleur_html['darkgreen']='006400';
+$code_couleur_html['darkkhaki']='BDB76B';
+$code_couleur_html['darkmagenta']='8B008B';
+$code_couleur_html['darkolivegreen']='556B2F';
+$code_couleur_html['darkorange']='FF8C00';
+$code_couleur_html['darkorchid']='9932CC';
+$code_couleur_html['darkred']='8B0000';
+$code_couleur_html['darksalmon']='E9967A';
+$code_couleur_html['darkseagreen']='8FBC8F';
+$code_couleur_html['darkslateblue']='483D8B';
+$code_couleur_html['darkslategray']='2F4F4F';
+$code_couleur_html['darkturquoise']='00CED1';
+$code_couleur_html['darkviolet']='9400D3';
+$code_couleur_html['deeppink']='FF1493';
+$code_couleur_html['deepskyblue']='00BFFF';
+$code_couleur_html['dimgray']='696969';
+$code_couleur_html['dodgerblue']='1E90FF';
+$code_couleur_html['firebrick']='B22222';
+$code_couleur_html['floralwhite']='FFFAF0';
+$code_couleur_html['forestgreen']='228B22';
+$code_couleur_html['fuchsia']='FF00FF';
+$code_couleur_html['gainsboro']='DCDCDC';
+$code_couleur_html['ghostwhite']='F8F8FF';
+$code_couleur_html['gold']='FFD700';
+$code_couleur_html['goldenrod']='DAA520';
+$code_couleur_html['gray']='808080';
+$code_couleur_html['green']='008000';
+$code_couleur_html['greenyellow']='ADFF2F';
+$code_couleur_html['honeydew']='F0FFF0';
+$code_couleur_html['hotpink']='FF69B4';
+$code_couleur_html['indianred']='CD5C5C';
+$code_couleur_html['indigo']='4B0082';
+$code_couleur_html['ivory']='FFFFF0';
+$code_couleur_html['khaki']='F0E68C';
+$code_couleur_html['lavender']='E6E6FA';
+$code_couleur_html['lavenderblush']='FFF0F5';
+$code_couleur_html['lawngreen']='7CFC00';
+$code_couleur_html['lemonchiffon']='FFFACD';
+$code_couleur_html['lightblue']='ADD8E6';
+$code_couleur_html['lightcoral']='F08080';
+$code_couleur_html['lightcyan']='E0FFFF';
+$code_couleur_html['lightgoldenrodyellow']='FAFAD2';
+$code_couleur_html['lightgreen']='90EE90';
+$code_couleur_html['lightgrey']='D3D3D3';
+$code_couleur_html['lightpink']='FFB6C1';
+$code_couleur_html['lightsalmon']='FFA07A';
+$code_couleur_html['lightseagreen']='20B2AA';
+$code_couleur_html['lightskyblue']='87CEFA';
+$code_couleur_html['lightslategray']='778899';
+$code_couleur_html['lightsteelblue']='B0C4DE';
+$code_couleur_html['lightyellow']='FFFFE0';
+$code_couleur_html['lime']='00FF00';
+$code_couleur_html['limegreen']='32CD32';
+$code_couleur_html['linen']='FAF0E6';
+$code_couleur_html['magenta']='FF00FF';
+$code_couleur_html['maroon']='800000';
+$code_couleur_html['mediumaquamarine']='66CDAA';
+$code_couleur_html['mediumblue']='0000CD';
+$code_couleur_html['mediumorchid']='BA55D3';
+$code_couleur_html['mediumpurple']='9370DB';
+$code_couleur_html['mediumseagreen']='3CB371';
+$code_couleur_html['mediumslateblue']='7B68EE';
+$code_couleur_html['mediumspringgreen']='00FA9A';
+$code_couleur_html['mediumturquoise']='48D1CC';
+$code_couleur_html['mediumvioletred']='C71585';
+$code_couleur_html['midnightblue']='191970';
+$code_couleur_html['mintcream']='F5FFFA';
+$code_couleur_html['mistyrose']='FFE4E1';
+$code_couleur_html['moccasin']='FFE4B5';
+$code_couleur_html['navajowhite']='FFDEAD';
+$code_couleur_html['navy']='000080';
+$code_couleur_html['oldlace']='FDF5E6';
+$code_couleur_html['olive']='808000';
+$code_couleur_html['olivedrab']='6B8E23';
+$code_couleur_html['orange']='FFA500';
+$code_couleur_html['orangered']='FF4500';
+$code_couleur_html['orchid']='DA70D6';
+$code_couleur_html['palegoldenrod']='EEE8AA';
+$code_couleur_html['palegreen']='98FB98';
+$code_couleur_html['paleturquoise']='AFEEEE';
+$code_couleur_html['palevioletred']='DB7093';
+$code_couleur_html['papayawhip']='FFEFD5';
+$code_couleur_html['peachpuff']='FFDAB9';
+$code_couleur_html['peru']='CD853F';
+$code_couleur_html['pink']='FFC0CB';
+$code_couleur_html['plum']='DDA0DD';
+$code_couleur_html['powderblue']='B0E0E6';
+$code_couleur_html['purple']='800080';
+$code_couleur_html['red']='FF0000';
+$code_couleur_html['rosybrown']='BC8F8F';
+$code_couleur_html['royalblue']='4169E1';
+$code_couleur_html['saddlebrown']='8B4513';
+$code_couleur_html['salmon']='FA8072';
+$code_couleur_html['sandybrown']='F4A460';
+$code_couleur_html['seagreen']='2E8B57';
+$code_couleur_html['seashell']='FFF5EE';
+$code_couleur_html['sienna']='A0522D';
+$code_couleur_html['silver']='C0C0C0';
+$code_couleur_html['skyblue']='87CEEB';
+$code_couleur_html['slateblue']='6A5ACD';
+$code_couleur_html['slategray']='708090';
+$code_couleur_html['snow']='FFFAFA';
+$code_couleur_html['springgreen']='00FF7F';
+$code_couleur_html['steelblue']='4682B4';
+$code_couleur_html['tan']='D2B48C';
+$code_couleur_html['teal']='008080';
+$code_couleur_html['thistle']='D8BFD8';
+$code_couleur_html['tomato']='FF6347';
+$code_couleur_html['turquoise']='40E0D0';
+$code_couleur_html['violet']='EE82EE';
+$code_couleur_html['wheat']='F5DEB3';
+$code_couleur_html['white']='FFFFFF';
+$code_couleur_html['whitesmoke']='F5F5F5';
+$code_couleur_html['yellow']='FFFF00';
+$code_couleur_html['yellowgreen']='9ACD32';
 
 $tab_items=array('utiliser_couleurs_perso', 'style_body_backgroundcolor', 'utiliser_degrade', 'degrade_haut', 'degrade_bas', 'utiliser_couleurs_perso_infobulles', 'couleur_infobulle_fond_entete', 'couleur_infobulle_fond_corps', 'utiliser_couleurs_perso_lig_tab_alt', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'utiliser_cahier_texte_perso', 'fond_notices_c', 'entete_fond_c', 'cellule_c', 'cellule_alt_c', 'fond_notices_t', 'entete_fond_t', 'cellule_t', 'cellule_alt_t', 'fond_notices_i', 'entete_fond_i', 'cellule_i', 'cellule_alt', 'fond_notices_f', 'cellule_f', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen', 'couleur_fond_postit');
 
@@ -1009,7 +1163,7 @@ div.info_abs {
 		//=========================================
 
 		$poste_notice_nom=array("fond_notices_c", "entete_fond_c", "cellule_c", "cellule_alt_c", "fond_notices_t", "entete_fond_t", "cellule_t", "cellule_alt_t", "fond_notices_i", "entete_fond_i", "cellule_i", "cellule_alt", "fond_notices_f", "cellule_f", "police_travaux", "police_matieres", "bord_tableau_notice", "cellule_gen");
-		$poste_notice_couleur=array("C7FF99", "C7FF99", "E5FFCF", "D3FFAF", "FFCCCF", "FFCCCF", "FFEFF0", "FFDFE2", "ACACFF", "ACACFF", "EFEFFF", "C8C8FF", "FFFF80", "FFFFDF", "FF4444", "green", "6F6968", "F6F7EF");
+		$poste_notice_couleur=array("C7FF99", "C7FF99", "E5FFCF", "D3FFAF", "FFCCCF", "FFCCCF", "FFEFF0", "FFDFE2", "ACACFF", "ACACFF", "EFEFFF", "C8C8FF", "FFFF80", "FFFFDF", "FF4444", "008000", "6F6968", "F6F7EF");
 		$poste_notice_classe=array("color_fond_notices_c", "couleur_entete_fond_c", "couleur_cellule_c", "couleur_cellule_alt_c", "color_fond_notices_t", "couleur_entete_fond_t", "couleur_cellule_t", "couleur_cellule_alt_t", "color_fond_notices_i", "couleur_entete_fond_i", "couleur_cellule_i", "couleur_cellule_alt_i", "color_fond_notices_f", "couleur_cellule_f", "color_police_travaux", "color_police_matieres ", "couleur_bord_tableau_notice", "couleur_cellule_gen");
 		$poste_type_couleur=array("background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "background-color", "color", "color", "border-color", "background-color");
 
@@ -2105,6 +2259,7 @@ echo add_token_field();
 			for($j=0;$j<count($tab_ct_couleur_fond);$j++) {
 				$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]]=array();
 				$couleur_traite=getSettingValue($tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]);
+				//echo "getSettingValue(".$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i].")<br />";
 				if($couleur_traite!="") {
 					$tabcouleurs[$tab_ct_couleur_fond[$j].'_'.$tab_ct_notice[$i]]=tab_rvb($couleur_traite);
 				} else {
@@ -2179,6 +2334,7 @@ echo add_token_field();
 		for($j=0;$j<count($tab_ct_police_bordure);$j++) {
 			$tabcouleurs[$tab_ct_police_bordure[$j]]=array();
 			$couleur_traite=getSettingValue($tab_ct_police_bordure[$j]);
+			//echo "getSettingValue(".$tab_ct_police_bordure[$j].")<br />";
 			if($couleur_traite!="") {
 				$tabcouleurs[$tab_ct_police_bordure[$j]]=tab_rvb($couleur_traite);
 			} else {
