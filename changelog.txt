@@ -6,17 +6,6 @@
 Gepi-master (Version de développement)
 ===========================
 
-AID:
-- Possibilité de rendre des AID non visibles des élèves 
-  (pour par exemple préparer un voyage scolaire, et ne le rendre visible 
-  qu'une fois le voyage prêt).
-- Possibilité de définir un Résumé par défaut au niveau de la catégorie AID.
-
-Carnets de notes:
-- Ajout de modes de saisie de notes pour passer plus vite à la saisie de la note suivante.
-- Possibilité, lors de la saisie de notes, d'afficher les notes précédentes et 
-  les moyennes et appréciations des bulletins des années précédentes.
-
 Absences 2: 
 - Possibilité de générer un fichier ODT de rappel à la loi (depuis Bilan individuel).
   Possibilité proposée au-delà d'un seuil d'absences paramétrable dans le module Abs2.
@@ -24,6 +13,22 @@ Absences 2:
   de Consultation élève.
 - Possibilité dans les notifications d'extraire le détail des absences plutôt 
   que les mentions matin/après-midi/journée (voir paramétrage du module Abs2).
+
+Actions:
+- Ajout d'un module Actions pour gérer des inscriptions/présence élèves,
+  par exemple sur les sorties/actions UNSS.
+
+AID:
+- Possibilité de rendre des AID non visibles des élèves 
+  (pour par exemple préparer un voyage scolaire, et ne le rendre visible 
+  qu'une fois le voyage prêt).
+- Possibilité de définir un Résumé par défaut au niveau de la catégorie AID.
+- Possibilité de définir des super-gestionnaires de statut scolarité.
+
+Carnets de notes:
+- Ajout de modes de saisie de notes pour passer plus vite à la saisie de la note suivante.
+- Possibilité, lors de la saisie de notes, d'afficher les notes précédentes et 
+  les moyennes et appréciations des bulletins des années précédentes.
 
 Bulletins:
 - Possibilité d'autorisation exceptionnelle de saisie/modification d'appréciation 
@@ -34,13 +39,6 @@ Bulletins:
 - Bulletins HTML: Possibilité d'afficher une ligne des moyennes générales annuelles.
 - Possibilité, lors de la saisie des appréciations, d'afficher les moyennes et 
   appréciations des bulletins des années précédentes.
-
-Actions:
-- Ajout d'un module Actions pour gérer des inscriptions/présence élèves,
-  par exemple sur les sorties/actions UNSS.
-
-AID:
-- Possibilité de définir des super-gestionnaires de statut scolarité.
 
 - Général:
 - Possibilité de mettre à jour globalement les groupes d'après l'export EXP_ELEVES.xml
