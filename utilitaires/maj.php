@@ -269,8 +269,8 @@ if (isset ($_POST['maj'])) {
         require 'updates/172_to_173.inc.php';
 	}
 
-	if (($force_maj == 'yes') or (quelle_maj("master"))) {
-        require 'updates/173_to_dev.inc.php';
+	if (($force_maj == 'yes') or (quelle_maj("1.7.4"))) {
+        require 'updates/173_to_174.inc.php';
 	}
 
 	// Mise à jour du numéro de version

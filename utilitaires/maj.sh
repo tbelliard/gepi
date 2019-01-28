@@ -168,7 +168,7 @@ Exemples d'utilisation :
     }
 
     if ($force || $start_from == '1.7.3') {
-        require './updates/173_to_dev.inc.php';
+        require './updates/173_to_174.inc.php';
     }
 
 // Test sur la version des plugins (installés ou pas)
