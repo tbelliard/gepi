@@ -89,6 +89,9 @@ if (isset($nom_plugin)) {
       $testXML = new traiterXml($xml);
 
       if ($testXML->getReponse() === true){
+		// ajout RGDP
+		if ($testXML->getErreur() == 'description_detaillee') $_msg = '<p class="red">Attention : Le noeud description_detaillee est manquant ou vide dans le fichier plugin.xml (voir <a target="_blank" href="http://www.sylogix.org/projects/gepi/wiki/Plugin">Coder un plugin pour GEPI</a>).</p>';
+		// fin ajout RGPD
 		// traitement ante_installation
 		$fonction_ante="ante_installation_".$nom_plugin;
 		if (function_exists($fonction_ante))
@@ -221,6 +224,11 @@ switch ($_erreur) {
   case "2":
     $_msg = "<p class=\"red\">Le fichier plugin.xml ne respecte pas la struture demand&eacute;e ! voyez <a href=\"http://www.sylogix.org/wiki/gepi/plugin\">la documentation collaborative (wiki)</a></p>";
     break;
+  // ajout RGPD
+  case "4":
+	$_msg="<p class=\"red\">".stripslashes($_msg)."</p>";
+    break;
+  // fin ajout RGPD
   case "10":
 	$_msg="<p class=\"red\">".stripslashes($_msg)."</p>";
     break;

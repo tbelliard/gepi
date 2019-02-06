@@ -100,15 +100,18 @@ class traiterXml {
    * @return boolean
    */
   private function verifNiveau1(){
-    // On vérifie tous les noeuds
+    // On vérifie tous les noeuds obligatoires
     $nbre = count($this->_noeuds);
     for($a = 0 ; $a < $nbre ; $a++){
       $noeud = $this->_noeuds[$a];
-
       if (!isset($this->_xml->$noeud) OR $this->_xml->$noeud == ''){
         $this->retourneErreur(1, htmlspecialchars('<'.$noeud.'>'));
         return false;
       }
+	// ajout RGPD
+	// on vérifie la préseance facultative du noeud description_detaillee
+	if (!isset($this->_xml->description_detaillee) || $this->_xml->description_detaillee=='') $this->retourneErreur(4, '');
+	// fin ajout RGPD
     }
     return true;
   }
@@ -150,7 +153,7 @@ class traiterXml {
   private function retourneErreur($_e, $_m){
     switch ($_e) {
       case 1:
-        $message = 'Il manque le noeud ' . $_m . ' dans le fichier plugin.xml';
+        $message = 'Le noeud ' . $_m . ' est manquant ou vide dans le fichier plugin.xml';
         break;
       case 2:
         $message = 'Le fichier ' . $_m . ' est déclaré dans plugin.xml mais est manquant dans le plugin.';
@@ -158,7 +161,11 @@ class traiterXml {
       case 3:
         $message = 'Le fichier ' . $_m . ' est présent dans le plugin mais n\'a pas ses droits dans plugin.xml.';
         break;
-
+	// ajout RGPD
+      case 4:
+		$message = 'description_detaillee';
+        break;	
+	// fin ajout RGPD
       default:
         $message = "pas de message d'erreur";
       break;
