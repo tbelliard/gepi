@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -149,17 +149,20 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 // prendre les donnees de la base
 if ( $action === 'visualiser' )
 {
-        $i = '0';
-        $requete = "SELECT * FROM ".$prefix_base."edt_semaines";
-        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
-        while ( $donnee = mysqli_fetch_array($resultat))
-	{
+	if(isset($type_semaine)) {
+		unset($type_semaine);
+	}
+	$i = '0';
+	$requete = "SELECT * FROM ".$prefix_base."edt_semaines;";
+	//echo "$requete<br />";
+	$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
+	while ( $donnee = mysqli_fetch_array($resultat)) {
 		$num_semaine[$i] = $donnee['num_edt_semaine'];
 		//$num_interne[$i] = $donnee['id_edt_semaine'];
 		$num_interne[$i] = $donnee['num_semaines_etab'];
 		$type_semaine[$i] = $donnee['type_edt_semaine'];
 		$i = $i + 1;
-        }
+	}
 }
 
 
@@ -242,7 +245,7 @@ if ($action === "visualiser") {
 						<td><input type="text" id="num_interne_<?php echo $j; ?>" name="num_interne[<?php echo $i; ?>]" size="3" value="<?php echo $num_interne[$i]; ?>" class="input_sans_bord" /></td>
 						<td><input type="text" id="type_semaine_<?php echo $j; ?>" name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
 						<td> lundi <?php echo date("d-m-Y", (int) trouverDates($i+1)); ?> </td>
-						<td> samedi <?php echo date("d-m-Y", (trouverDates($i+1) + 5*86400)); ?> </td>
+						<td> dimanche <?php echo date("d-m-Y", (trouverDates($i+1) + 6*86400)); ?> </td>
 
 
 					</tr>
