@@ -1020,6 +1020,14 @@ echo_selon_mode("
 		<input type='hidden' name='x0' value='$x0' />
 		<input type='hidden' name='y0' value='$y0' />
 		".add_token_field());
+
+if(isset($num_semaine)) {
+	$type_semaine=get_type_semaine($num_semaine);
+	if($type_semaine!='') {
+		echo_selon_mode("
+		<div style='float:right; width:6.5em; padding:0;2em; margin:0;2em; text-align:center;' class='fieldset_opacite50'>Semaine ".$type_semaine."</div>");
+	}
+}
 //=======================================
 if($_SESSION['statut']=="responsable") {
 	$checked_eleve="";
