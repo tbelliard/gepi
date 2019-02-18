@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero, Stephane Boireau
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
  *
  * This file is part of GEPI.
  *
@@ -183,7 +183,9 @@ if ($action === "visualiser") {
 	//====================================
 	
 	//debug_var();
-	
+
+	$tab_jours_vacances=get_tab_jours_vacances();
+
 	/* gestion des jours de chaque semaine */
 	// On considère que la 32e semaine commence le 6 août 2007
 	// En timestamp Unix GMT, cette date vaut 1186358400 secondes
@@ -238,6 +240,14 @@ if ($action === "visualiser") {
 						} else {
 							$couleur_cellule = 'couleur_ligne_2';
 							$ic = '1';
+						}
+
+						if((in_array(date("Ymd", (int) trouverDates($i+1)) ,$tab_jours_vacances))&&(in_array(date("Ymd", (int) trouverDates($i+1) + 6*86400) ,$tab_jours_vacances))) {
+							$couleur_cellule = 'fond_gris';
+						}
+						elseif(((int) trouverDates($i+1)>getSettingValue('end_bookings'))||
+						((int) trouverDates($i+1) + 6*86400<getSettingValue('begin_bookings'))) {
+							$couleur_cellule = 'fond_gris';
 						}
 					?>
 					<tr class="<?php echo $couleur_cellule; ?>">
