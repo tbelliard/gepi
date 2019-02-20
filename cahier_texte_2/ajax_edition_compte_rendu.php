@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2016 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2019 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *

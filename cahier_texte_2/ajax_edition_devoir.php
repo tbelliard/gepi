@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2018 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2019 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -163,6 +163,7 @@ if(isset($_GET['change_visibilite'])) {
 
 //on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $ctTravailAFaire->getIdGroupe();
+$id_groupe=$ctTravailAFaire->getIdGroupe();
 
 // Initialisation du type de couleur (voir global.inc.php)
 $type_couleur = "t";
