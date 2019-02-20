@@ -125,22 +125,6 @@ $id_groupe=$cahierTexteNoticePrivee->getIdGroupe();
 
 // **********************************************
 
-echo "<div style='float:right; width:16px;'><a href=\"#\" style=\"font-size: 11pt;\" title=\"Recharger la page. Cela peut être utile si le champ de saisie ne s'affiche pas.\" onclick=\"javascript:
-				id_groupe = '".$id_groupe."';
-				getWinDernieresNotices().hide();
-				getWinListeNotices();
-				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
-				getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe=".$id_groupe."&today='+getCalendarUnixDate(), { 
-				    		encoding: 'utf-8',
-				    		onComplete : 
-				    		function() {
-				    			initWysiwyg();
-							}
-						}
-				);
-				return false;
-			\"><img src='../images/icons/actualiser.png' class='icone16' /></a></div>\n";
-
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
 echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" style=\"border: 0px; vertical-align : middle\" HEIGHT=\"16\" WIDTH=\"16\" src=\"../images/blank.gif\" alt=\"Lier\" title=\"Lier la liste avec la fenetre la liste des notices\" /></div>&nbsp;\n";
@@ -219,6 +203,23 @@ echo " <a href=\"#\" onclick=\"fen=window.open('../groupes/popup.php?id_groupe="
 if((isset($cahierTexteNoticePrivee))&&($cahierTexteNoticePrivee->getIdCt()!=null)) {
 	echo " <a href='affiche_notice.php?id_ct=".$cahierTexteNoticePrivee->getIdCt()."&type_notice=p' target='_blank' title=\"Afficher la notice dans un nouvel onglet.\"><img src='../images/icons/chercher.png' class='icone16' alt='Afficher' /></a>";
 }
+
+echo " <a href=\"#\" style=\"font-size: 11pt;\" title=\"Recharger la page. Cela peut être utile si le champ de saisie ne s'affiche pas.\" onclick=\"javascript:
+				id_groupe = '".$id_groupe."';
+				getWinDernieresNotices().hide();
+				getWinListeNotices();
+				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
+				getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe=".$id_groupe."&today='+getCalendarUnixDate(), { 
+				    		encoding: 'utf-8',
+				    		onComplete : 
+				    		function() {
+				    			initWysiwyg();
+							}
+						}
+				);
+				return false;
+			\"><img src='../images/icons/actualiser.png' class='icone16' /></a>";
+
 
 // 20150415
 $tempdir=get_user_temp_directory($_SESSION['login']);
