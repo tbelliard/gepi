@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2018 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2019 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -121,6 +121,7 @@ if(mysqli_num_rows($test_grp_visib)!=0) {
 
 //on met le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $cahierTexteNoticePrivee->getIdGroupe();
+$id_groupe=$cahierTexteNoticePrivee->getIdGroupe();
 
 // **********************************************
 
