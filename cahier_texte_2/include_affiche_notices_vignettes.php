@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2011 Josselin Jacquard
+ * Copyright 2009-2019 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -23,12 +23,13 @@
 function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_fond_notices) {
 	global $gepiPath;
 
-	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["t"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
+	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["t"]."\" summary=\"Travail à faire\">\n<tr>\n<td>\n");
 
-	echo("<strong>&nbsp;A faire pour le :</strong>\n");
+	echo("<strong>&nbsp;A faire pour le&nbsp;:</strong>\n");
 	echo("<b>" . french_strftime("%a %d %b %y", $devoir->getDateCt()) . "</b>\n");
 	echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 
+	//==============================
 	//vise
 	$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_devoir_".$devoir->getIdCt()."'></div>");
 	$html_balise .= '<div style="margin: 0px; float: left;">';
@@ -81,10 +82,16 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 			if(($devoir->getDateVisibiliteEleve()!="")&&(mysql_date_to_unix_timestamp($devoir->getDateVisibiliteEleve())>time())) {
 				$html_balise .=("<img src=\"../images/icons/visible.png\" width=\"19\" height=\"16\" alt=\"Date de visibilité de la notice pour les élèves\" title=\"Date de visibilité de la notice pour les élèves\" /><span style='font-size: xx-small; color:red;'>&nbsp;".get_date_heure_from_mysql_date($devoir->getDateVisibiliteEleve())."</span>\n");
 			}
+
+			echo "<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_devoir_".$devoir->getIdCt()."', 't'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
+		<img src='../images/icons/notices_CDT_travail.png' id='img_vue_vignette_contenu_notice_devoir_".$devoir->getIdCt()."' class='icone16' />
+	</a>";
+
 		}
 	} else {
 		$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 	}
+	//==============================
 
 	/*
 	$sql="SELECT DISTINCT cde.* FROM ct_devoirs_entry cde WHERE cde.id_ct='".$devoir->getIdCt()."';";
@@ -98,6 +105,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 	}
 	*/
 
+	//==============================
 	$tab_tag_type=get_tab_tag_cdt();
 	$tab_tag_notice=get_tab_tag_notice($devoir->getIdCt(), 't');
 	if(isset($tab_tag_notice["indice"])) {
@@ -109,12 +117,18 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 	$html_balise .= '</div>';
 	echo($html_balise);
 	echo "<br/>\n";
+	//==============================
+
+	//==============================
 	//affichage contenu
+	echo "<div id='vignette_contenu_notice_devoir_".$devoir->getIdCt()."'>";
 	echo ($devoir->getContenu());
 
 	//Documents joints
 	$ctDevoirDocuments = $devoir->getCahierTexteTravailAFaireFichierJoints();
 	echo(afficheDocuments($ctDevoirDocuments));
+	echo "</div>";
+	//==============================
 
 	echo("</td>\n</tr>\n</table>\n<br/>\n");
 }
@@ -122,7 +136,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_notice, $color_fond_notices) {
 	global $gepiPath;
 
-	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["p"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
+	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["p"]."\" summary=\"Notice privée\">\n<tr>\n<td>\n");
 
 	echo("<strong>&nbsp;Notice priv&eacute;e</strong>\n");
 	echo("<b>" . french_strftime("%a %d %b %y", $notice_privee->getDateCt()) . "</b>\n");
@@ -184,6 +198,10 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 				}
 			}
 
+			echo "<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_privee_".$notice_privee->getIdCt()."', 'p'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
+		<img src='../images/icons/notices_CDT_privee.png' id='img_vue_vignette_contenu_notice_privee_".$notice_privee->getIdCt()."' class='icone16' />
+	</a>";
+
 			$html_balise .= '</div>';
 			//echo($html_balise);
 		}
@@ -191,8 +209,12 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 	echo($html_balise);
 
 	echo "<br/>\n";
+	//==============================
 	//affichage contenu
+	echo "<div id='vignette_contenu_notice_privee_".$notice_privee->getIdCt()."'>";
 	echo ($notice_privee->getContenu());
+	echo "</div>";
+	//==============================
 
 	echo("</td>\n</tr>\n</table>\n<br/>\n");
 }
@@ -200,7 +222,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices) {
 	global $gepiPath;
 
-		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
+		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Compte-rendu de séance\">\n<tr>\n<td>\n");
 		echo("<b>&nbsp;" . french_strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
 
 		$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_compte_rendu_".$compte_rendu->getIdCt()."'></div>");
@@ -269,22 +291,29 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 			}
 		}
 
+		echo "<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."', 'c'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
+		<img src='../images/icons/notices_CDT_compte_rendu.png' id='img_vue_vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."' class='icone16' />
+	</a>";
 
 		$html_balise .= '</div>';
 		echo($html_balise);
 
-		//affichage contenu
 		echo "<br/>\n";
-    // On ajoute le nom de la séquence si elle existe
-    $aff_seq = NULL;
-    if ($compte_rendu->getIdSequence() != "0"){
-      $aff_seq = '<p class="bold" title="'.$compte_rendu->getCahierTexteSequence()->getDescription().'"> - <em>' . $compte_rendu->getCahierTexteSequence()->getTitre() . '</em> - </p>';
-    }
+		//==============================
+		//affichage contenu
+		echo "<div id='vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."'>";
+		// On ajoute le nom de la séquence si elle existe
+		$aff_seq = NULL;
+		if ($compte_rendu->getIdSequence() != "0"){
+		$aff_seq = '<p class="bold" title="'.$compte_rendu->getCahierTexteSequence()->getDescription().'"> - <em>' . $compte_rendu->getCahierTexteSequence()->getTitre() . '</em> - </p>';
+		}
 		echo ($aff_seq . $compte_rendu->getContenu());
 
 		// Documents joints
 		$ctDocuments = $compte_rendu->getCahierTexteCompteRenduFichierJoints();
 		echo(afficheDocuments($ctDocuments));
+		echo "</div>";
+		//==============================
 
 		echo("</td>\n</tr>\n</table>\n<br/>\n");
 }

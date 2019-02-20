@@ -1207,6 +1207,96 @@ function recharge_notice_cr(id_groupe) {
 	);
 }
 
+function alterne_affichage_vignette_notice(id, type_notice) {
+	//alert(id);
+	if(document.getElementById(id)) {
+		if(document.getElementById(id).style.display=='none') {
+			document.getElementById(id).style.display='';
+
+			if(document.getElementById('img_vue_'+id)) {
+				if(type_notice=='t') {
+					document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_travail.png';
+				}
+				else if(type_notice=='c') {
+					document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_compte_rendu.png';
+				}
+				else if(type_notice=='p') {
+					document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_privee.png';
+				}
+				else {
+					document.getElementById('img_vue_'+id).src='../images/icons/vignette_blanche.png';
+				}
+			}
+		}
+		else {
+			document.getElementById(id).style.display='none';
+
+			if(document.getElementById('img_vue_'+id)) {
+				//document.getElementById('img_vue_'+id).src='../images/icons/invisible.png';
+				document.getElementById('img_vue_'+id).src='../images/icons/vignette_blanche_et_oeil_barre.png';
+			}
+		}
+	}
+}
+
+var etat_visibilite_notices=true;
+function alterne_affichage_toutes_vignettes_notices() {
+	/*
+	img=document.getElementsByTagName('img');
+	for(i=0;i<img.length;i++) {
+		id=img[i].getAttribute('id');
+		if(id.substring(0,8)=='img_vue_') {
+		}
+	}
+	*/
+
+	if(etat_visibilite_notices==true) {
+		div=document.getElementsByTagName('div');
+		for(i=0;i<div.length;i++) {
+			id=div[i].getAttribute('id');
+			if((id)&&(id.substring(0,24)=='vignette_contenu_notice_')) {
+				document.getElementById(id).style.display='none';
+
+				if(document.getElementById('img_vue_'+id)) {
+					document.getElementById('img_vue_'+id).src='../images/icons/vignette_blanche_et_oeil_barre.png';
+				}
+			}
+		}
+
+		etat_visibilite_notices=false;
+	}
+	else {
+		div=document.getElementsByTagName('div');
+		for(i=0;i<div.length;i++) {
+			id=div[i].getAttribute('id');
+			if(id) {
+				if(id.substring(0,37)=='vignette_contenu_notice_compte_rendu_') {
+					document.getElementById(id).style.display='';
+
+					if(document.getElementById('img_vue_'+id)) {
+						document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_compte_rendu.png';
+					}
+				}
+				else if(id.substring(0,31)=='vignette_contenu_notice_devoir_') {
+					document.getElementById(id).style.display='';
+
+					if(document.getElementById('img_vue_'+id)) {
+						document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_travail.png';
+					}
+				}
+				else if(id.substring(0,31)=='vignette_contenu_notice_privee_') {
+					document.getElementById(id).style.display='';
+
+					if(document.getElementById('img_vue_'+id)) {
+						document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_privee.png';
+					}
+				}
+			}
+		}
+
+		etat_visibilite_notices=true;
+	}
+}
 /**
 *
 *  Fin des fonctions ajax du cahier de texte
