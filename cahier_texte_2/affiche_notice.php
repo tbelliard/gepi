@@ -247,7 +247,12 @@ if(isset($tab_tag_notice["indice"])) {
 //echo $lig_ct->contenu;
 //echo preg_replace("#<img #i", "<img onclick=\"affiche_div_img(this.src)\" ", $lig_ct->contenu);
 //echo preg_replace("#<img #i", "<img onclick=\"affiche_div_img(this.src, this.width, this.height)\" ", $lig_ct->contenu);
-echo preg_replace("#<img #i", "<img onclick=\"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width=400,height=400');\" ", $lig_ct->contenu);
+
+// Ajout via PHP des onclick sur les images
+//echo preg_replace("#<img #i", "<img onclick=\"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width=400,height=400');\" ", $lig_ct->contenu);
+
+
+echo $lig_ct->contenu;
 
 $adj=affiche_docs_joints($lig_ct->id_ct, $type_notice);
 if($adj!='') {
@@ -260,6 +265,32 @@ if($adj!='') {
 echo "
 	</div>
 </div>
+
+<script type='text/javascript'>
+	// Ajout via Javascript des onclick sur les images
+
+	img=document.getElementsByTagName('img');
+	for(i=0;i<img.length;i++) {
+		//id=img[i].getAttribute('id');
+		src_img=img[i].getAttribute('src');
+		if(src_img.substring(0, 10)!='../images/') {
+			//width_img=img[i].getAttribute('width');
+			//height_img=img[i].getAttribute('height');
+
+			var att = document.createAttribute('onclick');
+
+			//att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+this.width+',height='+this.height+'');\";
+			//att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 400))+',height='+Math.min(screen.availHeight, Math.max(this.height,400))+'');\";
+			//att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, this.width)+',height='+Math.min(screen.availHeight, this.height)+'');\";
+
+			att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 600))+',height='+Math.min(screen.availHeight, this.height)+'');\";
+
+			img[i].setAttributeNode(att);
+		}
+	}
+
+</script>
+
 <p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
