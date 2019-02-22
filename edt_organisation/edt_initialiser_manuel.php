@@ -301,8 +301,14 @@ if (isset($choix_prof)) {
 		}else{
 			$selected="";
 		}
+		if($tab_select_salle[$c]["nom_salle"]!='') {
+			$designation_salle=$tab_select_salle[$c]["nom_salle"];
+		}
+		else {
+			$designation_salle=$tab_select_salle[$c]["numero_salle"];
+		}
 		echo "
-				<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
+				<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$designation_salle."</option>\n";
 	}
 	echo '
 			</select>
@@ -358,11 +364,22 @@ if (isset($choix_prof)) {
 
 
 			// Vérification que la salle est libre à ce jour cette heure
-			$sql="SELECT id_cours FROM edt_cours WHERE
+			if($choix_semaine=='0') {
+				// Il faut vérifier qu'il n'y a pas déjà un cours que ce soit en semaine A ou B.
+				$sql="SELECT * FROM edt_cours WHERE
+						id_salle ='".$login_salle."' AND
+						jour_semaine = '".$ch_jour_semaine."' AND
+						id_definie_periode = '".$ch_heure."';";
+			}
+			else {
+				// On veut insérer un cours pour une semaine A ou B
+				// Il faut vérifier que sur cette semaine A/B ou sur toutes les semaines, il n'y a pas déjà un cours.
+				$sql="SELECT * FROM edt_cours WHERE
 						id_salle ='".$login_salle."' AND
 						jour_semaine = '".$ch_jour_semaine."' AND
 						id_definie_periode = '".$ch_heure."' AND
 						(id_semaine = '0' OR id_semaine = '".$choix_semaine."');";
+			}
 			//echo "$sql<br />";
 			$verif_salle = mysqli_query($GLOBALS["mysqli"], $sql)
 							 or die ('Erreur dans la verif salle');
@@ -370,6 +387,14 @@ if (isset($choix_prof)) {
 			$nbre_verif_s = mysqli_num_rows($verif_salle);
 			if ($nbre_verif_s != 0) {
 				$rep_verif_s = mysqli_fetch_array($verif_salle);
+				$precision_semaine='';
+				if($rep_verif_s['id_semaine']!='0') {
+					$precision_semaine=' en semaine '.$rep_verif_s['id_semaine'];
+				}
+				$precision_prof='';
+				if($rep_verif_s['login_prof']!='') {
+					$precision_prof=" (<a href='index_edt.php?visioedt=prof1&type_edt_2=prof&login_edt=".$rep_verif_s['login_prof']."' target='_blank' title=\"Voir l'EDT de ce professeur dans un nouvel onglet.\">".civ_nom_prenom($rep_verif_s['login_prof'])."</a>)";
+				}
 
 				$sql="SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."';";
 				//echo "$sql<br />";
@@ -378,36 +403,62 @@ if (isset($choix_prof)) {
 				// On vérifie si ce n'est pas une AID
 				if ($rep_present_s['id_aid'] != "") {
 					$aid = $rep_present_s['id_aid'];
-					echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par un groupe AID( ".$aid." ).</p>";
-				}else{
+					echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par un groupe AID( ".$aid." )".$precision_semaine.$precision_prof.".</p>";
+				} else {
 					$tab_present_s = get_group($rep_present_s["id_groupe"]);
-					echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p>";
+					echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"].$precision_semaine.$precision_prof.".</p>";
 				}
 
 			}
 
 			// Vérification que ce prof n'a pas déjà cours à ce moment là
-			$verif_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours, j_groupes_professeurs WHERE
-									edt_cours.jour_semaine = '".$ch_jour_semaine."' AND
-									edt_cours.id_definie_periode = '".$ch_heure."' AND
-									(edt_cours.id_semaine = '".$choix_semaine."' OR edt_cours.id_semaine = '0') AND
-									edt_cours.id_groupe = j_groupes_professeurs.id_groupe AND
-									login = '".$choix_prof."' AND
-									edt_cours.heuredeb_dec = '".$heure_debut."' AND
-									edt_cours.login_prof = '".$choix_prof."'")
+			if($choix_semaine=='0') {
+				// Il faut vérifier qu'il n'y a pas déjà un cours que ce soit en semaine A ou B.
+				$sql="SELECT * FROM edt_cours, j_groupes_professeurs WHERE
+										edt_cours.jour_semaine = '".$ch_jour_semaine."' AND
+										edt_cours.id_definie_periode = '".$ch_heure."' AND
+										edt_cours.id_groupe = j_groupes_professeurs.id_groupe AND
+										login = '".$choix_prof."' AND
+										edt_cours.heuredeb_dec = '".$heure_debut."' AND
+										edt_cours.login_prof = '".$choix_prof."'";
+			}
+			else {
+				// On veut insérer un cours pour une semaine A ou B
+				// Il faut vérifier que sur cette semaine A/B ou sur toutes les semaines, il n'y a pas déjà un cours.
+				$sql="SELECT * FROM edt_cours, j_groupes_professeurs WHERE
+										edt_cours.jour_semaine = '".$ch_jour_semaine."' AND
+										edt_cours.id_definie_periode = '".$ch_heure."' AND
+										(edt_cours.id_semaine = '".$choix_semaine."' OR edt_cours.id_semaine = '0') AND
+										edt_cours.id_groupe = j_groupes_professeurs.id_groupe AND
+										login = '".$choix_prof."' AND
+										edt_cours.heuredeb_dec = '".$heure_debut."' AND
+										edt_cours.login_prof = '".$choix_prof."'";
+			}
+			//echo "$sql<br />";
+			$verif_prof = mysqli_query($GLOBALS["mysqli"], $sql)
 										or die('erreur verif prof !');
 
 			$nbre_verif_prof = mysqli_num_rows($verif_prof);
 			if ($nbre_verif_prof != 0) {
 				$rep_verif_prof = mysqli_fetch_array($verif_prof);
+				$precision_semaine='';
+				if($rep_verif_prof['id_semaine']!='0') {
+					$precision_semaine=' en semaine '.$rep_verif_prof['id_semaine'];
+				}
+
+				$precision_prof='';
+				if($rep_verif_prof['login_prof']!='') {
+					$precision_prof=" (<a href='index_edt.php?visioedt=prof1&type_edt_2=prof&login_edt=".$rep_verif_prof['login_prof']."' target='_blank' title=\"Voir l'EDT de ce professeur dans un nouvel onglet.\">".civ_nom_prenom($rep_verif_prof['login_prof'])."</a>)";
+				}
 
 				// On vérifie si ce n'est pas une AID
 				if ($rep_verif_prof['id_aid'] != "") {
 					$aid = $rep_verif_prof['id_aid'];
-					echo "<p class=\"refus\" style=\"color:red\">Ce professeur a déjà cours avec un groupe AID ( ".$aid." ).</p>";
-				}else{
+					echo "<p class=\"refus\" style=\"color:red\">Ce professeur a déjà cours avec un groupe AID ( ".$aid." )".$precision_semaine.$precision_prof.".</p>";
+				}
+				else {
 					$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
-					echo "<p class=\"refus\" style=\"color:red\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p>";
+					echo "<p class=\"refus\" style=\"color:red\">Ce professeur a déjà cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"].$precision_semaine.$precision_prof.".</p>";
 				}
 			}
 
