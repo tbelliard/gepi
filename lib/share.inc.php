@@ -3284,6 +3284,9 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	}
 	else {
 		$largeur=str_replace('px', '', $largeur);
+		$largeur=str_replace('em', '', $largeur);
+		//echo "largeur='$largeur'<br />\$posDiv_infobulle=$posDiv_infobulle<br />";
+
 		$posDiv_infobulle = $posDiv_infobulle+$largeur;
 	}
 
