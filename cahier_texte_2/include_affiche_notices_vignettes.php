@@ -78,12 +78,13 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 									new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 									return false;
 								\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
-	
+
 			if(($devoir->getDateVisibiliteEleve()!="")&&(mysql_date_to_unix_timestamp($devoir->getDateVisibiliteEleve())>time())) {
 				$html_balise .=("<img src=\"../images/icons/visible.png\" width=\"19\" height=\"16\" alt=\"Date de visibilité de la notice pour les élèves\" title=\"Date de visibilité de la notice pour les élèves\" /><span style='font-size: xx-small; color:red;'>&nbsp;".get_date_heure_from_mysql_date($devoir->getDateVisibiliteEleve())."</span>\n");
 			}
 
-			echo "<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_devoir_".$devoir->getIdCt()."', 't'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
+
+			$html_balise .="<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_devoir_".$devoir->getIdCt()."', 't'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
 		<img src='../images/icons/notices_CDT_travail.png' id='img_vue_vignette_contenu_notice_devoir_".$devoir->getIdCt()."' class='icone16' />
 	</a>";
 
@@ -198,7 +199,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 				}
 			}
 
-			echo "<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_privee_".$notice_privee->getIdCt()."', 'p'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
+			$html_balise .="<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_privee_".$notice_privee->getIdCt()."', 'p'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
 		<img src='../images/icons/notices_CDT_privee.png' id='img_vue_vignette_contenu_notice_privee_".$notice_privee->getIdCt()."' class='icone16' />
 	</a>";
 
@@ -272,6 +273,10 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 			}
+
+			$html_balise.="<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."', 'c'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
+		<img src='../images/icons/notices_CDT_compte_rendu.png' id='img_vue_vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."' class='icone16' />
+	</a>";
 		}
 		// cas d'un visa, on n'affiche rien
 		if ($compte_rendu->getVisa() == 'y') {
@@ -290,10 +295,6 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 				$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est indiqué pour le ".french_strftime("%A %d/%m/%Y", $compte_rendu->getDateCt())."\" />";
 			}
 		}
-
-		echo "<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."', 'c'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
-		<img src='../images/icons/notices_CDT_compte_rendu.png' id='img_vue_vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."' class='icone16' />
-	</a>";
 
 		$html_balise .= '</div>';
 		echo($html_balise);
