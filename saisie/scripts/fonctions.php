@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2016 Bouguin Régis
+* Copyright 2016-2019 Bouguin Régis, Stéphane Boireau
 *
 * This file is part of GEPI.
 *
@@ -40,7 +40,7 @@ function getToutElemProg($quePerso = false, $queMat = false, $queNiveau = false,
 				. "INNER JOIN j_mep_mat AS jmm ON jmm.idEP = t0.id WHERE jmm.idMat = '".$matiere."' ORDER BY t0.libelle ";
 		}
 	} else {
-		$sql = "SELECT mep.* FROM matiere_element_programme AS mep INNER JOIN j_mep_mat AS jmm ON jmm.idEP = mep.id WHERE jmm.idMat = '".$matiere."'";
+		$sql = "SELECT mep.* FROM matiere_element_programme AS mep INNER JOIN j_mep_mat AS jmm ON jmm.idEP = mep.id WHERE jmm.idMat = '".$matiere."' ORDER BY mep.libelle";
 	}
 	
 	if ($queNiveau) {
@@ -48,9 +48,10 @@ function getToutElemProg($quePerso = false, $queMat = false, $queNiveau = false,
 		$sql1 = "SELECT jmn.* FROM (SELECT DISTINCT e.mef_code FROM eleves AS e INNER JOIN j_eleves_groupes AS jeg ON e.login = jeg.login WHERE jeg.id_groupe = '".$id_groupe."' ) AS tm "
 			. "INNER JOIN j_mep_niveau AS jmn ON jmn.idNiveau = tm.mef_code ";
 		
-		$sql = "SELECT DISTINCT ts.*  FROM (".$sql1.") AS tn INNER JOIN (".$sql.") AS ts ON ts.id = tn.idEP ";
+		$sql = "SELECT DISTINCT ts.*  FROM (".$sql1.") AS tn INNER JOIN (".$sql.") AS ts ON ts.id = tn.idEP  ORDER BY libelle";
 	}
-	
+	//$sql.=";";
+	//echo "$sql<br />";
 	$resultchargeDB = $mysqli->query($sql);
 	
 	return $resultchargeDB;
