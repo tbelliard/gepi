@@ -154,7 +154,7 @@ if($type_notice!='t') {
 		while($lig_autre_notice=mysqli_fetch_object($test_autre_notice)) {
 			echo "
 	<div style='float:right; width:16px; margin:0.2em;'>
-		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=t' title=\"Consulter la notice de travail à faire à la maison n°".$lig_autre_notice->id_ct." pour le même jour.\"><img src='..//images/icons/notices_CDT_travail.png' class='icone16' alt='CDT' /></a>
+		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=t' title=\"Consulter la notice de travail à faire à la maison n°".$lig_autre_notice->id_ct." pour le même jour.\"><img src='../images/icons/notices_CDT_travail.png' class='icone16' alt='CDT' /></a>
 	</div>";
 		}
 	}
@@ -229,7 +229,8 @@ else {
 	</h3>";
 
 echo "
-	<div class='fieldset_opacite50' style='padding:0.5em'>";
+	<div class='fieldset_opacite50' style='padding:0.5em'>
+		<div id='div_ouverture_toutes_images' style='float:right; width:16px; margin:0.3em;'></div>";
 
 $tab_tag_type=get_tab_tag_cdt();
 $tab_tag_notice=get_tab_tag_notice($lig_ct->id_ct, $type_notice);
@@ -267,6 +268,8 @@ echo "
 </div>
 
 <script type='text/javascript'>
+	var temoin_images=0;
+
 	// Ajout via Javascript des onclick sur les images
 
 	img=document.getElementsByTagName('img');
@@ -283,11 +286,126 @@ echo "
 			//att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 400))+',height='+Math.min(screen.availHeight, Math.max(this.height,400))+'');\";
 			//att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, this.width)+',height='+Math.min(screen.availHeight, this.height)+'');\";
 
+
 			att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 600))+',height='+Math.min(screen.availHeight, this.height)+'');\";
 
+			//att.value = \"ouvre_et_positionne_fenetre(i, this.src, this.width, this.height);\";
+
 			img[i].setAttributeNode(att);
+
+			//alert(i);
+			temoin_images++;
 		}
 	}
+
+	var fen=new Array();
+	function ouvre_et_positionne_fenetre(indice, img_src, img_width, img_height) {
+		var x0=10;
+		var y0=10;
+
+		alert(indice+' '+img_src);
+
+		var img=document.getElementsByTagName('img');
+		for(i=0;i<img.length;i++) {
+			//if(fen[i]!='NaN') {
+			if(fen[i]) {
+				var y=fen[i].scrollTop();
+				alert('Fenetre '+i+' ordonnee '+y);
+			}
+		}
+
+		fen[indice]=\"window.open(img_src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top='+y0+',left='+x0+',width='+Math.min(screen.availWidth, Math.max(img_width, 600))+',height='+Math.min(screen.availHeight, img_height)+'');\";
+		eval(fen[indice]);
+	}
+
+	function ouvre_fenetres_toutes_images() {
+		var x0=0;
+		var x=x0;
+		var maxwidth=0;
+		var y=10;
+		var img=document.getElementsByTagName('img');
+		for(i=0;i<img.length;i++) {
+		//for(i=0;i<6;i++) {
+			img_src=img[i].src;
+
+			//alert(img_src.substring(0, 10));
+			// On récupère https://ww
+			//if(img_src.substring(0, 10)!='../images/') {
+
+			if((img_src.search('images/icons/home.png')==-1)&&
+			(img_src.search('images/icons/cahier_textes.png')==-1)&&
+			(img_src.search('images/icons/notices_CDT_compte_rendu.png')==-1)&&
+			(img_src.search('images/icons/notices_CDT_travail.png')==-1)&&
+			(img_src.search('images/icons/notices_CDT_privee.png')==-1)&&
+			(img_src.search('images/icons/back.png')==-1)&&
+			(img_src.search('images/edit16.png')==-1)&&
+			(img_src.search('images/icons/forward.png')==-1)&&
+			(img_src.search('images/icons/images.png')==-1)&&
+			(img_src.search('images/alerte_entete.png')==-1)&&
+			(img_src.search('images/bouton_continue.png')==-1)) {
+				img_width=img[i].width;
+				img_height=img[i].height;
+
+				largeur=Math.min(screen.availWidth, Math.max(img_width, 600));
+				hauteur=Math.min(screen.availHeight, img_height);
+
+				if(y+hauteur+60>screen.availHeight) {
+					if(x+maxwidth<screen.availHeight) {
+						x=x+maxwidth;
+						y=0;
+						maxwidth=0;
+					}
+					else {
+						break;
+					}
+				}
+
+				if(x+largeur>maxwidth) {
+					maxwidth=x+largeur;
+				}
+
+				//window.open(img_src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top='+y+',left='+x0+',width='+largeur+',height='+hauteur);
+				window.open(img_src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top='+y+',left='+x+',width='+largeur+',height='+hauteur);
+
+				//document.getElementById('div_ouverture_toutes_images').innerHTML=document.getElementById('div_ouverture_toutes_images').innerHTML+' '+img_src+'->'+y;
+
+				//y+=hauteur;
+				y=y+(hauteur+60);
+				/*
+				if(y>screen.availHeight) {
+					if(x+maxwidth<screen.availHeight) {
+						x=x+maxwidth;
+						y=0;
+					}
+					else {
+						break;
+					}
+				}
+				*/
+			}
+		}
+	}
+
+	if(temoin_images>0) {
+		document.getElementById('div_ouverture_toutes_images').innerHTML=\"<a href='#' onclick='ouvre_fenetres_toutes_images(); return false;' title='Ouvrir toutes (*) les images en une mosaïque de nouvelles fenêtres (* celles qui tiendront à l écran).'><img src='../images/icons/images.png' class='icone16' /></a>\";
+	}
+
+// A FAIRE: Permettre d'ouvrir des lots de fenêtres (les N premières, les suivantes,...)
+
+//https://www.sitepoint.com/css3-background-size-property/
+
+//https://javascript.info/popup-windows#accessing-a-popup
+
+/*
+// Ouvrir / provoque une déconnexion
+let newWindow = open('/', 'example', 'width=300,height=300')
+newWindow.focus();
+
+newWindow.onload = function() {
+	let html = '<div style=\"font-size:30px\">Welcome!</div>';
+	newWindow.document.body.insertAdjacentHTML('afterbegin', html);
+};
+*/
 
 </script>
 
