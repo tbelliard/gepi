@@ -110,7 +110,7 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 					$tmp_tab=explode("|", $newElemGroupe);
 					foreach($tmp_tab as $current_elprog) {
 						if(trim($current_elprog)!='') {
-							saveNewElemGroupe($id_groupe, $current_elprog, $anneeScolaire, $periode);
+							saveNewElemGroupe($id_groupe, trim($current_elprog), $anneeScolaire, $periode);
 						}
 					}
 					$forcer_focus_element_prog_groupe='newElemGroupe'.$tmp_num_per;
@@ -1276,6 +1276,78 @@ function focus_suivant(num){
 
 	// Dans tous les cas, si $restauration n'est pas NULL, il faut vider la table tempo des appréciations de ce groupe
 
+	$afficher_choix_element_prog=false;
+	if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+		$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
+
+		// Infobulle
+		if(mysqli_num_rows($toutElemProgramme)>0) {
+			$texte_infobulle="
+			<form name='form_choix_element_programme'>
+				<input type='hidden' name='champ_element_programme' id='champ_element_programme' value=\"\" />";
+			if(acces('/saisie/gerer_mep.php', $_SESSION['statut'])) {
+				$texte_infobulle.="
+				<a href='gerer_mep.php' target='_blank' title=\"Supprimer/corriger des éléments de programme dans un nouvel onglet.\"><img src='../images/icons/configure.png' class='icone16' alt='Gérer' /> Gérer mes éléments de programme</a>";
+			}
+
+			$texte_infobulle.="
+				<table class='boireaus boireaus_alt'>
+					<thead>
+						<tr>
+							<th>Choix</th>
+							<th>Libellé</th>
+						</tr>
+					</thead>
+					<tbody>";
+			$cpt_element_prog=0;
+			$toutElemProgramme->data_seek(0);
+			while($element = $toutElemProgramme->fetch_object()){
+				//$element->id
+				//$element->libelle
+				$texte_infobulle.="
+						<tr>
+							<td><input type='checkbox' name='choix_element_prog[]' id='choix_element_prog_".$cpt_element_prog."' value=\"".trim(str_replace('"', "'", $element->libelle))."\" onchange=\"checkbox_change(this.id)\"/></td>
+							<td style='text-align:left;'><label for='choix_element_prog_".$cpt_element_prog."' id='texte_choix_element_prog_".$cpt_element_prog."'>".trim($element->libelle)."</label></td>
+						</tr>";
+				$cpt_element_prog++;
+			}
+			$texte_infobulle.="
+					</tbody>
+				</table>
+				<input type='button' value='Valider le choix' onclick=\"valider_choix_elements_programmes()\" />
+			</form>";
+
+			echo "
+			<script type='text/javascript'>
+				function affiche_choix_ele_prog(id) {
+					document.getElementById('champ_element_programme').value=id;
+					afficher_div('div_choix_elements_programmes','y',10,-100);
+				}
+
+				function valider_choix_elements_programmes() {
+					id=document.getElementById('champ_element_programme').value;
+					if(document.getElementById(id)) {
+						var chaine='';
+						for(i=0;i<$cpt_element_prog;i++) {
+							if(document.getElementById('choix_element_prog_'+i).checked==true) {
+								if(chaine!='') {
+									chaine=chaine+'|';
+								}
+								chaine=chaine+document.getElementById('choix_element_prog_'+i).value;
+							}
+						}
+					}
+					document.getElementById(id).value=chaine;
+					cacher_div('div_choix_elements_programmes');
+				}
+			</script>";
+
+			$tabdiv_infobulle[]=creer_div_infobulle('div_choix_elements_programmes',"Éléments de programmes","",$texte_infobulle,"",30,0,'y','y','n','n');
+			$afficher_choix_element_prog=true;
+		}
+
+	}
+
 //=================================
 $chaine_champs_textarea_correction="";
 $chaine_champs_input_correction="";
@@ -1376,7 +1448,7 @@ while ($k < $nb_periode) {
 					$cpt = TRUE;
 				}
 			}
-			$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
+			//$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 		}
 	}
 	else {
@@ -1412,9 +1484,10 @@ while ($k < $nb_periode) {
 				$mess[$k].="<br />\n";
 			}
 
-			$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
+			//$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 
 			if(mysqli_num_rows($toutElemProgramme)>0) {
+				$toutElemProgramme->data_seek(0);
 				$mess[$k].="<select name='Elem_groupe$k' id='Elem_groupe$k' style='margin-top:.5em; max-width:38em;'> \n";
 				$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
 				while($element = $toutElemProgramme->fetch_object()){
@@ -1424,10 +1497,13 @@ while ($k < $nb_periode) {
 
 				$mess[$k].="<br />\n";
 			}
-			$mess[$k].="<input type='text' name='newElemGroupe$k' id='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:90%; margin-top:.3em' title=\"".$explications_ajout_element_de_programme."\" /> \n";
+			$mess[$k].="<input type='text' name='newElemGroupe$k' id='newElemGroupe$k' placeholder='Nouvel élément de programme' style='width:82%; margin-top:.3em' title=\"".$explications_ajout_element_de_programme."\" /> \n";
 
 			// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
 			//           Ou une préférence utilisateur?
+			if($afficher_choix_element_prog) {
+				$mess[$k].="<a href='#' onclick=\"affiche_choix_ele_prog('newElemGroupe$k');return false;\" title=\"Choisir un élément de programme.\"><img src='../images/icons/tableau_coches.png' class='icone16' alt='Choix' /></a> \n";
+			}
 			$mess[$k].="<a href='#' onclick=\"affiche_liste_ele_prog('newElemGroupe$k');return false;\" title=\"Accéder à la banque des éléments de programmes.\"><img src='../images/icons/livre.png' class='icone16' alt='Suggestions' /></a> \n";
 		}
 	}
@@ -2093,10 +2169,13 @@ foreach ($liste_eleves as $eleve_login) {
 						$mess[$k].="<br />\n";
 					}
 
-					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' id='newElemEleve".$k."_".$ele_id."' placeholder='Nouvel élément de programme' style='width:90%; margin-top:.3em' title=\"".$explications_ajout_element_de_programme."\" /> \n";
+					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' id='newElemEleve".$k."_".$ele_id."' placeholder='Nouvel élément de programme' style='width:82%; margin-top:.3em' title=\"".$explications_ajout_element_de_programme."\" /> \n";
 
 					// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
 					//           Ou une préférence utilisateur?
+					if($afficher_choix_element_prog) {
+						$mess[$k].="<a href='#' onclick=\"affiche_choix_ele_prog('newElemEleve".$k."_".$ele_id."');return false;\" title=\"Choisir un élément de programme.\"><img src='../images/icons/tableau_coches.png' class='icone16' alt='Choix' /></a> \n";
+					}
 					$mess[$k].="<a href='#' onclick=\"affiche_liste_ele_prog('newElemEleve".$k."_".$ele_id."');return false;\"><img src='../images/icons/livre.png' class='icone16' alt='Suggestions' /></a> \n";
 
 					//$mess[$k].= var_dump($elementEleve);
