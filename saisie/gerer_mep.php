@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -143,7 +143,7 @@ if(isset($_POST['is_posted'])) {
 				//echo "$sql<br />";
 				$res_mep=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res_mep)>0) {
-					$sql="UPDATE matiere_element_programme SET libelle='".mysqli_real_escape_string($mysqli, stripslashes($libelle))."' WHERE id='".$idEP."';";
+					$sql="UPDATE matiere_element_programme SET libelle='".mysqli_real_escape_string($mysqli, trim(stripslashes($libelle)))."' WHERE id='".$idEP."';";
 					//echo "$sql<br />";
 					$update=mysqli_query($mysqli, $sql);
 					if(!$update) {
@@ -215,7 +215,7 @@ if(isset($_POST['is_posted'])) {
 				//echo "$sql<br />";
 				$res_mep=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res_mep)>0) {
-					$sql="UPDATE matiere_element_programme SET libelle='".mysqli_real_escape_string($mysqli, stripslashes($libelle))."' WHERE id='".$idEP."';";
+					$sql="UPDATE matiere_element_programme SET libelle='".mysqli_real_escape_string($mysqli, trim(stripslashes($libelle)))."' WHERE id='".$idEP."';";
 					//echo "$sql<br />";
 					$update=mysqli_query($mysqli, $sql);
 					if(!$update) {
@@ -233,6 +233,9 @@ if(isset($_POST['is_posted'])) {
 		$msg="Enregistrement effectué (".strftime("le %d/%m/%Y à %H:%M:%S").")";
 	}
 }
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 
 $themessage = 'Des modifications n ont pas été enregistrées. Voulez-vous vraiment quitter sans enregistrer ?';
 //================================
@@ -279,7 +282,7 @@ if($_SESSION['statut']=="professeur") {
 		<input type='hidden' name='is_posted' value='y' />
 		".(isset($id_groupe) ? "<input type='hidden' name='id_groupe' value='$id_groupe' />" : "")."
 		<p>Modifier/corriger mes éléments de programme&nbsp;:</p>
-		<table class='boireaus boireaus_alt'>
+		<table class='boireaus boireaus_alt sortable resizable'>
 			<thead>
 				<tr>
 					<th>Id</th>
