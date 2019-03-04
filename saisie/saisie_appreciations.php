@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Bouguin Régis, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Bouguin Régis, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1389,6 +1389,7 @@ while ($k < $nb_periode) {
 		$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
 		$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
 		$mess[$k].="\"";
+		$mess[$k].=" onblur=\"mise_en_exergue_textarea_vide('n".$k.$num_id."')\"";
 		$mess[$k].=">".$app_grp[$k]."</textarea>\n";
 
 		// 20160617
