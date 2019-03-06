@@ -229,8 +229,16 @@ require_once("../lib/header.inc.php");
 	<strong><em>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></em></strong>
 	.
 </p>
-<?php } ?>
 <?php
+	}
+
+	//echo "\$nombreligne=$nombreligne<br />";
+	if($nombreligne==0) {
+		echo "<p style='color:red'>Il n'existe encore aucun AID dans la catégorie d'AID <strong>".$nom_aid."</strong>.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	//if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { 
 	if (($NiveauGestionAid >= 10) and ($activer_outils_comp == "y")) { 
 ?>
