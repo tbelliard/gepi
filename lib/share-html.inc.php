@@ -1191,7 +1191,7 @@ function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL,$tab_extra=NU
 	}
 
 	// Nombre de lignes dans chaque colonne:
-	$nb_class_par_colonne=round($nombreligne/$nbcol);
+	$nb_class_par_colonne=max(round($nombreligne/$nbcol),1);
 
 	$percent=floor(100/$nbcol);
 
@@ -2988,7 +2988,7 @@ function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur
 	}
 
 	// Nombre de lignes dans chaque colonne:
-	$nb_class_par_colonne=round($nombreligne/$nbcol);
+	$nb_class_par_colonne=max(round($nombreligne/$nbcol),1);
 
 	echo "<table width='100%' summary=\"Tableau de choix\">\n";
 	echo "<tr style='text-align:center; vertical-align: top;'>\n";
