@@ -48,7 +48,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 									id_groupe = '".$devoir->getIdGroupe()."';
 									getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$devoir->getIdCt()."',{ onComplete: function(transport) {	initWysiwyg();}});
 									getWinListeNotices();
-									new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$devoir->getIdGroupe()."',{ onComplete:function() {updateDivModification();}});
+									new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$devoir->getIdGroupe()."',{ onComplete:function() {updateDivModification();controler_affichage_toutes_vignettes_notices();}});
 									updateCalendarWithUnixDate(".$devoir->getDateCt().");
 									object_en_cours_edition = 'devoir';
 									");
@@ -60,7 +60,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
                                             contenu_a_copier = '".addslashes(htmlspecialchars($devoir->getContenu()))."';
                                             ct_a_importer_class='".get_class($devoir)."';
                                             id_ct_a_importer='".$devoir->getIdCt()."';
-                                            new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$devoir->getIdGroupe()."&ct_a_importer_class=".get_class($devoir)."&id_ct_a_importer=".$devoir->getIdCt()."',{ onComplete:function() {updateDivModification();} });
+                                            new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$devoir->getIdGroupe()."&ct_a_importer_class=".get_class($devoir)."&id_ct_a_importer=".$devoir->getIdCt()."',{ onComplete:function() {updateDivModification();controler_affichage_toutes_vignettes_notices();} });
                                         \"><img style=\"border: 0px;\" src=\"");
                         if (isset($_SESSION['ct_a_importer']) && $_SESSION['ct_a_importer'] == $devoir) {
                             $html_balise .=("../images/icons/copy-16-gold.png");
@@ -75,7 +75,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
 									suppressionDevoir('".french_strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$devoir->getIdGroupe()."','".add_token_in_js_func()."');
-									new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
+									new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();controler_affichage_toutes_vignettes_notices();}});
 									return false;
 								\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 
@@ -153,7 +153,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 										getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$notice_privee->getIdCt()."',{ onComplete: function() {	initWysiwyg();}});
 										updateCalendarWithUnixDate(".$notice_privee->getDateCt().");
 										getWinListeNotices();
-										new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$notice_privee->getIdGroupe()."',{ onComplete:function() {updateDivModification();}});
+										new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$notice_privee->getIdGroupe()."',{ onComplete:function() {updateDivModification();controler_affichage_toutes_vignettes_notices();}});
 										object_en_cours_edition = 'notice_privee';
 										");
 				$html_balise .=("\">");
@@ -164,7 +164,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
                                                     contenu_a_copier = '".addslashes(htmlspecialchars($notice_privee->getContenu()))."';
                                                     ct_a_importer_class='".get_class($notice_privee)."';
                                                     id_ct_a_importer='".$notice_privee->getIdCt()."';
-                                                    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$notice_privee->getIdGroupe()."&ct_a_importer_class=".get_class($notice_privee)."&id_ct_a_importer=".$notice_privee->getIdCt()."',{ onComplete:function() {updateDivModification();} });
+                                                    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$notice_privee->getIdGroupe()."&ct_a_importer_class=".get_class($notice_privee)."&id_ct_a_importer=".$notice_privee->getIdCt()."',{ onComplete:function() {updateDivModification();controler_affichage_toutes_vignettes_notices();} });
                                                 \"><img style=\"border: 0px;\" src=\"");
                                 if (isset($_SESSION['ct_a_importer']) && $_SESSION['ct_a_importer'] == $notice_privee) {
                                     $html_balise .=("../images/icons/copy-16-gold.png");
@@ -179,7 +179,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
 										suppressionNoticePrivee('".french_strftime("%A %d %B %Y", $notice_privee->getDateCt())."','".$notice_privee->getIdCt()."', '".$notice_privee->getIdGroupe()."','".add_token_in_js_func()."');
-										new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
+										new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();controler_affichage_toutes_vignettes_notices();}});
 										return false;
 									\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 
@@ -242,7 +242,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 										{ onComplete: function(transport) {initWysiwyg();}});
 									updateCalendarWithUnixDate(".$compte_rendu->getDateCt().");
 									getWinListeNotices();
-									new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$compte_rendu->getIdGroupe()."',{ onComplete:function() {updateDivModification();}});
+									new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$compte_rendu->getIdGroupe()."',{ onComplete:function() {updateDivModification();controler_affichage_toutes_vignettes_notices();}});
 									object_en_cours_edition = 'compte_rendu';
 								");
 				$html_balise .=("\">");
@@ -253,7 +253,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
                                                     contenu_a_copier = '".addslashes(htmlspecialchars($compte_rendu->getContenu()))."';
                                                     ct_a_importer_class='".get_class($compte_rendu)."';
                                                     id_ct_a_importer='".$compte_rendu->getIdCt()."';
-                                                    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$compte_rendu->getIdGroupe()."&ct_a_importer_class=".get_class($compte_rendu)."&id_ct_a_importer=".$compte_rendu->getIdCt()."',{ onComplete:function() {updateDivModification();} });
+                                                    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$compte_rendu->getIdGroupe()."&ct_a_importer_class=".get_class($compte_rendu)."&id_ct_a_importer=".$compte_rendu->getIdCt()."',{ onComplete:function() {updateDivModification();controler_affichage_toutes_vignettes_notices();} });
                                                 \"><img style=\"border: 0px;\" src=\"");
                                 if (isset($_SESSION['ct_a_importer']) && $_SESSION['ct_a_importer'] == $compte_rendu) {
                                     $html_balise .=("../images/icons/copy-16-gold.png");
@@ -269,7 +269,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
 								suppressionCompteRendu('".french_strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().",'".add_token_in_js_func()."');
-								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
+								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();controler_affichage_toutes_vignettes_notices();}});
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
 			}

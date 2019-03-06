@@ -526,7 +526,7 @@ function suppressionCompteRendu(message, id_ct_a_supprimer, csrf_alea) {
       					if (object_en_cours_edition == 'compte_rendu' && $('id_ct') != null && $F('id_ct') == id_ct_a_supprimer) {
 								getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:	function() {initWysiwyg();debut_alert = new Date();}});
 						}
-				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();debut_alert = new Date();}});
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();debut_alert = new Date();}});
 					}
 				}
@@ -547,7 +547,7 @@ function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe, csrf_alea)
       					if (object_en_cours_edition == 'devoir' && $('id_devoir') != null && $F('id_devoir') == id_devoir_a_supprimer) {
 							getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:	function() {initWysiwyg();debut_alert = new Date();}});
 						}
-				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();debut_alert = new Date();}});
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();debut_alert = new Date();}});
       				}
     			}
@@ -568,7 +568,7 @@ function suppressionNoticePrivee(message, id_notice_privee_a_supprimer, id_group
       					if (object_en_cours_edition == 'notice_privee' && $('id_ct') != null && $F('id_ct') == id_notice_privee_a_supprimer) {
 							getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate(), { onComplete:	function() {initWysiwyg();debut_alert = new Date();}});
 						}
-				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();debut_alert = new Date();}});
+				      	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + $F('id_groupe_colonne_gauche'), { onComplete: function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();debut_alert = new Date();}});
       				}
     			}
@@ -587,7 +587,7 @@ function suppressionDocument(message, id_document_a_supprimer, id_ct, csrf_alea)
 						alert(transport.responseText);
 					} else {
 	      				getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=' + id_ct, { onComplete: function() {initWysiwyg();debut_alert = new Date();}});
-						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();debut_alert = new Date();}});
 					}
     			}
@@ -606,7 +606,7 @@ function suppressionDevoirDocument(message, id_document_a_supprimer, id_devoir, 
 						alert(transport.responseText);
 					} else {
 	      				getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_devoir=' + id_devoir, { onComplete: function(transport) {initWysiwyg();debut_alert = new Date();}});
-						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();debut_alert = new Date();}});
 					}
     			}
@@ -623,7 +623,7 @@ function completeEnregistrementCompteRenduCallback(response) {
 
 		if((response.match('formulaire d'))&&(response.match('Une copie de sauvegarde a'))) {
 			getWinListeNotices();
-			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 		}
 	} else {
 		/*
@@ -655,7 +655,7 @@ function completeEnregistrementCompteRenduCallback(response) {
 		// Pour ne pas mettre à jour la fenêtre Liste des notices si on a délié la fenêtre Edition et la fenêtre Liste des notices:
 		if(chaineActive==true) {
 			getWinListeNotices();
-			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 		}
 		else {
 			//alert('Pas de mise à jour de la fenêtre Liste des notices');
@@ -679,7 +679,7 @@ function completeEnregistrementDevoirCallback(response) {
 
 		if((response.match('formulaire d'))&&(response.match('Une copie de sauvegarde a'))) {
 			getWinListeNotices();
-			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 		}
  	} else {
  		//si response ne contient pas le mot erreur, il contient l'id du compte rendu
@@ -695,7 +695,7 @@ function completeEnregistrementDevoirCallback(response) {
 		// Pour ne pas mettre à jour la fenêtre Liste des notices si on a délié la fenêtre Edition et la fenêtre Liste des notices:
 		if(chaineActive==true) {
 			getWinListeNotices();
-	 		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+	 		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 		}
 		else {
 			//alert('Pas de mise à jour de la fenêtre Liste des notices');
@@ -725,7 +725,7 @@ function completeEnregistrementNoticePriveeCallback(response) {
 		// Pour ne pas mettre à jour la fenêtre Liste des notices si on a délié la fenêtre Edition et la fenêtre Liste des notices:
 		if(chaineActive==true) {
 			getWinListeNotices();
-			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 		}
 		else {
 			//alert('Pas de mise à jour de la fenêtre Liste des notices');
@@ -831,7 +831,7 @@ function updateWindows(message){
 	getWinEditionNotice().setAjaxContent(url,
 		{ onComplete: function() {
 				debut_alert = new Date();
-				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 				initWysiwyg();
 			}
 		});
@@ -1297,6 +1297,65 @@ function alterne_affichage_toutes_vignettes_notices() {
 		etat_visibilite_notices=true;
 	}
 }
+
+function controler_affichage_toutes_vignettes_notices() {
+	/*
+	img=document.getElementsByTagName('img');
+	for(i=0;i<img.length;i++) {
+		id=img[i].getAttribute('id');
+		if(id.substring(0,8)=='img_vue_') {
+		}
+	}
+	*/
+
+	//alert('plip');
+	if(etat_visibilite_notices==true) {
+		div=document.getElementsByTagName('div');
+		for(i=0;i<div.length;i++) {
+			id=div[i].getAttribute('id');
+			if(id) {
+				if(id.substring(0,37)=='vignette_contenu_notice_compte_rendu_') {
+					document.getElementById(id).style.display='';
+
+					if(document.getElementById('img_vue_'+id)) {
+						document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_compte_rendu.png';
+					}
+				}
+				else if(id.substring(0,31)=='vignette_contenu_notice_devoir_') {
+					document.getElementById(id).style.display='';
+
+					if(document.getElementById('img_vue_'+id)) {
+						document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_travail.png';
+					}
+				}
+				else if(id.substring(0,31)=='vignette_contenu_notice_privee_') {
+					document.getElementById(id).style.display='';
+
+					if(document.getElementById('img_vue_'+id)) {
+						document.getElementById('img_vue_'+id).src='../images/icons/notices_CDT_privee.png';
+					}
+				}
+			}
+		}
+	}
+	else {
+		div=document.getElementsByTagName('div');
+		for(i=0;i<div.length;i++) {
+			id=div[i].getAttribute('id');
+			if((id)&&(id.substring(0,24)=='vignette_contenu_notice_')) {
+				document.getElementById(id).style.display='none';
+
+				if(document.getElementById('img_vue_'+id)) {
+					document.getElementById('img_vue_'+id).src='../images/icons/vignette_blanche_et_oeil_barre.png';
+				}
+			}
+		}
+	}
+	//alert('plop');
+}
+
+//controler_affichage_toutes_vignettes_notices();
+
 /**
 *
 *  Fin des fonctions ajax du cahier de texte
