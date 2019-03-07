@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -421,6 +421,12 @@ echo "</span></p>
 			<tr>
 				<th>Date de fin</th>
 				<td style='text-align:left;'>
+					<div style='float:right; width:16px;' title=\"Mettre les mêmes date et heure de fin que de début.\">
+						<a href='#' onclick=\"document.getElementById('display_date_fin').value=document.getElementById('display_date_fin').value; 
+									document.getElementById('display_heure_fin').value=document.getElementById('display_heure_debut').value; 
+									return false;\"><img src='../images/icons/coller_23x24.png' class='icone16' /></a>
+					</div>
+
 					<input type='text' name='display_date_fin' id='display_date_fin' size='10' value=\"".(isset($display_date_fin) ? $display_date_fin : "")."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />
 		".img_calendrier_js("display_date_fin", "img_bouton_display_date_fin")."
 					 à/en 
