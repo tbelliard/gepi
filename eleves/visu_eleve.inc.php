@@ -435,6 +435,7 @@ Patientez pendant l'extraction des données... merci.
 		echo "<p>L'".$gepiSettings['denomination_eleve']." dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
 	}
 	else {
+		$check_mae=check_mae($_SESSION['login']);
 
 		if(getSettingAOui('active_mod_discipline')) {
 			require("../mod_discipline/mod_discipline.lib.php");
@@ -1366,7 +1367,12 @@ Patientez pendant l'extraction des données... merci.
 			echo "<div style='float:right; text-align:center; width: 7em; background-image: url(\"../images/background/opacite50.png\"); border:1px solid black;'><a href='../mod_discipline/saisie_incident.php?ele_login[0]=".$ele_login."&amp;is_posted=y".add_token_in_url()."' title=\"Saisir un nouvel ".$mod_disc_terme_incident." dans le module Discipline\">Saisie<br />".$mod_disc_terme_incident."</a></div>";
 		}
 
-		echo "<h2>Informations sur l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+		echo "<h2>Informations sur l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom'];
+		if((getSettingAOui("active_mod_alerte"))&&($check_mae)) {
+			//echo "<div style='float:right;width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=".$tab_ele['nom']." ".$tab_ele['prenom']."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\"><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerter' /></a></div>";
+			echo " <a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=".$tab_ele['nom']." ".$tab_ele['prenom']."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\"><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerter' /></a>";
+		}
+		echo "</h2>\n";
 		//affichage de la date de sortie de l'élève de l'établissement
 		if ($tab_ele['date_sortie']!=0) {
 		   echo "<span style=\"color:red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."<br/><br/></span>";

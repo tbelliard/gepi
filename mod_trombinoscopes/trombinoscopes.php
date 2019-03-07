@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue,Eric Lebrun, Christian Chapel
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue,Eric Lebrun, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -1496,6 +1496,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 
 	$acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
+	$check_mae=check_mae($_SESSION['login']);
+
 	echo "<table width='100%' border='0' cellspacing='0' cellpadding='4' summary='Trombino'>\n";
 
 	$i = 1;
@@ -1600,6 +1602,11 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				}
 				else {
 					echo $nom_prenom_aff;
+				}
+
+				// 20190307
+				if((getSettingAOui("active_mod_alerte"))&&($check_mae)) {
+					echo " <a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=".$alt_nom_prenom_aff."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\" class='noprint'><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerter' /></a>";
 				}
 
 				if ( $matiere_prof[$i] != '' ) {
