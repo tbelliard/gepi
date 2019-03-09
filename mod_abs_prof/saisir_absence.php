@@ -422,7 +422,7 @@ echo "</span></p>
 				<th>Date de fin</th>
 				<td style='text-align:left;'>
 					<div style='float:right; width:16px;' title=\"Mettre les mêmes date et heure de fin que de début.\">
-						<a href='#' onclick=\"document.getElementById('display_date_fin').value=document.getElementById('display_date_fin').value; 
+						<a href='#' onclick=\"document.getElementById('display_date_fin').value=document.getElementById('display_date_debut').value; 
 									document.getElementById('display_heure_fin').value=document.getElementById('display_heure_debut').value; 
 									return false;\"><img src='../images/icons/coller_23x24.png' class='icone16' /></a>
 					</div>
