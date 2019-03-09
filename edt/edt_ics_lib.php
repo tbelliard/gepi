@@ -1554,6 +1554,8 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	global $complement_liens_edt;
 	//+++++++++++++++++++++
 
+	global $sans_semaine_suivante_precedente;
+
 	global $tab_coord_prises;
 	$tab_coord_prises=array();
 
@@ -1591,7 +1593,8 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	}
 </script>
 
-<div id='div_edt_".$chaine_alea."'>";
+<div id='div_edt_".$chaine_alea."' class='infobulle_corps' style='height:".$hauteur_jour."px'>";
+// class='infobulle_corps' style='background-color:white;height:".$hauteur_jour."px'
 
 	$ts_debut_annee=getSettingValue('begin_bookings');
 	$ts_fin_annee=getSettingValue('end_bookings');
@@ -1847,7 +1850,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			}
 		}
 
-		if($num_semaine_annee_suivante!="") {
+		if(($num_semaine_annee_suivante!="")&&($sans_semaine_suivante_precedente!='y')) {
 			//background-color:silver;
 			$x_courant=$x0+$largeur_edt;
 			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center; z-index:20;' title=\"Semaine suivante\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."num_semaine_annee=".$num_semaine_annee_suivante."'";
@@ -1877,7 +1880,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			$cpt++;
 		}
 
-		if($display_date_precedente!="") {
+		if(($display_date_precedente!="")&&($sans_semaine_suivante_precedente!='y')) {
 			//background-color:silver;
 			$x_courant=$x0-32;
 			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Jour précédent\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."affichage=".$display_date_precedente_num_jour."&amp;display_date=".$display_date_precedente."'><img src='../images/arrow_left.png' class='icone16' alt='Précédent' /></a></div>";

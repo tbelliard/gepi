@@ -3077,7 +3077,7 @@ function saveParamClasse($id_classe,$item,$valeur) {
  * @global int $GLOBALS['$posDiv_infobulle']
  * @name $posDiv_infobulle
  */
-$GLOBALS['$posDiv_infobulle'] = 0;
+$GLOBALS['posDiv_infobulle'] = 0;
 
 /**
  * 

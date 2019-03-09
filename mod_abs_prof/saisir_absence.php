@@ -387,6 +387,8 @@ echo "
 
 		<p>Vous souhaitez saisir une absence pour le ou les professeurs suivants&nbsp;:<br /><span class='bold'>";
 
+require("../edt/edt_ics_lib.php");
+
 $tab_prof=array();
 for($loop=0;$loop<count($login_user);$loop++) {
 	$tab_prof[$loop]=get_info_user($login_user[$loop]);
@@ -397,7 +399,43 @@ for($loop=0;$loop<count($login_user);$loop++) {
 	echo "<input type='hidden' name='login_user[]' value='".$login_user[$loop]."' />";
 	echo $tab_prof[$loop]['denomination'];
 	if($active_mod_edt) {
-		echo " <a href='../edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=".$login_user[$loop]."' title=\"Voir l'EDT du professeur dans un nouvel onglet.\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
+		//echo " <a href='../edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=".$login_user[$loop]."' title=\"Voir l'EDT du professeur dans un nouvel onglet.\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
+
+		if(isset($display_date_debut)) {
+			//mysql_date_to_unix_timestamp
+			$tmp_date=explode("/", $display_date_debut);
+			$jour = $tmp_date[0];
+			$mois = $tmp_date[1];
+			$annee = $tmp_date[2];
+			$heure=8;
+			$min=0;
+			$sec=0;
+			$ts_display_date=mktime($heure,$min,$sec,$mois,$jour,$annee);
+		}
+		else {
+			$ts_display_date=time();
+		}
+
+		$mode_infobulle='y';
+		$login_eleve='';
+		$id_classe='';
+		$login_prof=$login_user[$loop];
+		$type_affichage='prof';
+		$affichage='semaine';
+		$x0=50;
+		$y0=40;
+		$largeur_edt=500;
+		$hauteur_une_heure=60;
+		$hauteur_jour=620;
+
+		$html="<a href='../edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=".$login_user[$loop]."' title=\"Voir l'EDT du professeur dans un nouvel onglet.\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
+		$html.=affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
+
+//function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow,$zindex_infobulle=1){
+
+		$tabdiv_infobulle[]=creer_div_infobulle('edt2_'.$loop,"EDT ".civ_nom_prenom($login_user[$loop]),"",$html,"",37,100,'y','y','n','n');
+		echo " <a href='#' onclick=\"afficher_div('edt2_".$loop."','y',-100,20);return false;\"><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
+
 	}
 
 }
@@ -472,6 +510,27 @@ echo "
 
 	</fieldset>
 </form>";
+
+echo ouvre_popup_visu_groupe_visu_aid("y");
+
+$titre_infobulle="Action EDT";
+$texte_infobulle="<!--p>Choix&nbsp;:</p-->
+<div id='div_action_edt'></div>";
+$tabdiv_infobulle[]=creer_div_infobulle('infobulle_action_edt',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',4000);
+
+echo "
+<script type='text/javascript'>
+	// Action lancée lors du clic dans le div_edt
+	function action_edt_cours(id_cours, ts) {
+		// Actuellement, aucune action n'est lancée.
+		// La fonction est là pour éviter une erreur JavaScript
+
+		new Ajax.Updater($('div_action_edt'),'../edt/index2.php?action_js=y&id_cours='+id_cours+'&ts='+ts+'&affichage=semaine',{method: 'get'});
+
+		afficher_div('infobulle_action_edt', 'y', 10, 10);
+		document.getElementById('infobulle_action_edt').style.zIndex=5000;
+	}
+</script>";
 
 require("../lib/footer.inc.php");
 ?>

@@ -995,8 +995,13 @@ if((getSettingAOui('autorise_edt_tous'))||
 	$texte_infobulle="";
 	$tabdiv_infobulle[]=creer_div_infobulle('edt_prof',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
 
+	
 	function affiche_lien_edt_prof($login_prof, $info_prof) {
 		return " <a href='../edt_organisation/index_edt.php?login_edt=".$login_prof."&amp;type_edt_2=prof&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_prof_en_infobulle('$login_prof', '".addslashes($info_prof)."');return false;\" title=\"Emploi du temps de ".$info_prof."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>";
+	}
+	
+	function affiche_lien_edt2_prof($login_prof, $info_prof, $ts) {
+		return " <a href='../edt/index2.php?login_prof=".$login_prof."&amp;affichage=semaine&amp;type_affichage=prof&amp;ts=".$ts."' onclick=\"affiche_edt2_prof_en_infobulle('$login_prof', '".addslashes($info_prof)."', ".$ts.");return false;\" title=\"Emploi du temps de ".$info_prof."\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
 	}
 
 	$titre_infobulle="EDT de la classe de <span id='span_id_nom_classe'></span>";
@@ -1024,10 +1029,20 @@ if((getSettingAOui('autorise_edt_tous'))||
 		new Ajax.Updater($('edt_prof_contenu_corps'),'../edt_organisation/index_edt.php?login_edt='+login_prof+'&type_edt_2=prof&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
 		afficher_div('edt_prof','y',-20,20);
 	}
+
+	function affiche_edt2_prof_en_infobulle(login_prof, info_prof, ts) {
+		document.getElementById('id_ligne_titre_infobulle_edt').innerHTML=info_prof;
+
+		new Ajax.Updater($('edt_prof_contenu_corps'),'../edt/index2.php?login_prof='+login_prof+'&type_affichage=prof&affichage=semaine&ts='+ts+'&mode_infobulle=y&&mode=afficher_edt_js&x0=50&y0=40&largeur_edt=500&hauteur_une_heure=60&hauteur_jour=640&sans_semaine_suivante_precedente=y',{method: 'get'});
+		afficher_div('edt_prof','y',-20,20);
+	}
 </script>\n";
 }
 else {
 	function affiche_lien_edt_prof($login_prof, $info_prof) {
+		return "";
+	}
+	function affiche_lien_edt2_prof($login_prof, $info_prof, $ts) {
 		return "";
 	}
 }
@@ -1074,7 +1089,11 @@ if(($_SESSION['statut']=="administrateur")||
 else {
 	echo $id_absence;
 }
-echo "&nbsp;:</strong> ".$civ_nom_prenom_absent." ".affiche_lien_edt_prof($login_user, $civ_nom_prenom_absent)." (<em>$lien_mailto_absent</em>) est absent(e) du ".formate_date($date_debut,"y","complet")." au ".formate_date($date_fin,"y","complet")."</p>";
+echo "&nbsp;:</strong> ".$civ_nom_prenom_absent." ";
+//echo affiche_lien_edt_prof($login_user, $civ_nom_prenom_absent);
+$ts=mysql_date_to_unix_timestamp($date_debut);
+echo " ".affiche_lien_edt2_prof($login_user, $civ_nom_prenom_absent, $ts);
+echo " (<em>$lien_mailto_absent</em>) est absent(e) du ".formate_date($date_debut,"y","complet")." au ".formate_date($date_fin,"y","complet")."</p>";
 
 $chaine_js_var_user="var nom_user=new Array();\n";
 $chaine_js_var_user.="nom_user['$login_user']=\"$civ_nom_prenom_absent\";\n";
@@ -1649,7 +1668,10 @@ echo "<tr><td colspan='5'>
 											$reponse
 										</td>
 										<td>
-											".affiche_lien_edt_prof($lig_prof->login, $denomination_prof_courant)."
+											";
+													//echo affiche_lien_edt_prof($lig_prof->login, $denomination_prof_courant);
+													echo affiche_lien_edt2_prof($lig_prof->login, $denomination_prof_courant, $timestamp_courant);
+													echo "
 										</td>
 										<td>
 											".$lien_mailto_courant."
@@ -1786,7 +1808,10 @@ echo "<tr><td colspan='5'>
 										$reponse
 									</td>
 									<td>
-										".affiche_lien_edt_prof($lig_prof->login, $denomination_prof_courant)."
+										";
+												//echo affiche_lien_edt_prof($lig_prof->login, $denomination_prof_courant);
+												echo affiche_lien_edt2_prof($lig_prof->login, $denomination_prof_courant, $timestamp_courant);
+												echo "
 									</td>
 									<td>
 										".$lien_mailto_courant."
@@ -1990,6 +2015,29 @@ echo "
 		checkbox_change('proposition_'+i);
 	}
 </script>";
+
+//==============================================================================
+echo ouvre_popup_visu_groupe_visu_aid("y");
+
+$titre_infobulle="Action EDT";
+$texte_infobulle="<!--p>Choix&nbsp;:</p-->
+<div id='div_action_edt'></div>";
+$tabdiv_infobulle[]=creer_div_infobulle('infobulle_action_edt',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',4000);
+
+echo "
+<script type='text/javascript'>
+	// Action lancée lors du clic dans le div_edt
+	function action_edt_cours(id_cours, ts) {
+		// Actuellement, aucune action n'est lancée.
+		// La fonction est là pour éviter une erreur JavaScript
+
+		new Ajax.Updater($('div_action_edt'),'../edt/index2.php?action_js=y&id_cours='+id_cours+'&ts='+ts+'&affichage=semaine',{method: 'get'});
+
+		afficher_div('infobulle_action_edt', 'y', 10, 10);
+		document.getElementById('infobulle_action_edt').style.zIndex=5000;
+	}
+</script>";
+//==============================================================================
 
 require("../lib/footer.inc.php");
 ?>

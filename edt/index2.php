@@ -94,7 +94,7 @@ $display_date=isset($_POST['display_date']) ? $_POST['display_date'] : (isset($_
 
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 $login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : NULL);
-
+$sans_semaine_suivante_precedente=isset($_GET['sans_semaine_suivante_precedente']) ? $_GET['sans_semaine_suivante_precedente'] : 'n';
 
 if((isset($mode))&&($mode=="reinit")) {
 	if(isset($type_affichage)) {
