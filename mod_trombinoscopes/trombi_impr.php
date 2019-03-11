@@ -239,7 +239,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 										AND a.id = '".$aid."'
 										AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 										GROUP BY e.nom, e.prenom
-										ORDER BY $grp_order_by;";			
+										ORDER BY $grp_order_by;";
 			}
 		}
 
@@ -327,6 +327,36 @@ function matiereprof($prof, $equipepeda) {
 <table width="100%" border="0" cellspacing="0" cellpadding="2" style="border : 1px solid #010101;" align="center" summary="Trombinoscope">
 	<tr>
 	<td width="70%" height="20" style="text-align: left; ">
+		<?php
+			if(acces('/mod_trombinoscopes/trombinoscopes.php', $_SESSION['statut'])) {
+				if ( $action_affiche === 'classe' ) {
+					$param='classe='.$classe;
+				}
+				elseif ( $action_affiche === 'groupe' ) {
+					$param='groupe='.$groupe;
+				}
+				elseif ( $action_affiche === 'aid' ) {
+					$param='aid='.$aid;
+				}
+				elseif ( $action_affiche === 'equipepeda' ) {
+					$param='equipepeda='.$equipepeda;
+				}
+				elseif ( $action_affiche === 'discipline' ) {
+					$param='discipline='.$discipline;
+				}
+				elseif ( $action_affiche === 'statusgepi' ) {
+					$param='statusgepi='.$statusgepi;
+				}
+				if($param!='') {
+					echo "
+		<div style='float:right; width:16px; margin:0.2em;' class='noprint'>
+			<a href='trombinoscopes.php?".$param."&amp;etape=2' title=\"Accéder au module trombinoscope.\">
+				<img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' />
+			</a>
+		</div>";
+				}
+			}
+		?>
 		<span style="font-size: 12px;">TROMBINOSCOPE <?php $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej); echo $annee_en_cours_t; ?></span><br />
 		<span style="font-size: 16px; font-weight: bold;"><?php echo $entete; ?></span>
 	</td>
