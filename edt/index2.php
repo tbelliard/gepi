@@ -264,7 +264,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 			}
 
 			if(acces_trombinoscope()) {
-				echo " <a href='../mod_trombinoscopes/trombinoscopes.php?groupe=".$lig->id_groupe."&amp;etape=2' target='_blank' title=\"Afficher le trombinoscope du groupe\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
+				echo " <a href='../mod_trombinoscopes/trombinoscopes.php?groupe=".$lig->id_groupe."&amp;etape=2' 
+				onclick=\"window.open('../mod_trombinoscopes/trombi_impr.php?classe=&groupe=".$lig->id_groupe."&aid=&equipepeda=&discipline=&statusgepi=&affdiscipline=', '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width=800,height=600');return false;\" 
+				target='_blank' 
+				title=\"Afficher le trombinoscope du groupe\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
 			}
 
 			if(acces("/groupes/popup.php", $_SESSION['statut'])) {
@@ -286,7 +289,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 
 				if(count($current_group['classes']['classes'])>1) {
 					if(acces_trombinoscope()) {
-						echo " <a href='../mod_trombinoscopes/trombinoscopes.php?classe=".$current_id_classe."&amp;etape=2' target='_blank' title=\"Afficher le trombinoscope de la classe de ".$current_classe['classe']."\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
+						echo " <a href='../mod_trombinoscopes/trombinoscopes.php?classe=".$current_id_classe."&amp;etape=2' 
+							onclick=\"window.open('../mod_trombinoscopes/trombi_impr.php?classe=".$current_id_classe."&groupe=&aid=&equipepeda=&discipline=&statusgepi=&affdiscipline=', '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width=800,height=600');return false;\" 
+							target='_blank' 
+							title=\"Afficher le trombinoscope de la classe de ".$current_classe['classe']."\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
 					}
 				}
 
@@ -334,6 +340,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 
 			if(acces_trombinoscope()) {
 				echo " <a href='../mod_trombinoscopes/trombinoscopes.php?aid=".$lig->id_aid."&amp;etape=2' target='_blank' title=\"Afficher le trombinoscope de l'AID\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
+				echo " <a href='../mod_trombinoscopes/trombinoscopes.php?aid=".$lig->id_aid."&amp;etape=2' 
+							onclick=\"window.open('../mod_trombinoscopes/trombi_impr.php?classe=&groupe=&aid=".$lig->id_aid."&equipepeda=&discipline=&statusgepi=&affdiscipline=', '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width=800,height=600');return false;\" 
+							target='_blank' 
+							title=\"Afficher le trombinoscope de l'AID\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
 			}
 
 			echo "</p>";
@@ -348,7 +358,10 @@ if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]
 
 				if(count($tab_aid['classes']['classes'])>1) {
 					if(acces_trombinoscope()) {
-						echo " <a href='../mod_trombinoscopes/trombinoscopes.php?classe=".$current_id_classe."&amp;etape=2' target='_blank' title=\"Afficher le trombinoscope de la classe de ".$current_classe['classe']."\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
+						echo " <a href='../mod_trombinoscopes/trombinoscopes.php?classe=".$current_id_classe."&amp;etape=2' 
+							onclick=\"window.open('../mod_trombinoscopes/trombi_impr.php?classe=".$current_id_classe."&groupe=&aid=&equipepeda=&discipline=&statusgepi=&affdiscipline=', '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width=800,height=600');return false;\" 
+							target='_blank' 
+							title=\"Afficher le trombinoscope de la classe de ".$current_classe['classe']."\"><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a>";
 					}
 				}
 
