@@ -52,7 +52,7 @@ class ImportCtrl extends Controleur {
                 $this->copy_file($this->tmp);
             } else
                 throw new Exception('Aucun fichier ne semble uploadé ');
-            $this->csv = '../temp/'.get_user_temp_directory().'/correspondances.csv';            
+            $this->csv = '../temp/'.get_user_temp_directory().'/correspondances.csv';
             if (file_exists($this->csv)) {
                 $this->traite_file($this->csv);
                 unlink($this->csv);
@@ -93,48 +93,63 @@ class ImportCtrl extends Controleur {
             throw new Exception('Le fichier n\'est pas un fichier csv ');
     }
 
-    private function traite_file($file) {
+	private function traite_file($file) {
 
-        if (!isset($_POST["choix"]) || ($_POST["choix"] == "ecrit")) {
-            $this->ecriture = TRUE;
-        } else {
-            $this->ecriture = FALSE;
-        }
-        $data = new ImportModele();
-        $this->verif_file($file);
-        if (is_null($this->erreurs_lignes)) {
-             $this->setVarGlobal('choix_info', 'affich_result');
-            $this->fic = fopen($file, 'r');
-            while (($this->ligne = fgetcsv($this->fic, 1000, ";")) !== FALSE) {
-                $this->ligne[0] = traitement_magic_quotes(corriger_caracteres(htmlspecialchars($this->ligne[0], ENT_QUOTES)));
-                $this->ligne[1] = traitement_magic_quotes(corriger_caracteres(htmlspecialchars($this->ligne[1], ENT_QUOTES)));
-                $this->messages = $this->get_message($data->get_error($this->ligne[0], $this->ligne[1], $this->ecriture));
-                if ($_POST["choix"] == "erreur" && $this->messages[0] == "message_red") {
-                    $this->table[] = array('login_gepi' => $this->ligne[0], 'login_sso' => $this->ligne[1], 'couleur' => $this->messages[0], 'message' => $this->messages[1]);
-                } else if ($_POST["choix"] != "erreur") {
-                    $this->table[] = array('login_gepi' => $this->ligne[0], 'login_sso' => $this->ligne[1], 'couleur' => $this->messages[0], 'message' => $this->messages[1]);
-                }
-            }
-            fclose($this->fic);
-            if(is_null($this->table)) {
-                if ($_POST["choix"] != "erreur") $this->setVarGlobal('choix_info', 'no_data');
-                if ($_POST["choix"] == "erreur") $this->setVarGlobal('choix_info', 'no_error');
-            }
-        }
-    }
+		if (!isset($_POST["choix"]) || ($_POST["choix"] == "ecrit")) {
+			$this->ecriture = TRUE;
+		} else {
+			$this->ecriture = FALSE;
+		}
+		$data = new ImportModele();
+		$this->verif_file($file);
+		if (is_null($this->erreurs_lignes)) {
+			$this->setVarGlobal('choix_info', 'affich_result');
+			$this->fic = fopen($file, 'r');
+			//while (($this->ligne = fgetcsv($this->fic, 1000, ";")) !== FALSE) {
+			while (($this->lig = fgets($this->fic, 1000)) !== FALSE) {
+				if(trim($this->lig)=='') {
+					// On a une ligne vide, on passe
+				}
+				else {
+					$this->ligne=explode(';', $this->lig);
+					$this->ligne[0] = traitement_magic_quotes(corriger_caracteres(htmlspecialchars($this->ligne[0], ENT_QUOTES)));
+					$this->ligne[1] = traitement_magic_quotes(corriger_caracteres(htmlspecialchars($this->ligne[1], ENT_QUOTES)));
+					$this->messages = $this->get_message($data->get_error($this->ligne[0], $this->ligne[1], $this->ecriture));
+					if ($_POST["choix"] == "erreur" && $this->messages[0] == "message_red") {
+						$this->table[] = array('login_gepi' => $this->ligne[0], 'login_sso' => $this->ligne[1], 'couleur' => $this->messages[0], 'message' => $this->messages[1]);
+					} else if ($_POST["choix"] != "erreur") {
+						$this->table[] = array('login_gepi' => $this->ligne[0], 'login_sso' => $this->ligne[1], 'couleur' => $this->messages[0], 'message' => $this->messages[1]);
+					}
+				}
+			}
+			fclose($this->fic);
+			if(is_null($this->table)) {
+				if ($_POST["choix"] != "erreur") $this->setVarGlobal('choix_info', 'no_data');
+				if ($_POST["choix"] == "erreur") $this->setVarGlobal('choix_info', 'no_error');
+			}
+		}
+	}
 
-    private function verif_file($file) {
-        $this->fic = fopen($file, 'r');
-        $ligne_erreur = 1;
-        while (($this->ligne = fgetcsv($this->fic, 1000, ";")) !== FALSE) {
-            if (sizeof($this->ligne) != 2) {
-                $this->erreurs_lignes[] = $ligne_erreur;
-            }
-            $ligne_erreur++;
-        }
-        fclose($this->fic);
-        return($this->erreurs_lignes);
-    }
+	private function verif_file($file) {
+		$this->fic = fopen($file, 'r');
+		// Compteur pour fournir le numéro de la ligne comportant une erreur
+		$ligne_erreur = 1;
+		//while (($this->ligne = fgetcsv($this->fic, 1000, ";")) !== FALSE) {
+		while (($this->lig = fgets($this->fic, 1000)) !== FALSE) {
+			if(trim($this->lig)=='') {
+				// On a une ligne vide, on passe
+			}
+			else {
+				$this->ligne=explode(';', $this->lig);
+				if (sizeof($this->ligne) != 2) {
+					$this->erreurs_lignes[] = $ligne_erreur;
+				}
+			}
+			$ligne_erreur++;
+		}
+		fclose($this->fic);
+		return($this->erreurs_lignes);
+	}
 
     private function get_message($code) {
         //$NomBloc   : nom du bloc qui appel la fonction (lecture seule)

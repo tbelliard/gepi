@@ -135,80 +135,87 @@ class CvsentCtrl extends Controleur {
 			$this->fic = fopen($file, 'r');
 			skip_bom_utf8($this->fic);
 			$statut = 'eleve';
-			while (($this->ligne = fgetcsv($this->fic, 1024, ";")) !== FALSE) {
-				if(!isset($ligne_entete)) {
-					$ligne_entete=$this->ligne;
+			//while (($this->ligne = fgetcsv($this->fic, 1024, ";")) !== FALSE) {
+			while (($this->lig = fgets($this->fic, 1024)) !== FALSE) {
+				if(trim($this->lig)=='') {
+					// On a une ligne vide, on passe
 				}
-				foreach($this->ligne as &$value){
-					$value= ensure_utf8($value);
-				}
+				else {
+					$this->ligne=explode(';', $this->lig);
+					if(!isset($ligne_entete)) {
+						$ligne_entete=$this->ligne;
+					}
+					foreach($this->ligne as &$value){
+						$value= ensure_utf8($value);
+					}
 
-				sso_print_r_debug($this->ligne);
+					sso_print_r_debug($this->ligne);
 
-				// On charge la table temporaire
-				//$this->ligne[0] : rne
-				//$this->ligne[1] : uid
-				//$this->ligne[2] : classe
-				//$this->ligne[3] : statut
-				//$this->ligne[4] : prénom
-				//$this->ligne[5] : nom
-				//$this->ligne[6] : login
-				//$this->ligne[7] : mot de passe
-				//$this->ligne[8] : cle de jointure
-				//$this->ligne[9] : uid pere
-				//$this->ligne[10] : uid pere
-				//$this->ligne[11] : uid tuteur1
-				//$this->ligne[12] : uid tuteur2
-				// si on a un élève, il a un père ou une mère ou un tuteur 1 ou un tuteur 2
-				if ($this->ligne[9] != "" || $this->ligne[10] != "" || $this->ligne[11] != "" || $this->ligne[12] != "") {
+					// On charge la table temporaire
+					//$this->ligne[0] : rne
+					//$this->ligne[1] : uid
+					//$this->ligne[2] : classe
+					//$this->ligne[3] : statut
+					//$this->ligne[4] : prénom
+					//$this->ligne[5] : nom
+					//$this->ligne[6] : login
+					//$this->ligne[7] : mot de passe
+					//$this->ligne[8] : cle de jointure
+					//$this->ligne[9] : uid pere
+					//$this->ligne[10] : uid pere
+					//$this->ligne[11] : uid tuteur1
+					//$this->ligne[12] : uid tuteur2
+					// si on a un élève, il a un père ou une mère ou un tuteur 1 ou un tuteur 2
+					if ($this->ligne[9] != "" || $this->ligne[10] != "" || $this->ligne[11] != "" || $this->ligne[12] != "") {
+						// DEBUG : 20150929
+						//if ((((mb_strtolower($this->ligne[3])=='eleve')||(mb_strtolower($this->ligne[3])=='tuteur'))&&($this->ligne[2] != "")) || $this->ligne[10] != "" || $this->ligne[11] != "" || $this->ligne[12] != "") {
+						// NON : le $recherche est utilisé pour voir si le statut est élève ou non.
+						//       Avec $recherche=true, on effectue une recherche dans cherche_login() avec statut LIKE 'eleve'
+						$recherche = TRUE;
+						$recherche_info="TRUE";
+					} else {
+						$recherche = FALSE;
+						$recherche_info="FALSE";
+					}
+
 					// DEBUG : 20150929
-					//if ((((mb_strtolower($this->ligne[3])=='eleve')||(mb_strtolower($this->ligne[3])=='tuteur'))&&($this->ligne[2] != "")) || $this->ligne[10] != "" || $this->ligne[11] != "" || $this->ligne[12] != "") {
-					// NON : le $recherche est utilisé pour voir si le statut est élève ou non.
-					//       Avec $recherche=true, on effectue une recherche dans cherche_login() avec statut LIKE 'eleve'
-					$recherche = TRUE;
-					$recherche_info="TRUE";
-				} else {
-					$recherche = FALSE;
-					$recherche_info="FALSE";
-				}
+					sso_echo_debug("\$recherche=$recherche_info<br />");
 
-				// DEBUG : 20150929
-				sso_echo_debug("\$recherche=$recherche_info<br />");
-
-				// On a un parent
-				if ((!$recherche)&&(isset($ligne_entete[13]))&&($ligne_entete[13]=='prenom enfant')&&(isset($this->ligne[13]))&&($this->ligne[13]!="")&&(isset($ligne_entete[14]))&&($ligne_entete[14]=='nom enfant')&&(isset($this->ligne[14]))&&($this->ligne[14]!="")) {
-					// Parent avec enfant, mais sans classe... est-ce un bug de l'export ou un élève de l'an dernier.
-					// On peut récupérer la classe si l'élève est toujours dans l'établissement, mais ne va-t-il pas y avoir un doublon parent dans l'export CSV?
-					// Deux lignes parent pour l'élève sans classe pour une ligne et avec classe pour l'autre ? Va-t-on récupérer/retenir le bon?
-					if(getSettingAOui('mod_sso_table_tenter_classe_vide')) {
-						$sql="SELECT DISTINCT classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.nom='".mysqli_real_escape_string($GLOBALS['mysqli'], $this->ligne[14])."' AND e.prenom='".mysqli_real_escape_string($GLOBALS['mysqli'], $this->ligne[13])."';";
-						$res_classe=mysqli_query($GLOBALS['mysqli'], $sql);
-						if(mysqli_num_rows($res_classe)==1) {
-							$lig_classe=mysqli_fetch_object($res_classe);
-							$this->ligne[2]=$lig_classe->classe;
+					// On a un parent
+					if ((!$recherche)&&(isset($ligne_entete[13]))&&($ligne_entete[13]=='prenom enfant')&&(isset($this->ligne[13]))&&($this->ligne[13]!="")&&(isset($ligne_entete[14]))&&($ligne_entete[14]=='nom enfant')&&(isset($this->ligne[14]))&&($this->ligne[14]!="")) {
+						// Parent avec enfant, mais sans classe... est-ce un bug de l'export ou un élève de l'an dernier.
+						// On peut récupérer la classe si l'élève est toujours dans l'établissement, mais ne va-t-il pas y avoir un doublon parent dans l'export CSV?
+						// Deux lignes parent pour l'élève sans classe pour une ligne et avec classe pour l'autre ? Va-t-on récupérer/retenir le bon?
+						if(getSettingAOui('mod_sso_table_tenter_classe_vide')) {
+							$sql="SELECT DISTINCT classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.nom='".mysqli_real_escape_string($GLOBALS['mysqli'], $this->ligne[14])."' AND e.prenom='".mysqli_real_escape_string($GLOBALS['mysqli'], $this->ligne[13])."';";
+							$res_classe=mysqli_query($GLOBALS['mysqli'], $sql);
+							if(mysqli_num_rows($res_classe)==1) {
+								$lig_classe=mysqli_fetch_object($res_classe);
+								$this->ligne[2]=$lig_classe->classe;
+							}
 						}
 					}
-				}
 
-				sso_print_r_debug($this->ligne);
-
-				$this->res = $data->cherche_login($this->ligne, $statut, $recherche);
-				if (mysqli_num_rows($this->res) == 1) {
-					// on a un seul utilisateur dans Gepi
-					$row = mysqli_fetch_row($this->res);
-					$login_gepi = $row[0];
-				} else {
-					// Pour les autres cas, il faut attendre que la table soit remplie
-					$login_gepi = '';
-				}
-				sso_echo_debug("\$login_gepi=$login_gepi<br />");
-				// On n'inscrit pas un élève ou parent d'un ancien élève plus dans aucune classe cette année... sinon, l'association avec le petit frère va être refusée avec le login_sso UNIQUE/INDEX
-				if($this->ligne[2] != "") {
-					$data->ligne_table_import($this->ligne, $login_gepi);
-					$tab_corresp[$this->ligne[1]]=$login_gepi."|".$this->ligne[6]."|".$this->ligne[7];
 					sso_print_r_debug($this->ligne);
-					sso_echo_debug("\$data->ligne_table_import(\$this->ligne, $login_gepi)<br />");
-					sso_echo_debug("\$tab_corresp[".$this->ligne[1]."]=$login_gepi|".$this->ligne[6]."|".$this->ligne[7]."<br />");
+
+					$this->res = $data->cherche_login($this->ligne, $statut, $recherche);
+					if (mysqli_num_rows($this->res) == 1) {
+						// on a un seul utilisateur dans Gepi
+						$row = mysqli_fetch_row($this->res);
+						$login_gepi = $row[0];
+					} else {
+						// Pour les autres cas, il faut attendre que la table soit remplie
+						$login_gepi = '';
+					}
+					sso_echo_debug("\$login_gepi=$login_gepi<br />");
+					// On n'inscrit pas un élève ou parent d'un ancien élève plus dans aucune classe cette année... sinon, l'association avec le petit frère va être refusée avec le login_sso UNIQUE/INDEX
+					if($this->ligne[2] != "") {
+						$data->ligne_table_import($this->ligne, $login_gepi);
+						$tab_corresp[$this->ligne[1]]=$login_gepi."|".$this->ligne[6]."|".$this->ligne[7];
+						sso_print_r_debug($this->ligne);
+						sso_echo_debug("\$data->ligne_table_import(\$this->ligne, $login_gepi)<br />");
+						sso_echo_debug("\$tab_corresp[".$this->ligne[1]."]=$login_gepi|".$this->ligne[6]."|".$this->ligne[7]."<br />");
+					}
 				}
 			} // On a fini de parcourir le fichier et de remplir $data
 
@@ -413,10 +420,18 @@ class CvsentCtrl extends Controleur {
 
     private function verif_file($file) {
         $this->fic = fopen($file, 'r');
+        // Compteur pour fournir le numéro de la ligne comportant une erreur
         $ligne_erreur = 1;
-        while (($this->ligne = fgetcsv($this->fic, 1000, ";")) !== FALSE) {
-            if (sizeof($this->ligne) < 13) {
-                $this->erreurs_lignes[] = $ligne_erreur;
+        //while (($this->ligne = fgetcsv($this->fic, 1000, ";")) !== FALSE) {
+        while (($this->lig = fgets($this->fic, 1000)) !== FALSE) {
+            if(trim($this->lig)=='') {
+                // On a une ligne vide, on passe
+            }
+            else {
+                $this->ligne=explode(';', $this->lig);
+                if (sizeof($this->ligne) < 13) {
+                    $this->erreurs_lignes[] = $ligne_erreur;
+                }
             }
             $ligne_erreur++;
         }
