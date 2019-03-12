@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -224,17 +224,8 @@ echo "<a name=\"debut_de_page\"></a>
 // Proposer d'extraire les remplacements entre telle et telle date, pour tous les profs ou pour une sélection de profs
 // Afficher ensuite deux tableaux, l'un de totaux, l'autre du détail des remplacements avec date et heure.
 
-if($mode=="") {
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form1'>
-	<fieldset class='fieldset_opacite50'>
-		".add_token_field()."
-		<h3>Extraction des remplacements validés</h3>
-
-		<p>Intervalle de dates&nbsp;: du 
-		<input type='text' name = 'date_debut_remplac' id='date_debut_remplac' size='10' value = \"".$date_debut_remplac."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />".img_calendrier_js("date_debut_remplac", "img_bouton_date_debut_remplac")." au <input type='text' name = 'date_fin_remplac' id='date_fin_remplac' size='10' value = \"".$date_fin_remplac."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />".img_calendrier_js("date_fin_remplac", "img_bouton_date_fin_remplac")."</p>
-
-		<p>Extraire les remplacements pour le ou les professeurs cochés ci-dessous&nbsp;:</p>
-		".liste_checkbox_utilisateurs(array('professeur'), 
+if(($mode=="")||(!isset($login_prof))) {
+	$checkbox_liste_profs=liste_checkbox_utilisateurs(array('professeur'), 
 							array(), 
 							'login_prof', 
 							'cocher_decocher', 
@@ -250,7 +241,26 @@ if($mode=="") {
 								u.etat='actif' AND 
 								u.login=apr.login_user AND 
 								apr.validation_remplacement='oui' 
-							ORDER BY statut, nom, prenom, login;")."
+							ORDER BY statut, nom, prenom, login;");
+
+	if($checkbox_liste_profs=='') {
+		echo "
+		<h3>Extraction des remplacements validés</h3>
+		<p style='color:red'>Il n'existe encore aucun remplacement validé.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form1'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<h3>Extraction des remplacements validés</h3>
+
+		<p>Intervalle de dates&nbsp;: du 
+		<input type='text' name = 'date_debut_remplac' id='date_debut_remplac' size='10' value = \"".$date_debut_remplac."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />".img_calendrier_js("date_debut_remplac", "img_bouton_date_debut_remplac")." au <input type='text' name = 'date_fin_remplac' id='date_fin_remplac' size='10' value = \"".$date_fin_remplac."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />".img_calendrier_js("date_fin_remplac", "img_bouton_date_fin_remplac")."</p>
+
+		<p>Extraire les remplacements pour le ou les professeurs cochés ci-dessous&nbsp;:</p>
+		".$checkbox_liste_profs."
 		<p><a href='#' onclick='cocher_decocher(true);return false;'>Cocher</a>/<a href='#' onclick='cocher_decocher(false);return false;'>décocher</a> tous les professeurs</p>
 
 		<p><input type='hidden' name='mode' value='extraction' />
