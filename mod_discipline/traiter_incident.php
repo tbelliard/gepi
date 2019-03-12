@@ -1158,7 +1158,7 @@ echo "		}
 						}
 						else {
 							$sql="SELECT nom,prenom,email FROM eleves WHERE login='$lig2->login';";
-							echo "$sql<br />\n";
+							//echo "$sql<br />\n";
 							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res3)>0) {
 								$lig3=mysqli_fetch_object($res3);
@@ -1166,7 +1166,7 @@ echo "		}
 								$tab_individu[$lig2->login]['designation']=$chaine;
 								$tab_individu[$lig2->login]['email']=$lig3->email;
 								if($acces_visu_eleve) {
-									echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig2->login."&onglet=discipline' target='_blank' title=\"Voir la fiche élève dans un nouvel onglet.\">".$chaine['designation']."</a>";
+									echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig2->login."&onglet=discipline' target='_blank' title=\"Voir la fiche élève dans un nouvel onglet.\">".$tab_individu[$lig2->login]['designation']."</a>";
 								}
 								else {
 									echo $chaine;
