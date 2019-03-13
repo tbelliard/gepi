@@ -68,24 +68,36 @@ if((isset($_GET['sous_dossier']))&&($_GET['sous_dossier']=='absences')) {
 	readfile($filepath);
 }
 else {
-	$tab_file=get_tab_fichiers_du_dossier_de_sauvegarde();
+
+	$path="../backup/" . $dirname . "/" ;
+
+	$tab_file=get_tab_fichiers_du_dossier_de_sauvegarde($path);
 	$n=count($tab_file);
+	//echo "<p style='color:red'>Il y a $n fichiers dans le dossier de sauvegarde</p>";
 
 	$filepath = null;
 	$filename = null;
 
 	if ($n > 0) {
+		//echo "<p style='color:red'>On cherche le fichier n°".$fileid."<br />";
 		$m = 0;
-		foreach($tab_file as $value) {
+		// foreach et for ne parcourent pas le tableau tab_file dans le même ordre.
+		//foreach($tab_file as $value) {
+		for($m=0;$m<count($tab_file);$m++) {
+			$value=$tab_file[$m];
+			//echo "\$tab_file[$m]=".$tab_file[$m]."<br />";
 			if ($m == $fileid) {
 				$filepath = "../backup/".$dirname."/".$value;
 				$filename = $value;
+				//echo "On a trouvé l'indice $fileid avec filename=$filename<br />";
+				break;
 			}
-			$m++;
+			//$m++;
 		}
 		clearstatcache();
 	}
 
+	//die();
 	send_file_download_headers('text/x-sql',$filename);
 	readfile($filepath);
 }

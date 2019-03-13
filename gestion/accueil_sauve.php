@@ -1632,21 +1632,26 @@ if (isset($action) and ($action == 'dump'))  {
 			*/
 			$tab_file=get_tab_fichiers_du_dossier_de_sauvegarde($path);
 			$n=count($tab_file);
+			//echo "<p style='color:red'>Il y a $n fichiers dans le dossier de sauvegarde $path</p>";
 
 			$nom_fichier=str_replace($path,'',$fichier);
 			$nom_fichier=str_replace('.sql','',$nom_fichier);
 			$fileid=null;
 			if ($n > 0) {
+				//echo "<p style='color:red'>On cherche ".$nom_fichier.'.'.$filetype."<br />";
 				for($m=0;$m<count($tab_file);$m++){
-					//echo "\$tab_file[$m]=$tab_file[$m]<br />";
+					//echo "\$tab_file[$m]=".$tab_file[$m]."<br />";
 					if($tab_file[$m]==$nom_fichier.'.'.$filetype){
 						$fileid=$m;
+						//echo "On a trouvé l'indice $m<br />";
+						break;
 					}
 				}
 				clearstatcache();
+				//echo "</p>";
 			}
 
-			echo "<br/><p class=grand><a href='savebackup.php?fileid=$fileid'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
+			echo "<br/><p class=grand><a href='savebackup.php?fileid=$fileid'>Télécharger le fichier généré par la sauvegarde<br />($nom_fichier)</a></p>\n";
 			echo "<br/><br/><a href=\"accueil_sauve.php";
 			if(isset($quitter_la_page)) {echo "?quitter_la_page=y";}
 			echo "\">Retour vers l'interface de sauvegarde/restauration</a><br /></div>\n";
