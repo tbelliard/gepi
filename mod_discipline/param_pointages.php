@@ -911,7 +911,7 @@ echo "<table class='boireaus boireaus_alt' border='1' summary='Nouveau seuil'>
 		</td>
 		<td style='text-align:left;'>
 			<input type='radio' name='periode' id='periode_y' value='y' onchange=\"changement();checkbox_change(this.id);checkbox_change('periode_n');\" checked /><label for='periode_y' id='texte_periode_y' style='font-weight:bold'>Période</label><br />
-			<input type='radio' name='periode' id='periode_n' value='n' onchange=\"changement();checkbox_change(this.id);checkbox_change('periode_y');\" /><label for='periode_n' id='texte_periode_n'$style_periode_n>Année</label>
+			<input type='radio' name='periode' id='periode_n' value='n' onchange=\"changement();checkbox_change(this.id);checkbox_change('periode_y');\" /><label for='periode_n' id='texte_periode_n'>Année</label>
 		</td>
 		<td style='text-align:left;'>
 			<input type='radio' name='type' id='type_mail' value='mail' onchange=\"changement();checkbox_change(this.id);checkbox_change('type_message');\" checked /><label for='type_mail' id='texte_type_mail' style='font-weight:bold'>Mail</label><br />
