@@ -598,7 +598,7 @@
 			<p>
 				<?php
 					echo add_token_field();
-					if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN' && file_exists("gestion/mysql.exe") && file_exists("gestion/mysqldump.exe"))||
+					if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN' && file_exists("gestion/mysqldump.exe"))||
 					(strtoupper(substr(PHP_OS,0,3)) != 'WIN')) {
 						echo "
 				<input type='hidden' name='action' value='system_dump' />";
