@@ -7498,4 +7498,15 @@ function tableau_actions_eleve($mode='complet') {
 	}
 	return $retour;
 }
+
+function insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($titre_xml, $url_xml) {
+	global $gepiPath;
+	if(!file_exists($gepiPath."/lib/iep.swf")) {
+		return '';
+	}
+	else {
+		return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_instrumenpoche_dans_ckeditor('".preg_replace("/'/", " ", $titre_xml)."', '".$url_xml."')\" title='Insérer un lien vers le visionneur Instrumenpoche pour ce fichier XML'><img src='../images/up.png' width='18' height='18' alt='Insérer' /></a></div>";
+	}
+}
+
 ?>

@@ -656,6 +656,9 @@ echo "<script type='text/javascript'>
 				elseif(preg_match("/ggb$/i",$document->getEmplacement())) {
 					echo insere_lien_insertion_lien_geogebra_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 				}
+				elseif(preg_match("/xml$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($document->getTitre(), $document->getEmplacement());
+				}
 
 				echo "
 							<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a>
