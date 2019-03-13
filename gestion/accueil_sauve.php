@@ -1701,16 +1701,21 @@ if (isset($action) and ($action == 'system_dump'))  {
 	if (ob_get_contents()) ob_flush(); flush();
 
 	$t_debut=time();
-	if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN') && file_exists("mysqldump.exe")) {
-		// on est sous Window$ et on a $filename : "xxxx.sql.gz"
-		$filename=substr($filename,0,-3); // $filename : "xxxx.sql"
-		$command = "mysqldump.exe --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass";
-		if (isset($dbPort)) {$command.=" --port=".$dbPort;}
-		$command .= " $dbDb > $filename";
-		$exec = exec($command);
-		gzip($filename); // on compresse et on obtient un fichier xxxx.sql.gz
-		unlink($filename); // on supprime le fichier xxxx.sql
-		$filename=$filename.".gz"; // // $filename : xxxx.sql.gz
+	if (strtoupper(substr(PHP_OS,0,3)) == 'WIN') {
+		if(file_exists("mysqldump.exe")) {
+			// on est sous Window$ et on a $filename : "xxxx.sql.gz"
+			$filename=substr($filename,0,-3); // $filename : "xxxx.sql"
+			$command = "mysqldump.exe --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass";
+			if (isset($dbPort)) {$command.=" --port=".$dbPort;}
+			$command .= " $dbDb > $filename";
+			$exec = exec($command);
+			gzip($filename); // on compresse et on obtient un fichier xxxx.sql.gz
+			unlink($filename); // on supprime le fichier xxxx.sql
+			$filename=$filename.".gz"; // // $filename : xxxx.sql.gz
+		}
+		else {
+			echo "<p class='centre' style='color: red; font-weight: bold;'>Erreur lors de la sauvegarde&nbsp;: le fichier mysqldump.exe est absent dans le dossier 'gestion'.</p>\n";
+		}
 	}
 	else {
 			if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
@@ -1738,7 +1743,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 	$m=$t_duree%60;
 	$h=floor($t_duree/60);
 
-	if (filesize($filename) > 10000) {
+	if (file_exists($filename)) {
 		echo "<script>document.getElementById('sauvegarde_en_cours').innerHTML=''</script>";
 		echo "<p class='centre' style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès en ".$h." h ".$m." min ".$s." s.</p>\n";
 		if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {

@@ -594,12 +594,20 @@
 				  if ($newentree->titre=="Sauvegarde de la base") {
 ?>
 	<div class="div_tableau cellule_1">
-		<form enctype="multipart/form-data" action="gestion/accueil_sauve.php" method="post" id="formulaire" >
+		<form action="gestion/accueil_sauve.php" method="post" id="formulaire" >
 			<p>
 				<?php
 					echo add_token_field();
+					if ((strtoupper(substr(PHP_OS,0,3)) == 'WIN' && file_exists("gestion/mysqldump.exe"))||
+					(strtoupper(substr(PHP_OS,0,3)) != 'WIN')) {
+						echo "
+				<input type='hidden' name='action' value='system_dump' />";
+					}
+					else {
+						echo "
+				<input type='hidden' name='action' value='dump' />";
+					}
 				?>
-				<input type='hidden' name='action' value='system_dump' />
 				<input type="submit" value="Lancer une sauvegarde de la base de données" />
 			</p>
 		</form>
