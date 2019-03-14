@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -46,8 +46,14 @@ if (!checkAccess()) {
 
 function extr_valeur($lig){
 	unset($tabtmp);
-	$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
-	return trim($tabtmp[2]);
+	$tabtmp=explode(">",my_ereg_replace("<",">",ensure_ascii($lig)));
+	//echo "\$lig=$lig<br />";
+	if(isset($tabtmp[2])) {
+		return trim($tabtmp[2]);
+	}
+	else {
+		return '';
+	}
 }
 
 function ouinon($nombre){
@@ -557,7 +563,7 @@ else{
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
 				$res_ele_id=mysqli_query($GLOBALS["mysqli"], $sql);
-				affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
+				affiche_debug("mysqli_num_rows(\$res_ele_id)=".mysqli_num_rows($res_ele_id)."<br />");
 
 				unset($tab_ele_id);
 				$tab_ele_id=array();
