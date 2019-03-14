@@ -93,6 +93,15 @@ require_once("../lib/header.inc.php");
 			die();
 		}
 
+		//echo "\$url_xml=$url_xml<br />";
+		$url_racine_gepi=preg_replace("#/*$#", "", getSettingValue('url_racine_gepi'));
+		if($url_racine_gepi!='') {
+			if(preg_match("#^$url_racine_gepi/documents/#", $url_xml)) {
+				$url_xml=preg_replace("#^$url_racine_gepi/documents/#", "../documents/", $url_xml);
+			}
+		}
+		//echo "\$url_xml=$url_xml<br />";
+
 		$multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
 		if(isset($multisite) && $multisite == 'y') {
 			if((!preg_match("#^\.\./documents/$multi/cl[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.xml$#i", $url_xml))&&
@@ -121,9 +130,11 @@ require_once("../lib/header.inc.php");
 		$url_xml0=$url_xml;
 		//echo "url_xml0=$url_xml0<br />";
 
-		$debut_url=preg_replace("#cahier_texte_2/.*#","",$_SERVER['HTTP_REFERER']);
-		$url_xml=$debut_url.preg_replace("#\.\./#", "", $url_xml);
-		//echo "url_xml=$url_xml<br />";
+		if(isset($_SERVER['HTTP_REFERER'])) {
+			$debut_url=preg_replace("#cahier_texte_2/.*#","",$_SERVER['HTTP_REFERER']);
+			$url_xml=$debut_url.preg_replace("#\.\./#", "", $url_xml);
+			//echo "url_xml=$url_xml<br />";
+		}
 
 		//$basename_url_xml=basename($url_xml);
 		//echo "basename_url_xml=$basename_url_xml<br />";
