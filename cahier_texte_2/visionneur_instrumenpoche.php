@@ -130,11 +130,15 @@ require_once("../lib/header.inc.php");
 		$url_xml0=$url_xml;
 		//echo "url_xml0=$url_xml0<br />";
 
+		/*
+		// Cela provoque une erreur:
+		// Le url_xml=https://CHEMIN_CLG/gepi/documents/cl1234/fichier.xml est changé en url_xml=http://CHEMIN_ENT/sg.dodocuments/cl1234/fichier.xml
 		if(isset($_SERVER['HTTP_REFERER'])) {
 			$debut_url=preg_replace("#cahier_texte_2/.*#","",$_SERVER['HTTP_REFERER']);
 			$url_xml=$debut_url.preg_replace("#\.\./#", "", $url_xml);
 			//echo "url_xml=$url_xml<br />";
 		}
+		*/
 
 		//$basename_url_xml=basename($url_xml);
 		//echo "basename_url_xml=$basename_url_xml<br />";
