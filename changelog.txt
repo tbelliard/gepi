@@ -5,6 +5,10 @@
 
 Gepi-master (Version de développement)
 ===========================
+Cahiers de textes 2:
+- Ajout d'une visionneuse Instrumenpoche.
+- Mise à jour de l'app GeoGebra.
+
 
 Gepi-1.7.4 (28/01/2019)
 ===========================
