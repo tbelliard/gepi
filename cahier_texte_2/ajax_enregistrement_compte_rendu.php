@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2015 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2019 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -197,6 +197,13 @@ fclose($f);
 $contenu_cor=cdt_copie_fichiers_archive_vers_cdt_courant($contenu_cor, "compte_rendu", $id_groupe);
 
 $contenu_cor=a_href_target_blank($contenu_cor);
+
+//INSERT INTO setting SET name='url_visionneur_instrumentpoche', value='https://127.0.0.1/steph/gepi_git_trunk/cahier_texte_2/visionneur_instrumenpoche.php';
+$url_visionneur_instrumentpoche=getSettingValue('url_visionneur_instrumentpoche');
+if($url_visionneur_instrumentpoche!='') {
+	$contenu_cor=preg_replace("#='visionneur_instrumenpoche.php#", "='$url_visionneur_instrumentpoche", $contenu_cor);
+	$contenu_cor=preg_replace('#="visionneur_instrumenpoche.php#', '="'.$url_visionneur_instrumentpoche, $contenu_cor);
+}
 
 $ctCompteRendu->setContenu($contenu_cor);
 $ctCompteRendu->setDateCt($date_ct);
