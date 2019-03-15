@@ -54,7 +54,9 @@ if((isset($_GET['sous_dossier']))&&($_GET['sous_dossier']=='absences')) {
 
 	if ($n > 0) {
 		$m = 0;
-		foreach($tab_file as $value) {
+		//foreach($tab_file as $value) {
+		for($m=0;$m<count($tab_file);$m++) {
+			$value=$tab_file[$m];
 			if ($m == $fileid) {
 				$filepath = "../backup/".$dirname."/absences/".$value;
 				$filename = $value;
