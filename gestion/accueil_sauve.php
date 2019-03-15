@@ -2013,7 +2013,9 @@ if ($n > 0) {
 	</tr>\n";
 	$m = 0;
 	$alt=1;
-	foreach($tab_file as $value) {
+	//foreach($tab_file as $value) {
+	for($m=0;$m<count($tab_file);$m++) {
+		$value=$tab_file[$m];
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='padding:5px;'>\n";
@@ -2086,7 +2088,9 @@ if($temoin_dossier_backup_absences=="y") {
 		<th class='nosort'>&nbsp;</th>
 	</tr>";
 		$m = 0;
-		foreach($tab_file as $value) {
+		//foreach($tab_file as $value) {
+		for($m=0;$m<count($tab_file);$m++) {
+			$value=$tab_file[$m];
 			$alt=$alt*(-1);
 			echo "
 	<tr>
