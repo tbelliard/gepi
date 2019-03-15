@@ -58,8 +58,14 @@ include_once 'header_template.inc.php';
 
 <head>
 <!-- on inclut l'entête -->
-	<?php include($racineGepi.'/templates/origine/header_template.php'); ?>
+	<?php 
+		include($racineGepi.'/templates/origine/header_template.php'); 
 
+		if(isset($meta_visionneur_geogebra)) {
+			echo "
+	<meta name=viewport content=\"width=device-width,initial-scale=1\">";
+		}
+	?>
 
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/accueil.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/bandeau.css" media="screen" />
