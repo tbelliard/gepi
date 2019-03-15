@@ -1183,7 +1183,8 @@ function insere_lien_ggb_dans_ckeditor(titre, url) {
 }
 
 function insere_lien_instrumenpoche_dans_ckeditor(titre, url) {
-	texte="<a href='visionneur_instrumenpoche.php?url="+url+"' target='_blank'>"+titre+"</a>";
+	//texte="<a href='visionneur_instrumenpoche.php?url="+url+"' target='_blank'>"+titre+"</a>";
+	texte="<a href='visionneur_instrumenpoche.php?"+url+"' target='_blank'>"+titre+"</a>";
 	CKEDITOR.instances['contenu'].insertHtml(texte);
 }
 

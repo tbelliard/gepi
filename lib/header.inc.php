@@ -65,6 +65,12 @@ include_once 'header_template.inc.php';
 			echo "
 	<meta name=viewport content=\"width=device-width,initial-scale=1\">";
 		}
+
+		if(isset($meta_visionneur_instrumentpoche)) {
+			echo "
+	<meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\">";
+		}
+
 	?>
 
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/accueil.css" media="screen" />
@@ -117,6 +123,52 @@ if((isset($charger_js_dragresize))&&($charger_js_dragresize=="y")) {
     echo '<script type="text/javascript" src="'.$gepiPath.'/lib/twinhelix_dragresize.js"></script>'."\n";
     echo '<link rel="stylesheet" href="'.$gepiPath.'/css/twinhelix_dragresize.css" />'."\n";
     echo js_dragresize();
+}
+
+if(isset($meta_visionneur_instrumentpoche)) {
+	echo "
+    <script src=\"iepjsmax.js\"></script>
+    <script type=\"text/x-mathjax-config\">
+      MathJax.Hub.Config({
+        tex2jax: {";
+	echo '
+          inlineMath: [["$","$"],["\\(","\\)"]]';
+	echo "
+        },
+        jax: [\"input/TeX\",\"output/SVG\"],
+        TeX: {extensions: [\"color.js\"]},
+        messageStyle:'none'
+      });
+    </script>
+    <script src=\"https://www.mathgraph32.org/js/MathJax/MathJax.js?config=TeX-AMS-MML_SVG-full\"></script>
+    <script type=\"text/javascript\">
+      function go() {
+        try {
+          var url = window.location.search.substring(1);
+          if (!url) {
+            console.error('Absence d’adresse passée dans l’url.');
+            return
+          }
+          var connect = new XMLHttpRequest();
+          connect.open(\"GET\", url, true);
+          connect.onreadystatechange = function (aEvt) {
+            if ((connect.readyState == 4) && (connect.status == 200)) {
+              var figure = connect.responseText;
+              var svg = document.getElementById(\"svg\");
+              var autostart = true;
+              var iepapp = new iep.iepApp();
+              iepapp.addDoc(svg,figure,autostart);
+              window.addEventListener(\"unload\",function() {
+                iepapp.closeAllXMLWindows()
+              });
+            }
+          }
+          connect.send(null);
+        } catch (error) {
+          console.error('Plantage : '+error);
+        }
+      }
+    </script>";
 }
 ?>
 
