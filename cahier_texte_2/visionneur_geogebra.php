@@ -41,6 +41,7 @@ if (!checkAccess()) {
 	die();
 }
 
+$meta_visionneur_geogebra='y';
 require_once("../lib/header.inc.php");
 ?>
 
@@ -58,7 +59,7 @@ require_once("../lib/header.inc.php");
 <div style='text-align:center;'>
 
 	<h1>Visionneur GeoGebra</h1>
-
+	<script src="https://cdn.geogebra.org/apps/deployggb.js"></script>
 	<?php
 
 		//debug_var();
@@ -109,42 +110,25 @@ require_once("../lib/header.inc.php");
 		$url_ggb0=$url_ggb;
 		//echo "url_ggb0=$url_ggb0<br />";
 
+		/*
+
 		$debut_url=preg_replace("#cahier_texte_2/.*#","",$_SERVER['HTTP_REFERER']);
 		$url_ggb=$debut_url.preg_replace("#\.\./#", "", $url_ggb);
 		//echo "url_ggb=$url_ggb<br />";
+
+		*/
 	?>
 
-<!--
-	<applet code="geogebra.GeoGebraApplet"  archive="geogebra.jar" 
-	  codebase="http://jars.geogebra.org/webstart/" 
-	  width="800" height="400">
-		  <param name="filename" value="<?php echo $url_ggb;?>" />
-		  <param name="framePossible" value="false" />
-	Il faut installer un <a href='http://www.java.com'>plugin Java</a> (<em>1.5 ou plus récent</em>) pour visionner cette page.
-	</applet>
--->
+	<div id="ggb-element" align='center'></div> 
 
-<applet name="ggbApplet" code="geogebra.GeoGebraApplet" archive="geogebra.jar"
-         codebase="http://www.geogebra.org/webstart/4.0/unsigned/"
-         width="1000" height="600" MAYSCRIPT>
-		  <param name="ggbBase64" value="<?php echo base64_encode(file_get_contents($url_ggb0));?>">
-		  <param name="framePossible" value="false" />
-	Il faut installer un <a href='http://www.java.com'>plugin Java</a> (<em>1.5 ou plus récent</em>) pour visionner cette page.
-</applet>
+	<script>
+		var ggbApp = new GGBApplet({"filename": "<?php echo $url_ggb;?>", "width": 1000, "height": 600, "showToolBar": true, "showAlgebraInput": true, "showMenuBar": true }, true);
+		window.addEventListener("load", function() { 
+			ggbApp.inject('ggb-element');
+		});
+	</script>
 
-<p><em>NOTES&nbsp;:</em></p>
-<ul>
-	<li>
-		<p>Votre navigateur va peut-être bloquer l'activation du plugin Java utilisé par GeoGebra.<br />
-		Un cadenas avec un point d'exclamation peut signaler cela en barre d'adresse de votre navigateur.<br />
-		Cliquez sur ce cadenas et désactivez temporairement la protection.<br />
-		Les figures géométriques proposées dans GeoGebra ne présentent pas de danger.</p>
-	</li>
-	<li>
-		<p>Vous pouvez zoomer dans la fenêtre de la figure GeoGebra en pressant la touche CTRL du clavier<br />
-et en faisant simultanément rouler la molette de la souris.</p>
-	</li>
-</ul>
+	<p><em>NOTES&nbsp;:</em> Vous pouvez zoomer dans la fenêtre de la figure GeoGebra en faisant rouler la molette de la souris.</p>
 
 </div>
 </body>
