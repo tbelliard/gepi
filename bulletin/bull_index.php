@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * @copyright Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @copyright Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
  * @todo Les bulletins HTML utilisent les infos display_rang, display_coef,... de la table 'classes'.
  *Les bulletins PDF utilisent plutôt les infos de la table 'modele_bulletin' il me semble.
  *Il faudrait peut-être revoir le dispositif pour adopter la même stratégie.
@@ -2073,7 +2073,8 @@ else {
 		// ++++++++++++++++++++++++++++++++++++++
 		// AJOUTER UN TEST: Le visiteur a-t-il le droit d'accéder à cette page pour cette classe
 		if ($_SESSION["statut"] == "scolarite") {
-			$sql="SELECT 1=1 FROM classes c, j_scol_classes jsc, j_eleves_classes jec WHERE (jec.id_classe=c.id AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id='$id_classe');";
+			//$sql="SELECT 1=1 FROM classes c, j_scol_classes jsc, j_eleves_classes jec WHERE (jec.id_classe=c.id AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id='$id_classe');";
+			$sql="SELECT 1=1 FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) LIMIT 1;";
 		}
 		//elseif ($_SESSION["statut"] == "administrateur") {
 		elseif (($_SESSION["statut"] == "administrateur")||($_SESSION["statut"] == "secours")||($_SESSION["statut"] == "autre")) {
