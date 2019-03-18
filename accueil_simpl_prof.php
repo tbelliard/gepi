@@ -1594,7 +1594,7 @@ echo "Periode $j<br />
 									echo "</a>";
 	
 									if($pref_accueil_infobulles=="y"){
-										echo "<div id='info_liste_csv_".$ii."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 12em;' onmouseout=\"cacher_div('info_liste_csv_".$ii."_".$j."');\">Listes CSV des élèves<br />".$classe['classe']."<br />".$groups[$ii]["periodes"][$j]["nom_periode"].".</div>\n";
+										echo "<div id='info_liste_csv_".$ii."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 12em;' onmouseout=\"cacher_div('info_liste_csv_".$ii."_".$j."');\">Listes CSV des élèves<br />".$tmp_nom_aid." (".$lig_aid->nom.")<br />Période $j.</div>\n";
 										$tab_liste_infobulles[]='info_liste_csv_'.$ii.'_'.$j;
 									}
 									echo "</div>\n";
