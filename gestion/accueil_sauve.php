@@ -2084,9 +2084,9 @@ if ($n > 0) {
 		echo "<td style='padding:5px;'><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
 		echo "</tr>\n";
 		//$m++;
-    }
-    clearstatcache();
-    echo "</table>\n<hr />\n";
+	}
+	clearstatcache();
+	echo "</table>\n<hr />\n";
 }
 
 if($temoin_dossier_backup_absences=="y") {
@@ -2123,7 +2123,7 @@ if($temoin_dossier_backup_absences=="y") {
 			<a href='../backup/".$dirname."/absences/".$value."'>Téléch. direct</a>
 		</td>
 	</tr>\n";
-			$m++;
+			//$m++;
 		}
 		clearstatcache();
 		echo "
