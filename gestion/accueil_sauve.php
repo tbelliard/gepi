@@ -1996,6 +1996,22 @@ $tab_file=get_tab_fichiers_du_dossier_de_sauvegarde('../backup/' . $dirname);
 $n=count($tab_file);
 
 if ($n > 0) {
+	/*
+	echo "<div style='float:left; width:50em;' class='fieldset_opacite50'>";
+	echo "<pre>";
+	print_r($tab_file);
+	echo "</pre>";
+	echo "</div>";
+
+	echo "<div style='float:left; width:50em;' class='fieldset_opacite50'>";
+	echo "<pre>";
+	for($m=0;$m<count($tab_file);$m++) {
+	echo "\$tab_file[$m]=".$tab_file[$m]."\n";
+	}
+	echo "</pre>";
+	echo "</div>";
+	*/
+
 	echo "<h3>Fichiers de restauration</h3>\n";
 	echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
 	// echo "<table class='boireaus centre' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><strong>Nom du fichier de sauvegarde</strong></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
@@ -2064,10 +2080,10 @@ if ($n > 0) {
 				echo "<td></td>\n";
 				break;
 		}
-        echo "<td style='padding:5px;'><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
-        echo "<td style='padding:5px;'><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
-        echo "</tr>\n";
-        $m++;
+		echo "<td style='padding:5px;'><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
+		echo "<td style='padding:5px;'><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
+		echo "</tr>\n";
+		//$m++;
     }
     clearstatcache();
     echo "</table>\n<hr />\n";
