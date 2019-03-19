@@ -1927,10 +1927,16 @@ echo "</form>\n";
 ";
 
 		if((isset($inclusion_depuis_graphes))&&($inclusion_depuis_graphes=='y')) {
-			echo "		afficher_div('div_signaler_faute','n',0,0);\n";
+			echo "
+		// Depuis bulletins/verif_bulletins.php et visualisation/affiche_eleve.php, le div se positionne relativement au div conteneur du bulletin.
+		// Dans les pages avec scrolling, cela pose des problèmes
+		afficher_div('div_signaler_faute','n',0,0);
+		//document.getElementById('div_signaler_faute').style.top=0;
+		//document.getElementById('div_signaler_faute').style.left=0;\n";
 		}
 		else {
-			echo "		afficher_div('div_signaler_faute','y',100,100);\n";
+			echo "
+		afficher_div('div_signaler_faute','y',100,100);\n";
 		}
 
 echo "
@@ -2068,10 +2074,15 @@ echo "</form>\n";
 
 		if((isset($inclusion_depuis_graphes))&&($inclusion_depuis_graphes=='y')) {
 			echo "
-		afficher_div('div_corriger_app','n',0,0);\n";
+		// Depuis bulletins/verif_bulletins.php et visualisation/affiche_eleve.php, le div se positionne relativement au div conteneur du bulletin.
+		// Dans les pages avec scrolling, cela pose des problèmes
+		afficher_div('div_corriger_app','n',0,0);
+		//document.getElementById('div_corriger_app').style.top=0;
+		//document.getElementById('div_corriger_app').style.left=0;\n";
 		}
 		else {
-			echo "		afficher_div('div_corriger_app','y',100,100);\n";
+			echo "
+		afficher_div('div_corriger_app','y',100,100);\n";
 		}
 
 echo "

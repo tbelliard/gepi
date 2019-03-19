@@ -1766,6 +1766,8 @@ echo "</div>\n";
 
 	//=============================================
 	// 20190318
+	// Pour le positionnement relatif des div ouverts depuis le bulletin simplifié:
+	$inclusion_depuis_graphes='y';
 	include_once("../lib/bulletin_simple.inc.php");
 	lib_corriger_appreciation();
 	lib_signalement_fautes();
