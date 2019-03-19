@@ -681,9 +681,11 @@ elseif(
 		echo $chaine_date_conseil_classe;
 	}
 
+	$classe=get_nom_classe($id_classe);
+
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
-		<h2>Autoriser la modification d'appréciations des bulletins</h2>
+		<h2>Autoriser la modification d'appréciations des bulletins en ".$classe."</h2>
 
 		<p>Pour quel enseignement souhaitez-vous autoriser un enseignant à proposer des saisies/corrections d'appréciations?</p>
 
@@ -759,7 +761,41 @@ elseif(
 					echo "<td><img src='../images/disabled.png' width='20' height='20' alt='Période $i close' title='Période $i close' /></td>\n";
 				}
 				else {
-					echo "<td><img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title='Période $i ouverte en saisie' /></td>\n";
+					echo "<td>";
+
+					// Vérifier si ce n'est pas verrouillé pour une autre classe, dans le cas d'un groupe multi-classe
+					$tmp_tab_etat_per=etat_verrouillage_groupe_periode($current_group['id'], $i);
+
+
+					echo "<img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title='Période $i ouverte en saisie' />";
+					$tmp_contenu_td='';
+					if($tmp_tab_etat_per['O']>0) {
+						$tmp_contenu_td.="<img src='../images/disabled.png' width='20' height='20' title='Période $i close pour ".$tmp_tab_etat_per['O']." classe(s).' /> ";
+					}
+					if($tmp_tab_etat_per['P']>0) {
+						if($tmp_contenu_td!='') {
+							$tmp_contenu_td.="<br />";
+						}
+						//$tmp_contenu_td.="<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=".$current_group['id']."&amp;periode=$i' title='Période $i partiellement close pour ".$tmp_tab_etat_per['P']." classe(s).'>Période $i</a>";
+						$tmp_contenu_td.="<input type='checkbox' name='enseignement_periode[]' id='case_".$i."_".$current_group['id']."' value='".$current_group['id']."|".$i."' onchange=\"checkbox_change(this.id)\" />";
+						$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$current_group['id']."' AND periode='$i';";
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							$lig=mysqli_fetch_object($res);
+							if($lig->date_limite>$date_courante) {
+								$tmp_contenu_td.="<br />";
+								$tmp_contenu_td.="Autorisation jusqu'au<br />".strftime("%d/%m/%Y à %H:%M",$lig->date_limite);
+							}
+						}
+					}
+					if($tmp_contenu_td=='') {
+						echo "<img src='../images/enabled.png' width='20' height='20' title='Période $i ouverte en saisie pour la classe de ".$classe."' />\n";
+					}
+					else {
+						echo $tmp_contenu_td;
+					}
+
+					echo "</td>\n";
 				}
 			}
 			echo "</tr>\n";
@@ -824,7 +860,7 @@ elseif(
 				echo "<img src='../images/disabled.png' width='20' height='20' alt='Période $i close' title='Période $i close' />";
 			}
 			else {
-				echo "<img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title='Période $i ouverte en saisie' />";
+				echo "<img src='../images/enabled.png' width='20' height='20' title='Période $i ouverte en saisie pour la classe de ".$classe."' />\n";
 			}
 			echo "
 			</td>";
@@ -840,7 +876,7 @@ elseif(
 	</fieldset>
 </form>
 
-<script type=''>
+<script type='text/javascript'>
 	function coche_per(periode,mode) {
 		champs_input=document.getElementsByTagName('input');
 		for(i=0;i<champs_input.length;i++){
@@ -869,13 +905,15 @@ elseif((isset($id_groupe))&&(isset($periode))) {
 		echo $chaine_date_conseil_classe;
 	}
 
-	echo "<h2>Autoriser la modification d'appréciations des bulletins</h2>";
+	$classe=get_nom_classe($id_classe);
+
+	echo "<h2>Autoriser la modification d'appréciations des bulletins en ".$classe."</h2>";
 
 	//if(!isset($is_posted)) {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 		echo add_token_field();
 		$group=get_group($id_groupe);
-		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'appréciations pour l'enseignement <strong>".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']." avec ".$group['proflist_string']."</span>)</strong> en <strong>période $periode</strong>.</p>\n";
+		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'appréciations pour l'enseignement <strong>".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']." avec ".$group['proflist_string']."</span>)</strong> en <strong>période&nbsp;$periode</strong>.</p>\n";
 
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$group['id']."' AND periode='$periode';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -945,17 +983,17 @@ elseif((isset($id_groupe))&&(isset($periode))) {
 		echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
 		echo "<br />";
 
-		echo "<input type='radio' name='mode' id='mode_proposition' value='proposition' checked /><label for='mode_proposition'> Permettre la proposition de corrections (<em>proposition qui devront ensuite être validées par un compte scolarité ou administrateur</em>).</label>\n";
+		echo "<input type='radio' name='mode' id='mode_proposition' value='proposition' checked onchange=\"change_style_radio()\" /><label for='mode_proposition' id='texte_mode_proposition'> Permettre la proposition de corrections (<em>proposition qui devront ensuite être validées par un compte scolarité ou administrateur</em>).</label>\n";
 		echo "<br />";
 		if(getSettingAOui('autoriser_correction_bulletin')) {
 			echo "<span style='color:red'>Ce premier mode ne présente pas d'intérêt ici puisque vous avez donné globalement le droit (<em>en administrateur dans Gestion générale/Droits d'accès</em>) de proposer des corrections tant que la période n'est pas complètement close</span>.<br /><span style='color:red'>Seul le mode ci-dessous apporte quelque chose dans votre configuration.</span><br />";
 		}
-		echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' /><label for='mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
+		echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' onchange=\"change_style_radio()\" /><label for='mode_acces_complet' id='texte_mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
 		echo "<br />";
 
 		if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
 			echo "<br />\n";
-			echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' /><label for='donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés.</label>";
+			echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' onchange=\"checkbox_change(this.id)\" /><label for='donner_acces_modif_bull_note' id='texte_donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés.</label>";
 			echo "<br />\n";
 		}
 
@@ -996,7 +1034,9 @@ else {
 		echo $chaine_date_conseil_classe;
 	}
 
-	echo "<h2>Autoriser la modification d'appréciations des bulletins</h2>";
+	$classe=get_nom_classe($id_classe);
+
+	echo "<h2>Autoriser la modification d'appréciations des bulletins en ".$classe."</h2>";
 
 	if((!isset($enseignement_periode))||(!is_array($enseignement_periode))||(count($enseignement_periode)==0)) {
 		echo "<p style='color:red'>Enseignement(s) et période(s) non choisis.</p>";
@@ -1029,7 +1069,6 @@ else {
 					echo "<input type='hidden' name='enseignement_periode[]' value='".$enseignement_periode[$loop]."' />\n";
 
 					echo "<strong>".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']." avec ".$group['proflist_string']."</span>)</strong> en <strong>période $periode</strong>";
-
 
 					$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$group['id']."' AND periode='$periode';";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1118,17 +1157,17 @@ else {
 
 		if($temoin_enseignement) {
 			echo "<p style='margin-top:1em;'>";
-			echo "<input type='radio' name='mode' id='mode_proposition' value='proposition' checked /><label for='mode_proposition'> Permettre la proposition de corrections (<em>proposition qui devront ensuite être validées par un compte scolarité ou administrateur</em>).</label>\n";
+			echo "<input type='radio' name='mode' id='mode_proposition' value='proposition' checked onchange=\"change_style_radio()\" /><label for='mode_proposition' id='texte_mode_proposition'> Permettre la proposition de corrections (<em>proposition qui devront ensuite être validées par un compte scolarité ou administrateur</em>).</label>\n";
 			echo "<br />";
 			if(getSettingAOui('autoriser_correction_bulletin')) {
 				echo "<span style='color:red'>Ce premier mode ne présente pas d'intérêt ici puisque vous avez donné globalement le droit (<em>en administrateur dans Gestion générale/Droits d'accès</em>) de proposer des corrections tant que la période n'est pas complètement close</span>.<br /><span style='color:red'>Seul le mode ci-dessous apporte quelque chose dans votre configuration.</span><br />";
 			}
-			echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' /><label for='mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
+			echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' onchange=\"change_style_radio()\" /><label for='mode_acces_complet' id='texte_mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
 			echo "<br />";
 
 			if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
 				echo "<p style='margin-top:1em;'>\n";
-				echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' /><label for='donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés.</label>";
+				echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' onchange=\"checkbox_change(this.id)\" /><label for='donner_acces_modif_bull_note' id='texte_donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés.</label>";
 				echo "</p>\n";
 			}
 		}
@@ -1174,7 +1213,7 @@ else {
 			if((getSettingAOui('abs2_import_manuel_bulletin'))&&
 			(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol'))))) {
 				echo "<p style='margin-top:1em;'>\n";
-				echo "<input type='checkbox' name='donner_acces_modif_totaux_abs' id='donner_acces_modif_totaux_abs' value='y' /><label for='donner_acces_modif_totaux_abs'> Donner aussi l'accès à la modification des totaux d'absences, non justifiées et retards sur les bulletins associés.</label>";
+				echo "<input type='checkbox' name='donner_acces_modif_totaux_abs' id='donner_acces_modif_totaux_abs' value='y' onchange=\"checkbox_change(this.id)\" /><label for='donner_acces_modif_totaux_abs' id='texte_donner_acces_modif_totaux_abs'> Donner aussi l'accès à la modification des totaux d'absences, non justifiées et retards sur les bulletins associés.</label>";
 				echo "</p>\n";
 			}
 		}
@@ -1188,7 +1227,13 @@ else {
 		Dans le cas où vous donnez une autorisation de modification Vie scolaire aux CPE de la classe, la modification effectuée par un CPE est immédiate, sans attente de confirmation/validation par un compte scolarité ou administrateur.</p>";
 }
 
-echo "<p><br /></p>\n";
+echo "
+<script type='text/javascript'>
+	".js_checkbox_change_style().
+	js_change_style_radio()."
+	change_style_radio();
+</script>
+<p><br /></p>\n";
 
 require("../lib/footer.inc.php");
 ?>

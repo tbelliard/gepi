@@ -19455,4 +19455,35 @@ function get_tab_acces_mail_resp() {
 	return $tab;
 }
 
+function etat_verrouillage_groupe_periode($id_groupe, $periode) {
+	global $mysqli;
+
+	$tab=array();
+	$tab['P']=0;
+	$tab['O']=0;
+	$tab['N']=0;
+
+	$sql="SELECT verouiller FROM periodes p, j_groupes_classes jgc WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='".$id_groupe."' AND num_periode='".$periode."';";
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab[$lig->verouiller]++;
+	}
+
+	return $tab;
+}
+/*
+function is_saisie_possible_groupe_periode($id_groupe, $periode) {
+	global $mysqli;
+
+	$sql="SELECT 1=1 FROM periodes p, j_groupes_classes jgc WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='".$id_groupe."' AND p.num_periode='".$periode."' AND p.verouiller!='N';";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		// Saisie peut-être possible pour une des classes du groupe
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+*/
 ?>
