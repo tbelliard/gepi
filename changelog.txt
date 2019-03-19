@@ -5,6 +5,11 @@
 
 Gepi-master (Version de développement)
 ===========================
+
+Bulletins:
+- Facilités d'ouverture exceptionnelle de saisie de notes/appréciations en période
+  partiellement close.
+
 Cahiers de textes 2:
 - Ajout d'une visionneuse Instrumenpoche.
 - Mise à jour de l'app GeoGebra.

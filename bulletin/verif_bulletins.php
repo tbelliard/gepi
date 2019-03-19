@@ -1491,6 +1491,9 @@ echo "</div>\n";
 		$acces_autorisation_exceptionnelle_modif_bull_note=getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol');
 		$acces_autorisation_exceptionnelle_modif_bull_app=getSettingAOui('PeutDonnerAccesBullAppPeriodeCloseScol');
 	}
+	$lignes_autoriser_saisie_cn=array();
+	$lignes_autoriser_saisie_note_bull=array();
+	$lignes_autoriser_saisie_app_bull=array();
 
 	$tab_num_mail=array();
 	if(count($tab_alerte_prof)>0) {
@@ -1628,6 +1631,9 @@ echo "</div>\n";
 			".$tab_group['info']."&nbsp;: Accès (<em>à la saisie de notes dans le Carnet de notes</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
 							}
 						}
+
+						$lignes_autoriser_saisie_cn[]="
+						<input type='checkbox' name='enseignement_periode[]' id='cn_enseignement_periode_".$group_id."_".$per."' value='".$group_id."|".$per."' onchange=\"checkbox_change(this.id)\" /><label for='cn_enseignement_periode_".$group_id."_".$per."' id='texte_cn_enseignement_periode_".$group_id."_".$per."'>".get_info_grp($group_id)."</label><br />";
 					}
 
 					echo "</li>";
@@ -1635,7 +1641,7 @@ echo "</div>\n";
 
 				if($acces_autorisation_exceptionnelle_modif_bull_note) {
 					echo "
-		<li><a href='autorisation_exceptionnelle_saisie_note.php?id_classe=$id_classe".$ajout."' target='_blank'>la saisie/modification de notes du bulletin,</a>";
+	<li><a href='autorisation_exceptionnelle_saisie_note.php?id_classe=$id_classe".$ajout."' target='_blank'>la saisie/modification de notes du bulletin,</a>";
 
 					foreach($tab_prof['groupe'] as $group_id => $tab_group) {
 						$sql="SELECT * FROM acces_exceptionnel_matieres_notes WHERE  id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
@@ -1647,12 +1653,15 @@ echo "</div>\n";
 			".$tab_group['info']."&nbsp;: Accès (<em>à la saisie de notes dans les Bulletins</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
 							}
 						}
+
+						$lignes_autoriser_saisie_note_bull[]="
+							<input type='checkbox' name='enseignement_periode[]' id='bull_note_enseignement_periode_".$group_id."_".$per."' value='".$group_id."|".$per."' onchange=\"checkbox_change(this.id)\" /><label for='bull_note_enseignement_periode_".$group_id."_".$per."' id='texte_bull_note_enseignement_periode_".$group_id."_".$per."'>".get_info_grp($group_id)."</label><br />";
 					}
 				}
 
 				if($acces_autorisation_exceptionnelle_modif_bull_app) {
 					echo "</li>
-		<li><a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>la proposition de saisie d'appréciation(s) sur les bulletins.</a>";
+	<li><a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>la proposition de saisie d'appréciation(s) sur les bulletins.</a>";
 
 					foreach($tab_prof['groupe'] as $group_id => $tab_group) {
 						$sql="SELECT * FROM matieres_app_delais WHERE id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
@@ -1664,6 +1673,9 @@ echo "</div>\n";
 			".$tab_group['info']."&nbsp;: Accès (<em>Appréciations des bulletins&nbsp;: ".$lig_acces->mode."</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
 							}
 						}
+
+						$lignes_autoriser_saisie_app_bull[]="
+							<input type='checkbox' name='enseignement_periode[]' id='bull_app_enseignement_periode_".$group_id."_".$per."' value='".$group_id."|".$per."' onchange=\"checkbox_change(this.id)\" /><label for='bull_app_enseignement_periode_".$group_id."_".$per."' id='texte_bull_app_enseignement_periode_".$group_id."_".$per."'>".get_info_grp($group_id)."</label><br />";
 					}
 
 					echo "</li>";
@@ -1691,6 +1703,51 @@ echo "</div>\n";
 		}
 		echo "</table>\n";
 		//echo "</div>";
+
+		$tmp_tab=array_unique($lignes_autoriser_saisie_cn);
+		if(count($tmp_tab)>1) {
+			echo "<form action=\"../cahier_notes/autorisation_exceptionnelle_saisie.php\" methd=\"post\" target=\"_blank\">
+				<fieldset class='fieldset_opacite50' style='margin:0.5em;'>
+					<p class='bold'>Accès exceptionnel à la saisie de notes dans le carnet de notes&nbsp;:</p>
+					<input type='hidden' name='id_classe' value='$id_classe' />";
+			foreach($tmp_tab as $key => $ligne) {
+				echo $ligne;
+			}
+			echo "
+					<input type='submit' name='id_classe' value='Ouvrir un accès exceptionnel pour les enseignements choisis' />
+				</fieldset>
+			</form>";
+		}
+
+		$tmp_tab=array_unique($lignes_autoriser_saisie_note_bull);
+		if(count($tmp_tab)>1) {
+			echo "<form action=\"../bulletin/autorisation_exceptionnelle_saisie_note.php\" methd=\"post\" target=\"_blank\">
+				<fieldset class='fieldset_opacite50' style='margin:0.5em;'>
+					<p class='bold'>Accès exceptionnel à la saisie de moyennes dans les bulletins&nbsp;:</p>
+					<input type='hidden' name='id_classe' value='$id_classe' />";
+			foreach($tmp_tab as $key => $ligne) {
+				echo $ligne;
+			}
+			echo "
+					<input type='submit' name='id_classe' value='Ouvrir un accès exceptionnel pour les enseignements choisis' />
+				</fieldset>
+			</form>";
+		}
+
+		$tmp_tab=array_unique($lignes_autoriser_saisie_app_bull);
+		if(count($tmp_tab)>1) {
+			echo "<form action=\"../bulletin/autorisation_exceptionnelle_saisie_app.php\" methd=\"post\" target=\"_blank\">
+				<fieldset class='fieldset_opacite50' style='margin:0.5em;'>
+					<p class='bold'>Accès exceptionnel à la saisie d'appréciations dans les bulletins&nbsp;:</p>
+					<input type='hidden' name='id_classe' value='$id_classe' />";
+			foreach($tmp_tab as $key => $ligne) {
+				echo $ligne;
+			}
+			echo "
+					<input type='submit' name='id_classe' value='Ouvrir un accès exceptionnel pour les enseignements choisis' />
+				</fieldset>
+			</form>";
+		}
 	}
 
 	//echo "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
@@ -1776,6 +1833,8 @@ echo "</div>\n";
 		document.getElementById('corps_bull_simp').innerHTML=\"<div style='width:5em;height:5em;padding:2.5em;text-align:center'><img src='../images/spinner.gif' class='icone16' alt='Patientez' /></div>\";
 		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
 	}
+
+	".js_checkbox_change_style()."
 
 	//]]>
 </script>\n";
