@@ -270,7 +270,7 @@ if((isset($_GET['type_export']))&&($_GET['type_export']=="ariane")&&(isset($tab_
 	echo echo_csv_encoded($fd);
 	die();
 }
-elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdier")&&(isset($tab_aid))) {
+elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdie")&&(isset($tab_aid))) {
 
 	// Décommenter les lignes requises dans l'export:
 	//$tab_acces_tel_ele=get_tab_acces_tel_ele();
@@ -279,6 +279,11 @@ elseif((isset($_GET['type_export']))&&($_GET['type_export']=="verdier")&&(isset(
 	//$tab_acces_tel_resp=get_tab_acces_tel_resp();
 	$tab_acces_mail_resp=get_tab_acces_mail_resp();
 
+	if((isset($_GET['entete_verdie']))&&($_GET['entete_verdie']=="2")) {
+		$fd.="Liste type pour chargement des participants dans l'espace organisateur VERDIE.;;;;\n";
+		$fd.="Conservez bien exactement le format de ce document, sans toucher les cellules grisées;;;;\n";
+		$fd.=";;Saisir impérativement et exactement les termes A pour accompagnateur et E pour enfants participants au séjour;Saisir impérativement et exactement les termes M pour les participants de sexe masculin et F pour les participants de sexe féminin;\n";
+	}
 	$fd.="Nom;Prénom;Statut (A/E);Sexe (M/F);E-mail\n";
 
 	$sql="SELECT u.login, u.nom, u.prenom, u.email, u.civilite, u.numind FROM utilisateurs u, j_aid_utilisateurs jau WHERE jau.id_utilisateur=u.login AND jau.id_aid='$id_aid';";

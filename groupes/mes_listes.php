@@ -342,7 +342,7 @@ if($_SESSION['statut']=='professeur') {
 					(
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=dareic' target='_blank' title=\"Export des informations élève au format CSV DAREIC.\">DAREIC</a> - 
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\n\nIl se peut qu'il faille réenregistrer le fichier au format XLS pour qu'il soit accepté par le site sur lequel vous êtes appelé à fournir le fichier.\">Ariane</a> - 
-						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdie' target='_blank' title=\"Export des informations élève au format CSV Verdié.\nIl faut copier les lignes obtenues après les lignes grises dans le modèle XLS fourni sur le site Verdié.\">Verdié</a>
 					)
 								<span title=\"L'accès à l'adresse postale des parents, à l'adresse mail élève ou parent, aux numéros de téléphones peuvent être restreint pour certaines catégories d'utilisateurs.\nCela dépend de la politique de l'établissement.\"><img src='../images/icons/ico_aide.png' class='icone16' /></span>
 			<!--width='15' height='25'-->
@@ -709,7 +709,7 @@ if(mysqli_num_rows($res_aid_config)>0) {
 					(
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=dareic' target='_blank' title=\"Export des informations élève au format CSV DAREIC.\">DAREIC</a> - 
 						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=ariane' target='_blank' title=\"Export des informations Responsable légal 1 au format CSV Ariane.\n\nIl se peut qu'il faille réenregistrer le fichier au format XLS pour qu'il soit accepté par le site sur lequel vous êtes appelé à fournir le fichier.\"\">Ariane</a> - 
-						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdier' target='_blank' title=\"Export des informations élève au format CSV Verdier.\">Verdier</a>
+						<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."&amp;type_export=verdie' target='_blank' title=\"Export des informations élève au format CSV Verdié.\nIl faut copier les lignes obtenues après les lignes grises dans le modèle XLS fourni sur le site Verdié.\">Verdié</a>
 					)";
 						$cpt++;
 					}
