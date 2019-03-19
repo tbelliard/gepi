@@ -1646,7 +1646,7 @@ Les saisies/modifications sont possibles.";
 
 					echo "</li>";
 				}
-				echo"
+				echo "
 </ul>\n";
 				echo "</td>\n";
 			}
