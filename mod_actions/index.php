@@ -134,6 +134,8 @@ if((isset($id_action))&&(isset($mode))&&($mode=='print')) {
 	".($action['description']!='' ? "
 	<p class='fieldset_opacite50' style='margin:0.5em; padding:0.5em;'>".nl2br($action['description'])."</p>" : "");
 
+	echo "<div id='fixe' class='noprint'><input type='button' onclick=\"window.print();\" value='Imprimer' /></div>";
+
 	if(count($action['presents'])>0) {
 		echo "
 	<p>Liste des (".count($action['presents']).") élèves présents&nbsp;:</p>
