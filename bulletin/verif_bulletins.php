@@ -1484,6 +1484,13 @@ echo "</div>\n";
 	echo "</table>\n";
 
 	$acces_autorisation_exceptionnelle_modif_cn=acces("/cahier_notes/autorisation_exceptionnelle_saisie.php", $_SESSION['statut']);
+	$acces_autorisation_exceptionnelle_modif_bull_note=false;
+	$acces_autorisation_exceptionnelle_modif_bull_app=false;
+	if($_SESSION['statut']=='scolarite') {
+		$acces_autorisation_exceptionnelle_modif_cn=getSettingAOui('PeutDonnerAccesCNPeriodeCloseScol');
+		$acces_autorisation_exceptionnelle_modif_bull_note=getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol');
+		$acces_autorisation_exceptionnelle_modif_bull_app=getSettingAOui('PeutDonnerAccesBullAppPeriodeCloseScol');
+	}
 
 	$tab_num_mail=array();
 	if(count($tab_alerte_prof)>0) {
@@ -1593,7 +1600,10 @@ echo "</div>\n";
 			//echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode(ereg_replace("\\\n",'_NEWLINE_',$message))."\" />\n";
 
 			echo "</td>\n";
-			if($ver_periode[$per]=="P") {
+			if(($ver_periode[$per]=="P")&&
+			($acces_autorisation_exceptionnelle_modif_cn||
+			$acces_autorisation_exceptionnelle_modif_bull_note||
+			$acces_autorisation_exceptionnelle_modif_bull_app)) {
 				echo "<td rowspan='2'>\n";
 				$ajout="";
 				if(count($tab_prof['groupe'])==1) {
@@ -1608,51 +1618,57 @@ echo "</div>\n";
 					echo "
 	<li><a href='../cahier_notes/autorisation_exceptionnelle_saisie.php?id_classe=$id_classe".$ajout."' target='_blank'>la saisie/modification de notes du carnet de notes,</a>";
 
-				foreach($tab_prof['groupe'] as $group_id => $tab_group) {
-					$sql="SELECT * FROM acces_cn WHERE id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
-					//echo "$sql<br />";
-					$test = mysqli_query($mysqli, $sql);
-					if($test->num_rows > 0) {
-						while($lig_acces=mysqli_fetch_object($test)) {
-							echo "<br />
-		".$tab_group['info']."&nbsp;: Accès (<em>à la saisie de notes dans le Carnet de notes</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
+					foreach($tab_prof['groupe'] as $group_id => $tab_group) {
+						$sql="SELECT * FROM acces_cn WHERE id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
+						//echo "$sql<br />";
+						$test = mysqli_query($mysqli, $sql);
+						if($test->num_rows > 0) {
+							while($lig_acces=mysqli_fetch_object($test)) {
+								echo "<br />
+			".$tab_group['info']."&nbsp;: Accès (<em>à la saisie de notes dans le Carnet de notes</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
+							}
+						}
+					}
+
+					echo "</li>";
+				}
+
+				if($acces_autorisation_exceptionnelle_modif_bull_note) {
+					echo "
+		<li><a href='autorisation_exceptionnelle_saisie_note.php?id_classe=$id_classe".$ajout."' target='_blank'>la saisie/modification de notes du bulletin,</a>";
+
+					foreach($tab_prof['groupe'] as $group_id => $tab_group) {
+						$sql="SELECT * FROM acces_exceptionnel_matieres_notes WHERE  id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
+						//echo "$sql<br />";
+						$test = mysqli_query($mysqli, $sql);
+						if($test->num_rows > 0) {
+							while($lig_acces=mysqli_fetch_object($test)) {
+								echo "<br />
+			".$tab_group['info']."&nbsp;: Accès (<em>à la saisie de notes dans les Bulletins</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
+							}
 						}
 					}
 				}
 
-				echo "</li>";
+				if($acces_autorisation_exceptionnelle_modif_bull_app) {
+					echo "</li>
+		<li><a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>la proposition de saisie d'appréciation(s) sur les bulletins.</a>";
+
+					foreach($tab_prof['groupe'] as $group_id => $tab_group) {
+						$sql="SELECT * FROM matieres_app_delais WHERE id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
+						//echo "$sql<br />";
+						$test = mysqli_query($mysqli, $sql);
+						if($test->num_rows > 0) {
+							while($lig_acces=mysqli_fetch_object($test)) {
+								echo "<br />
+			".$tab_group['info']."&nbsp;: Accès (<em>Appréciations des bulletins&nbsp;: ".$lig_acces->mode."</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
+							}
+						}
+					}
+
+					echo "</li>";
 				}
 				echo "
-	<li><a href='autorisation_exceptionnelle_saisie_note.php?id_classe=$id_classe".$ajout."' target='_blank'>la saisie/modification de notes du bulletin,</a>";
-
-				foreach($tab_prof['groupe'] as $group_id => $tab_group) {
-					$sql="SELECT * FROM acces_exceptionnel_matieres_notes WHERE  id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
-					//echo "$sql<br />";
-					$test = mysqli_query($mysqli, $sql);
-					if($test->num_rows > 0) {
-						while($lig_acces=mysqli_fetch_object($test)) {
-							echo "<br />
-		".$tab_group['info']."&nbsp;: Accès (<em>à la saisie de notes dans les Bulletins</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
-						}
-					}
-				}
-
-				echo "</li>
-	<li><a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>la proposition de saisie d'appréciation(s) sur les bulletins.</a>";
-
-				foreach($tab_prof['groupe'] as $group_id => $tab_group) {
-					$sql="SELECT * FROM matieres_app_delais WHERE id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
-					//echo "$sql<br />";
-					$test = mysqli_query($mysqli, $sql);
-					if($test->num_rows > 0) {
-						while($lig_acces=mysqli_fetch_object($test)) {
-							echo "<br />
-		".$tab_group['info']."&nbsp;: Accès (<em>Appréciations des bulletins&nbsp;: ".$lig_acces->mode."</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
-						}
-					}
-				}
-
-				echo "</li>
 </ul>\n";
 				echo "</td>\n";
 			}
