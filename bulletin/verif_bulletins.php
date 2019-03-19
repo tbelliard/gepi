@@ -1103,6 +1103,9 @@ Les saisies/modifications sont possibles.";
 								$note=$lig_note->statut;
 							}
 						}
+						else {
+							$note='-';
+						}
 					}
 					if ($note == '') {
 						$bulletin_rempli = 'no';
