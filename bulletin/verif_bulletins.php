@@ -878,6 +878,25 @@ Les saisies/modifications sont possibles.";
 		$tabdiv_infobulle[]=creer_div_infobulle("div_modif_verrouillage",$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
 	}
 
+//============================================
+// 20190318
+echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+
+	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+		echo "<img src='../images/icons/close16.png' style=\"width:16px; height:16px\" alt='Fermer' />\n";
+		echo "</a>\n";
+		echo "</div>\n";
+
+		echo "<div id='titre_entete_bull_simp'></div>\n";
+	echo "</div>\n";
+	
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "</div>\n";
+
+echo "</div>\n";
+//============================================
 
 	//
 	// Vérification de paramètres généraux
@@ -1012,7 +1031,7 @@ Les saisies/modifications sont possibles.";
 							//echo "<br /><br /><br />\n";
 							echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 							//echo "<br />\n";
-							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
+							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=".$id_eleve[$j]."' onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('".$id_eleve[$j]."','".addslashes($eleve_nom[$j]." ".$eleve_prenom[$j])."','$id_classe','$per','$per');return false;\" title=\"Cliquez pour voir le bulletin simplifié dans un nouvel onglet.\" target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 						}
 						if ($affiche_mess_app != 0) {
 							echo "<br /><br />\n";
@@ -1024,7 +1043,7 @@ Les saisies/modifications sont possibles.";
 						// MODIF: boireaus
 						// Pour les matières comme Histoire & Géo,...
 						//echo "<br />--> " . $current_group["description"] . " (" . $current_group["classlist_string"] . ")  --  (";
-						echo "<br />--> " . htmlspecialchars($current_group["description"]) . " (" . $current_group["classlist_string"] . ")  --  (";
+						echo "<br />--&gt; " . htmlspecialchars($current_group["description"]) . " (" . $current_group["classlist_string"] . ")  --  (";
 						//============================================
 						$m=0;
 						$virgule = 1;
@@ -1102,6 +1121,7 @@ Les saisies/modifications sont possibles.";
 							else {
 								$note=$lig_note->statut;
 							}
+						
 						}
 						else {
 							$note='-';
@@ -1114,7 +1134,7 @@ Les saisies/modifications sont possibles.";
 							echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 							//echo "<br />\n";
 							//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span> :";
-							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
+							echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('".$id_eleve[$j]."','".addslashes($eleve_nom[$j]." ".$eleve_prenom[$j])."','$id_classe','$per','$per');return false;\" target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 						}
 						if ($affiche_mess_note != 0) {echo "<br /><br /><b>Moyennes non remplies</b> pour les matières suivantes&nbsp;: ";}
 						$affiche_nom = 0;
@@ -1123,7 +1143,9 @@ Les saisies/modifications sont possibles.";
 						// MODIF: boireaus
 						// Pour les matières comme Histoire & Géo,...
 						//echo "<br />--> " . $current_group["description"] . " (" . $current_group["classlist_string"] . ")  --  (";
-						echo "<br />--> ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] . ")  --   (";
+						echo "<br />--&gt; ";
+						//echo $current_group["id"]." ";
+						echo htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] . ")  --   (";
 						//============================================
 						$m=0;
 						$virgule = 1;
@@ -1187,7 +1209,7 @@ Les saisies/modifications sont possibles.";
 					echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 					//echo "<br />\n";
 					//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span> :";
-					echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
+					echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('".$id_eleve[$j]."','".addslashes($eleve_nom[$j]." ".$eleve_prenom[$j])."','$id_classe','$per','$per');return false;\" target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 				}
 				echo "<br /><br />\n";
 				echo "<b>Avis du conseil de classe</b> non rempli !";
@@ -1259,7 +1281,7 @@ Les saisies/modifications sont possibles.";
 									echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 									//echo "<br />\n";
 									//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page</a>)</span>&nbsp;:";
-									echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
+									echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('".$id_eleve[$j]."','".addslashes($eleve_nom[$j]." ".$eleve_prenom[$j])."','$id_classe','$per','$per');return false;\" target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 								}
 								echo "<br /><br />\n";
 								echo "<b>Appréciation $nom_aid </b> non remplie (";
@@ -1307,7 +1329,7 @@ Les saisies/modifications sont possibles.";
 										echo "<p style='border:1px solid black;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 										//echo "<br />\n";
 										//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span>&nbsp;:";
-										echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
+										echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('".$id_eleve[$j]."','".addslashes($eleve_nom[$j]." ".$eleve_prenom[$j])."','$id_classe','$per','$per');return false;\" target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 									}
 									echo "<br /><br />\n";
 									echo "<b>Note $nom_aid </b>non remplie (";
@@ -1360,7 +1382,7 @@ Les saisies/modifications sont possibles.";
 					echo "<div style='border:1px solid black; margin-bottom:0.3em; padding:0.3em;' class='fieldset_opacite50'><span class='bold'>$eleve_prenom[$j] $eleve_nom[$j]";
 					//echo "<br />\n";
 					//echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'>bulletin simple dans une nouvelle page)</a></span>&nbsp;:";
-					echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
+					echo "(<a href='../prepa_conseil/edit_limite.php?id_classe=$id_classe&amp;periode1=$per&amp;periode2=$per&amp;choix_edit=2&amp;login_eleve=$id_eleve[$j]' onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('".$id_eleve[$j]."','".addslashes($eleve_nom[$j]." ".$eleve_prenom[$j])."','$id_classe','$per','$per');return false;\" target='bull'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='bulletin simple dans une nouvelle page' title='bulletin simple dans une nouvelle page' /></a>)</span>&nbsp;:";
 				}
 				echo "<br /><br />\n";
 				echo "<b>Rubrique \"Absences\" </b> non remplie. (";
@@ -1732,10 +1754,24 @@ Les saisies/modifications sont possibles.";
 		cacher_div('div_modif_verrouillage');
 	}
 
+	// 20190318
+	function affiche_bull_simp(login_eleve,designation_eleve,id_classe,num_per1,num_per2) {
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+designation_eleve+' période '+num_per1+' à '+num_per2;
+		document.getElementById('corps_bull_simp').innerHTML=\"<div style='width:5em;height:5em;padding:2.5em;text-align:center'><img src='../images/spinner.gif' class='icone16' alt='Patientez' /></div>\";
+		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+	}
+
 	//]]>
 </script>\n";
 
-
+	//=============================================
+	// 20190318
+	include_once("../lib/bulletin_simple.inc.php");
+	lib_corriger_appreciation();
+	lib_signalement_fautes();
+	// lib/share-html.inc.php
+	//necessaire_bull_simple();
+	//=============================================
 
 	//if ($bulletin_rempli == 'yes') {
 	if (($bulletin_rempli == 'yes')&&(($mode=='tout')||($mode=='tout_sauf_avis'))) {
