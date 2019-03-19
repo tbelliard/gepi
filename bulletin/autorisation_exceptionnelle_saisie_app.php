@@ -1050,7 +1050,8 @@ else {
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field();
 
-		echo "<p style='margin-left:3em; text-indent:-3em;'>Vous souhaitez autoriser exceptionnellement un ou des enseignants à proposer des saisies/corrections d'appréciations pour le ou les enseignements suivants&nbsp;:<br />";
+		echo "<p style='margin-left:3em; text-indent:-3em;'>Vous souhaitez autoriser exceptionnellement un ou des enseignants à proposer des saisies/corrections d'appréciations pour le ou les enseignements suivants&nbsp;:</p>
+	<div style='margin-left:3em; margin-bottom:1em;'>";
 		$temoin_vie_scolaire=false;
 		$temoin_enseignement=false;
 		for($loop=0;$loop<count($enseignement_periode);$loop++) {
@@ -1104,7 +1105,7 @@ else {
 				echo "<span style='color:red'>Le couple id_groupe/période est invalide&nbsp;: ".$enseignement_periode[$loop]."</span><br />";
 			}
 		}
-		echo "</p>";
+		echo "</div>";
 
 
 		$annee = strftime("%Y");

@@ -730,7 +730,8 @@ else {
 
 	$visibilite_bulletins=false;
 
-	echo "<p style='margin-left:3em; text-indent:-3em;'>Vous souhaitez autoriser exceptionnellement un ou des enseignants à effectuer des saisies/corrections de notes du carnet de notes pour le ou les enseignements suivants&nbsp;:<br />";
+	echo "<p style='margin-left:3em; text-indent:-3em;'>Vous souhaitez autoriser exceptionnellement un ou des enseignants à effectuer des saisies/corrections de notes du carnet de notes pour le ou les enseignements suivants&nbsp;:</p>
+	<div style='margin-left:3em; margin-bottom:1em;'>";
 	for($loop=0;$loop<count($enseignement_periode);$loop++) {
 		$tab_ens_per=explode('|', $enseignement_periode[$loop]);
 		if((isset($tab_ens_per[1]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[0]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
@@ -780,7 +781,7 @@ else {
 			echo "<span style='color:red'>Le couple id_groupe/période est invalide&nbsp;: ".$enseignement_periode[$loop]."</span><br />";
 		}
 	}
-
+	echo "</div>";
 
 	$annee = strftime("%Y");
 	$mois = strftime("%m");
