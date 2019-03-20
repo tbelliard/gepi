@@ -7479,13 +7479,13 @@ function tableau_actions_eleve($mode='complet') {
 				$retour.="<img src='../images/disabled.png' class='icone20' title=\"Pointé(e) absent le ".formate_date($lig->date_pointage, 'y')." par ".civ_nom_prenom($lig->login_pointage)."\" />";
 			}
 			else {
-				$sql="SELECT MAX(date_pointage) FROM mod_actions_inscriptions WHERE id_action='".$id_action."' AND presence!='';";
+				$sql="SELECT MAX(date_pointage) AS max_date_pointage FROM mod_actions_inscriptions WHERE id_action='".$lig->id."' AND presence!='';";
 				//echo "$sql<br />";
 				$res2=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res2)>0) {
 					$lig2=mysqli_fetch_object($res2);
-					if($lig2->date_pointage!='1970-01-01 00:00:00') {
-						$retour.="<img src='../images/disabled.png' class='icone20' title=\"Non relevé présent le ".formate_date($lig->date_pointage, 'y')."\" />";
+					if((!is_null($lig2->max_date_pointage))&&($lig2->max_date_pointage!='1970-01-01 00:00:00')) {
+						$retour.="<img src='../images/disabled.png' class='icone20' title=\"Non relevé présent le ".formate_date($lig2->max_date_pointage, 'y')."\" />";
 					}
 				}
 			}
