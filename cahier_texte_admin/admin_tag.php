@@ -148,6 +148,8 @@ if(($acces_admin)&&(isset($_POST['is_posted']))) {
 	}
 
 	$tab_tag=array();
+	$tab_tag["indice"]=array();
+	$tab_tag["id"]=array();
 	$sql="SELECT * FROM ct_tag_type ORDER BY nom_tag;";
 	$res_tag=mysqli_query($mysqli, $sql);
 	$loop=0;
