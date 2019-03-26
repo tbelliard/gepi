@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -37,8 +37,11 @@ if (!defined('FPDF_VERSION')) {
 define('LargeurPage','210');
 define('HauteurPage','297');
 
+// Le footer de avis_pdf.php vient de
+// impression/class_pdf.php
 require_once("./class_pdf.php");
 require_once ("./liste.inc.php"); //fonction qui retourne le nombre d'élèves par classe (ou groupe) pour une période donnée.
+
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.
@@ -70,7 +73,7 @@ if (!checkAccess()) {
 
 // LES OPTIONS DEBUT
 //if (!isset($_SESSION['avis_pdf_marge_haut'])) { $MargeHaut = 10 ; } else {$MargeHaut =  $_SESSION['avis_pdf_marge_haut'];}
-$MargeHaut=getPref($_SESSION['login'],'avis_pdf_marge_gauche',10);
+$MargeHaut=getPref($_SESSION['login'],'avis_pdf_marge_haut',10);
 
 //if (!isset($_SESSION['avis_pdf_marge_droite'])) { $MargeDroite = 10 ; } else {$MargeDroite =  $_SESSION['avis_pdf_marge_droite'];}
 $MargeDroite=getPref($_SESSION['login'],'avis_pdf_marge_droite',10);
@@ -80,6 +83,10 @@ $MargeGauche=getPref($_SESSION['login'],'avis_pdf_marge_gauche',10);
 
 //if (!isset($_SESSION['avis_pdf_marge_bas'])) { $MargeBas = 10 ; } else {$MargeBas =  $_SESSION['avis_pdf_marge_bas'];}
 $MargeBas=getPref($_SESSION['login'],'avis_pdf_marge_bas',10);
+if($MargeBas<10) {
+	// Avec le footer, on ne peut pas descendre en dessous
+	$MargeBas=10;
+}
 
 //if (!isset($_SESSION['avis_pdf_marge_reliure'])) { $avec_reliure = 1 ; } else {$avec_reliure =  $_SESSION['avis_pdf_marge_reliure'];}
 $avec_reliure=getPref($_SESSION['login'],'avis_pdf_marge_reliure',1);
@@ -135,8 +142,6 @@ $pdf->SetTopMargin($MargeHaut);
 $pdf->SetRightMargin($MargeDroite);
 $pdf->SetLeftMargin($MargeGauche);
 $pdf->SetAutoPageBreak(true, $MargeBas);
-
-
 
 //On recupère les variables pour l'affichage et on traite leur existance.
 // DE   IMPRIME.PHP
@@ -270,6 +275,21 @@ if(getSettingAOui('active_mod_discipline')) {
 	*/
 }
 
+// DEBUG:
+/*
+$tempdir=get_user_temp_directory();
+$f=fopen("../temp/".$tempdir."/debug_avis_pdf.txt","w+");
+fwrite($f, "DEBUG AVIS : \n");
+fwrite($f, "MargeHaut=$MargeHaut\n");
+fwrite($f, "MargeBas=$MargeBas\n");
+fclose($f);
+*/
+$mode_my_echo_debug='fichier';
+$my_echo_debug=0;
+my_echo_debug("DEBUG AVIS : \n");
+my_echo_debug("MargeHaut=$MargeHaut\n");
+my_echo_debug("MargeBas=$MargeBas\n");
+
 // Cette boucle crée les différentes pages du PDF (page = un entête et des lignes par élèves.
 for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 
@@ -296,7 +316,6 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$id_classe=$id_liste_classes[$i_pdf];
 		//$id_classe=$donnees_eleves[0]['id_classe'];
 	}
-
 
 	//Info pour le debug.
 	$affiche='n';
@@ -351,9 +370,81 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		fwrite($f, "\$h_cell=$h_cell\n");
 		fclose($f);
 		*/
+		my_echo_debug("\$hauteur_disponible=$hauteur_disponible\n");
+		my_echo_debug("\$nb_ligne_demande=$nb_ligne_demande\n");
+		my_echo_debug("\$h_cell=$h_cell\n");
 	}
 
 	$pdf->AddPage("P");
+
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	$debug='n';
+	if($debug=='y') {
+		//=====================================
+		// NE PAS SUPPRIMER CETTE SECTION... c'est pour le debug
+		// Règles en rouge:
+		// Selon ce que l'on souhaite débugger, décommenter une des deux règles
+		$pdf->SetDrawColor(255,0,0);
+		//=====================================
+		// Règle 1: horizontale
+		$tmp_marge_gauche=5;
+		$tmp_marge_haut=5;
+		$x=$tmp_marge_gauche;
+		$y=$tmp_marge_haut;
+
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(200,1,'','T',0,'C',0);
+
+		for($loop=0;$loop<19;$loop++) {
+			$x=$tmp_marge_gauche+$loop*10;
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(5,20,''.$loop,'',0,'L',0);
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(10,270,'','L',0,'C',0);
+
+			for($loop2=0;$loop2<10;$loop2++) {
+				$pdf->SetXY($x+$loop2,$y);
+				$pdf->Cell(10,5,'','L',0,'C',0);
+			}
+		}
+		//=====================================
+		// Règle 2: verticale
+		$tmp_marge_gauche=1;
+		$tmp_marge_haut=0;
+		$x=$tmp_marge_gauche;
+		$y=$tmp_marge_haut;
+
+		$pdf->SetFont('DejaVu','',5);
+
+		// Ligne verticale
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(1,280,'','L',0,'C',0);
+
+		for($loop=1;$loop<29;$loop++) {
+			// Repère numérique en cm
+			$y=$tmp_marge_haut+$loop*10-3;
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(10,5,''.$loop,'',0,'L',0);
+
+			// Ligne tous les centimètres
+			$y=$tmp_marge_haut+$loop*10;
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(200,10,'','T',0,'C',0);
+
+			// Les millimètres
+			for($loop2=0;$loop2<10;$loop2++) {
+				$pdf->SetXY($x,$y-10+$loop2);
+				$pdf->Cell(2,10,'','T',0,'C',0);
+			}
+		}
+		//=====================================
+		// Retour au noir pour les tracés qui suivent:
+		$pdf->SetDrawColor(0,0,0);
+		//=====================================
+	}
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 	// Couleur des traits
 	$pdf->SetDrawColor(0,0,0);
 
@@ -523,6 +614,18 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	while($nb_eleves_i < $nb_eleves) {
 		if(isset($donnees_eleves[$nb_eleves_i]['login'])) {
 			$login_elv = $donnees_eleves[$nb_eleves_i]['login'];
+
+			/*
+			$f=fopen("../temp/".$tempdir."/debug_avis_pdf.txt","a+");
+			fwrite($f, "===========================================\n");
+			fwrite($f, "Élève n°".$nb_eleves_i." : ".$donnees_eleves[$nb_eleves_i]['login']."\n");
+			fclose($f);
+			*/
+			$mode_my_echo_debug='fichier';
+			$my_echo_debug=0;
+			my_echo_debug("===========================================\n");
+			my_echo_debug("Élève n°".$nb_eleves_i." : ".$donnees_eleves[$nb_eleves_i]['login']." (y_tmp=$y_tmp) (\$pdf->getY()=".$pdf->getY().")\n");
+
 			$sql_current_eleve_avis = "SELECT avis,id_mention FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='".$donnees_eleves[$nb_eleves_i]['id_periode']."')";
 			//echo "$sql_current_eleve_avis<br />\n";
 			$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], $sql_current_eleve_avis);
@@ -543,30 +646,118 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {
 			//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$h_cell-5) {
 			//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-5) {
-			if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-2) {
+			//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-2) {
+
+			my_echo_debug("\$y_top_tableau+(\$compteur_eleves_page+1)*\$h_cell = $y_top_tableau+($compteur_eleves_page+1)*$h_cell = ".($y_top_tableau+($compteur_eleves_page+1)*$h_cell)."\n");
+			if(($y_top_tableau+($compteur_eleves_page+1)*$h_cell)>(297-$MargeBas)) {
+			//if(($y_top_tableau+($compteur_eleves_page+1)*$h_cell)>287) {
 				/*
-				$f=fopen("/tmp/debug_avis_pdf.txt","a+");
+				$f=fopen("../temp/".$tempdir."/debug_avis_pdf.txt","a+");
+				fwrite($f, "\n");
 				fwrite($f, "\$y_tmp+\$h_cell=$y_tmp+$h_cell=".(strtr($y_tmp,",",".")+strtr($h_cell,",","."))."\n");
 				fwrite($f, "297-\$MargeBas-\$MargeHaut-5=".(297-$MargeBas-$MargeHaut-5)."\n");
 				fclose($f);
 				*/
+				my_echo_debug("\n");
+				my_echo_debug("\$y_top_tableau+(\$compteur_eleves_page+1)*\$h_cell = $y_top_tableau+($compteur_eleves_page+1)*$h_cell = ".($y_top_tableau+($compteur_eleves_page+1)*$h_cell).">297-$MargeBas soit ".(297-$MargeBas)."\n");
+				my_echo_debug("\$y_tmp+\$h_cell=$y_tmp+$h_cell=".(strtr($y_tmp,",",".")+strtr($h_cell,",","."))."\n");
+				my_echo_debug("297-\$MargeBas-\$MargeHaut-5=297-$MargeBas-$MargeHaut-5=".(297-$MargeBas-$MargeHaut-5)."\n");
 
 				// Haut du tableau pour la deuxieme, troisieme,... page de la classe
 				// Pour la deuxieme, troisieme,... page d'une classe, on n'a pas d'entete:
 				$y_top_tableau=$MargeHaut;
 
 				$pdf->AddPage("P");
-				$pdf->Setxy($X_tableau,$y_top_tableau);
+				$pdf->SetXY($X_tableau,$y_top_tableau);
 				$compteur_eleves_page=0;
+
+				//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				if($debug=='y') {
+					//=====================================
+					// NE PAS SUPPRIMER CETTE SECTION... c'est pour le debug
+					// Règles en rouge:
+					// Selon ce que l'on souhaite débugger, décommenter une des deux règles
+					$pdf->SetDrawColor(255,0,0);
+					//=====================================
+					// Règle 1: horizontale
+					$tmp_marge_gauche=5;
+					$tmp_marge_haut=5;
+					$x=$tmp_marge_gauche;
+					$y=$tmp_marge_haut;
+
+					$pdf->SetXY($x,$y);
+					$pdf->Cell(200,1,'','T',0,'C',0);
+
+					for($loop=0;$loop<19;$loop++) {
+						$x=$tmp_marge_gauche+$loop*10;
+						$pdf->SetXY($x,$y);
+						$pdf->Cell(5,20,''.$loop,'',0,'L',0);
+						$pdf->SetXY($x,$y);
+						$pdf->Cell(10,270,'','L',0,'C',0);
+
+						for($loop2=0;$loop2<10;$loop2++) {
+							$pdf->SetXY($x+$loop2,$y);
+							$pdf->Cell(10,5,'','L',0,'C',0);
+						}
+					}
+					//=====================================
+					// Règle 2: verticale
+					$tmp_marge_gauche=1;
+					$tmp_marge_haut=0;
+					$x=$tmp_marge_gauche;
+					$y=$tmp_marge_haut;
+
+					$pdf->SetFont('DejaVu','',5);
+
+					// Ligne verticale
+					$pdf->SetXY($x,$y);
+					$pdf->Cell(1,280,'','L',0,'C',0);
+
+					for($loop=1;$loop<29;$loop++) {
+						// Repère numérique en cm
+						$y=$tmp_marge_haut+$loop*10-3;
+						$pdf->SetXY($x,$y);
+						$pdf->Cell(10,5,''.$loop,'',0,'L',0);
+
+						// Ligne tous les centimètres
+						$y=$tmp_marge_haut+$loop*10;
+						$pdf->SetXY($x,$y);
+						$pdf->Cell(200,10,'','T',0,'C',0);
+
+						// Les millimètres
+						for($loop2=0;$loop2<10;$loop2++) {
+							$pdf->SetXY($x,$y-10+$loop2);
+							$pdf->Cell(2,10,'','T',0,'C',0);
+						}
+					}
+					//=====================================
+					// Retour au noir pour les tracés qui suivent:
+					$pdf->SetDrawColor(0,0,0);
+					//=====================================
+				}
+				//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 			}
 
 			// Ordonnee courante pour l'eleve n°$compteur_eleves_page de la page:
 			$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
+			/*
+			$f=fopen("../temp/".$tempdir."/debug_avis_pdf.txt","a+");
+			fwrite($f, "\$y_tmp = ".$y_top_tableau."+".$compteur_eleves_page."*".$h_cell." = ".$y_tmp."\n");
+			fclose($f);
+			*/
+			my_echo_debug("\$y_tmp = ".$y_top_tableau."+".$compteur_eleves_page."*".$h_cell." = ".$y_tmp."\n");
 
 			// Colonne Nom_Prenom
 			$pdf->SetXY($X_nom_prenom,$y_tmp);
-			$pdf->SetFont('DejaVu','B',9);		
+			$pdf->SetFont('DejaVu','B',9);
 			$texte = my_strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".casse_mot($donnees_eleves[$nb_eleves_i]['prenom'],'majf2');
+			/*
+			$f=fopen("../temp/".$tempdir."/debug_avis_pdf.txt","a+");
+			fwrite($f, $y_tmp.":".$texte."\n");
+			fclose($f);
+			*/
+			my_echo_debug($y_tmp.":".$texte."\n");
 
 			$taille_max_police=9;
 			$taille_min_police=ceil($taille_max_police/3);
