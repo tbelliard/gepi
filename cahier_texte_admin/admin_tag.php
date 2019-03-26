@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -171,23 +171,23 @@ if(isset($_POST['is_posted'])) {
 	$cpt=count($tab_tag["indice"]);
 
 	$cpt_suppr=0;
-	for($loop=0;$loop<=$cpt;$loop++) {
-		if(isset($_POST["suppr_tag_".$loop])) {
-			$sql="SELECT 1=1 FROM ct_tag WHERE id_tag='".$_POST["suppr_tag_".$loop]."';";
+	foreach($tab_tag["id"] as $id_tag => $current_tag) {
+		if(isset($_POST["suppr_tag_".$id_tag])) {
+			$sql="SELECT 1=1 FROM ct_tag WHERE id_tag='".$_POST["suppr_tag_".$id_tag]."';";
 			//echo "$sql<br />";
 			$test=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($test)>0) {
-				$msg.="Suppression impossible du tag '".$tab_tag["id"][$_POST["suppr_tag_".$loop]]['nom_tag']."' associé à ".mysqli_num_rows($test)." notices.<br />";
+				$msg.="Suppression impossible du tag '".$tab_tag["id"][$_POST["suppr_tag_".$id_tag]]['nom_tag']."' associé à ".mysqli_num_rows($test)." notices.<br />";
 			}
 			else {
-				$sql="DELETE FROM ct_tag_type WHERE id='".$_POST["suppr_tag_".$loop]."';";
+				$sql="DELETE FROM ct_tag_type WHERE id='".$_POST["suppr_tag_".$id_tag]."';";
 				//echo "$sql<br />";
 				$del=mysqli_query($mysqli, $sql);
 				if(!$del) {
-					$msg.="Erreur lors de la suppression du tag '".$tab_tag["id"][$_POST["suppr_tag_".$loop]]['nom_tag']."'.<br />";
+					$msg.="Erreur lors de la suppression du tag '".$tab_tag["id"][$_POST["suppr_tag_".$id_tag]]['nom_tag']."'.<br />";
 				}
 				else {
-					$msg.="Suppression du tag '".$tab_tag["id"][$_POST["suppr_tag_".$loop]]['nom_tag']."' effectuée.<br />";
+					$msg.="Suppression du tag '".$tab_tag["id"][$_POST["suppr_tag_".$id_tag]]['nom_tag']."' effectuée.<br />";
 					$cpt_suppr++;
 				}
 			}
