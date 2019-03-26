@@ -235,8 +235,7 @@ if(!isset($id_incident)) {
 			echo "<p>Aucun incident n'est encore déclaré";
 			if(($date_incident!="")||
 			($heure_incident!="")||
-			($nature_incident!="")||
-			($protagoniste_incident!="")) {echo " avec les critères choisis";}
+			($nature_incident!="")) {echo " avec les critères choisis";}
 			echo ".</p>\n";
 		}
 		else {
@@ -245,16 +244,14 @@ if(!isset($id_incident)) {
 				echo "<p>Aucun incident n'est encore déclaré";
 				if(($date_incident!="")||
 				($heure_incident!="")||
-				($nature_incident!="")||
-				($protagoniste_incident!="")) {echo " avec les critères choisis";}
+				($nature_incident!="")) {echo " avec les critères choisis";}
 				echo ".</p>\n";
 			}
 			else {
 				echo "<p>Aucun incident (<i>non clos</i>) n'est déclaré";
 				if(($date_incident!="")||
 				($heure_incident!="")||
-				($nature_incident!="")||
-				($protagoniste_incident!="")) {echo " avec les critères choisis";}
+				($nature_incident!="")) {echo " avec les critères choisis";}
 				echo ".</p>\n";
 
 				echo "<p><a href='".$_SERVER['PHP_SELF']."?incidents_clos=y$chaine_criteres'>Afficher les incidents clos avec les mêmes critères</a>.</p>\n";
