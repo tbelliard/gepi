@@ -3324,7 +3324,7 @@ fclose($f);
 									if (($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=12) and ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']<15)) { $place_eleve=1;}
 									if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=15) { $place_eleve=0;}
 									*/
-									if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['place_eleve'])) {
+									if((isset($tab_bull['eleve'][$i]['aid_b'][$m]['place_eleve']))&&(is_numeric($tab_bull['eleve'][$i]['aid_b'][$m]['place_eleve']))) {
 										//$place_eleve=$tab_bull['eleve'][$i]['aid_b'][$m]['place_eleve'];
 										$place_eleve=$tab_bull['eleve'][$i]['aid_b'][$m]['place_eleve']-1;
 									}
@@ -5058,7 +5058,7 @@ fclose($f);
 									if (($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=12) and ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']<15)) { $place_eleve=1;}
 									if ($matiere[$ident_eleve_aff][$id_periode][$m]['moy_eleve']>=15) { $place_eleve=0;}
 									*/
-									if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['place_eleve'])) {
+									if((isset($tab_bull['eleve'][$i]['aid_e'][$m]['place_eleve']))&&(is_numeric($tab_bull['eleve'][$i]['aid_e'][$m]['place_eleve']))) {
 										//$place_eleve=$tab_bull['eleve'][$i]['aid_e'][$m]['place_eleve'];
 										$place_eleve=$tab_bull['eleve'][$i]['aid_e'][$m]['place_eleve']-1;
 									}
