@@ -741,7 +741,7 @@ if(isset($_GET['export_pdf3'])) {
 
 		$sc_interligne=1.3;
 
-		$h_cell=10;
+		$h_cell=8;
 		$hauteur_max_font=10;
 		$hauteur_min_font=4;
 		$bordure='LRBT';
@@ -758,9 +758,9 @@ if(isset($_GET['export_pdf3'])) {
 		$Espace_dx=5;
 		$Espace_dy=5;
 		$largeur_tab=floor(($largeur_page-$MargeDroite-$MargeGauche-1*$Espace_dx)/2);
-		$h_cell=8;
 
-		$hauteur_par_eleve=(6+count($tab_eval))*$h_cell;
+		//$hauteur_par_eleve=(6+count($tab_eval))*$h_cell;
+		$hauteur_par_eleve=(6+count($tab_eval))*$h_cell+$Espace_dy;
 
 		$x2=$x1+$largeur_tab+$Espace_dx;
 
@@ -770,11 +770,83 @@ if(isset($_GET['export_pdf3'])) {
 
 		$num_page++;
 		$pdf->AddPage("P");
+
+
+		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		$debug='n';
+		if($debug=='y') {
+			//=====================================
+			// NE PAS SUPPRIMER CETTE SECTION... c'est pour le debug
+			// DEBUG 20190326
+			// Règles en rouge:
+			// Selon ce que l'on souhaite débugger, décommenter une des deux règles
+			$pdf->SetDrawColor(255,0,0);
+			//=====================================
+			// Règle 1: horizontale
+			$tmp_marge_gauche=5;
+			$tmp_marge_haut=5;
+			$x=$tmp_marge_gauche;
+			$y=$tmp_marge_haut;
+
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(200,1,'','T',0,'C',0);
+
+			for($loop=0;$loop<19;$loop++) {
+				$x=$tmp_marge_gauche+$loop*10;
+				$pdf->SetXY($x,$y);
+				$pdf->Cell(5,20,''.$loop,'',0,'L',0);
+				$pdf->SetXY($x,$y);
+				$pdf->Cell(10,270,'','L',0,'C',0);
+
+				for($loop2=0;$loop2<10;$loop2++) {
+					$pdf->SetXY($x+$loop2,$y);
+					$pdf->Cell(10,5,'','L',0,'C',0);
+				}
+			}
+			//=====================================
+			// Règle 2: verticale
+			$tmp_marge_gauche=1;
+			$tmp_marge_haut=0;
+			$x=$tmp_marge_gauche;
+			$y=$tmp_marge_haut;
+
+			$pdf->SetFont('DejaVu','',5);
+
+			// Ligne verticale
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(1,270,'','L',0,'C',0);
+
+			for($loop=1;$loop<27;$loop++) {
+				// Repère numérique en cm
+				$y=$tmp_marge_haut+$loop*10-3;
+				$pdf->SetXY($x,$y);
+				$pdf->Cell(10,5,''.$loop,'',0,'L',0);
+
+				// Ligne tous les centimètres
+				$y=$tmp_marge_haut+$loop*10;
+				$pdf->SetXY($x,$y);
+				$pdf->Cell(200,10,'','T',0,'C',0);
+
+				// Les millimètres
+				for($loop2=0;$loop2<10;$loop2++) {
+					$pdf->SetXY($x,$y-10+$loop2);
+					$pdf->Cell(2,10,'','T',0,'C',0);
+				}
+			}
+			//=====================================
+			// Retour au noir pour les tracés qui suivent:
+			$pdf->SetDrawColor(0,0,0);
+			//=====================================
+		}
+		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 		$pdf->EnteteCC();
 		$pdf->SetXY($x1,$y2);
 
 		// 20181124
-		$nb_eleves_par_colonne=floor(($hauteur_page-$MargeBas-$y2)/$hauteur_par_eleve);
+		//$nb_eleves_par_colonne=floor(($hauteur_page-$MargeBas-$y2)/$hauteur_par_eleve);
+		$nb_eleves_par_colonne=floor(($hauteur_page-$MargeBas-$y2-$h_cell)/$hauteur_par_eleve);
 		$nb_eleves_par_page=2*$nb_eleves_par_colonne;
 		$nb_pages_pleines=floor(count($tab_ele)/$nb_eleves_par_page);
 		$nb_eleves_sur_derniere_page=count($tab_ele)-$nb_pages_pleines*$nb_eleves_par_page;
@@ -799,26 +871,34 @@ if(isset($_GET['export_pdf3'])) {
 			}
 		}
 
-		/*
-		echo "\$nb_eleves_par_colonne=$nb_eleves_par_colonne<br />
-		\$nb_eleves_par_page=$nb_eleves_par_page<br />
-		\$nb_pages_pleines=$nb_pages_pleines<br />
-		\$nb_eleves_sur_derniere_page=$nb_eleves_sur_derniere_page<br />";
-		echo "<div style='float:left; width:15em;'>
-		<pre>";
-		print_r($tab_ele_a);
-		echo "</pre>
-		</div>";
-		echo "<div style='float:left; width:15em;'>
-		<pre>";
-		//print_r($tab_ele_r);
-		for($i=0;$i<count($tab_ele_r);$i++) {
-			echo "[$i] => ".$tab_ele_r[$i]."<br />";
+		//+++++++++++++++++++++++++++++++
+		// DEBUG 20190326
+		if($debug=='y') {
+			echo "\$y2=$y2<br />
+			\$hauteur_par_eleve=$hauteur_par_eleve<br />
+			\$nb_eleves_par_colonne=floor(($hauteur_page-$MargeBas-$y2)/$hauteur_par_eleve);<br />
+			\$nb_eleves_par_colonne=$nb_eleves_par_colonne<br />
+			\$nb_eleves_par_page=$nb_eleves_par_page<br />
+			\$nb_pages_pleines=$nb_pages_pleines<br />
+			\$nb_eleves_sur_derniere_page=$nb_eleves_sur_derniere_page<br />
+			Bas théorique: \$y2 + \$nb_eleves_par_colonne*(\$hauteur_par_eleve+\$Espace_dy) = $y2 + $nb_eleves_par_colonne*($hauteur_par_eleve+$Espace_dy) = ".$y2." + ".($nb_eleves_par_colonne*($hauteur_par_eleve+$Espace_dy))." = ".($y2+$nb_eleves_par_colonne*($hauteur_par_eleve+$Espace_dy))."<br />
+			<br />";
+			echo "<div style='float:left; width:15em;'>
+			<pre>";
+			print_r($tab_ele_a);
+			echo "</pre>
+			</div>";
+			echo "<div style='float:left; width:15em;'>
+			<pre>";
+			//print_r($tab_ele_r);
+			for($i=0;$i<count($tab_ele_r);$i++) {
+				echo "[$i] => ".$tab_ele_r[$i]."<br />";
+			}
+			echo "</pre>
+			</div>";
+			//die();
 		}
-		echo "</pre>
-		</div>";
-		die();
-		*/
+		//+++++++++++++++++++++++++++++++
 
 		for($k=0;$k<count($tab_ele_r);$k++) {
 			$ele_login=$tab_ele_r[$k];
@@ -830,8 +910,20 @@ if(isset($_GET['export_pdf3'])) {
 			// Nombre de vraies notes (pas absent, disp, ou -)
 			$nb_note=0;
 
+			if($debug=='y') {
+				echo $ele_login.": ".$pdf->GetY()."<br />";
+			}
+
 			//if($pdf->GetY()+$h_cell+$hauteur_par_eleve>$hauteur_page-$MargeBas) {
-			if($pdf->GetY()+$h_cell+$hauteur_par_eleve+$Espace_dx>$hauteur_page-$MargeBas) {
+			if($pdf->GetY()+$h_cell+$hauteur_par_eleve+$Espace_dy>$hauteur_page-$MargeBas) {
+			//if($pdf->GetY()+$hauteur_par_eleve+$Espace_dy>$hauteur_page-$MargeBas) {
+				// DEBUG 20190326
+				if($debug=='y') {
+					echo $ele_login."<br />";
+					//echo $pdf->GetY()."+$h_cell+$hauteur_par_eleve+$Espace_dy>$hauteur_page-$MargeBas<br />";
+					echo $pdf->GetY()."+$h_cell+$hauteur_par_eleve>$hauteur_page-$MargeBas<br />";
+					//echo $pdf->GetY()."+$hauteur_par_eleve+$Espace_dy>$hauteur_page-$MargeBas<br />";
+				}
 				$num_page++;
 				$pdf->AddPage("P");
 				$pdf->EnteteCC();
@@ -978,6 +1070,11 @@ if(isset($_GET['export_pdf3'])) {
 			}
 
 			$compteur++;
+		}
+
+		if($debug=='y') {
+			// DEBUG 20190326
+			die();
 		}
 
 		$pref_output_mode_pdf=get_output_mode_pdf();
@@ -1307,10 +1404,10 @@ chargement = false;
 <?php
 echo "<p id='LiensSousBandeau' class='bold'>\n";
 echo "<a href=\"index_cc.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
-echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_csv=y'>CSV</a>";
-echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_pdf=y' title=\"PDF classique avec le récapitulatif par élève à découper.\">PDF</a>";
-echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_pdf3=y' title=\"PDF trié pour une découpe au massicot avant agrafage des évaluations avec le tableau récapitulatif.\">PDF (tri)</a>";
-echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_pdf2=y' title=\"Listing des élèves sous forme de tableau avec un élève par ligne et une colonne par évaluation.\">PDF (liste)</a>";
+echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_csv=y' target='_blank'>CSV</a>";
+echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_pdf=y' title=\"PDF classique avec le récapitulatif par élève à découper.\" target='_blank'>PDF</a>";
+echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_pdf3=y' title=\"PDF trié pour une découpe au massicot avant agrafage des évaluations avec le tableau récapitulatif.\" target='_blank'>PDF (tri)</a>";
+echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_pdf2=y' title=\"Listing des élèves sous forme de tableau avec un élève par ligne et une colonne par évaluation.\" target='_blank'>PDF (liste)</a>";
 //echo "|";
 echo "</p>\n";
 
