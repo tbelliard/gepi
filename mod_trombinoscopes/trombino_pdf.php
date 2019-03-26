@@ -60,7 +60,6 @@ if (!checkAccess()) {
 	die();
 }
 
-
 if (empty($_GET['page']) and empty($_POST['page'])) { $page = ''; }
 	else { if (isset($_GET['page'])) {$page=$_GET['page'];} if (isset($_POST['page'])) {$page=$_POST['page'];} }
 if (empty($_GET['id'])) { $id = ''; } else { $id=$_GET['id']; }
@@ -90,7 +89,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	// 20181102
 	if ($id_action!='') { $action_affiche = 'action'; }
-	if ( $action_affiche === 'action' ) { $requete_qui = 'SELECT mac.nom AS nom_categorie, maa.nom AS nom_action, date_action FROM '.$prefix_base.'mod_actions_action maa, '.$prefix_base.'mod_actions_categories mac WHERE maa.id_categorie=mac.id AND maa.id="'.$id_action.'";'; }
 
 	// c'est une classe
 	if ( $classe != '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'classe'; }
@@ -113,6 +111,8 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	//if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'"'; }
 	if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'" AND etat="actif";'; }
+
+	if ( $action_affiche === 'action' ) { $requete_qui = 'SELECT mac.nom AS nom_categorie, maa.nom AS nom_action, date_action FROM '.$prefix_base.'mod_actions_action maa, '.$prefix_base.'mod_actions_categories mac WHERE maa.id_categorie=mac.id AND maa.id="'.$id_action.'";'; }
 
 	$execute_qui = mysqli_query($GLOBALS["mysqli"], $requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
