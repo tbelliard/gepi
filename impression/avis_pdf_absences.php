@@ -86,12 +86,17 @@ if (!checkAccess()) {
 //debug_var();
 
 // LES OPTIONS DEBUT
-$MargeHaut=getPref($_SESSION['login'],'avis_pdf_marge_gauche',10);
+$MargeHaut=getPref($_SESSION['login'],'avis_pdf_marge_haut',10);
 $MargeDroite=getPref($_SESSION['login'],'avis_pdf_marge_droite',10);
 $MargeGauche=getPref($_SESSION['login'],'avis_pdf_marge_gauche',10);
 $MargeBas=getPref($_SESSION['login'],'avis_pdf_marge_bas',10);
 $avec_reliure=getPref($_SESSION['login'],'avis_pdf_marge_reliure',1);
 $avec_emplacement_trous=getPref($_SESSION['login'],'avis_pdf_avec_emplacement_trous',1);
+
+if($MargeBas<10) {
+	// Avec le footer, on ne peut pas descendre en dessous
+	$MargeBas=10;
+}
 
 //Gestion de la marge à gauche pour une reliure éventuelle ou des feuilles perforées.
 if ($avec_reliure==1) {
@@ -319,6 +324,10 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		print_r($donnees_eleves);
 		echo "</pre>";
 	}
+
+	// DEBUG
+	//$option_tout_une_page=0;
+	//$h_cell=35;
 
 	// CALCUL de VARIABLES
 	// Calcul de la hauteur de la ligne dans le cas de l'option tout sur une ligne
@@ -610,15 +619,15 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], $sql_current_eleve_avis);
 			//$current_eleve_avis = @old_mysql_result($current_eleve_avis_query, 0, "appreciation");
 			$current_eleve_avis="";
-			$current_eleve_nb_absences="";
-			$current_eleve_non_justifie="";
-			$current_eleve_nb_retards="";
+			$current_eleve_nb_absences=0;
+			$current_eleve_non_justifie=0;
+			$current_eleve_nb_retards=0;
 			if(mysqli_num_rows($current_eleve_avis_query)>0) {
 				$lig_ele=mysqli_fetch_object($current_eleve_avis_query);
 				$current_eleve_avis=$lig_ele->appreciation;
-				$current_eleve_nb_absences=$lig_ele->nb_absences;
-				$current_eleve_nb_non_justifie=$lig_ele->non_justifie;
-				$current_eleve_nb_retards=$lig_ele->nb_retards;
+				$current_eleve_nb_absences=is_numeric($lig_ele->nb_absences) ? $lig_ele->nb_absences : 0;
+				$current_eleve_nb_non_justifie=is_numeric($lig_ele->non_justifie) ? $lig_ele->non_justifie : 0;
+				$current_eleve_nb_retards=is_numeric($lig_ele->nb_retards) ? $lig_ele->nb_retards : 0;
 
 				$total_nb_absences+=$current_eleve_nb_absences;
 				$total_nb_non_justifie+=$current_eleve_nb_non_justifie;
@@ -656,7 +665,8 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {
 			//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$h_cell-5) {
 			//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-5) {
-			if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-2) {
+			//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-2) {
+			if(($y_top_tableau+($compteur_eleves_page+2)*$h_cell)>(297-$MargeBas)) {
 				/*
 				$f=fopen("/tmp/debug_avis_pdf.txt","a+");
 				fwrite($f, "\$y_tmp+\$h_cell=$y_tmp+$h_cell=".(strtr($y_tmp,",",".")+strtr($h_cell,",","."))."\n");
@@ -669,7 +679,78 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 				$y_top_tableau=$MargeHaut;
 
 				$pdf->AddPage("P");
+				$y_top_tableau=$MargeHaut;
 				$pdf->Setxy($X_tableau,$y_top_tableau);
+
+				//==========================================
+				//==========================================
+				$y_tmp=$y_top_tableau;
+
+				// Ligne de titre
+				$pdf->Setxy($X_tableau,$y_top_tableau);
+				$pdf->SetFont('DejaVu','B',9);
+				$texte = "Nom prénom";
+
+				$taille_max_police=9;
+				$taille_min_police=ceil($taille_max_police/3);
+				$largeur_dispo=$l_cell_nom;
+				//$info_debug=$y_tmp;
+				$info_debug="";
+				cell_ajustee("<b>".$texte."</b>".$info_debug,$X_nom_prenom,$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+				//================================
+				// Colonne Avis abs:
+				$pdf->Setxy($X_avis_conseil,$y_top_tableau);
+
+				$pdf->SetFont('DejaVu','',7.5);
+
+				$hauteur_caractere_appreciation=9;
+				$taille_max_police=$hauteur_caractere_appreciation;
+				$taille_min_police=ceil($taille_max_police/3);
+				$largeur_dispo=$l_cell_avis;
+				//cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+				cell_ajustee("<b>Appréciation</b>",$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+				//================================
+				if($avec_col_abs=="y") {
+					$pdf->Setxy($X_col_abs,$y_top_tableau);
+
+					$pdf->SetFont('DejaVu','',7.5);
+
+					$hauteur_caractere_appreciation=9;
+					$taille_max_police=$hauteur_caractere_appreciation;
+					$taille_min_police=ceil($taille_max_police/3);
+					$largeur_dispo=$l_cell_abs;
+					//cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+					cell_ajustee("<b>NbAbs</b>",$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+				}
+
+				if($avec_col_nj=="y") {
+					$pdf->Setxy($X_col_nj,$y_top_tableau);
+
+					$pdf->SetFont('DejaVu','',7.5);
+
+					$hauteur_caractere_appreciation=9;
+					$taille_max_police=$hauteur_caractere_appreciation;
+					$taille_min_police=ceil($taille_max_police/3);
+					$largeur_dispo=$l_cell_abs;
+					//cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+					cell_ajustee("<b>NbNJ</b>",$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+				}
+
+				if($avec_col_ret=="y") {
+					$pdf->Setxy($X_col_ret,$y_top_tableau);
+
+					$pdf->SetFont('DejaVu','',7.5);
+
+					$hauteur_caractere_appreciation=9;
+					$taille_max_police=$hauteur_caractere_appreciation;
+					$taille_min_police=ceil($taille_max_police/3);
+					$largeur_dispo=$l_cell_abs;
+					//cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+					cell_ajustee("<b>NbRet</b>",$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+				}
+				//==========================================
+				//==========================================
+
 				$compteur_eleves_page=0;
 			}
 
