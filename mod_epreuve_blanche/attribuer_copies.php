@@ -1003,6 +1003,7 @@ elseif($tri=='salle') {
 	}
 
 	$sql="SELECT DISTINCT es.* FROM eb_salles es WHERE id_epreuve='$id_epreuve' ORDER BY es.salle;";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucune salle n'est encore associée à l'épreuve.</p>\n";
@@ -1010,9 +1011,16 @@ elseif($tri=='salle') {
 		die();
 	}
 
+	// 20190329
+	echo "<div id='div_debug' style='float:right;width:20em;'></div>";
+
 	if($etat!='clos') {
 		echo "<p style='margin-top:1em;margin-bottom:1em;'><a href='javascript:repartir_automatiquement_entre_les_profs(1)'>Répartir les copies entre les ".count($login_prof)." professeur(s) en nombre égal pour tous</a>.<br />
-<a href='javascript:repartir_automatiquement_entre_les_profs(2)'>Attribuer à chaque professeur un nombre de copies égal au nombre d'élèves qu'il a en classe</a>.</p>";
+<a href='javascript:repartir_automatiquement_entre_les_profs(4)'>Répartir les copies entre les ".count($login_prof)." professeur(s) en nombre égal pour tous, sans modifier les copies déjà attribuées manuellement</a>.<br />
+
+<a href='javascript:repartir_automatiquement_entre_les_profs(2)'>Attribuer à chaque professeur un nombre de copies égal au nombre d'élèves qu'il a en classe</a>.<br />
+<a href='javascript:repartir_automatiquement_entre_les_profs(3)'>Attribuer à chaque professeur un nombre de copies égal au nombre d'élèves qu'il a en classe, sans modifier les copies déjà attribuées manuellement</a>.<br />
+</p>";
 	}
 
 	$tab_cpt_eleve=array();
@@ -1030,11 +1038,15 @@ elseif($tri=='salle') {
 		$tab_salle[]=$lig->salle;
 		$tab_id_salle[]=$lig->id;
 
+		$sql="select * from eb_copies WHERE id_epreuve='".$id_epreuve."' AND id_salle='".$lig->id."';";
+		$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+		$effectif_salle_courante=mysqli_num_rows($res_eff);
+
 		if($etat!='clos') {
 
 			echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves$cpt' value='Valider' /></p>\n";
 		}
-		echo "<p>Salle <b>$lig->salle</b>&nbsp;:</p>\n";
+		echo "<p>Salle <b>$lig->salle</b>&nbsp;: <span title=\"Effectif dans la salle : ".$effectif_salle_courante."\">(".$effectif_salle_courante." élève(s))</span></p>\n";
 		echo "<blockquote>\n";
 
 		//echo "\$cpt=$cpt<br />";
@@ -1364,6 +1376,7 @@ elseif($tri=='salle') {
 		//echo "\$chaine_cpt0_eleves=$chaine_cpt0_eleves<br />";
 		//echo "\$chaine_cpt1_eleves=$chaine_cpt1_eleves<br />";
 	
+
 		echo "<script type='text/javascript'>
 
 function calcule_effectif() {
@@ -1419,7 +1432,7 @@ function repartir_automatiquement_entre_les_profs(mode) {
 			}
 		}
 	}
-	else {
+	else if(mode==2) {
 		var tab_eff_prof=new Array($js_chaine_effectif_habituel_prof);
 
 		indice_prof=0;
@@ -1431,6 +1444,82 @@ function repartir_automatiquement_entre_les_profs(mode) {
 			}
 			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
 				document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+			}
+		}
+
+	}
+	else if(mode==3) {
+		var tab_eff_prof=new Array($js_chaine_effectif_habituel_prof);
+
+		var chaine_debug='';
+		var tab_deja=new Array();
+		for(indice_prof=0;indice_prof<tab_eff_prof.length;indice_prof++) {
+			tab_deja[indice_prof]=0;
+			for(j=0;j<$cpt;j++) {
+				if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+					if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked==true) {
+						tab_deja[indice_prof]++;
+					}
+				}
+			}
+			chaine_debug+=' tab_eff_prof['+indice_prof+']='+tab_eff_prof[indice_prof];
+			chaine_debug+=' tab_deja['+indice_prof+']='+tab_deja[indice_prof];
+		}
+		//alert(chaine_debug);
+		//document.getElementById('div_debug').innerHTML=chaine_debug;
+
+		indice_prof=0;
+		limite=tab_eff_prof[indice_prof];
+		for(j=0;j<$cpt;j++) {
+			if(tab_deja[indice_prof]>=limite) {
+				indice_prof++;
+				limite=tab_eff_prof[indice_prof];
+			}
+			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+				if(document.getElementById('id_prof_ele_'+tab_eff_prof.length+'_'+j).checked==true) {
+					document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+					tab_deja[indice_prof]++;
+
+					//document.getElementById('div_debug').innerHTML+='<br />'+j+'-&gt; prof'+indice_prof+' ('+tab_deja[indice_prof]+')';
+				}
+			}
+		}
+
+	}
+	else {
+		var effectif_par_prof=Math.ceil($cpt/".count($login_prof).");
+		var tab_eff_prof=new Array($js_chaine_effectif_habituel_prof);
+
+		var chaine_debug='';
+		var tab_deja=new Array();
+		for(indice_prof=0;indice_prof<tab_eff_prof.length;indice_prof++) {
+			tab_deja[indice_prof]=0;
+			for(j=0;j<$cpt;j++) {
+				if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+					if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked==true) {
+						tab_deja[indice_prof]++;
+					}
+				}
+			}
+			chaine_debug+=' tab_eff_prof['+indice_prof+']='+tab_eff_prof[indice_prof];
+			chaine_debug+=' tab_deja['+indice_prof+']='+tab_deja[indice_prof];
+		}
+		//alert(chaine_debug);
+		//document.getElementById('div_debug').innerHTML=chaine_debug;
+
+		indice_prof=0;
+		limite=effectif_par_prof;
+		for(j=0;j<$cpt;j++) {
+			if(tab_deja[indice_prof]>=limite) {
+				indice_prof++;
+			}
+			if(document.getElementById('id_prof_ele_'+indice_prof+'_'+j)) {
+				if(document.getElementById('id_prof_ele_'+tab_eff_prof.length+'_'+j).checked==true) {
+					document.getElementById('id_prof_ele_'+indice_prof+'_'+j).checked=true;
+					tab_deja[indice_prof]++;
+
+					//document.getElementById('div_debug').innerHTML+='<br />'+j+'-&gt; prof'+indice_prof+' ('+tab_deja[indice_prof]+')';
+				}
 			}
 		}
 
