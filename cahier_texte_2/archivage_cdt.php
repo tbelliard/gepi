@@ -598,6 +598,31 @@ echo "</pre>";
 </script>\n";
 				*/
 
+				$content.="
+<script type='text/javascript'>
+	//+++++++++++++++++++++++++++++++++++
+	var temoin_images=0;
+
+	// Ajout via Javascript des onclick sur les images
+
+	img=document.getElementsByTagName('img');
+	for(i=0;i<img.length;i++) {
+		src_img=img[i].getAttribute('src');
+		if(src_img.substring(0, 10)!='../images/') {
+			var att = document.createAttribute('onclick');
+
+			att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 600))+',height='+Math.min(screen.availHeight, this.height)+'');\";
+
+			img[i].setAttributeNode(att);
+
+			//alert(i);
+			temoin_images++;
+		}
+	}
+	//+++++++++++++++++++++++++++++++++++
+</script>";
+
+
 				$content=html_entete("CDT: ".$nom_detaille_groupe_non_html,1,'y',"$chaine_login_prof").$content;
 				$content.=html_pied_de_page();
 
