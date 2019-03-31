@@ -620,7 +620,7 @@ if($etat!='clos') {
 		$test_non_aff=mysqli_query($mysqli, $sql);
 		$nb_non_aff=mysqli_num_rows($test_non_aff);
 
-		if(($nb_profs>1)||($nb_restr>0)) {
+		if(($nb_profs>1)||($nb_non_aff>0)) {
 			echo "<div style='float:right; width:12em; padding:0.3em;' class='fieldset_opacite50'>
 	<p>Saisir<br />
 	<a href='".$_SERVER['PHP_SELF']."?id_epreuve=".$id_epreuve."'>toutes les notes</a>,<br />
