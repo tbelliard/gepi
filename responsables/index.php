@@ -393,6 +393,8 @@ if ($_SESSION['statut'] == 'administrateur') {
 	echo " | <a href=\"modify_resp.php\">Ajouter un ".$gepiSettings['denomination_responsable']."</a>\n";
 	if(getSettingValue("import_maj_xml_sconet")==1) {
 		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+
+		echo " | <a href=\"maj_import3.php?step=20\">Contrôler les niveaux de responsabilité</a>\n";
 	}
 
 	//- Dédoublonner parents/homonymes

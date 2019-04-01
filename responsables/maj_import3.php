@@ -688,6 +688,9 @@ else{
 	if($step>0){
 		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Mise à jour Sconet</a>";
 	}
+	if($step!=20) {
+		echo " | <a href=\"".$_SERVER['PHP_SELF']."?step=20\">Contrôler les niveaux de responsabilité</a>\n";
+	}
 	echo "</p>\n";
 
 	if(isset($_POST['nom_champ_INE'])) {
