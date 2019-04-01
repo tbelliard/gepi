@@ -505,257 +505,268 @@ $tab_types_abs_regimes=array();
 $afficheEleve = array();
 $elv = 0;
 foreach($eleve_col as $eleve) {
-	$saisie_affiches = array ();
-	if ($eleve_col->isOdd()) {
-		$afficheEleve[$elv]['background']="impair";
-	} else {
-		$afficheEleve[$elv]['background']="pair";
+	$sql="SELECT 1=1 FROM eleves WHERE login='".$eleve->getLogin()."' AND date_entree>'".strftime('%Y-%m-%d %H:%M:%S')."';";
+	$test_date_entree=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test_date_entree)>0) {
+		// L'élève n'est pas encore arrivé dans l'établissement
 	}
-	
-	$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
-	$abs_hier = false;
-	$traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
-	$justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
-	$afficheEleve[$elv]['bulle_hier'] = '';
-	foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
-		if (!$saisie->getManquementObligationPresence()) continue;
-		$abs_hier = true;
-		$traitee_hier = $traitee_hier && $saisie->getTraitee();
-		$justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
-		$afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
-	}
-	if ($abs_hier) {
-		$afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
-		$afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
-	} else {
-		$afficheEleve[$elv]['class_hier'] = '';
-		$afficheEleve[$elv]['text_hier'] = '';
-	}
-	$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
-	$afficheEleve[$elv]['id'] = $eleve->getId();
-	$afficheEleve[$elv]['login'] = $eleve->getLogin();
-	$afficheEleve[$elv]['nom'] = $eleve->getNom();
-	$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
-	$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
-	$afficheEleve[$elv]['regime'] = '';
-	if ($eleve->getEleveRegimeDoublant() != null) {
-		$afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
-		if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
-			$tab_regimes[]=$afficheEleve[$elv]['regime'];
-		}
-		$tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
-	}
-
-	if ((isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
-		|| (isset($current_classe) && $current_classe != null)) {
-		//si le groupe a une seule classe ou si c'est une classe qui est sélectionner pas la peine d'afficher la classe.
-	} else {
-		if ($eleve->getClasse() != null) {
-			$afficheEleve[$elv]['classe'] = $eleve->getClasse()->getNom();
-		}
-	}
-	
-	if ($utilisateur->getAccesFicheEleve($eleve)) {
-		$afficheEleve[$elv]['accesFiche'] = $eleve->getLogin();
-	}
-	
-	$col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-	$afficheEleve[$elv]['creneaux_possibles'] = $col_creneaux->count();
-	for($i = 0; $i<$col_creneaux->count(); $i++){
-		$edt_creneau = $col_creneaux[$i];
-		$nb_creneau_a_saisir = 0; //il faut calculer le nombre de creneau a saisir pour faire un colspan
-		if ($current_creneau != null && $current_creneau->getPrimaryKey() == $edt_creneau->getPrimaryKey()) {
-			$creneau_courant=$i;
-			$afficheEleve[$elv]['creneau_courant']=$i;
-			// on va faire une boucle pour calculer le nombre de creneaux dans ce cours
-			if ($current_cours == null) {
-				$nb_creneau_a_saisir = 1;
-				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
-			} else {
-				//$nb_creneau_a_saisir = 0;
-				$dt_fin_cours = $current_cours->getHeureFin(null);
-				$it_creneau = $edt_creneau;
-				$absences_du_creneau = new PropelObjectCollection();
-				while ($it_creneau != null && $dt_fin_cours->format('U') > $it_creneau->getHeuredebutDefiniePeriode('U')) {
-					foreach ($eleve->getAbsenceEleveSaisiesDuCreneau($it_creneau, $dt_date_absence_eleve) as $abs) {
-						if (!$absences_du_creneau->contains($abs)) {
-							$absences_du_creneau->append($abs);
-						}
-					}
-					$it_creneau = $it_creneau->getNextEdtCreneau();
-					$nb_creneau_a_saisir++;
-				}
-			}
-			// pour le creneau en cours on garde uniquement les absences de l'utilisateur pour ne pas l'influencer par d'autres saisies sauf si configuré autrement
-			if (getSettingValue("abs2_afficher_saisies_creneau_courant")!='y') {
-				$absences_du_creneau_du_prof = new PropelObjectCollection();
-				foreach ($absences_du_creneau as $abs) {
-					if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
-						$absences_du_creneau_du_prof->append($abs);
-					}
-				}
-				$absences_du_creneau = $absences_du_creneau_du_prof;
-			}
-		} else if ($current_creneau != null && $edt_creneau->getHeuredebutDefiniePeriode('U') > $current_creneau->getHeuredebutDefiniePeriode('U')) {
-			//on n'affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie si c'est un enseignant
-			if($utilisateur->getStatut() == "professeur"){
-				$absences_du_creneau = new PropelCollection();
-			}else{
-				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
-			}
+	else {
+		$saisie_affiches = array ();
+		if ($eleve_col->isOdd()) {
+			$afficheEleve[$elv]['background']="impair";
 		} else {
-			//on affiche  les informations pour les crenaux avant la saisie sauf si configuré autrement
-			if (getSettingValue("abs2_montrer_creneaux_precedents")=='y') {
-				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
-
-/*
-// 20121009
-if(!$absences_du_creneau->isEmpty()) {
-echo "<p>".$eleve->getLogin()."<br />".
-//$absences_du_creneau->get().
-"</p>";
-echo "<pre>";
-print_r($absences_du_creneau);
-echo "</pre>";
-}
-*/
-
-			} else {
-				$absences_du_creneau = new PropelCollection();
+			$afficheEleve[$elv]['background']="pair";
+		}
+	
+		$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
+		$abs_hier = false;
+		$traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
+		$justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
+		$afficheEleve[$elv]['bulle_hier'] = '';
+		foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
+			if (!$saisie->getManquementObligationPresence()) continue;
+			$abs_hier = true;
+			$traitee_hier = $traitee_hier && $saisie->getTraitee();
+			$justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
+			$afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
+		}
+		if ($abs_hier) {
+			$afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
+			$afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
+		} else {
+			$afficheEleve[$elv]['class_hier'] = '';
+			$afficheEleve[$elv]['text_hier'] = '';
+		}
+		$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
+		$afficheEleve[$elv]['id'] = $eleve->getId();
+		$afficheEleve[$elv]['login'] = $eleve->getLogin();
+		$afficheEleve[$elv]['nom'] = $eleve->getNom();
+		$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
+		$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
+		$afficheEleve[$elv]['regime'] = '';
+		if ($eleve->getEleveRegimeDoublant() != null) {
+			$afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
+			if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
+				$tab_regimes[]=$afficheEleve[$elv]['regime'];
 			}
+			$tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
 		}
 
-		// 20161013: Style cellule
-		$afficheEleve[$elv]['style'][$i] = "";
-		if ($deja_saisie && $nb_creneau_a_saisir > 0) {
-			$afficheEleve[$elv]['style'][$i] = "fondVert";
-		}
-		if (!$absences_du_creneau->isEmpty()) {
-			foreach ($absences_du_creneau as $abs_saisie) {
-				if ($abs_saisie->getManquementObligationPresence()) {
-					$afficheEleve[$elv]['style'][$i] = "fondRouge";
-					break;
-				}
-				// 20121009
-				else {
-					$afficheEleve[$elv]['style'][$i] = "fondJaune";
-				}
+		if ((isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
+			|| (isset($current_classe) && $current_classe != null)) {
+			//si le groupe a une seule classe ou si c'est une classe qui est sélectionner pas la peine d'afficher la classe.
+		} else {
+			if ($eleve->getClasse() != null) {
+				$afficheEleve[$elv]['classe'] = $eleve->getClasse()->getNom();
 			}
-
+		}
+	
+		if ($utilisateur->getAccesFicheEleve($eleve)) {
+			$afficheEleve[$elv]['accesFiche'] = $eleve->getLogin();
+		}
+	
+		$col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
+		$afficheEleve[$elv]['creneaux_possibles'] = $col_creneaux->count();
+		for($i = 0; $i<$col_creneaux->count(); $i++){
+			$edt_creneau = $col_creneaux[$i];
+			$nb_creneau_a_saisir = 0; //il faut calculer le nombre de creneau a saisir pour faire un colspan
 			if ($current_creneau != null && $current_creneau->getPrimaryKey() == $edt_creneau->getPrimaryKey()) {
-					if($afficheEleve[$elv]['style'][$i] == "fondRouge") {
-					$nb_manquements++;
+				$creneau_courant=$i;
+				$afficheEleve[$elv]['creneau_courant']=$i;
+				// on va faire une boucle pour calculer le nombre de creneaux dans ce cours
+				if ($current_cours == null) {
+					$nb_creneau_a_saisir = 1;
+					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+				} else {
+					//$nb_creneau_a_saisir = 0;
+					$dt_fin_cours = $current_cours->getHeureFin(null);
+					$it_creneau = $edt_creneau;
+					$absences_du_creneau = new PropelObjectCollection();
+					while ($it_creneau != null && $dt_fin_cours->format('U') > $it_creneau->getHeuredebutDefiniePeriode('U')) {
+						foreach ($eleve->getAbsenceEleveSaisiesDuCreneau($it_creneau, $dt_date_absence_eleve) as $abs) {
+							if (!$absences_du_creneau->contains($abs)) {
+								$absences_du_creneau->append($abs);
+							}
+						}
+						$it_creneau = $it_creneau->getNextEdtCreneau();
+						$nb_creneau_a_saisir++;
+					}
 				}
-				elseif($afficheEleve[$elv]['style'][$i] == "fondJaune") {
-					$nb_non_manquements++;
+				// pour le creneau en cours on garde uniquement les absences de l'utilisateur pour ne pas l'influencer par d'autres saisies sauf si configuré autrement
+				if (getSettingValue("abs2_afficher_saisies_creneau_courant")!='y') {
+					$absences_du_creneau_du_prof = new PropelObjectCollection();
+					foreach ($absences_du_creneau as $abs) {
+						if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
+							$absences_du_creneau_du_prof->append($abs);
+						}
+					}
+					$absences_du_creneau = $absences_du_creneau_du_prof;
 				}
-			}
-		}
-		
-		if ($nb_creneau_a_saisir>1) {
-			$afficheEleve[$elv]['nb_creneaux_a_saisir'][$i] = $nb_creneau_a_saisir;
-		} else {
-			$afficheEleve[$elv]['nb_creneaux_a_saisir'][$i]= 1;
-		}
-		
-		//si il y a des absences de l'utilisateurs on va proposer de les modifier
-		if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
-			$cpt=0;
-			foreach ($absences_du_creneau as $saisie) {
-				if (in_array($saisie->getPrimaryKey(), $saisie_affiches)) {
-					// on affiche les saisies une seule fois
-					$afficheEleve[$elv]['saisie'][$i]="";
-					continue;
+			} else if ($current_creneau != null && $edt_creneau->getHeuredebutDefiniePeriode('U') > $current_creneau->getHeuredebutDefiniePeriode('U')) {
+				//on n'affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie si c'est un enseignant
+				if($utilisateur->getStatut() == "professeur"){
+					$absences_du_creneau = new PropelCollection();
+				}else{
+					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 				}
-				$saisie_affiches[] = $saisie->getPrimaryKey();
-				if ($saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && $saisie->getCreatedAt('U') > (time() - 3600)) {
-					$afficheEleve[$elv]['saisie'][$i]['primaryKey'] = $saisie->getPrimaryKey();
-					$afficheEleve[$elv]['saisie'][$i]['createdAt'] = $saisie->getCreatedAt("H:i");
-					$besoin_echo_virgule = false;
-					foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
-						if ($bou_traitement->getAbsenceEleveType() != null) {
-							$afficheEleve[$elv]['saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom();
-							//echo "\$afficheEleve[$elv]['saisie'][$i]['traitements'][] = ".$bou_traitement->getAbsenceEleveType()->getNom()."<br />";
+			} else {
+				//on affiche  les informations pour les crenaux avant la saisie sauf si configuré autrement
+				if (getSettingValue("abs2_montrer_creneaux_precedents")=='y') {
+					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 
-							// 20161013
-							$commentaire_associe="";
-							if($saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
-							$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
-						}
-					}
-				}
-				// 20121009
-				else {
-					// Peut-être ajouter un test: les autres utilisateurs ont-ils le droit de voir ce qui a été saisi par un collègue?
-					// Pour permettre un affichage en title sur les cellules avec saisie
-					/*
-					echo "<hr />Saisie<pre>";
-					print_r($saisie);
-					echo "</pre>";
-					*/
-					foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
-						if ($bou_traitement->getAbsenceEleveType() != null) {
-							$commentaire_associe="";
-							if($saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
-							$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
-							/*
-							echo "<hr />bou_traitement<pre>";
-							print_r($bou_traitement);
-							echo "</pre>";
-							*/
-						}
-					}
-				}
-				$cpt++;
-			}
-		}
-		
-		//on va afficher des renseignements sur les heures précédentes
-		foreach ($absences_du_creneau as $abs_saisie) {
-			if ($abs_saisie->getTraitee() && $abs_saisie->getManquementObligationPresence()) {
-				$txt = $abs_saisie->getTypesDescription();
-				if ($txt != '') {
-					$afficheEleve[$elv]['saisieDescription'][$i][] = $abs_saisie->getTypesDescription();
-					//echo $abs_saisie->getTypesDescription()."<br />";
+	/*
+	// 20121009
+	if(!$absences_du_creneau->isEmpty()) {
+	echo "<p>".$eleve->getLogin()."<br />".
+	//$absences_du_creneau->get().
+	"</p>";
+	echo "<pre>";
+	print_r($absences_du_creneau);
+	echo "</pre>";
+	}
+	*/
+
+				} else {
+					$absences_du_creneau = new PropelCollection();
 				}
 			}
 
-			// 20161013
-			foreach ($abs_saisie->getAbsenceEleveTraitements() as $bou_traitement) {
-				if ($bou_traitement->getAbsenceEleveType() != null) {
-					$commentaire_associe="";
-					if($abs_saisie->getCommentaire()!=null) {$commentaire_associe=" (".$abs_saisie->getCommentaire().")";}
-					$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
+			// 20161013: Style cellule
+			$afficheEleve[$elv]['style'][$i] = "";
+			if ($deja_saisie && $nb_creneau_a_saisir > 0) {
+				$afficheEleve[$elv]['style'][$i] = "fondVert";
+			}
+			if (!$absences_du_creneau->isEmpty()) {
+				foreach ($absences_du_creneau as $abs_saisie) {
+					if ($abs_saisie->getManquementObligationPresence()) {
+						$afficheEleve[$elv]['style'][$i] = "fondRouge";
+						break;
+					}
+					// 20121009
+					else {
+						$afficheEleve[$elv]['style'][$i] = "fondJaune";
+					}
+				}
+
+				if ($current_creneau != null && $current_creneau->getPrimaryKey() == $edt_creneau->getPrimaryKey()) {
+						if($afficheEleve[$elv]['style'][$i] == "fondRouge") {
+						$nb_manquements++;
+					}
+					elseif($afficheEleve[$elv]['style'][$i] == "fondJaune") {
+						$nb_non_manquements++;
+					}
 				}
 			}
-		}
 		
-		if ($nb_creneau_a_saisir > 0) {
-			// le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies_groupe.php
-			if (isset($message_erreur_eleve[$eleve->getId()]) && $message_erreur_eleve[$eleve->getId()] != '') {
-				$afficheEleve[$elv]['erreurEnregistre'][$i] = $message_erreur_eleve[$eleve->getId()];
+			if ($nb_creneau_a_saisir>1) {
+				$afficheEleve[$elv]['nb_creneaux_a_saisir'][$i] = $nb_creneau_a_saisir;
+			} else {
+				$afficheEleve[$elv]['nb_creneaux_a_saisir'][$i]= 1;
 			}
+		
+			//si il y a des absences de l'utilisateurs on va proposer de les modifier
+			if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
+				$cpt=0;
+				foreach ($absences_du_creneau as $saisie) {
+					//echo $saisie->getPrimaryKey()."<br/>";
+					if (in_array($saisie->getPrimaryKey(), $saisie_affiches)) {
+						// on affiche les saisies une seule fois
+						// 20190401: mais faut-il vider?
+						//$afficheEleve[$elv]['saisie'][$i]="";
+						//$afficheEleve[$elv]['saisie'][$i]=array();
+						continue;
+					}
+					$saisie_affiches[] = $saisie->getPrimaryKey();
+					if ($saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && $saisie->getCreatedAt('U') > (time() - 3600)) {
+					//if (true) {
+						$afficheEleve[$elv]['saisie'][$i]['primaryKey'] = $saisie->getPrimaryKey();
+						$afficheEleve[$elv]['saisie'][$i]['createdAt'] = $saisie->getCreatedAt("H:i");
+						$besoin_echo_virgule = false;
+						foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+							if ($bou_traitement->getAbsenceEleveType() != null) {
+								$afficheEleve[$elv]['saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom();
+								//echo "\$afficheEleve[$elv]['saisie'][$i]['traitements'][] = ".$bou_traitement->getAbsenceEleveType()->getNom()."<br />";
+
+								// 20161013
+								$commentaire_associe="";
+								if($saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+								$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
+							}
+						}
+					}
+					// 20121009
+					else {
+						// Peut-être ajouter un test: les autres utilisateurs ont-ils le droit de voir ce qui a été saisi par un collègue?
+						// Pour permettre un affichage en title sur les cellules avec saisie
+						/*
+						echo "<hr />Saisie<pre>";
+						print_r($saisie);
+						echo "</pre>";
+						*/
+						foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+							if ($bou_traitement->getAbsenceEleveType() != null) {
+								$commentaire_associe="";
+								if($saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+								$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
+								/*
+								echo "<hr />bou_traitement<pre>";
+								print_r($bou_traitement);
+								echo "</pre>";
+								*/
+							}
+						}
+					}
+					$cpt++;
+				}
+			}
+		
+			//on va afficher des renseignements sur les heures précédentes
+			foreach ($absences_du_creneau as $abs_saisie) {
+				if ($abs_saisie->getTraitee() && $abs_saisie->getManquementObligationPresence()) {
+					$txt = $abs_saisie->getTypesDescription();
+					if ($txt != '') {
+						$afficheEleve[$elv]['saisieDescription'][$i][] = $abs_saisie->getTypesDescription();
+						//echo $abs_saisie->getTypesDescription()."<br />";
+					}
+				}
+
+				// 20161013
+				foreach ($abs_saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+					if ($bou_traitement->getAbsenceEleveType() != null) {
+						$commentaire_associe="";
+						if($abs_saisie->getCommentaire()!=null) {$commentaire_associe=" (".$abs_saisie->getCommentaire().")";}
+						$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
+					}
+				}
+			}
+		
+			if ($nb_creneau_a_saisir > 0) {
+				// le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies_groupe.php
+				if (isset($message_erreur_eleve[$eleve->getId()]) && $message_erreur_eleve[$eleve->getId()] != '') {
+					$afficheEleve[$elv]['erreurEnregistre'][$i] = $message_erreur_eleve[$eleve->getId()];
+				}
 			
-			//la saisie sur ce creneau
-			$type_autorises = AbsenceEleveTypeQuery::create()->orderByRank()->useAbsenceEleveTypeStatutAutoriseQuery()->filterByStatut($utilisateur->getStatut())->endUse()->find();
-			if ($type_autorises->count() != 0) {
-				$afficheEleve[$elv]['type_autorises'][$i] = array();
-				foreach ($type_autorises as $type) {
-					$afficheEleve[$elv]['type_autorises'][$i][]= array('type'=>$type->getId(), 'nom'=>$type->getNom(), 'modeInterface'=>$type->getModeInterface());
+				//la saisie sur ce creneau
+				$type_autorises = AbsenceEleveTypeQuery::create()->orderByRank()->useAbsenceEleveTypeStatutAutoriseQuery()->filterByStatut($utilisateur->getStatut())->endUse()->find();
+				if ($type_autorises->count() != 0) {
+					$afficheEleve[$elv]['type_autorises'][$i] = array();
+					foreach ($type_autorises as $type) {
+						$afficheEleve[$elv]['type_autorises'][$i][]= array('type'=>$type->getId(), 'nom'=>$type->getNom(), 'modeInterface'=>$type->getModeInterface());
+					}
 				}
 			}
 		}
-	}
 	
-	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
-		$nom_photo = $eleve->getNomPhoto(1);
-		$photos = $nom_photo;
-		if (($photos == NULL) or (!(file_exists($photos)))) {
-			$photos = "../mod_trombinoscopes/images/trombivide.jpg";
+		if ((getSettingValue("active_module_trombinoscopes")=='y')) {
+			$nom_photo = $eleve->getNomPhoto(1);
+			$photos = $nom_photo;
+			if (($photos == NULL) or (!(file_exists($photos)))) {
+				$photos = "../mod_trombinoscopes/images/trombivide.jpg";
+			}
+			$afficheEleve[$elv]['nom_photo'] = $photos;
 		}
-		$afficheEleve[$elv]['nom_photo'] = $photos;
+		$elv++;
 	}
-	$elv++;
 }
 
 // 20120618
@@ -907,7 +918,7 @@ foreach ($groupe_col as $group) {
 		</form>	
 <?php }
 
-// ===== Affichage des AID ======							
+// ===== Affichage des AID ======
 
 if (isset ($aid_col) && !$aid_col->isEmpty()) {
 ?>	
