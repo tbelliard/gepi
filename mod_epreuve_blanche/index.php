@@ -301,7 +301,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				break;
 			}
 		}
-		if($msg=='') {
+		if((!isset($msg))||($msg=='')) {
 			$sql="DELETE FROM eb_epreuves WHERE id='$id_epreuve';";
 			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$suppr) {
