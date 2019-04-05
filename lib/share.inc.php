@@ -4937,7 +4937,7 @@ function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
 	require_once($path.'lib/pclzip.lib.php');
 
 	if (isset($dossier_a_archiver)) {
-	$suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
+	$suffixe_zip="_le_".date("Y_m_d_\a_H\hi_s");
 	switch ($dossier_a_archiver) {
 		case "documents":
 			$chemin_stockage = $path.$dirname."_cdt".$suffixe_zip.".zip"; //l'endroit où sera stockée l'archive
