@@ -527,13 +527,13 @@ if (isset($_POST['h_resize_trombinoscopes'])) {
 	}
 
 // Suppression de photos
-	if(isset($_POST['sup_pers']) && $_POST['sup_pers']=="oui"){
+	if(isset($_POST['supp_photos']) && $_POST['supp_photos']=="personnels"){
 		check_token();
 		// suppression des photos du personnel
 		$msg.=(efface_photos("personnels"))?"Photos du personnel supprimées<br/>":"Erreur lors de la suppression des photos du personnel<br/>";
 		
 	}
-	if (isset($_POST['supp_eleve']) && $_POST['supp_eleve']=="oui"){
+	if (isset($_POST['supp_photos']) && $_POST['supp_photos']=="eleves"){
 		check_token();
 		// suppression des photos des élèves
 		$msg.=(efface_photos("eleves"))?"Photos des élèves supprimées<br/>":"Erreur lors de la suppression des photos des élèves<br/>";

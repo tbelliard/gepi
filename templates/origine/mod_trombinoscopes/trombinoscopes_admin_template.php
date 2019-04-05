@@ -486,21 +486,22 @@ unset ($aid_disponible)
 		<legend class="bold">
 		<label for="supprime">Suppression de photos</label>
 		</legend>
+
 <?php if( file_exists('../photos/'.$repertoire_rne.'personnels/') ) { ?>
-		<input type="checkbox"
-			name="sup_pers"
+		<input type="radio"
+			name="supp_photos"
 			id='supprime_personnels'
-			value="oui"
+			value="personnels"
 			/>
 		<label for="supprime_personnels" id='sup_pers'>
 		Vider le dossier photos des personnels
 		</label>
 <?php } if( file_exists('../photos/'.$repertoire_rne.'eleves/') ) {?>
 		<br/>
-		<input type="checkbox"
-			name="supp_eleve"
+		<input type="radio"
+			name="supp_photos"
 			id='supprime_eleves'
-			value="oui" />
+			value="eleves" />
 		<label for="supprime_eleves" id='sup_ele'>
 		Vider le dossier photos des élèves
 		</label>
