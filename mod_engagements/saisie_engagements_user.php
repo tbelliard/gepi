@@ -195,13 +195,13 @@ if(isset($_POST['is_posted'])) {
 
 	if(isset($_POST['engagement'])) {
 		$engagement=$_POST['engagement'];
-		$id_classe=$_POST['id_classe'];
+		$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 		foreach($engagement as $key => $current_id_engagement) {
 			if(!array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
 				$msg.="Vous n'êtes pas autorisé à saisir les engagements de type ".$current_id_engagement."<br />";
 			}
 			else {
-				if((!isset($id_classe[$key]))||($id_classe[$key]=="")) {
+				if((isset($id_classe))||(!isset($id_classe[$key]))||($id_classe[$key]=="")) {
 					$sql="INSERT INTO engagements_user SET id_type='', 
 										valeur='', 
 										login='$login_user',
