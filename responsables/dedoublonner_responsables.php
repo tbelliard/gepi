@@ -92,6 +92,15 @@ if(isset($_POST['dedoublonner'])) {
 			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($del) {
 				fwrite_sql($sql);
+
+				// Suppression des comptes de responsables:
+				$sql="DELETE FROM engagements_user WHERE login='".$tab["login"]."';";
+				//echo "$sql<br />";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$tab["login"]."';";
+				//echo "$sql<br />";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 
