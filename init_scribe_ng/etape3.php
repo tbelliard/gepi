@@ -81,7 +81,16 @@ if (($_POST['step'] == "3")&&
       ->filterByStatut('responsable')
       ->delete();
 */
-  $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM utilisateurs WHERE statut = 'responsable'");
+	// Suppression des comptes de responsables:
+	$sql="DELETE FROM engagements_user WHERE login IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+	//echo "$sql<br />";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	$sql="DELETE FROM sso_table_correspondance WHERE login_gepi IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+	//echo "$sql<br />";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+    $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM utilisateurs WHERE statut = 'responsable'");
     
     // On parcours tous les responsables
 

@@ -118,6 +118,14 @@ if((isset($_POST['mode']))&&($_POST['mode']=='suppr_assoc_doublon')) {
 if(isset($_GET['supprimer_comptes_parents'])) {
 	check_token();
 
+	$sql="DELETE FROM engagements_user WHERE login IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+	//echo "$sql<br />";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	$sql="DELETE FROM sso_table_correspondance WHERE login_gepi IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+	//echo "$sql<br />";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
 	$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
 	$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 

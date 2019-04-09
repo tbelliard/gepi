@@ -171,6 +171,19 @@ if (!isset($_POST["action"])) {
 		// Suppression des comptes de responsables:
 		echo "<br />\n";
 		echo "<p><em>On supprime les anciens comptes responsables...</em> ";
+
+		$sql="DELETE FROM engagements_user WHERE login IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+		//echo "$sql<br />";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		/*
+		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+		//echo "$sql<br />";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		*/
+
 		$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
 		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 

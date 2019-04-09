@@ -158,6 +158,19 @@ if (!isset($is_posted)) {
 		}
 
 		// Suppression des comptes de responsables:
+		$sql="DELETE FROM engagements_user WHERE login IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+		//echo "$sql<br />";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		/*
+		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi IN (SELECT login FROM utilisateurs WHERE statut='responsable');";
+		//echo "$sql<br />";
+		if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		*/
+
+		// Suppression des comptes de responsables:
 		$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
 		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
@@ -306,6 +319,43 @@ if (!isset($is_posted)) {
 				echo "<p>Lors de l'enregistrement des données de PERSONNES.CSV, il y a eu <span style='color:red'>$nb_reg_no3 erreurs</span>. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 			} else {
 				echo "<p>L'importation des personnes (<em>responsables</em>) dans la base GEPI a été effectuée avec succès (<em>".$nb_record3." enregistrements au total</em>).</p>\n";
+
+				$sql="SELECT * FROM sso_table_correspondance;";
+				//echo "$sql<br />";
+				$res_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_sso)>0) {
+					$dirname=$gepiPath."/backup/".getSettingValue("backup_directory");
+					$f=fopen($dirname."/sso_table_correspondance_".strftime("%Y%m%d_%H%M%S").".sql");
+					$f2=fopen($dirname."/sso_table_correspondance_".strftime("%Y%m%d_%H%M%S").".csv");
+					while($lig_sso=mysqli_fetch_object($res_sso)) {
+						fwrite($f, "INSERT INTO sso_table_correspondance SET login_gepi='".$lig_sso->login_gepi.", login_sso='".$lig_sso->login_sso."';\n");
+						fwrite($f2, $lig_sso->login_gepi.";".$lig_sso->login_sso.";\n");
+					}
+					fclose($f);
+					fclose($f2);
+
+					$sql="(SELECT login FROM utilisateurs) UNION (SELECT login FROM eleves) UNION (SELECT login FROM resp_pers WHERE login!='');";
+					//echo "$sql<br />";
+					$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_login)>0) {
+						$tab_login=array();
+						while($lig_login=mysqli_fetch_object($res_login)) {
+							$tab_login[]=strtolower($lig_login->login);
+						}
+						$sql="SELECT DISTINCT login_gepi FROM sso_table_correspondance;";
+						//echo "$sql<br />";
+						$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_login)>0) {
+							while($lig_login=mysqli_fetch_object($res_login)) {
+								if(!in_array(strtolower($lig_login->login_gepi), $tab_login)) {
+									$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$lig_login->login_gepi."';";
+									//echo "$sql<br />";
+									$del=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
+							}
+						}
+					}
+				}
 			}
 
 		}
