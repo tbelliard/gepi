@@ -453,8 +453,43 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 	$tab=get_tab_engagements_user("", $id_classe[$loop]);
 	$nom_classe=get_nom_classe($id_classe[$loop]);
 
+	/*
+	echo $nom_classe."<pre>";
+	print_r($tab);
+	echo "</pre><hr />";
+	*/
+
 	foreach($tab['login_user'] as $current_login => $tab_engagement_current_user) {
 		$tab_user=get_info_user($current_login);
+		/*
+		echo "<pre>";
+		print_r($tab_user);
+		echo "</pre>";
+		*/
+		if(!isset($tab_user['nom'])) {
+			$tab_user=get_info_eleve($current_login);
+		}
+		if(!isset($tab_user['nom'])) {
+			$tab_user=get_info_responsable($current_login);
+		}
+		// Un responsable sans login va poser problème... on va perdre la liaison en cas de suppression du compte en conservant la personne dans resp_pers
+		// On risque même de ré-attribuer le login à un autre utilisateur
+		// Il faut soit une autre clé que le login, soit supprimer l'engagement lors de la suppression du compte dans utilisateurs
+		if(!isset($tab_user['nom'])) {
+			$tab_user['nom']="ERREUR (nettoyage des tables requis)";
+		}
+		if(!isset($tab_user['prenom'])) {
+			$tab_user['prenom']="ERREUR (nettoyage des tables requis)";
+		}
+		if(!isset($tab_user['statut'])) {
+			$tab_user['statut']="ERREUR (nettoyage des tables requis)";
+		}
+
+		/*
+		echo "<pre>";
+		print_r($tab_user);
+		echo "</pre>";
+		*/
 
 		$chaine_tr="
 			<tr id='texte_login_user_$cpt'>
