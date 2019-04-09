@@ -848,10 +848,23 @@ else {
 			while($lig_resp=mysqli_fetch_object($res)) {
 				echo "
 		<tr class='white_hover'>
-			<td style='text-align:left;'><span id='resp_$cpt'><a href='saisie_engagements_user.php?login_user=".$lig_resp->login."' title=\"Saisir les engagements de cet utilisateur, même hors de la classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">$lig_resp->civilite $lig_resp->nom $lig_resp->prenom</a></span></td>
+			<td style='text-align:left;'>";
+				if($lig_resp->login=='') {
+					echo "
+					<div style='float:right; width:16px'><img src='../images/icons/buddy_no.png' class='icone16' title=\"Ce responsable n'a pas de compte utilisateur.\nUn compte utilisateur est requis pour les engagements responsables.\" /></div>
+					".$lig_resp->civilite.' '.$lig_resp->nom.' '.$lig_resp->prenom;
+				}
+				else {
+					echo "
+					<span id='resp_$cpt'><a href='saisie_engagements_user.php?login_user=".$lig_resp->login."' title=\"Saisir les engagements de cet utilisateur, même hors de la classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">$lig_resp->civilite $lig_resp->nom $lig_resp->prenom</a></span>";
+				}
+				echo "
+			</td>
 			<td style='text-align:left;'>";
 
-				$tab_resp[]=$lig_resp->login;
+				if($lig_resp->login!='') {
+					$tab_resp[]=$lig_resp->login;
+				}
 
 				$sql="SELECT DISTINCT e.* FROM eleves e, 
 								j_eleves_classes jec,
@@ -875,26 +888,32 @@ else {
 			</td>";
 
 				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
-					echo "<td>\n";
-					if(($_SESSION['statut']=='administrateur')||
-					((isset($tab_engagements['indice'][$loop]['droit_special']))&&(in_array($_SESSION['login'], $tab_engagements['indice'][$loop]['droit_special'])))||
-					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
-					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
-					(($_SESSION['statut']=='professeur')&&
-						((isset($tab_engagements['indice'][$loop]['SaisiePP']))&&(in_array($_SESSION['login'], $tab_pp[$id_classe[$i]]))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes')))
-					) {
-						$checked="";
-						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
-							$checked=" checked";
-						}
-						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_resp->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' />";
+					if($lig_resp->login=='') {
+						echo "
+			<td title=\"Ce responsable n'a pas de compte utilisateur.\nUn compte utilisateur est requis pour les engagements responsables.\">-</td>\n";
 					}
 					else {
-						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
-							echo "<img src='../images/enabled.png' class='icone20' />";
+						echo "<td>\n";
+						if(($_SESSION['statut']=='administrateur')||
+						((isset($tab_engagements['indice'][$loop]['droit_special']))&&(in_array($_SESSION['login'], $tab_engagements['indice'][$loop]['droit_special'])))||
+						(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
+						(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
+						(($_SESSION['statut']=='professeur')&&
+							((isset($tab_engagements['indice'][$loop]['SaisiePP']))&&(in_array($_SESSION['login'], $tab_pp[$id_classe[$i]]))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes')))
+						) {
+							$checked="";
+							if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+								$checked=" checked";
+							}
+							echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_resp->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' />";
 						}
+						else {
+							if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+								echo "<img src='../images/enabled.png' class='icone20' />";
+							}
+						}
+						echo "</td>\n";
 					}
-					echo "</td>\n";
 				}
 
 				echo "</tr>\n";
@@ -907,7 +926,7 @@ else {
 		$chaine_engagements_hors_classe="";
 		foreach($tab_engagements_classe['login_user'] as $current_login => $tab_id_engagement) {
 			$tmp_info_user=get_info_user($current_login);
-			if((!in_array($current_login, $tab_resp))&&($tmp_info_user['statut']=='responsable')) {
+			if((!in_array($current_login, $tab_resp))&&(isset($tmp_info_user['statut']))&&($tmp_info_user['statut']=='responsable')) {
 				$chaine_engagements_hors_classe.="
 		<tr>
 			<td><a href='saisie_engagements_user.php?login_user=".$current_login."' title=\"Saisir les engagements de cet utilisateur, même hors de la classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($current_login)."</a></td>";

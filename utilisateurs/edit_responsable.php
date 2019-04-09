@@ -207,6 +207,7 @@ if (!$error) {
 					$res2 = mysqli_query($GLOBALS["mysqli"], "UPDATE resp_pers SET login='' WHERE login = '".$_GET['parent_login'] . "'");
 					// Suppression de scorie éventuelle:
 					$res3 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM sso_table_correspondance WHERE login_gepi = '".$_GET['parent_login']."'");
+					$res4 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM engagements_user WHERE login = '".$_GET['parent_login']."'");
 				} else {
 					$msg .= "Erreur lors de la suppression de l'utilisateur.";
 				}
@@ -226,6 +227,7 @@ if (!$error) {
 						$res = mysqli_query($GLOBALS["mysqli"], "UPDATE resp_pers SET login = '' WHERE login = '" . $current_parent->login ."'");
 						// Suppression de scorie éventuelle:
 						$res3 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM sso_table_correspondance WHERE login_gepi = '".$current_parent->login."'");
+						$res4 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM engagements_user WHERE login = '".$current_parent->login."';");
 						$nb_comptes++;
 					}
 				}
