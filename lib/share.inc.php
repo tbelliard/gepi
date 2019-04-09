@@ -344,7 +344,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 		$dirname="$gepiPath/backup/".getSettingValue("backup_directory");
 
 		$ts=french_strftime("%a %d/%m/%Y %H:%M:%S");
-		$f=fopen($dirname."/debug_envoi_mail_.log");
+		$f=fopen($dirname."/debug_envoi_mail_.log", "a+");
 		fwrite($f, "==========================\n".$ts." :\r\n");
 		if(!$envoi) {
 			fwrite($f, "ECHEC de l'envoi de mail\r\n");
