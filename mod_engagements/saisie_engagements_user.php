@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -159,6 +159,7 @@ if(isset($_POST['is_posted'])) {
 					else {
 						$sql="UPDATE engagements_user SET id_type='id_classe', valeur='$current_id_classe' WHERE login='$login_user' AND id='$current_engagement';";
 					}
+					//echo "$sql<br />";
 					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$update) {
 						$msg.="Erreur lors de la mise à jour de la classe pour l'engagement n°$current_engagement<br />";
@@ -184,6 +185,7 @@ if(isset($_POST['is_posted'])) {
 				}
 				else {
 					$sql="DELETE FROM engagements_user WHERE login='$login_user' AND id='$current_engagement';";
+					//echo "$sql<br />";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {
 						$msg.="Erreur lors de la suppression de l'engagement n°$current_engagement<br />";
@@ -201,7 +203,7 @@ if(isset($_POST['is_posted'])) {
 				$msg.="Vous n'êtes pas autorisé à saisir les engagements de type ".$current_id_engagement."<br />";
 			}
 			else {
-				if((isset($id_classe))||(!isset($id_classe[$key]))||($id_classe[$key]=="")) {
+				if((!isset($id_classe))||(!isset($id_classe[$key]))||($id_classe[$key]=="")) {
 					$sql="INSERT INTO engagements_user SET id_type='', 
 										valeur='', 
 										login='$login_user',
@@ -213,6 +215,7 @@ if(isset($_POST['is_posted'])) {
 										login='$login_user', 
 										id_engagement='$current_id_engagement';";
 				}
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$insert) {
 					$msg.="Erreur lors de l'enregistrement de l'engagement de type n°$current_id_engagement<br />";
@@ -276,6 +279,12 @@ echo "
 	".add_token_field();
 
 if(count($tab_engagements_user)>0) {
+	/*
+	echo "<pre>";
+	print_r($tab_engagements_user);
+	echo "</pre>";
+	*/
+
 	echo "
 	<p class='bold'>Engagements existants pour ".$info_user['civ_denomination']."</p>
 	<table class='boireaus boireaus_alt' summary='Engagements'/>
