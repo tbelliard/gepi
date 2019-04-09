@@ -40,7 +40,7 @@ if (!checkAccess()) {
 	die();
 }
 
-$id_choix_periode=isset($_POST['id_choix_periode']) ? $_POST["id_choix_periode"] : 0;
+$id_choix_periode=isset($_POST['id_choix_periode']) ? $_POST["id_choix_periode"] : (isset($_GET['id_choix_periode']) ? $_GET["id_choix_periode"] : 0);
 
 //**************** EN-TETE **************************************
 $titre_page = "Impression de listes au format PDF";
@@ -78,20 +78,19 @@ if ($id_choix_periode == 0) {
 	echo "<legend style='border: 1px solid grey;";
 	echo "background-color: white; ";
 	echo "'>Sélectionnez la période pour laquelle vous souhaitez imprimer les listes.</legend>\n";
-	echo "<form method=\"post\" action=\"impression_serie.php\" name=\"imprime_serie\">\n";
+	//echo "<form method=\"post\" action=\"impression_serie.php\" name=\"imprime_serie\">\n";
 	$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
 	$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	echo "<br />\n";
-	While ( $data_periode = mysqli_fetch_array($resultat_periode)) {
-		echo "<label for='id_choix_periode".$data_periode['num_periode']."' id='texte_id_choix_periode".$data_periode['num_periode']."' style='cursor: pointer;'>Période ".$data_periode['num_periode']." : </label><input type='radio' name='id_choix_periode' id='id_choix_periode".$data_periode['num_periode']."' value='".$data_periode['num_periode']."' onchange=\"change_style_radio()\" /> <br />\n";
+	while ( $data_periode = mysqli_fetch_array($resultat_periode)) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_choix_periode=".$data_periode['num_periode']."'>Période ".$data_periode['num_periode']."</a><br />\n";
+		//echo "<label for='id_choix_periode".$data_periode['num_periode']."' id='texte_id_choix_periode".$data_periode['num_periode']."' style='cursor: pointer;'>Période ".$data_periode['num_periode']." : </label><input type='radio' name='id_choix_periode' id='id_choix_periode".$data_periode['num_periode']."' value='".$data_periode['num_periode']."' onchange=\"change_style_radio()\" /> <br />\n";
 	}
-	echo "<br /><br /> <input value=\"Valider la période\" name=\"Valider\" type=\"submit\" />\n
-			<br />\n";
-
-	echo "</form>\n";
+	//echo "<br /><br /> <input value=\"Valider la période\" name=\"Valider\" type=\"submit\" />\n<br />\n";
+	//echo "</form>\n";
 	echo "</fieldset>\n";
 
-	echo js_change_style_radio("change_style_radio", "y", "y", 'checkbox_change', 'texte_');
+	//echo js_change_style_radio("change_style_radio", "y", "y", 'checkbox_change', 'texte_');
 
 	echo "</div>\n";
 	echo "<br />";
