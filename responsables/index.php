@@ -82,6 +82,14 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 								}
 								else {
 									$msg.="Compte d'utilisateur $lig1->login supprimé.<br />\n";
+
+									$sql="DELETE FROM engagements_user WHERE login='$lig1->login';";
+									//echo "$sql<br />";
+									$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+									$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='$lig1->login';";
+									//echo "$sql<br />";
+									$del=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
 							}
 							else {
@@ -180,6 +188,14 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 								}
 								else {
 									$msg.="Compte d'utilisateur $lig1->login supprimé.<br />\n";
+
+									$sql="DELETE FROM engagements_user WHERE login='$lig1->login';";
+									//echo "$sql<br />";
+									$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+									$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='$lig1->login';";
+									//echo "$sql<br />";
+									$del=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
 							}
 							else {
@@ -258,7 +274,6 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 			if(mysqli_num_rows($res1)>0){
 				$lig1=mysqli_fetch_object($res1);
 
-
 				$sql="SELECT statut FROM utilisateurs WHERE login='$lig1->login';";
 				//echo "$sql<br />\n";
 				$res3=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -273,6 +288,14 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 						}
 						else {
 							$msg.="Compte d'utilisateur $lig1->login supprimé.<br />\n";
+
+							$sql="DELETE FROM engagements_user WHERE login='$lig1->login';";
+							//echo "$sql<br />";
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='$lig1->login';";
+							//echo "$sql<br />";
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 					else {
@@ -393,6 +416,8 @@ if ($_SESSION['statut'] == 'administrateur') {
 	echo " | <a href=\"modify_resp.php\">Ajouter un ".$gepiSettings['denomination_responsable']."</a>\n";
 	if(getSettingValue("import_maj_xml_sconet")==1) {
 		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+
+		echo " | <a href=\"maj_import3.php?step=20\">Contrôler les niveaux de responsabilité</a>\n";
 	}
 
 	//- Dédoublonner parents/homonymes
