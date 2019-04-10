@@ -3565,7 +3565,17 @@ function debug_var() {
 				$cpt_debug_debug_var++;
 			}
 			elseif(isset($debug_var_count[$chaine_tab_niv1])) {
-				echo $val;
+				/*
+				echo "<pre>";
+				print_r($val);
+				echo "</pre>";
+				*/
+				if(is_string($val)) {
+					echo $val;
+				}
+				else {
+					echo "<span style='color:red'>Ce n'est ni un tableau, ni une chaine... est-ce un résultat de requête SQL?</span>";
+				}
 				$debug_var_count[$chaine_tab_niv1]++;
 			}
 
