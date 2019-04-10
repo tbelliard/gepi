@@ -694,17 +694,19 @@ if (isset($_POST['is_posted'])) {
 		}
 
 		// Contrôle des ajouts
-		foreach($_POST['modalite_election'] as $key => $current_modalite) {
-			foreach($tab_mef_grp as $key2 => $current_mef) {
-				$sql="SELECT 1=1 FROM mef_matieres WHERE mef_code='".$current_mef."' AND code_matiere='".$code_matiere."' AND code_modalite_elect='".$current_modalite."';";
-				$test=mysqli_query($mysqli, $sql);
-				if(mysqli_num_rows($test)==0) {
-					// On ajoute
-					$sql="INSERT INTO mef_matieres SET mef_code='".$current_mef."', code_matiere='".$code_matiere."', code_modalite_elect='".$current_modalite."';";
-					$insert=mysqli_query($mysqli, $sql);
-					if(!$insert) {
-						$error=true;
-						$msg.="Erreur lors de l'ajout d'une association MEF/Matière/Modalité.<br />".$sql."<br />";
+		if(isset($_POST['modalite_election'])) {
+			foreach($_POST['modalite_election'] as $key => $current_modalite) {
+				foreach($tab_mef_grp as $key2 => $current_mef) {
+					$sql="SELECT 1=1 FROM mef_matieres WHERE mef_code='".$current_mef."' AND code_matiere='".$code_matiere."' AND code_modalite_elect='".$current_modalite."';";
+					$test=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($test)==0) {
+						// On ajoute
+						$sql="INSERT INTO mef_matieres SET mef_code='".$current_mef."', code_matiere='".$code_matiere."', code_modalite_elect='".$current_modalite."';";
+						$insert=mysqli_query($mysqli, $sql);
+						if(!$insert) {
+							$error=true;
+							$msg.="Erreur lors de l'ajout d'une association MEF/Matière/Modalité.<br />".$sql."<br />";
+						}
 					}
 				}
 			}
