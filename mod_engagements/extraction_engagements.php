@@ -56,9 +56,11 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=2");
-    die();
+	header("Location: ../logout.php?auto=2");
+	die();
 }
+
+//debug_var();
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $engagement_ele=isset($_POST['engagement_ele']) ? $_POST['engagement_ele'] : (isset($_GET['engagement_ele']) ? $_GET['engagement_ele'] : array());
@@ -168,55 +170,10 @@ if(isset($action)) {
 			}
 
 			if ($record == 'yes') {
-				/*
-				function ajout_bouton_supprimer_message($contenu_cor,$id_message) {
-					$contenu_cor='
-					<form method="POST" action="accueil.php" name="f_suppression_message">
-					<input type="hidden" name="csrf_alea" value="_CSRF_ALEA_">
-					<input type="hidden" name="supprimer_message" value="'.$id_message.'">
-					<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
-					</form>'.$contenu_cor;
-					$r_sql="UPDATE messages SET texte='".$contenu_cor."' WHERE id='".$id_message."'";
-					return mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
-				}
-
-				function update_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) {
-					$r_sql = "UPDATE messages
-					SET texte = '".$contenu_cor."',
-					date_debut = '".$date_debut."',
-					date_fin = '".$date_fin."',
-					date_decompte = '".$date_decompte."',
-					auteur='".$_SESSION['login']."',
-					statuts_destinataires = '".$statuts_destinataires."',
-					login_destinataire='".$login_destinataire."'
-					WHERE id ='".$_POST['id_mess']."'";
-					//", matiere_destinataire='".$matiere_destinataire."'";
-					return mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
-				}
-
-				function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) {
-					$r_sql = "INSERT INTO messages
-					SET texte = '".$contenu_cor."',
-					date_debut = '".$date_debut."',
-					date_fin = '".$date_fin."',
-					date_decompte = '".$date_decompte."',
-					auteur='".$_SESSION['login']."',
-					statuts_destinataires = '".$statuts_destinataires."',
-					login_destinataire='".$login_destinataire."'";
-					//$r_sql.=", matiere_destinataire='".$matiere_destinataire."'";
-					$retour=mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
-					if ($retour)
-						{
-						$id_message=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
-						if (isset($_POST['suppression_possible']) && $_POST['suppression_possible']=="oui" &&  $statuts_destinataires=="_")
-							$retour=ajout_bouton_supprimer_message($contenu_cor,$id_message);
-						}
-					return $retour;
-				}
-				*/
 
 				$t_login_destinataires=$login_user;
-				if (count($t_login_destinataires)>1) {$statuts_destinataires="_";}
+				//if (count($t_login_destinataires)>1) {$statuts_destinataires="_";}
+				$statuts_destinataires="_";
 
 				foreach($t_login_destinataires as $login_destinataire) {
 					$erreur=!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) && $erreur;
@@ -340,7 +297,7 @@ if((!isset($id_classe))||((count($engagement_ele)==0)&&(count($engagement_resp)=
 			</tr>
 		</table>
 
-		<p><a href='#' onClick='ModifCase(true);return false;'>Tout cocher</a> / <a href='#' onClick='ModifCase(false);return false;'>Tout décocher</a></p>
+		<p><a href='#' onClick='ModifCase(true);return false;'>Cocher toutes les classes</a> / <a href='#' onClick='ModifCase(false);return false;'>Décocher toutes les classes</a></p>
 
 		<table>
 			<tr>
