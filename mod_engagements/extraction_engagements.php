@@ -308,11 +308,11 @@ if((!isset($id_classe))||((count($engagement_ele)==0)&&(count($engagement_resp)=
 					<label for='engagement_statut_eleve' id='texte_engagement_statut_eleve'>Extraire des engagements élèves</label>
 				</td>
 				<td style='vertical-align:top'>";
-	$cpt=0;
+	$cpt_eng_ele=0;
 	foreach($tab_engagements['indice'] as $key => $current_engagement) {
 		if($current_engagement['ConcerneEleve']) {
-			echo "<input type='checkbox' name='engagement_ele[]' id='engagement_ele_$cpt' value='".$current_engagement['id']."' onchange=\"checkbox_change('engagement_ele_$cpt')\" /><label for='engagement_ele_$cpt' id='texte_engagement_ele_$cpt' title=\"".$current_engagement['nom']." (".$current_engagement['description'].") ".$current_engagement['effectif']." engagement(s) saisi(s).\"> ".$current_engagement['nom']."</label><br />";
-			$cpt++;
+			echo "<input type='checkbox' name='engagement_ele[]' id='engagement_ele_$cpt_eng_ele' value='".$current_engagement['id']."' onchange=\"checkbox_change('engagement_ele_$cpt_eng_ele')\" /><label for='engagement_ele_$cpt_eng_ele' id='texte_engagement_ele_$cpt_eng_ele' title=\"".$current_engagement['nom']." (".$current_engagement['description'].") ".$current_engagement['effectif']." engagement(s) saisi(s).\"> ".$current_engagement['nom']."</label><br />";
+			$cpt_eng_ele++;
 		}
 	}
 	echo "
@@ -326,17 +326,19 @@ if((!isset($id_classe))||((count($engagement_ele)==0)&&(count($engagement_resp)=
 					<label for='engagement_statut_responsable' id='texte_engagement_statut_responsable'>Extraire des engagements responsables</label>
 				</td>
 				<td style='vertical-align:top'>";
-	$cpt=0;
+	$cpt_eng_resp=0;
 	foreach($tab_engagements['indice'] as $key => $current_engagement) {
 		if($current_engagement['ConcerneResponsable']) {
-			echo "<input type='checkbox' name='engagement_resp[]' id='engagement_resp_$cpt' value='".$current_engagement['id']."' onchange=\"checkbox_change('engagement_resp_$cpt')\" /><label for='engagement_resp_$cpt' id='texte_engagement_resp_$cpt' title=\"".$current_engagement['nom']." (".$current_engagement['description'].") ".$current_engagement['effectif']." engagement(s) saisi(s).\"> ".$current_engagement['nom']."</label><br />";
-			$cpt++;
+			echo "<input type='checkbox' name='engagement_resp[]' id='engagement_resp_$cpt_eng_resp' value='".$current_engagement['id']."' onchange=\"checkbox_change('engagement_resp_$cpt_eng_resp')\" /><label for='engagement_resp_$cpt_eng_resp' id='texte_engagement_resp_$cpt_eng_resp' title=\"".$current_engagement['nom']." (".$current_engagement['description'].") ".$current_engagement['effectif']." engagement(s) saisi(s).\"> ".$current_engagement['nom']."</label><br />";
+			$cpt_eng_resp++;
 		}
 	}
 	echo "
 				</td>
 			</tr>
 		</table>
+
+		<p><a href='#' onClick='coche_engagements(true);return false;'>Cocher tous les engagements</a> / <a href='#' onClick='coche_engagements(false);return false;'>Décocher tous les engagements</a></p>
 
 		<p><input type='submit' value='Valider' /></p>
 
@@ -352,6 +354,21 @@ if((!isset($id_classe))||((count($engagement_ele)==0)&&(count($engagement_resp)=
 			if(document.getElementById('tab_id_classe_'+k)){
 				document.getElementById('tab_id_classe_'+k).checked = mode;
 				change_style_classe(k);
+			}
+		}
+	}
+
+	function coche_engagements(mode) {
+		for (var k=0;k<$cpt_eng_ele;k++) {
+			if(document.getElementById('engagement_ele_'+k)){
+				document.getElementById('engagement_ele_'+k).checked = mode;
+				checkbox_change('engagement_ele_'+k);
+			}
+		}
+		for (var k=0;k<$cpt_eng_resp;k++) {
+			if(document.getElementById('engagement_resp_'+k)){
+				document.getElementById('engagement_resp_'+k).checked = mode;
+				checkbox_change('engagement_resp_'+k);
 			}
 		}
 	}
