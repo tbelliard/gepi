@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2015 Régis Bouguin
+ * Copyright 2015-2019 Régis Bouguin
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -80,6 +80,8 @@ $photoListe = NULL;
 // $id_aid = isset($_SESSION['liste_perso']['id_aid']) ? $_SESSION['liste_perso']['id_aid'] : NULL;
 $id_groupe = NULL;
 $id_aid = NULL;
+
+//debug_var();
 
 //$colonnes = array();
 
@@ -183,7 +185,7 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 			   ->distinct();
 			$eleve_col = $query->find();
 		} else {
-			if(count($idElevesChoisis)) {
+			if((isset($idElevesChoisis))&&(count($idElevesChoisis))) {
 				// TODO : enregistrer les élèves et mettre tout ça dans des fonctions
 				EnregistreElevesChoisis($idElevesChoisis, $_SESSION['liste_perso']['id']);
 			}
@@ -217,7 +219,8 @@ elseif ($sauveModifieCaseColonne) {
 elseif ($supprimeColonne) { //===== On supprime une colonne
 	$idCol = filter_input(INPUT_POST, 'colonneASupprime') ? filter_input(INPUT_POST, 'colonneASupprime') : NULL;
 	$liste = filter_input(INPUT_POST, 'idListe') ? filter_input(INPUT_POST, 'idListe') : NULL;
-	if ($idCol !== NULL) {
+	//echo "idCol='$idCol'<br />";
+	if (($idCol !== NULL)&&($idCol!='-1')) {
 		SupprimeColonne($liste, $idCol);
 	}
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
@@ -482,7 +485,7 @@ foreach ($groupe_col as $group) {
 		<form action="index.php" name="formSupprimeColonne" method="post">
 			<p>
 				<select id="colonneASupprime" name="colonneASupprime">
-					<option value='-1'>choisissez la colonne à supprimer</option>		
+					<option value='-1'>choisissez la colonne à supprimer</option>
 <?php
 if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	while ($col = $colonnes->fetch_object()) {
