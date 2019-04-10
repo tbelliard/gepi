@@ -933,8 +933,8 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/impression/impression_serie.php' , "texte"=>"Mes listes PDF");
 	$cpt_sous_menu++;
 
-	if(getSettingAOui("GepiListePersonnelles")) {
-		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_listes_perso/index.php' , "texte"=>"Listes perso");
+	if(getSettingAOui('GepiListePersonnelles')) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_listes_perso/index.php' , "texte"=>"Listes personnelles");
 		$cpt_sous_menu++;
 	}
 
@@ -1002,12 +1002,6 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/statistiques/index.php' , "texte"=>"Statistiques");
 	$cpt_sous_menu++;
-	
-	if(getSettingAOui('GepiListePersonnelles')) {
-		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_listes_perso/index.php' , "texte"=>"Listes personnelles");
-		$cpt_sous_menu++;
-	}
-	
 
 	$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 	$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
