@@ -582,7 +582,7 @@
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
 				$res_ele_id=mysqli_query($GLOBALS["mysqli"], $sql);
-				affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
+				affiche_debug("count(\$res_ele_id)=".mysqli_num_rows($res_ele_id)."<br />");
 
 				unset($tab_ele_id);
 				$tab_ele_id=array();
@@ -962,7 +962,7 @@
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
 				$res_ele_id=mysqli_query($GLOBALS["mysqli"], $sql);
-				//echo "count(\$res_ele_id)=".count($res_ele_id)."<br />";
+				//echo "count(\$res_ele_id)=".mysqli_num_rows($res_ele_id)."<br />";
 
 				unset($tab_ele_id);
 				$tab_ele_id=array();
