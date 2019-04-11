@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2015-2019 Régis Bouguin
+ * Copyright 2015-2019 Régis Bouguin, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -91,7 +91,7 @@ $id_aid = NULL;
 $tableauChoisi = filter_input(INPUT_POST, 'tableauChoisi') ? filter_input(INPUT_POST, 'tableauChoisi') : NULL;
 $nouvelleListe = filter_input(INPUT_POST, 'nouvelleListe') === 'Nouvelle liste' ? TRUE : NULL;
 $sauveDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Sauvegarder' ? TRUE : FALSE;
-$supprimerDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Supprimer' ? TRUE : FALSE;
+$supprimerDefinitionListe = filter_input(INPUT_POST, 'supprimerDefinitionListe') === 'Supprimer' ? TRUE : FALSE;
 $sauveTitreColonne = filter_input(INPUT_POST, 'action') === 'sauveTitreColonne' ? TRUE : FALSE;
 $chargeEleves = filter_input(INPUT_POST, 'action') === 'choixEleves' ? TRUE : FALSE;
 $sauveModifieCaseColonne = filter_input(INPUT_POST, 'action') === 'sauveModifieCaseColonne' ? TRUE : FALSE;
@@ -130,24 +130,82 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 	$nbColonneListe = DonneeEnPostOuSession('nbColonneListe', 'nbColonne',0);
 	
 	if (strlen($nomListe)) {
-		sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe, $nbColonneListe);
-		//===== On met tout en session =====
-		$_SESSION['liste_perso']['id'] = $idListe;
-		$_SESSION['liste_perso']['nom'] = $nomListe;
-		$_SESSION['liste_perso']['sexe'] = $sexeListe;
-		$_SESSION['liste_perso']['classe'] = $classeListe;
-		$_SESSION['liste_perso']['nbColonne'] = $nbColonneListe;
-		$_SESSION['liste_perso']['photo'] = $photoListe;
-		$colonnes = LitColonnes($idListe);
-		$_SESSION['liste_perso']['colonnes'] = $colonnes;
+		if(($idListe!='')&&(!checkProprioListe($idListe))) {
+			$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+			//echo "$msg<br />";
+			//die();
+			$idListe='';
+		}
+		else {
+			sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe, $nbColonneListe);
+			//===== On met tout en session =====
+			$_SESSION['liste_perso']['id'] = $idListe;
+			$_SESSION['liste_perso']['nom'] = $nomListe;
+			$_SESSION['liste_perso']['sexe'] = $sexeListe;
+			$_SESSION['liste_perso']['classe'] = $classeListe;
+			$_SESSION['liste_perso']['nbColonne'] = $nbColonneListe;
+			$_SESSION['liste_perso']['photo'] = $photoListe;
+			$colonnes = LitColonnes($idListe);
+			$_SESSION['liste_perso']['colonnes'] = $colonnes;
+		}
 	}
-	
 } elseif ($supprimerDefinitionListe) { //===== Suppression d'une liste =====
-		
+	//$idListe = isset($_POST['idListe']) ? $_POST['idListe'] : NULL;
+	$idListe = DonneeEnPostOuSession('idListe', 'id', '');
+	if((!isset($idListe))||($idListe=='')) {
+		$msg="Liste à supprimer non choisie.<br />";
+		$idListe='';
+	}
+	elseif(!checkProprioListe($idListe)) {
+		$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+	}
+	else {
+		$sql="DELETE FROM mod_listes_perso_contenus WHERE id_def='".$idListe."';";
+		$del=mysqli_query($mysqli, $sql);
+		if(!$del) {
+			$msg="Erreur lors de la suppression des contenus associés à la liste n°".$idListe.".<br />";
+		}
+		else {
+			$sql="DELETE FROM mod_listes_perso_colonnes WHERE id_def='".$idListe."';";
+			$del=mysqli_query($mysqli, $sql);
+			if(!$del) {
+				$msg="Erreur lors de la suppression des colonnes associées à la liste n°".$idListe.".<br />";
+			}
+			else {
+				$sql="DELETE FROM mod_listes_perso_eleves WHERE id_def='".$idListe."';";
+				$del=mysqli_query($mysqli, $sql);
+				if(!$del) {
+					$msg="Erreur lors de la suppression des élèves associés à la liste n°".$idListe.".<br />";
+				}
+				else {
+					$sql="DELETE FROM mod_listes_perso_definition WHERE id='".$idListe."';";
+					$del=mysqli_query($mysqli, $sql);
+					if(!$del) {
+						$msg="Erreur lors de la suppression de la liste n°".$idListe.".<br />";
+					}
+					else {
+						$msg="Liste n°".$idListe." supprimée.<br />";
+						$idListe='';
+						unset($_SESSION['liste_perso']);
+					}
+				}
+			}
+		}
+	}
 } elseif ($sauveTitreColonne) { //===== Un titre de colonne a changé =====
-	SauveTitreColonne();
 	$idListe = filter_input(INPUT_POST, 'id_def');
-	
+	if((!isset($idListe))||($idListe=='')) {
+		$msg="Liste non choisie.<br />";
+		$idListe='';
+	}
+	elseif(!checkProprioListe($idListe)) {
+		$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+		$idListe='';
+	}
+	else {
+		SauveTitreColonne();
+		$idListe = filter_input(INPUT_POST, 'id_def');
+	}
 } elseif ($chargeEleves) { //===== On charge les élèves =====
 	$eleve_col = new PropelCollection();
 	$id_groupe = (int)filter_input(INPUT_POST, 'id_groupe') != -1 ? filter_input(INPUT_POST, 'id_groupe') : NULL;
@@ -194,8 +252,19 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
 } 
 elseif ($supprimeEleve) {
-	SupprimeEleve($supprimeEleve, $_SESSION['liste_perso']['id']);
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+	if((!isset($idListe))||($idListe=='')) {
+		$msg="Liste non choisie.<br />";
+		$idListe='';
+	}
+	elseif(!checkProprioListe($idListe)) {
+		$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+		$idListe='';
+	}
+	else {
+		SupprimeEleve($supprimeEleve, $_SESSION['liste_perso']['id']);
+		$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+	}
 } 
 elseif ($sauveModifieCaseColonne) {
 	$login = filter_input(INPUT_POST, 'login');
@@ -203,47 +272,103 @@ elseif ($sauveModifieCaseColonne) {
 	$idColonne = filter_input(INPUT_POST, 'id_col');
 	$contenu = filter_input(INPUT_POST, 'contenu');
 	$id = filter_input(INPUT_POST, 'id');
-	$retour_ModifieCaseColonneEleve=ModifieCaseColonneEleve($login, $idDef, $idColonne, $contenu, $id);
-	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
 
-	if(isset($_POST['mode_ajax'])) {
-		if($retour_ModifieCaseColonneEleve) {
-			echo $contenu;
+	$idListe = $idDef;
+	if((!isset($idListe))||($idListe=='')) {
+		$msg="Liste non choisie.<br />";
+		$idListe='';
+	}
+	elseif(!checkProprioListe($idListe)) {
+		$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+		$idListe='';
+	}
+	else {
+
+		$retour_ModifieCaseColonneEleve=ModifieCaseColonneEleve($login, $idDef, $idColonne, $contenu, $id);
+		$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+
+		if(isset($_POST['mode_ajax'])) {
+			if($retour_ModifieCaseColonneEleve) {
+				echo $contenu;
+			}
+			else {
+				echo "<span style='color:red'>ERREUR</span>";
+			}
+			die();
 		}
-		else {
-			echo "<span style='color:red'>ERREUR</span>";
-		}
-		die();
 	}
 }
 elseif ($supprimeColonne) { //===== On supprime une colonne
 	$idCol = filter_input(INPUT_POST, 'colonneASupprime') ? filter_input(INPUT_POST, 'colonneASupprime') : NULL;
 	$liste = filter_input(INPUT_POST, 'idListe') ? filter_input(INPUT_POST, 'idListe') : NULL;
 	//echo "idCol='$idCol'<br />";
-	if (($idCol !== NULL)&&($idCol!='-1')) {
-		SupprimeColonne($liste, $idCol);
+
+	$idListe = $liste;
+	if((!isset($idListe))||($idListe=='')) {
+		$msg="Liste non choisie.<br />";
+		$idListe='';
 	}
-	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+	elseif(!checkProprioListe($idListe)) {
+		$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+		$idListe='';
+	}
+	else {
+		if (($idCol !== NULL)&&($idCol!='-1')) {
+			SupprimeColonne($liste, $idCol);
+		}
+		$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+	}
 }
 elseif ($avanceColonne) {
 	$idColonneABouge = filter_input(INPUT_POST, 'colonneABouge');
 	$idListe = filter_input(INPUT_POST, 'idListe');
-	AvanceColonne($idColonneABouge, $idListe);
+	if((!isset($idListe))||($idListe=='')) {
+		$msg="Liste non choisie.<br />";
+		$idListe='';
+	}
+	elseif(!checkProprioListe($idListe)) {
+		$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+		$idListe='';
+	}
+	else {
+		AvanceColonne($idColonneABouge, $idListe);
+	}
 }
 elseif ($reculeColonne) {
 	$idColonneABouge = filter_input(INPUT_POST, 'colonneABouge');
 	$idListe = filter_input(INPUT_POST, 'idListe');
-	ReculeColonne($idColonneABouge, $idListe);
+	if((!isset($idListe))||($idListe=='')) {
+		$msg="Liste non choisie.<br />";
+		$idListe='';
+	}
+	elseif(!checkProprioListe($idListe)) {
+		$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+		$idListe='';
+	}
+	else {
+		ReculeColonne($idColonneABouge, $idListe);
+	}
 }
 else { //===== Sinon on vérifie s'il y a une liste en mémoire
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
+	if((isset($idListe))&&($idListe!='')&&(!checkProprioListe($idListe))) {
+		$msg="Vous n'êtes pas propriétaire de la liste n°".$idListe.".<br />";
+		$idListe='';
+	}
 }
 
 //==============================================
 //Charge tableau
 //==============================================
+//echo "\$idListe='$idListe'<br />";
 chargeListe($idListe);
 $eleve_choisi_col = ChargeEleves($idListe);
+/*
+echo "\$donneesTableau = ChargeColonnesEleves($idListe, \$eleve_choisi_col);<br />
+où \$eleve_choisi_col contient<pre>";
+print_r($eleve_choisi_col);
+echo "</pre>";
+*/
 $donneesTableau = ChargeColonnesEleves($idListe, $eleve_choisi_col);
 
 $groupe_col = $utilisateur->getGroupes();
@@ -269,11 +394,22 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+/*
+if(isset($msg)) {
+echo "<div style='color:red; border: 1px dashed red;'>".$msg."</div>";
+}
+*/
+
+/*
+echo "<pre>";
+print_r($donneesTableau);
+echo "</pre>";
+*/
 ?>
 <div class="noprint">
 <?php
 if((isset($idListe))&&(preg_match("/^[0-9]{1,}$/", $idListe))) {
-	echo "<div style='float:right; width:16px;'><a href='export_liste.php?id_def=".$idListe."' target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>";
+	echo "<div style='float:right; width:16px; text-align:center;' class='fieldset_opacite50'><a href='export_liste.php?id_def=".$idListe."' target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>";
 }
 ?>
 <ul class="menu_entete_liste">
@@ -466,8 +602,8 @@ foreach ($groupe_col as $group) {
 				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe; ?>" />
 				<input type="submit" id="sauveDefinitionListe" name="sauveDefinitionListe" value="Sauvegarder" />
 				<input type="submit" 
-					   id="supprimeDefinitionListe" 
-					   name="supprimeDefinitionListe" 
+					   id="supprimerDefinitionListe" 
+					   name="supprimerDefinitionListe" 
 					   value="Supprimer"
 					   title="Supprimer la liste"
 					   style="margin-top: 1em;"
@@ -632,15 +768,15 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	masque('supprime_<?php echo $elv_choisi->getLogin(); ?>');
 </script>		
 					</form>
-				</td>				
+				</td>
 <?php	if ($sexeListe) { ?>
-				<td class="center"><?php echo $elv_choisi->getSexe(); ?></td>	
+				<td class="center"><?php echo $elv_choisi->getSexe(); ?></td>
 <?php	} ?>
 				
 <?php	if ($classeListe) { ?>
-				<td class="center"><?php echo $elv_choisi->getClasse()->getNom(); ?></td>	
+				<td class="center"><?php echo $elv_choisi->getClasse()->getNom(); ?></td>
 <?php	} ?>
-				
+
 <?php	if ($photoListe) { ?>
 				<td class="center">
 <?php		if ($elv_choisi->getElenoet()) { ?>

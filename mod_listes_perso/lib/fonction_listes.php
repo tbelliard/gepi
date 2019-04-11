@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2015 Régis Bouguin
+ * Copyright 2015-2019 Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -199,7 +199,7 @@ function SauveTitreColonne() {
 		echo $sql."<br />" ;
 		return FALSE;
 	}
-	return TRUE;	
+	return TRUE;
 }
 
 function HightPlace($idListe) {
@@ -437,12 +437,35 @@ function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NU
 
 function ChargeColonnesEleves($idListe, $eleve_choisi_col) {
 	$tableauRetour = array();
-	if (isset($eleve_choisi_col) && is_array($eleve_choisi_col) && count($eleve_choisi_col)) {
+	/*
+	if (isset($eleve_choisi_col)) {
+		echo "eleve_choisi_col est défini.<br />";
+		if(is_array($eleve_choisi_col)) {
+			echo "eleve_choisi_col est un tableau.<br />";
+			if(count($eleve_choisi_col)) {
+				echo "et ce tableau est non vide.<br />";
+			}
+		}
+		elseif(is_object($eleve_choisi_col)) {
+			echo "eleve_choisi_col est un objet.<br />";
+			if($eleve_choisi_col->count()) {
+				echo "et cet objet est non vide.<br />";
+			}
+		}
+	}
+	*/
+	//if (isset($eleve_choisi_col) && is_array($eleve_choisi_col) && count($eleve_choisi_col)) {
+	if (isset($eleve_choisi_col) && is_object($eleve_choisi_col) && ($eleve_choisi_col->count()>0)) {
+		//echo "On a des élèves dans \$eleve_choisi_col<br />";
 		foreach ($eleve_choisi_col as $elv) {
 			$tableauRetour[$elv->getLogin()] = ChargeCasesEleves($idListe, $elv);
 		}
 	}
-	
+	/*
+	echo "tableauRetour<pre>";
+	print_r($tableauRetour);
+	echo "</pre>";
+	*/
 	return $tableauRetour;
 }
 
@@ -487,7 +510,18 @@ function SupprimeToutesColonnes($elv, $idListe) {
 	return TRUE;
 }
 
-
+function checkProprioListe($idListe) {
+	global $mysqli;
+	$sql="SELECT 1=1 FROM mod_listes_perso_definition WHERE id='".$idListe."' AND proprietaire='".$_SESSION['login']."'";
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if ((!$query)||(mysqli_num_rows($query)==0)) {
+		return FALSE;
+	}
+	else {
+		return TRUE;
+	}
+}
 
 
 
