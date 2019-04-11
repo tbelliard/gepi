@@ -81,6 +81,7 @@ $id_def=isset($_GET['id_def']) ? $_GET['id_def'] : NULL;
 
 if(isset($id_def)) {
 	$sql="SELECT * FROM mod_listes_perso_definition WHERE id='".$id_def."' AND proprietaire='".$_SESSION["login"]."';";
+	//echo "\n$sql\n<br />\n";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res)>0) {
@@ -97,11 +98,14 @@ if(isset($id_def)) {
 
 		$tab_col=array();
 		$sql="SELECT * FROM mod_listes_perso_colonnes WHERE id_def='".$id_def."' ORDER BY placement;";
-		//echo "$sql<br />";
+		//echo "\n$sql\n<br />\n";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig2=mysqli_fetch_object($res2)) {
 			$csv.=preg_replace("/;/", ",", $lig2->titre).";";
-			$tab_col[]=$lig2->placement;
+			//$tab_col[]=$lig2->placement;
+			$tab_col[]=$lig2->id;
+			// La jointure est mod_listes_perso_colonnes.id=mod_listes_perso_contenus.colonne
+			// et mod_listes_perso_colonnes.placement ne sert que pour l'ordre des colonnes.
 		}
 		$csv.="\n";
 
@@ -112,7 +116,7 @@ if(isset($id_def)) {
 		*/
 
 		$sql="SELECT e.* FROM mod_listes_perso_eleves m, eleves e WHERE m.id_def='".$id_def."' AND e.login=m.login ORDER BY e.nom, e.prenom;";
-		//echo "$sql<br />";
+		//echo "\n$sql\n<br />\n";
 		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig_ele=mysqli_fetch_object($res_ele)) {
 			$csv.=$lig_ele->nom.";";
@@ -127,7 +131,7 @@ if(isset($id_def)) {
 			for($loop=0;$loop<count($tab_col);$loop++) {
 				$valeur="";
 				$sql="SELECT * FROM mod_listes_perso_contenus WHERE id_def='".$id_def."' AND login='".$lig_ele->login."' AND colonne='".$tab_col[$loop]."';";
-				//echo "$sql<br />";
+				//echo "\n$sql\n<br />\n";
 				$res_col=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_col)>0) {
 					$lig_col=mysqli_fetch_object($res_col);
