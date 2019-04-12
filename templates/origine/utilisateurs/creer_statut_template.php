@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -126,7 +126,33 @@ echo add_token_field();
 	  </p>
 	</form>
 
+	<p style='margin-top:1em'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>Seul un administrateur peut créer des statuts personnalisés.</li>
+		<li>
+			<strong>Créer des statuts personnalisés</strong><br />
+			[<a href='../accueil_admin.php'>gestion des bases</a>] -&gt; [<a href='index.php'>Gestion des comptes d'accès des utilisateurs</a>] -&gt; [<a href='index.php?mode=personnels'>Personnel de l'établissement</a>] -&gt; en haut, il y a un lien [<a href='creer_statut.php'>Statuts personnalisés</a>] : cliquons.<br />
+			En bas à gauche, [Ajouter un statut personnalisé] et lui donner un nom.<br />
+			Quand on clique sur [Ajouter], le tableau gagne une colonne avec des coches vides.<br />
+			Il suffit de choisir les droits à donner à ce statut et de [Enregistrer et mettre à jour].
+		</li>
+		<li>
+			<strong>Donner un statut personnalisé à un utilisateur</strong><br />
+			Quand on crée un nouvel utilisateur <em>(personnel de l'établissement)</em>, on lui donne un statut <em>(Professeur, Administrateur, C.P.E., Scolarité, Secours, Autre)</em>.<br />
+			Pour pouvoir lui donner le statut personnalisé, il faut qu'il soit "Autre".<br />
+			Sur la page des statuts personnalisés, les utilisateurs "Autre" sont listés à droite en attente d'un statut personnalisé <em>(sans lequel ils ne peuvent pas se connecter)</em>.<br />
+			Il faut alors leur donner le statut choisi, c'est terminé.
+		</li>
+		<li>
+			<strong>Mettre à jour un statut personnalisé</strong><br />
+			Pour mettre à jour un statut personnalisé <em>(ajout d'un droit par exemple)</em> il faut dans un premier temps détruire le statut et le recréer avec les droits voulus.<br />
+			Il ne faut pas oublier de réaffecter le statut à chaque utilisateur.
+		</li>
+	</ul>
 
+	
+	
+	</p>
 
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
