@@ -159,7 +159,7 @@ if ($action == 'ajouter') {
 					$vf = 'V';
 				}
 
-				$droit_courant=$autorise_statuts_personnalise[$i];
+				$droit_courant=$autorise_statuts_personnalise[$a];
 				foreach($droit_courant as $nom_fichier => $commentaire) {
 					$sql="INSERT INTO droits_speciaux SET id_statut='".$last_id."',
 											nom_fichier='".$nom_fichier."',
