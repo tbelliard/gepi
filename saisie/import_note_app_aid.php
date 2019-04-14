@@ -183,8 +183,24 @@ Laisser la colonne vide si il n'y a pas de notes pour cet AID <em>(mais la colon
 </p>
 <p>Pour constituer le fichier d'importation vous avez besoin de connaître l'identifiant <b>GEPI</b> de chaque élève. Vous pouvez télécharger:</p>
 <ul>
-	<li>le fichier élèves <em>(identifiant GEPI (login), sans nom et prénom)</em> en <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;champs=3&amp;ligne_entete=y&amp;mode=Id_Note_App'><b>cliquant ici</b></a></li>
-	<li>ou bien le fichier élèves <em>(nom - prénom - identifiant GEPI)</em> en <a href='import_class_csv.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;champs=5&amp;ligne_entete=y&amp;mode=Nom_Prenom_Id_Note_App'><b>cliquant ici</b></a><br />(<i>ce deuxième fichier n'est pas directement adapté à l'import<br />(il faudra en supprimer les colonnes Nom et Prénom avant import)</i>)</li>
+	<li>le fichier élèves <em>(identifiant GEPI (login), sans nom et prénom)</em> en cliquant ici&nbsp;: ";
+	for($loop_per=1;$loop_per<=$tab_aid['maxper'];$loop_per++) {
+		if(($tab_aid["classe"]["ver_periode"]['all'][$loop_per]>=2)||
+		(($tab_aid["classe"]["ver_periode"]['all'][$loop_per]!=0)&&($_SESSION['statut']=='secours'))) {
+
+			echo " <a href='import_class_csv.php?aid_id=".$aid_id."&amp;periode_num=$loop_per&amp;champs=3&amp;ligne_entete=y&amp;mode=Id_Note_App'><b>période $loop_per</b></a> ";
+		}
+	}
+	echo "</li>
+	<li>ou bien le fichier élèves <em>(nom - prénom - identifiant GEPI)</em> en cliquant ici&nbsp;: ";
+	for($loop_per=1;$loop_per<=$tab_aid['maxper'];$loop_per++) {
+		if(($tab_aid["classe"]["ver_periode"]['all'][$loop_per]>=2)||
+		(($tab_aid["classe"]["ver_periode"]['all'][$loop_per]!=0)&&($_SESSION['statut']=='secours'))) {
+
+			echo " <a href='import_class_csv.php?aid_id=".$aid_id."&amp;periode_num=$loop_per&amp;champs=5&amp;ligne_entete=y&amp;mode=Nom_Prenom_Id_Note_App'><b>période $loop_per</b></a> ";
+		}
+	}
+	echo "<br />(<i>ce deuxième fichier n'est pas directement adapté à l'import<br />(il faudra en supprimer les colonnes Nom et Prénom avant import)</i>)</li>
 </ul>
 <p>Une fois téléchargé, utilisez votre tableur habituel pour ouvrir ce fichier en précisant que le type de fichier est csv avec point-virgule comme séparateur.</p>\n";
 
@@ -214,143 +230,149 @@ elseif(!isset($_POST['valider_import'])) {
 					unset($en_tete);
 				}
 				$data = fgetcsv ($fp, $long_max, ";");
-				$num = count ($data);
-				// On commence par repérer les lignes qui comportent 2 ou 3 champs tous vides de façon à ne pas les retenir
-				if (($num == 2) or ($num == 3)) {
-					$champs_vides = 'yes';
-					for ($c=0; $c<$num; $c++) {
-						if ($data[$c] != '') {
-							$champs_vides = 'no';
+				/*
+				echo "<hr /><pre>";
+				print_r($data);
+				echo "</pre><hr />";
+				*/
+				if(is_array($data)) {
+					$num = count ($data);
+					// On commence par repérer les lignes qui comportent 2 ou 3 champs tous vides de façon à ne pas les retenir
+					if (($num == 2) or ($num == 3)) {
+						$champs_vides = 'yes';
+						for ($c=0; $c<$num; $c++) {
+							if ($data[$c] != '') {
+								$champs_vides = 'no';
+							}
 						}
 					}
-				}
-				// On ne retient que les lignes qui comportent 2 ou 3 champs dont au moins un est non vide
-				if ((($num == 3) or ($num == 2)) and ($champs_vides == 'no')) {
-					$alt=$alt*(-1);
-					$row++;
-					echo "<tr class='lig$alt'>\n";
-					for ($c=0; $c<$num; $c++) {
-						$col3 = '';
-						$reg_app = '';
-						$data_app = '';
-						switch ($c) {
-							case 0:
-								//login
-								$reg_login = "reg_".$row."_login";
-								$reg_statut = "reg_".$row."_statut";
-								$call_login = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='" . $data[$c] . "'");
-								$test = @mysqli_num_rows($call_login);
-								if ($test != 0) {
-									$nom_eleve = @old_mysql_result($call_login, 0, "nom");
-									$prenom_eleve = @old_mysql_result($call_login, 0, "prenom");
+					// On ne retient que les lignes qui comportent 2 ou 3 champs dont au moins un est non vide
+					if ((($num == 3) or ($num == 2)) and ($champs_vides == 'no')) {
+						$alt=$alt*(-1);
+						$row++;
+						echo "<tr class='lig$alt'>\n";
+						for ($c=0; $c<$num; $c++) {
+							$col3 = '';
+							$reg_app = '';
+							$data_app = '';
+							switch ($c) {
+								case 0:
+									//login
+									$reg_login = "reg_".$row."_login";
+									$reg_statut = "reg_".$row."_statut";
+									$call_login = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='" . $data[$c] . "'");
+									$test = @mysqli_num_rows($call_login);
+									if ($test != 0) {
+										$nom_eleve = @old_mysql_result($call_login, 0, "nom");
+										$prenom_eleve = @old_mysql_result($call_login, 0, "prenom");
 
-									//
-									// Si l'élève ne suit pas la matière
-									//
-									if (in_array($data[$c], $tab_aid["eleves"][$periode_num]["list"]))  {
-										echo "<td><p>$data[$c]</p></td>\n";
+										//
+										// Si l'élève ne suit pas la matière
+										//
+										if (in_array($data[$c], $tab_aid["eleves"][$periode_num]["list"]))  {
+											echo "<td><p>$data[$c]</p></td>\n";
+										} else {
+											echo "<td><p><font color = red>* $data[$c] ??? *</font></p></td>\n";
+											$valid = 0;
+										}
+										echo "<td><p>$nom_eleve</p></td>\n";
+										//echo "<td><p>$prenom_eleve</p></td>";
+										echo "<td><p>$prenom_eleve</p>";
+										$data_login = urlencode($data[$c]);
+										echo "<input type='hidden' name='$reg_login' value=\"$data_login\" />";
+										echo "</td>\n";
 									} else {
-										echo "<td><p><font color = red>* $data[$c] ??? *</font></p></td>\n";
+										echo "<td><font color = red>???</font></td>\n";
+										echo "<td><font color = red>???</font></td>\n";
+										echo "<td><font color = red>???</font></td>\n";
+										echo "<td><font color = red>???</font></td>\n";
 										$valid = 0;
 									}
-									echo "<td><p>$nom_eleve</p></td>\n";
-									//echo "<td><p>$prenom_eleve</p></td>";
-									echo "<td><p>$prenom_eleve</p>";
-									$data_login = urlencode($data[$c]);
-									echo "<input type='hidden' name='$reg_login' value=\"$data_login\" />";
-									echo "</td>\n";
-								} else {
-									echo "<td><font color = red>???</font></td>\n";
-									echo "<td><font color = red>???</font></td>\n";
-									echo "<td><font color = red>???</font></td>\n";
-									echo "<td><font color = red>???</font></td>\n";
-									$valid = 0;
-								}
-								break;
-							case 1:
-								// Note
-								if (preg_match ("/^[0-9\.\,]{1,}$/", $data[$c])) {
-									$data[$c] = str_replace(",", ".", "$data[$c]");
-									$test_num = settype($data[$c],"double");
-									if ($test_num) {
-										if (($data[$c] >= 0) and ($data[$c] <= 20)) {
-											//echo "<td><p>$data[$c]</p></td>";
-											echo "<td><p>$data[$c]</p>";
-											$reg_note = "reg_".$row."_note";
-											echo "<input type='hidden' name='$reg_note' value=\"$data[$c]\" />";
-											echo "</td>\n";
+									break;
+								case 1:
+									// Note
+									if (preg_match ("/^[0-9\.\,]{1,}$/", $data[$c])) {
+										$data[$c] = str_replace(",", ".", "$data[$c]");
+										$test_num = settype($data[$c],"double");
+										if ($test_num) {
+											if (($data[$c] >= 0) and ($data[$c] <= 20)) {
+												//echo "<td><p>$data[$c]</p></td>";
+												echo "<td><p>$data[$c]</p>";
+												$reg_note = "reg_".$row."_note";
+												echo "<input type='hidden' name='$reg_note' value=\"$data[$c]\" />";
+												echo "</td>\n";
+											} else {
+												echo "<td><font color = red>???</font></td>\n";
+												$valid = 0;
+											}
 										} else {
 											echo "<td><font color = red>???</font></td>\n";
 											$valid = 0;
 										}
 									} else {
-										echo "<td><font color = red>???</font></td>\n";
-										$valid = 0;
+										$tempo = my_strtolower($data[$c]);
+										if (($tempo == "disp") or ($tempo == "abs") or ($tempo == "-")) {
+											//echo "<td><p>$data[$c]</p></td>";
+											echo "<td><p>$data[$c]</p>\n";
+											$reg_note = "reg_".$row."_note";
+											echo "<input type='hidden' name='$reg_note' value=\"$data[$c]\" />";
+											echo "</td>\n";
+										} else if ($data[$c] == "") {
+											//echo "<td><p><font color = green>ND</font></p></td>";
+											echo "<td><p><font color = green>ND</font></p>";
+											$reg_note = "reg_".$row."_note";
+											echo "<input type='hidden' name='$reg_note' value='' />";
+											echo "</td>\n";
+											$non_def = 'yes';
+										} else {
+											echo "<td><font color = red>???</font></td>\n";
+											$valid = 0;
+										}
 									}
-								} else {
-									$tempo = my_strtolower($data[$c]);
-									if (($tempo == "disp") or ($tempo == "abs") or ($tempo == "-")) {
-										//echo "<td><p>$data[$c]</p></td>";
-										echo "<td><p>$data[$c]</p>\n";
-										$reg_note = "reg_".$row."_note";
-										echo "<input type='hidden' name='$reg_note' value=\"$data[$c]\" />";
-										echo "</td>\n";
-									} else if ($data[$c] == "") {
-										//echo "<td><p><font color = green>ND</font></p></td>";
-										echo "<td><p><font color = green>ND</font></p>";
-										$reg_note = "reg_".$row."_note";
-										echo "<input type='hidden' name='$reg_note' value='' />";
-										echo "</td>\n";
+									break;
+								case 2:
+									// Appréciation
+									$non_def='';
+									if ($data[$c] == "") {
+										$col3 = "<font color = green>ND</font>";
 										$non_def = 'yes';
+										$data_app = '';
 									} else {
-										echo "<td><font color = red>???</font></td>\n";
-										$valid = 0;
+										// =====================================================
+										// L'export CSV généré par le fichier ODS remplace les ; par des |POINT-VIRGULE|
+										// pour ne pas provoquer de problème avec le séparateur ; du CSV
+										// AJOUT: boireaus
+										//echo "<td>\$data[$c]=$data[$c]</td>";
+										//$data[$c]=my_ereg_replace("|POINT-VIRGULE|",";",$data[$c]);
+										//$data[$c]=my_ereg_replace("\|POINT-VIRGULE\|",";",$data[$c]);
+										$data[$c]=trim(str_replace("|POINT-VIRGULE|",";",$data[$c]));
+										// =====================================================
+										//$col3 = $data[$c];
+										$col3 = ensure_utf8($data[$c]);
+										//$data_app = urlencode($data[$c]);
+										$data_app = urlencode($col3);
 									}
-								}
-								break;
-							case 2:
-								// Appréciation
-								$non_def='';
-								if ($data[$c] == "") {
-									$col3 = "<font color = green>ND</font>";
-									$non_def = 'yes';
-									$data_app = '';
-								} else {
-									// =====================================================
-									// L'export CSV généré par le fichier ODS remplace les ; par des |POINT-VIRGULE|
-									// pour ne pas provoquer de problème avec le séparateur ; du CSV
-									// AJOUT: boireaus
-									//echo "<td>\$data[$c]=$data[$c]</td>";
-									//$data[$c]=my_ereg_replace("|POINT-VIRGULE|",";",$data[$c]);
-									//$data[$c]=my_ereg_replace("\|POINT-VIRGULE\|",";",$data[$c]);
-									$data[$c]=trim(str_replace("|POINT-VIRGULE|",";",$data[$c]));
-									// =====================================================
-									//$col3 = $data[$c];
-									$col3 = ensure_utf8($data[$c]);
-									//$data_app = urlencode($data[$c]);
-									$data_app = urlencode($col3);
-								}
-								$reg_app = "reg_".$row."_app";
-								//                            echo "<INPUT TYPE=HIDDEN name='$reg_app' value = $data_app>";
-								echo "<td><p>$col3</p>";
-								if($non_def!='yes') {
-									echo "<input type='hidden' name='$reg_app' value=\"$data_app\" />";
-								}
-								//echo "</td>\n</tr>\n";
-								echo "</td>\n";
-								break;
+									$reg_app = "reg_".$row."_app";
+									//                            echo "<INPUT TYPE=HIDDEN name='$reg_app' value = $data_app>";
+									echo "<td><p>$col3</p>";
+									if($non_def!='yes') {
+										echo "<input type='hidden' name='$reg_app' value=\"$data_app\" />";
+									}
+									//echo "</td>\n</tr>\n";
+									echo "</td>\n";
+									break;
+							}
 						}
+						//echo "<td><p>$col3</p>"</td></tr>";
+						/*
+						echo "<td><p>$col3</p>";
+						echo "<INPUT TYPE=HIDDEN name='$reg_app' value = $data_app />";
+						echo "</td>\n</tr>\n";
+						*/
+						echo "</tr>\n";
+						// fin de la condition "if ($num == 3)"
 					}
-					//echo "<td><p>$col3</p>"</td></tr>";
-					/*
-					echo "<td><p>$col3</p>";
-					echo "<INPUT TYPE=HIDDEN name='$reg_app' value = $data_app />";
-					echo "</td>\n</tr>\n";
-					*/
-					echo "</tr>\n";
-					// fin de la condition "if ($num == 3)"
 				}
-
 			// fin de la boucle "while(!feof($fp))"
 			}
 			fclose($fp);
