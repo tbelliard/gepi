@@ -43,6 +43,8 @@ if (!checkAccess()) {
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
+$aid_id = isset($_POST['aid_id']) ? $_POST['aid_id'] : (isset($_GET['aid_id']) ? $_GET['aid_id'] : NULL);
+
 $periode_num = isset($_GET['periode_num']) ? $_GET['periode_num'] : 0;
 
 if (!is_numeric($periode_num)) $periode_num = 0;
@@ -51,11 +53,20 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 	$current_group = get_group($id_groupe);
 } else {
 	$current_group = false;
+
+	if (is_numeric($aid_id) && $aid_id > 0) {
+		$current_aid = get_tab_aid($aid_id);
+	} else {
+		$current_aid=false;
+	}
 }
 
 if ($current_group) {
 	$nom_fic = $current_group["name"] . "-" . $current_group["classlist_string"] . ".csv";
+} elseif ($current_aid) {
+	$nom_fic = remplace_accents($current_aid["nom_complet"] . "-" . $current_aid["aid_nom"] . "-" . $current_aid["classlist_string"], 'all') . ".csv";
 } else {
+	//https://127.0.0.1/steph/gepi_git_trunk/saisie/import_class_csv.php?id_groupe=&periode_num=0&champs=3&ligne_entete=y&mode=Id_Note_App
 	$classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
 	$nom_fic = $classe . ".csv";
 }
@@ -153,6 +164,65 @@ if ($current_group) {
 				//$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".";"."$fin_de_ligne";
 				$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$note.";".$app."$fin_de_ligne";
 				break;
+		}
+	}
+}
+elseif ($current_aid) {
+	/*
+	echo "<pre>";
+	print_r($current_aid);
+	echo "</pre>";
+	die();
+	*/
+	if(isset($current_aid["eleves"][$periode_num]["users"])) {
+		foreach($current_aid["eleves"][$periode_num]["users"] as $current_eleve) {
+			$eleve_login = $current_eleve["login"];
+			$eleve_nom = $current_eleve["nom"];
+			$eleve_prenom = $current_eleve["prenom"];
+
+			$note='';
+			$app="-";
+			$sql="SELECT * FROM aid_appreciations WHERE login='$eleve_login' AND periode='$periode_num' AND id_aid='$aid_id'";
+			$res_appreciation=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_appreciation)){
+				$lig_appreciation=mysqli_fetch_object($res_appreciation);
+				//$app=my_ereg_replace("\n"," ",$lig_appreciation->appreciation);
+				$app=my_ereg_replace("\n"," ",my_ereg_replace("\r","",strtr($lig_appreciation->appreciation,";",".")));
+				//$app=strtr($lig_appreciation->appreciation,"\n"," ");
+				//$app="grr".my_eregi_replace("<br />"," ",my_eregi_replace("<br>"," ",nl2br($lig_appreciation->appreciation)));
+
+				if($lig_appreciation->statut=='other') {
+					$note='';
+				}
+				elseif($lig_appreciation->statut!='') {
+					$note=$lig_appreciation->statut;
+				}
+				elseif(!is_null($lig_appreciation->note)){
+					$note=strtr($lig_appreciation->note, ".", ",");
+				}
+			}
+
+			switch($_GET['mode']){
+				case "Id_Note_App":
+					//$fd.=$eleve_login.";".";"."$fin_de_ligne";
+					$fd.=$eleve_login.";".$note.";".$app."$fin_de_ligne";
+					break;
+				case "Id_App":
+					//$fd.=$eleve_login.";"."$fin_de_ligne";
+					$fd.=$eleve_login.";".$app."$fin_de_ligne";
+					break;
+				case "Nom_Prenom_Id_App":
+					//$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";"."$fin_de_ligne";
+					$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$app."$fin_de_ligne";
+					break;
+				case "Nom_Prenom_Id":
+					$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login."$fin_de_ligne";
+					break;
+				case "Nom_Prenom_Id_Note_App":
+					//$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".";"."$fin_de_ligne";
+					$fd.=$eleve_nom.";".$eleve_prenom.";".$eleve_login.";".$note.";".$app."$fin_de_ligne";
+					break;
+			}
 		}
 	}
 } else {
