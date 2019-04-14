@@ -525,7 +525,7 @@ if ($max_periode == '1') {
 }
 ?>
 		<br />
-		L'aid débute à la période;
+		L'aid débute à la période&nbsp;
 		<select name="display_begin" onchange="changement();">
 <?php
 
