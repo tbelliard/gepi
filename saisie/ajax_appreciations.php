@@ -200,13 +200,16 @@ elseif($mode=="verif_aid") {
 		die("Témoin élève nul");
 	}
 
-	$sql="SELECT  * FROM j_aid_utilisateurs WHERE id_aid='".$var2."' AND id_utilisateur='".$_SESSION['login']."';";
-	if (mysqli_num_rows($verif_prof) >= 1) {
-		// On ne fait rien
-		$temoin_prof=mysqli_num_rows($verif_prof);
-	} else {
-		log_ajax_app("Vous ne pouvez pas saisir d'appreciations pour cet eleve");
-		die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&egrave;ve');
+	if($_SESSION['statut']!='secours') {
+		$sql="SELECT  * FROM j_aid_utilisateurs WHERE id_aid='".$var2."' AND id_utilisateur='".$_SESSION['login']."';";
+		$verif_prof = mysqli_query($GLOBALS["mysqli"], $sql);
+		if (mysqli_num_rows($verif_prof) >= 1) {
+			// On ne fait rien
+			$temoin_prof=mysqli_num_rows($verif_prof);
+		} else {
+			log_ajax_app("Vous ne pouvez pas saisir d'appreciations pour cet eleve");
+			die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&egrave;ve');
+		}
 	}
 }
 
