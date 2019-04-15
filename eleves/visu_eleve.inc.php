@@ -342,7 +342,7 @@ else {
 	}
 
 	// Bizarre : c'est masqué par le javascript de fin de page avant même la fin du chargement des onglets ???
-	//echo "<span id='spinner_chargement' style='margin-left:3em;' title=\"Veuillez patienter le temps du chargement des différents onglets...\"> <img src='../images/spinner.gif' class='icone16' alt='Patientez' /> Patientez...</span>";
+	echo "<span id='spinner_chargement' style='margin-left:3em; color:red; padding:0.5em;' class='fieldset_opacite50' title=\"Veuillez patienter le temps du chargement des différents onglets...\"> <img src='../images/spinner.gif' class='icone16' alt='Patientez' /> Veuillez patienter...</span>";
 
 	echo "</p>\n";
 	echo "</div>\n";
@@ -357,6 +357,8 @@ else {
 	echo "' />\n";
 	echo "</form>\n";
 
+	flush();
+	ob_flush();
 
 	echo "<form id='form_changement_classe' action='".$_SERVER['PHP_SELF']."' method='post'>
 	<input type='hidden' name='id_classe' id='id_classe_form_changement_classe' value='' />
@@ -4007,11 +4009,9 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 	
 	window.focus();
 
-	/*
 	if(document.getElementById('spinner_chargement')) {
-		document.getElementById('spinner_chargement').style.display='none';
+		setTimeout(\"document.getElementById('spinner_chargement').style.display='none'\", 2000);
 	}
-	*/
 </script>\n";
 
 		/*
