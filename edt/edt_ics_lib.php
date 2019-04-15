@@ -1621,6 +1621,12 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	}
 	//echo "\$num_semaine_annee=$num_semaine_annee<br />";
 
+	if((isset($sans_semaine_suivante_precedente))&&($sans_semaine_suivante_precedente=='y')) {
+		$html.="<div style='float:left; width:16px; margin:3px;'>
+	<a href='../edt/index2.php?num_semaine_annee=$num_semaine_annee&$param_lien_edt&largeur_edt=$largeur_edt&y0=$y0&hauteur_une_heure=$hauteur_une_heure&hauteur_jour=$hauteur_jour' target='_blank' title=\"Ouvrir l'EDT complet dans une nouvelle fenêtre.\"><img src='../images/icons/edt2.png' class='icone16' alt='EDT' /></a>
+</div>";
+	}
+
 	$tab_jour=get_tab_jour_ouverture_etab();
 
 	if($affichage=="semaine") {
@@ -1761,6 +1767,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	//==================================================================
 	$x_jour=array();
 	if($affichage=="semaine") {
+
 		// Affichage des N jours de la semaine
 		//====================================
 		// Recherche du numéro de semaine précédente
