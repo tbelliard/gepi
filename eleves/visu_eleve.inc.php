@@ -1149,24 +1149,16 @@ Patientez pendant l'extraction des données... merci.
 		) {
 			// Actuellement, les élèves et parents n'ont pas accès à visu_eleve.inc.php
 
-			$titre_infobulle="EDT de ".$tab_ele['prenom']." ".$tab_ele['nom'];
-			$texte_infobulle="";
-			$tabdiv_infobulle[]=creer_div_infobulle('edt_eleve',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+			if(getSettingValue('edt_version_defaut')=='2') {
+				$lien_edt=retourne_lien_edt2_eleve($ele_login, time());
+			}
+			else {
+				$lien_edt=retourne_lien_edt_eleve($ele_login);
+			}
+			if($lien_edt!="") {
+				echo "<div style='float:right; width:3em;'>".$lien_edt."</div>\n";
+			}
 
-			echo "<div style='float:right; width:3em;'><a href='../edt_organisation/index_edt.php?login_edt=".$ele_login."&amp;type_edt_2=eleve&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle();return false;\" title=\"Emploi du temps de ".$tab_ele['prenom']." ".$tab_ele['nom']."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>
-
-<style type='text/css'>
-	.lecorps {
-		margin-left:0px;
-	}
-</style>
-
-<script type='text/javascript'>
-	function affiche_edt_en_infobulle() {
-		new Ajax.Updater($('edt_eleve_contenu_corps'),'../edt_organisation/index_edt.php?login_edt=".$ele_login."&type_edt_2=eleve&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
-		afficher_div('edt_eleve','y',-20,20);
-	}
-</script>\n";
 		}
 
 		//==============================================

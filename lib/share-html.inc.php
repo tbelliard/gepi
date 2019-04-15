@@ -7515,4 +7515,51 @@ function insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($titre_xml, $ur
 	}
 }
 
+function retourne_lien_edt2_eleve($ele_login, $ts='') {
+	global $mysqli;
+	global $tabdiv_infobulle, $tabid_infobulle;
+
+	// Nécessite require("../edt/edt_ics_lib.php"); ?
+	// Même pas... c'est index2.php lors de l'appel Ajax qui fait l'accès
+
+	if($ts=='') {
+		$ts=time();
+	}
+
+	$retour="";
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))||
+		((getSettingAOui('autorise_edt_eleve'))&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+	) {
+
+		$sql="SELECT * FROM eleves WHERE login='$ele_login';";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+
+			$titre_infobulle="EDT de ".$lig->prenom." ".$lig->nom;
+			$texte_infobulle="";
+			$tabdiv_infobulle[]=creer_div_infobulle('edt_eleve',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+			$retour="<a href='../edt/index2.php?login_eleve=".$ele_login."&amp;type_affichage=eleve&amp;affichage=semaine&amp;&ts=$ts&mode_infobulle=y&mode=afficher_edt_js&x0=50&y0=40&largeur_edt=500&hauteur_une_heure=60&hauteur_jour=640&sans_semaine_suivante_precedente=y' onclick=\"affiche_edt2_eleve_en_infobulle('".$ele_login."', '".strtr(strtr($lig->prenom." ".$lig->nom, "'", " "), '"', " ")."', '$ts');return false;\" title=\"Emploi du temps de ".$lig->prenom." ".$lig->nom."\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT' /></a>
+
+<style type='text/css'>
+	.lecorps {
+		margin-left:0px;
+	}
+</style>
+
+<script type='text/javascript'>
+	function affiche_edt2_eleve_en_infobulle(login_ele, info_eleve, ts) {
+		new Ajax.Updater($('edt_eleve_contenu_corps'),'../edt/index2.php?login_eleve=".$ele_login."&type_affichage=eleve&affichage=semaine&ts='+ts+'&mode_infobulle=y&mode=afficher_edt_js&x0=50&y0=40&largeur_edt=500&hauteur_une_heure=60&hauteur_jour=640&sans_semaine_suivante_precedente=y',{method: 'get'});
+		afficher_div('edt_eleve','y',-20,20);
+	}
+</script>\n";
+		}
+	}
+
+	return $retour;
+}
+
 ?>

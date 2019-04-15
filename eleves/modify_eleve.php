@@ -1357,10 +1357,12 @@ if (isset($eleve_login)) {
 	//=========================
 }
 
-$avec_js_et_css_edt="y";
-$style_specifique[] = "edt_organisation/style_edt";
-$style_specifique[] = "templates/DefaultEDT/css/small_edt";
-$javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+if(getSettingValue('edt_version_defaut')=='1') {
+	$avec_js_et_css_edt="y";
+	$style_specifique[] = "edt_organisation/style_edt";
+	$style_specifique[] = "templates/DefaultEDT/css/small_edt";
+	$javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+}
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -2978,9 +2980,14 @@ if(isset($eleve_login)){
 	}
 
 	//==============================================
-	$lien_edt=retourne_lien_edt_eleve($eleve_login);
+	if(getSettingValue('edt_version_defaut')=='2') {
+		$lien_edt=retourne_lien_edt2_eleve($eleve_login, time());
+	}
+	else {
+		$lien_edt=retourne_lien_edt_eleve($eleve_login);
+	}
 	if($lien_edt!="") {
-		echo "<div style='text-align:center;'>".$lien_edt."</div>\n";
+		echo "<div style='text-align:center; margin:0.5em;'>".$lien_edt."</div>\n";
 	}
 
 	$temoin_rss_ele=retourne_temoin_ou_lien_rss($eleve_login);

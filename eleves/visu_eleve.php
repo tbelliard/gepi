@@ -53,7 +53,9 @@ if (!checkAccess()) {
 $utilisation_win = "oui";
 $utilisation_jsdivdrag = "oui";
 
-$avec_js_et_css_edt="y";
+if(getSettingValue('edt_version_defaut')=='1') {
+	$avec_js_et_css_edt="y";
+}
 
 if (getSettingValue("active_module_absence")=='2') {
 	$style_specifique[] = "mod_abs2/lib/abs_style";
