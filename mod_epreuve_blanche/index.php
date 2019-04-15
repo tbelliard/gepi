@@ -855,7 +855,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$tabdiv_infobulle[]=creer_div_infobulle('div_epreuve_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');
 
 					}
-					echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
+					echo ">$lig->intitule</a> <em>(".formate_date($lig->date).")</em>";
+					echo " <em title=\"épreuve notée sur ".$lig->note_sur." points.\">(sur ".$lig->note_sur.")</em>";
 
 					// 20180423
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$lig->id';";
