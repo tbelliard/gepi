@@ -456,7 +456,7 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 		}
 		$lien_semaine_prec="<a href='".$_SERVER['PHP_SELF']."?$param_lien_edt&amp;num_semaine_annee=".$lig->num_semaine."|$annee_b&amp;mode=afficher_edt' title=\"Semaine précédente\"";
 		if($mode_infobulle=="y") {
-			$lien_semaine_prec.=" onclick=\"edt_semaine_suivante('$lig->num_semaine', '$annee_b', '$id_classe', '$login_prof'); return false;\"";
+			$lien_semaine_prec.=" onclick=\"edt_semaine_suivante_ou_precedente('$lig->num_semaine', '$annee_b', '$id_classe', '$login_prof'); return false;\"";
 		}
 		$lien_semaine_prec.="><img src='../images/arrow_left.png' class='icone16' alt='Semaine précédente'></a> - ";
 	}
@@ -472,7 +472,7 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 		}
 		$lien_semaine_suiv=" - <a href='".$_SERVER['PHP_SELF']."?$param_lien_edt&amp;num_semaine_annee=".$lig->num_semaine."|$annee_b&amp;mode=afficher_edt' title=\"Semaine suivante\"";
 		if($mode_infobulle=="y") {
-			$lien_semaine_suiv.=" onclick=\"edt_semaine_suivante('$lig->num_semaine', '$annee_b', '$id_classe', '$login_prof'); return false;\"";
+			$lien_semaine_suiv.=" onclick=\"edt_semaine_suivante_ou_precedente('$lig->num_semaine', '$annee_b', '$id_classe', '$login_prof'); return false;\"";
 		}
 		$lien_semaine_suiv.="><img src='../images/arrow_right.png' class='icone16' alt='Semaine suivante'></a>";
 	}
@@ -489,7 +489,7 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 
 		$html.="<script type='text/javascript'>
 	//alert('plop');
-	function edt_semaine_suivante(num_semaine, annee, id_classe, login_prof) {
+	function edt_semaine_suivante_ou_precedente(num_semaine, annee, id_classe, login_prof) {
 		//alert('plop');
 		new Ajax.Updater($('div_edt_".$chaine_alea."'),'../edt/index.php?num_semaine_annee='+num_semaine+'|'+annee+'&id_classe='+id_classe+'&login_prof='+login_prof+'&type_edt=$type_edt&mode=afficher_edt_js',{method: 'get'});
 	}
@@ -1587,7 +1587,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	global $mode_infobulle;
 	$chaine_alea=remplace_accents(rand(1, 1000000)."_".microtime(),"all");
 	$html.="<script type='text/javascript'>
-	function edt_semaine_suivante(num_semaine_annee) {
+	function edt_semaine_suivante_ou_precedente(num_semaine_annee) {
 		//alert('plop');
 		new Ajax.Updater($('div_edt_".$chaine_alea."'),'../edt/index2.php?num_semaine_annee='+num_semaine_annee+'&mode=afficher_edt_js&$param_lien_edt&largeur_edt=$largeur_edt&y0=$y0&hauteur_une_heure=$hauteur_une_heure&hauteur_jour=$hauteur_jour',{method: 'get'});
 	}
@@ -1794,10 +1794,14 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		}
 
 		// Semaine précédente
-		if($num_semaine_annee_precedente!="") {
+		if(($num_semaine_annee_precedente!="")&&($sans_semaine_suivante_precedente!='y')) {
 			//background-color:silver;
 			$x_courant=$x0-32;
-			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Semaine précédente\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."num_semaine_annee=".$num_semaine_annee_precedente."'><img src='../images/arrow_left.png' class='icone16' alt='Précédent' /></a></div>";
+			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Semaine précédente\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."num_semaine_annee=".$num_semaine_annee_precedente."'";
+			if($mode_infobulle=="y") {
+				$html.=" onclick=\"edt_semaine_suivante_ou_precedente('$num_semaine_annee_precedente'); return false;\"";
+			}
+			$html.="><img src='../images/arrow_left.png' class='icone16' alt='Précédent' /></a></div>";
 		}
 		//====================================
 
@@ -1855,7 +1859,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			$x_courant=$x0+$largeur_edt;
 			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center; z-index:20;' title=\"Semaine suivante\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."num_semaine_annee=".$num_semaine_annee_suivante."'";
 			if($mode_infobulle=="y") {
-				$html.=" onclick=\"edt_semaine_suivante('$num_semaine_annee_suivante'); return false;\"";
+				$html.=" onclick=\"edt_semaine_suivante_ou_precedente('$num_semaine_annee_suivante'); return false;\"";
 			}
 			$html.="><img src='../images/arrow_right.png' class='icone16' alt='Suivant' /></a></div>";
 		}
