@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -186,7 +186,7 @@ if($_SESSION['statut']=='professeur') {
 			echo "<form action='get_csv.php' method='post'>\n";
 			echo "<fieldset style='border: 1px solid grey;background-image: url(\"../images/background/opacite50.png\");'>\n";
 			//echo "<legend style='border: 1px solid grey;background-color: white;'></legend>\n";
-			echo "<p class='bold'>Listes personnalisées&nbsp;:</p>\n";
+			echo "<p class='bold'>Listes personnalisées&nbsp;: <em title=\"Choisir les champs à extraire pour les élèves d'un enseignement/groupe donné.\">(enseignements/groupes)</em></p>\n";
 			echo "<div style='margin-left:3em;'>\n";
 
 			echo "<select name='id_groupe' id='id_groupe' onchange='update_champs_periode()'>\n";
@@ -540,7 +540,7 @@ elseif(isset($classe)) {
 
 }
 else {
-	echo "<p class='bold'>Listes personnalisées&nbsp;:</p>\n";
+	echo "<p class='bold'>Listes personnalisées&nbsp;: <em title=\"Choisir les champs à extraire pour les élèves d'une classe donnée.\">(classes)</em></p>\n";
 	echo "<select name='id_classe' id='id_classe' onchange='update_champs_periode()'>\n";
 	echo "<option value='toutes'>Toutes</option>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
