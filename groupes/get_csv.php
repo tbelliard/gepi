@@ -406,9 +406,11 @@ else {
 
 	if((isset($avec_email))&&($avec_email=='y')) {
 		$tab_acces_mail_ele=get_tab_acces_mail_ele();
+		/*
 		echo "<pre>";
 		print_r($tab_acces_mail_ele);
 		echo "</pre>";
+		*/
 		$fd.="EMAIL;";
 	}
 	if((isset($avec_statut))&&($avec_statut=='y')) {$fd.="STATUT;";}
