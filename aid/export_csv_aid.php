@@ -271,7 +271,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_2')) {
 	<input TYPE=HIDDEN name=is_posted value = 'sans_id_etape_3' />
 	<input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
 	<input TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
-	<p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
+	<p>Le fichier à importer comporte-il une première ligne d'en-tête&nbsp;? si oui cocher la case&nbsp;
 	<input TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
 	<input TYPE=SUBMIT value = "Valider" /><br />
 	</form>
@@ -595,7 +595,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
 	<input TYPE=HIDDEN name=is_posted value = 'avec_id_etape_3' />
 	<input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
 	<input TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
-	<p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
+	<p>Le fichier à importer comporte-il une première ligne d'en-tête&nbsp;? si oui cocher la case&nbsp;
 	<input TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
 	<input TYPE=SUBMIT value = "Valider" /><br />
 	</form>
