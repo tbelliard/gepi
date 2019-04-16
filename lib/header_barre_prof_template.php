@@ -741,6 +741,11 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 		$cpt_sous_menu++;
 		*/
 
+		$tmp_sous_menu[$cpt_sous_menu]['lien']="/groupes/mes_listes.php#aid";
+		$tmp_sous_menu[$cpt_sous_menu]['texte']="Export CSV spécifique";
+		$tmp_sous_menu[$cpt_sous_menu]['target']="_blank";
+		$cpt_sous_menu++;
+
 		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 		$compteur_menu++;
