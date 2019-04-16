@@ -39,8 +39,97 @@ if (!checkAccess()) {
 	die();
 }
 
+if((!isset($indice_aid))||(!preg_match('/^[0-9]{1,}$/', $indice_aid))) {
+	header("Location: ./index.php?msg=Catégorie AID non choisie");
+	die();
+}
+
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 $nom_generique_aid = @old_mysql_result($call_data, 0, "nom");
+
+if(isset($_GET['csv_avec_id'])) {
+	$csv='';
+	if($_GET['csv_avec_id']==1) {
+		$csv="Nom_AID;Identifiant_AID\n";
+
+		$sql="SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY nom, numero";
+		$res = mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$csv.=$lig->nom.";".$lig->id."\n";
+		}
+
+		$nom_fic = "Categorie_AID_num_".$indice_aid."_".remplace_accents($nom_generique_aid, 'all')."_export_definition_AID.csv";
+	}
+	elseif($_GET['csv_avec_id']==2) {
+		$csv="Login_eleve;Identifiant_AID\n";
+
+		$sql="SELECT * FROM j_aid_eleves WHERE indice_aid='$indice_aid' ORDER BY id_aid, login;";
+		$res = mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$csv.=$lig->login.";".$lig->id_aid."\n";
+		}
+
+		$nom_fic = "Categorie_AID_num_".$indice_aid."_".remplace_accents($nom_generique_aid, 'all')."_export_eleves_AID.csv";
+	}
+	elseif($_GET['csv_avec_id']==3) {
+		$csv="Login_prof;Identifiant_AID\n";
+
+		$sql="SELECT * FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid' ORDER BY id_aid, id_utilisateur;";
+		$res = mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$csv.=$lig->id_utilisateur.";".$lig->id_aid."\n";
+		}
+
+		$nom_fic = "Categorie_AID_num_".$indice_aid."_".remplace_accents($nom_generique_aid, 'all')."_export_profs_AID.csv";
+	}
+
+	if($csv=='') {
+		echo "Mode export non choisi ou invalide.";
+	}
+	else {
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+	}
+	die();
+}
+elseif(isset($_GET['csv_sans_id'])) {
+	$csv='';
+	if($_GET['csv_sans_id']==2) {
+		$csv="Login_eleve;Nom_AID\n";
+
+		$sql="SELECT a.nom, jae.login FROM j_aid_eleves jae, aid a WHERE a.indice_aid='$indice_aid' AND 
+										a.indice_aid=jae.indice_aid AND 
+										a.id=jae.id_aid ORDER BY nom, login;";
+		$res = mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$csv.=$lig->login.";".$lig->nom."\n";
+		}
+
+		$nom_fic = "Categorie_AID_num_".$indice_aid."_".remplace_accents($nom_generique_aid, 'all')."_export_eleves_AID.csv";
+	}
+	elseif($_GET['csv_sans_id']==3) {
+		$csv="Login_prof;Nom_AID\n";
+
+		$sql="SELECT a.nom, jau.id_utilisateur FROM j_aid_utilisateurs jau, aid a WHERE a.indice_aid='$indice_aid' AND 
+										a.indice_aid=jau.indice_aid AND 
+										a.id=jau.id_aid ORDER BY nom, id_utilisateur;";
+		$res = mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$csv.=$lig->id_utilisateur.";".$lig->nom."\n";
+		}
+
+		$nom_fic = "Categorie_AID_num_".$indice_aid."_".remplace_accents($nom_generique_aid, 'all')."_export_profs_AID.csv";
+	}
+
+	if($csv=='') {
+		echo "Mode export non choisi ou invalide.";
+	}
+	else {
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+	}
+	die();
+}
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des ".$nom_generique_aid." | Outil d'importation";
@@ -86,6 +175,20 @@ if (!isset($is_posted)) {
 			echo "<input type=hidden name=indice_aid value=$indice_aid />";
 			echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Continuer' />";
 			echo "</FORM></td></tr></table>";
+
+			echo "<p style='margin-left:4em; text-indent:-4em; margin-top:2em;'><em>NOTES&nbsp;:</em> Il va vous être proposé d'importer les AID et les inscriptions associées.<br />
+			Deux choix vous seront offerts&nbsp;: avec définition des identifiants numériques des AID ou sans <em>(en laissant Gepi générer les identifiants numériques associés aux AID)</em>.<br />
+			Si des AID existent déjà, vous pouvez effectuer un export du contenu actuel des tables pour vous en servir de base pour un nouveau remplissage/import.<br />
+			<strong>Exports avec identifiants&nbsp;:</strong> 
+			<a href='".$_SERVER['PHP_SELF']."?indice_aid=".$indice_aid."&csv_avec_id=1' target='_blank'>AID</a> - 
+			<a href='".$_SERVER['PHP_SELF']."?indice_aid=".$indice_aid."&csv_avec_id=2' target='_blank'>Élèves</a> - 
+			<a href='".$_SERVER['PHP_SELF']."?indice_aid=".$indice_aid."&csv_avec_id=3' target='_blank'>Professeurs</a> <em>(trois fichiers)</em><br />
+
+			<strong>Exports sans identifiants&nbsp;:</strong> 
+			<a href='".$_SERVER['PHP_SELF']."?indice_aid=".$indice_aid."&csv_sans_id=2' target='_blank'>Élèves</a> - 
+			<a href='".$_SERVER['PHP_SELF']."?indice_aid=".$indice_aid."&csv_sans_id=3' target='_blank'>Professeurs</a> <em>(deux fichiers)</em>
+			</p>";
+
 		} else {
 			echo "<p><b>Etes-vous sûr de vouloir effacer toutes les données concernant les $nom_generique_aid ?</b></p>";
 			echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
@@ -500,16 +603,16 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
 	echo "<p>Le fichier d'importation doit être au format csv <em>(séparateur&nbsp;: point-virgule)</em><br />";
 	if ($type_import == 1) {
 		echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
-		echo "--&gt; <B>l'identifiant de l'élève</b><br />";
-		echo "--&gt; <B>L'identifiant de l'activité</B><br /></p>";
+		echo "--&gt; <B>l'identifiant de l'élève</b> <em>(login)</em><br />";
+		echo "--&gt; <B>L'identifiant de l'activité</B> <em>(nombre entier)</em><br /></p>";
 	} else if ($type_import == 2) {
 		echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
-		echo "--&gt; <B>l'identifiant du professeur</b><br />";
-		echo "--&gt; <B>L'identifiant de l'activité</B><br /></p>";
+		echo "--&gt; <B>l'identifiant du professeur</b> <em>(login)</em><br />";
+		echo "--&gt; <B>L'identifiant de l'activité</B> <em>(nombre entier)</em><br /></p>";
 	} else {
 		echo "Le fichier doit contenir les deux champs suivants, obligatoires :<br />";
 		echo "--&gt; <B>Nom complet de l'activité</B><br />";
-		echo "--&gt; <B>L'identifiant de l'activité</B><br /></p>";
+		echo "--&gt; <B>L'identifiant de l'activité</B> <em>(nombre entier)</em><br /></p>";
 	}
 }
 
@@ -561,13 +664,15 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 						}
 
 						//
-						// Vérification sur l'identifiant AID
+						// Vérification sur l'identifiant AID (le champ aid.id est un entier)
 						//
-						if (!(preg_match("/^[a-zA-Z0-9_]{1,10}$/", $data[1]))) {
+						//if (!(preg_match("/^[a-zA-Z0-9_]{1,10}$/", $data[1]))) {
+						if (!(preg_match("/^[0-9]{1,10}$/", $data[1]))) {
 							$erreur = 'yes';
-							echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : l'identifiant $nom_generique_aid n'est pas valide (un identifiant doit être constitué de uniquement de chiffres, de lettres et caractères de soulignement).</font></p>";
+							//echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : l'identifiant $nom_generique_aid n'est pas valide (un identifiant doit être constitué de uniquement de chiffres, de lettres et caractères de soulignement).</font></p>";
+							echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : l'identifiant $nom_generique_aid n'est pas valide (un identifiant doit être constitué de uniquement de chiffres).</font></p>";
 						}
-						$call_aid = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (id='$data[1]' and indice_aid='$indice_aid')");
+						$call_aid = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (id='".$data[1]."' and indice_aid='".$indice_aid."')");
 						$test = mysqli_num_rows($call_aid);
 						if (($test == 0) and ($type_import != 3)) {
 							// Vérification de l'existence d'une AID correspondant à chaque identifiant AID
