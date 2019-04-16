@@ -487,40 +487,42 @@ else {
 
 		if($temoin_au_moins_un_groupe>0) {
 			for($loop=1;$loop<=$max_per;$loop++) {
-				echo "<div style='float:left; width:30em; margin:3px;'>\n";
-				echo "<p class='bold'>Effectifs en période $loop&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs_sous_grp&amp;num_periode=$loop'>Export CSV</a></p>\n";
-				echo "<table class='boireaus boireaus_alt resizable sortable'>\n";
-				echo "<tr>\n";
-				echo "<th class=text'>Sous-groupes</th>\n";
-				echo "<th class=text'>Classes</th>\n";
-				echo "<th class=number'>Effectifs<br />groupes</th>\n";
-				echo "<th class=number'>Effectifs<br />classes</th>\n";
-				echo "</tr>\n";
-				$alt=1;
-				for($i=0;$i<count($tab_sous_grp[$loop]['id_groupe']);$i++) {
-					$alt=$alt*(-1);
-					echo "<tr class='lig$alt white_hover'>\n";
-					echo "<td>";
-					//echo get_info_grp($tab_sous_grp[$loop][$i], array('classes'));
-					echo get_info_grp($tab_sous_grp[$loop]['id_groupe'][$i], array());
-					echo "</td>\n";
-					echo "<td>";
-					echo $tab_sous_grp[$loop]['classe'][$i];
-					echo "</td>\n";
-
-					echo "<td>";
-					$sql="SELECT e.login FROM j_eleves_groupes jeg, eleves e WHERE jeg.id_groupe='".$tab_sous_grp[$loop]['id_groupe'][$i]."' AND e.login=jeg.login AND jeg.periode='$loop';";
-					//echo "$sql<br />\n";
-					$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
-					echo mysqli_num_rows($res_eff);
-					echo "</td>\n";
-					echo "<td>";
-					echo $tab_eff_classe[$tab_sous_grp[$loop]['id_classe'][$i]][$loop];
-					echo "</td>\n";
+				if(isset($tab_sous_grp[$loop]['id_groupe'])) {
+					echo "<div style='float:left; width:30em; margin:3px;'>\n";
+					echo "<p class='bold'>Effectifs en période $loop&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs_sous_grp&amp;num_periode=$loop'>Export CSV</a></p>\n";
+					echo "<table class='boireaus boireaus_alt resizable sortable'>\n";
+					echo "<tr>\n";
+					echo "<th class=text'>Sous-groupes</th>\n";
+					echo "<th class=text'>Classes</th>\n";
+					echo "<th class=number'>Effectifs<br />groupes</th>\n";
+					echo "<th class=number'>Effectifs<br />classes</th>\n";
 					echo "</tr>\n";
+					$alt=1;
+					for($i=0;$i<count($tab_sous_grp[$loop]['id_groupe']);$i++) {
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt white_hover'>\n";
+						echo "<td>";
+						//echo get_info_grp($tab_sous_grp[$loop][$i], array('classes'));
+						echo get_info_grp($tab_sous_grp[$loop]['id_groupe'][$i], array());
+						echo "</td>\n";
+						echo "<td>";
+						echo $tab_sous_grp[$loop]['classe'][$i];
+						echo "</td>\n";
+
+						echo "<td>";
+						$sql="SELECT e.login FROM j_eleves_groupes jeg, eleves e WHERE jeg.id_groupe='".$tab_sous_grp[$loop]['id_groupe'][$i]."' AND e.login=jeg.login AND jeg.periode='$loop';";
+						//echo "$sql<br />\n";
+						$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+						echo mysqli_num_rows($res_eff);
+						echo "</td>\n";
+						echo "<td>";
+						echo $tab_eff_classe[$tab_sous_grp[$loop]['id_classe'][$i]][$loop];
+						echo "</td>\n";
+						echo "</tr>\n";
+					}
+					echo "</table>\n";
+					echo "</div>\n";
 				}
-				echo "</table>\n";
-				echo "</div>\n";
 			}
 			echo "<div style='clear:both;'>&nbsp;</div>\n";
 			echo "<p><br /></p>\n";
