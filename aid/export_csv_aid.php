@@ -321,7 +321,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 	echo "<td><p class=\"small\">Nom de l'acticité</p></td>";
 	echo "<td><p class=\"small\">Remarque</p></td></tr>";
 	$call_max = mysqli_query($GLOBALS["mysqli"], "SELECT max(id) max FROM aid WHERE indice_aid='$indice_aid'");
-	$max_id = old_mysql_result($call_max,0,max);
+	$max_id = old_mysql_result($call_max,0, 'max');
 	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT distinct col2 FROM tempo2 WHERE col2!='' ORDER BY col2");
 	$nb_aid = mysqli_num_rows($call_data);
 	// On enregistre les AID
