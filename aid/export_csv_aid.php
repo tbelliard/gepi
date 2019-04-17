@@ -137,18 +137,20 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
-
+/*
 echo "<p class=bold><a href=\"index2.php?indice_aid=$indice_aid\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
 
 if (isset($is_posted) and ($is_posted=='avec_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=avec_id_etape_1&indice_aid=$indice_aid".add_token_in_url()."\">Importer un autre fichier</a> |";}
 if (isset($is_posted) and ($is_posted=='sans_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=sans_id_etape_1&indice_aid=$indice_aid".add_token_in_url()."\">Importer un autre fichier</a> |";}
 
 echo "</p>";
-
+*/
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 
 $long_max = 8000;
 if (!isset($is_posted)) {
+	echo "<p class='bold'><a href=\"index2.php?indice_aid=$indice_aid\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+
 	$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
 	$nb_test = mysqli_num_rows($test);
 	if ($nb_test == 0) {
@@ -201,7 +203,13 @@ if (!isset($is_posted)) {
 		}
 	}
 }
+
 if (isset($is_posted) and ($is_posted == 'debut')) {
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
+
 	//check_token();
 	if (isset($confirm) and ($confirm == 'Oui')) {
 		check_token(false);
@@ -233,6 +241,11 @@ if (isset($is_posted) and ($is_posted == 'debut')) {
 //*************************************************************************************************
 
 if (isset($is_posted) and ($is_posted == "sans_id_etape_1")) {
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=debut\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
+
 	check_token(false);
 
 	echo "<table border=0>";
@@ -259,7 +272,12 @@ if (isset($is_posted) and ($is_posted == "sans_id_etape_1")) {
 
 
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_2')) {
-	check_token(false);
+	//check_token(false);
+
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_1\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
 
 	?>
 	<form enctype="multipart/form-data" action="export_csv_aid.php" method=post name=formulaire>
@@ -291,9 +309,21 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_2')) {
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 	check_token(false);
 
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_2&type_import=$type_import\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
+
+/*
+$_POST['is_posted']=	avec_id_etape_2
+$_POST['indice_aid']=	1
+$_POST['type_import']=	1
+*/
+
 	$csvfile = isset($_FILES["csvfile"]) ? $_FILES["csvfile"] : NULL;
-   //if($csvfile != "none") {
-	if(isset($csvfile)) {
+	//if($csvfile != "none") {
+	//if(isset($csvfile)) {
+	if((isset($csvfile['tmp_name']))&&($csvfile['tmp_name']!='')) {
 		//$fp = fopen($csvfile, "r");
 		$fp = fopen($csvfile['tmp_name'], "r");
 		if(!$fp) {
@@ -418,6 +448,12 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
 
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_3&type_import=$type_import".add_token_in_url()."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_1&type_import=$type_import".add_token_in_url()."\">Importer un autre fichier</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
+
 	check_token(false);
 	echo "<p class='bold'>Mise à jour de la liste des $nom_generique_aid</p>";
 	echo "<table border=1 cellpadding=2 cellspacing=2><tr>";
@@ -547,6 +583,11 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
 
 if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=debut\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
+
 	check_token(false);
 	echo "<table border=0>";
 	//	cas où on importe un fichier numéro-AID
@@ -582,9 +623,14 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
 }
 
 
-
+//debug_var();
 if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
-	check_token(false);
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_1\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
+
+	//check_token(false);
 	?>
 	<form enctype="multipart/form-data" action="export_csv_aid.php" method=post name=formulaire>
 	<?php
@@ -618,11 +664,22 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
 
 
 if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_2&type_import=$type_import\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
+
 	check_token(false);
 
 	$csvfile = isset($_FILES["csvfile"]) ? $_FILES["csvfile"] : NULL;
 	//if($csvfile != "none") {
-	if(isset($csvfile)) {
+	if((isset($csvfile['tmp_name']))&&($csvfile['tmp_name']!='')) {
+		/*
+		echo "<pre>";
+		print_r($csvfile);
+		echo "</pre>";
+		*/
+
 		//$fp = fopen($csvfile, "r");
 		$fp = fopen($csvfile['tmp_name'], "r");
 		if(!$fp) {
@@ -801,6 +858,12 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
 
 if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
+	echo "<p class='bold'>
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_3&type_import=$type_import".add_token_in_url()."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | 
+	<a href=\"".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_1&type_import=$type_import".add_token_in_url()."\">Importer un autre fichier</a> | 
+	<a href=\"index2.php?indice_aid=$indice_aid\">Retour au menu de la catégorie AID ".$nom_generique_aid."</a>
+</p>";
+
 	check_token(false);
 	if ($type_import == 3) {
 		$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT * FROM tempo2 WHERE ((col1 !='') and (col2!='')) ORDER BY col1");
