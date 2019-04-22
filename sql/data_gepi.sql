@@ -182,7 +182,7 @@ INSERT INTO droits VALUES ('/saisie/help.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V'
 INSERT INTO droits VALUES ('/saisie/import_class_csv.php', 'F', 'V', 'F', 'V', 'F', 'F', 'V', 'F', '', '');
 INSERT INTO droits VALUES ('/saisie/import_note_app.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');
 INSERT INTO droits VALUES ('/saisie/index.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', '', '');
-INSERT INTO droits VALUES ('/saisie/saisie_aid.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', 'Saisie des notes et appréciations AID', '');
+INSERT INTO droits VALUES ('/saisie/saisie_aid.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Saisie des notes et appréciations AID', '');
 INSERT INTO droits VALUES ('/saisie/saisie_appreciations.php', 'F', 'V', 'F', 'F', 'F', 'F', 'V', 'F', 'Saisie des appréciations du bulletins', '');
 INSERT INTO droits VALUES ('/saisie/ajax_appreciations.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Sauvegarde des appréciations du bulletins', '');
 INSERT INTO droits VALUES ('/saisie/saisie_avis.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Saisie des avis du conseil de classe', '');

@@ -507,21 +507,35 @@ if ($flag == "prof") { ?>
 <?php
     }
 ?>
-	<p class='bold'>Ajouter un professeur responsable à la liste de l'AID :</p>
+	<p class='bold'>Ajouter un professeur responsable à la liste de l'AID&nbsp;:</p>
 	<select size=1 name="reg_prof_login" onchange="changement()">
 		<option value=''>(aucun)</option>
-    <?php
-    $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
-    $nombreligne = mysqli_num_rows($call_prof);
-    while ($lig_prof=mysqli_fetch_object($call_prof)) {
-    	echo "
-		<option value=\"$lig_prof->login\" title=\"".casse_mot($lig_prof->nom,'maj')." ".casse_mot($lig_prof->prenom,'majf2')." ($lig_prof->login)\">";
-?>
-			<?php echo my_strtoupper($lig_prof->nom); ?> <?php echo casse_mot($lig_prof->prenom,'majf2')." (".$lig_prof->statut.")"; ?>
-		</option>
-<?php
-    }
-    ?>
+	<?php
+	// Le statut autre n'a pas accès.
+	//$sql="SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom";
+	//$sql="SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur') order by nom";
+	$sql="SELECT login, nom, prenom, statut FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut='scolarite' OR statut='cpe') order by statut, nom";
+	$call_prof = mysqli_query($GLOBALS["mysqli"], $sql);
+	$nombreligne = mysqli_num_rows($call_prof);
+	$statut_precedent='';
+	while ($lig_prof=mysqli_fetch_object($call_prof)) {
+		if($lig_prof->statut!=$statut_precedent) {
+			if($statut_precedent!='') {
+				echo "
+		</optgroup>";
+			}
+			echo "
+		<optgroup label='-- ".$lig_prof->statut." --'>\n";
+			$statut_precedent=$lig_prof->statut;
+		}
+		echo "
+			<option value=\"$lig_prof->login\" title=\"".casse_mot($lig_prof->nom,'maj')." ".casse_mot($lig_prof->prenom,'majf2')." ($lig_prof->login)\">".casse_mot($lig_prof->nom,'maj').' '.casse_mot($lig_prof->prenom,'majf2')." (".$lig_prof->statut.")</option>";
+	}
+	if($statut_precedent!='') {
+		echo "
+		</optgroup>";
+	}
+	?>
 	</select>
 	<p>
 		<input type="hidden" name="add_prof" value="yes" />
