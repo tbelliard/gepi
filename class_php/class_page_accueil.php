@@ -630,14 +630,13 @@ if(getSettingAOui('active_bulletins')) {
 				AND jgc.id_groupe = jeg.id_groupe
 				AND jeg.login = jep.login AND jep.professeur = '".$this->loginUtilisateur."')"));
 	} else {
-        
-            $sql = "SELECT jgc.saisie_ects
+		$sql = "SELECT jgc.saisie_ects
 				FROM j_groupes_classes jgc, j_scol_classes jsc
 				WHERE (jgc.saisie_ects = TRUE
 				AND jgc.id_classe = jsc.id_classe
 				AND jsc.login = '".$this->loginUtilisateur."')";
-            $resultat = mysqli_query($mysqli, $sql); 
-            $this->test_scol_ects = $resultat->num_rows;
+		$resultat = mysqli_query($mysqli, $sql); 
+		$this->test_scol_ects = $resultat->num_rows;
 	}
 	$conditions_ects = ($this->gepiSettings['active_mod_ects'] == 'y' AND
 		  (($this->test_prof_suivi != "0" and $this->gepiSettings['GepiAccesSaisieEctsPP'] =='yes'
@@ -654,8 +653,8 @@ if(getSettingAOui('active_bulletins')) {
 
 	if(getSettingAOui('active_bulletins')) {
 		// Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
-        
-            $sql = "SELECT * FROM aid_config
+
+		$sql = "SELECT * FROM aid_config
 								  WHERE display_bulletin = 'y'
 								  OR bull_simplifie = 'y'
 								  ORDER BY nom"; 
@@ -667,43 +666,46 @@ if(getSettingAOui('active_bulletins')) {
 				. "WHERE u.id_utilisateur = \"".$_SESSION['login']."\" ";
 				
 		}
-			//echo $sql;
-            $resultat = mysqli_query($mysqli, $sql);  
-            while ($obj = $resultat->fetch_object()) {
-                $indice_aid = $obj->indice_aid;
-                $call_prof = mysqli_query($mysqli, "SELECT * FROM j_aid_utilisateurs
-                                          WHERE (id_utilisateur = '".$this->loginUtilisateur."'
-                                          AND indice_aid = '".$indice_aid."')");
-                $nb_result = $call_prof->num_rows;
-                if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
-                    $nom_aid = $obj->nom;
-                    $this->creeNouveauItem("/saisie/saisie_aid.php?indice_aid=".$indice_aid,
-                          $nom_aid,
-                          "Cet outil permet la saisie des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les $nom_aid.");
-                }
-            }  
-        
+		//echo $sql;
+		$resultat = mysqli_query($mysqli, $sql);  
+		while ($obj = $resultat->fetch_object()) {
+			$indice_aid = $obj->indice_aid;
+			$sql="SELECT * FROM j_aid_utilisateurs
+				WHERE (id_utilisateur = '".$this->loginUtilisateur."'
+				AND indice_aid = '".$indice_aid."');";
+			//echo "$sql<br />";
+			$call_prof = mysqli_query($mysqli, $sql);
+			$nb_result = $call_prof->num_rows;
+			//echo "\$nb_result=$nb_result<br />";
+			if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
+				$nom_aid = $obj->nom;
+				$this->creeNouveauItem("/saisie/saisie_aid.php?indice_aid=".$indice_aid,
+				$nom_aid,
+				"Cet outil permet la saisie des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les $nom_aid.");
+			}
+		}
+
 
 		//==============================
 		// Pour permettre la saisie de commentaires-type, renseigner la variable $commentaires_types dans /lib/global.inc
 		// Et récupérer le paquet commentaires_types sur... ADRESSE A DEFINIR:
 		if(file_exists('saisie/commentaires_types.php')) {
-                $resultat = $nb_lignes = mysqli_query($mysqli, "SELECT 1=1 FROM j_eleves_professeurs
-												  WHERE professeur='".$this->loginUtilisateur."'");
-                $nb_lignes = $resultat->num_rows;
-            if ((($this->statutUtilisateur=='professeur')
-                    AND (getSettingValue("CommentairesTypesPP")=='yes')
-                    AND ($nb_lignes >0))
-                    OR (($this->statutUtilisateur=='scolarite')
-                            AND (getSettingValue("CommentairesTypesScol")=='yes'))
-                    OR (($this->statutUtilisateur=='cpe')
-                            AND (getSettingValue("CommentairesTypesCpe")=='yes'))
-              )
-            {
-                $this->creeNouveauItem("/saisie/commentaires_types.php",
-                      "Saisie de commentaires-types",
-                      "Permet de définir des commentaires-types pour l'avis du conseil de classe.");
-            }
+			$resultat = $nb_lignes = mysqli_query($mysqli, "SELECT 1=1 FROM j_eleves_professeurs
+			WHERE professeur='".$this->loginUtilisateur."'");
+			$nb_lignes = $resultat->num_rows;
+			if ((($this->statutUtilisateur=='professeur')
+				AND (getSettingValue("CommentairesTypesPP")=='yes')
+				AND ($nb_lignes >0))
+				OR (($this->statutUtilisateur=='scolarite')
+				AND (getSettingValue("CommentairesTypesScol")=='yes'))
+				OR (($this->statutUtilisateur=='cpe')
+				AND (getSettingValue("CommentairesTypesCpe")=='yes'))
+				)
+			{
+				$this->creeNouveauItem("/saisie/commentaires_types.php",
+				"Saisie de commentaires-types",
+				"Permet de définir des commentaires-types pour l'avis du conseil de classe.");
+			}
 		}
 
 	  }
