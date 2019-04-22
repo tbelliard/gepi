@@ -668,7 +668,7 @@ if(getSettingAOui('active_bulletins')) {
                 $call_prof = mysqli_query($mysqli, "SELECT * FROM j_aid_utilisateurs
                                           WHERE (id_utilisateur = '".$this->loginUtilisateur."'
                                           AND indice_aid = '".$indice_aid."')");
-                $nb_result = $resultat->num_rows;
+                $nb_result = $call_prof->num_rows;
                 if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
                     $nom_aid = $obj->nom;
                     $this->creeNouveauItem("/saisie/saisie_aid.php?indice_aid=".$indice_aid,
