@@ -454,12 +454,14 @@ for($i=1;$i<=$max_num_per_tt_grp;$i++) {
 }
 echo "</tr>\n";
 
+$nb_deja=0;
 $alt=1;
 for($j=0;$j<$cpt;$j++) {
 	$alt=$alt*(-1);
 
 	if($tab_grp[$j]['transfert']=='y') {
 		echo "<tr style='background-color:gray;' title='Transfert vers le carnet de notes déjà effectué'>\n";
+		$nb_deja++;
 	}
 	else {
 		echo "<tr class='lig$alt'>\n";
@@ -498,7 +500,7 @@ for($j=0;$j<$cpt;$j++) {
 echo "</table>\n";
 
 if(getSettingValue("note_autre_que_sur_referentiel")=="F") {
-	echo "<p><span style='font-weight:bold; color:red;'>ATTENTION</span>&nbsp;: Les notes dans les carnets de notes ne sont autorisées que sur 20.<br />Si vous n'autorisez pas les professeurs à saisir des notes sur un autre référentiel que 20, les notes seront ramenées sur 20 lors du transfert dans le carnet de notes.<br />En revanche, si vous souhaitez autoriser les notes sur d'autres référentiels, <a href='../cahier_notes_admin/index.php'>suivez ce lien</a>.</p>\n";
+	echo "<p style='margin-top:1em;'><span style='font-weight:bold; color:red;'>ATTENTION</span>&nbsp;: Les notes dans les carnets de notes ne sont autorisées que sur 20.<br />Si vous n'autorisez pas les professeurs à saisir des notes sur un autre référentiel que 20, les notes seront ramenées sur 20 lors du transfert dans le carnet de notes.<br />En revanche, si vous souhaitez autoriser les notes sur d'autres référentiels, <a href='../cahier_notes_admin/index.php'>suivez ce lien</a>.</p>\n";
 }
 
 
@@ -511,8 +513,12 @@ function alert_transfert(id) {
 </script>\n";
 
 echo " <input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
-echo "<p><input type='submit' name='transfert_cn' value='Valider' /></p>\n";
+echo "<p style='margin-top:1em;'><input type='submit' name='transfert_cn' value='Valider' /></p>\n";
 echo "</form>\n";
+
+if($nb_deja>0) {
+	echo "<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> Le transfert a déjà été effectué pour ".$nb_deja." enseignement(s).</p>";
+}
 
 echo "<p><br /></p>\n";
 echo "<p style='color:red;'>A FAIRE:</p>\n";
