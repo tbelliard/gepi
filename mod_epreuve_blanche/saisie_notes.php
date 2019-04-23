@@ -553,12 +553,14 @@ if(mysqli_num_rows($test3)>0) {
 	die();
 }
 
-$sql="SELECT 1=1 FROM eb_groupes WHERE transfert='y' AND id_epreuve='$id_epreuve';";
-$test4=mysqli_query($GLOBALS["mysqli"], $sql);
-if(mysqli_num_rows($test4)>0) {
-	echo "<p style='color:red;'><b>Anomalie&nbsp;:</b> L'épreuve n'est pas close et le transfert des notes vers les carnets de notes a déjà été effectué pour un enseignement/groupe au moins.<br />Merci de prendre contact avec l'administrateur ou avec le responsable de l'épreuve (<i>en principe titulaire d'un compte 'scolarité'</i>) pour qu'il effectue à nouveau le transfert une fois les notes modifiées/corrigées.";
+if($etat!='clos') {
+	$sql="SELECT 1=1 FROM eb_groupes WHERE transfert='y' AND id_epreuve='$id_epreuve';";
+	//echo "$sql<br />";
+	$test4=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test4)>0) {
+		echo "<p style='color:red;'><b>Anomalie&nbsp;:</b> L'épreuve n'est pas close et le transfert des notes vers les carnets de notes a déjà été effectué pour un enseignement/groupe au moins.<br />Merci de prendre contact avec l'administrateur ou avec le responsable de l'épreuve (<i>en principe titulaire d'un compte 'scolarité'</i>) pour qu'il effectue à nouveau le transfert une fois les notes modifiées/corrigées.";
+	}
 }
-
 //========================================================
 
 // 20130406
