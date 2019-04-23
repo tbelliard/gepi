@@ -183,6 +183,54 @@ if ($barre_plugin!="") {
 					$menus .= '     <li><a href="'.$gepiPath.'/mod_abs2/saisie_bulletin.php"'.insert_confirm_abandon().'>Saisie Vie Scolaire</a></li>'."\n";
 				}
 
+				//========================================================
+				// AID
+				// Pour un professeur, on n'appelle que les aid qui sont sur un bulletin
+				$sql_call_data = "SELECT * FROM aid_config
+					WHERE display_bulletin = 'y'
+					OR bull_simplifie = 'y'
+					ORDER BY nom;";
+				$tmp_cpt_aid=0;
+				$tmp_nb_aid_a_afficher=0;
+				$tmp_call_data = mysqli_query($mysqli, $sql_call_data);
+				$tmp_nb_aid = $tmp_call_data->num_rows;
+				while ($obj_call_data = $tmp_call_data->fetch_object()) {
+					$tmp_indice_aid = $obj_call_data->indice_aid;
+					$sql="SELECT * FROM j_aid_utilisateurs
+						WHERE (id_utilisateur = '".$_SESSION['login']."'
+						AND indice_aid = '".$tmp_indice_aid."');";
+					//echo "$sql<br />";
+					$tmp_call_prof = mysqli_query($mysqli, $sql);
+					$tmp_nb_result = $tmp_call_prof->num_rows;
+					if ($tmp_nb_result != 0) {
+						$tmp_nom_aid = $obj_call_data->nom;
+						$sql="SELECT a.nom, a.id, a.numero FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$tmp_indice_aid') ORDER BY a.numero, a.nom;";
+						//echo "$sql<br />";
+						$tmp_call_prof_aid = mysqli_query($mysqli, $sql);
+						$tmp_nombre_aid = $tmp_call_prof_aid->num_rows;
+						if ($tmp_nombre_aid>0) {
+							if($tmp_nb_aid_a_afficher==0) {
+								$menus .= '     <li class="plus">AID'."\n";
+								$menus .= '            <ul class="niveau3">'."\n";
+							}
+
+							$menus .= '                <li><a href="'.$gepiPath.'/saisie/saisie_aid.php?indice_aid='.$tmp_indice_aid.'"'.insert_confirm_abandon().' title="Saisir les '.($obj_call_data->type_note!='no' ? 'moyennes et ' : '').'appréciations .">'.$tmp_nom_aid.' (saisie)</a></li>'."\n";
+
+							$tmp_nb_aid_a_afficher++;
+
+						}
+						$tmp_call_prof_aid->close();
+					}
+					$tmp_call_prof->close();
+					$tmp_cpt_aid++;
+				}
+
+				if($tmp_nb_aid_a_afficher>0) {
+					$menus .= '            </ul>'."\n";
+					$menus .= '     </li>'."\n";
+				}
+				//========================================================
+
 				$menus .= '   </ul>'."\n";
 				$menus .= '</li>'."\n";
 			}
