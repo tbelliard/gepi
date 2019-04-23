@@ -99,6 +99,9 @@ Ce choix permet de limiter la liste des classes proposées aux différents compt
 	}
 ?>
 </p>
+
+<div style='float:right; width:7em; padding:0.5em; margin:0.5em; text-align:center;' class='fieldset_opacite50'><a href='../groupes/visu_profs_class.php'>Équipes pédagogiques</a></div>
+
 <p style='margin-top: 10px;'>
 <img src='../images/icons/add.png' alt='' class='back_link' /> <a href="modify_nom_class.php">Ajouter une classe</a>
 </p>
