@@ -14,6 +14,13 @@ Cahiers de textes 2:
 - Ajout d'une visionneuse Instrumenpoche.
 - Mise à jour de l'app GeoGebra.
 
+AID:
+- Possibilité de désigner comme "professeur" un compte scolarité ou cpe.
+
+Bibliothèques:
+- Mise à jour de TinyButStrong en version 3.11.0 (PHP 5 and 7) (2019-02-10)
+- Mise à jour du plugin openTBS de TinyButStrong en version 1.9.12 (2019-03-10)
+
 
 Gepi-1.7.4 (28/01/2019)
 ===========================
