@@ -639,6 +639,8 @@ if($etat!='clos') {
 	}
 }
 
+$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+
 echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus boireaus_alt sortable resizable' summary='Saisie'>\n";
 echo "<tr>\n";
 echo "<th class='number'>Numéro anonymat</th>\n";
@@ -663,6 +665,9 @@ while($lig=mysqli_fetch_object($res)) {
 
 	if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 		echo "<td style='background-color:gray;'$title_col_sp>\n";
+		if($acces_visu_eleve) {
+			echo "<div style='float:right; width:16px'><a href='../eleves/visu_eleve.php?ele_login=".$lig->login_ele."' title=\"Voir le dossier élève dans un nouvel onglet.\" target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' alt='Voir' /></a></div>";
+		}
 		echo get_nom_prenom_eleve($lig->login_ele)."\n";
 		echo "</td>\n";
 	}
