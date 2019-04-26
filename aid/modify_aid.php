@@ -459,16 +459,16 @@ if ($flag == "prof") { ?>
 
     if ($nombre !=0) {
 	?>
-	<p class='bold'>Liste des professeurs responsables :</p>
+	<p class='bold'>Liste des professeurs responsables&nbsp;:</p>
 	<p>
-		Les noms des professeurs ci-dessous figurent (selon le paramétrage) 
+		Les noms des professeurs <em title="Un professeur, un CPE ou un compte scolarité jouant un rôle de professeur sur l'AID, c'est-à-dire, par exemple, habilité à saisir les notes/appréciations des bulletins si l'AID est visible sur les bulletins.">(*)</em> ci-dessous figurent <em>(selon le paramétrage)</em> 
 		sur les bulletins officiels et/ou les bulletins simplifiés.
 	</p>
 <?php
         if ($activer_outils_comp == "y") {
 ?>
 	<p>
-		De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activé cette possibilité).
+		De plus ces professeurs <em title="Un professeur, un CPE ou un compte scolarité jouant un rôle de professeur sur l'AID, c'est-à-dire, par exemple, habilité à saisir les notes/appréciations des bulletins si l'AID est visible sur les bulletins.">(*)</em> peuvent modifier les fiches projet <em>(si l'administrateur a activé cette possibilité)</em>.
 	</p>
 	<?php } ?>
 	<hr />
@@ -503,11 +503,11 @@ if ($flag == "prof") { ?>
 <?php
     } else {
 ?>
-	<h4 style="color: red;">Il n'y a pas actuellement de professeur responsable !</h4>
+	<h4 style="color: red;">Il n'y a pas actuellement de professeur <em title="Un professeur, un CPE ou un compte scolarité jouant un rôle de professeur sur l'AID, c'est-à-dire, par exemple, habilité à saisir les notes/appréciations des bulletins si l'AID est visible sur les bulletins.">(*)</em> responsable !</h4>
 <?php
     }
 ?>
-	<p class='bold'>Ajouter un professeur responsable à la liste de l'AID&nbsp;:</p>
+	<p class='bold'>Ajouter un professeur <em title="Un professeur, un CPE ou un compte scolarité jouant un rôle de professeur sur l'AID, c'est-à-dire, par exemple, habilité à saisir les notes/appréciations des bulletins si l'AID est visible sur les bulletins.">(*)</em> responsable à la liste de l'AID&nbsp;:</p>
 	<select size=1 name="reg_prof_login" onchange="changement()">
 		<option value=''>(aucun)</option>
 	<?php
@@ -548,11 +548,11 @@ if ($flag == "prof") { ?>
     if ($nombre != 0) {
 ?>
 <hr />
-<h2>Affecter cette liste aux Aids sans professeur responsable</h2>
+<h2>Affecter cette liste aux Aids sans professeur <em title="Un professeur, un CPE ou un compte scolarité jouant un rôle de professeur sur l'AID, c'est-à-dire, par exemple, habilité à saisir les notes/appréciations des bulletins si l'AID est visible sur les bulletins.">(*)</em>  responsable</h2>
 <form enctype="multipart/form-data" action="modify_aid.php" method="post">
 	<p>
 		Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste ci-dessus seront également affectés 
-		à toutes les AIDs de cette catégorie n'ayant pas encore de professeur responsable.
+		à toutes les AIDs de cette catégorie n'ayant pas encore de professeur <em title="Un professeur, un CPE ou un compte scolarité jouant un rôle de professeur sur l'AID, c'est-à-dire, par exemple, habilité à saisir les notes/appréciations des bulletins si l'AID est visible sur les bulletins.">(*)</em>  responsable.
 	</p>
 	<?php echo add_token_field(); ?>
 	<p>
@@ -583,7 +583,7 @@ if ($flag == "prof") { ?>
 ?>
 	<select name="liste_aids[]" size="6" onchange="changement()" multiple>
 <?php
-while($obj = $calldata->fetch_object()){
+while($obj = $calldata->fetch_object()) {
 ?>
 		<option value="<?php echo $obj->id; ?>"><?php echo $obj->nom; ?></option>
 <?php
@@ -591,7 +591,7 @@ while($obj = $calldata->fetch_object()){
 }
 ?>
 	</select>
-	<p>Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste de cette AID 
+	<p>Si vous cliquez sur le bouton ci-dessous, les professeurs <em title="Professeurs, CPE ou compte scolarité jouant un rôle de professeur sur l'AID, c'est-à-dire, par exemple, habilité à saisir les notes/appréciations des bulletins si l'AID est visible sur les bulletins.">(*)</em>  de la liste de cette AID 
 		seront également affectés à toutes les AIDs sélectionnées ci-dessus.
 	</p>
 	<p><input type="submit" value="Affecter la liste aux Aids sélectionnées ci-dessus" /></p>
