@@ -37,7 +37,7 @@ $listeResponsables = getResponsables();
 
 /*===== Élève =====*/
 // On récupère tous les élèves
-$sqlEleves = "SELECT t3.* , c.classe FROM "
+$sqlEleves = "SELECT t3.*, c.classe FROM "
 	. "(SELECT DISTINCT t1.* , t2.id_classe "
 	. "FROM eleves AS t1 "
 	. "INNER JOIN j_eleves_classes AS t2 "

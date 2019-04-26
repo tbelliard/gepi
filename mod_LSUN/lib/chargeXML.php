@@ -447,7 +447,12 @@ mysql>
 						
 					//on ne conserve que les chiffres pour id-sts
 					if (!$enseignant->numind) {
-						$msgErreur .= $enseignant->nom." ".$enseignant->prenom." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br /><br />";
+						$tmp_statut=get_valeur_champ('utilisateurs', "login='".$enseignant->login."'", 'statut');
+						$info_statut='';
+						if($tmp_statut!='') {
+							$info_statut=" <em title=\"Compte de statut ".$tmp_statut."\">(".$tmp_statut.")</em>";
+						}
+						$msgErreur .= $enseignant->nom." ".$enseignant->prenom.$info_statut." n'a pas d'identifiant STS, vous devez corriger cette erreur avant de continuer&nbsp;: <em><a href=\"../utilisateurs/modify_user.php?user_login=".$enseignant->login."\" target=\"_BLANK\" >Corriger</a></em><br /><br />";
 						continue;
 					}
 					if((!$enseignant->nom)||($enseignant->nom=="")) {
@@ -1724,7 +1729,13 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 							}
 						}
 
-						$msg_erreur_remplissage.="Aucun avis du conseil de classe n'est saisi pour <strong>".get_nom_prenom_eleve($eleve->login)."</strong> pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Les saisies concernant cet élève ne seront pas extraites et donc pas remontées vers LSU.<br />Un compte scolarité, professeur principal,... <em>(selon les droits d'accès paramétrés)</em> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
+						$msg_erreur_remplissage.="Aucun avis du conseil de classe n'est saisi pour <strong><a href='../eleves/visu_eleve.php?ele_login=".$eleve->login."' target='_blank'>".get_nom_prenom_eleve($eleve->login)."</a></strong> pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp;
+						// 20190426
+						$tmp_eleve=get_info_eleve($eleve->login);
+						if((isset($tmp_eleve['date_sortie']))&&(!is_null($tmp_eleve['date_sortie']))&&($tmp_eleve['date_sortie']<$date_conseil_classe)) {
+							$msg_erreur_remplissage.=" <em>(sorti".($tmp_eleve['sexe']=='F' ? 'e' : '')." de l'établissement le ".formate_date($tmp_eleve['date_sortie']).")</em>";
+						}
+						$msg_erreur_remplissage.=".<br />Les saisies concernant cet élève ne seront pas extraites et donc pas remontées vers LSU.<br />Un compte scolarité, professeur principal,... <em>(selon les droits d'accès paramétrés)</em> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
 					}
 					else {
 						$tmp_chaine=nettoye_texte_vers_chaine($avisConseil);
