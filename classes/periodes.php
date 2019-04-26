@@ -351,7 +351,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	$k = '1';
 	$alt=1;
 
-	include("../lib/calendrier/calendrier.class.php");
+	//include("../lib/calendrier/calendrier.class.php");
 
 	while ($k < $nb_periode) {
 		if ($nom_periode[$k] == '') {$nom_periode[$k] = "période ".$k;}
