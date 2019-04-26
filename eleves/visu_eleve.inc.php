@@ -3675,7 +3675,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			$div_en_haut_a_droite.="<div style='float:right; width:4em; color:red; text-align:center;'>\n";
 			//if (($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe')){
 			if(acces_extract_disc("", $ele_login)) {
-				$div_en_haut_a_droite.="<a href='../mod_discipline/mod_discipline_extraction_ooo.php?protagoniste_incident=$ele_login' title=\"Exporter les ".$mod_disc_terme_incident."s au format ODT.\">ODT</a><br />";
+				$div_en_haut_a_droite.="<a href='../mod_discipline/mod_discipline_extraction_ooo.php?protagoniste_incident=$ele_login' title=\"Exporter les ".$mod_disc_terme_incident."s au format ODT.\" target='_blank'>ODT</a><br />";
 			}
 	
 			$div_en_haut_a_droite.="<a href='../mod_discipline/afficher_incidents_eleve.php?login_ele=$ele_login' title=\"Afficher cette page avec/sans les informations concernant les autres protagonistes des ".$mod_disc_terme_incident."s.
