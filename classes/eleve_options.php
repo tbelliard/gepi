@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -75,6 +75,250 @@ if($_SESSION['statut']=="scolarite") {
 }
 
 include "../lib/periodes.inc.php";
+
+if((isset($_GET['src_transfert_id_groupe']))&&(preg_match("/^[0-9]{1,}$/", $_GET['src_transfert_id_groupe']))&&
+(isset($_GET['id_classe']))&&(preg_match("/^[0-9]{1,}$/", $_GET['id_classe']))&&
+(isset($_GET['periode']))&&(preg_match("/^[0-9]{1,}$/", $_GET['periode']))&&
+(isset($_GET['login_eleve']))&&($_GET['login_eleve']!='')) {
+	check_token();
+
+	unset($_SESSION['transfert_notes_eleve']);
+	unset($_SESSION['transfert_notes_src_id_groupe']);
+	unset($_SESSION['transfert_notes_periode']);
+	unset($_SESSION['transfert_notes_id_classe']);
+
+	// Faire des vérifications
+	$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='".$_GET['id_classe']."' AND login='".$_GET['login_eleve']."' AND periode='".$_GET['periode']."';";
+	//echo "$sql<br />";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)==0) {
+		echo "<img src='../images/disabled.png' class='icone16' title=\"L'élève n'est pas inscrit dans la classe indiquée.\" />";
+	}
+	else {
+		$_SESSION['transfert_notes_eleve']=$_GET['login_eleve'];
+		$_SESSION['transfert_notes_src_id_groupe']=$_GET['src_transfert_id_groupe'];
+		$_SESSION['transfert_notes_periode']=$_GET['periode'];
+		$_SESSION['transfert_notes_id_classe']=$_GET['id_classe'];
+
+		echo "<img src='../images/icons/flag2.gif' class='icone16' title=\"Choisissez maintenant vers quel enseignement transférer/coller les notes de ".get_nom_prenom_eleve($_GET['login_eleve']).".\"/>";
+	}
+
+	die();
+}
+
+
+
+//		new Ajax.Updater($('span_resultat_transfert_notes_'+num_ligne+'_'+periode),'eleve_options.php?dest_transfert_id_groupe='+id_groupe+'&login_eleve=$login_eleve&id_classe=$id_classe&periode='+periode+'".add_token_in_url(false)."', {method: 'get'});
+if((isset($_GET['dest_transfert_id_groupe']))&&(preg_match("/^[0-9]{1,}$/", $_GET['dest_transfert_id_groupe']))&&
+(isset($_GET['id_classe']))&&(preg_match("/^[0-9]{1,}$/", $_GET['id_classe']))&&
+(isset($_GET['periode']))&&(preg_match("/^[0-9]{1,}$/", $_GET['periode']))&&
+(isset($_GET['login_eleve']))&&($_GET['login_eleve']!='')) {
+	check_token();
+
+	// Faire des vérifications
+	if($_SESSION['transfert_notes_eleve']!=$_GET['login_eleve']) {
+		echo "<img src='../images/disabled.png' class='icone16' title=\"Incohérence sur l'identité de l'élève. Auriez-vous travaillé sur plusieurs onglets en parallèle?\" />";
+	}
+	else {
+
+		$info_grp_src=get_info_grp($_SESSION['transfert_notes_src_id_groupe'], array('description', 'matieres', 'classes', 'profs'), '');
+		$info_grp_dest=get_info_grp($_GET['dest_transfert_id_groupe'], array('description', 'matieres', 'classes', 'profs'), '');
+		$info_eleve=get_nom_prenom_eleve($_SESSION['transfert_notes_eleve']);
+
+		$compte_rendu="Transfert de notes de ".$info_eleve." de ".$info_grp_src." (période ".$_SESSION['transfert_notes_periode'].") vers ".$info_grp_dest." (période ".$_GET['periode'].") : \n";
+
+		// Récupèrer le carnet de notes source
+		$id_cn_src=get_id_cahier_notes($_SESSION['transfert_notes_src_id_groupe'], $_SESSION['transfert_notes_periode']);
+		if($id_cn_src=='') {
+			echo "<img src='../images/disabled.png' class='icone16' title=\"Pas de carnet de notes source trouvé.\" />";
+		}
+		else {
+			// Récupérer les notes
+			$sql="SELECT cd.*, cnd.note, cnd.statut, cnd.comment FROM cn_devoirs cd, 
+										cn_notes_devoirs cnd 
+									WHERE cd.id_racine='".$id_cn_src."' AND 
+										cd.id=cnd.id_devoir AND 
+										cnd.login='".$_SESSION['transfert_notes_eleve']."' AND 
+										cnd.statut!='v';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)==0) {
+				echo "<img src='../images/disabled.png' class='icone16' title=\"Pas de note trouvée dans le carnet de notes source.\" />";
+			}
+			else {
+				// Vérifier que l'élève est dans le groupe:
+				$erreur='n';
+				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='".$_SESSION['transfert_notes_eleve']."' AND id_groupe='".$_GET['dest_transfert_id_groupe']."' AND periode='".$_GET['periode']."';";
+				//echo "$sql<br />";
+				$test=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($test)==0) {
+					$sql="INSERT INTO j_eleves_groupes SET login='".$_SESSION['transfert_notes_eleve']."', id_groupe='".$_GET['dest_transfert_id_groupe']."', periode='".$_GET['periode']."';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($mysqli, $sql);
+					if(!$insert) {
+						$erreur='y';
+					}
+				}
+
+				if($erreur=='y') {
+					echo "<img src='../images/disabled.png' class='icone16' title=\"Erreur lors de l'inscription de l'élève dans le groupe destination.\" />";
+				}
+				else {
+					// Créer le carnet de notes destination si nécessaire
+					$id_cn_dest=get_id_cahier_notes($_GET['dest_transfert_id_groupe'], $_GET['periode']);
+					if($id_cn_dest=='') {
+						$id_cn_dest=creer_carnet_notes($_GET['dest_transfert_id_groupe'], $_GET['periode']);
+					}
+					if($id_cn_dest=='') {
+						echo "<img src='../images/disabled.png' class='icone16' title=\"Erreur lors de la création du carnet de notes destination.\" />";
+					}
+					else {
+						$nb_notes=0;
+						$nb_err=0;
+						//$notes=array();
+						while($lig=mysqli_fetch_object($res)) {
+							// Créer les évaluations destination
+							$sql="INSERT INTO cn_devoirs SET id_conteneur='".$id_cn_dest."', 
+												id_racine='".$id_cn_dest."', 
+												nom_court='".mysqli_real_escape_string($mysqli, $lig->nom_court)."', 
+												nom_complet='".mysqli_real_escape_string($mysqli, $lig->nom_complet)."', 
+												description='".mysqli_real_escape_string($mysqli, $lig->description)."\n(Note transférée depuis $info_grp_src)"."', 
+												facultatif='".$lig->facultatif."', 
+												date='".$lig->date."', 
+												coef='".$lig->coef."', 
+												note_sur='".$lig->note_sur."', 
+												ramener_sur_referentiel='".$lig->ramener_sur_referentiel."', 
+												display_parents='".$lig->display_parents."', 
+												display_parents_app='".$lig->display_parents_app."', 
+												date_ele_resp='".$lig->date_ele_resp."';";
+							//echo "$sql<br />";
+							$res_cd=mysqli_query($mysqli, $sql);
+							if(!$res_cd) {
+								$nb_err++;
+							}
+							else {
+								$id_devoir=mysqli_insert_id($mysqli);
+								$compte_rendu.="Évaluation n°".$id_devoir." ($lig->nom_court ($lig->nom_complet)) créée dans le carnet de notes de l'enseignement destination: ";
+
+								if($lig->statut!='') {
+									$info_note=$lig->statut;
+								}
+								else {
+									$info_note=$lig->note;
+								}
+
+								// Transférer la note
+								$sql="INSERT INTO cn_notes_devoirs SET login='".$_SESSION['transfert_notes_eleve']."', 
+													id_devoir='".$id_devoir."', 
+													note='".$lig->note."', 
+													statut='".$lig->statut."', 
+													comment='".mysqli_real_escape_string($mysqli, $lig->comment)."';";
+								//echo "$sql<br />";
+								$insert=mysqli_query($mysqli, $sql);
+								if(!$insert) {
+									$nb_err++;
+									$compte_rendu.="Erreur lors de l'inscription de la note ($info_note).\n";
+								}
+								else {
+									$compte_rendu.=$info_note;
+
+									// Suppression de la note source
+									$sql="DELETE FROM cn_notes_devoirs WHERE login='".$_SESSION['transfert_notes_eleve']."' AND 
+													id_devoir='".$lig->id."';";
+									//echo "$sql<br />";
+									$del=mysqli_query($mysqli, $sql);
+									if(!$del) {
+										$nb_err++;
+										$compte_rendu.=" (erreur lors du ménage dans l'enseignement source)";
+									}
+									else {
+										$nb_notes++;
+									}
+									$compte_rendu.="\n";
+								}
+
+							}
+
+						}
+
+						$grp_src=get_group($_SESSION['transfert_notes_src_id_groupe']);
+						$arret='no';
+						//mise_a_jour_moyennes_conteneurs($grp_src, $_SESSION['transfert_notes_periode'], $id_cn_src, $id_cn_src, $arret);
+						$current_group=$grp_src;
+						$periode_num=$_SESSION['transfert_notes_periode'];
+						$id_racine=$id_cn_src;
+						recherche_enfant($id_cn_src);
+
+						$grp_dest=get_group($_GET['dest_transfert_id_groupe']);
+						$arret='no';
+						//mise_a_jour_moyennes_conteneurs($grp_dest, $_GET['periode'], $id_cn_dest, $id_cn_dest, $arret);
+						$current_group=$grp_dest;
+						$periode_num=$_GET['periode'];
+						$id_racine=$id_cn_dest;
+						recherche_enfant($id_cn_dest);
+
+						if($nb_err>0) {
+							echo "<img src='../images/icons/flag.png' class='icone16' title=\"Une ou des erreurs se sont produites lors du transfert des notes de ".get_info_grp($_SESSION['transfert_notes_src_id_groupe'], array('description', 'matieres', 'classes', 'profs'), '')." en période ".$_SESSION['transfert_notes_periode']." vers cet enseignement pour ".get_nom_prenom_eleve($_GET['login_eleve']).".\nVoici le compte-rendu:\n".$compte_rendu."\"/>";
+						}
+						else {
+							echo "<img src='../images/icons/flag_green.png' class='icone16' title=\"Les notes de ".get_info_grp($_SESSION['transfert_notes_src_id_groupe'], array('description', 'matieres', 'classes', 'profs'), '')." en période ".$_SESSION['transfert_notes_periode']." ont été transférées vers cet enseignement pour ".get_nom_prenom_eleve($_GET['login_eleve']).".\"/>";
+						}
+
+
+						$message="Bonjour, \n\nJe souhaite vous informer d'une opération de transfert de notes.\n\n".$compte_rendu;
+						$texte_mail=preg_replace('/(\\\n)+/',"\n",$message);
+						$texte_mail=preg_replace('/(\\\')+/',"'",$texte_mail);
+						$texte_mail.="\nBien cordialement.\n-- \n".civ_nom_prenom($_SESSION['login']);
+
+						// Envoyer un mail aux profs
+						if((isset($grp_src['profs']['users']))&&(count($grp_src['profs']['users'])>0)) {
+							foreach($grp_src['profs']['users'] as $current_login_prof => $current_prof) {
+								if(check_mail($current_prof['email'])) {
+									$tab_param_mail['destinataire']=$current_prof['email'];
+									$subject = "[GEPI]: Transfert de notes (".$info_eleve.")";
+
+									$headers = "";
+									if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+										$headers.="Reply-to:".$_SESSION['email']."\r\n";
+										$tab_param_mail['replyto']=$_SESSION['email'];
+
+										$headers.="BCC:".$_SESSION['email']."\r\n";
+										$tab_param_mail['bcc']=$_SESSION['email'];
+									}
+
+									// On envoie le mail
+									$envoi = envoi_mail($subject, $texte_mail, $current_prof['email'], $headers, "plain", $tab_param_mail);
+									if($envoi) {
+										//...
+										//echo "Mail envoyé (".$current_prof['email'].")<br />";
+									}
+									else {
+										//echo "Echec de l'envoi du mail (".$current_prof['email'].")<br />";
+									}
+								}
+							}
+						}
+
+						// Déposer une alerte
+						if(getSettingAOui('active_mod_alerte')) {
+							foreach($grp_src['profs']['users'] as $current_login_prof => $current_prof) {
+								$retour=enregistre_message("Transfert de notes (".$info_eleve.")", $message, $_SESSION['login'], $current_login_prof, strftime("%Y-%m-%d %H:%M:%S"));
+							}
+						}
+
+						unset($_SESSION['transfert_notes_eleve']);
+						unset($_SESSION['transfert_notes_src_id_groupe']);
+						unset($_SESSION['transfert_notes_periode']);
+						unset($_SESSION['transfert_notes_id_classe']);
+					}
+				}
+			}
+		}
+	}
+	die();
+}
+
+
 
 $grp_edt=isset($_POST['grp_edt']) ? $_POST['grp_edt'] : (isset($_GET['grp_edt']) ? $_GET['grp_edt'] : "n");
 
@@ -701,7 +945,14 @@ while ($i < $nombre_ligne) {
 				$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 				$nb_notes_cn=mysqli_num_rows($test_cn);
 				if($nb_notes_cn>0) {
-					echo "<img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+					if($ver_periode[$j]=='N') {
+						//echo "<a href='".$_SERVER['PHP_SELF']."?src_transfert_notes=y&login_ele=".$login_eleve."&id_classe=".$id_classe."&id_groupe=".$id_groupe."&periode=".$j."' target='_blank' title=\"Transférer les notes vers un autre enseignement en cas de changement de groupe en cours de période.\" onclick=\"transfert_notes(".$i.", ".$id_groupe.", ".$j."); return false;\"><span id='span_img_cn_non_vide_".$i."_".$j."'><img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' /></span></a>";
+
+						echo "<a href='#' title=\"Transférer les notes vers un autre enseignement en cas de changement de groupe en cours de période.\" onclick=\"transfert_notes(".$i.", ".$id_groupe.", ".$j."); return false;\"><span id='span_img_cn_non_vide_".$i."_".$j."'><img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' /></span></a>";
+					}
+					else {
+						echo "<img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+					}
 					//echo "$sql<br />";
 				}
 
@@ -711,6 +962,9 @@ while ($i < $nombre_ligne) {
 					echo "<img id='img_erreur_affect_".$i."_".$j."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
 				}
 
+				if($ver_periode[$j]=='N') {
+					echo "<a href='#' id='destination_transfert_notes_".$i."_".$j."' onclick=\"destination_transfert_notes($i, $id_groupe, $j); return false;\" style='display:none' title=\"Transférer les notes vers cet enseignement.\"><img src='../images/icons/paste.png' class='icone16' alt='Coller' /></a><span id='span_resultat_transfert_notes_".$i."_".$j."'></span>";
+				}
 				echo "</td>\n";
 			}
 		}
@@ -759,7 +1013,14 @@ while ($i < $nombre_ligne) {
 			$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_notes_cn=mysqli_num_rows($test_cn);
 			if($nb_notes_cn>0) {
-				echo "<img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+				if($ver_periode[$j]=='N') {
+					//echo "<a href='".$_SERVER['PHP_SELF']."?src_transfert_notes=y&login_ele=".$login_eleve."&id_classe=".$id_classe."&id_groupe=".$id_groupe."&periode=".$j."' target='_blank' title=\"Transférer les notes vers un autre enseignement en cas de changement de groupe en cours de période.\" onclick=\"transfert_notes(".$i.", ".$id_groupe.", ".$j."); return false;\"><span id='span_img_cn_non_vide_".$i."_".$j."'><img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' /></span></a>";
+
+					echo "<a href='#' title=\"Transférer les notes vers un autre enseignement en cas de changement de groupe en cours de période.\" onclick=\"transfert_notes(".$i.", ".$id_groupe.", ".$j."); return false;\"><span id='span_img_cn_non_vide_".$i."_".$j."'><img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' /></span></a>";
+				}
+				else {
+					echo "<img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+				}
 				//echo "$sql<br />";
 			}
 
@@ -769,6 +1030,10 @@ while ($i < $nombre_ligne) {
 			}
 
 			echo " <em style='font-size:x-small' title=\"$eff_grp élève(s) sont inscrits dans cet enseignement en période $i.\n\n(effectif enregistré ne tenant pas compte des éventuelles modifications non encore validées dans cette page).\">($eff_grp)</em>";
+
+			if($ver_periode[$j]=='N') {
+				echo "<a href='#' id='destination_transfert_notes_".$i."_".$j."' onclick=\"destination_transfert_notes($i, $id_groupe, $j); return false;\" style='display:none' title=\"Transférer les notes vers cet enseignement.\"><img src='../images/icons/paste.png' class='icone16' alt='Coller' /></a><span id='span_resultat_transfert_notes_".$i."_".$j."'></span>";
+			}
 			echo "</td>\n";
 		}
 		$j++;
@@ -1026,6 +1291,71 @@ echo "<script type='text/javascript' language='javascript'>
 			}
 		}
 	}
+
+	var transfert_notes_num_ligne=-1;
+	var transfert_notes_periode=-1;
+	function transfert_notes(num_ligne, id_groupe, periode) {
+		for(j=0;j<$nb_periode;j++) {
+			for(i=0;i<$i;i++) {
+				if(document.getElementById('destination_transfert_notes_'+i+'_'+j)) {
+					document.getElementById('destination_transfert_notes_'+i+'_'+j).style.display='';
+				}
+
+				if(document.getElementById('span_resultat_transfert_notes_'+i+'_'+j)) {
+					document.getElementById('span_resultat_transfert_notes_'+i+'_'+j).innerHTML='';
+				}
+			}
+		}
+
+		/*
+		for(i=0;i<$i;i++) {
+			if(document.getElementById('destination_transfert_notes_'+i+'_'+periode)) {
+				document.getElementById('destination_transfert_notes_'+i+'_'+periode).style.display='';
+			}
+
+			if(document.getElementById('span_resultat_transfert_notes_'+i+'_'+periode)) {
+				document.getElementById('span_resultat_transfert_notes_'+i+'_'+periode).innerHTML='';
+			}
+		}
+		*/
+
+		if(document.getElementById('destination_transfert_notes_'+num_ligne+'_'+periode)) {
+			document.getElementById('destination_transfert_notes_'+num_ligne+'_'+periode).style.display='none';
+		}
+
+		new Ajax.Updater($('span_resultat_transfert_notes_'+num_ligne+'_'+periode),'eleve_options.php?src_transfert_id_groupe='+id_groupe+'&login_eleve=$login_eleve&id_classe=$id_classe&periode='+periode+'".add_token_in_url(false)."', {method: 'get'});
+
+		transfert_notes_num_ligne=num_ligne;
+		transfert_notes_periode=periode;
+	}
+
+	function destination_transfert_notes(num_ligne, id_groupe, periode) {
+		for(j=0;j<$nb_periode;j++) {
+			for(i=0;i<$i;i++) {
+				for(i=0;i<$i;i++) {
+					if(document.getElementById('destination_transfert_notes_'+i+'_'+j)) {
+						document.getElementById('destination_transfert_notes_'+i+'_'+j).style.display='none';
+					}
+
+					if(document.getElementById('span_resultat_transfert_notes_'+i+'_'+j)) {
+						document.getElementById('span_resultat_transfert_notes_'+i+'_'+j).innerHTML='';
+					}
+				}
+			}
+		}
+
+		if(document.getElementById('case'+num_ligne+'_'+periode)) {
+			document.getElementById('case'+num_ligne+'_'+periode).checked=true;
+			colore_td_eleve_options(num_ligne);
+		}
+
+		if(document.getElementById('span_img_cn_non_vide_'+transfert_notes_num_ligne+'_'+transfert_notes_periode)) {
+			document.getElementById('span_img_cn_non_vide_'+transfert_notes_num_ligne+'_'+transfert_notes_periode).innerHTML=\"<img src='../images/info.png' class='icone16' title='Après transfert, si tout se passe normalement, il ne devrait plus y avoir de note ici. Rafraichissez la page pour contrôler.' />\";
+		}
+
+		new Ajax.Updater($('span_resultat_transfert_notes_'+num_ligne+'_'+periode),'eleve_options.php?dest_transfert_id_groupe='+id_groupe+'&login_eleve=$login_eleve&id_classe=$id_classe&periode='+periode+'".add_token_in_url(false)."', {method: 'get'});
+	}
+
 </script>\n";
 
 if($nb_erreurs>0){

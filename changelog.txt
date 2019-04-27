@@ -10,6 +10,10 @@ Bulletins:
 - Facilités d'ouverture exceptionnelle de saisie de notes/appréciations en période
   partiellement close.
 
+Carnet de notes:
+- Facilité de transfert des notes d'un enseignement à un autre dans le cas 
+  d'un changement de groupe d'élève dans une même classe.
+
 Cahiers de textes 2:
 - Ajout d'une visionneuse Instrumenpoche.
 - Mise à jour de l'app GeoGebra.
