@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -66,6 +66,7 @@ include('lib_exb.php');
 
 $id_exam=isset($_POST['id_exam']) ? $_POST['id_exam'] : (isset($_GET['id_exam']) ? $_GET['id_exam'] : NULL);
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+$export_etendu=isset($_POST['export_etendu']) ? $_POST['export_etendu'] : (isset($_GET['export_etendu']) ? $_GET['export_etendu'] : 'n');
 
 
 $acces_mod_exb_prof="n";
@@ -122,6 +123,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				//$sql="SELECT m.*,em.coef,em.bonus FROM ex_matieres em, matieres m WHERE em.matiere=m.matiere AND id_exam='$id_exam' ORDER BY em.ordre, m.matiere;";
 				// Pour mettre les matières à bonus à la fin si aucun ordre n'a été défini
 				$sql="SELECT m.*,em.coef,em.bonus FROM ex_matieres em, matieres m WHERE em.matiere=m.matiere AND id_exam='$id_exam' ORDER BY em.ordre, em.bonus, m.matiere;";
+				//echo "$sql<br />\n";
 				$res_matieres=mysqli_query($GLOBALS["mysqli"], $sql);
 				$nb_matieres=mysqli_num_rows($res_matieres);
 				if($nb_matieres==0) {
@@ -131,6 +133,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					$tab_matiere=array();
 					$tab_coef=array();
 					$tab_bonus=array();
+					$tab_note_sur=array();
 					while($lig=mysqli_fetch_object($res_matieres)) {
 						$tab_matiere[]=$lig->matiere;
 						$tab_coef[]=$lig->coef;
@@ -234,6 +237,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 													//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
 													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
 													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note*20/$note_sur;
+
+													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note_sur"]=$note_sur;
+													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note0"]=$lig_dev->note;
+
 													$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]=$lig_groupe->id_dev;
 
 													if($lig_dev->statut=="") {
@@ -349,6 +356,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										if($eff_notes_epb>0) {
 											while($lig_note=mysqli_fetch_object($res_notes_epb)) {
 												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_note->statut;
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note_sur"]=$note_sur;
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note0"]=$lig_note->note;
 												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_note->note*20/$note_sur;
 												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["infobulle"]=$chaine_mpp;
 
@@ -425,15 +434,33 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						check_token();
 
 						$csv="CLASSE;LOGIN_ELEVE;NOM_PRENOM_ELEVE;";
-						for($j=0;$j<$nb_matieres;$j++) {$csv.=$tab_matiere[$j].";";}
+						for($j=0;$j<$nb_matieres;$j++) {
+							$csv.=$tab_matiere[$j].";";
+							if($export_etendu=='y') {
+								$csv.=$tab_matiere[$j]." note sur referentiel;";
+								$csv.=$tab_matiere[$j]." referentiel;";
+							}
+						}
 						$csv.="MOYENNE;\r\n";
 
 						$csv.=";;COEFFICIENT;";
-						for($j=0;$j<$nb_matieres;$j++) {$csv.=strtr($tab_coef[$j],".",",").";";}
+						for($j=0;$j<$nb_matieres;$j++) {
+							$csv.=strtr($tab_coef[$j],".",",").";";
+							if($export_etendu=='y') {
+								$csv.=";";
+								$csv.=";";
+							}
+						}
 						$csv.=";\r\n";
 
 						$csv.=";;BONUS;";
-						for($j=0;$j<$nb_matieres;$j++) {$csv.=$tab_bonus[$j].";";}
+						for($j=0;$j<$nb_matieres;$j++) {
+							$csv.=$tab_bonus[$j].";";
+							if($export_etendu=='y') {
+								$csv.=";";
+								$csv.=";";
+							}
+						}
 						$csv.=";\r\n";
 
 						for($i=0;$i<$nb_classes;$i++) {
@@ -462,11 +489,30 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 											}
 
 											$csv.=strtr($note_courante,".",",").";";
+											if($export_etendu=='y') {
+												if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note0'])) {
+													$csv.=strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note0'],".",",").";";
+													$csv.=strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note_sur'],".",",").";";
+												}
+												else {
+													$csv.=";";
+													$csv.=";";
+												}
+											}
 
 										}
 										elseif(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
 											if($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut']!='') {
 												$csv.=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'].";";
+												if($export_etendu=='y') {
+													$csv.=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['statut'].";";
+													if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note_sur'])) {
+														$csv.=strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note_sur'],".",",").";";
+													}
+													else {
+														$csv.=";";
+													}
+												}
 											}
 											else {
 												if($tab_bonus[$j]=='n') {
@@ -477,6 +523,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 													$tot_ele+=max(0,($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note']-10)*$tab_coef[$j]);
 												}
 												$csv.=strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note'],".",",").";";
+												if($export_etendu=='y') {
+													if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note0'])) {
+														$csv.=strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note0'],".",",").";";
+														$csv.=strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note_sur'],".",",").";";
+													}
+													else {
+														$csv.=";";
+														$csv.=";";
+													}
+												}
 											}
 										}
 										else {
@@ -1082,9 +1138,20 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=csv".add_token_in_url()."'";
 	echo " target='_blank'>CSV</a>\n";
 	echo "<br />\n";
+
+	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=csv&amp;export_etendu=y".add_token_in_url()."'";
+	echo " target='_blank' title=\"Par défaut, les notes sont ramenées sur 20.\nAvec l'export étendu, c'est aussi le cas, mais des colonnes sont ajoutées pour indiquer le référentiel de la note source et la valeur de la note sur ce référentiel.\">CSV étendu</a>\n";
+	echo "<br />\n";
+
 	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=pdf".add_token_in_url()."'";
 	echo " target='_blank'>PDF</a>\n";
 	echo "</div>\n";
+
+	/*
+	echo "<pre>";
+	print_r($tab_note);
+	echo "</pre>";
+	*/
 
 	//$csv="";
 	for($i=0;$i<$nb_classes;$i++) {
