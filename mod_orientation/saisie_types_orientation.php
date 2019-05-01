@@ -159,16 +159,16 @@ if(isset($_POST['nouvelle_orientation'])) {
 						else {
 							$lig_orientation=mysqli_fetch_object($res);
 							if($lig_orientation->titre!=$current_orientation) {
-								$sql="SELECT * FROM o_orientations_base WHERE titre='".mysqli_real_escape_string($mysqli, $current_orientation)."';";
+								$sql="SELECT * FROM o_orientations_base WHERE titre='".mysqli_real_escape_string($mysqli, ensure_utf8($current_orientation))."';";
 								$test=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test)>0) {
-									$msg.="Il existe déjà une orientation portant le titre \"".$current_orientation."\".<br />";
+									$msg.="Il existe déjà une orientation portant le titre \"".ensure_utf8($current_orientation)."\".<br />";
 								}
 								else {
-									$sql="UPDATE o_orientations_base SET titre='".mysqli_real_escape_string($mysqli, preg_replace("/'/", " ", stripslashes($current_orientation)))."' ";
+									$sql="UPDATE o_orientations_base SET titre='".mysqli_real_escape_string($mysqli, ensure_utf8(preg_replace("/'/", " ", stripslashes($current_orientation))))."' ";
 
 									if((isset($NON_PROTECT['description_'.$id_orientation]))&&($lig_orientation->description!=$NON_PROTECT['description_'.$id_orientation])) {
-										$sql.=", description='".mysqli_real_escape_string($mysqli, $NON_PROTECT['description_'.$id_orientation])."' ";
+										$sql.=", description='".mysqli_real_escape_string($mysqli, ensure_utf8($NON_PROTECT['description_'.$id_orientation]))."' ";
 									}
 
 									$sql.=" WHERE id='".$id_orientation."';";
@@ -183,7 +183,7 @@ if(isset($_POST['nouvelle_orientation'])) {
 								}
 							}
 							elseif((isset($NON_PROTECT['description_'.$id_orientation]))&&($lig_orientation->description!=$NON_PROTECT['description_'.$id_orientation])) {
-								$sql="UPDATE o_orientations_base SET description='".mysqli_real_escape_string($mysqli, $NON_PROTECT['description_'.$id_orientation])."' WHERE id='".$id_orientation."';";
+								$sql="UPDATE o_orientations_base SET description='".mysqli_real_escape_string($mysqli, ensure_utf8($NON_PROTECT['description_'.$id_orientation]))."' WHERE id='".$id_orientation."';";
 								//echo "$sql<br />";
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($update) {
@@ -242,15 +242,15 @@ if(isset($_POST['nouvelle_orientation'])) {
 		}
 		else {
 
-			$sql="SELECT * FROM o_orientations_base WHERE titre='".mysqli_real_escape_string($mysqli, preg_replace("/'/", " ", stripslashes($nouvelle_orientation)))."';";
+			$sql="SELECT * FROM o_orientations_base WHERE titre='".mysqli_real_escape_string($mysqli, ensure_utf8(preg_replace("/'/", " ", stripslashes($nouvelle_orientation))))."';";
 			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test)>0) {
-				$msg.="Il existe déjà une orientation portant le titre \"".$nouvelle_orientation."\".<br />";
+				$msg.="Il existe déjà une orientation portant le titre \"".ensure_utf8($nouvelle_orientation)."\".<br />";
 			}
 			else {
-				$sql="INSERT INTO o_orientations_base SET titre='".mysqli_real_escape_string($mysqli, $nouvelle_orientation)."'";
+				$sql="INSERT INTO o_orientations_base SET titre='".mysqli_real_escape_string($mysqli, ensure_utf8($nouvelle_orientation))."'";
 				if(isset($NON_PROTECT['description_nouvelle_orientation'])) {
-					$sql.=", description='".mysqli_real_escape_string($mysqli, $NON_PROTECT['description_nouvelle_orientation'])."'";
+					$sql.=", description='".mysqli_real_escape_string($mysqli, ensure_utf8($NON_PROTECT['description_nouvelle_orientation']))."'";
 				}
 				$sql.=";";
 				//echo "$sql<br />";
