@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -40,6 +40,8 @@ if (!checkAccess()) {
 
 //debug_var();
 $current_matiere=isset($_POST['current_matiere']) ? $_POST['current_matiere'] : (isset($_GET['current_matiere']) ? $_GET['current_matiere'] : NULL);
+
+$tab_options_sconet=get_tab_options_sconet();
 
 if((isset($_GET['export_ele_csv']))&&(isset($_GET['matiere']))) {
 	check_token();
@@ -145,6 +147,21 @@ if (isset($_POST['isposted'])) {
 			$ok = 'no';
 		} else {
 			$msg = "Les modifications ont été enregistrées ! <br />";
+		}
+	}
+
+	if($ok=='yes') {
+		if($code_matiere!='') {
+			$sql="SELECT 1=1 FROM nomenclatures_valeurs WHERE type='matiere' AND code='".$code_matiere."' AND nom='option_sconet_saisie';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if((mysqli_num_rows($test)>0)&&(!isset($_POST['option_sconet']))) {
+				$sql="DELETE FROM nomenclatures_valeurs WHERE type='matiere' AND code='".$code_matiere."' AND nom='option_sconet_saisie';";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+			elseif((mysqli_num_rows($test)==0)&&(isset($_POST['option_sconet']))) {
+				$sql="INSERT INTO nomenclatures_valeurs SET type='matiere', code='".$code_matiere."', nom='option_sconet_saisie', valeur='y';";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
 		}
 	}
 
@@ -544,7 +561,26 @@ echo "</select>";
 //$tab_modalites=get_tab_modalites_election();
 
 ?>
-</td>
+	</td>
+	</tr>
+
+<?php
+	if($code_matiere!='') {
+?>
+	<tr title="La matière est saisie comme option pour les élèves dans Sconet.
+	Cela permet lors de la mise à jour d'après Sconet de ne pré-inscrire l'élève dans un enseignement de cette matière que si l'option a été saisie pour l'élève dans Sconet.">
+		<th><label for='option_sconet'>Option sconet&nbsp;:</label></th>
+		<td>
+			<input type='checkbox' name='option_sconet' id='option_sconet' value='y' <?php
+				if(array_key_exists($code_matiere, $tab_options_sconet['code'])) {
+					echo "checked ";
+				}
+			?>/>
+		</td>
+	</tr>
+<?php
+	}
+?>
 </table>
 <p>
 <label for='force_defaut' style='cursor: pointer;'><b>Pour toutes les classes, forcer la valeur de la priorité d'affichage à la valeur par défaut ci-dessus :</b></label>

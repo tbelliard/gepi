@@ -19496,4 +19496,32 @@ function is_saisie_possible_groupe_periode($id_groupe, $periode) {
 	}
 }
 */
+
+function get_tab_options_sconet() {
+	global $mysqli;
+
+	// Recherche des options renseignées dans Sconet:
+	$tab_options_sconet=array();
+	$tab_options_sconet['code']=array();
+	$tab_options_sconet['matiere']=array();
+	$sql="SELECT * FROM nomenclatures_valeurs WHERE nom='option_sconet_saisie' AND valeur='y';";
+	//echo "$sql<br />";
+	$res_options_sconet=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_options_sconet)>0){
+		while($lig_options_sconet=mysqli_fetch_object($res_options_sconet)) {
+			//$sql="SELECT * FROM nomenclatures WHERE code='$lig_options_sconet->code' AND type='matiere';";
+			$sql="SELECT * FROM matieres WHERE code_matiere='".$lig_options_sconet->code."';";
+			$res_opt_courante=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_opt_courante)>0){
+				//$tab_options_sconet['code'][]=$lig_options_sconet->code;
+
+				while($lig_opt_courante=mysqli_fetch_object($res_opt_courante)) {
+					$tab_options_sconet['matiere'][$lig_opt_courante->matiere]['code']=$lig_options_sconet->code;
+					$tab_options_sconet['code'][$lig_options_sconet->code]['matieres'][]=$lig_opt_courante->matiere;
+				}
+			}
+		}
+	}
+	return $tab_options_sconet;
+}
 ?>
