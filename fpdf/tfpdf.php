@@ -2,13 +2,13 @@
 /*******************************************************************************
 * tFPDF (based on FPDF 1.7)                                                    *
 *                                                                              *
-* Version:  1.24                                                               *
-* Date:     2011-09-24                                                         *
+* Version:  1.25                                                               *
+* Date:     2018-03-19                                                         *
 * Author:   Ian Back <ianb@bpm1.com>                                           *
 * License:  LGPL                                                               *
 *******************************************************************************/
 
-define('tFPDF_VERSION','1.24');
+define('tFPDF_VERSION','1.25');
 
 class tFPDF
 {
@@ -76,7 +76,7 @@ var $PDFVersion;         // PDF version number
 *                               Public methods                                 *
 *                                                                              *
 *******************************************************************************/
-function tFPDF($orientation='P', $unit='mm', $size='A4')
+function __construct($orientation='P', $unit='mm', $size='A4')
 {
 	// Some checks
 	$this->_dochecks();
@@ -502,7 +502,7 @@ function AddFont($family, $style='', $file='', $uni=false)
 		if (file_exists($unifilename.'.mtx.php')) {
 			include($unifilename.'.mtx.php');
 		}
-                if (!isset($type) ||  !isset($name) || $originalsize != $ttfstat['size'] || !is_readable($ttffile)) {
+		if (!isset($type) ||  !isset($name) || $originalsize != $ttfstat['size']) {
 			$ttffile = $ttffilename;
 			require_once($this->_getfontpath().'unifont/ttfonts.php');
 			$ttf = new TTFontFile();
@@ -611,7 +611,7 @@ function SetFont($family, $style='', $size=0)
 	if(!isset($this->fonts[$fontkey]))
 	{
 		// Test if one of the core fonts
-		if($family=='DejaVu')
+		if($family=='arial')
 			$family = 'helvetica';
 		if(in_array($family,$this->CoreFonts))
 		{

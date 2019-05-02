@@ -8,8 +8,8 @@
 * written in Python - http://www.reportlab.com/software/opensource/            *
 * together with ideas from the OpenOffice source code and others.              *
 *                                                                              *
-* Version:  1.04                                                               *
-* Date:     2011-09-18                                                         *
+* Version:  1.05                                                               *
+* Date:     2018-03-19                                                         *
 * Author:   Ian Back <ianb@bpm1.com>                                           *
 * License:  LGPL                                                               *
 * Copyright (c) Ian Back, 2010                                                 *
@@ -69,7 +69,7 @@ var $charWidths;
 var $defaultWidth;
 var $maxStrLenRead;
 
-	function TTFontFile() {
+	function __construct() {
 		$this->maxStrLenRead = 200000;	// Maximum size of glyf table to read in as string (otherwise reads each glyph from file)
 	}
 
@@ -749,7 +749,7 @@ var $maxStrLenRead;
 				$up = unpack("n", substr($data,0,2));
 			}
 
-			if ($glyphLen > 2 && ($up[1] & (1 << 15)) ) {	// If number of contours <= -1 i.e. composiste glyph
+			if ($glyphLen > 2 && ($up[1] & (1 << 15)) ) {	// If number of contours <= -1 i.e. composite glyph
 				$pos_in_glyph = 10;
 				$flags = GF_MORE;
 				$nComponentElements = 0;

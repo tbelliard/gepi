@@ -12,21 +12,21 @@ h2 {font:bold 95% Arial,sans-serif; color:#900000; margin-top:1.5em; margin-bott
 <body>
 <h1>tFPDF</h1>
 <h2>Informations</h2>
-Auteur : <a href="mailto:ian@bpm1.com?subject=tFPDF">Ian Back</a><br>
-Licence : LGPL
+Author: <a href="mailto:ian@bpm1.com?subject=tFPDF">Ian Back</a><br>
+License: LGPL
 <h2>Description</h2>
-Cette classe est une version modifiée de FPDF qui ajoute le support de l'UTF-8. De plus, elle
-incorpore dans le document uniquement les portions des polices qui sont effectivement utilisées,
-réduisant ainsi la taille du fichier PDF. Ces fonctionnalités ont été développées à l'origine
-pour le projet <a href="http://www.mpdf1.com/mpdf/" target="_blank">mPDF</a>.<br>
+This class is a modified version of FPDF that adds UTF-8 support. Moreover, it embeds only
+the necessary parts of the fonts that are used in the document, making the file size much
+smaller than if the whole fonts were embedded. These features were originally developed
+for the <a href="http://www.mpdf1.com/mpdf/" target="_blank">mPDF</a> project.<br>
 <br>
-Pour utiliser une police Unicode dans votre script, passez le nom du fichier de police comme
-troisième paramètre à <code>AddFont()</code> et <code>true</code> comme quatrième paramètre.
-La police peut être située soit dans le répertoire font/unifont, soit directement dans le
-répertoire des polices systèmes (dans le cas où la constante <code>_SYSTEM_TTFONTS</code>
-a été définie). La famille de polices <a href="http://dejavu-fonts.org" target="_blank">DejaVu</a>
-est fournie dans l'archive.<br>
+To use a Unicode font in your script, pass the font file name as third parameter of
+<code>AddFont()</code> and <code>true</code> as fourth parameter. The font may be located
+either in the font/unifont directory or directly in the system font folder (in case the
+<code>_SYSTEM_TTFONTS</code> constant is defined).
+The package ships with the <a href="https://dejavu-fonts.github.io/" target="_blank">DejaVu</a>
+font family.<br>
 <br>
-<strong>Note :</strong> cette classe requiert l'extension mbstring.
+<strong>Note:</strong> this class requires the mbstring extension.
 </body>
 </html>
