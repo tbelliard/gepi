@@ -211,7 +211,7 @@ if(!mef_avec_proposition_orientation($id_classe)) {
 	die();
 }
 
-echo "<div style='float:right;width:3em;'><a href='#PDF'>PDF</a></div>";
+echo "<div style='float:right;width:3em;'><a href='#PDF' title=\"Accéder à l'export PDF des voeux en bas de page.\">PDF</a></div>";
 
 $tab_orientation=get_tab_orientations_types_par_mef();
 $tab_orientation2=get_tab_orientations_types();

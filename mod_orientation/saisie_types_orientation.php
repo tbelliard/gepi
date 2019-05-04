@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -501,7 +501,10 @@ if(mysqli_num_rows($res)!=0) {
 		$lignes_mef="";
 		$sql="SELECT * FROM o_orientations_mefs oom, mef m WHERE oom.id_orientation='".$lig->id."' AND oom.mef_code=m.mef_code ORDER BY m.libelle_court, m.libelle_long, m.libelle_edition;";
 		$res_mef=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_mef)>0) {
+		if(mysqli_num_rows($res_mef)==0) {
+			$lignes_mef.="<span style='color:red' title=\"Cette orientation n'est associée à aucun MEF.\nIl ne sera donc pas possible d'associer cette orientation à un élève.\"><img src='../images/icons/ico_attention.png' class='icone16' /> Aucun MEF</span><br />";
+		}
+		else {
 			while($lig_mef=mysqli_fetch_object($res_mef)) {
 				$style="";
 				if(!in_array($lig_mef->mef_code, $tab_mef_avec_proposition_orientation)) {
@@ -554,7 +557,7 @@ echo "
 				<tr>
 					<td style='text-align:left'>Description&nbsp;: </td><td style='text-align:left'><textarea name='no_anti_inject_description_nouvelle_orientation' id='no_anti_inject_description_nouvelle_orientation' cols='60' onchange='changement()'></textarea></td>
 				</tr>
-				<tr>
+				<tr title=\"Il faut cocher ici les MEFs des élèves pour lesquels cette orientation peut être demandée/proposée.\nPar exemple, on proposera 2nde générale à des élèves qui sont actuellement en 3ème.\nIl faut donc cocher tous les MEFs de 3è ici pour l'orientation dont le titre ci-dessus sera 2nde...\">
 					<td style='text-align:left'>MEFs associées&nbsp;: </td><td style='text-align:left'>";
 
 $compteur=0;

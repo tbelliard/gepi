@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -449,6 +449,8 @@ if(!mef_avec_proposition_orientation($id_classe)) {
 	die();
 }
 
+$tab_mef=get_tab_mef();
+
 echo "
 <form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>
 	<fieldset class='fieldset_opacite50'>
@@ -497,20 +499,42 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 		else {
 			$commentaire=preg_replace('/"/', " ", $tab_voeux_ele[$loop]['commentaire']);
 		}
-		echo "
+
+		/*
+		$lignes_voeux="
 						Voeu ".($loop)."
 						<select name='voeu_".$lig_ele->id_eleve."[]' onchange=\"changement();\">
 							<option value='' title=\"Choisissez un voeu.\nSi l'orientation souhaitée n'est pas dans la liste proposée, choisissez 'Autre orientation' et précisez en commentaire l'orientation.\"".$selected_aucun.">---</option>";
-		if(isset($tab_orientation[$lig_ele->mef_code])) {
+		*/
+		$title_voeux="Choisissez un voeu.\nSi l'orientation souhaitée n'est pas dans la liste proposée, choisissez 'Autre orientation' et précisez en commentaire l'orientation.";
+
+		$lignes_voeux_possibles="";
+		if((isset($lig_ele->mef_code))&&
+		(($lig_ele->mef_code=='')||(!isset($tab_mef[$lig_ele->mef_code])))) {
+			$title_voeux="Aucun MEF n'est renseigné pour cet élève.\nVous devriez peut-être contrôler les MEFs saisis.\nVous pouvez néanmoins choisir 'Autre orientation' et préciser en commentaire l'orientation.";
+		}
+		elseif(isset($tab_orientation[$lig_ele->mef_code])) {
 			for($loop2=0;$loop2<count($tab_orientation[$lig_ele->mef_code]['id_orientation']);$loop2++) {
 				$selected="";
 				if((isset($tab_voeux_ele[$loop]))&&($tab_voeux_ele[$loop]['id_orientation']==$tab_orientation[$lig_ele->mef_code]['id_orientation'][$loop2])) {
 					$selected=" selected";
 				}
-				echo "
+				$lignes_voeux_possibles.="
 							<option value='".$tab_orientation[$lig_ele->mef_code]['id_orientation'][$loop2]."' title=\"".preg_replace('/"/', " ", $tab_orientation[$lig_ele->mef_code]['description'][$loop2])."\"".$selected.">".$tab_orientation[$lig_ele->mef_code]['titre'][$loop2]."</option>";
 			}
+
+			if($lignes_voeux_possibles=="") {
+				$title_voeux="Aucune orientation n'est associée au MEF de l'élève.\nUn paramètrage en administrateur est peut-être nécessaire au niveau de la saisie des types d'orientations.\nVous pouvez néanmoins choisir 'Autre orientation' et préciser en commentaire l'orientation.";
+			}
 		}
+		else {
+			$title_voeux="Aucune orientation n'est associée au MEF de l'élève.\nUn paramètrage en administrateur est peut-être nécessaire au niveau de la saisie des types d'orientations.\nVous pouvez néanmoins choisir 'Autre orientation' et préciser en commentaire l'orientation.";
+		}
+		echo "
+						Voeu ".($loop)."
+						<select name='voeu_".$lig_ele->id_eleve."[]' onchange=\"changement();\">
+							<option value='' title=\"".$title_voeux."\"".$selected_aucun.">---</option>".$lignes_voeux_possibles;
+
 		$selected="";
 		if((isset($tab_voeux_ele[$loop]))&&($tab_voeux_ele[$loop]['id_orientation']=="0")) {
 			$selected=" selected";
