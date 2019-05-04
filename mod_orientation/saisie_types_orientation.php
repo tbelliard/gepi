@@ -516,7 +516,7 @@ if(mysqli_num_rows($res)!=0) {
 				$cpt_assoc_mef++;
 			}
 		}
-		$lignes_mef.="<select name='ajout_assoc_mef_".$lig->id."' onchange=\"changement();\">\n";
+		$lignes_mef.="<select name='ajout_assoc_mef_".$lig->id."' onchange=\"changement();\" title=\"Il faut sélectionner ici les MEFs des élèves pour lesquels cette orientation peut être demandée/proposée.\nPar exemple, on proposera 2nde générale à des élèves qui sont actuellement en 3ème.\nIl faut donc cocher tous les MEFs de 3è ici pour l'orientation dont le titre ci-dessus sera 2nde...\">\n";
 		$lignes_mef.="<option value=\"\">--- Ajouter un MEF ---</option>\n";
 		foreach($tab_mef as $mef_code => $mef_courante) {
 			$style="";
