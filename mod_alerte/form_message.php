@@ -456,6 +456,9 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 								if($envoi) {
 									$msg.="Mail envoyé pour ".civ_nom_prenom($value).".<br />";
 								}
+								else {
+									$msg.="Échec de l'envoi du mail pour ".civ_nom_prenom($value)." (".$mail_dest.").<br />";
+								}
 							}
 						}
 					}
@@ -501,6 +504,9 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers, "plain", $tab_param_mail);
 							if($envoi) {
 								$msg.="Mail envoyé.<br />";
+							}
+							else {
+								$msg.="Échec de l'envoi du mail pour ".civ_nom_prenom($login_dest)." (".$mail_dest.").<br />";
 							}
 						}
 					}
@@ -560,6 +566,7 @@ if((getSettingAOui('autorise_edt_tous'))||
 $themessage = 'Un message est en cours de rédaction. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_enregistrement = "Les modifications ont été enregistrées !";
 $utilisation_prototype = "ok";
+
 //**************** EN-TETE *****************
 $titre_page = "Alertes";
 require_once("../lib/header.inc.php");
