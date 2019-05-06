@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -48,6 +48,37 @@ if (!checkAccess()) {
 // Initialisation des variables
 $user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET["user_login"]) ? $_GET["user_login"] : NULL);
 $msg = '';
+
+if((isset($_GET['check_login']))&&($_GET['check_login']!='')) {
+	check_token();
+
+	$sql="SELECT civilite, nom, prenom, statut FROM utilisateurs WHERE login='".$_GET['check_login']."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)==0) {
+		echo "<p>Le login ".$_GET['check_login']." n'est encore attribué à aucun compte utilisateur.</p>";
+		// Tester si un élève aurait ce login (possible) ou resp_pers (ça ne devrait pas arriver)
+
+		$sql="SELECT nom, prenom FROM eleves WHERE login='".$_GET['check_login']."';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$lig=mysqli_fetch_object($test);
+			echo "<p style='color:red'><strong>Attention&nbsp;:</strong> Le login ".$_GET['check_login']." est attribué à l'élève <a href='../eleves/modify_eleve.php?eleve_login=".$_GET['check_login']."' target='_blank' title=\"Voir la fiche élève dans un nouvel onglet.\">".$lig->prenom." ".$lig->nom."</a>.</p>";
+		}
+
+		$sql="SELECT civilite, nom, prenom, pers_id FROM resp_pers WHERE login='".$_GET['check_login']."';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$lig=mysqli_fetch_object($test);
+			echo "<p style='color:red'><strong>Attention&nbsp;:</strong> Le login ".$_GET['check_login']." est attribué au responsable <a href='../responsables/modify_resp.php?pers_id=".$lig->pers_id."' target='_blank' title=\"Voir la fiche responsable dans un nouvel onglet.\">".$lig->civilite." ".$lig->nom." ".$lig->prenom."</a>.</p>";
+		}
+	}
+	else {
+		$lig=mysqli_fetch_object($test);
+		echo "<p style='color:red'><strong>Attention&nbsp;:</strong> Le login ".$_GET['check_login']." est attribué au compte de statut ".$lig->statut." <a href='modify_user.php?user_login=".$_GET['check_login']."' target='_blank' title=\"Voir la fiche utilisateur dans un nouvel onglet.\">".$lig->civilite." ".$lig->nom." ".$lig->prenom."</a>.</p>";
+	}
+
+	die();
+}
 
 $journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 $duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
@@ -1009,10 +1040,30 @@ if (isset($user_login) and ($user_login!='')) {
 	echo "<b>".$user_login."</b>\n";
 	echo "<input type='hidden' name='reg_login' id='reg_login' value=\"".$user_login."\" />\n";
 } else {
+
+	echo "
+	<script type='text/javascript'>
+		// <![CDATA[
+		function check_login_existant(champ) {
+			valeur=document.getElementById(champ).value;
+			if(valeur!='') {
+				//alert(valeur);
+				$('infos_login').style.display='';
+				new Ajax.Updater($('infos_login'),'modify_user.php?check_login='+valeur+'".add_token_in_url(false)."',{method: 'get'});
+			}
+		}
+		//]]>
+	</script>\n";
+
 	echo "<input type='text' name='new_login' id='reg_login' size='20' value=\"";
 	if (isset($user_login)) {echo $user_login;}
 	elseif(isset($_POST['new_login'])) {echo $_POST['new_login'];}
-	echo "\" onchange=\"changement()\" />\n";
+	echo "\" onchange=\"changement()\" ";
+
+	echo " onblur=\"check_login_existant('reg_login')\" ";
+
+	echo "/>\n";
+
 }
 
 if (!$session_gepi->auth_ldap || !$session_gepi->auth_sso) {
@@ -1050,8 +1101,10 @@ if(($_SESSION['statut']=='administrateur')&&(isset($user_login))&&($user_login!=
 	echo "</div>\n";
 }
 
+echo "<div id='infos_login' style='float:right; width:400px; display:none; margin-right:0.5em; padding:3px; text-align:center;' class='fieldset_opacite50'></div>\n";
+
 if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
-	echo "<div id='suggestion_login' style='float:right; width:400px; height: 200px; border: 1px solid black; overflow:auto; display:none; margin-right:0.5em; padding:3px; background-image: url(\"../images/background/opacite50.png\");'></div>\n";
+	echo "<div id='suggestion_login' style='float:right; width:400px; height:200px; overflow:auto; display:none; margin-right:0.5em; padding:3px;' class='fieldset_opacite50'></div>\n";
 }
 ?>
 
