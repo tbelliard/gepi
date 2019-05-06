@@ -460,6 +460,9 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 									$msg.="Échec de l'envoi du mail pour ".civ_nom_prenom($value)." (".$mail_dest.").<br />";
 								}
 							}
+							else {
+								$msg.="Pas d'adresse mail valide pour ".civ_nom_prenom($value).".<br />";
+							}
 						}
 					}
 				}
@@ -508,6 +511,9 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 							else {
 								$msg.="Échec de l'envoi du mail pour ".civ_nom_prenom($login_dest)." (".$mail_dest.").<br />";
 							}
+						}
+						else {
+							$msg.="Pas d'adresse mail valide pour ".civ_nom_prenom($login_dest).".<br />";
 						}
 					}
 				}
