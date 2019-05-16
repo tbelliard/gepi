@@ -528,6 +528,131 @@ $msg_erreur="";
 							//echo "</pre>";
 
 							if(count($tab_ele_saisie_incomplete)>0) {
+								// 20190514: Relever l'état ouvert ou non de la saisie dans Gepi
+								// On ne l'affiche qu'une fois pour toutes les classes
+								if(!isset($SocleOuvertureSaisieComposantes)) {
+									echo "<div class='fieldset_opacite50' style='margin-top:1em; padding:0.5em'>";
+									if($_SESSION['statut']=='administrateur') {
+										echo "<div style='float:right' title=\"Paramétrer les saisies/import du Socle\">
+											<a href='admin.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' /></a>
+										</div>";
+									}
+									echo "<p class='bold'>Socle&nbsp;:</p>";
+									$max_per=0;
+									$sql="SELECT MAX(num_periode) AS max_per FROM periodes;";
+									$res_max=mysqli_query($mysqli, $sql);
+									if(mysqli_num_rows($res_max)>0) {
+										$lig_max=mysqli_fetch_object($res_max);
+										$max_per=$lig_max->max_per;
+
+										echo "<p>La <strong>saisie est ouverte</strong> pour la ou les périodes suivantes&nbsp;: <strong>";
+										$cpt_socle=0;
+										for($i=1;$i<$max_per+1;$i++) {
+											if(getSettingAOui("SocleOuvertureSaisieComposantesPeriode".$i)) {
+												if($cpt_socle>0) {
+													echo ", ";
+												}
+												echo "période $i";
+												$cpt_socle++;
+											}
+										}
+										if($cpt_socle==0) {
+											echo "<span style='color:red'>Aucune</span>";
+										}
+										echo "</strong></p>";
+									}
+
+									echo "<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
+										Les profils autorisés à <strong>ouvrir/fermer l'accès à la saisie</strong> <em>(en plus des comptes administrateurs)</em>&nbsp;: ";
+									if((!getSettingAOui("SocleOuvertureSaisieComposantes_scolarite"))&&
+									(!getSettingAOui("SocleOuvertureSaisieComposantes_cpe"))) {
+										echo "<span style='color:red'>Aucun</span>";
+									}
+									else {
+										if(getSettingAOui("SocleOuvertureSaisieComposantes_scolarite")) {
+											echo "comptes scolarité";
+											if(getSettingAOui("SocleOuvertureSaisieComposantes_cpe")) {
+												echo ", comptes cpe";
+											}
+										}
+										else {
+											if(getSettingAOui("SocleOuvertureSaisieComposantes_cpe")) {
+												echo "comptes cpe";
+											}
+										}
+									}
+									echo "</p>
+									<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
+										Les profils autorisés à <strong>saisir les bilans</strong> sont&nbsp;: <br />";
+									$cpt_saisie_socle=0;
+									if(getSettingAOui("SocleSaisieComposantes_scolarite")) {
+										echo "les comptes Scolarité associés à la classe<br />";
+										$cpt_saisie_socle++;
+									}
+									if(getSettingAOui("SocleSaisieComposantes_cpe")) {
+										echo "les comptes CPE associés à la classe<br />";
+										$cpt_saisie_socle++;
+									}
+									if(getSettingAOui("SocleSaisieComposantes_PP")) {
+										echo "les comptes ".getSettingValue("gepi_prof_suivi")." associés à la classe<br />";
+										$cpt_saisie_socle++;
+									}
+									if(getSettingAOui("SocleSaisieComposantes_professeur")) {
+										echo "les comptes Professeurs associés à la classe<br />";
+										$cpt_saisie_socle++;
+									}
+									if($cpt_saisie_socle==0) {
+										echo "<span style='color:red'>Aucun</span>";
+										
+									}
+									echo "</p>
+									<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
+										Les profils autorisés à <strong>saisir la synthèse pour chaque élève</strong> sont&nbsp;:<br />";
+									$cpt_saisie_socle=0;
+									if(getSettingAOui("SocleSaisieSyntheses_scolarite")) {
+										echo "les comptes Scolarité associés à la classe<br />";
+										$cpt_saisie_socle++;
+									}
+									if(getSettingAOui("SocleSaisieSyntheses_cpe")) {
+										echo "les comptes CPE associés à la classe<br />";
+										$cpt_saisie_socle++;
+									}
+									if(getSettingAOui("SocleSaisieSyntheses_PP")) {
+										echo "les comptes ".getSettingValue("gepi_prof_suivi")." associés à la classe<br />";
+										$cpt_saisie_socle++;
+									}
+									if(getSettingAOui("SocleSaisieSyntheses_professeur")) {
+										echo "les comptes Professeurs associés à la classe<br />";
+										$cpt_saisie_socle++;
+									}
+									if($cpt_saisie_socle==0) {
+										echo "<span style='color:red'>Aucun</span>";
+										
+									}
+									echo "</p>";
+
+									if(getSettingAOui("SocleImportComposantes")) {
+										echo "<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>L'import d'un export JSON des niveaux de maitrise estimés d'après les saisies effectuées dans 
+										<a href='https://sacoche.sesamath.net/index.php?page=documentation__referentiels_socle__socle_export_import#toggle_export_gepi' target='_blank' title=\"Voir, dans un nouvel onglet, la page concernant cet export.\">SACoche</a> est possible.<br />
+										Les profils autorisés à <strong>".($_SESSION['statut']=='administrateur' ? "<a href='../saisie/socle_import.php' target=\"_blank\">importer les niveaux de maitrise depuis un export SACoche</a>" : "importer les niveaux de maitrise depuis un export SACoche")."</strong> sont, en sus des administrateurs&nbsp;:<br />";
+										$cpt_saisie_socle=0;
+										if(getSettingAOui("SocleImportComposantes_scolarite")) {
+											echo "les comptes Scolarité associés à la classe<br />";
+											$cpt_saisie_socle++;
+										}
+										if(getSettingAOui("SocleImportComposantes_cpe")) {
+											echo "les comptes CPE associés à la classe<br />";
+											$cpt_saisie_socle++;
+										}
+										if($cpt_saisie_socle==0) {
+											echo "<span style='color:red'>Aucun</span>";
+										
+										}
+										echo "</p>";
+									}
+									echo "</div>";
+								}
+
 								$current_classe=get_nom_classe($selectionClasse[$loop]);
 								echo "
 						<p style='color:red; margin-top:1em;'>Les saisies de composantes du socle sont <strong>incomplètes</strong> pour le ou les élèves suivants de ".$current_classe."&nbsp;:</p>
