@@ -1064,7 +1064,7 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 				}
 				elseif($date_conseil_classe<$datecolarite) {
-					$msg_erreur_remplissage.="La date du conseil de classe de <strong>".get_nom_classe($eleve->id_classe)."</strong> en période <strong>".$num_periode."</strong> (".formate_date($date_conseil_classe).") est antérieure à la date de scolarité (".formate_date($datecolarite).") de ".$eleve->prenom." ".$eleve->nom.".<br />Vous devriez corriger en <strong>compte scolarité</strong> dans la page de <strong>Verrouillage/déverrouillage des périodes</strong>.<br /><br />";
+					$msg_erreur_remplissage.="La date du conseil de classe de <strong>".get_nom_classe($eleve->id_classe)."</strong> en période <strong>".$num_periode."</strong> (".formate_date($date_conseil_classe).") est antérieure à la date de scolarité (".formate_date($datecolarite).") de <a href='../eleves/modify_eleve.php?eleve_login=".$eleve->login."' target='_blank'>".$eleve->prenom." ".$eleve->nom."</a>.<br />Vous devriez corriger en <strong>compte scolarité</strong> dans la page de <strong>Verrouillage/déverrouillage des périodes</strong><br />ou alors l'élève est arrivé après la fin de la période, et il ne devrait alors <a href='../classes/classes_const.php?id_classe=".$eleve->id_classe."#".$eleve->login."' target='_blank'>pas être inscrit dans la classe</a> sur la période ".$num_periode.".<br /><br />";
 				}
 				$attributsElevePeriode = array('prof-princ-refs'=>"ENS_".$profResponsable , 'eleve-ref'=>"EL_".$eleve->id_eleve , 'periode-ref'=>'P_'.$num_periode , 'date-conseil-classe'=>$date_conseil_classe , 'date-scolarite'=>"$datecolarite" , 'date-verrou'=>"$eleve->date_verrou" , 'responsable-etab-ref'=>"$respEtabElv" );
 				foreach ($attributsElevePeriode as $cle=>$valeur) {
