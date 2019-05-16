@@ -531,6 +531,13 @@ if(!isset($id_incident)) {
 	echo "</div>\n";
 	*/
 
+	echo "<div style='float:right; width:6em; padding:0.2em; text-align:center;' class='fieldset_opacite50'>
+		<a href='saisie_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/add.png' class='icone16' /> 
+			Saisir un ".ucfirst($mod_disc_terme_incident)."
+		</a>
+	</div>\n";
+
 	echo "<p class='bold'>Choisir l'".$mod_disc_terme_incident." à traiter/consulter&nbsp;:</p>\n";
 	echo "<blockquote>\n";
 
