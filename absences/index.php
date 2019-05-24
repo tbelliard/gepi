@@ -43,7 +43,13 @@ if (!checkAccess()) {
 // Initialisation
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
-include "../lib/periodes.inc.php";
+//debug_var();
+if((isset($id_classe))&&(!preg_match('/^[0-9]{1,}$/', $id_classe))) {
+	$msg="Classe non choisie ou choix invalide.<br />";
+	unset($id_classe);
+}
+
+//include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des absences";
 require_once("../lib/header.inc.php");
@@ -111,6 +117,7 @@ if (!isset($id_classe)) {
 
 	echo "<br />\n";
 } else {
+	include "../lib/periodes.inc.php";
 
 	// On choisit la période :
 	echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre classe</a>";
