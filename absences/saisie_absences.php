@@ -217,11 +217,11 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 				$test_nb = mysqli_num_rows($test_eleve_nb_absences_query);
 				if ($test_nb != "0") {
 					$sql="UPDATE absences SET".$sql_ajout." WHERE (login='$reg_eleve_login' AND periode='$periode_num');";
-					$register = mysqli_query($GLOBALS["mysqli"], $sql);
 				} else {
-					$sql="INSERT INTO absences SET '$reg_eleve_login', periode='$periode_num', ".$sql_ajout.";";
-					$register = mysqli_query($GLOBALS["mysqli"], $sql);
+					$sql="INSERT INTO absences SET login='$reg_eleve_login', periode='$periode_num', ".$sql_ajout.";";
 				}
+				//echo "$sql<br />";
+				$register = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!$register) {
 					$msg.="Erreur lors de l'enregistrement des données pour $reg_eleve_login.<br />";
 					$nb_err++;
