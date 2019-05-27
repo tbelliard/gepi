@@ -795,7 +795,9 @@ for($i=1;$i<count($data_pdf);$i++) {
 	}
 }
 
-for($i=0;$i<count($tab_col_note);$i++) {
+// La colonne 0 contient les noms prénoms des élèves
+//for($i=0;$i<count($tab_col_note);$i++) {
+for($i=1;$i<count($tab_col_note);$i++) {
 	$tab_m[$i]=calcule_moy_mediane_quartiles($tab_col_note[$i]);
 }
 
