@@ -313,6 +313,7 @@ while ($num_per < $nb_cahier_note) {
     $k=0;
     for ($j = $nb_dev[$num_per-1]; $j < $nb_dev[$num_per]; $j++) {
         $nom_dev[$j] = old_mysql_result($appel_dev, $k, 'nom_court');
+        $description_dev[$j] = old_mysql_result($appel_dev, $k, 'description');
         $id_dev[$j] = old_mysql_result($appel_dev, $k, 'id');
         $coef[$j] = old_mysql_result($appel_dev, $k, 'coef');
         $note_sur[$j] = old_mysql_result($appel_dev, $k, 'note_sur');
@@ -425,6 +426,7 @@ while ($num_per < $nb_cahier_note) {
         while ($m < $nb_dev_s_cont[$i]) {
             $id_s_dev[$i][$m] = old_mysql_result($query_nb_dev, $m, 'id');
             $nom_sous_dev[$i][$m] = old_mysql_result($query_nb_dev, $m, 'nom_court');
+            $description_sous_dev[$i][$m] = old_mysql_result($query_nb_dev, $m, 'description');
             $coef_s_dev[$i][$m]  = old_mysql_result($query_nb_dev, $m, 'coef');
             $note_sur_s_dev[$i][$m]  = old_mysql_result($query_nb_dev, $m, 'note_sur');
             $ramener_sur_referentiel_s_dev[$i][$m]  = old_mysql_result($query_nb_dev, $m, 'ramener_sur_referentiel');
@@ -482,7 +484,7 @@ while ($num_per < $nb_cahier_note) {
         }
 
         //echo "<th class=cn".$tmp." valign='top'><center><b>$nom_dev[$i]</b><br />";
-        echo "<td class='cn".$tmp."' valign='top'><center><b>$nom_dev[$i]</b><br />";
+        echo "<td class='cn".$tmp."' valign='top' title=\"".($description_dev[$i]!='' ? str_replace('"', "'", $description_dev[$i]) : "")."\"><center><b>".$nom_dev[$i]."</b><br />";
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur[$i]!=getSettingValue("referentiel_note")) {
 		if ($ramener_sur_referentiel[$i] != 'V') {
 			echo "<font size=-2>Note sur $note_sur[$i]<br />";
@@ -511,7 +513,7 @@ while ($num_per < $nb_cahier_note) {
             //if (($mode[$num_per] == 1) and ($coef_s_dev[$i][$m] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
             //echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_sous_dev[$i][$m]."</b><br />";
             if (($mode[$num_per] == 1) and ($coef_s_dev[$i][$m] != 0)) $tmp = " couleur_calcul_moy";
-            echo "<td class='cn".$tmp."' valign='top'><center><b>".$nom_sous_dev[$i][$m]."</b><br />";
+            echo "<td class='cn".$tmp."' valign='top' title=\"".($description_sous_dev[$i][$m]!='' ? str_replace('"', "'", $description_sous_dev[$i][$m]) : "")."\"><center><b>".$nom_sous_dev[$i][$m]."</b><br />";
 	    if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur_s_dev[$i][$m]!=getSettingValue("referentiel_note")) {
 		if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
 			echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";

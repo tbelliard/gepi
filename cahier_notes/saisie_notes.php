@@ -1624,7 +1624,7 @@ Cliquez pour faire apparaître cette note sur le relevé de notes.' alt='Evaluat
 			echo "</center></td>\n";
 		}
 		else {
-			echo "<td class=cn".$tmp." valign='top'><center><b>".$nom_dev[$i]."</b><br /><font size=-2>($display_date[$i])</font>\n";
+			echo "<td class=cn".$tmp." valign='top'title=\"".($description_dev[$i]!='' ? str_replace('"', "'", $description_dev[$i]) : "")."\"><center><b>".$nom_dev[$i]."</b><br /><font size=-2>($display_date[$i])</font>\n";
 			if($display_parents[$i]!=0) {
 				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes.
 Visible à compter du ".formate_date($date_visibilite_ele_resp[$i])." pour les parents et élèves.' />\n";
