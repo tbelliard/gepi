@@ -80,6 +80,7 @@ if($corrigeMEF == 'y') {
 }
 
 if (MefAppartenanceAbsent()) {
+//if (true) {
 	include_once 'getAppartenances.php';
 	die();
 }
