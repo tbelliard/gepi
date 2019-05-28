@@ -41,6 +41,8 @@ if (!checkAccess()) {
 	die();
 }
 
+//debug_var();
+
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 if((!isset($login_eleve))||(trim($login_eleve)=="")) {
 	header("Location: ../accueil.php?msg=Elève non choisi.");
@@ -338,7 +340,7 @@ if(($_SESSION['statut']=="administrateur")||
 				$lig_grp=mysqli_fetch_object($call_group);
 				$id_groupe = $lig_grp->id;
 				$nom_groupe = $lig_grp->name;
-				$id_group[$j] = $id_groupe."_".$j;
+				$id_group[$j] = 'case'.$id_groupe."_".$j;
 				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 						"id_groupe = '" . $id_groupe . "' and " .
 						"login = '" . $login_eleve . "' and " .
@@ -979,14 +981,14 @@ while ($i < $nombre_ligne) {
 			echo "<td style='text-align:center' id='td_case".$i."_".$j."'>\n";
 			if(($_SESSION['statut']=="administrateur")||
 			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
-				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement(); colore_td_eleve_options($i);' value='y' ";
+				echo "<input type='checkbox' id='case".$i."_".$j."' name='case".$id_groupe."_".$j."' onchange='changement(); colore_td_eleve_options($i);' value='y' ";
 				if (mysqli_num_rows($test)>0) {
 					echo "checked ";
 				}
 				echo "/>\n";
 			}
 			else {
-				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement(); colore_td_eleve_options($i);' value='y' style='display:none; '";
+				echo "<input type='checkbox' id='case".$i."_".$j."' name='case".$id_groupe."_".$j."' onchange='changement(); colore_td_eleve_options($i);' value='y' style='display:none; '";
 				if (mysqli_num_rows($test)==0) {
 					echo "/>\n";
 					echo "&nbsp;\n";
