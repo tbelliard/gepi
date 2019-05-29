@@ -68,8 +68,29 @@ if((!isset($id_ct))||
 	die();
 }
 
-// Pas d'entête
+if($type_notice=='c') {
+	$table_ct='ct_entry';
+}
+elseif($type_notice=='t') {
+	$table_ct='ct_devoirs_entry';
+}
+else {
+	$table_ct='ct_private_entry';
+}
+$sql="SELECT * FROM ".$table_ct." WHERE id_ct='".$id_ct."';";
+$res=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res)>0) {
+	$lig_ct=mysqli_fetch_object($res);
 
+	// Contrôler que la personne est propriétaire du CDT.
+	$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='".$lig_ct->id_groupe."' AND login='".$_SESSION['login']."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$titre_page_title2=get_info_grp($lig_ct->id_groupe, array('classes'), '');
+	}
+}
+
+// Pas d'entête
 //**************** EN-TETE **************************************
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
@@ -174,7 +195,11 @@ if($type_notice!='p') {
 }
 
 echo "
-	<h3>Séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct);
+	<div style='float:left; width:18.5em; font-weight:bold;'>
+		Séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct)."
+	</div>
+
+	<div style='float:left; width:20px; text-align:center; '>";
 
 // Lien séance précédente/suivante
 // Problème lorsqu'on a deux heures dans la même journée (ajouter un test)
@@ -194,6 +219,10 @@ else {
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\"><img src='../images/icons/back.png' class='icone16' alt='Séance précédente' /></a>";
 	}
 }
+echo "
+	</div>
+
+	<div style='float:left; width:20px; text-align:center; '>";
 
 if($type_notice=='c') {
 	$type_notice_2='cr';
@@ -207,6 +236,11 @@ else {
 
 echo "
 		 <a href='index.php?id_groupe=".$lig_ct->id_groupe."&id_ct=".$id_ct."&type_notice=".$type_notice_2."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct)."\"><img src='../images/edit16.png' class='icone16' alt='Séance' /></a> ";
+
+echo "
+	</div>
+
+	<div style='float:left; width:20px; text-align:center; '>";
 
 $sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct>'".$id_ct."' AND date_ct='".$lig_ct->date_ct."' ORDER BY id_ct ASC;";
 $res_mult=mysqli_query($mysqli, $sql);
@@ -224,9 +258,9 @@ else {
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\"><img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' /></a>";
 	}
 }
-
 	echo "
-	</h3>";
+	</div>
+	<div style='clear:both;'></div>";
 
 echo "
 	<div class='fieldset_opacite50' style='padding:0.5em'>
