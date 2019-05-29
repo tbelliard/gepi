@@ -389,9 +389,11 @@
 						*/
 						flush();
 
+						libxml_use_internal_errors(true);
 						$resp_xml=simplexml_load_file($dest_file);
 						if(!$resp_xml) {
 							echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+							echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -661,6 +663,7 @@
 
 				$dest_file="../temp/".$tempdir."/responsables.xml";
 
+				libxml_use_internal_errors(true);
 				$resp_xml=simplexml_load_file($dest_file);
 				if(!$resp_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -1144,6 +1147,7 @@
 				check_token(false);
 				$dest_file="../temp/".$tempdir."/responsables.xml";
 
+				libxml_use_internal_errors(true);
 				$resp_xml=simplexml_load_file($dest_file);
 				if(!$resp_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";

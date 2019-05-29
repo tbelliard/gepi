@@ -127,6 +127,7 @@ if (!isset($suite)) {
 
 	$dest_file="../temp/".$tempdir."/sts.xml";
 
+	libxml_use_internal_errors(true);
 	$sts_xml=simplexml_load_file($dest_file);
 	if(!$sts_xml) {
 		echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";

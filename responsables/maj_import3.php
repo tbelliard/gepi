@@ -969,9 +969,11 @@ else{
 
 			$dest_file="../temp/".$tempdir."/eleves.xml";
 
+			libxml_use_internal_errors(true);
 			$ele_xml=simplexml_load_file($dest_file);
 			if(!$ele_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1165,6 +1167,7 @@ else{
 
 			$dest_file="../temp/".$tempdir."/eleves.xml";
 
+			libxml_use_internal_errors(true);
 			$ele_xml=simplexml_load_file($dest_file);
 			if(!$ele_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -1255,6 +1258,7 @@ else{
 
 			$avec_scolarite_an_dernier="y";
 
+			libxml_use_internal_errors(true);
 			$ele_xml=simplexml_load_file($dest_file);
 			if(!$ele_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -1577,6 +1581,7 @@ else{
 			// Par contre, on y fait quand même des tests pour les élèves partis... ne pas squizzer ça si on supprime l'étape
 
 			$dest_file="../temp/".$tempdir."/eleves.xml";
+			libxml_use_internal_errors(true);
 			$ele_xml=simplexml_load_file($dest_file);
 			if(!$ele_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -5950,6 +5955,16 @@ mysql>
 
 					echo "<p>Affectation dans les groupes de l'élève $prenom_eleve $nom_eleve (<i>$lig_classe->classe</i>)</p>\n";
 
+					/*
+					// 20190501
+					echo "tab_options_sconet (rempli d'après des entrées dans 'nomenclatures_valeurs'):<pre>";
+					print_r($tab_options_sconet);
+					echo "</pre>";
+					echo "tab_opt_ele:<pre>";
+					print_r($tab_opt_ele);
+					echo "</pre>";
+					*/
+
 					if(count($tab_opt_ele)>0) {
 						echo "<p>Option(s) saisie(s) dans Sconet&nbsp;: ";
 						$cpt_opt=0;
@@ -6783,9 +6798,11 @@ mysql>
 
 					//$dest_file="../temp/".$tempdir."/responsables.xml";
 	
+					libxml_use_internal_errors(true);
 					$resp_xml=simplexml_load_file($dest_file);
 					if(!$resp_xml) {
 						echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+						echo "<p><a href='".$_SERVER['PHP_SELF']."?step=9'>Téléverser un autre fichier</a></p>\n";
 						require("../lib/footer.inc.php");
 						die();
 					}
@@ -7011,6 +7028,7 @@ mysql>
 			else{
 			*/
 
+				libxml_use_internal_errors(true);
 				$resp_xml=simplexml_load_file($dest_file);
 				if(!$resp_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -7189,6 +7207,7 @@ mysql>
 			else{
 			*/
 
+				libxml_use_internal_errors(true);
 				$resp_xml=simplexml_load_file($dest_file);
 				if(!$resp_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";

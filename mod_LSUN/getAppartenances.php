@@ -28,11 +28,27 @@ $_SESSION['fichier_sts_emp'] = isset($_FILES['fichier_sts_emp']['name']) ? $_FIL
 if(isset($_FILES['fichier_sts_emp']['tmp_name'])) {
 	unset($xml);
 
+	/*
+	echo "<pre>";
+	print_r($_FILES);
+	echo "</pre>";
+	*/
+
 	if(!isset($_FILES['fichier_sts_emp']['error']) || is_array($_FILES['fichier_sts_emp']['error'])) {
 		$msg="Erreur sur l'upload du XML STS_EMP.<br />";
 	}
 	elseif($_FILES['fichier_sts_emp']['error']==UPLOAD_ERR_OK) {
-		$xml = simplexml_load_file($_FILES['fichier_sts_emp']['tmp_name']);
+		if((isset($_FILES['fichier_sts_emp']['type']))&&(!preg_match('/xml/i', $_FILES['fichier_sts_emp']['type']))) {
+			$msg="Le fichier n'est pas un fichier XML&nbsp;: ".$_FILES['fichier_sts_emp']['type']."<br />";
+		}
+		else {
+			libxml_use_internal_errors(true);
+			$xml = simplexml_load_file($_FILES['fichier_sts_emp']['tmp_name']);
+			if(!$xml) {
+				$msg="Echec de l'ouverture du fichier&nbsp;: Est-ce bien un fichier XML&nbsp;?<br />";
+				unset($xml);
+			}
+		}
 	}
 	else {
 		$msg="Erreur sur l'upload du XML STS_EMP.<br />";
