@@ -345,6 +345,124 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 	<td style="width: 80%"><b><?php echo $titre; ?></b>&nbsp;
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer" style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 		Ces notices ne sont visibles que de leur auteur.
+
+		<?php
+
+			//============================================================
+			// Notice précédente/suivante
+			if(preg_match("/^[0-9]{1,}$/", $cahierTexteNoticePrivee->getIdCt())) {
+				//id_groupe: $cahierTexteNoticePrivee->getGroupe()->getId();
+				//$cahierTexteNoticePrivee->getDateCt();
+				$type_notice='p';
+				$table_ct='ct_private_entry';
+
+				// Lien séance précédente/suivante
+
+				// Notice précédente:
+				echo "
+					<div style='display:inline; width:20px; text-align:center; '>";
+
+				// Problème lorsqu'on a deux heures dans la même journée (ajouter un test)
+				$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$cahierTexteNoticePrivee->getGroupe()->getId()."' AND id_ct<'".$cahierTexteNoticePrivee->getIdCt()."' AND date_ct='".$cahierTexteNoticePrivee->getDateCt()."' ORDER BY id_ct DESC;";
+				//echo "$sql<br />";
+				$res_mult=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_mult)>0) {
+					$lig_prec=mysqli_fetch_object($res_mult);
+					echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$lig_prec->id_ct."&today=0&id_groupe=".$cahierTexteNoticePrivee->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'notice_privee';
+						\"
+						 title=\"Afficher la notice privée du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
+							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
+						</a>";
+				}
+				else {
+					$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$cahierTexteNoticePrivee->getGroupe()->getId()."' AND id_ct!='".$cahierTexteNoticePrivee->getIdCt()."' AND date_ct<'".$cahierTexteNoticePrivee->getDateCt()."' ORDER BY date_ct DESC limit 1;";
+					//echo "$sql<br />";
+					$res_prec=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_prec)>0) {
+						$lig_prec=mysqli_fetch_object($res_prec);
+						echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$lig_prec->id_ct."&today=0&id_groupe=".$cahierTexteNoticePrivee->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'notice_privee';
+						\"
+						 title=\"Afficher la notice privée du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
+							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
+						</a>";
+					}
+				}
+
+				echo "
+					</div>
+
+					<div style='display:inline; width:20px; text-align:center;' title=\"Passer à la notice précédente/suivante, sans (ré)enregistrer la notice courante.\">
+						<img src=\"../images/icons/notices_CDT_privee.png\" class=\"icone16\" />
+					</div>
+
+					<div style='display:inline; width:20px; text-align:center; '>";
+
+				// Notice suivante:
+				$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$cahierTexteNoticePrivee->getGroupe()->getId()."' AND id_ct>'".$cahierTexteNoticePrivee->getIdCt()."' AND date_ct='".$cahierTexteNoticePrivee->getDateCt()."' ORDER BY id_ct ASC;";
+				$res_mult=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_mult)>0) {
+					$lig_suiv=mysqli_fetch_object($res_mult);
+					echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$lig_suiv->id_ct."&today=0&id_groupe=".$cahierTexteNoticePrivee->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'notice_privee';
+						\"
+						 title=\"Afficher la notice privée du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
+							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />
+						</a>";
+				}
+				else {
+					$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$cahierTexteNoticePrivee->getGroupe()->getId()."' AND id_ct!='".$cahierTexteNoticePrivee->getIdCt()."' AND date_ct>'".$cahierTexteNoticePrivee->getDateCt()."' ORDER BY date_ct ASC limit 1;";
+					$res_suiv=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_suiv)>0) {
+						$lig_suiv=mysqli_fetch_object($res_suiv);
+						echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$lig_suiv->id_ct."&today=0&id_groupe=".$cahierTexteNoticePrivee->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'notice_privee';
+						\"
+						 title=\"Afficher la notice privée du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
+							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />
+						</a>";
+					}
+				}
+
+				echo "
+					</div>";
+			}
+			//============================================================
+		?>
+
 		<input type="hidden" name="date_ct" value="<?php echo $cahierTexteNoticePrivee->getDateCt(); ?>" />
 		<input type="hidden" id="id_ct" name="id_ct" value="<?php echo $cahierTexteNoticePrivee->getIdCt(); ?>" />
 		<input type="hidden" name="id_groupe" id="id_ct" value="<?php echo $groupe->getId(); ?>" />

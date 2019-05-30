@@ -571,6 +571,121 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 				echo "<button type='submit' style='font-variant: small-caps;'
 			onClick=\"javascript:$('get_devoirs_du_jour').value='y';\">Import trav.</button>";
 			}
+
+			//============================================================
+			// Notice précédente/suivante
+			if(preg_match("/^[0-9]{1,}$/", $ctCompteRendu->getIdCt())) {
+				//id_groupe: $ctCompteRendu->getGroupe()->getId();
+				//$ctCompteRendu->getDateCt();
+				$type_notice='c';
+				$table_ct='ct_entry';
+
+				// Lien séance précédente/suivante
+
+				// Notice précédente:
+				echo "
+					<div style='display:inline; width:20px; text-align:center; '>";
+
+				// Problème lorsqu'on a deux heures dans la même journée (ajouter un test)
+				$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$ctCompteRendu->getGroupe()->getId()."' AND id_ct<'".$ctCompteRendu->getIdCt()."' AND date_ct='".$ctCompteRendu->getDateCt()."' ORDER BY id_ct DESC;";
+				//echo "$sql<br />";
+				$res_mult=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_mult)>0) {
+					$lig_prec=mysqli_fetch_object($res_mult);
+					echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$lig_prec->id_ct."&today=0&id_groupe=".$ctCompteRendu->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'compte_rendu';
+						\"
+						 title=\"Afficher la notice de la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
+							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
+						</a>";
+				}
+				else {
+					$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$ctCompteRendu->getGroupe()->getId()."' AND id_ct!='".$ctCompteRendu->getIdCt()."' AND date_ct<'".$ctCompteRendu->getDateCt()."' ORDER BY date_ct DESC limit 1;";
+					//echo "$sql<br />";
+					$res_prec=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_prec)>0) {
+						$lig_prec=mysqli_fetch_object($res_prec);
+						echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$lig_prec->id_ct."&today=0&id_groupe=".$ctCompteRendu->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'compte_rendu';
+						\"
+						 title=\"Afficher la notice de la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
+							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
+						</a>";
+					}
+				}
+
+				echo "
+					</div>
+
+					<div style='display:inline; width:20px; text-align:center;' title=\"Passer à la notice précédente/suivante, sans (ré)enregistrer la notice courante.\">
+						<img src=\"../images/icons/notices_CDT_compte_rendu.png\" class=\"icone16\" />
+					</div>
+
+					<div style='display:inline; width:20px; text-align:center; '>";
+
+				// Notice suivante:
+				$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$ctCompteRendu->getGroupe()->getId()."' AND id_ct>'".$ctCompteRendu->getIdCt()."' AND date_ct='".$ctCompteRendu->getDateCt()."' ORDER BY id_ct ASC;";
+				$res_mult=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_mult)>0) {
+					$lig_suiv=mysqli_fetch_object($res_mult);
+					echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$lig_suiv->id_ct."&today=0&id_groupe=".$ctCompteRendu->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'compte_rendu';
+						\"
+						 title=\"Afficher la notice de la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
+							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />
+						</a>";
+				}
+				else {
+					$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$ctCompteRendu->getGroupe()->getId()."' AND id_ct!='".$ctCompteRendu->getIdCt()."' AND date_ct>'".$ctCompteRendu->getDateCt()."' ORDER BY date_ct ASC limit 1;";
+					$res_suiv=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_suiv)>0) {
+						$lig_suiv=mysqli_fetch_object($res_suiv);
+						echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$lig_suiv->id_ct."&today=0&id_groupe=".$ctCompteRendu->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'compte_rendu';
+						\"
+						 title=\"Afficher la notice de la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
+							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />
+						</a>";
+					}
+				}
+
+				echo "
+					</div>";
+			}
+			//============================================================
+
 		?>
 		<input type='hidden' name='get_devoirs_du_jour' id='get_devoirs_du_jour' value='' />
 
@@ -611,6 +726,7 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 		</td>
 		<td><?php
 		if (!isset($info)) {
+
 			$hier = $today - 3600*24;
 			$demain = $today + 3600*24;
 
@@ -631,7 +747,8 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 			echo "<td>\n";
 			echo "<a href=\"javascript:
 						getWinCalendar().setLocation(0, GetWidth() - 245);
-				\"><img src=\"../images/icons/date.png\" width='16' height='16' alt='Calendrier' /></a>\n";
+				\" 
+				title=\"Afficher le calendrier.\"><img src=\"../images/icons/date.png\" width='16' height='16' alt='Calendrier' /></a>\n";
 			echo "</td>\n";
 
 			echo "<td style='text-align:center; width: 16px;'>\n";

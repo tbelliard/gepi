@@ -481,6 +481,123 @@ echo "<script type='text/javascript'>
 	}
 </script>\n";
 */
+
+			//============================================================
+			// Notice précédente/suivante
+			if(preg_match("/^[0-9]{1,}$/", $ctTravailAFaire->getIdCt())) {
+				//id_groupe: $ctTravailAFaire->getGroupe()->getId();
+				//$ctTravailAFaire->getDateCt();
+				$type_notice='t';
+				$table_ct='ct_devoirs_entry';
+
+				// Lien séance précédente/suivante
+
+				// Notice précédente:
+				echo "
+					<div style='display:inline; width:20px; text-align:center; '>";
+
+				// Problème lorsqu'on a deux heures dans la même journée (ajouter un test)
+				$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$ctTravailAFaire->getGroupe()->getId()."' AND id_ct<'".$ctTravailAFaire->getIdCt()."' AND date_ct='".$ctTravailAFaire->getDateCt()."' ORDER BY id_ct DESC;";
+				//echo "$sql<br />";
+				$res_mult=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_mult)>0) {
+					$lig_prec=mysqli_fetch_object($res_mult);
+					echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$lig_prec->id_ct."&today=0&id_groupe=".$ctTravailAFaire->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'devoir';
+						\"
+						 title=\"Afficher aux travaux à faire pour la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
+							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
+						</a>";
+				}
+				else {
+					$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$ctTravailAFaire->getGroupe()->getId()."' AND id_ct!='".$ctTravailAFaire->getIdCt()."' AND date_ct<'".$ctTravailAFaire->getDateCt()."' ORDER BY date_ct DESC limit 1;";
+					//echo "$sql<br />";
+					$res_prec=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_prec)>0) {
+						$lig_prec=mysqli_fetch_object($res_prec);
+						echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$lig_prec->id_ct."&today=0&id_groupe=".$ctTravailAFaire->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'devoir';
+						\"
+						 title=\"Afficher aux travaux à faire pour la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
+							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
+						</a>";
+					}
+				}
+
+				echo "
+					</div>
+
+					<div style='display:inline; width:20px; text-align:center;' title=\"Passer à la notice précédente/suivante, sans (ré)enregistrer la notice courante.\">
+						<img src=\"../images/icons/notices_CDT_travail.png\" class=\"icone16\" />
+					</div>
+
+					<div style='display:inline; width:20px; text-align:center; '>";
+
+				// Notice suivante:
+				$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$ctTravailAFaire->getGroupe()->getId()."' AND id_ct>'".$ctTravailAFaire->getIdCt()."' AND date_ct='".$ctTravailAFaire->getDateCt()."' ORDER BY id_ct ASC;";
+				$res_mult=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_mult)>0) {
+					$lig_suiv=mysqli_fetch_object($res_mult);
+					echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$lig_suiv->id_ct."&today=0&id_groupe=".$ctTravailAFaire->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'devoir';
+						\"
+						 title=\"Afficher aux travaux à faire pour la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
+							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />
+						</a>";
+				}
+				else {
+					$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$ctTravailAFaire->getGroupe()->getId()."' AND id_ct!='".$ctTravailAFaire->getIdCt()."' AND date_ct>'".$ctTravailAFaire->getDateCt()."' ORDER BY date_ct ASC limit 1;";
+					$res_suiv=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_suiv)>0) {
+						$lig_suiv=mysqli_fetch_object($res_suiv);
+						echo "
+						<a href=\"#\" onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$lig_suiv->id_ct."&today=0&id_groupe=".$ctTravailAFaire->getGroupe()->getId()."',
+								{ onComplete:
+									function(transport) {
+										initWysiwyg();
+									}
+								}
+							);
+							object_en_cours_edition = 'devoir';
+						\"
+						 title=\"Afficher aux travaux à faire pour la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
+							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />
+						</a>";
+					}
+				}
+
+				echo "
+					</div>";
+			}
+			//============================================================
+
+
+
 			echo "<br />\n";
 			echo "<span title='Vous pouvez modifier les dates et heure de visibilité avec les flèches Haut/Bas, PageUp/PageDown du clavier.'>Visibilité</span>&nbsp;:\n";
 			echo " <input type='text' name='jour_visibilite' id='jour_visibilite' value='$jour_courant' size='7' onkeydown='clavier_date(this.id,event)' 
