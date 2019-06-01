@@ -1055,7 +1055,13 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<tr><td>".get_nom_classe($tab_id_classe[$i])."</td><td>";
 			if((isset($tab_signature['classe']))&&(array_key_exists($tab_id_classe[$i] ,$tab_signature['classe']))) {
-				if((isset($tab_signature['fichier']))&&(array_key_exists($tab_signature['classe'][$tab_id_classe[$i]]['id_fichier'] ,$tab_signature['fichier']))) {
+
+				//echo "On cherche l'indice \$tab_signature['classe'][$tab_id_classe[$i]]['id_fichier']=".$tab_signature['classe'][$tab_id_classe[$i]]['id_fichier']." dans \$tab_signature['fichier'] pour en extraire le sous-indice ['chemin'].<br />";
+
+				if((isset($tab_signature['fichier']))&&
+				(array_key_exists($tab_signature['classe'][$tab_id_classe[$i]]['id_fichier'] ,$tab_signature['fichier']))&&
+				(isset($tab_signature['fichier'][$tab_signature['classe'][$tab_id_classe[$i]]['id_fichier']]['chemin']))
+				) {
 					echo "<input type='checkbox' name='signer[]' id='signer_".$tab_id_classe[$i]."' value= '".$tab_id_classe[$i]."' onchange=\"checkbox_change(this.id)\" /><label for='signer_".$tab_id_classe[$i]."' id='texte_signer_".$tab_id_classe[$i]."'> Signer avec l'image ci-contre ";
 					echo "<img src='".$tab_signature['fichier'][$tab_signature['classe'][$tab_id_classe[$i]]['id_fichier']]['chemin']."' width='100' style='vertical-align:middle;' />";
 					echo "</label>";
