@@ -7,6 +7,9 @@ if(((isset($bull_pdf_debug))&&($bull_pdf_debug=='y'))||((isset($releve_pdf_debug
 elseif((isset($generer_fichiers_pdf_archivage))&&($generer_fichiers_pdf_archivage=='y')) {
 	//echo "\nArchivage\n";
 }
+elseif(isset($_POST['envoi_par_mail'])) {
+	//echo "\nEnvoi par mail\n";
+}
 else {
 	send_file_download_headers('application/pdf','bulletin.pdf');
 }

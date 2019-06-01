@@ -71,5 +71,32 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'bull_mail' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'bull_mail'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS bull_mail (
+		id INT(11) unsigned NOT NULL auto_increment,
+		login_sender VARCHAR(50) NOT NULL DEFAULT '',
+		pers_id VARCHAR(10) NOT NULL DEFAULT '',
+		email VARCHAR(100) NOT NULL DEFAULT '',
+		login_ele VARCHAR(50) NOT NULL DEFAULT '',
+		nom_prenom_ele VARCHAR(255) NOT NULL DEFAULT '',
+		id_classe INT(11) unsigned NOT NULL DEFAULT '0',
+		periodes VARCHAR(100) NOT NULL DEFAULT '',
+		id_envoi VARCHAR(255) NOT NULL DEFAULT '',
+		envoi VARCHAR(50) NOT NULL DEFAULT '',
+		date_envoi DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
+		PRIMARY KEY ( id )
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 
 ?>

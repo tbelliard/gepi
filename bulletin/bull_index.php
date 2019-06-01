@@ -1046,9 +1046,25 @@ function ToutDeCocher() {
 </script>";
 	}
 
+	// 20190531
+	if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+		echo "<p style='margin-top:1em;'>
+		<input type='checkbox' name='envoi_par_mail' id='envoi_par_mail' value='1' onchange=\"checkbox_change(this.id)\" />
+		<label for='envoi_par_mail' id='texte_envoi_par_mail'>
+			Envoyer le bulletin par mail lorsqu'une adresse mail responsable est disponible dans la base <em>(PDF et PDP_2016 seulement pour le moment)</em>.
+		</label>
+		</p>";
+	}
+
 	$tab_signature=get_tab_signature_bull();
 	if(count($tab_signature)>0) {
-		echo "<p class='bold'>Signature des bulletins&nbsp;: <a href='#'><img src='../images/edit16.png' class='icone16' title=\"Éditer/Modifier les signatures.
+		/*
+		echo "<pre>";
+		print_r($tab_signature);
+		echo "</pre>";
+		*/
+
+		echo "<p class='bold' style='margin-top:1em;'>Signature des bulletins&nbsp;: <a href='#'><img src='../images/edit16.png' class='icone16' title=\"Éditer/Modifier les signatures.
 Le dépot de fichiers de signature pour les différents utilisateurs et classes n'est pour le moment possible qu'en tant qu'administrateur dans Gestion des modules/Bulletins\" /></a></p>\n";
 		echo "<table class='boireaus boireaus_alt' summary='Tableau des signatures possibles'>\n";
 		echo "<tr><th>Classe</th><th>Signer</th></tr>\n";
@@ -1078,7 +1094,6 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 		}
 		echo "</table>\n";
 	}
-
 
 	echo "<p align='center'><input type='submit' name='bouton_valide_select_eleves1' value='Valider' /></p>\n";
 	echo "</div>\n";
@@ -1537,6 +1552,7 @@ else {
 	echo "</p>\n";
 	*/
 
+	// 20190402
 	//debug_var();
 
 	//$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
@@ -1557,6 +1573,9 @@ else {
 
 	// 20170716
 	$tab_ele_derniere_periode_imprimee=array();
+
+	// 20190531
+	$envoi_par_mail=isset($_POST['envoi_par_mail']) ? $_POST['envoi_par_mail'] : NULL;
 
 	// 20100615
 	//$moyennes_periodes_precedentes=isset($_POST['moyennes_periodes_precedentes']) ? $_POST['moyennes_periodes_precedentes'] : "n";
@@ -1770,6 +1789,7 @@ else {
 	$tableau_eleve['login']=array();
 	$tableau_eleve['no_gep']=array();
 	$tableau_eleve['nom_prenom']=array();
+	$tableau_resp=array();
 
 	// 20120505...
 	// Si on en est aux élèves ayant changé de classe... récupérer les classes de l'élève en cours
@@ -4754,6 +4774,8 @@ mysql>
 							$tableau_eleve['login'][]=$current_eleve_login[$i];
 							$tableau_eleve['no_gep'][]=$tab_ele['no_gep'];
 							$tableau_eleve['nom_prenom'][]=remplace_accents($tab_ele['nom']."_".$tab_ele['prenom'],'all');
+							// 20190531
+							$tableau_resp[$current_eleve_login[$i]]=$tab_ele['resp'];
 						}
 
 						$nb_bulletins_edites++;
@@ -4767,6 +4789,17 @@ mysql>
 			}
 		}
 	}
+
+	// $tableau_eleve contient le tableau des élèves sélectionnés avec
+	//	$tableau_eleve['login'][$j]
+	//	$tableau_eleve['no_gep'][$j]
+	//	$tableau_eleve['nom_prenom'][$j]
+	/*
+	echo "\$tableau_eleve<pre>";
+	print_r($tableau_eleve);
+	echo "</pre>";
+	die();
+	*/
 
 	// 20181024
 	/*
@@ -5043,6 +5076,13 @@ Et dans
 							}
 						}
 
+						$dirname = "../temp/".get_user_temp_directory()."/".getPref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
+						@mkdir($dirname);
+						if(!file_exists($dirname)) {
+							echo "<p>ERREUR d'acces au dossier des bulletins: $dirname</p>";
+							die();
+						}
+
 						echo $pdf->Output($dirname."/".$nom_fichier_bulletin,'F');
 						echo "<p><a href='$dirname/$nom_fichier_bulletin' target='_blank'>$nom_fichier_bulletin</a>";
 						//if(($arch_bull_envoi_mail=="yes")||($arch_bull_envoi_mail_tous_resp=="yes")) {
@@ -5181,6 +5221,607 @@ Bien cordialement.
 		require("../lib/footer.inc.php");
 		die();
 	}
+	//========================================================================
+	// 20190402 20190531
+	elseif(isset($envoi_par_mail)) {
+		// Calquer sur l'archivage des bulletins.
+		// envoi_par_mail == 1 -> remplir la liste des élèves/parents dans la table bull_mail
+		// envoi_par_mail == 2 -> suite/boucle par tranches de N envois
+
+		//**************** EN-TETE *********************
+		$titre_page = "Envoi par mail des bulletins";
+		require_once("../lib/header.inc.php");
+		//**************** FIN EN-TETE *****************
+
+		//debug_var();
+
+		echo "
+<p class='bold'><a href='bull_index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+
+		if($envoi_par_mail=='1') {
+			echo "
+<form action='".$_SERVER['PHP_SELF']."' method='POST'>
+	<fieldset class='fieldset_opacite50'>
+		<h2>Envoi de bulletins par mail</h2>
+		<input type='hidden' name='envoi_par_mail' value ='2' />
+		".(isset($intercaler_releve_notes) ? "<input type='hidden' name='intercaler_releve_notes' value ='".$intercaler_releve_notes."' />" : '')."
+		".(isset($intercaler_app_classe) ? "<input type='hidden' name='intercaler_app_classe' value ='".$intercaler_app_classe."' />" : '')."
+		".(isset($imprimeResume) ? "<input type='hidden' name='imprimeResume' value ='".$imprimeResume."' />" : '')."
+		".(isset($bull_pdf_debug) ? "<input type='hidden' name='bull_pdf_debug' value ='".$bull_pdf_debug."' />" : '')."
+		".(isset($valide_select_eleves) ? "<input type='hidden' name='valide_select_eleves' value ='".$valide_select_eleves."' />" : '')."
+		".(isset($avec_bilan_cycle) ? "<input type='hidden' name='avec_bilan_cycle' value ='".$avec_bilan_cycle."' />" : '')."
+		".(isset($bulletin_fin_cycle_seulement) ? "<input type='hidden' name='bulletin_fin_cycle_seulement' value ='".$bulletin_fin_cycle_seulement."' />" : '')."
+		".(isset($choix_periode_num) ? "<input type='hidden' name='choix_periode_num' value ='".$choix_periode_num."' />" : '')."
+		".(isset($un_seul_bull_par_famille) ? "<input type='hidden' name='un_seul_bull_par_famille' value ='".$un_seul_bull_par_famille."' />" : '')."
+		".(isset($seulement_resp_2_autre_adresse) ? "<input type='hidden' name='seulement_resp_2_autre_adresse' value ='".$seulement_resp_2_autre_adresse."' />" : '')."
+		".(isset($coefficients_a_1) ? "<input type='hidden' name='coefficients_a_1' value ='".$coefficients_a_1."' />" : '')."
+		".(isset($use_cell_ajustee) ? "<input type='hidden' name='use_cell_ajustee' value ='".$use_cell_ajustee."' />" : '')."
+		".(isset($tri_par_etab_orig) ? "<input type='hidden' name='tri_par_etab_orig' value ='".$tri_par_etab_orig."' />" : '')."
+		".(isset($forcer_recalcul_rang) ? "<input type='hidden' name='forcer_recalcul_rang' value ='".$forcer_recalcul_rang."' />" : '')."
+		".(isset($type_bulletin) ? "<input type='hidden' name='type_bulletin' value ='".$type_bulletin."' />" : '')."
+		".(isset($b_adr_pg) ? "<input type='hidden' name='b_adr_pg' value ='".$b_adr_pg."' />" : '')."
+		".(isset($forcer_recalcul_moy_conteneurs) ? "<input type='hidden' name='forcer_recalcul_moy_conteneurs' value ='".$forcer_recalcul_moy_conteneurs."' />" : '')."
+		<input type='hidden' name='mode_bulletin' value ='$mode_bulletin' />";
+
+			/*
+			".(isset($tous_les_eleves) ? "<input type='hidden' name='tous_les_eleves' value ='".$tous_les_eleves."' />" : '')."
+			".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+			".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+			".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+			*/
+
+			for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+				echo "
+		<input type='hidden' name='tab_id_classe[]' value ='".$tab_id_classe[$loop_classe]."' />";
+				for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+					if(isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num])) {
+						foreach($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] as $key => $value) {
+							echo "
+		<input type='hidden' name='tab_selection_ele_".$loop_classe.'_'.$loop_periode_num."[]' value ='".$value."' />";
+						}
+					}
+				}
+			}
+			for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+				echo "
+		<input type='hidden' name='tab_periode_num[]' value ='".$tab_periode_num[$loop_periode_num]."' />";
+			}
+			/*
+			for($loop_ele=0;$loop_ele<count($tab_selection_eleves);$loop_ele++) {
+				echo "
+			<input type='hidden' name='tab_selection_eleves[]' value ='".$tab_selection_eleves[$loop_ele]."' />";
+			}
+			*/
+
+			for($loop_signer=0;$loop_signer<count($signer);$loop_signer++) {
+				echo "
+		<input type='hidden' name='signer[]' value ='".$signer[$loop_signer]."' />";
+			}
+
+			$id_envoi=$_SESSION['login'].'_'.time();
+			echo "
+		<input type='hidden' name='id_envoi' value ='".$id_envoi."' />";
+
+			// envoi_par_mail == 1 -> remplir la liste des élèves/parents dans la table bull_mail
+
+			/*
+			echo "<pre>";
+			print_r($tableau_eleve);
+			echo "</pre>";
+
+			echo "<pre>";
+			print_r($tab_id_classe);
+			echo "</pre>";
+
+			echo "<pre>";
+			print_r($tab_periode_num);
+			echo "</pre>";
+
+			echo "<pre>";
+			print_r($tab_bulletin);
+			echo "</pre>";
+			*/
+
+			/*
+				// 20190531
+				$tableau_resp[$current_eleve_login[$i]]=$tab_ele['resp'];
+			*/
+
+			$tableau_id_classe_eleve=array();
+			$tableau_periodes_eleve=array();
+			for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+				$id_classe=$tab_id_classe[$loop_classe];
+				for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+					$tmp_tab_select=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : NULL;
+					if(isset($tmp_tab_select)) {
+						for($j=0;$j<count($tableau_eleve['login']);$j++) {
+							if(in_array($tableau_eleve['login'][$j], $tmp_tab_select)) {
+								if(!isset($tableau_id_classe_eleve[$tableau_eleve['login'][$j]])) {
+									$tableau_id_classe_eleve[$tableau_eleve['login'][$j]]=$id_classe;
+								}
+								$tableau_periodes_eleve[$tableau_eleve['login'][$j]][]=$tab_periode_num[$loop_periode_num];
+							}
+						}
+					}
+				}
+			}
+
+			for($j=0;$j<count($tableau_eleve['login']);$j++) {
+				if(!isset($tableau_id_classe_eleve[$tableau_eleve['login'][$j]])) {
+					echo "<p style='color:red'>L'élève ".$tableau_eleve['login'][$j]." n'a pas de classe.</p>";
+				}
+				elseif(!isset($tableau_periodes_eleve[$tableau_eleve['login'][$j]])) {
+					echo "<p style='color:red'>L'élève ".$tableau_eleve['login'][$j]." n'a pas été coché sur une seule période.</p>";
+				}
+				else {
+					$id_classe_eleve=$tableau_id_classe_eleve[$tableau_eleve['login'][$j]];
+					$chaine_periodes=implode(",", $tableau_periodes_eleve[$tableau_eleve['login'][$j]]);
+
+					$tmp_tab_arch_ele_courant=$tableau_resp[$tableau_eleve['login'][$j]]["adresses"]["adresse"];
+
+					foreach($tmp_tab_arch_ele_courant as $tmp_num_resp_destinataire => $current_resp_adr) {
+						/*
+						echo "<pre>";
+						print_r($current_resp_adr);
+						echo "</pre>";
+						*/
+						$sql="INSERT INTO bull_mail SET login_sender='".$_SESSION['login']."', 
+											pers_id='".$current_resp_adr['pers_id']."',
+											email='".(check_mail($current_resp_adr['email'][0]) ? $current_resp_adr['email'][0] : '')."',
+											login_ele='".$tableau_eleve['login'][$j]."', 
+											nom_prenom_ele='".mysqli_real_escape_string($mysqli, $tableau_eleve['nom_prenom'][$j])."', 
+											id_classe='".$id_classe_eleve."',
+											periodes='".$chaine_periodes."',
+											id_envoi='".$id_envoi."',
+											envoi='en_attente',
+											date_envoi='"."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($mysqli, $sql);
+						if(!$insert) {
+							echo "<p style='color:red'>ERREUR lors de l'enregistrement de l'envoi à effectuer.</p>";
+						}
+						else {
+							echo "<p>Enregistrement de la préparation d'envoi pour ".$tableau_eleve['nom_prenom'][$j]." <span title='Responsable n°".$current_resp_adr['pers_id']."'>(".$current_resp_adr['pers_id'].")</span></p>";
+						}
+
+					}
+
+
+				}
+			}
+
+			echo "
+		<p><input type='submit' value='Suite...' /></p>
+	</fieldset>
+</form>";
+		}
+		else {
+			// envoi_par_mail == 2 -> suite/boucle par tranches de N envois
+			$id_envoi=isset($_POST['id_envoi']) ? $_POST['id_envoi'] : NULL;
+			if(!isset($id_envoi)) {
+				echo "<h2>Envoi de bulletins par mail</h2>
+				<p style='color:red'>ERREUR&nbsp;: L'identifiant de l'envoi par mail n'a pas été reçu.</p>";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			$dirname = "../temp/".get_user_temp_directory()."/".$id_envoi;
+			@mkdir($dirname);
+			if(!file_exists($dirname)) {
+				echo "<h2>Envoi de bulletins par mail</h2>
+				<p>ERREUR d'acces au dossier des bulletins: $dirname</p>";
+				die();
+			}
+
+			// Pour ne pas laisser de scories
+			vider_dir($dirname);
+
+			/*
+			echo "\$tab_bulletin<pre>";
+			print_r($tab_bulletin);
+			echo "</pre>";
+			*/
+
+			$sql="SELECT * FROM bull_mail WHERE login_sender='".$_SESSION['login']."' AND 
+									id_envoi='".$id_envoi."' AND 
+									envoi='en_attente' 
+								ORDER BY id_classe, nom_prenom_ele 
+								LIMIT 10;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+
+				echo "
+	<form action='".$_SERVER['PHP_SELF']."' method='POST'>
+		<fieldset class='fieldset_opacite50'>
+			<h2>Envoi de bulletins par mail</h2>
+			<input type='hidden' name='envoi_par_mail' value ='2' />
+			<input type='hidden' name='id_envoi' value ='".$id_envoi."' />
+			".(isset($intercaler_releve_notes) ? "<input type='hidden' name='intercaler_releve_notes' value ='".$intercaler_releve_notes."' />" : '')."
+			".(isset($intercaler_app_classe) ? "<input type='hidden' name='intercaler_app_classe' value ='".$intercaler_app_classe."' />" : '')."
+			".(isset($imprimeResume) ? "<input type='hidden' name='imprimeResume' value ='".$imprimeResume."' />" : '')."
+			".(isset($bull_pdf_debug) ? "<input type='hidden' name='bull_pdf_debug' value ='".$bull_pdf_debug."' />" : '')."
+			".(isset($valide_select_eleves) ? "<input type='hidden' name='valide_select_eleves' value ='".$valide_select_eleves."' />" : '')."
+			".(isset($avec_bilan_cycle) ? "<input type='hidden' name='avec_bilan_cycle' value ='".$avec_bilan_cycle."' />" : '')."
+			".(isset($bulletin_fin_cycle_seulement) ? "<input type='hidden' name='bulletin_fin_cycle_seulement' value ='".$bulletin_fin_cycle_seulement."' />" : '')."
+			".(isset($choix_periode_num) ? "<input type='hidden' name='choix_periode_num' value ='".$choix_periode_num."' />" : '')."
+			".(isset($un_seul_bull_par_famille) ? "<input type='hidden' name='un_seul_bull_par_famille' value ='".$un_seul_bull_par_famille."' />" : '')."
+			".(isset($seulement_resp_2_autre_adresse) ? "<input type='hidden' name='seulement_resp_2_autre_adresse' value ='".$seulement_resp_2_autre_adresse."' />" : '')."
+			".(isset($coefficients_a_1) ? "<input type='hidden' name='coefficients_a_1' value ='".$coefficients_a_1."' />" : '')."
+			".(isset($use_cell_ajustee) ? "<input type='hidden' name='use_cell_ajustee' value ='".$use_cell_ajustee."' />" : '')."
+			".(isset($tri_par_etab_orig) ? "<input type='hidden' name='tri_par_etab_orig' value ='".$tri_par_etab_orig."' />" : '')."
+			".(isset($forcer_recalcul_rang) ? "<input type='hidden' name='forcer_recalcul_rang' value ='".$forcer_recalcul_rang."' />" : '')."
+			".(isset($type_bulletin) ? "<input type='hidden' name='type_bulletin' value ='".$type_bulletin."' />" : '')."
+			".(isset($b_adr_pg) ? "<input type='hidden' name='b_adr_pg' value ='".$b_adr_pg."' />" : '')."
+			".(isset($forcer_recalcul_moy_conteneurs) ? "<input type='hidden' name='forcer_recalcul_moy_conteneurs' value ='".$forcer_recalcul_moy_conteneurs."' />" : '')."
+			<input type='hidden' name='mode_bulletin' value ='$mode_bulletin' />";
+
+				/*
+				".(isset($tous_les_eleves) ? "<input type='hidden' name='tous_les_eleves' value ='".$tous_les_eleves."' />" : '')."
+				".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+				".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+				".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+				*/
+
+				for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+					echo "
+			<input type='hidden' name='tab_id_classe[]' value ='".$tab_id_classe[$loop_classe]."' />";
+					for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+						if(isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num])) {
+							foreach($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] as $key => $value) {
+								echo "
+			<input type='hidden' name='tab_selection_ele_".$loop_classe.'_'.$loop_periode_num."[]' value ='".$value."' />";
+							}
+						}
+					}
+				}
+				for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+					echo "
+			<input type='hidden' name='tab_periode_num[]' value ='".$tab_periode_num[$loop_periode_num]."' />";
+				}
+				/*
+				for($loop_ele=0;$loop_ele<count($tab_selection_eleves);$loop_ele++) {
+					echo "
+				<input type='hidden' name='tab_selection_eleves[]' value ='".$tab_selection_eleves[$loop_ele]."' />";
+				}
+				*/
+
+				for($loop_signer=0;$loop_signer<count($signer);$loop_signer++) {
+					echo "
+			<input type='hidden' name='signer[]' value ='".$signer[$loop_signer]."' />";
+				}
+
+
+				while($lig=mysqli_fetch_object($res)) {
+
+					// Rechercher l'indice $j de $tableau_eleve['nom_prenom'][$j] ?
+					/*
+					echo "Recherche de ".$lig->login_ele." dans \$tableau_eleve['login']<br />";
+					echo "\$tableau_eleve<pre>";
+					print_r($tableau_eleve);
+					echo "</pre>";
+					*/
+
+					$j='';
+					for($k=0;$k<count($tableau_eleve['login']);$k++) {
+						//echo "\$tableau_eleve['login'][$k]=".$tableau_eleve['login'][$k]."<br />";
+						if($tableau_eleve['login'][$k]==$lig->login_ele) {
+							//echo "Trouvé.<br />";
+							$j=$k;
+							break;
+						}
+					}
+
+					// Si $j==0, on a un test $j=='' qui est considéré comme vrai
+					if("$j"=='') {
+						echo "<p style='color:red'>".$lig->login_ele." non trouvé.</p>";
+					}
+					else {
+						if(!isset($tab_classe[$lig->id_classe])) {
+							$tab_classe[$lig->id_classe]=get_valeur_champ("classes", "id='".$lig->id_classe."'", "classe");
+						}
+
+						$tmp_tab_periodes_ele=explode(',', $lig->periodes);
+
+						/*
+						echo "\$tableau_resp[$lig->login_ele]<pre>";
+						print_r($tableau_resp[$lig->login_ele]);
+						echo "</pre>";
+						*/
+						foreach($tableau_resp[$lig->login_ele]["adresses"]["adresse"] as $tmp_num_resp_destinataire => $current_resp_adr) {
+							
+							//echo "<pre>";
+							//print_r($current_resp_adr);
+							//echo "</pre>";
+
+							if($current_resp_adr['pers_id']==$lig->pers_id) {
+								$nom_fichier_bulletin='bulletin';
+								$nom_fichier_bulletin.='_'.$tableau_eleve['nom_prenom'][$j];
+								$nom_fichier_bulletin.='_'.$tableau_eleve['no_gep'][$j];
+								$nom_fichier_bulletin.="_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all");
+								$nom_fichier_bulletin.="_".strftime("%Y%m%d");
+								$nom_fichier_bulletin.="_".remplace_accents($tab_classe[$lig->id_classe], "all");
+
+								$nom_fichier_bulletin.='_resp_legal_'.$current_resp_adr["resp_legal"]."_".$current_resp_adr["pers_id"];
+								$nom_fichier_bulletin.='.pdf';
+
+								//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+								$pdf=new bul_PDF('p', 'mm', 'A4');
+								$nb_eleve_aff = 1;
+								$categorie_passe = '';
+								$categorie_passe_count = 0;
+								$pdf->SetCreator($gepiSchoolName);
+								$pdf->SetAuthor($gepiSchoolName);
+								$pdf->SetKeywords('');
+								$pdf->SetSubject('Bulletin');
+								$pdf->SetTitle('Bulletin');
+								$pdf->SetDisplayMode('fullwidth', 'single');
+								$pdf->SetCompression(TRUE);
+								$pdf->SetAutoPageBreak(TRUE, 5);
+
+								$responsable_place = 0;
+
+								// A faire: Forcer 1 seul bulletin par parent
+
+								for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+									$id_classe=$tab_id_classe[$loop_classe];
+									$classe=get_class_from_id($id_classe);
+
+									//if($arch_bull_signature=="yes") {
+										if(!isset($tab_signature_classe[$id_classe])) {
+											$tab_signature_classe[$id_classe]=get_tab_signature_bull_archivage($id_classe);
+										}
+
+										if(isset($tab_signature_classe[$id_classe]['fichier'][0]['chemin'])) {
+											$signature_bull[$id_classe]=$tab_signature_classe[$id_classe]['fichier'][0]['chemin'];
+											/*
+											echo "\$signature_bull[$id_classe]<pre>";
+											print_r($signature_bull[$id_classe]);
+											echo "</pre>";
+											*/
+										}
+									//}
+
+									for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+										$periode_num=$tab_periode_num[$loop_periode_num];
+
+										if(in_array($periode_num, $tmp_tab_periodes_ele)) {
+											// Recherche de l'indice $i de l'élève dans le tableau tab_bulletin pour la période considérée.
+											for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
+
+												if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+													if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']))&&($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']==$tableau_eleve['login'][$j])) {
+														bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+													}
+												}
+											}
+										}
+									}
+								}
+
+								echo $pdf->Output($dirname."/".$nom_fichier_bulletin,'F');
+								echo "<p><a href='$dirname/$nom_fichier_bulletin' target='_blank'>$nom_fichier_bulletin</a>";
+								if(isset($current_resp_adr["email"])) {
+									// 20170714 : On envoie les bulletins pour $current_resp_adr["email"][]
+									for($loop_mail=0;$loop_mail<count($current_resp_adr["email"]);$loop_mail++) {
+
+										$destinataire_mail="";
+										$tab_param_mail=array();
+										if(check_mail($current_resp_adr["email"][$loop_mail])) {
+											$destinataire_mail.=$current_resp_adr["email"][$loop_mail];
+											$tab_param_mail['destinataire'][]=$current_resp_adr["email"][$loop_mail];
+										}
+										else {
+											$sql="UPDATE bull_mail SET envoi='mail_non_valide' WHERE id='".$lig->id."';";
+											//echo "$sql<br />";
+											$update=mysqli_query($mysqli, $sql);
+										}
+
+										if($destinataire_mail!="") {
+											$sujet_mail="Envoi du bulletin ".$nom_fichier_bulletin;
+											$message_mail="Bonjour ".$current_resp_adr[1].",
+
+Veuillez trouver en pièce jointe le bulletin ".$nom_fichier_bulletin."
+
+
+Bien cordialement.
+-- 
+".getSettingValue('gepiSchoolName');
+
+											// On enlève le préfixe ../ parce que le chemin absolu est reconstruit via SERVER_ROOT dans envoi_mail()
+											if(envoi_mail($sujet_mail, $message_mail, $destinataire_mail, '', "plain", $tab_param_mail, preg_replace("#^\.\./#", "", $dirname."/".$nom_fichier_bulletin))) {
+												echo " <em style='color:green' title=\"Mail envoyé avec succès pour ".$current_resp_adr[1]."\">(".$destinataire_mail.")</em>";
+												$sql="UPDATE bull_mail SET envoi='succes' WHERE id='".$lig->id."';";
+												//echo "$sql<br />";
+												$update=mysqli_query($mysqli, $sql);
+											}
+											else {
+												echo " <em style='color:red' title=\"Échec de l'envoi du mail ".$current_resp_adr[1]."\">(".$destinataire_mail.")</em>";
+												$sql="UPDATE bull_mail SET envoi='echec' WHERE id='".$lig->id."';";
+												//echo "$sql<br />";
+												$update=mysqli_query($mysqli, $sql);
+											}
+										}
+									}
+
+								}
+								else {
+									$sql="UPDATE bull_mail SET envoi='mail_non_valide' WHERE id='".$lig->id."';";
+									//echo "$sql<br />";
+									$update=mysqli_query($mysqli, $sql);
+								}
+								echo "</p>\n";
+
+								flush();
+							}
+						}
+					}
+				}
+
+				echo "<p><input type='submit' value='Suite...' /></p>
+	</fieldset>
+</form>";
+			}
+			else {
+				// Récapituler les envois et échecs et purger le dossier $dirname
+
+				// Pour ne pas laisser de scories
+				vider_dir($dirname);
+
+				echo "<h2>Envoi de bulletins par mail</h2>
+				<h3>Récapitulatif</h3>";
+				//<p style='color:red'>A FAIRE&nbsp;: Récapituler les envois et échecs et purger le dossier $dirname et proposer un lien pour imprimer les PDF non envoyés.</p>
+
+				$sql="SELECT * FROM bull_mail WHERE login_sender='".$_SESSION['login']."' AND 
+										id_envoi='".$id_envoi."' AND 
+										(envoi='mail_non_valide' OR envoi='echec') 
+									ORDER BY id_classe, nom_prenom_ele 
+									LIMIT 10;";
+				//echo "$sql<br />";
+				$res=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)>0) {
+					echo "<p>Un ou des bulletins n'ont pas pu être envoyés faute d'adresse mail valide<br />
+					<em style='font-size:x-small'>(ou si votre installation ne permet pas l'envoi de mail&nbsp;;<br />
+					ou encore si l'envoi de mail a été pris pour du spam par le gérant de votre serveur SMTP)</em></p>";
+
+					echo "<p style='margin-top:1em; margin-bottom:1em;'>Envoi non effectués <br />";
+					$tab_non_envoyes=array();
+					while($lig=mysqli_fetch_object($res)) {
+						echo " pour ".get_nom_prenom_eleve($lig->login_ele)." à destination de ".civ_nom_prenom_from_pers_id($lig->pers_id)." pour la ou les périodes ".$lig->periodes."<br />";
+						$tab_non_envoyes[]=$lig->login_ele;
+					}
+					echo "</p>
+
+					<form action='".$_SERVER['PHP_SELF']."' method='POST'>
+						<fieldset class='fieldset_opacite50'>
+							".(isset($intercaler_releve_notes) ? "<input type='hidden' name='intercaler_releve_notes' value ='".$intercaler_releve_notes."' />" : '')."
+							".(isset($intercaler_app_classe) ? "<input type='hidden' name='intercaler_app_classe' value ='".$intercaler_app_classe."' />" : '')."
+							".(isset($imprimeResume) ? "<input type='hidden' name='imprimeResume' value ='".$imprimeResume."' />" : '')."
+							".(isset($bull_pdf_debug) ? "<input type='hidden' name='bull_pdf_debug' value ='".$bull_pdf_debug."' />" : '')."
+							".(isset($valide_select_eleves) ? "<input type='hidden' name='valide_select_eleves' value ='".$valide_select_eleves."' />" : '')."
+							".(isset($avec_bilan_cycle) ? "<input type='hidden' name='avec_bilan_cycle' value ='".$avec_bilan_cycle."' />" : '')."
+							".(isset($bulletin_fin_cycle_seulement) ? "<input type='hidden' name='bulletin_fin_cycle_seulement' value ='".$bulletin_fin_cycle_seulement."' />" : '')."
+							".(isset($choix_periode_num) ? "<input type='hidden' name='choix_periode_num' value ='".$choix_periode_num."' />" : '')."
+							".(isset($un_seul_bull_par_famille) ? "<input type='hidden' name='un_seul_bull_par_famille' value ='".$un_seul_bull_par_famille."' />" : '')."
+							".(isset($seulement_resp_2_autre_adresse) ? "<input type='hidden' name='seulement_resp_2_autre_adresse' value ='".$seulement_resp_2_autre_adresse."' />" : '')."
+							".(isset($coefficients_a_1) ? "<input type='hidden' name='coefficients_a_1' value ='".$coefficients_a_1."' />" : '')."
+							".(isset($use_cell_ajustee) ? "<input type='hidden' name='use_cell_ajustee' value ='".$use_cell_ajustee."' />" : '')."
+							".(isset($tri_par_etab_orig) ? "<input type='hidden' name='tri_par_etab_orig' value ='".$tri_par_etab_orig."' />" : '')."
+							".(isset($forcer_recalcul_rang) ? "<input type='hidden' name='forcer_recalcul_rang' value ='".$forcer_recalcul_rang."' />" : '')."
+							".(isset($type_bulletin) ? "<input type='hidden' name='type_bulletin' value ='".$type_bulletin."' />" : '')."
+							".(isset($b_adr_pg) ? "<input type='hidden' name='b_adr_pg' value ='".$b_adr_pg."' />" : '')."
+							".(isset($forcer_recalcul_moy_conteneurs) ? "<input type='hidden' name='forcer_recalcul_moy_conteneurs' value ='".$forcer_recalcul_moy_conteneurs."' />" : '')."
+							<input type='hidden' name='mode_bulletin' value ='$mode_bulletin' />";
+
+							/*
+							".(isset($tous_les_eleves) ? "<input type='hidden' name='tous_les_eleves' value ='".$tous_les_eleves."' />" : '')."
+							".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+							".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+							".(isset($) ? "<input type='hidden' name='' value ='".$."' />" : '')."
+							*/
+
+					for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+						echo "
+							<input type='hidden' name='tab_id_classe[]' value ='".$tab_id_classe[$loop_classe]."' />";
+						for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+							if(isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num])) {
+								foreach($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] as $key => $value) {
+									if(in_array($value, $tab_non_envoyes)) {
+										echo "
+							<input type='hidden' name='tab_selection_ele_".$loop_classe.'_'.$loop_periode_num."[]' value ='".$value."' />";
+									}
+								}
+							}
+						}
+					}
+					for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+						echo "
+							<input type='hidden' name='tab_periode_num[]' value ='".$tab_periode_num[$loop_periode_num]."' />";
+					}
+					/*
+					for($loop_ele=0;$loop_ele<count($tab_selection_eleves);$loop_ele++) {
+						echo "
+					<input type='hidden' name='tab_selection_eleves[]' value ='".$tab_selection_eleves[$loop_ele]."' />";
+					}
+					*/
+
+					for($loop_signer=0;$loop_signer<count($signer);$loop_signer++) {
+						echo "
+							<input type='hidden' name='signer[]' value ='".$signer[$loop_signer]."' />";
+					}
+
+					echo "
+		<p>Générer un fichier PDF des bulletins non envoyés de façon à l'imprimer et le remettre au format papier&nbsp;:</p>
+		<p><input type='submit' value='Générer' /></p>
+	</fieldset>
+</form>";
+
+				}
+				else {
+					echo "<p>Tous les envois ont été effectués.</p>";
+					$sql="SELECT * FROM bull_mail WHERE login_sender='".$_SESSION['login']."' AND 
+											id_envoi='".$id_envoi."' AND 
+											envoi='succes' 
+										ORDER BY id_classe, nom_prenom_ele 
+										LIMIT 10;";
+					//echo "$sql<br />";
+					$res=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res)>0) {
+						echo "<p>Envoi effectué avec succès des bulletins <br />";
+						while($lig=mysqli_fetch_object($res)) {
+							echo " de ".get_nom_prenom_eleve($lig->login_ele)." à destination de ".civ_nom_prenom_from_pers_id($lig->pers_id)." pour la ou les périodes ".$lig->periodes."<br />";
+						}
+						echo "</p>";
+					}
+				}
+			}
+
+		}
+
+		require("../lib/footer.inc.php");
+		die();
+
+
+/*
+		if((!isset($dest_mail))||(!check_mail($dest_mail))) {
+			$pref_output_mode_pdf=get_output_mode_pdf();
+			$pdf->Output($nom_bulletin,$pref_output_mode_pdf);
+		}
+		else {
+			//$dest_mail=getSettingValue('gepiAdminAdress');
+			//echo "\$dest_mail=$dest_mail<br />";
+			$sujet_mail="Envoi du bulletin ".$nom_bulletin;
+			$message_mail="Bonjour Monsieur, madame,
+
+Veuillez trouver en pièce jointe le bulletin ".$nom_bulletin."
+
+
+Bien cordialement.
+-- 
+".civ_nom_prenom($_SESSION['login'], "initiale_prenom")."
+".getSettingValue('gepiSchoolName');
+
+			$tab_param_mail['destinataire']=array($dest_mail);
+
+			$tempdir=get_user_temp_directory();
+			$dirname="../temp/".$tempdir;
+
+			echo $pdf->Output($dirname."/".$nom_bulletin,'F');
+
+			// On enlève le préfixe ../ parce que le chemin absolu est reconstruit via SERVER_ROOT dans envoi_mail()
+			envoi_mail($sujet_mail, $message_mail, $dest_mail, '', "plain", $tab_param_mail, preg_replace("#^\.\./#", "", $dirname."/".$nom_bulletin));
+
+			$data=file_get_contents($dirname."/".$nom_bulletin);
+			send_file_download_headers('application/pdf',$nom_bulletin);
+			echo $data;
+			// Ménage:
+			unlink($dirname."/".$nom_bulletin);
+			die();
+		}
+*/
+
+	}
+	//========================================================================
 
 	/*
 	if($mode_bulletin=="html") {
@@ -5225,7 +5866,7 @@ Bien cordialement.
 
 		//if((!isset($bull_pdf_debug))||($bull_pdf_debug!='y')) {
 		// 20120418
-		if(((!isset($bull_pdf_debug))||($bull_pdf_debug!='y'))&&($generer_fichiers_pdf_archivage!='y')) {
+		if(((!isset($bull_pdf_debug))||($bull_pdf_debug!='y'))&&($generer_fichiers_pdf_archivage!='y')&&(!isset($envoi_par_mail))) {
 			send_file_download_headers('application/pdf','bulletin.pdf');
 		}
 		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
