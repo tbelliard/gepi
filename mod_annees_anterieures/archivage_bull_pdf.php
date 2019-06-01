@@ -162,7 +162,7 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo "<input type='checkbox' id='arch_bull_envoi_mail' name='arch_bull_envoi_mail' value='yes' onchange='checkbox_change(this.id)' ";
 	$arch_bull_envoi_mail=getPref($_SESSION['login'],'arch_bull_envoi_mail', 'no');
 	if($arch_bull_envoi_mail=='yes') {echo " checked";}
-	echo " /><label for='arch_bull_envoi_mail' id='texte_arch_bull_envoi_mail'> Envoyer par mail aux responsables légaux 1 pour lesquels une adresse mail est renseignée, les bulletins générés</label><br />
+	echo " /><label for='arch_bull_envoi_mail' id='texte_arch_bull_envoi_mail'> Envoyer par mail aux responsables légaux pour lesquels une adresse mail est renseignée, les bulletins générés</label><br />
 	<!--
 	<em>(on limite l'envoi au responsable légal 1, parce que l'adresse apparaissant sur le bulletin PDF généré est celle du responsable légal 1)</em><br />
 	-->

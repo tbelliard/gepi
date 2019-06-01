@@ -433,7 +433,15 @@ else {
 	echo "<li><p>Éventuellement, une fois le module activé (<em>et après rafraichissement de la page</em>) générer, pour chaque élève, un bulletin PDF des N périodes via le module Années antérieures.</p></li>\n";
 }
 if(file_exists("../mod_plugins/archivageAPB/index.php")) {
-	echo "<li><a href='../mod_plugins/archivageAPB/index.php'>Archiver les données de l'année qui se termine pour le plugin APB</a>.</li>\n";
+	$sql="SELECT 1=1 FROM plugins_autorisations WHERE fichier='mod_plugins/archivageAPB/index.php';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT 1=1 FROM plugins WHERE nom='archivageAPB' AND ouvert='y';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<li><a href='../mod_plugins/archivageAPB/index.php'>Archiver les données de l'année qui se termine pour le plugin APB</a>.</li>\n";
+		}
+	}
 }
 if(getSettingValue('active_module_absence')=='2') {
 	echo "<li><p><a href='../mod_abs2/extraction_saisies.php?date_absence_eleve_debut=".(date('Y')-1)."-08-01&date_absence_eleve_fin=".date('Y')."-08-01&type_extrait=1&retour=../gestion/changement_d_annee.php'>Effectuer une extraction CSV des absences</a>,\n";
