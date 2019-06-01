@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -270,9 +270,11 @@ if(isset($_POST['upload_sts_file'])) {
 		else{
 			echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
+			libxml_use_internal_errors(true);
 			$sts_xml=simplexml_load_file($dest_file);
 			if(!$sts_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}

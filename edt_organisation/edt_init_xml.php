@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 * Ajout Sandrine Dangreville
 * Divison Informatique -Rectorat de Creteil
 * Importation de données des fichiers sts_emp et emp_sts
@@ -50,8 +50,19 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //==================================================
+libxml_use_internal_errors(true);
 $xml_sts_emp = simplexml_load_file('sts_emp.xml');
+if(!$xml_sts_emp) {
+	echo "<p style='color:red;'>ECHEC du chargement du fichier sts_emp.xml avec simpleXML.</p>\n";
+	require("../lib/footer.inc.php");
+	die();
+}
 $xml_emp_sts = simplexml_load_file('emp_sts.xml');
+if(!$xml_emp_sts) {
+	echo "<p style='color:red;'>ECHEC du chargement du fichier emp_sts.xml avec simpleXML.</p>\n";
+	require("../lib/footer.inc.php");
+	die();
+}
 //====================================================
 //export des données de l etablissement
 
@@ -176,7 +187,7 @@ foreach ($xml_sts_emp->xpath('//INDIVIDU') as $o_nom)
 //lecture des alternances
 //construction d'un tableau pour chaque alternance
 //construction d'un tableau avec les différents type d'alternances;
-//***************cette partie ne semble pas correspodnre avec la demande de julien*******************
+//***************cette partie ne semble pas correspondre avec la demande de julien*******************
 unset($i);
 
 foreach ($xml_emp_sts->xpath('//ALTERNANCE') as $ar_alternance_temp)

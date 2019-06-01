@@ -289,7 +289,7 @@ require_once("../lib/header.inc.php");
 							//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
 							echo "<p>Cette page permet de remplir des tables temporaires avec les informations extraites du XML.<br />\n";
 							echo "</p>\n";
-							echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+							echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_xml'>\n";
 							echo add_token_field();
 
 							echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
@@ -305,12 +305,31 @@ require_once("../lib/header.inc.php");
 							}
 
 							echo "<p>Veuillez fournir le fichier exportAbsence.xml:<br />\n";
-							echo "<input type=\"file\" size=\"60\" name=\"absences_xml_file\" /><br />\n";
+							echo "<input type=\"file\" size=\"60\" id='input_xml_file' name=\"absences_xml_file\" /><br />\n";
 							echo "<input type='hidden' name='etape' value='$etape' />\n";
 							echo "<input type='hidden' name='is_posted' value='yes' />\n";
 							echo "</p>\n";
 
-							echo "<p><input type='submit' value='Valider' /></p>\n";
+							echo "
+								<p><input type='submit' id='input_submit' value='Valider' />
+								<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+							</fieldset>
+
+							<script type='text/javascript'>
+								document.getElementById('input_submit').style.display='none';
+								document.getElementById('input_button').style.display='';
+
+								function check_champ_file() {
+									fichier=document.getElementById('input_xml_file').value;
+									//alert(fichier);
+									if(fichier=='') {
+										alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+									}
+									else {
+										document.getElementById('form_envoi_xml').submit();
+									}
+								}
+							</script>";
 							echo "</form>\n";
 
 							echo "<p><b>ATTENTION</b>&nbsp;:</p>\n";
@@ -335,9 +354,11 @@ require_once("../lib/header.inc.php");
 							if($etape==1) {
 								$xml_file = isset($_FILES["absences_xml_file"]) ? $_FILES["absences_xml_file"] : NULL;
 
+								libxml_use_internal_errors(true);
 								$sconet_xml=simplexml_load_file($xml_file['tmp_name']);
 								if(!$sconet_xml) {
 									echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+									echo "<p><a href='".$_SERVER['PHP_SELF']."?num_periode=$num_periode'>Téléverser un autre fichier</a></p>\n";
 									require("../lib/footer.inc.php");
 									die();
 								}

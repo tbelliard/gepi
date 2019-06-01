@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -406,18 +406,38 @@ if ($action=="importnomenclature") {
 			echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
 		}
 		else {
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
-".add_token_field()."
-	<p>Veuillez fournir le fichier Nomenclature.xml:<br />
-	<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /></p>\n";
+			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_xml'>
+	<fieldset class='fieldset_opacite50'>
+	".add_token_field()."
+		<p>Veuillez fournir le fichier Nomenclature.xml:<br />
+		<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" id='input_xml_file' /></p>\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
-				echo "	<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex&nbsp;: Nomenclature.zip</em>)</p>";
+					echo "
+		<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex&nbsp;: Nomenclature.zip</em>)</p>";
 			}
 			echo "
-	<input type='checkbox' name='remplacer' id='remplacer' value='y' /><label for='remplacer'> Remplacer les enregistrements déjà présents dans Gepi.</label><br />
-	<input type='hidden' name='action' value='importnomenclature' />
-	<input type='hidden' name='is_posted' value='yes' />
-	<p><input type='submit' value='Valider' /></p>
+		<input type='checkbox' name='remplacer' id='remplacer' value='y' /><label for='remplacer'> Remplacer les enregistrements déjà présents dans Gepi.</label><br />
+		<input type='hidden' name='action' value='importnomenclature' />
+		<input type='hidden' name='is_posted' value='yes' />
+		<p><input type='submit' id='input_submit' value='Valider' />
+		<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+	</fieldset>
+
+	<script type='text/javascript'>
+		document.getElementById('input_submit').style.display='none';
+		document.getElementById('input_button').style.display='';
+
+		function check_champ_file() {
+			fichier=document.getElementById('input_xml_file').value;
+			//alert(fichier);
+			if(fichier=='') {
+				alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+			}
+			else {
+				document.getElementById('form_envoi_xml').submit();
+			}
+		}
+	</script>
 </form>
 
 <p style='color:red'>Pour le moment, on a un doublon au niveau des MEF dans les tables 'mef' et 'nomenclatures'.<br />
@@ -517,9 +537,11 @@ Il faut pour le moment faire les imports dans les pages d'import des nomenclatur
 
 					$dest_file="../temp/".$tempdir."/nomenclature.xml";
 
+					libxml_use_internal_errors(true);
 					$nomenclature_xml=simplexml_load_file($dest_file);
 					if(!$nomenclature_xml) {
 						echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+						echo "<p><a href='".$_SERVER['PHP_SELF']."?action=importnomenclature'>Téléverser un autre fichier</a></p>\n";
 						require("../lib/footer.inc.php");
 						die();
 					}

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1348,9 +1348,11 @@ elseif($action=="upload") {
 	Si une classe n'est pas sélectionnée, les enseignements/groupes multi-classe qui font intervenir cette classe pourraient être amputés de membres de cette classe.<br />
 	<em>Exemple&nbsp;:</em> Si vous avez un groupe AGL1_4B_4C faisant intervenir des élèves de 4B et 4C, mais que seule la 4B a été sélectionnée, il vous sera proposé par la suite de désincrire du groupe les élèves de 4C puisque non trouvés dans le fichier XML parmi les membres du regroupement EDT associé à AGL1_4B_4C.</p>";
 
+	libxml_use_internal_errors(true);
 	$eleves_xml=simplexml_load_file($dest_file);
 	if(!$eleves_xml) {
 		echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}

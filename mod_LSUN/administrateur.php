@@ -234,9 +234,14 @@ $listeAidAp = getApAid();
 
 //===== on charge les nomenclatures de LSUN =====
 if (file_exists('LSUN_nomenclatures.xml')) {
-    $xml = simplexml_load_file('LSUN_nomenclatures.xml');
+	libxml_use_internal_errors(true);
+	$xml = simplexml_load_file('LSUN_nomenclatures.xml');
+	if(!$xml) {
+		exit('Echec lors de la lecture du fichier LSUN_nomenclatures.xml avec SimpleXML.');
+	}
+	libxml_use_internal_errors(false);
 } else {
-    exit('Echec lors de l\'ouverture du fichier LSUN_nomenclatures.xml.');
+	exit('Echec lors de l\'ouverture du fichier LSUN_nomenclatures.xml.');
 }
 
 

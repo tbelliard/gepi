@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -220,9 +220,11 @@ Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mi
 
 					$dest_file="../temp/".$tempdir."/sts.xml";
 
+					libxml_use_internal_errors(true);
 					$sts_xml=simplexml_load_file($dest_file);
 					if(!$sts_xml) {
 						echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+						echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 						require("../lib/footer.inc.php");
 						die();
 					}
