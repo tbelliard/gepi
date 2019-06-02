@@ -1048,12 +1048,19 @@ function ToutDeCocher() {
 
 	// 20190531
 	if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
-		echo "<p style='margin-top:1em;'>
-		<input type='checkbox' name='envoi_par_mail' id='envoi_par_mail' value='1' onchange=\"checkbox_change(this.id)\" />
-		<label for='envoi_par_mail' id='texte_envoi_par_mail'>
-			Envoyer le bulletin par mail lorsqu'une adresse mail responsable est disponible dans la base <em>(PDF et PDP_2016 seulement pour le moment)</em>.
-		</label>
+		$sql="SHOW TABLES LIKE 'bull_mail'";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<p style='margin-top:1em;'>
+			<input type='checkbox' name='envoi_par_mail' id='envoi_par_mail' value='1' onchange=\"checkbox_change(this.id)\" />
+			<label for='envoi_par_mail' id='texte_envoi_par_mail'>
+				Envoyer le bulletin par mail lorsqu'une adresse mail responsable est disponible dans la base <em>(PDF et PDP_2016 seulement pour le moment)</em>.
+			</label>
 		</p>";
+		}
+		else {
+			echo "<p style='color:red'>Une mise à jour de la base est requise pour créer la table 'bull_mail'.</p>";
+		}
 	}
 
 	$tab_signature=get_tab_signature_bull();
