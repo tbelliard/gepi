@@ -66,6 +66,8 @@ $liste_tables_del_etape_eleves = array(
 "matieres_appreciations_grp",
 "matieres_appreciations_tempo",
 "synthese_app_classe",
+
+'bull_mail',
 //==========================
 // Tables notanet
 'notanet',
@@ -176,6 +178,8 @@ $liste_tables_del_etape_matieres = array(
 "matieres_appreciations_acces",
 "matieres_appreciations_acces_eleve",
 "synthese_app_classe",
+
+'bull_mail',
 //==========================
 "socle_eleves_enseignements_complements",
 //==========================
@@ -237,6 +241,8 @@ $liste_tables_del_etape_resp = array(
 "tempo2",
 "tempo",
 
+'bull_mail',
+
 "engagements_user",
 
 "log_maj_sconet"
@@ -257,6 +263,9 @@ $liste_tables_del_etape_professeurs = array(
 "matieres_appreciations_acces",
 "matieres_appreciations_acces_eleve",
 "synthese_app_classe",
+
+'bull_mail',
+
 "observatoire_j_resp_champ",
 "tempo2",
 "tempo",
