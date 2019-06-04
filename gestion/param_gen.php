@@ -2749,7 +2749,7 @@ echo add_token_field();
 	<p class="cellTab">
 		<input type="radio" 
 			   name="phpmailer_smtp_auth" 
-			   id="phpmailer_smtp_auth" 
+			   id="phpmailer_smtp_auth_y" 
 			   value="y" 
 			   <?php
 				if(getSettingValue('phpmailer_smtp_auth')=="") {saveSetting('phpmailer_smtp_auth', 'n');}
@@ -2790,7 +2790,7 @@ echo add_token_field();
 			Mot de passe du compte SMTP&nbsp;: 
 		</span>
 		<span class="cellTab plusPetit">
-			<input type="text" 
+			<input type="password" 
 				   name="phpmailer_smtp_password" 
 				   size="20" 
 				   value="<?php echo(getSettingValue("phpmailer_smtp_password")); ?>" 
