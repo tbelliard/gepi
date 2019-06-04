@@ -380,7 +380,7 @@ if(mysqli_num_rows($res)>0) {
 </table>";
 	}
 	else {
-		echo "<p>Les bilans de composantes du socle et les synthèses sont remplis pour tous les élèves de la classe.</p>";
+		echo "<p title=\"Succès : Tout est rempli.\" style='color:green'><img src='../images/enabled.png' class='icone20' /> Les bilans de composantes du socle et les synthèses sont remplis pour tous les élèves de la classe.</p>";
 	}
 
 	echo "<p style='margin-top:1em'><em>Notes&nbsp;:</em></p>
