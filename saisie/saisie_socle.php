@@ -560,11 +560,12 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 		elseif(isset($id_classe)) {
 			$acces_saisie="n";
 			if($_SESSION["statut"]=="scolarite") {
-				$sql="SELECT 1=1 FROM j_scol_classes WHERE login='".$_SESSION["login"]."' AND id_classe='".$id_classe."';";
-				$test=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($test)>0) {
+				//$sql="SELECT 1=1 FROM j_scol_classes WHERE login='".$_SESSION["login"]."' AND id_classe='".$id_classe."';";
+				//$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				//if(mysqli_num_rows($test)>0) {
 					$acces_saisie="y";
-				}
+				//}
+				// A FAIRE : Ajouter un droit pour voir s'il faut restreindre.
 			}
 			elseif($_SESSION["statut"]=="cpe") {
 				if(getSettingAOui('GepiAccesTouteFicheEleveCpe')) {
