@@ -1584,6 +1584,8 @@ else {
 	// 20190531
 	$envoi_par_mail=isset($_POST['envoi_par_mail']) ? $_POST['envoi_par_mail'] : NULL;
 
+	$pers_id=isset($_POST['pers_id']) ? $_POST['pers_id'] : (isset($_GET['pers_id']) ? $_GET['pers_id'] : NULL);
+
 	// 20100615
 	//$moyennes_periodes_precedentes=isset($_POST['moyennes_periodes_precedentes']) ? $_POST['moyennes_periodes_precedentes'] : "n";
 	//$evolution_moyenne_periode_precedente=isset($_POST['evolution_moyenne_periode_precedente']) ? $_POST['evolution_moyenne_periode_precedente'] : "n";
@@ -3781,7 +3783,8 @@ mysql>
 						// 20170712
 						// Pour ne récupérer que les infos associées au responsable pour lequel on veut imprimer le bulletin
 						// A modifier pour ne pas se limiter à un $_GET['pers_id'], mais pouvoir choisir le $pers_id aussi en POST.
-						if((isset($_GET['pers_id']))&&(preg_match("/^[0-9p]{1,}$/", $_GET['pers_id']))) {
+						//if((isset($_GET['pers_id']))&&(preg_match("/^[0-9p]{1,}$/", $_GET['pers_id']))) {
+						if((isset($pers_id))&&(!is_array($pers_id))&&(preg_match("/^[0-9p]{1,}$/", $pers_id))) {
 							// Récup infos responsables
 							$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
 															resp_adr ra,
@@ -3835,6 +3838,68 @@ mysql>
 									$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
 
 									$cpt++;
+								}
+							}
+						}
+						elseif((isset($pers_id))&&(is_array($pers_id))) {
+							// Récup infos responsables
+							$cpt=0;
+							for($loop_resp=0;$loop_resp<count($pers_id);$loop_resp++) {
+								if(preg_match("/^[0-9p]{1,}$/", $pers_id[$loop_resp])) {
+									$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+																	resp_adr ra,
+																	responsables2 r
+												WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+														r.pers_id=rp.pers_id AND
+														rp.adr_id=ra.adr_id AND 
+														rp.pers_id='".$pers_id[$loop_resp]."'
+												ORDER BY resp_legal;";
+									$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+									//echo "$sql<br />";
+									if(mysqli_num_rows($res_resp)>0) {
+										//$cpt=0;
+										// Avec un seul pers_id, on ne fait qu'un tour dans la boucle.
+										while($lig_resp=mysqli_fetch_object($res_resp)) {
+											$tab_ele['resp'][$cpt]=array();
+
+											$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+
+											$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+											$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+											$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+											$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+											$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+											$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+											$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+
+											$tab_ele['resp'][$cpt]['mel']=$lig_resp->mel;
+											if(((isset($arch_bull_envoi_mail))&&($arch_bull_envoi_mail=="yes"))||
+											((isset($envoi_bulletins_individuels_par_mail))&&($envoi_bulletins_individuels_par_mail=="y"))) {
+												$tab_ele['resp'][$cpt]['email']=get_mail_user($lig_resp->login);
+											}
+
+											$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+											$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+											$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+											$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+											$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+											$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+											$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+
+											$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+
+											//++++++++++++++++++++++++++++++++++++++++++
+											// 20170713 : A revoir : Si on imprime pour le resp_legal 2 
+											//            qui est à la même adresse que le resp_legal 1, il faudrait mettre l'intitulé M.et.Mme...
+											$tab_ele['resp']["adresses"]=adresse_postale_resp($tab_ele['resp']);
+
+											//++++++++++++++++++++++++++++++++++++++++++
+
+											$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+
+											$cpt++;
+										}
+									}
 								}
 							}
 						}
@@ -5693,9 +5758,12 @@ Bien cordialement.
 
 					echo "<p style='margin-top:1em; margin-bottom:1em;'>Envoi non effectués <br />";
 					$tab_non_envoyes=array();
+					$chaine_pers_id_non_envoyes='';
 					while($lig=mysqli_fetch_object($res)) {
 						echo " pour ".get_nom_prenom_eleve($lig->login_ele)." à destination de ".civ_nom_prenom_from_pers_id($lig->pers_id)." pour la ou les périodes ".$lig->periodes."<br />";
 						$tab_non_envoyes[]=$lig->login_ele;
+						$chaine_pers_id_non_envoyes.="
+							<input type='hidden' name='pers_id[]' value='".$lig->pers_id."' />";
 					}
 					echo "</p>
 
@@ -5756,6 +5824,8 @@ Bien cordialement.
 						echo "
 							<input type='hidden' name='signer[]' value ='".$signer[$loop_signer]."' />";
 					}
+
+					echo $chaine_pers_id_non_envoyes;
 
 					echo "
 		<p>Générer un fichier PDF des bulletins non envoyés de façon à l'imprimer et le remettre au format papier&nbsp;:</p>
