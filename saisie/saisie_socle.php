@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -229,6 +229,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 		$cpt_reg=0;
 		$nb_err=0;
+		$nb_refus_baisser=0;
 		// Si id_groupe, vérifier que l'utilisateur a le droit de saisie.
 		if(isset($id_groupe)) {
 			$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE login='".$_SESSION["login"]."' AND id_groupe='".$id_groupe."';";
@@ -311,6 +312,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 											}
 											else {
 												$msg.="<span title=\"".$tab_domaine_socle[$code]."\">".$code."&nbsp;:</span> Refus de vider le niveau de maitrise pour ".$ine." <em>(".get_nom_prenom_from_INE($ine).")</em><br />";
+												$nb_refus_baisser++;
 											}
 										}
 										elseif($lig->niveau_maitrise>$valeur) {
@@ -320,6 +322,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 											}
 											else {
 												$msg.="<span title=\"".$tab_domaine_socle[$code]."\">".$code."&nbsp;:</span> Refus de baisser le niveau de maitrise pour ".$ine." <em>(".get_nom_prenom_from_INE($ine).")</em><br />";
+												$nb_refus_baisser++;
 											}
 										}
 										else {
@@ -541,6 +544,16 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 					}
 				}
 			}
+
+			if(($nb_refus_baisser>0)&&(
+				(getSettingAOui("SocleSaisieComposantesForcer_".$_SESSION["statut"]))||
+				(
+					($_SESSION['statut']=="professeur")&&(isset($id_classe))&&(getSettingAOui("SocleSaisieComposantesForcer_PP"))&&(is_pp($_SESSION['login'], $id_classe))
+				)
+			)) {
+				$msg.="Un ou des refus de baisser un niveau de compétence a été signalé, mais vous pourriez forcer la baisse en cochant la case idoine en début du formulaire.<br />";
+			}
+
 			$msg.=$cpt_reg." enregistrement(s) effectué(s).<br />";
 			$msg.=$nb_err." erreur(s).<br />";
 		}
@@ -648,6 +661,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 											}
 											else {
 												$msg.="<span title=\"".$tab_domaine_socle[$code]."\">".$code."&nbsp;:</span> Refus de vider le niveau de maitrise pour ".$ine." <em>(".get_nom_prenom_from_INE($ine).")</em><br />";
+												$nb_refus_baisser++;
 											}
 										}
 										elseif($lig->niveau_maitrise>$valeur) {
@@ -657,6 +671,7 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 											}
 											else {
 												$msg.="<span title=\"".$tab_domaine_socle[$code]."\">".$code."&nbsp;:</span> Refus de baisser le niveau de maitrise pour ".$ine." <em>(".get_nom_prenom_from_INE($ine).")</em><br />";
+												$nb_refus_baisser++;
 											}
 										}
 										else {
@@ -854,6 +869,16 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 					}
 				}
 			}
+
+			if(($nb_refus_baisser>0)&&(
+				(getSettingAOui("SocleSaisieComposantesForcer_".$_SESSION["statut"]))||
+				(
+					($_SESSION['statut']=="professeur")&&(isset($id_classe))&&(getSettingAOui("SocleSaisieComposantesForcer_PP"))&&(is_pp($_SESSION['login'], $id_classe))
+				)
+			)) {
+				$msg.="Un ou des refus de baisser un niveau de compétence a été signalé, mais vous pourriez forcer la baisse en cochant la case idoine en début du formulaire.<br />";
+			}
+
 			$msg.=$cpt_reg." enregistrement(s) effectué(s).<br />";
 			$msg.=$nb_err." erreur(s).<br />";
 		}
@@ -873,7 +898,14 @@ require_once("../lib/header.inc.php");
 //$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
 
 echo "<p class='bold'><a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo " | <a href=\"socle_verif.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Vérification du remplissage des bilans de composantes du socle</a>";
+echo " | <a href=\"socle_verif.php";
+if(isset($id_classe)) {
+	echo "?id_classe=".$id_classe;
+	if(isset($periode)) {
+		echo "&periode=".$periode;
+	}
+}
+echo "\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Vérification du remplissage des bilans de composantes du socle</a>";
 
 if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(
 	(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))||
