@@ -560,15 +560,20 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 		elseif(isset($id_classe)) {
 			$acces_saisie="n";
 			if($_SESSION["statut"]=="scolarite") {
-				//$sql="SELECT 1=1 FROM j_scol_classes WHERE login='".$_SESSION["login"]."' AND id_classe='".$id_classe."';";
-				//$test=mysqli_query($GLOBALS["mysqli"], $sql);
-				//if(mysqli_num_rows($test)>0) {
+				if(getSettingAOui('SocleSaisieComposantes_scolariteToutesClasses')) {
 					$acces_saisie="y";
-				//}
-				// A FAIRE : Ajouter un droit pour voir s'il faut restreindre.
+				}
+				else {
+					$sql="SELECT 1=1 FROM j_scol_classes WHERE login='".$_SESSION["login"]."' AND id_classe='".$id_classe."';";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)>0) {
+						$acces_saisie="y";
+					}
+				}
 			}
 			elseif($_SESSION["statut"]=="cpe") {
-				if(getSettingAOui('GepiAccesTouteFicheEleveCpe')) {
+				//if(getSettingAOui('GepiAccesTouteFicheEleveCpe')) {
+				if(getSettingAOui('SocleSaisieComposantes_cpeToutesClasses')) {
 					$acces_saisie="y";
 				}
 				else {
@@ -899,14 +904,17 @@ require_once("../lib/header.inc.php");
 //$SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
 
 echo "<p class='bold'><a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo " | <a href=\"socle_verif.php";
-if(isset($id_classe)) {
-	echo "?id_classe=".$id_classe;
-	if(isset($periode)) {
-		echo "&periode=".$periode;
+
+if(acces("/saisie/socle_verif.php", $_SESSION["statut"])) {
+	echo " | <a href=\"socle_verif.php";
+	if(isset($id_classe)) {
+		echo "?id_classe=".$id_classe;
+		if(isset($periode)) {
+			echo "&periode=".$periode;
+		}
 	}
+	echo "\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Vérification du remplissage des bilans de composantes du socle</a>";
 }
-echo "\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Vérification du remplissage des bilans de composantes du socle</a>";
 
 if((acces("/saisie/socle_verrouillage.php", $_SESSION["statut"]))&&(
 	(getSettingAOui("SocleOuvertureSaisieComposantes_".$_SESSION["statut"]))||
@@ -1086,7 +1094,15 @@ else {
 		}
 		*/
 
-		$sql=retourne_sql_mes_classes();
+
+		if((($_SESSION['statut']=='scolarite')&&(getSettingAOui('SocleSaisieComposantes_scolariteToutesClasses')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('SocleSaisieComposantes_cpeToutesClasses')))) {
+			$sql="SELECT DISTINCT c.id, c.id as id_classe, c.classe FROM classes c ORDER BY classe;";
+		}
+		else {
+			$sql=retourne_sql_mes_classes();
+		}
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "<p style='color:red;'>Aucune classe trouvée pour vous.</p>";
@@ -1169,6 +1185,51 @@ else {
 
 $SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantesPeriode".$periode);
 
+if($SocleOuvertureSaisieComposantes) {
+	if($_SESSION['statut']=='scolarite') {
+		if(getSettingAOui("SocleSaisieComposantes_scolariteToutesClasses")) {
+			$SocleOuvertureSaisieComposantes=true;
+		}
+		else {
+			$SocleOuvertureSaisieComposantes=false;
+
+			if((isset($id_classe))&&(getSettingAOui("SocleSaisieComposantes_scolarite"))) {
+				$tab_classe_user_courant=get_classes_from_user($_SESSION["login"], $_SESSION["statut"]);
+				if(array_key_exists($id_classe, $tab_classe_user_courant)) {
+					$SocleOuvertureSaisieComposantes=true;
+				}
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		if(getSettingAOui("SocleSaisieComposantes_cpeToutesClasses")) {
+			$SocleOuvertureSaisieComposantes=true;
+		}
+		else {
+			$SocleOuvertureSaisieComposantes=false;
+
+			if((isset($id_classe))&&(getSettingAOui("SocleSaisieComposantes_cpe"))) {
+				$tab_classe_user_courant=get_classes_from_user($_SESSION["login"], $_SESSION["statut"]);
+				if(array_key_exists($id_classe, $tab_classe_user_courant)) {
+					$SocleOuvertureSaisieComposantes=true;
+				}
+			}
+		}
+	}
+	else {
+		$SocleOuvertureSaisieComposantes=false;
+		if(getSettingAOui("SocleSaisieComposantes_".$_SESSION['statut'])) {
+			$SocleOuvertureSaisieComposantes=true;
+		}
+		else {
+			// Test PP
+			if(($_SESSION["statut"]=="professeur")&&(isset($id_classe))&&(getSettingAOui("SocleSaisieComposantes_PP"))&&(is_pp($_SESSION["login"], $id_classe))) {
+				$SocleOuvertureSaisieComposantes=true;
+			}
+		}
+	}
+}
+
 // Saisies (sous réserve que la saisie soit ouverte, sinon affichage)
 $complement_url_retour="";
 if(isset($id_groupe)) {
@@ -1185,7 +1246,7 @@ echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (th
 echo "<h2>Saisies socle pour l'année <span style='color:red' title='Année récupérée des **4 premiers caractères** du paramètre **Année scolaire** de **Gestion générale/Configuration générale**'>$gepiYear_debut</span></h2>";
 
 if(!$SocleOuvertureSaisieComposantes) {
-	echo "\n<p style='color:red'>La saisie/modification des bilans de composantes du socle est fermée en période $periode.<br />Seule la consultation des saisies est possible.</p>";
+	echo "\n<p style='color:red'>La saisie/modification des bilans de composantes du socle est fermée en période $periode, ou pas ouverte pour votre compte/statut selon le paramétrage du module.<br />Seule la consultation des saisies est possible.</p>";
 }
 
 
@@ -1601,13 +1662,24 @@ if(isset($id_groupe)) {
 							$style[$tab_niveaux_eleves_enseignement_complement[$lig->no_gep]["positionnement"]]=" style='font-weight:bold'";
 						}
 
-						echo "
+						if($SocleOuvertureSaisieComposantes=="y") {
+							echo "
 		<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de l'enseignement de complément (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")\">
 			<strong>Enseignement de complément&nbsp;:</strong> ".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["code"]." (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")<br />
 			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$cpt_ele."_0' value='0'".$checked[0]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_2');calcule_score_socle($cpt_ele)\" /><label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_0' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_0'".$style[0]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
 			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$cpt_ele."_1' value='1'".$checked[1]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_2');calcule_score_socle($cpt_ele)\" /><label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_1' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_1'".$style[1]."> Objectif atteint</label><br />
 			<input type='radio' name='enseignement_complement[".$lig->no_gep."]' id='enseignement_complement_".$id_groupe."_".$cpt_ele."_2' value='2'".$checked[2]." onchange=\"checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$id_groupe."_".$cpt_ele."_2');calcule_score_socle($cpt_ele)\" /><label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_2' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_2'".$style[2].">Objectif dépassé</label>
 		</p>";
+						}
+						else {
+							echo "
+		<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de l'enseignement de complément (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")\">
+			<strong>Enseignement de complément&nbsp;:</strong> ".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["code"]." (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")<br />
+			".($checked[0]!='' ? '<img src="../images/enabled.png" class="icone20" />' : '<img src="../images/disabled.png" class="icone20" />')."<label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_0' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_0'".$style[0]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
+			".($checked[1]!='' ? '<img src="../images/enabled.png" class="icone20" />' : '<img src="../images/disabled.png" class="icone20" />')."<label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_1' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_1'".$style[1]."> Objectif atteint</label><br />
+			".($checked[2]!='' ? '<img src="../images/enabled.png" class="icone20" />' : '<img src="../images/disabled.png" class="icone20" />')."<label for='enseignement_complement_".$id_groupe."_".$cpt_ele."_2' id='texte_enseignement_complement_".$id_groupe."_".$cpt_ele."_2'".$style[2].">Objectif dépassé</label>
+		</p>";
+						}
 					}
 				}
 
@@ -2222,7 +2294,8 @@ elseif(isset($id_classe)) {
 							$checked[$niveau_enseignement_complement_eleve_courant]=" checked";
 							$style[$niveau_enseignement_complement_eleve_courant]=" style='font-weight:bold'";
 
-							echo "
+							if($SocleOuvertureSaisieComposantes=="y") {
+								echo "
 			<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de l'enseignement de complément (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")\">
 				<strong>Enseignement de complément&nbsp;:</strong> ".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["code"]." (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")<br />
 				".get_info_grp($lig_test->id_groupe)."&nbsp;: <br />
@@ -2230,6 +2303,16 @@ elseif(isset($id_classe)) {
 				<input type='radio' name='enseignement_complement".$lig_test->id_groupe."[".$lig->no_gep."]' id='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1' value='1'".$checked[1]." onchange=\"checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2');calcule_score_socle($cpt_ele);\" /><label for='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1' id='texte_enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1'".$style[1]."> Objectif atteint</label><br />
 				<input type='radio' name='enseignement_complement".$lig_test->id_groupe."[".$lig->no_gep."]' id='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2' value='2'".$checked[2]." onchange=\"checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1');checkbox_change('enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2');calcule_score_socle($cpt_ele);\" /><label for='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2' id='texte_enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2'".$style[2].">Objectif dépassé</label>
 			</p>";
+							}
+							else {
+								echo "
+		<p style='margin-left:3em; text-indent:-3em;' title=\"Niveau de maitrise de l'enseignement de complément (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")\">
+			<strong>Enseignement de complément&nbsp;:</strong> ".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["code"]." (".$tab_types_enseignements_complement["code"][$code_enseignement_complement]["valeur"].")<br />
+			".($checked[0]!='' ? '<img src="../images/enabled.png" class="icone20" />' : '<img src="../images/disabled.png" class="icone20" />')."<label for='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0' id='texte_enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_0'".$style[0]."> Objectif non atteint <em>(pas de remontée)</em></label><br />
+			".($checked[1]!='' ? '<img src="../images/enabled.png" class="icone20" />' : '<img src="../images/disabled.png" class="icone20" />')."<label for='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1' id='texte_enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_1'".$style[1]."> Objectif atteint</label><br />
+			".($checked[2]!='' ? '<img src="../images/enabled.png" class="icone20" />' : '<img src="../images/disabled.png" class="icone20" />')."<label for='enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2' id='texte_enseignement_complement_".$lig_test->id_groupe."_".$cpt_ele."_2'".$style[2].">Objectif dépassé</label>
+		</p>";
+							}
 						}
 					}
 				}

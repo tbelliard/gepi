@@ -89,7 +89,7 @@ if(isset($_POST['enregistrer_Saisie_Socle'])) {
 		}
 	}
 
-	$tab=array("SocleSaisieComposantes_scolarite", "SocleSaisieComposantes_cpe", "SocleSaisieComposantes_PP", "SocleSaisieComposantes_professeur", "SocleSaisieComposantesForcer_scolarite", "SocleSaisieComposantesForcer_cpe", "SocleSaisieComposantesForcer_PP", "SocleSaisieComposantesForcer_professeur", "SocleOuvertureSaisieComposantes_scolarite", "SocleOuvertureSaisieComposantes_cpe", "SocleSaisieSyntheses_scolarite", "SocleSaisieSyntheses_cpe", "SocleSaisieSyntheses_PP", "SocleSaisieSyntheses_professeur", "SocleImportComposantes", "SocleImportComposantes_scolarite", "SocleImportComposantes_cpe");
+	$tab=array("SocleSaisieComposantes_scolarite", "SocleSaisieComposantes_scolariteToutesClasses", "SocleSaisieComposantes_cpeToutesClasses", "SocleSaisieComposantes_cpe", "SocleSaisieComposantes_PP", "SocleSaisieComposantes_professeur", "SocleSaisieComposantesForcer_scolarite", "SocleSaisieComposantesForcer_cpe", "SocleSaisieComposantesForcer_PP", "SocleSaisieComposantesForcer_professeur", "SocleOuvertureSaisieComposantes_scolarite", "SocleOuvertureSaisieComposantes_cpe", "SocleSaisieSyntheses_scolarite", "SocleSaisieSyntheses_cpe", "SocleSaisieSyntheses_PP", "SocleSaisieSyntheses_professeur", "SocleImportComposantes", "SocleImportComposantes_scolarite", "SocleImportComposantes_cpe");
 	for($loop=0;$loop<count($tab);$loop++) {
 		if(isset($_POST[$tab[$loop]])) {
 			$valeur="y";
@@ -343,6 +343,18 @@ echo "</p>";
 
 		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
 			Les profils autorisés à <strong>saisir les bilans</strong> sont&nbsp;:<br />
+
+			<input type="checkbox" 
+				   id="SocleSaisieComposantes_scolariteToutesClasses" 
+				   name="SocleSaisieComposantes_scolariteToutesClasses"
+					<?php if(getSettingAOui("SocleSaisieComposantes_scolariteToutesClasses")) {echo " checked ";} ?>
+				   value="y" 
+				   onchange="checkbox_change(this.id);changement();" />
+			<label for="SocleSaisieComposantes_scolariteToutesClasses" id='texte_SocleSaisieComposantes_scolariteToutesClasses'>
+				les comptes Scolarité sans restriction de classe
+			</label>
+			<br />
+
 			<input type="checkbox" 
 				   id="SocleSaisieComposantes_scolarite" 
 				   name="SocleSaisieComposantes_scolarite"
@@ -351,6 +363,17 @@ echo "</p>";
 				   onchange="checkbox_change(this.id);changement();" />
 			<label for="SocleSaisieComposantes_scolarite" id='texte_SocleSaisieComposantes_scolarite'>
 				les comptes Scolarité associés à la classe
+			</label>
+			<br />
+
+			<input type="checkbox" 
+				   id="SocleSaisieComposantes_cpeToutesClasses" 
+				   name="SocleSaisieComposantes_cpeToutesClasses"
+					<?php if(getSettingAOui("SocleSaisieComposantes_cpeToutesClasses")) {echo " checked ";} ?>
+				   value="y" 
+				   onchange="checkbox_change(this.id);changement();" />
+			<label for="SocleSaisieComposantes_cpeToutesClasses" id='texte_SocleSaisieComposantes_cpeToutesClasses'>
+				les comptes CPE sans restriction de classe
 			</label>
 			<br />
 

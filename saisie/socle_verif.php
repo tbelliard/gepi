@@ -108,7 +108,19 @@ if(mysqli_num_rows($res)>0) {
 	}
 }
 
-if((isset($id_classe))&&(!in_array($id_classe, $tab_mes_classes))) {
+if(($_SESSION['statut']=='scolarite')&&(getSettingAOui('SocleSaisieComposantes_scolariteToutesClasses'))) {
+	// On laisse poursuivre
+}
+elseif(($_SESSION['statut']=='cpe')&&(getSettingAOui('SocleSaisieComposantes_cpeToutesClasses'))) {
+	// On laisse poursuivre
+}
+elseif($_SESSION['statut']=='scolarite') {
+	// On laisse poursuivre
+}
+elseif($_SESSION['statut']=='cpe') {
+	// On laisse poursuivre
+}
+elseif((isset($id_classe))&&(!in_array($id_classe, $tab_mes_classes))) {
 	$msg="Vous n'avez pas accès à cette classe.<br />";
 	unset($id_classe);
 }
