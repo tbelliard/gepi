@@ -128,7 +128,8 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 		*/
 
 		if($piece_jointe!="") {
-			$mail->addAttachment($piece_jointe);
+			$path=$_SERVER['DOCUMENT_ROOT'].$gepiPath."/";
+			$mail->addAttachment($path.$piece_jointe);
 		}
 
 		// From
