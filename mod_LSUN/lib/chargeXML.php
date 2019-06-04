@@ -1164,7 +1164,21 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					
 					}
 					$tmp_chaine=nettoye_texte_vers_chaine($acquisEleve->appreciation);
-					$noeudAcquisAppreciation = $xml->createElement('appreciation' ,ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8')));
+					$tmp_chaine=ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8'));
+					if($tmp_chaine=='') {
+						// 20190604
+						$lien_bull_simp="";
+						if(acces_impression_bulletins_simplifies($eleve->login)) {
+							$tmp_tab_clas=get_class_dates_from_ele_login($eleve->login);
+							if(isset($tmp_tab_clas[$eleve->periode]["id_classe"])) {
+								$lien_bull_simp=" <a href='../prepa_conseil/edit_limite.php?id_classe=".$tmp_tab_clas[$eleve->periode]["id_classe"]."&amp;periode1=".$eleve->periode."&amp;periode2=".$eleve->periode."&amp;choix_edit=2&amp;login_eleve=".$eleve->login."&couleur_alterne=y' target='_blank' title=\"Voir dans un nouvel onglet les bulletins simplifiés.\"><img src='../images/icons/bulletin_16.png' class='icone16' alt='BullSimp' /></a>";
+							}
+						}
+
+						$msg_erreur_remplissage.="L'appréciation de <strong>".get_nom_prenom_eleve($eleve->login)."</strong> est vide en ".get_info_grp($acquisEleve->id_groupe)." pour la période <strong>".$eleve->periode."</strong>".$lien_bull_simp.".<br />Le <strong>professeur</strong> peut corriger si la période est ouverte en saisie. Sinon, l'opération est possible avec un compte de statut <strong>secours</strong>.<br /><br />";
+
+					}
+					$noeudAcquisAppreciation = $xml->createElement('appreciation', $tmp_chaine);
 					$noeudAcquis->appendChild($noeudAcquisAppreciation);
 					$listeAcquis->appendChild($noeudAcquis);
 				}
