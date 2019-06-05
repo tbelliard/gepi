@@ -183,6 +183,12 @@ if(isset($xml)) {
 	$tab_xml=array();
 	$tab_indices_maj_classes_xml=array();
 	$tab_indices_maj_unaccent_classes_xml=array();
+	if((!$xml->DONNEES)||(!$xml->DONNEES->STRUCTURE)||(!$xml->DONNEES->STRUCTURE->DIVISIONS)) {
+		echo "<p style='color:red'><strong>ERREUR&nbsp;:</strong> Fichier XML non valide.<br />
+		Il devrait avoir une structure DONNEES-&gt;STRUCTURE-&gt;DIVISIONS.</p>";
+		require_once("../lib/footer.inc.php");
+		die();
+	}
 	$objet_structures=($xml->DONNEES->STRUCTURE->DIVISIONS);
 	foreach ($objet_structures->children() as $current_division) {
 		//echo("<p><b>Structure</b><br />");
