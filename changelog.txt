@@ -19,6 +19,7 @@ Carnet de notes:
 Cahiers de textes 2:
 - Ajout d'une visionneuse Instrumenpoche.
 - Mise à jour de l'app GeoGebra.
+- Possibilité de copier d'un clic le code source HTML d'une vignette.
 
 AID:
 - Possibilité de désigner comme "professeur" un compte scolarité ou cpe.

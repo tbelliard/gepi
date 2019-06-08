@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -990,6 +990,68 @@ else {
 
 $groupe_appartient_prof=verif_groupe_appartient_prof($id_groupe)==1 ? true : false;
 
+// 20190608
+echo "<script type='text/javascript'>
+
+	function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
+		//alert(id);
+
+		var id_notice='';
+		var id_copy_src='';
+		if(type_notice=='c') {
+			id_notice='vignette_contenu_notice_compte_rendu_'+id;
+			id_copy_src='copy_src_notice_compte_rendu_'+id;
+		}
+		else if(type_notice=='t') {
+			id_notice='vignette_contenu_notice_devoir_'+id;
+			id_copy_src='copy_src_notice_devoir_'+id;
+		}
+		else if(type_notice=='p') {
+			id_notice='vignette_contenu_notice_privee_'+id;
+			id_copy_src='copy_src_notice_privee_'+id;
+		}
+
+		if((id_notice!='')&&(document.getElementById(id_notice))) {
+
+			/*
+			var encodedStr = document.getElementById(id_notice).innerHTML.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+				return '&#'+i.charCodeAt(0)+';';
+			});
+			*/
+			//var encodedStr = document.getElementById(id_notice).innerHTML.replace(/</g, '&#60;').replace(/>/g, '&#62;');
+			var encodedStr = document.getElementById(id_notice).innerHTML;
+
+			if(document.getElementById('url_racine_gepi')) {
+				if(document.getElementById('url_racine_gepi').value!='') {
+					//alert('plOp');
+					tmp_encodedStr=encodedStr.replace(/..\/documents\//g, document.getElementById('url_racine_gepi').value+'/documents/');
+					//alert(tmp_encodedStr);
+					encodedStr=tmp_encodedStr;
+				}
+			}
+
+			//alert(encodedStr);
+			document.getElementById('champ_copie_code_source').value=encodedStr;
+			document.getElementById('champ_copie_code_source').style.display='';
+			document.getElementById('champ_copie_code_source').select();
+			var successful = document.execCommand('copy');
+			if(successful) {
+				//alert('OK');
+				document.getElementById(id_copy_src).innerHTML=\"<img src='../images/icons/copy_src_OK.png' class='icone16' title='Copie vers le presse-papier effectuée avec succès.' />\";
+				setTimeout(\"document.getElementById('\"+id_copy_src+\"').innerHTML=\\\"<img src='../images/icons/copy_src.png' class='icone16' />\\\"\", 3000);
+			}
+			else {
+				document.getElementById(id_copy_src).innerHTML=\"<img src='../images/icons/copy_src_KO.png' class='icone16' title='Échec de la copie vers le presse-papier.' />\";
+				setTimeout(\"document.getElementById('\"+id_copy_src+\"').innerHTML=\\\"<img src='../images/icons/copy_src.png' class='icone16' />\\\"\", 3000);
+			}
+			document.getElementById('champ_copie_code_source').style.display='none';
+		}
+	}
+</script>
+
+<input type='hidden' name='url_racine_gepi' id='url_racine_gepi' value=\"".getSettingValue('url_racine_gepi')."\" />
+<textarea name='champ_copie_code_source' id='champ_copie_code_source' style='display:none'></textarea>";
+
 //"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve, special
 $req_devoirs =
 	"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve
@@ -1103,10 +1165,10 @@ while (true) {
 				get_etat_et_img_cdt_travail_fait($not_dev->id_ct);
 			}
 
-			echo "<div id='div_travail_".$not_dev->id_ct."' class='see_all_notice couleur_bord_tableau_notice $class_color_fond_notice' style='min-height:2em;'>";
+			echo "<div id='div_travail_".$not_dev->id_ct."' class='see_all_notice couleur_bord_tableau_notice $class_color_fond_notice' style='min-height:2em; padding:0.5em;'>";
 		}
 		else {
-			echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."''>";
+			echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."' style='padding:0.5em;'>";
 		}
 
 // id='div_travail_".$value['id_ct']."' class='see_all_notice couleur_bord_tableau_notice $class_color_fond_notice
@@ -1127,8 +1189,27 @@ while (true) {
 		}
 
 		// A FAIRE : ajouter un test sur prof
+		// 20190608
+		$chaine_type_notice='';
 		if($groupe_appartient_prof) {
 			echo "<div style='float:right; width:16px; margin:2px;' title=\"Éditer la notice.\"><a href='index.php?id_groupe=".$id_groupe."&type_notice=".($not_dev->type=='c' ? 'cr' : ($not_dev->type=='t' ? 'dev' : 'priv'))."&id_ct=".$not_dev->id_ct."'><img src='../images/edit16.png' class='icone16' /></a></div>";
+
+			// 20190608
+			if($not_dev->type=='c') {
+				$chaine_type_notice='compte_rendu';
+			}
+			elseif($not_dev->type=='t') {
+				$chaine_type_notice='devoir';
+			}
+			elseif($not_dev->type=='p') {
+				$chaine_type_notice='privee';
+			}
+
+			if($chaine_type_notice!='') {
+				echo "<div style='float:right; width:16px; margin:2px;'><a href='#' onclick=\"copier_code_source_vignette_vers_presse_papier('".$not_dev->id_ct."', '".$not_dev->type."'); return false;\" title=\"Copier vers le presse-papier le code source HTML du contenu de la vignette.\" id='copy_src_notice_".$chaine_type_notice."_".$not_dev->id_ct."'>
+		<img src='../images/icons/copy_src.png' class='icone16' />
+	</a></div>";
+			}
 		}
 
 		/*
@@ -1145,7 +1226,17 @@ while (true) {
 			//echo "<div style='float:right; width:16px;'>".$chaine_tag."</div>";
 			echo $chaine_tag;
 		}
-		echo "$content\n</div>\n";
+
+		// 20190608
+		if($chaine_type_notice!='') {
+			echo "<div id='vignette_contenu_notice_".$chaine_type_notice."_".$not_dev->id_ct."'>\n";
+			echo "$content\n";
+			echo "</div>\n";
+		}
+		else {
+			echo "$content\n";
+		}
+		echo "</div>\n";
 		if ($not_dev->type == "c") {$date_ct_old = $not_dev->date_ct;}
 	}
 }

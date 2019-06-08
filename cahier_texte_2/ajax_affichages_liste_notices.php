@@ -172,6 +172,12 @@ foreach ($current_group->getClasses() as $classe) {
 }
 
 echo "</p>";
+
+// 20190607
+//echo "<input type='hidden' name='champ_copie_code_source' id='champ_copie_code_source' value=\"\" />";
+echo "<input type='hidden' name='url_racine_gepi' id='url_racine_gepi' value=\"".getSettingValue('url_racine_gepi')."\" />
+<textarea name='champ_copie_code_source' id='champ_copie_code_source' style='display:none'></textarea>";
+
 $compteur_nb_total_notices = 0;
 
 //récupération de $liste_comptes_rendus : comptes rendus pour la matière en cours

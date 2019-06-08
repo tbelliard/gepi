@@ -23,10 +23,11 @@
 function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_fond_notices) {
 	global $gepiPath;
 
-	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["t"]."\" summary=\"Travail à faire\">\n<tr>\n<td>\n");
+	$tmp_date=french_strftime("%a %d %b %y", $devoir->getDateCt());
+	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["t"]."\" summary=\"Travail à faire\">\n<tr>\n<td title=\"A faire pour le ".$tmp_date."\">\n");
 
 	echo("<strong>&nbsp;A faire pour le&nbsp;:</strong>\n");
-	echo("<b>" . french_strftime("%a %d %b %y", $devoir->getDateCt()) . "</b>\n");
+	echo("<b>" . $tmp_date . "</b>\n");
 	echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 
 	//==============================
@@ -88,6 +89,10 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 		<img src='../images/icons/notices_CDT_travail.png' id='img_vue_vignette_contenu_notice_devoir_".$devoir->getIdCt()."' class='icone16' />
 	</a>";
 
+			$html_balise.="<a href='#' onclick=\"copier_code_source_vignette_vers_presse_papier('".$devoir->getIdCt()."', 't'); return false;\" title=\"Copier vers le presse-papier le code source HTML du contenu de la vignette.\" id='copy_src_notice_devoir_".$devoir->getIdCt()."'>
+		<img src='../images/icons/copy_src.png' class='icone16' />
+	</a>";
+
 		}
 	} else {
 		$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
@@ -117,7 +122,9 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 
 	$html_balise .= '</div>';
 	echo($html_balise);
-	echo "<br/>\n";
+
+	//echo "<br/>\n";
+	echo "<div style='clear:both'></div>\n";
 	//==============================
 
 	//==============================
@@ -137,10 +144,11 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_notice, $color_fond_notices) {
 	global $gepiPath;
 
-	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["p"]."\" summary=\"Notice privée\">\n<tr>\n<td>\n");
+	$tmp_date=french_strftime("%a %d %b %y", $notice_privee->getDateCt());
+	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["p"]."\" summary=\"Notice privée\">\n<tr>\n<td title=\"Notice privée du ".$tmp_date."\">\n");
 
 	echo("<strong>&nbsp;Notice priv&eacute;e</strong>\n");
-	echo("<b>" . french_strftime("%a %d %b %y", $notice_privee->getDateCt()) . "</b>\n");
+	echo("<b>" . $tmp_date . "</b>\n");
 	echo("&nbsp;&nbsp;&nbsp;&nbsp;");
 
 	//vise
@@ -203,13 +211,18 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 		<img src='../images/icons/notices_CDT_privee.png' id='img_vue_vignette_contenu_notice_privee_".$notice_privee->getIdCt()."' class='icone16' />
 	</a>";
 
+			$html_balise.="<a href='#' onclick=\"copier_code_source_vignette_vers_presse_papier('".$notice_privee->getIdCt()."', 'p'); return false;\" title=\"Copier vers le presse-papier le code source HTML du contenu de la vignette.\" id='copy_src_notice_privee_".$notice_privee->getIdCt()."'>
+		<img src='../images/icons/copy_src.png' class='icone16' />
+	</a>";
+
 			$html_balise .= '</div>';
 			//echo($html_balise);
 		}
 
 	echo($html_balise);
 
-	echo "<br/>\n";
+	//echo "<br/>\n";
+	echo "<div style='clear:both'></div>\n";
 	//==============================
 	//affichage contenu
 	echo "<div id='vignette_contenu_notice_privee_".$notice_privee->getIdCt()."'>";
@@ -223,8 +236,10 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices) {
 	global $gepiPath;
 
-		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Compte-rendu de séance\">\n<tr>\n<td>\n");
-		echo("<b>&nbsp;" . french_strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
+	$tmp_date=french_strftime("%a %d %b %y", $compte_rendu->getDateCt());
+
+		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Compte-rendu de séance\">\n<tr>\n<td title=\"Compte-rendu de la séance du ".$tmp_date."\">\n");
+		echo("<b>&nbsp;" . $tmp_date . "</b>\n");
 
 		$html_balise =("<div style='display: none; color: red; margin: 0px; float: right;' id='compte_rendu_en_cours_compte_rendu_".$compte_rendu->getIdCt()."'></div>");
 		$html_balise .= '<div style="margin: 0px; float: left;">';
@@ -277,6 +292,11 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 			$html_balise.="<a href='#' onclick=\"alterne_affichage_vignette_notice('vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."', 'c'); return false;\" title=\"Afficher/masquer le contenu de la vignette.\">
 		<img src='../images/icons/notices_CDT_compte_rendu.png' id='img_vue_vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."' class='icone16' />
 	</a>";
+
+			$html_balise.="<a href='#' onclick=\"copier_code_source_vignette_vers_presse_papier('".$compte_rendu->getIdCt()."', 'c'); return false;\" title=\"Copier vers le presse-papier le code source HTML du contenu de la vignette.\" id='copy_src_notice_compte_rendu_".$compte_rendu->getIdCt()."'>
+		<img src='../images/icons/copy_src.png' class='icone16' />
+	</a>";
+
 		}
 		// cas d'un visa, on n'affiche rien
 		if ($compte_rendu->getVisa() == 'y') {
@@ -299,7 +319,8 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 		$html_balise .= '</div>';
 		echo($html_balise);
 
-		echo "<br/>\n";
+		//echo "<br/>\n";
+		echo "<div style='clear:both'></div>\n";
 		//==============================
 		//affichage contenu
 		echo "<div id='vignette_contenu_notice_compte_rendu_".$compte_rendu->getIdCt()."'>";

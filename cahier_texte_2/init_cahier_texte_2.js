@@ -1362,6 +1362,61 @@ function controler_affichage_toutes_vignettes_notices() {
 
 //controler_affichage_toutes_vignettes_notices();
 
+function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
+	//alert(id);
+
+	var id_notice='';
+	var id_copy_src='';
+	if(type_notice=='c') {
+		id_notice='vignette_contenu_notice_compte_rendu_'+id;
+		id_copy_src='copy_src_notice_compte_rendu_'+id;
+	}
+	else if(type_notice=='t') {
+		id_notice='vignette_contenu_notice_devoir_'+id;
+		id_copy_src='copy_src_notice_devoir_'+id;
+	}
+	else if(type_notice=='p') {
+		id_notice='vignette_contenu_notice_privee_'+id;
+		id_copy_src='copy_src_notice_privee_'+id;
+	}
+
+	if((id_notice!='')&&(document.getElementById(id_notice))) {
+
+		/*
+		var encodedStr = document.getElementById(id_notice).innerHTML.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+			return '&#'+i.charCodeAt(0)+';';
+		});
+		*/
+		//var encodedStr = document.getElementById(id_notice).innerHTML.replace(/</g, '&#60;').replace(/>/g, '&#62;');
+		var encodedStr = document.getElementById(id_notice).innerHTML;
+
+		if(document.getElementById('url_racine_gepi')) {
+			if(document.getElementById('url_racine_gepi').value!='') {
+				//alert('plOp');
+				tmp_encodedStr=encodedStr.replace(/..\/documents\//g, document.getElementById('url_racine_gepi').value+'/documents/');
+				//alert(tmp_encodedStr);
+				encodedStr=tmp_encodedStr;
+			}
+		}
+
+		//alert(encodedStr);
+		document.getElementById('champ_copie_code_source').value=encodedStr;
+		document.getElementById('champ_copie_code_source').style.display='';
+		document.getElementById('champ_copie_code_source').select();
+		var successful = document.execCommand('copy');
+		if(successful) {
+			//alert('OK');
+			document.getElementById(id_copy_src).innerHTML="<img src='../images/icons/copy_src_OK.png' class='icone16' title='Copie vers le presse-papier effectuée avec succès.' />";
+			setTimeout("document.getElementById('"+id_copy_src+"').innerHTML=\"<img src='../images/icons/copy_src.png' class='icone16' />\"", 3000);
+		}
+		else {
+			document.getElementById(id_copy_src).innerHTML="<img src='../images/icons/copy_src_KO.png' class='icone16' title='Échec de la copie vers le presse-papier.' />";
+			setTimeout("document.getElementById('"+id_copy_src+"').innerHTML=\"<img src='../images/icons/copy_src.png' class='icone16' />\"", 3000);
+		}
+		document.getElementById('champ_copie_code_source').style.display='none';
+	}
+}
+
 /**
 *
 *  Fin des fonctions ajax du cahier de texte
