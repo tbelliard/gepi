@@ -76,30 +76,35 @@ if((isset($tab_id_classe))&&(isset($prof_principal))) {
 	$msg="";
 
 	for($i=0;$i<count($tab_id_classe);$i++) {
-		if($prof_principal[$i]=="") {
-			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
-			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-			$nb_ele=mysqli_num_rows($res_ele);
+		if(isset($prof_principal[$i])) {
+			if($prof_principal[$i]=="") {
+				$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_ele=mysqli_num_rows($res_ele);
 
-			$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
-			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
-			$msg.="$nb_ele associations supprimées en ".get_nom_classe($tab_id_classe[$i])."<br />";
+				$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+				$msg.="$nb_ele associations supprimées en ".get_nom_classe($tab_id_classe[$i])."<br />";
+			}
+			else {
+				$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				$nb_ele=0;
+				$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$tab_id_classe[$i]."';";
+				$res_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig=mysqli_fetch_object($res_ele_classe)) {
+					$sql="INSERT INTO j_eleves_professeurs SET id_classe='".$tab_id_classe[$i]."', login='".$lig->login."', professeur='".$prof_principal[$i]."';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($insert) {
+						$nb_ele++;
+					}
+				}
+				$msg.="$nb_ele élèves associés à ".civ_nom_prenom($prof_principal[$i])." en ".get_nom_classe($tab_id_classe[$i])."<br />";
+			}
 		}
 		else {
-			$sql="DELETE FROM j_eleves_professeurs WHERE id_classe='".$tab_id_classe[$i]."'";
-			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
-
-			$nb_ele=0;
-			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$tab_id_classe[$i]."';";
-			$res_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
-			while($lig=mysqli_fetch_object($res_ele_classe)) {
-				$sql="INSERT INTO j_eleves_professeurs SET id_classe='".$tab_id_classe[$i]."', login='".$lig->login."', professeur='".$prof_principal[$i]."';";
-				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-				if($insert) {
-					$nb_ele++;
-				}
-			}
-			$msg.="$nb_ele élèves associés à ".civ_nom_prenom($prof_principal[$i])." en ".get_nom_classe($tab_id_classe[$i])."<br />";
+			$msg.="Aucun choix n'a été fait pour la classe de ".get_nom_classe($tab_id_classe[$i])."<br />";
 		}
 	}
 }
