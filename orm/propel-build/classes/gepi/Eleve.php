@@ -1914,7 +1914,7 @@ class Eleve extends BaseEleve {
 	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
 		//on va vérifier que avant et après les dates précisées, la table est bien synchronisée sur l'année en cours
 		require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
-		assert('$dateDebut == null || $dateFin == null || $dateDebut <= $dateFin');
+		//assert('$dateDebut == null || $dateFin == null || $dateDebut <= $dateFin');
 		
 		//on va vérifier antérieurement à la date de début
 		if ($dateDebut != null) {
