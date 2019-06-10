@@ -106,10 +106,10 @@ $msg="";
 //
 if ((isset($envoi_mail))&&
 ((count($mail_prof>0))||
-(count($mail_prof>0))||
-(count($mail_prof>0))||
-(count($mail_prof>0))||
-(count($mail_prof>0)))) {
+(count($mail_cpe>0))||
+(count($mail_scol>0))||
+(count($mail_resp>0))||
+(count($mail_eleve>0)))) {
 	check_token();
 
 	// Récupérer les infos de l'événément
