@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -105,11 +105,11 @@ $msg="";
 // Insertion ou modification d'un événement
 //
 if ((isset($envoi_mail))&&
-((count($mail_prof>0))||
-(count($mail_cpe>0))||
-(count($mail_scol>0))||
-(count($mail_resp>0))||
-(count($mail_eleve>0)))) {
+((count($mail_prof)>0)||
+(count($mail_cpe)>0)||
+(count($mail_scol)>0)||
+(count($mail_resp)>0)||
+(count($mail_eleve)>0))) {
 	check_token();
 
 	// Récupérer les infos de l'événément
