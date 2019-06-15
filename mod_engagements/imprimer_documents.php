@@ -1069,7 +1069,7 @@ echo "</pre>";
 $msg_scorie="";
 echo "<p class='bold'>Choisissez&nbsp;:</p>\n";
 // target='_blank'
-echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>
+echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='formulaire'>
 	<fieldset class='fieldset_opacite50'>
 		<input type='hidden' name='is_posted' value='2' />
 		".add_token_field();
@@ -1242,8 +1242,14 @@ if($acces_imprimerConvocationConseilClasse) {
 			<!--a href='#' onClick=\"ModifCase('liste_eleve',true);return false;\">Cocher toutes les listes d'élèves</a> / <a href='#' onClick=\"ModifCase('liste_eleve',false);return false;\">décocher toutes les listes d'élèves</a><br /-->
 		</p>
 
-		<p><input type='submit' value='Valider' /></p>
-		<div id='fixe'><input type='submit' value='Valider' /></div>
+		<p>
+			<input type='submit' id='submit_1' value='Valider' />
+			<input type='button' name='button_submit_1' id='button_submit_1' value='Valider' style='display:none' onclick='valide_submit_engagement()' />
+		</p>
+		<div id='fixe'>
+			<input type='submit' id='button_submit_2' value='Valider' />
+			<input type='button' name='button_submit_2' id='button_submit_2' value='Valider' style='display:none' onclick='valide_submit_engagement()' />
+		</div>
 	</fieldset>
 </form>
 
@@ -1253,6 +1259,34 @@ if($acces_imprimerConvocationConseilClasse) {
 			if(document.getElementById(categorie+'_'+k)){
 				document.getElementById(categorie+'_'+k).checked = mode;
 			}
+		}
+	}
+
+	document.getElementById('submit_1').style.display='none';
+	document.getElementById('button_submit_1').style.display='';
+	document.getElementById('submit_2').style.display='none';
+	document.getElementById('button_submit_2').style.display='';
+
+	function valide_submit_engagement() {
+		// Tester qu'un checkbox au moins est coché.
+
+		nb_coche=0;
+		champs_input=document.getElementsByTagName('input');
+		//alert('champs_input.length='+champs_input.length)
+		for(i=0;i<champs_input.length;i++){
+			type=champs_input[i].getAttribute('type');
+			//name=champs_input[i].getAttribute('name');
+			//alert('name='+name+'\\ntype='+type)
+			if((type==\"checkbox\")&&(champs_input[i].checked==true)) {
+				nb_coche++;
+			}
+		}
+
+		if(nb_coche==0) {
+			alert('Aucune case n\'a été cochée.');
+		}
+		else {
+			document.getElementById('formulaire').submit();
 		}
 	}
 </script>";
