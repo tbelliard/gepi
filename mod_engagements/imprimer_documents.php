@@ -346,6 +346,9 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 if((isset($id_classe))&&(isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	check_token();
 
+	//debug_var();
+	//die();
+
 	if(($_SESSION['statut']=="professeur")&&(!getSettingAOui('imprimerConvocationConseilClassePP'))) {
 		header("Location: imprimer_documents.php?msg=Impression non autorisée.");
 		die();
@@ -410,9 +413,12 @@ __ADR_ETAB__
 	$lieu="Salle des conseils";
 	// Lieu à mettre dans d_dates_evenements_classes
 
+	$cpt_mail=0;
+	$cpt_mail_envoyes=0;
 	$mail_erreur="";
 	for($loop=0;$loop<count($id_classe);$loop++) {
 		$mail=isset($_POST['mail_'.$id_classe[$loop]]) ? $_POST['mail_'.$id_classe[$loop]] : array();
+		$cpt_mail+=count($mail);
 
 		// 20190103
 		$acces_mail_resp=get_acces_mail_resp('', $id_classe[$loop]);
@@ -469,6 +475,9 @@ __ADR_ETAB__
 					$envoi = envoi_mail($subject, $contenu_mail, $tmp_tab['email'], $headers, "plain", $tab_param_mail);
 					if(!$envoi) {
 						$mail_erreur.="Erreur ($classe) : Erreur lors de l'envoi du mail pour le destinataire ".$mail[$i].".\n";
+					}
+					else {
+						$cpt_mail_envoyes++;
 					}
 				}
 				else {
@@ -614,74 +623,89 @@ __ADR_ETAB__
 		}
 	}
 
-	/*
-	$TBS = new clsTinyButStrong; // new instance of TBS
-	$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
-	*/
-
-	// Load the template
-	$nom_fichier_modele_ooo ='convocation_conseil_classe.odt';
-	$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
-
-	//Procédure du traitement à effectuer
-	//les chemins contenant les données
-	include_once ("../mod_ooo/lib/chemin.inc.php");
-
-	$nom_fichier = "../mod_ooo/".$nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo;
-
-	//Génération du nom du fichier
-	$now = gmdate('d_M_Y_H:i:s');
-	$nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
-	$nom_fic = remplace_accents($nom_fichier_modele[0]."_".$classe."_"."_généré_le_".$now.".".$nom_fichier_modele[1],'all');
-	// Je n'arrive pas à générer un fichier à ce nom.
-	// Problème de syntaxe tinyButStrong?
-
-
-	// Création d'une classe tinyDoc
-	$OOo = new tinyDoc();
-
-	// Choix du module de dézippage
-	$dezippeur=getSettingValue("fb_dezip_ooo");
-	if ($dezippeur==1){
-		$OOo->setZipMethod('shell');
-		$OOo->setZipBinary('zip');
-		$OOo->setUnzipBinary('unzip');
+	if($cpt==0) {
+		if($cpt_mail==0) {
+			// On n'a ni mail, ni convocation ODT
+			$msg="Aucune impression ou envoi de mail n'a été coché.<br />";
+		}
+		else {
+			// Les mails ont été envoyés (avec envoir d'un mail d'erreur ou non)
+			$msg=$cpt_mail_envoyes." mail(s) envoyé(s).<br />";
+			if($mail_erreur!='') {
+				$msg.=nl2br($mail_erreur);
+			}
+		}
 	}
-	else{
-		$OOo->setZipMethod('ziparchive');
+	else {
+		/*
+		$TBS = new clsTinyButStrong; // new instance of TBS
+		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+		*/
+
+		// Load the template
+		$nom_fichier_modele_ooo ='convocation_conseil_classe.odt';
+		$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
+
+		//Procédure du traitement à effectuer
+		//les chemins contenant les données
+		include_once ("../mod_ooo/lib/chemin.inc.php");
+
+		$nom_fichier = "../mod_ooo/".$nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo;
+
+		//Génération du nom du fichier
+		$now = gmdate('d_M_Y_H:i:s');
+		$nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
+		$nom_fic = remplace_accents($nom_fichier_modele[0]."_".$classe."_"."_généré_le_".$now.".".$nom_fichier_modele[1],'all');
+		// Je n'arrive pas à générer un fichier à ce nom.
+		// Problème de syntaxe tinyButStrong?
+
+
+		// Création d'une classe tinyDoc
+		$OOo = new tinyDoc();
+
+		// Choix du module de dézippage
+		$dezippeur=getSettingValue("fb_dezip_ooo");
+		if ($dezippeur==1){
+			$OOo->setZipMethod('shell');
+			$OOo->setZipBinary('zip');
+			$OOo->setUnzipBinary('unzip');
+		}
+		else{
+			$OOo->setZipMethod('ziparchive');
+		}
+
+		$tempdir=get_user_temp_directory();
+		$nom_dossier_temporaire = "../temp/".$tempdir;
+		$nom_fichier_xml_a_traiter ='content.xml';
+
+		$OOo->SetProcessDir($nom_dossier_temporaire);
+		$OOo->createFrom($nom_fichier);
+		//$OOo->createFrom($nom_fichier);
+		$OOo->loadXml($nom_fichier_xml_a_traiter);
+
+		// Traitement des tableaux
+		$OOo->mergeXml(
+		array(
+		'name'      => 'var',
+		'type'      => 'block',
+		'data_type' => 'array',
+		'charset'   => 'UTF-8'
+		),$tab_OOo);
+
+		$OOo->SaveXml(); //traitement du fichier extrait
+
+		$OOo->sendResponse(); //envoi du fichier traité
+		$OOo->remove(); //suppression des fichiers de travail
+		// Fin de traitement des tableaux
+		$OOo->close();
+
+		/*
+		$TBS->LoadTemplate($nom_fichier, OPENTBS_ALREADY_UTF8);
+
+		$TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fic);
+		*/
+		die();
 	}
-
-	$tempdir=get_user_temp_directory();
-	$nom_dossier_temporaire = "../temp/".$tempdir;
-	$nom_fichier_xml_a_traiter ='content.xml';
-
-	$OOo->SetProcessDir($nom_dossier_temporaire);
-	$OOo->createFrom($nom_fichier);
-	//$OOo->createFrom($nom_fichier);
-	$OOo->loadXml($nom_fichier_xml_a_traiter);
-
-	// Traitement des tableaux
-	$OOo->mergeXml(
-	array(
-	'name'      => 'var',
-	'type'      => 'block',
-	'data_type' => 'array',
-	'charset'   => 'UTF-8'
-	),$tab_OOo);
-
-	$OOo->SaveXml(); //traitement du fichier extrait
-
-	$OOo->sendResponse(); //envoi du fichier traité
-	$OOo->remove(); //suppression des fichiers de travail
-	// Fin de traitement des tableaux
-	$OOo->close();
-
-	/*
-	$TBS->LoadTemplate($nom_fichier, OPENTBS_ALREADY_UTF8);
-
-	$TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fic);
-	*/
-	die();
 }
 
 if((isset($id_classe[0]))&&(isset($_GET['imprimer_liste_eleve']))&&(isset($_GET['destinataire']))) {
@@ -1044,8 +1068,8 @@ echo "</pre>";
 
 $msg_scorie="";
 echo "<p class='bold'>Choisissez&nbsp;:</p>\n";
-
-echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>
+// target='_blank'
+echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>
 	<fieldset class='fieldset_opacite50'>
 		<input type='hidden' name='is_posted' value='2' />
 		".add_token_field();
