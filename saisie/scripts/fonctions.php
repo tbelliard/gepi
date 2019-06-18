@@ -113,30 +113,36 @@ function saveNewElemGroupe($id_groupe, $newElemGroupe, $annee, $periode) {
 	global $mefDuGroupe;
 	
 	//enregistre le nouvel élément
+	//echo "saveNewElement($newElemGroupe);<br />";
 	saveNewElement($newElemGroupe);
 	
 	// récupère l'id de l'élément
 	$idNewLibelle = getElemProgByLibelle($newElemGroupe)->fetch_object()->id;
-	//echo $idNewLibelle.'<br />';
+	//echo "\$idNewLibelle=".$idNewLibelle.'<br />';
 	
 	// enregistre la jointure avec le groupe
+	//echo "saveJointureGroupeEP($id_groupe, $idNewLibelle, $annee, $periode);<br />";
 	saveJointureGroupeEP($id_groupe, $idNewLibelle, $annee, $periode);
 	
 	// enregistre la jointure de chaque élève du groupe
 	$groupe = get_group($id_groupe);
 	foreach ($groupe['eleves'][$periode]['list'] as $login) {
+		//echo "saveJointureEleveEP($login, $idNewLibelle, $annee, $periode, $id_groupe);<br />";
 		saveJointureEleveEP($login, $idNewLibelle, $annee, $periode, $id_groupe);
 	}
 	
 	// enregistre la jointure du prof '.$_SESSION['login']
+	//echo "saveJointureProfEP(".$_SESSION['login'].", $idNewLibelle);<br />";
 	saveJointureProfEP($_SESSION['login'], $idNewLibelle);
 
 	// enregistre la jointure avec la matière';
 	$matiere = $groupe["matiere"]["matiere"];
+	//echo "saveJointureMatiereEP($matiere, $idNewLibelle);<br />";
 	saveJointureMatiereEP($matiere, $idNewLibelle);
 
 	// enregistre la jointure avec le niveau
 	if ($mefDuGroupe) {
+		//echo "saveJointureEPMef(\$mefDuGroupe,$idNewLibelle);<br />";
 		saveJointureEPMef($mefDuGroupe,$idNewLibelle);
 	}
 	
@@ -235,7 +241,7 @@ function saveJointureMatiereEP($matiere, $idEP) {
  * @param type $mefDuGroupe
  * @param type $idEP
  */
-function saveJointureEPMef($mefDuGroupe , $idEP) {	
+function saveJointureEPMef($mefDuGroupe , $idEP) {
 	global $mysqli;
 	
 	while($mef = $mefDuGroupe->fetch_object()){
@@ -435,5 +441,3 @@ function getMef($id_groupe) {
 	return $resultchargeDB;
 }
 
-
-	
