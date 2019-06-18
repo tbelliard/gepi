@@ -92,6 +92,11 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 	$mefDuGroupe = NULL;
 
 	$mefDuGroupe = getMef($id_groupe);
+	/*
+	echo "\$mefDuGroupe<pre>";
+	print_r($mefDuGroupe);
+	echo "</pre>";
+	*/
 
 	//$current_group["nb_periode"]-1
 	for($tmp_num_per=1;$tmp_num_per<=$current_group["nb_periode"]-1;$tmp_num_per++) {
@@ -101,6 +106,7 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 		// A FAIRE : Vérifier si la période est ouverte en saisie
 
 		if(isset($_POST['newElemGroupe'.$tmp_num_per])) {
+			$compteur_element_prog_new=0;
 			// on crée un nouvel élément programme pour le groupe
 			$newElemGroupe = filter_input(INPUT_POST, 'newElemGroupe'.$tmp_num_per);
 			if ($newElemGroupe != NULL) {
@@ -110,7 +116,16 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 					$tmp_tab=explode("|", $newElemGroupe);
 					foreach($tmp_tab as $current_elprog) {
 						if(trim($current_elprog)!='') {
+
+							if($compteur_element_prog_new>0) {
+								$mefDuGroupe = NULL;
+								$mefDuGroupe = getMef($id_groupe);
+							}
+
+							//echo "saveNewElemGroupe($id_groupe, ".trim($current_elprog).", $anneeScolaire, $periode);<br />";
 							saveNewElemGroupe($id_groupe, trim($current_elprog), $anneeScolaire, $periode);
+
+							$compteur_element_prog_new++;
 						}
 					}
 					$forcer_focus_element_prog_groupe='newElemGroupe'.$tmp_num_per;
@@ -2480,6 +2495,11 @@ ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n
 		<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
 		<input type='hidden' id='info_focus' name='champ_info_focus' value='' />
 		<input type='hidden' id='focus_courant' name='focus_courant' value='' />
+
+		<!-- 20190304 -->
+		<div id='debug_fixe'></div>
+		<div id='debug_position_souris'></div>
+
     </div>
 </form>
 
@@ -2555,6 +2575,17 @@ echo "
 
 	function afficher_positionner_div_notes(id_div_notes, login_ele) {
 		if(document.getElementById(id_div_notes)) {
+
+			// 20190304
+			// window.pageYOffset est affecté.
+			// document.scrollTop = undefined
+			// document.getElementById(id_div_notes).pageYOffset = undefined
+			// document.getElementById(id_div_notes).style.clientY = undefined
+			// document.getElementById(id_div_notes).clientY = undefined
+			//document.body.scrollTop
+			// document.scrollTop = window.scrollY
+			//document.getElementById('debug_fixe').innerHTML=document.scrollTop+' '+window.scrollY+' '+window.pageYOffset+' '+document.getElementById(id_div_notes).scrollTop+' '+document.getElementById(id_div_notes).offsetTop+' '+' . '+document.getElementById(id_div_notes).style.top+' . '+document.getElementById(id_div_notes).style.clientY+' . ';
+
 			div_note_aff='n';
 
 			tab_div=document.getElementsByTagName('div');
@@ -2573,8 +2604,13 @@ echo "
 			}
 
 			if(div_note_aff=='y') {
+				// 20190304
+				//document.getElementById('debug_fixe').innerHTML=document.getElementById('debug_fixe').innerHTML+' - '+tmp_id;
+				//document.getElementById('debug_fixe').innerHTML=tmp_id;
+
 				fermer_div_notes();
 				afficher_div(id_div_notes,'y',20,20);
+				//setTimeout(\"afficher_div(id_div_notes,'y',20,20);\", 500);
 				// A FAIRE: Ajouter un test: si le positionnement a échoué et qu'on est hors fenêtre repositionner.
 			}
 
