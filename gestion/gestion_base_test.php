@@ -881,15 +881,18 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 
 				// AID
 				for($loop_aid=0;$loop_aid<count($tab_aid);$loop_aid++) {
-					if(($lig_ele->periode>=$tab_aid[$loop]['display_begin'])&&($lig_ele->periode<=$tab_aid[$loop]['display_end'])) {
-						if(in_array($lig_ele->login, $tab_aid[$loop]['eleves'][$lig_ele->periode]['list'])) {
+					//echo "\$lig_ele->periode=".$lig_ele->periode."<br />";
+					//echo "\$tab_aid[$loop_aid]['display_begin']=".$tab_aid[$loop_aid]['display_begin']." et \$tab_aid[$loop_aid]['display_end']=".$tab_aid[$loop_aid]['display_end']."<br />";
+					//(isset($tab_aid[$loop_aid]['display_begin']))&&(isset($tab_aid[$loop_aid]['display_end']))&&
+					if(($lig_ele->periode>=$tab_aid[$loop_aid]['display_begin'])&&($lig_ele->periode<=$tab_aid[$loop_aid]['display_end'])) {
+						if(in_array($lig_ele->login, $tab_aid[$loop_aid]['eleves'][$lig_ele->periode]['list'])) {
 							if($mode=="ecraser") {
 
 								$note=rand(-1,40);
 								if($note==-1) {
 									$note=0;
 									$statut="abs";
-									$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet'].").";
+									$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet'].").";
 								}
 								/*
 								elseif($note==-2) {
@@ -902,37 +905,37 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 									$statut="";
 
 									if($note<6) {
-										$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
+										$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
 									}
 									elseif($note<9) {
-										$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
+										$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
 									}
 									elseif($note<11) {
-										$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
+										$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
 									}
 									elseif($note<14) {
-										$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
+										$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
 									}
 									else {
-										$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
+										$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut continuer.";
 									}
 								}
 
-								$sql="DELETE FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop]['id_aid']."' AND indice_aid='".$tab_aid[$loop]['indice_aid']."';";
+								$sql="DELETE FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop_aid]['id_aid']."' AND indice_aid='".$tab_aid[$loop_aid]['indice_aid']."';";
 								$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
-								if($tab_aid[$loop]['type_note']=="no") {
+								if($tab_aid[$loop_aid]['type_note']=="no") {
 									// On n'a pas de note à gérér
 									$note=0;
 									$statut="-";
 								}
-								elseif($tab_aid[$loop]['type_note']=="every") {
+								elseif($tab_aid[$loop_aid]['type_note']=="every") {
 									// On prend les note et statut calculés plus haut
 								}
-								elseif(($tab_aid[$loop]['type_note']=="last")&&($lig_ele->periode==$tab_aid[$loop]['display_end'])) {
+								elseif(($tab_aid[$loop_aid]['type_note']=="last")&&($lig_ele->periode==$tab_aid[$loop_aid]['display_end'])) {
 									// On prend les note et statut calculés plus haut
 								}
-								elseif(($tab_aid[$loop]['type_note']=="first")&&($lig_ele->periode==$tab_aid[$loop]['display_begin'])) {
+								elseif(($tab_aid[$loop_aid]['type_note']=="first")&&($lig_ele->periode==$tab_aid[$loop_aid]['display_begin'])) {
 									// On prend les note et statut calculés plus haut
 								}
 								else {
@@ -940,12 +943,12 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 									$statut="-";
 								}
 
-								$sql="INSERT INTO aid_appreciations SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', id_aid='".$tab_aid[$loop]['id_aid']."', indice_aid='".$tab_aid[$loop]['indice_aid']."', note='".$note."', statut='".$statut."', appreciation='".mysqli_real_escape_string($mysqli, $app)."';";
+								$sql="INSERT INTO aid_appreciations SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', id_aid='".$tab_aid[$loop_aid]['id_aid']."', indice_aid='".$tab_aid[$loop_aid]['indice_aid']."', note='".$note."', statut='".$statut."', appreciation='".mysqli_real_escape_string($mysqli, $app)."';";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
 							else {
 
-								$sql="SELECT * FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop]['id_aid']."' AND indice_aid='".$tab_aid[$loop]['indice_aid']."';";
+								$sql="SELECT * FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop_aid]['id_aid']."' AND indice_aid='".$tab_aid[$loop_aid]['indice_aid']."';";
 								$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_app)>0) {
 									$lig_app=mysqli_fetch_object($res_app);
@@ -958,7 +961,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 										if($note==-1) {
 											$note=0;
 											$statut="abs";
-											$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet'].").";
+											$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet'].").";
 										}
 										/*
 										elseif($note==-2) {
@@ -974,19 +977,19 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 
 									if(trim($app)=="") {
 										if($note<6) {
-											$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
+											$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
 										}
 										elseif($note<9) {
-											$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
+											$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
 										}
 										elseif($note<11) {
-											$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
+											$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
 										}
 										elseif($note<14) {
-											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
+											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
 										}
 										else {
-											$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
+											$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut continuer.";
 										}
 									}
 
@@ -996,7 +999,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 									if($note==-1) {
 										$note=0;
 										$statut="abs";
-										$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet'].").";
+										$app="Trop d'absences pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet'].").";
 									}
 									/*
 									elseif($note==-2) {
@@ -1009,38 +1012,38 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 										$statut="";
 
 										if($note<6) {
-											$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
+											$app="Ensemble bien faible pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut impérativement se mettre au travail.";
 										}
 										elseif($note<9) {
-											$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
+											$app="Ensemble trop juste pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut s'accrocher, travailler davantage.";
 										}
 										elseif($note<11) {
-											$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
+											$app="Ensemble moyen pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut s'accrocher, s'investir davantage.";
 										}
 										elseif($note<14) {
-											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
+											$app="Ensemble juste correct pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). ".$il_ou_elle." peut mieux faire avec plus d'attention.";
 										}
 										else {
-											$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop]['nom_aid']." (".$tab_aid[$loop]['nom_general_complet']."). Il faut continuer.";
+											$app="Bon travail pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode." en AID ".$tab_aid[$loop_aid]['nom_aid']." (".$tab_aid[$loop_aid]['nom_general_complet']."). Il faut continuer.";
 										}
 									}
 								}
 
-								$sql="DELETE FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop]['id_aid']."' AND indice_aid='".$tab_aid[$loop]['indice_aid']."';";
+								$sql="DELETE FROM aid_appreciations WHERE login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND id_aid='".$tab_aid[$loop_aid]['id_aid']."' AND indice_aid='".$tab_aid[$loop_aid]['indice_aid']."';";
 								$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
-								if($tab_aid[$loop]['type_note']=="no") {
+								if($tab_aid[$loop_aid]['type_note']=="no") {
 									// On n'a pas de note à gérér
 									$note=0;
 									$statut="-";
 								}
-								elseif($tab_aid[$loop]['type_note']=="every") {
+								elseif($tab_aid[$loop_aid]['type_note']=="every") {
 									// On prend les note et statut calculés plus haut
 								}
-								elseif(($tab_aid[$loop]['type_note']=="last")&&($lig_ele->periode==$tab_aid[$loop]['display_end'])) {
+								elseif(($tab_aid[$loop_aid]['type_note']=="last")&&($lig_ele->periode==$tab_aid[$loop_aid]['display_end'])) {
 									// On prend les note et statut calculés plus haut
 								}
-								elseif(($tab_aid[$loop]['type_note']=="first")&&($lig_ele->periode==$tab_aid[$loop]['display_begin'])) {
+								elseif(($tab_aid[$loop_aid]['type_note']=="first")&&($lig_ele->periode==$tab_aid[$loop_aid]['display_begin'])) {
 									// On prend les note et statut calculés plus haut
 								}
 								else {
@@ -1048,7 +1051,7 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 									$statut="-";
 								}
 
-								$sql="INSERT INTO aid_appreciations SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', id_aid='".$tab_aid[$loop]['id_aid']."', indice_aid='".$tab_aid[$loop]['indice_aid']."', note='".$note."', statut='".$statut."', appreciation='".mysqli_real_escape_string($mysqli, $app)."';";
+								$sql="INSERT INTO aid_appreciations SET login='".$lig_ele->login."', periode='".$lig_ele->periode."', id_aid='".$tab_aid[$loop_aid]['id_aid']."', indice_aid='".$tab_aid[$loop_aid]['indice_aid']."', note='".$note."', statut='".$statut."', appreciation='".mysqli_real_escape_string($mysqli, $app)."';";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							}
