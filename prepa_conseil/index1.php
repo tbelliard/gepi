@@ -1099,46 +1099,58 @@ function UncheckAll_checkbox(){
 				}
 				//==========================================
 
-                $temp = "visu_note_".$k;
-                if (isset($_POST[$temp]) or isset($_GET[$temp])) {
-                    $j++;
-                    $note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
-                    $_statut = @old_mysql_result($note_query, 0, "statut");
-                    $note = @old_mysql_result($note_query, 0, "note");
-                    if ($option[$i][$k] == "non") {
-                        $col[$j][$nb_lignes] = "<center>-</center>";
+				$temp = "visu_note_".$k;
+				if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+					$j++;
+					$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$login_eleve[$i]' AND id_groupe = '".$current_group["id"] . "' AND periode='$k')");
+					$_statut = @old_mysql_result($note_query, 0, "statut");
+					$note = @old_mysql_result($note_query, 0, "note");
+					if ($option[$i][$k] == "non") {
+						$col[$j][$nb_lignes] = "<center>-</center>";
 						$col_csv[$j][$nb_lignes] = "-";
-                    } else {
-                        if ($_statut != '') {
-                            //$col[$j][$nb_lignes] = $_statut;
-                            $col[$j][$nb_lignes] = "<center>".$_statut."</center>";
+					} else {
+						if ($_statut != '') {
+							//$col[$j][$nb_lignes] = $_statut;
+							$col[$j][$nb_lignes] = "<center>".$_statut."</center>";
 							$col_csv[$j][$nb_lignes] = $_statut;
 						} else {
-                            if ($note != '') {
-                                //$col[$j][$nb_lignes] = number_format($note,1,',','');
+							if ($note != '') {
+								//$col[$j][$nb_lignes] = number_format($note,1,',','');
 								$col[$j][$nb_lignes] = "<center>".number_format($note,1,',','')."</center>";
 								$col_csv[$j][$nb_lignes] = number_format($note,1,',','');
-                                if ($stat == "yes") {
-                                    $col[$nb_col][$nb_lignes] += $note;
-                                    if (!isset($nb_note[$nb_lignes])) $nb_note[$nb_lignes]=1; else $nb_note[$nb_lignes]++;
-                                }
-                            } else {
-                                //$col[$j][$nb_lignes] = '-';
+								if ($stat == "yes") {
+									if(!isset($col[$nb_col][$nb_lignes])) {
+										$col[$nb_col][$nb_lignes]=0;
+									}
+									/*
+									//$note=13.0;
+									echo "------------------<br />";
+									echo "\$_statut='$_statut'<br />";
+									echo "\$note='$note'<br />";
+									echo "\$col[$nb_col][$nb_lignes]=".$col[$nb_col][$nb_lignes]."<br />";
+									echo "\$col[$nb_col][$nb_lignes] += $note;<br />";
+									//$col[$nb_col][$nb_lignes]+=$note;
+									*/
+									$col[$nb_col][$nb_lignes]=floatval($col[$nb_col][$nb_lignes])+floatval($note);
+									if (!isset($nb_note[$nb_lignes])) $nb_note[$nb_lignes]=1; else $nb_note[$nb_lignes]++;
+								}
+							} else {
+								//$col[$j][$nb_lignes] = '-';
 								$col[$j][$nb_lignes] = "<center>-</center>";
 								$col_csv[$j][$nb_lignes] = "-";
-                            }
-                        }
-                    }
+							}
+						}
+					}
 
 					//echo "\$col_csv[$j][$nb_lignes]=".$col_csv[$j][$nb_lignes]."<br />";
 
-                }
-                $temp = "visu_app_".$k;
-                if (isset($_POST[$temp]) or isset($_GET[$temp])) {
+				}
+				$temp = "visu_app_".$k;
+				if (isset($_POST[$temp]) or isset($_GET[$temp])) {
 
-                    $j++;
-                    $app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$login_eleve[$i]' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-                    $app = @old_mysql_result($app_query, 0, "appreciation");
+				$j++;
+				$app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$login_eleve[$i]' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+				$app = @old_mysql_result($app_query, 0, "appreciation");
 
 					//++++++++++++++++++++++++
 					// Modif d'après F.Boisson
