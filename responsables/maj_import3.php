@@ -12286,6 +12286,18 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 			echo "<h2>Traitement des responsabilités disparues</h2>\n";
 
+			$sql="SELECT ele_id, pers_id FROM temp_responsables2_import WHERE ele_id!='' AND pers_id!='';";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb=mysqli_num_rows($res);
+			if($nb==0) {
+				echo "<p style='color:red'>La table 'temp_responsables2_import' ne contient pas d'association élève/responsable.<br />
+				Il faut effectuer une mise à jour d'après Siècle/Sconet en fournissant les fichiers élèves et responsables pour contrôler les modifications/disparitions de responsabilités.</p>";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+
 			$sql="SELECT ele_id, pers_id FROM responsables2 WHERE CONCAT(ele_id,'_',pers_id) NOT IN (SELECT CONCAT(ele_id,'_',pers_id) FROM temp_responsables2_import);";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb=mysqli_num_rows($res);
