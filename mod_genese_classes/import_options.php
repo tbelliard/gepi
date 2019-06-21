@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -94,6 +94,8 @@ if($action=="upload_file") {
 
 	echo "<h2>Projet $projet</h2>\n";
 
+	check_token(false);
+
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 	// Le nom est ok. On ouvre le fichier
@@ -116,18 +118,27 @@ if($action=="upload_file") {
 		$tab_non_option=array('NOM','PRENOM','SEXE','NAISSANCE','LOGIN','ELENOET','ELE_ID','INE','EMAIL','CLASSE');
 
 		// Lecture de la ligne d'entête du CSV
-		$ligne=trim(fgets($fp, 4096));
-		$tabligne_entete=explode(";",$ligne);
+		$ligne=trim(preg_replace('/"/','',strtr(fgets($fp, 4096), ',', ';')));
+		//if((preg_match('/;nom;/i', $ligne)||(preg_match('/;prenom;/i', $ligne)) {
+			$tabligne_entete=explode(";",$ligne);
+		//}
 
 		$tab_options=array();
 
+		// Fichier modèle CSV généré depuis Gepi mod_genese_classes/liste_options.php
+		$type_fichier_csv=1;
+
 		$tabligne_entete_inverse=array();
 		for($i=0;$i<count($tabligne_entete);$i++) {
+			//if($tabligne_entete[$i]=='N° Interne') {
+			if(mb_strtolower($tabligne_entete[$i])=='n° interne') {
+				$tabligne_entete[$i]='ELENOET';
+				// Fichier Extraction de Siècle 
+				$type_fichier_csv=2;
+			}
 			$tabligne_entete_inverse["$tabligne_entete[$i]"]=$i;
 
 			if(!in_array($tabligne_entete[$i],$tab_non_option)) {
-
-
 				// VERIFIER AUSSI SI L'OPTION PRéSUMéE EST DANS gc_options
 				$sql="SELECT 1=1 FROM gc_options WHERE projet='$projet' AND opt='".$tabligne_entete[$i]."';";
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -138,6 +149,30 @@ if($action=="upload_file") {
 				}
 			}
 		}
+
+		if($type_fichier_csv==2) {
+			$tab_options=array();
+			$tab_indices_options=array();
+			for($i=0;$i<count($tabligne_entete);$i++) {
+				if(preg_match('/Option /i', $tabligne_entete[$i])) {
+					$tab_indices_options[]=$i;
+				}
+			}
+		}
+
+		/*
+		echo "tab_options<pre>";
+		print_r($tab_options);
+		echo "</pre>";
+
+		echo "tabligne_entete<pre>";
+		print_r($tabligne_entete);
+		echo "</pre>";
+
+		echo "tabligne_entete_inverse<pre>";
+		print_r($tabligne_entete_inverse);
+		echo "</pre>";
+		*/
 
 		$cle="";
 		if(in_array('LOGIN',$tabligne_entete)) {
@@ -151,6 +186,9 @@ if($action=="upload_file") {
 		}
 		elseif(in_array('INE',$tabligne_entete)) {
 			$cle='no_gep';
+		}
+		elseif(in_array('N° Interne',$tabligne_entete)) {
+			$cle='elenoet';
 		}
 
 		if($cle=="") {
@@ -226,14 +264,49 @@ if($action=="upload_file") {
 						echo "<tr class='lig$alt'><td style='text-align:left;'><b>$val_login</b>&nbsp;:</td><td style='text-align:left;'>\n";
 					}
 					$chaine_opt_eleve="";
-					for($i=0;$i<count($tab_options);$i++) {
-						if($tabligne[$tabligne_entete_inverse["$tab_options[$i]"]]==1) {
+					if($type_fichier_csv==1) {
+						for($i=0;$i<count($tab_options);$i++) {
+							if($tabligne[$tabligne_entete_inverse["$tab_options[$i]"]]==1) {
 
-							echo $tab_options[$i]." ";
-							$chaine_opt_eleve.="|".$tab_options[$i];
-							//$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', opt='".$tab_options[$i]."';";
-							//echo "$sql<br />\n";
-							//$res=mysql_query($sql);
+								echo $tab_options[$i]." ";
+								$chaine_opt_eleve.="|".$tab_options[$i];
+								//$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', opt='".$tab_options[$i]."';";
+								//echo "$sql<br />\n";
+								//$res=mysql_query($sql);
+							}
+						}
+					}
+					else {
+						/*
+						echo "<pre>";
+						print_r($tabligne);
+						echo "</pre>";
+						*/
+
+						for($i=0;$i<count($tab_indices_options);$i++) {
+							$current_option=trim($tabligne[$tab_indices_options[$i]]);
+							if($current_option!='') {
+								if(in_array($current_option, $tab_options)) {
+									// C'est bon
+									echo $current_option." ";
+									$chaine_opt_eleve.="|".$current_option;
+								}
+								else {
+									// On teste si c'est une option connue
+									$sql="SELECT * FROM gc_options WHERE projet='$projet' AND opt='".$current_option."';";
+									//echo "$sql<br />\n";
+									$res=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res)>0) {
+										$tab_options[]=$current_option;
+										echo $current_option." ";
+										$chaine_opt_eleve.="|".$current_option;
+									}
+									else {
+										echo "<span style='color:red'>Option $current_option inconnue</span> ";
+										//echo "$sql<br />\n";
+									}
+								}
+							}
 						}
 					}
 					if($chaine_opt_eleve!="") {
@@ -272,17 +345,43 @@ else {
 
 	echo "<p>Veuillez fournir un fichier CSV au format... approprié... pour importer les options futures des élèves.</p>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_csv'>\n";
+	echo "<fieldset class='fieldset_opacite50'>\n";
+	echo add_token_field();
+	echo "<input type='hidden' name='mode' value='1' />\n";
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<input type='hidden' name='projet' value='$projet' />\n";
-	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
-	echo "<p><input type='submit' value='Valider' />\n";
+	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" id='input_csv_file' />\n";
+
+	echo "<p><input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+</fieldset>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('input_csv_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier CSV à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_csv').submit();
+		}
+	}
+</script>\n";
+
+
+	echo "</fieldset>\n";
 	echo "</form>\n";
 
 	echo "<p><i>NOTES&nbsp;:</i></p>\n";
 	echo "<ul>\n";
 	echo "<li><p>Les options préalablement saisies pour ce projet seront perdues.<p></li>\n";
 	echo "<li><p>Le format du CSV pourra être par exemple&nbsp;:<br />NOM;PRENOM;NAISSANCE;ELENOET;CLASSE;AGL1;AGL2;ALL1;ALL2;ATHLE;DECP3;ESP2;LATIN;Redoublement;Depart<br />Dans cet exemple, ELENOET sera la clé pour identifier l'élève.<br />Les autres clés valides sont LOGIN, ELE_ID, INE.<br />Les noms des colonnes doivent coïncider avec les noms de matières dans Gepi.</p><p>Le plus simple pour obtenir ce fichier consiste à suivre les étapes dans l'ordre.<br />Lors de l'étape 2 'Lister les options actuelles des élèves', un fichier CSV au bon format est généré.</p></li>\n";
+	echo "<li><p>Alternativement, vous pouvez fournir un fichier Extraction CSV personnalisée de Siècle <em>(avec séparateur point-virgule)</em> avec les champs nom, prénom, numéro interne <em>(elenoet)</em> et les options suivies.<p></li>\n";
 	echo "</ul>\n";
 }
 
