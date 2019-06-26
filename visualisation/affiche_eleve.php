@@ -1052,6 +1052,19 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 
+		// 20190625
+		//if(acces("/saisie/saisie_avis2.php", $_SESSION['statut'])) {
+		if(acces_saisie_avis2($id_classe)) {
+			if((isset($choix_periode))&&($choix_periode=='toutes_periodes')) {
+				echo " | Bilan des avis ";
+				for($tmp_loop_per=1;$tmp_loop_per<$nb_periode;$tmp_loop_per++) {
+					echo "<a href='../saisie/saisie_avis2.php?id_classe=$id_classe&amp;periode_num=$tmp_loop_per' target='_blank'>P$tmp_loop_per</a> ";
+				}
+			}
+			elseif((isset($num_periode_choisie))&&(preg_match("/^[0-9]{1,}$/", $num_periode_choisie))) {
+				echo " | <a href='../saisie/saisie_avis2.php?id_classe=$id_classe&amp;periode_num=$num_periode_choisie' target='_blank'>Bilan des avis</a>";
+			}
+		}
 		echo "</p>\n";
 		echo "</form>\n";
 

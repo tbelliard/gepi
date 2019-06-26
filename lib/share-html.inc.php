@@ -4773,6 +4773,10 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			$retour.="
 		<tr>
 			<td><a href='$gepiPath/saisie/impression_avis.php'$target>Imprimer les avis du conseil de classe&nbsp;:</a></td>";
+
+			//$acces_saisie_avis2=acces("/saisie/saisie_avis2.php", $_SESSION['statut']);
+			$acces_saisie_avis2=acces_saisie_avis2($id_classe);
+
 			foreach($tab_per as $current_num_periode => $periode) {
 				$sql="SELECT DISTINCT a.login FROM avis_conseil_classe a, j_eleves_classes jec WHERE jec.login=a.login AND jec.periode=a.periode AND jec.id_classe='$id_classe' AND a.periode='$current_num_periode' AND avis!='';";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -4782,7 +4786,14 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 				}
 				else {
 					$retour.="
-			<td><a href='$gepiPath/impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$current_num_periode'$target title=\"Imprimer l'avis du conseil de classe, ou générer un PDF des avis du conseil.\"><img src='$gepiPath/images/icons/pdf.png' class='icone32' alt='Saisir' /></a></td>";
+			<td>";
+					$retour.="
+				<a href='$gepiPath/impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$current_num_periode'$target title=\"Imprimer l'avis du conseil de classe, ou générer un PDF des avis du conseil.\"><img src='$gepiPath/images/icons/pdf.png' class='icone32' alt='Saisir' /></a>";
+					if($acces_saisie_avis2) {
+						$retour.="
+				 <a href='$gepiPath/saisie/saisie_avis2.php?id_classe=$id_classe&amp;periode_num=$current_num_periode'$target title=\"Afficher les avis, mentions, mises en garde,... du conseil.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone32' alt='Saisir' /></a>";
+					}
+					$retour.="</td>";
 				}
 			}
 			$retour.="

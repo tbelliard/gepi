@@ -19546,4 +19546,40 @@ function get_tab_options_sconet() {
 	}
 	return $tab_options_sconet;
 }
+
+function acces_saisie_avis2($id_classe) {
+	global $mysqli;
+
+	$retour=false;
+	if(($_SESSION['statut']=='scolarite')&&(getSettingAOui("GepiRubConseilScol"))) {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		if(getSettingAOui("GepiRubConseilCpeTous")) {
+			$retour=true;
+		}
+		elseif(getSettingAOui("GepiRubConseilCpe")) {
+			$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec 
+			WHERE jec.id_classe='".$id_classe."' AND 
+			jec.login=jecpe.e_login AND 
+			jecpe.cpe_login = '".$_SESSION['login']."';";
+			$test_cpe_suivi=mysqli_query($mysqli, $sql);
+			if (mysqli_num_rows($test_cpe_suivi)>0) {
+				$retour=true;
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='secours') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+		if(getSettingAOui("GepiRubConseilProf")) {
+			if(is_pp($_SESSION['login'], $id_classe)) {
+				$retour=true;
+			}
+		}
+	}
+
+	return $retour;
+}
 ?>
