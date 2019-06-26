@@ -1201,7 +1201,7 @@ for($i=0;$i<count($id_classe);$i++) {
 						<!--input type='checkbox' name='liste_eleve_".$id_classe[$i]."' id='liste_eleve_$cpt2' value=\"$value\" /-->
 						<a href='".$_SERVER['PHP_SELF']."?id_classe[0]=".$id_classe[$i]."&amp;imprimer_liste_eleve=y&amp;destinataire=$value".add_token_in_url()."' target='_blank'><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
 					</td>
-					<td>
+					<td title=\"Informations supplémentaires sur les personnes indiquées (adresse, téléphone,...)\">
 						$infos_supplementaires
 					</td>
 				</tr>";
