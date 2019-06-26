@@ -79,6 +79,11 @@ if(isset($_POST['is_posted'])) {
 	$non_justifie=isset($_POST['non_justifie']) ? $_POST['non_justifie'] : array();
 	$nb_retards=isset($_POST['nb_retards']) ? $_POST['nb_retards'] : array();
 
+	// Ménage : Suppression de scories éventuelles:
+	$sql="DELETE FROM gc_eleves_options WHERE id_classe_actuelle='' AND projet='$projet';";
+	//echo "<p>$sql<br />\n";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
 	if(count($eleve)>0) {
 
 		$classe_fut=isset($_POST['classe_fut']) ? $_POST['classe_fut'] : array();
