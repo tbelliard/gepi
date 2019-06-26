@@ -332,7 +332,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	$display_moy_gen=sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
 
 
-	bulletin_classe($tab_moy, $nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$nb_coef_superieurs_a_zero,$affiche_categories);
+	bulletin_classe($tab_moy, $nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$nb_coef_superieurs_a_zero,$affiche_categories, 'y');
 
 	// Formulaire de saisie
 	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
