@@ -218,40 +218,54 @@ if($action=="upload_file") {
 				}
 
 				if($val_login!="") {
-					if($val_login!=$val_login_precedent) {
-						if($cpt>0) {
-							echo "</td></tr>\n";
+					// Test classe:
+					$sql="SELECT id_classe FROM j_eleves_classes jec WHERE login='".$val_login."' AND id_classe IN (SELECT id_classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle') ORDER BY periode DESC LIMIT 1;";
+					// L'affichage de la requête ci-dessous se retrouve décalée d'un élève parce qu'on n'a pas encore refermé la ligne précédente </td></tr>
+					//echo "$sql<br />";
+					$test_classe=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($test_classe)>0) {
+						if($val_login!=$val_login_precedent) {
+							if($cpt>0) {
+								echo "</td></tr>\n";
+							}
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><td style='text-align:left;'><b>$val_login</b>&nbsp;:</td><td style='text-align:left;'>\n";
 						}
-						$alt=$alt*(-1);
-						echo "<tr class='lig$alt'><td style='text-align:left;'><b>$val_login</b>&nbsp;:</td><td style='text-align:left;'>\n";
-					}
-					$chaine_opt_eleve="";
-					for($i=0;$i<count($tab_options);$i++) {
-						if($tabligne[$tabligne_entete_inverse["$tab_options[$i]"]]==1) {
+						//echo "$sql<br />";
+						$lig_classe=mysqli_fetch_object($test_classe);
 
-							echo $tab_options[$i]." ";
-							$chaine_opt_eleve.="|".$tab_options[$i];
-							//$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', opt='".$tab_options[$i]."';";
-							//echo "$sql<br />\n";
-							//$res=mysql_query($sql);
-						}
-					}
-					if($chaine_opt_eleve!="") {
-						$chaine_opt_eleve.="|";
+						$chaine_opt_eleve="";
+						for($i=0;$i<count($tab_options);$i++) {
+							if($tabligne[$tabligne_entete_inverse["$tab_options[$i]"]]==1) {
 
-						// 20160624: Test
-						$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='$projet' AND login='$val_login';";
-						//echo "$sql<br />\n";
-						$test=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($test)==0) {
-							$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."';";
-							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+								echo $tab_options[$i]." ";
+								$chaine_opt_eleve.="|".$tab_options[$i];
+								//$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', opt='".$tab_options[$i]."';";
+								//echo "$sql<br />\n";
+								//$res=mysql_query($sql);
+							}
 						}
-						else {
-							$sql="UPDATE gc_eleves_options SET liste_opt='".$chaine_opt_eleve."' WHERE projet='$projet' AND login='$val_login';";
+						if($chaine_opt_eleve!="") {
+							$chaine_opt_eleve.="|";
+
+							// 20160624: Test
+							$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='$projet' AND login='$val_login';";
 							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								//$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."';";
+								$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."', id_classe_actuelle='".$lig_classe->id_classe."';";
+								//echo "$sql<br />\n";
+								$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+							else {
+								$sql="UPDATE gc_eleves_options SET liste_opt='".$chaine_opt_eleve."' WHERE projet='$projet' AND login='$val_login';";
+								//echo "$sql<br />\n";
+								$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+							if($res) {
+								$cpt_import++;
+							}
 						}
 					}
 				}
