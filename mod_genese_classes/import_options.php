@@ -131,8 +131,11 @@ if($action=="upload_file") {
 		$tabligne_entete_inverse=array();
 		for($i=0;$i<count($tabligne_entete);$i++) {
 			//if($tabligne_entete[$i]=='N° Interne') {
-			if(mb_strtolower($tabligne_entete[$i])=='n° interne') {
+			//echo "\$tabligne_entete[$i]=".$tabligne_entete[$i]."<br />";
+			//if(mb_strtolower($tabligne_entete[$i])=='n° interne') {
+			if(preg_match('/^n.* interne$/i', $tabligne_entete[$i])) {
 				$tabligne_entete[$i]='ELENOET';
+				//echo "On corrige \$tabligne_entete[$i]=".$tabligne_entete[$i]."<br />";
 				// Fichier Extraction de Siècle 
 				$type_fichier_csv=2;
 			}
@@ -202,6 +205,7 @@ if($action=="upload_file") {
 		$val_login_precedent="";
 		$alt=1;
 		$cpt=0;
+		$cpt_import=0;
 		$nat_num = array();
 		while (!feof($fp)) {
 			$ligne = fgets($fp, 4096);
@@ -256,75 +260,89 @@ if($action=="upload_file") {
 				}
 
 				if($val_login!="") {
-					if($val_login!=$val_login_precedent) {
-						if($cpt>0) {
-							echo "</td></tr>\n";
+					// Test classe:
+					$sql="SELECT id_classe FROM j_eleves_classes jec WHERE login='".$val_login."' AND id_classe IN (SELECT id_classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle') ORDER BY periode DESC LIMIT 1;";
+					// L'affichage de la requête ci-dessous se retrouve décalée d'un élève parce qu'on n'a pas encore refermé la ligne précédente </td></tr>
+					//echo "$sql<br />";
+					$test_classe=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($test_classe)>0) {
+						if($val_login!=$val_login_precedent) {
+							if($cpt>0) {
+								echo "</td></tr>\n";
+							}
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><td style='text-align:left;'><b>$val_login</b>&nbsp;:</td><td style='text-align:left;'>\n";
 						}
-						$alt=$alt*(-1);
-						echo "<tr class='lig$alt'><td style='text-align:left;'><b>$val_login</b>&nbsp;:</td><td style='text-align:left;'>\n";
-					}
-					$chaine_opt_eleve="";
-					if($type_fichier_csv==1) {
-						for($i=0;$i<count($tab_options);$i++) {
-							if($tabligne[$tabligne_entete_inverse["$tab_options[$i]"]]==1) {
+						//echo "$sql<br />";
+						$lig_classe=mysqli_fetch_object($test_classe);
 
-								echo $tab_options[$i]." ";
-								$chaine_opt_eleve.="|".$tab_options[$i];
-								//$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', opt='".$tab_options[$i]."';";
-								//echo "$sql<br />\n";
-								//$res=mysql_query($sql);
+						$chaine_opt_eleve="";
+						if($type_fichier_csv==1) {
+							for($i=0;$i<count($tab_options);$i++) {
+								if($tabligne[$tabligne_entete_inverse["$tab_options[$i]"]]==1) {
+
+									echo $tab_options[$i]." ";
+									$chaine_opt_eleve.="|".$tab_options[$i];
+									//$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', opt='".$tab_options[$i]."';";
+									//echo "$sql<br />\n";
+									//$res=mysql_query($sql);
+								}
 							}
 						}
-					}
-					else {
-						/*
-						echo "<pre>";
-						print_r($tabligne);
-						echo "</pre>";
-						*/
+						else {
+							/*
+							echo "<pre>";
+							print_r($tabligne);
+							echo "</pre>";
+							*/
 
-						for($i=0;$i<count($tab_indices_options);$i++) {
-							$current_option=trim($tabligne[$tab_indices_options[$i]]);
-							if($current_option!='') {
-								if(in_array($current_option, $tab_options)) {
-									// C'est bon
-									echo $current_option." ";
-									$chaine_opt_eleve.="|".$current_option;
-								}
-								else {
-									// On teste si c'est une option connue
-									$sql="SELECT * FROM gc_options WHERE projet='$projet' AND opt='".$current_option."';";
-									//echo "$sql<br />\n";
-									$res=mysqli_query($GLOBALS["mysqli"], $sql);
-									if(mysqli_num_rows($res)>0) {
-										$tab_options[]=$current_option;
+							for($i=0;$i<count($tab_indices_options);$i++) {
+								$current_option=trim($tabligne[$tab_indices_options[$i]]);
+								if($current_option!='') {
+									if(in_array($current_option, $tab_options)) {
+										// C'est bon
 										echo $current_option." ";
 										$chaine_opt_eleve.="|".$current_option;
 									}
 									else {
-										echo "<span style='color:red'>Option $current_option inconnue</span> ";
+										// On teste si c'est une option connue
+										$sql="SELECT * FROM gc_options WHERE projet='$projet' AND opt='".$current_option."';";
 										//echo "$sql<br />\n";
+										$res=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res)>0) {
+											$tab_options[]=$current_option;
+											echo $current_option." ";
+											$chaine_opt_eleve.="|".$current_option;
+										}
+										else {
+											echo "<span style='color:red'>Option $current_option inconnue</span> ";
+											//echo "$sql<br />\n";
+										}
 									}
 								}
 							}
 						}
-					}
-					if($chaine_opt_eleve!="") {
-						$chaine_opt_eleve.="|";
+						if($chaine_opt_eleve!="") {
+							$chaine_opt_eleve.="|";
 
-						// 20160624: Test
-						$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='$projet' AND login='$val_login';";
-						//echo "$sql<br />\n";
-						$test=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($test)==0) {
-							$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."';";
+							// 20160624: Test
+							$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='$projet' AND login='$val_login';";
 							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["mysqli"], $sql);
-						}
-						else {
-							$sql="UPDATE gc_eleves_options SET liste_opt='".$chaine_opt_eleve."' WHERE projet='$projet' AND login='$val_login';";
-							//echo "$sql<br />\n";
-							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								//$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."';";
+								$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."', id_classe_actuelle='".$lig_classe->id_classe."';";
+								//echo "$sql<br />\n";
+								$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+							else {
+								$sql="UPDATE gc_eleves_options SET liste_opt='".$chaine_opt_eleve."' WHERE projet='$projet' AND login='$val_login';";
+								//echo "$sql<br />\n";
+								$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+							if($res) {
+								$cpt_import++;
+							}
 						}
 					}
 				}
@@ -336,6 +354,7 @@ if($action=="upload_file") {
 		echo "</td></tr>\n";
 		echo "</table>\n";
 		echo "<p>Import achevé.</p>\n";
+		echo "<p>Les options de ".$cpt_import." élève(s) ont été importées.</p>";
 	}
 }
 else {
