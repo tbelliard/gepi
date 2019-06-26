@@ -1777,12 +1777,19 @@ else{
 			echo "<p class='bold'>Contrôle des départs d'élèves...</p>\n";
 
 			//===============================================
+			$ajout_script_suite='';
 			if(isset($_POST['parcours_desinscriptions'])) {
 				$texte_maj_sconet="";
 				if(!isset($_POST['desinscription'])) {
 					$texte="<p>Aucune désinscription n'a été validée.</p>\n";
 					echo $texte;
 					$texte_maj_sconet.=$texte;
+					// A FAIRE : AJOUTER UN JS pour passer automatiquement
+					$ajout_script_suite="<script type='text/javascript'>
+						if(document.getElementById('form_suite')) {
+							setTimeout(\"document.getElementById('form_suite').submit()\", 2000);
+						}
+					</script>";
 				}
 				else {
 					$desinscription=$_POST['desinscription'];
@@ -1891,7 +1898,7 @@ else{
 			}
 			//===============================================
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' id='form_suite' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -1919,7 +1926,8 @@ else{
 				else {
 					echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n";
 
-					echo "<p>";
+					// A FAIRE : FAIRE DISPARAITRE LE "TOUT COCHER" si aucune différence n'est affichée et mettre un script suite
+					echo "<p id='p_tout_cocher_1'>";
 					echo "<a href=\"javascript:modifcase('coche')\">";
 					echo "Cocher tous les élèves qu'il est possible de désinscrire</a>";
 					echo " / ";
@@ -1927,6 +1935,7 @@ else{
 					echo "Tout décocher</a></p>\n";
 	
 					$cpt=0;
+					$cpt_checkbox=0;
 					while($lig=mysqli_fetch_object($res)) {
 						// Marquer comme parcouru pour ne pas les reparcourir au tour suivant dans la boucle:
 						$sql="UPDATE tempo2 SET col1='ele_id_eleve_parti_vu' WHERE col1='ele_id_eleve_parti' AND col2='$lig->col2';";
@@ -2054,6 +2063,7 @@ else{
 									if($temoin_periode=='y') {
 										// On propose de désinscrire des classes et des groupes
 										echo "<input type='checkbox' name='desinscription[]' id='desinscription_$cpt' value=\"$lig_ele->login|$lig_clas->periode\" />\n";
+										$cpt_checkbox++;
 									}
 									else {
 										echo "&nbsp;";
@@ -2073,12 +2083,29 @@ else{
 						}
 					}
 
-					echo "<p>";
+					echo "<p id='p_tout_cocher_2'>";
 					echo "<a href=\"javascript:modifcase('coche')\">";
 					echo "Cocher tous les élèves qu'il est possible de désinscrire</a>";
 					echo " / ";
 					echo "<a href=\"javascript:modifcase('decoche')\">";
 					echo "Tout décocher</a></p>\n";
+
+					if($cpt_checkbox==0) {
+						echo "<script type='text/javascript'>
+							if(document.getElementById('p_tout_cocher_1')) {
+								document.getElementById('p_tout_cocher_1').style.display='none';
+							}
+							if(document.getElementById('p_tout_cocher_2')) {
+								document.getElementById('p_tout_cocher_2').style.display='none';
+							}
+						</script>";
+
+						$ajout_script_suite="<script type='text/javascript'>
+							if(document.getElementById('form_suite')) {
+								setTimeout(\"document.getElementById('form_suite').submit()\", 2000);
+							}
+						</script>";
+					}
 				}
 
 				//echo "<input type='hidden' name='step' value='2c' />\n";
@@ -2100,7 +2127,7 @@ else{
 		}
 	}
 </script>\n";
-	
+
 				echo "<p><i>NOTES&nbsp;:</i></p>\n";
 				echo "<blockquote>\n";
 				echo "<p>Les élèves notés dans Sconet comme ayant quitté l'établissement peuvent être désinscrits des classes et enseignements sur les périodes futures.<br />On recherche ci-dessus les périodes sur lesquelles les élèves n'ont pas de note ni quoi que ce soit sur le bulletin.</p>\n";
@@ -2110,6 +2137,8 @@ else{
 
 				echo "</form>\n";
 			}
+
+			echo $ajout_script_suite;
 
 			//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=$stop' onClick=\"test_stop_suite('3'); return false;\">Suite</a></p>\n";
 
@@ -8714,7 +8743,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			$nb_disparus=mysqli_num_rows($test);
 
 			if($nb_disparus==0) {
-				echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_suite'>\n";
 				echo add_token_field();
 				echo "<p>Parcours des disparitions terminé.</p>\n";
 				//==============================
@@ -8725,6 +8754,12 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 				//==============================
 				echo "<p><input type='submit' value='Suite' /></p>\n";
 				echo "</form>\n";
+
+				echo "<script type='text/javascript'>
+					if(document.getElementById('form_suite')) {
+						setTimeout(\"document.getElementById('form_suite').submit()\", 2000);
+					}
+				</script>";
 			}
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -9486,9 +9521,19 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 
 			if($temoin_rapprochement_propose=="n") {
 				echo "<p>Aucun doublon n'a été détecté à ce stade.</p>\n";
+
+				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_suite'>\n";
+
+				echo "<script type='text/javascript'>
+					if(document.getElementById('form_suite')) {
+						setTimeout(\"document.getElementById('form_suite').submit()\", 2000);
+					}
+				</script>";
+			}
+			else {
+				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_suite'>\n";
 			}
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>\n";
 			if($temoin_rapprochement_propose=="y") {
 				echo "<p class='bold'>Ou passer à la suite</p>\n";
@@ -12260,7 +12305,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				//echo "<input type='hidden' name='step' value='19' />\n";
 				echo "<input type='hidden' name='step' value='20' />\n";
 
-				$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
+				$sql="SELECT r.pers_id,r.ele_id, r.resp_legal FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 				info_debug($sql);
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)>0){
@@ -12273,7 +12318,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						info_debug($sql);
 						$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-						if($nettoyage) {enregistre_log_maj_sconet("Suppression de responsabilité sans élève associé pour le responsable n°<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>$lig_nett->pers_id</a> (".civ_nom_prenom_from_pers_id($lig_nett->pers_id).") en tant que responsable légal $resp_legal de l'élève n°$lig_nett->ele_id.<br />");}
+						if($nettoyage) {enregistre_log_maj_sconet("Suppression de responsabilité sans élève associé pour le responsable n°<a href='modify_resp.php?pers_id=".$lig_nett->pers_id."' target='_blank'>".$lig_nett->pers_id."</a> (".civ_nom_prenom_from_pers_id($lig_nett->pers_id).") en tant que responsable légal ".$lig_nett->resp_legal." de l'élève n°".$lig_nett->ele_id.".<br />");}
 
 						flush();
 						$cpt_nett++;
