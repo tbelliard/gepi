@@ -8343,6 +8343,10 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 					}
 				}
 
+				if($cpt==0) {
+					echo "<span style='color:red'>Aucune différence trouvée sur cette tranche.</span>";
+				}
+
 				$num_tranche++;
 				echo "<input type='hidden' name='num_tranche'value='$num_tranche' />\n";
 
@@ -8633,6 +8637,10 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						}
 					}
 					flush();
+				}
+
+				if($cpt==0) {
+					echo "<span style='color:red'>Aucune différence trouvée sur cette tranche.</span>";
 				}
 
 				$num_tranche++;
