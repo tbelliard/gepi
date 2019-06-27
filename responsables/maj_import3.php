@@ -2382,6 +2382,7 @@ else{
 			}
 			else {
 				// Affichage de la liste des ELE_ID pour lesquels des différences (new ou modif) ont été relevées dans une étape précédente
+				//$tab_ele_id_diff=array();
 				//====================================
 				// 20110911
 				//if(isset($tab_ele_id_diff)){
@@ -2394,7 +2395,7 @@ else{
 				}
 				//====================================
 
-				if(count($tab_ele_id_diff)>0){
+				if((isset($tab_ele_id_diff))&&(count($tab_ele_id_diff)>0)) {
 					if(count($tab_ele_id_diff)==1){
 						echo "<p>L'ELE_ID, pour lequel une ou des différences ont déjà été repérées, est&nbsp;: \n";
 					}
@@ -10970,7 +10971,12 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$tab_tmp=explode("_",$tab_resp_diff[$i]);
 						$chaine_ele_resp.=$tab_tmp[1]."/".$tab_tmp[2];
 					}
-					echo $chaine_ele_resp;
+					if($chaine_ele_resp!='') {
+						echo $chaine_ele_resp;
+					}
+					else {
+						echo "<span style='color:red'>Aucune différence trouvée à ce stade.</span>";
+					}
 					echo "</p>\n";
 				}
 			}
