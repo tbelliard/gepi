@@ -19585,4 +19585,21 @@ function acces_saisie_avis2($id_classe) {
 
 	return $retour;
 }
+
+function is_prof_groupe($login_prof, $id_groupe) {
+	global $mysqli;
+
+	$is_prof_groupe=false;
+
+	$sql="SELECT 1=1 FROM j_groupes_professeurs jgp
+					WHERE jgp.login='".$login_prof."' AND 
+						jgp.id_groupe=='$id_groupe' LIMIT 1;";
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		$is_prof_groupe = true;
+		$res->close();
+	}
+
+	return $is_prof_groupe;
+}
 ?>
