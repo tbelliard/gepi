@@ -1168,8 +1168,8 @@ for($i=0;$i<count($id_classe);$i++) {
 								if(check_mail($current_mail)) {
 									echo "<input type='checkbox' name='mail_".$id_classe[$i]."[]' id='mail_$cpt1' value=\"$value\" />";
 								}
-								elseif((($current_mail['statut']=='eleve')&&($acces_mail_ele))||
-								(($current_mail['statut']=='responsable')&&($acces_mail_resp))) {
+								elseif((isset($current_user['statut']))&&((($current_user['statut']=='eleve')&&($acces_mail_ele))||
+								(($current_user['statut']=='responsable')&&($acces_mail_resp)))) {
 									echo "<img src='../images/disabled.png' class='icone20' alt='Mail non valide' title=\"Mail non valide : '".$current_mail."'\" >";
 								}
 								else {
