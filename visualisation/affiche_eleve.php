@@ -3913,12 +3913,13 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 					}
 
 					// Série min et série max pour les bandes min/max:
-					// Avec min($current_eleve_note[$loop]) on n'a que les élève de la classe pas ceux de tout l'enseignement si à cheval sur plusieurs classes
-					//$seriemin.=min($current_eleve_note[$loop]);
-					$seriemin.=$moy_min_classe_grp[$loop];
-					//$seriemax.=max($current_eleve_note[$loop]);
-					$seriemax.=$moy_max_classe_grp[$loop];
-
+					if((isset($tab_acces_moy[$num_periode]))&&($tab_acces_moy[$num_periode]=='y')) {
+						// Avec min($current_eleve_note[$loop]) on n'a que les élève de la classe pas ceux de tout l'enseignement si à cheval sur plusieurs classes
+						//$seriemin.=min($current_eleve_note[$loop]);
+						$seriemin.=$moy_min_classe_grp[$loop];
+						//$seriemax.=max($current_eleve_note[$loop]);
+						$seriemax.=$moy_max_classe_grp[$loop];
+					}
 
 					// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 					if($tab_acces_app[$num_periode]=="y") {
