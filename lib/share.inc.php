@@ -3595,6 +3595,9 @@ function debug_var() {
 				if(is_string($val)) {
 					echo $val;
 				}
+				elseif(is_numeric($val)) {
+					echo $val;
+				}
 				else {
 					echo "<span style='color:red'>Ce n'est ni un tableau, ni une chaine... est-ce un résultat de requête SQL?</span>";
 				}
