@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -73,61 +73,67 @@ if((isset($is_posted))&&(isset($projet))) {
 
 	if(isset($_POST['ajouter'])) {
 
+		$tab_deja=array();
+		$sql="SELECT * FROM gc_options_classes WHERE projet='$projet';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab_deja[$lig->classe_future][]=$lig->opt_exclue;
+			}
+		}
+
 		$clas_fut=isset($_POST['clas_fut']) ? $_POST['clas_fut'] : array();
 		$sans_lv1=isset($_POST['sans_lv1']) ? $_POST['sans_lv1'] : array();
 		$sans_lv2=isset($_POST['sans_lv2']) ? $_POST['sans_lv2'] : array();
 		$sans_lv3=isset($_POST['sans_lv3']) ? $_POST['sans_lv3'] : array();
 		$sans_autre=isset($_POST['sans_autre']) ? $_POST['sans_autre'] : array();
 
-
 		for($j=0;$j<count($clas_fut);$j++) {
 			for($i=0;$i<count($sans_lv1);$i++) {
-				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv1[$i]';";
-				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
-					$nb_reg++;
-				}
-				else {
-					$nb_err++;
-				}
-			}
-
-			for($i=0;$i<count($sans_lv1);$i++) {
-				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv1[$i]';";
-				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
-					$nb_reg++;
-				}
-				else {
-					$nb_err++;
+				if((!isset($tab_deja[$clas_fut[$j]]))||(!in_array($sans_lv1[$i], $tab_deja[$clas_fut[$j]]))) {
+					$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv1[$i]';";
+					if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
+						$nb_reg++;
+					}
+					else {
+						$nb_err++;
+					}
 				}
 			}
 
 			for($i=0;$i<count($sans_lv2);$i++) {
-				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv2[$i]';";
-				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
-					$nb_reg++;
-				}
-				else {
-					$nb_err++;
+				if((!isset($tab_deja[$clas_fut[$j]]))||(!in_array($sans_lv2[$i], $tab_deja[$clas_fut[$j]]))) {
+					$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv2[$i]';";
+					if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
+						$nb_reg++;
+					}
+					else {
+						$nb_err++;
+					}
 				}
 			}
 
 			for($i=0;$i<count($sans_lv3);$i++) {
-				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv3[$i]';";
-				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
-					$nb_reg++;
-				}
-				else {
-					$nb_err++;
+				if((!isset($tab_deja[$clas_fut[$j]]))||(!in_array($sans_lv3[$i], $tab_deja[$clas_fut[$j]]))) {
+					$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv3[$i]';";
+					if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
+						$nb_reg++;
+					}
+					else {
+						$nb_err++;
+					}
 				}
 			}
 
 			for($i=0;$i<count($sans_autre);$i++) {
-				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_autre[$i]';";
-				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
-					$nb_reg++;
-				}
-				else {
-					$nb_err++;
+				if((!isset($tab_deja[$clas_fut[$j]]))||(!in_array($sans_autre[$i], $tab_deja[$clas_fut[$j]]))) {
+					$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_autre[$i]';";
+					if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
+						$nb_reg++;
+					}
+					else {
+						$nb_err++;
+					}
 				}
 			}
 		}
@@ -168,10 +174,54 @@ if((!isset($projet))||($projet=="")) {
 	die();
 }
 
-//echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
+
+echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+
+$sql="SELECT DISTINCT projet FROM gc_projets ORDER BY projet;";
+$res_proj=mysqli_query($GLOBALS["mysqli"], $sql);
+
+$indice_projet=-1;
+$cpt_projet=0;
+$lignes_option_select_projet='';
+while ($lig_proj=mysqli_fetch_object($res_proj)) {
+	$lignes_option_select_projet.="<option value='$lig_proj->projet'";
+	if($lig_proj->projet==$projet) {
+		$lignes_option_select_projet.="selected";
+		$indice_projet=$cpt_projet;
+	}
+	$lignes_option_select_projet.=">$lig_proj->projet</option>\n";
+	$cpt_projet++;
+}
+
+echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_projet(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('chgt_projet').selectedIndex=$cpt_projet;
+			}
+		}
+	}
+</script>\n";
+
+echo "<p class='bold'><a href='index.php?projet=$projet'".insert_confirm_abandon().">Retour</a>";
+echo " | <a href='index.php'>Autre projet</a>&nbsp;: ";
+echo "<select name='projet' id='chgt_projet' onchange=\"confirm_changement_projet(change, '$themessage');\">\n";
+echo $lignes_option_select_projet;
+echo "</select>\n";
 echo "</p>\n";
-//echo "</div>\n";
+echo "</form>\n";
 
 
 $sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
@@ -237,7 +287,7 @@ echo "<tr>\n";
 echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 $cpt=0;
 while($lig=mysqli_fetch_object($res_clas_fut)) {
-	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' /><label for='clas_fut_$cpt'>$lig->classe</label><br />\n";
+	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' onchange='changement()' /><label for='clas_fut_$cpt'>$lig->classe</label><br />\n";
 	$cpt++;
 }
 echo "</td>\n";
@@ -246,7 +296,7 @@ $cpt=0;
 if($nb_lv1>0) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 	while($lig=mysqli_fetch_object($res_lv1)) {
-		echo "<input type='checkbox' name='sans_lv1[]' id='opt_$cpt' value='$lig->opt' />\n";
+		echo "<input type='checkbox' name='sans_lv1[]' id='opt_$cpt' value='$lig->opt' onchange='changement()' />\n";
 		echo "<label for='opt_$cpt'>$lig->opt</label>\n";
 		echo "<br />\n";
 		$cpt++;
@@ -257,7 +307,7 @@ if($nb_lv1>0) {
 if($nb_lv2>0) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 	while($lig=mysqli_fetch_object($res_lv2)) {
-		echo "<input type='checkbox' name='sans_lv2[]' id='opt_$cpt' value='$lig->opt' />\n";
+		echo "<input type='checkbox' name='sans_lv2[]' id='opt_$cpt' value='$lig->opt' onchange='changement()' />\n";
 		echo "<label for='opt_$cpt'>$lig->opt</label>\n";
 		echo "<br />\n";
 		$cpt++;
@@ -268,7 +318,7 @@ if($nb_lv2>0) {
 if($nb_lv3>0) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 	while($lig=mysqli_fetch_object($res_lv3)) {
-		echo "<input type='checkbox' name='sans_lv3[]' id='opt_$cpt' value='$lig->opt' />\n";
+		echo "<input type='checkbox' name='sans_lv3[]' id='opt_$cpt' value='$lig->opt' onchange='changement()' />\n";
 		echo "<label for='opt_$cpt'>$lig->opt</label>\n";
 		echo "<br />\n";
 		$cpt++;
@@ -279,7 +329,7 @@ if($nb_lv3>0) {
 if($nb_autre>0) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 	while($lig=mysqli_fetch_object($res_autre)) {
-		echo "<input type='checkbox' name='sans_autre[]' id='opt_$cpt' value='$lig->opt' />\n";
+		echo "<input type='checkbox' name='sans_autre[]' id='opt_$cpt' value='$lig->opt' onchange='changement()' />\n";
 		echo "<label for='opt_$cpt'>$lig->opt</label>\n";
 		echo "<br />\n";
 		$cpt++;
@@ -306,7 +356,7 @@ echo "</fieldset>
 $sql="SELECT * FROM gc_options_classes WHERE projet='$projet' ORDER BY classe_future,opt_exclue;";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)>0) {
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='suppr'>
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='suppr' style='margin-top:1em;'>
 	<fieldset class='fieldset_opacite50'>\n";
 	echo "<p>Si vous souhaitez supprimer des contraintes préalablement définies, cochez et validez&nbsp;:</p>\n";
 	$cpt=0;
@@ -319,7 +369,7 @@ if(mysqli_num_rows($res)>0) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'><td style='text-align:left;'>\n";
 		}
-		echo "<input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig->id' /><label for='suppr_$cpt'> <b>$lig->classe_future</b>&nbsp;: Pas de $lig->opt_exclue</label><br />\n";
+		echo "<input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig->id' onchange='changement()' /><label for='suppr_$cpt'> <b>$lig->classe_future</b>&nbsp;: Pas de $lig->opt_exclue</label><br />\n";
 		$classe_prec=$lig->classe_future;
 		$cpt++;
 	}
@@ -335,8 +385,14 @@ if(mysqli_num_rows($res)>0) {
 }
 
 echo "<p><br /></p>
-<p><em>NOTE&nbsp;:</em> Cette page de saisie des contraintes ne permet  de saisir actuellementque des contraintes simples.<br />
-Vous poyvez préciser que vous ne pouvez pas avoir telle option dans telle(s) classe(s), mais in n'est pas encore possible de préciser que vous ne voulez pas telle combinaison d'options sur telle classe.</p>\n";
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Cette page de saisie des contraintes ne permet  de saisir actuellementque des contraintes simples.<br />
+Vous pouvez préciser que vous ne pouvez pas avoir telle option dans telle(s) classe(s), mais in n'est pas encore possible de préciser que vous ne voulez pas telle combinaison d'options sur telle classe.<br />
+<br />
+Une astuce peut consister à ajouter une pseudo-option à intituler par exemple <strong>z_ALL_LAT</strong>&nbsp;:<br />
+'<strong>z_</strong>' pour qu'elle se place en fin de liste dans le tableau des options et ne vienne pas polluer les affichages,<br />
+'<strong>ALL_LAT</strong>' pour avoir quelque chose d'explicite sur la combinaison d'options.<br />
+<em>Inconvénient&nbsp;:</em> Il faut pointer manuellement les élèves qui ont cette combinaison d'options en leur cochant la pseudo-option z_ALL_LAT.
+</p>\n";
 
 require("../lib/footer.inc.php");
 ?>

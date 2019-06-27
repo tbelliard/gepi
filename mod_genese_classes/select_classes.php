@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -123,10 +123,50 @@ if((!isset($projet))||($projet=="")) {
 	die();
 }
 
-//echo "<div class='noprint'>\n";
+echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 echo "<p class='bold'><a href='index.php?projet=$projet'".insert_confirm_abandon().">Retour</a>";
+echo " | <a href='index.php'>Autre projet</a>&nbsp;: ";
+$sql="SELECT DISTINCT projet FROM gc_projets ORDER BY projet;";
+$res_proj=mysqli_query($GLOBALS["mysqli"], $sql);
+echo "<select name='projet' id='chgt_projet' onchange=\"confirm_changement_projet(change, '$themessage');\">\n";
+$indice_projet=-1;
+$cpt_projet=0;
+while ($lig_proj=mysqli_fetch_object($res_proj)) {
+	echo "<option value='$lig_proj->projet'";
+	if($lig_proj->projet==$projet) {
+		echo "selected";
+		$indice_projet=$cpt_projet;
+	}
+	echo ">$lig_proj->projet</option>\n";
+	$cpt_projet++;
+}
+echo "</select>\n";
 echo "</p>\n";
-//echo "</div>\n";
+
+echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_projet(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('chgt_projet').selectedIndex=$cpt_projet;
+			}
+		}
+	}
+</script>\n";
+
+echo "</form>\n";
+
 
 echo "<h2>Projet $projet</h2>\n";
 

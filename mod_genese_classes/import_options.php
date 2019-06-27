@@ -81,9 +81,51 @@ if((!isset($projet))||($projet=="")) {
 	die();
 }
 
-//echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a> | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Autre import</a>";
-//echo "</div>\n";
+echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+
+$sql="SELECT DISTINCT projet FROM gc_projets ORDER BY projet;";
+$res_proj=mysqli_query($GLOBALS["mysqli"], $sql);
+
+$indice_projet=-1;
+$cpt_projet=0;
+$lignes_option_select_projet='';
+while ($lig_proj=mysqli_fetch_object($res_proj)) {
+	$lignes_option_select_projet.="<option value='$lig_proj->projet'";
+	if($lig_proj->projet==$projet) {
+		$lignes_option_select_projet.="selected";
+		$indice_projet=$cpt_projet;
+	}
+	$lignes_option_select_projet.=">$lig_proj->projet</option>\n";
+	$cpt_projet++;
+}
+
+echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_projet(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('chgt_projet').selectedIndex=$cpt_projet;
+			}
+		}
+	}
+</script>\n";
+
+echo "<p class='bold'><a href='index.php?projet=$projet'".insert_confirm_abandon().">Retour</a> | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Autre import</a>";
+echo " | <a href='index.php'>Autre projet</a>&nbsp;: ";
+echo "<select name='projet' id='chgt_projet' onchange=\"confirm_changement_projet(change, '$themessage');\">\n";
+echo $lignes_option_select_projet;
+echo "</select>\n";
 
 $afficher_listes=isset($_POST['afficher_listes']) ? $_POST['afficher_listes'] : (isset($_GET['afficher_listes']) ? $_GET['afficher_listes'] : NULL);
 
@@ -91,6 +133,7 @@ $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $
 
 if($action=="upload_file") {
 	echo "</p>\n";
+	echo "</form>\n";
 
 	echo "<h2>Projet $projet</h2>\n";
 
@@ -359,6 +402,7 @@ if($action=="upload_file") {
 }
 else {
 	echo "</p>\n";
+	echo "</form>\n";
 
 	echo "<h2>Projet $projet</h2>\n";
 

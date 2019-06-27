@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -246,10 +246,54 @@ if((!isset($projet))||($projet=="")) {
 // A FAIRE : Tester les doublons dans les noms d'options
 //           J'ai eu un truc bizarre avec des coches d'options autre au nom de classes 5B, 5C,... non pris en compte
 
-//echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
+
+echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+
+$sql="SELECT DISTINCT projet FROM gc_projets ORDER BY projet;";
+$res_proj=mysqli_query($GLOBALS["mysqli"], $sql);
+
+$indice_projet=-1;
+$cpt_projet=0;
+$lignes_option_select_projet='';
+while ($lig_proj=mysqli_fetch_object($res_proj)) {
+	$lignes_option_select_projet.="<option value='$lig_proj->projet'";
+	if($lig_proj->projet==$projet) {
+		$lignes_option_select_projet.="selected";
+		$indice_projet=$cpt_projet;
+	}
+	$lignes_option_select_projet.=">$lig_proj->projet</option>\n";
+	$cpt_projet++;
+}
+
+echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_projet(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('chgt_projet').selectedIndex=$cpt_projet;
+			}
+		}
+	}
+</script>\n";
+
+echo "<p class='bold'><a href='index.php?projet=$projet'".insert_confirm_abandon().">Retour</a>";
+echo " | <a href='index.php'>Autre projet</a>&nbsp;: ";
+echo "<select name='projet' id='chgt_projet' onchange=\"confirm_changement_projet(change, '$themessage');\">\n";
+echo $lignes_option_select_projet;
+echo "</select>\n";
 echo "</p>\n";
-//echo "</div>\n";
+echo "</form>\n";
 
 echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 	<fieldset class='fieldset_opacite50'>
