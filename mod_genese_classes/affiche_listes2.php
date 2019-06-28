@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -324,6 +324,11 @@ $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $
 		require("../lib/footer.inc.php");
 		die();
 	}
+
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=".$projet."&id_aff=".$id_aff."' title=\"Rafraichir l'affichage courant\n(cela peut être utile après des modifications effectuées dans un autre onglet).\">Rafraichir</a>\n";
+
+	echo " | <a href='affiche_listes.php?projet=".$projet."&id_aff=".$id_aff."&afficher_listes=y' title=\"Afficher la liste de requêtes avec les options, classes actuelles, profils,...\">Affichage cette liste avec options</a>\n";
+
 
 	$tab_aff_courant=get_infos_gc_affichage($id_aff);
 

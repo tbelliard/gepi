@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -268,6 +268,7 @@ if(isset($id_aff)) {
 }
 
 if((isset($id_aff))&&(isset($_GET['mode']))&&($_GET['mode']=='nommer_aff')) {
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Affichage n°$id_aff</a></p>\n";
 
 	echo "<h2>Projet $projet : Affichage</h2>\n";
@@ -314,12 +315,16 @@ if((isset($id_aff))&&(isset($_GET['mode']))&&($_GET['mode']=='nommer_aff')) {
 
 	require("../lib/footer.inc.php");
 	die();
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
 
-
-
 $afficher_listes=isset($_POST['afficher_listes']) ? $_POST['afficher_listes'] : (isset($_GET['afficher_listes']) ? $_GET['afficher_listes'] : NULL);
+
+if((isset($id_aff))&&(isset($afficher_listes))) {
+	//.(isset($afficher_listes) ? "afficher_listes=".$afficher_listes : '')
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=".$projet."&id_aff=".$id_aff."&afficher_listes=".$afficher_listes."' title=\"Rafraichir l'affichage courant\n(cela peut être utile après des modifications effectuées dans un autre onglet).\">Rafraichir</a>\n";
+}
 
 // Choix des élèves à afficher:
 if(!isset($afficher_listes)) {
