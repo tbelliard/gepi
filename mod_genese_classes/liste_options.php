@@ -516,6 +516,7 @@ if(isset($lien_fichier_ods)) {
 	die();
 }
 
+$tab_id_classe=array();
 $sql="SELECT id_classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle';";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 while($lig=mysqli_fetch_object($res)) {
@@ -556,7 +557,7 @@ if(!isset($_POST['choix_param'])) {
 		
 			echo "<input type='checkbox' name='id_classe[]' id='id_classe_$cpt_i' value='$lig_clas->id' ";
 			echo "onchange=\"checkbox_champ_change('id_classe_$cpt_i'); changement();\" ";
-			if(in_array($lig_clas->id,$tab_id_classe)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+			if(in_array($lig_clas->id, $tab_id_classe)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 			echo "/><label for='id_classe_$cpt_i'><span id='texte_id_classe_$cpt_i'$temp_style>$lig_clas->classe</span></label>\n";
 			echo "<input type='hidden' name='classe[$lig_clas->id]' value='$lig_clas->classe' />\n";
 			echo "<br />\n";
