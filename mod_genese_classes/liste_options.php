@@ -700,6 +700,13 @@ else {
 	}
 	echo "<p>Vous avez choisi les classes $liste_classes</p>\n";
 
+	if((!isset($tab_champs))||(count($tab_champs)==0)) {
+		echo "<p style='color:red'>Vous n'avez choisi aucune option pour identifier les élèves.<br />
+		<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."'>Choisir des champs.</a></p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	$liste_champs="";
 	for($i=0;$i<count($tab_champs);$i++) {
 		if(isset($_POST[$tab_champs[$i]])) {
@@ -710,32 +717,33 @@ else {
 	}
 	echo "<p>Vous souhaitez faire apparaître les champs&nbsp;: $liste_champs</p>\n";
 
-	$liste_matiere="";
-	$li_select_matiere="";
-	for($i=0;$i<count($matiere);$i++) {
-		if($i>0) {$liste_matiere.=", ";}
-		$liste_matiere.=$matiere[$i];
 
-		$li_select_matiere.="<li>\n";
-		$li_select_matiere.="<select name='matiere[$i]'>\n";
-		for($j=0;$j<count($matiere);$j++) {
-			$li_select_matiere.="<option value='".$matiere[$j]."'";
-			if($i==$j) {$li_select_matiere.=" selected='true'";}
-			$li_select_matiere.=">$matiere[$j]</option>\n";
+	if((isset($matiere))&&(count($matiere)>0)) {
+		$liste_matiere="";
+		$li_select_matiere="";
+		for($i=0;$i<count($matiere);$i++) {
+			if($i>0) {$liste_matiere.=", ";}
+			$liste_matiere.=$matiere[$i];
+
+			$li_select_matiere.="<li>\n";
+			$li_select_matiere.="<select name='matiere[$i]'>\n";
+			for($j=0;$j<count($matiere);$j++) {
+				$li_select_matiere.="<option value='".$matiere[$j]."'";
+				if($i==$j) {$li_select_matiere.=" selected='true'";}
+				$li_select_matiere.=">$matiere[$j]</option>\n";
+			}
+			$li_select_matiere.="</select>\n";
+			$li_select_matiere.="</li>\n";
 		}
-		$li_select_matiere.="</select>\n";
-		$li_select_matiere.="</li>\n";
+
+		echo "<p>Veuillez choisir l'ordre des colonnes options parmi&nbsp;:&nbsp;";
+		echo $liste_matiere;
+		echo "</p>\n";
+
+		echo "<ol>\n";
+		echo $li_select_matiere;
+		echo "</ol>\n";
 	}
-
-	echo "<p>Veuillez choisir l'ordre des colonnes options parmi&nbsp;:&nbsp;";
-	echo $liste_matiere;
-	echo "</p>\n";
-
-	echo "<ol>\n";
-	echo $li_select_matiere;
-	echo "</ol>\n";
-
-
 
 	echo "<p>Type d'export&nbsp;: ";
 	echo "<input type='radio' name='type_export' id='type_export_csv' value='csv' checked /><label for='type_export_csv'>CSV</label> ou \n";
