@@ -2228,6 +2228,7 @@ $_POST['projet']=	4eme_vers_3eme
 	echo "<script type='text/javascript'>
 
 	var couleur_profil=new Array($chaine_couleur_profil);
+	var couleur_profil_fond=new Array($chaine_couleur_profil_fond);
 	var tab_profil=new Array($chaine_profil);
 
 	function set_profil(profil) {
@@ -2441,7 +2442,8 @@ echo "
 				else {
 					for(m=0;m<couleur_profil.length;m++) {
 						if(document.getElementById('profil_'+i).value==tab_profil[m]) {
-							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+							//document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+							document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil_fond[m];
 						}
 					}
 				}
@@ -2472,12 +2474,15 @@ echo "
 				document.getElementById('tr_eleve_'+cpt).style.backgroundColor=couleur_lv3[i];
 			}
 			if(cat=='profil') {
-				document.getElementById('tr_eleve_'+cpt).style.backgroundColor=couleur_profil[i];
+				//document.getElementById('tr_eleve_'+cpt).style.backgroundColor=couleur_profil[i];
+				document.getElementById('tr_eleve_'+cpt).style.backgroundColor=couleur_profil_fond[i];
 			}
 		}
 	}
 	
 	function lance_colorisation() {
+		colorise('aucune',0);
+
 		cat=document.forms['form_affect_eleves_classes'].elements['colorisation'].options[document.forms['form_affect_eleves_classes'].elements['colorisation'].selectedIndex].value;
 		//alert(cat);
 		if(cat=='classe_fut') {

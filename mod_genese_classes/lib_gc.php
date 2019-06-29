@@ -1,7 +1,24 @@
 <?php
 
-$tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
-
+$tabcouleur=array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
+/*
+$tabcouleur=array("aliceblue",
+			"azure",
+			"cornsilk",
+			"aqua",
+			"ghostwhite",
+			"honeydew",
+			"antiquewhite",
+			"aquamarine",
+			"beige",
+			"bisque",
+			"black",
+			"blanchedalmond",
+			"blue",
+			"blueviolet",
+			"brown",
+			"burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
+*/
 
 //=====================================
 /*
@@ -15,7 +32,7 @@ $liste=array('palegoldenrod',
 'mintcream',
 'lightgray',
 'gray');
-*/
+
 $liste=array('palegoldenrod',
 'mistyrose',
 'palegreen',
@@ -26,25 +43,56 @@ $liste=array('palegoldenrod',
 'mintcream',
 'lightgray',
 'gray');
+*/
+
+$liste=array("lavenderblush",
+"azure",
+"cornsilk",
+"#d8faad", // Vert très clair
+"#f4d9f6", // Violet très clair
+"#fff5c6", // Crème (Jaune orange) clair
+"ghostwhite",
+"honeydew",
+"palegreen",
+"aqua",
+'palegoldenrod',
+'mistyrose',
+'moccasin',
+'lightskyblue',
+'darkseagreen',
+'olive',
+'mintcream');
 
 if(isset($classe_fut)) {
+	/*
+	echo "<pre>";
+	print_r($classe_fut);
+	echo "</pre>";
+	*/
 	$chaine_couleur_classe_fut="'$liste[0]'";
+	//echo "\$classe_fut[0]=".$classe_fut[0]." -&gt; '".$liste[0]."'<br />";
 	for($i=1;$i<count($classe_fut)-3;$i++) {
 		if(isset($liste[$i])) {
 			$chaine_couleur_classe_fut.=",'$liste[$i]'";
+			//echo "\$classe_fut[$i]=".$classe_fut[$i]." -&gt; '".$liste[$i]."'<br />";
 		}
 		else {
 			$chaine_couleur_classe_fut.=",'$tabcouleur[$i]'";
+			//echo "\$classe_fut[$i]=".$classe_fut[$i]." -&gt; '".$tabcouleur[$i]."'<br />";
 		}
+		
 	}
 	$chaine_couleur_classe_fut.=",'lightgray','gray','white'";
 
 	//echo "\$chaine_couleur_classe_fut=$chaine_couleur_classe_fut<br />";
 	$tab_couleur_classe_fut=explode(",", preg_replace("/[^A-Za-z0-9,]/", "", $chaine_couleur_classe_fut));
+
+	//echo "\$chaine_couleur_classe_fut=".$chaine_couleur_classe_fut."<br />";
 }
 //=====================================
 
 //=====================================
+/*
 $chaine_couleur_lv1="'palegoldenrod',
 'mintcream',
 'mistyrose',
@@ -55,10 +103,33 @@ $chaine_couleur_lv1="'palegoldenrod',
 'olive',
 'lightgray',
 'gray'";
+*/
+$chaine_couleur_lv1="'lavenderblush',
+'azure',
+'cornsilk',
+'#d8faad', // Vert très clair
+'#f4d9f6', // Violet très clair
+'#fff5c6', // Crème (Jaune orange) clair
+'ghostwhite',
+'honeydew',
+'palegreen',
+'aqua',
+'palegoldenrod',
+'mistyrose',
+'moccasin',
+'lightskyblue',
+'darkseagreen',
+'olive',
+'mintcream',
+'lightgray',
+'gray'";
 //=====================================
 
-$chaine_couleur_lv2="'lightgreen','lightpink','lightblue','gold','lightgray','gray','olive'";
-$chaine_couleur_lv3="'purple','greenyellow','violet','chartreuse','lightgray','gray','olive'";
+//$chaine_couleur_lv2="'lightgreen','lightpink','lightblue','gold','lightgray','gray','olive'";
+//$chaine_couleur_lv3="'purple','greenyellow','violet','chartreuse','lightgray','gray','olive'";
+
+$chaine_couleur_lv2=$chaine_couleur_lv1;
+$chaine_couleur_lv3=$chaine_couleur_lv1;
 
 // Les variables $chaine_couleur_* sont utilisées pour initialiser des tableaux javascript.
 
@@ -74,12 +145,14 @@ for($loop=0;$loop<count($tab_profil);$loop++) {
 // A modifier...
 //$chaine_couleur_profil="'red','orangered','gray','green','blue'";
 //$chaine_profil="'GC','C','RAS','B','TB'";
+$chaine_couleur_profil_fond="";
 $chaine_couleur_profil="";
 $chaine_profil="";
 
 //$tab_profil=array($chaine_profil);
 //$tab_couleur_profil=array($chaine_couleur_profil);
 $tab_couleur_profil=array('red','orangered','gray','green','blue');
+$tab_couleur_profil_fond=array('red','orangered','gray','green','blue');
 $tab_couleur_profil_assoc=array();
 for($loop=0;$loop<count($tab_profil);$loop++) {
 	$tab_couleur_profil_assoc[$tab_profil[$loop]]=$tab_couleur_profil[$loop];
@@ -88,6 +161,11 @@ for($loop=0;$loop<count($tab_profil);$loop++) {
 		$chaine_couleur_profil.=",";
 	}
 	$chaine_couleur_profil.="'".$tab_couleur_profil[$loop]."'";
+
+	if($chaine_couleur_profil_fond!="") {
+		$chaine_couleur_profil_fond.=",";
+	}
+	$chaine_couleur_profil_fond.="'".$tab_couleur_profil_fond[$loop]."'";
 
 	if($chaine_profil!="") {
 		$chaine_profil.=",";
@@ -108,9 +186,11 @@ if(getSettingAOui("mod_genese_classes_profils_v2")) {
 	$tmp_tab_niveau_traduction=array('Très bon niveau', 'Bon niveau', 'Moyen/Satisfaisant', 'Niveau fragile', 'Niveau faible/insuffisant');
 
 	$chaine_couleur_profil="";
+	$chaine_couleur_profil_fond="";
 	$chaine_profil="";
 
 	$tmp_tab_couleur_profil=array('blue','green','gray','orangered','red');
+	$tmp_tab_couleur_profil_fond=array('#aef0ec','#bbeea5','#e6e6e6','#f9d683','#ff9292');
 	$tab_couleur_profil=array();
 	$tab_couleur_profil_assoc=array();
 
@@ -121,6 +201,7 @@ if(getSettingAOui("mod_genese_classes_profils_v2")) {
 			$tab_profil_traduction[$cpt_profil]=$tmp_tab_profil_traduction[$loop_profil]." - ".$tmp_tab_niveau_traduction[$loop_niveau];
 			$tab_profil_traduction_assoc[$tab_profil[$cpt_profil]]=$tmp_tab_profil_traduction[$loop_profil]." - ".$tmp_tab_niveau_traduction[$loop_niveau];
 			$tab_couleur_profil[$cpt_profil]=$tmp_tab_couleur_profil[$loop_profil];
+			$tab_couleur_profil_fond[$cpt_profil]=$tmp_tab_couleur_profil_fond[$loop_profil];
 			$tab_couleur_profil_assoc[$tab_profil[$cpt_profil]]=$tmp_tab_couleur_profil[$loop_profil];
 			$cpt_profil++;
 		}
@@ -133,6 +214,11 @@ if(getSettingAOui("mod_genese_classes_profils_v2")) {
 			$chaine_couleur_profil.=",";
 		}
 		$chaine_couleur_profil.="'".$tab_couleur_profil[$loop]."'";
+
+		if($chaine_couleur_profil_fond!="") {
+			$chaine_couleur_profil_fond.=",";
+		}
+		$chaine_couleur_profil_fond.="'".$tab_couleur_profil_fond[$loop]."'";
 
 		if($chaine_profil!="") {
 			$chaine_profil.=",";

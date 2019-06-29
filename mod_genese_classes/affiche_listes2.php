@@ -367,6 +367,11 @@ $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $
 
 		echo "<div id='div_ods' style='text-align:center; border:1px solid black;' class='fieldset_opacite50'>\n";
 		echo "</div>\n";
+
+		echo "<div id='div_ods' style='text-align:center; border:1px solid black; margin-top:1em;' class='fieldset_opacite50'>\n";
+		echo "<p><em>NOTE&nbsp;:</em><br />
+		En cliquant sur un élève, dans une des listes, vous pouvez rapidement effectuer un changement de classe future.</p>";
+		echo "</div>\n";
 	
 		/*
 		echo "<hr />\n";

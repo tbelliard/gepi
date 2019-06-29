@@ -644,6 +644,15 @@ if(!isset($afficher_listes)) {
 	*/
 
 	//=============================
+	// Ménage pour ne pas avoir deux fois 'Red', 'Dep' et '':
+	$tmp_classe_fut=$classe_fut;
+	$classe_fut=array();
+	for($i=0;$i<count($tmp_classe_fut);$i++) {
+		if(($tmp_classe_fut[$i]!='Red')&&($tmp_classe_fut[$i]!='Dep')&&($tmp_classe_fut[$i]!='')) {
+			$classe_fut[]=$tmp_classe_fut[$i];
+		}
+	}
+	unset($tmp_classe_fut);
 	$classe_fut[]="Red";
 	$classe_fut[]="Dep";
 	$classe_fut[]=""; // Vide pour les Non Affectés
@@ -1615,6 +1624,17 @@ else {
 	// 20170708
 	include("gc_func.inc.php");
 	$classe_fut=get_classe_fut();
+
+	// Ménage pour ne pas avoir deux fois 'Red', 'Dep' et '':
+	$tmp_classe_fut=$classe_fut;
+	$classe_fut=array();
+	for($i=0;$i<count($tmp_classe_fut);$i++) {
+		if(($tmp_classe_fut[$i]!='Red')&&($tmp_classe_fut[$i]!='Dep')&&($tmp_classe_fut[$i]!='')) {
+			$classe_fut[]=$tmp_classe_fut[$i];
+		}
+	}
+	unset($tmp_classe_fut);
+
 	$classe_fut_0=$classe_fut;
 
 	$classe_fut[]="Red";
@@ -3006,6 +3026,7 @@ echo "
 	var couleur_lv3=new Array($chaine_couleur_lv3);
 
 	var couleur_profil=new Array($chaine_couleur_profil);
+	var couleur_profil_fond=new Array($chaine_couleur_profil_fond);
 	var tab_profil=new Array($chaine_profil);
 
 	function colorise(mode,n) {
@@ -3051,7 +3072,8 @@ echo "
 			else {
 				for(m=0;m<couleur_profil.length;m++) {
 					if(document.getElementById('profil_'+i).value==tab_profil[m]) {
-						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+						//document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil_fond[m];
 					}
 				}
 			}
@@ -3061,6 +3083,8 @@ echo "
 	colorise('classe_fut',".count($classe_fut).");
 
 	function lance_colorisation() {
+		colorise('aucune',0);
+
 		cat=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
 		//alert(cat);
 		if(cat=='classe_fut') {

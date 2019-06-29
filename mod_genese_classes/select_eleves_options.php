@@ -1282,6 +1282,7 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 	echo "<script type='text/javascript'>
 
 	var couleur_profil=new Array($chaine_couleur_profil);
+	var couleur_profil_fond=new Array($chaine_couleur_profil_fond);
 	var tab_profil=new Array($chaine_profil);
 
 	function set_profil(profil) {
@@ -1299,7 +1300,7 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 		}
 		cacher_div('div_set_profil');
 	}
-	
+
 	function affiche_set_profil(cpt) {
 		document.getElementById('profil_courant').value=cpt;
 		afficher_div('div_set_profil','y',100,100);
@@ -1552,7 +1553,8 @@ function colorise(mode,n) {
 			else {
 				for(m=0;m<couleur_profil.length;m++) {
 					if(document.getElementById('profil_'+i).value==tab_profil[m]) {
-						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+						//document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+						document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil_fond[m];
 					}
 				}
 			}
@@ -1750,7 +1752,8 @@ function colorise_ligne2(cpt) {
 		else {
 			for(m=0;m<couleur_profil.length;m++) {
 				if(document.getElementById('profil_'+i).value==tab_profil[m]) {
-					document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+					//document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil[m];
+					document.getElementById('tr_eleve_'+i).style.backgroundColor=couleur_profil_fond[m];
 				}
 			}
 		}
@@ -1774,6 +1777,7 @@ function lance_colorisation() {
 		colorise(cat,".count($lv3).");
 	}
 	if(cat=='profil') {
+		//alert('plop');
 		colorise(cat,".count($tab_profil).");
 	}
 	if(cat=='aucune') {
