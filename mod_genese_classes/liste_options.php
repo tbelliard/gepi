@@ -684,6 +684,13 @@ for(i=0;i<champs.length;i++) {
 
 }
 else {
+	if((!isset($id_classe))||(count($id_classe)==0)) {
+		echo "<p style='color:red'>Vous n'avez choisi aucune classe.<br />
+		<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."'>Choisir une ou des classes.</a></p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	$liste_classes="";
 	for($i=0;$i<count($id_classe);$i++) {
 		if($i>0) {$liste_classes.=", ";}
