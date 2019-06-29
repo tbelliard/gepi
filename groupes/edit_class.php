@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -831,7 +831,7 @@ echo "</form>\n";
 // 20171208 Ajouter un lien sur le nom de la classe vers classes/classes_const.php?id_classe=32 avec un title.
 echo "<h3>Gestion des enseignements pour la classe&nbsp;: ";
 if(acces('/classes/classes_const.php', $_SESSION['statut'])) {
-	echo '<strong><a href="" title="Gérer les régime, statut de redoublant, CPE, '.getSettingValue('gepi_prof_suivi').',... des élèves de la classe.">'.$classe["classe"].'</a></strong>';
+	echo '<strong><a href="../classes/classes_const.php?id_classe='.$id_classe.'" title="Gérer les régime, statut de redoublant, CPE, '.getSettingValue('gepi_prof_suivi').',... des élèves de la classe.">'.$classe["classe"].'</a></strong>';
 }
 else {
 	echo '<strong>'.$classe["classe"].'</strong>';
