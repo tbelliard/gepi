@@ -172,14 +172,8 @@ elseif(!isset($creation_copie)) {
 	$get_groups_for_class_avec_visibilite="y";
 	$groups_src=get_groups_for_class($id_classe_source);
 	$groups_dest=get_groups_for_class($id_classe_dest);
-	if(!is_array($groups_src)) {
+	if((!is_array($groups_src))||(count($groups_src)==0)) {
 		echo "<p style='color:red'>Il n'existe aucun enseignement dans la classe <strong>".$classe_source."</strong></p>";
-		require("../lib/footer.inc.php");
-		die();
-	}
-
-	if(!is_array($groups_dest)) {
-		echo "<p style='color:red'>Il n'existe aucun enseignement dans la classe <strong>".$classe_dest."</strong></p>";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -208,7 +202,7 @@ elseif(!isset($creation_copie)) {
 		<td>
 			<input type='checkbox' name='new_groupe_dest[$cpt]' id='new_groupe_dest_$cpt' value='y' title=\"Ce choix n'est pris en compte que si aucun groupe existant n'est sélectionné pour cette association\" /><label for='new_groupe_dest_$cpt'>Créer un nouvel enseignement</label><br />\n";
 
-			if(count($groups_dest)>0) {
+			if((is_array($groups_dest))&&(count($groups_dest)>0)) {
 				echo "
 			<select name='id_groupe_dest[$cpt]'>
 				<option value=''>---</option>";
