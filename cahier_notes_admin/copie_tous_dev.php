@@ -168,13 +168,25 @@ elseif(!isset($creation_copie)) {
 	$classe_source=get_class_from_id($id_classe_source);
 	$classe_dest=get_class_from_id($id_classe_dest);
 
-	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-
-	echo "<p class='bold'>Copie de devoirs de la classe de <strong>$classe_source</strong> vers la classe de <strong>$classe_dest</strong></p>\n";
 	$get_groups_for_class_avec_proflist="y";
 	$get_groups_for_class_avec_visibilite="y";
 	$groups_src=get_groups_for_class($id_classe_source);
 	$groups_dest=get_groups_for_class($id_classe_dest);
+	if(!is_array($groups_src)) {
+		echo "<p style='color:red'>Il n'existe aucun enseignement dans la classe <strong>".$classe_source."</strong></p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	if(!is_array($groups_dest)) {
+		echo "<p style='color:red'>Il n'existe aucun enseignement dans la classe <strong>".$classe_dest."</strong></p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+	echo "<p class='bold'>Copie de devoirs de la classe de <strong>$classe_source</strong> vers la classe de <strong>$classe_dest</strong></p>\n";
 
 	echo "<input type='hidden' name='id_classe_source' value='$id_classe_source' />\n";
 	echo "<input type='hidden' name='id_classe_dest' value='$id_classe_dest' />\n";
@@ -196,7 +208,7 @@ elseif(!isset($creation_copie)) {
 		<td>
 			<input type='checkbox' name='new_groupe_dest[$cpt]' id='new_groupe_dest_$cpt' value='y' title=\"Ce choix n'est pris en compte que si aucun groupe existant n'est sélectionné pour cette association\" /><label for='new_groupe_dest_$cpt'>Créer un nouvel enseignement</label><br />\n";
 
-			if(count($groups_dest>0)) {
+			if(count($groups_dest)>0) {
 				echo "
 			<select name='id_groupe_dest[$cpt]'>
 				<option value=''>---</option>";
