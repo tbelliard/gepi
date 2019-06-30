@@ -228,9 +228,11 @@ if(isset($_POST['valider_param'])) {
 			}
 		}
 
-		for($i=0;$i<count($matiere);$i++) {
-			$ecriture=fwrite($fichier_content_xml,'<table:table-column table:style-name="co2" table:default-cell-style-name="ce6"/>');
-			$nb_col++;
+		if((isset($matiere))&&(count($matiere)>0)) {
+			for($i=0;$i<count($matiere);$i++) {
+				$ecriture=fwrite($fichier_content_xml,'<table:table-column table:style-name="co2" table:default-cell-style-name="ce6"/>');
+				$nb_col++;
+			}
 		}
 
 		$nb_col_vides=1023-$nb_col;
