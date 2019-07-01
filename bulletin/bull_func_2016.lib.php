@@ -5047,7 +5047,7 @@ echo "</pre>";
 		}
 
 
-
+		// 20190701
 		// Cadre chef étab
 
 		$pdf->SetFillColor($param_bull2016["couleur_communication_famille"]["R"], $param_bull2016["couleur_communication_famille"]["V"], $param_bull2016["couleur_communication_famille"]["B"]);
@@ -12741,7 +12741,7 @@ echo "</pre>";
 
 
 
-
+		// 20190701
 		// Cadre Visa chef étab
 		$x_courant=$param_bull2016["x_signature_PP_bilan_cycle"]+$param_bull2016["largeur_signature_PP_bilan_cycle"];
 
@@ -12749,6 +12749,8 @@ echo "</pre>";
 		$pdf->SetDrawColor(255, 255, 255);
 		$pdf->Rect($x_courant, $y_visa, $param_bull2016["largeur_signature_chef_bilan_cycle"], $param_bull2016["hauteur_signature_bilan_cycle"], 'DF');
 
+		/*
+		// Décalé plus bas pour écrire par dessus la signature
 		$texte="Visa du principal du collège";
 		$y_courant=$y_visa;
 		$pdf->SetXY($x_courant, $y_courant);
@@ -12756,20 +12758,24 @@ echo "</pre>";
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetFont('DejaVu','',7);
 		$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"],7, $texte,0,2,'L');
-
-/*
-		$pdf->SetXY($x_courant, $y_visa);
-		$pdf->SetFillColor(0, 0, 0);
-		$pdf->SetTextColor(0, 0, 0);
-		$pdf->drawTextBox($texte, $param_bull2016["largeur_signature_chef_bilan_cycle"], $param_bull2016["hauteur_signature_bilan_cycle"], 'L', 'T', 0);
-*/
+		*/
 
 		$pdf->SetXY($x_courant, $y_visa);
 		if((isset($signature_bull[$tab_bull['id_classe']]))&&($signature_bull[$tab_bull['id_classe']]!="")&&(file_exists($signature_bull[$tab_bull['id_classe']]))) {
 			$fich_sign=$signature_bull[$tab_bull['id_classe']];
 
-			$X_sign = $param_bull2016["x_signature_chef"];
+			//$X_sign = $param_bull2016["x_signature_chef"]; // C'est un positionnement pour la page 2 du bulletin, pas pour le socle.
+			$X_sign = $x_courant;
 			$Y_sign = $y_visa;
+
+			//======================
+			/*
+			// DEBUG:
+			$pdf->SetXY($x_courant+20, $y_visa+20);
+			$texte="\$X_sign=".$X_sign;
+			$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"], 7, $texte,0,2,'L');
+			*/
+			//======================
 
 			$largeur_dispo=$param_bull2016["largeur_signature_chef_bilan_cycle"]-10;
 			// On ajuste mieux la hauteur de l'image, quitte à ce que le tampon/signature soit en surimpression (ou plutôt sous-impression) avec le Nom du chef en première ligne du cadre.
@@ -12794,18 +12800,52 @@ echo "</pre>";
 			echo "\$H_sign=$H_sign<br />\n";
 			*/
 
+// A FAIRE : TESTER LA LARGEUR DE L'IMAGE... RATIO A REVOIR CI-DESSUS?
+// OU ORDRE A MODIFIER POUR METTRE LE TEXTE PAR DESSUS L'IMAGE
+
 			$X_sign += ($param_bull2016["largeur_signature_chef_bilan_cycle"]-$L_sign) / 2;
 			$Y_sign += ($param_bull2016["hauteur_signature_bilan_cycle"]-$H_sign) / 2;
 
 			$tmp_dim_photo=getimagesize($fich_sign);
 
+			//======================
+			/*
+			// DEBUG:
+			$pdf->SetXY($x_courant, $y_visa+20);
+			//$texte="\$tmp_dim_photo[2]=".$tmp_dim_photo[2];
+			$texte="\$x_courant=".$x_courant." \$y_visa=".$y_visa;
+			$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"], 7, $texte,0,2,'L');
+
+			$pdf->SetXY($x_courant, $y_visa+30);
+			//$texte="\$tmp_dim_photo[2]=".$tmp_dim_photo[2];
+			$texte="\$X_sign=".$X_sign." \$Y_sign=".$Y_sign;
+			$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"], 7, $texte,0,2,'L');
+			*/
+			//======================
+
 			if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
 				//$pdf->Image($fich_sign, $X_sign, $Y_sign, $L_sign, $H_sign);
+				//======================
 				$pdf->Image($fich_sign, round($X_sign), round($Y_sign), round($L_sign), round($H_sign));
+				// DEBUG:
+				//$pdf->Image($fich_sign, $x_courant, $y_visa, round($L_sign), round($H_sign));
+				//======================
 			}
 		}
 
 		//$pdf->MultiCell($param_bull2016["largeur_signature_chef_bilan_cycle"], 5, "Le ".strftime("%d/%m/%Y").", ".$tab_bull['suivi_par'], 0, 2, '');
+
+		//======================
+		// On remet par dessus l'image:
+		$x_courant=$param_bull2016["x_signature_PP_bilan_cycle"]+$param_bull2016["largeur_signature_PP_bilan_cycle"];
+		$texte="Visa du principal du collège";
+		$y_courant=$y_visa;
+		$pdf->SetXY($x_courant, $y_courant);
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetFont('DejaVu','',7);
+		$pdf->Cell($param_bull2016["largeur_signature_chef_bilan_cycle"],7, $texte,0,2,'L');
+		//======================
 
 		$texte=$tab_bull['suivi_par'];
 		$y_courant+=4;
