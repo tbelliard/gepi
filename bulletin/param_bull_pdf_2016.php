@@ -1021,7 +1021,7 @@ echo add_token_field();
 	if(getSettingAOui('active_mod_engagements')) {
 		$tab_engagements=get_tab_engagements();
 
-		if(count($tab_engagements["indice"]>0)) {
+		if(count($tab_engagements["indice"])>0) {
 			echo "
 <a name='engagements'></a>
 <h3>Engagements</h3>
