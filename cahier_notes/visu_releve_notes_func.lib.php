@@ -1329,7 +1329,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 	
 				if (($choix_periode!='intervalle')||
 				(($choix_periode=='intervalle')&&(isset($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])))) {
-				//count($tab_rel['eleve'][$i]['groupe'][$j]['devoir']>0)))) {
+				//count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])>0
 					if ($tab_rel['affiche_categories']) {
 						// On regarde si on change de catégorie de matière
 						if ($tab_rel['eleve'][$i]['groupe'][$j]['id_cat'] != $prev_cat_id) {
