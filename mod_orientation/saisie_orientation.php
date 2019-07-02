@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -92,6 +92,23 @@ if(mysqli_num_rows($res_o)>0) {
 		$tab_orientation2[$lig_o->id]['description']=$lig_o->description;
 
 		$cpt++;
+	}
+}
+
+if(isset($id_classe)) {
+	$tab_orientation_possibles_classe=array();
+	$sql="SELECT oob.*, oom.mef_code FROM o_orientations_base oob, o_orientations_mefs oom WHERE oob.id=oom.id_orientation AND oom.mef_code IN (SELECT DISTINCT mef_code FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$id_classe."') ORDER BY titre;";
+	//echo "$sql<br />";
+	$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_o)>0) {
+		$cpt=0;
+		while($lig_o=mysqli_fetch_object($res_o)) {
+			$tab_orientation_possibles_classe[$lig_o->id]['id_orientation']=$lig_o->id;
+			$tab_orientation_possibles_classe[$lig_o->id]['titre']=$lig_o->titre;
+			$tab_orientation_possibles_classe[$lig_o->id]['description']=$lig_o->description;
+
+			$cpt++;
+		}
 	}
 }
 
@@ -534,8 +551,23 @@ echo "
 					<th>Élève</th>
 					<th>Nom prénom</th>
 					<th>Voeux</th>
-					<th title=\"Copier les voeux vers les choix d'orientation de même rang\"><img src='../images/icons/copy.png' class='icone16' alt='Copier' /></th>
-					<th>Orientation proposée/conseillée</th>
+					<th title=\"Copier les voeux vers les choix d'orientation de même rang.\n\nLorsque des voeux ont été formulés, il est possible de valider ces voeux en effectuant une simple copie de la colonne Voeux vers la colonne Orientation proposée/conseillée.\"><img src='../images/icons/copy.png' class='icone16' alt='Copier' /></th>
+					<th>
+						Orientation proposée/conseillée";
+if((isset($tab_orientation_possibles_classe))&&(count($tab_orientation_possibles_classe)>0)) {
+	echo "
+						<br />
+						<select name='id_orientation_1_tous' id='id_orientation_1_tous' onchange=\"changement();imposer_orientation1();\" title=\"Choisissez une orientation 1 à imposer à tous les élèves ci-dessous.\nVous pourrez modifier ce choix pour un ou plusieurs élèves ci-dessous avant de valider.\">
+							<option value=''>---</option>";
+	foreach($tab_orientation_possibles_classe as $key => $value) {
+		echo "
+							<option value='$key' title=\"".$value['description']."\">".$value['titre']."</option>";
+	}
+	echo "
+						</select>";
+}
+echo "
+					</th>
 				</tr>
 			</thead>
 			<tbody>";
@@ -681,7 +713,9 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 		echo "
 							<option value='0' title=\"Si l'orientation souhaitée n'est pas dans la liste proposée, choisissez 'Autre orientation' et précisez en commentaire l'orientation.\"".$selected.">Autre orientation</option>
 						</select>
-						<input type='text' name='commentaire_".$lig_ele->id_eleve."[]'  id='commentaire_".$lig_ele->id_eleve."_".$loop."'value=\"".$commentaire."\" size='30' onchange=\"changement();\" /><br />";
+						<input type='text' name='commentaire_".$lig_ele->id_eleve."[]'  id='commentaire_".$lig_ele->id_eleve."_".$loop."'value=\"".$commentaire."\" size='30' onchange=\"changement();\" />
+						<img src='../images/icons/ico_aide.png' class='icone16' title=\"Préciser le choix effectuée dans le champ SELECT à gauche, ou saisir une orientation autre non initialement prévue dans la liste des oritentations possibles.\" />
+						<br />";
 
 	}
 
@@ -726,6 +760,27 @@ echo "
 								document.getElementById('commentaire_'+suffixe).value=document.getElementById('commentaire_voeu_'+suffixe).innerHTML;
 								changement();
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	function imposer_orientation1() {
+		var index_choisi=document.getElementById('id_orientation_1_tous').selectedIndex;
+		var id_orientation_choisie=document.getElementById('id_orientation_1_tous').options[index_choisi].value;
+		//alert('index_choisi='+index_choisi+' et id_orientation_choisie='+id_orientation_choisie);
+
+		champ_select=document.getElementsByTagName('select');
+		for(i=0;i<champ_select.length;i++) {
+			id_champ=champ_select[i].getAttribute('id');
+			if(id_champ.substr(0,12)=='orientation_') {
+				if(id_champ.substr(id_champ.length-2)=='_1') {
+					for(j=0;j<champ_select[i].options.length;j++) {
+						if(champ_select[i].options[j].value==id_orientation_choisie) {
+							champ_select[i].selectedIndex=j;
+							break;
 						}
 					}
 				}
