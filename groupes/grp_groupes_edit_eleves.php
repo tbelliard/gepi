@@ -518,7 +518,7 @@ $chaine_periode_ouverte.="</p>";
 
 	/*
 	echo "<div style='float:right; text-align:center;'>\n";
-	if(count($current_grp_groupes['groupes']>1)) {
+	if(count($current_grp_groupes['groupes'])>1) {
 		echo "
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='form_copie_ele' method='post'>
 		<fieldset class='fieldset_opacite50'>
