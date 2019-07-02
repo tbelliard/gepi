@@ -4998,15 +4998,18 @@ echo "</pre>";
 
 		// Justifiées
 		if($param_bull2016["bull2016_aff_abs_justifiees"]=="y") {
-			$nb_j=$tab_bull['eleve'][$i]['eleve_absences']-$tab_bull['eleve'][$i]['eleve_nj'];
-			$s="";
-			if("$nb_j"=="?") {
-				$s="s";
-			}
-			elseif($nb_j<=1) {
+			if((is_int($tab_bull['eleve'][$i]['eleve_absences']))&&(is_int($tab_bull['eleve'][$i]['eleve_nj']))) {
+				$nb_j=$tab_bull['eleve'][$i]['eleve_absences']-$tab_bull['eleve'][$i]['eleve_nj'];
 				$s="";
+				if($nb_j<=1) {
+					$s="";
+				}
+				elseif($nb_j>=1) {
+					$s="s";
+				}
 			}
-			elseif($nb_j>=1) {
+			else {
+				$nb_j='?';
 				$s="s";
 			}
 			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards_2+$decal);
