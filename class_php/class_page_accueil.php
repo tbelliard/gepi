@@ -1507,6 +1507,41 @@ if(getSettingAOui('active_bulletins')) {
 			}
 		}
 
+		if((($_SESSION['statut']=='administrateur')&&
+				(getSettingAOui('active_mod_orientation'))
+			)||
+			(($_SESSION['statut']=='scolarite')&&
+				(getSettingAOui('active_mod_orientation'))&&
+				(
+					(getSettingAOui('OrientationSaisieTypeScolarite'))||
+					(getSettingAOui('OrientationSaisieOrientationScolarite'))||
+					(getSettingAOui('OrientationSaisieVoeuxScolarite'))
+				)
+			)||
+			(($_SESSION['statut']=='professeur')&&
+				(getSettingAOui('active_mod_orientation'))&&
+				(is_pp($_SESSION['login']))&&
+				(
+					(getSettingAOui('OrientationSaisieTypePP'))||
+					(getSettingAOui('OrientationSaisieOrientationPP'))||
+					(getSettingAOui('OrientationSaisieVoeuxPP'))
+				)
+			)||
+			(($_SESSION['statut']=='cpe')&&
+				(getSettingAOui('active_mod_orientation'))&&
+				(
+					(getSettingAOui('OrientationSaisieTypeCpe'))||
+					(getSettingAOui('OrientationSaisieOrientationCpe'))||
+					(getSettingAOui('OrientationSaisieVoeuxCpe'))
+				)
+			)
+		) {
+				$this->creeNouveauItem("/mod_orientation/index.php",
+				  "Orientation",
+				  "Saisir les voeux, l'orientation des élèves pour faire apparaître ces informations sur les bulletins.");
+		}
+		
+
 	}
 
 	if ($this->statutUtilisateur=='scolarite'){
