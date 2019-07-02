@@ -11,6 +11,7 @@ Bulletins:
   partiellement close.
 - Possibilité d'envoyer les bulletins par mail lors de la génération des 
   bulletins en fin de période.
+- Facilité de sélection d'un fichier de signature pour une classe.
 
 Carnet de notes:
 - Facilité de transfert des notes d'un enseignement à un autre dans le cas 
@@ -20,6 +21,9 @@ Cahiers de textes 2:
 - Ajout d'une visionneuse Instrumenpoche.
 - Mise à jour de l'app GeoGebra.
 - Possibilité de copier d'un clic le code source HTML d'une vignette.
+
+Orientation:
+- Facilité de saisie globale de l'orientation pour une classe donnée.
 
 AID:
 - Possibilité de désigner comme "professeur" un compte scolarité ou cpe.

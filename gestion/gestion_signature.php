@@ -822,12 +822,30 @@ if($mode=='choix_assoc_fichier_user_classe') {
 			</tr>";
 
 	$cpt=0;
+	$chaine_cpt='';
 	for($loop_c=0;$loop_c<count($tab_classe);$loop_c++) {
+		if($chaine_cpt!='') {
+			$chaine_cpt.=',';
+		}
+		$chaine_cpt.=$cpt;
 		echo "
 			<tr>
 				<td title=\"".$tab_classe[$loop_c]['suivi_par']."\">
 					".$tab_classe[$loop_c]['classe']."<br />
-					<span style='font-size:small'>".$tab_classe[$loop_c]['suivi_par']."</span>
+					<span style='font-size:small'>".$tab_classe[$loop_c]['suivi_par']."</span><br />
+					<select name='choix_fichier_classe_".$loop_c."' id='choix_fichier_classe_".$loop_c."' onchange=\"select_fichier(".$loop_c.");changement();\" style='max-width:10em;' title=\"Choisir ce nom de fichier pour tous les utilisateurs autorisés à signer avec ce fichier.\">
+						<option value=''>---</option>";
+		$tmp_tab_deja=array();
+		foreach($tab_fichiers as $key => $value) {
+			$tmp_nom_fichier=basename($value);
+			if(!in_array($tmp_nom_fichier, $tmp_tab_deja)) {
+				echo "
+						<option value='".$key."'>".$tmp_nom_fichier."</option>";
+				$tmp_tab_deja[]=$tmp_nom_fichier;
+			}
+		}
+		echo "
+					</select>
 				</td>";
 		for($loop=0;$loop<count($tab_user);$loop++) {
 			echo "
@@ -871,6 +889,11 @@ if($mode=='choix_assoc_fichier_user_classe') {
 			</tr>";
 	}
 
+	if($chaine_cpt!='') {
+		$chaine_cpt.=',';
+	}
+	$chaine_cpt.=$cpt;
+
 	echo "
 		</table>
 		".add_token_field()."
@@ -906,6 +929,33 @@ if($mode=='choix_assoc_fichier_user_classe') {
 							}
 						}
 					}
+				}
+			}
+			
+			function select_fichier(loop_classe) {
+				var chaine_cpt=new Array(".$chaine_cpt.");
+
+				//alert(document.getElementById('choix_fichier_classe_'+loop_classe).selectedIndex);
+
+				fichier=document.getElementById('choix_fichier_classe_'+loop_classe).options[document.getElementById('choix_fichier_classe_'+loop_classe).selectedIndex].innerHTML;
+
+				indice_depart=chaine_cpt[loop_classe];
+				indice_fin=chaine_cpt[loop_classe+1];
+				//alert('indice_depart='+indice_depart+' et indice_fin='+indice_fin);
+				for(i=indice_depart;i<indice_fin;i++) {
+					if(document.getElementById('id_fichier_'+i)) {
+						for(j=0;j<document.getElementById('id_fichier_'+i).options.length;j++) {
+							if(document.getElementById('id_fichier_'+i).options[j].innerHTML==fichier) {
+								document.getElementById('id_fichier_'+i).options[j].selected=true;
+								update_checkbox(i);
+								//break;
+							}
+						}
+					}
+				}
+
+				for(i=0;i<$cpt;i++) {
+					update_checkbox(i);
 				}
 			}
 		</script>
