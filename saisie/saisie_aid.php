@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -98,6 +98,9 @@ if (isset($_POST['is_posted'])) {
 
 	$nb_periode=$tab_aid['maxper'];
 
+	//$tab_notes_app_aid_prec=array();
+	$liste_modifs='';
+
 	$k=1;
 	while ($k < $nb_periode + 1) {
 		if (($k >= $display_begin) and ($k <= $display_end)) {
@@ -105,6 +108,7 @@ if (isset($_POST['is_posted'])) {
 				//f_write_tmp("\$_POST['app_grp_'.$k]=".$_POST['app_grp_'.$k]);
 				//f_write_tmp("\$current_group[\"classe\"][\"ver_periode\"]['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]);
 				if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
 				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 
 					if (isset($NON_PROTECT["app_grp_".$k])) {
@@ -122,6 +126,13 @@ if (isset($_POST['is_posted'])) {
 					$test_grp_app_query = mysqli_query($GLOBALS["mysqli"], $sql);
 					$test = mysqli_num_rows($test_grp_app_query);
 					if ($test != "0") {
+						// 20190703
+						$lig_tmp=mysqli_fetch_object($test_grp_app_query);
+						if(stripslashes(nl2br($app))!=nl2br($lig_tmp->appreciation)) {
+							//$tab_notes_app_aid_prec[$k]['app_grp']="Modification de l'appréciation de groupe en période $k de \n=========================\n".$lig_tmp->appreciation."\n=========================\nen\n=========================\n".$app."\n=========================\n";
+							$liste_modifs.="\nModification de l'appréciation de groupe en période $k de \n=========================\n".$lig_tmp->appreciation."\n=========================\nen\n=========================\n".($app)."\n=========================\n";
+						}
+
 						if ($app != "") {
 							$sql="UPDATE aid_appreciations_grp SET appreciation='" . $app . "' WHERE (id_aid='".$aid_id."' AND periode='$k' AND indice_aid='".$indice_aid."')";
 						} else {
@@ -137,6 +148,9 @@ if (isset($_POST['is_posted'])) {
 						}
 					} else {
 						if ($app != "") {
+							// 20190703
+							$liste_modifs.="\nAjout d'une nouvelle appréciation de groupe en période $k\n=========================\n".$app."\n=========================\n";
+
 							$sql="INSERT INTO aid_appreciations_grp SET id_aid='".$aid_id."', periode='$k', indice_aid='".$indice_aid."', appreciation='" . $app . "'";
 							//echo "$sql<br />";
 							$register=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -198,6 +212,7 @@ if (isset($_POST['is_posted'])) {
 						$ver_periode[$k] = old_mysql_result($periode_query, $k-1, "verouiller");
 						//if ($ver_periode[$k] == "N"){
 						if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] != "O"))||
+							(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol'))&&($ver_periode[$k] != "O"))||
 							(($_SESSION['statut']!='secours')&&($ver_periode[$k] == "N"))) {
 							//echo "La période n'est pas fermée en saisie.<br />";
 							//=========================
@@ -286,10 +301,26 @@ if (isset($_POST['is_posted'])) {
 								if ($test != "0") {
 									//echo "Il y avait déjà un enregistrement.<br />";
 									if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+
+										// 20190703
+										$lig_tmp=mysqli_fetch_object($test_eleve_app_query);
+										if(stripslashes(nl2br($app))!=nl2br($lig_tmp->appreciation)) {
+											$liste_modifs.="\nModification de l'appréciation de ".get_nom_prenom_eleve($reg_eleve_login)." en période $k de \n=========================\n".$lig_tmp->appreciation."\n=========================\nen\n=========================\n".($app)."\n=========================\n";
+										}
+										if(($note!=$lig_tmp->note)||($elev_statut!=$lig_tmp->statut)) {
+											$liste_modifs.="\nModification de la note de ".get_nom_prenom_eleve($reg_eleve_login)." en période $k de ".$lig_tmp->note." (".$lig_tmp->statut.") en ".$note." (".$elev_statut.")\n";
+										}
+
 										$sql="UPDATE aid_appreciations SET appreciation='$app', note='$note',statut='$elev_statut' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
 										//echo "$sql<br />";
 										$register=mysqli_query($GLOBALS["mysqli"], $sql);
 									} else {
+										// 20190703
+										$lig_tmp=mysqli_fetch_object($test_eleve_app_query);
+										if(stripslashes(nl2br($app))!=nl2br($lig_tmp->appreciation)) {
+											$liste_modifs.="\nModification de l'appréciation de ".get_nom_prenom_eleve($reg_eleve_login)." en période $k de \n=========================\n".$lig_tmp->appreciation."\n=========================\nen\n=========================\n".($app)."\n=========================\n";
+										}
+
 										$sql="UPDATE aid_appreciations SET appreciation='$app' WHERE (login='$reg_eleve_login' AND periode='$k' and id_aid = '$aid_id' and indice_aid='$indice_aid');";
 										//echo "$sql<br />";
 										$register=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -297,10 +328,15 @@ if (isset($_POST['is_posted'])) {
 								} else {
 									//echo "Il n'y avait pas encore d'enregistrement.<br />";
 									if (($type_note=='every') or (($type_note=='last') and ($k == $last_periode_aid))) {
+										// 20190703
+										$liste_modifs.="\nAjout d'une appréciation pour ".get_nom_prenom_eleve($reg_eleve_login)." en période $k\n=========================\n".($app)."\n=========================\navec la note ".$note." (".$elev_statut.")\n";
+
 										$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app', note = '$note', statut='$elev_statut', indice_aid='$indice_aid';";
 										//echo "$sql<br />";
 										$register=mysqli_query($GLOBALS["mysqli"], $sql);
 									} else {
+										$liste_modifs.="\nAjout d'une appréciation pour ".get_nom_prenom_eleve($reg_eleve_login)." en période $k\n=========================\n".($app)."\n=========================\n";
+
 										$sql="INSERT INTO aid_appreciations SET login='$reg_eleve_login',id_aid='$aid_id',periode='$k',appreciation='$app',statut='$elev_statut', indice_aid='$indice_aid';";
 										//echo "$sql<br />";
 										$register=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -328,9 +364,137 @@ if (isset($_POST['is_posted'])) {
 		$j++;
 	}
 
+	if($liste_modifs!='') {
+		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='secours')||($_SESSION['statut']=='cpe')) {
+			// S'il y a d'autres profs associés à l'AID, on les informe
+
+			$sql="SELECT DISTINCT u.nom, u.prenom, u.civilite, u.login, u.email FROM utilisateurs u, 
+													j_aid_utilisateurs jau 
+												WHERE jau.id_utilisateur=u.login AND 
+													jau.id_aid='".$aid_id."' AND 
+													jau.indice_aid='".$indice_aid."' AND 
+													u.login!='".$_SESSION['login']."';";
+			$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_u)>0) {
+				$tab_param_mail=array();
+
+				$texte_mail="Je viens d'effectuer (".strftime("%d/%m/%Y à %H:%M:%S").") des saisies sur l'AID ".get_info_aid($aid_id, array('nom_general_complet', 'classes', 'profs'), '')."\n".$liste_modifs."\n\nCordialement.\n-- \n".civ_nom_prenom($_SESSION['login']);
+
+				$email_destinataires="";
+				$tab_login_destinataire=array();
+				$cpt_dest=0;
+				while($lig_u=mysqli_fetch_object($res_u)) {
+					if($cpt_dest>0) {
+						$email_destinataires.=", ";
+					}
+
+					if(check_mail($lig_u->email)) {
+						$email_destinataires=$lig_u->email;
+						$tab_param_mail['destinataire'][]=$lig_u->email;
+						$cpt_dest++;
+					}
+
+					$tab_login_destinataire[]=$lig_u->login;
+				}
+
+				// Au cas où l'envoi de mail foirerait, on met toujours un message:
+				// On met un message en page d'accueil
+				for($loop=0;$loop<count($tab_login_destinataire);$loop++) {
+					$r_sql = "INSERT INTO messages
+							SET texte = '".mysqli_real_escape_string($GLOBALS["mysqli"], nl2br($texte_mail))."',
+							date_debut = '".time()."',
+							date_fin = '".(time()+7*24*3600)."',
+							date_decompte = '',
+							auteur='".$_SESSION['login']."',
+							statuts_destinataires = '_',
+							login_destinataire='".$tab_login_destinataire[$loop]."';";
+					//echo "$r_sql<br />";
+					$retour=mysqli_query($GLOBALS["mysqli"], $r_sql);
+					if ($retour) {
+						$id_message=mysqli_insert_id($GLOBALS["mysqli"]);
+
+						$contenu_cor='
+						<form method="POST" action="accueil.php" name="f_suppression_message">
+						<input type="hidden" name="csrf_alea" value="_CSRF_ALEA_">
+						<input type="hidden" name="supprimer_message" value="'.$id_message.'">
+						<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
+						</form>'.mysqli_real_escape_string($GLOBALS["mysqli"], nl2br($texte_mail));
+						$r_sql="UPDATE messages SET texte='".$contenu_cor."' WHERE id='".$id_message."';";
+						//echo "<span style='color:green'>$r_sql</span><br />";
+						$retour=mysqli_query($GLOBALS["mysqli"], $r_sql);
+					}
+				}
+
+				$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+				if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+					$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+				}
+
+				if($envoi_mail_actif=='y') {
+					if($email_destinataires!="") {
+
+						$email_declarant='';
+						$email_cc='';
+						$cpt_cc=0;
+						if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+							$nom_declarant=$_SESSION['prenom'].' '.$_SESSION['nom'];
+							$email_declarant=$_SESSION['email'];
+							//echo "\$email_declarant=$email_declarant<br />";
+							$tab_param_mail['from']=$_SESSION['email'];
+							$tab_param_mail['from_name']=$_SESSION['prenom'].' '.$_SESSION['nom'];
+						}
+
+						$sujet_mail="Correction d'appréciation AID";
+
+						$ajout_header="";
+						if($email_declarant!="") {
+							$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
+							$tab_param_mail['cc'][$cpt_cc]=$email_declarant;
+							$tab_param_mail['cc_name'][$cpt_cc]=$nom_declarant;
+							if($email_cc!='') {
+								$ajout_header.=", $email_cc";
+							}
+							$ajout_header.="\r\n";
+							$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
+							$tab_param_mail['replyto']=$email_declarant;
+							$tab_param_mail['replyto_name']=$nom_declarant;
+
+						}
+						elseif($email_cc!='') {
+							$ajout_header.="Cc: $email_cc\r\n";
+						}
+
+						$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+						//$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
+						$texte_mail=$salutation.",\n\n".$texte_mail;
+
+						/*
+						echo "<pre>";
+						print_r($tab_param_mail);
+						echo "</pre>";
+						*/
+
+						$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header,"plain",$tab_param_mail);
+						if($envoi) {
+							$msg_mail='Mail d\'information envoyé aux animateurs de l\'AID ('.strftime('%d/%m/%Y à %H:%M:%S').').<br />';
+						}
+						else {
+							$msg_mail='Échec de l\'envoi d\'un mail d\'information aux animateurs de l\'AID ('.strftime('%d/%m/%Y à %H:%M:%S').').<br />';
+						}
+					}
+				}
+
+
+			}
+		}
+	}
+
 	if(($msg=="")&&($nb_reg>0)) {
 		$msg.="Les modifications ont été enregistrées !<br />";
 		$affiche_message = 'yes';
+	}
+	if(isset($msg_mail)) {
+		$msg.=$msg_mail;
 	}
 }
 //
@@ -379,6 +543,7 @@ if(isset($tab_aid)) {
 	while ($k < $nb_periode_max + 1) {
 		if (($k >= $display_begin) and ($k <= $display_end)) {
 			if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+			(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
 			(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 				$proposer_liens_enregistrement="y";
 				break;
@@ -556,6 +721,7 @@ if (!isset($aid_id)) {
 					//echo "\$tab_aid[\"classe\"][\"ver_periode\"]['all'][$i]=".$tab_aid["classe"]["ver_periode"]['all'][$i]."<br />";
 
 					if(($tab_aid["classe"]["ver_periode"]['all'][$i]>=2)||
+					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
 					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='secours'))) {
 
 						echo "
@@ -585,6 +751,7 @@ if (!isset($aid_id)) {
 					}
 
 					if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
 					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 						echo "
 		<td>
@@ -685,7 +852,9 @@ if (!isset($aid_id)) {
 						$ver_periode[$k] = old_mysql_result($periode_query, $k-1, "verouiller");
 						//if ($ver_periode[$k] != "N") {
 						if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] == "O"))||
-							(($_SESSION['statut']!='secours')&&($ver_periode[$k] != "N"))) {
+							(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol'))&&($ver_periode[$k] == "O"))||
+							(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('AccesModifAppreciationScol'))&&($ver_periode[$k] != "N"))||
+							(($_SESSION['statut']!='secours')&&($_SESSION['statut']!='scolarite')&&($ver_periode[$k] != "N"))) {
 							echo "<td><b>";
 							if ($current_eleve_app_t[$k] != '') {
 								echo "$current_eleve_app_t[$k]";
