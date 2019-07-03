@@ -646,7 +646,7 @@ else {
 		</table>
 		</div>";
 
-		$tabdiv_infobulle[]=creer_div_infobulle('resp_classe_'.$obj_classe->id, $titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+		$tabdiv_infobulle[]=creer_div_infobulle('resp_classe_'.$obj_classe->id, $titre_infobulle,"",$texte_infobulle,"",25,0,'y','n','n','n');
 
 	}
 }
