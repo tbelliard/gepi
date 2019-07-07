@@ -305,7 +305,7 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						$communs_xml=simplexml_load_file($dest_file);
 						if(!$communs_xml) {
 							echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
-							echo "<p><a href='".$_SERVER['PHP_SELF']."?step=3'>Téléverser un autre fichier</a></p>\n";
+							echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
