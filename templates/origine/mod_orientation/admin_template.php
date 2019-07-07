@@ -362,7 +362,7 @@ echo add_token_field();
 		<label for='suppr_voeux'>Supprimer les voeux saisis</label><br />
 
 		<input type='checkbox' name='suppr_orientation' id='suppr_orientation' value="y" />
-		<label for='suppr_orientation'>Supprimer les orientations saisis</label><br />
+		<label for='suppr_orientation'>Supprimer les orientations saisies</label><br />
 		</p>
 
 		<input type='hidden' name='is_posted2' value='y' />
@@ -371,7 +371,7 @@ echo add_token_field();
 			<input type='submit' name='valider' value='Valider' />
 		</p>
 
-		<p style='margin-top:1em;'><em>NOTES&nbsp;:</em> Les voeux et orientations saisies sont aussi supprimés lors de l'initialisation.</p>
+		<p style='margin-top:1em;'><em>NOTES&nbsp;:</em> Les voeux et orientations saisis sont aussi supprimés lors de l'initialisation.</p>
 	  </fieldset>
 	</form>
 
