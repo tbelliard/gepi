@@ -739,7 +739,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 						if ($app!="") {
 							$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
 							$register=mysqli_query($GLOBALS["mysqli"], $sql);
-							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
+							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour l'appréciation de groupe sur la période $correction_periode.<br />";} 
 							else {
 								$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
 								$url_racine_gepi=getSettingValue('url_racine_gepi');
