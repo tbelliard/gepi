@@ -150,24 +150,43 @@ function extr_valeur($lig){
 						echo "<p>Cette page permet de remplir des tables temporaires avec les informations élèves, responsables,...<br />\n";
 						echo "</p>\n";
 
-						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_xml'>\n";
 						echo add_token_field();
 
 						if($etape==1){
 							echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
 							echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" /><br />\n";
 							echo "Veuillez fournir le fichier Nomenclature.xml:<br />\n";
-							echo "<input type=\"file\" size=\"80\" name=\"nomenclature_xml_file\" /><br />\n";
+							echo "<input type=\"file\" size=\"80\" id='input_xml_file' name=\"nomenclature_xml_file\" /><br />\n";
 						}
-						else{
+						else {
 							echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
-							echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" /><br />\n";
+							echo "<input type=\"file\" size=\"80\" id='input_xml_file' name=\"responsables_xml_file\" /><br />\n";
 						}
 						echo "<input type='hidden' name='etape' value='$etape' />\n";
 						echo "<input type='hidden' name='is_posted' value='yes' />\n";
 						echo "</p>\n";
 
-						echo "<p><input type='submit' value='Valider' /></p>\n";
+						echo "
+							<p><input type='submit' id='input_submit' value='Valider' />
+							<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+						</fieldset>
+
+						<script type='text/javascript'>
+							document.getElementById('input_submit').style.display='none';
+							document.getElementById('input_button').style.display='';
+
+							function check_champ_file() {
+								fichier=document.getElementById('input_xml_file').value;
+								//alert(fichier);
+								if(fichier=='') {
+									alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+								}
+								else {
+									document.getElementById('form_envoi_xml').submit();
+								}
+							}
+						</script>";
 						echo "</form>\n";
 					}
 					else {
@@ -280,10 +299,12 @@ function extr_valeur($lig){
 							}
 	
 							echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
-	
+
+							libxml_use_internal_errors(true);
 							$ele_xml=simplexml_load_file($dest_file);
 							if(!$ele_xml) {
 								echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+								echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=$etape'>Téléverser un autre fichier</a></p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
@@ -648,9 +669,11 @@ function extr_valeur($lig){
 	
 							$dest_file="../temp/".$tempdir."/nomenclature.xml";
 	
+							libxml_use_internal_errors(true);
 							$nomenclature_xml=simplexml_load_file($dest_file);
 							if(!$nomenclature_xml) {
 								echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+								echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=$etape'>Téléverser un autre fichier</a></p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}

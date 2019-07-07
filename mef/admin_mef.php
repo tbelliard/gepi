@@ -1,8 +1,6 @@
 <?php
 /*
- *
- *
- * Copyright 2010-2011 Josselin Jacquard
+ * Copyright 2010-2019 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -61,21 +59,21 @@ if (empty($_GET['LIBELLE_EDITION']) and empty($_POST['LIBELLE_EDITION'])) { $LIB
 $mef = MefQuery::create()->findPk($id);
 if ($action == 'supprimer') {
 	check_token();
-    if ($mef != null) {
-	$mef->delete();
-    }
+	if ($mef != null) {
+		$mef->delete();
+	}
 } elseif ($action == 'supprimer_tous_mef') {
 	check_token();
 	$sql="TRUNCATE mef;";
 	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 } elseif ($action == 'ajouterdefaut') {
 	check_token();
-    ajoutMefParDefaut();
+	ajoutMefParDefaut();
 } elseif ($action == 'ajouterdefautlycee') {
 	check_token();
-    ajoutMefParDefautLycee();
+	ajoutMefParDefautLycee();
 } else {
-    if ($EXT_ID != '') {
+	if ($EXT_ID != '') {
 		check_token();
 		if ($mef == null) {
 			$mef = new Mef();
@@ -95,7 +93,7 @@ if ($action == 'supprimer') {
 			$sql="UPDATE mef SET code_mefstat='".$_POST['CODE_MEFSTAT']."' WHERE mef_code='".$EXT_ID."';";
 			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
-    }
+	}
 }
 
 // header
@@ -142,21 +140,48 @@ if ($action=="importnomenclature") {
 			echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
 		}
 		else {
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
-".add_token_field()."
-	<p>Veuillez fournir le fichier Nomenclature.xml:<br />
-	<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" class='fieldset_opacite50' /></p>\n";
-			if ($gepiSettings['unzipped_max_filesize']>=0) {
-				echo "	<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex&nbsp;: Nomenclature.zip</em>)</p>";
+			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_xml'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<p>Veuillez fournir le fichier Nomenclature.xml:<br />
+		<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" id='input_xml_file' class='fieldset_opacite50' /></p>\n";
+				if ($gepiSettings['unzipped_max_filesize']>=0) {
+					echo "	<p style=\"font-size:small; color: red;\"><em>REMARQUE&nbsp;:</em> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (<em>Ex&nbsp;: Nomenclature.zip</em>)</p>";
+				}
+				echo "
+		<input type='hidden' name='action' value='importnomenclature' />
+		<input type='hidden' name='is_posted' value='yes' />
+
+		<p><input type='submit' id='input_submit' value='Valider' />
+		<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+	</fieldset>
+
+	<script type='text/javascript'>
+		document.getElementById('input_submit').style.display='none';
+		document.getElementById('input_button').style.display='';
+
+		function check_champ_file() {
+			fichier=document.getElementById('input_xml_file').value;
+			//alert(fichier);
+			if(fichier=='') {
+				alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
 			}
-			echo "
-	<input type='hidden' name='action' value='importnomenclature' />
-	<input type='hidden' name='is_posted' value='yes' />
-	<p><input type='submit' value='Valider' /></p>
+			else {
+				document.getElementById('form_envoi_xml').submit();
+			}
+		}
+	</script>
+
 </form>";
+
 		}
 	}
 	else {
+		$post_max_size=ini_get('post_max_size');
+		$upload_max_filesize=ini_get('upload_max_filesize');
+		$max_execution_time=ini_get('max_execution_time');
+		$memory_limit=ini_get('memory_limit');
+
 		$tempdir=get_user_temp_directory();
 		$xml_file = isset($_FILES["nomenclature_xml_file"]) ? $_FILES["nomenclature_xml_file"] : NULL;
 
@@ -164,7 +189,7 @@ if ($action=="importnomenclature") {
 			echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
 
 			echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
-			echo "post_max_size=$post_max_size<br />\n";
+			echo "post_max_size=".$post_max_size."<br />\n";
 			echo "upload_max_filesize=$upload_max_filesize<br />\n";
 			echo "</p>\n";
 		}
@@ -249,9 +274,11 @@ if ($action=="importnomenclature") {
 
 					$dest_file="../temp/".$tempdir."/nomenclature.xml";
 
+					libxml_use_internal_errors(true);
 					$nomenclature_xml=simplexml_load_file($dest_file);
 					if(!$nomenclature_xml) {
 						echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+						echo "<p><a href='".$_SERVER['PHP_SELF']."?action=importnomenclature'>Téléverser un autre fichier</a></p>\n";
 						require("../lib/footer.inc.php");
 						die();
 					}

@@ -966,9 +966,11 @@ else{
 
 			$dest_file="../temp/".$tempdir."/eleves.xml";
 
+			libxml_use_internal_errors(true);
 			$ele_xml=simplexml_load_file($dest_file);
 			if(!$ele_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1162,6 +1164,7 @@ else{
 
 			$dest_file="../temp/".$tempdir."/eleves.xml";
 
+			libxml_use_internal_errors(true);
 			$ele_xml=simplexml_load_file($dest_file);
 			if(!$ele_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -1252,6 +1255,7 @@ else{
 
 			$avec_scolarite_an_dernier="y";
 
+			libxml_use_internal_errors(true);
 			$ele_xml=simplexml_load_file($dest_file);
 			if(!$ele_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -1574,6 +1578,7 @@ else{
 			// Par contre, on y fait quand même des tests pour les élèves partis... ne pas squizzer ça si on supprime l'étape
 
 			$dest_file="../temp/".$tempdir."/eleves.xml";
+			libxml_use_internal_errors(true);
 			$ele_xml=simplexml_load_file($dest_file);
 			if(!$ele_xml) {
 				echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -6780,9 +6785,11 @@ mysql>
 
 					//$dest_file="../temp/".$tempdir."/responsables.xml";
 	
+					libxml_use_internal_errors(true);
 					$resp_xml=simplexml_load_file($dest_file);
 					if(!$resp_xml) {
 						echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+						echo "<p><a href='".$_SERVER['PHP_SELF']."?step=9'>Téléverser un autre fichier</a></p>\n";
 						require("../lib/footer.inc.php");
 						die();
 					}
@@ -7008,6 +7015,7 @@ mysql>
 			else{
 			*/
 
+				libxml_use_internal_errors(true);
 				$resp_xml=simplexml_load_file($dest_file);
 				if(!$resp_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -7186,6 +7194,7 @@ mysql>
 			else{
 			*/
 
+				libxml_use_internal_errors(true);
 				$resp_xml=simplexml_load_file($dest_file);
 				if(!$resp_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -12238,7 +12247,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				//echo "<input type='hidden' name='step' value='19' />\n";
 				echo "<input type='hidden' name='step' value='20' />\n";
 
-				$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
+				$sql="SELECT r.pers_id,r.ele_id, r.resp_legal FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 				info_debug($sql);
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)>0){
@@ -12251,7 +12260,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						info_debug($sql);
 						$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-						if($nettoyage) {enregistre_log_maj_sconet("Suppression de responsabilité sans élève associé pour le responsable n°<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>$lig_nett->pers_id</a> (".civ_nom_prenom_from_pers_id($lig_nett->pers_id).") en tant que responsable légal $resp_legal de l'élève n°$lig_nett->ele_id.<br />");}
+						if($nettoyage) {enregistre_log_maj_sconet("Suppression de responsabilité sans élève associé pour le responsable n°<a href='modify_resp.php?pers_id=".$lig_nett->pers_id."' target='_blank'>".$lig_nett->pers_id."</a> (".civ_nom_prenom_from_pers_id($lig_nett->pers_id).") en tant que responsable légal ".$lig_nett->resp_legal." de l'élève n°".$lig_nett->ele_id.".<br />");}
 
 						flush();
 						$cpt_nett++;

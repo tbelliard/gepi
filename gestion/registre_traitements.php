@@ -1563,28 +1563,39 @@ foreach ($liste_plugins as $plugin) {
 	if (is_object($plugin)){
 		// le plugin est installé
 
+		libxml_use_internal_errors(true);
 		$xml = simplexml_load_file("../mod_plugins/".$plugin->getNom() . "/plugin.xml");
-		$versiongepi=$xml->versiongepi;
-		// On teste s'il est ouvert
-		if ($plugin->getOuvert() == 'y') {
+		if(!$xml) {
 			echo "
+	<tr>
+		<td>".str_replace("_", " ", $plugin->getNom())."</td>
+		<td colspan='3' style='color:red'>Erreur lors de la lecture du XML.</td>
+	</tr>";
+
+		}
+		else {
+			$versiongepi=$xml->versiongepi;
+			// On teste s'il est ouvert
+			if ($plugin->getOuvert() == 'y') {
+				echo "
 	<tr>
 		<td>".str_replace("_", " ", $plugin->getNom())."</td>
 		<td>".$xml->description."</td>
 		<td>".$xml->auteur."</td>
 		<td style='text-align:left'>
 		".(isset($xml->description_detaillee) ? nl2br($xml->description_detaillee) : "-");
-		$commentaire_plug=strtr(stripslashes(getSettingValue('RGPD_plug_'.str_replace(" ", "_", $plugin->getNom()))), '"', "'");
-		if($_SESSION['statut']=='administrateur') {
-			// Permettre la modification du commentaire
-			echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_plug_".str_replace(" ", "_", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$commentaire_plug."</textarea>";
-		}
-		elseif($commentaire_plug!='') {
+			$commentaire_plug=strtr(stripslashes(getSettingValue('RGPD_plug_'.str_replace(" ", "_", $plugin->getNom()))), '"', "'");
+			if($_SESSION['statut']=='administrateur') {
+				// Permettre la modification du commentaire
+				echo "<br /><textarea cols='60' name='no_anti_inject_RGPD_plug_".str_replace(" ", "_", $plugin->getNom())."' title=\"Commentaire supplémentaire à faire apparaître (facultatif).\" onchange=\"changement();\">".$commentaire_plug."</textarea>";
+			}
+			elseif($commentaire_plug!='') {
 			echo "<br />".nl2br($commentaire_plug);
-		}
-		echo "
+			}
+			echo "
 		</td>
 	</tr>";
+			}
 		}
 	}
 }

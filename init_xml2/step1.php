@@ -394,9 +394,11 @@
 
 						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
 
+						libxml_use_internal_errors(true);
 						$ele_xml=simplexml_load_file($dest_file);
 						if(!$ele_xml) {
 							echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+							echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -651,6 +653,7 @@
 
 				$avec_scolarite_an_dernier="y";
 
+				libxml_use_internal_errors(true);
 				$ele_xml=simplexml_load_file($dest_file);
 				if(!$ele_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -1000,6 +1003,7 @@
 				echo "Analyse du fichier pour extraire les informations de la section OPTIONS...<br />\n";
 				//echo "<blockquote>\n";
 
+				libxml_use_internal_errors(true);
 				$ele_xml=simplexml_load_file($dest_file);
 				if(!$ele_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -1275,9 +1279,11 @@
 
 						$dest_file="../temp/".$tempdir."/fichier_nomenclature.xml";
 
+						libxml_use_internal_errors(true);
 						$nomenclature_xml=simplexml_load_file($dest_file);
 						if(!$nomenclature_xml) {
 							echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+							echo "<p><a href='".$_SERVER['PHP_SELF']."?step=3'>Téléverser un autre fichier</a></p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}

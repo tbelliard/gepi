@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2016 Régis Bouguin, Stéphane Boireau
+* Copyright 2016-2019 Régis Bouguin, Stéphane Boireau
 *
 * This file is part of GEPI.
 *
@@ -26,7 +26,33 @@
 $_SESSION['fichier_sts_emp'] = isset($_FILES['fichier_sts_emp']['name']) ? $_FILES['fichier_sts_emp']['name'] : (isset($_SESSION['fichier_sts_emp']) ? $_SESSION['fichier_sts_emp'] : NULL);
 
 if(isset($_FILES['fichier_sts_emp']['tmp_name'])) {
-	$xml = simplexml_load_file($_FILES['fichier_sts_emp']['tmp_name']);
+	unset($xml);
+
+	/*
+	echo "<pre>";
+	print_r($_FILES);
+	echo "</pre>";
+	*/
+
+	if(!isset($_FILES['fichier_sts_emp']['error']) || is_array($_FILES['fichier_sts_emp']['error'])) {
+		$msg="Erreur sur l'upload du XML STS_EMP.<br />";
+	}
+	elseif($_FILES['fichier_sts_emp']['error']==UPLOAD_ERR_OK) {
+		if((isset($_FILES['fichier_sts_emp']['type']))&&(!preg_match('/xml/i', $_FILES['fichier_sts_emp']['type']))) {
+			$msg="Le fichier n'est pas un fichier XML&nbsp;: ".$_FILES['fichier_sts_emp']['type']."<br />";
+		}
+		else {
+			libxml_use_internal_errors(true);
+			$xml = simplexml_load_file($_FILES['fichier_sts_emp']['tmp_name']);
+			if(!$xml) {
+				$msg="Echec de l'ouverture du fichier&nbsp;: Est-ce bien un fichier XML&nbsp;?<br />";
+				unset($xml);
+			}
+		}
+	}
+	else {
+		$msg="Erreur sur l'upload du XML STS_EMP.<br />";
+	}
 }
 
 if (filter_input(INPUT_POST, 'corrigeMEF')) {
@@ -108,6 +134,7 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 ?>
+<!--
 <form action="index.php" method="post" enctype="multipart/form-data" id="formFichier">
 	<h2>Rapprochement des noms de classes et renseignement des MEFs</h2>
 	<p class="center">
@@ -116,14 +143,52 @@ require_once("../lib/header.inc.php");
 		<button>valider</button>
 	</p>
 </form>
+-->
+<form action="index.php" method="post" enctype="multipart/form-data" id="formFichier">
+	<h2>Rapprochement des noms de classes et renseignement des MEFs</h2>
+	<p class="center">
+		<label for="fichier_sts_emp">Choisissez le fichier sts_emp :</label>
+		<input type="file" name="fichier_sts_emp" id="fichier_sts_emp" />
+		<input type='submit' id='input_submit' value='Valider' />
+		<input type='button' id='input_button' value='Valider' style='display:none;' onclick="check_champ_file()" />
+	</p>
+
+	<script type='text/javascript'>
+		document.getElementById('input_submit').style.display='none';
+		document.getElementById('input_button').style.display='';
+
+		function check_champ_file() {
+			fichier=document.getElementById('fichier_sts_emp').value;
+			//alert(fichier);
+			if(fichier=='') {
+				alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+			}
+			else {
+				document.getElementById('formFichier').submit();
+			}
+		}
+	</script>
+</form>
 
 <?php
 if(isset($xml)) {
+	/*
+	echo "<pre>";
+	print_r($xml);
+	echo "</pre>";
+	*/
+	
 	$debug_import="n";
 	$cpt=0;
 	$tab_xml=array();
 	$tab_indices_maj_classes_xml=array();
 	$tab_indices_maj_unaccent_classes_xml=array();
+	if((!$xml->DONNEES)||(!$xml->DONNEES->STRUCTURE)||(!$xml->DONNEES->STRUCTURE->DIVISIONS)) {
+		echo "<p style='color:red'><strong>ERREUR&nbsp;:</strong> Fichier XML non valide.<br />
+		Il devrait avoir une structure DONNEES-&gt;STRUCTURE-&gt;DIVISIONS.</p>";
+		require_once("../lib/footer.inc.php");
+		die();
+	}
 	$objet_structures=($xml->DONNEES->STRUCTURE->DIVISIONS);
 	foreach ($objet_structures->children() as $current_division) {
 		//echo("<p><b>Structure</b><br />");

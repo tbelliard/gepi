@@ -301,9 +301,11 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					else {
 						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
+						libxml_use_internal_errors(true);
 						$communs_xml=simplexml_load_file($dest_file);
 						if(!$communs_xml) {
 							echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+							echo "<p><a href='".$_SERVER['PHP_SELF']."?step=3'>Téléverser un autre fichier</a></p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -635,9 +637,11 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$dest_file="../temp/".$tempdir."/communs.xml";
 
+				libxml_use_internal_errors(true);
 				$communs_xml=simplexml_load_file($dest_file);
 				if(!$communs_xml) {
 					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+					echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}

@@ -2,7 +2,7 @@
 	@set_time_limit(0);
 	/*
 	*
-	* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+	* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 	*
 	* This file is part of GEPI.
 	*
@@ -209,14 +209,33 @@
 		if(!isset($step)) {
 			echo "<p class='bold'>Upload du fichier d'export EXP_COURS.xml d'EDT.</p>\n";
 
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_xml'>\n";
 			echo "<fieldset class='fieldset_opacite50'>\n";
 			echo "<p>Veuillez fournir le fichier d'export EXP_COURS.xml&nbsp;:<br />\n";
-			echo "<input type=\"file\" size=\"65\" name=\"xml_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />\n";
+			echo "<input type=\"file\" size=\"65\" name=\"xml_file\" id='input_xml_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />\n";
 			echo "<input type='hidden' name='step' value='0' />\n";
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo add_token_field();
-			echo "<p><input type='submit' value='Valider' /></p>\n";
+			echo "
+				<p><input type='submit' id='input_submit' value='Valider' />
+				<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+			</fieldset>
+
+			<script type='text/javascript'>
+				document.getElementById('input_submit').style.display='none';
+				document.getElementById('input_button').style.display='';
+
+				function check_champ_file() {
+					fichier=document.getElementById('input_xml_file').value;
+					//alert(fichier);
+					if(fichier=='') {
+						alert('Vous n\'avez pas sélectionné de fichier XML à envoyer.');
+					}
+					else {
+						document.getElementById('form_envoi_xml').submit();
+					}
+				}
+			</script>";
 			echo "</fieldset>\n";
 			echo "</form>\n";
 
@@ -286,9 +305,11 @@
 						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
 
+	libxml_use_internal_errors(true);
 	$cours_xml=simplexml_load_file($dest_file);
 	if(!$cours_xml) {
 		echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Téléverser un autre fichier</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
