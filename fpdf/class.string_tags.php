@@ -9,7 +9,7 @@
 * $Id$
 *                                                                           *
 *                                                                           *
-* License:  Free for non-commercial use	                                    *
+* License:  Free for non-commercial use                                     *
 *                                                                           *
 * You may use and modify this software as you wish.                         *
 * PLEASE REPORT ANY BUGS TO THE AUTHOR. THANK YOU   
@@ -21,7 +21,7 @@
 /**
  * Extracts the tags from a string
  * @package externe
- * @subpackage FPDF	
+ * @subpackage FPDF
 */
 class String_TAGS{
 var $aTAGS;
@@ -31,7 +31,8 @@ var $iTagMaxElem;
 	/**
     	Constructor
 	*/
-	function string_tags($p_tagmax = 2){
+	//function string_tags($p_tagmax = 2){
+	function __construct($p_tagmax = 2){
 		$this->aTAGS = array();
 		$this->aHREF = array();
 		$this->iTagMaxElem = $p_tagmax;

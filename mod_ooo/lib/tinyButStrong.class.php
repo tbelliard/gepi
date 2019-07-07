@@ -494,7 +494,7 @@ public $_PlugIns = array();
 public $_PlugIns_Ok = false;
 public $_piOnFrm_Ok = false;
 
-function clsTinyButStrong($Chrs='',$VarPrefix='') {
+function __construct($Chrs='',$VarPrefix='') {
 	if ($Chrs!=='') {
 		$Ok = false;
 		$Len = mb_strlen($Chrs);
