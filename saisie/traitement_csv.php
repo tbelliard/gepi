@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -243,13 +243,13 @@ for ($row=1; $row<$nb_row; $row++) {
         }
     }
 	if($temoin_periode_close=="y") {
-		echo "<font color='red'>La période est close pour l'utilisateur $reg_login !</font><br />\n";
+		echo "<font color='red'>La période est close pour l'utilisateur ".get_nom_prenom_eleve($reg_login)." !</font><br />\n";
 	}
 	else {
 		if ((!$reg_data1) or (!$reg_data2)) {
-				echo "<font color='red'>Erreur lors de la modification de données de l'utilisateur $reg_login !</font><br />\n";
+				echo "<font color='red'>Erreur lors de la modification de données de l'utilisateur ".get_nom_prenom_eleve($reg_login)." !</font><br />\n";
 		} else {
-			echo "Les données de l'utilisateur $reg_login ont été modifiées avec succès !<br />\n";
+			echo "Les données de l'utilisateur ".get_nom_prenom_eleve($reg_login)." ont été modifiées avec succès !<br />\n";
 		}
 	}
 }
