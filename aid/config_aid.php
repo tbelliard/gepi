@@ -97,7 +97,9 @@ if (isset($is_posted) and ($is_posted == "1")) {
 	}
 
 	if ($display_end < $display_begin) {$display_end = $display_begin;}
-	$del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."'");
+	$sql="DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."';";
+	//echo "$sql<br />";
+	$del = mysqli_query($GLOBALS["mysqli"], $sql);
 	echo "<!-- DELETE FROM aid_config WHERE indice_aid = '".$indice_aid."' -->";
 
 	if($reg_nom=="") {
