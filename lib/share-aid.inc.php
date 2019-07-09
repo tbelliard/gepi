@@ -452,7 +452,7 @@ function get_tab_aid($id_aid, $order_by_ele="",$tab_champs=array('all')) {
 			$tab_aid['profs']=array();
 			$tab_aid['profs']['list']=array();
 			$tab_aid['profs']['users']=array();
-			$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau 
+			$sql="SELECT u.login, u.civilite, u.nom, u.prenom, u.email FROM utilisateurs u, j_aid_utilisateurs jau 
 												WHERE u.login=jau.id_utilisateur AND 
 													jau.id_aid='".$id_aid."'
 												ORDER BY u.nom, u.prenom;";
@@ -470,7 +470,7 @@ function get_tab_aid($id_aid, $order_by_ele="",$tab_champs=array('all')) {
 					$tab_aid['proflist_string'].=$lig_aid_prof->civilite." ".$lig_aid_prof->nom." ".mb_substr($lig_aid_prof->prenom,0,1);
 
 					$tab_aid['profs']['list'][]=$lig_aid_prof->login;
-					$tab_aid['profs']['users'][$lig_aid_prof->login]=array("login"=>$lig_aid_prof->login, "civilite"=>$lig_aid_prof->civilite, "nom"=>$lig_aid_prof->nom, "prenom"=>$lig_aid_prof->prenom);
+					$tab_aid['profs']['users'][$lig_aid_prof->login]=array("login"=>$lig_aid_prof->login, "civilite"=>$lig_aid_prof->civilite, "nom"=>$lig_aid_prof->nom, "prenom"=>$lig_aid_prof->prenom, "email"=>$lig_aid_prof->email);
 
 					$cpt_aid_prof++;
 				}
@@ -774,6 +774,21 @@ function suppr_ele_aid($login_ele, $id_aid, $indice_aid) {
 			}
 
 		}
+	}
+
+	return $retour;
+}
+
+function check_prof_aid($login_prof, $id_aid) {
+	global $mysqli;
+
+	$sql="SELECT 1=1 FROM j_aid_utilisateurs WHERE id_utilisateur='".$_SESSION['login']."' AND id_aid='".$id_aid."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$retour=true;
+	}
+	else {
+		$retour=false;
 	}
 
 	return $retour;

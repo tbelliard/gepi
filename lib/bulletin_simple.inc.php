@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 //echo "\$delais_apres_cloture=$delais_apres_cloture<br />";
@@ -78,6 +78,10 @@ if((!isset($themessage))||($themessage=="")) {
 	$themessage="Des saisies n\'ont pas été enregistrées. Voulez-vous vraiment quitter sans enregistrer ?";
 }
 
+global $afficher_proposition_correction;
+global $afficher_proposition_correction_aid;
+global $afficher_signalement_faute;
+
 $alt=1;
 
 // Initialisation des tableaux 
@@ -89,10 +93,19 @@ $tmp_tab=afficher_liens_modif_app($id_classe, $periode1, $periode2);
 $tab_afficher_liens_modif_app=$tmp_tab[0];
 $tab_afficher_liens_valider_modif_app=$tmp_tab[1];
 
+$tab_afficher_liens_modif_app_aid=$tmp_tab[2];
+$tab_afficher_liens_valider_modif_app_aid=$tmp_tab[3];
+
 $afficher_proposition_correction="n";
-if(count($tab_afficher_liens_modif_app)>0) {
+if((count($tab_afficher_liens_modif_app)>0)||(count($tab_afficher_liens_valider_modif_app)>0)) {
 	$afficher_proposition_correction="y";
 }
+
+$afficher_proposition_correction_aid="n";
+if((count($tab_afficher_liens_modif_app_aid)>0)||(count($tab_afficher_liens_valider_modif_app_aid)>0)) {
+	$afficher_proposition_correction_aid="y";
+}
+
 /*
 echo "<pre>";
 print_r($tab_afficher_liens_modif_app);
@@ -116,7 +129,7 @@ if(in_array($_SESSION['statut'],$tab_statuts_signalement_faute_autorise)) {
 	}
 }
 
-if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) {
+if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")||($afficher_proposition_correction_aid=="y")) {
 	// A N'INSERER QUE POUR LES COMPTES DE PERSONNELS... de façon à éviter de donner les mails des profs à des élèves
 
 	if((!isset($necessaire_signalement_fautes_insere))||($necessaire_signalement_fautes_insere=="n")) {
@@ -125,13 +138,19 @@ if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) 
 	global $signalement_id_groupe;
 
 	$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+	global $envoi_mail_actif;
 }
 
 global $mysqli;
 global $gepiPath;
+global $current_info_eleve;
 
 $tab_modif_app_proposees=array();
 $tab_mes_groupes=array();
+
+$tab_modif_app_aid_proposees=array();
+$tab_mes_aid=array();
+
 if($_SESSION['statut']=='professeur') {
 	//$tab_mes_groupes=array();
 	$sql = "SELECT jgp.id_groupe FROM j_groupes_professeurs jgp WHERE login = '" . $_SESSION['login'] . "';" ;
@@ -162,6 +181,46 @@ if($_SESSION['statut']=='professeur') {
 		}
 	}
 
+
+	$sql="SELECT DISTINCT jau.id_aid FROM j_aid_utilisateurs jau, 
+							j_aid_eleves jae, 
+							j_eleves_classes jec 
+						WHERE jau.id_aid=jae.id_aid AND 
+							jae.login=jec.login AND 
+							jec.id_classe='$id_classe' AND 
+							jau.id_utilisateur='".$_SESSION['login']."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_mes_aid[]=$lig->id_aid;
+
+			$sql="SELECT * FROM matieres_app_corrections WHERE id_aid='$lig->id_aid';";
+			$res_mad=mysqli_query($mysqli, $sql);
+			if($res_mad->num_rows>0) {
+				while($lig_mad=$res_mad->fetch_object()) {
+					$tab_modif_app_aid_proposees[$lig_mad->id_aid][$lig_mad->periode][$lig_mad->login]=$lig_mad->appreciation;
+				}
+			}
+		}
+	}
+
+	if(getSettingAOui('visuCorrectionsAppAIDProposeesProfs')) {
+		$sql="SELECT DISTINCT jae.id_aid FROM j_aid_eleves jae, 
+								j_eleves_classes jec 
+							WHERE jae.login=jec.login AND 
+								jec.id_classe='$id_classe';";
+		//echo "$sql<br />";
+		$res_mad=mysqli_query($mysqli, $sql);
+		if($res_mad->num_rows>0) {
+			while($lig_mad=$res_mad->fetch_object()) {
+				$tab_modif_app_aid_proposees[$lig_mad->id_aid][$lig_mad->periode][$lig_mad->login]=$lig_mad->appreciation;
+			}
+		}
+	}
+
+
+
 	if((!isset($necessaire_corriger_appreciation_insere))||($necessaire_corriger_appreciation_insere=="n")) {
 		lib_corriger_appreciation();
 	}
@@ -180,6 +239,18 @@ elseif($_SESSION['statut']=='scolarite') {
 	if($res_mad->num_rows>0) {
 		while($lig_mad=$res_mad->fetch_object()) {
 			$tab_modif_app_proposees[$lig_mad->id_groupe][$lig_mad->periode][$lig_mad->login]=$lig_mad->appreciation;
+		}
+	}
+
+	$sql="SELECT DISTINCT ma.* FROM matieres_app_corrections ma,
+						j_eleves_classes jec 
+					WHERE jec.login=ma.login AND 
+						jec.id_classe='$id_classe';";
+	//echo "$sql<br />";
+	$res_mad=mysqli_query($mysqli, $sql);
+	if($res_mad->num_rows>0) {
+		while($lig_mad=$res_mad->fetch_object()) {
+			$tab_modif_app_aid_proposees[$lig_mad->id_aid][$lig_mad->periode][$lig_mad->login]=$lig_mad->appreciation;
 		}
 	}
 
@@ -282,6 +353,15 @@ if ($on_continue == 'yes') {
 	$current_eleve_naissance = old_mysql_result($data_eleve, 0, "naissance");
 	$current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
 	$current_eleve_elenoet = old_mysql_result($data_eleve, 0, "elenoet");
+
+	$current_info_eleve[$current_eleve_login]['login']=$current_eleve_login;
+	$current_info_eleve[$current_eleve_login]['id_eleve']=$current_id_eleve;
+	$current_info_eleve[$current_eleve_login]['nom']=$current_eleve_nom;
+	$current_info_eleve[$current_eleve_login]['prenom']=$current_eleve_prenom;
+	$current_info_eleve[$current_eleve_login]['sexe']=$current_eleve_sexe;
+	$current_info_eleve[$current_eleve_login]['naissance']=$current_eleve_naissance;
+	$current_info_eleve[$current_eleve_login]['elenoet']=$current_eleve_elenoet;
+
 	$data_profsuivi = mysqli_query($GLOBALS["mysqli"], "SELECT u.login FROM utilisateurs u, j_eleves_professeurs j WHERE (j.login='$current_eleve_login' AND j.professeur = u.login AND j.id_classe='$id_classe') ");
 	$current_eleve_profsuivi_login = @old_mysql_result($data_profsuivi, 0, "login");
 
@@ -442,19 +522,33 @@ if ($on_continue == 'yes') {
 
 	echo "<tbody>\n";
 	//echo "</table>";
+
+	//------------------------------
+	// Boucle 'aid_b'
+	//------------------------------
 	// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
-	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE order_display1 = 'b' ORDER BY order_display2");
+	$sql="SELECT * FROM aid_config WHERE order_display1 = 'b' ORDER BY order_display2;";
+	//echo "$sql<br />";
+	$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_aid = mysqli_num_rows($call_data);
 	$z=0;
 	while ($z < $nb_aid) {
 		$display_begin = old_mysql_result($call_data, $z, "display_begin");
 		$display_end = old_mysql_result($call_data, $z, "display_end");
-		if (($periode1 >= $display_begin) and ($periode2 <= $display_end)) {
+		//if (($periode1 >= $display_begin) and ($periode2 <= $display_end)) {
+		if ((($periode1 >= $display_begin) and ($periode1 <= $display_end))||
+		(($periode2 >= $display_begin) and ($periode2 <= $display_end))
+		) {
 			$indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
-			$aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='$current_eleve_login' and indice_aid='$indice_aid')");
+			$sql="SELECT id_aid FROM j_aid_eleves WHERE (login='$current_eleve_login' and indice_aid='$indice_aid');";
+			//echo "$sql<br />";
+			$aid_query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$aid_id = @old_mysql_result($aid_query, 0, "id_aid");
 			if ($aid_id != '') {
-				affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);
+				//echo "affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);<br />";
+				//affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);
+				affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,max($periode1,$display_begin),min($periode2,$display_end),$id_classe, 'bull_simpl', $affiche_coef);
+
 			}
 		}
 		$z++;
@@ -1018,19 +1112,31 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 	}
 
 	//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>";
+	//------------------------------
+	// Boucle 'aid_e'
+	//------------------------------
 	// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en fin de bulletin :
-	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE order_display1 = 'e' ORDER BY order_display2");
+	$sql="SELECT * FROM aid_config WHERE order_display1 = 'e' ORDER BY order_display2;";
+	//echo "$sql<br />";
+	$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_aid = mysqli_num_rows($call_data);
 	$z=0;
 	while ($z < $nb_aid) {
 		$display_begin = old_mysql_result($call_data, $z, "display_begin");
 		$display_end = old_mysql_result($call_data, $z, "display_end");
-		if (($periode1 >= $display_begin) and ($periode2 <= $display_end)) {
+		//if (($periode1 >= $display_begin) and ($periode2 <= $display_end)) {
+		if ((($periode1 >= $display_begin) and ($periode1 <= $display_end))||
+		(($periode2 >= $display_begin) and ($periode2 <= $display_end))
+		) {
 			$indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
-			$aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='$current_eleve_login' and indice_aid='$indice_aid')");
+			$sql="SELECT id_aid FROM j_aid_eleves WHERE (login='$current_eleve_login' and indice_aid='$indice_aid');";
+			//echo "$sql<br />";
+			$aid_query = mysqli_query($GLOBALS["mysqli"], $sql);
 			$aid_id = @old_mysql_result($aid_query, 0, "id_aid");
 			if ($aid_id != '') {
-				affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);
+				//echo "affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);<br />";
+				//affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe, 'bull_simpl', $affiche_coef);
+				affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,max($periode1,$display_begin),min($periode2,$display_end),$id_classe, 'bull_simpl', $affiche_coef);
 			}
 		}
 		$z++;
@@ -1650,16 +1756,43 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 
 function affiche_aid_simple($affiche_rang, $test_coef, $indice_aid, $aid_id, $current_eleve_login, $periode1, $periode2, $id_classe, $style_bulletin, $affiche_coef) {
 
-global $affiche_colonne_moy_classe;
-global $couleur_lignes, $alt, $alt2;
+	global $affiche_colonne_moy_classe;
+	global $couleur_lignes, $alt, $alt2;
+	global $tab_mes_aid;
 
-unset($tab_acces_app);
-$tab_acces_app=array();
-//$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
-$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $current_eleve_login);
+	global $afficher_signalement_faute;
+	global $afficher_proposition_correction;
+	global $afficher_proposition_correction_aid;
+	global $tab_afficher_liens_modif_app_aid;
+	global $envoi_mail_actif;
+
+	//$current_id_eleve=get_valeur_champ("eleves", "login='".$current_eleve_login."'", "id_eleve");
+	global $current_info_eleve;
+	$current_id_eleve=$current_info_eleve[$current_eleve_login]['id_eleve'];
+	$current_eleve_prenom=$current_info_eleve[$current_eleve_login]['prenom'];
+	$current_eleve_nom=$current_info_eleve[$current_eleve_login]['nom'];
+
+	$current_aid=get_tab_aid($aid_id);
+	$liste_profs_aid=$current_aid['proflist_string'];
+	$liste_email_profs_aid='';
+	foreach($current_aid['profs']['users'] as $user_login => $current_user) {
+		if(check_mail($current_user['email'])) {
+			if($liste_email_profs_aid!='') {
+				$liste_email_profs_aid.=',';
+			}
+			$liste_email_profs_aid.=$current_user['email'];
+		}
+	}
+
+	unset($tab_acces_app);
+	$tab_acces_app=array();
+	//$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
+	$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $current_eleve_login);
 
 	$nb_periodes = $periode2 - $periode1 + 1;
-	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+	$sql="SELECT * FROM aid_config WHERE indice_aid = '$indice_aid';";
+	//echo "$sql<br />";
+	$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
 	$AID_NOM = @old_mysql_result($call_data, 0, "nom");
 	$note_max = @old_mysql_result($call_data, 0, "note_max");
 	$type_note = @old_mysql_result($call_data, 0, "type_note");
@@ -1668,6 +1801,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 	$bull_simplifie = @old_mysql_result($call_data, 0, "bull_simplifie");
 	// On vérifie que cette AID soit autorisée à l'affichage dans le bulletin simplifié
 	if ($bull_simplifie == "n") {
+		//echo "Pas sur les bulletins simplifiés<br />";
 		return "";
 	}
 
@@ -1707,9 +1841,14 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 		}
 		//=========================
 
-		$current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$nb' and id_aid='$aid_id' and indice_aid='$indice_aid')");
+		// 20190708
+		$sql="SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$nb' and id_aid='$aid_id' and indice_aid='$indice_aid');";
+		//echo "$sql<br />";
+		$current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], $sql);
 		$eleve_aid_app[$nb] = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
+		//echo "\$eleve_aid_app[$nb]=".$eleve_aid_app[$nb]."<br />";
 		if ($eleve_aid_app[$nb] == '') {$eleve_aid_app[$nb] = ' -';}
+		//echo "\$eleve_aid_app[$nb]=".$eleve_aid_app[$nb]."<br />";
 		$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
 		$periode_max = mysqli_num_rows($periode_query);
 		$last_periode_aid = min($periode_max,$display_end);
@@ -1764,6 +1903,11 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 	$n = '0';
 	while ($n < $nb_lig) {
 		echo affiche_utilisateur($aid_prof_resp_login[$n],$id_classe)."<br />";
+
+		if(!isset($signalement_id_aid[$current_aid['id_aid']])) {
+			echo "<input type='hidden' name='signalement_id_aid[".$current_aid['id_aid']."]' id='signalement_id_aid_".$current_aid['id_aid']."' value=\"".$current_aid['nom']." (".$current_aid['nom']." en ".$current_aid['classlist_string'].")\" />\n";
+		}
+
 		$n++;
 	}
 	echo "</i></td>";
@@ -1784,7 +1928,8 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 		}
 		echo "<td align=\"center\" class='$style_bulletin' style='$style_bordure_cell'><b>";
 		// L'élève fait-il partie de la classe pour la période considérée ?
-		$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
+		$sql="select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."';";
+		$test_eleve_app = sql_query1($sql);
 		if ($test_eleve_app !=0) {
 			if ($current_eleve_aid_statut[$nb] == '') {
 				if ($current_eleve_aid_note[$nb] != '') {
@@ -1803,7 +1948,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 
 		$current_eleve_aid_appreciation="";
 		if ($test_eleve_app !=0) {
-			if (($eleve_aid_app[$nb]== '') or ($tab_acces_app[$nb]!="y")) {
+			if (($eleve_aid_app[$nb]=='') or ($tab_acces_app[$nb]!="y")) {
 				$eleve_aid_app[$nb] = ' -';
 			}
 			$current_eleve_aid_appreciation=$eleve_aid_app[$nb];
@@ -1814,11 +1959,69 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $curr
 			//echo "<td class='$style_bulletin' style='$style_bordure_cell'>-</td></tr>";
 		}
 
+		$aid_app_prefixe='';
+		$current_eleve_aid_appreciation_0=$current_eleve_aid_appreciation;
 		if (afficheResumeAid($aid_id)) {
 			$current_eleve_aid_appreciation = getResume($aid_id).$current_eleve_aid_appreciation;
+			// border:1px solid blue
+			$aid_app_prefixe='<div title="Résumé de l\'AID." style="font-variant:italic;">'.getResume($aid_id).'</div>';
 		}
 
-		echo "<td class='$style_bulletin' style='text-align:left; $style_bordure_cell'>".$current_eleve_aid_appreciation."</td></tr>";
+		echo "<td class='$style_bulletin' style='text-align:left; $style_bordure_cell'>";
+		// 20190708
+		//echo "AID_ID=".$aid_id." Periode ".$nb."<br />";
+
+		echo $aid_app_prefixe;
+		// style='border:1px solid red'
+		echo "<div id='app_aid_".$current_id_eleve."_".$current_aid['id_aid']."_$nb' title=\"Appréciation spécifique à l'élève.\">";
+		//echo $current_eleve_aid_appreciation;
+		echo $current_eleve_aid_appreciation_0;
+		echo "</div>";
+
+		echo "<div id='proposition_app_aid_".$current_id_eleve."_".$current_aid['id_aid']."_$nb' class='noprint'>";
+		if(isset($tab_modif_app_aid_proposees[$current_aid['id_aid']][$nb][$current_eleve_login])) {
+			echo "<div style='border:1px solid red; color: green'><strong>Proposition de correction en attente&nbsp;:</strong><br />".$tab_modif_app_aid_proposees[$current_aid['id_aid']][$nb][$current_eleve_login]."</div>";
+		}
+		echo "</div>";
+
+		echo "<textarea name='appreciation_aid_".$current_id_eleve."_".$current_aid['id_aid']."[$nb]' id='appreciation_aid_".$current_id_eleve."_".$current_aid['id_aid']."_$nb' style='display:none;'>".$current_eleve_aid_appreciation_0."</textarea>\n";
+
+		//echo "\$afficher_signalement_faute=$afficher_signalement_faute<br />";
+		//echo "\$afficher_proposition_correction=$afficher_proposition_correction<br />";
+		//echo "\$afficher_proposition_correction_aid=$afficher_proposition_correction_aid<br />";
+		echo "</td>";
+
+
+		if(($afficher_signalement_faute=='y')||($afficher_proposition_correction_aid=='y')) {
+			// A N'INSERER QUE POUR LES COMPTES DE PERSONNELS... de façon à éviter de donner les mails des profs à des élèves
+			echo "<td class='bull_simpl noprint'>";
+
+			if((!isset($current_aid["classe"]["ver_periode"][$id_classe][$nb]))||($current_aid["classe"]["ver_periode"][$id_classe][$nb]=='O')) {
+				echo "-";
+			}
+			else {
+				echo affiche_lien_proposition_ou_correction_appreciation_aid($current_eleve_login, $current_id_eleve, $current_eleve_prenom, $current_eleve_nom, $current_aid, $id_classe, $nb, $liste_profs_aid, $tab_mes_aid, $tab_afficher_liens_modif_app_aid);
+
+				// Tester si l'adresse mail du/des profs de l'enseignement est renseignée et si l'envoi de mail est actif.
+				// Sinon, on pourrait enregistrer le signalement dans une table actions_signalements pour affichage comme le Panneau d'affichage
+				if($afficher_signalement_faute=='y') {
+					echo "<a href=\"mailto:$liste_email_profs_aid?Subject=[Gepi]: Signaler un problème/faute&body=Bonjour,Je pense que vous avez commis une faute de frappe pour $current_eleve_login dans l AID n°".$current_aid['id_aid'].".Cordialement.-- ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."\"";
+					if($envoi_mail_actif!='n') {
+						//echo " onclick=\"alert('plop');return false;\"";
+						echo " onclick=\"signaler_une_faute_aid('$current_eleve_login', '$current_id_eleve', '".$current_aid['id_aid']."', '$liste_profs_aid', '$nb') ;return false;\"";
+					}
+					echo " title=\"Signaler une faute de frappe, d'orthographe ou autre...
+Si vous vous apercevez que ce collègue a fait une erreur,
+vous pouvez lui envoyer un mail pour l'alerter.
+Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
+
+					echo "<span id='signalement_effectue_aid_".$current_id_eleve."_".$current_aid['id_aid']."_$nb'></span>";
+				}
+			}
+			echo "</td>\n";
+		}
+
+		echo "</tr>";
 
 		$print_tr = 'yes';
 		$nb++;
@@ -1979,6 +2182,142 @@ echo "
 </script>\n";
 		//========================================================
 
+		//========================================================
+		// AID
+		echo "<div id='div_signaler_faute_aid' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+		
+			echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_signaler_faute_aid')\">\n";
+				echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+				echo "<a href='#' onClick=\"cacher_div('div_signaler_faute_aid');return false;\">\n";
+				echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+				echo "</a>\n";
+				echo "</div>\n";
+		
+				echo "<div id='titre_entete_signaler_faute_aid'></div>\n";
+			echo "</div>\n";
+			
+			echo "<div id='corps_signaler_faute_aid' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+
+echo "
+<form name='form_signalement_faute_aid' id='form_signalement_faute_aid' action ='../lib/ajax_signaler_faute.php' method='post' target='_blank'>
+<input type='hidden' name='signalement_login_eleve' id='signalement_login_eleve_aid' value='' />
+<input type='hidden' name='signalement_id_aid' id='signalement_id_aid' value='' />
+<input type='hidden' name='signalement_id_eleve' id='signalement_id_eleve_aid' value='' />
+<input type='hidden' name='signalement_num_periode' id='signalement_num_periode_aid' value='' />
+<input type='hidden' name='signalement_id_classe' id='signalement_id_classe_aid' value='$id_classe' />
+<input type='hidden' name='suppression_possible' id='signalement_suppression_possible_aid' value='oui' />
+
+<div id='div_signalement_message_aid'></div>
+<!--textarea name='signalement_message' id='signalement_message' cols='50' rows='12'></textarea-->
+
+<input type='button' onclick='valider_signalement_faute_aid()' name='Envoyer' value='Envoyer' />\n";
+echo add_token_field();
+echo "</form>\n";
+
+			echo "</div>\n";
+		
+		echo "</div>\n";
+		//========================================================
+
+		//========================================================
+		echo "<script type='text/javascript'>
+	// <![CDATA[
+
+	function signaler_une_faute_aid(eleve_login, id_eleve, id_aid, liste_profs_aid, num_periode) {
+
+		info_eleve=eleve_login;
+		if(document.getElementById('nom_prenom_eleve_'+id_eleve)) {
+			info_eleve=document.getElementById('nom_prenom_eleve_'+id_eleve).value;
+		}
+
+		document.getElementById('titre_entete_signaler_faute_aid').innerHTML='Signaler un problème/faute pour '+info_eleve+' période '+num_periode;
+
+		document.getElementById('signalement_login_eleve_aid').value=eleve_login;
+		document.getElementById('signalement_id_aid').value=id_aid;
+
+		document.getElementById('signalement_id_eleve_aid').value=id_eleve;
+		document.getElementById('signalement_num_periode_aid').value=num_periode;
+
+		info_aid=''
+		if(document.getElementById('signalement_id_aid_'+id_aid)) {
+			info_aid=document.getElementById('signalement_id_aid_'+id_aid).value;
+		}
+
+		message='Bonjour,\\n\\nL\'appréciation de l\'élève '+info_eleve+' sur l\'AID n°'+id_aid+' ('+info_aid+') en période n°'+num_periode+' présente un problème ou une faute:\\n';
+		message=message+'================================\\n';
+		// Le champ textarea n'existe que si une appréciation a été enregistrée
+		if(document.getElementById('appreciation_aid_'+id_eleve+'_'+id_aid+'_'+num_periode)) {
+			message=message+document.getElementById('appreciation_aid_'+id_eleve+'_'+id_aid+'_'+num_periode).innerHTML;
+		}
+		//alert('document.getElementById(\'appreciation_aid_'+id_eleve+'_'+id_aid+'_'+num_periode+').innerHTML');
+		message=message+'\\n================================\\n'
+";
+		if(getSettingValue('url_racine_gepi')!="") {
+			//echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe+'#saisie_app_'+eleve_login;\n";
+			echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ___URL_PAGE_CORRECTION___';\n";
+			echo "		message=message+'\\n';";
+		}
+		if(getSettingValue('url_racine_gepi_interne')!="") {
+			echo "		message=message+'\\nDepuis le réseau de l\'établissement, après connexion dans Gepi, l\'adresse pour corriger est ___URL_PAGE_CORRECTION_INTERNE___';\n";
+			echo "		message=message+'\\n';";
+		}
+		echo "
+		message=message+'\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."';
+
+		//alert('message='+message);
+
+		document.getElementById('div_signalement_message_aid').innerHTML='<textarea name=\'signalement_message\' id=\'signalement_message_aid\' cols=\'50\' rows=\'11\'></textarea>';
+
+		document.getElementById('signalement_message_aid').innerHTML=message;
+";
+
+		if((isset($inclusion_depuis_graphes))&&($inclusion_depuis_graphes=='y')) {
+			echo "
+		// Depuis bulletins/verif_bulletins.php et visualisation/affiche_eleve.php, le div se positionne relativement au div conteneur du bulletin.
+		// Dans les pages avec scrolling, cela pose des problèmes
+		afficher_div('div_signaler_faute_aid','n',0,0);
+		//document.getElementById('div_signaler_faute_aid').style.top=0;
+		//document.getElementById('div_signaler_faute_aid').style.left=0;\n";
+		}
+		else {
+			echo "
+		afficher_div('div_signaler_faute_aid','y',100,100);\n";
+		}
+
+echo "
+	}
+
+	function valider_signalement_faute_aid() {
+		signalement_id_aid=document.getElementById('signalement_id_aid').value;
+		signalement_login_eleve=document.getElementById('signalement_login_eleve_aid').value;
+
+		signalement_message=document.getElementById('signalement_message_aid').value;
+
+		signalement_id_eleve=document.getElementById('signalement_id_eleve_aid').value;
+		signalement_num_periode=document.getElementById('signalement_num_periode_aid').value;
+		signalement_id_classe=document.getElementById('signalement_id_classe_aid').value;
+
+		//alert(signalement_message);
+
+		document.getElementById('signalement_effectue_aid_'+signalement_id_eleve+'_'+signalement_id_aid+'_'+signalement_num_periode).innerHTML=\"<img src='../images/spinner.gif' />\";
+
+		new Ajax.Updater($('signalement_effectue_aid_'+signalement_id_eleve+'_'+signalement_id_aid+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {
+			signalement_login_eleve: signalement_login_eleve,
+			signalement_id_aid: signalement_id_aid,
+			signalement_id_classe: signalement_id_classe,
+			signalement_num_periode: signalement_num_periode,
+			no_anti_inject_signalement_message: signalement_message,
+			suppression_possible:'oui'
+		}});
+
+		cacher_div('div_signaler_faute_aid');
+		//document.getElementById('signalement_message_aid').innerHTML='';
+
+	}
+	//]]>
+</script>\n";
+		//========================================================
 	}
 }
 
@@ -2133,6 +2472,143 @@ echo "
 </script>\n";
 		//========================================================
 
+		//========================================================
+		// AID:
+		echo "<div id='div_corriger_app_aid' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+		
+			echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_corriger_app_aid')\">\n";
+				echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+				echo "<a href='#' onClick=\"cacher_div('div_corriger_app_aid');return false;\">\n";
+				echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+				echo "</a>\n";
+				echo "</div>\n";
+		
+				echo "<div id='titre_entete_corriger_app_aid'></div>\n";
+			echo "</div>\n";
+			
+			echo "<div id='corps_corriger_app_aid' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+
+echo "
+<form name='form_corriger_app_aid' id='form_signalement_faute_aid' action ='../lib/ajax_corriger_app.php' method='post' target='_blank'>
+<input type='hidden' name='corriger_app_login_eleve' id='corriger_app_login_eleve_aid' value='' />
+<input type='hidden' name='corriger_app_id_aid' id='corriger_app_id_aid' value='' />
+<input type='hidden' name='corriger_app_id_eleve' id='corriger_app_id_eleve_aid' value='' />
+<input type='hidden' name='corriger_app_num_periode' id='corriger_app_num_periode_aid' value='' />
+<input type='hidden' name='corriger_app_id_classe' id='corriger_app_id_classe_aid' value='$id_classe' />
+<input type='hidden' name='corriger_app_mode' id='corriger_app_mode_aid' value='' />
+
+<div id='div_corriger_appreciation_aid'></div>
+<!--textarea name='app' id='app' cols='50' rows='12'></textarea-->
+
+<input type='button' onclick='valider_corriger_app_aid()' name='Valider' value='Valider' />\n";
+echo add_token_field();
+echo "</form>\n";
+
+			echo "</div>\n";
+		
+		echo "</div>\n";
+		//========================================================
+
+		//========================================================
+		echo "<script type='text/javascript'>
+	// <![CDATA[
+
+	function modifier_une_appreciation_aid(eleve_login, id_eleve, id_aid, liste_profs_aid, num_periode, mode) {
+
+		info_eleve=eleve_login;
+		if(document.getElementById('nom_prenom_eleve_'+id_eleve)) {
+			info_eleve=document.getElementById('nom_prenom_eleve_'+id_eleve).value;
+		}
+
+		if(mode=='corriger') {
+			document.getElementById('titre_entete_corriger_app_aid').innerHTML='Corriger  l appréciation pour '+info_eleve+' période '+num_periode;
+		}
+		else {
+			document.getElementById('titre_entete_corriger_app_aid').innerHTML='Proposer une correction de l appréciation pour '+info_eleve+' période '+num_periode;
+		}
+		document.getElementById('corriger_app_mode_aid').value=mode;
+
+		document.getElementById('corriger_app_login_eleve_aid').value=eleve_login;
+		document.getElementById('corriger_app_id_aid').value=id_aid;
+
+		document.getElementById('corriger_app_id_eleve_aid').value=id_eleve;
+		document.getElementById('corriger_app_num_periode_aid').value=num_periode;
+
+		info_aid=''
+		if(document.getElementById('corriger_app_id_aid_'+id_aid)) {
+			info_aid=document.getElementById('corriger_app_id_aid_'+id_aid).value;
+		}
+
+		message='';
+		// Le champ textarea n'existe que si une appréciation a été enregistrée
+		if(document.getElementById('appreciation_aid_'+id_eleve+'_'+id_aid+'_'+num_periode)) {
+			message=message+document.getElementById('appreciation_aid_'+id_eleve+'_'+id_aid+'_'+num_periode).innerHTML;
+		}
+
+		//alert('message='+message);
+
+		// 20180809
+		document.getElementById('div_corriger_appreciation_aid').innerHTML='<textarea name=\'app\' id=\'app_aid\' cols=\'50\' rows=\'11\'>'+message+'</textarea> <a href=\'#\' onclick=\\\"document.getElementById(\'app_aid\').value=corriger_espaces_et_casse_ponctuation(document.getElementById(\'app_aid\').value);return false;\\\" title=\'Corriger la ponctuation\'><img src=\'$gepiPath/images/icons/wizard_ponctuation.png\' class=\'icone16\' alt=\'Ponctuation\' /></a>';
+
+		//document.getElementById('signalement_message').innerHTML=message;
+";
+
+		if((isset($inclusion_depuis_graphes))&&($inclusion_depuis_graphes=='y')) {
+			echo "
+		// Depuis bulletins/verif_bulletins.php et visualisation/affiche_eleve.php, le div se positionne relativement au div conteneur du bulletin.
+		// Dans les pages avec scrolling, cela pose des problèmes
+		afficher_div('div_corriger_app_aid','n',0,0);\n";
+		}
+		else {
+			echo "
+		afficher_div('div_corriger_app_aid','y',100,100);\n";
+		}
+
+echo "
+	}
+
+	function valider_corriger_app_aid() {
+		corriger_app_id_aid=document.getElementById('corriger_app_id_aid').value;
+		corriger_app_login_eleve=document.getElementById('corriger_app_login_eleve_aid').value;
+
+		app=document.getElementById('app_aid').value;
+
+		corriger_app_id_eleve=document.getElementById('corriger_app_id_eleve_aid').value;
+		corriger_app_num_periode=document.getElementById('corriger_app_num_periode_aid').value;
+		corriger_app_id_classe=document.getElementById('corriger_app_id_classe_aid').value;
+
+		corriger_app_mode=document.getElementById('corriger_app_mode_aid').value;
+
+		if(corriger_app_mode=='corriger') {
+			new Ajax.Updater($('app_aid_'+corriger_app_id_eleve+'_'+corriger_app_id_aid+'_'+corriger_app_num_periode),'../lib/ajax_corriger_app.php?a=a&".add_token_in_url(false)."',{method: 'post',
+			parameters: {
+				corriger_app_login_eleve: corriger_app_login_eleve,
+				corriger_app_id_aid: corriger_app_id_aid,
+				corriger_app_id_classe: corriger_app_id_classe,
+				corriger_app_num_periode: corriger_app_num_periode,
+				no_anti_inject_app: app,
+			}});
+		}
+		else {
+			document.getElementById('proposition_app_aid_'+corriger_app_id_eleve+'_'+corriger_app_id_aid+'_'+corriger_app_num_periode).innerHTML=\"<img src='../images/spinner.gif' class='icone16' title='Traitement en cours...' alt='En cours...' />\";
+
+			new Ajax.Updater($('proposition_app_aid_'+corriger_app_id_eleve+'_'+corriger_app_id_aid+'_'+corriger_app_num_periode),'../lib/ajax_corriger_app.php?a=a&".add_token_in_url(false)."',{method: 'post',
+			parameters: {
+				corriger_app_login_eleve: corriger_app_login_eleve,
+				corriger_app_id_aid: corriger_app_id_aid,
+				corriger_app_id_classe: corriger_app_id_classe,
+				corriger_app_num_periode: corriger_app_num_periode,
+				no_anti_inject_app: app,
+			}});
+		}
+		cacher_div('div_corriger_app_aid');
+
+	}
+
+	//]]>
+</script>\n";
+		//========================================================
+
 	}
 }
 
@@ -2144,6 +2620,9 @@ function afficher_liens_modif_app($id_classe, $periode1, $periode2) {
 
 	$tab_afficher_liens_modif_app=array();
 	$tab_afficher_liens_valider_modif_app=array();
+
+	$tab_afficher_liens_modif_app_aid=array();
+	$tab_afficher_liens_valider_modif_app_aid=array();
 
 	if($_SESSION['statut']=='professeur') {
 		$tab_grp_classe_prof=array();
@@ -2158,6 +2637,26 @@ function afficher_liens_modif_app($id_classe, $periode1, $periode2) {
 
 			$date_courante=time();
 		}
+
+		$tab_aid_classe_prof=array();
+		$sql="SELECT DISTINCT jau.id_aid FROM j_aid_utilisateurs jau, 
+								j_aid_eleves jae, 
+								j_eleves_classes jec 
+							WHERE jau.id_aid=jae.id_aid AND 
+								jae.login=jec.login AND 
+								jec.id_classe='$id_classe' AND 
+								jau.id_utilisateur='".$_SESSION['login']."';";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if($res->num_rows>0) {
+			while($lig=$res->fetch_object()) {
+				$tab_aid_classe_prof[]=$lig->id_aid;
+			}
+			$res->close();
+
+			$date_courante=time();
+		}
+
 	}
 
 	/*
@@ -2169,6 +2668,7 @@ function afficher_liens_modif_app($id_classe, $periode1, $periode2) {
 	for($loop_per=$periode1;$loop_per<=$periode2;$loop_per++) {
 		//$tab_afficher_liens_modif_app[$loop_per]="n";
 		$tab_afficher_liens_valider_modif_app[$loop_per]="n";
+		$tab_afficher_liens_valider_modif_app_aid[$loop_per]="n";
 
 		if(($_SESSION['statut']=='professeur')&&(count($tab_grp_classe_prof)>0)) {
 			$sql="SELECT verouiller FROM periodes WHERE id_classe='$id_classe' AND num_periode='$loop_per';";
@@ -2228,9 +2728,77 @@ function afficher_liens_modif_app($id_classe, $periode1, $periode2) {
 			}
 			$res->close();
 		}
+
+		//=====================================
+		// AID:
+		if(($_SESSION['statut']=='professeur')&&(count($tab_aid_classe_prof)>0)) {
+			$sql="SELECT verouiller FROM periodes WHERE id_classe='$id_classe' AND num_periode='$loop_per';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			$lig=$res->fetch_object();
+			if($lig->verouiller=='N') {
+				for($loop_grp=0;$loop_grp<count($tab_aid_classe_prof);$loop_grp++) {
+					$tab_afficher_liens_modif_app_aid[$tab_aid_classe_prof[$loop_grp]][$loop_per]="yy";
+				}
+			}
+			elseif($lig->verouiller=='P') {
+				if(getSettingAOui('autoriser_correction_bulletin')) {
+					for($loop_grp=0;$loop_grp<count($tab_aid_classe_prof);$loop_grp++) {
+						$tab_afficher_liens_modif_app_aid[$tab_aid_classe_prof[$loop_grp]][$loop_per]="y";
+						//echo "\$tab_afficher_liens_modif_app[$tab_grp_classe_prof[$loop_grp]][$loop_per]=".$tab_afficher_liens_modif_app[$tab_grp_classe_prof[$loop_grp]][$loop_per]."<br />";
+					}
+				}
+
+				// On teste si un droit exceptionnel de modif a été donné.
+				for($loop_grp=0;$loop_grp<count($tab_aid_classe_prof);$loop_grp++) {
+					$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM matieres_app_delais WHERE id_aid='".$tab_aid_classe_prof[$loop_grp]."' AND periode='$loop_per';";
+					$res_mad=mysqli_query($mysqli, $sql);
+					if($res_mad->num_rows>0) {
+						$lig_mad=$res_mad->fetch_object();
+						$date_limite=$lig_mad->date_limite;
+						// 20131204
+						//echo "\$date_limite=$date_limite en période $k.<br />";
+						//echo "\$date_courante=$date_courante.<br />";
+
+						if($date_courante<$date_limite) {
+							$tab_afficher_liens_modif_app_aid[$tab_aid_classe_prof[$loop_grp]][$loop_per]='y';
+							if($lig_mad->mode=='acces_complet') {
+								$tab_afficher_liens_modif_app_aid[$tab_aid_classe_prof[$loop_grp]][$loop_per]='yy';
+							}
+						}
+					}
+				}
+			}
+			$res->close();
+		}
+		elseif(in_array($_SESSION['statut'], array('scolarite', 'secours'))) {
+			$sql="SELECT verouiller FROM periodes WHERE id_classe='$id_classe' AND num_periode='$loop_per';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			$lig=$res->fetch_object();
+			if($lig->verouiller!='O') {
+				$tab_afficher_liens_valider_modif_app_aid[$loop_per]="y";
+				//echo "\$tab_afficher_liens_valider_modif_app_aid[$loop_per]=".$tab_afficher_liens_valider_modif_app_aid[$loop_per]."<br />";
+			}
+			/*
+			elseif(($lig->verouiller=='P')&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol'))) {
+				$tab_afficher_liens_valider_modif_app_aid[$loop_per]="y";
+			}
+			*/
+			$res->close();
+		}
+		elseif(($_SESSION['statut']=='administrateur')&&(getSettingAOui('GepiAdminValidationCorrectionBulletins'))) {
+			$sql="SELECT verouiller FROM periodes WHERE id_classe='$id_classe' AND num_periode='$loop_per';";
+			$res=mysqli_query($mysqli, $sql);
+			$lig=$res->fetch_object();
+			if($lig->verouiller!='O') {
+				$tab_afficher_liens_valider_modif_app_aid[$loop_per]="y";
+			}
+			$res->close();
+		}
 	}
 
-	return array($tab_afficher_liens_modif_app, $tab_afficher_liens_valider_modif_app);
+	return array($tab_afficher_liens_modif_app, $tab_afficher_liens_valider_modif_app, $tab_afficher_liens_modif_app_aid, $tab_afficher_liens_valider_modif_app_aid);
 }
 
 
@@ -2283,6 +2851,63 @@ Le professeur recevra un mail l'informant de la modification.\" class='noprint' 
 	elseif(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol'))) {
 		if($current_group["classe"]["ver_periode"][$id_classe][$nb]!='O') {
 			$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez d'une faute de frappe, ou si vous souhaitez modifier l'appréciation, ce lien est là pour ça.
+Le professeur recevra un mail l'informant de la modification.\" class='noprint' target='_blank'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+		}
+	}
+
+	return $retour;
+}
+
+function affiche_lien_proposition_ou_correction_appreciation_aid($current_eleve_login, $current_id_eleve, $current_eleve_prenom, $current_eleve_nom, $current_aid, $id_classe, $nb, $liste_profs_aid, $tab_mes_aid, $tab_afficher_liens_modif_app) {
+	//global $tab_mes_groupes;
+	//global $tab_afficher_liens_modif_app;
+
+	global $inclusion_depuis_graphes;
+	global $gepiPath;
+
+	$ajout="";
+	if($inclusion_depuis_graphes=="y") {
+		$ajout="afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$current_eleve_login','$id_classe','$nb','$nb');";
+	}
+
+	$retour="";
+
+	if(($_SESSION['statut']=='professeur')&&(in_array($current_aid['id_aid'],$tab_mes_aid))) {
+		if($current_aid["classe"]["ver_periode"][$id_classe][$nb]=='N') {
+			$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation_aid('$current_eleve_login', '$current_id_eleve', '".$current_aid['id_aid']."', '$liste_profs_aid', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\" class='noprint' target='_blank'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+		}
+		elseif(isset($tab_afficher_liens_modif_app_aid[$current_aid['id_aid']][$nb])) {
+			if($tab_afficher_liens_modif_app_aid[$current_aid['id_aid']][$nb]=='y') {
+				$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation_aid('$current_eleve_login', '$current_id_eleve', '".$current_aid['id_aid']."', '$liste_profs_aid', '$nb', 'proposer') ;return false;\" title=\"Proposer une correction de l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez simplement modifier votre appréciation, ce lien est là pour ça.\" class='noprint' target='_blank'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+			}
+			elseif($tab_afficher_liens_modif_app_aid[$current_aid['id_APB']][$nb]=='yy') {
+				$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation_aid('$current_eleve_login', '$current_id_eleve', '".$current_aid['id_aid']."', '$liste_profs_aid', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\" class='noprint' target='_blank'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+			}
+			//echo "plop";
+		}
+	}
+	elseif(($_SESSION['statut']=='professeur')&&
+		(((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe)))||
+		(is_pp($_SESSION['login'], $id_classe, $current_eleve_login)))) {
+
+		if(getSettingAOui('PeutAutoriserPPaCorrigerSesApp')) {
+			if(acces_correction_app_aid_pp($current_aid['id_aid'])) {
+				if($current_aid["classe"]["ver_periode"][$id_classe][$nb]!='O') {
+					$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation_aid('$current_eleve_login', '$current_id_eleve', '".$current_aid['id_aid']."', '$liste_profs_aid', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez d'une faute de frappe, ou si vous souhaitez modifier l'appréciation, ce lien est là pour ça.
+Le professeur recevra un mail l'informant de la modification.\" class='noprint' target='_blank'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+				}
+			}
+		}
+
+	}
+	elseif(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol'))) {
+		if($current_aid["classe"]["ver_periode"][$id_classe][$nb]!='O') {
+			$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation_aid('$current_eleve_login', '$current_id_eleve', '".$current_aid['id_aid']."', '$liste_profs_aid', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
 Si vous vous apercevez d'une faute de frappe, ou si vous souhaitez modifier l'appréciation, ce lien est là pour ça.
 Le professeur recevra un mail l'informant de la modification.\" class='noprint' target='_blank'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 		}

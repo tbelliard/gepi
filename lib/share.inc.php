@@ -19490,7 +19490,7 @@ function get_tab_acces_mail_resp() {
 	return $tab;
 }
 
-function etat_verrouillage_groupe_periode($id_groupe, $periode, $tab_id_classe_exclu=array()) {
+function etat_verrouillage_groupe_periode($id_groupe, $periode) {
 	global $mysqli;
 
 	$tab=array();
@@ -19611,5 +19611,40 @@ function is_prof_groupe($login_prof, $id_groupe) {
 	}
 
 	return $is_prof_groupe;
+}
+
+function etat_verrouillage_aid_periode($id_aid, $periode, $tab_id_classe_exclu=array()) {
+	global $mysqli;
+
+	$tab=array();
+	$tab['P']=0;
+	$tab['O']=0;
+	$tab['N']=0;
+	$tab['classes']=array();
+	$tab['classes']['P']='';
+	$tab['classes']['O']='';
+	$tab['classes']['N']='';
+
+	$sql="SELECT DISTINCT p.id_classe, p.verouiller FROM periodes p, 
+						j_eleves_classes jec, 
+						j_aid_eleves jae
+					WHERE p.id_classe=jec.id_classe AND 
+						jae.login=jec.login AND 
+						jae.id_aid='".$id_aid."' AND 
+						jec.periode=p.num_periode AND 
+						p.num_periode='".$periode."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		if(!in_array($lig->id_classe, $tab_id_classe_exclu)) {
+			$tab[$lig->verouiller]++;
+			if($tab['classes'][$lig->verouiller]!='') {
+				$tab['classes'][$lig->verouiller].=', ';
+			}
+			$tab['classes'][$lig->verouiller].=get_nom_classe($lig->id_classe);
+		}
+	}
+
+	return $tab;
 }
 ?>

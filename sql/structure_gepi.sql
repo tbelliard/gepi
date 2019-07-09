@@ -403,7 +403,7 @@ CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_incr
 DROP TABLE IF EXISTS s_categories;
 CREATE TABLE IF NOT EXISTS s_categories ( id INT(11) NOT NULL auto_increment, categorie varchar(50) NOT NULL default '',sigle varchar(20) NOT NULL default '', PRIMARY KEY (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS matieres_app_corrections;
-CREATE TABLE IF NOT EXISTS matieres_app_corrections (login varchar(50) NOT NULL default '', id_groupe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY (login,id_groupe,periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS matieres_app_corrections (login varchar(50) NOT NULL default '', id_groupe int(11) NOT NULL default '0', id_aid int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY login_periode_grp_aid(login,periode,id_groupe,id_aid)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 -- ---------------------------------------------------------------------
 -- a_motifs
 -- ---------------------------------------------------------------------
@@ -594,7 +594,7 @@ CREATE TABLE IF NOT EXISTS a_notifications(	id INTEGER(11)  NOT NULL AUTO_INCREM
 DROP TABLE IF EXISTS j_notifications_resp_pers;
 CREATE TABLE IF NOT EXISTS j_notifications_resp_pers(	a_notification_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de la notification',	pers_id VARCHAR(10)  NOT NULL COMMENT 'cle etrangere des personnes',	PRIMARY KEY (a_notification_id,pers_id),	CONSTRAINT j_notifications_resp_pers_FK_1		FOREIGN KEY (a_notification_id)		REFERENCES a_notifications (id)		ON DELETE CASCADE,	INDEX j_notifications_resp_pers_FI_2 (pers_id),	CONSTRAINT j_notifications_resp_pers_FK_2		FOREIGN KEY (pers_id)		REFERENCES resp_pers (pers_id)		ON DELETE CASCADE) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
 DROP TABLE IF EXISTS matieres_app_delais;
-CREATE TABLE matieres_app_delais (periode int(11) NOT NULL default '0', id_groupe int(11) NOT NULL default '0', date_limite TIMESTAMP NOT NULL, mode VARCHAR(100) NOT NULL DEFAULT '', PRIMARY KEY  (periode,id_groupe), INDEX id_groupe (id_groupe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE matieres_app_delais (periode int(11) NOT NULL default '0', id_groupe int(11) NOT NULL default '0', id_aid int(11) NOT NULL default '0', date_limite TIMESTAMP NOT NULL, mode VARCHAR(100) NOT NULL DEFAULT '', PRIMARY KEY periode_grp_aid(periode,id_groupe,id_aid), INDEX id_groupe (id_groupe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS ct_private_entry;
 CREATE TABLE ct_private_entry (id_ct INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la cotice privee',heure_entry TIME default '00:00:00' NOT NULL COMMENT 'heure de l\'entree',date_ct INTEGER default 0 NOT NULL COMMENT 'date du compte rendu',contenu TEXT  NOT NULL COMMENT 'contenu redactionnel du compte rendu',id_groupe INTEGER  NOT NULL COMMENT 'Cle etrangere du groupe auquel appartient le compte rendu',id_login VARCHAR(32)  COMMENT 'Cle etrangere de l\'utilisateur auquel appartient le compte rendu',id_sequence INT ( 11 ) NOT NULL DEFAULT '0',PRIMARY KEY (id_ct),INDEX ct_private_entry_FI_1 (id_groupe),CONSTRAINT ct_private_entry_FK_1 FOREIGN KEY (id_groupe) REFERENCES groupes (id) ON DELETE CASCADE,INDEX ct_private_entry_FI_2 (id_login),CONSTRAINT ct_private_entry_FK_2 FOREIGN KEY (id_login) REFERENCES utilisateurs (login) ON DELETE CASCADE) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Notice privee du cahier de texte';
 DROP TABLE IF EXISTS cc_dev;
@@ -886,6 +886,7 @@ DROP TABLE IF EXISTS acces_exceptionnel_matieres_notes;
 CREATE TABLE acces_exceptionnel_matieres_notes (
 id INT( 11 ) NOT NULL AUTO_INCREMENT ,
 id_groupe INT( 11 ) NOT NULL ,
+id_aid INT( 11 ) NOT NULL ,
 periode INT( 11 ) NOT NULL ,
 date_limite timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 commentaires text NOT NULL,

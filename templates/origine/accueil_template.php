@@ -268,7 +268,25 @@
 	$message_correction_app_en_attente_de_validation="";
 	if($_SESSION['statut']=='scolarite') {
 		// Il faut détecter les corrections d'appréciation de groupe et pas seulement celles d'élèves:
-		$sql_correction_app="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jgc.id_classe AND jgc.id_groupe=mac.id_groupe AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+		$sql_correction_app="(SELECT DISTINCT c.id, c.classe FROM classes c, 
+								j_groupes_classes jgc, 
+								matieres_app_corrections mac, 
+								j_scol_classes jsc 
+							WHERE c.id=jgc.id_classe AND 
+								jgc.id_groupe=mac.id_groupe AND 
+								jsc.id_classe=c.id AND 
+								jsc.login='".$_SESSION['login']."')
+						UNION (SELECT DISTINCT c.id, c.classe FROM classes c, 
+								j_eleves_classes jec, 
+								j_aid_eleves jae, 
+								matieres_app_corrections mac, 
+								j_scol_classes jsc 
+							WHERE c.id=jec.id_classe AND 
+								jec.login=jae.login AND 
+								jae.id_aid=mac.id_aid AND 
+								jsc.id_classe=c.id AND 
+								jsc.login='".$_SESSION['login']."') 
+							ORDER BY classe;";
 	}
 	elseif(($_SESSION['statut']=='professeur')&&(getSettingAOui('autoriser_valider_correction_app_pp'))&&(is_pp($_SESSION['login']))) {
 		$sql_correction_app="SELECT DISTINCT c.id, c.classe 
@@ -282,7 +300,20 @@
 							jep.professeur='".$_SESSION['login']."' ORDER BY classe;";
 	}
 	elseif(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='secours')) {
-		$sql_correction_app="SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, j_groupes_classes jgc, classes c WHERE mac.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY classe;";
+		$sql_correction_app="(SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, 
+									j_groupes_classes jgc, 
+									classes c 
+								WHERE mac.id_groupe=jgc.id_groupe AND 
+									jgc.id_classe=c.id) 
+						UNION 
+						(SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, 
+									j_aid_eleves jae,
+									j_eleves_classes jec, 
+									classes c 
+								WHERE mac.id_aid=jae.id_aid AND 
+									jae.login_jec.login AND 
+									jec.id_classe=c.id) 
+								ORDER BY classe;";
 	}
 	if(isset($sql_correction_app)) {
 		//echo "$sql_correction_app<br />";

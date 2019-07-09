@@ -99,4 +99,86 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'id_aid' à la table 'matieres_app_corrections'&nbsp;: ";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM matieres_app_corrections LIKE 'id_aid';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE matieres_app_corrections ADD id_aid INT(11) NOT NULL default '0' AFTER id_groupe;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+
+		$result .= "&nbsp;-> Suppression de la clé primaire sur la table 'matieres_app_corrections'&nbsp;: ";
+		$sql="alter table matieres_app_corrections drop primary key;";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+			$result .= "&nbsp;-> Création d'une nouvelle clé primaire sur la table 'matieres_app_corrections'&nbsp;: ";
+			$sql="alter table matieres_app_corrections add primary key login_periode_grp_aid(login,periode,id_groupe,id_aid);";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+			}
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'id_aid' à la table 'matieres_app_delais'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM matieres_app_delais LIKE 'id_aid';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE matieres_app_delais ADD id_aid INT(11) NOT NULL default '0' AFTER id_groupe;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+
+		$result .= "&nbsp;-> Suppression de la clé primaire sur la table 'matieres_app_delais'&nbsp;: ";
+		$sql="alter table matieres_app_delais drop primary key;";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+			$result .= "&nbsp;-> Création d'une nouvelle clé primaire sur la table 'matieres_app_delais'&nbsp;: ";
+			$sql="alter table matieres_app_delais add primary key periode_grp_aid(periode,id_groupe,id_aid);";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+			}
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'id_aid' à la table 'acces_exceptionnel_matieres_notes'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM acces_exceptionnel_matieres_notes LIKE 'id_aid';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE acces_exceptionnel_matieres_notes ADD id_aid INT(11) NOT NULL default '0' AFTER id_groupe;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 ?>

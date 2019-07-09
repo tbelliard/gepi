@@ -523,7 +523,25 @@ if(getSettingAOui('active_bulletins')) {
 	$afficher_correction_validation="n";
 	if($_SESSION['statut']=='scolarite') {
 		// Il faut détecter les corrections d'appréciation de groupe et pas seulement celles d'élèves:
-		$sql_correction_app="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jgc.id_classe AND jgc.id_groupe=mac.id_groupe AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+		$sql_correction_app="(SELECT DISTINCT c.id, c.classe FROM classes c, 
+								j_groupes_classes jgc, 
+								matieres_app_corrections mac, 
+								j_scol_classes jsc 
+							WHERE c.id=jgc.id_classe AND 
+								jgc.id_groupe=mac.id_groupe AND 
+								jsc.id_classe=c.id AND 
+								jsc.login='".$_SESSION['login']."')
+						UNION (SELECT DISTINCT c.id, c.classe FROM classes c, 
+								j_eleves_classes jec, 
+								j_aid_eleves jae, 
+								matieres_app_corrections mac, 
+								j_scol_classes jsc 
+							WHERE c.id=jec.id_classe AND 
+								jec.login=jae.login AND 
+								jae.id_aid=mac.id_aid AND 
+								jsc.id_classe=c.id AND 
+								jsc.login='".$_SESSION['login']."') 
+							ORDER BY classe;";
 	}
 	elseif(($_SESSION['statut']=='professeur')&&(getSettingAOui('autoriser_valider_correction_app_pp'))&&(is_pp($_SESSION['login']))) {
 		$sql_correction_app="SELECT DISTINCT c.id, c.classe 
@@ -537,7 +555,20 @@ if(getSettingAOui('active_bulletins')) {
 							jep.professeur='".$_SESSION['login']."' ORDER BY classe;";
 	}
 	elseif(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='secours')) {
-		$sql_correction_app="SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, j_groupes_classes jgc, classes c WHERE mac.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY classe;";
+		$sql_correction_app="(SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, 
+									j_groupes_classes jgc, 
+									classes c 
+								WHERE mac.id_groupe=jgc.id_groupe AND 
+									jgc.id_classe=c.id) 
+						UNION 
+						(SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, 
+									j_aid_eleves jae,
+									j_eleves_classes jec, 
+									classes c 
+								WHERE mac.id_aid=jae.id_aid AND 
+									jae.login_jec.login AND 
+									jec.id_classe=c.id) 
+								ORDER BY classe;";
 	}
 	if(isset($sql_correction_app)) {
 		//echo "$sql_correction_app<br />";
@@ -580,7 +611,15 @@ if(getSettingAOui('active_bulletins')) {
 		if($afficher_correction_validation=="y") {
 			$texte_item="Cet outil vous permet de valider les corrections d'appréciations proposées par des professeurs après la clôture d'une période.";
 			if($_SESSION['statut']=='scolarite') {
-				$sql="SELECT 1=1 FROM matieres_app_corrections map, j_scol_classes jsc, j_groupes_classes jgc where jsc.login='".$_SESSION['login']."' AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe=map.id_groupe;";
+				$sql="(SELECT 1=1 FROM matieres_app_corrections map, j_scol_classes jsc, j_groupes_classes jgc where jsc.login='".$_SESSION['login']."' AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe=map.id_groupe) 
+				UNION (SELECT 1=1 FROM matieres_app_corrections map, 
+							j_scol_classes jsc, 
+							j_eleves_classes jec, 
+							j_aid_eleves jae 
+						where jsc.login='".$_SESSION['login']."' AND 
+							jsc.id_classe=jec.id_classe AND 
+							jec.login=jae.login AND 
+							jae.id_aid=map.id_aid);";
 				$resultat = mysqli_query($mysqli, $sql);  
 				$nb_aid = $resultat->num_rows;
 				if($nb_aid>0) {

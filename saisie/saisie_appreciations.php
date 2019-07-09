@@ -483,6 +483,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
         if(in_array($correction_login_eleve, $tmp_tab_login_ele)) {
             // On a trouvé la classe de l'élève
             $ver_periode_classe_correction_eleve=$current_group['classe']['ver_periode'][$tmp_id_classe][$correction_periode];
+            //echo "\$ver_periode_classe_correction_eleve=$ver_periode_classe_correction_eleve<br />";
             break;
         }
     }
@@ -495,6 +496,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		$mode_app="proposition";
 		$autorisation_exceptionnelle_de_saisie='n';
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$lig=mysqli_fetch_object($res);
@@ -506,7 +508,8 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 				$autorisation_exceptionnelle_de_saisie='y';
 			}
 
-			$mode_app="acces_complet";
+			//$mode_app="acces_complet";
+			$mode_app=$lig->mode;
 		}
 
 		$saisie_valide='n';
@@ -514,14 +517,17 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		if(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y') {
 			// La proposition de correction est autorisée même si aucune appréciation n'était saisie avant fermeture de la période.
 			$saisie_valide='y';
+			//echo "1";
 		}
 		elseif($autorisation_exceptionnelle_de_saisie=='y') {
 			// Il y a une autorisation exceptionnelle de saisie
 			$saisie_valide='y';
+			//echo "2";
 		}
 		else {
 			// On contrôle s'il y avait une appréciation saisie avant la fermeture de période
 			$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
+			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				// Il y avait une appréciation saisie
@@ -565,15 +571,38 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 					}
 					else {
 
-						// 20131204
 						if($mode_app=="acces_complet") {
 							// On valide la saisie
 
-
-
+							$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode';";
+							//echo "$sql<br />";
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res)>0) {
+								$sql="UPDATE matieres_appreciations SET appreciation='".$app."' WHERE login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode';";
+								//echo "$sql<br />";
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
+								if($update) {
+									$msg.="Appréciation corrigée pour ".get_nom_prenom_eleve($correction_login_eleve)." en période ".$correction_periode."<br />";
+								}
+								else {
+									$msg.="Erreur lors de la correction de l'appréciation pour ".get_nom_prenom_eleve($correction_login_eleve)." en période ".$correction_periode."<br />";
+								}
+							}
+							else {
+								$sql="INSERT INTO matieres_appreciations SET appreciation='".$app."', login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode';";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if($insert) {
+									$msg.="Appréciation enregistrée pour ".get_nom_prenom_eleve($correction_login_eleve)." en période ".$correction_periode."<br />";
+								}
+								else {
+									$msg.="Erreur lors de l'enregistrement de l'appréciation pour ".get_nom_prenom_eleve($correction_login_eleve)." en période ".$correction_periode."<br />";
+								}
+							}
 						}
 						else {
 							$sql="SELECT * FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+							//echo "$sql<br />";
 							fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 							$test_correction=mysqli_query($GLOBALS["mysqli"], $sql);
 							$test=mysqli_num_rows($test_correction);
