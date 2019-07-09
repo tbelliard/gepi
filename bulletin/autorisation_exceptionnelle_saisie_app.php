@@ -764,20 +764,19 @@ elseif(
 					echo "<td>";
 
 					// Vérifier si ce n'est pas verrouillé pour une autre classe, dans le cas d'un groupe multi-classe
-					$tmp_tab_etat_per=etat_verrouillage_groupe_periode($current_group['id'], $i);
+					$tmp_tab_etat_per=etat_verrouillage_groupe_periode($current_group['id'], $i, array($id_classe));
 
-
-					echo "<img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title='Période $i ouverte en saisie' />";
+					echo "<img src='../images/enabled.png' width='20' height='20' alt='Période $i ouverte en saisie' title=\"Période $i ouverte en saisie pour la classe de ".$classe."\" />";
 					$tmp_contenu_td='';
 					if($tmp_tab_etat_per['O']>0) {
-						$tmp_contenu_td.="<img src='../images/disabled.png' width='20' height='20' title='Période $i close pour ".$tmp_tab_etat_per['O']." classe(s).' /> ";
+						$tmp_contenu_td.="<img src='../images/disabled.png' width='20' height='20' title='Période $i close pour ".$tmp_tab_etat_per['O']." classe(s): ".$tmp_tab_etat_per['classes']['O']."' /> ";
 					}
 					if($tmp_tab_etat_per['P']>0) {
 						if($tmp_contenu_td!='') {
 							$tmp_contenu_td.="<br />";
 						}
 						//$tmp_contenu_td.="<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;id_groupe=".$current_group['id']."&amp;periode=$i' title='Période $i partiellement close pour ".$tmp_tab_etat_per['P']." classe(s).'>Période $i</a>";
-						$tmp_contenu_td.="<input type='checkbox' name='enseignement_periode[]' id='case_".$i."_".$current_group['id']."' value='".$current_group['id']."|".$i."' onchange=\"checkbox_change(this.id)\" />";
+						$tmp_contenu_td.="<input type='checkbox' name='enseignement_periode[]' id='case_".$i."_".$current_group['id']."' value='".$current_group['id']."|".$i."' onchange=\"checkbox_change(this.id)\" title=\"Période $i close pour ".$tmp_tab_etat_per['P']." classe(s): ".$tmp_tab_etat_per['classes']['P']."\" />";
 						$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$current_group['id']."' AND periode='$i';";
 						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)>0) {
@@ -788,12 +787,15 @@ elseif(
 							}
 						}
 					}
+					/*
 					if($tmp_contenu_td=='') {
 						echo "<img src='../images/enabled.png' width='20' height='20' title='Période $i ouverte en saisie pour la classe de ".$classe."' />\n";
 					}
 					else {
 						echo $tmp_contenu_td;
 					}
+					*/
+					echo $tmp_contenu_td;
 
 					echo "</td>\n";
 				}

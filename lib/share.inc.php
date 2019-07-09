@@ -19490,18 +19490,28 @@ function get_tab_acces_mail_resp() {
 	return $tab;
 }
 
-function etat_verrouillage_groupe_periode($id_groupe, $periode) {
+function etat_verrouillage_groupe_periode($id_groupe, $periode, $tab_id_classe_exclu=array()) {
 	global $mysqli;
 
 	$tab=array();
 	$tab['P']=0;
 	$tab['O']=0;
 	$tab['N']=0;
+	$tab['classes']=array();
+	$tab['classes']['P']='';
+	$tab['classes']['O']='';
+	$tab['classes']['N']='';
 
-	$sql="SELECT verouiller FROM periodes p, j_groupes_classes jgc WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='".$id_groupe."' AND num_periode='".$periode."';";
+	$sql="SELECT p.id_classe, verouiller FROM periodes p, j_groupes_classes jgc WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='".$id_groupe."' AND num_periode='".$periode."';";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
-		$tab[$lig->verouiller]++;
+		if(!in_array($lig->id_classe, $tab_id_classe_exclu)) {
+			$tab[$lig->verouiller]++;
+			if($tab['classes'][$lig->verouiller]!='') {
+				$tab['classes'][$lig->verouiller].=', ';
+			}
+			$tab['classes'][$lig->verouiller].=get_nom_classe($lig->id_classe);
+		}
 	}
 
 	return $tab;
