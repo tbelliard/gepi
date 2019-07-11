@@ -19490,7 +19490,7 @@ function get_tab_acces_mail_resp() {
 	return $tab;
 }
 
-function etat_verrouillage_groupe_periode($id_groupe, $periode) {
+function etat_verrouillage_groupe_periode($id_groupe, $periode, $tab_id_classe_exclu=array()) {
 	global $mysqli;
 
 	$tab=array();
