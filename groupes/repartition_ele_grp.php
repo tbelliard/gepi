@@ -86,6 +86,8 @@ $id_grp_groupe = isset($_GET['id_grp_groupe']) ? $_GET['id_grp_groupe'] : (isset
 
 $msg="";
 
+//debug_var();
+
 if($_SESSION['statut']!='administrateur') {
 	if((isset($id_grp_groupe))&&(!acces_modif_liste_eleves_grp_groupes("", $id_grp_groupe))) {
 		$msg.="Accès non autorisé&nbsp;: Vous n'administrez pas le ".$groupe_de_groupes." n°".$id_grp_groupe.".<br />";
@@ -194,8 +196,42 @@ if(isset($_POST['enregistrer_repartition'])) {
 				$lig_clas=mysqli_fetch_object($res_clas);
 				$current_id_classe_ele=$lig_clas->id_classe;
 
+/*
+$_POST['id_classe']=	Array (*)
+$_POST[id_classe]['0']=	2
+$_POST['id_groupe']=	Array (*)
+$_POST[id_groupe]['0']=	49
+$_POST['num_periode']=	1
+$_POST['repartition_eleves']=	y
+$_POST['order_by']=	
+$_POST['Valider_repartition2']=	Enregistrer
+$_POST['login_ele']=	Array (*)
+$_POST[login_ele]['0']=	xxxxx_a
+$_POST[login_ele]['1']=	xxxxx_b
+$_POST[login_ele]['2']=	xxxxx_c
+$_POST[login_ele]['3']=	xxxxx_d
+...
+$_POST[login_ele]['17']=	xxxxx_t
+$_POST['nb_ele']=	18
+$_POST['enregistrer_repartition']=	y
+
+Nombre de valeurs en POST: 27
+*/
+				/*
+				echo "grp_eleve<pre>";
+				print_r($grp_eleve);
+				echo "</pre>";
+				echo "id_groupe<pre>";
+				print_r($id_groupe);
+				echo "</pre>";
+				*/
 				for($i=0;$i<count($id_groupe);$i++) {
-					if($grp_eleve[$j]==$id_groupe[$i]) {
+					if(!isset($grp_eleve[$j])) {
+						// Faut-il proposer de faire quelque chose si $grp_eleve[$j] n'est pas défini?
+						// Dans ce cas, cela signifie que l'élève ne peut pas être désinscrit du groupe dans lequel il est.
+						// Donc pas de changement.
+					}
+					elseif($grp_eleve[$j]==$id_groupe[$i]) {
 						if(!in_array($login_ele[$j],$tab_eleve[$id_groupe[$i]])) {
 							// On affecte l'élève dans le groupe
 							//$sql="INSERT INTO j_eleves_groupes SET login='".$login_ele[$j]."', id_groupe='".$id_groupe[$i]."', periode='$num_periode';";
@@ -246,6 +282,9 @@ if(isset($_POST['enregistrer_repartition'])) {
 
 		if($nb_modif>0) {
 			$msg.="$nb_modif inscription(s)/désinscription(s) enregistrée(s).<br />";
+		}
+		else {
+			$msg.="Aucune inscription/désinscription n'est enregistrée.<br />";
 		}
 	}
 }
@@ -1207,6 +1246,7 @@ Enseignement dispensé par ".$group[$i]['profs']['proflist_string']."\">\n";
 
 			$ligne_si_desinscription_impossible.="<td>\n";
 			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
+				//$ligne_si_desinscription_impossible.="<input type='hidden' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' />\n";
 				$ligne_si_desinscription_impossible.="<img src='../images/enabled.png' width='20' height='20' alt='Affecté dans le groupe' title='Affecté dans le groupe' />\n";
 
 				if(!test_before_eleve_grp_removal($login_ele, $id_groupe[$i], $num_periode)) {
@@ -1332,7 +1372,15 @@ Enseignement dispensé par ".$group[$i]['profs']['proflist_string']."\">\n";
 			total=0;
 			for (var ki=0;ki<$cpt;ki++) {
 				if(document.getElementById('grp_eleve_'+i+'_'+ki)) {
-					if(document.getElementById('grp_eleve_'+i+'_'+ki).checked==true) {total++;}
+					type_cible=document.getElementById('grp_eleve_'+indice_grp+'_'+ki).getAttribute('type');
+					if(type_cible=='radio') {
+						if(document.getElementById('grp_eleve_'+i+'_'+ki).checked==true) {total++;}
+					}
+					/*
+					if(type_cible=='hidden') {
+						total++;
+					}
+					*/
 				}
 			}
 			document.getElementById('effectif_colonne_'+i).innerHTML=total;
