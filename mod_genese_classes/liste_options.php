@@ -228,9 +228,11 @@ if(isset($_POST['valider_param'])) {
 			}
 		}
 
-		for($i=0;$i<count($matiere);$i++) {
-			$ecriture=fwrite($fichier_content_xml,'<table:table-column table:style-name="co2" table:default-cell-style-name="ce6"/>');
-			$nb_col++;
+		if((isset($matiere))&&(count($matiere)>0)) {
+			for($i=0;$i<count($matiere);$i++) {
+				$ecriture=fwrite($fichier_content_xml,'<table:table-column table:style-name="co2" table:default-cell-style-name="ce6"/>');
+				$nb_col++;
+			}
 		}
 
 		$nb_col_vides=1023-$nb_col;
@@ -637,6 +639,13 @@ for(i=0;i<champs.length;i++) {
 
 }
 else {
+	if((!isset($id_classe))||(count($id_classe)==0)) {
+		echo "<p style='color:red'>Vous n'avez choisi aucune classe.<br />
+		<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."'>Choisir une ou des classes.</a></p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	$liste_classes="";
 	for($i=0;$i<count($id_classe);$i++) {
 		if($i>0) {$liste_classes.=", ";}
@@ -644,7 +653,14 @@ else {
 
 		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />\n";
 	}
-	echo "<p>Vous avez choisi les classes $liste_classes</p>\n";
+	echo "<p>Vous avez choisi les classes <strong>$liste_classes</strong></p>\n";
+
+	if((!isset($tab_champs))||(count($tab_champs)==0)) {
+		echo "<p style='color:red'>Vous n'avez choisi aucune option pour identifier les élèves.<br />
+		<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."'>Choisir des champs.</a></p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
 
 	$liste_champs="";
 	for($i=0;$i<count($tab_champs);$i++) {
@@ -654,34 +670,34 @@ else {
 			$liste_champs.=$tab_champs[$i];
 		}
 	}
-	echo "<p>Vous souhaitez faire apparaître les champs&nbsp;: $liste_champs</p>\n";
+	echo "<p>Vous souhaitez faire apparaître les champs&nbsp;: <strong>$liste_champs</strong></p>\n";
 
-	$liste_matiere="";
-	$li_select_matiere="";
-	for($i=0;$i<count($matiere);$i++) {
-		if($i>0) {$liste_matiere.=", ";}
-		$liste_matiere.=$matiere[$i];
+	if((isset($matiere))&&(count($matiere)>0)) {
+		$liste_matiere="";
+		$li_select_matiere="";
+		for($i=0;$i<count($matiere);$i++) {
+			if($i>0) {$liste_matiere.=", ";}
+			$liste_matiere.=$matiere[$i];
 
-		$li_select_matiere.="<li>\n";
-		$li_select_matiere.="<select name='matiere[$i]'>\n";
-		for($j=0;$j<count($matiere);$j++) {
-			$li_select_matiere.="<option value='".$matiere[$j]."'";
-			if($i==$j) {$li_select_matiere.=" selected='true'";}
-			$li_select_matiere.=">$matiere[$j]</option>\n";
+			$li_select_matiere.="<li>\n";
+			$li_select_matiere.="<select name='matiere[$i]'>\n";
+			for($j=0;$j<count($matiere);$j++) {
+				$li_select_matiere.="<option value='".$matiere[$j]."'";
+				if($i==$j) {$li_select_matiere.=" selected='true'";}
+				$li_select_matiere.=">$matiere[$j]</option>\n";
+			}
+			$li_select_matiere.="</select>\n";
+			$li_select_matiere.="</li>\n";
 		}
-		$li_select_matiere.="</select>\n";
-		$li_select_matiere.="</li>\n";
+
+		echo "<p>Veuillez choisir l'ordre des colonnes options parmi&nbsp;:&nbsp;";
+		echo $liste_matiere;
+		echo "</p>\n";
+
+		echo "<ol>\n";
+		echo $li_select_matiere;
+		echo "</ol>\n";
 	}
-
-	echo "<p>Veuillez choisir l'ordre des colonnes options parmi&nbsp;:&nbsp;";
-	echo $liste_matiere;
-	echo "</p>\n";
-
-	echo "<ol>\n";
-	echo $li_select_matiere;
-	echo "</ol>\n";
-
-
 
 	echo "<p>Type d'export&nbsp;: ";
 	echo "<input type='radio' name='type_export' id='type_export_csv' value='csv' checked /><label for='type_export_csv'>CSV</label> ou \n";
