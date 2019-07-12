@@ -700,7 +700,14 @@ else {
 
 		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />\n";
 	}
-	echo "<p>Vous avez choisi les classes $liste_classes</p>\n";
+	echo "<p>Vous avez choisi les classes <strong>$liste_classes</strong></p>\n";
+
+	if((!isset($tab_champs))||(count($tab_champs)==0)) {
+		echo "<p style='color:red'>Vous n'avez choisi aucune option pour identifier les élèves.<br />
+		<a href='".$_SERVER['PHP_SELF']."?projet=".$projet."'>Choisir des champs.</a></p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
 
 	if((!isset($tab_champs))||(count($tab_champs)==0)) {
 		echo "<p style='color:red'>Vous n'avez choisi aucune option pour identifier les élèves.<br />
@@ -717,8 +724,8 @@ else {
 			$liste_champs.=$tab_champs[$i];
 		}
 	}
-	echo "<p>Vous souhaitez faire apparaître les champs&nbsp;: $liste_champs</p>\n";
 
+	echo "<p>Vous souhaitez faire apparaître les champs&nbsp;: <strong>$liste_champs</strong></p>\n";
 
 	if((isset($matiere))&&(count($matiere)>0)) {
 		$liste_matiere="";
