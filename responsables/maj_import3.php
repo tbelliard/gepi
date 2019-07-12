@@ -2362,7 +2362,7 @@ else{
 				}
 				//====================================
 
-				if(count($tab_ele_id_diff)>0){
+				if((isset($tab_ele_id_diff))&&(count($tab_ele_id_diff)>0)) {
 					if(count($tab_ele_id_diff)==1){
 						echo "<p>L'ELE_ID, pour lequel une ou des différences ont déjà été repérées, est&nbsp;: \n";
 					}
