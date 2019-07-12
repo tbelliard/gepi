@@ -1633,112 +1633,54 @@ else {
 	echo "</tr>\n";
 
 
-
-
 	$alt=1;
 
 	//$tab_eleve=array_unique($tmp_tab_eleve);
 	//sort($tab_eleve);
 	
 	$cpt=0;
-	for($j=0;$j<count($tab_eleve);$j++) {
-		$login_ele=$tab_eleve[$j];
+	if(isset($tab_eleve)) {
+		for($j=0;$j<count($tab_eleve);$j++) {
+			$login_ele=$tab_eleve[$j];
 	
-		$alt=$alt*(-1);
-		echo "<tr class='lig$alt white_hover'>\n";
-		echo "<td>";
-		echo "<input type='hidden' name='login_ele[$cpt]' value='".$login_ele."' />\n";
-		echo get_nom_prenom_eleve($login_ele);
-		echo "</td>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt white_hover'>\n";
+			echo "<td>";
+			echo "<input type='hidden' name='login_ele[$cpt]' value='".$login_ele."' />\n";
+			echo get_nom_prenom_eleve($login_ele);
+			echo "</td>\n";
 	
-		echo "<td>";
-		$tmp_tab_class_ele=get_class_from_ele_login($login_ele);
-		echo $tmp_tab_class_ele["liste"];
-		echo "</td>\n";
+			echo "<td>";
+			$tmp_tab_class_ele=get_class_from_ele_login($login_ele);
+			echo $tmp_tab_class_ele["liste"];
+			echo "</td>\n";
 	
-		$nb_grp_ele=0;
-		$info_plusieurs_grp_ele="";
-		for($i=0;$i<count($id_groupe);$i++) {
-			$k=$i+1;
-				for($m=1;$m<=$maxper;$m++) {
-					echo "<td>\n";
+			$nb_grp_ele=0;
+			$info_plusieurs_grp_ele="";
+			for($i=0;$i<count($id_groupe);$i++) {
+				$k=$i+1;
+					for($m=1;$m<=$maxper;$m++) {
+						echo "<td>\n";
 
-					if(in_array($login_ele,$group[$i]["eleves"][$m]["list"])) {
-						if(!test_before_eleve_grp_removal($login_ele, $id_groupe[$i], $m)) {
-							echo "<img src='../images/enabled.png' width='20' height='20' alt='Affecté dans le groupe' title='Affecté dans le groupe' />\n";
-							echo "<input type='hidden' name='grp_eleve_".$i."_".$m."[$cpt]' id='grp_eleve_".$i."_".$m."_$cpt' value='$id_groupe[$i]' />\n";
+						if(in_array($login_ele,$group[$i]["eleves"][$m]["list"])) {
+							if(!test_before_eleve_grp_removal($login_ele, $id_groupe[$i], $m)) {
+								echo "<img src='../images/enabled.png' width='20' height='20' alt='Affecté dans le groupe' title='Affecté dans le groupe' />\n";
+								echo "<input type='hidden' name='grp_eleve_".$i."_".$m."[$cpt]' id='grp_eleve_".$i."_".$m."_$cpt' value='$id_groupe[$i]' />\n";
+							}
+							else {
+								echo "<input type='checkbox' name='grp_eleve_".$i."_".$m."[$cpt]' id='grp_eleve_".$i."_".$m."_$cpt' value='".$id_groupe[$i]."' onchange='changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" checked />\n";
+							}
 						}
 						else {
-							echo "<input type='checkbox' name='grp_eleve_".$i."_".$m."[$cpt]' id='grp_eleve_".$i."_".$m."_$cpt' value='".$id_groupe[$i]."' onchange='changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" checked />\n";
+							echo "<input type='checkbox' name='grp_eleve_".$i."_".$m."[$cpt]' value='".$id_groupe[$i]."' id='grp_eleve_".$i."_".$m."_$cpt' onchange='changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" />\n";
 						}
+						echo "</td>\n";
 					}
-					else {
-						echo "<input type='checkbox' name='grp_eleve_".$i."_".$m."[$cpt]' value='".$id_groupe[$i]."' id='grp_eleve_".$i."_".$m."_$cpt' onchange='changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" />\n";
-					}
+			}
 
-					/*
-					//echo "\$m=$m<br />";
-					if($m==$num_periode) {
-						echo "<input type='hidden' name='grp_eleve_".$m."[$cpt]' id='grp_eleve_$cpt' ";
-						if(in_array($login_ele,$group[$i]["eleves"][$m]["list"])) {
-							echo "value='".$id_groupe[$i]."' />\n";
-
-							echo "<img src='../images/enabled.png' width='20' height='20' alt='Groupe sélectionné' />\n";
-						}
-						else {
-							echo "value='' />\n";
-						}
-						//echo "/>\n";
-					}
-					else {
-						echo "<input type='checkbox' name='grp_eleve_".$m."[$cpt]' value='".$id_groupe[$i]."' onchange='changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" ";
-						if(in_array($login_ele,$group[$i]["eleves"][$m]["list"])) {
-							echo "checked ";
-							//if($nb_grp_ele>0) {$info_plusieurs_grp_ele.=", ";}
-							//$info_plusieurs_grp_ele.=$group[$i]['name']." <span style='color:red; font-size:x-small;'>($k)</span>";
-							$nb_grp_ele++;
-						}
-						echo "/>\n";
-					}
-					*/
-					echo "</td>\n";
-				}
+			echo "</tr>\n";
+			$cpt++;
 		}
-		/*
-
-
-
-
-			$ligne_si_desinscription_possible.="<input type='radio' name='grp_eleve[$cpt]' value='".$id_groupe[$i]."' onchange='changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" ";
-			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
-				$ligne_si_desinscription_possible.="checked ";
-				if($nb_grp_ele>0) {$info_plusieurs_grp_ele.=", ";}
-				$info_plusieurs_grp_ele.=$group[$i]['name']." <span style='color:red; font-size:x-small;'>($k)</span>";
-				$nb_grp_ele++;
-			}
-			$ligne_si_desinscription_possible.="/>\n";
-			$ligne_si_desinscription_possible.="</td>\n";
-
-
-			$ligne_si_desinscription_impossible.="<td>\n";
-			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
-				$ligne_si_desinscription_impossible.="<img src='../images/enabled.png' width='20' height='20' alt='Affecté dans le groupe' title='Affecté dans le groupe' />\n";
-
-				if(!test_before_eleve_grp_removal($login_ele, $id_groupe[$i], $num_periode)) {
-					$ligne_si_desinscription_impossible.="<img src='../images/icons/securite.png' width='16' height='16' alt='Bulletin ou carnet de notes non vide' title='Bulletin ou carnet de notes non vide' />\n";
-					$temoin_desinscription_impossible="y";
-				}
-			}
-
-
-
-		echo "<td>";
-		if($nb_grp_ele==0) {echo "&nbsp;";}
-		else {echo $info_plusieurs_grp_ele;}
-		echo "</td>";
-		*/
-		echo "</tr>\n";
-		$cpt++;
 	}
 
 	echo "<tr>\n";
