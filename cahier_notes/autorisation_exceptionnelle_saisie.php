@@ -124,8 +124,15 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 					for($loop=0;$loop<count($enseignement_periode);$loop++) {
 						$tab_ens_per=explode('|', $enseignement_periode[$loop]);
 						if((isset($tab_ens_per[1]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[0]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
+
+							if(isset($tab_param_mail)) {
+								unset($tab_param_mail);
+							}
+
 							$id_groupe=$tab_ens_per[0];
 							$periode=$tab_ens_per[1];
+
+							$info_current_group=get_info_grp($id_groupe);
 
 							$sql="DELETE FROM acces_cn WHERE id_groupe='$id_groupe' AND periode='$periode';";
 							//echo "$sql<br />";
@@ -136,10 +143,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 							//echo "$sql<br />";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res) {
-								$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
+								$msg.="ERREUR lors de l'insertion de l'enregistrement pour ".$info_current_group.".<br />";
 							}
 							else {
-								$msg.="Enregistrement de l'autorisation effectué.<br />";
+								$msg.="Enregistrement de l'autorisation effectué pour ".$info_current_group.".<br />";
 
 								$_SESSION['autorisation_saisie_date_limite']=mktime($heure, $minute, 0, $mois, $jour, $annee);
 
@@ -153,10 +160,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 										//echo "$sql<br />";
 										$res=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res) {
-											$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins.<br />";
+											$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins pour ".$info_current_group.".<br />";
 										}
 										else {
-											$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué.<br />";
+											$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué pour ".$info_current_group.".<br />";
 											$complement_texte_mail="Vous pourrez aussi corriger les moyennes du bulletin.\n\n";
 										}
 									}
@@ -177,10 +184,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 										//echo "$sql<br />";
 										$res=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res) {
-											$msg.="ERREUR lors de l'insertion de l'enregistrement pour les appréciations des bulletins.<br />";
+											$msg.="ERREUR lors de l'insertion de l'enregistrement pour les appréciations des bulletins pour ".$info_current_group.".<br />";
 										}
 										else {
-											$msg.="Enregistrement de l'autorisation pour les appréciations des bulletins effectué.<br />";
+											$msg.="Enregistrement de l'autorisation pour les appréciations des bulletins effectué pour ".$info_current_group.".<br />";
 											$complement_texte_mail="Vous pourrez aussi corriger les appreciations du bulletin.\n\n";
 										}
 									}
@@ -265,7 +272,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 
 										$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
 
-										if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
+										if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)." pour ".$info_current_group."<br />";}
 									}
 			
 								}
@@ -419,6 +426,17 @@ if(!isset($id_classe)) {
 		tab_liste($tab_txt,$tab_lien,4);
 		echo "</blockquote>\n";
 	}
+
+	echo "
+<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> <strong>La présente page ne présente d'intérêt qu'en période partiellement close</strong>.<br />
+Voici pourquoi&nbsp;:<br />
+En <strong>période ouverte en saisie</strong>, les professeurs peuvent saisir/modifier leurs notes et appréciations sans qu'aucune limitation ne se présente.<br />
+En <strong>période close</strong>, aucune modification <em>(note, appréciation, avis du conseil de classe,...)</em> n'est plus possible.<br />
+En <strong>période partiellement close</strong>, seuls les avis du conseil de classe peuvent être modifiés.<br />
+C'est le moment où, à la lueur des saisies de notes et appréciations, le professeur principal <em>(ou le chef d'établissement selon les cas)</em> rédige les avis du conseil de classe.<br />
+A cette phase avant le conseil de classe, il arrive qu'un professeur ait manqué de temps pour faire des saisies.<br />
+Il est possible, via la présente page, de lui donner un accès exceptionnel à la saisie de notes, sans pour autant rouvrir la saisie à tous les professeurs.</p>";
+
 }
 elseif(
 	((!isset($id_groupe))||(!isset($periode)))&&
@@ -579,6 +597,16 @@ elseif(
 	}
 </script>";
 
+	echo "
+<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> <strong>La présente page ne présente d'intérêt qu'en période partiellement close</strong>.<br />
+Voici pourquoi&nbsp;:<br />
+En <strong>période ouverte en saisie</strong>, les professeurs peuvent saisir/modifier leurs notes et appréciations sans qu'aucune limitation ne se présente.<br />
+En <strong>période close</strong>, aucune modification <em>(note, appréciation, avis du conseil de classe,...)</em> n'est plus possible.<br />
+En <strong>période partiellement close</strong>, seuls les avis du conseil de classe peuvent être modifiés.<br />
+C'est le moment où, à la lueur des saisies de notes et appréciations, le professeur principal <em>(ou le chef d'établissement selon les cas)</em> rédige les avis du conseil de classe.<br />
+A cette phase avant le conseil de classe, il arrive qu'un professeur ait manqué de temps pour faire des saisies.<br />
+Il est possible, via la présente page, de lui donner un accès exceptionnel à la saisie de notes, sans pour autant rouvrir la saisie à tous les professeurs.</p>";
+
 }
 elseif((isset($id_groupe))&&(isset($periode))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
@@ -656,6 +684,8 @@ elseif((isset($id_groupe))&&(isset($periode))) {
 		}
 	}
 
+	echo "<p class='bold'>Carnet de notes&nbsp;:</p>";
+	echo "<div style='margin-left:3em;'>";
 	echo "<p>Quelle doit être la date/heure limite de cette autorisation de modification de notes du carnet de notes&nbsp;?<br />\n";
 	//include("../lib/calendrier/calendrier.class.php");
 	//$cal = new Calendrier("formulaire", "display_date_limite");
@@ -673,8 +703,11 @@ elseif((isset($id_groupe))&&(isset($periode))) {
 	echo img_calendrier_js("display_date_limite", "img_bouton_display_date_limite");
 
 	echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
+	echo "</div>";
 
 	if((!isset($group["visibilite"]["bulletins"]))||($group["visibilite"]["bulletins"]=="y")) {
+		echo "<p class='bold' style='margin-top:1em;'>Bulletins&nbsp;:</p>";
+		echo "<div style='margin-left:3em;'>";
 		if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
 			echo "<br />\n";
 			echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' onchange=\"checkbox_change(this.id)\" /><label for='donner_acces_modif_bull_note' id='texte_donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés</label>";
@@ -693,6 +726,7 @@ elseif((isset($id_groupe))&&(isset($periode))) {
 				echo "<br />";
 			echo "</div>";
 		}
+		echo "</div>";
 	}
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</p>\n";
@@ -816,6 +850,8 @@ else {
 	}
 
 
+	echo "<p class='bold'>Carnet de notes&nbsp;:</p>";
+	echo "<div style='margin-left:3em;'>";
 	echo "<p>Quelle doit être la date/heure limite de cette autorisation de modification de notes du carnet de notes&nbsp;?<br />\n";
 	//include("../lib/calendrier/calendrier.class.php");
 	//$cal = new Calendrier("formulaire", "display_date_limite");
@@ -832,8 +868,11 @@ else {
 	echo img_calendrier_js("display_date_limite", "img_bouton_display_date_limite");
 
 	echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
+	echo "</div>";
 
 	if($visibilite_bulletins) {
+		echo "<p class='bold' style='margin-top:1em;'>Bulletins&nbsp;:</p>";
+		echo "<div style='margin-left:3em;'>";
 		if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
 			echo "<br />\n";
 			echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' onchange=\"checkbox_change(this.id)\" /><label for='donner_acces_modif_bull_note' id='texte_donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés</label>";
@@ -852,6 +891,7 @@ else {
 				echo "<br />";
 			echo "</div>";
 		}
+		echo "</div>";
 	}
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</p>\n";

@@ -120,6 +120,8 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 					$msg.="ERREUR : L'heure $heure/$minute n'est pas valide.<br />";
 				}
 				else {
+					$info_current_group=get_info_grp($id_groupe);
+
 					$sql="DELETE FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$periode';";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -127,10 +129,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 					$sql="INSERT INTO matieres_app_delais SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00', mode='$mode';";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
-						$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
+						$msg.="ERREUR lors de l'insertion de l'enregistrement pour ".$info_current_group.".<br />";
 					}
 					else {
-						$msg.="Enregistrement de l'autorisation effectué.<br />";
+						$msg.="Enregistrement de l'autorisation effectué pour ".$info_current_group.".<br />";
 
 						$_SESSION['autorisation_saisie_date_limite']=mktime($heure, $minute, 0, $mois, $jour, $annee);
 
@@ -142,10 +144,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								$sql="INSERT INTO acces_exceptionnel_matieres_notes SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
 								$res=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res) {
-									$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins.<br />";
+									$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins pour ".$info_current_group.".<br />";
 								}
 								else {
-									$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué.<br />";
+									$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué pour ".$info_current_group.".<br />";
 									$complement_texte_mail="Vous pourrez aussi corriger les moyennes du bulletin.\n\n";
 								}
 							}
@@ -231,7 +233,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 
 									$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
 
-									if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
+									if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)." pour ".$info_current_group."<br />";}
 								}
 							}
 		
@@ -272,6 +274,8 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_aid))&&(isset($periode))
 					$msg.="ERREUR : L'heure $heure/$minute n'est pas valide.<br />";
 				}
 				else {
+					$info_current_aid=get_info_aid($id_aid);
+
 					$sql="DELETE FROM matieres_app_delais WHERE id_aid='$id_aid' AND periode='$periode';";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -279,10 +283,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_aid))&&(isset($periode))
 					$sql="INSERT INTO matieres_app_delais SET id_aid='$id_aid', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00', mode='$mode';";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
-						$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
+						$msg.="ERREUR lors de l'insertion de l'enregistrement pour ".$info_current_aid.".<br />";
 					}
 					else {
-						$msg.="Enregistrement de l'autorisation effectué.<br />";
+						$msg.="Enregistrement de l'autorisation effectué pour ".$info_current_aid.".<br />";
 
 						$_SESSION['autorisation_saisie_date_limite']=mktime($heure, $minute, 0, $mois, $jour, $annee);
 
@@ -294,10 +298,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_aid))&&(isset($periode))
 								$sql="INSERT INTO acces_exceptionnel_matieres_notes SET id_aid='$id_aid', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
 								$res=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res) {
-									$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins.<br />";
+									$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins pour ".$info_current_aid.".<br />";
 								}
 								else {
-									$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué.<br />";
+									$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué pour ".$info_current_aid.".<br />";
 									$complement_texte_mail="Vous pourrez aussi corriger les moyennes du bulletin.\n\n";
 								}
 							}
@@ -325,6 +329,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_aid))&&(isset($periode))
 	
 							$email_destinataires="";
 							$designation_destinataires="";
+							unset($tab_param_mail['destinataire']);
 							// Recherche des profs de l'AID
 							$sql="SELECT DISTINCT u.email, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau WHERE jau.id_aid='$id_aid' AND jau.id_utilisateur=u.login AND u.email!='';";
 							//echo "$sql<br />";
@@ -378,7 +383,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_aid))&&(isset($periode))
 
 									$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
 
-									if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
+									if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)." pour ".$info_current_aid."<br />";}
 								}
 							}
 		
@@ -424,6 +429,11 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 					$_SESSION['autorisation_saisie_date_limite']=mktime($heure, $minute, 0, $mois, $jour, $annee);
 
 					for($loop=0;$loop<count($enseignement_periode);$loop++) {
+
+						if(isset($tab_param_mail)) {
+							unset($tab_param_mail);
+						}
+
 						$tab_ens_per=explode('|', $enseignement_periode[$loop]);
 						if((isset($tab_ens_per[1]))&&($tab_ens_per[0]=='viescolaire')&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
 
@@ -451,10 +461,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 							//echo "$sql<br />";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res) {
-								$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
+								$msg.="ERREUR lors de l'insertion de l'enregistrement Vie scolaire.<br />";
 							}
 							else {
-								$msg.="Enregistrement de l'autorisation effectué.<br />";
+								$msg.="Enregistrement de l'autorisation Vie scolaire effectué.<br />";
 
 								$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 								if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
@@ -554,6 +564,8 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 							$id_groupe=$tab_ens_per[0];
 							$periode=$tab_ens_per[1];
 
+							$info_current_group=get_info_grp($id_groupe);
+
 							$sql="DELETE FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$periode';";
 							//echo "$sql<br />";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -563,10 +575,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 							//echo "$sql<br />";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res) {
-								$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
+								$msg.="ERREUR lors de l'insertion de l'enregistrement pour ".$info_current_group.".<br />";
 							}
 							else {
-								$msg.="Enregistrement de l'autorisation effectué.<br />";
+								$msg.="Enregistrement de l'autorisation effectué pour ".$info_current_group.".<br />";
 
 								$complement_texte_mail="";
 								if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
@@ -578,10 +590,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 										//echo "$sql<br />";
 										$res=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res) {
-											$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins.<br />";
+											$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins pour ".$info_current_group.".<br />";
 										}
 										else {
-											$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué.<br />";
+											$msg.="Enregistrement de l'autorisation pour les notes des bulletins pour ".$info_current_group." effectué.<br />";
 											$complement_texte_mail="Vous pourrez aussi corriger les moyennes du bulletin.\n\n";
 										}
 									}
@@ -668,7 +680,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 
 											$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
 
-											if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
+											if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)." pour ".$info_current_group."<br />";}
 										}
 									}
 		
@@ -724,8 +736,15 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 					for($loop=0;$loop<count($aid_periode);$loop++) {
 						$tab_ens_per=explode('|', $aid_periode[$loop]);
 						if((isset($tab_ens_per[1]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[0]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
+
+							if(isset($tab_param_mail)) {
+								unset($tab_param_mail);
+							}
+
 							$id_aid=$tab_ens_per[0];
 							$periode=$tab_ens_per[1];
+
+							$info_current_aid=get_info_aid($id_aid);
 
 							$sql="DELETE FROM matieres_app_delais WHERE id_aid='$id_aid' AND periode='$periode';";
 							//echo "$sql<br />";
@@ -736,10 +755,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 							//echo "$sql<br />";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res) {
-								$msg.="ERREUR lors de l'insertion de l'enregistrement.<br />";
+								$msg.="ERREUR lors de l'insertion de l'enregistrement pour ".$info_current_aid.".<br />";
 							}
 							else {
-								$msg.="Enregistrement de l'autorisation effectué.<br />";
+								$msg.="Enregistrement de l'autorisation ".$info_current_aid." effectué.<br />";
 
 								$complement_texte_mail="";
 								if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
@@ -751,10 +770,11 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 										//echo "$sql<br />";
 										$res=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res) {
-											$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins.<br />";
+											$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins pour ".$info_current_aid.".<br />";
 										}
 										else {
-											$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué.<br />";
+											$msg.="Enregistrement de l'autorisation pour les notes des bulletins pour ".$info_current_aid." effectué.<br />";
+											// A vérifier: A-t-on ici à coup sûr un AID avec note?
 											$complement_texte_mail="Vous pourrez aussi corriger les moyennes du bulletin.\n\n";
 										}
 									}
@@ -839,7 +859,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_cl
 
 											$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
 
-											if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
+											if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)." pour ".$info_current_aid."<br />";}
 										}
 									}
 		
@@ -996,6 +1016,17 @@ if(!isset($id_classe)) {
 		tab_liste($tab_txt,$tab_lien,4);
 		echo "</blockquote>\n";
 	}
+
+	echo "
+<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> <strong>La présente page ne présente d'intérêt qu'en période partiellement close</strong>.<br />
+Voici pourquoi&nbsp;:<br />
+En <strong>période ouverte en saisie</strong>, les professeurs peuvent saisir/modifier leurs notes et appréciations sans qu'aucune limitation ne se présente.<br />
+En <strong>période close</strong>, aucune modification <em>(note, appréciation, avis du conseil de classe,...)</em> n'est plus possible.<br />
+En <strong>période partiellement close</strong>, seuls les avis du conseil de classe peuvent être modifiés.<br />
+C'est le moment où, à la lueur des saisies de notes et appréciations, le professeur principal <em>(ou le chef d'établissement selon les cas)</em> rédige les avis du conseil de classe.<br />
+A cette phase avant le conseil de classe, il arrive qu'un professeur ait manqué de temps pour faire des saisies.<br />
+Il est possible, via la présente page, de lui donner un accès exceptionnel à la saisie d'appréciations, sans pour autant rouvrir la saisie à tous les professeurs.<br />
+Les modifications peuvent de plus être soit acceptées sans autre formalité, soit seulement proposées par le professeur et validées par un compte scolarité ou administrateur <em>(selon les Droits définis dans <strong>Gestion des droits</strong>)</em>.</p>";
 }
 elseif(
 	(
@@ -1180,7 +1211,7 @@ elseif(
 						$lignes_aid.="</td>\n";
 					}
 					elseif($ver_periode[$i]=='O') {
-						$lignes_aid.="<td><img src='../images/disabled.png' width='20' height='20' alt='Période $i close' title='Période $i close pour ".$tmp_tab_etat_per['O']." classe(s): ".$tmp_tab_etat_per['classes']['O']."' /></td>\n";
+						$lignes_aid.="<td><img src='../images/disabled.png' width='20' height='20' alt='Période $i close' title='Période $i close pour la classe de ".$classe."' /></td>\n";
 					}
 					else {
 						$lignes_aid.="<td>";
@@ -1357,6 +1388,17 @@ elseif(
 	}
 </script>";
 
+
+	echo "
+<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> <strong>La présente page ne présente d'intérêt qu'en période partiellement close</strong>.<br />
+Voici pourquoi&nbsp;:<br />
+En <strong>période ouverte en saisie</strong>, les professeurs peuvent saisir/modifier leurs notes et appréciations sans qu'aucune limitation ne se présente.<br />
+En <strong>période close</strong>, aucune modification <em>(note, appréciation, avis du conseil de classe,...)</em> n'est plus possible.<br />
+En <strong>période partiellement close</strong>, seuls les avis du conseil de classe peuvent être modifiés.<br />
+C'est le moment où, à la lueur des saisies de notes et appréciations, le professeur principal <em>(ou le chef d'établissement selon les cas)</em> rédige les avis du conseil de classe.<br />
+A cette phase avant le conseil de classe, il arrive qu'un professeur ait manqué de temps pour faire des saisies.<br />
+Il est possible, via la présente page, de lui donner un accès exceptionnel à la saisie d'appréciations, sans pour autant rouvrir la saisie à tous les professeurs.<br />
+Les modifications peuvent de plus être soit acceptées sans autre formalité, soit seulement proposées par le professeur et validées par un compte scolarité ou administrateur <em>(selon les Droits définis dans <strong>Gestion des droits</strong>)</em>.</p>";
 }
 elseif((isset($id_groupe))&&(isset($periode))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
