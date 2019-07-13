@@ -33,7 +33,7 @@ INSERT INTO aid SET id='0', nom='Premiere activite ludique', numero='1', indice_
 #
 # table aid_config
 #
-INSERT INTO aid_config  values ('A.A.L', 'Aid d\'activite ludique', '20', 'b', '0', 'every', '0', '1', '3', '', 'y', '1', 'y', 'y', 'n', 'n', 'n');
+INSERT INTO aid_config  values ('A.A.L', 'Aid d\'activite ludique', '20', 'b', '0', 'every', '0', '1', '3', '', 'y', '1', 'y', 'y', 'n', 'n', 'n', '', 'n');
 
 
 #
@@ -850,54 +850,54 @@ INSERT INTO droits_aid  values ('perso3', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'A 
 #
 # table droits_speciaux
 #
-INSERT INTO droits_speciaux  values ('69', '2', '/mod_annees_anterieures/consultation_annee_anterieure.php', 'F');
-INSERT INTO droits_speciaux  values ('68', '2', '/voir_abs', 'F');
-INSERT INTO droits_speciaux  values ('67', '2', '/voir_bulle', 'F');
-INSERT INTO droits_speciaux  values ('66', '2', '/voir_notes', 'F');
-INSERT INTO droits_speciaux  values ('65', '2', '/voir_ens', 'F');
-INSERT INTO droits_speciaux  values ('64', '2', '/voir_resp', 'F');
-INSERT INTO droits_speciaux  values ('63', '2', '/eleves/liste_eleves.php', 'F');
-INSERT INTO droits_speciaux  values ('62', '2', '/eleves/visu_eleve.php', 'F');
-INSERT INTO droits_speciaux  values ('61', '2', '/messagerie/index.php', 'F');
-INSERT INTO droits_speciaux  values ('60', '2', '/tous_les_edt', 'F');
-INSERT INTO droits_speciaux  values ('59', '2', '/edt_organisation/index_edt.php', 'F');
-INSERT INTO droits_speciaux  values ('58', '2', '/cahier_texte_admin/visa_ct.php', 'F');
-INSERT INTO droits_speciaux  values ('57', '2', '/cahier_texte/see_all.php', 'F');
-INSERT INTO droits_speciaux  values ('56', '2', '/mod_absences/lib/liste_absences.php', 'F');
-INSERT INTO droits_speciaux  values ('55', '2', '/mod_absences/gestion/ajout_abs.php', 'F');
-INSERT INTO droits_speciaux  values ('54', '2', '/mod_absences/gestion/select.php', 'F');
-INSERT INTO droits_speciaux  values ('53', '2', '/mod_absences/lib/export_csv.php', 'F');
-INSERT INTO droits_speciaux  values ('52', '2', '/mod_absences/lib/tableau.php', 'F');
-INSERT INTO droits_speciaux  values ('51', '2', '/mod_absences/gestion/bilan_absences_quotidien_pdf.php', 'F');
-INSERT INTO droits_speciaux  values ('50', '2', '/mod_absences/gestion/bilan_absences_classe.php', 'F');
-INSERT INTO droits_speciaux  values ('49', '2', '/mod_absences/gestion/bilan_absences_quotidien.php', 'F');
-INSERT INTO droits_speciaux  values ('48', '2', '/mod_absences/gestion/voir_absences_viescolaire.php', 'F');
-INSERT INTO droits_speciaux  values ('47', '2', '/prepa_conseil/edit_limite.php', 'F');
-INSERT INTO droits_speciaux  values ('46', '2', '/prepa_conseil/index3.php', 'F');
-INSERT INTO droits_speciaux  values ('45', '2', '/cahier_notes/visu_releve_notes.php', 'F');
-INSERT INTO droits_speciaux  values ('44', '2', '/gestion/info_gepi.php', 'V');
-INSERT INTO droits_speciaux  values ('43', '2', '/gestion/contacter_admin.php', 'V');
-INSERT INTO droits_speciaux  values ('42', '2', '/utilisateurs/mon_compte.php', 'V');
-INSERT INTO droits_speciaux  values ('41', '2', '/accueil.php', 'V');
-INSERT INTO droits_speciaux  values ('70', '2', '/mod_annees_anterieures/popup_annee_anterieure.php', 'F');
-INSERT INTO droits_speciaux  values ('71', '2', '/mod_trombinoscopes/trombinoscopes.php', 'F');
-INSERT INTO droits_speciaux  values ('72', '2', '/mod_trombinoscopes/trombi_impr.php', 'F');
-INSERT INTO droits_speciaux  values ('73', '2', '/mod_discipline/index.php', 'F');
-INSERT INTO droits_speciaux  values ('74', '2', '/mod_discipline/saisie_incident.php', 'F');
-INSERT INTO droits_speciaux  values ('75', '2', '/mod_discipline/incidents_sans_protagonistes.php', 'F');
-INSERT INTO droits_speciaux  values ('76', '2', '/mod_discipline/sauve_role.php', 'F');
-INSERT INTO droits_speciaux  values ('77', '2', '/mod_discipline/update_colonne_retenue.php', 'F');
-INSERT INTO droits_speciaux  values ('78', '2', '/mod_discipline/traiter_incident.php', 'F');
-INSERT INTO droits_speciaux  values ('79', '2', '/mod_ooo/retenue.php', 'F');
-INSERT INTO droits_speciaux  values ('80', '2', '/mod_ooo/rapport_incident.php', 'F');
-INSERT INTO droits_speciaux  values ('81', '2', '/mod_abs2/index.php', 'F');
-INSERT INTO droits_speciaux  values ('82', '2', '/mod_abs2/saisie_absence.php', 'F');
-INSERT INTO droits_speciaux  values ('83', '2', '/mod_abs2/enregistrement saisie.php', 'F');
-INSERT INTO droits_speciaux  values ('84', '2', '/mod_abs2/enregistrement_modif_saisie.php', 'F');
-INSERT INTO droits_speciaux  values ('85', '2', '/mod_abs2/liste_saisie.php', 'F');
-INSERT INTO droits_speciaux  values ('86', '2', '/mod_abs2/visu_saisie.php', 'F');
-INSERT INTO droits_speciaux  values ('87', '2', '/mod_abs2/retenue.php', 'F');
-INSERT INTO droits_speciaux  values ('88', '2', '/mod_abs2/rapport_incident.php', 'F');
+INSERT INTO droits_speciaux  values ('69', '2', '/mod_annees_anterieures/consultation_annee_anterieure.php', 'F', '');
+INSERT INTO droits_speciaux  values ('68', '2', '/voir_abs', 'F', '');
+INSERT INTO droits_speciaux  values ('67', '2', '/voir_bulle', 'F', '');
+INSERT INTO droits_speciaux  values ('66', '2', '/voir_notes', 'F', '');
+INSERT INTO droits_speciaux  values ('65', '2', '/voir_ens', 'F', '');
+INSERT INTO droits_speciaux  values ('64', '2', '/voir_resp', 'F', '');
+INSERT INTO droits_speciaux  values ('63', '2', '/eleves/liste_eleves.php', 'F', '');
+INSERT INTO droits_speciaux  values ('62', '2', '/eleves/visu_eleve.php', 'F', '');
+INSERT INTO droits_speciaux  values ('61', '2', '/messagerie/index.php', 'F', '');
+INSERT INTO droits_speciaux  values ('60', '2', '/tous_les_edt', 'F', '');
+INSERT INTO droits_speciaux  values ('59', '2', '/edt_organisation/index_edt.php', 'F', '');
+INSERT INTO droits_speciaux  values ('58', '2', '/cahier_texte_admin/visa_ct.php', 'F', '');
+INSERT INTO droits_speciaux  values ('57', '2', '/cahier_texte/see_all.php', 'F', '');
+INSERT INTO droits_speciaux  values ('56', '2', '/mod_absences/lib/liste_absences.php', 'F', '');
+INSERT INTO droits_speciaux  values ('55', '2', '/mod_absences/gestion/ajout_abs.php', 'F', '');
+INSERT INTO droits_speciaux  values ('54', '2', '/mod_absences/gestion/select.php', 'F', '');
+INSERT INTO droits_speciaux  values ('53', '2', '/mod_absences/lib/export_csv.php', 'F', '');
+INSERT INTO droits_speciaux  values ('52', '2', '/mod_absences/lib/tableau.php', 'F', '');
+INSERT INTO droits_speciaux  values ('51', '2', '/mod_absences/gestion/bilan_absences_quotidien_pdf.php', 'F', '');
+INSERT INTO droits_speciaux  values ('50', '2', '/mod_absences/gestion/bilan_absences_classe.php', 'F', '');
+INSERT INTO droits_speciaux  values ('49', '2', '/mod_absences/gestion/bilan_absences_quotidien.php', 'F', '');
+INSERT INTO droits_speciaux  values ('48', '2', '/mod_absences/gestion/voir_absences_viescolaire.php', 'F', '');
+INSERT INTO droits_speciaux  values ('47', '2', '/prepa_conseil/edit_limite.php', 'F', '');
+INSERT INTO droits_speciaux  values ('46', '2', '/prepa_conseil/index3.php', 'F', '');
+INSERT INTO droits_speciaux  values ('45', '2', '/cahier_notes/visu_releve_notes.php', 'F', '');
+INSERT INTO droits_speciaux  values ('44', '2', '/gestion/info_gepi.php', 'V', '');
+INSERT INTO droits_speciaux  values ('43', '2', '/gestion/contacter_admin.php', 'V', '');
+INSERT INTO droits_speciaux  values ('42', '2', '/utilisateurs/mon_compte.php', 'V', '');
+INSERT INTO droits_speciaux  values ('41', '2', '/accueil.php', 'V', '');
+INSERT INTO droits_speciaux  values ('70', '2', '/mod_annees_anterieures/popup_annee_anterieure.php', 'F', '');
+INSERT INTO droits_speciaux  values ('71', '2', '/mod_trombinoscopes/trombinoscopes.php', 'F', '');
+INSERT INTO droits_speciaux  values ('72', '2', '/mod_trombinoscopes/trombi_impr.php', 'F', '');
+INSERT INTO droits_speciaux  values ('73', '2', '/mod_discipline/index.php', 'F', '');
+INSERT INTO droits_speciaux  values ('74', '2', '/mod_discipline/saisie_incident.php', 'F', '');
+INSERT INTO droits_speciaux  values ('75', '2', '/mod_discipline/incidents_sans_protagonistes.php', 'F', '');
+INSERT INTO droits_speciaux  values ('76', '2', '/mod_discipline/sauve_role.php', 'F', '');
+INSERT INTO droits_speciaux  values ('77', '2', '/mod_discipline/update_colonne_retenue.php', 'F', '');
+INSERT INTO droits_speciaux  values ('78', '2', '/mod_discipline/traiter_incident.php', 'F', '');
+INSERT INTO droits_speciaux  values ('79', '2', '/mod_ooo/retenue.php', 'F', '');
+INSERT INTO droits_speciaux  values ('80', '2', '/mod_ooo/rapport_incident.php', 'F', '');
+INSERT INTO droits_speciaux  values ('81', '2', '/mod_abs2/index.php', 'F', '');
+INSERT INTO droits_speciaux  values ('82', '2', '/mod_abs2/saisie_absence.php', 'F', '');
+INSERT INTO droits_speciaux  values ('83', '2', '/mod_abs2/enregistrement saisie.php', 'F', '');
+INSERT INTO droits_speciaux  values ('84', '2', '/mod_abs2/enregistrement_modif_saisie.php', 'F', '');
+INSERT INTO droits_speciaux  values ('85', '2', '/mod_abs2/liste_saisie.php', 'F', '');
+INSERT INTO droits_speciaux  values ('86', '2', '/mod_abs2/visu_saisie.php', 'F', '');
+INSERT INTO droits_speciaux  values ('87', '2', '/mod_abs2/retenue.php', 'F', '');
+INSERT INTO droits_speciaux  values ('88', '2', '/mod_abs2/rapport_incident.php', 'F', '');
 
 
 #
@@ -1177,11 +1177,11 @@ INSERT INTO groupes  values ('216', 'Math', 'Mathématiques', 'nyn');
 #
 # table horaires_etablissement
 #
-INSERT INTO horaires_etablissement  values ('1', '0000-00-00', 'lundi', '08:00:00', '17:30:00', '00:45:00', '1');
-INSERT INTO horaires_etablissement  values ('2', '0000-00-00', 'mardi', '08:00:00', '17:30:00', '00:45:00', '1');
-INSERT INTO horaires_etablissement  values ('3', '0000-00-00', 'mercredi', '08:00:00', '12:00:00', '00:00:00', '1');
-INSERT INTO horaires_etablissement  values ('4', '0000-00-00', 'jeudi', '08:00:00', '17:30:00', '00:45:00', '1');
-INSERT INTO horaires_etablissement  values ('5', '0000-00-00', 'vendredi', '08:00:00', '17:30:00', '00:45:00', '1');
+INSERT INTO horaires_etablissement  values ('1', '0000-00-00', 'lundi', '08:00:00', '17:30:00', '00:45:00', '1', '0');
+INSERT INTO horaires_etablissement  values ('2', '0000-00-00', 'mardi', '08:00:00', '17:30:00', '00:45:00', '1', '1');
+INSERT INTO horaires_etablissement  values ('3', '0000-00-00', 'mercredi', '08:00:00', '12:00:00', '00:00:00', '1', '2');
+INSERT INTO horaires_etablissement  values ('4', '0000-00-00', 'jeudi', '08:00:00', '17:30:00', '00:45:00', '1', '3');
+INSERT INTO horaires_etablissement  values ('5', '0000-00-00', 'vendredi', '08:00:00', '17:30:00', '00:45:00', '1', '4');
 
 
 #
