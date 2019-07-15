@@ -457,13 +457,13 @@ echo "
 <h3>Divers</h3>
 <blockquote>";
 
+$chaine_selection_modalites="";
 $sql="SELECT DISTINCT m.* FROM matieres m, j_groupes_matieres jgm WHERE m.matiere=jgm.id_matiere ORDER BY m.matiere, m.nom_complet;";
 $res=mysqli_query($GLOBALS['mysqli'], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p style='color:red'>Aucune matière avec enseignement associé n'a été trouvée.</p>";
 }
 else {
-	$chaine_selection_modalites="";
 	echo "
 <form action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
