@@ -314,7 +314,9 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+
+<h2>Effectifs des classes</h2>";
 
 if($nb_classes==0) {
 	echo "<p style='color:red'>Aucune classe n'existe encore.</p>\n";
@@ -327,6 +329,8 @@ $sql="SELECT num_periode FROM periodes p, classes c WHERE p.id_classe=c.id ORDER
 $res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_per)==0) {
 	echo "<p style='color:red'>Aucune classe avec périodes n'a été trouvée.</p>\n";
+	require_once("../lib/footer.inc.php");
+	die();
 }
 else {
 	echo "<p class='bold' style='margin-bottom:1em;margin-top:1em;'>$nb_classes classe(s) sont définies.</p>
