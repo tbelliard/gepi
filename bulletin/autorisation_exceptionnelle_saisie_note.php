@@ -381,6 +381,16 @@ if(!isset($id_classe)) {
 		tab_liste($tab_txt,$tab_lien,4);
 		echo "</blockquote>\n";
 	}
+
+	echo "
+<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> <strong>La présente page ne présente d'intérêt qu'en période partiellement close</strong>.<br />
+Voici pourquoi&nbsp;:<br />
+En <strong>période ouverte en saisie</strong>, les professeurs peuvent saisir/modifier leurs notes et appréciations sans qu'aucune limitation ne se présente.<br />
+En <strong>période close</strong>, aucune modification <em>(note, appréciation, avis du conseil de classe,...)</em> n'est plus possible.<br />
+En <strong>période partiellement close</strong>, seuls les avis du conseil de classe peuvent être modifiés.<br />
+C'est le moment où, à la lueur des saisies de notes et appréciations, le professeur principal <em>(ou le chef d'établissement selon les cas)</em> rédige les avis du conseil de classe.<br />
+A cette phase avant le conseil de classe, il arrive qu'un professeur ait manqué de temps pour faire des saisies.<br />
+Il est possible, via la présente page, de lui donner un accès exceptionnel à la saisie de notes, sans pour autant rouvrir la saisie à tous les professeurs.</p>";
 }
 elseif((!isset($id_groupe))||(!isset($periode))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
@@ -459,6 +469,17 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 		}
 	}
 	echo "</table>\n";
+
+	echo "
+<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> <strong>La présente page ne présente d'intérêt qu'en période partiellement close</strong>.<br />
+Voici pourquoi&nbsp;:<br />
+En <strong>période ouverte en saisie</strong>, les professeurs peuvent saisir/modifier leurs notes et appréciations sans qu'aucune limitation ne se présente.<br />
+En <strong>période close</strong>, aucune modification <em>(note, appréciation, avis du conseil de classe,...)</em> n'est plus possible.<br />
+En <strong>période partiellement close</strong>, seuls les avis du conseil de classe peuvent être modifiés.<br />
+C'est le moment où, à la lueur des saisies de notes et appréciations, le professeur principal <em>(ou le chef d'établissement selon les cas)</em> rédige les avis du conseil de classe.<br />
+A cette phase avant le conseil de classe, il arrive qu'un professeur ait manqué de temps pour faire des saisies.<br />
+Il est possible, via la présente page, de lui donner un accès exceptionnel à la saisie de notes, sans pour autant rouvrir la saisie à tous les professeurs.</p>";
+
 }
 else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
