@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -92,6 +92,15 @@ if(isset($action)) {
 		for($loop=0;$loop<count($login_user);$loop++) {
 
 			$tab_user=get_info_user($login_user[$loop]);
+			if(count($tab_user)==0) {
+				$tab_user=get_info_eleve($login_user[$loop]);
+			}
+			else {
+				$tab_user['nom']='Inconnu';
+				$tab_user['prenom']='Inconnu';
+				$tab_user['statut']='Inconnu';
+			}
+
 			$tab=get_tab_engagements_user($login_user[$loop]);
 
 			/*
