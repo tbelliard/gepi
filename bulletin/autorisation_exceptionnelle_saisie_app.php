@@ -1388,7 +1388,6 @@ elseif(
 	}
 </script>";
 
-
 	echo "
 <p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> <strong>La présente page ne présente d'intérêt qu'en période partiellement close</strong>.<br />
 Voici pourquoi&nbsp;:<br />

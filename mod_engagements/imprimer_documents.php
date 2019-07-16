@@ -552,6 +552,7 @@ __ADR_ETAB__
 
 	$tab_OOo=array();
 
+	//debug_var();
 	$cpt=0;
 	for($loop=0;$loop<count($id_classe);$loop++) {
 		$convocation=isset($_POST['convocation_'.$id_classe[$loop]]) ? $_POST['convocation_'.$id_classe[$loop]] : array();
@@ -578,6 +579,11 @@ __ADR_ETAB__
 			$tab_OOo[$cpt]['date_conseil']=$tmp_date_conseil;
 
 			$tmp_tab=get_info_user($convocation[$i]);
+			if(count($tmp_tab)==0) {
+				// Cas d'un élève sans compte utilisateur
+				$tmp_tab=get_info_eleve($convocation[$i]);
+			}
+
 			if(count($tmp_tab)==0) {
 				$tmp_tab['nom']="NOM_INCONNU";
 				$tmp_tab['prenom']="PRENOM_INCONNU";
@@ -610,7 +616,7 @@ __ADR_ETAB__
 				}
 			}
 
-			$tab_OOo[$cpt]['dest_civilite']=$tmp_tab['civilite'];
+			$tab_OOo[$cpt]['dest_civilite']=isset($tmp_tab['civilite']) ? $tmp_tab['civilite'] : '';
 			$tab_OOo[$cpt]['dest_nom']=$tmp_tab['nom'];
 			$tab_OOo[$cpt]['dest_prenom']=$tmp_tab['prenom'];
 			$tab_OOo[$cpt]['dest_adr1']=$tmp_tab['adresse']['adr1'];
@@ -1138,6 +1144,10 @@ for($i=0;$i<count($id_classe);$i++) {
 			<tbody>";
 				foreach($tab_engagements_classe['id_engagement_user'][$current_id_engagement] as $key => $value) {
 					$current_user=get_info_user($value);
+					if(count($current_user)==0) {
+						$current_user=get_info_eleve($value);
+					}
+					// Sinon, si c'est un parent, on a impérativement besoin d'un compte utilisateur puisque c'est un login et non un pers_id qui est enregistré dans les engagements.
 					/*
 					echo "\$value=$value<br />";
 					echo "<pre>";
@@ -1212,7 +1222,7 @@ for($i=0;$i<count($id_classe);$i++) {
 						$cpt2++;
 					}
 					else {
-						$msg_scorie.="Il semble qu'il reste des scories concernant le login $value (<em>vous devriez effectuer un nettoyage des tables</em>).<br />";
+						$msg_scorie.="Il semble qu'il reste des scories concernant le login $value (<em>vous devriez effectuer un nettoyage des tables, ou contrôler que le compte utilisateur correspondant existe</em>).<br />";
 					}
 				}
 				echo "

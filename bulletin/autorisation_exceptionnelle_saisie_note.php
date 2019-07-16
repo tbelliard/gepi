@@ -600,7 +600,6 @@ En <strong>période partiellement close</strong>, seuls les avis du conseil de c
 C'est le moment où, à la lueur des saisies de notes et appréciations, le professeur principal <em>(ou le chef d'établissement selon les cas)</em> rédige les avis du conseil de classe.<br />
 A cette phase avant le conseil de classe, il arrive qu'un professeur ait manqué de temps pour faire des saisies.<br />
 Il est possible, via la présente page, de lui donner un accès exceptionnel à la saisie de notes, sans pour autant rouvrir la saisie à tous les professeurs.</p>";
-
 }
 elseif(
 		(((!isset($id_groupe))&&(!isset($id_aid)))||(!isset($periode)))&&

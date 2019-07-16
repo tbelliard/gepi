@@ -575,6 +575,7 @@ elseif(
 		}
 	}
 	echo "</table>\n";
+
 	echo "
 		<input type='hidden' name='id_classe' value='$id_classe' />
 		<p><input type='submit' value='Autoriser tous les personnels sélectionnés' /></p>
