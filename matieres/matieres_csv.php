@@ -105,7 +105,23 @@ else {
 	echo "</pre>";
 	*/
 	if((!isset($csv_file))||($csv_file['tmp_name']=='')||($csv_file['error']!='0')) {
-		echo "<p style='color:red'>Aucun fichier n'a été transmis</p>\n";
+		echo "<p style='color:red'>Aucun fichier n'a été transmis.</p>\n";
+		echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	elseif(!in_array($csv_file['type'], array('text/csv',
+								'text/plain',
+								'application/csv',
+								'text/comma-separated-values',
+								'application/excel',
+								'application/vnd.ms-excel',
+								'application/vnd.msexcel',
+								'text/anytext',
+								'application/octet-stream',
+								'application/txt',
+								'application/tsv'))) {
+		echo "<p style='color:red'>Le fichier n'est pas un fichier CSV.</p>\n";
 		echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -113,7 +129,7 @@ else {
 
 	$fp=fopen($csv_file['tmp_name'],"r");
 	if(!$fp) {
-		echo "<p style='color:red'>Impossible d'ouvrir le fichier CSV</p>\n";
+		echo "<p style='color:red'>Impossible d'ouvrir le fichier CSV.</p>\n";
 		echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</p>\n";
 		require("../lib/footer.inc.php");
 		die();
