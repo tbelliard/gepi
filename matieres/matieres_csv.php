@@ -39,8 +39,8 @@ if ($resultat_session == 'c') {
 
 //INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `secours` , `description` , `statut` ) VALUES ('/matieres/matieres_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Importation des matières depuis un fichier CSV', '');
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 
@@ -60,96 +60,144 @@ require_once("../lib/header.inc.php");
 echo "<center><h3 class='gepi'>Importation des matières</h3></center>\n";
 
 if (!isset($is_posted)) {
-
-    echo "<p>Importation d'un fichier CSV où chaque ligne est de la forme: <code>nom_court;nom_long</code><br /><i>Par exemple:</i><br />\n";
-    echo "<pre>MATHS;MATHEMATIQUES
-FRANC;FRANCAIS
-...</pre>\n";
-    //echo "</p>\n";
-    echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_csv'>
+	<fieldset class='fieldset_opacite50'>";
 	echo add_token_field();
-    echo "<input type='hidden' name='is_posted' value='yes' />\n";
-    //echo "<input type='hidden' name='step1' value='y'>";
-    echo "<p><input type='file' size='80' name='csv_file' /><br />\n";
-    echo "<input type='submit' value='Valider' /></p>\n";
-    echo "</form>\n";
+	echo "<input type='hidden' name='is_posted' value='yes' />\n";
+	//echo "<input type='hidden' name='step1' value='y'>";
+
+	echo "<p>Importation d'un fichier CSV où chaque ligne est de la forme: <code>nom_court;nom_long</code><br /><i>Par exemple:</i><br />\n";
+	echo "<pre>
+	MATHS;MATHEMATIQUES
+	FRANC;FRANCAIS
+	...</pre>\n";
+
+	echo "<p><input type='file' size='80' name='csv_file' id='csv_file' /><br />\n";
+
+	echo "<input type='submit' id='input_submit' value='Valider' />
+<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+</fieldset>
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_file() {
+		fichier=document.getElementById('csv_file').value;
+		//alert(fichier);
+		if(fichier=='') {
+			alert('Vous n\'avez pas sélectionné de fichier CSV à envoyer.');
+		}
+		else {
+			document.getElementById('form_envoi_csv').submit();
+		}
+	}
+</script>
+
+</form>";
 
 }
 else {
-    $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-        $fp=fopen($csv_file['tmp_name'],"r");
-        if(!$fp) {
-            echo "<p>Impossible d'ouvrir le fichier CSV</p>\n";
-            echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</p>\n";
-        }
-        else{
-            $msg="";
+	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+	/*
+	echo "<pre>";
+	print_r($csv_file);
+	echo "</pre>";
+	*/
+	if((!isset($csv_file))||($csv_file['tmp_name']=='')||($csv_file['error']!='0')) {
+		echo "<p style='color:red'>Aucun fichier n'a été transmis</p>\n";
+		echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
 
-            echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier CSV mais déjà présents dans la base GEPI.</p>\n";
-            echo "<table class='boireaus' border='1' cellpadding='2' cellspacing='2' summary='Tableau des matières du CSV'>\n";
-            echo "<tr><th><p class=\"small\">Identifiant de la matière</p></th><th><p class=\"small\">Nom complet</p></th></tr>\n";
+	$fp=fopen($csv_file['tmp_name'],"r");
+	if(!$fp) {
+		echo "<p style='color:red'>Impossible d'ouvrir le fichier CSV</p>\n";
+		echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else{
+		$msg="";
 
-			$alt=1;
+		echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier CSV mais déjà présents dans la base GEPI.</p>\n";
+		echo "<table class='boireaus' border='1' cellpadding='2' cellspacing='2' summary='Tableau des matières du CSV'>\n";
+		echo "<tr><th><p class=\"small\">Identifiant de la matière</p></th><th><p class=\"small\">Nom complet</p></th></tr>\n";
 
-            $nb_reg_no = 0;
-            while(!feof($fp)){
-                $temoin_erreur="non";
-                $tmp_lig=fgets($fp,4096);
-				if(trim($tmp_lig)!=""){
-					$ligne=explode(";",$tmp_lig);
+		$alt=1;
 
-					$affiche[0]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[0]))));
-					if((mb_strlen(preg_replace("/[A-Za-z0-9_ &]/","",strtr($affiche[0],"-","_")))!=0)&&($affiche[0]!="")){
-						$temoin_erreur="oui";
-						//echo "<!--  -->\n";
-						$msg.="Le nom <font color='red'>$affiche[0]</font> ne convient pas.<br />\n";
-						$nb_reg_no++;
-					}
+		$nb_reg_no = 0;
+		while(!feof($fp)){
+			$temoin_erreur="non";
+			$tmp_lig=fgets($fp,4096);
 
+			if(trim($tmp_lig)!=""){
+				$ligne=explode(";", $tmp_lig);
+
+				$affiche[0]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[0]))));
+				if((mb_strlen(preg_replace("/[A-Za-z0-9_ &]/","",strtr($affiche[0],"-","_")))!=0)&&($affiche[0]!="")){
+					$temoin_erreur="oui";
+					//echo "<!--  -->\n";
+					$msg.="Le nom <font color='red'>$affiche[0]</font> ne convient pas.<br />\n";
+					$nb_reg_no++;
+				}
+
+				if(!isset($ligne[1])) {
+					$temoin_erreur="oui";
+					//echo "<!--  -->\n";
+					$msg.="La ligne '<font color='red'>$tmp_lig</font>' ne comporte pas de nom complet de matière.<br />\n";
+					$nb_reg_no++;
+
+					$affiche[1]='';
+				}
+				else {
 					$affiche[1]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[1]))));
-					if((mb_strlen(preg_replace("/[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]/","",strtr($affiche[1],"-","_")))!=0)&&($affiche[1]!="")){
-						$temoin_erreur="oui";
-						//echo "<!--  -->\n";
-						$msg.="Le nom <font color='red'>$affiche[1]</font> ne convient pas.<br />\n";
-						$nb_reg_no++;
-					}
+				}
+				if((mb_strlen(preg_replace("/[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]/","",strtr($affiche[1],"-","_")))!=0)&&($affiche[1]!="")){
+					$temoin_erreur="oui";
+					//echo "<!--  -->\n";
+					$msg.="Le nom <font color='red'>$affiche[1]</font> ne convient pas.<br />\n";
+					$nb_reg_no++;
+				}
 
-					if(($affiche[0]!="")&&($affiche[1]!="")&&($temoin_erreur!="oui")){
-						$alt=$alt*(-1);
+				if(($affiche[0]!="")&&($affiche[1]!="")&&($temoin_erreur!="oui")){
+					$alt=$alt*(-1);
 
-						$verif = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where matiere='$affiche[0]'");
-						$resverif = mysqli_num_rows($verif);
-						if($resverif == 0) {
-							$req = mysqli_query($GLOBALS["mysqli"], "insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
-							if(!$req) {
-								$nb_reg_no++;
-								//echo mysql_error();
-								echo "<tr class='lig$alt white_hover'><td colspan='2'><font color='red'>".mysqli_error($GLOBALS["mysqli"])."</font></td></tr>\n";
-							} else {
-								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>\n";
-							}
+					$verif = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where matiere='$affiche[0]'");
+					$resverif = mysqli_num_rows($verif);
+					if($resverif == 0) {
+						$req = mysqli_query($GLOBALS["mysqli"], "insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
+						if(!$req) {
+							$nb_reg_no++;
+							//echo mysql_error();
+							echo "<tr class='lig$alt white_hover'><td colspan='2'><font color='red'>".mysqli_error($GLOBALS["mysqli"])."</font></td></tr>\n";
 						} else {
-							$nom_complet = old_mysql_result($verif,0,'nom_complet');
-							echo "<tr class='lig$alt white_hover'><td><p><font color='green'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>\n";
+							echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>\n";
 						}
+					} else {
+						$nom_complet = old_mysql_result($verif,0,'nom_complet');
+						echo "<tr class='lig$alt white_hover'><td><p><font color='green'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>\n";
 					}
 				}
-            }
-            echo "</table>\n";
-            //dbase_close($fp);
-            fclose($fp);
-            if ($nb_reg_no != 0) {
-                echo "<p>Lors de l'enregistrement des données il y a eu <b>$nb_reg_no erreur(s)</b>.<br />Essayez de trouver la cause de l'erreur et recommencez la procédure.</p>\n";
-                if($msg!=""){
-                    echo "<p>Voici la liste des chaines non acceptées:</p>\n";
-                    echo "<blockquote>\n";
-                    echo "$msg";
-                    echo "</blockquote>\n";
-                }
-            } else {
-                echo "<p>L'importation des matières dans la base GEPI a été effectuée avec succès !<br />";
-            }
-        }
+			}
+		}
+		echo "</table>\n";
+		//dbase_close($fp);
+		fclose($fp);
+
+		if ($nb_reg_no != 0) {
+			echo "<p>Lors de l'enregistrement des données il y a eu <b>$nb_reg_no erreur(s)</b>.<br />Essayez de trouver la cause de l'erreur et recommencez la procédure.</p>\n";
+			if($msg!="") {
+				echo "<p>Voici la liste des chaines non acceptées:</p>\n";
+				echo "<blockquote>\n";
+				echo "$msg";
+				echo "</blockquote>\n";
+			}
+		} else {
+			echo "<p>L'importation des matières dans la base GEPI a été effectuée avec succès !<br />";
+		}
+	}
 }
 require("../lib/footer.inc.php");
 ?>
