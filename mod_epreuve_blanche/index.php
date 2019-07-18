@@ -1722,6 +1722,8 @@ function checkbox_change(cpt) {
 
 			if(!isset($id_classe)) {
 				echo "<p style='color:red'>ERREUR&nbsp;: Aucune classe n'a été choisie.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
 			}
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
