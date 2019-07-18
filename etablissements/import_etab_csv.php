@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -46,6 +46,9 @@ if (!checkAccess()) {
 $titre_page = "Etablissements | Importation d'un fichier csv";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
+
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;
 
@@ -55,7 +58,8 @@ if (!isset($is_posted)) {
 	echo "<p><span class = 'grand'>Première phase d'importation des établissements </span></p>\n";
 	echo "<hr />\n";
 	echo "<p>Choisir un fichier csv parmi ceux disponibles actuellement dans la distribution GEPI : <br />\n";
-	echo "<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=post name=\"formulaire\">\n";
+	echo "<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=post name=\"formulaire\">
+	<fieldset class='fieldset_opacite50'>\n";
 
 	echo add_token_field();
 
@@ -76,6 +80,7 @@ if (!isset($is_posted)) {
 	echo "<input type='submit' value='Valider' />\n";
 	echo "<input type='hidden' name='is_posted' value='1' />\n";
 	echo "<input type='hidden' name='choix' value=\"gepi\" />\n";
+	echo "</fieldset>\n";
 	echo "</form>\n";
 
 	echo "<br /><br /><hr />\n";
@@ -83,22 +88,45 @@ if (!isset($is_posted)) {
 	echo "<p>Choisir un autre fichier de votre choix :<br />
 	<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=\"post\" name=\"formulaire\">\n";
 */
-	echo "<p>Choisir un autre fichier de votre choix :<br />
-	<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=\"post\" name=\"formulaire2\">\n";
-	echo add_token_field();
-
 	$csv_file = "";
-	echo "<input type='file' name=\"csv_file\" />\n";
-	echo "<input type='submit' value='Valider' />\n";
-	?>
-	<p><label for='en_tete' style='cursor: pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<i>non vide</i>) à ignorer, cocher la case ci-contre&nbsp;
-	<input type='checkbox' name="en_tete" id="en_tete" value="yes" /></label></p>
-	<input type='hidden' name='is_posted' value='1' />
-	<input type='hidden' name='choix' value="autre" />
 
-	</FORM>
-	<?php
-	echo "<p>Le fichier d'importation peut-être constitué à l'aide d'un tableur à partir des informations contenues dans le fichier \"NMETABC.TXT\" qui se trouve dans GEP.";
+	echo "<p>Choisir un autre fichier de votre choix :<br />
+	<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=\"post\" name=\"formulaire2\" id=\"formulaire2\">
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='file' name='csv_file' id='csv_file' />
+
+		<input type='submit' id='input_submit' value='Valider' />
+		<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+
+		<input type='hidden' name='is_posted' value='1' />
+		<input type='hidden' name='choix' value='autre' />
+
+		<p><label for='en_tete' style='cursor: pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<i>non vide</i>) à ignorer, cocher la case ci-contre&nbsp;
+		<input type='checkbox' name='en_tete' id='en_tete' value='yes' /></label></p>
+
+	</fieldset>
+
+	<script type='text/javascript'>
+		document.getElementById('input_submit').style.display='none';
+		document.getElementById('input_button').style.display='';
+
+		function check_champ_file() {
+			fichier=document.getElementById('csv_file').value;
+			//alert(fichier);
+			if(fichier=='') {
+				alert('Vous n\'avez pas sélectionné de fichier CSV à envoyer.');
+			}
+			else {
+				document.getElementById('formulaire2').submit();
+			}
+		}
+	</script>
+
+</form>";
+
+
+	echo "<p style='margin-top:1em;'>Le fichier d'importation peut-être constitué à l'aide d'un tableur à partir des informations contenues dans le fichier \"NMETABC.TXT\" qui se trouve dans GEP.";
 	echo "<br />Il doit être au format csv (séparateur : point-virgule) et doit contenir les six champs suivants :<br />\n";
 	echo "--> <B>Le N° RNE de l'établissement</B><br />\n";
 	echo "--> <B>Le nom de l'établissement</B><br />\n";
@@ -119,13 +147,30 @@ if (!isset($is_posted)) {
 	if ($_POST['choix'] == 'gepi') {
 		$fp = @fopen("./bases/".$_POST['csv_file'], "r");
 	} else {
-	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-	if($csv_file['tmp_name'] == "") {
-		echo "<p>Aucun fichier n'a été sélectionné !</p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-	$fp = @fopen($csv_file['tmp_name'], "r");
+		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+		if((!isset($csv_file))||($csv_file['tmp_name']=='')||($csv_file['error']!='0')) {
+			echo "<p>Aucun fichier n'a été sélectionné !</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+		elseif(!in_array($csv_file['type'], array('text/csv',
+									'text/plain',
+									'application/csv',
+									'text/comma-separated-values',
+									'application/excel',
+									'application/vnd.ms-excel',
+									'application/vnd.msexcel',
+									'text/anytext',
+									'application/octet-stream',
+									'application/txt',
+									'application/tsv'))) {
+			echo "<p style='color:red'>Le fichier n'est pas un fichier CSV.</p>\n";
+			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		$fp = @fopen($csv_file['tmp_name'], "r");
 	}
 
 	echo "<form enctype='multipart/form-data' action='import_etab_csv.php' method='post'>\n";
@@ -154,115 +199,117 @@ if (!isset($is_posted)) {
 				$alt=$alt*(-1);
 			}
 			$data = fgetcsv ($fp, $long_max, ";");
-			$num = count ($data);
-			if ($num == 6)  {
-				$reg_rne = '';
-				$reg_nom = '';
-				$reg_type2 = '';
-				$reg_type1 = '';
-				$reg_cp = '';
-				$reg_ville = '';
-				$row++;
-				echo "<tr class='lig$alt white_hover'>\n";
-				for ($c=0; $c<$num; $c++) {
-					switch ($c) {
-					case 0:
-						//RNE
-						$call_rne = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements WHERE id='$data[$c]'");
-						$test = @mysqli_num_rows($call_rne);
-						$couleur = 'black';
-						if ($test != 0) {
-							$couleur = 'red';
-							$reg_ligne='no';
-						}
-						//echo "<td><p><b><font color = ".$couleur.">".$data[$c]."</font></p></b></td>\n";
-						echo "<td><p><b><font color = ".$couleur.">".$data[$c]."</font></b></p></td>\n";
-						$reg_rne=$data[$c];
-						break;
-					case 1:
-						// Nom
-						if ($data[$c] == "") {
-						$col = "<b><font color='red'>Non défini</font></b>\n";
-							$reg_ligne='no';
-						} else {
-							$reg_nom = traitement_magic_quotes(corriger_caracteres($data[$c]));
-							$col = $data[$c];
-						}
-						echo "<td>$col</td>\n";
-						break;
-					case 2:
-						// Type lycée/collège
-						$tempo = $data[$c];
-						$valid='no';
-						foreach ($type_etablissement as $type_etabli => $nom_etablissement) {
-							if ($tempo == $type_etabli) {
-								$tempo = $nom_etablissement;
-								$reg_type1 = $type_etabli;
-								$valid='yes';
-
+			if(is_array($data)) {
+				$num = count ($data);
+				if ($num == 6)  {
+					$reg_rne = '';
+					$reg_nom = '';
+					$reg_type2 = '';
+					$reg_type1 = '';
+					$reg_cp = '';
+					$reg_ville = '';
+					$row++;
+					echo "<tr class='lig$alt white_hover'>\n";
+					for ($c=0; $c<$num; $c++) {
+						switch ($c) {
+						case 0:
+							//RNE
+							$call_rne = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements WHERE id='$data[$c]'");
+							$test = @mysqli_num_rows($call_rne);
+							$couleur = 'black';
+							if ($test != 0) {
+								$couleur = 'red';
+								$reg_ligne='no';
 							}
-						}
-						if ($valid=='yes') {
-							echo "<td><p>$tempo</p></td>\n";
-						} else {
-							echo "<td><b><font color='red'>Non défini</font></b></td>\n";
-							$reg_ligne='no';
-						}
-						break;
-					case 3:
-						// Type public/privé
-						$tempo = my_strtolower($data[$c]);
-						$valid='yes';
-						switch($tempo) {
-							case "public":
-							$reg_type2 = "public";
+							//echo "<td><p><b><font color = ".$couleur.">".$data[$c]."</font></p></b></td>\n";
+							echo "<td><p><b><font color = ".$couleur.">".$data[$c]."</font></b></p></td>\n";
+							$reg_rne=$data[$c];
 							break;
-							case "prive":
-							$reg_type2 = "prive";
-							break;
-							$valid = 'no';
-						}
-						if ($valid=='yes') {
-							echo "<td><p>$tempo</p></td>\n";
-						} else {
-							echo "<td><b><font color='red'>Non défini</font></b></td>\n";
-							$reg_ligne='no';
-						}
-						break;
-					case 4:
-						// Code postal
-						if (preg_match ("/^[0-9]{1,5}$/", $data[$c])) {
-							echo "<td><p>$data[$c]</p></td>\n";
-							$reg_cp=$data[$c];
-						} else {
-							echo "<td><b><font color='red'>Non défini</font></b></td>\n";
-							$reg_ligne='no';
-						}
-						break;
-					case 5:
-						// Ville
-					if ($data[$c] == "") {
+						case 1:
+							// Nom
+							if ($data[$c] == "") {
 							$col = "<b><font color='red'>Non défini</font></b>\n";
-							$reg_ligne='no';
-							$reg_ville = '';
-						} else {
-							$col = $data[$c];
-							$reg_ville = traitement_magic_quotes(corriger_caracteres($data[$c]))    ;
+								$reg_ligne='no';
+							} else {
+								$reg_nom = traitement_magic_quotes(corriger_caracteres($data[$c]));
+								$col = $data[$c];
+							}
+							echo "<td>$col</td>\n";
+							break;
+						case 2:
+							// Type lycée/collège
+							$tempo = $data[$c];
+							$valid='no';
+							foreach ($type_etablissement as $type_etabli => $nom_etablissement) {
+								if ($tempo == $type_etabli) {
+									$tempo = $nom_etablissement;
+									$reg_type1 = $type_etabli;
+									$valid='yes';
+
+								}
+							}
+							if ($valid=='yes') {
+								echo "<td><p>$tempo</p></td>\n";
+							} else {
+								echo "<td><b><font color='red'>Non défini</font></b></td>\n";
+								$reg_ligne='no';
+							}
+							break;
+						case 3:
+							// Type public/privé
+							$tempo = my_strtolower($data[$c]);
+							$valid='yes';
+							switch($tempo) {
+								case "public":
+								$reg_type2 = "public";
+								break;
+								case "prive":
+								$reg_type2 = "prive";
+								break;
+								$valid = 'no';
+							}
+							if ($valid=='yes') {
+								echo "<td><p>$tempo</p></td>\n";
+							} else {
+								echo "<td><b><font color='red'>Non défini</font></b></td>\n";
+								$reg_ligne='no';
+							}
+							break;
+						case 4:
+							// Code postal
+							if (preg_match ("/^[0-9]{1,5}$/", $data[$c])) {
+								echo "<td><p>$data[$c]</p></td>\n";
+								$reg_cp=$data[$c];
+							} else {
+								echo "<td><b><font color='red'>Non défini</font></b></td>\n";
+								$reg_ligne='no';
+							}
+							break;
+						case 5:
+							// Ville
+						if ($data[$c] == "") {
+								$col = "<b><font color='red'>Non défini</font></b>\n";
+								$reg_ligne='no';
+								$reg_ville = '';
+							} else {
+								$col = $data[$c];
+								$reg_ville = traitement_magic_quotes(corriger_caracteres($data[$c]))    ;
+							}
+							echo "<td>$col</td></tr>\n";
+							break;
 						}
-						echo "<td>$col</td></tr>\n";
-						break;
 					}
-				}
-				if (isset($reg_ligne)) {
-					unset($reg_ligne);
-				} else {
-					$table_etab[$ind][] = $reg_rne;
-					$table_etab[$ind][] = $reg_nom;
-					$table_etab[$ind][] = $reg_type1;
-					$table_etab[$ind][] = $reg_type2;
-					$table_etab[$ind][] = $reg_cp;
-					$table_etab[$ind][] = $reg_ville;
-					$ind++;
+					if (isset($reg_ligne)) {
+						unset($reg_ligne);
+					} else {
+						$table_etab[$ind][] = $reg_rne;
+						$table_etab[$ind][] = $reg_nom;
+						$table_etab[$ind][] = $reg_type1;
+						$table_etab[$ind][] = $reg_type2;
+						$table_etab[$ind][] = $reg_cp;
+						$table_etab[$ind][] = $reg_ville;
+						$ind++;
+					}
 				}
 			}
 			// fin de la boucle "while(!feof($fp))"
