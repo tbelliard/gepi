@@ -323,11 +323,36 @@ $_POST['type_import']=	1
 	$csvfile = isset($_FILES["csvfile"]) ? $_FILES["csvfile"] : NULL;
 	//if($csvfile != "none") {
 	//if(isset($csvfile)) {
-	if((isset($csvfile['tmp_name']))&&($csvfile['tmp_name']!='')) {
+	if((!isset($csvfile))||($csvfile['tmp_name']=='')||($csvfile['error']!='0')) {
+		echo "<p>Aucun fichier n'a été sélectionné !</p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	elseif(!in_array($csvfile['type'], array('text/csv',
+								'text/plain',
+								'application/csv',
+								'text/comma-separated-values',
+								'application/excel',
+								'application/vnd.ms-excel',
+								'application/vnd.msexcel',
+								'text/anytext',
+								'application/octet-stream',
+								'application/txt',
+								'application/tsv'))) {
+		echo "<p style='color:red'>Le fichier n'est pas un fichier CSV.</p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	elseif((isset($csvfile['tmp_name']))&&($csvfile['tmp_name']!='')) {
 		//$fp = fopen($csvfile, "r");
 		$fp = fopen($csvfile['tmp_name'], "r");
 		if(!$fp) {
 			echo "Impossible d'ouvrir le fichier CSV (".$csvfile['name'].")";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
+			require("../lib/footer.inc.php");
+			die();
 		} else {
 			$erreur = 'no';
 			//	Dans le cas où on importe un fichier PROF-AID ou ELEVE-AID, on vérifie le login
@@ -435,14 +460,19 @@ $_POST['type_import']=	1
 
 				} else {
 					$del = mysqli_query($GLOBALS["mysqli"], "delete from tempo2");
-					echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées lors de l'enregistrement des données dans la table temporaire : l'opération d'importation ne peut continuer !</p>";
+					echo "<p style='color:red'>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées lors de l'enregistrement des données dans la table temporaire : l'opération d'importation ne peut continuer !</p>";
+					echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
 				}
 			} else {
-				echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées dans le fichier : l'opération d'importation ne peut continuer !</p>";
+				echo "<p style='color:red'>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées dans le fichier : l'opération d'importation ne peut continuer !</p>";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
 			}
 		}
 	} else {
-		echo "<p>Aucun fichier n'a été sélectionné !</p>";
+		echo "<p style='color:red'>Aucun fichier n'a été sélectionné !</p>";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=sans_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
+		require("../lib/footer.inc.php");
+		die();
 	}
 }
 
@@ -673,7 +703,29 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
 	$csvfile = isset($_FILES["csvfile"]) ? $_FILES["csvfile"] : NULL;
 	//if($csvfile != "none") {
-	if((isset($csvfile['tmp_name']))&&($csvfile['tmp_name']!='')) {
+	if((!isset($csvfile))||($csvfile['tmp_name']=='')||($csvfile['error']!='0')) {
+		echo "<p>Aucun fichier n'a été sélectionné !</p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	elseif(!in_array($csvfile['type'], array('text/csv',
+								'text/plain',
+								'application/csv',
+								'text/comma-separated-values',
+								'application/excel',
+								'application/vnd.ms-excel',
+								'application/vnd.msexcel',
+								'text/anytext',
+								'application/octet-stream',
+								'application/txt',
+								'application/tsv'))) {
+		echo "<p style='color:red'>Le fichier n'est pas un fichier CSV.</p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	elseif((isset($csvfile['tmp_name']))&&($csvfile['tmp_name']!='')) {
 		/*
 		echo "<pre>";
 		print_r($csvfile);
@@ -684,7 +736,8 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 		$fp = fopen($csvfile['tmp_name'], "r");
 		if(!$fp) {
 			//echo "Impossible d'ouvrir le fichier CSV ($csvfile)";
-			echo "Impossible d'ouvrir le fichier CSV (".$csvfile['name'].")";
+			echo "<p style='color:red'>Impossible d'ouvrir le fichier CSV (".$csvfile['name'].")</p>";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
 		} else {
 			$erreur = 'no';
 			//
@@ -843,16 +896,17 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 					echo "</FORM>";
 				} else {
 					$del = mysqli_query($GLOBALS["mysqli"], "delete from tempo2");
-					echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées lors de l'enregistrement des données dans la table temporaire : l'opération d'importation ne peut continuer !</p>";
+					echo "<p style='color:red'>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées lors de l'enregistrement des données dans la table temporaire : l'opération d'importation ne peut continuer !</p>";
+					echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
 				}
-
-
 			} else {
-				echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées dans le fichier : l'opération d'importation ne peut continuer !</p>";
+				echo "<p style='color:red'>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées dans le fichier : l'opération d'importation ne peut continuer !</p>";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
 			}
 		}
 	} else {
-		echo "<p>Aucun fichier n'a été sélectionné !</p>";
+		echo "<p style='color:red'>Aucun fichier n'a été sélectionné !</p>";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?indice_aid=$indice_aid&is_posted=avec_id_etape_2&type_import=$type_import'>Cliquer ici </a> pour recommencer !</p>\n";
 	}
 }
 
