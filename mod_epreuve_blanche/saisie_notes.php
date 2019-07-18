@@ -274,74 +274,100 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 				while(!feof($fp)) {
 					if (isset($en_tete)) {
 						$data = fgetcsv ($fp, $long_max, ";");
+
+						// Recherche des champs
+						$tabchamps = array("N_ANONYMAT","NOTE");
+
+						for($i=0;$i<sizeof($data);$i++) {
+							for($j=0;$j<sizeof($tabchamps);$j++) {
+								if($data[$i]==$tabchamps[$j]) {
+									$indice_champ[$tabchamps[$j]]=$i;
+								}
+							}
+						}
+
+						/*
+						if(!isset($indice_champ['N_ANONYMAT'])) {
+						}
+						*/
+
 						unset($en_tete);
 					}
+
+					if(!isset($indice_champ['N_ANONYMAT'])) {
+						$indice_champ['N_ANONYMAT']=0;
+					}
+
+					if(!isset($indice_champ['NOTE'])) {
+						$indice_champ['NOTE']=1;
+					}
+
 					$data = fgetcsv ($fp, $long_max, ";");
 
-					if((isset($data[1]))&&($data[0]!='')&&($data[1]!='')) {
+					if((isset($data[$indice_champ['NOTE']]))&&($data[$indice_champ['N_ANONYMAT']]!='')&&($data[$indice_champ['NOTE']]!='')) {
 						if($_SESSION['statut']=='professeur') {
-							$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
+							$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[$indice_champ['N_ANONYMAT']]."';";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res)==0) {
-								$msg.="Le numéro d'anonymat ".$data[0]." ne vous est pas attribué.<br />";
+								$msg.="Le numéro d'anonymat ".$data[$indice_champ['N_ANONYMAT']]." ne vous est pas attribué.<br />";
 							}
 							else {
-								$note_courante=preg_replace("/,/", ".", $data[1]);
-								if((preg_match("/^[0-9\.\,]{1,}$/", $data[1]))&&($note_courante>=0)&&($note_courante<=$note_sur)) {
-									$sql="UPDATE eb_copies SET note='$note_courante', statut='' WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
+								$note_courante=preg_replace("/,/", ".", $data[$indice_champ['NOTE']]);
+								if((preg_match("/^[0-9\.\,]{1,}$/", $data[$indice_champ['NOTE']]))&&($note_courante>=0)&&($note_courante<=$note_sur)) {
+									$sql="UPDATE eb_copies SET note='$note_courante', statut='' WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[$indice_champ['N_ANONYMAT']]."';";
 									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 										$nb_reg++;
 									}
 									else {
-										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[0].".<br />";
+										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[$indice_champ['N_ANONYMAT']].".<br />";
 									}
 								}
-								elseif(($data[1]=="abs")||($data[1]=="disp")||($data[1]=="-")) {
-									$sql="UPDATE eb_copies SET note='0.0', statut='".$data[1]."' WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[0]."';";
+								elseif(($data[$indice_champ['NOTE']]=="abs")||($data[$indice_champ['NOTE']]=="disp")||($data[$indice_champ['NOTE']]=="-")) {
+									$sql="UPDATE eb_copies SET note='0.0', statut='".$data[$indice_champ['NOTE']]."' WHERE id_epreuve='$id_epreuve' AND login_prof='".$_SESSION['login']."' AND n_anonymat='".$data[$indice_champ['N_ANONYMAT']]."';";
 									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 										$nb_reg++;
 									}
 									else {
-										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[0].".<br />";
+										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[$indice_champ['N_ANONYMAT']].".<br />";
 									}
 								}
 								else {
-									$msg.="La note ".$data[1]." pour le numéro d'anonymat ".$data[0]." est invalide.<br />";
+									$msg.="La note ".$data[$indice_champ['NOTE']]." pour le numéro d'anonymat ".$data[$indice_champ['N_ANONYMAT']]." est invalide.<br />";
 								}
 							}
 						}
 						else {
-							$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
+							$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[$indice_champ['N_ANONYMAT']]."';";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res)==0) {
-								$msg.="Le numéro d'anonymat ".$data[0]." n'est pas associé à .<br />";
+								$msg.="Le numéro d'anonymat ".$data[$indice_champ['N_ANONYMAT']]." n'est pas associé à un élève dans la table 'eb_copies'.<br />";
 							}
 							else {
-								$note_courante=preg_replace("/,/", ".", $data[1]);
-								if((preg_match("/^[0-9\.\,]{1,}$/", $data[1]))&&($note_courante>=0)&&($note_courante<=$note_sur)) {
-									$sql="UPDATE eb_copies SET note='$note_courante', statut='' WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
+								$note_courante=preg_replace("/,/", ".", $data[$indice_champ['NOTE']]);
+								if((preg_match("/^[0-9\.\,]{1,}$/", $data[$indice_champ['NOTE']]))&&($note_courante>=0)&&($note_courante<=$note_sur)) {
+									$sql="UPDATE eb_copies SET note='$note_courante', statut='' WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[$indice_champ['N_ANONYMAT']]."';";
 									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 										$nb_reg++;
 									}
 									else {
-										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[0].".<br />";
+										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[$indice_champ['N_ANONYMAT']].".<br />";
 									}
 								}
-								elseif(($data[1]=="abs")||($data[1]=="disp")||($data[1]=="-")) {
-									$sql="UPDATE eb_copies SET note='0.0', statut='".$data[1]."' WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[0]."';";
+								elseif(($data[$indice_champ['NOTE']]=="abs")||($data[$indice_champ['NOTE']]=="disp")||($data[$indice_champ['NOTE']]=="-")) {
+									$sql="UPDATE eb_copies SET note='0.0', statut='".$data[$indice_champ['NOTE']]."' WHERE id_epreuve='$id_epreuve' AND n_anonymat='".$data[$indice_champ['N_ANONYMAT']]."';";
 									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 										$nb_reg++;
 									}
 									else {
-										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[0].".<br />";
+										$msg.="Erreur lors de l'enregistrement de la note ".$note_courante." pour le numéro d'anonymat ".$data[$indice_champ['N_ANONYMAT']].".<br />";
 									}
 								}
 								else {
-									$msg.="La note ".$data[1]." pour le numéro d'anonymat ".$data[0]." est invalide.<br />";
+									$msg.="La note ".$data[$indice_champ['NOTE']]." pour le numéro d'anonymat ".$data[$indice_champ['N_ANONYMAT']]." est invalide.<br />";
 								}
 							}
 						}
