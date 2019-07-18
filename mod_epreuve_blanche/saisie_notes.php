@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -246,7 +246,23 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 
 	if($upload_autorise=="y") {
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-		if($csv_file['tmp_name'] != "") {
+		if((!isset($csv_file))||($csv_file['tmp_name']=='')||($csv_file['error']!='0')) {
+			$msg="Aucun fichier n'a été transmis.<br />";
+		}
+		elseif(!in_array($csv_file['type'], array('text/csv',
+									'text/plain',
+									'application/csv',
+									'text/comma-separated-values',
+									'application/excel',
+									'application/vnd.ms-excel',
+									'application/vnd.msexcel',
+									'text/anytext',
+									'application/octet-stream',
+									'application/txt',
+									'application/tsv'))) {
+			$msg="Le fichier n'est pas un fichier CSV.<br />";
+		}
+		elseif($csv_file['tmp_name'] != "") {
 			$fp = @fopen($csv_file['tmp_name'], "r");
 			if(!$fp) {
 				$msg="Impossible d'ouvrir le fichier CSV<br />";
