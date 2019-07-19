@@ -70,23 +70,25 @@ if(isset($saisie_mention)) {
 	$cpt_suppr=0;
 	$tab_mentions=get_mentions();
 	$tab_mentions_aff=get_tab_mentions_affectees();
-	for($i=0;$i<count($suppr);$i++) {
-		if(!in_array($suppr[$i],$tab_mentions_aff)) {
-			$sql="DELETE FROM j_mentions_classes WHERE id_mention='$suppr[$i]';";
-			//echo "$sql<br />";
-			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(!$nettoyage) {
-				$msg.="Erreur lors de la suppression de l'association de la $gepi_denom_mention <b>".$tab_mentions[$suppr[$i]]."</b> avec une ou des classes.<br />";
-			}
-			else {
-				$sql="DELETE FROM mentions WHERE id='$suppr[$i]';";
+	if((isset($suppr))&&(is_array($suppr))) {
+		for($i=0;$i<count($suppr);$i++) {
+			if(!in_array($suppr[$i],$tab_mentions_aff)) {
+				$sql="DELETE FROM j_mentions_classes WHERE id_mention='$suppr[$i]';";
 				//echo "$sql<br />";
 				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$nettoyage) {
-					$msg.="Erreur lors de la suppression de la $gepi_denom_mention <b>".$tab_mentions[$suppr[$i]]."</b><br />";
+					$msg.="Erreur lors de la suppression de l'association de la $gepi_denom_mention <b>".$tab_mentions[$suppr[$i]]."</b> avec une ou des classes.<br />";
 				}
 				else {
-					$cpt_suppr++;
+					$sql="DELETE FROM mentions WHERE id='$suppr[$i]';";
+					//echo "$sql<br />";
+					$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$nettoyage) {
+						$msg.="Erreur lors de la suppression de la $gepi_denom_mention <b>".$tab_mentions[$suppr[$i]]."</b><br />";
+					}
+					else {
+						$cpt_suppr++;
+					}
 				}
 			}
 		}
