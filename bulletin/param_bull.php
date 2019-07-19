@@ -971,6 +971,7 @@ echo add_token_field();
 
 if(getSettingAOui('active_bulletins')) {
 ?>
+<H2>Paramètres des bulletins HTML</H2>
 <input type='hidden' name='is_posted' value='y' />
 <H3>Mise en page du bulletin scolaire</H3>
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Mise en page'>
