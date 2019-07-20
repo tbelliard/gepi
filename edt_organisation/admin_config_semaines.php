@@ -64,7 +64,8 @@ $num_interne = isset($_GET["num_interne"]) ? $_GET["num_interne"] : (isset($_POS
 //
 // ======================================================
 	
-function trouverDates($numero_semaine){
+function trouverDates($numero_semaine) {
+	global $mysqli;
 	// fonction qui permet de déterminer la date de début de la semaine (lundi)
 	/*
 	$ts_depart = 1186358400;
@@ -74,30 +75,59 @@ function trouverDates($numero_semaine){
 */
 	
 	// On recherche l'année
+	// n 	Mois sans les zéros initiaux 	1 à 12
 	$maintenant = date("n");
 	if ($maintenant >= 8) {
 		$annee = date("Y");
 	} else {
 		$annee = date("Y") - 1;
 	}
-	
+
+	$begin_bookings=getSettingValue('begin_bookings');
+	if(preg_match('/^[0-9]{1,}$/', $begin_bookings)) {
+		$annee_debut_annee=strftime("%Y", $begin_bookings);
+	}
+	else {
+		$annee_debut_annee=$annee;
+	}
+
+	//echo "\$annee_debut_annee=$annee_debut_annee et \$annee=$annee<br />";
+
 	// On recherche le premier lundi du mois d'Août
 	$lundi1=1;
-	while (date("N",mktime(0, 0, 0, 8, $lundi1, $annee))!=1) {
+	// N 	Représentation numérique ISO-8601 du jour de la semaine (ajouté en PHP 5.1.0)
+	// 1 (pour Lundi) à 7 (pour Dimanche)
+	//while (date("N",mktime(0, 0, 0, 8, $lundi1, $annee))!=1) {
+	while (date("N",mktime(0, 0, 0, 8, $lundi1, $annee_debut_annee))!=1) {
+		//echo 'date("N",mktime(0, 0, 0, 8, '.$lundi1.', '.$annee.'))='.date("N",mktime(0, 0, 0, 8, $lundi1, $annee)).'<br />';
+		//echo 'date("N",mktime(0, 0, 0, 8, '.$lundi1.', '.$annee_debut_annee.'))='.date("N",mktime(0, 0, 0, 8, $lundi1, $annee_debut_annee)).'<br />';
+		//echo "\$lundi1=".$lundi1."<br />";
 		$lundi1++;
 	}
 	
 	// On recherche le lundi de la semaine 32
-	while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee))<32) {
+	//while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee))<32) {
+	while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee_debut_annee))<32) {
+		//echo 'date("W",mktime(0, 0, 0, 8, '.$lundi1.', '.$annee.'))='.date("W",mktime(0, 0, 0, 8, $lundi1, $annee)).'<br />';
+		//echo 'date("W",mktime(0, 0, 0, 8, '.$lundi1.', '.$annee_debut_annee.'))='.date("W",mktime(0, 0, 0, 8, $lundi1, $annee_debut_annee)).'<br />';
+		//echo "\$lundi1=".$lundi1."<br />";
 		$lundi1 = $lundi1 + 7;
 	}
-	while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee))>32) {
+	//while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee))>32) {
+	while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee_debut_annee))>32) {
+		//echo 'date("W",mktime(0, 0, 0, 8, '.$lundi1.', '.$annee.'))='.date("W",mktime(0, 0, 0, 8, $lundi1, $annee)).'<br />';
+		//echo 'date("W",mktime(0, 0, 0, 8, '.$lundi1.', '.$annee_debut_annee.'))='.date("W",mktime(0, 0, 0, 8, $lundi1, $annee_debut_annee)).'<br />';
+		//echo "\$lundi1=".$lundi1."<br />";
 		$lundi1 = $lundi1 - 7;
 	}
-	
-	$ts_depart = mktime(1, 0, 0, 8, $lundi1, $annee);
 
-    $fin_temp = NumLastWeek();
+	//$ts_depart = mktime(1, 0, 0, 8, $lundi1, $annee);
+	//echo "\$ts_depart=$ts_depart soit ".strftime("%d/%m/%Y", $ts_depart)."<br />";
+	$ts_depart = mktime(1, 0, 0, 8, $lundi1, $annee_debut_annee);
+	//echo "\$ts_depart=$ts_depart soit ".strftime("%d/%m/%Y", $ts_depart)."<br />";
+
+	$fin_temp = NumLastWeek();
+	//echo "\$fin_temp=$fin_temp<br />";
 
 	if ($numero_semaine == 32) {
 		$ts = $ts_depart;
@@ -152,17 +182,29 @@ if ( $action === 'visualiser' )
 	if(isset($type_semaine)) {
 		unset($type_semaine);
 	}
+	$num_semaine=array();
 	$i = '0';
 	$requete = "SELECT * FROM ".$prefix_base."edt_semaines;";
 	//echo "$requete<br />";
 	$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
-	while ( $donnee = mysqli_fetch_array($resultat)) {
-		$num_semaine[$i] = $donnee['num_edt_semaine'];
+	while ( $donnee = mysqli_fetch_object($resultat)) {
+		//echo "\$donnee->num_edt_semaine=".$donnee->num_edt_semaine."<br />";
+		$num_semaine[$i] = $donnee->num_edt_semaine;
+		//echo "\$num_semaine[$i]=".$num_semaine[$i]."<br />";
 		//$num_interne[$i] = $donnee['id_edt_semaine'];
-		$num_interne[$i] = $donnee['num_semaines_etab'];
-		$type_semaine[$i] = $donnee['type_edt_semaine'];
-		$i = $i + 1;
+		$num_interne[$i] = $donnee->num_semaines_etab;
+		$type_semaine[$i] = $donnee->type_edt_semaine;
+		$i++;
 	}
+	/*
+	echo "<pre>";
+	print_r($num_semaine);
+	echo "</pre>";
+
+	echo "<pre>";
+	print_r($num_interne);
+	echo "</pre>";
+	*/
 }
 
 
