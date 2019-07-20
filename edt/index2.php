@@ -1450,12 +1450,19 @@ $num_semaine_en_cours=strftime("%U|%Y");
 $indice_select_semaine_courante=-1;
 $lien_retour_semaine_courante="";
 
-if(strftime("%m")>=8) {
-	$annee=strftime("%Y");
+$begin_bookings=getSettingValue('begin_bookings');
+if(preg_match('/^[0-9]{1,}$/', $begin_bookings)) {
+	$annee=strftime("%Y", $begin_bookings);
 }
 else {
-	$annee=strftime("%Y")-1;
+	if(strftime("%m")>=8) {
+		$annee=strftime("%Y");
+	}
+	else {
+		$annee=strftime("%Y")-1;
+	}
 }
+
 //echo "\$num_semaine_en_cours=$num_semaine_en_cours<br />";
 for($n=36;$n<=52;$n++) {
 	$tmp_tab=get_days_from_week_number($n ,$annee);
