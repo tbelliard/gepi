@@ -79,6 +79,9 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 		if((!isset($niveau_arbo))||("$niveau_arbo"=="")||($niveau_arbo==1)) {
 			require_once("../lib/PHPMailer/PHPMailerAutoload.php");
 		}
+		elseif($niveau_arbo=='public') {
+			require_once("../lib/PHPMailer/PHPMailerAutoload.php");
+		}
 		elseif($niveau_arbo==0) {
 			require_once("lib/PHPMailer/PHPMailerAutoload.php");
 		}

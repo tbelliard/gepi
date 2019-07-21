@@ -94,39 +94,65 @@ switch($action)
 
 //envoi du message
 case "envoi":
-    //N.B. pour peaufiner, mettre un script de vérification de l'adresse email et du contenu du message !
-    $message = "Demandeur : ".$nama."\nEtablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
-    if ($email_reponse == '') {
-        echo "<br /><br /><br /><P style=\"text-align: center\">Votre message n'a pas été envoyé : vous devez indiquer une adresse e-mail pour la réponse !</p>";
-    } else {
-		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+	//N.B. pour peaufiner, mettre un script de vérification de l'adresse email et du contenu du message !
+	$message = "Demandeur : ".$nama."\nEtablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
+	if ($email_reponse == '') {
+		echo "<br /><br /><br /><P style=\"text-align: center\">Votre message n'a pas été envoyé : vous devez indiquer une adresse e-mail pour la réponse !</p>";
+	} else {
+		// 20190721
+		$ajout_headers='';
+		$tab_param_mail=array();
 
-        $from = $email_reponse != "" ? "$nama <$email_reponse>" : getSettingValue("gepiAdminAdress");
+		//$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+		//if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
-        $subject = $gepiPrefixeSujetMail."Demande d'aide dans GEPI";
-        $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
+		if($email_reponse != "") {
+			$from="$nama <$email_reponse>";
+			$tab_param_mail['from']=$email_reponse;
+			$tab_param_mail['from_name']=$nama;
+		}
+		else {
+			$from=getSettingValue("gepiAdminAdress");
+			$tab_param_mail['from']=$from;
+		}
 
-        $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
-        $headers .= "From: $from\r\n";
-        if ($email_reponse != "") {
-          $headers .= "Reply-To: $from\r\n";
-        }
+		//$subject = $gepiPrefixeSujetMail."Demande d'aide dans GEPI";
+		//$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
+		$subject="Demande d'aide dans GEPI";
 
-        $envoi = mail(getSettingValue("gepiAdminAdress"),
-            $subject,
-            $message,
-            $headers);
+		/*
+		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+		$headers .= "From: $from\r\n";
+		if ($email_reponse != "") {
+			$headers .= "Reply-To: $from\r\n";
+		}
+		*/
+		if ($email_reponse != "") {
+			$ajout_header="Reply-To: $from\r\n";
+			$tab_param_mail['replyto']=$email_reponse;
+			$tab_param_mail['replyto_name']=$nama;
+		}
 
-        if ($envoi) {
-            echo "<br /><br /><br /><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>";
-        } else {
-            echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>";
-        }
-    }
-    break;
+		/*
+		$envoi = mail(getSettingValue("gepiAdminAdress"),
+		$subject,
+		$message,
+		$headers);
+		*/
+
+		$destinataire=getSettingValue("gepiAdminAdress");
+		$tab_param_mail['destinataire']=$destinataire;
+		$envoi=envoi_mail($subject, $message, $destinataire, $ajout_headers, "plain", $tab_param_mail);
+
+		if ($envoi) {
+			echo "<br /><br /><br /><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>";
+		} else {
+			echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font>            </p>";
+		}
+	}
+	break;
 
 default://formulaire d'envoi
     echo "<form action='contacter_admin_pub.php' method='post' name='doc'>";
