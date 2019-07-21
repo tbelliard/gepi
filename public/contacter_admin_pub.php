@@ -35,7 +35,7 @@ $email_reponse = isset($_POST["email_reponse"]) ? $_POST["email_reponse"] : '';
 
 
 //**************** EN-TETE *****************
-require_once("/lib/header_public.inc.php");
+require_once("./lib/header_public.inc.php");
 //**************** FIN EN-TETE *************
 
 ?>
