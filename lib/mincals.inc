@@ -31,7 +31,7 @@ class Calendar
     var $id_groupe;
     var $dmy;
 
-    function Calendar($day, $month, $year, $h, $id_groupe, $dmy)
+    function __construct($day, $month, $year, $h, $id_groupe, $dmy)
     {
         $this->day   = $day;
         $this->month = $month;
