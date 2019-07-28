@@ -278,9 +278,11 @@ if (isset($data['modif_ok']) AND isset($data['nom_periode'])) {
 		$classes_concernees_insert = "0";
 	}
 	else {
-			$classes_concernees_insert = "";
-		for ($c=0; $c<count($data['classes_concernees']); $c++) {
-			$classes_concernees_insert .= $data['classes_concernees'][$c].";";
+		$classes_concernees_insert = "";
+		if(isset($data['classes_concernees'])) {
+			for ($c=0; $c<count($data['classes_concernees']); $c++) {
+				$classes_concernees_insert .= $data['classes_concernees'][$c].";";
+			}
 		}
 	}
 

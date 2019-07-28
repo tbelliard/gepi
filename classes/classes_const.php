@@ -62,7 +62,7 @@ if (isset($is_posted)) {
 
 	//=========================
 	// AJOUT: boireaus 20071010
-	$log_eleve=$_POST['log_eleve'];
+	$log_eleve=isset($_POST['log_eleve']) ? $_POST['log_eleve'] : array();
 	$regime_eleve=isset($_POST['regime_eleve']) ? $_POST['regime_eleve'] : NULL;
 	$doublant_eleve=isset($_POST['doublant_eleve']) ? $_POST['doublant_eleve'] : NULL;
 	$prof_principal=isset($_POST['prof_principal']) ? $_POST['prof_principal'] : NULL;

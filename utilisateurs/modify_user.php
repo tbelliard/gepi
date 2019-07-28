@@ -854,6 +854,14 @@ if (isset($user_login) and ($user_login!='')) {
 				$utilisateur_courant_trouve="y";
 				$temoin_tmp=1;
 				if($lig_user_tmp=mysqli_fetch_object($res_liste_user)){
+					if($lig_user_tmp->statut!=$statut_prec) {
+						if($statut_prec!="") {
+							$liste_options_user.="</optgroup>\n";
+						}
+						$liste_options_user.="<optgroup label='-- $lig_user_tmp->statut --'>\n";
+						$statut_prec=$lig_user_tmp->statut;
+					}
+
 					$login_user_suiv=$lig_user_tmp->login;
 					$liste_options_user.="<option value='$lig_user_tmp->login' title=\"$lig_user_tmp->login : Compte $lig_user_tmp->statut\"".$style_ajout.">".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
 				}
