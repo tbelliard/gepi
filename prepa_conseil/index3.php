@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -93,9 +93,11 @@ if ($login_eleve and $login_eleve != null) {
 	$id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
 }
 
-if (isset($id_classe)) {
+if((isset($id_classe))&&($id_classe!='')) {
 	// On regarde si le type est correct :
 	if (!is_numeric($id_classe)) {
+		//debug_var();
+		//echo "id_classe='$id_classe'<br />";
 		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numérique.");
 		echo "Erreur.";
 		require ("../lib/footer.inc.php");
@@ -456,32 +458,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 
 
-		echo "<tr>\n";
-		echo "<td><input type=\"radio\" id='choix_edit_2' name=\"choix_edit\" value=\"2\" onchange=\"change_style_radio()\" ";
-		if((isset($_SESSION['choix_edit']))&&($_SESSION['choix_edit']==2)) {
-			echo "checked ";
-		}
-		echo "/></td>\n";
-		echo "<td><label for='choix_edit_2' id='texte_choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'".$gepiSettings['denomination_eleve']." sélectionné ci-contre : </label>\n";
-		echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
-
-		//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 		if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
 			// Tous les élèves vont être affichés
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom, prenom";
 		}
 		elseif ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
-			/*
-			$sql="SELECT DISTINCT e.* " .
-				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
-				"WHERE (" .
-				"jec.id_classe='$id_classe' AND " .
-				"e.login = jeg.login AND " .
-				"jeg.login = jec.login AND " .
-				"jeg.id_groupe = jgp.id_groupe AND " .
-				"jgp.login = '".$_SESSION['login']."') " .
-				"ORDER BY e.nom,e.prenom";
-			*/
 			if(is_pp($_SESSION['login'], $id_classe)) {
 				if(getSettingAOui('GepiAccesBulletinSimpleProf')) {
 					$sql="(SELECT DISTINCT e.* " .
@@ -531,15 +512,32 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		//echo "$sql<br />\n";
 		$call_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nombreligne = mysqli_num_rows($call_eleve);
-		$i = "0" ;
-		while ($i < $nombreligne) {
-			$eleve = old_mysql_result($call_eleve, $i, 'login');
-			$nom_el = old_mysql_result($call_eleve, $i, 'nom');
-			$prenom_el = old_mysql_result($call_eleve, $i, 'prenom');
-			echo "<option value=$eleve>$nom_el  $prenom_el </option>\n";
-			$i++;
+		if($nombreligne==0) {
+			echo "<tr>\n";
+			echo "<td><img src='../images/disabled.png' class='icone20' /></td>\n";
+			echo "<td style='color:red'>Aucun élève n'a été trouvé.</td>\n";
+			echo "</tr>\n";
 		}
-		echo "</select></td></tr>\n";
+		else {
+			echo "<tr>\n";
+			echo "<td><input type=\"radio\" id='choix_edit_2' name=\"choix_edit\" value=\"2\" onchange=\"change_style_radio()\" ";
+			if((isset($_SESSION['choix_edit']))&&($_SESSION['choix_edit']==2)) {
+				echo "checked ";
+			}
+			echo "/></td>\n";
+			echo "<td><label for='choix_edit_2' id='texte_choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'".$gepiSettings['denomination_eleve']." sélectionné ci-contre : </label>\n";
+			echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
+
+			$i = "0" ;
+			while ($i < $nombreligne) {
+				$eleve = old_mysql_result($call_eleve, $i, 'login');
+				$nom_el = old_mysql_result($call_eleve, $i, 'nom');
+				$prenom_el = old_mysql_result($call_eleve, $i, 'prenom');
+				echo "<option value=$eleve>$nom_el  $prenom_el </option>\n";
+				$i++;
+			}
+			echo "</select></td></tr>\n";
+		}
 
 		echo "<tr>\n";
 		echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_4' value=\"4\" onchange=\"change_style_radio()\" ";
@@ -588,6 +586,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
 		}
 	}
+
+	if((!isset($id_classe))||(!preg_match('/^[0-9]{1,}$/', $id_classe))) {
+		echo "<p style='color:red'>Classe non choisie.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	echo "<p>Choisissez la(les) période(s) : </p>\n";
 	include "../lib/periodes.inc.php";
 
