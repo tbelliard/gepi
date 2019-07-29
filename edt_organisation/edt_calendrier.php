@@ -3,7 +3,7 @@
 /*
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -210,11 +210,11 @@ if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 		$jourdebut = $detail_jourdeb[2]."-".$detail_jourdeb[1]."-".$detail_jourdeb[0];
 		$jourfin = $detail_jourfin[2]."-".$detail_jourfin[1]."-".$detail_jourfin[0];
 			// On insère les classes qui sont concernées (0 = toutes)
-			if ($data['classes_concernees'][0] == "0") {
+			if((!isset($data['classes_concernees'][0]))||($data['classes_concernees'][0] == "0")) {
 				$classes_concernees_insert = "0";
 			}
 			else {
-					$classes_concernees_insert = "";
+				$classes_concernees_insert = "";
 				for ($c=0; $c<count($data['classes_concernees']); $c++) {
 					$classes_concernees_insert .= $data['classes_concernees'][$c].";";
 				}
@@ -340,8 +340,13 @@ for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
 		$data['contenu_infobulle'] = "<span style=\"color: brown;\">".(count($data['expl_aff'][$i]) - 1)." classe(s).</span><br />";
 		$contenu_infobulle = "";
 		for ($t=0; $t<(count($data['expl_aff'][$i]) - 1); $t++) {
-			$req_nomclasse = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM classes WHERE id = '".$data["expl_aff"][$i][$t]."'"));
-			$contenu_infobulle .= $req_nomclasse["nom_complet"].'<br />';
+			$req_nomclasse = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT classe, nom_complet FROM classes WHERE id = '".$data["expl_aff"][$i][$t]."'"));
+			if($req_nomclasse["nom_complet"]!='') {
+				$contenu_infobulle .= $req_nomclasse["nom_complet"].'<br />';
+			}
+			else {
+				$contenu_infobulle .= $req_nomclasse["classe"].'<br />';
+			}
 		}
 		//$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernées", $contenu_infobulle);
 		$id_div = "periode".$data['rep_affcalendar'][$i]["id_calendrier"];
