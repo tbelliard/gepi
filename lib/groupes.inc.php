@@ -481,16 +481,22 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                 // Périodes
                 $temp["periodes"]=array();
                 // Pour le nom et le nombre de periodes, on suppose qu'elles sont identiques dans toutes les classes du groupe
-                $sql_periode = "SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["list"][0] ."' ORDER BY num_periode";
-                $periode_query = mysqli_query($mysqli, $sql_periode);
-                $nb_periode = $periode_query->num_rows + 1;
-                $i = "1";
-                while ($obj_period = $periode_query->fetch_object()) {
-                    $temp["periodes"][$i]["nom_periode"] = $obj_period->nom_periode;
-                    $temp["periodes"][$i]["num_periode"] = $i;
-                    $i++;
+                if(isset($temp["classes"]["list"][0])) {
+                    $sql_periode = "SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["list"][0] ."' ORDER BY num_periode";
+                    $periode_query = mysqli_query($mysqli, $sql_periode);
+                    $nb_periode = $periode_query->num_rows + 1;
+                    $i = "1";
+                    while ($obj_period = $periode_query->fetch_object()) {
+                        $temp["periodes"][$i]["nom_periode"] = $obj_period->nom_periode;
+                        $temp["periodes"][$i]["num_periode"] = $i;
+                        $i++;
+                    }
+                }
+                else {
+                    $nb_periode=0;
                 }
                 $temp["nb_periode"] = $nb_periode;
+
                 // Verrouillage
                 
                 // Initialisation
@@ -503,23 +509,25 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                     $i++;
                 }
 
-                foreach ($temp["classes"]["list"] as $c_id) {
-                    $sql_periode2 = "SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["classes"][$c_id]["id"] ."' ORDER BY num_periode";
-                    $periode_query2 = mysqli_query($mysqli, $sql_periode2);
-                    $nb_periode = $periode_query2->num_rows + 1 ;
-                    $i = "1";
-                    while ($obj_period2 = $periode_query2->fetch_object()) {
-                        $temp["classe"]["ver_periode"][$c_id][$i] = $obj_period2->verouiller;
-                        $liste_ver_per[$i] .= $temp["classe"]["ver_periode"][$c_id][$i];
+                if(isset($temp["classes"]["list"])) {
+                    foreach ($temp["classes"]["list"] as $c_id) {
+                        $sql_periode2 = "SELECT * FROM periodes WHERE id_classe = '". $temp["classes"]["classes"][$c_id]["id"] ."' ORDER BY num_periode";
+                        $periode_query2 = mysqli_query($mysqli, $sql_periode2);
+                        $nb_periode = $periode_query2->num_rows + 1 ;
+                        $i = "1";
+                        while ($obj_period2 = $periode_query2->fetch_object()) {
+                            $temp["classe"]["ver_periode"][$c_id][$i] = $obj_period2->verouiller;
+                            $liste_ver_per[$i] .= $temp["classe"]["ver_periode"][$c_id][$i];
 
-                        $temp["classe"]["date_fin"][$c_id][$i] = $obj_period2->date_fin;
-                        $temp["classe"]["date_conseil_classe"][$c_id][$i] = $obj_period2->date_conseil_classe;
-                        $i++;
+                            $temp["classe"]["date_fin"][$c_id][$i] = $obj_period2->date_fin;
+                            $temp["classe"]["date_conseil_classe"][$c_id][$i] = $obj_period2->date_conseil_classe;
+                            $i++;
+                        }
+                        $all_clos .= "O";
+                        $all_open .= "N";
+                        $all_clos_part .= "P";
+                        $periode_query2->close();
                     }
-                    $all_clos .= "O";
-                    $all_open .= "N";
-                    $all_clos_part .= "P";
-                    $periode_query2->close();
                 }
                 $i = "1";
                 while ($i < $nb_periode) {
@@ -539,13 +547,17 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                         $temp["classe"]["ver_periode"]["all"][$i] = -1;
                     $i++;
                 }
-                $periode_query->close();
-                for($loop_classe=0;$loop_classe<count($temp["classes"]["list"]);$loop_classe++) {
-                    $sql="SELECT periode,COUNT(login) AS effectif FROM j_eleves_classes WHERE id_classe='".$temp["classes"]["list"][$loop_classe]."' GROUP BY periode;";
-                    //echo "$sql<br />";
-                    $res_eff_classe_periode = mysqli_query($mysqli, $sql);
-                    while ($lig_clas=mysqli_fetch_object($res_eff_classe_periode)) {
-                        $temp["classe"][$temp["classes"]["list"][$loop_classe]][$lig_clas->periode] = $lig_clas->effectif;
+                if(isset($periode_query)) {
+                    $periode_query->close();
+                }
+                if(isset($temp["classes"]["list"])) {
+                    for($loop_classe=0;$loop_classe<count($temp["classes"]["list"]);$loop_classe++) {
+                        $sql="SELECT periode,COUNT(login) AS effectif FROM j_eleves_classes WHERE id_classe='".$temp["classes"]["list"][$loop_classe]."' GROUP BY periode;";
+                        //echo "$sql<br />";
+                        $res_eff_classe_periode = mysqli_query($mysqli, $sql);
+                        while ($lig_clas=mysqli_fetch_object($res_eff_classe_periode)) {
+                            $temp["classe"][$temp["classes"]["list"][$loop_classe]][$lig_clas->periode] = $lig_clas->effectif;
+                        }
                     }
                 }
             }
