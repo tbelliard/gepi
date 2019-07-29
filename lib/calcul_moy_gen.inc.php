@@ -145,6 +145,7 @@ $moy_max_classe='-';
 $moy_min_classe='-';
 $current_eleve_note = array();
 $current_eleve_statut = array();
+$current_group_effectif_avec_note = array();
 
 $i=0;
 $get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id,nom_complet FROM matieres_categories");

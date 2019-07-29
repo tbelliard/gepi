@@ -231,6 +231,11 @@ if (!isset($_GET['periode_num'])) {
 			$_SESSION['id_liste_periodes'][]=$i;
 		}
 
+		if(!isset($_SESSION['id_liste_periodes'])) {
+			echo "Aucune période n'a été choisie.";
+			die();
+		}
+
 		$id_liste_periodes=$_SESSION['id_liste_periodes'];
 		$id_periode=$id_liste_periodes[0];
 	}
@@ -480,17 +485,23 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		// On récupère le PP du premier élève de la classe... si c'est un nouvel arrivant avec oubli de saisie du PP, on aura une info erronée.
 		// Si il y a plusieurs PP dans la classe, on n'aura qu'un seul des PP.
 		//$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
-		$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
-		//echo "$sql<br />\n";
-		$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($call_profsuivi_eleve)==0) {
+		if(!isset($donnees_eleves[0]['login'])) {
 			$current_eleve_profsuivi_login="";
 			$current_eleve_profsuivi_identite="- Aucun -";
 		}
 		else {
-			$lig_current_eleve_profsuivi=mysqli_fetch_object($call_profsuivi_eleve);
-			$current_eleve_profsuivi_login=$lig_current_eleve_profsuivi->professeur;
-			$current_eleve_profsuivi_identite=affiche_utilisateur($current_eleve_profsuivi_login,$id_classe);
+			$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
+			//echo "$sql<br />\n";
+			$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($call_profsuivi_eleve)==0) {
+				$current_eleve_profsuivi_login="";
+				$current_eleve_profsuivi_identite="- Aucun -";
+			}
+			else {
+				$lig_current_eleve_profsuivi=mysqli_fetch_object($call_profsuivi_eleve);
+				$current_eleve_profsuivi_login=$lig_current_eleve_profsuivi->professeur;
+				$current_eleve_profsuivi_identite=affiche_utilisateur($current_eleve_profsuivi_login,$id_classe);
+			}
 		}
 
 		$gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
@@ -521,16 +532,23 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$pdf->SetFont('DejaVu','I',11);
 
 		if ($nb_periodes==1) {
-			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='".$donnees_eleves[0]['id_periode']."' ORDER BY num_periode";
-			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_per)==0){
-				die("Problème avec les infos de la classe $id_classe</body></html>");
+			if(!isset($donnees_eleves[0]['id_periode'])) {
+				echo "Problème avec les infos de la classe $id_classe.";
+				require("../lib/footer.inc.php");
+				die();
 			}
-			else{
-				$lig_tmp=mysqli_fetch_object($res_per);
-				$periode=$lig_tmp->nom_periode;
-				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'TLR',2,'C');
-				$pdf->CellFitScale($L_entete_discipline,$H_entete_classe / 2 ,$periode,'LBR',2,'C');
+			else {
+				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='".$donnees_eleves[0]['id_periode']."' ORDER BY num_periode";
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_per)==0){
+					die("Problème avec les infos de la classe $id_classe</body></html>");
+				}
+				else{
+					$lig_tmp=mysqli_fetch_object($res_per);
+					$periode=$lig_tmp->nom_periode;
+					$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'TLR',2,'C');
+					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe / 2 ,$periode,'LBR',2,'C');
+				}
 			}
 		} else {
 			$pdf->Cell($L_entete_classe,$H_entete_classe ,'Année scolaire '.getSettingValue('gepiYear'),'LTRB',2,'C');

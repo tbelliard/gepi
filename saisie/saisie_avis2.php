@@ -426,7 +426,22 @@ if (isset($id_classe)) {
 	$couleur_verrouillage_periode['P']="darkorange";
 	$couleur_verrouillage_periode['N']="green";
 
-	$classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
+	$sql="SELECT classe, nom_complet FROM classes WHERE id = '".$id_classe."';";
+	$res_nom_classe=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_nom_classe)==0) {
+		echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a></p>
+		<p style='color:red'>Classe non identifiée.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$lig_classe=mysqli_fetch_object($res_nom_classe);
+	if($lig_classe->nom_complet!='') {
+		$classe_suivi=$lig_classe->nom_complet;
+	}
+	else {
+		$classe_suivi=$lig_classe->classe;
+	}
 }
 
 // Première étape : la classe est définie, on definit la période
@@ -470,7 +485,7 @@ $msg_acces_app_ele_resp\"><img src='../images/icons/visible.png' width='19' heig
 		}
 
 		if($acces_avis_pdf) {
-			echo " <a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=$i' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour la période n°$i.\"><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /></a>";
+			echo " <a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=$i' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour la période n°$i.\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /></a>";
 		}
 
 		echo ".</li>\n";
@@ -479,7 +494,7 @@ $msg_acces_app_ele_resp\"><img src='../images/icons/visible.png' width='19' heig
 	echo "</ul>\n";
 
 	if($acces_avis_pdf) {
-		echo "<p><a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=toutes' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour l'ensemble des périodes.\"><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /> Imprimer les avis du conseil de classe pour toutes les périodes.</a></p>";
+		echo "<p><a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=toutes' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour l'ensemble des périodes.\" target='_blank'><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /> Imprimer les avis du conseil de classe pour toutes les périodes.</a></p>";
 	}
 }
 
@@ -609,8 +624,8 @@ if(isset($id_class_suiv)){
 //fin ajout lien classe précédente / classe suivante
 
 if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
-	echo "| <img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Impression PDF des avis <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num' title=\"Générer un fichier PDF des avis du conseil de classe pour la période $periode_num seulement.\">P$periode_num</a>";
-	echo " - <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=toutes' title=\"Générer un fichier PDF des avis du conseil de classe pour toutes les périodes.\">Toutes</a>";
+	echo "| <img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Impression PDF des avis <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num' title=\"Générer un fichier PDF des avis du conseil de classe pour la période $periode_num seulement.\" target='_blank'>P$periode_num</a>";
+	echo " - <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=toutes' title=\"Générer un fichier PDF des avis du conseil de classe pour toutes les périodes.\" target='_blank'>Toutes</a>";
 }
 
 if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||

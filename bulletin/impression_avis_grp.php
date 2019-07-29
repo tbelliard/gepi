@@ -91,7 +91,9 @@ while($lig_class=mysqli_fetch_object($result_classes)){
 	else{
 		echo "<tr>\n";
 		echo "<th>$lig_class->classe</th>\n";
-		while($lig_per=mysqli_fetch_object($res_per)){
+		$chaine_periodes='';
+		$cpt_per=0;
+		while($lig_per=mysqli_fetch_object($res_per)) {
 /*    $_POST['mode_bulletin']=	pdf
     $_POST['type_bulletin']=	-1
     $_POST['bull_pdf_debug']=	y
@@ -105,14 +107,32 @@ while($lig_class=mysqli_fetch_object($result_classes)){
     $_POST[tab_periode_num]['0']=	2
     $_POST['valide_select_eleves']=	y
 */
+			$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='".$lig_class->id."' AND periode='".$lig_per->num_periode."';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			echo "<td> - <a href='bull_index.php?mode_bulletin=pdf&amp;type_bulletin=-1&amp;choix_periode_num=fait&amp;b_adr_pg=xx&amp;intercaler_app_classe=y&amp;bouton_valide_select_eleves1=Valider&amp;tab_id_classe[0]=$lig_class->id&amp;tab_periode_num[0]=".$lig_per->num_periode."&amp;valide_select_eleves=y' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
+			if(mysqli_num_rows($test)==0){
+				echo "<td title='Aucun élève dans la classe en période ".$lig_per->num_periode."'><img src='../images/disabled.png' class='icone20' /> ".$lig_per->nom_periode."</td>\n";
+			}
+			else {
+				echo "<td> - <a href='bull_index.php?mode_bulletin=pdf&amp;type_bulletin=-1&amp;choix_periode_num=fait&amp;b_adr_pg=xx&amp;intercaler_app_classe=y&amp;bouton_valide_select_eleves1=Valider&amp;tab_id_classe[0]=$lig_class->id&amp;tab_periode_num[0]=".$lig_per->num_periode."&amp;valide_select_eleves=y' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
+				$chaine_periodes.="&amp;tab_periode_num[".$cpt_per."]=".$lig_per->num_periode;
+				$cpt_per++;
+			}
 		}
-		echo "<td> - <a href='bull_index.php?mode_bulletin=pdf&amp;type_bulletin=-1&amp;choix_periode_num=fait&amp;b_adr_pg=xx&amp;intercaler_app_classe=y&amp;bouton_valide_select_eleves1=Valider&amp;tab_id_classe[0]=$lig_class->id";
-		for($loop=0;$loop<mysqli_num_rows($res_per);$loop++) {
-			echo "&amp;tab_periode_num[$loop]=".($loop+1);
+
+		if($chaine_periodes!='') {
+			echo "<td> - <a href='bull_index.php?mode_bulletin=pdf&amp;type_bulletin=-1&amp;choix_periode_num=fait&amp;b_adr_pg=xx&amp;intercaler_app_classe=y&amp;bouton_valide_select_eleves1=Valider&amp;tab_id_classe[0]=$lig_class->id";
+			/*
+			for($loop=0;$loop<mysqli_num_rows($res_per);$loop++) {
+				echo "&amp;tab_periode_num[$loop]=".($loop+1);
+			}
+			*/
+			echo $chaine_periodes;
+			echo "&amp;valide_select_eleves=y' target='_blank'>Toutes</a></td>\n";
 		}
-		echo "&amp;valide_select_eleves=y' target='_blank'>Toutes</a></td>\n";
+		else {
+			echo "<td title='Aucun élève dans la classe quelle que soit la période'> - <img src='../images/disabled.png' class='icone20' /> Toutes</td>\n";
+		}
 		echo "</tr>\n";
 	}
 	$cpt++;
