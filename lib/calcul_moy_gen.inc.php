@@ -140,6 +140,12 @@ $current_coef_eleve1=array();
 $total_coef_cat_classe = array();
 $total_coef_cat_eleve = array();
 
+// 20190729
+$moy_max_classe='-';
+$moy_min_classe='-';
+$current_eleve_note = array();
+$current_eleve_statut = array();
+
 $i=0;
 $get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id,nom_complet FROM matieres_categories");
 $categories = array();
