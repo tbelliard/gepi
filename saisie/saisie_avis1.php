@@ -58,7 +58,6 @@ $msg="";
 
 //debug_var();
 
-
 // On teste si un professeur peut saisir les avis
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiRubConseilProf")!='yes') {
 	die("Droits insuffisants pour effectuer cette opération");
@@ -778,6 +777,7 @@ if ($insert_mass_appreciation_type=="y") {
 }
 //=========================
 
+	$nb_textarea=0;
 
 	$k=1;
 	$commentaires_type_classe_periode=array();
@@ -839,6 +839,14 @@ if ($insert_mass_appreciation_type=="y") {
 		$k++;
 	}
 
+	$tab_eff=array();
+	$sql="SELECT periode, COUNT(login) AS effectif FROM j_eleves_classes WHERE id_classe='".$id_classe."' GROUP BY periode;";
+	//echo "$sql<br />";
+	$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_eff=mysqli_fetch_object($res_eff)) {
+		$tab_eff[$lig_eff->periode]=$lig_eff->effectif;
+	}
+
 	//$i = "0";
 	$num_id=10;
 
@@ -848,8 +856,8 @@ if ($insert_mass_appreciation_type=="y") {
 		$alt=$alt*(-1);
 		if ($ver_periode[$k] != "N") {
 			echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">";
-			if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
-				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"$nom_periode[$k] : Exporter au format PDF les avis du conseil de classe sur les élèves.\">";
+			if((isset($tab_eff[$k]))&&($tab_eff[$k]>0)&&(acces('/impression/avis_pdf.php', $_SESSION['statut']))) {
+				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" target='_blank' title=\"$nom_periode[$k] : Exporter au format PDF les avis du conseil de classe sur les élèves.\">";
 				echo $nom_periode[$k];
 				echo "</a>";
 			}
@@ -859,8 +867,8 @@ if ($insert_mass_appreciation_type=="y") {
 			echo "</span></td>\n";
 		} else {
 			echo "<tr class='lig$alt'>\n<td>";
-			if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
-				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"$nom_periode[$k] : Exporter au format PDF les avis du conseil de classe sur les élèves.\">";
+			if((isset($tab_eff[$k]))&&($tab_eff[$k]>0)&&(acces('/impression/avis_pdf.php', $_SESSION['statut']))) {
+				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" target='_blank' title=\"$nom_periode[$k] : Exporter au format PDF les avis du conseil de classe sur les élèves.\">";
 				echo $nom_periode[$k];
 				echo "</a>";
 			}
@@ -870,7 +878,7 @@ if ($insert_mass_appreciation_type=="y") {
 			echo "</td>\n";
 		}
 
-		if ($ver_periode[$k] != "O") {
+		if((isset($tab_eff[$k]))&&($tab_eff[$k]>0)&&($ver_periode[$k] != "O")) {
 			echo "<td>\n";
 			echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_synthese_".$k."\" rows='2' cols='120' class='wrap' onchange=\"changement()\"";
 			echo ">";
@@ -878,6 +886,7 @@ if ($insert_mass_appreciation_type=="y") {
 
 			echo "$current_synthese[$k]";
 			echo "</textarea>\n";
+			$nb_textarea++;
 
 			// 20160617
 			echo "<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
@@ -1141,6 +1150,7 @@ $msg_acces_app_ele_resp\" />";
 
 					echo "$current_eleve_avis_t[$k]";
 					echo "</textarea>\n";
+					$nb_textarea++;
 
 					echo "<div style='float:right; width:16px' title=\"Éditer l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom sur la période $k avec rappel du bulletin.\"><a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login."#app' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit16_ele.png' class='icone16' alt='Éditer' /></a></div>";
 
@@ -1372,12 +1382,16 @@ $msg_acces_app_ele_resp\" />";
 					if(getSettingAOui('aff_temoin_check_serveur')) {
 						temoin_check_srv();
 					}
-				?>
-				<input type='submit' value='Enregistrer' title="Enregistrer les avis saisis" />
 
-		<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
-		<div id='decompte' title="La session ne sera plus valide, si vous ne consultez pas une page
-ou ne validez pas ce formulaire avant le nombre de secondes indiqué."></div>
+					if((isset($nb_textarea))&&($nb_textarea>0)) {
+						echo "
+						<input type='submit' value='Enregistrer' title='Enregistrer les avis saisis' />
+						<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+						<div id='decompte' title=\"La session ne sera plus valide, si vous ne consultez pas une page
+				ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>";
+					}
+				?>
+
 
 		<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
 		<input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />

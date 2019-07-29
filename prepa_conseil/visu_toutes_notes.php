@@ -2310,7 +2310,12 @@ if(isset($_GET['mode'])) {
 		send_file_download_headers('text/x-csv',$nom_fic);
 
 		$fd="";
-		$fd.=affiche_tableau_csv2($nb_lignes_tableau, $nb_col, $ligne1_csv, $col, $col_csv);
+		if(isset($col_csv)) {
+			$fd.=affiche_tableau_csv2($nb_lignes_tableau, $nb_col, $ligne1_csv, $col, $col_csv);
+		}
+		else {
+			$fd="Aucune donnée n'a été extraite.";
+		}
 		//echo $fd;
 		echo echo_csv_encoded($fd);
 		die();

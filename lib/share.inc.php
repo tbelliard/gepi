@@ -15635,8 +15635,10 @@ function get_tab_acces_appreciations_ele($periode1, $periode2, $id_classe, $stat
 			// Ouverture manuelle
 			$tmp_tab_acces_app=acces_appreciations($periode1, $periode2, $id_classe, $statut);
 			for($i=$periode1;$i<=$periode2;$i++) {
-				for($loop=0;$loop<count($tab_ele[$i]);$loop++) {
-					$tab_acces_app[$i][$tab_ele[$i][$loop]]=$tmp_tab_acces_app[$i];
+				if(isset($tab_ele[$i])) {
+					for($loop=0;$loop<count($tab_ele[$i]);$loop++) {
+						$tab_acces_app[$i][$tab_ele[$i][$loop]]=$tmp_tab_acces_app[$i];
+					}
 				}
 			}
 		}

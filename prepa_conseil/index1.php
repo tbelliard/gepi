@@ -492,35 +492,61 @@ if($_SESSION['statut']=='professeur'){
 if (!$current_group) {
     unset($_SESSION['chemin_retour']);
     echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
-    echo "<p>Votre choix :</p>\n";
-    //$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-    //$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+
 	if($_SESSION['statut']=='scolarite'){
-		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+		$sql="SELECT DISTINCT c.* FROM classes c, 
+							periodes p, 
+							j_scol_classes jsc, 
+							j_eleves_classes jec 
+						WHERE jec.id_classe=c.id AND 
+							jec.periode=p.num_periode AND 
+							p.id_classe = c.id AND 
+							jsc.id_classe=c.id AND 
+							jsc.login='".$_SESSION['login']."' 
+						ORDER BY classe;";
 	}
 	elseif($_SESSION['statut']=='professeur'){
-		$appel_donnees=mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
+		$sql="SELECT DISTINCT c.* FROM classes c, 
+							periodes p, 
+							j_groupes_classes jgc, 
+							j_groupes_professeurs jgp, 
+							j_eleves_groupes jeg 
+						WHERE jeg.id_groupe=jgc.id_groupe AND 
+							p.id_classe = c.id AND 
+							jgc.id_classe=c.id AND 
+							jgp.id_groupe=jgc.id_groupe AND 
+							jgp.login='".$_SESSION['login']."' 
+						ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='cpe'){
-		$appel_donnees=mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
-			p.id_classe = c.id AND
-			jec.id_classe=c.id AND
-			jec.periode=p.num_periode AND
-			jecpe.e_login=jec.login AND
-			jecpe.cpe_login='".$_SESSION['login']."'
-			ORDER BY classe");
+		$sql="SELECT DISTINCT c.* FROM classes c, 
+							periodes p, 
+							j_eleves_classes jec, 
+							j_eleves_cpe jecpe 
+						WHERE p.id_classe = c.id AND
+							jec.id_classe=c.id AND
+							jec.periode=p.num_periode AND
+							jecpe.e_login=jec.login AND
+							jecpe.cpe_login='".$_SESSION['login']."'
+							ORDER BY classe;";
 	}
 	elseif($_SESSION['statut']=='secours'){
-		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c ORDER BY classe");
+		$sql="SELECT DISTINCT c.* FROM classes c, 
+							j_eleves_classes jec 
+						WHERE c.id=jec.id_classe 
+						ORDER BY classe;";
 	}
 
+	$appel_donnees = mysqli_query($GLOBALS["mysqli"], $sql);
 	$lignes = mysqli_num_rows($appel_donnees);
 	//echo "\$lignes=$lignes<br />";
 
 	if($lignes==0) {
-		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Aucune classe ne vous est attribuée, ou ces classes n'ont pas de périodes ou d'élèves.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else {
+		echo "<p>Votre choix&nbsp;:</p>\n";
+
 		$nb_class_par_colonne=round($lignes/3);
 		/*
 		echo "<table width='100%'>\n";
@@ -544,6 +570,7 @@ if (!$current_group) {
 			$groups = get_groups_for_class($id_classe,"","n");
 			//echo "\$id_classe=$id_classe et count(\$groups)=".count($groups)."<br />";
 
+			$flag2 = "no";
 			foreach($groups as $group) {
 				if($group['visibilite']['bulletins']!="n") {
 					$temoin_pp="no";

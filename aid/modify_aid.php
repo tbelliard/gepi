@@ -223,14 +223,19 @@ if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
     while($temp = mysqli_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
-    foreach($_POST["liste_aids"] as $key1) {
-      foreach($liste_profs as $key2){
-        $test = sql_query1("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$key1."' and id_utilisateur = '".$key2."' and indice_aid='$indice_aid'");
-        if ($test == -1) {
-          $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$key2', id_aid = '$key1', indice_aid='$indice_aid'");
-          if (!$reg_data) { $msg .= "Erreur lors de l'ajout du professeur $key2 à l'aid dont l'identifiant est $key1 !<br />"; }
+    if((!isset($_POST["liste_aids"]))||(count($_POST["liste_aids"])==0)) {
+      $msg = "Aucun AID n'a été sélectionné.<br />";
+    }
+    else {
+      foreach($_POST["liste_aids"] as $key1) {
+        foreach($liste_profs as $key2){
+          $test = sql_query1("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$key1."' and id_utilisateur = '".$key2."' and indice_aid='$indice_aid'");
+          if ($test == -1) {
+            $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$key2', id_aid = '$key1', indice_aid='$indice_aid'");
+            if (!$reg_data) { $msg .= "Erreur lors de l'ajout du professeur $key2 à l'aid dont l'identifiant est $key1 !<br />"; }
+          }
         }
-     }
+      }
     }
     $flag = "prof";
     if ($msg == '') {$msg = "Les modifications ont été enregistrées.";}
