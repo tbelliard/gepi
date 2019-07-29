@@ -456,6 +456,11 @@ while($j < $nb_lignes_tableau) {
 	$j++;
 }
 
+if(!isset($ind)) {
+	echo "<p style='color:red'>Aucun élève n'est inscrit dans la classe.</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
 $num_debut_colonnes_matieres=$ind;
 
 /*

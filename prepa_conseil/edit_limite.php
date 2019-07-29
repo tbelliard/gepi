@@ -498,7 +498,12 @@ savePref($_SESSION['login'], 'bull_simp_larg_col4', $bull_simp_larg_col4);
 //====================================
 
 if ($choix_edit == '2') {
-	bulletin($tab_moy,$login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,$couleur_alterne);
+	if((!isset($login_eleve))||($login_eleve=='')) {
+		echo "<p style='color:red'>Élève non choisi.</p>";
+	}
+	else {
+		bulletin($tab_moy,$login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,$couleur_alterne);
+	}
 }
 
 //echo "choix_edit=$choix_edit<br />";
