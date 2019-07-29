@@ -715,6 +715,19 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$tab_acces_app=array();
 
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		if((!isset($id_classe))||($id_classe=='')) {
+			echo "<p class='bold'><a href='../accueil.php'>Retour</a></p>
+			<p style='color:red'>Vous n'êtes affecté dans aucune classe.</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+		elseif(!isset($nb_periode)) {
+			echo "<p class='bold'><a href='../accueil.php'>Retour</a></p>
+			<p style='color:red'>Aucune période n'a été trouvée.</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
 		//$tab_acces_app=acces_appreciations(1, $nb_periode, $id_classe, $_SESSION['statut']);
 		$tab_acces_app=acces_appreciations(1, $nb_periode, $id_classe, $_SESSION['statut'], $login_eleve);
 
