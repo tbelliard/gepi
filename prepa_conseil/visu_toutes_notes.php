@@ -2470,8 +2470,13 @@ echo "</pre>";
 			}
 		}
 
-		$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(count($ligne1_csv)-2))/10;
-		//$info_largeur_col_notes="\$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(".count($ligne1_csv)."-2))/10=$largeur_col_notes";
+		if(count($ligne1_csv)<3) {
+			$largeur_col_notes=10;
+		}
+		else {
+			$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(count($ligne1_csv)-2))/10;
+			//$info_largeur_col_notes="\$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(".count($ligne1_csv)."-2))/10=$largeur_col_notes";
+		}
 
 		function ajuste_FontSize($texte, $largeur_dispo, $hauteur_caractere_initiale, $graisse='', $hauteur_caractere_minimale, $fonte='DejaVu') {
 			global $pdf;

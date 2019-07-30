@@ -92,6 +92,15 @@ if(!$nom_classe) {
 	die();
 }
 
+/*
+$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$id_classe."' AND jec.login=e.login;";
+$test=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($test)==0) {
+	header("Location: ../accueil.php?msg=La classe $nom_classe ne compte aucun élève");
+	die();
+}
+*/
+
 //==============================
 include "../lib/periodes.inc.php";
 include "../lib/bulletin_simple.inc.php";
@@ -189,8 +198,8 @@ if ($_SESSION['statut'] == "eleve" AND $choix_edit != "2") {
 
 if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 	// On vérifie si le prof peut pour une raison (droit) ou une autre accéder à au moins un élève de la classe
-	if(is_pp($_SESSION['login'], $id_classe)) {
-		if(getSettingAOui('GepiAccesBulletinSimpleProf')) {
+	if((getSettingAOui('GepiAccesBulletinSimplePP'))&&(is_pp($_SESSION['login'], $id_classe))) {
+		if((getSettingAOui('GepiAccesBulletinSimpleProf'))||(getSettingAOui('GepiAccesBulletinSimpleProfTousEleves'))) {
 			$sql="(SELECT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')) " .
 				"UNION (SELECT jec.id_classe " .
 				"FROM j_eleves_classes jec, j_eleves_professeurs jep " .
@@ -209,8 +218,22 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSi
 				"jep.professeur = '".$_SESSION['login']."') ORDER BY e.nom,e.prenom;";
 		}
 	}
-	else {
-	    $sql="SELECT DISTINCT e.* " .
+	elseif(getSettingAOui('GepiAccesBulletinSimpleProfTousEleves')) {
+		$sql="SELECT DISTINCT e.* " .
+			"FROM eleves e, 
+				j_eleves_classes jec, 
+				j_groupes_classes jgc, 
+				j_groupes_professeurs jgp " .
+			"WHERE (" .
+			"jec.id_classe='$id_classe' AND " .
+			"e.login = jec.login AND " .
+			"jec.id_classe = jgc.id_classe AND " .
+			"jgc.id_groupe = jgp.id_groupe AND " .
+			"jgp.login = '".$_SESSION['login']."') " .
+			"ORDER BY e.nom,e.prenom";
+	}
+	elseif(getSettingAOui('GepiAccesBulletinSimpleProf')) {
+		$sql="SELECT DISTINCT e.* " .
 			"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 			"WHERE (" .
 			"jec.id_classe='$id_classe' AND " .
@@ -220,6 +243,10 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSi
 			"jgp.login = '".$_SESSION['login']."') " .
 			"ORDER BY e.nom,e.prenom";
 	}
+	else {
+		$sql="SELECT 1=2 " .
+			"FROM eleves e;";
+	}
 	//echo "$sql<br />";
 	$res_test = mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -227,10 +254,25 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSi
 	//$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 
 	if ($test == "0") {
-		tentative_intrusion("2", "Tentative d'accès par un prof à une classe (".$nom_classe.") dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
-		echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
-		require ("../lib/footer.inc.php");
-		die();
+		$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='".$id_classe."' AND jec.login=e.login;";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			// Il y a bien des élèves dans la classe.
+			tentative_intrusion("2", "Tentative d'accès par un prof à une classe (".$nom_classe.") dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
+			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+			require ("../lib/footer.inc.php");
+			die();
+		}
+		else {
+			$sql="SELECT 1=1 FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_classe='$id_classe' AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."';";
+			$test = mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
+				tentative_intrusion("2", "Tentative d'accès par un prof à une classe (".$nom_classe.") dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
+				echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
+				require ("../lib/footer.inc.php");
+				die();
+			}
+		}
 	}
 }
 
