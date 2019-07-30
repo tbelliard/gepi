@@ -1250,7 +1250,7 @@ function UncheckAll_checkbox(){
 	//==============================================
 	// AJOUT: boireaus 20080418
 	// Calculs pour la colonne RANG sur la moyenne des périodes
-	if(($stat=="yes")&&($aff_rang=="y")) {
+	if(($stat=="yes")&&($aff_rang=="y")&&(isset($col))&&(isset($col_csv))) {
 		//$tmp_tab=$col[$nb_col];
 		//for($loop=0;$loop<count($tmp_tab);$loop++) {
 			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";

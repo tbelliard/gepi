@@ -78,82 +78,108 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 
 	$k=$periode_cn;
 
-	$acces_exceptionnel_saisie=false;
-	if($_SESSION['statut']=='professeur') {
-		$acces_exceptionnel_saisie=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn);
+	if((!isset($_POST['log_eleve_'.$k]))||(!isset($_POST['note_eleve_'.$k]))) {
+		$msg='Aucun élève/note validé.<br />';
 	}
+	else {
+		$acces_exceptionnel_saisie=false;
+		if($_SESSION['statut']=='professeur') {
+			$acces_exceptionnel_saisie=acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn);
+		}
 
-	//=========================
-	// AJOUT: boireaus 20071010
-	$log_eleve=$_POST['log_eleve_'.$k];
-	$note_eleve=$_POST['note_eleve_'.$k];
-	//=========================
+		//=========================
+		// AJOUT: boireaus 20071010
+		$log_eleve=$_POST['log_eleve_'.$k];
+		$note_eleve=$_POST['note_eleve_'.$k];
+		//=========================
 
-	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
+		$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
-	//for($i=0;$i<count($log_eleve);$i++){
-	for($i=0;$i<$indice_max_log_eleve;$i++){
+		//for($i=0;$i<count($log_eleve);$i++){
+		for($i=0;$i<$indice_max_log_eleve;$i++){
 
-		if(isset($log_eleve[$i])) {
-			// La période est-elle ouverte?
-			$reg_eleve_login=$log_eleve[$i];
+			if(isset($log_eleve[$i])) {
+				// La période est-elle ouverte?
+				$reg_eleve_login=$log_eleve[$i];
 
-			if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
-				$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
-				//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N") {
-				if (($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N")||
-					($acces_exceptionnel_saisie)||
-					(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="O")&&($_SESSION['statut']=='secours'))) {
+				if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
+					$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
+					//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N") {
+					if (($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N")||
+						($acces_exceptionnel_saisie)||
+						(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]!="O")&&($_SESSION['statut']=='secours'))) {
 
-					$loguer_modif=false;
-					if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N")) {
-						$loguer_modif=true;
-					}
+						$loguer_modif=false;
+						if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] != "N")) {
+							$loguer_modif=true;
+						}
 
-					$note=$note_eleve[$i];
+						$note=$note_eleve[$i];
 
-					$elev_statut = '';
-					if (($note == 'disp')) {
-						$note = '0';
-						$elev_statut = 'disp';
-					}
-					else if (($note == 'abs')) {
-						$note = '0';
-						$elev_statut = 'abs';
-					}
-					else if (($note == '-')) {
-						$note = '0';
-						$elev_statut = '-';
-					}
-					else if (preg_match("/^[0-9\.\,]{1,}$/", $note)) {
-						$note = str_replace(",", ".", "$note");
-						if (($note < 0) or ($note > 20)) {
+						$elev_statut = '';
+						if (($note == 'disp')) {
+							$note = '0';
+							$elev_statut = 'disp';
+						}
+						else if (($note == 'abs')) {
+							$note = '0';
+							$elev_statut = 'abs';
+						}
+						else if (($note == '-')) {
+							$note = '0';
+							$elev_statut = '-';
+						}
+						else if (preg_match("/^[0-9\.\,]{1,}$/", $note)) {
+							$note = str_replace(",", ".", "$note");
+							if (($note < 0) or ($note > 20)) {
+								$note = '';
+								$elev_statut = '';
+							}
+						}
+						else {
 							$note = '';
 							$elev_statut = '';
 						}
-					}
-					else {
-						$note = '';
-						$elev_statut = '';
-					}
 
-					if (($note != '') or ($elev_statut != '')) {
-						$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
-						$test = mysqli_num_rows($test_eleve_note_query);
-						if ($test != "0") {
-							if($loguer_modif) {
-								// On récupère la note précédente de l'élève
-								$lig_old_note_ele=mysqli_fetch_object($test_eleve_note_query);
+						if (($note != '') or ($elev_statut != '')) {
+							$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
+							$test = mysqli_num_rows($test_eleve_note_query);
+							if ($test != "0") {
+								if($loguer_modif) {
+									// On récupère la note précédente de l'élève
+									$lig_old_note_ele=mysqli_fetch_object($test_eleve_note_query);
 
-								if(($lig_old_note_ele->note!=$note)||($lig_old_note_ele->statut!=$elev_statut)) {
-									$texte="Modification de note du bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
-									if(($lig_old_note_ele->statut!="")) {
-										$texte.=$lig_old_note_ele->statut." -> ";
+									if(($lig_old_note_ele->note!=$note)||($lig_old_note_ele->statut!=$elev_statut)) {
+										$texte="Modification de note du bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
+										if(($lig_old_note_ele->statut!="")) {
+											$texte.=$lig_old_note_ele->statut." -> ";
+										}
+										else {
+											$texte.=$lig_old_note_ele->note." -> ";
+										}
+										if($elev_statut!="") {
+											if($elev_statut=="v") {
+												$texte.="(vide)";
+											}
+											else {
+												$texte.=$elev_statut;
+											}
+										}
+										else {
+											$texte.=$note;
+										}
+										$texte.=".";
+										$retour=log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn, $texte);
 									}
-									else {
-										$texte.=$lig_old_note_ele->note." -> ";
-									}
-									if($elev_statut!="") {
+								}
+
+								$register = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
+								$modif[$k] = 'yes';
+							} else {
+
+								if($loguer_modif) {
+									$texte="Saisie de note sur le bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
+									if(($elev_statut!="")) {
 										if($elev_statut=="v") {
 											$texte.="(vide)";
 										}
@@ -164,132 +190,110 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 									else {
 										$texte.=$note;
 									}
-									$texte.=".";
+									$texte.=".\n";
+									$retour=log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn, $texte);
+								}
+
+								$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_notes SET login='$reg_eleve_login', id_groupe='" . $current_group["id"] . "',periode='$k',note='$note',statut='$elev_statut', rang='0'");
+								$modif[$k] = 'yes';
+							}
+						} else {
+							if($loguer_modif) {
+								$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
+								$test = mysqli_num_rows($test_eleve_note_query);
+								if ($test != "0") {
+									$texte="Suppression de note sur le bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
+									if(($elev_statut!="")) {
+										if($elev_statut=="v") {
+											$texte.="(vide)";
+										}
+										else {
+											$texte.=$elev_statut;
+										}
+									}
+									else {
+										$texte.=$note;
+									}
+									$texte.=".\n";
 									$retour=log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn, $texte);
 								}
 							}
 
-							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
-							$modif[$k] = 'yes';
-						} else {
-
-							if($loguer_modif) {
-								$texte="Saisie de note sur le bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
-								if(($elev_statut!="")) {
-									if($elev_statut=="v") {
-										$texte.="(vide)";
-									}
-									else {
-										$texte.=$elev_statut;
-									}
-								}
-								else {
-									$texte.=$note;
-								}
-								$texte.=".\n";
-								$retour=log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn, $texte);
-							}
-
-							$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_notes SET login='$reg_eleve_login', id_groupe='" . $current_group["id"] . "',periode='$k',note='$note',statut='$elev_statut', rang='0'");
+							$register = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_notes WHERE (login='$reg_eleve_login' and id_groupe='" . $current_group["id"] . "' and periode='$k')");
 							$modif[$k] = 'yes';
 						}
-					} else {
-						if($loguer_modif) {
-							$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
-							$test = mysqli_num_rows($test_eleve_note_query);
-							if ($test != "0") {
-								$texte="Suppression de note sur le bulletin en période $k pour ".get_nom_prenom_eleve($reg_eleve_login, 'avec_classe')." : ";
-								if(($elev_statut!="")) {
-									if($elev_statut=="v") {
-										$texte.="(vide)";
-									}
-									else {
-										$texte.=$elev_statut;
-									}
-								}
-								else {
-									$texte.=$note;
-								}
-								$texte.=".\n";
-								$retour=log_modifs_acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_cn, $texte);
-							}
-						}
-
-						$register = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_notes WHERE (login='$reg_eleve_login' and id_groupe='" . $current_group["id"] . "' and periode='$k')");
-						$modif[$k] = 'yes';
 					}
 				}
 			}
 		}
-	}
 
-	/*
-	foreach ($current_group["eleves"]["all"]["list"] as $reg_eleve_login) {
-		// MODIFICATION: boireaus
-		// On n'enregistre que pour la période correspondant à $periode_cn
+		/*
+		foreach ($current_group["eleves"]["all"]["list"] as $reg_eleve_login) {
+			// MODIFICATION: boireaus
+			// On n'enregistre que pour la période correspondant à $periode_cn
+			//$k=1;
+			$k=$periode_cn;
+			//while ($k < $nb_periode) {
+				if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
+					$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
+					if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
+						$nom_log = $reg_eleve_login."_t".$k;
+						$note = $$nom_log;
+						$elev_statut = '';
+						if (($note == 'disp')) { $note = '0'; $elev_statut = 'disp';
+						} else if (($note == 'abs')) { $note = '0'; $elev_statut = 'abs';
+						} else if (($note == '-')) { $note = '0'; $elev_statut = '-';
+						} else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
+							$note = str_replace(",", ".", "$note");
+							if (($note < 0) or ($note > 20)) { $note = ''; $elev_statut = '';}
+						} else {
+							$note = ''; $elev_statut = '';
+						}
+						if (($note != '') or ($elev_statut != '')) {
+							$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
+							$test = mysql_num_rows($test_eleve_note_query);
+							if ($test != "0") {
+								$register = mysql_query("UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
+								$modif[$k] = 'yes';
+							} else {
+								$register = mysql_query("INSERT INTO matieres_notes SET login='$reg_eleve_login', id_groupe='" . $current_group["id"] . "',periode='$k',note='$note',statut='$elev_statut', rang='0'");
+								$modif[$k] = 'yes';
+							}
+						} else {
+							$register = mysql_query("DELETE FROM matieres_notes WHERE (login='$reg_eleve_login' and id_groupe='" . $current_group["id"] . "' and periode='$k')");
+							$modif[$k] = 'yes';
+						}
+					}
+				}
+
+				//$k++;
+			//}
+		}
+		*/
+
+		// on indique qu'il faut le cas échéant procéder à un recalcul du rang des élèves
 		//$k=1;
 		$k=$periode_cn;
 		//while ($k < $nb_periode) {
-			if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
-				$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
-				if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
-					$nom_log = $reg_eleve_login."_t".$k;
-					$note = $$nom_log;
-					$elev_statut = '';
-					if (($note == 'disp')) { $note = '0'; $elev_statut = 'disp';
-					} else if (($note == 'abs')) { $note = '0'; $elev_statut = 'abs';
-					} else if (($note == '-')) { $note = '0'; $elev_statut = '-';
-					} else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
-						$note = str_replace(",", ".", "$note");
-						if (($note < 0) or ($note > 20)) { $note = ''; $elev_statut = '';}
-					} else {
-						$note = ''; $elev_statut = '';
-					}
-					if (($note != '') or ($elev_statut != '')) {
-						$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
-						$test = mysql_num_rows($test_eleve_note_query);
-						if ($test != "0") {
-							$register = mysql_query("UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$k')");
-							$modif[$k] = 'yes';
-						} else {
-							$register = mysql_query("INSERT INTO matieres_notes SET login='$reg_eleve_login', id_groupe='" . $current_group["id"] . "',periode='$k',note='$note',statut='$elev_statut', rang='0'");
-							$modif[$k] = 'yes';
-						}
-					} else {
-						$register = mysql_query("DELETE FROM matieres_notes WHERE (login='$reg_eleve_login' and id_groupe='" . $current_group["id"] . "' and periode='$k')");
-						$modif[$k] = 'yes';
+			if (isset($modif[$k]) and ($modif[$k] == 'yes')) {
+				$recalcul_rang = sql_query1("select recalcul_rang from groupes
+				where id='".$current_group["id"]."' limit 1");
+				$long = mb_strlen($recalcul_rang);
+				if ($long >= $k) {
+					$recalcul_rang = substr_replace ( $recalcul_rang, "y", $k-1, $k);
+				} else {
+					for ($l = $long; $l<$k; $l++) {
+						$recalcul_rang = $recalcul_rang.'y';
 					}
 				}
+				$req = mysqli_query($GLOBALS["mysqli"], "update groupes set recalcul_rang = '".$recalcul_rang."'
+				where id='".$current_group["id"]."'");
 			}
-
 			//$k++;
 		//}
+
+		$affiche_message = 'yes';
 	}
-	*/
-
-	// on indique qu'il faut le cas échéant procéder à un recalcul du rang des élèves
-	//$k=1;
-	$k=$periode_cn;
-	//while ($k < $nb_periode) {
-		if (isset($modif[$k]) and ($modif[$k] == 'yes')) {
-			$recalcul_rang = sql_query1("select recalcul_rang from groupes
-			where id='".$current_group["id"]."' limit 1");
-			$long = mb_strlen($recalcul_rang);
-			if ($long >= $k) {
-				$recalcul_rang = substr_replace ( $recalcul_rang, "y", $k-1, $k);
-			} else {
-				for ($l = $long; $l<$k; $l++) {
-					$recalcul_rang = $recalcul_rang.'y';
-				}
-			}
-			$req = mysqli_query($GLOBALS["mysqli"], "update groupes set recalcul_rang = '".$recalcul_rang."'
-			where id='".$current_group["id"]."'");
-		}
-		//$k++;
-	//}
-
-
-	$affiche_message = 'yes';
 }
 if (!isset($is_posted)) {$is_posted = '';}
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -730,7 +734,7 @@ echo add_token_field();
 	if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 		($acces_exceptionnel_saisie[$periode_cn])||
 		(($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0)&&($_SESSION['statut']=='secours'))) {
-		echo "<p><input type='submit' value='Enregistrer' /> : Enregistrer les moyennes dans le bulletin</p>\n";
+		echo "<p id='p_enregistrer'><input type='submit' value='Enregistrer' /> : Enregistrer les moyennes dans le bulletin</p>\n";
 
 		echo "<p><i>Taper une note de 0 à 20 pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code 'n' ou '-' pour absence de note.</i></p>\n";
 	}
@@ -1392,12 +1396,21 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 (($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0)&&($_SESSION['statut']=='secours'))
 ) {
 
-	echo "<center>\n";
-	echo "<div id='fixe'>\n";
-	echo $chaine_date_conseil_classe;
-	echo "<input type='submit' value='Enregistrer' />\n";
-	echo "</div>\n";
-	echo "</center>\n";
+	if((isset($num_id))&&($num_id>10)) {
+		echo "<center>\n";
+		echo "<div id='fixe'>\n";
+		echo $chaine_date_conseil_classe;
+		echo "<input type='submit' value='Enregistrer' />\n";
+		echo "</div>\n";
+		echo "</center>\n";
+	}
+	else {
+		echo "<script type='text/javascript'>
+	if(document.getElementById('p_enregistrer')) {
+		document.getElementById('p_enregistrer').style.display='none';
+	}
+</script>";
+	}
 }
 ?>
 
