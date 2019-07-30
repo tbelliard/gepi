@@ -1332,9 +1332,10 @@ if (!isset($aid_id)) {
 		$k = '1';
 		while ($k < $nb_periode_max + 1) {
 			if (($k >= $display_begin) and ($k <= $display_end)) {
-				if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+				if((isset($tab_aid["classe"]["ver_periode"]['all'][$k]))&&
+				(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
 				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
-				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours')))) {
 					$proposer_liens_enregistrement="y";
 					break;
 				}
@@ -1521,9 +1522,10 @@ if (!isset($aid_id)) {
 
 					//echo "\$tab_aid[\"classe\"][\"ver_periode\"]['all'][$i]=".$tab_aid["classe"]["ver_periode"]['all'][$i]."<br />";
 
-					if(($tab_aid["classe"]["ver_periode"]['all'][$i]>=2)||
+					if((isset($tab_aid["classe"]["ver_periode"]['all'][$i]))&&
+					(($tab_aid["classe"]["ver_periode"]['all'][$i]>=2)||
 					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
-					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='secours'))) {
+					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='secours')))) {
 
 						echo "
 						 <a href='#' onclick=\"ajoute_app_periode_a_textarea($i)\" title=\"Ajouter l'avis sur le groupe aux appréciations de la période $k.\"><img src='../images/icons/add.png' class='icone16' alt='Insérer' /></a> 
@@ -1551,9 +1553,10 @@ if (!isset($aid_id)) {
 						$current_app_t[$k]="";
 					}
 
-					if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+					if((isset($tab_aid["classe"]["ver_periode"]['all'][$k]))&&
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
 					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
-					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours')))) {
 						echo "
 		<td>
 			<textarea name=\"no_anti_inject_app_grp_".$k."\" id=\"app_grp_".$k."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">".$current_app_t[$k]."</textarea>";
@@ -1568,9 +1571,10 @@ if (!isset($aid_id)) {
 		</td>";
 						$proposer_liens_enregistrement="y";
 					}
-					elseif(($tab_aid["classe"]["ver_periode"]['all'][$k]>=1)&&(in_array($_SESSION['login'], $tab_aid['profs']['list']))&&
-						(isset($tab_autorisation_exceptionnelle_de_saisie_app[$k]))&&
-						($tab_autorisation_exceptionnelle_de_saisie_app[$k]!='n')) {
+					elseif((isset($tab_aid["classe"]["ver_periode"]['all'][$k]))&&
+					($tab_aid["classe"]["ver_periode"]['all'][$k]>=1)&&(in_array($_SESSION['login'], $tab_aid['profs']['list']))&&
+					(isset($tab_autorisation_exceptionnelle_de_saisie_app[$k]))&&
+					($tab_autorisation_exceptionnelle_de_saisie_app[$k]!='n')) {
 
 						if($tab_autorisation_exceptionnelle_de_saisie_app[$k]=='yy') {
 							$tmp_title="title=\"Modification autorisée à titre exceptionnel.\"";
