@@ -474,7 +474,9 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 
 				// Visualisation des bulletins simplifiés
 				$affiche_li_bull_simp="n";
-				if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
+				if ((getSettingAOui("GepiAccesBulletinSimpleProf"))||
+				(getSettingAOui("GepiAccesBulletinSimpleProfTousEleves"))||
+				(getSettingAOui("GepiAccesBulletinSimpleProfToutesClasses"))) {
 					$affiche_li_bull_simp="y";
 				}
 				elseif(getSettingValue("GepiAccesBulletinSimplePP") == "yes") {
