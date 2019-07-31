@@ -1528,8 +1528,8 @@ if (!isset($aid_id)) {
 					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='secours')))) {
 
 						echo "
-						 <a href='#' onclick=\"ajoute_app_periode_a_textarea($i)\" title=\"Ajouter l'avis sur le groupe aux appréciations de la période $k.\"><img src='../images/icons/add.png' class='icone16' alt='Insérer' /></a> 
-						<a href='#' onclick=\"ajoute_app_periode_a_textarea_vide($i)\" title=\"Insérer l'avis sur le groupe aux appréciations de la période $k\n*lorsque l'appréciation est vide*.\"><img src='../images/icons/wizard.png' class='icone16' alt='Insérer' /></a>";
+						 <a href='#' onclick=\"ajoute_app_periode_a_textarea($i)\" title=\"Ajouter l'avis sur le groupe aux appréciations de la période $i.\"><img src='../images/icons/add.png' class='icone16' alt='Insérer' /></a> 
+						<a href='#' onclick=\"ajoute_app_periode_a_textarea_vide($i)\" title=\"Insérer l'avis sur le groupe aux appréciations de la période $i\n*lorsque l'appréciation est vide*.\"><img src='../images/icons/wizard.png' class='icone16' alt='Insérer' /></a>";
 
 					}
 					echo "
