@@ -414,6 +414,8 @@ $classe = old_mysql_result($call_classe, "0", "classe");
 //debug_var();
 //=============================
 
+$ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
+
 $gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
 
 if(!isset($quitter_la_page)){
@@ -472,8 +474,6 @@ if(!isset($quitter_la_page)){
 	$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
 	$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
 	$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
-
-	$ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 
 	if($ouvrir_infobulle_nav=="y") {
 		$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/vert.png' width='16' height='16' /></a></div>\n";
