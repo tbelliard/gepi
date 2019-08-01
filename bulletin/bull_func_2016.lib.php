@@ -212,10 +212,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 	// Cas standard d'impression
 	$tab_adr_lignes=array();
-	foreach($tab_bull['eleve'][$i]['resp']["adresses"]["adresse"] as $tmp_num_resp => $current_resp_adr) {
-		$tab_adr_lignes[]=$current_resp_adr["adresse"];
+	if(isset($tab_bull['eleve'][$i]['resp']["adresses"]["adresse"])) {
+		foreach($tab_bull['eleve'][$i]['resp']["adresses"]["adresse"] as $tmp_num_resp => $current_resp_adr) {
+			$tab_adr_lignes[]=$current_resp_adr["adresse"];
+		}
+		$nb_bulletins=$tab_bull['eleve'][$i]['resp']["adresses"]["nb_adr"];
 	}
-	$nb_bulletins=$tab_bull['eleve'][$i]['resp']["adresses"]["nb_adr"];
+	else {
+		$nb_bulletins=1;
+	}
 	//echo "nb_bulletins=$nb_bulletins<br />\n";
 
 	// Impression avec désignation du responsable (archivage bulletins PDF ou autre)
