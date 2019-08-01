@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -118,7 +118,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 
-	if ( $action_affiche === 'classe' ) { $entete = "Classe : ".$donnees_qui['nom_complet'];}
+	if ( $action_affiche === 'classe' ) { $entete = "Classe : ".($donnees_qui['nom_complet']!='' ? $donnees_qui['nom_complet'] : $donnees_qui['classe']) ;}
 	if ( $action_affiche === 'groupe' ) {
 		//$entete = "Groupe : ".$donnees_qui['name'];
 		$current_group=get_group($groupe);

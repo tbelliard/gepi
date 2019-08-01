@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -96,190 +96,173 @@ if(mysqli_num_rows($res_class_tmp)>0){
 if (isset($_POST['is_posted'])) {
 	check_token();
 
-	$checkmat=$_POST['checkmat'];
+	$checkmat=isset($_POST['checkmat']) ? $_POST['checkmat'] : array();
 	//$id_grp=$_POST['id_grp'];
 	$id_grp=isset($_POST['id_grp']) ? $_POST['id_grp'] : NULL;
-	$prof=$_POST['prof'];
-	$id_matiere=$_POST['id_matiere'];
+	$prof=isset($_POST['prof']) ? $_POST['prof'] : array();;
+	$id_matiere=isset($_POST['id_matiere']) ? $_POST['id_matiere'] : array();
 
-	echo "<!--count(\$id_matiere)=".count($id_matiere)."-->\n";
+	$msg.="<!--count(\$id_matiere)=".count($id_matiere)."-->\n";
 
 	$nb_nouveaux_groupes=0;
 	$nb_grp_maj=0;
 	//for($i=0;$i<count($id_matiere);$i++){
-	for($i=0;$i<$_POST['compteur_matieres'];$i++){
-		unset($reg_clazz);
-		if(isset($id_matiere[$i])){
-            echo "<!--\$id_matiere[$i]=".$id_matiere[$i]."-->\n";
-            if($id_matiere[$i]!=""){
-                if(isset($checkmat[$i])){
-                    if($checkmat[$i]=="nouveau_groupe"){
-                        // C'est un nouveau groupe
+	if(isset($_POST['compteur_matieres'])) {
+		for($i=0;$i<$_POST['compteur_matieres'];$i++){
+			unset($reg_clazz);
+			if(isset($id_matiere[$i])) {
+				$msg.="<!--\$id_matiere[$i]=".$id_matiere[$i]."-->\n";
+				if($id_matiere[$i]!="") {
+					if(isset($checkmat[$i])) {
+						if($checkmat[$i]=="nouveau_groupe") {
+							// C'est un nouveau groupe
 
-                        echo "<!--\$checkmat[$i]=nouveau_groupe-->\n";
+							$msg.="<!--\$checkmat[$i]=nouveau_groupe-->\n";
 
-                        $sql="SELECT * FROM matieres WHERE matiere='$id_matiere[$i]'";
-                        $resultat_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
-                        $ligne_matiere=mysqli_fetch_object($resultat_matiere);
+							$sql="SELECT * FROM matieres WHERE matiere='$id_matiere[$i]'";
+							$resultat_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+							$ligne_matiere=mysqli_fetch_object($resultat_matiere);
 
-                        $reg_clazz[0]=$id_classe;
+							$reg_clazz[0]=$id_classe;
 
-                        //$create = create_group($reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz);
-                        //echo "<!-- create_group($id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz); -->\n";
-                        $create = create_group($id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz);
-                        if (!$create) {
-                            //echo "<!-- erreur -->\n";
-                            $msg .= "Erreur lors de la création du groupe $id_matiere[$i]";
-                        }
-                        else {
-                            $nb_nouveaux_groupes++;
+							//$create = create_group($reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz);
+							//echo "<!-- create_group($id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz); -->\n";
+							$create = create_group($id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz);
+							if (!$create) {
+								//echo "<!-- erreur -->\n";
+								$msg .= "Erreur lors de la création du groupe $id_matiere[$i]";
+							}
+							else {
+								$nb_nouveaux_groupes++;
 
-                            $id_groupe=$create;
-                            $sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
-                            $resultat_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+								$id_groupe=$create;
+								if((isset($prof[$i]))&&($prof[$i]!='')) {
+									$sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
+									$resultat_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
 
-                            // Affectation de tous les élèves de la classe dans le groupe:
-                            $current_group = get_group($id_groupe);
-                            $reg_professeurs = (array)$current_group["profs"]["list"];
-                            unset($reg_eleves);
-                            $reg_eleves = array();
+								// Affectation de tous les élèves de la classe dans le groupe:
+								$current_group = get_group($id_groupe);
+								$reg_professeurs = (array)$current_group["profs"]["list"];
+								unset($reg_eleves);
+								$reg_eleves = array();
 
-                            /*
-                            //$sql="SELECT * FROM periodes WHERE id_classe='$id_classe'";
-                            $sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY periode,login";
-                            $result_list_eleves=mysql_query($sql);
-                            while($ligne_eleve=mysql_fetch_object($result_list_eleves)){
-                                $reg_eleves[$ligne_eleve->periode][]=$ligne_eleve->login;
-                            }
-                            */
-					$tab_eleves_groupe_toutes_periodes=array();
-                            $sql="SELECT * FROM periodes WHERE id_classe='$id_classe'";
-                            $result_list_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
-                            while($ligne_periode=mysqli_fetch_object($result_list_periodes)){
-                                //echo "<!-- \$ligne_periode->num_periode=$ligne_periode->num_periode -->\n";
-                                //echo "\$ligne_periode->num_periode=$ligne_periode->num_periode <br />\n";
-                                $reg_eleves[$ligne_periode->num_periode]=array();
-                                //$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY periode,login";
-                                $sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$ligne_periode->num_periode' ORDER BY periode,login";
-                                $result_list_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
-                                while($ligne_eleve=mysqli_fetch_object($result_list_eleves)){
-                                    $reg_eleves[$ligne_periode->num_periode][]=$ligne_eleve->login;
-                                    //echo "<!-- \$ligne_eleve->login=$ligne_eleve->login -->\n";
+								$tab_eleves_groupe_toutes_periodes=array();
+								$sql="SELECT * FROM periodes WHERE id_classe='$id_classe'";
+								$result_list_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
+								while($ligne_periode=mysqli_fetch_object($result_list_periodes)) {
+									//echo "<!-- \$ligne_periode->num_periode=$ligne_periode->num_periode -->\n";
+									//echo "\$ligne_periode->num_periode=$ligne_periode->num_periode <br />\n";
+									$reg_eleves[$ligne_periode->num_periode]=array();
+									//$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY periode,login";
+									$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$ligne_periode->num_periode' ORDER BY periode,login";
+									$result_list_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
+									while($ligne_eleve=mysqli_fetch_object($result_list_eleves)){
+										$reg_eleves[$ligne_periode->num_periode][]=$ligne_eleve->login;
+										//echo "<!-- \$ligne_eleve->login=$ligne_eleve->login -->\n";
 
-						if(!in_array($ligne_eleve->login, $tab_eleves_groupe_toutes_periodes)) {
-							$tab_eleves_groupe_toutes_periodes[]=$ligne_eleve->login;
+										if(!in_array($ligne_eleve->login, $tab_eleves_groupe_toutes_periodes)) {
+											$tab_eleves_groupe_toutes_periodes[]=$ligne_eleve->login;
+										}
+									}
+								}
+
+								$code_modalite_elect_eleves=array();
+								for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
+									$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
+									$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_cme)>0) {
+										$lig_cme=mysqli_fetch_object($res_cme);
+										$code_modalite_elect_eleves[$lig_cme->code_modalite_elect]["eleves"][]=$tab_eleves_groupe_toutes_periodes[$loop];
+									}
+								}
+
+								$create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
+								if (!$create) {
+									$msg .= "Erreur lors de la mise à jour du groupe $id_matiere[$i]";
+								}
+								//else {
+								//	$msg .= "Le groupe a bien été mis à jour.";
+								//}
+							}
 						}
-                                }
-                            }
+						elseif($checkmat[$i]!="") {
+							// Mise à jour du groupe $id_groupe=$checkmat[$i]
+							$id_groupe=$checkmat[$i];
+							//echo "\$id_groupe=$id_groupe<br />\n";
+							$group=get_group($id_groupe);
 
-					$code_modalite_elect_eleves=array();
-					for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
-						$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
-						$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res_cme)>0) {
-							$lig_cme=mysqli_fetch_object($res_cme);
-							$code_modalite_elect_eleves[$lig_cme->code_modalite_elect]["eleves"][]=$tab_eleves_groupe_toutes_periodes[$loop];
+							$sql="SELECT * FROM matieres WHERE matiere='$id_matiere[$i]'";
+							$resultat_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+							$ligne_matiere=mysqli_fetch_object($resultat_matiere);
+
+							$reg_clazz[0]=$id_classe;
+
+							if(isset($group["profs"]["list"])){
+								$tabprof=$group["profs"]["list"];
+							}
+							else{
+								$tabprof=array();
+							}
+							if(isset($group["eleves"]["list"])){
+								$tabele=$group["eleves"]["list"];
+							}
+							else{
+								$tabele=array();
+							}
+							$tab_modalites=$group["modalites"];
+
+							$create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $tabprof, $tabele,$tab_modalites);
+
+							if (!$create) {
+								$msg .= "Erreur lors de la mise à jour du groupe $id_matiere[$i]";
+							}
+							else{
+								if((!isset($prof[$i]))||($prof[$i]=="")) {
+									$sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='$id_groupe'";
+									$resultat_suppr_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
+								else{
+									$sql="SELECT * FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$prof[$i]'";
+									$resultat_verif_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($resultat_verif_prof)==0){
+										// On supprime le professeur précédemment affecté s'il y en avait un pour mettre le nouveau:
+										$sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='$id_groupe'";
+										$resultat_suppr_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+
+										$sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
+										$resultat_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+										$nb_grp_maj++;
+									}
+									else{
+										// Le prof est déjà affecté au groupe.
+									}
+								}
+							}
 						}
 					}
-
-                            $create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
-                            if (!$create) {
-                                $msg .= "Erreur lors de la mise à jour du groupe $id_matiere[$i]";
-                            }
-                            //else {
-                            //	$msg .= "Le groupe a bien été mis à jour.";
-                            //}
-
-
-                        }
-                    }
-                    elseif($checkmat[$i]!=""){
-                        // Mise à jour du groupe $id_groupe=$checkmat[$i]
-                        $id_groupe=$checkmat[$i];
-                        //echo "\$id_groupe=$id_groupe<br />\n";
-                        $group=get_group($id_groupe);
-
-                        $sql="SELECT * FROM matieres WHERE matiere='$id_matiere[$i]'";
-                        $resultat_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
-                        $ligne_matiere=mysqli_fetch_object($resultat_matiere);
-
-                        $reg_clazz[0]=$id_classe;
-
-                        /*
-                        for($k=0;$k<count();$k++){
-                            echo "\$group[profs][list][$k]=".$group["profs"]["list"][$k]."<br />\n";
-                        }
-                        */
-
-                        //$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
-                        //echo "<!--update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, ".$group["profs"]["list"].", ".$group["eleves"]["list"].");-->\n";
-                        //echo "update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, ".$group["profs"]["list"].", ".$group["eleves"]["list"].");<br />\n";
-
-                        //$create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $group["profs"]["list"], $group["eleves"]["list"]);
-                        if(isset($group["profs"]["list"])){
-                            $tabprof=$group["profs"]["list"];
-                        }
-                        else{
-                            $tabprof=array();
-                        }
-                        if(isset($group["eleves"]["list"])){
-                            $tabele=$group["eleves"]["list"];
-                        }
-                        else{
-                            $tabele=array();
-                        }
-                        $tab_modalites=$group["modalites"];
-
-                        $create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $tabprof, $tabele,$tab_modalites);
-
-                        if (!$create) {
-                            $msg .= "Erreur lors de la mise à jour du groupe $id_matiere[$i]";
-                        }
-                        else{
-                            if($prof[$i]==""){
-                                $sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='$id_groupe'";
-                                $resultat_suppr_prof=mysqli_query($GLOBALS["mysqli"], $sql);
-                            }
-                            else{
-                                $sql="SELECT * FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='$prof[$i]'";
-                                $resultat_verif_prof=mysqli_query($GLOBALS["mysqli"], $sql);
-                                if(mysqli_num_rows($resultat_verif_prof)==0){
-                                    // On supprime le professeur précédemment affecté s'il y en avait un pour mettre le nouveau:
-                                    $sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='$id_groupe'";
-                                    $resultat_suppr_prof=mysqli_query($GLOBALS["mysqli"], $sql);
-
-                                    $sql="INSERT INTO j_groupes_professeurs VALUES('$id_groupe','$prof[$i]','')";
-                                    $resultat_prof=mysqli_query($GLOBALS["mysqli"], $sql);
-                                    $nb_grp_maj++;
-                                }
-                                else{
-                                    // Le prof est déjà affecté au groupe.
-                                }
-                            }
-                        }
-                    }
-                }
-                else{
-                    // On supprime le groupe:
-                    //$id_groupe=$checkmat[$i];
-                    $id_groupe=$id_grp[$i];
-                    if($id_groupe!=""){
-                        //echo "Suppression... \$id_groupe=$id_groupe<br />";
-                        if(test_before_group_deletion($id_groupe)){
-                            if(!delete_group($id_groupe)){
-                                $msg.="Erreur lors de la suppression du groupe.<br />";
-                            }
-                            else {
-                                $msg.="Groupe n°$id_groupe supprimé.<br />";
-                            }
-                        }
-                        else{
-                            $msg.="Des notes sons saisies pour ce groupe. La suppression du groupe n°$id_groupe n'est pas possible.<br />";
-                        }
-                    }
-                }
-            }
-        }
+					else {
+						// On supprime le groupe:
+						//$id_groupe=$checkmat[$i];
+						$id_groupe=$id_grp[$i];
+						if($id_groupe!="") {
+							//echo "Suppression... \$id_groupe=$id_groupe<br />";
+							if(test_before_group_deletion($id_groupe)) {
+								if(!delete_group($id_groupe)){
+									$msg.="Erreur lors de la suppression du groupe.<br />";
+								}
+								else {
+									$msg.="Groupe n°$id_groupe supprimé.<br />";
+								}
+							}
+							else{
+								$msg.="Des notes sons saisies pour ce groupe. La suppression du groupe n°$id_groupe n'est pas possible.<br />";
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	if($nb_nouveaux_groupes>0) {
