@@ -4847,7 +4847,12 @@ mysql>
 							$tableau_eleve['no_gep'][]=$tab_ele['no_gep'];
 							$tableau_eleve['nom_prenom'][]=remplace_accents($tab_ele['nom']."_".$tab_ele['prenom'],'all');
 							// 20190531
-							$tableau_resp[$current_eleve_login[$i]]=$tab_ele['resp'];
+							if(isset($tab_ele['resp'])) {
+								$tableau_resp[$current_eleve_login[$i]]=$tab_ele['resp'];
+							}
+							else {
+								$tableau_resp[$current_eleve_login[$i]]=array();
+							}
 						}
 
 						$nb_bulletins_edites++;
@@ -5429,35 +5434,36 @@ Bien cordialement.
 					$id_classe_eleve=$tableau_id_classe_eleve[$tableau_eleve['login'][$j]];
 					$chaine_periodes=implode(",", $tableau_periodes_eleve[$tableau_eleve['login'][$j]]);
 
-					$tmp_tab_arch_ele_courant=$tableau_resp[$tableau_eleve['login'][$j]]["adresses"]["adresse"];
+					if(isset($tableau_resp[$tableau_eleve['login'][$j]]["adresses"]["adresse"])) {
+						$tmp_tab_arch_ele_courant=$tableau_resp[$tableau_eleve['login'][$j]]["adresses"]["adresse"];
 
-					foreach($tmp_tab_arch_ele_courant as $tmp_num_resp_destinataire => $current_resp_adr) {
-						/*
-						echo "<pre>";
-						print_r($current_resp_adr);
-						echo "</pre>";
-						*/
-						$sql="INSERT INTO bull_mail SET login_sender='".$_SESSION['login']."', 
-											pers_id='".$current_resp_adr['pers_id']."',
-											email='".(check_mail($current_resp_adr['email'][0]) ? $current_resp_adr['email'][0] : '')."',
-											login_ele='".$tableau_eleve['login'][$j]."', 
-											nom_prenom_ele='".mysqli_real_escape_string($mysqli, $tableau_eleve['nom_prenom'][$j])."', 
-											id_classe='".$id_classe_eleve."',
-											periodes='".$chaine_periodes."',
-											id_envoi='".$id_envoi."',
-											envoi='en_attente',
-											date_envoi='"."';";
-						//echo "$sql<br />";
-						$insert=mysqli_query($mysqli, $sql);
-						if(!$insert) {
-							echo "<p style='color:red'>ERREUR lors de l'enregistrement de l'envoi à effectuer.</p>";
-						}
-						else {
-							echo "<p>Enregistrement de la préparation d'envoi pour ".$tableau_eleve['nom_prenom'][$j]." <span title='Responsable n°".$current_resp_adr['pers_id']."'>(".$current_resp_adr['pers_id'].")</span></p>";
-						}
+						foreach($tmp_tab_arch_ele_courant as $tmp_num_resp_destinataire => $current_resp_adr) {
+							/*
+							echo "<pre>";
+							print_r($current_resp_adr);
+							echo "</pre>";
+							*/
+							$sql="INSERT INTO bull_mail SET login_sender='".$_SESSION['login']."', 
+												pers_id='".$current_resp_adr['pers_id']."',
+												email='".(check_mail($current_resp_adr['email'][0]) ? $current_resp_adr['email'][0] : '')."',
+												login_ele='".$tableau_eleve['login'][$j]."', 
+												nom_prenom_ele='".mysqli_real_escape_string($mysqli, $tableau_eleve['nom_prenom'][$j])."', 
+												id_classe='".$id_classe_eleve."',
+												periodes='".$chaine_periodes."',
+												id_envoi='".$id_envoi."',
+												envoi='en_attente',
+												date_envoi='"."';";
+							//echo "$sql<br />";
+							$insert=mysqli_query($mysqli, $sql);
+							if(!$insert) {
+								echo "<p style='color:red'>ERREUR lors de l'enregistrement de l'envoi à effectuer.</p>";
+							}
+							else {
+								echo "<p>Enregistrement de la préparation d'envoi pour ".$tableau_eleve['nom_prenom'][$j]." <span title='Responsable n°".$current_resp_adr['pers_id']."'>(".$current_resp_adr['pers_id'].")</span></p>";
+							}
 
+						}
 					}
-
 
 				}
 			}
