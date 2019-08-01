@@ -5464,6 +5464,9 @@ Bien cordialement.
 
 						}
 					}
+					else {
+						echo "<p style='color:red'>L'élève ".$tableau_eleve['login'][$j]." n'a pas d'adresse responsable à laquelle envoyer le mail.</p>";
+					}
 
 				}
 			}
