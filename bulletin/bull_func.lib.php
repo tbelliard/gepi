@@ -2082,7 +2082,12 @@ echo "</pre>";
 			else {
 
 				//$texte=$tab_adr_lignes[$num_resp_bull];
-				$texte = $tab_adr_lignes[$indice_resp_bull];
+				if(isset($tab_adr_lignes[$indice_resp_bull])) {
+					$texte = $tab_adr_lignes[$indice_resp_bull];
+				}
+				else {
+					$texte='';
+				}
 				//$taille_max_police=10;
 				$taille_max_police=$tab_modele_pdf["adresse_resp_fontsize"][$classe_id];
 				$taille_min_police=ceil($taille_max_police/3);
