@@ -2752,7 +2752,12 @@ else {
 
 			$tab_bulletin[$id_classe][$periode_num]['id_classe']=$lig_classe->id;
 			$tab_bulletin[$id_classe][$periode_num]['classe']=$lig_classe->classe;
-			$tab_bulletin[$id_classe][$periode_num]['classe_nom_complet']=$lig_classe->nom_complet;
+			if(trim($lig_classe->nom_complet)!='') {
+				$tab_bulletin[$id_classe][$periode_num]['classe_nom_complet']=$lig_classe->nom_complet;
+			}
+			else {
+				$tab_bulletin[$id_classe][$periode_num]['classe_nom_complet']=$lig_classe->classe;
+			}
 			$tab_bulletin[$id_classe][$periode_num]['formule']=$lig_classe->formule;
 			$tab_bulletin[$id_classe][$periode_num]['suivi_par']=$lig_classe->suivi_par;
 
