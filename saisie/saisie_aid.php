@@ -378,8 +378,9 @@ if(isset($tab_aid)) {
 	$k = '1';
 	while ($k < $nb_periode_max + 1) {
 		if (($k >= $display_begin) and ($k <= $display_end)) {
-			if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
-			(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+			if((isset($tab_aid["classe"]["ver_periode"]['all'][$k]))&&
+			(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+			(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours')))) {
 				$proposer_liens_enregistrement="y";
 				break;
 			}
@@ -555,8 +556,9 @@ if (!isset($aid_id)) {
 
 					//echo "\$tab_aid[\"classe\"][\"ver_periode\"]['all'][$i]=".$tab_aid["classe"]["ver_periode"]['all'][$i]."<br />";
 
-					if(($tab_aid["classe"]["ver_periode"]['all'][$i]>=2)||
-					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='secours'))) {
+					if((isset($tab_aid["classe"]["ver_periode"]['all'][$i]))&&
+					(($tab_aid["classe"]["ver_periode"]['all'][$i]>=2)||
+					(($tab_aid["classe"]["ver_periode"]['all'][$i]!=0)&&($_SESSION['statut']=='secours')))) {
 
 						echo "
 						 <a href='#' onclick=\"ajoute_app_periode_a_textarea($i)\" title=\"Ajouter l'avis sur le groupe aux appréciations de la période $k.\"><img src='../images/icons/add.png' class='icone16' alt='Insérer' /></a> 
@@ -584,8 +586,9 @@ if (!isset($aid_id)) {
 						$current_app_t[$k]="";
 					}
 
-					if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
-					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
+					if((isset($tab_aid["classe"]["ver_periode"]['all'][$k]))&&
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours')))) {
 						echo "
 		<td>
 			<textarea name=\"no_anti_inject_app_grp_".$k."\" id=\"app_grp_".$k."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">".$current_app_t[$k]."</textarea>
