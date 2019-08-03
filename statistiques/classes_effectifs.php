@@ -269,8 +269,14 @@ if(isset($_GET['export_csv'])) {
 		$csv="MEF;Classes;Effectifs;\r\n";
 
 		$tab_mef=get_tab_mef();
+		/*
+		echo "<pre>";
+		print_r($tab_mef);
+		echo "</pre>";
+		*/
 
 		$sql="SELECT m.*, COUNT(e.login) AS effectif FROM eleves e, mef m WHERE e.mef_code=m.mef_code AND e.login in (SELECT login FROM j_eleves_classes WHERE periode='".$num_periode."') GROUP BY mef_rattachement ORDER BY m.libelle_court, m.libelle_long, m.libelle_edition, m.mef_code;";
+		//echo "$sql<br />";
 		$res_mef=mysqli_query($mysqli, $sql);
 		while($lig_mef=mysqli_fetch_object($res_mef)) {
 			$liste_classes='';
@@ -282,6 +288,7 @@ if(isset($_GET['export_csv'])) {
 													periode='".$num_periode."' AND 
 													jec.id_classe=c.id 
 												ORDER BY c.classe;";
+			//echo "$sql<br />";
 			$res_mef_classe=mysqli_query($mysqli, $sql);
 			$cpt_mef_classe=0;
 			while($lig_mef_classe=mysqli_fetch_object($res_mef_classe)) {
@@ -289,7 +296,15 @@ if(isset($_GET['export_csv'])) {
 				$liste_classes.=$lig_mef_classe->classe;
 				$cpt_mef_classe++;
 			}
-			$csv.=$tab_mef[$lig_mef->mef_rattachement]['designation_courte'].";".$liste_classes.";".$lig_mef->effectif.";\r\n";
+			if(isset($tab_mef[$lig_mef->mef_rattachement]['designation_courte'])) {
+				$csv.=$tab_mef[$lig_mef->mef_rattachement]['designation_courte'].";".$liste_classes.";".$lig_mef->effectif.";\r\n";
+			}
+			elseif(isset($tab_mef[$lig_mef->mef_code]['designation_courte'])) {
+				$csv.=$tab_mef[$lig_mef->mef_code]['designation_courte'].";".$liste_classes.";".$lig_mef->effectif.";\r\n";
+			}
+			else {
+				$csv.=$lig_mef->rattachement.";".$liste_classes.";".$lig_mef->effectif.";\r\n";
+			}
 		}
 
 		$csv.="Total;;";
