@@ -108,19 +108,23 @@ if((isset($id_classe))&&
 		$csv.=';"RNE_ORIG";"NOM_ETAB_ORIG";"NIVEAU_ETAB_ORIG";"TYPE_ETAB_ORIG";"CP_ETAB_ORIG";"VILLE_ETAB_ORIG"';
 	}
 
-	if(in_array("id_classe",$champ_autre)) {$csv.=';"ID_CLASSE"';}
-	if(in_array("classe",$champ_autre)) {
-		$csv.=';"NOM_DE_CLASSE"';
+	if(isset($champ_autre)) {
+		if(in_array("id_classe",$champ_autre)) {$csv.=';"ID_CLASSE"';}
+		if(in_array("classe",$champ_autre)) {
+			$csv.=';"NOM_DE_CLASSE"';
+		}
+
+		if(in_array("id_groupe",$champ_autre)) {$csv.=';"ID_GROUPE"';}
+		if(in_array("nom_groupe",$champ_autre)) {$csv.=';"NOM_DE_GROUPE"';}
+
+		if(in_array("matiere",$champ_autre)) {$csv.=';"NOM_COURT_DE_MATIERE"';}
+		if(in_array("matiere_nom_complet",$champ_autre)) {$csv.=';"NOM_LONG_DE_MATIERE"';}
 	}
 
-	if(in_array("id_groupe",$champ_autre)) {$csv.=';"ID_GROUPE"';}
-	if(in_array("nom_groupe",$champ_autre)) {$csv.=';"NOM_DE_GROUPE"';}
-
-	if(in_array("matiere",$champ_autre)) {$csv.=';"NOM_COURT_DE_MATIERE"';}
-	if(in_array("matiere_nom_complet",$champ_autre)) {$csv.=';"NOM_LONG_DE_MATIERE"';}
-
-	for($loop=0;$loop<count($champ_enseignant);$loop++) {
-		$csv.=';"'.strtoupper($champ_enseignant[$loop]).'"';
+	if(isset($champ_enseignant)) {
+		for($loop=0;$loop<count($champ_enseignant);$loop++) {
+			$csv.=';"'.strtoupper($champ_enseignant[$loop]).'"';
+		}
 	}
 
 	$csv.=';"NUMERO_DE_PERIODE"';
@@ -353,30 +357,34 @@ die();
 										$csv.=';'.$tab_info_ele[$tab_ele[$m]]['chaine_csv_etab_orig'];
 									}
 
-									if(in_array("id_classe",$champ_autre)) {$csv.=';"'.$id_classe[$i].'"';}
-									if(in_array("classe",$champ_autre)) {
-										if(!isset($tab_classe[$id_classe[$i]])) {
-											$tab_classe[$id_classe[$i]]=clean_string_csv(get_class_from_id($id_classe[$i]));
+									if(isset($champ_autre)) {
+										if(in_array("id_classe",$champ_autre)) {$csv.=';"'.$id_classe[$i].'"';}
+										if(in_array("classe",$champ_autre)) {
+											if(!isset($tab_classe[$id_classe[$i]])) {
+												$tab_classe[$id_classe[$i]]=clean_string_csv(get_class_from_id($id_classe[$i]));
+											}
+											$csv.=';"'.$tab_classe[$id_classe[$i]].'"';
 										}
-										$csv.=';"'.$tab_classe[$id_classe[$i]].'"';
+
+										if(in_array("id_groupe",$champ_autre)) {$csv.=';"'.$tab_id_groupe[$k].'"';}
+										if(in_array("nom_groupe",$champ_autre)) {$csv.=';"'.$tab_grp[$tab_id_groupe[$k]]['name'].'"';}
+			
+										if(in_array("matiere",$champ_autre)) {$csv.=';"'.$tab_grp[$tab_id_groupe[$k]]["matiere"]["matiere"].'"';}
+										if(in_array("matiere_nom_complet",$champ_autre)) {$csv.=';"'.clean_string_csv($tab_grp[$tab_id_groupe[$k]]["matiere"]["nom_complet"]).'"';}
+									}
+		
+									if(isset($champ_enseignant)) {
+										for($loop=0;$loop<count($champ_enseignant);$loop++) {
+											// Cas d'un groupe sans prof
+											if(isset($tab_prof[$tab_id_groupe[$k]][0][$champ_enseignant[$loop]])) {
+												$csv.=';"'.$tab_prof[$tab_id_groupe[$k]][0][$champ_enseignant[$loop]].'"';
+											}
+											else {
+												$csv.=';""';
+											}
+										}
 									}
 
-									if(in_array("id_groupe",$champ_autre)) {$csv.=';"'.$tab_id_groupe[$k].'"';}
-									if(in_array("nom_groupe",$champ_autre)) {$csv.=';"'.$tab_grp[$tab_id_groupe[$k]]['name'].'"';}
-		
-									if(in_array("matiere",$champ_autre)) {$csv.=';"'.$tab_grp[$tab_id_groupe[$k]]["matiere"]["matiere"].'"';}
-									if(in_array("matiere_nom_complet",$champ_autre)) {$csv.=';"'.clean_string_csv($tab_grp[$tab_id_groupe[$k]]["matiere"]["nom_complet"]).'"';}
-		
-									for($loop=0;$loop<count($champ_enseignant);$loop++) {
-										// Cas d'un groupe sans prof
-										if(isset($tab_prof[$tab_id_groupe[$k]][0][$champ_enseignant[$loop]])) {
-											$csv.=';"'.$tab_prof[$tab_id_groupe[$k]][0][$champ_enseignant[$loop]].'"';
-										}
-										else {
-											$csv.=';""';
-										}
-									}
-		
 									$csv.=';"'.$tab_per[$j].'"';
 									//if(!isset($tab_nom_per[$id_classe[$i]][$tab_per[$j]])) {
 									if(!isset($tab_nom_per[$id_classe[$i]])) {
@@ -1261,12 +1269,13 @@ elseif(!isset($choix_donnees)) {
 }
 else {
 	// On ne devrait pas arriver là
-	echo "<p style='color:red'>Soit on a envoyé via header() le CSV, soit il faut fournir ici un lien de telechargement depuis temp.</p>\n";
+	echo "<p style='color:red'><em>ANOMALIE&nbsp;:</em> Avez-vous bien demandé à extraire des données&nbsp;? N'avez-vous rien coché&nbsp;?</p>
+	<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix des informations à extraire.</a></p>\n";
+	//soit on a envoyé le CSV via header(), soit il faut fournir ici un lien de telechargement depuis temp
 
 	if(isset($csv)) {
 		echo "<pre>$csv</pre>";
 	}
-
 
 }
 //echo "<p>The end!</p>";
