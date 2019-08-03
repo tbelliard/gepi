@@ -104,7 +104,10 @@ if (isset($_POST['is_posted'])) {
 			if(isset($_POST['no_anti_inject_app_grp_'.$k])) {
 				//f_write_tmp("\$_POST['app_grp_'.$k]=".$_POST['app_grp_'.$k]);
 				//f_write_tmp("\$current_group[\"classe\"][\"ver_periode\"]['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]);
-				if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+				if(!isset($tab_aid["classe"]["ver_periode"]['all'][$k])) {
+					$msg.="Aucune classe avec période n'est associée à l'AID.<br />";
+				}
+				elseif(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
 				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 
 					if (isset($NON_PROTECT["app_grp_".$k])) {
