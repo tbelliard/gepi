@@ -165,12 +165,14 @@ if (isset($_POST['is_posted'])) {
 			if(isset($_POST['no_anti_inject_app_grp_'.$k])) {
 				//f_write_tmp("\$_POST['app_grp_'.$k]=".$_POST['app_grp_'.$k]);
 				//f_write_tmp("\$current_group[\"classe\"][\"ver_periode\"]['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]);
-				if(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
-				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
-				(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))||
-					(($tab_aid["classe"]["ver_periode"]['all'][$k]>=1)&&(in_array($_SESSION['login'], $tab_aid['profs']['list']))&&
-					(isset($tab_autorisation_exceptionnelle_de_saisie_app[$k]))&&
-					($tab_autorisation_exceptionnelle_de_saisie_app[$k]=='yy'))
+				if((isset($tab_aid["classe"]["ver_periode"]['all'][$k]))&&
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]>=2)||
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol')))||
+					(($tab_aid["classe"]["ver_periode"]['all'][$k]!=0)&&($_SESSION['statut']=='secours'))||
+						(($tab_aid["classe"]["ver_periode"]['all'][$k]>=1)&&(in_array($_SESSION['login'], $tab_aid['profs']['list']))&&
+						(isset($tab_autorisation_exceptionnelle_de_saisie_app[$k]))&&
+						($tab_autorisation_exceptionnelle_de_saisie_app[$k]=='yy'))
+					)
 				) {
 
 					if (isset($NON_PROTECT["app_grp_".$k])) {
@@ -225,7 +227,9 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 				}
-				elseif(($tab_aid["classe"]["ver_periode"]['all'][$k]>=1)&&(in_array($_SESSION['login'], $tab_aid['profs']['list']))&&
+				elseif((isset($tab_aid["classe"]["ver_periode"]['all'][$k]))&&
+					($tab_aid["classe"]["ver_periode"]['all'][$k]>=1)&&
+					(in_array($_SESSION['login'], $tab_aid['profs']['list']))&&
 					(isset($tab_autorisation_exceptionnelle_de_saisie_app[$k]))&&
 					($tab_autorisation_exceptionnelle_de_saisie_app[$k]=='y')) {
 					// Proposition à enregistrer
