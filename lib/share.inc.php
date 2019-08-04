@@ -17115,39 +17115,40 @@ function adresse_postale_resp($tab_resp_adr, $mode="pdf") {
 	if ($un_seul_bull_par_famille!="oui") {
 		for($cpt=2;$cpt<count($tab_resp_adr);$cpt++) {
 			// Vérifier si les indices sont renseignés?
+			if(isset($tab_resp_adr[$cpt])) {
+				$tab["nb_adr"]++;
 
-			$tab["nb_adr"]++;
+				$num_resp=$cpt+1;
 
-			$num_resp=$cpt+1;
+				// Les lignes d'adresse après le civilite/nom/prénom
+				$tab["adresse"][$num_resp]=lignes_adresse_postale($tab_resp_adr[$cpt], $mode);
 
-			// Les lignes d'adresse après le civilite/nom/prénom
-			$tab["adresse"][$num_resp]=lignes_adresse_postale($tab_resp_adr[$cpt], $mode);
+				// Fabriquer la ligne Civilite Nom Prénom
+				if($tab_resp_adr[$cpt]['civilite']!="") {
+					$tab["adresse"][$num_resp][1]=$tab_resp_adr[$cpt]['civilite']." ".$tab_resp_adr[$cpt]['nom']." ".$tab_resp_adr[$cpt]['prenom'];
+				}
+				else {
+					$tab["adresse"][$num_resp][1]=$tab_resp_adr[$cpt]['nom']." ".$tab_resp_adr[$cpt]['prenom'];
+				}
 
-			// Fabriquer la ligne Civilite Nom Prénom
-			if($tab_resp_adr[$cpt]['civilite']!="") {
-				$tab["adresse"][$num_resp][1]=$tab_resp_adr[$cpt]['civilite']." ".$tab_resp_adr[$cpt]['nom']." ".$tab_resp_adr[$cpt]['prenom'];
-			}
-			else {
-				$tab["adresse"][$num_resp][1]=$tab_resp_adr[$cpt]['nom']." ".$tab_resp_adr[$cpt]['prenom'];
-			}
+				// Le bloc complet des lignes adresse:
+				$tab["adresse"][$num_resp]["adresse"]="<b>".$tab["adresse"][$num_resp][1]."</b>\n".$tab["adresse"][$num_resp]["adresse"];
 
-			// Le bloc complet des lignes adresse:
-			$tab["adresse"][$num_resp]["adresse"]="<b>".$tab["adresse"][$num_resp][1]."</b>\n".$tab["adresse"][$num_resp]["adresse"];
+				if(isset($tab_resp_adr[$cpt]["pers_id"])) {
+					$tab["adresse"][$num_resp]["pers_id"]=$tab_resp_adr[$cpt]["pers_id"];
+				}
 
-			if(isset($tab_resp_adr[$cpt]["pers_id"])) {
-				$tab["adresse"][$num_resp]["pers_id"]=$tab_resp_adr[$cpt]["pers_id"];
-			}
+				if(isset($tab_resp_adr[$cpt]["resp_legal"])) {
+					$tab["adresse"][$num_resp]["resp_legal"]=$tab_resp_adr[$cpt]["resp_legal"];
+				}
 
-			if(isset($tab_resp_adr[$cpt]["resp_legal"])) {
-				$tab["adresse"][$num_resp]["resp_legal"]=$tab_resp_adr[$cpt]["resp_legal"];
-			}
-
-			if(isset($tab_resp_adr[$cpt]["mel"])) {
-				$tab["adresse"][$num_resp]["email"][]=$tab_resp_adr[$cpt]["mel"];
-			}
-			if(isset($tab_resp_adr[$cpt]["email"])) {
-				if((!isset($tab["adresse"][$num_resp]["email"]))||(!in_array($tab_resp_adr[$cpt]["email"] ,$tab["adresse"][$num_resp]["email"]))) {
-					$tab["adresse"][$num_resp]["email"][]=$tab_resp_adr[$cpt]["email"];
+				if(isset($tab_resp_adr[$cpt]["mel"])) {
+					$tab["adresse"][$num_resp]["email"][]=$tab_resp_adr[$cpt]["mel"];
+				}
+				if(isset($tab_resp_adr[$cpt]["email"])) {
+					if((!isset($tab["adresse"][$num_resp]["email"]))||(!in_array($tab_resp_adr[$cpt]["email"] ,$tab["adresse"][$num_resp]["email"]))) {
+						$tab["adresse"][$num_resp]["email"][]=$tab_resp_adr[$cpt]["email"];
+					}
 				}
 			}
 		}
