@@ -5849,7 +5849,6 @@ Bien cordialement.
 
 				}
 				else {
-					echo "<p>Tous les envois ont été effectués.</p>";
 					$sql="SELECT * FROM bull_mail WHERE login_sender='".$_SESSION['login']."' AND 
 											id_envoi='".$id_envoi."' AND 
 											envoi='succes' 
@@ -5858,11 +5857,47 @@ Bien cordialement.
 					//echo "$sql<br />";
 					$res=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($res)>0) {
+						echo "<p>Tous les envois possibles ont été effectués.</p>";
+
 						echo "<p>Envoi effectué avec succès des bulletins <br />";
 						while($lig=mysqli_fetch_object($res)) {
 							echo " de ".get_nom_prenom_eleve($lig->login_ele)." à destination de ".civ_nom_prenom_from_pers_id($lig->pers_id)." pour la ou les périodes ".$lig->periodes."<br />";
 						}
 						echo "</p>";
+
+						$sql="SELECT * FROM bull_mail WHERE login_sender='".$_SESSION['login']."' AND 
+												id_envoi='".$id_envoi."' AND 
+												envoi='echec' 
+											ORDER BY id_classe, nom_prenom_ele 
+											LIMIT 10;";
+						//echo "$sql<br />";
+						$res=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res)>0) {
+							echo "<p style='color:red'>Échec de ".mysqli_num_rows($res)." envois de bulletins <br />";
+							while($lig=mysqli_fetch_object($res)) {
+								echo " pour ".get_nom_prenom_eleve($lig->login_ele)." à destination de ".civ_nom_prenom_from_pers_id($lig->pers_id)." pour la ou les périodes ".$lig->periodes."<br />";
+							}
+							echo "</p>";
+						}
+					}
+					else {
+						$sql="SELECT * FROM bull_mail WHERE login_sender='".$_SESSION['login']."' AND 
+												id_envoi='".$id_envoi."' AND 
+												envoi='echec' 
+											ORDER BY id_classe, nom_prenom_ele 
+											LIMIT 10;";
+						//echo "$sql<br />";
+						$res=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res)>0) {
+							echo "<p style='color:red'>Échec de ".mysqli_num_rows($res)." envois de bulletins <br />";
+							while($lig=mysqli_fetch_object($res)) {
+								echo " pour ".get_nom_prenom_eleve($lig->login_ele)." à destination de ".civ_nom_prenom_from_pers_id($lig->pers_id)." pour la ou les périodes ".$lig->periodes."<br />";
+							}
+							echo "</p>";
+						}
+						else {
+							echo "<p>Aucun envoi n'a été effectué.</p>";
+						}
 					}
 				}
 			}
