@@ -353,7 +353,7 @@ else {
 <ul>
 	<li><a href='#eff_classes'>Effectifs des classes par périodes</a></li>
 	<li><a href='#eff_grp'>Effectifs des enseignements multi-classes <em>(regroupements)</em> par périodes</a></li>
-	<li><a href='#eff_grp_clas'>Effectifs des enseignements multi-classes <em>(regroupements)</em> par rapport aux effectifs des classes par périodes</a></li>
+	<li><a href='#eff_grp_clas'>Effectifs des enseignements sous-groupes et mono-classe par rapport aux effectifs des classes par périodes</a></li>
 	<li><a href='#eff_classes_sexes'>Effectifs des classes par sexes par périodes</a></li>
 	<li><a href='#eff_mef' title=\"Effectifs par MEF (Modules élémentaires de formation)\">Effectifs par MEF</a></li>
 	<li><a href='#eff_mef_rattachement' title=\"Effectifs par MEF rattachement (Modules élémentaires de formation)\">Effectifs par MEF rattachement</a></li>
@@ -549,6 +549,9 @@ else {
 			}
 			echo "<div style='clear:both;'>&nbsp;</div>\n";
 			echo "<p><br /></p>\n";
+		}
+		else {
+			echo "<p style='color:red; margin-top:1em; margin-bottom:2em;'>Aucun enseignement sous-groupe d'une classe n'est présent.</p>";
 		}
 	}
 
