@@ -1249,6 +1249,8 @@ Enseignement dispensé par ".$group[$i]['profs']['proflist_string']."\">\n";
 				//$ligne_si_desinscription_impossible.="<input type='hidden' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' />\n";
 				$ligne_si_desinscription_impossible.="<img src='../images/enabled.png' width='20' height='20' alt='Affecté dans le groupe' title='Affecté dans le groupe' />\n";
 
+				$ligne_si_desinscription_impossible.="<input type='hidden' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' />\n";
+
 				if(!test_before_eleve_grp_removal($login_ele, $id_groupe[$i], $num_periode)) {
 					$ligne_si_desinscription_impossible.="<img src='../images/icons/securite.png' width='16' height='16' alt='Bulletin ou carnet de notes non vide' title='Bulletin ou carnet de notes non vide' />\n";
 					$temoin_desinscription_impossible="y";
@@ -1262,8 +1264,13 @@ Enseignement dispensé par ".$group[$i]['profs']['proflist_string']."\">\n";
 		else {echo $ligne_si_desinscription_possible;}
 
 		echo "<td>\n";
-		if($nb_grp_ele>1) {echo "<span title=\"Si vous validez le formulaire, l'élève sera désinscrit de tous les groupes sauf de celui qui est coché.\">".$info_plusieurs_grp_ele."</span>";}
-		else {echo "&nbsp;";}
+		if($nb_grp_ele>1) {
+			echo "<span title=\"Si vous validez le formulaire, l'élève sera désinscrit de tous les groupes sauf de celui qui est coché.\">".$info_plusieurs_grp_ele."</span>";
+		}
+		else {
+			echo "<span title=\"L'élève est actuellement inscrit dans $nb_grp_ele groupe de la sélection.\">$nb_grp_ele</span>";
+		}
+		//else {echo "&nbsp;";}
 		echo "</td>\n";
 		echo "</tr>\n";
 		$cpt++;
@@ -1372,15 +1379,14 @@ Enseignement dispensé par ".$group[$i]['profs']['proflist_string']."\">\n";
 			total=0;
 			for (var ki=0;ki<$cpt;ki++) {
 				if(document.getElementById('grp_eleve_'+i+'_'+ki)) {
-					type_cible=document.getElementById('grp_eleve_'+indice_grp+'_'+ki).getAttribute('type');
+					type_cible=document.getElementById('grp_eleve_'+i+'_'+ki).getAttribute('type');
 					if(type_cible=='radio') {
 						if(document.getElementById('grp_eleve_'+i+'_'+ki).checked==true) {total++;}
 					}
-					/*
+
 					if(type_cible=='hidden') {
 						total++;
 					}
-					*/
 				}
 			}
 			document.getElementById('effectif_colonne_'+i).innerHTML=total;
