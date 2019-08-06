@@ -1198,6 +1198,12 @@ for($i=0;$i<count($id_classe);$i++) {
 						if($current_user['statut']=='responsable') {
 							$infos_supplementaires=affiche_infos_adresse_et_tel("", $current_user);
 						}
+						elseif($current_user['statut']=='eleve') {
+							$infos_supplementaires="<a href='../eleves/visu_eleve.php?ele_login=".$current_user['login']."' target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' /></a>";
+						}
+						else {
+							$infos_supplementaires="<img src='../images/disabled.png' class='icone20' />";
+						}
 						//get_info_responsable($login_resp)
 						//get_info_user($login_resp);
 						//GepiAccesGestElevesProfP
