@@ -400,7 +400,7 @@ echo " | <a href='".$_SERVER['PHP_SELF']."'>Extraire les engagements pour d'autr
 // Pouvoir envoyer un mail...
 
 $cpt=0;
-echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>
+echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' id='formulaire' target='_blank'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field()."
 		<table class='boireaus boireaus_alt sortable resizable'>
@@ -556,7 +556,10 @@ echo "
 			<label for='suppression_possible_non' id='texte_suppression_possible_non' style='font-weight:bold;'>Non </label><input type='radio' name='suppression_possible' id='suppression_possible_non' value='non' checked='checked' onchange=\"checkbox_change('suppression_possible_oui');checkbox_change('suppression_possible_non');\" />
 		</p>
 
-		<p><input type='submit' value='Valider' /></p>
+		<p>
+			<input type='submit' id='input_submit' value='Valider' />
+			<input type='button' value='Valider' id='input_button' style='display:none;' onclick=\"valider_form()\" />
+		</p>
 
 		</div>
 	</fieldset>
@@ -574,6 +577,31 @@ echo "
 				checkbox_change('login_user_'+k);
 			}
 		}
+	}
+
+	if(document.getElementById('input_button')) {
+		document.getElementById('input_button').style.display='';
+	}
+
+	if(document.getElementById('input_submit')) {
+		document.getElementById('input_submit').style.display='none';
+	}
+
+	function valider_form() {
+		if(document.getElementById('p_bandeau_template_tbs_msg')) {
+			document.getElementById('p_bandeau_template_tbs_msg').innerHTML='';
+		}
+
+		if(document.getElementById('action_export_csv')) {
+			if(document.getElementById('action_export_csv').checked==true) {
+				document.getElementById('formulaire').setAttribute('target', '_blank');
+			}
+			else {
+				document.getElementById('formulaire').setAttribute('target', '_self');
+			}
+		}
+
+		document.getElementById('formulaire').submit();
 	}
 </script>";
 
