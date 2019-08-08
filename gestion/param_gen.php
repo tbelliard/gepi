@@ -1063,6 +1063,9 @@ require_once("../lib/header.inc.php");
 	echo "<div style='float:right; width:10em; text-align:center' class='fieldset_opacite50'><a href='../init_xml2/import_communs_xml.php?ad_retour_imports_communs=../gestion/param_gen.php' \"onclick=\"return confirm_abandon (this, change, '$themessage')\">Importer depuis Siècle/Sconet</a></div>";
 ?>
 
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<h3 class='bold'>Informations générales</h3>
+
 	<p class="ligneCaps">
 		<label for='gepiSchoolRne' class="cellTab70">
 			Année scolaire&nbsp;:
@@ -1266,18 +1269,46 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		</span>
 	</p>
 
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Contacter l'administrateur (une fois connecté)</h3>
+
 	<p class="ligneCaps">
-		<label for='gepiAdminAdressPageLogin' style='cursor: pointer;display: table-cell; width: 70%; vertical-align: middle;'>
-			Faire apparaitre le lien [Contacter l'administrateur] sur la page de login :
+		<label for='gepiAdminAdressFormHidden' style='cursor: pointer;display: table-cell; width: 70%; vertical-align: middle;' title="Une fois connecté, un utilisateur (personnel, élève, responsable) dispose dans la barre d'entête, d'un lien intitulé *Contacter l'administrateur*.
+Dans ce formulaire, l'adresse mail de l'administrateur n'apparait pas par défaut.
+Vous avez la possibilité de donner l'accès à cette adresse.">
+			Faire apparaitre l'adresse de l'administrateur dans le formulaire [Contacter l'administrateur] :
 		</label>
 		<span class="cellTab plusPetit">
-			<input type="checkbox" id='gepiAdminAdressPageLogin' name="gepiAdminAdressPageLogin" value="y"
+			<input type="checkbox" name="gepiAdminAdressFormHidden" id="gepiAdminAdressFormHidden" value="n"
 	<?php
-		if(getSettingValue("gepiAdminAdressPageLogin")!='n'){echo " checked='checked'";}
+		if(getSettingValue("gepiAdminAdressFormHidden")!='y'){echo " checked='checked'";}
 	?>
 	onchange='changement()' />
 		</span>
 	</p>
+
+	<p class="ligneCaps">
+		<label for='contact_admin_mailto' class="cellTab70" title="Le formulaire *Contacter l'administrateur* proposé en barre d'entête une fois connecté peut-être remplacé par un lien mailto.
+Si votre serveur ne permet pas l'envoi de mail, c'est la seule solution viable.
+Inconvénient pour l'utilisateur, il doit disposer d'un client mail configuré sur la machine qu'il utilise.
+S'il est sur sa propre machine, le client mail sera probablement configuré avec son adresse mail, les serveurs smtp et pop ou imap,...
+S'il est sur une autre machine, sur un réseau d'établissement, dans un cyber-café ou sur la machine d'un ami, le client mail ne sera probablement pas configuré et il devra copier/coller l'adresse mail administrateur dans un webmail (faisable, mais pas très ergonomique).
+Bref, si votre serveur permet l'envoi de mail, il vaut mieux ne pas cocher cette case.">
+			Remplacer le formulaire [Contacter l'administrateur] par un lien mailto :
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="checkbox" id='contact_admin_mailto' name="contact_admin_mailto" value="y"
+	<?php
+		if(getSettingValue("contact_admin_mailto")=='y'){echo " checked='checked'";}
+	?>
+	onchange='changement()' />
+		</span>
+	</p>
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Page de login et formats de login, mots de passe</h3>
 
 	<p class="ligneCaps">
 			Alerter l'utilisateur en page de login à propos du verrouillage Majuscule au clavier
@@ -1299,65 +1330,124 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 	onchange='changement()' /><label for='login_mode_alerte_capslock_3'>aucune alerte <em>(test désactivé)</em></label>
 		</span>
 	</p>
-	
-	<p class="ligneCaps">
-		<label for='gepiAdminAdressFormHidden' style='cursor: pointer;display: table-cell; width: 70%; vertical-align: middle;'>
-			Faire apparaitre l'adresse de l'administrateur dans le formulaire [Contacter l'administrateur] :
-		</label>
-		<span class="cellTab plusPetit">
-			<input type="checkbox" name="gepiAdminAdressFormHidden" id="gepiAdminAdressFormHidden" value="n"
-	<?php
-		if(getSettingValue("gepiAdminAdressFormHidden")!='y'){echo " checked='checked'";}
-	?>
-	onchange='changement()' />
-		</span>
-	</p>
+
 
 	<p class="ligneCaps">
-		<label for='gepiPrefixeSujetMail' class="cellTab70">
-			Ajouter un préfixe au sujet des mails envoyés par Gepi :<br />
-			<span class="plusPetit">Cela peut être utile si vous recevez des mails de plusieurs Gepi.<br />
-			Notez que le préfixe 'GEPI :' est de toutes façons ajouté.</span>
+		<label for='mode_generation_login' class="cellTab70">
+			<a name='format_login_pers'></a>
+			Mode de génération automatique des logins personnels&nbsp;:
 		</label>
 		<span class="cellTab plusPetit">
-			<input type="text" id='gepiPrefixeSujetMail' name="gepiPrefixeSujetMail" value="<?php echo getSettingValue('gepiPrefixeSujetMail');?>" onchange='changement()' />
-		</span>
-	</p>
-
-	<p class="ligneCaps">
-		<label for='contact_admin_mailto' class="cellTab70">
-			Remplacer le formulaire [Contacter l'administrateur] par un lien mailto :
-		</label>
-		<span class="cellTab plusPetit">
-			<input type="checkbox" id='contact_admin_mailto' name="contact_admin_mailto" value="y"
-	<?php
-		if(getSettingValue("contact_admin_mailto")=='y'){echo " checked='checked'";}
-	?>
-	onchange='changement()' />
-		</span>
-	</p>
-
-	<p class="ligneCaps">
-		<label for='envoi_mail_liste' class="cellTab70">
-			Permettre d'envoyer des mails à une liste d'élèves :
-			<br />
-			(<em style='font-size: small'>sous réserve que les mails soient remplis</em>)
-			<br />
-			<span style='font-size: small' title='Cependant, en mettant tous les destinataires en BCC (Blind Carbon Copy, soit Copie Cachée), vous pouvez conserver la confidentialité des destinataires (il faut toutefois la plupart du temps au moins un destinataire non caché pour que l&apos;envoi soit accepté).'>
-				Nous attirons votre attention sur le fait qu'envoyer un mail à une liste d'utilisateurs via un lien mailto 
-				permet à chaque élève de connaitre les email des autres élèves sans que l'autorisation de divulgation 
-				ou non paramétrée dans <strong>Gérer mon compte</strong> soit prise en compte.
-			</span>
-		</label>
-		<span class="cellTab plusPetit">
-			<input type="checkbox" id='envoi_mail_liste' name="envoi_mail_liste" value="y"
 		<?php
-			if(getSettingValue("envoi_mail_liste")=='y'){echo " checked='checked'";}
+			$default_login_gen_type=getSettingValue('mode_generation_login');
+			if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnp";}
+			echo champ_input_choix_format_login('mode_generation_login', $default_login_gen_type);
 		?>
-		onchange='changement()' />
 		</span>
 	</p>
-		
+
+	<p class="ligneCaps">
+		<label for='mode_generation_login_eleve' class="cellTab70">
+			<a name='format_login_ele'></a>
+			Mode de génération automatique des logins élèves&nbsp;:
+		</label>
+		<span class="cellTab plusPetit">
+			<?php
+				$default_login_gen_type=getSettingValue('mode_generation_login_eleve');
+				if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnnn_p";}
+				//echo champs_select_choix_format_login('mode_generation_login_eleve', $mode_generation_login_eleve);
+				echo champ_input_choix_format_login('mode_generation_login_eleve', $default_login_gen_type);
+			?>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<label for='mode_generation_login_responsable' class="cellTab70">
+			<a name='format_login_resp'></a>
+			Mode de génération automatique des logins responsables&nbsp;:
+		</label>
+		<span class="cellTab plusPetit">
+			<?php
+				$default_login_gen_type=getSettingValue('mode_generation_login_responsable');
+				if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnnnnnnnnnnnnnn";}
+				echo champ_input_choix_format_login('mode_generation_login_responsable', $default_login_gen_type);
+			?>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<a name='filtrage_strict_nom_prenom_pour_login'></a>
+		Filtrer strictement des noms et prénoms pour la génération de logins&nbsp;:<br />
+		(<em>on ne garde que les caractères alphabétiques (on supprime les espaces, tirets,...)</em>)
+		<span class="cellTab plusPetit">
+			<span class="cellTab">
+				<input type="radio" name="FiltrageStrictAlphaNomPrenomPourLogin" id="FiltrageStrictAlphaNomPrenomPourLogin_y" value="y" <?php if(getSettingAOui("FiltrageStrictAlphaNomPrenomPourLogin")){echo "checked='checked'";} ?> onchange='changement()' />
+				<label for='FiltrageStrictAlphaNomPrenomPourLogin_y' style='cursor: pointer;'>Oui</label>
+				<br />
+				<input type="radio" name="FiltrageStrictAlphaNomPrenomPourLogin" id="FiltrageStrictAlphaNomPrenomPourLogin_n" value="n" <?php if(!getSettingAOui("FiltrageStrictAlphaNomPrenomPourLogin")){echo "checked='checked'";} ?> onchange='changement()' />
+				<label for='FiltrageStrictAlphaNomPrenomPourLogin_n' style='cursor: pointer;'>Non</label>
+			</span>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			Mode de génération des mots de passe :
+			<br />
+			(<em style='font-size:small;'>
+				Jeu de caractères à utiliser en plus des caractères numériques
+			</em>)
+		</span>
+		<span class="cellTab plusPetit">
+			<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_y" value="y" <?php if((getSettingValue("mode_generation_pwd_majmin")=="y")||(getSettingValue("mode_generation_pwd_majmin")=="")) {echo " checked='checked'";} ?> onchange='changement()' />
+			<label for='mode_generation_pwd_majmin_y' style='cursor: pointer;'>
+				Majuscules et minuscules
+			</label>
+			<br />
+			<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_n" value="n" <?php if(getSettingValue("mode_generation_pwd_majmin")=="n"){echo " checked='checked'";} ?> onchange='changement()' />
+			<label for='mode_generation_pwd_majmin_n' style='cursor: pointer;'>
+				Minuscules seulement
+			</label>
+			<br />
+
+			<span style="display: table-cell; vertical-align: middle;">
+				<input type="checkbox" name="mode_generation_pwd_excl" id="mode_generation_pwd_excl" value="y" <?php if(getSettingValue("mode_generation_pwd_excl")=="y") {echo " checked='checked'";} ?> onchange='changement()' />
+				<label for='mode_generation_pwd_excl' style='cursor: pointer;'>
+					Exclure les caractères prêtant à confusion (<em>i, 1, l, I, 0, O, o</em>)
+				</label>
+				<br />
+			</span>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<label for='longmin_pwd' class="cellTab70">
+			Longueur minimale du mot de passe :
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="text" name="longmin_pwd" id="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,50)" />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<label for='gepiAdminAdressPageLogin' style='cursor: pointer;display: table-cell; width: 70%; vertical-align: middle;' title="Avant la connexion, en page de login, il est possible de proposer un lien mailto pour contacter l'administrateur.
+Ce lien permet par exemple à la personne qui rencontre un souci pour se connecter, de contacter l'administrateur.
+Inconvénient : Si c'est un importun, il disposera de l'adresse mail de l'administrateur.">
+			Faire apparaitre le lien [Contacter l'administrateur] sur la page de login :
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="checkbox" id='gepiAdminAdressPageLogin' name="gepiAdminAdressPageLogin" value="y"
+	<?php
+		if(getSettingValue("gepiAdminAdressPageLogin")!='n'){echo " checked='checked'";}
+	?>
+	onchange='changement()' />
+		</span>
+	</p>
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Session</h3>
+
 	<p class="ligneCaps">
 		<label for='sessionMaxLength' class="cellTab70">
 			<a name='sessionMaxLength'></a>Durée maximum d'inactivité : <br />
@@ -1392,24 +1482,9 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 			</span>
 		</span>
 	</p>
-		
-	<p class="ligneCaps">
-		<label for='longmin_pwd' class="cellTab70">
-			Longueur minimale du mot de passe :
-		</label>
-		<span class="cellTab plusPetit">
-			<input type="text" name="longmin_pwd" id="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,50)" />
-		</span>
-	</p>
 
-	<p class="ligneCaps">
-		<label for='langue_vivante_regionale' class="cellTab70">
-			L'établissement propose l'enseignement de langue(s) vivante(s) régionale(s)&nbsp;:
-		</label>
-		<span class="cellTab plusPetit">
-			<input type="checkbox" name="langue_vivante_regionale" id="langue_vivante_regionale" value="y" <?php if(getSettingAOui("langue_vivante_regionale")) {echo "checked ";}?>" onchange='changement()' />
-		</span>
-	</p>
+
+
 
 	<?php
 		// insert into setting set name='use_custom_denominations', value='yes';
@@ -1421,6 +1496,10 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 	?>
 
 	<br />
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Personnaliser des dénominations</h3>
 
 	<p class="ligneCaps">Personnaliser certains libellés (<em>étudiants au lieu d'élèves, par ex.</em>).<br />
 	(<em>cette fonctionnalité est en cours d'implémentation, pas encore étendue à toutes les pages - ne pas hésiter à signaler les manques criants sur la liste 'users'</em>).</p>
@@ -1527,94 +1606,64 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		</span>
 	</p>
 
-	<p class="ligneCaps">
-		<label for='mode_generation_login' class="cellTab70">
-			<a name='format_login_pers'></a>
-			Mode de génération automatique des logins personnels&nbsp;:
-		</label>
-		<span class="cellTab plusPetit">
-		<?php
-			$default_login_gen_type=getSettingValue('mode_generation_login');
-			if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnp";}
-			echo champ_input_choix_format_login('mode_generation_login', $default_login_gen_type);
-		?>
-		</span>
-	</p>
 
 	<p class="ligneCaps">
-		<label for='mode_generation_login_eleve' class="cellTab70">
-			<a name='format_login_ele'></a>
-			Mode de génération automatique des logins élèves&nbsp;:
-		</label>
-		<span class="cellTab plusPetit">
-			<?php
-				$default_login_gen_type=getSettingValue('mode_generation_login_eleve');
-				if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnnn_p";}
-				//echo champs_select_choix_format_login('mode_generation_login_eleve', $mode_generation_login_eleve);
-				echo champ_input_choix_format_login('mode_generation_login_eleve', $default_login_gen_type);
-			?>
+		<span class="cellTab70">
+			<a name='groupe_de_groupes'></a>
+			Terme (<em>au singulier</em>) à employer pour désigner un "ensemble de groupes" sur lequel vous pouvez déléguer à certains professeurs la modification des listes d'élèves.
 		</span>
-	</p>
-
-	<p class="ligneCaps">
-		<label for='mode_generation_login_responsable' class="cellTab70">
-			<a name='format_login_resp'></a>
-			Mode de génération automatique des logins responsables&nbsp;:
-		</label>
 		<span class="cellTab plusPetit">
-			<?php
-				$default_login_gen_type=getSettingValue('mode_generation_login_responsable');
-				if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnnnnnnnnnnnnnn";}
-				echo champ_input_choix_format_login('mode_generation_login_responsable', $default_login_gen_type);
-			?>
-		</span>
-	</p>
-
-	<p class="ligneCaps">
-		<a name='filtrage_strict_nom_prenom_pour_login'></a>
-		Filtrer strictement des noms et prénoms pour la génération de logins&nbsp;:<br />
-		(<em>on ne garde que les caractères alphabétiques (on supprime les espaces, tirets,...)</em>)
-		<span class="cellTab plusPetit">
-			<span class="cellTab">
-				<input type="radio" name="FiltrageStrictAlphaNomPrenomPourLogin" id="FiltrageStrictAlphaNomPrenomPourLogin_y" value="y" <?php if(getSettingAOui("FiltrageStrictAlphaNomPrenomPourLogin")){echo "checked='checked'";} ?> onchange='changement()' />
-				<label for='FiltrageStrictAlphaNomPrenomPourLogin_y' style='cursor: pointer;'>Oui</label>
-				<br />
-				<input type="radio" name="FiltrageStrictAlphaNomPrenomPourLogin" id="FiltrageStrictAlphaNomPrenomPourLogin_n" value="n" <?php if(!getSettingAOui("FiltrageStrictAlphaNomPrenomPourLogin")){echo "checked='checked'";} ?> onchange='changement()' />
-				<label for='FiltrageStrictAlphaNomPrenomPourLogin_n' style='cursor: pointer;'>Non</label>
-			</span>
+		<input type="text" name="denom_groupe_de_groupes" value="<?php if(getSettingValue("denom_groupe_de_groupes")!="") {echo getSettingValue("denom_groupe_de_groupes");} else {echo "ensemble de groupes";} ?>" onchange='changement()' /><br />
 		</span>
 	</p>
 
 	<p class="ligneCaps">
 		<span class="cellTab70">
-			Mode de génération des mots de passe :
-			<br />
-			(<em style='font-size:small;'>
-				Jeu de caractères à utiliser en plus des caractères numériques
-			</em>)
+			<a name='groupes_de_groupes'></a>
+			Terme (<em>au pluriel</em>) à employer pour désigner les "ensembles de groupes" sur lesquels vous pouvez déléguer à des professeurs la modification des listes d'élèves.
 		</span>
 		<span class="cellTab plusPetit">
-			<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_y" value="y" <?php if((getSettingValue("mode_generation_pwd_majmin")=="y")||(getSettingValue("mode_generation_pwd_majmin")=="")) {echo " checked='checked'";} ?> onchange='changement()' />
-			<label for='mode_generation_pwd_majmin_y' style='cursor: pointer;'>
-				Majuscules et minuscules
-			</label>
-			<br />
-			<input type="radio" name="mode_generation_pwd_majmin" id="mode_generation_pwd_majmin_n" value="n" <?php if(getSettingValue("mode_generation_pwd_majmin")=="n"){echo " checked='checked'";} ?> onchange='changement()' />
-			<label for='mode_generation_pwd_majmin_n' style='cursor: pointer;'>
-				Minuscules seulement
-			</label>
-			<br />
-
-			<span style="display: table-cell; vertical-align: middle;">
-				<input type="checkbox" name="mode_generation_pwd_excl" id="mode_generation_pwd_excl" value="y" <?php if(getSettingValue("mode_generation_pwd_excl")=="y") {echo " checked='checked'";} ?> onchange='changement()' />
-				<label for='mode_generation_pwd_excl' style='cursor: pointer;'>
-					Exclure les caractères prêtant à confusion (<em>i, 1, l, I, 0, O, o</em>)
-				</label>
-				<br />
-			</span>
+		<input type="text" name="denom_groupes_de_groupes" value="<?php if(getSettingValue("denom_groupes_de_groupes")!="") {echo getSettingValue("denom_groupes_de_groupes");} else {echo "ensembles de groupes";} ?>" onchange='changement()' /><br />
 		</span>
 	</p>
-	
+
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Mails</h3>
+
+	<p class="ligneCaps">
+		<label for='gepiPrefixeSujetMail' class="cellTab70">
+			Ajouter un préfixe au sujet des mails envoyés par Gepi :<br />
+			<span class="plusPetit">Cela peut être utile si vous recevez des mails de plusieurs Gepi.<br />
+			Notez que le préfixe 'GEPI :' est de toutes façons ajouté.</span>
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="text" id='gepiPrefixeSujetMail' name="gepiPrefixeSujetMail" value="<?php echo getSettingValue('gepiPrefixeSujetMail');?>" onchange='changement()' />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<label for='envoi_mail_liste' class="cellTab70">
+			Permettre d'envoyer des mails à une liste d'élèves :
+			<br />
+			(<em style='font-size: small'>sous réserve que les mails soient remplis</em>)
+			<br />
+			<span style='font-size: small' title='Cependant, en mettant tous les destinataires en BCC (Blind Carbon Copy, soit Copie Cachée), vous pouvez conserver la confidentialité des destinataires (il faut toutefois la plupart du temps au moins un destinataire non caché pour que l&apos;envoi soit accepté).'>
+				Nous attirons votre attention sur le fait qu'envoyer un mail à une liste d'utilisateurs via un lien mailto 
+				permet à chaque élève de connaitre les email des autres élèves sans que l'autorisation de divulgation 
+				ou non paramétrée dans <strong>Gérer mon compte</strong> soit prise en compte.
+			</span>
+		</label>
+		<span class="cellTab plusPetit">
+			<input type="checkbox" id='envoi_mail_liste' name="envoi_mail_liste" value="y"
+		<?php
+			if(getSettingValue("envoi_mail_liste")=='y'){echo " checked='checked'";}
+		?>
+		onchange='changement()' />
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<span class="cellTab70">
 			<a name='mode_email_resp'></a>
@@ -1704,25 +1753,9 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		</span>
 	</p>
 
-	<p class="ligneCaps">
-		<span class="cellTab70">
-			<a name='groupe_de_groupes'></a>
-			Terme (<em>au singulier</em>) à employer pour désigner un "ensemble de groupes" sur lequel vous pouvez déléguer à certains professeurs la modification des listes d'élèves.
-		</span>
-		<span class="cellTab plusPetit">
-		<input type="text" name="denom_groupe_de_groupes" value="<?php if(getSettingValue("denom_groupe_de_groupes")!="") {echo getSettingValue("denom_groupe_de_groupes");} else {echo "ensemble de groupes";} ?>" onchange='changement()' /><br />
-		</span>
-	</p>
-
-	<p class="ligneCaps">
-		<span class="cellTab70">
-			<a name='groupes_de_groupes'></a>
-			Terme (<em>au pluriel</em>) à employer pour désigner les "ensembles de groupes" sur lesquels vous pouvez déléguer à des professeurs la modification des listes d'élèves.
-		</span>
-		<span class="cellTab plusPetit">
-		<input type="text" name="denom_groupes_de_groupes" value="<?php if(getSettingValue("denom_groupes_de_groupes")!="") {echo getSettingValue("denom_groupes_de_groupes");} else {echo "ensembles de groupes";} ?>" onchange='changement()' /><br />
-		</span>
-	</p>
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Adresses postales</h3>
 
 	<p class="ligneCaps">
 		<a name='FormatAdressePostaleCheck'></a>
@@ -1738,6 +1771,10 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 			</span>
 		</span>
 	</p>
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Bulletins</h3>
 
 	<p class="ligneCaps">
 		<span class="cellTab70">
@@ -2011,7 +2048,40 @@ if($avis_conseil_classe_a_la_mano=="") {$avis_conseil_classe_a_la_mano="n";}
 	</p>
 
 	<p class="ligneCaps">
-		<span class="cellTab70">			
+		<span class="cellTab70">
+			<a name='ancre_exp_imp_chgt_etab'></a>
+			<label for='exp_imp_chgt_etab' style='cursor: pointer'>
+				Permettre l'export/import des bulletins d'élèves au format CSV&nbsp;:
+			</label>
+			<br />
+			<span style='font-variant: normal; font-style: italic; font-size: small;'>
+				Le fichier peut être généré pour un élève qui quitte l'établissement en cours d'année.<br />
+				L'établissement qui reçoit l'élève peut utiliser ce fichier pour importer les bulletins.
+			</span>
+		</span>
+		<span class="cellTab plusPetit">
+<?php
+$exp_imp_chgt_etab=getSettingValue("exp_imp_chgt_etab");
+if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
+?>
+			<input type='checkbox' 
+				   name='exp_imp_chgt_etab' 
+				   id='exp_imp_chgt_etab' 
+				   value='yes'
+				   <?php if($exp_imp_chgt_etab=='yes') {echo " checked='checked'";} ?>
+				   onchange='changement()' />
+		</span>
+	</p>
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Champs optionnels</h3>
+
+	<div title="Certains champs présents dans Siècle/Sconet peuvent être proposés dans Gepi, mais ils ne sont pas toujours utiles/pertinents selon le cycle des élèves.
+En collège, le numéro de téléphone professionnel des élèves est par exemple assez peu utile.">
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
 			<a name='ancre_ele_lieu_naissance'></a>
 			<label for='ele_lieu_naissance' style='cursor: pointer'>
 				Faire apparaitre les lieux de naissance des élèves&nbsp;:
@@ -2043,7 +2113,7 @@ if($ele_lieu_naissance=="") {$ele_lieu_naissance="no";}
 
 
 	<p class="ligneCaps">
-		<span class="cellTab70">			
+		<span class="cellTab70">
 			<a name='ancre_ele_tel_pers'></a>
 			<label for='ele_tel_pers' style='cursor: pointer'>
 				Faire apparaitre le numéro de téléphone personnel des élèves&nbsp;:
@@ -2104,32 +2174,21 @@ if($ele_tel_prof=="") {$ele_tel_prof="no";}
 				   onchange='changement()' />
 		</span>
 	</p>
+	</div>
+
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<hr style='width:200px;' />
+	<h3 class='bold'>Divers</h3>
 
 	<p class="ligneCaps">
-		<span class="cellTab70">			
-			<a name='ancre_exp_imp_chgt_etab'></a>
-			<label for='exp_imp_chgt_etab' style='cursor: pointer'>
-				Permettre l'export/import des bulletins d'élèves au format CSV&nbsp;:
-			</label>
-			<br />
-			<span style='font-variant: normal; font-style: italic; font-size: small;'>
-				Le fichier peut être généré pour un élève qui quitte l'établissement en cours d'année.<br />
-				L'établissement qui reçoit l'élève peut utiliser ce fichier pour importer les bulletins.
-			</span>
-		</span>
+		<label for='langue_vivante_regionale' class="cellTab70">
+			L'établissement propose l'enseignement de langue(s) vivante(s) régionale(s)&nbsp;:
+		</label>
 		<span class="cellTab plusPetit">
-<?php
-$exp_imp_chgt_etab=getSettingValue("exp_imp_chgt_etab");
-if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
-?>
-			<input type='checkbox' 
-				   name='exp_imp_chgt_etab' 
-				   id='exp_imp_chgt_etab' 
-				   value='yes'
-				   <?php if($exp_imp_chgt_etab=='yes') {echo " checked='checked'";} ?>
-				   onchange='changement()' />
+			<input type="checkbox" name="langue_vivante_regionale" id="langue_vivante_regionale" value="y" <?php if(getSettingAOui("langue_vivante_regionale")) {echo "checked ";}?>" onchange='changement()' />
 		</span>
 	</p>
+
 
 	<div style="display: table-row;">
 		<div class="cellTab70">
