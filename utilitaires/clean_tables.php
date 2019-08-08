@@ -1645,6 +1645,43 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 			}
 			else {$temoin_aberrations_groupes++;}
 		}
+
+		// 20190808
+		$texte_info_action='';
+		$tab_grp=array();
+		$sql="select id_groupe from j_groupes_classes group by id_groupe having count(id_classe)>1;";
+		$res_grp=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_grp)>0) {
+			while($lig_grp=mysqli_fetch_object($res_grp)) {
+				$sql="select id_classe from j_groupes_classes WHERE id_groupe='".$lig_grp->id_groupe."';";
+				//echo "$sql<br />";
+				$res_clas=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_clas)>0) {
+					while($lig_clas=mysqli_fetch_object($res_clas)) {
+						$sql="select num_periode from periodes WHERE id_classe='".$lig_clas->id_classe."' ORDER BY num_periode DESC LIMIT 1;";
+						//echo "$sql<br />";
+						$res_per=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res_per)>0) {
+							while($lig_per=mysqli_fetch_object($res_per)) {
+								$tab_grp[$lig_grp->id_groupe][$lig_per->num_periode][]=$lig_clas->id_classe;
+							}
+						}
+					}
+				}
+				if(count($tab_grp[$lig_grp->id_groupe])>1) {
+					$texte_info_action.="<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Le groupe <a href='../groupes/edit_group.php?id_groupe=".$lig_grp->id_groupe."' target='_blank'>".get_info_grp($lig_grp->id_groupe)."</a> est associé à des classes qui n'ont pas le même nombre de périodes.<br />
+					Cela ne devrait pas arriver.<br />
+					Il faut scinder ce groupe pour avoir des groupes associés un seul nombre de périodes.<br />
+					Vous devriez sauvegarder la base, imprimer les notes et bulletins associés aux classes du groupe auparavant pour ne pas perdre de données.</p>";
+				}
+			}
+
+			if($texte_info_action!='') {
+				echo $texte_info_action;
+				update_infos_action_nettoyage($id_info, $texte_info_action);
+			}
+		}
+
 	}
 
 	$texte_info_action="<h2>Nettoyage des erreurs d'appartenance à des groupes</h2>\n";
