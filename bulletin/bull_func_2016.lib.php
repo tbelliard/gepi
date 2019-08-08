@@ -1780,12 +1780,17 @@ echo "</pre>";
 										if ($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve]=="") {
 											fich_debug_bull("\$tab_bull['note'][$m][$i]=".$tab_bull['note'][$m][$i]."\n");
 											fich_debug_bull("\$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]=".$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]."\n");
-											// 20151201: METTRE UN SEUIL POUR L'EVOLUTION DE LA MOYENNE
-											if($tab_bull['note'][$m][$i]>=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]+$param_bull2016["bull2016_evolution_moyenne_periode_precedente_seuil"]) {
-												$fleche_evolution="+";
-											}
-											elseif($tab_bull['note'][$m][$i]<=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]-$param_bull2016["bull2016_evolution_moyenne_periode_precedente_seuil"]) {
-												$fleche_evolution="-";
+
+											if((is_numeric($tab_bull['note'][$m][$i]))&&(is_numeric($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]))) {
+												if($tab_bull['note'][$m][$i]>=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]+$param_bull2016["bull2016_evolution_moyenne_periode_precedente_seuil"]) {
+													$fleche_evolution="+";
+												}
+												elseif($tab_bull['note'][$m][$i]<=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]-$param_bull2016["bull2016_evolution_moyenne_periode_precedente_seuil"]) {
+													$fleche_evolution="-";
+												}
+												else {
+													$fleche_evolution="";
+												}
 											}
 											else {
 												$fleche_evolution="";
