@@ -5163,7 +5163,9 @@ Bien cordialement.
 			}
 		}
 		else {
-			$sql="SELECT col2 AS login FROM tempo2 WHERE col1='$id_classe' ORDER BY col2 LIMIT $arch_bull_eff_tranche;";
+			//$sql="SELECT col2 AS login FROM tempo2 WHERE col1='$id_classe' ORDER BY col2 LIMIT $arch_bull_eff_tranche;";
+			$sql="SELECT col2 AS login FROM tempo2 WHERE col1='$id_classe' ORDER BY col2;";
+			//echo "$sql<br />";
 			$res_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_ele_classe)>0) {
 				echo "Classe de $classe en partie traitée (<em>il reste ".mysqli_num_rows($res_ele_classe)." élève(s)</em>).<br />";
