@@ -3028,6 +3028,9 @@ fclose($f);
 							$info_nom_matiere="AID";
 						}
 
+						// 20190808
+						//echo "\$info_nom_matiere=$info_nom_matiere<br />";
+
 						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
 						if((isset($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]))&&($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]==1)) {
 							// Encadrement
@@ -3184,6 +3187,9 @@ fclose($f);
 								}
 								else {
 									$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note'], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+									// 20190808
+									//echo "\$valeur = present_nombre(\$tab_bull['eleve'][$i]['aid_b'][$m]['aid_note'], \$tab_modele_pdf[\"arrondie_choix\"][$classe_id], \$tab_modele_pdf[\"nb_chiffre_virgule\"][$classe_id], \$tab_modele_pdf[\"chiffre_avec_zero\"][$classe_id]) = present_nombre(".$tab_bull['eleve'][$i]['aid_b'][$m]['aid_note'].", ".$tab_modele_pdf["arrondie_choix"][$classe_id].", ".$tab_modele_pdf["nb_chiffre_virgule"][$classe_id].", ".$tab_modele_pdf["chiffre_avec_zero"][$classe_id].") = $valeur<br />";
+
 								}
 								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								$valeur = "";
@@ -3969,6 +3975,9 @@ fclose($f);
 						}
 					}
 
+					// 20190808
+					//echo "\$info_nom_matiere=$info_nom_matiere<br />";
+
 					// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
 					if((isset($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]))&&($tab_modele_pdf["cell_ajustee_texte_matiere"][$classe_id]==1)) {
 						// Encadrement
@@ -4210,6 +4219,10 @@ fclose($f);
 								else {
 									$valeur = present_nombre($tab_bull['note'][$m][$i], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 
+									// 20190808
+									//echo "\$valeur = present_nombre(\$tab_bull['note'][$m][$i], \$tab_modele_pdf[\"arrondie_choix\"][$classe_id], \$tab_modele_pdf[\"nb_chiffre_virgule\"][$classe_id], \$tab_modele_pdf[\"chiffre_avec_zero\"][$classe_id]) = present_nombre(".$tab_bull['note'][$m][$i].", ".$tab_modele_pdf["arrondie_choix"][$classe_id].", ".$tab_modele_pdf["nb_chiffre_virgule"][$classe_id].", ".$tab_modele_pdf["chiffre_avec_zero"][$classe_id].") = $valeur<br />";
+
+
 									//if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
 									if (($tab_modele_pdf["evolution_moyenne_periode_precedente"][$classe_id]=='y')&&(isset($tab_bull['login_prec']))) {
 										//$fleche_evolution="";
@@ -4238,19 +4251,22 @@ fclose($f);
 														if ($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve]=="") {
 															//echo "\$tab_bull['note'][$m][$i]=".$tab_bull['note'][$m][$i]."<br />\n";
 															//echo "\$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]=".$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]."<br />\n";
-															// 20151201: METTRE UN SEUIL POUR L'EVOLUTION DE LA MOYENNE
-															if($tab_bull['note'][$m][$i]>=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]+$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
-																$fleche_evolution="+";
-															}
-															elseif($tab_bull['note'][$m][$i]<=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]-$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
-																$fleche_evolution="-";
+
+															if((is_numeric($tab_bull['note'][$m][$i]))&&(is_numeric($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]))) {
+																if($tab_bull['note'][$m][$i]>=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]+$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
+																	$fleche_evolution="+";
+																}
+																elseif($tab_bull['note'][$m][$i]<=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]-$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
+																	$fleche_evolution="-";
+																}
+																else {
+																	$fleche_evolution="";
+																}
 															}
 															else {
 																$fleche_evolution="";
 															}
 															//echo "\$fleche_evolution=".$fleche_evolution."<br />\n";
-
-															//$valeur = present_nombre($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 														}
 
 													}
@@ -4281,6 +4297,10 @@ fclose($f);
 										}
 										else {
 											$valeur = present_nombre($tab_bull['moy_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+
+											// 20190808
+											//echo "\$valeur = present_nombre(\$tab_bull['moy_classe_grp'][$m], \$tab_modele_pdf[\"arrondie_choix\"][$classe_id], \$tab_modele_pdf[\"nb_chiffre_virgule\"][$classe_id], \$tab_modele_pdf[\"chiffre_avec_zero\"][$classe_id]) = present_nombre(".$tab_bull['moy_classe_grp'][$m].", ".$tab_modele_pdf["arrondie_choix"][$classe_id].", ".$tab_modele_pdf["nb_chiffre_virgule"][$classe_id].", ".$tab_modele_pdf["chiffre_avec_zero"][$classe_id].") = $valeur<br />";
+
 										}
 										$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'cla.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									}
@@ -4290,6 +4310,9 @@ fclose($f);
 											$valeur = "-";
 										} else {
 											$valeur = present_nombre($tab_bull['moy_min_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+
+											// 20190808
+											//echo "\$valeur = present_nombre(\$tab_bull['moy_min_classe_grp'][$m], \$tab_modele_pdf[\"arrondie_choix\"][$classe_id], \$tab_modele_pdf[\"nb_chiffre_virgule\"][$classe_id], \$tab_modele_pdf[\"chiffre_avec_zero\"][$classe_id]) = present_nombre(".$tab_bull['moy_min_classe_grp'][$m].", ".$tab_modele_pdf["arrondie_choix"][$classe_id].", ".$tab_modele_pdf["nb_chiffre_virgule"][$classe_id].", ".$tab_modele_pdf["chiffre_avec_zero"][$classe_id].") = $valeur<br />";
 										}
 										$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'min.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									}
@@ -4299,6 +4322,9 @@ fclose($f);
 											$valeur = "-";
 										} else {
 											$valeur = present_nombre($tab_bull['moy_max_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+
+											// 20190808
+											//echo "\$valeur = present_nombre(\$tab_bull['moy_max_classe_grp'][$m], \$tab_modele_pdf[\"arrondie_choix\"][$classe_id], \$tab_modele_pdf[\"nb_chiffre_virgule\"][$classe_id], \$tab_modele_pdf[\"chiffre_avec_zero\"][$classe_id]) = present_nombre(".$tab_bull['moy_max_classe_grp'][$m].", ".$tab_modele_pdf["arrondie_choix"][$classe_id].", ".$tab_modele_pdf["nb_chiffre_virgule"][$classe_id].", ".$tab_modele_pdf["chiffre_avec_zero"][$classe_id].") = $valeur<br />";
 										}
 										$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'max.'.$valeur,'LRD',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 										$valeur = ''; // on remet à vide.
@@ -4362,11 +4388,16 @@ fclose($f);
 														else {
 															$valeur = present_nombre($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 															//===============================
-															if($tab_bull['note'][$m][$i]>=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]+$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
-																$fleche_evolution="+";
-															}
-															elseif($tab_bull['note'][$m][$i]<=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]-$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
-																$fleche_evolution="-";
+															if((is_numeric($tab_bull['note'][$m][$i]))&&(is_numeric($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]))) {
+																if($tab_bull['note'][$m][$i]>=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]+$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
+																	$fleche_evolution="+";
+																}
+																elseif($tab_bull['note'][$m][$i]<=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]-$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
+																	$fleche_evolution="-";
+																}
+																else {
+																	$fleche_evolution="";
+																}
 															}
 															else {
 																$fleche_evolution="";
@@ -4441,6 +4472,9 @@ fclose($f);
 								$valeur = "-";
 							} else {
 								$valeur = present_nombre($tab_bull['moy_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+
+								// 20190808
+								//echo "\$valeur = present_nombre(\$tab_bull['moy_classe_grp'][$m], \$tab_modele_pdf[\"arrondie_choix\"][$classe_id], \$tab_modele_pdf[\"nb_chiffre_virgule\"][$classe_id], \$tab_modele_pdf[\"chiffre_avec_zero\"][$classe_id]) = present_nombre(".$tab_bull['moy_classe_grp'][$m].", ".$tab_modele_pdf["arrondie_choix"][$classe_id].", ".$tab_modele_pdf["nb_chiffre_virgule"][$classe_id].", ".$tab_modele_pdf["chiffre_avec_zero"][$classe_id].") = $valeur<br />";
 							}
 							$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
 							$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
@@ -4455,6 +4489,9 @@ fclose($f);
 								$valeur = "-";
 							} else {
 								$valeur = present_nombre($tab_bull['moy_min_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+
+								// 20190808
+								//echo "\$valeur = present_nombre(\$tab_bull['moy_min_classe_grp'][$m], \$tab_modele_pdf[\"arrondie_choix\"][$classe_id], \$tab_modele_pdf[\"nb_chiffre_virgule\"][$classe_id], \$tab_modele_pdf[\"chiffre_avec_zero\"][$classe_id]) = present_nombre(".$tab_bull['moy_min_classe_grp'][$m].", ".$tab_modele_pdf["arrondie_choix"][$classe_id].", ".$tab_modele_pdf["nb_chiffre_virgule"][$classe_id].", ".$tab_modele_pdf["chiffre_avec_zero"][$classe_id].") = $valeur<br />";
 							}
 							$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
 							$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
@@ -4468,6 +4505,9 @@ fclose($f);
 								$valeur = "-";
 							} else {
 								$valeur = present_nombre($tab_bull['moy_max_classe_grp'][$m], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+
+								// 20190808
+								//echo "\$valeur = present_nombre(\$tab_bull['moy_max_classe_grp'][$m], \$tab_modele_pdf[\"arrondie_choix\"][$classe_id], \$tab_modele_pdf[\"nb_chiffre_virgule\"][$classe_id], \$tab_modele_pdf[\"chiffre_avec_zero\"][$classe_id]) = present_nombre(".$tab_bull['moy_max_classe_grp'][$m].", ".$tab_modele_pdf["arrondie_choix"][$classe_id].", ".$tab_modele_pdf["nb_chiffre_virgule"][$classe_id].", ".$tab_modele_pdf["chiffre_avec_zero"][$classe_id].") = $valeur<br />";
 							}
 							$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier, $valeur,'TLRB',0,'C');
 							$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id];
