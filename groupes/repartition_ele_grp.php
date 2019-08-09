@@ -503,32 +503,65 @@ if($_SESSION['statut']=="administrateur") {
 
 		echo "<p><b>Choix des classes&nbsp;:</b><br />\n";
 
-		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe;";
+		//$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe;";
+		$sql="SELECT DISTINCT c.id, c.classe, MAX(p.num_periode) as maxper FROM classes c, periodes p where p.id_classe=c.id group by id_classe order by maxper;";
 		$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_classes=mysqli_num_rows($call_classes);
-
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
-
 		// Affichage sur 3 colonnes
 		$nb_classes_par_colonne=round($nb_classes/3);
 
-		echo "<table width='100%' summary='Choix des classes'>\n";
-		echo "<tr valign='top' align='center'>\n";
-
+		$lig_clas=mysqli_fetch_object($call_classes);
 		$cpt = 0;
 
+		$maxper=$lig_clas->maxper;
+
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire_".$maxper."' class='fieldset_opacite50' style='padding:0.5em; margin:1em;'>\n";
+		echo "<p class='bold'>Classes à ".$maxper." périodes</p>";
+		echo "<table width='100%' summary='Choix des classes'>\n";
+		echo "<tr valign='top' align='center'>\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td align='left'>\n";
 
+		echo "<label id='label_tab_id_classe_".$maxper."_".$cpt."' for='tab_id_classe_".$maxper."_".$cpt."' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_".$maxper."_".$cpt."' value='$lig_clas->id' onchange=\"change_style_classe('".$maxper."_".$cpt."')\" /> $lig_clas->classe</label>";
+		echo "<br />\n";
+		$cpt++;
+
 		while($lig_clas=mysqli_fetch_object($call_classes)) {
 
-			//affichage 2 colonnes
+			if($lig_clas->maxper!=$maxper) {
+				echo "</td>\n";
+				echo "</tr>\n";
+				echo "</table>\n";
+
+				echo "<p><a href='#' onClick=\"ModifCase($maxper, true)\">Tout cocher</a> / <a href='#' onClick=\"ModifCase($maxper, false)\">Tout décocher</a></p>\n";
+
+				echo "<p><input type='submit' value='Valider' /></p>\n";
+				echo "</form>\n";
+
+				$cpt = 0;
+
+				$maxper=$lig_clas->maxper;
+
+				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire_".$maxper."' class='fieldset_opacite50' style='padding:0.5em; margin:1em;'>\n";
+				echo "<p class='bold'>Classes à ".$maxper." périodes</p>";
+				echo "<table width='100%' summary='Choix des classes'>\n";
+				echo "<tr valign='top' align='center'>\n";
+				echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+				echo "<td align='left'>\n";
+
+				/*
+				echo "<label id='label_tab_id_classe_".$maxper."_".$cpt."' for='tab_id_classe_".$maxper."_".$cpt."' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_".$maxper."_".$cpt."' value='$lig_clas->id' onchange=\"change_style_classe('".$maxper."_".$cpt."')\" /> $lig_clas->classe</label>";
+				echo "<br />\n";
+				$cpt++;
+				*/
+			}
+
 			if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
 				echo "</td>\n";
 				echo "<td align='left'>\n";
 			}
 
-			echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe</label>";
+			echo "<label id='label_tab_id_classe_".$maxper."_".$cpt."' for='tab_id_classe_".$maxper."_".$cpt."' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_".$maxper."_".$cpt."' value='$lig_clas->id' onchange=\"change_style_classe('".$maxper."_".$cpt."')\" /> $lig_clas->classe</label>";
 			echo "<br />\n";
 			$cpt++;
 		}
@@ -537,17 +570,17 @@ if($_SESSION['statut']=="administrateur") {
 		echo "</tr>\n";
 		echo "</table>\n";
 
-		echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout décocher</a></p>\n";
+		echo "<p><a href='#' onClick=\"ModifCase($maxper, true)\">Tout cocher</a> / <a href='#' onClick=\"ModifCase($maxper, false)\">Tout décocher</a></p>\n";
 
 		echo "<p><input type='submit' value='Valider' /></p>\n";
 		echo "</form>\n";
 
 		echo "<script type='text/javascript'>
-		function ModifCase(mode) {
+		function ModifCase(maxper, mode) {
 			for (var k=0;k<$cpt;k++) {
-				if(document.getElementById('tab_id_classe_'+k)){
-					document.getElementById('tab_id_classe_'+k).checked = mode;
-					change_style_classe(k);
+				if(document.getElementById('tab_id_classe_'+maxper+'_'+k)){
+					document.getElementById('tab_id_classe_'+maxper+'_'+k).checked = mode;
+					change_style_classe(maxper+'_'+k);
 				}
 			}
 		}
@@ -565,7 +598,11 @@ if($_SESSION['statut']=="administrateur") {
 
 	</script>
 	
-	<p style='text-indent:-6.5em; margin-left:6.5em; margin-top:1em;'>ATTENTION&nbsp;: Cette page de répartition ne permet pas d'inscrire ou de conserver l'inscription dans plus d'un des groupes qui seront sélectionnés à l'affichage.<br />Parmi les groupes affichés, un élève ne pourra pas être inscrit dans plus d'un d'entre eux.</p>\n";
+	<p style='text-indent:-6.5em; margin-left:6.5em; margin-top:1em;'><strong>ATTENTION&nbsp;:</strong> Cette page de répartition ne permet pas d'inscrire ou de conserver l'inscription dans plus d'un des groupes qui seront sélectionnés à l'affichage.<br />Parmi les groupes affichés, un élève ne pourra pas être inscrit dans plus d'un d'entre eux.</p>\n
+
+	<p style='text-indent:-4.7em; margin-left:4.7em; margin-top:1em;'><strong>NOTES&nbsp;:</strong> Il n'est pas possible de créer des groupes multiclasses entre des classes qui n'ont pas le même nombre de périodes.<br />
+	Par exemple, les classes à semestres ne peuvent pas avoir d'enseignement commun avec des classes à trimestres par le moyen de groupes.<br />
+	Pour un tel besoin, il faut utiliser des AID.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
