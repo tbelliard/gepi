@@ -28,6 +28,7 @@ Discipline:
 - Possibilité de donner l'accès parent/élève aux incidents le concernant, 
   mais sans afficher les détails de l'incident 
   (pour inciter à un contact téléphonique avec le CPE).
+- Ajout de tableaux des derniers incidents et des sanctions à venir.
 
 Orientation:
 - Facilité de saisie globale de l'orientation pour une classe donnée.

@@ -19661,4 +19661,99 @@ function etat_verrouillage_aid_periode($id_aid, $periode, $tab_id_classe_exclu=a
 
 	return $tab;
 }
+
+function traduction_nom_creneau_edt($nom_definie_periode) {
+	global $mysqli;
+
+	$retour=$nom_definie_periode;
+
+	$sql="SELECT * FROM edt_creneaux WHERE nom_definie_periode='$nom_definie_periode';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$retour="<span title=\"de ".preg_replace('/-00$/', '', $lig->heuredebut_definie_periode)." à ".preg_replace('/-00$/', '', $lig->heurefin_definie_periode)."\">".preg_replace('/-00$/', '', $lig->heuredebut_definie_periode)."-&gt;".preg_replace('/-00$/', '', $lig->heurefin_definie_periode)."</span>";
+	}
+
+	return $retour;
+}
+
+function liste_incidents_eleve_jours($ele_login, $n, $p) {
+	global $mysqli;
+
+	$retour='';
+
+	$date_debut=strftime("%Y-%m-%d", time()-$n*24*3600);
+	$date_fin=strftime("%Y-%m-%d", time()-$p*24*3600);
+	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' AND (si.date>='$date_debut' AND si.date<='$date_fin') ORDER BY si.date DESC;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour.="<div class='fieldset_opacite50' style='padding:0.2em;margin-bottom:0.2em'>".formate_date($lig->date)." <span style='font-size:small'>(".traduction_nom_creneau_edt($lig->heure).")</span> <strong>".$lig->nature."</strong> <em title=\"en qualité de ".$lig->qualite."\">(".$lig->qualite.")</em></div>";
+		}
+	}
+
+	return $retour;
+}
+
+function liste_sanctions_a_venir_eleve($ele_login, $n=365) {
+	global $mysqli;
+
+	$retour='';
+
+	$date_debut=strftime("%Y-%m-%d");
+	$date_fin=strftime("%Y-%m-%d", time()+$n*24*3600);
+
+	$sql="SELECT ss.nature AS nature_sanction, se.* FROM s_sanctions ss, 
+			s_exclusions se 
+		WHERE ss.id_sanction=se.id_sanction AND 
+			ss.login='$ele_login' AND 
+			(se.date_debut>='$date_debut' AND se.date_fin<='$date_fin') 
+		ORDER BY se.date_debut DESC;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour.="<div class='fieldset_opacite50' style='padding:0.2em;margin-bottom:0.2em'><strong>".ucfirst($lig->nature_sanction)."</strong> du ".formate_date($lig->date_debut)." <em style='font-size:small'>(".$lig->heure_debut.")</em> au ".formate_date($lig->date_fin)." <em style='font-size:small'>(".$lig->heure_fin.")</em></div>";
+		}
+	}
+
+	$sql="SELECT ss.nature AS nature_sanction, sr.* FROM s_sanctions ss, 
+			s_retenues sr 
+		WHERE ss.id_sanction=sr.id_sanction AND 
+			ss.login='$ele_login' AND 
+			(sr.date>='$date_debut' AND sr.date<='$date_fin') 
+		ORDER BY sr.date DESC;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour.="<div class='fieldset_opacite50' style='padding:0.2em;margin-bottom:0.2em'><strong>".ucfirst($lig->nature_sanction)."</strong> le ".formate_date($lig->date)." ".$lig->heure_debut." <em title='Durée'>(".$lig->duree."h)</em>";
+			if(trim($lig->lieu)!='') {
+				$retour.=" <em style='font-size:small' title=\"Lieu\">(".$lig->lieu.")</em>";
+			}
+			if(trim($lig->materiel)!='') {
+				$retour.=" <em style='font-size:small' title=\"Matériel à apporter\">(".$lig->materiel.")</em>";
+			}
+			$retour.="</div>";
+		}
+	}
+
+	$sql="SELECT ss.nature AS nature_sanction, st.* FROM s_sanctions ss, 
+			s_travail st 
+		WHERE ss.id_sanction=st.id_sanction AND 
+			ss.login='$ele_login' AND 
+			(st.date_retour>='$date_debut' AND st.date_retour<='$date_fin') 
+		ORDER BY st.date_retour DESC;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$retour.="<div class='fieldset_opacite50' style='padding:0.2em;margin-bottom:0.2em'><strong>".ucfirst($lig->nature_sanction)."</strong> pour le ".formate_date($lig->date_retour)." ".$lig->heure_retour." <em title='Travail' style='font-size:small'>(".$lig->travail.")</em>";
+			$retour.="</div>";
+		}
+	}
+
+	return $retour;
+}
 ?>

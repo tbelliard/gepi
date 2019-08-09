@@ -128,6 +128,20 @@ echo "</p>\n";
 
 require_once("../mod_discipline/sanctions_func_lib.php");
 
+/*
+$liste_incidents_eleve_jours=liste_incidents_eleve_jours($ele_login, 7, 0);
+if($liste_incidents_eleve_jours!='') {
+	//title=\"".ucfirst($mod_disc_terme_incident)."s des 7 derniers jours.\"
+	echo "<div class='fieldset_opacite50' style='padding:0.3em; margin:0.5em;' ><p class='bold'>".ucfirst($mod_disc_terme_incident)."s des 7 derniers jours</p>".$liste_incidents_eleve_jours."</div>";
+}
+*/
+
+$liste_sanctions_a_venir_eleve=liste_sanctions_a_venir_eleve($ele_login);
+if($liste_sanctions_a_venir_eleve!='') {
+	//title=\"".ucfirst($mod_disc_terme_sanction)."s dans les jours à venir.\"
+	echo "<div class='fieldset_opacite50' style='padding:0.3em; margin:0.5em;' ><p class='bold'>".ucfirst($mod_disc_terme_sanction)."s dans les jours à venir</p>".$liste_sanctions_a_venir_eleve."</div>";
+}
+
 $mode="";
 $date_debut="";
 $date_fin="";
@@ -137,8 +151,6 @@ $tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve=tableau_des_ave
 if($tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve!='') {
 	echo "<div style='float:right; width:25em; margin-bottom:0.5em; margin-left:0.5em;'>".$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve."</div>\n";
 }
-
-// AJOUTER UN TABLEAU DES INCIDENTS DES n DERNIERS JOURS
 
 if((getSettingAOui('active_mod_disc_pointage'))&&
 ((($_SESSION['statut']=='eleve')&&(getSettingAOui('disc_pointage_acces_totaux_ele')))||(($_SESSION['statut']=='responsable')&&(getSettingAOui('disc_pointage_acces_totaux_resp'))))) {

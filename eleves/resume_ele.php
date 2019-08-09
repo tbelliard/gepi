@@ -804,6 +804,8 @@ if((getSettingValue('active_module_absence')==2)&&(acces_abs_eleve($_SESSION['lo
 		$html.="<p>Aucun manquement n'est enregistré pour le $display_date.</p>";
 	}
 
+	// Ajouter un récap sur les N derniers jours
+
 	$html.="<p style='margin-top:1em'><a href='$url_abs'>Voir toutes les absences et retards</a>.</p>";
 
 	echo "
@@ -833,6 +835,18 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Discipline</div>";
 
 	require_once("../mod_discipline/sanctions_func_lib.php");
+
+	$liste_incidents_eleve_jours=liste_incidents_eleve_jours($login_eleve, 7, 0);
+	if($liste_incidents_eleve_jours!='') {
+		//title=\"".ucfirst($mod_disc_terme_incident)."s des 7 derniers jours.\"
+		$html.="<div class='fieldset_opacite50' style='padding:0.3em; margin:0.5em;' ><p class='bold'>".ucfirst($mod_disc_terme_incident)."s des 7 derniers jours</p>".$liste_incidents_eleve_jours."</div>";
+	}
+
+	$liste_sanctions_a_venir_eleve=liste_sanctions_a_venir_eleve($login_eleve);
+	if($liste_sanctions_a_venir_eleve!='') {
+		//title=\"".ucfirst($mod_disc_terme_sanction)."s dans les jours à venir.\"
+		$html.="<div class='fieldset_opacite50' style='padding:0.3em; margin:0.5em;' ><p class='bold'>".ucfirst($mod_disc_terme_sanction)."s dans les jours à venir</p>".$liste_sanctions_a_venir_eleve."</div>";
+	}
 
 	$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve=tableau_des_avertissements_de_fin_de_periode_eleve($login_eleve);
 	if($tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve!='') {
