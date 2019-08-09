@@ -1185,14 +1185,14 @@ if(getSettingAOui('active_bulletins')) {
 	}
 
 	if(($_SESSION['statut']=='eleve')) {
-		if(getSettingValue('visuEleDisc')=='yes') {
+		if((getSettingAOui('visuEleDisc'))||(getSettingAOui('visuEleDiscNature'))) {
 			$this->creeNouveauItem("/mod_discipline/visu_disc.php",
 					"Discipline".$temoin_disc,
 					ucfirst($mod_disc_terme_incident)."s vous concernant.");
 		}
 	}
 	elseif(($_SESSION['statut']=='responsable')) {
-		if(getSettingValue('visuRespDisc')=='yes') {
+		if((getSettingAOui('visuRespDisc'))||(getSettingAOui('visuRespDiscNature'))) {
 			$this->creeNouveauItem("/mod_discipline/visu_disc.php",
 					"Discipline".$temoin_disc,
 					ucfirst($mod_disc_terme_incident)."s concernant les élèves/enfants dont vous êtes responsable.");
@@ -2081,24 +2081,6 @@ if(getSettingAOui('active_bulletins')) {
   protected function discipline() {
 		global $mod_disc_terme_incident, $gepiPath;
 		$this->b=0;
-
-		/*
-		if(($_SESSION['statut']=='eleve')) {
-			if(getSettingValue('visuEleDisc')=='y') {
-				$this->creeNouveauItem("/mod_discipline/visu_disc.php",
-						"Discipline",
-						"Incidents vous concernant.");
-			}
-		}
-		elseif(($_SESSION['statut']=='responsable')) {
-			if(getSettingValue('visuRespDisc')=='y') {
-				$this->creeNouveauItem("/mod_discipline/visu_disc.php",
-						"Discipline",
-						"Incidents concernant les élèves/enfants dont vous êtes responsable.");
-			}
-		}
-		else {
-		*/
 
 			$temoin_disc="";
 			$cpt_disc=get_temoin_discipline_personnel();

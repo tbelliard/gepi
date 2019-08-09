@@ -128,7 +128,8 @@ if ($barre_plugin!="") {
 		}
 
 		// Discipline
-		if((getSettingAOui("active_mod_discipline"))&&(getSettingAOui("visuEleDisc"))) {
+		if((getSettingAOui("active_mod_discipline"))&&
+		((getSettingAOui("visuEleDisc"))||(getSettingAOui("visuEleDiscNature")))) {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_discipline/visu_disc.php"'.insert_confirm_abandon().' title="Incidents vous concernant.">&nbsp;Discipline</a></li>'."\n";
 		}
 

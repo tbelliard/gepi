@@ -6485,7 +6485,8 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
  * @see getSettingValue()
  */
 function acces_resp_disc($login_resp) {
-	if((check_compte_actif($login_resp)!=0)&&(getSettingValue('visuRespDisc')=='yes')) {
+	if((check_compte_actif($login_resp)!=0)&&
+	((getSettingAOui('visuRespDisc'))||(getSettingAOui('visuRespDiscNature')))) {
 		return TRUE;
 	}
 	else {
@@ -6502,7 +6503,8 @@ function acces_resp_disc($login_resp) {
  * @see getSettingValue()
  */
 function acces_ele_disc($login_ele) {
-	if((check_compte_actif($login_ele)!=0)&&(getSettingValue('visuEleDisc')=='yes')) {
+	if((check_compte_actif($login_ele)!=0)&&
+	((getSettingAOui('visuEleDisc'))||getSettingAOui('visuEleDiscNature'))) {
 		return TRUE;
 	}
 	else {
@@ -14496,7 +14498,8 @@ function get_id_classe_derniere_classe_ele($login_eleve) {
  */
 function acces_incidents_disc_eleve($login_user, $statut_user, $login_eleve) {
 	if($statut_user=='responsable') {
-		if((is_responsable($login_eleve, $login_user, "", "yy"))&&(getSettingAOui('visuRespDisc'))) {
+		if((is_responsable($login_eleve, $login_user, "", "yy"))&&
+		((getSettingAOui('visuRespDisc'))||(getSettingAOui('visuRespDiscNature')))) {
 			return true;
 		}
 		else {
@@ -14504,7 +14507,7 @@ function acces_incidents_disc_eleve($login_user, $statut_user, $login_eleve) {
 		}
 	}
 	elseif($statut_user=='eleve') {
-		if(getSettingAOui('visuEleDisc')) {
+		if((getSettingAOui('visuEleDisc'))||(getSettingAOui('visuEleDiscNature'))) {
 			return true;
 		}
 		else {

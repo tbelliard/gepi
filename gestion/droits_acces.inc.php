@@ -2753,7 +2753,14 @@ if(getSettingAOui('active_mod_discipline')) {
 
 
 	$titreItem='visuEleDisc';
-	$texteItem="a accès dans le module Discipline aux incidents le concernant.";
+	$texteItem="a accès dans le module Discipline aux incidents le concernant <em>(description de l'incident incluse)</em>.";
+	$tab_droits_acces[$statutItem][$titreItem]['rubrique']='Discipline';
+	$tab_droits_acces[$statutItem][$titreItem]['texteItem']=$texteItem;
+	$tab_droits_acces[$statutItem][$titreItem]['visibilite']=array('administrateur', 'scolarite', 'cpe', 'professeur', 'eleve', 'responsable');
+	$tab_droits_acces[$statutItem][$titreItem]['conditions']=array('active_mod_discipline');
+
+	$titreItem='visuEleDiscNature';
+	$texteItem="a accès dans le module Discipline aux incidents le concernant <em>(nature de l'incident, sanctions, mais sans le détail de la description)</em>.";
 	$tab_droits_acces[$statutItem][$titreItem]['rubrique']='Discipline';
 	$tab_droits_acces[$statutItem][$titreItem]['texteItem']=$texteItem;
 	$tab_droits_acces[$statutItem][$titreItem]['visibilite']=array('administrateur', 'scolarite', 'cpe', 'professeur', 'eleve', 'responsable');
@@ -3127,7 +3134,16 @@ if(getSettingAOui('active_mod_discipline')) {
 
 
 	$titreItem='visuRespDisc';
-	$texteItem="a accès dans le module Discipline aux incidents concernant les enfants dont il est responsable.";
+	$texteItem="a accès dans le module Discipline aux incidents concernant les enfants dont il est responsable <em>(description de l'incident incluse)</em>.";
+	$texteItemComplement="<br />(<em>sous réserve que le <a href='../mod_discipline/discipline_admin.php' target='_blank'>module Discipline soit activé</a></em>)";
+	$tab_droits_acces[$statutItem][$titreItem]['rubrique']='Discipline';
+	$tab_droits_acces[$statutItem][$titreItem]['texteItem']=$texteItem;
+	$tab_droits_acces[$statutItem][$titreItem]['texteItemComplement']=$texteItemComplement;
+	$tab_droits_acces[$statutItem][$titreItem]['visibilite']=array('administrateur', 'scolarite', 'cpe', 'professeur', 'eleve', 'responsable');
+	$tab_droits_acces[$statutItem][$titreItem]['conditions']=array('active_mod_discipline');
+
+	$titreItem='visuRespDiscNature';
+	$texteItem="a accès dans le module Discipline aux incidents concernant les enfants dont il est responsable <em>(nature de l'incident, sanctions, mais sans le détail de la description)</em>.";
 	$texteItemComplement="<br />(<em>sous réserve que le <a href='../mod_discipline/discipline_admin.php' target='_blank'>module Discipline soit activé</a></em>)";
 	$tab_droits_acces[$statutItem][$titreItem]['rubrique']='Discipline';
 	$tab_droits_acces[$statutItem][$titreItem]['texteItem']=$texteItem;

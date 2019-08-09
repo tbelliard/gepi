@@ -140,7 +140,8 @@ if ($barre_plugin!="") {
 		}
 
 		// Discipline
-		if((getSettingAOui("active_mod_discipline"))&&(getSettingAOui("visuRespDisc"))) {
+		if((getSettingAOui("active_mod_discipline"))&&
+		((getSettingAOui("visuRespDisc"))||(getSettingAOui("visuRespDiscNature")))) {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_discipline/visu_disc.php"'.insert_confirm_abandon().' title="Incidents concernant les élèves/enfants dont vous êtes '.getSettingValue('denomination_responsable').'.">&nbsp;Discipline</a></li>'."\n";
 		}
 

@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -57,7 +57,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if($_SESSION['statut']=='eleve') {
-	if(getSettingValue('visuEleDisc')!='yes') {
+	if((getSettingAOui('visuEleDisc'))&&(getSettingAOui('visuEleDiscNature'))) {
 		echo "<p style='color:red'>Vous n'êtes pas autorisé à accéder à cette page.</p>\n";
 		tentative_intrusion(1, "Tentative d'accès au module Discipline sans y être autorisé.");
 		require("../lib/footer.inc.php");
@@ -65,7 +65,7 @@ if($_SESSION['statut']=='eleve') {
 	}
 }
 elseif($_SESSION['statut']=='responsable') {
-	if(getSettingValue('visuRespDisc')!='yes') {
+	if((getSettingAOui('visuRespDisc'))&&(getSettingAOui('visuRespDiscNature'))) {
 		echo "<p style='color:red'>Vous n'êtes pas autorisé à accéder à cette page.</p>\n";
 		tentative_intrusion(1, "Tentative d'accès au module Discipline sans y être autorisé.");
 		require("../lib/footer.inc.php");
@@ -137,6 +137,8 @@ $tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve=tableau_des_ave
 if($tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve!='') {
 	echo "<div style='float:right; width:25em; margin-bottom:0.5em; margin-left:0.5em;'>".$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve."</div>\n";
 }
+
+// AJOUTER UN TABLEAU DES INCIDENTS DES n DERNIERS JOURS
 
 if((getSettingAOui('active_mod_disc_pointage'))&&
 ((($_SESSION['statut']=='eleve')&&(getSettingAOui('disc_pointage_acces_totaux_ele')))||(($_SESSION['statut']=='responsable')&&(getSettingAOui('disc_pointage_acces_totaux_resp'))))) {

@@ -24,6 +24,11 @@ Cahiers de textes 2:
 - Mise à jour de l'app GeoGebra.
 - Possibilité de copier d'un clic le code source HTML d'une vignette.
 
+Discipline:
+- Possibilité de donner l'accès parent/élève aux incidents le concernant, 
+  mais sans afficher les détails de l'incident 
+  (pour inciter à un contact téléphonique avec le CPE).
+
 Orientation:
 - Facilité de saisie globale de l'orientation pour une classe donnée.
 

@@ -644,6 +644,31 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 	global $mod_disc_terme_incident, $mod_disc_terme_sanction;
 	global $tab_incidents_ele, $tab_mesures_ele, $tab_sanctions_ele;
 
+	$acces_details_incident=true;
+
+	if(($_SESSION['statut']=='eleve')) {
+		if(getSettingAOui('visuEleDisc')) {
+			$acces_details_incident=true;
+		}
+		elseif(getSettingAOui('visuEleDiscNature')) {
+			$acces_details_incident=false;
+		}
+		else {
+			return "<p style='color:red'>Accès non autorisé.</p>";
+		}
+	}
+	elseif(($_SESSION['statut']=='responsable')) {
+		if(getSettingAOui('visuRespDisc')) {
+			$acces_details_incident=true;
+		}
+		elseif(getSettingAOui('visuRespDiscNature')) {
+			$acces_details_incident=false;
+		}
+		else {
+			return "<p style='color:red'>Accès non autorisé.</p>";
+		}
+	}
+
 	$retour="";
 
 	if($date_debut!="") {
@@ -767,7 +792,9 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 
 			$retour.="<td>";
 			$retour.="<p style='font-weight: bold;'>".$lig->nature."</p>\n";
-			$retour.="<p>".$lig->description."</p>\n";
+			if($acces_details_incident) {
+				$retour.="<p>".$lig->description."</p>\n";
+			}
 			
 			$retour.="</td>\n";
 
