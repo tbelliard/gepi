@@ -806,7 +806,89 @@ if((getSettingValue('active_module_absence')==2)&&(acces_abs_eleve($_SESSION['lo
 		$html.="<p>Aucun manquement n'est enregistré pour le $display_date.</p>";
 	}
 
+	//echo "\$display_date=$display_date<br />";
+
 	// Ajouter un récap sur les N derniers jours
+	$nb_retard_nj=0;
+	$nb_retard_j=0;
+	$nb_abs_j=0;
+	$nb_abs_nj=0;
+	for($loop=1;$loop<7;$loop++) {
+
+		$eleve = EleveQuery::create()->findOneByLogin($login_eleve);
+
+		$creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
+		$dt_date_absence_eleve = new DateTime(strftime("%d.%m.%Y", time()-$loop*24*3600));
+		//echo strftime("%d.%m.%Y", time()-$loop*24*3600)."<br />";
+
+		$nb_manquements_a_afficher=0;
+		foreach ($creneau_col as $creneau) {
+
+			$abs_col = $eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $dt_date_absence_eleve);
+			$tab_heure = explode(":", $creneau->getHeuredebutDefiniePeriode());
+			$date_actuelle_heure_creneau = clone $dt_date_absence_eleve;
+			$date_actuelle_heure_creneau->setTime($tab_heure[0], $tab_heure[1], $tab_heure[2]);
+			if ((($abs_col->isEmpty())&&($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve)->isEmpty())) || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
+				// On ne fait rien
+			} else {
+				$nb_manquements_a_afficher++;
+
+				$priorite = 5;
+				$current_minus_4 = new DateTime();
+				$current_minus_4->modify('-4 hours');
+					foreach ($abs_col as $abs) {
+					if (($abs->getTraitee() || $abs->getCreatedAt(null) < $current_minus_4) && get_priorite($abs) < $priorite) {
+						$priorite = get_priorite($abs);
+					}
+				}
+
+				if(!$eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve)->isEmpty()) {
+					foreach ($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve) as $ret) {
+						if (($ret->getTraitee() || $ret->getCreatedAt(null) < $current_minus_4) && get_priorite($ret) < $priorite) {
+							$priorite = get_priorite($ret);
+						}
+					}
+				}
+
+				switch ($priorite) {
+					case 1:
+						//Retard justifié
+						$nb_retard_j++;
+					break;
+					case 2:
+						//Absence justifiée
+						$nb_abs_j++;
+					break;
+					case 3:
+						//Retard non justifié
+						$nb_retard_nj++;
+					break;
+					case 4:
+						//Absence non justifiée
+						$nb_abs_nj++;
+					break;
+				}
+			}
+		}
+	}
+
+	if(($nb_abs_j>0)||($nb_abs_nj>0)||($nb_retard_j>0)||($nb_retard_nj>0)) {
+		$html.="<p style='margin-top:1em;'><strong>Entre le ".strftime("%d/%m/%Y", time()-6*24*3600)." et le ".strftime("%d/%m/%Y", time()-1*24*3600)."&nbsp;:</strong><br />";
+		if($nb_abs_j>0) {
+			$html.=$nb_abs_j." absence(s) justifiée(s).<br />";
+		}
+		if($nb_abs_nj>0) {
+			$html.="<span style='color:red' title=\"N'oubliez pas de justifier ces absences rapidement. Merci.\">".$nb_abs_nj." absence(s) non justifiée(s).<br />";
+		}
+
+		if($nb_retard_j>0) {
+			$html.=$nb_retard_j." retard(s) justifié(s).<br />";
+		}
+		if($nb_retard_nj>0) {
+			$html.="<span style='color:red' title=\"N'oubliez pas de justifier ces retards rapidement. Merci.\">".$nb_retard_nj." absence(s) non justifié(s).<br />";
+		}
+		$html.="</p>";
+	}
 
 	$html.="<p style='margin-top:1em'><a href='$url_abs'>Voir toutes les absences et retards</a>.</p>";
 
