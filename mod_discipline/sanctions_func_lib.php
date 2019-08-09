@@ -764,7 +764,12 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 			$alt_1=$alt_1*(-1);
 			$retour.="<tr class='lig$alt_1'>\n";
 
-				$retour.="<td>".$lig->id_incident."</td>\n";
+				if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))) {
+					$retour.="<td><a href='../mod_discipline/saisie_incident.php?id_incident=".$lig->id_incident."&step=2' target='_blank'>".$lig->id_incident."</a></td>\n";
+				}
+				else {
+					$retour.="<td>".$lig->id_incident."</td>\n";
+				}
 
 				// Modifier l'accès Consultation d'incident... on ne voit actuellement que ses propres incidents
 				//$retour.="<td><a href='' target='_blank'>".$lig->id_incident."</a></td>\n";
