@@ -894,7 +894,7 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 	}
 
 	$html.="<p style='font-weight: bold; margin-top:1em;'>".ucfirst($mod_disc_terme_sanction)."s</p>\n";
-	if(count($tab_sanctions_ele[$login_eleve])>0) {
+	if((isset($tab_sanctions_ele[$login_eleve]))&&(count($tab_sanctions_ele[$login_eleve])>0)) {
 		$html.="<table class='boireaus' border='1' summary='Totaux ".$mod_disc_terme_sanction."s'>\n";
 		$html.="<tr><th>Nature</th><th>Total</th><th>Non<br />effectué(e)</th></tr>\n";
 		$alt=1;
