@@ -730,6 +730,8 @@ if((getSettingValue('active_module_absence')==2)&&(acces_abs_eleve($_SESSION['lo
 	$creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 	$dt_date_absence_eleve = new DateTime(str_replace("/", ".", $display_date));
 
+	include_once('../orm/helpers/EdtHelper.php');
+
 	$nb_manquements_a_afficher=0;
 	foreach ($creneau_col as $creneau) {
 		if($creneau->getTypeCreneaux()=="cours") {
