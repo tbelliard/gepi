@@ -501,6 +501,7 @@ else {
 		echo "<a href=\"#calend\" onclick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\">\n";
 		echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" />\n";
 		echo "</a>\n";
+		echo "<a href=\"\" onclick=\"document.getElementById('date_fin').value=document.getElementById('date_debut').value; return false;\" title=\"Une journée d'exclusion : Copier la date de début.\"><img src='../images/icons/paste.png' class='icone16' /></a>";
 		echo "</td>\n";
 		echo "</tr>\n";
 
