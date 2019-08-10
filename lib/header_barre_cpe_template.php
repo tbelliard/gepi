@@ -167,7 +167,7 @@ if ($barre_plugin!="") {
 
 				if(getSettingAOui('active_mod_engagements')) {
 					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
-					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Impression documents, convocations conseil de classe (mail et papier),...</a></li>'."\n";
 				}
 
 				if((getSettingAOui('active_mod_orientation'))&&((getSettingAOui('OrientationSaisieTypeCpe'))||(getSettingAOui('OrientationSaisieOrientationCpe'))||(getSettingAOui('OrientationSaisieVoeuxCpe')))) {
@@ -313,7 +313,7 @@ if ($barre_plugin!="") {
 			if($acces_saisie_engagement=="y") {
 				$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().' title="Saisir les engagements élèves/responsables.">Saisie engagements</a></li>'."\n";
 			}
-			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().' title="Imprimer les documents, convocations,...">Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().' title="Imprimer les documents, convocations,...">Impression documents, convocations conseil de classe (mail et papier),...</a></li>'."\n";
 			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().' title="Extraire en CSV, envoyer par mail.">Extraction engagements</a></li>'."\n";
 			$menus .= '         </ul>'."\n";
 			$menus .= '       </li>'."\n";

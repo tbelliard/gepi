@@ -158,7 +158,7 @@ if ($barre_plugin!="") {
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Dates événements</a></li>'."\n";
 				if(getSettingAOui('active_mod_engagements')) {
 					$menus .= '                <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
-					$menus .= '                <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+					$menus .= '                <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Impression documents, convocations conseil de classe (mail et papier),...</a></li>'."\n";
 				}
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
@@ -465,7 +465,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 				$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().' title="Saisir les engagements élèves/responsables.">Saisie engagements</a></li>'."\n";
 			}
 
-			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Impression documents, convocations conseil de classe (mail et papier),...</a></li>'."\n";
 			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().' title="Extraire en CSV, envoyer par mail.">Extraction engagements</a></li>'."\n";
 			$menus .= '         </ul>'."\n";
 			$menus .= '       </li>'."\n";
