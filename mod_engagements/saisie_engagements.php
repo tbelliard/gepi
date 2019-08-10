@@ -980,7 +980,9 @@ else {
 	<div id='fixe'><input type='submit' value='Valider' /></div>
 	</form>
 	
-	<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Pour saisir des engagements de responsables qui ne sont pas responsables/parents d'élèves dans la classe, effectuer la saisie des engagements depuis une recherche sur le nom du parent dans la page de ";
+	<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li><p>Pour saisir des engagements de responsables qui ne sont pas responsables/parents d'élèves dans la classe, effectuer la saisie des engagements depuis une recherche sur le nom du parent dans la page de ";
 	if(acces('/responsables/index.php', $_SESSION['statut'])) {
 		echo "<a href='../responsables/index.php'>Gestion des responsables</a>";
 	}
@@ -990,7 +992,10 @@ else {
 	else {
 		echo "Gestion des responsables (<em>en administrateur</em>)";
 	}
-	echo "</p>\n";
+	echo "
+		</p></li>
+		<li><p>Les responsables doivent disposer d'un compte utilisateur pour pouvoir être cochés dans les Engagements.</p></li>
+	</ul>\n";
 }
 
 require_once("../lib/footer.inc.php");

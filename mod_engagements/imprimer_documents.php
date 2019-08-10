@@ -244,7 +244,7 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 
 			$tmp_tab['adresse']['adr1']="ADR1_PARENT";
 			$tmp_tab['adresse']['adr2']="";
-			$tmp_tab['adr3']="";
+			$tmp_tab['adresse']['adr3']="";
 			$tmp_tab['adresse']['cp']="";
 			$tmp_tab['adresse']['commune']="VILLE_PARENT";
 
@@ -598,7 +598,7 @@ __ADR_ETAB__
 
 				$tmp_tab['adresse']['adr1']="ADR1_PARENT";
 				$tmp_tab['adresse']['adr2']="";
-				$tmp_tab['adr3']="";
+				$tmp_tab['adresse']['adr3']="";
 				$tmp_tab['adresse']['cp']="";
 				$tmp_tab['adresse']['commune']="VILLE_PARENT";
 
