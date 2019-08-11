@@ -7436,6 +7436,11 @@ mysql>
 							$sql="DELETE FROM utilisateurs WHERE statut='responsable' ANT login IN (SELECT login FROM resp_pers WHERE pers_id='".$suppr[$loop]."');";
 							$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
+							if($lig_rp->login!='') {
+								$sql="DELETE FROM engagements_user WHERE login='".$lig_rp->login."';";
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+
 							$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 							$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($menage) {
@@ -7456,6 +7461,11 @@ mysql>
 
 								$sql="DELETE FROM utilisateurs WHERE statut='responsable' ANT login IN (SELECT login FROM resp_pers WHERE pers_id='".$suppr[$loop]."');";
 								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+
+								if($lig_rp->login!='') {
+									$sql="DELETE FROM engagements_user WHERE login='".$lig_rp->login."';";
+									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
 
 								$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -7512,6 +7522,11 @@ mysql>
 										}
 
 										if(($nb_resp_conserves==1)&&(!isset($conserver[$tab_homonymes[0]['pers_id']]))) {
+											if($lig_rp->login!='') {
+												$sql="DELETE FROM engagements_user WHERE login='".$lig_rp->login."';";
+												$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+											}
+
 											$texte.="Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
 											$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 											$menage=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -7574,6 +7589,12 @@ mysql>
 
 											// Il faut supprimer le responsable pour ne pas se retrouver à imposer deux resp_pers avec un même login (non vide)
 											$texte="Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
+
+											if($lig_rp->login!='') {
+												$sql="DELETE FROM engagements_user WHERE login='".$lig_rp->login."';";
+												$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+											}
+
 											$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
 											$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 											if($menage) {
@@ -8659,6 +8680,11 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 							if(mysqli_num_rows($test_utilisateur)>0) {
 								$lig_u=mysqli_fetch_object($test_utilisateur);
 								if($lig_u->statut=='responsable') {
+									if($lig_u->login!='') {
+										$sql="DELETE FROM engagements_user WHERE login='".$lig_u->login."';";
+										$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+									}
+
 									echo "Suppression du compte d'utilisateur associé à la personne&nbsp;: ";
 									$sql="DELETE FROM utilisateurs WHERE login='".$lig_u->login."';";
 									info_debug($sql);
@@ -9056,6 +9082,11 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						if(mysqli_num_rows($test_utilisateur)>0) {
 							$lig_u=mysqli_fetch_object($test_utilisateur);
 							if($lig_u->statut=='responsable') {
+								if($lig_u->login!='') {
+									$sql="DELETE FROM engagements_user WHERE login='".$lig_u->login."';";
+									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
+
 								echo "Suppression du compte d'utilisateur associé à la personne&nbsp;: ";
 								$sql="DELETE FROM utilisateurs WHERE login='".$lig_u->login."';";
 								info_debug($sql);
