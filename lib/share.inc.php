@@ -13635,6 +13635,7 @@ function get_tab_engagements_user($login_user="", $id_classe='', $statut_concern
 	if($id_groupe!='') {
 		$sql.=" AND eu.id_type='id_classe' AND valeur IN (SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='".$id_groupe."')";
 	}
+	$sql.=";";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt=0;
