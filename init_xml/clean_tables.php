@@ -171,7 +171,7 @@ echo "</form>";
 		$i++;
 	}
 */
-	$req = mysqli_query($GLOBALS["mysqli"], "select pers_id,nom,prenom,adr_id from resp_pers order by nom,prenom");
+	$req = mysqli_query($GLOBALS["mysqli"], "select pers_id,nom,prenom,adr_id,login from resp_pers order by nom,prenom");
 	$sup = 'no';
 	$nb_resp = mysqli_num_rows($req);
 	$i = 0;
@@ -180,6 +180,7 @@ echo "</form>";
 		$nom_resp=old_mysql_result($req, $i, 'nom');
 		$prenom_resp=old_mysql_result($req, $i, 'prenom');
 		$adr_id=old_mysql_result($req, $i, 'adr_id');
+		$login_resp=old_mysql_result($req, $i, 'login');
 
 		$test1 = mysqli_query($GLOBALS["mysqli"], "select r.ele_id from responsables2 r, eleves e where r.pers_id='$pers_id' AND e.ele_id=r.ele_id");
 		//$test1 = mysql_query("select ele_id from eleves where ele_id='$ele_id'");
@@ -187,6 +188,11 @@ echo "</form>";
 			$del=@mysqli_query($GLOBALS["mysqli"], "delete from responsables2 where pers_id='$pers_id'");
 			$del=@mysqli_query($GLOBALS["mysqli"], "delete from resp_pers where pers_id='$pers_id'");
 			echo "Le responsable ".$prenom_resp." ".$nom_resp." a été supprimé de la base.<br />";
+
+			if($login_resp!='') {
+				$sql="DELETE FROM engagements_user WHERE login ='$login_resp';";
+				$del_eng=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
 
 			// L'adresse héberge-t-elle encore un représentant d'élève de l'établissement?
 			$sql="SELECT * FROM resp_adr ra, eleves e, responsables2 r, resp_pers rp WHERE

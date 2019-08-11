@@ -150,9 +150,9 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[1] = "SELECT * FROM eleves WHERE ereno='$cible1'";
     $req[1] = "UPDATE eleves SET ereno='' WHERE ereno='$cible1'";
 
-	$mess[] = "Table engagements_user :";
-	$test_nb[] = "SELECT * FROM engagements_user WHERE login ='$cible1'";
-	$req[] = "DELETE FROM engagements_user WHERE login ='$cible1'";
+	//$mess[] = "Table engagements_user :";
+	//$test_nb[] = "SELECT * FROM engagements_user WHERE login ='$cible1'";
+	//$req[] = "DELETE FROM engagements_user WHERE login ='$cible1'";
 
     break;
 
@@ -470,7 +470,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[4] = "SELECT * FROM j_eleves_professeurs WHERE id_classe ='$cible1'";
     $req[4] = "DELETE FROM j_eleves_professeurs WHERE id_classe ='$cible1'";
 
-    $nombre_req = 5;
+    $mess[5] = "Table de jointure engagements/classe :";
+    $test_nb[5] = "SELECT * FROM engagements_user WHERE id_type='id_classe' AND valeur='$cible1';";
+    $req[5] = "DELETE FROM engagements_user WHERE id_type='id_classe' AND valeur='$cible1';";
+
+    $nombre_req = 6;
 
 	$test_existence=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'periodes_observatoire';");
 	if(mysqli_num_rows($test_existence)>0){

@@ -924,38 +924,40 @@ else {
 		}
 
 		$chaine_engagements_hors_classe="";
-		foreach($tab_engagements_classe['login_user'] as $current_login => $tab_id_engagement) {
-			$tmp_info_user=get_info_user($current_login);
-			if((!in_array($current_login, $tab_resp))&&(isset($tmp_info_user['statut']))&&($tmp_info_user['statut']=='responsable')) {
-				$chaine_engagements_hors_classe.="
-		<tr>
-			<td><a href='saisie_engagements_user.php?login_user=".$current_login."' title=\"Saisir les engagements de cet utilisateur, même hors de la classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($current_login)."</a></td>";
-
-				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
+		if(isset($tab_engagements_classe['login_user'])) {
+			foreach($tab_engagements_classe['login_user'] as $current_login => $tab_id_engagement) {
+				$tmp_info_user=get_info_user($current_login);
+				if((!in_array($current_login, $tab_resp))&&(isset($tmp_info_user['statut']))&&($tmp_info_user['statut']=='responsable')) {
 					$chaine_engagements_hors_classe.="
-			<td>\n";
-					if(($_SESSION['statut']=='administrateur')||
-					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
-					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
-					(($_SESSION['statut']=='professeur')&&(isset($tab_engagements['indice'][$loop]['SaisiePP']))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes'))
-					) {
-						$checked="";
-						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
-							$checked=" checked";
-						}
-						$chaine_engagements_hors_classe.="<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$current_login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' />";
-					}
-					else {
-						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
-							$chaine_engagements_hors_classe.="<img src='../images/enabled.png' class='icone20' />";
-						}
-					}
-					$chaine_engagements_hors_classe.="</td>\n";
-				}
+			<tr>
+				<td><a href='saisie_engagements_user.php?login_user=".$current_login."' title=\"Saisir les engagements de cet utilisateur, même hors de la classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($current_login)."</a></td>";
 
-				$chaine_engagements_hors_classe.="
-		</tr>";
-				$cpt++;
+					for($loop=0;$loop<$nb_tous_engagements;$loop++) {
+						$chaine_engagements_hors_classe.="
+				<td>\n";
+						if(($_SESSION['statut']=='administrateur')||
+						(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
+						(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
+						(($_SESSION['statut']=='professeur')&&(isset($tab_engagements['indice'][$loop]['SaisiePP']))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes'))
+						) {
+							$checked="";
+							if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+								$checked=" checked";
+							}
+							$chaine_engagements_hors_classe.="<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$current_login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' />";
+						}
+						else {
+							if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+								$chaine_engagements_hors_classe.="<img src='../images/enabled.png' class='icone20' />";
+							}
+						}
+						$chaine_engagements_hors_classe.="</td>\n";
+					}
+
+					$chaine_engagements_hors_classe.="
+			</tr>";
+					$cpt++;
+				}
 			}
 		}
 

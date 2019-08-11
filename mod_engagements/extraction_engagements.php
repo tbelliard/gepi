@@ -96,9 +96,15 @@ if(isset($action)) {
 				$tab_user=get_info_eleve($login_user[$loop]);
 			}
 			else {
-				$tab_user['nom']='Inconnu';
-				$tab_user['prenom']='Inconnu';
-				$tab_user['statut']='Inconnu';
+				if(!isset($tab_user['nom'])) {
+					$tab_user['nom']='Inconnu';
+				}
+				if(!isset($tab_user['prenom'])) {
+					$tab_user['prenom']='Inconnu';
+				}
+				if(!isset($tab_user['statut'])) {
+					$tab_user['statut']='Inconnu';
+				}
 			}
 
 			$tab=get_tab_engagements_user($login_user[$loop]);
@@ -108,15 +114,29 @@ if(isset($action)) {
 			print_r($tab);
 			echo "</pre>";
 			*/
+
 			$classe="";
 			$engagements="";
 			if($tab_user['statut']=="eleve") {
 				$classe=$tab_user['classes'];
 
+				$cpt_eng=0;
 				for($loop2=0;$loop2<count($tab['indice']);$loop2++) {
-					if($loop2>0) {$engagements.=", ";}
-					$engagements.=$tab['indice'][$loop2]['nom_engagement'];
-					if($tab['indice'][$loop2]['type']=='id_classe') {$engagements.=" (".get_nom_classe($tab['indice'][$loop2]['valeur']).")";}
+					if($cpt_eng>0) {$engagements.=", ";}
+
+					if($tab['indice'][$loop2]['type']=='id_classe') {
+						$tmp_nom_classe=get_nom_classe($tab['indice'][$loop2]['valeur']);
+						// Il y a un souci de suppression des engagements liés à une classe lors de la suppression de classe.
+						if($tmp_nom_classe!='') {
+							$engagements.=$tab['indice'][$loop2]['nom_engagement'];
+							$engagements.=" (".$tmp_nom_classe.")";
+							$cpt_eng++;
+						}
+					}
+					else {
+						$engagements.=$tab['indice'][$loop2]['nom_engagement'];
+						$cpt_eng++;
+					}
 				}
 			}
 			else {
