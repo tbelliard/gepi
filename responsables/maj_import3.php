@@ -12504,7 +12504,10 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								}
 							}
 
+							$tmp_login_ele=get_valeur_champ('eleves', "ele_id='".$lig->ele_id."'", 'login');
+
 							while($lig2=mysqli_fetch_object($res2)) {
+
 								if(!$resp_legal_1) {
 									$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig2->pers_id."';";
 									$resp_legal_1=true;
@@ -12519,13 +12522,13 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								//echo "$sql<br />";
 								$update=mysqli_query($mysqli, $sql);
 								if(!$update) {
-									echo "<span style='color:red'>ERREUR lors de la mise à jour de la responsabilité pour <a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a> sur l'élève <a href='../eleves/modify_eleve.php?ele_id=".$lig->ele_id."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a></span><br />";
+									echo "<span style='color:red'>ERREUR lors de la mise à jour de la responsabilité pour <a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a> sur l'élève <a href='../eleves/modify_eleve.php?eleve_login=".$tmp_login_ele."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a></span><br />";
 								}
 								else {
 									if($liste_modif!='') {
 										$liste_modif.=', ';
 									}
-									$liste_modif.="<a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a>/<a href='../eleves/modify_eleve.php?ele_id=".$lig->ele_id."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a>";
+									$liste_modif.="<a href='modify_resp.php?pers_id=".$lig2->pers_id."' target='_blank'>".civ_nom_prenom_from_pers_id($lig2->pers_id)."</a>/<a href='../eleves/modify_eleve.php?eleve_login=".$tmp_login_ele."' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id)."</a>";
 								}
 								$nb_resp_deja++;
 							}
