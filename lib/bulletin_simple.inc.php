@@ -149,6 +149,7 @@ $tab_modif_app_proposees=array();
 $tab_mes_groupes=array();
 
 $tab_modif_app_aid_proposees=array();
+global $tab_mes_aid;
 $tab_mes_aid=array();
 
 if($_SESSION['statut']=='professeur') {
