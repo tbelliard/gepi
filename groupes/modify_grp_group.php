@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -250,7 +250,7 @@ if((isset($mode))&&($mode=='valider_ajout_user')&&(isset($id_grp_groupe))) {
 		$msg.="Erreur lors du nettoyage préalable des utilisateurs adminstrateurs du $groupe_de_groupes n°$id_grp_groupe.<br />";
 	}
 	else {
-		$login_user=isset($_POST['login_user']) ? $_POST['login_user'] : "";
+		$login_user=isset($_POST['login_user']) ? $_POST['login_user'] : array();
 
 		$cpt=0;
 		for($loop=0;$loop<count($login_user);$loop++) {
