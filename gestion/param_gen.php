@@ -1271,13 +1271,14 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<hr style='width:200px;' />
-	<h3 class='bold'>Contacter l'administrateur (une fois connecté)</h3>
+	<h3 class='bold'>Contacter l'administrateur</h3>
 
 	<p class="ligneCaps">
 		<label for='gepiAdminAdressFormHidden' style='cursor: pointer;display: table-cell; width: 70%; vertical-align: middle;' title="Une fois connecté, un utilisateur (personnel, élève, responsable) dispose dans la barre d'entête, d'un lien intitulé *Contacter l'administrateur*.
 Dans ce formulaire, l'adresse mail de l'administrateur n'apparait pas par défaut.
 Vous avez la possibilité de donner l'accès à cette adresse.">
-			Faire apparaitre l'adresse de l'administrateur dans le formulaire [Contacter l'administrateur] :
+			Faire apparaitre l'adresse de l'administrateur dans le formulaire [Contacter l'administrateur] :<br />
+			<em style="font-size: small;">(en mode connecté seulement, pas dans le Cahier de textes public)</em>
 		</label>
 		<span class="cellTab plusPetit">
 			<input type="checkbox" name="gepiAdminAdressFormHidden" id="gepiAdminAdressFormHidden" value="n"
@@ -1289,7 +1290,7 @@ Vous avez la possibilité de donner l'accès à cette adresse.">
 	</p>
 
 	<p class="ligneCaps">
-		<label for='contact_admin_mailto' class="cellTab70" title="Le formulaire *Contacter l'administrateur* proposé en barre d'entête une fois connecté peut-être remplacé par un lien mailto.
+		<label for='contact_admin_mailto' class="cellTab70" title="Le formulaire *Contacter l'administrateur* proposé en barre d'entête peut-être remplacé par un lien mailto.
 Si votre serveur ne permet pas l'envoi de mail, c'est la seule solution viable.
 Inconvénient pour l'utilisateur, il doit disposer d'un client mail configuré sur la machine qu'il utilise.
 S'il est sur sa propre machine, le client mail sera probablement configuré avec son adresse mail, les serveurs smtp et pop ou imap,...
