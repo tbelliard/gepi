@@ -548,6 +548,11 @@ Patientez pendant l'extraction des données... merci.
 						if(document.getElementById('patience')) {
 							document.getElementById('patience').style.display='none';
 						}
+
+						if(document.getElementById('spinner_chargement')) {
+							//setTimeout(\"document.getElementById('spinner_chargement').style.display='none'\", 2000);
+							document.getElementById('spinner_chargement').style.display='none';
+						}
 					</script>\n";
 					require_once("../lib/footer.inc.php");
 					die();
@@ -601,6 +606,11 @@ Patientez pendant l'extraction des données... merci.
 					echo "<script type='text/javascript'>
 						if(document.getElementById('patience')) {
 							document.getElementById('patience').style.display='none';
+						}
+
+						if(document.getElementById('spinner_chargement')) {
+							//setTimeout(\"document.getElementById('spinner_chargement').style.display='none'\", 2000);
+							document.getElementById('spinner_chargement').style.display='none';
 						}
 					</script>\n";
 					require_once("../lib/footer.inc.php");
