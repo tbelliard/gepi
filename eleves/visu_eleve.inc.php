@@ -538,15 +538,20 @@ Patientez pendant l'extraction des données... merci.
 		}
 		elseif($_SESSION['statut']=='scolarite') {
 			if (getSettingValue("GepiAccesTouteFicheEleveScolarite")!='yes') {
-			    $sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
+				$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
 
-			    $test=mysqli_query($GLOBALS["mysqli"], $sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			    if(mysqli_num_rows($test)==0) {
-				    echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
-				    require_once("../lib/footer.inc.php");
-				    die();
-			    }
+				if(mysqli_num_rows($test)==0) {
+					echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
+					echo "<script type='text/javascript'>
+						if(document.getElementById('patience')) {
+							document.getElementById('patience').style.display='none';
+						}
+					</script>\n";
+					require_once("../lib/footer.inc.php");
+					die();
+				}
 			}
 
 			$acces_eleve="y";
@@ -588,14 +593,19 @@ Patientez pendant l'extraction des données... merci.
 		}
 		elseif($_SESSION['statut']=='cpe') {
 			if (getSettingValue("GepiAccesTouteFicheEleveCpe")!='yes') {
-			    $sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
-			    $test=mysqli_query($GLOBALS["mysqli"], $sql);
+				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			    if(mysqli_num_rows($test)==0) {
-				    echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
-				    require_once("../lib/footer.inc.php");
-				    die();
-			    }
+				if(mysqli_num_rows($test)==0) {
+					echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
+					echo "<script type='text/javascript'>
+						if(document.getElementById('patience')) {
+							document.getElementById('patience').style.display='none';
+						}
+					</script>\n";
+					require_once("../lib/footer.inc.php");
+					die();
+				}
 			}
 
 			$acces_eleve="y";
