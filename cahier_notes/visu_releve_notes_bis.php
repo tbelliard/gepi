@@ -2,7 +2,7 @@
 /*
 *
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -736,7 +736,8 @@ dans l'extraction DATE à DATE.\"><a href=\"#\" onclick=\"document.getElementByI
 				//echo "<td style='background-color:lightgreen;' onclick=\"alterne_coche('tab_periode_num_$j')\">";
 				echo "<td style='background-color:lightgreen;'>";
 				//echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"radio\" name=\"periode\" value='$j' /></label>\n";
-				if($date_derniere_evaluation[$j]!="9999-12-31 00:00:00") {
+				if(($date_derniere_evaluation[$j]!="9999-12-31 00:00:00")&&
+				($date_derniere_evaluation[$j]!="0000-00-00 00:00:00")) {
 					$tmp_date=formate_date($date_1ere_evaluation[$j]);
 					echo "<span style='font-size:x-small' title=\"Date de la première évaluation de la période $j pour les classes sélectionnées.
 
