@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -289,7 +289,7 @@ else {
 	// Récupération de la liste des classes d'un professeur
 	if($_SESSION['statut']=='professeur') {
 		$tab_classe_du_prof=array();
-		$sql="SELECT c.classe, jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp, classes c WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgc.id_classe=c.id ORDER BY c.classe;";
+		$sql="SELECT DISTINCT c.classe, jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp, classes c WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgc.id_classe=c.id ORDER BY c.classe;";
 
 		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_classe)>0) {
