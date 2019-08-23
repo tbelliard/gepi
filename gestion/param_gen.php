@@ -1053,7 +1053,17 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 ?>
+<div id='fixe' class='fieldset_opacite50' style='padding:0.2em;'>
+	<a href="#debut">Début de page</a><br />
+	<a href="#form2">Formulaire logo</a><br />
+	<a href="#form3" title="Statistiques PHPMyVisite">Formulaire PMV</a><br />
+	<a href="#form4">Formulaire GIT</a><br />
+	<a href="#gepi_en_production" title="La présente installation est-elle une installation de test ou un Gepi en production.">Formulaire prod/test</a><br />
+	<a href="#phpmailer">Formulaire PHPmailer</a><br />
+	<a href="#config_envoi_sms">Formulaire SMS</a><br />
+</div>
 
+<a name='debut'></a>
 <form action="param_gen.php" method="post" id="form1" style="width: 100%;">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 
@@ -2482,6 +2492,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 </script>
 
 <hr />
+<a name='form2'></a>
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form2" style="width: 100%;">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p class="cellTab70">
@@ -2526,7 +2537,7 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 <?php } ?>
 	</p>
 
-	<p>
+	<p style='text-indent:-3em; margin-left:3em'>
 		<em>Remarques&nbsp;:</em>
 		<br />- le fichier sera renommé logo_etab.xxx (<em>où l'extension xxx est fonction du type</em>)
 		<br />- les transparences sur les images PNG, GIF ne permettent pas une impression PDF 
@@ -2545,6 +2556,7 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 
 <hr />
 
+<a name='form3'></a>
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form3" style="width: 100%;">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
@@ -2585,10 +2597,9 @@ echo add_token_field();
 		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>
 
-	<p>
+	<p style='text-indent:-3em; margin-left:3em'>
 		<em>Remarque:</em>
-	</p>
-	<p>
+	<br />
 		Il arrive que ce test de présence provoque un affichage d'erreur (<em>à propos de pmv.php</em>).
 		Dans ce cas, désactivez simplement le test.
 	</p>
@@ -2596,6 +2607,7 @@ echo add_token_field();
 </form>
 <hr />
 
+<a name='form4'></a>
 <form enctype="multipart/form-data" action="param_gen.php" method="post" id="form4" style="width: 100%;">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
@@ -2640,10 +2652,9 @@ echo add_token_field();
 		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>
 
-	<p>
+	<p style='text-indent:-3em; margin-left:3em'>
 		<em>Remarque:</em>
-	</p>
-	<p>
+	<br />
 		git est l'outil de gestion de versions de Gepi.<br />
 		Si git est installé sur votre serveur et accessible par le serveur web, alors vous pouvez afficher dans l'entête administrateur sur la page d'accueil, la date de la révision en place.<br />
 		Cela peut être commode pour apporter des précisions sur votre version quand vous posez une question sur la liste gepi-users, mais l'absence éventuelle de git n'enlèvera aucune fonctionnalité à votre Gepi.
@@ -2700,10 +2711,9 @@ echo add_token_field();
 		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>
 
-	<p>
+	<p style='text-indent:-3em; margin-left:3em'>
 		<em>Remarque:</em>
-	</p>
-	<p>
+	<br />
 		Sur un serveur Gepi en production, avec des données que l'on ne veut pas perdre accidentellement, on désactive l'accès à quelques liens sensibles de Gepi comme <strong>Effacer la base</strong> et <strong>Données de test</strong>.<br />
 		Sur un Gepi de test en revanche, on peut souhaiter effectuer ces actions sensibles.
 	</p>
