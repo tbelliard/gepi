@@ -235,6 +235,15 @@ if ( $action === 'visualiser' )
 	}
 }
 
+function admin_horaire_ouverture_tronque_secondes($chaine) {
+	if(preg_match("/^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$/", $chaine)) {
+		return preg_replace("/:[0-9]{1,2}$/", "", $chaine, 1);
+	}
+	else {
+		return $chaine;
+	}
+}
+
 // ===================================================================
 //
 //						Affichage de la page
@@ -323,7 +332,7 @@ require_once("./menu.inc.new.php");
 
 	    </tr>
 	    <tr class="couleur_ligne_1">
-	      <td class="tab_td_donnee_cote">Ouvert</td>
+	      <td class="tab_td_donnee_cote" style="color:black">Ouvert</td>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
 		      <td><input name="ouvert[<?php echo $i; ?>]" value="1" type="checkbox" <?php if ( isset($ouvert[$i]) and $ouvert[$i] === '1' ) { ?>checked="checked"<?php } ?> /><?php $i = $i + 1; ?></td>
@@ -332,28 +341,34 @@ require_once("./menu.inc.new.php");
 		?>
 	    </tr>
 	    <tr class="couleur_ligne_2">
-	      <td class="tab_td_donnee_cote">Ouverture &agrave;</td>
+	      <td class="tab_td_donnee_cote" style="color:black">Ouverture &agrave;</td>
 	      <?php $i = '0';
-		while ( $i < '7' ) { ?>
-		      <td><input name="ouverture[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($ouverture[$i]) and !empty($ouverture[$i]) ) { echo $ouverture[$i]; } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
+		while ( $i < '7' ) { 
+			// maxlength="5"
+		?>
+		      <td><input name="ouverture[<?php echo $i; ?>]" id="ouverture_<?php echo $i; ?>" size="5" value="<?php if ( isset($ouverture[$i]) and !empty($ouverture[$i]) and $ouverture[$i]!='00:00:00') { echo admin_horaire_ouverture_tronque_secondes($ouverture[$i]); } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
 		<?php } ?>
 	    </tr>
 	    <tr class="couleur_ligne_1">
-	      <td class="tab_td_donnee_cote">Fermeture à</td>
+	      <td class="tab_td_donnee_cote" style="color:black">Fermeture à</td>
 	      <?php $i = '0';
-		while ( $i < '7' ) { ?>
-		      <td><input name="fermeture[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($fermeture[$i]) and !empty($fermeture[$i]) ) { echo $fermeture[$i]; } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
+		while ( $i < '7' ) { 
+			// maxlength="5"
+		?>
+		      <td><input name="fermeture[<?php echo $i; ?>]" id="fermeture_<?php echo $i; ?>" size="5" value="<?php if ( isset($fermeture[$i]) and !empty($fermeture[$i]) and $fermeture[$i]!='00:00:00') { echo admin_horaire_ouverture_tronque_secondes($fermeture[$i]); } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
 		<?php } ?>
 	    </tr>
 	    <tr class="couleur_ligne_2">
-	      <td class="tab_td_donnee_cote">Temps de pause</td>
+	      <td class="tab_td_donnee_cote" style="color:black">Temps de pause</td>
 	      <?php $i = '0';
-		while ( $i < '7' ) { ?>
-		      <td><input name="pause[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($pause[$i]) and !empty($pause[$i]) ) { echo $pause[$i]; } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
+		while ( $i < '7' ) { 
+			// maxlength="5"
+		?>
+		      <td><input name="pause[<?php echo $i; ?>]" id="pause_<?php echo $i; ?>" size="5" value="<?php if ( isset($pause[$i]) and !empty($pause[$i]) and $pause[$i]!='00:00:00') { echo admin_horaire_ouverture_tronque_secondes($pause[$i]); } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>
 		<?php } ?>
 	    </tr>
 	    <tr class="couleur_ligne_1">
-	      <td class="tab_td_donnee_cote">Temps Jour</td>
+	      <td class="tab_td_donnee_cote" style="color:black">Temps Jour</td>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
 		      <td><?php if ( isset($temps_total_ouverture[$i]) and !empty($temps_total_ouverture[$i]) ) { echo $temps_total_ouverture[$i]; } $i = $i + 1; ?></td>
@@ -366,7 +381,33 @@ require_once("./menu.inc.new.php");
 	</table>
 	<input type="hidden" name="action_sql" value="modifier" />
 	<br/>
+	<div style='float:right;width:32px;'>
+		<a href='#' onclick="admin_horaire_ouverture_8h_17h();return false;" title="Mettre tous les horaires à 8H-17H avec un temps de pause de 1H30.">
+			<img src='../images/icons/wizard.png' class='icone16' />
+		</a>
+		<script type='text/javascript'>
+			function admin_horaire_ouverture_8h_17h() {
+				for(i=0;i<7;i++) {
+					if(document.getElementById('ouverture_'+i)) {
+						document.getElementById('ouverture_'+i).value='08:00';
+					}
+					if(document.getElementById('fermeture_'+i)) {
+						document.getElementById('fermeture_'+i).value='17:00';
+					}
+					if(document.getElementById('pause_'+i)) {
+						document.getElementById('pause_'+i).value='01:30';
+					}
+				}
+				
+			}
+		</script>
+	</div>
 	<center><input type="submit" name="submit" value="Enregistrer" /></center>
+	<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>Les horaires doivent être au format HH:MM soit par exemple pour 8H, une chaine 08:00.</li>
+		<li>Le temps de pause dans la journée sera probablement de 1H30 ou 2H, soit des chaines 01:30 ou 02:00.</li>
+	</ul>
   </form>
 <?php /* fin de gestion des horaire d'ouverture */ 	?>
 
