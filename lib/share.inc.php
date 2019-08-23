@@ -19178,7 +19178,7 @@ function get_tab_acces_tel_ele() {
 			if(getSettingAOui('GepiAccesTelElevesRespProf')) {
 				$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg,
 									j_groupes_professeurs jgp
-								WHERE jeg.id_groupe=jgp.lid_groupe AND 
+								WHERE jeg.id_groupe=jgp.id_groupe AND 
 									jgp.login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -19238,7 +19238,7 @@ function get_tab_acces_mail_ele() {
 			if(getSettingAOui('GepiAccesMailElevesRespProf')) {
 				$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg,
 									j_groupes_professeurs jgp
-								WHERE jeg.id_groupe=jgp.lid_groupe AND 
+								WHERE jeg.id_groupe=jgp.id_groupe AND 
 									jgp.login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -19302,7 +19302,7 @@ function get_tab_acces_adresse_resp() {
 									j_groupes_professeurs jgp
 								WHERE r.ele_id=e.ele_id AND 
 									e.login=jeg.login AND 
-									jeg.id_groupe=jgp.lid_groupe AND 
+									jeg.id_groupe=jgp.id_groupe AND 
 									jgp.login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -19370,7 +19370,7 @@ function get_tab_acces_tel_resp() {
 									j_groupes_professeurs jgp
 								WHERE r.ele_id=e.ele_id AND 
 									e.login=jeg.login AND 
-									jeg.id_groupe=jgp.lid_groupe AND 
+									jeg.id_groupe=jgp.id_groupe AND 
 									jgp.login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -19438,7 +19438,7 @@ function get_tab_acces_mail_resp() {
 									j_groupes_professeurs jgp
 								WHERE r.ele_id=e.ele_id AND 
 									e.login=jeg.login AND 
-									jeg.id_groupe=jgp.lid_groupe AND 
+									jeg.id_groupe=jgp.id_groupe AND 
 									jgp.login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
