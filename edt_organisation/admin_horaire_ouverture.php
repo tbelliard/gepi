@@ -76,17 +76,34 @@ function convert_minutes_heures($minutes)
 }
 
 if (empty($_GET['action_sql']) and empty($_POST['action_sql'])) {$action_sql="";}
-   else { if (isset($_GET['action_sql'])) {$action_sql=$_GET['action_sql'];} if (isset($_POST['action_sql'])) {$action_sql=$_POST['action_sql'];} }
+else { if (isset($_GET['action_sql'])) {$action_sql=$_GET['action_sql'];} if (isset($_POST['action_sql'])) {$action_sql=$_POST['action_sql'];} }
+
 if (empty($_GET['action']) and empty($_POST['action'])) {exit();}
-   else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
-if (empty($_GET['ouvert']) and empty($_POST['ouvert'])) { $ouvert = ''; }
-   else { if (isset($_GET['ouvert'])) { $ouvert = $_GET['ouvert']; } if (isset($_POST['ouvert'])) { $ouvert = $_POST['ouvert']; } }
-if (empty($_GET['ouverture']) and empty($_POST['ouverture'])) { $ouverture = ''; }
-   else { if (isset($_GET['ouverture'])) { $ouverture = $_GET['ouverture']; } if (isset($_POST['ouverture'])) { $ouverture = $_POST['ouverture']; } }
-if (empty($_GET['fermeture']) and empty($_POST['fermeture'])) { $fermeture = ''; }
-   else { if (isset($_GET['fermeture'])) { $fermeture = $_GET['fermeture']; } if (isset($_POST['fermeture'])) { $fermeture = $_POST['fermeture']; } }
-if (empty($_GET['pause']) and empty($_POST['pause'])) { $pause = ''; }
-   else { if (isset($_GET['pause'])) { $pause = $_GET['pause']; } if (isset($_POST['pause'])) { $pause = $_POST['pause']; } }
+else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
+if (empty($_GET['ouvert']) and empty($_POST['ouvert'])) {
+	$ouvert = '';
+}
+else { if (isset($_GET['ouvert'])) { $ouvert = $_GET['ouvert']; } if (isset($_POST['ouvert'])) { $ouvert = $_POST['ouvert']; } }
+
+if (empty($_GET['ouverture']) and empty($_POST['ouverture'])) { 
+	//$ouverture = '';
+	$ouverture = array();
+}
+else { if (isset($_GET['ouverture'])) { $ouverture = $_GET['ouverture']; } if (isset($_POST['ouverture'])) {
+	$ouverture = $_POST['ouverture']; } 
+}
+
+if (empty($_GET['fermeture']) and empty($_POST['fermeture'])) {
+	//$fermeture = '';
+	$fermeture = array();
+}
+else { if (isset($_GET['fermeture'])) { $fermeture = $_GET['fermeture']; } if (isset($_POST['fermeture'])) { $fermeture = $_POST['fermeture']; } }
+
+if (empty($_GET['pause']) and empty($_POST['pause'])) {
+	//$pause = '';
+	$pause = array();
+}
+else { if (isset($_GET['pause'])) { $pause = $_GET['pause']; } if (isset($_POST['pause'])) { $pause = $_POST['pause']; } }
 
 
 // tableau semaine
@@ -116,9 +133,11 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 	{
 		if( isset($ouvert[$i]) and !empty($ouvert[$i]) )
 		{
-			$test_jour = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."horaires_etablissement
-												WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
-												date_horaire_etablissement = '0000-00-00'"),0);
+			$sql="SELECT count(*) FROM ".$prefix_base."horaires_etablissement
+					WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
+					date_horaire_etablissement = '0000-00-00';";
+			//echo "$sql<br />";
+			$test_jour = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 			$date_horaire_etablissement = '';
 			$jour_horaire_etablissement = $tab_sem[$i];
 			$ouverture_horaire_etablissement = $ouverture[$i];
@@ -130,11 +149,12 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 				// 20170917
 				$requete = "INSERT INTO ".$prefix_base."horaires_etablissement
 									(date_horaire_etablissement, jour_horaire_etablissement, ouverture_horaire_etablissement, fermeture_horaire_etablissement, pause_horaire_etablissement, ouvert_horaire_etablissement, num_jour_table_horaires_etablissement)
-									VALUES ('".$date_horaire_etablissement."', '".$jour_horaire_etablissement."', '".$ouverture_horaire_etablissement."', '".$fermeture_horaire_etablissement."', '".$pause_horaire_etablissement."', '".$ouvert_horaire_etablissement."', '".$i."')";
+									VALUES ('".$date_horaire_etablissement."', '".$jour_horaire_etablissement."', '".$ouverture_horaire_etablissement."', '".$fermeture_horaire_etablissement."', '".$pause_horaire_etablissement."', '".$ouvert_horaire_etablissement."', '".$i."');";
 			}
 			if ( $test_jour != '0' ) {
-				$requete = "UPDATE ".$prefix_base."horaires_etablissement SET date_horaire_etablissement = '".$date_horaire_etablissement."', jour_horaire_etablissement = '".$jour_horaire_etablissement."', ouverture_horaire_etablissement = '".$ouverture_horaire_etablissement."', fermeture_horaire_etablissement = '".$fermeture_horaire_etablissement."', pause_horaire_etablissement = '".$pause_horaire_etablissement."', ouvert_horaire_etablissement = '".$ouvert_horaire_etablissement."', num_jour_table_horaires_etablissement='".$i."' WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00'";
+				$requete = "UPDATE ".$prefix_base."horaires_etablissement SET date_horaire_etablissement = '".$date_horaire_etablissement."', jour_horaire_etablissement = '".$jour_horaire_etablissement."', ouverture_horaire_etablissement = '".$ouverture_horaire_etablissement."', fermeture_horaire_etablissement = '".$fermeture_horaire_etablissement."', pause_horaire_etablissement = '".$pause_horaire_etablissement."', ouvert_horaire_etablissement = '".$ouvert_horaire_etablissement."', num_jour_table_horaires_etablissement='".$i."' WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00';";
 			}
+			//echo "$requete<br />";
 			mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 			if($chaine_jours_ouverts!="") {$chaine_jours_ouverts.=",";}
@@ -145,8 +165,9 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 
 		} else{
 			// On teste si le jour en question existe et on passe à 0 le dernier champ
-			$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM horaires_etablissement
-										WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' LIMIT 1");
+			$sql="SELECT * FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' LIMIT 1;";
+			//echo "$sql<br />";
+			$test = mysqli_query($GLOBALS["mysqli"], $sql);
 			$test_c = mysqli_num_rows($test);
 
 			if ($test_c == 1) {
@@ -159,6 +180,7 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 									ouvert_horaire_etablissement = '0'
 								WHERE jour_horaire_etablissement = '".$tab_sem[$i]."'
 								AND date_horaire_etablissement = '0000-00-00'";
+				//echo "$requete<br />";
 				mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			}
 		}
@@ -180,6 +202,7 @@ if ( $action === 'visualiser' )
 {
 	$i = '';
 	$requete = "SELECT * FROM ".$prefix_base."horaires_etablissement WHERE date_horaire_etablissement = '0000-00-00'";
+	//echo "$requete<br />";
 	$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while ( $donnee = mysqli_fetch_array($resultat)) {
 		/*
@@ -188,18 +211,19 @@ if ( $action === 'visualiser' )
 		echo "</pre>";
 		*/
 		$jour = $donnee['jour_horaire_etablissement'];
+		//echo "\$jour=$jour<br />";
 		if(isset($tab_sem_inv[$jour])) {
 			$i = $tab_sem_inv[$jour];
 			//echo "\$i=$i<br />";
 			if( $donnee['ouverture_horaire_etablissement'] != '00:00:00' ) {
-				$ouverture[$i] = $donnee['ouverture_horaire_etablissement'];
+				$ouverture[$i] = (string)$donnee['ouverture_horaire_etablissement'];
 			}
 			else {
 				//$ouverture[$i] = '';
 				$ouverture[$i] = '00:00:00';
 			}
 			if( $donnee['fermeture_horaire_etablissement'] != '00:00:00' ) {
-				$fermeture[$i] = $donnee['fermeture_horaire_etablissement'];
+				$fermeture[$i] = (string)$donnee['fermeture_horaire_etablissement'];
 			}
 			else {
 				//$fermeture[$i] = '';
@@ -207,12 +231,18 @@ if ( $action === 'visualiser' )
 			}
 			//echo "\$donnee['pause_horaire_etablissement']=".$donnee['pause_horaire_etablissement']."<br />";
 			if( $donnee['pause_horaire_etablissement'] != '00:00:00' ) { 
-				$pause[$i] = $donnee['pause_horaire_etablissement']; 
+				$pause[$i] = (string)$donnee['pause_horaire_etablissement']; 
 			} 
 			else { 
 				//$pause[$i] = '';
 				$pause[$i] = '00:00:00';
 			}
+
+			/*
+			echo "\$ouverture[$i]=".$ouverture[$i]."<br />";
+			echo "\$fermeture[$i]=".$fermeture[$i]."<br />";
+			echo "\$pause[$i]=".$pause[$i]."<br />";
+			*/
 
 			$ouvert[$i] = $donnee['ouvert_horaire_etablissement'];
 
