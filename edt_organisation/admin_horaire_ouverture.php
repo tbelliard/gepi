@@ -191,8 +191,20 @@ if ( $action === 'visualiser' )
 		if(isset($tab_sem_inv[$jour])) {
 			$i = $tab_sem_inv[$jour];
 			//echo "\$i=$i<br />";
-			if( $donnee['ouverture_horaire_etablissement'] != '00:00:00' ) { $ouverture[$i] = $donnee['ouverture_horaire_etablissement']; } else { $ouverture[$i] = ''; }
-			if( $donnee['fermeture_horaire_etablissement'] != '00:00:00' ) { $fermeture[$i] = $donnee['fermeture_horaire_etablissement']; } else { $fermeture[$i] = ''; }
+			if( $donnee['ouverture_horaire_etablissement'] != '00:00:00' ) {
+				$ouverture[$i] = $donnee['ouverture_horaire_etablissement'];
+			}
+			else {
+				//$ouverture[$i] = '';
+				$ouverture[$i] = '00:00:00';
+			}
+			if( $donnee['fermeture_horaire_etablissement'] != '00:00:00' ) {
+				$fermeture[$i] = $donnee['fermeture_horaire_etablissement'];
+			}
+			else {
+				//$fermeture[$i] = '';
+				$fermeture[$i] = '00:00:00';
+			}
 			//echo "\$donnee['pause_horaire_etablissement']=".$donnee['pause_horaire_etablissement']."<br />";
 			if( $donnee['pause_horaire_etablissement'] != '00:00:00' ) { 
 				$pause[$i] = $donnee['pause_horaire_etablissement']; 
@@ -201,7 +213,9 @@ if ( $action === 'visualiser' )
 				//$pause[$i] = '';
 				$pause[$i] = '00:00:00';
 			}
+
 			$ouvert[$i] = $donnee['ouvert_horaire_etablissement'];
+
 			if( $fermeture[$i] != '00:00:00' and $ouverture[$i] != '00:00:00' and $pause[$i] != '00:00:00' and $fermeture[$i] != '' and $ouverture[$i] != '' and $pause[$i] != '') {
 				$calcul = (convert_heures_minutes($fermeture[$i]) - convert_heures_minutes($ouverture[$i])) - convert_heures_minutes($pause[$i]);
 				$temps_total_ouverture[$i] = convert_minutes_heures($calcul);
