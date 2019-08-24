@@ -286,7 +286,11 @@ if (isset($data['modif_ok']) AND isset($data['nom_periode'])) {
 		}
 	}
 
-	$modif_periode = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_calendrier
+	/*
+	echo "<pre>";
+	print_r($data);
+	echo "</pre>";
+	$sql="UPDATE edt_calendrier
 				SET nom_calendrier = '".traitement_magic_quotes($data['nom_periode'])."',
 				classe_concerne_calendrier = '".$classes_concernees_insert."',
 				debut_calendrier_ts = '".$deb_ts."',
@@ -298,7 +302,23 @@ if (isset($data['modif_ok']) AND isset($data['nom_periode'])) {
 				numero_periode = '".$data['choix_periode']."',
 				etabferme_calendrier = '".$data['etabferme']."',
 				etabvacances_calendrier = '".$data['vacances']."'
-				WHERE id_calendrier = '".$data['modif_ok']."'")
+				WHERE id_calendrier = '".$data['modif_ok']."';";
+	*/
+	$sql="UPDATE edt_calendrier
+				SET nom_calendrier = '".$data['nom_periode']."',
+				classe_concerne_calendrier = '".$classes_concernees_insert."',
+				debut_calendrier_ts = '".$deb_ts."',
+				fin_calendrier_ts = '".$fin_ts."',
+				jourdebut_calendrier = '".$jourdebut."',
+				heuredebut_calendrier = '".$data['heure_debut']."',
+				jourfin_calendrier = '".$jourfin."',
+				heurefin_calendrier = '".$data['heure_fin']."',
+				numero_periode = '".$data['choix_periode']."',
+				etabferme_calendrier = '".$data['etabferme']."',
+				etabvacances_calendrier = '".$data['vacances']."'
+				WHERE id_calendrier = '".$data['modif_ok']."';";
+	//echo "$sql<br />";
+	$modif_periode = mysqli_query($GLOBALS["mysqli"], $sql)
 				OR DIE ('Erreur dans la modification');
 }
 
