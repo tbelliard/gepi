@@ -5271,7 +5271,12 @@ function affiche_tableau_vacances($id_classe="", $griser="n", $affiche_passe="y"
 	<tr".$passe.">
 		<th".$passe.">".$lig->nom_calendrier."</th>
 		<td>".french_strftime("%a %d/%m/%Y", $lig->debut_calendrier_ts)."</td>
-		<td>".french_strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."</td>
+		<td>
+			<!--
+			".french_strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."<br />
+			-->
+			".get_date_slash_from_mysql_date($lig->jourfin_calendrier." ".$lig->heurefin_calendrier, 'court')."
+		</td>
 	</tr>";
 				$nb_lignes++;
 			}
