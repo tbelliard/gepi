@@ -78,10 +78,19 @@ $nb_engagements=count($tab_engagements['indice']);
 
 $msg="";
 
+//debug_var();
+
 if(isset($action)) {
 	check_token();
 
 	$login_user=isset($_POST['login_user']) ? $_POST['login_user'] : array();
+
+	/*
+	echo "engagement_resp<pre>";
+	print_r($engagement_resp);
+	echo "</pre>";
+	echo "<hr />";
+	*/
 
 	if(count($login_user)==0) {
 		$msg="ERREUR : Aucun utilisateur n'a été sélectionné.<br />";
@@ -110,45 +119,118 @@ if(isset($action)) {
 			$tab=get_tab_engagements_user($login_user[$loop]);
 
 			/*
-			echo "<pre>";
+			echo "<hr />";
+			echo "tab_user<pre>";
+			print_r($tab_user);
+			echo "</pre>";
+			echo "<hr />";
+
+			echo "tab<pre>";
 			print_r($tab);
 			echo "</pre>";
+			echo "<hr />";
 			*/
 
 			$classe="";
 			$engagements="";
+			$tab_liste_engagements=array();
 			if($tab_user['statut']=="eleve") {
 				$classe=$tab_user['classes'];
 
 				$cpt_eng=0;
 				for($loop2=0;$loop2<count($tab['indice']);$loop2++) {
-					if($cpt_eng>0) {$engagements.=", ";}
+					if(in_array($tab['indice'][$loop2]['id_engagement'], $engagement_ele)) {
+						if($cpt_eng>0) {$engagements.=", ";}
 
-					if($tab['indice'][$loop2]['type']=='id_classe') {
-						$tmp_nom_classe=get_nom_classe($tab['indice'][$loop2]['valeur']);
-						// Il y a un souci de suppression des engagements liés à une classe lors de la suppression de classe.
-						if($tmp_nom_classe!='') {
-							$engagements.=$tab['indice'][$loop2]['nom_engagement'];
-							$engagements.=" (".$tmp_nom_classe.")";
+						if($tab['indice'][$loop2]['id_type']=='id_classe') {
+							$tmp_nom_classe=get_nom_classe($tab['indice'][$loop2]['valeur']);
+							// Il y a un souci de suppression des engagements liés à une classe lors de la suppression de classe.
+							if($tmp_nom_classe!='') {
+								//$engagements.=$tab['indice'][$loop2]['nom_engagement'];
+								//$engagements.=" (".$tmp_nom_classe.")";
+
+								if(!in_array($tab['indice'][$loop2]['nom_engagement']." (".$tmp_nom_classe.")", $tab_liste_engagements)) {
+									$tab_liste_engagements[]=$tab['indice'][$loop2]['nom_engagement']." (".$tmp_nom_classe.")";
+								}
+								$cpt_eng++;
+							}
+						}
+						else {
+							//$engagements.=$tab['indice'][$loop2]['nom_engagement'];
+
+							if(!in_array($tab['indice'][$loop2]['nom_engagement'], $tab_liste_engagements)) {
+								$tab_liste_engagements[]=$tab['indice'][$loop2]['nom_engagement'];
+							}
 							$cpt_eng++;
 						}
 					}
-					else {
-						$engagements.=$tab['indice'][$loop2]['nom_engagement'];
-						$cpt_eng++;
+				}
+			}
+			elseif($tab_user['statut']=="responsable") {
+				//$classe=$tab_user['classes'];
+				$classe='';
+				$tmp_tab_classe=array();
+
+				$cpt_eng=0;
+				for($loop2=0;$loop2<count($tab['indice']);$loop2++) {
+					//echo "\$tab['indice'][$loop2]['id_engagement']=".$tab['indice'][$loop2]['id_engagement']."<br />";
+					if(in_array($tab['indice'][$loop2]['id_engagement'], $engagement_resp)) {
+						if($cpt_eng>0) {$engagements.=", ";}
+
+						if($tab['indice'][$loop2]['id_type']=='id_classe') {
+							$tmp_nom_classe=get_nom_classe($tab['indice'][$loop2]['valeur']);
+							//echo "get_nom_classe(\$tab['indice'][$loop2]['valeur'])=".$tmp_nom_classe."<br />";
+
+							if($tmp_nom_classe!='') {
+								//echo $tab['indice'][$loop2]['nom_engagement']." (".$tmp_nom_classe.")<br />";
+								//$engagements.=$tab['indice'][$loop2]['nom_engagement'];
+								//$engagements.=" (".$tmp_nom_classe.")";
+
+								if(!in_array($tmp_nom_classe, $tmp_tab_classe)) {
+									if($classe!='') {
+										$classe.=", ";
+									}
+									$classe.=$tmp_nom_classe;
+									$tmp_tab_classe[]=$tmp_nom_classe;
+								}
+
+								if(!in_array($tab['indice'][$loop2]['nom_engagement']." (".$tmp_nom_classe.")", $tab_liste_engagements)) {
+									$tab_liste_engagements[]=$tab['indice'][$loop2]['nom_engagement']." (".$tmp_nom_classe.")";
+								}
+								$cpt_eng++;
+							}
+						}
+						else {
+							//$engagements.=$tab['indice'][$loop2]['nom_engagement'];
+							//echo $tab['indice'][$loop2]['nom_engagement']."<br />";
+
+							if(!in_array($tab['indice'][$loop2]['nom_engagement'], $tab_liste_engagements)) {
+								$tab_liste_engagements[]=$tab['indice'][$loop2]['nom_engagement'];
+							}
+							$cpt_eng++;
+						}
 					}
 				}
 			}
 			else {
 				$classe="";
-
-
 			}
+
+			$engagements='';
+			foreach($tab_liste_engagements as $key => $value) {
+				if($engagements!='') {
+					$engagements.=', ';
+				}
+				$engagements.=$value;
+			}
+
 			$csv.=$login_user[$loop].";".$tab_user['nom'].";".$tab_user['prenom'].";$classe;".$tab_user['statut'].";$engagements;\r\n";
 
 		}
 
 		//echo "<pre>$csv</pre>";
+
+		//die();
 
 		$nom_fic="fichier_engagements_".strftime("%Y%m%d_%H%M%S").".csv";
 		send_file_download_headers('text/x-csv',$nom_fic);
