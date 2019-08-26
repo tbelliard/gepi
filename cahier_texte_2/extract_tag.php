@@ -71,6 +71,8 @@ if((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui('acces_cdt_prof')
 	die("Le module n'est pas activé.");
 }
 
+//debug_var();
+
 //=======================
 // Pour éviter de refaire le choix des dates en revenant ici, on utilise la SESSION...
 $annee = strftime("%Y");
@@ -428,7 +430,7 @@ if(!isset($mode)) {
 	<p style='text-indent:-3em; margin-left:3em;'>Avec les tags suivants&nbsp;:<br />";
 		for($loop=0;$loop<count($tab_tag_type["indice"]);$loop++) {
 			$checked='';
-			if((isset($_SESSION['cdt_extract_tag']))&&(in_array($tab_tag_type["indice"][$loop]["id"], $_SESSION['cdt_extract_tag']['tag']))) {
+			if((isset($_SESSION['cdt_extract_tag']['tag']))&&(in_array($tab_tag_type["indice"][$loop]["id"], $_SESSION['cdt_extract_tag']['tag']))) {
 				$checked=' checked';
 			}
 
