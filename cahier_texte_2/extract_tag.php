@@ -467,7 +467,7 @@ if(!isset($mode)) {
 	<p style='text-indent:-3em; margin-left:3em;'>Se limiter aux notices des enseignements suivants&nbsp;:<br />";
 			for($loop=0;$loop<count($groups);$loop++) {
 				$checked='';
-				if((isset($_SESSION['cdt_extract_tag']))&&(in_array($groups[$loop]['id'], $_SESSION['cdt_extract_tag']['id_groupe']))) {
+				if((isset($_SESSION['cdt_extract_tag']['id_groupe']))&&(in_array($groups[$loop]['id'], $_SESSION['cdt_extract_tag']['id_groupe']))) {
 					$checked=' checked';
 				}
 
