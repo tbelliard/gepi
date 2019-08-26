@@ -89,12 +89,12 @@ $display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin']
 //=======================
 
 $mode=isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : NULL);
-$type_notice=isset($_POST["type_notice"]) ? $_POST["type_notice"] : array();
-$tag=isset($_POST["tag"]) ? $_POST["tag"] : array();
-$id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : array();
+$type_notice=isset($_POST["type_notice"]) ? $_POST["type_notice"] : (isset($_GET["type_notice"]) ? $_GET["type_notice"] : array());
+$tag=isset($_POST["tag"]) ? $_POST["tag"] : (isset($_GET["tag"]) ? $_GET["tag"] : array());
+$id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : array());
 
-$id_classe=isset($_POST["id_classe"]) ? $_POST["id_classe"] : array();
-$login_prof=isset($_POST["login_prof"]) ? $_POST["login_prof"] : array();
+$id_classe=isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : array());
+$login_prof=isset($_POST["login_prof"]) ? $_POST["login_prof"] : (isset($_GET["login_prof"]) ? $_GET["login_prof"] : array());
 
 $tab_tag_type=get_tab_tag_cdt();
 /*
@@ -525,7 +525,33 @@ else {
 	}
 	else {
 
-		echo "<div style='float:right; width:16px;'><a href='".$_SERVER['PHP_SELF']."?export=csv&mode=extraire' target='_blank' title=\"Exporter en CSV les dates, enseignements, tags...\"><img src='../images/icons/csv.png' class='icone16' alt='CSV'/></a></div>
+		echo "<div style='float:right; width:16px;'><a href='".$_SERVER['PHP_SELF']."?export=csv&mode=extraire";
+		if((isset($tag))&&(is_array($tag))) {
+			foreach($tag as $key => $value) {
+				echo "&tag[]=".$value;
+			}
+		}
+		if((isset($type_notice))&&(is_array($type_notice))) {
+			foreach($type_notice as $key => $value) {
+				echo "&type_notice[]=".$value;
+			}
+		}
+		if((isset($id_groupe))&&(is_array($id_groupe))) {
+			foreach($id_groupe as $key => $value) {
+				echo "&id_groupe[]=".$value;
+			}
+		}
+		if((isset($id_classe))&&(is_array($id_classe))) {
+			foreach($id_classe as $key => $value) {
+				echo "&id_classe[]=".$value;
+			}
+		}
+		if((isset($login_prof))&&(is_array($login_prof))) {
+			foreach($login_prof as $key => $value) {
+				echo "&login_prof[]=".$value;
+			}
+		}
+		echo "' target='_blank' title=\"Exporter en CSV les dates, enseignements, tags...\"><img src='../images/icons/csv.png' class='icone16' alt='CSV'/></a></div>
 <table class='boireaus boireaus_alt sortable resizable'>
 	<thead>
 		<tr>
