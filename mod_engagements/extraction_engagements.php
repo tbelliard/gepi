@@ -84,14 +84,12 @@ if(isset($action)) {
 	check_token();
 
 	$login_user=isset($_POST['login_user']) ? $_POST['login_user'] : array();
-
 	/*
 	echo "engagement_resp<pre>";
 	print_r($engagement_resp);
 	echo "</pre>";
 	echo "<hr />";
 	*/
-
 	if(count($login_user)==0) {
 		$msg="ERREUR : Aucun utilisateur n'a été sélectionné.<br />";
 	}
@@ -316,7 +314,12 @@ require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 //debug_var();
-
+/*
+$tab_engagements=get_tab_engagements();
+echo "<pre>";
+print_r($tab_engagements);
+echo "</pre>";
+*/
 ?>
 <script src="../ckeditor_4/ckeditor.js"></script>
 <?php
@@ -453,7 +456,8 @@ if((!isset($id_classe))||((count($engagement_ele)==0)&&(count($engagement_resp)=
 
 		<p><input type='submit' value='Valider' /></p>
 
-		<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> Seules apparaissent les classes dans lesquelles des engagements sont saisis.</p>
+		<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> Seules apparaissent les classes dans lesquelles des engagements sont saisis.<br />
+		<em>Petite incohérence&nbsp;:</em> Pour extraire des engagements non liés à des classes, il faut tout de même choisir au moins une classe <em>(elle ne sera pas prise en compte pour l'extraction de ces engagements non liés à des classes, mais le présent formulaire nécessite qu'au moins une classe soit choisie pour passer à la suite)</em>.</p>
 	</fieldset>
 </form>
 
@@ -620,6 +624,92 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 	}
 
 }
+
+// Engagements non liés à une classe:
+$tab=get_tab_engagements_user();
+/*
+echo "<pre>";
+print_r($tab);
+echo "</pre><hr />";
+*/
+$nom_classe='';
+foreach($tab['login_user'] as $current_login => $tab_engagement_current_user) {
+
+	$tab_user=get_info_user($current_login);
+	/*
+	echo "<pre>";
+	print_r($tab_user);
+	echo "</pre>";
+	*/
+	if(!isset($tab_user['nom'])) {
+		$tab_user=get_info_eleve($current_login);
+	}
+	if(!isset($tab_user['nom'])) {
+		$tab_user=get_info_responsable($current_login);
+	}
+	// Un responsable sans login va poser problème... on va perdre la liaison en cas de suppression du compte en conservant la personne dans resp_pers
+	// On risque même de ré-attribuer le login à un autre utilisateur
+	// Il faut soit une autre clé que le login, soit supprimer l'engagement lors de la suppression du compte dans utilisateurs
+	if(!isset($tab_user['nom'])) {
+		$tab_user['nom']="ERREUR (nettoyage des tables requis)";
+	}
+	if(!isset($tab_user['prenom'])) {
+		$tab_user['prenom']="ERREUR (nettoyage des tables requis)";
+	}
+	if(!isset($tab_user['statut'])) {
+		$tab_user['statut']="ERREUR (nettoyage des tables requis)";
+	}
+
+	/*
+	echo "<pre>";
+	print_r($tab_user);
+	echo "</pre>";
+	*/
+
+	$chaine_tr="
+		<tr id='texte_login_user_$cpt'>
+			<td><input type='checkbox' name='login_user[]' id='login_user_$cpt' value=\"$current_login\" onchange=\"checkbox_change('login_user_$cpt')\" /></td>
+			<td><label for='login_user_$cpt'>".$tab_user['nom']."</label>";
+			/*
+			echo "<pre>";
+			echo print_r($tab_user);
+			echo "</pre>";
+			*/
+	$chaine_tr.="</td>
+			<td><label for='login_user_$cpt'>".$tab_user['prenom']."</label></td>
+			<td>".$tab_user['statut']."</td>
+			<td>".$nom_classe."</td>
+			<td>";
+
+	$temoin_engagement_recherche="n";
+	for($loop2=0;$loop2<count($tab_engagement_current_user);$loop2++) {
+		if((($tab_user['statut']=="eleve")&&(in_array($tab['indice'][$tab_engagement_current_user[$loop2]]['id_engagement'], $engagement_ele))&&($tab['indice'][$tab_engagement_current_user[$loop2]]['id_type']==''))||
+		(($tab_user['statut']=="responsable")&&(in_array($tab['indice'][$tab_engagement_current_user[$loop2]]['id_engagement'], $engagement_resp))&&($tab['indice'][$tab_engagement_current_user[$loop2]]['id_type']==''))) {
+			/*
+			echo "
+			<pre>";
+			print_r($tab);
+			echo "
+			</pre>";
+			*/
+			$chaine_tr.=$tab['indice'][$tab_engagement_current_user[$loop2]]['nom_engagement']."<br />";
+
+			$temoin_engagement_recherche="y";
+		}
+	}
+
+	$chaine_tr.="
+			</td>
+		</tr>";
+
+	if($temoin_engagement_recherche=="y") {
+		echo $chaine_tr;
+	}
+
+	$cpt++;
+}
+
+
 echo "
 		</table>";
 for($loop=0;$loop<count($id_classe);$loop++) {

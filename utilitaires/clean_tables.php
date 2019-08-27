@@ -2443,6 +2443,8 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="13")) or (isset($_GET['maj'
 				}
 			}
 		}
+
+		$texte_info_action.=menage_engagements_user();
 	}
 
 	echo $texte_info_action;

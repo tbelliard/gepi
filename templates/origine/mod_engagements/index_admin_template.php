@@ -371,6 +371,8 @@ if(count($tab_engagements['indice'])>0) {
 			echo "<strong>Paramétrage des bulletins CLG 2016</strong>";
 		}
 		?> quels engagements doivent apparaitre dans le cadre Vie Scolaire du bulletin CLG 2016.</p></li>
+		<li><p><strong>Attention&nbsp;:</strong> Si vous passez de 'non Lié à une classe' à 'Lié à une classe' après avoir déclaré des utilisateurs pour cet engagement, vous devrez re-déclarer ces engagements pour ces utilisateurs.<br />
+		Il n'est en effet pas possible de deviner pour quelle classe cet engagement doit alors être déclaré.</p></li>
 	</ul>
 </form>
 
