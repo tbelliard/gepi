@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -166,12 +166,16 @@ if((isset($mode))&&($mode=='imprime')) {
 		$lig_ep=mysqli_fetch_object($res);
 		$intitule_epreuve=$lig_ep->intitule;
 		$date_epreuve=formate_date("$lig_ep->date");
-	
+
+		$id_salle=array();
+		$salle=array();
 		$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
 		$res_salle=mysqli_query($GLOBALS["mysqli"], $sql);
-		while($lig_salle=mysqli_fetch_object($res_salle)) {
-			$salle[]=$lig_salle->salle;
-			$id_salle[]=$lig_salle->id;
+		if(mysqli_num_rows($res_salle)>0) {
+			while($lig_salle=mysqli_fetch_object($res_salle)) {
+				$salle[]=$lig_salle->salle;
+				$id_salle[]=$lig_salle->id;
+			}
 		}
 
 		if (!defined('FPDF_VERSION')) {
@@ -451,7 +455,45 @@ if((!isset($mode))||($mode!='parametrer')) {
 	echo "<p class='bold'>Etiquettes&nbsp;:</p>\n";
 	echo "<ul>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=parametrer".add_token_in_url()."'>Paramétrer</a> les étiquettes</li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=imprime".add_token_in_url()."'>Imprimer</a> les étiquettes</li>\n";
+
+	$id_salle=array();
+	$salle=array();
+	$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
+	$res_salle=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_salle)>0) {
+		while($lig_salle=mysqli_fetch_object($res_salle)) {
+			$salle[]=$lig_salle->salle;
+			$id_salle[]=$lig_salle->id;
+		}
+	}
+
+	if(count($id_salle)==0) {
+		echo "<li>Aucune salle n'est encore définie et donc aucun élève n'est placé dans une salle.<br />
+		Les étiquettes à coller sur les tables ne peuvent donc être imprimées.<br />
+		Commencez par <a href='definir_salles.php?id_epreuve=".$id_epreuve."'>définir les salles</a>.</li>";
+	}
+	else {
+		$temoin_au_moins_un_eleve_place=false;
+		for($i=0;$i<count($id_salle);$i++) {
+			$sql="SELECT e.nom, e.prenom, e.naissance, e.login, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='".$id_salle[$i]."' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom, e.prenom;";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$temoin_au_moins_un_eleve_place=true;
+				break;
+			}
+		}
+
+		if(!$temoin_au_moins_un_eleve_place) {
+			echo "<li>Aucun élève n'est placé dans la ou les salles définies.<br />
+		Les étiquettes à coller sur les tables ne peuvent donc être imprimées.<br />
+		Commencez par <a href='definir_salles.php?mode=affect_eleves&id_epreuve=".$id_epreuve."'>répartir les élèves entre les salles</a>.</li>";
+		}
+		else {
+			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=imprime".add_token_in_url()."'>Imprimer</a> les étiquettes</li>\n";
+		}
+	}
+
 	echo "</ul>\n";
 }
 else {

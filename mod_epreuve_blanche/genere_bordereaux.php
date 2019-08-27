@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -730,30 +730,69 @@ if(!isset($imprime)) {
 	}
 	//========================================================
 
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1' target='_blank'>\n";
+	$id_salle=array();
+	$salle=array();
+	$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
+	$res_salle=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_salle)>0) {
+		while($lig_salle=mysqli_fetch_object($res_salle)) {
+			$salle[]=$lig_salle->salle;
+			$id_salle[]=$lig_salle->id;
+		}
+	}
 
-	echo "<p>Choisissez le type de bordereaux à imprimer&nbsp;:<br />\n";
-	echo "<input type='radio' name='mode' id='mode_csv' value='csv' /><label for='mode_csv'>CSV</label><br />";
-	echo "<input type='radio' name='mode' id='mode_pdf' value='pdf' checked /><label for='mode_pdf'>PDF</label><br />";
-	echo "<p>Informations à inclure&nbsp;:<br />";
-	echo "<input type='checkbox' name='avec_num_anonymat' id='avec_num_anonymat' value='y' checked /><label for='avec_num_anonymat'>Avec le numéro anonymat</label><br />";
-	//echo "<input type='checkbox' name='avec_colonne_vide' id='avec_colonne_vide' value='y' checked/><label for='avec_colonne_vide'>Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide' value='Note sur $note_sur' /><br />";
-	echo "<input type='checkbox' name='avec_colonne_vide_1' id='avec_colonne_vide_1' value='y' checked /><label for='avec_colonne_vide_1'> Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_1' value='Note sur $note_sur' /><br />";
-	echo "<input type='checkbox' name='avec_colonne_vide_2' id='avec_colonne_vide_2' value='y' /><label for='avec_colonne_vide_2'> Avec une deuxième colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_2' value='Pointage départ' /><br />";
-	echo "<input type='checkbox' name='avec_colonne_vide_3' id='avec_colonne_vide_3' value='y' /><label for='avec_colonne_vide_3'> Avec une troisième colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_3' value='Pointage retour' /><br />";
-	echo "Normalement, les champs suivants ne devraient pas apparaitre sur des bordereaux professeurs, mais vous imaginerez peut-être des usages auxquels les développeurs n'avaient pas pensé.<br />";
-	echo "<input type='checkbox' name='avec_nom_prenom' id='avec_nom_prenom' value='y' /><label for='avec_nom_prenom'>Avec les nom/prénom des élèves</label><br />";
-	echo "<input type='checkbox' name='avec_naissance' id='avec_naissance' value='y' /><label for='avec_naissance'>Avec la date de naissance de l'élève</label><br />";
-	echo "<input type='checkbox' name='avec_classe' id='avec_classe' value='y' /><label for='avec_classe'>Avec la classe de l'élève</label><br />";
-	echo "<input type='checkbox' name='avec_salle' id='avec_salle' value='y' /><label for='avec_salle'>Avec le nom de salle dans laquelle l'élève a passé l'épreuve</label><br />";
+	if(count($id_salle)==0) {
+		echo "<p style='color:red;'>Aucune salle n'est encore définie et donc aucun élève n'est placé dans une salle.<br />
+		Les étiquettes à coller sur les tables ne peuvent donc être imprimées.<br />
+		Commencez par <a href='definir_salles.php?id_epreuve=".$id_epreuve."'>définir les salles</a>.</p>";
+	}
+	else {
+		$temoin_au_moins_un_eleve_place=false;
+		for($i=0;$i<count($id_salle);$i++) {
+			$sql="SELECT e.nom, e.prenom, e.naissance, e.login, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='".$id_salle[$i]."' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom, e.prenom;";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$temoin_au_moins_un_eleve_place=true;
+				break;
+			}
+		}
 
-	echo add_token_field();
+		if(!$temoin_au_moins_un_eleve_place) {
+			echo "<p style='color:red;'>Aucun élève n'est placé dans la ou les salles définies.<br />
+		Les étiquettes à coller sur les tables ne peuvent donc être imprimées.<br />
+		Commencez par <a href='definir_salles.php?mode=affect_eleves&id_epreuve=".$id_epreuve."'>répartir les élèves entre les salles</a>.</p>";
+		}
+		else {
 
-	echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />";
-	echo "<input type='hidden' name='imprime' value='y' />";
-	echo "<input type='submit' name='valider' value='Valider' /><br />";
-	echo "</p>\n";
-	echo "</form>\n";
+			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1' target='_blank'>\n";
+
+			echo "<p>Choisissez le type de bordereaux à imprimer&nbsp;:<br />\n";
+			echo "<input type='radio' name='mode' id='mode_csv' value='csv' /><label for='mode_csv'>CSV</label><br />";
+			echo "<input type='radio' name='mode' id='mode_pdf' value='pdf' checked /><label for='mode_pdf'>PDF</label><br />";
+			echo "<p>Informations à inclure&nbsp;:<br />";
+			echo "<input type='checkbox' name='avec_num_anonymat' id='avec_num_anonymat' value='y' checked /><label for='avec_num_anonymat'>Avec le numéro anonymat</label><br />";
+			//echo "<input type='checkbox' name='avec_colonne_vide' id='avec_colonne_vide' value='y' checked/><label for='avec_colonne_vide'>Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide' value='Note sur $note_sur' /><br />";
+			echo "<input type='checkbox' name='avec_colonne_vide_1' id='avec_colonne_vide_1' value='y' checked /><label for='avec_colonne_vide_1'> Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_1' value='Note sur $note_sur' /><br />";
+			echo "<input type='checkbox' name='avec_colonne_vide_2' id='avec_colonne_vide_2' value='y' /><label for='avec_colonne_vide_2'> Avec une deuxième colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_2' value='Pointage départ' /><br />";
+			echo "<input type='checkbox' name='avec_colonne_vide_3' id='avec_colonne_vide_3' value='y' /><label for='avec_colonne_vide_3'> Avec une troisième colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_3' value='Pointage retour' /><br />";
+			echo "Normalement, les champs suivants ne devraient pas apparaitre sur des bordereaux professeurs, mais vous imaginerez peut-être des usages auxquels les développeurs n'avaient pas pensé.<br />";
+			echo "<input type='checkbox' name='avec_nom_prenom' id='avec_nom_prenom' value='y' /><label for='avec_nom_prenom'>Avec les nom/prénom des élèves</label><br />";
+			echo "<input type='checkbox' name='avec_naissance' id='avec_naissance' value='y' /><label for='avec_naissance'>Avec la date de naissance de l'élève</label><br />";
+			echo "<input type='checkbox' name='avec_classe' id='avec_classe' value='y' /><label for='avec_classe'>Avec la classe de l'élève</label><br />";
+			echo "<input type='checkbox' name='avec_salle' id='avec_salle' value='y' /><label for='avec_salle'>Avec le nom de salle dans laquelle l'élève a passé l'épreuve</label><br />";
+
+			echo add_token_field();
+
+			echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />";
+			echo "<input type='hidden' name='imprime' value='y' />";
+			echo "<input type='submit' name='valider' value='Valider' /><br />";
+			echo "</p>\n";
+			echo "</form>\n";
+
+		}
+	}
+
 }
 require("../lib/footer.inc.php");
 ?>
