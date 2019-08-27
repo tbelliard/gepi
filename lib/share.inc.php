@@ -13564,7 +13564,8 @@ function get_tab_engagements($statut_concerne="", $statut_saisie="") {
 			$tab_engagements['indice'][$cpt]=$lig;
 
 			$tab_engagements['indice'][$cpt]['effectif']=0;
-			$sql="SELECT 1=1 FROM engagements_user WHERE id_engagement='".$lig['id']."';";
+			//$sql="SELECT 1=1 FROM engagements_user WHERE id_engagement='".$lig['id']."';";
+			$sql="SELECT 1=1 FROM engagements_user WHERE id_engagement='".$lig['id']."' AND id_type='".$lig['type']."';";
 			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
 			$tab_engagements['indice'][$cpt]['effectif']=mysqli_num_rows($res_eff);
 
@@ -13616,7 +13617,16 @@ function get_tab_engagements_user($login_user="", $id_classe='', $statut_concern
 	$tab_engagements_user['login_user']=array();
 	$tab_engagements_user['id_engagement']=array();
 	$tab_engagements_user['id_engagement_user']=array();
-	$sql="SELECT eu.*, e.nom AS nom_engagement, e.description AS engagement_description, e.type, e.conseil_de_classe, e.code AS code_engagement FROM engagements_user eu, engagements e WHERE eu.id_engagement=e.id";
+	$sql="SELECT eu.*, 
+			e.nom AS nom_engagement, 
+			e.description AS engagement_description, 
+			e.type, 
+			e.conseil_de_classe, 
+			e.code AS code_engagement 
+		FROM engagements_user eu, 
+			engagements e 
+		WHERE eu.id_engagement=e.id AND 
+			eu.id_type=e.type";
 
 	if($login_user!="") {
 		$sql.=" AND eu.login='".$login_user."'";
@@ -19475,6 +19485,44 @@ function get_tab_acces_mail_resp() {
 	}
 
 	return $tab;
+}
+
+function menage_engagements_user() {
+	global $mysqli;
+
+	$retour='';
+
+	$sql="SELECT eu.*, e.nom AS nom_engagement, e.description AS engagement_description, e.type, e.conseil_de_classe, e.code AS code_engagement FROM engagements_user eu, engagements e WHERE eu.id_engagement=e.id AND eu.id_type!=e.type;";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="DELETE FROM engagements_user WHERE id='".$lig->id."';";
+			$del=mysqli_query($mysqli, $sql);
+			if($del) {
+				$retour.="<span style='color:green'>Engagement n°".$lig->id_engagement." <em title=\"Liaison à une classe ou non au niveau utilisateur, non conforme à ce qui est déclaré globalement pour l'engagement.\">(de type erroné)</em> supprimé pour ".civ_nom_prenom($lig->login)."</span><br />";
+			}
+			else {
+				$retour.="<span style='color:red'>Erreur lors de la suppression de l'engagement n°".$lig->id_engagement." <em title=\"Liaison à une classe ou non au niveau utilisateur, non conforme à ce qui est déclaré globalement pour l'engagement.\">(de type erroné)</em> pour ".civ_nom_prenom($lig->login)."</span><br />";
+			}
+		}
+	}
+
+	$sql="SELECT * FROM engagements_user eu WHERE id_engagement NOT IN (SELECT id FROM engagements);";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="DELETE FROM engagements_user eu WHERE id_engagement='".$lig->id_engagement."';";
+			$del=mysqli_query($mysqli, $sql);
+			if($del) {
+				$retour.="<span style='color:green'>Suppression d'une scorie d'engagement n°".$lig->id_engagement." pour ".civ_nom_prenom($lig->login)." <em>(cet engagement n'existe plus)</em>.</span><br />";
+			}
+			else {
+				$retour.="<span style='color:red'>Erreur lors de la suppression d'une scorie d'engagement n°".$lig->id_engagement." pour ".civ_nom_prenom($lig->login)." <em>(cet engagement n'existe plus)</em>.</span><br />";
+			}
+		}
+	}
+
+	return $retour;
 }
 
 ?>

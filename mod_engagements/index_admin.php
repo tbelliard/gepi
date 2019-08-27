@@ -190,6 +190,38 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 					else {
 						//echo "Modif sur $sql<br />";
 						$nb_modif++;
+
+						// Modifier aussi le id_type et valeur dans engagements_user
+						if((isset($type[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['type']!='id_classe')) {
+
+							$sql="SELECT * FROM engagements_user WHERE id_type='' AND id_engagement='".$tab_engagements['indice'][$loop]['id']."';";
+							$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_u)>0) {
+								$chaine_u='';
+								while($lig_u=mysqli_fetch_object($res_u)) {
+									if($chaine_u!='') {
+										$chaine_u.=', ';
+									}
+									$chaine_u.=civ_nom_prenom($lig_u->login);
+								}
+
+								$sql="DELETE FROM engagements_user WHERE id_type='' AND id_engagement='".$tab_engagements['indice'][$loop]['id']."';";
+								$del=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$del) {
+									$msg.="Erreur lors de la suppression des engagements préalablment non liés à une classe pour les utilisateurs qui avaient préalablement l'engagement n°".$tab_engagements['indice'][$loop]['id']."<br />";
+								}
+								else {
+									$msg.="Suppression de l'engagement n°".$tab_engagements['indice'][$loop]['id']." pour ".$chaine_u." qui avaient cet engagement avant qu'il devienne lié à une classe.<br />Il faudra re-déclarer ces personnes en précisant à quelle classe ils sont liés.<br />";
+								}
+							}
+						}
+						elseif((!isset($type[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['type']=='id_classe')) {
+							$sql="UPDATE engagements_user SET id_type='', valeur='0' WHERE id_engagement='".$tab_engagements['indice'][$loop]['id']."';";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$update) {
+								$msg.="Erreur lors de la modification du type 'non lié à une classe' pour les utilisateurs qui avaient préalablement l'engagement n°".$tab_engagements['indice'][$loop]['id']."<br />";
+							}
+						}
 					}
 				}
 
@@ -446,6 +478,8 @@ if (isset($_POST['is_posted']) and ($msg=='')){
 	$msg = "Les modifications ont été enregistrées !";
 	$post_reussi=TRUE;
 }
+
+$msg.=menage_engagements_user();
 
 $tab_engagements=get_tab_engagements();
 
