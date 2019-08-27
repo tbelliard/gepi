@@ -455,7 +455,7 @@ echo "</ol>\n";
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";
 echo "<ol>
 	<li style='margin-top:1em;'>
-		<p><a href='../init_xml2/import_communs_xml.php?ad_retour_imports_communs=../gestion/changement_annee.php'>Mettre à jour les informations établissement/année scolaire à l'aide de l'export Communs de Siècle/Sconet</a>.<br />
+		<p><a href='../init_xml2/import_communs_xml.php?ad_retour_imports_communs=../gestion/changement_d_annee.php'>Mettre à jour les informations établissement/année scolaire à l'aide de l'export Communs de Siècle/Sconet</a>.<br />
 		<em>(le fichier comporte également les informations adresse établissement, chef d'établissement,...)</em><br />
 		&nbsp;<br />
 		Ou, <input type='checkbox' id='modif_dates_manuellement' name='modif_dates_manuellement' value='y' onchange=\"checkbox_change(this.id); changement();\" /><label for='modif_dates_manuellement' id='texte_modif_dates_manuellement'>modifier manuellement</label>&nbsp;:</p>
