@@ -398,8 +398,13 @@ function bull_exb($tab_ele,$i) {
 				$grandeur = $pdf->GetStringWidth($text_tel);
 				$grandeur = $grandeur + 2;
 			}
+
 			if ( $tab_modele_pdf["tel_texte"][$classe_id] != '' and $tab_modele_pdf["tel_image"][$classe_id] == '' ) {
 				$text_tel = $tab_modele_pdf["tel_texte"][$classe_id].''.$gepiSchoolTel;
+				$grandeur = $pdf->GetStringWidth($text_tel);
+			}
+			else {
+				$text_tel = $gepiSchoolTel;
 				$grandeur = $pdf->GetStringWidth($text_tel);
 			}
 
@@ -850,7 +855,12 @@ function bull_exb($tab_ele,$i) {
 			}
 			$pdf->SetFont('DejaVu', $type_texte, $taille_texte);
 			//$pdf->Cell(90,7, ("Classe de ".unhtmlentities($tab_bull['classe_nom_complet'])),0,2,'C');
-			$pdf->Cell(90,7, ("Classe de ".unhtmlentities($tab_ele['classe_nom_complet'])),0,2,'C');
+			if($tab_ele['classe_nom_complet']!='') {
+				$pdf->Cell(90,7, ("Classe de ".unhtmlentities($tab_ele['classe_nom_complet'])),0,2,'C');
+			}
+			else {
+				$pdf->Cell(90,7, ("Classe de ".unhtmlentities($tab_ele['classe'])),0,2,'C');
+			}
 			$taille_texte = '12'; $type_texte = '';
 			if ( $tab_modele_pdf["taille_texte_annee"][$classe_id] != '' and $tab_modele_pdf["taille_texte_annee"][$classe_id] != '0') {
 				$taille_texte = $tab_modele_pdf["taille_texte_annee"][$classe_id];
