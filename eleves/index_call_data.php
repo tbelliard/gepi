@@ -1,4 +1,7 @@
 <?php
+	$sql_bidon="SELECT 1=2 FROM eleves;";
+	//echo "$sql_bidon<br />";
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql_bidon);
 
 	if(((isset($_POST['mode_rech_prenom']))&&($_POST['mode_rech_prenom']=='contient'))||
 			((isset($_GET['mode_rech_prenom']))&&($_GET['mode_rech_prenom']=='contient'))) {
@@ -31,6 +34,12 @@
 	//echo "quelles_classes=$quelles_classes<br />";
 	//echo "motif_rech_etab=$motif_rech_etab<br />";
 
+	/*
+	if(isset($mode_rech)) {
+		echo "Au départ de index_call_data, on a \$mode_rech=$mode_rech<br />";
+	}
+	*/
+
 	if($_SESSION['statut'] == 'professeur') {
 		/*
 		$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_professeurs jep
@@ -60,6 +69,7 @@
 			)
 			ORDER BY $order_type;";
 		}
+		//echo "$sql<br />";
 		$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -90,6 +100,7 @@
 				j.periode=t.max_periode
 				)
 			ORDER BY $order_type;";
+			//echo "$sql<br />";
 			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -116,11 +127,14 @@
 				j.id_classe =cl.id
 				)
 				ORDER BY $order_type;";
+				//echo "$sql<br />";
 				$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			} else {
 				//$calldata = mysql_query("SELECT * FROM eleves ORDER BY $order_type");
-				$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY $order_type");
+				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY $order_type;";
+				//echo "$sql<br />";
+				$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -297,7 +311,7 @@
 							jer.login=e.login
 						ORDER BY $order_type;";
 			}
-			//echo "$sql<br />\n";
+			//echo "$sql<br />";
 			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -327,7 +341,7 @@
 							jer.login=e.login
 						ORDER BY $order_type;";
 			}
-			//echo "$sql<br />\n";
+			//echo "$sql<br />";
 			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -392,6 +406,7 @@
 							e.login=jer.login AND
 							jec.id_classe=c.id AND
 							e.login NOT IN (SELECT e_login FROM j_eleves_cpe) ORDER BY $order_type;";
+				//echo "$sql<br />";
 				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			else{
@@ -399,6 +414,7 @@
 						WHERE e.login=jec.login AND
 							e.login=jer.login AND
 							e.login NOT IN (SELECT e_login FROM j_eleves_cpe) ORDER BY $order_type;";
+				//echo "$sql<br />";
 				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
@@ -439,6 +455,7 @@
 							e.login=jer.login AND
 							jec.id_classe=c.id AND
 							e.login NOT IN (SELECT login FROM j_eleves_professeurs) ORDER BY $order_type;";
+				//echo "$sql<br />";
 				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			}
@@ -447,6 +464,7 @@
 						WHERE e.login=jec.login AND
 							e.login=jer.login AND
 							e.login NOT IN (SELECT login FROM j_eleves_professeurs) ORDER BY $order_type;";
+				//echo "$sql<br />";
 				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			}
@@ -466,7 +484,7 @@
 							e.login=jer.login AND
 							jec.id_classe=c.id AND
 							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
-				//echo "$sql<br />\n";
+				//echo "$sql<br />";
 				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -483,7 +501,7 @@
 						WHERE e.login=jec.login AND
 							e.login=jer.login AND
 							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
-				//echo "$sql<br />\n";
+				//echo "$sql<br />";
 				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -507,6 +525,7 @@
 
 			$pref_motif="";
 			$texte_motif="commence par";
+			$mode_rech="commence_par";
 			if((isset($mode_rech_prenom))&&($mode_rech_prenom=='contient')) {
 				$pref_motif="%";
 				$texte_motif="contient";
@@ -521,22 +540,22 @@
 			*/
 			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE prenom like '".$pref_motif.$motif_rech."%' AND
+					WHERE prenom like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 							e.login=jer.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE prenom like '".$pref_motif.$motif_rech."%' AND
+				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE prenom like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 									e.login=jer.login
 								ORDER BY $order_type";
 			}
-			//echo "$sql<br />\n";
+			//echo "$sql<br />";
 			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
-				echo "<p align='center'>Liste des élèves dont le prenom $texte_motif <b>$motif_rech</b></p>\n";
+				echo "<p align='center'>Liste des élèves dont le prenom $texte_motif <b>".stripslashes($motif_rech)."</b></p>\n";
 			}
 			else {
 				// Message alternatif depuis modify_eleve.php
@@ -547,6 +566,7 @@
 		} else if ($quelles_classes == 'recherche') {
 			$pref_motif="";
 			$texte_motif="commence par";
+			$mode_rech="commence_par";
 			if((isset($mode_rech_nom))&&($mode_rech_nom=='contient')) {
 				$pref_motif="%";
 				$texte_motif="contient";
@@ -566,22 +586,22 @@
 			*/
 			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE nom like '".$pref_motif.$motif_rech."%' AND
+					WHERE nom like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 							e.login=jer.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE nom like '".$pref_motif.$motif_rech."%' AND
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE nom like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 							e.login=jer.login
 					ORDER BY $order_type";
 			}
-			//echo "$sql<br />\n";
+			//echo "$sql<br />";
 			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
-				echo "<p align='center'>Liste des élèves dont le nom $texte_motif <b>$motif_rech</b></p>\n";
+				echo "<p align='center'>Liste des élèves dont le nom $texte_motif <b>".stripslashes($motif_rech)."</b></p>\n";
 			}
 			else {
 				// Message alternatif depuis modify_eleve.php
@@ -613,7 +633,7 @@
 							e.login=jer.login
 					ORDER BY $order_type";
 			}
-			//echo "$sql<br />\n";
+			//echo "$sql<br />";
 			$calldata = mysql_query($sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
@@ -631,6 +651,7 @@
 
 			$pref_motif="";
 			$texte_motif="commence par";
+			$mode_rech="commence_par";
 			if((isset($mode_rech_elenoet))&&($mode_rech_elenoet=='contient')) {
 				$pref_motif="%";
 				$texte_motif="contient";
@@ -641,22 +662,22 @@
 
 			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE elenoet like '".$pref_motif.$motif_rech."%' AND
+					WHERE elenoet like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 							e.login=jer.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE elenoet like '".$pref_motif.$motif_rech."%' AND
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE elenoet like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 							e.login=jer.login
 					ORDER BY $order_type";
 			}
-			//echo "$sql<br />\n";
+			//echo "$sql<br />";
 			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
-				echo "<p align='center'>Liste des élèves dont l'elenoet $texte_motif <b>$motif_rech</b></p>\n";
+				echo "<p align='center'>Liste des élèves dont l'elenoet $texte_motif <b>".stripslashes($motif_rech)."</b></p>\n";
 			}
 			else {
 				// Message alternatif depuis modify_eleve.php
@@ -671,6 +692,7 @@
 
 			$pref_motif="";
 			$texte_motif="commence par";
+			$mode_rech="commence_par";
 			if((isset($mode_rech_ele_id))&&($mode_rech_ele_id=='contient')) {
 				$pref_motif="%";
 				$texte_motif="contient";
@@ -688,15 +710,15 @@
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE ele_id like '".$pref_motif.$motif_rech."%' AND
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE ele_id like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 							e.login=jer.login
 					ORDER BY $order_type";
 			}
-			//echo "$sql<br />\n";
+			//echo "$sql<br />";
 			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
-				echo "<p align='center'>Liste des élèves dont l'ele_id $texte_motif <b>$motif_rech</b></p>\n";
+				echo "<p align='center'>Liste des élèves dont l'ele_id $texte_motif <b>".stripslashes($motif_rech)."</b></p>\n";
 			}
 			else {
 				// Message alternatif depuis modify_eleve.php
@@ -711,6 +733,7 @@
 
 			$pref_motif="";
 			$texte_motif="commence par";
+			$mode_rech="commence_par";
 			if((isset($mode_rech_no_gep))&&($mode_rech_no_gep=='contient')) {
 				$pref_motif="%";
 				$texte_motif="contient";
@@ -721,22 +744,22 @@
 
 			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
-					WHERE no_gep like '".$pref_motif.$motif_rech."%' AND
+					WHERE no_gep like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 							e.login=jer.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE no_gep like '".$pref_motif.$motif_rech."%' AND
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE no_gep like '".$pref_motif.mysqli_real_escape_string($mysqli, $motif_rech)."%' AND
 							e.login=jer.login
 					ORDER BY $order_type";
 			}
-			//echo "$sql<br />\n";
+			//echo "$sql<br />";
 			$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if((!isset($page_courante))||($page_courante!="modify_eleve")) {
-				echo "<p align='center'>Liste des élèves dont l'identifiant national $texte_motif <b>$motif_rech</b></p>\n";
+				echo "<p align='center'>Liste des élèves dont l'identifiant national $texte_motif <b>".stripslashes($motif_rech)."</b></p>\n";
 			}
 			else {
 				// Message alternatif depuis modify_eleve.php
@@ -771,7 +794,7 @@
 			if(preg_match('/classe/',$order_type)){
 				//$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
 				$sql="SELECT distinct e.*,c.classe,jer.* FROM j_eleves_classes jec, classes c, j_eleves_regime jer, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and jer.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
-				//echo "$sql<br />\n";
+				//echo "$sql<br />";
 				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			else{
@@ -783,7 +806,7 @@
 				$sql="SELECT e.*, jer.* FROM j_eleves_regime jer, eleves e
 					LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
 					where jee.id_eleve is NULL AND jer.login=e.login ORDER BY $order_type;";
-				//echo "$sql<br />\n";
+				//echo "$sql<br />";
 				$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
@@ -801,7 +824,7 @@
 																	jer.login=e.login AND
 																	e.mef_code='$motif_rech_mef'
 																ORDER BY $order_type;";
-						//echo "$sql<br />\n";
+						//echo "$sql<br />";
 						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 					else {
@@ -810,7 +833,7 @@
 														WHERE jer.login=e.login AND
 															e.mef_code='$motif_rech_mef'
 														ORDER BY $order_type;";
-						//echo "$sql<br />\n";
+						//echo "$sql<br />";
 						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
@@ -825,7 +848,7 @@
 																	jer.login=e.login AND
 																	e.mef_code NOT IN (SELECT mef_code FROM mef)
 																ORDER BY $order_type;";
-						//echo "$sql<br />\n";
+						//echo "$sql<br />";
 						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 					else {
@@ -834,7 +857,7 @@
 														WHERE jer.login=e.login AND
 															e.mef_code NOT IN (SELECT mef_code FROM mef)
 														ORDER BY $order_type;";
-						//echo "$sql<br />\n";
+						//echo "$sql<br />";
 						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
@@ -855,7 +878,7 @@
 														jee.id_eleve=e.elenoet AND 
 														jee.id_etablissement='$motif_rech_etab'
 													ORDER BY $order_type;";
-						//echo "$sql<br />\n";
+						//echo "$sql<br />";
 						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 					else {
@@ -866,7 +889,7 @@
 													jee.id_eleve=e.elenoet AND 
 													jee.id_etablissement='$motif_rech_etab'
 												ORDER BY $order_type;";
-						//echo "$sql<br />\n";
+						//echo "$sql<br />";
 						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
@@ -893,7 +916,7 @@
 														jec.login=e.login AND 
 														jer.login=e.login)
 													ORDER BY $order_type;";
-						//echo "$sql<br />\n";
+						//echo "$sql<br />";
 						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 					else {
@@ -903,11 +926,18 @@
 											WHERE jee.id_eleve is NULL AND 
 												jer.login=e.login 
 											ORDER BY $order_type;";
-						//echo "$sql<br />\n";
+						//echo "$sql<br />";
 						$calldata=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 			}
 		}
 	}
+
+	/*
+	if(isset($mode_rech)) {
+		echo "A la fin de index_call_data, on a \$mode_rech=$mode_rech<br />";
+	}
+	*/
+
 ?>
