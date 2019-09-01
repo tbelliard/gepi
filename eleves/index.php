@@ -896,7 +896,7 @@ if (!isset($quelles_classes)) {
 		<option value='commence_par'>commence par</option>
 		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
-		echo "<input type='text' name='motif_rech' id='motif_rech_nom' value='' onclick='verif3()' size='5' />\n";
+		echo "<input type='text' name='motif_rech' id='motif_rech_nom' value=\"\" onclick='verif3()' size='5' />\n";
 		echo "</span><br />\n";
 		//echo "</label>\n";
 		echo "</td>\n";
@@ -913,7 +913,7 @@ if (!isset($quelles_classes)) {
 		<option value='commence_par'>commence par</option>
 		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
-		echo "<input type='text' name='motif_rech_p' value='' onclick='verif4()' size='5' />\n";
+		echo "<input type='text' name='motif_rech_p' value=\"\" onclick='verif4()' size='5' />\n";
 		echo "</span><br />\n";
 		//echo "</label>\n";
 		echo "</td>\n";
@@ -954,7 +954,7 @@ if (!isset($quelles_classes)) {
 		<option value='commence_par'>commence par</option>
 		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
-		echo "<input type='text' name='motif_rech_elenoet' id='motif_rech_elenoet' value='' onclick='verif5()' size='5' />\n";
+		echo "<input type='text' name='motif_rech_elenoet' id='motif_rech_elenoet' value=\"\" onclick='verif5()' size='5' />\n";
 		echo "</span><br />\n";
 		//echo "</label>\n";
 		echo "</td>\n";
@@ -971,7 +971,7 @@ if (!isset($quelles_classes)) {
 		<option value='commence_par'>commence par</option>
 		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
-		echo "<input type='text' name='motif_rech_ele_id' id='motif_rech_ele_id' value='' onclick='verif6()' size='5' />\n";
+		echo "<input type='text' name='motif_rech_ele_id' id='motif_rech_ele_id' value=\"\" onclick='verif6()' size='5' />\n";
 		echo "</span><br />\n";
 		//echo "</label>\n";
 		echo "</td>\n";
@@ -988,7 +988,7 @@ if (!isset($quelles_classes)) {
 		<option value='commence_par'>commence par</option>
 		<option value='contient'".(((isset($mode_rech))&&($mode_rech=='contient'))?" selected":"").">contient</option>
 		</select>";
-		echo "<input type='text' name='motif_rech_no_gep' id='motif_rech_no_gep' value='' onclick='verif7()' size='5' />\n";
+		echo "<input type='text' name='motif_rech_no_gep' id='motif_rech_no_gep' value=\"\" onclick='verif7()' size='5' />\n";
 		echo "</span><br />\n";
 		//echo "</label>\n";
 		echo "</td>\n";
@@ -1723,41 +1723,97 @@ if(isset($quelles_classes)) {
 	echo "<th><p>Identifiant</p></th>\n";
 	$csv.="Identifiant;";
 
+	// Dans index_call_data.php, on affecte à $motif_rech le motif recherché, qu'il ait été transmis comme $motif_rech_p, $motif_rech_ele_id,...
 	$ajout_param_lien="";
-	if(isset($motif_rech)){$ajout_param_lien.="&amp;motif_rech=$motif_rech";}
-	if(isset($mode_rech_nom)){$ajout_param_lien.="&amp;mode_rech_nom=$mode_rech_nom";}
-	if(isset($mode_rech_prenom)){$ajout_param_lien.="&amp;mode_rech_prenom=$mode_rech_prenom";}
-	//if((isset($mode_rech_champ))&&(isset($champ_rech))) {$ajout_param_lien.="&amp;mode_rech_champ=$mode_rech_champ&amp;champ_rech=$champ_rech";}
+	//if(($quelles_classes=='recherche')&&(isset($motif_rech))) {
+	if($quelles_classes=='recherche') {
+		//$ajout_param_lien.="&amp;motif_rech=".stripslashes($motif_rech);
+		if(isset($mode_rech_nom)) {$ajout_param_lien.="&amp;mode_rech_nom=$mode_rech_nom";}
+		if(isset($motif_rech)) {
+			$ajout_param_lien.="&amp;motif_rech=".stripslashes($motif_rech);
+		}
+	}
+	//if(($quelles_classes=='rech_prenom')&&(isset($mode_rech_prenom))){
+	if($quelles_classes=='rech_prenom') {
+		if(isset($mode_rech_prenom)) {
+			$ajout_param_lien.="&amp;mode_rech_prenom=$mode_rech_prenom";
+		}
+		//if(isset($motif_rech_p)) {$ajout_param_lien.="&amp;motif_rech_p=".stripslashes($motif_rech_p);}
+		if(isset($motif_rech)) {
+			$ajout_param_lien.="&amp;motif_rech=".stripslashes($motif_rech);
+		}
+	}
 	if(isset($mode_rech)) {$ajout_param_lien.="&amp;mode_rech=$mode_rech";}
-	if(isset($mode_rech_elenoet)) {$ajout_param_lien.="&amp;mode_rech_elenoet=$mode_rech_elenoet";}
-	if(isset($mode_rech_ele_id)) {$ajout_param_lien.="&amp;mode_rech_ele_id=$mode_rech_ele_id";}
-	if(isset($mode_rech_no_gep)) {$ajout_param_lien.="&amp;mode_rech_no_gep=$mode_rech_no_gep";}
-	// 20130607
-	if(isset($motif_rech_mef)) {$ajout_param_lien.="&amp;motif_rech_mef=$motif_rech_mef";}
-	if(isset($motif_rech_etab)) {$ajout_param_lien.="&amp;motif_rech_etab=$motif_rech_etab";}
 
-	if(isset($date_entree_min)) {$ajout_param_lien.="&amp;date_entree_min=$date_entree_min";}
-	if(isset($nb_derniers_inscrits)) {$ajout_param_lien.="&amp;nb_derniers_inscrits=$nb_derniers_inscrits";}
+	//if(($quelles_classes=='rech_elenoet')&&(isset($mode_rech_elenoet))) {
+	if($quelles_classes=='rech_elenoet') {
+		//$ajout_param_lien.="&amp;mode_rech_elenoet=$mode_rech_elenoet";
+		//if(isset($motif_rech_elenoet)) {$ajout_param_lien.="&amp;motif_rech_elenoet=$motif_rech_elenoet";}
+		if(isset($motif_rech)) {
+			$ajout_param_lien.="&amp;motif_rech=".stripslashes($motif_rech);
+		}
+	}
 
-	echo "<th><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
+	//if(($quelles_classes=='rech_ele_id')&&(isset($mode_rech_ele_id))) {
+	if($quelles_classes=='rech_ele_id') {
+		//$ajout_param_lien.="&amp;mode_rech_ele_id=$mode_rech_ele_id";
+		//if(isset($motif_rech_ele_id)) {$ajout_param_lien.="&amp;motif_rech_ele_id=$motif_rech_ele_id";}
+		if(isset($motif_rech)) {
+			$ajout_param_lien.="&amp;motif_rech=".stripslashes($motif_rech);
+		}
+	}
+	//if(($quelles_classes=='rech_no_gep')&&(isset($mode_rech_no_gep))) {
+	if($quelles_classes=='rech_no_gep') {
+		//$ajout_param_lien.="&amp;mode_rech_no_gep=$mode_rech_no_gep";
+		//if(isset($motif_rech_no_gep)) {$ajout_param_lien.="&amp;motif_rech_no_gep=$motif_rech_no_gep";}
+		if(isset($motif_rech)) {
+			$ajout_param_lien.="&amp;motif_rech=".stripslashes($motif_rech);
+		}
+	}
+
+	//if(($quelles_classes=='rech_mef')&&(isset($motif_rech_mef))) {
+	if($quelles_classes=='rech_mef') {
+		//$ajout_param_lien.="&amp;motif_rech_mef=$motif_rech_mef";
+		//if(isset($motif_rech_mef)) {$ajout_param_lien.="&amp;motif_rech_mef=".stripslashes($motif_rech_mef);}
+		if(isset($motif_rech)) {
+			$ajout_param_lien.="&amp;motif_rech=".stripslashes($motif_rech);
+		}
+	}
+	//if(($quelles_classes=='rech_etab')&&(isset($motif_rech_etab))) {
+	if($quelles_classes=='rech_etab') {
+		//$ajout_param_lien.="&amp;motif_rech_etab=".stripslashes($motif_rech_etab);
+		//if(isset($motif_rech_etab)) {$ajout_param_lien.="&amp;motif_rech_etab=".stripslashes($motif_rech_etab);}
+		if(isset($motif_rech)) {
+			$ajout_param_lien.="&amp;motif_rech=".stripslashes($motif_rech);
+		}
+	}
+
+	if(($quelles_classes=='date_entree_sup_value')&&(isset($date_entree_min))) {
+		$ajout_param_lien.="&amp;date_entree_min=$date_entree_min";
+	}
+	if(($quelles_classes=='derniers_inscrits')&&(isset($nb_derniers_inscrits))) {
+		$ajout_param_lien.="&amp;nb_derniers_inscrits=$nb_derniers_inscrits";
+	}
+
+	echo "<th><p><a href=\"index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
 	echo $ajout_param_lien;
-	echo "'>Nom Prénom</a></p></th>\n";
+	echo "\">Nom Prénom</a></p></th>\n";
 	$csv.="Nom Prénom;";
 	$csv.="Date sortie;";
 
-	echo "<th><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
+	echo "<th><p><a href=\"index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
 	echo $ajout_param_lien;
-	echo "'>Sexe</a></p></th>\n";
+	echo "\">Sexe</a></p></th>\n";
 	$csv.="Sexe;"
 	;
-	echo "<th><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
+	echo "<th><p><a href=\"index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
 	echo $ajout_param_lien;
-	echo "'>Date de naissance</a></p></th>\n";
+	echo "\">Date de naissance</a></p></th>\n";
 	$csv.="Date de naissance;";
 
-	echo "<th><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
+	echo "<th><p><a href=\"index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
 	echo $ajout_param_lien;
-	echo "'>Régime</a></p></th>\n";
+	echo "\">Régime</a></p></th>\n";
 	$csv.="Régime;";
 
 	if (($quelles_classes == 'na')||($quelles_classes == 'dse')) {
@@ -1765,9 +1821,9 @@ if(isset($quelles_classes)) {
 	} else {
 		echo "<th><p>";
 		if($_SESSION['statut'] != 'professeur') {
-			echo "<a href='index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes";
+			echo "<a href=\"index.php?order_type=classe,nom,prenom&amp;quelles_classes=$quelles_classes";
 			echo $ajout_param_lien;
-			echo "'>Classe</a>";
+			echo "\">Classe</a>";
 		}
 		else{
 			echo "Classe";
@@ -1933,10 +1989,11 @@ if(isset($quelles_classes)) {
 			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$eleve_login)))||
 			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$eleve_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))||
 			((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $quelles_classes)))) {
-			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
-			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-			if(isset($mode_rech)){echo "&amp;mode_rech=$mode_rech";}
-			echo "'>$eleve_nom $eleve_prenom</a>";
+			echo "<p><a href=\"modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
+			echo $ajout_param_lien;
+			//if(isset($mode_rech)){echo "&amp;mode_rech=$mode_rech";}
+			//if(isset($motif_rech)){echo "&amp;motif_rech=".stripslashes($motif_rech);}
+			echo "\">$eleve_nom $eleve_prenom</a>";
 		}
 		else {
 			echo "$eleve_nom $eleve_prenom";

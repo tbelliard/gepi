@@ -143,8 +143,12 @@ if((isset($quelles_classes))&&(isset($mode_rech))&&($mode_rech=='contient')) {
 		$mode_rech_no_gep="contient";
 	}
 }
+if(isset($motif_rech)) {
+	$motif_rech=stripslashes($motif_rech);
+}
 //=========================
 //echo "\$motif_rech=$motif_rech<br />";
+//echo "\$mode_rech=$mode_rech<br />";
 
 $journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 $duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
@@ -2153,12 +2157,14 @@ $num_eleve_courant=-1;
 if ((isset($order_type)) and (isset($quelles_classes))) {
     //echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
-    echo " | <a href=\"index.php?quelles_classes=$quelles_classes";
+	echo " | <a href=\"index.php?quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	if(isset($mode_rech)){echo "&amp;mode_rech=$mode_rech";}
 	echo "&amp;order_type=$order_type\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Retour à votre recherche</a>\n";
 
+	//echo "PLOP";
 	include("index_call_data.php");
+	//echo "PLIP";
 
 	echo "<input type=hidden name=order_type value=\"$order_type\" />\n";
 	echo "<input type=hidden name=quelles_classes value=\"$quelles_classes\" />\n";

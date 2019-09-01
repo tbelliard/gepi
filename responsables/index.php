@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -41,6 +41,8 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+//debug_var();
 
 //if(isset($suppr_resp)){
 if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
@@ -1170,7 +1172,7 @@ if($num_resp==0){
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='val_rech' id='val_rech' value='$val_rech' />\n";
+	echo "<input type='text' name='val_rech' id='val_rech' value=\"".stripslashes($val_rech)."\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -1303,7 +1305,7 @@ else{
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='val_rech' id='val_rech' value='$val_rech' />\n";
+	echo "<input type='text' name='val_rech' id='val_rech' value=\"".stripslashes($val_rech)."\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
