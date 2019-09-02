@@ -477,7 +477,7 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 			$tmp_aid_deja=array();
 			while($lig_aid_tmp=mysqli_fetch_object($test_aid_tmp)) {
 				if(!in_array($lig_aid_tmp->indice_aid, $tmp_aid_deja)) {
-					$menus .= '           <li><a href="'.$gepiPath.'/aid/index2.php?indice_aid='.$lig_aid_tmp->indice_aid.'"'.insert_confirm_abandon().' title="Gérer l AID.">'.$lig_aid_tmp->nom.'</a></li>'."\n";
+					$menus .= '           <li><a href="'.$gepiPath.'/aid/index2.php?indice_aid='.$lig_aid_tmp->indice_aid.'"'.insert_confirm_abandon().' title="Gérer le ou les AID de cette catégorie.">'.$lig_aid_tmp->nom.'</a></li>'."\n";
 					$tmp_aid_deja[]=$lig_aid_tmp->indice_aid;
 				}
 			}
