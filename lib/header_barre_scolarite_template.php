@@ -420,7 +420,7 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		*/
 
 		$sql="(SELECT ac.* FROM j_aid_utilisateurs_gest jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid)
-		UNION (SELECT ac.* FROM j_aidcateg_super_gestionnaires jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid);";
+		UNION (SELECT ac.* FROM j_aidcateg_super_gestionnaires jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid) ORDER BY type_aid, nom;";
 		$test_aid_tmp=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($test_aid_tmp)>0) {
 			$menus .= '       <li class="plus">AID'."\n";

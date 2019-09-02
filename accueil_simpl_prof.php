@@ -1175,7 +1175,7 @@ $ii=$i;
 
 $sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a
 		WHERE ac.indice_aid=a.indice_aid 
-		ORDER BY ac.order_display1, ac.order_display2, a.numero, ac.nom;";
+		ORDER BY ac.type_aid, ac.order_display1, ac.order_display2, a.numero, ac.nom;";
 //echo "$sql<br />";
 $res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 $i=0;
