@@ -365,7 +365,7 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 				$sql_call_data = "SELECT * FROM aid_config
 					WHERE display_bulletin = 'y'
 					OR bull_simplifie = 'y'
-					ORDER BY nom";
+					ORDER BY type_aid, nom";
 				$tmp_cpt_aid=0;
 				$tmp_nb_aid_a_afficher=0;
 				$tmp_call_data = mysqli_query($mysqli, $sql_call_data);
@@ -629,7 +629,7 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 				a.id=jau.id_aid AND 
 				a.indice_aid=jau.indice_aid AND 
 				jau.id_utilisateur='".$_SESSION['login']."'
-			ORDER BY ac.order_display1, ac.order_display2, a.numero, ac.nom;";
+			ORDER BY ac.type_aid, ac.order_display1, ac.order_display2, a.numero, ac.nom;";
 	//echo "$sql<br />";
 	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_aid)>0) {
