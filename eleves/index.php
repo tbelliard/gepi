@@ -2089,7 +2089,7 @@ if(isset($quelles_classes)) {
 		else {
 			echo "<td><p>$info_pp</p></td>\n";
 		}
-		$csv.="$info_pp;";
+		$csv.=$eleve_profsuivi_nom_csv.";";
 
 		//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		if($_SESSION['statut']=="administrateur") {
