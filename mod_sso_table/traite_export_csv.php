@@ -267,7 +267,8 @@ if($mode=="upload") {
 						$tab=explode(";", ensure_utf8($ligne));
 
 						// Faire la recherche et faire un rowspan si plusieurs réponses.
-						$sql="SELECT * FROM utilisateurs WHERE nom LIKE '%".remplace_accents($tab[$tabindice['Nom']], "%")."%' AND prenom LIKE '%".remplace_accents($tab[$tabindice['Prénom']], "%")."%';";
+						$sql="SELECT * FROM utilisateurs WHERE nom LIKE '%".mysqli_real_escape_string($mysqli, remplace_accents($tab[$tabindice['Nom']], "%"))."%' AND prenom LIKE '%".mysqli_real_escape_string($mysqli, remplace_accents($tab[$tabindice['Prénom']], "%"))."%';";
+						//echo "$sql<br />";
 						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(mysqli_num_rows($res)==1) {
