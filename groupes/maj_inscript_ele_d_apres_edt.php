@@ -447,26 +447,30 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 				//$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
 				$current_nom_groupe=trim(preg_replace("/\[.*\]/", "", $tmp_tab_nom_groupe[$loop]));
 				if(trim($current_nom_groupe)=='') {
-					$current_nom_groupe=$tmp_tab_nom_groupe[$loop];
-				}
-				if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
-					if($loop2>0) {
-						$sql.=" OR ";
+					$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+					if(trim($current_nom_groupe)=='') {
+						$current_nom_groupe=$tmp_tab_nom_groupe[$loop];
 					}
-					$sql.="classe like '$current_nom_groupe' OR 
-						classe like '$current_nom_groupe, %' OR 
-						classe like '%, $current_nom_groupe, %' OR 
-						classe like '%, $current_nom_groupe'";
-					$sql.=" OR groupes like '$current_nom_groupe' OR 
-						groupes like '$current_nom_groupe, %' OR 
-						groupes like '%, $current_nom_groupe, %' OR 
-						groupes like '%, $current_nom_groupe'";
-					$loop2++;
-
-					$temoin_au_moins_un_current_nom_groupe=true;
 				}
 
-// AJOUTER UN TEMOIN COMME QUOI IL Y A AU MOINS UN CRITERE
+				if(trim($current_nom_groupe)!='') {
+					if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
+						if($loop2>0) {
+							$sql.=" OR ";
+						}
+						$sql.="classe like '$current_nom_groupe' OR 
+							classe like '$current_nom_groupe, %' OR 
+							classe like '%, $current_nom_groupe, %' OR 
+							classe like '%, $current_nom_groupe'";
+						$sql.=" OR groupes like '$current_nom_groupe' OR 
+							groupes like '$current_nom_groupe, %' OR 
+							groupes like '%, $current_nom_groupe, %' OR 
+							groupes like '%, $current_nom_groupe'";
+						$loop2++;
+
+						$temoin_au_moins_un_current_nom_groupe=true;
+					}
+				}
 
 			}
 			$sql.=");";
@@ -828,21 +832,30 @@ if((isset($_POST['maj_tous_les_groupes']))&&(isset($_POST['groupe_a_mettre_a_jou
 						//$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
 						$current_nom_groupe=trim(preg_replace("/\[.*\]/", "", $tmp_tab_nom_groupe[$loop]));
 
-						if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
-							if($loop2>0) {
-								$sql.=" OR ";
+						if(trim($current_nom_groupe)=='') {
+							$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+							if(trim($current_nom_groupe)=='') {
+								$current_nom_groupe=$tmp_tab_nom_groupe[$loop];
 							}
-							$sql.="classe like '$current_nom_groupe' OR 
-								classe like '$current_nom_groupe, %' OR 
-								classe like '%, $current_nom_groupe, %' OR 
-								classe like '%, $current_nom_groupe'";
-							$sql.=" OR groupes like '$current_nom_groupe' OR 
-								groupes like '$current_nom_groupe, %' OR 
-								groupes like '%, $current_nom_groupe, %' OR 
-								groupes like '%, $current_nom_groupe'";
-							$loop2++;
+						}
 
-							$temoin_au_moins_un_current_nom_groupe=true;
+						if(trim($current_nom_groupe)!='') {
+							if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
+								if($loop2>0) {
+									$sql.=" OR ";
+								}
+								$sql.="classe like '$current_nom_groupe' OR 
+									classe like '$current_nom_groupe, %' OR 
+									classe like '%, $current_nom_groupe, %' OR 
+									classe like '%, $current_nom_groupe'";
+								$sql.=" OR groupes like '$current_nom_groupe' OR 
+									groupes like '$current_nom_groupe, %' OR 
+									groupes like '%, $current_nom_groupe, %' OR 
+									groupes like '%, $current_nom_groupe'";
+								$loop2++;
+
+								$temoin_au_moins_un_current_nom_groupe=true;
+							}
 						}
 					}
 					$sql.=");";
@@ -2061,12 +2074,15 @@ elseif($action=="comparer") {
 				//$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
 				$current_nom_groupe=trim(preg_replace("/\[.*\]/", "", $tmp_tab_nom_groupe[$loop]));
 				if($debug_import_edt=="y") {
-					echo $tmp_tab_nom_groupe[$loop]."-&gt;".$current_nom_groupe."<br />";
+					echo "<span style='color:green'>".$tmp_tab_nom_groupe[$loop]." devient ".$current_nom_groupe."</span><br />";
 				}
 				if(trim($current_nom_groupe)=='') {
-					$current_nom_groupe=$tmp_tab_nom_groupe[$loop];
+					$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+					if(trim($current_nom_groupe)=='') {
+						$current_nom_groupe=$tmp_tab_nom_groupe[$loop];
+					}
 					if($debug_import_edt=="y") {
-						echo "On reprend $current_nom_groupe pour \$current_nom_groupe<br />";
+						echo "<span style='color:green'>On reprend $current_nom_groupe pour \$current_nom_groupe</span><br />";
 					}
 				}
 				if($debug_import_edt=="y") {
@@ -2074,36 +2090,39 @@ elseif($action=="comparer") {
 						echo "Après modif: ".htmlentities($current_nom_groupe)."<br />";
 					}
 				}
-				if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
-					if($loop2>0) {
-						//$chaine_nom_groupe.=", ";
-						//$sql.=" UNION ";
-						$sql.=" OR ";
-					}
-					/*
-					$sql="(SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
-						WHERE (groupes like '$current_nom_groupe' OR 
+
+				if(trim($current_nom_groupe)!='') {
+					if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
+						if($loop2>0) {
+							//$chaine_nom_groupe.=", ";
+							//$sql.=" UNION ";
+							$sql.=" OR ";
+						}
+						/*
+						$sql="(SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+							WHERE (groupes like '$current_nom_groupe' OR 
+								groupes like '$current_nom_groupe, %' OR 
+								groupes like '%, $current_nom_groupe, %' OR 
+								groupes like '%, $current_nom_groupe'))";
+						*/
+						/*
+						$sql.="groupes like '$current_nom_groupe' OR 
 							groupes like '$current_nom_groupe, %' OR 
 							groupes like '%, $current_nom_groupe, %' OR 
-							groupes like '%, $current_nom_groupe'))";
-					*/
-					/*
-					$sql.="groupes like '$current_nom_groupe' OR 
-						groupes like '$current_nom_groupe, %' OR 
-						groupes like '%, $current_nom_groupe, %' OR 
-						groupes like '%, $current_nom_groupe'";
-					*/
-					$sql.="classe like '$current_nom_groupe' OR 
-						classe like '$current_nom_groupe, %' OR 
-						classe like '%, $current_nom_groupe, %' OR 
-						classe like '%, $current_nom_groupe'";
-					$sql.=" OR groupes like '$current_nom_groupe' OR 
-						groupes like '$current_nom_groupe, %' OR 
-						groupes like '%, $current_nom_groupe, %' OR 
-						groupes like '%, $current_nom_groupe'";
-					$loop2++;
+							groupes like '%, $current_nom_groupe'";
+						*/
+						$sql.="classe like '$current_nom_groupe' OR 
+							classe like '$current_nom_groupe, %' OR 
+							classe like '%, $current_nom_groupe, %' OR 
+							classe like '%, $current_nom_groupe'";
+						$sql.=" OR groupes like '$current_nom_groupe' OR 
+							groupes like '$current_nom_groupe, %' OR 
+							groupes like '%, $current_nom_groupe, %' OR 
+							groupes like '%, $current_nom_groupe'";
+						$loop2++;
 
-					$temoin_au_moins_un_current_nom_groupe=true;
+						$temoin_au_moins_un_current_nom_groupe=true;
+					}
 				}
 			}
 			$sql.=");";
