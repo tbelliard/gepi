@@ -114,21 +114,23 @@ if ($barre_plugin!="") {
 
 		//=======================================================
 		// AID
-		$sql="(SELECT ac.* FROM j_aid_utilisateurs_gest jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid)
-		UNION (SELECT ac.* FROM j_aidcateg_super_gestionnaires jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid) ORDER BY type_aid, nom;";
-		$test_aid_tmp=mysqli_query($mysqli, $sql);
-		if(mysqli_num_rows($test_aid_tmp)>0) {
-			$menus .= '       <li class="li_inline">AID'."\n";
-			$menus .= '       <ul class="niveau2">'."\n";
-			$tmp_aid_deja=array();
-			while($lig_aid_tmp=mysqli_fetch_object($test_aid_tmp)) {
-				if(!in_array($lig_aid_tmp->indice_aid, $tmp_aid_deja)) {
-					$menus .= '           <li><a href="'.$gepiPath.'/aid/index2.php?indice_aid='.$lig_aid_tmp->indice_aid.'"'.insert_confirm_abandon().' title="Gérer Gérer le ou les AID de cette catégorie.">'.$lig_aid_tmp->nom.'</a></li>'."\n";
-					$tmp_aid_deja[]=$lig_aid_tmp->indice_aid;
+		if(getSettingAOui('active_mod_gest_aid')) {
+			$sql="(SELECT ac.* FROM j_aid_utilisateurs_gest jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid)
+			UNION (SELECT ac.* FROM j_aidcateg_super_gestionnaires jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid) ORDER BY type_aid, nom;";
+			$test_aid_tmp=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test_aid_tmp)>0) {
+				$menus .= '       <li class="li_inline">AID'."\n";
+				$menus .= '       <ul class="niveau2">'."\n";
+				$tmp_aid_deja=array();
+				while($lig_aid_tmp=mysqli_fetch_object($test_aid_tmp)) {
+					if(!in_array($lig_aid_tmp->indice_aid, $tmp_aid_deja)) {
+						$menus .= '           <li><a href="'.$gepiPath.'/aid/index2.php?indice_aid='.$lig_aid_tmp->indice_aid.'"'.insert_confirm_abandon().' title="Gérer Gérer le ou les AID de cette catégorie.">'.$lig_aid_tmp->nom.'</a></li>'."\n";
+						$tmp_aid_deja[]=$lig_aid_tmp->indice_aid;
+					}
 				}
+				$menus .= '       </ul>'."\n";
+				$menus .= '       </li>'."\n";
 			}
-			$menus .= '       </ul>'."\n";
-			$menus .= '       </li>'."\n";
 		}
 		//=======================================================
 
