@@ -739,7 +739,7 @@ else {
 //echo "<p>DEBUG 2 : type_affichage=$type_affichage</p>";
 
 $x0=isset($_POST['x0']) ? $_POST['x0'] : (isset($_GET['x0']) ? $_GET['x0'] : 50);
-$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 10);
+$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 20);
 
 if(isset($type_affichage)) {
 	//============================
@@ -841,7 +841,7 @@ if((isset($_GET['mode']))&&($_GET['mode']=='afficher_edt_js')) {
 	$x0=isset($_POST['x0']) ? $_POST['x0'] : (isset($_GET['x0']) ? $_GET['x0'] : 50);
 
 	$largeur_edt=isset($_POST['largeur_edt']) ? $_POST['largeur_edt'] : (isset($_GET['largeur_edt']) ? $_GET['largeur_edt'] : 800);
-	$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 10);
+	$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 20);
 	$hauteur_une_heure=isset($_GET['hauteur_une_heure']) ? $_GET['hauteur_une_heure'] : 60;
 	$hauteur_jour=isset($_GET['hauteur_jour']) ? $_GET['hauteur_jour'] : 800;
 
