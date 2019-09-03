@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -746,27 +746,30 @@ if ($_SESSION['statut'] == 'professeur') {
 		}
 	}
 
-	if($NiveauGestionAid_AID_courant>=1) {
-		echo "
-	| <a href='modify_aid.php?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
-		<img src='../images/icons/edit16_ele.png' class='icone16' /> 
-		Élèves de l'AID
-	</a>";
+	if((isset($aid_id))&&(preg_match('/^[0-9]{1,}$/', $aid_id))) {
+		if($NiveauGestionAid_AID_courant>=1) {
+			echo "
+		| <a href='modify_aid.php?flag=eleve&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/edit16_ele.png' class='icone16' /> 
+			Élèves de l'AID
+		</a>";
+		}
+		if($NiveauGestionAid_AID_courant>=2) {
+			echo "
+		| <a href='modify_aid.php?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/edit_user.png' class='icone16' /> 
+			Professeurs de l'AID
+		</a>";
+		}
+		if($NiveauGestionAid_AID_courant>=5) {
+			echo "
+		| <a href='modify_aid.php?flag=prof_gest&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+			<img src='../images/icons/configure.png' class='icone16' /> 
+			Gestionnaires de l'AID
+		</a>";
+		}
 	}
-	if($NiveauGestionAid_AID_courant>=2) {
-		echo "
-	| <a href='modify_aid.php?flag=prof&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
-		<img src='../images/icons/edit_user.png' class='icone16' /> 
-		Professeurs de l'AID
-	</a>";
-	}
-	if($NiveauGestionAid_AID_courant>=5) {
-		echo "
-	| <a href='modify_aid.php?flag=prof_gest&aid_id=".$aid_id."&indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">
-		<img src='../images/icons/configure.png' class='icone16' /> 
-		Gestionnaires de l'AID
-	</a>";
-	}
+
 	if($NiveauGestionAid_categorie==10) {
 		echo "
 	| <a href='config_aid.php?indice_aid=".$indice_aid."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
