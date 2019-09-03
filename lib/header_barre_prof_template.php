@@ -716,13 +716,15 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 				$cpt_sous_menu2++;
 			}
 
-			$sql="SELECT 1=1 FROM j_aid_utilisateurs_gest WHERE id_utilisateur= '".$_SESSION['login']."' AND id_aid = '".$lig_aid->id_aid."' AND indice_aid='".$lig_aid->indice_aid."';";
-			//echo "$sql<br />";
-			$test=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($test)>0) {
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid->id_aid."&indice_aid=".$lig_aid->indice_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Gérer les élèves";
-				$cpt_sous_menu2++;
+			if(getSettingAOui('active_mod_gest_aid')) {
+				$sql="SELECT 1=1 FROM j_aid_utilisateurs_gest WHERE id_utilisateur= '".$_SESSION['login']."' AND id_aid = '".$lig_aid->id_aid."' AND indice_aid='".$lig_aid->indice_aid."';";
+				//echo "$sql<br />";
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)>0) {
+					$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid->id_aid."&indice_aid=".$lig_aid->indice_aid;
+					$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Gérer les élèves";
+					$cpt_sous_menu2++;
+				}
 			}
 
 			if($lig_aid->outils_complementaires=="y") {
