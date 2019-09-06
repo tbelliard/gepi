@@ -1069,7 +1069,9 @@ if($_SESSION['statut']=="responsable") {
 		<p>Affichage&nbsp;: <input type='radio' name='type_affichage' id='type_affichage_classe' value='classe' ".$checked_classe."/><label for='type_affichage_classe'>classe</label>
 		<select name='id_classe' id='id_classe' style='width:5em;' 
 			onchange=\"if(document.getElementById('id_classe').options[document.getElementById('id_classe').selectedIndex].value!='') {
-						document.getElementById('type_affichage_classe').checked=true;
+						if(document.getElementById('type_affichage_classe')) {
+							document.getElementById('type_affichage_classe').checked=true;
+						}
 					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 	if(count($tab_classes)==0) {
@@ -1094,7 +1096,9 @@ if($_SESSION['statut']=="responsable") {
 		 ou <input type='radio' name='type_affichage' id='type_affichage_eleve' value='eleve' ".$checked_eleve."/><label for='type_affichage_eleve'>élève</label>
 		<select name='login_eleve' id='login_eleve' style='width:10em;' 
 			onchange=\"if(document.getElementById('login_eleve').options[document.getElementById('login_eleve').selectedIndex].value!='') {
-						document.getElementById('type_affichage_eleve').checked=true;
+						if(document.getElementById('type_affichage_eleve')) {
+							document.getElementById('type_affichage_eleve').checked=true;
+						}
 					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 		for($loop=0;$loop<count($tab_ele);$loop+=2) {
@@ -1133,7 +1137,14 @@ elseif($_SESSION['statut']=="eleve") {
 	}
 	else {
 		echo_selon_mode("<label for='type_affichage_classe'>classe de </label>
-		<select name='id_classe' onchange=\"document.getElementById('type_affichage_classe').checked=true;document.getElementById('type_affichage_eleve').checked=false;document.getElementById('form_envoi').submit();\">");
+		<select name='id_classe' onchange=\"
+					if(document.getElementById('type_affichage_classe')) {
+						document.getElementById('type_affichage_classe').checked=true;
+					}
+					if(document.getElementById('type_affichage_eleve')) {
+						document.getElementById('type_affichage_eleve').checked=false;
+					};
+				document.getElementById('form_envoi').submit();\">");
 		foreach($tab_classes_ele['classe'] as $current_id_classe => $tab_clas) {
 			$current_nom_classe=$tab_clas['classe'];
 			$selected="";
@@ -1172,6 +1183,7 @@ else {
 		$checked_prof=" checked";
 	}
 
+	// onchange=\"document.getElementById('form_envoi').submit();\"
 	echo_selon_mode("
 		<p>Affichage&nbsp;: <input type='radio' name='type_affichage' id='type_affichage_prof' value='prof' ".$checked_prof."/>");
 	if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('AccesProf_EdtProfs'))) {
@@ -1222,15 +1234,23 @@ else {
 		$lien_prof_precedent="";
 		if($precedent!="") {
 			$lien_prof_precedent="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$precedent;
-					document.getElementById('type_affichage_prof').checked=true;
-					document.getElementById('id_classe').selectedIndex=0;
+					if(document.getElementById('type_affichage_prof')) {
+						document.getElementById('type_affichage_prof').checked=true;
+					}
+					if(document.getElementById('id_classe')) {
+						document.getElementById('id_classe').selectedIndex=0;
+					}
 					document.getElementById('form_envoi').submit();\" title=\"Professeur précédent\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
 		}
 		$lien_prof_suivant="";
 		if($suivant!="") {
 			$lien_prof_suivant="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$suivant;
-					document.getElementById('type_affichage_prof').checked=true;
-					document.getElementById('id_classe').selectedIndex=0;
+					if(document.getElementById('type_affichage_prof')) {
+						document.getElementById('type_affichage_prof').checked=true;
+					}
+					if(document.getElementById('id_classe')) {
+						document.getElementById('id_classe').selectedIndex=0;
+					}
 					document.getElementById('form_envoi').submit();\" title=\"Professeur suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivant' /></a>";
 		}
 
@@ -1238,8 +1258,12 @@ else {
 		$lien_prof_precedent
 		<select name='login_prof' id='login_prof' style='width:10em;' 
 			onchange=\"if(document.getElementById('login_prof').options[document.getElementById('login_prof').selectedIndex].value!='') {
-						document.getElementById('type_affichage_prof').checked=true;
-						document.getElementById('id_classe').selectedIndex=0;
+						if(document.getElementById('type_affichage_prof')) {
+							document.getElementById('type_affichage_prof').checked=true;
+						}
+						if(document.getElementById('id_classe')) {
+							document.getElementById('id_classe').selectedIndex=0;
+						}
 					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 		/*
@@ -1319,15 +1343,23 @@ else {
 	$lien_classe_precedente="";
 	if($precedent!="") {
 		$lien_classe_precedente="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$precedent;
-				document.getElementById('type_affichage_classe').checked=true;
-				document.getElementById('login_prof').selectedIndex=0;
+				if(document.getElementById('type_affichage_classe')) {
+					document.getElementById('type_affichage_classe').checked=true;
+				}
+				if(document.getElementById('login_prof')) {
+					document.getElementById('login_prof').selectedIndex=0;
+				}
 				document.getElementById('form_envoi').submit();\" title=\"Classe précédente\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédente' /></a>";
 	}
 	$lien_classe_suivante="";
 	if($suivant!="") {
 		$lien_classe_suivante="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$suivant;
-				document.getElementById('type_affichage_classe').checked=true;
-				document.getElementById('login_prof').selectedIndex=0;
+				if(document.getElementById('type_affichage_classe')) {
+					document.getElementById('type_affichage_classe').checked=true;
+				}
+				if(document.getElementById('login_prof')) {
+					document.getElementById('login_prof').selectedIndex=0;
+				}
 				document.getElementById('form_envoi').submit();\" title=\"Classe suivante\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivante' /></a>";
 	}
 
@@ -1336,8 +1368,12 @@ else {
 		$lien_classe_precedente
 		<select name='id_classe' id='id_classe' style='width:5em;' 
 			onchange=\"if(document.getElementById('id_classe').options[document.getElementById('id_classe').selectedIndex].value!='') {
-						document.getElementById('type_affichage_classe').checked=true;
-						document.getElementById('login_prof').selectedIndex=0;
+						if(document.getElementById('type_affichage_classe')) {
+							document.getElementById('type_affichage_classe').checked=true;
+						}
+						if(document.getElementById('login_prof')) {
+							document.getElementById('login_prof').selectedIndex=0;
+						}
 					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 	echo_selon_mode($chaine_options_select);
@@ -1404,15 +1440,23 @@ else {
 			$lien_eleve_precedent="";
 			if($precedent!="") {
 				$lien_eleve_precedent="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$precedent;
-						document.getElementById('type_affichage_eleve').checked=true;
-						document.getElementById('login_prof').selectedIndex=0;
+						if(document.getElementById('type_affichage_eleve')) {
+							document.getElementById('type_affichage_eleve').checked=true;
+						}
+						if(document.getElementById('login_prof')) {
+							document.getElementById('login_prof').selectedIndex=0;
+						}
 						document.getElementById('form_envoi').submit();\" title=\"Élève précédent\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
 			}
 			$lien_eleve_suivant="";
 			if($suivant!="") {
 				$lien_eleve_suivant="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$suivant;
-						document.getElementById('type_affichage_eleve').checked=true;
-						document.getElementById('login_prof').selectedIndex=0;
+						if(document.getElementById('type_affichage_eleve')) {
+							document.getElementById('type_affichage_eleve').checked=true;
+						}
+						if(document.getElementById('login_prof')) {
+							document.getElementById('login_prof').selectedIndex=0;
+						}
 						document.getElementById('form_envoi').submit();\" title=\"Élève suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivant' /></a>";
 			}
 
@@ -1422,8 +1466,12 @@ else {
 		$lien_eleve_precedent
 		<select name='login_eleve' id='login_eleve' style='width:10em;' 
 			onchange=\"if(document.getElementById('login_eleve').options[document.getElementById('login_eleve').selectedIndex].value!='') {
-						document.getElementById('type_affichage_eleve').checked=true;
-						document.getElementById('login_prof').selectedIndex=0;
+						if(document.getElementById('type_affichage_eleve')) {
+							document.getElementById('type_affichage_eleve').checked=true;
+						}
+						if(document.getElementById('login_prof')) {
+							document.getElementById('login_prof').selectedIndex=0;
+						}
 					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>
 			$chaine_options_select

@@ -3540,14 +3540,33 @@ function affiche_abs2_sur_edt2() {
 	global $x0, $y0, $largeur_edt, $hauteur_une_heure;
 	global $hauteur_entete;
 
+	global $affichage;
+
 	$html="";
 
+	/*
+	$html="affichage=$affichage<br />";
+	echo "jours<pre>";
+	print_r($jours);
+	echo "</pre>";
+	*/
+
 	if(isset($login_eleve)) {
-		foreach($jours['num_jour'] as $num_jour => $current_jour) {
-			if(!isset($ts_1er_jour)) {
-				$ts_1er_jour=mktime(0, 0, 0, $current_jour['mm'], $current_jour['jj'], $current_jour['aaaa']);
-				$mysqldate_1er_jour=$current_jour['aaaa']."-".$current_jour['mm']."-".$current_jour['jj']." 00:00:00";
+		if($affichage=='semaine') {
+			foreach($jours['num_jour'] as $num_jour => $current_jour) {
+				if(!isset($ts_1er_jour)) {
+					$ts_1er_jour=mktime(0, 0, 0, $current_jour['mm'], $current_jour['jj'], $current_jour['aaaa']);
+					$mysqldate_1er_jour=$current_jour['aaaa']."-".$current_jour['mm']."-".$current_jour['jj']." 00:00:00";
+				}
+				$ts_dernier_jour=mktime(23, 59, 59, $current_jour['mm'], $current_jour['jj'], $current_jour['aaaa']);
+				$mysqldate_dernier_jour=$current_jour['aaaa']."-".$current_jour['mm']."-".$current_jour['jj']." 23:59:59";
 			}
+		}
+		else {
+			$current_jour=$jours['num_jour'][$affichage];
+			$ts_1er_jour=mktime(0, 0, 0, $current_jour['mm'], $current_jour['jj'], $current_jour['aaaa']);
+			$mysqldate_1er_jour=$current_jour['aaaa']."-".$current_jour['mm']."-".$current_jour['jj']." 00:00:00";
+
 			$ts_dernier_jour=mktime(23, 59, 59, $current_jour['mm'], $current_jour['jj'], $current_jour['aaaa']);
 			$mysqldate_dernier_jour=$current_jour['aaaa']."-".$current_jour['mm']."-".$current_jour['jj']." 23:59:59";
 		}
