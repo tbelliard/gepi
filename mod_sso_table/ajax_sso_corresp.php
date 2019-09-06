@@ -26,11 +26,11 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_sso_table/ajax_sso_corresp.php';";
@@ -50,8 +50,8 @@ statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if(isset($_GET['delete'])) {
@@ -76,4 +76,35 @@ if(isset($_GET['delete'])) {
 	die();
 }
 
+if((isset($_GET['mode']))&&($_GET['mode']=='afficher_user')&&(isset($_GET['login_gepi']))) {
+	if(trim($_GET['login_gepi'])=='') {
+		echo "<span style='color:red'>Login invalide.</span>";
+		die();
+	}
+
+	$login_gepi=$_GET['login_gepi'];
+	$test=preg_replace('/[A-Za-z0-9_.-]/', '', $login_gepi);
+	if($test!='') {
+		echo "<span style='color:red'>Le login proposé contient des caractères invalides (".$test.").</span>";
+		die();
+	}
+
+	$statut=get_valeur_champ('utilisateurs', "login='".$login_gepi."'", 'statut');
+	if($statut=='eleve') {
+		header("Location: ../eleves/modify_eleve.php?eleve_login=$login_gepi");
+	}
+	elseif($statut=='responsable') {
+		$pers_id=get_valeur_champ('resp_pers', "login='$login_gepi'", "pers_id");
+		if($pers_id=='') {
+			echo "<span style='color:red'>Le login proposé ne correspond à aucun responsable.</span>";
+			die();
+		}
+		header("Location: ../responsables/modify_resp.php?pers_id=$pers_id");
+	}
+	else {
+		header("Location: ../utilisateurs/modify_user.php?user_login=$login_gepi");
+	}
+
+	die();
+}
 ?>

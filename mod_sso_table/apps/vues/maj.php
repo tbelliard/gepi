@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -22,12 +22,12 @@
 // On empêche l'accès direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
-};
+}
 ?>
 [onload;file=menu.php]
 <p>A partir de cette page vous pouvez mettre à jour manuellement une correspondance :</p>
 <p>Rechercher un utilisateur dans Gepi. Attention son compte doit être activé et paramétré en sso</p>
-<form action="index.php?ctrl=maj&action=search"  method="post">
+<form action="index.php?ctrl=maj&action=search"  method="post" id='form_recherche'>
           <input type="text" name="nom" id="nom" value="" />
           <input type="submit" name="action" value="Rechercher" class="submit"/>
 </form>
@@ -41,9 +41,11 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             <th title="Cliquer pour trier" style="cursor:pointer">Login</th>
         </tr>
         <tr class="lig[sso1.ligne]">
-            <td style="padding-left: .2em; padding-right: .2em;"> [sso1.nom;block=tr;bmagnet=table]</td>
+            <td style="padding-left: .2em; padding-right: .2em;"> <a href='#' onclick="document.getElementById('nom').value='[sso1.nom_seul]';document.getElementById('form_recherche').submit();return false;" title="Rechercher [sso1.nom_seul]">[sso1.nom;block=tr;bmagnet=table]</a></td>
             <td style="padding-left: .2em; padding-right: .2em;"> [sso1.statut]</td>
-            <td style="padding-left: .2em; padding-right: .2em;"> [sso1.login_gepi]</td>
+            <td style="padding-left: .2em; padding-right: .2em;"> 
+                <a href='ajax_sso_corresp.php?login_gepi=[sso1.login_gepi]&mode=afficher_user' target='_blank' title="Accéder à la fiche">[sso1.login_gepi]</a>
+            </td>
         </tr>
     </table>
 </div>

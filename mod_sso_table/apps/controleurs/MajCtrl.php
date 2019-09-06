@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -22,7 +22,7 @@
 // On empêche l'accès direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
-};
+}
 
 require_once ("Controleur.php");
 require_once("ImportModele.php");
@@ -42,7 +42,7 @@ class MajCtrl extends Controleur {
         $lig=-1;
         while($lig_correspond=mysqli_fetch_object($resp)) {
             $nomPrenom = $lig_correspond->nom." ".$lig_correspond->prenom;
-          $this->var[]=Array('nom'=>"$nomPrenom",'statut'=>"$lig_correspond->statut" , 'login_gepi'=>"$lig_correspond->login",'ligne'=>$lig);
+          $this->var[]=Array('nom'=>"$nomPrenom",'statut'=>"$lig_correspond->statut" , 'login_gepi'=>"$lig_correspond->login",'ligne'=>$lig,'nom_seul'=>trim(preg_replace('/[^A-Za-z]/', '%', $lig_correspond->nom)));
            $lig *= -1; 
         }
         $this->vue->MergeBlock('sso1',$this->var) ;
