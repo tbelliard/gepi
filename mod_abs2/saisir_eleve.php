@@ -567,7 +567,12 @@ echo ' id="heure_fin_absence_eleve" onKeyDown="clavier_heure2(this.id,event,30,3
 echo '/><br/>';
 
 echo "<span title=\"Pour plusieurs élèves, les saisies sont toujours créées séparées.
-En revanche, si pour un élève donné, vous saisissez une absence récurrente, par exemple pour des rendez-vous tous les lundis de 10h à 11h entre telle date et telle date, il peut être utile de créer des saisies séparées, au cas où l'un des rendez-vous serait annulé par la suite.\">";
+En revanche, si pour un élève donné, vous saisissez une absence récurrente, par exemple pour des rendez-vous tous les lundis de 10h à 11h entre telle date et telle date, il peut être utile de créer des saisies séparées, au cas où l'un des rendez-vous serait annulé par la suite.
+ATTENTION : Gepi n'autorise la création que de 50 saisies (50 dates) 
+            au maximum en une seule fois.
+            Pour saisir plus de 50 dates (répétition par exemple 
+            d'absences les lundi et mardi sur 17 semaines, ce qui 
+            fait 51 dates, il faudra s'y prendre à deux fois.)\">";
 echo '<input type="radio" name="multisaisie" id="multisaisie_n" value="n" checked="checked" />';
 echo '	<label for="multisaisie_n">Créer une seule saisie</label> <br/>';
 echo '	<input type="radio" name="multisaisie" id="multisaisie_y" value="y"/>';
@@ -601,10 +606,15 @@ if(($_SESSION['statut']=="cpe")||($_SESSION['statut']=="scolarite")) {
 	else {
 		echo "<br />
 <div style='border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;'>
-	<p title=\"Répéter la saisie entre les dates mentionnées ci-dessus...\nSi vous choisissez des jours de répétition de la saisie, une saisie sera créée par jour\n(même si vous cochez 'Créer une seule saisie' ci-dessus).\"><strong>Répétition&nbsp;:</strong><br />
+	<p title=\"Répéter la saisie entre les dates mentionnées ci-dessus...\nSi vous choisissez des jours de répétition de la saisie, une saisie sera créée par jour\n(même si vous cochez 'Créer une seule saisie' ci-dessus).
+ATTENTION : Gepi n'autorise la création que de 50 saisies (50 dates) 
+            au maximum en une seule fois.
+            Pour saisir plus de 50 dates (répétition par exemple 
+            d'absences les lundi et mardi sur 17 semaines, ce qui 
+            fait 51 dates, il faudra s'y prendre à deux fois.)\"\"><strong>Répétition&nbsp;:</strong><br />
 		Uniquement les <br />";
 		foreach($tab_jour_ouvres as $indice => $tab_jour_courant) {
-			echo "<input type='checkbox' name='restrict_jour[]' id='restrict_jour_".$indice."' value='$indice' /><label for='restrict_jour_".$indice."'>".$tab_jour_courant["fr"]."</label><br />";
+			echo "<input type='checkbox' name='restrict_jour[]' id='restrict_jour_".$indice."' value='$indice' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;}\" /><label for='restrict_jour_".$indice."'>".$tab_jour_courant["fr"]."</label><br />";
 		}
 	}
 	echo "</p>
