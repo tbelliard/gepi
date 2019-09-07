@@ -193,6 +193,7 @@ if ($current_cours != null) {
 
 		$tab_jour_ouvres=get_tab_jour_ouverture_etab();
 		$tab_jour_ouvres_US=get_tab_jour_ouverture_etab_US();
+
 		/*
 		echo "tab_jour_ouvres<pre>";
 		print_r($tab_jour_ouvres);
@@ -202,6 +203,7 @@ if ($current_cours != null) {
 		print_r($tab_jour_ouvres_US);
 		echo "</pre>";
 		*/
+
 		$tab_jours_vacances=get_tab_jours_vacances();
 
 		$date_compteur = $date_debut;
@@ -214,7 +216,7 @@ if ($current_cours != null) {
 			//echo "\$date_compteur->format('U')=".$date_compteur->format('U')." ";
 			//echo "\$date_compteur->format('j')=".$date_compteur->format('j')." ".$date_compteur->format('l');
 
-			$compteur = $compteur + 1;
+			//$compteur = $compteur + 1;
 			if(((in_array(mb_strtolower($date_compteur->format('l')), $tab_jour_ouvres))||
 			(in_array(mb_strtolower($date_compteur->format('l')), $tab_jour_ouvres_US)))&&
 			(!in_array($date_compteur->format('Ymd'), $tab_jours_vacances))) {
@@ -236,6 +238,7 @@ if ($current_cours != null) {
 						$saisie->setEdtCreneau($creneau);
 					}
 					$saisie_col_modele->append($saisie);
+					$compteur = $compteur + 1;
 				}
 			}
 			//echo "<br />";
