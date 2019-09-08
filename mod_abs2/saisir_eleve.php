@@ -571,8 +571,8 @@ En revanche, si pour un élève donné, vous saisissez une absence récurrente, 
 ATTENTION : Gepi n'autorise la création que de 50 saisies (50 dates) 
             au maximum en une seule fois.
             Pour saisir plus de 50 dates (répétition par exemple 
-            d'absences les lundi et mardi sur 17 semaines, ce qui 
-            fait 51 dates, il faudra s'y prendre à deux fois.)\">";
+            d'absences les lundi, mardi et mercredi sur 17 semaines, 
+            ce qui fait 51 dates, il faudra s'y prendre à deux fois.)\">";
 echo '<input type="radio" name="multisaisie" id="multisaisie_n" value="n" checked="checked" />';
 echo '	<label for="multisaisie_n">Créer une seule saisie</label> <br/>';
 echo '	<input type="radio" name="multisaisie" id="multisaisie_y" value="y"/>';
@@ -610,8 +610,8 @@ if(($_SESSION['statut']=="cpe")||($_SESSION['statut']=="scolarite")) {
 ATTENTION : Gepi n'autorise la création que de 50 saisies (50 dates) 
             au maximum en une seule fois.
             Pour saisir plus de 50 dates (répétition par exemple 
-            d'absences les lundi et mardi sur 17 semaines, ce qui 
-            fait 51 dates, il faudra s'y prendre à deux fois.)\"\"><strong>Répétition&nbsp;:</strong><br />
+            d'absences les lundi, mardi et mercredi sur 17 semaines, 
+            ce qui fait 51 dates, il faudra s'y prendre à deux fois.)\"\"><strong>Répétition&nbsp;:</strong><br />
 		Uniquement les <br />";
 		foreach($tab_jour_ouvres as $indice => $tab_jour_courant) {
 			echo "<input type='checkbox' name='restrict_jour[]' id='restrict_jour_".$indice."' value='$indice' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;}\" /><label for='restrict_jour_".$indice."'>".$tab_jour_courant["fr"]."</label><br />";
