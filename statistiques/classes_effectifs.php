@@ -252,6 +252,34 @@ if(isset($_GET['export_csv'])) {
 			$csv.=$tab_mef[$lig_mef->mef_code]['designation_courte'].";".$liste_classes.";".$lig_mef->effectif.";\r\n";
 		}
 
+		// MEF VIDE
+		$sql="SELECT COUNT(e.login) AS effectif FROM eleves e, 
+									j_eleves_classes jec 
+								WHERE e.login=jec.login AND 
+									jec.periode='".$num_periode."' AND 
+									e.mef_code='';";
+		//echo "$sql<br />";
+		$res_mef=mysqli_query($mysqli, $sql);
+		while($lig_mef=mysqli_fetch_object($res_mef)) {
+			$liste_classes='';
+			$sql="SELECT DISTINCT c.classe, jec.id_classe FROM eleves e, 
+													j_eleves_classes jec, 
+													classes c 
+												WHERE e.mef_code='' AND 
+													e.login=jec.login AND 
+													periode='".$num_periode."' AND 
+													jec.id_classe=c.id 
+												ORDER BY c.classe;";
+			$res_mef_classe=mysqli_query($mysqli, $sql);
+			$cpt_mef_classe=0;
+			while($lig_mef_classe=mysqli_fetch_object($res_mef_classe)) {
+				if($cpt_mef_classe>0) {$liste_classes.=', ';}
+				$liste_classes.=$lig_mef_classe->classe;
+				$cpt_mef_classe++;
+			}
+			$csv.="MEF VIDE;".$liste_classes.";".$lig_mef->effectif.";\r\n";
+		}
+
 		$csv.="Total;;";
 		$sql="SELECT e.login FROM j_eleves_classes jec, eleves e WHERE e.login=jec.login AND jec.periode='$num_periode';";
 		//echo "$sql<br />";
@@ -305,6 +333,34 @@ if(isset($_GET['export_csv'])) {
 			else {
 				$csv.=$lig_mef->rattachement.";".$liste_classes.";".$lig_mef->effectif.";\r\n";
 			}
+		}
+
+		// MEF VIDE
+		$sql="SELECT COUNT(e.login) AS effectif FROM eleves e, 
+									j_eleves_classes jec 
+								WHERE e.login=jec.login AND 
+									jec.periode='".$num_periode."' AND 
+									e.mef_code='';";
+		//echo "$sql<br />";
+		$res_mef=mysqli_query($mysqli, $sql);
+		while($lig_mef=mysqli_fetch_object($res_mef)) {
+			$liste_classes='';
+			$sql="SELECT DISTINCT c.classe, jec.id_classe FROM eleves e, 
+													j_eleves_classes jec, 
+													classes c 
+												WHERE e.mef_code='' AND 
+													e.login=jec.login AND 
+													periode='".$num_periode."' AND 
+													jec.id_classe=c.id 
+												ORDER BY c.classe;";
+			$res_mef_classe=mysqli_query($mysqli, $sql);
+			$cpt_mef_classe=0;
+			while($lig_mef_classe=mysqli_fetch_object($res_mef_classe)) {
+				if($cpt_mef_classe>0) {$liste_classes.=', ';}
+				$liste_classes.=$lig_mef_classe->classe;
+				$cpt_mef_classe++;
+			}
+			$csv.="MEF VIDE;".$liste_classes.";".$lig_mef->effectif.";\r\n";
 		}
 
 		$csv.="Total;;";
@@ -652,6 +708,7 @@ echo "
 		}
 
 		$sql="SELECT m.*, COUNT(e.login) AS effectif FROM eleves e, mef m WHERE e.mef_code=m.mef_code AND e.login in (SELECT login FROM j_eleves_classes WHERE periode='".$loop."') GROUP BY mef_code ORDER BY m.libelle_court, m.libelle_long, m.libelle_edition, m.mef_code;";
+		//echo "$sql<br />";
 		$res_mef=mysqli_query($mysqli, $sql);
 		while($lig_mef=mysqli_fetch_object($res_mef)) {
 			$liste_classes='';
@@ -662,6 +719,7 @@ echo "
 													e.login=jec.login AND periode='".$loop."' AND 
 													jec.id_classe=c.id 
 												ORDER BY c.classe;";
+			//echo "$sql<br />";
 			$res_mef_classe=mysqli_query($mysqli, $sql);
 			$cpt_mef_classe=0;
 			while($lig_mef_classe=mysqli_fetch_object($res_mef_classe)) {
@@ -672,6 +730,40 @@ echo "
 			echo "
 		<tr>
 			<td>".$tab_mef[$lig_mef->mef_code]['designation_courte']."</td>
+			<td>".$liste_classes."</td>
+			<td>".$lig_mef->effectif."</td>
+		</tr>";
+		}
+
+		// MEF VIDE
+		$sql="SELECT COUNT(e.login) AS effectif FROM eleves e, 
+									j_eleves_classes jec 
+								WHERE e.login=jec.login AND 
+									jec.periode='".$loop."' AND 
+									e.mef_code='';";
+		//echo "$sql<br />";
+		$res_mef=mysqli_query($mysqli, $sql);
+		while($lig_mef=mysqli_fetch_object($res_mef)) {
+			$liste_classes='';
+			$sql="SELECT DISTINCT c.classe, jec.id_classe FROM eleves e, 
+													j_eleves_classes jec, 
+													classes c 
+												WHERE e.mef_code='' AND 
+													e.login=jec.login AND 
+													periode='".$loop."' AND 
+													jec.id_classe=c.id 
+												ORDER BY c.classe;";
+			//echo "$sql<br />";
+			$res_mef_classe=mysqli_query($mysqli, $sql);
+			$cpt_mef_classe=0;
+			while($lig_mef_classe=mysqli_fetch_object($res_mef_classe)) {
+				if($cpt_mef_classe>0) {$liste_classes.=', ';}
+				$liste_classes.=$lig_mef_classe->classe;
+				$cpt_mef_classe++;
+			}
+			echo "
+		<tr>
+			<td style='color:red' title=\"MEF non renseigné\">Aucun</td>
 			<td>".$liste_classes."</td>
 			<td>".$lig_mef->effectif."</td>
 		</tr>";
@@ -739,7 +831,41 @@ echo "
 			}
 			echo "
 		<tr>
-			<td>".(isset($tab_mef[$lig_mef->mef_rattachement]['designation_courte']) ? $tab_mef[$lig_mef->mef_rattachement]['designation_courte'] : "<span title=\"MAF_rattachement inconnu ? Contrôlez les MEF.\" style='color:red'>???</span>")."</td>
+			<td>".(isset($tab_mef[$lig_mef->mef_rattachement]['designation_courte']) ? $tab_mef[$lig_mef->mef_rattachement]['designation_courte'] : "<span title=\"MEF_rattachement inconnu ? Contrôlez les MEF.\" style='color:red'>???</span>")."</td>
+			<td>".$liste_classes."</td>
+			<td>".$lig_mef->effectif."</td>
+		</tr>";
+		}
+
+		// MEF VIDE
+		$sql="SELECT COUNT(e.login) AS effectif FROM eleves e, 
+									j_eleves_classes jec 
+								WHERE e.login=jec.login AND 
+									jec.periode='".$loop."' AND 
+									e.mef_code='';";
+		//echo "$sql<br />";
+		$res_mef=mysqli_query($mysqli, $sql);
+		while($lig_mef=mysqli_fetch_object($res_mef)) {
+			$liste_classes='';
+			$sql="SELECT DISTINCT c.classe, jec.id_classe FROM eleves e, 
+													j_eleves_classes jec, 
+													classes c 
+												WHERE e.mef_code='' AND 
+													e.login=jec.login AND 
+													periode='".$loop."' AND 
+													jec.id_classe=c.id 
+												ORDER BY c.classe;";
+			//echo "$sql<br />";
+			$res_mef_classe=mysqli_query($mysqli, $sql);
+			$cpt_mef_classe=0;
+			while($lig_mef_classe=mysqli_fetch_object($res_mef_classe)) {
+				if($cpt_mef_classe>0) {$liste_classes.=', ';}
+				$liste_classes.=$lig_mef_classe->classe;
+				$cpt_mef_classe++;
+			}
+			echo "
+		<tr>
+			<td style='color:red' title=\"MEF non renseigné\">Aucun</td>
 			<td>".$liste_classes."</td>
 			<td>".$lig_mef->effectif."</td>
 		</tr>";
