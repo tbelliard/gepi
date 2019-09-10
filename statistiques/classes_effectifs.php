@@ -257,7 +257,7 @@ if(isset($_GET['export_csv'])) {
 									j_eleves_classes jec 
 								WHERE e.login=jec.login AND 
 									jec.periode='".$num_periode."' AND 
-									e.mef_code='';";
+									(e.mef_code='' OR e.mef_code='-1' OR e.mef_code IS NULL OR e.mef_code NOT IN (SELECT mef_code FROM mef WHERE mef_code!=''));";
 		//echo "$sql<br />";
 		$res_mef=mysqli_query($mysqli, $sql);
 		while($lig_mef=mysqli_fetch_object($res_mef)) {
@@ -265,7 +265,7 @@ if(isset($_GET['export_csv'])) {
 			$sql="SELECT DISTINCT c.classe, jec.id_classe FROM eleves e, 
 													j_eleves_classes jec, 
 													classes c 
-												WHERE e.mef_code='' AND 
+												WHERE (e.mef_code='' OR e.mef_code='-1' OR e.mef_code IS NULL OR e.mef_code NOT IN (SELECT mef_code FROM mef WHERE mef_code!='')) AND 
 													e.login=jec.login AND 
 													periode='".$num_periode."' AND 
 													jec.id_classe=c.id 
@@ -740,7 +740,7 @@ echo "
 									j_eleves_classes jec 
 								WHERE e.login=jec.login AND 
 									jec.periode='".$loop."' AND 
-									e.mef_code='';";
+									(e.mef_code='' OR e.mef_code='-1' OR e.mef_code IS NULL OR e.mef_code NOT IN (SELECT mef_code FROM mef WHERE mef_code!=''));";
 		//echo "$sql<br />";
 		$res_mef=mysqli_query($mysqli, $sql);
 		while($lig_mef=mysqli_fetch_object($res_mef)) {
@@ -748,7 +748,7 @@ echo "
 			$sql="SELECT DISTINCT c.classe, jec.id_classe FROM eleves e, 
 													j_eleves_classes jec, 
 													classes c 
-												WHERE e.mef_code='' AND 
+												WHERE (e.mef_code='' OR e.mef_code='-1' OR e.mef_code IS NULL OR e.mef_code NOT IN (SELECT mef_code FROM mef WHERE mef_code!='')) AND 
 													e.login=jec.login AND 
 													periode='".$loop."' AND 
 													jec.id_classe=c.id 
@@ -842,7 +842,7 @@ echo "
 									j_eleves_classes jec 
 								WHERE e.login=jec.login AND 
 									jec.periode='".$loop."' AND 
-									e.mef_code='';";
+									(e.mef_code='' OR e.mef_code='-1' OR e.mef_code IS NULL OR e.mef_code NOT IN (SELECT mef_code FROM mef WHERE mef_code!=''));";
 		//echo "$sql<br />";
 		$res_mef=mysqli_query($mysqli, $sql);
 		while($lig_mef=mysqli_fetch_object($res_mef)) {
@@ -850,7 +850,7 @@ echo "
 			$sql="SELECT DISTINCT c.classe, jec.id_classe FROM eleves e, 
 													j_eleves_classes jec, 
 													classes c 
-												WHERE e.mef_code='' AND 
+												WHERE (e.mef_code='' OR e.mef_code='-1' OR e.mef_code IS NULL OR e.mef_code NOT IN (SELECT mef_code FROM mef WHERE mef_code!='')) AND 
 													e.login=jec.login AND 
 													periode='".$loop."' AND 
 													jec.id_classe=c.id 
