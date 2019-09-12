@@ -1296,7 +1296,7 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 			}
 		}
 
-		if(nb_checkbox==1) {
+		if((!temoin)&&(nb_checkbox==1)) {
 			for(i=0;i<champs_input.length;i++) {
 				type=champs_input[i].getAttribute('type');
 				if(type=='checkbox'){
