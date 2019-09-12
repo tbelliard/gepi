@@ -58,42 +58,55 @@ $debug_ele="n";
 ?>
 <script type="text/javascript" language="JavaScript">
 <!--
-function CocheCase(boul){
-  len = document.formulaire.elements.length;
-  for( i=0; i<len; i++) {
-    if (document.formulaire.elements[i].type=='checkbox') {
-      document.formulaire.elements[i].checked = boul ;
-    }
-  }
- }
+	function CocheCase(boul) {
+		len = document.formulaire.elements.length;
+		for( i=0; i<len; i++) {
+			if (document.formulaire.elements[i].type=='checkbox') {
+				document.formulaire.elements[i].checked = boul ;
+			}
+		}
+	}
 
-function InverseSel(){
-  len = document.formulaire.elements.length;
-  for( i=0; i<len; i++) {
-    if (document.formulaire.elements[i].type=='checkbox') {
-      a=!document.formulaire.elements[i].checked  ;
-      document.formulaire.elements[i].checked = a
-    }
-   }
-}
+	function InverseSel() {
+		len = document.formulaire.elements.length;
+		for( i=0; i<len; i++) {
+			if (document.formulaire.elements[i].type=='checkbox') {
+				a=!document.formulaire.elements[i].checked;
+				document.formulaire.elements[i].checked = a
+			}
+		}
+	}
 
-function MetVal(cible){
-len = document.formulaire.elements.length;
-if ( cible== 'nom' ) {
-  a=2;
-  b=document.formulaire.nom.value;
-  } else {
-  a=3;
-  b=document.formulaire.pour.value;
-  }
-for( i=0; i<len; i++) {
-if ((document.formulaire.elements[i].type=='checkbox')
-     &&
-    (document.formulaire.elements[i].checked)
-    ) {
-document.formulaire.elements[i+a].value = b ;
-}}}
- // -->
+	function MetVal(cible) {
+		len = document.formulaire.elements.length;
+		if ( cible== 'nom' ) {
+			a=2;
+			b=document.formulaire.nom.value;
+		} else {
+			if ( cible== 'nom_alt' ) {
+				a=3;
+				b=document.formulaire.nom_alt.value;
+			} else {
+				if ( cible== 'fonction' ) {
+					a=4;
+					b=document.formulaire.fonction.value;
+				} else {
+					a=5;
+					b=document.formulaire.pour.value;
+				}
+			}
+		}
+
+		for( i=0; i<len; i++) {
+			if ((document.formulaire.elements[i].type=='checkbox')
+				&&
+				(document.formulaire.elements[i].checked)
+				) {
+				document.formulaire.elements[i+a].value = b ;
+			}
+		}
+	}
+// -->
 </script>
 
 <?php
@@ -235,19 +248,9 @@ if (isset($is_posted)) {
 		if ($test == "0") {
 			$insert_ou_update_classe="insert";
 			$tmp_nom_classe=mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""));
-			$reg_classe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe='".$tmp_nom_classe."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni'");
-
-			$id_classe=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
-			for($loop=0;$loop<count($tab_user_scol);$loop++) {
-				// TEST déjà assoc... cela peut arriver si des scories subsistent...
-				$sql="SELECT 1=1 FROM j_scol_classes WHERE login='$tab_user_scol[$loop]' AND id_classe='$id_classe';";
-				$test_j_scol_class=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($test_j_scol_class)==0) {
-					//$tab_user_scol
-					$sql="INSERT INTO j_scol_classes SET login='$tab_user_scol[$loop]', id_classe='$id_classe';";
-					$insert_j_scol_class=mysqli_query($GLOBALS["mysqli"], $sql);
-				}
-			}
+			$sql="INSERT INTO classes SET classe='".$tmp_nom_classe."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni';";
+			//echo "$sql<br />";
+			$reg_classe = mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$tab_id_classe=array();
 			$sql="SELECT id FROM classes ORDER BY classe;";
@@ -304,91 +307,114 @@ if (isset($is_posted)) {
 				$info_action_mode="statut";
 				enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
 			}
-        } else {
-            $insert_ou_update_classe="update";
-            $reg_classe = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET classe='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni' WHERE classe='$classe'");
-        }
-        if (!$reg_classe) {echo "<p style='color:red'>Erreur lors de l'enregistrement de la classe $classe.";}
+		}
+		else {
+			$insert_ou_update_classe="update";
+			$sql="UPDATE classes SET classe='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""))."', 
+					nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',
+					suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',
+					formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', 
+					format_nom='cni' 
+				WHERE classe='$classe';";
+			$reg_classe = mysqli_query($GLOBALS["mysqli"], $sql);
+		}
 
-        // On enregistre les périodes pour cette classe
-        // On teste d'abord :
-        $id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$classe'"),0,'id');
-        $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
-        if ($test == "0") {
-            $j = '0';
-            while ($j < $reg_periodes_num[$classe]) {
-                $num = $j+1;
-                $nom_per = "Période ".$num;
-                if ($num == "1") { $ver = "N"; } else { $ver = 'O'; }
-                $sql="INSERT INTO periodes SET num_periode='$num',nom_periode='$nom_per',verouiller='$ver',id_classe='$id_classe';";
-                $register = mysqli_query($GLOBALS["mysqli"], $sql);
-                if (!$register) echo "<p>Erreur lors de l'enregistrement d'une période pour la classe $classe";
+		if (!$reg_classe) {echo "<p style='color:red'>Erreur lors de l'enregistrement de la classe $classe.";}
 
-                // 20150810
-                if($insert_ou_update_classe=="insert") {
-                    $sql="SELECT * FROM edt_calendrier WHERE numero_periode='".$num."';";
-                    $res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
-                    if(mysqli_num_rows($res_cal)==1) {
-                        $lig_cal=mysqli_fetch_object($res_cal);
+		// On enregistre les périodes pour cette classe
+		// On teste d'abord :
+		$id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select id from classes where classe='$classe'"),0,'id');
 
-                        $tab_id_classe_deja=explode(";", $lig_cal->classe_concerne_calendrier);
-                        $chaine_id_classe="";
-                        for($loop=0;$loop<count($tab_id_classe);$loop++) {
-                            if(($tab_id_classe[$loop]==$id_classe)||(in_array($tab_id_classe[$loop], $tab_id_classe_deja))) {
-                                $chaine_id_classe.=$tab_id_classe[$loop].";";
-                            }
-                        }
+		if((isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_classe))) {
+			if(isset($suivi_par_alt[$classe])) {
+				if(!saveParamClasse($id_classe, 'suivi_par_alt', $suivi_par_alt[$classe])) {
+					echo "<p style='color:red'>Erreur lors de l'enregistrement de la désignation alternative de la personne assurant le suivi de la classe ".$classe.".</p>";
+				}
+			}
 
-                        //$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$lig_cal->classe_concerne_calendrier.$id_classe.";' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
-                        $sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
-                        $update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+			if(isset($fonction[$classe])) {
+				if(!saveParamClasse($id_classe, 'suivi_par_alt_fonction', $fonction[$classe])) {
+					echo "<p style='color:red'>Erreur lors de l'enregistrement de la fonction de la personne assurant le suivi de la classe ".$classe.".</p>";
+				}
+			}
+		}
 
-                        $sql="UPDATE periodes SET date_fin='".$lig_cal->jourfin_calendrier."' WHERE id_classe='".$id_classe."' AND num_periode='".$lig_cal->numero_periode."';";
-                        $update_per=mysqli_query($GLOBALS["mysqli"], $sql);
-                    }
-                    elseif($nb_edt_cal>0) {
-                        $info_action_titre="Dates de périodes pour la classe ".get_nom_classe($id_classe);
-                        $info_action_texte="Pensez à contrôler que la classe ".get_nom_classe($id_classe)." est bien associée aux périodes et vacances dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.";
-                        $info_action_destinataire=array("administrateur");
-                        $info_action_mode="statut";
-                        enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
-                    }
-                }
+		$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE (id_classe='$id_classe')"),0);
+		if ($test == "0") {
+			$j = '0';
+			while ($j < $reg_periodes_num[$classe]) {
+				$num = $j+1;
+				$nom_per = "Période ".$num;
+				if ($num == "1") { $ver = "N"; } else { $ver = 'O'; }
+				$sql="INSERT INTO periodes SET num_periode='$num',nom_periode='$nom_per',verouiller='$ver',id_classe='$id_classe';";
+				$register = mysqli_query($GLOBALS["mysqli"], $sql);
+				if (!$register) echo "<p>Erreur lors de l'enregistrement d'une période pour la classe $classe";
 
-                $j++;
-            }
-        } else {
-            // on "démarque" les périodes des classes qui ne sont pas à supprimer
-            $sql = mysqli_query($GLOBALS["mysqli"], "UPDATE periodes SET verouiller='N' where (id_classe='$id_classe' and num_periode='1')");
-            $sql = mysqli_query($GLOBALS["mysqli"], "UPDATE periodes SET verouiller='O' where (id_classe='$id_classe' and num_periode!='1')");
-            //
-            $nb_per = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select num_periode from periodes where id_classe='$id_classe'"));
-            if ($nb_per > $reg_periodes_num[$classe]) {
-                // Le nombre de périodes de la classe est inférieur au nombre enregistré
-                // On efface les périodes en trop
-                $k = 0;
-                for ($k=$reg_periodes_num[$classe]+1; $k<$nb_per+1; $k++) {
-                    $del = mysqli_query($GLOBALS["mysqli"], "delete from periodes where (id_classe='$id_classe' and num_periode='$k')");
-                }
-            }
-            if ($nb_per < $reg_periodes_num[$classe]) {
+				// 20150810
+				if($insert_ou_update_classe=="insert") {
+					$sql="SELECT * FROM edt_calendrier WHERE numero_periode='".$num."';";
+					$res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_cal)==1) {
+						$lig_cal=mysqli_fetch_object($res_cal);
 
-                // Le nombre de périodes de la classe est supérieur au nombre enregistré
-                // On enregistre les périodes
-                $k = 0;
-                $num = $nb_per;
-                for ($k=$nb_per+1 ; $k < $reg_periodes_num[$classe]+1; $k++) {
-                    $num++;
-                    $nom_per = "Période ".$num;
-                    if ($num == "1") { $ver = "N"; } else { $ver = 'O'; }
-                    $register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO periodes SET num_periode='$num',nom_periode='$nom_per',verouiller='$ver',id_classe='$id_classe'");
-                    if (!$register) echo "<p>Erreur lors de l'enregistrement d'une période pour la classe $classe";
-                }
-            }
-        }
+						$tab_id_classe_deja=explode(";", $lig_cal->classe_concerne_calendrier);
+						$chaine_id_classe="";
+						for($loop=0;$loop<count($tab_id_classe);$loop++) {
+							if(($tab_id_classe[$loop]==$id_classe)||(in_array($tab_id_classe[$loop], $tab_id_classe_deja))) {
+								$chaine_id_classe.=$tab_id_classe[$loop].";";
+							}
+						}
 
-        $i++;
-    }
+						//$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$lig_cal->classe_concerne_calendrier.$id_classe.";' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+						$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+						$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+
+						$sql="UPDATE periodes SET date_fin='".$lig_cal->jourfin_calendrier."' WHERE id_classe='".$id_classe."' AND num_periode='".$lig_cal->numero_periode."';";
+						$update_per=mysqli_query($GLOBALS["mysqli"], $sql);
+					}
+					elseif($nb_edt_cal>0) {
+						$info_action_titre="Dates de périodes pour la classe ".get_nom_classe($id_classe);
+						$info_action_texte="Pensez à contrôler que la classe ".get_nom_classe($id_classe)." est bien associée aux périodes et vacances dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.";
+						$info_action_destinataire=array("administrateur");
+						$info_action_mode="statut";
+						enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+					}
+				}
+
+				$j++;
+			}
+		} else {
+			// on "démarque" les périodes des classes qui ne sont pas à supprimer
+			$sql = mysqli_query($GLOBALS["mysqli"], "UPDATE periodes SET verouiller='N' where (id_classe='$id_classe' and num_periode='1')");
+			$sql = mysqli_query($GLOBALS["mysqli"], "UPDATE periodes SET verouiller='O' where (id_classe='$id_classe' and num_periode!='1')");
+			//
+			$nb_per = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select num_periode from periodes where id_classe='$id_classe'"));
+			if ($nb_per > $reg_periodes_num[$classe]) {
+				// Le nombre de périodes de la classe est inférieur au nombre enregistré
+				// On efface les périodes en trop
+				$k = 0;
+				for ($k=$reg_periodes_num[$classe]+1; $k<$nb_per+1; $k++) {
+					$del = mysqli_query($GLOBALS["mysqli"], "delete from periodes where (id_classe='$id_classe' and num_periode='$k')");
+				}
+			}
+			if ($nb_per < $reg_periodes_num[$classe]) {
+
+				// Le nombre de périodes de la classe est supérieur au nombre enregistré
+				// On enregistre les périodes
+				$k = 0;
+				$num = $nb_per;
+				for ($k=$nb_per+1 ; $k < $reg_periodes_num[$classe]+1; $k++) {
+					$num++;
+					$nom_per = "Période ".$num;
+					if ($num == "1") { $ver = "N"; } else { $ver = 'O'; }
+					$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO periodes SET num_periode='$num',nom_periode='$nom_per',verouiller='$ver',id_classe='$id_classe'");
+					if (!$register) echo "<p>Erreur lors de l'enregistrement d'une période pour la classe $classe";
+				}
+			}
+		}
+
+		$i++;
+		}
 
 	$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -461,44 +487,61 @@ une à une</font> et/ou <font color="red">globalement</font> grâce aux
 fonctionnalités offertes ci-dessous :</td>
 </tr>
 <tr>
-  <td colspan="2">&nbsp;</td>
-  <td colspan="4">1) D'abord, cochez les lignes une à une</td>
-</tr>
-  <tr>
-  <td colspan="3">&nbsp;</td>
-  <td colspan="3">Vous pouvez aussi &nbsp;
-  <a href="javascript:CocheCase(true)">
-  COCHER</a> ou
-  <a href="javascript:CocheCase(false)">
-  DECOCHER</a> toutes les lignes , ou
-  <a href="javascript:InverseSel()">
-  INVERSER </a>la sélection</td>
+	<td colspan="2">&nbsp;</td>
+	<td colspan="4">1) D'abord, cochez les lignes une à une</td>
 </tr>
 <tr>
-  <td colspan="2">&nbsp;</td>
-  <td colspan="4">2) Puis, pour les lignes cochées :</td>
-</tr>
- <tr>
-  <td colspan="4">&nbsp;</td>
-  <td align="right">le nom au bas du bulletin sera &nbsp;:&nbsp;</td>
-  <td>
-    <input type="text" name="nom" maxlength="80" size="40" />
-  <input type ="button" name="but_nom" value="Recopier"
-onclick="javascript:MetVal('nom')" />
- </td>
-</tr>
- <tr>
-  <td colspan="4">&nbsp;</td>
-  <td align="right">la formule au bas du bulletin sera
-&nbsp;:&nbsp;</td>
-  <td><input type="text" name="pour" maxlength="80" size="40" />
-  <input type ="button" name="but_pour" value="Recopier"
-onclick="javascript:MetVal('pour')" />
- </td>
+	<td colspan="3">&nbsp;</td>
+	<td colspan="3">Vous pouvez aussi &nbsp;
+	<a href="javascript:CocheCase(true)">
+	COCHER</a> ou
+	<a href="javascript:CocheCase(false)">
+	DECOCHER</a> toutes les lignes , ou
+	<a href="javascript:InverseSel()">
+	INVERSER </a>la sélection</td>
 </tr>
 <tr>
-  <td colspan="2">&nbsp;</td>
-  <td colspan="4">3) Cliquez sur les boutons "Recopier" pour remplir les champs selectionnés.</td>
+	<td colspan="2">&nbsp;</td>
+	<td colspan="4">2) Puis, pour les lignes cochées :</td>
+</tr>
+<tr>
+	<td colspan="4">&nbsp;</td>
+	<td align="right">le nom au bas du bulletin sera &nbsp;:&nbsp;</td>
+	<td>
+		<input type="text" name="nom" maxlength="80" size="40" />
+		<input type ="button" name="but_nom" value="Recopier"
+			onclick="javascript:MetVal('nom')" />
+	</td>
+</tr>
+<tr>
+	<td colspan="4">&nbsp;</td>
+	<td align="right">la désignation alternative pouvant être utilisée dans des publipostages OOo sera &nbsp;:&nbsp;</td>
+	<td>
+		<input type="text" name="nom_alt" maxlength="80" size="40" />
+		<input type ="button" name="but_nom_alt" value="Recopier"
+			onclick="javascript:MetVal('nom_alt')" />
+	</td>
+</tr>
+<tr>
+	<td colspan="4">&nbsp;</td>
+	<td align="right">la fonction associée sera &nbsp;:&nbsp;</td>
+	<td>
+		<input type="text" name="fonction" maxlength="80" size="40" />
+		<input type ="button" name="but_fonction" value="Recopier"
+			onclick="javascript:MetVal('fonction')" />
+	</td>
+</tr>
+<tr>
+	<td colspan="4">&nbsp;</td>
+	<td align="right">la formule au bas du bulletin sera&nbsp;:&nbsp;</td>
+	<td><input type="text" name="pour" maxlength="80" size="40" />
+		<input type ="button" name="but_pour" value="Recopier"
+		onclick="javascript:MetVal('pour')" />
+	</td>
+</tr>
+<tr>
+	<td colspan="2">&nbsp;</td>
+	<td colspan="4">3) Cliquez sur les boutons "Recopier" pour remplir les champs selectionnés.</td>
 </tr>
 
 </table>
@@ -506,7 +549,7 @@ onclick="javascript:MetVal('pour')" />
 <br />
 <?php
 
-    echo "<script type='text/javascript'>
+	echo "<script type='text/javascript'>
 	function tout_cocher() {
 		for(i=0;i<$nb;i++) {
 			if(document.getElementById('ligne_'+i)) {
@@ -536,7 +579,7 @@ onclick="javascript:MetVal('pour')" />
 </script>
 
 <table border=1 class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des classes'>";
-    echo "<tr>
+	echo "<tr>
 	<th>
 		<p class=\"small\" align=\"center\" title=\"Les cases à cocher ci-dessous servent à préciser vers quelles lignes recopier les nom et formule choisis ci-dessus.\">
 			Aide<br />Remplissage<br />
@@ -550,65 +593,103 @@ Si vous partagez les classes entre le chef d'établissement et son adjoint, vous
 <th><p class=\"small\">Identifiant de la classe</p></th>
 <th><p class=\"small\">Nom complet</p></th>
 <th><p class=\"small\">Nom apparaissant au bas du bulletin</p></th>
-<th><p class=\"small\">formule au bas du bulletin</p></th>
+<th><p class=\"small\">Désignation alternative de la personne suivant la classe pouvant être utilisée dans des publipostages OOo</p></th>
+<th><p class=\"small\">Fonction associée</p></th>
+<th><p class=\"small\">Formule au bas du bulletin</p></th>
 <th><p class=\"small\">Nombres de périodes</p></th></tr>\n";
 	$num_id1=1;
 	$num_id2=$nb+1;
 	$num_id3=2*$nb+1;
+	$num_id4=3*$nb+1;
+	$num_id5=4*$nb+1;
 	$alt=1;
-    while ($i < $nb) {
+	while ($i < $nb) {
 		$alt=$alt*(-1);
-        $classe_id = old_mysql_result($call_data, $i, "classe");
-        $test_classe_exist = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE classe='$classe_id'");
-        $nb_test_classe_exist = mysqli_num_rows($test_classe_exist);
+		$classe_id = old_mysql_result($call_data, $i, "classe");
+		$sql="SELECT * FROM classes WHERE classe='$classe_id';";
+		//echo "$sql<br />";
+		$test_classe_exist = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_test_classe_exist = mysqli_num_rows($test_classe_exist);
 
-        if ($nb_test_classe_exist==0) {
-            $nom_complet = $classe_id;
-            $nom_court = "<font color=red>".$classe_id."</font>";
-            $suivi_par = getSettingValue("gepiAdminPrenom")." ".getSettingValue("gepiAdminNom").", ".getSettingValue("gepiAdminFonction");
-            $formule = "";
-            $nb_per = '3';
-        } else {
-            $id_classe = old_mysql_result($test_classe_exist, 0, 'id');
-            $nb_per = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select num_periode from periodes where id_classe='$id_classe'"));
-            $nom_court = "<font color=green>".$classe_id."</font>";
-            $nom_complet = old_mysql_result($test_classe_exist, 0, 'nom_complet');
-            $suivi_par = old_mysql_result($test_classe_exist, 0, 'suivi_par');
-            $formule = old_mysql_result($test_classe_exist, 0, 'formule');
-        }
-        echo "<tr class='lig$alt'>\n";
-        echo "<td><center><input type=\"checkbox\" id='ligne_$i' name='ligne_$i' value='' /></center></td>\n";
-        echo "<td>\n";
-        echo "<label for='ligne_$i'><p align='center'><b>$nom_court</b></p></label>\n";
-        //echo "";
-        echo "</td>\n";
-        echo "<td>\n";
-        echo "<input type=text id=\"n".$num_id1."\" onKeyDown=\"clavier(this.id,event);\" name='reg_nom_complet[$classe_id]' value=\"".$nom_complet."\" /> \n";
-        echo "</td>\n";
-        echo "<td>\n";
-        echo "<input type=text id=\"n".$num_id2."\" onKeyDown=\"clavier(this.id,event);\" name='reg_suivi[$classe_id]' value=\"".$suivi_par."\" />\n";
-        echo "</td>\n";
-        echo "<td>\n";
-        echo "<input type=text id=\"n".$num_id3."\" onKeyDown=\"clavier(this.id,event);\" name='reg_formule[$classe_id]' value=\"".$formule."\" />\n";
-        echo "</td>\n";
-        echo "<td>\n";
-        echo "<select size=1 name='reg_periodes_num[$classe_id]'>\n";
-        for ($k=1;$k<7;$k++) {
-            echo "<option value='$k'";
-            if ($nb_per == "$k") echo " SELECTED";
-            echo ">$k</option>\n";
-        }
-        echo "</select>\n";
-        echo "</td></tr>\n";
-        $i++;
+		if ($nb_test_classe_exist==0) {
+			$nom_complet = $classe_id;
+			$nom_court = "<font color=red>".$classe_id."</font>";
+			$suivi_par = getSettingValue("gepiAdminPrenom")." ".getSettingValue("gepiAdminNom").", ".getSettingValue("gepiAdminFonction");
+			$suivi_par_alt=$suivi_par;
+			$suivi_par_alt_fonction="Chef d'établissement";
+			$formule = "Pour le conseil";
+			$nb_per = '3';
+		} else {
+			$id_classe = old_mysql_result($test_classe_exist, 0, 'id');
+			$nb_per = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select num_periode from periodes where id_classe='$id_classe'"));
+			$nom_court = "<font color=green>".$classe_id."</font>";
+			$nom_complet = old_mysql_result($test_classe_exist, 0, 'nom_complet');
+			$suivi_par = old_mysql_result($test_classe_exist, 0, 'suivi_par');
+			$formule = old_mysql_result($test_classe_exist, 0, 'formule');
+
+			$suivi_par_alt=$suivi_par;
+			$suivi_par_alt_fonction="Chef d'établissement";
+			$sql="SELECT * FROM classes_param WHERE id_classe='".$id_classe."' AND name LIKE 'suivi_par%';";
+			//echo "$sql<br />";
+			$res_classe_param=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classe_param)>0) {
+				while($lig_classe_param=mysqli_fetch_object($res_classe_param)) {
+					if($lig_classe_param->name=='suivi_par_alt') {
+						$suivi_par_alt=$lig_classe_param->value;
+					}
+					elseif($lig_classe_param->name=='suivi_par_alt_fonction') {
+						$suivi_par_alt_fonction=$lig_classe_param->value;
+					}
+				}
+			}
+
+		}
+
+		echo "<tr class='lig$alt'>\n";
+		echo "<td><center><input type=\"checkbox\" id='ligne_$i' name='ligne_$i' value='' /></center></td>\n";
+		echo "<td>\n";
+		echo "<label for='ligne_$i'><p align='center'><b>$nom_court</b></p></label>\n";
+		//echo "";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<input type=text id=\"n".$num_id1."\" onKeyDown=\"clavier(this.id,event);\" name='reg_nom_complet[$classe_id]' value=\"".$nom_complet."\" /> \n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<input type=text id=\"n".$num_id2."\" onKeyDown=\"clavier(this.id,event);\" name='reg_suivi[$classe_id]' value=\"".$suivi_par."\" />\n";
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo "<input type=text id=\"n".$num_id3."\" onKeyDown=\"clavier(this.id,event);\" name='suivi_par_alt[$classe_id]' value=\"".$suivi_par_alt."\" />\n";
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo "<input type=text id=\"n".$num_id4."\" onKeyDown=\"clavier(this.id,event);\" name='suivi_par_alt_fonction[$classe_id]' value=\"".$suivi_par_alt_fonction."\" />\n";
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo "<input type=text id=\"n".$num_id5."\" onKeyDown=\"clavier(this.id,event);\" name='reg_formule[$classe_id]' value=\"".$formule."\" />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<select size=1 name='reg_periodes_num[$classe_id]'>\n";
+		for ($k=1;$k<7;$k++) {
+			echo "<option value='$k'";
+			if ($nb_per == "$k") echo " SELECTED";
+			echo ">$k</option>\n";
+		}
+		echo "</select>\n";
+		echo "</td></tr>\n";
+		$i++;
+
 		$num_id1++;
 		$num_id2++;
 		$num_id3++;
-    }
-    echo "</table>\n";
-    echo "<input type=hidden name='step2' value='y' />\n";
-    echo "<p align='center'><input type='submit' value='Enregistrer les données' /></p>\n";
-    echo "</form>\n";
+		$num_id4++;
+		$num_id5++;
+	}
+	echo "</table>\n";
+	echo "<input type=hidden name='step2' value='y' />\n";
+	echo "<p align='center'><input type='submit' value='Enregistrer les données' /></p>\n";
+	echo "</form>\n";
 }
 
 ?>
