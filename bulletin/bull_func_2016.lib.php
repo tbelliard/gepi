@@ -616,11 +616,79 @@ die();
 			$pdf->Rect($param_bull2016["x_colonne_cycle"], $param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]), $param_bull2016["cote_carre_cycle"], $param_bull2016["cote_carre_cycle"], 'F');
 			$pdf->SetFillColor(0, 0, 0);
 
-			$pdf->SetXY($param_bull2016["x_colonne_cycle"], $param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]));
+			//$pdf->SetXY($param_bull2016["x_colonne_cycle"], $param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]));
+			$pdf->SetXY($param_bull2016["x_colonne_cycle"], 
+				$param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"])-round(($param_bull2016["cote_carre_cycle"]-3)/2));
+
+			$pdf->SetFont('DejaVu','',6);
+			$pdf->SetTextColor(255,255,255);
+			$pdf->Cell($param_bull2016["cote_carre_cycle"],$param_bull2016["cote_carre_cycle"], 'Cycle',0,2,'C');
+
+			$decalage_vertical_valeur_cycle_et_cercle=1;
+
+			$pdf->SetXY($param_bull2016["x_colonne_cycle"], 
+					$param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"])+$decalage_vertical_valeur_cycle_et_cercle);
 			$pdf->SetFont('DejaVu','',14);
 			$pdf->SetTextColor(255,255,255);
 			$pdf->Cell($param_bull2016["cote_carre_cycle"],$param_bull2016["cote_carre_cycle"], $loop_cycle,0,2,'C');
 
+			/*
+			// http://www.fpdf.org/en/script/script69.php
+			//Circle($x0: float, $y0: float, $r: float, $astart: float, $afinish: float, $style: string, $line_style: array, $fill_color: array, $nSeg: integer)
+			$pdf->SetTextColor(0,0,0);
+			$pdf->SetFillColor(0,0,0);
+			$pdf->Circle($param_bull2016["x_colonne_cycle"], 
+					$param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]), 
+					round(($param_bull2016["cote_carre_cycle"]-3)/2), 
+					0, 
+					360, 
+					'D', 
+					$line_style: array, 
+					array(0,0,0), 
+					$nSeg: integer);
+			*/
+			//http://www.fpdf.org/en/script/script6.php
+			//$pdf->SetTextColor(0,0,0);
+
+//			$style_cercle=$style = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,20,5,10', 'phase' => 10, 'color' => array(255, 0, 0));
+
+			$pdf->SetLineStyle(array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(255, 255, 255)));
+
+			/*
+			$pdf->Circle($param_bull2016["x_colonne_cycle"]+round(($param_bull2016["cote_carre_cycle"])/2), 
+					$param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"])+round(($param_bull2016["cote_carre_cycle"])/2), 
+					round(($param_bull2016["cote_carre_cycle"]-3)/2),
+					0, 
+					360, 
+					'D');
+			*/
+
+			$x_centre_cercle=$param_bull2016["x_colonne_cycle"]+round(($param_bull2016["cote_carre_cycle"])/2)-0.5;
+			$y_centre_cercle=$param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"])+round(($param_bull2016["cote_carre_cycle"])/2)-0.5+$decalage_vertical_valeur_cycle_et_cercle;
+			$r_centre_cercle=round(($param_bull2016["cote_carre_cycle"]-3)/2);
+
+			$pdf->Circle($x_centre_cercle, 
+					$y_centre_cercle, 
+					$r_centre_cercle, 
+					0, 
+					360, 
+					'D');
+
+// A VERIFIER : Avait-on un encadré autour de l'adresse responsable.
+
+			$pdf->SetLineStyle(array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(255, 255, 255)));
+
+			/*
+			$pdf->Circle($param_bull2016["x_colonne_cycle"]+round(($param_bull2016["cote_carre_cycle"])/2), 
+					$param_bull2016["y_colonne_cycle"]+($loop_cycle-2)*($param_bull2016["cote_carre_cycle"]+$param_bull2016["ecart_carres_cycle"]+round(($param_bull2016["cote_carre_cycle"])/2)), 
+					round(($param_bull2016["cote_carre_cycle"]-3)/2),
+					0, 
+					360, 
+					'D', 
+					$style_cercle, 
+					array(0,0,0));
+			*/
+			//Circle($x0, $y0, $r, $astart = 0, $afinish = 360, $style = '', $line_style = null, $fill_color = null, $nSeg = 8)
 		}
 
 		// Colonne correspondant à $loop_niveau et Ligne à $loop_cycle

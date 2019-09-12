@@ -22,6 +22,9 @@ if (!defined('FPDF_VERSION')) {
 	// Fichier d'extension de fpdf pour le bulletin
 	require_once("../class_php/gepi_pdf.class.php");
 
+	// 20190911
+	//require_once("../fpdf/draw.php");
+
 	// Fonctions php des bulletins pdf
 	require_once("bulletin_fonctions.php");
 	// Ensemble des données communes
