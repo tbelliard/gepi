@@ -805,305 +805,315 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$pdf->SetAutoPageBreak(TRUE, 5);
 
 						//for($i=0;$i<$nb_classes;$i++) {
-						for($i=0;$i<count($id_classe);$i++) {
+						if((isset($id_classe))&&(is_array($id_classe))) {
+							for($i=0;$i<count($id_classe);$i++) {
 
-							// Récupération des infos sur les classes sélectionnées pour l'impression
-							//$sql="SELECT classe, nom_complet FROM classes WHERE id='$id_classe';";
-							for($loop=0;$loop<$nb_classes;$loop++) {
-								if($id_classe[$i]==$tab_id_classe[$loop]) {
-									$tmp_tab_classe[$i]=$tab_classe[$loop];
-									$tmp_tab_classe_nom_complet[$i]=$tab_classe_nom_complet[$loop];
-									$tmp_tab_suivi_par[$i]=$tab_suivi_par[$loop];
-									break;
+								// Récupération des infos sur les classes sélectionnées pour l'impression
+								//$sql="SELECT classe, nom_complet FROM classes WHERE id='$id_classe';";
+								for($loop=0;$loop<$nb_classes;$loop++) {
+									if($id_classe[$i]==$tab_id_classe[$loop]) {
+										$tmp_tab_classe[$i]=$tab_classe[$loop];
+										$tmp_tab_classe_nom_complet[$i]=$tab_classe_nom_complet[$loop];
+										$tmp_tab_suivi_par[$i]=$tab_suivi_par[$loop];
+										break;
+									}
 								}
-							}
 
-							// Problème avec les élèves qui ont changé de classe en cours d'année... il faudrait choisir une période de référence pour l'appartenance de classe
-							//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
-							$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe[$i]' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
-							//echo "$sql<br />\n";
-							$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-							$cpt_ele_clas=0;
-							if(mysqli_num_rows($res_ele)>0) {
-								while($lig_ele=mysqli_fetch_object($res_ele)) {
+								// Problème avec les élèves qui ont changé de classe en cours d'année... il faudrait choisir une période de référence pour l'appartenance de classe
+								//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
+								$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe[$i]' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
+								//echo "$sql<br />\n";
+								$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+								$cpt_ele_clas=0;
+								if(mysqli_num_rows($res_ele)>0) {
+									while($lig_ele=mysqli_fetch_object($res_ele)) {
 
-									$tab_ele=array();
-									$tab_ele['login']=$lig_ele->login;
-									$tab_ele['nom']=$lig_ele->nom;
-									$tab_ele['prenom']=$lig_ele->prenom;
-									$tab_ele['denom_eleve']=casse_mot($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2');
-									$tab_ele['sexe']=$lig_ele->sexe;
-									$tab_ele['naissance']=formate_date($lig_ele->naissance);
-									$tab_ele['ine']=$lig_ele->no_gep;
-									$tab_ele['no_gep']=$lig_ele->no_gep;
-									$tab_ele['ele_id']=$lig_ele->ele_id;
-									$tab_ele['elenoet']=$lig_ele->elenoet;
+										$tab_ele=array();
+										$tab_ele['login']=$lig_ele->login;
+										$tab_ele['nom']=$lig_ele->nom;
+										$tab_ele['prenom']=$lig_ele->prenom;
+										$tab_ele['denom_eleve']=casse_mot($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2');
+										$tab_ele['sexe']=$lig_ele->sexe;
+										$tab_ele['naissance']=formate_date($lig_ele->naissance);
+										$tab_ele['ine']=$lig_ele->no_gep;
+										$tab_ele['no_gep']=$lig_ele->no_gep;
+										$tab_ele['ele_id']=$lig_ele->ele_id;
+										$tab_ele['elenoet']=$lig_ele->elenoet;
 
-									/*
-									$tab_ele['classe']=$tab_classe[$i];
-									$tab_ele['id_classe']=$tab_id_classe[$i];
-									$tab_ele['classe_nom_complet']=$tab_classe_nom_complet[$i];
-									$tab_ele['suivi_par']=$tab_suivi_par[$i];
-									*/
-									$tab_ele['classe']=$tmp_tab_classe[$i];
-									$tab_ele['id_classe']=$id_classe[$i];
-									$tab_ele['classe_nom_complet']=$tmp_tab_classe_nom_complet[$i];
-									$tab_ele['suivi_par']=$tmp_tab_suivi_par[$i];
+										/*
+										$tab_ele['classe']=$tab_classe[$i];
+										$tab_ele['id_classe']=$tab_id_classe[$i];
+										$tab_ele['classe_nom_complet']=$tab_classe_nom_complet[$i];
+										$tab_ele['suivi_par']=$tab_suivi_par[$i];
+										*/
+										$tab_ele['classe']=$tmp_tab_classe[$i];
+										$tab_ele['id_classe']=$id_classe[$i];
+										$tab_ele['classe_nom_complet']=$tmp_tab_classe_nom_complet[$i];
+										$tab_ele['suivi_par']=$tmp_tab_suivi_par[$i];
 
-									$tab_ele['intitule_exam']=$intitule_exam;
-									$tab_ele['description_exam']=$description_exam;
-									$tab_ele['date_exam']=$date_exam;
+										$tab_ele['intitule_exam']=$intitule_exam;
+										$tab_ele['description_exam']=$description_exam;
+										$tab_ele['date_exam']=$date_exam;
 
-									// Récup infos Prof Principal (prof_suivi)
-									$sql="SELECT u.* FROM j_eleves_professeurs jep, utilisateurs u WHERE jep.login='".$lig_ele->login."' AND id_classe='$tab_id_classe[$i]' AND jep.professeur=u.login;";
-									$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
-									//echo "$sql<br />";
-									if(mysqli_num_rows($res_pp)>0) {
-										$lig_pp=mysqli_fetch_object($res_pp);
-										$tab_ele['pp']=array();
-				
-										$tab_ele['pp']['login']=$lig_pp->login;
-										$tab_ele['pp']['nom']=$lig_pp->nom;
-										$tab_ele['pp']['prenom']=$lig_pp->prenom;
-										$tab_ele['pp']['civilite']=$lig_pp->civilite;
-									}
-
-									// Régime et redoublement
-									$sql="SELECT * FROM j_eleves_regime WHERE login='".$lig_ele->login."';";
-									$res_ele_reg=mysqli_query($GLOBALS["mysqli"], $sql);
-									if(mysqli_num_rows($res_ele_reg)>0) {
-										$lig_ele_reg=mysqli_fetch_object($res_ele_reg);
-				
-										$tab_ele['regime']=$lig_ele_reg->regime;
-										$tab_ele['doublant']=$lig_ele_reg->doublant;
-									}
-
-									$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$tab_ele['elenoet']."' AND e.id = j.id_etablissement);";
-									//echo "$sql<br />";
-									$data_etab = mysqli_query($GLOBALS["mysqli"], $sql);
-									if(mysqli_num_rows($data_etab)>0) {
-										$tab_ele['etab_id'] = @old_mysql_result($data_etab, 0, "id");
-										$tab_ele['etab_nom'] = @old_mysql_result($data_etab, 0, "nom");
-										$tab_ele['etab_niveau'] = @old_mysql_result($data_etab, 0, "niveau");
-										$tab_ele['etab_type'] = @old_mysql_result($data_etab, 0, "type");
-										$tab_ele['etab_cp'] = @old_mysql_result($data_etab, 0, "cp");
-										$tab_ele['etab_ville'] = @old_mysql_result($data_etab, 0, "ville");
-				
-										if ($tab_ele['etab_niveau']!='') {
-										foreach ($type_etablissement as $type_etab => $nom_etablissement) {
-											if ($tab_ele['etab_niveau'] == $type_etab) {
-												$tab_ele['etab_niveau_nom']=$nom_etablissement;
-											}
+										// Récup infos Prof Principal (prof_suivi)
+										$sql="SELECT u.* FROM j_eleves_professeurs jep, utilisateurs u WHERE jep.login='".$lig_ele->login."' AND id_classe='$tab_id_classe[$i]' AND jep.professeur=u.login;";
+										$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
+										//echo "$sql<br />";
+										if(mysqli_num_rows($res_pp)>0) {
+											$lig_pp=mysqli_fetch_object($res_pp);
+											$tab_ele['pp']=array();
+					
+											$tab_ele['pp']['login']=$lig_pp->login;
+											$tab_ele['pp']['nom']=$lig_pp->nom;
+											$tab_ele['pp']['prenom']=$lig_pp->prenom;
+											$tab_ele['pp']['civilite']=$lig_pp->civilite;
 										}
-										if ($tab_ele['etab_cp']==0) {
-											$tab_ele['etab_cp']='';
+
+										// Régime et redoublement
+										$sql="SELECT * FROM j_eleves_regime WHERE login='".$lig_ele->login."';";
+										$res_ele_reg=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_ele_reg)>0) {
+											$lig_ele_reg=mysqli_fetch_object($res_ele_reg);
+					
+											$tab_ele['regime']=$lig_ele_reg->regime;
+											$tab_ele['doublant']=$lig_ele_reg->doublant;
 										}
-										if ($tab_ele['etab_type']=='aucun')
-											$tab_ele['etab_type']='';
-										else
-											$tab_ele['etab_type']= $type_etablissement2[$tab_ele['etab_type']][$tab_ele['etab_niveau']];
-										}
-									}
 
-									// Récup infos responsables
-									$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
-																	resp_adr ra,
-																	responsables2 r
-												WHERE r.ele_id='".$tab_ele['ele_id']."' AND
-														r.resp_legal!='0' AND
-														r.pers_id=rp.pers_id AND
-														rp.adr_id=ra.adr_id
-												ORDER BY resp_legal;";
-									$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
-									//echo "$sql<br />";
-									if(mysqli_num_rows($res_resp)>0) {
-										$cpt=0;
-										while($lig_resp=mysqli_fetch_object($res_resp)) {
-											$tab_ele['resp'][$cpt]=array();
-				
-											$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
-				
-											$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
-											$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
-											$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
-											$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
-											$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
-											$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
-											$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
-				
-											$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
-											$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
-											$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
-											$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
-											$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
-											$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
-											$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
-				
-											$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
-				
-											$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
-				
-											$cpt++;
-										}
-									}
-
-
-									// Remplissage d'un tableau avec les indices comme attendus par la fonction bull_exb() calquée sur celle des bulletins PDF classiques
-									// Et calcul de la moyenne générale de l'élève
-									$tot_ele=0;
-									$tot_coef=0;
-									$tab_ele['matieres']=array();
-									for($j=0;$j<count($tab_matiere);$j++) {
-
-										//$login_debug='';
-										//if($lig_ele->login==$login_debug) {echo "\$tab_matiere[$j]=$tab_matiere[$j]<br />\n";}
-										//if($lig_ele->login==$login_debug) {echo "\$tab_note[".$lig_ele->login."][$id_classe[$i]][".$tab_matiere[$j]."]['statut']=".$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['statut']."<br />\n";}
-
-										// 20170326
-										if((isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']))&&($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']>1)) {
-											$note_courante=round($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['total']/$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']*10)/10;
-
-											if($tab_bonus[$j]=='n') {
-												$tot_coef+=$tab_coef[$j];
-												$tot_ele+=$note_courante*$tab_coef[$j];
-											}
-											else {
-												$tot_ele+=max(0,($note_courante-10)*$tab_coef[$j]);
-											}
-											$tab_ele['matieres']["$tab_matiere[$j]"]['note']=strtr($note_courante,".",",");
-											$tab_ele['matieres']["$tab_matiere[$j]"]['statut']="";
-
-											unset($current_id_dev);
-
-											if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'])) {
-												$current_id_dev=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'];
-											}
-
-											// INFO: $current_id_dev contient un identifiant de devoir si un devoir a été choisi et si c'est la moyenne du bulletin qui a été choisie, c'est $current_id_dev=bull_$id_groupe_$periode_num
-
-											//if($lig_ele->login==$login_debug) {echo "\$current_id_dev=$current_id_dev<br />\n";}
-
-											if(isset($current_id_dev)) {
-												if(isset($tab_prof[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev']])) {
-													$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev']];
+										$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$tab_ele['elenoet']."' AND e.id = j.id_etablissement);";
+										//echo "$sql<br />";
+										$data_etab = mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($data_etab)>0) {
+											$tab_ele['etab_id'] = @old_mysql_result($data_etab, 0, "id");
+											$tab_ele['etab_nom'] = @old_mysql_result($data_etab, 0, "nom");
+											$tab_ele['etab_niveau'] = @old_mysql_result($data_etab, 0, "niveau");
+											$tab_ele['etab_type'] = @old_mysql_result($data_etab, 0, "type");
+											$tab_ele['etab_cp'] = @old_mysql_result($data_etab, 0, "cp");
+											$tab_ele['etab_ville'] = @old_mysql_result($data_etab, 0, "ville");
+					
+											if ($tab_ele['etab_niveau']!='') {
+											foreach ($type_etablissement as $type_etab => $nom_etablissement) {
+												if ($tab_ele['etab_niveau'] == $type_etab) {
+													$tab_ele['etab_niveau_nom']=$nom_etablissement;
 												}
 											}
-
-
-											if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe'])) {
-												$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof_grp[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe']];
+											if ($tab_ele['etab_cp']==0) {
+												$tab_ele['etab_cp']='';
 											}
-
-											$tab_ele['matieres']["$tab_matiere[$j]"]['coef']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['coef'];
-											$tab_ele['matieres']["$tab_matiere[$j]"]['bonus']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['bonus'];
-											$tab_ele['matieres']["$tab_matiere[$j]"]['nom_complet']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['nom_complet'];
-
-											if(isset($tab_moy[$id_classe[$i]]["$tab_matiere[$j]"])) {
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['moyenne'];
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['min'];
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['max'];
-
-												if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"])) {
-													//$tab_ele['matieres']["$tab_matiere[$j]"]['app']=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"];
-													$tab_ele['matieres']["$tab_matiere[$j]"]['app']="Moyenne de plusieurs notes.";
-												}
-												else {
-													$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
-												}
+											if ($tab_ele['etab_type']=='aucun')
+												$tab_ele['etab_type']='';
+											else
+												$tab_ele['etab_type']= $type_etablissement2[$tab_ele['etab_type']][$tab_ele['etab_niveau']];
 											}
-											else {
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']="-";
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']="-";
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']="-";
-												$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
-											}
-
 										}
-										elseif(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
-											if($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['statut']!='') {
-												$tab_ele['matieres']["$tab_matiere[$j]"]['statut']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['statut'];
-												$tab_ele['matieres']["$tab_matiere[$j]"]['note']="";
+
+										// Récup infos responsables
+										$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+																		resp_adr ra,
+																		responsables2 r
+													WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+															r.resp_legal!='0' AND
+															r.pers_id=rp.pers_id AND
+															rp.adr_id=ra.adr_id
+													ORDER BY resp_legal;";
+										$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+										//echo "$sql<br />";
+										if(mysqli_num_rows($res_resp)>0) {
+											$cpt=0;
+											while($lig_resp=mysqli_fetch_object($res_resp)) {
+												$tab_ele['resp'][$cpt]=array();
+					
+												$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+					
+												$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+												$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+												$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+												$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+												$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+												$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+												$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+					
+												$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+												$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+												$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+												$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+												$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+												$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+												$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+					
+												$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+					
+												$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+					
+												$cpt++;
 											}
-											else {
+										}
+
+
+										// Remplissage d'un tableau avec les indices comme attendus par la fonction bull_exb() calquée sur celle des bulletins PDF classiques
+										// Et calcul de la moyenne générale de l'élève
+										$tot_ele=0;
+										$tot_coef=0;
+										$tab_ele['matieres']=array();
+										for($j=0;$j<count($tab_matiere);$j++) {
+
+											//$login_debug='';
+											//if($lig_ele->login==$login_debug) {echo "\$tab_matiere[$j]=$tab_matiere[$j]<br />\n";}
+											//if($lig_ele->login==$login_debug) {echo "\$tab_note[".$lig_ele->login."][$id_classe[$i]][".$tab_matiere[$j]."]['statut']=".$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['statut']."<br />\n";}
+
+											// 20170326
+											if((isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']))&&($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']>1)) {
+												$note_courante=round($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['total']/$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['nb_notes']*10)/10;
+
 												if($tab_bonus[$j]=='n') {
 													$tot_coef+=$tab_coef[$j];
-													$tot_ele+=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['note']*$tab_coef[$j];
+													$tot_ele+=$note_courante*$tab_coef[$j];
 												}
 												else {
-													$tot_ele+=max(0,($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['note']-10)*$tab_coef[$j]);
+													$tot_ele+=max(0,($note_courante-10)*$tab_coef[$j]);
 												}
-												$tab_ele['matieres']["$tab_matiere[$j]"]['note']=strtr($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['note'],".",",");
+												$tab_ele['matieres']["$tab_matiere[$j]"]['note']=strtr($note_courante,".",",");
 												$tab_ele['matieres']["$tab_matiere[$j]"]['statut']="";
-											}
 
-											//if($lig_ele->login==$login_debug) {echo "\$tab_ele['matieres'][".$tab_matiere[$j]."]['note']=".$tab_ele['matieres']["$tab_matiere[$j]"]['note']."<br />\n";}
-											//if($lig_ele->login==$login_debug) {echo "\$tot_ele=$tot_ele<br />\n";}
+												unset($current_id_dev);
 
-											unset($current_id_dev);
-
-											if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'])) {
-												$current_id_dev=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'];
-											}
-
-											// INFO: $current_id_dev contient un identifiant de devoir si un devoir a été choisi et si c'est la moyenne du bulletin qui a été choisie, c'est $current_id_dev=bull_$id_groupe_$periode_num
-
-											//if($lig_ele->login==$login_debug) {echo "\$current_id_dev=$current_id_dev<br />\n";}
-
-											if(isset($current_id_dev)) {
-												if(isset($tab_prof[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev']])) {
-													$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev']];
+												if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'])) {
+													$current_id_dev=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'];
 												}
-											}
 
-											if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe'])) {
-												$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof_grp[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe']];
-											}
+												// INFO: $current_id_dev contient un identifiant de devoir si un devoir a été choisi et si c'est la moyenne du bulletin qui a été choisie, c'est $current_id_dev=bull_$id_groupe_$periode_num
 
-											$tab_ele['matieres']["$tab_matiere[$j]"]['coef']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['coef'];
-											$tab_ele['matieres']["$tab_matiere[$j]"]['bonus']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['bonus'];
-											$tab_ele['matieres']["$tab_matiere[$j]"]['nom_complet']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['nom_complet'];
+												//if($lig_ele->login==$login_debug) {echo "\$current_id_dev=$current_id_dev<br />\n";}
 
-											if(isset($tab_moy[$id_classe[$i]]["$tab_matiere[$j]"])) {
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['moyenne'];
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['min'];
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['max'];
+												if(isset($current_id_dev)) {
+													if(isset($tab_prof[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev']])) {
+														$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev']];
+													}
+												}
 
-												if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"])) {
-													$tab_ele['matieres']["$tab_matiere[$j]"]['app']=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"];
+
+												if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe'])) {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof_grp[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe']];
+												}
+
+												$tab_ele['matieres']["$tab_matiere[$j]"]['coef']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['coef'];
+												$tab_ele['matieres']["$tab_matiere[$j]"]['bonus']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['bonus'];
+												$tab_ele['matieres']["$tab_matiere[$j]"]['nom_complet']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['nom_complet'];
+
+												if(isset($tab_moy[$id_classe[$i]]["$tab_matiere[$j]"])) {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['moyenne'];
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['min'];
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['max'];
+
+													if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"])) {
+														//$tab_ele['matieres']["$tab_matiere[$j]"]['app']=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"];
+														$tab_ele['matieres']["$tab_matiere[$j]"]['app']="Moyenne de plusieurs notes.";
+													}
+													else {
+														$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
+													}
 												}
 												else {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']="-";
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']="-";
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']="-";
 													$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
 												}
-											}
-											else {
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']="-";
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']="-";
-												$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']="-";
-												$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
-											}
 
+											}
+											elseif(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['statut'])) {
+												if($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['statut']!='') {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['statut']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['statut'];
+													$tab_ele['matieres']["$tab_matiere[$j]"]['note']="";
+												}
+												else {
+													if($tab_bonus[$j]=='n') {
+														$tot_coef+=$tab_coef[$j];
+														$tot_ele+=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['note']*$tab_coef[$j];
+													}
+													else {
+														$tot_ele+=max(0,($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['note']-10)*$tab_coef[$j]);
+													}
+													$tab_ele['matieres']["$tab_matiere[$j]"]['note']=strtr($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['note'],".",",");
+													$tab_ele['matieres']["$tab_matiere[$j]"]['statut']="";
+												}
+
+												//if($lig_ele->login==$login_debug) {echo "\$tab_ele['matieres'][".$tab_matiere[$j]."]['note']=".$tab_ele['matieres']["$tab_matiere[$j]"]['note']."<br />\n";}
+												//if($lig_ele->login==$login_debug) {echo "\$tot_ele=$tot_ele<br />\n";}
+
+												unset($current_id_dev);
+
+												if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'])) {
+													$current_id_dev=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'];
+												}
+
+												// INFO: $current_id_dev contient un identifiant de devoir si un devoir a été choisi et si c'est la moyenne du bulletin qui a été choisie, c'est $current_id_dev=bull_$id_groupe_$periode_num
+
+												//if($lig_ele->login==$login_debug) {echo "\$current_id_dev=$current_id_dev<br />\n";}
+
+												if(isset($current_id_dev)) {
+													if(isset($tab_prof[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev']])) {
+														$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev']];
+													}
+												}
+
+												if(isset($tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe'])) {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['profs_list']=$tab_prof_grp[$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_groupe']];
+												}
+
+												$tab_ele['matieres']["$tab_matiere[$j]"]['coef']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['coef'];
+												$tab_ele['matieres']["$tab_matiere[$j]"]['bonus']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['bonus'];
+												$tab_ele['matieres']["$tab_matiere[$j]"]['nom_complet']=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['nom_complet'];
+
+												if(isset($tab_moy[$id_classe[$i]]["$tab_matiere[$j]"])) {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['moyenne'];
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['min'];
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']=$tab_moy[$id_classe[$i]]["$tab_matiere[$j]"]['max'];
+
+													if(isset($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"])) {
+														$tab_ele['matieres']["$tab_matiere[$j]"]['app']=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"];
+													}
+													else {
+														$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
+													}
+												}
+												else {
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_classe_grp']="-";
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_min_classe_grp']="-";
+													$tab_ele['matieres']["$tab_matiere[$j]"]['moy_max_classe_grp']="-";
+													$tab_ele['matieres']["$tab_matiere[$j]"]['app']="-";
+												}
+
+											}
 										}
+										// Moyenne générale de l'élève
+										if($tot_coef>0) {
+											$moyenne=round(10*$tot_ele/$tot_coef)/10;
+											$tab_ele['moyenne']=strtr($moyenne,".",",");
+										}
+										else {
+											$tab_ele['moyenne']="-";
+										}
+
+										$tab_ele['moy_generale_classe']=$tab_moy_gen[$id_classe[$i]]['moyenne'];
+										$tab_ele['moy_min_classe']=$tab_moy_gen[$id_classe[$i]]['min'];
+										$tab_ele['moy_max_classe']=$tab_moy_gen[$id_classe[$i]]['max'];
+										$tab_ele['avis']="-";
+
+										bull_exb($tab_ele,$cpt_ele_clas);
+
+										$cpt_ele_clas++;
+
 									}
-									// Moyenne générale de l'élève
-									if($tot_coef>0) {
-										$moyenne=round(10*$tot_ele/$tot_coef)/10;
-										$tab_ele['moyenne']=strtr($moyenne,".",",");
-									}
-									else {
-										$tab_ele['moyenne']="-";
-									}
-
-									$tab_ele['moy_generale_classe']=$tab_moy_gen[$id_classe[$i]]['moyenne'];
-									$tab_ele['moy_min_classe']=$tab_moy_gen[$id_classe[$i]]['min'];
-									$tab_ele['moy_max_classe']=$tab_moy_gen[$id_classe[$i]]['max'];
-									$tab_ele['avis']="-";
-
-									bull_exb($tab_ele,$cpt_ele_clas);
-
-									$cpt_ele_clas++;
-
 								}
 							}
+						}
+						else {
+							$pdf->AddPage(); //ajout d'une page au document
+							$pdf->SetFont('DejaVu');
+
+							$pdf->SetXY(10,10);
+							$pdf->SetFont('DejaVu','B',8);
+							$pdf->Cell(0,4.5, "Aucune classe n'a été sélectionnée.",0,0,'C');
 						}
 
 						// Datation du nom de fichier
@@ -1219,7 +1229,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	}
 	*/
 
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1' target='_blank'>\n";
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1' id='form_impression_bulletin' target='_blank'>\n";
 	echo "<p class='bold' style='margin-top:1em;'>Choisissez les classes pour lesquelles vous souhaitez éditer des bulletins&nbsp;:</p>\n";
 	echo "<div style='margin-left:3em;'>";
 	for($i=0;$i<$nb_classes;$i++) {
@@ -1260,7 +1270,54 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 		echo "</div>";
 	}
 
-	echo "<input type='submit' name='Imprimer' value='Imprimer' />\n";
+
+	echo "<input type='submit' name='Imprimer' id='input_submit' value='Imprimer' />
+	<input type='button' id='input_button' value='Imprimer' style='display:none;' onclick=\"check_champ_checkbox()\" /></p>\n";
+
+			echo "
+
+<script type='text/javascript'>
+	document.getElementById('input_submit').style.display='none';
+	document.getElementById('input_button').style.display='';
+
+	function check_champ_checkbox() {
+		var temoin=false;
+		var nb_checkbox=0;
+
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++) {
+			type=champs_input[i].getAttribute('type');
+			if(type=='checkbox'){
+				if(champs_input[i].checked==true) {
+					temoin=true;
+					break;
+				}
+				nb_checkbox++;
+			}
+		}
+
+		if(nb_checkbox==1) {
+			for(i=0;i<champs_input.length;i++) {
+				type=champs_input[i].getAttribute('type');
+				if(type=='checkbox'){
+					champs_input[i].checked=true;
+					temoin=true;
+					break;
+				}
+			}
+		}
+
+		if(temoin) {
+			document.getElementById('form_impression_bulletin').submit();
+		}
+		else {
+			alert(\"Aucune classe n'est cochée.\");
+		}
+	}
+</script>\n";
+
+
+
 	echo "<input type='hidden' name='id_exam' value='$id_exam' />\n";
 	echo "<input type='hidden' name='mode' value='imprimer' />\n";
 	echo "</form>\n";
