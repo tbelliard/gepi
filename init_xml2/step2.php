@@ -252,60 +252,64 @@ if (isset($is_posted)) {
 			//echo "$sql<br />";
 			$reg_classe = mysqli_query($GLOBALS["mysqli"], $sql);
 
-			$tab_id_classe=array();
-			$sql="SELECT id FROM classes ORDER BY classe;";
-			$res_classe = mysqli_query($GLOBALS["mysqli"], $sql);
-			while($lig_classe=mysqli_fetch_object($res_classe)) {
-				$tab_id_classe[]=$lig_classe->id;
-			}
+			$id_classe=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
-			// Associer aux vacances:
-			$sql="SELECT * FROM edt_calendrier WHERE numero_periode='0' AND etabvacances_calendrier='1';";
-			$res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
-			while($lig_cal=mysqli_fetch_object($res_cal)) {
-				$chaine_id_classe="";
+			if((!isset($id_classe))||(!preg_match('/^[0-9]{1,}$/', $id_classe))) {
+				$tab_id_classe=array();
+				$sql="SELECT id FROM classes ORDER BY classe;";
+				$res_classe = mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_classe=mysqli_fetch_object($res_classe)) {
+					$tab_id_classe[]=$lig_classe->id;
+				}
 
-				$tab_id_classe_deja=explode(";", $lig_cal->classe_concerne_calendrier);
-				for($loop=0;$loop<count($tab_id_classe);$loop++) {
-					if(($tab_id_classe[$loop]==$id_classe)||(in_array($tab_id_classe[$loop], $tab_id_classe_deja))) {
-						$chaine_id_classe.=$tab_id_classe[$loop].";";
+				// Associer aux vacances:
+				$sql="SELECT * FROM edt_calendrier WHERE numero_periode='0' AND etabvacances_calendrier='1';";
+				$res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_cal=mysqli_fetch_object($res_cal)) {
+					$chaine_id_classe="";
+
+					$tab_id_classe_deja=explode(";", $lig_cal->classe_concerne_calendrier);
+					for($loop=0;$loop<count($tab_id_classe);$loop++) {
+						if(($tab_id_classe[$loop]==$id_classe)||(in_array($tab_id_classe[$loop], $tab_id_classe_deja))) {
+							$chaine_id_classe.=$tab_id_classe[$loop].";";
+						}
+					}
+
+					$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+					$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+
+				// Associer aux mentions
+				$sql="SELECT * FROM mentions;";
+				$res_mentions = mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_mentions)>0) {
+					$ordre=0;
+					$sql="DELETE FROM j_mentions_classes WHERE id_classe='".$id_classe."';";
+					$del = mysqli_query($GLOBALS["mysqli"], $sql);
+
+					while($lig_mention=mysqli_fetch_object($res_mentions)) {
+						$sql="INSERT INTO j_mentions_classes SET id_classe='".$id_classe."', id_mention='".$lig_mention->id."', ordre='".$ordre."';";
+						$insert_mention = mysqli_query($GLOBALS["mysqli"], $sql);
+						$ordre++;
 					}
 				}
 
-				$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
-				$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
-			}
-
-			// Associer aux mentions
-			$sql="SELECT * FROM mentions;";
-			$res_mentions = mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_mentions)>0) {
-				$ordre=0;
-				$sql="DELETE FROM j_mentions_classes WHERE id_classe='".$id_classe."';";
-				$del = mysqli_query($GLOBALS["mysqli"], $sql);
-
-				while($lig_mention=mysqli_fetch_object($res_mentions)) {
-					$sql="INSERT INTO j_mentions_classes SET id_classe='".$id_classe."', id_mention='".$lig_mention->id."', ordre='".$ordre."';";
-					$insert_mention = mysqli_query($GLOBALS["mysqli"], $sql);
-					$ordre++;
-				}
-			}
-
-			$info_action_titre="Mentions associées à la nouvelle classe ".$tmp_nom_classe;
-			$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='saisie/saisie_mentions.php?associer_mentions_classes=y'>contrôler les mentions associées.</a>.";
-			$info_action_destinataire=array("administrateur");
-			$info_action_mode="statut";
-			enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
-
-			// Associer aux fichiers signature
-			if(getSettingAOui('active_fichiers_signature')) {
-				$info_action_titre="Fichiers signature associés à la nouvelle classe ".$tmp_nom_classe;
-
-				$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='gestion/gestion_signature.php?mode=choix_assoc_fichier_user_classe'>choisir/définir un fichier signature pour les bulletins</a>.";
-
+				$info_action_titre="Mentions associées à la nouvelle classe ".$tmp_nom_classe;
+				$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='saisie/saisie_mentions.php?associer_mentions_classes=y'>contrôler les mentions associées.</a>.";
 				$info_action_destinataire=array("administrateur");
 				$info_action_mode="statut";
 				enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+
+				// Associer aux fichiers signature
+				if(getSettingAOui('active_fichiers_signature')) {
+					$info_action_titre="Fichiers signature associés à la nouvelle classe ".$tmp_nom_classe;
+
+					$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='gestion/gestion_signature.php?mode=choix_assoc_fichier_user_classe'>choisir/définir un fichier signature pour les bulletins</a>.";
+
+					$info_action_destinataire=array("administrateur");
+					$info_action_mode="statut";
+					enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+				}
 			}
 		}
 		else {
