@@ -1056,13 +1056,15 @@ for($i=0;$i<count($id_classe);$i++) {
 				d_dates_evenements_classes ddec 
 			WHERE dde.id_ev=ddec.id_ev AND 
 				ddec.id_classe='".$id_classe[$i]."' AND 
-				date_evenement>='".$date_limite."' 
+				date_evenement>='".$date_limite."' AND 
+				dde.type='conseil_de_classe' 
 				ORDER BY ddec.date_evenement;";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$dates_conseils[$id_classe[$i]][]=$lig->date_evenement;
+			//echo "\$dates_conseils[\$id_classe[$i]][]=\$dates_conseils[".$id_classe[$i]."][]=".$lig->date_evenement."<br />";
 		}
 	}
 }
@@ -1311,6 +1313,8 @@ else {
 	echo "	</fieldset>
 </form>";
 }
+
+echo "<p style='margin-top:1em; color:red;'><em>A FAIRE&nbsp;:</em> Permettre aussi d'imprimer des documents pour les événements autres que les conseils de classe.</p>";
 
 require_once("../lib/footer.inc.php");
 ?>
