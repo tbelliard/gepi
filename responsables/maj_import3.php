@@ -12845,6 +12845,128 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			}
 
 
+			//============================================================
+			// 20190916
+
+			// Élèves sans responsable légal 1
+			echo "<p style='font-weight:bold; margin-top:1em;'>Recherche des élèves sans responsable légal 1.</p>";
+			$sql="SELECT DISTINCT ele_id, login FROM eleves WHERE ele_id NOT IN (SELECT ele_id FROM responsables2 WHERE resp_legal='1') ORDER BY nom, prenom;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)==0) {
+				echo "<p>Tous les élèves ont un responsable légal 1.<br />";
+			}
+			else {
+				echo "<p>".mysqli_num_rows($res)." élève(s) n'ont pas de responsable légal 1.<br />";
+				while($lig=mysqli_fetch_object($res)) {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' title='Voir le dossier élève dans un nouvel onglet.' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id, 'avec_classe')."</a>&nbsp;: ";
+					// Parcourir les responsables et chercher les NIVEAU_RESPONSABILITE=1 triés par ordre de CODE_PARENTE
+					// Si il y en a
+					//	Si l'un est resp_legal 2, chercher s'il y a un autre NIVEAU_RESPONSABILITE=1 à déclarer resp_legal 1 sinon passer de resp_legal 2 à 1
+					// 	Si il n'y a ni resp_legal 1 no resp_legal 2 parmi les NIVEAU_RESPONSABILITE=1, déclarer resp_legal 1 et 2 dans l'ordre des CODE_PARENTE
+					//$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND niveau_responsabilite='1' ORDER BY niveau_responsabilite*100+code_parente;";
+					$resp_1_deja_defini=false;
+					$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND niveau_responsabilite='1' ORDER BY code_parente;";
+					//echo "$sql<br />";
+					$res_resp=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_resp)>0) {
+						//echo mysqli_num_rows($res_resp)." responsable(s) avec NIVEAU_RESPONSABILITE='1'.<br />";
+						while($lig_resp=mysqli_fetch_object($res_resp)) {
+							if(!$resp_1_deja_defini) {
+								if($lig_resp->resp_legal==2) {
+									//if($deja_resp_2) {
+										// Bizarre : Il y a un resp_legal 2 sans resp_legal 1
+										$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig_resp->pers_id."';";
+										//echo "$sql<br />";
+										$update=mysqli_query($mysqli, $sql);
+										if($update) {
+											$resp_1_deja_defini=true;
+											echo civ_nom_prenom_from_pers_id($lig_resp->pers_id)." devient <em>(de RESP_LEGAL ".$lig_resp->resp_legal.")</em> RESP_LEGAL 1.";
+											// Le resp_legal 1 est défini, on passe à l'élève sans resp_legal 1 suivant
+											//break;
+										}
+										else {
+											echo "<span style='color:red'>ERREUR</span>";
+										}
+									/*
+									}
+									else {
+									}
+									*/
+								}
+								else {
+									// On a resp_legal 0 ou 9 avec NIVEAU_RESPONSABILITE='1'
+									$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig_resp->pers_id."';";
+									//echo "$sql<br />";
+									$update=mysqli_query($mysqli, $sql);
+									if($update) {
+										echo civ_nom_prenom_from_pers_id($lig_resp->pers_id)." devient <em>(de RESP_LEGAL ".$lig_resp->resp_legal.")</em> RESP_LEGAL 1.";
+										$resp_1_deja_defini=true;
+										// Le resp_legal 1 est défini, on passe à l'élève sans resp_legal 1 suivant
+										break;
+									}
+									else {
+										echo "<span style='color:red'>ERREUR</span>";
+									}
+								}
+							}
+						}
+					}
+					if(!$resp_1_deja_defini) {
+						echo "<span style='color:red'>Aucun responsable 1 n'a été trouvé.</span>";
+					}
+					echo "<br />";
+				}
+			}
+			// Là, on devrait avoir un resp_legal 1 pour tous les élèves, ou alors, il n'y a pas non plus de resp_legal 2
+
+			// Élèves sans responsable légal 2
+			echo "<p style='font-weight:bold; margin-top:1em;'>Recherche des élèves sans responsable légal 2.</p>";
+			$sql="SELECT DISTINCT ele_id, login FROM eleves WHERE ele_id NOT IN (SELECT ele_id FROM responsables2 WHERE resp_legal='2') ORDER BY nom, prenom;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)==0) {
+				echo "<p>Tous les élèves ont un responsable légal 2.<br />";
+			}
+			else {
+				echo "<p>".mysqli_num_rows($res)." élève(s) n'ont pas de responsable légal 2.<br />";
+				while($lig=mysqli_fetch_object($res)) {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' title='Voir le dossier élève dans un nouvel onglet.' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id, 'avec_classe')."</a>&nbsp;: ";
+					// Parcourir les responsables et chercher les NIVEAU_RESPONSABILITE=1 triés par ordre de CODE_PARENTE
+					// Si il y en a
+					//	S'il n'est pas resp_legal 1, le déclarer resp_legal 2
+					$resp_2_deja_defini=false;
+					$sql="SELECT * FROM responsables2 WHERE ele_id='".$lig->ele_id."' AND niveau_responsabilite='1' AND resp_legal!='1' ORDER BY code_parente;";
+					//echo "$sql<br />";
+					$res_resp=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_resp)>0) {
+						//echo mysqli_num_rows($res_resp)." responsable(s) avec NIVEAU_RESPONSABILITE='1'.<br />";
+						while($lig_resp=mysqli_fetch_object($res_resp)) {
+							if(!$resp_2_deja_defini) {
+								$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig_resp->pers_id."';";
+								//echo "$sql<br />";
+								$update=mysqli_query($mysqli, $sql);
+								if($update) {
+									echo civ_nom_prenom_from_pers_id($lig_resp->pers_id)." devient <em>(de RESP_LEGAL ".$lig_resp->resp_legal.")</em> RESP_LEGAL 2.";
+									$resp_2_deja_defini=true;
+									// Le resp_legal 2 est défini, on passe à l'élève sans resp_legal 2 suivant
+									//break;
+								}
+								else {
+									echo "<span style='color:red'>ERREUR</span>";
+								}
+							}
+						}
+					}
+					if(!$resp_2_deja_defini) {
+						echo "<span style='color:red'>Aucun responsable 2 n'a été trouvé.</span>";
+					}
+					echo "<br />";
+				}
+			}
+			//============================================================
+
+
 			// 20180226
 			// Rechercher des responsabilités sans responsables légaux 1 et 2
 			// Y rechercher des niveau_responsabilité=1 ordonnées suivant code_parente pour définir les resp_legal 1 et 2
@@ -12852,7 +12974,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			$sql="SELECT DISTINCT ele_id, COUNT(resp_legal) AS nb_resp FROM responsables2 WHERE resp_legal='1' OR resp_legal='2' GROUP BY ele_id HAVING COUNT(resp_legal)<2;";
 			$res=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($res)>0) {
-				echo "<p>Contrôle supplémentaire lié à la modifications Siècle qui abandonne les <strong>responsables légaux 1 et 2</strong> pour les critères <strong>Niveau de responsabilité</strong> et <strong>Code parenté</strong>.</p>
+				echo "<p style='margin-top:1em;'>Contrôle supplémentaire lié à la modifications Siècle qui abandonne les <strong>responsables légaux 1 et 2</strong> pour les critères <strong>Niveau de responsabilité</strong> et <strong>Code parenté</strong>.</p>
 				<p>".mysqli_num_rows($res)." élèves n'ont pas deux responsables légaux.<br />
 				Nous allons parcourir les responsables de Niveau de responsabilité 1 pour leur attribuer le rôle de responsable légal.</p>";
 
