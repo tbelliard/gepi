@@ -2338,7 +2338,7 @@ function tableau_html_eleves_du_groupe($id_groupe, $nb_col) {
 	$retour.="</tr>\n";
 	$retour.="</thead>\n";
 	$retour.="<tbody>\n";
-	$sql="SELECT DISTINCT nom, prenom FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe';";
+	$sql="SELECT DISTINCT nom, prenom FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' ORDER BY nom, prenom;";
 	$res_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ele_grp)>0) {
 		$cpt=0;
