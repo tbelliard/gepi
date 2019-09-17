@@ -610,6 +610,7 @@ foreach ($liste_eleves as $eleve) {
 	$elenoet="";
 	$date_sortie="";
 	$sql="SELECT elenoet, date_sortie FROM eleves WHERE login='".$eleve_login[$i]."';";
+	//echo "$sql<br />";
 	$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_elenoet)>0) {
 		$tmp_lig=mysqli_fetch_object($res_elenoet);
@@ -623,7 +624,7 @@ foreach ($liste_eleves as $eleve) {
 	echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' title=\"Voir la fiche élève dans un nouvel onglet.\" target='_blank'>".$eleve_nom[$i]." ".$eleve_prenom[$i]."</a></td>\n";
 	echo "<td>$eleve_classe[$i]</td>\n";
 
-	if(($date_sortie!="")&&($date_sortie<$display_date)) {
+	if(($date_sortie!="")&&($date_sortie!='0000-00-00 00:00:00')&&($date_sortie<$display_date)) {
 		$date_sortie_formatee=formate_date($date_sortie);
 		echo "<td colspan='2' title=\"L'élève a quitté l'établissement le $date_sortie_formatee.\" style='background-color:orange'>".$date_sortie_formatee."</td>";
 	}
