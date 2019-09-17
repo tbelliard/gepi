@@ -12966,6 +12966,47 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			}
 
 
+			//============================================================
+			// 20190916
+			// Si parmi les resp_legal=9, il y a des NIVEAUX_RESPONSABILITE 1
+			//	Si les resp_legal 1 ou 2 ne sont pas attribués, les passer resp_legal 1 ou 2 selon les places dispo.
+			//	Sinon, les mettre resp_legal 0 avec acces_sp et envoi_bulletin
+
+			// Et parmi les NIVEAU_RESPONSABILITE='1' qui restent, on passe à resp_legal=0+envoi_bulletin+acces_sp
+			$sql="SELECT * FROM responsables2 WHERE niveau_responsabilite='1' AND resp_legal!='1' AND resp_legal!='2';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				echo "<p style='font-weight:bold; margin-top:1em;'>".mysqli_num_rows($res)." responsables avec NIVEAU_RESPONSABILITE='1' ne sont pas déclarés responsables légaux.<br />
+				On leur donne un accès aux notes, CDT,... sous réserve qu'ils aient un compte utilisateur <em>(et que ces modules soient acitfs dans Gepi)</em>.<br />Mise en place d'un témoin pour ces responsables de façon à générer un bulletin à leur adresse.</p>";
+
+				$sql="UPDATE responsables2 SET envoi_bulletin='y', acces_sp='y', resp_legal='0' WHERE niveau_responsabilite='1' AND resp_legal!='1' AND resp_legal!='2';";
+				//echo "$sql<br />";
+				$update=mysqli_query($mysqli, $sql);
+				if(!$update) {
+					echo "<p><span style='color:red'>ERREUR lors de l'attribution du droit de consultation et de l'envoi des bulletins vers les responsables légaux non responsable légal 1 ou 2.</span></p>";
+				}
+			}
+
+			// S'il reste des resp_legal 9
+			$sql="SELECT DISTINCT rp.nom, rp.prenom, r.* FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE rp.pers_id=r.pers_id AND r.resp_legal='9' AND e.ele_id=r.ele_id AND jec.login=e.login;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				echo "<p style='color:red; margin-top:1em;'>Il reste ".mysqli_num_rows($res)." responsables non traités <em>(codés RESP_LEGAL 9)</em>&nbsp;:<br />";
+				$cpt_r9=0;
+				while($lig=mysqli_fetch_object($res)) {
+					if($cpt_r9>0) {
+						echo ", ";
+					}
+					echo "<a href='modify_resp.php?pers_id=".$lig->pers_id."' target='_blank'>".$lig->nom." ".$lig->prenom."</a>";
+					$cpt_r9++;
+				}
+				echo "<br />Vous devriez contrôler ces responsables pour éventuellement les taguer RESP_LEGAL 0 (pour qu'ils soient considérés comme 'contact' pour des appels téléphoniques en cas d'absence de l'élève, de problème de santé,...) et leur attribuer éventuellement aussi un accès aux notes/bulletins selon les cas.";
+				echo "</p>";
+			}
+			//============================================================
+
 
 			// Et ceux qui restent, sont resp_legal=0+envoi_bulletin+acces_sp
 			$sql="UPDATE responsables2 SET envoi_bulletin='y', acces_sp='y' WHERE niveau_responsabilite='1' AND resp_legal!='1' AND resp_legal!='2';";
