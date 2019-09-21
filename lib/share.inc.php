@@ -11394,7 +11394,12 @@ function get_infos_salle_cours($id_salle) {
 		}
 
 		if($lig->nom_salle!="") {
-			$designation_complete.=" (".$lig->nom_salle.")";
+			if(($lig->numero_salle!="")&&(strpos($lig->nom_salle, $lig->numero_salle)===false)) {
+				$designation_complete.=" (".$lig->nom_salle.")";
+			}
+			else {
+				$designation_complete=$lig->nom_salle;
+			}
 		}
 
 		$tab['designation_courte']=$designation_courte;
