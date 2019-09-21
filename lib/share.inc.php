@@ -11375,6 +11375,7 @@ function get_infos_salle_cours($id_salle) {
 	$tab=array();
 
 	$sql="SELECT * FROM salle_cours WHERE id_salle='$id_salle';";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
@@ -11382,6 +11383,8 @@ function get_infos_salle_cours($id_salle) {
 		$tab['numero_salle']=$lig->numero_salle;
 		$tab['nom_salle']=$lig->nom_salle;
 
+		$designation_courte='';
+		$designation_complete='';
 		if($lig->numero_salle!="") {
 			$designation_courte=$lig->numero_salle;
 			$designation_complete=$lig->numero_salle;
