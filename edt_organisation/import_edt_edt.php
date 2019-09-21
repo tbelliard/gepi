@@ -1690,7 +1690,7 @@ elseif($action=="enregistrer_rapprochements") {
 		echo "$nb_reg associations de semaines A/B effectuées.<br />";
 	}
 
-	echo "<p>L'étape suivante consiste à effectuer le remplissage de l'emploi du temps en suivant le lien <strong>Remplir l'EDT</strong> ci-dessus sous le bandeau d'entête.</p>";
+	echo "<p>L'étape suivante consiste à effectuer le remplissage de l'emploi du temps en suivant le lien <strong><a href='".$_SERVER['PHP_SELF']."?action=remplir_edt_cours".add_token_in_url()."'>Remplir l'EDT</a></strong> ci-dessus sous le bandeau d'entête.</p>";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -2899,10 +2899,14 @@ mysql>
 						echo "<hr />";
 						$temoin_erreur_insert_edt_cours++;
 					}
+					else {
+						$nb_cours_enregistres++;
+					}
 				}
 
 				if($temoin_erreur_insert_edt_cours>0) {
 					echo "<div style='color:green' id='div_cours_enregistre_".$nb_cours_enregistres."'>".$lignes_ce_cours."<hr /></div>";
+					// BIZARRE CA:
 					$nb_cours_enregistres++;
 
 					$chaine_details_cours=$edt_cours_id_groupe."|".$edt_cours_id_salle."|".$edt_cours_jour_semaine."|".$edt_cours_id_definie_periode."|".$edt_cours_duree."|".$edt_cours_heuredeb_dec."|".$edt_cours_id_semaine."|".$edt_cours_login_prof;
@@ -3407,6 +3411,9 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 									echo "<span style='color:red'>Erreur lors de la création du cours : $sql</span><br />";
 									$temoin_erreur_pour_un_prof++;
 								}
+								else {
+									$nb_cours_enregistres++;
+								}
 							}
 
 							if($temoin_erreur_pour_un_prof==0) {
@@ -3446,7 +3453,9 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 
 }
 else {
-	echo "plop";
+	$sql="SELECT 1=1 FROM edt_cours;";
+	$res=mysqli_query($mysqli, $sql);
+	echo "<p>".mysqli_num_rows($res)." cours sont enregistrés dans la base <em>(table 'edt_cours')</em>.</p>";
 }
 
 require("../lib/footer.inc.php");
