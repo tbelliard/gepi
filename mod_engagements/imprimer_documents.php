@@ -189,7 +189,7 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 	}
 	elseif($imprimer=="convocation") {
 
-		$lieu="Salle des conseils";
+		$lieu="(lieu à définir)";
 		// Lieu à mettre dans d_dates_evenements_classes
 
 		$tab_OOo=array();
@@ -204,8 +204,7 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		$tab_OOo[$cpt]['etab_ville']=$etab_ville;
 
 		$tab_OOo[$cpt]['classe']=$classe;
-		$tab_OOo[$cpt]['lieu']=$lieu;
-
+		//$tab_OOo[$cpt]['lieu']=$lieu;
 
 		$date_limite=strftime("%Y-%m-%d")." 00:00:00";
 		// Pour debug/devel
@@ -223,11 +222,16 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		if(mysqli_num_rows($res)>0) {
 			$lig=mysqli_fetch_object($res);
 			$tmp_date_conseil=formate_date($lig->date_evenement,"y2","complet");
+
+			$tmp_lieu=get_infos_salle_cours($lig->id_salle);
+			$lieu=isset($tmp_lieu['designation_complete']) ? $tmp_lieu['designation_complete'] : '(lieu inconnu)';
 		}
 		else {
 			$tmp_date_conseil="DATE INCONNUE";
+			$lieu='(lieu à définir)';
 		}
 		$tab_OOo[$cpt]['date_conseil']=$tmp_date_conseil;
+		$tab_OOo[$cpt]['lieu']=$lieu;
 
 		$tmp_tab=get_info_user($_SESSION['login']);
 		if(count($tmp_tab)==0) {
@@ -410,7 +414,8 @@ __LIEU_CONSEIL__
 __NOM_ETAB__
 __ADR_ETAB__
 */
-	$lieu="Salle des conseils";
+	//$lieu="Salle des conseils";
+	$lieu='(lieu à définir)';
 	// Lieu à mettre dans d_dates_evenements_classes
 
 	$cpt_mail=0;
@@ -419,6 +424,34 @@ __ADR_ETAB__
 	for($loop=0;$loop<count($id_classe);$loop++) {
 		$mail=isset($_POST['mail_'.$id_classe[$loop]]) ? $_POST['mail_'.$id_classe[$loop]] : array();
 		$cpt_mail+=count($mail);
+
+		$id_salle=isset($_POST['lieu_'.$id_classe[$loop]]) ? $_POST['lieu_'.$id_classe[$loop]] : array();
+
+		$ts_date_conseil=mysql_date_to_unix_timestamp($date_conseil[$id_classe[$loop]]);
+		if(isset($id_salle[$ts_date_conseil])) {
+			$tmp_lieu=get_infos_salle_cours($id_salle[$ts_date_conseil]);
+			$lieu=isset($tmp_lieu['designation_complete']) ? $tmp_lieu['designation_complete'] : '(lieu inconnu)';
+		}
+		else {
+			$lieu='(lieu à définir)';
+		}
+
+/*
+$_POST['is_posted']=	2
+$_POST['csrf_alea']=	050fgoHAW786m7Nk44I732nqz8581PwrXKtTLi
+$_POST['id_classe']=	Array (*)
+$_POST[id_classe]['0']=	14
+$_POST['date_conseil']=	Array (*)
+$_POST[date_conseil]['14']=	2019-11-26 18:00:00
+$_POST['lieu_14']=	Array (*)
+$_POST[lieu_14]['1574787600']=	1
+$_POST[lieu_14]['1582017000']=	1
+$_POST['convocation_14']=	Array (*)
+$_POST[convocation_14]['0']=	eleve1
+
+$ts=mysql_date_to_unix_timestamp($dates_conseils[$id_classe[$i]][$j]);
+
+*/
 
 		// 20190103
 		$acces_mail_resp=get_acces_mail_resp('', $id_classe[$loop]);
@@ -547,7 +580,8 @@ __ADR_ETAB__
 	$classe="";
 	//$date_conseil="";
 	*/
-	$lieu="Salle des conseils";
+	//$lieu="Salle des conseils";
+	$lieu='(lieu à définir)';
 	// Lieu à mettre dans d_dates_evenements_classes
 
 	$tab_OOo=array();
@@ -556,6 +590,34 @@ __ADR_ETAB__
 	$cpt=0;
 	for($loop=0;$loop<count($id_classe);$loop++) {
 		$convocation=isset($_POST['convocation_'.$id_classe[$loop]]) ? $_POST['convocation_'.$id_classe[$loop]] : array();
+		$id_salle=isset($_POST['lieu_'.$id_classe[$loop]]) ? $_POST['lieu_'.$id_classe[$loop]] : array();
+
+		$ts_date_conseil=mysql_date_to_unix_timestamp($date_conseil[$id_classe[$loop]]);
+		if(isset($id_salle[$ts_date_conseil])) {
+			$tmp_lieu=get_infos_salle_cours($id_salle[$ts_date_conseil]);
+			$lieu=isset($tmp_lieu['designation_complete']) ? $tmp_lieu['designation_complete'] : '(lieu inconnu)';
+		}
+		else {
+			$lieu='(lieu à définir)';
+		}
+
+/*
+
+$_POST['is_posted']=	2
+$_POST['csrf_alea']=	050fgoHAW786m7Nk44I732nqz8581PwrXKtTLi
+$_POST['id_classe']=	Array (*)
+$_POST[id_classe]['0']=	14
+$_POST['date_conseil']=	Array (*)
+$_POST[date_conseil]['14']=	2019-11-26 18:00:00
+$_POST['lieu_14']=	Array (*)
+$_POST[lieu_14]['1574787600']=	1
+$_POST[lieu_14]['1582017000']=	1
+$_POST['convocation_14']=	Array (*)
+$_POST[convocation_14]['0']=	eleve1
+
+$ts=mysql_date_to_unix_timestamp($dates_conseils[$id_classe[$i]][$j]);
+
+*/
 
 		$classe=get_nom_classe($id_classe[$loop]);
 		for($i=0;$i<count($convocation);$i++) {
@@ -1064,6 +1126,7 @@ for($i=0;$i<count($id_classe);$i++) {
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$dates_conseils[$id_classe[$i]][]=$lig->date_evenement;
+			$lieux_conseils[$id_classe[$i]][]=$lig->id_salle;
 			//echo "\$dates_conseils[\$id_classe[$i]][]=\$dates_conseils[".$id_classe[$i]."][]=".$lig->date_evenement."<br />";
 		}
 	}
@@ -1119,7 +1182,8 @@ for($i=0;$i<count($id_classe);$i++) {
 			}
 			$ts=mysql_date_to_unix_timestamp($dates_conseils[$id_classe[$i]][$j]);
 			echo "
-		<input type='radio' name='date_conseil[".$id_classe[$i]."]' id='date_conseil_".$id_classe[$i]."_".$ts."' value='".$dates_conseils[$id_classe[$i]][$j]."'$checked /><label for='date_conseil_".$id_classe[$i]."_".$ts."' id='texte_date_conseil_".$id_classe[$i]."_".$ts."'>".formate_date($dates_conseils[$id_classe[$i]][$j], "y", "complet")."</label><br />";
+		<input type='radio' name='date_conseil[".$id_classe[$i]."]' id='date_conseil_".$id_classe[$i]."_".$ts."' value='".$dates_conseils[$id_classe[$i]][$j]."'$checked /><label for='date_conseil_".$id_classe[$i]."_".$ts."' id='texte_date_conseil_".$id_classe[$i]."_".$ts."'>".formate_date($dates_conseils[$id_classe[$i]][$j], "y", "complet")."</label>
+		<input type='hidden' name='lieu_".$id_classe[$i]."[$ts]' value=\"".$lieux_conseils[$id_classe[$i]][$j]."\" /><br />";
 		}
 	}
 	echo "</p>";
