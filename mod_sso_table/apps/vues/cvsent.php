@@ -73,12 +73,58 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 		<p style='margin-top:1em; text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
 		<ul>
 			<li>
-				<p>Le recollement entre les informations ENT et celles de Gepi se fera sur les nom et prénom des utilisateurs.</p>
+				<p>Le recollement entre les informations ENT et celles de Gepi se fera sur les nom et prénom des utilisateurs.<br />
+				Seuls les champs <strong>Nom;Prénom;Identifiant ENT</strong> sont requis dans ce CSV.</p>
 			</li>
 			<li>
 				<p>Ce genre de situation peut arriver si par exemple, pour les personnels, l'authentification passe par le serveur LDAP académique (<em>donnant accès aussi au webmail,...</em>).<br />
 				Dans ce cas, l'ENT ne génère pas le mot de passe de l'utilisateur ENT.<br />
 				Seul un export plus restreint est possible.</p>
+			</li>
+			<li>
+				<p>Les utilisateurs doivent préalablement disposer d'un compte utilisateur dans Gepi.<br />
+				C'est le cas pour les personnels, mais pas toujours pour les élèves et parents.<br />
+				Pensez à <a href='../utilisateurs/create_eleve.php'>créer les comptes élèves</a> et <a href='../utilisateurs/create_responsable.php'>parents</a> d'abord.</p>
+			</li>
+		</ul>
+	</fieldset>
+	</form>
+</div>
+
+
+<hr />
+
+<h2>Import CSV type 3</h2>
+<div style='margin-left:3em;'>
+	<form action='traite_export_csv.php' method='post' enctype='multipart/form-data'>
+	<fieldset class='fieldset_opacite50'>
+		<p style='margin-top:1em; text-indent:-4em; margin-left:4em;'>Si au lieu d'un export CSV avec les 13 champs attendus, vous disposez d'un export CSV du type&nbsp;:</p>
+		<pre>
+	﻿"Id";"Id Siecle";"Type";"Nom";"Prénom";"Login";"Alias de login";"Code d'activation";"Fonction(s)";"Structure(s)";"Classe(s)";"Enfant(s)";"Parent(s)"
+	"LILLE-1234567";"";"Enseignant";"TERIEUR";"Alain";"alain.terieur";"alain.terieur";"";"SANS OBJET, ESPAGNOL, ESPAGNOL, ESPAGNOL";"CLG-JACQUES BREL-ac-LILLE-LILLE";"4E1, 4E4, 5E4, 5E3";"";""
+	"LILLE-1323451";"2591470";"Élève";"LEUZE";"Lara";"lara.leuze";"lara.leuze";"Abq5zP71";"";"CLG-JACQUES BREL-ac-LILLE-LILLE";"6E1";"";"Corinne LEUZE, Jean LEUZE"
+	"LILLE-4431638";"";"Parent";"LEUZE";"Jean";"jean.leuze";"jean.leuze";"jVUmx2C9";"";"CLG-JACQUES BREL-ac-LILLE-LILLE";"6E1";"Lara LEUZE";""
+		</pre>
+
+		<p class="title-page">Veuillez fournir le fichier csv&nbsp;:</p>
+		<p>
+			<input type='file' name='fichier' />
+
+			<input type='hidden' name='type_csv' value='3' />
+			<input type='hidden' name='mode' value='upload' />
+			<input type='submit' value='Téléchargement' />
+		</p>
+
+		<p style='margin-top:1em; text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+		<ul>
+			<li>
+				<p>Le recollement entre les informations ENT et celles de Gepi se fera sur les nom et prénom des utilisateurs.<br />
+				Seuls les champs <strong>"Nom";"Prénom";"Login"</strong> sont requis dans ce CSV.</p>
+			</li>
+			<li>
+				<p>Les utilisateurs doivent préalablement disposer d'un compte utilisateur dans Gepi.<br />
+				C'est le cas pour les personnels, mais pas toujours pour les élèves et parents.<br />
+				Pensez à <a href='../utilisateurs/create_eleve.php'>créer les comptes élèves</a> et <a href='../utilisateurs/create_responsable.php'>parents</a> d'abord.</p>
 			</li>
 		</ul>
 	</fieldset>
