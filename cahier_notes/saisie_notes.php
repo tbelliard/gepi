@@ -925,6 +925,12 @@ if((isset($current_group["classes"]["list"]))&&(count($current_group["classes"][
 	echo "<div style='float:right; width:30em; font-size:x-small;'>".affiche_tableau_resp_classe($current_group["classes"]["list"][0])."</div>";
 }
 
+if((isset($current_group['eleves'][$periode_num]['list']))&&(count($current_group['eleves'][$periode_num]['list'])==0)) {
+	echo "<p style='color:red'>Il n'y a aucun élève dans cet enseignement sur la période ".$periode_num.".</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+
 if(isset($num_devoir)) {
 	echo "<script type='text/javascript' language='JavaScript'>
 	if(document.getElementById('span_chgt_dev')) {document.getElementById('span_chgt_dev').style.display='';}
@@ -1027,8 +1033,9 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post id=\"form2\">\n";
 if ($id_devoir != 0) {
 	echo add_token_field();
-	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
-
+	if((isset($current_group['eleves'][$periode_num]['list']))&&(count($current_group['eleves'][$periode_num]['list'])>0)) {
+		echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+	}
 	echo "<input type='hidden' name='modif_note_sur' id='modif_note_sur' value='' />\n";
 }
 
@@ -1174,6 +1181,12 @@ echo "<pre>";
 print_r($liste_eleves);
 echo "</pre>";
 */
+if(!isset($liste_eleves)) {
+	echo "<p style='color:red'>Il n'y a aucun élève dans cet enseignement sur la période ".$periode_num.".</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+
 foreach ($liste_eleves as $eleve) {
 	/*
 	echo "<pre>";
@@ -2559,7 +2572,13 @@ if ($id_devoir) echo "<input type='hidden' name='is_posted' value=\"yes\" />\n";
 
 <input type="hidden" name="id_conteneur" value="<?php echo "$id_conteneur";?>" />
 <input type="hidden" name="id_devoir" value="<?php echo "$id_devoir";?>" />
-<?php if ($id_devoir != 0) echo "<br /><center><div id=\"fixe\"><input type='submit' value='Enregistrer' /></div></center>\n"; ?>
+<?php 
+	if ($id_devoir != 0) {
+		if((isset($current_group['eleves'][$periode_num]['list']))&&(count($current_group['eleves'][$periode_num]['list'])>0)) {
+			echo "<br /><center><div id=\"fixe\"><input type='submit' value='Enregistrer' /></div></center>\n"; 
+		}
+	}
+?>
 </form>
 <?php
 

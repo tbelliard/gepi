@@ -244,7 +244,12 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$date_ele_resp_dev = old_mysql_result($appel_dev, $j, 'date_ele_resp');
 					echo "<li>\n";
 					echo "<span style='color:green;'>$nom_dev</span>";
-					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+					if((isset($eff_groupe))&&($eff_groupe==0)) {
+						echo " - <span title=\"Pas de saisie possible sans élève dans l'enseignement.\">Saisie</span>";
+					}
+					else {
+						echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+					}
 
 					$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
 					$res_eff_dev=mysqli_query($GLOBALS["mysqli"], $sql);
