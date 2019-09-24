@@ -65,6 +65,7 @@
 
 <?php
 	insere_lien_calendrier_crob("right");
+	insere_lien_recherche_eleve("right");
 ?>
 
 <div class='fixeMilieuDroit'>

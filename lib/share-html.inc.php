@@ -7583,4 +7583,38 @@ function retourne_lien_edt2_eleve($ele_login, $ts='') {
 	return $retour;
 }
 
+function insere_lien_recherche_eleve($float="") {
+	global $gepiPath, $themessage;
+
+	// Mettre un test sur les droits
+	$url_recherche='';
+	if((acces("/eleves/recherche.php", $_SESSION['statut']))&&(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))) {
+		$url_recherche="/eleves/recherche.php";
+		$title_recherche="Effectuer une recherche sur un élève, responsable, utilisateur, matière,...";
+		$icon_recherche="chercher.png";
+	}
+	elseif(acces("/eleves/visu_eleve.php", $_SESSION['statut'])) {
+		$url_recherche="/eleves/visu_eleve.php";
+		$title_recherche="Effectuer une recherche sur une fiche élève.";
+		$icon_recherche="chercher_eleve.png";
+	}
+
+	if($url_recherche!='') {
+		if($float!="") {
+			echo "<div style='float:$float;width:16px;margin:3px;'>";
+		}
+
+		echo "<a href='".$gepiPath.$url_recherche."' ";
+
+		if((isset($themessage))&&($themessage!='')) {
+			echo "onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		}
+		echo " target='_blank' title=\"".$title_recherche."\"><img src='$gepiPath/images/icons/".$icon_recherche."' class='icone16' alt='Recherche' /></a>";
+
+		if($float!="") {
+			echo "</div>";
+		}
+	}
+}
+
 ?>
