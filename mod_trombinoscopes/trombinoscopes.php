@@ -504,7 +504,7 @@ function reactiver(mavar) {
 
 			echo "<option value='' ";
 			if ( empty($classe) ) { echo "selected='selected'"; }
-			echo " onclick=\"reactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
+			echo " onclick=\"reactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline,aid');\">pas de s&eacute;lection</option>\n";
 
 			if (( $classe != 'toutes' )&&($_SESSION['statut']!='eleve')) {
 				echo "<option value='toutes'>voir toutes les classes</option>\n";
@@ -525,7 +525,7 @@ function reactiver(mavar) {
 				if(!empty($classe) and $classe == $data_classe_prof['id']) {
 					echo " selected='selected'";
 				}
-				echo " onclick=\"desactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline');\">";
+				echo " onclick=\"desactiver('equipepeda,groupe,discipline,statusgepi,affdiscipline,aid');\">";
 				echo ucwords($data_classe_prof['nom_complet']).' ('.ucwords($data_classe_prof['classe']).')';
 				echo "</option>\n";
 			}
@@ -579,7 +579,7 @@ function reactiver(mavar) {
 			if ( empty($classe) ) {
 				echo " selected='selected'";
 			}
-			echo " onclick=\"reactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
+			echo " onclick=\"reactiver('classe,equipepeda,discipline,statusgepi,affdiscipline,aid');\">pas de s&eacute;lection</option>\n";
 
 			if (( $groupe != 'toutes' )&&($_SESSION['statut']!='eleve')) {
 				echo "<option value='toutes'>voir tous les groupes</option>\n";
@@ -595,7 +595,7 @@ function reactiver(mavar) {
 
 			echo "<optgroup label='-- Les groupes --'>\n";
 			while ( $donnee_groupe_prof = mysqli_fetch_array($resultat_groupe_prof)) {
-				echo "<option value='".$donnee_groupe_prof['id_groupe']."' onclick=\"desactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">";
+				echo "<option value='".$donnee_groupe_prof['id_groupe']."' onclick=\"desactiver('classe,equipepeda,discipline,statusgepi,affdiscipline,aid');\">";
 
 				//modif ERIC
 				echo ucwords($donnee_groupe_prof['description']);
@@ -654,7 +654,7 @@ function reactiver(mavar) {
 	 <label for='aid' style='margin-left: 15px;'>Par AID</label>
 	 <br />
 	 <select name='aid' id='aid' style='margin-left: 15px;'>
-		<option value='' selected='selected'>pas de sélection</option>
+		<option value='' selected='selected' onclick="reactiver('classe,equipepeda,groupe,discipline,statusgepi,affdiscipline,aid');">pas de sélection</option>
 	
 <?php
 	while ($aid_prof = mysqli_fetch_object($call_data)) {
@@ -683,7 +683,7 @@ function reactiver(mavar) {
 <?php
    while ($obj_aid = mysqli_fetch_object($call_aid)) {
 ?>		   
-		   <option value='<?php echo $obj_aid->id ?>'>
+		   <option value='<?php echo $obj_aid->id ?>' onclick="desactiver('classe,groupe,equipepeda,discipline,statusgepi,affdiscipline');">
 			  <?php echo $obj_aid->nom ?>
 		   </option>
 <?php	
@@ -773,7 +773,7 @@ function reactiver(mavar) {
 			if ( empty($equipepeda) ) {
 				echo " selected='selected'";
 			}
-			echo " onclick=\"reactiver('classe,groupe,discipline,statusgepi');\">pas de s&eacute;lection</option>\n";
+			echo " onclick=\"reactiver('classe,groupe,discipline,statusgepi,aid');\">pas de s&eacute;lection</option>\n";
 
 
 			//if ( $equipepeda != 'toutes' ) {
@@ -796,7 +796,7 @@ function reactiver(mavar) {
 				if(!empty($equipepeda) and $equipepeda == $donnee_equipe_pedagogique['id']) {
 					echo " selected='selected'";
 				}
-				echo " onclick=\"desactiver('classe,groupe,discipline,statusgepi');\">";
+				echo " onclick=\"desactiver('classe,groupe,aid,discipline,statusgepi');\">";
 				echo ucwords($donnee_equipe_pedagogique['nom_complet']).' ('.ucwords($donnee_equipe_pedagogique['classe']).')';
 				echo "</option>\n";
 			}
@@ -845,7 +845,7 @@ function reactiver(mavar) {
 				if ( empty($discipline) ) {
 					echo " selected='selected'";
 				}
-				echo " onclick=\"reactiver('classe,groupe,equipepeda,statusgepi,affdiscipline');\">pas de s&eacute;lection</option>\n";
+				echo " onclick=\"reactiver('classe,groupe,equipepeda,statusgepi,affdiscipline,aid');\">pas de s&eacute;lection</option>\n";
 
 				if ( $discipline != 'toutes' ) {
 					echo "<option value='toutes'>voir toutes les disciplines</option>\n";
@@ -861,7 +861,7 @@ function reactiver(mavar) {
 					if(!empty($discipline) and $discipline == $donnee_discipline['matiere']) {
 						echo " selected='selected'";
 					}
-					echo " onclick=\"desactiver('classe,groupe,equipepeda,statusgepi,affdiscipline');\">\n";
+					echo " onclick=\"desactiver('classe,groupe,aid,equipepeda,statusgepi,affdiscipline');\">\n";
 					echo ucwords($donnee_discipline['nom_complet']);
 					echo "</option>\n";
 				}
@@ -895,14 +895,14 @@ function reactiver(mavar) {
 			if ( empty($statusgepi) ) {
 				echo " selected='selected'";
 			}
-			echo " onclick=\"reactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">pas de s&eacute;lection</option>\n";
+			echo " onclick=\"reactiver('classe,groupe,equipepeda,discipline,affdiscipline,aid');\">pas de s&eacute;lection</option>\n";
 			echo "<optgroup label='-- Les statuts --'>\n";
 			while ( $donnee_statusgepi = mysqli_fetch_array($resultat_statusgepi)) {
 				echo "<option value='".$donnee_statusgepi['statut']."'";
 				if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) {
 					echo " selected='selected'";
 				}
-				echo " onclick=\"desactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">";
+				echo " onclick=\"desactiver('classe,groupe,aid,equipepeda,discipline,affdiscipline');\">";
 				echo my_ereg_replace("Scolarite","Scolarité",ucwords($donnee_statusgepi['statut']));
 				echo "</option>\n";
 			}
@@ -964,6 +964,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	echo "<br />\n";
 	echo "<b>\n";
 
+	//debug_var();
+
 	// on regarde ce qui a été choisi
 	if ( $classe != '' and $groupe === '' and $aid === ''  and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) {
 		// c'est une classe
@@ -988,6 +990,12 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	elseif ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi != '' ) {
 		// c'est un status de gepi
 		$action_affiche = 'statusgepi';
+	}
+
+	if((!isset($action_affiche))||(!in_array($action_affiche, array('classe', 'groupe', 'aid', 'equipepeda', 'discipline', 'statusgepi')))) {
+		echo "<p style='color:red'>Choix invalide.</p>";
+		require("../lib/footer.inc.php");
+		die();
 	}
 
 	if ( $action_affiche === 'classe' ) {
