@@ -551,7 +551,7 @@ function reactiver(mavar) {
 
 			//if($groupe == '') {
 			if (($groupe=='')&&($_SESSION['statut']=='professeur')) {
-				$requete_groupe_prof = ('SELECT * FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
+				$requete_groupe_prof = ('SELECT DISTINCT g.*, jgc.id_groupe FROM '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'groupes g, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c
 							WHERE jgp.id_groupe = g.id
 							AND jgp.login = "'.$_SESSION['login'].'"
 							AND g.id = jgc.id_groupe
@@ -567,7 +567,7 @@ function reactiver(mavar) {
 
 
 			if($groupe == "toutes") {
-				$requete_groupe_prof = ("SELECT * FROM groupes g,
+				$requete_groupe_prof = ("SELECT DISTINCT g.*, jgc.id_groupe FROM groupes g,
 											j_groupes_classes jgc,
 											classes c
 										WHERE g.id = jgc.id_groupe AND
@@ -608,6 +608,8 @@ function reactiver(mavar) {
 			}
 			echo "</optgroup>\n";
 			echo "</select>\n";
+
+			//echo "\$requete_groupe_prof=$requete_groupe_prof<br />";
 
 			echo "<br />\n";
 			echo "<span style='margin-left: 15px;'><input type='radio' id='order_by_alpha' name='order_by' value='alpha' checked='checked' /><label for='order_by_alpha'> Tri alphabétique</label></span><br />\n";
