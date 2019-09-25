@@ -406,7 +406,16 @@ if (isset($choix_prof)) {
 					echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par un groupe AID( ".$aid." )".$precision_semaine.$precision_prof.".</p>";
 				} else {
 					$tab_present_s = get_group($rep_present_s["id_groupe"]);
-					echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"].$precision_semaine.$precision_prof.".</p>";
+					if((isset($tab_present_s["classlist_string"]))&&(isset($tab_present_s["description"]))) {
+						echo "<p class=\"refus\" style=\"color:red\">Cette salle est déjà occupée par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"].$precision_semaine.$precision_prof.".</p>";
+					}
+					else {
+						echo "<p class=\"refus\" style=\"color:red\">Cette salle serait déjà occupée par les élèves d'un groupe supprimé depuis, mais dont il resterait des scories dans la base (".$precision_semaine.$precision_prof.").<br />
+						Un contrôle de la table 'edt_cours' s'impose&nbsp;: 
+						<a href='verifier_edt.php'>Vérifier les EDT</a><br />
+						Si cela ne suffit pas, il faudra procéder à un nettoyage des tables&nbsp;: 
+						<a href='../utilitaires/clean_tables.php?maj=9".add_token_in_url()."'>Nettoyage des tables</a></p>";
+					}
 				}
 
 			}
