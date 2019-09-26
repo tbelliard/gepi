@@ -52,6 +52,14 @@ if (!checkAccess()) {
 	die();
 }
 
+//==============================
+$sql="update infos_actions SET description='Une fonctionnalité d\'encodage des photos est proposée pour éviter des téléchargements abusifs.<br />Voir <a href=\'$gepiPath/mod_trombinoscopes/trombinoscopes_admin.php#encodage\'>Administration du module Trombinoscope</a>' where description like 'Une fonctionnalité d\'encodage des photos est proposée pour éviter des téléchargements abusifs.%./mod_trombinoscopes/trombinoscopes_admin.php%';";
+$corrige=mysqli_query($mysqli, $sql);
+
+$sql="update infos_actions SET description='La méthode d\'encodage a été modifiée, vérifier qu\'il n\'y a pas d\'incohérence.<br />Voir <a href=\'$gepiPath/mod_trombinoscopes/trombinoscopes_admin.php#encodage\'>Administration du module Trombinoscope</a><br /><span style=\'font-weight: bold;\'>Attention : </span>désormais il ne faut plus transférer les photos des élèves directement sur le serveur (FTP ou autre), mais passer par \"Télécharger les photos des élèves\" dans le module d\'administration du trombinoscope<br />' where description like 'La méthode d\'encodage a été modifiée, vérifier qu\'il n\'y a pas d\'incohérence.%./mod_trombinoscopes/trombinoscopes_admin.php%';";
+$corrige=mysqli_query($mysqli, $sql);
+//==============================
+
 $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : array();
 $nature=isset($_POST['nature']) ? $_POST['nature'] : (isset($_GET['nature']) ? $_GET['nature'] : NULL);
 $dest=isset($_POST['dest']) ? $_POST['dest'] : (isset($_GET['dest']) ? $_GET['dest'] : NULL);
