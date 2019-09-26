@@ -49,7 +49,7 @@ if ($res_test==0){
 	}
 
 	$titre="Encodage des photos";
-	$texte="Une fonctionnalité d'encodage des photos est proposée pour éviter des téléchargements abusifs.<br />Voir <a href='./mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a>";
+	$texte="Une fonctionnalité d'encodage des photos est proposée pour éviter des téléchargements abusifs.<br />Voir <a href='$gepiPath/mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a>";
 	$destinataire="administrateur";
 	$mode="statut";
 	enregistre_infos_actions($titre,$texte,$destinataire,$mode);
