@@ -2146,6 +2146,8 @@ function get_commune($code_commune_insee,$mode){
 	}
 }
 
+//debug_var();
+
 echo "<form enctype='multipart/form-data' name='form_choix_eleve' action='modify_eleve.php' method='post'>\n";
 //echo add_token_field();
 echo "<p class=bold><a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
@@ -2172,10 +2174,17 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 	if (isset($mode_rech)) echo "<input type=hidden name=mode_rech value=\"$mode_rech\" />\n";
 
 	if((isset($calldata))&&(mysqli_num_rows($calldata)>0)) {
+		//echo "\$eleve_login=$eleve_login<br />";
 		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
 		$cpt_eleve=0;
 		while($lig_calldata=mysqli_fetch_object($calldata)) {
-			echo "<option value='$lig_calldata->login'";
+			// 20190927
+			/*
+			echo "<!--\n";
+			var_dump($lig_calldata);
+			echo "-->\n";
+			*/
+			echo "<option value='".$lig_calldata->login."'";
 			if($lig_calldata->login==$eleve_login) {
 				echo " selected";
 				$num_eleve_courant=$cpt_eleve;

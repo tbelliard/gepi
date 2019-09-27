@@ -9295,12 +9295,16 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 							$sql="SELECT * FROM resp_pers WHERE pers_id='$ancien_pers_id';";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res)>0) {
+								//20190927
+								$temoin_rapprochement_effectue=0;
+
 								$lig=mysqli_fetch_object($res);
 								$texte.="Mise à jour de la responsabilité pour $lig->nom $lig->prenom (<em>$ancien_pers_id&gt;<a href='modify_resp.php?pers_id=$nouveau_pers_id' target='_blank'>$nouveau_pers_id</a></em>)&nbsp;: ";
 								$sql="UPDATE responsables2 SET pers_id='$nouveau_pers_id' WHERE pers_id='$ancien_pers_id';";
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($update) {
 									$texte.="<span style='color:green'>SUCCES</span>";
+									$temoin_rapprochement_effectue++;
 								}
 								else {
 									$texte.="<span style='color:red'>ECHEC</span>";
@@ -9312,11 +9316,17 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($update) {
 									$texte.="<span style='color:green'>SUCCES</span>";
+									$temoin_rapprochement_effectue++;
 								}
 								else {
 									$texte.="<span style='color:red'>ECHEC</span>";
 								}
 								$texte.="<br />\n";
+
+								if($temoin_rapprochement_effectue==2) {
+									// Faut-il faire d'autorité le ménage dans temp_resp_pers pour l'ancien pers_id?
+									// Le doublon devra être traité en scorie à la fin dans le traitement des responsabilités.
+								}
 							}
 						}
 					}
@@ -11805,9 +11815,11 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 							$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
 							//$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
-							$ligne_courante.="<td colspan='10'>Aucune personne associée ou personne non ajoutée dans l'étape PERSONNES\n";
+							$ligne_courante.="<td colspan='10' title=\"Cela arive généralement quand il y a eu des doublons de déclaration dans Siècle et que vous avez finalement fait le rapprochement avec un responsable existant dans Gepi.\nLa  scorie devrait alors être supprimée dans Gepi en cochant la case à droite.\">Aucune personne associée ou personne non ajoutée dans l'étape PERSONNES\n";
 
 							$sql="SELECT * FROM temp_resp_pers_import WHERE pers_id='$pers_id';";
+							// 20190927
+							//echo "<br />$sql<br />";
 							$res_temp_pers=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_temp_pers)>0) {
 								$lig_tmp_resp=mysqli_fetch_object($res_temp_pers);

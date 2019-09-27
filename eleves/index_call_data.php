@@ -1,5 +1,5 @@
 <?php
-	$sql_bidon="SELECT 1=2 FROM eleves;";
+	$sql_bidon="SELECT * FROM eleves LIMIT 0;";
 	//echo "$sql_bidon<br />";
 	$calldata = mysqli_query($GLOBALS["mysqli"], $sql_bidon);
 
@@ -933,6 +933,8 @@
 			}
 		}
 	}
+
+	//echo "$sql<br />";
 
 	/*
 	if(isset($mode_rech)) {
