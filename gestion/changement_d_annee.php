@@ -131,7 +131,7 @@ if (isset($_POST['is_posted'])) {
 
 		if($temoin_changement>0) {
 			$info_action_titre="Dates des vacances et jours fériés";
-			$info_action_texte="L'année scolaire a changé.<br />Pensez à mettre à jour les dates de vacances <a href='edt/import_vacances_ics.php'>Importer les dates depuis education.gouv.fr</a>.";
+			$info_action_texte="L'année scolaire a changé.<br />Pensez à mettre à jour les dates de vacances <a href='".$gepiPath."/edt/import_vacances_ics.php'>Importer les dates depuis education.gouv.fr</a>.";
 			$info_action_destinataire=array("administrateur");
 			$info_action_mode="statut";
 			enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);

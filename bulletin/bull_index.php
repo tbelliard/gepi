@@ -2818,7 +2818,7 @@ else {
 
 			// Pour ne pas bloquer dans le cas de l'archivage...
 			if($eff_classe==0) {
-				enregistre_infos_actions("ERREUR Archivage bulletins PDF", "Aucun bulletin généré pour la classe <a href='classes/classes_const.php?id_classe=$id_classe'>$classe</a> en période $periode_num (la classe est vide sur cette période).",array("administrateur"),'statut');
+				enregistre_infos_actions("ERREUR Archivage bulletins PDF", "Aucun bulletin généré pour la classe <a href='".$gepiPath."/classes/classes_const.php?id_classe=$id_classe'>$classe</a> en période $periode_num (la classe est vide sur cette période).",array("administrateur"),'statut');
 			}
 			else {
 				//==============================

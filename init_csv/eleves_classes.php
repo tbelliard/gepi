@@ -142,7 +142,7 @@ if (!isset($_POST["action"])) {
 		// On ne met alors qu'une seule info_action
 		if($nb_edt_cal==0) {
 			$info_action_titre="Dates de périodes et de vacances";
-			$info_action_texte="Pensez à importer les périodes de vacances et saisir ou mettre à jour les dates de périodes et les classes associées dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.<br />Les dates de vacances sont notamment utilisées pour les totaux d'absences.";
+			$info_action_texte="Pensez à importer les périodes de vacances et saisir ou mettre à jour les dates de périodes et les classes associées dans <a href='".$gepiPath."/edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.<br />Les dates de vacances sont notamment utilisées pour les totaux d'absences.";
 			$info_action_destinataire=array("administrateur");
 			$info_action_mode="statut";
 			enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -258,7 +258,7 @@ if (!isset($_POST["action"])) {
 							}
 							elseif($nb_edt_cal>0) {
 								$info_action_titre="Dates de périodes pour la classe ".get_nom_classe($classe_id);
-								$info_action_texte="Pensez à contrôler que la classe ".get_nom_classe($classe_id)." est bien associée aux périodes et vacances dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.";
+								$info_action_texte="Pensez à contrôler que la classe ".get_nom_classe($classe_id)." est bien associée aux périodes et vacances dans <a href='".$gepiPath."/edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.";
 								$info_action_destinataire=array("administrateur");
 								$info_action_mode="statut";
 								enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);

@@ -1942,7 +1942,7 @@ col2 varchar(100) NOT NULL default ''
 								$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 								$lig_tmp=mysqli_fetch_object($res_tmp);
 								$clas_tmp=$lig_tmp->classe;
-								$texte_info_action.="Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe&amp;quitter_la_page=y' target='_blank'>$clas_tmp</a> (<i>n°$lig_clas->id_classe</i>)<br />\n";
+								$texte_info_action.="Classe de <a href='$gepiPath/classes/classes_const.php?id_classe=$lig_clas->id_classe&amp;quitter_la_page=y' target='_blank'>$clas_tmp</a> (<i>n°$lig_clas->id_classe</i>)<br />\n";
 							}
 							$texte_info_action.="Cela ne devrait pas être possible.<br />\n";
 							$texte_info_action.="Faites le ménage dans les effectifs des classes ci-dessus.\n";
@@ -3292,7 +3292,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				//if($lig_champ->Collation!='utf8_general_ci' && $lig_champ->Collation!=NULL) {
 				if($lig_champ->Collation!='utf8_general_ci') {
 					$texte_info_action.="<span style='color:red'>".$lig_champ->Collation."</span>";
-					$texte_info_action.="<br /><a href='".$_SERVER['PHP_SELF']."?maj=corriger_interclassements&amp;table=$tab[0]".add_token_in_url()."'>Corriger</a>";
+					$texte_info_action.="<br /><a href='$gepiPath/clean_tables.php?maj=corriger_interclassements&amp;table=$tab[0]".add_token_in_url()."'>Corriger</a>";
 				}
 				else {
 					$texte_info_action.=$lig_champ->Collation;
@@ -3529,7 +3529,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 					$sql="SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id='$lig2->categorie_id'";
 					$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_cat)==0) {
-						$texte_info_action.="<span style='color:red'>La catégorie n°$lig2->categorie_id associée à la classe n°$lig->id ($lig->classe) n'existe pas dans la table 'matieres_categories'.</span><br />Vous devriez revoir le paramétrage des catégories.<br />Une solution consiste à forcer le même paramétrage pour toutes les classes depuis la page de <a href='../matieres/index.php' target='_blank'>Gestion des matières</a><br />Sinon, vous pouvez contrôler et Enregistrer dans la page <a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>Gestion des classes/&lt;$lig->classe&gt;/Enseignements</a> (<i>voir le ou les icones <img src='../images/icons/flag2.gif' width='17' height='18' /></i>).<br />";
+						$texte_info_action.="<span style='color:red'>La catégorie n°$lig2->categorie_id associée à la classe n°$lig->id ($lig->classe) n'existe pas dans la table 'matieres_categories'.</span><br />Vous devriez revoir le paramétrage des catégories.<br />Une solution consiste à forcer le même paramétrage pour toutes les classes depuis la page de <a href='$gepiPath/matieres/index.php' target='_blank'>Gestion des matières</a><br />Sinon, vous pouvez contrôler et Enregistrer dans la page <a href='$gepiPath/groupes/edit_class.php?id_classe=$lig->id' target='_blank'>Gestion des classes/&lt;$lig->classe&gt;/Enseignements</a> (<i>voir le ou les icones <img src='../images/icons/flag2.gif' width='17' height='18' /></i>).<br />";
 						$nb_erreurs++;
 					}
 					else {

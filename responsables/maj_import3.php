@@ -1518,7 +1518,7 @@ else{
 						$lig_ele=mysqli_fetch_object($test_ele_classe);
 						$info_action_titre="Incohérence Sconet/Gepi pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
 
-						$info_action_texte="L'élève <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))."</a> est inscrit dans une classe dans Gepi, alors qu'il n'y est plus dans Sconet.<br />Il faut soit le désinscrire pour les périodes à venir dans Gepi, soit le réinscrire dans une classe dans Sconet (<em>selon l'endroit où l'erreur se situe</em>).";
+						$info_action_texte="L'élève <a href='".$gepiPath."/eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))."</a> est inscrit dans une classe dans Gepi, alors qu'il n'y est plus dans Sconet.<br />Il faut soit le désinscrire pour les périodes à venir dans Gepi, soit le réinscrire dans une classe dans Sconet (<em>selon l'endroit où l'erreur se situe</em>).";
 
 						$info_action_destinataire=array("administrateur","scolarite");
 						$info_action_mode="statut";
@@ -3690,7 +3690,7 @@ else{
 											echo "<img src='../images/icons/buddy.png' class='icone16' alt=\"Email compte : $tmp_email_utilisateur_eleve\" title=\"Le mail renseigné par l'élève dans 'Gérer mon compte' est '$tmp_email_utilisateur_eleve'.\" /> ";
 
 											$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
-											$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' ($tmp_email_utilisateur_eleve) est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").<br />Vous pouvez également effectuer la <a href='eleves/synchro_mail.php'>synchronisation globalement</a>.";
+											$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='".$gepiPath."/eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' ($tmp_email_utilisateur_eleve) est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").<br />Vous pouvez également effectuer la <a href='".$gepiPath."/eleves/synchro_mail.php'>synchronisation globalement</a>.";
 											$info_action_destinataire=array("administrateur","scolarite");
 											$info_action_mode="statut";
 											enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -3794,7 +3794,7 @@ else{
 										// RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
 
 										$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
-										$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>changement de classe</a> de $lig_clas1->classe vers $affiche[9]";
+										$info_action_texte="Effectuer le <a href='".$gepiPath."/classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>changement de classe</a> de $lig_clas1->classe vers $affiche[9]";
 										$info_action_destinataire="administrateur";
 										$info_action_mode="statut";
 										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -3844,7 +3844,7 @@ else{
 										$res_clas_fut=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_clas_fut)==1) {
 											$lig_clas_fut=mysqli_fetch_object($res_clas_fut);
-											$info_action_texte="Il se peut qu'il faille <a href='classes/classes_const.php?id_classe=$lig_clas_fut->id&amp;msg=".rawurlencode("Il faut peut-être réinscrire ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." en classe de $affiche[9].")."'>réinscrire ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." dans la classe de $affiche[9]</a>.<br />Elle a un temps été déclarée sortie de l'établissement.<br />Ce n'est plus le cas dans Sconet.";
+											$info_action_texte="Il se peut qu'il faille <a href='".$gepiPath."/classes/classes_const.php?id_classe=$lig_clas_fut->id&amp;msg=".rawurlencode("Il faut peut-être réinscrire ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." en classe de $affiche[9].")."'>réinscrire ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." dans la classe de $affiche[9]</a>.<br />Elle a un temps été déclarée sortie de l'établissement.<br />Ce n'est plus le cas dans Sconet.";
 										}
 										else {
 											$info_action_texte="Il se peut qu'il faille réinscrire ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." dans la classe de ".$affiche[9].".<br />Elle a un temps été déclarée sortie de l'établissement.<br />Ce n'est plus le cas dans Sconet.";
@@ -4865,7 +4865,7 @@ else{
 									$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
 									$test_ia=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($test_ia)==0) {
-										enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
+										enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='".$gepiPath."/gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
 									}
 								}
 								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, $mode_generation_login_eleve, 'maj');
@@ -4937,7 +4937,7 @@ else{
 
 									if($nb_comptes_eleves>0) {
 										$info_action_titre="Nouvel élève&nbsp;: ".remplace_accents(stripslashes($lig->ELENOM)." ".stripslashes($lig->ELEPRE))." ($login_eleve)";
-										$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouvel élève&nbsp;: <a href='utilisateurs/create_eleve.php?critere_recherche=$lig->ELENOM&afficher_tous_les_eleves=n'>".remplace_accents(stripslashes($lig->ELENOM)." ".stripslashes($lig->ELEPRE))."</a>.";
+										$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouvel élève&nbsp;: <a href='".$gepiPath."/utilisateurs/create_eleve.php?critere_recherche=$lig->ELENOM&afficher_tous_les_eleves=n'>".remplace_accents(stripslashes($lig->ELENOM)." ".stripslashes($lig->ELEPRE))."</a>.";
 										$info_action_destinataire=array("administrateur");
 										$info_action_mode="statut";
 										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -10093,7 +10093,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 														$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a> ";
 
 														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))." ($lig_pers2->pers_id)";
-														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' est vide contrairement à l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
+														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='".$gepiPath."/responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' est vide contrairement à l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='".$gepiPath."/responsables/synchro_mail.php'>synchronisation globalement</a>.";
 														$info_action_destinataire=array("administrateur","scolarite");
 														$info_action_mode="statut";
 														enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -10108,7 +10108,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 															$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a> ";
 
 															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom),'all')." ($lig_pers2->pers_id)";
-															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom),'all')."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
+															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='".$gepiPath."/responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom),'all')."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='".$gepiPath."/responsables/synchro_mail.php'>synchronisation globalement</a>.";
 															$info_action_destinataire=array("administrateur","scolarite");
 															$info_action_mode="statut";
 															enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -10119,7 +10119,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 															// ... faudrait-il aussi tester l'ancien resp_pers.mel et le utilisateurs.email?
 	
 															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))." ($lig_pers2->pers_id)";
-															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
+															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='".$gepiPath."/responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='".$gepiPath."/responsables/synchro_mail.php'>synchronisation globalement</a>.";
 															$info_action_destinataire=array("administrateur","scolarite");
 															$info_action_mode="statut";
 															enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -10674,7 +10674,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 											}
 											$info_action_texte.="<br />";
 										}
-										$info_action_texte.="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
+										$info_action_texte.="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='".$gepiPath."/utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
 										$info_action_destinataire=array("administrateur");
 										$info_action_mode="statut";
 										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);

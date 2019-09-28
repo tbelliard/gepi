@@ -58,6 +58,44 @@ $corrige=mysqli_query($mysqli, $sql);
 
 $sql="update infos_actions SET description='La méthode d\'encodage a été modifiée, vérifier qu\'il n\'y a pas d\'incohérence.<br />Voir <a href=\'$gepiPath/mod_trombinoscopes/trombinoscopes_admin.php#encodage\'>Administration du module Trombinoscope</a><br /><span style=\'font-weight: bold;\'>Attention : </span>désormais il ne faut plus transférer les photos des élèves directement sur le serveur (FTP ou autre), mais passer par \"Télécharger les photos des élèves\" dans le module d\'administration du trombinoscope<br />' where description like 'La méthode d\'encodage a été modifiée, vérifier qu\'il n\'y a pas d\'incohérence.%./mod_trombinoscopes/trombinoscopes_admin.php%';";
 $corrige=mysqli_query($mysqli, $sql);
+
+$tab_dossier_correction=array('edt_organisation', 'eleves', 'responsables', 'classes', 'gestion', 'utilisateurs', 'utilitaires', 'matieres', 'cahier_texte_admin', 'mef', 'saisie', 'edt');
+for($loop=0;$loop<count($tab_dossier_correction);$loop++) {
+	$sql="SELECT * FROM infos_actions WHERE description LIKE '%href=\'".$tab_dossier_correction[$loop]."/%';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE infos_actions SET description='".mysqli_real_escape_string($mysqli, preg_replace("#href='".$tab_dossier_correction[$loop]."/#", "href='".$gepiPath."/".$tab_dossier_correction[$loop]."/", $lig->description))."' WHERE id='".$lig->id."';";
+			//echo "$sql<br />";
+			$corrige=mysqli_query($mysqli, $sql);
+		}
+	}
+
+	$sql="SELECT * FROM infos_actions WHERE description LIKE '%href=\'../".$tab_dossier_correction[$loop]."/%';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE infos_actions SET description='".mysqli_real_escape_string($mysqli, preg_replace("#href='../".$tab_dossier_correction[$loop]."/#", "href='".$gepiPath."/".$tab_dossier_correction[$loop]."/", $lig->description))."' WHERE id='".$lig->id."';";
+			//echo "$sql<br />";
+			$corrige=mysqli_query($mysqli, $sql);
+		}
+	}
+
+	$sql="SELECT * FROM infos_actions WHERE description LIKE '%href=\'./".$tab_dossier_correction[$loop]."/%';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE infos_actions SET description='".mysqli_real_escape_string($mysqli, preg_replace("#href='./".$tab_dossier_correction[$loop]."/#", "href='".$gepiPath."/".$tab_dossier_correction[$loop]."/", $lig->description))."' WHERE id='".$lig->id."';";
+			//echo "$sql<br />";
+			$corrige=mysqli_query($mysqli, $sql);
+		}
+	}
+
+}
+
 //==============================
 
 $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : array();
