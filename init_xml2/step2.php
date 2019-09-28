@@ -215,7 +215,7 @@ if (isset($is_posted)) {
 	// On ne met alors qu'une seule info_action
 	if($nb_edt_cal==0) {
 		$info_action_titre="Dates de périodes et de vacances";
-		$info_action_texte="Pensez à importer les périodes de vacances et saisir ou mettre à jour les dates de périodes et les classes associées dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.<br />Les dates de vacances sont notamment utilisées pour les totaux d'absences.";
+		$info_action_texte="Pensez à importer les périodes de vacances et saisir ou mettre à jour les dates de périodes et les classes associées dans <a href='".$gepiPath."/edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.<br />Les dates de vacances sont notamment utilisées pour les totaux d'absences.";
 		$info_action_destinataire=array("administrateur");
 		$info_action_mode="statut";
 		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -289,7 +289,7 @@ if (isset($is_posted)) {
 			}
 
 			$info_action_titre="Mentions associées à la nouvelle classe ".$tmp_nom_classe;
-			$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='saisie/saisie_mentions.php?associer_mentions_classes=y'>contrôler les mentions associées.</a>.";
+			$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='".$gepiPath."/saisie/saisie_mentions.php?associer_mentions_classes=y'>contrôler les mentions associées.</a>.";
 			$info_action_destinataire=array("administrateur");
 			$info_action_mode="statut";
 			enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -298,7 +298,7 @@ if (isset($is_posted)) {
 			if(getSettingAOui('active_fichiers_signature')) {
 				$info_action_titre="Fichiers signature associés à la nouvelle classe ".$tmp_nom_classe;
 
-				$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='gestion/gestion_signature.php?mode=choix_assoc_fichier_user_classe'>choisir/définir un fichier signature pour les bulletins</a>.";
+				$info_action_texte="Une nouvelle classe est définie.<br />Vous devez <a href='".$gepiPath."/gestion/gestion_signature.php?mode=choix_assoc_fichier_user_classe'>choisir/définir un fichier signature pour les bulletins</a>.";
 
 				$info_action_destinataire=array("administrateur");
 				$info_action_mode="statut";
@@ -348,7 +348,7 @@ if (isset($is_posted)) {
                     }
                     elseif($nb_edt_cal>0) {
                         $info_action_titre="Dates de périodes pour la classe ".get_nom_classe($id_classe);
-                        $info_action_texte="Pensez à contrôler que la classe ".get_nom_classe($id_classe)." est bien associée aux périodes et vacances dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.";
+                        $info_action_texte="Pensez à contrôler que la classe ".get_nom_classe($id_classe)." est bien associée aux périodes et vacances dans <a href='".$gepiPath."/edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.";
                         $info_action_destinataire=array("administrateur");
                         $info_action_mode="statut";
                         enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);

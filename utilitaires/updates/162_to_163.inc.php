@@ -296,7 +296,7 @@ if($temoin_modif_mef_code_eleves=="n") {
 
 if($temoin_modif_mef_code=="y") {
 	$info_action_titre="Contenu de la table mef";
-	$info_action_texte="Le champ mef_code de la table 'mef' ou de la table 'eleves' n'avait pas le bon format lors de la mise à jour de la base du ".strftime("%d/%m/%Y à %H:%M:%S").". Vous devriez <a href='./mef/admin_mef.php'>contrôler le contenu de la table 'mef'</a> et faire une <a href='./responsables/maj_import.php'>Mise à jour d'après Sconet</a>.";
+	$info_action_texte="Le champ mef_code de la table 'mef' ou de la table 'eleves' n'avait pas le bon format lors de la mise à jour de la base du ".strftime("%d/%m/%Y à %H:%M:%S").". Vous devriez <a href='".$gepiPath."/mef/admin_mef.php'>contrôler le contenu de la table 'mef'</a> et faire une <a href='".$gepiPath."/responsables/maj_import.php'>Mise à jour d'après Sconet</a>.";
 	$info_action_destinataire="administrateur";
 	$info_action_mode="statut";
 	enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);

@@ -499,7 +499,7 @@ if ($test == -1) {
 	$test=sql_query1($sql);
 	if ($test == -1) {
 		$info_action_titre="Paramétrage mode_email_resp requis";
-		$info_action_texte="Vous devez effectuer un choix de paramétrage pour la synchronisation des email des responsables&nbsp;: <a href='gestion/param_gen.php#mode_email_resp'>Paramétrage</a>";
+		$info_action_texte="Vous devez effectuer un choix de paramétrage pour la synchronisation des email des responsables&nbsp;: <a href='".$gepiPath."/gestion/param_gen.php#mode_email_resp'>Paramétrage</a>";
 		$info_action_destinataire="administrateur";
 		$info_action_mode="statut";
 		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -556,7 +556,7 @@ if(mysqli_num_rows($res_csrf)==0) {
 		$result .= "<br /><p style=\"color:blue;\">Paramétrage csrf_mode requis.<br /></p>";
 	
 		$info_action_titre="Paramétrage csrf_mode requis";
-		$info_action_texte="Vous devez effectuer un choix de paramétrage pour la protection contre les attaques CSRF&nbsp;: <a href='gestion/security_policy.php#csrf_mode'>Paramétrage</a>";
+		$info_action_texte="Vous devez effectuer un choix de paramétrage pour la protection contre les attaques CSRF&nbsp;: <a href='".$gepiPath."/gestion/security_policy.php#csrf_mode'>Paramétrage</a>";
 		$info_action_destinataire="administrateur";
 		$info_action_mode="statut";
 		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -655,7 +655,7 @@ if(mysqli_num_rows($res_cdt)==0) {
 		$result .= "<br /><p style=\"color:blue;\">Contrôle des index dans les documents des CDT requis.<br /></p>";
 	
 		$info_action_titre="Contrôle des index dans les documents des CDT requis";
-		$info_action_texte="Il a existé un bug dans la création des fichiers index.html protégeant d'accès anormaux les documents joints aux cahiers de textes.<br />Il est recommandé de lancer une vérification de présence des index&nbsp;: <a href='cahier_texte_admin/index.php?ajout_index_documents=y'>Contrôler</a>";
+		$info_action_texte="Il a existé un bug dans la création des fichiers index.html protégeant d'accès anormaux les documents joints aux cahiers de textes.<br />Il est recommandé de lancer une vérification de présence des index&nbsp;: <a href='".$gepiPath."/cahier_texte_admin/index.php?ajout_index_documents=y'>Contrôler</a>";
 		$info_action_destinataire="administrateur";
 		$info_action_mode="statut";
 		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);

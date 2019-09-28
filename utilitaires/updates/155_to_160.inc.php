@@ -249,7 +249,7 @@ for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
 		$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
 		$test_ia=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_ia)==0) {
-			enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
+			enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='".$gepiPath."/gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
 		}
 
 		$result .= "Format de login ";

@@ -79,7 +79,7 @@ if(mysqli_num_rows($res)>0) {
 	$result .= "<span style='color:red'>Des préférences utilisateurs sont en doublon.<br />Un <a href='../utilitaires/clean_tables.php?maj=controle_preferences".add_token_in_url()."'>nettoyage des tables</a> est nécessaire.</span><br />";
 
 	$info_action_titre="Préférences utilisateurs en doublon";
-	$info_action_texte="Des préférences utilisateurs sont en doublon.<br />Un <a href='./utilitaires/clean_tables.php#controle_preferences'>nettoyage des tables</a> est nécessaire.";
+	$info_action_texte="Des préférences utilisateurs sont en doublon.<br />Un <a href='".$gepiPath."/utilitaires/clean_tables.php#controle_preferences'>nettoyage des tables</a> est nécessaire.";
 	$info_action_destinataire=array("administrateur");
 	$info_action_mode="statut";
 	enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
