@@ -221,7 +221,7 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 		
 		$query = EleveQuery::create();
 		$query->useJEleveGroupeQuery()->filterByGroupe($current_groupe)->endUse();
-		$query->where('Eleve.DateSortie is NULL')
+		$query->where('Eleve.DateSortie is NULL OR Eleve.DateSortie="0000-00-00 00:00:00" OR Eleve.DateSortie>"'.strftime('%Y-%m-%d %H:%M:%S').'"')
             ->orderBy('Eleve.Nom','asc')
             ->orderBy('Eleve.Prenom','asc')
             ->distinct();
@@ -237,7 +237,7 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 			$query->useJAidElevesQuery()
 			   ->filterByIdAid($current_aid->getId())
 			   ->endUse()
-			   ->where('Eleve.DateSortie is NULL')
+			   ->where('(Eleve.DateSortie is NULL OR Eleve.DateSortie="0000-00-00 00:00:00" OR Eleve.DateSortie>"'.strftime('%Y-%m-%d %H:%M:%S').'"')
 			   ->orderBy('Eleve.Nom','asc')
 			   ->orderBy('Eleve.Prenom','asc')
 			   ->distinct();
