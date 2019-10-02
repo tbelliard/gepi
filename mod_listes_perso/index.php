@@ -785,7 +785,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 <?php	if ($photoListe) { ?>
 				<td class="center">
 <?php		if ($elv_choisi->getElenoet()) { ?>
-					<img src="../photos/eleves/<?php echo $elv_choisi->getElenoet(); ?>.jpg" class="photoElv" alt=""/>
+					<img src="../photos/eleves/<?php echo encode_nom_photo($elv_choisi->getElenoet()); ?>.jpg" class="photoElv" alt=""/>
 <?php		} ?>
 				</td>		
 <?php	}
