@@ -2175,8 +2175,19 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 
 	if((isset($calldata))&&(mysqli_num_rows($calldata)>0)) {
 		//echo "\$eleve_login=$eleve_login<br />";
-		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
+		echo " | ";
+
+
+
+		//echo "<select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
 		$cpt_eleve=0;
+		$num_eleve=-1;
+
+		$login_eleve_prec=0;
+		$login_eleve_suiv=0;
+		$temoin_tmp=0;
+
+		$chaine_options_login_eleves="";
 		while($lig_calldata=mysqli_fetch_object($calldata)) {
 			// 20190927
 			/*
@@ -2184,6 +2195,7 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 			var_dump($lig_calldata);
 			echo "-->\n";
 			*/
+			/*
 			echo "<option value='".$lig_calldata->login."'";
 			if($lig_calldata->login==$eleve_login) {
 				echo " selected";
@@ -2191,13 +2203,57 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 			}
 			echo ">".$lig_calldata->nom." ".$lig_calldata->prenom."</option>\n";
 			$cpt_eleve++;
+			*/
+
+			if($lig_calldata->login==$eleve_login){
+				$chaine_options_login_eleves.="<option value='$lig_calldata->login' selected='true'>".$lig_calldata->nom." ".$lig_calldata->prenom."</option>\n";
+
+				$num_eleve=$cpt_eleve;
+
+				$temoin_tmp=1;
+				if($lig_calldata=mysqli_fetch_object($calldata)){
+					$login_eleve_suiv=$lig_calldata->login;
+					$chaine_options_login_eleves.="<option value='$lig_calldata->login'>".$lig_calldata->nom." ".$lig_calldata->prenom."</option>\n";
+				}
+				else{
+					$login_eleve_suiv=0;
+				}
+			}
+			else{
+				$chaine_options_login_eleves.="<option value='$lig_calldata->login'>".$lig_calldata->nom." ".$lig_calldata->prenom."</option>\n";
+			}
+
+			if($temoin_tmp==0){
+				$login_eleve_prec=$lig_calldata->login;
+			}
+			$cpt_eleve++;
 		}
+
+		if("$login_eleve_prec"!="0") {
+			echo "<a href='#' onclick=\"document.getElementById('choix_eleve_login').selectedIndex=eval(document.getElementById('choix_eleve_login').selectedIndex-1);return confirm_changement_eleve(change, '$themessage');\" title='Elève précédent'><img src='../images/icons/arrow-left.png' class='icone16' /></a>";
+		}
+
+		echo "<select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
+		echo $chaine_options_login_eleves;
 		echo "</select>\n";
+		if("$login_eleve_suiv"!="0") {
+			echo "<a href='#' onclick=\"document.getElementById('choix_eleve_login').selectedIndex=eval(document.getElementById('choix_eleve_login').selectedIndex+1);return confirm_changement_eleve(change, '$themessage');\" title='Elève suivant'><img src='../images/icons/arrow-right.png' class='icone16' /></a>";
+		}
+
 	}
 	elseif((isset($tab_eleve))&&(count($tab_eleve)>0)) {
-		echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
+		//echo " | <select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
 		$cpt_eleve=0;
+		$num_eleve=-1;
+
+		$login_eleve_prec=0;
+		$login_eleve_suiv=0;
+		$temoin_tmp=0;
+
+		$chaine_options_login_eleves="";
+
 		for($loop=0;$loop<count($tab_eleve);$loop++) {
+			/*
 			echo "<option value='".$tab_eleve[$loop]['login']."'";
 			if($tab_eleve[$loop]['login']==$eleve_login) {
 				echo " selected";
@@ -2205,8 +2261,48 @@ if ((isset($order_type)) and (isset($quelles_classes))) {
 			}
 			echo ">".$tab_eleve[$loop]['nom']." ".$tab_eleve[$loop]['prenom']."</option>\n";
 			$cpt_eleve++;
+			*/
+
+			if($tab_eleve[$loop]['login']==$eleve_login) {
+				$chaine_options_login_eleves.="<option value='".$tab_eleve[$loop]['login']."' selected='true'>".$tab_eleve[$loop]['nom']." ".$tab_eleve[$loop]['prenom']."</option>\n";
+
+				$num_eleve_courant=$cpt_eleve;
+				$num_eleve=$cpt_eleve;
+
+				$temoin_tmp=1;
+				if(isset($tab_eleve[$loop+1]['login'])){
+					$loop++;
+					$login_eleve_suiv=$tab_eleve[$loop]['login'];
+					$chaine_options_login_eleves.="<option value='".$tab_eleve[$loop]['login']."'>".$tab_eleve[$loop]['nom']." ".$tab_eleve[$loop]['prenom']."</option>\n";
+				}
+				else{
+					$login_eleve_suiv=0;
+				}
+			}
+			else{
+				$chaine_options_login_eleves.="<option value='".$tab_eleve[$loop]['login']."'>".$tab_eleve[$loop]['nom']." ".$tab_eleve[$loop]['prenom']."</option>\n";
+			}
+
+			if($temoin_tmp==0){
+				$login_eleve_prec=$tab_eleve[$loop]['login'];
+			}
+			$cpt_eleve++;
+
 		}
+		echo " | ";
+
+		if("$login_eleve_prec"!="0") {
+			echo "<a href='#' onclick=\"document.getElementById('choix_eleve_login').selectedIndex=eval(document.getElementById('choix_eleve_login').selectedIndex-1);return confirm_changement_eleve(change, '$themessage');\" title='Elève précédent'><img src='../images/icons/arrow-left.png' class='icone16' /></a>";
+		}
+
+		echo "<select name='eleve_login' id='choix_eleve_login' onchange=\"confirm_changement_eleve(change, '$themessage');\">\n";
+		echo $chaine_options_login_eleves;
 		echo "</select>\n";
+
+		if("$login_eleve_suiv"!="0") {
+			echo "<a href='#' onclick=\"document.getElementById('choix_eleve_login').selectedIndex=eval(document.getElementById('choix_eleve_login').selectedIndex+1);return confirm_changement_eleve(change, '$themessage');\" title='Elève suivant'><img src='../images/icons/arrow-right.png' class='icone16' /></a>";
+		}
+
 	}
 	echo "<input type='submit' id='bouton_submit_changement_eleve' value='Changer' />\n";
 }
