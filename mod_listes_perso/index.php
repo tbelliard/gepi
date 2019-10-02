@@ -69,6 +69,10 @@ include_once 'lib/fonction_listes.php';
 // a bouger vers définition de la base et mise à jour
 //verifieTableCree();
 
+$sql="DELETE FROM mod_listes_perso_eleves WHERE login NOT IN (SELECT login FROM eleves);";
+//echo "$sql<br />";
+$menage=mysqli_query($mysqli, $sql);
+
 $idListe = NULL;
 $nomListe = NULL;
 $sexeListe = NULL;
@@ -369,6 +373,7 @@ où \$eleve_choisi_col contient<pre>";
 print_r($eleve_choisi_col);
 echo "</pre>";
 */
+
 $donneesTableau = ChargeColonnesEleves($idListe, $eleve_choisi_col);
 
 $groupe_col = $utilisateur->getGroupes();
