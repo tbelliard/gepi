@@ -101,7 +101,7 @@ function sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe
 	   . "`sexe`= '$sexeListe', "
 	   . "`classe`= '$classeListe', "
 	   . "`photo`= '$photoListe' "
-	   . ";";	
+	   . ";";
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
 		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
@@ -144,7 +144,7 @@ function Dernier_id() {
 	$last_id = $query->fetch_object()->id;
 	return $last_id;
 }
-	
+
 
 
 //=========================================================================================================
@@ -166,7 +166,7 @@ function CreeColonnes($idListe, $nouveauNombre) {
 		if (!$query) {
 			echo "Erreur lors de la lecture de la base ".mysqli_error($mysqli)."<br />" ;
 			echo $sql."<br />" ;
-			return FALSE;			
+			return FALSE;
 		}
 	}
 }
@@ -324,7 +324,7 @@ function crementePlace($idListe, $debut, $deplacement) {
 		echo $sql."<br />" ;
 		return FALSE;
 	}
-	return TRUE;	
+	return TRUE;
 }
 
 function SupprimeColonnePourElv($idListe, $colonne) {
@@ -353,7 +353,7 @@ function ChargeClasses() {
 function ChargeEleves($idListe) {
 	global $mysqli;
 	$sql = "SELECT * FROM mod_listes_perso_eleves "
-	   . "WHERE `id_def` = '$idListe' ";
+	   . "WHERE `id_def` = '$idListe';";
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
@@ -364,34 +364,49 @@ function ChargeEleves($idListe) {
 	if ($query->num_rows) {
 		while ($id = $query->fetch_object()) {
 			$listeId[] = $id->login;
+			//echo "ChargeEleves($idListe): \$listeId[] = ".$id->login.";<br />";
 		}
-			$eleve_choisi_col = new PropelCollection();
-			foreach ($listeId as $elv) {
-				$query = EleveQuery::create();
-				$query->findByLogin($elv);
-				$eleve = $query->findOne();
-				$eleve_choisi_col->add($eleve);
-			}
+
+		$eleve_choisi_col = new PropelCollection();
+		foreach ($listeId as $elv) {
+			$query = EleveQuery::create();
+			$query->findByLogin($elv);
+			$eleve = $query->findOne();
+			$eleve_choisi_col->add($eleve);
+		}
 		return $eleve_choisi_col;
 	} else {
 		return NULL;
-	}	
+	}
 }
 
 function EnregistreElevesChoisis($idElevesChoisis, $idListe) {
 	global $mysqli;
+	$cpt_ele=0;
 	foreach ($idElevesChoisis as $idEleve) {
-		$sql = "INSERT INTO mod_listes_perso_eleves "
-		   . "SET `id_def` = '$idListe', "
-		   . "`login` = '$idEleve' "
-		   . "ON DUPLICATE KEY UPDATE `login` = '$idEleve' ";
-		//echo $sql."<br />" ;
-		$query = mysqli_query($mysqli, $sql);
-		if (!$query) {
-			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
-			echo $sql."<br />" ;
-			return FALSE;
+		$sql="SELECT 1=1 FROM eleves WHERE login='".$idEleve."';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$sql = "INSERT INTO mod_listes_perso_eleves "
+			   . "SET `id_def` = '$idListe', "
+			   . "`login` = '$idEleve' "
+			   . "ON DUPLICATE KEY UPDATE `login` = '$idEleve' ";
+			//echo $sql."<br />" ;
+			$query = mysqli_query($mysqli, $sql);
+			if (!$query) {
+				echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+				echo $sql."<br />" ;
+				return FALSE;
+			}
+			else {
+				$cpt_ele++;
+			}
 		}
+	}
+
+	if($cpt_ele==0) {
+		echo "Aucun élève n'a été enregistré.<br />";
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -400,7 +415,7 @@ function SupprimeEleve($login, $idListe) {
 	global $mysqli;
 	$sql = "DELETE FROM `mod_listes_perso_eleves` "
 	   . "WHERE `login` = '$login' "
-	   . "AND `id_def` = '$idListe'" ;	
+	   . "AND `id_def` = '$idListe'" ;
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
@@ -419,7 +434,7 @@ function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NU
 	   . "`contenu` = '$contenu', "
 	   . "`colonne` = '$idColonne', "
 	   . "`login` = '$login', "
-	   . "`id_def` = '$idListe' " ;	
+	   . "`id_def` = '$idListe' " ;
 	if ($id !== NULL) {
 		$sql .= ", `id` = '$id' " ;
 	}
@@ -458,7 +473,15 @@ function ChargeColonnesEleves($idListe, $eleve_choisi_col) {
 	if (isset($eleve_choisi_col) && is_object($eleve_choisi_col) && ($eleve_choisi_col->count()>0)) {
 		//echo "On a des élèves dans \$eleve_choisi_col<br />";
 		foreach ($eleve_choisi_col as $elv) {
-			$tableauRetour[$elv->getLogin()] = ChargeCasesEleves($idListe, $elv);
+			/*
+			echo "<pre>";
+			var_dump($elv);
+			echo "</pre>";
+			*/
+			//if(is_object($elv)) {
+			if($elv!=null) {
+				$tableauRetour[$elv->getLogin()] = ChargeCasesEleves($idListe, $elv);
+			}
 		}
 	}
 	/*
@@ -490,7 +513,7 @@ function ChargeCasesEleves($idListe, $elv) {
 
 	}
 	return $tableauRetour;
-	
+
 }
 
 function SupprimeToutesColonnes($elv, $idListe) {
