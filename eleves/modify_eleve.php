@@ -2474,13 +2474,20 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 	echo "</tr>\n";
 
 	//echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
-	echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>elenoet</em>) : </th><td><input type='text' name='reg_no_gep' size='20' ";
+	echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>elenoet</em>) : </th><td><input type='text' name='reg_no_gep' id='reg_no_gep' size='20' ";
 	if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
-	echo " onchange='changement();' /></td>\n";
+	echo " onchange='changement();' />";
+	if ((isset($reg_no_gep))&&(getSettingAOui('active_module_trombinoscopes'))) echo "&nbsp;<img src='../images/icons/ico_aide.png' class='icone16' title=\"Sans numéro ELENOET, il risque de ne pas être possible d'associer une photo à l'élève.\" />";
+	echo "</td>\n";
 	echo "</tr>\n";
 	
 	echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>ele_id</em>) : </th><td>";
-	if (isset($reg_ele_id)) {echo $reg_ele_id;}
+	if (isset($reg_ele_id)) {
+		echo $reg_ele_id;
+		if((isset($reg_no_gep))&&($reg_no_gep=='')&&(preg_match('/^e[0-9]{1,}/', $reg_ele_id))) {
+			echo " <a href='#' onclick=\"document.getElementById('reg_no_gep').value='$reg_ele_id'; return false;\" title=\"Prendre pour ELENOET, la valeur de l'ELE_ID.\"><img src='../images/icons/paste.png' class='icone16' /></a>";
+		}
+	}
 	echo "</td>\n";
 	echo "</tr>\n";
 
