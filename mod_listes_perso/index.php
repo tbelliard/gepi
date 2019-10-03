@@ -222,30 +222,57 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 		} else {
 			$current_groupe = GroupeQuery::create()->findPk($id_groupe);
 		}
-		
+
+		/*
+		echo "<pre>";
+		print_r($current_groupe);
+		echo "</pre>";
+		*/
+
 		$query = EleveQuery::create();
 		$query->useJEleveGroupeQuery()->filterByGroupe($current_groupe)->endUse();
-		$query->where('Eleve.DateSortie is NULL OR Eleve.DateSortie="0000-00-00 00:00:00" OR Eleve.DateSortie>"'.strftime('%Y-%m-%d %H:%M:%S').'"')
+		$query->where('(Eleve.DateSortie is NULL OR Eleve.DateSortie="0000-00-00 00:00:00" OR Eleve.DateSortie>"'.strftime('%Y-%m-%d %H:%M:%S').'")')
             ->orderBy('Eleve.Nom','asc')
             ->orderBy('Eleve.Prenom','asc')
             ->distinct();
 		$eleve_col = $query->find();
-		
+
+		/*
+		foreach($eleve_col as $current_ele) {
+			echo $current_ele->getNom()." ".$current_ele->getPrenom()."<br />";
+		}
+		*/
+
+		/*
+		$sql="SELECT DISTINCT e.* FROM eleves e, 
+							j_eleves_groupes jeg 
+						WHERE e.login=jeg.login AND 
+							jeg.id_groupe='".$id_groupe."' AND 
+							(e.date_sortie IS NULL OR 
+							e.date_sortie='0000-00-00 00:00:00' OR 
+							e.date_sortie>'".strftime('%Y-%m-%d %H:%M:%S')."') 
+						ORDER BY e.nom, e.prenom;";
+		echo "$sql<br />";
+		*/
+
 	} else {
 		//TODO : à mettre dans une fonction
 		$id_aid = (int)filter_input(INPUT_POST, 'id_aid') != -1 ? filter_input(INPUT_POST, 'id_aid') : NULL;
 		if ($id_aid !==NULL ) {
+			//echo "\$id_aid=$id_aid<br />";
+
 			$current_aid = AidDetailsQuery::create()->findPk($id_aid);
-			
+
 			$query = EleveQuery::create();
 			$query->useJAidElevesQuery()
 			   ->filterByIdAid($current_aid->getId())
 			   ->endUse()
-			   ->where('(Eleve.DateSortie is NULL OR Eleve.DateSortie="0000-00-00 00:00:00" OR Eleve.DateSortie>"'.strftime('%Y-%m-%d %H:%M:%S').'"')
+			   ->where('(Eleve.DateSortie is NULL OR Eleve.DateSortie="0000-00-00 00:00:00" OR Eleve.DateSortie>"'.strftime('%Y-%m-%d %H:%M:%S').'")')
 			   ->orderBy('Eleve.Nom','asc')
 			   ->orderBy('Eleve.Prenom','asc')
 			   ->distinct();
 			$eleve_col = $query->find();
+
 		} else {
 			if((isset($idElevesChoisis))&&(count($idElevesChoisis))) {
 				// TODO : enregistrer les élèves et mettre tout ça dans des fonctions
