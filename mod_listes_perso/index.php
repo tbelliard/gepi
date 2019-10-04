@@ -628,6 +628,7 @@ foreach ($groupe_col as $group) {
 					   id="nbColonneListe"
 					   value="<?php if(isset($colonnes) && $colonnes) {echo $colonnes->num_rows;} else {echo 0;} ?>"
 					   size="1"
+					   onkeydown="clavier_2(this.id,event,0,20);" autocomplete="off"
 					   />
 			</p>
 			<p class=" colD15" <?php if ($idListe === NULL ||$idListe === "" ) { echo "style='display:none;' ";} ?>>
