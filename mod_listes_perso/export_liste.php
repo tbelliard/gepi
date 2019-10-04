@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2015-2017 Régis Bouguin, Stephane Boireau
+ * Copyright 2015-2019 Régis Bouguin, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -134,8 +134,11 @@ if(isset($id_def)) {
 				//echo "\n$sql\n<br />\n";
 				$res_col=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_col)>0) {
-					$lig_col=mysqli_fetch_object($res_col);
-					$valeur=preg_replace("/;/", ",", $lig_col->contenu);
+					$valeur='';
+					while($lig_col=mysqli_fetch_object($res_col)) {
+						// On ne devrait faire qu'un tour dans la boucle
+						$valeur.=preg_replace("/;/", ",", $lig_col->contenu);
+					}
 				}
 				$csv.=$valeur.";";
 			}

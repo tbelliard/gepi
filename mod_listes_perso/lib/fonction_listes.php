@@ -429,6 +429,44 @@ function SupprimeEleve($login, $idListe) {
 
 function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NULL ) {
 	global $mysqli;
+	$sql="SELECT * FROM mod_listes_perso_contenus WHERE id_def='$idListe' AND 
+										colonne='$idColonne' AND 
+										login='$login'";
+	if ($id !== NULL) {
+		$sql.=" AND id='$id'";
+	}
+	$sql.=";";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$lig=mysqli_fetch_object($test);
+		$sql="UPDATE mod_listes_perso_contenus SET contenu='$contenu' WHERE id='".$lig->id."';";
+		$query=mysqli_query($mysqli, $sql);
+		if (!$query) {
+			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+			echo $sql."<br />" ;
+			return FALSE;
+		}
+	}
+	else {
+		$sql="INSERT INTO mod_listes_perso_contenus SET contenu='$contenu', 
+										colonne='$idColonne', 
+										login='$login', 
+										id_def='$idListe' ";
+		if ($id !== NULL) {
+			// On ne devrait pas passer là
+			$sql.=", id='$id' " ;
+		}
+		$sql.=";";
+		//echo $sql."<br />" ;
+		$query = mysqli_query($mysqli, $sql);
+		if (!$query) {
+			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+			echo $sql."<br />" ;
+			return FALSE;
+		}
+	}
+
+	/*
 	$sql = "INSERT INTO `mod_listes_perso_contenus` "
 	   . "SET "
 	   . "`contenu` = '$contenu', "
@@ -447,6 +485,7 @@ function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NU
 		echo $sql."<br />" ;
 		return FALSE;
 	}
+	*/
 	return TRUE;
 }
 
@@ -501,12 +540,13 @@ function ChargeCasesEleves($idListe, $elv) {
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
-		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo "Erreur lors de la lecture dans la base ".mysqli_error($mysqli)."<br />" ;
 		echo $sql."<br />" ;
 		return FALSE;
 	}
 	if ($query->num_rows) {
 		while ($case = $query->fetch_object()) {
+			// En cas de bug avec un double enregistrement, c'est le dernier qui est récupéré.
 			$tableauRetour[$case->colonne]['contenu'] = $case->contenu;
 			$tableauRetour[$case->colonne]['id'] = $case->id;
 		}
