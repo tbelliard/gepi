@@ -438,7 +438,7 @@ if(mysqli_num_rows($res)>0) {
 	<tr>
 		<td id='cc_".$lig->id."_nom_court' onclick=\"document.getElementById('nom_court').value=this.innerHTML;changement();\">".$lig->nom_court."</td>
 		<td id='cc_".$lig->id."_nom_complet' onclick=\"document.getElementById('nom_complet').value=this.innerHTML;changement();\">".$lig->nom_complet."</td>
-		<td id='cc_".$lig->id."_description' onclick=\"document.getElementById('description').value=this.innerHTML;changement();\">".nl2br($lig->description)."</td>
+		<td id='cc_".$lig->id."_description' onclick=\"document.getElementById('description').value=document.getElementById('span_cc_".$lig->id."_description').innerHTML;changement();\">".nl2br(preg_replace('/\\\n/', '<br />', $lig->description))."<span style='display:none' id='span_cc_".$lig->id."_description'>".$lig->description."</span></td>
 		<td id='cc_".$lig->id."_note_sur' onclick=\"document.getElementById('note_sur').value=this.innerHTML;changement();\">".$lig->note_sur."</td>
 		<td id='cc_".$lig->id."_display_date' onclick=\"document.getElementById('display_date').value=this.innerHTML;changement();\">".formate_date($lig->date)."</td>
 		<td id='cc_".$lig->id."_vision_famille' onclick=\"document.getElementById('vision_famille').value=this.innerHTML;changement();\">".formate_date($lig->vision_famille)."</td>
