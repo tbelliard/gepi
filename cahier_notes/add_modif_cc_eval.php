@@ -161,9 +161,13 @@ $nom_classe=$current_group["classlist_string"];
 if (isset($_POST['ok'])) {
 	check_token();
 
-	$nom_court=traitement_magic_quotes($_POST['nom_court']);
-	$nom_complet=traitement_magic_quotes($_POST['nom_complet']);
-	$description=traitement_magic_quotes($_POST['description']);
+	//$nom_court=traitement_magic_quotes($_POST['nom_court']);
+	//$nom_complet=traitement_magic_quotes($_POST['nom_complet']);
+	//$description=traitement_magic_quotes($_POST['description']);
+
+	$nom_court=$_POST['nom_court'];
+	$nom_complet=$_POST['nom_complet'];
+	$description=$_POST['description'];
 
 	$note_sur=preg_replace('/[^0-9.]/','',$_POST['note_sur']);
 
@@ -226,7 +230,8 @@ if (isset($_POST['ok'])) {
 		}
 		$vision_famille  = $annee."-".$mois."-".$jour." 00:00:00";
 
-		$sql="UPDATE cc_eval SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', note_sur='$note_sur', date='".$date."', vision_famille ='".$vision_famille ."' WHERE id='$id_eval';";
+		//$sql="UPDATE cc_eval SET nom_court='".mysqli_real_escape_string($mysqli, $nom_court)."', nom_complet='".mysqli_real_escape_string($mysqli, $nom_complet)."', description='".mysqli_real_escape_string($mysqli, $description)."', note_sur='$note_sur', date='".$date."', vision_famille ='".$vision_famille ."' WHERE id='$id_eval';";
+		$sql="UPDATE cc_eval SET nom_court='".$nom_court."', nom_complet='".$nom_complet."', description='".$description."', note_sur='$note_sur', date='".$date."', vision_famille ='".$vision_famille ."' WHERE id='$id_eval';";
 		//echo "$sql<br />";
 		$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$update) {
