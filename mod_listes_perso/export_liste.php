@@ -115,7 +115,7 @@ if(isset($id_def)) {
 		echo "</pre>";
 		*/
 
-		$sql="SELECT e.* FROM mod_listes_perso_eleves m, eleves e WHERE m.id_def='".$id_def."' AND e.login=m.login ORDER BY e.nom, e.prenom;";
+		$sql="SELECT DISTINCT e.* FROM mod_listes_perso_eleves m, eleves e WHERE m.id_def='".$id_def."' AND e.login=m.login ORDER BY e.nom, e.prenom;";
 		//echo "\n$sql\n<br />\n";
 		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig_ele=mysqli_fetch_object($res_ele)) {
