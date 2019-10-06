@@ -261,19 +261,114 @@ $sql="SELECT DISTINCT ccn.id_cahier_notes, g.*, c.classe FROM cn_cahier_notes cc
 						ORDER BY g.name, g.description, c.classe;";
 //echo "$sql<br/>";
 $res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-echo " | <select name='id_racine' onchange=\"document.forms['form0'].submit();\">\n";
-while($lig=mysqli_fetch_object($res_grp)) {
-	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='' AND domaine='cahier_notes' AND visible='n';";
-	$test_vis=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($test_vis)==0) {
-		echo "<option value='$lig->id_cahier_notes'";
-		if($lig->id_cahier_notes==$id_racine) {echo " selected='true'";}
-		echo ">";
-		echo $lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
-		echo "</option>\n";
+$chaine_options_grp="";
+$cpt_grp=0;
+$num_grp=-1;
+if(mysqli_num_rows($res_grp)>0){
+	$id_groupe_prec=0;
+	$id_groupe_suiv=0;
+	$temoin_tmp=0;
+
+	while($lig=mysqli_fetch_object($res_grp)) {
+		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='' AND domaine='cahier_notes' AND visible='n';";
+		$test_vis=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_vis)==0) {
+			if($lig->id_cahier_notes==$id_racine) {
+				$num_grp=$cpt_grp;
+
+				$chaine_options_grp.="<option value='$lig->id_cahier_notes'";
+				$chaine_options_grp.=" selected='true'";
+				$chaine_options_grp.=">";
+				$chaine_options_grp.=$lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
+				$chaine_options_grp.="</option>\n";
+
+				$temoin_tmp=1;
+				if($lig=mysqli_fetch_object($res_grp)){
+					$id_groupe_suiv=$lig->id_cahier_notes;
+
+					$chaine_options_grp.="<option value='$lig->id_cahier_notes'";
+					$chaine_options_grp.=">";
+					$chaine_options_grp.=$lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
+					$chaine_options_grp.="</option>\n";
+				}
+				else{
+					$id_groupe_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_grp.="<option value='$lig->id_cahier_notes'";
+				$chaine_options_grp.=">";
+				$chaine_options_grp.=$lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
+				$chaine_options_grp.="</option>\n";
+			}
+
+			if($temoin_tmp==0){
+				$id_groupe_prec=$lig->id_cahier_notes;
+			}
+			$cpt_grp++;
+		}
 	}
+
 }
-echo "</select>\n";
+
+if($chaine_options_grp!='') {
+	echo " | ";
+
+	echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_grp(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form0.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form0.submit();
+			}
+			else{
+				document.getElementById('id_racine').selectedIndex=$num_grp;
+			}
+		}
+	}
+</script>\n";
+
+	if("$id_groupe_prec"!="0"){
+		echo "<a href='#' onclick=\"document.getElementById('id_racine').selectedIndex=".($num_grp-1).";confirm_changement_grp (this, change, '$themessage')\"><img src='../images/icons/arrow-left.png' class='icone16' /></a>";
+	}
+
+	echo "<select name='id_racine' id='id_racine' onchange=\"confirm_changement_grp(change, '$themessage');\">\n";
+	echo $chaine_options_grp;
+	/*
+	while($lig=mysqli_fetch_object($res_grp)) {
+		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='' AND domaine='cahier_notes' AND visible='n';";
+		$test_vis=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_vis)==0) {
+			echo "<option value='$lig->id_cahier_notes'";
+			if($lig->id_cahier_notes==$id_racine) {echo " selected='true'";}
+			echo ">";
+			echo $lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
+			echo "</option>\n";
+		}
+	}
+	*/
+	echo "</select>\n";
+
+	if("$id_groupe_suiv"!="0"){
+		echo " <a href='#' onclick=\"document.getElementById('id_racine').selectedIndex=".($num_grp+1).";confirm_changement_grp(this, change, '$themessage')\"><img src='../images/icons/arrow-right.png' class='icone16' /></a>";
+	}
+
+
+	/*
+	echo "<script type='text/javascript'>
+	alert('plop');
+	alert(document.getElementById('id_racine').selectedIndex);
+</script>\n";
+	*/
+}
 
 echo " | ";
 if($periode_num>1) {
