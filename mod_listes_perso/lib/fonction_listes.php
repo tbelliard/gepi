@@ -413,6 +413,16 @@ function EnregistreElevesChoisis($idElevesChoisis, $idListe) {
 
 function SupprimeEleve($login, $idListe) {
 	global $mysqli;
+
+	//============================
+	// Ménage dans les enregistrements associés
+	$sql = "DELETE FROM `mod_listes_perso_contenus` "
+	   . "WHERE `login` = '$login' "
+	   . "AND `id_def` = '$idListe'" ;
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	//============================
+
 	$sql = "DELETE FROM `mod_listes_perso_eleves` "
 	   . "WHERE `login` = '$login' "
 	   . "AND `id_def` = '$idListe'" ;
@@ -432,19 +442,36 @@ function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NU
 	$sql="SELECT * FROM mod_listes_perso_contenus WHERE id_def='$idListe' AND 
 										colonne='$idColonne' AND 
 										login='$login'";
+	/*
 	if ($id !== NULL) {
 		$sql.=" AND id='$id'";
 	}
+	*/
 	$sql.=";";
 	$test=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($test)>0) {
-		$lig=mysqli_fetch_object($test);
-		$sql="UPDATE mod_listes_perso_contenus SET contenu='$contenu' WHERE id='".$lig->id."';";
-		$query=mysqli_query($mysqli, $sql);
-		if (!$query) {
-			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
-			echo $sql."<br />" ;
-			return FALSE;
+		// S'il y a plus d'un enregistrement, il faut faire du ménage.
+		$nb_update=0;
+		while($lig=mysqli_fetch_object($test)) {
+			if($nb_update==0) {
+				$sql="UPDATE mod_listes_perso_contenus SET contenu='$contenu' WHERE id='".$lig->id."';";
+				$query=mysqli_query($mysqli, $sql);
+				if (!$query) {
+					echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+					echo $sql."<br />" ;
+					return FALSE;
+				}
+			}
+			else {
+				$sql="DELETE FROM mod_listes_perso_contenus WHERE id='".$lig->id."';";
+				$query=mysqli_query($mysqli, $sql);
+				if (!$query) {
+					echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+					echo $sql."<br />" ;
+					return FALSE;
+				}
+			}
+			$nb_update++;
 		}
 	}
 	else {
