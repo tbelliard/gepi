@@ -38,6 +38,8 @@ if (!checkAccess()) {
 	die();
 }
 
+check_tables_modifiees();
+
 // Ménage:
 $sql="SELECT du.* FROM droits_utilisateurs du LEFT JOIN utilisateurs u ON u.login=du.login_user WHERE u.login IS NULL;";
 //echo "$sql<br />";
@@ -3255,7 +3257,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				//if($lig_champ->Collation!='utf8_general_ci' && $lig_champ->Collation!=NULL) {
 				if($lig_champ->Collation!='utf8_general_ci') {
 					$texte_info_action.="<span style='color:red'>".$lig_champ->Collation."</span>";
-					$texte_info_action.="<br /><a href='$gepiPath/clean_tables.php?maj=corriger_interclassements&amp;table=$tab[0]".add_token_in_url()."'>Corriger</a>";
+					$texte_info_action.="<br /><a href='$gepiPath/utilitaires/clean_tables.php?maj=corriger_interclassements&amp;table=$tab[0]".add_token_in_url()."'>Corriger</a>";
 				}
 				else {
 					$texte_info_action.=$lig_champ->Collation;

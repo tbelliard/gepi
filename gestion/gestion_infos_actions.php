@@ -96,6 +96,33 @@ for($loop=0;$loop<count($tab_dossier_correction);$loop++) {
 
 }
 
+$sql="SELECT * FROM infos_actions WHERE description LIKE '% href=\'".$gepiPath."/clean_tables.php%'";
+//echo "$sql<br />";
+$test=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($test)>0) {
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE infos_actions SET description='".mysqli_real_escape_string($mysqli, preg_replace("#href='".$gepiPath."/clean_tables.php#", "href='".$gepiPath."/utilitaires/clean_tables.php", $lig->description))."' WHERE id='".$lig->id."';";
+			//echo "$sql<br />";
+			$corrige=mysqli_query($mysqli, $sql);
+		}
+	}
+}
+
+$sql="SELECT * FROM infos_actions WHERE description LIKE '%plugin_archapb%'";
+//echo "$sql<br />";
+$test=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($test)>0) {
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE infos_actions SET description='".mysqli_real_escape_string($mysqli, preg_replace("#plugin_archapb#", "plugin_archAPB", $lig->description))."' WHERE id='".$lig->id."';";
+			//echo "$sql<br />";
+			$corrige=mysqli_query($mysqli, $sql);
+		}
+	}
+}
 //==============================
 
 $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : array();
