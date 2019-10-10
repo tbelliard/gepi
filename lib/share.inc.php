@@ -64,7 +64,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
 	$subject = $gepiPrefixeSujetMail."GEPI : $sujet";
-	$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
+	//$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
 
 	if((getSettingAOui('utiliser_phpmailer'))&&(getSettingValue('phpmailer_smtp_host')!="")&&(getSettingValue('phpmailer_smtp_port')!="")&&(getSettingValue('phpmailer_from')!="")) {
 
@@ -306,6 +306,8 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 
 	}
 	else {
+		$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
+
 		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
 		$headers .= "MIME-Version: 1.0\r\n";
 		$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
