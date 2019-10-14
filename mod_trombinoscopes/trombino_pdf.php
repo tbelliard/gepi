@@ -477,10 +477,10 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 					}
 				}
 
-
 				// Informations sous la photo
 				$y=$y0+$m*($haut_cadre+$dy)+($haut_cadre-$hauteur_info_eleve)+$hauteur_classe+$ecart_sous_classe;
 				$pdf->SetXY($x,$y);
+				$pdf->SetFont('DejaVu','',$fonte_size);
 
 				$texte="";
 				//if(isset($tab_ele[$cpt])) {
