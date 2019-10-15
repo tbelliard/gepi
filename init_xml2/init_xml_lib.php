@@ -254,6 +254,7 @@ function info_debug($texte,$mode=0) {
 	global $dirname;
 
 	$debug=0;
+	//$mode=3;
 	if($debug==1) {
 		if($mode==1) {
 			// On écrase le fichier s'il existait déjà
@@ -264,6 +265,9 @@ function info_debug($texte,$mode=0) {
 		elseif($mode==2) {
 			// Affichage d'un lien pour accéder au fichier de debug depuis la page web
 			echo "<p><a href='../backup/".$dirname."/debug_maj_import2.txt' target='_blank'>Fichier debug</a></p>";
+		}
+		elseif($mode==3) {
+			echo "<span style='color:green'>$step : $texte</span><br />";
 		}
 		else {
 			// On complète le fichier
