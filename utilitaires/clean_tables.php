@@ -3336,10 +3336,10 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 	else {
 		$nb_corr=0;
-		$r_sql = mysqli_query($GLOBALS["mysqli"], "SHOW TABLE STATUS");
+		$r_sql = mysqli_query($GLOBALS["mysqli"], "SHOW TABLE STATUS;");
 		while ($une_table = mysqli_fetch_array($r_sql)) {
 			if($une_table['Collation']!="utf8_general_ci") {
-				echo "Correction de la table ".$une_tableune_table['Name']." : ";
+				echo "Correction de la table ".$une_table['Name']." : ";
 				$sql="ALTER TABLE `".$une_table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
