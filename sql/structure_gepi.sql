@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `responsables2` (`ele_id` varchar(10) NOT NULL, `pers
 DROP TABLE IF EXISTS `resp_adr`;
 CREATE TABLE IF NOT EXISTS `resp_adr` (`adr_id` varchar(10) NOT NULL,`adr1` varchar(100) NOT NULL,`adr2` varchar(100) NOT NULL,`adr3` varchar(100) NOT NULL,`adr4` varchar(100) NOT NULL,`cp` varchar(6) NOT NULL,`pays` varchar(50) NOT NULL,`commune` varchar(50) NOT NULL,PRIMARY KEY  (`adr_id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `resp_pers`;
-CREATE TABLE IF NOT EXISTS `resp_pers` (`pers_id` varchar(10) NOT NULL,`login` varchar(50) NOT NULL,`nom` varchar(50) NOT NULL,`prenom` varchar(50) NOT NULL,`civilite` varchar(5) NOT NULL,`tel_pers` varchar(255) NOT NULL,`tel_port` varchar(255) NOT NULL,`tel_prof` varchar(255) NOT NULL,`mel` varchar(100) NOT NULL,`adr_id` varchar(10) NOT NULL,PRIMARY KEY  (`pers_id`), INDEX login ( `login` ), INDEX adr_id ( `adr_id` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS `resp_pers` (`pers_id` varchar(10) NOT NULL,`login` varchar(50) NOT NULL DEFAULT '', `nom` varchar(50) NOT NULL DEFAULT '', `prenom` varchar(50) NOT NULL DEFAULT '', `civilite` varchar(5) NOT NULL DEFAULT '', `tel_pers` varchar(255) NOT NULL DEFAULT '', `tel_port` varchar(255) NOT NULL DEFAULT '', `tel_prof` varchar(255) NOT NULL DEFAULT '', `mel` varchar(100) NOT NULL DEFAULT '', `adr_id` varchar(10) NOT NULL DEFAULT '', PRIMARY KEY  (`pers_id`), INDEX login ( `login` ), INDEX adr_id ( `adr_id` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `tentatives_intrusion`;
 CREATE TABLE `tentatives_intrusion` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,`login` VARCHAR( 255 ) NULL ,`adresse_ip` VARCHAR( 255 ) NOT NULL ,`date` DATETIME NOT NULL ,`niveau` SMALLINT NOT NULL ,`fichier` VARCHAR( 255 ) NOT NULL ,`description` TEXT NOT NULL ,`statut` VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( `id` ) ,UNIQUE KEY ( `id`, `login` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `etiquettes_formats`;
@@ -1742,6 +1742,22 @@ login_ele VARCHAR( 50 ) NOT NULL DEFAULT '',
 presence VARCHAR(10) NOT NULL DEFAULT '', 
 date_pointage DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00', 
 login_pointage VARCHAR( 50 ) NOT NULL DEFAULT '', 
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS bull_mail;
+CREATE TABLE IF NOT EXISTS bull_mail (
+id INT(11) unsigned NOT NULL auto_increment,
+login_sender VARCHAR(50) NOT NULL DEFAULT '',
+pers_id VARCHAR(10) NOT NULL DEFAULT '',
+email VARCHAR(100) NOT NULL DEFAULT '',
+login_ele VARCHAR(50) NOT NULL DEFAULT '',
+nom_prenom_ele VARCHAR(255) NOT NULL DEFAULT '',
+id_classe INT(11) unsigned NOT NULL DEFAULT '0',
+periodes VARCHAR(100) NOT NULL DEFAULT '',
+id_envoi VARCHAR(255) NOT NULL DEFAULT '',
+envoi VARCHAR(50) NOT NULL DEFAULT '',
+date_envoi DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
