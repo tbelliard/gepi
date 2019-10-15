@@ -6515,6 +6515,14 @@ mysql>
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
+			//=========================================
+			$sql="update resp_pers set tel_pers='' where tel_pers IS NULL;";
+			$correction=mysqli_query($GLOBALS["mysqli"], $sql);
+			$sql="update resp_pers set tel_port='' where tel_port IS NULL;";
+			$correction=mysqli_query($GLOBALS["mysqli"], $sql);
+			$sql="update resp_pers set tel_prof='' where tel_prof IS NULL;";
+			$correction=mysqli_query($GLOBALS["mysqli"], $sql);
+			//=========================================
 
 			// 20120927
 			$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
@@ -8165,7 +8173,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 				$cpt=0;
 				//$chaine_nouveaux="";
 				while($lig=mysqli_fetch_object($res1)){
-					$sql="SELECT 1=1 FROM resp_pers rp, temp_resp_pers_import t WHERE rp.pers_id=t.pers_id AND t.pers_id='$lig->pers_id'";
+					$sql="SELECT 1=1 FROM resp_pers rp, temp_resp_pers_import t WHERE rp.pers_id=t.pers_id AND t.pers_id='$lig->pers_id';";
 					info_debug($sql);
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					info_debug("Test diff $lig->pers_id");
