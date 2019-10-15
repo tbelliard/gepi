@@ -1054,7 +1054,7 @@ function ToutDeCocher() {
 			echo "<p style='margin-top:1em;'>
 			<input type='checkbox' name='envoi_par_mail' id='envoi_par_mail' value='1' onchange=\"checkbox_change(this.id)\" />
 			<label for='envoi_par_mail' id='texte_envoi_par_mail'>
-				Envoyer le bulletin par mail lorsqu'une adresse mail responsable est disponible dans la base <em>(PDF et PDP_2016 seulement pour le moment)</em>.
+				Envoyer le bulletin par mail lorsqu'une adresse mail responsable est disponible dans la base <em>(PDF et PDF_2016 seulement pour le moment)</em>.
 			</label>
 		</p>";
 		}
@@ -5497,7 +5497,7 @@ Bien cordialement.
 			@mkdir($dirname);
 			if(!file_exists($dirname)) {
 				echo "<h2>Envoi de bulletins par mail</h2>
-				<p>ERREUR d'acces au dossier des bulletins: $dirname</p>";
+				<p>ERREUR d'acces au dossier des bulletins&nbsp;: $dirname</p>";
 				die();
 			}
 
