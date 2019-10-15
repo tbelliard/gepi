@@ -168,6 +168,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		$texte=preg_replace("|<b></b>|i","",$texte);
 		$texte=preg_replace("|<u></u>|i","",$texte);
 		$texte=preg_replace("|<i></i>|i","",$texte);
+		$texte=preg_replace("|&nbsp;|i"," ",$texte);
 
 		$tab=preg_split('/<(.*)>/U',$texte,-1,PREG_SPLIT_DELIM_CAPTURE);
 		foreach($tab as $i=>$valeur) {
@@ -524,6 +525,8 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 	for($i=0;$i<count($ligne);$i++) {
 		$x_courant=$x;
+
+		$ligne[$i]=trim($ligne[$i]);
 
 		if($align=="C") {
 			$x_courant=$x+($largeur_dispo-$pdf->GetStringWidth($ligne[$i]."   "))/2;
