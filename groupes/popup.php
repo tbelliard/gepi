@@ -410,7 +410,7 @@ if($gepi_prof_suivi==""){
 			$alt=1;
 			while($lig_eleve=mysqli_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
-				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie<$mysql_date_courante)) {
+				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie>'1970-12-12 00:00:00')&&($lig_eleve->date_sortie<$mysql_date_courante)) {
 					echo "<tr valign='top' class='white_hover' style='background-color:grey' title=\"Sorti(e) de l'établissement le ".formate_date($lig_eleve->date_sortie)."\">\n";
 				}
 				else {
@@ -532,7 +532,7 @@ if($gepi_prof_suivi==""){
 			$alt=1;
 			while($lig_eleve=mysqli_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
-				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie<$mysql_date_courante)) {
+				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie>'1970-12-12 00:00:00')&&($lig_eleve->date_sortie<$mysql_date_courante)) {
 					echo "<tr valign='top' class='white_hover' style='background-color:grey' title=\"Sorti(e) de l'établissement le ".formate_date($lig_eleve->date_sortie)."\">\n";
 				}
 				else {
@@ -667,7 +667,7 @@ if($gepi_prof_suivi==""){
 			$alt=1;
 			while($lig_eleve=mysqli_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
-				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie<$mysql_date_courante)) {
+				if((isset($lig_eleve->date_sortie))&&(preg_match("/^[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/", $lig_eleve->date_sortie))&&($lig_eleve->date_sortie>'1970-12-12 00:00:00')&&($lig_eleve->date_sortie<$mysql_date_courante)) {
 					echo "<tr valign='top' class='white_hover' style='background-color:grey' title=\"Sorti(e) de l'établissement le ".formate_date($lig_eleve->date_sortie)."\">\n";
 				}
 				else {
