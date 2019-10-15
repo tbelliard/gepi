@@ -181,4 +181,56 @@ if ($test_champ==0) {
 } else {
 	$result .= msj_present("Le champ existe déjà");
 }
+
+
+$result .= "&nbsp;-> Contrôle de la valeur par défaut du champ 'nom' de la table 'resp_pers'&nbsp;: ";
+$sql="ALTER TABLE resp_pers CHANGE nom nom VARCHAR(50) NOT NULL DEFAULT '';";
+$result_inter = traite_requete($sql);
+if ($result_inter == '') {
+	$result .= msj_ok("SUCCES !");
+}
+else {
+	$result .= msj_erreur("ECHEC !");
+}
+
+$result .= "&nbsp;-> Contrôle de la valeur par défaut du champ 'prenom' de la table 'resp_pers'&nbsp;: ";
+$sql="ALTER TABLE resp_pers CHANGE prenom prenom VARCHAR(50) NOT NULL DEFAULT '';";
+$result_inter = traite_requete($sql);
+if ($result_inter == '') {
+	$result .= msj_ok("SUCCES !");
+}
+else {
+	$result .= msj_erreur("ECHEC !");
+}
+
+$result .= "&nbsp;-> Contrôle de la valeur par défaut du champ 'tel_pers' de la table 'resp_pers'&nbsp;: ";
+$sql="ALTER TABLE resp_pers CHANGE tel_pers tel_pers VARCHAR(255) NOT NULL DEFAULT '';";
+$result_inter = traite_requete($sql);
+if ($result_inter == '') {
+	$result .= msj_ok("SUCCES !");
+}
+else {
+	$result .= msj_erreur("ECHEC !");
+}
+
+$result .= "&nbsp;-> Contrôle de la valeur par défaut du champ 'tel_port' de la table 'resp_pers'&nbsp;: ";
+$sql="ALTER TABLE resp_pers CHANGE tel_port tel_port VARCHAR(255) NOT NULL DEFAULT '';";
+$result_inter = traite_requete($sql);
+if ($result_inter == '') {
+	$result .= msj_ok("SUCCES !");
+}
+else {
+	$result .= msj_erreur("ECHEC !");
+}
+
+$result .= "&nbsp;-> Contrôle de la valeur par défaut du champ 'tel_prof' de la table 'resp_pers'&nbsp;: ";
+$sql="ALTER TABLE resp_pers CHANGE tel_prof tel_prof VARCHAR(255) NOT NULL DEFAULT '';";
+$result_inter = traite_requete($sql);
+if ($result_inter == '') {
+	$result .= msj_ok("SUCCES !");
+}
+else {
+	$result .= msj_erreur("ECHEC !");
+}
+
 ?>
