@@ -233,4 +233,29 @@ else {
 	$result .= msj_erreur("ECHEC !");
 }
 
+$tab_champs_a_corriger=array('no_gep'=>50, 
+'nom'=>100,
+'prenom'=>100,
+'sexe'=>1,
+'elenoet'=>50, 
+'ereno'=>50, 
+'lieu_naissance'=>50,
+'email'=>255,
+'tel_pers'=>255, 
+'tel_port'=>255, 
+'tel_prof'=>255, 
+'mef_code'=>50,
+'adr_id'=>10);
+foreach($tab_champs_a_corriger as $key => $value) {
+	$result .= "&nbsp;-> Contrôle de la valeur par défaut du champ '".$key."' de la table 'eleves'&nbsp;: ";
+	$sql="ALTER TABLE eleves CHANGE ".$key." ".$key." VARCHAR(".$value.") NOT NULL DEFAULT '';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
 ?>
