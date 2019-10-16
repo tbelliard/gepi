@@ -746,6 +746,15 @@ else{
 
 			check_token(false);
 
+			//=========================================
+			$tab_champs_a_corriger=array('no_gep', 'nom', 'prenom', 'sexe', 'lieu_naissance', 'elenoet', 'ereno', 'tel_pers', 'tel_port', 'tel_prof', 'adr_id');
+			foreach($tab_champs_a_corriger as $key => $value) {
+				$sql="UPDATE ".$key." SET ".$value."='' WHERE ".$value." IS NULL;";
+				//echo "$sql<br />";
+				$correction=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+			//=========================================
+
 			$_SESSION['alert_diff_mail_ele']=$alert_diff_mail_ele;
 			$_SESSION['alert_diff_etab_origine']=$alert_diff_etab_origine;
 			// 20130607
