@@ -411,7 +411,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	// cadre note
 	$titre_du_cadre='Relevé de notes du';
 	$largeur_cadre_matiere='50';
-	$texte_observation='Observations:';
+	$texte_observation='Observations :';
 	$cadre_titre='0'; // affiche le cadre autour du titre ici: "relevé de notes..."
 	$largeur_cadre_note_global = '200'; //largeur du cadre note global nom matiere | note | observation
 	$hauteur_dun_regroupement='4'; // hauteur de la cellule regroupement
@@ -723,8 +723,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 						//if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
 
 						$tmp_coef_devoir=$donne_requete['coef_devoir'];
-						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$tmp_coef_devoir.")"; }
-						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $tmp_coef_devoir != '1.0' ) { $coef_oui = " (coef: ".$tmp_coef_devoir.")"; } else { $coef_oui = ''; } }
+						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef.: ".$tmp_coef_devoir.")"; }
+						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $tmp_coef_devoir != '1.0' ) { $coef_oui = " (coef.: ".$tmp_coef_devoir.")"; } else { $coef_oui = ''; } }
 
 					}
 					else
@@ -884,8 +884,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 						//if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $donne_requete[8] != '1.0' ) { $coef_oui = " (coef: ".$donne_requete[8].")"; } else { $coef_oui = ''; } }
 
 						$tmp_coef_devoir=$donne_requete['coef_devoir'];
-						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef: ".$tmp_coef_devoir.")"; }
-						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $tmp_coef_devoir != '1.0' ) { $coef_oui = " (coef: ".$tmp_coef_devoir.")"; } else { $coef_oui = ''; } }
+						if ( $_SESSION['avec_coef'] == 'oui1' ) { $coef_oui = " (coef.: ".$tmp_coef_devoir.")"; }
+						if ( $_SESSION['avec_coef'] == 'oui2' ) { if ( $tmp_coef_devoir != '1.0' ) { $coef_oui = " (coef.: ".$tmp_coef_devoir.")"; } else { $coef_oui = ''; } }
 
 					}
 					else
