@@ -55,6 +55,10 @@
 	// Récupération des paramètres
 	// Les valeurs des tableaux peuvent ne pas être affectées si aucune case n'est cochée
 	$tab_rn_nomdev=isset($_POST['rn_nomdev']) ? $_POST['rn_nomdev'] : (isset($tab_rn_nomdev) ? $tab_rn_nomdev : array());
+
+	// 20191009 : Martial Lenzen
+	$tab_rn_aff_nomdev_choix=isset($_POST['rn_aff_nomdev_choix']) ? $_POST['rn_aff_nomdev_choix'] : (isset($tab_rn_aff_nomdev_choix) ? $tab_rn_aff_nomdev_choix : array());
+
 	$tab_rn_toutcoefdev=isset($_POST['rn_toutcoefdev']) ? $_POST['rn_toutcoefdev'] : (isset($tab_rn_toutcoefdev) ? $tab_rn_toutcoefdev : array());
 	$tab_rn_coefdev_si_diff=isset($_POST['rn_coefdev_si_diff']) ? $_POST['rn_coefdev_si_diff'] : (isset($tab_rn_coefdev_si_diff) ? $tab_rn_coefdev_si_diff : array());
 
@@ -216,6 +220,10 @@
 			// Dans le cas d'un appel depuis la génération de bulletin, il faudrait prendre les paramètres par défaut de la classe
 			// ****************************************
 			$tab_releve[$id_classe][$periode_num]['rn_nomdev']=isset($tab_rn_nomdev[$loop_classe]) ? $tab_rn_nomdev[$loop_classe] : "n";
+
+			// 20191015 : Martial Lenzen
+			$tab_releve[$id_classe][$periode_num]['rn_aff_nomdev_choix']=isset($tab_rn_aff_nomdev_choix[$loop_classe]) ? $tab_rn_aff_nomdev_choix[$loop_classe] : "2";
+
 			$tab_releve[$id_classe][$periode_num]['rn_toutcoefdev']=isset($tab_rn_toutcoefdev[$loop_classe]) ? $tab_rn_toutcoefdev[$loop_classe] : "n";
 			$tab_releve[$id_classe][$periode_num]['rn_coefdev_si_diff']=isset($tab_rn_coefdev_si_diff[$loop_classe]) ? $tab_rn_coefdev_si_diff[$loop_classe] : "n";
 
@@ -691,7 +699,8 @@
 							}
 
 							if ($choix_periode=="intervalle") {
-								$sql1="SELECT cn.id_cahier_notes, d.id, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								// 20191015 : Martial Lenzen
+								$sql1="SELECT cn.id_cahier_notes, d.id, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, d.nom_complet, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
 								d.display_parents='1' and
@@ -704,7 +713,8 @@
 								";
 							}
 							else {
-								$sql1 = "SELECT cn.id_cahier_notes, d.id, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
+								// 20191015 : Martial Lenzen
+								$sql1 = "SELECT cn.id_cahier_notes, d.id, d.id_conteneur, d.coef, nd.note, nd.comment, d.nom_court, d.nom_complet, nd.statut, d.date, d.date_ele_resp, d.note_sur, d.display_parents_app FROM cn_notes_devoirs nd, cn_devoirs d, cn_cahier_notes cn WHERE (
 								nd.login = '".$current_eleve_login[$i]."' and
 								nd.id_devoir = d.id and
 								d.display_parents='1' and
@@ -758,7 +768,15 @@
 										$eleve_note = $obj_note_courant->note;
 									}
 									$eleve_statut = $obj_note_courant->statut;
-									$eleve_nom_court = $obj_note_courant->nom_court;
+
+									// 20191009 : Martial Lenzen
+									if ($tab_releve[$id_classe][$periode_num]['rn_aff_nomdev_choix']=='2') {
+										$eleve_nom_court = $obj_note_courant->nom_court;
+									}
+									else {
+										$eleve_nom_court = $obj_note_courant->nom_complet;
+									}
+
 									$date_note = $obj_note_courant->date;
 									$note_sur = $obj_note_courant->note_sur;
 									$coef_devoir = $obj_note_courant->coef;

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -173,11 +173,6 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
-					if (isset($_POST['rn_nomdev_'.$per])) {
-						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_nomdev='".$_POST['rn_nomdev_'.$per]."' where id='".$id_classe."'");
-						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
-					}
-
 					if (isset($_POST['rn_toutcoefdev_'.$per])) {
 						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_toutcoefdev='".$_POST['rn_toutcoefdev_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
@@ -266,9 +261,9 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
-					// 20121027
-					//$tab_param=array('rn_aff_classe_nom');
-					$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'rn_moy_gen');
+					// 20191015 : Martial Lenzen
+					// MODIF 20191015 : lenzenm
+					$tab_param=array('rn_aff_classe_nom', 'rn_nomdev', 'rn_aff_nomdev_choix','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'rn_moy_gen');
 					for($loop=0;$loop<count($tab_param);$loop++) {
 						if (isset($_POST[$tab_param[$loop].'_'.$per])) {
 							if ($_POST[$tab_param[$loop].'_'.$per]!='') {
@@ -1108,7 +1103,7 @@ if (isset($_POST['is_posted'])) {
 			$message_enregistrement = "Aucune modification n'a été effectuée !";
 		}
 		else {
-			$message_enregistrement = ($nb_reg_ok+$nb_modif_priorite)." modification(s) effectuée(s) !";
+			$message_enregistrement = ($nb_reg_ok+$nb_modif_priorite)." modification".($nb_reg_ok+$nb_modif_priorite==1 ? " effectuée" : "s effectuées")." !";
 		}
 		$affiche_message = 'yes';
 	} else if ($reg_ok=='yes') {
@@ -2326,6 +2321,26 @@ td {
 		<input type="radio" name="<?php echo "rn_nomdev_".$per; ?>" value="n" />Non
 	</td>
 </tr>
+
+<!-- Ajout Martial du 08/10/2019 pour le choix du nom court ou long des noms des devoirs (si affichés) sur les relevés de notes -->
+<?php
+	$titre_infobulle="Choix du nom du devoir\n";
+	$texte_infobulle="<p>Le choix du nom du devoir n'est possible que si la case \"Afficher le nom des devoirs\" est cochée.</p><br /><p>Par défaut, c'est le nom court qui est attribué aux classes.</p>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_choix_du_nom_des_devoirs',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+?>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">Choix du nom du devoir<?php
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_choix_du_nom_des_devoirs','y',100,-50);\" onmouseout=\"cacher_div('a_propos_choix_du_nom_des_devoirs');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur le choix du nom des devoirs'/></a>";
+	?>&nbsp;:</td>
+	<td>
+		<input type="radio" value="1" name="rn_aff_nomdev_choix_<?php echo $per;?>" id="rn_aff_nomdev_choix_1" onchange='changement()' /><label for='rn_aff_nomdev_choix_1' style='cursor: pointer;'>Nom long</label><br />
+		<input type="radio" value="2" name="rn_aff_nomdev_choix_<?php echo $per;?>" id="rn_aff_nomdev_choix_2" onchange='changement()' /><label for='rn_aff_nomdev_choix_2' style='cursor: pointer;'>Nom court</label>
+	</td>
+</tr>
+<!-- Fin ajout Martial -->
+
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">Afficher tous les coefficients des devoirs&nbsp;:</td>

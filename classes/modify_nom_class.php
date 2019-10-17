@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -94,6 +94,10 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
 	if (!isset($rn_aff_classe_nom)) $rn_aff_classe_nom = 1;
+
+	// 20191015 : Martial Lenzen
+	if (!isset($rn_aff_nomdev_choix)) $rn_aff_nomdev_choix = 2;
+
 	// A MODIFIER EN CAS DE MODE CNIL STRICT
 	if (!isset($rn_app)) $rn_app = 'n';
 	if (!isset($rn_moy_classe)) $rn_moy_classe = 'n';
@@ -146,7 +150,15 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													ects_fonction_signataire_attestation='".$ects_fonction_signataire_attestation."'
 												WHERE id = '$id_classe'");
 
-			if (!$register_class) {
+			//==================================
+			// AJOUT 20191015 : lenzenm
+			// sauvegarder le choix du nom long ou court pour les devoirs dans la table 'classes_param' au lieu de 'classes' :
+			$register_class2 = saveParamClasse($id_classe, 'rn_aff_nomdev_choix', $rn_aff_nomdev_choix);
+			if (!$register_class2) {$reg_ok = 'no';} else {$reg_ok = 'yes' ;}
+			// Fin ajout
+			//==================================
+
+			if (!$register_class || $reg_ok=='no') {
 					$msg .= "Une erreur s'est produite lors de la modification de la classe.";
 					} else {
 					$msg .= "La classe a bien été modifiée.";
@@ -192,8 +204,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 
 			// =========================
-			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
+			// 20151015 (ajout du paramètre rn_aff_nomdev_choix)
+			$tab_param=array('rn_aff_classe_nom', 'rn_aff_nomdev_choix', 'rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne', 'rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -226,7 +238,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													rn_nomdev='$rn_nomdev',
 													rn_toutcoefdev='$rn_toutcoefdev',
 													rn_coefdev_si_diff='$rn_coefdev_si_diff',
-													rn_datedev='$rn_datedev',				
+													rn_datedev='$rn_datedev',
 													rn_abs_2='$rn_abs_2',
 													rn_sign_chefetab='$rn_sign_chefetab',
 													rn_sign_pp='$rn_sign_pp',
@@ -239,7 +251,16 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													ects_domaines_etude='".$ects_domaines_etude."',
 													ects_fonction_signataire_attestation='".$ects_fonction_signataire_attestation."'
 												");
-		if (!$register_class) {
+
+		//==============================
+		// AJOUT 20191015
+		// sauvegarder le choix du nom long ou court pour les devoirs dans la table 'classes_param' au lieu de 'classes' :
+		$register_class2 = saveParamClasse($id_classe, 'rn_aff_nomdev_choix', $rn_aff_nomdev_choix);
+		if (!$register_class2) {$reg_ok = 'no';} else {$reg_ok = 'yes' ;}
+		// Fin de l'ajout
+		//==============================
+
+		if (!$register_class || $reg_ok=='no') {
 			$msg .= "Une erreur s'est produite lors de l'enregistrement de la nouvelle classe.";
 		} else {
 			$msg .= "La nouvelle classe a bien été enregistrée.";
@@ -296,8 +317,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 
 			// =========================
-			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
+			// 20191015 : Martial Lenzen
+			// (ajout du paramètre rn_aff_nomdev_choix)
+			$tab_param=array('rn_aff_classe_nom', 'rn_aff_nomdev_choix', 'rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne', 'rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -439,9 +461,9 @@ if(isset($id_classe)) {
 	//]]>
 </script>\n";
 
-	$tabdiv_infobulle[]=creer_div_infobulle('navigation_classe',$titre,"",$texte,"",14,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('navigation_classe',$titre,"",$texte,"",14,0,'y', 'y', 'n', 'n');
 	
-	echo " | <a href='#' onclick=\"afficher_div('navigation_classe','y',-100,20);\"";
+	echo " | <a href='#' onclick=\"afficher_div('navigation_classe', 'y',-100,20);\"";
 	echo ">";
 	echo "Navigation";
 	echo "</a>";
@@ -504,15 +526,19 @@ if (isset($id_classe)) {
 	$ects_fonction_signataire_attestation = old_mysql_result($call_nom_class, 0, 'ects_fonction_signataire_attestation');
 	$ects_domaines_etude = old_mysql_result($call_nom_class, 0, 'ects_domaines_etude');
 	// =========================
-	// 20121027
+	// 20191015 : Martial Lenzen (pour le paramètre rn_aff_nomdev_choix)
 	// Paramètres enregistrés dans la table 'classes_param':
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
+	$tab_param=array('rn_aff_classe_nom', 'rn_aff_nomdev_choix', 'rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne', 'rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
 	}
 	if($rn_type_par_defaut=="") {$rn_type_par_defaut="html";}
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
+
+	// 20191015 : Martial Lenzen
+	//if($rn_aff_nomdev_choix=="") {$rn_aff_nomdev_choix=2;}
+
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
 	if($bull_prefixe_periode=="") {$bull_prefixe_periode="Bulletin du ";}
 	if($type_classe=="") {$type_classe="standard";}
@@ -536,6 +562,10 @@ if (isset($id_classe)) {
 
 	// =========================
 	$rn_nomdev='n';
+
+	$rn_aff_nomdev_choix='2';  // AJOUT 20151015 : lenzenm 
+	// A VERIFIER: La valeur par défaut devrait être la valeur historique
+
 	$rn_toutcoefdev='n';
 	$rn_coefdev_si_diff='n';
 	$rn_datedev='n';
@@ -551,10 +581,11 @@ if (isset($id_classe)) {
 	$rn_abs_2='n';
 	// =========================
 	$display_moy_gen_saisie_avis2='y';
-	// 20121027
+
 	$suivi_par_alt='';
 	$suivi_par_alt_fonction='';
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'type_classe', 'rn_moy_gen');
+	// 20151015 (pour le paramètre rn_aff_nomdev_choix)
+	$tab_param=array('rn_aff_classe_nom', 'rn_aff_nomdev_choix', 'rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne', 'rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'type_classe', 'rn_moy_gen');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		/*
@@ -565,6 +596,10 @@ if (isset($id_classe)) {
 	}
 	if($rn_type_par_defaut=="") {$rn_type_par_defaut="html";}
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
+
+	// 20191009 : Martial Lenzen
+	//if($rn_aff_nomdev_choix=="") {$rn_aff_nomdev_choix=2;}
+
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
 	if($bull_prefixe_periode=="") {$bull_prefixe_periode="Bulletin du ";}
 	if($type_classe=="") {$type_classe="standard";}
@@ -933,6 +968,7 @@ if(isset($id_classe)) {
 </tr>
 <!--
 Afficher le nom des devoirs.
+Si le nom est affiché, choisir entre nom long et court.
 Afficher tous les coefficients des devoirs.
 Afficher les coefficients des devoirs si des coefficients différents
 > > sont présents.
@@ -977,6 +1013,20 @@ Afficher une case pour la signature du chef d'établissement
 	</td>
 	<td><input type="checkbox" value="y" name="rn_nomdev" id="rn_nomdev"  <?php   if ($rn_nomdev=="y") echo " checked='checked ' "; ?> onchange='changement()' /></td>
 </tr>
+
+<!-- 20191009 - Martial Lenzen - Début -->
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">
+		Si la case "Afficher le nom des devoirs" est cochée, utiliser le&nbsp;:
+	</td>
+	<td>
+		<input type="radio" value="1" name="rn_aff_nomdev_choix" id="rn_aff_nomdev_choix_1"  <?php if ($rn_aff_nomdev_choix=="1") echo " checked='checked ' "; ?> onchange='changement()' /><label for='rn_aff_nomdev_choix_1' style='cursor: pointer;'>Nom long</label><br />
+		<input type="radio" value="2" name="rn_aff_nomdev_choix" id="rn_aff_nomdev_choix_2"  <?php if ($rn_aff_nomdev_choix=="2") echo " checked='checked ' "; ?> onchange='changement()' /><label for='rn_aff_nomdev_choix_2' style='cursor: pointer;'>Nom court</label><br />
+	</td>
+</tr>
+<!-- 20191009 - Martial Lenzen - Fin -->
+
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
@@ -1113,13 +1163,13 @@ Le professeur peut aussi modifier la moyenne lors du transfert du carnet de note
 <?php
 	$titre_infobulle="Rapport taille polices\n";
 	$texte_infobulle="<p>Pour que la liste des devoirs tienne dans la cellule, on réduit la taille de la police.<br />Pour que cela reste lisible, vous pouvez fixer ici une taille minimale en dessous de laquelle ne pas descendre.</p><br /><p>Si la taille minimale ne suffit toujours pas à permettre l'affichage dans la cellule, on supprime les retours à la ligne.</p><br /><p>Et cela ne suffit toujours pas, le texte est tronqué (<em>dans ce cas, un relevé HTML pourra permettre l'affichage (les hauteurs de cellules s'adaptent à la quantité de texte... L'inconvénient&nbsp;: Une matière peut paraître plus importante qu'une autre par la place qu'elle occupe)</em>).</p>\n";
-	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_rapport_tailles_polices',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_rapport_tailles_polices',$titre_infobulle,"",$texte_infobulle,"",35,0,'y', 'y', 'n', 'n');
 ?>
 
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">Rapport taille_standard / taille_minimale_de_police (<em>relevé PDF</em>)  <?php
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_rapport_tailles_polices','y',100,-50);\"  onmouseout=\"cacher_div('a_propos_rapport_tailles_polices');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_rapport_tailles_polices', 'y',100,-50);\"  onmouseout=\"cacher_div('a_propos_rapport_tailles_polices');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
 	?>&nbsp;:</td>
 	<td><input type="text" name="rn_rapport_standard_min_font" size="3" value="<?php echo $rn_rapport_standard_min_font;?>" onchange='changement()' /></td>
 </tr>
@@ -1139,13 +1189,13 @@ Le professeur peut aussi modifier la moyenne lors du transfert du carnet de note
 	$texte_infobulle.="<li>La case Bloc observations est cochée.</li>\n";
 	$texte_infobulle.="<li>Une des cases signature est cochée.</li>\n";
 	$texte_infobulle.="</ul>\n";
-	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_bloc_observations',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_bloc_observations',$titre_infobulle,"",$texte_infobulle,"",35,0,'y', 'y', 'n', 'n');
 ?>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps;">
 		<label for='rn_bloc_obs' style='cursor: pointer;'>Afficher le bloc observations (<em>relevé PDF</em>) <?php
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations','y',100,-50);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations', 'y',100,-50);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
 	?>&nbsp;:</label>
 	</td>
 	<td>
@@ -1203,7 +1253,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 
 if($ouvrir_infobulle_nav=='y') {
 	echo "<script type='text/javascript'>
-	setTimeout(\"afficher_div('navigation_classe','y',-100,20);\",1000)
+	setTimeout(\"afficher_div('navigation_classe', 'y',-100,20);\",1000)
 </script>\n";
 }
 

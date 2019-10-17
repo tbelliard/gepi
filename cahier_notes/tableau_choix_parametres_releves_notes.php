@@ -114,7 +114,7 @@
 	echo "</tr>\n";
 
 	// A changer: il vaudrait mieux lister les paramètres correspondant à des champs de la table 'classes' (on ne devrait plus en ajouter)
-	$tab_param_table_classes_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
+	$tab_param_table_classes_param=array('rn_aff_classe_nom', 'rn_aff_nomdev_choix', 'rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne', 'rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
 
 	for($k=0;$k<count($tab_item);$k++) {
 		$affiche_ligne="y";
@@ -157,6 +157,42 @@
 			echo "<a href=\"javascript:CocheLigne('".$tab_item[$k]."')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne('".$tab_item[$k]."')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 			echo "</td>\n";
 			echo "</tr>\n";
+
+			//=================================
+			// 20191009 : Martial Lenzen
+			// Si on est sur la ligne "nom du devoir", on affiche une autre ligne dans le tableau pour savoir si on veut
+			// les noms courts ou longs :
+			if ($k==0) {
+				//$alt=$alt*(-1);
+				echo "<tr id='tr_rn_nomdev_choix' class='lig$alt white_hover'>\n";
+				echo "<td style='text-align:left;'>Choix du nom du devoir (<em>valide uniquement si \"".$tab_traduc[$tab_item[$k]]."\" est coché</em>)<br />\n";
+				echo "Nom long (1) / Nom court (2, par défaut)";
+				echo "</td>\n";
+				for($i=0;$i<count($tab_id_classe);$i++) {
+					echo "<td>\n";
+					echo "<label for='rn_aff_nomdev_choix_".$i."_1' class='invisible'>Nom long</label>
+					<input type='radio' name='rn_aff_nomdev_choix[$i]' id='rn_aff_nomdev_choix_".$i."_1' value='1' ";
+					if((isset($tab_param_classe[$i]['rn_aff_nomdev_choix']))&&($tab_param_classe[$i]['rn_aff_nomdev_choix']=='1')) {
+						echo "checked='checked' ";
+					}
+					echo "/><br />\n";
+					echo "<label for='rn_aff_nomdev_choix_".$i."_2' class='invisible'>Nom court</label>
+					<input type='radio' name='rn_aff_nomdev_choix[$i]' id='rn_aff_nomdev_choix_".$i."_2' value='2' ";
+					if((!isset($tab_param_classe[$i]['rn_aff_nomdev_choix']))||($tab_param_classe[$i]['rn_aff_nomdev_choix']=='2')) {
+						echo "checked='checked' ";
+					}
+					echo "/>\n";
+					echo "</td>\n";
+				}
+
+				echo "<td>\n";
+				//echo "&nbsp;";
+				echo "Nom long<br />\n";
+				echo "Nom court\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
+			//=================================
 		}
 	}
 
@@ -337,9 +373,9 @@
 		$texte_infobulle.="<li>La case Bloc observations est cochée.</li>\n";
 		$texte_infobulle.="<li>Une des cases signature est cochée.</li>\n";
 		$texte_infobulle.="</ul>\n";
-		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_bloc_observations',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_bloc_observations',$titre_infobulle,"",$texte_infobulle,"",35,0,'y', 'y', 'n', 'n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations','y',100,100);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations', 'y',100,100);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
 		// echo "</p>\n";
 
 		echo "</td>\n";
@@ -385,9 +421,9 @@
 		$titre_infobulle="Paramètres par défaut\n";
 		$texte_infobulle="Les paramètres par défaut sont proposés d'après le paramétrage de la classe.<br />\n";
 		$texte_infobulle.="En compte administrateur&nbsp;: <strong>Gestion des bases/Gestion des classes/&lt;une_classe&gt; Paramètres/Paramètres des relevés de notes</strong><br />ou<br /><strong>Gestion des bases/Gestion des classes/Paramétrage de plusieurs classes par lots/Paramètres des relevés de notes</strong>\n";
-		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_parametres_defaut_releve',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_parametres_defaut_releve',$titre_infobulle,"",$texte_infobulle,"",35,0,'y', 'y', 'n', 'n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_parametres_defaut_releve','y',100,100);\"  onmouseout=\"cacher_div('a_propos_parametres_defaut_releve');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Paramètres par défaut' /></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_parametres_defaut_releve', 'y',100,100);\"  onmouseout=\"cacher_div('a_propos_parametres_defaut_releve');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Paramètres par défaut' /></a>";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
@@ -413,9 +449,9 @@
 		$texte_infobulle.="&nbsp;<br />\n";
 		$texte_infobulle.="Une différence entre les relevés HTML et PDF&nbsp;:<br />\n";
 		$texte_infobulle.="Dans le cas du relevé HTML la formule de <strong>Paramètres du relevé HTML</strong> est affichée en plus de la formule ci-dessous.<br />\n";
-		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_formule_bas_de_page',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_formule_bas_de_page',$titre_infobulle,"",$texte_infobulle,"",35,0,'y', 'y', 'n', 'n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_formule_bas_de_page','y',100,100);\"  onmouseout=\"cacher_div('a_propos_formule_bas_de_page');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur formule de bas de page' /></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_formule_bas_de_page', 'y',100,100);\"  onmouseout=\"cacher_div('a_propos_formule_bas_de_page');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur formule de bas de page' /></a>";
 		echo "</p>\n";
 
 		echo "<table border='0' summary='Tableau des formules de bas de page'>\n";
