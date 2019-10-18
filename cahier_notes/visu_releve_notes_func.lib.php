@@ -2544,7 +2544,7 @@ function releve_pdf($tab_rel,$i) {
 //echo $tab_rel['eleve'][$i]['nom']."<br />\n";
 //echo "\$affiche_bloc_observation=$affiche_bloc_observation<br />\n";
 
-		$texte_observation="Observations:";
+		$texte_observation="Observations :";
 	
 		//$aff_classe_nom=1;
 		$aff_classe_nom=$tab_rel['rn_aff_classe_nom'];
