@@ -81,6 +81,19 @@ if((!isset($indice_aid))&&(isset($_GET['aid_id']))) {
 }
 //debug_var();
 
+if(isset($indice_aid)) {
+	if($_SESSION['statut']!='administrateur') {
+		$sql="SELECT 1=1 FROM j_aidcateg_super_gestionnaires jacsg 
+					WHERE jacsg.indice_aid='".$indice_aid."' AND
+						jacsg.id_utilisateur='".$_SESSION['login']."';";
+		$test=mysqli_query($GLOBALS["mysqli"],$sql);
+		if(mysqli_num_rows($test)==0) {
+			header("Location: ../accueil.php?msg=Accès non autorisé");
+			die();
+		}
+	}
+}
+
 $mysqli = $GLOBALS["mysqli"];
 // ========== fin initialisation ===================
 
@@ -405,7 +418,16 @@ if($nouvelle_categorie) {
 			}
 			echo "</div>";
 
-			$sql="SELECT * FROM aid_config ORDER BY nom, nom_complet;";
+			if($_SESSION['statut']=='administrateur') {
+				$sql="SELECT * FROM aid_config ORDER BY nom, nom_complet;";
+			}
+			else {
+				$sql="SELECT ac.* FROM aid_config ac, 
+								j_aidcateg_super_gestionnaires jacsg 
+							WHERE ac.indice_aid=jacsg.indice_aid AND
+								jacsg.id_utilisateur='".$_SESSION['login']."' 
+							ORDER BY nom, nom_complet;";
+			}
 			$query = mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($query)>1) {
 				echo "

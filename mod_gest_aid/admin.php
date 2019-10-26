@@ -55,10 +55,25 @@ $msg = '';
 if (isset($_POST['activer'])) {
 	check_token();
 	if (!saveSetting("active_mod_gest_aid", $_POST['activer'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !<br />";
 	}
 	else {
-		$msg = "Enregistrement effectué.";
+		$msg = "Enregistrement de l'activation/désactivation effectué.<br />";
+		$post_reussi=TRUE;
+	}
+
+	if(isset($_POST['super_gest_aid_modif_cat'])) {
+		$valeur='y';
+	}
+	else {
+		$valeur='n';
+	}
+
+	if (!saveSetting("super_gest_aid_modif_cat", $valeur)) {
+		$msg = "Erreur lors de l'enregistrement du paramètre super_gest_aid_modif_cat !<br />";
+	}
+	else {
+		$msg = "Enregistrement 'super_gest_aid_modif_cat' effectué.<br />";
 		$post_reussi=TRUE;
 	}
 }

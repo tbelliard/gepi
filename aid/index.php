@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -39,30 +39,41 @@ if (!checkAccess()) {
     die();
 }
 
-if (isset($_POST['sup'])) {
-  $call_data = sql_query("SELECT indice_aid FROM aid_config");
-  $sup_all = "";
-  $liste_cible = '';
-  for ($i=0; ($row=sql_row($call_data,$i)); $i++) {
-      $id = $row[0];
-      $temp = "sup".$id;
-      if (isset($_POST[$temp])) {
+//debug_var();
 
-        $test = sql_count(sql_query("SELECT indice_aid FROM aid WHERE indice_aid='".$id."'"));
-        if ($test != 0) {
-           $sup_all = 'no';
-        } else {
-           $liste_cible = $liste_cible.$id.";";
-        }
-      }
-  }
-  $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI']."?sup_all=".$sup_all;
-  header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&action=del_type_aid".add_token_in_url(false));
-
+$msg='';
+if((isset($_POST['sup']))&&($_SESSION['statut']!='administrateur')) {
+	$call_data = sql_query("SELECT indice_aid FROM aid_config");
+	$sup_all = "";
+	$liste_cible = '';
+	for ($i=0; ($row=sql_row($call_data,$i)); $i++) {
+		$id = $row[0];
+		$temp = "sup".$id;
+		if (isset($_POST[$temp])) {
+			$test = sql_count(sql_query("SELECT indice_aid FROM aid WHERE indice_aid='".$id."'"));
+			if ($test != 0) {
+				$sup_all = 'no';
+			} else {
+				$liste_cible = $liste_cible.$id.";";
+			}
+		}
+	}
+	$_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI']."?sup_all=".$sup_all;
+	header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&action=del_type_aid".add_token_in_url(false));
 }
-  if (isset($_GET['sup_all'])) $sup_all = $_GET['sup_all']; else $sup_all = '';
 
-  if ($sup_all=='no') $msg = "Une ou plusieurs catégories aid n'ont pas pu être supprimées car elles contiennent des aid.";
+if (isset($_GET['sup_all'])) $sup_all = $_GET['sup_all']; else $sup_all = '';
+
+if ($sup_all=='no') $msg.="Une ou plusieurs catégories aid n'ont pas pu être supprimées car elles contiennent des aid.";
+
+$tab_droits_pages=array();
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')) {
+	$sql="SELECT * FROM droits WHERE ".$_SESSION['statut']."='V';";
+	$res_droits=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res_droits)) {
+		$tab_droits_pages[]=$lig->id;
+	}
+}
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des AID";
@@ -73,31 +84,50 @@ require_once("../lib/header.inc.php");
 
 ?>
 <p class="bold" style="margin-top: .5em;">
-	<!-- <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> -->
-	<!-- | -->
-	<a href="config_aid.php?mode=ajout">Ajouter une catégorie d'AID</a>
-	<!-- | -->
-
+	<a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
 <?php
-$test_outils_comp = sql_query1("select count(outils_complementaires) from aid_config where outils_complementaires='y'");
-if ($test_outils_comp != 0) {
-?>
-	|
-	<a href="config_aid_fiches_projet.php">Configurer les fiches projet</a>
-<?php
+if($_SESSION['statut']=='administrateur') {
+	echo " | 
+	<a href='config_aid.php?mode=ajout'>Ajouter une catégorie d'AID</a>";
 }
 
-$sql="SELECT 1=1 FROM j_groupes_types jgt, groupes_types gt WHERE gt.id=jgt.id_type LIMIT 1;";
-$test=mysqli_query($GLOBALS["mysqli"], $sql);
-if(mysqli_num_rows($test)>0) {
-	echo " | <a href='transfert_groupe_aid.php'>Transfert/migration Groupe-&gt;AID</a>";
+if(in_array('/aid/config_aid_fiches_projet.php', $tab_droits_pages)) {
+	$test_outils_comp = sql_query1("select count(outils_complementaires) from aid_config where outils_complementaires='y'");
+	if ($test_outils_comp != 0) {
+	?>
+		 | 
+		<a href="config_aid_fiches_projet.php">Configurer les fiches projet</a>
+	<?php
+	}
+}
+
+if(in_array('/aid/transfert_groupe_aid.php', $tab_droits_pages)) {
+	$sql="SELECT 1=1 FROM j_groupes_types jgt, groupes_types gt WHERE gt.id=jgt.id_type LIMIT 1;";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo " | <a href='transfert_groupe_aid.php'>Transfert/migration Groupe-&gt;AID</a>";
+	}
+}
+if(in_array('/aid/gerer_user_aid.php', $tab_droits_pages)) {
+	echo " | <a href='gerer_user_aid.php'>Gérer les professeurs, gestionnaires et super-gestionnaires des AID</a>";
 }
 ?>
 </p>
 <!-- <p class="medium"> -->
 <?php
 
-$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom");
+//$sql="SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom";
+if($_SESSION['statut']=='administrateur') {
+	$sql="SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom;";
+}
+else {
+	$sql="SELECT ac.* FROM aid_config ac, 
+					j_aidcateg_super_gestionnaires jacsg 
+				WHERE ac.indice_aid=jacsg.indice_aid AND
+					jacsg.id_utilisateur='".$_SESSION['login']."' 
+				ORDER BY order_display1, order_display2, nom;";
+}
+$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_aid = mysqli_num_rows($call_data);
 if ($nb_aid == 0) {
 ?>
@@ -112,7 +142,13 @@ if ($nb_aid == 0) {
 			<th>Nom - Modifications</th>
 			<th>Liste des aid de la catégorie</th>
 			<th>Nom complet de l'AID</th>
+<?php
+if($_SESSION['statut']=='administrateur') {
+?>
 			<th><input type="submit" name="sup" value="Supprimer" /></th>
+<?php
+}
+?>
 		</tr>
 <?php
 
@@ -159,9 +195,15 @@ if ($nb_aid == 0) {
 			<td>
 				<?php echo $nom_complet_aid; ?>
 			</td>
+<?php
+if($_SESSION['statut']=='administrateur') {
+?>
 			<td class="center">
 				<input type="checkbox" name="sup<?php echo $indice_aid; ?>" />
 			</td>
+<?php
+}
+?>
 		</tr>
 <?php
         $i++;

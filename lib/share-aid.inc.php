@@ -290,9 +290,8 @@ function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
         return 10;
         die();
     }
-    if (getSettingValue("active_mod_gest_aid")=="y") {
+    if (getSettingAOui("active_mod_gest_aid")) {
         fdebug_aid("Acces : $_login, $_indice_aid, $_id_aid");
-
       // l'id de l'aid n'est pas défini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catégorie
       if ($_id_aid == "") {
         fdebug_aid("aid_id est non defini");
@@ -306,8 +305,14 @@ function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
         fdebug_aid("$sql\ntest2=$test2");
 
         if ($test2 >= 1) {
-            fdebug_aid("Retour 5");
-            return 5;
+            if(getSettingAOui('super_gest_aid_modif_cat')) {
+                fdebug_aid("Retour 10 (super_gest_aid_modif_cat)");
+                return 10;
+            }
+            else {
+                fdebug_aid("Retour 5");
+                return 5;
+            }
         } else if ($test1 >= 1) {
             fdebug_aid("Retour 1");
             return 1;
@@ -789,6 +794,17 @@ function check_prof_aid($login_prof, $id_aid) {
 	}
 	else {
 		$retour=false;
+	}
+
+	return $retour;
+}
+
+function traduction_type_aid($type_aid, $champ='nom_court') {
+	global $tab_type_aid;
+
+	$retour='';
+	if(isset($tab_type_aid[$type_aid][$champ])) {
+		$retour=$tab_type_aid[$type_aid][$champ];
 	}
 
 	return $retour;

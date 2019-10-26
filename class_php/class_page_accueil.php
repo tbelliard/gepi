@@ -2118,45 +2118,50 @@ if(getSettingAOui('active_bulletins')) {
   }
 
   private function plugins(){
-      global $mysqli;
+	global $mysqli;
 	$this->b=0;
-    
-    $sql = "SELECT * FROM plugins WHERE ouvert = 'y' order by description";
-      
-        $query = mysqli_query($mysqli, $sql); 
-        while ($plugin =  $query->fetch_object()) {
-            $this->b=0;
-            $nomPlugin=$plugin->nom;
-            $this->verif_exist_ordre_menu('bloc_plugin_'.$nomPlugin);
-            // On offre la possibilité d'inclure un fichier functions_nom_du_plugin.php
-            // Ce fichier peut lui-même contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
-            if (file_exists($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
-                include_once($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
-            $querymenu = mysqli_query($mysqli, 'SELECT * FROM plugins_menus
-                                      WHERE plugin_id = "'.$plugin->id.'"
-                                      ORDER by titre_item');
-            while ($menuItem = $querymenu->fetch_object()) {
-                // On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
-                // On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
-                $nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
-                if (function_exists($nom_fonction_autorisation)) {
-                    // Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur à afficher cet item dans le menu
-                    $result_autorisation = $nom_fonction_autorisation($this->loginUtilisateur,$menuItem->lien_item);
-                } else {
-                    $result_autorisation=true;
-                }
-                if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
-                    $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
-                        supprimer_numero($menuItem->titre_item),
-                        $menuItem->description_item);
-                }
-            }
 
-              if ($this->b>0){
-                  $descriptionPlugin = $plugin->description;
-                  $this->creeNouveauTitre('accueil',"$descriptionPlugin",'images/icons/package.png');
-              }
-        }	
+	$sql = "SELECT * FROM plugins WHERE ouvert = 'y' order by description;";
+	//echo "$sql<br />";
+	$query = mysqli_query($mysqli, $sql); 
+	while ($plugin =  $query->fetch_object()) {
+		$this->b=0;
+		$nomPlugin=$plugin->nom;
+		$this->verif_exist_ordre_menu('bloc_plugin_'.$nomPlugin);
+
+		// On offre la possibilité d'inclure un fichier functions_nom_du_plugin.php
+		// Ce fichier peut lui-même contenir une fonction calcul_autorisation_nom_du_plugin voir plus bas.
+		if (file_exists($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php"))
+			include_once($this->cheminRelatif."mod_plugins/".$nomPlugin."/functions_".$nomPlugin.".php");
+
+		$sql="SELECT DISTINCT lien_item, description_item, titre_item, user_statut FROM plugins_menus
+		WHERE plugin_id = '".$plugin->id."' AND 
+		user_statut='".$_SESSION['statut']."'
+		ORDER by titre_item;";
+		//echo "$sql<br />";
+		$querymenu = mysqli_query($mysqli, $sql);
+		while ($menuItem = $querymenu->fetch_object()) {
+			// On regarde si le plugin a prévu une surcharge dans le calcul de l'affichage de l'item dans le menu
+			// On commence par regarder si une fonction du type calcul_autorisation_nom_du_plugin existe
+			$nom_fonction_autorisation = "calcul_autorisation_".$nomPlugin;
+			if (function_exists($nom_fonction_autorisation)) {
+			// Si une fonction du type calcul_autorisation_nom_du_plugin existe, on calcule le droit de l'utilisateur à afficher cet item dans le menu
+				$result_autorisation = $nom_fonction_autorisation($this->loginUtilisateur,$menuItem->lien_item);
+			} else {
+				$result_autorisation=true;
+			}
+			if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
+				$this->creeNouveauItemPlugin("/".$menuItem->lien_item,
+				supprimer_numero($menuItem->titre_item),
+				$menuItem->description_item);
+			}
+		}
+
+		if ($this->b>0){
+			$descriptionPlugin = $plugin->description;
+			$this->creeNouveauTitre('accueil',"$descriptionPlugin",'images/icons/package.png');
+		}
+	}
   }
 
   protected function geneseClasses(){

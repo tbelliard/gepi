@@ -86,10 +86,10 @@ INSERT INTO droits VALUES ('/accueil_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', '
 INSERT INTO droits VALUES ('/accueil_modules.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', '', '');
 INSERT INTO droits VALUES ('/accueil.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'F', '', '');
 INSERT INTO droits VALUES ('/aid/add_aid.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
-INSERT INTO droits VALUES ('/aid/config_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
+INSERT INTO droits VALUES ('/aid/config_aid.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
 INSERT INTO droits VALUES ('/aid/export_csv_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
 INSERT INTO droits VALUES ('/aid/help.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
-INSERT INTO droits VALUES ('/aid/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
+INSERT INTO droits VALUES ('/aid/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
 INSERT INTO droits VALUES ('/aid/index2.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
 INSERT INTO droits VALUES ('/aid/modify_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
 INSERT INTO droits VALUES ('/aid/modify_aid_new.php', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
@@ -2315,3 +2315,4 @@ INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LSF'
 INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LVE', nom='LVE', valeur='Langue vivante étrangère';
 INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='CHK', nom='CHK', valeur='Chant Choral';
 INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LCE', nom='LCE', valeur='Langues et cultures européennes';
+INSERT INTO droits SET id='/aid/gerer_user_aid.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Gérer les professeurs, gestionnaires,... d AID', statut='';

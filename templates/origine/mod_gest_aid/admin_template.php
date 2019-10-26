@@ -125,6 +125,31 @@ echo add_token_field();
 		  Désactiver la possibilité de définir des gestionnaires d'AID ou des "super-gestionnaires" de cat&eacute;gorie d'AID
 		</label>
 	  </fieldset>
+
+	  <fieldset class="no_bordure">
+		<legend class="invisible">Droits Gestionnaires</legend>
+		<input type='checkbox'
+			   name='super_gest_aid_modif_cat'
+			   id='super_gest_aid_modif_cat'
+			   value='y'
+			   <?php if (getSettingAOui('super_gest_aid_modif_cat')) echo ' checked="checked"'; ?>/>
+		<label for='super_gest_aid_modif_cat'>
+		  Autoriser les super-gestionnaires à modifier les catégories dont ils sont super-gestionnaires <em>(nom, périodes, type, résumé,...)</em>.
+		</label>
+		<br />
+		<!--
+		<input type='checkox'
+			   name='gest_aid_modif_cat'
+			   id='gest_aid_modif_cat'
+			   value='y'
+			   <?php if (getSettingAOui('gest_aid_modif_cat')) echo ' checked="checked"'; ?>/>
+		<label for='activer_y'>
+		  Autoriser les gestionnaires d'AID à modifier les résumés AID.</em>.
+		</label>
+		-->
+	  </fieldset>
+
+
 	  <p class="center">
 		<input type='submit' name='valider' value='Valider' />
 	  </p>
