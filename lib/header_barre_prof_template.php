@@ -624,7 +624,20 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 
 	//========================================================
 	// AID
-	$sql="SELECT DISTINCT ac.*, a.nom AS nom_aid, a.id AS id_aid FROM aid_config ac, aid a, j_aid_utilisateurs jau
+
+	// 20191025
+
+	// Afficher aussi les AID gérés
+	// catégories gérées (super-gestionnaire)
+	// catégories gérées (fiches projet seulement)
+	// gestionnaire de l'AID
+
+	$tab_menu_h_aid_prof=array();
+	$sql="SELECT DISTINCT ac.*, 
+				a.nom AS nom_aid, 
+				a.id AS id_aid 
+			FROM aid_config ac, aid a, 
+				j_aid_utilisateurs jau
 			WHERE ac.indice_aid=a.indice_aid AND 
 				a.id=jau.id_aid AND 
 				a.indice_aid=jau.indice_aid AND 
@@ -633,118 +646,230 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 	//echo "$sql<br />";
 	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_aid)>0) {
+		while ($lig_aid=mysqli_fetch_assoc($res_aid)) {
+			$tab_menu_h_aid_prof[$lig_aid['id_aid']]=$lig_aid;
+		}
+	}
+
+	$tab_menu_h_aid_gest=array();
+	if (getSettingAOui("active_mod_gest_aid")) {
+		$sql="SELECT DISTINCT ac.*, 
+					a.nom AS nom_aid, 
+					a.id AS id_aid 
+				FROM aid_config ac, aid a, 
+					j_aid_utilisateurs_gest jau
+				WHERE ac.indice_aid=a.indice_aid AND 
+					a.id=jau.id_aid AND 
+					a.indice_aid=jau.indice_aid AND 
+					jau.id_utilisateur='".$_SESSION['login']."'
+				ORDER BY ac.type_aid, ac.order_display1, ac.order_display2, a.numero, ac.nom;";
+		//echo "$sql<br />";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0) {
+			while ($lig_aid=mysqli_fetch_assoc($res_aid)) {
+				$tab_menu_h_aid_gest[$lig_aid['id_aid']]=$lig_aid;
+			}
+		}
+	}
+
+	$tab_menu_h_c_aid_super_gest=array();
+	if (getSettingAOui("active_mod_gest_aid")) {
+		$sql="SELECT DISTINCT ac.* 
+				FROM aid_config ac, 
+					j_aidcateg_super_gestionnaires jau
+				WHERE ac.indice_aid=jau.indice_aid AND 
+					jau.id_utilisateur='".$_SESSION['login']."'
+				ORDER BY ac.type_aid, ac.order_display1, ac.order_display2;";
+		//echo "$sql<br />";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0) {
+			while ($lig_aid=mysqli_fetch_assoc($res_aid)) {
+				$tab_menu_h_c_aid_super_gest[$lig_aid['indice_aid']]=$lig_aid;
+			}
+		}
+	}
+
+	$tab_menu_h_c_aid_fiches_projet=array();
+	$sql="SELECT DISTINCT ac.* 
+			FROM aid_config ac, 
+				j_aidcateg_utilisateurs jau
+			WHERE ac.indice_aid=jau.indice_aid AND 
+				jau.id_utilisateur='".$_SESSION['login']."'
+			ORDER BY ac.type_aid, ac.order_display1, ac.order_display2;";
+	//echo "$sql<br />";
+	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_aid)>0) {
+		while ($lig_aid=mysqli_fetch_assoc($res_aid)) {
+			$tab_menu_h_c_aid_fiches_projet[$lig_aid['indice_aid']]=$lig_aid;
+		}
+	}
+
+	if((count($tab_menu_h_aid_prof)>0)||
+	(count($tab_menu_h_aid_gest)>0)||
+	(count($tab_menu_h_c_aid_super_gest)>0)||
+	(count($tab_menu_h_c_aid_fiches_projet)>0)) {
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '' , "texte"=>"AID");
 		$tmp_sous_menu=array();
 		$cpt_sous_menu=0;
+	}
 
-		while ($lig_aid=mysqli_fetch_object($res_aid)) {
-			$tmp_indice_aid = $lig_aid->indice_aid;
-			$tmp_aid_display_begin = $lig_aid->display_begin;
-			$tmp_aid_display_end = $lig_aid->display_end;
-			$tmp_aid_display_bulletin = $lig_aid->display_bulletin;
-			$tmp_aid_bull_simplifie = $lig_aid->bull_simplifie;
-			$tmp_aid_type_note = $lig_aid->type_note;
-			$tmp_aid_outils_complementaires = $lig_aid->outils_complementaires;
-			$tmp_aid_nom = $lig_aid->nom_aid;
+	// Boucler sur $tab_menu_h_aid_prof et tester si l'AID est dans $tab_menu_h_aid_gest
+	// Puis une partie après les exports CSV pour les Catégories
+	// pour afficher les accès super-gest et fiches projet
 
-			/*
-			echo "<pre>";
-			print_r($lig_aid);
-			echo "</pre>";
+	foreach($tab_menu_h_aid_prof as $tmp_id_aid => $lig_aid) {
+		$tmp_indice_aid = $lig_aid['indice_aid'];
+		$tmp_aid_display_begin = $lig_aid['display_begin'];
+		$tmp_aid_display_end = $lig_aid['display_end'];
+		$tmp_aid_display_bulletin = $lig_aid['display_bulletin'];
+		$tmp_aid_bull_simplifie = $lig_aid['bull_simplifie'];
+		$tmp_aid_type_note = $lig_aid['type_note'];
+		$tmp_aid_outils_complementaires = $lig_aid['outils_complementaires'];
+		$tmp_aid_nom = $lig_aid['nom_aid'];
+
+
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>$lig_aid['nom_aid']);
+		$tmp_sous_menu2=array();
+		$cpt_sous_menu2=0;
+
+		if(($lig_aid['display_bulletin']=="y")||($lig_aid['bull_simplifie']=="y")) {
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_aid_nom." (saisie)";
+			$cpt_sous_menu2++;
+
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_aid_nom." (visualisation)";
+			$cpt_sous_menu2++;
+		}
+
+		$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/popup.php?id_aid=".$lig_aid['id_aid'];
+		$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Liste élèves";
+		$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+		$tmp_sous_menu2[$cpt_sous_menu2]['js']=" onclick=\"ouvre_popup_visu_aid('".$lig_aid['id_aid']."','".$lig_aid['display_end']."');return false;\"";
+		$cpt_sous_menu2++;
+
+		$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/groupes/get_csv.php?id_aid=".$lig_aid['id_aid'];
+		$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Export CSV";
+		$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+		$cpt_sous_menu2++;
+
+		$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/impression/liste_pdf.php?id_aid=".$lig_aid['id_aid']."&periode_num=".$lig_aid['display_end'];
+		$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Export PDF";
+		$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+		$cpt_sous_menu2++;
+
+		if(getSettingAOui("active_module_trombinoscopes")) {
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_trombinoscopes/trombi_impr.php?aid=".$lig_aid['id_aid'];
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Trombinoscope";
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+			$cpt_sous_menu2++;
+
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_trombinoscopes/trombino_pdf.php?aid=".$lig_aid['id_aid'];
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Trombi.PDF";
+			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+			$cpt_sous_menu2++;
+		}
+
+		if(getSettingValue("active_module_absence")=="2") {
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_abs2/index.php?type_selection=id_aid&id_aid=".$lig_aid['id_aid'];
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Saisie Absences";
+			$cpt_sous_menu2++;
+		}
+
+		if(getSettingAOui('active_mod_gest_aid')) {
+			/*$sql="SELECT 1=1 FROM j_aid_utilisateurs_gest WHERE id_utilisateur= '".$_SESSION['login']."' AND id_aid = '".$lig_aid['id_aid']."' AND indice_aid='".$lig_aid['indice_aid']."';";
+			//echo "$sql<br />";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
 			*/
-
-			$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>$lig_aid->nom_aid);
-			//, "title"=>$lig_aid->nom." (".$lig_aid->nom_complet.") : ".$lig_aid->nom_aid
-			$tmp_sous_menu2=array();
-			$cpt_sous_menu2=0;
-
-			if(($lig_aid->display_bulletin=="y")||($lig_aid->bull_simplifie=="y")) {
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/saisie/saisie_aid.php?indice_aid=".$tmp_indice_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_aid_nom." (saisie)";
-				$cpt_sous_menu2++;
-
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/prepa_conseil/visu_aid.php?indice_aid=".$tmp_indice_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_aid_nom." (visualisation)";
+			if(array_key_exists($tmp_id_aid, $tab_menu_h_aid_gest)) {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid['id_aid']."&indice_aid=".$lig_aid['indice_aid'];
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Gérer les élèves";
 				$cpt_sous_menu2++;
 			}
+		}
 
-			/*
-			for($loop_per=$lig_aid->display_begin;$loop_per<=$lig_aid->display_end;$loop_per++) {
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/popup.php?id_aid=".$lig_aid->id_aid."&periode_num=".$loop_per;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Liste Période ".$loop_per;
-				$cpt_sous_menu2++;
-			}
-
-			for($loop_per=$lig_aid->display_begin;$loop_per<=$lig_aid->display_end;$loop_per++) {
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/groupes/get_csv.php?id_aid=".$lig_aid->id_aid."&periode_num=".$loop_per;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Export CSV Période ".$loop_per;
-				$cpt_sous_menu2++;
-			}
-			*/
-
-			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/popup.php?id_aid=".$lig_aid->id_aid;
-			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Liste élèves";
-			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
-			$tmp_sous_menu2[$cpt_sous_menu2]['js']=" onclick=\"ouvre_popup_visu_aid('".$lig_aid->id_aid."','".$lig_aid->display_end."');return false;\"";
+		if($lig_aid['outils_complementaires']=="y") {
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/index_fiches.php?indice_aid=".$lig_aid['indice_aid'];
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Fiches projet";
 			$cpt_sous_menu2++;
+		}
 
-			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/groupes/get_csv.php?id_aid=".$lig_aid->id_aid;
-			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Export CSV";
-			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+
+		$cpt_sous_menu++;
+
+	}
+
+	// Mettre les AID qui sont en $tab_menu_h_aid_gest, mais pas dans $tab_menu_h_aid_prof
+	if(count($tab_menu_h_aid_gest)>0) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>'Gérer les élèves');
+		$tmp_sous_menu2=array();
+		$cpt_sous_menu2=0;
+
+		foreach($tab_menu_h_aid_gest as $tmp_id_aid => $lig_aid) {
+			//if(!array_key_exists($tmp_id_aid, $tab_menu_h_aid_prof)) {
+			//}
+
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid['id_aid']."&indice_aid=".$lig_aid['indice_aid'];
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$lig_aid['nom'].' ('.$lig_aid['nom_aid'].')';
 			$cpt_sous_menu2++;
+		}
 
-			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/impression/liste_pdf.php?id_aid=".$lig_aid->id_aid."&periode_num=".$lig_aid->display_end;
-			$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Export PDF";
-			$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
+		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+
+		$cpt_sous_menu++;
+	}
+
+	// Puis une partie pour les Catégories
+	// pour afficher les accès super-gest et fiches projet
+
+	if(count($tab_menu_h_c_aid_super_gest)>0) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>'Gestion categories');
+		$tmp_sous_menu2=array();
+		$cpt_sous_menu2=0;
+
+		foreach($tab_menu_h_c_aid_super_gest as $tmp_id_aid => $lig_aid) {
+
+			$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/index2.php?indice_aid=".$lig_aid['indice_aid'];
+			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$lig_aid['nom_complet'];
 			$cpt_sous_menu2++;
+		}
 
-			if(getSettingAOui("active_module_trombinoscopes")) {
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_trombinoscopes/trombi_impr.php?aid=".$lig_aid->id_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Trombinoscope";
-				$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
-				$cpt_sous_menu2++;
+		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_trombinoscopes/trombino_pdf.php?aid=".$lig_aid->id_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Trombi.PDF";
-				$tmp_sous_menu2[$cpt_sous_menu2]['target']="_blank";
-				$cpt_sous_menu2++;
-			}
+		$cpt_sous_menu++;
+	}
 
-			if(getSettingValue("active_module_absence")=="2") {
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/mod_abs2/index.php?type_selection=id_aid&id_aid=".$lig_aid->id_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Saisie Absences";
-				$cpt_sous_menu2++;
-			}
+	if(count($tab_menu_h_c_aid_fiches_projet)>0) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '' , "texte"=>'Fiches projet');
+		$tmp_sous_menu2=array();
+		$cpt_sous_menu2=0;
 
-			if(getSettingAOui('active_mod_gest_aid')) {
-				$sql="SELECT 1=1 FROM j_aid_utilisateurs_gest WHERE id_utilisateur= '".$_SESSION['login']."' AND id_aid = '".$lig_aid->id_aid."' AND indice_aid='".$lig_aid->indice_aid."';";
-				//echo "$sql<br />";
-				$test=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($test)>0) {
-					$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/modify_aid.php?flag=eleve&aid_id=".$lig_aid->id_aid."&indice_aid=".$lig_aid->indice_aid;
-					$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Gérer les élèves";
-					$cpt_sous_menu2++;
-				}
-			}
-
-			if($lig_aid->outils_complementaires=="y") {
-				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/index_fiches.php?indice_aid=".$lig_aid->indice_aid;
-				$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Fiches projet";
+		foreach($tab_menu_h_c_aid_fiches_projet as $tmp_id_aid => $lig_aid) {
+			if($lig_aid['outils_complementaires']=="y") {
+				$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/aid/index_fiches.php?indice_aid=".$lig_aid['indice_aid'];
+				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$lig_aid['nom_complet'];
 				$cpt_sous_menu2++;
 			}
+		}
 
+		if($cpt_sous_menu2>0) {
 			$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 			$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 
 			$cpt_sous_menu++;
 		}
+	}
 
-		/*
-		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
-		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
-		$cpt_sous_menu++;
-		*/
 
+	if((count($tab_menu_h_aid_prof)>0)||
+	(count($tab_menu_h_aid_gest)>0)||
+	(count($tab_menu_h_c_aid_super_gest)>0)||
+	(count($tab_menu_h_c_aid_fiches_projet)>0)) {
 		$tmp_sous_menu[$cpt_sous_menu]['lien']="/groupes/mes_listes.php#aid";
 		$tmp_sous_menu[$cpt_sous_menu]['texte']="Export CSV spécifique";
 		$tmp_sous_menu[$cpt_sous_menu]['target']="_blank";
@@ -753,8 +878,8 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 		$compteur_menu++;
-
 	}
+
 	//========================================================
 
 

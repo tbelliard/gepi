@@ -54,6 +54,12 @@ if ($barre_plugin!="") {
 }
 // fin plugins
 
+$tab_droits_pages=array();
+$sql="SELECT * FROM droits WHERE scolarite='V';";
+$res_droits=mysqli_query($mysqli, $sql);
+while($lig=mysqli_fetch_object($res_droits)) {
+	$tab_droits_pages[]=$lig->id;
+}
 /*******************************************************************
  *
  *			Construction du menu horizontal de la page d'accueil 
@@ -445,48 +451,6 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 			$menus .= '       </li>'."\n";
 		}
 
-		// AID
-		/*
-		$sql="SELECT ac.* FROM j_aid_utilisateurs_gest jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid;";
-		$test_aid1=mysqli_query($mysqli, $sql);
-		$sql="SELECT * FROM j_aidcateg_super_gestionnaires WHERE id_utilisateur='".$_SESSION['login']."';";
-		$test_aid2=mysqli_query($mysqli, $sql);
-		if((mysqli_num_rows($test_aid1)>0)||(mysqli_num_rows($test_aid2)>0)) {
-			$menus .= '       <li class="plus">AID'."\n";
-			$menus .= '       <ul class="niveau3">'."\n";
-			while() {
-				$menus .= '           <li><a href="'.$gepiPath.'/groupes/grp_groupes_edit_eleves.php"'.insert_confirm_abandon().' title="Administrer les '.$groupes_de_groupes.' pour modifier les inscriptions élèves.">'.ucfirst($groupes_de_groupes).'</a></li>'."\n";
-			}
-			$menus .= '       </ul>'."\n";
-			$menus .= '       </li>'."\n";
-
-			//$nom_aid = @old_mysql_result($call_data, $i, "nom");
-			$nom_aid = $obj->nom;
-			if ($nb_result2 != 0)
-			$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
-			$nom_aid,
-		}
-		*/
-
-		if(getSettingAOui('active_mod_gest_aid')) {
-			$sql="(SELECT ac.* FROM j_aid_utilisateurs_gest jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid)
-			UNION (SELECT ac.* FROM j_aidcateg_super_gestionnaires jaug, aid_config ac WHERE jaug.id_utilisateur='".$_SESSION['login']."' AND jaug.indice_aid=ac.indice_aid) ORDER BY type_aid, nom;";
-			$test_aid_tmp=mysqli_query($mysqli, $sql);
-			if(mysqli_num_rows($test_aid_tmp)>0) {
-				$menus .= '       <li class="plus">AID'."\n";
-				$menus .= '       <ul class="niveau3">'."\n";
-				$tmp_aid_deja=array();
-				while($lig_aid_tmp=mysqli_fetch_object($test_aid_tmp)) {
-					if(!in_array($lig_aid_tmp->indice_aid, $tmp_aid_deja)) {
-						$menus .= '           <li><a href="'.$gepiPath.'/aid/index2.php?indice_aid='.$lig_aid_tmp->indice_aid.'"'.insert_confirm_abandon().' title="Gérer le ou les AID de cette catégorie.">'.$lig_aid_tmp->nom.'</a></li>'."\n";
-						$tmp_aid_deja[]=$lig_aid_tmp->indice_aid;
-					}
-				}
-				$menus .= '       </ul>'."\n";
-				$menus .= '       </li>'."\n";
-			}
-		}
-
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/responsables/index.php"'.insert_confirm_abandon().'>Responsables</a>'."\n";
 		$menus .= '           <ul class="niveau3">'."\n";
@@ -541,6 +505,229 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================
+
+
+		//==================================================================
+
+		// AID
+
+		// 20191025
+		$tab_menu_h_aid_prof=array();
+		$sql="SELECT DISTINCT ac.*, 
+					a.nom AS nom_aid, 
+					a.id AS id_aid 
+				FROM aid_config ac, aid a, 
+					j_aid_utilisateurs jau
+				WHERE ac.indice_aid=a.indice_aid AND 
+					a.id=jau.id_aid AND 
+					a.indice_aid=jau.indice_aid AND 
+					jau.id_utilisateur='".$_SESSION['login']."'
+				ORDER BY ac.type_aid, ac.order_display1, ac.order_display2, a.numero, ac.nom;";
+		//echo "$sql<br />";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0) {
+			while ($lig_aid=mysqli_fetch_assoc($res_aid)) {
+				$tab_menu_h_aid_prof[$lig_aid['id_aid']]=$lig_aid;
+			}
+		}
+
+		$tab_menu_h_aid_gest=array();
+		if (getSettingAOui("active_mod_gest_aid")) {
+			$sql="SELECT DISTINCT ac.*, 
+						a.nom AS nom_aid, 
+						a.id AS id_aid 
+					FROM aid_config ac, aid a, 
+						j_aid_utilisateurs_gest jau
+					WHERE ac.indice_aid=a.indice_aid AND 
+						a.id=jau.id_aid AND 
+						a.indice_aid=jau.indice_aid AND 
+						jau.id_utilisateur='".$_SESSION['login']."'
+					ORDER BY ac.type_aid, ac.order_display1, ac.order_display2, a.numero, ac.nom;";
+			//echo "$sql<br />";
+			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_aid)>0) {
+				while ($lig_aid=mysqli_fetch_assoc($res_aid)) {
+					$tab_menu_h_aid_gest[$lig_aid['id_aid']]=$lig_aid;
+				}
+			}
+		}
+
+		$tab_menu_h_c_aid_super_gest=array();
+		if (getSettingAOui("active_mod_gest_aid")) {
+			$sql="SELECT DISTINCT ac.* 
+					FROM aid_config ac, 
+						j_aidcateg_super_gestionnaires jau
+					WHERE ac.indice_aid=jau.indice_aid AND 
+						jau.id_utilisateur='".$_SESSION['login']."'
+					ORDER BY ac.type_aid, ac.order_display1, ac.order_display2;";
+			//echo "$sql<br />";
+			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_aid)>0) {
+				while ($lig_aid=mysqli_fetch_assoc($res_aid)) {
+					$tab_menu_h_c_aid_super_gest[$lig_aid['indice_aid']]=$lig_aid;
+				}
+			}
+		}
+
+		$tab_menu_h_c_aid_fiches_projet=array();
+		$sql="SELECT DISTINCT ac.* 
+				FROM aid_config ac, 
+					j_aidcateg_utilisateurs jau
+				WHERE ac.indice_aid=jau.indice_aid AND 
+					jau.id_utilisateur='".$_SESSION['login']."'
+				ORDER BY ac.type_aid, ac.order_display1, ac.order_display2;";
+		//echo "$sql<br />";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0) {
+			while ($lig_aid=mysqli_fetch_assoc($res_aid)) {
+				$tab_menu_h_c_aid_fiches_projet[$lig_aid['indice_aid']]=$lig_aid;
+			}
+		}
+
+		if((count($tab_menu_h_aid_prof)>0)||
+		(count($tab_menu_h_aid_gest)>0)||
+		(count($tab_menu_h_c_aid_super_gest)>0)||
+		(count($tab_menu_h_c_aid_fiches_projet)>0)) {
+			$menus .= '       <li class="li_inline">AID'."\n";
+			$menus .= '       <ul class="niveau2">'."\n";
+		}
+
+		// Boucler sur $tab_menu_h_aid_prof et tester si l'AID est dans $tab_menu_h_aid_gest
+		// Puis une partie après les exports CSV pour les Catégories
+		// pour afficher les accès super-gest et fiches projet
+
+		foreach($tab_menu_h_aid_prof as $tmp_id_aid => $lig_aid) {
+			$tmp_indice_aid = $lig_aid['indice_aid'];
+			$tmp_aid_display_begin = $lig_aid['display_begin'];
+			$tmp_aid_display_end = $lig_aid['display_end'];
+			$tmp_aid_display_bulletin = $lig_aid['display_bulletin'];
+			$tmp_aid_bull_simplifie = $lig_aid['bull_simplifie'];
+			$tmp_aid_type_note = $lig_aid['type_note'];
+			$tmp_aid_outils_complementaires = $lig_aid['outils_complementaires'];
+			$tmp_aid_nom = $lig_aid['nom_aid'];
+
+			$menus .= '     <li class="plus">'.$lig_aid['nom_aid']."\n";
+			$menus .= '            <ul class="niveau3">'."\n";
+
+
+			if(($lig_aid['display_bulletin']=="y")||($lig_aid['bull_simplifie']=="y")) {
+				if(in_array('/saisie/saisie_aid.php', $tab_droits_pages)) {
+					$menus .= '                <li><a href="'.$gepiPath.'/saisie/saisie_aid.php?indice_aid='.$tmp_indice_aid.'" '.insert_confirm_abandon().'>'.$tmp_aid_nom.' (saisie)</a></li>'."\n";
+				}
+				if(in_array('/prepa_conseil/visu_aid.php', $tab_droits_pages)) {
+					$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/visu_aid.php?indice_aid='.$tmp_indice_aid.'" '.insert_confirm_abandon().'>'.$tmp_aid_nom.' (saisie)</a></li>'."\n";
+				}
+			}
+
+			if(in_array('/aid/popup.php', $tab_droits_pages)) {
+				$menus .= '                <li><a href="'.$gepiPath.'/aid/popup.php?id_aid='.$lig_aid['id_aid'].'" target="_blank" onclick="ouvre_popup_visu_aid("'.$lig_aid['id_aid'].'","'.$lig_aid['display_end'].'");return false;">Liste élèves</a></li>'."\n";
+			}
+			if(in_array('/groupes/get_csv.php', $tab_droits_pages)) {
+				$menus .= '                <li><a href="'.$gepiPath.'/groupes/get_csv.php?id_aid='.$lig_aid['id_aid'].'" target="_blank">Export CSV</a></li>'."\n";
+			}
+			if(in_array('/impression/liste_pdf.php', $tab_droits_pages)) {
+				$menus .= '                <li><a href="'.$gepiPath.'/impression/liste_pdf.php?id_aid='.$lig_aid['id_aid'].'" target="_blank">Export PDF</a></li>'."\n";
+			}
+
+
+			if(getSettingAOui("active_module_trombinoscopes")) {
+				if(in_array('/mod_trombinoscopes/trombi_impr.php', $tab_droits_pages)) {
+					$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombi_impr.php?aid='.$lig_aid['id_aid'].'" target="_blank">Trombinoscope</a></li>'."\n";
+				}
+				if(in_array('/mod_trombinoscopes/trombino_pdf.php', $tab_droits_pages)) {
+					$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?aid='.$lig_aid['id_aid'].'" target="_blank">Trombi.PDF</a></li>'."\n";
+				}
+			}
+
+			if(getSettingValue("active_module_absence")=="2") {
+				if(in_array('/mod_abs2/index.php', $tab_droits_pages)) {
+					$menus .= '                <li><a href="'.$gepiPath.'/mod_abs2/index.php?type_selection=id_aid&id_aid='.$lig_aid['id_aid'].'" '.insert_confirm_abandon().'>Saisie Absences</a></li>'."\n";
+				}
+			}
+
+			if(getSettingAOui('active_mod_gest_aid')) {
+				if(array_key_exists($tmp_id_aid, $tab_menu_h_aid_gest)) {
+					if(in_array('/aid/modify_aid.php', $tab_droits_pages)) {
+						$menus .= '                <li><a href="'.$gepiPath.'/aid/modify_aid.php?flag=eleve&aid_id='.$lig_aid['id_aid']."&indice_aid=".$lig_aid['indice_aid'].'" '.insert_confirm_abandon().'>Gérer les élèves</a></li>'."\n";
+					}
+				}
+			}
+
+			if($lig_aid['outils_complementaires']=="y") {
+				if(in_array('/aid/index_fiches.php', $tab_droits_pages)) {
+					$menus .= '                <li><a href="'.$gepiPath.'/aid/index_fiches.php?indice_aid='.$lig_aid['indice_aid'].'" '.insert_confirm_abandon().'>Fiches projet</a></li>'."\n";
+				}
+			}
+
+			$menus .= '            </ul>'."\n";
+			$menus .= '     </li>'."\n";
+		}
+
+		// Mettre les AID qui sont en $tab_menu_h_aid_gest, mais pas dans $tab_menu_h_aid_prof
+		if(count($tab_menu_h_aid_gest)>0) {
+			if(in_array('/aid/modify_aid.php', $tab_droits_pages)) {
+				$menus .= '     <li class="plus">Gérer les élèves'."\n";
+				$menus .= '            <ul class="niveau3">'."\n";
+
+				foreach($tab_menu_h_aid_gest as $tmp_id_aid => $lig_aid) {
+					$menus .= '                <li><a href="'.$gepiPath.'/aid/modify_aid.php?flag=eleve&aid_id='.$lig_aid['id_aid']."&indice_aid=".$lig_aid['indice_aid'].'" '.insert_confirm_abandon().'>'.$lig_aid['nom'].' ('.$lig_aid['nom_aid'].')</a></li>'."\n";
+				}
+
+				$menus .= '            </ul>'."\n";
+				$menus .= '     </li>'."\n";
+			}
+		}
+
+		// Puis une partie pour les Catégories
+		// pour afficher les accès super-gest et fiches projet
+
+		if(count($tab_menu_h_c_aid_super_gest)>0) {
+			if(in_array('/aid/index2.php', $tab_droits_pages)) {
+				$menus .= '     <li class="plus">Gestion categories'."\n";
+				$menus .= '            <ul class="niveau3">'."\n";
+
+				foreach($tab_menu_h_c_aid_super_gest as $tmp_id_aid => $lig_aid) {
+					$menus .= '                <li><a href="'.$gepiPath.'/aid/index2.php?indice_aid='.$lig_aid['indice_aid'].'" '.insert_confirm_abandon().'>'.$lig_aid['nom_complet'].'</a></li>'."\n";
+				}
+
+				$menus .= '            </ul>'."\n";
+				$menus .= '     </li>'."\n";
+			}
+		}
+
+		if(count($tab_menu_h_c_aid_fiches_projet)>0) {
+			if(in_array('/aid/index_fiches.php', $tab_droits_pages)) {
+				$tmp_menu='';
+				foreach($tab_menu_h_c_aid_fiches_projet as $tmp_id_aid => $lig_aid) {
+					if($lig_aid['outils_complementaires']=="y") {
+						$tmp_menu.= '                <li><a href="'.$gepiPath.'/aid/index_fiches.php?indice_aid='.$lig_aid['indice_aid'].'" '.insert_confirm_abandon().'>'.$lig_aid['nom_complet'].'</a></li>'."\n";
+					}
+				}
+
+				if($tmp_menu!='') {
+					$menus .= '     <li class="plus">Fiches projet'."\n";
+					$menus .= '            <ul class="niveau3">'."\n";
+					$menus .= $tmp_menu;
+					$menus .= '            </ul>'."\n";
+					$menus .= '     </li>'."\n";
+				}
+			}
+		}
+
+
+		if((count($tab_menu_h_aid_prof)>0)||
+		(count($tab_menu_h_aid_gest)>0)||
+		(count($tab_menu_h_c_aid_super_gest)>0)||
+		(count($tab_menu_h_c_aid_fiches_projet)>0)) {
+			if(in_array('/groupes/mes_listes.php', $tab_droits_pages)) {
+				$menus .= '                <li><a href="'.$gepiPath.'/groupes/mes_listes.php#aid">Export CSV spécifique</a></li>'."\n";
+			}
+			$menus .= '       </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
+
+		//==================================================================
+
 
 		//=======================================================
 		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Listes</a>'."\n";
