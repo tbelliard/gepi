@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -291,7 +291,7 @@ elseif((isset($id_liste_aid))&&(count($id_liste_aid)==1)) {
 }
 $flag_aid_plusieurs_classes = "n";
 if(isset($current_aid)) {
-	if(count($current_aid['classes']['list'])>1) {
+	if((isset($current_aid['classes']['list']))&&(count($current_aid['classes']['list'])>1)) {
 		$flag_aid_plusieurs_classes = "y";
 	}
 
