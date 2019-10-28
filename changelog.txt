@@ -43,6 +43,12 @@ AID:
 Épreuves blanches:
 - Possibilité d'exporter les notes en CSV sur un autre référentiel que 20.
 
+LSUN et Socle:
+- Ajout d'un mode pour permettre des saisies différentes par les professeurs 
+  sans que celles de l'un écrasent celles de l'autre.
+  Un professeur principal, cpe ou compte scolarité selon ce qui est paramétré 
+  effectue un bilan pour remontée LSU.
+
 Bibliothèques:
 - Mise à jour de TinyButStrong en version 3.11.0 (PHP 5 and 7) (2019-02-10)
 - Mise à jour du plugin openTBS de TinyButStrong en version 1.9.12 (2019-03-10)

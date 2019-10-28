@@ -105,6 +105,15 @@ if(isset($_POST['enregistrer_Saisie_Socle'])) {
 		}
 	}
 
+	if(isset($_POST['SocleSaisieComposantesMode'])) {
+		if(!saveSetting("SocleSaisieComposantesMode", $_POST['SocleSaisieComposantesMode'])) {
+			$msg.="Erreur lors de l'enregistrement du mode de saisie des composantes du socle.<br />";
+		}
+		else {
+			$nb_reg++;
+		}
+	}
+
 	$msg.=$nb_reg." paramètre(s) enregistré(s) <em>(".strftime("le %d/%m/%Y à %H:%M:%S").")</em>.<br />";
 }
 
@@ -132,6 +141,10 @@ require_once("../lib/header.inc.php");
 $SocleSaisieComposantes=getSettingAOui("SocleSaisieComposantes");
 $SocleOuvertureSaisieComposantes=getSettingAOui("SocleOuvertureSaisieComposantes");
 $SocleSaisieComposantesConcurrentes=getSettingValue("SocleSaisieComposantesConcurrentes");
+$SocleSaisieComposantesMode=getSettingValue("SocleSaisieComposantesMode");
+if($SocleSaisieComposantesMode=='') {
+	$SocleSaisieComposantesMode=1;
+}
 ?>
 
 <form action="admin.php" method="post" name="formulaire" id="formulaire">
@@ -316,6 +329,31 @@ echo "</p>";
 				Saisie des <em>Bilans de composantes du socle</em> fermée
 			</label-->
 		</p>
+
+
+		<p style='margin-left:3em; text-indent:-3em; margin-top:1em;'>
+			Deux modes sont proposés&nbsp;:<br />
+			<input type="radio" 
+				   id="SocleSaisieComposantesMode_1" 
+				   name="SocleSaisieComposantesMode"
+					<?php if($SocleSaisieComposantesMode==1) {echo " checked ";} ?>
+				   value="1" 
+				   onchange="change_style_radio();changement();" />
+			<label for="SocleSaisieComposantesMode_1" id='texte_SocleSaisieComposantesMode_1'>Mode historique&nbsp;: Tous les utilisateurs <em>(professeurs, prof principal, compte scolarité,...)</em> saisissent directement dans la même table 'socle_eleves_composantes', les uns écrasant le niveau saisi par les autres selon les modalités mentionnées plus bas</label>
+			<br />
+			<input type="radio" 
+				   id="SocleSaisieComposantesMode_2" 
+				   name="SocleSaisieComposantesMode"
+					<?php if($SocleSaisieComposantesMode==2) {echo " checked ";} ?>
+				   value="2" 
+				   onchange="change_style_radio();changement();" />
+			<label for="SocleSaisieComposantesMode_2" id='texte_SocleSaisieComposantesMode_2'>
+				Les professeurs saisissent chacun les niveaux de maitrise dans une table intermédiaire sans que ces avis soient écrasés par des collègues et une synthèse est faite par les comptes choisis <em>(prof principal, compte scolarité,...)</em> dans la table principale 'socle_eleves_composantes' utilisée pour les remontées LSUN
+			</label>
+		</p>
+
+
+
 
 		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
 			Les profils autorisés à <strong>ouvrir/fermer l'accès à la saisie</strong> <em>(en plus des comptes administrateurs)</em>&nbsp;:<br />

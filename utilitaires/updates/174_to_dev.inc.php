@@ -356,4 +356,40 @@ foreach($tab_champs_a_corriger as $table => $corrections) {
 	}
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'socle_eleves_composantes_groupes'&nbsp;:</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'socle_eleves_composantes_groupes'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS socle_eleves_composantes_groupes (id int(11) NOT NULL auto_increment, 
+		ine varchar(50) NOT NULL DEFAULT '', 
+		cycle tinyint(2) NOT NULL DEFAULT '0', 
+		annee varchar(10) NOT NULL default '', 
+		code_composante varchar(10) NOT NULL DEFAULT '', 
+		niveau_maitrise varchar(10) NOT NULL DEFAULT '', 
+		id_groupe INT(11) NOT NULL default '0', 
+		periode INT(11) NOT NULL default '1', 
+		login_saisie varchar(50) NOT NULL DEFAULT '', 
+		date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+		PRIMARY KEY (id), INDEX ine_cycle_id_composante_id_groupe_periode (ine, cycle, code_composante, id_groupe, periode, annee), UNIQUE(ine, cycle, code_composante, id_groupe, periode, annee)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$SocleSaisieComposantesMode=getSettingValue("SocleSaisieComposantesMode");
+if($SocleSaisieComposantesMode=='') {
+	$result .= "&nbsp;-> Initialisation de la valeur de 'SocleSaisieComposantesMode'&nbsp;: ";
+	if(!saveSetting('SocleSaisieComposantesMode', 1)) {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
 ?>

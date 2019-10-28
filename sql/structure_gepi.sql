@@ -1761,3 +1761,15 @@ date_envoi DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS socle_eleves_composantes_groupes;
+CREATE TABLE IF NOT EXISTS socle_eleves_composantes_groupes (id int(11) NOT NULL auto_increment, 
+ine varchar(50) NOT NULL DEFAULT '', 
+cycle tinyint(2) NOT NULL DEFAULT '0', 
+annee varchar(10) NOT NULL default '', 
+code_composante varchar(10) NOT NULL DEFAULT '', 
+niveau_maitrise varchar(10) NOT NULL DEFAULT '', 
+id_groupe INT(11) NOT NULL default '0', 
+periode INT(11) NOT NULL default '1', 
+login_saisie varchar(50) NOT NULL DEFAULT '', 
+date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+PRIMARY KEY (id), INDEX ine_cycle_id_composante_id_groupe_periode (ine, cycle, code_composante, id_groupe, periode, annee), UNIQUE(ine, cycle, code_composante, id_groupe, periode, annee)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
