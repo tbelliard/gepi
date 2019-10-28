@@ -1597,18 +1597,18 @@ PRIMARY KEY  (id_groupe, id_aid), INDEX id_groupe_id_aid (id_groupe, id_aid)) EN
 DROP TABLE IF EXISTS engagements_droit_saisie;
 CREATE TABLE IF NOT EXISTS engagements_droit_saisie (
 id INT(11) unsigned NOT NULL auto_increment,
-id_engagement INT(11) NOT NULL ,
+id_engagement INT(11) NOT NULL DEFAULT '0',
 login VARCHAR( 50 ) NOT NULL DEFAULT '', 
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS `edt_cours_remplacements`;
-CREATE TABLE `edt_cours_remplacements` (`id_cours` int(11) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL, `id_aid` varchar(10) NOT NULL, `id_salle` varchar(3) NOT NULL, `jour_semaine` varchar(10) NOT NULL, `id_definie_periode` varchar(3) NOT NULL, `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(10) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', `login_prof` varchar(50) NOT NULL, id_absence int(11) NOT NULL, jour varchar(10) NOT NULL DEFAULT '', PRIMARY KEY  (`id_cours`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE `edt_cours_remplacements` (`id_cours` int(11) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL DEFAULT '', `id_aid` varchar(10) NOT NULL DEFAULT '', `id_salle` varchar(3) NOT NULL DEFAULT '', `jour_semaine` varchar(10) NOT NULL DEFAULT '', `id_definie_periode` varchar(3) NOT NULL DEFAULT '', `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(10) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', `login_prof` varchar(50) NOT NULL DEFAULT '', id_absence int(11) NOT NULL DEFAULT '0', jour varchar(10) NOT NULL DEFAULT '', PRIMARY KEY  (`id_cours`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS socle_eleves_composantes;
 CREATE TABLE socle_eleves_composantes (id int(11) NOT NULL auto_increment, 
-ine varchar(50) NOT NULL, 
-cycle tinyint(2) NOT NULL, 
+ine varchar(50) NOT NULL DEFAULT '', 
+cycle tinyint(2) NOT NULL DEFAULT '0', 
 annee varchar(10) NOT NULL default '', 
 code_composante varchar(10) NOT NULL DEFAULT '', 
 niveau_maitrise varchar(10) NOT NULL DEFAULT '', 
@@ -1619,8 +1619,8 @@ PRIMARY KEY (id), INDEX ine_cycle_id_composante_periode (ine, cycle, code_compos
 
 DROP TABLE IF EXISTS socle_eleves_syntheses;
 CREATE TABLE socle_eleves_syntheses (id int(11) NOT NULL auto_increment, 
-ine varchar(50) NOT NULL, 
-cycle tinyint(2) NOT NULL, 
+ine varchar(50) NOT NULL DEFAULT '', 
+cycle tinyint(2) NOT NULL DEFAULT '', 
 annee varchar(10) NOT NULL default '', 
 synthese TEXT, 
 login_saisie varchar(50) NOT NULL DEFAULT '', 
@@ -1630,14 +1630,14 @@ PRIMARY KEY (id), INDEX ine_cycle_annee (ine, cycle, annee), UNIQUE(ine, cycle, 
 DROP TABLE IF EXISTS j_groupes_enseignements_complement;
 CREATE TABLE IF NOT EXISTS j_groupes_enseignements_complement (
 id int(11) unsigned NOT NULL auto_increment, 
-id_groupe int(11) NOT NULL,
-code VARCHAR(50) NOT NULL,
+id_groupe int(11) NOT NULL DEFAULT '0',
+code VARCHAR(50) NOT NULL DEFAULT '',
 PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS socle_eleves_enseignements_complements;
 CREATE TABLE socle_eleves_enseignements_complements (id int(11) NOT NULL auto_increment, 
-ine varchar(50) NOT NULL, 
-id_groupe INT(11) NOT NULL, 
+ine varchar(50) NOT NULL DEFAULT '', 
+id_groupe INT(11) NOT NULL DEFAULT '0', 
 positionnement varchar(10) NOT NULL DEFAULT '', 
 login_saisie varchar(50) NOT NULL DEFAULT '', 
 date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
@@ -1658,8 +1658,8 @@ PRIMARY KEY code_id_eleve_periode (code, id_eleve, periode), INDEX code_id_eleve
 
 DROP TABLE IF EXISTS elements_programmes;
 CREATE TABLE IF NOT EXISTS elements_programmes (id int(11) NOT NULL auto_increment, 
-cycle TINYINT(1) NOT NULL, 
-matiere VARCHAR(255) NOT NULL, 
+cycle TINYINT(1) NOT NULL DEFAULT '0', 
+matiere VARCHAR(255) NOT NULL DEFAULT '', 
 rubrique VARCHAR(255) NOT NULL default '', 
 item TEXT, 
 resume VARCHAR(255) NOT NULL DEFAULT '', 
@@ -1668,26 +1668,26 @@ PRIMARY KEY (id), INDEX cycle_matiere (cycle, matiere)) ENGINE=MyISAM CHARACTER 
 DROP TABLE IF EXISTS j_groupes_lvr;
 CREATE TABLE IF NOT EXISTS j_groupes_lvr (
 id int(11) unsigned NOT NULL auto_increment, 
-id_groupe int(11) NOT NULL,
-code VARCHAR(50) NOT NULL,
+id_groupe int(11) NOT NULL DEFAULT '0',
+code VARCHAR(50) NOT NULL DEFAULT '',
 PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS socle_eleves_lvr;
 CREATE TABLE socle_eleves_lvr (id int(11) NOT NULL auto_increment, 
-ine varchar(50) NOT NULL, 
-id_groupe INT(11) NOT NULL, 
+ine varchar(50) NOT NULL DEFAULT '', 
+id_groupe INT(11) NOT NULL DEFAULT '0', 
 positionnement varchar(10) NOT NULL DEFAULT '', 
 login_saisie varchar(50) NOT NULL DEFAULT '', 
 date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
 PRIMARY KEY (id), INDEX ine_id_groupe (ine, id_groupe), UNIQUE(ine, id_groupe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS ele_adr;
-CREATE TABLE IF NOT EXISTS ele_adr (adr_id varchar(10) NOT NULL,adr1 varchar(100) NOT NULL,adr2 varchar(100) NOT NULL,adr3 varchar(100) NOT NULL,adr4 varchar(100) NOT NULL,cp varchar(6) NOT NULL,pays varchar(50) NOT NULL,commune varchar(50) NOT NULL,PRIMARY KEY  (adr_id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS ele_adr (adr_id varchar(10) NOT NULL DEFAULT '',adr1 varchar(100) NOT NULL DEFAULT '',adr2 varchar(100) NOT NULL DEFAULT '',adr3 varchar(100) NOT NULL DEFAULT '',adr4 varchar(100) NOT NULL DEFAULT '',cp varchar(6) NOT NULL DEFAULT '',pays varchar(50) NOT NULL DEFAULT '',commune varchar(50) NOT NULL DEFAULT '',PRIMARY KEY  (adr_id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS a_droits;
 CREATE TABLE a_droits (id int(11) NOT NULL auto_increment, 
-login varchar(50) NOT NULL, 
-page varchar(255) NOT NULL, 
+login varchar(50) NOT NULL DEFAULT '', 
+page varchar(255) NOT NULL DEFAULT '', 
 consultation varchar(10) NOT NULL DEFAULT 'n', 
 saisie varchar(10) NOT NULL DEFAULT 'n', 
 PRIMARY KEY (id), INDEX login_page (login,page)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -1701,7 +1701,7 @@ CREATE TABLE b_droits_divers (login varchar(50) NOT NULL default '', nom_droit v
 DROP TABLE IF EXISTS commentaires_types_d_apres_moy;
 CREATE TABLE commentaires_types_d_apres_moy (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-login VARCHAR( 50 ) NOT NULL ,
+login VARCHAR( 50 ) NOT NULL DEFAULT '' ,
 note_min float(10,2) NOT NULL DEFAULT '0.0' ,
 note_max float(10,2) NOT NULL DEFAULT '20.1' ,
 app TEXT NOT NULL

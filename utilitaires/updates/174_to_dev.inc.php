@@ -188,6 +188,10 @@ $sql="ALTER TABLE resp_pers CHANGE nom nom VARCHAR(50) NOT NULL DEFAULT '';";
 $result_inter = traite_requete($sql);
 if ($result_inter == '') {
 	$result .= msj_ok("SUCCES !");
+
+	$sql="UPDATE resp_pers SET nom='' WHERE nom IS NULL;";
+	//echo "$sql<br />";
+	$correction=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 else {
 	$result .= msj_erreur("ECHEC !");
@@ -198,6 +202,10 @@ $sql="ALTER TABLE resp_pers CHANGE prenom prenom VARCHAR(50) NOT NULL DEFAULT ''
 $result_inter = traite_requete($sql);
 if ($result_inter == '') {
 	$result .= msj_ok("SUCCES !");
+
+	$sql="UPDATE resp_pers SET prenom='' WHERE prenom IS NULL;";
+	//echo "$sql<br />";
+	$correction=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 else {
 	$result .= msj_erreur("ECHEC !");
@@ -208,6 +216,10 @@ $sql="ALTER TABLE resp_pers CHANGE tel_pers tel_pers VARCHAR(255) NOT NULL DEFAU
 $result_inter = traite_requete($sql);
 if ($result_inter == '') {
 	$result .= msj_ok("SUCCES !");
+
+	$sql="UPDATE resp_pers SET tel_pers='' WHERE tel_pers IS NULL;";
+	//echo "$sql<br />";
+	$correction=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 else {
 	$result .= msj_erreur("ECHEC !");
@@ -218,6 +230,10 @@ $sql="ALTER TABLE resp_pers CHANGE tel_port tel_port VARCHAR(255) NOT NULL DEFAU
 $result_inter = traite_requete($sql);
 if ($result_inter == '') {
 	$result .= msj_ok("SUCCES !");
+
+	$sql="UPDATE resp_pers SET tel_port='' WHERE tel_port IS NULL;";
+	//echo "$sql<br />";
+	$correction=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 else {
 	$result .= msj_erreur("ECHEC !");
@@ -228,6 +244,10 @@ $sql="ALTER TABLE resp_pers CHANGE tel_prof tel_prof VARCHAR(255) NOT NULL DEFAU
 $result_inter = traite_requete($sql);
 if ($result_inter == '') {
 	$result .= msj_ok("SUCCES !");
+
+	$sql="UPDATE resp_pers SET tel_prof='' WHERE tel_prof IS NULL;";
+	//echo "$sql<br />";
+	$correction=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 else {
 	$result .= msj_erreur("ECHEC !");
@@ -252,9 +272,87 @@ foreach($tab_champs_a_corriger as $key => $value) {
 	$result_inter = traite_requete($sql);
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
+
+		$sql="UPDATE eleves SET ".$key."='' WHERE ".$key." IS NULL;";
+		//echo "$sql<br />";
+		$correction=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	else {
 		$result .= msj_erreur("ECHEC !");
+	}
+}
+
+
+$tab_champs_a_corriger=array();
+$tab_champs_a_corriger['engagements_droit_saisie']=array('id_engagement' => "INT(11) NOT NULL DEFAULT '0'|0");
+$tab_champs_a_corriger['edt_cours_remplacements']=array('id_groupe' => "varchar(10) NOT NULL DEFAULT ''|", 
+'id_aid' => "varchar(10) NOT NULL DEFAULT ''|", 
+'id_salle' => "varchar(3) NOT NULL DEFAULT ''|", 
+'jour_semaine' => "varchar(10) NOT NULL DEFAULT ''|", 
+'id_definie_periode' => "varchar(3) NOT NULL DEFAULT ''|", 
+'login_prof' => "varchar(50) NOT NULL DEFAULT ''|", 
+'id_absence' => "int(11) NOT NULL DEFAULT '0'|0");
+
+$tab_champs_a_corriger['socle_eleves_composantes']=array('ine' => "varchar(50) NOT NULL DEFAULT ''|", 
+'cycle' =>"tinyint(2) NOT NULL DEFAULT '0'|0");
+$tab_champs_a_corriger['socle_eleves_syntheses']=array('ine' => "varchar(50) NOT NULL DEFAULT ''|", 
+'cycle' =>"tinyint(2) NOT NULL DEFAULT '0'|0");
+
+$tab_champs_a_corriger['j_groupes_enseignements_complement']=array('id_groupe' => "int(11) NOT NULL DEFAULT '0'|0",
+'code' => "VARCHAR(50) NOT NULL DEFAULT ''|");
+
+$tab_champs_a_corriger['socle_eleves_enseignements_complements']=array('id_groupe' => "int(11) NOT NULL DEFAULT '0'|0",
+'ine' => "varchar(50) NOT NULL DEFAULT ''|");
+
+$tab_champs_a_corriger['elements_programmes']=array('cycle' => "TINYINT(1) NOT NULL DEFAULT '0'|0", 
+'matiere' => "VARCHAR(255) NOT NULL DEFAULT ''|");
+
+$tab_champs_a_corriger['j_groupes_lvr']=array('id_groupe' => "int(11) NOT NULL DEFAULT '0'|0",
+'code' => "VARCHAR(50) NOT NULL DEFAULT ''|");
+
+$tab_champs_a_corriger['socle_eleves_lvr']=array('ine' => "varchar(50) NOT NULL DEFAULT ''|", 
+'id_groupe' => "INT(11) NOT NULL DEFAULT '0'|0");
+
+$tab_champs_a_corriger['ele_adr']=array('adr_id' => "varchar(10) NOT NULL DEFAULT ''|", 
+'adr1' => "varchar(100) NOT NULL DEFAULT ''|", 
+'adr2' => "varchar(100) NOT NULL DEFAULT ''|", 
+'adr3' => "varchar(100) NOT NULL DEFAULT ''|", 
+'adr4' => "varchar(100) NOT NULL DEFAULT ''|", 
+'cp' => "varchar(6) NOT NULL DEFAULT ''|", 
+'pays' => "varchar(50) NOT NULL DEFAULT ''|", 
+'commune' => "varchar(50) NOT NULL DEFAULT ''|");
+
+$tab_champs_a_corriger['a_droits']=array('login' => "varchar(50) NOT NULL DEFAULT ''|", 
+'page' => "varchar(255) NOT NULL DEFAULT ''|");
+
+$tab_champs_a_corriger['commentaires_types_d_apres_moy']=array('login' => "VARCHAR( 50 ) NOT NULL DEFAULT ''");
+
+
+foreach($tab_champs_a_corriger as $table => $corrections) {
+	$sql="SHOW TABLES LIKE '".$table."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		foreach($corrections as $champ => $description_champ) {
+			$tmp_tab=array();
+			$tmp_tab=explode('|', $description_champ);
+			if(!isset($tmp_tab[1])) {
+				$tmp_tab[1]='';
+			}
+			$result .= "&nbsp;-> Contrôle de la valeur par défaut du champ '".$champ."' de la table '$table'&nbsp;: ";
+			$sql="ALTER TABLE ".$table." CHANGE ".$champ." ".$champ." ".$tmp_tab[0].";";
+			//$result.="$sql<br />";
+			$result_inter = traite_requete($sql);
+			if ($result_inter == '') {
+				$result .= msj_ok("SUCCES !");
+
+				$sql="UPDATE ".$table." SET ".$champ."='".$tmp_tab[1]."' WHERE ".$champ." IS NULL;";
+				//echo "$sql<br />";
+				$correction=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+			else {
+				$result .= msj_erreur("ECHEC !");
+			}
+		}
 	}
 }
 
