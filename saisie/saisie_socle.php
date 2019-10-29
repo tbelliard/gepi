@@ -2927,6 +2927,21 @@ elseif(isset($id_classe)) {
 					$title[3]="";
 					$title[4]="";
 
+					$effectif_niveau=array();
+					for($loop=0;$loop<5;$loop++) {
+						$effectif_niveau[$loop]=array();
+						$effectif_niveau[$loop]['effectif']=0;
+						$effectif_niveau[$loop]['info']='';
+					}
+
+					/*
+					echo "<tr><td colspan='13'>";
+					echo "effectif_niveau<pre>";
+					print_r($effectif_niveau);
+					echo "</pre>";
+					echo "</td></tr>";
+					*/
+
 					if(isset($tab_saisies[$lig->no_gep][$cycle][$code][$periode])) {
 						$checked[0]="";
 						$checked[$tab_saisies[$lig->no_gep][$cycle][$code][$periode]["niveau_maitrise"]]=" checked";
@@ -2940,8 +2955,16 @@ elseif(isset($id_classe)) {
 					}
 
 					if($SocleSaisieComposantesMode==2) {
-						$effectif_niveau=array();
+						//$effectif_niveau=array();
 						if(isset($tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode])) {
+							/*
+							echo "<tr><td colspan='13'>";
+							echo "\$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode]<pre>";
+							print_r($tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode]);
+							echo "</pre>";
+							echo "</td></tr>";
+							*/
+
 							foreach($tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode] as $current_id_groupe => $current_saisie) {
 								$effectif_niveau[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode][$current_id_groupe]["niveau_maitrise"]]['effectif']++;
 								$effectif_niveau[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode][$current_id_groupe]["niveau_maitrise"]]['info'].=$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode][$current_id_groupe]["title"]."\n";
