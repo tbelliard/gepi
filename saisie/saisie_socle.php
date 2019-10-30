@@ -174,6 +174,13 @@ $tab_traduction_niveau_couleur[2]="<span style='color:orange' title=\"\">MF</spa
 $tab_traduction_niveau_couleur[3]="<span style='color:green' title=\"\">MS</span>";
 $tab_traduction_niveau_couleur[4]="<span style='color:blue' title=\"\">TBM</span>";
 
+$tab_couleur_niveau=array();
+$tab_couleur_niveau[0]="";
+$tab_couleur_niveau[1]="red";
+$tab_couleur_niveau[2]="orange";
+$tab_couleur_niveau[3]="green";
+$tab_couleur_niveau[4]="blue";
+
 //20170302
 $tab_types_enseignements_complement=get_tab_types_enseignements_complement();
 
@@ -986,6 +993,138 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 	}
 }
 
+// 20191027
+if((isset($_GET['export_csv']))&&
+(isset($_GET['id_classe']))&&
+(isset($_GET['periode']))&&
+(preg_match("/^[0-9]{1,}$/", $_GET['id_classe']))&&
+(preg_match("/^[0-9]{1,}$/", $_GET['periode']))) {
+
+	$id_classe=$_GET['id_classe'];
+	$periode=$_GET['periode'];
+
+	$tab_saisies_grp=array();
+	$sql="SELECT DISTINCT sec.* FROM socle_eleves_composantes_groupes sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND sec.periode=jec.periode AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."' AND e.no_gep!='';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_saisies_grp[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode][$lig->id_groupe]["niveau_maitrise"]=$lig->niveau_maitrise;
+			if(!isset($tab_civ_nom_prenom[$lig->login_saisie])) {
+				$tab_civ_nom_prenom[$lig->login_saisie]=civ_nom_prenom($lig->login_saisie);
+			}
+			//$tab_saisies_grp[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode][$lig->id_groupe]["title"]="Saisi par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2");
+			$tab_saisies_grp[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode][$lig->id_groupe]["title"]="".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2");
+		}
+	}
+
+	// Récupérer la liste des élèves et leur cycle.
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$id_classe."' AND jec.periode='".$periode."' AND e.no_gep!='' ORDER BY e.nom, e.prenom;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$msg="Aucun élève avec INE non vide n'a été trouvé pour cette classe.<br />";
+	}
+	else {
+
+		$classe=get_nom_classe($id_classe);
+
+		$csv="INE;Nom;Prenom;Classe;Periode;Cycle;Domaine;Domaine explicite;Maitrise Insuffisante;Maitrise Fragile;Maitrise Satisfaisante;Très Bonne Maitrise;Moyenne;Niveau moyen;\n";
+
+		$cpt_ele=0;
+		$tab_cycle=array();
+		while($lig=mysqli_fetch_object($res)) {
+
+			$mef_code_ele=$lig->mef_code;
+			// 20180608
+			//echo "\$mef_code_ele=$mef_code_ele<br />";
+			if(!isset($tab_cycle[$mef_code_ele])) {
+				$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
+				$cycle=$tmp_tab_cycle_niveau["mef_cycle"];
+				$niveau=$tmp_tab_cycle_niveau["mef_niveau"];
+				$tab_cycle[$mef_code_ele]=$cycle;
+			}
+
+			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
+				// Le cycle courant pour ".$lig->nom." ".$lig->prenom." n'a pas pu être identifié&nbsp;???
+			}
+			else {
+				if(isset($cycle_particulier)) {
+					$cycle=$cycle_particulier;
+				}
+				else {
+					$cycle=$tab_cycle[$mef_code_ele];
+				}
+
+				// 20191027
+				if($SocleSaisieComposantesMode==1) {
+					$csv.=$lig->no_gep.";".$lig->nom.";".$lig->prenom.";".$classe.";".$periode.";".$tab_cycle[$mef_code_ele];
+
+
+					// Quel intérêt ?
+
+
+
+
+
+
+
+				}
+				else {
+					//$csv="INE;Nom;Prenom;Classe;Periode;Cycle;Domaine;Maitrise Insuffisante;Maitrise Fragile;Maitrise Satisfaisante;Très Bonne Maitrise;\n";
+
+					$cpt_domaine=0;
+					foreach($tab_domaine_socle as $code => $libelle) {
+
+						$effectif_niveau=array();
+						for($loop=0;$loop<5;$loop++) {
+							$effectif_niveau[$loop]=array();
+							$effectif_niveau[$loop]['effectif']=0;
+							$effectif_niveau[$loop]['info']='';
+						}
+
+						if(isset($tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode])) {
+
+							foreach($tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode] as $current_id_groupe => $current_saisie) {
+								$effectif_niveau[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode][$current_id_groupe]["niveau_maitrise"]]['effectif']++;
+							}
+						}
+
+						$csv.=$lig->no_gep.";".$lig->nom.";".$lig->prenom.";".$classe.";".$periode.";".$tab_cycle[$mef_code_ele].";";
+						$csv.=$code.";".$tab_domaine_socle[$code].";";
+						//for($loop=0;$loop<5;$loop++) {
+						$moyenne="-";
+						$niveau_moyen="-";
+						$total=0;
+						$total_sur=0;
+						for($loop=1;$loop<5;$loop++) {
+							$csv.=$effectif_niveau[$loop]['effectif'].";";
+							$total+=$effectif_niveau[$loop]['effectif']*$loop;
+							$total_sur+=$effectif_niveau[$loop]['effectif'];
+						}
+
+						// Ajouter une colonne moyenne?
+						if($total_sur>0) {
+							$moyenne=round(10*$total/$total_sur)/10;
+
+							if(isset($tab_traduction_niveau[round($total/$total_sur)])) {
+								$niveau_moyen=$tab_traduction_niveau[round($total/$total_sur)];
+							}
+						}
+						$csv.=$moyenne.";".$niveau_moyen.";";
+
+						$csv.="\n";
+					}
+				}
+			}
+		}
+
+		$nom_fic="socle_classe_".remplace_accents($classe, 'all')."_periode_".$periode."_".strftime("%Y%m%d_%H%M%S").".csv";
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+		die();
+	}
+}
+
 $themessage  = 'Des valeurs ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_enregistrement = "Les modifications ont été enregistrées !";
 //**************** EN-TETE *****************
@@ -1395,21 +1534,33 @@ $create_table=mysqli_query($mysqli, $sql);
 
 
 if(isset($id_groupe)) {
-	echo "\n<h2>".get_info_grp($id_groupe)." (période $periode)</h2>";
-
-	if(isset($cycle_particulier)) {
-		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
-	}
 
 	$sql="SELECT MAX(periode) AS max_per FROM j_eleves_groupes WHERE id_groupe='$id_groupe';";
 	$res_max=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_max)==0) {
+		echo "\n<h2>".get_info_grp($id_groupe)." (période $periode)</h2>";
+
 		echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> Aucun élève n'a été trouvé dans le groupe/enseignement.</p>";
 		require("../lib/footer.inc.php");
 		die();
 	}
 	$lig_max=mysqli_fetch_object($res_max);
 	$max_per=$lig_max->max_per;
+
+	echo "\n<h2>".get_info_grp($id_groupe)." (période ";
+	if($periode>1) {
+		echo "<a href='saisie_socle.php?id_groupe=".$id_groupe."&periode=".($periode-1)."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Période précédente\"><img src='../images/icons/arrow-left.png' class='icone16' /></a> ";
+	}
+	echo $periode;
+	if($periode<$max_per) {
+		echo " <a href='saisie_socle.php?id_groupe=".$id_groupe."&periode=".($periode+1)."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Période suivante\"><img src='../images/icons/arrow-right.png' class='icone16' /></a> ";
+	}
+	echo ")</h2>";
+
+	if(isset($cycle_particulier)) {
+		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
+	}
+
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// A REVOIR POUR RECUPERER LES SAISIES D ANNEES PRECEDENTES
@@ -1594,6 +1745,23 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 			echo "<li><p>Chaque professeur fait les saisies selon son opinion, ses évaluations.<br />
 			Un bilan sera fait par le ".getSettingValue('gepi_prof_suivi')." ou un compte scolarité selon ce qui a été paramétré dans le module.</p></li>";
 		}
+
+		if(($periode>1)&&($SocleOuvertureSaisieComposantes=='y')) {
+			echo "
+			<li>
+				<p>Vous pouvez recopier les niveaux de maitrise de la période précédente et ajuster ensuite les évolutions relevées.<br />
+				Vous pouvez le faire en cliquant sur le niveau de maitrise dans la colonne <strong>période précédente</strong> pour une composante donnée et un élève donné.<br />
+				Vous pouvez le faire pour toutes les composantes pour un élève donné en cliquant en entête de tableau élève sur l'icone <img src='../images/icons/wizard.png' class='icone16' /> de la colonne Période précédente.<br />
+				Et enfin, vous pouvez recopier les niveaux de maitrise de la période précédente pour tous les élèves et sur toutes les composantes 
+				<a href='#' onclick=\"copie_niveau_maitrise_periode_precedente_tous_eleves(); return false;\" title=\"Recopier les niveaux de maitrise de la période précédente pour tous les élèves et sur toutes les composantes.\">
+					en cliquant ici 
+					<img src='../images/icons/paste.png' class='icone16' />
+				</a>
+			</li>";
+		}
+		echo "
+</ul>";
+
 		echo "
 </ul>";
 		/*
@@ -1676,8 +1844,19 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 				<thead>
 					<tr>
 						<th rowspan='2'>Domaine du socle</th>
-						<th colspan='5'>Niveau de maitrise</th>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
-						<th rowspan='2'>Période<br />précédente</th>" : "")."
+						<th colspan='5'>Niveau de maitrise</th>";
+					if(($periode>1)&&($SocleOuvertureSaisieComposantes)) {
+						echo "
+						<th rowspan='2'>Période<br />précédente";
+						if($SocleOuvertureSaisieComposantes=="y") {
+							echo " 
+						<a href='#' onclick=\"copie_niveau_maitrise_periode_precedente($cpt_ele); return false;\" title=\"Prendre pour valeur, le niveau de maitrise de la période précédente sur chacun des domaines pour cet élève\">
+							<img src='../images/icons/paste.png' class='icone16' />
+						</a>";
+						}
+						echo "</th>";
+					}
+					echo "
 					</tr>
 					<tr>
 						<th title='Non encore défini' onclick=\"coche_colonne_ele($cpt_ele, 0)\">X</th>
@@ -1720,10 +1899,27 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 						echo "</td>
 						</tr>";
 						*/
+
+						/*
 						$valeur_precedente="";
 						if(($periode>1)&&(isset($tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]))&&(isset($tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]]))) {
 							$valeur_precedente=$tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]];
 						}
+						*/
+
+						$valeur_precedente="";
+						if(($periode>1)&&(isset($tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]))&&(isset($tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]]))) {
+
+							if($SocleOuvertureSaisieComposantes=="y") {
+								$val=$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"];
+
+								$valeur_precedente="<span style='color:".$tab_couleur_niveau[$val]."' onclick=\"coche_niveau_maitrise($cpt_ele, $cpt_domaine, ".$val.")\">".$tab_traduction_niveau[$val]."</span><span id='span_periode_precedente_".$cpt_ele."_".$cpt_domaine."' style='display:none'>".$val."</span>";
+							}
+							else {
+								$valeur_precedente=$tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]];
+							}
+						}
+
 
 						if($SocleOuvertureSaisieComposantes=="y") {
 							echo "
@@ -1778,7 +1974,10 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 						<td>".(($checked[1]!="") ? "<span style='color:red'>MI</span>" : "")."</td>
 						<td>".(($checked[2]!="") ? "<span style='color:orange'>MF</span>" : "")."</td>
 						<td>".(($checked[3]!="") ? "<span style='color:green'>MS</span>" : "")."</td>
-						<td>".(($checked[4]!="") ? "<span style='color:blue'>TBM</span>" : "")."</td>
+						<td>".(($checked[4]!="") ? "<span style='color:blue'>TBM</span>" : "")."</td>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
+						<td>
+							$valeur_precedente
+						</td>" : "")."
 					</tr>";
 						}
 					}
@@ -2086,6 +2285,54 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 					document.getElementById('div_photo').innerHTML='';
 				}
 
+
+				function coche_niveau_maitrise(cpt_ele, cpt_domaine, niveau) {
+					id='niveau_maitrise_'+cpt_ele+'_'+cpt_domaine+'_'+niveau;
+					if(document.getElementById(id)) {
+						document.getElementById(id).checked=true;
+						changement();
+						maj_couleurs_maitrise(cpt_ele, cpt_domaine);
+						calcule_score_socle(cpt_ele);
+					}
+				}
+
+				function coche_niveau_maitrise_moyen(cpt_ele) {
+					//alert(cpt_ele);
+					for(cpt_domaine=0;cpt_domaine<".count($tab_domaine_socle).";cpt_domaine++) {
+						//id='niveau_maitrise_'+cpt_ele+'_'+cpt_domaine+'_'+niveau;
+						id='span_moy_'+cpt_ele+'_'+cpt_domaine;
+						if(document.getElementById(id)) {
+							//alert(id+' existe.');
+							moy=document.getElementById(id).innerHTML;
+							coche_niveau_maitrise(cpt_ele, cpt_domaine, moy);
+						}
+					}
+				}
+
+				function coche_niveau_maitrise_moyen_tous_eleves() {
+					for(i=0;i<$cpt_ele;i++) {
+						coche_niveau_maitrise_moyen(i);
+					}
+				}
+
+				function copie_niveau_maitrise_periode_precedente(cpt_ele) {
+					//alert(cpt_ele);
+					for(cpt_domaine=0;cpt_domaine<".count($tab_domaine_socle).";cpt_domaine++) {
+						id='span_periode_precedente_'+cpt_ele+'_'+cpt_domaine;
+						if(document.getElementById(id)) {
+							//alert(id+' existe.');
+							moy=document.getElementById(id).innerHTML;
+							coche_niveau_maitrise(cpt_ele, cpt_domaine, moy);
+						}
+					}
+				}
+
+				function copie_niveau_maitrise_periode_precedente_tous_eleves() {
+					for(i=0;i<$cpt_ele;i++) {
+						copie_niveau_maitrise_periode_precedente(i);
+					}
+				}
+
 			</script>";
 			}
 		}
@@ -2153,8 +2400,19 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 				<thead>
 					<tr>
 						<th rowspan='2'>Domaine du socle</th>
-						<th colspan='9'>Niveau de maitrise</th>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
-						<th rowspan='2'>Période<br />précédente</th>" : "")."
+						<th colspan='9'>Niveau de maitrise</th>";
+					if(($periode>1)&&($SocleOuvertureSaisieComposantes)) {
+						echo "
+						<th rowspan='2'>Période<br />précédente";
+						if($SocleOuvertureSaisieComposantes=="y") {
+							echo " 
+						<a href='#' onclick=\"copie_niveau_maitrise_periode_precedente($cpt_ele); return false;\" title=\"Prendre pour valeur, le niveau de maitrise de la période précédente sur chacun des domaines pour cet élève\">
+							<img src='../images/icons/paste.png' class='icone16' />
+						</a>";
+						}
+						echo "</th>";
+					}
+					echo "
 					</tr>
 					<tr>
 						<th title='Non encore défini' onclick=\"coche_colonne_ele($cpt_ele, 0)\">X</th>
@@ -2239,9 +2497,24 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 						echo "</td>
 						</tr>";
 						*/
+						/*
 						$valeur_precedente="";
 						if(($periode>1)&&(isset($tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode-1][$id_groupe]["niveau_maitrise"]))&&(isset($tab_traduction_niveau_couleur[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode-1][$id_groupe]["niveau_maitrise"]]))) {
 							$valeur_precedente=$tab_traduction_niveau_couleur[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode-1][$id_groupe]["niveau_maitrise"]];
+						}
+						*/
+
+						$valeur_precedente="";
+						if(($periode>1)&&(isset($tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode-1][$id_groupe]["niveau_maitrise"]))&&(isset($tab_traduction_niveau_couleur[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode-1][$id_groupe]["niveau_maitrise"]]))) {
+
+							if($SocleOuvertureSaisieComposantes=="y") {
+								$val=$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode-1][$id_groupe]["niveau_maitrise"];
+
+								$valeur_precedente="<span style='color:".$tab_couleur_niveau[$val]."' onclick=\"coche_niveau_maitrise($cpt_ele, $cpt_domaine, ".$val.")\">".$tab_traduction_niveau[$val]."</span><span id='span_periode_precedente_".$cpt_ele."_".$cpt_domaine."' style='display:none'>".$val."</span>";
+							}
+							else {
+								$valeur_precedente=$tab_traduction_niveau_couleur[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode-1][$id_groupe]["niveau_maitrise"]];
+							}
 						}
 
 						if($SocleOuvertureSaisieComposantes=="y") {
@@ -2659,19 +2932,58 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 					document.getElementById('div_photo').innerHTML='';
 				}
 
+
+				function coche_niveau_maitrise(cpt_ele, cpt_domaine, niveau) {
+					id='niveau_maitrise_'+cpt_ele+'_'+cpt_domaine+'_'+niveau;
+					if(document.getElementById(id)) {
+						document.getElementById(id).checked=true;
+						changement();
+						maj_couleurs_maitrise(cpt_ele, cpt_domaine);
+						calcule_score_socle(cpt_ele);
+					}
+				}
+
+				function coche_niveau_maitrise_moyen(cpt_ele) {
+					//alert(cpt_ele);
+					for(cpt_domaine=0;cpt_domaine<".count($tab_domaine_socle).";cpt_domaine++) {
+						//id='niveau_maitrise_'+cpt_ele+'_'+cpt_domaine+'_'+niveau;
+						id='span_moy_'+cpt_ele+'_'+cpt_domaine;
+						if(document.getElementById(id)) {
+							//alert(id+' existe.');
+							moy=document.getElementById(id).innerHTML;
+							coche_niveau_maitrise(cpt_ele, cpt_domaine, moy);
+						}
+					}
+				}
+
+				function coche_niveau_maitrise_moyen_tous_eleves() {
+					for(i=0;i<$cpt_ele;i++) {
+						coche_niveau_maitrise_moyen(i);
+					}
+				}
+
+				function copie_niveau_maitrise_periode_precedente(cpt_ele) {
+					//alert(cpt_ele);
+					for(cpt_domaine=0;cpt_domaine<".count($tab_domaine_socle).";cpt_domaine++) {
+						id='span_periode_precedente_'+cpt_ele+'_'+cpt_domaine;
+						if(document.getElementById(id)) {
+							//alert(id+' existe.');
+							moy=document.getElementById(id).innerHTML;
+							coche_niveau_maitrise(cpt_ele, cpt_domaine, moy);
+						}
+					}
+				}
+
+				function copie_niveau_maitrise_periode_precedente_tous_eleves() {
+					for(i=0;i<$cpt_ele;i++) {
+						copie_niveau_maitrise_periode_precedente(i);
+					}
+				}
+
 			</script>";
 			}
 
-
 		}
-
-
-
-
-
-
-
-
 
 		echo "
 	</fieldset>
@@ -2679,21 +2991,39 @@ Choisir entre deux modes: dans mod_LSUN/admin.php
 	}
 }
 elseif(isset($id_classe)) {
-	echo "<h3>Classe de ".get_nom_classe($id_classe)." (période $periode)</h3>";
-
-	if(isset($cycle_particulier)) {
-		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
-	}
 
 	$sql="SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe';";
 	$res_max=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_max)==0) {
+		echo "<h3>Classe de ".get_nom_classe($id_classe)." (période $periode)</h3>";
+
 		echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> La classe n'a pas de périodes définies.</p>";
 		require("../lib/footer.inc.php");
 		die();
 	}
 	$lig_max=mysqli_fetch_object($res_max);
 	$max_per=$lig_max->max_per;
+
+	echo "<h3>Classe de ".get_nom_classe($id_classe)." (période ";
+	if($periode>1) {
+		echo "<a href='saisie_socle.php?id_classe=".$id_classe."&periode=".($periode-1)."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Période précédente\"><img src='../images/icons/arrow-left.png' class='icone16' /></a> ";
+	}
+	echo $periode;
+	if($periode<$max_per) {
+		echo " <a href='saisie_socle.php?id_classe=".$id_classe."&periode=".($periode+1)."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Période suivante\"><img src='../images/icons/arrow-right.png' class='icone16' /></a> ";
+	}
+	echo ")</h3>";
+
+	if(isset($cycle_particulier)) {
+		echo "<p style='color:red; font-weight:bold; margin-bottom:1em;'>Saisie pour le cycle $cycle_particulier sans tenir compte du cycle actuel lié au MEF de l'élève.</p>";
+	}
+
+	// 20191027
+	if($SocleSaisieComposantesMode==2) {
+		echo "<div style='float:right; width:3em; margin:0.5em; text-align:center;' class='fieldset_opacite50'>
+		<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."&periode=".$periode."&export_csv=y' target='_blank'>CSV</a>
+	</div>";
+	}
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// A REVOIR POUR RECUPERER LES SAISIES D ANNEES PRECEDENTES
@@ -2804,6 +3134,36 @@ elseif(isset($id_classe)) {
 
 			echo "</p></li>";
 		}
+
+		if($SocleSaisieComposantesMode==2) {
+			echo "<li>
+				<p>
+					Lorsque les professeurs ont saisi des niveaux de maitrise sur leurs enseignements, un niveau moyen est calculé.<br />
+					Il apparait pour chaque élève dans la colonne <strong>Niveau moyen</strong>.<br />
+					Vous pouvez prendre les niveaux moyens calculés en cliquant sur le niveau en question dans la colonne niveau moyen pour une composante donnée.<br />
+					Vous pouvez prendre globalement pour l'ensemble des composantes les niveaux moyens calculés pour un élève donné en cliquant en entête de tableau élève sur l'icone <img src='../images/icons/wizard.png' class='icone16' /> de la colonne Niveau moyen.<br />
+					Et enfin, vous pouvez prendre les niveaux moyens calculés pour tous les élèves et sur toutes les composantes 
+					<a href='#' onclick=\"coche_niveau_maitrise_moyen_tous_eleves(); return false;\" title=\"Prendre, pour tous les élèves, les valeurs moyennes des niveaux de maitrise calculés.\">
+						en cliquant ici 
+						<img src='../images/icons/wizard.png' class='icone16' />
+					</a>
+				</p>
+			</li>";
+		}
+
+		if(($periode>1)&&($SocleOuvertureSaisieComposantes=='y')) {
+			echo "
+			<li>
+				<p>Vous pouvez recopier les niveaux de maitrise de la période précédente et ajuster ensuite les évolutions relevées.<br />
+				Vous pouvez le faire en cliquant sur le niveau de maitrise dans la colonne <strong>période précédente</strong> pour une composante donnée et un élève donné.<br />
+				Vous pouvez le faire pour toutes les composantes pour un élève donné en cliquant en entête de tableau élève sur l'icone <img src='../images/icons/wizard.png' class='icone16' /> de la colonne Période précédente.<br />
+				Et enfin, vous pouvez recopier les niveaux de maitrise de la période précédente pour tous les élèves et sur toutes les composantes 
+				<a href='#' onclick=\"copie_niveau_maitrise_periode_precedente_tous_eleves(); return false;\" title=\"Recopier les niveaux de maitrise de la période précédente pour tous les élèves et sur toutes les composantes.\">
+					en cliquant ici 
+					<img src='../images/icons/paste.png' class='icone16' />
+				</a>
+			</li>";
+		}
 		echo "
 </ul>";
 
@@ -2878,8 +3238,19 @@ elseif(isset($id_classe)) {
 			<thead>
 				<tr>
 					<th rowspan='2'>Domaine du socle</th>
-					<th colspan='5'>Niveau de maitrise</th>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
-					<th rowspan='2'>Période<br />précédente</th>" : "")."
+					<th colspan='5'>Niveau de maitrise</th>";
+					if(($periode>1)&&($SocleOuvertureSaisieComposantes)) {
+						echo "
+						<th rowspan='2'>Période<br />précédente";
+						if($SocleOuvertureSaisieComposantes=="y") {
+							echo " 
+						<a href='#' onclick=\"copie_niveau_maitrise_periode_precedente($cpt_ele); return false;\" title=\"Prendre pour valeur, le niveau de maitrise de la période précédente sur chacun des domaines pour cet élève\">
+							<img src='../images/icons/paste.png' class='icone16' />
+						</a>";
+						}
+						echo "</th>";
+					}
+					echo "
 				</tr>
 				<tr>
 					<th title='Non encore défini' onclick=\"coche_colonne_ele($cpt_ele, 0)\">X</th>
@@ -2898,8 +3269,31 @@ elseif(isset($id_classe)) {
 			<thead>
 				<tr>
 					<th rowspan='2'>Domaine du socle</th>
-					<th colspan='9'>Niveau de maitrise</th>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
-					<th rowspan='2'>Période<br />précédente</th>" : "")."
+					<th colspan='9'>Niveau de maitrise</th>
+					<th rowspan='2' title=\"Niveau moyen de maitrise calculé d'après les saisies des professeurs.\">
+						Niveau moyen";
+					if($SocleOuvertureSaisieComposantes=="y") {
+						echo " 
+						<a href='#' onclick=\"coche_niveau_maitrise_moyen($cpt_ele); return false;\" title=\"Prendre la valeur moyenne calculée sur chacun des domaines pour cet élève\">
+							<img src='../images/icons/wizard.png' class='icone16' />
+						</a>";
+					}
+					echo "
+					</th>";
+					if(($periode>1)&&($SocleOuvertureSaisieComposantes)) {
+						echo "
+					<th rowspan='2'>
+						Période<br />précédente";
+						if($SocleOuvertureSaisieComposantes=="y") {
+							echo " 
+						<a href='#' onclick=\"copie_niveau_maitrise_periode_precedente($cpt_ele); return false;\" title=\"Prendre pour valeur, le niveau de maitrise de la période précédente sur chacun des domaines pour cet élève\">
+							<img src='../images/icons/paste.png' class='icone16' />
+						</a>";
+						}
+						echo "
+					</th>";
+					}
+					echo "
 				</tr>
 				<tr>
 					<th title='Non encore défini' onclick=\"coche_colonne_ele($cpt_ele, 0)\">X</th>
@@ -2951,10 +3345,24 @@ elseif(isset($id_classe)) {
 
 					$valeur_precedente="";
 					if(($periode>1)&&(isset($tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]))&&(isset($tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]]))) {
-						$valeur_precedente=$tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]];
+
+						if($SocleOuvertureSaisieComposantes=="y") {
+							$val=$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"];
+
+							$valeur_precedente="<span style='color:".$tab_couleur_niveau[$val]."' onclick=\"coche_niveau_maitrise($cpt_ele, $cpt_domaine, ".$val.")\">".$tab_traduction_niveau[$val]."</span><span id='span_periode_precedente_".$cpt_ele."_".$cpt_domaine."' style='display:none'>".$val."</span>";
+						}
+						else {
+							$valeur_precedente=$tab_traduction_niveau_couleur[$tab_saisies[$lig->no_gep][$cycle][$code][$periode-1]["niveau_maitrise"]];
+						}
 					}
 
 					if($SocleSaisieComposantesMode==2) {
+
+						$moyenne="-";
+						$niveau_moyen="-";
+						$total=0;
+						$total_sur=0;
+
 						//$effectif_niveau=array();
 						if(isset($tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode])) {
 							/*
@@ -2969,6 +3377,27 @@ elseif(isset($id_classe)) {
 								$effectif_niveau[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode][$current_id_groupe]["niveau_maitrise"]]['effectif']++;
 								$effectif_niveau[$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode][$current_id_groupe]["niveau_maitrise"]]['info'].=$tab_saisies_grp[$lig->no_gep][$cycle][$code][$periode][$current_id_groupe]["title"]."\n";
 							}
+
+							//$moyenne="-";
+							//$niveau_moyen="-";
+							//$total=0;
+							//$total_sur=0;
+							for($loop=1;$loop<5;$loop++) {
+								$total+=$effectif_niveau[$loop]['effectif']*$loop;
+								$total_sur+=$effectif_niveau[$loop]['effectif'];
+							}
+
+							// Ajouter une colonne moyenne?
+							if($total_sur>0) {
+								$moyenne=round(10*$total/$total_sur)/10;
+
+								if(isset($tab_traduction_niveau[round($total/$total_sur)])) {
+									$moy=round($total/$total_sur);
+									//$niveau_moyen="<span style='color:".$tab_couleur_niveau[$moy]."' onclick=\"coche_niveau_maitrise('niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_".$moy."')\">".$tab_traduction_niveau[$moy]."</span>";
+									$niveau_moyen="<span style='color:".$tab_couleur_niveau[$moy]."' onclick=\"coche_niveau_maitrise($cpt_ele, $cpt_domaine, $moy)\">".$tab_traduction_niveau[$moy]."</span><span id='span_moy_".$cpt_ele."_".$cpt_domaine."' style='display:none'>$moy</span>";
+								}
+							}
+
 						}
 					}
 
@@ -3064,6 +3493,9 @@ elseif(isset($id_classe)) {
 								echo "
 					<td></td>";
 							}
+
+							echo "
+					<td>".$niveau_moyen."</td>";
 						}
 
 						echo "".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
@@ -3074,7 +3506,9 @@ elseif(isset($id_classe)) {
 						$cpt_domaine++;
 					}
 					else {
-						echo "
+
+						if($SocleSaisieComposantesMode==1) {
+							echo "
 				<tr>
 					<td style='text-align:left;'>".$libelle."</td>
 					<td>".(($checked[0]!="") ? "X" : "")."</td>
@@ -3083,6 +3517,56 @@ elseif(isset($id_classe)) {
 					<td>".(($checked[3]!="") ? "<span style='color:green'>MS</span>" : "")."</td>
 					<td>".(($checked[4]!="") ? "<span style='color:blue'>TBM</span>" : "")."</td>
 				</tr>";
+						}
+						else {
+							// 20191030
+							echo "
+				<tr>
+					<td style='text-align:left;'>".$libelle."</td>
+					<td>".(($checked[0]!="") ? "X" : "")."</td>
+					<td>".(($checked[1]!="") ? "<span style='color:red'>MI</span>" : "")."</td>";
+							if((isset($effectif_niveau[1]['info']))&&($effectif_niveau[1]['info']!='')) {
+								echo "
+					<td title=\"Niveau de maitrise saisi par\n".$effectif_niveau[1]['info']."\" style=\"color:red\">".$effectif_niveau[1]['effectif']."</td>";
+							}
+							else {
+								echo "
+					<td></td>";
+							}
+							echo "
+					<td>".(($checked[2]!="") ? "<span style='color:orange'>MF</span>" : "")."</td>";
+							if((isset($effectif_niveau[2]['info']))&&($effectif_niveau[2]['info']!='')) {
+								echo "
+					<td title=\"Niveau de maitrise saisi par\n".$effectif_niveau[2]['info']."\" style=\"color:orange\">".$effectif_niveau[2]['effectif']."</td>";
+							}
+							else {
+								echo "
+					<td></td>";
+							}
+							echo "
+					<td>".(($checked[3]!="") ? "<span style='color:green'>MS</span>" : "")."</td>";
+							if((isset($effectif_niveau[3]['info']))&&($effectif_niveau[3]['info']!='')) {
+								echo "
+					<td title=\"Niveau de maitrise saisi par\n".$effectif_niveau[3]['info']."\" style=\"color:green\">".$effectif_niveau[3]['effectif']."</td>";
+							}
+							else {
+								echo "
+					<td></td>";
+							}
+							echo "
+					<td>".(($checked[4]!="") ? "<span style='color:blue'>TBM</span>" : "")."</td>";
+							if((isset($effectif_niveau[4]['info']))&&($effectif_niveau[4]['info']!='')) {
+								echo "
+					<td title=\"Niveau de maitrise saisi par\n".$effectif_niveau[4]['info']."\" style=\"color:blue\">".$effectif_niveau[4]['effectif']."</td>";
+							}
+							else {
+								echo "
+					<td></td>";
+							}
+							echo "
+					<td>".$niveau_moyen."</td>
+				</tr>";
+						}
 					}
 				}
 				echo "
@@ -3242,9 +3726,17 @@ elseif(isset($id_classe)) {
 		<input type='hidden' name='periode' value='$periode' />
 		<p><input type='submit' value='Enregistrer' /></p>
 
-		<div id='fixe'>
+		<div id='fixe' style='text-align:center;'>
 			<div id='div_photo'></div>
-			<input type='submit' value='Enregistrer' />
+			<input type='submit' value='Enregistrer' />";
+			if($SocleSaisieComposantesMode==2) {
+				echo "<br />
+				<a href='#' onclick=\"coche_niveau_maitrise_moyen_tous_eleves(); return false;\" title=\"Prendre, pour tous les élèves, les valeurs moyennes des niveaux de maitrise calculés.\">
+					Niveaux moyens
+					<img src='../images/icons/wizard.png' class='icone16' />
+				</a>";
+			}
+			echo "
 		</div>
 
 		<script type='text/javascript'>
@@ -3407,6 +3899,62 @@ elseif(isset($id_classe)) {
 			function vide_photo_courante() {
 				document.getElementById('div_photo').innerHTML='';
 			}
+
+			/*
+			function coche_niveau_maitrise(id) {
+				if(document.getElementById(id)) {
+					document.getElementById(id).checked=true;
+				}
+			}
+			*/
+
+			function coche_niveau_maitrise(cpt_ele, cpt_domaine, niveau) {
+				id='niveau_maitrise_'+cpt_ele+'_'+cpt_domaine+'_'+niveau;
+				if(document.getElementById(id)) {
+					document.getElementById(id).checked=true;
+					changement();
+					maj_couleurs_maitrise(cpt_ele, cpt_domaine);
+					calcule_score_socle(cpt_ele);
+				}
+			}
+
+			function coche_niveau_maitrise_moyen(cpt_ele) {
+				//alert(cpt_ele);
+				for(cpt_domaine=0;cpt_domaine<".count($tab_domaine_socle).";cpt_domaine++) {
+					//id='niveau_maitrise_'+cpt_ele+'_'+cpt_domaine+'_'+niveau;
+					id='span_moy_'+cpt_ele+'_'+cpt_domaine;
+					if(document.getElementById(id)) {
+						//alert(id+' existe.');
+						moy=document.getElementById(id).innerHTML;
+						coche_niveau_maitrise(cpt_ele, cpt_domaine, moy);
+					}
+				}
+			}
+
+			function coche_niveau_maitrise_moyen_tous_eleves() {
+				for(i=0;i<$cpt_ele;i++) {
+					coche_niveau_maitrise_moyen(i);
+				}
+			}
+
+			function copie_niveau_maitrise_periode_precedente(cpt_ele) {
+				//alert(cpt_ele);
+				for(cpt_domaine=0;cpt_domaine<".count($tab_domaine_socle).";cpt_domaine++) {
+					id='span_periode_precedente_'+cpt_ele+'_'+cpt_domaine;
+					if(document.getElementById(id)) {
+						//alert(id+' existe.');
+						moy=document.getElementById(id).innerHTML;
+						coche_niveau_maitrise(cpt_ele, cpt_domaine, moy);
+					}
+				}
+			}
+
+			function copie_niveau_maitrise_periode_precedente_tous_eleves() {
+				for(i=0;i<$cpt_ele;i++) {
+					copie_niveau_maitrise_periode_precedente(i);
+				}
+			}
+
 		</script>";
 		}
 		echo "
