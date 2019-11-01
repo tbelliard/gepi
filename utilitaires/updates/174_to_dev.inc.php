@@ -385,10 +385,10 @@ $SocleSaisieComposantesMode=getSettingValue("SocleSaisieComposantesMode");
 if($SocleSaisieComposantesMode=='') {
 	$result .= "&nbsp;-> Initialisation de la valeur de 'SocleSaisieComposantesMode'&nbsp;: ";
 	if(!saveSetting('SocleSaisieComposantesMode', 1)) {
-		$result .= msj_ok("SUCCES !");
+		$result .= msj_erreur("ECHEC !");
 	}
 	else {
-		$result .= msj_erreur("ECHEC !");
+		$result .= msj_ok("SUCCES !");
 	}
 }
 
