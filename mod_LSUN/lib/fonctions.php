@@ -98,7 +98,9 @@ function getResponsables() {
 
 function MetAJourResp() {
 	global $mysqli;
-	$responsables = $mysqli->query("SELECT DISTINCT suivi_par FROM classes");
+	$sql="SELECT DISTINCT suivi_par FROM classes WHERE id NOT IN (SELECT id_classe FROM classes_param WHERE name='type_classe' AND value='non_sconet');";
+	//echo $sql."<br />";
+	$responsables = $mysqli->query($sql);
 	while ($resp = $responsables->fetch_object()) {
 		$sql = "INSERT INTO lsun_responsables (login) VALUES (\"".mysqli_real_escape_string($mysqli, $resp->suivi_par)."\") ON DUPLICATE KEY UPDATE login = \"".mysqli_real_escape_string($mysqli, $resp->suivi_par)."\";";
 		//echo $sql."<br />";
