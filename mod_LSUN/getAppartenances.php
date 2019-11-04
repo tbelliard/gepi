@@ -100,24 +100,29 @@ if (filter_input(INPUT_POST, 'corrigeMEF')) {
 
 	if(is_array($classeBase2)) {
 		foreach ($classeBase2 as $key=>$classeActuelle) {
-			//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
-			$sql = "UPDATE classes SET mef_code = '$mefAppartenance2[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase2[$key]';";
-			//echo $sql.'<br>';
-			$mysqli->query($sql);
-
-			if(isset($nomXMLclasse[$key])) {
-				$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
+			if($nomXMLclasse[$key]=='classe_non_sconet_sans_remontee_LSU') {
+				saveParamClasse($key, 'type_classe', 'non_sconet');
+			}
+			else {
+				//echo $key." ".$classeActuelle." ".$nom_completBase[$key].'<br>';
+				$sql = "UPDATE classes SET mef_code = '$mefAppartenance2[$key]' WHERE classe = '$classeActuelle' AND nom_complet = '$nom_completBase2[$key]';";
 				//echo $sql.'<br>';
-				$test=mysqli_query($GLOBALS['mysqli'], $sql);
-				if(mysqli_num_rows($test)==0) {
-					$sql="INSERT INTO classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."', id_classe='".$key."';";
+				$mysqli->query($sql);
+
+				if(isset($nomXMLclasse[$key])) {
+					$sql="SELECT * FROM classes_param WHERE id_classe='".$key."';";
 					//echo $sql.'<br>';
-					$insert=mysqli_query($GLOBALS['mysqli'], $sql);
-				}
-				else {
-					$sql="UPDATE classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."' WHERE id_classe='".$key."';";
-					//echo $sql.'<br>';
-					$update=mysqli_query($GLOBALS['mysqli'], $sql);
+					$test=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(mysqli_num_rows($test)==0) {
+						$sql="INSERT INTO classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."', id_classe='".$key."';";
+						//echo $sql.'<br>';
+						$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+					}
+					else {
+						$sql="UPDATE classes_param SET name='nom_classe_sts', value='".$nomXMLclasse[$key]."' WHERE id_classe='".$key."';";
+						//echo $sql.'<br>';
+						$update=mysqli_query($GLOBALS['mysqli'], $sql);
+					}
 				}
 			}
 		}
@@ -329,6 +334,7 @@ while ($classe = $listeClasse->fetch_object()) {
 				<option value='".$current_nom_div."'>$current_nom_div</option>";
 		}
 		echo "
+				<option value='classe_non_sconet_sans_remontee_LSU'>Hors Sconet (pas de remontée LSU)</option>
 			</select>
 		</td>
 		<td>
