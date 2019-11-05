@@ -106,6 +106,10 @@ function MetAJourResp() {
 		//echo $sql."<br />";
 		$mysqli->query($sql);
 	}
+
+	$sql="DELETE FROM lsun_responsables WHERE login NOT IN (SELECT DISTINCT suivi_par FROM classes WHERE id NOT IN (SELECT id_classe FROM classes_param WHERE name='type_classe' AND value='non_sconet'));";
+	//echo $sql."<br />";
+	$menage = $mysqli->query($sql);
 }
 
 /**
