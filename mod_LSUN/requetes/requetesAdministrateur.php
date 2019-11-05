@@ -63,6 +63,7 @@ foreach ($newResponsable as $valeur) {
 $supprimeResponsable = filter_input(INPUT_POST, 'supprimeResponsable');
 
 if ($supprimeResponsable) {
+	// J'ai l'impression qu'on n'arrive jamais là
 	$sqlNewResponsable = "DELETE FROM lsun_responsables WHERE login = '".$supprimeResponsable."'" ;
 	//echo $sqlNewResponsable;
 	$resultchargeDB = $mysqli->query($sqlNewResponsable);
