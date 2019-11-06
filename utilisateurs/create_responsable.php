@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -536,6 +536,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="edit_responsable.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+ | <a href="create_eleve.php">Créer des comptes élèves</a>
 </p>
 <?php
 

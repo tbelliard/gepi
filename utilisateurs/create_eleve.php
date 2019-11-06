@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -258,6 +258,7 @@ require_once("../lib/header.inc.php");
 ?>
 <p class='bold'>
 <a href="edit_eleve.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+ | <a href="create_responsable.php">Créer des comptes responsables</a>
 </p>
 <?php
 $quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e LEFT JOIN utilisateurs u ON e.login=u.login WHERE (" .
