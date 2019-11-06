@@ -40,6 +40,9 @@ if (!checkAccess()) {
     die();
 }
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
 $titre_page = "Listes d'élèves";
@@ -65,10 +68,21 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
 	if($_SESSION['statut']=='professeur') {
 		echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
-		$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
-			jgp.login = '".$_SESSION['login']."' AND
-			g.id=jgp.id_groupe
-			ORDER BY g.description";
+
+		$sql="SELECT DISTINCT g.id, g.description, jgm.id_matiere 
+				FROM groupes g, 
+					j_groupes_professeurs jgp, 
+					j_groupes_classes jgc, 
+					classes c, 
+					j_groupes_matieres jgm 
+				WHERE
+					jgp.login = '".$_SESSION['login']."' AND 
+					g.id=jgp.id_groupe AND 
+					jgp.id_groupe=jgc.id_groupe AND 
+					jgc.id_classe=c.id AND 
+					jgc.id_groupe=jgm.id_groupe 
+					ORDER BY jgm.id_matiere, c.classe, g.description;";
+		//echo "$sql<br />";
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_grp)==0) {
@@ -78,7 +92,16 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 			die();
 		}
 		else {
-			echo "<table>\n";
+			echo "<table class='boireaus boireaus_alt resizable sortable'>
+	<thead>
+		<tr>
+			<th>Classes</th>
+			<th>Enseignement</th>
+			<th>Matière</th>
+			<th>Périodes</th>
+		</tr>
+	</thead>
+	<tbody>\n";
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
 				echo "<tr>\n";
 				unset($tabnumper);
@@ -118,18 +141,22 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
 				}
 
+				echo "<td class='bold'>".$chaine_class."</td>";
+				echo "<td>".htmlspecialchars($lig_grp->description,ENT_QUOTES,"UTF-8")."</td>";
+				echo "<td>".$lig_grp->id_matiere."</td>";
 				echo "<td>\n";
-				echo "<b>$chaine_class</b>: ".htmlspecialchars($lig_grp->description);
-				echo "</td>\n";
 				for($i=0;$i<count($tabnumper);$i++) {
-					if($i>0) {echo "<td> - </td>\n";}
-					echo "<td>\n";
+					//if($i>0){echo "<td> - </td>\n";}
+					if($i>0){echo " - ";}
+					//echo "<td>\n";
 					echo "<a href='popup.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' onclick=\"ouvre_popup_visu_groupe('$lig_grp->id','','$tabnumper[$i]');return false;\" target='_blank'>".htmlspecialchars($tabnomper[$i])."</a>\n";
-					echo "</td>\n";
+					//echo "</td>\n";
 				}
 				echo "</tr>\n";
 			}
-			echo "</table>\n";
+			echo "
+	</tbody>
+</table>\n";
 
 		}
 

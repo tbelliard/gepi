@@ -49,6 +49,9 @@ if (!checkAccess()) {
 	get_acces_mail_ele($login_ele, $id_classe='') {
 */
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
 $titre_page = "Listes CSV";
@@ -93,20 +96,20 @@ echo "<p class='bold'>Listes standard&nbsp;:</p>\n";
 
 if($_SESSION['statut']=='professeur') {
 	echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
-	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
-	//$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classe c WHERE
-	/*
-	$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
-		jgp.login = '".$_SESSION['login']."' AND
-		g.id=jgp.id_groupe
-		ORDER BY g.description";
-	*/
-	$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classes c WHERE
-		jgp.login = '".$_SESSION['login']."' AND 
-		g.id=jgp.id_groupe AND 
-		jgp.id_groupe=jgc.id_groupe AND 
-		jgc.id_classe=c.id
-		ORDER BY g.description, c.classe;";
+	$sql="SELECT DISTINCT g.id, g.description, jgm.id_matiere 
+			FROM groupes g, 
+				j_groupes_professeurs jgp, 
+				j_groupes_classes jgc, 
+				classes c, 
+				j_groupes_matieres jgm 
+			WHERE
+				jgp.login = '".$_SESSION['login']."' AND 
+				g.id=jgp.id_groupe AND 
+				jgp.id_groupe=jgc.id_groupe AND 
+				jgc.id_classe=c.id AND 
+				jgc.id_groupe=jgm.id_groupe 
+				ORDER BY jgm.id_matiere, c.classe, g.description;";
+	//echo "$sql<br />";
 	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_grp)==0){
@@ -117,7 +120,16 @@ if($_SESSION['statut']=='professeur') {
 	else {
 		echo "<div style='margin-left:3em;'>\n";
 		$message_erreur="";
-		echo "<table>\n";
+		echo "<table class='boireaus boireaus_alt resizable sortable'>
+	<thead>
+		<tr>
+			<th>Classes</th>
+			<th>Enseignement</th>
+			<th>Matière</th>
+			<th>Périodes</th>
+		</tr>
+	</thead>
+	<tbody>\n";
 		while($lig_grp=mysqli_fetch_object($res_grp)){
 			echo "<tr>\n";
 			unset($tabnumper);
@@ -164,18 +176,23 @@ if($_SESSION['statut']=='professeur') {
 			//echo "<a href='get_csv.php?id_groupe=$lig_grp->id'>".htmlspecialchars($lig_grp->description)." ($chaine_class)</a><br />\n";
 			//echo "<td style='font-weight:bold;'>\n";
 			//echo htmlspecialchars($lig_grp->description)." ($chaine_class):";
+			echo "<td class='bold'>".$chaine_class."</td>";
+			echo "<td>".htmlspecialchars($lig_grp->description,ENT_QUOTES,"UTF-8")."</td>";
+			echo "<td>".$lig_grp->id_matiere."</td>";
 			echo "<td>\n";
-			echo "<b>$chaine_class</b>: ".htmlspecialchars($lig_grp->description,ENT_QUOTES,"UTF-8");
-			echo "</td>\n";
 			for($i=0;$i<count($tabnumper);$i++){
-				if($i>0){echo "<td> - </td>\n";}
-				echo "<td>\n";
+				//if($i>0){echo "<td> - </td>\n";}
+				if($i>0){echo " - ";}
+				//echo "<td>\n";
 				echo "<a href='get_csv.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' target='_blank'>".htmlspecialchars($tabnomper[$i],ENT_QUOTES,"UTF-8")."</a>\n";
-				echo "</td>\n";
+				//echo "</td>\n";
 			}
+			echo "</td>\n";
 			echo "</tr>\n";
 		}
-		echo "</table>\n";
+		echo "
+	</tbody>
+</table>\n";
 		echo $message_erreur;
 		echo "</div>\n";
 		echo "<br />\n";
