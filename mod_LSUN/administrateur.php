@@ -846,7 +846,13 @@ if ($cpt) {echo "			</div>\n";}
 					<th>Division</th>
 					<th>Type de parcours éducatifs</th>
 					<th>Description</th>
-					<th>liaison AID</th>
+					<th>
+						liaison AID 
+						<a name='form_1_parcours_liaison_aid'></a>
+						<a href='#form_1_parcours_liaison_aid' onclick="selection_liens_AID_parcours(); return false;" title="Tenter de trouver les liaisons d'après les noms AID et type de parcours.">
+							<img src='../images/icons/wizard.png' class='icone16' />
+						</a>
+					</th>
 					<th title="Seule la ligne choisie est traitée. Les autres modifications ne sont pas prises en compte.">Action<br />individuelle</th>
 					<th>Suppression<br />
 					<a href='#' onclick="suppr_parcours(true);return false;" title='Cocher tous les Parcours comme devant être supprimés.'><img src='../images/delete16.png' class='icone16' /></a> / 
@@ -906,10 +912,10 @@ if ($cpt) {echo "			</div>\n";}
 					<?php echo getClasses($parcoursCommun->classe)->fetch_object()->nom_complet; ?>
 				</td>
 				<td>
-					<select name="modifieParcoursCode[<?php echo $parcoursCommun->id; ?>]">
+					<select name="modifieParcoursCode[<?php echo $parcoursCommun->id; ?>]" id='champ_select_modifieParcoursCode_<?php echo $parcoursCommun->id; ?>'>
 <?php foreach ($xml->{'liste-parcours'}->parcours as $parcours) { ?>
 						<option value="<?php echo $parcours['code'] ?>" <?php if($parcours['code'] == $parcoursCommun->codeParcours){echo " selected ";} ?> >
-							<?php echo $parcours['libelle'] ?>
+							<?php echo $parcours['libelle']; ?>
 						</option>
 <?php } ?>
 					</select>
@@ -927,7 +933,7 @@ print_r($AidParc);
 echo "</pre>";
 */
 ?>
-					<select name="modifieParcoursLien[<?php echo $parcoursCommun->id; ?>]">
+					<select name="modifieParcoursLien[<?php echo $parcoursCommun->id; ?>]"id='champ_select_modifieParcoursLien_<?php echo $parcoursCommun->id; ?>'>
 						<option value=""></option>
 <?php
 	$AidParcours->data_seek(0);
@@ -1037,13 +1043,15 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 				<td>
 				</td>
 			</tr>
-		</table> 
+		</table>
+
 		<p><input type="submit" 
 			   alt="Submit button" 
 			   name="modifiePlusieursParcours" 
 			   value="Valider les modifications ci-dessus"
 			   title="Valider les modifications ci-dessus" />
 		</p>
+
 		<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Les parcours affichés sont ceux des classes sélectionnées.<br />
 		Si vous voulez voir tous les parcours saisis, sélectionnez toutes les classes dans le premier formulaire et validez la sélection.</p>
 
@@ -1052,6 +1060,84 @@ while ($APCommun = $AidParcours->fetch_object()) { ?>
 				for(i=0;i<<?php echo $cpt_ligne_parcours;?>;i++) {
 					if(document.getElementById('suppr_parcours_'+i)) {
 						document.getElementById('suppr_parcours_'+i).checked=mode;
+					}
+				}
+			}
+
+			// 20191111
+			function selection_liens_AID_parcours() {
+				champ_select=document.getElementsByTagName('select');
+				//alert(champ_select.length);
+				for(i=0;i<champ_select.length;i++) {
+					id=champ_select[i].getAttribute('id');
+					if(id.substring(0,33)=='champ_select_modifieParcoursCode_') {
+						// Tester si le champ est non vide : Il l'est forcément
+						//if(champ_select[i].selectedIndex>0) {
+							type_parcours=champ_select[i].options[champ_select[i].selectedIndex].value;
+							num_id_parcours=id.substring(33,id.length);
+							/*
+							if(i<5) {
+								alert('type_parcours='+type_parcours+' et num_id_parcours='+num_id_parcours);
+							}
+							*/
+
+							if(document.getElementById('champ_select_modifieParcoursLien_'+num_id_parcours)) {
+								lien_parcours=document.getElementById('champ_select_modifieParcoursLien_'+num_id_parcours);
+								if(lien_parcours.selectedIndex==0) {
+									// On cherche si on trouve un nom qui correspond
+									/*if(i<4) {
+										alert(lien_parcours.options.length);
+									}
+									*/
+									for(j=0;j<lien_parcours.options.length;j++) {
+										//valeur_courante=lien_parcours.options[j].value;
+										valeur_courante=lien_parcours.options[j].label;
+										title_courant=lien_parcours.options[j].getAttribute('title');
+
+										if(title_courant===null) {
+											// On est probablement sur l'index 0
+										}
+										else {
+											/*
+											if(i<4) {
+												alert('type_parcours='+type_parcours+' et num_id_parcours='+num_id_parcours+' valeur_courante='+valeur_courante+' title_courant='+title_courant);
+											}
+											*/
+
+											if(type_parcours=='PAR_AVN') {
+												if((title_courant.toLowerCase().indexOf('avenir')!=-1)||(title_courant.indexOf('Avenir')!=-1)) {
+													//alert('PAR_AVN trouvé');
+													lien_parcours.selectedIndex=j;
+													break;
+												}
+											}
+
+											if(type_parcours=='PAR_CIT') {
+												if(title_courant.toLowerCase().indexOf('citoyen')!=-1) {
+													lien_parcours.selectedIndex=j;
+													break;
+												}
+											}
+
+											if(type_parcours=='PAR_SAN') {
+												if(title_courant.toLowerCase().indexOf('santé')!=-1) {
+													lien_parcours.selectedIndex=j;
+													break;
+												}
+											}
+
+											if(type_parcours=='PAR_ART') {
+												if(title_courant.toLowerCase().indexOf('artistique')!=-1) {
+													lien_parcours.selectedIndex=j;
+													break;
+												}
+											}
+										}
+									}
+								}
+							}
+
+						//}
 					}
 				}
 			}
