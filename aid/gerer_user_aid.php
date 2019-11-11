@@ -112,7 +112,7 @@ if((isset($_GET['indice_aid']))&&(preg_match('/^[0-9]{1,}$/', $_GET['indice_aid'
 			<img src='../images/icons/ico_aide.png' class='icone16' title=\"Pour sélectionner plusieurs utilisateurs, effectuer Ctrl+Clic dans le champ SELECT ci-dessous.\" />
 		</p>";
 
-		$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' OR statut='scolarite' or statut='cpe') AND login NOT IN (SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE indice_aid='".$_GET['indice_aid']."') ORDER BY statut, nom, prenom;";
+		$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' OR statut='scolarite' or statut='cpe') AND etat='actif' AND login NOT IN (SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE indice_aid='".$_GET['indice_aid']."') ORDER BY statut, nom, prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res)==0) {
@@ -237,7 +237,7 @@ if((isset($_GET['indice_aid']))&&(preg_match('/^[0-9]{1,}$/', $_GET['indice_aid'
 
 		// Les comptes scolarité n'ont pas accès aux fiches projet /aid/index_fiches.php
 		//$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' OR statut='scolarite' or statut='cpe') AND login NOT IN (SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE indice_aid='".$_GET['indice_aid']."') ORDER BY statut, nom, prenom;";
-		$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' or statut='cpe') AND login NOT IN (SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE indice_aid='".$_GET['indice_aid']."') ORDER BY statut, nom, prenom;";
+		$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' or statut='cpe') AND etat='actif' AND login NOT IN (SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE indice_aid='".$_GET['indice_aid']."') ORDER BY statut, nom, prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res)==0) {
@@ -362,7 +362,7 @@ if((isset($_GET['indice_aid']))&&(preg_match('/^[0-9]{1,}$/', $_GET['indice_aid'
 			<img src='../images/icons/ico_aide.png' class='icone16' title=\"Pour sélectionner plusieurs utilisateurs, effectuer Ctrl+Clic dans le champ SELECT ci-dessous.\" />
 		</p>";
 
-		$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' OR statut='scolarite' or statut='cpe') AND login NOT IN (SELECT id_utilisateur FROM j_aid_utilisateurs_gest WHERE indice_aid='".$_GET['indice_aid']."' AND id_aid='".$_GET['id_aid']."') ORDER BY statut, nom, prenom;";
+		$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' OR statut='scolarite' or statut='cpe') AND etat='actif' AND login NOT IN (SELECT id_utilisateur FROM j_aid_utilisateurs_gest WHERE indice_aid='".$_GET['indice_aid']."' AND id_aid='".$_GET['id_aid']."') ORDER BY statut, nom, prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res)==0) {
@@ -493,7 +493,7 @@ if((isset($_GET['indice_aid']))&&(preg_match('/^[0-9]{1,}$/', $_GET['indice_aid'
 			<img src='../images/icons/ico_aide.png' class='icone16' title=\"Pour sélectionner plusieurs utilisateurs, effectuer Ctrl+Clic dans le champ SELECT ci-dessous.\" />
 		</p>";
 
-		$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' OR statut='scolarite' or statut='cpe') AND login NOT IN (SELECT id_utilisateur FROM j_aid_utilisateurs WHERE indice_aid='".$_GET['indice_aid']."' AND id_aid='".$_GET['id_aid']."') ORDER BY statut, nom, prenom;";
+		$sql="SELECT u.* FROM utilisateurs u WHERE (statut='professeur' OR statut='scolarite' or statut='cpe') AND etat='actif' AND login NOT IN (SELECT id_utilisateur FROM j_aid_utilisateurs WHERE indice_aid='".$_GET['indice_aid']."' AND id_aid='".$_GET['id_aid']."') ORDER BY statut, nom, prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res)==0) {
