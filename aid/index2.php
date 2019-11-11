@@ -165,6 +165,8 @@ $sql = "SELECT 1=1 FROM aid WHERE indice_aid='".$indice_aid."' AND sous_groupe='
 $trouve_parent = $mysqli->query($sql)->num_rows;
 $trouve_parent = Categorie_a_enfants ($indice_aid)->num_rows;
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+
 //**************** EN-TETE *********************
 $titre_page = "Gestion des ".$nom_aid;
 // if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
@@ -184,7 +186,7 @@ require_once("../lib/header.inc.php");
 	if ($NiveauGestionAid >= 10) {
 		// Admin
 		echo "
-	<a href=\"index.php\" title=\"Retour à la page d'accueil des AID : Liste des catégories d'AID\">
+	<a href=\"index.php\" title=\"Retour à la page d'accueil des AID : Liste des catégories d'AID\" onclick=\"return confirm_abandon (this, change, '$themessage')\">
 		<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 	</a>
 	|";
@@ -193,11 +195,11 @@ require_once("../lib/header.inc.php");
 	if (($NiveauGestionAid >= 5)&&(acces('/aid/add_aid.php', $_SESSION['statut']))) {
 ?>
 	<!-- | -->
-	<a href="add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=<?php echo $indice_aid; ?>">
+	<a href="add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 		Ajouter un(e) <?php echo $nom_aid; ?>
 	</a>
 	|
-	<a href="add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=<?php echo $indice_aid; ?>">
+	<a href="add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 		Ajouter des <?php echo $nom_aid; ?> à la chaîne
 	</a>
 <?php 
@@ -206,7 +208,7 @@ require_once("../lib/header.inc.php");
 	if ($NiveauGestionAid >= 10) {
 ?>
 	|
-	<a href="export_csv_aid.php?indice_aid=<?php echo $indice_aid; ?>">
+	<a href="export_csv_aid.php?indice_aid=<?php echo $indice_aid; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 		Importation de données depuis un fichier vers GEPI
 	</a>
 <?php
@@ -215,7 +217,9 @@ require_once("../lib/header.inc.php");
 	$NiveauGestionAid_categorie=NiveauGestionAid($_SESSION["login"],$indice_aid);
 	if($NiveauGestionAid_categorie==10) {
 		echo "
-		| <a href='config_aid.php?indice_aid=".$indice_aid."'>Catégorie AID</a>";
+		| <a href='config_aid.php?indice_aid=".$indice_aid."' title=\"Éditer la catégorie AID courante\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Catégorie AID</a>";
+
+		// Ajouter un formulaire pour passer à une autre catégorie
 	}
 
 ?>
@@ -226,7 +230,7 @@ require_once("../lib/header.inc.php");
 ?>
 <p class="medium">
 	Les droits d'accès aux différents champs sont configurables pour l'ensemble des AID dans la page 
-	<strong><em>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></em></strong>
+	<strong><em>Gestion des AID -> <a href='./config_aid_fiches_projet.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">Configurer les fiches projet</a></em></strong>
 	.
 </p>
 <?php
@@ -250,10 +254,10 @@ require_once("../lib/header.inc.php");
 	<table class='boireaus'>
 		<tr>
 			<th>
-				<a href='index2.php?order_by=numero,nom&amp;indice_aid=<?php echo $indice_aid;?>'>N°</a>
+				<a href='index2.php?order_by=numero,nom&amp;indice_aid=<?php echo $indice_aid;?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">N°</a>
 			</th>
 			<th>
-				<a href='index2.php?order_by=nom&amp;indice_aid=<?php echo $indice_aid;?>'>Nom</a>
+				<a href='index2.php?order_by=nom&amp;indice_aid=<?php echo $indice_aid;?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">Nom</a>
 			</th>
 <?php
 // En tete de la colonne "Ajouter, supprimer des professeurs"
@@ -418,7 +422,7 @@ while ($i < $nombreligne) {
 		if ($activer_outils_comp == "y") {
 ?>
 			<td class='medium'>
-				<a href='modif_fiches.php?aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>&amp;action=modif&amp;retour=index2.php'>
+				<a href='modif_fiches.php?aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>&amp;action=modif&amp;retour=index2.php' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 					<strong><?php 
 						if(trim($aid_nom)=="") {
 							echo "<span style='color:red'>ANOMALIE&nbsp;: Le nom est vide. Cliquez pour corriger</span>";
@@ -432,7 +436,7 @@ while ($i < $nombreligne) {
 <?php
 		} else { ?>
 			<td class='medium'>
-				<a href='add_aid.php?action=modif_aid&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
+				<a href='add_aid.php?action=modif_aid&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 					<strong><?php echo $aid_nom; ?></strong>
 				</a>
 			</td>
@@ -442,7 +446,7 @@ while ($i < $nombreligne) {
 	} else if ($NiveauGestionAid_courant >= 5) { 
 ?>
 			<td class='medium'>
-				<a href='add_aid.php?action=modif_aid&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
+				<a href='add_aid.php?action=modif_aid&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 					<strong><?php echo $aid_nom; ?></strong>
 				</a>
 			</td>
@@ -461,7 +465,7 @@ while ($i < $nombreligne) {
 		if (!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y'))) {
 ?>
 			<td class='medium noprint'>
-				<a href='modify_aid.php?flag=prof&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
+				<a href='modify_aid.php?flag=prof&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 					Ajouter, supprimer des professeurs
 				</a>
 			</td>
@@ -473,7 +477,7 @@ while ($i < $nombreligne) {
 	if ($NiveauGestionAid_courant >= 1) {
 ?>
 			<td class='medium noprint'>
-				<a href='modify_aid.php?flag=eleve&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
+				<a href='modify_aid.php?flag=eleve&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 					Ajouter, supprimer des élèves
 				</a>
 			</td>
@@ -484,7 +488,7 @@ while ($i < $nombreligne) {
 		if (getSettingValue("active_mod_gest_aid")=="y") {
 ?>
 			<td class='medium noprint'>
-				<a href='modify_aid.php?flag=prof_gest&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
+				<a href='modify_aid.php?flag=prof_gest&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 					Ajouter, supprimer des gestionnaires
 				</a>
 			</td>
@@ -499,6 +503,7 @@ while ($i < $nombreligne) {
 				<input type="checkbox" 
 					   name="fiche_publique_<?php echo $aid_id; ?>" 
 					   value="y" 
+					   onchange="changement()"
 					   id="case_1_<?php echo $i; ?>"
 <?php					if ($fiche_publique == "y") {echo " checked = 'checked' ";} ?>
 					   />
@@ -508,6 +513,7 @@ while ($i < $nombreligne) {
 				<input type="checkbox" 
 					   name="eleve_peut_modifier_<?php echo $aid_id; ?>" 
 					   value="y" 
+					   onchange="changement()"
 					   id="case_2_<?php echo $i; ?>"
 <?php					if ($eleve_peut_modifier == "y") {echo " checked = 'checked' ";} ?>
 					   />
@@ -517,6 +523,7 @@ while ($i < $nombreligne) {
 				<input type="checkbox" 
 					   name="prof_peut_modifier_<?php echo $aid_id; ?>" 
 					   value="y" 
+					   onchange="changement()"
 					   id="case_3_<?php echo $i; ?>"
 <?php					if ($prof_peut_modifier == "y") {echo " checked = 'checked' ";} ?>
 					   />
@@ -526,6 +533,7 @@ while ($i < $nombreligne) {
 				<input type="checkbox" 
 					   name="cpe_peut_modifier_<?php echo $aid_id; ?>"
 					   value="y" 
+					   onchange="changement()"
 					   id="case_4_<?php echo $i; ?>"
  <?php					if ($cpe_peut_modifier == "y") {echo " checked = 'checked' ";} ?>
 					   />
@@ -535,6 +543,7 @@ while ($i < $nombreligne) {
 				<input type="checkbox" 
 					   name="affiche_adresse1_<?php echo $aid_id; ?>" 
 					   value="y" 
+					   onchange="changement()"
 					   id="case_5_<?php echo $i; ?>"
  <?php					if ($affiche_adresse1 == "y") {echo " checked = 'checked' ";} ?>
 					   />
@@ -544,6 +553,7 @@ while ($i < $nombreligne) {
 				<input type="checkbox" 
 					   name="en_construction_<?php echo $aid_id; ?>" 
 					   value="y" 
+					   onchange="changement()"
 					   id="case_6_<?php echo $i; ?>"
 <?php					if ($en_construction == "y") {echo " checked = 'checked' ";} ?>
 					   />
@@ -553,6 +563,7 @@ while ($i < $nombreligne) {
 				<input type="checkbox" 
 					   name="visibilite_eleve_<?php echo $aid_id; ?>" 
 					   value="y" 
+					   onchange="changement()"
 					   id="case_7_<?php echo $i; ?>"
 <?php					if ($visibilite_eleve == "y") {echo " checked = 'checked' ";} ?>
 					   />
@@ -564,7 +575,7 @@ while ($i < $nombreligne) {
 	if ($NiveauGestionAid_courant >= 5)  {
 ?>
 			<td class='medium'>
-				<a class="noprint" href='../lib/confirm_query.php?liste_cible=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid ?>&amp;action=del_aid<?php echo add_token_in_url() ?>'>
+				<a class="noprint" href='../lib/confirm_query.php?liste_cible=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid ?>&amp;action=del_aid<?php echo add_token_in_url() ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
 					supprimer
 				</a>
 			</td>
