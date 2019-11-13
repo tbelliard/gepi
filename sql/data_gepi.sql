@@ -2316,3 +2316,4 @@ INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LVE'
 INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='CHK', nom='CHK', valeur='Chant Choral';
 INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LCE', nom='LCE', valeur='Langues et cultures européennes';
 INSERT INTO droits SET id='/aid/gerer_user_aid.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Gérer les professeurs, gestionnaires,... d AID', statut='';
+INSERT INTO droits SET id='/messagerie/consulter_messages.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Consulter les messages individuels sur le Panneau d affichage', statut='';

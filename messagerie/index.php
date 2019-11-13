@@ -2,7 +2,7 @@
 /*
  * $Id: index.php 7393 2011-07-05 17:58:38Z mleygnac $
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -494,7 +494,17 @@ echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon 
 if(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
 	echo " | <a href='../classes/dates_classes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nouvel événement classe</a>";
 }
-"</p>\n";
+
+if(acces("/messagerie/consulter_messages.php", $_SESSION['statut'])) {
+	// Test sur la présence de messages individuels:
+	$sql="SELECT 1=1 FROM messages WHERE login_destinataire!='' AND date_fin>='".time()."' LIMIT 1";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo " | <a href='consulter_messages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"/Lorsque des messages/annonces ont été postées sur le Panneau d'affichage pour des utilisateurs particuliers, ils n'apparaissent pas dans les messages pouvant être modifiés.\">Consulter les messages individuels</a>";
+	}
+}
+
+echo "</p>\n";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";

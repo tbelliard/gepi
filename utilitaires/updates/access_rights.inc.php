@@ -2050,6 +2050,18 @@ autre='F',
 description='Gérer les professeurs, gestionnaires,... d AID',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/messagerie/consulter_messages.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Consulter les messages individuels sur le Panneau d affichage',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
