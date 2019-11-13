@@ -487,8 +487,17 @@
 
 						if ($affiche_categories) {
 							// On utilise les valeurs spécifiées pour la classe en question
-							$sql="SELECT DISTINCT jgc.id_groupe, jgm.id_matiere matiere, jgc.categorie_id ".
-							"FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
+							$sql="SELECT DISTINCT jgc.id_groupe, 
+									jgm.id_matiere AS matiere, 
+									jgc.priorite, 
+									jmcc.priority, 
+									m.nom_complet, 
+									jgc.categorie_id ".
+							"FROM j_eleves_groupes jeg, 
+								j_groupes_classes jgc, 
+								j_groupes_matieres jgm, 
+								j_matieres_categories_classes jmcc, 
+								matieres m " .
 							"WHERE ( " .
 							"jeg.login = '" . $current_eleve_login[$i] ."' AND " .
 							"jgc.id_groupe = jeg.id_groupe AND " .
@@ -501,10 +510,18 @@
 							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
 
 							$sql.=") " .
-							"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
+							"ORDER BY jmcc.priority, 
+								jgc.priorite, 
+								m.nom_complet;";
 						} else {
-							$sql="SELECT DISTINCT jgc.id_groupe, jgc.categorie_id, jgc.coef, jgm.id_matiere matiere " .
-							"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_eleves_groupes jeg " .
+							$sql="SELECT DISTINCT jgc.id_groupe, 
+										jgc.categorie_id, 
+										jgc.coef, 
+										jgc.priorite, 
+										jgm.id_matiere AS matiere " .
+							"FROM j_groupes_classes jgc, 
+								j_groupes_matieres jgm, 
+								j_eleves_groupes jeg " .
 							"WHERE ( " .
 							"jeg.login = '" . $current_eleve_login[$i] . "' AND " .
 							"jgc.id_groupe = jeg.id_groupe AND " .
@@ -515,9 +532,10 @@
 							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
 
 							$sql.=") " .
-							"ORDER BY jgc.priorite,jgm.id_matiere";
+							"ORDER BY jgc.priorite, 
+								jgm.id_matiere;";
 						}
-//echo "$sql<br />\n";
+						//echo "$sql<br />\n";
 						$appel_liste_groupes = mysqli_query($GLOBALS["mysqli"], $sql);
 						$nombre_groupes = mysqli_num_rows($appel_liste_groupes);
 
