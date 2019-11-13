@@ -8462,7 +8462,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 			if(mysqli_num_rows($res1)==0) {
 				info_debug("Fin parcours_diff adresses");
 				// On a terminé le parcours
-				echo "<p>Le parcours des différences concernant les personnes est terminé.</p>\n";
+				echo "<p>Le parcours des différences concernant les adresses est terminé.</p>\n";
 
 				flush();
 
