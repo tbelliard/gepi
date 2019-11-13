@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -322,6 +322,13 @@ if (isset($_POST['is_posted'])) {
 			else {
 				$msg.="Erreur lors de la suppression des préférences d'affichage ou non des enseignements en page d'accueil simplifiée.<br />";
 			}
+		}
+
+		// Ménage: Suppression des messages individuels passés
+		$sql="DELETE FROM messages WHERE login_destinataire!='' AND date_fin<'".time()."'";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$del) {
+			$msg.="Erreur lors de la suppression des messages individuels passés du le Panneau d'affichage.<br />";
 		}
 
 	}
