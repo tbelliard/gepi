@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -93,6 +93,8 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Statistiques";
 require_once("../lib/header.inc.php");
@@ -219,8 +221,8 @@ if(!isset($is_posted)) {
 	echo "<input type='submit' name='valider' value='Valider' />\n";
 
 	//echo "<p style='color:red;'>Ajouter des liens Tout cocher/décocher.</p>\n";
-	echo "<p style='color:red;'>A FAIRE: Totaux par classes...</p>\n";
-	echo "<p style='color:red;'>A FAIRE: Pouvoir faire des tableaux mois par mois.</p>\n";
+	//echo "<p style='color:red;'>A FAIRE: Totaux par classes...</p>\n";
+	//echo "<p style='color:red;'>A FAIRE: Pouvoir faire des tableaux mois par mois.</p>\n";
 	//echo "</div>\n";
 
 	echo "</fieldset>\n";
@@ -766,16 +768,14 @@ elseif($mode=='topten') {
 	}
 	else {
 		echo "<p>Les $nb_ele élèves responsables du plus grand nombre d'".$mod_disc_terme_incident."s&nbsp;:</p>\n";
-		echo "<table class='boireaus' summary='Tableau des fauteurs d ".$mod_disc_terme_incident."s'>\n";
+		echo "<table class='boireaus boireaus_alt resizable sortable' summary='Tableau des fauteurs d ".$mod_disc_terme_incident."s'>\n";
 		echo "<tr>\n";
-		echo "<th>Elève</th>\n";
-		echo "<th>Classe</th>\n";
-		echo "<th>Nombre d'".$mod_disc_terme_incident."s</th>\n";
+		echo "<th class='text'>Elève</th>\n";
+		echo "<th class='text'>Classe</th>\n";
+		echo "<th class='number'>Nombre d'".$mod_disc_terme_incident."s</th>\n";
 		echo "</tr>\n";
-		$alt=1;
 		while($lig=mysqli_fetch_object($res)) {
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr>\n";
 			echo "<td>\n";
 			echo "<a href='../eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=discipline' target='_blank'>";
 			echo get_nom_prenom_eleve($lig->login);
@@ -805,16 +805,14 @@ elseif($mode=='topten') {
 	}
 	else {
 		echo "<p>Les $nb_ele élèves qui ont le plus de ".$mod_disc_terme_sanction."s&nbsp;:</p>\n";
-		echo "<table class='boireaus' summary='Tableau des ".$mod_disc_terme_sanction."nés'>\n";
+		echo "<table class='boireaus boireaus_alt resizable sortable' summary='Tableau des ".$mod_disc_terme_sanction."nés'>\n";
 		echo "<tr>\n";
-		echo "<th>Elève</th>\n";
-		echo "<th>Classe</th>\n";
-		echo "<th>Nombre de ".$mod_disc_terme_sanction."s</th>\n";
+		echo "<th class='text'>Elève</th>\n";
+		echo "<th class='text'>Classe</th>\n";
+		echo "<th class='number'>Nombre de ".$mod_disc_terme_sanction."s</th>\n";
 		echo "</tr>\n";
-		$alt=1;
 		while($lig=mysqli_fetch_object($res)) {
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr>\n";
 			echo "<td>\n";
 			echo "<a href='../eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=discipline' target='_blank'>";
 			echo get_nom_prenom_eleve($lig->login);
@@ -844,16 +842,14 @@ elseif($mode=='topten') {
 	}
 	else {
 		echo "<p>Les $nb_ele élèves qui ont le plus de retenues&nbsp;:</p>\n";
-		echo "<table class='boireaus' summary='Tableau des sanctionnés par des retenues'>\n";
+		echo "<table class='boireaus boireaus_alt resizable sortable' summary='Tableau des sanctionnés par des retenues'>\n";
 		echo "<tr>\n";
-		echo "<th>Elève</th>\n";
-		echo "<th>Classe</th>\n";
-		echo "<th>Nombre de retenues</th>\n";
+		echo "<th class='text'>Elève</th>\n";
+		echo "<th class='text'>Classe</th>\n";
+		echo "<th class='number'>Nombre de retenues</th>\n";
 		echo "</tr>\n";
-		$alt=1;
 		while($lig=mysqli_fetch_object($res)) {
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr>\n";
 			echo "<td>\n";
 			echo "<a href='../eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=discipline' target='_blank'>";
 			echo get_nom_prenom_eleve($lig->login);
@@ -885,16 +881,14 @@ elseif($mode=='topten') {
 	}
 	else {
 		echo "<p>Les $nb_ele élèves qui ont le plus d'exclusions&nbsp;:</p>\n";
-		echo "<table class='boireaus' summary='Tableau des sanctionnés par des exclusions'>\n";
+		echo "<table class='boireaus boireaus_alt resizable sortable' summary='Tableau des sanctionnés par des exclusions'>\n";
 		echo "<tr>\n";
-		echo "<th>Elève</th>\n";
-		echo "<th>Classe</th>\n";
-		echo "<th>Nombre d'exclusions</th>\n";
+		echo "<th class='text'>Elève</th>\n";
+		echo "<th class='text'>Classe</th>\n";
+		echo "<th class='number'>Nombre d'exclusions</th>\n";
 		echo "</tr>\n";
-		$alt=1;
 		while($lig=mysqli_fetch_object($res)) {
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr>\n";
 			echo "<td>\n";
 			echo "<a href='../eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=discipline' target='_blank'>";
 			echo get_nom_prenom_eleve($lig->login);
