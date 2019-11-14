@@ -404,7 +404,11 @@ elseif($mode=='totaux') {
 		$restriction_date.=" AND (si.date<='$date_fin_disc') ";
 	}
 
-	echo "<p class='bold'>".ucfirst($mod_disc_terme_incident)."s&nbsp;:</p>\n";
+	echo "<p class='bold' style='margin-top:1em;'>".ucfirst($mod_disc_terme_incident)."s&nbsp;:</p>\n";
+	if(!isset($nature)) {
+		$nature=array();
+		echo "<p style='color:red'>Aucune nature n'a été choisie.</p>";
+	}
 	echo "<table class='boireaus' summary='".ucfirst($mod_disc_terme_incident)."s'>\n";
 	echo "<tr>\n";
 	echo "<th>Nature</th>\n";
@@ -458,7 +462,11 @@ elseif($mode=='totaux') {
 	echo "</table>\n";
 
 
-	echo "<p class='bold'>Mesures prises&nbsp;:</p>\n";
+	echo "<p class='bold' style='margin-top:1em;'>Mesures prises&nbsp;:</p>\n";
+	if(!isset($id_mesure)) {
+		$id_mesure=array();
+		echo "<p style='color:red'>Aucune mesure prise n'a été choisie.</p>";
+	}
 	echo "<table class='boireaus' summary='Mesures prises'>\n";
 	echo "<tr>\n";
 	echo "<th>Mesure</th>\n";
@@ -489,7 +497,11 @@ elseif($mode=='totaux') {
 	echo "</table>\n";
 
 
-	echo "<p class='bold'>".ucfirst($mod_disc_terme_sanction)."s&nbsp;:</p>\n";
+	echo "<p class='bold' style='margin-top:1em;'>".ucfirst($mod_disc_terme_sanction)."s&nbsp;:</p>\n";
+	if(!isset($id_nature_sanction)) {
+		$id_nature_sanction=array();
+		echo "<p style='color:red'>Aucun(e) ".ucfirst($mod_disc_terme_sanction)." n'a été choisi(e).</p>";
+	}
 	echo "<table class='boireaus' summary='".ucfirst($mod_disc_terme_sanction)."s'>\n";
 	echo "<tr>\n";
 	echo "<th>".ucfirst($mod_disc_terme_sanction)."</th>\n";
