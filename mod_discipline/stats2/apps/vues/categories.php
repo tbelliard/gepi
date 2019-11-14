@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *
  * This file is part of GEPI.
  *
@@ -35,10 +35,18 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                 <legend class='legend'>Affectation : </legend>
                 <h3>1. Sélectionner les incidents</h3>
                 <select  name='natures_incidents[]' multiple size=20 >
-                    <?php  foreach($liste_natures as $nature) {?>
+                    <?php
+                       $temoin_nature_incident_existante=false;
+                       foreach($liste_natures as $nature) {
+                           if(isset($nature->nature)) {
+                               $temoin_nature_incident_existante=true;
+                    ?>
                     <option class='option' VALUE="<?php echo htmlspecialchars($nature->nature,ENT_QUOTES);?>">
                     <?php if  (!$nature->nature) echo ' Pas de nature renseignée ('.$nature->categorie_sigle.')'; else echo $nature->nature.' ('.$nature->categorie_sigle.')';?></option>
-                        <?php }?>
+                     <?php
+                             }
+                        }
+                     ?>
                 </select>
                 <br />
                 <h3>2. Choisir une Categorie</h3>
@@ -49,7 +57,16 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     <option class='option' VALUE='default'>Enlever les catégories</option>
                 </select><br />
                 <h3>3. Mise à jour des données</h3>
-                <Input type='submit' value='Mettre à jour' class='submit'>
+                <?php
+                if($temoin_nature_incident_existante) {
+                    echo "
+                <input type='submit' value='Mettre à jour' class='submit'>";
+                }
+                else {
+                    echo "<p style='color:red'>Il n'existe aucune nature d'incident,<br />
+                    donc pas d'association Nature-&gt;Catégorie possible.</p>";
+                }
+                ?>
             </fieldset>
         </form>
     </div>
@@ -67,7 +84,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                         
                         foreach($liste_natures as $nature) { ?>
                     <ul class='selected_titre'>
-                                <?php if ($nature->categorie==$liste_categories[$i]->categorie) { ?>
+                                <?php if ((isset($nature->categorie))&&($nature->categorie==$liste_categories[$i]->categorie)) { ?>
                         <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES).add_token_in_url() ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignée'; else echo $nature->nature;?></a></li>
                                     <?php }?>
                     </ul>
@@ -83,7 +100,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                         <?php
                         foreach($liste_natures as $nature) {?>
                     <ul class='selected_titre'>
-                                <?php if ($nature->categorie==$liste_categories[$i]->categorie) { ?>
+                                <?php if ((isset($nature->categorie))&&($nature->categorie==$liste_categories[$i]->categorie)) { ?>
                         <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES).add_token_in_url()  ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignée'; else echo $nature->nature;?></a></li>
                                     <?php }?>
                     </ul>
