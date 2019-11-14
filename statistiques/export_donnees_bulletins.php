@@ -472,6 +472,13 @@ if(!isset($id_classe)) {
 		die();
 	}
 
+	if($nb_classes==1){
+		$checked=' checked';
+	}
+	else {
+		$checked='';
+	}
+
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
@@ -492,7 +499,7 @@ if(!isset($id_classe)) {
 			echo "<td align='left'>\n";
 		}
 
-		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe</label>";
+		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)'".$checked." /> $lig_clas->classe</label>";
 		echo "<br />\n";
 		$cpt++;
 	}
@@ -533,6 +540,7 @@ L'extraction a été rendue plus paramétrable en permettant de choisir les clas
 		}
 	}
 
+	change_style_classe(0);
 </script>\n";
 }
 elseif(!isset($choix_periodes)) {
@@ -710,8 +718,18 @@ elseif(!isset($choix_periodes)) {
 }
 elseif(!isset($choix_matieres)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes</a>";
-	echo " | <a href='javascript: history.go(-1);'>Retour au choix des périodes</a>";
+	//echo " | <a href='javascript: history.go(-1);'>Retour au choix des périodes</a>";
+	echo " | <a href='#' onclick=\"document.getElementById('form_retour_choix_periodes').submit()\">Retour au choix des périodes</a>";
 	echo "</p>\n";
+
+	//=======================
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_retour_choix_periodes'>";
+	for($i=0;$i<count($id_classe);$i++) {
+		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />";
+		//echo " ".$id_classe[$i];
+	}
+	echo "</form>";
+	//=======================
 
 	echo "<p class='bold'>Choix des matières/enseignements&nbsp;:</p>\n";
 
@@ -934,9 +952,41 @@ elseif(!isset($choix_matieres)) {
 }
 elseif(!isset($choix_eleves)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes</a>";
-	echo " | <a href='javascript: history.go(-2);'>Retour au choix des périodes</a>";
-	echo " | <a href='javascript: history.go(-1);'>Retour au choix des enseignements</a>";
+	echo " | <a href='#' onclick=\"document.getElementById('form_retour_choix_periodes').submit()\">Retour au choix des périodes</a>";
+	echo " | <a href='#' onclick=\"document.getElementById('form_retour_choix_enseignements').submit()\">Retour au choix des enseignements</a>";
+	//echo " | <a href='javascript: history.go(-1);'>Retour au choix des enseignements</a>";
 	echo "</p>\n";
+
+	//=======================
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_retour_choix_periodes'>";
+	for($i=0;$i<count($id_classe);$i++) {
+		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />";
+		//echo " ".$id_classe[$i];
+	}
+	echo "</form>";
+	//=======================
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_retour_choix_enseignements'>";
+	for($i=0;$i<count($id_classe);$i++) {
+		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />";
+		//echo " ".$id_classe[$i];
+	}
+	echo "<input type='hidden' name='choix_periodes' value='$choix_periodes' />";
+	echo "<input type='hidden' name='max_per' value='$max_per' />";
+	if($choix_periodes=='certaines') {
+		for($i=0;$i<count($id_classe);$i++) {
+			if(isset($_POST['num_periode_'.$id_classe[$i]])) {
+				$tmp_per=$_POST['num_periode_'.$id_classe[$i]];
+				for($loop=0;$loop<$max_per;$loop++) {
+					if(isset($tmp_per[$loop])) {
+						echo "<input type='hidden' name='num_periode_".$id_classe[$i]."[]' value='$tmp_per[$loop]' />\n";
+						//echo "num_periode_".$id_classe[$i]."[]='$tmp_per[$loop]'<br />";
+					}
+				}
+			}
+		}
+	}
+	echo "</form>";
+	//=======================
 
 	echo "<p class='bold'>Choix des élèves&nbsp;:</p>\n";
 
@@ -1121,10 +1171,86 @@ elseif(!isset($choix_donnees)) {
 	// Anonymat souhaité
 
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes</a>";
-	echo " | <a href='javascript: history.go(-3);'>Retour au choix des périodes</a>";
-	echo " | <a href='javascript: history.go(-2);'>Retour au choix des enseignements</a>";
-	echo " | <a href='javascript: history.go(-1);'>Retour au choix des élèves</a>";
+	//echo " | <a href='javascript: history.go(-3);'>Retour au choix des périodes</a>";
+	//echo " | <a href='javascript: history.go(-2);'>Retour au choix des enseignements</a>";
+	//echo " | <a href='javascript: history.go(-1);'>Retour au choix des élèves</a>";
+
+	echo " | <a href='#' onclick=\"document.getElementById('form_retour_choix_periodes').submit()\">Retour au choix des périodes</a>";
+	echo " | <a href='#' onclick=\"document.getElementById('form_retour_choix_enseignements').submit()\">Retour au choix des enseignements</a>";
+	echo " | <a href='#' onclick=\"document.getElementById('form_retour_choix_eleves').submit()\">Retour au choix des élèves</a>";
 	echo "</p>\n";
+
+	//debug_var();
+
+	//=======================
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_retour_choix_periodes'>";
+	for($i=0;$i<count($id_classe);$i++) {
+		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />";
+		//echo " ".$id_classe[$i];
+	}
+	echo "</form>";
+	//=======================
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_retour_choix_enseignements'>";
+	for($i=0;$i<count($id_classe);$i++) {
+		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />";
+		//echo " ".$id_classe[$i];
+	}
+	echo "<input type='hidden' name='choix_periodes' value='$choix_periodes' />";
+	echo "<input type='hidden' name='max_per' value='$max_per' />";
+	if($choix_periodes=='certaines') {
+		for($i=0;$i<count($id_classe);$i++) {
+			if(isset($_POST['num_periode_'.$id_classe[$i]])) {
+				$tmp_per=$_POST['num_periode_'.$id_classe[$i]];
+				for($loop=0;$loop<$max_per;$loop++) {
+					if(isset($tmp_per[$loop])) {
+						echo "<input type='hidden' name='num_periode_".$id_classe[$i]."[]' value='$tmp_per[$loop]' />\n";
+						//echo "num_periode_".$id_classe[$i]."[]='$tmp_per[$loop]'<br />";
+					}
+				}
+			}
+		}
+	}
+	echo "</form>";
+	//=======================
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_retour_choix_eleves'>";
+	for($i=0;$i<count($id_classe);$i++) {
+		echo "<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />";
+		//echo " ".$id_classe[$i];
+	}
+	echo "<input type='hidden' name='choix_periodes' value='$choix_periodes' />";
+	echo "<input type='hidden' name='max_per' value='$max_per' />";
+	if($choix_periodes=='certaines') {
+		for($i=0;$i<count($id_classe);$i++) {
+			if(isset($_POST['num_periode_'.$id_classe[$i]])) {
+				$tmp_per=$_POST['num_periode_'.$id_classe[$i]];
+				for($loop=0;$loop<$max_per;$loop++) {
+					if(isset($tmp_per[$loop])) {
+						echo "<input type='hidden' name='num_periode_".$id_classe[$i]."[]' value='$tmp_per[$loop]' />\n";
+						//echo "num_periode_".$id_classe[$i]."[]='$tmp_per[$loop]'<br />";
+					}
+				}
+			}
+		}
+	}
+
+	echo "<input type='hidden' name='choix_matieres' value='$choix_matieres' />";
+
+	if($choix_matieres=='certaines') {
+		for($i=0;$i<count($id_classe);$i++) {
+			if(isset($_POST['id_groupe_'.$id_classe[$i]])) {
+				$tmp_grp=$_POST['id_groupe_'.$id_classe[$i]];
+				for($loop=0;$loop<count($tmp_grp);$loop++) {
+					echo "<input type='hidden' name='id_groupe_".$id_classe[$i]."[]' value='$tmp_grp[$loop]' />\n";
+				}
+			}
+		}
+	}
+
+	echo "</form>";
+	//=======================
+
+
+
 
 	echo "<p class='bold'>Choix des données à exporter&nbsp;:</p>\n";
 
