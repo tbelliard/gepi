@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *
  * This file is part of GEPI.
  *
@@ -51,22 +51,32 @@ class CategoriesCtrl extends Controleur {
     $this->vue->afficheVue('categories.php',$this->vue->getVars());
     echo"<script type='text/javascript'>initSortable();</script>";
   }
+
   private function add_infos_categories($liste_nat,$liste_cat) {
-    foreach($liste_nat as $nature) {
-      if (!$nature->id_categorie) {
-        $nature->categorie='Non affecté';
-        $nature->categorie_sigle='Non affecté';
-      } else {
-        foreach($liste_cat as $categorie) {
-          if($categorie->id==$nature->id_categorie) {
-            $nature->categorie=$categorie->categorie;
-            $nature->categorie_sigle=$categorie->sigle;
-          }
-        }
-      }
-    }
-    return $liste_nat;
+	//echo "\$liste_nat<pre>";
+	//print_r($liste_nat);
+	//echo "</pre>";
+	if(!isset($liste_nat['error'])) {
+		foreach($liste_nat as $nature) {
+			//echo "\$nature<pre>";
+			//print_r($nature);
+			//echo "</pre>";
+			if ((!isset($nature->id_categorie))||(!$nature->id_categorie)) {
+				$nature->categorie='Non affecté';
+				$nature->categorie_sigle='Non affecté';
+			} else {
+				foreach($liste_cat as $categorie) {
+					if($categorie->id==$nature->id_categorie) {
+						$nature->categorie=$categorie->categorie;
+						$nature->categorie_sigle=$categorie->sigle;
+					}
+				}
+			}
+		}
+	}
+	return $liste_nat;
   }
+
   function save() {
     check_token(false);
     $this->natures_selected=isset($_POST['natures_incidents'])?$_POST['natures_incidents']:(isset($_GET['natures_incidents'])?$_GET['natures_incidents']:Null);
