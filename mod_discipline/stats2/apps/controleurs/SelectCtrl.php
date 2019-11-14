@@ -129,7 +129,7 @@ class SelectCtrl extends Controleur {
          $page_redir="../index.php";
       }
       echo"<script type='text/javascript'>
-      alert('Renseignez les périodes du calendrier en admin');
+      alert('Renseignez les périodes de notes du calendrier en admin (périodes autres que les vacances).');
       document.location.href='$page_redir';
 </script>";
     }
