@@ -88,6 +88,8 @@ if ($uid_post==$uid_prime) {
 
 		$contenu_cor=a_href_target_blank($contenu_cor);
 
+		$contenu_cor=cdt_corrige_chemin_archive($contenu_cor);
+
 		if ($contenu_cor == "" or $contenu_cor == "<br>") {$contenu_cor = "...";}
 	
 		$sql="INSERT INTO ct_private_entry SET date_ct='$date_devoir', heure_entry='".strftime("%H:%M:%S")."', id_login='".$_SESSION['login']."', id_groupe='$id_groupe', contenu='<b>COPIE DE SAUVEGARDE</b><br />$contenu_cor';";
@@ -177,6 +179,8 @@ if($url_absolues_gepi!="") {
 $contenu_cor=cdt_copie_fichiers_archive_vers_cdt_courant($contenu_cor, "devoir", $id_groupe);
 
 $contenu_cor=a_href_target_blank($contenu_cor);
+
+$contenu_cor=cdt_corrige_chemin_archive($contenu_cor);
 
 //INSERT INTO setting SET name='url_visionneur_instrumentpoche', value='https://127.0.0.1/steph/gepi_git_trunk/cahier_texte_2/visionneur_instrumenpoche.php';
 $url_visionneur_instrumentpoche=getSettingValue('url_visionneur_instrumentpoche');

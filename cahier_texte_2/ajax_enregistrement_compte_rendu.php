@@ -82,6 +82,7 @@ if ($uid_post==$uid_prime) {
 		//$contenu_cor = stripslashes($contenu_cor);
 
 		$contenu_cor=a_href_target_blank($contenu_cor);
+		$contenu_cor=cdt_corrige_chemin_archive($contenu_cor);
 
 		if ($contenu_cor == "" or $contenu_cor == "<br>") {$contenu_cor = "...";}
 	
@@ -197,6 +198,8 @@ fclose($f);
 $contenu_cor=cdt_copie_fichiers_archive_vers_cdt_courant($contenu_cor, "compte_rendu", $id_groupe);
 
 $contenu_cor=a_href_target_blank($contenu_cor);
+
+$contenu_cor=cdt_corrige_chemin_archive($contenu_cor);
 
 //INSERT INTO setting SET name='url_visionneur_instrumentpoche', value='https://127.0.0.1/steph/gepi_git_trunk/cahier_texte_2/visionneur_instrumenpoche.php';
 $url_visionneur_instrumentpoche=getSettingValue('url_visionneur_instrumentpoche');

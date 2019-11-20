@@ -19818,4 +19818,13 @@ function menage_engagements_user() {
 	return $retour;
 }
 
+function cdt_corrige_chemin_archive($texte) {
+	$contenu_cor=$texte;
+	if(preg_match('|/documents/archives/etablissement/[[:alnum:] _-]*/documents/archives/etablissement/|', $contenu_cor)) {
+		//$contenu_cor=preg_replace('|<a href=|i', '<a target="'.$target.'" href=', $contenu_cor);
+		$contenu_cor=preg_replace('|/documents/archives/etablissement/[[:alnum:] _-]*/documents/archives/etablissement/|', '/documents/archives/etablissement/', $contenu_cor);
+	}
+	return $contenu_cor;
+}
+
 ?>
