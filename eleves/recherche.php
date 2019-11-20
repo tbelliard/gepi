@@ -538,8 +538,9 @@ if(isset($is_posted_recherche2)) {
 
 	for($loop=0;$loop<count($rech_matiere);$loop++) {
 		$sql="SELECT DISTINCT jgp.id_groupe, u.login FROM utilisateurs u, j_groupes_matieres jgm, j_groupes_professeurs jgp WHERE jgm.id_matiere='".$rech_matiere[$loop]."'
-			AND jgm.id_groupe=jgp.id_groupe
-			AND jgp.login=u.login;";
+			AND jgm.id_groupe=jgp.id_groupe 
+			AND jgp.login=u.login 
+			ORDER BY u.nom, u.prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
@@ -567,7 +568,8 @@ if(isset($is_posted_recherche2b)) {
 
 	for($loop=0;$loop<count($rech_matiere);$loop++) {
 		$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_matiere='".$rech_matiere[$loop]."'
-			AND jpm.id_professeur=u.login;";
+			AND jpm.id_professeur=u.login 
+			ORDER BY u.nom, u.prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
@@ -610,7 +612,8 @@ if(isset($is_posted_recherche3)) {
 	for($loop=0;$loop<count($rech_classe);$loop++) {
 		$sql="SELECT jgp.id_groupe, u.login FROM utilisateurs u, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_classe='".$rech_classe[$loop]."'
 			AND jgc.id_groupe=jgp.id_groupe
-			AND jgp.login=u.login;";
+			AND jgp.login=u.login 
+			ORDER BY u.nom, u.prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
@@ -637,7 +640,11 @@ if(isset($is_posted_recherche4)) {
 	$tab_result_recherche['eleve']=array();
 
 	for($loop=0;$loop<count($rech_classe);$loop++) {
-		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$rech_classe[$loop]."';";
+		$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec, 
+								eleves e 
+							WHERE jec.id_classe='".$rech_classe[$loop]."' AND 
+								e.login=jec.login 
+							ORDER BY e.nom, e.prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
