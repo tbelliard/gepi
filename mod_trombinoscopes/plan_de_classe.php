@@ -477,7 +477,7 @@ echo "<div style='float:right; width:40px;'>\n";
 echo "</div\n>";
 
 echo "<div style='float:right; width:40px; margin-right:4em;'>\n";
-	echo "<a href='javascript:inverser_plan_classe()' title=\"Inverser le plan : Cette opération est encore en travaux... soyez indulgent;).\">Inverser</a>";
+	echo "<a href='javascript:inverser_plan_classe()' title=\"Inverser le plan : Lorsqu'on projette au tableau avec un vidéoprojecteur, cela peut être utile.\">Inverser</a>";
 echo "</div\n>";
 
 echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
@@ -557,6 +557,14 @@ echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
 
 echo "</form>\n";
 
+$debug_coordonnees_photos=false;
+if($debug_coordonnees_photos) {
+	echo "<div id='debug_div' style='position:absolute; width:300px; top:0px; left:1000px;'>
+	<textarea id='textarea_debug' cols='20' rows='20'>
+	</textarea>
+</div>";
+}
+
 echo "<script type='text/javascript'>
 	function afficher_les_photos() {
 		$chaine_affichage_div
@@ -624,7 +632,7 @@ echo "<script type='text/javascript'>
 					x_min=x;
 				}
 				else {
-					if(x<x_min) {
+					if(eval(x)<eval(x_min)) {
 						x_min=x;
 					}
 				}
@@ -633,7 +641,7 @@ echo "<script type='text/javascript'>
 					x_max=x;
 				}
 				else {
-					if(x>x_max) {
+					if(eval(x)>eval(x_max)) {
 						x_max=x;
 					}
 				}
@@ -642,7 +650,7 @@ echo "<script type='text/javascript'>
 					y_min=y;
 				}
 				else {
-					if(y<y_min) {
+					if(eval(y)<eval(y_min)) {
 						y_min=y;
 					}
 				}
@@ -651,10 +659,13 @@ echo "<script type='text/javascript'>
 					y_max=y;
 				}
 				else {
-					if(y>y_max) {
+					if(eval(y)>eval(y_max)) {
 						y_max=y;
 					}
 				}
+
+				".($debug_coordonnees_photos ? "// DEBUG:
+				document.getElementById('textarea_debug').value=document.getElementById('textarea_debug').value+'\\n\\n'+tab_ele[i]+'\\n'+'x='+x+' et y='+y+' x_min='+x_min+' x_max='+x_max+' y_min='+y_min+' y_max='+y_max;" : "")."
 
 				/*
 				x=document.getElementById('div_'+tab_ele[i]).style.left.replace('px','');
@@ -668,9 +679,18 @@ echo "<script type='text/javascript'>
 			}
 		}
 		//alert('x_min='+x_min+' x_max='+x_max+' y_min='+y_min+' y_max='+y_max);
+		".($debug_coordonnees_photos ? "// DEBUG:
+		document.getElementById('textarea_debug').value=document.getElementById('textarea_debug').value+'\\n======================';
+		document.getElementById('textarea_debug').value=document.getElementById('textarea_debug').value+'x_min='+x_min+' x_max='+x_max+' y_min='+y_min+' y_max='+y_max;" : "")."
+
+		//Components.utils.import(\"resource://gre/modules/Console.jsm\");
+		//console.log(\"Hello from Firefox code\");
 
 		largeur=eval(x_max-x_min);
 		longueur=eval(y_max-y_min);
+
+		".($debug_coordonnees_photos ? "// DEBUG:
+		document.getElementById('textarea_debug').value=document.getElementById('textarea_debug').value+'\\nlargeur='+largeur+' longueur='+longueur;" : "")."
 
 		for(i=0;i<tab_ele.length;i++) {
 		//for(i=0;i<2;i++) {
@@ -686,10 +706,13 @@ echo "<script type='text/javascript'>
 
 				//alert('x='+x+' et y='+y+'devient x='+x2+' et y='+y2);
 
-				if(x2>0) {
+				".($debug_coordonnees_photos ? "// DEBUG:
+				document.getElementById('textarea_debug').value=document.getElementById('textarea_debug').value+'\\n\\n'+tab_ele[i]+'\\n'+'x='+x+' et y='+y+' devient x='+x2+' et y='+y2;" : "")."
+
+				if(x2>=0) {
 					document.getElementById('div_'+tab_ele[i]).style.left=x2+'px';
 				}
-				if(y2>0) {
+				if(y2>=0) {
 					document.getElementById('div_'+tab_ele[i]).style.top=y2+'px';
 				}
 
