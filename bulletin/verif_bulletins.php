@@ -1470,6 +1470,14 @@ Les saisies/modifications sont possibles.";
 		$acces_autorisation_exceptionnelle_modif_bull_app=getSettingAOui('PeutDonnerAccesBullAppPeriodeCloseScol');
 	}
 
+	$acces_envoi_mail=acces('/bulletin/envoi_mail.php', $_SESSION['statut']);
+	if($acces_envoi_mail) {
+		$rowspan=" rowspan='2'";
+	}
+	else {
+		$rowspan="";
+	}
+
 	$tab_num_mail=array();
 	if(count($tab_alerte_prof)>0) {
 		$num=0;
@@ -1571,7 +1579,7 @@ Les saisies/modifications sont possibles.";
 
 			//echo "<br />";
 			echo "</td>\n";
-			echo "<td rowspan='2'>\n";
+			echo "<td".$rowspan.">\n";
 			//echo "<textarea id='message_$num' cols='50' rows='5'>$message</textarea>\n";
 			echo "<textarea name='message_$num' id='message_$num' cols='50' rows='5'>$message</textarea>\n";
 			//echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode($message)."\" />\n";
@@ -1582,7 +1590,7 @@ Les saisies/modifications sont possibles.";
 			($acces_autorisation_exceptionnelle_modif_cn||
 			$acces_autorisation_exceptionnelle_modif_bull_note||
 			$acces_autorisation_exceptionnelle_modif_bull_app)) {
-				echo "<td rowspan='2'>\n";
+				echo "<td".$rowspan.">\n";
 				$ajout="";
 				if(count($tab_prof['groupe'])==1) {
 					foreach($tab_prof['groupe'] as $group_id => $tab_group) {
@@ -1596,19 +1604,19 @@ Les saisies/modifications sont possibles.";
 					echo "
 	<li><a href='../cahier_notes/autorisation_exceptionnelle_saisie.php?id_classe=$id_classe".$ajout."' target='_blank'>la saisie/modification de notes du carnet de notes,</a>";
 
-					foreach($tab_prof['groupe'] as $group_id => $tab_group) {
-						$sql="SELECT * FROM acces_cn WHERE id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
-						//echo "$sql<br />";
-						$test = mysqli_query($mysqli, $sql);
-						if($test->num_rows > 0) {
-							while($lig_acces=mysqli_fetch_object($test)) {
-								echo "<br />
-			".$tab_group['info']."&nbsp;: Accès (<em>à la saisie de notes dans le Carnet de notes</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
-							}
+				foreach($tab_prof['groupe'] as $group_id => $tab_group) {
+					$sql="SELECT * FROM acces_cn WHERE id_groupe='$group_id' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."' ORDER BY date_limite ASC;";
+					//echo "$sql<br />";
+					$test = mysqli_query($mysqli, $sql);
+					if($test->num_rows > 0) {
+						while($lig_acces=mysqli_fetch_object($test)) {
+							echo "<br />
+		".$tab_group['info']."&nbsp;: Accès (<em>à la saisie de notes dans le Carnet de notes</em>) ouvert jusqu'au ".formate_date($lig_acces->date_limite, "y", "court");
 						}
 					}
+				}
 
-					echo "</li>";
+				echo "</li>";
 				}
 
 				if($acces_autorisation_exceptionnelle_modif_bull_note) {
@@ -1652,16 +1660,18 @@ Les saisies/modifications sont possibles.";
 			}
 			echo "</tr>\n";
 
-			echo "<tr class='lig$alt'>\n";
-			echo "<td>\n";
-			if(!in_array($num, $tab_num_mail)) {
-				echo "<span style='color: red;'>Pas de mail</span>";
+			if($acces_envoi_mail) {
+				echo "<tr class='lig$alt'>\n";
+				echo "<td>\n";
+				if((!$acces_envoi_mail)||(!in_array($num, $tab_num_mail))) {
+					echo "<span style='color: red;'>Pas de mail</span>";
+				}
+				else {
+					echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a></span>";
+				}
+				echo "</td>\n";
+				echo "</tr>\n";
 			}
-			else {
-				echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a></span>";
-			}
-			echo "</td>\n";
-			echo "</tr>\n";
 
 			//echo "<a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a>";
 			//echo "<br />\n";
