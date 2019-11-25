@@ -1332,7 +1332,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				//count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])>0
 					if ($tab_rel['affiche_categories']) {
 						// On regarde si on change de catégorie de matière
-						if ($tab_rel['eleve'][$i]['groupe'][$j]['id_cat'] != $prev_cat_id) {
+						if ((isset($tab_rel['eleve'][$i]['groupe'][$j]['id_cat']))&&($tab_rel['eleve'][$i]['groupe'][$j]['id_cat'] != $prev_cat_id)) {
 							$prev_cat_id = $tab_rel['eleve'][$i]['groupe'][$j]['id_cat'];
 		
 							echo "<tr>\n";

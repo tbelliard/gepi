@@ -492,7 +492,8 @@
 					}
 
 					if($autorisation_acces=='y') {
-
+						//Pour forcer en debug:
+						//$affiche_categories=false;
 						if ($affiche_categories) {
 							// On utilise les valeurs spécifiées pour la classe en question
 							$sql="SELECT DISTINCT jgc.id_groupe, 
@@ -511,12 +512,14 @@
 							"jgc.id_groupe = jeg.id_groupe AND " .
 							"jgc.categorie_id = jmcc.categorie_id AND " .
 							"jgc.id_classe = '".$id_classe."' AND " .
+							"jmcc.classe_id=jgc.id_classe AND " .
 							"jgm.id_groupe = jgc.id_groupe AND " .
 							"m.matiere = jgm.id_matiere" .
 							" AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n')";
 
 							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
 
+							// Le GROUP BY est en principe inutile
 							$sql.=") " .
 							"GROUP BY jgc.id_groupe ".
 							"ORDER BY jmcc.priority, 
@@ -540,6 +543,7 @@
 
 							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
 
+							// Le GROUP BY est en principe inutile
 							$sql.=") " .
 							"GROUP BY jgc.id_groupe ".
 							"ORDER BY jgc.priorite, 
