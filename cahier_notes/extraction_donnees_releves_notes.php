@@ -518,6 +518,7 @@
 							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
 
 							$sql.=") " .
+							"GROUP BY jgc.id_groupe ".
 							"ORDER BY jmcc.priority, 
 								jgc.priorite, 
 								m.nom_complet;";
@@ -540,6 +541,7 @@
 							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
 
 							$sql.=") " .
+							"GROUP BY jgc.id_groupe ".
 							"ORDER BY jgc.priorite, 
 								jgm.id_matiere;";
 						}
