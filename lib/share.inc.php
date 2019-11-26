@@ -162,18 +162,41 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 		}
 
 		// From
-		if((isset($tab_param_mail['from']))&&(check_mail($tab_param_mail['from']))) {
-			$mail->From = $tab_param_mail['from'];
-			if(isset($tab_param_mail['from_name'])) {
-				$mail->FromName = $tab_param_mail['from_name'];
+		// INSERT INTO setting SET name='phpmailer_forcer_from', value='y';
+		if(getSettingAOui('phpmailer_forcer_from')) {
+			if((isset($tab_param_mail['from']))&&(check_mail($tab_param_mail['from']))) {
+				$mail->From = getSettingValue('phpmailer_from');
+				$mail->FromName = 'Mail automatique Gepi';
+
+				if(isset($tab_param_mail['from_name'][$loop])) {
+					$mail->addReplyTo($tab_param_mail['from'][$loop], $tab_param_mail['from_name'][$loop]);
+				}
+				else {
+					$mail->addReplyTo($tab_param_mail['from'][$loop]);
+				}
+			}
+			else {
+				//$mail->From = "ne-pas-repondre@".$_SERVER['SERVER_NAME'];
+				//2015-04-08 15:35:54	CLIENT -> SERVER: MAIL FROM:<ne-pas-repondre@127.0.0.1>
+				//2015-04-08 15:35:54	SERVER -> CLIENT: 501 5.1.7 Bad sender address syntax
+				$mail->From = getSettingValue('phpmailer_from');
+				$mail->FromName = 'Mail automatique Gepi';
 			}
 		}
 		else {
-			//$mail->From = "ne-pas-repondre@".$_SERVER['SERVER_NAME'];
-			//2015-04-08 15:35:54	CLIENT -> SERVER: MAIL FROM:<ne-pas-repondre@127.0.0.1>
-			//2015-04-08 15:35:54	SERVER -> CLIENT: 501 5.1.7 Bad sender address syntax
-			$mail->From = getSettingValue('phpmailer_from');
-			$mail->FromName = 'Mail automatique Gepi';
+			if((isset($tab_param_mail['from']))&&(check_mail($tab_param_mail['from']))) {
+				$mail->From = $tab_param_mail['from'];
+				if(isset($tab_param_mail['from_name'])) {
+					$mail->FromName = $tab_param_mail['from_name'];
+				}
+			}
+			else {
+				//$mail->From = "ne-pas-repondre@".$_SERVER['SERVER_NAME'];
+				//2015-04-08 15:35:54	CLIENT -> SERVER: MAIL FROM:<ne-pas-repondre@127.0.0.1>
+				//2015-04-08 15:35:54	SERVER -> CLIENT: 501 5.1.7 Bad sender address syntax
+				$mail->From = getSettingValue('phpmailer_from');
+				$mail->FromName = 'Mail automatique Gepi';
+			}
 		}
 
 		// Destinataires
