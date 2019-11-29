@@ -769,17 +769,19 @@ if ($on_continue == 'yes') {
 			//echo "(".$current_group['id'].")";
 			$liste_email_profs_du_groupe="";
 			$liste_profs_du_groupe="";
+			$tmp_tab_mail_grp=array();
 			while ($k < count($current_matiere_professeur_login)) {
 				echo "<br /><i>".affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe)."</i>";
 				if($k>0) {$liste_profs_du_groupe.="|";}
 				$liste_profs_du_groupe.=$current_matiere_professeur_login[$k];
 
 				$tmp_mail=retourne_email($current_matiere_professeur_login[$k]);
-				if($tmp_mail!='') {
+				if(($tmp_mail!='')&&(!in_array($tmp_mail, $tmp_tab_mail_grp))) {
 					if($liste_email_profs_du_groupe!='') {
 						$liste_email_profs_du_groupe.=", ";
 					}
 					$liste_email_profs_du_groupe.=$tmp_mail;
+					$tmp_tab_mail_grp[]=$tmp_mail;
 				}
 				$k++;
 			}
@@ -1776,12 +1778,16 @@ function affiche_aid_simple($affiche_rang, $test_coef, $indice_aid, $aid_id, $cu
 	$current_aid=get_tab_aid($aid_id);
 	$liste_profs_aid=$current_aid['proflist_string'];
 	$liste_email_profs_aid='';
+	$tmp_tab_mail_aid=array();
 	foreach($current_aid['profs']['users'] as $user_login => $current_user) {
 		if(check_mail($current_user['email'])) {
-			if($liste_email_profs_aid!='') {
-				$liste_email_profs_aid.=',';
+			if(!in_array($current_user['email'], $tmp_tab_mail_aid)) {
+				if($liste_email_profs_aid!='') {
+					$liste_email_profs_aid.=',';
+				}
+				$liste_email_profs_aid.=$current_user['email'];
+				$tmp_tab_mail_aid[]=$current_user['email'];
 			}
-			$liste_email_profs_aid.=$current_user['email'];
 		}
 	}
 
