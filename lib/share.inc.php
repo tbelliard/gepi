@@ -19850,4 +19850,24 @@ function cdt_corrige_chemin_archive($texte) {
 	return $contenu_cor;
 }
 
+
+// Le prof de $id_aid a-t-il autorisé le PP à corriger ses appréciations
+// On teste aussi getSettingAOui('PeutAutoriserPPaCorrigerSesApp')
+function acces_correction_app_aid_pp($id_aid) {
+	$retour=false;
+
+	/*
+	// Question non tranchée: Faut-il créer une table aid_param?
+	$sql="SELECT 1=1 FROM aid_param WHERE id_groupe='$id_groupe' AND name='AutoriserCorrectionAppreciationParPP' AND value='y';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+	*/
+	return $retour;
+}
+
 ?>
