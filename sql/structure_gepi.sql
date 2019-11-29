@@ -1620,7 +1620,7 @@ PRIMARY KEY (id), INDEX ine_cycle_id_composante_periode (ine, cycle, code_compos
 DROP TABLE IF EXISTS socle_eleves_syntheses;
 CREATE TABLE socle_eleves_syntheses (id int(11) NOT NULL auto_increment, 
 ine varchar(50) NOT NULL DEFAULT '', 
-cycle tinyint(2) NOT NULL DEFAULT '', 
+cycle tinyint(2) NOT NULL DEFAULT 0, 
 annee varchar(10) NOT NULL default '', 
 synthese TEXT, 
 login_saisie varchar(50) NOT NULL DEFAULT '', 
