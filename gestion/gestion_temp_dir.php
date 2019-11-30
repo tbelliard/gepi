@@ -50,7 +50,7 @@ $reinitialiser=isset($_POST['reinitialiser']) ? $_POST['reinitialiser'] : (isset
 
 
 //if((isset($_POST['is_posted']))&&(($suppr))||(isset($reinit))) {
-if(isset($reinitialiser)) {
+if((isset($reinitialiser))&&(isset($reinit))&&(is_array($reinit))&&(count($reinit)>0)) {
 	check_token();
 
 	$msg="";
@@ -125,7 +125,7 @@ if(isset($reinitialiser)) {
 	}
 }
 else{
-	if((isset($_POST['is_posted']))&&(isset($suppr))) {
+	if((isset($_POST['is_posted']))&&(isset($suppr))&&(count($suppr)>0)) {
 		check_token();
 		$msg="";
 
