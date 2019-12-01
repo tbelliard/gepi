@@ -220,114 +220,115 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		}
 	} else {
 		if ($reg_class_name) {
-		//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat'");
-		//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat', display_nbdev ='$display_nbdev'");
-		$register_class = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe = '$reg_class_name',
-													nom_complet = '$reg_nom_complet',
-													suivi_par = '$reg_suivi_par',
-													formule = '$reg_formule',
-													format_nom = '$reg_format',
-													format_nom_eleve = '$reg_elformat',
-													display_rang = '$display_rang',
-													display_address = '$display_address',
-													display_coef = '$display_coef',
-													display_mat_cat = '$display_mat_cat',
-													display_nbdev ='$display_nbdev',
-													display_moy_gen='$display_moy_gen',
-													modele_bulletin_pdf='$modele_bulletin',
-													rn_nomdev='$rn_nomdev',
-													rn_toutcoefdev='$rn_toutcoefdev',
-													rn_coefdev_si_diff='$rn_coefdev_si_diff',
-													rn_datedev='$rn_datedev',
-													rn_abs_2='$rn_abs_2',
-													rn_sign_chefetab='$rn_sign_chefetab',
-													rn_sign_pp='$rn_sign_pp',
-													rn_sign_resp='$rn_sign_resp',
-													rn_sign_nblig='$rn_sign_nblig',
-													rn_formule='$rn_formule',
-													ects_type_formation='".$ects_type_formation."',
-													ects_parcours='".$ects_parcours."',
-													ects_code_parcours='".$ects_code_parcours."',
-													ects_domaines_etude='".$ects_domaines_etude."',
-													ects_fonction_signataire_attestation='".$ects_fonction_signataire_attestation."'
-												");
+			//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat'");
+			//$register_class = mysql_query("INSERT INTO classes SET classe = '$reg_class_name', nom_complet = '$reg_nom_complet', suivi_par = '$reg_suivi_par', formule = '$reg_formule', format_nom = '$reg_format', display_rang = '$display_rang', display_address = '$display_address', display_coef = '$display_coef', display_mat_cat = '$display_mat_cat', display_nbdev ='$display_nbdev'");
+			$register_class = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe = '$reg_class_name',
+														nom_complet = '$reg_nom_complet',
+														suivi_par = '$reg_suivi_par',
+														formule = '$reg_formule',
+														format_nom = '$reg_format',
+														format_nom_eleve = '$reg_elformat',
+														display_rang = '$display_rang',
+														display_address = '$display_address',
+														display_coef = '$display_coef',
+														display_mat_cat = '$display_mat_cat',
+														display_nbdev ='$display_nbdev',
+														display_moy_gen='$display_moy_gen',
+														modele_bulletin_pdf='$modele_bulletin',
+														rn_nomdev='$rn_nomdev',
+														rn_toutcoefdev='$rn_toutcoefdev',
+														rn_coefdev_si_diff='$rn_coefdev_si_diff',
+														rn_datedev='$rn_datedev',
+														rn_abs_2='$rn_abs_2',
+														rn_sign_chefetab='$rn_sign_chefetab',
+														rn_sign_pp='$rn_sign_pp',
+														rn_sign_resp='$rn_sign_resp',
+														rn_sign_nblig='$rn_sign_nblig',
+														rn_formule='$rn_formule',
+														ects_type_formation='".$ects_type_formation."',
+														ects_parcours='".$ects_parcours."',
+														ects_code_parcours='".$ects_code_parcours."',
+														ects_domaines_etude='".$ects_domaines_etude."',
+														ects_fonction_signataire_attestation='".$ects_fonction_signataire_attestation."'
+													");
 
-		//==============================
-		// AJOUT 20191015
-		// sauvegarder le choix du nom long ou court pour les devoirs dans la table 'classes_param' au lieu de 'classes' :
-		$register_class2 = saveParamClasse($id_classe, 'rn_aff_nomdev_choix', $rn_aff_nomdev_choix);
-		if (!$register_class2) {$reg_ok = 'no';} else {$reg_ok = 'yes' ;}
-		// Fin de l'ajout
-		//==============================
+			//if (!$register_class || $reg_ok=='no') {
+			if (!$register_class) {
+				$msg .= "Une erreur s'est produite lors de l'enregistrement de la nouvelle classe.";
+			} else {
+				$msg .= "La nouvelle classe a bien été enregistrée.";
+				$id_classe = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
-		if (!$register_class || $reg_ok=='no') {
-			$msg .= "Une erreur s'est produite lors de l'enregistrement de la nouvelle classe.";
-		} else {
-			$msg .= "La nouvelle classe a bien été enregistrée.";
-			$id_classe = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+				//==============================
+				// AJOUT 20191015
+				// sauvegarder le choix du nom long ou court pour les devoirs dans la table 'classes_param' au lieu de 'classes' :
+				$register_class2 = saveParamClasse($id_classe, 'rn_aff_nomdev_choix', $rn_aff_nomdev_choix);
+				if (!$register_class2) {$reg_ok = 'no';} else {$reg_ok = 'yes' ;}
+				// Fin de l'ajout
+				//==============================
 
-			// On enregistre les infos relatives aux catégories de matières
-			$tab_priorites_categories=array();
-			$temoin_pb_ordre_categories="n";
-			$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, priority FROM matieres_categories");
-			while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
-				$reg_priority = $_POST['priority_'.$row["id"]];
-				if (isset($_POST['moyenne_'.$row["id"]])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
-				if (!is_numeric($reg_priority)) $reg_priority = 0;
-				if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
+				// On enregistre les infos relatives aux catégories de matières
+				$tab_priorites_categories=array();
+				$temoin_pb_ordre_categories="n";
+				$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, priority FROM matieres_categories");
+				while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
+					$reg_priority = $_POST['priority_'.$row["id"]];
+					if (isset($_POST['moyenne_'.$row["id"]])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
+					if (!is_numeric($reg_priority)) $reg_priority = 0;
+					if (!is_numeric($reg_aff_moyenne)) $reg_aff_moyenne = 0;
 
-				if(in_array($reg_priority, $tab_priorites_categories)) {
-					$temoin_pb_ordre_categories="y";
-					$reg_priority=max($tab_priorites_categories)+1;
-				}
-				$tab_priorites_categories[]=$reg_priority;
-
-				$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
-
-				if (!$res) {
-					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
-				}
-			}
-
-			if($temoin_pb_ordre_categories=="y") {
-				$msg.="<br /><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Des mesures ont été prises pour imposer des ordres différents, mais il se peut que l'ordre ne vous convienne pas.<br />\n";
-			}
-
-			$sql="SELECT login FROM utilisateurs WHERE etat='actif' AND statut='scolarite';";
-			$res_scol=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_scol)>0) {
-				$nb_scol=0;
-				while($lig_scol=mysqli_fetch_object($res_scol)) {
-					$sql="INSERT INTO j_scol_classes SET login='$lig_scol->login', id_classe='$id_classe';";
-					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(!$insert) {
-						$msg.="<br />Erreur lors de l'association du compte $lig_scol->login avec la classe.";
+					if(in_array($reg_priority, $tab_priorites_categories)) {
+						$temoin_pb_ordre_categories="y";
+						$reg_priority=max($tab_priorites_categories)+1;
 					}
-					else {
-						$nb_scol++;
+					$tab_priorites_categories[]=$reg_priority;
+
+					$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
+
+					if (!$res) {
+						$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
 					}
 				}
-				if($nb_scol==1) {
-					$msg.="<br />Un compte scolarité associé avec la classe.";
-				}
-				if($nb_scol>1) {
-					$msg.="<br />$nb_scol comptes scolarité associés avec la classe.";
-					$msg.="<br />Pour modifier la liste des comptes associés, suivez <a href='./scol_resp.php'>ce lien</a>.";
-				}
-			}
 
-			// =========================
-			// 20191015 : Martial Lenzen
-			// (ajout du paramètre rn_aff_nomdev_choix)
-			$tab_param=array('rn_aff_classe_nom', 'rn_aff_nomdev_choix', 'rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne', 'rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
-			for($loop=0;$loop<count($tab_param);$loop++) {
-				$tmp_name=$tab_param[$loop];
-				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
-					$msg.="<br />Erreur lors de l'enregistrement de $tmp_name.";
+				if($temoin_pb_ordre_categories=="y") {
+					$msg.="<br /><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Des mesures ont été prises pour imposer des ordres différents, mais il se peut que l'ordre ne vous convienne pas.<br />\n";
 				}
+
+				$sql="SELECT login FROM utilisateurs WHERE etat='actif' AND statut='scolarite';";
+				$res_scol=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_scol)>0) {
+					$nb_scol=0;
+					while($lig_scol=mysqli_fetch_object($res_scol)) {
+						$sql="INSERT INTO j_scol_classes SET login='$lig_scol->login', id_classe='$id_classe';";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="<br />Erreur lors de l'association du compte $lig_scol->login avec la classe.";
+						}
+						else {
+							$nb_scol++;
+						}
+					}
+					if($nb_scol==1) {
+						$msg.="<br />Un compte scolarité associé avec la classe.";
+					}
+					if($nb_scol>1) {
+						$msg.="<br />$nb_scol comptes scolarité associés avec la classe.";
+						$msg.="<br />Pour modifier la liste des comptes associés, suivez <a href='./scol_resp.php'>ce lien</a>.";
+					}
+				}
+
+				// =========================
+				// 20191015 : Martial Lenzen
+				// (ajout du paramètre rn_aff_nomdev_choix)
+				$tab_param=array('rn_aff_classe_nom', 'rn_aff_nomdev_choix', 'rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne', 'rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction', 'type_classe', 'display_moy_gen_saisie_avis2', 'rn_moy_gen');
+				for($loop=0;$loop<count($tab_param);$loop++) {
+					$tmp_name=$tab_param[$loop];
+					if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
+						$msg.="<br />Erreur lors de l'enregistrement de $tmp_name.";
+					}
+				}
+				// =========================
 			}
-			// =========================
-		}
 
 		} else {
 		$msg .= "Veuillez préciser le nom de la classe !";
