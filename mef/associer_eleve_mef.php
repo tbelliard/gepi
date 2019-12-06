@@ -303,7 +303,7 @@ if (!$eleve_col->isEmpty()) {
 									</p>
 								</td>
 								<td style=\"width:580px;\" >
-									".$eleve->getClasse()->getNom()."
+									".(($eleve->getClasse()!=NULL) ? $eleve->getClasse()->getNom() : "<span style='color:red'>aucune</span>")."
 								</td>
 								<td style=\"vertical-align: top;\">
 									<p>";
