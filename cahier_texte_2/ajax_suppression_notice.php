@@ -68,8 +68,12 @@ if ($type == 'CahierTexteTravailAFaire') {
 	$objet = CahierTexteCompteRenduPeer::retrieveByPK($id_objet);
 } elseif ($type == 'CahierTexteCompteRenduFichierJoint') {
 	$objet = CahierTexteCompteRenduFichierJointPeer::retrieveByPK($id_objet);
+
+	$emplacement_document=get_valeur_champ("ct_documents", "id='".$id_objet."'", "emplacement");
 } elseif ($type == 'CahierTexteTravailAFaireFichierJoint') {
 	$objet = CahierTexteTravailAFaireFichierJointPeer::retrieveByPK($id_objet);
+
+	$emplacement_document=get_valeur_champ("ct_devoirs_documents", "id='".$id_objet."'", "emplacement");
 } elseif ($type == 'CahierTexteNoticePrivee') {
 	$objet = CahierTexteNoticePriveePeer::retrieveByPK($id_objet);
 }
@@ -82,4 +86,15 @@ if ($objet == null) {
 
 $objet->delete();
 $utilisateur->clearAllReferences();
+
+if ($type == 'CahierTexteCompteRenduFichierJoint') {
+	if(file_exists($emplacement_document)) {
+		@unlink($emplacement_document);
+	}
+} elseif ($type == 'CahierTexteTravailAFaireFichierJoint') {
+	if(file_exists($emplacement_document)) {
+		@unlink($emplacement_document);
+	}
+}
+
 ?>
