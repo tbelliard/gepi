@@ -965,6 +965,14 @@ if (isset($_POST['phpmailer_debug'])) {
 	}
 }
 
+if (isset($_POST['phpmailer_forcer_from'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_forcer_from", $_POST['phpmailer_forcer_from'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_forcer_from !";
+	}
+}
+
 if (isset($_POST['autorise_envoi_sms'])) {
 	check_token();
 	if (!saveSetting("autorise_envoi_sms", $_POST['autorise_envoi_sms'])) {
@@ -2937,13 +2945,55 @@ echo add_token_field();
 			   id="phpmailer_debug_n" 
 			   value="n" 
 			   <?php
-				if(!getSettingAOui('phpmailer_debug')) {echo "checked='checked'";}
+				if(!getSettingAOui('')) {echo "checked='checked'";}
 			   ?>
 			   onchange='changement()' />
 		<label for='phpmailer_debug_n' style='cursor: pointer;'>
 			Non
 		</label>
 	</p>
+
+	<br />
+
+	<p class="ligneCaps" style="font-variant: small-caps; margin-top:2em;">
+		Origine des messages <em>(champ From)</em>&nbsp;:
+	</p>
+	<p class='ligneCaps small'>Il peut y avoir deux types de mails dans Gepi&nbsp;:</p>
+	<ul>
+		<li class='ligneCaps small'>Les messages automatiques <em>(envoyés par exemple à l'administrateur)</em></li>
+		<li class='ligneCaps small'>Les messages qu'un utilisateur envoie via Gepi à un autre utilisateur <em>(exemple&nbsp;: message à propos du remplissage des bulletins)</em></li>
+	</ul>
+	<p class='ligneCaps small'>Sur ce deuxième cas, il peut arriver que l'envoi de mail échoue.<br />
+	En activant le mode debug sur l'envoi de mail, on voit que la cause annoncée est <br />
+	"<strong>Sender address rejected: not owned by user...</strong>"</p>
+	<br />
+	<p class='ligneCaps small'>Pour contourner ce problème, utiliser le champ <strong>Reply-to</strong> plutôt que <strong>From</strong> lors de l'envoi&nbsp;: 
+		<input type="radio" 
+			   name="phpmailer_forcer_from" 
+			   id="phpmailer_forcer_from_y" 
+			   value="y" 
+			   <?php
+				if(getSettingValue('phpmailer_forcer_from')=="") {saveSetting('phpmailer_forcer_from', 'n');}
+				if(getSettingAOui('phpmailer_forcer_from')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_forcer_from_y' style='cursor: pointer;'>
+			Oui
+		</label>
+		&nbsp;/&nbsp;
+		<input type="radio" 
+			   name="phpmailer_forcer_from" 
+			   id="phpmailer_forcer_from_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('phpmailer_forcer_from')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_forcer_from_n' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+	<br />
 
 	<p>
 	<input type="hidden" name="is_posted" value="1" />

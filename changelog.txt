@@ -53,6 +53,7 @@ Bibliothèques:
 - Mise à jour de TinyButStrong en version 3.11.0 (PHP 5 and 7) (2019-02-10)
 - Mise à jour du plugin openTBS de TinyButStrong en version 1.9.12 (2019-03-10)
 - Mise à jour de PHPMailer en version 6.0.7 (pour php>=5.3)
+  Avec ajout d'un mode pour From et Reply-to.
 - Mise à jour de tFPDF en version 1.25 (2018-03-19)
 
 
