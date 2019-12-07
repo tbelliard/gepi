@@ -1683,6 +1683,7 @@ else {
 				if((isset($tab_ens_per[1]))&&($tab_ens_per[0]=='viescolaire')&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
 					// On le traite dans une deuxième partie
 					$temoin_vie_scolaire=true;
+					$periode=$tab_ens_per[1];
 				}
 				elseif((isset($tab_ens_per[1]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[0]))&&(preg_match('/^[0-9]{1,}$/', $tab_ens_per[1]))) {
 					$temoin_enseignement=true;
