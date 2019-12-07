@@ -168,11 +168,11 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 				$mail->From = getSettingValue('phpmailer_from');
 				$mail->FromName = 'Mail automatique Gepi';
 
-				if(isset($tab_param_mail['from_name'][$loop])) {
-					$mail->addReplyTo($tab_param_mail['from'][$loop], $tab_param_mail['from_name'][$loop]);
+				if(isset($tab_param_mail['from_name'])) {
+					$mail->addReplyTo($tab_param_mail['from'], $tab_param_mail['from_name']);
 				}
 				else {
-					$mail->addReplyTo($tab_param_mail['from'][$loop]);
+					$mail->addReplyTo($tab_param_mail['from']);
 				}
 			}
 			else {
