@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -85,6 +85,20 @@ D'avance merci.
 ___NOM_EMETTEUR___";
 }
 
+$MsgMailVerifRemplissageBulletinsAbs=getSettingValue('MsgMailVerifRemplissageBulletinsAbs');
+if($MsgMailVerifRemplissageBulletinsAbs=="") {
+	$MsgMailVerifRemplissageBulletinsAbs="Bonjour(soir) ___NOM_PROF___,
+ 
+Des saisies absences (totaux ou appreciation) ne sont pas remplies:
+___LIGNE_ABS_MANQUANTES___
+ 
+Je vous serais reconnaissant(e) de bien vouloir les remplir rapidement.
+ 
+D'avance merci.
+-- 
+___NOM_EMETTEUR___";
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Vérification du remplissage des bulletins";
 require_once("../lib/header.inc.php");
@@ -130,10 +144,17 @@ if(isset($editer_modele_mail)) {
 		".add_token_field()."
 		<input type='hidden' name='editer_modele_mail' value='y' />
 		<input type='hidden' name='valider_modele_mail' value='y' />
+
+		<h2>Modèle de mail</h2>
+
 		<p>Lors de la vérification des moyennes, appréciations,... non remplies, vous pouvez envoyer un message pour alerter les collègues qu'il leur reste peu de temps pour effectuer les saisies manquantes.<br />
 		Ce message peut être personnalisé ici.</p>
-		<p>Modèle de mail&nbsp;: </p>
+
+		<p class='strong'>Modèle de mail&nbsp;: </p>
 		<textarea name='MsgMailVerifRemplissageBulletins' id='MsgMailVerifRemplissageBulletins' cols='80' rows='15'>".stripslashes(getSettingValue('MsgMailVerifRemplissageBulletins'))."</textarea>
+
+		<p class='strong'>Modèle de mail pour les absences&nbsp;: </p>
+		<textarea name='MsgMailVerifRemplissageBulletinsAbs' id='MsgMailVerifRemplissageBulletinsAbs' cols='80' rows='15'>".stripslashes(getSettingValue('MsgMailVerifRemplissageBulletinsAbs'))."</textarea>
 
 		<p><input type='submit' value='Enregistrer' /></p>
 
@@ -946,6 +967,8 @@ echo "</div>\n";
 
 	// Tableau pour stocker les infos à envoyer aux profs à propos des notes/app non remplies
 	$tab_alerte_prof=array();
+	//20191206
+	$tab_alerte_absences=array();
 
 	// Affichage sur 3 colonnes
 	$nb_eleve_par_colonne=round($nb_eleves/2);
@@ -1386,25 +1409,40 @@ echo "</div>\n";
 				}
 				echo "<br /><br />\n";
 				echo "<b>Rubrique \"Absences\" </b> non remplie. (";
-				$query_resp = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_eleves_cpe j WHERE (j.e_login = '$id_eleve[$j]' AND u.login = j.cpe_login)");
+				$query_resp = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_eleves_cpe j WHERE (j.e_login = '$id_eleve[$j]' AND u.login = j.cpe_login)");
 				$nb_prof = mysqli_num_rows($query_resp);
 				$m=0;
 				$virgule = 1;
-				while ($m < $nb_prof) {
-					$login_prof = @old_mysql_result($query_resp, $m, 'login');
+				while ($lig_cpe=mysqli_fetch_object($query_resp)) {
+					$login_prof = $lig_cpe->login;
 					$email = retourne_email($login_prof);
-					$nom_prof = @old_mysql_result($query_resp, $m, 'nom');
-					$prenom_prof = @old_mysql_result($query_resp, $m, 'prenom');
+					$nom_prof = $lig_cpe->nom;
+					$prenom_prof = $lig_cpe->prenom;
+					$civilite_prof = $lig_cpe->civilite;
 					//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 					//if($email!="") {
 					if(($email!="")&&(check_mail($email))) {
 						$sujet_mail="[Gepi]: Absences non remplies: ".$id_eleve[$j];
 						$message_mail="Bonjour,\r\n\r\nCordialement";
-						echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
-					}
+						echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";					}
 					else{
 						echo casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof);
 					}
+
+					//============================
+					//20191206
+					// Pour les rappels et ouvertures exceptionnelles
+					if(!isset($tab_alerte_absences[$login_prof])) {
+						$tab_alerte_absences[$login_prof]=array();
+						$tab_alerte_absences[$login_prof]['civilite']=$civilite_prof;
+						$tab_alerte_absences[$login_prof]['nom']=$nom_prof;
+						$tab_alerte_absences[$login_prof]['prenom']=$prenom_prof;
+						$tab_alerte_absences[$login_prof]['email']=$email;
+					}
+					$eleve_nom_prenom=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
+					$tab_alerte_absences[$login_prof]['absences']['infos_manquantes'][]=$eleve_nom_prenom;
+					//============================
+
 					$m++;
 					if ($m == $nb_prof) {$virgule = 0;}
 					if ($virgule == 1) {echo ", ";}
@@ -1504,7 +1542,7 @@ echo "</div>\n";
 	}
 
 	$tab_num_mail=array();
-	if(count($tab_alerte_prof)>0) {
+	if((count($tab_alerte_prof)>0)||(count($tab_alerte_absences)>0)) {
 		$num=0;
 
 		//echo "<div style='border: 1px solid black'>";
@@ -1520,12 +1558,11 @@ echo "</div>\n";
 		}
 
 		echo "<p class='bold'>Récapitulatif&nbsp;: <a href='".$_SERVER['PHP_SELF']."?".$param_lien."editer_modele_mail=y' title=\"Editer le modèle de mail.\"><img src='../images/edit16.png' class='icone16' alt='Editer le modèle de mail' /></a></p>\n";
-		echo "<table class='boireaus' summary=\"Courriels\">\n";
-		$alt=1;
+		echo "<table class='boireaus boireaus_alt boireaus_alt2' summary=\"Courriels\">\n";
+		//$alt=1;
 
 		//$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]
 		foreach($tab_alerte_prof as $login_prof => $tab_prof) {
-			$alt=$alt*(-1);
 
 			$info_prof=$tab_alerte_prof[$login_prof]['civilite']." ".casse_mot($tab_alerte_prof[$login_prof]['nom'],'maj')." ".casse_mot($tab_alerte_prof[$login_prof]['prenom'],'majf2');
 
@@ -1569,10 +1606,6 @@ echo "</div>\n";
 
 			}
 
-			//$message.="\nLorsqu'un élève n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.\nEn revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problème d'affectation d'élèves.\n";
-
-			//$message.="\nJe vous serais reconnaissant(e) de bien vouloir les remplir rapidement.\n\nD'avance merci.\n-- \n".civ_nom_prenom($_SESSION['login']);
-
 			$message=stripslashes($MsgMailVerifRemplissageBulletins);
 			$message=preg_replace("/___NOM_PROF___/", $info_prof, $message);
 			//$message=preg_replace("/___ENSEIGNEMENT___/", "", $message);
@@ -1584,7 +1617,7 @@ echo "</div>\n";
 			}
 			$message=preg_replace("/___NOM_EMETTEUR___/", civ_nom_prenom($_SESSION['login']), $message);
 
-			echo "<tr class='lig$alt'>\n";
+			echo "<tr>\n";
 			echo "<td>\n";
 			if(in_array($login_prof, $tab_pp)) {
 				echo "<div style='float:right; width:16px;margin:3px;' title=\"Ce professeur est ".$gepi_prof_suivi." d'élèves de cette classe.\"><img src='../images/bulle_verte.png' width='9' height='9' alt=\"".$gepi_prof_suivi."\" /></div>";
@@ -1611,6 +1644,7 @@ echo "</div>\n";
 			//echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode(ereg_replace("\\\n",'_NEWLINE_',$message))."\" />\n";
 
 			echo "</td>\n";
+
 			if(($ver_periode[$per]=="P")&&
 			($acces_autorisation_exceptionnelle_modif_cn||
 			$acces_autorisation_exceptionnelle_modif_bull_note||
@@ -1695,7 +1729,7 @@ echo "</div>\n";
 			echo "</tr>\n";
 
 			if($acces_envoi_mail) {
-				echo "<tr class='lig$alt'>\n";
+				echo "<tr>\n";
 				echo "<td>\n";
 				if((!$acces_envoi_mail)||(!in_array($num, $tab_num_mail))) {
 					echo "<span style='color: red;'>Pas de mail</span>";
@@ -1711,12 +1745,119 @@ echo "</div>\n";
 			//echo "<br />\n";
 			$num++;
 		}
+
+		//==================================================================
+		// 20191206
+		foreach($tab_alerte_absences as $login_prof => $tab_prof) {
+
+			$info_prof=$tab_alerte_absences[$login_prof]['civilite']." ".casse_mot($tab_alerte_absences[$login_prof]['nom'],'maj')." ".casse_mot($tab_alerte_absences[$login_prof]['prenom'],'majf2');
+
+			$chaine_infos_manquantes="Saisies absences manquantes (totaux ou appréciation) pour ";
+			$cpt_ele_abs=0;
+			foreach($tab_prof['absences']['infos_manquantes'] as $current_eleve_info) {
+
+				if($cpt_ele_abs>0) {
+					$chaine_infos_manquantes.=", ";
+				}
+				$chaine_infos_manquantes.=$current_eleve_info;
+				$cpt_ele_abs++;
+			}
+			$chaine_infos_manquantes.=".\n";
+
+			$message=stripslashes($MsgMailVerifRemplissageBulletinsAbs);
+			$message=preg_replace("/___NOM_PROF___/", $info_prof, $message);
+			//$message=preg_replace("/___ENSEIGNEMENT___/", "", $message);
+			//$message=preg_replace("/___LISTE_ELEVES___/", "", $message);
+			$message=preg_replace("/___LIGNE_ABS_MANQUANTES___/", $chaine_infos_manquantes, $message);
+			//$message=preg_replace("/___LIGNE_MOYENNES_MANQUANTES___/", '', $message);
+			if(isset($tab_date_conseil[$id_classe]['date'])) {
+				$message=preg_replace("/___DATE_CONSEIL___/", formate_date($tab_date_conseil[$id_classe]['date'], "y2", "court"), $message);
+			}
+
+			//$message=preg_replace('#Des moyennes et/ou appréciations ne sont pas remplies:#', '', $message);
+			$message=preg_replace("/___NOM_EMETTEUR___/", civ_nom_prenom($_SESSION['login']), $message);
+
+			echo "<tr>\n";
+			echo "<td>\n";
+			if(in_array($login_prof, $tab_pp)) {
+				echo "<div style='float:right; width:16px;margin:3px;' title=\"Ce professeur est ".$gepi_prof_suivi." d'élèves de cette classe.\"><img src='../images/bulle_verte.png' width='9' height='9' alt=\"".$gepi_prof_suivi."\" /></div>";
+			}
+
+			if($tab_alerte_absences[$login_prof]['email']!="") {
+				if(check_mail($tab_alerte_absences[$login_prof]['email'])) {
+					$tab_num_mail[]=$num;
+					$sujet_mail="[Gepi]: Appreciations et/ou totaux absence manquants";
+					echo "<a href='mailto:".$tab_alerte_absences[$login_prof]['email']."?subject=$sujet_mail&amp;body=".rawurlencode($message)."'>".$info_prof."</a>";
+					echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"$sujet_mail\" />\n";
+					echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$tab_alerte_absences[$login_prof]['email']."\" />\n";
+				}
+			}
+			else {
+				echo $info_prof;
+			}
+
+			//echo "<br />";
+			echo "</td>\n";
+			echo "<td".$rowspan.">\n";
+			//echo "<textarea id='message_$num' cols='50' rows='5'>$message</textarea>\n";
+			echo "<textarea name='message_$num' id='message_$num' cols='50' rows='5'>$message</textarea>\n";
+			//echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode($message)."\" />\n";
+			//echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode(ereg_replace("\\\n",'_NEWLINE_',$message))."\" />\n";
+
+			echo "</td>";
+
+			if(($ver_periode[$per]=="P")&&
+			($acces_autorisation_exceptionnelle_modif_bull_note||
+			$acces_autorisation_exceptionnelle_modif_bull_app)) {
+				echo "<td".$rowspan.">\n";
+/*
+$_POST['enseignement_periode']=	Array (*)
+$_POST[enseignement_periode]['0']=	viescolaire|1
+$_POST['id_classe']=	34
+*/
+				echo "<p>Autoriser exceptionnellement, bien que la période soit partiellement close, <br />
+				<a href='../bulletin/autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe&enseignement_periode[0]=viescolaire|$per' target='_blank'>la saisie/modification des appréciations et absences</a>";
+
+				$sql="SELECT * FROM abs_bull_delais WHERE id_classe='$id_classe' AND periode='$per' AND date_limite>'".strftime("%Y-%m-%d %H:%M:%S")."';";
+				//echo "$sql<br />";
+				$res_acces_abs=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_acces_abs)>0) {
+					echo "<br />";
+					$lig_abs=mysqli_fetch_object($res_acces_abs);
+
+					echo "L'accès est actuellement ouvert jusqu'au ".strftime("%d/%m/%Y à %H:%M", mysql_date_to_unix_timestamp($lig_abs->date_limite)).".";
+				}
+				echo "</p>";
+
+				echo "</td>\n";
+			}
+			echo "</tr>\n";
+
+			if($acces_envoi_mail) {
+				echo "<tr>\n";
+				echo "<td>\n";
+				if((!$acces_envoi_mail)||(!in_array($num, $tab_num_mail))) {
+					echo "<span style='color: red;'>Pas de mail</span>";
+				}
+				else {
+					echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a></span>";
+				}
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
+
+			//echo "<a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a>";
+			//echo "<br />\n";
+			$num++;
+		}
+		//==================================================================
+
 		echo "</table>\n";
 		//echo "</div>";
 
 		$tmp_tab=array_unique($lignes_autoriser_saisie_cn);
 		if(count($tmp_tab)>1) {
-			echo "<form action=\"../cahier_notes/autorisation_exceptionnelle_saisie.php\" methd=\"post\" target=\"_blank\">
+			echo "<form action=\"../cahier_notes/autorisation_exceptionnelle_saisie.php\" method=\"post\" target=\"_blank\">
 				<fieldset class='fieldset_opacite50' style='margin:0.5em;'>
 					<p class='bold'>Accès exceptionnel à la saisie de notes dans le carnet de notes&nbsp;:</p>
 					<input type='hidden' name='id_classe' value='$id_classe' />";
@@ -1731,7 +1872,7 @@ echo "</div>\n";
 
 		$tmp_tab=array_unique($lignes_autoriser_saisie_note_bull);
 		if(count($tmp_tab)>1) {
-			echo "<form action=\"../bulletin/autorisation_exceptionnelle_saisie_note.php\" methd=\"post\" target=\"_blank\">
+			echo "<form action=\"../bulletin/autorisation_exceptionnelle_saisie_note.php\" method=\"post\" target=\"_blank\">
 				<fieldset class='fieldset_opacite50' style='margin:0.5em;'>
 					<p class='bold'>Accès exceptionnel à la saisie de moyennes dans les bulletins&nbsp;:</p>
 					<input type='hidden' name='id_classe' value='$id_classe' />";
@@ -1746,7 +1887,7 @@ echo "</div>\n";
 
 		$tmp_tab=array_unique($lignes_autoriser_saisie_app_bull);
 		if(count($tmp_tab)>1) {
-			echo "<form action=\"../bulletin/autorisation_exceptionnelle_saisie_app.php\" methd=\"post\" target=\"_blank\">
+			echo "<form action=\"../bulletin/autorisation_exceptionnelle_saisie_app.php\" method=\"post\" target=\"_blank\">
 				<fieldset class='fieldset_opacite50' style='margin:0.5em;'>
 					<p class='bold'>Accès exceptionnel à la saisie d'appréciations dans les bulletins&nbsp;:</p>
 					<input type='hidden' name='id_classe' value='$id_classe' />";
