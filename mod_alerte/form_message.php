@@ -860,6 +860,8 @@ if($chaine_prof_principal!="") {
 	$chaine_prof_principal.=");";
 }
 
+$chaine_pp_classe="";
+
 for($loop=0;$loop<count($tab_statut);$loop++) {
 	$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
 	$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -867,7 +869,6 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 		$texte_infobulle.="<br /><p class='bold'><a href=\"javascript:cocher_decocher_statut('$tab_statut[$loop]')\" title=\"Cocher/décocher tous les comptes de statut ".ucfirst($tab_statut[$loop])."\">".ucfirst($tab_statut[$loop])."</a>";
 
 		if($tab_statut[$loop]=='professeur') {
-			//$chaine_prof_classe="";
 			$sql="SELECT c.id, c.classe FROM classes c ORDER BY classe;";
 			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_classe)>0) {
