@@ -823,11 +823,12 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 
 				tab=document.getElementsByClassName('span_user_dest_alerte');
 				if(tab.length==0) {
+					/*
 					if(confirm("Aucun destinataire ne semble choisi. Voulez-vous quand même tenter l'envoi?")) {
-
-
 						document.formulaire.submit();
 					}
+					*/
+					alert("Aucun destinataire n'a été choisi.");
 				}
 				else {
 
