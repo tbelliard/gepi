@@ -106,19 +106,25 @@ if ($barre_plugin!="") {
 
 		// Bulletins
 		if(getSettingAOui("active_bulletins")) {
-			if((getSettingAOui("GepiAccesBulletinSimpleEleve"))&&(getSettingAOui("GepiAccesGraphEleve"))) {
-				$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
-				$menus .= '   <ul class="niveau2">'."\n";
-				$menus .= '     <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter vos bulletins simplifiés.">&nbsp;Bulletins simplifiés</a></li>'."\n";
-				$menus .= '     <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique vos résultats.">&nbsp;Visualis.graphique</a></li>'."\n";
-				$menus .= '   </ul>'."\n";
-				$menus .= '</li>'."\n";
-			}
-			elseif(getSettingAOui("GepiAccesBulletinSimpleEleve")) {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter vos bulletins simplifiés.">&nbsp;Bulletins</a></li>'."\n";
-			}
-			elseif(getSettingAOui("GepiAccesGraphEleve")) {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique vos résultats.">&nbsp;Visu.graph</a></li>'."\n";
+			$sql="SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$_SESSION['login']."' AND 
+			jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY jec.periode DESC LIMIT 1;";
+			//echo "$sql<br />";
+			$tmp_res_classe_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($tmp_res_classe_eleve)>0) {
+				if((getSettingAOui("GepiAccesBulletinSimpleEleve"))&&(getSettingAOui("GepiAccesGraphEleve"))) {
+					$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
+					$menus .= '   <ul class="niveau2">'."\n";
+					$menus .= '     <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter vos bulletins simplifiés.">&nbsp;Bulletins simplifiés</a></li>'."\n";
+					$menus .= '     <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique vos résultats.">&nbsp;Visualis.graphique</a></li>'."\n";
+					$menus .= '   </ul>'."\n";
+					$menus .= '</li>'."\n";
+				}
+				elseif(getSettingAOui("GepiAccesBulletinSimpleEleve")) {
+					$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter vos bulletins simplifiés.">&nbsp;Bulletins</a></li>'."\n";
+				}
+				elseif(getSettingAOui("GepiAccesGraphEleve")) {
+					$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique vos résultats.">&nbsp;Visu.graph</a></li>'."\n";
+				}
 			}
 		}
 

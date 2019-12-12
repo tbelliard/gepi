@@ -62,6 +62,13 @@ if (isset($id_classe)) {
 			die();
 		}
 	}
+
+	// 20191211
+	$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+	if((isset($id_classe))&&(in_array($id_classe, $tab_id_classe_exclues_module_bulletins))) {
+		header('Location: ../accueil.php?msg='.rawurlencode("Les bulletins ne sont pas gérés dans Gepi pour cette classe."));
+		die();
+	}
 }
 
 $javascript_specifique="prepa_conseil/colorisation_visu_toutes_notes";
@@ -71,10 +78,21 @@ $titre_page = "Visualisation des notes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
+
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
 ?>
 <!--p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a-->
 <?php
 if (isset($id_classe)) {
+	if(in_array($id_classe, $tab_id_classe_exclues_module_bulletins)) {
+		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a></p>
+		<p style='color:red'>Les bulletins ne sont pas gérés dans Gepi pour la classe ".get_nom_classe($id_classe).".</p>";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe, "", "span");
 	if($chaine_date_conseil_classe!="") {
 		//$chaine_date_conseil_classe="<div class='fieldset_opacite50' style='float:right; width:10em; font-size:normal; text-align:center;'>".$chaine_date_conseil_classe."</div>";
@@ -93,21 +111,37 @@ if (isset($id_classe)) {
 
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
-	if($_SESSION['statut']=='scolarite'){
-		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+
+	if($_SESSION['statut']=='scolarite') {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 	}
-	elseif($_SESSION['statut']=='professeur'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY c.classe";
 	}
-	elseif($_SESSION['statut']=='cpe'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
-			p.id_classe = c.id AND
-			jec.id_classe=c.id AND
-			jec.periode=p.num_periode AND
-			jecpe.e_login=jec.login AND
-			jecpe.cpe_login='".$_SESSION['login']."'
+	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes") {
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY c.classe";
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE 
+			p.id_classe = c.id AND 
+			jec.id_classe=c.id AND 
+			jec.periode=p.num_periode AND 
+			jecpe.e_login=jec.login AND 
+			jecpe.cpe_login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') 
 			ORDER BY classe";
 	}
+	elseif($_SESSION['statut']=='autre') {
+		// Statut autre
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY c.classe";
+	}
+
+	// 20191211
+	//$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
 	$chaine_options_classes="";
 
 	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -702,28 +736,37 @@ display_div_coloriser();
 	echo "</p>\n";
 	echo "<strong>Visualiser les moyennes par classe :</strong><br />";
 	unset($sql);
+
 	if($_SESSION['statut']=='scolarite') {
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes") {
-		$sql="SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
-			p.id_classe = c.id AND
-			jec.id_classe=c.id AND
-			jec.periode=p.num_periode AND
-			jecpe.e_login=jec.login AND
-			jecpe.cpe_login='".$_SESSION['login']."'
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE 
+			p.id_classe = c.id AND 
+			jec.id_classe=c.id AND 
+			jec.periode=p.num_periode AND 
+			jecpe.e_login=jec.login AND 
+			jecpe.cpe_login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') 
 			ORDER BY classe";
 	}
 	elseif($_SESSION['statut']=='autre') {
 		// Statut autre
-		$sql="SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY c.classe";
 	}
+
+	// 20191211
+	//$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
 	if(!isset($sql)) {
 		echo "<p style='color:red'>Vous semblez n'avoir accès à aucune classe&nbsp;???</p>";
 		require("../lib/footer.inc.php");

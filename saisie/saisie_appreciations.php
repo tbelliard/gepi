@@ -912,6 +912,9 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+
 // Préférences pour les éléments de programmes
 $quePerso=getPref($_SESSION['login'], "ElementsProgrammesQuePerso", false);
 $queMat=getPref($_SESSION['login'], "ElementsProgrammesQueMat", false);
@@ -990,7 +993,22 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$tmp_groups=array();
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
-				$tmp_groups[]=$tab_groups[$loop];
+				// 20191211
+				$nb_classes_bull=0;
+				if(count($tab_id_classe_exclues_module_bulletins)>0) {
+					foreach($tab_groups[$loop]["classes"]["classes"] as $tmp_classe) {
+						if(!in_array($tmp_classe['id'], $tab_id_classe_exclues_module_bulletins)) {
+							$nb_classes_bull++;
+						}
+					}
+				}
+				else {
+					$nb_classes_bull=1;
+				}
+
+				if($nb_classes_bull>0) {
+					$tmp_groups[]=$tab_groups[$loop];
+				}
 			}
 		}
 
@@ -1218,7 +1236,26 @@ if ($multiclasses) {
 
 // On commence par mettre la liste dans l'ordre souhaité
 if ($order_by != "classe") {
-	$liste_eleves = $current_group["eleves"]["all"]["list"];
+	//$liste_eleves = $current_group["eleves"]["all"]["list"];
+	$liste_eleves=array();
+	foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
+		if(!in_array($current_group["eleves"]["all"]["users"][$eleve_login]["classe"], $tab_id_classe_exclues_module_bulletins)) {
+			$liste_eleves[]=$eleve_login;
+		}
+		else {
+			// Vérifier quand même si l'élève a changé de classe en cours d'année
+			$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$eleve_login."';";
+			$test_classe=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test_classe)>0) {
+				while($lig_test_classe=mysqli_fetch_object($test_classe)) {
+					if(!in_array($lig_test_classe->id_classe, $tab_id_classe_exclues_module_bulletins)) {
+						$liste_eleves[]=$eleve_login;
+						break;
+					}
+				}
+			}
+		}
+	}
 } else {
 	// Ici, on tri par classe
 	// On va juste créer une liste des élèves pour chaque classe
@@ -1234,7 +1271,10 @@ if ($order_by != "classe") {
 	// On met tout ça à la suite
 	$liste_eleves = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
-		$liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
+		// 20191211
+		if(!in_array($classe_id, $tab_id_classe_exclues_module_bulletins)) {
+			$liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
+		}
 	}
 }
 
@@ -1522,7 +1562,24 @@ while ($k < $nb_periode) {
 					if($cpt) {
 						$mess[$k].="\n<br />\n";
 					}
-					$mess[$k].="<input type='image' name=\"delElemProgGroup".$k."[$element->idEP]\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour tous les élèves' /> ";
+
+					// 20191212
+					/*
+					if(
+						(
+							($current_group["classe"]["ver_periode"]['all'][$k] == 1)&&
+							(
+								($app_grp[$k]!='')||
+								(getSettingAOui('autoriser_correction_bulletin_hors_delais')=='y')
+							)
+							&&(getSettingAOui('autoriser_correction_bulletin')=='y')
+						)||
+						($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
+					) {
+					*/
+						$mess[$k].="<input type='image' name=\"delElemProgGroup".$k."[$element->idEP]\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour tous les élèves' /> ";
+					//}
+
 					$mess[$k].="- ".$element->libelle;
 					$cpt = TRUE;
 				}
@@ -1933,7 +1990,13 @@ foreach ($liste_eleves as $eleve_login) {
 				//
 				$mess[$k] = '';
 				//$mess[$k] =$mess[$k]."<td>".$note."</td>\n<td>";
-				$mess[$k] =$mess[$k]."<td>".$note."</td>\n<td>";
+				$mess[$k].="<td>";
+				// 20191211
+				// Classe de l'élève sur cette période
+				if(!in_array($eleve_id_classe, $tab_id_classe_exclues_module_bulletins)) {
+					$mess[$k].=$note;
+				}
+				$mess[$k].="</td>\n<td>";
 
 				$mess[$k].=$notes_conteneurs;
 
@@ -1951,13 +2014,16 @@ foreach ($liste_eleves as $eleve_login) {
 						($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
 					) {
 
-						$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' style=\"width:16px; height:16px;\" alt='Proposer une correction' title='Proposer une correction' /></a>";
-	
-						$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>$eleve_app</textarea>\n";
-						$chaine_champs_input_correction.="<input type='hidden' name='nom_prenom_eleve_$cpt_correction' id='nom_prenom_eleve_$cpt_correction' value=\"$eleve_nom $eleve_prenom\" />\n";
-	
-						$mess[$k].="</div>\n";
-						$cpt_correction++;
+						// 20191211
+						if(!in_array($eleve_id_classe, $tab_id_classe_exclues_module_bulletins)) {
+							$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' style=\"width:16px; height:16px;\" alt='Proposer une correction' title='Proposer une correction' /></a>";
+		
+							$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>$eleve_app</textarea>\n";
+							$chaine_champs_input_correction.="<input type='hidden' name='nom_prenom_eleve_$cpt_correction' id='nom_prenom_eleve_$cpt_correction' value=\"$eleve_nom $eleve_prenom\" />\n";
+		
+							$mess[$k].="</div>\n";
+							$cpt_correction++;
+						}
 					}
 				}
 				//===============================
@@ -1986,26 +2052,33 @@ foreach ($liste_eleves as $eleve_login) {
 					$mess[$k] =$mess[$k]."</td>\n";
 
 
-					$mess[$k].="<td style='text-align:left;'>-<br>";
-					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);
-					//$mess[$k].= var_dump($elementEleve);
+					$mess[$k].="<td style='text-align:left;'>";
+					//$mess[$k].="-<br>";
 
-					$cpt=FALSE;
-					if(mysqli_num_rows($elementEleve)>0) {
-						while($element = $elementEleve->fetch_object()){
-							if($cpt) {
-								$mess[$k].="\n<br />\n";
+					// 20191211
+					if(!in_array($eleve_id_classe, $tab_id_classe_exclues_module_bulletins)) {
+						$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);
+						//$mess[$k].= var_dump($elementEleve);
+
+						$cpt=FALSE;
+						if(mysqli_num_rows($elementEleve)>0) {
+							while($element = $elementEleve->fetch_object()){
+								if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
+									if($cpt) {
+										$mess[$k].="\n<br />\n";
+									}
+
+									// 20191212
+									if($tab_autorisation_exceptionnelle_de_saisie[$k]=='y') {
+										$mess[$k].="<button name=\"delElemProgElv".$k."[".$element->idEP."]\" value='$eleve_login' "
+											. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
+										$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
+										$mess[$k].="</button>\n";
+									}
+								}
+								$mess[$k].="- ".$element->libelle;
+								$cpt = TRUE;
 							}
-							//$mess[$k].="<input type='image' name=\"delElemProgElv".$k."['$element->idEP']['$eleve_login']\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
-							//$mess[$k].="<input type='image' name=\"delElemProgElv".$k."[$element->idEP]['$eleve_login']\" src='../images/disabled.png' style=\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
-							//if(getSettingAOui('ElementProgModifProfPeriodeClose')) {
-								$mess[$k].="<button name=\"delElemProgElv".$k."[".$element->idEP."]\" value='$eleve_login' "
-									. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
-								$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
-								$mess[$k].="</button>\n";
-							//}
-							$mess[$k].="- ".$element->libelle;
-							$cpt = TRUE;
 						}
 					}
 				}
@@ -2085,7 +2158,11 @@ foreach ($liste_eleves as $eleve_login) {
 					$liste_notes='Pas de note dans le carnet pour cette période.';
 				}
 
-				$mess[$k]="<td>".$note;
+				$mess[$k]="<td>";
+				// 20191211
+				if(!in_array($eleve_id_classe, $tab_id_classe_exclues_module_bulletins)) {
+					$mess[$k].=$note;
+				}
 				// 20180822
 				if($note_seule!='') {
 					$mess[$k].="\n<span style='display:none' id='note_n".$k.$num_id."'>".$note_seule."</span>\n";
@@ -2113,117 +2190,124 @@ foreach ($liste_eleves as $eleve_login) {
 					$mess[$k].="<br />\n";
 					$mess[$k].=$notes_conteneurs;
 				}
-				$mess[$k].="\n<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
-				$chaine_champs_input_nom.="<input type='hidden' name='nom_eleve_".$k."[$i]' id='nom_eleve_".$k.$num_id."' value=\"".$eleve_nom."\" />\n";
+				// 20191211
+				if(!in_array($eleve_id_classe, $tab_id_classe_exclues_module_bulletins)) {
+					$mess[$k].="\n<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				$chaine_champs_input_login.="<input type='hidden' name='login_eleve_".$k."[$i]' id='login_eleve_".$k.$num_id."' value=\"".$eleve_login_t[$k]."\" />\n";
+					$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
+					$chaine_champs_input_nom.="<input type='hidden' name='nom_eleve_".$k."[$i]' id='nom_eleve_".$k.$num_id."' value=\"".$eleve_nom."\" />\n";
 
-				$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='$saisie_app_nb_cols_textarea' onchange=\"changement();";
-				$mess[$k].="ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
-				// La vérification de fautes de frappe est maintenant faite dans la même requête ajax
-				//$mess[$k].="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
+					$chaine_champs_input_login.="<input type='hidden' name='login_eleve_".$k."[$i]' id='login_eleve_".$k.$num_id."' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				// 20150316: Désactivé parce que ce la provoque une série de requêtes ajax au chargement de la page.
-				//$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\n";
+					$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='$saisie_app_nb_cols_textarea' onchange=\"changement();";
+					$mess[$k].="ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
+					// La vérification de fautes de frappe est maintenant faite dans la même requête ajax
+					//$mess[$k].="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
 
-				//$mess[$k].="verifAppVide('".$k.$num_id."');";
+					// 20150316: Désactivé parce que ce la provoque une série de requêtes ajax au chargement de la page.
+					//$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\n";
 
-				$mess[$k].="\"";
+					//$mess[$k].="verifAppVide('".$k.$num_id."');";
 
-				// 20180623
-				//$mess[$k].=" onblur=\"verifAppVide('".$k.$num_id."');\"";
+					$mess[$k].="\"";
 
-				//==================================
-				// Rétablissement: boireaus 20080219
-				// Pour revenir au champ suivant après validation/enregistrement:
-				// MODIF: boireaus 20080520
-				//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
-				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
-				$mess[$k].="repositionner_commtype(); afficher_positionner_div_notes('notes_".$eleve_login."_".$k."', '".$eleve_login."');";
-				//================================================
-				if(getSettingValue("gepi_pmv")!="n"){
-					$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login."';";
-					//echo "$sql<br />";
-					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_ele)>0) {
-						$lig_ele=mysqli_fetch_object($res_ele);
-						$_photo_eleve = nom_photo($lig_ele->elenoet);
-						if(file_exists($_photo_eleve)) {
-							$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(my_strtoupper($eleve_nom)." ".casse_mot($eleve_prenom,'majf2'))."')";
+					// 20180623
+					//$mess[$k].=" onblur=\"verifAppVide('".$k.$num_id."');\"";
+
+					//==================================
+					// Rétablissement: boireaus 20080219
+					// Pour revenir au champ suivant après validation/enregistrement:
+					// MODIF: boireaus 20080520
+					//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
+					$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
+					$mess[$k].="repositionner_commtype(); afficher_positionner_div_notes('notes_".$eleve_login."_".$k."', '".$eleve_login."');";
+					//================================================
+					if(getSettingValue("gepi_pmv")!="n"){
+						$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login."';";
+						//echo "$sql<br />";
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_ele)>0) {
+							$lig_ele=mysqli_fetch_object($res_ele);
+							$_photo_eleve = nom_photo($lig_ele->elenoet);
+							if(file_exists($_photo_eleve)) {
+								$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(my_strtoupper($eleve_nom)." ".casse_mot($eleve_prenom,'majf2'))."')";
+							}
+							else {
+								$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
+							}
 						}
 						else {
 							$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
 						}
 					}
-					else {
-						$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
+					//================================================
+					$mess[$k].="\"";
+					//==================================
+
+					$mess[$k].=">".$eleve_app."</textarea>\n";
+
+					// 20160617
+					$mess[$k].="<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
+
+					// on affiche si besoin l'appréciation temporaire (en sauvegarde)
+					$mess[$k].=$eleve_app_t;
+
+					// Espace pour afficher les éventuelles fautes de frappe
+					$mess[$k].="<div id='div_verif_n".$k.$num_id."' style='color:red;'>";
+					// 20150316
+					if(getSettingValue('active_recherche_lapsus')!='n') {
+						$mess[$k].=teste_lapsus($eleve_app);
 					}
+					$mess[$k].="</div>\n";
 				}
-				//================================================
-				$mess[$k].="\"";
-				//==================================
-
-				$mess[$k].=">".$eleve_app."</textarea>\n";
-
-				// 20160617
-				$mess[$k].="<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
-
-				// on affiche si besoin l'appréciation temporaire (en sauvegarde)
-				$mess[$k].=$eleve_app_t;
-
-				// Espace pour afficher les éventuelles fautes de frappe
-				$mess[$k].="<div id='div_verif_n".$k.$num_id."' style='color:red;'>";
-				// 20150316
-				if(getSettingValue('active_recherche_lapsus')!='n') {
-					$mess[$k].=teste_lapsus($eleve_app);
-				}
-				$mess[$k].="</div>\n";
 
 				if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 					$mess[$k].="</td>\n<td style='text-align:left;'>";
-				
-					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);
-					$cpt=FALSE;
-					if(mysqli_num_rows($elementEleve)>0) {
-						while($element = $elementEleve->fetch_object()){
-							if($cpt) {
-								$mess[$k].="\n<br />\n";
+
+					// 20191211
+					if(!in_array($eleve_id_classe, $tab_id_classe_exclues_module_bulletins)) {
+						$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);
+						$cpt=FALSE;
+						if(mysqli_num_rows($elementEleve)>0) {
+							while($element = $elementEleve->fetch_object()){
+								if($cpt) {
+									$mess[$k].="\n<br />\n";
+								}
+								//$mess[$k].="<input type='image' name=\"delElemProgElv_".$element->idEP."['$eleve_login']\"  src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
+								$mess[$k].="<button name=\"delElemProgElv".$k."[".$element->idEP."]\" value='$eleve_login' "
+									. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
+								$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
+								$mess[$k].="</button>\n";
+								$mess[$k].="- ".$element->libelle;
+								$cpt = TRUE;
 							}
-							//$mess[$k].="<input type='image' name=\"delElemProgElv_".$element->idEP."['$eleve_login']\"  src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
-							$mess[$k].="<button name=\"delElemProgElv".$k."[".$element->idEP."]\" value='$eleve_login' "
-								. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
-							$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
-							$mess[$k].="</button>\n";
-							$mess[$k].="- ".$element->libelle;
-							$cpt = TRUE;
+							$mess[$k].="<br />\n";
 						}
-						$mess[$k].="<br />\n";
-					}
-					// 20161129
-					if(mysqli_num_rows($toutElemProgramme)>0) {
-						$toutElemProgramme->data_seek(0);
+						// 20161129
+						if(mysqli_num_rows($toutElemProgramme)>0) {
+							$toutElemProgramme->data_seek(0);
 
-						$mess[$k].="<select name=\"Elem_Eleve".$k."[$eleve_login]\" id='Elem_Eleve_".$k."_".$eleve_login."' style='margin-top:.5em; max-width:38em;'> \n";
-						$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
-						while($element = $toutElemProgramme->fetch_object()){
-							$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
+							$mess[$k].="<select name=\"Elem_Eleve".$k."[$eleve_login]\" id='Elem_Eleve_".$k."_".$eleve_login."' style='margin-top:.5em; max-width:38em;'> \n";
+							$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
+							while($element = $toutElemProgramme->fetch_object()){
+								$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
+							}
+							$mess[$k].="</select> \n";
+							$mess[$k].="<br />\n";
 						}
-						$mess[$k].="</select> \n";
-						$mess[$k].="<br />\n";
+
+						$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' id='newElemEleve".$k."_".$ele_id."' placeholder='Nouvel élément de programme' style='width:82%; margin-top:.3em' title=\"".$explications_ajout_element_de_programme."\" /> \n";
+
+						// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
+						//           Ou une préférence utilisateur?
+						if($afficher_choix_element_prog) {
+							$mess[$k].="<a href='#' onclick=\"affiche_choix_ele_prog('newElemEleve".$k."_".$ele_id."');return false;\" title=\"Choisir un élément de programme.\"><img src='../images/icons/tableau_coches.png' class='icone16' alt='Choix' /></a> \n";
+						}
+						$mess[$k].="<a href='#' onclick=\"affiche_liste_ele_prog('newElemEleve".$k."_".$ele_id."');return false;\"><img src='../images/icons/livre.png' class='icone16' alt='Suggestions' /></a> \n";
+
+						//$mess[$k].= var_dump($elementEleve);
 					}
-
-					$mess[$k].="<input type='text' name='newElemEleve".$k."[$eleve_login]' id='newElemEleve".$k."_".$ele_id."' placeholder='Nouvel élément de programme' style='width:82%; margin-top:.3em' title=\"".$explications_ajout_element_de_programme."\" /> \n";
-
-					// 20171031: Ajouter un test sur le fait qu'on propose ou non la liste des éléments de programmes
-					//           Ou une préférence utilisateur?
-					if($afficher_choix_element_prog) {
-						$mess[$k].="<a href='#' onclick=\"affiche_choix_ele_prog('newElemEleve".$k."_".$ele_id."');return false;\" title=\"Choisir un élément de programme.\"><img src='../images/icons/tableau_coches.png' class='icone16' alt='Choix' /></a> \n";
-					}
-					$mess[$k].="<a href='#' onclick=\"affiche_liste_ele_prog('newElemEleve".$k."_".$ele_id."');return false;\"><img src='../images/icons/livre.png' class='icone16' alt='Suggestions' /></a> \n";
-
-					//$mess[$k].= var_dump($elementEleve);
 				}
 			
 				

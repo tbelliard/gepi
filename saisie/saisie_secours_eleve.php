@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -241,7 +241,10 @@ function cherche_eleves(champ) {
 }
 </script>\n";
 
-	$sql="SELECT DISTINCT c.* FROM classes c WHERE 1 ORDER BY classe;";
+	//$sql="SELECT DISTINCT c.* FROM classes c WHERE 1 ORDER BY classe;";
+	// 20191211
+	$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
+	//echo "$sql<br />";
 	//echo "$sql<br />";
 	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nombreligne = mysqli_num_rows($calldata);

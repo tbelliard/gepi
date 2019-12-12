@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -426,6 +426,9 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 	$affiche_bascule = 'yes';
 }
 
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" name='form1' method=\"post\">\n";
 insere_lien_calendrier_crob("right");
 echo "<p class='bold'>\n";
@@ -470,7 +473,22 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$tmp_groups=array();
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
-				$tmp_groups[]=$tab_groups[$loop];
+				// 20191211
+				$nb_classes_bull=0;
+				if(count($tab_id_classe_exclues_module_bulletins)>0) {
+					foreach($tab_groups[$loop]["classes"]["classes"] as $tmp_classe) {
+						if(!in_array($tmp_classe['id'], $tab_id_classe_exclues_module_bulletins)) {
+							$nb_classes_bull++;
+						}
+					}
+				}
+				else {
+					$nb_classes_bull=1;
+				}
+
+				if($nb_classes_bull>0) {
+					$tmp_groups[]=$tab_groups[$loop];
+				}
 			}
 		}
 
@@ -837,13 +855,35 @@ echo add_token_field();
 <?php
 // On commence par mettre la liste dans l'ordre souhaité
 if ($order_by != "classe") {
-	$liste_eleves = $current_group["eleves"]["all"]["list"];
+	// 20191211
+	//$liste_eleves = $current_group["eleves"]["all"]["list"];
+	$liste_eleves=array();
+	foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
+		if(!in_array($current_group["eleves"]["all"]["users"][$eleve_login]["classe"], $tab_id_classe_exclues_module_bulletins)) {
+			$liste_eleves[]=$eleve_login;
+		}
+		else {
+			// Vérifier quand même si l'élève a changé de classe en cours d'année
+			$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$eleve_login."';";
+			$test_classe=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test_classe)>0) {
+				while($lig_test_classe=mysqli_fetch_object($test_classe)) {
+					if(!in_array($lig_test_classe->id_classe, $tab_id_classe_exclues_module_bulletins)) {
+						$liste_eleves[]=$eleve_login;
+						break;
+					}
+				}
+			}
+		}
+	}
 } else {
 	// Ici, on trie par classe
 	// On va juste créer une liste des élèves pour chaque classe
 	$tab_classes = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
-		$tab_classes[$classe_id] = array();
+		//if(!in_array($classe_id, $tab_id_classe_exclues_module_bulletins)) {
+			$tab_classes[$classe_id] = array();
+		//}
 	}
 	// On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
 	foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
@@ -853,7 +893,10 @@ if ($order_by != "classe") {
 	// On met tout ça à la suite
 	$liste_eleves = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
-		$liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
+		// 20191211
+		if(!in_array($classe_id, $tab_id_classe_exclues_module_bulletins)) {
+			$liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
+		}
 	}
 }
 
@@ -999,37 +1042,44 @@ foreach ($liste_eleves as $eleve_login) {
 					//==================
 
 					// ========================
-					$mess[$k].="<td id=\"td_".$k.$num_id."\" ".$temp."><center>\n";
-					$mess[$k].="<input type='hidden' name=\"log_eleve_".$k."[$i]\" value=\"$eleve_login\" />\n";
 
-					//$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve_".$k."[$i]\" value=";
-					$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" ";
-					$mess[$k].="autocomplete=\"off\" ";
-					$mess[$k].="name=\"note_eleve_".$k."[$i]\" value=";
-					// ========================
+					// 20191211
+					if(!in_array($eleve_id_classe, $tab_id_classe_exclues_module_bulletins)) {
+						$mess[$k].="<td id=\"td_".$k.$num_id."\" ".$temp."><center>\n";
+						$mess[$k].="<input type='hidden' name=\"log_eleve_".$k."[$i]\" value=\"$eleve_login\" />\n";
 
-					if (($periode_cn == $k) and ($is_posted=='bascule')) {
-						//$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
-						if ($statut_moy == 'y') {
-							$mess[$k] = $mess[$k]."\"".@old_mysql_result($moyenne_query, 0, "note")."\"";
+						//$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve_".$k."[$i]\" value=";
+						$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" ";
+						$mess[$k].="autocomplete=\"off\" ";
+						$mess[$k].="name=\"note_eleve_".$k."[$i]\" value=";
+						// ========================
+
+						if (($periode_cn == $k) and ($is_posted=='bascule')) {
+							//$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
+							if ($statut_moy == 'y') {
+								$mess[$k] = $mess[$k]."\"".@old_mysql_result($moyenne_query, 0, "note")."\"";
+							} else {
+								$mess[$k] = $mess[$k]."\"\"";
+								$tab_recopie_vide[]="$eleve_nom $eleve_prenom";
+							}
+							//$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" /></td>\n";
+							$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" />\n";
 						} else {
-							$mess[$k] = $mess[$k]."\"\"";
-							$tab_recopie_vide[]="$eleve_nom $eleve_prenom";
+							//$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
+							if ($eleve_statut != '') {
+								$mess[$k] = $mess[$k]."\"".$eleve_statut."\"";
+								//$tmp_tab_test[]=$eleve_statut;
+							} else {
+								$mess[$k] = $mess[$k]."\"".$eleve_note."\"";
+								//$tmp_tab_test[]=$eleve_note;
+							}
+							$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" />\n";
 						}
-						//$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" /></td>\n";
-						$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" />\n";
-					} else {
-						//$mess[$k] = $mess[$k]."<td id=\"td_".$k.$num_id."\" ".$temp."><center><input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"".$eleve_login_t[$k]."\" value=";
-						if ($eleve_statut != '') {
-							$mess[$k] = $mess[$k]."\"".$eleve_statut."\"";
-							//$tmp_tab_test[]=$eleve_statut;
-						} else {
-							$mess[$k] = $mess[$k]."\"".$eleve_note."\"";
-							//$tmp_tab_test[]=$eleve_note;
-						}
-						$mess[$k] = $mess[$k]." onfocus=\"javascript:this.select()\" onchange=\"verifcol(".$k.$num_id.");changement()\" />\n";
 					}
-
+					else {
+						$mess[$k].="<td ".$temp."><center>\n";
+						$temoin_num_id="n";
+					}
 					$mess[$k].="</center></td>\n";
 				}
 				else{

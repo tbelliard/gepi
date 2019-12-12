@@ -289,16 +289,35 @@ if ($current_group) {
 	// On commence par gérer simplement la liste des groupes pour les professeurs
 
 	if ($_SESSION["statut"] == "professeur") {
-		echo "<p>Saisir les moyennes ou appréciations par classe :</p>\n";
+		echo "<p>Saisir les moyennes ou appréciations par classe&nbsp;:</p>\n";
+
+		$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
 
 		$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 		foreach ($groups as $group) {
 			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group["id"]."' AND domaine='bulletins' AND visible='n';";
 			$test_jgv=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($test_jgv)==0) {
-				echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-				echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlspecialchars($group["description"]) . "</a>";
-				echo "</span></p>\n";
+				// 20191211
+				if(isset($group['classes']['classes'])) {
+					$nb_classes_bull=0;
+					if(count($tab_id_classe_exclues_module_bulletins)>0) {
+						foreach($group["classes"]["classes"] as $classe) {
+							if(!in_array($classe['id'], $tab_id_classe_exclues_module_bulletins)) {
+								$nb_classes_bull++;
+							}
+						}
+					}
+					else {
+						$nb_classes_bull=1;
+					}
+
+					if($nb_classes_bull>0) {
+						echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
+						echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlspecialchars($group["description"]) . "</a>";
+						echo "</span></p>\n";
+					}
+				}
 			}
 		}
 	} elseif ($_SESSION["statut"] == "secours") {
@@ -312,8 +331,10 @@ if ($current_group) {
 			}
 		}
 
-		echo "<p>Saisir les moyennes ou appréciations par classe :</p>\n";
-		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+		echo "<p>Saisir les moyennes ou appréciations par classe&nbsp;:</p>\n";
+		//$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+		$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
+		$appel_donnees = mysqli_query($GLOBALS["mysqli"], $sql);
 		$lignes = mysqli_num_rows($appel_donnees);
 		while($lig_classe=mysqli_fetch_object($appel_donnees)) {
 			$id_classe = $lig_classe->id;

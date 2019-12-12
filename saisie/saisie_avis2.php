@@ -84,6 +84,14 @@ if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
 	die();
 }
 
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+if((isset($id_classe))&&(in_array($id_classe, $tab_id_classe_exclues_module_bulletins))) {
+	header('Location: ../accueil.php?msg='.rawurlencode("Les bulletins ne sont pas gérés dans Gepi pour cette classe."));
+	die();
+}
+
+
 if(($_SESSION['statut']=='professeur')&&(!is_pp($_SESSION['login'], $id_classe))) {
 	header("Location: ../accueil.php?msg=Accès non autorisé.");
 	die();
@@ -345,6 +353,9 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+
 //================================================
 $type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
 if(($type_bulletin_par_defaut!="pdf")&&($type_bulletin_par_defaut!="pdf_2016")&&($type_bulletin_par_defaut!="html")) {
@@ -371,6 +382,15 @@ change = 'no';
 
 // 20130722
 if (isset($id_classe)) {
+
+	// 20191211
+	if((isset($id_classe))&&(in_array($id_classe, $tab_id_classe_exclues_module_bulletins))) {
+		echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a></p>";
+		echo "<p style='color:red'>Les bulletins ne sont pas gérés dans Gepi pour la classe ".get_nom_classe($id_classe)."</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
 			(getSettingAOui('GepiAccesGraphParent'))||
 			(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
@@ -513,6 +533,7 @@ if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
 	echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
 
 // Ajout lien classe précédente / classe suivante
+/*
 if($_SESSION['statut']=='scolarite'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
@@ -544,6 +565,9 @@ elseif($_SESSION['statut'] == 'autre'){
 elseif($_SESSION['statut'] == 'secours'){
 	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 }
+*/
+// 20191211
+$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
 
 $chaine_options_classes="";
 

@@ -110,19 +110,42 @@ if ($barre_plugin!="") {
 
 		// Bulletins
 		if(getSettingAOui("active_bulletins")) {
-			if((getSettingAOui("GepiAccesBulletinSimpleParent"))&&(getSettingAOui("GepiAccesGraphParent"))) {
-				$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
-				$menus .= '   <ul class="niveau2">'."\n";
-				$menus .= '     <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter les bulletins simplifiés des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Bulletins simplifiés</a></li>'."\n";
-				$menus .= '     <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique les résultats des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Visualis.graphique</a></li>'."\n";
-				$menus .= '   </ul>'."\n";
-				$menus .= '</li>'."\n";
+			$sql="(SELECT e.login, e.prenom, e.nom " .
+					"FROM eleves e, resp_pers r, responsables2 re, j_eleves_classes jec " .
+					"WHERE (" .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2') AND 
+					jec.login=e.login AND 
+					jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
+			if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+				$sql.=" UNION (SELECT e.login, e.prenom, e.nom " .
+					"FROM eleves e, resp_pers r, responsables2 re, j_eleves_classes jec " .
+					"WHERE (" .
+					"e.ele_id = re.ele_id AND " .
+					"re.pers_id = r.pers_id AND " .
+					"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y' AND 
+					jec.login=e.login AND 
+					jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
 			}
-			elseif(getSettingAOui("GepiAccesBulletinSimpleParent")) {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter les bulletins simplifiés des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Bulletins</a></li>'."\n";
-			}
-			elseif(getSettingAOui("GepiAccesGraphParent")) {
-				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique les résultats des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Visu.graph</a></li>'."\n";
+			$sql.=";";
+			//echo "$sql<br />";
+			$tmp_res_classe_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($tmp_res_classe_eleve)>0) {
+				if((getSettingAOui("GepiAccesBulletinSimpleParent"))&&(getSettingAOui("GepiAccesGraphParent"))) {
+					$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
+					$menus .= '   <ul class="niveau2">'."\n";
+					$menus .= '     <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter les bulletins simplifiés des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Bulletins simplifiés</a></li>'."\n";
+					$menus .= '     <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique les résultats des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Visualis.graphique</a></li>'."\n";
+					$menus .= '   </ul>'."\n";
+					$menus .= '</li>'."\n";
+				}
+				elseif(getSettingAOui("GepiAccesBulletinSimpleParent")) {
+					$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter les bulletins simplifiés des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Bulletins</a></li>'."\n";
+				}
+				elseif(getSettingAOui("GepiAccesGraphParent")) {
+					$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique les résultats des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Visu.graph</a></li>'."\n";
+				}
 			}
 		}
 

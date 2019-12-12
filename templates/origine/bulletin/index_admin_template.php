@@ -91,6 +91,10 @@
 
   <div id='container'>
 
+<?php
+//debug_var();
+?>
+
   <form action="index_admin.php" id="form1" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
 <?php
 	echo add_token_field();
@@ -489,6 +493,46 @@ if($acces_moy_ele_resp_cn=="") {$acces_moy_ele_resp_cn='immediat';}
 </form>
 
 	<br />
+
+
+  <form action="index_admin.php" id="form_classes_exclues" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
+<?php
+	echo add_token_field();
+?>
+	<input type="hidden" name="is_posted" value="classes_exclues" />
+
+	<h2 class="colleHaut">Classes exclues</h2>
+	<p>
+	Vous pouvez souhaiter ne pas utiliser les bulletins Gepi pour certaines classes.<br />
+	Choisissez ici les classes pour lesquelles les menus bulletins ne seront pas proposés.</p>
+	<?php
+		$sql="CREATE TABLE IF NOT EXISTS modules_restrictions 
+		(id int(11) NOT NULL auto_increment, 
+		module varchar(50) NOT NULL DEFAULT '', 
+		name varchar(50) NOT NULL DEFAULT '', 
+		value varchar(50) NOT NULL DEFAULT '', 
+		PRIMARY KEY (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$create=mysqli_query($mysqli, $sql);
+
+		$tab_classes_exclues=array();
+		$sql="SELECT * FROM modules_restrictions WHERE module='bulletins' AND name='id_classe';";
+		$res=mysqli_query($mysqli, $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_classes_exclues[]=$lig->value;
+		}
+
+		echo liste_checkbox_classes($tab_classes_exclues, 'id_classe', 'cocher_decocher', '', "checkbox_change", 'y');
+
+	?>
+	</p>
+
+	<p class="center">
+	  <input type="submit" value="Exclure les classes cochées" />
+	</p>
+</form>
+
+	<br />
+
 	<div style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
 	<h2 class="colleHaut">Divers</h2>
 

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -52,9 +52,10 @@ echo "</p>\n";
 
 echo "<h3>Liste des classes : </h3>\n";
 
-echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer les avis :</p>\n";
+echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez imprimer les avis&nbsp;:</p>\n";
 
-$sql=retourne_sql_mes_classes();
+//$sql=retourne_sql_mes_classes();
+$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
 $result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_classes = mysqli_num_rows($result_classes);
 

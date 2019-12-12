@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -462,7 +462,8 @@ if(!isset($id_classe)) {
 	echo "<p class='bold'>Choix des classes&nbsp;:</p>\n";
 
 	// Liste des classes avec élève:
-	$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
+	//$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
+	$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
 	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_classes=mysqli_num_rows($call_classes);

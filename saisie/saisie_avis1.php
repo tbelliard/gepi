@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -49,6 +49,13 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 
 if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
 	header("Location: ../accueil.php?msg=Classe non choisie.");
+	die();
+}
+
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+if((isset($id_classe))&&(in_array($id_classe, $tab_id_classe_exclues_module_bulletins))) {
+	header('Location: ../accueil.php?msg='.rawurlencode("Les bulletins ne sont pas gérés dans Gepi pour cette classe."));
 	die();
 }
 
@@ -359,6 +366,10 @@ print_r($tab_orientation_classe_courante);
 echo "</pre>";
 */
 //=================================
+
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+
 $acces_bull_simp='n';
 if(($_SESSION['statut']=="professeur") AND 
 ((getSettingValue("GepiAccesBulletinSimpleProf")=="yes")||
@@ -387,6 +398,7 @@ change = 'no';
 <?php
 
 // Ajout lien classe précédente / classe suivante
+/*
 if($_SESSION['statut']=='scolarite') {
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
@@ -419,6 +431,8 @@ elseif($_SESSION['statut'] == 'autre') {
 elseif($_SESSION['statut'] == 'secours') {
 	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 }
+*/
+$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
 
 $chaine_options_classes="";
 
@@ -520,6 +534,13 @@ if(isset($id_classe)) {
 echo "</p>\n";
 
 echo "</form>\n";
+
+// 20191211
+if((isset($id_classe))&&(in_array($id_classe, $tab_id_classe_exclues_module_bulletins))) {
+	echo "<p style='color:red'>Les bulletins ne sont pas gérés dans Gepi pour la classe ".get_nom_classe($id_classe)."</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
 
 // 20140226
 if(getSettingAOui('active_mod_discipline')) {

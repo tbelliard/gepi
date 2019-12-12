@@ -56,6 +56,13 @@ $per=isset($_POST['per']) ? $_POST['per'] : (isset($_GET['per']) ? $_GET['per'] 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 $mode2=isset($_POST['mode2']) ? $_POST['mode2'] : (isset($_GET['mode2']) ? $_GET['mode2'] : NULL);
 
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+if((isset($id_classe))&&(in_array($id_classe, $tab_id_classe_exclues_module_bulletins))) {
+	header('Location: ../accueil.php?msg='.rawurlencode("Les bulletins ne sont pas gérés dans Gepi pour cette classe."));
+	die();
+}
+
 if(isset($valider_modele_mail)) {
 	$MsgMailVerifRemplissageBulletins=preg_replace('/(\\\n)+/',"\n",$_POST['MsgMailVerifRemplissageBulletins']);
 	$MsgMailVerifRemplissageBulletins=preg_replace('/(\\\')+/',"'",$MsgMailVerifRemplissageBulletins);

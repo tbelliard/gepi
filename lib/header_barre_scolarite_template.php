@@ -70,6 +70,9 @@ while($lig=mysqli_fetch_object($res_droits)) {
 	if ($_SESSION['statut'] == "scolarite") {
 		$acces_saisie_modalites_accompagnement=acces_saisie_modalites_accompagnement();
 
+		// 20191211
+		//$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+
 		$tmp_liste_classes_scol=array();
 		$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe;";
 
@@ -143,7 +146,7 @@ while($lig=mysqli_fetch_object($res_droits)) {
 		}
 		//=======================================================
 
-		if(getSettingValue("active_carnets_notes") == 'y'){
+		if(getSettingValue("active_carnets_notes") == 'y') {
 			//=======================================================
 			// Bulletins
 			if (getSettingValue("active_bulletins") == "y") {

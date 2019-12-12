@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -68,23 +68,31 @@ echo "</p>";
 if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') or ($_SESSION['statut'] == 'cpe')) {
     //$call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 
+
 	if($_SESSION['statut']=='scolarite'){
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 	}
 	elseif($_SESSION['statut']=='cpe') {
 		if(getSettingValue("GepiRubConseilCpeTous")!='yes') {
-			$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe = c.id AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 		}
 		else {
-			$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE p.id_classe = c.id  AND jec.id_classe=c.id AND jecpe.cpe_login='".$_SESSION['login']."' AND jec.login=jecpe.e_login ORDER BY classe";
+			$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE p.id_classe = c.id  AND jec.id_classe=c.id AND jecpe.cpe_login='".$_SESSION['login']."' AND jec.login=jecpe.e_login AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 		}
 	}
 	else {
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe = c.id AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 	}
+
+	//$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
+
 	$call_classe = mysqli_query($GLOBALS["mysqli"], $sql);
 
-    $nombre_classe = mysqli_num_rows($call_classe);
+	$nombre_classe = mysqli_num_rows($call_classe);
 	if($nombre_classe==0){
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}

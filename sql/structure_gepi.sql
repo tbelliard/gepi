@@ -1773,3 +1773,11 @@ periode INT(11) NOT NULL default '1',
 login_saisie varchar(50) NOT NULL DEFAULT '', 
 date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
 PRIMARY KEY (id), INDEX ine_cycle_id_composante_id_groupe_periode (ine, cycle, code_composante, id_groupe, periode, annee), UNIQUE(ine, cycle, code_composante, id_groupe, periode, annee)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS modules_restrictions;
+CREATE TABLE IF NOT EXISTS modules_restrictions 
+(id int(11) NOT NULL auto_increment, 
+module varchar(50) NOT NULL DEFAULT '', 
+name varchar(50) NOT NULL DEFAULT '', 
+value varchar(50) NOT NULL DEFAULT '', 
+PRIMARY KEY (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

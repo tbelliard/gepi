@@ -1135,6 +1135,20 @@ Patientez pendant l'extraction des données... merci.
 		echo "</pre>";
 		*/
 
+		// 20191211
+		$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+		$temoin_classe_a_bulletins=0;
+		foreach($tab_ele['classe'] as $key => $tmp_current_classe) {
+			if(!in_array($tmp_current_classe['id_classe'], $tab_id_classe_exclues_module_bulletins)) {
+				$temoin_classe_a_bulletins++;
+				break;
+			}
+		}
+		if($temoin_classe_a_bulletins==0) {
+			$acces_bulletins='n';
+			$acces_bulletin_simple=false;
+		}
+
 		$indice_derniere_classe=count($tab_ele['classe'])-1;
 		if(!isset($tab_ele['classe'][$indice_derniere_classe]['pp'])) {
 			echo "<p style='color:red;'>Aucun ".$gepi_prof_suivi." n'est associé à cet(te) élève.";
@@ -2088,7 +2102,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 								}
 							}
 
-							if($tab_ele['resp'][$i]['envoi_bulletin']!='') {
+							if(($tab_ele['resp'][$i]['envoi_bulletin']!='')&&($temoin_classe_a_bulletins>0)) {
 								$alt=$alt*(-1);
 								echo "<tr class='lig$alt'><th style='text-align: left;'>Envoi bulletin:</th><td>";
 								if(in_array($_SESSION['statut'], array('administrateur', 'scolarite'))) {

@@ -270,23 +270,23 @@ if(!isset($tab_id_classe)) {
 	//$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE c.id=jec.id_classe ORDER BY c.classe;";
 	if ($_SESSION["statut"] == "scolarite") {
 		// On sélectionne les classes associées au compte scolarité
-		$sql="SELECT DISTINCT c.* FROM classes c, j_scol_classes jsc, j_eleves_classes jec WHERE (jec.id_classe=c.id AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."') ORDER BY c.classe;";
+		//$sql="SELECT DISTINCT c.* FROM classes c, j_scol_classes jsc, j_eleves_classes jec WHERE (jec.id_classe=c.id AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."') ORDER BY c.classe;";
 
 		$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée.";
 	}
 	elseif (($_SESSION["statut"] == "administrateur")||($_SESSION["statut"] == "secours")||($_SESSION["statut"] == "autre")) {
 		// On selectionne toutes les classes
-		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
+		//$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
 
 		$message_0="Aucune classe avec élève n'a été trouvée.";
 	}
 	elseif ($_SESSION["statut"] == "professeur") {
-		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login = jec.login AND jec.id_classe = c.id) ORDER BY c.classe;";
+		//$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login = jec.login AND jec.id_classe = c.id) ORDER BY c.classe;";
 
 			$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée pour l'édition des bulletins.";
 	}
 	elseif ($_SESSION["statut"] == "cpe") {
-		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jecpe.cpe_login='".$_SESSION['login']."' AND jecpe.e_login = jec.login AND jec.id_classe = c.id) ORDER BY c.classe;";
+		//$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jecpe.cpe_login='".$_SESSION['login']."' AND jecpe.e_login = jec.login AND jec.id_classe = c.id) ORDER BY c.classe;";
 
 			$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée pour l'édition des bulletins.";
 	}
@@ -297,6 +297,7 @@ if(!isset($tab_id_classe)) {
 		die();
 	}
 
+	$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
 	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_classes=mysqli_num_rows($call_classes);

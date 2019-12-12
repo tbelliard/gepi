@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -333,6 +333,13 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 // Vérifier s'il peut y avoir des accents dans un id_classe.
 if(!is_numeric($id_classe)) {$id_classe=NULL;}
 
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+if((isset($id_classe))&&(in_array($id_classe, $tab_id_classe_exclues_module_bulletins))) {
+	header('Location: ../accueil.php?msg='.rawurlencode("Les bulletins ne sont pas gérés dans Gepi pour cette classe."));
+	die();
+}
+
 //===============================================
 // Enregistrement de l'avis du conseil de classe:
 if(
@@ -526,18 +533,22 @@ $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_G
 // Quelques filtrages de départ pour pré-initialiser la variable qui nous importe ici : $login_eleve
 if ($_SESSION['statut'] == "responsable") {
 	$sql="(SELECT e.login, e.prenom, e.nom " .
-			"FROM eleves e, resp_pers r, responsables2 re " .
+			"FROM eleves e, resp_pers r, responsables2 re, j_eleves_classes jec " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2') AND 
+			jec.login=e.login AND 
+			jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
 	if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
 		$sql.=" UNION (SELECT e.login, e.prenom, e.nom " .
-			"FROM eleves e, resp_pers r, responsables2 re " .
+			"FROM eleves e, resp_pers r, responsables2 re, j_eleves_classes jec " .
 			"WHERE (" .
 			"e.ele_id = re.ele_id AND " .
 			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y'))";
+			"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y' AND 
+			jec.login=e.login AND 
+			jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
 	}
 	$sql.=";";
 	$get_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -553,28 +564,32 @@ if ($_SESSION['statut'] == "responsable") {
 		if ($login_eleve != null) {
 			// $login_eleve a été défini mais l'utilisateur a plusieurs élèves associés. On vérifie
 			// qu'il a le droit de visualiser les données pour l'élève sélectionné.
-			$sql="(SELECT e.login " .
-					"FROM eleves e, responsables2 re, resp_pers r " .
+			$sql="(SELECT DISTINCT e.login " .
+					"FROM eleves e, responsables2 re, resp_pers r, j_eleves_classes jec " .
 					"WHERE (" .
 					"e.login = '" . $login_eleve . "' AND " .
 					"e.ele_id = re.ele_id AND " .
 					"re.pers_id = r.pers_id AND " .
-					"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2')))";
+					"r.login = '" . $_SESSION['login'] . "' AND (re.resp_legal='1' OR re.resp_legal='2') AND 
+					jec.login=e.login AND 
+					jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
 			if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
-				$sql.=" UNION (SELECT e.login " .
-					"FROM eleves e, responsables2 re, resp_pers r " .
+				$sql.=" UNION (SELECT DISTINCT e.login " .
+					"FROM eleves e, responsables2 re, resp_pers r, j_eleves_classes jec " .
 					"WHERE (" .
 					"e.login = '" . $login_eleve . "' AND " .
 					"e.ele_id = re.ele_id AND " .
 					"re.pers_id = r.pers_id AND " .
-					"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
+					"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y' AND 
+					jec.login=e.login AND 
+					jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
 			}
 			$sql.=";";
 			$test = mysqli_query($GLOBALS["mysqli"], $sql);
 			if (mysqli_num_rows($test) == 0) {
-			    tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève ($login_eleve) dont il n'est pas responsable légal.");
-			    echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
-			    require("../lib/footer.inc.php");
+				tentative_intrusion(2, "Tentative par un parent de visualisation graphique des résultats d'un élève ($login_eleve) dont il n'est pas responsable légal.");
+				echo "<p>Vous ne pouvez visualiser que les graphiques des élèves pour lesquels vous êtes responsable légal.</p>\n";
+				require("../lib/footer.inc.php");
 				die();
 			}
 		}
@@ -591,7 +606,20 @@ if ($login_eleve and $login_eleve != null) {
 	// On récupère la classe de l'élève, pour déterminer automatiquement le nombre de périodes
 	// On part du postulat que même si l'élève change de classe en cours d'année, c'est pour aller
 	// dans une classe qui a le même nombre de périodes...
-	$id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
+	//$id_classe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' LIMIT 1"), 0);
+
+	$sql="SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$login_eleve."' AND 
+		jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY jec.periode DESC LIMIT 1;";
+	$res_classe_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_classe_eleve)==0) {
+		header('Location: ../accueil.php?msg='.rawurlencode("Vous n'êtes pas dans une classe pour laquelle les bulletins seraient gérés dans Gepi."));
+		die();
+	}
+	else {
+		$lig_tmp=mysqli_fetch_object($res_classe_eleve);
+		$id_classe=$lig_tmp->id_classe;
+	}
+
 	$req = mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login='".$login_eleve."'");
 	$nom_eleve = old_mysql_result($req, 0, "nom");
 	$prenom_eleve = old_mysql_result($req, 0, "prenom");
@@ -611,10 +639,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<p>Sélectionnez la classe : </p>\n";
 	echo "<blockquote>\n";
 	if($_SESSION['statut']=='scolarite') {
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 	}
 	elseif($_SESSION['statut']=='professeur') {
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='cpe') {
 		/*
@@ -627,12 +657,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			ORDER BY classe";
 		*/
 		// Les cpe ont accès à tous les bulletins, donc aussi aux courbes
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.id_classe = c.id AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 	}
 
 	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
 		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))) {
-		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id AND 
+			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe";
 	}
 	/*
 	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||

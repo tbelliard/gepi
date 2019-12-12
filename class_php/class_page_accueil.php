@@ -1244,14 +1244,46 @@ if(getSettingAOui('active_bulletins')) {
 				);
 
 		if ($condition) {
-		  if ($this->statutUtilisateur == "responsable") {
-			  $this->creeNouveauItem("/prepa_conseil/index3.php",
-					  "Bulletins simplifiés",
-					  "Permet de consulter les bulletins simplifiés des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$this->gepiSettings['denomination_responsable'].".");
-			 } else {
-			  $this->creeNouveauItem("/prepa_conseil/index3.php",
-					  "Bulletins simplifiés",
-					  "Permet de consulter vos bulletins sous forme simplifiée.");
+			if($this->statutUtilisateur == "responsable") {
+				$sql="(SELECT e.login, e.prenom, e.nom " .
+						"FROM eleves e, resp_pers r, responsables2 re, j_eleves_classes jec " .
+						"WHERE (" .
+						"e.ele_id = re.ele_id AND " .
+						"re.pers_id = r.pers_id AND " .
+						"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2') AND 
+						jec.login=e.login AND 
+						jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
+				if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+					$sql.=" UNION (SELECT e.login, e.prenom, e.nom " .
+						"FROM eleves e, resp_pers r, responsables2 re, j_eleves_classes jec " .
+						"WHERE (" .
+						"e.ele_id = re.ele_id AND " .
+						"re.pers_id = r.pers_id AND " .
+						"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y' AND 
+						jec.login=e.login AND 
+						jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
+				}
+				$sql.=";";
+			}
+			elseif($this->statutUtilisateur == "eleve") {
+				$sql="SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$_SESSION['login']."' AND 
+				jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY jec.periode DESC LIMIT 1;";
+			}
+			else {
+				$sql="SELECT id FROM classes WHERE 1=2;";
+			}
+			//echo "$sql<br />";
+			$res_classe_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classe_eleve)>0) {
+				if ($this->statutUtilisateur == "responsable") {
+					$this->creeNouveauItem("/prepa_conseil/index3.php",
+					"Bulletins simplifiés",
+					"Permet de consulter les bulletins simplifiés des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$this->gepiSettings['denomination_responsable'].".");
+				} else {
+					$this->creeNouveauItem("/prepa_conseil/index3.php",
+					"Bulletins simplifiés",
+					"Permet de consulter vos bulletins sous forme simplifiée.");
+				}
 			}
 		}
 	}
@@ -1272,14 +1304,45 @@ if(getSettingAOui('active_bulletins')) {
 				);
 
 		if ($condition) {
-		  if ($this->statutUtilisateur == "responsable") {
-			  $this->creeNouveauItem("/visualisation/affiche_eleve.php",
-					  "Visualisation graphique",
-					  "Permet de visualiser sous forme graphique les résultats des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$this->gepiSettings['denomination_responsable'].", par rapport à la classe.");
-			} else {
-			  $this->creeNouveauItem("/visualisation/affiche_eleve.php",
-					  "Visualisation graphique",
-					  "Permet de consulter vos résultats sous forme graphique, comparés à la classe.");
+			if($this->statutUtilisateur == "responsable") {
+				$sql="(SELECT e.login, e.prenom, e.nom " .
+						"FROM eleves e, resp_pers r, responsables2 re, j_eleves_classes jec " .
+						"WHERE (" .
+						"e.ele_id = re.ele_id AND " .
+						"re.pers_id = r.pers_id AND " .
+						"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2') AND 
+						jec.login=e.login AND 
+						jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
+				if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
+					$sql.=" UNION (SELECT e.login, e.prenom, e.nom " .
+						"FROM eleves e, resp_pers r, responsables2 re, j_eleves_classes jec " .
+						"WHERE (" .
+						"e.ele_id = re.ele_id AND " .
+						"re.pers_id = r.pers_id AND " .
+						"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y' AND 
+						jec.login=e.login AND 
+						jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')))";
+				}
+				$sql.=";";
+			}
+			elseif($this->statutUtilisateur == "eleve") {
+				$sql="SELECT id_classe FROM j_eleves_classes jec WHERE login = '".$_SESSION['login']."' AND 
+				jec.id_classe NOT IN (SELECT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY jec.periode DESC LIMIT 1;";
+			}
+			else {
+				$sql="SELECT id FROM classes WHERE 1=2;";
+			}
+			$res_classe_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classe_eleve)>0) {
+				if ($this->statutUtilisateur == "responsable") {
+					$this->creeNouveauItem("/visualisation/affiche_eleve.php",
+					"Visualisation graphique",
+					"Permet de visualiser sous forme graphique les résultats des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$this->gepiSettings['denomination_responsable'].", par rapport à la classe.");
+				} else {
+					$this->creeNouveauItem("/visualisation/affiche_eleve.php",
+					"Visualisation graphique",
+					"Permet de consulter vos résultats sous forme graphique, comparés à la classe.");
+				}
 			}
 		}
 	}

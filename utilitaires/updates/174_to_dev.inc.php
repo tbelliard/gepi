@@ -392,4 +392,24 @@ if($SocleSaisieComposantesMode=='') {
 	}
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'modules_restrictions'&nbsp;:</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'modules_restrictions'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS modules_restrictions 
+		(id int(11) NOT NULL auto_increment, 
+		module varchar(50) NOT NULL DEFAULT '', 
+		name varchar(50) NOT NULL DEFAULT '', 
+		value varchar(50) NOT NULL DEFAULT '', 
+		PRIMARY KEY (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

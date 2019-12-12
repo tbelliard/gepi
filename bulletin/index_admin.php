@@ -161,6 +161,7 @@ if(isset($_POST['is_posted'])) {
 }
 
 if (isset($_POST['acces_app_ele_resp'])) {
+	check_token();
 	$acces_app_ele_resp=$_POST['acces_app_ele_resp'];
 	if (!saveSetting("acces_app_ele_resp", $acces_app_ele_resp)) {
 		$msg .= "Erreur lors de l'enregistrement de 'acces_app_ele_resp' !<br />";
@@ -170,6 +171,7 @@ if (isset($_POST['acces_app_ele_resp'])) {
 	}
 }
 if (isset($_POST['acces_moy_ele_resp'])) {
+	check_token();
 	$acces_moy_ele_resp=$_POST['acces_moy_ele_resp'];
 	if (!saveSetting("acces_moy_ele_resp", $acces_moy_ele_resp)) {
 		$msg .= "Erreur lors de l'enregistrement de 'acces_moy_ele_resp' !<br />";
@@ -179,12 +181,63 @@ if (isset($_POST['acces_moy_ele_resp'])) {
 	}
 }
 if (isset($_POST['acces_moy_ele_resp_cn'])) {
+	check_token();
 	$acces_moy_ele_resp_cn=$_POST['acces_moy_ele_resp_cn'];
 	if (!saveSetting("acces_moy_ele_resp_cn", $acces_moy_ele_resp_cn)) {
 		$msg .= "Erreur lors de l'enregistrement de 'acces_moy_ele_resp_cn' !<br />";
 	}
 	else {
 		$msg .= "Enregistrement de 'acces_moy_ele_resp_cn' effectué.<br />";
+	}
+}
+
+
+if (isset($_POST['is_posted']) and ($_POST['is_posted']=='classes_exclues')){
+	check_token();
+
+	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
+
+	$nb_add=0;
+	$nb_del=0;
+
+	$tab_deja=array();
+	$sql="SELECT * FROM modules_restrictions WHERE module='bulletins' AND name='id_classe';";
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		if(!in_array($lig->value, $id_classe)) {
+			$sql="DELETE FROM modules_restrictions WHERE module='bulletins' AND name='id_classe' AND value='".$lig->value."';";
+			$del=mysqli_query($mysqli, $sql);
+			if(!$del) {
+				$msg.="Erreur lors de la suppression de ".get_nom_classe($lig->value)." de la liste des classes exclues.<br />";
+			}
+			else {
+				$nb_del++;
+			}
+		}
+		else {
+			$tab_deja[]=$lig->value;
+		}
+	}
+
+	foreach($id_classe as $kay => $current_classe) {
+		if(!in_array($current_classe, $tab_deja)) {
+			$sql="INSERT INTO modules_restrictions SET module='bulletins', name='id_classe', value='".$current_classe."';";
+			$reg=mysqli_query($mysqli, $sql);
+			if(!$reg) {
+				$msg.="Erreur lors de l'ajout de ".get_nom_classe($current_classe)." à la liste des classes exclues.<br />";
+			}
+			else {
+				$nb_add++;
+			}
+		}
+	}
+
+	if($nb_add>0) {
+		$msg.=$nb_add." classe(s) ajoutée(s) à la liste des classes exclues du module bulletins.<br />";
+	}
+
+	if($nb_del>0) {
+		$msg.=$nb_del." classe(s) supprimée(s) de la liste des classes exclues du module bulletins.<br />";
 	}
 }
 

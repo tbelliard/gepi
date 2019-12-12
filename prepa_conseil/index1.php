@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -469,6 +469,9 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+// 20191211
+$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+
 if (isset($_SESSION['chemin_retour'])) {$retour = $_SESSION['chemin_retour'];} else {$retour = "index1.php";}
 
 if ($en_tete!="yes"){
@@ -490,9 +493,9 @@ if($_SESSION['statut']=='professeur'){
 }
 
 if (!$current_group) {
-    unset($_SESSION['chemin_retour']);
-    echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
-
+	unset($_SESSION['chemin_retour']);
+	echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+	/*
 	if($_SESSION['statut']=='scolarite'){
 		$sql="SELECT DISTINCT c.* FROM classes c, 
 							periodes p, 
@@ -536,7 +539,10 @@ if (!$current_group) {
 						WHERE c.id=jec.id_classe 
 						ORDER BY classe;";
 	}
-
+	*/
+	// 20191211
+	$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
+	//echo "$sql<br />";
 	$appel_donnees = mysqli_query($GLOBALS["mysqli"], $sql);
 	$lignes = mysqli_num_rows($appel_donnees);
 	//echo "\$lignes=$lignes<br />";
@@ -644,15 +650,15 @@ if (!$current_group) {
 		}
 		echo "</table>\n";
 	}
-        /*
+	/*
 	echo "</td>\n";
-        echo "</tr>\n";
-        echo "</table>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 	*/
 
 } else if (!isset($choix_visu)) {
 	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
-    echo "<p class='bold'>\n";
+	echo "<p class='bold'>\n";
 	echo "<a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 	if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
@@ -679,25 +685,40 @@ if (!$current_group) {
 			$temoin_tmp=0;
 			for($loop=0;$loop<count($tab_groups);$loop++) {
 				if((!isset($tab_groups[$loop]['visibilite']['bulletins']))||($tab_groups[$loop]['visibilite']['bulletins']!="n")) {
-					if($tab_groups[$loop]['id']==$id_groupe){
-						$num_groupe=$loop;
-
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-
-						$temoin_tmp=1;
-						if(isset($tab_groups[$loop+1])){
-							$id_grp_suiv=$tab_groups[$loop+1]['id'];
-						}
-						else{
-							$id_grp_suiv=0;
+					// 20191211
+					$nb_classes_bull=0;
+					if(count($tab_id_classe_exclues_module_bulletins)>0) {
+						foreach($tab_groups[$loop]["classes"]["classes"] as $tmp_classe) {
+							if(!in_array($tmp_classe['id'], $tab_id_classe_exclues_module_bulletins)) {
+								$nb_classes_bull++;
+							}
 						}
 					}
 					else {
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$nb_classes_bull=1;
 					}
 
-					if($temoin_tmp==0){
-						$id_grp_prec=$tab_groups[$loop]['id'];
+					if($nb_classes_bull>0) {
+						if($tab_groups[$loop]['id']==$id_groupe){
+							$num_groupe=$loop;
+
+							$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+							$temoin_tmp=1;
+							if(isset($tab_groups[$loop+1])){
+								$id_grp_suiv=$tab_groups[$loop+1]['id'];
+							}
+							else{
+								$id_grp_suiv=0;
+							}
+						}
+						else {
+							$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						}
+
+						if($temoin_tmp==0){
+							$id_grp_prec=$tab_groups[$loop]['id'];
+						}
 					}
 				}
 			}
@@ -723,20 +744,20 @@ if (!$current_group) {
 		}
 	}
 
-    if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours') and ($test_acces_pp=="n")) {
-        echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
-        echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
-        die();
-    }
+	if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours') and ($test_acces_pp=="n")) {
+		echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
+		echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
+		die();
+	}
 
 	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group, "", "span");
 
-    echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire\">";
-    echo "<p class='bold'>Groupe : " . htmlspecialchars($current_group["description"]) ." " . htmlspecialchars($current_group["classlist_string"]) . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /> $chaine_date_conseil_classe</p>\n";
-    echo "<p>Choisissez les données à imprimer (<i>vous pouvez cocher plusieurs cases</i>) : </p>\n";
-    $i="1";
+	echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire\">";
+	echo "<p class='bold'>Groupe : " . htmlspecialchars($current_group["description"]) ." " . htmlspecialchars($current_group["classlist_string"]) . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /> $chaine_date_conseil_classe</p>\n";
+	echo "<p>Choisissez les données à imprimer (<i>vous pouvez cocher plusieurs cases</i>) : </p>\n";
+	$i="1";
 	$cpt=0;
-    while ($i < $nb_periode) {
+	while ($i < $nb_periode) {
 		$name = "visu_note_".$i;
 		echo "<p><input type='checkbox' name='$name' id='$name' value='yes' ";
 		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
@@ -744,17 +765,17 @@ if (!$current_group) {
 		echo "/><label for='$name' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>".ucfirst($nom_periode[$i])." - Extraire les moyennes</span></label></p>\n";
 		$i++;
 		$cpt++;
-    }
-    $i="1";
-    while ($i < $nb_periode) {
+	}
+	$i="1";
+	while ($i < $nb_periode) {
 		$name = "visu_app_".$i;
 		echo "<p><input type='checkbox' name='$name' id='$name' value='yes' ";
 		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 		echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
 		echo "/><label for='$name' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>".ucfirst($nom_periode[$i])." - Extraire les appréciations</span></label></p>\n";
-	    $i++;
+		$i++;
 		$cpt++;
-    }
+	}
 
 	//==========================================
 	// Le rang doit-il être affiché
@@ -764,7 +785,7 @@ if (!$current_group) {
 	$affiche_categories="n";
 	if($aff_rang=="y") {
 		$name="vmm_afficher_rang";
-	    echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' ";
+		echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' ";
 		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
 		echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
 		echo "/><label for='afficher_rang' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher le rang des élèves.</span></label></p>\n";
@@ -864,39 +885,60 @@ function UncheckAll_checkbox(){
 		}
 	}
 
-    if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours') and ($test_acces_pp=="n")) {
-        echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
-        echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
-        die();
-    }
+	if ((!(check_prof_groupe($_SESSION['login'],$id_groupe))) and ($_SESSION['statut']!='scolarite') and ($_SESSION['statut']!='secours') and ($test_acces_pp=="n")) {
+		echo "<p>Vous n'êtes pas dans cette classe le professeur de la matière choisie !</p>\n";
+		echo "<p><a href='index1.php'>Retour à l'accueil</a></p>\n";
+		die();
+	}
 
-
-    $nombre_eleves = count($current_group["eleves"]["all"]["list"]);
+	//$nombre_eleves = count($current_group["eleves"]["all"]["list"]);
 	//echo "\$nombre_eleves=$nombre_eleves<br />";
+	$liste_eleves=array();
 
-    // On commence par mettre la liste dans l'ordre souhaité
-    if ($order_by != "classe") {
-        $liste_eleves = $current_group["eleves"]["all"]["list"];
-    } else {
-        // Ici, on trie par classe
-        // On va juste créer une liste des élèves pour chaque classe
-        $tab_classes = array();
-        foreach($current_group["classes"]["list"] as $classe_id) {
-            $tab_classes[$classe_id] = array();
-        }
-        // On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
-        foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
-            $classe = $current_group["eleves"]["all"]["users"][$eleve_login]["classe"];
-            $tab_classes[$classe][] = $eleve_login;
+	// On commence par mettre la liste dans l'ordre souhaité
+	if ($order_by != "classe") {
+		// 20191211
+		//$liste_eleves = $current_group["eleves"]["all"]["list"];
+		$liste_eleves=array();
+		foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
+			if(!in_array($current_group["eleves"]["all"]["users"][$eleve_login]["classe"], $tab_id_classe_exclues_module_bulletins)) {
+				$liste_eleves[]=$eleve_login;
+			}
+			else {
+				// Vérifier quand même si l'élève a changé de classe en cours d'année
+				$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$eleve_login."';";
+				$test_classe=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($test_classe)>0) {
+					while($lig_test_classe=mysqli_fetch_object($test_classe)) {
+						if(!in_array($lig_test_classe->id_classe, $tab_id_classe_exclues_module_bulletins)) {
+							$liste_eleves[]=$eleve_login;
+							break;
+						}
+					}
+				}
+			}
+		}
+	} else {
+		// Ici, on trie par classe
+		// On va juste créer une liste des élèves pour chaque classe
+		$tab_classes = array();
+		foreach($current_group["classes"]["list"] as $classe_id) {
+			$tab_classes[$classe_id] = array();
+		}
+		// On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
+		foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
+			$classe = $current_group["eleves"]["all"]["users"][$eleve_login]["classe"];
+			$tab_classes[$classe][] = $eleve_login;
 			//echo "$eleve_login ";
-        }
+		}
 		//echo "<br />";
-        // On met tout ça à la suite
-        $liste_eleves = array();
-        foreach($current_group["classes"]["list"] as $classe_id) {
-            $liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
-        }
-    }
+		// On met tout ça à la suite
+		$liste_eleves = array();
+		foreach($current_group["classes"]["list"] as $classe_id) {
+			$liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
+		}
+	}
+	$nombre_eleves = count($liste_eleves);
 
 	//debug_var();
 
@@ -1804,25 +1846,40 @@ function UncheckAll_checkbox(){
 				$temoin_tmp=0;
 				for($loop=0;$loop<count($tab_groups);$loop++) {
 					if((!isset($tab_groups[$loop]['visibilite']['bulletins']))||($tab_groups[$loop]['visibilite']['bulletins']!="n")) {
-						if($tab_groups[$loop]['id']==$id_groupe){
-							$num_groupe=$loop;
-
-							$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-
-							$temoin_tmp=1;
-							if(isset($tab_groups[$loop+1])){
-								$id_grp_suiv=$tab_groups[$loop+1]['id'];
-							}
-							else{
-								$id_grp_suiv=0;
+						// 20191211
+						$nb_classes_bull=0;
+						if(count($tab_id_classe_exclues_module_bulletins)>0) {
+							foreach($tab_groups[$loop]["classes"]["classes"] as $tmp_classe) {
+								if(!in_array($tmp_classe['id'], $tab_id_classe_exclues_module_bulletins)) {
+									$nb_classes_bull++;
+								}
 							}
 						}
 						else {
-							$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+							$nb_classes_bull=1;
 						}
 
-						if($temoin_tmp==0){
-							$id_grp_prec=$tab_groups[$loop]['id'];
+						if($nb_classes_bull>0) {
+							if($tab_groups[$loop]['id']==$id_groupe){
+								$num_groupe=$loop;
+
+								$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+								$temoin_tmp=1;
+								if(isset($tab_groups[$loop+1])){
+									$id_grp_suiv=$tab_groups[$loop+1]['id'];
+								}
+								else{
+									$id_grp_suiv=0;
+								}
+							}
+							else {
+								$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+							}
+
+							if($temoin_tmp==0){
+								$id_grp_prec=$tab_groups[$loop]['id'];
+							}
 						}
 					}
 				}
