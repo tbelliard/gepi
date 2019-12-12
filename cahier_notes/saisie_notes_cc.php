@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -221,6 +221,8 @@ if (isset($_POST['is_posted'])) {
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
+	$msg='';
+	$nb_reg=0;
 	//for($i=0;$i<count($log_eleve);$i++){
 	for($i=0;$i<$indice_max_log_eleve;$i++){
 		if(isset($log_eleve[$i])) {
@@ -294,10 +296,20 @@ if (isset($_POST['is_posted'])) {
 							//echo "$sql<br />";
 							$register = mysqli_query($GLOBALS["mysqli"], $sql);
 						}
+						if($register) {
+							$nb_reg++;
+						}
+						else {
+							$msg.="Erreur lors de l'enregistrement pour ".get_nom_prenom_eleve($reg_eleve_login)."<br />";
+						}
 					}
 				//}
 			}
 		}
+	}
+
+	if($nb_reg>0) {
+		$msg.=$nb_reg." enregistrement(s) effectué(s) (".strtime("%d/%m/%Y à %H:%M:%S").").<br />";
 	}
 
 	/*
