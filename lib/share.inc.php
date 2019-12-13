@@ -19871,6 +19871,7 @@ function acces_correction_app_aid_pp($id_aid) {
 }
 
 function get_sql_classes_tel_module($module, $statut, $login) {
+	global $mysqli;
 
 	$sql="SHOW TABLES LIKE 'modules_restrictions';";
 	$test=mysqli_query($mysqli, $sql);
