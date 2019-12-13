@@ -19872,51 +19872,58 @@ function acces_correction_app_aid_pp($id_aid) {
 
 function get_sql_classes_tel_module($module, $statut, $login) {
 
-	if($module=='bulletins') {
-		if ($statut == "scolarite") {
-			// On sélectionne les classes associées au compte scolarité
-			$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c, j_scol_classes jsc, j_eleves_classes jec WHERE (jec.id_classe=c.id AND jsc.id_classe=c.id AND jsc.login='".$login."') AND 
-			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe') 
-			ORDER BY c.classe;";
-		}
-		elseif (($statut == "administrateur")||
-			($statut == "secours")||
-			($statut == "autre")) {
-			// On selectionne toutes les classes
-			$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) AND 
-			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe') 
-			ORDER BY c.classe;";
-		}
-		elseif ($_SESSION["statut"] == "professeur") {
-			/*
-			$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$login."' AND jep.login = jec.login AND jec.id_classe = c.id) AND 
-			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe') 
-			ORDER BY c.classe;";
-			*/
+	$sql="SHOW TABLES LIKE 'modules_restrictions';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		if($module=='bulletins') {
+			if ($statut == "scolarite") {
+				// On sélectionne les classes associées au compte scolarité
+				$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c, j_scol_classes jsc, j_eleves_classes jec WHERE (jec.id_classe=c.id AND jsc.id_classe=c.id AND jsc.login='".$login."') AND 
+				c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe') 
+				ORDER BY c.classe;";
+			}
+			elseif (($statut == "administrateur")||
+				($statut == "secours")||
+				($statut == "autre")) {
+				// On selectionne toutes les classes
+				$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) AND 
+				c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe') 
+				ORDER BY c.classe;";
+			}
+			elseif ($_SESSION["statut"] == "professeur") {
+				/*
+				$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$login."' AND jep.login = jec.login AND jec.id_classe = c.id) AND 
+				c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe') 
+				ORDER BY c.classe;";
+				*/
 
-			$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c, 
-								periodes p, 
-								j_groupes_classes jgc, 
-								j_groupes_professeurs jgp, 
-								j_eleves_groupes jeg 
-							WHERE jeg.id_groupe=jgc.id_groupe AND 
-								p.id_classe = c.id AND 
-								jgc.id_classe=c.id AND 
-								jgp.id_groupe=jgc.id_groupe AND 
-								jgp.login='".$login."' AND 
-								c.id NOT IN (SELECT value FROM modules_restrictions 
-												WHERE module='".$module."' AND name='id_classe') 
-							ORDER BY c.classe";
+				$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c, 
+									periodes p, 
+									j_groupes_classes jgc, 
+									j_groupes_professeurs jgp, 
+									j_eleves_groupes jeg 
+								WHERE jeg.id_groupe=jgc.id_groupe AND 
+									p.id_classe = c.id AND 
+									jgc.id_classe=c.id AND 
+									jgp.id_groupe=jgc.id_groupe AND 
+									jgp.login='".$login."' AND 
+									c.id NOT IN (SELECT value FROM modules_restrictions 
+													WHERE module='".$module."' AND name='id_classe') 
+								ORDER BY c.classe";
 
-		}
-		elseif ($_SESSION["statut"] == "cpe") {
-			$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c, j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jecpe.cpe_login='".$login."' AND jecpe.e_login = jec.login AND jec.id_classe = c.id) AND 
-			c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe') 
-			ORDER BY c.classe;";
+			}
+			elseif ($_SESSION["statut"] == "cpe") {
+				$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c, j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jecpe.cpe_login='".$login."' AND jecpe.e_login = jec.login AND jec.id_classe = c.id) AND 
+				c.id NOT IN (SELECT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe') 
+				ORDER BY c.classe;";
+			}
+			else {
+				// On retourne une requête sans enregistrement associé
+				$sql="SELECT c.*, c.id AS id_classe FROM classes c WHERE c.id='-1000' ORDER BY c.classe;";
+			}
 		}
 		else {
-			// On retourne une requête sans enregistrement associé
-			$sql="SELECT c.*, c.id AS id_classe FROM classes c WHERE c.id='-1000' ORDER BY c.classe;";
+			$sql="SELECT DISTINCT c.*, c.id AS id_classe FROM classes c ORDER BY c.classe;";
 		}
 	}
 	else {
@@ -19930,12 +19937,17 @@ function get_classes_exclues_tel_module($module) {
 	global $mysqli;
 
 	$tab=array();
-	if($module=='bulletins') {
-		$sql="SELECT DISTINCT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe'";
-		$res=mysqli_query($mysqli, $sql);
-		if(mysqli_num_rows($res)>0) {
-			while($lig=mysqli_fetch_object($res)) {
-				$tab[]=$lig->value;
+
+	$sql="SHOW TABLES LIKE 'modules_restrictions';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		if($module=='bulletins') {
+			$sql="SELECT DISTINCT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe'";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$tab[]=$lig->value;
+				}
 			}
 		}
 	}
