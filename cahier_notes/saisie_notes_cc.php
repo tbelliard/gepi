@@ -309,7 +309,7 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if($nb_reg>0) {
-		$msg.=$nb_reg." enregistrement(s) effectué(s) (".strtime("%d/%m/%Y à %H:%M:%S").").<br />";
+		$msg.=$nb_reg." enregistrement(s) effectué(s) (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 	}
 
 	/*
@@ -335,7 +335,6 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 //unset($_SESSION['chemin_retour']);
-
 ?>
 <script type="text/javascript" language=javascript>
 chargement = false;
