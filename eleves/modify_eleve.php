@@ -920,7 +920,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 				if($elenoet_ou_login!=""){
 					if((isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')||
-					(mb_strlen(preg_replace("/[0-9]/","",$elenoet_ou_login))==0)) {
+					(mb_strlen(preg_replace("/[0-9]/","",$elenoet_ou_login))==0)||
+					(preg_match("/^e[0-9]{1,}$/", $elenoet_ou_login))) {
 						if(isset($_POST['suppr_filephoto'])){
 							if($_POST['suppr_filephoto']=='y'){
 
@@ -2821,11 +2822,12 @@ echo "</table>\n";
 
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 //echo "<td>\$reg_no_gep=$reg_no_gep</td>";
-if(isset($reg_no_gep)){
+if((isset($reg_no_gep))&&($reg_no_gep!='')) {
 	// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 	$photo=nom_photo($reg_no_gep);
 
 	echo "<td align='center'>\n";
+	//echo "reg_no_gep='$reg_no_gep'<br />";
 	$temoin_photo="non";
 	//echo "<td>\$photo=$photo</td>";
 	if($photo){
