@@ -512,6 +512,8 @@ function initWysiwyg() {
 			customConfig: '../lib/ckeditor_gepi_config_ct.js'
 		});
 	}
+
+	setTimeout('controler_affichage_toutes_vignettes_notices()', 1000);
 }
 
 function suppressionCompteRendu(message, id_ct_a_supprimer, csrf_alea) {
@@ -579,20 +581,20 @@ function suppressionNoticePrivee(message, id_notice_privee_a_supprimer, id_group
 
 function suppressionDocument(message, id_document_a_supprimer, id_ct, csrf_alea) {
 	if (confirmlink(this,message,'Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRenduFichierJoint&id_objet='+id_document_a_supprimer+'&csrf_alea='+csrf_alea,
-    		{ onComplete:
-    			function(transport) {
+		new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRenduFichierJoint&id_objet='+id_document_a_supprimer+'&csrf_alea='+csrf_alea,
+		{ onComplete:
+			function(transport) {
 					debut_alert = new Date();
 					if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
 						alert(transport.responseText);
 					} else {
-	      				getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=' + id_ct, { onComplete: function() {initWysiwyg();debut_alert = new Date();}});
+						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=' + id_ct, { onComplete: function() {initWysiwyg();debut_alert = new Date();}});
 						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();controler_affichage_toutes_vignettes_notices();}});
 						new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();debut_alert = new Date();}});
 					}
-    			}
+				}
 			}
-    	);
+		);
 	}
 }
 
@@ -1315,6 +1317,7 @@ function controler_affichage_toutes_vignettes_notices() {
 	*/
 
 	//alert('plip');
+	//alert('etat_visibilite_notices='+etat_visibilite_notices);
 	if(etat_visibilite_notices==true) {
 		div=document.getElementsByTagName('div');
 		for(i=0;i<div.length;i++) {
