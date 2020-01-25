@@ -445,7 +445,7 @@ if(mysqli_num_rows($res)>0) {
 		<td id='cc_".$lig->id."_nom_court' onclick=\"
 				document.getElementById('nom_court').value=document.getElementById('cc_".$lig->id."_nom_court').innerHTML;
 				document.getElementById('nom_complet').value=document.getElementById('cc_".$lig->id."_nom_complet').innerHTML;
-				document.getElementById('description').value=document.getElementById('cc_".$lig->id."_description').innerHTML;
+				document.getElementById('description').value=document.getElementById('span_cc_".$lig->id."_description').innerHTML;
 				document.getElementById('note_sur').value=document.getElementById('cc_".$lig->id."_note_sur').innerHTML;
 				document.getElementById('display_date').value=document.getElementById('cc_".$lig->id."_display_date').innerHTML;
 				document.getElementById('vision_famille').value=document.getElementById('cc_".$lig->id."_vision_famille').innerHTML;
