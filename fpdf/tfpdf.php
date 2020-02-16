@@ -1257,8 +1257,17 @@ function _dochecks()
 	if(ini_get('mbstring.func_overload') & 2)
 		$this->Error('mbstring overloading must be disabled');
 	// Ensure runtime magic quotes are disabled
-	if(get_magic_quotes_runtime())
-		@set_magic_quotes_runtime(0);
+
+	if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+		|| (!function_exists("get_magic_quotes_runtime"))
+		|| (!function_exists("set_magic_quotes_runtime"))) {
+		// Rien à faire
+	}
+	else {
+		if(get_magic_quotes_runtime()) {
+			@set_magic_quotes_runtime(0);
+		}
+	}
 }
 
 function _getfontpath()
@@ -2267,7 +2276,14 @@ function UTF8StringToArray($str) {
    $len = strlen($str);
    for ($i = 0; $i < $len; $i++) {
 	$uni = -1;
-      $h = ord($str[$i]);
+
+	if(is_int($str)) {
+		$h = ord($str);
+	}
+	else {
+		$h = ord($str[$i]);
+	}
+
       if ( $h <= 0x7F )
          $uni = $h;
       elseif ( $h >= 0xC2 ) {

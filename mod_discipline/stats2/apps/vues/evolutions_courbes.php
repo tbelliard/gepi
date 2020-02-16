@@ -5,10 +5,17 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 };
 
 require_once "../../../../artichow/LinePlot.class.php";
-if (get_magic_quotes_gpc()) {
-  $data = @unserialize(stripslashes($_GET['values']));     
-} else {
-  $data = @unserialize($_GET['values']);      
+if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+	|| (!function_exists("get_magic_quotes_gpc"))) {
+	// Rien à faire
+	$data = @unserialize($_GET['values']);
+}
+else {
+	if (get_magic_quotes_gpc()) {
+		$data = @unserialize(stripslashes($_GET['values']));
+	} else {
+		$data = @unserialize($_GET['values']);
+	}
 }
 $graph = new Graph(800, 500);
 $graph->setAntiAliasing(TRUE);
