@@ -3,7 +3,7 @@
  * Ajouter, modifier une évaluation cumule
  * 
  * 
- * @copyright Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * @copyright Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * @package Carnet_de_notes
  * @subpackage Evaluation_cumule
@@ -169,7 +169,9 @@ if (isset($_POST['ok'])) {
 	$nom_complet=$_POST['nom_complet'];
 	$description=$_POST['description'];
 
-	$note_sur=preg_replace('/[^0-9.]/','',$_POST['note_sur']);
+	//echo "note_sur=".$_POST['note_sur']."<br />";
+	$note_sur=preg_replace('/[^0-9.,]/','',$_POST['note_sur']);
+	//echo "note_sur=$note_sur<br />";
 
 	if($nom_court=='') {
 		$msg="Le nom_court de l'évaluation ne peut pas être vide.";
