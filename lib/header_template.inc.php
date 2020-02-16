@@ -2,7 +2,7 @@
 /**
  * Construit les tableaux nécessaires au header des gabarits
  * 
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul, Bouguin Régis, Stephane Boireau
+ * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul, Bouguin Régis, Stephane Boireau
  * 
  * Variables envoyées au gabarit
  * - $tbs_gepiSchoolName : nom de l'établissement
@@ -74,13 +74,18 @@ $donnees_enfant=array();
  */
 function last_connection() {
 	global $gepiPath;
-    global $mysqli;
-   $sql = "select START, AUTOCLOSE, REMOTE_ADDR from log where LOGIN = '".$_SESSION['login']."' and SESSION_ID != '".session_id()."' order by START desc";
-           
+	global $mysqli;
+	$sql = "select START, AUTOCLOSE, REMOTE_ADDR from log where LOGIN = '".$_SESSION['login']."' and SESSION_ID != '".session_id()."' order by START desc";
+	//echo "$sql<br />";
         $res = mysqli_query($mysqli, $sql);
         $r = '';
-        if ($res) {
+        if (mysqli_num_rows($res)>0) {
             $row = $res->fetch_row();
+            /*
+            echo "<pre>";
+            print_r($row);
+            echo "</pre>";
+            */
             $annee_b = substr($row[0],0,4);
             $mois_b =  substr($row[0],5,2);
             $jour_b =  substr($row[0],8,2);

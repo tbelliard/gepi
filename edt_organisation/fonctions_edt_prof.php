@@ -3,7 +3,7 @@
  * Ensemble des fonctions qui permettent d'afficher les emplois du temps des profs
  *
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -53,13 +53,24 @@
 // =============================================================================
 function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j , $rang1, $rang2, $period)
 {
+            $id_semaine1=0;
+            $duree1=0;
+            $id_semaine2=0;
+            $duree2=0;
+
             mysqli_data_seek($req_creneau, 0);
             $rep_creneau = mysqli_fetch_array($req_creneau);
-            $id_semaine1 = $rep_creneau['id_semaine'];
-            $duree1 = $rep_creneau['duree'];
+            if(isset($rep_creneau['id_semaine'])) {
+                $id_semaine1 = $rep_creneau['id_semaine'];
+                $duree1 = $rep_creneau['duree'];
+            }
+
             $rep_creneau = mysqli_fetch_array($req_creneau);
-            $id_semaine2 = $rep_creneau['id_semaine'];
-            $duree2 = $rep_creneau['duree'];
+            if(isset($rep_creneau['id_semaine'])) {
+                $id_semaine2 = $rep_creneau['id_semaine'];
+                $duree2 = $rep_creneau['duree'];
+            }
+
             // ===== tests de sécurité sur $rang1 et $rang2
             if ($rang1 <=0) {
                 $rang1 = 1;
@@ -97,9 +108,12 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
                     $rep_creneau = mysqli_fetch_array($req_creneau);
                     $i++;
                 }
-    
-    
-                $id_semaine1 = $rep_creneau['id_semaine'];
+
+
+                $id_semaine1=0;
+                if(isset($rep_creneau['id_semaine'])) {
+                    $id_semaine1 = $rep_creneau['id_semaine'];
+                }
 
                 mysqli_data_seek($req_creneau, 0);
                 $i = 0;
@@ -108,8 +122,10 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
                     $i++;
                 }
                 if ($rep_creneau) {
-                    $id_semaine2 = $rep_creneau['id_semaine'];
-    
+                    $id_semaine2=0;
+                    if(isset($rep_creneau['id_semaine'])) {
+                        $id_semaine2 = $rep_creneau['id_semaine'];
+                    }
                 }
                 else {
     
@@ -811,12 +827,14 @@ if ($type_edt=="prof") {
                     // ====================== étude du cas n°12'
                     if ($id_semaine1 != '0') {
                         $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 1,3 , $period);
-                        mysqli_data_seek($req_creneau, 0);
-                        ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem_tab[$jour], $jour, $tab_id_creneaux, $j, $type_edt, $login_edt, '0', $tab_data,$index_box, $period);
-                        $id_semaine_to_use = $rep_creneau['id_semaine'];
-                        $rep_creneau = mysqli_fetch_array($req_creneau);
-                        ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem_tab[$jour], $jour, $tab_id_creneaux, $j, $type_edt, $login_edt, $id_semaine_to_use, $tab_data,$index_box, $period);
-                        $elapse_time += $duree_max;
+                        //if(isset($req_creneau)) {
+                            mysqli_data_seek($req_creneau, 0);
+                            ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem_tab[$jour], $jour, $tab_id_creneaux, $j, $type_edt, $login_edt, '0', $tab_data,$index_box, $period);
+                            $id_semaine_to_use = $rep_creneau['id_semaine'];
+                            $rep_creneau = mysqli_fetch_array($req_creneau);
+                            ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem_tab[$jour], $jour, $tab_id_creneaux, $j, $type_edt, $login_edt, $id_semaine_to_use, $tab_data,$index_box, $period);
+                            $elapse_time += $duree_max;
+                        //}
                     }
                     else {
 

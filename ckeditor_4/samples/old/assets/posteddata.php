@@ -32,10 +32,18 @@ if (!empty($_POST))
 		if ( ( !is_string($value) && !is_numeric($value) ) || !is_string($key) )
 			continue;
 
-		if ( get_magic_quotes_gpc() )
-			$value = htmlspecialchars( stripslashes((string)$value) );
-		else
+		if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+			|| (!function_exists("get_magic_quotes_runtime"))
+			|| (!function_exists("set_magic_quotes_runtime"))) {
+			// Rien à faire
 			$value = htmlspecialchars( (string)$value );
+		}
+		else {
+			if ( get_magic_quotes_gpc() )
+				$value = htmlspecialchars( stripslashes((string)$value) );
+			else
+				$value = htmlspecialchars( (string)$value );
+		}
 ?>
 		<tr>
 			<th style="vertical-align: top"><?php echo htmlspecialchars( (string)$key ); ?></th>

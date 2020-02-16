@@ -5,7 +5,7 @@
  *
  * @package		GEPI
  * @subpackage	EmploisDuTemps
- * @copyright	Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
+ * @copyright	Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero, Stephane Boireau
  * @license		GNU/GPL, see COPYING.txt
  * 
  * This file is part of GEPI.
@@ -823,11 +823,15 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$info_alt.=" en $rep_classe_pour_id_div_et_title";
 
 		// On récupère la période active en passant d'abord par le calendrier
-		$query_cal = mysqli_query($GLOBALS["mysqli"], "SELECT numero_periode FROM edt_calendrier WHERE
+		$sql="SELECT numero_periode FROM edt_calendrier WHERE
 														debut_calendrier_ts <= '".date("U")."'
 														AND fin_calendrier_ts >= '".date("U")."'
-														AND numero_periode != '0'
-														AND classe_concerne_calendrier LIKE '%".$rep_id_classe['id_classe']."%'")
+														AND numero_periode != '0'";
+		if(isset($rep_id_classe['id_classe'])) {
+			$sql.=" AND classe_concerne_calendrier LIKE '%".$rep_id_classe['id_classe']."%'";
+		}
+		$sql.=";";
+		$query_cal = mysqli_query($GLOBALS["mysqli"], $sql)
 									OR trigger_error('Impossible de lire le calendrier.', E_USER_NOTICE);
 		$p_c = mysqli_fetch_array($query_cal);
 
@@ -1462,11 +1466,16 @@ function aff_checked($aff, $valeur){
 
 // retourne les settings de l'EdT
 function GetSettingEdt($param_edt){
-	$req_param_edt = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = '".$param_edt."'");
-	$rep_param_edt = mysqli_fetch_array($req_param_edt);
+	$retourne='';
 
-	$retourne = $rep_param_edt["valeur"];
-
+	$sql="SELECT valeur FROM edt_setting WHERE reglage = '".$param_edt."';";
+	//echo "$sql<br />";
+	$req_param_edt = mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($req_param_edt)>0) {
+		$rep_param_edt = mysqli_fetch_array($req_param_edt);
+		$retourne = $rep_param_edt["valeur"];
+	}
+	//echo "retourne=$retourne<br />";
 	return $retourne;
 }
 

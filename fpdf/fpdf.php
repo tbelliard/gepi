@@ -66,7 +66,8 @@ function WriteHTML($html)
         else
         {
             //Balise
-            if($e{0}=='/')
+            //if($e{0}=='/')
+            if($e[0]=='/')
                 $this->CloseTag(strtoupper(substr($e,1)));
             else
             {
@@ -170,7 +171,8 @@ function myWriteHTML($html)
 		else
 		{
 			//Balise
-			if($e{0}=='/') {
+			//if($e{0}=='/') {
+			if($e[0]=='/') {
 				$tag=strtoupper(substr($e,1));
 				if($tag=='B' or $tag=='I' or $tag=='U') {
 					if($my_echo_debug==1) my_echo_debug("   myWriteHTML: Avant fermeture de \"$tag\"\n   myWriteHTML: x=".$this->GetX()." et y=".$this->GetY()."\n");

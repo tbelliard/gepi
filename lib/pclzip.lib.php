@@ -5331,7 +5331,8 @@
     $v_result=1;
 
     // ----- Look if function exists
-    if (   (!function_exists("get_magic_quotes_runtime"))
+    if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+          || (!function_exists("get_magic_quotes_runtime"))
 	    || (!function_exists("set_magic_quotes_runtime"))) {
       return $v_result;
 	}
@@ -5365,7 +5366,8 @@
     $v_result=1;
 
     // ----- Look if function exists
-    if (   (!function_exists("get_magic_quotes_runtime"))
+    if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+          || (!function_exists("get_magic_quotes_runtime"))
 	    || (!function_exists("set_magic_quotes_runtime"))) {
       return $v_result;
 	}

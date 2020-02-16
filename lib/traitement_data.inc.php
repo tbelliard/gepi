@@ -14,39 +14,69 @@ function corriger_caracteres($texte) {
 }
 
 function traitement_magic_quotes($_value) {
-   if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
-   if (!is_numeric($_value)) {
-        $_value = mysqli_real_escape_string($GLOBALS["mysqli"], $_value);
-   }
-   return $_value;
+	if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+		|| (!function_exists("get_magic_quotes_gpc"))) {
+		// Rien à faire
+	}
+	else {
+		if (get_magic_quotes_gpc()) {
+			$_value = stripslashes($_value);
+		}
+	}
+
+	if (!is_numeric($_value)) {
+		$_value = mysqli_real_escape_string($GLOBALS["mysqli"], $_value);
+	}
+	return $_value;
 }
 
 function unslashes($s)
 {
-    if (get_magic_quotes_gpc()) return stripslashes($s);
-    else return $s;
+	if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+		|| (!function_exists("get_magic_quotes_gpc"))) {
+		// Rien à faire
+		return $s;
+	}
+	else {
+		if (get_magic_quotes_gpc()) {return stripslashes($s);}
+		else {return $s;}
+	}
 }
 
 # Nettoyage des variables dans $_POST et $_GET pour prévenir tout problème
 # d'injection SQL
 function anti_inject(&$_value, $_key) {
-    global $mysqli;
+	global $mysqli;
 
-    if (is_array($_value)) {
-       foreach ($_value as $key2 => $value2) {
-           $value2 = corriger_caracteres($value2);
-           if (get_magic_quotes_gpc()) $_value[$key2] = stripslashes($value2);
-           if (!is_numeric($_value[$key2])) {
-               $_value[$key2] = $mysqli->real_escape_string($_value[$key2]);
-           }
-       }
-   } else {
-       $_value = corriger_caracteres($_value);
-       if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
-       if (!is_numeric($_value)) {
-           $_value = $mysqli->real_escape_string($_value);
-       }
-   }
+	if (is_array($_value)) {
+		foreach ($_value as $key2 => $value2) {
+			$value2 = corriger_caracteres($value2);
+			if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+			|| (!function_exists("get_magic_quotes_gpc"))) {
+				// Rien à faire
+			}
+			else {
+				if (get_magic_quotes_gpc()) $_value[$key2] = stripslashes($value2);
+			}
+
+			if (!is_numeric($_value[$key2])) {
+				$_value[$key2] = $mysqli->real_escape_string($_value[$key2]);
+			}
+		}
+	} else {
+		$_value = corriger_caracteres($_value);
+		if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+		|| (!function_exists("get_magic_quotes_gpc"))) {
+			// Rien à faire
+		}
+		else {
+			if (get_magic_quotes_gpc())    $_value = stripslashes($_value);
+		}
+
+		if (!is_numeric($_value)) {
+			$_value = $mysqli->real_escape_string($_value);
+		}
+	}
 }
 
 // Crée des variables à partir du tableau $_POST qui ne sont pas traitées par la fonction anti_inject
@@ -54,17 +84,26 @@ function anti_inject(&$_value, $_key) {
 // Ce sont des variables du type $_POST["no_anti_inject_nom_quelquonque"]
 // On crée alors des variables $NON_PROTECT['nom_quelquonque']
 function cree_variables_non_protegees() {
-    global $NON_PROTECT;
-    foreach ($_POST as $key => $value) {
-        if (mb_substr($key,0,15) == "no_anti_inject_") {
-            $temp = mb_substr($key,15,mb_strlen($key));
-            if (get_magic_quotes_gpc())
-                $NON_PROTECT[$temp] = stripslashes($_POST[$key]);
-            else
-                $NON_PROTECT[$temp] = $_POST[$key];
+	global $NON_PROTECT;
 
-        }
-    }
+	foreach ($_POST as $key => $value) {
+		if (mb_substr($key,0,15) == "no_anti_inject_") {
+			$temp = mb_substr($key,15,mb_strlen($key));
+			if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+				|| (!function_exists("get_magic_quotes_gpc"))) {
+				// Rien à faire
+				$NON_PROTECT[$temp] = $_POST[$key];
+			}
+			else {
+				if (get_magic_quotes_gpc()) {
+					$NON_PROTECT[$temp] = stripslashes($_POST[$key]);
+				}
+				else {
+					$NON_PROTECT[$temp] = $_POST[$key];
+				}
+			}
+		}
+	}
 }
 
 // Supprime les tag images avec une extension php, ce qui pourrait faire une attaque si un utilisateur
@@ -150,10 +189,15 @@ function no_php_in_img($chaine) {
 
 // on force, si besoin, la valeur de magic_quotes_runtime à off de façon à ce que les valeurs récupérées dans la base
 // puissent être affichées directement, sans caractère "\" 
-if (get_magic_quotes_runtime()) {
-    set_magic_quotes_runtime(FALSE);
-} 
-
+	if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+		|| (!function_exists("get_magic_quotes_gpc"))) {
+		// Rien à faire
+	}
+	else {
+		if (get_magic_quotes_runtime()) {
+			set_magic_quotes_runtime(FALSE);
+		}
+	}
 
 $config = HTMLPurifier_Config::createDefault();
 $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
@@ -175,7 +219,14 @@ $cssDefinition->info["position"] = new HTMLPurifier_AttrDef_Enum(array("absolute
 //$def->addElement('oembed','Inline', 'Common'); // on y ajoute la balise <oembed>
 
 $purifier = new HTMLPurifier($config);
-$magic_quotes = get_magic_quotes_gpc();
+if ((version_compare(PHP_VERSION, '5.3.0', '>'))
+	|| (!function_exists("get_magic_quotes_gpc"))) {
+	// Rien à faire
+	$magic_quotes=false;
+}
+else {
+	$magic_quotes = get_magic_quotes_gpc();
+}
 
 /*
 $config = HTMLPurifier_Config::createDefault();
