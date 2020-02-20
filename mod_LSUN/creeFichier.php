@@ -21,6 +21,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+$LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
+
 include_once 'lib/chargeXML.php';
 
 // INSERT INTO setting SET name='LSU_export_historique_heure_deux_points', value='yes';
@@ -39,7 +41,7 @@ $file = $dirTemp.$nomFichier;
 
 $xml->save($file);
 
-$LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
+//$LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
 if($LSUN_version_xsd=='') {
 	$LSUN_version_xsd=20180427;
 }
@@ -49,6 +51,10 @@ if($LSUN_version_xsd==20171009) {
 }
 elseif($LSUN_version_xsd==20190427) {
 	$schema = "xsd/import-bilan-complet_20190427.xsd";
+}
+elseif($LSUN_version_xsd==20200301) {
+	//$schema = "xsd/import-complet-strict.xsd";
+	$schema = "xsd/import-bilan-complet.xsd";
 }
 else {
 	$schema = "xsd/import-bilan-complet.xsd";

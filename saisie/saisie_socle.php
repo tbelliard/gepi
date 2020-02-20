@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -74,6 +74,11 @@ if(!getSettingAOui("SocleSaisieComposantes_".$_SESSION["statut"])) {
 		die();
 	}
 }
+
+check_tables_modifiees();
+
+// 20200219 : Valeur définie dans le paragraphe 2.3.41 COMPETENCE NUMERIQUE du Spec_2nd_degre_Editeurs_LSUN_import_bilan-V3.17.pdf
+$niveau_maitrise_numerique_max=3;
 
 $msg="";
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
@@ -213,7 +218,10 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 
 			// Gérer/Tester le cas PP
 			if((!isset($id_groupe))&&(isset($id_classe))) {
-				if(($_SESSION['statut']=="professeur")&&(isset($_POST["forcer"]))&&(getSettingAOui("SocleSaisieComposantesForcer_PP"))&&(is_pp($_SESSION['login'], $id_classe))) {
+				if(($_SESSION['statut']=="professeur")&&
+				(isset($_POST["forcer"]))&&
+				(getSettingAOui("SocleSaisieComposantesForcer_PP"))&&
+				(is_pp($_SESSION['login'], $id_classe))) {
 					$forcer="y";
 				}
 			}
@@ -223,7 +231,10 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 		if(getSettingAOui("SocleSaisieSyntheses_".$_SESSION["statut"])) {
 			$SocleSaisieSyntheses=true;
 		}
-		elseif(($_SESSION["statut"]=="professeur")&&(isset($id_classe))&&(getSettingAOui("SocleSaisieSyntheses_PP"))&&(is_pp($_SESSION["login"], $id_classe))) {
+		elseif(($_SESSION["statut"]=="professeur")&&
+		(isset($id_classe))&&
+		(getSettingAOui("SocleSaisieSyntheses_PP"))&&
+		(is_pp($_SESSION["login"], $id_classe))) {
 			$SocleSaisieSyntheses=true;
 		}
 
@@ -566,7 +577,9 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 					}
 				}
 			}
-			elseif(($_SESSION["statut"]=="professeur")&&(getSettingAOui("SocleSaisieComposantes_PP"))&&(is_pp($_SESSION['login'], $id_classe))) {
+			elseif(($_SESSION["statut"]=="professeur")&&
+			(getSettingAOui("SocleSaisieComposantes_PP"))&&
+			(is_pp($_SESSION['login'], $id_classe))) {
 				$acces_saisie="y";
 			}
 
@@ -854,6 +867,253 @@ if((isset($_POST['enregistrer_saisies']))&&(isset($periode))) {
 						}
 					}
 				}
+
+
+				// 20200219
+				if((($_SESSION['statut']=='scolarite')&&(getSettingAOui('SocleSaisieCompetencesNumeriques_scolarite')))||
+				(($_SESSION['statut']=='cpe')&&(getSettingAOui('SocleSaisieCompetencesNumeriques_cpe')))||
+				(($_SESSION['statut']=='professeur')&&(getSettingAOui('SocleSaisieCompetencesNumeriques_PP'))&&(is_pp($_SESSION['login'],$id_classe)))) {
+					$tab_competences_numeriques_eleves=array();
+					$sql="SELECT * FROM setting WHERE name LIKE 'socle_competences_numeriques_id_classe_".$id_classe."' AND VALUE='".$id_classe."';";
+					$test_competences_numeriques=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($test_competences_numeriques)>0) {
+						$tab_competences_numeriques=get_tab_competences_numeriques_LSU();
+
+						// Récupérer les compétences saisies pour les élèves
+						/*
+						$sql="SELECT DISTINCT sec.* FROM socle_eleves_competences_numeriques sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND sec.periode=jec.periode AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."' AND e.no_gep!='';";
+						//echo "$sql<br />";
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while($lig=mysqli_fetch_object($res)) {
+								$tab_competences_numeriques_eleves[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode]["niveau_maitrise"]=$lig->niveau_maitrise;
+							}
+						}
+						*/
+
+						$niveau_maitrise_numerique=isset($_POST['niveau_maitrise_numerique']) ? $_POST['niveau_maitrise_numerique'] : NULL;
+
+						if(isset($niveau_maitrise_numerique)) {
+
+							foreach($niveau_maitrise_numerique as $current_element => $valeur) {
+								//if(($valeur!="")&&(!in_array($valeur, array(0, 1, 2, 3, 4, 5, 6, 7, 8)))) {
+								if(($valeur!="")&&(!in_array($valeur, array(0, 1, 2, 3)))) {
+									// 20170521
+									$tmp_tab=explode("|", $current_element);
+									$ine=$tmp_tab[0];
+									$cycle=$tmp_tab[1];
+									$code=$tmp_tab[2];
+
+									if($ine=="") {
+										$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte.<br />";
+									}
+									else {
+										$msg.=get_nom_prenom_from_INE($ine)."&nbsp;: Valeur invalide pour '$current_element'&nbsp;: '$valeur'.<br />";
+									}
+								}
+								else {
+									//$lig->no_gep."|".$tab_cycle[$mef_code_ele]."|".$code
+									$tmp_tab=explode("|", $current_element);
+									$ine=$tmp_tab[0];
+									$cycle=$tmp_tab[1];
+									$code=$tmp_tab[2];
+
+									// 20170521
+									if($ine=="") {
+										$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte pour la compétence numérique $code.<br />";
+									}
+									elseif(!in_array($ine, $tab_ine_du_groupe)) {
+										$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de la classe.<br />";
+									}
+									else {
+										$sql="SELECT * FROM socle_eleves_competences_numeriques WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_competence='".$code."' AND periode='".$periode."' AND annee='".$gepiYear_debut."';";
+										//echo "$sql<br />";
+										$test=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test)==0) {
+											if($valeur!="") {
+												$sql="INSERT INTO socle_eleves_competences_numeriques SET ine='".$ine."', cycle='".$cycle."', annee='".$gepiYear_debut."', code_competence='".$code."', niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."', periode='".$periode."';";
+												//echo "$sql<br />";
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+												if($insert) {
+													$cpt_reg++;
+												}
+												else {
+													$msg.="Erreur lors de l'enregistrement $sql<br />";
+													$nb_err++;
+												}
+											}
+										}
+										else {
+
+											if($valeur=="") {
+												$sql="DELETE FROM socle_eleves_competences_numeriques WHERE ine='".$ine."' AND cycle='".$cycle."' AND code_competence='".$code."' AND periode='".$periode."' AND annee='".$gepiYear_debut."';";
+											}
+											else {
+												$sql="UPDATE socle_eleves_competences_numeriques SET niveau_maitrise='".$valeur."', login_saisie='".$_SESSION['login']."', date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."' AND code_competence='".$code."' AND periode='".$periode."';";
+											}
+											//echo "$sql<br />";
+											$update=mysqli_query($GLOBALS["mysqli"], $sql);
+											if($update) {
+												$cpt_reg++;
+											}
+											else {
+												$msg.="Erreur lors de la mise à jour $sql<br />";
+												$nb_err++;
+											}
+										}
+									}
+								}
+							}
+						}
+
+						$indice_synthese=isset($_POST['indice_synthese_numerique']) ? $_POST['indice_synthese_numerique'] : array();
+						//if(($SocleSaisieSyntheses)&&(count($indice_synthese)>0)) {
+						if(count($indice_synthese)>0) {
+							for($loop=0;$loop<count($indice_synthese);$loop++) {
+								$tmp_tab=explode("|", $indice_synthese[$loop]);
+								$ine=$tmp_tab[0];
+								$cycle=$tmp_tab[1];
+
+								if($ine=="") {
+									$msg.="Un identifiant INE est vide. Il ne peut pas être pris en compte pour la synthèse numérique.<br />";
+								}
+								elseif(!in_array($ine, $tab_ine_du_groupe)) {
+									$msg.="L'élève $ine <em>(".get_nom_prenom_from_INE($ine).")</em> n'est pas membre de l'enseignement.<br />";
+								}
+								else {
+
+									if((isset($NON_PROTECT["synthese_numerique_".$ine."_".$cycle]))&&
+									(($NON_PROTECT["synthese_numerique_".$ine."_".$cycle]!=""))) {
+										$synthese=$NON_PROTECT["synthese_numerique_".$ine."_".$cycle];
+										$synthese=trim(suppression_sauts_de_lignes_surnumeraires($synthese));
+
+										$sql="SELECT * FROM socle_eleves_syntheses_numeriques WHERE ine='".$ine."' AND cycle='".$cycle."' AND periode='".$periode."' AND annee='".$gepiYear_debut."';";
+										//echo "$sql<br />";
+										$test=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test)==0) {
+											if($synthese!="") {
+												$sql="INSERT INTO socle_eleves_syntheses_numeriques SET ine='".$ine."', 
+															cycle='".$cycle."', 
+															annee='".$gepiYear_debut."', 
+															periode='".$periode."', 
+															synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $synthese)."', 
+															login_saisie='".$_SESSION['login']."', 
+															date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
+												//echo "$sql<br />";
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+												if($insert) {
+													$cpt_reg++;
+												}
+												else {
+													$msg.="Erreur lors de l'enregistrement $sql<br />";
+													$nb_err++;
+												}
+											}
+										}
+										else {
+											$lig=mysqli_fetch_object($test);
+
+											if($synthese=="") {
+												//if($forcer=="y") {
+													$sql="DELETE FROM socle_eleves_syntheses_numeriques WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."' AND periode='".$periode."';";
+													//echo "$sql<br />";
+													$del=mysqli_query($GLOBALS["mysqli"], $sql);
+													if($del) {
+														$cpt_reg++;
+													}
+													else {
+														$msg.="Erreur lors de la suppression $sql<br />";
+														$nb_err++;
+													}
+												//}
+											}
+											elseif($synthese!=$lig->synthese) {
+												$sql="UPDATE socle_eleves_syntheses_numeriques SET synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $synthese)."', 
+																login_saisie='".$_SESSION['login']."', 
+																date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
+															WHERE ine='".$ine."' AND cycle='".$cycle."' AND annee='".$gepiYear_debut."' AND periode='".$periode."';";
+												//echo "$sql<br />";
+												$update=mysqli_query($GLOBALS["mysqli"], $sql);
+												if($update) {
+													$cpt_reg++;
+												}
+												else {
+													$msg.="Erreur lors de la mise à jour $sql<br />";
+													$nb_err++;
+												}
+											}
+										}
+									}
+
+								}
+							}
+						}
+
+
+						if((isset($NON_PROTECT["synthese_numerique_classe"]))&&
+						(($NON_PROTECT["synthese_numerique_classe"]!=""))) {
+							$synthese=$NON_PROTECT["synthese_numerique_classe"];
+							$synthese=trim(suppression_sauts_de_lignes_surnumeraires($synthese));
+
+							$sql="SELECT * FROM socle_classes_syntheses_numeriques WHERE id_classe='".$id_classe."' AND annee='".$gepiYear_debut."';";
+							//echo "$sql<br />";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								if($synthese!="") {
+									$sql="INSERT INTO socle_classes_syntheses_numeriques SET id_classe='".$id_classe."', 
+												annee='".$gepiYear_debut."', 
+												synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $synthese)."', 
+												login_saisie='".$_SESSION['login']."', 
+												date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."';";
+									//echo "$sql<br />";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if($insert) {
+										$cpt_reg++;
+									}
+									else {
+										$msg.="Erreur lors de l'enregistrement $sql<br />";
+										$nb_err++;
+									}
+								}
+							}
+							else {
+								$lig=mysqli_fetch_object($test);
+
+								if($synthese=="") {
+									//if($forcer=="y") {
+										$sql="DELETE FROM socle_classes_syntheses_numeriques WHERE id_classe='".$id_classe."' AND annee='".$gepiYear_debut."';";
+										//echo "$sql<br />";
+										$del=mysqli_query($GLOBALS["mysqli"], $sql);
+										if($del) {
+											$cpt_reg++;
+										}
+										else {
+											$msg.="Erreur lors de la suppression $sql<br />";
+											$nb_err++;
+										}
+									//}
+								}
+								elseif($synthese!=$lig->synthese) {
+									$sql="UPDATE socle_classes_syntheses_numeriques SET synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $synthese)."', 
+													login_saisie='".$_SESSION['login']."', 
+													date_saisie='".strftime("%Y-%m-%d %H:%M:%S")."' 
+												WHERE id_classe='".$id_classe."' AND annee='".$gepiYear_debut."';";
+									//echo "$sql<br />";
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+									if($update) {
+										$cpt_reg++;
+									}
+									else {
+										$msg.="Erreur lors de la mise à jour $sql<br />";
+										$nb_err++;
+									}
+								}
+							}
+						}
+
+					}
+				}
+
 			}
 			$msg.=$cpt_reg." enregistrement(s) effectué(s).<br />";
 			$msg.=$nb_err." erreur(s).<br />";
@@ -1856,6 +2116,39 @@ elseif(isset($id_classe)) {
 	$lig_max=mysqli_fetch_object($res_max);
 	$max_per=$lig_max->max_per;
 
+
+	// 20200219
+	if((($_SESSION['statut']=='scolarite')&&(getSettingAOui('SocleSaisieCompetencesNumeriques_scolarite')))||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui('SocleSaisieCompetencesNumeriques_cpe')))||
+	(($_SESSION['statut']=='professeur')&&(getSettingAOui('SocleSaisieCompetencesNumeriques_PP'))&&(is_pp($_SESSION['login'],$id_classe)))) {
+		$tab_competences_numeriques_eleves=array();
+		$sql="SELECT * FROM setting WHERE name LIKE 'socle_competences_numeriques_id_classe_".$id_classe."' AND VALUE='".$id_classe."';";
+		$test_competences_numeriques=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_competences_numeriques)>0) {
+			$tab_competences_numeriques=get_tab_competences_numeriques_LSU();
+
+			// Récupérer les compétences saisies pour les élèves
+			$sql="SELECT DISTINCT sec.* FROM socle_eleves_competences_numeriques sec, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND sec.ine=e.no_gep AND sec.periode=jec.periode AND jec.id_classe='".$id_classe."' AND annee='".$gepiYear_debut."' AND e.no_gep!='';";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$tab_competences_numeriques_eleves[$lig->ine][$lig->cycle][$lig->code_competence][$lig->periode]["niveau_maitrise"]=$lig->niveau_maitrise;
+					if(!isset($tab_civ_nom_prenom[$lig->login_saisie])) {
+						$tab_civ_nom_prenom[$lig->login_saisie]=civ_nom_prenom($lig->login_saisie);
+					}
+					$tab_competences_numeriques_eleves[$lig->ine][$lig->cycle][$lig->code_competence][$lig->periode]["title"]="Saisi par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2");
+				}
+			}
+		}
+		/*
+		echo "\$tab_competences_numeriques_eleves<pre>";
+		print_r($tab_competences_numeriques_eleves);
+		echo "</pre>";
+		*/
+	}
+
+
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// A REVOIR POUR RECUPERER LES SAISIES D ANNEES PRECEDENTES
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1886,6 +2179,21 @@ elseif(isset($id_classe)) {
 			}
 			//$tab_syntheses[$lig->ine][$lig->cycle]["title"]="Saisie par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2");
 			$tab_syntheses[$lig->ine][$lig->cycle]["title"]=" title=\"Saisie par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2")."\"";
+		}
+	}
+
+
+	// 20200219
+	$tab_syntheses_numeriques=array();
+	$sql="SELECT DISTINCT ses.* FROM socle_eleves_syntheses_numeriques ses, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND ses.ine=e.no_gep AND jec.id_classe='".$id_classe."' AND jec.periode=ses.periode AND annee='".$gepiYear_debut."' AND e.no_gep!='';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_syntheses_numeriques[$lig->ine][$lig->cycle][$lig->periode]["synthese"]=$lig->synthese;
+			if(!isset($tab_civ_nom_prenom[$lig->login_saisie])) {
+				$tab_civ_nom_prenom[$lig->login_saisie]=civ_nom_prenom($lig->login_saisie);
+			}
+			$tab_syntheses_numeriques[$lig->ine][$lig->cycle][$lig->periode]["title"]=" title=\"Saisie par ".$tab_civ_nom_prenom[$lig->login_saisie]." le ".formate_date($lig->date_saisie,"y2")."\"";
 		}
 	}
 
@@ -1972,6 +2280,38 @@ elseif(isset($id_classe)) {
 		<p style='margin-left:2em;text-indent:-2em;'><input type='checkbox' name='forcer' id='forcer' value='y' onchange=\"checkbox_change(this.id)\" ".(((isset($_POST["forcer"]))&&($_POST["forcer"]=="y")) ? " checked" : "")." /><label for='forcer' id='texte_forcer'>Forcer les saisies <br />
 <em>(pour vider/baisser éventuellement les niveaux de maitrise en écrasant les saisies antérieures 
 <br />(les votres ou celles de collègues (à manipuler avec précaution, dans un soucis de bonne entente entre collègues)))</em>.</label></p>";
+		}
+
+		// 20200219
+		if(isset($tab_competences_numeriques)) {
+			$sql="SELECT * FROM socle_classes_syntheses_numeriques WHERE id_classe='".$id_classe."' AND annee='".$gepiYear_debut."';";
+			$res_s_n=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_s_n)==0) {
+				$synthese_numerique_classe='';
+			}
+			else {
+				$lig=mysqli_fetch_object($res_s_n);
+				$synthese_numerique_classe=$lig->synthese;
+			}
+
+			if($SocleOuvertureSaisieComposantes=="y") {
+				echo "<div style='margin:0.5em; padding:0.5em;' class='fieldset_opacite50'>
+	<p><strong>Appréciation, synthèse annuelle sur les travaux/projets numériques, outils informatiques utilisés en classe de ".get_nom_classe($id_classe)."</strong>&nbsp;:<br />
+				<textarea style='vertical-align:top;' 
+						cols='80' 
+						rows='4' 
+						name=\"no_anti_inject_synthese_numerique_classe\" 
+						title=\"Synthèse des travaux, projets... numériques pour la classe.\">".$synthese_numerique_classe."</textarea>
+	</p>
+</div>";
+			}
+			else {
+				echo "<div style='margin:0.5em; padding:0.5em;' class='fieldset_opacite50'>
+	<p><strong>Appréciation, synthèse annuelle sur les travaux, projets, outils informatiques utilisés en classe de ".get_nom_classe($id_classe)."</strong>&nbsp;:<br />
+	".nl2br($synthese_numerique_classe)."
+	</p>
+</div>";
+			}
 		}
 
 		$cpt_ele=0;
@@ -2226,7 +2566,8 @@ elseif(isset($id_classe)) {
 			<textarea style='vertical-align:top;' 
 					cols='80' 
 					rows='4' 
-					name=\"no_anti_inject_synthese_".$lig->no_gep."_".$cycle."\">".
+					name=\"no_anti_inject_synthese_".$lig->no_gep."_".$cycle."\" 
+					title=\"Synthèse pour ".$lig->nom." ".$lig->prenom."\">".
 					((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? $tab_syntheses[$lig->no_gep][$cycle]["synthese"] : "").
 			"</textarea>
 		</p>";
@@ -2235,6 +2576,200 @@ elseif(isset($id_classe)) {
 					echo "
 		<p style='margin-top:0.5em;' ".((isset($tab_syntheses[$lig->no_gep][$cycle]["title"])) ? $tab_syntheses[$lig->no_gep][$cycle]["title"] : "")."><strong>Synthèse&nbsp;:</strong> ".((isset($tab_syntheses[$lig->no_gep][$cycle]["synthese"])) ? nl2br($tab_syntheses[$lig->no_gep][$cycle]["synthese"]) : "<span style='color:red'>Vide</span>")."</p>";
 				}
+
+
+				// 20200219
+				// Competences numeriques
+				if(isset($tab_competences_numeriques)) {
+					if($SocleOuvertureSaisieComposantes=="y") {
+						//echo $lig->no_gep;
+						echo "
+		<table class='boireaus boireaus_alt' summary=\"Tableau des compétences numériques de ".$lig->nom." ".$lig->prenom."\">
+			<thead>
+				<tr>
+					<th rowspan='2'>Domaine</th>
+					<th rowspan='2'>Compétence numérique</th>
+					<th colspan='".($niveau_maitrise_numerique_max+1)."'>Niveau de maitrise</th>".((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
+					<th rowspan='2'>Période<br />précédente</th>" : "")."
+				</tr>
+				<tr>
+					<th title='Non encore défini' onclick=\"coche_colonne_ele_numerique($cpt_ele, 0)\">X</th>";
+						for($loop=1;$loop<=$niveau_maitrise_numerique_max;$loop++) {
+							echo "
+					<th onclick=\"coche_colonne_ele_numerique($cpt_ele, $loop)\">".$loop."</th>";
+						}
+						echo "
+				</tr>
+			</thead>
+			<tbody>";
+						$domaine_precedent='';
+						$compteur_code_competence=0;
+						foreach($tab_competences_numeriques['code'] as $code_competence => $current_competence) {
+							if($current_competence['domaine']!=$domaine_precedent) {
+								$domaine_precedent=$current_competence['domaine'];
+							}
+
+//				$tab_competences_numeriques_eleves[$lig->ine][$lig->cycle][$lig->code_composante][$lig->periode]["niveau_maitrise"]=$lig->niveau_maitrise;
+
+							if(!isset($tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode])) {
+								$checked[0]=' checked';
+								for($loop=1;$loop<=$niveau_maitrise_numerique_max;$loop++) {
+									$checked[$loop]='';
+								}
+							}
+							else {
+								$checked[0]='';
+
+								for($loop=1;$loop<=$niveau_maitrise_numerique_max;$loop++) {
+									if($loop==$tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode]['niveau_maitrise']) {
+										$checked[$loop]=' checked';
+									}
+									else {
+										$checked[$loop]='';
+									}
+								}
+							}
+
+							$valeur_precedente="";
+							/*
+							if(($periode>1)&&(isset($tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode-1]['niveau_maitrise']))&&(isset($tab_traduction_niveau_couleur[$tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode-1]['niveau_maitrise']]))) {
+								$valeur_precedente=$tab_traduction_niveau_couleur[$tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode-1]['niveau_maitrise']];
+							}
+							*/
+							// On n'a pas de traduction des niveaux pour les compétences numériques
+							if(($periode>1)&&(isset($tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode-1]['niveau_maitrise']))) {
+								$valeur_precedente=$tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode-1]['niveau_maitrise'];
+							}
+
+
+							echo "
+				<tr>
+					<td>".$current_competence['domaine']."</td>
+					<td>".$current_competence['libelle']."</td>
+					<td><input type='radio' name='' value='' ".$checked[0]."</td>";
+							for($loop=1;$loop<=$niveau_maitrise_numerique_max;$loop++) {
+								echo "
+					<td id='td_niveau_maitrise_numerique_".$cpt_ele."_".$compteur_code_competence."_".$loop."' title=\"".$current_competence['libelle']." : ".$loop."\">
+						<input type='radio' 
+							name='niveau_maitrise_numerique[".$lig->no_gep."|".$cycle."|".$code_competence."]' 
+							id='niveau_maitrise_numerique_".$cpt_ele."_".$compteur_code_competence."_".$loop."' 
+							value='$loop' 
+							onchange=\"changement();\" ".$checked[$loop]." />
+					</td>";
+
+/*
+					<td id='td_niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2'".$title[2].">
+						<input type='radio' 
+							id='niveau_maitrise_".$cpt_ele."_".$cpt_domaine."_2' 
+							name=\"niveau_maitrise[".$lig->no_gep."|".$cycle."|".$code."]\" 
+							value='2'".$checked[2]." 
+							onchange=\"changement(); maj_couleurs_maitrise($cpt_ele,$cpt_domaine);calcule_score_socle($cpt_ele)\" />"."
+					</td>
+*/
+
+							}
+
+							echo ((($periode>1)&&($SocleOuvertureSaisieComposantes)) ? "
+					<td>
+						$valeur_precedente
+					</td>" : "")."
+				</tr>";
+							$compteur_code_competence++;
+						}
+						echo "
+			</table>
+
+			<p style='margin-top:0.5em;'>
+				<strong>Synthèse compétences numériques&nbsp;:</strong> 
+				<input type='hidden' name='indice_synthese_numerique[]' value=\"".$lig->no_gep."|".$cycle."\" />
+				<textarea style='vertical-align:top;' 
+						cols='80' 
+						rows='4' 
+						name=\"no_anti_inject_synthese_numerique_".$lig->no_gep."_".$cycle."\" 
+						title=\"Synthèse des compétences numériques pour ".$lig->nom." ".$lig->prenom."\">".
+						((isset($tab_syntheses_numeriques[$lig->no_gep][$cycle][$periode]["synthese"])) ? $tab_syntheses_numeriques[$lig->no_gep][$cycle][$periode]["synthese"] : "").
+				"</textarea>
+			</p>";
+
+
+					}
+					else {
+						// Affichage en mode saisie close...
+
+						//echo $lig->no_gep;
+						echo "
+		<table class='boireaus boireaus_alt' summary=\"Tableau des compétences numériques de ".$lig->nom." ".$lig->prenom."\">
+			<thead>
+				<tr>
+					<th rowspan='2'>Domaine</th>
+					<th rowspan='2'>Compétence numérique</th>
+					<th colspan='".($niveau_maitrise_numerique_max+1)."'>Niveau de maitrise</th>
+				</tr>
+				<tr>
+					<th title='Non encore défini'>X</th>";
+						for($loop=1;$loop<=$niveau_maitrise_numerique_max;$loop++) {
+							echo "
+					<th>".$loop."</th>";
+						}
+						echo "
+				</tr>
+			</thead>
+			<tbody>";
+						$domaine_precedent='';
+						$compteur_code_competence=0;
+						foreach($tab_competences_numeriques['code'] as $code_competence => $current_competence) {
+							if($current_competence['domaine']!=$domaine_precedent) {
+								$domaine_precedent=$current_competence['domaine'];
+							}
+
+							if(!isset($tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode])) {
+								$checked[0]=' checked';
+								for($loop=1;$loop<=$niveau_maitrise_numerique_max;$loop++) {
+									$checked[$loop]='';
+								}
+							}
+							else {
+								$checked[0]='';
+
+								for($loop=1;$loop<=$niveau_maitrise_numerique_max;$loop++) {
+									if($loop==$tab_competences_numeriques_eleves[$lig->no_gep][$cycle][$code_competence][$periode]['niveau_maitrise']) {
+										$checked[$loop]=' checked';
+									}
+									else {
+										$checked[$loop]='';
+									}
+								}
+							}
+
+
+							echo "
+				<tr>
+					<td>".$current_competence['domaine']."</td>
+					<td>".$current_competence['libelle']."</td>
+					<td>".($checked[0]!='' ? "<img src='../images/disabled.png' class='icone20' />" : "")."</td>";
+							for($loop=1;$loop<=$niveau_maitrise_numerique_max;$loop++) {
+								echo "
+					<td id='td_niveau_maitrise_numerique_".$cpt_ele."_".$compteur_code_competence."_".$loop."' title=\"".$current_competence['libelle']." : ".$loop."\">".($checked[$loop]!='' ? "<img src='../images/enabled.png' class='icone20' alt='Coche' />" : "")."
+					</td>";
+
+							}
+
+							echo "
+				</tr>";
+							$compteur_code_competence++;
+						}
+						echo "
+			</table>
+
+			<p style='margin-top:0.5em;'>
+				<strong>Synthèse compétences numériques&nbsp;:</strong> ".
+						((isset($tab_syntheses_numeriques[$lig->no_gep][$cycle][$periode]["synthese"])) ? nl2br($tab_syntheses_numeriques[$lig->no_gep][$cycle][$periode]["synthese"]) : "(vide)").
+				"
+			</p>";
+
+					}
+				}
+
 
 				$cpt_ele++;
 			}
@@ -2413,6 +2948,19 @@ elseif(isset($id_classe)) {
 
 				}
 			}
+
+			// 20200219
+			function coche_colonne_ele_numerique(cpt_ele, niveau_maitrise) {
+				var i;
+				for(i=0;i<16;i++) {
+					if(document.getElementById('niveau_maitrise_numerique_'+cpt_ele+'_'+i+'_'+niveau_maitrise)) {
+						document.getElementById('niveau_maitrise_numerique_'+cpt_ele+'_'+i+'_'+niveau_maitrise).checked=true;
+						//maj_couleurs_maitrise(cpt_ele,i);
+						//calcule_score_socle(cpt_ele);
+					}
+				}
+			}
+
 
 			checkbox_change('cycle_VIDE');
 			checkbox_change('cycle_2');
