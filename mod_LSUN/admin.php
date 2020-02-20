@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2016-2018 Régis Bouguin, Stephane Boireau
+* Copyright 2016-2020 Régis Bouguin, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -89,7 +89,7 @@ if(isset($_POST['enregistrer_Saisie_Socle'])) {
 		}
 	}
 
-	$tab=array("SocleSaisieComposantes_scolarite", "SocleSaisieComposantes_scolariteToutesClasses", "SocleSaisieComposantes_cpeToutesClasses", "SocleSaisieComposantes_cpe", "SocleSaisieComposantes_PP", "SocleSaisieComposantes_professeur", "SocleSaisieComposantesForcer_scolarite", "SocleSaisieComposantesForcer_cpe", "SocleSaisieComposantesForcer_PP", "SocleSaisieComposantesForcer_professeur", "SocleOuvertureSaisieComposantes_scolarite", "SocleOuvertureSaisieComposantes_cpe", "SocleSaisieSyntheses_scolarite", "SocleSaisieSyntheses_cpe", "SocleSaisieSyntheses_PP", "SocleSaisieSyntheses_professeur", "SocleImportComposantes", "SocleImportComposantes_scolarite", "SocleImportComposantes_cpe");
+	$tab=array("SocleSaisieComposantes_scolarite", "SocleSaisieComposantes_cpe", "SocleSaisieComposantes_PP", "SocleSaisieComposantes_professeur", "SocleSaisieComposantesForcer_scolarite", "SocleSaisieComposantesForcer_cpe", "SocleSaisieComposantesForcer_PP", "SocleSaisieComposantesForcer_professeur", "SocleOuvertureSaisieComposantes_scolarite", "SocleOuvertureSaisieComposantes_cpe", "SocleSaisieSyntheses_scolarite", "SocleSaisieSyntheses_cpe", "SocleSaisieSyntheses_PP", "SocleSaisieSyntheses_professeur", "SocleImportComposantes", "SocleImportComposantes_scolarite", "SocleImportComposantes_cpe", 'langue_vivante_regionale', 'SocleSaisieCompetencesNumeriques_PP', 'SocleSaisieCompetencesNumeriques_cpe', 'SocleSaisieCompetencesNumeriques_scolarite');
 	for($loop=0;$loop<count($tab);$loop++) {
 		if(isset($_POST[$tab[$loop]])) {
 			$valeur="y";
@@ -111,6 +111,42 @@ if(isset($_POST['enregistrer_Saisie_Socle'])) {
 		}
 		else {
 			$nb_reg++;
+		}
+	}
+
+	//socle_competences_numeriques_classe
+	$tab_id_classe_socle_saisie_competences_numeriques=array();
+	$sql="SELECT * FROM setting WHERE name LIKE 'socle_competences_numeriques_id_classe_%';";
+	//echo "$sql<br />";
+	$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_clas=mysqli_fetch_object($res_clas)) {
+		if((!isset($_POST['socle_competences_numeriques_classe']))||
+		(!in_array($lig_clas->VALUE, $_POST['socle_competences_numeriques_classe']))) {
+			$sql="DELETE FROM setting WHERE name='socle_competences_numeriques_id_classe_".$lig_clas->VALUE."';";
+			//echo "$sql<br />";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				$nb_reg++;
+			}
+		}
+		else {
+			$tab_id_classe_socle_saisie_competences_numeriques[]=$lig_clas->VALUE;
+		}
+	}
+
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	//echo "$sql<br />";
+	$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_clas=mysqli_fetch_object($res_clas)) {
+		if((isset($_POST['socle_competences_numeriques_classe']))&&
+		(in_array($lig_clas->id, $_POST['socle_competences_numeriques_classe']))&&
+		(!in_array($lig_clas->id, $tab_id_classe_socle_saisie_competences_numeriques))) {
+			if(!saveSetting('socle_competences_numeriques_id_classe_'.$lig_clas->id, $lig_clas->id)) {
+				$msg.="Erreur lors de l'enregistrement de la saisie des compétences numériques pour la classe de '".get_nom_classe($lig_clas->id)."'.<br />";
+			}
+			else {
+				$nb_reg++;
+			}
 		}
 	}
 
@@ -560,6 +596,84 @@ echo "</p>";
 			Limiter les saisies aux comptes Scolarité, CPE et/ou <?php echo getSettingValue("gepi_prof_suivi");?> parait raisonnable.
 		</p>
 
+		<!-- 20200219 -->
+		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
+			Les profils autorisés à <strong>saisir les niveaux de Compétences Numériques pour chaque élève</strong> sont&nbsp;:<br />
+			<input type="checkbox" 
+				   id="SocleSaisieCompetencesNumeriques_scolarite" 
+				   name="SocleSaisieCompetencesNumeriques_scolarite"
+					<?php if(getSettingAOui("SocleSaisieCompetencesNumeriques_scolarite")) {echo " checked ";} ?>
+				   value="y" 
+				   onchange="checkbox_change(this.id);changement();" />
+			<label for="SocleSaisieCompetencesNumeriques_scolarite" id='texte_SocleSaisieCompetencesNumeriques_scolarite'>
+				les comptes Scolarité associés à la classe
+			</label>
+			<br />
+
+			<input type="checkbox" 
+				   id="SocleSaisieCompetencesNumeriques_cpe" 
+				   name="SocleSaisieCompetencesNumeriques_cpe"
+					<?php if(getSettingAOui("SocleSaisieCompetencesNumeriques_cpe")) {echo " checked ";} ?>
+				   value="y" 
+				   onchange="checkbox_change(this.id);changement();" />
+			<label for="SocleSaisieCompetencesNumeriques_cpe" id='texte_SocleSaisieCompetencesNumeriques_cpe'>
+				les comptes CPE associés à la classe
+			</label>
+			<br />
+
+			<input type="checkbox" 
+				   id="SocleSaisieCompetencesNumeriques_PP" 
+				   name="SocleSaisieCompetencesNumeriques_PP"
+					<?php if(getSettingAOui("SocleSaisieCompetencesNumeriques_PP")) {echo " checked ";} ?>
+				   value="y" 
+				   onchange="checkbox_change(this.id);changement();" />
+			<label for="SocleSaisieCompetencesNumeriques_PP" id='texte_SocleSaisieCompetencesNumeriques_PP'>
+				les comptes <?php echo getSettingValue("gepi_prof_suivi");?> associés à la classe
+			</label>
+			<br />
+		</p>
+
+		<!-- CHOISIR LES NIVEAUX POUR LESQUELS LA SAISIE DE NIVEAUX DE COMPETENCES NUMERIQUES EST OUVERTE -->
+
+		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
+			Classes concernées par la saisie des Compétences Numériques dans Gepi&nbsp;:
+		</p>
+		<?php
+			$tab_id_classe_socle_saisie_competences_numeriques=array();
+			$sql="SELECT * FROM setting WHERE name LIKE 'socle_competences_numeriques_id_classe_%';";
+			//echo "$sql<br />";
+			$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_clas=mysqli_fetch_object($res_clas)) {
+				//$tab_id_classe_socle_saisie_competences_numeriques[]=$lig_clas->value;
+				$tab_id_classe_socle_saisie_competences_numeriques[]=$lig_clas->VALUE;
+			}
+
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+			//echo "$sql<br />";
+			$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			$tab_txt=array();
+			$tab_nom_champ=array();
+			$tab_id_champ=array();
+			$tab_valeur_champ=array();
+
+			$cpt=0;
+			while($lig_clas=mysqli_fetch_object($res_clas)) {
+				$tab_txt[]=$lig_clas->classe;
+				$tab_nom_champ[]="socle_competences_numeriques_classe[]";
+				$tab_id_champ[]="socle_competences_numeriques_classe_".$cpt;
+				$tab_valeur_champ[]=$lig_clas->id;
+				$cpt++;
+			}
+
+			echo "<div style='margin-left:3em;'>".tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, "checkbox_change2", "modif_coche", 3, $tab_id_classe_socle_saisie_competences_numeriques)."</div>";
+
+?>
+
+
+
+
+
 		<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'>
 			<input type="checkbox" 
 				   id="SocleImportComposantes" 
@@ -597,12 +711,23 @@ echo "</p>";
 			</label>
 		</p>
 
+
+	<p style='margin-top:1em; margin-bottom:1em; margin-left:3em; text-indent:-3em;'>
+		<label for='langue_vivante_regionale' id='texte_langue_vivante_regionale' title="Si votre établissement propose l'enseignement de Langues Vivantes Régionales, vous devez, après avoir coché et validé ici, associer aux enseignements de LVR la langue vivante régionale enseignée dans Gestion des bases/Gestion des classes/*Telle_classe* Enseignements.">
+			L'établissement propose l'enseignement de langue(s) vivante(s) régionale(s)&nbsp;:
+		</label>
+		<input type="checkbox" name="langue_vivante_regionale" id="langue_vivante_regionale" value="y" <?php if(getSettingAOui("langue_vivante_regionale")) {echo "checked ";}?>" onchange="checkbox_change(this.id); changement();" />
+	</p>
+
+	<!-- NOTE : La liste des LVR est saisie en dur dans lib/share.inc.php dans get_tab_types_LVR() -->
+
+
 		<input type="hidden" name="enregistrer_Saisie_Socle" value="y" />
 		<input type="submit" value="Valider" />
 
 	</fieldset>
 </form>
-<?php
+<?php 
 //debug_var();
 echo "<script type='text/javascript'>
 ".js_change_style_radio("change_style_radio", "n", "y")."

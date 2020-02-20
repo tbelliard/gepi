@@ -154,6 +154,13 @@ if ($creeFichier == 'y') {
 		saveSetting('LSU_traiteModSpeElv', "n");
 	}
 
+	// 20200219
+	if(filter_input(INPUT_POST, 'traiteCompetencesNumeriques')) {
+		saveSetting('LSU_Competences_Numeriques', filter_input(INPUT_POST, 'traiteCompetencesNumeriques'));
+	}	else {
+		saveSetting('LSU_Competences_Numeriques', "n");
+	}
+
 	if(filter_input(INPUT_POST, 'traiteSocle')) {
 		saveSetting('LSU_Donnees_socle', filter_input(INPUT_POST, 'traiteSocle'));
 	}	else {
@@ -2426,6 +2433,14 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 							   <?php if ((getSettingValue("LSU_Parcours") != "n") && (getSettingValue("LSU_ParcoursElv") != "n")) {echo ' checked '; }  ?>  />
 						<label for="traiteParcoursElv" id="texte_traiteParcoursElv">données élèves des Parcours</label>
 					</li>
+
+					<li title="Les Compétences Numériques ne sont évaluées et remontées vers LSU que pour les 6èmes en fin de cycle 3 pour l'année 2019-2020. Cette extraction implique de choisir le schéma d'export de mars 2020. Voir la note en bas de page.">
+						<!-- 20200219 -->
+						<input type="checkbox" name="traiteCompetencesNumeriques" id="traiteCompetencesNumeriques" value="y" onchange="checkbox_change(this.id)" 
+							   <?php if (getSettingAOui("LSU_Competences_Numeriques")) {echo ' checked '; }  ?>  />
+						<label for="traiteCompetencesNumeriques" id="texte_traiteCompetencesNumeriques">données élèves des Compétences Numériques</label>
+					</li>
+
 				</ul>
 			</div>
 			<div style='text-align:left;'>
@@ -2462,42 +2477,56 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 			$LSUN_version_xsd=getSettingValue('LSUN_version_xsd');
 			if($LSUN_version_xsd=='') {
 				//if(strftime('%d/%m/%Y')>'27/04/2018') {
-				$ts=mktime(0, 0, 0, 4, 27, 2019);
+				$ts=mktime(0, 0, 0, 3, 1, 2020);
+				$ts1=mktime(0, 0, 0, 4, 27, 2019);
 				$ts2=mktime(0, 0, 0, 4, 27, 2018);
 				if(time()>$ts) {
+					$checked_version_20200301=' checked';
+					$checked_version_20190427='';
+					$checked_version_20180427=' ';
+					$checked_version_20171009='';
+				}
+				elseif(time()>$ts1) {
+					$checked_version_20200301='';
 					$checked_version_20190427=' checked';
-					$checked_version_20180427=' checked';
+					$checked_version_20180427='';
 					$checked_version_20171009='';
 				}
 				elseif(time()>$ts2) {
+					$checked_version_20200301='';
 					$checked_version_20190427='';
 					$checked_version_20180427=' checked';
 					$checked_version_20171009='';
 				}
 				else {
+					$checked_version_20200301='';
 					$checked_version_20190427='';
 					$checked_version_20180427='';
 					$checked_version_20171009=' checked';
 				}
 			}
 			elseif($LSUN_version_xsd=='20171009') {
+					$checked_version_20200301='';
 					$checked_version_20190427='';
 					$checked_version_20180427='';
 					$checked_version_20171009=' checked';
 			}
 			elseif($LSUN_version_xsd=='20180427') {
+					$checked_version_20200301='';
 					$checked_version_20190427='';
 					$checked_version_20180427=' checked';
 					$checked_version_20171009='';
 			}
 			elseif($LSUN_version_xsd=='20190427') {
+					$checked_version_20200301='';
 					$checked_version_20190427=' checked';
 					$checked_version_20180427='';
 					$checked_version_20171009='';
 			}
 			else {
+					$checked_version_20200301=' checked';
 					$checked_version_20190427='';
-					$checked_version_20180427=' checked';
+					$checked_version_20180427='';
 					$checked_version_20171009='';
 			}
 			echo "
@@ -2507,10 +2536,10 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' onchange=\"change_style_radio()\"".$checked_version_20180427."/><label for='LSUN_version_xsd_20180427' id='texte_LSUN_version_xsd_20180427'>Version fin avril 2018 (LSU 18.2.0.0)</label>
 				<br />
 				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20190427' value='20190427'  onchange=\"change_style_radio()\"".$checked_version_20190427."/><label for='LSUN_version_xsd_20190427' id='texte_LSUN_version_xsd_20190427'>Version fin avril 2019 (LSU 19.2.0.0)</label>
-			</p>
-			<!--
-			<input type='hidden' name='LSUN_version_xsd' id='LSUN_version_xsd_20180427' value='20180427' />
-			-->";
+				<br />
+				<!-- 20200219 -->
+				<input type='radio' name='LSUN_version_xsd' id='LSUN_version_xsd_20200301' value='20200301'  onchange=\"change_style_radio()\"".$checked_version_20200301."/><label for='LSUN_version_xsd_20200301' id='texte_LSUN_version_xsd_20200301'>Version mars 2020 (LSU x.x.x.x)</label>
+			</p>";
 		?>
 
 
@@ -2527,24 +2556,41 @@ while ($liaison = $listeAidAp->fetch_object()) { ?>
 
 echo $msg_erreur;
 
+
+echo "<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>";
+
 $sql="SELECT jgec.id_groupe FROM j_groupes_enseignements_complement jgec, groupes g WHERE jgec.id_groupe=g.id;";
 $res=mysqli_query($mysqli, $sql);
 $nb_ens_compl=mysqli_num_rows($res);
 if($nb_ens_compl==0) {
-	echo "<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Aucun enseignement n'est déclaré enseignement de complément.<br />
-	Serait-ce un oubli de paramétrage.<br />";
+	echo "Aucun enseignement n'est déclaré enseignement de complément.<br />
+		Serait-ce un oubli de paramétrage.<br />";
 }
 elseif($nb_ens_compl==1) {
-	echo "<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> Un seul enseignement de complément est déclaré.<br />
-	Cela parait peu.<br />";
+	echo "Un seul enseignement de complément est déclaré.<br />
+		Cela parait peu.<br />";
 }
 else {
-	echo "<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> ".$nb_ens_compl." enseignements sont déclarés enseignements de complément.<br />";
+	echo $nb_ens_compl." enseignements sont déclarés enseignements de complément.<br />";
 }
-echo "Habituellement, des enseignements de latin, euro,... sont tagués enseignements de complément.<br />
-Ces enseignements rapportent alors des points supplémentaires aux élèves dans le bilan de fin de cycle.<br />
-Le marquage 'enseignement de complément' se fait en administrateur dans <strong>Gestion des bases/Gestion des classes/&lt;Telle classe&gt; Enseignements</strong> colonne <strong>Ens.compl</strong>.<br />
-Le marquage peut être effectué par lots via <strong>Gestion des bases/Gestion des classes/<a href='../classes/classes_param.php' target='_blank'>Paramétrage par lots</a>/Modifier le type d'enseignement de complément des enseignements de...</strong></p>";
+
+echo "
+		Habituellement, des enseignements de latin, euro,... sont tagués enseignements de complément.<br />
+		Ces enseignements rapportent alors des points supplémentaires aux élèves dans le bilan de fin de cycle.<br />
+		Le marquage 'enseignement de complément' se fait en administrateur dans <strong>Gestion des bases/Gestion des classes/&lt;Telle classe&gt; Enseignements</strong> colonne <strong>Ens.compl</strong>.<br />
+		Le marquage peut être effectué par lots via <strong>Gestion des bases/Gestion des classes/<a href='../classes/classes_param.php' target='_blank'>Paramétrage par lots</a>/Modifier le type d'enseignement de complément des enseignements de...</strong></p>
+		<br />
+	</li>
+	<li>
+		<p>L'arrêté relatif à l'<strong>évaluation des compétences numériques</strong> <a href='https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000039005188' target='_blank'>https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000039005188</a> acquises par les élèves des écoles et collèges été publié au Journal officiel le 1er septembre 2019.<br />
+Le CRCN définit 16 compétences numériques attendues dans 5 domaines d'activité et propose 8 niveaux de maitrise de ces compétences pour les élèves de l'enseignement scolaire mais aussi les étudiants de l'enseignement supérieur et dans un contexte de formation d'adultes.<br />
+Au cycle 3, l'évaluation sera limitée aux 3 premiers niveaux de maitrise.<br />
+Dès l'année 2019-2020, les enseignants de cycle 3 auront à renseigner dans le dernier bilan périodique des élèves de CM2 et de 6e les niveaux de maitrise des compétences numériques atteints par les élèves.<br />
+Pour en savoir plus sur les compétences numériques, reportez-vous à la page Eduscol dédiée <a href='https://eduscol.education.fr/pid38816/certification-des-competences-numeriques.html' target='_blank'>https://eduscol.education.fr/pid38816/certification-des-competences-numeriques.html</a></p>
+	</li>
+</ul>";
 
 ?>
 

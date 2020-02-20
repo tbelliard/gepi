@@ -16303,6 +16303,46 @@ function check_tables_modifiees() {
 			}
 		}
 	}
+
+	// 20200219
+	//echo "getSettingValue('version')=".getSettingValue('version')."<br />";
+	if(getSettingValue('version')=="1.7.4") {
+		$sql="CREATE TABLE IF NOT EXISTS socle_eleves_competences_numeriques (id int(11) NOT NULL auto_increment, 
+	ine varchar(50) NOT NULL DEFAULT '', 
+	cycle tinyint(2) NOT NULL DEFAULT '0', 
+	annee varchar(10) NOT NULL DEFAULT '',
+	code_competence varchar(10) NOT NULL DEFAULT '', 
+	niveau_maitrise varchar(10) NOT NULL DEFAULT '', 
+	periode INT(11) NOT NULL default '1', 
+	login_saisie varchar(50) NOT NULL DEFAULT '', 
+	date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+	PRIMARY KEY (id), INDEX ine_cycle_id_competence_periode (ine, cycle, code_competence, periode), UNIQUE(ine, cycle, code_competence, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		//echo "$sql<br />";
+		$create = mysqli_query($mysqli, $sql);
+
+		$sql="CREATE TABLE IF NOT EXISTS socle_eleves_syntheses_numeriques (id int(11) NOT NULL auto_increment, 
+		ine varchar(50) NOT NULL, 
+		cycle tinyint(2) NOT NULL, 
+		annee varchar(10) NOT NULL DEFAULT '',
+		periode INT(11) NOT NULL default '1', 
+		synthese TEXT, 
+		login_saisie varchar(50) NOT NULL DEFAULT '', 
+		date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+		PRIMARY KEY (id), UNIQUE(ine, cycle, annee, periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		//echo "$sql<br />";
+		$create = mysqli_query($mysqli, $sql);
+
+		$sql="CREATE TABLE IF NOT EXISTS socle_classes_syntheses_numeriques (id int(11) NOT NULL auto_increment, 
+		id_classe int(11) NOT NULL, 
+		classe varchar(50) NOT NULL, 
+		annee varchar(10) NOT NULL DEFAULT '',
+		synthese TEXT, 
+		login_saisie varchar(50) NOT NULL DEFAULT '', 
+		date_saisie DATETIME DEFAULT '1970-01-01 00:00:01', 
+		PRIMARY KEY (id), UNIQUE(id_classe, annee)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		//echo "$sql<br />";
+		$create = mysqli_query($mysqli, $sql);
+	}
 }
 
 function nettoyage_evenements_classes() {
@@ -19955,4 +19995,90 @@ function get_classes_exclues_tel_module($module) {
 
 	return $tab;
 }
+
+function get_tab_competences_numeriques_LSU() {
+	global $mysqli;
+
+	/*
+	// Liste des compétences numériques pour LSUN en fin de cycle 3 (6è) au 20200211
+	<!-- Liste des compétences numériques possibles, organisées en domaines, pour les 6èmes -->
+	<competences-numeriques>
+		<domaine-competences-numeriques libelle="Information et données">
+			<competence-numerique code="CN_INF_MEN" libelle="Mener une recherche et une veille d'information"/>
+			<competence-numerique code="CN_INF_GER" libelle="Gérer des données"/>
+			<competence-numerique code="CN_INF_TRA" libelle="Traiter des données"/>
+		</domaine-competences-numeriques>
+		<domaine-competences-numeriques libelle="Communication et collaboration">
+			<competence-numerique code="CN_COM_INT" libelle="Interagir"/>
+			<competence-numerique code="CN_COM_PAR" libelle="Partager et publier"/>
+			<competence-numerique code="CN_COM_COL" libelle="Collaborer"/>
+			<competence-numerique code="CN_COM_SIN" libelle="S'insérer dans le monde numérique"/>
+		</domaine-competences-numeriques>
+		<domaine-competences-numeriques libelle="Création de contenus">
+			<competence-numerique code="CN_CRE_TEX" libelle="Développer des documents textuels"/>
+			<competence-numerique code="CN_CRE_MUL" libelle="Développer des documents multimédia"/>
+			<competence-numerique code="CN_CRE_ADA" libelle="Adapter les documents à leur finalité"/>
+			<competence-numerique code="CN_CRE_PRO" libelle="Programmer"/>
+		</domaine-competences-numeriques>
+		<domaine-competences-numeriques libelle="Protection et sécurité">
+			<competence-numerique code="CN_PRO_SEC" libelle="Sécuriser l'environnement numérique"/>
+			<competence-numerique code="CN_PRO_DON" libelle="Protéger les données personnelles et la vie privée"/>
+			<competence-numerique code="CN_PRO_SAN" libelle="Protéger la santé, le bien-être et l'environnement"/>
+		</domaine-competences-numeriques>
+		<domaine-competences-numeriques libelle="Environnement numérique">
+			<competence-numerique code="CN_ENV_RES" libelle="Résoudre des problèmes techniques"/>
+			<competence-numerique code="CN_ENV_EVO" libelle="Évoluer dans un environnement numérique"/>
+		</domaine-competences-numeriques>
+	</competences-numeriques>
+	*/
+
+	$tab=array();
+	$tab["domaine"]=array();
+	$tab["code"]=array();
+
+	$tab["domaine"][0]["libelle"]='Information et données';
+	$tab["code"]['CN_INF_MEN']['libelle']="Mener une recherche et une veille d'information";
+	$tab["code"]['CN_INF_MEN']['domaine']=$tab["domaine"][0]["libelle"];
+	$tab["code"]['CN_INF_GER']['libelle']='Gérer des données';
+	$tab["code"]['CN_INF_GER']['domaine']=$tab["domaine"][0]["libelle"];
+	$tab["code"]['CN_INF_TRA']['libelle']='Traiter des données';
+	$tab["code"]['CN_INF_TRA']['domaine']=$tab["domaine"][0]["libelle"];
+
+	$tab["domaine"][1]["libelle"]='Communication et collaboration';
+	$tab["code"]['CN_COM_INT']['libelle']="Interagir";
+	$tab["code"]['CN_COM_INT']['domaine']=$tab["domaine"][1]["libelle"];
+	$tab["code"]['CN_COM_PAR']['libelle']="Partager et publier";
+	$tab["code"]['CN_COM_PAR']['domaine']=$tab["domaine"][1]["libelle"];
+	$tab["code"]['CN_COM_COL']['libelle']="Collaborer";
+	$tab["code"]['CN_COM_COL']['domaine']=$tab["domaine"][1]["libelle"];
+	$tab["code"]['CN_COM_SIN']['libelle']="S'insérer dans le monde numérique";
+	$tab["code"]['CN_COM_SIN']['domaine']=$tab["domaine"][1]["libelle"];
+
+	$tab["domaine"][2]["libelle"]='Création de contenus';
+	$tab["code"]['CN_CRE_TEX']['libelle']="Développer des documents textuels";
+	$tab["code"]['CN_CRE_TEX']['domaine']=$tab["domaine"][2]["libelle"];
+	$tab["code"]['CN_CRE_MUL']['libelle']="Développer des documents multimédia";
+	$tab["code"]['CN_CRE_MUL']['domaine']=$tab["domaine"][2]["libelle"];
+	$tab["code"]['CN_CRE_ADA']['libelle']="Adapter les documents à leur finalité";
+	$tab["code"]['CN_CRE_ADA']['domaine']=$tab["domaine"][2]["libelle"];
+	$tab["code"]['CN_CRE_PRO']['libelle']="Programmer";
+	$tab["code"]['CN_CRE_PRO']['domaine']=$tab["domaine"][2]["libelle"];
+
+	$tab["domaine"][3]["libelle"]='Protection et sécurité';
+	$tab["code"]['CN_PRO_SEC']['libelle']="Sécuriser l'environnement numérique";
+	$tab["code"]['CN_PRO_SEC']['domaine']=$tab["domaine"][3]["libelle"];
+	$tab["code"]['CN_PRO_DON']['libelle']="Protéger les données personnelles et la vie privée";
+	$tab["code"]['CN_PRO_DON']['domaine']=$tab["domaine"][3]["libelle"];
+	$tab["code"]['CN_PRO_SAN']['libelle']="Protéger la santé, le bien-être et l'environnement";
+	$tab["code"]['CN_PRO_SAN']['domaine']=$tab["domaine"][3]["libelle"];
+
+	$tab["domaine"][4]["libelle"]='Environnement numérique';
+	$tab["code"]['CN_ENV_RES']['libelle']="Résoudre des problèmes techniques";
+	$tab["code"]['CN_ENV_RES']['domaine']=$tab["domaine"][4]["libelle"];
+	$tab["code"]['CN_ENV_EVO']['libelle']="Évoluer dans un environnement numérique";
+	$tab["code"]['CN_ENV_EVO']['domaine']=$tab["domaine"][4]["libelle"];
+
+	return $tab;
+}
+
 ?>

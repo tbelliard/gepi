@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -67,6 +67,10 @@ if (!isset($action) or ($action != "restaure")) {
 	}
 }
 
+// 20200219 : Valeur définie dans le paragraphe 2.3.41 COMPETENCE NUMERIQUE du Spec_2nd_degre_Editeurs_LSUN_import_bilan-V3.17.pdf
+$niveau_maitrise_numerique_max=3;
+
+check_tables_modifiees();
 
 // Initialisation du répertoire actuel de sauvegarde des donnes de test
 $dirname = "donnees_test";
@@ -421,11 +425,23 @@ if(getSettingAOui('gepi_en_production')) {
 
 if(isset($_GET['remplissage_aleatoire_socle'])) {
 
+	$gepiYear=getSettingValue("gepiYear");
+	$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+	if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
+		echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+
+		<p style='color:red'>Année scolaire non définie dans <a href='param_gen.php'>Gestion générale/Configuration générale</a>.</p>";
+		require("../lib/footer.inc.php");
+
+		die();
+	}
+
 	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
-<h2>Remplissage des bilans de composantes du Socle</h2>
 
 <form action='".$_SERVER["PHP_SELF"]."' method='post'>
 	<fieldset class='fieldset_opacite50'>
+		<h2>Remplissage des bilans de composantes du Socle</h2>
+
 		".add_token_field()."
 		<h3>Confirmation du remplissage aléatoire.<br />
 		<span style='color:red; text-decoration: blink;'>Attention, ne pas faire sur une base de production</span></h3>
@@ -438,6 +454,27 @@ if(isset($_GET['remplissage_aleatoire_socle'])) {
 
 		<p><b>Êtes-vous sûr de vouloir continuer ?</b></p>
 		<input type='hidden' name='remplissage_aleatoire_socle' value='y' />
+		<p><input type='submit' name='confirm' value = 'Oui' /></p>
+
+	</fieldset>
+</form>
+
+<form action='".$_SERVER["PHP_SELF"]."' method='post'>
+	<fieldset class='fieldset_opacite50' style='margin-top:1em;'>
+		<h2>Remplissage des bilans de compétences numériques</h2>
+
+		".add_token_field()."
+		<h3>Confirmation du remplissage aléatoire.<br />
+		<span style='color:red; text-decoration: blink;'>Attention, ne pas faire sur une base de production</span></h3>
+
+		<p>
+			<input type='radio' name='mode' id='mode_ecraser_num' value='ecraser' onchange='change_style_radio()' checked /><label for='mode_ecraser_num' id='texte_mode_ecraser_num'>Écraser les données de compétences numériques existantes</label>,<br />
+			<input type='radio' name='mode' id='mode_completer_num' value='completer' onchange='change_style_radio()' /><label for='mode_completer_num' id='texte_mode_completer_num'>Compléter les données de compétences numériques existantes</label>.
+		</p>
+		<br />
+
+		<p><b>Êtes-vous sûr de vouloir continuer ?</b></p>
+		<input type='hidden' name='remplissage_aleatoire_competences_numeriques' value='y' />
 		<p><input type='submit' name='confirm' value = 'Oui' /></p>
 
 		<script type='text/javascript'>
@@ -453,7 +490,18 @@ if(isset($_GET['remplissage_aleatoire_socle'])) {
 elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 	check_token(false);
 
+	$gepiYear=getSettingValue("gepiYear");
+	$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+	if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
 		echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+
+		<p style='color:red'>Année scolaire non définie dans <a href='param_gen.php'>Gestion générale/Configuration générale</a>.</p>";
+		require("../lib/footer.inc.php");
+
+		die();
+	}
+
+	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
 
 <h2>Remplissage des bilans de composantes du Socle</h2>";
 
@@ -514,18 +562,18 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 					}
 					echo $lig["login"]." (P.".$lig['periode'].")($cpt_ele)";
 
-					$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$lig['periode']."';";
+					$sql="DELETE FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND annee='".$gepiYear_debut."' AND periode='".$lig['periode']."';";
 					//echo "$sql<br />";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
-					$sql="DELETE FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."';";
+					$sql="DELETE FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND annee='".$gepiYear_debut."';";
 					//echo "$sql<br />";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					foreach($tab_domaine_socle as $code => $libelle) {
 						$niveau_maitrise=rand(1,4);
 
-						$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."', periode='".$lig['periode']."';";
+						$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."', annee='".$gepiYear_debut."', periode='".$lig['periode']."';";
 						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
@@ -535,7 +583,7 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 						$cpt++;
 					}
 
-					$sql="INSERT INTO socle_eleves_syntheses SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_syntheses_type[$cpt_synthese%$nb_synthese_type])."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
+					$sql="INSERT INTO socle_eleves_syntheses SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_syntheses_type[$cpt_synthese%$nb_synthese_type])."', annee='".$gepiYear_debut."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
 					//echo "$sql<br />";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
@@ -552,7 +600,7 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 				}
 				else {
 					$tab_deja=array();
-					$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$lig['periode']."';";
+					$sql="SELECT * FROM socle_eleves_composantes WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND annee='".$gepiYear_debut."' AND periode='".$lig['periode']."';";
 					//echo "$sql<br />";
 					$res_deja=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_deja)>0) {
@@ -565,7 +613,7 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 					}
 
 					$synthese_deja="n";
-					$sql="SELECT * FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."';";
+					$sql="SELECT * FROM socle_eleves_syntheses WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND annee='".$gepiYear_debut."';";
 					//echo "$sql<br />";
 					$res_deja=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_deja)>0) {
@@ -584,7 +632,7 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 							if(!in_array($code, $tab_deja)) {
 								$niveau_maitrise=rand(1,4);
 
-								$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."', periode='".$lig['periode']."';";
+								$sql="INSERT INTO socle_eleves_composantes SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_composante='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."', annee='".$gepiYear_debut."', periode='".$lig['periode']."';";
 								//echo "$sql<br />";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$insert) {
@@ -597,7 +645,7 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 
 						if($synthese_deja=="n") {
 
-							$sql="INSERT INTO socle_eleves_syntheses SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_syntheses_type[$cpt_synthese%$nb_synthese_type])."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
+							$sql="INSERT INTO socle_eleves_syntheses SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', synthese='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_syntheses_type[$cpt_synthese%$nb_synthese_type])."', annee='".$gepiYear_debut."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."';";
 							//echo "$sql<br />";
 							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$insert) {
@@ -606,6 +654,146 @@ elseif(isset($_POST['remplissage_aleatoire_socle'])) {
 							}
 							$cpt_synthese++;
 						}
+						$cpt_ele++;
+
+						if($temoin_err_ele==0) {
+							echo " <span style='color:green'>OK</span>";
+						}
+						flush();
+					}
+				}
+			}
+		}
+	}
+	echo "</p>";
+	echo "<p>Terminé.</p>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif(isset($_POST['remplissage_aleatoire_competences_numeriques'])) {
+	check_token(false);
+
+	$gepiYear=getSettingValue("gepiYear");
+	$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+	if(!preg_match("/^20[0-9]{2}/", $gepiYear_debut)) {
+		echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+
+		<p style='color:red'>Année scolaire non définie dans <a href='param_gen.php'>Gestion générale/Configuration générale</a>.</p>";
+		require("../lib/footer.inc.php");
+
+		die();
+	}
+
+	echo " | <a href='gestion_base_test.php'>Retour à la page d'accueil des données de test</a></p>
+
+<h2>Remplissage des bilans de compétences numériques</h2>";
+
+	$tab_competences_numeriques=get_tab_competences_numeriques_LSU();
+
+	$mode=isset($_POST['mode']) ? $_POST['mode'] : "ecraser";
+	$date_saisie=strftime("%Y-%m-%d %H:%M:%S");
+
+	//echo "\$mode=$mode<br />";
+
+	$nb_competences_numeriques=16;
+
+	$id_classe_precedente="";
+	$cpt=0;
+	$cpt_ele=0;
+	$cpt_synthese=0;
+	$tab_cycle=array();
+	echo "<p><strong>Remplissage&nbsp;:</strong> ";
+
+	$sql="SELECT DISTINCT c.classe, c.id AS id_classe, e.*, jec.periode FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND c.id=jec.id_classe ORDER BY c.classe, jec.periode, e.nom, e.prenom;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			if($lig["id_classe"]!=$id_classe_precedente) {
+				echo "<br /> - <strong>".get_nom_classe($lig["id_classe"])."</strong> ";
+				$id_classe_precedente=$lig["id_classe"];
+			}
+
+			$temoin_err_ele=0;
+			$mef_code_ele=$lig['mef_code'];
+			if(!isset($tab_cycle[$mef_code_ele])) {
+				$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
+				$cycle=$tmp_tab_cycle_niveau["mef_cycle"];
+				$niveau=$tmp_tab_cycle_niveau["mef_niveau"];
+				$tab_cycle[$mef_code_ele]=$cycle;
+			}
+
+			if((!isset($tab_cycle[$mef_code_ele]))||($tab_cycle[$mef_code_ele]=="")) {
+				echo "
+		<p style='color:red'>Le cycle courant pour ".$lig['nom']." ".$lig['prenom']." n'a pas pu être identitfié&nbsp;???</p>";
+			}
+			else {
+				if($mode=="ecraser") {
+					if($cpt_ele>0) {
+						echo ", ";
+					}
+					echo $lig["login"]." (P.".$lig['periode'].")($cpt_ele)";
+
+					$sql="DELETE FROM socle_eleves_competences_numeriques WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND annee='".$gepiYear_debut."' AND periode='".$lig['periode']."';";
+					//echo "$sql<br />";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					foreach($tab_competences_numeriques['code'] as $code => $current_competence) {
+						$niveau_maitrise=rand(1,$niveau_maitrise_numerique_max);
+
+						$sql="INSERT INTO socle_eleves_competences_numeriques SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_competence='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."', annee='".$gepiYear_debut."', periode='".$lig['periode']."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							echo " <span style='color:red' title='Erreur'>$code</span>";
+							$temoin_err_ele++;
+						}
+						$cpt++;
+					}
+
+					$cpt_ele++;
+
+					if($temoin_err_ele==0) {
+						echo " <span style='color:green'>OK</span>";
+					}
+
+				}
+				else {
+					$tab_deja=array();
+					$sql="SELECT * FROM socle_eleves_competences_numeriques WHERE ine='".$lig['no_gep']."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND annee='".$gepiYear_debut."' AND periode='".$lig['periode']."';";
+					//echo "$sql<br />";
+					$res_deja=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_deja)>0) {
+						while($lig_deja=mysqli_fetch_object($res_deja)) {
+							// Normalement, il n'y a qu'un enregistrement par ine/cycle/code_composante
+							if(!in_array($lig_deja->code_competence, $tab_deja)) {
+								$tab_deja[]=$lig_deja->code_competence;
+							}
+						}
+					}
+
+					if(count($tab_deja)!=$nb_competences_numeriques) {
+						if($cpt_ele>0) {
+							echo ", ";
+						}
+						echo $lig["login"]." (P.".$lig['periode'].")($cpt_ele)";
+
+						foreach($tab_competences_numeriques['code'] as $code => $current_competence) {
+							if(!in_array($code, $tab_deja)) {
+								$niveau_maitrise=rand(1,$niveau_maitrise_numerique_max);
+
+								$sql="INSERT INTO socle_eleves_competences_numeriques SET ine='".$lig['no_gep']."', cycle='".$tab_cycle[$mef_code_ele]."', code_competence='".$code."', niveau_maitrise='".$niveau_maitrise."', date_saisie='".$date_saisie."', login_saisie='".$_SESSION['login']."', annee='".$gepiYear_debut."', periode='".$lig['periode']."';";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$insert) {
+									echo " <span style='color:red' title='Erreur'>$code</span>";
+									$temoin_err_ele++;
+								}
+								$cpt++;
+							}
+						}
+
 						$cpt_ele++;
 
 						if($temoin_err_ele==0) {

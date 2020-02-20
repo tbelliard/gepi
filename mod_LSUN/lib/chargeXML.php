@@ -113,6 +113,14 @@ $xml->appendChild($items);
 		);
 	}
 
+	// 20200219
+	if($LSUN_version_xsd>=20200301) {
+		$longueur_max_chaine_code_division=20;
+	}
+	else {
+		$longueur_max_chaine_code_division=8;
+	}
+
 	$items->setAttribute(
 		'schemaVersion',
 		'3.0'
@@ -219,7 +227,7 @@ $xml->appendChild($items);
 				$attributsEleve = array('id'=>'EL_'.$eleve->id_eleve,'id-be'=>$eleve->ele_id,
 					'nom'=>mb_substr($eleve->nom,0,100,'UTF-8'),
 					'prenom'=>mb_substr($eleve->prenom,0,100,'UTF-8'),
-					'code-division'=>mb_substr($tmp_classe,0,8,'UTF-8'));
+					'code-division'=>mb_substr($tmp_classe,0,$longueur_max_chaine_code_division,'UTF-8'));
 				foreach ($attributsEleve as $cle=>$valeur) {
 					$attEleve = $xml->createAttribute($cle);
 					$attEleve->value = $valeur;
@@ -518,7 +526,68 @@ mysql>
 			$elementsProgramme->appendChild($noeudElementProgramme);
 		}
 		$donnees->appendChild($elementsProgramme);
-		
+
+
+		// 20200219
+		/*----- Compétences Numériques -----*/
+		/*
+		<competences-numeriques-communs>
+			<competences-numeriques-commun id="CNC_01" code-structure="6EME_4" type-structure="D">
+				Appréciation 
+				littérale pour la classe de 6EME_4 pour les compétences numériques du dernier trimestre.  
+				Présente les projets réalisés en spécifiant les outils mobilisés et l’implication globale de 
+				la classe.
+			</competences-numeriques-commun>
+			<competences-numeriques-commun id="CNC_02" code-structure="6_TEC_2__6_TEC_2" type-structure="G">
+				Appréciation 
+				littérale pour le groupe 6_TEC_2__6_TEC_2 pour les compétences numériques. Présente les projets réalisés 
+				en spécifiant les outils mobilisés et l’implication globale de la classe.
+			</competences-numeriques-commun>
+		</competences-numeriques-communs>
+		*/
+		if ((getSettingValue("LSU_Competences_Numeriques") != "n")&&($LSUN_version_xsd>=20200301)) {
+			if (isset($selectionClasse) && count($selectionClasse)>0) {
+				//$gepiYear=getSettingValue("gepiYear");
+				//$gepiYear_debut=mb_substr($gepiYear, 0, 4);
+				$tmp_tab=array();
+				for($loop=0;$loop<count($selectionClasse);$loop++) {
+					//$sql="SELECT * FROM socle_classes_syntheses_numeriques WHERE id_classe='".$selectionClasse[$loop]."' AND annee='".$gepiYear_debut."';";
+					$sql="SELECT * FROM socle_classes_syntheses_numeriques WHERE id_classe='".$selectionClasse[$loop]."' AND annee='".$millesime."';";
+					//echo "$sql<br />";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)>0) {
+						$tmp_lig=mysqli_fetch_object($test);
+						$tmp_tab['CNC_'.$selectionClasse[$loop]]['classe']=get_nom_classe($selectionClasse[$loop]);
+						$tmp_tab['CNC_'.$selectionClasse[$loop]]['synthese']=$tmp_lig->synthese;
+					}
+				}
+
+				if(count($tmp_tab)>0) {
+					$CompetencesNumeriquesCommuns = $xml->createElement('competences-numeriques-communs');
+					foreach($tmp_tab as $key => $current_tab) {
+						$tmp_chaine=nettoye_texte_vers_chaine($current_tab['synthese']);
+						$synthese = ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8'));
+
+						$noeudCompetencesNumeriquesCommun= $xml->createElement('competences-numeriques-commun', $synthese);
+
+						$attributsCompetencesNumeriquesCommun = array('id'=>$key, 
+							'code-structure'=>mb_substr(htmlspecialchars($current_tab['classe']), 0, $longueur_max_chaine_code_division, 'UTF-8'), 
+							'type-structure'=>'D');
+						foreach ($attributsCompetencesNumeriquesCommun as $cle=>$valeur) {
+							$attCompetencesNumeriquesCommun = $xml->createAttribute($cle);
+							$attCompetencesNumeriquesCommun->value = $valeur;
+							$noeudCompetencesNumeriquesCommun->appendChild($attCompetencesNumeriquesCommun);
+						}
+						//echo "plop<br />";
+						$CompetencesNumeriquesCommuns->appendChild($noeudCompetencesNumeriquesCommun);
+					}
+
+					$donnees->appendChild($CompetencesNumeriquesCommuns);
+				}
+			}
+		}
+
+
 		/*----- Parcours -----*/
 if (getSettingValue("LSU_Parcours") != "n") {
 	if ($listeParcoursCommuns->num_rows) {
@@ -528,7 +597,7 @@ if (getSettingValue("LSU_Parcours") != "n") {
 				$noeudParcoursCommun= $xml->createElement('parcours-commun');
 					if($parcoursCommun->periode < 10) {$num_periode = "0".$parcoursCommun->periode;} else {$num_periode = $parcoursCommun->periode;}
 					$parcoursClasse = getClasses($parcoursCommun->classe)->fetch_object()->classe;
-					$attributsParcoursCommun = array('periode-ref'=>'P_'.$num_periode, 'code-division'=>mb_substr(htmlspecialchars($parcoursClasse),0,8,'UTF-8'));
+					$attributsParcoursCommun = array('periode-ref'=>'P_'.$num_periode, 'code-division'=>mb_substr(htmlspecialchars($parcoursClasse),0,$longueur_max_chaine_code_division,'UTF-8'));
 					foreach ($attributsParcoursCommun as $cle=>$valeur) {
 						$attParcoursCommun = $xml->createAttribute($cle);
 						$attParcoursCommun->value = $valeur;
@@ -568,7 +637,7 @@ if (getSettingAOui("LSU_commentaire_vie_sco")) {
 			if(($LSUN_periodes_a_extraire=='toutes')||(in_array($vieScoCommun->periode, $LSUN_periodes))) {
 				$noeudVieSco =  $xml->createElement('vie-scolaire-commun');
 				if($vieScoCommun->periode < 10) {$num_periode = "0".$vieScoCommun->periode;} else {$num_periode = $vieScoCommun->periode;}
-				$attributsVieSco = array('periode-ref'=>'P_'."$num_periode" , 'code-division'=>"$vieScoCommun->classe");
+				$attributsVieSco = array('periode-ref'=>'P_'."$num_periode" , 'code-division'=>mb_substr("$vieScoCommun->classe", 0, $longueur_max_chaine_code_division, 'UTF-8'));
 				foreach ($attributsVieSco as $cle=>$valeur) {
 					$attVieSco = $xml->createAttribute($cle);
 					$attVieSco->value = $valeur;
@@ -1498,10 +1567,102 @@ if (getSettingValue("LSU_traite_AP") != "n") {
 					}
 				
 				}
-			
-			
+
 				$noeudBilanElevePeriodique->appendChild($listeAcquis);
-			
+
+
+				// 20200219
+				/*
+				<competences-numeriques comp-num-commun-refs="CNC_02">
+					<appreciation-num>
+						Appréciation littérale pour l'élève Grenelle Victor pour les compétences 
+						numériques du T1. Présente les projets réalisés en spécifiant les outils mobilisés et 
+						l’implication globale de l'élève.
+					</appreciation-num>
+					<competence-num code="CN_INF_MEN" niveau="1" />
+					<competence-num code="CN_INF_GER" niveau="2" />
+					<competence-num code="CN_INF_TRA" niveau="3" />
+					<competence-num code="CN_COM_INT" niveau="1" />
+					<competence-num code="CN_COM_PAR" niveau="2" />
+				</competences-numeriques>
+				*/
+				if ((getSettingValue("LSU_Competences_Numeriques") != "n")&&($LSUN_version_xsd>=20200301)) {
+					//$eleve->login,$eleve->periode
+
+					$mef_code_ele=$eleve->mef_code;
+					if(!isset($tab_cycle[$mef_code_ele])) {
+						$tmp_tab_cycle_niveau=calcule_cycle_et_niveau($mef_code_ele, "", "");
+						$cycle_eleve_courant=$tmp_tab_cycle_niveau["mef_cycle"];
+						$niveau_eleve_courant=$tmp_tab_cycle_niveau["mef_niveau"];
+						$tab_cycle[$mef_code_ele]=$cycle_eleve_courant;
+					}
+
+					$ine_ele=get_valeur_champ('eleves', "login='".$eleve->login."'", 'no_gep');
+
+					$synthese='';
+					$sql="SELECT * FROM socle_eleves_syntheses_numeriques WHERE ine='".$ine_ele."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$eleve->periode."' AND annee='".$millesime."';";
+					//echo "$sql<br />";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)>0) {
+						$lig=mysqli_fetch_object($test);
+						$synthese=$lig->synthese;
+					}
+
+					$tmp_tab_comp_num=array();
+					$sql="SELECT * FROM socle_eleves_competences_numeriques WHERE ine='".$ine_ele."' AND cycle='".$tab_cycle[$mef_code_ele]."' AND periode='".$eleve->periode."' AND annee='".$millesime."';";
+					//echo "$sql<br />";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)>0) {
+						while($lig=mysqli_fetch_object($test)) {
+							$tmp_tab_comp_num[$lig->code_competence]=$lig->niveau_maitrise;
+						}
+					}
+
+					$tmp_id_classe='';
+					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$eleve->login."' AND periode='".$eleve->periode."';";
+					//echo "$sql<br />";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)>0) {
+						$lig=mysqli_fetch_object($test);
+						$tmp_id_classe=$lig->id_classe;
+					}
+
+					if(($tmp_id_classe!='')&&
+					(($synthese!='')||(count($tmp_tab_comp_num)>0))) {
+						$noeudCompetencesNumeriques=$xml->createElement('competences-numeriques');
+						$attsCompNum = $xml->createAttribute('comp-num-commun-refs');
+						$attsCompNum->value = "CNC_".$tmp_id_classe;
+						$noeudCompetencesNumeriques->appendChild($attsCompNum);
+
+						if($synthese!='') {
+							$tmp_chaine=nettoye_texte_vers_chaine($synthese);
+							$synthese = ensure_utf8(mb_substr(trim($tmp_chaine),0,600,'UTF-8'));
+
+							$appCompNum= $xml->createElement('appreciation-num', $synthese);
+							$noeudCompetencesNumeriques->appendChild($appCompNum);
+						}
+
+						if(count($tmp_tab_comp_num)>0) {
+							foreach($tmp_tab_comp_num as $code_competence => $niveau_maitrise) {
+								$noeudCompNum=$xml->createElement('competence-num');
+
+								$attsCompNum = $xml->createAttribute('code');
+								$attsCompNum->value = $code_competence;
+								$noeudCompNum->appendChild($attsCompNum);
+
+								$attsCompNum = $xml->createAttribute('niveau');
+								$attsCompNum->value = $niveau_maitrise;
+								$noeudCompNum->appendChild($attsCompNum);
+
+								$noeudCompetencesNumeriques->appendChild($noeudCompNum);
+							}
+						}
+
+						$noeudBilanElevePeriodique->appendChild($noeudCompetencesNumeriques);
+					}
+				}
+
+
 				if ((getSettingValue("LSU_traite_EPI") != "n") && (getSettingValue("LSU_traite_EPI_Elv") != "n")) {
 					// non obligatoire
 					$episEleve = getAidEleve($eleve->login, $_EPI, $eleve->periode);
