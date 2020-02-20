@@ -73,13 +73,18 @@ class itemGeneral {
             $sql_droits = "SELECT ".$statut." FROM droits WHERE id='$tab_id[0]'";
                   
             $query_droits = mysqli_query($mysqli, $sql_droits);
+            if(mysqli_num_rows($query_droits)==0) {
+                return "0";
+            }
+            else {
             $obj_droits = $query_droits->fetch_row();
             $query_droits->close();
             if ($obj_droits[0] == "V") {
                 return "1";
             } else {
                 return "0";
-            }    
+            }
+            }
 	  } else {
 	  
 			$sql="SELECT ds.autorisation FROM `droits_speciaux` ds,  `droits_utilisateurs` du
