@@ -1173,7 +1173,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jecpe.e_login AND jecpe.cpe_login=u.login AND u.email!='';";
 					}
 					elseif($lig->destinataire=='tous_cpe') {
-						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u WHERE u.statut='cpe' AND u.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u WHERE u.statut='cpe' AND u.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
 					}
 					elseif($lig->destinataire=='professeurs') {
 						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jeg.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login AND u.email!='';";

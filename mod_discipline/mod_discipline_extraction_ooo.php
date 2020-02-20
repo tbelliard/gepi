@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -645,7 +645,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 						$texte_sanctions.=" $lig_sanction->lieu";
 						//$texte_sanctions.="<td>".nl2br($lig_sanction->travail)."</td>\n";
 	
-						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 						if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 							$texte="Aucun travail";
 						}
@@ -686,7 +686,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 						$texte_sanctions.=" ".$lig_sanction->heure_fin;
 						$texte_sanctions.=" (".$lig_sanction->lieu.")";
 	
-						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 						if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 							$texte="Aucun travail";
 						}
@@ -722,7 +722,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 
 						$texte_sanctions.=formate_date($lig_sanction->date_retour);
 	
-						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 						if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 							$texte="Aucun travail";
 						}
@@ -755,7 +755,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 						}
 						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
-						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 						if($tmp_doc_joints!="") {
 							$texte_sanctions.=$tmp_doc_joints;
 						}
@@ -1301,7 +1301,7 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 									$texte_sanctions.=" $lig_sanction->lieu";
 									//$texte_sanctions.="<td>".nl2br($lig_sanction->travail)."</td>\n";
 	
-									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 									if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 										$texte="Aucun travail";
 									}
@@ -1348,7 +1348,7 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 									$texte_sanctions.=" ".$lig_sanction->heure_fin;
 									$texte_sanctions.=" (".$lig_sanction->lieu.")";
 	
-									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 									if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 										$texte="Aucun travail";
 									}
@@ -1390,7 +1390,7 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 
 									$texte_sanctions.=formate_date($lig_sanction->date_retour);
 	
-									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 									if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 										$texte="Aucun travail";
 									}
@@ -1429,7 +1429,7 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 									}
 									//+++++++++++++++++++++++++++++++++++++++++++++++
 
-									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 									if($tmp_doc_joints!="") {
 										$texte_sanctions.=$tmp_doc_joints;
 									}
@@ -1701,7 +1701,7 @@ while($lig_incident=mysqli_fetch_object($res_incident)) {
 				$texte_sanctions.=" $lig_sanction->lieu";
 				//$texte_sanctions.="<td>".nl2br($lig_sanction->travail)."</td>\n";
 	
-				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 					$texte="Aucun travail";
 				}
@@ -1734,7 +1734,7 @@ while($lig_incident=mysqli_fetch_object($res_incident)) {
 				$texte_sanctions.=" ".$lig_sanction->heure_fin;
 				$texte_sanctions.=" (".$lig_sanction->lieu.")";
 	
-				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 					$texte="Aucun travail";
 				}
@@ -1761,7 +1761,7 @@ while($lig_incident=mysqli_fetch_object($res_incident)) {
 				$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." pour le ";
 				$texte_sanctions.=formate_date($lig_sanction->date_retour);
 	
-				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 					$texte="Aucun travail";
 				}
@@ -1786,7 +1786,7 @@ while($lig_incident=mysqli_fetch_object($res_incident)) {
 			while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 				$texte_sanctions.=" : $lig_sanction->description ";
 
-				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, '');
 				if($tmp_doc_joints!="") {
 					$texte_sanctions.=$tmp_doc_joints;
 				}
