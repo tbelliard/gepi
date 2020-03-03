@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -77,6 +77,8 @@ $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 if((isset($mode))&&($mode=='parametrer')) {
 	check_token();
 
+	$msg='';
+
 	$tab_param=array('MargeHaut',
 'MargeDroite',
 'MargeGauche',
@@ -106,7 +108,29 @@ if((isset($mode))&&($mode=='parametrer')) {
 		//echo "<br />";
 	}
 
-	if($cpt>0) {$msg="$cpt enregistrements effectués.";}
+	// 20200303
+	if(isset($_POST['valider'])) {
+		if(isset($_POST['inclure_nom_salle'])) {
+			$valeur_inclure_nom_salle='1';
+		}
+		else {
+			$valeur_inclure_nom_salle='0';
+		}
+		$sql="DELETE FROM eb_param WHERE type='etiquette' AND nom='inclure_nom_salle';";
+		//echo "$sql<br />";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		$sql="INSERT INTO eb_param SET valeur='".$valeur_inclure_nom_salle."', type='etiquette', nom='inclure_nom_salle';";
+		//echo "$sql<br />";
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($insert) {
+			$cpt++;
+		}
+		else {
+			$msg.="Erreur lors de l'enregistrement de l'inclusion ou non du nom de salle sur les étiquettes.<br />";
+		}
+	}
+
+	if($cpt>0) {$msg.="$cpt enregistrements effectués.";}
 }
 
 // Initialisation des valeurs
@@ -153,6 +177,8 @@ $x1=$x0+$larg_etq+$dx;
 $no_footer="n";
 
 
+//debug_var();
+
 if((isset($mode))&&($mode=='imprime')) {
 	check_token();
 
@@ -167,19 +193,47 @@ if((isset($mode))&&($mode=='imprime')) {
 		$intitule_epreuve=$lig_ep->intitule;
 		$date_epreuve=formate_date("$lig_ep->date");
 
+
+		// 20200303
+		$inclure_nom_salle=false;
+		$sql="SELECT 1=1 FROM eb_param WHERE type='etiquette' AND nom='inclure_nom_salle' AND valeur='1';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$inclure_nom_salle=true;
+		}
+
+
 		$id_salle=array();
 		$salle=array();
+		$salle=array();
+		// 20200303
+		$id_salle_2=array();
 		$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
 		$res_salle=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_salle)>0) {
 			while($lig_salle=mysqli_fetch_object($res_salle)) {
 				$salle[]=$lig_salle->salle;
 				$id_salle[]=$lig_salle->id;
+				// 20200303
+				$id_salle_2[$lig_salle->id]=$lig_salle->salle;
 			}
 		}
 
+		// 20200303
+		if($inclure_nom_salle) {
+			$id_salle_ele=array();
+			$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' ORDER BY id_salle, n_anonymat;";
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_ele)>0) {
+				while($lig_ele=mysqli_fetch_object($res_ele)) {
+					$id_salle_ele[$lig_ele->login_ele]=$lig_ele->id_salle;
+				}
+			}
+		}
+
+
 		if (!defined('FPDF_VERSION')) {
-		  require_once('../fpdf/fpdf.php');
+			require_once('../fpdf/fpdf.php');
 		}
 		
 		
@@ -335,8 +389,15 @@ if((isset($mode))&&($mode=='imprime')) {
 					$y=$y+$h_cell;
 					$pdf->SetXY($x,$y);
 					$texte=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2')."\n";
-					$texte.="Naissance: ".formate_date($lig->naissance)."\n";
-					$texte.="Numéro: ".$lig->n_anonymat;
+					$texte.="Naissance : ".formate_date($lig->naissance)."\n";
+					$texte.="Numéro :    ".$lig->n_anonymat;
+					// 20200303
+					if($inclure_nom_salle) {
+						if((isset($id_salle_ele[$lig->login]))&&(isset($id_salle_2[$id_salle_ele[$lig->login]]))) {
+							$texte.="\n";
+							$texte.="Salle :         ".$id_salle_2[$id_salle_ele[$lig->login]];
+						}
+					}
 					//cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
 					cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 
@@ -709,6 +770,15 @@ else {
 
 	echo "</table>\n";
 
+	// 20200303
+	$checked='';
+	$sql="SELECT 1=1 FROM eb_param WHERE type='etiquette' AND nom='inclure_nom_salle' AND valeur='1';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$checked=' checked';
+	}
+	echo "<input type='checkbox' name='inclure_nom_salle' id='inclure_nom_salle' value='y' onchange=\"checkbox_change(this.id); changement();\"".$checked." /><label for='inclure_nom_salle' id='texte_inclure_nom_salle'>Inclure le nom de la salle sur l'étiquette.</label><br />\n";
+
 	echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
 	echo "<input type='hidden' name='mode' value='parametrer' />\n";
 	echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
@@ -825,6 +895,16 @@ else {
 	}
 
 	document.getElementById('n0').focus();
+
+	".js_checkbox_change_style('checkbox_change', 'texte_')."
+
+	item=document.getElementsByTagName('input');
+	for(i=0;i<item.length;i++) {
+		if(item[i].getAttribute('type')=='checkbox') {
+			checkbox_change(item[i].getAttribute('id'));
+		}
+	}
+
 </script>\n";
 
 }

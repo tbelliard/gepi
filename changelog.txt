@@ -50,6 +50,9 @@ LSUN et Socle:
   Un professeur principal, cpe ou compte scolarité selon ce qui est paramétré 
   effectue un bilan pour remontée LSU.
 
+Épreuves blanches:
+- Possibilité d'inclure le nom de salle sur les étiquettes.
+
 Bibliothèques:
 - Mise à jour de TinyButStrong en version 3.11.0 (PHP 5 and 7) (2019-02-10)
 - Mise à jour du plugin openTBS de TinyButStrong en version 1.9.12 (2019-03-10)
