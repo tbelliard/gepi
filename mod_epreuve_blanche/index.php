@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -2044,11 +2044,13 @@ eb_salles
 					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucun groupe/enseignement.</p>\n";
 				}
 				else {
-					echo "<p>Liste des enseignements de l'épreuve modèle&nbsp;:</p>\n";
+					echo "<p>Liste des enseignements de l'épreuve modèle&nbsp;: 
+					<a href='#' onclick=\"cocher_decocher_tous_champs_tel_prefixe('id_groupe_', true); return false;\" title='Tout cocher'><img src='../images/enabled.png' class='icone20' /></a> / <a href='#' onclick=\"cocher_decocher_tous_champs_tel_prefixe('id_groupe_', false); return false;\" title='Tout décocher'><img src='../images/disabled.png' class='icone20' /></a></p>\n";
 					echo "<p style='margin-left: 3em;'>";
 					while($lig=mysqli_fetch_object($res)) {
 						$tmp_grp=get_group($lig->id_groupe);
-						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_".$lig->id_groupe."' value='$lig->id_groupe' onchange='changement()' checked /><label for='id_groupe_".$lig->id_groupe."'> ".$tmp_grp['name']." (<i>".$tmp_grp['classlist_string']."</i>)</label>\n";
+						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_".$lig->id_groupe."' value='$lig->id_groupe' onchange='checkbox_change(this.id);changement();' checked />
+						<label for='id_groupe_".$lig->id_groupe."' id='texte_id_groupe_".$lig->id_groupe."'> ".$tmp_grp['name']." (<i>".$tmp_grp['classlist_string']."</i>)</label>\n";
 					}
 					echo "</p>\n";
 				}
@@ -2060,10 +2062,13 @@ eb_salles
 					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucune salle.</p>\n";
 				}
 				else {
-					echo "<p>Liste des salles&nbsp;:</p>\n";
+					echo "<p>Liste des salles&nbsp;: 
+					<a href='#' onclick=\"cocher_decocher_tous_champs_tel_prefixe('id_salle_', true); cocher_decocher_tous_champs_tel_prefixe('copie_affect_ele_salle_', true); return false;\" title='Tout cocher'><img src='../images/enabled.png' class='icone20' /></a> / <a href='#' onclick=\"cocher_decocher_tous_champs_tel_prefixe('id_salle_', false); cocher_decocher_tous_champs_tel_prefixe('copie_affect_ele_salle_', false); return false;\" title='Tout décocher'><img src='../images/disabled.png' class='icone20' /></a>
+					</p>\n";
 					echo "<p style='margin-left: 3em;'>";
 					while($lig=mysqli_fetch_object($res)) {
-						echo "<input type='checkbox' name='id_salle[]' id='id_salle_".$lig->id."' value='$lig->id' onchange='changement()' checked /><label for='id_salle_".$lig->id."'> ".$lig->salle."</label>\n";
+						echo "<input type='checkbox' name='id_salle[]' id='id_salle_".$lig->id."' value='$lig->id' onchange='checkbox_change(this.id);changement()' checked />
+						<label for='id_salle_".$lig->id."' id='texte_id_salle_".$lig->id."'> ".$lig->salle."</label>\n";
 						$tab_salle[$lig->id]=$lig->salle;
 					}
 					echo "</p>\n";
@@ -2092,8 +2097,8 @@ eb_salles
 									$current_id_salle=$lig->id_salle;
 									echo "<p style='margin-left: 6em;'>";
 									echo "<span class='conteneur_infobulle_css'>\n";
-									echo "<input type='checkbox' name='copie_affect_ele_salle[]' id='copie_affect_ele_salle_".$lig->id_salle."' value='".$lig->id_salle."' onchange='changement()' checked  />";
-									echo "<label for='copie_affect_ele_salle_".$lig->id_salle."'>";
+									echo "<input type='checkbox' name='copie_affect_ele_salle[]' id='copie_affect_ele_salle_".$lig->id_salle."' value='".$lig->id_salle."' onchange='checkbox_change(this.id);changement()' checked  />";
+									echo "<label for='copie_affect_ele_salle_".$lig->id_salle."' id='texte_copie_affect_ele_salle_".$lig->id_salle."'>";
 									//if($lig->id_salle!='-1') {
 										echo "Copier les affectations d'élèves en ".$tab_salle[$lig->id_salle]."</label>";
 									/*
@@ -2132,12 +2137,14 @@ eb_salles
 					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucun correcteur.</p>\n";
 				}
 				else {
-					echo "<p>Liste des correcteurs&nbsp;:</p>\n";
+					echo "<p>Liste des correcteurs&nbsp;: 
+					<a href='#' onclick=\"cocher_decocher_tous_champs_tel_prefixe('login_prof_', true); return false;\" title='Tout cocher'><img src='../images/enabled.png' class='icone20' /></a> / <a href='#' onclick=\"cocher_decocher_tous_champs_tel_prefixe('login_prof_', false); return false;\" title='Tout décocher'><img src='../images/disabled.png' class='icone20' /></a></p>\n";
 					echo "<p style='margin-left: 3em;'>";
 					while($lig=mysqli_fetch_object($res)) {
 						$tab_prof[$lig->login_prof]=civ_nom_prenom($lig->login_prof);
 
-						echo "<input type='checkbox' name='login_prof[]' id='login_prof_".$lig->login_prof."' value='$lig->login_prof' onchange='changement()' checked /><label for='login_prof_".$lig->login_prof."'> ".$tab_prof[$lig->login_prof]."</label>\n";
+						echo "<input type='checkbox' name='login_prof[]' id='login_prof_".$lig->login_prof."' value='$lig->login_prof' onchange='checkbox_change(this.id);changement()' checked />
+						<label for='login_prof_".$lig->login_prof."' id='texte_login_prof_".$lig->login_prof."'> ".$tab_prof[$lig->login_prof]."</label>\n";
 					}
 					echo "</p>\n";
 
@@ -2195,6 +2202,36 @@ eb_salles
 
 				// Espace pour que les infobulles CSS puissent s'afficher.
 				echo "<div style='height:10em;'>&nbsp;</div>";
+
+				echo "<script type='text/javascript'>
+				".js_checkbox_change_style('checkbox_change', 'texte_')."
+
+	item=document.getElementsByTagName('input');
+	for(i=0;i<item.length;i++) {
+		if(item[i].getAttribute('type')=='checkbox') {
+			checkbox_change(item[i].getAttribute('id'));
+		}
+	}
+
+	function cocher_decocher_tous_champs_tel_prefixe(prefixe, mode) {
+		//var pattern=new RegExp('^'+prefixe, 'g');
+
+		item=document.getElementsByTagName('input');
+		for(i=0;i<item.length;i++) {
+			if(item[i].getAttribute('type')=='checkbox') {
+				id_item=item[i].getAttribute('id');
+				//if(id_item.match(/^prefixe/)) {
+
+				var pattern=new RegExp('^'+prefixe, 'g');
+
+				if(pattern.test(id_item)) {
+					item[i].checked=mode;
+					checkbox_change(item[i].getAttribute('id'));
+				}
+			}
+		}
+	}
+</script>";
 
 			}
 		}
