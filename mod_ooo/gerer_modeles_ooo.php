@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -290,6 +290,15 @@ if($_SESSION['statut']=='administrateur') {
 	$fich[]="liste_eleve_conseil_classe.odt";
 	$utilisation[]="Liste des élèves pour la prise de notes lors du conseil de classe";
 	$special[]="";
+
+
+	// Module Épreuves blanches
+	$lien_wiki[]='';
+	$entete_section[]="MODULE Épreuves blanches";
+	$fich[]="mod_epreuve_blanche_emargement.odt";
+	$utilisation[]="Feuille d'émargement";
+	$special[]="";
+
 }
 
 if(isset($fich)) {
@@ -333,9 +342,11 @@ echo "<p>Ce module est destiné à gérer les modèles Open Office de Gepi.</p>\
 echo "</p>\n";
 echo "<br />\n";
 
-if ((isset($op)) && ($op=="supp")) { //Supprimer un fichier perso
-     // alert("EFFACER $fic");
-	  @unlink($nom_dossier_modeles_ooo_mes_modeles.$rne.$fic);
+if ((isset($op)) && ($op=="supp")) {
+	//Supprimer un fichier perso
+	// alert("EFFACER $fic");
+	// Loguer la suppression
+	@unlink($nom_dossier_modeles_ooo_mes_modeles.$rne.$fic);
 }
 
 echo "<body>";
@@ -471,6 +482,7 @@ else { // passage 2 : le nom du fichier a été choisi
             $dest=$desterreur;
         }
         else {
+		// Loguer l'ajout de fichier
             //echo "<p>$cible a été copié</p>";
             $dest.="?fichier=$cible";
             echo($fich_cible." a été copié correctement dans : ".$nom_dossier_modeles_ooo_mes_modeles.$rne.$fichiercopie."<br />");
