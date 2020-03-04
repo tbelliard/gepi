@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -78,6 +78,8 @@ if(isset($imprime)) {
 	else {
 		$lig_ep=mysqli_fetch_object($res);
 		$intitule_epreuve=$lig_ep->intitule;
+		// 20200305
+		$mysql_date_epreuve=$lig_ep->date;
 		$date_epreuve=formate_date("$lig_ep->date");
 	
 		$sql="SELECT * FROM eb_salles WHERE id_epreuve='$id_epreuve' ORDER BY salle;";
@@ -435,6 +437,140 @@ if(isset($imprime)) {
 			die();
 
 		}
+		elseif($mode=='odt') {
+			// 20200305
+
+			//$tab_lignes_OOo_eleve=array();
+			$tab_lignes_OOo_salle=array();
+			$tab_lignes_OOo=array();
+
+			// Boucle par salle, puis par élève
+
+			for($i=0;$i<count($id_salle);$i++) {
+				$tab_lignes_OOo_salle=array();
+
+				$tab_lignes_OOo_salle['epreuve']=$intitule_epreuve;
+				$tab_lignes_OOo_salle['date']=$date_epreuve;
+				$tab_lignes_OOo_salle['salle']=$salle[$i];
+
+				$tab_lignes_OOo_salle['etab']=getSettingValue("gepiSchoolName");
+				$tab_lignes_OOo_salle['acad']=getSettingValue("gepiSchoolAcademie");
+				$tab_lignes_OOo_salle['adr1']=getSettingValue("gepiSchoolAdress1")." ".getSettingValue("gepiSchoolAdress2");
+				$tab_lignes_OOo_salle['cp']=getSettingValue("gepiSchoolZipCode");
+				$tab_lignes_OOo_salle['ville']=getSettingValue("gepiSchoolCity");
+				$tab_lignes_OOo_salle['annee_scolaire']=getSettingValue("gepiYear");
+
+				$tab_lignes_OOo_salle['eleve']=array();
+
+				$sql="SELECT e.nom, e.prenom, e.login, e.naissance, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom,e.prenom;";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$cpt=0;
+					$rang=1;
+					while($lig=mysqli_fetch_object($res)) {
+						$tab_lignes_OOo_salle['eleve'][$cpt]['nom']=casse_mot($lig->nom);
+						$tab_lignes_OOo_salle['eleve'][$cpt]['prenom']=casse_mot($lig->prenom, 'majf2');
+						$tab_lignes_OOo_salle['eleve'][$cpt]['naissance']=formate_date($lig->naissance);
+
+						$tmp_tab_clas=get_clas_ele_telle_date($lig->login, $mysql_date_epreuve.' 00:00:00');
+						if(isset($tmp_tab_clas['classe'])) {
+							$tab_lignes_OOo_salle['eleve'][$cpt]['classe']=$tmp_tab_clas['classe'];
+						}
+						else {
+							$tab_lignes_OOo_salle['eleve'][$cpt]['classe']=get_chaine_liste_noms_classes_from_ele_login($lig->login);
+						}
+
+						$tab_lignes_OOo_salle['eleve'][$cpt]['n_anonymat']=$lig->n_anonymat;
+
+						$tab_lignes_OOo_salle['eleve'][$cpt]['salle']=$salle[$i];
+
+						$tab_lignes_OOo_salle['eleve'][$cpt]['rang']=$rang;
+
+						$cpt++;
+						$rang++;
+					}
+				}
+				$tab_lignes_OOo_salle['effectif']=$cpt;
+
+				//$tab_lignes_OOo['salle'][]=$tab_lignes_OOo_salle;
+				$tab_lignes_OOo[]=$tab_lignes_OOo_salle;
+			}
+
+			/*
+			echo "<pre>";
+			print_r($tab_lignes_OOo);
+			echo "</pre>";
+			*/
+
+			$mode_ooo="imprime";
+			
+			include_once('../tbs/tbs_class.php');
+			include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+			
+			// Création d'une classe  TBS OOo class
+
+			$OOo = new clsTinyButStrong;
+			$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
+			
+
+			$fichier_a_utiliser="mod_epreuve_blanche_emargement.odt";
+
+			$tableau_a_utiliser=$tab_lignes_OOo;
+			// Nom à utiliser dans le fichier ODT:
+			$nom_a_utiliser="salle";
+			/*
+				[salle;block=begin;sub1=eleve]
+				[salle.etab] – Année scolaire [salle.annee_scolaire]
+				Épreuve : [salle.epreuve]
+				Date : [salle.date]
+				Salle : [salle.salle]
+				Effectif : [salle.effectif] candidats
+
+				[salle_sub1.rang;block=table:table-row]
+				[salle_sub1.nom]
+				[salle_sub1.prenom]
+				[salle_sub1.naissance]
+				[salle_sub1.classe]
+				[salle_sub1.salle]
+				[salle_sub1.n_anonymat]
+
+				[salle;block=end]
+
+
+				$tab_lignes_OOo[$cpt_salle]['etab']
+				$tab_lignes_OOo[$cpt_salle]['epreuve']
+				$tab_lignes_OOo[$cpt_salle]['date']
+				$tab_lignes_OOo[$cpt_salle]['salle']
+
+				$tab_lignes_OOo[$cpt_salle]['eleve'][$cpt][]['nom']
+				$tab_lignes_OOo[$cpt_salle]['eleve'][$cpt][]['prenom']
+				$tab_lignes_OOo[$cpt_salle]['eleve'][$cpt][]['naissance']
+				...
+				$tab_lignes_OOo[$cpt_salle]['eleve'][$cpt][]['rang']
+			*/
+
+
+			$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
+			include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
+			$nom_fichier_modele_ooo = $fichier_a_utiliser;
+			include_once('../mod_ooo/lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
+
+			$OOo->LoadTemplate($nom_dossier_modele_a_utiliser."/".$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+
+			// $OOo->MergeBlock('eleves',$tab_eleves_OOo);
+			$OOo->MergeBlock($nom_a_utiliser, $tableau_a_utiliser);
+			
+			$nom_fic = $fichier_a_utiliser;
+			
+			$OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
+			
+			$OOo->remove(); //suppression des fichiers de travail
+			
+			$OOo->close();
+
+			die();
+		}
 	}
 }
 
@@ -537,6 +673,14 @@ if(!isset($imprime)) {
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=pdf".add_token_in_url()."' target='_blank'>Avec les colonnes 'NOM_PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
+
+	// 20200305
+	echo "<li><b>ODT</b>&nbsp;:\n";
+	 	echo "<ul>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=odt&amp;imprime=odt".add_token_in_url()."' target='_blank'>Fichier LibreOffice/OpenOffice.org</a></li>\n";
+		echo "</ul>\n";
+	echo "</li>\n";
+
 	echo "</ul>\n";
 }
 

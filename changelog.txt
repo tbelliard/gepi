@@ -52,6 +52,7 @@ LSUN et Socle:
 
 Épreuves blanches:
 - Possibilité d'inclure le nom de salle sur les étiquettes.
+- Ajout d'un modèle ODT (OpenDocument) pour les feuilles d'émargement.
 
 Bibliothèques:
 - Mise à jour de TinyButStrong en version 3.11.0 (PHP 5 and 7) (2019-02-10)
