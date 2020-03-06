@@ -523,6 +523,9 @@ echo "<script type='text/javascript'>
 					$res_prec=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($res_prec)>0) {
 						$lig_prec=mysqli_fetch_object($res_prec);
+
+						$ts_seance_prec=$lig_prec->date_ct;
+
 						echo "
 						<a href=\"#\" onclick=\"javascript:
 							getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$lig_prec->id_ct."&today=0&id_groupe=".$ctTravailAFaire->getGroupe()->getId()."',
@@ -533,6 +536,9 @@ echo "<script type='text/javascript'>
 								}
 							);
 							object_en_cours_edition = 'devoir';
+							updateCalendarWithUnixDate($ts_seance_prec);
+							dateChanged(calendarInstanciation);
+							setTimeout('initWysiwyg();', 1000);
 						\"
 						 title=\"Afficher aux travaux à faire pour la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
 							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
@@ -574,6 +580,9 @@ echo "<script type='text/javascript'>
 					$res_suiv=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($res_suiv)>0) {
 						$lig_suiv=mysqli_fetch_object($res_suiv);
+
+						$ts_seance_suiv=$lig_suiv->date_ct;
+
 						echo "
 						<a href=\"#\" onclick=\"javascript:
 							getWinEditionNotice().setAjaxContent('ajax_edition_devoir.php?id_devoir=".$lig_suiv->id_ct."&today=0&id_groupe=".$ctTravailAFaire->getGroupe()->getId()."',
@@ -584,6 +593,9 @@ echo "<script type='text/javascript'>
 								}
 							);
 							object_en_cours_edition = 'devoir';
+							updateCalendarWithUnixDate($ts_seance_suiv);
+							dateChanged(calendarInstanciation);
+							setTimeout('initWysiwyg();', 1000);
 						\"
 						 title=\"Afficher aux travaux à faire pour la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
 							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />

@@ -389,6 +389,9 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 					$res_prec=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($res_prec)>0) {
 						$lig_prec=mysqli_fetch_object($res_prec);
+
+						$ts_seance_prec=$lig_prec->date_ct;
+
 						echo "
 						<a href=\"#\" onclick=\"javascript:
 							getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$lig_prec->id_ct."&today=0&id_groupe=".$cahierTexteNoticePrivee->getGroupe()->getId()."',
@@ -399,6 +402,9 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 								}
 							);
 							object_en_cours_edition = 'notice_privee';
+							updateCalendarWithUnixDate($ts_seance_prec);
+							dateChanged(calendarInstanciation);
+							setTimeout('initWysiwyg();', 1000);
 						\"
 						 title=\"Afficher la notice privée du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
 							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
@@ -440,6 +446,9 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 					$res_suiv=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($res_suiv)>0) {
 						$lig_suiv=mysqli_fetch_object($res_suiv);
+
+						$ts_seance_suiv=$lig_prec->date_ct;
+
 						echo "
 						<a href=\"#\" onclick=\"javascript:
 							getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$lig_suiv->id_ct."&today=0&id_groupe=".$cahierTexteNoticePrivee->getGroupe()->getId()."',
@@ -450,6 +459,9 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 								}
 							);
 							object_en_cours_edition = 'notice_privee';
+							updateCalendarWithUnixDate($ts_seance_suiv);
+							dateChanged(calendarInstanciation);
+							setTimeout('initWysiwyg();', 1000);
 						\"
 						 title=\"Afficher la notice privée du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
 							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />

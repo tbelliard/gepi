@@ -258,8 +258,8 @@ echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			updateListeNoticesChaine();
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
 			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?today=".$today."&id_groupe=' + id_groupe,
-      			 { onComplete:function() {initWysiwyg();}}
-      		);
+				 { onComplete:function() {initWysiwyg();}}
+			);
 			compte_rendu_en_cours_de_modification('aucun');
 		\">\n");
 echo "<option value='-1'>choisissez un groupe</option>\n";
@@ -592,6 +592,7 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 				$res_mult=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res_mult)>0) {
 					$lig_prec=mysqli_fetch_object($res_mult);
+
 					echo "
 						<a href=\"#\" onclick=\"javascript:
 							getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$lig_prec->id_ct."&today=0&id_groupe=".$ctCompteRendu->getGroupe()->getId()."',
@@ -613,6 +614,9 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 					$res_prec=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($res_prec)>0) {
 						$lig_prec=mysqli_fetch_object($res_prec);
+
+						$ts_seance_prec=$lig_prec->date_ct;
+
 						echo "
 						<a href=\"#\" onclick=\"javascript:
 							getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$lig_prec->id_ct."&today=0&id_groupe=".$ctCompteRendu->getGroupe()->getId()."',
@@ -623,6 +627,9 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 								}
 							);
 							object_en_cours_edition = 'compte_rendu';
+							updateCalendarWithUnixDate($ts_seance_prec);
+							dateChanged(calendarInstanciation);
+							setTimeout('initWysiwyg();', 1000);
 						\"
 						 title=\"Afficher la notice de la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\">
 							<img src='../images/icons/back.png' class='icone16' alt='Séance précédente' />
@@ -664,6 +671,9 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 					$res_suiv=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($res_suiv)>0) {
 						$lig_suiv=mysqli_fetch_object($res_suiv);
+
+						$ts_seance_suiv=$lig_suiv->date_ct;
+
 						echo "
 						<a href=\"#\" onclick=\"javascript:
 							getWinEditionNotice().setAjaxContent('ajax_edition_compte_rendu.php?id_ct=".$lig_suiv->id_ct."&today=0&id_groupe=".$ctCompteRendu->getGroupe()->getId()."',
@@ -674,6 +684,9 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 								}
 							);
 							object_en_cours_edition = 'compte_rendu';
+							updateCalendarWithUnixDate($ts_seance_suiv);
+							dateChanged(calendarInstanciation);
+							setTimeout('initWysiwyg();', 1000);
 						\"
 						 title=\"Afficher la notice de la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\">
 							<img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' />
