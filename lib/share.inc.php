@@ -20081,4 +20081,42 @@ function get_tab_competences_numeriques_LSU() {
 	return $tab;
 }
 
+function get_tab_id_jours_ouvres() {
+	global $mysqli;
+	global $prefix_base;
+
+	$tab=array();
+
+	// tableau semaine
+	$tab_sem[0] = 'dimanche';
+	$tab_sem[1] = 'lundi';
+	$tab_sem[2] = 'mardi';
+	$tab_sem[3] = 'mercredi';
+	$tab_sem[4] = 'jeudi';
+	$tab_sem[5] = 'vendredi';
+	$tab_sem[6] = 'samedi';
+
+	for($i=0;$i<count($tab_sem);$i++) {
+		$sql="SELECT 1=1 FROM ".$prefix_base."horaires_etablissement
+				WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
+						date_horaire_etablissement = '0000-00-00' AND ouvert_horaire_etablissement='1';";
+		//echo "$sql<br />";
+		$res_j_o=mysqli_query($mysqli, $sql);
+		if($res_j_o->num_rows) {
+			$tab[]=$i;
+			$res_j_o->close();
+		}
+	}
+
+	/*
+	echo "<pre>";
+	print_r($tab);
+	echo "</pre>";
+	*/
+
+	// Tester if(!in_array(strftime('%w', $ts, get_tab_id_jours_ouvres())))
+	// %w commence avec 0->dimanche, 1->lundi,...
+
+	return $tab;
+}
 ?>

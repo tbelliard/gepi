@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2019 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2020 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -698,6 +698,29 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 					</div>";
 			}
 			//============================================================
+
+			// 20200306
+			// Tester si le ts est celui d'un jour non ouvré
+			//echo "Test ".strftime('%w', $ctCompteRendu->getDateCt())." ".strftime('%A', $ctCompteRendu->getDateCt());
+			if(!in_array(strftime('%w', $ctCompteRendu->getDateCt()), get_tab_id_jours_ouvres())) {
+				echo " <span style='color:red' title=\"Le ".strftime("%A", $ctCompteRendu->getDateCt())." ne fait pas partie des jours d'ouverture de l'établissement.\">Fermé</span>";
+			}
+			else {
+				// Sinon, tester si c'est un jour de vacances
+				$sql="SELECT id_classe FROM j_groupes_classes WHERE id_groupe='".$id_groupe."';";
+				$res_clas_grp=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_clas_grp)) {
+					$tab_ts_vacances=get_tab_jours_vacances();
+					/*
+					echo "<pre>";
+					print_r($tab_ts_vacances);
+					echo "</pre>";
+					*/
+					if(in_array(strftime('%Y%m%d', $ctCompteRendu->getDateCt()), $tab_ts_vacances)) {
+						echo " <span style='color:red' title='Ce jour est un jour férié ou un jour de vacances.'>Vacances</span>";
+					}
+				}
+			}
 
 		?>
 		<input type='hidden' name='get_devoirs_du_jour' id='get_devoirs_du_jour' value='' />
