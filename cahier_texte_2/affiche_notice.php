@@ -145,9 +145,16 @@ if(mysqli_num_rows($res)==0) {
 }
 
 // Et un autre vers visu CDT
+$ancre_see_all='';
+if($type_notice=='c') {
+	$ancre_see_all='#compte_rendu_'.$id_ct;
+}
+elseif($type_notice=='t') {
+	$ancre_see_all='#travail_'.$id_ct;
+}
 echo "
 	<div style='float:right; width:16px; margin:0.5em;'>
-		<a href='../cahier_texte_2/see_all.php?id_groupe=".$lig_ct->id_groupe."'><img src='../images/icons/cahier_textes.png' class='icone16' alt='CDT' /></a>
+		<a href='../cahier_texte_2/see_all.php?id_groupe=".$lig_ct->id_groupe.$ancre_see_all."'><img src='../images/icons/cahier_textes.png' class='icone16' alt='CDT' /></a>
 	</div>";
 
 echo "
