@@ -290,8 +290,9 @@ if($_SESSION['statut']=='administrateur') {
 	$fich[]="liste_eleve_conseil_classe.odt";
 	$utilisation[]="Liste des élèves pour la prise de notes lors du conseil de classe";
 	$special[]="";
+}
 
-
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 	// Module Épreuves blanches
 	$lien_wiki[]='';
 	$entete_section[]="MODULE Épreuves blanches";
@@ -299,6 +300,11 @@ if($_SESSION['statut']=='administrateur') {
 	$utilisation[]="Feuille d'émargement";
 	$special[]="";
 
+	$lien_wiki[]='';
+	$entete_section[]="";
+	$fich[]="mod_epreuve_blanche_convocation.odt";
+	$utilisation[]="Convocations élèves pour l'épreuve";
+	$special[]="";
 }
 
 if(isset($fich)) {

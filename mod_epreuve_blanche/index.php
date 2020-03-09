@@ -1162,7 +1162,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				// Générer CSV, PDF
 				echo "</li>\n";
 
-				// Il n'est pas possible de générer lesfeuilles d'émargement sans affecter les élèves dans des salles
+				// Il n'est pas possible de générer les feuilles d'émargement sans affecter les élèves dans des salles
 				$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle!='-1';";
 				$test_affect_salle=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test_affect_salle)>0) {
@@ -1191,6 +1191,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					// Générer CSV, PDF
 					echo "</li>\n";
 
+
+					echo "<li>\n";
+					echo "<a href='genere_convocation.php?id_epreuve=$id_epreuve'";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Générer les convocations élèves</a><br />\n";
+					echo "</li>\n";
 				}
 
 				if($etat!='clos') {
