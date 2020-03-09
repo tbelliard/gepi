@@ -1,7 +1,7 @@
 <?php
 
 /*
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -72,22 +72,35 @@ if (!isset($id_classe)) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href='import_absences_sconet.php'>Importer les absences de Sconet par lots</a>\n";
 	echo " | <a href='import_absences_csv.php'>Importer les absences depuis un CSV par lots</a>\n";
+	echo " | <a href='import_absences_ent.php'>Importer les absences depuis un CSV ENT par lots</a>\n";
 	echo "</p>\n";
+
+	echo "<h2>Saisie des absences</h2>";
 
 	if ((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']!="cpe")) {
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe;";
 	} else {
-		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe)  ORDER BY classe;";
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe) ORDER BY classe;";
 	}
 	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nombreligne = mysqli_num_rows($calldata);
+
+	if($nombreligne==0) {
+		echo "<p style='color:red'>Aucune classe ne vous est affectée.</p>
+		<br />
+		<p style='text-indent:-6em; margin-left:6em; margin-top:1em;'><em>Remarque&nbsp;:</em> Il est possible, quand il y a plusieurs CPE, de donner les mêmes droits à tous les CPE indépendamment du CPE attribué à chaque élève.<br />
+		Ce paramétrage doit être effectué en administrateur dans <strong>Gestion générale/Droits d'accès</strong>.</p>";
+
+		require "../lib/footer.inc.php";
+		die();
+	}
 
 	echo "<p>Total : $nombreligne classe";
 	if($nombreligne>1){echo "s";}
 	echo " - ";
 	echo "Cliquez sur la classe pour laquelle vous souhaitez saisir les absences :</p>\n";
 	if (!getSettingAOui('GepiAccesAbsTouteClasseCpe')) {
-		echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un ".$gepiSettings['denomination_eleve']." de la classe.</p>\n";
+		echo "<p><em>Remarque&nbsp;:</em> s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un ".$gepiSettings['denomination_eleve']." de la classe.</p>\n";
 	}
 
 	/*
@@ -125,6 +138,8 @@ if (!isset($id_classe)) {
 	echo " | <a href='import_absences_sconet.php'>Importer les absences de Sconet par lots</a>\n";
 
 	echo " | <a href='import_absences_csv.php'>Importer les absences depuis un CSV par lots</a>\n";
+
+	echo " | <a href='import_absences_ent.php'>Importer les absences depuis un CSV ENT par lots</a>\n";
 
 	echo "</p>\n";
 
@@ -186,7 +201,9 @@ if (!isset($id_classe)) {
 		 (($ver_periode[$i]!="O")&&($_SESSION['statut']=='secours'))) {
 			echo "<td style='width:5em;'><a href='import_absences_sconet.php?id_classe=$id_classe&amp;num_periode=$i'>de Sconet</a></td>\n";
 
-			echo "<td style='width:5em;'><a href='import_absences_csv.php?id_classe=$id_classe&amp;num_periode=$i'>depuis un CSV</a></td>\n";
+			echo "<td style='width:5em;'>
+				<a href='import_absences_csv.php?id_classe=$id_classe&amp;num_periode=$i'>depuis un CSV</a>
+			</td>\n";
 		}
 		/*
 		else {
