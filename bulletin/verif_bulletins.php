@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001-2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -273,6 +273,8 @@ if (!(isset($id_classe))) {
 
 	echo "</p>\n";
 
+	$tab_classes_exclues_des_bulletins=get_classes_exclues_tel_module('bulletins');
+
 	echo "<b>Choisissez la classe&nbsp;:</b></p>\n<br />\n";
 	//<table><tr><td>\n";
 	if ($_SESSION["statut"] == "scolarite") {
@@ -292,7 +294,6 @@ if (!(isset($id_classe))) {
 	else {
 		$tab_pp=get_tab_prof_suivi();
 
-		echo "<div style='margin-left:3em;'>\n";
 
 		unset($lien_classe);
 		unset($txt_classe);
@@ -302,56 +303,65 @@ if (!(isset($id_classe))) {
 		$tab_etat_periodes=array();
 
 		while($lig_classe=mysqli_fetch_object($appel_donnees)) {
-			$tab_id_classe[]=$lig_classe->id;
+			if(!in_array($lig_classe->id, $tab_classes_exclues_des_bulletins)) {
+				$tab_id_classe[]=$lig_classe->id;
 
-			$lien_classe[]="verif_bulletins.php?id_classe=".$lig_classe->id;
+				$lien_classe[]="verif_bulletins.php?id_classe=".$lig_classe->id;
 
-			$chaine_classe="<strong>".ucfirst($lig_classe->classe)."</strong>";
-			if(isset($tab_date_conseil[$lig_classe->id])) {
-				$chaine_classe.=" <span style='font-variant:italic; font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$lig_classe->id]['date'],"n","court").")</span>";
+				$chaine_classe="<strong>".ucfirst($lig_classe->classe)."</strong>";
+				if(isset($tab_date_conseil[$lig_classe->id])) {
+					$chaine_classe.=" <span style='font-variant:italic; font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$lig_classe->id]['date'],"n","court").")</span>";
+				}
+				$tab_etat_periodes[$lig_classe->id]=html_etat_verrouillage_periode_classe($lig_classe->id);
+				$chaine_classe.=" <span style='font-size:small;'>(".$tab_etat_periodes[$lig_classe->id].")</span>";
+				$txt_classe[]=$chaine_classe;
 			}
-			$tab_etat_periodes[$lig_classe->id]=html_etat_verrouillage_periode_classe($lig_classe->id);
-			$chaine_classe.=" <span style='font-size:small;'>(".$tab_etat_periodes[$lig_classe->id].")</span>";
-			$txt_classe[]=$chaine_classe;
 		}
 
-		tab_liste($txt_classe,$lien_classe,3);
-		echo "</div>\n";
+		if(count($tab_id_classe)==0) {
+			echo "<p>Aucune classe ne vous est attribuée, ou aucune des classes n'utilise les bulletins dans Gepi.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		}
+		else {
 
-		if(count($tab_date_conseil)>0) {
-			$active_mod_alerte=getSettingAOui('active_mod_alerte');
-			$active_mod_edt=getSettingAOui('autorise_edt_tous');
+			echo "<div style='margin-left:3em;'>\n";
+			tab_liste($txt_classe,$lien_classe,3);
+			echo "</div>\n";
 
-			echo "<br />
-<p class='bold'>Classes triées par dates de conseil de classe&nbsp;:</p>
-<div style='margin-left:3em;'>";
-			foreach($tab_date_conseil as $id_classe => $value) {
-				if(in_array($id_classe, $tab_id_classe)) {
-					echo "
-	<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."'><strong>".$tab_date_conseil[$id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-variant:italic;font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$id_classe]['date'], "y", "complet").")</span></a>";
-					if(isset($tab_etat_periodes[$id_classe])) {
-						echo " <span style='font-size:small;'>(".$tab_etat_periodes[$id_classe].")</span>";
-					}
+			if(count($tab_date_conseil)>0) {
+				$active_mod_alerte=getSettingAOui('active_mod_alerte');
+				$active_mod_edt=getSettingAOui('autorise_edt_tous');
 
-					if(isset($tab_pp[$id_classe])) {
-						for($loop=0;$loop<count($tab_pp[$id_classe]);$loop++) {
-							if($loop>0) {echo ",";}
-							echo " ".affiche_utilisateur($tab_pp[$id_classe][$loop], $id_classe);
-
-							if($active_mod_alerte) {
-								echo " <a href='../mod_alerte/form_message.php?login_dest=".$tab_pp[$id_classe][$loop]."' title='Déposer une alerte/message dans le module Alertes.' target='_blank'><img src='../images/icons/module_alerte32.png' class='icone16' alt='Mail' /></a>";
-							}
-
-							if($active_mod_edt) {
-								echo " <a href='../edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=".$tab_pp[$id_classe][$loop]."' title=\"Voir l'EDT du professeur dans un nouvel onglet.\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
-							}
-
+				echo "<br />
+	<p class='bold'>Classes triées par dates de conseil de classe&nbsp;:</p>
+	<div style='margin-left:3em;'>";
+				foreach($tab_date_conseil as $id_classe => $value) {
+					if(in_array($id_classe, $tab_id_classe)) {
+						echo "
+		<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."'><strong>".$tab_date_conseil[$id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-variant:italic;font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$id_classe]['date'], "y", "complet").")</span></a>";
+						if(isset($tab_etat_periodes[$id_classe])) {
+							echo " <span style='font-size:small;'>(".$tab_etat_periodes[$id_classe].")</span>";
 						}
+
+						if(isset($tab_pp[$id_classe])) {
+							for($loop=0;$loop<count($tab_pp[$id_classe]);$loop++) {
+								if($loop>0) {echo ",";}
+								echo " ".affiche_utilisateur($tab_pp[$id_classe][$loop], $id_classe);
+
+								if($active_mod_alerte) {
+									echo " <a href='../mod_alerte/form_message.php?login_dest=".$tab_pp[$id_classe][$loop]."' title='Déposer une alerte/message dans le module Alertes.' target='_blank'><img src='../images/icons/module_alerte32.png' class='icone16' alt='Mail' /></a>";
+								}
+
+								if($active_mod_edt) {
+									echo " <a href='../edt/index2.php?affichage=semaine&type_affichage=prof&login_prof=".$tab_pp[$id_classe][$loop]."' title=\"Voir l'EDT du professeur dans un nouvel onglet.\" target='_blank'><img src='../images/icons/edt2.png' class='icone16' alt='EDT2' /></a>";
+								}
+
+							}
+						}
+						echo "<br />";
 					}
-					echo "<br />";
 				}
+				echo "<div>\n";
 			}
-			echo "<div>\n";
 		}
 	}
 
@@ -386,11 +396,13 @@ if (!(isset($id_classe))) {
 
 } else if (!(isset($per))) {
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
-	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+
+	$tab_classes_exclues_des_bulletins=get_classes_exclues_tel_module('bulletins');
 
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
-	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id NOT IN (SELECT DISTINCT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe') ORDER BY classe;";
 
 	$chaine_options_classes="";
 	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -399,52 +411,54 @@ if (!(isset($id_classe))) {
 		$id_class_suiv=0;
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
-			$info_conseil_classe="";
-			if(isset($tab_date_conseil[$lig_class_tmp->id])) {
-				$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date'],"n","court").")";
-			}
+			//if(!in_array($lig_class_tmp->id, $tab_classes_exclues_des_bulletins)) {
+				$info_conseil_classe="";
+				if(isset($tab_date_conseil[$lig_class_tmp->id])) {
+					$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date'],"n","court").")";
+				}
 
-			if($lig_class_tmp->id==$id_classe) {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
-				$temoin_tmp=1;
-				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
-					$info_conseil_classe="";
-					if(isset($tab_date_conseil[$lig_class_tmp->id])) {
-						$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date'],"n","court").")";
+				if($lig_class_tmp->id==$id_classe) {
+					$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+					$temoin_tmp=1;
+					if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
+						$info_conseil_classe="";
+						if(isset($tab_date_conseil[$lig_class_tmp->id])) {
+							$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date'],"n","court").")";
+						}
+
+						$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+						$id_class_suiv=$lig_class_tmp->id;
 					}
-
+					else{
+						$id_class_suiv=0;
+					}
+				}
+				else {
 					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
-					$id_class_suiv=$lig_class_tmp->id;
 				}
-				else{
-					$id_class_suiv=0;
-				}
-			}
-			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
-			}
 
-			if($temoin_tmp==0) {
-				$id_class_prec=$lig_class_tmp->id;
-			}
+				if($temoin_tmp==0) {
+					$id_class_prec=$lig_class_tmp->id;
+				}
+			//}
 		}
 	}
 	// =================================
 	if(isset($id_class_prec)) {
 		if($id_class_prec!=0) {
-			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
-			echo "'>Classe précédente</a>\n";
+			echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
+			echo "'><img src='../images/icons/arrow-left.png' class='icone16' title='Classe précédente' /></a>\n";
 		}
 	}
 	if($chaine_options_classes!="") {
-		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo " <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 		echo $chaine_options_classes;
 		echo "</select>\n";
 	}
 	if(isset($id_class_suiv)) {
 		if($id_class_suiv!=0) {
-			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
-			echo "'>Classe suivante</a>\n";
+			echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
+			echo "'><img src='../images/icons/arrow-right.png' class='icone16' title='Classe suivante' /></a>\n";
 		}
 	}
 
@@ -651,7 +665,7 @@ Les saisies/modifications sont possibles.";
 
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
-	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id NOT IN (SELECT DISTINCT value FROM modules_restrictions WHERE module='bulletins' AND name='id_classe')  ORDER BY classe";
 	//echo "$sql<br />";
 
 	$tab_id_classe=array();
