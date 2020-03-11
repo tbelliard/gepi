@@ -2280,6 +2280,9 @@ function UTF8StringToArray($str) {
 	if(is_int($str)) {
 		$h = ord($str);
 	}
+	elseif(is_float($str)) {
+		$h = ord($str);
+	}
 	else {
 		$h = ord($str[$i]);
 	}
