@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
@@ -292,7 +292,8 @@ if($_SESSION['statut']=='administrateur') {
 	$special[]="";
 }
 
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+if(($_SESSION['statut']=='administrateur')||
+	($_SESSION['statut']=='scolarite')) {
 	// Module Épreuves blanches
 	$lien_wiki[]='';
 	$entete_section[]="MODULE Épreuves blanches";
