@@ -4689,6 +4689,15 @@ function retourne_tab_html_pointages_disc($login_ele) {
 
 function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 	global $gepiPath, $mes_groupes;
+	global $tab_id_classe_exclues_module_bulletins;
+
+	if((!isset($tab_id_classe_exclues_module_bulletins))||(count($tab_id_classe_exclues_module_bulletins)==0)) {
+		$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+	}
+	$classe_sans_bulletins_gepi=false;
+	if(in_array($id_classe, $tab_id_classe_exclues_module_bulletins)) {
+		$classe_sans_bulletins_gepi=true;
+	}
 
 	if($target!="") {
 		$target=" target='$target'";
@@ -4712,7 +4721,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 		}
 
 		$lien_verif="";
-		if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
+		if((!$classe_sans_bulletins_gepi)&&(acces("/bulletin/verif_bulletins.php", $_SESSION['statut']))) {
 			$lien_verif=" <em style='font-weight:normal;'>(<a href='".$gepiPath."/bulletin/verif_bulletins.php?id_classe=$id_classe' title=\"Vérifier le remplissage des notes, appréciations, avis, absences,...\"".$target."><img src='".$gepiPath."/images/icons/bulletin_verif_20.png' class='icone20' alt='Vérif' /> Vérification</a>)</em>";
 
 			if ($_SESSION['statut'] == 'professeur') {
@@ -4746,6 +4755,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 		//           Et un lien vers vérifier (mais quoi: donc étape choix: https://127.0.0.1/steph/gepi_git_trunk/bulletin/verif_bulletins.php?id_classe=34)
 		// Comme le lien vérifier les le même pour toutes les périodes, un seul lien quelque part... ou enregistrer la préférence.
 
+	if(!$classe_sans_bulletins_gepi) {
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='secours')||
 		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiRubConseilCpeTous')))||
 		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiRubConseilCpe'))&&(is_cpe($_SESSION['login'], $id_classe)))||
@@ -4840,6 +4850,8 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			}
 			$retour.="
 		</tr>";
+		}
+	}
 
 			// Imprimer les documents de prise de notes à destination des élèves délégués pendant le conseil de classe
 			if(getSettingAOui('active_mod_engagements')) {
@@ -4853,8 +4865,8 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 				$retour.="
 		</tr>";
 			}
-		}
 
+	if(!$classe_sans_bulletins_gepi) {
 		// Bulletins,... 
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')||($_SESSION['statut']=='cpe')||($_SESSION['statut']=='autre')) {
 			//Toutes les moyennes d'une classe
@@ -4966,7 +4978,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 
 		}
 		// Cas secours à traiter aussi
-
+	}
 
 		$retour.="
 	</tbody>
