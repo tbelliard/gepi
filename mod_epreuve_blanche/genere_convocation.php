@@ -336,13 +336,32 @@ if(!isset($imprime)) {
 	}
 	//========================================================
 
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=odt&amp;imprime=odt".add_token_in_url()."' target='_blank'>Imprimer les convocations au format LibreOffice/OpenOffice.org</a></p>
+	echo "<div style='padding:0.5em; width:20em; text-align:center;' class='fieldset_opacite50'>
+		<p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=odt&amp;imprime=odt".add_token_in_url()."' target='_blank'>Imprimer les convocations au format LibreOffice/OpenOffice.org</a></p>
+	</div>
 	
 	<p style='margin-top:2em;'><em>NOTES&nbsp;:</em></p>
 	<ul>
 		<li>
-			<p>Il est possible de personnaliser le modèle dans <strong>Modèles OpenOffice/Gérer les modèles de document OOo de l'établissement</strong>.<br />
-			<a href='../mod_ooo/gerer_modeles_ooo.php#MODULE_Epreuves_blanches'>Modifier le modèle de Convocation</a>.
+			<p>Il est possible de personnaliser le modèle dans <strong>Modèles OpenOffice/Gérer les modèles de document OOo de l'établissement</strong>.<br />";
+
+	$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
+	include_once('../mod_ooo/lib/lib_mod_ooo.php'); //les fonctions
+	$nom_fichier_modele_ooo ='mod_epreuve_blanche_convocation.odt'; // Modèle
+	include_once('../mod_ooo/lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
+
+	echo "Le modèle utilisé est actuellement <a href='".$nom_dossier_modele_a_utiliser."/".$nom_fichier_modele_ooo."' target='_blank' class='bold'>celui-ci</a>";
+
+	if(acces('/mod_ooo/gerer_modeles_ooo.php', $_SESSION['statut'])) {
+		echo ".<br />
+			<a href='../mod_ooo/gerer_modeles_ooo.php#MODULE_Epreuves_blanches'>Mettre en place un modèle de Convocation modifié, ou revenir au modèle par défaut</a>.";
+	}
+	else {
+		echo ".<br />Ce modèle peut être mis en place avec un compte <strong>administrateur</strong>.";
+	}
+
+	$acces_gestion_param_gen=acces('/gestion/param_gen.php', $_SESSION['statut']);
+	echo "
 			</p>
 			<br />
 		</li>
@@ -350,32 +369,40 @@ if(!isset($imprime)) {
 			<p>Les champs disponibles sont&nbsp;: </p>
 			<ul>
 				<li>
-					<span style='color:red'>A DETAILLER</span>
-					<pre>
-	[eleve.ep_intitule]
-	[eleve.ep_description]
-	[eleve.ep_date]
-
-	[eleve.nom]
-	[eleve.prenom]
-	[eleve.naissance]
-	[eleve.classe]
-	[eleve.n_anonymat]
-
-	[eleve.salle]
-
-	[eleve.etab]
-	[eleve.adresse]
-	[eleve.cp]
-	[eleve.ville]
-	[eleve.acad]
-	[eleve.annee_scolaire]
-
-	[eleve.fonction_chef]
-	[eleve.nom_chef]
-	[eleve.prenom_chef]
-
-					</pre>
+					<p>Les champs du document ODT qui sont remplacés par des données de la base Gepi sont les suivants&nbsp;:</p>
+					<table class='boireaus boireaus_alt'>
+						<thead>
+							<tr>
+								<th>Champ</th>
+								<th>Signification</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr><td class='bold'>[eleve.ep_intitule]</td><td>Intitulé de l'épreuve</td></tr>
+							<tr><td class='bold'>[eleve.ep_description]</td><td>Description de l'épreuve</td></tr>
+							<tr><td class='bold'>[eleve.ep_date]</td><td>Date de l'épreuve</td></tr>
+							<tr><td class='bold'>[eleve.nom]</td><td>Nom de l'élève</td></tr>
+							<tr><td class='bold'>[eleve.prenom]</td><td>Prénom de l'élève</td></tr>
+							<tr><td class='bold'>[eleve.naissance]</td><td>Date de naissance de l'élève</td></tr>
+							<tr><td class='bold'>[eleve.classe]</td><td>Classe de l'élève</td></tr>
+							<tr><td class='bold'>[eleve.n_anonymat]</td><td>Numéro anonymat de l'élève dans l'épreuve</td></tr>
+							<tr><td class='bold'>[eleve.salle]</td><td>Salle de l'élève lors de l'épreuve</td></tr>
+							<tr><td class='bold'>[eleve.etab]</td><td>Nom de l'établissement tel que défini en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+							<tr><td class='bold'>[eleve.adresse]</td><td>Adresse de l'établissement telle que définie en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+							<tr><td class='bold'>[eleve.cp]</td><td>Code postal de l'établissement tel que défini en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+							<tr><td class='bold'>[eleve.ville]</td><td>Ville de l'établissement telle que définie en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+							<tr><td class='bold'>[eleve.acad]</td><td>Académie de l'établissement telle que définie en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+							<tr><td class='bold'>[eleve.annee_scolaire]</td><td>Année scolaire tel que définie en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+							<tr><td class='bold'>[eleve.fonction_chef]</td><td>Fonction de l'administrateur du site tel que défini en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+							<tr><td class='bold'>[eleve.nom_chef]</td><td>Nom de l'administrateur du site tel que défini en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+							<tr><td class='bold'>[eleve.prenom_chef]</td><td>Prénom de l'administrateur du site tel que défini en administrateur dans ".($acces_gestion_param_gen ? "<a href='../gestion/param_gen.php' target='_blank'>Gestion générale/Configuration générale</a>" : "<strong>Gestion générale/Configuration générale</strong>")."</td></tr>
+						</tbody>
+					</table>
+					<br />
+				</li>
+				<li>
+					<p>La personnalisation d'un modèle présente quelques difficultés au niveau des champs mentionnés ci-dessus.<br />
+					Quelques explications à ce sujet avec la <a href='http://www.sylogix.org/projects/gepi/wiki/Mod_discipline_OOo_avertissements' target='_blank'>personnalisation d'un autre modèle</a>, dans le cadre du module Discipline.</p>
 				</li>
 			</ul>
 		</li>
