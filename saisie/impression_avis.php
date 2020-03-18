@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -39,6 +39,98 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+
+// On teste si un professeur peut saisir les avis
+if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiRubConseilProf")!='yes') {
+	die("Droits insuffisants pour effectuer cette opération");
+}
+
+// On teste si le service scolarité peut saisir les avis
+if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol")!='yes') {
+	die("Droits insuffisants pour effectuer cette opération");
+}
+
+if((isset($_GET['mode']))&&($_GET['mode']=='export_csv')&&(isset($_GET['id_classe']))&&(preg_match("/^[0-9]{1,}$/", $_GET['id_classe']))&&(isset($_GET['periode_num']))&&(preg_match("/^[0-9]{1,}$/", $_GET['periode_num']))) {
+
+	// Vérifier dans le cas d'un PP qu'il a accès à la classe
+	if($_SESSION['statut']=='professeur') {
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id='".$_GET['id_classe']."');";
+		$test = mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			header("Location: ../accueil.php?msg=Accès non autorisé à cette classe.");
+			die();
+		}
+	}
+
+	$csv="";
+	$ligne_entete="";
+	$lignes_csv="";
+
+	$ligne_entete="login;nom;prenom;classe;periode;avis;";
+
+	$ligne_entete.=getSettingValue('gepi_denom_mention').";";
+
+	if(getSettingAOui('active_mod_discipline')) {
+		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+		if(count($tab_type_avertissement_fin_periode)>0) {
+			$ligne_entete.=getSettingValue('mod_disc_terme_avertissement_fin_periode').";";
+
+			$tab_avt_ele=liste_avertissements_fin_periode_classe($_GET['id_classe'], $_GET['periode_num'], "nom_complet", "n", "n");
+		}
+	}
+
+	$ligne_entete.="\r\n";
+
+	$nom_classe=remplace_accents(get_nom_classe($_GET['id_classe']), 'all');
+
+	$sql="SELECT e.*, acc.avis, acc.id_mention FROM avis_conseil_classe acc, 
+				eleves e,
+				j_eleves_classes jec 
+			WHERE acc.login=e.login AND 
+				e.login=jec.login AND 
+				jec.id_classe='".$_GET['id_classe']."' AND 
+				jec.periode='".$_GET['periode_num']."' 
+			ORDER BY e.nom, e.prenom;";
+	//echo $sql."\r\n";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+
+			//$avis=preg_replace('/(\\\n){1,}/', '', preg_replace('/(\\\r){1,}/', '', preg_replace('/;/', '.,', $lig->avis)));
+			$avis=preg_replace('/\n+/', ' ', preg_replace('/\r+/', ' ', preg_replace('/;/', '.,', $lig->avis)));
+
+			$lignes_csv.=$lig->login.";".$lig->nom.";".$lig->prenom.";".$nom_classe.";".$_GET['periode_num'].";".$avis.";";
+
+			$lignes_csv.=preg_replace('/;/', '.,', traduction_mention($lig->id_mention)).";";
+
+
+			if(getSettingAOui('active_mod_discipline')) {
+				// Récupérer les avertissements des élèves de la classe pour la période en cours.
+				if(count($tab_type_avertissement_fin_periode)>0) {
+
+					if(isset($tab_avt_ele[$lig->login])) {
+						$lignes_csv.=preg_replace('/;/', '.,', $tab_avt_ele[$lig->login]).";";
+					}
+
+				}
+			}
+
+
+
+			$lignes_csv.="\r\n";
+		}
+	}
+
+	$csv=$ligne_entete.$lignes_csv;
+
+	$nom_fic=remplace_accents("avis_conseil_classe_".$nom_classe, 'all')."_".strftime("%Y%m%d_%H%M%S").".csv";
+	send_file_download_headers('text/x-csv',$nom_fic);
+	echo echo_csv_encoded($csv);
+	die();
+}
+
+
 //**************** EN-TETE *****************
 $titre_page = "Impression des avis du conseil de classe";
 require_once("../lib/header.inc.php");
@@ -48,15 +140,6 @@ require_once("../lib/header.inc.php");
 
 $id_liste_periodes=isset($_POST['id_liste_periodes']) ? $_POST["id_liste_periodes"] : 0;
 
-// On teste si un professeur peut saisir les avis
-if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiRubConseilProf")!='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
-}
-
-// On teste si le service scolarité peut saisir les avis
-if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol")!='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
-}
 
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 if ($id_liste_periodes!=0) {
@@ -69,7 +152,7 @@ echo "</p>\n";
 
 if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // Scolarite ou Cpe
 
-	if (($id_liste_periodes)!=0) {	
+	if (($id_liste_periodes)!=0) {
 	   //IMPRESSION A LA CHAINE
 	   $nb_periodes = sizeof($id_liste_periodes);
 	   $chaine_periodes = "";
@@ -241,7 +324,10 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
             while ($k < $nb_periode) {
 
                    echo "<br /><b>$classe_suivi </b>- ";
-                   echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k'>".ucfirst($nom_periode[$k])."</a>";
+                   echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k'>".ucfirst($nom_periode[$k])." <img src='../images/icons/pdf.png' class='icone16' /></a>";
+
+			echo " - <a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."&amp;mode=export_csv&amp;periode_num=$k' target='_blank' title=\"Exporter les avis en CSV.\"><img src='../images/icons/csv.png' class='icone16' /></a>";
+
 
                $k++;
             }
