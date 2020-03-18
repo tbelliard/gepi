@@ -99,7 +99,7 @@ if((isset($_GET['mode']))&&($_GET['mode']=='export_csv')&&(isset($_GET['id_class
 		while($lig=mysqli_fetch_object($res)) {
 
 			//$avis=preg_replace('/(\\\n){1,}/', '', preg_replace('/(\\\r){1,}/', '', preg_replace('/;/', '.,', $lig->avis)));
-			$avis=preg_replace('/\n+/', ' ', preg_replace('/\r+/', ' ', preg_replace('/;/', '.,', $lig->avis)));
+			$avis=preg_replace('/\n+/', ' ', preg_replace('/\r+/', ' ', preg_replace('/’/', "'", preg_replace('/;/', '.,', $lig->avis))));
 
 			$lignes_csv.=$lig->login.";".$lig->nom.";".$lig->prenom.";".$nom_classe.";".$_GET['periode_num'].";".$avis.";";
 
