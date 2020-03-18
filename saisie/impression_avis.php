@@ -84,10 +84,11 @@ if((isset($_GET['mode']))&&($_GET['mode']=='export_csv')&&(isset($_GET['id_class
 
 	$nom_classe=remplace_accents(get_nom_classe($_GET['id_classe']), 'all');
 
-	$sql="SELECT e.*, acc.avis, acc.id_mention FROM avis_conseil_classe acc, 
+	$sql="SELECT DISTINCT e.*, acc.avis, acc.id_mention FROM avis_conseil_classe acc, 
 				eleves e,
 				j_eleves_classes jec 
 			WHERE acc.login=e.login AND 
+				acc.periode=jec.periode AND 
 				e.login=jec.login AND 
 				jec.id_classe='".$_GET['id_classe']."' AND 
 				jec.periode='".$_GET['periode_num']."' 
