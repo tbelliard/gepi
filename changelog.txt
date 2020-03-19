@@ -15,6 +15,7 @@ Bulletins:
 - Possibilité d'ouvrir exceptionnellement la saisie AID en période partiellement close.
 - Possibilité de signaler des fautes, de proposer des corrections sur les AID.
 - Possibilité d'exclure certaines classes du module bulletins.
+- Possibilité d'exporter en CSV les avis de conseils de classe.
 
 Carnet de notes:
 - Facilité de transfert des notes d'un enseignement à un autre dans le cas 

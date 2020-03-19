@@ -69,11 +69,19 @@ if((isset($_GET['mode']))&&($_GET['mode']=='export_csv')&&(isset($_GET['id_class
 
 	$ligne_entete="login;nom;prenom;classe;periode;avis;";
 
-	$ligne_entete.=getSettingValue('gepi_denom_mention').";";
+	$avec_mentions=false;
+	//$tab_mentions=get_mentions($_GET['id_classe']);
+	$tab_mentions_aff=get_tab_mentions_affectees($_GET['id_classe']);
+	if(count($tab_mentions_aff)>0) {
+		$avec_mentions=true;
+		$ligne_entete.=getSettingValue('gepi_denom_mention').";";
+	}
 
-	if(getSettingAOui('active_mod_discipline')) {
+	$avec_avertissements_fin_periode=false;
+	if((getSettingAOui('active_mod_discipline'))&&(getSettingAOui('mod_disc_acces_avertissements'))) {
 		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
 		if(count($tab_type_avertissement_fin_periode)>0) {
+			$avec_avertissements_fin_periode=true;
 			$ligne_entete.=getSettingValue('mod_disc_terme_avertissement_fin_periode').";";
 
 			$tab_avt_ele=liste_avertissements_fin_periode_classe($_GET['id_classe'], $_GET['periode_num'], "nom_complet", "n", "n");
@@ -103,21 +111,15 @@ if((isset($_GET['mode']))&&($_GET['mode']=='export_csv')&&(isset($_GET['id_class
 
 			$lignes_csv.=$lig->login.";".$lig->nom.";".$lig->prenom.";".$nom_classe.";".$_GET['periode_num'].";".$avis.";";
 
-			$lignes_csv.=preg_replace('/;/', '.,', traduction_mention($lig->id_mention)).";";
-
-
-			if(getSettingAOui('active_mod_discipline')) {
-				// Récupérer les avertissements des élèves de la classe pour la période en cours.
-				if(count($tab_type_avertissement_fin_periode)>0) {
-
-					if(isset($tab_avt_ele[$lig->login])) {
-						$lignes_csv.=preg_replace('/;/', '.,', $tab_avt_ele[$lig->login]).";";
-					}
-
-				}
+			if($avec_mentions) {
+				$lignes_csv.=preg_replace('/;/', '.,', traduction_mention($lig->id_mention)).";";
 			}
 
-
+			if($avec_avertissements_fin_periode) {
+				if(isset($tab_avt_ele[$lig->login])) {
+					$lignes_csv.=preg_replace('/;/', '.,', $tab_avt_ele[$lig->login]).";";
+				}
+			}
 
 			$lignes_csv.="\r\n";
 		}
@@ -266,7 +268,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 	}
 	else {
 		$nb_classes=mysqli_num_rows($result_classes);
-		$nb_class_par_colonne=round($nb_classes/3);
+		$nb_class_par_colonne=round($nb_classes/2);
 		echo "<table width='100%'>\n";
 		echo "<tr valign='top' align='left'>\n";
 		$cpt=0;
@@ -282,21 +284,24 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 				echo "<table border='1' class='boireaus'>\n";
 			}
 
-			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
+			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='".$lig_class->id."' ORDER BY num_periode";
 			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_per)==0){
-				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
+				echo "<p>ERREUR: Aucune période n'est définie pour la classe ".$lig_class->classe."</p>\n";
 				echo "</body></html>\n";
 				die();
 			}
 			else{
 				echo "<tr>\n";
-				echo "<th>$lig_class->classe</th>\n";
+				echo "<th>".$lig_class->classe."</th>\n";
 				$alt=1;
 				while($lig_per=mysqli_fetch_object($res_per)){
 					$alt=$alt*(-1);
-					echo "<td class='lig$alt'> - <a href='../impression/avis_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
+					echo "<td class='lig$alt'>
+						<a href='../impression/avis_pdf.php?id_classe=".$lig_class->id."&amp;periode_num=".$lig_per->num_periode."' target='_blank' title=\"Imprimer les avis PDF de ".$lig_class->classe." pour la période ".$lig_per->nom_periode."\">".$lig_per->nom_periode." <img src='../images/icons/pdf.png' class='icone16' /></a>
+						 - <a href='".$_SERVER['PHP_SELF']."?id_classe=".$lig_class->id."&amp;mode=export_csv&amp;periode_num=".$lig_per->num_periode."' target='_blank' title=\"Exporter en CSV les avis de ".$lig_class->classe." pour la période ".$lig_per->nom_periode.".\"><img src='../images/icons/csv.png' class='icone16' /></a>
+					</td>\n";
 				}
 				echo "</tr>\n";
 			}
@@ -317,33 +322,31 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 				s.id_classe=cc.id_classe AND 
 				cc.id_classe = c.id)";
 	$call_prof_classe = mysqli_query($GLOBALS["mysqli"], $sql);
-    $nombre_classe = mysqli_num_rows($call_prof_classe);
-    if ($nombre_classe == "0") {
-        echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." ! Il ne vous revient donc pas d'imprimer les avis de conseil de classe.";
-    } else {
-        $j = "0";
-        echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>";
-        while ($j < $nombre_classe) {
-            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
+	$nombre_classe = mysqli_num_rows($call_prof_classe);
+	if ($nombre_classe == "0") {
+		echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." ! Il ne vous revient donc pas d'imprimer les avis de conseil de classe.";
+	} else {
+		$j = "0";
+		echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>";
+		while ($j < $nombre_classe) {
+			$id_classe = old_mysql_result($call_prof_classe, $j, "id");
+			$classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
 
-            include "../lib/periodes.inc.php";
-            $k="1";
-            while ($k < $nb_periode) {
+			include "../lib/periodes.inc.php";
+			$k="1";
+			while ($k < $nb_periode) {
+				echo "<br /><b>$classe_suivi </b>- ";
+				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k'>".ucfirst($nom_periode[$k])." <img src='../images/icons/pdf.png' class='icone16' /></a>";
 
-                   echo "<br /><b>$classe_suivi </b>- ";
-                   echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k'>".ucfirst($nom_periode[$k])." <img src='../images/icons/pdf.png' class='icone16' /></a>";
+				echo " - <a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."&amp;mode=export_csv&amp;periode_num=$k' target='_blank' title=\"Exporter les avis en CSV.\"><img src='../images/icons/csv.png' class='icone16' /></a>";
 
-			echo " - <a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."&amp;mode=export_csv&amp;periode_num=$k' target='_blank' title=\"Exporter les avis en CSV.\"><img src='../images/icons/csv.png' class='icone16' /></a>";
-
-
-               $k++;
-            }
-            echo "<br />";
-		echo "<p><a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=toutes' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour l'ensemble des périodes.\"><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /> Imprimer les avis du conseil de classe de $classe_suivi pour toutes les périodes.</a></p>";
-            $j++;
-        }
-    }
+				$k++;
+			}
+			echo "<br />";
+			echo "<p><a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=toutes' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour l'ensemble des périodes.\"><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /> Imprimer les avis du conseil de classe de $classe_suivi pour toutes les périodes.</a></p>";
+			$j++;
+		}
+	}
 } else {
 	echo "<p style='color:red'>Vous n'avez aucun droit ici.</p>\n";
 }
