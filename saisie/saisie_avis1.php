@@ -433,7 +433,13 @@ elseif($_SESSION['statut'] == 'secours') {
 	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 }
 */
-$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
+if($_SESSION['statut']=='professeur') {
+	// Récupérer les classe dont le prof est PP
+	$sql=retourne_sql_classes_pp($_SESSION['login']);
+}
+else {
+	$sql=get_sql_classes_tel_module('bulletins', $_SESSION['statut'], $_SESSION['login']);
+}
 
 $chaine_options_classes="";
 
@@ -474,8 +480,13 @@ if($nb_classes_suivies>0){
 }
 
 // =================================
+if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
+	echo " | ";
+}
 if(isset($id_class_prec)){
-	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+	if($id_class_prec!=0) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/arrow-left.png' class='icone16' title='Classe précédente' /></a>";
+	}
 }
 
 if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
@@ -503,13 +514,13 @@ if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
 </script>\n";
 
 	//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
-	echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+	echo "<select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 	echo $chaine_options_classes;
 	echo "</select>\n";
 }
 
 if(isset($id_class_suiv)){
-	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
+	if($id_class_suiv!=0){echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/arrow-right.png' class='icone16' title='Classe suivante' /></a>";}
 }
 //fin ajout lien classe précédente / classe suivante
 
@@ -607,12 +618,14 @@ if ($id_classe) {
 		else {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
 			WHERE (c.id_classe='$id_classe' AND
+			p.id_classe=c.id_classe AND 
 			c.login = e.login AND
 			p.login = c.login AND
 			p.professeur = '".$_SESSION['login']."'
 			) ORDER BY nom, prenom";
 		}
 	}
+	//echo "$sql<br />";
 	$appel_donnees_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 

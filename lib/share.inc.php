@@ -20119,4 +20119,39 @@ function get_tab_id_jours_ouvres() {
 
 	return $tab;
 }
+
+
+function retourne_sql_classes_pp($login_prof) {
+	$sql="SELECT DISTINCT jec.id_classe, 
+				c.* 
+			FROM j_eleves_professeurs jep, 
+				j_eleves_classes jec, 
+				classes c 
+			WHERE jep.professeur='$login_prof' AND 
+				jep.login=jec.login AND 
+				jec.id_classe=c.id AND 
+				jep.id_classe=jec.id_classe 
+			ORDER BY c.classe;";
+	return $sql;
+}
+
+function get_tab_clas_pp($login_prof) {
+	global $mysqli;
+	$tab=array();
+	$tab['login']=array();
+	$tab['id_classe']=array();
+
+	$sql=retourne_sql_classes_pp($login_prof);
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		while($lig=$res->fetch_object()) {
+			$tab['id_classe'][]=$lig->id_classe;
+			$tab['classe'][]=$lig->classe;
+		}
+		$res->close();
+	}
+
+	return $tab;
+}
+
 ?>
