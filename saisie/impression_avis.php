@@ -224,7 +224,6 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 		echo "</table>\n";
 	}
 } elseif($_SESSION['statut']=='professeur') { // appel pour un prof
-    echo "<br />";
 	echo "<br />";
 	$sql="SELECT DISTINCT c.* FROM classes c, 
 					j_eleves_professeurs s, 
