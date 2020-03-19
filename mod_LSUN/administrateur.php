@@ -785,7 +785,19 @@ if ($cpt) {echo "			</div>\n";}
 				</td>
 				<td>
 					<input type="hidden" name="modifieParcoursClasse[<?php echo $parcoursCommun->id; ?>]" value="<?php echo $parcoursCommun->classe; ?>" />
-					<?php echo getClasses($parcoursCommun->classe)->fetch_object()->nom_complet; ?>
+					<?php 
+						//echo getClasses($parcoursCommun->classe)->fetch_object()->nom_complet;
+						// Quand aucune classe n'est encore sélectionnée, on a
+						// PHP Notice:  Trying to get property 'nom_complet' of non-object
+						
+						$current_objet_classe=getClasses($parcoursCommun->classe)->fetch_object();
+						if(is_object($current_objet_classe)) {
+							echo $current_objet_classe->nom_complet;
+						}
+						else {
+							echo "<span style='color:red'>Pas de classe sélectionnée</span>";
+						}
+					?>
 				</td>
 				<td>
 					<select name="modifieParcoursCode[<?php echo $parcoursCommun->id; ?>]">
