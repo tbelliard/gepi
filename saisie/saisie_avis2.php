@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -539,13 +539,14 @@ if($_SESSION['statut']=='scolarite'){
 }
 elseif($_SESSION['statut']=='professeur'){
 	// On a filtré plus haut les profs qui n'ont pas getSettingValue("GepiRubConseilProf")=='yes'
-	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
-										j_eleves_classes jec,
-										j_eleves_professeurs jep
-								WHERE jec.id_classe=c.id AND
-										jep.login=jec.login AND
-										jep.professeur='".$_SESSION['login']."'
-								ORDER BY c.classe;";
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, 
+								j_eleves_classes jec, 
+								j_eleves_professeurs jep 
+						WHERE jec.id_classe=c.id AND 
+							jec.id_classe=jep.id_classe AND 
+								jep.login=jec.login AND 
+								jep.professeur='".$_SESSION['login']."' 
+						ORDER BY c.classe;";
 }
 elseif($_SESSION['statut']=='cpe'){
 	// On ne devrait pas arriver ici en CPE...

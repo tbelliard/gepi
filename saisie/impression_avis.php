@@ -309,7 +309,15 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 	}
 } elseif($_SESSION['statut']=='professeur') { // appel pour un prof
     echo "<br />";
-    $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+	echo "<br />";
+	$sql="SELECT DISTINCT c.* FROM classes c, 
+					j_eleves_professeurs s, 
+					j_eleves_classes cc 
+			WHERE (s.professeur='" . $_SESSION['login'] . "' AND 
+				s.login = cc.login AND 
+				s.id_classe=cc.id_classe AND 
+				cc.id_classe = c.id)";
+	$call_prof_classe = mysqli_query($GLOBALS["mysqli"], $sql);
     $nombre_classe = mysqli_num_rows($call_prof_classe);
     if ($nombre_classe == "0") {
         echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." ! Il ne vous revient donc pas d'imprimer les avis de conseil de classe.";
