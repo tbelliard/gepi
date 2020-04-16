@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title></title>
+    <title>Projet on </title>
     <link>https://tbelliard.github.io/gepi/</link>
-    <description>Recent content on </description>
+    <description>Recent content in Projet on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr-FR</language>
     
 	<atom:link href="https://tbelliard.github.io/gepi/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Projet</title>
-      <link>https://tbelliard.github.io/gepi/projet/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://tbelliard.github.io/gepi/projet/</guid>
-      <description>Présentation Gepi est une solution web de gestion et de suivi des résultats scolaires.
-Déployé sur un serveur, il est accessible par intranet ou internet par tous les acteurs de l&#39;établissement. De la saisie des résultats de chaque évaluation par les professeurs à l&amp;rsquo;impression des bulletins au service scolarité, en passant par la préparation des conseils de classe, Gepi est un outil souple et facile d&amp;rsquo;accès, même pour les plus frileux à l&amp;rsquo;outil informatique.</description>
-    </item>
     
     <item>
       <title>Démo en ligne</title>
