@@ -1,0 +1,51 @@
+const idx = lunr(function () {
+  this.field('id')
+  this.field('link')
+  this.field('title')
+  this.field('body')
+
+  
+  this.add({
+    "id": "0",
+    "link": "http://localhost:1313/gepi/categories/",
+    "title": "Categories",
+    "body": "[]",
+  });
+  
+  this.add({
+    "id": "1",
+    "link": "http://localhost:1313/gepi/",
+    "title": "Projet GEPI",
+    "body": "[]",
+  });
+  
+  this.add({
+    "id": "2",
+    "link": "http://localhost:1313/gepi/tags/",
+    "title": "Tags",
+    "body": "[]",
+  });
+  
+});
+
+const simpleIndex = [
+  
+   {
+     id: 0,
+     link: "http://localhost:1313/gepi/categories/",
+     title: "Categories",
+   },
+  
+   {
+     id: 1,
+     link: "http://localhost:1313/gepi/",
+     title: "Projet GEPI",
+   },
+  
+   {
+     id: 2,
+     link: "http://localhost:1313/gepi/tags/",
+     title: "Tags",
+   },
+  
+];

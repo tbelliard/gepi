@@ -1,0 +1,12 @@
+baseURL = "https://tbelliard.github.io/gepi"
+languageCode = "fr-FR"
+title = ""
+theme = "book"
+
+[params]
+  BookToC = false
+  BookLogo = 'logo_gepi.png'
+  BookSection = '*'
+  BookSearch = false
+  BookComments = false
+  BookMenuBundle = '/menu'
