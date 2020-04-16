@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title></title>
+    <link>https://tbelliard.github.io/gepi/</link>
+    <description>Recent content on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>fr-FR</language>
+    
+	<atom:link href="https://tbelliard.github.io/gepi/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Projet</title>
+      <link>https://tbelliard.github.io/gepi/projet/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tbelliard.github.io/gepi/projet/</guid>
+      <description>Présentation Gepi est une solution web de gestion et de suivi des résultats scolaires.
+Déployé sur un serveur, il est accessible par intranet ou internet par tous les acteurs de l&#39;établissement. De la saisie des résultats de chaque évaluation par les professeurs à l&amp;rsquo;impression des bulletins au service scolarité, en passant par la préparation des conseils de classe, Gepi est un outil souple et facile d&amp;rsquo;accès, même pour les plus frileux à l&amp;rsquo;outil informatique.</description>
+    </item>
+    
+    <item>
+      <title>Démo en ligne</title>
+      <link>https://tbelliard.github.io/gepi/demo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tbelliard.github.io/gepi/demo/</guid>
+      <description>Version de démonstration de GEPI Une démonstration en ligne de GEPI est disponible pour tous ceux qui souhaitent tester Gepi et voir à quoi il ressemble. N&amp;rsquo;hésitez pas à l&amp;rsquo;utiliser intensément, mais soyez prudents de ne pas faire figurer d&amp;rsquo;informations confidentielles (noms d&#39;élèves existants par exemple) et de ne pas le rendre inutilisable pour ceux qui passeront derrière vous (ne changez pas les mots de passe des utilisateurs de démonstration).</description>
+    </item>
+    
+    <item>
+      <title>Documentation</title>
+      <link>https://tbelliard.github.io/gepi/documentation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tbelliard.github.io/gepi/documentation/</guid>
+      <description>Documentation de GEPI Une documentation communautaire est consultable sur l&amp;rsquo;ancien wiki de développement de Gepi.</description>
+    </item>
+    
+    <item>
+      <title>Support</title>
+      <link>https://tbelliard.github.io/gepi/support/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tbelliard.github.io/gepi/support/</guid>
+      <description>Obtenir de l&amp;rsquo;aide Documentation en ligne Consultez la documentation en ligne, alimentée par des développeurs et utilisateurs de Gepi.
+Listes de diffusion Si vous ne trouvez pas de réponse à vos questions dans la documentation, vous pouvez échanger directement sur la liste de diffusion communautaire des utilisateurs de Gepi. Pour vous inscrire, cliquez sur le lien ci-dessous et suivez les instructions. Les messages envoyés sur la liste sont reçus par l&amp;rsquo;ensemble des abonnés.</description>
+    </item>
+    
+    <item>
+      <title>Télécharger</title>
+      <link>https://tbelliard.github.io/gepi/telecharger/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tbelliard.github.io/gepi/telecharger/</guid>
+      <description>Télécharger Gepi Dernière version stable : gepi-1.7.4 -&amp;gt; Télécharger GEPI 1.7.4 (avec les derniers correctifs)
+-&amp;gt; Voir les dernières modifications
+Note sur les numéros de version
+La version ci-dessus est la dernière version considérée stable. Néanmoins, des corrections de bugs y sont apportées régulièrement. A chaque correction de bug intervenant sur cette version, un nouveau paquet est automatiquement généré, avec un nouveau numéro de révision (il s&amp;rsquo;agit d&amp;rsquo;un numéro aléatoire, et non d&amp;rsquo;une incrémentation linéaire).</description>
+    </item>
+    
+    <item>
+      <title>Code source</title>
+      <link>https://tbelliard.github.io/gepi/sources/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tbelliard.github.io/gepi/sources/</guid>
+      <description>Accéder aux sources de Gepi Les sources de Gepi sont hébergées sur Github. Le dépôt officiel est accessible à l&amp;rsquo;adresse https://github.com/tbelliard/gepi.
+Pour récupérer les sources de Gepi, vous pouvez vous connecter sur cette interface, ou bien cloner le dépôt à l&amp;rsquo;aide d&amp;rsquo;un client Git, à partir de l&amp;rsquo;URL git://github.com/tbelliard/gepi.git (accessible en lecture seule).
+Organisation du code Le code est organisé en différentes branches : la branche master contient le code le plus récent, avec les développements en cours (elle ne doit donc pas être utilisée en production, car potentiellement instable et pouvant induire des dysfonctionnements ou corruptions de données) ; ensuite pour chaque version stable (1.</description>
+    </item>
+    
+  </channel>
+</rss>
