@@ -1396,7 +1396,10 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 		if(document.getElementById('url_racine_gepi')) {
 			if(document.getElementById('url_racine_gepi').value!='') {
 				//alert('plOp');
-				tmp_encodedStr=encodedStr.replace(/..\/documents\//g, document.getElementById('url_racine_gepi').value+'/documents/');
+				//tmp_encodedStr=encodedStr.replace(/..\/documents\//g, document.getElementById('url_racine_gepi').value+'/documents/');
+
+				tmp_encodedStr=encodedStr.replace(/\.\.\/documents\//g, document.getElementById('url_racine_gepi').value+'/documents/');
+
 				//alert(tmp_encodedStr);
 				encodedStr=tmp_encodedStr;
 			}
