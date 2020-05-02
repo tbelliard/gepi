@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
+ * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1337,7 +1337,7 @@ if (mysqli_num_rows($appel_cahier_texte_liste) > 1) {
   // ajout Eric ==> interdire la modification d'un visa par le prof
   // si c'est un visa
   $appel_cahier_texte_donne = mysqli_fetch_array($appel_cahier_texte_liste);
-  if ($appel_cahier_texte_donne['visa']=='y') {;
+  if ((isset($appel_cahier_texte_donne['visa']))&&($appel_cahier_texte_donne['visa']=='y')) {
 	  unset ($edit_devoir);
 	  unset ($id_ct);
 	  $contenu ='';
