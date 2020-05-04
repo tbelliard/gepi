@@ -233,7 +233,7 @@ if ($autorise == "oui") {
 
 	$tab_enseignements = get_groups_for_prof($identite);
 	// Si c'est un AID, on inscrit son nom
-	if ($rep_cours["id_aid"] != NULL) {
+	if ((isset($rep_cours["id_aid"]))&&($rep_cours["id_aid"] != NULL)) {
 		$nom_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, indice_aid FROM aid WHERE id = '".$rep_cours["id_aid"]."'"));
 		$req_nom_complet = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid_config WHERE indice_aid = '".$nom_aid["indice_aid"]."'");
 		$rep_nom_complet = mysqli_fetch_array($req_nom_complet);
@@ -242,7 +242,13 @@ if ($autorise == "oui") {
 		$aff_intro = CHOOSE_LESSON;
 	}
 
-    echo '<option value="'.$rep_cours["id_groupe"].'">'.$aff_intro.'</option>';
+	$tmp_id_groupe='';
+	if(isset($rep_cours["id_groupe"])) {
+		$tmp_id_groupe=$rep_cours["id_groupe"];
+	}
+	//echo '<option value="'.$rep_cours["id_groupe"].'">'.$aff_intro.'</option>';
+	echo '<option value="'.$tmp_id_groupe.'">'.$aff_intro.'</option>';
+
     $already_selected = false;
 	for($i=0; $i<count($tab_enseignements); $i++) {
 
@@ -533,7 +539,37 @@ if ($autorise == "oui") {
 				//}			
 			}
 			else {
-				if (SalleDisponible($tab_select_salle[$c]["id_salle"], $rep_cours["jour_semaine"], $rep_cours["id_definie_periode"], $rep_cours["duree"], $rep_cours["heuredeb_dec"], $rep_cours["id_semaine"], -1, $message, $rep_cours["id_calendrier"])) {
+				$tmp_jour_semaine='';
+				$tmp_id_definie_periode='';
+				$tmp_duree=0;
+				$tmp_heuredeb_dec='';
+				$tmp_id_semaine='';
+				$tmp_message='';
+				$tmp_id_calendrier='';
+				if(isset($rep_cours["jour_semaine"])) {
+					$tmp_jour_semaine=$rep_cours["jour_semaine"];
+				}
+				if(isset($rep_cours["id_definie_periode"])) {
+					$tmp_id_definie_periode=$rep_cours["id_definie_periode"];
+				}
+				if(isset($rep_cours["duree"])) {
+					$tmp_duree=$rep_cours["duree"];
+				}
+				if(isset($rep_cours["heuredeb_dec"])) {
+					$tmp_heuredeb_dec=$rep_cours["heuredeb_dec"];
+				}
+				if(isset($rep_cours["id_semaine"])) {
+					$tmp_id_semaine=$rep_cours["id_semaine"];
+				}
+				if(isset($message)) {
+					$tmp_message=$message;
+				}
+				if(isset($rep_cours["id_calendrier"])) {
+					$tmp_id_calendrier=$rep_cours["id_calendrier"];
+				}
+
+				//if (SalleDisponible($tab_select_salle[$c]["id_salle"], $rep_cours["jour_semaine"], $rep_cours["id_definie_periode"], $rep_cours["duree"], $rep_cours["heuredeb_dec"], $rep_cours["id_semaine"], -1, $message, $rep_cours["id_calendrier"])) {
+				if (SalleDisponible($tab_select_salle[$c]["id_salle"], $tmp_jour_semaine, $tmp_id_definie_periode, $tmp_duree, $tmp_heuredeb_dec, $tmp_id_semaine, -1, $tmp_message, $tmp_id_calendrier)) {
 					//echo  $rep_cours["id_semaine"];
 					echo "<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
 				}
@@ -611,7 +647,7 @@ if ($autorise == "oui") {
 		<input type="hidden" name="id_cours" value="'.$id_cours.'" />
 		<input type="hidden" name="type_edt" value="'.$type_edt.'" />
 		<input type="hidden" name="identite" value="'.$identite.'" />
-		<input type="hidden" name="id_aid" value="'.$rep_cours["id_aid"].'" />
+		<input type="hidden" name="id_aid" value="'.(isset($rep_cours["id_aid"]) ? $rep_cours["id_aid"] : '').'" />
 	';
 	// Cas où il s'agit de la création d'un cours
 	if ($cours == "aucun" OR $modifier_cours == "non") {
