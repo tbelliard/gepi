@@ -354,6 +354,66 @@ if($selected_eleve) {
 
 // Modification Regis : mise en page par CSS des devoirs à faire si la matière n'est pas sélectionnée
 
+//echo "id_groupe=$id_groupe<br />";
+
+// 20200526
+echo "<div style='float:right; width:40px; margin:3px'>
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+
+	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
+
+	<script type='text/javascript'>
+		function rendre_les_images_CDT_cliquables() {
+			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='none';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='';
+
+			img=document.getElementsByTagName('img');
+			for(i=0;i<img.length;i++) {
+				//id=img[i].getAttribute('id');
+				src_img=img[i].getAttribute('src');
+				if(src_img.substring(0, 10)!='../images/') {
+					//width_img=img[i].getAttribute('width');
+					//height_img=img[i].getAttribute('height');
+
+					var att = document.createAttribute('onclick');
+
+					att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 600))+',height='+Math.min(screen.availHeight, this.height)+'');\";
+
+					img[i].setAttributeNode(att);
+
+					//alert(i);
+				}
+			}
+		}
+
+		function rendre_les_images_CDT_non_cliquables() {
+			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+			img=document.getElementsByTagName('img');
+			for(i=0;i<img.length;i++) {
+				//id=img[i].getAttribute('id');
+				src_img=img[i].getAttribute('src');
+				if(src_img.substring(0, 10)!='../images/') {
+					//width_img=img[i].getAttribute('width');
+					//height_img=img[i].getAttribute('height');
+
+					if(img[i].getAttribute('onclick')) {
+						img[i].removeAttribute('onclick');
+					}
+
+					//alert(i);
+				}
+			}
+		}
+
+		document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
+		document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+	</script>
+</div>";
+
+
 $test_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu FROM ct_entry WHERE (id_groupe='$id_groupe')");
 $nb_test = mysqli_num_rows($test_cahier_texte);
 $delai = getSettingValue("delai_devoirs");
