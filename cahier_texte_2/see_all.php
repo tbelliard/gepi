@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -466,6 +466,61 @@ if(($id_groupe=='Toutes_matieres')&&
 			echo "- ";
 			echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe&amp;ordre=$current_ordre&amp;imprime=$current_imprime'>\nAfficher les Compte-rendus de séance et Travaux à faire\n</a>\n";
 		}
+
+	echo "- 
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+
+	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
+
+	<script type='text/javascript'>
+		function rendre_les_images_CDT_cliquables() {
+			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='none';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='';
+
+			img=document.getElementsByTagName('img');
+			for(i=0;i<img.length;i++) {
+				//id=img[i].getAttribute('id');
+				src_img=img[i].getAttribute('src');
+				if(src_img.substring(0, 10)!='../images/') {
+					//width_img=img[i].getAttribute('width');
+					//height_img=img[i].getAttribute('height');
+
+					var att = document.createAttribute('onclick');
+
+					att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 600))+',height='+Math.min(screen.availHeight, this.height)+'');\";
+
+					img[i].setAttributeNode(att);
+
+					//alert(i);
+				}
+			}
+		}
+
+		function rendre_les_images_CDT_non_cliquables() {
+			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+			img=document.getElementsByTagName('img');
+			for(i=0;i<img.length;i++) {
+				//id=img[i].getAttribute('id');
+				src_img=img[i].getAttribute('src');
+				if(src_img.substring(0, 10)!='../images/') {
+					//width_img=img[i].getAttribute('width');
+					//height_img=img[i].getAttribute('height');
+
+					if(img[i].getAttribute('onclick')) {
+						img[i].removeAttribute('onclick');
+					}
+
+					//alert(i);
+				}
+			}
+		}
+
+		document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
+		document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+	</script>";
 
 		//================================================
 		$date_debut_cdt_mail=isset($_POST['date_debut_cdt_mail']) ? $_POST['date_debut_cdt_mail'] : strftime("%d/%m/%Y");
@@ -950,6 +1005,127 @@ if ($infos_generales != '') {
 }
 
 	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
+
+// 20200526 : Affichage/masquage des notices de tel type
+echo "<div id='div_masquage_type_notices' style='float:right; width: 60px; margin:3px;'>
+	<a href='#' onclick=\"alterne_affichage_notices('c'); return false;\" id='a_alterne_affichage_notices_c' title=\"Afficher/masquer les notices de compte-rendus de séance.\"><img src='../images/icons/notices_CDT_compte_rendu.png' class='icone16' id='img_alterne_affichage_notices_c' /></a>
+
+	<a href='#' onclick=\"alterne_affichage_notices('t'); return false;\" id='a_alterne_affichage_notices_t' title=\"Afficher/masquer les notices de travail à faire.\"><img src='../images/icons/notices_CDT_travail.png' class='icone16' id='img_alterne_affichage_notices_t' /></a>
+
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+
+	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
+
+	<script type='text/javascript'>
+		var etat_affichage_notices_c='';
+		var etat_affichage_notices_t='';
+
+		function alterne_affichage_notices(type_notice) {
+			if(type_notice=='c') {
+				document.getElementById('a_alterne_affichage_notices_c').style.display='none';
+
+
+				if(etat_affichage_notices_c=='') {
+					etat_affichage_notices_c='none';
+					document.getElementById('img_alterne_affichage_notices_c').src='../images/icons/notices_CDT_compte_rendu_gris.png';
+				}
+				else {
+					etat_affichage_notices_c='';
+					document.getElementById('img_alterne_affichage_notices_c').src='../images/icons/notices_CDT_compte_rendu.png';
+				}
+
+				tab_div=document.getElementsByTagName('div');
+				//alert(tab_div.length);
+				for(i=0;i<tab_div.length;i++) {
+					if(id=tab_div[i].getAttribute('id')) {
+						// div_notice_c_
+						if(id.substring(0, 13)=='div_notice_'+type_notice+'_') {
+							tab_div[i].style.display=etat_affichage_notices_c;
+						}
+					}
+				}
+
+				setTimeout(\"document.getElementById('a_alterne_affichage_notices_c').style.display=''\", 5000);
+			}
+
+			if(type_notice=='t') {
+				document.getElementById('a_alterne_affichage_notices_t').style.display='none';
+
+				if(etat_affichage_notices_t=='') {
+					etat_affichage_notices_t='none';
+					document.getElementById('img_alterne_affichage_notices_t').src='../images/icons/notices_CDT_travail_gris.png';
+				}
+				else {
+					etat_affichage_notices_t='';
+					document.getElementById('img_alterne_affichage_notices_t').src='../images/icons/notices_CDT_travail.png';
+				}
+
+				tab_div=document.getElementsByTagName('div');
+				//alert(tab_div.length);
+				for(i=0;i<tab_div.length;i++) {
+					if(id=tab_div[i].getAttribute('id')) {
+						// div_notice_c_
+						if(id.substring(0, 13)=='div_notice_'+type_notice+'_') {
+							tab_div[i].style.display=etat_affichage_notices_t;
+						}
+					}
+				}
+
+				setTimeout(\"document.getElementById('a_alterne_affichage_notices_t').style.display=''\", 5000);
+			}
+		}
+
+
+		function rendre_les_images_CDT_cliquables() {
+			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='none';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='';
+
+			img=document.getElementsByTagName('img');
+			for(i=0;i<img.length;i++) {
+				//id=img[i].getAttribute('id');
+				src_img=img[i].getAttribute('src');
+				if(src_img.substring(0, 10)!='../images/') {
+					//width_img=img[i].getAttribute('width');
+					//height_img=img[i].getAttribute('height');
+
+					var att = document.createAttribute('onclick');
+
+					att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 600))+',height='+Math.min(screen.availHeight, this.height)+'');\";
+
+					img[i].setAttributeNode(att);
+
+					//alert(i);
+				}
+			}
+		}
+
+		function rendre_les_images_CDT_non_cliquables() {
+			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+			img=document.getElementsByTagName('img');
+			for(i=0;i<img.length;i++) {
+				//id=img[i].getAttribute('id');
+				src_img=img[i].getAttribute('src');
+				if(src_img.substring(0, 10)!='../images/') {
+					//width_img=img[i].getAttribute('width');
+					//height_img=img[i].getAttribute('height');
+
+					if(img[i].getAttribute('onclick')) {
+						img[i].removeAttribute('onclick');
+					}
+
+					//alert(i);
+				}
+			}
+		}
+
+		document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
+		document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+	</script>
+</div>";
+
 echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>CAHIER DE TEXTES: comptes rendus de séance</strong>\n</h2>\n";
 
 if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
@@ -1132,6 +1308,9 @@ while (true) {
 		}
 	
 		$content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
+		// 20200526 : Conteneur date et notice
+		echo "<div id='div_notice_".$not_dev->type."_".$not_dev->id_ct."'>";
+		// style='border:1px dashed red; margin:2px;'
 		echo "<h3 class='see_all_h3'>\n<strong>\n";
 			if ($not_dev->type == "t") {
 				echo "<a name='travail_".$not_dev->id_ct."'></a>";
@@ -1237,6 +1416,11 @@ while (true) {
 			echo "$content\n";
 		}
 		echo "</div>\n";
+
+
+		// 20200526 : Conteneur date et notice
+		echo "</div>\n";
+
 		if ($not_dev->type == "c") {$date_ct_old = $not_dev->date_ct;}
 	}
 }
