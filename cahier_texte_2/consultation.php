@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -169,9 +169,13 @@ $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
 // Nom complet de la classe
 $appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
 $classe_nom = @old_mysql_result($appel_classe, 0, "classe");
-// Nom complet de la matière
-$matiere_nom = $current_group["matiere"]["nom_complet"];
-$matiere_nom_court = $current_group["matiere"]["matiere"];
+
+if(isset($current_group["matiere"])) {
+	// Nom complet de la matière
+	$matiere_nom = $current_group["matiere"]["nom_complet"];
+	$matiere_nom_court = $current_group["matiere"]["matiere"];
+}
+
 // Vérification sur les dates
 settype($month,"integer");
 settype($day,"integer");
