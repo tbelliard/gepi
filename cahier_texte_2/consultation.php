@@ -357,7 +357,13 @@ if($selected_eleve) {
 //echo "id_groupe=$id_groupe<br />";
 
 // 20200526
-echo "<div style='float:right; width:40px; margin:3px'>
+echo "<div id='fixe' class='no_print'>
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables_fixe' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+
+	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables_fixe' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
+</div>
+
+<div style='float:right; width:40px; margin:3px'>
 	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
 
 	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
@@ -366,6 +372,9 @@ echo "<div style='float:right; width:40px; margin:3px'>
 		function rendre_les_images_CDT_cliquables() {
 			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='none';
 			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='';
+
+			document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='none';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='';
 
 			img=document.getElementsByTagName('img');
 			for(i=0;i<img.length;i++) {
@@ -390,6 +399,9 @@ echo "<div style='float:right; width:40px; margin:3px'>
 			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
 			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
 
+			document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
+
 			img=document.getElementsByTagName('img');
 			for(i=0;i<img.length;i++) {
 				//id=img[i].getAttribute('id');
@@ -409,6 +421,9 @@ echo "<div style='float:right; width:40px; margin:3px'>
 
 		document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
 		document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+		document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='';
+		document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
 
 	</script>
 </div>";

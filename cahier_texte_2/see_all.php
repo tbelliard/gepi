@@ -433,6 +433,12 @@ if(($id_groupe=='Toutes_matieres')&&
 		}
 	}
 
+	echo "<div id='fixe' class='no_print'>
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables_fixe' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+
+	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables_fixe' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
+</div>";
+
 	echo "<div class='no_print'>\n";
 		if ($current_imprime=='n') {
 			if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe" OR $_SESSION["statut"] == "autre") {
@@ -477,6 +483,9 @@ if(($id_groupe=='Toutes_matieres')&&
 			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='none';
 			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='';
 
+			document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='none';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='';
+
 			img=document.getElementsByTagName('img');
 			for(i=0;i<img.length;i++) {
 				//id=img[i].getAttribute('id');
@@ -500,6 +509,9 @@ if(($id_groupe=='Toutes_matieres')&&
 			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
 			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
 
+			document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
+
 			img=document.getElementsByTagName('img');
 			for(i=0;i<img.length;i++) {
 				//id=img[i].getAttribute('id');
@@ -519,6 +531,9 @@ if(($id_groupe=='Toutes_matieres')&&
 
 		document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
 		document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+		document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='';
+		document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
 
 	</script>";
 
@@ -1007,7 +1022,14 @@ if ($infos_generales != '') {
 	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
 
 // 20200526 : Affichage/masquage des notices de tel type
-echo "<div id='div_masquage_type_notices' style='float:right; width: 60px; margin:3px;'>
+echo "
+<div id='fixe' class='no_print'>
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables_fixe' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+
+	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables_fixe' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
+</div>
+
+<div id='div_masquage_type_notices' style='float:right; width: 60px; margin:3px;'>
 	<a href='#' onclick=\"alterne_affichage_notices('c'); return false;\" id='a_alterne_affichage_notices_c' title=\"Afficher/masquer les notices de compte-rendus de séance.\"><img src='../images/icons/notices_CDT_compte_rendu.png' class='icone16' id='img_alterne_affichage_notices_c' /></a>
 
 	<a href='#' onclick=\"alterne_affichage_notices('t'); return false;\" id='a_alterne_affichage_notices_t' title=\"Afficher/masquer les notices de travail à faire.\"><img src='../images/icons/notices_CDT_travail.png' class='icone16' id='img_alterne_affichage_notices_t' /></a>
@@ -1080,6 +1102,9 @@ echo "<div id='div_masquage_type_notices' style='float:right; width: 60px; margi
 			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='none';
 			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='';
 
+			document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='none';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='';
+
 			img=document.getElementsByTagName('img');
 			for(i=0;i<img.length;i++) {
 				//id=img[i].getAttribute('id');
@@ -1103,6 +1128,9 @@ echo "<div id='div_masquage_type_notices' style='float:right; width: 60px; margi
 			document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
 			document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
 
+			document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='';
+			document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
+
 			img=document.getElementsByTagName('img');
 			for(i=0;i<img.length;i++) {
 				//id=img[i].getAttribute('id');
@@ -1122,6 +1150,9 @@ echo "<div id='div_masquage_type_notices' style='float:right; width: 60px; margi
 
 		document.getElementById('a_rendre_les_images_CDT_cliquables').style.display='';
 		document.getElementById('a_rendre_les_images_CDT_non_cliquables').style.display='none';
+
+		document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='';
+		document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
 
 	</script>
 </div>";
