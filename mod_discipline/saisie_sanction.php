@@ -97,10 +97,40 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 			$deleguer_check=isset($_POST['deleguer_check']) ? $_POST['deleguer_check'] : NULL;
 
+
+			// 20200712 : Tester le format
+			// Si la durée envoyée est de la forme 1h30...
+			if(preg_match("/^[0-9]{1,}h[0-9]{1,}/i", $duree_retenue)) {
+				$duree_retenue_old=$duree_retenue;
+
+				$tmp_tab=explode('h', mb_strtolower($duree_retenue));
+				$nb_heures=$tmp_tab[0];
+				$nb_minutes=preg_replace("/[^0-9]/", '', preg_replace("/[A-Za-z]{1,}.*/", '', $tmp_tab[1]));
+				//$msg.="\$nb_heures=$nb_heures et \$nb_minutes=$nb_minutes<br />";
+				$duree_retenue=$nb_heures+round(100*$nb_minutes/60)/100;
+
+				$msg.="La durée de $nature_sanction saisie a été convertie de ".$duree_retenue_old." en ".$duree_retenue."H.<br />Corrigez si nécessaire.<br />";
+			}
+			elseif(preg_match("/^[0-9]{1,}:[0-9]{1,}/", $duree_retenue)) {
+				$duree_retenue_old=$duree_retenue;
+
+				$tmp_tab=explode(':', mb_strtolower($duree_retenue));
+				$nb_heures=$tmp_tab[0];
+				$nb_minutes=preg_replace("/[^0-9]/", '', preg_replace("/[A-Za-z]{1,}.*/", '', $tmp_tab[1]));
+				//$msg.="\$nb_heures=$nb_heures et \$nb_minutes=$nb_minutes<br />";
+				$duree_retenue=$nb_heures+round(100*$nb_minutes/60)/100;
+
+				$msg.="La durée de $nature_sanction saisie a été convertie de ".$duree_retenue_old." en ".$duree_retenue."H.<br />Corrigez si nécessaire.<br />";
+			}
+
 			$duree_retenue=preg_replace("/[^0-9.]/","",preg_replace("/,/",".",$duree_retenue));
 			if($duree_retenue=="") {
 				$duree_retenue=1;
-				$msg.="La durée de $nature_sanction saisie n'était pas correcte. Elle a été remplacée par '1'.<r />";
+				$msg.="La durée de $nature_sanction saisie n'était pas correcte.<br />Elle a été remplacée par '1'.<br />Corrigez si nécessaire.<br />";
+			}
+
+			if($duree_retenue>9) {
+				$msg.="La durée de la retenue parait élevée&nbsp;: ".$duree_retenue."<br />N'y a-t-il pas d'erreur&nbsp;?<br />Corrigez si nécessaire.<br />";
 			}
 
 			if(!isset($date_retenue)) {
