@@ -198,7 +198,8 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
               <?php } else { ?>
               <th colspan="2"
               <?php } ?>
-              <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Individu</th>
+              <?php 
+                  if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Individu</th>
               <th >Incidents</th><th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Mesures prises</th>
               <th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Sanctions prises</th>
               <th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Heures de retenues</th>
@@ -217,7 +218,17 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     $alt_b=1;
                     foreach ($liste_eleves[$titre] as $eleve) {
                       $alt_b=$alt_b*(-1);?>
-            <tr <?php if ($alt_b==1) echo"class='alt'";?>><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve?>"><?php echo $totaux_indiv[$eleve]['nom']; ?></a></td><td><?php echo $totaux_indiv[$eleve]['prenom']; ?></td>
+            <tr <?php if ($alt_b==1) echo"class='alt'";?>>
+              <td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve?>"><?php echo $totaux_indiv[$eleve]['nom']; ?></a></td>
+              <td><?php 
+                  // 20200718
+                 echo "<span style='display:none'>".$totaux_indiv[$eleve]['prenom']."</span>";
+                 echo "<div style='float:right; width:16px; margin-left:3px;'>
+                    <a href='../../eleves/visu_eleve.php?ele_login=".$eleve."&onglet=discipline' target='_blank' title=\"Voir la fiche élève dans un nouvel onglet.\"><img src='../../images/icons/ele_onglets.png' class='icone16' /></a>
+                 </div>";
+                 echo $totaux_indiv[$eleve]['prenom']; 
+                 ?>
+              </td>
                <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
               <td><?php echo $totaux_indiv[$eleve]['classe']; ?></td>
               <?php }  ?>

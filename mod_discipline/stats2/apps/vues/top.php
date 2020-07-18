@@ -33,13 +33,21 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
       <div class="float_left" >
         <h3>Top 10 des incidents </h3>
         <?php if($top_incidents): ?>
-        <table class="boireaus" >
+        <table class="boireaus resizable sortable" >
           <tr><th><font class='titre'>Nom</font></th><th><font class='titre'>Classe</font></th><th><font class='titre'>Nombre</font></th></tr>
           <?php
           $alt_b=1;
           foreach ($top_incidents as $eleve) {
             $alt_b=$alt_b*(-1); ?>
-          <tr class="lig<?php echo $alt_b;?>"><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          <tr class="lig<?php echo $alt_b;?>">
+             <td>
+                 <span style='display:none'><?php echo $eleve->nom.' '.$eleve->prenom;?></span>
+                 <div style='float:right; width:16px; margin-left:3px;'>
+                    <a href='../../eleves/visu_eleve.php?ele_login=<?php echo $eleve->login;?>&onglet=discipline' target='_blank' title="Voir la fiche élève dans un nouvel onglet."><img src='../../images/icons/ele_onglets.png' class='icone16' /></a>
+                 </div>
+                <a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a>
+             </td>
+             <td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
           </tr>
             <?php } ?>
         </table>
@@ -50,13 +58,18 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
       <div class="float_left" >
         <h3>Top 10 des sanctions </h3>
         <?php if($top_sanctions): ?>
-        <table class="boireaus" >
+        <table class="boireaus resizable sortable" >
           <tr><th><font class='titre'>Nom</font></th><th><font class='titre'>Classe</font></th><th><font class='titre'>Nombre</font></th></tr>
           <?php
           $alt_b=1;
           foreach ($top_sanctions as $eleve) {
             $alt_b=$alt_b*(-1); ?>
-          <tr class="lig<?php echo $alt_b;?>"><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          <tr class="lig<?php echo $alt_b;?>"><td>
+                 <span style='display:none'><?php echo $eleve->nom.' '.$eleve->prenom;?></span>
+                 <div style='float:right; width:16px; margin-left:3px;'>
+                    <a href='../../eleves/visu_eleve.php?ele_login=<?php echo $eleve->login;?>&onglet=discipline' target='_blank' title="Voir la fiche élève dans un nouvel onglet."><img src='../../images/icons/ele_onglets.png' class='icone16' /></a>
+                 </div>
+                <a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
           </tr>
             <?php } ?>
         </table>
@@ -67,13 +80,18 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
       <div class="float_left" >
         <h3>Top 10 des heures de retenues </h3>
          <?php if($top_retenues): ?>
-        <table class="boireaus" >
+        <table class="boireaus resizable sortable" >
           <tr><th><font class='titre'>Nom</font></th><th><font class='titre'>Classe</font></th><th><font class='titre'>Nombre</font></th></tr>
           <?php
           $alt_b=1;
           foreach ($top_retenues as $eleve) {
             $alt_b=$alt_b*(-1); ?>
-          <tr class="lig<?php echo $alt_b;?>"><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          <tr class="lig<?php echo $alt_b;?>"><td>
+                 <span style='display:none'><?php echo $eleve->nom.' '.$eleve->prenom;?></span>
+                 <div style='float:right; width:16px; margin-left:3px;'>
+                    <a href='../../eleves/visu_eleve.php?ele_login=<?php echo $eleve->login;?>&onglet=discipline' target='_blank' title="Voir la fiche élève dans un nouvel onglet."><img src='../../images/icons/ele_onglets.png' class='icone16' /></a>
+                 </div>
+                <a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
           </tr>
             <?php } ?>
         </table>
@@ -84,13 +102,18 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
       <div class="float_left" >
         <h3>Top 10 du nombre d'exclusions </h3>
          <?php if($top_exclusions): ?>
-        <table class="boireaus" >
+        <table class="boireaus resizable sortable" >
           <tr><th><font class='titre'>Nom</font></th><th><font class='titre'>Classe</font></th><th><font class='titre'>Nombre</font></th></tr>
           <?php
           $alt_b=1;
           foreach ($top_exclusions as $eleve) {
             $alt_b=$alt_b*(-1); ?>
-          <tr class="lig<?php echo $alt_b;?>"><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          <tr class="lig<?php echo $alt_b;?>"><td>
+                 <span style='display:none'><?php echo $eleve->nom.' '.$eleve->prenom;?></span>
+                 <div style='float:right; width:16px; margin-left:3px;'>
+                    <a href='../../eleves/visu_eleve.php?ele_login=<?php echo $eleve->login;?>&onglet=discipline' target='_blank' title="Voir la fiche élève dans un nouvel onglet."><img src='../../images/icons/ele_onglets.png' class='icone16' /></a>
+                 </div>
+                <a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
           </tr>
             <?php } ?>
         </table>
