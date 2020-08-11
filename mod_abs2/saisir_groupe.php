@@ -151,7 +151,7 @@ $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence
 $id_semaine = isset($_POST["id_semaine"]) ? $_POST["id_semaine"] :(isset($_GET["id_semaine"]) ? $_GET["id_semaine"] :(isset($_SESSION["id_semaine"]) ? $_SESSION["id_semaine"] : NULL));
 $cahier_texte = isset($_POST["cahier_texte"]) ? $_POST["cahier_texte"] :(isset($_GET["cahier_texte"]) ? $_GET["cahier_texte"] :NULL);
 
-$tri=isset($_POST['tri']) ? $_POST['tri'] : isset($_GET['tri']) ? $_GET['tri'] : NULL;
+$tri=isset($_POST['tri']) ? $_POST['tri'] : (isset($_GET['tri']) ? $_GET['tri'] : NULL);
 
 if (isset($id_groupe) && $id_groupe != null) $_SESSION['id_groupe_abs'] = $id_groupe;
 if (isset($id_classe) && $id_classe != null) $_SESSION['id_classe_abs'] = $id_classe;
