@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -133,10 +133,16 @@ if ($nombre_lignes != 0) {
 		$alt=$alt*(-1);
 		$id_classe = old_mysql_result($call_data, $i, "id");
 		$classe = old_mysql_result($call_data, $i, "classe");
+		$classe_nom_complet = old_mysql_result($call_data, $i, "nom_complet");
 		echo "<tr";
 		echo " class='lig$alt white_hover'";
 		echo ">\n";
-		echo "<td>\n";
+		if($classe!=str_replace('"', "'", $classe_nom_complet)) {
+			echo "<td title=\"$classe : ".str_replace('"', "'", $classe_nom_complet)."\">\n";
+		}
+		else {
+			echo "<td>\n";
+		}
 		echo "<b>$classe</b> ";
 		echo "</td>\n";
 
