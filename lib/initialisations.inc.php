@@ -38,8 +38,10 @@ if ((ini_get('date.timezone') == 'UTC') || (ini_get('date.timezone') == '')) {
  * @global int $GLOBALS['niveau_arbo']
  * @name $niveau_arbo
  */
+if(!isset($niveau_arbo)) {
+	$niveau_arbo=1;
+}
 $GLOBALS['niveau_arbo']=$niveau_arbo;
-
 /**
  * Chemin de la racine de GEPI
  * 
@@ -50,7 +52,10 @@ $GLOBALS['niveau_arbo']=$niveau_arbo;
  * @global string $GLOBALS['gepiPath']
  * @name $gepiPath
  */
-$GLOBALS['gepiPath']=$gepiPath;
+if(isset($gepiPath)) {
+	// La variable est initialisée dans connect.inc.php
+	$GLOBALS['gepiPath']=$gepiPath;
+}
 
 /**
  * Chemin relatif vers la racine de GEPI
@@ -66,8 +71,10 @@ $GLOBALS['relatif_gepi']=NULL;
  * @global string $GLOBALS['multisite']
  * @name $multisite
  */
-$GLOBALS['multisite'] = $multisite;
-
+if(isset($multisite)) {
+	// La variable est initialisée dans connect.inc.php
+	$GLOBALS['multisite'] = $multisite;
+}
 /**
  * Version de GEPI stable
  * 
@@ -219,6 +226,8 @@ if (isset($_REQUEST["source"])) {
  * Données de connexion à la base
  */
    require_once($chemin_relatif_gepi2."/secure/connect.inc.php");
+   $GLOBALS['gepiPath']=$gepiPath;
+   $GLOBALS['multisite'] = $multisite;
 /**
  * Connection à la base
  */
