@@ -12451,6 +12451,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				// Rechercher des responsabilités sans responsables légaux 1 et 2
 				// Y rechercher des niveau_responsabilité=1 ordonnées suivant code_parente pour définir les resp_legal 1 et 2
 
+				echo "<h2>Contrôle des responsabilités nouvelles</h2>\n";
+
 				// Élèves sans responsable légal 1
 				echo "<p style='font-weight:bold; margin-top:1em;'>Recherche des élèves sans responsable légal 1.</p>";
 				$sql="SELECT DISTINCT ele_id, login FROM eleves WHERE ele_id NOT IN (SELECT ele_id FROM responsables2 WHERE resp_legal='1') ORDER BY nom, prenom;";
@@ -12663,8 +12665,33 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					}
 				}
 
+				// S'il reste des resp_legal 9 avec niveau_responsabilite=3 (contact), on les passe en resp_legal=0
+				$sql="SELECT DISTINCT rp.nom, rp.prenom, r.* FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE rp.pers_id=r.pers_id AND r.resp_legal='9' AND e.ele_id=r.ele_id AND jec.login=e.login AND r.niveau_responsabilite='3' ORDER BY e.nom, e.prenom;";
+				//echo "$sql<br />";
+				$res=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)>0) {
+					echo "<p style='color:red; margin-top:1em;'>".mysqli_num_rows($res)." responsables jusque-là codés RESP_LEGAL 9 et dont le niveau de responsabilité est \"<strong>personne à contacter</strong>\" <em>('contact' pour des appels téléphoniques en cas d'absence de l'élève, de problème de santé,...)</em> va/vont être passé(s) en RESP_LEGAL 0&nbsp;:<br />";
+					$cpt_r9=0;
+					while($lig=mysqli_fetch_object($res)) {
+						if($cpt_r9>0) {
+							echo ", ";
+						}
+						$sql="UPDATE responsables2 SET resp_legal='0' WHERE ele_id='".$lig->ele_id."' AND pers_id='".$lig->pers_id."' AND resp_legal='9';";
+						$update_9=mysqli_query($mysqli, $sql);
+						if($update_9) {
+							echo "<a href='modify_resp.php?pers_id=".$lig->pers_id."' target='_blank'>".$lig->nom." ".$lig->prenom."</a>";
+						}
+						else {
+							echo "<a href='modify_resp.php?pers_id=".$lig->pers_id."' target='_blank'><span style='color:red' title=\"Il s'est produit une erreur. Veuillez contrôler ce responsable.\">".$lig->nom." ".$lig->prenom."</span></a>";
+						}
+						$cpt_r9++;
+					}
+					echo "<br />Si ces personnes doivent quand même disposer d'un compte utilisateur pour se connecter ou recevoir les bulletins, vous devriez les contrôler pour leur attribuer éventuellement aussi un accès aux notes/bulletins selon les cas.";
+					echo "</p>";
+				}
+
 				// S'il reste des resp_legal 9
-				$sql="SELECT DISTINCT rp.nom, rp.prenom, r.* FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE rp.pers_id=r.pers_id AND r.resp_legal='9' AND e.ele_id=r.ele_id AND jec.login=e.login;";
+				$sql="SELECT DISTINCT rp.nom, rp.prenom, r.* FROM resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE rp.pers_id=r.pers_id AND r.resp_legal='9' AND e.ele_id=r.ele_id AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 				//echo "$sql<br />";
 				$res=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res)>0) {
