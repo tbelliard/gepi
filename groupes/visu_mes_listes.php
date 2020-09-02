@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -54,6 +54,9 @@ echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' 
 //echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un(e) autre classe/groupe</a>";
 if(acces("/classes/export_ele_opt.php", $_SESSION['statut'])) {
 	echo " | <a href='../classes/export_ele_opt.php'>Exporter des options élèves en CSV</a>";
+}
+if((getSettingAOui('active_module_trombinoscopes'))&&(acces("/mod_trombinoscopes/plan_de_classe.php", $_SESSION['statut']))) {
+	echo " | <a href='../mod_trombinoscopes/plan_de_classe.php'>Plan de classe</a>";
 }
 echo "</p>\n";
 

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -57,6 +57,11 @@ echo " | <a href='./parametres_impression_pdf.php'>Régler les paramètres du PD
 if(check_droit_acces('/groupes/mes_listes.php',$_SESSION['statut'])) {
 	echo " | <a href='../groupes/mes_listes.php'>Listes CSV</a>";
 }
+
+if((getSettingAOui('active_module_trombinoscopes'))&&(acces("/mod_trombinoscopes/plan_de_classe.php", $_SESSION['statut']))) {
+	echo " | <a href='../mod_trombinoscopes/plan_de_classe.php'>Plan de classe</a>";
+}
+
 echo "</p>\n";
 
 if ($id_choix_periode != 0) {
