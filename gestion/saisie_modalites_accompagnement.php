@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -57,6 +57,12 @@ if(isset($id_classe)) {
 
 $tab_modalite_accompagnement=get_tab_modalites_accompagnement();
 
+/*
+echo "tab_modalite_accompagnement<pre>";
+print_r($tab_modalite_accompagnement);
+echo "</pre>";
+*/
+
 //debug_var();
 
 if(isset($_POST['is_posted_modalites_classes'])) {
@@ -94,35 +100,53 @@ $_POST['no_anti_inject_textarea_4461_PPRE_3']=
 				jec.login=e.login AND 
 				jec.id_classe='".$id_classe."' 
 			ORDER BY e.nom, e.prenom;";
+	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		if(!isset($_POST['accompagnement_'.$lig->id_eleve."_".$lig->code."_".$lig->periode])) {
 			$sql="DELETE FROM j_modalite_accompagnement_eleve WHERE id_eleve='".$lig->id_eleve."' AND code='".$lig->code."' AND periode='".$lig->periode."';";
+			//echo "$sql<br />";
 			$del=mysqli_query($mysqli, $sql);
 			$nb_del++;
 		}
 		else {
-			$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+			if(is_null($lig->commentaire)) {
+				$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]='';
+			}
+			else {
+				$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+			}
 		}
 	}
 	if($nb_del>0) {
 		$msg.=$nb_del." modalité(s) d'accompagnement supprimée(s).<br />";
 	}
 
+	/*
+	echo "tab_modalites_ele<pre>";
+	print_r($tab_modalites_ele);
+	echo "</pre>";
+	*/
+
 	$tab_ele=array();
 	$sql="SELECT e.*, jec.periode FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe."' ORDER BY jec.periode, e.nom, e.prenom;";
+	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		//$tab_ele[]=$lig;
 
 		foreach($tab_modalite_accompagnement["code"] as $code => $libelle) {
 			if(isset($_POST['accompagnement_'.$lig->id_eleve."_".$code."_".$lig->periode])) {
+				//echo "\$_POST['accompagnement_".$lig->id_eleve."_".$code."_".$lig->periode."] est défini.<br />";
 				if(isset($tab_modalites_ele[$lig->id_eleve][$code][$lig->periode])) {
+					//echo "\$tab_modalites_ele[$lig->id_eleve][$code][$lig->periode] est défini.<br />";
+
 					// Modalité d'accompagnement déjà enregistrée sur cette période.
 					// On se contente de mettre à jour le commentaire s'il y en a un
 					if((isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode]))&&($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode]!=$tab_modalites_ele[$lig->id_eleve][$code])) {
 						$sql="UPDATE j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])."' WHERE id_eleve='".$lig->id_eleve."' AND code='".$code."' AND periode='".$lig->periode."';";
 
+						//echo "$sql<br />";
 						$update=mysqli_query($mysqli, $sql);
 						if(!$update) {
 							$msg.="Erreur lors de la mise à jour de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom." en période ".$lig->periode.".<br />";
@@ -133,6 +157,7 @@ $_POST['no_anti_inject_textarea_4461_PPRE_3']=
 					}
 				}
 				else {
+					//echo "\$tab_modalites_ele[$lig->id_eleve][$code][$lig->periode] n'est pas défini.<br />";
 					// On enregistre une nouvelle modalité.
 
 					if(isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])) {
@@ -142,6 +167,8 @@ $_POST['no_anti_inject_textarea_4461_PPRE_3']=
 						$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='', id_eleve='".$lig->id_eleve."', code='".$code."', periode='".$lig->periode."'";
 					}
 
+					//echo "$sql<br />";
+					//$msg.="$sql<br />";
 					$insert=mysqli_query($mysqli, $sql);
 					if(!$insert) {
 						$msg.="Erreur lors de l'enregistrement de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom." en période ".$lig->periode.".<br />";
@@ -189,23 +216,43 @@ $_POST['accompagnement_4459_ULIS_1']=	ULIS
 			WHERE jmae.id_eleve=e.id_eleve AND 
 				e.login='".$login_eleve."' 
 			ORDER BY jmae.periode;";
+	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		if(!isset($_POST['accompagnement_'.$lig->id_eleve."_".$lig->code."_".$lig->periode])) {
 			$sql="DELETE FROM j_modalite_accompagnement_eleve WHERE id_eleve='".$lig->id_eleve."' AND code='".$lig->code."' AND periode='".$lig->periode."';";
+			//echo "$sql<br />";
 			$del=mysqli_query($mysqli, $sql);
 			$nb_del++;
 		}
 		else {
-			$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+			if(is_null($lig->commentaire)) {
+				$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]='';
+			}
+			else {
+				$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+			}
 		}
 	}
 	if($nb_del>0) {
 		$msg.=$nb_del." modalité(s) d'accompagnement supprimée(s).<br />";
 	}
 
+	/*
+	echo "tab_modalite_accompagnement<pre>";
+	print_r($tab_modalite_accompagnement);
+	echo "</pre>";
+	*/
+
+	/*
+	echo "tab_modalites_ele<pre>";
+	print_r($tab_modalites_ele);
+	echo "</pre>";
+	*/
+
 	$tab_ele=array();
 	$sql="SELECT e.*, jec.periode FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND e.login='".$login_eleve."' ORDER BY jec.periode;";
+	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		//$tab_ele[]=$lig;
@@ -218,6 +265,7 @@ $_POST['accompagnement_4459_ULIS_1']=	ULIS
 					if((isset($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode]))&&($NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode]!=$tab_modalites_ele[$lig->id_eleve][$code])) {
 						$sql="UPDATE j_modalite_accompagnement_eleve SET commentaire='".mysqli_real_escape_string($mysqli, $NON_PROTECT['textarea_'.$lig->id_eleve."_".$code."_".$lig->periode])."' WHERE id_eleve='".$lig->id_eleve."' AND code='".$code."' AND periode='".$lig->periode."';";
 
+						//echo "$sql<br />";
 						$update=mysqli_query($mysqli, $sql);
 						if(!$update) {
 							$msg.="Erreur lors de la mise à jour de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom." en période ".$lig->periode.".<br />";
@@ -237,6 +285,8 @@ $_POST['accompagnement_4459_ULIS_1']=	ULIS
 						$sql="INSERT INTO j_modalite_accompagnement_eleve SET commentaire='', id_eleve='".$lig->id_eleve."', code='".$code."', periode='".$lig->periode."'";
 					}
 
+					//echo "$sql<br />";
+					//$msg.="$sql<br />";
 					$insert=mysqli_query($mysqli, $sql);
 					if(!$insert) {
 						$msg.="Erreur lors de l'enregistrement de la modalité d'accompagnement $code pour ".$lig->nom." ".$lig->prenom." en période ".$lig->periode.".<br />";
@@ -457,9 +507,15 @@ elseif(isset($login_eleve)) {
 				eleves e 
 			WHERE jmae.id_eleve=e.id_eleve AND 
 				e.login='".$login_eleve."';";
+	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
-		$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+		if(is_null($lig->commentaire)) {
+			$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]='';
+		}
+		else {
+			$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+		}
 	}
 
 	$rowspan=count($tab_modalite_accompagnement["indice"]);
@@ -472,6 +528,7 @@ elseif(isset($login_eleve)) {
 		WHERE c.id=jec.id_classe AND 
 			jec.login='$login_eleve' 
 		ORDER BY jec.periode;";
+	//echo "$sql<br />";
 	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res2)>0) {
 		while($lig2=mysqli_fetch_assoc($res2)) {
@@ -657,9 +714,15 @@ else {
 				jec.periode=jmae.periode AND 
 				jec.id_classe='".$id_classe."' 
 			ORDER BY e.nom, e.prenom;";
+	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	while($lig=mysqli_fetch_object($res)) {
-		$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+		if(is_null($lig->commentaire)) {
+			$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]='';
+		}
+		else {
+			$tab_modalites_ele[$lig->id_eleve][$lig->code][$lig->periode]=$lig->commentaire;
+		}
 	}
 
 	$rowspan=count($tab_modalite_accompagnement["indice"]);
