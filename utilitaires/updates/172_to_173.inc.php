@@ -112,11 +112,17 @@ if ($test_champ==0) {
 // Modifications méthode encodage photo
 // ------------------------------------
 
-$titre="Encodage des noms de fichier des photos élèves";
-$texte="La méthode d'encodage a été modifiée, vérifier qu'il n'y a pas d'incohérence.<br />Voir <a href='$gepiPath/mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a><br /><span style='font-weight: bold;'>Attention : </span>désormais il ne faut plus transférer les photos des élèves directement sur le serveur (FTP ou autre), mais passer par \"Télécharger les photos des élèves\" dans le module d'administration du trombinoscope<br />";
-$destinataire="administrateur";
-$mode="statut";
-enregistre_infos_actions($titre,$texte,$destinataire,$mode);
+$sql="SELECT * FROM infos_actions WHERE titre='Encodage des noms de fichier des photos élèves' AND description LIKE '%désormais il ne faut plus transférer les photos des élèves directement sur le serveur%';";
+//echo "$sql<br />";
+$test_encodage=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test_encodage)==0) {
+	$titre="Encodage des noms de fichier des photos élèves";
+	$texte="La méthode d'encodage a été modifiée, vérifier qu'il n'y a pas d'incohérence.<br />Voir <a href='$gepiPath/mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a><br /><span style='font-weight: bold;'>Attention : </span>désormais il ne faut plus transférer les photos des élèves directement sur le serveur (FTP ou autre), mais passer par \"Télécharger les photos des élèves\" dans le module d'administration du trombinoscope<br />";
+	$destinataire="administrateur";
+	$mode="statut";
+	enregistre_infos_actions($titre,$texte,$destinataire,$mode);
+	//echo "enregistre_infos_actions($titre,$texte,$destinataire,$mode);<br />";
+}
 
 $result .= "&nbsp;-> Ajout d'un champ 'encodage_photos_eleves_alea' à la table 'setting'<br />";
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='encodage_photos_eleves_alea'");

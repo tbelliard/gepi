@@ -48,11 +48,18 @@ if ($res_test==0){
 		$result.=msj_erreur("Définition du paramètre encodage_nom_photo : Erreur !");
 	}
 
-	$titre="Encodage des photos";
-	$texte="Une fonctionnalité d'encodage des photos est proposée pour éviter des téléchargements abusifs.<br />Voir <a href='$gepiPath/mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a>";
-	$destinataire="administrateur";
-	$mode="statut";
-	enregistre_infos_actions($titre,$texte,$destinataire,$mode);
+	$sql="SELECT * FROM infos_actions WHERE titre='Encodage des photos' AND description LIKE '%encodage des photos est propos%';";
+	//echo "$sql<br />";
+	$test_encodage=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_encodage)==0) {
+		$titre="Encodage des photos";
+		$texte="Une fonctionnalité d'encodage des photos est proposée pour éviter des téléchargements abusifs.<br />Voir <a href='$gepiPath/mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a>";
+		$destinataire="administrateur";
+		$mode="statut";
+		enregistre_infos_actions($titre,$texte,$destinataire,$mode);
+
+		//echo "enregistre_infos_actions($titre,$texte,$destinataire,$mode);<br />";
+	}
 
 } else {
 	$result .= msj_present("Le paramètre encodage_nom_photo existe déjà dans la table setting.");
