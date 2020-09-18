@@ -357,7 +357,7 @@ if (!$eleve_col->isEmpty()) {
 		echo "</td>";
 
 		// 20160722: Ajouter un checkbox pour rattacher les saisies qui peuvent l'être
-		echo "<td rowspan='2' style='vertical-align:top' title=\"Rattacher au nouveau traitement créé, les saisies qui peuvent l'être.\nSeules les saisies avec création de traitement permettent un rattachement\n(il faut donc choisir un 'type' dans le champ SELECT à gauche).\"><input type='checkbox' name='rattacher_saisies_si_possible' id='rattacher_saisies_si_possible' value='y' /><label for='rattacher_saisies_si_possible'>Rattacher saisies</label></td>";
+		echo "<td rowspan='2' style='vertical-align:top' title=\"Rattacher au nouveau traitement créé, les saisies qui peuvent l'être.\nSeules les saisies avec création de traitement permettent un rattachement\n(il faut donc choisir un 'type' dans le champ SELECT à gauche).\"><input type='checkbox' name='rattacher_saisies_si_possible' id='rattacher_saisies_si_possible' value='y' onchange=\"checkbox_change(this.id)\" /><label for='rattacher_saisies_si_possible' id='texte_rattacher_saisies_si_possible'>Rattacher saisies</label></td>";
 
 	    echo ("</tr>\n");
 		//=============================================================
@@ -473,7 +473,7 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			echo("</td>");
 
 
-			echo '<td style="vertical-align: top;"><input style="font-size:88%;" name="active_absence_eleve[]" id="active_absence_eleve_'.$eleve->getPrimaryKey().'" value="'.$eleve->getPrimaryKey().'" type="checkbox" onchange="click_active_absence('.$eleve->getPrimaryKey().')" ';
+			echo '<td style="vertical-align: top;"><input style="font-size:88%;" name="active_absence_eleve[]" id="active_absence_eleve_'.$eleve->getPrimaryKey().'" value="'.$eleve->getPrimaryKey().'" type="checkbox" onchange="click_active_absence('.$eleve->getPrimaryKey().');" ';
 			if ($eleve_col->count() == 1) {
 			    echo "checked=\"true\" ";
 			}
@@ -577,10 +577,10 @@ ATTENTION : Gepi n'autorise la création que de 50 saisies (50 dates)
             Pour saisir plus de 50 dates (répétition par exemple 
             d'absences les lundi, mardi et mercredi sur 17 semaines, 
             ce qui fait 51 dates, il faudra s'y prendre à deux fois.)\">";
-echo '<input type="radio" name="multisaisie" id="multisaisie_n" value="n" checked="checked" />';
-echo '	<label for="multisaisie_n">Créer une seule saisie</label> <br/>';
-echo '	<input type="radio" name="multisaisie" id="multisaisie_y" value="y"/>';
-echo '	<label for="multisaisie_y">Créer une saisie par jour</label>';
+echo '<input type="radio" name="multisaisie" id="multisaisie_n" value="n" checked="checked" onchange="checkbox_change(\'multisaisie_y\'); checkbox_change(\'multisaisie_n\')" />';
+echo '	<label for="multisaisie_n" id="texte_multisaisie_n">Créer une seule saisie</label> <br/>';
+echo '	<input type="radio" name="multisaisie" id="multisaisie_y" value="y" onchange="checkbox_change(\'multisaisie_y\'); checkbox_change(\'multisaisie_n\')" />';
+echo '	<label for="multisaisie_y" id="texte_multisaisie_y">Créer une saisie par jour</label>';
 echo "</span>";
 
 echo '</p></div>';
@@ -618,7 +618,7 @@ ATTENTION : Gepi n'autorise la création que de 50 saisies (50 dates)
             ce qui fait 51 dates, il faudra s'y prendre à deux fois.)\"><strong>Répétition&nbsp;:</strong><br />
 		Uniquement les <br />";
 		foreach($tab_jour_ouvres as $indice => $tab_jour_courant) {
-			echo "<input type='checkbox' name='restrict_jour[]' id='restrict_jour_".$indice."' value='$indice' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;}\" /><label for='restrict_jour_".$indice."'>".$tab_jour_courant["fr"]."</label><br />\n";
+			echo "<input type='checkbox' name='restrict_jour[]' id='restrict_jour_".$indice."' value='$indice' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;}; checkbox_change(this.id)\" /><label for='restrict_jour_".$indice."' id='texte_restrict_jour_".$indice."'>".$tab_jour_courant["fr"]."</label><br />\n";
 		}
 
 		echo "</p>
@@ -631,10 +631,10 @@ ATTENTION : Gepi n'autorise la création que de 50 saisies (50 dates)
 	if(mysqli_num_rows($res_semAB)>0) {
 		echo "<br />
 <div style='border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;'>
-	<p>Restreindre les dates aux semaines&nbsp;:<br />";
+	<p>Restreindre les dates aux&nbsp;:<br />";
 		$cpt_semAB=0;
 		while($lig_semAB=mysqli_fetch_object($res_semAB)) {
-			echo "<input type='checkbox' name='restrict_semAB[]' id='restrict_semAB_".$cpt_semAB."' value='".$lig_semAB->type_edt_semaine."' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;}\" /><label for='restrict_semAB_".$cpt_semAB."'> ".$lig_semAB->type_edt_semaine." </label><br />\n";
+			echo "<input type='checkbox' name='restrict_semAB[]' id='restrict_semAB_".$cpt_semAB."' value='".$lig_semAB->type_edt_semaine."' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;};checkbox_change(this.id)\" /><label for='restrict_semAB_".$cpt_semAB."' id='texte_restrict_semAB_".$cpt_semAB."'> semaines ".$lig_semAB->type_edt_semaine." </label><br />\n";
 			$cpt_semAB++;
 		}
 
@@ -694,8 +694,8 @@ if (!$cours_col->isEmpty()) {
 			//echo "\$semaine->getLundi('Ymd')=".$semaine->getLundi('Ymd')."<br />";
 
 			//$semaine = new EdtSemaine();
-			echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."' id='semaine_".$semaine->getPrimaryKey()."' />";
-			echo "<label for='semaine_".$semaine->getPrimaryKey()."'".$style_semaine.">Semaine ".$semaine->getNumEdtSemaine();
+			echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."' id='semaine_".$semaine->getPrimaryKey()."' onchange=\"checkbox_change(this.id)\" />";
+			echo "<label for='semaine_".$semaine->getPrimaryKey()."' id='texte_semaine_".$semaine->getPrimaryKey()."'".$style_semaine.">Semaine ".$semaine->getNumEdtSemaine();
 			if($semaine->getTypeEdtSemaine()!='') {
 				echo " <span title=\"Semaine ".$semaine->getTypeEdtSemaine()."\">(".$semaine->getTypeEdtSemaine().")</span>";
 			}
@@ -737,8 +737,8 @@ if (!$cours_col->isEmpty()) {
 				}
 
 				//$semaine = new EdtSemaine();
-				echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."' id='semaine_".$semaine->getPrimaryKey()."' />";
-				echo "<label for='semaine_".$semaine->getPrimaryKey()."'".$style_semaine.">Semaine ".$semaine->getNumEdtSemaine();
+				echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."' id='semaine_".$semaine->getPrimaryKey()."' onchange=\"checkbox_change(this.id)\" />";
+				echo "<label for='semaine_".$semaine->getPrimaryKey()."' id='texte_semaine_".$semaine->getPrimaryKey()."'".$style_semaine.">Semaine ".$semaine->getNumEdtSemaine();
 				if($semaine->getTypeEdtSemaine()!='') {
 					echo " <span title=\"Semaine ".$semaine->getTypeEdtSemaine()."\">(".$semaine->getTypeEdtSemaine().")</span>";
 				}
@@ -783,8 +783,20 @@ echo "</td></tr>";
 				document.getElementById('div_choix_creneau').style.opacity=1;
 			}
 		}
+
+		
 	}
 	//check_changement_creneau();
+
+	//alert("plop");
+	<?php
+	echo js_checkbox_change_style();
+	echo js_change_style_all_checkbox();
+	echo js_change_style_radio();
+	?>
+
+	checkbox_change('multisaisie_y');
+	checkbox_change('multisaisie_n');
 </script>
 <?php
 }
