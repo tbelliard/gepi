@@ -611,14 +611,32 @@ ATTENTION : Gepi n'autorise la création que de 50 saisies (50 dates)
             au maximum en une seule fois.
             Pour saisir plus de 50 dates (répétition par exemple 
             d'absences les lundi, mardi et mercredi sur 17 semaines, 
-            ce qui fait 51 dates, il faudra s'y prendre à deux fois.)\"\"><strong>Répétition&nbsp;:</strong><br />
+            ce qui fait 51 dates, il faudra s'y prendre à deux fois.)\"><strong>Répétition&nbsp;:</strong><br />
 		Uniquement les <br />";
 		foreach($tab_jour_ouvres as $indice => $tab_jour_courant) {
-			echo "<input type='checkbox' name='restrict_jour[]' id='restrict_jour_".$indice."' value='$indice' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;}\" /><label for='restrict_jour_".$indice."'>".$tab_jour_courant["fr"]."</label><br />";
+			echo "<input type='checkbox' name='restrict_jour[]' id='restrict_jour_".$indice."' value='$indice' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;}\" /><label for='restrict_jour_".$indice."'>".$tab_jour_courant["fr"]."</label><br />\n";
 		}
-	}
-	echo "</p>
+
+		echo "</p>
 </div>";
+	}
+
+	// 20200918
+	$sql="SELECT DISTINCT type_edt_semaine from edt_semaines WHERE type_edt_semaine!='' ORDER BY type_edt_semaine;";
+	$res_semAB=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_semAB)>0) {
+		echo "<br />
+<div style='border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;'>
+	<p>Restreindre les dates aux semaines&nbsp;:<br />";
+		$cpt_semAB=0;
+		while($lig_semAB=mysqli_fetch_object($res_semAB)) {
+			echo "<input type='checkbox' name='restrict_semAB[]' id='restrict_semAB_".$cpt_semAB."' value='".$lig_semAB->type_edt_semaine."' onchange=\"if(this.checked==true) {document.getElementById('multisaisie_y').checked=true;}\" /><label for='restrict_semAB_".$cpt_semAB."'> ".$lig_semAB->type_edt_semaine." </label><br />\n";
+			$cpt_semAB++;
+		}
+
+		echo "</p>
+</div>";
+	}
 }
 
 echo '</div>';
@@ -646,8 +664,15 @@ if (!$cours_col->isEmpty()) {
 		echo "</option>\n";
 	}
 	echo "</select>";
-    echo '</p>';
+	echo '</p>';
 
+
+	$tab_jours_vacances=get_tab_jours_vacances();
+	/*
+	echo "<pre>";
+	print_r($tab_jours_vacances);
+	echo "</pre>";
+	*/
 
 	$col = EdtSemaineQuery::create()->find();
 	if (isset($_GET["affiche_toute_semaine"])) {
@@ -656,15 +681,26 @@ if (!$cours_col->isEmpty()) {
 		for ($i = 0; $i < $col->count(); $i++) {
 			$pos = ($i + 30) % $col->count();
 			$semaine = $col[$pos];
+
+			$style_semaine='';
+			if((in_array($semaine->getLundi('Ymd'), $tab_jours_vacances))&&
+			(in_array($semaine->getSamedi('Ymd'), $tab_jours_vacances))) {
+				$style_semaine=" style='color:grey'";
+			}
+			//echo "\$semaine->getLundi('Ymd')=".$semaine->getLundi('Ymd')."<br />";
+
 			//$semaine = new EdtSemaine();
-			echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
-			echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
+			echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."' id='semaine_".$semaine->getPrimaryKey()."' />";
+			echo "<label for='semaine_".$semaine->getPrimaryKey()."'".$style_semaine.">Semaine ".$semaine->getNumEdtSemaine();
+			if($semaine->getTypeEdtSemaine()!='') {
+				echo " <span title=\"Semaine ".$semaine->getTypeEdtSemaine()."\">(".$semaine->getTypeEdtSemaine().")</span>";
+			}
 			if (date('W') == $semaine->getPrimaryKey())  {
-				echo " (courante) ";
+				echo " <span style='color:green' title=\"Semaine courante.\">(courante)</span> ";
 			} else {
 				echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
 			}
-			echo "<br/>\n";
+			echo "</label><br/>\n";
 		}
 		echo '<a href="./saisir_eleve.php">Ne pas afficher toutes les semaines</a>';
 		echo '</p>';
@@ -689,15 +725,25 @@ if (!$cours_col->isEmpty()) {
 			// A FAIRE tester si $semaine->getSamedi('U') $semaine->getLundi('U') est bien entre begin_bookings et end_bookings (accepter une semaine avant et une semaine après)
 			if(($semaine->getLundi('U')>=getSettingValue('begin_bookings')-24*3600*7)&&
 			($semaine->getSamedi('U')<=getSettingValue('end_bookings')+24*3600*7)) {
+
+				$style_semaine='';
+				if((in_array($semaine->getLundi('Ymd'), $tab_jours_vacances))&&
+				(in_array($semaine->getSamedi('Ymd'), $tab_jours_vacances))) {
+					$style_semaine=" style='color:grey'";
+				}
+
 				//$semaine = new EdtSemaine();
-				echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
-				echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
+				echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."' id='semaine_".$semaine->getPrimaryKey()."' />";
+				echo "<label for='semaine_".$semaine->getPrimaryKey()."'".$style_semaine.">Semaine ".$semaine->getNumEdtSemaine();
+				if($semaine->getTypeEdtSemaine()!='') {
+					echo " <span title=\"Semaine ".$semaine->getTypeEdtSemaine()."\">(".$semaine->getTypeEdtSemaine().")</span>";
+				}
 				if (date('W') == $semaine->getPrimaryKey())  {
-					echo " (courante) ";
+					echo " <span style='color:green' title=\"Semaine courante.\">(courante)</span> ";
 				} else {
 					echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
 				}
-				echo "<br/>\n";
+				echo "</label><br/>\n";
 				$compteur_semaines++;
 			}
 			/*

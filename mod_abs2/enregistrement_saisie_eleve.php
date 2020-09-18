@@ -183,6 +183,29 @@ if ($current_cours != null) {
     }
 
     if ($message_enregistrement == "") {
+
+	// 20200918
+	$restrict_semAB=isset($_POST['restrict_semAB']) ? $_POST['restrict_semAB'] : array();
+	$tab_semAB=array();
+	if(count($restrict_semAB)>0) {
+		$chaine_semAB='';
+		for($loop_semAB=0;$loop_semAB<count($restrict_semAB);$loop_semAB++) {
+			if($chaine_semAB!='') {
+				$chaine_semAB.=" OR ";
+			}
+			$chaine_semAB.="type_edt_semaine='".$restrict_semAB[$loop_semAB]."'";
+		}
+
+		$sql="SELECT * from edt_semaines WHERE ($chaine_semAB) ORDER BY num_edt_semaine;";
+		$res_semAB=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_semAB)>0) {
+			while($lig_semAB=mysqli_fetch_object($res_semAB)) {
+				$tab_semAB[]=$lig_semAB->num_edt_semaine;
+			}
+		}
+	}
+
+
 	$restrict_jour=isset($_POST['restrict_jour']) ? $_POST['restrict_jour'] : array();
 	if(count($restrict_jour)) {
 		$multisaisie="y";
@@ -222,23 +245,35 @@ if ($current_cours != null) {
 			(!in_array($date_compteur->format('Ymd'), $tab_jours_vacances))) {
 
 				if((count($restrict_jour)==0)||(in_array($date_compteur->format('N'), $restrict_jour))) {
-					//echo " jour ouvré";
-					$date_debut_saisie = clone $date_compteur;
-					$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
-					$date_fin_saisie = clone $date_compteur;
-					$date_fin_saisie->setTime($heure_fin->format('H'), $heure_fin->format('i'));
 
-					$saisie = new AbsenceEleveSaisie();
-					$saisie->setUtilisateurProfessionnel($utilisateur);
-					$saisie->setCommentaire($commentaire);
-
-					$saisie->setDebutAbs($date_debut_saisie);
-					$saisie->setFinAbs($date_fin_saisie);
-					if ($creneau != null) {
-						$saisie->setEdtCreneau($creneau);
+					// 20200918
+					$prendre_en_compte_cette_date=true;
+					if(count($restrict_semAB)>0) {
+						if(!in_array($date_compteur->format('W'), $tab_semAB)) {
+							$prendre_en_compte_cette_date=false;
+							//echo "Semaine ".$date_compteur->format('W')." rejetée.<br />";
+						}
 					}
-					$saisie_col_modele->append($saisie);
-					$compteur = $compteur + 1;
+
+					if($prendre_en_compte_cette_date) {
+						//echo " jour ouvré";
+						$date_debut_saisie = clone $date_compteur;
+						$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
+						$date_fin_saisie = clone $date_compteur;
+						$date_fin_saisie->setTime($heure_fin->format('H'), $heure_fin->format('i'));
+
+						$saisie = new AbsenceEleveSaisie();
+						$saisie->setUtilisateurProfessionnel($utilisateur);
+						$saisie->setCommentaire($commentaire);
+
+						$saisie->setDebutAbs($date_debut_saisie);
+						$saisie->setFinAbs($date_fin_saisie);
+						if ($creneau != null) {
+							$saisie->setEdtCreneau($creneau);
+						}
+						$saisie_col_modele->append($saisie);
+						$compteur = $compteur + 1;
+					}
 				}
 			}
 			//echo "<br />";
