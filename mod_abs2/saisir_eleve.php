@@ -130,11 +130,15 @@ $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Les absences";
-$utilisation_jsdivdrag = "non";
+//$utilisation_jsdivdrag = "non";
+$utilisation_jsdivdrag = "oui";
 $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
+
+insere_lien_calendrier_crob("right");
+
 include('menu_abs2.inc.php');
 //===========================
 echo "<div class='css-panes' id='containDiv'>\n";
