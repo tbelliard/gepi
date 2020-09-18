@@ -150,6 +150,7 @@ if (isset($is_posted) && $is_posted) {
 
 			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
 			$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
+			$login_gest=isset($_POST['login_gest']) ? $_POST['login_gest'] : array();
 			$prof_matiere=isset($_POST['prof_matiere']) ? $_POST['prof_matiere'] : array();
 
 			$aid_nom_depart=$aid_nom;
@@ -360,6 +361,25 @@ if (isset($is_posted) && $is_posted) {
 							}
 						}
 					}
+
+					// 20200918
+					$nb_gest_inscrits=0;
+					for($loop2=0;$loop2<count($login_gest);$loop2++) {
+						$test2=Prof_deja_gestionnaire($login_gest[$loop2], $aid_id, $indice_aid)->num_rows;
+						if ($test2 != "0") {
+							$msg.="Le compte ".$login_gest[$loop2]." que vous avez tenté de déclarer gestionnaire est déjà associé à cet AID.<br />";
+						} else {
+							if ($login_gest[$loop2] != '') {
+								$reg_data=Sauve_prof_gestionnaire($login_gest[$loop2], $aid_id, $indice_aid);
+								if (!$reg_data) {
+									$msg.="Erreur lors de l'ajout du compte ".$login_gest[$loop2]." comme gestionnaire !<br />";
+								}
+								else {
+									$nb_gest_inscrits++;
+								}
+							}
+						}
+					}
 				}
 
 				if ($count == "1") {
@@ -376,6 +396,10 @@ if (isset($is_posted) && $is_posted) {
 
 				if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
 					$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
+				}
+
+				if((isset($nb_gest_inscrits))&&($nb_gest_inscrits>0)) {
+					$msg.=$nb_gest_inscrits." gestionnaire(s) inscrit(s).<br />";
 				}
 			}
 
@@ -476,6 +500,7 @@ if (isset($is_posted) && $is_posted) {
 				}
 
 				$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
+				$login_gest=isset($_POST['login_gest']) ? $_POST['login_gest'] : array();
 
 				$nb_profs_inscrits=0;
 				for($loop=0;$loop<count($login_prof);$loop++) {
@@ -587,6 +612,25 @@ if (isset($is_posted) && $is_posted) {
 					}
 				}
 
+				// 20200918
+				$nb_gest_inscrits=0;
+				for($loop2=0;$loop2<count($login_gest);$loop2++) {
+					$test2=Prof_deja_gestionnaire($login_gest[$loop2], $aid_id, $indice_aid)->num_rows;
+					if ($test2 != "0") {
+						$msg.="Le compte ".$login_gest[$loop2]." que vous avez tenté de déclarer gestionnaire est déjà associé à cet AID.<br />";
+					} else {
+						if ($login_gest[$loop2] != '') {
+							$reg_data=Sauve_prof_gestionnaire($login_gest[$loop2], $aid_id, $indice_aid);
+							if (!$reg_data) {
+								$msg.="Erreur lors de l'ajout du compte ".$login_gest[$loop2]." comme gestionnaire !<br />";
+							}
+							else {
+								$nb_gest_inscrits++;
+							}
+						}
+					}
+				}
+
 				// Résumé
 				if(isset($_POST["reg_resume"])) {
 					$reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
@@ -625,6 +669,10 @@ if (isset($is_posted) && $is_posted) {
 					$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
 				}
 
+				if((isset($nb_gest_inscrits))&&($nb_gest_inscrits>0)) {
+					$msg.=$nb_gest_inscrits." gestionnaire(s) inscrit(s).<br />";
+				}
+
 				$mess = rawurlencode($msg);
 				//echo "<a href='add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid'>Redir vers add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid</a><br />";
 				header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
@@ -638,6 +686,10 @@ if (isset($is_posted) && $is_posted) {
 
 				if((isset($nb_profs_inscrits))&&($nb_profs_inscrits>0)) {
 					$msg.=$nb_profs_inscrits." professeur(s) inscrit(s).<br />";
+				}
+
+				if((isset($nb_gest_inscrits))&&($nb_gest_inscrits>0)) {
+					$msg.=$nb_gest_inscrits." gestionnaire(s) inscrit(s).<br />";
 				}
 
 				$mess = rawurlencode($msg);
@@ -976,6 +1028,35 @@ if ($_SESSION['statut'] == 'professeur') {
 				</p>";
 				echo "</div>";
 
+				echo "</div>";
+
+			}
+
+			// 20200918
+			$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut FROM utilisateurs u WHERE (u.statut='professeur' OR u.statut='cpe' OR u.statut='scolarite') AND u.etat='actif' ORDER BY u.statut, u.nom, u.prenom;";
+			$res_prof=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_prof)>0) {
+				echo "<h3>Gestionnaires</h3>";
+				echo "<div style='margin-left:3em;'>";
+				$tab_txt=array();
+				$tab_nom_champ=array();
+				$tab_id_champ=array();
+				$tab_valeur_champ=array();
+				echo "<p style='margin-top:1em;'>Inscrire comme gestionnaire(s) de cet AID les personnels cochés&nbsp;:</p>";
+				$cpt_prof=0;
+				while($lig_prof=mysqli_fetch_object($res_prof)) {
+					if($lig_prof->statut!='professeur') {
+						$tab_txt[]=casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2")." <em>(".$lig_prof->statut.")</em>";
+					}
+					else {
+						$tab_txt[]=casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2");
+					}
+					$tab_nom_champ[]="login_gest[]";
+					$tab_id_champ[]="login_gest_".$cpt_prof;
+					$tab_valeur_champ[]=$lig_prof->login;
+					$cpt_prof++;
+				}
+				tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, "checkbox_change_gest", "modif_coche_gest", 5);
 				echo "</div>";
 
 			}
