@@ -52,7 +52,12 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 
 if(isset($id_classe)) {
-	include("../lib/periodes.inc.php");
+	if(preg_match('/^[0-9]{1,}$/', $id_classe)) {
+		include("../lib/periodes.inc.php");
+	}
+	else {
+		unset($id_classe);
+	}
 }
 
 $tab_modalite_accompagnement=get_tab_modalites_accompagnement();
