@@ -976,15 +976,17 @@ while ($i < $nombreligne){
     echo "<td><p class='small'><span class='bold'>{$col[$i][3]}</span></p></td>\n";
     // Si c'est un professeur : matières si c'est un "autre" alors on affiche son statut personnalisé
     if ($col[$i][7] == "autre" AND getSettingValue("statuts_prives") == "y") {
-    	// On récupère son statut personnalisé
-		$query_s = mysqli_query($GLOBALS["mysqli"], "SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$user_login."' AND id_statut = ds.id");
-		if ($query_s) {
+		// On récupère son statut personnalisé
+		$sql="SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$user_login."' AND id_statut = ds.id;";
+		//echo "$sql<br />";
+		$query_s = mysqli_query($GLOBALS["mysqli"], $sql);
+		if (($query_s)&&(mysqli_num_rows($query_s)>0)) {
 
 			$special = mysqli_fetch_array($query_s);
 
 		}else{
 
-			$special = '';
+			$special["nom_statut"] = '';
 
 		}
 
