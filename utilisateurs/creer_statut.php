@@ -498,14 +498,23 @@ if ($query) {
 	while($tab = mysqli_fetch_array($query_u)){
 
 		// On récupère son statut s'il existe
-		$query_s = mysqli_query($GLOBALS["mysqli"], "SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$tab["login"]."'");
-		$statut = mysqli_fetch_array($query_s);
+		$sql="SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$tab["login"]."';";
+		//echo "$sql<br />";
+		$query_s = mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($query_s)>0) {
+			$statut = mysqli_fetch_array($query_s);
 
-		if(($statut["id_statut"]=="")||($statut["id_statut"]=="0")) {
-			$couleur_span_user=" style='color:red'";
+			if(($statut["id_statut"]=="")||($statut["id_statut"]=="0")) {
+				$couleur_span_user=" style='color:red'";
+			}
+			else {
+				$couleur_span_user="";
+			}
 		}
 		else {
-			$couleur_span_user="";
+			$statut=array();
+			$statut["id_statut"]='';
+			$couleur_span_user=" style='color:red'";
 		}
 
 		$aff_users .= '
@@ -524,6 +533,7 @@ if ($query) {
 				<option value="rien" style="color:red">Choix du statut</option>';
 
 		$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
+		//echo "$sql<br />";
 		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		while($rep = mysqli_fetch_array($query)){
 			if ($statut["id_statut"] == $rep["id"]) {
