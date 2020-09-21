@@ -314,11 +314,13 @@ $_POST['accompagnement_4459_ULIS_1']=	ULIS
 }
 
 // =================================
-$chaine_options_classes="
-			<option value=''>---</option>";
+$chaine_options_classes='';
 $sql="SELECT id, classe FROM classes ORDER BY classe";
 $res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_class_tmp)>0){
+	$chaine_options_classes="
+			<option value=''>---</option>";
+
 	$id_class_prec=0;
 	$id_class_suiv=0;
 	$temoin_tmp=0;
@@ -375,7 +377,7 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>
 	<p class='bold'>
 		<a href='".$page_retour."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 
-if($id_class_prec!=0){
+if((isset($id_class_prec))&&($id_class_prec!=0)) {
 	echo "
 		 | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";
  }
@@ -408,7 +410,7 @@ if($chaine_options_classes!="") {
 		</select>\n";
 }
 
-if($id_class_suiv!=0){
+if((isset($id_class_suiv))&&($id_class_suiv!=0)) {
 	echo "
 		 | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";
  }
