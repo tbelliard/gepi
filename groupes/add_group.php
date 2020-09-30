@@ -73,6 +73,7 @@ $reg_clazz = array();
 if (isset($_POST['is_posted'])) {
 	check_token();
 
+    $msg='';
     $error = false;
     $reg_nom_groupe = html_entity_decode($_POST['groupe_nom_court']);
     $reg_nom_complet = html_entity_decode($_POST['groupe_nom_complet']);
