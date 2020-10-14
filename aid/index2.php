@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrunn, Régis Bouguin, Stephane Boireau
+ * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrunn, Régis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -287,6 +287,9 @@ if ($NiveauGestionAid >= 10) {
 if (($NiveauGestionAid >= 10) and ($activer_outils_comp == "y")) {
 ?>
 			<th class="small" style="font-weight: normal;">
+				<?php 
+					//echo "\$NiveauGestionAid=$NiveauGestionAid";
+				?>
 				La fiche est visible sur la 
 				<a href="javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')">
 					partie publique
@@ -413,7 +416,12 @@ while ($i < $nombreligne) {
 	//if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) {
 	if ($NiveauGestionAid_courant >= 1) {
 ?>
-			<td class='medium'><strong><?php echo $aid_num; ?></strong></td>
+			<td class='medium'><strong>
+				<?php 
+					echo $aid_num; 
+					//echo "\$NiveauGestionAid_courant=$NiveauGestionAid_courant";
+				?>
+			</strong></td>
 <?php
 	}
 	// Colonne du nom de l'AID
@@ -484,7 +492,8 @@ while ($i < $nombreligne) {
  <?php } 
 	// colonne "Ajouter, supprimer des gestionnaires"
 	//if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) {
-	if ($NiveauGestionAid_courant >= 10) {
+	//if ($NiveauGestionAid_courant >= 10) {
+	if (($NiveauGestionAid_courant >= 10)||($NiveauGestionAid>=10)) {
 		if (getSettingValue("active_mod_gest_aid")=="y") {
 ?>
 			<td class='medium noprint'>
@@ -496,7 +505,8 @@ while ($i < $nombreligne) {
 		} 
 	} 
 	//if ((NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) and ($activer_outils_comp == "y")) {
-	if (($NiveauGestionAid_courant >= 10) and ($activer_outils_comp == "y")) {
+	//if (($NiveauGestionAid_courant >= 10) and ($activer_outils_comp == "y")) {
+	if ((($NiveauGestionAid_courant >= 10)||($NiveauGestionAid>=10)) and ($activer_outils_comp == "y")) {
 		// La fiche est-elle publique ?
 ?>
 			<td class="center">
