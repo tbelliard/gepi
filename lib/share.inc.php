@@ -59,6 +59,8 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
 function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain", $tab_param_mail=array(), $piece_jointe="") {
 	global $gepiPath, $niveau_arbo;
 
+	//echo "\$niveau_arbo=$niveau_arbo<br />";
+
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
@@ -79,7 +81,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 			if((!isset($niveau_arbo))||("$niveau_arbo"=="")||($niveau_arbo==1)) {
 				require_once("../lib/PHPMailer-5/PHPMailerAutoload.php");
 			}
-			elseif($niveau_arbo=='public') {
+			elseif("$niveau_arbo"=='public') {
 				require_once("../lib/PHPMailer/PHPMailerAutoload.php");
 			}
 			elseif($niveau_arbo==0) {
@@ -98,7 +100,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 				require_once("../lib/PHPMailer/src/SMTP.php");
 				require_once("../lib/PHPMailer/src/Exception.php");
 			}
-			elseif($niveau_arbo=='public') {
+			elseif("$niveau_arbo"=='public') {
 				require_once("../lib/PHPMailer/src/PHPMailer.php");
 				require_once("../lib/PHPMailer/src/SMTP.php");
 				require_once("../lib/PHPMailer/src/Exception.php");
@@ -16485,8 +16487,9 @@ function aidEstAfficheBulletin($aid_id) {
 	global $mysqli;
 	$retour = FALSE;
 	$sqlEstAffiche = "SELECT 1=1 FROM aid WHERE `aid`.`id` = '$aid_id' AND resumeBulletin = 'y' ;";
-	//echo $sqlEstAffiche;
-	if ($mysqli->query($sqlEstAffiche)->num_rows) {
+	//echo $sqlEstAffiche."<br />";
+	$res=$mysqli->query($sqlEstAffiche);
+	if(($res)&&(mysqli_num_rows($res)>0)) {
 		$retour = TRUE;
 	}
 	return $retour;
