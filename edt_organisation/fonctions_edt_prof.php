@@ -519,12 +519,19 @@ function GetColor($id_groupe) {
 			$sql="SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$id_groupe."';";
 			//echo "$sql<br />";
 			$req_matiere = mysqli_query($GLOBALS["mysqli"], $sql);
-			$rep_matiere = mysqli_fetch_array($req_matiere);
-			$matiere = $rep_matiere['id_matiere'];
-			$recher_couleur = "M_".$matiere;
-			$color = GetSettingEdt($recher_couleur);
-			$ReturnColor = "cadreCouleur".$color;
-			$tab_cadreCouleur[$id_groupe]=$ReturnColor;
+			if(mysqli_num_rows($req_matiere)>0) {
+				$rep_matiere = mysqli_fetch_array($req_matiere);
+				$matiere = $rep_matiere['id_matiere'];
+				$recher_couleur = "M_".$matiere;
+				$color = GetSettingEdt($recher_couleur);
+				$ReturnColor = "cadreCouleur".$color;
+				$tab_cadreCouleur[$id_groupe]=$ReturnColor;
+			}
+			else {
+				$matiere = 'Matière';
+				$ReturnColor = 'cadreCouleur';
+				$tab_cadreCouleur[$id_groupe]=$ReturnColor;
+			}
 		}
 	}
 	elseif($temoin_semAB!="") {
