@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue,Eric Lebrun, Christian Chapel
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue,Eric Lebrun, Christian Chapel, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -333,7 +333,11 @@ function reactiver(mavar) {
 
 	if($_SESSION['statut']=='administrateur') {
 		echo " | <a href='trombino_decoupe.php'>Découpe trombinoscope</a>";
+		echo " | <a href='trombinoscopes_admin.php' title=\"Paramétrer le module,
+- Gestion des photos,
+- Uploader de photos,...\"><img src='../images/icons/configure.png' class='icone16' /> Paramétrage</a>";
 	}
+
 	if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $aid != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
 		//echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
 
