@@ -454,7 +454,7 @@ if ($flag == "prof") { ?>
 	}
 ?></p>
 <?php
-    $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
+    $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom, u.statut FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysqli_num_rows($call_liste_data);
 ?>
 <form enctype="multipart/form-data" action="modify_aid.php" method="post">
@@ -485,10 +485,15 @@ if ($flag == "prof") { ?>
         $login_prof = old_mysql_result($call_liste_data, $i, "login");
         $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
         $prenom_prof = old_mysql_result($call_liste_data, $i, "prenom");
+        $statut_prof = old_mysql_result($call_liste_data, $i, "statut");
 ?>
 		<tr>
 			<td>
-				<strong><?php echo $nom_prof." ".$prenom_prof; ?></strong>
+				<strong><?php echo $nom_prof." ".$prenom_prof; 
+				if($statut_prof!='professeur') {
+					echo " <em>(".$statut_prof.")</em>";
+				}
+				?></strong>
 			</td>
 			<td>
 				<a href='../lib/confirm_query.php?liste_cible=<?php echo $login_prof; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_prof_aid<?php echo add_token_in_url(); ?>'>

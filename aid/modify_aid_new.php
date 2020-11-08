@@ -383,7 +383,7 @@ if (isset($aff_liste_m)) {
 			$prof[$p]["id_utilisateur"] = old_mysql_result($req_prof, $p, "id_utilisateur");
 			// On récupère le nom et la civilité de tous les profs
 			$rep_nom = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, civilite FROM utilisateurs WHERE login = '".$prof[$p]["id_utilisateur"]."'"));
-			$aff_aid_d .= "".$rep_nom["civilite"].$rep_nom["nom"]." ";
+			$aff_aid_d .= "".$rep_nom["civilite"]." ".casse_mot($rep_nom["nom"],'maj')." ";
 		}
 
 	$req_ele_aid = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT j.login, e.nom, e.prenom, c.id, c.classe

@@ -987,7 +987,7 @@ if ($_SESSION['statut'] == 'professeur') {
 				echo "</div>";
 			}
 
-			$sql="SELECT DISTINCT u.login, u.nom, u.prenom FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif' ORDER BY u.nom, u.prenom;";
+			$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut FROM utilisateurs u WHERE (u.statut='professeur' OR u.statut='cpe') AND u.etat='actif' ORDER BY u.nom, u.prenom;";
 			$res_prof=mysqli_query($GLOBALS['mysqli'], $sql);
 			if(mysqli_num_rows($res_prof)>0) {
 				echo "<h3>Professeurs</h3>";
@@ -999,7 +999,12 @@ if ($_SESSION['statut'] == 'professeur') {
 				echo "<p style='margin-top:1em;'>Inscrire comme professeur(s) responsable(s) de cet AID les professeurs cochés&nbsp;:</p>";
 				$cpt_prof=0;
 				while($lig_prof=mysqli_fetch_object($res_prof)) {
-					$tab_txt[]=casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2");
+					if($lig_prof->statut=='professeur') {
+						$tab_txt[]=casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2");
+					}
+					else {
+						$tab_txt[]=casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2")." (".$lig_prof->statut.")";
+					}
 					$tab_nom_champ[]="login_prof[]";
 					$tab_id_champ[]="login_prof_".$cpt_prof;
 					$tab_valeur_champ[]=$lig_prof->login;
