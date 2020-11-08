@@ -59,8 +59,6 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
 function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain", $tab_param_mail=array(), $piece_jointe="") {
 	global $gepiPath, $niveau_arbo;
 
-	//echo "\$niveau_arbo=$niveau_arbo<br />";
-
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
@@ -13374,6 +13372,10 @@ function get_infos_creneau($id_creneau) {
 			$tab['fin_court']=substr($lig->heurefin_definie_periode,0,5);
 			$tab['info']=$lig->nom_definie_periode." (".$tab['debut_court']." - ".$tab['fin_court'].")";
 			$tab['info_html']=$lig->nom_definie_periode." (<em>".$tab['debut_court']." - ".$tab['fin_court']."</em>)";
+
+			$tmp_tab1=explode(':', $tab['debut']);
+			$tmp_tab2=explode(':', $tab['fin']);
+			$tab['duree_minutes']=($tmp_tab2[0]*60+$tmp_tab2[1])-($tmp_tab1[0]*60+$tmp_tab1[1]);
 		}
 	}
 
@@ -20152,6 +20154,46 @@ function get_tab_clas_pp($login_prof) {
 			$tab['classe'][]=$lig->classe;
 		}
 		$res->close();
+	}
+
+	return $tab;
+}
+
+function check_edt_cours2() {
+	global $mysqli;
+	//INSERT INTO setting SET name='use_edt_cours2', value='y';
+	$use_edt_cours2=getSettingAOui('use_edt_cours2');
+	if($use_edt_cours2) {
+		$sql="CREATE TABLE IF NOT EXISTS `edt_cours2` (`id_cours` int(11) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL, `id_aid` varchar(10) NOT NULL, `id_salle` varchar(3) NOT NULL, `jour_semaine` varchar(10) NOT NULL, `h_debut` varchar(10) NOT NULL, `duree_minutes` INT(11) NOT NULL default '60', `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(10) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', `login_prof` varchar(50) NOT NULL, `id_cours1` int(11) NOT NULL DEFAULT '0', PRIMARY KEY  (`id_cours`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$create_table=mysqli_query($mysqli, $sql);
+		if($create_table) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+function get_niveau_from_classe($id_classe) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT DISTINCT m.mef_code, m.libelle_long FROM mef m, 
+					eleves e, 
+					j_eleves_classes jec 
+				WHERE m.mef_code=e.mef_code AND 
+					e.login=jec.login AND 
+					jec.id_classe='".$id_classe."';";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[$lig->mef_code]=$lig->libelle_long;
+		}
 	}
 
 	return $tab;

@@ -2631,19 +2631,19 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 		$retour.="<table style ='width:100%;'>\n";
 		$retour.="<caption class='invisible'>Tableau de choix des utilisateurs</caption>\n";
 		$retour.="<tr style='text-align:center; vertical-align: top;'>\n";
-		$retour.="<td style='text-align:left' >\n";
+		$retour.="<td style='text-align:left' ><p>\n";
 
 		$cpt=0;
 		$statut_prec="";
 		while($lig=mysqli_fetch_object($res)) {
 			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
-				$retour.="</td>\n";
-				$retour.="<td style='text-align:left' >\n";
+				$retour.="</p></td>\n";
+				$retour.="<td style='text-align:left' ><p>\n";
 			}
 
 			if($lig->statut!=$statut_prec) {
 				if($avec_titre_statut=="y") {
-					$retour.="<p><strong>".ucfirst($lig->statut)."</strong><br />\n";
+					$retour.="<strong>".ucfirst($lig->statut)."</strong><br />\n";
 				}
 				$statut_prec=$lig->statut;
 			}
@@ -2665,7 +2665,7 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 
 			$cpt++;
 		}
-		$retour.="</td>\n";
+		$retour.="</p></td>\n";
 		$retour.="</tr>\n";
 		$retour.="</table>\n";
 
@@ -7629,4 +7629,303 @@ function insere_lien_recherche_eleve($float="") {
 	}
 }
 
+
+/*
+MariaDB [gepidev]> select id_definie_periode as id,nom_definie_periode as nom,heuredebut_definie_periode as debut,heurefin_definie_periode as fin, type_creneaux, jour_creneau from edt_creneaux order by heuredebut_definie_periode;
++----+-----+----------+----------+---------------+--------------+
+| id | nom | debut    | fin      | type_creneaux | jour_creneau |
++----+-----+----------+----------+---------------+--------------+
+|  1 | M1  | 08:00:00 | 08:55:00 | cours         | NULL         |
+|  2 | M2  | 08:55:00 | 09:55:00 | cours         | NULL         |
+| 31 | P1  | 09:55:00 | 10:10:00 | pause         | NULL         |
+|  3 | M3  | 10:10:00 | 11:05:00 | cours         | NULL         |
+|  4 | M4  | 11:05:00 | 12:05:00 | cours         | NULL         |
+| 33 | R1  | 12:10:00 | 12:45:00 | repas         | NULL         |
+| 34 | S0  | 12:45:00 | 13:35:00 | cours         | NULL         |
+|  5 | S1  | 13:35:00 | 14:30:00 | cours         | NULL         |
+| 39 | P2  | 14:30:00 | 14:45:00 | pause         | NULL         |
+|  6 | S2  | 14:45:00 | 15:40:00 | cours         | NULL         |
+|  7 | S3  | 15:45:00 | 16:35:00 | cours         | NULL         |
+| 38 | S4  | 16:35:00 | 17:29:00 | pause         | NULL         |
++----+-----+----------+----------+---------------+--------------+
+12 rows in set (0.001 sec)
+
+MariaDB [gepidev]> 
+*/
+function avertissement_fin_cours_proche($niveau_arbo=0) {
+	global $mysqli;
+
+	$retour='';
+
+	if(getPref($_SESSION['login'], 'avertir_fin_cours_proche', 'n')=='y') {
+		$delai=getPref($_SESSION['login'], 'avertir_fin_cours_proche_delai', 120);
+		$instant1=strftime('%H:%M:%S');
+		$instant2=strftime('%H:%M:%S', time()+$delai);
+		$sql="SELECT * FROM edt_creneaux WHERE heuredebut_definie_periode<'".$instant1."' AND heurefin_definie_periode>'".$instant2."'";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$ts=mysql_date_to_unix_timestamp($lig->heurefin_definie_periode);
+			if(preg_match('/^[0-9]{1,}$/', $ts)) {
+
+				// AJOUTER UN TEST SUR jour établissement ouvert
+
+				if(time()<$ts-$delai) {
+
+					$avertissement_fin_cours_proche_sound='libreoffice_apert.wav';
+					if ($niveau_arbo == "0") {
+						$chemin_sound="./sounds/".$avertissement_fin_cours_proche_sound;
+					} elseif ($niveau_arbo == "1") {
+						$chemin_sound="../sounds/".$avertissement_fin_cours_proche_sound;
+					} elseif ($niveau_arbo == "2") {
+						$chemin_sound="../../sounds/".$avertissement_fin_cours_proche_sound;
+					} elseif ($niveau_arbo == "3") {
+						$chemin_sound="../../../sounds/".$avertissement_fin_cours_proche_sound;
+					}
+					else {
+						$chemin_sound="../sounds/".$avertissement_fin_cours_proche_sound;
+					}
+
+					if(file_exists($chemin_sound)) {
+
+						$nb_millisecondes=($ts-time()-$delai)*1000;
+
+						$retour ="<audio id='id_avertissement_fin_cours_proche_sound' preload='auto'>
+				<source src='".$chemin_sound."' />
+			</audio>
+			<script type='text/javascript'>
+			  function play_avertissement_fin_cours_proche_sound() {
+				  if(document.getElementById('id_avertissement_fin_cours_proche_sound')) {
+					  document.getElementById('id_avertissement_fin_cours_proche_sound').play();
+				  }
+			  }
+
+			  setTimeout('play_avertissement_fin_cours_proche_sound()', $nb_millisecondes);
+			  //alert('On va lancer une alerte de fin de cours proche dans ".$nb_millisecondes." millisecondes');
+			</script>";
+
+					return $retour;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+function avertissement_fin_cours($niveau_arbo=0) {
+	global $mysqli;
+
+	$retour='';
+
+	//saveSetting('avertissement_fin_cours', 'y');
+
+	// Pour tester sur un login particulier, remplacer le % par un login particulier.
+	$restreindre_login_test=" AND login LIKE '%'";
+
+	if((getSettingAOui('avertissement_fin_cours'))&&
+	($_SESSION['statut']=='professeur')) {
+		// Rechercher le cours courant du professeur
+		$jour=strftime('%A');
+		// DEBUG : Pour tester un jour particulier
+		//$jour='mardi';
+		$sql="SELECT * FROM edt_cours ec, 
+					edt_creneaux ecr 
+				WHERE ec.login_prof='".$_SESSION['login']."' AND 
+					ec.id_definie_periode=ecr.id_definie_periode AND 
+					ec.jour_semaine='".$jour."' AND 
+					ecr.heuredebut_definie_periode<'".strftime('%H:%M:%S')."' AND 
+					ecr.heurefin_definie_periode>'".strftime('%H:%M:%S')."'".$restreindre_login_test.";";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			$type_semaine_courante='';
+			$sql="SELECT * FROM edt_semaines WHERE num_edt_semaine='".strftime('%U')."';";
+			//echo "$sql<br />";
+			$res2=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res2)>0) {
+				$lig2=mysqli_fetch_object($res2);
+				$type_semaine_courante=$lig2->type_edt_semaine;
+			}
+
+			while($lig=mysqli_fetch_object($res)) {
+				if(($lig->id_semaine!=0)&&($lig->id_semaine==$type_semaine_courante)) {
+					if($lig->id_groupe!=0) {
+						$id_groupe=$lig->id_groupe;
+					}
+					elseif($lig->id_aid!=0) {
+						$id_aid=$lig->id_aid;
+						// PB : On peut avoir des niveaux différents pour un AID
+					}
+					break;
+				}
+				else {
+					if($lig->id_groupe!=0) {
+						$id_groupe=$lig->id_groupe;
+					}
+					elseif($lig->id_aid!=0) {
+						$id_aid=$lig->id_aid;
+						// PB : On peut avoir des niveaux différents pour un AID
+					}
+					break;
+				}
+			}
+
+			if(isset($id_groupe)) {
+				if((strftime('%H:%M')>="08:00")&&(strftime('%H:%M')<="08:55")) {
+					$ts=mktime(8, 55);
+				}
+				elseif((strftime('%H:%M')>="10:15")&&(strftime('%H:%M')<="11:05")) {
+					$ts=mktime(11, 5);
+				}
+				elseif((strftime('%H:%M')>="12:40")&&(strftime('%H:%M')<="13:35")) {
+					$ts=mktime(13, 35);
+				}
+				// A CORRIGER 14:36->14:50
+				elseif((strftime('%H:%M')>="14:36")&&(strftime('%H:%M')<="15:35")) {
+					$ts=mktime(15, 35);
+				}
+				else {
+					$sql="SELECT jgc.id_classe FROM j_groupes_classes jgc, 
+										j_eleves_classes jec 
+									WHERE jgc.id_groupe='".$id_groupe."' AND 
+										jgc.id_classe=jec.id_classe;";
+					//echo "$sql<br />";
+					$res=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig=mysqli_fetch_object($res)) {
+							$tab=get_niveau_from_classe($lig->id_classe);
+							if(count($tab)>0) {
+								foreach($tab as $mef_code => $niveau) {
+									if($niveau!='') {
+										if(preg_match('/^6EME/', $niveau)) {
+											if((strftime('%H:%M')>="09:00")&&(strftime('%H:%M')<="09:45")) {
+												$ts=mktime(9, 45);
+											}
+											elseif((strftime('%H:%M')>="11:10")&&(strftime('%H:%M')<="12:05")) {
+												$ts=mktime(12, 5);
+											}
+											elseif((strftime('%H:%M')>="13:35")&&(strftime('%H:%M')<="14:20")) {
+												$ts=mktime(14, 20);
+											}
+											elseif((strftime('%H:%M')>="15:40")&&(strftime('%H:%M')<="16:25")) {
+												$ts=mktime(16, 25);
+											}
+										}
+										elseif(preg_match('/^5EME/', $niveau)) {
+											if((strftime('%H:%M')>="09:00")&&(strftime('%H:%M')<="09:50")) {
+												$ts=mktime(9, 50);
+											}
+											elseif((strftime('%H:%M')>="11:10")&&(strftime('%H:%M')<="12:00")) {
+												$ts=mktime(12, 0);
+											}
+											elseif((strftime('%H:%M')>="13:35")&&(strftime('%H:%M')<="14:25")) {
+												$ts=mktime(14, 25);
+											}
+											elseif((strftime('%H:%M')>="15:40")&&(strftime('%H:%M')<="16:25")) {
+												$ts=mktime(16, 25);
+											}
+										}
+										elseif(preg_match('/^4EME/', $niveau)) {
+											if((strftime('%H:%M')>="09:00")&&(strftime('%H:%M')<="09:55")) {
+												$ts=mktime(9, 55);
+											}
+											elseif((strftime('%H:%M')>="11:10")&&(strftime('%H:%M')<="12:05")) {
+												$ts=mktime(12, 5);
+											}
+											elseif((strftime('%H:%M')>="13:35")&&(strftime('%H:%M')<="14:30")) {
+												$ts=mktime(14, 30);
+											}
+											elseif((strftime('%H:%M')>="15:40")&&(strftime('%H:%M')<="16:30")) {
+												$ts=mktime(16, 30);
+											}
+										}
+										elseif(preg_match('/^3EME/', $niveau)) {
+											if((strftime('%H:%M')>="09:00")&&(strftime('%H:%M')<="10:00")) {
+												$ts=mktime(10, 0);
+											}
+											elseif((strftime('%H:%M')>="11:10")&&(strftime('%H:%M')<="12:00")) {
+												$ts=mktime(12, 0);
+											}
+											elseif((strftime('%H:%M')>="13:35")&&(strftime('%H:%M')<="14:35")) {
+												$ts=mktime(14, 35);
+											}
+											elseif((strftime('%H:%M')>="15:40")&&(strftime('%H:%M')<="16:35")) {
+												$ts=mktime(16, 35);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if(isset($ts)) {
+					//echo "ts=$ts soit une fin de cours à ".strftime("%H:%M", $ts).".<br />";
+
+					$nb_millisecondes=($ts-time())*1000;
+
+					// DEBUG : Pour tester:
+					//$nb_millisecondes=5000;
+
+					if($nb_millisecondes>0) {
+
+						$avertissement_fin_cours_sound='libreoffice_gong.wav';
+						if ($niveau_arbo == "0") {
+							$chemin_sound="./sounds/".$avertissement_fin_cours_sound;
+							$chemin_sound_php="./sounds/sound.php";
+						} elseif ($niveau_arbo == "1") {
+							$chemin_sound="../sounds/".$avertissement_fin_cours_sound;
+							$chemin_sound_php="../sounds/sound.php";
+						} elseif ($niveau_arbo == "2") {
+							$chemin_sound="../../sounds/".$avertissement_fin_cours_sound;
+							$chemin_sound_php="../../sounds/sound.php";
+						} elseif ($niveau_arbo == "3") {
+							$chemin_sound="../../../sounds/".$avertissement_fin_cours_sound;
+							$chemin_sound_php="../../../sounds/sound.php";
+						}
+						else {
+							$chemin_sound="../sounds/".$avertissement_fin_cours_sound;
+							$chemin_sound_php="../sounds/sound.php";
+						}
+
+						if(file_exists($chemin_sound)) {
+
+							//echo "Le fichier son est $chemin_sound<br />";
+
+							$retour ="<audio id='id_avertissement_fin_cours_sound' preload='auto'>
+					<source src='".$chemin_sound."' />
+				</audio>
+
+				<script type='text/javascript'>
+				  function play_avertissement_fin_cours_sound() {
+
+					  if(document.getElementById('id_avertissement_fin_cours_sound')) {
+						  //alert('Lancement alerte de fin de cours.');
+						  document.getElementById('id_avertissement_fin_cours_sound').play();
+						  //alert('Après le lancement du son.');
+						  //window.open('".$chemin_sound."', 'Fin de cours');
+						  //window.open('".$chemin_sound_php."', 'Fin de cours');
+					  }
+
+					//var audio_fin_cours = new Audio('".$chemin_sound."');
+					//audio_fin_cours.play();
+				  }
+
+				  setTimeout('play_avertissement_fin_cours_sound()', $nb_millisecondes);
+				  //alert('On va lancer une alerte de fin de cours dans ".$nb_millisecondes." millisecondes');
+				</script>";
+
+						return $retour;
+						}
+
+					}
+				}
+			}
+
+		}
+	}
+
+}
 ?>
