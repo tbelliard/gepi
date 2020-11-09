@@ -7871,7 +7871,7 @@ function avertissement_fin_cours($niveau_arbo=0) {
 
 					if($nb_millisecondes>0) {
 
-						$avertissement_fin_cours_sound='libreoffice_gong.wav';
+						$avertissement_fin_cours_sound='libreoffice_theetone.wav';
 						if ($niveau_arbo == "0") {
 							$chemin_sound="./sounds/".$avertissement_fin_cours_sound;
 							$chemin_sound_php="./sounds/sound.php";
