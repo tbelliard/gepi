@@ -7721,7 +7721,7 @@ function avertissement_fin_cours($niveau_arbo=0) {
 	//saveSetting('avertissement_fin_cours', 'y');
 
 	// Pour tester sur un login particulier, remplacer le % par un login particulier.
-	$restreindre_login_test=" AND login LIKE '%'";
+	$restreindre_login_test=" AND login_prof LIKE '%'";
 
 	if((getSettingAOui('avertissement_fin_cours'))&&
 	($_SESSION['statut']=='professeur')) {
