@@ -153,9 +153,13 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	
 	include('alerte_popup.php');
 
-	echo avertissement_fin_cours_proche($niveau_arbo);
+	if(isset($_SESSION['login'])) {
+		echo avertissement_fin_cours_proche($niveau_arbo);
+	}
 
-	echo avertissement_fin_cours($niveau_arbo);
+	if((isset($_SESSION['login']))&&(isset($_SESSION['statut']))) {
+		echo avertissement_fin_cours($niveau_arbo);
+	}
 ?>
 <?php
 // On ferme la connexion à la base
