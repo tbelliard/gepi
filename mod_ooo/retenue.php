@@ -192,23 +192,35 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 
 	//On Traite ici la date et l'heure de la retenue posée
 	if ($mode=='module_retenue') {
-	     $sql_sanction = "SELECT * FROM `s_retenues` WHERE `id_sanction`=$id_sanction";
-	     $res_sanction=mysqli_query($GLOBALS["mysqli"], $sql_sanction);
-	    if(mysqli_num_rows($res_sanction)>0) {
+		$sql_sanction = "SELECT * FROM `s_retenues` WHERE `id_sanction`=$id_sanction";
+		$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql_sanction);
+		if(mysqli_num_rows($res_sanction)>0) {
 			$lig_sanction=mysqli_fetch_object($res_sanction);
 			
 			$date_retenue = datemysql_to_jj_mois_aaaa($lig_sanction->date,'-','o');
 			
 			if ($lig_sanction->duree>1) {
-			  $duree = $lig_sanction->duree." heures";
+				$duree = $lig_sanction->duree." heures";
 			} else {
-			  $duree = $lig_sanction->duree." heure";
+				$duree = $lig_sanction->duree." heure";
 			}
 			
 			$travail = $lig_sanction->travail;
+			//if(preg_replace('/\s*/', '//', $travail)=='Travail:') {
+			if($travail=='Travail : ') {
+				$travail='';
+			}
+			// 20201117:
+			// Si il y a des documents joints...
+			$tab_docs_joints=get_documents_joints($id_sanction, 'sanction');
+			foreach($tab_docs_joints as $current_doc_joint) {
+				if($travail!=''){ $travail.="\n";}
+				$travail.=$current_doc_joint;
+			}
+
 			$lieu = $lig_sanction->lieu;
-            
-            if ($lig_sanction->materiel) $materiel = $lig_sanction->materiel;
+
+			if ($lig_sanction->materiel) $materiel = $lig_sanction->materiel;
 			
 			
 			//recherche de l'heure de début. C'est le crénaux qui est enregistré.
@@ -216,29 +228,29 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			//echo $sql_heure;
 			$res_heure = mysqli_query($GLOBALS["mysqli"], $sql_heure);
 			if(mysqli_num_rows($res_heure)>0) {
-			    $lig_heure=mysqli_fetch_object($res_heure); 
+				$lig_heure=mysqli_fetch_object($res_heure); 
 				$h_deb = $lig_heure->heuredebut_definie_periode;
 				//on affiche que les 5 1er caratèeres de l'heure
 				$h_deb=mb_substr($h_deb,0,5);
 				//remplacement des : par H dans la chaine
 				$h_deb=str_replace(":","H", $h_deb);
 			} else {
-			  
-			  // LE CRENEAU EST INCONNU on se retrouve dans le cas d'une heure saisie à la main.
-			  $h_deb = $lig_sanction->heure_debut;
+
+				// LE CRENEAU EST INCONNU on se retrouve dans le cas d'une heure saisie à la main.
+				$h_deb = $lig_sanction->heure_debut;
 			}
 
 			//Traitement d'un eventuel report
 			$nb_report=nombre_reports($lig_sanction->id_sanction,0);
 			if ($nb_report<>0) {
-			  $texte_report="REPORT N° ".$nb_report;
+				$texte_report="REPORT N° ".$nb_report;
 			} else {
-			  $texte_report="";
+				$texte_report="";
 			}
 			
-	    } else {
+		} else {
 			return "LA RETENUE EST INCONNUE";
-		}     
+		}
 	} // mode = module retenue	
 } //if mode = module discipline  
 
