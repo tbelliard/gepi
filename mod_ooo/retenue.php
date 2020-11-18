@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -211,8 +211,11 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 				$travail='';
 			}
 			// 20201117:
-			// Si il y a des documents joints...
 			$tab_docs_joints=get_documents_joints($id_sanction, 'sanction');
+			//$f=fopen("../temp/get_documents_joints_".strftime("%Y%m%d_%H%M").".txt", "a+");
+			//$f=fopen("/tmp/get_documents_joints_".strftime("%Y%m%d_%H%M").".txt", "a+");
+			//fwrite($f, "count(\$tab_docs_joints)=".count($tab_docs_joints)."\n");
+			//fclose($f);
 			foreach($tab_docs_joints as $current_doc_joint) {
 				if($travail!=''){ $travail.="\n";}
 				$travail.=$current_doc_joint;
