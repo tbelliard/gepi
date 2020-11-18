@@ -453,6 +453,25 @@ echo add_token_field();
 		<label for='cdt_afficher_volume_docs_joints'> Afficher dans le CDT le volume total de documents joints.</label>
 	  </p>
 
+	  <p>
+		<label for='cdt_nb_doc_joints'> Nombre maximal de documents joints envoyés lors d'un enregistrement&nbsp;: </label>
+		<input type="text"
+			   name="cdt_nb_doc_joints"
+			   id="cdt_nb_doc_joints"
+			   onchange='changement();'
+			   title="Nombre maximal de documents joints envoyés lors d'un enregistrement"
+			   size="2"
+			   value="<?php
+				$cdt_nb_doc_joints=getSettingValue('cdt_nb_doc_joints');
+				if(!preg_match('/^[0-9]{1,}$/', $cdt_nb_doc_joints)) {
+					$cdt_nb_doc_joints=3;
+				}
+				echo $cdt_nb_doc_joints;
+			   ?>"
+			   onKeyDown="clavier_2(this.id,event,0,10);"
+			   />
+	  </p>
+
 	  <h2>Visa des cahiers de texte</h2>
 	  <fieldset class="no_bordure">
 		<legend class="invisible">Visa</legend>

@@ -22,6 +22,9 @@ Carnet de notes:
   d'un changement de groupe d'élève dans une même classe.
 - Possibilité de choisir entre nom complet et nom court des évaluations dans les relevés de notes.
 
+Cahiers de textes 1 et 2:
+- Possibilité de choisir le nombre de fichiers uploadés lors de l'enregistrement d'une notice.
+
 Cahiers de textes 2:
 - Ajout d'une visionneuse Instrumenpoche.
 - Mise à jour de l'appli GeoGebra.
@@ -32,6 +35,7 @@ Discipline:
   mais sans afficher les détails de l'incident 
   (pour inciter à un contact téléphonique avec le CPE).
 - Ajout de tableaux des derniers incidents et des sanctions à venir.
+- Ajout de la liste des PJ dans la variable 'travail' sur le fichier produit.
 
 Orientation:
 - Facilité de saisie globale de l'orientation pour une classe donnée.

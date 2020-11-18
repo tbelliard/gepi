@@ -866,7 +866,11 @@ echo "<script type='text/javascript'>
 				?>
 			</tr>
 			<?php
+			// 20201117
 			$nb_doc_choisi='3';
+			if(preg_match('/[0-9]{1,}/', getSettingValue('cdt_nb_doc_joints'))) {
+				$nb_doc_choisi=getSettingValue('cdt_nb_doc_joints');
+			}
 			$nb_doc_choisi_compte='0';
 			while($nb_doc_choisi_compte<$nb_doc_choisi) { ?>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_cellule[$type_couleur]; ?>;">

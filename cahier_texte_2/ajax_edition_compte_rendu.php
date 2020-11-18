@@ -905,10 +905,10 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 			<?php
 			// 20201117
 			$nb_doc_choisi='3';
-			// INSERT INTO setting SET name='cdt2_nb_doc_joints', value='10';
-			//saveSetting('cdt2_nb_doc_joints', 10);
-			if(preg_match('/[0-9]{1,}/', getSettingValue('cdt2_nb_doc_joints'))) {
-				$nb_doc_choisi=getSettingValue('cdt2_nb_doc_joints');
+			// INSERT INTO setting SET name='cdt_nb_doc_joints', value='10';
+			//saveSetting('cdt_nb_doc_joints', 10);
+			if(preg_match('/[0-9]{1,}/', getSettingValue('cdt_nb_doc_joints'))) {
+				$nb_doc_choisi=getSettingValue('cdt_nb_doc_joints');
 			}
 			$nb_doc_choisi_compte='0';
 			while($nb_doc_choisi_compte<$nb_doc_choisi) { ?>

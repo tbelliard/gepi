@@ -181,6 +181,24 @@ if (isset($_POST['is_posted'])) {
 		elseif (!saveSetting("cdt_afficher_volume_docs_joints", "n")) {
 			$msg .= "Erreur lors de l'enregistrement de l'affichage du volume des documents joints.<br />";
 		}
+
+		if (isset($_POST['cdt_nb_doc_joints'])) {
+			//$cdt_nb_doc_joints=preg_match('/^[0-9]{1,}$/', $_POST['cdt_nb_doc_joints']) ? $_POST['cdt_nb_doc_joints'] : 3;
+			if(!preg_match('/^[0-9]{1,}$/', $_POST['cdt_nb_doc_joints'])) {
+				$msg.= "Erreur : Valeur invalide pour 'cdt_nb_doc_joints' : <u>".$_POST['cdt_nb_doc_joints']."</u><br />";
+			}
+			else {
+				$cdt_nb_doc_joints=$_POST['cdt_nb_doc_joints'];
+				if($cdt_nb_doc_joints>ini_get('max_file_uploads')) {
+					$msg.="La valeur proposée pour 'cdt_nb_doc_joints' dépasse le maximum autorisé par le serveur (".ini_get('max_file_uploads').").<br />";
+					$cdt_nb_doc_joints=ini_get('max_file_uploads');
+				}
+
+				if (!saveSetting("cdt_nb_doc_joints", $cdt_nb_doc_joints)) {
+					$msg .= "Erreur lors de l'enregistrement du délai de visualisation des devoirs<br />";
+				}
+			}
+		}
 	}
 
 

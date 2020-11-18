@@ -272,11 +272,11 @@ if (!empty($doc_file['name'][0])) {
         }
 	$dest_dir = '../documents/'.$multi.'cl'.$ctCompteRendu->getIdCt();
 
-	//il y a au plus trois documents joints dans l'interface de saisie
 	// 20201117
+	// il y avait au plus trois documents joints dans l'interface de saisie
 	$nb_doc_choisi='3';
-	if(preg_match('/[0-9]{1,}/', getSettingValue('cdt2_nb_doc_joints'))) {
-		$nb_doc_choisi=getSettingValue('cdt2_nb_doc_joints');
+	if(preg_match('/[0-9]{1,}/', getSettingValue('cdt_nb_doc_joints'))) {
+		$nb_doc_choisi=getSettingValue('cdt_nb_doc_joints');
 	}
 	for ($index_doc=0; $index_doc < $nb_doc_choisi; $index_doc++) {
 		if(!empty($doc_file['tmp_name'][$index_doc])) {
