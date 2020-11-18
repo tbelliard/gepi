@@ -593,7 +593,7 @@ echo "<input type='text' name='debut' value='$debut' size='5' /> \n";
 
 
 if(isset($nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche)){
-	if($limit+$debut<$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche){
+	if((preg_match("/^[0-9]{1,}$/", $limit))&&($limit+$debut<$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche)) {
 		echo "<input type='button' value='>>' onClick='tranche_suivante()' /> \n";
 	}
 }
