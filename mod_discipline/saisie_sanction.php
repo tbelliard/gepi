@@ -1448,6 +1448,13 @@ if(isset($odt)&&
 				$date_retour=formate_date($lig_sanction->date_retour);
 				$heure_retour=$lig_sanction->heure_retour;
 				$travail=$lig_sanction->travail;
+
+				// 20201120:
+				$tab_docs_joints=get_documents_joints($id_sanction, 'sanction');
+				foreach($tab_docs_joints as $current_doc_joint) {
+					if($travail!=''){ $travail.="\n";}
+					$travail.=$current_doc_joint;
+				}
 			}
 		}
 		elseif($odt=='autre') {
