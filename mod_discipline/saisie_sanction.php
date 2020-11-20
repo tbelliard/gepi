@@ -1309,7 +1309,16 @@ if(isset($odt)&&
 				$date=$lig_sanction->date;
 				$heure_debut=$lig_sanction->heure_debut;
 				$duree=$lig_sanction->duree;
+
 				$travail=preg_replace("/^Travail : /", "", $lig_sanction->travail);
+
+				// 20201120:
+				$tab_docs_joints=get_documents_joints($id_sanction, 'sanction');
+				foreach($tab_docs_joints as $current_doc_joint) {
+					if($travail!=''){ $travail.="\n";}
+					$travail.=$current_doc_joint;
+				}
+
 				$lieu=ucfirst($lig_sanction->lieu);
 				$materiel=$lig_sanction->materiel;
 			}
