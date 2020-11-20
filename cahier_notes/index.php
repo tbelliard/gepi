@@ -944,74 +944,88 @@ id_groupe=".$current_group["id"]."</p>";
 	}
 
 	if (($empty != 'yes')&&(getSettingAOui('active_bulletins'))) {
-		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
-		$test_jgv=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($test_jgv)==0) {
-			//if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
-			if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
-				echo "<h3 class='gepi'>Saisie du bulletin ($nom_periode[$periode_num])</h3>\n";
-	
-				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
-				$res_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-				$nb_ele_grp=mysqli_num_rows($res_ele_grp);
-	
-				$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND statut!='-';";
-				$res_mn=mysqli_query($GLOBALS["mysqli"], $sql);
-				$nb_mn=mysqli_num_rows($res_mn);
-				if($nb_mn==0) {
-					$info_mn="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
-				}
-				else {
-					if($nb_mn==$nb_ele_grp) {
-						$info_mn="<span style='color:green; font-size: small;'>($nb_mn/$nb_ele_grp)</span>";
-					}
-					else {
-						$info_mn="<span style='color:red; font-size: small;'>($nb_mn/$nb_ele_grp)</span>";
-					}
-				}
-	
-				$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND appreciation!='';";
-				$res_ma=mysqli_query($GLOBALS["mysqli"], $sql);
-				$nb_ma=mysqli_num_rows($res_ma);
-				if($nb_ma==0) {
-					$info_ma="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
-				}
-				else {
-					if($nb_ma==$nb_ele_grp) {
-						$info_ma="<span style='color:green; font-size: small;'>($nb_ma/$nb_ele_grp)</span>";
-					}
-					else {
-						$info_ma="<span style='color:red; font-size: small;'>($nb_ma/$nb_ele_grp)</span>";
-					}
-				}
-	
-				echo "<ul><li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Saisie des moyennes</a> $info_mn</li>\n";
-				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Saisie des appréciations</a> $info_ma</li></ul>\n";
-			} else {
-				echo "<h3 class='gepi'>Visualisation du bulletin ($nom_periode[$periode_num])</h3>\n";
-				echo "<ul>\n";
-				if(acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_num)) {
-					echo "<li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Accès exceptionnel à la correction des moyennes</a> (<b>".$gepiClosedPeriodLabel."</b>).</li>\n";
-				}
-				else {
-					echo "<li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Visualisation des moyennes</a> (<b>".$gepiClosedPeriodLabel."</b>).</li>\n";
-				}
-				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Visualisation des appréciations</a> (<b>".$gepiClosedPeriodLabel."</b>).</li></ul>\n";
-			}
 
-			echo "
-<p style='margin-top:2em;'><em>NOTES&nbsp;:</em></p>
-<ul>
-	<li>Lorsque la période est close, seule la consultation des notes saisies est possible.</li>
-	<li>Lorsque la période est ouverte en saisie, vous pouvez créér/modifier des évaluations, des ".getSettingValue("gepi_denom_boite")."s,...</li>
-	<li>
-		En fin de période, il convient de provoquer une recopie des moyennes du carnet de notes vers le bulletin.<br />
-		Cela permet de signaler à la personne éditant les bulletins que l'on a fini ses saisies.<br />
-		Cela permet également de modifier les moyennes apparaissant.<br />
-		Par exemple, vous pouvez décider de ne pas mettre de moyenne sur le bulletin pour un élève qui n'aurait été présent qu'à une évaluation<br />
-		(<em>si vous estimez que la note n'est pas représentative du niveau de l'élève</em>).
-	</li>
-</ul>";
+		// 20201120
+		$tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
+		$pas_de_bulletin=true;
+		foreach($current_group['classes']['list'] as $tmp_id_classe) {
+			if(!in_array($tmp_id_classe, $tab_id_classe_exclues_module_bulletins)) {
+				$pas_de_bulletin=false;
+				break;
+			}
+		}
+
+		if(!$pas_de_bulletin) {
+
+			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
+			$test_jgv=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_jgv)==0) {
+				//if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
+				if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
+					echo "<h3 class='gepi'>Saisie du bulletin ($nom_periode[$periode_num])</h3>\n";
+		
+					$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
+					$res_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_ele_grp=mysqli_num_rows($res_ele_grp);
+		
+					$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND statut!='-';";
+					$res_mn=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_mn=mysqli_num_rows($res_mn);
+					if($nb_mn==0) {
+						$info_mn="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
+					}
+					else {
+						if($nb_mn==$nb_ele_grp) {
+							$info_mn="<span style='color:green; font-size: small;'>($nb_mn/$nb_ele_grp)</span>";
+						}
+						else {
+							$info_mn="<span style='color:red; font-size: small;'>($nb_mn/$nb_ele_grp)</span>";
+						}
+					}
+		
+					$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND appreciation!='';";
+					$res_ma=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_ma=mysqli_num_rows($res_ma);
+					if($nb_ma==0) {
+						$info_ma="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
+					}
+					else {
+						if($nb_ma==$nb_ele_grp) {
+							$info_ma="<span style='color:green; font-size: small;'>($nb_ma/$nb_ele_grp)</span>";
+						}
+						else {
+							$info_ma="<span style='color:red; font-size: small;'>($nb_ma/$nb_ele_grp)</span>";
+						}
+					}
+
+					echo "<ul><li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Saisie des moyennes</a> $info_mn</li>\n";
+					echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Saisie des appréciations</a> $info_ma</li></ul>\n";
+				} else {
+					echo "<h3 class='gepi'>Visualisation du bulletin ($nom_periode[$periode_num])</h3>\n";
+					echo "<ul>\n";
+					if(acces_exceptionnel_saisie_bull_note_groupe_periode($id_groupe, $periode_num)) {
+						echo "<li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Accès exceptionnel à la correction des moyennes</a> (<b>".$gepiClosedPeriodLabel."</b>).</li>\n";
+					}
+					else {
+						echo "<li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Visualisation des moyennes</a> (<b>".$gepiClosedPeriodLabel."</b>).</li>\n";
+					}
+					echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Visualisation des appréciations</a> (<b>".$gepiClosedPeriodLabel."</b>).</li></ul>\n";
+				}
+
+				echo "
+	<p style='margin-top:2em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>Lorsque la période est close, seule la consultation des notes saisies est possible.</li>
+		<li>Lorsque la période est ouverte en saisie, vous pouvez créér/modifier des évaluations, des ".getSettingValue("gepi_denom_boite")."s,...</li>
+		<li>
+			En fin de période, il convient de provoquer une recopie des moyennes du carnet de notes vers le bulletin.<br />
+			Cela permet de signaler à la personne éditant les bulletins que l'on a fini ses saisies.<br />
+			Cela permet également de modifier les moyennes apparaissant.<br />
+			Par exemple, vous pouvez décider de ne pas mettre de moyenne sur le bulletin pour un élève qui n'aurait été présent qu'à une évaluation<br />
+			(<em>si vous estimez que la note n'est pas représentative du niveau de l'élève</em>).
+		</li>
+	</ul>";
+			}
 		}
 	}
 
