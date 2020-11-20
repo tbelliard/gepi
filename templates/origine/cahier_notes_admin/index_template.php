@@ -3,7 +3,7 @@
 /*
 * $Id$
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -313,9 +313,10 @@
 	  Évaluation par compétence
 	</h2>
 	<p>
-	  Utilisation d'un logiciel externe pour l'évaluation par compétence (beta)
+	  <label for='utiliser_sacoche'>Utilisation d'un logiciel externe pour l'évaluation par compétence (beta)</label>
 	  <input type="checkbox" 
 			 name="utiliser_sacoche" 
+			 id="utiliser_sacoche" 
 			 size="8"
 			 title="utiliser_sacoche"
 			 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {echo 'checked="checked"';} ?> 
@@ -342,7 +343,23 @@
 
         ?>
 	</p>
-	
+
+	<p>
+	  <label for='export_vers_sacoche'>Permettre d'exporter les notes du Carnet de notes vers les appréciations des bulletins pour SACoche</label>
+	  <input type="checkbox" 
+			 name="export_vers_sacoche" 
+			 id="export_vers_sacoche" 
+			 size="8"
+			 title="export_vers_sacoche"
+			 <?php if (getSettingAOui("export_vers_sacoche")) {echo 'checked="checked"';} ?> 
+			 onchange='changement();' />
+	<?php
+		if(getSettingAOui('export_vers_sacoche')) {
+			echo "<br /><a href='../eleves/gestion_sacoche.php'>Importer les identifiants SACoche</a>\n";
+		}
+	?>
+	</p>
+
 	<p class="center">
 	  <input type="hidden" name="is_posted" value="1" />
 	  <input type="submit" value="Enregistrer" />

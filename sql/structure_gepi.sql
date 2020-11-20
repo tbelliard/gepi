@@ -93,6 +93,7 @@ CREATE TABLE eleves
 	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)',
 	mef_code VARCHAR(50) NOT NULL DEFAULT '' COMMENT 'code mef de la formation de l\'eleve',
 	adr_id VARCHAR(10) NOT NULL DEFAULT '',
+	id_sacoche INT(11) NOT NULL default '0',
 	PRIMARY KEY (id_eleve),
 	INDEX eleves_FI_1 (mef_code),
 	INDEX I_referenced_j_eleves_classes_FK_1_1 (login),

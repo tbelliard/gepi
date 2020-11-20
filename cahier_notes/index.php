@@ -794,7 +794,23 @@ var tab_per_cn=new Array();\n";
 	echo " | ";
 	echo "<a href=\"index_cc.php?id_racine=$id_racine\"> ".ucfirst($nom_cc)."</a>";
 
-    echo "</p>\n";
+	// 20201120
+	if((getSettingAOui('export_vers_sacoche'))&&(isset($periode_num))) {
+		// Tester si les identifiants SACoche sont renseignés
+		$sql="SELECT DISTINCT e.id_sacoche FROM eleves e, 
+						j_eleves_groupes jeg 
+					WHERE e.login=jeg.login AND 
+						jeg.id_groupe='".$id_groupe."' AND 
+						jeg.periode='".$periode_num."' AND 
+						e.id_sacoche!='0';";
+		$res_sacoche=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_sacoche)>0) {
+			echo " | ";
+			echo "<a href=\"export_sacoche.php?id_groupe=$id_groupe&periode_num=$periode_num\"> Exporter les notes pour SACoche <span title=\"Les identifiants SACoche sont renseignés pour ".mysqli_num_rows($res_sacoche)." élèves sur ".count($current_group["eleves"][$periode_num]["list"]).".\">(".mysqli_num_rows($res_sacoche)."/".count($current_group["eleves"][$periode_num]["list"]).")</span></a>";
+		}
+	}
+
+	echo "</p>\n";
 	echo "</form>\n";
 	echo "</div>\n";
 
@@ -927,7 +943,7 @@ id_groupe=".$current_group["id"]."</p>";
 		echo "<p><a href='toutes_notes.php?id_groupe=$id_groupe'>Voir toutes les évaluations de l'année</a></p>\n";
 	}
 
-    if (($empty != 'yes')&&(getSettingAOui('active_bulletins'))) {
+	if (($empty != 'yes')&&(getSettingAOui('active_bulletins'))) {
 		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
 		$test_jgv=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_jgv)==0) {
@@ -1019,37 +1035,37 @@ id_groupe=".$current_group["id"]."</p>";
 
 if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id_racine))) {
 
-    $matiere_nom = $current_group["matiere"]["nom_complet"];
-    $matiere_nom_court = $current_group["matiere"]["matiere"];
+	$matiere_nom = $current_group["matiere"]["nom_complet"];
+	$matiere_nom_court = $current_group["matiere"]["matiere"];
 
-    $nom_classes = $current_group["classlist_string"];
+	$nom_classes = $current_group["classlist_string"];
 
-    echo "<p class='bold'>";
-    echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
-    echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a></p>\n";
-    echo "<p class='bold'>Enseignement : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
+	echo "<p class='bold'>";
+	echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
+	echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a></p>\n";
+	echo "<p class='bold'>Enseignement : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
-    echo "<h3>Visualisation/modification - Choisissez la période : </h3>
-<div style='margin-left:3em;'>\n";
-    $i="1";
-    while ($i < ($current_group["nb_periode"])) {
-        echo "<p><a href='index.php?id_groupe=$id_groupe&amp;periode_num=$i'>".ucfirst($current_group["periodes"][$i]["nom_periode"])."</a>";
+	echo "<h3>Visualisation/modification - Choisissez la période : </h3>
+	<div style='margin-left:3em;'>\n";
+	$i="1";
+	while ($i < ($current_group["nb_periode"])) {
+		echo "<p><a href='index.php?id_groupe=$id_groupe&amp;periode_num=$i'>".ucfirst($current_group["periodes"][$i]["nom_periode"])."</a>";
 
-	$sql="SELECT * FROM periodes WHERE num_periode='$i' AND id_classe='".$current_group["classes"]["list"][0]."' AND verouiller='N'";
-	$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_test)==0){
-		echo " (<i>période close</i>)";
+		$sql="SELECT * FROM periodes WHERE num_periode='$i' AND id_classe='".$current_group["classes"]["list"][0]."' AND verouiller='N'";
+		$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_test)==0){
+			echo " (<i>période close</i>)";
 
-		if(acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $i)) {
-			echo " (<em>Accès exceptionnellement ouvert en saisie</em>)";
+			if(acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $i)) {
+				echo " (<em>Accès exceptionnellement ouvert en saisie</em>)";
+			}
+
 		}
 
+		echo "</p>\n";
+		$i++;
 	}
-
-	echo "</p>\n";
-    $i++;
-    }
-    echo "
+	echo "
 </div>
 
 <h3>Visualisation uniquement : </h3>

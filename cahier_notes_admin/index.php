@@ -135,6 +135,16 @@ if(isset($_POST['is_posted'])) {
 		saveSetting("sacoche_base", $_POST['sacoche_base']);
 	}
 
+	if (isset($_POST['export_vers_sacoche'])) {
+		if (!saveSetting("export_vers_sacoche", 'yes')) {
+			$msg .= "Erreur lors de l'enregistrement de export_vers_sacoche !";
+		}
+	} else {
+		if (!saveSetting("export_vers_sacoche", 'no')) {
+			$msg .= "Erreur lors de l'enregistrement de export_vers_sacoche !";
+		}
+	}
+
   	if (isset($_POST['cn_affiche_date_fin_periode'])) {
 		saveSetting("cn_affiche_date_fin_periode", $_POST['cn_affiche_date_fin_periode']);
 	}

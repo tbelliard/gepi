@@ -482,4 +482,19 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'id_sacoche' à la table 'eleves'&nbsp;: ";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM eleves LIKE 'id_sacoche';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE eleves ADD id_sacoche INT(11) NOT NULL default '0' AFTER adr_id;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>
