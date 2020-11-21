@@ -119,7 +119,8 @@ if ((isset($_GET['export']))&&($_GET['export']=='csv')) {
 	$sql="SELECT * FROM cn_devoirs WHERE id_racine='".$id_racine."' AND display_parents='1' ORDER BY id_conteneur, date, nom_court, nom_complet;";
 	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
-	if(mysqli_num_rows($res)>0) {
+	$nb_devoirs=mysqli_num_rows($res);
+	if($nb_devoirs>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='".$lig->id."' AND statut!='v' ORDER BY login;";
 			//echo "$sql<br />";
@@ -139,6 +140,12 @@ if ((isset($_GET['export']))&&($_GET['export']=='csv')) {
 				}
 			}
 		}
+	}
+
+	// Pour contourner un pb d'analyse SACoche du délimiteurs de champs du CSV:
+	$chaine_separateur='';
+	for($i=0;$i<$nb_devoirs;$i++) {
+		$chaine_separateur.=';';
 	}
 
 	$csv='';
@@ -189,6 +196,7 @@ if ((isset($_GET['export']))&&($_GET['export']=='csv')) {
 					}
 				}
 
+				$csv.=$chaine_separateur;
 				$csv.="\"\n";
 			}
 		}
