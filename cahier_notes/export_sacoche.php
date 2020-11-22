@@ -19,6 +19,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+@set_time_limit(0);
+
 /**
  * Fichiers d'initialisation
  */
@@ -209,12 +211,182 @@ if ((isset($_GET['export']))&&($_GET['export']=='csv')) {
 	echo "</pre>";
 	*/
 
-	$nom_fic="export_notes_pour_appreciations_SACoche_".remplace_accents(get_info_grp($id_groupe), 'all')."_periode_".$periode_num."_".strftime("%Y%m%d_%H%M%S").".csv";
+	$nom_fic="export_notes_pour_appreciations_SACoche_".remplace_accents(get_info_grp($id_groupe, array('matieres', 'classes'), ''), 'all')."_periode_".$periode_num."_".strftime("%Y%m%d_%H%M%S").".csv";
 
 	send_file_download_headers('text/x-csv',$nom_fic);
 	echo echo_csv_encoded($csv);
 
 	die();
+}
+
+if(isset($_POST['envoi_csv'])) {
+	check_token();
+
+	$msg="ENVOI CSV effectué<br />";
+	//debug_var();
+
+	$csv_file = isset($_FILES["fichier_csv_sacoche"]) ? $_FILES["fichier_csv_sacoche"] : NULL;
+
+	if(!isset($csv_file['tmp_name'])) {
+		$msg="Le fichier n'a pas été uploadé.<br />";
+	}
+	elseif(!is_uploaded_file($csv_file['tmp_name'])) {
+		$msg="L'upload du fichier a échoué.<br />";
+	}
+	elseif(!file_exists($csv_file['tmp_name'])){
+		$msg="Le fichier aurait été uploadé mais pas conservé ???<br />";
+	}
+	else {
+		//$motifs=array('bulletin_', 'rubrique_', 'groupe_');
+		$csv='';
+		$fich=fopen($csv_file['tmp_name'], 'r');
+		while (!feof($fich)) {
+			$ligne=fgets($fich, 4096);
+			//if(trim($ligne)!="") {
+				//echo $ligne."<br />\n";
+				if($ligne=='') {
+					//echo "1<br />";
+					$csv.="\n";
+				}
+				//elseif(preg_match("/(^bulletin_)(^rubrique_)(^groupe_)/", $ligne)) {
+				elseif((preg_match("/^bulletin_/", $ligne))||
+				(preg_match("/^rubrique_/", $ligne))||
+				(preg_match("/^groupe_/", $ligne))) {
+					//echo "2<br />";
+					//$csv.=$ligne."\n";
+					$csv.=$ligne;
+				}
+			//}
+		}
+		fclose($fich);
+
+
+		$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num');";
+		//echo "$sql<br />";
+		$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_cahier_note = mysqli_num_rows($appel_cahier_notes);
+		if ($nb_cahier_note == 0) {
+			header("Location: ./index.php?msg=Le carnet de notes n'est pas initialisé pour cet enseignement sur cette période.");
+			die();
+		}
+
+		$lig=mysqli_fetch_object($appel_cahier_notes);
+		$id_racine = $lig->id_cahier_notes;
+
+		// Récupérer les devoirs de la période
+		$tab_devoirs=array();
+		$sql="SELECT * FROM cn_devoirs WHERE id_racine='".$id_racine."' AND display_parents='1' ORDER BY id_conteneur, date, nom_court, nom_complet;";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		$nb_devoirs=mysqli_num_rows($res);
+		if($nb_devoirs>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='".$lig->id."' AND statut!='v' ORDER BY login;";
+				//echo "$sql<br />";
+				$res2=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res2)>0) {
+					while($lig2=mysqli_fetch_object($res2)) {
+						$tab_devoirs[$lig2->login][$lig->id]['nom_court']=$lig->nom_court;
+						$tab_devoirs[$lig2->login][$lig->id]['date']=formate_date($lig->date);
+						$tab_devoirs[$lig2->login][$lig->id]['coef']=$lig->coef;
+						$tab_devoirs[$lig2->login][$lig->id]['note_sur']=$lig->note_sur;
+						if($lig2->statut=='') {
+							$tab_devoirs[$lig2->login][$lig->id]['note_ou_statut']=$lig2->note;
+						}
+						else {
+							$tab_devoirs[$lig2->login][$lig->id]['note_ou_statut']=$lig2->statut;
+						}
+					}
+				}
+			}
+		}
+
+		// Pour contourner un pb d'analyse SACoche du délimiteurs de champs du CSV:
+		$chaine_separateur='';
+		for($i=0;$i<$nb_devoirs;$i++) {
+			$chaine_separateur.=';';
+		}
+
+		//$csv='';
+		foreach($current_group["classes"]["list"] as $current_id_classe) {
+			$sql= "SELECT DISTINCT jeg.login, e.id_sacoche, e.nom, e.prenom FROM eleves e, 
+						j_eleves_groupes jeg, 
+						j_eleves_classes jec 
+					WHERE (e.login=jeg.login AND 
+						e.id_sacoche!='0' AND 
+						jeg.login=jec.login AND 
+						jec.periode=jeg.periode AND 
+						jec.periode='".$periode_num."' AND 
+						jeg.id_groupe='".$id_groupe."' AND 
+						jec.id_classe='".$current_id_classe."') 
+					ORDER BY e.nom, e.prenom;";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					//$csv.='eleve_'.$lig->id_sacoche.';"'.$lig->prenom.' '.$lig->nom.'";;"';
+					$ligne_csv_courante='eleve_'.$lig->id_sacoche.';"'.$lig->prenom.' '.$lig->nom.'";;"';
+
+					if(isset($tab_devoirs[$lig->login])) {
+						$sql="SELECT * FROM cn_notes_conteneurs WHERE id_conteneur='".$id_racine."' AND login='".$lig->login."' AND statut='y';";
+						//echo "$sql<br />";
+						$res3=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res3)>0) {
+							$lig3=mysqli_fetch_object($res3);
+							//$csv.="Moyenne : ".$lig3->note.", ";
+							$ligne_csv_courante.="Moyenne : ".$lig3->note.", ";
+							//$csv.="Moyenne  ".$lig3->note.", ";
+						}
+
+						$cpt=0;
+						foreach($tab_devoirs[$lig->login] as $id_devoir => $current_devoir) {
+							if($cpt>0) {
+								//$csv.=", ";
+								$ligne_csv_courante.=", ";
+							}
+
+							//$csv.=$current_devoir['nom_court']." : ";
+							$ligne_csv_courante.=$current_devoir['nom_court']." : ";
+							//$csv.=$current_devoir['note_ou_statut'];
+							$ligne_csv_courante.=$current_devoir['note_ou_statut'];
+							if($current_devoir['note_sur']!=20) {
+								//$csv.="/".$current_devoir['note_sur'];
+								$ligne_csv_courante.="/".$current_devoir['note_sur'];
+							}
+							if($current_devoir['coef']!=1) {
+								//$csv.=" (".($current_devoir['coef']+1-1).")";
+								$ligne_csv_courante.=" (".($current_devoir['coef']+1-1).")";
+							}
+
+							$cpt++;
+						}
+					}
+
+					//$csv.=$ligne_csv_courante;
+					$csv.=mb_convert_encoding($ligne_csv_courante, "ISO-8859-1", "utf-8");
+					$csv.=$chaine_separateur;
+					$csv.="\"\n";
+				}
+			}
+
+		}
+
+		/*
+		echo "<pre>";
+		echo $csv;
+		echo "</pre>";
+		*/
+
+		$nom_fic="export_notes_pour_appreciations_SACoche_".remplace_accents(get_info_grp($id_groupe, array('matieres', 'classes'), ''), 'all')."_periode_".$periode_num."_".strftime("%Y%m%d_%H%M%S").".csv";
+
+		send_file_download_headers('text/x-csv',$nom_fic);
+		//echo echo_csv_encoded($csv);
+		// Il y a un bazar entre le fichier ISO8859-1 de l'export SACoche et le fichier traité en UTF8 dans Gepi.
+		echo $csv;
+
+		die();
+
+	}
 }
 
 
@@ -235,7 +407,8 @@ echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a>";
 
 // Mettre de quoi passer au groupe suivant pour lequel on a des identifiants SACoche
 
-echo "</div>
+echo "</form>
+</div>
 
 <h2>Export des notes pour SACoche</h2>\n";
 
@@ -266,11 +439,59 @@ La présente page permet de renseigner ces appréciations avec les notes saisies
 
 <br />
 
-<p><a href='".$_SERVER['PHP_SELF']."?id_groupe=".$id_groupe."&periode_num=".$periode_num."&export=csv' target='_blank'>Exporter les notes</a></p>
+<p><a href='".$_SERVER['PHP_SELF']."?id_groupe=".$id_groupe."&periode_num=".$periode_num."&export=csv' target='_blank' style='font-weight:bold'>Exporter simplement les notes et la moyenne</a><br />
+<br />
+Ou<br />
+&nbsp;</p>
+
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_csv' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<!--
+		<p>Exporter les informations suivantes&nbsp;:<br />
+		<input type='checkbox' name='moyenne' id='moyenne' value='y' onchange='checkbox_change(this.id)' /><label for='moyenne' id='texte_moyenne'>la moyenne</label><br />
+		<input type='checkbox' name='nom_court_devoir' id='nom_court_devoir' value='y' onchange='checkbox_change(this.id)' /><label for='nom_court_devoir' id='texte_nom_court_devoir'>le nom court de l'évaluation</label><br />
+		<input type='checkbox' name='note_devoir' id='note_devoir' value='y' onchange='checkbox_change(this.id)' /><label for='note_devoir' id='texte_note_devoir'>la note obtenue à chaque évaluation</label><br />
+		<input type='checkbox' name='coef_devoir' id='coef_devoir' value='y' onchange='checkbox_change(this.id)' /><label for='coef_devoir' id='texte_coef_devoir'></label><br />
+		</p>
+		-->
+
+		<p>Envoyer le fichier modèle CSV fourni par SACoche pour cet enseignement/période de façon à générer un fichier CSV à retourner vers SACoche sans intervention manuelle dans le fichier.<br />
+		Fichier CSV SACoche&nbsp;: <input type='file' name='fichier_csv_sacoche' id='input_csv_file' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+		</p>
+
+		<input type='hidden' name='id_groupe' value='$id_groupe' />
+		<input type='hidden' name='periode_num' value='$periode_num' />
+		<input type='hidden' name='envoi_csv' value='y' />
+
+		<p>
+		<input type='submit' id='input_submit' value='Valider' />
+		<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" />
+		</p>
+
+		<script type='text/javascript'>
+			document.getElementById('input_submit').style.display='none';
+			document.getElementById('input_button').style.display='';
+
+			function check_champ_file() {
+				fichier=document.getElementById('input_csv_file').value;
+				//alert(fichier);
+				if(fichier=='') {
+					alert('Vous n\'avez pas sélectionné de fichier CSV à envoyer.');
+				}
+				else {
+					document.getElementById('form_envoi_csv').submit();
+				}
+			}
+		</script>
+	</fieldset>
+</form>
 
 <p style='margin-top:1em;'><em>NOTE&nbsp;:</em></p>
 <div style='margin-left:3em;padding:1em;' class='fieldset_opacite50'>
-	<p>Le fichier attendu dans SACoche a le format suivant&nbsp;:</p>
+	<p>Dans le cas où vous ne fournissez pas dans le formulaire ci-dessus le fichier modèle de SACoche, vous devrez incorporer manuellement les lignes extraites de Gepi dans le fichier de SACoche.<br />
+	Voici quelques explications&nbsp;:<br />
+	Le fichier attendu dans SACoche a le format suivant&nbsp;:</p>
 	<pre class='fieldset_opacite50'>
 	bulletin_3mixte_5_1_585;Saisie déportée - Bulletin scolaire - Trimestre 1 - 5 B - 5B2C1
 
