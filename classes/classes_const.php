@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -431,7 +431,10 @@ if(!isset($quitter_la_page)){
 		}
 	}
 
-	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+	echo " |";
+	if($id_class_prec!=0) {
+		echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/arrow-left.png' class='icone16' title='Classe précédente' /></a>";
+	}
 
 	if($chaine_options_classes!="") {
 
@@ -458,12 +461,12 @@ if(!isset($quitter_la_page)){
 </script>\n";
 
 
-		echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+		echo " <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 		echo $chaine_options_classes;
 		echo "</select>\n";
 	}
 
-	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
+	if($id_class_suiv!=0){echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/arrow-right.png' class='icone16' title='Classe suivante' /></a>";}
 
 	//=========================
 	// AJOUT: boireaus 20081224
@@ -517,7 +520,11 @@ else {
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	echo "<p class='bold'>";
 	echo "<a href='index.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst($gepi_prof_suivi)." : saisie rapide</a>\n";
-	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
+
+	echo " |";
+	if($id_class_prec!=0) {
+		echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/arrow-left.png' class='icone16' title='Classe précédente' /></a>";
+	}
 
 	if($chaine_options_classes!="") {
 
@@ -544,12 +551,12 @@ else {
 </script>\n";
 
 
-		echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+		echo " <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 		echo $chaine_options_classes;
 		echo "</select>\n";
 	}
 
-	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
+	if($id_class_suiv!=0){echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/arrow-right.png' class='icone16' title='Classe suivante' /></a>";}
 	echo "</p>\n";
 	echo "</form>\n";
 
