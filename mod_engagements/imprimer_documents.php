@@ -427,10 +427,15 @@ __ADR_ETAB__
 
 		$id_salle=isset($_POST['lieu_'.$id_classe[$loop]]) ? $_POST['lieu_'.$id_classe[$loop]] : array();
 
-		$ts_date_conseil=mysql_date_to_unix_timestamp($date_conseil[$id_classe[$loop]]);
-		if(isset($id_salle[$ts_date_conseil])) {
-			$tmp_lieu=get_infos_salle_cours($id_salle[$ts_date_conseil]);
-			$lieu=isset($tmp_lieu['designation_complete']) ? $tmp_lieu['designation_complete'] : '(lieu inconnu)';
+		if((isset($date_conseil))&&(isset($date_conseil[$id_classe[$loop]]))) {
+			$ts_date_conseil=mysql_date_to_unix_timestamp($date_conseil[$id_classe[$loop]]);
+			if(isset($id_salle[$ts_date_conseil])) {
+				$tmp_lieu=get_infos_salle_cours($id_salle[$ts_date_conseil]);
+				$lieu=isset($tmp_lieu['designation_complete']) ? $tmp_lieu['designation_complete'] : '(lieu inconnu)';
+			}
+			else {
+				$lieu='(lieu à définir)';
+			}
 		}
 		else {
 			$lieu='(lieu à définir)';
@@ -592,10 +597,15 @@ $ts=mysql_date_to_unix_timestamp($dates_conseils[$id_classe[$i]][$j]);
 		$convocation=isset($_POST['convocation_'.$id_classe[$loop]]) ? $_POST['convocation_'.$id_classe[$loop]] : array();
 		$id_salle=isset($_POST['lieu_'.$id_classe[$loop]]) ? $_POST['lieu_'.$id_classe[$loop]] : array();
 
-		$ts_date_conseil=mysql_date_to_unix_timestamp($date_conseil[$id_classe[$loop]]);
-		if(isset($id_salle[$ts_date_conseil])) {
-			$tmp_lieu=get_infos_salle_cours($id_salle[$ts_date_conseil]);
-			$lieu=isset($tmp_lieu['designation_complete']) ? $tmp_lieu['designation_complete'] : '(lieu inconnu)';
+		if((isset($date_conseil))&&(isset($date_conseil[$id_classe[$loop]]))) {
+			$ts_date_conseil=mysql_date_to_unix_timestamp($date_conseil[$id_classe[$loop]]);
+			if(isset($id_salle[$ts_date_conseil])) {
+				$tmp_lieu=get_infos_salle_cours($id_salle[$ts_date_conseil]);
+				$lieu=isset($tmp_lieu['designation_complete']) ? $tmp_lieu['designation_complete'] : '(lieu inconnu)';
+			}
+			else {
+				$lieu='(lieu à définir)';
+			}
 		}
 		else {
 			$lieu='(lieu à définir)';
