@@ -1683,13 +1683,13 @@ class Eleve extends BaseEleve {
 		}
 		$row = $result_query->fetch_array(MYSQLI_ASSOC);
 		mysqli_free_result($result_query);
-		if (!$row['marqueur_calcul']) {//si il n'y a pas le marqueur de calcul fini, on retourne faux
+		if ((isset($row['marqueur_calcul']))&&(!$row['marqueur_calcul'])) {//si il n'y a pas le marqueur de calcul fini, on retourne faux
 			return false;
-		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+		} else if ((isset($row['updated_at']))&&(isset($row['now']))&&($row['updated_at'] && $row['updated_at']  > $row['now'])) {
 			return false;
-		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
+		} else if ((isset($row['union_date']))&&(isset($row['now']))&&($row['union_date'] && $row['union_date']  > $row['now'])) {
 			return false;
-		} else if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
+		} else if ((isset($row['union_date']))&&(isset($row['updated_at']))&&($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at']))) {//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
 			return false;
 		} else if ($dateDebutClone == null || $dateFinClone == null){
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
@@ -1698,7 +1698,7 @@ class Eleve extends BaseEleve {
                         //on ajoute une heure à la date de fin pour dépasser 23:59:59 et bien dépasser la tranche de 00:00
                         //si on a un debut à 00:00 et une fin la même journée à 23:59, en ajoutant une heure à la fin on a largement deux tranches de 12h completes
                         //donc bien deux demi journées de décomptées
-                        if ($row['count_demi_jounee'] == $nbre_demi_journees) {
+                        if ((isset($row['count_demi_jounee']))&&($row['count_demi_jounee'] == $nbre_demi_journees)) {
                                             return true;
                         } else {
                             return false;
