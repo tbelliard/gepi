@@ -56,7 +56,7 @@ if(isset($_GET['nettoyage_assoc']) and ($_GET['nettoyage_assoc'] == "y") and (is
 	}
 }
 
-if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
+if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp") and (isset($_POST['scol_login'])) and (isset($_POST['tab_id_clas']))) {
 	check_token();
 
 	$msg = '';
@@ -172,14 +172,28 @@ else{
 <?php
 	$acces_utilisateur_modify=acces("/utilisateurs/modify_user.php", $_SESSION['statut']);
 
-	//echo "<table border='1'>\n";
-	echo "<table class='boireaus'>\n";
-	//#96C8F0
-	$ligne_comptes_scol="<tr style='background-color:#FAFABE;'>\n";
-	//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>Comptes</td>\n";
-	$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>Comptes</th>\n";
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe;");
+	$nombre_lignes = mysqli_num_rows($call_data);
+	if($nombre_lignes==0) {
+		echo "<p style='color:red'>Il n'existe encore aucune classe.<br />
+		Commencez par créer des classes.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	$call_scol = mysqli_query($GLOBALS["mysqli"], "SELECT login,nom,prenom FROM utilisateurs WHERE (statut='scolarite' AND etat='actif') ORDER BY nom,prenom");
 	$nb = mysqli_num_rows($call_scol);
+	if($nb==0) {
+		echo "<p style='color:red'>Il n'existe encore aucun compte scolarité.<br />
+		Commencez par créer des comptes de statut 'scolarite'.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	echo "<table class='boireaus'>\n";
+	$ligne_comptes_scol="<tr style='background-color:#FAFABE;'>\n";
+	$ligne_comptes_scol.="<th style='text-align:center; font-weight:bold;'>Comptes</th>\n";
+
 	$i=0;
 	$scol_login=array();
 	while($lig_scol=mysqli_fetch_object($call_scol)){
@@ -224,9 +238,6 @@ else{
 	//echo "</td>\n";
 	echo "</th>\n";
 	echo "</tr>\n";
-
-	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
-	$nombre_lignes = mysqli_num_rows($call_data);
 
 	if ($nombre_lignes != 0) {
 		// Lignes classes...
