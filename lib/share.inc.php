@@ -392,25 +392,74 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 		$envoi = mail($destinataire,
 			$subject,
 			$message,
-		  $headers);
+			$headers);
 	}
 
 	if(getSettingAOui('log_envoi_mail')) {
 		$dirname="$gepiPath/backup/".getSettingValue("backup_directory");
+		if(isset($niveau_arbo)) {
+			if($niveau_arbo==0) {
+				$dirname="./backup/".getSettingValue("backup_directory");
+			}
+			elseif(($niveau_arbo==1)||("$niveau_arbo"=='public')) {
+				$dirname="../backup/".getSettingValue("backup_directory");
+			}
+			elseif($niveau_arbo==2) {
+				$dirname="../../backup/".getSettingValue("backup_directory");
+			}
 
-		$ts=french_strftime("%a %d/%m/%Y %H:%M:%S");
-		$f=fopen($dirname."/debug_envoi_mail_.log", "a+");
-		fwrite($f, "==========================\n".$ts." :\r\n");
-		if(!$envoi) {
-			fwrite($f, "ECHEC de l'envoi de mail\r\n");
+			$ts=french_strftime("%a %d/%m/%Y %H:%M:%S");
+			$f=fopen($dirname."/debug_envoi_mail_.log", "a+");
+			fwrite($f, "==========================\n".$ts." :\r\n");
+			if(!$envoi) {
+				fwrite($f, "ECHEC de l'envoi de mail\r\n");
+			}
+			else {
+				fwrite($f, "SUCCES de l'envoi de mail\r\n");
+			}
+			fwrite($f, "HTTP_REFERER : ".$_SERVER['HTTP_REFERER']."\r\n");
+			if(isset($_SESSION['login'])) {
+				fwrite($f, "\$_SESSION['login'] : ".$_SESSION['login']."\r\n");
+			}
+			fwrite($f, "Sujet : $sujet\r\n");
+			fwrite($f, "Destinataire : $destinataire\r\n");
+
+			if(isset($tab_param_mail['destinataire'])) {
+				if(is_array($tab_param_mail['destinataire'])) {
+					for($loop=0;$loop<count($tab_param_mail['destinataire']);$loop++) {
+						fwrite($f, "\$tab_param_mail['destinataire'][$loop] : ".$tab_param_mail['destinataire'][$loop]."\r\n");
+					}
+				}
+				else {
+					fwrite($f, "\$tab_param_mail['destinataire'] : ".$tab_param_mail['destinataire']."\r\n");
+				}
+			}
+
+			if(isset($tab_param_mail['cc'])) {
+				if(is_array($tab_param_mail['cc'])) {
+					for($loop=0;$loop<count($tab_param_mail['cc']);$loop++) {
+						fwrite($f, "\$tab_param_mail['cc'][$loop] : ".$tab_param_mail['cc'][$loop]."\r\n");
+					}
+				}
+				else {
+					fwrite($f, "\$tab_param_mail['cc'] : ".$tab_param_mail['cc']."\r\n");
+				}
+			}
+
+			if(isset($tab_param_mail['bcc'])) {
+				if(is_array($tab_param_mail['bcc'])) {
+					for($loop=0;$loop<count($tab_param_mail['bcc']);$loop++) {
+						fwrite($f, "\$tab_param_mail['bcc'][$loop] : ".$tab_param_mail['bcc'][$loop]."\r\n");
+					}
+				}
+				else {
+					fwrite($f, "\$tab_param_mail['bcc'] : ".$tab_param_mail['bcc']."\r\n");
+				}
+			}
+
+			fwrite($f, "Headers suppl : $ajout_headers\r\n");
+			fclose($f);
 		}
-		else {
-			fwrite($f, "SUCCES de l'envoi de mail\r\n");
-		}
-		fwrite($f, "Sujet : $sujet\r\n");
-		fwrite($f, "Destinataire : $destinataire\r\n");
-		fwrite($f, "Headers suppl : $ajout_headers\r\n");
-		fclose($f);
 	}
 
 	return $envoi;
