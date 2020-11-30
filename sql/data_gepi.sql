@@ -2318,3 +2318,5 @@ INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LCE'
 INSERT INTO droits SET id='/aid/gerer_user_aid.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Gérer les professeurs, gestionnaires,... d AID', statut='';
 INSERT INTO droits SET id='/messagerie/consulter_messages.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Consulter les messages individuels sur le Panneau d affichage', statut='';
 INSERT INTO setting SET name='export_vers_sacoche', value='n';
+INSERT INTO droits SET id='/cahier_texte_2/voir_pj.php', administrateur='F', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='F', autre='F', description='Consulter les PJ à une notice de CDT', statut='';
+

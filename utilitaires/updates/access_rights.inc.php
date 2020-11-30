@@ -2062,6 +2062,18 @@ autre='F',
 description='Consulter les messages individuels sur le Panneau d affichage',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/voir_pj.php',
+administrateur='F',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='F',
+autre='F',
+description='Consulter les PJ à une notice de CDT',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

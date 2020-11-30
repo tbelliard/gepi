@@ -344,6 +344,24 @@ function afficheDocuments ($documents) {
 	$html = '';
 	if (($documents) and (count($documents)!=0)) {
 		$html = "<br><span class='petit'>Document(s) joint(s):</span>";
+
+		// 20201127
+		// url_gepibox
+		foreach ($documents as $document) {
+			if(preg_match('#/cl[0-9]{1,}/#', $document->getEmplacement())) {
+				$type_notice='c';
+			}
+			elseif(preg_match('#/cl_dev[0-9]{1,}/#', $document->getEmplacement())) {
+				$type_notice='t';
+			}
+			else {
+				break;
+			}
+
+			$html .= "<a href='voir_pj.php?id_ct=".$document->getIdCt()."&type_notice=".$type_notice."' title='Visionner les documents joints' target='_blank'><img src='../images/icons/chercher.png' class='icone16' /></a>";
+			break;
+		}
+
 		//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
 		$html .= "<ul style=\"padding-left: 15px;\">";
 		foreach ($documents as $document) {

@@ -1402,6 +1402,15 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 
 				//alert(tmp_encodedStr);
 				encodedStr=tmp_encodedStr;
+
+				//href='voir_pj.php?id_ct
+				tmp_encodedStr=encodedStr.replace(/voir_pj.php\?id_ct=/, document.getElementById('url_racine_gepi').value+'/cahier_de_texte_2/voir_pj.php\?id_ct=');
+				encodedStr=tmp_encodedStr;
+
+				tmp_encodedStr=encodedStr.replace(/\.\.\/images\/icons\/chercher.png/g, document.getElementById('url_racine_gepi').value+'/images/icons/chercher.png');
+				//alert(tmp_encodedStr);
+				encodedStr=tmp_encodedStr;
+
 			}
 		}
 
@@ -1422,7 +1431,6 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 		document.getElementById('champ_copie_code_source').style.display='none';
 	}
 }
-
 /**
 *
 *  Fin des fonctions ajax du cahier de texte
