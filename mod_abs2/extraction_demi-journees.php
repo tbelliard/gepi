@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2020 Josselin Jacquard, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -98,6 +98,40 @@ if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format(
 $dt_date_absence_eleve_debut->setTime(0,0,0);
 $dt_date_absence_eleve_fin->setTime(23,59,59);
 
+// 20201126: Boucler sur la liste des classes
+$boucler_sur_classes=isset($_POST['boucler_sur_classes']) ? $_POST['boucler_sur_classes'] : NULL;
+if(isset($boucler_sur_classes)) {
+	if(preg_match('/^[0-9]{1,}$/', $boucler_sur_classes)) {
+		if($boucler_sur_classes==1) {
+			$id_extraction=substr(rand().time(), 0, 10);
+			$date_extraction=time();
+
+			if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+				$classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
+			} else {
+				$classe_col = $utilisateur->getClasses();
+			}
+			if (!$classe_col->isEmpty()) {
+				foreach ($classe_col as $classe) {
+					$id_classe=$classe->getId();
+					$_SESSION['id_classe_abs'] = $id_classe;
+					break;
+				}
+			}
+		}
+		else {
+			$id_extraction=$_POST['id_extraction'];
+			$date_extraction=$_POST['date_extraction'];
+		}
+		$boucler_sur_classes++;
+	}
+	else {
+		$msg="Valeur invalide pour 'boucler_sur_classes'.<br />";
+		unset($boucler_sur_classes);
+	}
+}
+
+
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -117,12 +151,98 @@ if ($affichage != 'ods') {// on affiche pas de html
     <div id="contain_div" class="css-panes">
          <?php if (isset($message)){
           echo'<h2 class="no">'.$message.'</h2>';
-        }?>
+        }
+
+
+
+	// 20201126: Affichage bilan
+	if((isset($_GET['boucler_sur_classes_affichage_bilan']))&&(isset($_GET['id_extraction']))) {
+
+		$sql="SELECT * FROM a_agregation_demi_journees WHERE id_extraction='".$_GET['id_extraction']."' ORDER BY classe, nom, prenom LIMIT 1;";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)==0) {
+			echo "<p style='color:red'>Aucune donnée n'a été extraite.</p>";
+			require_once("../lib/footer.inc.php");
+			die();
+		}
+
+		$lig=mysqli_fetch_object($res);
+		echo "<h2>Les demi-journées du ".formate_date($lig->date_debut)." au ".formate_date($lig->date_fin)."</h2>";
+
+		echo '<table class="sortable resizable boireaus boireaus_alt" style="border-width:1px; border-style:outset">';
+		echo '<thead>';
+		echo '<tr>';
+
+		echo '<th class="text" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+		echo 'Nom Prénom';
+		echo '</th>';
+
+		echo '<th class="text" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+		echo 'Classe';
+		echo '</th>';
+
+		echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+		echo 'Nbre de demi-journées d\'absence';
+		echo '</th>';
+
+		echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+		echo 'non justifiees';
+		echo '</th>';
+
+		echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+		echo 'non valables';
+		echo '</th>';
+
+		echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+		echo 'nbre de retards';
+		echo '</th>';
+
+		echo '</tr>';
+		echo '</thead>';
+		echo '<tbody>';
+		$csv="ELENOET;NOM;PRENOM;CLASSE;NBABS;NBNJ;NBRET;\n";
+		$csv2="ELENOET;NBABS;NBNJ;NBRET;\n";
+
+		$sql="SELECT * FROM a_agregation_demi_journees WHERE id_extraction='".$_GET['id_extraction']."' ORDER BY classe, nom, prenom;";
+		$res=mysqli_query($mysqli, $sql);
+		while($lig=mysqli_fetch_object($res)) {
+
+			echo "<tr class='white_hover'>
+				<td style='border:1px; border-style: inset;'><a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' target='_blank'>".$lig->nom." ".$lig->prenom."</a></td>
+				<td style='border:1px; border-style: inset;'>".$lig->classe."</td>
+				<td style='border:1px; border-style: inset;'>".$lig->NbAbsences."</td>
+				<td style='border:1px; border-style: inset;'>".$lig->NbNonJustifiees."</td>
+				<td style='border:1px; border-style: inset;'>".$lig->NbNonValables."</td>
+				<td style='border:1px; border-style: inset;'>".$lig->NbRetards."</td>
+			</tr>";
+		}
+		echo "</table>";
+
+
+
+
+
+
+
+
+
+
+		require_once("../lib/footer.inc.php");
+		die();
+	}
+
+
+
+        ?>
     <!--div style='float:right;width:5em;' title="Lien à placer ailleurs par la suite... dans un onglet par exemple"><a href='export_stat.php' target='_blank'>Exports statistiques</a></div-->
     <p>
       <strong>Précision:</strong> Un manquement à l'obligation de présence sur une heure, entraine le décompte de la demi-journée correspondante pour l'élève.
     </p>
     <form dojoType="dijit.form.Form" id="choix_extraction" name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
+	<?php
+		// 20201126:
+		if(!isset($boucler_sur_classes)) {
+	?>
     <h2>Les demi-journées
     du	
     <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
@@ -130,35 +250,92 @@ if ($affichage != 'ods') {// on affiche pas de html
     <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
 	</h2>
     Nom (facultatif) : <input dojoType="dijit.form.TextBox" type="text" style="width : 10em" name="nom_eleve" size="10" value="<?php echo $nom_eleve?>"/>
+	<?php
+		// 20201126:
+		}
+		else {
+			echo "<h2>Les demi-journées du ".$dt_date_absence_eleve_debut->format('Y-m-d')."
+			<input type='hidden' id='date_absence_eleve_debut' name='date_absence_eleve_debut' value='".$dt_date_absence_eleve_debut->format('Y-m-d')."' /> 
+			au ".$dt_date_absence_eleve_fin->format('Y-m-d')."
+			<input type='hidden' id='date_absence_eleve_fin' name='date_absence_eleve_fin' value='".$dt_date_absence_eleve_fin->format('Y-m-d')."' />
+			</h2>";
+		}
 
-    <?php
     //on affiche une boite de selection avec les classe
     if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
 	$classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
     } else {
 	$classe_col = $utilisateur->getClasses();
     }
+	$classe_courante='';
     if (!$classe_col->isEmpty()) {
-	    echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\">");
-	    echo "<option value='-1'>Toutes les classes</option>\n";
-	    foreach ($classe_col as $classe) {
-		    echo "<option value='".$classe->getId()."'";
-		    if ($id_classe == $classe->getId()) echo " selected='selected' ";
-		    echo ">";
-		    echo $classe->getNom();
-		    echo "</option>\n";
-	    }
-	    echo "</select> ";
+		// 20201126: Boucler sur la liste des classes
+		if(!isset($boucler_sur_classes)) {
+			//echo ("Classe : <select dojoType=\"dijit.form.Select\" id='id_classe' style=\"width :12em;font-size:12px;\" name=\"id_classe\">");
+			echo ("Classe : <select id='id_classe' style=\"width :12em;font-size:12px;\" name=\"id_classe\">");
+			echo "<option value='-1'>Toutes les classes</option>\n";
+			foreach ($classe_col as $classe) {
+				echo "<option value='".$classe->getId()."'";
+				if ($id_classe == $classe->getId()) {
+					echo " selected='selected' ";
+					$classe_courante=$classe->getNom();
+				}
+				echo ">";
+				echo $classe->getNom();
+				echo "</option>\n";
+			}
+			echo "</select> ";
+
+			echo " <input type='checkbox' name='boucler_sur_classes' id='boucler_sur_classes' value='1' onchange=\"document.getElementById('id_classe').selectedIndex=1;\" />
+		<label for='boucler_sur_classes' id='boucler_sur_classes'>Boucler sur la liste des classes <em>(hors génération ODS)</em></label>";
+		}
+		else {
+			echo "<div style='display:none'> ";
+			echo ("Classe : <select id='id_classe' style=\"width :12em;font-size:12px;\" name=\"id_classe\">");
+			echo "<option value='-1'>Toutes les classes</option>\n";
+			foreach ($classe_col as $classe) {
+				echo "<option value='".$classe->getId()."'";
+				if ($id_classe == $classe->getId()) {
+					echo " selected='selected' ";
+					$classe_courante=$classe->getNom();
+				}
+				echo ">";
+				echo $classe->getNom();
+				echo "</option>\n";
+			}
+			echo "</select> ";
+			echo "</div> ";
+
+			echo "<input type='hidden' name='id_extraction' id='id_extraction' value='$id_extraction' />";
+			echo "<input type='hidden' name='date_extraction' id='date_extraction' value='$date_extraction' />";
+
+			echo " <input type='hidden' name='boucler_sur_classes' id='boucler_sur_classes' value='$boucler_sur_classes' />
+		<label for='boucler_sur_classes' id='boucler_sur_classes'><span style='font-weight:bold'>On bloucle sur la liste des classes</span></label>";
+		}
+
     } else {
 	echo 'Aucune classe avec élève affecté n\'a été trouvée';
     }
     ?>
     </p>
 	<p>
+	<?php
+		//20201126
+		if(!isset($boucler_sur_classes)) {
+	?>
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Afficher</button>
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods">Enregistrer au format ods</button>
     &nbsp;<input type="checkbox" id='generer_csv' name="generer_csv" value="y"><label for='generer_csv' title="La génération de CSV est effectuée avec l'affichage HTML dans la présente page (pas lors de la génération d'un fichier ODS).
 Cochez la case et cliquez sur Afficher pour obtenir la génération d'un fichier CSV.">Générer un CSV</label>
+	<?php
+		}
+		else {
+			echo "<input type='hidden' name='affichage' value='html'/>";
+			if(isset($generer_csv)) {
+				echo "<input type='hidden' name='generer_csv' value='y'/>";
+			}
+		}
+	?>
 	</p>
 	</form>
 
@@ -218,6 +395,11 @@ if ($affichage != null && $affichage != '') {
 
 if ($affichage == 'html') {
     //debug_var();
+
+	// 20201126
+	if(isset($classe_courante)) {
+		echo "<h3 style='font-weight:bold'>Classe de $classe_courante</h3>";
+	}
 
     if(isset($_POST['generer_csv'])) {
         $user_temp_dir=get_user_temp_directory();
@@ -293,7 +475,35 @@ if ($affichage == 'html') {
 	echo "</pre>";
 	*/
 
-    
+	// 20201126: Boucler sur la liste des classes
+	if(isset($boucler_sur_classes)) {
+		// Créer la table avec des champs id, id_eleve, date_debut, date_fin...
+		// Pouvoir parser les date_debut, date_fin déjà enregistrés?
+		$sql="CREATE TABLE IF NOT EXISTS a_agregation_demi_journees (
+			id INTEGER(11) NOT NULL AUTO_INCREMENT,
+			eleve_id INTEGER(11) NOT NULL DEFAULT '0',
+			elenoet INTEGER(11) NOT NULL DEFAULT '0',
+			login VARCHAR(50) NOT NULL DEFAULT '',
+			nom VARCHAR(50) NOT NULL DEFAULT '',
+			prenom VARCHAR(50) NOT NULL DEFAULT '',
+			id_classe INTEGER(11) NOT NULL DEFAULT '0',
+			classe VARCHAR(50) NOT NULL DEFAULT '',
+			NbAbsences INTEGER(11) NOT NULL DEFAULT '0',
+			NbNonJustifiees INTEGER(11) NOT NULL DEFAULT '0',
+			NbNonValables INTEGER(11) NOT NULL DEFAULT '0',
+			NbRetards INTEGER(11) NOT NULL DEFAULT '0',
+			date_debut DATE NOT NULL default '1970-01-01',
+			date_fin DATE NOT NULL default '1970-01-01',
+			date_extraction DATETIME NOT NULL default '1970-01-01 00:00:00',
+			id_extraction INTEGER NOT NULL DEFAULT '0',
+			PRIMARY KEY (id)
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		//echo "$sql<br />";
+		$create_table=mysqli_query($mysqli, $sql);
+
+		$date_extraction_mysql=strftime("%Y-%m-%d %H:%M:%S", $date_extraction);
+	}
+
     $alt=1;
     $acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
     foreach ($eleve_col as $eleve) {
@@ -370,6 +580,28 @@ if ($affichage == 'html') {
 	    echo '</td>';
 
 	    echo '</tr>';
+
+		// 20201126
+		if(isset($boucler_sur_classes)) {
+			$sql="INSERT INTO a_agregation_demi_journees SET eleve_id='".$eleve->getId()."',
+			elenoet='".$eleve->getElenoet()."',
+			login='".$eleve->getLogin()."',
+			nom='".mysqli_real_escape_string($mysqli, $eleve->getNom())."',
+			prenom='".mysqli_real_escape_string($mysqli, $eleve->getPrenom())."',
+			id_classe='".$id_classe."',
+			classe='".mysqli_real_escape_string($mysqli, $classe_courante)."',
+			NbAbsences='".$eleve->getNbAbsences()."',
+			NbNonJustifiees='".$eleve->getNbNonJustifiees()."',
+			NbNonValables='".$current_non_valable."',
+			NbRetards='".$eleve->getNbRetards()."',
+			date_debut='".$date_debut_mysql."',
+			date_fin='".$date_fin_mysql."',
+			date_extraction='".$date_extraction_mysql."',
+			id_extraction='".$id_extraction."';";
+			//echo "$sql<br />";
+			$insert=mysqli_query($mysqli, $sql);
+		}
+
     }
     echo '<tbody>';
     echo '<tfoot>';
@@ -427,6 +659,23 @@ if ($affichage == 'html') {
             }
         }
     }
+
+	// 20201126: Boucler sur la liste des classes
+	if(isset($boucler_sur_classes)) {
+		echo "<p id='bilan_boucler_sur_classes' style='display:none;'></p>
+		<script type='text/javascript'>
+			if($boucler_sur_classes<document.getElementById('id_classe').length) {
+				//alert(\"document.getElementById('id_classe').selectedIndex=\"+document.getElementById('id_classe').selectedIndex);
+				//alert($boucler_sur_classes);
+				document.getElementById('id_classe').selectedIndex=$boucler_sur_classes;
+				setTimeout(\"document.getElementById('choix_extraction').submit()\", 3000);
+			}
+			else {
+				document.location.href='".$_SERVER['PHP_SELF']."?boucler_sur_classes_affichage_bilan=y&id_extraction=".$id_extraction."';
+			}
+		</script>";
+	}
+
 } else if ($affichage == 'ods') {
     // load the TinyButStrong libraries    
 	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine
