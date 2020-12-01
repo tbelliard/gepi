@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -543,7 +543,8 @@ if($mode=='choix_fichier') {
 	// Tableau des utilisateurs autorisés à utiliser un fichier de signature
 	$cpt=0;
 	$tab_user=array();
-	$sql="SELECT * FROM signature_droits;";
+	$sql="SELECT sd.* FROM signature_droits sd, utilisateurs u WHERE u.login=sd.login;";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -574,7 +575,8 @@ if($mode=='choix_fichier') {
 	$cpt=0;
 	$login_prec="";
 	$tab_fichiers_utilisateurs=array();
-	$sql="SELECT * FROM signature_fichiers ORDER BY login;";
+	$sql="SELECT sf.* FROM signature_fichiers sf, utilisateurs u WHERE u.login=sf.login ORDER BY sf.login;";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -719,7 +721,8 @@ if($mode=='choix_assoc_fichier_user_classe') {
 	$login_prec="";
 	$tab_fichiers=array();
 	$tab_fichiers_utilisateurs=array();
-	$sql="SELECT * FROM signature_fichiers ORDER BY login;";
+	$sql="SELECT sf.* FROM signature_fichiers sf, utilisateurs u WHERE sf.login=u.login ORDER BY sf.login;";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
