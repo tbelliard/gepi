@@ -350,15 +350,23 @@ function afficheDocuments ($documents) {
 		foreach ($documents as $document) {
 			if(preg_match('#/cl[0-9]{1,}/#', $document->getEmplacement())) {
 				$type_notice='c';
+				$current_id_ct=$document->getIdCt();
 			}
 			elseif(preg_match('#/cl_dev[0-9]{1,}/#', $document->getEmplacement())) {
 				$type_notice='t';
+				$current_id_ct=$document->getIdCtDevoir();
 			}
 			else {
 				break;
 			}
 
-			$html .= "<a href='voir_pj.php?id_ct=".$document->getIdCt()."&type_notice=".$type_notice."' title='Visionner les documents joints' target='_blank'><img src='../images/icons/chercher.png' class='icone16' /></a>";
+			/*
+			echo "<pre>";
+			print_r($document);
+			echo "</pre><hr />";
+			*/
+
+			$html .= "<a href='voir_pj.php?id_ct=".$current_id_ct."&type_notice=".$type_notice."' title='Visionner les documents joints' target='_blank'><img src='../images/icons/chercher.png' class='icone16' /></a>";
 			break;
 		}
 
