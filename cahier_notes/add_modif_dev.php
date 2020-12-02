@@ -457,10 +457,26 @@ if (isset($_POST['ok'])) {
 			$mois = strftime("%m");
 			$jour = strftime("%d");
 		}
+
 		$date = $annee."-".$mois."-".$jour." 00:00:00";
+
+		// 20201202 : Test sur la date : Est-elle bien entre le début et la fin de l'année scolaire ?
+		if(gmmktime(0, 0, 0, $mois, $jour, $annee)<getSettingValue("begin_bookings")) {
+			$debut_annee=strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+			$msg.="La date proposée (".$_POST['display_date'].") est antérieure au début de l'année (".$debut_annee.")<br />Modification de la date proposée en ".$debut_annee."<br />";
+			$date=strftime("%Y-%m-%d 00:00:00", getSettingValue("begin_bookings"));
+		}
+
+		if(gmmktime(0, 0, 0, $mois, $jour, $annee)>getSettingValue("end_bookings")) {
+			$fin_annee=strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+			$msg.="La date proposée (".$_POST['display_date'].") est postérieure à la fin de l'année (".$fin_annee.")<br />Modification de la date proposée en ".$fin_annee."<br />";
+			$date=strftime("%Y-%m-%d 00:00:00", getSettingValue("end_bookings"));
+		}
+
 		if(($temoin_log=="y")&&($lig_old->date!=$date)) {
 			$chaine_log.=". Modification de la date du devoir : ".formate_date($lig_old->date)." -> ".formate_date($date)."\n";
 		}
+
 		$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET date = '".$date."' WHERE id = '$id_devoir'");
 		if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
@@ -564,9 +580,9 @@ if (isset($_POST['ok'])) {
 
 	if ($reg_ok=='yes') {
 		if ($new=='yes') {$msg.="Nouvel enregistrement réussi.";}
-		else {$msg.="Les modifications ont été effectuées avec succès.";}
+		else {$msg.="Les modifications ont été effectuées avec succès.<br />";}
 	} else {
-		$msg.="Il y a eu un problème lors de l'enregistrement";
+		$msg.="Il y a eu un problème lors de l'enregistrement.<br />";
 	}
 
     //==========================================================
@@ -1013,6 +1029,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date :</td>\n";
 		echo "<td>\n";
+		// 20201202 : A FAIRE : Ajouter un test sur la date : Est-elle bien entre le début et la fin de l'année scolaire ?
 		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" ";
 		if($aff_date_ele_resp!='y'){
 			echo " onchange=\"document.getElementById('date_ele_resp').value=document.getElementById('display_date').value;changement();\"";
