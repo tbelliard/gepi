@@ -144,7 +144,10 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
  */
 function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
 	global $tabdiv_infobulle, $gepiClosedPeriodLabel, $id_groupe, $eff_groupe, $acces_exceptionnel_saisie;
-    
+
+	$begin_bookings=getSettingValue('begin_bookings');
+	$end_bookings=getSettingValue('end_bookings');
+
 	if((isset($id_groupe))&&(!isset($eff_groupe))) {
 		$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
 		//echo "$sql<br />";
@@ -289,6 +292,14 @@ Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='1
 					}
 
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
+
+					$ts_date_dev=mysql_date_to_unix_timestamp($date_dev);
+					if($ts_date_dev<$begin_bookings) {
+						echo "<span style='background-color:yellow'> <img src='../images/icons/ico_attention.png' class='icone20' title=\"ATTENTION : La date de l'évaluation (".formate_date($date_dev).") est antérieure au début de l'année (".strftime("%d/%m/%Y", $begin_bookings)."). Cela peut perturber les saisies pour des élèves arrivés en début d'année.\" /> </span>";
+					}
+					if($ts_date_dev>$end_bookings) {
+						echo "<span style='background-color:yellow'> <img src='../images/icons/ico_attention.png' class='icone20' title=\"ATTENTION : La date de l'évaluation (".formate_date($date_dev).") est postérieure à la fin de l'année (".strftime("%d/%m/%Y", $begin_bookings).").\" /> </span>";
+					}
 
 					// Autre anomalie
 					 $sql="SELECT * FROM cn_devoirs WHERE id='$id_dev' AND facultatif!='O' AND facultatif!='N' AND facultatif!='B';";
