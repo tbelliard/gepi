@@ -186,7 +186,7 @@ if ($affichage != null && $affichage != '') {
     if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
 		if ($eleve_col->count()>150) {
 			echo 'Il semble que vous demandez des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée.<br />Veuillez faire une demande pour moins d\'élèves ou';
-			if(getSettingAOui('AccesCpeAgregationAbs2')) {
+			if(is_cpe($_SESSION['login'])&&(getSettingAOui('AccesCpeAgregationAbs2'))) {
 				echo ' <a href="./admin/admin_table_agregation.php" title="ATTENTION : Cette opération est lourde.
                      Elle peut enliser le serveur, perturber les 
                      saisies le temps qu\'elle s\'achève.">remplir la table d\'agrégation</a>.';
