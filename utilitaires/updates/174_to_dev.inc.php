@@ -497,4 +497,39 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'a_agregation_demi_journees'&nbsp;:</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'a_agregation_demi_journees'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS a_agregation_demi_journees (
+			id INTEGER(11) NOT NULL AUTO_INCREMENT,
+			eleve_id INTEGER(11) NOT NULL DEFAULT '0',
+			elenoet INTEGER(11) NOT NULL DEFAULT '0',
+			login VARCHAR(50) NOT NULL DEFAULT '',
+			nom VARCHAR(50) NOT NULL DEFAULT '',
+			prenom VARCHAR(50) NOT NULL DEFAULT '',
+			id_classe INTEGER(11) NOT NULL DEFAULT '0',
+			classe VARCHAR(50) NOT NULL DEFAULT '',
+			NbAbsences INTEGER(11) NOT NULL DEFAULT '0',
+			NbNonJustifiees INTEGER(11) NOT NULL DEFAULT '0',
+			NbNonValables INTEGER(11) NOT NULL DEFAULT '0',
+			NbRetards INTEGER(11) NOT NULL DEFAULT '0',
+			date_debut DATE NOT NULL default '1970-01-01',
+			date_fin DATE NOT NULL default '1970-01-01',
+			date_extraction DATETIME NOT NULL default '1970-01-01 00:00:00',
+			id_extraction INTEGER NOT NULL DEFAULT '0',
+			PRIMARY KEY (id)
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+
+
 ?>

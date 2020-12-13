@@ -6,6 +6,10 @@
 Gepi-master (Version de développement)
 ===========================
 
+Absences2:
+- Extraction en boucle des demi-journées d'absences sur l'ensemble des classes 
+  pour calculer un taux d'absentéisme global.
+
 Bulletins:
 - Facilités d'ouverture exceptionnelle de saisie de notes/appréciations en période
   partiellement close.

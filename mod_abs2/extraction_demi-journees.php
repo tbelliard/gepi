@@ -98,12 +98,40 @@ if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format(
 $dt_date_absence_eleve_debut->setTime(0,0,0);
 $dt_date_absence_eleve_fin->setTime(23,59,59);
 
+if((isset($_GET['suppr_extraction']))&&(preg_match('/^[0-9]{1,}$/', $_GET['suppr_extraction']))) {
+	check_token();
+
+	$sql="DELETE FROM a_agregation_demi_journees WHERE id_extraction='".$_GET['suppr_extraction']."';";
+	$del=mysqli_query($mysqli, $sql);
+	if(!$del) {
+		$msg="Erreur lors de la suppression de l'extraction n°".$_GET['suppr_extraction'].".<br />";
+	}
+	else {
+		$msg="Extraction n°".$_GET['suppr_extraction']." supprimée.<br />";
+	}
+}
+
 // 20201126: Boucler sur la liste des classes
 $boucler_sur_classes=isset($_POST['boucler_sur_classes']) ? $_POST['boucler_sur_classes'] : NULL;
+$id_extraction=isset($_POST['id_extraction']) ? $_POST['id_extraction'] : (isset($_GET['id_extraction']) ? $_GET['id_extraction'] : NULL);
 if(isset($boucler_sur_classes)) {
 	if(preg_match('/^[0-9]{1,}$/', $boucler_sur_classes)) {
 		if($boucler_sur_classes==1) {
-			$id_extraction=substr(rand().time(), 0, 10);
+			$cpt=0;
+			while($cpt<100) {
+				$id_extraction=substr(rand().time(), 0, 9);
+
+				$sql="SELECT 1=1 FROM a_agregation_demi_journees WHERE id_extraction='".$id_extraction."';";
+				$test=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($test)==0) {
+					break;
+				}
+				$cpt++;
+			}
+			// Précaution au cas où on atteindrait cpt=100
+			$sql="DELETE FROM a_agregation_demi_journees WHERE id_extraction='".$id_extraction."';";
+			$del=mysqli_query($mysqli, $sql);
+
 			$date_extraction=time();
 
 			if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
@@ -120,7 +148,7 @@ if(isset($boucler_sur_classes)) {
 			}
 		}
 		else {
-			$id_extraction=$_POST['id_extraction'];
+			//$id_extraction=$_POST['id_extraction'];
 			$date_extraction=$_POST['date_extraction'];
 		}
 		$boucler_sur_classes++;
@@ -156,18 +184,27 @@ if ($affichage != 'ods') {// on affiche pas de html
 
 
 	// 20201126: Affichage bilan
-	if((isset($_GET['boucler_sur_classes_affichage_bilan']))&&(isset($_GET['id_extraction']))) {
+	//if((isset($_GET['boucler_sur_classes_affichage_bilan']))&&(isset($_GET['id_extraction']))) {
+	if((isset($_GET['boucler_sur_classes_affichage_bilan']))&&(isset($id_extraction))) {
+		//debug_var();
 
-		$sql="SELECT * FROM a_agregation_demi_journees WHERE id_extraction='".$_GET['id_extraction']."' ORDER BY classe, nom, prenom LIMIT 1;";
+		//$sql="SELECT * FROM a_agregation_demi_journees WHERE id_extraction='".$_GET['id_extraction']."' ORDER BY classe, nom, prenom LIMIT 1;";
+		$sql="SELECT * FROM a_agregation_demi_journees WHERE id_extraction='".$id_extraction."' ORDER BY classe, nom, prenom LIMIT 1;";
+		//echo "$sql<br />";
 		$res=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res)==0) {
-			echo "<p style='color:red'>Aucune donnée n'a été extraite.</p>";
+			echo "<p style='color:red'>Aucune donnée n'a été extraite.";
+			echo "<br />".$sql;
+			echo "</p>";
 			require_once("../lib/footer.inc.php");
 			die();
 		}
 
 		$lig=mysqli_fetch_object($res);
-		echo "<h2>Les demi-journées du ".formate_date($lig->date_debut)." au ".formate_date($lig->date_fin)."</h2>";
+		$date_debut_extraction=formate_date($lig->date_debut);
+		$date_fin_extraction=formate_date($lig->date_fin);
+		echo "<h2>Les demi-journées du ".$date_debut_extraction." au ".$date_fin_extraction."</h2>
+		<h3>Extraction n°".$lig->id_extraction." du ".formate_date($lig->date_extraction, 'y')."</h3>";
 
 		echo '<table class="sortable resizable boireaus boireaus_alt" style="border-width:1px; border-style:outset">';
 		echo '<thead>';
@@ -200,10 +237,11 @@ if ($affichage != 'ods') {// on affiche pas de html
 		echo '</tr>';
 		echo '</thead>';
 		echo '<tbody>';
-		$csv="ELENOET;NOM;PRENOM;CLASSE;NBABS;NBNJ;NBRET;\n";
-		$csv2="ELENOET;NBABS;NBNJ;NBRET;\n";
+		$csv="ELENOET;NOM;PRENOM;CLASSE;NBABS;NBNJ;NBNVAL;NBRET;\n";
+		$csv2="ELENOET;NBABS;NBNJ;NBNVAL;NBRET;\n";
 
-		$sql="SELECT * FROM a_agregation_demi_journees WHERE id_extraction='".$_GET['id_extraction']."' ORDER BY classe, nom, prenom;";
+		//$sql="SELECT * FROM a_agregation_demi_journees WHERE id_extraction='".$_GET['id_extraction']."' ORDER BY classe, nom, prenom;";
+		$sql="SELECT * FROM a_agregation_demi_journees WHERE id_extraction='".$id_extraction."' ORDER BY classe, nom, prenom;";
 		$res=mysqli_query($mysqli, $sql);
 		while($lig=mysqli_fetch_object($res)) {
 
@@ -215,17 +253,71 @@ if ($affichage != 'ods') {// on affiche pas de html
 				<td style='border:1px; border-style: inset;'>".$lig->NbNonValables."</td>
 				<td style='border:1px; border-style: inset;'>".$lig->NbRetards."</td>
 			</tr>";
+			$csv.=$lig->elenoet.";".$lig->nom.";".$lig->prenom.";".$lig->classe.";".$lig->NbAbsences.";".$lig->NbNonJustifiees.";".$lig->NbNonValables.";".$lig->NbRetards."\n";
+			$csv2.=$lig->elenoet.";".$lig->NbAbsences.";".$lig->NbNonJustifiees.";".$lig->NbNonValables.";".$lig->NbRetards."\n";
 		}
 		echo "</table>";
 
+		// Le taux d’absentéisme se calcule ainsi : 
+		// (nb d'élèves absents plus de 4 demi-journées non justifiées / effectif total) x 100.
 
+		// Taux d’absence : nb 1/2j abs / (nb 1/2 j présence x effectif) x 100.
 
+		// Enregistrer le bilan dans une table extraction à telle date pour des données de telle date à telle date
 
+		// COUNT(eleve_id) AS total
+		$sql="SELECT 1=1 FROM a_agregation_demi_journees 
+			WHERE id_extraction='".$id_extraction."' AND 
+				NbNonValables>'4';";
+		$res=mysqli_query($mysqli, $sql);
+		$total_eleves_exces_non_valable=mysqli_num_rows($res);
 
+		$sql="SELECT 1=1 FROM a_agregation_demi_journees 
+			WHERE id_extraction='".$id_extraction."';";
+		$res=mysqli_query($mysqli, $sql);
+		$total_eleves=mysqli_num_rows($res);
 
+		echo "<p style='margin-top:1em'>";
+		if($total_eleves_exces_non_valable==0) {
+			echo "Aucun élève n'a ";
+		}
+		elseif($total_eleves_exces_non_valable==1) {
+			echo "1 élève a ";
+		}
+		else {
+			echo $total_eleves_exces_non_valable." élèves ont ";
+		}
+		echo "plus de 4 absences non valables sur cette extraction <em>(du ".$date_debut_extraction." au ".$date_fin_extraction.")</em>, pour un total de ".$total_eleves." élèves.<br />
+		Soit un <strong>taux d'absentéisme</strong> de <strong>".(round(10*100*$total_eleves_exces_non_valable/$total_eleves)/10)."%</strong>.</p>";
 
+		//if(isset($_POST['generer_csv'])) {
+		if(isset($_GET['generer_csv'])) {
+			$user_temp_dir=get_user_temp_directory();
+			if(!$user_temp_dir) {
+				echo "<p style='color:red'>ERREUR : Il n'a pas été possible d'accéder à votre dossier temporaire pour y générer le CSV.</p>\n";
+			}
+			else {
+				$chemin_fichier="../temp/".$user_temp_dir."/extraction_abs_".strftime("%Y%m%d%H%M%S").".csv";
+				$f=fopen($chemin_fichier, "w+");
+				if(!$f) {
+					echo "<p style='color:red'>ERREUR : Il n'a pas été possible de créer un fichier CSV dans votre dossier temporaire.</p>\n";
+				}
+				else {
+					fwrite($f, $csv2);
+					fclose($f);
 
-
+					$chemin_fichier1="../temp/".$user_temp_dir."/extraction_abs_plus_".strftime("%Y%m%d%H%M%S").".csv";
+					$f=fopen($chemin_fichier1, "w+");
+					fwrite($f, $csv);
+					fclose($f);
+					echo "<p><a href='$chemin_fichier' target='_blank'>Télécharger le CSV</a> ou le <a href='$chemin_fichier1' target='_blank'>CSV avec nom, prénom, classe</a></p>
+					<script type='text/javascript'>
+						document.getElementById('p_csv').innerHTML=\"<a href='$chemin_fichier' target='_blank'>Télécharger le CSV</a> ou le <a href='$chemin_fichier1' target='_blank'>CSV avec nom, prénom, classe</a>\";
+						document.getElementById('p_csv').style.display='';
+					</script>\n";
+				}
+			}
+		}
 
 		require_once("../lib/footer.inc.php");
 		die();
@@ -254,11 +346,13 @@ if ($affichage != 'ods') {// on affiche pas de html
 		// 20201126:
 		}
 		else {
-			echo "<h2>Les demi-journées du ".$dt_date_absence_eleve_debut->format('Y-m-d')."
+			echo "<h2>Les demi-journées du ".$dt_date_absence_eleve_debut->format('d/m/Y')."
 			<input type='hidden' id='date_absence_eleve_debut' name='date_absence_eleve_debut' value='".$dt_date_absence_eleve_debut->format('Y-m-d')."' /> 
-			au ".$dt_date_absence_eleve_fin->format('Y-m-d')."
+			au ".$dt_date_absence_eleve_fin->format('d/m/Y')."
 			<input type='hidden' id='date_absence_eleve_fin' name='date_absence_eleve_fin' value='".$dt_date_absence_eleve_fin->format('Y-m-d')."' />
 			</h2>";
+
+			echo "Extraction n° ".$id_extraction." en cours... étape ".$boucler_sur_classes."...<br />";
 		}
 
     //on affiche une boite de selection avec les classe
@@ -286,7 +380,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 			}
 			echo "</select> ";
 
-			echo " <input type='checkbox' name='boucler_sur_classes' id='boucler_sur_classes' value='1' onchange=\"document.getElementById('id_classe').selectedIndex=1;\" />
+			echo " <input type='checkbox' name='boucler_sur_classes' id='boucler_sur_classes' value='1' onchange=\"document.getElementById('id_classe').selectedIndex=1; if(document.getElementById('affichage_ods')) {if(this.checked==true) {document.getElementById('affichage_ods').style.display='none'}else{document.getElementById('affichage_ods').style.display=''}}\" />
 		<label for='boucler_sur_classes' id='boucler_sur_classes'>Boucler sur la liste des classes <em>(hors génération ODS)</em></label>";
 		}
 		else {
@@ -324,14 +418,16 @@ if ($affichage != 'ods') {// on affiche pas de html
 		if(!isset($boucler_sur_classes)) {
 	?>
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Afficher</button>
+    <span id="affichage_ods">
     <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods">Enregistrer au format ods</button>
-    &nbsp;<input type="checkbox" id='generer_csv' name="generer_csv" value="y"><label for='generer_csv' title="La génération de CSV est effectuée avec l'affichage HTML dans la présente page (pas lors de la génération d'un fichier ODS).
+    </span>
+    &nbsp;<input type="checkbox" id='generer_csv' name="generer_csv" value="y" /><label for='generer_csv' title="La génération de CSV est effectuée avec l'affichage HTML dans la présente page (pas lors de la génération d'un fichier ODS).
 Cochez la case et cliquez sur Afficher pour obtenir la génération d'un fichier CSV.">Générer un CSV</label>
 	<?php
 		}
 		else {
 			echo "<input type='hidden' name='affichage' value='html'/>";
-			if(isset($generer_csv)) {
+			if(isset($_POST['generer_csv'])) {
 				echo "<input type='hidden' name='generer_csv' value='y'/>";
 			}
 		}
@@ -392,6 +488,69 @@ if ($affichage != null && $affichage != '') {
     
     $eleve_col = $eleve_query->find();
 }
+else {
+	// Afficher les taux d'absentéisme précédemment calculés
+
+	$sql="SHOW TABLES LIKE 'a_agregation_demi_journees';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT DISTINCT id_extraction, date_extraction, date_debut, date_fin FROM a_agregation_demi_journees ORDER BY date_extraction;";
+		$res1=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res1)>0) {
+			echo "<table class='boireaus boireaus_alt resizable sortable'>
+			<thead>
+				<tr>
+					<th title=\"Ce numéro est un numéro aléatoire généré lors de l'extraction pour pouvoir gérer plusieurs extraction simultanées par plusieurs CPE.\nIl n'a pas de caractère chronologique.\">N°</th>
+					<th>Date de l'extraction</th>
+					<th>Données du</th>
+					<th>au</th>
+					<th>Nombre d'élèves<br />
+					dépassant 4 demi-journées<br />
+					d'absence<br />
+					non justifiables/valables</th>
+					<th>Effectif total</th>
+					<th>Taux d'absentéisme<br />
+					en %</th>
+					<th>Supprimer</th>
+				</tr>
+			</thead>
+			<tbody>";
+			while($lig1=mysqli_fetch_object($res1)) {
+
+				$sql="SELECT 1=1 FROM a_agregation_demi_journees 
+					WHERE id_extraction='".$lig1->id_extraction."' AND 
+						NbNonValables>'4';";
+				$res=mysqli_query($mysqli, $sql);
+				$total_eleves_exces_non_valable=mysqli_num_rows($res);
+
+				$sql="SELECT 1=1 FROM a_agregation_demi_journees 
+					WHERE id_extraction='".$lig1->id_extraction."';";
+				$res=mysqli_query($mysqli, $sql);
+				$total_eleves=mysqli_num_rows($res);
+
+				echo "
+				<tr>
+					<td><a href='".$_SERVER['PHP_SELF']."?boucler_sur_classes_affichage_bilan=y&id_extraction=".$lig1->id_extraction."' title=\"Voir les détails de cette extraction.\">".$lig1->id_extraction."</a></td>
+					<td>".formate_date($lig1->date_extraction, 'y')."</td>
+					<td>".formate_date($lig1->date_debut)."</td>
+					<td>".formate_date($lig1->date_fin)."</td>
+					<td>".$total_eleves_exces_non_valable."</td>
+					<td>".$total_eleves."</td>
+					<td>".(round(10*100*$total_eleves_exces_non_valable/$total_eleves)/10)."</td>
+					<td><a href='".$_SERVER['PHP_SELF']."?suppr_extraction=".$lig1->id_extraction.add_token_in_url()."'>
+						<img src='../images/delete16.png' class='icone16' />
+					</a></td>
+				</tr>
+			</thead>
+			<tbody>";
+
+			}
+			echo "
+			<tbody>
+		</table>";
+		}
+	}
+}
 
 if ($affichage == 'html') {
     //debug_var();
@@ -442,8 +601,8 @@ if ($affichage == 'html') {
     echo '</tr>';
     echo '</thead>';
     echo '<tbody>';
-    $csv="ELENOET;NOM;PRENOM;CLASSE;NBABS;NBNJ;NBRET;\n";
-    $csv2="ELENOET;NBABS;NBNJ;NBRET;\n";
+    $csv="ELENOET;NOM;PRENOM;CLASSE;NBABS;NBNJ;NBNVAL;NBRET;\n";
+    $csv2="ELENOET;NBABS;NBNJ;NBNVAL;NBRET;\n";
     $nb_demijournees = 0;
     $nb_nonjustifiees = 0;
     $nb_retards = 0;
@@ -636,7 +795,7 @@ if ($affichage == 'html') {
     echo '</table>';
     echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
 
-    if(isset($_POST['generer_csv'])) {
+    if((isset($_POST['generer_csv']))&&(!isset($boucler_sur_classes))) {
         if($user_temp_dir) {
             $chemin_fichier="../temp/".$user_temp_dir."/extraction_abs_".strftime("%Y%m%d%H%M%S").".csv";
             $f=fopen($chemin_fichier, "w+");
@@ -671,7 +830,11 @@ if ($affichage == 'html') {
 				setTimeout(\"document.getElementById('choix_extraction').submit()\", 3000);
 			}
 			else {
-				document.location.href='".$_SERVER['PHP_SELF']."?boucler_sur_classes_affichage_bilan=y&id_extraction=".$id_extraction."';
+				document.location.href='".$_SERVER['PHP_SELF']."?boucler_sur_classes_affichage_bilan=y&id_extraction=".$id_extraction;
+		if(isset($_POST['generer_csv'])) {
+			echo "&generer_csv=y";
+		}
+		echo "';
 			}
 		</script>";
 	}
