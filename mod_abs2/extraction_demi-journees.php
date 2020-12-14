@@ -259,7 +259,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 		echo "</table>";
 
 		// Le taux d’absentéisme se calcule ainsi : 
-		// (nb d'élèves absents plus de 4 demi-journées non justifiées / effectif total) x 100.
+		// (nb d'élèves absents au moins 4 demi-journées non justifiées / effectif total) x 100.
 
 		// Taux d’absence : nb 1/2j abs / (nb 1/2 j présence x effectif) x 100.
 
@@ -268,7 +268,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 		// COUNT(eleve_id) AS total
 		$sql="SELECT 1=1 FROM a_agregation_demi_journees 
 			WHERE id_extraction='".$id_extraction."' AND 
-				NbNonValables>'4';";
+				NbNonValables>='4';";
 		$res=mysqli_query($mysqli, $sql);
 		$total_eleves_exces_non_valable=mysqli_num_rows($res);
 
@@ -287,7 +287,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 		else {
 			echo $total_eleves_exces_non_valable." élèves ont ";
 		}
-		echo "plus de 4 absences non valables sur cette extraction <em>(du ".$date_debut_extraction." au ".$date_fin_extraction.")</em>, pour un total de ".$total_eleves." élèves.<br />
+		echo "au moins 4 absences non valables sur cette extraction <em>(du ".$date_debut_extraction." au ".$date_fin_extraction.")</em>, pour un total de ".$total_eleves." élèves.<br />
 		Soit un <strong>taux d'absentéisme</strong> de <strong>".(round(10*100*$total_eleves_exces_non_valable/$total_eleves)/10)."%</strong>.</p>";
 
 		//if(isset($_POST['generer_csv'])) {
@@ -505,8 +505,8 @@ else {
 					<th>Données du</th>
 					<th>au</th>
 					<th>Nombre d'élèves<br />
-					dépassant 4 demi-journées<br />
-					d'absence<br />
+					ayant au moins<br />
+					4 demi-journées d'absence<br />
 					non justifiables/valables</th>
 					<th>Effectif total</th>
 					<th>Taux d'absentéisme<br />
@@ -519,7 +519,7 @@ else {
 
 				$sql="SELECT 1=1 FROM a_agregation_demi_journees 
 					WHERE id_extraction='".$lig1->id_extraction."' AND 
-						NbNonValables>'4';";
+						NbNonValables>='4';";
 				$res=mysqli_query($mysqli, $sql);
 				$total_eleves_exces_non_valable=mysqli_num_rows($res);
 
