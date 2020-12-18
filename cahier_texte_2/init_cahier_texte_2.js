@@ -1411,6 +1411,12 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 				//alert(tmp_encodedStr);
 				encodedStr=tmp_encodedStr;
 
+				tmp_encodedStr=encodedStr.replace(/visionneur_instrumenpoche.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
+				encodedStr=tmp_encodedStr;
+
+				tmp_encodedStr=encodedStr.replace(/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
+				encodedStr=tmp_encodedStr;
+
 			}
 		}
 
