@@ -1499,7 +1499,7 @@ if ($nb_dev != 0) {
 		echo "$nom_conteneur\n";
 
 		if($ponderation!='0.0') {
-			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée dun coefficient $ponderation";
+			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée d un coefficient $ponderation";
 			echo " <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
 		}
 		echo "</th>\n";
@@ -1543,10 +1543,10 @@ if ($id_devoir==0) {
 			if ($nb_dev_s_cont[$i] != 0) { echo "<th class=cn colspan='$nb_dev_s_cont[$i]' valign='top'><center>$cellule_nom_sous_cont</center></th>\n";}
 		}
 		if($nom_sous_cont[$i]!=""){
-			echo "<td class=cn valign='top'><center><b>$nom_sous_cont[$i]</b><br />\n";
+			echo "<th class='cn' valign='top'><center><b>$nom_sous_cont[$i]</b><br />\n";
 		}
 		else{
-			echo "<td class=cn valign='top'><center><b>&nbsp;</b><br />\n";
+			echo "<th class='cn' valign='top'><center><b>&nbsp;</b><br />\n";
 		}
 		if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 3)||($acces_exceptionnel_saisie)) {
 			if(getSettingAOui('GepiPeutCreerBoitesProf')) {
@@ -1556,29 +1556,32 @@ if ($id_devoir==0) {
 
 		echo "<a href=\"./saisie_notes.php?id_conteneur=$id_sous_cont[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Visualisation</a>\n";
 		if ($display_bulletin_sous_cont[$i] == '1') { echo "<br /><font color='red'>Aff.&nbsp;bull.</font>\n";}
-		echo "</center></td>\n";
+		echo "</center></th>\n";
 		$i++;
 	}
 }
 // En mode saisie, on n'affiche que le devoir à saisir
 if ((($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) and ($id_devoir==0)) {
 	if($nom_conteneur!=""){
-		echo "<td class=cn  valign='top'><center><b>$nom_conteneur</b>";
+		echo "<th class='cn' valign='top'><center><b>$nom_conteneur</b>";
 
 		if($ponderation!='0.0') {
-			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée dun coefficient $ponderation";
+			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée d un coefficient $ponderation";
 			echo " <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
 		}
 		echo "<br />";
 	}
 	else{
-		echo "<td class=cn  valign='top'><center><b>&nbsp;</b><br />";
+		echo "<th class='cn' valign='top'><center><b>&nbsp;</b><br />";
 	}
 
 	if(getSettingAOui('GepiPeutCreerBoitesProf')) {
 		echo "<a href=\"./add_modif_conteneur.php?mode_navig=retour_saisie&amp;id_conteneur=$id_conteneur&amp;id_retour=$id_conteneur\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">Configuration</a><br />";
 	}
-	echo "<br /><font color='red'>Aff.&nbsp;bull.</font></center></td>\n";
+	echo "<br /><font color='red'>Aff.&nbsp;bull.</font></center></th>\n";
+}
+else {
+	echo "<th class='cn' valign='top'>&nbsp;</th>\n";
 }
 
 echo "</tr>\n";
@@ -1601,6 +1604,8 @@ if ($multiclasses) {$header_pdf[] = "";}
 $w_pdf[] = $w1;
 if ($multiclasses) {echo "<td class='cn'>&nbsp;</td>\n";}
 if ($multiclasses) {$w_pdf[] = $w2;}
+
+echo "<!-- Liste des évaluations à la racine -->\n";
 $i = 0;
 $indice_devoir_saisi=-1;
 while ($i < $nb_dev) {
@@ -1666,13 +1671,19 @@ if ($id_devoir==0) {
 	while ($i < $nb_sous_cont) {
 		$tmp = '';
 		if ($_SESSION['affiche_tous'] == 'yes') {
+			echo "<!-- Liste des évaluations dans les conteneurs/boites -->\n";
 			$m = 0;
 			while ($m < $nb_dev_s_cont[$i]) {
 				$tmp = '';
 				if (($mode == 1) and ($coef_s_dev[$i][$m] != 0)) $tmp = " bgcolor = $couleur_calcul_moy ";
 				$header_pdf[] = ($nom_sous_dev[$i][$m]." (".$display_date_s_dev[$i][$m].")");
 				$w_pdf[] = $w2;
-				echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=".$id_s_dev[$i][$m]."\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">".$nom_sous_dev[$i][$m]."</a></b><br /><font size=-2>(".$display_date_s_dev[$i][$m].")</font></center></td>\n";
+				if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
+					echo "<td class=cn".$tmp." valign='top' style='background-color:plum'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=".$id_s_dev[$i][$m]."\"  onclick=\"return confirm_abandon (this, change,'$themessage')\">".$nom_sous_dev[$i][$m]."</a></b><br /><font size=-2>(".$display_date_s_dev[$i][$m].")</font></center></td>\n";
+				}
+				else {
+					echo "<td class=cn".$tmp." valign='top' style='background-color:plum'><center><b>".$nom_sous_dev[$i][$m]."</b><br /><font size=-2>(".$display_date_s_dev[$i][$m].")</font></center></td>\n";
+				}
 				$m++;
 			}
 			$tmp = '';
@@ -1686,11 +1697,11 @@ if ($id_devoir==0) {
 }
 // En mode saisie, on n'affiche que le devoir à saisir
 if ($id_devoir==0) {
-	echo "<td class=cn valign='top'><center><b>Moyenne</b>\n";
+	echo "<th class='cn' valign='top'><center><b>Moyenne</b>\n";
 	if((isset($id_conteneur))&&(($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie))) {
 		echo "<br /><a href='".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur&amp;recalculer=y".add_token_in_url()."'>Recalculer</a>";
 	}
-	echo "</center></td>\n";
+	echo "</center></th>\n";
 	$header_pdf[] = "Moyenne";
 	$w_pdf[] = $w2;
 }
@@ -1702,6 +1713,7 @@ echo "</tr>";
 echo "<tr><td class=cn valign='top'>&nbsp;</td>";
 if ($multiclasses) {echo "<td class='cn'>&nbsp;</td>";}
 echo "\n";
+echo "<!-- Liens de saisie pour les évaluations à la racine si la période est ouverte  -->\n";
 $i = 0;
 while ($i < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
@@ -1743,9 +1755,16 @@ if ($id_devoir==0) {
 	$i=0;
 	while ($i < $nb_sous_cont) {
 		if ($_SESSION['affiche_tous'] == 'yes') {
+			echo "<!-- Liens de saisie pour les évaluations dans les conteneurs/boites -->\n";
 			$m = 0;
 			while ($m < $nb_dev_s_cont[$i]) {
-				echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=".$id_sous_cont[$i]."&amp;id_devoir=".$id_s_dev[$i][$m]."\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a></center></td>\n";
+				if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
+					echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=".$id_sous_cont[$i]."&amp;id_devoir=".$id_s_dev[$i][$m]."\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a></center></td>\n";
+				}
+				else {
+					// La période est close et il n'y a pas d'accès exceptionnel ouvert
+					echo "<td class=cn valign='top'>&nbsp;</td>\n";
+				}
 				$m++;
 			}
 		}
