@@ -829,7 +829,12 @@ echo "<script type='text/javascript'>
 							echo "</a>";
 							echo "</td>\n";
 						}
-						echo "<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."','".add_token_in_js_func()."')\">Supprimer</a></td></tr>\n";
+						echo "<td style=\"text-align: center;\">
+							<div style='float: right; width:16px; margin-right:5px;' title=\"Supprimer ce fichier lors de l'enregistrement de la notice.\">
+								<input type='checkbox' name='suppr_doc_joint[]' id='suppr_doc_joint_".$document->getId()."' value='".$document->getId()."' />
+							</div>
+							<a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."','".add_token_in_js_func()."')\" title=\"Supprimer ce document, sans enregistrer les modifications éventuelles de la notice ci-dessus.\">Supprimer</a>
+						</td></tr>\n";
 				$nb_documents_joints++;
 			}
 			echo "</table>\n";

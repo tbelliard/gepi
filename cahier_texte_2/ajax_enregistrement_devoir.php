@@ -315,7 +315,23 @@ for($loop=0;$loop<count($tag);$loop++) {
 	}
 }
 //==================================================
-
+$suppr_doc_joint=isset($_POST['suppr_doc_joint']) ? $_POST['suppr_doc_joint'] : array();
+foreach($suppr_doc_joint as $key => $id_document_a_supprimer) {
+	$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='".$id_devoir."' AND id='".$id_document_a_supprimer."';";
+	//echo "$sql<br />";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$lig_suppr=mysqli_fetch_object($test);
+		$emplacement_document=$lig_suppr->emplacement;
+		if(file_exists($emplacement_document)) {
+			@unlink($emplacement_document);
+		}
+		$sql="DELETE FROM ct_devoirs_documents WHERE id_ct_devoir='".$id_devoir."' AND id='".$id_document_a_supprimer."';";
+		//echo "$sql<br />";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+}
+//==================================================
 //traitement de telechargement de documents joints
 if (!empty($doc_file['name'][0])) {
 	require_once("traite_doc.php");
