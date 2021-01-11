@@ -14,9 +14,14 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 } else if ($resultat_session == '0') {
-	//header("Location: ../logout.php?auto=1");
-	header("Location: ../logout.php?auto=1");
-	die();
+	// Nouvel essai pour essayer d'ouvrir une session SSO CAS:
+	require_once("../lib/auth_sso.inc.php");
+
+	if (($resultat_session == '0')||($resultat_session == 'c')) {
+		//header("Location: ../logout.php?auto=1");
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/visionneur_geogebra.php';";

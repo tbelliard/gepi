@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -34,8 +34,14 @@ if ($resultat_session == "c") {
 	header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
 	die();
 } else if ($resultat_session == "0") {
-	header("Location: ../logout.php?auto=1");
-	die();
+	// Nouvel essai pour essayer d'ouvrir une session SSO CAS:
+	require_once("../lib/auth_sso.inc.php");
+
+	if (($resultat_session == '0')||($resultat_session == 'c')) {
+		//header("Location: ../logout.php?auto=1");
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/voir_pj.php';";
