@@ -12462,7 +12462,12 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					echo "<p>Tous les élèves ont un responsable légal 1.<br />";
 				}
 				else {
-					echo "<p>".mysqli_num_rows($res)." élève(s) n'ont pas de responsable légal 1.<br />";
+					if(mysqli_num_rows($res)>1) {
+						echo "<p>".mysqli_num_rows($res)." élèves n'ont pas de responsable légal 1.<br />";
+					}
+					else {
+						echo "<p>".mysqli_num_rows($res)." élève n'a pas de responsable légal 1.<br />";
+					}
 					while($lig=mysqli_fetch_object($res)) {
 						echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' title='Voir le dossier élève dans un nouvel onglet.' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id, 'avec_classe')."</a>&nbsp;: ";
 						// Parcourir les responsables et chercher les NIVEAU_RESPONSABILITE=1 triés par ordre de CODE_PARENTE
@@ -12534,7 +12539,12 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					echo "<p>Tous les élèves ont un responsable légal 2.<br />";
 				}
 				else {
-					echo "<p>".mysqli_num_rows($res)." élève(s) n'ont pas de responsable légal 2.<br />";
+					if(mysqli_num_rows($res)>1) {
+						echo "<p>".mysqli_num_rows($res)." élèves n'ont pas de responsable légal 2.<br />";
+					}
+					else {
+						echo "<p>".mysqli_num_rows($res)." élève n'a pas de responsable légal 2.<br />";
+					}
 					while($lig=mysqli_fetch_object($res)) {
 						echo "<a href='../eleves/visu_eleve.php?ele_login=".$lig->login."' title='Voir le dossier élève dans un nouvel onglet.' target='_blank'>".get_nom_prenom_eleve_from_ele_id($lig->ele_id, 'avec_classe')."</a>&nbsp;: ";
 						// Parcourir les responsables et chercher les NIVEAU_RESPONSABILITE=1 triés par ordre de CODE_PARENTE
