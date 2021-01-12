@@ -919,7 +919,7 @@ if(getSettingAOui('active_bulletins')) {
 				  "Permet d'effectuer une extraction/export CSV des notes des carnets de notes de telle ou telle classe.");
 	}
 
-	if ($this->statutUtilisateur=='administrateur'){
+	if (($this->statutUtilisateur=='administrateur')&&(getSettingAOui('active_carnets_notes'))) {
 		$this->creeNouveauItem("/cahier_notes/autorisation_exceptionnelle_saisie.php",
 			"Autorisation exceptionnelle de saisie de CN",
 			"Permet d'autoriser exceptionnellement un enseignant à saisir/corriger des notes du carnet de notes pour un enseignement sur une période partiellement close.");
