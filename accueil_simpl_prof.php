@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1416,8 +1416,11 @@ echo "Periode $j<br />
 								$class_style="deverrouille";
 							}
 
-							echo "<!-- Colonne CN -->\n";
-							echo "<td class='$class_style'></td>\n";
+							// 20210112
+							if($pref_accueil_cn=="y") {
+								echo "<!-- Colonne CN -->\n";
+								echo "<td class='$class_style'></td>\n";
+							}
 
 							if($pref_accueil_bull=="y"){
 								// Calcul du nombre de notes et du nombre d'appréciations présentes sur le bulletin
