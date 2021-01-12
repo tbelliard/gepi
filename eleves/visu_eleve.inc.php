@@ -945,6 +945,11 @@ Patientez pendant l'extraction des données... merci.
 
 		}
 
+		// 20210112
+		if(!getSettingAOui('active_bulletins')) {
+			$acces_bulletins='n';
+		}
+
 		// A REVOIR par la suite
 		$active_cahiers_texte=getSettingValue("active_cahiers_texte");
 		if($active_cahiers_texte=='y') {
