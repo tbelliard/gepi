@@ -240,7 +240,7 @@
 ?>
 	<input type="hidden" name="is_posted" value="4" />
 
-	<h2 class="colleHaut">Format des désignations professeurs et matirèes dans EDT</h2>
+	<h2 class="colleHaut">Format des désignations professeurs et matières dans EDT</h2>
 
 	<p>Lors de l'import, il vous est proposé d'effectuer les correspondances NOM_EDT/NOM_GEPI non encore enregistrées.<br />
 	Le format choisi dans EDT peut varier.</p>
