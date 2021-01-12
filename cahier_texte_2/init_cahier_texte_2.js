@@ -1180,13 +1180,15 @@ function insere_image_dans_ckeditor(url, largeur, hauteur) {
 
 function insere_lien_ggb_dans_ckeditor(titre, url) {
 	//texte="<a href='visionneur_geogebra.php?url="+url+"' target='_blank'>"+url.replace(/\\/g,'/').replace( /.*\//, '' )+"</a>";
-	texte="<a href='visionneur_geogebra.php?url="+url+"' target='_blank'>"+titre+"</a>";
+	//texte="<a href='visionneur_geogebra.php?url="+url+"' target='_blank'>"+titre+"</a>";
+	texte="<a href='../cahier_texte_2/visionneur_geogebra.php?url="+url+"' target='_blank'>"+titre+"</a>";
 	CKEDITOR.instances['contenu'].insertHtml(texte);
 }
 
 function insere_lien_instrumenpoche_dans_ckeditor(titre, url) {
 	//texte="<a href='visionneur_instrumenpoche.php?url="+url+"' target='_blank'>"+titre+"</a>";
-	texte="<a href='visionneur_instrumenpoche.php?"+url+"' target='_blank'>"+titre+"</a>";
+	//texte="<a href='visionneur_instrumenpoche.php?"+url+"' target='_blank'>"+titre+"</a>";
+	texte="<a href='../cahier_texte_2/visionneur_instrumenpoche.php?"+url+"' target='_blank'>"+titre+"</a>";
 	CKEDITOR.instances['contenu'].insertHtml(texte);
 }
 
@@ -1411,10 +1413,12 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 				//alert(tmp_encodedStr);
 				encodedStr=tmp_encodedStr;
 
-				tmp_encodedStr=encodedStr.replace(/visionneur_instrumenpoche.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
+				//tmp_encodedStr=encodedStr.replace(/visionneur_instrumenpoche.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
+				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_instrumenpoche.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
 				encodedStr=tmp_encodedStr;
 
-				tmp_encodedStr=encodedStr.replace(/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
+				//tmp_encodedStr=encodedStr.replace(/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
+				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
 				encodedStr=tmp_encodedStr;
 
 			}
