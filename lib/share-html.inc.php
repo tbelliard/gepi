@@ -7546,12 +7546,16 @@ function tableau_actions_eleve($mode='complet') {
 function insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($titre_xml, $url_xml) {
 	global $gepiPath;
 	global $niveau_arbo;
+
+	//$fichier_IEP="lib/iep.swf";
+	$fichier_IEP="cahier_texte_2/iepjsmax.js";
+
 	//if(!file_exists($gepiPath."/lib/iep.swf")) {
-	if(((!isset($niveau_arbo))&&(!file_exists("../lib/iep.swf")))||
-	((isset($niveau_arbo))&&($niveau_arbo==0)&&(!file_exists("./lib/iep.swf")))||
-	((isset($niveau_arbo))&&($niveau_arbo==1)&&(!file_exists("../lib/iep.swf")))||
-	((isset($niveau_arbo))&&($niveau_arbo=='public')&&(!file_exists("../lib/iep.swf")))||
-	((isset($niveau_arbo))&&($niveau_arbo==2)&&(!file_exists("../../lib/iep.swf")))) {
+	if(((!isset($niveau_arbo))&&(!file_exists("../".$fichier_IEP)))||
+	((isset($niveau_arbo))&&($niveau_arbo==0)&&(!file_exists("./".$fichier_IEP)))||
+	((isset($niveau_arbo))&&($niveau_arbo==1)&&(!file_exists("../".$fichier_IEP)))||
+	((isset($niveau_arbo))&&($niveau_arbo=='public')&&(!file_exists("../".$fichier_IEP)))||
+	((isset($niveau_arbo))&&($niveau_arbo==2)&&(!file_exists("../../".$fichier_IEP)))) {
 		return '';
 	}
 	else {
