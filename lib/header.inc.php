@@ -71,6 +71,10 @@ include_once 'header_template.inc.php';
 	<meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\">";
 		}
 
+		// Pour améliorer les choses sur un smartphone:
+		// https://openweb.eu.org/articles/adapter_site_smartphones
+		echo '<meta name="viewport" content="width=device-width, height=device-height" />';
+
 	?>
 
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/accueil.css" media="screen" />
