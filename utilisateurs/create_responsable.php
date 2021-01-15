@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -255,7 +255,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				// 20150915
 				$test_login=$current_parent->login;
+
+				//echo "\$test_login=$test_login<br />";
+
 				if($test_login!="") {
+					if($debug_create_resp=="y") {echo "Ce parent a déjà un login dans la table resp_pers ($test_login)<br />\n";}
+
 					// Il y a déjà un login non vide dans resp_pers
 					// On vérifie que le login n'est pas déjà attribué à un autre
 					$sql="SELECT login FROM utilisateurs WHERE login='".$test_login."';";
@@ -315,14 +320,23 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					}
 				}
 
+				//echo "\$test_login=$test_login<br />";
+
 				if(($test_login=="")||(!isset($reg_login))) {
+					if($debug_create_resp=="y") {echo "Ce parent n'a pas encore de login dans la table resp_pers.<br />\n";}
+
 					// On tente de récupérer un login mis en réserve
 					$sql="SELECT login, password, salt FROM tempo_utilisateurs WHERE identifiant1='".$current_parent->pers_id."' AND statut='responsable';";
 					if($debug_create_resp=="y") {echo "$sql<br />\n";}
 					$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_login)>0) {
 						$lig_login=mysqli_fetch_object($res_login);
+
+						if($debug_create_resp=="y") {echo "Ce parent a un compte mis en réserve dans la table tempo_utilisateurs ($lig_login->login).<br />\n";}
+
 						if(test_unique_login($lig_login->login, "y")) {
+							if($debug_create_resp=="y") {echo "Le login $lig_login->login est bien unique.<br />\n";}
+
 							$reg_login=$lig_login->login;
 							$reg_password=$lig_login->password;
 							$reg_salt=$lig_login->salt;
@@ -336,6 +350,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 							}
 							$liste_comptes_recuperes_avec_mdp.="<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' title=\"Voir la fiche du responsable dans un nouvel onglet.\" target='_blank'>".casse_mot($current_parent->nom,"maj")." ".casse_mot($current_parent->prenom,"majf2")."</a>";
 							$nb_comptes_recuperes_avec_mdp++;
+						}
+						else {
+							if($debug_create_resp=="y") {echo "Anomalie : Le login $lig_login->login n'est pas unique.<br />\n";}
 						}
 					}
 				}
@@ -394,6 +411,17 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						else {
 							$msg .= $current_parent->nom." ".$current_parent->prenom." (<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' target='_blank'>".$current_parent->pers_id."</a>)&nbsp;: Un compte existe déjà dans la table 'utilisateurs' pour le login $reg_login attribué au responsable ".$lig_user_exist->nom." ".$lig_user_exist->prenom.".<br/>";
 							// Faut il restaurer le MDP?
+
+							$sql="UPDATE resp_pers SET login='".$reg_login."' WHERE (pers_id = '" . $current_parent->pers_id . "');";
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							$reg2 = mysqli_query($GLOBALS["mysqli"], $sql);
+							$nb_comptes++;
+
+							$sql="UPDATE utilisateurs SET etat='actif' WHERE login='".$reg_login."' AND statut='responsable';";
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							$reg3 = mysqli_query($GLOBALS["mysqli"], $sql);
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+
 						}
 
 					}
@@ -409,7 +437,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 								"statut = 'responsable', " .
 								"etat = 'actif', " .
 								"auth_mode = '".$reg_auth."', " .
-								"change_mdp = 'n'";
+								"change_mdp = 'n';";
 						if($debug_create_resp=="y") {echo "$sql<br />\n";}
 						$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 	
@@ -417,11 +445,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 							$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
 							if($debug_create_resp=="y") {echo "<span style='color:red'>Erreur lors de la création du compte ".$reg_login."</span><br/>\n";}
 						} else {
-							$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
+							$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "');";
 							if($debug_create_resp=="y") {echo "$sql<br />\n";}
 							$reg2 = mysqli_query($GLOBALS["mysqli"], $sql);
-							if($debug_create_resp=="y") {echo "$sql<br />\n";}
-							//$msg.="$sql<br />";
 							$nb_comptes++;
 
 							// Ménage:
@@ -497,7 +523,13 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
 				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login.add_token_in_url()."'>";
-				$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
+
+				if($nb_comptes_recuperes_avec_mdp==0) {
+					$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
+				}
+				else {
+					$msg .= "Pour initialiser ou <span title=\"Dans le cas d'un compte récupéré et si l'utilisateur a oublié son mot de passe.\">générer de nouveaux (*)</span> mot(s) de passe, vous devez suivre ce lien maintenant !";
+				}
 				$msg .= "</a>";
 			} else {
 				// On est ici en mode de création par classe
@@ -515,7 +547,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					$msg.="<br/>";
 				}
 				// =====================
-				$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
+				if($nb_comptes_recuperes_avec_mdp==0) {
+					$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
+				}
+				else {
+					$msg .= "Pour initialiser ou <span title=\"Dans le cas de comptes récupérés et si des utilisateurs ont oublié leur mot de passe.\">générer de nouveaux (*)</span> mot(s) de passe, vous devez suivre ce lien maintenant !";
+				}
 			}
 			// =====================
 			// MODIF: boireaus 20071102
