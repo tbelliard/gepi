@@ -960,7 +960,11 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 						if(mysqli_num_rows($res_suivi)>0) {
 
 							//$retour.="<p style='text-align:left;'>Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
-							$retour.="<p style='text-align:left; font-weight: bold;'>".ucfirst($mod_disc_terme_sanction)."s</p>\n";
+							$retour.="<p style='text-align:left; font-weight: bold;'>".ucfirst($mod_disc_terme_sanction)."s";
+							if($_SESSION['statut']=='cpe') {
+								$retour.=" <a href='../mod_discipline/saisie_sanction.php?id_incident=".$lig->id_incident."&step=2' target='_blank' title=\"Consulter/modifier les sanctions.\"><img src='../images/icons/chercher.png' class='icone16' /> </a>";
+							}
+							$retour.="</p>\n";
 
 							$retour.="<table class='boireaus' border='1' summary=\"Tableau des ".$mod_disc_terme_sanction."s pour le protagoniste $lig_prot->login de l ".$mod_disc_terme_incident." n°$lig->id_incident\">\n";
 
