@@ -1,6 +1,25 @@
 <?php
 /*
-*/
+ *
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 
 // Initialisations diverses pour le module Discipline
 $mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
@@ -993,7 +1012,17 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 									$res_retenue=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_retenue)>0) {
 										$lig_retenue=mysqli_fetch_object($res_retenue);
-										$retour.=formate_date($lig_retenue->date)." (<i>".$lig_retenue->duree."H</i>)";
+										$retour.=formate_date($lig_retenue->date);
+										if($lig_retenue->heure_debut=='') {
+											$retour.="";
+										}
+										elseif(preg_match('/^[A-Za-z]/', $lig_retenue->heure_debut)) {
+											$retour.=" en ".$lig_retenue->heure_debut;
+										}
+										else {
+											$retour.=" à ".$lig_retenue->heure_debut;
+										}
+										$retour.=" (<i>".$lig_retenue->duree."H</i>)";
 									}
 									else {
 										$retour.="X";
