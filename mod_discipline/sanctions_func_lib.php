@@ -948,7 +948,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 								else {
 									$retour.="<td>demandée par ".u_p_nom($lig_suivi->login_u)."</td>\n";
 								}
-								$retour.="</tr>\n";	
+								$retour.="</tr>\n";
 							}	
 							$retour.="</table>\n";
 						}		
@@ -962,7 +962,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 							//$retour.="<p style='text-align:left;'>Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
 							$retour.="<p style='text-align:left; font-weight: bold;'>".ucfirst($mod_disc_terme_sanction)."s";
 							if($_SESSION['statut']=='cpe') {
-								$retour.=" <a href='../mod_discipline/saisie_sanction.php?id_incident=".$lig->id_incident."&step=2' target='_blank' title=\"Consulter/modifier les sanctions.\"><img src='../images/icons/chercher.png' class='icone16' /> </a>";
+								$retour.=" <a href='../mod_discipline/saisie_sanction.php?id_incident=".$lig->id_incident."&step=2' target='_blank' title=\"Consulter/modifier les ".$mod_disc_terme_sanction."s.\"><img src='../images/icons/chercher.png' class='icone16' /> </a>";
 							}
 							$retour.="</p>\n";
 
@@ -1088,6 +1088,10 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 					if ($zone_de_commentaire !="") {
 						$retour .= "<p style='text-align:left;'><b>Commentaires sur l'".$mod_disc_terme_incident."&nbsp;:&nbsp;</b></br></br>$zone_de_commentaire</p>";
 					}
+				}
+
+				if($_SESSION['statut']=='cpe') {
+					$retour.=" <a href='../mod_discipline/saisie_sanction.php?id_incident=".$lig->id_incident."&step=2' target='_blank' title=\"Ajouter une ".$mod_disc_terme_sanction.".\"><img src='../images/icons/ajout_sanction.png' width='25' height='20' /></a>";
 				}
 			}
 
