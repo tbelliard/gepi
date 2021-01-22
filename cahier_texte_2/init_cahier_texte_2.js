@@ -1400,11 +1400,17 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 				//alert('plOp');
 				//tmp_encodedStr=encodedStr.replace(/..\/documents\//g, document.getElementById('url_racine_gepi').value+'/documents/');
 
+				//==========================
+				// GeoGebra
+				//tmp_encodedStr=encodedStr.replace(/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
+				//tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
+				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_geogebra.php\?url=\.\.\/documents\//, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?url=___POINTPOINT___\/documents\/');
+				encodedStr=tmp_encodedStr;
+				//==========================
 				tmp_encodedStr=encodedStr.replace(/\.\.\/documents\//g, document.getElementById('url_racine_gepi').value+'/documents/');
-
 				//alert(tmp_encodedStr);
 				encodedStr=tmp_encodedStr;
-
+				//==========================
 				//href='voir_pj.php?id_ct
 				tmp_encodedStr=encodedStr.replace(/voir_pj.php\?id_ct=/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/voir_pj.php\?id_ct=');
 				encodedStr=tmp_encodedStr;
@@ -1412,14 +1418,16 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 				tmp_encodedStr=encodedStr.replace(/\.\.\/images\/icons\/chercher.png/g, document.getElementById('url_racine_gepi').value+'/images/icons/chercher.png');
 				//alert(tmp_encodedStr);
 				encodedStr=tmp_encodedStr;
-
+				//==========================
 				//tmp_encodedStr=encodedStr.replace(/visionneur_instrumenpoche.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
 				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_instrumenpoche.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
 				encodedStr=tmp_encodedStr;
-
-				//tmp_encodedStr=encodedStr.replace(/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
-				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
+				//==========================
+				// GeoGebra : on rétablit le ___POINTPOINT___/documents en ../documents
+				tmp_encodedStr=encodedStr.replace(/url=___POINTPOINT___\/documents\//, 'url=\.\.\/documents\/');
 				encodedStr=tmp_encodedStr;
+				//==========================
+
 
 			}
 		}
