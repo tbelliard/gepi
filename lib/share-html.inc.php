@@ -7943,4 +7943,28 @@ function avertissement_fin_cours($niveau_arbo=0) {
 	}
 
 }
+
+function insere_visu_eleve($login_eleve, $onglet='', $title='', $float='', $target='') {
+	global $gepiPath;
+	$retour='';
+	$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+	if($acces_visu_eleve) {
+		if($float!='') {
+			$retour.="<div style='float:".$float.", width:16px;'>";
+		}
+		$retour.="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$login_eleve;
+		if($onglet!='') {
+			$retour.="&onglet=".$onglet;
+		}
+		$retour.="'";
+		if($title!='') {
+			$retour.=" title=\"".$title."\"";
+		}
+		$retour.="><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a>";
+		if($float!='') {
+			$retour.="</div>";
+		}
+	}
+	return $retour;
+}
 ?>

@@ -1793,6 +1793,8 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					$lig2=mysqli_fetch_object($res2);
 					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 					echo infobulle_photo($lig->login);
+
+					echo insere_visu_eleve($lig->login, 'discipline', "Voir la fiche élève", 'right', '_blank');
 				}
 				else {
 					echo "ERREUR: Login inconnu";
@@ -2504,6 +2506,7 @@ elseif($mode=='modif') {
 
 	echo "<p class='bold'>".ucfirst($mod_disc_terme_sanction)." (<em>$traitement</em>) n°$id_sanction concernant ".p_nom($ele_login);
 	echo infobulle_photo($ele_login);
+	echo insere_visu_eleve($ele_login, 'discipline', "Voir la fiche élève", '', '_blank');
 	echo "&nbsp;: ";
 	echo get_nature_sanction($traitement);
 	echo "</p>\n";
