@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -272,6 +272,16 @@ if(isset($enregistrer)) {
 					}
 				}
 			}
+	
+			if($_SESSION['statut']=='administrateur') {
+				if(isset($_POST['accueil_simpl_par_defaut'])) {
+					saveSetting('accueil_simpl_par_defaut', 'y');
+				}
+				else {
+					saveSetting('accueil_simpl_par_defaut', 'n');
+				}
+			}
+	
 		}
 
 		if(($page=='add_modif_dev')||($_SESSION['statut']=='professeur')){
@@ -1070,7 +1080,19 @@ else{
 
 
 	// La page n'est considérée que pour l'admin pour réduire la longueur de la liste
-	if($_SESSION['statut']=='administrateur'){
+	if($_SESSION['statut']=='administrateur') {
+		$accueil_simpl_par_defaut=getSettingValue('accueil_simpl_par_defaut');
+		if($accueil_simpl_par_defaut=='y') {
+			$checked_accueil_simpl_par_defaut=" checked='true'";
+			$style_accueil_simpl_par_defaut=" style='font-weight:bold'";
+		}
+		else {
+			$checked_accueil_simpl_par_defaut="";
+			$style_accueil_simpl_par_defaut="";
+		}
+		echo "<p style='text-indent:-2em; margin-left:3em;'><input type=\"checkbox\" name='accueil_simpl_par_defaut' id='accueil_simpl_par_defaut' value=\"y\" onchange='checkbox_change(this.id)'".$checked_accueil_simpl_par_defaut." /><label for='accueil_simpl_par_defaut' id='texte_accueil_simpl_par_defaut'".$style_accueil_simpl_par_defaut."> Forcer l'affichage de l'interface simplifiée dans le cas où un professeur n'a pas encore choisi d'utiliser ou non l'interface simplifiée.<br />
+		Cela lui permet de découvrir l'interface simplifiée... puis éventuellement de choisir l'interface classique/historique.</label></p>\n";
+
 		echo "<input type=\"hidden\" name='page' value=\"$page\" />\n";
 	}
 
@@ -1143,7 +1165,7 @@ else{
 
 	echo "<p><i>Remarques:</i></p>\n";
 	echo "<ul>\n";
-	echo "<li>La prise en compte des champs choisis est conditionnée par le fait d'avoir coché ou non la colonne 'Utiliser l'interface simplifiée' pour l'utilisateur considéré.</li>\n";
+	echo "<li>Par défaut, la prise en compte des champs choisis est conditionnée par le fait d'avoir coché ou non la colonne 'Utiliser l'interface simplifiée' pour l'utilisateur considéré.</li>\n";
 	echo "<li>Les champs non proposés dans les interfaces simplifiées restent accessibles aux utilisateurs en cliquant sur les liens 'Interface complète' proposés dans les pages d'interfaces simplifiées .</li>\n";
 	echo "</ul>\n";
 	//}

@@ -152,15 +152,28 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='eleve')||($_SESSI
 	$accueil_simpl=isset($_GET['accueil_simpl']) ? $_GET['accueil_simpl'] : NULL;
 	if(!isset($accueil_simpl)) {
 		if($_SESSION['statut']=='professeur') {
-			// Si on affichait par défaut l'interface simplifiée pour les profs, il faudrait définir un modèle pour savoir quelles colonnes afficher
+			// Si on affichait par défaut l'interface simplifiée pour les profs,
+			// il faudrait définir un modèle pour savoir quelles colonnes afficher
 			$valeur_par_defaut="n";
 		}
 		else {
 			$valeur_par_defaut="y";
 		}
 
-		$pref_accueil_simpl=getPref($_SESSION['login'],'accueil_simpl',$valeur_par_defaut);
-		$accueil_simpl=$pref_accueil_simpl;
+		//$pref_accueil_simpl=getPref($_SESSION['login'],'accueil_simpl',$valeur_par_defaut);
+		$pref_accueil_simpl=getPref($_SESSION['login'],'accueil_simpl','');
+		if($pref_accueil_simpl=='') {
+			// INSERT INTO setting SET name='accueil_simpl_par_defaut', value='y';
+			if(getSettingAOui('accueil_simpl_par_defaut')) {
+				$accueil_simpl='y';
+			}
+			else {
+				$accueil_simpl=$valeur_par_defaut;
+			}
+		}
+		else {
+			$accueil_simpl=$pref_accueil_simpl;
+		}
 	}
 
 //echo "plop";

@@ -65,6 +65,11 @@ LSUN et Socle:
 - Ajout d'un modèle ODT (OpenDocument) pour les feuilles d'émargement.
 - Possibilité de générer des convocations élèves au format ODT (OpenDocument).
 
+Général:
+- Possibilité d'imposer l'interface simplifiée par défaut pour les professeurs
+ (tant qu'un professeur n'a pas fait de choix d'utiliser ou non cette interface,
+ c'est celle qu'il a par défaut).
+
 Bibliothèques:
 - Mise à jour de TinyButStrong en version 3.11.0 (PHP 5 and 7) (2019-02-10)
 - Mise à jour du plugin openTBS de TinyButStrong en version 1.9.12 (2019-03-10)
@@ -110,7 +115,7 @@ Bulletins:
 - Possibilité, lors de la saisie des appréciations, d'afficher les moyennes et 
   appréciations des bulletins des années précédentes.
 
-- Général:
+Général:
 - Possibilité de mettre à jour globalement les groupes d'après l'export EXP_ELEVES.xml
 - Prise en compte du champ PAIE_FRAIS_SCOLAIRES de Siècle pour déterminer 
   le responsable légal 1 par rapport au responsable légal 2.
