@@ -202,7 +202,7 @@ if(isset($id_groupe)) {
 		<tr>
 			".(($type_ct=='') ? "<th class='text' title=\"Compte-rendu ou travail à faire\">Type</th>" : "")."
 			".(($entete=='n') ? "<th class='nosort'>Insérer</th>" : "")."
-			<th class='text'>Fichier</th>
+			<th class='text' style='max-width:600px; overflow:auto;'>Fichier</th>
 			<th class='number'>Taille</th>
 			<th class='number'>Date</th>
 		</tr>
@@ -228,8 +228,8 @@ if(isset($id_groupe)) {
 				echo "
 			".(($entete=='n') ? "<td><a href=\"javascript:insere_texte_dans_ckeditor('<a href=\'".$lig->emplacement."\' target=\'_blank\'>".preg_replace("/'/", ' ', $lig->titre)."</a>')\" title=\"Insérer un lien vers le document.\"><img src='../images/icons/wizard.png' class='icone16' /></a></td>" : "")."
 
-			<td style='text-align:left'>
-				<a href='".$lig->emplacement."' target='_blank'>".$lig->titre."</a>
+			<td style='text-align:left;max-width:600px; overflow:hidden;'>
+				<a href='".$lig->emplacement."' target='_blank' title=\"".$lig->titre."\">".$lig->titre."</a>
 			</td>
 			<td><span style='display:none'>".$lig->taille."</span>".volume_human($lig->taille)."</td>
 			<td><span style='display:none'>".$lig->date_ct."</span>".strftime('%a %d/%m/%Y', $lig->date_ct)."</td>
