@@ -200,12 +200,6 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 	}
-
-
-	if (isset($_POST['is_posted']) && ($msg=="") ) {
-		$msg = "Les modifications ont été enregistrées !<br />";
-		$post_reussi=TRUE;
-	}
 	
 	if (isset($_POST['cdt_autoriser_modif_multiprof'])) {
 		if ($_POST['cdt_autoriser_modif_multiprof'] == "yes") {
@@ -216,6 +210,21 @@ if (isset($_POST['is_posted'])) {
 		if (!saveSetting("cdt_autoriser_modif_multiprof", $temp)) {
 			$msg .= "Erreur lors de l'enregistrement de cdt_autoriser_modif_multiprof !<br />";
 		}
+	}
+	
+	if (isset($_POST['cdt_ele_nb_jours_a_venir'])) {
+		if (!preg_match('/^[0-9]{1,}$/', $_POST['cdt_ele_nb_jours_a_venir'])) {
+			$msg .= "Valeur invalide pour 'cdt_ele_nb_jours_a_venir' !<br />";
+		} else {
+			if (!saveSetting("cdt_ele_nb_jours_a_venir", $_POST['cdt_ele_nb_jours_a_venir'])) {
+				$msg .= "Erreur lors de l'enregistrement de 'cdt_ele_nb_jours_a_venir' !<br />";
+			}
+		}
+	}
+
+	if (isset($_POST['is_posted']) && ($msg=="") ) {
+		$msg = "Les modifications ont été enregistrées !<br />";
+		$post_reussi=TRUE;
 	}
 }
 

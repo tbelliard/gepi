@@ -7967,4 +7967,31 @@ function insere_visu_eleve($login_eleve, $onglet='', $title='', $float='', $targ
 	}
 	return $retour;
 }
+
+// 20210124 A DEPLACER?
+function retourne_tag_cdt($id_ct, $type_ct, $float='') {
+	global $mysqli, $tab_tag_type, $gepiPath;
+
+	if(!is_array($tab_tag_type)) {
+		$tab_tag_type=get_tab_tag_cdt();
+	}
+
+	$retour="";
+
+	$tab_tag_notice=get_tab_tag_notice($id_ct, $type_ct);
+	if(isset($tab_tag_notice["indice"])) {
+		for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
+			if($float!='') {
+				$retour.="<div style='float:right; width:16px;'>";
+			}
+			$retour.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" />";
+			if($float!='') {
+				$retour.="</div>";
+			}
+		}
+	}
+
+	return $retour;
+}
+
 ?>

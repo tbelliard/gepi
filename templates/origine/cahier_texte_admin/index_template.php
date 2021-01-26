@@ -525,6 +525,35 @@ echo add_token_field();
 	  </fieldset>
 
 
+	  <h2>Interface résumé élève</h2>
+	  <fieldset class="no_bordure">
+		<legend class="invisible">Nombre de jours à venir à afficher</legend>
+			<p>Dans l'interface résumé élève <em>(page d'accueil des élèves)</em>, on n'affiche par défaut que les travaux à faire pour le jour choisi <em>(par défaut le lendemain)</em>.<br />
+			Et pour voir les compte-rendus de séances et les travaux à faire pour les autres jours, il faut quitter la page résumé et accéder au module CDT complet.<br />
+			Vous pouvez modifier ici ce paramétrage..<br />
+			Pour modifier ce paramétrage&nbsp;:</p>
+		<?php
+			$cdt_ele_nb_jours_a_venir=getSettingValue('cdt_ele_nb_jours_a_venir');
+			if($cdt_ele_nb_jours_a_venir=='') {
+				$cdt_ele_nb_jours_a_venir=0;
+			}
+		?>
+		<label for='cdt_ele_nb_jours_a_venir' style='cursor: pointer;'>
+		  Afficher les travaux à faire pour le jour qui vient et les 
+		</label>
+		  <input type='text'
+				 name='cdt_ele_nb_jours_a_venir'
+				 id='cdt_ele_nb_jours_a_venir'
+				 value='<?php echo $cdt_ele_nb_jours_a_venir;?>'
+				 onKeyDown="clavier_2(this.id,event,0,365);"
+				 AutoComplete="off"
+				 size="2"
+				 onchange='changement();' />
+		 jours au-delà.
+	  <br />
+	  </fieldset>
+
+
 	  <p class="center">
 		<input type="submit" value="Enregistrer" />
 	  </p>

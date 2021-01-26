@@ -669,6 +669,8 @@ if((getSettingAOui('active_cahiers_texte'))&&(acces_cdt_eleve($_SESSION['login']
 	$class_notice_dev_fait="color_fond_notices_t_fait";
 	$class_notice_dev_non_fait="";
 
+	$tab_tag_type=get_tab_tag_cdt();
+
 	$CDTPeutPointerTravailFait=getSettingAOui('CDTPeutPointerTravailFait'.ucfirst($_SESSION['statut']));
 	if($CDTPeutPointerTravailFait) {
 		$tab_etat_travail_fait=get_tab_etat_travail_fait($login_eleve);
@@ -688,6 +690,17 @@ if((getSettingAOui('active_cahiers_texte'))&&(acces_cdt_eleve($_SESSION['login']
 
 	$html.="<div id='div_cdt_contenu'>";
 	$html.=travaux_a_faire_cdt_jour($login_eleve, $id_classe);
+
+
+
+
+
+	// 20210124 : Modifier pour afficher les notices de compte-rendus et de travaux à faire dans les N jours à venir
+	// Avoir un lien pour voir les semaines passées/à venir
+
+
+
+
 	$html.="</div>";
 
 	echo "
