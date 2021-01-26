@@ -19757,7 +19757,7 @@ function is_prof_groupe($login_prof, $id_groupe) {
 
 	$sql="SELECT 1=1 FROM j_groupes_professeurs jgp
 					WHERE jgp.login='".$login_prof."' AND 
-						jgp.id_groupe=='$id_groupe' LIMIT 1;";
+						jgp.id_groupe='$id_groupe' LIMIT 1;";
 	$res = mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		$is_prof_groupe = true;
