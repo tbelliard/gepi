@@ -472,6 +472,25 @@ echo add_token_field();
 			   />
 	  </p>
 
+	  <p>
+		<input type="checkbox"
+			   name="cdt2_input_file_multiple"
+			   id="cdt2_input_file_multiple"
+			   onchange='changement();'
+			   value="y"
+		       <?php if(getSettingAOui("cdt2_input_file_multiple")) {echo " checked";} ?>
+			   />
+		<label for='cdt2_input_file_multiple'> Permettre l'utilisation d'un champ 'file' de type 'multiple' pour sélectionner plusieurs fichiers d'un coup avec CTRL+Clic ou SHIFT+Clic.<br />
+		Dans ce champ, s'il est autorisé, le nombre de fichiers mentionné ci-dessus n'est pas pris en compte.</label>
+	  </p>
+
+		<?php
+			$max_file_uploads=ini_get('max_file_uploads');
+			if(preg_match('/^[0-9]{1,}$/', $max_file_uploads)) {
+				echo "<p style='text-indent:-3em; margin-left:3em;'><em>NOTE&nbsp;:</em> Dans tous les cas, le nombre de fichiers pouvant être téléversés est limité, au niveau du serveur, à ".$max_file_uploads." fichiers <em>(paramètre 'max_file_uploads' du php.ini)</em>.</p>";
+			}
+		?>
+
 	  <h2>Visa des cahiers de texte</h2>
 	  <fieldset class="no_bordure">
 		<legend class="invisible">Visa</legend>

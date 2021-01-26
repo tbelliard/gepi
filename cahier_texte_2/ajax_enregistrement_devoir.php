@@ -68,6 +68,12 @@ if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_
 $doc_name = isset($_POST["doc_name"]) ? $_POST["doc_name"] :(isset($_GET["doc_name"]) ? $_GET["doc_name"] :NULL);
 $doc_masque = isset($_POST["doc_masque"]) ? $_POST["doc_masque"] :(isset($_GET["doc_masque"]) ? $_GET["doc_masque"] :NULL);
 
+
+// 20210126:
+if (empty($_FILES['doc_file2'])) { $doc_file2=''; } else { $doc_file2=$_FILES['doc_file2'];}
+$doc_masque2 = isset($_POST["doc_masque2"]) ? $_POST["doc_masque2"] :(isset($_GET["doc_masque2"]) ? $_GET["doc_masque2"] :NULL);
+
+
 //parametre de changement de titre de fichier joint.
 $doc_name_modif = isset($_POST["doc_name_modif"]) ? $_POST["doc_name_modif"] :(isset($_GET["doc_name_modif"]) ? $_GET["doc_name_modif"] :NULL);
 $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GET["id_document"]) ? $_GET["id_document"] :NULL);
@@ -331,6 +337,49 @@ foreach($suppr_doc_joint as $key => $id_document_a_supprimer) {
 		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
+
+//==================================================
+// 20210126:
+if((getSettingAOui('cdt2_input_file_multiple'))&&(!empty($doc_file2['name'][0]))) {
+	require_once("traite_doc.php");
+	$total_max_size = getSettingValue("total_max_size");
+	$max_size = getSettingValue("max_size");
+	$multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
+	if ((isset($multisite) && $multisite == 'y') && is_dir('../documents/'.$multi) === false){
+		mkdir('../documents/'.$multi);
+	}
+	$dest_dir = '../documents/'.$multi.'cl_dev'.$ctTravailAFaire->getIdCt();
+
+	// 20201117
+	// il y avait au plus trois documents joints dans l'interface de saisie
+	$nb_doc_choisi='3';
+	if(preg_match('/[0-9]{1,}/', getSettingValue('cdt_nb_doc_joints'))) {
+		$nb_doc_choisi=getSettingValue('cdt_nb_doc_joints');
+	}
+	for ($index_doc=0; $index_doc < $nb_doc_choisi; $index_doc++) {
+		if(!empty($doc_file2['tmp_name'][$index_doc])) {
+			$file_path = ajout_fichier($doc_file2, $dest_dir, $index_doc, $id_groupe);
+			if ($file_path != null) {
+				//création de l'objet ctDocument
+				$ctDocument = new CahierTexteTravailAFaireFichierJoint();
+				$ctDocument->setIdCtDevoir($ctTravailAFaire->getIdCt());
+				$ctDocument->setTaille($doc_file2['size'][$index_doc]);
+				$ctDocument->setEmplacement($file_path);
+				$ctDocument->setTitre(basename($file_path));
+				if(isset($doc_masque[$index_doc])) {
+					$ctDocument->setVisibleEleveParent(false);
+				}
+				else {
+					$ctDocument->setVisibleEleveParent(true);
+				}
+				$ctDocument->save();
+				$ctTravailAFaire->addCahierTexteTravailAFaireFichierJoint($ctDocument);
+				$ctTravailAFaire->save();
+			}
+		}
+	}
+}
+
 //==================================================
 //traitement de telechargement de documents joints
 if (!empty($doc_file['name'][0])) {

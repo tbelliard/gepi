@@ -873,7 +873,26 @@ echo "<script type='text/javascript'>
 					}
 				?>
 			</tr>
+
 			<?php
+			// 20210126
+			if(getSettingAOui('cdt2_input_file_multiple')) {
+			?>
+			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_cellule[$type_couleur]; ?>;" title="La première ligne permet de sélectionner plusieurs fichiers d'un coup. Ne pas abuser en tentant d'uploader un trop grand nombre de fichiers ou un trop grand volume, sous peine d'échec.">
+				<td style="text-align: center; color:darkorange;">Sélectionner plusieurs fichiers d'un coup</td>
+				<td style="text-align: center;"><input type="file" name="doc_file2[]" 	size="20" multiple="oui" style='border:1px solid darkorange;' /></td>
+				<?php
+					if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
+						echo "<td style='border-style: 1px solid $couleur_bord_tableau_notice; background-color: ".$couleur_cellule[$type_couleur]."; text-align: center; color:orange;' title=\"Si vous cochez la case, tous les fichiers sélectionnés dans le champ à gauche seront masqués.\">";
+						echo "<input type='checkbox' name='doc_masque2' value='y'";
+						echo "/>";
+						echo "</td>\n";
+					}
+				?>
+			</tr>
+			<?php
+			}
+
 			// 20201117
 			$nb_doc_choisi='3';
 			if(preg_match('/[0-9]{1,}/', getSettingValue('cdt_nb_doc_joints'))) {

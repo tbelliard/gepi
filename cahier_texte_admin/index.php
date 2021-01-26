@@ -199,8 +199,19 @@ if (isset($_POST['is_posted'])) {
 				}
 			}
 		}
+
+		if (isset($_POST['cdt2_input_file_multiple'])) {
+			if (!saveSetting("cdt2_input_file_multiple", "y")) {
+				$msg .= "Erreur lors de l'enregistrement de l'autorisation du champ file multiple.<br />";
+			}
+		}
+		elseif (!saveSetting("cdt2_input_file_multiple", "n")) {
+			$msg .= "Erreur lors de l'enregistrement de l'interdiction du champ file multiple.<br />";
+		}
 	}
-	
+
+
+
 	if (isset($_POST['cdt_autoriser_modif_multiprof'])) {
 		if ($_POST['cdt_autoriser_modif_multiprof'] == "yes") {
 			$temp = "yes";

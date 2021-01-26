@@ -39,7 +39,7 @@ Cahiers de textes 2:
 - Ajout d'une visionneuse Instrumenpoche.
 - Mise à jour de l'appli GeoGebra.
 - Possibilité de copier d'un clic le code source HTML d'une vignette.
-- Possibilité" de supprimer des pièces jointes par lots.
+- Possibilité de supprimer des pièces jointes par lots.
 
 Discipline:
 - Possibilité de donner l'accès parent/élève aux incidents le concernant, 
