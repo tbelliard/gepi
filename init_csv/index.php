@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -90,7 +90,7 @@ temoin VARCHAR( 50 ) NOT NULL
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		echo "<p style='margin:1em;padding:1em;' class='fieldset_opacite50'><strong style='color:red'>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." comptes responsables sont actuellement mis en réserve.<br />
-		L'initialisation CSV ne permet par d'imposer le même login à des utilisateurs responsables.<br />
+		L'initialisation CSV ne permet pas d'imposer le même login à des utilisateurs responsables.<br />
 		Vous devriez supprimer maintenant les comptes mis en réserve pour éviter par exemple l'attribution du login de M.MARTIN Jean à Mme.DUBOIS Martine lorsque vous recréerez les compes responsables.<br />
 		<a href='../gestion/changement_d_annee.php?suppr_reserve_resp=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes responsables.\" target='_blank'>Supprimer les comptes responsables mis en réserve</a></p>\n";
 	}
