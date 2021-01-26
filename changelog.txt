@@ -16,7 +16,8 @@ Bulletins:
 - Possibilité d'envoyer les bulletins par mail lors de la génération des 
   bulletins en fin de période.
 - Facilité de sélection d'un fichier de signature pour une classe.
-- Possibilité d'ouvrir exceptionnellement la saisie AID en période partiellement close.
+- Possibilité d'ouvrir exceptionnellement la saisie AID en période partiellement 
+  close.
 - Possibilité de signaler des fautes, de proposer des corrections sur les AID.
 - Possibilité d'exclure certaines classes du module bulletins.
 - Possibilité d'exporter en CSV les avis de conseils de classe.
@@ -24,10 +25,15 @@ Bulletins:
 Carnet de notes:
 - Facilité de transfert des notes d'un enseignement à un autre dans le cas 
   d'un changement de groupe d'élève dans une même classe.
-- Possibilité de choisir entre nom complet et nom court des évaluations dans les relevés de notes.
+- Possibilité de choisir entre nom complet et nom court des évaluations dans 
+  les relevés de notes.
 
 Cahiers de textes 1 et 2:
-- Possibilité de choisir le nombre de fichiers uploadés lors de l'enregistrement d'une notice.
+- Possibilité de choisir le nombre de fichiers uploadés lors de l'enregistrement
+  d'une notice.
+- Possibilité de modifier le nombre de jours dans le futur pour les travaux 
+  à faire en page d'accueil Résumé élève.
+- Ajout d'une page pour consulter les documents joints à un CDT.
 
 Cahiers de textes 2:
 - Ajout d'une visionneuse Instrumenpoche.

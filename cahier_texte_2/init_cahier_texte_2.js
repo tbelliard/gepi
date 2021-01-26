@@ -1141,6 +1141,31 @@ function getWinCarSpec() {
 	return winCarSpec;
 }
 
+
+function getWinDocsJoints() {
+	if (typeof WinDocsJoints=="undefined") {
+		WinDocsJoints = new Window(
+				{id: 'win_docs_joints',
+				title: 'Documents joints',
+				showEffect: Element.show,
+				hideEffect: Element.hide,
+				top:10,
+				left:40,
+				width:300,
+				height:200}
+			);
+		$('win_docs_joints_content').setStyle({
+			backgroundColor: 'azure',
+			fontSize: '14px',
+			color: '#000000'
+		});
+	}
+
+	WinDocsJoints.show();
+	WinDocsJoints.toFront();
+	return WinDocsJoints;
+}
+
 //include('../lib/DHTMLcalendar/lang/calendar-fr.js');
 //include('../lib/DHTMLcalendar/calendar-setup.js');
 

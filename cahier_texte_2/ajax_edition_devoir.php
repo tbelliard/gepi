@@ -268,6 +268,9 @@ if(file_exists("./archives.php")) {
 						getWinArchives().setAjaxContent('./archives.php',{});
 					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_Archives']."\">Archives</button>\n";
 }
+echo "<button style='background-color:azure' onclick=\"javascript:
+						getWinDocsJoints().setAjaxContent('./documents_cdt.php?id_groupe=".$groupe->getId()."&entete=n&type_ct=t',{});
+					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_PJ']."\">PJ</button>\n";
 
 echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/tableau.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";
 

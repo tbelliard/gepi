@@ -3208,6 +3208,8 @@ Cela peut vous permettre d'éviter de placer un contrôle en classe alors qu'il 
 	}
 	$tab['attribut_title_CDT2_CarSpec']="Ouvrir une fenêtre popup pour insérer des caractères spéciaux de votre choix.".$ajout;
 
+	$tab['attribut_title_CDT2_PJ']="Voir les documents joints aux cahiers de textes.";
+
 	return $tab;
 }
 

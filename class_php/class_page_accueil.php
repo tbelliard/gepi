@@ -1775,6 +1775,13 @@ if(getSettingAOui('active_bulletins')) {
 					"Ce menu vous permet de consulter les cahiers de textes des années précédentes.");
 			}
 		}
+
+		if($this->statutUtilisateur=="professeur") {
+			$this->creeNouveauItem("/cahier_texte_2/documents_cdt.php",
+				"Documents joints aux CDT",
+				"Ce menu vous permet de consulter les documents joints à vos cahiers de textes.");
+		}
+
 	}
 
 	$this->creeNouveauItem("/impression/impression_serie.php",

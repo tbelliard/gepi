@@ -209,6 +209,10 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 			$cpt_sous_menu++;
 		}
 
+		$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/documents_cdt.php';
+		$tmp_sous_menu[$cpt_sous_menu]['texte']="Docs.joints aux CDT";
+		$cpt_sous_menu++;
+
 		$tbs_menu_prof[$compteur_menu]["sous_menu"]=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]["niveau_sous_menu"]=2;
 

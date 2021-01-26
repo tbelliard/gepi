@@ -2074,6 +2074,18 @@ autre='F',
 description='Consulter les PJ à une notice de CDT',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/documents_cdt.php',
+administrateur='F',
+professeur='V',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Documents joints aux CDT',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
