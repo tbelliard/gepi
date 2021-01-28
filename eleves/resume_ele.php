@@ -448,16 +448,24 @@ echo "</div>";
 else {
 	$affichage_div_edt="n";
 	echo "
-<div style='float:left; width:8em;'>
+<div style='float:left; width:12em;'>
 	<form id='form_chgt_date' action='".$_SERVER['PHP_SELF']."' method='post'>
 		<input type='hidden' name='login_eleve' value='$login_eleve' />
 		<input type='hidden' name='affichage' value='jour' />
+
+		<!-- 20210128 -->
+		<a href=\"#\" onclick=\"document.getElementById('display_date').value=decalage_date(document.getElementById('display_date').value,'-',1);document.getElementById('form_chgt_date').submit();\" title='Jour précédent'><img src='../images/icons/arrow-left.png' class='icone16' /></a>
+
 		<input type='text' name='display_date' id='display_date' value='$display_date' size='8' onchange=\"document.getElementById('form_chgt_date').submit();\" onBlur=\"document.getElementById('form_chgt_date').submit();\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez taper la date manuellement.
 
 Vous pouvez aussi, utiliser les flèches Haut Bas du pavé de direction de votre clavier pour passer au jour précédent/suivant (la validation du choix se fait en cliquant ensuite hors du champ de formulaire de saisie de la date).
 
 Enfin, vous pouvez sélectionner la date en cliquant sur l'image Calendrier.\" />
 		".img_calendrier_js("display_date", "img_bouton_display_date")."
+
+		<!-- 20210128 -->
+		<a href=\"#\" onclick=\"document.getElementById('display_date').value=decalage_date(document.getElementById('display_date').value,'+',1);document.getElementById('form_chgt_date').submit();\" title='Jour suivant'><img src='../images/icons/arrow-right.png' class='icone16' /></a>
+
 	</form>
 </div>";
 
@@ -486,6 +494,7 @@ Enfin, vous pouvez sélectionner la date en cliquant sur l'image Calendrier.\" /
 
 </div>";
 
+	echo "<div style='clear:both'></div>";
 }
 //<div style='clear:both'></div>
 
