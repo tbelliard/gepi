@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -816,35 +816,26 @@ if (isset($_POST['is_posted'])) {
 			}
 
 			if(isset($_POST['creer_sous_groupes'])) {
-				if((!isset($_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']=='')||(!preg_match("/^[0-9]*$/", $_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']<1)) {
-					$msg.="Erreur : Le nombre de sous-groupes demandés est invalide.<br />";
-				}
-				else {
-					//20130912 $reg_categorie à récupérer...
+				// 20210126 : Créer un groupe par élève
+				if((isset($_POST['mode_creation_sous_groupes']))&&($_POST['mode_creation_sous_groupes']=='un_par_eleve')) {
 					$current_group=get_group($id_groupe);
 					$reg_categorie=$current_group["classes"]["classes"][$reg_clazz[0]]["categorie_id"];
 
-					$nb_sous_groupes_a_creer=$_POST['nb_sous_groupes_a_creer'];
+					foreach($current_group['eleves']["all"]["users"] as $current_ele_login => $current_eleve) {
 
-					$suffixe_sous_groupe_a_creer=isset($_POST['suffixe_sous_groupe_a_creer']) ? $_POST['suffixe_sous_groupe_a_creer'] : "";
+						$tmp_prenom=mb_substr(preg_replace('/[^A-Za-z]/', '', remplace_accents($current_eleve['prenom'], 'all')), 0, 3);
+						$tmp_nom=mb_substr(preg_replace('/[^A-Za-z]/', '', remplace_accents($current_eleve['nom'], 'all')), 0, 3);
 
-					for($loop=0;$loop<$nb_sous_groupes_a_creer;$loop++) {
 						$reg_nom_sous_groupe=$reg_nom_groupe;
 						$reg_nom_complet_sous_groupe=$reg_nom_complet;
 
-						if($suffixe_sous_groupe_a_creer=="1") {
-							$reg_nom_sous_groupe.="_".($loop+1);
-							$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".($loop+1).")";
-						}
-						elseif($suffixe_sous_groupe_a_creer=="g1") {
-							$reg_nom_sous_groupe.="_g".($loop+1);
-							$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".($loop+1).")";
-						}
-						elseif($suffixe_sous_groupe_a_creer=="A") {
-							$alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-							$reg_nom_sous_groupe.="_".substr($alphabet, $loop, 1);
-							$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".substr($alphabet, $loop, 1).")";
-						}
+						$reg_nom_sous_groupe.="_".$tmp_prenom.".".$tmp_nom;
+						$reg_nom_complet_sous_groupe=$reg_nom_complet." (".$current_eleve['prenom'].' '.$current_eleve['nom'].")";
+
+						// Tester si le nom court existe déjà ?
+
+
+
 
 						$create = create_group($reg_nom_sous_groupe, $reg_nom_complet_sous_groupe, $reg_matiere, $reg_clazz, $reg_categorie);
 						if (!$create) {
@@ -877,42 +868,13 @@ if (isset($_POST['is_posted'])) {
 
 							// Elèves du sous-groupe
 							$reg_eleves_sous_groupe=array();
-							if($nb_sous_groupes_a_creer==1) {
-								$reg_eleves_sous_groupe=$reg_eleves;
-							}
-							else {
-								foreach ($current_group["periodes"] as $period) {
-									$reg_eleves_sous_groupe[$period["num_periode"]]=array();
 
-									$nb_ele_restants=count($current_group["eleves"][$period["num_periode"]]["list"]);
-									$nb_sous_groupes_restants=$nb_sous_groupes_a_creer;
-									$rang_prec=0;
-									$rang[-1]=0;
-									for($loop_grp=0;$loop_grp<$nb_sous_groupes_a_creer;$loop_grp++) {
-										$tranche[$loop_grp]=ceil($nb_ele_restants/$nb_sous_groupes_restants);
+							foreach ($current_group["periodes"] as $period) {
+								$reg_eleves_sous_groupe[$period["num_periode"]]=array();
 
-										$rang[$loop_grp]=$rang_prec+$tranche[$loop_grp];
-
-										$nb_ele_restants-=$tranche[$loop_grp];
-										$nb_sous_groupes_restants--;
-										$rang_prec=$rang[$loop_grp];
-									}
-
-									for($loop_ele=$rang[$loop-1];$loop_ele<$rang[$loop];$loop_ele++) {
-											$reg_eleves_sous_groupe[$period["num_periode"]][]=$current_group["eleves"][$period["num_periode"]]["list"][$loop_ele];
-									}
-
-									/*
-									for($loop_ele=0;$loop_ele<count($current_group["eleves"][$period["num_periode"]]["list"]);$loop_ele++) {
-
-										$tranche=floor(count($current_group["eleves"][$period["num_periode"]]["list"])/$nb_sous_groupes_a_creer);
-
-										if(($loop_ele+1>=$loop*$tranche+1)&&
-										($loop_ele+1<($loop+1)*$tranche+1)) {
-											$reg_eleves_sous_groupe[$period["num_periode"]][]=$current_group["eleves"][$period["num_periode"]]["list"][$loop_ele];
-										}
-									}
-									*/
+								// Tester si l'élève est dans le groupe sur la période
+								if(in_array($current_ele_login, $current_group['eleves'][$period['num_periode']]['list'])) {
+									$reg_eleves_sous_groupe[$period["num_periode"]][]=$current_ele_login;
 								}
 							}
 
@@ -923,7 +885,118 @@ if (isset($_POST['is_posted'])) {
 
 						}
 					}
+				}
+				else {
 
+					if((!isset($_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']=='')||(!preg_match("/^[0-9]*$/", $_POST['nb_sous_groupes_a_creer']))||($_POST['nb_sous_groupes_a_creer']<1)) {
+						$msg.="Erreur : Le nombre de sous-groupes demandés est invalide.<br />";
+					}
+					else {
+						//20130912 $reg_categorie à récupérer...
+						$current_group=get_group($id_groupe);
+						$reg_categorie=$current_group["classes"]["classes"][$reg_clazz[0]]["categorie_id"];
+
+						$nb_sous_groupes_a_creer=$_POST['nb_sous_groupes_a_creer'];
+
+						$suffixe_sous_groupe_a_creer=isset($_POST['suffixe_sous_groupe_a_creer']) ? $_POST['suffixe_sous_groupe_a_creer'] : "";
+
+						for($loop=0;$loop<$nb_sous_groupes_a_creer;$loop++) {
+							$reg_nom_sous_groupe=$reg_nom_groupe;
+							$reg_nom_complet_sous_groupe=$reg_nom_complet;
+
+							if($suffixe_sous_groupe_a_creer=="1") {
+								$reg_nom_sous_groupe.="_".($loop+1);
+								$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".($loop+1).")";
+							}
+							elseif($suffixe_sous_groupe_a_creer=="g1") {
+								$reg_nom_sous_groupe.="_g".($loop+1);
+								$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".($loop+1).")";
+							}
+							elseif($suffixe_sous_groupe_a_creer=="A") {
+								$alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+								$reg_nom_sous_groupe.="_".substr($alphabet, $loop, 1);
+								$reg_nom_complet_sous_groupe=$reg_nom_complet." (groupe ".substr($alphabet, $loop, 1).")";
+							}
+
+							$create = create_group($reg_nom_sous_groupe, $reg_nom_complet_sous_groupe, $reg_matiere, $reg_clazz, $reg_categorie);
+							if (!$create) {
+								$msg .= "Erreur lors de la création du sous-groupe $reg_nom_sous_groupe.<br />";
+							} else {
+								// Puis mise à jour avec la liste des élèves, la visibilité
+								$id_sous_groupe=$create;
+
+								// Visibilité du sous-groupe
+								for($loo=0;$loo<count($tab_domaines);$loo++) {
+									$visibilite_groupe_domaine_courant=isset($_POST['visibilite_nouveaux_sous_groupes_'.$tab_domaines[$loo]]) ? $_POST['visibilite_nouveaux_sous_groupes_'.$tab_domaines[$loo]] : "n";
+
+									if(in_array($tab_domaines[$loo], $invisibilite_groupe)) {
+										if($visibilite_groupe_domaine_courant!='n') {
+											$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='".$id_sous_groupe."' AND domaine='".$tab_domaines[$loo]."';";
+											//echo "$sql<br />";
+											$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilité du groupe n°".$id_sous_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
+										}
+									}
+									else {
+										if($visibilite_groupe_domaine_courant=='n') {
+											$sql="INSERT j_groupes_visibilite SET id_groupe='".$id_sous_groupe."', domaine='".$tab_domaines[$loo]."', visible='n';";
+											//echo "$sql<br />";
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$id_sous_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
+										}
+									}
+								}
+
+								// Elèves du sous-groupe
+								$reg_eleves_sous_groupe=array();
+								if($nb_sous_groupes_a_creer==1) {
+									$reg_eleves_sous_groupe=$reg_eleves;
+								}
+								else {
+									foreach ($current_group["periodes"] as $period) {
+										$reg_eleves_sous_groupe[$period["num_periode"]]=array();
+
+										$nb_ele_restants=count($current_group["eleves"][$period["num_periode"]]["list"]);
+										$nb_sous_groupes_restants=$nb_sous_groupes_a_creer;
+										$rang_prec=0;
+										$rang[-1]=0;
+										for($loop_grp=0;$loop_grp<$nb_sous_groupes_a_creer;$loop_grp++) {
+											$tranche[$loop_grp]=ceil($nb_ele_restants/$nb_sous_groupes_restants);
+
+											$rang[$loop_grp]=$rang_prec+$tranche[$loop_grp];
+
+											$nb_ele_restants-=$tranche[$loop_grp];
+											$nb_sous_groupes_restants--;
+											$rang_prec=$rang[$loop_grp];
+										}
+
+										for($loop_ele=$rang[$loop-1];$loop_ele<$rang[$loop];$loop_ele++) {
+												$reg_eleves_sous_groupe[$period["num_periode"]][]=$current_group["eleves"][$period["num_periode"]]["list"][$loop_ele];
+										}
+
+										/*
+										for($loop_ele=0;$loop_ele<count($current_group["eleves"][$period["num_periode"]]["list"]);$loop_ele++) {
+
+											$tranche=floor(count($current_group["eleves"][$period["num_periode"]]["list"])/$nb_sous_groupes_a_creer);
+
+											if(($loop_ele+1>=$loop*$tranche+1)&&
+											($loop_ele+1<($loop+1)*$tranche+1)) {
+												$reg_eleves_sous_groupe[$period["num_periode"]][]=$current_group["eleves"][$period["num_periode"]]["list"][$loop_ele];
+											}
+										}
+										*/
+									}
+								}
+
+								$update = update_group($id_sous_groupe, $reg_nom_sous_groupe, $reg_nom_complet_sous_groupe, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves_sous_groupe);
+								if (!$update) {
+									$msg .= "Erreur lors de la mise à jour du sous-groupe ".$reg_nom_sous_groupe.".<br />";
+								}
+
+							}
+						}
+
+					}
 				}
 			}
 
@@ -1273,7 +1346,12 @@ echo "
 		<p style='text-indent:-2em; margin-left:2em;'>
 			<input type='checkbox' name='creer_sous_groupes' id='creer_sous_groupes' value='y' onchange='affiche_masque_details_sous_groupes(); changement();' /><label for='creer_sous_groupes' id='texte_creer_sous_groupes'>Créer de nouveaux sous-groupes</label><br />
 			<div id='div_details_nouveaux_sous_groupes'>
-				en fractionnant l'enseignement en 
+
+				<br />
+				<!-- 20210126 -->
+				<input type='radio' name='mode_creation_sous_groupes' id='mode_creation_sous_groupes_fractionner' value='fractionner' checked />&nbsp;
+
+				<label for='mode_creation_sous_groupes_fractionner' id='texte_mode_creation_sous_groupes_fractionner'>en fractionnant l'enseignement en 
 				<select name='nb_sous_groupes_a_creer' id='nb_sous_groupes_a_creer' onchange='maj_check_sous_groupes(); changement();'>
 					<option value=''>---</option>
 					<option value='1'>1</option>
@@ -1294,7 +1372,16 @@ echo "
 					<option value='1'>_1, _2,...</option>
 					<option value='g1'>_g1, _g2,...</option>
 					<option value='A'>_A, _B,...</option>
-				</select><br />
+				</select>
+				</label>
+				<br />
+				<br />
+
+				<!-- 20210126 -->
+				<input type='radio' name='mode_creation_sous_groupes' id='mode_creation_sous_groupes_un_par_eleve' value='un_par_eleve' />&nbsp;
+				<label for='mode_creation_sous_groupes_un_par_eleve' id='texte_mode_creation_sous_groupes_un_par_eleve'>ou créer un groupe par élève</label><br />
+				<br />
+
 				visibles sur<br />";
 
 for($loop=0;$loop<count($tab_domaines);$loop++) {
