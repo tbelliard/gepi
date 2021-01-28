@@ -587,6 +587,39 @@ if (isset($_GET['action'])) {
     }
 }
 
+
+if (isset($_POST['action'])) {
+	check_token();
+
+	$msg = '';
+	if(($_POST['action'] == "delete_group")&&(isset($_POST['confirm_delete_group']))&&($_POST['confirm_delete_group'] == "y")) {
+
+		foreach($_POST['suppr_id_groupe'] as $key => $current_id_groupe) {
+			if (!is_numeric($current_id_groupe)) {
+				$msg."Groupe n°$current_id_groupe invalide.<br />";
+			}
+			else {
+				$verify = test_before_group_deletion($current_id_groupe);
+				if ($verify) {
+					$sql="SELECT * FROM groupes WHERE id='".$current_id_groupe."'";
+					$req_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+					$ligne_grp=mysqli_fetch_object($req_grp);
+					//================================
+					$delete = delete_group($current_id_groupe);
+					if ($delete == true) {
+						$msg .= "Le groupe $ligne_grp->name (" . $current_id_groupe . ") a été supprimé.<br />";
+					} else {
+						$msg .= "Une erreur a empêché la suppression du groupe $ligne_grp->name (" . $current_id_groupe . ").<br />";
+					}
+				} else {
+					$msg .= "Des données existantes bloquent la suppression du groupe $ligne_grp->name (" . $current_id_groupe . ").<br />Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.<br />";
+				}
+			}
+		}
+	}
+}
+
+
 $avec_js_et_css_edt="y";
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -706,6 +739,138 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 		echo "<p style='color:red;'>Des données existantes bloquent la suppression du groupe.<br />Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.</p>\n";
 	}
 	echo "</div>\n";
+}
+elseif((isset($_POST['suppr_id_groupe']))&&(is_array($_POST['suppr_id_groupe']))&&(count($_POST['suppr_id_groupe'])>0)&&(!isset($_POST['confirm_delete_group']))) {
+	check_token(false);
+
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form_suppr' method='post'>\n";
+	echo "<div class='fieldset_opacite50' style='border: 2px solid red; margin:0.5em; padding:0.5em;'>\n";
+	echo add_token_field();
+	echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
+	echo "<input type='hidden' name='action' value='delete_group' />\n";
+	echo "<input type='hidden' name='confirm_delete_group' value='y' />\n";
+
+	// On va détailler ce qui serait supprimé en cas de confirmation
+	$nb_groupes_pouvant_etre_supprimes=0;
+	foreach($_POST['suppr_id_groupe'] as $key => $current_id_groupe) {
+		if (!is_numeric($current_id_groupe)) {
+			echo "<p>Groupe n°$current_id_groupe invalide.<br />";
+		}
+		else {
+	
+			$tmp_group=get_group($current_id_groupe, array("classes"));
+			echo "<div class='fieldset_opacite50' style='border: 2px solid red; margin:0.5em; padding:0.5em;'>\n";
+			echo "<p><strong>ATTENTION&nbsp;:</strong> Vous souhaitez supprimer l'enseignement suivant (n°".$current_id_groupe.")&nbsp;: ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) en ".$tmp_group['classlist_string']."<br />\n";
+			echo "Voici quelques éléments sur l'enseignement&nbsp;:</p>\n";
+			$suppression_possible='y';
+
+			$lien_bull_simp="";
+			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
+			//echo "$sql<br />";
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_per)>0) {
+				$lig_per=mysqli_fetch_object($res_per);
+
+				$lien_bull_simp="<a href='../prepa_conseil/edit_limite.php?choix_edit=1&amp;id_classe=$id_classe&amp;periode1=1&amp;periode2=$lig_per->num_periode' target='_blank'><img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple dans une nouvelle page' title='Bulletin simple dans une nouvelle page' /></a>";
+			}
+
+			echo "<p style='margin-left:5em;'>";
+			$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$current_id_groupe."';";
+			$test_mn=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_mn=mysqli_num_rows($test_mn);
+			if($nb_mn==0) {
+				echo "Aucune note sur les bulletins.<br />\n";
+			}
+			else {
+				echo "<span style='color:red;'>$nb_mn note(s) sur les bulletins</span> (<i>toutes périodes confondues</i>)&nbsp;: $lien_bull_simp<br />\n";
+				$suppression_possible='n';
+			}
+
+			$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$current_id_groupe."';";
+			$test_ma=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_ma=mysqli_num_rows($test_ma);
+			if($nb_ma==0) {
+				echo "Aucune appréciation sur les bulletins.<br />\n";
+			}
+			else {
+				echo "<span style='color:red;'>$nb_ma appréciation(s) sur les bulletins</span> (<i>toutes périodes confondues</i>)&nbsp;: $lien_bull_simp<br />\n";
+				$suppression_possible='n';
+			}
+
+			$temoin_non_vide='n';
+			// CDT
+			$sql="SELECT 1=1 FROM ct_entry WHERE id_groupe='".$current_id_groupe."';";
+			$test_notice_cdt=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_notice_cdt=mysqli_num_rows($test_notice_cdt);
+			if($nb_notice_cdt==0) {
+				echo "Aucune notice dans le cahier de textes.<br />\n";
+			}
+			else {
+				echo "$nb_notice_cdt notice(s) dans le cahier de textes.<br />\n";
+				$temoin_non_vide='y';
+			}
+
+			$sql="SELECT 1=1 FROM ct_devoirs_entry WHERE id_groupe='".$current_id_groupe."';";
+			$test_devoir_cdt=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_devoir_cdt=mysqli_num_rows($test_devoir_cdt);
+			if($nb_devoir_cdt==0) {
+				echo "Aucun devoir dans le cahier de textes.<br />\n";
+			}
+			else {
+				echo "$nb_devoir_cdt devoir(s) dans le cahier de textes.<br />\n";
+				$temoin_non_vide='y';
+			}
+
+			// NOTES
+			// Récupérer les cahier de notes
+			$sql="SELECT DISTINCT id_cahier_notes, periode FROM cn_cahier_notes WHERE id_groupe='".$current_id_groupe."' ORDER BY periode;";
+			$res_ccn=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_ccn)==0) {
+				echo "Aucun cahier de notes n'est initialisé pour cet enseignement.<br />\n";
+			}
+			else {
+				while($lig_id_cn=mysqli_fetch_object($res_ccn)) {
+					$sql="SELECT 1=1 FROM cn_devoirs WHERE id_racine='$lig_id_cn->id_cahier_notes';";
+					$res_dev=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_dev=mysqli_num_rows($res_dev);
+					if($nb_dev==0) {
+						echo "Période $lig_id_cn->periode&nbsp;: Aucun devoir.<br />\n";
+					}
+					else {
+						echo "Période $lig_id_cn->periode&nbsp;: $nb_dev devoir(s) dans le carnet de notes.<br />\n";
+						$temoin_non_vide='y';
+					}
+				}
+			}
+			echo "</p>\n";
+
+			if($suppression_possible=='y') {
+				if($temoin_non_vide=='y') {
+					echo "<p><label for='suppr_id_groupe_".$current_id_groupe."' id='texte_suppr_id_groupe_".$current_id_groupe."'>Si vous souhaitez effectuer ";
+					echo "malgré tout ";
+					echo "la suppression de l'enseignement&nbsp;: </label>";
+					echo "<input type='checkbox' name='suppr_id_groupe[]' id='suppr_id_groupe_".$current_id_groupe."' value='".$current_id_groupe."' onchange='checkbox_change(this.id)' /> <img src='../images/icons/ico_attention.png' class='icone20' title=\"'ATTENTION !!! L'enseignement n'est pas totalement vide, même si les bulletins ne contiennent pas de référence à cet enseignement.\\nEtes-vous *VRAIMENT SÛR* de vouloir supprimer cet enseignement ?\">";
+					echo "</p>\n";
+				}
+				else {
+					echo "<p><label for='suppr_id_groupe_".$current_id_groupe."' id='texte_suppr_id_groupe_".$current_id_groupe."'>Si vous souhaitez confirmer la suppression de l'enseignement&nbsp;: </label>";
+					echo "<input type='checkbox' name='suppr_id_groupe[]' id='suppr_id_groupe_".$current_id_groupe."' value='".$current_id_groupe."' onchange='checkbox_change(this.id)' />";
+					echo "</p>\n";
+				}
+				$nb_groupes_pouvant_etre_supprimes++;
+			}
+			else {
+				echo "<p style='color:red;'>Des données existantes bloquent la suppression du groupe.<br />Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.</p>\n";
+			}
+			echo "</div>\n";
+		}
+	}
+
+	if($nb_groupes_pouvant_etre_supprimes>0) {
+		echo "<input type='submit' value='Supprimer les enseignements cochés.' />";
+	}
+	echo "</div>\n";
+	echo "</form>\n";
 }
 
 $display_mat_cat="n";
@@ -1260,6 +1425,10 @@ for($i=0;$i<30;$i++){
 		echo "<td>";
 		echo "<a name='ancre_enseignement_".$group["id"]."'></a>";
 		echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Supprimer cet enseignement\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+
+
+		echo " <input type='checkbox' name='suppr_id_groupe[]' id='suppr_id_groupe_".$group["id"]."' value='".$group["id"]."' title=\"Cocher pour supprimer plusieurs enseignements d'un coup plutôt que un par un avec le lien ci-contre.\" />";
+
 		echo "</td>\n";
 
 		// Enseignement
@@ -1691,6 +1860,10 @@ if($ouvrir_infobulle_nav=='y') {
 	setTimeout(\"afficher_div('navigation_classe','y',-100,20);\",1000)
 </script>\n";
 }
+
+echo "<script type='text/javascript'>
+	".js_checkbox_change_style()."
+</script>\n";
 
 require("../lib/footer.inc.php");
 
