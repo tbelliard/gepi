@@ -1130,7 +1130,7 @@ if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&(getS
 //=================================
 // Cadre Liens? Ou faire un message pour les liens vers le site du collège,...
 //=================================
-if($affichage_div_edt=="y") {
+//if($affichage_div_edt=="y") {
 	$largeur_indications=300;
 
 	$html="";
@@ -1141,10 +1141,12 @@ if($affichage_div_edt=="y") {
 
 	$html.="<p>Quelques indications sur la présente page&nbsp;:</p>
 <ul>";
-        if((getSettingAOui('active_cahiers_texte'))&&(acces_cdt_eleve($_SESSION['login'], $login_eleve))) {
-            $html.="
-                <li><p>Vous pouvez afficher les travaux à faire dans les jours qui viennent (<em>et pas juste pour le jour choisi</em>) dans telle matière en cliquant sur la matière correspondante dans l'emploi du temps.</p></li>";
-        }
+
+	if((getSettingAOui('active_cahiers_texte'))&&(acces_cdt_eleve($_SESSION['login'], $login_eleve))) {
+		$html.="
+	<li><p>Vous pouvez afficher les travaux à faire dans les jours qui viennent (<em>et pas juste pour le jour choisi</em>) dans telle matière en cliquant sur la matière correspondante dans l'emploi du temps.</p></li>";
+	}
+
 	$html.="
 	<li><p>Les images <img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /> en haut à droite dans les cadres affichés permettent d'accéder au module complet.</p></li>";
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
@@ -1156,7 +1158,7 @@ if($affichage_div_edt=="y") {
 
 	echo "
 <div id='div_indications' style='float:left; width:".$largeur_indications."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['indication'].";'>".$html."</div>";
-}
+//}
 
 
 if($_SESSION['statut']=='responsable') {
