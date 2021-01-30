@@ -2,7 +2,7 @@
 @set_time_limit(0);
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -77,10 +77,11 @@ if (!isset($_POST["action"])) {
 
 	echo "<p>Vous allez effectuer la deuxième étape : elle consiste à importer le fichier <b>g_responsables.csv</b> contenant les données élèves.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> :</p>\n";
-	echo "<ul><li>Identifiant élève interne à l'établissement (n°, et non login) <b>(*)</b></li>\n" .
+	echo "<ul>
+			<li>Identifiant élève interne à l'établissement <em>(n°, et non le login)</em> <b>(*)</b></li>\n" .
 			"<li>Nom du responsable <b>(*)</b></li>\n" .
 			"<li>Prénom</li>\n" .
-			"<li>Civilité</li>\n" .
+			"<li>Civilité <em>(M. ou MME (**))</em></li>\n" .
 			"<li>Ligne 1 adresse</li>\n" .
 			"<li>Ligne 2 adresse</li>\n" .
 			"<li>Code postal</li>\n" .
@@ -118,7 +119,8 @@ if (!isset($_POST["action"])) {
 		<a href='../gestion/changement_d_annee.php?suppr_reserve_resp=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes responsables.\" target='_blank'>Supprimer les comptes responsables mis en réserve</a></p>";
 	}
 
-	echo "<p><i>NOTE:</i> Les champs marqués d'un <b>(*)</b> doivent être non vides.</p>\n";
+	echo "<p style='margin-top:1em; text-indent:-3em; margin-left:3em;'><i>NOTE:</i> Les champs marqués d'un <b>(*)</b> doivent être non vides.<br />
+	(**) La civilité MLLE est encore permise dans Gepi, mais pas recommandée officiellement.</p>\n";
 } else {
 	//
 	// Quelque chose a été posté
@@ -216,7 +218,7 @@ if (!isset($_POST["action"])) {
 			$reg_commune = $lig->commune;
 
 			// On nettoie et on vérifie :
-			$reg_id_eleve = preg_replace("/[^0-9]/","",trim($reg_id_eleve));
+			$reg_id_eleve = preg_replace("/[^A-Z0-9]/","",trim($reg_id_eleve));
 
 			$reg_nom=my_strtoupper(nettoyer_caracteres_nom($reg_nom, "a", " '_-",""));
 			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
@@ -353,7 +355,8 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(my_strtolower($csv_file['name']) == "g_responsables.csv") {
+		//if(my_strtolower($csv_file['name']) == "g_responsables.csv") {
+		if(preg_match('/g_responsables[0-9_]*.csv/', my_strtolower($csv_file['name']))) {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");

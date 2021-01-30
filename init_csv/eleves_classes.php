@@ -2,7 +2,7 @@
 @set_time_limit(0);
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -329,7 +329,8 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(my_strtolower($csv_file['name']) == "g_eleves_classes.csv") {
+		//if(my_strtolower($csv_file['name']) == "g_eleves_classes.csv") {
+		if(preg_match('/g_eleves_classes[0-9_]*.csv/', my_strtolower($csv_file['name']))) {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
