@@ -2,7 +2,7 @@
 @set_time_limit(0);
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -76,7 +76,8 @@ if (!isset($_POST["action"])) {
 			"<li>Prénom</li>\n" .
 			"<li>Civilité</li>\n" .
 			"<li>Adresse e-mail</li>\n" .
-			"</ul>\n";
+			"<li>Login <em title=\"Une ligne d'entête doit impérativement être fournie avec l'intitulé 'Login'.\nLe login ne sera accepté que s'il n'est pas déjà attribué.\">(optionnel)</em></li>\n" .
+		"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_professeurs.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='professeurs.php' method='post'>\n";
 	echo add_token_field();
@@ -111,7 +112,7 @@ if (!isset($_POST["action"])) {
 	}
 	echo "<br />\n";
 
-	echo "<br />\n</p>\n<p>Quel mode d'authentification est utilisé ?  (laissez 'Gepi' si vous ne savez pas de quoi il s'agit)</p>\n";
+	echo "<br />\n</p>\n<p>Quel mode d'authentification est utilisé ?  <em>(laissez 'Gepi' si vous ne savez pas de quoi il s'agit)</em></p>\n";
 	echo "<p>\n<input type='radio' name='sso' value='gepi' checked /> Gepi";
 	echo "<br />\n<input type='radio' name='sso' value='sso' /> SSO (aucun mot de passe ne sera généré)";
 	echo "<br />\n<input type='radio' name='sso' value='ldap' /> Ldap (aucun mot de passe ne sera généré)</p>\n";
@@ -284,7 +285,8 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(my_strtolower($csv_file['name']) == "g_professeurs.csv") {
+		//if(my_strtolower($csv_file['name']) == "g_professeurs.csv") {
+		if(preg_match('/g_professeurs[0-9_]*.csv/', my_strtolower($csv_file['name']))) {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -303,11 +305,20 @@ if (!isset($_POST["action"])) {
 
 				//=========================
 				// On lit une ligne pour passer la ligne d'entête:
+				// 20210130
+				$avec_login=false;
 				if($en_tete=="yes") {
 					$ligne = fgets($fp, 4096);
 					echo "<p>A titre d'information, la ligne d'entête passée est la suivante&nbsp;:<br />
 					<span style='color:green'>$ligne</span><br />
 					Si il ne s'agit pas d'une ligne d'entête, vous pouvez <a href='".$_SERVER['PHP_SELF']."'>refaire cette étape</a>.</p>";
+
+					// 20210130
+					$tabligne=explode(";",$ligne);
+					if((isset($tabligne[4]))&&(preg_match('/login/', mb_strtolower($tabligne[4])))) {
+						$avec_login=true;
+					}
+
 				}
 				//=========================
 
@@ -336,6 +347,12 @@ if (!isset($_POST["action"])) {
 
 						$tabligne[3] = preg_replace("/\"/", "", trim($tabligne[3]));
 						if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $tabligne[3])) {$tabligne[3] = "-";}
+
+						// 20210130
+						if(($avec_login)&&(isset($tabligne[4]))) {
+							$tabligne[4] = preg_replace("/\"/", "", trim($tabligne[4]));
+							if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]*)*$/i", $tabligne[4])) {unset($tabligne[4]);}
+						}
 
 
 						// On regarde si le prof existe déjà dans la base
@@ -373,6 +390,15 @@ if (!isset($_POST["action"])) {
 								}
 								else{
 									die('Vous n\'avez pas autorisé Gepi à utiliser un ENT');
+								}
+							}
+							// 20210130
+							elseif(($avec_login)&&(isset($tabligne[4]))) {
+								if(!test_unique_login($tabligne[4])) {
+									echo "<p style='color:red'>Le login ".$tabligne[4]." de la ligne '".$ligne."' est déjà attribué à un autre utilisateur<br />Un nouveau login va être généré&nbsp;: ".generate_unique_login($reg_nom_login, $reg_prenom_login, $_POST['login_gen_type'], $_POST['login_gen_type_casse']).".<p>";
+								}
+								else {
+									$login_prof=$tabligne[4];
 								}
 							}
 							else {
