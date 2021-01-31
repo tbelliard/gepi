@@ -72,8 +72,10 @@ if (!isset($_POST["action"])) {
 	echo "<p>Vous allez effectuer la cinquième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
 	echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
+	// 20210130
 	echo "<ul><li>Identifiant (<em>interne</em>) de l'élève</li>\n" .
 			"<li>Identifiant court de la classe (<em>ex: 1S2</em>)</li>\n" .
+			"<li>Nom complet de la classe <em title=\"Si le nom complet est vide, c'est le nom court qui est utilisé par défaut en attendant une modification manuelle dans la Gestion des classes/Paramètres de la classe.\">(optionnel&nbsp;; ex: Première S2)</em></li>\n" .
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_classes.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='eleves_classes.php' method='post'>\n";
@@ -81,7 +83,13 @@ if (!isset($_POST["action"])) {
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
-    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes'$checked /></p>\n";
+	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes'$checked /></p>\n";
+
+	echo "<p title=\"Le nombre de périodes peut-être modifié par la suite.\nChoisissez le nombre de périodes le plus fréquent pour avoir le moins de modifications à apporter par la suite.\nLes classes qui existaient déjà l'année passée ne voient pas leur nombre de périodes changer.\">Nombre de périodes pour les nouvelles classes&nbsp;: <select name='num_periods'>
+		<option value='1'>1</option>
+		<option value='2'>2</option>
+		<option value='3' selected='true'>3</option>
+	</select>";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -96,6 +104,8 @@ if (!isset($_POST["action"])) {
 		// On enregistre les données dans la base.
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
 		//
+
+		$num_periods=isset($_POST['num_periods']) ? $_POST['num_periods'] : 3;
 
 		echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
 		$j=0;
@@ -154,8 +164,18 @@ if (!isset($_POST["action"])) {
 		// Compteur d'enregistrement
 		$total = 0;
 		while ($lig=mysqli_fetch_object($res_temp)) {
+
+			$num_periods=isset($_POST['num_periods']) ? $_POST['num_periods'] : 3;
+
 			$reg_id_int = $lig->col1;
-			$reg_classe = $lig->col2;
+
+			// 20210130
+			$tmp_tab_classe=explode("|", $lig->col2);
+			$reg_classe = $tmp_tab_classe[0];
+			$reg_nom_complet_classe = $tmp_tab_classe[1];
+			if(trim($reg_nom_complet_classe)=='') {
+				$reg_nom_complet_classe = $tmp_tab_classe[0];
+			}
 
 			// On nettoie et on vérifie :
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
@@ -164,7 +184,6 @@ if (!isset($_POST["action"])) {
 			$reg_classe = preg_replace("/[^A-Za-z0-9._ \-]/","",trim($reg_classe));
 			//$reg_classe=nettoyer_caracteres_nom($reg_classe, "an", " _-", "");
 			if (mb_strlen($reg_classe) > 100) $reg_classe = mb_substr($reg_classe, 0, 100);
-
 
 			if(($reg_id_int!='')&&($reg_classe!='')){
 				// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
@@ -191,13 +210,19 @@ if (!isset($_POST["action"])) {
 							"display_rang = 'n', " .
 							"display_address = 'n', " .
 							"display_coef = 'y'";
-						echo "$sql<br />";
+						//echo "$sql<br />";
 						$insert1 = mysqli_query($GLOBALS["mysqli"], $sql);
 						// On récupère l'ID de la classe nouvelle créée, pour enregistrer les périodes
 						$classe_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
+						// 20210130
+						$sql="UPDATE classes SET nom_complet='" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom_complet_classe) . "' WHERE id='".$classe_id."';";
+						//echo "$sql<br />";
+						$update1 = mysqli_query($GLOBALS["mysqli"], $sql);
+
 						$tab_id_classe=array();
 						$sql="SELECT id FROM classes ORDER BY classe;";
+						//echo "$sql<br />";
 						$res_classe = mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_classe=mysqli_fetch_object($res_classe)) {
 							$tab_id_classe[]=$lig_classe->id;
@@ -205,6 +230,7 @@ if (!isset($_POST["action"])) {
 
 						// Associer aux vacances:
 						$sql="SELECT * FROM edt_calendrier WHERE numero_periode='0' AND etabvacances_calendrier='1';";
+						//echo "$sql<br />";
 						$res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_cal=mysqli_fetch_object($res_cal)) {
 							$chaine_id_classe="";
@@ -217,10 +243,12 @@ if (!isset($_POST["action"])) {
 							}
 
 							$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+							//echo "$sql<br />";
 							$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 
-						for ($p=1;$p<4;$p++) {
+						//for ($p=1;$p<4;$p++) {
+						for ($p=1;$p<=$num_periods;$p++) {
 							if ($p == 1) {$v = "O";}
 							else {$v = "N";}
 							$sql="INSERT INTO periodes SET " .
@@ -229,12 +257,12 @@ if (!isset($_POST["action"])) {
 									"verouiller = '" . $v . "', " .
 									"id_classe = '" . $classe_id . "', ".
 									"date_verrouillage='0000-00-00 00:00:00'";
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							$insert2 = mysqli_query($GLOBALS["mysqli"], $sql);
 
 							// 20150810
 							$sql="SELECT * FROM edt_calendrier WHERE numero_periode='".$p."';";
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							$res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_cal)==1) {
 								$lig_cal=mysqli_fetch_object($res_cal);
@@ -248,11 +276,11 @@ if (!isset($_POST["action"])) {
 								}
 
 								$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
-								echo "$sql<br />";
+								//echo "$sql<br />";
 								$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
 
 								$sql="UPDATE periodes SET date_fin='".$lig_cal->jourfin_calendrier."' WHERE id_classe='".$classe_id."' AND num_periode='".$lig_cal->numero_periode."';";
-								echo "$sql<br />";
+								//echo "$sql<br />";
 								$update_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							}
@@ -265,7 +293,7 @@ if (!isset($_POST["action"])) {
 							}
 
 						}
-						$num_periods = 3;
+						//$num_periods = 3;
 
 					} else {
 						// La classe existe
@@ -330,6 +358,7 @@ if (!isset($_POST["action"])) {
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
 		//if(my_strtolower($csv_file['name']) == "g_eleves_classes.csv") {
+		// 20210130
 		if(preg_match('/g_eleves_classes[0-9_]*.csv/', my_strtolower($csv_file['name']))) {
 
 			// Le nom est ok. On ouvre le fichier
@@ -376,10 +405,17 @@ if (!isset($_POST["action"])) {
 						//$tabligne[1]=nettoyer_caracteres_nom($tabligne[1], "an", " _-", "");
 						if (mb_strlen($tabligne[1]) > 100) $tabligne[1] = mb_substr($tabligne[1], 0, 100);
 
+						// 20210130
+						$nom_complet_classe=$tabligne[1];
+						if(isset($tabligne[2])) {
+							$nom_complet_classe=trim($tabligne[2]);
+						}
+
 						$data_tab[$k] = array();
 
 						$data_tab[$k]["id_int"] = $tabligne[0];
 						$data_tab[$k]["classe"] = $tabligne[1];
+						$data_tab[$k]["nom_complet_classe"] = $nom_complet_classe;
 
 						$k++;
 
@@ -400,7 +436,10 @@ if (!isset($_POST["action"])) {
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
 				echo "<table border='1' class='boireaus' summary='Tableau élèves/classes'>\n";
-				echo "<tr><th>ID interne de l'élève</th><th>Classe</th></tr>\n";
+				echo "<tr><th>ID interne de l'élève</th><th>Classe</th><th>Nom complet de la classe</th></tr>\n";
+
+				$num_periods=isset($_POST['num_periods']) ? $_POST['num_periods'] : 3;
+				echo "<input type='hidden' name='num_periods' value='".$num_periods."' />\n";
 
 				$alt=1;
 				for ($i=0;$i<$k;$i++) {
@@ -409,12 +448,12 @@ if (!isset($_POST["action"])) {
 						echo "<tr class='lig$alt'>\n";
 						echo "<td>\n";
 						$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
-						col2='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["classe"])."';";
+						col2='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["classe"]."|".$data_tab[$i]["nom_complet_classe"])."';";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
 							echo "<span style='color:red'>";
 							echo $data_tab[$i]["id_int"];
-	 						echo "</span>";
+							echo "</span>";
 							$nb_error++;
 						}
 						else {
@@ -423,6 +462,9 @@ if (!isset($_POST["action"])) {
 						echo "</td>\n";
 						echo "<td>\n";
 						echo $data_tab[$i]["classe"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["nom_complet_classe"];
 						echo "</td>\n";
 						echo "</tr>\n";
 					}
