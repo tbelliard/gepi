@@ -204,7 +204,7 @@ if (!isset($_POST["action"])) {
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
 		//if(my_strtolower($csv_file['name']) == "g_disciplines.csv") {
-		if(preg_match('/g_disciplines[0-9_]*.csv/', my_strtolower($csv_file['name']))) {
+		if(preg_match('/g_disciplines[0-9A_Za-z_]*.csv/', my_strtolower($csv_file['name']))) {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
