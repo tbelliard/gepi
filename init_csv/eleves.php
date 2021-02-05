@@ -227,7 +227,7 @@ if (!isset($_POST["action"])) {
 
 			//$reg_naissance = mktime(0, 0, 0, $naissance[1], $naissance[0], $naissance[2]);
 			$reg_naissance = $naissance[2] . "-" . $naissance[1] . "-" . $naissance[0];
-			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
+			$reg_id_int = preg_replace("/[^A-Z0-9]/","",trim($reg_id_int));
 
 			$reg_id_nat = preg_replace("/[^A-Z0-9]/","",trim($reg_id_nat));
 
@@ -517,12 +517,12 @@ if (!isset($_POST["action"])) {
 
 						$tabligne[2] = $naissance[0] . "/" . $naissance[1] . "/" . $naissance[2];
 
-						$tabligne[3] = preg_replace("/[^0-9]/","",trim($tabligne[3]));
+						$tabligne[3] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[3]));
 
 						$tabligne[4] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[4]));
 						$tabligne[4] = preg_replace("/\"/", "", $tabligne[4]);
 
-						$tabligne[5] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[5]));
+						$tabligne[5] = preg_replace("/[^A-Z0-9]/","", trim(casse_mot($tabligne[5], 'maj')));
 						$tabligne[5] = preg_replace("/\"/", "", $tabligne[5]);
 
 						$tabligne[6] = trim(my_strtoupper($tabligne[6]));

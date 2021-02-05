@@ -178,7 +178,7 @@ if (!isset($_POST["action"])) {
 			}
 
 			// On nettoie et on vérifie :
-			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
+			$reg_id_int = preg_replace("/[^A-Z0-9]/","",trim($reg_id_int));
 			if (mb_strlen($reg_id_int) > 50) $reg_id_int = mb_substr($reg_id_int, 0, 50);
 
 			$reg_classe = preg_replace("/[^A-Za-z0-9._ \-]/","",trim($reg_classe));
@@ -397,7 +397,7 @@ if (!isset($_POST["action"])) {
 						// 1 : nom court de la classe
 
 						// On nettoie et on vérifie :
-						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
+						$tabligne[0] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[0]));
 						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
 						//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[1]));

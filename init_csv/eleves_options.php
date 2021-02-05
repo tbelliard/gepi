@@ -118,14 +118,16 @@ if (!isset($_POST["action"])) {
 			$reg_options = $lig->col2;
 
 			// On nettoie et on vérifie :
-			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
+			$reg_id_int = preg_replace("/[^A-Z0-9]/","",trim($reg_id_int));
 			if (mb_strlen($reg_id_int) > 50) $reg_id_int = mb_substr($reg_id_int, 0, 50);
 			$reg_options = preg_replace("/[^A-Za-z0-9._\-!]/","",trim($reg_options));
 			if (mb_strlen($reg_options) > 2000) $reg_options = mb_substr($reg_options, 0, 2000); // Juste pour éviter une tentative d'overflow...
 
 
 			// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
-			$test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "'");
+			$sql="SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "';";
+			//echo "$sql<br />";
+			$test = mysqli_query($GLOBALS["mysqli"], $sql);
 			if (mysqli_num_rows($test) == 1) {
 				$login_eleve = old_mysql_result($test, 0, "login");
 
@@ -133,7 +135,9 @@ if (!isset($_POST["action"])) {
 				$reg_options = explode("!", $reg_options);
 				$valid_options = array();
 				foreach ($reg_options as $option) {
-					$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(matiere) FROM matieres WHERE matiere = '" . $option ."'"), 0);
+					$sql="SELECT count(matiere) FROM matieres WHERE matiere = '" . $option ."';";
+					//echo "$sql<br />";
+					$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
 					if ($test == 1) {
 						$valid_options[] = $option;
 					}
@@ -143,7 +147,9 @@ if (!isset($_POST["action"])) {
 
 				// On récupère la classe de l'élève.
 
-				$test = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT(id_classe) FROM j_eleves_classes WHERE login = '" . $login_eleve . "'");
+				$sql="SELECT DISTINCT(id_classe) FROM j_eleves_classes WHERE login = '" . $login_eleve . "';";
+				//echo "$sql<br />";
+				$test = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if (mysqli_num_rows($test) != 0) {
 					// L'élève fait bien parti d'une classe
@@ -153,7 +159,9 @@ if (!isset($_POST["action"])) {
 					// Maintenant on a tout : les options, la classe de l'élève, et son login
 					// Enfin il reste quand même un truc à récupérer : le nombre de périodes :
 
-					$num_periods = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
+					$sql="SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $id_classe . "';";
+					//echo "$sql<br />";
+					$num_periods = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
 
 					// Bon cette fois c'est bon, on a tout. On va donc procéder de la manière suivante :
 					// - on regarde s'il existe un groupe pour la classe dans la matière considérée
@@ -164,10 +172,12 @@ if (!isset($_POST["action"])) {
 					// On procède matière par matière :
 
 					foreach ($valid_options as $matiere) {
-						$test = mysqli_query($GLOBALS["mysqli"], "SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE (" .
+						$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE (" .
 								"jgc.id_classe = '" . $id_classe . "' AND " .
 								"jgc.id_groupe = jgm.id_groupe AND " .
-								"jgm.id_matiere = '" . $matiere . "')");
+								"jgm.id_matiere = '" . $matiere . "');";
+						//echo "$sql<br />";
+						$test = mysqli_query($GLOBALS["mysqli"], $sql);
 						if (mysqli_num_rows($test) > 0) {
 							// Au moins un groupe existe, c'est bon signe
 							// On passe groupe par groupe pour vérifier si l'élève est déjà inscrit ou pas
@@ -175,12 +185,16 @@ if (!isset($_POST["action"])) {
 								// On extrait l'ID du groupe
 								$group_id = old_mysql_result($test, $j, "id_groupe");
 								// On regarde si l'élève est inscrit
-								$res = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' AND login = '" . $login_eleve . "')"), 0);
+								$sql="SELECT count(login) FROM j_eleves_groupes WHERE (id_groupe = '" . $group_id . "' AND login = '" . $login_eleve . "')";
+								//echo "$sql<br />";
+								$res = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
 								if ($res == 0) {
 									// L'élève ne fait pas encore parti du groupe. On l'inscrit pour les périodes de la classe
 									for ($p=1;$p<=$num_periods;$p++) {
 										// On enregistre
-										$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $login_eleve . "', periode = '" . $p . "'");
+										$sql="INSERT INTO j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $login_eleve . "', periode = '" . $p . "';";
+										//echo "$sql<br />";
+										$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 										if (!$reg) {
 											$error++;
 											echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
@@ -261,11 +275,11 @@ if (!isset($_POST["action"])) {
 
 
 						// On nettoie et on vérifie :
-						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
+						$tabligne[0] = preg_replace("/[^A-Z0-9]/","", trim($tabligne[0]));
 						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
 						if(!isset($tabligne[1])) {$tabligne[1]="";}
-						$tabligne[1] = preg_replace("/[^A-Za-z0-9._\-!]/","",trim($tabligne[1]));
+						$tabligne[1] = preg_replace("/[^A-Za-z0-9._\-!]/","", trim($tabligne[1]));
 						if (mb_strlen($tabligne[1]) > 2000) $tabligne[1] = mb_substr($tabligne[1], 0, 2000);
 
 						$data_tab[$k] = array();
