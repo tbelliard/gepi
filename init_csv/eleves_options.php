@@ -326,7 +326,7 @@ if (!isset($_POST["action"])) {
 							echo $data_tab[$i]["id_int"];
 						}
 						echo "</td>\n";
-						echo "<td>\n";
+						echo "<td style='text-align:left'>\n";
 						echo $data_tab[$i]["options"];
 						echo "</td>\n";
 						echo "</tr>\n";
