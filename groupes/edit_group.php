@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau, Pierre Aldebert
 *
 * This file is part of GEPI.
 *
@@ -714,6 +714,149 @@ if (isset($_POST['is_posted'])) {
 	}
 	//==================================
 
+	//==================================
+	// 20200620
+	if(isset($_POST['groupe_selo'])) {
+		$sql="SELECT * FROM groupes_param WHERE name='groupe_selo' AND id_groupe='".$id_groupe."';";
+		$test_selo=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_selo)>0) {
+			$sql="UPDATE groupes_param SET value='".$_POST['id_groupe_langue_associee_selo']."' WHERE name='groupe_selo' AND id_groupe='".$id_groupe."';";
+			$update_selo=mysqli_query($mysqli, $sql);
+			if(!$update_selo) {
+				$msg.="Erreur lors de la mise à jour de la langue de section associée à cet enseignement de selo.<br />";
+			}
+		}
+		else {
+			$sql="INSERT INTO groupes_param SET name='groupe_selo', id_groupe='".$id_groupe."', value='".$_POST['id_groupe_langue_associee_selo']."';";
+			$insert_selo=mysqli_query($mysqli, $sql);
+			if(!$insert_selo) {
+				$msg.="Erreur lors de l'enregistrement de la langue de section associée à cet enseignement de selo.<br />";
+			}
+		}
+	}
+	else {
+		$sql="SELECT * FROM groupes_param WHERE name='groupe_selo' AND id_groupe='".$id_groupe."';";
+		$test_selo=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_selo)>0) {
+			$sql="DELETE FROM groupes_param WHERE name='groupe_selo' AND id_groupe='".$id_groupe."';";
+			$del_selo=mysqli_query($mysqli, $sql);
+			if(!$del_selo) {
+				$msg.="Erreur lors de la suppression de l'enregistrement selo.<br />";
+			}
+		}
+	}
+	//==================================
+	// PA le 20210121 : section internationale
+	if(isset($_POST['groupe_inter'])) {
+		$sql="SELECT * FROM groupes_param WHERE name='groupe_inter' AND id_groupe='".$id_groupe."';";
+		$test_inter=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_inter)>0) {
+			$sql="UPDATE groupes_param SET value='".$_POST['id_groupe_langue_associee_inter']."' WHERE name='groupe_inter' AND id_groupe='".$id_groupe."';";
+			$update_inter=mysqli_query($mysqli, $sql);
+			if(!$update_inter) {
+				$msg.="Erreur lors de la mise à jour de la langue de section associée à cet enseignement de section internationale.<br />";
+			}
+		}
+		else {
+			$sql="INSERT INTO groupes_param SET name='groupe_inter', id_groupe='".$id_groupe."', value='".$_POST['id_groupe_langue_associee_inter']."';";
+			$insert_inter=mysqli_query($mysqli, $sql);
+			if(!$insert_inter) {
+				$msg.="Erreur lors de l'enregistrement de la langue de section associée à cet enseignement de section internationale.<br />";
+			}
+		}
+	}
+	else {
+		$sql="SELECT * FROM groupes_param WHERE name='groupe_inter' AND id_groupe='".$id_groupe."';";
+		$test_inter=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_inter)>0) {
+			$sql="DELETE FROM groupes_param WHERE name='groupe_inter' AND id_groupe='".$id_groupe."';";
+			$del_inter=mysqli_query($mysqli, $sql);
+			if(!$del_inter) {
+				$msg.="Erreur lors de la suppression de l'enregistrement de section internationale.<br />";
+			}
+		}
+	}
+
+	//==================================
+	// PA le 20210121 : section binationale
+	if(isset($_POST['groupe_binat'])) {
+		$sql="SELECT * FROM groupes_param WHERE name='groupe_binat' AND id_groupe='".$id_groupe."';";
+		$test_binat=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_binat)>0) {
+			$sql="UPDATE groupes_param SET value='".$_POST['id_groupe_langue_associee_binat']."' WHERE name='groupe_binat' AND id_groupe='".$id_groupe."';";
+			$update_binat=mysqli_query($mysqli, $sql);
+			if(!$update_binat) {
+				$msg.="Erreur lors de la mise à jour de la langue de section associée à cet enseignement de section binationale.<br />";
+			}
+		}
+		else {
+			$sql="INSERT INTO groupes_param SET name='groupe_binat', id_groupe='".$id_groupe."', value='".$_POST['id_groupe_langue_associee_binat']."';";
+			$insert_binat=mysqli_query($mysqli, $sql);
+			if(!$insert_binat) {
+				$msg.="Erreur lors de l'enregistrement de la langue de section associée à cet enseignement de section binationale.<br />";
+			}
+		}
+	}
+	else {
+		$sql="SELECT * FROM groupes_param WHERE name='groupe_binat' AND id_groupe='".$id_groupe."';";
+		$test_binat=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_binat)>0) {
+			$sql="DELETE FROM groupes_param WHERE name='groupe_binat' AND id_groupe='".$id_groupe."';";
+			$del_binat=mysqli_query($mysqli, $sql);
+			if(!$del_binat) {
+				$msg.="Erreur lors de la suppression de l'enregistrement de section binationale.<br />";
+			}
+		}
+	}
+
+	//==================================
+	// PA le 20210121 : DNL hors SELO
+	if(isset($_POST['groupe_dnl_hors_selo'])) {
+		$sql="SELECT * FROM groupes_param WHERE name='groupe_dnl_hors_selo' AND id_groupe='".$id_groupe."';";
+		$test_dnl_hors_selo=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_dnl_hors_selo)>0) {
+			$sql="UPDATE groupes_param SET value='".$_POST['id_groupe_langue_associee_dnl_hors_selo']."' WHERE name='groupe_dnl_hors_selo' AND id_groupe='".$id_groupe."';";
+			$update_dnl_hors_selo=mysqli_query($mysqli, $sql);
+			if(!$update_dnl_hors_selo) {
+				$msg.="Erreur lors de la mise à jour de la langue associée à cet enseignement de dnl_hors_selo.<br />";
+			}
+			$sql="UPDATE groupes_param SET value='".$_POST['rang_lv']."' WHERE name='rang_lv' AND id_groupe='".$id_groupe."';";
+			$update_dnl_hors_selo=mysqli_query($mysqli, $sql);
+			if(!$update_dnl_hors_selo) {
+				$msg.="Erreur lors de la mise à jour de la langue associée à cet enseignement de dnl_hors_selo.<br />";
+			}
+		}
+		else {
+			$sql="INSERT INTO groupes_param SET name='groupe_dnl_hors_selo', id_groupe='".$id_groupe."', value='".$_POST['id_groupe_langue_associee_dnl_hors_selo']."';";
+			$insert_dnl_hors_selo=mysqli_query($mysqli, $sql);
+			if(!$insert_dnl_hors_selo) {
+				$msg.="Erreur lors de l'enregistrement de la langue associée à cet enseignement de dnl_hors_selo.<br />";
+			}
+			$sql="INSERT INTO groupes_param SET name='rang_lv', id_groupe='".$id_groupe."', value='".$_POST['rang_lv']."';";
+			$insert_dnl_hors_selo=mysqli_query($mysqli, $sql);
+			if(!$insert_dnl_hors_selo) {
+				$msg.="Erreur lors de l'enregistrement de la langue associée à cet enseignement de dnl_hors_selo.<br />";
+			}
+		}
+	}
+	else {
+		$sql="SELECT * FROM groupes_param WHERE name='groupe_dnl_hors_selo' AND id_groupe='".$id_groupe."';";
+		$test_dnl_hors_selo=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test_dnl_hors_selo)>0) {
+			$sql="DELETE FROM groupes_param WHERE name='groupe_dnl_hors_selo' AND id_groupe='".$id_groupe."';";
+			$del_dnl_hors_selo=mysqli_query($mysqli, $sql);
+			if(!$del_dnl_hors_selo) {
+				$msg.="Erreur lors de la suppression de l'enregistrement de section dnl_hors_selo.<br />";
+			}
+			$sql="DELETE FROM groupes_param WHERE name='rang_lv' AND id_groupe='".$id_groupe."';";
+			$del_dnl_hors_selo=mysqli_query($mysqli, $sql);
+			if(!$del_dnl_hors_selo) {
+				$msg.="Erreur lors de la suppression de l'enregistrement de section dnl_hors_selo.<br />";
+			}
+		}
+	}
+
+	//==================================
 
 	/*
 	echo "Apres modif:<br />";
@@ -1502,6 +1645,221 @@ if(mysqli_num_rows($res_nme)>0) {
 </div>";
 }
 // +++++++++++++++++++++++++++++++++
+
+// +++++++++++++++++++++++++++++++++
+
+// +++++++++++++++++++++++++++++++++
+// PA le 20210121 : modification pour les différentes sections linguistiques et les dnl hors SELO
+// +++++++++++++++++++++++++++++++++
+
+$sql="SELECT * FROM plugins WHERE nom='livretScolaire';";
+$test_LSL=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($test_LSL)>0) {
+
+echo "
+	<br />
+	<div style='border:1px solid white; background-image: url(\"../images/background/opacite50.png\");'>
+		<p><strong>Désignation de la langue de section pour les groupes enseignés en langue de section (3 premiers cas) ou de la langue de DNL pour les DNL hors SELO&nbsp;:</strong></p>
+	</div>
+	";
+
+// +++++++++++++++++++++++++++++++++
+// SELO 
+// +++++++++++++++++++++++++++++++++
+
+// 20200620
+$sql="SELECT * FROM groupes_param WHERE id_groupe='".$id_groupe."' AND name='groupe_selo';";
+$res_selo=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_selo)>0) {
+	$lig_selo=mysqli_fetch_object($res_selo);
+	$checked_selo=' checked';
+	$id_groupe_langue_associee_selo=$lig_selo->value;
+}
+else {
+	$checked_selo='';
+	$id_groupe_langue_associee_selo='';
+}
+
+$get_groups_for_class_avec_proflist='y';
+$tab_grp_clas=get_groups_for_class($id_classe);
+/*
+echo "<pre>";
+print_r($tab_grp_clas);
+echo "</pre>";
+*/
+echo "<div class='fieldset_opacite50' style='margin-top:1em; border:1px solid white;'>
+	<input type='checkbox' name='groupe_selo' id='groupe_selo' value='y' onchange=\"checkbox_change_divers(this.id)\"".$checked_selo." />
+	<label for='groupe_selo' id='texte_groupe_selo'>
+		Enseignement de SELO <em>(en section européenne)</em>
+	</label><br />
+	Langue vivante de section associée&nbsp;: 
+	<select name='id_groupe_langue_associee_selo' style='max-width:40em;'>
+		<option value=''>---</option>";
+foreach($tab_grp_clas as $key => $current_grp_lv_section) {
+	if($current_grp_lv_section['id']==$id_groupe_langue_associee_selo) {
+		$selected_lv_section=' selected';
+	}
+	else {
+		$selected_lv_section='';
+	}
+	echo "
+		<option value='".$current_grp_lv_section['id']."'".$selected_lv_section.">".$current_grp_lv_section['name']." (".$current_grp_lv_section['matiere']['matiere'].") (".$current_grp_lv_section['classlist_string'].") (".$current_grp_lv_section['proflist_string'].")"."</option>";
+}
+echo "
+	</select>
+</div>";
+// +++++++++++++++++++++++++++++++++
+
+// +++++++++++++++++++++++++++++++++
+// SECTION INTERNATIONALE
+// +++++++++++++++++++++++++++++++++
+
+$sql="SELECT * FROM groupes_param WHERE id_groupe='".$id_groupe."' AND name='groupe_inter';";
+$res_inter=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_inter)>0) {
+	$lig_inter=mysqli_fetch_object($res_inter);
+	$checked_inter=' checked';
+	$id_groupe_langue_associee_inter=$lig_inter->value;
+}
+else {
+	$checked_inter='';
+	$id_groupe_langue_associee_inter='';
+}
+
+$get_groups_for_class_avec_proflist='y';
+$tab_grp_clas=get_groups_for_class($id_classe);
+
+echo "<div class='fieldset_opacite50' style='margin-top:1em; border:1px solid white;'>
+	<input type='checkbox' name='groupe_inter' id='groupe_inter' value='y' onchange=\"checkbox_change_divers(this.id)\"".$checked_inter." />
+	<label for='groupe_inter' id='texte_groupe_inter'>
+		Enseignement, en section internationale, dans la langue de section</em>
+	</label><br />
+	Langue vivante de section associée&nbsp;: 
+	<select name='id_groupe_langue_associee_inter' style='max-width:40em;'>
+		<option value=''>---</option>";
+foreach($tab_grp_clas as $key => $current_grp_lv_section) {
+	if($current_grp_lv_section['id']==$id_groupe_langue_associee_inter) {
+		$selected_lv_section=' selected';
+	}
+	else {
+		$selected_lv_section='';
+	}
+	echo "
+		<option value='".$current_grp_lv_section['id']."'".$selected_lv_section.">".$current_grp_lv_section['name']." (".$current_grp_lv_section['matiere']['matiere'].") (".$current_grp_lv_section['classlist_string'].") (".$current_grp_lv_section['proflist_string'].")"."</option>";
+}
+echo "
+	</select>
+</div>";
+
+// +++++++++++++++++++++++++++++++++
+
+// +++++++++++++++++++++++++++++++++
+// SECTION BINATIONALE
+// +++++++++++++++++++++++++++++++++
+
+$sql="SELECT * FROM groupes_param WHERE id_groupe='".$id_groupe."' AND name='groupe_binat';";
+$res_binat=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_binat)>0) {
+	$lig_binat=mysqli_fetch_object($res_binat);
+	$checked_binat=' checked';
+	$id_groupe_langue_associee_binat=$lig_binat->value;
+}
+else {
+	$checked_binat='';
+	$id_groupe_langue_associee_binat='';
+}
+
+$get_groups_for_class_avec_proflist='y';
+$tab_grp_clas=get_groups_for_class($id_classe);
+
+echo "<div class='fieldset_opacite50' style='margin-top:1em; border:1px solid white;'>
+	<input type='checkbox' name='groupe_binat' id='groupe_binat' value='y' onchange=\"checkbox_change_divers(this.id)\"".$checked_binat." />
+	<label for='groupe_binat' id='texte_groupe_binat'>
+		Enseignement, en section binationale, dans la langue de section</em>
+	</label><br />
+	Langue vivante de section associée&nbsp;: 
+	<select name='id_groupe_langue_associee_binat' style='max-width:40em;'>
+		<option value=''>---</option>";
+foreach($tab_grp_clas as $key => $current_grp_lv_section) {
+	if($current_grp_lv_section['id']==$id_groupe_langue_associee_binat) {
+		$selected_lv_section=' selected';
+	}
+	else {
+		$selected_lv_section='';
+	}
+	echo "
+		<option value='".$current_grp_lv_section['id']."'".$selected_lv_section.">".$current_grp_lv_section['name']." (".$current_grp_lv_section['matiere']['matiere'].") (".$current_grp_lv_section['classlist_string'].") (".$current_grp_lv_section['proflist_string'].")"."</option>";
+}
+echo "
+	</select>
+</div>";
+// +++++++++++++++++++++++++++++++++
+
+// +++++++++++++++++++++++++++++++++
+// DNL HORS SELO
+// +++++++++++++++++++++++++++++++++
+
+$sql="SELECT * FROM groupes_param WHERE id_groupe='".$id_groupe."' AND name='groupe_dnl_hors_selo';";
+$res_dnl_hors_selo=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_dnl_hors_selo)>0) {
+	$lig_dnl_hors_selo=mysqli_fetch_object($res_dnl_hors_selo);
+	$checked_dnl_hors_selo=' checked';
+	$id_groupe_langue_associee_dnl_hors_selo=$lig_dnl_hors_selo->value;
+	// Dans ce cas , il y a un deuxième enregistrement, systématique
+	$sql="SELECT * FROM groupes_param WHERE id_groupe='".$id_groupe."' AND name='rang_lv';";
+	$res_dnl_hors_selo=mysqli_query($mysqli, $sql);
+	$lig_dnl_hors_selo=mysqli_fetch_object($res_dnl_hors_selo);
+	$rang_lv=$lig_dnl_hors_selo->value;
+	
+}
+else {
+	$checked_dnl_hors_selo='';
+	$id_groupe_langue_associee_dnl_hors_selo='';
+	$rang_lv='1'; // Par défaut, LV1 proposée
+}
+
+$get_groups_for_class_avec_proflist='y';
+$tab_grp_clas=get_groups_for_class($id_classe);
+
+echo "<div class='fieldset_opacite50' style='margin-top:1em; border:1px solid white;'>
+	<input type='checkbox' name='groupe_dnl_hors_selo' id='groupe_dnl_hors_selo' value='y' onchange=\"checkbox_change_divers(this.id)\"".$checked_dnl_hors_selo." />
+	<label for='groupe_dnl_hors_selo' id='texte_groupe_dnl_hors_selo'>
+		Enseignement de DNL hors section européenne</em>
+	</label><br />
+	Langue vivante associée&nbsp;: 
+	<select name='id_groupe_langue_associee_dnl_hors_selo' style='max-width:40em;'>
+		<option value=''>---</option>";
+foreach($tab_grp_clas as $key => $current_grp_lv_section) {
+	if($current_grp_lv_section['id']==$id_groupe_langue_associee_dnl_hors_selo) {
+		$selected_lv_section=' selected';
+	}
+	else {
+		$selected_lv_section='';
+	}
+	echo "
+		<option value='".$current_grp_lv_section['id']."'".$selected_lv_section.">".$current_grp_lv_section['name']." (".$current_grp_lv_section['matiere']['matiere'].") (".$current_grp_lv_section['classlist_string'].") (".$current_grp_lv_section['proflist_string'].")"."</option>";
+}
+echo "
+	</select>";
+	// Fin PA le 20210121	
+	// PA le 20210212 : il faut aussi se faire indiquer le rang de la LV (LVA, LVB, LVC)
+echo "&nbsp;&nbsp;&nbsp;Rang&nbsp;:
+		<select name='rang_lv' style='max-width:10em;'>";
+		for ($w=1;$w<=3;$w++) {
+			echo "	<option value='".$w."' ";
+			if ($w==$rang_lv) {
+				echo " selected";
+			}
+			echo ">LV".$w."</option>";
+		}
+		echo "
+		</select>
+		";
+
+echo "</div>";
+
+}
+
 
 // +++++++++++++++++++++++++++++++++
 $sql="SELECT 1=1 FROM edt_corresp2;";
