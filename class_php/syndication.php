@@ -1,9 +1,25 @@
 <?php
 
-/**
+/*
+ * $Id$
  *
- * @copyright 2008-2013
+ * Copyright 2008, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 $niveau_arbo = 1;
@@ -17,7 +33,12 @@ $eleve_l = isset($_GET["ele_l"]) ? $_GET["ele_l"] : NULL;
 $uri = isset($_GET["uri"]) ? $_GET["uri"] : NULL;
 
 // On vérifie si la table des uri existe (si elle existe, elle est forcément remplie
-$test_table = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'rss_users'"));
+$sql="SHOW TABLES LIKE 'rss_users';";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(!$res) {
+	die();
+}
+$test_table = mysqli_num_rows($res);
 if ($test_table == 0) {
 	die();
 }
@@ -28,7 +49,8 @@ else {
 
 	if ($test_uri == 1) {
 		// C'est bon, on peut générer les réponses
-	}else{
+	}
+	else {
 		die();
 	}
 }
@@ -119,7 +141,7 @@ $oRssFeed->setLanguage('fr');
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 
 // Ajout des news au flux
-if ($items["cdt_dev"]["count"] != 0) {
+if ((isset($items["cdt_dev"]["count"]))&&($items["cdt_dev"]["count"] != 0)) {
 	for($a = 0; $a < $items["cdt_dev"]["count"] ; $a++)
 	{
 
@@ -256,7 +278,8 @@ if ($items["cdt_dev"]["count"] != 0) {
 			}
 		}
 	}
-}elseif($items["cdt_dev"]["count"] == 0){
+}
+elseif((isset($items["cdt_dev"]["count"]))&&($items["cdt_dev"]["count"] == 0)) {
 
 	// Récupération de l'email
 	//$sEmail = getSettingValue("gepiSchoolEmail");
@@ -274,7 +297,8 @@ if ($items["cdt_dev"]["count"] != 0) {
 	$oRssFeed->appendItem($oRssItem);
 	$oRssItem = null;
 
-}else{
+}
+else {
 
 	// Récupération de l'email
 	//$sEmail = getSettingValue("gepiSchoolEmail");
