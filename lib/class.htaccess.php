@@ -83,7 +83,8 @@ class htaccess
      * 
      * @var bool $default If TRUE set htaccess default data
      */           
-    function htaccess($default = FALSE)
+    //function htaccess($default = FALSE)
+    function __construct($default = FALSE)
     {
 		$dirname = getSettingValue("backup_directory");
         $this->ht_dir =  realpath("../backup/".$dirname);
@@ -115,6 +116,7 @@ class htaccess
         //$this->user[$name] = crypt($passwd, $this->crypt_method);      // PB
         //$this->user[$name] = crypt($passwd,base64_encode($passwd));    // OK
         $this->user[$name] = "{SHA}".base64_encode(sha1($passwd, TRUE)); // OK
+
         return TRUE;
     }
 
