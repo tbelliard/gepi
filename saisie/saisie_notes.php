@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1049,7 +1049,9 @@ foreach ($liste_eleves as $eleve_login) {
 						$mess[$k].="<input type='hidden' name=\"log_eleve_".$k."[$i]\" value=\"$eleve_login\" />\n";
 
 						//$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" name=\"note_eleve_".$k."[$i]\" value=";
-						$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" ";
+						// 20210216
+						//$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=\"text\" size=\"4\" ";
+						$mess[$k].="<input id=\"n".$k.$num_id."\" onKeyUp=\"clavier_note(this.id,event);\" type=\"text\" size=\"4\" ";
 						$mess[$k].="autocomplete=\"off\" ";
 						$mess[$k].="name=\"note_eleve_".$k."[$i]\" value=";
 						// ========================

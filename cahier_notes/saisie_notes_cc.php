@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -469,6 +469,10 @@ echo "</b></p>\n";
 //=============================================================
 // MODIF: boireaus
 
+// 20210216
+$cn_mode_saisie=getPref($_SESSION['login'], 'cn_mode_saisie', 0);
+echo "<input type='hidden' name='cn_mode_saisie' id='cn_mode_saisie' value='".$cn_mode_saisie."' />";
+
 echo "<div id='div_q_p' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
 echo "<div id='div_photo_eleve' style='text-align:center; display:none;'></div>\n";
 echo "</div>\n";
@@ -650,12 +654,16 @@ foreach ($liste_eleves as $eleve) {
 		*/
 
 		$designation_eleve_js=addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'));
-		echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()";
+		// 20210216
+		//echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()";
+		echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyUp=\"clavier_note(this.id,event);\" onfocus=\"javascript:this.select()";
 		if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".$designation_eleve_js."')";}
 		else {
 			echo ";document.getElementById('div_photo_eleve').innerHTML='Pas de photo pour ".$designation_eleve_js."'";
 		}
-		echo "\" onchange=\"verifcol($num_id);changement();\" value='";
+		echo "\" ";
+		echo "onchange=\"verifcol($num_id);changement();\"";
+		echo " value='";
 		if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
 			echo $note_import[$current_displayed_line];
 		}
