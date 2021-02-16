@@ -3188,6 +3188,13 @@ mysql>
 						$chaine_salle_courante="<br /><span style='font-size:".$font_size3."pt;' title=\"Salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete']."\">".$tab_salle['indice'][$lig->id_salle]['designation_courte']."</span>";
 					}
 
+					// 20210216
+					$contenu_cellule='';
+					if(($lig->id_semaine!='0')&&($lig->id_semaine!='')) {
+						$contenu_cellule.="<span class='fieldset_opacite50' style='float:right; font-size:".$font_size3."pt;' title=\"Semaine ".$lig->id_semaine."\">".$lig->id_semaine."</span>";
+					}
+
+
 					if($type_affichage=="prof") {
 						$liste_classes="";
 						if($chaine_liste_classes!="") {
@@ -3195,19 +3202,39 @@ mysql>
 						}
 	// 20160919: permettre d'afficher le nom de groupe (au moins le début)
 						//$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span>".$liste_classes.$chaine_salle_courante;
-						$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_texte_ligne_1."</span>".$liste_classes.$chaine_salle_courante;
+						$contenu_cellule.="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_texte_ligne_1."</span>".$liste_classes.$chaine_salle_courante;
 					}
 					else {
 						/*
 						$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span><br />
 					<span style='font-size:".$font_size2."pt;' title=\"".$chaine_proflist_string."\">".$chaine_noms_profs."</span>".$chaine_salle_courante;
 						*/
-						$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_texte_ligne_1."</span><br />
+						$contenu_cellule.="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_texte_ligne_1."</span><br />
 					<span style='font-size:".$font_size2."pt;' title=\"".$chaine_proflist_string."\">".$chaine_noms_profs."</span>".$chaine_salle_courante;
 					}
 
+
+					// 20210216
+					if($debug_edt=="y") {
+						echo "<p style='margin:3px; border: 1px dashed red'>
+						Jour=".strftime('%a %d/%m/%Y', $ts_debut_jour)."<br />
+						\$chaine_texte_ligne_1=$chaine_texte_ligne_1<br />
+						\$chaine_type_semaine_du_cours_courant=$chaine_type_semaine_du_cours_courant<br />
+						\$lig->id_semaine=$lig->id_semaine<br />";
+					}
+
 					if(($lig->id_semaine!='0')&&($lig->id_semaine!='')) {
-						$contenu_cellule.=" <span class='fieldset_opacite50' style='float:right; font-size:".$font_size2."pt;' title=\"Semaine ".$lig->id_semaine."\">".$lig->id_semaine."</span>";
+						// Si le nom du groupe est trop long, le numéro de salle n'est pas affiché et le témoin de semaine A/B se retrouve en dehors de la zone affichée
+						//$contenu_cellule.=" <span class='fieldset_opacite50' style='float:right; font-size:".$font_size2."pt;' title=\"Semaine ".$lig->id_semaine."\">".$lig->id_semaine."</span>";
+
+						if($debug_edt=="y") {
+							echo "Témoin ".$lig->id_semaine." affiché.";
+						}
+					}
+
+					if($debug_edt=="y") {
+						echo "
+						</p>";
 					}
 
 
