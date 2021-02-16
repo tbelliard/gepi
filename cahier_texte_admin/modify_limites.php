@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -71,14 +71,14 @@ echo add_token_field();
         <td style="font-variant: small-caps;">
         Taille maximale autorisée pour un fichier en Ko :
         </td>
-        <td><input type="text" name="max_size_ko" size="20" value="<?php echo(getSettingValue("max_size")/1024); ?>" />
+        <td><input type="text" name="max_size_ko" id="max_size_ko" size="10" value="<?php echo(getSettingValue("max_size")/1024); ?>" onblur="document.getElementById('max_size_ko_h').innerHTML=volume_human(this.value,'ko')" />ko soit <span id='max_size_ko_h'></span>
         </td>
     </tr>
     <tr>
         <td style="font-variant: small-caps;">
         Espace disque maximal autorisé pour une rubrique (<em>un enseignement/groupe</em>) :
         </td>
-        <td><input type="text" name="total_max_size_ko" size="20" value="<?php echo(getSettingValue("total_max_size")/1024); ?>" />
+        <td><input type="text" name="total_max_size_ko" id="total_max_size_ko" size="10" value="<?php echo(getSettingValue("total_max_size")/1024); ?>" onblur="document.getElementById('total_max_size_ko_h').innerHTML=volume_human(this.value,'ko')" />ko soit <span id='total_max_size_ko_h'></span>
         </td>
     </tr>
 </table>
@@ -90,4 +90,9 @@ echo add_token_field();
 <p style='margin-left:3em;'>La taille maximale choisie ci-dessus pour un fichier peut aussi être restreinte par les paramétrages PHP de votre serveur&nbsp;:<br />
 <b>upload_max_filesize&nbsp;:</b> <?php echo ini_get('upload_max_filesize');?><br />
 <b>post_max_size&nbsp;:</b> <?php echo ini_get('post_max_size');?></p>
+
+<script type='text/javascript'>
+	document.getElementById('max_size_ko_h').innerHTML=volume_human(document.getElementById('max_size_ko').value,'ko');
+	document.getElementById('total_max_size_ko_h').innerHTML=volume_human(document.getElementById('total_max_size_ko').value,'ko');
+</script>
 <?php require("../lib/footer.inc.php");?>
