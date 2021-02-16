@@ -1162,6 +1162,9 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		$cdt_ele_nb_jours_a_venir=0;
 	}
 
+	// 20210128
+	//global $cdt_avec_notices_compte_rendus;
+	$cdt_avec_notices_compte_rendus='y';
 
 	$html="";
 
@@ -1223,6 +1226,51 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Cahier de textes</div>";
 
+	/*
+	$sql="";
+	if($cdt_avec_notices_compte_rendus=='y') {
+		$sql.="(";
+	}
+	$sql.="SELECT DISTINCT cde.* FROM ct_devoirs_entry cde, 
+					j_eleves_groupes jeg, 
+					j_eleves_classes jec, 
+					j_groupes_matieres jgm
+				WHERE jeg.login='".$login_eleve."' AND 
+					jeg.id_groupe=cde.id_groupe AND 
+					jec.login=jeg.login AND 
+					jec.periode=jeg.periode AND 
+					jec.id_classe='".$id_classe."' AND 
+					cde.contenu!='' AND 
+					cde.date_ct>='".$ts_debut_jour."' AND 
+					cde.date_ct<'".min($ts_debut_jour_suivant+$cdt_ele_nb_jours_a_venir*3600*24, $ts_max)."' AND 
+					cde.date_visibilite_eleve<='".strftime("%Y-%m-%d %H:%M:%S")."' AND
+					jgm.id_groupe=jeg.id_groupe
+					ORDER BY cde.date_ct, jgm.id_matiere";
+	if($cdt_avec_notices_compte_rendus=='y') {
+		$sql.=") UNION (SELECT DISTINCT cde.* FROM ct_entry cde, 
+					j_eleves_groupes jeg, 
+					j_eleves_classes jec, 
+					j_groupes_matieres jgm
+				WHERE jeg.login='".$login_eleve."' AND 
+					jeg.id_groupe=cde.id_groupe AND 
+					jec.login=jeg.login AND 
+					jec.periode=jeg.periode AND 
+					jec.id_classe='".$id_classe."' AND 
+					cde.contenu!='' AND 
+					cde.date_ct>='".$ts_debut_jour."' AND 
+					cde.date_ct<'".min(time(), $ts_debut_jour_suivant+$cdt_ele_nb_jours_a_venir*3600*24, $ts_max)."' AND
+					jgm.id_groupe=jeg.id_groupe
+					ORDER BY cde.date_ct, jgm.id_matiere)";
+	}
+	$sql.=";";
+	*/
+	// 20210128
+	// Remplir un tableau des compte-rendus
+	// Remplir un tableau des devoirs à faire avec la date comme indice,
+	// Parcourir les indices
+	// et afficher les compte-rendus après les devoirs à faire pour la date
+
+
 	$sql="SELECT DISTINCT cde.* FROM ct_devoirs_entry cde, 
 				j_eleves_groupes jeg, 
 				j_eleves_classes jec, 
@@ -1234,10 +1282,11 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 				jec.id_classe='".$id_classe."' AND 
 				cde.contenu!='' AND 
 				cde.date_ct>='".$ts_debut_jour."' AND 
-				cde.date_ct<'".min($ts_debut_jour_suivant+$cdt_ele_nb_jours_a_venir*3600*24,$ts_max)."' AND 
+				cde.date_ct<'".min($ts_debut_jour_suivant+$cdt_ele_nb_jours_a_venir*3600*24, $ts_max)."' AND 
 				cde.date_visibilite_eleve<='".strftime("%Y-%m-%d %H:%M:%S")."' AND
 				jgm.id_groupe=jeg.id_groupe
-				ORDER BY jgm.id_matiere;";
+				ORDER BY cde.date_ct, jgm.id_matiere;";
+
 	//$html.="$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
@@ -1323,6 +1372,8 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 			}
 
 			$class_color_fond_notice="";
+			// 20210128
+
 			$temoin_travail_fait_ou_non="";
 			if($CDTPeutPointerTravailFait) {
 				get_etat_et_img_cdt_travail_fait($lig->id_ct);
