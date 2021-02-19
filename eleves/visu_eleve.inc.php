@@ -1358,6 +1358,9 @@ Patientez pendant l'extraction des données... merci.
 		echo "<div style='clear:both;'></div>\n";
 		//====================================
 
+		// Utilisé pour dire bonjour ou bonsoir autour de 18h
+		$tmp_date=getdate();
+
 		//=====================================================================================
 		// 20170727
 		echo necessaire_modif_tel_resp_ele();
@@ -1619,7 +1622,7 @@ Patientez pendant l'extraction des données... merci.
 			if($acces_email_ele) {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>".$chaine_acces_modif_tel;
-				$tmp_date=getdate();
+				//$tmp_date=getdate();
 				//echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
 				echo "<a href='mailto:".$tab_ele['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 				if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
@@ -1667,6 +1670,7 @@ Patientez pendant l'extraction des données... merci.
 		// Onglet RESPONSABLES
 		//=======================
 
+		//$tmp_date=getdate();
 		if($acces_responsables=="y") {
 			echo "<div id='responsables' class='onglet' style='";
 			if($onglet!="responsables") {echo " display:none;";}
@@ -1756,7 +1760,7 @@ Patientez pendant l'extraction des données... merci.
 						// 20190101
 						if($acces_email_responsable) {
 							if($tab_ele['resp'][$i]['mel']!='') {
-								$tmp_date=getdate();
+								//$tmp_date=getdate();
 								$alt=$alt*(-1);
 								echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>".$chaine_acces_modif_tel;
 								echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
@@ -2071,7 +2075,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 							// 20190101
 							if($acces_email_responsable) {
 								if($tab_ele['resp'][$i]['mel']!='') {
-									$tmp_date=getdate();
+									//$tmp_date=getdate();
 									$alt=$alt*(-1);
 									echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>".$chaine_acces_modif_tel;
 									echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
@@ -2473,7 +2477,7 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				echo "</p>\n";
 
 				if($tab_ele['equipe_liste_email']!="") {
-					$tmp_date=getdate();
+					//$tmp_date=getdate();
 					//echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI&amp;body=";
 					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
