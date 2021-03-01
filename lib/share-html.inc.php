@@ -242,11 +242,17 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					}
 					
 					$nom_dev = old_mysql_result($appel_dev, $j, 'nom_court');
+					$description_dev = preg_replace('/"/', "'", old_mysql_result($appel_dev, $j, 'description'));
 					$id_dev = old_mysql_result($appel_dev, $j, 'id');
 					$date_dev = old_mysql_result($appel_dev, $j, 'date');
 					$date_ele_resp_dev = old_mysql_result($appel_dev, $j, 'date_ele_resp');
 					echo "<li>\n";
-					echo "<span style='color:green;'>$nom_dev</span>";
+					// 20210222
+					echo "<span style='color:green;' title=\"".preg_replace('/"/', "'", $nom_dev)." (".formate_date($date_dev).")";
+					if($description_dev!='') {
+						echo "\n".$description_dev;
+					}
+					echo "\">$nom_dev</span>";
 					if((isset($eff_groupe))&&($eff_groupe==0)) {
 						echo " - <span title=\"Pas de saisie possible sans élève dans l'enseignement.\">Saisie</span>";
 					}
@@ -407,11 +413,17 @@ En revanche, on n'affiche pas une case spécifique pour ce".((getSettingValue('g
 						echo "<ul>\n";
 						while ($j < $nb_dev) {
 							$nom_dev = old_mysql_result($appel_dev, $j, 'nom_court');
+							$description_dev = preg_replace('/"/', "'", old_mysql_result($appel_dev, $j, 'description'));
 							$id_dev = old_mysql_result($appel_dev, $j, 'id');
 							$date_dev = old_mysql_result($appel_dev, $j, 'date');
 							$date_ele_resp_dev = old_mysql_result($appel_dev, $j, 'date_ele_resp');
 							echo "<li>\n";
-							echo "<font color='green'>$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+							// 20210222
+							echo "<font color='green' title=\"".preg_replace('/"/', "'", $nom_dev)." (".formate_date($date_dev).")";
+							if($description_dev!='') {
+								echo "\n".$description_dev;
+							}
+							echo "\">$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
 							//$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='-' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
 							$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
