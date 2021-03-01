@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -62,6 +62,15 @@ if (!checkAccess()) {
 
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
+
+// 20210301
+/*
+if((isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_classe))&&(is_classe_exclue_tel_module($id_classe, 'cahier_notes'))) {
+	$mess=rawurlencode("Cette classe n utilise pas les carnets de notes.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+*/
 
 $choix_periodes=isset($_POST['choix_periodes']) ? $_POST['choix_periodes'] : NULL;
 //num_periode_".$id_classe[$i]."[] à récupérer
@@ -547,9 +556,21 @@ if(!isset($id_classe)) {
 		die();
 	}
 
+	// 20210301
+	$tab_id_classe_exclues_module_cahier_notes=get_classes_exclues_tel_module('cahier_notes');
+	$tab_classe=array();
+	$cpt=0;
+	while($lig_clas=mysqli_fetch_assoc($call_classes)) {
+		if(!in_array($lig_clas['id'], $tab_id_classe_exclues_module_cahier_notes)) {
+			$tab_classe[$cpt]=$lig_clas;
+			$cpt++;
+		}
+	}
+
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	// Affichage sur 3 colonnes
-	$nb_classes_par_colonne=round($nb_classes/3);
+	//$nb_classes_par_colonne=round($nb_classes/3);
+	$nb_classes_par_colonne=round(count($tab_classe)/3);
 
 	echo "<table width='100%' summary='Choix des classes'>\n";
 	echo "<tr valign='top' align='center'>\n";
@@ -559,7 +580,7 @@ if(!isset($id_classe)) {
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 	echo "<td align='left'>\n";
 
-	while($lig_clas=mysqli_fetch_object($call_classes)) {
+	foreach($tab_classe as $current_classe) {
 
 		//affichage 2 colonnes
 		if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
@@ -567,7 +588,7 @@ if(!isset($id_classe)) {
 			echo "<td align='left'>\n";
 		}
 
-		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='radio' name='id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe</label>";
+		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='radio' name='id_classe[]' id='tab_id_classe_$cpt' value='".$current_classe['id']."' onchange='change_style_classe($cpt)' /> ".$current_classe['classe']."</label>";
 		echo "<br />\n";
 		$cpt++;
 	}

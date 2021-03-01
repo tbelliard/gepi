@@ -2,10 +2,8 @@
 /**
  * saisie des Notes
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun; Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun; Stephane Boireau
 *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- * 
  * @license GNU/GPL
  * @package Carnet_de_notes
  * @subpackage saisie
@@ -125,6 +123,11 @@ if ($id_devoir)  {
 		$periode_num = $_GET['periode_num'];
 
 		if (is_numeric($id_groupe) && $id_groupe > 0) {
+			if(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes')) {
+				header("Location: ../accueil.php?msg=Groupe/Enseignement invalide");
+				die();
+			}
+
 			$current_group = get_group($id_groupe);
 
 			// Avec des classes qui n'ont pas le même nombre de période, on peut arriver avec un periode_num impossible pour un id_groupe
@@ -730,10 +733,12 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$temoin_tmp=0;
 		$tab_groupes_utiles=array();
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
-				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
-				if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
-					$tab_groupes_utiles[]=$tab_groups[$loop];
+			if(!is_groupe_exclu_tel_module($tab_groups[$loop]['id'], 'cahier_notes')) {
+				if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+					// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+					if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
+						$tab_groupes_utiles[]=$tab_groups[$loop];
+					}
 				}
 			}
 		}

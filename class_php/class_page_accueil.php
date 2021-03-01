@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1128,8 +1128,8 @@ if(getSettingAOui('active_bulletins')) {
 
    $condition = (
 		getSettingValue("active_carnets_notes")=='y' AND (
-			($this->statutUtilisateur == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes')
-			OR ($this->statutUtilisateur == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')
+			($this->statutUtilisateur == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes' AND is_eleve_avec_carnet_notes($_SESSION['login']))
+			OR ($this->statutUtilisateur == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes' AND is_eleve_avec_carnet_notes($_SESSION['login']))
 			));
 
 	if ($condition) {
@@ -1138,9 +1138,9 @@ if(getSettingAOui('active_bulletins')) {
 				  "Relevés de notes",
 				  "Permet de consulter les relevés de notes des ".$this->gepiSettings['denomination_eleves']." dont vous êtes le ".$this->gepiSettings['denomination_responsable'].".");
 		} else {
-		  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_ter.php",
-				  "Relevés de notes",
-				  "Permet de consulter vos relevés de notes détaillés.");
+			$this->creeNouveauItem("/cahier_notes/visu_releve_notes_ter.php",
+				"Relevés de notes",
+				"Permet de consulter vos relevés de notes détaillés.");
 		}
 	}
 	if ($this->b>0){
@@ -1154,8 +1154,8 @@ if(getSettingAOui('active_bulletins')) {
 
    $condition = (
 		getSettingValue("active_carnets_notes")=='y' AND (
-			($this->statutUtilisateur == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes')
-			OR ($this->statutUtilisateur == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')
+			($this->statutUtilisateur == "responsable" AND getSettingValue("GepiAccesReleveParent") == 'yes' AND is_responsable_avec_eleve_avec_carnet_notes($_SESSION['login']))
+			OR ($this->statutUtilisateur == "eleve" AND getSettingAOui("GepiAccesReleveEleve") AND is_eleve_avec_carnet_notes($_SESSION['login']))
 			));
 
 	if ($condition) {

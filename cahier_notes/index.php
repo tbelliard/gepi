@@ -75,20 +75,40 @@ if (getSettingValue("active_carnets_notes")!='y') {
 
 $msg="";
 
+// 20210301
+$tab_id_classe_exclues_module_cahier_notes=array();
+if(!getSettingAOui('acces_cn_prof')) {
+	$tab_id_classe_exclues_module_cahier_notes=get_classes_exclues_tel_module('cahier_notes');
+}
+
 unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
+
+// 20210301
+if((isset($id_groupe))&&(preg_match('/^[0-9]{1,}$/', $id_groupe))&&(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes'))) {
+	$id_groupe="no_group";
+}
+
 if ($id_groupe == "no_group") {
-    $id_groupe = NULL;
-    unset($_GET['id_groupe']);
-    $_SESSION['id_groupe_session'] = "";
+	$id_groupe = NULL;
+	unset($_GET['id_groupe']);
+	$_SESSION['id_groupe_session'] = "";
 }
 
 //on met le groupe dans la session, pour naviguer entre absence, cahier de texte et autres
 if ($id_groupe != NULL) {
-    $_SESSION['id_groupe_session'] = $id_groupe;
+	$_SESSION['id_groupe_session'] = $id_groupe;
 } else if (isset($_SESSION['id_groupe_session']) && $_SESSION['id_groupe_session'] != "") {
-     $_GET['id_groupe'] = $_SESSION['id_groupe_session'];
-     $id_groupe = $_SESSION['id_groupe_session'];
+	// 20210301
+	if((preg_match('/^[0-9]{1,}$/', $_SESSION['id_groupe_session']))&&(is_groupe_exclu_tel_module($_SESSION['id_groupe_session'], 'cahier_notes'))) {
+		$id_groupe = NULL;
+		unset($_GET['id_groupe']);
+		$_SESSION['id_groupe_session'] = "";
+	}
+	else {
+		$_GET['id_groupe'] = $_SESSION['id_groupe_session'];
+		$id_groupe = $_SESSION['id_groupe_session'];
+	}
 }
 
 if (is_numeric($id_groupe) && $id_groupe > 0) {
@@ -576,11 +596,14 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 		$tmp_groups=array();
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
-				$tmp_groups[]=$tab_groups[$loop];
-			}
-			elseif(get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num)!="") {
-				$tab_anomalie_cn_pour_groupe_hors_cn[$tab_groups[$loop]['id']]=get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num);
+			// 20210301
+			if(!is_groupe_exclu_tel_module($tab_groups[$loop]["id"], 'cahier_notes')) {
+				if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+					$tmp_groups[]=$tab_groups[$loop];
+				}
+				elseif(get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num)!="") {
+					$tab_anomalie_cn_pour_groupe_hors_cn[$tab_groups[$loop]['id']]=get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num);
+				}
 			}
 		}
 
@@ -1095,27 +1118,37 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 }
 
 if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset($id_racine))) {
-    ?>
-    <p class='bold'><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
-    <p>Accéder au carnet de notes : </p>
-    <?php
-    $groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+	?>
+	<p class='bold'><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
+	<p>Accéder au carnet de notes : </p>
+	<?php
+	$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 
-    if (empty($groups)) {
-        echo "<br /><br />";
-        echo "<b>Aucun cahier de notes n'est disponible.</b>";
-        echo "<br /><br />";
-    }
-
-    foreach($groups as $group) {
-		if((!isset($group["visibilite"]["cahier_notes"]))||($group["visibilite"]["cahier_notes"]=='y')) {
-			echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-			echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlspecialchars($group["description"]) . "</a>";
-			echo "</span></p>\n";
+	if (empty($groups)) {
+		echo "<br /><br />";
+		echo "<b>Aucun cahier de notes n'est disponible.</b>";
+		echo "<br /><br />";
+	}
+	else {
+		$nb_groupes_affiches=0;
+		foreach($groups as $group) {
+			// 20210301
+			if(!is_groupe_exclu_tel_module($group["id"], 'cahier_notes')) {
+				if((!isset($group["visibilite"]["cahier_notes"]))||($group["visibilite"]["cahier_notes"]=='y')) {
+					echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
+					echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlspecialchars($group["description"]) . "</a>";
+					echo "</span></p>\n";
+					$nb_groupes_affiches++;
+				}
+			}
 		}
-    }
+		if($nb_groupes_affiches==0) {
+			echo "<br /><br />";
+			echo "<b>Aucun cahier de notes n'est disponible.</b>";
+			echo "<br /><br />";
+		}
+	}
 }
-
 /*
 $periode_num=1;
 $login_ele=$current_group['eleves'][$periode_num]["list"][0];

@@ -20036,7 +20036,7 @@ function get_classes_exclues_tel_module($module) {
 	$sql="SHOW TABLES LIKE 'modules_restrictions';";
 	$test=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($test)>0) {
-		if($module=='bulletins') {
+		if(($module=='bulletins')||($module=='cahier_notes')) {
 			$sql="SELECT DISTINCT value FROM modules_restrictions WHERE module='".$module."' AND name='id_classe'";
 			$res=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($res)>0) {
@@ -20048,6 +20048,106 @@ function get_classes_exclues_tel_module($module) {
 	}
 
 	return $tab;
+}
+
+function is_groupe_exclu_tel_module($id_groupe, $module) {
+	global $mysqli;
+
+	$retour=false;
+
+	//if(($_SESSION['statut']!='professeur')||
+	//(($_SESSION['statut']=='professeur')&&(!getSettingAOui('acces_cn_prof')))) {
+		$sql="SHOW TABLES LIKE 'modules_restrictions';";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$sql="SELECT * FROM modules_restrictions mr, 
+					j_groupes_classes jgc 
+				WHERE mr.module='".$module."' AND 
+					mr.name='id_classe' AND 
+					mr.value=jgc.id_classe AND 
+					jgc.id_groupe='".$id_groupe."';";
+			//echo "$sql<br />";
+			$test=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test)>0) {
+				$retour=true;
+			}
+		}
+	//}
+
+	return $retour;
+}
+
+function is_classe_exclue_tel_module($id_classe, $module) {
+	global $mysqli;
+
+	$retour=false;
+
+	$sql="SHOW TABLES LIKE 'modules_restrictions';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT * FROM modules_restrictions mr, 
+				j_groupes_classes jgc 
+			WHERE mr.module='".$module."' AND 
+				mr.name='id_classe' AND 
+				mr.value='".$id_classe."';";
+		//echo "$sql<br />";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+
+	return $retour;
+}
+
+function get_classes_eleve_avec_carnet_notes($login) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT DISTINCT id_classe FROM j_eleves_classes jec 
+		WHERE jec.login='".$login."' AND 
+			jec.id_classe NOT IN (SELECT value FROM modules_restrictions mr WHERE
+			mr.module='cahier_notes' AND 
+			mr.name='id_classe');";
+	//echo "$sql<br />";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		while($lig=mysqli_fetch_object($test)) {
+			$tab[]=$lig->id_classe;
+		}
+	}
+
+	return $tab;
+}
+
+function is_eleve_avec_carnet_notes($login) {
+	global $mysqli;
+
+	$tab=get_classes_eleve_avec_carnet_notes($login);
+	if(count($tab)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function is_responsable_avec_eleve_avec_carnet_notes($login_resp) {
+	global $mysqli;
+
+	$retour=false;
+
+	$tab_tmp_ele = get_enfants_from_resp_login($_SESSION['login'],'', 'y');
+	for($loop=0;$loop<count($tab_tmp_ele);$loop+=2) {
+		$tab=get_classes_eleve_avec_carnet_notes($tab_tmp_ele[$loop]);
+		if(count($tab)>0) {
+			$retour=true;
+			break;
+		}
+	}
+
+	return $retour;
 }
 
 function get_tab_competences_numeriques_LSU() {

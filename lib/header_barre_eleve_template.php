@@ -90,7 +90,8 @@ if ($barre_plugin!="") {
 		}
 
 		// Carnet de notes
-		if((getSettingAOui("active_carnets_notes"))&&(getSettingAOui("GepiAccesReleveEleve"))) {
+		if((getSettingAOui("active_carnets_notes"))&&(getSettingAOui("GepiAccesReleveEleve"))&&(is_eleve_avec_carnet_notes($_SESSION['login']))) {
+
 			if(getSettingAOui('GepiAccesEvalCumulEleve')) {
 				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_ter.php"'.insert_confirm_abandon().' title="Permet de consulter vos relevés de notes.">&nbsp;Carnet de notes</a>'."\n";
 				$menus .= '   <ul class="niveau2">'."\n";

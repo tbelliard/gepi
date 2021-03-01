@@ -3,7 +3,7 @@
  * Ajouter, modifier un devoir dans une évaluation cumul
  * 
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * @package Carnet_de_notes
  * @subpackage Evaluation_cumule
@@ -82,6 +82,14 @@ if (!(Verif_prof_cahier_notes($_SESSION['login'],$id_racine))) {
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $obj_cn=$appel_cahier_notes->fetch_object();
 $id_groupe = $obj_cn->id_groupe;
+
+// 20210301
+if(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes')) {
+	$mess="Groupe/enseignement invalide.<br />";
+	header("Location: index.php?msg=$mess");
+	die();
+}
+
 $current_group = get_group($id_groupe);
 $periode_num = $obj_cn->periode;
 

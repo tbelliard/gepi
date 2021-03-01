@@ -2,7 +2,7 @@
 /*
 *
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -67,6 +67,18 @@ $releve_pdf_debug=isset($_POST['releve_pdf_debug']) ? $_POST['releve_pdf_debug']
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL);
+
+
+// 20210301
+if((isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_classe))&&(is_classe_exclue_tel_module($id_classe, 'cahier_notes'))) {
+	header("Location: ../accueil.php?msg=La classe ".get_nom_classe($id_classe)." n utilise pas le carnet de notes de Gepi.");
+	die();
+}
+
+if((isset($ele_login))&&($ele_login!='')&&(!is_eleve_avec_carnet_notes($ele_login))) {
+	header("Location: ../accueil.php?msg=La classe associée à cet élève n utilise pas le carnet de notes de Gepi.");
+	die();
+}
 
 // On force le mode HTML pour l'accès parents/élève
 $mode_bulletin="html";
@@ -234,10 +246,12 @@ elseif($_SESSION['statut']=='responsable') {
 	$tab_login=array();
 	$cpt_ele=0;
 	while($lig_ele=mysqli_fetch_object($res_ele)) {
-		$tab_ele[$cpt_ele]['login']=$lig_ele->login;
-		$tab_ele[$cpt_ele]['nom_prenom']=casse_mot($lig_ele->nom, 'maj')." ".casse_mot($lig_ele->prenom, 'majf2');
-		$tab_login[]=$lig_ele->login;
-		$cpt_ele++;
+		if(is_eleve_avec_carnet_notes($lig_ele->login)) {
+			$tab_ele[$cpt_ele]['login']=$lig_ele->login;
+			$tab_ele[$cpt_ele]['nom_prenom']=casse_mot($lig_ele->nom, 'maj')." ".casse_mot($lig_ele->prenom, 'majf2');
+			$tab_login[]=$lig_ele->login;
+			$cpt_ele++;
+		}
 	}
 
 	if($cpt_ele==1) {

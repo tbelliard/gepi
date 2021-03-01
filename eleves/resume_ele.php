@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -513,11 +513,19 @@ if((getSettingAOui('active_carnets_notes'))&&(acces_carnet_notes($_SESSION['stat
 	$acces_moyenne_chaque_devoir_carnet_notes=acces_moyenne_chaque_devoir_carnet_notes($_SESSION['statut']);
 	$acces_moyenne_min_max_chaque_devoir_carnet_notes=acces_moyenne_min_max_chaque_devoir_carnet_notes($_SESSION['statut']);
 
+	$afficher_cn=true;
+
 	if($_SESSION['statut']=='responsable') {
 		$url_cn="../cahier_notes/visu_releve_notes_ter.php";
+		if(!is_eleve_avec_carnet_notes($login_eleve)) {
+			$afficher_cn=false;
+		}
 	}
 	elseif($_SESSION['statut']=='eleve') {
 		$url_cn="../cahier_notes/visu_releve_notes_ter.php";
+		if(!is_eleve_avec_carnet_notes($_SESSION['login'])) {
+			$afficher_cn=false;
+		}
 	}
 	elseif($_SESSION['statut']=='professeur') {
 		$url_cn="../cahier_notes/visu_releve_notes_bis.php";
@@ -529,144 +537,146 @@ if((getSettingAOui('active_carnets_notes'))&&(acces_carnet_notes($_SESSION['stat
 		$url_cn="../cahier_notes/visu_releve_notes_bis.php";
 	}
 
-	$html="";
-	if($url_cn!="") {
-		$html.="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='".$url_cn."' title=\"Consulter le relevé de notes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
-	}
-	//$html.="<h3>Dernières notes</h3>";
-	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Dernières notes</div>";
+	if($afficher_cn) {
+		$html="";
+		if($url_cn!="") {
+			$html.="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='".$url_cn."' title=\"Consulter le relevé de notes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
+		}
+		//$html.="<h3>Dernières notes</h3>";
+		$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Dernières notes</div>";
 
-	// A VOIR : resp_legal=0 et droits
+		// A VOIR : resp_legal=0 et droits
 
-	/*
-	// A REVOIR : La partie
-				cd.display_parents='1' AND 
-				cd.date_ele_resp<='".$date_courante."' AND 
-			  pourrait ne pas être mise pour les statuts non élève/resp... tout dépend de l'usage qui est fait de cette page.
-			  Si on imprime la page pour donner aux parents, sans ces parties de la requête, on peut donner une info non souhaitée par le prof
-	*/
-	
-	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
-	$sql="SELECT * FROM cn_notes_devoirs cnd, 
-				cn_devoirs cd, 
-				cn_cahier_notes ccn
-			WHERE cnd.id_devoir=cd.id AND 
-				cd.display_parents='1' AND 
-				cd.date_ele_resp<='".$date_courante."' AND 
-				cnd.login='".$login_eleve."' AND 
-				cd.id_racine=ccn.id_cahier_notes AND 
-				cnd.statut!='v'
-			ORDER BY ccn.periode DESC, cd.date DESC LIMIT $nb_max_dev;";
-	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res)==0) {
-		$html.="Aucune note n'est saisie.";
-	}
-	else {
-		while($lig=mysqli_fetch_object($res)) {
-			// Nom de matière,...
-			if(!isset($tab_group_edt[$lig->id_groupe])) {
-				$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
-			}
-			$current_matiere_cn=$tab_group_edt[$lig->id_groupe]['matiere']['nom_complet'];
+		/*
+		// A REVOIR : La partie
+					cd.display_parents='1' AND 
+					cd.date_ele_resp<='".$date_courante."' AND 
+				  pourrait ne pas être mise pour les statuts non élève/resp... tout dépend de l'usage qui est fait de cette page.
+				  Si on imprime la page pour donner aux parents, sans ces parties de la requête, on peut donner une info non souhaitée par le prof
+		*/
+		
+		$date_courante=strftime("%Y-%m-%d %H:%M:%S");
+		$sql="SELECT * FROM cn_notes_devoirs cnd, 
+					cn_devoirs cd, 
+					cn_cahier_notes ccn
+				WHERE cnd.id_devoir=cd.id AND 
+					cd.display_parents='1' AND 
+					cd.date_ele_resp<='".$date_courante."' AND 
+					cnd.login='".$login_eleve."' AND 
+					cd.id_racine=ccn.id_cahier_notes AND 
+					cnd.statut!='v'
+				ORDER BY ccn.periode DESC, cd.date DESC LIMIT $nb_max_dev;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			$html.="Aucune note n'est saisie.";
+		}
+		else {
+			while($lig=mysqli_fetch_object($res)) {
+				// Nom de matière,...
+				if(!isset($tab_group_edt[$lig->id_groupe])) {
+					$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
+				}
+				$current_matiere_cn=$tab_group_edt[$lig->id_groupe]['matiere']['nom_complet'];
 
-			if(!isset($tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']])) {
-				$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']]=get_couleur_edt_matiere($tab_group_edt[$lig->id_groupe]['matiere']['matiere']);
-			}
+				if(!isset($tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']])) {
+					$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']]=get_couleur_edt_matiere($tab_group_edt[$lig->id_groupe]['matiere']['matiere']);
+				}
 
-			if($lig->statut!="") {
-				$info_note=$lig->statut;
-			}
-			else {
-				$info_note="<strong>".$lig->note."</strong>";
-				if($lig->note_sur!=20) {$info_note.="/".$lig->note_sur;}
-			}
+				if($lig->statut!="") {
+					$info_note=$lig->statut;
+				}
+				else {
+					$info_note="<strong>".$lig->note."</strong>";
+					if($lig->note_sur!=20) {$info_note.="/".$lig->note_sur;}
+				}
 
-			// Moyenne de la classe
-			$info_moy_classe="";
-			$moy_classe="";
-			$moy_min_classe="";
-			$moy_max_classe="";
-			if($acces_moyenne_chaque_devoir_carnet_notes||$acces_moyenne_min_max_chaque_devoir_carnet_notes) {
-				// Vérifier qu'il y a au moins une note
-				$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='".$lig->id_devoir."' and statut='';";
-				$test=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($test)>0) {
-					$sql="SELECT ROUND(AVG(note),1) AS moy FROM cn_notes_devoirs WHERE id_devoir='".$lig->id_devoir."' and statut='';";
-					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res2)>0) {
-						$lig2=mysqli_fetch_object($res2);
-						$moy_classe=$lig2->moy;
-						$info_moy_classe="Moy.classe&nbsp;: ".$moy_classe;
-						if($lig->note_sur!=20) {$info_moy_classe.="/".$lig->note_sur;}
+				// Moyenne de la classe
+				$info_moy_classe="";
+				$moy_classe="";
+				$moy_min_classe="";
+				$moy_max_classe="";
+				if($acces_moyenne_chaque_devoir_carnet_notes||$acces_moyenne_min_max_chaque_devoir_carnet_notes) {
+					// Vérifier qu'il y a au moins une note
+					$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='".$lig->id_devoir."' and statut='';";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)>0) {
+						$sql="SELECT ROUND(AVG(note),1) AS moy FROM cn_notes_devoirs WHERE id_devoir='".$lig->id_devoir."' and statut='';";
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res2)>0) {
+							$lig2=mysqli_fetch_object($res2);
+							$moy_classe=$lig2->moy;
+							$info_moy_classe="Moy.classe&nbsp;: ".$moy_classe;
+							if($lig->note_sur!=20) {$info_moy_classe.="/".$lig->note_sur;}
 
-						$info_moy_classe="<br />
-		<span style='font-size:".$font_size3."pt'>$info_moy_classe</span>";
+							$info_moy_classe="<br />
+			<span style='font-size:".$font_size3."pt'>$info_moy_classe</span>";
+						}
+
+						if($acces_moyenne_min_max_chaque_devoir_carnet_notes) {
+							$sql="SELECT MIN(note) as note_min FROM cn_notes_devoirs WHERE id_devoir='".$lig->id_devoir."' and statut='';";
+							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res2)>0) {
+								$lig2=mysqli_fetch_object($res2);
+								$moy_min_classe=$lig2->note_min;
+							}
+
+							$sql="SELECT MAX(note) as note_max FROM cn_notes_devoirs WHERE id_devoir='".$lig->id_devoir."' and statut='';";
+							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res2)>0) {
+								$lig2=mysqli_fetch_object($res2);
+								$moy_max_classe=$lig2->note_max;
+							}
+						}
 					}
+				}
+
+				$info_devoir=$tab_group_edt[$lig->id_groupe]['name']." (".$tab_group_edt[$lig->id_groupe]['description'].") en ".$tab_group_edt[$lig->id_groupe]['classlist_string']." (".$tab_group_edt[$lig->id_groupe]['profs']['proflist_string'].")
+	Évaluation : ".$lig->nom_court;
+				if(($lig->nom_complet!="")&&($lig->nom_complet!="Nouvelle évaluation")&&($lig->nom_complet!=$lig->nom_court)) {
+					$info_devoir.=" (".$lig->nom_complet.")";
+				}
+				if($lig->description!="") {
+					$info_devoir.="\n".$lig->description;
+				}
+				$info_devoir.="\nCoefficient : ".$lig->coef;
+				if(acces_moyenne_min_max_chaque_devoir_carnet_notes($_SESSION['statut'])) {
+					$info_devoir.="\nMoy.classe : ".$moy_classe;
+					if($lig->note_sur!=20) {$info_devoir.="/".$lig->note_sur;}
 
 					if($acces_moyenne_min_max_chaque_devoir_carnet_notes) {
-						$sql="SELECT MIN(note) as note_min FROM cn_notes_devoirs WHERE id_devoir='".$lig->id_devoir."' and statut='';";
-						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res2)>0) {
-							$lig2=mysqli_fetch_object($res2);
-							$moy_min_classe=$lig2->note_min;
-						}
+						$info_devoir.="\nMoy.min     : ".$moy_min_classe;
+						if($lig->note_sur!=20) {$info_devoir.="/".$lig->note_sur;}
 
-						$sql="SELECT MAX(note) as note_max FROM cn_notes_devoirs WHERE id_devoir='".$lig->id_devoir."' and statut='';";
-						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res2)>0) {
-							$lig2=mysqli_fetch_object($res2);
-							$moy_max_classe=$lig2->note_max;
-						}
+						$info_devoir.="\nMoy.max    : ".$moy_max_classe;
+						if($lig->note_sur!=20) {$info_devoir.="/".$lig->note_sur;}
 					}
 				}
-			}
-
-			$info_devoir=$tab_group_edt[$lig->id_groupe]['name']." (".$tab_group_edt[$lig->id_groupe]['description'].") en ".$tab_group_edt[$lig->id_groupe]['classlist_string']." (".$tab_group_edt[$lig->id_groupe]['profs']['proflist_string'].")
-Évaluation : ".$lig->nom_court;
-			if(($lig->nom_complet!="")&&($lig->nom_complet!="Nouvelle évaluation")&&($lig->nom_complet!=$lig->nom_court)) {
-				$info_devoir.=" (".$lig->nom_complet.")";
-			}
-			if($lig->description!="") {
-				$info_devoir.="\n".$lig->description;
-			}
-			$info_devoir.="\nCoefficient : ".$lig->coef;
-			if(acces_moyenne_min_max_chaque_devoir_carnet_notes($_SESSION['statut'])) {
-				$info_devoir.="\nMoy.classe : ".$moy_classe;
-				if($lig->note_sur!=20) {$info_devoir.="/".$lig->note_sur;}
-
-				if($acces_moyenne_min_max_chaque_devoir_carnet_notes) {
-					$info_devoir.="\nMoy.min     : ".$moy_min_classe;
-					if($lig->note_sur!=20) {$info_devoir.="/".$lig->note_sur;}
-
-					$info_devoir.="\nMoy.max    : ".$moy_max_classe;
+				elseif(acces_moyenne_chaque_devoir_carnet_notes($_SESSION['statut'])) {
+					$info_devoir.="\nMoy.classe : ".$moy_classe;
 					if($lig->note_sur!=20) {$info_devoir.="/".$lig->note_sur;}
 				}
+
+				$info_devoir.="\nCette note concerne la période ".$lig->periode;
+
+				$html.="
+		<div id='div_cn' style='float:left;width:99%; border-bottom: 1px solid black; margin-right:3px; margin-top:3px; margin-bottom:3px; background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";' class='fieldset_opacite50' title=\"$info_devoir\">
+			<div style='float:right; text-align:right; width:4em;'>
+				".$info_note."
+			</div>
+
+			<strong>$current_matiere_cn</strong><br />
+			<span style='font-size:".$font_size2."pt'>".formate_date($lig->date)."</span>".$info_moy_classe."
+		</div>";
 			}
-			elseif(acces_moyenne_chaque_devoir_carnet_notes($_SESSION['statut'])) {
-				$info_devoir.="\nMoy.classe : ".$moy_classe;
-				if($lig->note_sur!=20) {$info_devoir.="/".$lig->note_sur;}
-			}
-
-			$info_devoir.="\nCette note concerne la période ".$lig->periode;
-
-			$html.="
-	<div id='div_cn' style='float:left;width:99%; border-bottom: 1px solid black; margin-right:3px; margin-top:3px; margin-bottom:3px; background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";' class='fieldset_opacite50' title=\"$info_devoir\">
-		<div style='float:right; text-align:right; width:4em;'>
-			".$info_note."
-		</div>
-
-		<strong>$current_matiere_cn</strong><br />
-		<span style='font-size:".$font_size2."pt'>".formate_date($lig->date)."</span>".$info_moy_classe."
-	</div>";
 		}
+
+		// class='infobulle_corps'
+		echo "
+	<div style='float:left; width:".$largeur_cn."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['releves'].";'>".$html."</div>";
+
+		$x_courant+=$largeur_cn;
 	}
-
-	// class='infobulle_corps'
-	echo "
-<div style='float:left; width:".$largeur_cn."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['releves'].";'>".$html."</div>";
-
-	$x_courant+=$largeur_cn;
 }
 //=================================
 

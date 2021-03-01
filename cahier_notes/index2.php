@@ -2,8 +2,7 @@
 /**
  * Visualisation des moyennes des carnets de notes
  * 
- *
- * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage affichage
@@ -98,23 +97,21 @@ if (isset($id_classe)) {
 	// On regarde si le type est correct :
 	if (!is_numeric($id_classe)) {
 		tentative_intrusion("2", "Changement de la valeur de id_classe pour un type non numérique.");
-		echo "Erreur.";
-/**
- * inclusion du pied de page
- */
-		require ("../lib/footer.inc.php");
+		header("Location: ../accueil.php?msg=Identifiant de classe invalide.");
 		die();
 	}
+
+	if(is_classe_exclue_tel_module($id_classe, 'cahier_notes')) {
+		header("Location: ../accueil.php?msg=Cette classe n utilise pas les carnets de notes.");
+		die();
+	}
+
 	// On teste si le professeur a le droit d'accéder à cette classe
 	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
 		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 		if ($test == "0") {
 			tentative_intrusion("2", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation.");
-			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
-            /**
-             * inclusion du pied de page
-             */
-			require ("../lib/footer.inc.php");
+			header("Location: ../accueil.php?msg=Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !");
 			die();
 		}
 	}
@@ -129,6 +126,10 @@ $titre_page = "Visualisation des moyennes des carnets de notes";
  */
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+// 20210301
+$tab_id_classe_exclues_module_cahier_notes=get_classes_exclues_tel_module('cahier_notes');
+
 ?>
 
 <?php
@@ -175,28 +176,31 @@ if (isset($id_classe)) {
 	}
 	$chaine_options_classes="";
 
+
 	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0){
 		$id_class_prec=0;
 		$id_class_suiv=0;
 		$temoin_tmp=0;
-		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
-			if($lig_class_tmp->id==$id_classe){
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
-				$temoin_tmp=1;
-				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
+		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
+			if(!in_array($lig_class_tmp->id, $tab_id_classe_exclues_module_cahier_notes)) {
+				if($lig_class_tmp->id==$id_classe) {
+					$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+					$temoin_tmp=1;
+					if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
+						$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+						$id_class_suiv=$lig_class_tmp->id;
+					}
+					else{
+						$id_class_suiv=0;
+					}
+				}
+				else {
 					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
-					$id_class_suiv=$lig_class_tmp->id;
 				}
-				else{
-					$id_class_suiv=0;
+				if($temoin_tmp==0){
+					$id_class_prec=$lig_class_tmp->id;
 				}
-			}
-			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
-			}
-			if($temoin_tmp==0){
-				$id_class_prec=$lig_class_tmp->id;
 			}
 		}
 	}
@@ -593,13 +597,21 @@ display_div_coloriser();
 		$i = 0;
 		unset($tab_lien);
 		unset($tab_txt);
-		while ($i < $lignes){
-			$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".old_mysql_result($appel_donnees, $i, "id");
-			$tab_txt[$i] = old_mysql_result($appel_donnees, $i, "classe");
-			$i++;
-
+		while ($lig=mysqli_fetch_object($appel_donnees)) {
+			// 20210301
+			if(!in_array($lig->id, $tab_id_classe_exclues_module_cahier_notes)) {
+				$tab_lien[$i] = $_SERVER['PHP_SELF']."?id_classe=".$lig->id;
+				$tab_txt[$i] = $lig->classe;
+				$i++;
+			}
 		}
-		tab_liste($tab_txt,$tab_lien,3);
+
+		if($i==0) {
+			echo "<p>Aucune classe n'utilise les carnets de notes.</p>\n";
+		}
+		else {
+			tab_liste($tab_txt,$tab_lien,3);
+		}
 	}
 }
 echo "<p><i>Remarque:</i> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";

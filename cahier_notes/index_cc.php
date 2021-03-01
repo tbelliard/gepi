@@ -3,7 +3,7 @@
  * Création d'évaluations cumules
  * 
  *
- * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage affichage
@@ -76,6 +76,14 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
 $id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
+
+// 20210301
+if(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes')) {
+	$mess="Groupe/enseignement invalide.<br />";
+	header("Location: index.php?msg=$mess");
+	die();
+}
+
 $current_group = get_group($id_groupe);
 $periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 include "../lib/periodes.inc.php";
@@ -270,42 +278,51 @@ if(mysqli_num_rows($res_grp)>0){
 	$temoin_tmp=0;
 
 	while($lig=mysqli_fetch_object($res_grp)) {
-		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='' AND domaine='cahier_notes' AND visible='n';";
-		$test_vis=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($test_vis)==0) {
-			if($lig->id_cahier_notes==$id_racine) {
-				$num_grp=$cpt_grp;
+		// 20210301
+		if(!is_groupe_exclu_tel_module($lig->id, 'cahier_notes')) {
 
-				$chaine_options_grp.="<option value='$lig->id_cahier_notes'";
-				$chaine_options_grp.=" selected='true'";
-				$chaine_options_grp.=">";
-				$chaine_options_grp.=$lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
-				$chaine_options_grp.="</option>\n";
+			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$lig->id."' AND domaine='cahier_notes' AND visible='n';";
+			$test_vis=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_vis)==0) {
+				if($lig->id_cahier_notes==$id_racine) {
+					$num_grp=$cpt_grp;
 
-				$temoin_tmp=1;
-				if($lig=mysqli_fetch_object($res_grp)){
-					$id_groupe_suiv=$lig->id_cahier_notes;
+					$chaine_options_grp.="<option value='$lig->id_cahier_notes'";
+					$chaine_options_grp.=" selected='true'";
+					$chaine_options_grp.=">";
+					$chaine_options_grp.=$lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
+					$chaine_options_grp.="</option>\n";
 
+					$temoin_tmp=1;
+					if($lig=mysqli_fetch_object($res_grp)){
+						if(!is_groupe_exclu_tel_module($lig->id, 'cahier_notes')) {
+							$id_groupe_suiv=$lig->id_cahier_notes;
+
+							$chaine_options_grp.="<option value='$lig->id_cahier_notes'";
+							$chaine_options_grp.=">";
+							$chaine_options_grp.=$lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
+							$chaine_options_grp.="</option>\n";
+						}
+						else {
+							$id_groupe_suiv=0;
+						}
+					}
+					else {
+						$id_groupe_suiv=0;
+					}
+				}
+				else {
 					$chaine_options_grp.="<option value='$lig->id_cahier_notes'";
 					$chaine_options_grp.=">";
 					$chaine_options_grp.=$lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
 					$chaine_options_grp.="</option>\n";
 				}
-				else{
-					$id_groupe_suiv=0;
-				}
-			}
-			else {
-				$chaine_options_grp.="<option value='$lig->id_cahier_notes'";
-				$chaine_options_grp.=">";
-				$chaine_options_grp.=$lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
-				$chaine_options_grp.="</option>\n";
-			}
 
-			if($temoin_tmp==0){
-				$id_groupe_prec=$lig->id_cahier_notes;
+				if($temoin_tmp==0){
+					$id_groupe_prec=$lig->id_cahier_notes;
+				}
+				$cpt_grp++;
 			}
-			$cpt_grp++;
 		}
 	}
 

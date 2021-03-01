@@ -3,7 +3,7 @@
 /*
 * $Id$
  *
- * Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -128,6 +128,43 @@
 		Désactiver les carnets de notes
 	  </label>
 	</fieldset>
+
+
+
+	  <!-- 20210301 -->
+	  <br />
+	<p id='p_acces_cn_prof'>
+		<input type="checkbox" 
+				 name="acces_cn_prof" 
+				 id="acces_cn_prof" 
+				 value="y"
+			 onchange='changement();'
+				<?php if (getSettingAOui("acces_cn_prof")) echo " checked='checked'"; ?> />
+		<label for='acces_cn_prof' style='cursor: pointer;'>
+		  Dans le cas où les carnets de notes sont désactivés pour certaines classes ou pour toutes les classes, permettre néanmoins aux professeurs de saisir des notes dans un carnet de notes personnel.<br />
+		  <em>(il leur sera clairement indiqué que ce carnet ne peut pas être consulté par les élèves, responsables,...)</em>
+		</label>
+		<br />
+		Chaque professeur a alors la possibilité, dans <strong>Mon compte</strong>, d'afficher/masquer le lien vers ce Carnet de notes personnel.<br />
+		Par défaut,<br />
+		<input type='radio' name='acces_cn_prof_afficher_lien' id='acces_cn_prof_afficher_lien_y' value='y' onchange='changement();' <?php if (getSettingAOui("acces_cn_prof_afficher_lien")) echo " checked='checked'"; ?> /><label for='acces_cn_prof_afficher_lien_y'>Afficher le lien <em>(le professeur qui n'en veut pas devra désactiver l'affichage dans Mon compte)</em></label><br />
+		<input type='radio' name='acces_cn_prof_afficher_lien' id='acces_cn_prof_afficher_lien_n' value='n' onchange='changement();' <?php if (!getSettingAOui("acces_cn_prof_afficher_lien")) echo " checked='checked'"; ?> /><label for='acces_cn_prof_afficher_lien_n'>Ne pas afficher le lien <em>(le professeur qui veut utiliser le CN perso devra activer l'affichage dans Mon compte)</em></label><br />
+		Il est possible d'afficher dans le CN personnel, un lien vers l'application officielle consultée par les élèves,... pour les résultats aux évaluations.<br />
+		  Adresse URL officielle&nbsp;: 
+		<input type="text" 
+				 name="acces_cn_prof_url_cn_officiel" 
+				 id="acces_cn_prof_url_cn_officiel" 
+				 value="<?php echo getSettingValue("acces_cn_prof_url_cn_officiel"); ?>"
+			 onchange='changement();' />
+		  <em>(laisser vide pour ne pas afficher de lien)</em>
+	</p>
+	  <br />
+
+
+
+
+
+
 
 	<p class="grandEspaceHaut italic">
 		Afficher la date de fin de période ou non&nbsp;:<br />
@@ -366,6 +403,49 @@
 	</p>
 
 </form>
+
+
+
+  <!-- 20210301 -->
+  <br />
+  <form action="index.php" id="form_classes_exclues" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
+<?php
+	echo add_token_field();
+?>
+	<input type="hidden" name="is_posted" value="classes_exclues" />
+
+	<h2 class="colleHaut">Classes exclues</h2>
+	<p>
+	Vous pouvez souhaiter ne pas utiliser les carnets de notes Gepi pour certaines classes.<br />
+	Choisissez ici les classes pour lesquelles les menus carnets de notes ne seront pas proposés.</p>
+	<?php
+		$sql="CREATE TABLE IF NOT EXISTS modules_restrictions 
+		(id int(11) NOT NULL auto_increment, 
+		module varchar(50) NOT NULL DEFAULT '', 
+		name varchar(50) NOT NULL DEFAULT '', 
+		value varchar(50) NOT NULL DEFAULT '', 
+		PRIMARY KEY (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$create=mysqli_query($mysqli, $sql);
+
+		$tab_classes_exclues=array();
+		$sql="SELECT * FROM modules_restrictions WHERE module='cahier_notes' AND name='id_classe';";
+		$res=mysqli_query($mysqli, $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_classes_exclues[]=$lig->value;
+		}
+
+		echo liste_checkbox_classes($tab_classes_exclues, 'id_classe', 'cocher_decocher', '', "checkbox_change", 'y');
+
+	?>
+	</p>
+
+	<p class="center">
+	  <input type="submit" value="Exclure les classes cochées" />
+	</p>
+</form>
+<br />
+
+
 
 <p><br /></p>
 

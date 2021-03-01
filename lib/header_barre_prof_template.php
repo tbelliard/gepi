@@ -55,6 +55,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 // 20191211
 $tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
 
+// 20210301
+$tab_id_classe_exclues_module_cahier_notes=array();
+if(!getSettingAOui('acces_cn_prof')) {
+	$tab_id_classe_exclues_module_cahier_notes=get_classes_exclues_tel_module('cahier_notes');
+}
+
 $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 
@@ -64,13 +70,23 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 	$tmp_mes_classes_pp=array();
 	$tmp_mes_classes_per=array();
 	$tmp_mes_groupes_avec_bulletin=array();
+	// 20210301
+	$tmp_mes_groupes_avec_cahier_notes=array();
 	foreach($mes_groupes as $tmp_group) {
 		$tmp_nb_classes_avec_bulletin=0;
+		// 20210301
+		$tmp_nb_classes_avec_cn=0;
 		foreach($tmp_group["classes"]["classes"] as $key_id_classe => $value_tab_classe) {
 			// 20191212
 			if(!in_array($key_id_classe, $tab_id_classe_exclues_module_bulletins)) {
 				//echo "\$key_id_classe=$key_id_classe ".get_nom_classe($key_id_classe)." avec bulletins<br />";
 				$tmp_nb_classes_avec_bulletin++;
+			}
+
+			// 20210301
+			if(!in_array($key_id_classe, $tab_id_classe_exclues_module_cahier_notes)) {
+				//echo "\$key_id_classe=$key_id_classe ".get_nom_classe($key_id_classe)." avec cn<br />";
+				$tmp_nb_classes_avec_cn++;
 			}
 
 			if(!in_array($value_tab_classe['classe'], $tmp_mes_classes)) {
@@ -98,6 +114,10 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 		}
 		if($tmp_nb_classes_avec_bulletin>0) {
 			$tmp_mes_groupes_avec_bulletin[]=$tmp_group['id'];
+		}
+		// 20210301
+		if($tmp_nb_classes_avec_cn>0) {
+			$tmp_mes_groupes_avec_cahier_notes[]=$tmp_group['id'];
 		}
 	}
 
@@ -235,31 +255,34 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
 			if((!isset($tmp_group["visibilite"]["cahier_notes"]))||($tmp_group["visibilite"]["cahier_notes"]=='y')) {
-				$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
-				if($nom_ou_description_groupe_barre_h=='name') {
-					$tmp_sous_menu[$cpt_sous_menu]['texte']="<span title=\"Cahier de notes de cet enseignement.\nVous pouvez:\n- y saisir des notes,\n- imprimer votre carnet de notes pour telle période,\n- ou en récapitulatif de toute l'année.\">".$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</span>';
-				}
-				else {
-					$tmp_sous_menu[$cpt_sous_menu]['texte']="<span title=\"Cahier de notes de cet enseignement.\nVous pouvez:\n- y saisir des notes,\n- imprimer votre carnet de notes pour telle période,\n- ou en récapitulatif de toute l'année.\">".$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)</span>';
-				}
-				if($utiliserMenuBarreLight=="no") {
-					$tmp_sous_menu2=array();
-					$cpt_sous_menu2=0;
-					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-						$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop;
-						$tmp_sous_menu2[$cpt_sous_menu2]['texte']="<span title=\"Carnet de notes de ".$tmp_group["name"]." en ".$tmp_group["classlist_string"]." : Période ".$tmp_group["periodes"][$loop]["nom_periode"]."\">".$tmp_group["periodes"][$loop]["nom_periode"]."</span>";
-						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
-							$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
-						}
-						else {
-							$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
-						}
-						$cpt_sous_menu2++;
+				// 20210301
+				if(in_array($tmp_group['id'], $tmp_mes_groupes_avec_cahier_notes)) {
+					$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
+					if($nom_ou_description_groupe_barre_h=='name') {
+						$tmp_sous_menu[$cpt_sous_menu]['texte']="<span title=\"Cahier de notes de cet enseignement.\nVous pouvez:\n- y saisir des notes,\n- imprimer votre carnet de notes pour telle période,\n- ou en récapitulatif de toute l'année.\">".$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</span>';
 					}
-					$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
-					$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+					else {
+						$tmp_sous_menu[$cpt_sous_menu]['texte']="<span title=\"Cahier de notes de cet enseignement.\nVous pouvez:\n- y saisir des notes,\n- imprimer votre carnet de notes pour telle période,\n- ou en récapitulatif de toute l'année.\">".$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)</span>';
+					}
+					if($utiliserMenuBarreLight=="no") {
+						$tmp_sous_menu2=array();
+						$cpt_sous_menu2=0;
+						for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
+							$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop;
+							$tmp_sous_menu2[$cpt_sous_menu2]['texte']="<span title=\"Carnet de notes de ".$tmp_group["name"]." en ".$tmp_group["classlist_string"]." : Période ".$tmp_group["periodes"][$loop]["nom_periode"]."\">".$tmp_group["periodes"][$loop]["nom_periode"]."</span>";
+							if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
+								$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
+							}
+							else {
+								$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/icons/securite.png" width="16" height="16" alt="Période verrouillée: Saisie impossible" title="Période verrouillée: Saisie impossible" />';
+							}
+							$cpt_sous_menu2++;
+						}
+						$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+						$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+					}
+					$cpt_sous_menu++;
 				}
-				$cpt_sous_menu++;
 			}
 		}
 
@@ -277,8 +300,11 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 			$tmp_sous_menu2=array();
 			$cpt_sous_menu2=0;
 			foreach($tmp_mes_classes as $key => $value) {
-				$tmp_sous_menu2[$cpt_sous_menu2]=array("lien"=> '/cahier_notes/index2.php?id_classe='.$key , "texte"=>"$value");
-				$cpt_sous_menu2++;
+				// 20210301
+				if(!in_array($key, $tab_id_classe_exclues_module_cahier_notes)) {
+					$tmp_sous_menu2[$cpt_sous_menu2]=array("lien"=> '/cahier_notes/index2.php?id_classe='.$key , "texte"=>"$value");
+					$cpt_sous_menu2++;
+				}
 			}
 			$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 			$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;

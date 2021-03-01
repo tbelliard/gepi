@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Régis Bouguin
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Régis Bouguin
 *
 * This file is part of GEPI.
 *
@@ -139,7 +139,7 @@ $titre_page = $nom_cc;
  if ('eleve' == $utilisateur->getStatut()) {
      $eleve = clone $utilisateur;
  } elseif ('responsable' == $utilisateur->getStatut()) {
-     $enfants = $utilisateur->getEleves();
+	$enfants = $utilisateur->getEleves();
 
 	/*
 	echo "<pre>";
@@ -147,16 +147,25 @@ $titre_page = $nom_cc;
 	echo "</pre>";
 	*/
 
-     $login = isset($_POST['choixEleve']) ? $_POST['choixEleve'] : (isset($_SESSION['enfant']) ? $_SESSION['enfant'] : $enfants[0]->getLogin());
+	$enfants_avec_cn=array();
+	for($loop=0;$loop<count($enfants);$loop++) {
+		if(is_eleve_avec_carnet_notes($enfants[$loop]->getLogin())) {
+			$enfants_avec_cn[]=$enfants[$loop];
+		}
+	}
+
+	$login = isset($_POST['choixEleve']) ? $_POST['choixEleve'] : (isset($_SESSION['enfant']) ? $_SESSION['enfant'] : $enfants[0]->getLogin());
 
 	$tab_ele_resp=get_enfants_from_resp_login($_SESSION['login'], '', "yy");
 	if(!in_array($login, $tab_ele_resp)) {
 		unset($login);
 
-		for($loop=0;$loop<count($enfants);$loop++) {
-			if(in_array($enfants[$loop]->getLogin(), $tab_ele_resp)) {
-				$login=$enfants[$loop]->getLogin();
-				break;
+		for($loop=0;$loop<count($enfants_avec_cn);$loop++) {
+			if(in_array($enfants_avec_cn[$loop]->getLogin(), $tab_ele_resp)) {
+				//if(is_eleve_avec_carnet_notes($enfants[$loop]->getLogin())) {
+					$login=$enfants_avec_cn[$loop]->getLogin();
+					break;
+				//}
 			}
 		}
 
@@ -166,11 +175,11 @@ $titre_page = $nom_cc;
 		}
 	}
 
-     $_SESSION['enfant'] = $login;
-     $eleve = ElevePeer::retrieveByLOGIN($login);
-     
+	$_SESSION['enfant'] = $login;
+	$eleve = ElevePeer::retrieveByLOGIN($login);
+
  } else {
-     die("Vous n'avez pas droit à cette page");
+	die("Vous n'avez pas droit à cette page");
 }
 
  /***** - On récupère les évaluations des groupes dont l'élève fait parti → `cc_dev` *****/
@@ -250,7 +259,7 @@ if ($result = $mysqli->query($query)) {
 // temporisation de sortie
 ob_start(); 
 ?>
-<?php if ('responsable' == $utilisateur->getStatut() && (count($enfants)>1)) { ?>
+<?php if ('responsable' == $utilisateur->getStatut() && (count($enfants_avec_cn)>1)) { ?>
 <form action='visu_cc_elv.php' method='post'>
 	<?php echo add_token_field();?>
     <p>
@@ -262,7 +271,7 @@ ob_start();
             <?php 
                 //$tab_ele_resp=get_enfants_from_resp_login($_SESSION['login'], '', "yy");
 
-                foreach ($enfants as $enfant) { 
+                foreach ($enfants_avec_cn as $enfant) { 
                     if(in_array($enfant->getLogin(), $tab_ele_resp)) {
             ?>
             <option value="<?php echo $enfant->getLogin();?>"
@@ -287,13 +296,21 @@ ob_start();
 
 <?php if (!count($NotesCumulesSaisies) && !count($tableauNotesCumules)) {?>
 <p class="rouge center" style="font-weight:bold;">
-    Aucune <?php echo $nom_cc ;?> disponible
+    Aucune <?php echo $nom_cc ;?> disponible<?php
+	if(($_SESSION['statut']=='responsable')&&(isset($_SESSION['enfant']))) {
+		echo " pour ".get_nom_prenom_eleve($_SESSION['enfant']);
+	}
+?>
 </p>
 <?php } ?>
 
 
 <?php if (count($tableauNotesCumules)) { ?>
-<h2 class="center">Évaluations non intégrées au carnet de notes</h2>
+<h2 class="center">Évaluations non intégrées au carnet de notes<?php
+	if(($_SESSION['statut']=='responsable')&&(isset($_SESSION['enfant']))) {
+		echo " de ".get_nom_prenom_eleve($_SESSION['enfant']);
+	}
+?></h2>
 
 <?php
 /*
@@ -389,7 +406,11 @@ $i=0;
 <?php $i=0; ?>
 
 <?php if (count($NotesCumulesSaisies)) {?>
-<h2 class="center">Évaluations intégrées dans le carnet de notes</h2>
+<h2 class="center">Évaluations intégrées dans le carnet de notes<?php
+	if(($_SESSION['statut']=='responsable')&&(isset($_SESSION['enfant']))) {
+		echo " de ".get_nom_prenom_eleve($_SESSION['enfant']);
+	}
+?></h2>
 
 <?php $i=0; ?>
 

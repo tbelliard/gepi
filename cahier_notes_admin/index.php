@@ -9,7 +9,7 @@
  * $_POST['is_posted']
  * 
  *
- * @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage administration
@@ -148,7 +148,75 @@ if(isset($_POST['is_posted'])) {
   	if (isset($_POST['cn_affiche_date_fin_periode'])) {
 		saveSetting("cn_affiche_date_fin_periode", $_POST['cn_affiche_date_fin_periode']);
 	}
+
+
+	// 20210301
+	if (isset($_POST['acces_cn_prof'])) {
+		if (!saveSetting("acces_cn_prof", "y")) $msg = "Erreur lors de l'enregistrement du paramètre acces_cn_prof !<br />";
+	}
+	else {
+		if (!saveSetting("acces_cn_prof", "n")) $msg = "Erreur lors de l'enregistrement du paramètre acces_cn_prof !<br />";
+	}
+
+	if (isset($_POST['acces_cn_prof_afficher_lien'])) {
+		if (!saveSetting("acces_cn_prof_afficher_lien", $_POST['acces_cn_prof_afficher_lien'])) $msg = "Erreur lors de l'enregistrement du paramètre acces_cn_prof_afficher_lien !<br />";
+	}
+
+	if (isset($_POST['acces_cn_prof_url_cn_officiel'])) {
+		if (!saveSetting("acces_cn_prof_url_cn_officiel", $_POST['acces_cn_prof_url_cn_officiel'])) $msg = "Erreur lors de l'enregistrement du paramètre acces_cn_prof_url_cn_officiel !<br />";
+	}
 }
+
+
+if (isset($_POST['is_posted']) and ($_POST['is_posted']=='classes_exclues')){
+	check_token();
+
+	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
+
+	$nb_add=0;
+	$nb_del=0;
+
+	$tab_deja=array();
+	$sql="SELECT * FROM modules_restrictions WHERE module='cahier_notes' AND name='id_classe';";
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		if(!in_array($lig->value, $id_classe)) {
+			$sql="DELETE FROM modules_restrictions WHERE module='cahier_notes' AND name='id_classe' AND value='".$lig->value."';";
+			$del=mysqli_query($mysqli, $sql);
+			if(!$del) {
+				$msg.="Erreur lors de la suppression de ".get_nom_classe($lig->value)." de la liste des classes exclues.<br />";
+			}
+			else {
+				$nb_del++;
+			}
+		}
+		else {
+			$tab_deja[]=$lig->value;
+		}
+	}
+
+	foreach($id_classe as $kay => $current_classe) {
+		if(!in_array($current_classe, $tab_deja)) {
+			$sql="INSERT INTO modules_restrictions SET module='cahier_notes', name='id_classe', value='".$current_classe."';";
+			$reg=mysqli_query($mysqli, $sql);
+			if(!$reg) {
+				$msg.="Erreur lors de l'ajout de ".get_nom_classe($current_classe)." à la liste des classes exclues.<br />";
+			}
+			else {
+				$nb_add++;
+			}
+		}
+	}
+
+	if($nb_add>0) {
+		$msg.=$nb_add." classe(s) ajoutée(s) à la liste des classes exclues du module cahier_notes.<br />";
+	}
+
+	if($nb_del>0) {
+		$msg.=$nb_del." classe(s) supprimée(s) de la liste des classes exclues du module cahier_notes.<br />";
+	}
+}
+
 
 if (isset($_POST['is_posted']) and ($msg=='')){
   $msg = "Les modifications ont été enregistrées !";

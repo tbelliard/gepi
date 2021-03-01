@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -61,6 +61,12 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id
 
 if(!isset($id_groupe)) {
 	header("Location: ../accueil.php?msg=Groupe/enseignement non choisi");
+	die();
+}
+
+// 20210301
+if((isset($id_groupe))&&(preg_match('/^[0-9]{1,}$/', $id_groupe))&&(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes'))) {
+	header("Location: ../accueil.php?msg=Groupe/enseignement non valide");
 	die();
 }
 
@@ -163,8 +169,11 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 		$tmp_groups=array();
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
-				$tmp_groups[]=$tab_groups[$loop];
+			// 20210301
+			if(!is_groupe_exclu_tel_module($tab_groups[$loop]["id"], 'cahier_notes')) {
+				if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+					$tmp_groups[]=$tab_groups[$loop];
+				}
 			}
 		}
 

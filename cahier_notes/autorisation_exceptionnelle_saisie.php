@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -76,6 +76,15 @@ $display_heure_limite=isset($_POST['display_heure_limite']) ? $_POST['display_he
 $refermer_page=isset($_POST['refermer_page']) ? $_POST['refermer_page'] : (isset($_GET['refermer_page']) ? $_GET['refermer_page'] : NULL);
 
 //debug_var();
+
+
+// 20210301
+if((isset($id_classe))&&(preg_match('/^[0-9]{1,}$/', $id_classe))&&(is_classe_exclue_tel_module($id_classe, 'cahier_notes'))) {
+	$mess=rawurlencode("Cette classe n utilise pas les carnets de notes.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
 
 $msg="";
 
@@ -306,6 +315,10 @@ $titre_page = "Autorisation exceptionnelle de saisie de CN";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
+
+// 20210301
+$tab_id_classe_exclues_module_cahier_notes=get_classes_exclues_tel_module('cahier_notes');
+
 echo "<p class='bold'>\n";
 
 if($refermer_page=='y') {
@@ -398,27 +411,30 @@ if(!isset($id_classe)) {
 		$tab_lien=array();
 
 		while($lig_clas=mysqli_fetch_object($res_clas)) {
-			if(isset($tab_conseils_de_classe[$lig_clas->id])) {
+			// 20210301
+			if(!in_array($lig_clas->id, $tab_id_classe_exclues_module_cahier_notes)) {
+				if(isset($tab_conseils_de_classe[$lig_clas->id])) {
 
-				$lieu_conseil_de_classe="";
-				if(isset($tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'])) {
-					$lieu_conseil_de_classe=" (".$tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'].")";
+					$lieu_conseil_de_classe="";
+					if(isset($tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'])) {
+						$lieu_conseil_de_classe=" (".$tab_conseils_de_classe[$lig_clas->id]['lieu']['designation_complete'].")";
+					}
+
+					$chaine_tmp=" <span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$tab_conseils_de_classe[$lig_clas->id]['classe']." : ".$tab_conseils_de_classe[$lig_clas->id]['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$tab_conseils_de_classe[$lig_clas->id]['slashdate_ev'].")</span>";
+
+					$tab_txt[]=$lig_clas->classe.$chaine_tmp;
+				}
+				else {
+					$tab_txt[]=$lig_clas->classe;
 				}
 
-				$chaine_tmp=" <span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$tab_conseils_de_classe[$lig_clas->id]['classe']." : ".$tab_conseils_de_classe[$lig_clas->id]['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$tab_conseils_de_classe[$lig_clas->id]['slashdate_ev'].")</span>";
-
-				$tab_txt[]=$lig_clas->classe.$chaine_tmp;
-			}
-			else {
-				$tab_txt[]=$lig_clas->classe;
-			}
-
-			if(isset($id_incident)) {
-				//$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident";
-				$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."";
-			}
-			else {
-				$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
+				if(isset($id_incident)) {
+					//$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."&amp;id_incident=$id_incident";
+					$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."";
+				}
+				else {
+					$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
+				}
 			}
 		}
 
