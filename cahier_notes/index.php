@@ -3,7 +3,7 @@
  * Arborescence des évaluations
  * 
  *
- * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
  * @package Carnet_de_notes
  * @subpackage Conteneur
@@ -76,17 +76,24 @@ if (getSettingValue("active_carnets_notes")!='y') {
 $msg="";
 
 // 20210301
+/*
 $tab_id_classe_exclues_module_cahier_notes=array();
 if(!getSettingAOui('acces_cn_prof')) {
 	$tab_id_classe_exclues_module_cahier_notes=get_classes_exclues_tel_module('cahier_notes');
 }
+*/
 
 unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
 
 // 20210301
-if((isset($id_groupe))&&(preg_match('/^[0-9]{1,}$/', $id_groupe))&&(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes'))) {
-	$id_groupe="no_group";
+$pref_acces_cn_prof_afficher_lien=getPref($_SESSION['login'], 'acces_cn_prof_afficher_lien','');
+if((!getSettingAOui('acces_cn_prof'))||($pref_acces_cn_prof_afficher_lien!='y')) {
+	if((isset($id_groupe))&&(preg_match('/^[0-9]{1,}$/', $id_groupe))&&(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes'))) {
+		$id_groupe="no_group";
+		unset($_GET['periode_num']);
+		unset($_POST['periode_num']);
+	}
 }
 
 if ($id_groupe == "no_group") {
@@ -320,6 +327,9 @@ fclose($fich);
 */
 
 //debug_var();
+
+// 20210302
+$pref_acces_cn_prof_afficher_lien=getPref($_SESSION['login'], 'acces_cn_prof_afficher_lien','');
 
 //-----------------------------------------------------------------------------------
 if (isset($_REQUEST['id_devoir'])) {
@@ -857,11 +867,23 @@ echo "</div>";
 	}
 
 
-    echo "<h2 class='gepi'>Carnet de notes : ". htmlspecialchars($current_group["description"]) . " (<em>".$nom_periode[$periode_num];
+    echo "<h2 class='gepi'>Carnet de notes&nbsp;: ". htmlspecialchars($current_group["description"]) . " (<em>".$nom_periode[$periode_num];
     if(getSettingAOui('cn_affiche_date_fin_periode')) {
         echo " <span title='Fin de période' style='font-size:xx-small'>-&gt; ".formate_date($date_fin_periode[$periode_num])."</span>";
     }
-    echo "</em>)</h2>\n";
+    echo "</em>)";
+
+	// 20210302
+	$is_groupe_exclu_module_cn=is_groupe_exclu_tel_module($current_group['id'], 'cahier_notes');
+	if($is_groupe_exclu_module_cn) {
+		echo " <img src='../images/icons/ico_attention.png' class='icone16' title='Le carnet de notes est désactivé pour au moins une des classes associées à cet enseignement. Les notes saisies ne sont pas visibles des élèves et parents.' />";
+		$acces_cn_prof_url_cn_officiel=getSettingValue('acces_cn_prof_url_cn_officiel');
+		if($acces_cn_prof_url_cn_officiel!='') {
+			echo "<a href='".$acces_cn_prof_url_cn_officiel."' target='_blank' title=\"Accéder à l'application officielle de saisie des résultats aux évaluations : $acces_cn_prof_url_cn_officiel.\"><img src='../images/lien.png' class='icone16' /></a>";
+		}
+	}
+
+    echo "</h2>\n";
 // 20160225
     echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "(" . htmlspecialchars($current_group["matiere"]["matiere"]) . ")";
     // On teste si le carnet de notes est partagé ou non avec d'autres utilisateurs
@@ -1077,10 +1099,20 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 
 	$nom_classes = $current_group["classlist_string"];
 
+	$is_groupe_exclu_module_cn=is_groupe_exclu_tel_module($_GET['id_groupe'], 'cahier_notes');
+
 	echo "<p class='bold'>";
 	echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
 	echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a></p>\n";
-	echo "<p class='bold'>Enseignement : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
+	echo "<p class='bold'>Enseignement&nbsp;: ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")";
+	if($is_groupe_exclu_module_cn) {
+		echo " <img src='../images/icons/ico_attention.png' class='icone16' title='Le carnet de notes est désactivé pour au moins une des classes associées à cet enseignement. Les notes saisies ne sont pas visibles des élèves et parents.' />";
+		$acces_cn_prof_url_cn_officiel=getSettingValue('acces_cn_prof_url_cn_officiel');
+		if($acces_cn_prof_url_cn_officiel!='') {
+			echo "<a href='".$acces_cn_prof_url_cn_officiel."' target='_blank' title=\"Accéder à l'application officielle de saisie des résultats aux évaluations : $acces_cn_prof_url_cn_officiel.\"><img src='../images/lien.png' class='icone16' /></a>";
+		}
+	}
+	echo "</p>\n";
 
 	echo "<h3>Visualisation/modification - Choisissez la période : </h3>
 	<div style='margin-left:3em;'>\n";
@@ -1133,11 +1165,21 @@ if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset(
 		$nb_groupes_affiches=0;
 		foreach($groups as $group) {
 			// 20210301
-			if(!is_groupe_exclu_tel_module($group["id"], 'cahier_notes')) {
+			$is_groupe_exclu_module_cn=is_groupe_exclu_tel_module($group["id"], 'cahier_notes');
+			if(((getSettingAOui('acces_cn_prof'))&&($pref_acces_cn_prof_afficher_lien=='y'))||
+			(!$is_groupe_exclu_module_cn)) {
 				if((!isset($group["visibilite"]["cahier_notes"]))||($group["visibilite"]["cahier_notes"]=='y')) {
 					echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
 					echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlspecialchars($group["description"]) . "</a>";
-					echo "</span></p>\n";
+					echo "</span>";
+					if($is_groupe_exclu_module_cn) {
+						echo " <img src='../images/icons/ico_attention.png' class='icone16' title='Le carnet de notes est désactivé pour au moins une des classes associées à cet enseignement. Les notes saisies ne sont pas visibles des élèves et parents.' />";
+						$acces_cn_prof_url_cn_officiel=getSettingValue('acces_cn_prof_url_cn_officiel');
+						if($acces_cn_prof_url_cn_officiel!='') {
+							echo "<a href='".$acces_cn_prof_url_cn_officiel."' target='_blank' title=\"Accéder à l'application officielle de saisie des résultats aux évaluations : $acces_cn_prof_url_cn_officiel.\"><img src='../images/lien.png' class='icone16' /></a>";
+						}
+					}
+					echo "</p>\n";
 					$nb_groupes_affiches++;
 				}
 			}

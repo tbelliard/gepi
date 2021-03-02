@@ -1020,7 +1020,19 @@ if ($arrondir == 'pe') $detail = $detail."La moyenne est arrondie au point entie
 if ($ponderation != 0) $detail = $detail."Pondération : ".$ponderation." (s\\'ajoute au coefficient de la meilleur note de chaque élève).\\n";
 
 // Titre
-echo "<h2 class='gepi'>".htmlspecialchars($titre)."</h2>\n";
+echo "<h2 class='gepi'>".htmlspecialchars($titre);
+
+// 20210302
+$is_groupe_exclu_module_cn=is_groupe_exclu_tel_module($current_group['id'], 'cahier_notes');
+if($is_groupe_exclu_module_cn) {
+	echo " <img src='../images/icons/ico_attention.png' class='icone16' title='Le carnet de notes est désactivé pour au moins une des classes associées à cet enseignement. Les notes saisies ne sont pas visibles des élèves et parents.' />";
+	$acces_cn_prof_url_cn_officiel=getSettingValue('acces_cn_prof_url_cn_officiel');
+	if($acces_cn_prof_url_cn_officiel!='') {
+		echo "<a href='".$acces_cn_prof_url_cn_officiel."' target='_blank' title=\"Accéder à l'application officielle de saisie des résultats aux évaluations : $acces_cn_prof_url_cn_officiel.\"><img src='../images/lien.png' class='icone16' /></a>";
+	}
+}
+
+echo "</h2>\n";
 if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 
 	echo "<p class=cn>";

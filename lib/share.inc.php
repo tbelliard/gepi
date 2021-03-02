@@ -20150,6 +20150,66 @@ function is_responsable_avec_eleve_avec_carnet_notes($login_resp) {
 	return $retour;
 }
 
+function set_affichage_cn_perso($login) {
+	global $mysqli;
+
+	if(getSettingAOui('acces_cn_prof')) {
+		$pref_acces_cn_prof_afficher_lien=getPref($login, 'acces_cn_prof_afficher_lien', '');
+		if($pref_acces_cn_prof_afficher_lien=='') {
+
+			$acces_cn_prof_afficher_lien=getSettingAOui('acces_cn_prof_afficher_lien');
+			if($acces_cn_prof_afficher_lien) {
+				savePref($login, 'acces_cn_prof_afficher_lien', 'y');
+			}
+			else {
+				savePref($login, 'acces_cn_prof_afficher_lien', 'n');
+			}
+		}
+	}
+}
+
+function is_prof_avec_groupes_sans_cn($login) {
+	global $mysqli;
+
+	$retour=false;
+
+	$sql="SELECT 1=1 FROM j_groupes_classes jgc, 
+				j_groupes_professeurs jgp, 
+				modules_restrictions mr 
+			WHERE jgp.login='".$_SESSION['login']."' AND 
+				jgc.id_groupe=jgp.id_groupe AND 
+				jgc.id_classe=mr.value AND 
+				mr.module='cahier_notes';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$retour=true;
+	}
+
+	return $retour;
+}
+
+function get_groups_sans_cn_prof($login_prof) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT distinct jgc.id_groupe FROM j_groupes_classes jgc, 
+				j_groupes_professeurs jgp, 
+				modules_restrictions mr 
+			WHERE jgp.login='".$_SESSION['login']."' AND 
+				jgc.id_groupe=jgp.id_groupe AND 
+				jgc.id_classe=mr.value AND 
+				mr.module='cahier_notes';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		while($lig=mysqli_fetch_object($test)) {
+			$tab[]=$lig->id_groupe;
+		}
+	}
+
+	return $tab;
+}
+
 function get_tab_competences_numeriques_LSU() {
 	global $mysqli;
 

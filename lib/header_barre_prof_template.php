@@ -56,10 +56,10 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 $tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
 
 // 20210301
-$tab_id_classe_exclues_module_cahier_notes=array();
-if(!getSettingAOui('acces_cn_prof')) {
+//$tab_id_classe_exclues_module_cahier_notes=array();
+//if(!getSettingAOui('acces_cn_prof')) {
 	$tab_id_classe_exclues_module_cahier_notes=get_classes_exclues_tel_module('cahier_notes');
-}
+//}
 
 $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
@@ -250,13 +250,20 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 
 	if(getSettingValue("active_carnets_notes") == 'y'){
 		// Cahiers de notes
+		// 20210302
+		$pref_acces_cn_prof_afficher_lien=getPref($_SESSION['login'], 'acces_cn_prof_afficher_lien','');
+
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/cahier_notes/index.php' , "texte"=>"Notes");
 		$tmp_sous_menu=array();
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
 			if((!isset($tmp_group["visibilite"]["cahier_notes"]))||($tmp_group["visibilite"]["cahier_notes"]=='y')) {
 				// 20210301
-				if(in_array($tmp_group['id'], $tmp_mes_groupes_avec_cahier_notes)) {
+				//if(in_array($tmp_group['id'], $tmp_mes_groupes_avec_cahier_notes)) {
+				$is_groupe_exclu_module_cn=is_groupe_exclu_tel_module($tmp_group['id'], 'cahier_notes');
+				if(((getSettingAOui('acces_cn_prof'))&&($pref_acces_cn_prof_afficher_lien=='y'))||
+				(!$is_groupe_exclu_module_cn)) {
+
 					$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
 					if($nom_ou_description_groupe_barre_h=='name') {
 						$tmp_sous_menu[$cpt_sous_menu]['texte']="<span title=\"Cahier de notes de cet enseignement.\nVous pouvez:\n- y saisir des notes,\n- imprimer votre carnet de notes pour telle période,\n- ou en récapitulatif de toute l'année.\">".$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</span>';

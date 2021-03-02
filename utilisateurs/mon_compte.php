@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -987,6 +987,18 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 			$nb_reg++;
 		}
 	}
+
+
+	// 20210302
+	$acces_cn_prof_afficher_lien=isset($_POST['acces_cn_prof_afficher_lien']) ? $_POST['acces_cn_prof_afficher_lien'] : 'n';
+	if(!savePref($_SESSION['login'],'acces_cn_prof_afficher_lien',$acces_cn_prof_afficher_lien)) {
+		$msg.="Erreur lors de l'enregistrement de 'acces_cn_prof_afficher_lien'<br />\n";
+		$message_cn.="Erreur lors de l'enregistrement de 'acces_cn_prof_afficher_lien'.<br />";
+	}
+	else {
+		$nb_reg++;
+	}
+
 
 	if($message_cn!='') {
 		$message_cn="<p style='color:red'>".$message_cn."</p>";
@@ -2977,6 +2989,25 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "</table>";
 
 	//===========================================================
+	// 20210302
+	if(getSettingAOui('acces_cn_prof')) {
+		if(is_prof_avec_groupes_sans_cn($_SESSION['login'])) {
+			echo "<p>Certains de vos enseignements sont associés à des classes qui n'utilisent pas le carnet de notes de Gepi.<br />
+			Vous pouvez néanmoins faire apparaitre un lien Carnet de notes personnel pour ces enseignements.<br />
+			Les notes qui y seront saisies ne seront pas accessibles des élèves et parents.<br />
+			Vous devrez leur transmettre ces notes par un autre moyen.</p>
+			
+			<p><input type='checkbox' name='acces_cn_prof_afficher_lien' id='acces_cn_prof_afficher_lien' value='y' 
+				onchange=\"checkbox_change('acces_cn_prof_afficher_lien');changement()\" ";
+			if(getPref($_SESSION['login'], 'acces_cn_prof_afficher_lien', '')=='y') {
+				echo 'checked';
+			}
+			echo " tabindex='$tabindex'";
+			$tabindex++;
+			echo " /><label for='acces_cn_prof_afficher_lien' id='texte_acces_cn_prof_afficher_lien'> Afficher un lien CN personnel pour les enseignements n'utilisant pas les CN Gepi..</label></p>";
+		}
+	}
+	//===========================================================
 
 	echo "<br />\n";
 
@@ -4498,7 +4529,7 @@ if(getSettingAOui("active_bulletins")) {
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'saisie_app_bordure_app_vide', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_avec_sup10', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', 'accueil_tableau_ouverture_periode_y', 'accueil_tableau_ouverture_periode_n', 'accueil_tableau_acces_app_bull_ele_resp_y', 'accueil_tableau_acces_app_bull_ele_resp_n', $chaine_champs_checkbox_mod_discipline);
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'saisie_app_bordure_app_vide', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_avec_sup10', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', 'accueil_tableau_ouverture_periode_y', 'accueil_tableau_ouverture_periode_n', 'accueil_tableau_acces_app_bull_ele_resp_y', 'accueil_tableau_acces_app_bull_ele_resp_n', 'acces_cn_prof_afficher_lien', $chaine_champs_checkbox_mod_discipline);
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);

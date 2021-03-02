@@ -204,7 +204,7 @@ if(isset($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
 			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
-              $tbs_librairies[]=$gepiPath."/".$current_javascript_specifique.'.js';
+				$tbs_librairies[]=$gepiPath."/".$current_javascript_specifique.'.js';
 			}
 		}
 	}
@@ -475,6 +475,8 @@ if (isset($titre_page)) {
 			}else{
 				$tbs_statut[]=array("classe"=>"" , "texte"=>"Invité");
 			}
+			// 20210302
+			set_affichage_cn_perso($_SESSION['login']);
 		}elseif ($_SESSION['statut'] == "scolarite") {
 				$tbs_statut[]=array("classe"=>"" , "texte"=>"Scolarité");
 		}elseif ($_SESSION['statut'] == "cpe") {

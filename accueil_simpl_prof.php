@@ -218,6 +218,15 @@ insere_lien_calendrier_crob("right");
 
 $tab_id_classe_exclues_module_bulletins=get_classes_exclues_tel_module('bulletins');
 
+// 20210301
+/*
+$tab_id_classe_exclues_module_cahier_notes=array();
+if(!getSettingAOui('acces_cn_prof')) {
+	$tab_id_classe_exclues_module_cahier_notes=get_classes_exclues_tel_module('cahier_notes');
+}
+*/
+$pref_acces_cn_prof_afficher_lien=getPref($_SESSION['login'], 'acces_cn_prof_afficher_lien','');
+
 echo "<div class='norme'><p class='bold'>\n";
 //echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a> | \n";
 //echo "<a href=\"./accueil.php?accueil_simpl=n\"> Accès à l'interface complète </a>";
@@ -776,65 +785,73 @@ for($i=0;$i<count($groups);$i++){
 							echo "<td>\n";
 						}
 
-						if(!in_array($groups[$i]['id'],$invisibilite_groupe['cahier_notes'])) {
-							echo "<div id='h_cn_".$i."_".$j."'>";
-							echo "<a href='cahier_notes/index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'";
-							if($pref_accueil_infobulles=="y") {
-								echo " onmouseover=\"afficher_div('info_cn_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\"";
-							}
-							echo ">";
-							echo "<img src='images/icons/carnet_notes.png' width='32' height='32' alt='Saisie de notes' border='0' />";
-							echo "</a>";
-		
-							if($pref_accueil_infobulles=="y") {
-								echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Carnet de notes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
-		
-								$tab_liste_infobulles[]='info_cn_'.$i.'_'.$j;
-							}
+						if(!in_array($groups[$i]['id'], $invisibilite_groupe['cahier_notes'])) {
+							$is_groupe_exclu_module_cn=is_groupe_exclu_tel_module($groups[$i]['id'], 'cahier_notes');
+							if(((getSettingAOui('acces_cn_prof'))&&($pref_acces_cn_prof_afficher_lien=='y'))||
+							(!$is_groupe_exclu_module_cn)) {
+								echo "<div id='h_cn_".$i."_".$j."'>";
+								echo "<a href='cahier_notes/index.php?id_groupe=".$groups[$i]['id']."&amp;periode_num=".$groups[$i]['periodes'][$j]['num_periode']."'";
+								if($pref_accueil_infobulles=="y") {
+									echo " onmouseover=\"afficher_div('info_cn_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\"";
+								}
+								echo ">";
+								echo "<img src='images/icons/carnet_notes.png' width='32' height='32' alt='Saisie de notes' border='0' />";
+								echo "</a>";
+								
+								if($is_groupe_exclu_module_cn) {
+									echo " <img src='images/icons/ico_attention.png' width='32' height='32' title='Le carnet de notes est désactivé pour au moins une des classes associées à cet enseignement. Les notes saisies ne sont pas visibles des élèves et parents.' />";
+								}
+			
+								if($pref_accueil_infobulles=="y") {
+									echo "<div id='info_cn_".$i."_".$j."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_cn_".$i."_".$j."');\">Carnet de notes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>)<br />".$groups[$i]["periodes"][$j]["nom_periode"].".</div>\n";
+			
+									$tab_liste_infobulles[]='info_cn_'.$i.'_'.$j;
+								}
 
-							/*
-							echo "<pre>";
-							print_r($groups[$i]['classe']['date_fin']);
-							echo "</pre>";
-							*/
-							$chaine_date_fin_periode="";
-							$tmp_tab_date_fin_periode=array();
-							$tmp_tab_date_fin_periode_passee=array();
-							foreach($groups[$i]['classe']['date_fin'] as $tmp_id_classe => $tmp_classe) {
-								if($tmp_classe[$j]>=$date_courante_debut_journee_mysql) {
-									$tmp_tab_date_fin_periode[$tmp_classe[$j]][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
-								}
-								else {
-									$tmp_tab_date_fin_periode_passee[$tmp_classe[$j]][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
-								}
-							}
-							foreach($tmp_tab_date_fin_periode as $current_mysql_date => $tmp_tab_classe) {
-								$chaine_date_fin_periode.="<br /><span style='font-size:x-small;' title=\"Date de fin de période ";
-								for($loop_clas=0;$loop_clas<count($tmp_tab_classe);$loop_clas++) {
-									if($loop_clas>0) {
-										$chaine_date_fin_periode.=", ";
+								/*
+								echo "<pre>";
+								print_r($groups[$i]['classe']['date_fin']);
+								echo "</pre>";
+								*/
+								$chaine_date_fin_periode="";
+								$tmp_tab_date_fin_periode=array();
+								$tmp_tab_date_fin_periode_passee=array();
+								foreach($groups[$i]['classe']['date_fin'] as $tmp_id_classe => $tmp_classe) {
+									if($tmp_classe[$j]>=$date_courante_debut_journee_mysql) {
+										$tmp_tab_date_fin_periode[$tmp_classe[$j]][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
 									}
-									$chaine_date_fin_periode.=$tmp_tab_classe[$loop_clas];
-								}
-								$chaine_date_fin_periode.=" : ".formate_date($current_mysql_date)."\">";
-								$chaine_date_fin_periode.=formate_date($current_mysql_date);
-								$chaine_date_fin_periode.="</span>";
-							}
-							foreach($tmp_tab_date_fin_periode_passee as $current_mysql_date => $tmp_tab_classe) {
-								$chaine_date_fin_periode.="<br /><span style='font-size:x-small; color:red;' title=\"Date de fin de période dépassée ";
-								for($loop_clas=0;$loop_clas<count($tmp_tab_classe);$loop_clas++) {
-									if($loop_clas>0) {
-										$chaine_date_fin_periode.=", ";
+									else {
+										$tmp_tab_date_fin_periode_passee[$tmp_classe[$j]][]=$groups[$i]["classes"]["classes"][$tmp_id_classe]["classe"];
 									}
-									$chaine_date_fin_periode.=$tmp_tab_classe[$loop_clas];
 								}
-								$chaine_date_fin_periode.=" : ".formate_date($current_mysql_date)."\">";
-								$chaine_date_fin_periode.=formate_date($current_mysql_date);
-								$chaine_date_fin_periode.="</span>";
-							}
-							echo $chaine_date_fin_periode;
+								foreach($tmp_tab_date_fin_periode as $current_mysql_date => $tmp_tab_classe) {
+									$chaine_date_fin_periode.="<br /><span style='font-size:x-small;' title=\"Date de fin de période ";
+									for($loop_clas=0;$loop_clas<count($tmp_tab_classe);$loop_clas++) {
+										if($loop_clas>0) {
+											$chaine_date_fin_periode.=", ";
+										}
+										$chaine_date_fin_periode.=$tmp_tab_classe[$loop_clas];
+									}
+									$chaine_date_fin_periode.=" : ".formate_date($current_mysql_date)."\">";
+									$chaine_date_fin_periode.=formate_date($current_mysql_date);
+									$chaine_date_fin_periode.="</span>";
+								}
+								foreach($tmp_tab_date_fin_periode_passee as $current_mysql_date => $tmp_tab_classe) {
+									$chaine_date_fin_periode.="<br /><span style='font-size:x-small; color:red;' title=\"Date de fin de période dépassée ";
+									for($loop_clas=0;$loop_clas<count($tmp_tab_classe);$loop_clas++) {
+										if($loop_clas>0) {
+											$chaine_date_fin_periode.=", ";
+										}
+										$chaine_date_fin_periode.=$tmp_tab_classe[$loop_clas];
+									}
+									$chaine_date_fin_periode.=" : ".formate_date($current_mysql_date)."\">";
+									$chaine_date_fin_periode.=formate_date($current_mysql_date);
+									$chaine_date_fin_periode.="</span>";
+								}
+								echo $chaine_date_fin_periode;
 
-							echo "</div>\n";
+								echo "</div>\n";
+							}
 						}
 						else {echo "&nbsp;";}
 						echo "</td>\n";

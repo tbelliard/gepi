@@ -65,9 +65,12 @@ if(!isset($id_groupe)) {
 }
 
 // 20210301
-if((isset($id_groupe))&&(preg_match('/^[0-9]{1,}$/', $id_groupe))&&(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes'))) {
-	header("Location: ../accueil.php?msg=Groupe/enseignement non valide");
-	die();
+$pref_acces_cn_prof_afficher_lien=getPref($_SESSION['login'], 'acces_cn_prof_afficher_lien','');
+if((!getSettingAOui('acces_cn_prof'))||($pref_acces_cn_prof_afficher_lien!='y')) {
+	if((isset($id_groupe))&&(preg_match('/^[0-9]{1,}$/', $id_groupe))&&(is_groupe_exclu_tel_module($id_groupe, 'cahier_notes'))) {
+		header("Location: ../accueil.php?msg=Groupe/enseignement non valide");
+		die();
+	}
 }
 
 $current_group = get_group($id_groupe);
@@ -253,7 +256,17 @@ echo "</p>\n";
 
 echo "</form>\n";
 
-echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["description"] . "</b></p>\n";
+echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["description"] . "</b>";
+// 20210302
+$is_groupe_exclu_module_cn=is_groupe_exclu_tel_module($current_group['id'], 'cahier_notes');
+if($is_groupe_exclu_module_cn) {
+	echo " <img src='../images/icons/ico_attention.png' class='icone16' title='Le carnet de notes est désactivé pour au moins une des classes associées à cet enseignement. Les notes saisies ne sont pas visibles des élèves et parents.' />";
+	$acces_cn_prof_url_cn_officiel=getSettingValue('acces_cn_prof_url_cn_officiel');
+	if($acces_cn_prof_url_cn_officiel!='') {
+		echo "<a href='".$acces_cn_prof_url_cn_officiel."' target='_blank' title=\"Accéder à l'application officielle de saisie des résultats aux évaluations : $acces_cn_prof_url_cn_officiel.\"><img src='../images/lien.png' class='icone16' /></a>";
+	}
+}
+echo "</p>\n";
 
 
 // Couleurs utilisées
