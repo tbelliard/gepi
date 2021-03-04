@@ -176,7 +176,7 @@ if (is_numeric($id_groupe)) {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit d'être ici ?
-if (($current_group["id"] != "") ) {
+if ((isset($current_group["id"]))&&($current_group["id"] != "")) {
     if (!check_prof_groupe($_SESSION['login'],$current_group["id"])) {
         header("Location: ../logout.php?auto=1");
         die();
@@ -633,10 +633,16 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'del') and $valide_form=='y
 
 // si aucune notice n'existe dans ct_entry et qu'il existe des notices dans ct_devoirs_entry
 // on crée une notice "info générales" vide
-$test_ct_vide = sql_count(sql_query("SELECT id_ct FROM ct_entry WHERE (id_groupe='" . $current_group["id"]."')"));
-$test_ct_devoirs_vide = sql_count(sql_query("SELECT id_ct FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] ."')"));
-if (($test_ct_vide == 0) and ($test_ct_devoirs_vide != 0)) {$req = mysqli_query($GLOBALS["mysqli"], "INSERT INTO ct_entry SET id_ct='0', contenu = '', id_login='".$_SESSION['login']."', id_groupe='" . $current_group["id"]. "', date_ct=''");}
-
+if(isset($current_group["id"])) {
+	$sql="SELECT id_ct FROM ct_entry WHERE (id_groupe='" . $current_group["id"]."');";
+	$test_ct_vide = sql_count(sql_query($sql));
+	$sql="SELECT id_ct FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] ."');";
+	$test_ct_devoirs_vide = sql_count(sql_query($sql));
+	if (($test_ct_vide == 0) and ($test_ct_devoirs_vide != 0)) {
+		$sql="INSERT INTO ct_entry SET id_ct='0', contenu = '', id_login='".$_SESSION['login']."', id_groupe='" . $current_group["id"]. "', date_ct='';";
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+}
 
 // Détermination de $id_ct
 if($ajout=='oui') {
@@ -649,29 +655,34 @@ else {
 		$ajout_req=" AND id_login='".$_SESSION['login']."'";
 	}
 
-    if (isset($_GET['info']) or isset($_POST['info'])) {
-      $sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct=''";
-      $sql.=$ajout_req;
-      $sql.=")";
-      $infoyes = "&amp;info=yes";
-    } elseif (isset($edit_devoir)) {
-      $sql="SELECT contenu, id_ct,vise  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today'";
-      $sql.=$ajout_req;
-      $sql.=")";
-      $infoyes = "";
-    } elseif (isset($id_ct)) {
-      $sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today' AND id_ct='$id_ct'";
-      $sql.=$ajout_req;
-      $sql.=")";
-      $infoyes = "";
-    } else {
-      $sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='$today'";
-      $sql.=$ajout_req;
-      $sql.=") ORDER BY heure_entry ASC LIMIT 1";
-      $infoyes = "";
-    }
-    $appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
-    $test_cahier_texte = mysqli_num_rows($appel_cahier_texte);
+	if(isset($current_group["id"])) {
+		if (isset($_GET['info']) or isset($_POST['info'])) {
+			$sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct=''";
+			$sql.=$ajout_req;
+			$sql.=")";
+			$infoyes = "&amp;info=yes";
+		} elseif (isset($edit_devoir)) {
+			$sql="SELECT contenu, id_ct,vise  FROM ct_devoirs_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today'";
+			$sql.=$ajout_req;
+			$sql.=")";
+			$infoyes = "";
+		} elseif (isset($id_ct)) {
+			$sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct = '$today' AND id_ct='$id_ct'";
+			$sql.=$ajout_req;
+			$sql.=")";
+			$infoyes = "";
+		} else {
+			$sql="SELECT heure_entry, contenu, id_ct,vise,visa  FROM ct_entry WHERE (id_groupe='" . $current_group["id"] . "' AND date_ct='$today'";
+			$sql.=$ajout_req;
+			$sql.=") ORDER BY heure_entry ASC LIMIT 1";
+			$infoyes = "";
+		}
+		$appel_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
+		$test_cahier_texte = mysqli_num_rows($appel_cahier_texte);
+	}
+	else {
+		$test_cahier_texte=0;
+	}
 }
 
 if ($test_cahier_texte != 0) {
@@ -748,7 +759,8 @@ foreach($groups as $group) {
 	$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_grp_visib)==0) {
 		//echo "<b>";
-		if ($group["id"] == $current_group["id"]) {
+		if((isset($current_group["id"]))&&
+		($group["id"] == $current_group["id"])) {
  echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group["description"] . "&nbsp;-&nbsp;(";
 			$str = null;
 			foreach ($group["classes"]["classes"] as $classe) {
