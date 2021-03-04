@@ -1156,6 +1156,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 function affiche_docs_joints($id_ct,$type_notice) {
   global $contexte_affichage_docs_joints;
   global $envoi_mail;
+  global $gepiPath;
 
   // documents joints
   $html = '';
@@ -1166,11 +1167,16 @@ function affiche_docs_joints($id_ct,$type_notice) {
       $sql = "SELECT titre, emplacement, visible_eleve_parent FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
   }
 
+  $acces_voir_pj=acces('/cahier_texte_2/voir_pj.php', $_SESSION['statut']);
+
   // On n'a pas de docs joints sur les notices privées.
   if(isset($sql)) {
 	  $res = sql_query($sql);
 	    if (($res) and (sql_count($res)!=0)) {
 		$html .= "<span class='petit'>Document(s) joint(s):</span>";
+		if($acces_voir_pj) {
+			$html .= "<a href='".$gepiPath."/cahier_texte_2/voir_pj.php?id_ct=".$id_ct."&type_notice=".$type_notice."' title='Visionner les documents joints' target='_blank'><img src='../images/icons/chercher.png' class='icone16' /></a>";
+		}
 		$html .= "<ul style=\"padding-left: 15px;\">";
 		for ($i=0; ($row = sql_row($res,$i)); $i++) {
 		    if(((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y'))||
