@@ -2315,3 +2315,4 @@ INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LSF'
 INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LVE', nom='LVE', valeur='Langue vivante étrangère';
 INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='CHK', nom='CHK', valeur='Chant Choral';
 INSERT INTO nomenclatures_valeurs SET type='enseignement_complement', code='LCE', nom='LCE', valeur='Langues et cultures européennes';
+INSERT INTO setting SET name='GepiCahierTexteVersion', value='2';
