@@ -86,6 +86,7 @@ if (!isset($_POST["action"])) {
 			"<li>Ligne 2 adresse</li>\n" .
 			"<li>Code postal</li>\n" .
 			"<li>Commune</li>\n" .
+			"<li>Email <em>(optionnel)</em></li>\n" .
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_responsables.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>\n";
@@ -198,6 +199,23 @@ if (!isset($_POST["action"])) {
 			die();
 		}
 
+
+
+		// 20210213
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM responsables LIKE 'email1';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE responsables ADD email1 varchar(100) NOT NULL default '';";
+			$res_resp_email= mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM responsables LIKE 'email2';"));
+		if ($test_champ==0) {
+			$sql="ALTER TABLE responsables ADD email2 varchar(100) NOT NULL default '';";
+			$res_resp_email= mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+
+
+
 		echo "<br />\n";
 		echo "<p><em>On remplit la table 'responsables'&nbsp;:</em> ";
 
@@ -216,6 +234,10 @@ if (!isset($_POST["action"])) {
 			$reg_adresse2 = $lig->adresse2;
 			$reg_code_postal = $lig->code_postal;
 			$reg_commune = $lig->commune;
+
+			// 20210213
+			$reg_email = $lig->email;
+			$reg_email=nettoyer_caracteres_nom($reg_email, "an", " ,'.@_-","");
 
 			// On nettoie et on vérifie :
 			$reg_id_eleve = preg_replace("/[^A-Z0-9]/","",trim($reg_id_eleve));
@@ -277,7 +299,8 @@ if (!isset($_POST["action"])) {
 								"adr1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse1) . "', " .
 								"adr1_comp = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) . "', " .
 								"commune1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) . "', " .
-								"cp1 = '" . $reg_code_postal . "'";
+								"cp1 = '" . $reg_code_postal . "', ".
+								"email1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_email) . "'";
 							$insert = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						} else {
@@ -290,7 +313,8 @@ if (!isset($_POST["action"])) {
 									"adr1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse1) . "', " .
 									"adr1_comp = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) . "', " .
 									"commune1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) . "', " .
-									"cp1 = '" . $reg_code_postal . "' " .
+									"cp1 = '" . $reg_code_postal . "', " .
+									"email1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_email) . "' ".
 									"WHERE " .
 									"ereno = '" . $reg_id_eleve . "'";
 								$insert = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -303,6 +327,7 @@ if (!isset($_POST["action"])) {
 									"adr2_comp = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) . "', " .
 									"commune2 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) . "', " .
 									"cp2 = '" . $reg_code_postal . "' " .
+									"email2 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_email) . "' ".
 									"WHERE " .
 									"ereno = '" . $reg_id_eleve . "'";
 								$insert = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -402,7 +427,7 @@ if (!isset($_POST["action"])) {
 						// 7 : Commune
 
 						// On nettoie et on vérifie :
-						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
+						$tabligne[0] = preg_replace("/[^0-9A-Za-z]/","",trim($tabligne[0]));
 
 						$tabligne[1]=my_strtoupper(nettoyer_caracteres_nom($tabligne[1], "a", " _-",""));
 						$tabligne[1]=preg_replace("/'/"," ",$tabligne[1]);
@@ -429,6 +454,14 @@ if (!isset($_POST["action"])) {
 						$tabligne[7]=preg_replace("/'/",' ',$tabligne[7]);
 						if (mb_strlen($tabligne[7]) > 50) $tabligne[7] = mb_substr($tabligne[7], 0, 50);
 
+						// 20210213
+						if(isset($tabligne[8])) {
+							$tabligne[8]=nettoyer_caracteres_nom($tabligne[8], "an", " ,'.@_-","");
+						}
+						else {
+							$tabligne[8]='';
+						}
+
 						$data_tab[$k] = array();
 						$data_tab[$k]["id_eleve"] = $tabligne[0];
 						$data_tab[$k]["nom"] = $tabligne[1];
@@ -438,6 +471,8 @@ if (!isset($_POST["action"])) {
 						$data_tab[$k]["adresse2"] = $tabligne[5];
 						$data_tab[$k]["code_postal"] = $tabligne[6];
 						$data_tab[$k]["commune"] = $tabligne[7];
+						// 20210213
+						$data_tab[$k]["email"] = $tabligne[8];
 
 						/*
 						echo "<pre>";
@@ -464,9 +499,18 @@ if (!isset($_POST["action"])) {
 				adresse2 varchar(100) NOT NULL default '', 
 				code_postal varchar(6) NOT NULL default '', 
 				commune varchar(50) NOT NULL default '',
+				email varchar(100) NOT NULL default '',
 				PRIMARY KEY  (id)
 				);";
 				$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
+
+				// 20210213
+				$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM temp_responsables LIKE 'email';"));
+				if ($test_champ==0) {
+					$sql="ALTER TABLE temp_responsables ADD email varchar(100) NOT NULL default '';";
+					$res_resp_email= mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+
 
 				$sql="TRUNCATE TABLE temp_responsables;";
 				$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -483,7 +527,7 @@ if (!isset($_POST["action"])) {
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
 				echo "<table class='boireaus' summary='Tableau des responsables'>\n";
-				echo "<tr><th>ID élève</th><th>Nom</th><th>Prénom</th><th>Civilité</th><th>Ligne 1 adresse</th><th>Ligne 2 adresse</th><th>Code postal</th><th>Commune</th></tr>\n";
+				echo "<tr><th>ID élève</th><th>Nom</th><th>Prénom</th><th>Civilité</th><th>Ligne 1 adresse</th><th>Ligne 2 adresse</th><th>Code postal</th><th>Commune</th><th>Email</th></tr>\n";
 
 				$alt=1;
 				//for ($i=0;$i<$k-1;$i++) {
@@ -504,7 +548,8 @@ if (!isset($_POST["action"])) {
 						adresse1='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["adresse1"])."',
 						adresse2='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["adresse2"])."',
 						commune='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["commune"])."',
-						code_postal='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["code_postal"])."';";
+						code_postal='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["code_postal"])."',
+						email='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["email"])."';";
 						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
@@ -541,6 +586,9 @@ if (!isset($_POST["action"])) {
 						echo "</td>\n";
 						echo "<td>\n";
 						echo $data_tab[$i]["commune"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["email"];
 						echo "</td>\n";
 						echo "</tr>\n";
 					}
