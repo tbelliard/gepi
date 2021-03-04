@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -259,12 +259,18 @@ echo "<p>".mysqli_num_rows($test_resp)." responsable(s) potentiellement en doubl
 					<th>Tel</th>
 					<th>Adresse</th>
 					<th>Enfant(s)</th>
-					<th>Transférer les associations élèves vers le responsable sélectionné, puis supprimer le(s) doublon(s)</th>
+					<th>
+						Transférer les associations élèves vers le responsable sélectionné, puis supprimer le(s) doublon(s)
+						<span id='cocher_rapprochements_probables' style='display:none' title=\"Cocher le premier responsable dans chaque cas où les nom, prénom, téléphone et adresse coïncident exactement (si une majuscule, un accent, une virgule diffèrent, alors la sélection n'est pas faite automatiquement).\">
+						<a href='javascript:cocher_rapprochements_probables()'><img src='../images/icons/wizard.png' class='icone16' /></a>
+						</span>
+					</th>
 					<th>Supprimer sans transférer les associations élève vers l'homonyme</th>
 				</tr>
 			</thead>
 			<tbody>";
 $cpt=0;
+$maxcpt2=0;
 while($lig_resp=mysqli_fetch_object($test_resp)) {
 	$tab=get_info_responsable("", $lig_resp->pers_id);
 	if((isset($tab["nom"]))&&(isset($tab["prenom"]))) {
@@ -279,9 +285,9 @@ while($lig_resp=mysqli_fetch_object($test_resp)) {
 				echo lien_image_compte_utilisateur($tab["login"], "responsable", "_blank", "n");
 			}
 			echo "</td>
-					<td>".$tab["nom"]."</td>
-					<td>".$tab["prenom"]."</td>
-					<td>";
+					<td id='nom_".$cpt."_0'>".$tab["nom"]."</td>
+					<td id='prenom_".$cpt."_0'>".$tab["prenom"]."</td>
+					<td id='tel_".$cpt."_0'>";
 			$chaine_tel="";
 			if((isset($tab["tel_pers"]))&&($tab["tel_pers"]!="")) {
 				$chaine_tel.=$tab["tel_pers"];
@@ -299,16 +305,18 @@ while($lig_resp=mysqli_fetch_object($test_resp)) {
 				$chaine_tel.=$tab["tel_port"];
 			}
 			echo "</td>
-					<td>".$tab["adresse"]["en_ligne"]."</td>
+					<td id='adr_".$cpt."_0'>".$tab["adresse"]["en_ligne"]."</td>
 					<td>";
 			for($i=1;$i<count($tab["enfants"]);$i+=2) {
 				if($i>1) {echo ", ";}
 				echo $tab["enfants"][$i];
 			}
 			echo "</td>
-					<td><input type='radio' name='fusionner_conserver_".$cpt."' value='".$lig_resp->pers_id."' /></td>
+					<td><input type='radio' name='fusionner_conserver_".$cpt."' id='fusionner_conserver_".$cpt."' value='".$lig_resp->pers_id."' /></td>
 					<td><input type='checkbox' name='supprimer[]' value='".$lig_resp->pers_id."' /></td>
 				</tr>";
+
+			$cpt2=0;
 			while($lig_resp2=mysqli_fetch_object($res_resp2)) {
 				echo "
 				<tr>
@@ -318,9 +326,9 @@ while($lig_resp=mysqli_fetch_object($test_resp)) {
 					echo lien_image_compte_utilisateur($lig_resp2->login, "responsable", "_blank", "n");
 				}
 						echo "</td>
-					<td>".$lig_resp2->nom."</td>
-					<td>".$lig_resp2->prenom."</td>
-					<td>";
+					<td id='nom_".$cpt."_".$cpt2."'>".$lig_resp2->nom."</td>
+					<td id='prenom_".$cpt."_".$cpt2."'>".$lig_resp2->prenom."</td>
+					<td id='tel_".$cpt."_".$cpt2."'>";
 				$chaine_tel="";
 				if((isset($lig_resp2->tel_pers))&&($lig_resp2->tel_pers!="")) {
 					$chaine_tel.=$lig_resp2->tel_pers;
@@ -338,25 +346,30 @@ while($lig_resp=mysqli_fetch_object($test_resp)) {
 					$chaine_tel.=$lig_resp2->tel_port;
 				}
 				echo "</td>
-					<td>";
+					<td id='adr_".$cpt."_".$cpt2."'>";
 				$current_adr=get_adresse_responsable($lig_resp2->pers_id);
 				if(isset($current_adr["en_ligne"])) {
 					echo $current_adr["en_ligne"];
 				}
 						echo "</td>
 					<td>";
-			$current_ele=get_enfants_from_pers_id($lig_resp2->pers_id);
-			if(count($current_ele)>0) {
-				for($i=1;$i<count($current_ele);$i+=2) {
-					if($i>1) {echo ", ";}
-					echo $current_ele[$i];
+				$current_ele=get_enfants_from_pers_id($lig_resp2->pers_id);
+				if(count($current_ele)>0) {
+					for($i=1;$i<count($current_ele);$i+=2) {
+						if($i>1) {echo ", ";}
+						echo $current_ele[$i];
+					}
 				}
-			}
 					echo "</td>
 					<td><input type='radio' name='fusionner_conserver_".$cpt."' value='".$lig_resp2->pers_id."' /></td>
 					<td><input type='checkbox' name='supprimer[]' value='".$lig_resp2->pers_id."' /></td>
 				</tr>";
+				$cpt2++;
 			}
+			if($cpt2>$maxcpt2) {
+				$maxcpt2=$cpt2;
+			}
+
 			echo "
 				<tr>
 					<td colspan='9' style='background-color:grey'>&nbsp;</td>
@@ -371,7 +384,44 @@ echo "
 		<input type='hidden' name='cpt' value='$cpt' />
 		<p><input type='submit' value='Valider' /></p>
 	</fieldset>
-</form>";
+</form>
+
+<script type='text/javascript'>
+	if(document.getElementById('cocher_rapprochements_probables')) {
+		document.getElementById('cocher_rapprochements_probables').style.display='';
+	}
+
+	function cocher_rapprochements_probables() {
+		for(i=0;i<$cpt;i++) {
+			temoin_idem=true;
+			if(document.getElementById('nom_'+i+'_0')) {
+				for(k=0;k<$maxcpt2;k++) {
+					if(document.getElementById('nom_'+i+'_'+k)) {
+						if(document.getElementById('nom_'+i+'_'+k).innerHTML!=document.getElementById('nom_'+i+'_0').innerHTML) {
+							temoin_idem=false;
+							break;
+						}
+						if(document.getElementById('prenom_'+i+'_'+k).innerHTML!=document.getElementById('prenom_'+i+'_0').innerHTML) {
+							temoin_idem=false;
+							break;
+						}
+						if(document.getElementById('tel_'+i+'_'+k).innerHTML!=document.getElementById('tel_'+i+'_0').innerHTML) {
+							temoin_idem=false;
+							break;
+						}
+						if(document.getElementById('adr_'+i+'_'+k).innerHTML!=document.getElementById('adr_'+i+'_0').innerHTML) {
+							temoin_idem=false;
+							break;
+						}
+					}
+				}
+			}
+			if(temoin_idem) {
+				document.getElementById('fusionner_conserver_'+i).checked=true;
+			}
+		}
+	}
+</script>";
 
 
 require("../lib/footer.inc.php");
