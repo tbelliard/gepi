@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -366,7 +366,12 @@ if($temoin==1){
 										}
 
 										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom1',prenom='$lig2->prenom1',adr_id='$adr_id'";
-										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom1)."',prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom1)."',adr_id='$adr_id';";
+										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom1)."',prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom1)."',adr_id='$adr_id'";
+										// 20210214
+										if((isset($lig2->email1))&&($lig2->email1!='')) {
+											$sql.=", mel='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->email1)."'";
+										}
+										$sql.=";";
 										//echo "$sql<br />\n";
 										$res_insert2=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert2){
@@ -470,6 +475,11 @@ if($temoin==1){
 
 										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom2',prenom='$lig2->prenom2',adr_id='$adr_id'";
 										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom2)."',prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom2)."',adr_id='$adr_id'";
+										// 20210214
+										if((isset($lig2->email2))&&($lig2->email2!='')) {
+											$sql.=", mel='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->email2)."'";
+										}
+										$sql.="";
 										//echo "$sql<br />\n";
 										$res_insert2=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert2){
