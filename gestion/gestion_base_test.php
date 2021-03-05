@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -906,7 +906,14 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 			while($lig_ele=mysqli_fetch_object($res_ele)) {
 				$il_ou_elle=(mb_strtoupper($lig_ele->sexe)=='F' ? 'Elle' : 'Il');
 				echo $lig_ele->prenom." ".$lig_ele->nom." <span title='Période ".$lig_ele->periode."'>(P".$lig_ele->periode.")</span>";
-				$sql="SELECT jeg.*, g.name FROM j_eleves_groupes jeg, groupes g WHERE login='".$lig_ele->login."' AND jeg.id_groupe=g.id AND jeg.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n');";
+				$sql="SELECT jeg.*, g.name FROM j_eleves_groupes jeg, 
+						groupes g, 
+						j_groupes_classes jgc 
+					WHERE jgc.id_classe='".$id_classe[$loop]."' AND 
+						jgc.id_groupe=g.id AND 
+						login='".$lig_ele->login."' AND 
+						jeg.id_groupe=g.id AND 
+						jeg.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n');";
 				//echo "$sql<br />";
 				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_grp)>0) {
