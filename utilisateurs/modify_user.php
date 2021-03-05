@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -48,6 +48,8 @@ if (!checkAccess()) {
 // Initialisation des variables
 $user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET["user_login"]) ? $_GET["user_login"] : NULL);
 $msg = '';
+
+//debug_var();
 
 if((isset($_GET['check_login']))&&($_GET['check_login']!='')) {
 	check_token();
@@ -265,6 +267,7 @@ check_token();
 							$sql="INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='n'";
 						}
 						$sql.=$sql_ajout_chaine_numind_et_type;
+						//echo "$sql<br />";
 						$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if ($_POST['reg_statut'] == "professeur") {
@@ -530,6 +533,8 @@ check_token();
 						$poursuivre_enregistrer_numind=true;
 
 						$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
+						// Après ça, un numind ne contient plus que des chiffres.
+						// Pas moyen de mettre une lettre pour un non-professeur
 						if($_POST['reg_statut']=="professeur") {
 							$reg_numind="P".$reg_numind;
 
@@ -571,7 +576,9 @@ check_token();
 					$sql_ajout_chaine_numind_et_type.=", type='".$_POST['reg_type']."'";
 				}
 
-				$reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."',auth_mode='".$_POST['reg_auth_mode']."'".$sql_ajout_chaine_numind_et_type." WHERE login='".$user_login."'");
+				$sql="UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."',auth_mode='".$_POST['reg_auth_mode']."'".$sql_ajout_chaine_numind_et_type." WHERE login='".$user_login."';";
+				//echo "$sql<br />";
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				$del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$user_login."'");
 				$m = 0;
 				while ($m < $_POST['max_mat']) {
