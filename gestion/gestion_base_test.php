@@ -40,6 +40,7 @@ $dossier_a_archiver=isset($_POST['dossier']) ? $_POST['dossier'] : (isset($_GET[
 $resultat_session = $session_gepi->security_check();
 //Décommenter la ligne suivante pour le mode "manuel et bavard"
 //$debug="yes";
+$login_debug="alain.terieur";
 
 if (!isset($action) or ($action != "restaure")) {
     if ($resultat_session == 'c') {
@@ -899,7 +900,9 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 				eleves e 
 			WHERE jec.login=e.login AND 
 				jec.id_classe='".$id_classe[$loop]."';";
-		//echo "$sql<br />";
+		if(isset($debug)) {
+			echo "$sql<br />";
+		}
 		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_ele)>0) {
 			echo "<p>Élèves&nbsp;: ";
@@ -914,12 +917,17 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 						login='".$lig_ele->login."' AND 
 						jeg.id_groupe=g.id AND 
 						jeg.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n');";
-				//echo "$sql<br />";
+				if(isset($debug) && $lig_ele->login==$login_debug) {
+					echo "$sql<br />";
+				}
 				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_grp)>0) {
 					while($lig_grp=mysqli_fetch_object($res_grp)) {
 						if($mode=="ecraser") {
 							$sql="DELETE FROM matieres_notes WHERE id_groupe='".$lig_grp->id_groupe."' AND login='".$lig_ele->login."' AND periode='".$lig_ele->periode."';";
+							if(isset($debug) && $lig_ele->login==$login_debug) {
+								echo "$sql<br />";
+							}
 							$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							//$note=rand(-2,40);
@@ -957,12 +965,21 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 							}
 
 							$sql="INSERT INTO matieres_notes SET id_groupe='".$lig_grp->id_groupe."', login='".$lig_ele->login."', periode='".$lig_ele->periode."', note='".$note."', statut='".$statut."';";
+							if(isset($debug) && $lig_ele->login==$login_debug) {
+								echo "$sql<br />";
+							}
 							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$lig_grp->id_groupe."' AND login='".$lig_ele->login."' AND periode='".$lig_ele->periode."';";
+							if(isset($debug) && $lig_ele->login==$login_debug) {
+								echo "$sql<br />";
+							}
 							$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							$sql="INSERT INTO matieres_appreciations SET id_groupe='".$lig_grp->id_groupe."', login='".$lig_ele->login."', periode='".$lig_ele->periode."', appreciation='".addslashes($app)."';";
+							if(isset($debug) && $lig_ele->login==$login_debug) {
+								echo "$sql<br />";
+							}
 							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 						else {
@@ -971,6 +988,9 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 							$app="Appréciation bidon pour ".$lig_ele->prenom." en cette période ".$lig_ele->periode.".";
 
 							$sql="SELECT * FROM matieres_notes WHERE id_groupe='".$lig_grp->id_groupe."' AND login='".$lig_ele->login."' AND periode='".$lig_ele->periode."';";
+							if(isset($debug) && $lig_ele->login==$login_debug) {
+								echo "$sql<br />";
+							}
 							$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_note)>0) {
 								$lig_note=mysqli_fetch_object($res_note);
@@ -1035,13 +1055,22 @@ elseif(isset($_POST['remplissage_aleatoire_bulletins'])) {
 								}
 
 								$sql="INSERT INTO matieres_notes SET id_groupe='".$lig_grp->id_groupe."', login='".$lig_ele->login."', periode='".$lig_ele->periode."', note='".$note."', statut='".$statut."';";
+								if(isset($debug) && $lig_ele->login==$login_debug) {
+									echo "$sql<br />";
+								}
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
 
 							$sql="SELECT * FROM matieres_appreciations WHERE id_groupe='".$lig_grp->id_groupe."' AND login='".$lig_ele->login."' AND periode='".$lig_ele->periode."' AND appreciation!='';";
+							if(isset($debug) && $lig_ele->login==$login_debug) {
+								echo "$sql<br />";
+							}
 							$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_app)==0) {
 								$sql="INSERT INTO matieres_appreciations SET id_groupe='".$lig_grp->id_groupe."', login='".$lig_ele->login."', periode='".$lig_ele->periode."', appreciation='".addslashes($app)."';";
+								if(isset($debug) && $lig_ele->login==$login_debug) {
+									echo "$sql<br />";
+								}
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
 						}
