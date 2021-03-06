@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -174,7 +174,9 @@ echo "<input type=\"submit\" value=\"OK\"/></form>\n";
 minicals($year, $month, $day, $id_groupe, 'index.php?');
 echo "</td>";
 echo "</tr></table>\n<hr />\n";
-$test_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$sql="SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe');";
+//echo "$sql<br />";
+$test_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_test = mysqli_num_rows($test_cahier_texte);
 $delai = getSettingValue("delai_devoirs");
 //Affichage des devoirs globaux s'il n'y a pas de notices dans ct_entry à afficher

@@ -833,70 +833,99 @@ function make_classes_select_html($link, $current, $year, $month, $day, $domaine
 
   if (isset($_SESSION['statut']) && ($_SESSION['statut']=='scolarite'
 		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")) {
-  $sql = "SELECT DISTINCT c.id, c.classe
+  $sql = "(SELECT DISTINCT c.id, c.classe
 	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
 	WHERE (c.id = jgc.id_classe
 	  AND jgc.id_groupe = ct.id_groupe
 	  AND jsc.id_classe=jgc.id_classe
-	  AND jsc.login='".$_SESSION ['login']."'
-		)
+	  AND jsc.login='".$_SESSION ['login']."') 
+	UNION 
+	(SELECT DISTINCT c.id, c.classe
+	FROM classes c, j_groupes_classes jgc, ct_devoirs_entry ct, j_scol_classes jsc
+	WHERE (c.id = jgc.id_classe
+	  AND jgc.id_groupe = ct.id_groupe
+	  AND jsc.id_classe=jgc.id_classe
+	  AND jsc.login='".$_SESSION ['login']."')) 
 	ORDER BY classe ;";
   } else if (isset($_SESSION['statut']) && ($_SESSION['statut']=='cpe'
 		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")) {
-	$sql = "SELECT DISTINCT c.id, c.classe
+	$sql = "(SELECT DISTINCT c.id, c.classe
 	  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_eleves_cpe jec,j_eleves_classes jecl
 	  WHERE (c.id = jgc.id_classe
 	  AND jgc.id_groupe = ct.id_groupe
 	  AND jec.cpe_login = '".$_SESSION ['login']."'
 	  AND jec.e_login = jecl.login
-	  AND jecl.id_classe = jgc.id_classe)
+	  AND jecl.id_classe = jgc.id_classe) 
+	  UNION (SELECT DISTINCT c.id, c.classe
+	  FROM classes c, j_groupes_classes jgc, ct_devoirs_entry ct, j_eleves_cpe jec,j_eleves_classes jecl
+	  WHERE (c.id = jgc.id_classe
+	  AND jgc.id_groupe = ct.id_groupe
+	  AND jec.cpe_login = '".$_SESSION ['login']."'
+	  AND jec.e_login = jecl.login
+	  AND jecl.id_classe = jgc.id_classe))
 	  ORDER BY classe ;";
   } else {
 	if(isset($_SESSION['statut']) && ($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiAccesCDTToutesClasses'))) {
-		$sql = "SELECT DISTINCT c.id, c.classe
+		$sql = "(SELECT DISTINCT c.id, c.classe
 		  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_groupes_professeurs jgp
 		  WHERE (c.id = jgc.id_classe
 		  AND jgp.id_groupe = ct.id_groupe
 		  AND jgc.id_groupe = ct.id_groupe
 		  AND jgp.login='".$_SESSION['login']."')
+		  UNION 
+		  (SELECT DISTINCT c.id, c.classe
+		  FROM classes c, j_groupes_classes jgc, ct_devoirs_entry ct, j_groupes_professeurs jgp
+		  WHERE (c.id = jgc.id_classe
+		  AND jgp.id_groupe = ct.id_groupe
+		  AND jgc.id_groupe = ct.id_groupe
+		  AND jgp.login='".$_SESSION['login']."'))
 		  ORDER BY classe";
 	}
 	else {
-		$sql = "SELECT DISTINCT c.id, c.classe
+		$sql = "(SELECT DISTINCT c.id, c.classe
 		  FROM classes c, j_groupes_classes jgc, ct_entry ct
 		  WHERE (c.id = jgc.id_classe
-		  AND jgc.id_groupe = ct.id_groupe)
+		  AND jgc.id_groupe = ct.id_groupe))
+		  UNION 
+		  (SELECT DISTINCT c.id, c.classe
+		  FROM classes c, j_groupes_classes jgc, ct_devoirs_entry ct
+		  WHERE (c.id = jgc.id_classe
+		  AND jgc.id_groupe = ct.id_groupe))
 		  ORDER BY classe";
 	}
   }
 
   //GepiAccesCdtCpeRestreint
 
-  $res = sql_query($sql);
+	$res = sql_query($sql);
 
-
-  if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
-  {
-    $selected = ($row[0] == $current) ? "selected" : "";
-    $link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$row[0]" . $aff_get_rne;
-    $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[1]);
-  }
-  $out_html .= "</select>
-  <script type=\"text/javascript\">
-  <!--
-  function classe_go()
-  {
-  box = document.forms[\"classe\"].classe;
-  destination = box.options[box.selectedIndex].value;
-  if (destination) location.href = destination;
-  }
-  // -->
-  </script>
-  <noscript>
-  <input type=submit value=\"OK\" />
-  </noscript>
-  </form>";
-  return $out_html;
+	if ($res) {
+		$tab_deja=array();
+		for ($i = 0; ($row = sql_row($res, $i)); $i++) {
+			if(!in_array($row[0], $tab_deja)) {
+				$selected = ($row[0] == $current) ? "selected" : "";
+				$link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$row[0]" . $aff_get_rne;
+				$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[1]);
+				$tab_deja[]=$row[0];
+			}
+		}
+	}
+	$out_html .= "</select>
+	<script type=\"text/javascript\">
+	<!--
+	function classe_go()
+		{
+			box = document.forms[\"classe\"].classe;
+			destination = box.options[box.selectedIndex].value;
+			if (destination) location.href = destination;
+		}
+	// -->
+	</script>
+	<noscript>
+		<input type=\"submit\" value=\"OK\" />
+	</noscript>
+	</form>";
+	return $out_html;
 }
 
 /**
