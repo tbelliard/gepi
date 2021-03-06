@@ -1022,9 +1022,11 @@ for($i=0;$i<14;$i++) {
 				// Liste des notices privées pour ce jour dans ce groupe:
 				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_private_entry']);$j++) {
 					$texte_np_courant.="<div style='background-color:".$color_fond_notices['p']."; border: 1px solid black; margin: 1px;'>\n";
-					$chaine_tag=get_liste_tag_notice_cdt($tab_notice[$i][$id_groupe]['ct_private_entry'][$j]['id_ct'], 'p', "right");
-					if($chaine_tag!="") {
-						$texte_np_courant.=$chaine_tag;
+					if(isset($tab_notice[$i][$id_groupe]['ct_private_entry'][$j]['id_ct'])) {
+						$chaine_tag=get_liste_tag_notice_cdt($tab_notice[$i][$id_groupe]['ct_private_entry'][$j]['id_ct'], 'p', "right");
+						if($chaine_tag!="") {
+							$texte_np_courant.=$chaine_tag;
+						}
 					}
 					$texte_np_courant.=$tab_notice[$i][$id_groupe]['ct_private_entry'][$j]['contenu'];
 					$texte_np_courant.="</div>\n";
