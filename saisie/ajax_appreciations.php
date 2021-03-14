@@ -5,7 +5,7 @@
  * Fichier qui permet la sauvegarde automatique des appréciations au fur et à mesure de leur saisie
  * Ajout du contrôle des lapsus sur les appréciations et avis des conseils de classe
  *
- * @copyright 2007-2013
+ * @copyright 2007-2021
  */
 
 // ============== Initialisation ===================
@@ -29,8 +29,13 @@ if ($resultat_session == 'c') {
 
 function log_ajax_app($texte) {
 	$debug="n";
-	$fichier="/tmp/log_ajax_app.txt";
 	if($debug=="y") {
+		//$fichier="/tmp/log_ajax_app.txt";
+
+		//get_user_temp_directory($login_user="")
+		$dirname = "../backup/".getSettingValue("backup_directory");
+		$fichier=$dirname."/log_ajax_app.txt";
+
 		$ladate=strftime("%b %d %H:%M:%S");
 		$f=fopen($fichier,"a+");
 		fwrite($f,$ladate." : ".$texte."\n");
@@ -235,6 +240,7 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 					// On supprime l'enregistrement tempo pour éviter de conserver un tempo qui est déjà enregistré dans la table principale.
 					$sql="DELETE FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
 					log_ajax_app($sql);
+					//echo "$sql<br />";
 					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					$insertion_ou_maj_tempo="n";
 
