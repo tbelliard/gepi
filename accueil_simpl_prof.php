@@ -259,6 +259,9 @@ if(in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite'))) {
 	$liste_evenements=afficher_les_evenements();
 }
 
+// 20210314:
+affiche_infos_actions();
+
 echo "<center>\n";
 
 //Affichage des messages
