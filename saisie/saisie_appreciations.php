@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Bouguin Régis, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Bouguin Régis, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -379,7 +379,7 @@ if (isset($_POST['is_posted'])) {
             }
 		//=================================================
 
-            if(isset($log_eleve)){
+            if(isset($log_eleve)) {
                     //for($i=0;$i<count($log_eleve);$i++){
                 for($i=0;$i<$indice_max_log_eleve;$i++){
 
@@ -446,6 +446,15 @@ if (isset($_POST['is_posted'])) {
                                     }
                                 }
                             }
+                            else {
+                                // 20210314
+                                // On essaye d'enregistrer une modif d'appréciation alors que la période est close.
+                                // Soit il y a tentative frauduleuse
+                                // soit on vient de verrouiller la période et le prof a validé ses saisies juste après
+                                // il ne faudrait pas vider les matieres_appreciations_tempo
+                                //echo "Il ne faudrait pas vider les matieres_appreciations_tempo<br />";
+                                $msg.="Anomalie: Tentative de saisie d'une appréciation pour ".$reg_eleve_login." alors que la période n'est pas ouverte en saisie.<br />";
+                            }
                         }
                     }
                 }
@@ -456,13 +465,50 @@ if (isset($_POST['is_posted'])) {
 	if($msg=='') {
             // On ne vide que si l'enregistrement s'est bien passé
 
-            // A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
-            $effacer = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
-            OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysqli_error($GLOBALS["mysqli"]));
+		// 20210314
+		// Et par précaution on met des infos ailleurs:
+		// On supprime les appreciation_tempo qui sont identiques aux appreciations enregistrées dans matieres_appreciations
+		$sql="SELECT mat.* FROM matieres_appreciations_tempo mat, matieres_appreciations ma WHERE
+			(mat.id_groupe='".$current_group["id"]."' AND mat.id_groupe=ma.id_groupe AND mat.periode=ma.periode AND mat.login=ma.login AND mat.appreciation=ma.appreciation);";
+		//echo "$sql<br />";
+		$res_app_identiques=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_app_identiques)>0) {
+			while($lig_app_id=mysqli_fetch_object($res_app_identiques)) {
+				$sql="DELETE FROM matieres_appreciations_tempo WHERE login='$lig_app_id->login' AND id_groupe='".$current_group["id"]."' AND periode='$lig_app_id->periode';";
+				//echo "$sql<br />";
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+		}
+
+		// Il ne reste plus que les appréciations différentes:
+		$sql="SELECT * FROM matieres_appreciations_tempo mat, eleves e WHERE id_groupe = '".$current_group["id"]."' AND e.login=mat.login ORDER BY e.nom, e.prenom, periode;";
+		//echo "$sql<br />";
+		$res_app_tempo=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_app_tempo)>0) {
+			$liste_appreciations_tempo="";
+			while($lig_tempo=mysqli_fetch_object($res_app_tempo)) {
+				$liste_appreciations_tempo.="<strong>".$lig_tempo->nom." ".$lig_tempo->prenom."</strong> (période ".$lig_tempo->periode.")&nbsp;: ".$lig_tempo->appreciation."<br />";
+			}
+			$sujet_tempo="Sauvegarde d'appréciations temporaires";
+			$message_tempo="<p>Des appréciations temporaires diffèrent de ce qui a été enregistré pour l'enseignement ".get_info_grp($current_group["id"]).".</p><p>Les appréciations correspondantes sont&nbsp;:<br />".$liste_appreciations_tempo."<br />Vérifiez si ce qui a été enregistré est conforme à ce que vous souhaitiez avant de supprimer ce message.</p>";
+			enregistre_infos_actions($sujet_tempo, $message_tempo, array($_SESSION['login']), 'individu');
+
+			if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+				$header_suppl='';
+				$tab_param_mail['destinataire']=$_SESSION['email'];
+				envoi_mail($sujet_tempo, $message_tempo, $_SESSION['email'], $header_suppl, "html", $tab_param_mail);
+			}
+		}
+
+		// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
+		$sql="DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."';";
+		//echo "$sql<br />";
+		$effacer = mysqli_query($GLOBALS["mysqli"], $sql)
+		OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysqli_error($GLOBALS["mysqli"]));
 	}
 
 	if($msg=="") {
-            $affiche_message = 'yes';
+		$affiche_message = 'yes';
 	}
 }
 elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))) {
@@ -1329,6 +1375,7 @@ function focus_suivant(num){
 		// On supprime les appreciation_tempo qui sont identiques aux appreciations enregistrées dans matieres_appreciations
 		$sql="SELECT mat.* FROM matieres_appreciations_tempo mat, matieres_appreciations ma WHERE
 			(mat.id_groupe='".$current_group["id"]."' AND mat.id_groupe=ma.id_groupe AND mat.periode=ma.periode AND mat.login=ma.login AND mat.appreciation=ma.appreciation);";
+		//echo "$sql<br />";
 		$res_app_identiques=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_app_identiques)>0) {
 			while($lig_app_id=mysqli_fetch_object($res_app_identiques)) {
@@ -1340,12 +1387,36 @@ function focus_suivant(num){
 	}
 
 	// On teste s'il existe des données dans la table matieres_appreciations_tempo
-	$sql_test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM matieres_appreciations_tempo WHERE id_groupe = '" . $current_group["id"] . "'");
+	$sql="SELECT login, periode FROM matieres_appreciations_tempo WHERE id_groupe = '" . $current_group["id"] . "'";
+	//echo "$sql<br />";
+	$sql_test = mysqli_query($GLOBALS["mysqli"], $sql);
 	$test = mysqli_num_rows($sql_test);
 	if ($test !== 0 AND $restauration == NULL) {
 		// On envoie un message à l'utilisateur
-		echo "
-		<p class=\"red\">Certaines appréciations n'ont pas été enregistrées dans une table temporaire lors de votre dernière saisie.<br />
+		// 20210314
+		// La période aurait-elle été close pendant que le prof faisait ses saisies?
+		$test_periode_close=false;
+		while($lig_test=mysqli_fetch_object($sql_test)) {
+			if(($current_group["classe"]["ver_periode"]['all'][$lig_test->periode]>=2)||
+			(($current_group["classe"]["ver_periode"]['all'][$lig_test->periode]!=0)&&($_SESSION['statut']=='secours'))||
+			(($acces_exceptionnel_complet=="y")&&($_SESSION['statut']=='professeur'))) {
+				// La période n'est pas close
+			}
+			else {
+				$test_periode_close=true;
+				break;
+			}
+		}
+
+		if($test_periode_close) {
+			echo "<p class=\"red\">Certaines appréciations n'ont pas été enregistrées lors de votre dernière saisie.<br />
+			Un récapitulatif doit vous être affiché en page d'accueil.<br />
+			Demandez à l'administration que l'accès soit rouvert pour que vous puissiez faire prendre en compte les appréciations temporaires.</p>";
+		}
+		else {
+			echo "
+		<p class=\"red\">Certaines appréciations n'ont pas été enregistrées lors de votre dernière saisie.<br />
+			Elles ont par précaution été mises en réserve dans une table temporaire au fur et à mesure des saisies.<br />
 			Elles sont indiquées ci-dessous en rouge. Voulez-vous les restaurer ?
 		</p>
 		<p class=\"red\">
@@ -1354,8 +1425,28 @@ function focus_suivant(num){
 			-
 		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non".add_token_in_url()."\">NON</a>
 		<em>(elles seront alors définitivement perdues)</em>
-		</p>
-		";
+		</p>";
+		}
+
+		$sql="SELECT * FROM matieres_appreciations_tempo mat, eleves e WHERE id_groupe = '".$id_groupe."' AND e.login=mat.login ORDER BY e.nom, e.prenom, periode;";
+		//echo "$sql<br />";
+		$res_app_tempo=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_app_tempo)>0) {
+			$liste_appreciations_tempo="";
+			while($lig_tempo=mysqli_fetch_object($res_app_tempo)) {
+				$liste_appreciations_tempo.="<strong>".$lig_tempo->nom." ".$lig_tempo->prenom."</strong> (période ".$lig_tempo->periode.")&nbsp;: ".$lig_tempo->appreciation."<br />";
+			}
+			$sujet_tempo="Sauvegarde d'appréciations temporaires";
+			$message_tempo="<p>Il vous a été proposé de restaurer des appréciations temporaires pour l'enseignement ".get_info_grp($id_groupe).".</p><p>Les appréciations étaient&nbsp;:<br />".$liste_appreciations_tempo."<br />Ce message est une précaution pour vous permettre de revenir sur un éventuelle erreur.<br />Une fois la question traitée, vous pouvez supprimer ce message.</p>";
+			enregistre_infos_actions($sujet_tempo, $message_tempo, array($_SESSION['login']), 'individu');
+			//echo "On enregistre une action en page d'accueil...<br />";
+			if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+				$header_suppl='';
+				$tab_param_mail['destinataire']=$_SESSION['email'];
+				//echo "On envoie un mail...<br />";
+				envoi_mail($sujet_tempo, $message_tempo, $_SESSION['email'], $header_suppl, "html", $tab_param_mail);
+			}
+		}
 	}
 
 	// Dans tous les cas, si $restauration n'est pas NULL, il faut vider la table tempo des appréciations de ce groupe
@@ -2190,6 +2281,8 @@ foreach ($liste_eleves as $eleve_login) {
 					$mess[$k].="<br />\n";
 					$mess[$k].=$notes_conteneurs;
 				}
+				// 20210314
+				$mess[$k].="<br />\n";
 
 				// 20191211
 				if(!in_array($eleve_id_classe, $tab_id_classe_exclues_module_bulletins)) {
@@ -3097,7 +3190,32 @@ echo "</form>\n";
 // ====================== SYSTEME  DE SAUVEGARDE ========================
 // Dans tous les cas, suite à une demande de restauration, et quelle que soit la réponse, les sauvegardes doivent être effacées
 if ($restauration == "oui" OR $restauration == "non") {
-	$effacer = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
+	// 20210314
+	$sql="SELECT * FROM matieres_appreciations_tempo mat, eleves e WHERE id_groupe = '".$id_groupe."' AND e.login=mat.login ORDER BY e.nom, e.prenom, periode;";
+	//echo "$sql<br />";
+	$res_app_tempo=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_app_tempo)>0) {
+		$liste_appreciations_tempo="";
+		while($lig_tempo=mysqli_fetch_object($res_app_tempo)) {
+			$liste_appreciations_tempo.="<strong>".$lig_tempo->nom." ".$lig_tempo->prenom."</strong> (période ".$lig_tempo->periode.")&nbsp;: ".$lig_tempo->appreciation."<br />";
+		}
+		$sujet_tempo="Sauvegarde d'appréciations temporaires";
+		$message_tempo="<p>Vous avez répondu $restauration à la proposition de restauration des appréciations temporaires pour l'enseignement ".get_info_grp($id_groupe).".</p><p>Les appréciations étaient&nbsp;:<br />".$liste_appreciations_tempo."<br />Vérifiez si elles ont bien été prises en compte avant de supprimer ce message.</p>";
+		enregistre_infos_actions($sujet_tempo, $message_tempo, array($_SESSION['login']), 'individu');
+		//echo "On enregistre une action en page d'accueil...<br />";
+		if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+			$header_suppl='';
+			$tab_param_mail['destinataire']=$_SESSION['email'];
+			//echo "On envoie un mail...<br />";
+			envoi_mail($sujet_tempo, $message_tempo, $_SESSION['email'], $header_suppl, "html", $tab_param_mail);
+		}
+	}
+
+	$sql="DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."';";
+	//echo "$sql<br />";
+	echo "<p style='color:blue'>Vous avez répondu <strong>$restauration</strong> à la proposition de restauration des appréciations temporaires.</p>";
+	//echo "$sql<br />";
+	$effacer = mysqli_query($GLOBALS["mysqli"], $sql)
 	OR DIE('Erreur dans l\'effacement de la table temporaire (2) : '.mysqli_error($GLOBALS["mysqli"]));
 }
 // Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
