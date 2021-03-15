@@ -2321,3 +2321,4 @@ INSERT INTO setting SET name='export_vers_sacoche', value='n';
 INSERT INTO droits SET id='/cahier_texte_2/voir_pj.php', administrateur='F', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='F', autre='F', description='Consulter les PJ à une notice de CDT', statut='';
 INSERT INTO droits SET id='/cahier_texte_2/documents_cdt.php', administrateur='F', professeur='V', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Documents joints aux CDT', statut='';
 INSERT INTO setting SET name='GepiCahierTexteVersion', value='2';
+INSERT INTO droits SET id='/mod_epreuve_blanche/copie_par_lots.php', administrateur='V', professeur='F', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Epreuve blanche: Copie par lots', statut='';

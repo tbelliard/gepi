@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -840,7 +840,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			// Accéder aux épreuves blanches: closes ou non
 			$sql="SELECT * FROM eb_epreuves WHERE etat!='clos' ORDER BY date, intitule;";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res)>0) {
+			$nb_epreuves=mysqli_num_rows($res);
+			if($nb_epreuves>0) {
 				echo "<li>\n";
 				echo "<p><b>Epreuves en cours&nbsp;:</b><br />\n";
 				while($lig=mysqli_fetch_object($res)) {
@@ -886,6 +887,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				}
 				echo "</li>\n";
 			}
+
 			// Pouvoir consulter/modifier:
 			// - etat: clos ou non
 			// - date
@@ -896,7 +898,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			$sql="SELECT * FROM eb_epreuves WHERE etat='clos' ORDER BY date, intitule;";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res)>0) {
+			$nb_epreuves_closes=mysqli_num_rows($res);
+
+			if(($nb_epreuves>0)&&($nb_epreuves+$nb_epreuves_closes>1)) {
+				echo "<li><a href='copie_par_lots.php'>Copier des paramétrages d'une épreuve vers d'autres épreuves</a>.<br />
+				Par exemple, pour déclarer les mêmes salles et répartitions des élèves dans les salles pour plusieurs épreuves d'un même examen.</li>\n";
+			}
+
+			if($nb_epreuves_closes>0) {
 				echo "<li>\n";
 				echo "<p><b>Epreuves closes&nbsp;:</b><br />\n";
 				while($lig=mysqli_fetch_object($res)) {

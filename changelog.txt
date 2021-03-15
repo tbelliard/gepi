@@ -70,6 +70,7 @@ LSUN et Socle:
 - Possibilité d'inclure le nom de salle sur les étiquettes.
 - Ajout d'un modèle ODT (OpenDocument) pour les feuilles d'émargement.
 - Possibilité de générer des convocations élèves au format ODT (OpenDocument).
+- Possibilité de copier des parmaètres par lots vers plusieurs épreuves.
 
 Général:
 - Possibilité d'imposer l'interface simplifiée par défaut pour les professeurs

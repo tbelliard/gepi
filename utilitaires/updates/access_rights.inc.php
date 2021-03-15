@@ -2086,6 +2086,18 @@ autre='F',
 description='Documents joints aux CDT',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/copie_par_lots.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Epreuve blanche: Copie par lots',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

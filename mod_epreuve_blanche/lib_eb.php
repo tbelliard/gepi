@@ -95,4 +95,16 @@ function calcul_moy_med($tableau) {
 	return $tab_retour;
 }
 
+function get_info_epreuve_blanche($id_epreuve) {
+	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		return "<span style='color:red'>Épreuve inconnue</span>";
+	}
+	else {
+		$lig=mysqli_fetch_object($res);
+		return $lig->intitule." (".formate_date($lig->date).")";
+	}
+}
+
 ?>
