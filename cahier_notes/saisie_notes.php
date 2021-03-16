@@ -1451,6 +1451,14 @@ foreach ($liste_eleves as $eleve) {
 // 20120509
 $max_indice_eleve=$i;
 
+// 20210316
+/*
+if(isset($tab_graph)) {
+echo "<pre>";
+print_r($tab_graph);
+echo "</pre>";
+}
+*/
 //========================================
 // 20181022
 
@@ -1833,6 +1841,8 @@ while ($i < $nb_dev) {
 		echo "</center>";
 
 		echo "<div style='float:right; width:16px;'><a href='copie_dev.php?id_devoir=".$id_dev[$i]."' onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' /></a></div>";
+
+		echo "<div style='float:right; width:16px;'><a href='#' onclick=\"afficher_dev_infobulle(".$id_dev[$i].");return false;\" title=\"Afficher les notes en infobulle... avec possibilité de tri.\"><img src='../images/icons/chercher.png' class='icone16' alt='Afficher' /></a></div>";
 
 		echo"</td>\n";
 		if ($id_dev[$i] == $id_devoir) {
