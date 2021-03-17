@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+*  Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -58,7 +58,69 @@ if (!checkAccess()) {
 
 // Récupérer id_notice et type notice.
 $id_ct=isset($_GET['id_ct']) ? $_GET['id_ct'] : NULL;
-$type_notice=isset($_GET['type_notice']) ? $_GET['type_notice'] : NULL;
+$type_notice=isset($_POST['type_notice']) ? $_POST['type_notice'] : (isset($_GET['type_notice']) ? $_GET['type_notice'] : NULL);
+
+//===============================================
+// 20210317 : Autres notices le même jour dans d'autres enseignements
+$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL;
+$id_ct_src=isset($_POST['id_ct_src']) ? $_POST['id_ct_src'] : NULL;
+if(isset($id_ct_src)) {
+	if(preg_match('/^[0-9]{1,}$/', $id_ct_src)) {
+		if(isset($id_groupe)) {
+			if(preg_match('/^[0-9]{1,}$/', $id_groupe)) {
+				if(!is_prof_groupe($_SESSION['login'], $id_groupe)) {
+					header("Location: index.php?msg=".rawurlencode("Vous n'êtes pas professeur du groupe n°".$id_groupe."."));
+					die();
+				}
+
+				if($type_notice=="c") {
+					$table_ct="ct_entry";
+				}
+				elseif($type_notice=="t") {
+					$table_ct="ct_devoirs_entry";
+				}
+				elseif($type_notice=="p") {
+					$table_ct="ct_private_entry";
+				}
+				else {
+					header("Location: index.php?msg=".rawurlencode("Le type de notice CDT est invalide."));
+					die();
+				}
+			
+				$sql="SELECT date_ct FROM ".$table_ct." WHERE id_ct='".$id_ct_src."';";
+				$res=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res)==0) {
+					$id_ct=$id_ct_src;
+				}
+				else {
+					$lig=mysqli_fetch_object($res);
+					$date_ct=$lig->date_ct;
+
+					$sql="SELECT id_ct FROM ".$table_ct." WHERE id_groupe='".$id_groupe."' AND date_ct='".$date_ct."';";
+					$res=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res)==0) {
+						$id_ct=$id_ct_src;
+					}
+					else {
+						$lig=mysqli_fetch_object($res);
+						$id_ct=$lig->id_ct;
+					}
+				}
+			}
+			else {
+				$id_ct=$id_ct_src;
+			}
+		}
+		else {
+			$id_ct=$id_ct_src;
+		}
+	}
+	else {
+		header("Location: index.php?msg=".rawurlencode("L'identifiant de notice CDT '$id_ct_src' est invalide."));
+		die();
+	}
+}
+//===============================================
 
 if((!isset($id_ct))||
 (!isset($type_notice))||
@@ -156,6 +218,61 @@ echo "
 	<div style='float:right; width:16px; margin:0.5em;'>
 		<a href='../cahier_texte_2/see_all.php?id_groupe=".$lig_ct->id_groupe.$ancre_see_all."'><img src='../images/icons/cahier_textes.png' class='icone16' alt='CDT' /></a>
 	</div>";
+
+
+//===================================================================
+// 20210317 : Autres notices le même jour dans d'autres enseignements
+$table_ct='';
+if($type_notice=="c") {
+	$table_ct="ct_entry";
+}
+elseif($type_notice=="t") {
+	$table_ct="ct_devoirs_entry";
+}
+elseif($type_notice=="p") {
+	$table_ct="ct_private_entry";
+}
+if($table_ct!='') {
+	//$sql="SELECT DISTINCT id_groupe FROM ct_entry WHERE id_ct!=".$id_ct." AND date_ct='".$lig_ct->date_ct."';";
+	$sql="SELECT DISTINCT ct.id_groupe FROM ".$table_ct." ct, 
+				j_groupes_professeurs jgp, 
+				j_groupes_matieres jgm, 
+				j_groupes_classes jgc, 
+				classes c 
+			WHERE 
+				jgm.id_groupe=jgp.id_groupe AND 
+				jgc.id_groupe=jgp.id_groupe AND 
+				c.id=jgc.id_classe AND
+				ct.id_groupe=jgp.id_groupe AND 
+				jgp.login='".$_SESSION['login']."' AND 
+				ct.date_ct='".$lig_ct->date_ct."' 
+			ORDER BY jgm.id_matiere, c.classe;";
+	//echo "$sql<br />";
+	$res_autre_grp=mysqli_query($mysqli, $sql);
+	//if(mysqli_num_rows($res_autre_grp)>0) {
+	if(mysqli_num_rows($res_autre_grp)>1) {
+		echo "<div style='float:right; width:30em; text-align: right; margin-right:0.5em;'>
+		<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_change_grp'>
+			<select name='id_groupe' onchange=\"document.getElementById('form_change_grp').submit()\" style='max-width:20em;'>";
+		while($lig_grp=mysqli_fetch_object($res_autre_grp)) {
+			echo "
+				<option value='".$lig_grp->id_groupe."'>".get_info_grp($lig_grp->id_groupe)."</option>";
+		}
+		echo "
+			</select>
+			<input type='hidden' name='id_ct_src' id='id_ct_src' value='".$id_ct."' />
+			<input type='hidden' name='type_notice' id='type_notice' value='".$type_notice."' />
+			<input type='submit' id='submit_change_grp' value='Go' />
+			<script type='text/javascript'>
+				document.getElementById('submit_change_grp').style.display='none';
+			</script>
+		</form>
+	</div>";
+	}
+}
+//===================================================================
+
+
 
 echo "
 	<h2>".get_info_grp($lig_ct->id_groupe)."</h2>";
