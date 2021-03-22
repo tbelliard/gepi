@@ -441,11 +441,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 				}
 				// 20210322
-				if(isset($_GET['rafraichir_groupes'])) {
-					$msg="Rafraichissement des membres de(s) groupe(s) effectué.<br />";
-				}
-				else {
-					$msg="Ajout de(s) groupe(s) effectué.<br />";
+				if($msg=='') {
+					if(isset($_GET['rafraichir_groupes'])) {
+						$msg="Rafraichissement des membres de(s) groupe(s) effectué.<br />";
+					}
+					else {
+						$msg="Ajout de(s) groupe(s) effectué.<br />";
+					}
 				}
 			}
 		}
@@ -1701,6 +1703,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 				echo "</form>\n";
 
+				echo "<p style='margin-top:1em; text-indent:-6.5em; margin-left:6.5em;'><strong style='color:red'>Attention&nbsp;:</strong> Lors de l'ajout de groupes, la liste des élèves est re-générée, mais les affectations des élèves dans telle ou telle salle sont supprimées.<br />
+				Pour juste prendre en compte un nouvel élève, vous devriez <a href='index.php?id_epreuve=".$id_epreuve."&mode=ajout_groupes&rafraichir_groupes=y&csrf_alea=".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">raffraichir la liste des groupes</a> pour le prendre en compte.</p>";
+
 				echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
 	if(document.getElementById('id_classe_'+cpt)) {
@@ -1819,7 +1824,8 @@ function checkbox_change(cpt) {
 			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
 
-			echo "<p><br /></p>&nbsp;\n";
+			echo "<p style='margin-top:1em; text-indent:-6.5em; margin-left:6.5em;'><strong style='color:red'>Attention&nbsp;:</strong> Lors de l'ajout de groupes, la liste des élèves est re-générée, mais les affectations des élèves dans telle ou telle salle sont supprimées.<br />
+				Pour juste prendre en compte un nouvel élève, vous devriez <a href='index.php?id_epreuve=".$id_epreuve."&mode=ajout_groupes&rafraichir_groupes=y&csrf_alea=".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">raffraichir la liste des groupes</a> pour le prendre en compte.</p>";
 
 			echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
