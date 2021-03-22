@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -742,15 +742,23 @@ else {
 					echo "</td>\n";
 	
 					$affect="n";
-					for($i=0;$i<count($id_salle);$i++) {
-						echo "<td>\n";
-						echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='$id_salle[$i]' ";
-						echo "onchange='calcule_effectif();changement()' ";
-						echo "title=\"Affecter $designation_eleve en ".$salle[$i]."\" ";
-						// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
-						if($tab_ele_id_salle[$login_ele]==$id_salle[$i]) {echo "checked ";$affect="y";}
-						echo "/>\n";
-						echo "</td>\n";
+					// 20210322
+					if(!isset($tab_ele_id_salle[$login_ele])) {
+						echo "<td style='color:red' colspan='".count($id_salle)."'>
+							Élève nouvellement arrivé&nbsp;? Enregistrez les modifications dans la présente page, puis <a href='index.php?id_epreuve=".$id_epreuve."&mode=ajout_groupes&rafraichir_groupes=y&csrf_alea=".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">raffraichissez la liste des groupes</a> pour le prendre en compte
+						</td>";
+					}
+					else {
+						for($i=0;$i<count($id_salle);$i++) {
+							echo "<td>\n";
+							echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='$id_salle[$i]' ";
+							echo "onchange='calcule_effectif();changement()' ";
+							echo "title=\"Affecter $designation_eleve en ".$salle[$i]."\" ";
+							// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+							if($tab_ele_id_salle[$login_ele]==$id_salle[$i]) {echo "checked ";$affect="y";}
+							echo "/>\n";
+							echo "</td>\n";
+						}
 					}
 					echo "<td>\n";
 					echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='-1' ";
