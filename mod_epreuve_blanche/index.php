@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -353,9 +353,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$tab_anonymat=array('elenoet','ele_id','no_gep','alea','chrono');
 				if(!in_array($type_anonymat,$tab_anonymat)) {$type_anonymat="ele_id";}
 
-				// On ne supprime que les enregistrements de copies pour lesquelles aucune note n'est encore saisie
-				$sql="DELETE FROM eb_copies WHERE id_epreuve='$id_epreuve' AND statut='v';";
-				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+				// 20210322
+				// On ne supprimer les copies, les numéros anonymat que si ce n'est pas juste un rafraichissement
+				if(!isset($_GET['rafraichir_groupes'])) {
+					// On ne supprime que les enregistrements de copies pour lesquelles aucune note n'est encore saisie
+					$sql="DELETE FROM eb_copies WHERE id_epreuve='$id_epreuve' AND statut='v';";
+					$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
 
 				$tab_n_anonymat_affectes=array();
 				$sql="SELECT n_anonymat FROM eb_copies WHERE id_epreuve='$id_epreuve';";
@@ -436,7 +440,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$tab_deja_groupe[]=$id_groupe[$i];
 					}
 				}
-				if($msg=='') {$msg="Ajout de(s) groupe(s) effectué.<br />";}
+				// 20210322
+				if(isset($_GET['rafraichir_groupes'])) {
+					$msg="Rafraichissement des membres de(s) groupe(s) effectué.<br />";
+				}
+				else {
+					$msg="Ajout de(s) groupe(s) effectué.<br />";
+				}
 			}
 		}
 		$mode='modif_epreuve';
