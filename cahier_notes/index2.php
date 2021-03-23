@@ -388,7 +388,7 @@ if (isset($id_classe)) {
 		}
 
 		echo "<tr>\n";
-		echo "<td valign='top'><input type=\"checkbox\" name=\"aff_date_naiss\" id=\"aff_date_naiss\" /></td>\n";
+		echo "<td valign='top'><input type=\"checkbox\" name=\"aff_date_naiss\" id=\"aff_date_naiss\" value='y' /></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_date_naiss' style='cursor:pointer;'>\n";
 		echo "Afficher la date de naissance des élèves\n";
