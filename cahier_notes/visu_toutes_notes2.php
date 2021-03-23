@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1755,7 +1755,9 @@ if(isset($_GET['mode'])) {
 			}
 		}
 
-		$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(count($ligne1_csv)-2))/10;
+		//$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(count($ligne1_csv)-2))/10;
+		// On enlève la colonne nom/prénom
+		$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele)/(count($ligne1_csv)-1))/10;
 		//$info_largeur_col_notes="\$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(".count($ligne1_csv)."-2))/10=$largeur_col_notes";
 
 		function ajuste_FontSize($texte, $largeur_dispo, $hauteur_caractere_initiale, $graisse='', $hauteur_caractere_minimale, $fonte='DejaVu') {
