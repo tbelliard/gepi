@@ -371,12 +371,12 @@ while($j < $nb_lignes_tableau) {
 
 	//=======================================
 	// colonne date de naissance
-    if ($aff_date_naiss){
+	if ($aff_date_naiss){
 		$tmpdate=old_mysql_result($appel_donnees_eleves, $j, "naissance");
 		$tmptab=explode("-",$tmpdate);
 		if(mb_strlen($tmptab[0])==4){$tmptab[0]=mb_substr($tmptab[0],2,2);}
-        $col[$ind][$j+$ligne_supl]=$tmptab[2]."/".$tmptab[1]."/".$tmptab[0];
-        $ind++;
+		$col[$ind][$j+$ligne_supl]=$tmptab[2]."/".$tmptab[1]."/".$tmptab[0];
+		$ind++;
 	}
 	//=======================================
 
@@ -529,12 +529,12 @@ $k= 1;
 //=========================
 if ($aff_date_naiss){
 	if ($test_coef != 0) $col[$ind][0] = "-";
-    $col[$ind][$nb_lignes_tableau+$ligne_supl] = "-";
-    $col[$ind][$nb_lignes_tableau+1+$ligne_supl] = "-";
-    $col[$ind][$nb_lignes_tableau+2+$ligne_supl] = "-";
-    $nb_col++;
-    $k++;
-    $ind++;
+	$col[$ind][$nb_lignes_tableau+$ligne_supl] = "-";
+	$col[$ind][$nb_lignes_tableau+1+$ligne_supl] = "-";
+	$col[$ind][$nb_lignes_tableau+2+$ligne_supl] = "-";
+	$nb_col++;
+	$k++;
+	$ind++;
 }
 //=========================
 
@@ -1755,9 +1755,13 @@ if(isset($_GET['mode'])) {
 			}
 		}
 
-		//$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(count($ligne1_csv)-2))/10;
-		// On enlève la colonne nom/prénom
-		$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele)/(count($ligne1_csv)-1))/10;
+		if($avec_date_naiss=="y") {
+			$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(count($ligne1_csv)-2))/10;
+		}
+		else {
+			// On enlève juste la colonne nom/prénom
+			$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele)/(count($ligne1_csv)-1))/10;
+		}
 		//$info_largeur_col_notes="\$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(".count($ligne1_csv)."-2))/10=$largeur_col_notes";
 
 		function ajuste_FontSize($texte, $largeur_dispo, $hauteur_caractere_initiale, $graisse='', $hauteur_caractere_minimale, $fonte='DejaVu') {
