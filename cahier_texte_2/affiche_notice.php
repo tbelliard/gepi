@@ -255,8 +255,12 @@ if($table_ct!='') {
 		<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_change_grp'>
 			<select name='id_groupe' onchange=\"document.getElementById('form_change_grp').submit()\" style='max-width:20em;'>";
 		while($lig_grp=mysqli_fetch_object($res_autre_grp)) {
+			$selected='';
+			if($lig_grp->id_groupe==$lig_ct->id_groupe) {
+				$selected=" selected='true'";
+			}
 			echo "
-				<option value='".$lig_grp->id_groupe."'>".get_info_grp($lig_grp->id_groupe)."</option>";
+				<option value='".$lig_grp->id_groupe."'".$selected.">".get_info_grp($lig_grp->id_groupe)."</option>";
 		}
 		echo "
 			</select>
