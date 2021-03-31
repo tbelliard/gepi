@@ -1196,7 +1196,12 @@ function affiche_docs_joints($id_ct,$type_notice) {
       $sql = "SELECT titre, emplacement, visible_eleve_parent FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
   }
 
-  $acces_voir_pj=acces('/cahier_texte_2/voir_pj.php', $_SESSION['statut']);
+  if(isset($_SESSION['statut'])) {
+    $acces_voir_pj=acces('/cahier_texte_2/voir_pj.php', $_SESSION['statut']);
+  }
+  else {
+    $acces_voir_pj=false;
+  }
 
   // On n'a pas de docs joints sur les notices privées.
   if(isset($sql)) {
@@ -1635,7 +1640,7 @@ function affiche_infos_actions() {
 	ia.id=iad.id_info AND
 	((iad.nature='individu' AND iad.valeur='".$_SESSION['login']."') OR
 	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."')) ORDER BY date;";
-    
+	//echo "$sql<br />";
         $res = mysqli_query($mysqli, $sql);
         $chaine_id="";
         if($res->num_rows > 0) {
