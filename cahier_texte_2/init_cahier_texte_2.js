@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2009-2011 Josselin Jacquard
+ * Copyright 2009-2021 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1429,7 +1429,7 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 				// GeoGebra
 				//tmp_encodedStr=encodedStr.replace(/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
 				//tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_geogebra.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?');
-				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_geogebra.php\?url=\.\.\/documents\//, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?url=___POINTPOINT___\/documents\/');
+				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_geogebra.php\?url=\.\.\/documents\//g, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_geogebra.php\?url=___POINTPOINT___\/documents\/');
 				encodedStr=tmp_encodedStr;
 				//==========================
 				tmp_encodedStr=encodedStr.replace(/\.\.\/documents\//g, document.getElementById('url_racine_gepi').value+'/documents/');
@@ -1437,7 +1437,7 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 				encodedStr=tmp_encodedStr;
 				//==========================
 				//href='voir_pj.php?id_ct
-				tmp_encodedStr=encodedStr.replace(/voir_pj.php\?id_ct=/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/voir_pj.php\?id_ct=');
+				tmp_encodedStr=encodedStr.replace(/voir_pj.php\?id_ct=/g, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/voir_pj.php\?id_ct=');
 				encodedStr=tmp_encodedStr;
 
 				tmp_encodedStr=encodedStr.replace(/\.\.\/images\/icons\/chercher.png/g, document.getElementById('url_racine_gepi').value+'/images/icons/chercher.png');
@@ -1445,11 +1445,11 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 				encodedStr=tmp_encodedStr;
 				//==========================
 				//tmp_encodedStr=encodedStr.replace(/visionneur_instrumenpoche.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
-				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_instrumenpoche.php\?/, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
+				tmp_encodedStr=encodedStr.replace(/\.\.\/cahier_texte_2\/visionneur_instrumenpoche.php\?/g, document.getElementById('url_racine_gepi').value+'/cahier_texte_2/visionneur_instrumenpoche.php\?');
 				encodedStr=tmp_encodedStr;
 				//==========================
 				// GeoGebra : on rétablit le ___POINTPOINT___/documents en ../documents
-				tmp_encodedStr=encodedStr.replace(/url=___POINTPOINT___\/documents\//, 'url=\.\.\/documents\/');
+				tmp_encodedStr=encodedStr.replace(/url=___POINTPOINT___\/documents\//g, 'url=\.\.\/documents\/');
 				encodedStr=tmp_encodedStr;
 				//==========================
 
