@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -42,7 +42,7 @@ $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_epreuve_blanche/attribuer_copies.php',
 administrateur='V',
-professeur='F',
+professeur='V',
 cpe='F',
 scolarite='V',
 eleve='F',
@@ -53,6 +53,9 @@ description='Epreuve blanche: Attribuer les copies aux professeurs',
 statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
+
+$sql="UPDATE droits SET professeur='V' WHERE id='/mod_epreuve_blanche/attribuer_copies.php';";
+$maj=mysqli_query($GLOBALS["mysqli"], $sql);
 
 //======================================================================================
 // Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
@@ -68,7 +71,131 @@ $definition_salles=isset($_POST['definition_salles']) ? $_POST['definition_salle
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
-if(isset($_POST['valide_affect_eleves'])) {
+// 20210407
+if((!isset($id_epreuve))||(!preg_match("/^[0-9]{1,}$/", $id_epreuve))) {
+	header("Location: ../accueil.php?msg=".rawurlencode("Numéro d'épreuve invalide."));
+	die();
+}
+
+if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))&&(isset($_POST['valider_param_choix_numeros']))) {
+	check_token();
+
+	$autoriser_choix_numeros=isset($_POST['autoriser_choix_numeros']) ? '1' : '0';
+
+	$sql="SELECT * FROM eb_param WHERE type='autoriser_choix_numeros' AND nom='".$id_epreuve."';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)==0) {
+		$sql="INSERT INTO eb_param SET type='autoriser_choix_numeros', nom='".$id_epreuve."', valeur='".$autoriser_choix_numeros."';";
+		$reg=mysqli_query($mysqli, $sql);
+	}
+	else {
+		$sql="UPDATE eb_param SET valeur='".$autoriser_choix_numeros."' WHERE type='autoriser_choix_numeros' AND nom='".$id_epreuve."';";
+		$reg=mysqli_query($mysqli, $sql);
+	}
+	if(!$reg) {
+		$msg="Erreur lors de l'enregistrement du paramètre autorisant ou non les professeurs à sélectionner leurs numéros de copies dans la liste.<br />";
+	}
+	else {
+		$msg="Enregistrement du paramètre autorisant ou non les professeurs à sélectionner leurs numéros de copies dans la liste effectué.<br />";
+	}
+}
+
+if($_SESSION['statut']=='professeur') {
+	$sql="SELECT * FROM eb_profs WHERE id_epreuve='".$id_epreuve."' AND login_prof='".$_SESSION['login']."';";
+	//echo "$sql<br />";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)==0) {
+		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'êtes pas associé à l'épreuve n°".$id_epreuve."."));
+		die();
+	}
+}
+
+$autoriser_choix_numeros=false;
+$sql="SELECT * FROM eb_param WHERE type='autoriser_choix_numeros' AND nom='".$id_epreuve."';";
+//echo "$sql<br />";
+$test=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($test)>0) {
+	$lig=mysqli_fetch_object($test);
+	/*
+	echo "<pre>";
+	print_r($lig);
+	echo "</pre>";
+	*/
+	if($lig->valeur==1) {
+		$autoriser_choix_numeros=true;
+	}
+}
+//echo "\$autoriser_choix_numeros=$autoriser_choix_numeros<br />";
+if(($_SESSION['statut']=='professeur')&&(!$autoriser_choix_numeros)) {
+	//header("Location: ../accueil.php?msg=".rawurlencode("Accès non autorisé."));
+	die();
+}
+
+if(($_SESSION['statut']=='professeur')&&(isset($_POST['valider_choix_copies_prof']))) {
+	check_token();
+
+	$copie=isset($_POST['copie']) ? $_POST['copie'] : array();
+	$nb_copies=0;
+	$nb_desattribution=0;
+
+	$msg='';
+
+	$tab_deja_a_moi=array();
+	$tab_deja_attribuee=array();
+	$sql="SELECT ec.login_prof, ec.n_anonymat FROM eb_copies ec WHERE ec.id_epreuve='$id_epreuve' ORDER BY ec.n_anonymat;";
+	//echo "$sql<br />";
+	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+	$cpt=0;
+	while($lig2=mysqli_fetch_object($res2)) {
+		if($lig2->login_prof==$_SESSION['login']) {
+			$tab_deja_a_moi[$lig2->n_anonymat]=$lig2->login_prof;
+		}
+		elseif($lig2->login_prof!='') {
+			$tab_deja_attribuee[$lig2->n_anonymat]=$lig2->login_prof;
+		}
+	}
+
+
+	foreach($copie as $key => $value) {
+
+		$tmp_tab=explode("|", $value);
+		$n_anonymat=$tmp_tab[0];
+
+		if($tmp_tab[1]=='y') {
+			if((!isset($tab_deja_a_moi[$n_anonymat]))&&(!isset($tab_deja_attribuee[$n_anonymat]))) {
+				$sql="UPDATE eb_copies SET login_prof='".$_SESSION['login']."' WHERE id_epreuve='".$id_epreuve."' AND n_anonymat='".$n_anonymat."';";
+				$update=mysqli_query($mysqli, $sql);
+				if(!$update) {
+					$msg.="Erreur lors de l'attribution de la copie n°".$n_anonymat."<br />";
+				}
+				else {
+					$nb_copies++;
+				}
+			}
+		}
+		else {
+			if(isset($tab_deja_a_moi[$n_anonymat])) {
+				$sql="UPDATE eb_copies SET login_prof='' WHERE id_epreuve='".$id_epreuve."' AND n_anonymat='".$n_anonymat."';";
+				$update=mysqli_query($mysqli, $sql);
+				if(!$update) {
+					$msg.="Erreur lors de la désattribution de la copie n°".$n_anonymat."<br />";
+				}
+				else {
+					$nb_desattribution++;
+				}
+			}
+		}
+	}
+
+	if($nb_copies>0) {
+		$msg.=$nb_copies." copies prises en charge.<br />";
+	}
+	if($nb_desattribution>0) {
+		$msg.=$nb_desattribution." copies désattribuées.<br />";
+	}
+}
+
+if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))&&(isset($_POST['valide_affect_eleves']))) {
 	check_token();
 
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
@@ -121,7 +248,15 @@ echo "<p class='bold'>
 	 | 
 	<a href='".$_SERVER["PHP_SELF"]."?id_epreuve=$id_epreuve&amp;mode=modif_epreuve'
 			 onclick=\"return confirm_abandon (this, change, '$themessage')\"
-			 >Rafraichir sans prendre en compte les modifications <img src='../images/icons/actualiser.png' alt='Retour' class='icone16'/></a>
+			 >Rafraichir sans prendre en compte les modifications <img src='../images/icons/actualiser.png' alt='Retour' class='icone16'/></a>";
+if($_SESSION['statut']=='professeur') {
+	echo "
+	 | 
+	<a href='saisie_notes.php?id_epreuve=$id_epreuve'
+			 onclick=\"return confirm_abandon (this, change, '$themessage')\"
+			 >Saisir les notes <img src='../images/edit16.png' alt='Retour' class='icone16'/></a>";
+}
+echo "
 </p>\n";
 //echo "</div>\n";
 
@@ -153,10 +288,139 @@ else {
 }
 echo "</blockquote>\n";
 
+
+// 20210407
+if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))&&($etat!='clos')) {
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+	<fieldset class='fieldset_opacite50' style='margin-bottom:1em;'>
+		".add_token_field()."
+		<p><strong>Paramètre&nbsp;:</strong><br />
+		Dans le cas où vous avez distribué les copies anonymées sans relever à quel professeur vous les avez attribuées, vous pouvez autoriser les professeurs à sélectionner eux-mêmes leur liste de numéros dans cette page.</p>
+		<input type='hidden' name='id_epreuve' value='$id_epreuve' />
+		<input type='hidden' name='valider_param_choix_numeros' value='y' />
+		<p>
+			<input type='checkbox' name='autoriser_choix_numeros' id='autoriser_choix_numeros' value='y' onchange=\"checkbox_change(this.id)\" ".($autoriser_choix_numeros ? "checked " : "")."/><label for='autoriser_choix_numeros' id='texte_autoriser_choix_numeros'".($autoriser_choix_numeros ? " style='font-weight:bold' " : "")."> Autoriser les professeurs à sélectionner leurs numéros de copies d'après les copies qu'ils ont effectivement reçues à corriger.</label>
+		</p>
+		<p>
+			<input type='submit' value=\"Valider\" />
+		</p>
+	</fieldset>
+</form>\n";
+	echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
+}
+
+
 $sql="SELECT u.login,u.nom,u.prenom,u.civilite FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND u.login=ep.login_prof ORDER BY u.nom,u.prenom;";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucun professeur n'est encore choisi.</p>\n";
+	require("../lib/footer.inc.php");
+	die();
+}
+
+// 20210407
+if($_SESSION['statut']=='professeur') {
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>
+	".add_token_field()."
+	<input type='hidden' name='valider_choix_copies_prof' value='y' />
+	<input type='hidden' name='id_epreuve' value='".$id_epreuve."' />
+
+	<p>Liste des professeurs&nbsp;: ";
+	$info_prof=array();
+	$cpt_prof=0;
+	while($lig=mysqli_fetch_object($res)) {
+		$info_prof[$lig->login]=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
+		if($cpt_prof>0) {
+			echo ", ";
+		}
+		echo $info_prof[$lig->login];
+		$cpt_prof++;
+	}
+	echo ".</p>";
+
+	echo "<p style='margin-top:1em'>Sélectionnez vos copies et <input type='submit' value='Validez' />&nbsp;:</p>";
+	$sql="SELECT ec.login_prof, ec.n_anonymat FROM eb_copies ec WHERE ec.id_epreuve='$id_epreuve' ORDER BY ec.n_anonymat;";
+	//echo "$sql<br />";
+	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	echo "<table class='boireaus boireaus_alt' summary='Choix des copies'>
+	<tr>
+		<th>Numéro</th>
+		<th>\n";
+		if($etat!='clos') {
+			echo "<a href=\"javascript:coche_colonne_attribuer_copie('y')\" title=\"Sélectionner toutes les copies\">\n";
+			echo civ_nom_prenom($_SESSION["login"]);
+			echo "</a>\n";
+		}
+		else {
+			echo civ_nom_prenom($_SESSION["login"]);
+		}
+		echo "
+		</th>
+		<th>Déjà attribuée</th>
+		<th>
+			Non attribuée";
+		if($etat!='clos') {
+			echo "<br /><a href=\"javascript:coche_colonne_attribuer_copie('n')\" title=\"Désélectionner toutes les copies\"><img src='../images/disabled.png' class='icone20' /></a>\n";
+		}
+		echo "
+		</th>
+	</tr>";
+	$cpt=0;
+	while($lig2=mysqli_fetch_object($res2)) {
+		$colonne2='';
+		$colonne3='';
+		$colonne4='';
+
+		if($lig2->login_prof==$_SESSION['login']) {
+			if($etat!='clos') {
+				$colonne2="<input type='radio' name='copie[$cpt]' id='copie_y_".$cpt."' value='".$lig2->n_anonymat."|y' checked />";
+				$colonne4="<input type='radio' name='copie[$cpt]' id='copie_n_".$cpt."' value='".$lig2->n_anonymat."|n' />";
+				$cpt++;
+			}
+			else {
+				$colonne2="<img src='../images/enabled.png' class='icone20' />";
+			}
+		}
+		elseif(($lig2->login_prof!='')&&(isset($info_prof[$lig2->login_prof]))) {
+			$colonne3=$info_prof[$lig2->login_prof];
+		}
+		else {
+			if($etat!='clos') {
+				$colonne2="<input type='radio' name='copie[$cpt]' id='copie_y_".$cpt."' value='".$lig2->n_anonymat."|y' />";
+				$colonne4="<input type='radio' name='copie[$cpt]' id='copie_n_".$cpt."' value='".$lig2->n_anonymat."|n' checked />";
+				$cpt++;
+			}
+			else {
+				$colonne4="<img src='../images/enabled.png' class='icone20' />";
+			}
+		}
+
+		echo "
+	<tr>
+		<td>".$lig2->n_anonymat."</td>
+		<td>".$colonne2."</td>
+		<td>".$colonne3."</td>
+		<td>".$colonne4."</td>
+	</tr>";
+	}
+	echo "
+</table>
+<p><input type='submit' value='Valider' /></p>
+</form>
+
+<script type='text/javascript'>
+	function coche_colonne_attribuer_copie(col) {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('copie_'+col+'_'+i)) {
+				document.getElementById('copie_'+col+'_'+i).checked=true;
+			}
+		}
+	}
+</script>";
+
+
+
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -1181,6 +1445,7 @@ elseif($tri=='salle') {
 
 		}
 		echo "<tr>\n";
+		echo "<th></th>\n";
 		echo "<th></th>\n";
 		echo "<th></th>\n";
 		for($i=0;$i<count($info_prof);$i++) {

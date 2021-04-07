@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -482,6 +482,24 @@ echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=impor
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Importer les notes depuis un CSV</a>";
 
+// 20210407
+if($_SESSION['statut']=='professeur') {
+	$autoriser_choix_numeros=false;
+	$sql="SELECT * FROM eb_param WHERE type='autoriser_choix_numeros' AND nom='".$id_epreuve."';";
+	//echo "$sql<br />";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test)>0) {
+		$lig=mysqli_fetch_object($test);
+		if($lig->valeur==1) {
+			$autoriser_choix_numeros=true;
+		}
+	}
+	if($autoriser_choix_numeros) {
+		echo " | <a href='attribuer_copies.php?id_epreuve=$id_epreuve'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Sélectionner les numéros de copies attribuées</a>";
+	}
+}
 echo "</p>\n";
 
 //========================================================
