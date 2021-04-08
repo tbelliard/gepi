@@ -697,6 +697,8 @@ if($etat!='clos') {
 </div>";
 		}
 	}
+
+	echo "<div id='fixe'><input type='submit' value='Enregistrer' /></div>";
 }
 
 $acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
@@ -768,7 +770,7 @@ echo "</div>\n";
 
 if($etat!='clos') {
 	echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
-	echo "<p style='margin-top:0.5em;'><input type='submit' name='saisie_notes' value='Valider' /></p>\n";
+	echo "<p style='margin-top:0.5em;'><input type='submit' name='saisie_notes' value='Enregistrer' /></p>\n";
 	echo "</form>\n";
 
 	echo "
