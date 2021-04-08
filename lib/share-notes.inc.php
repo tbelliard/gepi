@@ -504,46 +504,111 @@ function Verif_prof_cahier_notes ($_login,$_id_racine) {
  * @param int $cpt 
  */
 function javascript_tab_stat($pref_id,$cpt) {
+	global $note_sur;
+
 	echo "<table class='boireaus boireaus_alt'>\n";
 	echo "<caption style='display:none;'>Statistiques</caption>";
+
+	/*
+	echo "<pre>";
+	print_r($note_sur);
+	echo "</pre>";
+	*/
+
+	$temoin_note_sur=false;
+	if((isset($note_sur))&&(is_string($note_sur))&&(preg_match('/^[0-9]{1,}[0-9.]*$/', $note_sur))&&($note_sur!=20)) {
+		$temoin_note_sur=true;
+		$tmp_note_sur=$note_sur;
+		$moitie_note_sur=$tmp_note_sur/2;
+		echo "<tr>
+			<th>Sur</th>
+			<th>".$note_sur."</th>
+			<th>20</th>
+		</tr>";
+	}
+	elseif((isset($note_sur))&&(is_array($note_sur))&&(isset($note_sur[0]))&&(preg_match('/^[0-9]{1,}[0-9.]*$/', $note_sur[0]))&&($note_sur[0]!=20)) {
+		$temoin_note_sur=true;
+		$tmp_note_sur=$note_sur[0];
+		$moitie_note_sur=$tmp_note_sur/2;
+		echo "<tr>
+			<th>Sur</th>
+			<th>".$tmp_note_sur."</th>
+			<th>20</th>
+		</tr>";
+	}
+	else {
+		$moitie_note_sur=10;
+		$tmp_note_sur=20;
+	}
+
 	echo "<tr>\n";
 	echo "<th>Moyenne</th>\n";
 	echo "<td id='".$pref_id."moyenne'></td>\n";
+	if($temoin_note_sur) {
+		echo "<td id='".$pref_id."moyenne_sur_20'></td>\n";
+	}
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<th>1er quartile</th>\n";
 	echo "<td id='".$pref_id."q1'></td>\n";
+	if($temoin_note_sur) {
+		echo "<td id='".$pref_id."q1_sur_20'></td>\n";
+	}
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<th>Médiane</th>\n";
 	echo "<td id='".$pref_id."mediane'></td>\n";
+	if($temoin_note_sur) {
+		echo "<td id='".$pref_id."mediane_sur_20'></td>\n";
+	}
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<th>3è quartile</th>\n";
 	echo "<td id='".$pref_id."q3'></td>\n";
+	if($temoin_note_sur) {
+		echo "<td id='".$pref_id."q3_sur_20'></td>\n";
+	}
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<th>Min</th>\n";
 	echo "<td id='".$pref_id."min'></td>\n";
+	if($temoin_note_sur) {
+		echo "<td id='".$pref_id."min_sur_20'></td>\n";
+	}
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<th>Max</th>\n";
 	echo "<td id='".$pref_id."max'></td>\n";
+	if($temoin_note_sur) {
+		echo "<td id='".$pref_id."max_sur_20'></td>\n";
+	}
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<th>Nb.notes&ge;10</th>\n";
-	echo "<td id='".$pref_id."nb_sup_egal_10'></td>\n";
+	if($temoin_note_sur) {
+		echo "<th>Nb.notes&ge;".$moitie_note_sur."</th>\n";
+		echo "<td colspan='2' id='".$pref_id."nb_sup_egal_10'></td>\n";
+	}
+	else {
+		echo "<th>Nb.notes&ge;10</th>\n";
+		echo "<td id='".$pref_id."nb_sup_egal_10'></td>\n";
+	}
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<th>Nb.notes&lt;10</th>\n";
-	echo "<td id='".$pref_id."nb_inf_10'></td>\n";
+	if($temoin_note_sur) {
+		echo "<th>Nb.notes&lt;".$moitie_note_sur."</th>\n";
+		echo "<td colspan='2' id='".$pref_id."nb_inf_10'></td>\n";
+	}
+	else {
+		echo "<th>Nb.notes&lt;10</th>\n";
+		echo "<td id='".$pref_id."nb_inf_10'></td>\n";
+	}
 	echo "</tr>\n";
 	echo "</table>\n";
 
@@ -573,7 +638,7 @@ function calcul_moy_med() {
 			valeur=valeur.replace(',','.');
 
 			if((valeur!='abs')&&(valeur!='disp')&&(valeur!='-')&&(valeur!='')) {
-				if(valeur>=10) {
+				if(valeur>=".$moitie_note_sur.") {
 					nb_sup_egal_10++;
 				}
 				else {
@@ -592,6 +657,11 @@ function calcul_moy_med() {
 		moyenne=Math.round(10*total/eff_utile)/10;
 		document.getElementById('".$pref_id."moyenne').innerHTML=moyenne;
 
+		if(document.getElementById('".$pref_id."moyenne_sur_20')) {
+			moyenne_sur_20=eval(100*20*moyenne/".$tmp_note_sur.")/100;
+			document.getElementById('".$pref_id."moyenne_sur_20').innerHTML=moyenne_sur_20;
+		}
+
 		tab_valeur.sort((function(a,b){return a - b}));
 		n=tab_valeur.length;
 		if(n/2==Math.round(n/2)) {
@@ -603,6 +673,10 @@ function calcul_moy_med() {
 			mediane=tab_valeur[(n-1)/2];
 		}
 		document.getElementById('".$pref_id."mediane').innerHTML=mediane;
+		if(document.getElementById('".$pref_id."mediane_sur_20')) {
+			mediane_sur_20=eval(100*20*mediane/".$tmp_note_sur.")/100;
+			document.getElementById('".$pref_id."mediane_sur_20').innerHTML=mediane_sur_20;
+		}
 
 		if(eff_utile>=4) {
 			rang=Math.ceil(eff_utile/4);
@@ -613,14 +687,43 @@ function calcul_moy_med() {
 
 			document.getElementById('".$pref_id."q1').innerHTML=q1;
 			document.getElementById('".$pref_id."q3').innerHTML=q3;
+
+			if(document.getElementById('".$pref_id."q1_sur_20')) {
+				q1_sur_20=eval(100*20*q1/".$tmp_note_sur.")/100;
+				document.getElementById('".$pref_id."q1_sur_20').innerHTML=q1_sur_20;
+			}
+
+			if(document.getElementById('".$pref_id."q3_sur_20')) {
+				q3_sur_20=eval(100*20*q3/".$tmp_note_sur.")/100;
+				document.getElementById('".$pref_id."q3_sur_20').innerHTML=q3_sur_20;
+			}
+
 		}
 		else {
 			document.getElementById('".$pref_id."q1').innerHTML='-';
 			document.getElementById('".$pref_id."q3').innerHTML='-';
+
+			if(document.getElementById('".$pref_id."q1_sur_20')) {
+				document.getElementById('".$pref_id."q1_sur_20').innerHTML='-';
+			}
+
+			if(document.getElementById('".$pref_id."q3_sur_20')) {
+				document.getElementById('".$pref_id."q3_sur_20').innerHTML='-';
+			}
 		}
 
 		document.getElementById('".$pref_id."min').innerHTML=tab_valeur[0];
 		document.getElementById('".$pref_id."max').innerHTML=tab_valeur[n-1];
+
+		if(document.getElementById('".$pref_id."min_sur_20')) {
+			min_sur_20=eval(100*20*tab_valeur[0]/".$tmp_note_sur.")/100;
+			document.getElementById('".$pref_id."min_sur_20').innerHTML=min_sur_20;
+		}
+
+		if(document.getElementById('".$pref_id."max_sur_20')) {
+			max_sur_20=eval(100*20*tab_valeur[n-1]/".$tmp_note_sur.")/100;
+			document.getElementById('".$pref_id."max_sur_20').innerHTML=max_sur_20;
+		}
 
 		document.getElementById('".$pref_id."nb_sup_egal_10').innerHTML=nb_sup_egal_10;
 		document.getElementById('".$pref_id."nb_inf_10').innerHTML=nb_inf_10;
@@ -673,6 +776,7 @@ function calcule_moy_mediane_quartiles($tab, $note_sur=20) {
 		if(isset($tab[$i])) {
 			if(($tab[$i]!='')&&($tab[$i]!='-')&&($tab[$i]!='&nbsp;')&&($tab[$i]!='abs')&&($tab[$i]!='disp')) {
 				$tab2[]=preg_replace('/,/','.',$tab[$i]);
+				//echo "\$tab[$i]=$tab[$i]<br />";
 				$total+=preg_replace('/,/','.',$tab[$i]);
 			}
 		}
