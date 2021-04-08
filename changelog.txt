@@ -59,6 +59,9 @@ AID:
 
 Épreuves blanches:
 - Possibilité d'exporter les notes en CSV sur un autre référentiel que 20.
+- Possibilité d'autoriser les professeurs à sélectionner les numéros des copies 
+  qui leur ont été attribuées de façon à pouvoir faire la saisie si l'administration
+  n'a pas fait l'attribution, mais seulement la distribution des copies.
 
 LSUN et Socle:
 - Ajout d'un mode pour permettre des saisies différentes par les professeurs 
