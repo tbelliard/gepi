@@ -379,7 +379,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$cpt_ano=preg_replace("/^0*/", "", preg_replace("/^MC/", "", $lig_max_anonymat->n_anonymat));
 					}
 				}
-				
+
 
 				$msg="";
 				$tab_deja_groupe=array();
@@ -440,8 +440,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$tab_deja_groupe[]=$id_groupe[$i];
 					}
 				}
-				// 20210322
 				if($msg=='') {
+					// 20210322
 					if(isset($_GET['rafraichir_groupes'])) {
 						$msg="Rafraichissement des membres de(s) groupe(s) effectué.<br />";
 					}
@@ -845,7 +845,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			echo "<ul>\n";
 			// Créer une épreuve blanche
-			echo "<li>\n";
+			echo "<li style='margin-bottom:1em;'>\n";
 			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=creer_epreuve'>Créer une nouvelle épreuve</a></p>\n";
 			echo "</li>\n";
 
@@ -854,8 +854,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_epreuves=mysqli_num_rows($res);
 			if($nb_epreuves>0) {
-				echo "<li>\n";
-				echo "<p><b>Epreuves en cours&nbsp;:</b><br />\n";
+				echo "<li style='margin-bottom:1em;'>\n";
+				echo "<p><b>Épreuves en cours&nbsp;:</b><br />\n";
 				while($lig=mysqli_fetch_object($res)) {
 					//echo "Modifier <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;modif_epreuve=y'";
 					echo "Modifier <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=modif_epreuve'";
@@ -913,12 +913,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$nb_epreuves_closes=mysqli_num_rows($res);
 
 			if(($nb_epreuves>0)&&($nb_epreuves+$nb_epreuves_closes>1)) {
-				echo "<li><a href='copie_par_lots.php'>Copier des paramétrages d'une épreuve vers d'autres épreuves</a>.<br />
+				echo "<li style='margin-bottom:1em;'><a href='copie_par_lots.php'>Copier des paramétrages d'une épreuve vers d'autres épreuves</a>.<br />
 				Par exemple, pour déclarer les mêmes salles et répartitions des élèves dans les salles pour plusieurs épreuves d'un même examen.</li>\n";
 			}
 
 			if($nb_epreuves_closes>0) {
-				echo "<li>\n";
+				echo "<li style='margin-bottom:1em;'>\n";
 				echo "<p><b>Epreuves closes&nbsp;:</b><br />\n";
 				while($lig=mysqli_fetch_object($res)) {
 					echo "Epreuve $lig->intitule(<i>".formate_date($lig->date)."</i>)\n";
@@ -934,7 +934,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "</ul>\n";
 
 			//echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'épreuves blanches.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-être ajouter une conservation dans les tables archivages (années antérieures).</p>\n";
-			echo "<p><em>NOTES&nbsp;:</em> Au changement d'année, les tables 'eb_copies', 'eb_epreuves', 'eb_groupes' et 'eb_profs' sont vidées.</p>\n";
+			echo "<p><em>NOTES&nbsp;:</em></p>
+			<ul>
+				<li>Au changement d'année, les tables 'eb_copies', 'eb_epreuves', 'eb_groupes' et 'eb_profs' sont vidées.</li>
+				<li><em>Astuce&nbsp;:</em> Dans le cas où plusieurs épreuves ont lieu à la suite <em>(par exemple pour un DNB blanc ou un bac blanc)</em>, on ne colle qu'une fois les étiquettes sur les tables.<br />Pour générer des étiquettes ne mentionnant pas telle ou telle épreuve, changez temporairement le titre d'une épreuve, le temps de générer les étiquettes à coller sur les tables.</li>
+			</ul>\n";
 		}
 		//===========================================================================
 		// Création d'une épreuve
@@ -1825,7 +1829,7 @@ function checkbox_change(cpt) {
 			echo "</form>\n";
 
 			echo "<p style='margin-top:1em; text-indent:-6.5em; margin-left:6.5em;'><strong style='color:red'>Attention&nbsp;:</strong> Lors de l'ajout de groupes, la liste des élèves est re-générée, mais les affectations des élèves dans telle ou telle salle sont supprimées.<br />
-				Pour juste prendre en compte un nouvel élève, vous devriez <a href='index.php?id_epreuve=".$id_epreuve."&mode=ajout_groupes&rafraichir_groupes=y&csrf_alea=".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">raffraichir la liste des groupes</a> pour le prendre en compte.</p>";
+			Pour juste prendre en compte un nouvel élève, vous devriez <a href='index.php?id_epreuve=".$id_epreuve."&mode=ajout_groupes&rafraichir_groupes=y&csrf_alea=".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">raffraichir la liste des groupes</a> pour le prendre en compte.</p>";
 
 			echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
