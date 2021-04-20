@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -85,7 +85,9 @@ if((isset($mode))&&($mode=='parametrer')) {
 'MargeBas',
 'haut_etq',
 'larg_etq',
-'dy');
+'dy',
+'padding_horizontal',
+'padding_vertical');
 
 	$cpt=0;
 	for($i=0;$i<count($tab_param);$i++) {
@@ -133,7 +135,7 @@ if((isset($mode))&&($mode=='parametrer')) {
 	if($cpt>0) {$msg.="$cpt enregistrements effectués.";}
 }
 
-// Initialisation des valeurs
+// Initialisation des valeurs par défaut
 $largeur_page=210;
 $hauteur_page=297;
 
@@ -151,7 +153,10 @@ $larg_etq=80;
 // Espace vertical entre deux étiquettes
 $dy=10;
 
-// Récupération des valeurs enregistrées
+$padding_horizontal=0;
+$padding_vertical=0;
+
+// Récupération des valeurs enregistrées pour écraser les paramètres par défaut
 $sql="SELECT * FROM eb_param WHERE type='etiquette';";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 while($lig=mysqli_fetch_object($res)) {
@@ -354,8 +359,11 @@ if((isset($mode))&&($mode=='imprime')) {
 						if($y+$haut_etq>$hauteur_page-$MargeBas) {
 							$num_page++;
 							$pdf->AddPage("P");
+
+							//$ajout_test="Chgt page y=$y haut_etq=$haut_etq";
+
 							$y=$y0;
-							//$ajout_test="Chgt page";
+
 							$cpt=0;
 						}
 
@@ -375,13 +383,13 @@ if((isset($mode))&&($mode=='imprime')) {
 					$texte="Epreuve $id_epreuve:\n";
 					$texte.="$intitule_epreuve ($date_epreuve)\n";
 					//cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
-					cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
+					cell_ajustee($texte,$x+$padding_horizontal,$y+$padding_vertical,$largeur_dispo-$padding_horizontal,$h_cell-$padding_vertical,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 
 					// Partie haut/droite de l'étiquette
 					$x+=$largeur_dispo;
 					$texte="Epreuve $id_epreuve:\n";
 					$texte.="$intitule_epreuve ($date_epreuve)\n";
-					cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
+					cell_ajustee($texte,$x+$padding_horizontal,$y+$padding_vertical,$largeur_dispo-$padding_horizontal,$h_cell-$padding_vertical,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 
 
 					// Partie bas/gauche de l'étiquette
@@ -399,13 +407,13 @@ if((isset($mode))&&($mode=='imprime')) {
 						}
 					}
 					//cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
-					cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
+					cell_ajustee($texte,$x+$padding_horizontal,$y,$largeur_dispo-$padding_horizontal,$h_cell-$padding_vertical,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 
 					// Partie bas/droite de l'étiquette
 					$x+=$largeur_dispo;
 					$texte="Numéro: ".$lig->n_anonymat;
 					//cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align='C',$align='L',$increment=0.3,$r_interligne=0.3) {
-					cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
+					cell_ajustee($texte,$x+$padding_horizontal,$y,$largeur_dispo-$padding_horizontal,$h_cell-$padding_vertical,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 
 					$cpt++;
 				}
@@ -763,6 +771,34 @@ else {
 	echo "<td>\n";
 	echo "<input type='text' autocomplete='off' name='dy' value='$dy' ";
 	echo "onfocus=\"this.select();colorise('dy','affiche')\" onblur=\"colorise('dy','')\" ";
+	echo "id=\"n".$cpt."\" onKeyDown=\"clavier(this.id,event);\" ";
+	echo "/>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	$cpt++;
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "Padding horizontal dans les étiquettes&nbsp;:<br /><em>(marge intérieure)</em>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='text' autocomplete='off' name='padding_horizontal' value='$padding_horizontal' ";
+	echo "onfocus=\"this.select();\" ";
+	echo "id=\"n".$cpt."\" onKeyDown=\"clavier(this.id,event);\" ";
+	echo "/>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	$cpt++;
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "Padding vertical dans les étiquettes&nbsp;:<br /><em>(marge intérieure)</em>\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<input type='text' autocomplete='off' name='padding_vertical' value='$padding_vertical' ";
+	echo "onfocus=\"this.select();\" ";
 	echo "id=\"n".$cpt."\" onKeyDown=\"clavier(this.id,event);\" ";
 	echo "/>\n";
 	echo "</td>\n";
