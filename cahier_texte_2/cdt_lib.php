@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -193,7 +193,7 @@ require_once("'.$pref_arbo.'/entete.php");
 						$html.="<div id='conteneur_notice_t_".$value['id_ct']."' class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
 							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_t_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/icons/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/icons/chercher.png' width='16' height='16' /></a></div>\n";
 							$html.="<div id='contenu_notice_t_".$value['id_ct']."'>\n";
-								$contenu_notice_courante=$value['contenu'];
+								$contenu_notice_courante=corrige_chemins_visionneuses($value['contenu']);
 								$adj=my_affiche_docs_joints($value['id_ct'],"t");
 								if($adj!='') {
 									$contenu_notice_courante.="<div style='border: 1px dashed black'>\n";
@@ -224,7 +224,7 @@ require_once("'.$pref_arbo.'/entete.php");
 						$html.="<div id='conteneur_notice_c_".$value['id_ct']."' class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
 							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_c_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/icons/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/icons/chercher.png' width='16' height='16' /></a></div>\n";
 							$html.="<div id='contenu_notice_c_".$value['id_ct']."'>\n";
-								$html.=$value['contenu'];
+								$html.=corrige_chemins_visionneuses($value['contenu']);
 								$adj=my_affiche_docs_joints($value['id_ct'],"c");
 								if($adj!='') {
 									$html.="<div style='border: 1px dashed black'>\n";
@@ -1137,4 +1137,41 @@ require_once("'.$pref_arbo.'/entete.php");
 			}
 		}
 	}
+
+function corrige_chemins_visionneuses($chaine) {
+	global $mysqli;
+	global $dossier_documents_archivage_cdt;
+
+	$retour=$chaine;
+
+	if((isset($dossier_documents_archivage_cdt))&&($dossier_documents_archivage_cdt!='')) {
+		// Corriger ce qui suit le "?"
+		$retour=preg_replace('#visionneur_instrumenpoche.php\?\.\./documents/#', 'visionneur_instrumenpoche.php?'.$dossier_documents_archivage_cdt.'/', $retour);
+		$retour=preg_replace('#visionneur_geogebra.php\?url=\.\./documents/#', 'visionneur_geogebra.php?url='.$dossier_documents_archivage_cdt.'/', $retour);
+	}
+
+	$url_racine_gepi=getSettingValue('url_racine_gepi');
+	if(preg_match('/^http/i', $url_racine_gepi)) {
+
+		/*
+		href="../documents/archives/etablissement/cahier_texte_2014_2015/cdt/visionneur_geogebra.php?
+		href="visionneur_instrumenpoche.php?
+		href="../cahier_texte_2/visionneur_geogebra.php?
+		*/
+
+		$retour=preg_replace('#\.\./cahier_texte_2/visionneur_instrumenpoche.php\?#', $url_racine_gepi.'/cahier_texte_2/visionneur_instrumenpoche.php?', $retour);
+		$retour=preg_replace('#\.\./cahier_texte_2/visionneur_geogebra.php\?#', $url_racine_gepi.'/cahier_texte_2/visionneur_geogebra.php?', $retour);
+
+		$retour=preg_replace('#href="visionneur_instrumenpoche.php\?#', 'href="'.$url_racine_gepi.'/cahier_texte_2/visionneur_instrumenpoche.php?', $retour);
+		$retour=preg_replace('#href="visionneur_geogebra.php\?#', 'href="'.$url_racine_gepi.'/cahier_texte_2/visionneur_geogebra.php?', $retour);
+
+		//<a href="https://127.0.0.1/steph/gepi_git_trunk/documents/archives/etablissement/cahier_texte_2014_2015/cdt/visionneur_geogebra.php?url
+		$retour=preg_replace('#href="'.$url_racine_gepi.'/documents/archives/[A-Za-z0-9_-]*/[A-Za-z0-9_-]*/cdt/visionneur_geogebra.php\?#', 'href="'.$url_racine_gepi.'/cahier_texte_2/visionneur_geogebra.php?', $retour);
+
+		$retour=preg_replace('#href="\.\./documents/archives/[A-Za-z0-9_-]*/[A-Za-z0-9_-]*/cdt/visionneur_geogebra.php\?#', 'href="'.$url_racine_gepi.'/cahier_texte_2/visionneur_geogebra.php?', $retour);
+
+	}
+
+	return $retour;
+}
 ?>
