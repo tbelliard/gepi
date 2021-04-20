@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -126,6 +126,46 @@ if (isset($action) and ($action == 'sup'))  {
 					Il s'agit peut-être un problème de droits sur le répertoire backup.<br />\n";
 			}
 		}
+	}
+}
+
+// 20210419
+if(isset($_POST['supprimer_fichiers_coches'])) {
+	check_token();
+
+	if(!isset($msg)) {
+		$msg='';
+	}
+
+	$suppr_fich_svg=isset($_POST['suppr_fich_svg']) ? $_POST['suppr_fich_svg'] : array();
+
+	$cpt_suppr=0;
+	foreach($suppr_fich_svg as $key => $fichier) {
+
+		$t=preg_replace('/[A-Za-z0-9_\.-]/', '', $fichier);
+		if($t!='') {
+			$msg.="Le fichier <strong>".$fichier."</strong> contient des caractères invalides&nbsp;: <strong>".$t."</strong><br />";
+		}
+		else {
+			if (@unlink("../backup/".$dirname."/".$fichier)) {
+				//$msg.="Le fichier <b>".$fichier."</b> a été supprimé.<br />\n";
+				$cpt_suppr++;
+
+				if(file_exists("../backup/".$dirname."/".$fichier.".txt")) {
+					@unlink("../backup/".$dirname."/".$fichier.".txt");
+				}
+			} else {
+				$msg.="Un problème est survenu lors de la tentative de suppression du fichier <b>".$fichier."</b>.<br />
+					Il s'agit peut-être un problème de droits sur le répertoire backup.<br />\n";
+			}
+		}
+	}
+
+	if($cpt_suppr==1) {
+		$msg.=$cpt_suppr." fichier a été supprimé.<br />";
+	}
+	elseif($cpt_suppr>1) {
+		$msg.=$cpt_suppr." fichiers ont été supprimés.<br />";
 	}
 }
 
@@ -2013,6 +2053,12 @@ if ($n > 0) {
 	*/
 
 	echo "<h3>Fichiers de restauration</h3>\n";
+
+	// 20210419
+	echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" id=\"form_tableau_svg\">
+	<input type='hidden' name='supprimer_fichiers_coches' value='y' />\n";
+	echo add_token_field();
+
 	echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
 	// echo "<table class='boireaus centre' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><strong>Nom du fichier de sauvegarde</strong></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
 	echo "<table class='boireaus centre resizable sortable' style='margin:auto;' >
@@ -2022,7 +2068,11 @@ if ($n > 0) {
 		</th>
 		<th class='number'>Taille</th>
 		<th class='number'>Date</th>
-		<th class='nosort'>&nbsp;</th>
+		<th class='nosort'>
+			<a href='#' onclick=\"accueil_sauve_cocher_decocher_tous_checkbox('suppr_fich_svg_', true)\"><img src='../images/enabled.png' class='icone20' /></a> / 
+			<a href='#' onclick=\"accueil_sauve_cocher_decocher_tous_checkbox('suppr_fich_svg_', false)\"><img src='../images/disabled.png' class='icone20' /></a><br />
+			<input type='submit' value='Supprimer' title=\"Supprimer tous les fichiers cochés\" />
+		</th>
 		<th class='nosort'>&nbsp;</th>
 		<th class='nosort'>&nbsp;</th>
 		<th class='nosort'>&nbsp;</th>
@@ -2064,7 +2114,11 @@ if ($n > 0) {
 		$tmp_date=filemtime("../backup/".$dirname."/".$value);
 		echo "<span style='display:none'>".$tmp_date."</span>".strftime("%d/%m/%Y %H:%M:%S", $tmp_date);
 		echo "</td>\n";
-		echo "<td style='padding:5px;'><a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a></td>\n";
+		// 20210419
+		echo "<td style='padding:5px;'>
+			<a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a>
+			<input type='checkbox' name='suppr_fich_svg[]' id='suppr_fich_svg_".$m."' value=\"".$value."\" />
+		</td>\n";
 		$type_sauvegarde="";
 		if (preg_match('/^_photos/i',$value)&& preg_match('/.zip$/i',$value))$type_sauvegarde="photos";
 		if (preg_match('/^_cdt/i',$value)&& preg_match('/.zip$/i',$value)) $type_sauvegarde="cdt";
@@ -2086,7 +2140,19 @@ if ($n > 0) {
 		//$m++;
 	}
 	clearstatcache();
-	echo "</table>\n<hr />\n";
+	// 20210419
+	echo "</table>
+	</form>
+	<hr />
+	<script type='text/javascript'>
+		function accueil_sauve_cocher_decocher_tous_checkbox(prefixe, mode) {
+			for(i=0;i<$m;i++) {
+				if(document.getElementById(prefixe+i)) {
+					document.getElementById(prefixe+i).checked=mode;
+				}
+			}
+		}
+	</script>";
 }
 
 if($temoin_dossier_backup_absences=="y") {
