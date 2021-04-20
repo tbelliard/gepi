@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -179,11 +179,14 @@ else {
 	$dossier_annee="../documents/archives/".$dossier_etab."/cahier_texte_".$annee;
 	$dossier_cdt=$dossier_annee."/cdt";
 	$dossier_documents=$dossier_annee."/documents";
+	// Pour corrige_chemins_visionneuses()
+	$dossier_documents_archivage_cdt=$dossier_documents;
 	$dossier_css=$dossier_annee."/css";
 
 	if($step==1) {
 		// Remplissage d'une table temporaire avec la liste des groupes.
 		$sql="TRUNCATE TABLE tempo2;";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors du nettoyage de la table 'tempo2'.</p>\n";
@@ -195,6 +198,7 @@ else {
 		//$sql="INSERT INTO tempo2 SELECT id,name FROM groupes;";
 		// On ne retient que les groupes associés à des classes... les autres sont des scories qui devraient être supprimées par un Nettoyage de la base
 		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes WHERE id IN (SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_texte' AND visible='n'));";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors de l'insertion de la liste des groupes dans la table 'tempo2'.</p>\n";
@@ -204,6 +208,7 @@ else {
 		}
 
 		$sql="CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Erreur lors de la création de la table temporaire 'tempo3_cdt'.</p>\n";
@@ -213,6 +218,7 @@ else {
 		}
 
 		$sql="TRUNCATE TABLE tempo3_cdt;";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors du nettoyage de la table 'tempo3_cdt'.</p>\n";
@@ -449,6 +455,7 @@ else {
 
 				$nom_detaille_groupe_non_html=$current_group['name']." (".$current_group['description']." en (".$current_group['classlist_string']."))";
 
+				// On affiche ne nom du groupe en cours d'archivage :
 				echo $nom_detaille_groupe."<br />";
 
 				archiver_images_formules_maths($id_groupe);
@@ -553,100 +560,111 @@ if(isset($msg)) {
 				else {
 					array_multisort ($tab_dates, SORT_ASC, SORT_NUMERIC, $tab_dates2, SORT_DESC, SORT_NUMERIC);
 				}
-/*
-echo "<pre>";
-print_r($tab_notices);
-echo "</pre>";
-
-echo "<pre>";
-print_r($tab_dev);
-echo "</pre>";
-*/
-				$content.="<p style='text-align:center;'><a href=\"javascript:modif_affichage_colonne_notices('t', '')\">Afficher</a> / <a href=\"javascript:modif_affichage_colonne_notices('t', 'none')\">masquer</a> toutes les notices de travail à faire.<br />
-<a href=\"javascript:modif_affichage_colonne_notices('c', '')\">Afficher</a> / <a href=\"javascript:modif_affichage_colonne_notices('c', 'none')\">masquer</a> toutes les notices de compte-rendu de séance.</p>
-
-<script type='text/javascript'>
-	// Affichage masquage de certains types de notices
-	function modif_affichage_colonne_notices(type, display) {
-		//td_colonne_t_... ou td_colonne_c_...
-		var tableau_td=document.getElementsByTagName('td');
-		for(i=0;i<tableau_td.length;i++) {
-			var td_courant=tableau_td[i];
-			var id_courant=td_courant.getAttribute('id');
-			if(id_courant) {
-				if(id_courant.substring(0,13)=='td_colonne_'+type+'_') {
-					td_courant.style.display=display;
-				}
-			}
-		}
-
-		document.getElementById('th_colonne_'+type).style.display=display;
-	}
-</script>";
-
-				$content.=lignes_cdt($tab_dates, $tab_notices, $tab_dev,$dossier_documents,$mode);
 
 				/*
-				echo "<div style='border: 1px solid black;'>\n";
-				echo $content;
-				echo "</div>\n";
-		
-				echo "<script type='text/javascript'>
-	if(document.getElementById('div_lien_retour_".$id_groupe."')) {
-		document.getElementById('div_lien_retour_".$id_groupe."').style.display='none';
-	}
-</script>\n";
+				echo "<pre>";
+				print_r($tab_notices);
+				echo "</pre>";
+
+				echo "<pre>";
+				print_r($tab_dev);
+				echo "</pre>";
 				*/
 
-				$content.="
-<script type='text/javascript'>
-	//+++++++++++++++++++++++++++++++++++
-	var temoin_images=0;
+				if(count($tab_dates)==0) {
+					// On ne crée pas le fichier si l'enseignement ne contient pas de notice CDT.
+					echo "<span style='color:red'>Aucune notice de CDT pour l'enseignement ".$nom_detaille_groupe."</span><br />";
+				}
+				else {
 
-	// Ajout via Javascript des onclick sur les images
+					$content.="<p style='text-align:center;'><a href=\"javascript:modif_affichage_colonne_notices('t', '')\">Afficher</a> / <a href=\"javascript:modif_affichage_colonne_notices('t', 'none')\">masquer</a> toutes les notices de travail à faire.<br />
+	<a href=\"javascript:modif_affichage_colonne_notices('c', '')\">Afficher</a> / <a href=\"javascript:modif_affichage_colonne_notices('c', 'none')\">masquer</a> toutes les notices de compte-rendu de séance.</p>
 
-	img=document.getElementsByTagName('img');
-	for(i=0;i<img.length;i++) {
-		src_img=img[i].getAttribute('src');
-		if(src_img.substring(0, 10)!='../images/') {
-			var att = document.createAttribute('onclick');
+	<script type='text/javascript'>
+		// Affichage masquage de certains types de notices
+		function modif_affichage_colonne_notices(type, display) {
+			//td_colonne_t_... ou td_colonne_c_...
+			var tableau_td=document.getElementsByTagName('td');
+			for(i=0;i<tableau_td.length;i++) {
+				var td_courant=tableau_td[i];
+				var id_courant=td_courant.getAttribute('id');
+				if(id_courant) {
+					if(id_courant.substring(0,13)=='td_colonne_'+type+'_') {
+						td_courant.style.display=display;
+					}
+				}
+			}
 
-			att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 600))+',height='+Math.min(screen.availHeight, this.height)+'');\";
-
-			img[i].setAttributeNode(att);
-
-			//alert(i);
-			temoin_images++;
+			document.getElementById('th_colonne_'+type).style.display=display;
 		}
-	}
-	//+++++++++++++++++++++++++++++++++++
-</script>";
+	</script>";
+
+					$content.=lignes_cdt($tab_dates, $tab_notices, $tab_dev,$dossier_documents,$mode);
+
+					/*
+					echo "<div style='border: 1px solid black;'>\n";
+					echo $content;
+					echo "</div>\n";
+			
+					echo "<script type='text/javascript'>
+		if(document.getElementById('div_lien_retour_".$id_groupe."')) {
+			document.getElementById('div_lien_retour_".$id_groupe."').style.display='none';
+		}
+	</script>\n";
+					*/
+
+					$content.="
+	<script type='text/javascript'>
+		//+++++++++++++++++++++++++++++++++++
+		var temoin_images=0;
+
+		// Ajout via Javascript des onclick sur les images
+
+		img=document.getElementsByTagName('img');
+		for(i=0;i<img.length;i++) {
+			src_img=img[i].getAttribute('src');
+			if(src_img.substring(0, 10)!='../images/') {
+				var att = document.createAttribute('onclick');
+
+				att.value = \"window.open(this.src, '_blank', 'toolbar=no,location=no,scrollbars=yes,resizable=yes,top=10,left=10,width='+Math.min(screen.availWidth, Math.max(this.width, 600))+',height='+Math.min(screen.availHeight, this.height)+'');\";
+
+				img[i].setAttributeNode(att);
+
+				//alert(i);
+				temoin_images++;
+			}
+		}
+		//+++++++++++++++++++++++++++++++++++
+	</script>";
 
 
-				$content=html_entete("CDT: ".$nom_detaille_groupe_non_html,1,'y',"$chaine_login_prof").$content;
-				$content.=html_pied_de_page();
+					$content=html_entete("CDT: ".$nom_detaille_groupe_non_html,1,'y',"$chaine_login_prof").$content;
+					$content.=html_pied_de_page();
 
-				//echo "\$dossier_cdt=$dossier_cdt<br />";
-				//echo "\$nom_fichier=$nom_fichier<br />";
-				$f=fopen($dossier_cdt."/".$nom_fichier,"w+");
-				fwrite($f,$content);
-				fclose($f);
+					//echo "\$dossier_cdt=$dossier_cdt<br />";
+					//echo "\$nom_fichier=$nom_fichier<br />";
+					$f=fopen($dossier_cdt."/".$nom_fichier,"w+");
+					fwrite($f,$content);
+					fclose($f);
 
-				foreach($current_group["classes"]["classes"] as $key => $value) {
-					// Pour ne créer les liens que pour les cahiers de textes non vides
-					if(count($tab_dates)>0) {
-						//$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".$value['classe']." (".$value['nom_complet'].")"."', matiere='$nom_complet_matiere', enseignement='$nom_enseignement', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
-						$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".addslashes($value['classe'])." (".addslashes($value['nom_complet']).")"."', matiere='".addslashes($nom_complet_matiere)."', enseignement='".addslashes($nom_enseignement)."', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
-						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(!$insert) {
-							$temoin_erreur="y";
-		
-							echo "<p style='color:red'>ERREUR lors de l'enregistrement dans 'tempo3_cdt'&nbsp;: $sql</p>\n";
+					foreach($current_group["classes"]["classes"] as $key => $value) {
+						// Pour ne créer les liens que pour les cahiers de textes non vides
+						if(count($tab_dates)>0) {
+							//$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".$value['classe']." (".$value['nom_complet'].")"."', matiere='$nom_complet_matiere', enseignement='$nom_enseignement', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
+							$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".addslashes($value['classe'])." (".addslashes($value['nom_complet']).")"."', matiere='".addslashes($nom_complet_matiere)."', enseignement='".addslashes($nom_enseignement)."', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
+							//echo "$sql<br />";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$insert) {
+								$temoin_erreur="y";
+			
+								echo "<p style='color:red'>ERREUR lors de l'enregistrement dans 'tempo3_cdt'&nbsp;: $sql</p>\n";
+							}
 						}
 					}
 				}
 
 				$sql="DELETE FROM tempo2 WHERE col1='$id_groupe';";
+				//echo "$sql<br />";
 				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$menage) {
 					$temoin_erreur="y";
@@ -683,6 +701,7 @@ echo "</pre>";
 			// ============================
 			//$sql="SELECT * FROM tempo3_cdt ORDER BY classe, matiere;";
 			$sql="SELECT DISTINCT id_classe, classe FROM tempo3_cdt ORDER BY classe;";
+			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 
@@ -767,6 +786,9 @@ echo "</pre>";
 					fwrite($f,$content);
 					fclose($f);
 				}
+			}
+			else {
+				echo "<p>Aucune classe n'a été trouvée.<br />Cela peut signifier qu'aucun contenu CDT n'a été rempli par aucun professeur.</p>";
 			}
 
 			// ===========================================
@@ -860,6 +882,9 @@ echo "</pre>";
 				$f=fopen($dossier_cdt."/index_professeurs.$extension","w+");
 				fwrite($f,$content);
 				fclose($f);
+			}
+			else {
+				echo "<p>Aucun professeur associé à une classe n'a été trouvé.</p>";
 			}
 
 

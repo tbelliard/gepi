@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2020 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2021 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -335,6 +335,49 @@ echo " <a href=\"#\" onclick=\"fen=window.open('../groupes/popup.php?id_groupe="
 if((isset($ctCompteRendu))&&($ctCompteRendu->getIdCt()!=null)) {
 	echo " <a href='affiche_notice.php?id_ct=".$ctCompteRendu->getIdCt()."&type_notice=c' target='_blank' title=\"Afficher la notice dans un nouvel onglet.\"><img src='../images/icons/chercher.png' class='icone16' alt='Afficher' /></a>";
 }
+
+//================================
+// 20210127
+if(getSettingAOui('cdt_restreindre_notice_tels_eleves')) {
+	// Il faudrait tester la période correspondant au groupe à la date donnée
+	$sql="SHOW TABLES LIKE 'ct_restriction_notice';";
+	$test=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$tab_ele=array();
+		$sql="SELECT DISTINCT e.* FROM eleves e, 
+					j_eleves_groupes jeg 
+				WHERE id_groupe='".$groupe->getId()."' AND
+					(e.date_sortie>".strftime('%Y-%m-%d %H:%M:%S')." OR e.date_sortie IS NULL)
+				ORDER BY e.nom, e.prenom;";
+		$res_ele=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_ele)) {
+			while($lig=mysqli_fetch_object($res_ele)) {
+				$tab_ele[]=$lig;
+			}
+		}
+
+		$tab_restr=array();
+		$sql="SELECT * FROM ct_restriction_notice 
+				WHERE id_ct='".$ctCompteRendu->getIdCt()."' AND
+					type_ct='t';";
+		$res_ele=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_ele)) {
+			while($lig=mysqli_fetch_object($res_ele)) {
+				$tab_restr[]=$lig;
+			}
+		}
+
+
+
+
+
+
+
+
+
+	}
+}
+//================================
 
 echo " <a href=\"#\" style=\"font-size: 11pt;\" title=\"Recharger la page. Cela peut être utile si le champ de saisie ne s'affiche pas.\" onclick=\"javascript:
 				id_groupe = '".$id_groupe."';
