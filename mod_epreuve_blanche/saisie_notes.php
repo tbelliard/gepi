@@ -66,6 +66,8 @@ $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['i
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : NULL;
 
+//debug_var();
+
 if(isset($_POST['saisie_notes'])) {
 	check_token();
 
@@ -770,7 +772,8 @@ echo "</div>\n";
 
 if($etat!='clos') {
 	echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
-	echo "<p style='margin-top:0.5em;'><input type='submit' name='saisie_notes' value='Enregistrer' /></p>\n";
+	echo "<p style='margin-top:0.5em;'><input type='submit' name='saisie_notes_submit' value='Valider' /></p>\n";
+	echo "<input type='hidden' name='saisie_notes' value='y' />\n";
 	echo "</form>\n";
 
 	echo "
