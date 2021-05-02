@@ -2558,6 +2558,25 @@ echo "<input type='hidden' name='cn_mode_saisie' id='cn_mode_saisie' value='".$c
 if((isset($id_devoir))&&($id_devoir!=0)) {
 	echo "<div id='div_q_p' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
 		echo "<div id='div_quartiles' style='text-align:center; display:none;'>\n";
+
+		// 20210502 : DEBUG
+		/*
+		if(isset($note_sur)) {
+			if(is_array($note_sur)) {
+				echo "\$note_sur= array()<br />";
+				echo "<pre>";
+				print_r($note_sur);
+				echo "</pre>";
+			}
+			else {
+				echo "\$note_sur=$note_sur<br />";
+			}
+		}
+		if(isset($note_sur_dev_choisi)) {
+			echo "\$note_sur_dev_choisi=$note_sur_dev_choisi<br />";
+		}
+		*/
+
 		javascript_tab_stat('tab_stat_',$num_id);
 		echo "</div>\n";
 
@@ -2637,7 +2656,29 @@ if((!isset($id_devoir))||($id_devoir=='')||($id_devoir=='0')) {
 
 	echo "<div id='div_q_p' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
 		echo "<div id='div_quartiles' style='text-align:center; display:none;'>\n";
+
+
+		// 20210502 : DEBUG
+		/*
+		echo "id_devoir=$id_devoir<br />";
+		if(isset($note_sur)) {
+			if(is_array($note_sur)) {
+				echo "\$note_sur= array()<br />";
+				echo "<pre>";
+				print_r($note_sur);
+				echo "</pre>";
+			}
+			else {
+				echo "\$note_sur=$note_sur<br />";
+			}
+		}
+		if(isset($note_sur_dev_choisi)) {
+			echo "\$note_sur_dev_choisi=$note_sur_dev_choisi<br />";
+		}
+		*/
+
 		javascript_tab_stat('tab_stat_',$nombre_lignes);
+
 		echo "</div>\n";
 	echo "</div>\n";
 }

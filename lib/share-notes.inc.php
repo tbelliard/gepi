@@ -503,8 +503,10 @@ function Verif_prof_cahier_notes ($_login,$_id_racine) {
  * @param string $pref_id prefixe des Id des balises <td...>
  * @param int $cpt 
  */
-function javascript_tab_stat($pref_id,$cpt) {
+function javascript_tab_stat($pref_id, $cpt) {
 	global $note_sur;
+	global $note_sur_dev_choisi;
+	global $id_devoir;
 
 	echo "<table class='boireaus boireaus_alt'>\n";
 	echo "<caption style='display:none;'>Statistiques</caption>";
@@ -516,7 +518,28 @@ function javascript_tab_stat($pref_id,$cpt) {
 	*/
 
 	$temoin_note_sur=false;
-	if((isset($note_sur))&&(is_string($note_sur))&&(preg_match('/^[0-9]{1,}[0-9.]*$/', $note_sur))&&($note_sur!=20)) {
+
+	if((isset($id_devoir))&&($id_devoir==0)) {
+		$moitie_note_sur=10;
+		$tmp_note_sur=20;
+	}
+	elseif((isset($note_sur_dev_choisi))&&(is_string($note_sur_dev_choisi))&&(preg_match('/^[0-9]{1,}[0-9.]*$/', $note_sur_dev_choisi))) {
+		if($note_sur_dev_choisi==20) {
+			$moitie_note_sur=10;
+			$tmp_note_sur=20;
+		}
+		else {
+			$temoin_note_sur=true;
+			$tmp_note_sur=$note_sur;
+			$moitie_note_sur=$tmp_note_sur/2;
+			echo "<tr>
+				<th>Sur</th>
+				<th>".$note_sur."</th>
+				<th>20</th>
+			</tr>";
+		}
+	}
+	elseif((isset($note_sur))&&(is_string($note_sur))&&(preg_match('/^[0-9]{1,}[0-9.]*$/', $note_sur))&&($note_sur!=20)) {
 		$temoin_note_sur=true;
 		$tmp_note_sur=$note_sur;
 		$moitie_note_sur=$tmp_note_sur/2;
@@ -526,6 +549,7 @@ function javascript_tab_stat($pref_id,$cpt) {
 			<th>20</th>
 		</tr>";
 	}
+	/*
 	elseif((isset($note_sur))&&(is_array($note_sur))&&(isset($note_sur[0]))&&(preg_match('/^[0-9]{1,}[0-9.]*$/', $note_sur[0]))&&($note_sur[0]!=20)) {
 		$temoin_note_sur=true;
 		$tmp_note_sur=$note_sur[0];
@@ -536,6 +560,7 @@ function javascript_tab_stat($pref_id,$cpt) {
 			<th>20</th>
 		</tr>";
 	}
+	*/
 	else {
 		$moitie_note_sur=10;
 		$tmp_note_sur=20;
