@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2017 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -793,7 +793,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							$graisse='B';
 							//=============================================
 							for($j=0;$j<$nb_matieres;$j++) {
-								$tab_stat[$j]=calcul_moy_med($tab_notes[$j]);
+								if(isset($tab_notes[$j])) {
+									$tab_stat[$j]=calcul_moy_med($tab_notes[$j]);
+								}
+								else {
+									$tab_stat[$j]=calcul_moy_med(array());
+								}
 							}
 							$tab_stat2=calcul_moy_med($tab_moy);
 							//=============================================
