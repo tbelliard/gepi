@@ -530,7 +530,8 @@ function javascript_tab_stat($pref_id, $cpt) {
 		}
 		else {
 			$temoin_note_sur=true;
-			$tmp_note_sur=$note_sur;
+			$tmp_note_sur=$note_sur_dev_choisi;
+			//echo "\$tmp_note_sur=$tmp_note_sur<br />";
 			$moitie_note_sur=$tmp_note_sur/2;
 			echo "<tr>
 				<th>Sur</th>
