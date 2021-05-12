@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -436,6 +436,7 @@ if(isset($imprime)) {
 						$x=$pdf->GetX();
 						$y=$pdf->GetY();
 						$texte=$tab_nom[$j];
+						$largeur_dispo=$larg_col1;
 						cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 						//$pdf->Cell($largeur_dispo,10,$texte,'LRBT',0,'C');
 						$pdf->SetXY($x+$largeur_dispo,$y);
@@ -443,22 +444,22 @@ if(isset($imprime)) {
 						$x=$pdf->GetX();
 						$y=$pdf->GetY();
 						$texte=$tab_naissance[$j];
-						//cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
-						$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
+						cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
+						//$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
 						$pdf->SetXY($x+$larg_col3,$y);
 
 						$x=$pdf->GetX();
 						$y=$pdf->GetY();
 						$texte=$tab_classe[$j];
-						//cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
-						$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
+						cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
+						//$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
 						$pdf->SetXY($x+$larg_col3,$y);
 
 						$x=$pdf->GetX();
 						$y=$pdf->GetY();
 						$texte=$salle_courante;
-						//cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
-						$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
+						cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
+						//$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
 
 						$pdf->SetXY($x1,$y+$h_cell);
 					}

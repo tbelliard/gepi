@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -376,21 +376,19 @@ if(isset($imprime)) {
 						$cpt++;
 					}
 
-					$larg_col=array();
+					// 20210512 : On fait un tour sans tracé pour calculer la largeur et adapter si nécessaire
 
-					$pdf->SetXY($x1,$y2);
+					$larg_col=array();
 
 					$larg_col[$cpt_col]=0;
 					$texte='Num.';
 					$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
-					$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					$cpt_col++;
 
 					$larg_col[$cpt_col]=0;
 					if($avec_num_anonymat=='y') {
 						$texte='Numéro copie';
 						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
 					$cpt_col++;
 
@@ -398,7 +396,6 @@ if(isset($imprime)) {
 					if($avec_colonne_vide_1=='y') {
 						$texte=$titre_colonne_vide_1;
 						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
 					$cpt_col++;
 
@@ -406,7 +403,6 @@ if(isset($imprime)) {
 					if($avec_colonne_vide_2=='y') {
 						$texte=$titre_colonne_vide_2;
 						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
 					$cpt_col++;
 
@@ -414,7 +410,6 @@ if(isset($imprime)) {
 					if($avec_colonne_vide_3=='y') {
 						$texte=$titre_colonne_vide_3;
 						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
 					$cpt_col++;
 
@@ -422,7 +417,6 @@ if(isset($imprime)) {
 					if($avec_nom_prenom=='y') {
 						$texte='Nom prénom';
 						$larg_col[$cpt_col]=$larg_max+4;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
 					$cpt_col++;
 
@@ -430,7 +424,6 @@ if(isset($imprime)) {
 					if($avec_naissance=='y') {
 						$texte='Naissance';
 						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
 					$cpt_col++;
 
@@ -438,7 +431,6 @@ if(isset($imprime)) {
 					if($avec_classe=='y') {
 						$texte='Classe';
 						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
 					$cpt_col++;
 
@@ -446,7 +438,6 @@ if(isset($imprime)) {
 					if($avec_salle=='y') {
 						$texte='Salle';
 						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
 					$cpt_col++;
 
@@ -454,7 +445,215 @@ if(isset($imprime)) {
 					for($loop=0;$loop<count($larg_col);$loop++) {
 						$largeur_totale+=$larg_col[$loop];
 					}
-					$nb_colonnes=floor(($largeur_page-$MargeDroite-$MargeGauche-5)/$largeur_totale);
+
+					if($largeur_totale+$MargeDroite+$MargeGauche<=$largeur_page) {
+						// Les largeurs de colonnes choisies tiennent sans retour à la ligne en largeur pour l'entête
+						$larg_col=array();
+						$cpt_col=0;
+
+						$pdf->SetXY($x1,$y2);
+
+						$larg_col[$cpt_col]=0;
+						$texte='Num.';
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_num_anonymat=='y') {
+							$texte='Numéro copie';
+							$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_colonne_vide_1=='y') {
+							$texte=$titre_colonne_vide_1;
+							$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_colonne_vide_2=='y') {
+							$texte=$titre_colonne_vide_2;
+							$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_colonne_vide_3=='y') {
+							$texte=$titre_colonne_vide_3;
+							$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_nom_prenom=='y') {
+							$texte='Nom prénom';
+							$larg_col[$cpt_col]=$larg_max+4;
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_naissance=='y') {
+							$texte='Naissance';
+							$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_classe=='y') {
+							$texte='Classe';
+							$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_salle=='y') {
+							$texte='Salle';
+							$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						$largeur_totale=0;
+						for($loop=0;$loop<count($larg_col);$loop++) {
+							$largeur_totale+=$larg_col[$loop];
+						}
+						$nb_colonnes=floor(($largeur_page-$MargeDroite-$MargeGauche-5)/$largeur_totale);
+					}
+					else {
+						// Les largeurs de colonnes choisies débordent en largeur pour l'entête
+						// On va imposer des largeurs avec cell_ajustee()
+						$larg_col=array();
+						$cpt_col=0;
+
+						$pdf->SetXY($x1,$y2);
+
+						$larg_col[$cpt_col]=0;
+						$texte='Num.';
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_num_anonymat=='y') {
+							$texte='Numéro copie';
+							//$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$larg_col[$cpt_col]=20;
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_colonne_vide_1=='y') {
+							$texte=$titre_colonne_vide_1;
+							//$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$larg_col[$cpt_col]=15;
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_colonne_vide_2=='y') {
+							$texte=$titre_colonne_vide_2;
+							//$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$larg_col[$cpt_col]=15;
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_colonne_vide_3=='y') {
+							$texte=$titre_colonne_vide_3;
+							//$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$larg_col[$cpt_col]=15;
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_nom_prenom=='y') {
+							$texte='Nom prénom';
+							//$larg_col[$cpt_col]=$larg_max+4;
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$larg_col[$cpt_col]=55;
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_naissance=='y') {
+							$texte='Naissance';
+							//$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$larg_col[$cpt_col]=20;
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_classe=='y') {
+							$texte='Classe';
+							//$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$larg_col[$cpt_col]=15;
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
+						}
+						$cpt_col++;
+
+						$larg_col[$cpt_col]=0;
+						if($avec_salle=='y') {
+							$texte='Salle';
+							//$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$larg_col[$cpt_col]=20;
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
+						}
+						$cpt_col++;
+
+						$largeur_totale=0;
+						for($loop=0;$loop<count($larg_col);$loop++) {
+							$largeur_totale+=$larg_col[$loop];
+						}
+						$nb_colonnes=floor(($largeur_page-$MargeDroite-$MargeGauche-5)/$largeur_totale);
+					}
+
 
 					$x=$pdf->GetX();
 					$y=$pdf->GetY();
@@ -491,49 +690,81 @@ if(isset($imprime)) {
 
 							if($avec_num_anonymat=='y') {
 								$texte='Numéro copie';
-								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								$x=$pdf->GetX();
+								$y=$pdf->GetY();
+								cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+								$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 							}
 							$cpt_col++;
 
 							if($avec_colonne_vide_1=='y') {
 								$texte=$titre_colonne_vide_1;
-								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								$x=$pdf->GetX();
+								$y=$pdf->GetY();
+								cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+								$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 							}
 							$cpt_col++;
 
 							if($avec_colonne_vide_2=='y') {
 								$texte=$titre_colonne_vide_2;
-								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								$x=$pdf->GetX();
+								$y=$pdf->GetY();
+								cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+								$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 							}
 							$cpt_col++;
 
 							if($avec_colonne_vide_3=='y') {
 								$texte=$titre_colonne_vide_3;
-								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								$x=$pdf->GetX();
+								$y=$pdf->GetY();
+								cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+								$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 							}
 							$cpt_col++;
 		
 							if($avec_nom_prenom=='y') {
 								$texte='Nom prénom';
-								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								$x=$pdf->GetX();
+								$y=$pdf->GetY();
+								cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+								$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 							}
 							$cpt_col++;
 		
 							if($avec_naissance=='y') {
 								$texte='Naissance';
-								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								$x=$pdf->GetX();
+								$y=$pdf->GetY();
+								cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+								$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 							}
 							$cpt_col++;
 		
 							if($avec_classe=='y') {
 								$texte='Classe';
-								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								$x=$pdf->GetX();
+								$y=$pdf->GetY();
+								cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+								$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 							}
 							$cpt_col++;
 		
 							if($avec_salle=='y') {
 								$texte='Salle';
-								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+								$x=$pdf->GetX();
+								$y=$pdf->GetY();
+								cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+								$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 							}
 							$cpt_col++;
 
@@ -559,30 +790,52 @@ if(isset($imprime)) {
 
 						$cpt_col=0;
 						$texte=$j+1;
-						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						$x=$pdf->GetX();
+						$y=$pdf->GetY();
+						cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+						$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 						$cpt_col++;
 
+						// 20210512
 						if($avec_num_anonymat=='y') {
 							$texte=$tab_n_anonymat[$j];
-							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$largeur_dispo=$larg_col[$cpt_col];
+							cell_ajustee($texte, $x, $y, $largeur_dispo, $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$largeur_dispo,$y);
 						}
 						$cpt_col++;
 
 						if($avec_colonne_vide_1=='y') {
 							$texte='';
-							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 						}
 						$cpt_col++;
 
 						if($avec_colonne_vide_2=='y') {
 							$texte='';
-							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 						}
 						$cpt_col++;
 
 						if($avec_colonne_vide_3=='y') {
 							$texte='';
-							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							cell_ajustee($texte, $x, $y, $larg_col[$cpt_col], $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$larg_col[$cpt_col],$y);
 						}
 						$cpt_col++;
 
@@ -590,6 +843,7 @@ if(isset($imprime)) {
 							$x=$pdf->GetX();
 							$y=$pdf->GetY();
 							$texte=$tab_nom[$j];
+							$largeur_dispo=$larg_col[$cpt_col];
 							cell_ajustee($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,$align);
 							//$pdf->Cell($largeur_dispo,10,$texte,'LRBT',0,'C');
 							$pdf->SetXY($x+$largeur_dispo,$y);
@@ -598,19 +852,34 @@ if(isset($imprime)) {
 	
 						if($avec_naissance=='y') {
 							$texte=$tab_naissance[$j];
-							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$largeur_dispo=$larg_col[$cpt_col];
+							cell_ajustee($texte, $x, $y, $largeur_dispo, $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$largeur_dispo,$y);
 						}
 						$cpt_col++;
 	
 						if($avec_classe=='y') {
 							$texte=$tab_classe[$j];
-							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$largeur_dispo=$larg_col[$cpt_col];
+							cell_ajustee($texte, $x, $y, $largeur_dispo, $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$largeur_dispo,$y);
 						}
 						$cpt_col++;
 	
 						if($avec_salle=='y') {
 							$texte=$tab_salle[$j];
-							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							//$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$largeur_dispo=$larg_col[$cpt_col];
+							cell_ajustee($texte, $x, $y, $largeur_dispo, $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, 'C');
+							$pdf->SetXY($x+$largeur_dispo,$y);
 						}
 						$cpt_col++;
 
