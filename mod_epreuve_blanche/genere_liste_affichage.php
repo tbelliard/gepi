@@ -430,7 +430,13 @@ if(isset($imprime)) {
 
 						if($imprime=='avec_num_anonymat') {
 							$texte=$tab_n_anonymat[$j];
-							$pdf->Cell($larg_col2,$hauteur_ligne,$texte,'LRBT',0,'C');
+							//$pdf->Cell($larg_col2,$hauteur_ligne,$texte,'LRBT',0,'C');
+
+							$x=$pdf->GetX();
+							$y=$pdf->GetY();
+							$largeur_dispo=$larg_col2;
+							cell_ajustee($texte, $x, $y, $largeur_dispo, $h_cell, $hauteur_max_font, $hauteur_min_font, $bordure, $v_align, $align);
+							$pdf->SetXY($x+$largeur_dispo,$y);
 						}
 
 						$x=$pdf->GetX();
