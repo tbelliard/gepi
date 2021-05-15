@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -62,7 +62,10 @@ $max_per=isset($_POST['max_per']) ? $_POST['max_per'] : NULL;
 $choix_matieres=isset($_POST['choix_matieres']) ? $_POST['choix_matieres'] : NULL;
 $choix_donnees=isset($_POST['choix_donnees']) ? $_POST['choix_donnees'] : NULL;
 
-if(isset($choix_donnees)) {
+if((isset($choix_donnees))&&(!isset($_POST['champ_eleve']))) {
+	$msg="Erreur&nbsp;: Vous n'avez sélectionné aucune donnée élève à extraire.<br />";
+}
+elseif((isset($choix_donnees))&&(isset($_POST['champ_eleve']))) {
 	check_token();
 
 	$id_groupe=array();
@@ -896,7 +899,7 @@ elseif(!isset($choix_donnees)) {
 
 	echo "<p class='bold' style='margin-top:1em;'>Choix des données à exporter&nbsp;:</p>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' id='formulaire' target='_blank'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='choix_periodes' value='$choix_periodes' />\n";
 	echo "<input type='hidden' name='max_per' value='$max_per' />\n";
@@ -1015,7 +1018,37 @@ Dupont;Simone;...;;AGL1;ESP2;;<br />
 	echo "<div style='clear:both'></div>\n";
 
 	echo "<input type='hidden' name='choix_donnees' value='y' />\n";
-	echo "<p><input type='submit' value='Valider' /></p>\n";
+	echo "<p><input type='submit' id='input_submit' value='Valider' />
+		<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champs_a_extraire()\" /></p>
+
+		<script type='text/javascript'>
+			document.getElementById('input_submit').style.display='none';
+			document.getElementById('input_button').style.display='';
+
+			function check_champs_a_extraire() {
+				var champs=new Array('login', 'ele_id', 'elenoet', 'no_gep', 'nom', 'prenom', 'sexe', 'naissance', 'id_classe', 'classe');
+
+				var temoin=0;
+				for(i=0;i<champs.length;i++) {
+					//if(document.getElementById(champs[i])) {
+					if(document.getElementById('champ_eleve_'+i)) {
+						//alert(champs[i]);
+						//if(document.getElementById(champs[i]).checked) {
+						if(document.getElementById('champ_eleve_'+i).checked) {
+							temoin=1;
+							break;
+						}
+					}
+				}
+
+				if(temoin==0) {
+					alert('Vous n\'avez pas sélectionné de champ élève à extraire.');
+				}
+				else {
+					document.getElementById('formulaire').submit();
+				}
+			}
+		</script>";
 	echo "</form>\n";
 
 
