@@ -29,11 +29,11 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 // Page bourrinée... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
@@ -41,48 +41,47 @@ check_token();
 
 
 $liste_tables_del = array(
-//"absences",
-//"aid",
-//"aid_appreciations",
-//"aid_config",
-//"avis_conseil_classe",
-//"classes",
-//"droits",
-//"eleves",
-"responsables",
-"responsables2",
-"resp_pers",
-"resp_adr",
-//"etablissements",
-//"j_aid_eleves",
-//"j_aid_utilisateurs",
-//"j_eleves_classes",
-//"j_eleves_etablissements",
-//"j_eleves_professeurs",
-//"j_eleves_regime",
-//"j_professeurs_matieres",
-//"log",
-//"matieres",
-//"matieres_appreciations",
-//"matieres_notes",
-//"periodes",
-"tempo2",
-//"temp_gep_import",
-"tempo",
-//"utilisateurs",
-//"cn_cahier_notes",
-//"cn_conteneurs",
-//"cn_devoirs",
-//"cn_notes_conteneurs",
-//"cn_notes_devoirs",
-//"setting"
+	//"absences",
+	//"aid",
+	//"aid_appreciations",
+	//"aid_config",
+	//"avis_conseil_classe",
+	//"classes",
+	//"droits",
+	//"eleves",
+	"responsables",
+	"responsables2",
+	"resp_pers",
+	"resp_adr",
+	//"etablissements",
+	//"j_aid_eleves",
+	//"j_aid_utilisateurs",
+	//"j_eleves_classes",
+	//"j_eleves_etablissements",
+	//"j_eleves_professeurs",
+	//"j_eleves_regime",
+	//"j_professeurs_matieres",
+	//"log",
+	//"matieres",
+	//"matieres_appreciations",
+	//"matieres_notes",
+	//"periodes",
+	"tempo2",
+	//"temp_gep_import",
+	"tempo",
+	//"utilisateurs",
+	//"cn_cahier_notes",
+	//"cn_conteneurs",
+	//"cn_devoirs",
+	//"cn_notes_conteneurs",
+	//"cn_notes_devoirs",
+	//"setting"
 );
 
 
-
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //**************** EN-TETE *****************
@@ -100,103 +99,103 @@ verif_active_dbase();
 echo "<h3 align='center' class='gepi'>Deuxième phase d'initialisation<br />Importation des responsables</h3>";
 
 if (isset($step1)) {
-    $j=0;
-    $flag=0;
-    while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-            $flag=1;
-        }
-        $j++;
-    }
-    if ($flag != 0){
-        echo "<p><b>ATTENTION ...</b><br />";
-        echo "Des données concernant les responsables sont actuellement présentes dans la base GEPI<br /></p>";
-        echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>";
-        echo "<form enctype='multipart/form-data' action='responsables.php' method=post>";
-        echo "<input type=hidden name='step1' value='y' />";
-        echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
-        echo "</form>";
-        die();
-    }
+	$j = 0;
+	$flag = 0;
+	while (($j < count($liste_tables_del)) and ($flag == 0)) {
+		if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"), 0) != 0) {
+			$flag = 1;
+		}
+		$j++;
+	}
+	if ($flag != 0) {
+		echo "<p><b>ATTENTION ...</b><br />";
+		echo "Des données concernant les responsables sont actuellement présentes dans la base GEPI<br /></p>";
+		echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>";
+		echo "<form enctype='multipart/form-data' action='responsables.php' method=post>";
+		echo "<input type=hidden name='step1' value='y' />";
+		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
+		echo "</form>";
+		die();
+	}
 }
 
 if (!isset($is_posted)) {
-    $j=0;
-    while ($j < count($liste_tables_del)) {
-        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-            $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
-        }
-        $j++;
-    }
+	$j = 0;
+	while ($j < count($liste_tables_del)) {
+		if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"), 0) != 0) {
+			$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
+		}
+		$j++;
+	}
 
-    echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
-    echo "<p>Importation du fichier <b>F_ere.dbf</b> contenant les données relatives aux responsables : veuillez préciser le nom complet du fichier <b>F_ere.dbf</b>.";
-    echo "<form enctype='multipart/form-data' action='responsables.php' method=post>";
-    echo "<input type=hidden name='is_posted' value='yes' />";
-    echo "<input type=hidden name='step1' value='y' />";
-    echo "<p><input type='file' size='80' name='dbf_file' />";
-    echo "<p><input type=submit value='Valider' />";
-    echo "</form>";
+	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
+	echo "<p>Importation du fichier <b>F_ere.dbf</b> contenant les données relatives aux responsables : veuillez préciser le nom complet du fichier <b>F_ere.dbf</b>.";
+	echo "<form enctype='multipart/form-data' action='responsables.php' method=post>";
+	echo "<input type=hidden name='is_posted' value='yes' />";
+	echo "<input type=hidden name='step1' value='y' />";
+	echo "<p><input type='file' size='80' name='dbf_file' />";
+	echo "<p><input type=submit value='Valider' />";
+	echo "</form>";
 
 } else {
-    $dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
-    if(mb_strtoupper($dbf_file['name']) == "F_ERE.DBF") {
-        $fp = dbase_open($dbf_file['tmp_name'], 0);
-        if(!$fp) {
-            echo "<p>Impossible d'ouvrir le fichier dbf</p>";
-            echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
-        } else {
-            // on constitue le tableau des champs à extraire
-            $tabchamps = array("ERENO", "ERENOM", "EREPRE", "EREADR", "EREADRS", "ERECLD", "ERELCOM", "EREANOM", "EREAPRE", "EREAADR", "EREACLD", "EREALCOM");
+	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
+	if (mb_strtoupper($dbf_file['name']) == "F_ERE.DBF") {
+		$fp = dbase_open($dbf_file['tmp_name'], 0);
+		if (!$fp) {
+			echo "<p>Impossible d'ouvrir le fichier dbf</p>";
+			echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
+		} else {
+			// on constitue le tableau des champs à extraire
+			$tabchamps = array("ERENO", "ERENOM", "EREPRE", "EREADR", "EREADRS", "ERECLD", "ERELCOM", "EREANOM", "EREAPRE", "EREAADR", "EREACLD", "EREALCOM");
 
-            // ERENO          numéro desresponsables (en liaison avec F_ELE.DBF)
-            // ERENOM         nom  du premier responsable
-            // EREPRE         prénom(s)  du premier responsable
-            // EREADR         n° + rue   du premier responsable
-            // ERECLD         code postal   du premier responsable
-            // ERELCOM        nom de la commune  du premier responsable
-            // EREANOM        nom du deuxième responsable
-            // EREAPRE        prénom(s) du deuxième responsable
-            // EREAADR        n° + rue  du deuxième responsable
-            // EREADRS        complément adresse
-            // EREACLD        code postal  du deuxième responsable
-            // EREALCOM       nom de la commune  du deuxième responsable
+			// ERENO          numéro desresponsables (en liaison avec F_ELE.DBF)
+			// ERENOM         nom  du premier responsable
+			// EREPRE         prénom(s)  du premier responsable
+			// EREADR         n° + rue   du premier responsable
+			// ERECLD         code postal   du premier responsable
+			// ERELCOM        nom de la commune  du premier responsable
+			// EREANOM        nom du deuxième responsable
+			// EREAPRE        prénom(s) du deuxième responsable
+			// EREAADR        n° + rue  du deuxième responsable
+			// EREADRS        complément adresse
+			// EREACLD        code postal  du deuxième responsable
+			// EREALCOM       nom de la commune  du deuxième responsable
 
 
-            $nblignes = dbase_numrecords($fp); //number of rows
-            $nbchamps = dbase_numfields($fp); //number of fields
+			$nblignes = dbase_numrecords($fp); //number of rows
+			$nbchamps = dbase_numfields($fp); //number of fields
 
-            if (@dbase_get_record_with_names($fp,1)) {
-                $temp = @dbase_get_record_with_names($fp,1);
-            } else {
-                echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-                echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
-                die();
-            }
+			if (@dbase_get_record_with_names($fp, 1)) {
+				$temp = @dbase_get_record_with_names($fp, 1);
+			} else {
+				echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+				echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</p>";
+				die();
+			}
 
-            $nb = 0;
-            foreach($temp as $key => $val){
-                $en_tete[$nb] = $key;
-                $nb++;
-            }
+			$nb = 0;
+			foreach ($temp as $key => $val) {
+				$en_tete[$nb] = $key;
+				$nb++;
+			}
 
-            // On range dans tabindice les indices des champs retenus
-            for ($k = 0; $k < count($tabchamps); $k++) {
-                for ($i = 0; $i < count($en_tete); $i++) {
-                    if ($en_tete[$i] == $tabchamps[$k]) {
-                        $tabindice[] = $i;
-                    }
-                }
-            }
+			// On range dans tabindice les indices des champs retenus
+			for ($k = 0; $k < count($tabchamps); $k++) {
+				for ($i = 0; $i < count($en_tete); $i++) {
+					if ($en_tete[$i] == $tabchamps[$k]) {
+						$tabindice[] = $i;
+					}
+				}
+			}
 
-            $nb_reg_no = 0;
-            $nb_record = 0;
-            for($k = 1; ($k < $nblignes+1); $k++){
-                $ligne = dbase_get_record($fp,$k);
-                for($i = 0; $i < count($tabchamps); $i++) {
-                    $affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$tabindice[$i]]))));
-                }
-                $req = mysqli_query($GLOBALS["mysqli"], "insert into responsables set
+			$nb_reg_no = 0;
+			$nb_record = 0;
+			for ($k = 1; ($k < $nblignes + 1); $k++) {
+				$ligne = dbase_get_record($fp, $k);
+				for ($i = 0; $i < count($tabchamps); $i++) {
+					$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$tabindice[$i]]))));
+				}
+				$req = mysqli_query($GLOBALS["mysqli"], "insert into responsables set
                 ereno = '$affiche[0]',
                 nom1 = '$affiche[1]',
                 prenom1 = '$affiche[2]',
@@ -211,35 +210,36 @@ if (!isset($is_posted)) {
                 cp2 = '$affiche[10]',
                 commune2 = '$affiche[11]'
                 ");
-                if(!$req) {
-                    $nb_reg_no++; echo mysqli_error($GLOBALS["mysqli"]);
-                } else {
-                    $nb_record++;
-                }
-            }
-            dbase_close($fp);
-            if ($nb_reg_no != 0) {
-                echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
-            } else {
-                echo "<p>L'importation des responsables dans la base GEPI a été effectuée avec succès (".$nb_record." enregistrements au total).
+				if (!$req) {
+					$nb_reg_no++;
+					echo mysqli_error($GLOBALS["mysqli"]);
+				} else {
+					$nb_record++;
+				}
+			}
+			dbase_close($fp);
+			if ($nb_reg_no != 0) {
+				echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
+			} else {
+				echo "<p>L'importation des responsables dans la base GEPI a été effectuée avec succès (" . $nb_record . " enregistrements au total).
                 <br />Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troixième phase d'importation des matières et de définition des options suivies par les élèves.</p>";
-                echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>";
-                echo "<center><p><a href='disciplines.php'>Procéder à la troisième phase</a></p></center>";
-            }
+				echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>";
+				echo "<center><p><a href='disciplines.php'>Procéder à la troisième phase</a></p></center>";
+			}
 
 
 			// On sauvegarde le témoin du fait qu'il va falloir convertir pour remplir les nouvelles tables responsables:
 			saveSetting("conv_new_resp_table", 0);
 
-        }
-    } else if (trim($dbf_file['name'])=='') {
-        echo "<p>Aucun fichier n'a été sélectionné !<br />";
-        echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
+		}
+	} else if (trim($dbf_file['name']) == '') {
+		echo "<p>Aucun fichier n'a été sélectionné !<br />";
+		echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
 
-    } else {
-        echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-        echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
-    }
+	} else {
+		echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+		echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</p>";
+	}
 }
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

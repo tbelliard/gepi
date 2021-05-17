@@ -32,35 +32,35 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 // Page bourrinée... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
 check_token();
 
 $liste_tables_del = array(
-"classes",
-"eleves",
-"groupes",
-"responsables",
-"j_eleves_groupes",
-"j_groupes_classes",
-"j_groupes_professeurs",
-"j_groupes_matieres",
-"j_eleves_classes",
-"j_professeurs_matieres",
-"matieres",
-"periodes",
-"utilisateurs"
+	"classes",
+	"eleves",
+	"groupes",
+	"responsables",
+	"j_eleves_groupes",
+	"j_groupes_classes",
+	"j_groupes_professeurs",
+	"j_groupes_matieres",
+	"j_eleves_classes",
+	"j_professeurs_matieres",
+	"matieres",
+	"periodes",
+	"utilisateurs"
 );
 
 //**************** EN-TETE *****************
@@ -72,97 +72,97 @@ require_once("../lib/header.inc.php");
 <?php
 echo "<center><h3 class='gepi'>Sixième phase d'initialisation<br />Nettoyage des tables</h3></center>";
 if (!isset($is_posted)) {
-   echo "<p><b>ATTENTION ...</b> : vous ne devez procéder à cette opération uniquement si toutes les données (élèves, classes, professeurs, disciplines, options) ont été définies !</p>";
-   echo "<p>Les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p>";
-   echo "<form enctype='multipart/form-data' action='clean_tables.php' method='post'>";
-   echo "<input type=hidden name='is_posted' value='yes' />";
-   echo "<p><input type=submit value='Procéder au nettoyage' />";
-   echo "</form>";
+	echo "<p><b>ATTENTION ...</b> : vous ne devez procéder à cette opération uniquement si toutes les données (élèves, classes, professeurs, disciplines, options) ont été définies !</p>";
+	echo "<p>Les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p>";
+	echo "<form enctype='multipart/form-data' action='clean_tables.php' method='post'>";
+	echo "<input type=hidden name='is_posted' value='yes' />";
+	echo "<p><input type=submit value='Procéder au nettoyage' />";
+	echo "</form>";
 } else {
-   $j=0;
-   $flag=0;
-   while (($j < count($liste_tables_del)) and ($flag==0)) {
-       if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)==0) {
-           $flag=1;
-       }
-       $j++;
-   }
-   if ($flag != 0){
-       echo "<p><b>ATTENTION ...</b><br />";
-       echo "L'initialisation des données de l'année n'est pas terminée, certaines données concernant les élèves, les classes, les groupes, les professeurs ou les matières sont manquantes. La procédure ne peut continuer !</p>";
+	$j = 0;
+	$flag = 0;
+	while (($j < count($liste_tables_del)) and ($flag == 0)) {
+		if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"), 0) == 0) {
+			$flag = 1;
+		}
+		$j++;
+	}
+	if ($flag != 0) {
+		echo "<p><b>ATTENTION ...</b><br />";
+		echo "L'initialisation des données de l'année n'est pas terminée, certaines données concernant les élèves, les classes, les groupes, les professeurs ou les matières sont manquantes. La procédure ne peut continuer !</p>";
 		echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
-       die();
-   }
-   //Suppression des données inutiles dans la tables utilisateurs
-   echo "<h3 class='gepi'>Vérification des données concernant les professeurs</h3>";
-   $req = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs where (statut = 'professeur' and etat='actif')");
-   $sup = 'no';
-   $nb_prof = mysqli_num_rows($req);
-   $i = 0;
-   while ($i < $nb_prof) {
-       $login_prof = old_mysql_result($req, $i, 'login');
-       $test = mysqli_query($GLOBALS["mysqli"], "select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
-       if (mysqli_num_rows($test)==0) {
-           $del = @mysqli_query($GLOBALS["mysqli"], "delete from utilisateurs where login = '$login_prof'");
-           echo "Le professeur $login_prof a été supprimé de la base.<br />";
-           $sup = 'yes';
-       } else {
-           $test = mysqli_query($GLOBALS["mysqli"], "select login from j_groupes_professeurs where login = '$login_prof'");
-           if (mysqli_num_rows($test)==0) {
-               $del = @mysqli_query($GLOBALS["mysqli"], "delete from utilisateurs where login = '$login_prof'");
-               echo "Le professeur $login_prof a été supprimé de la base.<br />";
-               $sup = 'yes';
-            }
-       }
-       $i++;
-   }
-   if ($sup == 'no') {
-       echo "<p>Aucun professeur n'a été supprimé !</p>";
-    }
-    //Suppression des données inutiles dans la tables des matières
-   echo "<h3 class='gepi'>Vérification des données concernant les matières</h3>";
-   $req = mysqli_query($GLOBALS["mysqli"], "select matiere from matieres");
-    $sup = 'no';
-   $nb_mat = mysqli_num_rows($req);
-   $i = 0;
-   while ($i < $nb_mat) {
-       $mat = old_mysql_result($req, $i, 'matiere');
-        $test1 = mysqli_query($GLOBALS["mysqli"], "select id_matiere from j_professeurs_matieres where id_matiere = '$mat'");
-        if (mysqli_num_rows($test1)==0) {
-            $test2 = mysqli_query($GLOBALS["mysqli"], "select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
-           if (mysqli_num_rows($test2)==0) {
-               $del = @mysqli_query($GLOBALS["mysqli"], "delete from matieres where matiere = '$mat'");
-               echo "La matière $mat a été supprimée de la base.<br />";
-               $sup = 'yes';
-           }
-       }
-       $i++;
-    }
-   if ($sup == 'no') {
-       echo "<p>Aucune matière n'a été supprimée !</p>";
-    }
-    //Suppression des données inutiles dans la tables des responsables
-   echo "<h3 class='gepi'>Vérification des données concernant les responsables des élèves</h3>";
-   $req = mysqli_query($GLOBALS["mysqli"], "select ereno, nom1, prenom1 from responsables");
-   $sup = 'no';
-   $nb_resp = mysqli_num_rows($req);
-   $i = 0;
-    while ($i < $nb_resp) {
-        $resp = old_mysql_result($req, $i, 'ereno');
-       $test1 = mysqli_query($GLOBALS["mysqli"], "select ereno from eleves where ereno = '$resp'");
-       if (mysqli_num_rows($test1)==0) {
-           $nom_resp = old_mysql_result($req, $i, 'nom1');
-           $prenom_resp = old_mysql_result($req, $i, 'prenom1');
-           $del = @mysqli_query($GLOBALS["mysqli"], "delete from responsables where ereno = '$resp'");
-           echo "Le responsable ".$prenom_resp." ".$nom_resp." a été supprimé de la base.<br />";
-          $sup = 'yes';
-       }
-       $i++;
-   }
-   if ($sup == 'no') {
-       echo "<p>Aucun responsable n'a été supprimé !</p>";
-    }
+		die();
+	}
+	//Suppression des données inutiles dans la tables utilisateurs
+	echo "<h3 class='gepi'>Vérification des données concernant les professeurs</h3>";
+	$req = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs where (statut = 'professeur' and etat='actif')");
+	$sup = 'no';
+	$nb_prof = mysqli_num_rows($req);
+	$i = 0;
+	while ($i < $nb_prof) {
+		$login_prof = old_mysql_result($req, $i, 'login');
+		$test = mysqli_query($GLOBALS["mysqli"], "select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
+		if (mysqli_num_rows($test) == 0) {
+			$del = @mysqli_query($GLOBALS["mysqli"], "delete from utilisateurs where login = '$login_prof'");
+			echo "Le professeur $login_prof a été supprimé de la base.<br />";
+			$sup = 'yes';
+		} else {
+			$test = mysqli_query($GLOBALS["mysqli"], "select login from j_groupes_professeurs where login = '$login_prof'");
+			if (mysqli_num_rows($test) == 0) {
+				$del = @mysqli_query($GLOBALS["mysqli"], "delete from utilisateurs where login = '$login_prof'");
+				echo "Le professeur $login_prof a été supprimé de la base.<br />";
+				$sup = 'yes';
+			}
+		}
+		$i++;
+	}
+	if ($sup == 'no') {
+		echo "<p>Aucun professeur n'a été supprimé !</p>";
+	}
+	//Suppression des données inutiles dans la tables des matières
+	echo "<h3 class='gepi'>Vérification des données concernant les matières</h3>";
+	$req = mysqli_query($GLOBALS["mysqli"], "select matiere from matieres");
+	$sup = 'no';
+	$nb_mat = mysqli_num_rows($req);
+	$i = 0;
+	while ($i < $nb_mat) {
+		$mat = old_mysql_result($req, $i, 'matiere');
+		$test1 = mysqli_query($GLOBALS["mysqli"], "select id_matiere from j_professeurs_matieres where id_matiere = '$mat'");
+		if (mysqli_num_rows($test1) == 0) {
+			$test2 = mysqli_query($GLOBALS["mysqli"], "select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
+			if (mysqli_num_rows($test2) == 0) {
+				$del = @mysqli_query($GLOBALS["mysqli"], "delete from matieres where matiere = '$mat'");
+				echo "La matière $mat a été supprimée de la base.<br />";
+				$sup = 'yes';
+			}
+		}
+		$i++;
+	}
+	if ($sup == 'no') {
+		echo "<p>Aucune matière n'a été supprimée !</p>";
+	}
+	//Suppression des données inutiles dans la tables des responsables
+	echo "<h3 class='gepi'>Vérification des données concernant les responsables des élèves</h3>";
+	$req = mysqli_query($GLOBALS["mysqli"], "select ereno, nom1, prenom1 from responsables");
+	$sup = 'no';
+	$nb_resp = mysqli_num_rows($req);
+	$i = 0;
+	while ($i < $nb_resp) {
+		$resp = old_mysql_result($req, $i, 'ereno');
+		$test1 = mysqli_query($GLOBALS["mysqli"], "select ereno from eleves where ereno = '$resp'");
+		if (mysqli_num_rows($test1) == 0) {
+			$nom_resp = old_mysql_result($req, $i, 'nom1');
+			$prenom_resp = old_mysql_result($req, $i, 'prenom1');
+			$del = @mysqli_query($GLOBALS["mysqli"], "delete from responsables where ereno = '$resp'");
+			echo "Le responsable " . $prenom_resp . " " . $nom_resp . " a été supprimé de la base.<br />";
+			$sup = 'yes';
+		}
+		$i++;
+	}
+	if ($sup == 'no') {
+		echo "<p>Aucun responsable n'a été supprimé !</p>";
+	}
 
 
 	//Suppression des données inutiles dans la table j_eleves_etablissements
@@ -170,19 +170,18 @@ if (!isset($is_posted)) {
 
 	//SELECT e.* FROM eleves e LEFT JOIN j_eleves_etablissements jec ON jec.id_eleve=e.elenoet WHERE jec.id_eleve is NULL;
 	//SELECT jec.* FROM j_eleves_etablissements jec LEFT JOIN eleves e ON jec.id_eleve=e.elenoet WHERE e.elenoet IS NULL;
-	$sql="SELECT jec.* FROM j_eleves_etablissements jec
+	$sql = "SELECT jec.* FROM j_eleves_etablissements jec
 			LEFT JOIN eleves e ON jec.id_eleve=e.elenoet
 			WHERE e.elenoet IS NULL;";
-	$res_jee=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_jee)==0) {
+	$res_jee = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res_jee) == 0) {
 		echo "<p>Aucune association élève/établissement n'a été supprimée.</p>\n";
-	}
-	else {
-		$cpt_suppr_jee=0;
-		while($lig_jee=mysqli_fetch_object($res_jee)) {
-			$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='".$lig_jee->id_eleve."' AND id_etablissement='".$lig_jee->id_etablissement."';";
-			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
-			if($suppr) {
+	} else {
+		$cpt_suppr_jee = 0;
+		while ($lig_jee = mysqli_fetch_object($res_jee)) {
+			$sql = "DELETE FROM j_eleves_etablissements WHERE id_eleve='" . $lig_jee->id_eleve . "' AND id_etablissement='" . $lig_jee->id_etablissement . "';";
+			$suppr = mysqli_query($GLOBALS["mysqli"], $sql);
+			if ($suppr) {
 				$cpt_suppr_jee++;
 			}
 		}
@@ -191,7 +190,7 @@ if (!isset($is_posted)) {
 
 
 	echo "<p><br /></p>\n";
-   echo "<p>Fin de la procédure !</p>";
+	echo "<p>Fin de la procédure !</p>";
 }
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
