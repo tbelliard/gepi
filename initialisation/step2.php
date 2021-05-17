@@ -60,16 +60,18 @@ verif_active_dbase();
 	function CocheCase(boul) {
 		len = document.formulaire.elements.length;
 		for (i = 0; i < len; i++) {
-			if (document.formulaire.elements[i].type == 'checkbox') {
+			if (document.formulaire.elements[i].type === 'checkbox') {
 				document.formulaire.elements[i].checked = boul;
 			}
 		}
 	}
 
 	function InverseSel() {
-		len = document.formulaire.elements.length;
-		for (i = 0; i < len; i++) {
-			if (document.formulaire.elements[i].type == 'checkbox') {
+		const len = document.formulaire.elements.length;
+		let a;
+
+		for (let i = 0; i < len; i++) {
+			if (document.formulaire.elements[i].type === 'checkbox') {
 				a = !document.formulaire.elements[i].checked;
 				document.formulaire.elements[i].checked = a
 			}
@@ -77,8 +79,10 @@ verif_active_dbase();
 	}
 
 	function MetVal(cible) {
-		len = document.formulaire.elements.length;
-		if (cible == 'nom') {
+		const len = document.formulaire.elements.length;
+
+		let a, b, i;
+		if (cible === 'nom') {
 			a = 2;
 			b = document.formulaire.nom.value;
 		} else {
@@ -86,7 +90,7 @@ verif_active_dbase();
 			b = document.formulaire.pour.value;
 		}
 		for (i = 0; i < len; i++) {
-			if ((document.formulaire.elements[i].type == 'checkbox')
+			if ((document.formulaire.elements[i].type === 'checkbox')
 				&&
 				(document.formulaire.elements[i].checked)
 			) {
