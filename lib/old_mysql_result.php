@@ -3,7 +3,7 @@
  * Fonction basée sur l'api mysqli et
  * simulant la fonction mysql_result()
  * Copyright 2014 Marc Leygnac
- * Copyright 2021 Neil Romain
+ * Copyright 2021 Romain Neil
  *
  * @param \mysqli_result $result résultat après requete
  * @param integer $row numéro de la ligne
