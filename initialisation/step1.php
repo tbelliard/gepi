@@ -132,10 +132,7 @@ if (!isset($is_posted)) {
                         $nb_reg_no++;
                     } else {
                         $nb_reg_ok++;
-//                        echo ".";
                     }
-                } else {
-//                    echo ".";
                 }
             }
 
