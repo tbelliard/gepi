@@ -4,7 +4,7 @@
  * You need PHP 5.2 at least
  * You need Zip Extension
  *
- * @copyright  GPL License 2008 - Julien Pauli - Cyril PIERRE de GEYER - Anaska (http://www.anaska.com)
+ * @copyright  GPL License 2008 - Julien Pauli - Cyril PIERRE de GEYER - Anaska (http://www.anaska.com) - Romain Neil
  * @license    http://www.gnu.org/copyleft/gpl.html  GPL License
  * @version 1.3
  */
@@ -12,7 +12,13 @@ class SegmentIterator implements RecursiveIterator
 {
     private $ref;
     private $key;
-    public function __construct(array $ref)
+
+	/**
+	 * @var int[]|string[]
+	 */
+	private $keys;
+
+	public function __construct(array $ref)
     {
         $this->ref = $ref;
         $this->key = 0;
