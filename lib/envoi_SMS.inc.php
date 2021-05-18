@@ -152,7 +152,7 @@ function envoi_SMS($tab_to, $sms, $log = false) {
 			$parametres['data'] .= '	<login>' . getSettingValue('sms_username') . '</login>' . "\n";
 			$parametres['data'] .= '	<password>' . getSettingValue('sms_password') . '</password>' . "\n";
 			foreach ($tab_to as $to) {
-				$parametres['data'] .= '		<sendMsg>' . "\n";;
+				$parametres['data'] .= '		<sendMsg>' . "\n";
 				$parametres['data'] .= '			<to>' . filtrage_numero($to, true) . '</to>' . "\n";
 				$parametres['data'] .= '			<txt><![CDATA[' . $sms . ']]></txt>' . "\n";
 				//$parametres['data'].='			<from>".substr(getSettingValue("sms_identite"),0,11)."</from>'."\n";
@@ -179,7 +179,7 @@ function envoi_SMS($tab_to, $sms, $log = false) {
 				} else $retour = 'OK';
 				$t_log['retour'] = $retour;
 				$t_log['reponse'] = $xml->saveXML();
-			};
+			}
 
 			break;
 
@@ -208,7 +208,7 @@ function envoi_SMS($tab_to, $sms, $log = false) {
 				else $retour = 'OK';
 				$t_log['retour'] = $retour;
 				$t_log['reponse'] = $reponse . ' ' . $t_erreurs[$reponse];
-			};
+			}
 
 			break;
 
@@ -241,7 +241,7 @@ function envoi_SMS($tab_to, $sms, $log = false) {
 				else $retour = 'OK';
 				$t_log['retour'] = $retour;
 				$t_log['reponse'] = $reponse;
-			};
+			}
 
 			break;
 
@@ -272,7 +272,7 @@ function envoi_SMS($tab_to, $sms, $log = false) {
 				if ($mobiles != "") $mobiles .= '				},' . "\n";
 				$mobiles .= '				{' . "\n";
 				$mobiles .= '				"MOBILEPHONE": "' . filtrage_numero($to) . '"' . "\n";
-			};
+			}
 
 			$mobiles = rtrim($mobiles, ',');
 			$parametres['smsData'] .= $mobiles;
@@ -294,7 +294,7 @@ function envoi_SMS($tab_to, $sms, $log = false) {
 				else $retour = 'SMS non envoyé(s) : ' . $t_reponse['statusText'];
 				$t_log['retour'] = $retour;
 				$t_log['reponse'] = liste_parametres($t_reponse);
-			};
+			}
 
 			break;
 
