@@ -1,10 +1,10 @@
 <?php
 
 /** Manipulation de la table setting
- * 
- * 
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin
+ *
+ *
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin, Romain Neil
  *
  * This file is part of GEPI.
  *
@@ -21,22 +21,22 @@
  * You should have received a copy of the GNU General Public License
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * @package Initialisation
  * @subpackage settings
- * 
+ *
  */
 
 /**
  * Tableau des réglages
- * 
- * $gepiSettings['name'] = 'value'
- * 
- * name le nom du réglage dans setting.name
- * 
- * value la valeur du réglage dans setting.value 
  *
- * @global array $GLOBALS['gepiSettings']
+ * $gepiSettings['name'] = 'value'
+ *
+ * name le nom du réglage dans setting.name
+ *
+ * value la valeur du réglage dans setting.value
+ *
+ * @global array $GLOBALS ['gepiSettings']
  * @name $gepiSettings
  */
 $GLOBALS['gepiSettings'] = array();
@@ -49,26 +49,24 @@ $GLOBALS['gepiSettings'] = array();
  *
  * Retourne TRUE si tout c'est bien passé, FALSE sinon
  *
- * @global array
  * @return bool TRUE if the settings are loaded
+ * @global array
  */
-function loadSettings()
-{
-    global $mysqli;
-    global $gepiSettings;
-    $sql = "SELECT name, value FROM setting";
-    
-    $resultat = mysqli_query($mysqli, $sql);
-    if (!$resultat) return (FALSE);
-    if ($resultat->num_rows == 0) return (FALSE);
-    
-    while($donnees = mysqli_fetch_assoc($resultat))
-    {
-        $gepiSettings[$donnees['name']] = $donnees['value'];
-    }
-    
-    $resultat->free();
-    return (TRUE);
+function loadSettings() {
+	global $mysqli;
+	global $gepiSettings;
+	$sql = "SELECT name, value FROM setting";
+
+	$resultat = mysqli_query($mysqli, $sql);
+	if (!$resultat) return (FALSE);
+	if ($resultat->num_rows == 0) return (FALSE);
+
+	while ($donnees = mysqli_fetch_assoc($resultat)) {
+		$gepiSettings[$donnees['name']] = $donnees['value'];
+	}
+
+	$resultat->free();
+	return (TRUE);
 }
 
 /**
@@ -79,16 +77,15 @@ function loadSettings()
  *
  * Retourne la valeur si le nom existe
  *
- * @global array 
- * @param text $_name Le nom du réglage que vous cherchez
- * @return text La valeur correspondant à $_name ou null si le setting n'est pas présent
- * 
+ * @param string $_name Le nom du réglage que vous cherchez
+ * @return string La valeur correspondant à $_name ou null si le setting n'est pas présent
+ *
+ * @global array
  */
-function getSettingValue($_name)
-{
-    global $gepiSettings;
-    if (isset($gepiSettings[$_name])) return ($gepiSettings[$_name]);
-    else return null;
+function getSettingValue($_name) {
+	global $gepiSettings;
+	if (isset($gepiSettings[$_name])) return ($gepiSettings[$_name]);
+	else return null;
 }
 
 /**
@@ -96,40 +93,38 @@ function getSettingValue($_name)
  *
  * Utilisez cette fonction ponctuellement, Si vous devez sauvegarder plusieurs réglages,
  * vous devriez plutôt écrire votre propre code
- * 
- * @global array $gepiSettings
- * @param text $_name Le nom du réglage
- * @param text $_value La valeur du réglage
+ *
+ * @param string $_name Le nom du réglage
+ * @param string $_value La valeur du réglage
  * @return bool TRUE si tout s'est bien passé, FALSE sinon
+ * @global array $gepiSettings
  */
-function saveSetting($_name, $_value)
-{
-    global $gepiSettings;
-    global $mysqli;
-    $R = mysqli_query($mysqli, "SELECT * FROM setting WHERE NAME='".$_name."' LIMIT 1");
-   if ($R->num_rows > 0) {
-    $sql = "update setting set VALUE = \"" . $_value . "\" where NAME = \"" . $_name . "\"";
-    $res = mysqli_query($mysqli, $sql);
-    if ( ! $res) return (FALSE);
-    } else {
-        $sql = "insert into setting set NAME = \"" . $_name . "\", VALUE = \"" . $_value . "\"";
-        $res = mysqli_query($mysqli, $sql);
-        if ( ! $res) return (FALSE);
-    }
-    $gepiSettings[$_name] = $_value;
-    return (TRUE);
+function saveSetting($_name, $_value) {
+	global $gepiSettings;
+	global $mysqli;
+	$R = mysqli_query($mysqli, "SELECT * FROM setting WHERE NAME='" . $_name . "' LIMIT 1");
+	if ($R->num_rows > 0) {
+		$sql = "update setting set VALUE = \"" . $_value . "\" where NAME = \"" . $_name . "\"";
+	} else {
+		$sql = "insert into setting set NAME = \"" . $_name . "\", VALUE = \"" . $_value . "\"";
+	}
+
+	$res = mysqli_query($mysqli, $sql);
+	if (!$res) return (FALSE);
+
+	$gepiSettings[$_name] = $_value;
+	return (TRUE);
 }
 
 /**
  * Renvoie TRUE si le réglage est 'yes' ou 'y'
  *
  *
- * @param text $_name Le nom du réglage que vous cherchez
+ * @param string $_name Le nom du réglage que vous cherchez
  * @return bool TRUE si le réglage que vous cherchez est 'yes' or 'y', FALSE sinon
  */
-function getSettingAOui($_name)
-{
-	if (getSettingValue($_name)=="yes" || getSettingValue($_name)=="y"){
+function getSettingAOui($_name) {
+	if (getSettingValue($_name) == "yes" || getSettingValue($_name) == "y") {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -140,12 +135,11 @@ function getSettingAOui($_name)
  * Renvoie TRUE si le réglage est 'no' ou 'n'
  *
  *
- * @param text $_name Le nom du réglage que vous cherchez
+ * @param string $_name Le nom du réglage que vous cherchez
  * @return bool TRUE si le réglage que vous cherchez est 'no' or 'n', FALSE sinon
  */
-function getSettingANon($_name)
-{
-	if (getSettingValue($_name)=="no" || getSettingValue($_name)=="n"){
+function getSettingANon($_name) {
+	if (getSettingValue($_name) == "no" || getSettingValue($_name) == "n") {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -158,16 +152,15 @@ function getSettingANon($_name)
  *
  * Utilisez cette fonction ponctuellement, Si vous devez supprimer plusieurs réglages,
  * vous devriez plutôt écrire votre propre code
- * 
- * @global array $gepiSettings
- * @param text $_name Le nom du réglage
+ *
+ * @param string $_name Le nom du réglage
  * @return bool TRUE si tout s'est bien passé, FALSE sinon
+ * @global array $gepiSettings
  */
-function deleteSetting($_name)
-{
-    global $gepiSettings;
-    global $mysqli;
-	$sql = "SELECT * FROM setting WHERE NAME='".$_name."' LIMIT 1";
+function deleteSetting($_name) {
+	global $gepiSettings;
+	global $mysqli;
+	$sql = "SELECT * FROM setting WHERE NAME='" . $_name . "' LIMIT 1";
 	$R = mysqli_query($mysqli, $sql);
 	if ($R->num_rows > 0) {
 		$sql = "DELETE FROM setting where NAME = \"" . $_name . "\"";
@@ -179,6 +172,3 @@ function deleteSetting($_name)
 		return (FALSE);
 	}
 }
-
-
-?>
