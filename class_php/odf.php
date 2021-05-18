@@ -163,12 +163,14 @@ IMG;
         $this->segments[$segment] = new Segment($segment, $m[1]);
         return $this->segments[$segment];
     }
-    /**
-     * Sauvegarde le fichier odt sur le disque
-     * 
-     * @param string $file nom du fichier désiré
-     * @return void
-     */
+
+	/**
+	 * Sauvegarde le fichier odt sur le disque
+	 *
+	 * @param string $file nom du fichier désiré
+	 * @throws \OdfException
+	 * @return void
+	 */
     public function saveToDisk($file = null)
     {
         if ($file !== null && is_string($file)) {
