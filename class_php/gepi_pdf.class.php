@@ -840,4 +840,3 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 	}
 
 }
-?>
