@@ -326,5 +326,3 @@ function envoi_SMS($tab_to, $sms, $log = false) {
 
 	if ($log == true) return $t_log; else return $retour;
 }
-
-?>
