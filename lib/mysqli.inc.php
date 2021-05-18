@@ -66,15 +66,14 @@ if (!$mysqli->set_charset("utf8")) {
  * retournera un objet mysqli_result. 
  * Pour les autres types de requêtes ayant réussies, mysqli_query() retournera TRUE.
  * 
- * @param type $sql
- * @return type 
+ * @param string $sql
+ * @return bool|\mysqli_result
  */
 function sqli_query ($sql)
 {
     global $mysqli;
-    
-    $r = mysqli_query($mysqli, $sql);
-    return $r;
+
+	return mysqli_query($mysqli, $sql);
 }
 
 /**
@@ -85,8 +84,8 @@ function sqli_query ($sql)
  * exactly one value, so error checking is somewhat limited.
  * It also returns -1 if the query returns a single NULL value, such as from
  * a MIN or MAX aggregate function applied over no rows.
- * @param type $sql
- * @return type 
+ * @param string $sql
+ * @return mixed
  */
 function sqli_query1 ($sql)
 {
@@ -124,8 +123,8 @@ function sqli_row ($r, $i)
 
 /** 
  * Retourne le nombre de lignes d'un objet mysqli.
- * @param type $r
- * @return type 
+ * @param \mysqli_result $r
+ * @return int
  */
 function sqli_count ($r)
 {
