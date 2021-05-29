@@ -126,10 +126,10 @@
 									   title="retour début de page depuis <?php echo $StatutItem; ?>">
 
 										<?php
-										if (my_strtolower($StatutItem) == 'responsable') echo casse_mot($gepiSettings['denomination_responsable'], 'majf');
-										elseif (my_strtolower($StatutItem) == 'eleve') echo casse_mot($gepiSettings['denomination_eleve'], 'majf');
-										elseif (my_strtolower($StatutItem) == 'professeur_principal') echo getSettingValue("gepi_prof_suivi");
-										elseif (my_strtolower($StatutItem) == 'scolarite') echo "Scolarité";
+										if (strtolower($StatutItem) == 'responsable') echo casse_mot($gepiSettings['denomination_responsable'], 'majf');
+										elseif (strtolower($StatutItem) == 'eleve') echo casse_mot($gepiSettings['denomination_eleve'], 'majf');
+										elseif (strtolower($StatutItem) == 'professeur_principal') echo getSettingValue("gepi_prof_suivi");
+										elseif (strtolower($StatutItem) == 'scolarite') echo "Scolarité";
 										else echo $StatutItem;
 										?>
 									</a>
