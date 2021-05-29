@@ -226,7 +226,7 @@
 				}
 				?>
 
-				var anc_onglet = '<?php echo $anc_onglet;?>';
+				const anc_onglet = '<?php echo $anc_onglet;?>';
 				change_onglet(anc_onglet);
 				//-->
 			</script>
@@ -236,8 +236,8 @@
 			<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 			<script type='text/javascript'>
-				var ele = document.getElementById('EmSize');
-				var em2px = ele.offsetLeft
+				const ele = document.getElementById('EmSize');
+				const em2px = ele.offsetLeft;
 				//alert('1em == '+em2px+'px');
 			</script>
 			<noscript></noscript>
