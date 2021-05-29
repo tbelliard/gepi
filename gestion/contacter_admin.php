@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
+ * Copyright 2001, 2012, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul, Romain Neil
  *
  * This file is part of GEPI.
  *
@@ -98,7 +98,7 @@ case "envoi":
 
 	$gepiAdminAdress=getSettingValue("gepiAdminAdress");
 	if($gepiAdminAdress==""){
-		echo "<p><span style='color:red;>ERREUR</span>: L'adresse mail de l'administrateur n'est pas renseignée.</p>\n";
+		echo "<p><span style='color:red'>ERREUR</span>: L'adresse mail de l'administrateur n'est pas renseignée.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
