@@ -139,9 +139,9 @@
 								</h3>
 								<ul class='div_tableau'>
 									<?php
-									if (isset($tab_droits_acces[my_strtolower($StatutItem)])) {
+									if (isset($tab_droits_acces[strtolower($StatutItem)])) {
 										$rubrique_precedente = '';
-										foreach ($tab_droits_acces[my_strtolower($StatutItem)] as $titreItem => $current_item) {
+										foreach ($tab_droits_acces[strtolower($StatutItem)] as $titreItem => $current_item) {
 											$texteItem = $current_item['texteItem'];
 
 											if ($current_item['rubrique'] != $rubrique_precedente) {
