@@ -4368,7 +4368,7 @@ function my_strtolower($mot) {
  * @return string chaine mise en forme
  */
 function my_strtoupper($mot) {
-	return casse_mot($mot, 'maj');
+	return casse_mot($mot);
 }
 
 /**
