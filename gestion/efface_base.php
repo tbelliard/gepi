@@ -2,7 +2,7 @@
 @set_time_limit(0);
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Romain Neil
  *
  * This file is part of GEPI.
  *
@@ -27,33 +27,33 @@ require_once("../lib/initialisations.inc.php");
 $resultat_session = $session_gepi->security_check();
 
 if ($resultat_session == 'c') {
-   header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
-if (isset($_POST['confirm']) and ($_POST['confirm']=='Non')) {
-    header("Location: index.php");
+if (isset($_POST['confirm']) and ($_POST['confirm'] == 'Non')) {
+	header("Location: index.php");
 }
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Effacement des données";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-?><p class=bold><a href='index.php#efface_base'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-
+?>
+<p class=bold><a href='index.php#efface_base'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <?php
-if(getSettingAOui('gepi_en_production')) {
-    echo "<h3 class='gepi'>Attention</h3>\n";
-    echo "<p>Votre serveur Gepi est paramétré comme un serveur en production.<br />Vous ne devriez pas effacer la base.<br />Vous perdriez tout ce qui est actuellement dans la base Gepi sauf&nbsp;:</p>
+if (getSettingAOui('gepi_en_production')) {
+	echo "<h3 class='gepi'>Attention</h3>\n";
+	echo "<p>Votre serveur Gepi est paramétré comme un serveur en production.<br />Vous ne devriez pas effacer la base.<br />Vous perdriez tout ce qui est actuellement dans la base Gepi sauf&nbsp;:</p>
 <ul>
     <li>Les classes (noms, périodes, ...)</li>
     <li>Les catégories d'AID</li>
@@ -65,35 +65,40 @@ if(getSettingAOui('gepi_en_production')) {
     <li>Les cahiers de texte</li>
 </ul>\n";
 
-    echo "<p>Vous pouvez modifier ce paramétrage dans la page de <a href='param_gen.php#gepi_en_production'>Configuration générale</a> si votre Gepi est en fait juste un Gepi de test.</p>\n";
-    require("../lib/footer.inc.php");
-    die();
+	echo "<p>Vous pouvez modifier ce paramétrage dans la page de <a href='param_gen.php#gepi_en_production'>Configuration générale</a> si votre Gepi est en fait juste un Gepi de test.</p>\n";
+	require("../lib/footer.inc.php");
+	die();
 }
 ?>
 <H2>Effacement de la base</H2>
 <?php
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 1)) {
-    if ($_POST['confirm']=='Oui') {
+	if ($_POST['confirm'] == 'Oui') {
 		check_token(false);
 
-        ?>
-        <center><p class='grand'><font color='red'><b>ATTENTION, la suppression des données est irréversible !</b></font></p>
-        <form action="efface_base.php" method="post" name="formulaire">
-		<?php
-			echo add_token_field();
 		?>
-        <table class='bordercolor10'>
-        <tr><td><INPUT TYPE=SUBMIT value ="EFFACER LES DONNEES <?php echo my_strtoupper($gepiSettings['denomination_eleves']);?>" /></td></tr></table>
-        <INPUT TYPE=HIDDEN name=is_posted value = 2 />
-        </form>
-		<p><br /></p>
+		<center><p class='grand'><font color='red'><b>ATTENTION, la suppression des données est irréversible
+						!</b></font></p>
+			<form action="efface_base.php" method="post" name="formulaire">
+				<?php
+				echo add_token_field();
+				?>
+				<table class='bordercolor10'>
+					<tr>
+						<td><input type="submit" value="EFFACER LES DONNEES <?= strtoupper($gepiSettings['denomination_eleves']); ?>"/>
+						</td>
+					</tr>
+				</table>
+				<INPUT TYPE=HIDDEN name=is_posted value=2/>
+			</form>
+			<p><br/></p>
 		</center>
-        <?php
-    }
+		<?php
+	}
 }
 
 if (!isset($_POST['is_posted'])) {
-    echo "<p><b>ATTENTION : Cette procédure efface tout le contenu de la base de données concernant les ".$gepiSettings['denomination_eleves']." (données personnelles, notes, appréciations, ...)</b>
+	echo "<p><b>ATTENTION : Cette procédure efface tout le contenu de la base de données concernant les " . $gepiSettings['denomination_eleves'] . " (données personnelles, notes, appréciations, ...)</b>
     <br />Si vous souhaitez initialiser l'année à l'aide de fichiers GEP, inutile d'utiliser cette procédure, l'effacement des données vous sera proposé au cours de la procédure d'initialisation.
 
     <br /><br />Les données suivantes sont conservées :
@@ -108,147 +113,147 @@ if (!isset($_POST['is_posted'])) {
     <li>Les cahiers de texte</li>
     </ul>";
 
-    echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>";
-    echo "<form action=\"efface_base.php\" method=\"post\" name=\"formulaire\">";
+	echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>";
+	echo "<form action=\"efface_base.php\" method=\"post\" name=\"formulaire\">";
 
 	echo add_token_field();
 
-    echo "<INPUT TYPE=HIDDEN name=is_posted value = '1' /> ";
+	echo "<INPUT TYPE=HIDDEN name=is_posted value = '1' /> ";
 	echo "<p>";
-    echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Oui' />";
-    echo " <INPUT TYPE=SUBMIT name='confirm' value = 'Non' />";
+	echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Oui' />";
+	echo " <INPUT TYPE=SUBMIT name='confirm' value = 'Non' />";
 	echo "</p>";
 	echo "<p><br /></p>";
-    echo "</FORM>";
+	echo "</FORM>";
 
 }
 
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 2)) {
 	check_token(false);
 
-   $liste_tables_del = array(
-"absences",
-//"absences_actions",
-//"edt_creneaux",
-"edt_creneaux_bis",
-"absences_eleves",
-"absences_gep",
-//"absences_motifs",
-"absences_rb",
-"aid",
-"aid_appreciations",
-//"aid_config",
-//"aid_familles",
-//"aid_productions",
-//"aid_public",
-/*
-"archivage_aid_eleve",
-"archivage_aids",
-"archivage_appreciations_aid",
-"archivage_disciplines",
-"archivage_ects",
-"archivage_eleves",
-"archivage_eleves2",
-"archivage_types_aid",
-*/
-"avis_conseil_classe",
-//"classes",
-"cn_cahier_notes",
-"cn_conteneurs",
-"cn_devoirs",
-"cn_notes_conteneurs",
-"cn_notes_devoirs",
-"ct_devoirs_entry",
-"ct_documents",
-"ct_entry",
-//"ct_types_documents",
-//"droits",
-//"droits_aid",
-"edt_calendrier",
-"edt_classes",
-"edt_cours",
-"edt_dates_special",
-"edt_init",
-//"edt_semaines",
-//"edt_setting",
-"eleves",
-"eleves_groupes_settings",
-//"etablissements",
-//"etiquettes_formats",
-"groupes",
-//"horaires_etablissement",
-"inscription_items",
-"inscription_j_login_items",
-"j_aid_eleves",
-"j_aid_eleves_resp",
-"j_aid_utilisateurs",
-"j_aid_utilisateurs_gest",
-"j_aidcateg_utilisateurs",
-"j_aidcateg_super_gestionnaires",
-"j_eleves_classes",
-"j_eleves_cpe",
-"j_eleves_etablissements",
-"j_eleves_groupes",
-"j_eleves_professeurs",
-"j_eleves_regime",
-"j_groupes_classes",
-"j_groupes_matieres",
-"j_groupes_professeurs",
-"j_matieres_categories_classes",
-//"j_professeurs_matieres",
-"j_scol_classes",
-//"lettres_cadres",
-"lettres_suivis",
-//"lettres_tcs",
-//"lettres_types",
-//"log",
-//"matieres",
-"matieres_appreciations",
-"matieres_appreciations_acces",
-"matieres_appreciations_grp",
-"matieres_appreciations_tempo",
-"matieres_categories",
-"matieres_notes",
-"messages",
-"miseajour",
-//"model_bulletin",
-//"periodes",
-"preferences",
-"resp_adr",
-"resp_pers",
-"responsables",
-"responsables2",
-"s_autres_sanctions",
-"s_communication",
-"s_exclusions",
-"s_incidents",
-"s_lieux_incidents",
-"s_mesures",
-"s_protagonistes",
-"s_qualites",
-"s_retenues",
-"s_sanctions",
-"s_traitement_incident",
-"s_travail",
-"s_types_sanctions",
-"salle_cours",
-//"setting",
-"suivi_eleve_cpe",
-"temp_gep_import",
-"tempo",
-"tempo2",
-"tentatives_intrusion",
-//"utilisateurs",
-"vs_alerts_eleves",
-"vs_alerts_groupes",
-"vs_alerts_types"
-);
-   $j=0;
-   while ($j < count($liste_tables_del)) {
-       $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
-       $j++;
-   }
-   echo "<p class='grand'>Suppression des données réussie.</p>";
+	$liste_tables_del = array(
+		"absences",
+		//"absences_actions",
+		//"edt_creneaux",
+		"edt_creneaux_bis",
+		"absences_eleves",
+		"absences_gep",
+		//"absences_motifs",
+		"absences_rb",
+		"aid",
+		"aid_appreciations",
+		//"aid_config",
+		//"aid_familles",
+		//"aid_productions",
+		//"aid_public",
+		/*
+		"archivage_aid_eleve",
+		"archivage_aids",
+		"archivage_appreciations_aid",
+		"archivage_disciplines",
+		"archivage_ects",
+		"archivage_eleves",
+		"archivage_eleves2",
+		"archivage_types_aid",
+		*/
+		"avis_conseil_classe",
+		//"classes",
+		"cn_cahier_notes",
+		"cn_conteneurs",
+		"cn_devoirs",
+		"cn_notes_conteneurs",
+		"cn_notes_devoirs",
+		"ct_devoirs_entry",
+		"ct_documents",
+		"ct_entry",
+		//"ct_types_documents",
+		//"droits",
+		//"droits_aid",
+		"edt_calendrier",
+		"edt_classes",
+		"edt_cours",
+		"edt_dates_special",
+		"edt_init",
+		//"edt_semaines",
+		//"edt_setting",
+		"eleves",
+		"eleves_groupes_settings",
+		//"etablissements",
+		//"etiquettes_formats",
+		"groupes",
+		//"horaires_etablissement",
+		"inscription_items",
+		"inscription_j_login_items",
+		"j_aid_eleves",
+		"j_aid_eleves_resp",
+		"j_aid_utilisateurs",
+		"j_aid_utilisateurs_gest",
+		"j_aidcateg_utilisateurs",
+		"j_aidcateg_super_gestionnaires",
+		"j_eleves_classes",
+		"j_eleves_cpe",
+		"j_eleves_etablissements",
+		"j_eleves_groupes",
+		"j_eleves_professeurs",
+		"j_eleves_regime",
+		"j_groupes_classes",
+		"j_groupes_matieres",
+		"j_groupes_professeurs",
+		"j_matieres_categories_classes",
+		//"j_professeurs_matieres",
+		"j_scol_classes",
+		//"lettres_cadres",
+		"lettres_suivis",
+		//"lettres_tcs",
+		//"lettres_types",
+		//"log",
+		//"matieres",
+		"matieres_appreciations",
+		"matieres_appreciations_acces",
+		"matieres_appreciations_grp",
+		"matieres_appreciations_tempo",
+		"matieres_categories",
+		"matieres_notes",
+		"messages",
+		"miseajour",
+		//"model_bulletin",
+		//"periodes",
+		"preferences",
+		"resp_adr",
+		"resp_pers",
+		"responsables",
+		"responsables2",
+		"s_autres_sanctions",
+		"s_communication",
+		"s_exclusions",
+		"s_incidents",
+		"s_lieux_incidents",
+		"s_mesures",
+		"s_protagonistes",
+		"s_qualites",
+		"s_retenues",
+		"s_sanctions",
+		"s_traitement_incident",
+		"s_travail",
+		"s_types_sanctions",
+		"salle_cours",
+		//"setting",
+		"suivi_eleve_cpe",
+		"temp_gep_import",
+		"tempo",
+		"tempo2",
+		"tentatives_intrusion",
+		//"utilisateurs",
+		"vs_alerts_eleves",
+		"vs_alerts_groupes",
+		"vs_alerts_types"
+	);
+	$j = 0;
+	while ($j < count($liste_tables_del)) {
+		$del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
+		$j++;
+	}
+	echo "<p class='grand'>Suppression des données réussie.</p>";
 }
 require("../lib/footer.inc.php");
 ?>

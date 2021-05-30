@@ -67,31 +67,28 @@
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
-{
-	
+abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria {
+
 	/**
 	 * Initializes internal state of BaseCahierTexteTravailAFaireQuery object.
 	 *
-	 * @param     string $dbName The dabase name
-	 * @param     string $modelName The phpName of a model, e.g. 'Book'
-	 * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+	 * @param string $dbName The dabase name
+	 * @param string $modelName The phpName of a model, e.g. 'Book'
+	 * @param string $modelAlias The alias for the model in this query, e.g. 'b'
 	 */
-	public function __construct($dbName = 'gepi', $modelName = 'CahierTexteTravailAFaire', $modelAlias = null)
-	{
+	public function __construct($dbName = 'gepi', $modelName = 'CahierTexteTravailAFaire', $modelAlias = null) {
 		parent::__construct($dbName, $modelName, $modelAlias);
 	}
 
 	/**
 	 * Returns a new CahierTexteTravailAFaireQuery object.
 	 *
-	 * @param     string $modelAlias The alias of a model in the query
-	 * @param     Criteria $criteria Optional Criteria to build the query from
+	 * @param string $modelAlias The alias of a model in the query
+	 * @param Criteria $criteria Optional Criteria to build the query from
 	 *
 	 * @return    CahierTexteTravailAFaireQuery
 	 */
-	public static function create($modelAlias = null, $criteria = null)
-	{
+	public static function create($modelAlias = null, $criteria = null) {
 		if ($criteria instanceof CahierTexteTravailAFaireQuery) {
 			return $criteria;
 		}
@@ -114,17 +111,17 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
 	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con an optional connection object
+	 * @param mixed $key Primary key to use for the query
+	 * @param PropelPDO $con an optional connection object
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaire|array|mixed the result, formatted by the current formatter
 	 */
-	public function findPk($key, $con = null)
-	{
+	public function findPk($key, $con = null) {
 		if ($key === null) {
 			return null;
 		}
-		if ((null !== ($obj = CahierTexteTravailAFairePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+		if ((null !== ($obj = CahierTexteTravailAFairePeer::getInstanceFromPool((string)$key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
 		}
@@ -133,8 +130,8 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 		}
 		$this->basePreSelect($con);
 		if ($this->formatter || $this->modelAlias || $this->with || $this->select
-		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
-		 || $this->map || $this->having || $this->joins) {
+			|| $this->selectColumns || $this->asColumns || $this->selectModifiers
+			|| $this->map || $this->having || $this->joins) {
 			return $this->findPkComplex($key, $con);
 		} else {
 			return $this->findPkSimple($key, $con);
@@ -145,13 +142,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * Find object by primary key using raw SQL to go fast.
 	 * Bypass doSelect() and the object formatter by using generated code.
 	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
+	 * @param mixed $key Primary key to use for the query
+	 * @param PropelPDO $con A connection object
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaire A model object, or null if the key is not found
 	 */
-	protected function findPkSimple($key, $con)
-	{
+	protected function findPkSimple($key, $con) {
 		$sql = 'SELECT ID_CT, DATE_CT, CONTENU, VISE, ID_GROUPE, ID_LOGIN, ID_SEQUENCE, DATE_VISIBILITE_ELEVE FROM ct_devoirs_entry WHERE ID_CT = :p0';
 		try {
 			$stmt = $con->prepare($sql);
@@ -165,7 +162,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new CahierTexteTravailAFaire();
 			$obj->hydrate($row);
-			CahierTexteTravailAFairePeer::addInstanceToPool($obj, (string) $key);
+			CahierTexteTravailAFairePeer::addInstanceToPool($obj, (string)$key);
 		}
 		$stmt->closeCursor();
 
@@ -175,13 +172,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Find object by primary key.
 	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
+	 * @param mixed $key Primary key to use for the query
+	 * @param PropelPDO $con A connection object
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaire|array|mixed the result, formatted by the current formatter
 	 */
-	protected function findPkComplex($key, $con)
-	{
+	protected function findPkComplex($key, $con) {
 		// As the query uses a PK condition, no limit(1) is necessary.
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		$stmt = $criteria
@@ -195,13 +192,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * <code>
 	 * $objs = $c->findPks(array(12, 56, 832), $con);
 	 * </code>
-	 * @param     array $keys Primary keys to use for the query
-	 * @param     PropelPDO $con an optional connection object
+	 * @param array $keys Primary keys to use for the query
+	 * @param PropelPDO $con an optional connection object
 	 *
+	 * @throws \PropelException
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
-	public function findPks($keys, $con = null)
-	{
+	public function findPks($keys, $con = null) {
 		if ($con === null) {
 			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
 		}
@@ -216,24 +213,22 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Filter the query by primary key
 	 *
-	 * @param     mixed $key Primary key to use for the query
+	 * @param mixed $key Primary key to use for the query
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByPrimaryKey($key)
-	{
+	public function filterByPrimaryKey($key) {
 		return $this->addUsingAlias(CahierTexteTravailAFairePeer::ID_CT, $key, Criteria::EQUAL);
 	}
 
 	/**
 	 * Filter the query by a list of primary keys
 	 *
-	 * @param     array $keys The list of primary key to use for the query
+	 * @param array $keys The list of primary key to use for the query
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByPrimaryKeys($keys)
-	{
+	public function filterByPrimaryKeys($keys) {
 		return $this->addUsingAlias(CahierTexteTravailAFairePeer::ID_CT, $keys, Criteria::IN);
 	}
 
@@ -247,16 +242,15 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $query->filterByIdCt(array('min' => 12)); // WHERE id_ct > 12
 	 * </code>
 	 *
-	 * @param     mixed $idCt The value to use as filter.
+	 * @param mixed $idCt The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByIdCt($idCt = null, $comparison = null)
-	{
+	public function filterByIdCt($idCt = null, $comparison = null) {
 		if (is_array($idCt) && null === $comparison) {
 			$comparison = Criteria::IN;
 		}
@@ -273,16 +267,15 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $query->filterByDateCt(array('min' => 12)); // WHERE date_ct > 12
 	 * </code>
 	 *
-	 * @param     mixed $dateCt The value to use as filter.
+	 * @param mixed $dateCt The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByDateCt($dateCt = null, $comparison = null)
-	{
+	public function filterByDateCt($dateCt = null, $comparison = null) {
 		if (is_array($dateCt)) {
 			$useMinMax = false;
 			if (isset($dateCt['min'])) {
@@ -312,14 +305,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $query->filterByContenu('%fooValue%'); // WHERE contenu LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $contenu The value to use as filter.
+	 * @param string $contenu The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByContenu($contenu = null, $comparison = null)
-	{
+	public function filterByContenu($contenu = null, $comparison = null) {
 		if (null === $comparison) {
 			if (is_array($contenu)) {
 				$comparison = Criteria::IN;
@@ -340,14 +332,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $query->filterByVise('%fooValue%'); // WHERE vise LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $vise The value to use as filter.
+	 * @param string $vise The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByVise($vise = null, $comparison = null)
-	{
+	public function filterByVise($vise = null, $comparison = null) {
 		if (null === $comparison) {
 			if (is_array($vise)) {
 				$comparison = Criteria::IN;
@@ -369,18 +360,17 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $query->filterByIdGroupe(array('min' => 12)); // WHERE id_groupe > 12
 	 * </code>
 	 *
-	 * @see       filterByGroupe()
-	 *
-	 * @param     mixed $idGroupe The value to use as filter.
+	 * @param mixed $idGroupe The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
+	 * @see       filterByGroupe()
+	 *
 	 */
-	public function filterByIdGroupe($idGroupe = null, $comparison = null)
-	{
+	public function filterByIdGroupe($idGroupe = null, $comparison = null) {
 		if (is_array($idGroupe)) {
 			$useMinMax = false;
 			if (isset($idGroupe['min'])) {
@@ -410,14 +400,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $query->filterByIdLogin('%fooValue%'); // WHERE id_login LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $idLogin The value to use as filter.
+	 * @param string $idLogin The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByIdLogin($idLogin = null, $comparison = null)
-	{
+	public function filterByIdLogin($idLogin = null, $comparison = null) {
 		if (null === $comparison) {
 			if (is_array($idLogin)) {
 				$comparison = Criteria::IN;
@@ -439,18 +428,17 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $query->filterByIdSequence(array('min' => 12)); // WHERE id_sequence > 12
 	 * </code>
 	 *
-	 * @see       filterByCahierTexteSequence()
-	 *
-	 * @param     mixed $idSequence The value to use as filter.
+	 * @param mixed $idSequence The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
+	 * @see       filterByCahierTexteSequence()
+	 *
 	 */
-	public function filterByIdSequence($idSequence = null, $comparison = null)
-	{
+	public function filterByIdSequence($idSequence = null, $comparison = null) {
 		if (is_array($idSequence)) {
 			$useMinMax = false;
 			if (isset($idSequence['min'])) {
@@ -481,18 +469,17 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 * $query->filterByDateVisibiliteEleve(array('max' => 'yesterday')); // WHERE date_visibilite_eleve > '2011-03-13'
 	 * </code>
 	 *
-	 * @param     mixed $dateVisibiliteEleve The value to use as filter.
+	 * @param mixed $dateVisibiliteEleve The value to use as filter.
 	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
 	 *              Empty strings are treated as NULL.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByDateVisibiliteEleve($dateVisibiliteEleve = null, $comparison = null)
-	{
+	public function filterByDateVisibiliteEleve($dateVisibiliteEleve = null, $comparison = null) {
 		if (is_array($dateVisibiliteEleve)) {
 			$useMinMax = false;
 			if (isset($dateVisibiliteEleve['min'])) {
@@ -516,13 +503,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Groupe object
 	 *
-	 * @param     Groupe|PropelCollection $groupe The related object(s) to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param Groupe|PropelCollection $groupe The related object(s) to use as filter
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByGroupe($groupe, $comparison = null)
-	{
+	public function filterByGroupe($groupe, $comparison = null) {
 		if ($groupe instanceof Groupe) {
 			return $this
 				->addUsingAlias(CahierTexteTravailAFairePeer::ID_GROUPE, $groupe->getId(), $comparison);
@@ -540,13 +527,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Adds a JOIN clause to the query using the Groupe relation
 	 *
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 * @param string $relationAlias optional alias for the relation
+	 * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN) {
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
 
@@ -559,7 +546,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 		}
 
 		// add the ModelJoin to the current object
-		if($relationAlias) {
+		if ($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
@@ -572,16 +559,16 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Use the Groupe relation Groupe object
 	 *
+	 * @param string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @throws \PropelException
+	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 * @see       useQuery()
 	 *
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN) {
 		return $this
 			->joinGroupe($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'Groupe', 'GroupeQuery');
@@ -590,13 +577,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
-	{
+	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null) {
 		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
 			return $this
 				->addUsingAlias(CahierTexteTravailAFairePeer::ID_LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
@@ -614,13 +601,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Adds a JOIN clause to the query using the UtilisateurProfessionnel relation
 	 *
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 * @param string $relationAlias optional alias for the relation
+	 * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-	{
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::LEFT_JOIN) {
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
 
@@ -633,7 +620,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 		}
 
 		// add the ModelJoin to the current object
-		if($relationAlias) {
+		if ($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
@@ -646,16 +633,16 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Use the UtilisateurProfessionnel relation UtilisateurProfessionnel object
 	 *
+	 * @param string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @throws \PropelException
+	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 * @see       useQuery()
 	 *
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-	{
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN) {
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'UtilisateurProfessionnel', 'UtilisateurProfessionnelQuery');
@@ -664,13 +651,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related CahierTexteSequence object
 	 *
-	 * @param     CahierTexteSequence|PropelCollection $cahierTexteSequence The related object(s) to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param CahierTexteSequence|PropelCollection $cahierTexteSequence The related object(s) to use as filter
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByCahierTexteSequence($cahierTexteSequence, $comparison = null)
-	{
+	public function filterByCahierTexteSequence($cahierTexteSequence, $comparison = null) {
 		if ($cahierTexteSequence instanceof CahierTexteSequence) {
 			return $this
 				->addUsingAlias(CahierTexteTravailAFairePeer::ID_SEQUENCE, $cahierTexteSequence->getId(), $comparison);
@@ -688,13 +675,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Adds a JOIN clause to the query using the CahierTexteSequence relation
 	 *
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 * @param string $relationAlias optional alias for the relation
+	 * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteSequence($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-	{
+	public function joinCahierTexteSequence($relationAlias = null, $joinType = Criteria::LEFT_JOIN) {
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteSequence');
 
@@ -707,7 +694,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 		}
 
 		// add the ModelJoin to the current object
-		if($relationAlias) {
+		if ($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
@@ -720,16 +707,16 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Use the CahierTexteSequence relation CahierTexteSequence object
 	 *
+	 * @param string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @throws \PropelException
+	 * @return    CahierTexteSequenceQuery A secondary query class using the current class as primary query
 	 * @see       useQuery()
 	 *
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    CahierTexteSequenceQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteSequenceQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-	{
+	public function useCahierTexteSequenceQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN) {
 		return $this
 			->joinCahierTexteSequence($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'CahierTexteSequence', 'CahierTexteSequenceQuery');
@@ -738,13 +725,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related CahierTexteTravailAFaireFichierJoint object
 	 *
-	 * @param     CahierTexteTravailAFaireFichierJoint $cahierTexteTravailAFaireFichierJoint  the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 * @param CahierTexteTravailAFaireFichierJoint $cahierTexteTravailAFaireFichierJoint the related object to use as filter
+	 * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function filterByCahierTexteTravailAFaireFichierJoint($cahierTexteTravailAFaireFichierJoint, $comparison = null)
-	{
+	public function filterByCahierTexteTravailAFaireFichierJoint($cahierTexteTravailAFaireFichierJoint, $comparison = null) {
 		if ($cahierTexteTravailAFaireFichierJoint instanceof CahierTexteTravailAFaireFichierJoint) {
 			return $this
 				->addUsingAlias(CahierTexteTravailAFairePeer::ID_CT, $cahierTexteTravailAFaireFichierJoint->getIdCtDevoir(), $comparison);
@@ -761,13 +748,13 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Adds a JOIN clause to the query using the CahierTexteTravailAFaireFichierJoint relation
 	 *
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 * @param string $relationAlias optional alias for the relation
+	 * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
+	 * @throws \PropelException
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteTravailAFaireFichierJoint($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
+	public function joinCahierTexteTravailAFaireFichierJoint($relationAlias = null, $joinType = Criteria::INNER_JOIN) {
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteTravailAFaireFichierJoint');
 
@@ -780,7 +767,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 		}
 
 		// add the ModelJoin to the current object
-		if($relationAlias) {
+		if ($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
@@ -793,16 +780,16 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Use the CahierTexteTravailAFaireFichierJoint relation CahierTexteTravailAFaireFichierJoint object
 	 *
+	 * @param string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @throws \PropelException
+	 * @return    CahierTexteTravailAFaireFichierJointQuery A secondary query class using the current class as primary query
 	 * @see       useQuery()
 	 *
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    CahierTexteTravailAFaireFichierJointQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteTravailAFaireFichierJointQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-	{
+	public function useCahierTexteTravailAFaireFichierJointQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN) {
 		return $this
 			->joinCahierTexteTravailAFaireFichierJoint($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'CahierTexteTravailAFaireFichierJoint', 'CahierTexteTravailAFaireFichierJointQuery');
@@ -811,12 +798,11 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	/**
 	 * Exclude object from result
 	 *
-	 * @param     CahierTexteTravailAFaire $cahierTexteTravailAFaire Object to remove from the list of results
+	 * @param CahierTexteTravailAFaire $cahierTexteTravailAFaire Object to remove from the list of results
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function prune($cahierTexteTravailAFaire = null)
-	{
+	public function prune($cahierTexteTravailAFaire = null) {
 		if ($cahierTexteTravailAFaire) {
 			$this->addUsingAlias(CahierTexteTravailAFairePeer::ID_CT, $cahierTexteTravailAFaire->getIdCt(), Criteria::NOT_EQUAL);
 		}

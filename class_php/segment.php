@@ -7,7 +7,7 @@ class SegmentException extends Exception
  * You need PHP 5.2 at least
  * You need Zip Extension
  *
- * @copyright  GPL License 2008 - Julien Pauli - Cyril PIERRE de GEYER - Anaska (http://www.anaska.com)
+ * @copyright  GPL License 2008 - Julien Pauli - Cyril PIERRE de GEYER - Anaska (http://www.anaska.com) - Romain Neil
  * @license    http://www.gnu.org/copyleft/gpl.html  GPL License
  * @version 1.3
  */
@@ -137,13 +137,15 @@ class Segment implements IteratorAggregate, Countable
             throw new SegmentException('child ' . $prop . ' does not exist');
         }
     }
-    /**
-     * Proxy vers setVar
-     *
-     * @param string $meth
-     * @param array $args
-     * @return Segment
-     */
+
+	/**
+	 * Proxy vers setVar
+	 *
+	 * @param string $meth
+	 * @param array $args
+	 * @throws \SegmentException
+	 * @return Segment
+	 */
     public function __call($meth, $args)
     {
         try {

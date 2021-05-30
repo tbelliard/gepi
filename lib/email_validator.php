@@ -57,4 +57,3 @@ function validEmail($email) {
     }
     return $isValid;
 }
-?>
