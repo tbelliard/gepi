@@ -137,10 +137,7 @@ class LDAPServer {
         		$user[0][$this->champ_civilite][0] = $this->code_cilivite_madame;
         	}
         	switch ($user[0][$this->champ_civilite][0]) {
-        		case $this->code_civilite_madame:
-        			$infos["civilite"] = "Mme";
-        		break;
-        		case $this->code_civilite_mademoiselle:
+				case $this->code_civilite_mademoiselle:
         			$infos["civilite"] = "Mlle";
         		break;
         		case $this->code_civilite_monsieur:
