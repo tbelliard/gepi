@@ -30,7 +30,7 @@ function minicals($year, $month, $day, $id_classe, $type, $dmy) {
 		var $type;
 		var $dmy;
 
-		function Calendar($day, $month, $year, $h, $id_classe, $type, $dmy) {
+		function __construct($day, $month, $year, $h, $id_classe, $type, $dmy) {
 			$this->day = $day;
 			$this->month = $month;
 			$this->year = $year;
