@@ -514,10 +514,10 @@ class Session {
 		$result = mysqli_query($mysqli, $sql);
 		$row = $result->fetch_object();
 
-		$change_password = $row->change_mdp != "n" ? true : false;
-		$statut_ok = $this->statut == $row->statut ? true : false;
-		$etat_ok = $row->etat == "actif" ? true : false;
-		$login_allowed = getSettingValue("disable_login") == "yes" ? false : true;
+		$change_password = $row->change_mdp != "n";
+		$statut_ok = $this->statut == $row->statut;
+		$etat_ok = $row->etat == "actif";
+		$login_allowed = !(getSettingValue("disable_login") == "yes");
 
 		if (!$login_allowed && $this->statut != "administrateur") {
 			return "0";
