@@ -1,4 +1,5 @@
 <?php
+
 class LDAPServer {
 	# Le chemin vers le fichier de configuration du LDAP.
 	# Le répertoire de Gepi est considéré comme la racine (mais il est possible
@@ -17,7 +18,7 @@ class LDAPServer {
 
 	# Les classes de l'entrée LDAP d'un utilisateur. Elles doivent
 	# être cohérentes avec les attributs utilisés.
-	private $people_object_classes = array("top","person","inetOrgPerson");
+	private $people_object_classes = array("top", "person", "inetOrgPerson");
 
 	# Les attributs suivants permettent de lier les champs du
 	# LDAP à des champs de la table utilisateurs de Gepi.
@@ -88,10 +89,10 @@ class LDAPServer {
 	public function authenticate_user($_login, $_password) {
 		// On tente un bind
 		$user = $this->get_user_profile($_login);
-		$test_bind = @ldap_bind($this->ds,$user["dn"],$_password);
+		$test_bind = @ldap_bind($this->ds, $user["dn"], $_password);
 
 		// On refait le bind pour reprendre les droits
-		ldap_bind($this->ds,$this->login,$this->password);
+		ldap_bind($this->ds, $this->login, $this->password);
 
 		if ($user && $_password != '' && $test_bind) {
 			return true;
@@ -104,113 +105,113 @@ class LDAPServer {
 	# dans un tableau
 	public function get_user_profile($_login) {
 		$_login = my_ereg_replace("[^-@._[:space:][:alnum:]]", "", $_login); // securite
-	    $search_dn = $this->get_dn();
-	    $search_filter = "(".$this->champ_login."=".$_login.")";
-		$sr = ldap_search($this->ds,$search_dn,$search_filter);
-	    $user = array();
-	    $user = ldap_get_entries($this->ds,$sr);
-        if (array_key_exists(0, $user)) {
-        	$infos = array();
-        	$infos["dn"] = $user[0]["dn"];
+		$search_dn = $this->get_dn();
+		$search_filter = "(" . $this->champ_login . "=" . $_login . ")";
+		$sr = ldap_search($this->ds, $search_dn, $search_filter);
+		$user = array();
+		$user = ldap_get_entries($this->ds, $sr);
+		if (array_key_exists(0, $user)) {
+			$infos = array();
+			$infos["dn"] = $user[0]["dn"];
 
-            if ($this->champ_prenom == '' || !array_key_exists($this->champ_prenom, $user[0])) {
-        		$user[0][$this->champ_prenom][0] = '';
-        	}
-            if ($this->champ_nom == '' || !array_key_exists($this->champ_nom, $user[0])) {
-        		$user[0][$this->champ_nom][0] = '';
-        	}
-            if ($this->champ_nom_complet == '' || !array_key_exists($this->champ_nom_complet, $user[0])) {
-        		$user[0][$this->champ_nom_complet][0] = '';
-        	}
+			if ($this->champ_prenom == '' || !array_key_exists($this->champ_prenom, $user[0])) {
+				$user[0][$this->champ_prenom][0] = '';
+			}
+			if ($this->champ_nom == '' || !array_key_exists($this->champ_nom, $user[0])) {
+				$user[0][$this->champ_nom][0] = '';
+			}
+			if ($this->champ_nom_complet == '' || !array_key_exists($this->champ_nom_complet, $user[0])) {
+				$user[0][$this->champ_nom_complet][0] = '';
+			}
 
-        	$nom = $this->format_name($user[0][$this->champ_prenom][0], $user[0][$this->champ_nom][0], $user[0][$this->champ_nom_complet][0]);
+			$nom = $this->format_name($user[0][$this->champ_prenom][0], $user[0][$this->champ_nom][0], $user[0][$this->champ_nom_complet][0]);
 
-        	$infos["prenom"] = $nom['prenom'];
-        	$infos["nom"] = $nom['nom'];
+			$infos["prenom"] = $nom['prenom'];
+			$infos["nom"] = $nom['nom'];
 
-        	if (!array_key_exists($this->champ_email, $user[0])) {
-        		$user[0][$this->champ_email][0] = null;
-        	}
-        	$infos["email"] = $user[0][$this->champ_email][0];
+			if (!array_key_exists($this->champ_email, $user[0])) {
+				$user[0][$this->champ_email][0] = null;
+			}
+			$infos["email"] = $user[0][$this->champ_email][0];
 
-        	if (!array_key_exists($this->champ_civilite, $user[0])) {
-        		$user[0][$this->champ_civilite][0] = $this->code_cilivite_madame;
-        	}
-        	switch ($user[0][$this->champ_civilite][0]) {
+			if (!array_key_exists($this->champ_civilite, $user[0])) {
+				$user[0][$this->champ_civilite][0] = $this->code_cilivite_madame;
+			}
+			switch ($user[0][$this->champ_civilite][0]) {
 				case $this->code_civilite_mademoiselle:
-        			$infos["civilite"] = "Mlle";
-        		break;
-        		case $this->code_civilite_monsieur:
-        			$infos["civilite"] = "M.";
-        		break;
-        		default:
-        			$infos["civilite"] = "Mme";
-        		break;
-        	}
+					$infos["civilite"] = "Mlle";
+					break;
+				case $this->code_civilite_monsieur:
+					$infos["civilite"] = "M.";
+					break;
+				default:
+					$infos["civilite"] = "Mme";
+					break;
+			}
 
-            if ($this->champ_rne == '' || !array_key_exists($this->champ_rne, $user[0])) {
-        		$user[0][$this->champ_rne][0] = "";
-        		$user[0][$this->champ_rne]['count'] = 0;
-        	}
-        	$nbre_rne = $user[0][$this->champ_rne]['count'];
+			if ($this->champ_rne == '' || !array_key_exists($this->champ_rne, $user[0])) {
+				$user[0][$this->champ_rne][0] = "";
+				$user[0][$this->champ_rne]['count'] = 0;
+			}
+			$nbre_rne = $user[0][$this->champ_rne]['count'];
 
-        	// S'il y a plusieurs RNE dans le ldap, on les renvoie tous
-        	$infos["rne"] = array();
-        	for($a = 0 ; $a < $nbre_rne ; $a++){
+			// S'il y a plusieurs RNE dans le ldap, on les renvoie tous
+			$infos["rne"] = array();
+			for ($a = 0; $a < $nbre_rne; $a++) {
 
 				$infos["rne"][$a] = $user[0][$this->champ_rne][$a];
 
 			}
 
 
-        	# La détermination du statut est la manipulation la plus délicate.
-        	# On dispose de deux moyens : un champ du LDAP (le plus simple...)
-        	# ou bien une chaîne à tester sur le DN.
-        	if ($this->champ_statut != null) {
-        		// Le champ statut est défini, alors on teste
-        		if (array_key_exists($this->champ_statut, $user[0])) {
-        			if (in_array($user[0][$this->champ_statut][0], array("administrateur","professeur","eleve","responsable","scolarite","cpe"))) {
-        				$infos["statut"] = $user[0][$this->champ_statut][0];
-        			}
-        		}
-        	} else {
-        		// Si on est là, ce qu'on va essayer de tester avec des chaînes de caractères sur le DN
-        		// En raison du risque d'erreur en cas de mauvaise configuration, on ne teste pas
-        		// le statut administrateur.
-        		if ($this->chaine_dn_statut_professeur != '' && strstr($infos["dn"],$this->chaine_dn_statut_professeur)) {
-        			$infos["statut"] = "professeur";
-        		} else if ($this->chaine_dn_statut_eleve != '' && strstr($infos["dn"],$this->chaine_dn_statut_eleve)) {
-        			$infos["statut"] = "eleve";
-        		} else if ($this->chaine_dn_statut_responsable != '' && strstr($infos["dn"],$this->chaine_dn_statut_responsable)) {
-        			$infos["statut"] = "responsable";
-        		} else if ($this->chaine_dn_statut_scolarite != '' && strstr($infos["dn"],$this->chaine_dn_statut_scolarite)) {
-        			$infos["statut"] = "scolarite";
-        		} else if ($this->chaine_dn_statut_cpe != '' && strstr($infos["dn"],$this->chaine_dn_statut_cpe)) {
-        			$infos["statut"] = "cpe";
-        		}
-        	}
-			if (!isset($info["statut"]) || !in_array($infos["statut"], array("administrateur","professeur","eleve","responsable","scolarite","cpe"))) {
+			# La détermination du statut est la manipulation la plus délicate.
+			# On dispose de deux moyens : un champ du LDAP (le plus simple...)
+			# ou bien une chaîne à tester sur le DN.
+			if ($this->champ_statut != null) {
+				// Le champ statut est défini, alors on teste
+				if (array_key_exists($this->champ_statut, $user[0])) {
+					if (in_array($user[0][$this->champ_statut][0], array("administrateur", "professeur", "eleve", "responsable", "scolarite", "cpe"))) {
+						$infos["statut"] = $user[0][$this->champ_statut][0];
+					}
+				}
+			} else {
+				// Si on est là, ce qu'on va essayer de tester avec des chaînes de caractères sur le DN
+				// En raison du risque d'erreur en cas de mauvaise configuration, on ne teste pas
+				// le statut administrateur.
+				if ($this->chaine_dn_statut_professeur != '' && strstr($infos["dn"], $this->chaine_dn_statut_professeur)) {
+					$infos["statut"] = "professeur";
+				} else if ($this->chaine_dn_statut_eleve != '' && strstr($infos["dn"], $this->chaine_dn_statut_eleve)) {
+					$infos["statut"] = "eleve";
+				} else if ($this->chaine_dn_statut_responsable != '' && strstr($infos["dn"], $this->chaine_dn_statut_responsable)) {
+					$infos["statut"] = "responsable";
+				} else if ($this->chaine_dn_statut_scolarite != '' && strstr($infos["dn"], $this->chaine_dn_statut_scolarite)) {
+					$infos["statut"] = "scolarite";
+				} else if ($this->chaine_dn_statut_cpe != '' && strstr($infos["dn"], $this->chaine_dn_statut_cpe)) {
+					$infos["statut"] = "cpe";
+				}
+			}
+			if (!isset($info["statut"]) || !in_array($infos["statut"], array("administrateur", "professeur", "eleve", "responsable", "scolarite", "cpe"))) {
 				$infos["statut"] = getSettingValue("statut_utilisateur_defaut");
 			}
 
-        	return $infos;
-        } else {
-        	return false;
-        }
+			return $infos;
+		} else {
+			return false;
+		}
 	}
 
 	/* Permet de récupérer tou sles utilisateurs du LDAP en fonction d'un paramètre
 	* retourne la liste des utilisateurs
 	*/
-	public function get_all_users($type, $param){
+	public function get_all_users($type, $param) {
 		// On laisse la possibilité d'ajouter des lignes dans le code
 		if ($type == 'rne') {
 			// On utilise le rne de l'établissement pour récupérer les utilisateurs
-			$filter = '('.$this->champ_rne.'='.$param.')';
-			$sr = ldap_search($this->ds, $this->get_dn(), $filter) ;
+			$filter = '(' . $this->champ_rne . '=' . $param . ')';
+			$sr = ldap_search($this->ds, $this->get_dn(), $filter);
 
 			return ldap_get_entries($this->ds, $sr);
-		}else{
+		} else {
 			return false;
 		}
 	}
@@ -218,8 +219,8 @@ class LDAPServer {
 	/*
 	* renvoie le dn de recherche dans le ldap
 	*/
-	private function get_dn(){
-		return $this->people_ou.",".$this->base_dn;
+	private function get_dn() {
+		return $this->people_ou . "," . $this->base_dn;
 	}
 
 
@@ -234,7 +235,7 @@ class LDAPServer {
 			exit;
 		} else {
 			# L'utilisateur n'existe pas, on formate les données, et on le créé.
-			$dn = $this->champ_login."=".$_login.",".$this->people_ou.",".$this->base_dn;
+			$dn = $this->champ_login . "=" . $_login . "," . $this->people_ou . "," . $this->base_dn;
 			$donnees = $this->format_user_data($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut);
 			$add = ldap_add($this->ds, $dn, $donnees);
 			return $add;
@@ -252,7 +253,7 @@ class LDAPServer {
 			exit;
 		} else {
 			# L'utilisateur existe, on formate les données, et on modifie l'annuaire.
-			$dn = $this->champ_login."=".$_login.",".$this->people_ou.",".$this->base_dn;
+			$dn = $this->champ_login . "=" . $_login . "," . $this->people_ou . "," . $this->base_dn;
 			$donnees = $this->format_user_data($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut);
 			$modify = ldap_modify($this->ds, $dn, $donnees);
 			return $modify;
@@ -268,7 +269,7 @@ class LDAPServer {
 			exit;
 		} else {
 			# L'utilisateur existe, on supprime.
-			$dn = $this->champ_login."=".$_login.",".$this->people_ou.",".$this->base_dn;
+			$dn = $this->champ_login . "=" . $_login . "," . $this->people_ou . "," . $this->base_dn;
 			$delete = ldap_delete($this->ds, $dn);
 			return $delete;
 		}
@@ -283,33 +284,33 @@ class LDAPServer {
 		return $update;
 	}
 
-	public static function connect_ldap($_adresse,$_port,$_login,$_password) {
+	public static function connect_ldap($_adresse, $_port, $_login, $_password) {
 		# Pour avoir du débug en log serveur, décommenter la ligne suivante.
 		#ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
-	    $ds = ldap_connect($_adresse, $_port);
-	    if($ds) {
-	       // On dit qu'on utilise LDAP V3, sinon la V2 par d?faut est utilis? et le bind ne passe pas.
-	       $norme = ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-	       // Accès non anonyme
-	       if ($_login != '') {
-	          // On tente un bind
-	          $b = ldap_bind($ds, $_login, $_password);
-	       } else {
-	          // Accès anonyme
-	          $b = ldap_bind($ds);
-	       }
-	       if ($b) {
-	           return $ds;
-	       } else {
-	           return false;
-	       }
-	    } else {
-	       return false;
-	    }
+		$ds = ldap_connect($_adresse, $_port);
+		if ($ds) {
+			// On dit qu'on utilise LDAP V3, sinon la V2 par d?faut est utilis? et le bind ne passe pas.
+			$norme = ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+			// Accès non anonyme
+			if ($_login != '') {
+				// On tente un bind
+				$b = ldap_bind($ds, $_login, $_password);
+			} else {
+				// Accès anonyme
+				$b = ldap_bind($ds);
+			}
+			if ($b) {
+				return $ds;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
 	public static function is_setup() {
-		return file_exists(dirname(__FILE__)."/../".self::config_file);
+		return file_exists(dirname(__FILE__) . "/../" . self::config_file);
 	}
 
 	# On récupère les données de configuration présentes dans le fichier
@@ -317,12 +318,12 @@ class LDAPServer {
 	private function load_config() {
 		$ldap_config = array();
 		if (self::is_setup()) {
-			$path = dirname(__FILE__)."/../".self::config_file;
+			$path = dirname(__FILE__) . "/../" . self::config_file;
 			include($path);
 
 			$available_settings = get_object_vars($this);
-			foreach($available_settings as $key => $value) {
-				$varname = "ldap_".$key;
+			foreach ($available_settings as $key => $value) {
+				$varname = "ldap_" . $key;
 				if (isset($$varname)) {
 					$this->$key = $$varname;
 				}
@@ -333,25 +334,25 @@ class LDAPServer {
 	# Encodage d'un mot de passe utilisateur pour l'enregistrer
 	# Ce code a été pris de phpLdapPasswd, par Karyl F. Stein
 	# voir : http://www.karylstein.com/phpLdapPasswd
-	private function encode_password ($password = '', $encoding = '') {
+	private function encode_password($password = '', $encoding = '') {
 		if ($encoding == '') $encoding = $this->password_encryption;
 
 		if (strcasecmp($encoding, "clear") == 0) {
 			$encodedpass = $password;
 		} elseif (strcasecmp($encoding, "crypt") == 0) {
-			$encodedpass = "{CRYPT}".crypt($password);
+			$encodedpass = "{CRYPT}" . crypt($password);
 		} elseif (strcasecmp($encoding, "md5") == 0) {
-			$encodedpass = "{MD5}".base64_encode(pack("H*",md5($password)));
+			$encodedpass = "{MD5}" . base64_encode(pack("H*", md5($password)));
 		} elseif (strcasecmp($encoding, "ssha") == 0) {
-			mt_srand((double)microtime()*1000000);
+			mt_srand((double)microtime() * 1000000);
 			$salt = mhash_keygen_s2k(MHASH_SHA1, $password, mb_substr(pack('h*', md5(mt_rand())), 0, 8), 4);
-			$encodedpass = "{SSHA}".base64_encode(mhash(MHASH_SHA1, $password.$salt).$salt);
+			$encodedpass = "{SSHA}" . base64_encode(mhash(MHASH_SHA1, $password . $salt) . $salt);
 		} else {
 			return false;
 			exit;
 		}
 
-		return($encodedpass);
+		return ($encodedpass);
 	}
 
 	# Cette méthode prend trois paramètres : nom, prénom, nom complet.
@@ -389,7 +390,7 @@ class LDAPServer {
 		} elseif ($_prenom != '' and $_nom != '' and $_nom_complet == '') {
 			$result['prenom'] = $_prenom;
 			$result['nom'] = $_nom;
-			$result['nom_complet'] = $_prenom." ".$_nom;
+			$result['nom_complet'] = $_prenom . " " . $_nom;
 		} elseif ($_prenom != '' and $_nom != '' and $_nom_complet != '') {
 			$result['prenom'] = $_prenom;
 			$result['nom'] = $_nom;
@@ -427,20 +428,20 @@ class LDAPServer {
 
 		// La civilité
 		if ($_civilite != '' and $this->champ_civilite != '') {
-		    switch ($_civilite) {
-        		case "Mme":
-        			$data[$this->champ_civilite] = $this->code_civilite_madame;
-        		break;
-        		case "Mlle":
-        			$data[$this->champ_civilite] = $this->code_civilite_mademoiselle;
-        		break;
-        		case "M.":
-        			$data[$this->champ_civilite] = $this->code_civilite_monsieur;
-        		break;
-        		default:
-        			$data[$this->champ_civilite] = $this->code_civilite_madame;
-        		break;
-        	}
+			switch ($_civilite) {
+				case "Mme":
+					$data[$this->champ_civilite] = $this->code_civilite_madame;
+					break;
+				case "Mlle":
+					$data[$this->champ_civilite] = $this->code_civilite_mademoiselle;
+					break;
+				case "M.":
+					$data[$this->champ_civilite] = $this->code_civilite_monsieur;
+					break;
+				default:
+					$data[$this->champ_civilite] = $this->code_civilite_madame;
+					break;
+			}
 		}
 
 		// Le mot de passe
@@ -457,4 +458,5 @@ class LDAPServer {
 	}
 
 }
+
 ?>
