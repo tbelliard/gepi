@@ -379,11 +379,9 @@ class Session {
 
 						} else {
 							return "8";
-							exit();
 						}
 					} else {
 						return "8";
-						exit();
 					}
 				}
 			}
@@ -394,7 +392,6 @@ class Session {
 			if ($this->account_is_locked()) {
 				$this->reset(2);
 				return "2";
-				exit();
 			}
 
 			# On charge les données de l'utilisateur
@@ -413,7 +410,6 @@ class Session {
 				}
 				if (!$load) {
 					return "6";
-					exit();
 				} else {
 					# Si l'import a réussi, on tente à nouveau de charger
 					# les données de l'utilisateur.
@@ -425,7 +421,6 @@ class Session {
 			if ($this->etat != "actif") {
 				$this->reset(2);
 				return "4";
-				exit();
 			}
 
 			# On vérifie que les connexions sont bien activées.
@@ -433,7 +428,6 @@ class Session {
 			if ($this->statut != "administrateur" && ($disable_login == "yes" || $disable_login == "soft")) {
 				$this->reset(2);
 				return "7";
-				exit();
 			}
 
 			# On teste la cohérence de mode de connexion
@@ -445,7 +439,6 @@ class Session {
 				if ($this->current_auth_mode != 'simpleSAML' && $auth_mode != $this->current_auth_mode) {
 					$this->reset(2);
 					return "5";
-					exit;
 				}
 			}
 
@@ -471,7 +464,6 @@ class Session {
 			# On envoie un mail, si l'option a été activée
 			mail_connexion();
 			return "1";
-			exit();
 		} else {
 			// L'authentification a échoué.
 			// On nettoie la session.
@@ -483,7 +475,6 @@ class Session {
 			// d'attaque brute-force sur les logins.
 			if ($this->record_failed_login($_login)) {
 				return "2";
-				exit();
 			}
 
 			// On retourne le code d'erreur générique
@@ -515,7 +506,6 @@ class Session {
 				tentative_intrusion(1, "Accès à une page sans être logué (peut provenir d'un timeout de session).");
 			}
 			return "0";
-			exit;
 		}
 
 		$sql = "SELECT statut, change_mdp, etat FROM utilisateurs where login = '" . $this->login . "'";
@@ -531,17 +521,14 @@ class Session {
 
 		if (!$login_allowed && $this->statut != "administrateur") {
 			return "0";
-			exit;
 		}
 
 		if (!$statut_ok) {
 			return "0";
-			exit;
 		}
 
 		if (!$etat_ok) {
 			return "0";
-			exit;
 		}
 
 		// Si on est là, ce que l'utilisateur a le droit de rester.
@@ -554,7 +541,6 @@ class Session {
 		# Mieux vaut deux fois qu'une...
 		if ($statut_ok && $etat_ok && ($login_allowed || $this->statut == "administrateur")) {
 			return "1";
-			exit;
 		}
 	}
 
@@ -564,7 +550,6 @@ class Session {
 		global $mysqli;
 		if ($_login == null) {
 			return false;
-			die();
 		}
 
 		$sql = "SELECT auth_mode FROM utilisateurs WHERE UPPER(login) = '" . mb_strtoupper($_login) . "'";
@@ -902,7 +887,6 @@ class Session {
 	private function authenticate_ldap($_login, $_password) {
 		if ($_login == null || $_password == null) {
 			return false;
-			exit();
 		}
 		$ldap_server = new LDAPServer;
 		if ($ldap_server->authenticate_user($_login, $_password)) {
@@ -1126,7 +1110,6 @@ class Session {
 			$this->login = $login;
 			$this->current_auth_mode = "sso";
 			return true;
-			exit;
 		} else {
 			// L'utilisateur n'a pas été identifié'
 			header("Location:" . LCS_PAGE_AUTHENTIF);
@@ -1141,7 +1124,6 @@ class Session {
 		# Petit test de départ pour être sûr :
 		if (!$this->login || $this->login == null) {
 			return false;
-			exit();
 		}
 
 		# Gestion du multisite : on a besoin du RNE de l'utilisateur.
@@ -1161,7 +1143,6 @@ class Session {
 			# Est-ce qu'on a bien une entrée ?
 			if ($query->num_rows != "1") {
 				return false;
-				exit();
 			}
 			$sql = "SELECT id_matiere FROM j_professeurs_matieres WHERE (id_professeur = '" . $this->login . "') ORDER BY ordre_matieres LIMIT 1";
 			$matiere_principale = sql_query1($sql);
@@ -1172,7 +1153,6 @@ class Session {
 			# Est-ce qu'on a bien une entrée ?
 			if (mysqli_num_rows($query) != "1") {
 				return false;
-				exit();
 			}
 
 			$sql = "SELECT id_matiere FROM j_professeurs_matieres WHERE (id_professeur = '" . $this->login . "') ORDER BY ordre_matieres LIMIT 1";
@@ -1351,7 +1331,6 @@ class Session {
 		# L'import d'un utilisateur ne peut se faire qu'à partir d'un LDAP
 		if (!LDAPServer::is_setup()) {
 			return false;
-			die();
 		} else {
 			# Le serveur LDAP est configuré, on y va.
 			# Encore un dernier petit test quand même : est-ce que l'utilisateur
@@ -1362,7 +1341,6 @@ class Session {
 			if ($resultat->num_rows != "0") {
 				$resultat->close();
 				return false;
-				die();
 			}
 			$resultat->close();
 
@@ -1403,7 +1381,6 @@ class Session {
 		# L'import d'un utilisateur ne peut se faire qu'à partir d'un LDAP de Scribe, ici.
 		if (!LDAPServer::is_setup()) {
 			return false;
-			die();
 		} else {
 
 			// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
@@ -1418,7 +1395,6 @@ class Session {
 			if ($resultat->num_rows != "0") {
 				$resultat->close();
 				return false;
-				die();
 			}
 			$resultat->close();
 
