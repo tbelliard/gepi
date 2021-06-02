@@ -1679,6 +1679,9 @@ class Session {
 	# particulier.
 	# Le fuseau horaire est simplement paramétré dans connect.inc.php,
 	# en assignant $timezone.
+	/**
+	 * @throws \Exception
+	 */
 	private function update_timezone($_timezone) {
 
 		# Mise à jour du fuseau horaire pour PHP
