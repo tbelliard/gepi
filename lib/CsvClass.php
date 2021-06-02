@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2008 Thomas Belliard
+ * Copyright 2001, 2008, 2021 Thomas Belliard, Romain Neil
  *
  * This file is part of GEPI.
  *
@@ -49,7 +49,7 @@ class CsvClass {
 		//if($this->exists) $this->rename();
 		$fp = fopen($this->filename, 'w');
 		foreach ($data as $line) {
-			fputcsv($fp, split(';', $line), $this->delimiter, $this->enclosure);
+			fputcsv($fp, preg_split(';', $line), $this->delimiter, $this->enclosure); //Romain Neil: A tester: remplacement par la fonction non dépréciée
 		}
 		fclose($fp);
 	}
