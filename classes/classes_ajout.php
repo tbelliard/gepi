@@ -362,19 +362,16 @@ function DecocheLigne(ki) {
 	// Initialisation
 	change='no';
 
-	function confirm_changement_classe(thechange, themessage)
-	{
+	function confirm_changement_classe(thechange, themessage) {
 		if (!(thechange)) thechange='no';
-		if (thechange != 'yes') {
+		if (thechange !== 'yes') {
 			document.form1.submit();
-		}
-		else{
-			var is_confirmed = confirm(themessage);
+		} else {
+			let is_confirmed = confirm(themessage);
 			if(is_confirmed){
 				document.form1.submit();
-			}
-			else{
-				document.getElementById('id_classe').selectedIndex=$num_classe;
+			} else{
+				document.getElementById('id_classe').selectedIndex = $num_classe;
 			}
 		}
 	}
