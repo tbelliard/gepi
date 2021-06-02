@@ -20,10 +20,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#
 
-# Cette classe sert à manipuler ou creer des fichiers CSV.
-
-
+/**
+ * Cette classe sert à manipuler ou creer des fichiers CSV.
+ */
 class CsvClass {
 
 	private $name;
@@ -34,7 +35,6 @@ class CsvClass {
 	private $exists = false;
 
 	public function __construct($name, $path, $delimiter = Null, $enclosure = Null) {
-
 		$this->path = $path;
 		$this->name = $name;
 		$this->filename = $this->path . $this->name . '.csv';
@@ -46,7 +46,6 @@ class CsvClass {
 	}
 
 	public function set_data($data) {
-		//if($this->exists) $this->rename();
 		$fp = fopen($this->filename, 'w');
 		foreach ($data as $line) {
 			fputcsv($fp, preg_split(';', $line), $this->delimiter, $this->enclosure); //Romain Neil: A tester: remplacement par la fonction non dépréciée
