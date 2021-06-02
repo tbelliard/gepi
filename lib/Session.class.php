@@ -97,9 +97,9 @@ class Session {
 		# On charge les valeurs déjà présentes en session
 		$this->load_session_data();
 		# On charge des éléments de configuration liés à l'authentification
-		$this->auth_locale = getSettingValue("auth_locale") == 'yes' ? true : false;
-		$this->auth_ldap = getSettingValue("auth_ldap") == 'yes' ? true : false;
-		$this->auth_simpleSAML = getSettingValue("auth_simpleSAML") == 'yes' ? true : false;
+		$this->auth_locale = getSettingValue("auth_locale") == 'yes';
+		$this->auth_ldap = getSettingValue("auth_ldap") == 'yes';
+		$this->auth_simpleSAML = getSettingValue("auth_simpleSAML") == 'yes';
 		$this->auth_sso = in_array(getSettingValue("auth_sso"), array("lemon", "cas", "lcs")) ? getSettingValue("auth_sso") : false;
 
 		if (!$this->is_anonymous()) {
