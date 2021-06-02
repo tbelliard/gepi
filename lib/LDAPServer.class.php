@@ -208,10 +208,8 @@ class LDAPServer {
 			// On utilise le rne de l'établissement pour récupérer les utilisateurs
 			$filter = '('.$this->champ_rne.'='.$param.')';
 			$sr = ldap_search($this->ds, $this->get_dn(), $filter) ;
-			$infos = array();
-			$infos = ldap_get_entries($this->ds, $sr);
 
-			return $infos;
+			return ldap_get_entries($this->ds, $sr);
 		}else{
 			return false;
 		}
