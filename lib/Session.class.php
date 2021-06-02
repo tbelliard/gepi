@@ -207,7 +207,6 @@ class Session {
 		if (isset($GLOBALS['liste_noire_ip']) && in_array($_SERVER['REMOTE_ADDR'], $GLOBALS['liste_noire_ip'])) {
 			tentative_intrusion(1, "Tentative de connexion depuis une IP sur liste noire (login utilisé : " . $_login . ")");
 			return "3";
-			die();
 		}
 
 		if ($_login != null && mb_strtoupper($_login) != mb_strtoupper($this->login)) {
