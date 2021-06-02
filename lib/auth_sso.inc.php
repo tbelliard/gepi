@@ -21,7 +21,7 @@
 
 //test version de php
 if (version_compare(PHP_VERSION, '5') < 0) {
-    die('GEPI nécessite PHP5 pour fonctionner');
+	die('GEPI nécessite PHP5 pour fonctionner');
 }
 
 // Pour le multisite
@@ -36,7 +36,7 @@ $prevent_session_init = true; // On bloque l'initialisation automatique de la se
 // On doit empêcher le filtrage de $_POST['logoutRequest'], qui contient des
 // caractères spéciaux
 if (isset($_POST) && array_key_exists('logoutRequest', $_POST)) {
-    $logout_request = $_POST['logoutRequest'];
+	$logout_request = $_POST['logoutRequest'];
 }
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -45,7 +45,7 @@ include_once("../lib/initialisationsPropel.inc.php");
 $auth_sso = in_array($gepiSettings['auth_sso'], array("lemon", "cas", "lcs"));
 
 if ($auth_sso && isset($logout_request)) {
-    $_POST['logoutRequest'] = $logout_request;
+	$_POST['logoutRequest'] = $logout_request;
 }
 
 # Cette page a pour vocation de gérer les authentification SSO.
@@ -92,15 +92,15 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 	phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, true, $url_base);
 	phpCAS::setLang(PHPCAS_LANG_FRENCH);
 
-	if((isset($cas_proxy_server))&&($cas_proxy_server!="")&&(isset($cas_proxy_port))&&($cas_proxy_port!="")) {
-		phpCAS::setExtraCurlOption(CURLOPT_PROXY     , $cas_proxy_server);
-		phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT , $cas_proxy_port);
-		phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE , CURLPROXY_HTTP);
+	if ((isset($cas_proxy_server)) && ($cas_proxy_server != "") && (isset($cas_proxy_port)) && ($cas_proxy_port != "")) {
+		phpCAS::setExtraCurlOption(CURLOPT_PROXY, $cas_proxy_server);
+		phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT, $cas_proxy_port);
+		phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
 	}
 
 	// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
 	// été trouvé par le client CAS.
-	if(getSettingAOui("setNoCasServerValidation")) {
+	if (getSettingAOui("setNoCasServerValidation")) {
 		phpCAS::setNoCasServerValidation();
 	}
 
@@ -113,7 +113,7 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 		phpCAS::handleLogoutRequests(false);
 	}
 	// Authentification
-		phpCAS::forceAuthentication();
+	phpCAS::forceAuthentication();
 
 	// Initialisation de la session, avec blocage de l'initialisation de la
 	// session php ainsi que des tests de timeout et update de logs,
@@ -122,7 +122,6 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 } else {
 	$session_gepi = new Session();
 }
-
 
 
 # L'instance de Session permettant de gérer directement les authentifications
