@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * Dernières modifications: 02/06/2021 Romain Neil
+ */
+
 function minicals($year, $month, $day, $id_classe, $type, $dmy) {
 
 	// PHP Calendar Class
@@ -36,19 +40,15 @@ function minicals($year, $month, $day, $id_classe, $type, $dmy) {
 			$this->dmy = $dmy;
 		}
 
-
 		function getCalendarLink($month, $year, $id_classe, $type) {
 			$day = 1;
-			if ($this->dmy == 'gestion_absences') return $this->dmy . ".php?year=$year&month=$month&day=$day&id_classe=$id_classe&type=$type";
+			if ($this->dmy == 'gestion_absences')return $this->dmy . ".php?year=$year&month=$month&day=$day&id_classe=$id_classe&type=$type";
 		}
 
 		function getDateLink($day, $month, $year) {
 			global $vocab;
 			if ($this->dmy == 'gestion_absences') return "<a title=\"Voir le cahier de textes pour cette journée\" href=" . $this->dmy . ".php?year=$year&month=$month&day=$day&id_classe=" . $this->id_classe . "&type=" . $this->type;
-
-
 		}
-
 
 		function getDaysInMonth($month, $year) {
 			if ($month < 1 || $month > 12) {
