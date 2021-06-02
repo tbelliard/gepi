@@ -539,7 +539,7 @@ class Session {
 		}
 
 		# Mieux vaut deux fois qu'une...
-		if ($statut_ok && $etat_ok && ($login_allowed || $this->statut == "administrateur")) {
+		if ($login_allowed || $this->statut == "administrateur") {
 			return "1";
 		}
 	}
