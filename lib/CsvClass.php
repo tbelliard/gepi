@@ -26,43 +26,44 @@
 
 class CsvClass {
 
-  private $name=Null;
-  private $path=Null;
-  private $delimiter=";";
-  private $enclosure='"';
-  private $filename=Null;
-  private $exists=false;
+	private $name = Null;
+	private $path = Null;
+	private $delimiter = ";";
+	private $enclosure = '"';
+	private $filename = Null;
+	private $exists = false;
 
-  public function  __construct($name,$path,$delimiter=Null,$enclosure=Null) {
+	public function __construct($name, $path, $delimiter = Null, $enclosure = Null) {
 
-    $this->path=$path;
-    $this->name=$name;
-    $this->filename=$this->path.$this->name.'.csv';
-    if($delimiter) $this->delimiter=$delimiter;
-    if($enclosure) $this->enclosure=$enclosure;
-    if (file_exists($this->filename)) {
-      $this->exists=true;
-    }
-  }
+		$this->path = $path;
+		$this->name = $name;
+		$this->filename = $this->path . $this->name . '.csv';
+		if ($delimiter) $this->delimiter = $delimiter;
+		if ($enclosure) $this->enclosure = $enclosure;
+		if (file_exists($this->filename)) {
+			$this->exists = true;
+		}
+	}
 
-  public function set_data($data) {
-    //if($this->exists) $this->rename();
-    $fp = fopen($this->filename, 'w');
-    foreach($data as $line) {
-      fputcsv($fp, split(';',$line),$this->delimiter,$this->enclosure);
-    }
-    fclose($fp);
-  }
+	public function set_data($data) {
+		//if($this->exists) $this->rename();
+		$fp = fopen($this->filename, 'w');
+		foreach ($data as $line) {
+			fputcsv($fp, split(';', $line), $this->delimiter, $this->enclosure);
+		}
+		fclose($fp);
+	}
 
-  private function rename() {
-    $i=1;
-    while($this->exists) {
-      $this->filename=$this->path.$this->name.'_'.$i.'.csv';
-      if (!file_exists($this->filename)) {
-        $this->exists=false;
-      }
-      $i++;
-    }
-  }
+	private function rename() {
+		$i = 1;
+		while ($this->exists) {
+			$this->filename = $this->path . $this->name . '_' . $i . '.csv';
+			if (!file_exists($this->filename)) {
+				$this->exists = false;
+			}
+			$i++;
+		}
+	}
 }
+
 ?>
