@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard
+ * Copyright 2001, 2012, 2021 Thomas Belliard, Romain Neil
  *
  * This file is part of GEPI.
  *
