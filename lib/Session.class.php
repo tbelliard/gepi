@@ -809,8 +809,7 @@ class Session {
 			# Un compte existe avec ce login
 			if ($db_salt == '') {
 				//on va tester avec le md5
-				if ($db_password == md5($_password)) {
-				} else {
+				if ($db_password != md5($_password)) {
 					$this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Recu: ' . $_password . "\n");
 					$tmp_mdp = array_flip(get_html_translation_table(HTML_ENTITIES));
 					$_password_unhtmlentities = strtr($_password, $tmp_mdp);
