@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2020, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau, Romain Neil
 *
 * This file is part of GEPI.
 *
@@ -42,7 +42,7 @@ if (!checkAccess()) {
 }
 
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-if ((!isset($id_classe)) || (!preg_match("/^[0-9]{1,}$/", $id_classe))) {
+if ((!isset($id_classe)) || (!preg_match("/^[0-9]+$/", $id_classe))) {
 	header("Location: ../accueil.php?msg=Classe non choisie.");
 	die();
 }
