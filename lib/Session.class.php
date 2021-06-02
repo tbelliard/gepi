@@ -220,7 +220,7 @@ class Session {
 			fclose($f_tmp);
 		} elseif ($debug_login_nouveaux_comptes == "y") {
 			$loguer_nouveau_login = "n";
-			if (preg_match("/[A-Za-z0-9_\.-]/", $_login)) {
+			if (preg_match("/[A-Za-z0-9_-]/", $_login)) {
 				$sql = "SELECT 1=1 FROM utilisateurs WHERE login='$_login' AND change_mdp='y';";
 
 				$resultat = mysqli_query($mysqli, $sql);
