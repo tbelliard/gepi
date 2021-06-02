@@ -28,8 +28,8 @@
 <div id="alert_cache" style="z-index:2000;
 							display:none;
 							position:absolute;
-							top:0px;
-							left:0px;
+							top:0;
+							left:0;
 							background-color:#000000;
 							width:200px;
 							height:200px;"> &nbsp;</div>
