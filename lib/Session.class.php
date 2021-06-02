@@ -1726,5 +1726,3 @@ class Session {
 		}
 	}
 }
-
-?>
