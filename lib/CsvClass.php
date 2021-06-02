@@ -26,11 +26,11 @@
 
 class CsvClass {
 
-	private $name = Null;
-	private $path = Null;
+	private $name;
+	private $path;
 	private $delimiter = ";";
 	private $enclosure = '"';
-	private $filename = Null;
+	private $filename;
 	private $exists = false;
 
 	public function __construct($name, $path, $delimiter = Null, $enclosure = Null) {
