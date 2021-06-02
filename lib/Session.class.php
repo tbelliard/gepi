@@ -1591,7 +1591,7 @@ class Session {
 						}
 					}
 
-				} elseif ($user['statut'] == 'professeur') {
+				//} elseif ($user['statut'] == 'professeur') {
 					// Rien de spécial à ce stade.
 
 				} else {
