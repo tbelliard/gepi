@@ -889,7 +889,7 @@ au sens Absences/appartenance de l'élève
 			if ($tab_profsuivi[$loop] == $eleve_profsuivi) {
 				echo " selected";
 			}
-			echo ">" . casse_mot($tab_profprenom[$loop], 'majf2') . " " . my_strtoupper($tab_profnom[$loop]) . "</option>\n";
+			echo ">" . casse_mot($tab_profprenom[$loop], 'majf2') . " " . strtoupper($tab_profnom[$loop]) . "</option>\n";
 		}
 		echo "</select></p>\n";
 		echo "</td>\n";
