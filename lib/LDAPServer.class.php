@@ -232,7 +232,6 @@ class LDAPServer {
 		# une autre méthode.
 		if ($this->test_user($_login)) {
 			return false;
-			exit;
 		} else {
 			# L'utilisateur n'existe pas, on formate les données, et on le créé.
 			$dn = $this->champ_login . "=" . $_login . "," . $this->people_ou . "," . $this->base_dn;
@@ -250,7 +249,6 @@ class LDAPServer {
 		# une autre méthode.
 		if (!$this->test_user($_login)) {
 			return false;
-			exit;
 		} else {
 			# L'utilisateur existe, on formate les données, et on modifie l'annuaire.
 			$dn = $this->champ_login . "=" . $_login . "," . $this->people_ou . "," . $this->base_dn;
@@ -266,7 +264,6 @@ class LDAPServer {
 		# Si l'utilisateur n'existe pas, on arrête tout de suite.
 		if (!$this->test_user($_login)) {
 			return true;
-			exit;
 		} else {
 			# L'utilisateur existe, on supprime.
 			$dn = $this->champ_login . "=" . $_login . "," . $this->people_ou . "," . $this->base_dn;
@@ -349,7 +346,6 @@ class LDAPServer {
 			$encodedpass = "{SSHA}" . base64_encode(mhash(MHASH_SHA1, $password . $salt) . $salt);
 		} else {
 			return false;
-			exit;
 		}
 
 		return ($encodedpass);
