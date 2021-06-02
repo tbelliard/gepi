@@ -104,7 +104,7 @@ class Calendrier {
 	 * @param string $form Le nom du formulaire
 	 * @param string $champ Le nom du champ
 	 */
-	function Calendrier($form, $champ) {
+	function __construct($form, $champ) {
 		$this->form = $form;
 		$this->champ = $champ;
 		$page = "?frm=" . $form . "&ch=" . $champ;
