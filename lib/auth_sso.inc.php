@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2021 Thomas Belliard, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Stephane Boireau, Romain Neil
 *
 * This file is part of GEPI.
 *
@@ -129,15 +129,9 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 # SSO, on ne s'embête pas :
 $auth = $session_gepi->authenticate();
 
-if ($auth == "1") {
-	# Authentification réussie
-	session_write_close();
-	//header("Location:accueil.php");
-	//die();
-} else {
+session_write_close();
+if ($auth != "1") {
 	# Echec d'authentification.
-	session_write_close();
-	header("Location:../login_failure.php?error=".$auth."&mode=sso");
+	header("Location:../login_failure.php?error=" . $auth . "&mode=sso");
 	die();
 }
-?>
