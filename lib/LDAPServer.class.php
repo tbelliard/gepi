@@ -250,8 +250,8 @@ class LDAPServer {
 			# L'utilisateur existe, on formate les données, et on modifie l'annuaire.
 			$dn = $this->champ_login . "=" . $_login . "," . $this->people_ou . "," . $this->base_dn;
 			$donnees = $this->format_user_data($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut);
-			$modify = ldap_modify($this->ds, $dn, $donnees);
-			return $modify;
+
+			return ldap_modify($this->ds, $dn, $donnees);
 		}
 	}
 
