@@ -111,7 +111,7 @@ class LDAPServer {
 		$user = array();
 		$user = ldap_get_entries($this->ds, $sr);
 		if (array_key_exists(0, $user)) {
-			$infos = array();
+			$infos = [];
 			$infos["dn"] = $user[0]["dn"];
 
 			if ($this->champ_prenom == '' || !array_key_exists($this->champ_prenom, $user[0])) {
@@ -162,7 +162,6 @@ class LDAPServer {
 				$infos["rne"][$a] = $user[0][$this->champ_rne][$a];
 
 			}
-
 
 			# La détermination du statut est la manipulation la plus délicate.
 			# On dispose de deux moyens : un champ du LDAP (le plus simple...)
@@ -227,7 +226,6 @@ class LDAPServer {
 	# Ajoute un utilisateur à l'annuaire.
 	# Retourne true/false.
 	public function add_user($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut) {
-
 		# Si l'utilisateur existe déjà, on abandonne. La mise à jour d'une entrée passe par
 		# une autre méthode.
 		if ($this->test_user($_login)) {
@@ -244,7 +242,6 @@ class LDAPServer {
 	# Met à jour un utilisateur dans l'annuaire.
 	# Retourne true/false
 	public function update_user($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut) {
-
 		# Si l'utilisateur n'existe pas, on abandonne. L'ajout d'une entrée passe par
 		# une autre méthode.
 		if (!$this->test_user($_login)) {
@@ -357,7 +354,7 @@ class LDAPServer {
 	# courant d'avoir les nom et prénom présents de manière distincte dans
 	# l'annuaire...
 	private function format_name($_prenom, $_nom, $_nom_complet) {
-		$result = array();
+		$result = [];
 		if ($_prenom == '' and $_nom == '' and $_nom_complet == '') {
 			// On n'a rien... On renvoie donc rien...
 			$result['nom'] = '';
@@ -398,8 +395,7 @@ class LDAPServer {
 	# Cette méthode formatte des données utilisateurs au format accepté par ldap_add ou ldap_modify.
 	# Les paramètres vides sont ignorés.
 	private function format_user_data($_login, $_nom, $_prenom, $_email, $_civilite, $_password, $_statut) {
-
-		$data = array();
+		$data = [];
 		$data['objectClass'] = $this->people_object_classes;
 		$data[$this->champ_login] = $_login;
 
@@ -454,5 +450,3 @@ class LDAPServer {
 	}
 
 }
-
-?>
