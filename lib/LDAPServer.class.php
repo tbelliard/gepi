@@ -421,9 +421,6 @@ class LDAPServer {
 		// La civilité
 		if ($_civilite != '' and $this->champ_civilite != '') {
 			switch ($_civilite) {
-				case "Mme":
-					$data[$this->champ_civilite] = $this->code_civilite_madame;
-					break;
 				case "Mlle":
 					$data[$this->champ_civilite] = $this->code_civilite_mademoiselle;
 					break;
