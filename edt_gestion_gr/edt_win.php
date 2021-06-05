@@ -163,7 +163,7 @@ if ($action == "modifier_gr") {
 
 ?>
 
-<html>
+<html lang="fr">
 	<head><title>&nbsp;-&nbsp;</title></head>
 	<body>
 	<div style="border: 2px solid red;">
