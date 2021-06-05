@@ -1,6 +1,5 @@
 <?php
 
-             
 /**
  * Intérieur du fichier php contenant le seul calendrier. On récupère en GET les valeurs
  * représentant le nom du formulaire et le nom du champ de la date.
@@ -8,7 +7,7 @@
 $frm = $_GET['frm'];
 $chm = $_GET['ch'];
 
-if((!preg_match("/^[A-Za-z0-9_]*$/", $frm))||(!preg_match("/^[A-Za-z0-9_]*$/", $chm))) {
+if ((!preg_match("/^[A-Za-z0-9_]*$/", $frm)) || (!preg_match("/^[A-Za-z0-9_]*$/", $chm))) {
 	die();
 }
 
@@ -23,5 +22,3 @@ include("calendrier.class.php");
 $cal = new Calendrier($frm, $chm);
 $cal->auto_set_date();
 $cal->affiche();
-
-?>

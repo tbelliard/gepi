@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2008 Thomas Belliard
+ * Copyright 2001, 2008, 2021 Thomas Belliard, Romain Neil
  *
  * This file is part of GEPI.
  *
@@ -20,49 +20,49 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#
 
-# Cette classe sert à manipuler ou creer des fichiers CSV.
-
-
+/**
+ * Cette classe sert à manipuler ou creer des fichiers CSV.
+ */
 class CsvClass {
 
-  private $name=Null;
-  private $path=Null;
-  private $delimiter=";";
-  private $enclosure='"';
-  private $filename=Null;
-  private $exists=false;
+	private $name;
+	private $path;
+	private $delimiter = ";";
+	private $enclosure = '"';
+	private $filename;
+	private $exists = false;
 
-  public function  __construct($name,$path,$delimiter=Null,$enclosure=Null) {
+	public function __construct($name, $path, $delimiter = Null, $enclosure = Null) {
+		$this->path = $path;
+		$this->name = $name;
+		$this->filename = $this->path . $this->name . '.csv';
+		if ($delimiter) $this->delimiter = $delimiter;
+		if ($enclosure) $this->enclosure = $enclosure;
+		if (file_exists($this->filename)) {
+			$this->exists = true;
+		}
+	}
 
-    $this->path=$path;
-    $this->name=$name;
-    $this->filename=$this->path.$this->name.'.csv';
-    if($delimiter) $this->delimiter=$delimiter;
-    if($enclosure) $this->enclosure=$enclosure;
-    if (file_exists($this->filename)) {
-      $this->exists=true;
-    }
-  }
+	public function set_data($data) {
+		$fp = fopen($this->filename, 'w');
+		foreach ($data as $line) {
+			fputcsv($fp, preg_split(';', $line), $this->delimiter, $this->enclosure); //Romain Neil: A tester: remplacement par la fonction non dépréciée
+		}
+		fclose($fp);
+	}
 
-  public function set_data($data) {
-    //if($this->exists) $this->rename();
-    $fp = fopen($this->filename, 'w');
-    foreach($data as $line) {
-      fputcsv($fp, split(';',$line),$this->delimiter,$this->enclosure);
-    }
-    fclose($fp);
-  }
-
-  private function rename() {
-    $i=1;
-    while($this->exists) {
-      $this->filename=$this->path.$this->name.'_'.$i.'.csv';
-      if (!file_exists($this->filename)) {
-        $this->exists=false;
-      }
-      $i++;
-    }
-  }
+	private function rename() {
+		$i = 1;
+		while ($this->exists) {
+			$this->filename = $this->path . $this->name . '_' . $i . '.csv';
+			if (!file_exists($this->filename)) {
+				$this->exists = false;
+			}
+			$i++;
+		}
+	}
 }
+
 ?>
