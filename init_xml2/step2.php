@@ -2,7 +2,7 @@
 @set_time_limit(0);
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -238,6 +238,9 @@ if (isset($is_posted)) {
 	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(DIVCOD) classe FROM temp_gep_import2 WHERE DIVCOD!='' ORDER BY DIVCOD");
 	$nb = mysqli_num_rows($call_data);
 	$i = "0";
+
+	// 20210831
+	$tab_id_classe=array();
 
 	while ($i < $nb) {
 		$classe = old_mysql_result($call_data, $i, "classe");
