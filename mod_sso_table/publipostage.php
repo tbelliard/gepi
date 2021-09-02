@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -302,7 +302,7 @@ if($mode=="upload") {
 		<input type='checkbox' name='inclure_url_connexion_ent' id='inclure_url_connexion_ent' value='y' onchange=\"checkbox_change(this.id)\"$checked_inclure_url_connexion_ent /><label for='inclure_url_connexion_ent' id='texte_inclure_url_connexion_ent'$style_inclure_url_connexion_ent> Inclure l'URL de connexion <input type='text' name='url_connexion_ent' value='".$url_connexion_ent."' /> dans le tableau des informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='fiche_bienvenue' id='fiche_bienvenue' value='y' onchange=\"checkbox_change(this.id)\" /><label for='fiche_bienvenue' id='texte_fiche_bienvenue'> Inclure la fiche bienvenue sous les informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='mot_de_passe_deja_modifie' id='mot_de_passe_deja_modifie' value='n' onchange=\"checkbox_change(this.id)\" /><label for='mot_de_passe_deja_modifie' id='texte_mot_de_passe_deja_modifie'> Ne pas imprimer les fiches pour lesquelles le mot de passe a déjà été modifié.</label><br />
-		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>')</em><br />
+		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>' ou '<span style='color:green'>Mot de passe modifié par l'utilisateur</span>')</em><br />
 		<br />
 
 		<input type='checkbox' name='envoi_mail' id='envoi_mail' value='y' onchange=\"checkbox_change(this.id)\" /><label for='envoi_mail' id='texte_envoi_mail'> Envoyer la fiche par mail aux utilisateurs concernés <em>(sous réserve que l'adresse mail de l'utilisateur associé au compte soit renseigné)</em>.</label><br />
@@ -618,6 +618,10 @@ elseif($mode=='publiposter') {
 					}
 
 					if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe déjà modifié par utilisateur/i", $tab[$tabindice['mot de passe']]))) {
+						$afficher="n";
+					}
+
+					if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe modifié par l'utilisateur/i", $tab[$tabindice['mot de passe']]))) {
 						$afficher="n";
 					}
 
@@ -944,6 +948,10 @@ elseif($mode=='publiposter') {
 					$afficher="n";
 				}
 
+				if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe modifié par l'utilisateur/i", $tab[$tabindice['mot de passe']]))) {
+					$afficher="n";
+				}
+
 				if(($afficher=="y")&&(isset($tabindice["uid"]))) {
 					if($tab[$tabindice['uid']]=="") {
 						$afficher="n";
@@ -1257,7 +1265,7 @@ elseif($mode=="derniers_parents_et_eleves_inscrits") {
 		<input type='checkbox' name='inclure_url_connexion_ent' id='inclure_url_connexion_ent' value='y' onchange=\"checkbox_change(this.id)\"$checked_inclure_url_connexion_ent /><label for='inclure_url_connexion_ent' id='texte_inclure_url_connexion_ent'$style_inclure_url_connexion_ent> Inclure l'URL de connexion <input type='text' name='url_connexion_ent' value='".$url_connexion_ent."' /> dans le tableau des informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='fiche_bienvenue' id='fiche_bienvenue' value='y' onchange=\"checkbox_change(this.id)\" /><label for='fiche_bienvenue' id='texte_fiche_bienvenue'> Inclure la fiche bienvenue sous les informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='mot_de_passe_deja_modifie' id='mot_de_passe_deja_modifie' value='n' onchange=\"checkbox_change(this.id)\" /><label for='mot_de_passe_deja_modifie' id='texte_mot_de_passe_deja_modifie'> Ne pas imprimer les fiches pour lesquelles le mot de passe a déjà été modifié.</label><br />
-		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>')</em></p>";
+		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>' ou '<span style='color:green'>Mot de passe modifié par l'utilisateur</span>')</em></p>";
 
 	if(count($tab_profil)>0) {
 		echo "
@@ -1457,6 +1465,10 @@ elseif($mode=="publiposter2") {
 							if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe déjà modifié par utilisateur/", $tmp_tab[2]))) {
 								$afficher="n";
 							}
+
+							if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe modifié par l'utilisateur/i", $tmp_tab[2]))) {
+								$afficher="n";
+							}
 						}
 					}
 
@@ -1588,6 +1600,10 @@ elseif($mode=="publiposter2") {
 					else {
 						$tmp_tab=explode("|", $lig_ts['col1']);
 						if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe déjà modifié par utilisateur/", $tmp_tab[2]))) {
+							$afficher="n";
+						}
+
+						if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe modifié par l'utilisateur/i", $tmp_tab[2]))) {
 							$afficher="n";
 						}
 					}
