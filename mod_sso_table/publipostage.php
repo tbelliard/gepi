@@ -128,6 +128,13 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+$url_qr_code_ent=getSettingValue('url_qr_code_ent');
+$a_propos_compte_mail_gepi=getSettingValue('a_propos_compte_mail_gepi');
+if($a_propos_compte_mail_gepi=='') {
+	$a_propos_compte_mail_gepi='Gepi';
+}
+//echo $url_qr_code_ent;
+
 if($mode!='publiposter') {
 	echo "<p class='bold'><a href='./index.php?ctrl=cvsent#publipostage'>Retour</a></p>";
 }
@@ -663,7 +670,11 @@ elseif($mode=='publiposter') {
 			for($loop_cle=0;$loop_cle<count($tab_cle_courante);$loop_cle++) {
 				$tab=$tab_courant[$tab_cle_courante[$loop_cle]];
 
-				$fb_courante="
+				$fb_courante='';
+				if((isset($url_qr_code_ent))&&($url_qr_code_ent!='')) {
+					$fb_courante="<div style='float:right;width:100px;'><img src='$url_qr_code_ent' width='100' /></div>";	
+				}
+				$fb_courante.="
 		<table style='page-break-inside: avoid; width:30em; font-size:9pt;' class='boireaus'>
 			<tr>
 				<td style='width:8em;'>À l'attention de </td>
@@ -687,7 +698,7 @@ elseif($mode=='publiposter') {
 			</tr>
 			<tr>
 				<td>Mot de passe </td>
-				<td class='bold'>".$tab[$tabindice['mot de passe']]."</td>
+				<td class='bold'>".htmlentities($tab[$tabindice['mot de passe']])."</td>
 			</tr>";
 
 				if((isset($tabindice['nom enfant']))&&($tab[$tabindice['nom enfant']]!='')) {
@@ -832,7 +843,7 @@ elseif($mode=='publiposter') {
 								}
 
 								$destinataire=$tab_param_mail['destinataire'][$loop_mail];
-								if(envoi_mail("Compte Gepi", "Bonjour(soir),\n\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
+								if(envoi_mail("Compte ".$a_propos_compte_mail_gepi, "Bonjour(soir),\n\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
 									$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion du compte ".$tab[$tabindice['login']]." envoyé avec succès.\">".$destinataire."</span>";
 									$nb_mail++;
 								}
@@ -894,7 +905,7 @@ elseif($mode=='publiposter') {
 			if($chaine_mail_envoye!="") {
 				$chaine_mail_envoye.=", ";
 			}
-			if(envoi_mail("Compte(s) Gepi", "Bonjour(soir),\n\n".$compilation_fb, $destinataire, "", "html", $tab_param_mail)) {
+			if(envoi_mail("Compte(s) ".$a_propos_compte_mail_gepi, "Bonjour(soir),\n\n".$compilation_fb, $destinataire, "", "html", $tab_param_mail)) {
 				$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion envoyées avec succès.\">".$destinataire."</span>";
 			}
 			else {
@@ -971,7 +982,12 @@ elseif($mode=='publiposter') {
 
 				if($afficher=="y") {
 					$tab_deja[]=$tab[$tabindice['uid']];
-					$fb_courante="
+
+					$fb_courante='';
+					if((isset($url_qr_code_ent))&&($url_qr_code_ent!='')) {
+						$fb_courante="<div style='float:right;width:100px;'><img src='$url_qr_code_ent' width='100' /></div>";	
+					}
+					$fb_courante.="
 	<table style='page-break-inside: avoid; width:30em; font-size:9pt;' class='boireaus'>
 		<tr>
 			<td style='width:8em;'>À l'attention de </td>
@@ -994,7 +1010,7 @@ elseif($mode=='publiposter') {
 		</tr>
 		<tr>
 			<td>Mot de passe </td>
-			<td class='bold'>".$tab[$tabindice['mot de passe']]."</td>
+			<td class='bold'>".htmlentities($tab[$tabindice['mot de passe']])."</td>
 		</tr>";
 
 					if((isset($tabindice['nom enfant']))&&($tab[$tabindice['nom enfant']]!='')) {
@@ -1118,7 +1134,7 @@ elseif($mode=='publiposter') {
 									}
 
 									$destinataire=$tab_param_mail['destinataire'][$loop_mail];
-									if(envoi_mail("Compte Gepi", "Bonjour(soir),\n\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
+									if(envoi_mail("Compte ".$a_propos_compte_mail_gepi, "Bonjour(soir),\n\n".$fb_courante, $destinataire, "", "html", $tab_param_mail)) {
 										$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion du compte ".$tab[$tabindice['login']]." envoyé avec succès.\">".$destinataire."</span>";
 										$nb_mail++;
 									}
@@ -1184,7 +1200,7 @@ elseif($mode=='publiposter') {
 			if($chaine_mail_envoye!="") {
 				$chaine_mail_envoye.=", ";
 			}
-			if(envoi_mail("Compte(s) Gepi", "Bonjour(soir),\n\n".$compilation_fb, $destinataire, "", "html", $tab_param_mail)) {
+			if(envoi_mail("Compte(s) ".$a_propos_compte_mail_gepi, "Bonjour(soir),\n\n".$compilation_fb, $destinataire, "", "html", $tab_param_mail)) {
 				$chaine_mail_envoye.="<span style='color:green' title=\"Informations de connexion envoyées avec succès.\">".$destinataire."</span>";
 			}
 			else {
@@ -1505,6 +1521,11 @@ elseif($mode=="publiposter2") {
 			sort($tab_cle_courante);
 			for($loop_cle=0;$loop_cle<count($tab_cle_courante);$loop_cle++) {
 				$tab=$tab_courant[$tab_cle_courante[$loop_cle]];
+
+				if((isset($url_qr_code_ent))&&($url_qr_code_ent!='')) {
+					echo "<div style='float:right;width:100px;'><img src='$url_qr_code_ent' width='100' /></div>";	
+				}
+
 				echo "
 		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
 			<tr>
@@ -1640,6 +1661,11 @@ elseif($mode=="publiposter2") {
 
 			for($loop_cle=0;$loop_cle<count($tab_cle_courante);$loop_cle++) {
 				$tab=$tab_courant[$tab_cle_courante[$loop_cle]];
+
+				if((isset($url_qr_code_ent))&&($url_qr_code_ent!='')) {
+					echo "<div style='float:right;width:100px;'><img src='$url_qr_code_ent' width='100' /></div>";	
+				}
+
 				echo "
 		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
 			<tr>
