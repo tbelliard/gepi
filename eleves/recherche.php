@@ -1313,6 +1313,7 @@ Pb pour tri?</p>
 	document.getElementById('submit_chercher').style.display='none';
 	document.getElementById('button_chercher').style.display='';
 	document.getElementById('rech_nom').focus();
+	document.getElementById('rech_nom').select();
 
 	function valider_form_recherche() {
 		if((document.getElementById('rech_nom').value=='')&&(document.getElementById('rech_prenom').value=='')) {
