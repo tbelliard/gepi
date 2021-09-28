@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2020 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2021 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -812,6 +812,10 @@ echo "<script type='text/javascript'>
 				}
 				elseif(preg_match("/xml$/i",$document->getEmplacement())) {
 					echo insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($document->getTitre(), $document->getEmplacement());
+				}
+				// 20210928
+				elseif(preg_match("/doc|docx|odt|ods|pdf$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_lien_document_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 				}
 
 				echo "

@@ -893,6 +893,10 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 				elseif(preg_match("/xml$/i",$document->getEmplacement())) {
 					echo insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 				}
+				// 20210928
+				elseif(preg_match("/doc|docx|odt|ods|pdf$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_lien_document_dans_ckeditor($document->getTitre(), $document->getEmplacement());
+				}
 
 				echo "
 							<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a>

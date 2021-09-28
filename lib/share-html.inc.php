@@ -2344,6 +2344,11 @@ function insere_lien_insertion_lien_geogebra_dans_ckeditor($titre_ggb, $url_ggb)
 	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_ggb_dans_ckeditor('".preg_replace("/'/", " ", $titre_ggb)."', '".$url_ggb."')\" title='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB'><img src='../images/up.png' width='18' height='18' alt='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB' /></a></div>";
 }
 
+// 20210928
+function insere_lien_insertion_lien_document_dans_ckeditor($titre_doc, $url_doc) {
+	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_document_dans_ckeditor('".preg_replace("/'/", " ", $titre_doc)."', '".$url_doc."')\" title='Insérer un lien vers le document'><img src='../images/up.png' width='18' height='18' alt='Insérer un lien vers le document' /></a></div>";
+}
+
 /** fonction alertant sur la configuration de suhosin
  *
  * @return string Chaine de texte HTML 
@@ -7613,7 +7618,21 @@ function insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($titre_xml, $ur
 		return '';
 	}
 	else {
-		return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_instrumenpoche_dans_ckeditor('".preg_replace("/'/", " ", $titre_xml)."', '".$url_xml."')\" title='Insérer un lien vers le visionneur Instrumenpoche pour ce fichier XML'><img src='../images/up.png' width='18' height='18' alt='Insérer' /></a></div>";
+
+		// 20210928
+		//insert into setting set name='cdt2_instrumenpoche_url_absolues', value='y';
+		//insert into setting set name='cdt2_instrumenpoche_url_iep', value='https://serveur/chemin/iep_get_url.html';
+		if((getSettingAOui('cdt2_instrumenpoche_url_absolues'))&&(getSettingValue('cdt2_instrumenpoche_url_iep')!='')) {
+			if(preg_match('#^\.\./#', $url_xml)) {
+				return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_instrumenpoche_dans_ckeditor2('".preg_replace("/'/", " ", $titre_xml)."', '".getSettingValue('url_racine_gepi').preg_replace('#^\.\./#', '/', $url_xml)."', '".getSettingValue('cdt2_instrumenpoche_url_iep')."')\" title='Insérer un lien vers le visionneur Instrumenpoche pour ce fichier XML'><img src='../images/up.png' width='18' height='18' alt='Insérer' /></a></div>";
+			}
+			else {
+				return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_instrumenpoche_dans_ckeditor2('".preg_replace("/'/", " ", $titre_xml)."', '".$url_xml."', '".getSettingValue('cdt2_instrumenpoche_url_iep')."')\" title='Insérer un lien vers le visionneur Instrumenpoche pour ce fichier XML'><img src='../images/up.png' width='18' height='18' alt='Insérer' /></a></div>";
+			}
+		}
+		else {
+			return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_instrumenpoche_dans_ckeditor('".preg_replace("/'/", " ", $titre_xml)."', '".$url_xml."')\" title='Insérer un lien vers le visionneur Instrumenpoche pour ce fichier XML'><img src='../images/up.png' width='18' height='18' alt='Insérer' /></a></div>";
+		}
 	}
 }
 
