@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2019 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2021 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -327,7 +327,22 @@ if((getSettingAOui('cdt2_input_file_multiple'))&&(!empty($doc_file2['name'][0]))
 
 //==================================================
 //traitement de telechargement de documents joints
-if (!empty($doc_file['name'][0])) {
+
+$temoin_documents_joints=false;
+
+$nb_doc_choisi='3';
+if(preg_match('/[0-9]{1,}/', getSettingValue('cdt_nb_doc_joints'))) {
+	$nb_doc_choisi=getSettingValue('cdt_nb_doc_joints');
+}
+
+for ($index_doc=0; $index_doc < $nb_doc_choisi; $index_doc++) {
+	if (!empty($doc_file['name'][$index_doc])) {
+		$temoin_documents_joints=true;
+		break;
+	}
+}
+
+if($temoin_documents_joints) {
 	require_once("traite_doc.php");
 	$total_max_size = getSettingValue("total_max_size");
 	$max_size = getSettingValue("max_size");
@@ -337,12 +352,6 @@ if (!empty($doc_file['name'][0])) {
         }
 	$dest_dir = '../documents/'.$multi.'cl'.$ctCompteRendu->getIdCt();
 
-	// 20201117
-	// il y avait au plus trois documents joints dans l'interface de saisie
-	$nb_doc_choisi='3';
-	if(preg_match('/[0-9]{1,}/', getSettingValue('cdt_nb_doc_joints'))) {
-		$nb_doc_choisi=getSettingValue('cdt_nb_doc_joints');
-	}
 	for ($index_doc=0; $index_doc < $nb_doc_choisi; $index_doc++) {
 		if(!empty($doc_file['tmp_name'][$index_doc])) {
 			$file_path = ajout_fichier($doc_file, $dest_dir, $index_doc, $id_groupe);
