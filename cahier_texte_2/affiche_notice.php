@@ -276,8 +276,6 @@ if($table_ct!='') {
 }
 //===================================================================
 
-
-
 echo "
 	<h2>".get_info_grp($lig_ct->id_groupe)."</h2>";
 
@@ -321,6 +319,34 @@ if($type_notice!='p') {
 		}
 	}
 }
+
+//===================================================================
+// 20211002
+// Rechercher la notice de travail à faire suivante
+if($type_notice=='c') {
+	$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct>'".$lig_ct->date_ct."' ORDER BY date_ct LIMIT 1;";
+	$test_autre_notice=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test_autre_notice)>0) {
+		$lig_autre_notice=mysqli_fetch_object($test_autre_notice);
+		echo "
+	<div style='float:right; width:16px; margin:0.2em;'>
+		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=t' title=\"Consulter la notice de travail à faire à la maison n°".$lig_autre_notice->id_ct." pour le ".strftime("%a %d/%m/%Y", $lig_autre_notice->date_ct).".\"><img src='../images/icons/notices_CDT_travail_suivant.png' class='icone16' alt='CDT' /></a>
+	</div>";
+	}
+}
+// Retour à la notice de compte-rendu précédente
+if($type_notice=='t') {
+	$sql="SELECT * FROM ct_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct<'".$lig_ct->date_ct."' ORDER BY date_ct DESC LIMIT 1;";
+	$test_autre_notice=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($test_autre_notice)>0) {
+		$lig_autre_notice=mysqli_fetch_object($test_autre_notice);
+		echo "
+	<div style='float:right; width:16px; margin:0.2em;'>
+		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=c' title=\"Consulter la notice de compte-rendu précédente du ".strftime("%a %d/%m/%Y", $lig_autre_notice->date_ct)." (n°".$lig_autre_notice->id_ct.").\"><img src='../images/icons/notices_CDT_compte_rendu_retour.png' class='icone16' alt='CDT' /></a>
+	</div>";
+	}
+}
+//===================================================================
 
 echo "
 	<div style='float:left; width:18.5em; font-weight:bold;'>
