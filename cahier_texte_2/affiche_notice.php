@@ -335,15 +335,17 @@ if($type_notice=='c') {
 	}
 }
 // Retour à la notice de compte-rendu précédente
+$lien_retour_notice_compte_rendu_precedente='';
 if($type_notice=='t') {
 	$sql="SELECT * FROM ct_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct<'".$lig_ct->date_ct."' ORDER BY date_ct DESC LIMIT 1;";
 	$test_autre_notice=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($test_autre_notice)>0) {
 		$lig_autre_notice=mysqli_fetch_object($test_autre_notice);
-		echo "
+		$lien_retour_notice_compte_rendu_precedente="
 	<div style='float:right; width:16px; margin:0.2em;'>
 		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=c' title=\"Consulter la notice de compte-rendu précédente du ".strftime("%a %d/%m/%Y", $lig_autre_notice->date_ct)." (n°".$lig_autre_notice->id_ct.").\"><img src='../images/icons/notices_CDT_compte_rendu_retour.png' class='icone16' alt='CDT' /></a>
 	</div>";
+		echo $lien_retour_notice_compte_rendu_precedente;
 	}
 }
 //===================================================================
@@ -442,6 +444,8 @@ if(isset($tab_tag_notice["indice"])) {
 
 
 echo $lig_ct->contenu;
+
+echo $lien_retour_notice_compte_rendu_precedente;
 
 $adj=affiche_docs_joints($lig_ct->id_ct, $type_notice);
 if($adj!='') {
