@@ -537,6 +537,8 @@ echo "
 			(img_src.search('images/icons/forward.png')==-1)&&
 			(img_src.search('images/icons/images.png')==-1)&&
 			(img_src.search('images/alerte_entete.png')==-1)&&
+			(img_src.search('images/icons/notices_CDT_compte_rendu_retour.png')==-1)&&
+			(img_src.search('images/icons/notices_CDT_travail_suivant.png')==-1)&&
 			(img_src.search('images/bouton_continue.png')==-1)) {
 				img_width=img[i].width;
 				img_height=img[i].height;
