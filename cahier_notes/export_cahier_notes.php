@@ -3,7 +3,7 @@
  * Export du carnet de notes
  * 
  * 
- * @copyright Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage export
@@ -294,11 +294,17 @@ if(!isset($type_export)) {
 
 	$pref_export_cn=getPref($_SESSION['login'],'export_cn','csv');
 	echo "<input type='radio' name='type_export' id='type_export_csv' value='CSV' ";
-	if((getSettingValue("export_cn_ods")!='y')||
+	if(((getSettingValue("export_cn_ods")!='y')&&($pref_export_cn!='csv')&&($pref_export_cn!='csv2'))||
 		($pref_export_cn=='csv')) {
 		echo "checked ";
 	}
 	echo "/><label for='type_export_csv' style='cursor: pointer;'> fichier CSV</label><br />\n";
+
+	echo "<input type='radio' name='type_export' id='type_export_csv2' value='CSV2' ";
+	if($pref_export_cn=='csv2') {
+		echo "checked ";
+	}
+	echo "/><label for='type_export_csv2' style='cursor: pointer;'> fichier CSV (moyenne et notes) (format non adapté à un réimport vers Gepi)</label><br />\n";
 
 	if(getSettingValue("export_cn_ods")=='y') {
 		echo "<input type='radio' name='type_export' id='type_export_ods' value='ODS' ";
@@ -492,6 +498,138 @@ if($type_export=="CSV") {
 	// On renvoye le fichier vers le navigateur:
 	echo echo_csv_encoded($fd);
 	die();
+}
+//20211120
+elseif($type_export=="CSV2") {
+
+	// Recherche du groupe et de la période associés à ce carnet de notes
+	$sql="SELECT * FROM cn_cahier_notes WHERE (id_cahier_notes='$id_racine');";
+	//echo "$sql<br />";
+	$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_cahier_note = mysqli_num_rows($appel_cahier_notes);
+	if ($nb_cahier_note == 0) {
+		header("Location: ./index.php?msg=Le carnet de notes n'est pas initialisé pour cet enseignement sur cette période.");
+		die();
+	}
+	$lig_cn=mysqli_fetch_object($appel_cahier_notes);
+	$id_groupe=$lig_cn->id_groupe;
+	$periode_num=$lig_cn->periode;
+
+	// Génération du CSV
+	savePref($_SESSION['login'], 'export_cn', 'csv2');
+
+	/*
+
+	$nom_fic.=".csv";
+
+	$now=gmdate('D, d M Y H:i:s').' GMT';
+	send_file_download_headers('text/x-csv',$nom_fic);
+
+	// Initialisation du contenu du fichier:
+	$fd='';
+
+
+	// On fait la liste des devoirs de ce carnet de notes
+	$appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
+	$nb_dev = mysqli_num_rows($appel_dev);
+
+	$ligne_entete="GEPI_INFOS;GEPI_LOGIN_ELEVE;NOM;PRENOM;CLASSE;MOYENNE;GEPI_COL_1ER_DEVOIR";
+	$fd.="$ligne_entete\n";
+	*/
+
+	// Récupérer les devoirs de la période
+	$tab_devoirs=array();
+	$sql="SELECT * FROM cn_devoirs WHERE id_racine='".$id_racine."' AND display_parents='1' ORDER BY id_conteneur, date, nom_court, nom_complet;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	$nb_devoirs=mysqli_num_rows($res);
+	if($nb_devoirs>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="SELECT * FROM cn_notes_devoirs WHERE id_devoir='".$lig->id."' AND statut!='v' ORDER BY login;";
+			//echo "$sql<br />";
+			$res2=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res2)>0) {
+				while($lig2=mysqli_fetch_object($res2)) {
+					$tab_devoirs[$lig2->login][$lig->id]['nom_court']=$lig->nom_court;
+					$tab_devoirs[$lig2->login][$lig->id]['date']=formate_date($lig->date);
+					$tab_devoirs[$lig2->login][$lig->id]['coef']=$lig->coef;
+					$tab_devoirs[$lig2->login][$lig->id]['note_sur']=$lig->note_sur;
+					if($lig2->statut=='') {
+						$tab_devoirs[$lig2->login][$lig->id]['note_ou_statut']=$lig2->note;
+					}
+					else {
+						$tab_devoirs[$lig2->login][$lig->id]['note_ou_statut']=$lig2->statut;
+					}
+				}
+			}
+		}
+	}
+
+	$current_group=get_group($id_groupe);
+	$csv='"LOGIN";"PRENOM NOM";"CLASSE";"MOYENNE";"DEVOIRS"'."\n";
+	foreach($current_group["classes"]["list"] as $current_id_classe) {
+
+		$classe=$current_group["classes"]["classes"][$current_id_classe]['classe'];
+
+		$sql= "SELECT DISTINCT jeg.login, e.nom, e.prenom FROM eleves e, 
+					j_eleves_groupes jeg, 
+					j_eleves_classes jec 
+				WHERE (e.login=jeg.login AND 
+					jeg.login=jec.login AND 
+					jec.periode=jeg.periode AND 
+					jec.periode='".$periode_num."' AND 
+					jeg.id_groupe='".$id_groupe."' AND 
+					jec.id_classe='".$current_id_classe."') 
+				ORDER BY e.nom, e.prenom;";
+		//echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$csv.='"'.$lig->login.'";"'.$lig->prenom.' '.$lig->nom.'";"'.$classe.'";"';
+
+				if(isset($tab_devoirs[$lig->login])) {
+					$sql="SELECT * FROM cn_notes_conteneurs WHERE id_conteneur='".$id_racine."' AND login='".$lig->login."' AND statut='y';";
+					//echo "$sql<br />";
+					$res3=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res3)>0) {
+						$lig3=mysqli_fetch_object($res3);
+						$csv.="Moyenne : ".$lig3->note.", ";
+						//$csv.="Moyenne  ".$lig3->note.", ";
+					}
+
+					$cpt=0;
+					foreach($tab_devoirs[$lig->login] as $id_devoir => $current_devoir) {
+						if($cpt>0) {
+							$csv.=", ";
+						}
+
+						$csv.=$current_devoir['nom_court']." : ";
+						$csv.=$current_devoir['note_ou_statut'];
+						if($current_devoir['note_sur']!=20) {
+							$csv.="/".$current_devoir['note_sur'];
+						}
+						if($current_devoir['coef']!=1) {
+							$csv.=" (".($current_devoir['coef']+1-1).")";
+						}
+
+						$cpt++;
+					}
+				}
+
+				$csv.=";";
+				$csv.="\"\n";
+			}
+		}
+
+	}
+
+	$nom_fic="export_notes_et_moyenne_".remplace_accents(get_info_grp($id_groupe, array('matieres', 'classes'), ''), 'all')."_periode_".$periode_num."_".strftime("%Y%m%d_%H%M%S").".csv";
+
+	send_file_download_headers('text/x-csv',$nom_fic);
+	echo echo_csv_encoded($csv);
+
+	die();
+
 }
 elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
