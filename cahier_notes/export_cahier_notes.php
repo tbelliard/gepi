@@ -566,7 +566,7 @@ elseif($type_export=="CSV2") {
 	}
 
 	$current_group=get_group($id_groupe);
-	$csv='"LOGIN";"PRENOM NOM";"CLASSE";"MOYENNE";"DEVOIRS"'."\n";
+	$csv='"LOGIN";"PRENOM NOM";"CLASSE";"MOYENNE";"DEVOIRS";"MOYENNE ET DEVOIRS"'."\n";
 	foreach($current_group["classes"]["list"] as $current_id_classe) {
 
 		$classe=$current_group["classes"]["classes"][$current_id_classe]['classe'];
@@ -587,37 +587,47 @@ elseif($type_export=="CSV2") {
 			while($lig=mysqli_fetch_object($res)) {
 				$csv.='"'.$lig->login.'";"'.$lig->prenom.' '.$lig->nom.'";"'.$classe.'";"';
 
+				$compilation='';
 				if(isset($tab_devoirs[$lig->login])) {
 					$sql="SELECT * FROM cn_notes_conteneurs WHERE id_conteneur='".$id_racine."' AND login='".$lig->login."' AND statut='y';";
 					//echo "$sql<br />";
 					$res3=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($res3)>0) {
 						$lig3=mysqli_fetch_object($res3);
-						$csv.="Moyenne : ".$lig3->note.", ";
+						$csv.="".$lig3->note;
 						//$csv.="Moyenne  ".$lig3->note.", ";
+						$compilation.="Moyenne : ".$lig3->note.", ";
 					}
+					$csv.="\";\"";
 
 					$cpt=0;
+					$liste_dev='';
 					foreach($tab_devoirs[$lig->login] as $id_devoir => $current_devoir) {
 						if($cpt>0) {
-							$csv.=", ";
+							$liste_dev.=", ";
 						}
 
-						$csv.=$current_devoir['nom_court']." : ";
-						$csv.=$current_devoir['note_ou_statut'];
+						$liste_dev.=$current_devoir['nom_court']." : ";
+						$liste_dev.=$current_devoir['note_ou_statut'];
 						if($current_devoir['note_sur']!=20) {
-							$csv.="/".$current_devoir['note_sur'];
+							$liste_dev.="/".$current_devoir['note_sur'];
 						}
 						if($current_devoir['coef']!=1) {
-							$csv.=" (".($current_devoir['coef']+1-1).")";
+							$liste_dev.=" (".($current_devoir['coef']+1-1).")";
 						}
 
 						$cpt++;
 					}
+					$csv.=$liste_dev;
+					$compilation.=$liste_dev;
 				}
 
+				$csv.="\"";
 				$csv.=";";
-				$csv.="\"\n";
+				$csv.="\"";
+				$csv.=$compilation;
+				$csv.="\"";
+				$csv.="\n";
 			}
 		}
 
