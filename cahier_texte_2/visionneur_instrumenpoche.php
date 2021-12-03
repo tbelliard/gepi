@@ -5,6 +5,9 @@
 <body>
 */
 
+// boireaus :
+// ___REPERE_POUR_CHEMIN_ALTERNATIF___
+
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
