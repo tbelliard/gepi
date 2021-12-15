@@ -801,7 +801,7 @@ echo "<script type='text/javascript'>
 				//			$titre_[$i] = $document->getTitre();
 				//			$taille = round( $document->getTaille()/1024,1);
 				//			$emplacement =  $document->getEmplacement();
-				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\">
+				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\" onmouseOver=\"this.style.backgroundColor='".$couleur_cellule[$type_couleur]."';\" onmouseOut=\"this.style.backgroundColor='white';\">
 						<td>\n";
 
 				if(preg_match("/(png|gif|jpg)$/i",$document->getEmplacement())) {

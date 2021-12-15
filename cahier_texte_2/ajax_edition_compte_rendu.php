@@ -881,7 +881,7 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 			$nb_documents_joints=0;
 			foreach ($documents as $document) {
 				//if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
-				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\">
+				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\" onmouseOver=\"this.style.backgroundColor='".$couleur_cellule[$type_couleur]."';\" onmouseOut=\"this.style.backgroundColor='white';\">
 						<td>\n";
 
 				if(preg_match("/(png|gif|jpg)$/i",$document->getEmplacement())) {
