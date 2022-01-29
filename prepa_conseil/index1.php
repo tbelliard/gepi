@@ -1932,7 +1932,7 @@ function UncheckAll_checkbox(){
 		echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
 		echo "<input type='hidden' name='larg_tab' value='$larg_tab' />\n";
 		echo "<input type='hidden' name='bord' value='$bord' />\n";
-		echo "<input type='hidden' name='bord' value='$stat' />\n";
+		echo "<input type='hidden' name='stat' value='$stat' />\n";
 		if(isset($order_by)){
 			echo "<p><input type='hidden' name='order_by' value='$order_by' />\n";
 		}
