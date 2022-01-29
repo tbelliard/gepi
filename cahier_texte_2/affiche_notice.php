@@ -169,7 +169,7 @@ echo "<div style='margin:0.5em; padding:0.5em; background-color:".$couleur_fond.
 // Mettre en float right un retour à la page d'accueil.
 echo "
 	<div style='float:right; width:16px; margin:0.5em;'>
-		<a href='../accueil.php'><img src='../images/icons/home.png' class='icone16' alt='Accueil' /></a>
+		<a href='../accueil.php'><img src='../images/icons/home.png' class='icone16' alt='Accueil' title=\"Retour à la page d'accueil Gepi\" /></a>
 	</div>";
 
 if($type_notice=='c') {
@@ -208,15 +208,18 @@ if(mysqli_num_rows($res)==0) {
 
 // Et un autre vers visu CDT
 $ancre_see_all='';
+$texte_see_all="cette séance";
 if($type_notice=='c') {
 	$ancre_see_all='#compte_rendu_'.$id_ct;
+	$texte_see_all="cette séance";
 }
 elseif($type_notice=='t') {
 	$ancre_see_all='#travail_'.$id_ct;
+	$texte_see_all="ce travail à faire";
 }
 echo "
 	<div style='float:right; width:16px; margin:0.5em;'>
-		<a href='../cahier_texte_2/see_all.php?id_groupe=".$lig_ct->id_groupe.$ancre_see_all."'><img src='../images/icons/cahier_textes.png' class='icone16' alt='CDT' /></a>
+		<a href='../cahier_texte_2/see_all.php?id_groupe=".$lig_ct->id_groupe.$ancre_see_all."' title=\"Voir ".$texte_see_all." dans l'ensemble du cahier de textes.\"><img src='../images/icons/cahier_textes.png' class='icone16' alt='CDT' /></a>
 	</div>";
 
 
@@ -394,7 +397,7 @@ else {
 }
 
 echo "
-		 <a href='index.php?id_groupe=".$lig_ct->id_groupe."&id_ct=".$id_ct."&type_notice=".$type_notice_2."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct)."\"><img src='../images/edit16.png' class='icone16' alt='Séance' /></a> ";
+		 <a href='index.php?id_groupe=".$lig_ct->id_groupe."&id_ct=".$id_ct."&type_notice=".$type_notice_2."' title=\"Éditer la séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct)."\"><img src='../images/edit16.png' class='icone16' alt='Séance' /></a> ";
 
 echo "
 	</div>
@@ -418,7 +421,21 @@ else {
 	}
 }
 	echo "
-	</div>
+	</div>";
+
+	// 20220126
+	// INSERER UN LIEN DE RETOUR A LA SEANCE DU JOUR COURANT OU A LA DERNIERE SEANCE AVANT AUJOURD'HUI
+	$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct<='".time()."' ORDER BY date_ct DESC limit 1;";
+	$res_prec=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_prec)>0) {
+		$lig_prec=mysqli_fetch_object($res_prec);
+		echo "
+		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\" style='margin-left:3em'><img src='../images/icons/cahier_textes_retour.png' class='icone16' alt=\"Aujourd'hui\" title=\"Retour à la séance du jour,\nou à défaut s'il n'y a pas de séance aujourdh'ui à la dernière séance passée.\" /></a>";
+	}
+
+
+
+	echo "
 	<div style='clear:both;'></div>";
 
 echo "
@@ -437,6 +454,39 @@ if(isset($tab_tag_notice["indice"])) {
 	echo "
 		</div>";
 }
+
+//=============================================
+/*
+// 20211130
+// https://www.creativejuiz.fr/blog/tutoriels/copier-presse-papier-en-javascript
+// Voir aussi https://clipboardjs.com/
+echo "<div style='float:right; width:16px'>
+	<a href='#' onclick=\"copier_notice_vers_presse_papier()\">
+		<img src='../images/icons/copy-16.png' width='16' height='16' />
+	</a>
+</div>
+<script type='text/javascript'>
+	function copier_notice_vers_presse_papier() {
+		document.getElementById('contenu_notice_affichee').select();
+		document.execCommand( 'copy' );
+		return false;
+	}
+
+
+btnCopy.addEventListener( 'click', function(){
+	document.getElementById('contenu_notice_affichee').select();
+	document.execCommand( 'copy' );
+	return false;
+} );
+
+</script>
+
+<button id=\"copy\" type=\"button\">Copy in clipboard</button>";
+echo "<div id='contenu_notice_affichee'>";
+echo $lig_ct->contenu;
+echo "</div>";
+*/
+//=============================================
 
 //echo $lig_ct->contenu;
 //echo preg_replace("#<img #i", "<img onclick=\"affiche_div_img(this.src)\" ", $lig_ct->contenu);
