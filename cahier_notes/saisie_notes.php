@@ -1085,6 +1085,16 @@ echo "</b></p>\n";
 echo "
 <script type='text/javascript' language='JavaScript'>
 
+// 20220129
+// Avec clavier_note() dans lib/functions.js on exploite les frappes UP/DOWN, PageUp/PageDown pour passer au champ note précédent/suivant,...
+// on corrige les saisies &->1, é->2,... (fautes de frappe, Shift oublié pour saisir un chiffre,...)
+// on gère les cn_mode_saisie pour selon le mode:
+// - passer au champ suivant quand on a saisi 125 pour 12.5
+// - passer au champ suivant quand un chiffre après la virgule a été saisi
+// ...
+// Avec verifcol() ici, on teste sur onchange les valeurs saisies, on corrige les . en ,
+// on remplace 'a' par 'abs',...
+// et on colorise en rouge si la valeur saisie dépasse la valeur note_sur, en vert sinon.
 function verifcol(num_id){
 	document.getElementById('n'+num_id).value=document.getElementById('n'+num_id).value.toLowerCase();
 	if(document.getElementById('n'+num_id).value=='a'){
