@@ -165,7 +165,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 $couleur_fond=$color_fond_notices[$type_notice];
-echo "<div style='margin:0.5em; padding:0.5em; background-color:".$couleur_fond."; border: 1px solid black;'>";
+echo "<div style='margin:0.5em; padding:0.5em; padding-bottom:1.5em; background-color:".$couleur_fond."; border: 1px solid black;'>";
 // Mettre en float right un retour à la page d'accueil.
 echo "
 	<div style='float:right; width:16px; margin:0.5em;'>
@@ -359,17 +359,19 @@ if($type_notice=='t') {
 echo "
 	<div style='float:left; width:18.5em; font-weight:bold;'>
 		Séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct)."
-	</div>
+	</div>";
 
-	<div style='float:left; width:20px; text-align:center; '>";
 
 // Lien séance précédente/suivante
+$liens_precedent_suivant="
+	<div style='float:left; width:20px; text-align:center; '>";
+
 // Problème lorsqu'on a deux heures dans la même journée (ajouter un test)
 $sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct<'".$id_ct."' AND date_ct='".$lig_ct->date_ct."' ORDER BY id_ct DESC;";
 $res_mult=mysqli_query($mysqli, $sql);
 if(mysqli_num_rows($res_mult)>0) {
 	$lig_prec=mysqli_fetch_object($res_mult);
-	echo "
+	$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\"><img src='../images/icons/back.png' class='icone16' alt='Séance précédente' /></a>";
 }
 else {
@@ -377,11 +379,11 @@ else {
 	$res_prec=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_prec)>0) {
 		$lig_prec=mysqli_fetch_object($res_prec);
-		echo "
+		$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\"><img src='../images/icons/back.png' class='icone16' alt='Séance précédente' /></a>";
 	}
 }
-echo "
+$liens_precedent_suivant.="
 	</div>
 
 	<div style='float:left; width:20px; text-align:center; '>";
@@ -396,10 +398,10 @@ else {
 	$type_notice_2='priv';
 }
 
-echo "
+$liens_precedent_suivant.="
 		 <a href='index.php?id_groupe=".$lig_ct->id_groupe."&id_ct=".$id_ct."&type_notice=".$type_notice_2."' title=\"Éditer la séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct)."\"><img src='../images/edit16.png' class='icone16' alt='Séance' /></a> ";
 
-echo "
+$liens_precedent_suivant.="
 	</div>
 
 	<div style='float:left; width:20px; text-align:center; '>";
@@ -408,7 +410,7 @@ $sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND i
 $res_mult=mysqli_query($mysqli, $sql);
 if(mysqli_num_rows($res_mult)>0) {
 	$lig_suiv=mysqli_fetch_object($res_mult);
-	echo "
+	$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\"><img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' /></a>";
 }
 else {
@@ -416,15 +418,17 @@ else {
 	$res_suiv=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_suiv)>0) {
 		$lig_suiv=mysqli_fetch_object($res_suiv);
-		echo "
+		$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\"><img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' /></a>";
 	}
 }
-	echo "
+	$liens_precedent_suivant.="
 	</div>";
 
+	echo $liens_precedent_suivant;
+
 	// 20220126
-	// INSERER UN LIEN DE RETOUR A LA SEANCE DU JOUR COURANT OU A LA DERNIERE SEANCE AVANT AUJOURD'HUI
+	// LIEN DE RETOUR A LA SEANCE DU JOUR COURANT OU A LA DERNIERE SEANCE AVANT AUJOURD'HUI
 	$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct<='".time()."' ORDER BY date_ct DESC limit 1;";
 	$res_prec=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_prec)>0) {
@@ -498,6 +502,9 @@ echo "</div>";
 
 echo $lig_ct->contenu;
 
+echo "</div>
+	<div style='clear:both;'></div>";
+
 echo $lien_retour_notice_precedente;
 
 $adj=affiche_docs_joints($lig_ct->id_ct, $type_notice);
@@ -507,6 +514,8 @@ if($adj!='') {
 			".$adj.
 		"</div>\n";
 }
+
+echo "<div style='float:right; width:70px;'>".$liens_precedent_suivant."</div>";
 
 echo "
 	</div>
