@@ -272,6 +272,7 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 	if ((getSettingValue("active_module_absence_professeur")=='y')&&(getSettingValue("active_module_absence")=='2')) {
 		echo "<br />Vous pourrez aussi effectuer la saisie des absences sur le plan de classe.<br />Dans la page de saisie des absences pour un groupe (<em>Onglet Saisir groupe</em>), vous trouverez la page de saisie sur le plan de classe (<em>si le plan de classe existe</em>) en suivant le lien sur l'icone <img src='../images/icons/trombino.png' width='20' height='20' alt='Icone trombi' />.";
 	}
+	echo "<br />Si un ou des élèves apparait comme manquant dans la liste, vérifiez si la date de sortie n'est pas renseignée <em>(cas d'élèves partis de l'établissement, puis revenus)</em>.<br />";
 	echo "</p>\n";
 
 	echo "<script type='text/javascript'>
