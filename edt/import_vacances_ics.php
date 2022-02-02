@@ -610,9 +610,9 @@ if(!isset($zone)) {
 			Le téléchargement proposé ci-dessus va probablement échouer.</p>
 			<p>Vous pouvez télécharger manuellement le fichier sur votre ordinateur, puis le fournir dans le formulaire ci-dessous.<br />
 			Récupérer le fichier de zone par <strong>Clic-droit/Enregistrer la cible du lien sous</strong> <em>(Zone
-			<a href='http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_A.ics' target='_blank'>A</a> - 
-			<a href='http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_B.ics' target='_blank'>B</a> - 
-			<a href='http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_C.ics' target='_blank'>C</a>
+			<a href='https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A.ics' target='_blank'>A</a> - 
+			<a href='https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-B.ics' target='_blank'>B</a> - 
+			<a href='https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-C.ics' target='_blank'>C</a>
 			)</em></p>
 			<form action='".$_SERVER['PHP_SELF']."' method='post' id='form_envoi_ics' enctype='multipart/form-data'>
 				<input type='hidden' name='zone' value='fichier_fourni' />
@@ -670,7 +670,7 @@ elseif($mode=="telech") {
 	 | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre zone</a>
 </p>
 <h2>Téléchargement du fichier pour la zone $zone<br />
-	<span style='font-size:xx-small'>(<a href='http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_".mb_strtoupper($zone).".ics' target='_blank'>http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_".mb_strtoupper($zone).".ics</a>)</span>
+	<span style='font-size:xx-small'>(<a href='https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-".mb_strtoupper($zone).".ics' target='_blank'>https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-".mb_strtoupper($zone).".ics</a>)</span>
 </h2>
 ";
 
@@ -689,7 +689,8 @@ elseif($mode=="telech") {
 		die();
 	}
 */
-	$content=my_file_get_contents("http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_".mb_strtoupper($zone).".ics");
+	//$content=my_file_get_contents("http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_".mb_strtoupper($zone).".ics");
+	$content=my_file_get_contents("https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-".mb_strtoupper($zone).".ics");
 	$temp_perso="../temp/".get_user_temp_directory();
 	if(!file_put_contents($temp_perso."/fichier_vacances_scolaires.ics", $content)) {
 		echo "<p style='color:red'>Échec de l'écriture du fichier temporaire.</p>";
