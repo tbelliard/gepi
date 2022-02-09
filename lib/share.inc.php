@@ -1022,10 +1022,12 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse = '') {
 		$test1 = mb_substr($login_user, 0, 1);
 	}
 
-	$test1 = $login_user{mb_strlen($login_user) - 1};
-	while ($test1 == "_" or $test1 == "-" or $test1 == ".") {
-		$login_user = mb_substr($login_user, 0, mb_strlen($login_user) - 1);
-		$test1 = $login_user{mb_strlen($login_user) - 1};
+	//$test1 = $login_user{mb_strlen($login_user)-1};
+	$test1 = mb_substr($login_user, mb_strlen($login_user) - 1, 1);
+	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
+		$login_user = mb_substr($login_user, 0, mb_strlen($login_user)-1);
+		//$test1 = $login_user{mb_strlen($login_user)-1};
+		$test1 = mb_substr($login_user, mb_strlen($login_user) - 1, 1);
 	}
 
 	// On teste l'unicité du login que l'on vient de créer
