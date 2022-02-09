@@ -14578,7 +14578,8 @@ class HTMLPurifier_ChildDef_Custom extends HTMLPurifier_ChildDef
     protected function _compileRegex()
     {
         $raw = str_replace(' ', '', $this->dtd_regex);
-        if ($raw{0} != '(') {
+        //if ($raw{0} != '(') {
+        if (substr($raw, 0, 1) != '(') {
             $raw = "($raw)";
         }
         $el = '[#a-zA-Z0-9_.-]+';
@@ -21061,7 +21062,8 @@ class HTMLPurifier_TagTransform_Font extends HTMLPurifier_TagTransform
         if (isset($attr['size'])) {
             // normalize large numbers
             if ($attr['size'] !== '') {
-                if ($attr['size']{0} == '+' || $attr['size']{0} == '-') {
+                //if ($attr['size']{0} == '+' || $attr['size']{0} == '-') {
+                if (substr($attr['size'], 0, 1) == '+' || substr($attr['size'], 0, 1) == '-') {
                     $size = (int)$attr['size'];
                     if ($size < -2) {
                         $attr['size'] = '-2';

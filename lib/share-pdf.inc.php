@@ -305,7 +305,8 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			}
 			elseif($supprimer_balises=="n") {
 				// On tient compte des balises
-				if($valeur{0}=='/') {
+				//if($valeur{0}=='/') {
+				if(substr($valeur, 0, 1)=='/') {
 					// On referme une balise
 					if(mb_strtoupper($valeur)=='/B') {
 						$style_courant=preg_replace("/B/i","",$style_courant);

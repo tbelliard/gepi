@@ -663,10 +663,12 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse = 'min') {
 		$login_user = mb_substr($login_user, 0, 50);
 		$login_user = preg_replace("/[^A-Za-z0-9._\-]/", "", trim($login_user));
 
-		$test1 = $login_user{0};
-		while ($test1 == "_" or $test1 == "-" or $test1 == ".") {
+		//$test1 = $login_user{0};
+		$test1 = mb_substr($login_user,0,1);
+		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
 			$login_user = mb_substr($login_user, 1);
-			$test1 = $login_user{0};
+			//$test1 = $login_user{0};
+			$test1 = mb_substr($login_user,0,1);
 		}
 
 		$test1 = $login_user{mb_strlen($login_user) - 1};
@@ -757,9 +759,10 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse = '') {
 	$_nom = remplace_accents($_nom);
 	$_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
 
-	if ($_nom == '') {
-		return FALSE;
-	}
+	// 20220206
+	$_initiale_prenom=substring($_prenom, 0, 1);
+
+	if($_nom=='') {return FALSE;}
 
 	if ($_mode == "name") {
 		$temp1 = $_nom;
@@ -929,23 +932,21 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse = '') {
 			}
 		}
 	} elseif ($_mode == "fname8") {
-		if ($_prenom == '') {
-			return FALSE;
-		}
-		$temp1 = $_prenom{0} . $_nom;
-		$temp1 = preg_replace("/ /", "", $temp1);
-		$temp1 = preg_replace("/-/", "_", $temp1);
-		$temp1 = preg_replace("/'/", "", $temp1);
-		$temp1 = mb_substr($temp1, 0, 8);
+		if($_prenom=='') {return FALSE;}
+		//$temp1 = $_prenom{0} . $_nom;
+		$temp1 = $_initiale_prenom . $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = mb_substr($temp1,0,8);
 	} elseif ($_mode == "fname19") {
-		if ($_prenom == '') {
-			return FALSE;
-		}
-		$temp1 = $_prenom{0} . $_nom;
-		$temp1 = preg_replace("/ /", "", $temp1);
-		$temp1 = preg_replace("/-/", "_", $temp1);
-		$temp1 = preg_replace("/'/", "", $temp1);
-		$temp1 = mb_substr($temp1, 0, 19);
+		if($_prenom=='') {return FALSE;}
+		//$temp1 = $_prenom{0} . $_nom;
+		$temp1 = $_initiale_prenom . $_nom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = mb_substr($temp1,0,19);
 	} elseif ($_mode == "firstdotname") {
 		if ($_prenom == '') {
 			return FALSE;
@@ -981,13 +982,12 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse = '') {
 		$temp1 = preg_replace("/'/", "", $temp1);
 		$temp1 = mb_substr($temp1, 0, 19);
 	} elseif ($_mode == "namef8") {
-		if ($_prenom == '') {
-			return FALSE;
-		}
-		$temp1 = mb_substr($_nom, 0, 7) . $_prenom{0};
-		$temp1 = preg_replace("/ /", "", $temp1);
-		$temp1 = preg_replace("/-/", "_", $temp1);
-		$temp1 = preg_replace("/'/", "", $temp1);
+		if($_prenom=='') {return FALSE;}
+		//$temp1 =  mb_substr($_nom,0,7) . $_prenom{0};
+		$temp1 =  mb_substr($_nom,0,7) . $_initiale_prenom;
+		$temp1 = preg_replace("/ /","", $temp1);
+		$temp1 = preg_replace("/-/","_", $temp1);
+		$temp1 = preg_replace("/'/","", $temp1);
 	} elseif ($_mode == "lcs") {
 		$temp1 = my_strtolower($_nom);
 		if (preg_match("/\s/", $temp1)) {
@@ -1014,10 +1014,12 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse = '') {
 	$login_user = mb_substr($login_user, 0, 50);
 	$login_user = preg_replace("/[^A-Za-z0-9._\-]/", "", trim($login_user));
 
-	$test1 = $login_user{0};
-	while ($test1 == "_" or $test1 == "-" or $test1 == ".") {
+	//$test1 = $login_user{0};
+	$test1 = mb_substr($login_user, 0, 1);
+	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
 		$login_user = mb_substr($login_user, 1);
-		$test1 = $login_user{0};
+		//$test1 = $login_user{0};
+		$test1 = mb_substr($login_user, 0, 1);
 	}
 
 	$test1 = $login_user{mb_strlen($login_user) - 1};
