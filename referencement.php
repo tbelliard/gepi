@@ -1,8 +1,6 @@
 <?php
 /*
- * Last modification  : 08/12/2006
- *
- * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2022 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -173,7 +171,10 @@ select {
 		</select></td></tr>
 		<tr style="background-color: #EFF3FF;"><td><label for="pref21">Nom</label></td><td><input maxlength="200" size="15" name="pref21" id="pref21" class="input" onfocus="javascript:this.select()" value="<?php echo getSettingValue("gepiSchoolName"); ?>" /></td></tr>
 		<tr style="background-color: #DFE8FF;"><td><label for="pref31">Code postal</label></td><td><input maxlength="4" size="2" name="pref31" id="pref31" class="input" onfocus="javascript:this.select()" /></td></tr>
-		<tr style="background-color: #EFF3FF;"><td><label for="pref3">N&deg; du d&eacute;partement</label></td><td><input maxlength="4" size="2" name="pref3" id="pref3" class="input" onfocus="javascript:this.select()" <?php $num_dp=getSettingValue("gepiSchoolZipCode"); ?> value="<?php echo $num_dp{0}.$num_dp{1}; ?>" /></td></tr>
+		<tr style="background-color: #EFF3FF;"><td><label for="pref3">N&deg; du d&eacute;partement</label></td><td><input maxlength="4" size="2" name="pref3" id="pref3" class="input" onfocus="javascript:this.select()" <?php $num_dp=getSettingValue("gepiSchoolZipCode"); ?> value="<?php 
+		//echo $num_dp{0}.$num_dp{1}; 
+		echo substr($num_dp, 0, 2); 
+		?>" /></td></tr>
 		<tr style="background-color: #DFE8FF;"><td><label for="pref4">RNE</label></td><td><input maxlength="20" size="15" name="pref4" id="pref4" class="input" onfocus="javascript:this.select()" /></td></tr>
 
 <?php /*		<tr style="background-color: #EFF3FF;"><td><label for="pref5">Mon établissement (nom patronymique et ville seulement) peut figurer dans la liste des "établissements utilisateurs de Gepi" sur le site public de Gepi.</label></td><td style="text-align: center;"><input checked="checked" name="pref5" id="pref5" type="radio" /></td></tr>

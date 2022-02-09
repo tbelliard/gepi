@@ -274,14 +274,16 @@ if (!isset($is_posted)) {
                         $temp1 = my_ereg_replace("'","", $temp1);
                         $temp1 = mb_substr($temp1,0,8);
                     } elseif ($_POST['login_gen_type'] == "fname8") {
-                        $temp1 = $affiche[1]{0} . $affiche[0];
+                        //$temp1 = $affiche[1]{0} . $affiche[0];
+                        $temp1 = mb_substr($affiche[1], 0, 1). $affiche[0];
                         $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
                         $temp1 = mb_substr($temp1,0,8);
                     } elseif ($_POST['login_gen_type'] == "fname19") {
-                        $temp1 = $affiche[1]{0} . $affiche[0];
+                        //$temp1 = $affiche[1]{0} . $affiche[0];
+                        $temp1 = mb_substr($affiche[1], 0, 1). $affiche[0];
                         $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
@@ -315,7 +317,8 @@ if (!isset($is_posted)) {
                         $temp1 = my_ereg_replace("'","", $temp1);
                         $temp1 = mb_substr($temp1,0,19);
                     } elseif ($_POST['login_gen_type'] == "namef8") {
-                        $temp1 =  mb_substr($affiche[0],0,7) . $affiche[1]{0};
+                        //$temp1 =  mb_substr($affiche[0],0,7) . $affiche[1]{0};
+                        $temp1 =  mb_substr($affiche[0],0,7) . mb_substr($affiche[1], 0, 1);
                         $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
@@ -337,10 +340,12 @@ if (!isset($is_posted)) {
                            $nom1 = $nom;
                             $sn = ucfirst($nom);
                         }
-                        $firstletter_nom = $nom1{0};
+                        //$firstletter_nom = $nom1{0};
+                        $firstletter_nom = mb_substr($nom1, 0, 1);
                         $firstletter_nom = mb_strtoupper($firstletter_nom);
                         $prenom = $affiche[1];
-                        $prenom1 = $affiche[1]{0};
+                        //$prenom1 = $affiche[1]{0};
+                        $prenom1 = mb_substr($affiche[1], 0, 1);
                         $temp1 = $prenom1 . $nom1;
                     }
                         $login_prof = $temp1;
