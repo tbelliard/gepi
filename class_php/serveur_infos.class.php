@@ -52,7 +52,11 @@ class infos{
 		$test = phpversion();
 		// on teste le premier chiffre
 		$version = mb_substr($test, 0, 1);
-		if ($version == 7) {
+		if ($version == 8) {
+			// A ce jour, il reste des fonctions DEPRECATED dans GEPI pour php8
+			// Il faut donc exclure de error_reporting E_DEPRECATED 
+			$retour = '<span style="color: green;">'.phpversion().' (Gepi nécessite php 5.2.x minimum)</span>';
+		} elseif ($version == 7) {
 			$retour = '<span style="color: green;">'.phpversion().' (Gepi nécessite php 5.2.x minimum)</span>';
 		} elseif ($version == 5) {
 			$retour = '<span style="color: green;">'.phpversion().' (Gepi nécessite php 5.2.x minimum)</span>';

@@ -531,7 +531,10 @@ var $wt_TempData; //some temporary info
         			$pStr - String to be parsed
         @return     $aStrLines - array - contains parsed text information.
 	*/
-	function StringToLines($w = 0, $pStr){
+	//function StringToLines($w = 0, $pStr){
+	// 20220219
+	// <b>Deprecated</b>:  Required parameter $pStr follows optional parameter $w in <b>.../fpdf/class.multicelltag.php</b> on line <b>534</b><br />
+	function StringToLines($pStr, $w = 0){
 
 		//save the current style settings, this will be the default in case of no style is specified
 		$this->SaveCurrentStyle();
