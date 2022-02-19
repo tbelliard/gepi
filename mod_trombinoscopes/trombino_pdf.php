@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2019 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Stephane Boireau
+* Copyright 2001, 2022 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -34,11 +34,17 @@ if ($resultat_session == 'c') {
 	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
 } else if ($resultat_session == '0') {
+	//20220219
+	//echo "resultat_session=0<br />";
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+//20220219
+//echo "resultat_session='$resultat_session'<br />";
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_trombinoscopes/trombino_pdf.php';";
+//20220219
+//echo "$sql<br />";
 $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/mod_trombinoscopes/trombino_pdf.php',
@@ -56,9 +62,18 @@ if(mysqli_num_rows($test)==0) {
 }
 
 if (!checkAccess()) {
+	//20220219
+	//echo "!checkAccess<br />";
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+//20220219
+//echo "<pre>";
+//print_r($_SESSION);
+//echo "</pre>";
+//die();
+
 
 if (empty($_GET['page']) and empty($_POST['page'])) { $page = ''; }
 	else { if (isset($_GET['page'])) {$page=$_GET['page'];} if (isset($_POST['page'])) {$page=$_POST['page'];} }
@@ -277,7 +292,8 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		}
 		return ($prof_de);
 	}
-
+	// 20220219
+	//echo "$requete_trombi<br />";
 	$execution_trombi = mysqli_query($GLOBALS["mysqli"], $requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	//$cpt_photo = 1;
 	$tab_classes=array();
@@ -323,7 +339,8 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	// Paramètres de dimensions
 	include('trombino.inc.php');
-	
+	// 20220219
+	//echo "Après trombino.inc.php<br />";
 	$gepiYear=getSettingValue('gepiYear');
 
 	//======================================
@@ -595,7 +612,9 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	$date=date("Ymd_Hi");
 	$nom_fich='Trombino_';
-	if((isset($groupe))&&($groupe!=0)) {
+	// 20220219
+	//echo "groupe=$groupe<br />";
+	if((isset($groupe))&&($groupe!=0)&&($groupe!='')) {
 		$tab_champs=array('matieres', 'classes');
 		$tmp_group=get_group($groupe, $tab_champs);
 		$nom_fich.=$tmp_group['name']."_-_";
@@ -613,6 +632,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	die();
 }
 else {
-echo "Choix invalide.";
+	echo "Choix invalide.";
 }
 ?>
