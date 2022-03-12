@@ -6913,7 +6913,10 @@ function get_img_formules_math($texte, $id_groupe, $type_notice = "c") {
 	$contenu_cor = $texte;
 
 	if ((preg_match('|src="http://latex.codecogs.com/|', $contenu_cor)) ||
-		(preg_match('|src="https://latex.codecogs.com/|', $contenu_cor))) {
+		(preg_match('|src="https://latex.codecogs.com/|', $contenu_cor))||
+		(preg_match('|src="https://latex2image-output.s3.amazonaws.com/|', $contenu_cor))) {
+
+		//https://latex2image-output.s3.amazonaws.com/img-VEPJ9xcGhepQ.png
 
 		$niv_arbo_tmp = 2;
 		$dest_documents = '../documents/';
@@ -6946,7 +6949,8 @@ function get_img_formules_math($texte, $id_groupe, $type_notice = "c") {
 		$tab_tmp = preg_split('/"/', $contenu_cor);
 		for ($loop = 0; $loop < count($tab_tmp); $loop++) {
 			if ((preg_match("|^http://latex.codecogs.com/|", $tab_tmp[$loop])) ||
-				(preg_match("|^https://latex.codecogs.com/|", $tab_tmp[$loop]))) {
+				(preg_match("|^https://latex.codecogs.com/|", $tab_tmp[$loop]))||
+				(preg_match("|^https://latex2image-output.s3.amazonaws.com/|", $tab_tmp[$loop]))) {
 				$erreur = "n";
 				$extension_fichier_formule = "gif";
 				if ((preg_match("|^http://latex.codecogs.com/gif.latex|", $tab_tmp[$loop])) ||
@@ -6967,6 +6971,9 @@ function get_img_formules_math($texte, $id_groupe, $type_notice = "c") {
 				} elseif ((preg_match("|^http://latex.codecogs.com/svg.latex|", $tab_tmp[$loop])) ||
 					(preg_match("|^https://latex.codecogs.com/svg.latex|", $tab_tmp[$loop]))) {
 					$extension_fichier_formule = "svg";
+				}
+				elseif (preg_match("|^https://latex2image-output.s3.amazonaws.com/|", $tab_tmp[$loop])) {
+					$extension_fichier_formule = "png";
 				}
 
 				// Eviter les doublons:

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2020 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2022 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -198,6 +198,12 @@ if(file_exists("./archives.php")) {
 echo "<button style='background-color:azure' onclick=\"javascript:
 						getWinDocsJoints().setAjaxContent('./documents_cdt.php?id_groupe=".$groupe->getId()."&entete=n',{});
 					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_PJ']."\">PJ</button>\n";
+
+// 20220312
+if(getSettingValue('url_latex2image')!='') {
+	// insert into setting set name='url_latex2image', value='https://latex2image.joeraut.com/';
+	echo "<a href='".getSettingValue('url_latex2image')."' target='_blank'><img src='../images/equation.png' class='icone16' /></a> ";
+}
 
 echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/tableau.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";
 
