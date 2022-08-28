@@ -66,6 +66,19 @@ if(($active_carnets_notes!='y')&&($active_cahiers_texte!='y')&&($active_module_t
 }
 
 
+if(isset($_GET['del_id_info'])) {
+	check_token();
+
+	if(!isset($msg)) {$msg="";}
+
+	if(del_info_action($_GET['del_id_info'])) {
+		$msg.="Action n° ".$_GET['del_id_info']." supprimée.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de l'action n° ".$_GET['del_id_info'].".<br />";
+	}
+}
+
 // Préférences des profs à récupérer dans la table 'preferences':
 
 $pref_accueil_ct=getPref($_SESSION['login'],'accueil_ct',"y");
