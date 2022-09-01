@@ -350,18 +350,21 @@
 						//echo "<p>Veuillez maintenant compléter les correspondances utiles entre EDT et GEPI&nbsp;:</p>\n";
 
 						$sql="TRUNCATE TABLE edt_lignes;";
+						//echo "$sql<br />";
 						$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$cpt=0;
 						$tab_cours=array();
 						foreach ($cours_xml->children() as $key => $cur_cours) {
-							if($key=='Cours') {
+							//if($key=='Cours') {
+							if(($key=='Cours')||($key=='Cours_annuels')) {
 								/*
 								echo "<p>$key</p>";
 								echo "<pre>";
 								print_r($cur_cours);
 								echo "</pre>";
 								*/
+
 								foreach ($cur_cours->children() as $key2 => $value2) {
 									if(in_array($key2, $tab_champs)) {
 										//$tab_cours[$cpt][$key2]=(string)$value2;
@@ -371,6 +374,7 @@
 										//echo "$key2:$value2<br />";
 									}
 								}
+
 								/*
 								echo "<p>\$tab_cours[$cpt]</p>";
 								echo "<pre>";
@@ -378,8 +382,10 @@
 								echo "</pre>";
 								*/
 
+
 								// Enregistrer la ligne dans edt_lignes
 								$sql="INSERT INTO edt_lignes SET ";
+								//echo "$sql<br />";
 								$sql_ajout="";
 								for($loop=0;$loop<count($tab_champs);$loop++) {
 									$champ_courant=$tab_champs2[$tab_champs[$loop]];
@@ -411,6 +417,7 @@
 
 
 				$sql="SELECT * FROM edt_lignes ORDER BY numero;";
+				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)==0) {
 					echo "<p>Aucun enregistrement n'a été trouvé.</p>";
@@ -448,7 +455,14 @@
 				$tab_corresp_a_faire['frequence']=array();
 
 				for($loop=0;$loop<count($ligne);$loop++) {
-					$current_mat_code_edt=$ligne[$loop]['mat_code'];
+					//echo "\$ligne[$loop]['mat_code']=";
+					if(isset($ligne[$loop]['mat_code'])) {
+						$current_mat_code_edt=$ligne[$loop]['mat_code'];
+					}
+					else {
+						$current_mat_code_edt='';
+					}
+					//echo $current_mat_code_edt."<br />";
 					if($current_mat_code_edt!="") {
 						$matiere=get_corresp_edt("matiere", $current_mat_code_edt);
 						if(($matiere=="")&&(!in_array($current_mat_code_edt, $tab_corresp_a_faire['matiere']))) {
@@ -522,7 +536,8 @@ Heure début : ".$ligne[$loop]['h_debut']."\">".$current_mat_code_edt."&nbsp;: <
 		<table class='boireaus boireaus_alt'>";
 
 				for($loop=0;$loop<count($ligne);$loop++) {
-					if(($ligne[$loop]['prof_nom']!="")||($ligne[$loop]['prof_prenom']!="")) {
+					if(((isset($ligne[$loop]['prof_nom']))&&($ligne[$loop]['prof_nom']!=""))||
+					((isset($ligne[$loop]['prof_prenom']))&&($ligne[$loop]['prof_prenom']!=""))) {
 						$prof=get_corresp_edt("prof", $ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom']);
 						if($prof=="") {
 							if(!in_array($ligne[$loop]['prof_nom']." ".$ligne[$loop]['prof_prenom'], $tab_corresp_a_faire['prof'])) {
@@ -611,7 +626,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">".$current_mat_code_edt."&nbsp;: <
 		<table class='boireaus boireaus_alt'>";
 
 				for($loop=0;$loop<count($ligne);$loop++) {
-					if($ligne[$loop]['classe']!="") {
+					if((isset($ligne[$loop]['classe']))&&($ligne[$loop]['classe']!="")) {
 						$classe=get_corresp_edt("classe", $ligne[$loop]['classe']);
 						if($classe=="") {
 							if(!in_array($ligne[$loop]['classe'], $tab_corresp_a_faire['classe'])) {
@@ -663,7 +678,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">".$current_mat_code_edt."&nbsp;: <
 
 	$cpt=0;
 	for($loop=0;$loop<count($ligne);$loop++) {
-		if($ligne[$loop]['classe']!="") {
+		if((isset($ligne[$loop]['classe']))&&($ligne[$loop]['classe']!="")) {
 			$classe=get_corresp_edt("groupe", $ligne[$loop]['classe']);
 			if($classe=="") {
 				if(!in_array($ligne[$loop]['classe'], $tab_corresp_a_faire['groupe'])) {
@@ -749,7 +764,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 		<table class='boireaus boireaus_alt'>";
 
 				for($loop=0;$loop<count($ligne);$loop++) {
-					if($ligne[$loop]['salle']!="") {
+					if((isset($ligne[$loop]['salle']))&&($ligne[$loop]['salle']!="")) {
 						$salle=get_corresp_edt("salle", $ligne[$loop]['salle']);
 						if($salle=="") {
 							if(!in_array($ligne[$loop]['salle'], $tab_corresp_a_faire['salle'])) {
@@ -809,7 +824,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 		<table class='boireaus boireaus_alt'>";
 
 				for($loop=0;$loop<count($ligne);$loop++) {
-					if($ligne[$loop]['jour']!="") {
+					if((isset($ligne[$loop]['jour']))&&($ligne[$loop]['jour']!="")) {
 						$jour=get_corresp_edt("jour", $ligne[$loop]['jour']);
 						if($jour=="") {
 							if(!in_array($ligne[$loop]['jour'], $tab_corresp_a_faire['jour'])) {
@@ -850,7 +865,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 		<table class='boireaus boireaus_alt'>";
 
 				for($loop=0;$loop<count($ligne);$loop++) {
-					if($ligne[$loop]['h_debut']!="") {
+					if((isset($ligne[$loop]['h_debut']))&&($ligne[$loop]['h_debut']!="")) {
 						$h_debut=get_corresp_edt("h_debut", $ligne[$loop]['h_debut']);
 						if($h_debut=="") {
 							if(!in_array($ligne[$loop]['h_debut'], $tab_corresp_a_faire['h_debut'])) {
