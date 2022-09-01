@@ -534,7 +534,7 @@ elseif($action=="upload") {
 	$cpt=0;
 	$tab_cours=array();
 	foreach ($cours_xml->children() as $key => $cur_cours) {
-		if($key=='Cours') {
+		if(($key=='Cours')||($key=='Cours_annuels')) {
 			/*
 			echo "<p>$key</p>";
 			echo "<pre>";
