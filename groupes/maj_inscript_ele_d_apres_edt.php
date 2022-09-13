@@ -1356,8 +1356,9 @@ elseif($action=="upload") {
 		//echo "$cpt : ".htmlentities($ligne)."<br />";
 
 		if(trim($ligne)!="") {
-
+//Eleves_et_leurs_responsables
 			if((preg_match("/^<Eleves /i", $ligne))||
+				(preg_match("/^<Eleves_et_leurs_responsables /i", $ligne))||
 				(preg_match("/^<NOM>/i", $ligne))||
 				(preg_match("/^<PRENOM>/i", $ligne))||
 				(preg_match("/^<DATE_NAISS>/i", $ligne))||
@@ -1365,6 +1366,7 @@ elseif($action=="upload") {
 				(preg_match("/^<CLASSE>/i", $ligne))||
 				(preg_match("/^<GROUPES>/i", $ligne))||
 				(preg_match("|^</Eleves>|i", $ligne))||
+				(preg_match("|^</Eleves_et_leurs_responsables>|i", $ligne))||
 				(preg_match("|^</TABLE>|i", $ligne))) {
 				fwrite($f2, $ligne);
 				echo ". ";
@@ -1388,6 +1390,7 @@ elseif($action=="upload") {
 	<em>Exemple&nbsp;:</em> Si vous avez un groupe AGL1_4B_4C faisant intervenir des élèves de 4B et 4C, mais que seule la 4B a été sélectionnée, il vous sera proposé par la suite de désincrire du groupe les élèves de 4C puisque non trouvés dans le fichier XML parmi les membres du regroupement EDT associé à AGL1_4B_4C.</p>";
 
 	libxml_use_internal_errors(true);
+	//echo "$dest_file";
 	$eleves_xml=simplexml_load_file($dest_file);
 	if(!$eleves_xml) {
 		echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
@@ -1464,7 +1467,8 @@ elseif($action=="upload") {
 	$tab_ele=array();
 	//$tab_classes_trouvees=array();
 	foreach ($eleves_xml->children() as $key => $cur_eleve) {
-		if($key=='Eleves') {
+		//if($key=='Eleves') {
+		if(($key=='Eleves')||($key=='Eleves_et_leurs_responsables')) {
 			/*
 			echo "<p>$key</p>";
 			echo "<pre>";
