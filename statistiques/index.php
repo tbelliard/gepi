@@ -60,6 +60,70 @@ if (!checkAccess()) {
     die();
 }
 
+$acces_stat_discipline="n";
+if(getSettingAOui('active_mod_discipline')) {
+	if(acces("/mod_discipline/stats2/index.php", $_SESSION['statut'])) {
+		$acces_stat_discipline="y";
+	}
+}
+
+$acces_export_bulletins="n";
+if($_SESSION['statut']=='professeur') {
+	$acces_stat_connexion="n";
+
+	if((getSettingAOui('AccesStatConnexionEleProfesseur'))||
+	(getSettingAOui('AccesDetailConnexionEleProfesseur'))||
+	(getSettingAOui('AccesStatConnexionRespProfesseur'))||
+	(getSettingAOui('AccesDetailConnexionRespProfesseur'))) {
+		$acces_stat_connexion="y";
+	}
+
+	if($acces_stat_connexion=="n") {
+		if(is_pp($_SESSION['login'])) {
+			if((getSettingAOui('AccesStatConnexionEleProfP'))||
+			(getSettingAOui('AccesDetailConnexionEleProfP'))||
+			(getSettingAOui('AccesStatConnexionRespProfP'))||
+			(getSettingAOui('AccesDetailConnexionRespProfP'))) {
+				$acces_stat_connexion="y";
+			}
+		}
+	}
+
+	if(($acces_stat_connexion=="n")&&($acces_stat_discipline=="n")) {
+	    header("Location: ./classes_effectifs.php");
+	    die();
+	}
+}
+elseif($_SESSION['statut']=='scolarite') {
+	if(getSettingAOui('active_bulletins')) {
+		$acces_export_bulletins="y";
+	}
+	if((getSettingAOui('AccesStatConnexionEleScolarite'))||
+	(getSettingAOui('AccesDetailConnexionEleScolarite'))||
+	(getSettingAOui('AccesStatConnexionRespScolarite'))||
+	(getSettingAOui('AccesDetailConnexionRespScolarite'))) {
+		$acces_stat_connexion="y";
+	}
+
+	if(($acces_stat_connexion=="n")&&($acces_stat_discipline=="n")&&($acces_export_bulletins=="n")) {
+	    header("Location: ./classes_effectifs.php");
+	    die();
+	}
+}
+elseif($_SESSION['statut']=='cpe') {
+	if((getSettingAOui('AccesStatConnexionEleCpe'))||
+	(getSettingAOui('AccesDetailConnexionEleCpe'))||
+	(getSettingAOui('AccesStatConnexionRespCpe'))||
+	(getSettingAOui('AccesDetailConnexionRespCpe'))) {
+		$acces_stat_connexion="y";
+	}
+
+	if(($acces_stat_connexion=="n")&&($acces_stat_discipline=="n")&&($acces_export_bulletins=="n")) {
+	    header("Location: ./classes_effectifs.php");
+	    die();
+	}
+}
+
 // ===================== entete Gepi ======================================//
 $titre_page = "Statistiques: Index";
 require_once("../lib/header.inc.php");
@@ -79,64 +143,31 @@ if($_SESSION['statut']=='administrateur') {
 	echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
 }
 elseif($_SESSION['statut']=='scolarite') {
-	if(getSettingAOui('active_bulletins')) {
+	if($acces_export_bulletins=="y") {
 		echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
 	}
-	if((getSettingAOui('AccesStatConnexionEleScolarite'))||
-	(getSettingAOui('AccesDetailConnexionEleScolarite'))||
-	(getSettingAOui('AccesStatConnexionRespScolarite'))||
-	(getSettingAOui('AccesDetailConnexionRespScolarite'))) {
+	if($acces_stat_connexion=="y") {
 		echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
 	}
 }
 elseif($_SESSION['statut']=='cpe') {
-	/*
-	if(getSettingAOui('active_bulletins')) {
-		echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
-	}
-	*/
-	if((getSettingAOui('AccesStatConnexionEleCpe'))||
-	(getSettingAOui('AccesDetailConnexionEleCpe'))||
-	(getSettingAOui('AccesStatConnexionRespCpe'))||
-	(getSettingAOui('AccesDetailConnexionRespCpe'))) {
+	if($acces_stat_connexion=="y") {
 		echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
 	}
 }
 elseif($_SESSION['statut']=='professeur') {
-	$acces="n";
-
-	if((getSettingAOui('AccesStatConnexionEleProfesseur'))||
-	(getSettingAOui('AccesDetailConnexionEleProfesseur'))||
-	(getSettingAOui('AccesStatConnexionRespProfesseur'))||
-	(getSettingAOui('AccesDetailConnexionRespProfesseur'))) {
-		$acces="y";
-	}
-
-	if($acces=="n") {
-		if(is_pp($_SESSION['login'])) {
-			if((getSettingAOui('AccesStatConnexionEleProfP'))||
-			(getSettingAOui('AccesDetailConnexionEleProfP'))||
-			(getSettingAOui('AccesStatConnexionRespProfP'))||
-			(getSettingAOui('AccesDetailConnexionRespProfP'))) {
-				$acces="y";
-			}
-		}
-	}
-
-	if($acces=="y") {
+	if($acces_stat_connexion=="y") {
 		echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
 	}
 }
 
-if(getSettingAOui('active_mod_discipline')) {
-	if(acces("/mod_discipline/stats2/index.php", $_SESSION['statut'])) {
-		echo "<li>Discipline&nbsp;:<br />
+if($acces_stat_discipline=="y") {
+	echo "<li>Discipline&nbsp;:<br />
 	<ul>
 		<li><a href='../mod_discipline/stats2/index.php'>Statistiques</a></li>
 		<li><a href='../mod_discipline/disc_stat.php'>Statistiques (<em>plus rudimentaires</em>)</a></li>
 	</ul>
 </li>\n";
-	}
 }
 echo "</ul>\n";
 
