@@ -352,7 +352,10 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 <table border="0" width="100%" summary="Tableau de saisie de notice">
 	<tr>
 	<td style="width: 80%"><b><?php echo $titre; ?></b>&nbsp;
-		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer" style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer" 
+			onclick="document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';"
+			style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+		<img src='../images/spinner.gif' id='spinner_gif' class='icone16' style='display:none' />
 		Ces notices ne sont visibles que de leur auteur.
 
 		<?php
@@ -604,7 +607,9 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 	<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice;?>; background-color: <?php echo $couleur_cellule['p']; ?>;">
 		<td colspan="2" style="text-align: center;">
 			<button type="submit" id="bouton_enregistrer_2" name="Enregistrer"
-					style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+				onclick="document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';"
+				style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
+				<img src='../images/spinner.gif' id='spinner_gif2' class='icone16' style='display:none' />
 		</td>
 	</tr>
 </table>

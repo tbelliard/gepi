@@ -471,10 +471,12 @@ else {
 	<tr>
 		<td style="width: 80%"><b>Pour le <?php echo french_strftime("%A %d %B %Y", $ctTravailAFaire->getDateCt()); ?></b>&nbsp;
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer"
+			onclick="document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';"
 			style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 		<button type="submit" style='font-variant: small-caps;'
-			onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et
+			onClick="javascript:$('passer_a').value = 'passer_compte_rendu';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';">Enr. et
 		passer aux comptes rendus</button>
+		<img src='../images/spinner.gif' id='spinner_gif' class='icone16' style='display:none' />
 
 		<?php
 /*
@@ -933,9 +935,11 @@ echo "<script type='text/javascript'>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice;?>; background-color: <?php echo $couleur_cellule[$type_couleur]; ?>;">
 				<td colspan="<?php echo $nb_col_tableau_pj;?>" style="text-align: center;">
 				<button type="submit" id="bouton_enregistrer_2" name="Enregistrer"
+					onclick="document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';"
 					style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 				<button type="submit" style='font-variant: small-caps;'
-					onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et passer aux comptes rendus</button>
+					onClick="javascript:$('passer_a').value = 'passer_compte_rendu';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';">Enr. et passer aux comptes rendus</button>
+				<img src='../images/spinner.gif' id='spinner_gif2' class='icone16' style='display:none' />
 				</td>
 			</tr>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">

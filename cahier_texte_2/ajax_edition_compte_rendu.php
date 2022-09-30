@@ -576,6 +576,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 	<tr>
 		<td style="width: 80%"><b><?php echo $titre; ?></b>&nbsp;
 		<button type="submit" id="bouton_enregistrer_1" name="Enregistrer"
+			onclick="document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';"
 			style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 			
 		<?php if (!isset($info)) { ?>
@@ -586,7 +587,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			if($date_ct_cours_suivant=="") {
 				echo "
 		<input type=\"submit\" style='font-variant: small-caps;'
-			onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
 			}
 			else {
 				$cdt2_afficher_passer_au_cours_suivant=getPref($_SESSION['login'], 'cdt2_afficher_passer_au_cours_suivant', "");
@@ -594,27 +595,29 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 				if(($cdt2_afficher_passer_au_cours_suivant=="")||($cdt2_afficher_passer_au_cours_suivant=="les_2")) {
 					echo "
 		<input type=\"submit\" style='font-variant: small-caps;'
-			onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux&#13;&#10;devoirs du lendemain\" />";
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux&#13;&#10;devoirs du lendemain\" />";
 
 					echo "
 		<input type='submit' style='font-variant: small-caps;'
-			onClick=\"javascript:$('passer_a').value = 'passer_devoir2';\" value=\"Enr. et passer aux&#13;&#10;devoirs du cours suivant\" title=\"$date_ct_cours_suivant
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir2';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux&#13;&#10;devoirs du cours suivant\" title=\"$date_ct_cours_suivant
 
 Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez faire apparaitre ici.\" />";
 				}
 				elseif($cdt2_afficher_passer_au_cours_suivant=="cours_suivant") {
 					echo "
 		<input type='submit' style='font-variant: small-caps;'
-			onClick=\"javascript:$('passer_a').value = 'passer_devoir2';\" value=\"Enr. et passer aux&#13;&#10;devoirs du cours suivant\" title=\"$date_ct_cours_suivant\" />";
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir2';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux&#13;&#10;devoirs du cours suivant\" title=\"$date_ct_cours_suivant\" />";
 				}
 				else {
 					echo "
 		<input type=\"submit\" style='font-variant: small-caps;'
-			onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
 				}
 			}
 		}
 		?>
+
+		<img src='../images/spinner.gif' id='spinner_gif' class='icone16' style='display:none' />
 
 		<?php
 			$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='$id_groupe' AND date_ct='".$ctCompteRendu->getDateCt()."';";
@@ -1016,6 +1019,7 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice;?>; background-color: <?php echo $couleur_cellule[$type_couleur]; ?>;">
 				<td colspan="<?php echo $nb_col_tableau_pj;?>" style="text-align: center;">
 				<button type="submit" id="bouton_enregistrer_2" name="Enregistrer"
+					onclick="document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';"
 					style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 				<?php if (!isset($info)) { ?>
 				<!--button type="submit" style='font-variant: small-caps;'
@@ -1025,7 +1029,7 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 					if($date_ct_cours_suivant=="") {
 						echo "
 				<input type=\"submit\" style='font-variant: small-caps;'
-					onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
 					}
 					else {
 						$cdt2_afficher_passer_au_cours_suivant=getPref($_SESSION['login'], 'cdt2_afficher_passer_au_cours_suivant', "");
@@ -1033,27 +1037,28 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 						if(($cdt2_afficher_passer_au_cours_suivant=="")||($cdt2_afficher_passer_au_cours_suivant=="les_2")) {
 							echo "
 				<input type=\"submit\" style='font-variant: small-caps;'
-					onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
 
 							echo "
 				<input type='submit' style='font-variant: small-caps;'
-					onClick=\"javascript:$('passer_a').value = 'passer_devoir2';\" value=\"Enr. et passer aux devoirs du cours suivant\" title=\"$date_ct_cours_suivant
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir2';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux devoirs du cours suivant\" title=\"$date_ct_cours_suivant
 
 Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez faire apparaitre ici.\" />";
 						}
 						elseif($cdt2_afficher_passer_au_cours_suivant=="cours_suivant") {
 							echo "
 				<input type='submit' style='font-variant: small-caps;'
-					onClick=\"javascript:$('passer_a').value = 'passer_devoir2';\" value=\"Enr. et passer aux devoirs du cours suivant\" title=\"$date_ct_cours_suivant\" />";
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir2';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux devoirs du cours suivant\" title=\"$date_ct_cours_suivant\" />";
 						}
 						else {
 							echo "
 				<input type=\"submit\" style='font-variant: small-caps;'
-					onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir';document.getElementById('spinner_gif').style.display='';document.getElementById('spinner_gif2').style.display='';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
 						}
 					}
 				}
 				?>
+				<img src='../images/spinner.gif' id='spinner_gif2' class='icone16' style='display:none' />
 				</td>
 			</tr>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
