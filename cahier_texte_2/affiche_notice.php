@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+*  Copyright 2001, 2022 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -329,6 +329,7 @@ if($type_notice!='p') {
 $lien_retour_notice_precedente='';
 
 // Rechercher la notice de travail à faire suivante
+$url_travail_suivant='';
 if($type_notice=='c') {
 	$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct>'".$lig_ct->date_ct."' ORDER BY date_ct LIMIT 1;";
 	$test_autre_notice=mysqli_query($mysqli, $sql);
@@ -339,9 +340,11 @@ if($type_notice=='c') {
 		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=t' title=\"Consulter la notice de travail à faire à la maison n°".$lig_autre_notice->id_ct." pour le ".strftime("%a %d/%m/%Y", $lig_autre_notice->date_ct).".\"><img src='../images/icons/notices_CDT_travail_suivant.png' class='icone16' alt='CDT' /></a>
 	</div>";
 		echo $lien_retour_notice_precedente;
+		$url_travail_suivant=$_SERVER['PHP_SELF']."?id_ct=".$lig_autre_notice->id_ct."&type_notice=t";
 	}
 }
 // Retour à la notice de compte-rendu précédente
+$url_ct_precedent='';
 if($type_notice=='t') {
 	$sql="SELECT * FROM ct_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct<'".$lig_ct->date_ct."' ORDER BY date_ct DESC LIMIT 1;";
 	$test_autre_notice=mysqli_query($mysqli, $sql);
@@ -352,6 +355,7 @@ if($type_notice=='t') {
 		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=c' title=\"Consulter la notice de compte-rendu précédente du ".strftime("%a %d/%m/%Y", $lig_autre_notice->date_ct)." (n°".$lig_autre_notice->id_ct.").\"><img src='../images/icons/notices_CDT_compte_rendu_retour.png' class='icone16' alt='CDT' /></a>
 	</div>";
 		echo $lien_retour_notice_precedente;
+		$url_ct_precedent=$_SERVER['PHP_SELF']."?id_ct=".$lig_autre_notice->id_ct."&type_notice=c";
 	}
 }
 //===================================================================
@@ -363,6 +367,9 @@ echo "
 
 
 // Lien séance précédente/suivante
+// 20221011
+$url_seance_precedente='';
+$url_seance_suivante='';
 $liens_precedent_suivant="
 	<div style='float:left; width:20px; text-align:center; '>";
 
@@ -373,6 +380,7 @@ if(mysqli_num_rows($res_mult)>0) {
 	$lig_prec=mysqli_fetch_object($res_mult);
 	$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\"><img src='../images/icons/back.png' class='icone16' alt='Séance précédente' /></a>";
+	$url_seance_precedente=$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice;
 }
 else {
 	$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct<'".$lig_ct->date_ct."' ORDER BY date_ct DESC limit 1;";
@@ -381,6 +389,7 @@ else {
 		$lig_prec=mysqli_fetch_object($res_prec);
 		$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\"><img src='../images/icons/back.png' class='icone16' alt='Séance précédente' /></a>";
+		$url_seance_precedente=$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice;
 	}
 }
 $liens_precedent_suivant.="
@@ -412,6 +421,7 @@ if(mysqli_num_rows($res_mult)>0) {
 	$lig_suiv=mysqli_fetch_object($res_mult);
 	$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\"><img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' /></a>";
+	$url_seance_suivante=$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice;
 }
 else {
 	$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct>'".$lig_ct->date_ct."' ORDER BY date_ct ASC limit 1;";
@@ -420,12 +430,54 @@ else {
 		$lig_suiv=mysqli_fetch_object($res_suiv);
 		$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\"><img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' /></a>";
+		$url_seance_suivante=$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice;
 	}
 }
 	$liens_precedent_suivant.="
 	</div>";
 
 	echo $liens_precedent_suivant;
+
+	// 20221011
+	if(($url_seance_precedente!='')||($url_seance_suivante!='')||($url_travail_suivant!='')||($url_ct_precedent!='')) {
+		echo "
+	<script>
+		function onKeyUp(event) {";
+		if($url_seance_precedente!='') {
+			echo "
+			if(event.key=='ArrowLeft') {
+				window.location='".$url_seance_precedente."';
+			}";
+		}
+		if($url_seance_suivante!='') {
+			echo "
+			if(event.key=='ArrowRight') {
+				window.location='".$url_seance_suivante."';
+			}";
+		}
+		if($url_ct_precedent!='') {
+			echo "
+			if((event.key=='b')||(event.key=='r')) {
+				window.location='".$url_ct_precedent."';
+			}";
+		}
+		if($url_travail_suivant!='') {
+			echo "
+			if(event.key=='t') {
+				window.location='".$url_travail_suivant."';
+			}";
+		}
+		echo "
+		}
+
+		elements=document.getElementsByTagName('body');
+
+		elements[0].onload = function(){
+			elements[0].addEventListener(\"keyup\", onKeyUp);
+			};
+	</script>";
+	}
+
 
 	// 20220126
 	// LIEN DE RETOUR A LA SEANCE DU JOUR COURANT OU A LA DERNIERE SEANCE AVANT AUJOURD'HUI
