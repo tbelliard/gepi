@@ -73,6 +73,10 @@ $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
 
+// 20221012
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "cahier_texte_2/init_cahier_texte_2";
 $utilisation_win = 'oui';

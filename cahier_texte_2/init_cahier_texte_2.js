@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2009-2021 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2022 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -1487,6 +1487,26 @@ function copier_code_source_vignette_vers_presse_papier(id, type_notice) {
 		document.getElementById('champ_copie_code_source').style.display='none';
 	}
 }
+
+function cocher_decocher_suppr_doc_joint() {
+	champs_input=document.getElementsByTagName('input');
+	for(i=0;i<champs_input.length;i++) {
+		type=champs_input[i].getAttribute('type');
+		if(type=='checkbox'){
+			id=champs_input[i].getAttribute('id');
+			if(id.substring(0,16)=='suppr_doc_joint_') {
+				if(champs_input[i].checked==true) {
+					champs_input[i].checked=false;
+				}
+				else {
+					champs_input[i].checked=true;
+				}
+			}
+		}
+
+	}
+}
+
 /**
 *
 *  Fin des fonctions ajax du cahier de texte

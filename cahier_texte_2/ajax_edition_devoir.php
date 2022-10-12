@@ -800,8 +800,13 @@ echo "<script type='text/javascript'>
 		// Affichage des documents joints
 		$document = new CahierTexteTravailAFaireFichierJoint(); //for ide completion
 		$documents = $ctTravailAFaire->getCahierTexteTravailAFaireFichierJoints();
-		echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: #000000; width: 100%\" cellspacing=\"1\" summary=\"Tableau des documents joints\">\n";
-		"<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_entete_fond[$type_couleur];\"><td style=\"text-align: center;\"><b>Titre</b></td><td style=\"text-align: center; width: 100px\"><b>Taille en Ko</b></td><td style=\"text-align: center; width: 100px\"></td></tr>\n";
+		echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: #000000; width: 100%\" cellspacing=\"1\" summary=\"Tableau des documents joints\" class='sortable resizable'>\n";
+		echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_entete_fond[$type_couleur];\">
+			<th class='text' style=\"text-align: center;\"><b>Titre</b></th>
+			<th class='number' style=\"text-align: center; width: 100px\"><b>Taille en Ko</b></th>
+			<th class='nosort' style=\"text-align: center; width: 100px\">Visibilité</th>
+			<th class='nosort' style=\"text-align: center; width: 100px\"><a href='javascript:cocher_decocher_suppr_doc_joint()' title='Cocher/décocher (inverser la sélection)'>Supprimer</a></th>
+		</tr>\n";
 		if (!empty($documents)) {
 			$nb_documents_joints=0;
 			foreach ($documents as $document) {
