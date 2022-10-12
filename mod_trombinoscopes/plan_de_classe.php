@@ -185,14 +185,14 @@ if((!isset($id_groupe))||($id_groupe=="")) {
 
 	echo "<table class='boireaus boireaus_alt resizable sortable'>\n";
 	echo "<tr>\n";
-	echo "<th>Choix</th>\n";
-	echo "<th>Id</th>\n";
-	echo "<th>Enseignement</th>\n";
-	echo "<th>Classes</th>\n";
-	echo "<th>Dimension<br />des photos</th>\n";
-	echo "<th>Copier</th>\n";
-	echo "<th>Coller</th>\n";
-	echo "<th>Afficher</th>\n";
+	echo "<th class='nosort'>Choix</th>\n";
+	echo "<th class='number'>Id</th>\n";
+	echo "<th class='text'>Enseignement</th>\n";
+	echo "<th class='text'>Classes</th>\n";
+	echo "<th class='nosort'>Dimension<br />des photos</th>\n";
+	echo "<th class='nosort'>Copier</th>\n";
+	echo "<th class='nosort'>Coller</th>\n";
+	echo "<th class='nosort'>Afficher</th>\n";
 	echo "</tr>\n";
 	for($loop=0;$loop<count($tab_groups);$loop++) {
 		echo "<tr class='white_hover'>\n";
