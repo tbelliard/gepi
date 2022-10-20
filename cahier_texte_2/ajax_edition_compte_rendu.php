@@ -899,19 +899,24 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 						<td>\n";
 
 				if(preg_match("/(png|gif|jpg)$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_lien_document_dans_ckeditor($document->getTitre(), $document->getEmplacement());
+					echo "";
 					echo insere_lien_insertion_image_dans_ckeditor($document->getEmplacement());
 				}
 				elseif(preg_match("/ggb$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_lien_document_dans_ckeditor($document->getTitre(), $document->getEmplacement());
+					echo "";
 					echo insere_lien_insertion_lien_geogebra_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 				}
 				elseif(preg_match("/xml$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_lien_document_dans_ckeditor($document->getTitre(), $document->getEmplacement());
+					echo "";
 					echo insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 				}
-				// 20210928
-				elseif(preg_match("/doc|docx|odt|ods|pdf$/i",$document->getEmplacement())) {
+				elseif(preg_match("/doc$|docx$|xls$|xlsx$|odt$|ods$|pdf$|txt$/i",$document->getEmplacement())) {
 					echo insere_lien_insertion_lien_document_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 				}
-
+				
 				echo "
 							<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a>
 						</td>

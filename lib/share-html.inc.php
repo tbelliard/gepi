@@ -2346,7 +2346,7 @@ function insere_lien_insertion_lien_geogebra_dans_ckeditor($titre_ggb, $url_ggb)
 
 // 20210928
 function insere_lien_insertion_lien_document_dans_ckeditor($titre_doc, $url_doc) {
-	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_document_dans_ckeditor('".preg_replace("/'/", " ", $titre_doc)."', '".$url_doc."')\" title='Insérer un lien vers le document'><img src='../images/up.png' width='18' height='18' alt='Insérer un lien vers le document' /></a></div>";
+	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_document_dans_ckeditor('".preg_replace("/'/", " ", $titre_doc)."', '".$url_doc."')\" title='Insérer un lien vers le document'><img src='../images/lien_up.png' width='18' height='18' alt='Insérer un lien vers le document' /></a></div>";
 }
 
 /** fonction alertant sur la configuration de suhosin
