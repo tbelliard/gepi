@@ -833,7 +833,8 @@ echo "<script type='text/javascript'>
 					echo "";
 					echo insere_lien_insertion_lien_instrumenpoche_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 				}
-				elseif(preg_match("/doc$|docx$|xls$|xlsx$|odt$|ods$|pdf$|txt$/i",$document->getEmplacement())) {
+				//elseif(preg_match("/doc$|docx$|xls$|xlsx$|odt$|ods$|pdf$|txt$/i",$document->getEmplacement())) {
+				else {
 					echo insere_lien_insertion_lien_document_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 				}
 
