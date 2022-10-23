@@ -173,6 +173,13 @@ if (isset($_GET['export_csv'])) {
 	$nom_fic = $current_group["name"];
 	$nom_fic .= "_" . $current_group["description"];
 	$nom_fic .= "_" . $current_group["classlist_string"];
+
+	// 20221023 : Insérer le nom du contrôle
+	if ((isset($_GET['tmp_id_devoir'])) && (preg_match('/^[0-9]{1,}$/', $_GET['tmp_id_devoir'])) && ($_GET['tmp_id_devoir'] != 0)) {
+		$nom_devoir=get_valeur_champ("cn_devoirs", "id='" . $_GET['tmp_id_devoir'] . "'", "nom_court");
+		$nom_fic .= '_'.remplace_accents($nom_devoir, 'all');
+	}
+
 	$nom_fic .= "_periode_" . $periode_num;
 	$nom_fic .= "_" . date("Ymd");
 	$nom_fic = remplace_accents($nom_fic, "all");
@@ -913,7 +920,12 @@ if ((isset($id_devoir)) && ($id_devoir != 0)) {
 }
 echo "> Imprimer au format PDF </a>|";
 
-echo "<a href=\"" . $_SERVER['PHP_SELF'] . "?export_csv=y&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num" . add_token_in_url() . "\" target=\"_blank\" onclick=\"return VerifChargement()\"> Exporter en CSV </a>| ";
+echo "<a href=\"" . $_SERVER['PHP_SELF'] . "?export_csv=y&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num";
+// 20221023
+if ((isset($id_devoir)) && ($id_devoir != 0)) {
+	echo "&amp;tmp_id_devoir=$id_devoir";
+}
+echo add_token_in_url() . "\" target=\"_blank\" onclick=\"return VerifChargement()\"> Exporter en CSV </a>| ";
 
 if (acces_modif_liste_eleves_grp_groupes($id_groupe)) {
 	echo "<a href='../groupes/grp_groupes_edit_eleves.php?id_groupe=$id_groupe' title=\"Si la liste des élèves du groupe affiché n'est pas correcte, vous êtes autorisé à modifier la liste.\">Modifier le groupe <img src='../images/icons/edit_user.png' class='icone16' title=\"Modifier.\" /></a>";
