@@ -165,16 +165,40 @@ if (!acces_cdt()) {
 }
 */
 
+// 20221101
+$tmp_id_classe=isset($_GET['tmp_id_classe']) ? $_GET['tmp_id_classe'] : NULL;
+
+
 // 20130722
 if(isset($id_groupe)) {
 	if((isset($action))&&($action=='afficher_tous_docs_joints')) {
 		echo " | <a href='".$_SERVER['PHP_SELF']."?action=export_html";
+		// 20221101
+		if(isset($tmp_id_classe)) {
+			echo "&amp;tmp_id_classe=".$tmp_id_classe;
+		}
+
 		$texte_lien="Exporter le(s) CDT choisi(s)";
 	}
 	else {
 		echo " | <a href='".$_SERVER['PHP_SELF']."?action=afficher_tous_docs_joints";
-			$texte_lien="Afficher tous les documents joints au(x) groupe(s) choisi(s)";
+
+		// 20221101
+		if(isset($tmp_id_classe)) {
+			echo "&amp;tmp_id_classe=".$tmp_id_classe;
+		}
+		elseif(isset($id_classe)) {
+			$tmp_id_classe=$id_classe[0];
+			for($i=1;$i<count($id_classe);$i++) {
+				$tmp_id_classe.=",".$id_classe[$i];
+			}
+			$chaine_tmp_id_classe="&amp;tmp_id_classe=".$tmp_id_classe;
+			echo $chaine_tmp_id_classe;
+		}
+
+		$texte_lien="Afficher tous les documents joints au(x) groupe(s) choisi(s)";
 	}
+
 	if(is_array($id_groupe)) {
 		for($loop=0;$loop<count($id_groupe);$loop++) {
 			echo "&amp;id_groupe[$loop]=".$id_groupe[$loop];
@@ -183,9 +207,25 @@ if(isset($id_groupe)) {
 	else {
 		echo "&amp;id_groupe=".$id_groupe;
 	}
-	echo "'>$texte_lien</a>";
-}
 
+	echo "'>$texte_lien</a>";
+
+	if((isset($tmp_id_classe))&&(!isset($id_classe))) {
+		$tmp_tab=explode(",", $tmp_id_classe);
+		$id_classe=array();
+		for($i=0;$i<count($tmp_tab);$i++) {
+			if(!in_array($tmp_tab[$i], $id_classe)) {
+				$id_classe[]=$tmp_tab[$i];
+			}
+		}
+	}
+}
+/*
+debug_var();
+echo "<pre>";
+print_r($id_classe);
+echo "</pre>";
+*/
 if(!isset($id_groupe)) {
 
 	if($_SESSION['statut']!='professeur') {
@@ -1099,7 +1139,7 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 }
 else {
 	// C'est une liste de classes/enseignements qui a été choisie
-
+	
 	$chaine_info_classes="";
 	$chaine_classes="";
 	$chaine_id_classe="";
