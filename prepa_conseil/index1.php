@@ -76,12 +76,14 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']==1)) {
 //=====================================================
 if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 
-	$now = gmdate('D, d M Y H:i:s') . ' GMT';
+	//$now = gmdate('D, d M Y H:i:s') . ' GMT';
+	$now=gmdate('Ymd_His');
 
 	$chaine_titre="export";
 	if(isset($current_group)) {
 		//$chaine_titre=$current_group['name']."_".$current_group['description'];
 		$chaine_titre=$current_group['name']."_".preg_replace("/,/","_",$current_group['classlist_string']);
+		$chaine_titre.="_Mes_moyennes";
 	}
 
 	//$nom_fic=$chaine_titre."_".$now.".csv";
@@ -116,12 +118,18 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 }
 if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
-	$now = gmdate('D, d M Y H:i:s') . ' GMT';
+	//$now = gmdate('D, d M Y H:i:s') . ' GMT';
+	$now=gmdate('Ymd_His');
 
+	$chaine_info_pdf='Mes moyennes';
 	$chaine_titre="export";
 	if(isset($current_group)) {
 		$chaine_titre=$current_group['name']."_".preg_replace("/,/","_",$current_group['classlist_string']);
+		$chaine_titre.="_Mes_moyennes";
+
+		$chaine_info_pdf.=' '.$current_group['name']." (".$current_group['classlist_string'].")";
 	}
+	$chaine_info_pdf.=' ('.gmdate('d/m/Y H:i').')';
 
 	//$nom_fic=$chaine_titre."_".$now.".pdf";
 	$nom_fic=$chaine_titre."_".$now;
@@ -258,8 +266,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$pdf->SetCreator($gepiSchoolName);
 	$pdf->SetAuthor($gepiSchoolName);
 	$pdf->SetKeywords('');
-	$pdf->SetSubject('Mes_moyennes');
-	$pdf->SetTitle('Mes_moyennes');
+	$pdf->SetSubject($chaine_info_pdf);
+	$pdf->SetTitle($chaine_info_pdf);
 	$pdf->SetDisplayMode('fullwidth', 'single');
 	$pdf->SetCompression(TRUE);
 	$pdf->SetAutoPageBreak(TRUE, 5);
