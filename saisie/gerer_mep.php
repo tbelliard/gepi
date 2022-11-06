@@ -285,10 +285,10 @@ if($_SESSION['statut']=="professeur") {
 		<table class='boireaus boireaus_alt sortable resizable'>
 			<thead>
 				<tr>
-					<th>Id</th>
-					<th>Libellé</th>
-					<th>Attribué</th>
-					<th>Supprimer</th>
+					<th class='number' title='Cliquer pour trier'>Id</th>
+					<th class='text' title='Cliquer pour trier'>Libellé</th>
+					<th class='nosort'>Attribué</th>
+					<th class='nosort'>Supprimer</th>
 				</tr>
 			</thead>
 			<tbody>";
@@ -322,6 +322,7 @@ if($_SESSION['statut']=="professeur") {
 						".$lig_mep->id."
 					</td>
 					<td style='text-align:left;'>
+						<span style='display:none'>".$lig_mep->libelle."</span>
 						<input type='text' name='element[".$lig_mep->id."]' value=\"".$lig_mep->libelle."\" onchange=\"changement()\" size='50' />
 					</td>
 					<td>
