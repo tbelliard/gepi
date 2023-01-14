@@ -227,7 +227,10 @@ if (isset($_REQUEST["source"])) {
  */
    require_once($chemin_relatif_gepi2."/secure/connect.inc.php");
    $GLOBALS['gepiPath']=$gepiPath;
+// 20230114
+if(isset($multisite)) {
    $GLOBALS['multisite'] = $multisite;
+}
 /**
  * Connection à la base
  */
