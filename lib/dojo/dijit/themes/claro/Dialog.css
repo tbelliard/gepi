@@ -22,6 +22,8 @@
   padding: 3px 5px 2px 7px;
   text-align: right;
   border-top: 1px solid #d3d3d3;
+}
+.claro .dijitDialogPaneContent .dijitDialogPaneActionBar {
   margin: 10px -8px -10px;
 }
 .claro .dijitTooltipDialog .dijitDialogPaneActionBar {
@@ -71,7 +73,7 @@
 .claro .dijitDialogCloseIconHover {
   background-position: -21px;
 }
-.claro .dijitDialogCloseIconActive {
+.claro .dijitDialogCloseIcon:active {
   background-position: -42px;
 }
 .claro .dijitTooltip,
