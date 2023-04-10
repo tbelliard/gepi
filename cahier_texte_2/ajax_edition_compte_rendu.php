@@ -909,7 +909,7 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\" onmouseOver=\"this.style.backgroundColor='".$couleur_cellule[$type_couleur]."';\" onmouseOut=\"this.style.backgroundColor='white';\">
 						<td>\n";
 
-				if(preg_match("/(png|gif|jpg)$/i",$document->getEmplacement())) {
+				if(preg_match("/(png|gif|jpg|jpeg|webp)$/i",$document->getEmplacement())) {
 					echo insere_lien_insertion_lien_document_dans_ckeditor($document->getTitre(), $document->getEmplacement());
 					echo "";
 					echo insere_lien_insertion_image_dans_ckeditor($document->getEmplacement());
