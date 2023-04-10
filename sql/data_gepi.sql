@@ -303,6 +303,8 @@ INSERT INTO ct_types_documents VALUES (58, 'GeoGebra', 'ggb', 'oui');
 INSERT INTO ct_types_documents VALUES (59, 'Word', 'docx', 'oui');
 INSERT INTO ct_types_documents VALUES (60, 'PowerPoint', 'pptx', 'oui');
 INSERT INTO ct_types_documents VALUES (61, 'Excel', 'xlsx', 'oui');
+INSERT INTO ct_types_documents VALUES (62, 'JPEG', 'jpeg', 'oui');
+INSERT INTO ct_types_documents VALUES (63, 'WEBP', 'webp', 'oui');
 INSERT INTO edt_creneaux VALUES (1, 'M1', '08:00:00', '08:55:00', '1', 'cours', '');
 INSERT INTO edt_creneaux VALUES (2, 'M2', '08:55:00', '09:50:00', '1', 'cours', '');
 INSERT INTO edt_creneaux VALUES (3, 'M3', '10:05:00', '11:00:00', '1', 'cours', '');
