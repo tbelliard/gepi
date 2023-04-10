@@ -1,9 +1,0 @@
-{
-    "name": "gepi/php-mailer",
-    "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-    "type": "project",
-    "require": {
-        "phpmailer/phpmailer": "^6.0"
-    },
-    "license": "GNU LESSER GENERAL PUBLIC LICENSE 2.1"
-}
