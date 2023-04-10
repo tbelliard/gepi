@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
+* Copyright 2001, 2023 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -186,6 +186,75 @@ if(!getSettingAOui("active_cahiers_texte")) {
 $content="";
 
 echo "<div class='centre_table'>\n";
+
+
+// 20230410
+if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe") {
+	//echo "<div id='tableau_des_tags' style='float:right; width: 20em; border: 1px solid black; background-color: white;'></div>";
+	echo "<div id='tableau_des_tags' style='float:right; width: 20em; '>";
+
+	if((isset($id_groupe))&&(is_numeric($id_groupe))) {
+		$tab_tag_type=get_tab_tag_cdt();
+
+		echo "<table class='boireaus boireaus_alt'>
+		<thead>
+			<tr>
+				<th></th>
+				<th title='Compte-rendu'>CR</th>
+				<th title='Travail à faire'>DEV</th>
+			</tr>
+		</thead>
+		<tbody>";
+		foreach($tab_tag_type['indice'] as $key => $value) {
+			$afficher_ligne=false;
+			$ligne="
+			<tr>
+				<th>".ucfirst($value['nom_tag'])."</th><td>";
+			$sql="SELECT DISTINCT cte.id_ct FROM ct_entry cte, 
+							ct_tag ctt 
+						WHERE cte.id_groupe='".$id_groupe."' AND 
+							cte.id_ct=ctt.id_ct AND 
+							ctt.id_tag='".$value['id']."'";
+			$res_cpt_tag=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_cpt_tag)>0) {
+				$afficher_ligne=true;
+				//$ligne.="<a href=\"javascript:affichage_notices_tag(".$value['id'].", 'c')\">".mysqli_num_rows($res_cpt_tag)."</a>";
+				//$chaine_id_ct='';
+				$lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag);
+				$chaine_id_ct=$lig_id_ct_tag->id_ct;
+				while($lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag)) {
+					$chaine_id_ct.=', '.$lig_id_ct_tag->id_ct;
+				}
+				$ligne.="<a href=\"javascript:affichage_notices_tag(new Array(".$chaine_id_ct."), 'c')\" title=\"N'afficher que ces notices.\">".mysqli_num_rows($res_cpt_tag)."</a>";
+			}
+			$ligne.="</td><td>";
+			$sql="SELECT DISTINCT cte.id_ct FROM ct_devoirs_entry cte, 
+							ct_tag ctt 
+						WHERE cte.id_groupe='".$id_groupe."' AND 
+							cte.id_ct=ctt.id_ct AND 
+							ctt.id_tag='".$value['id']."'";
+			$res_cpt_tag=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_cpt_tag)>0) {
+				$afficher_ligne=true;
+				//$ligne.="<a href=\"javascript:affichage_notices_tag(".$value['id'].", 't')\">".mysqli_num_rows($res_cpt_tag)."</a>";
+				$lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag);
+				$chaine_id_ct=$lig_id_ct_tag->id_ct;
+				while($lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag)) {
+					$chaine_id_ct.=', '.$lig_id_ct_tag->id_ct;
+				}
+				$ligne.="<a href=\"javascript:affichage_notices_tag(new Array(".$chaine_id_ct."), 't')\" title=\"N'afficher que ces notices.\">".mysqli_num_rows($res_cpt_tag)."</a>";
+			}
+			$ligne.="</td></tr>";
+			if($afficher_ligne) {
+				echo $ligne;
+			}
+		}
+		echo "
+		</tbody>
+	</table>";
+	}
+	echo "</div>";
+}
 
 	$infos_generales="";
 	if((isset($id_groupe))&&($id_groupe=='Toutes_matieres')) {
@@ -1154,6 +1223,45 @@ echo "
 		document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='';
 		document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
 
+
+		// 20230410
+		function affichage_notices_tag(tab, type_notice) {
+			// Masquer toutes les notices
+			setTimeout(\"document.getElementById('a_alterne_affichage_notices_c').style.display=''\", 5000);
+			setTimeout(\"document.getElementById('a_alterne_affichage_notices_t').style.display=''\", 5000);
+
+			document.getElementById('img_alterne_affichage_notices_c').src='../images/icons/notices_CDT_compte_rendu_gris.png';
+			document.getElementById('img_alterne_affichage_notices_t').src='../images/icons/notices_CDT_travail_gris.png';
+
+			etat_affichage_notices_c='none';
+			etat_affichage_notices_t='none';
+
+			tab_div=document.getElementsByTagName('div');
+			for(i=0;i<tab_div.length;i++) {
+				if(id=tab_div[i].getAttribute('id')) {
+					// div_notice_c_
+					if((id.substring(0, 13)=='div_notice_c_')||(id.substring(0, 13)=='div_notice_t_')) {
+						tab_div[i].style.display='none';
+					}
+				}
+			}
+
+
+			// Afficher les notices correspondant au tag :
+			for(i=0;i<tab.length;i++) {
+				document.getElementById('div_notice_'+type_notice+'_'+tab[i]).style.display='';
+			}
+
+			/*
+			tmp_tab=document.getElementsByClassName('tag_'+type_notice+'_'+id_tag);
+			for(i=0;i<tmp_tab.length;i++) {
+				tmp_tab[i].style.display='';
+			}
+			*/
+		}
+
+
+
 	</script>
 </div>";
 
@@ -1340,11 +1448,11 @@ while (true) {
 	
 		$content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
 		// 20200526 : Conteneur date et notice
-		echo "<div id='div_notice_".$not_dev->type."_".$not_dev->id_ct."'>";
+		echo "<div id='div_notice_".$not_dev->type."_".$not_dev->id_ct."'>\n";
 		// style='border:1px dashed red; margin:2px;'
 		echo "<h3 class='see_all_h3'>\n<strong>\n";
 			if ($not_dev->type == "t") {
-				echo "<a name='travail_".$not_dev->id_ct."'></a>";
+				echo "<a name='travail_".$not_dev->id_ct."'></a>\n";
 				echo("A faire pour le : ");
 			}
 			else {
@@ -1418,7 +1526,7 @@ while (true) {
 			if($chaine_type_notice!='') {
 				echo "<div style='float:right; width:16px; margin:2px;'><a href='#' onclick=\"copier_code_source_vignette_vers_presse_papier('".$not_dev->id_ct."', '".$not_dev->type."'); return false;\" title=\"Copier vers le presse-papier le code source HTML du contenu de la vignette.\" id='copy_src_notice_".$chaine_type_notice."_".$not_dev->id_ct."'>
 		<img src='../images/icons/copy_src.png' class='icone16' />
-	</a></div>";
+	</a></div>\n";
 			}
 		}
 
