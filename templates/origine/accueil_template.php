@@ -208,7 +208,6 @@
             }
         }
     }
-
 	affiche_infos_actions();
 ?>
 
@@ -312,7 +311,7 @@
 									j_eleves_classes jec, 
 									classes c 
 								WHERE mac.id_aid=jae.id_aid AND 
-									jae.login_jec.login AND 
+									jae.login=jec.login AND 
 									jec.id_classe=c.id) 
 								ORDER BY classe;";
 	}
