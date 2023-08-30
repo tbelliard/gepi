@@ -356,39 +356,41 @@ else {
 
 	$tbs_dossier_gabarit=array();
 
-
-$test = mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'gabarits'");
-
+	$test = mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'gabarits'");
+	if(mysqli_num_rows($test)==0) {
+		$gabarit="origine";
+	}
+	else {
 		$sql="SELECT texte, repertoire, pardefaut FROM gabarits ;";
 		$res_gab=mysqli_query($GLOBALS["mysqli"], $sql);
-	if($res_gab){
-	
-		if(mysqli_num_rows($res_gab)>0) {
-			while($lig_gab=mysqli_fetch_object($res_gab)) {
-				$texte_gab=$lig_gab->texte;
-				$repertoire_gab=$lig_gab->repertoire;
-				$defaut_gab=$lig_gab->pardefaut;
-				if($defaut_gab=="y"){
-					$value_gab="selected='selected'";
-					$gabarit=$lig_gab->repertoire;
-				}else{
-					$value_gab="";
-				}
-			$tbs_dossier_gabarit[]=array("texte"=>$texte_gab, "selection"=>$value_gab, "value"=>$repertoire_gab);	
-			}
-		}
+		if($res_gab) {
 		
-	}else{
-		$gabarit="origine";
-	}
+			if(mysqli_num_rows($res_gab)>0) {
+				while($lig_gab=mysqli_fetch_object($res_gab)) {
+					$texte_gab=$lig_gab->texte;
+					$repertoire_gab=$lig_gab->repertoire;
+					$defaut_gab=$lig_gab->pardefaut;
+					if($defaut_gab=="y"){
+						$value_gab="selected='selected'";
+						$gabarit=$lig_gab->repertoire;
+					}else{
+						$value_gab="";
+					}
+				$tbs_dossier_gabarit[]=array("texte"=>$texte_gab, "selection"=>$value_gab, "value"=>$repertoire_gab);	
+				}
+			}
+			
+		}else{
+			$gabarit="origine";
+		}
 
-	if ((isset($_GET['template'])) or (isset($_POST['template'])) or (isset($gabarit))) {
-		$gabarit = isset($_POST['template']) ? unslashes($_POST['template']) : (isset($_GET['template']) ? unslashes($_GET['template']) : $gabarit);
+		if ((isset($_GET['template'])) or (isset($_POST['template'])) or (isset($gabarit))) {
+			$gabarit = isset($_POST['template']) ? unslashes($_POST['template']) : (isset($_GET['template']) ? unslashes($_GET['template']) : $gabarit);
+		}
+		else{
+			$gabarit="origine";
+		}
 	}
-	else{
-		$gabarit="origine";
-	}
-
 
 	// Pour repérer les onglets lors du développement:
 	//insert into setting set value='y', name='afficher_version_en_title';
