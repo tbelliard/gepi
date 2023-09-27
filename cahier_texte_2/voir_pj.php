@@ -117,10 +117,10 @@ if($_SESSION['statut']=='eleve') {
 	// Récupérer la liste des documents accessibles
 	$tab_doc=array();
 	if($type_notice=='c') {
-		$sql="SELECT * FROM ct_documents WHERE id_ct='".$id_ct."' AND visible_eleve_parent='1';";
+		$sql="SELECT * FROM ct_documents WHERE id_ct='".$id_ct."' AND visible_eleve_parent='1' ORDER BY CONCAT('a', titre) ASC;";
 	}
 	else {
-		$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='".$id_ct."' AND visible_eleve_parent='1';";
+		$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='".$id_ct."' AND visible_eleve_parent='1' ORDER BY CONCAT('a', titre) ASC;";
 	}
 	$res_doc=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_doc)>0) {
@@ -152,10 +152,10 @@ elseif(in_array($_SESSION['statut'], array('professeur', 'scolarite', 'cpe'))) {
 	// Récupérer la liste des documents accessibles
 	$tab_doc=array();
 	if($type_notice=='c') {
-		$sql="SELECT * FROM ct_documents WHERE id_ct='".$id_ct."'".$restriction.";";
+		$sql="SELECT * FROM ct_documents WHERE id_ct='".$id_ct."'".$restriction." ORDER BY CONCAT('a', titre) ASC;";
 	}
 	else {
-		$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='".$id_ct."'".$restriction.";";
+		$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='".$id_ct."'".$restriction." ORDER BY CONCAT('a', titre) ASC;";
 	}
 	//echo "$sql<br />";
 	$res_doc=mysqli_query($mysqli, $sql);
@@ -370,7 +370,7 @@ else {
 
 
 
-	echo "<p class='bold'>Documents joints&nbsp;:</p>
+	echo "<p class='bold'>Document(s) joint(s)&nbsp;:</p>
 	<ul>";
 	foreach($tab_doc as $key => $document) {
 		echo "<li><a href='".$document['emplacement']."'>".$document['titre']."</a></li>";
