@@ -284,8 +284,12 @@ echo "
 
 //echo "\$type_notice=$type_notice<br />";
 
+// 20231111
+$url_ct_courant='';
+//echo "\$type_notice=$type_notice<br />";
 if($type_notice!='c') {
 	$sql="SELECT * FROM ct_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct='".$lig_ct->date_ct."';";
+	//echo "$sql<br />";
 	$test_autre_notice=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($test_autre_notice)>0) {
 		while($lig_autre_notice=mysqli_fetch_object($test_autre_notice)) {
@@ -293,6 +297,10 @@ if($type_notice!='c') {
 	<div style='float:right; width:16px; margin:0.2em;'>
 		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=c' title=\"Consulter le compte-rendu de séance n°".$lig_autre_notice->id_ct." pour le même jour.\"><img src='../images/icons/notices_CDT_compte_rendu.png' class='icone16' alt='CDT' /></a>
 	</div>";
+
+			// 20231111 : On récupère la dernière notice de compte-rendu du même jour
+			$url_ct_courant=$_SERVER['PHP_SELF']."?id_ct=".$lig_autre_notice->id_ct."&type_notice=c";
+			//echo $url_ct_courant;
 		}
 	}
 }
@@ -310,6 +318,8 @@ if($type_notice!='t') {
 	}
 }
 
+// 20231111
+$url_priv_courant='';
 if($type_notice!='p') {
 	$sql="SELECT * FROM ct_private_entry WHERE id_groupe='".$lig_ct->id_groupe."' AND date_ct='".$lig_ct->date_ct."';";
 	$test_autre_notice=mysqli_query($mysqli, $sql);
@@ -319,6 +329,10 @@ if($type_notice!='p') {
 	<div style='float:right; width:16px; margin:0.2em;'>
 		<a href='affiche_notice.php?id_ct=".$lig_autre_notice->id_ct."&amp;type_notice=p' title=\"Consulter la notice privée n°".$lig_autre_notice->id_ct." pour le même jour.\"><img src='../images/icons/notices_CDT_privee.png' class='icone16' alt='CDT' /></a>
 	</div>";
+
+			// 20231111 : On récupère la dernière notice privée du même jour
+			$url_priv_courant=$_SERVER['PHP_SELF']."?id_ct=".$lig_autre_notice->id_ct."&type_notice=p";
+			//echo $url_ct_courant;
 		}
 	}
 }
@@ -439,6 +453,7 @@ else {
 	echo $liens_precedent_suivant;
 
 	// 20221011
+	// Passer à une autre séance en pressant une touche : c, t, b
 	if(($url_seance_precedente!='')||($url_seance_suivante!='')||($url_travail_suivant!='')||($url_ct_precedent!='')) {
 		echo "
 	<script>
@@ -465,6 +480,19 @@ else {
 			echo "
 			if(event.key=='t') {
 				window.location='".$url_travail_suivant."';
+			}";
+		}
+		// 20231111
+		if($url_ct_courant!='') {
+			echo "
+			if(event.key=='c') {
+				window.location='".$url_ct_courant."';
+			}";
+		}
+		if($url_priv_courant!='') {
+			echo "
+			if(event.key=='p') {
+				window.location='".$url_priv_courant."';
 			}";
 		}
 		echo "
