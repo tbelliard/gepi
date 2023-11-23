@@ -3,7 +3,7 @@
  * Ajouter, modifier un devoir dans une évaluation cumul
  * 
  *
- * @copyright Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * @copyright Copyright 2001, 2023 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * @package Carnet_de_notes
  * @subpackage Evaluation_cumule
@@ -215,6 +215,8 @@ if (isset($_POST['is_posted'])) {
 
 }
 
+$themessage  = 'Des modifications n ont pas été enregistrées. Voulez-vous vraiment quitter sans enregistrer ?';
+
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Ajout/modification d'un $nom_cc";
 /**
@@ -228,7 +230,7 @@ echo add_token_field();
 
 echo "<div class='norme'>\n";
 echo "<p class='bold'>\n";
-echo "<a href='index_cc.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo "<a href='index_cc.php?id_racine=$id_racine' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo "</p>\n";
 echo "</div>\n";
 
@@ -248,7 +250,7 @@ if($aff_nom_court=='y') {
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name = 'nom_court' size='33' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" />\n";
+	echo "<input type='text' name = 'nom_court' size='33' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -256,7 +258,7 @@ else {
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name = 'nom_court' size='33' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" />\n";
+	echo "<input type='hidden' name = 'nom_court' size='33' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -266,7 +268,7 @@ if($aff_nom_complet=='y') {
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name = 'nom_complet' size='33' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" />\n";
+	echo "<input type='text' name = 'nom_complet' size='33' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -274,7 +276,7 @@ else {
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name = 'nom_complet' size='33' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" />\n";
+	echo "<input type='hidden' name = 'nom_complet' size='33' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -283,7 +285,7 @@ if($aff_description=='y') {
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<textarea name='description' rows='2' cols='40' >".$description."</textarea>\n";
+	echo "<textarea name='description' rows='2' cols='40' onchange=\"changement()\">".$description."</textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -291,7 +293,7 @@ else {
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='description' value='$description' />\n";
+	echo "<input type='hidden' name='description' value='$description' onchange=\"changement()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -305,7 +307,7 @@ if($aff_precision=='y') {
 		$alt=1;
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='precision' id='precision_s1' value='s1' "; if ($precision=='s1') echo "checked"; echo " />\n";
+		echo "<input type='radio' name='precision' id='precision_s1' value='s1' onchange=\"changement()\" "; if ($precision=='s1') echo "checked"; echo " />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_s1' style='cursor: pointer;'>";
@@ -317,7 +319,7 @@ if($aff_precision=='y') {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='precision' id='precision_s5' value='s5' "; if ($precision=='s5') echo "checked"; echo " />\n";
+		echo "<input type='radio' name='precision' id='precision_s5' value='s5' onchange=\"changement()\" "; if ($precision=='s5') echo "checked"; echo " />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_s5' style='cursor: pointer;'>";
@@ -329,7 +331,7 @@ if($aff_precision=='y') {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='precision' id='precision_se' value='se' "; if ($precision=='se') echo "checked"; echo " />\n";
+		echo "<input type='radio' name='precision' id='precision_se' value='se' onchange=\"changement()\" "; if ($precision=='se') echo "checked"; echo " />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_se' style='cursor: pointer;'>";
@@ -341,7 +343,7 @@ if($aff_precision=='y') {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='precision' id='precision_p1' value='p1' "; if ($precision=='p1') echo "checked"; echo " />\n";
+		echo "<input type='radio' name='precision' id='precision_p1' value='p1' onchange=\"changement()\" "; if ($precision=='p1') echo "checked"; echo " />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_p1' style='cursor: pointer;'>";
@@ -353,7 +355,7 @@ if($aff_precision=='y') {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='precision' id='precision_p5' value='p5' "; if ($precision=='p5') echo "checked"; echo " />\n";
+		echo "<input type='radio' name='precision' id='precision_p5' value='p5' onchange=\"changement()\" "; if ($precision=='p5') echo "checked"; echo " />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_p5' style='cursor: pointer;'>";
@@ -365,7 +367,7 @@ if($aff_precision=='y') {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='precision' id='precision_pe' value='pe' "; if ($precision=='pe') echo "checked"; echo " />\n";
+		echo "<input type='radio' name='precision' id='precision_pe' value='pe' onchange=\"changement()\" "; if ($precision=='pe') echo "checked"; echo " />\n";
 		echo "</td>\n";
 		echo "<td>\n";
 		echo "<label for='precision_pe' style='cursor: pointer;'>";
@@ -382,7 +384,7 @@ else {
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Précision&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='precision' value='$precision' />\n";
+	echo "<input type='hidden' name='precision' value='$precision' onchange=\"changement()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -395,14 +397,16 @@ else {
         <input type="radio" id="famille_voit" 
                name="famille" 
                <?php if ("yes" == $famille) echo "checked='checked'"; ?>
-               value="yes" />
+               value="yes"
+               onchange="changement()" />
         <label for="famille_voit">Les élèves et les parents voient cette évaluation</label>
         <br />
         <input type="radio" 
                id="famille_voit_pas" 
                name="famille" 
                <?php if ("no" == $famille) echo "checked='checked'"; ?>
-               value="no" />
+               value="no"
+               onchange=\"changement()\" />
         <label for="famille_voit_pas">Les élèves et les parents ne voient pas cette évaluation</label>
         <br />
     </td>

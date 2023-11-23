@@ -260,6 +260,8 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
+$themessage  = 'Des modifications n ont pas été enregistrées. Voulez-vous vraiment quitter sans enregistrer ?';
+
 //**************** EN-TETE *****************
 $titre_page="Carnet de notes - Ajout/modification d'un $nom_cc";
 /**
@@ -276,7 +278,7 @@ echo add_token_field();
 
 echo "<div class='norme'>\n";
 echo "<p class='bold'>\n";
-echo "<a href='index_cc.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo "<a href='index_cc.php?id_racine=$id_racine' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo "</p>\n";
 echo "</div>\n";
 
@@ -434,6 +436,7 @@ if(mysqli_num_rows($res)>0) {
 		<th>Date</th>
 		<th>Date de visibilité</th>
 		<th>Copie</th>
+		<th>Saisir</th>
 	</tr>";
 	while($lig=mysqli_fetch_object($res)) {
 		echo "
@@ -452,6 +455,7 @@ if(mysqli_num_rows($res)>0) {
 				document.getElementById('display_date').value=document.getElementById('cc_".$lig->id."_display_date').innerHTML;
 				document.getElementById('vision_famille').value=document.getElementById('cc_".$lig->id."_vision_famille').innerHTML;
 				changement();\"><img src='../images/icons/copy-16.png' class='icone16' alt='Copier' /></td>
+		<td><a href='saisie_notes_cc.php?id_racine=".$id_racine."&id_dev=".$id_dev."&id_eval=".$lig->id."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' /></a></td>
 	</tr>";
 	}
 	echo "
