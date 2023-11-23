@@ -3,7 +3,7 @@
  * Ajouter, modifier une évaluation cumule
  * 
  * 
- * @copyright Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * @copyright Copyright 2001, 2023 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * @package Carnet_de_notes
  * @subpackage Evaluation_cumule
@@ -65,7 +65,13 @@ if (getSettingValue("active_carnets_notes")!='y') {
  */
 require('cc_lib.php');
 
+//debug_var();
+
 $id_racine=isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);
+
+// 20231123
+//$mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET["mode_navig"]) ? $_GET["mode_navig"] : NULL);
+$mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET["mode_navig"]) ? $_GET["mode_navig"] : 'retour_index');
 
 if(!isset($id_racine)) {
 	$mess="Racine non précisée pour $nom_cc.<br />";
@@ -158,7 +164,10 @@ $matiere_nom_court=$current_group["matiere"]["matiere"];
 $nom_classe=$current_group["classlist_string"];
 
 // enregistrement des données
+// 20231123
 if (isset($_POST['ok'])) {
+//if ((isset($_POST['ok1']))||(isset($_POST['ok2']))) {
+
 	check_token();
 
 	//$nom_court=traitement_magic_quotes($_POST['nom_court']);
@@ -242,8 +251,28 @@ if (isset($_POST['ok'])) {
 		else {
 			$msg="Création ou mise à jour de l'évaluation associée au $nom_cc n°$id_dev effectuée.";
 		}
+
+
+		// 20231123
+		if((isset($mode_navig))&&($mode_navig == 'saisie_devoir')) {
+			header("Location: ./saisie_notes_cc.php?id_racine=$id_racine&id_dev=$id_dev&id_eval=$id_eval&msg=$msg");
+			die();
+		}		/*
+		elseif ($mode_navig == 'retour_saisie') {
+		header("Location: ./saisie_notes.php?id_conteneur=$id_retour&msg=$msg");
+		die();
+		}
+		*/
+		//elseif ($mode_navig == 'retour_index') {
+		else {
+			header("Location: ./index_cc.php?id_racine=$id_racine&msg=$msg");
+			die();
+		}
+
+		/*
 		header("Location: index_cc.php?id_racine=$id_racine&msg=$msg");
 		die();
+		*/
 	}
 
 }
@@ -411,7 +440,13 @@ if($aff_nom_court=='y'){
 </script>\n";
 }
 
-echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
+// 20231123
+//echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
+echo "<input type=\"hidden\" name='ok' value=\"Enregistrer\" />\n";
+echo "<input type='hidden' name='mode_navig' value='$mode_navig' />\n";
+echo "<p style='text-align:center;'><input type=\"submit\" name='ok1' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /><br/>\n";
+echo "<input type=\"button\" name='ok2' value=\"Enregistrer et saisir dans la foulée\" style=\"font-variant: small-caps;\" onClick=\"document.forms['formulaire'].mode_navig.value='saisie_devoir';document.forms['formulaire'].submit();\" /></p>\n";
+
 
 echo "</form>\n";
 
