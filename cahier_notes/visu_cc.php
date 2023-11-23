@@ -176,7 +176,9 @@ if(isset($_GET['export_csv'])) {
 		$ligne1.=";\r\n";
 		$ligne2.=";\r\n";
 		$ligne3.=";\r\n";
-		$ligne4.="TOTAL;TOTAL_SUR;MOYENNE;\r\n";
+		// 20231122
+		//$ligne4.="TOTAL;TOTAL_SUR;MOYENNE;\r\n";
+		$ligne4.="TOTAL;TOTAL_SUR;NOTE FINALE;\r\n";
 
 		$csv.=$ligne1;
 		$csv.=$ligne2;
@@ -554,7 +556,9 @@ if(isset($_GET['export_pdf'])) {
 			}
 			*/
 
-			$texte='Moyenne';
+			// 20231122
+			//$texte='Moyenne';
+			$texte='Note finale';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
 			$texte='-';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
@@ -1049,7 +1053,9 @@ if(isset($_GET['export_pdf3'])) {
 			}
 			*/
 
-			$texte='Moyenne';
+			// 20231122
+			//$texte='Moyenne';
+			$texte='Note finale';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
 			$texte='-';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
@@ -1171,7 +1177,9 @@ if(isset($_GET['export_pdf2'])) {
 		$header_pdf[] = "Sur_total";
 
 		$w_pdf[] = $w2;
-		$header_pdf[] = "Moyenne";
+		// 20231122
+		//$header_pdf[] = "Moyenne";
+		$header_pdf[]='Note finale';
 
 		//========================================
 		$data_pdf[0][] = ("Nom Prénom /Note sur");
@@ -1263,7 +1271,10 @@ if(isset($_GET['export_pdf2'])) {
 			}
 
 
-			$data_pdf[$num_ligne][] = "Moyenne :";
+			// 20231122
+			//$data_pdf[$num_ligne][] = "Moyenne :";
+			$data_pdf[$num_ligne][] = "Note finale :";
+
 			$data_pdf[$num_ligne][] = "";
 
 			for($loop=0;$loop<count($tab_eval);$loop++) {
@@ -1532,7 +1543,9 @@ foreach ($liste_eleves as $eleve) {
 	echo "</tr>\n";
 
 	echo "<tr class='table_no_split'>\n";
-	echo "<th>Moyenne</th>\n";
+	// 20231122
+	//echo "<th>Moyenne</th>\n";
+	echo "<th>Note finale</th>\n";
 	echo "<th>-</th>\n";
 	if($total_sur!=0) {
 		$moy=strtr(precision_arrondi(20*strtr($total,",",".")/strtr($total_sur,",","."),$precision),'.',',');
