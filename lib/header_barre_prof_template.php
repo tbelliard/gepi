@@ -250,6 +250,13 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 
 	if(getSettingValue("active_carnets_notes") == 'y'){
 		// Cahiers de notes
+
+		// 20240111
+		$nom_cc=getSettingValue('nom_cc');
+		if($nom_cc=='') {
+			$nom_cc="Évaluations cumul";
+		}
+
 		// 20210302
 		$pref_acces_cn_prof_afficher_lien=getPref($_SESSION['login'], 'acces_cn_prof_afficher_lien','');
 
@@ -285,6 +292,13 @@ $tab_pp=get_tab_prof_suivi("", $_SESSION["login"]);
 							}
 							$cpt_sous_menu2++;
 						}
+
+						// 20240111
+						$tmp_id_racine_menu=get_valeur_champ('cn_cahier_notes', "id_groupe='".$tmp_group['id']."'", 'id_cahier_notes');
+						$tmp_sous_menu2[$cpt_sous_menu2]['lien']="/cahier_notes/index_cc.php?id_racine=".$tmp_id_racine_menu;
+						$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$nom_cc;
+						$cpt_sous_menu2++;
+
 						$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 						$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 					}
