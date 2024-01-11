@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2021 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2024 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -722,8 +722,17 @@ echo "<script type='text/javascript'>
 					if((isset($tab_tag_notice["id"]))&&(in_array($id_tag, $tab_tag_notice["id"]))) {
 						echo " checked";
 						$style_label=" style='font-weight:bold'";
+
+						//20240111
+						$style_commentaire='';
 					}
-					echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comportera un ".$tag_courant['nom_tag'].".\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_label>".$tag_courant['nom_tag']."</label>";
+					else {
+						$style_commentaire='none';
+					}
+					// 20240111
+					//echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comportera un ".$tag_courant['nom_tag'].".\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_label>".$tag_courant['nom_tag']."</label>";
+					echo " onchange=\"checkbox_change(this.id); if(this.checked==true) {document.getElementById('tag_commentaire_".$id_tag."').style.display=''} else {document.getElementById('tag_commentaire_".$id_tag."').style.display='none'}\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comporte un ".$tag_courant['nom_tag'].".\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_label>".$tag_courant['nom_tag']."</label>";
+					echo "<input type='text' name='tag_commentaire[".$id_tag."]' id='tag_commentaire_".$id_tag."' value=\"".(isset($tab_tag_notice["commentaire"][$id_tag]) ? $tab_tag_notice["commentaire"][$id_tag] : '')."\" style='display: ".$style_commentaire."' size='8' />";
 				}
 			}
 

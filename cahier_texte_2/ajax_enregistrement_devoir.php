@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2021 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2024 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -282,11 +282,14 @@ fclose($f);
 //$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $tag=isset($_POST['tag']) ? $_POST['tag'] : array();
+// 20240111
+$tag_commentaire=isset($_POST['tag_commentaire']) ? $_POST['tag_commentaire'] : array();
 $tag_deja=array();
+
 $sql="SELECT * FROM ct_tag WHERE id_ct='".$id_devoir."' AND type_ct='t';";
 //echo "$sql<br />";
 /*
-$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+$f=fopen("../temp/gepi_debug_ct_dev.txt", "a+");
 fwrite($f, $sql."\n");
 fclose($f);
 */
@@ -304,22 +307,43 @@ if(mysqli_num_rows($res_tag_existants)>0) {
 			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		else {
-			$tag_deja[]=$lig_tag->id;
+			//$tag_deja[]=$lig_tag->id;
+			$tag_deja['id'][]=$lig_tag->id;
+			$tag_deja['id_tag'][]=$lig_tag->id_tag;
 		}
 	}
 }
 for($loop=0;$loop<count($tag);$loop++) {
-	if(!in_array($tag[$loop], $tag_deja)) {
-		$sql="INSERT INTO ct_tag SET id_ct='".$id_devoir."', type_ct='t', id_tag='".$tag[$loop]."';";
+	if((!isset($tag_deja['id_tag']))||(!in_array($tag[$loop], $tag_deja['id_tag']))) {
+		$sql="INSERT INTO ct_tag SET id_ct='".$id_devoir."', type_ct='t', id_tag='".$tag[$loop]."'";
+		// 20240111
+		if(isset($tag_commentaire[$tag[$loop]])) {
+			$sql.=", commentaire='".mysqli_real_escape_string($GLOBALS["mysqli"], preg_replace('/"/', " ", $tag_commentaire[$tag[$loop]]))."'";
+		}
+		$sql.=";";
 		//echo "$sql<br />";
 		/*
-		$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+		$f=fopen("../temp/gepi_debug_ct_dev.txt", "a+");
 		fwrite($f, $sql."\n");
 		fclose($f);
 		*/
 		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
-}
+	// 20240111
+	else {
+		$sql="UPDATE ct_tag SET ";
+		if(isset($tag_commentaire[$tag[$loop]])) {
+			$sql.=" commentaire='".mysqli_real_escape_string($GLOBALS["mysqli"], preg_replace('/"/', " ", $tag_commentaire[$tag[$loop]]))."'";
+		}
+		else {
+			$sql.=" commentaire=''";
+		}
+		$key_tag=array_search($tag[$loop], $tag_deja['id_tag']);
+		if(is_integer($key_tag)) {
+			$sql.=" WHERE id='".$tag_deja['id'][$key_tag]."';";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+	}}
 //==================================================
 $suppr_doc_joint=isset($_POST['suppr_doc_joint']) ? $_POST['suppr_doc_joint'] : array();
 foreach($suppr_doc_joint as $key => $id_document_a_supprimer) {

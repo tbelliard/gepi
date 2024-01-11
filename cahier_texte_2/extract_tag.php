@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
+ * Copyright 2001, 2024 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -251,16 +251,35 @@ if((isset($mode))&&($mode=="extraire")) {
 						$tab_notices["c"][$cpt]['contenu']="<div style='float:right; width:16px;'><a href='../cahier_texte_2/affiche_notice.php?id_ct=".$lig['id_ct']."&type_notice=c' title=\"Voir la notice\" target='_blank'><img src='../images/icons/notices_CDT_compte_rendu.png' width='16' height='16' /></a></div>".$tab_notices["c"][$cpt]['contenu'];
 					}
 
-					$sql="SELECT DISTINCT ct.id_tag FROM ct_tag ct WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='c';";
+					// 20240111
+					//$sql="SELECT DISTINCT ct.id_tag FROM ct_tag ct WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='c';";
+					$sql="SELECT DISTINCT ct.id_tag,ct.commentaire FROM ct_tag ct WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='c';";
+					//echo "$sql<br />";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig2=mysqli_fetch_object($res2)) {
 						$tab_notices["c"][$cpt]["id_tag"][]=$lig2->id_tag;
+						// 20240111
+						$tab_notices["c"][$cpt]["commentaire"][$lig2->id_tag]=$lig2->commentaire;
 					}
+
+					// 20240111
+					/*
+					echo "tab_notices[\"c\"][$cpt]<pre>";
+					print_r($tab_notices["c"][$cpt]);
+					echo "</pre>";
+					echo "<hr />";
+					*/
 
 					$cpt++;
 				}
 			}
 		}
+		// 20240111
+		/*
+		echo "tab_notices<pre>";
+		print_r($tab_notices);
+		echo "</pre>";
+		*/
 	}
 
 	if(in_array("t", $type_notice)) {
@@ -277,10 +296,12 @@ if((isset($mode))&&($mode=="extraire")) {
 						$tab_notices["t"][$cpt]['contenu']="<div style='float:right; width:16px;'><a href='../cahier_texte_2/affiche_notice.php?id_ct=".$lig['id_ct']."&type_notice=t' title=\"Voir la notice\" target='_blank'><img src='../images/icons/notices_CDT_travail.png' width='16' height='16' /></a></div>".$tab_notices["t"][$cpt]['contenu'];
 					}
 
-					$sql="SELECT DISTINCT ct.id_tag FROM ct_tag ct WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='t';";
+					$sql="SELECT DISTINCT ct.id_tag FROM ct_tag ct,ct.commentaire WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='t';";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig2=mysqli_fetch_object($res2)) {
 						$tab_notices["t"][$cpt]["id_tag"][]=$lig2->id_tag;
+						// 20240111
+						$tab_notices["t"][$cpt]["commentaire"][$lig2->id_tag]=$lig2->commentaire;
 					}
 
 					$cpt++;
@@ -303,10 +324,12 @@ if((isset($mode))&&($mode=="extraire")) {
 						$tab_notices["p"][$cpt]['contenu']="<div style='float:right; width:16px;'><a href='../cahier_texte_2/affiche_notice.php?id_ct=".$lig['id_ct']."&type_notice=t' title=\"Voir la notice\" target='_blank'><img src='../images/icons/notices_CDT_privee.png' width='16' height='16' /></a></div>".$tab_notices["p"][$cpt]['contenu'];
 					}
 
-					$sql="SELECT DISTINCT ct.id_tag FROM ct_tag ct WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='p';";
+					$sql="SELECT DISTINCT ct.id_tag FROM ct_tag ct,ct.commentaire WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='p';";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig2=mysqli_fetch_object($res2)) {
 						$tab_notices["p"][$cpt]["id_tag"][]=$lig2->id_tag;
+						// 20240111
+						$tab_notices["p"][$cpt]["commentaire"][$lig2->id_tag]=$lig2->commentaire;
 					}
 
 					$cpt++;
@@ -330,8 +353,13 @@ if((isset($_GET['export']))&&($_GET['export']=="csv")) {
 		$tab_prof=array();
 		$tab_classe=array();
 		foreach($tab_notices as $type_notice => $tab) {
+
 			// Style selon type_notice
 			for($loop=0;$loop<count($tab);$loop++) {
+
+				// 20240111
+				//echo "<br />\$tab_notices[$type_notice][$loop][id_ct]=".$tab[$loop]["id_ct"]."<br />";
+
 				if(!isset($tab_grp[$tab[$loop]["id_groupe"]])) {
 					$tab_grp[$tab[$loop]["id_groupe"]]["designation"]=remplace_accents(html_entity_decode(get_info_grp($tab[$loop]["id_groupe"], array('description', 'matieres'),"")));
 				}
@@ -358,6 +386,28 @@ if((isset($_GET['export']))&&($_GET['export']=="csv")) {
 						$chaine_tags.=", ";
 					}
 					$chaine_tags.=remplace_accents(html_entity_decode($tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["nom_tag"]));
+
+					// 20240111 :
+					//echo "<br />\$tab[$loop][\"id_tag\"][$loop2]=".$tab[$loop]["id_tag"][$loop2]."<br />";
+
+					//echo "<br />\$tab_notices[$type_notice][$loop][commentaire][".$tab[$loop]["id_tag"][$loop2]."]=".$tab_notices[$type_notice][$loop]['commentaire'][$tab[$loop]["id_tag"][$loop2]]."<br />";
+
+					//if((isset($tab["commentaire"][$tab[$loop]["id_tag"][$loop2]]))&&($tab["commentaire"][$tab[$loop]["id_tag"][$loop2]]!=''))
+					//$tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["commentaire"]))&&($tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["commentaire"]!=''))
+
+					if((isset($tab_notices[$type_notice][$loop]['commentaire'][$tab[$loop]["id_tag"][$loop2]]))&&($tab_notices[$type_notice][$loop]['commentaire'][$tab[$loop]["id_tag"][$loop2]]!=''))
+
+					 {
+						//echo "\$tab[\"commentaire\"][\$tab[$loop][\"id_tag\"][$loop2]]=\$tab[\"commentaire\"][".$tab[$loop]["id_tag"][$loop2]."]=".$tab[$loop]["commentaire"][$tab[$loop]["id_tag"][$loop2]]."<br />";
+						//$chaine_tags.=remplace_accents(html_entity_decode(" (".$tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["commentaire"].")"));
+						//$chaine_tags.=remplace_accents(html_entity_decode(" (".$tab["commentaire"][$tab[$loop]["id_tag"][$loop2]].")"));
+						$chaine_tags.=" (".remplace_accents(html_entity_decode($tab_notices[$type_notice][$loop]['commentaire'][$tab[$loop]["id_tag"][$loop2]]), '').")";
+
+
+
+// $tab["commentaire"][$lig2->id_tag]
+
+					}
 				}
 				$csv.=strftime("%Y%m%d", $tab[$loop]["date_ct"]).";";
 				$csv.=strftime("%a %d/%m/%Y", $tab[$loop]["date_ct"]).";";
@@ -374,6 +424,14 @@ if((isset($_GET['export']))&&($_GET['export']=="csv")) {
 					$csv.="notice privée;";
 				}
 				$csv.=$chaine_tags.";\n";
+
+				// 20240111
+				/*
+				echo "\$tab[\"commentaire\"]<pre>";
+				print_r($tab["commentaire"]);
+				echo "</pre>";
+				*/
+
 				$cpt++;
 			}
 		}

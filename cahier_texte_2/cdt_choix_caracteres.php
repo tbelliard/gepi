@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2023 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -55,6 +55,8 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+//debug_var();
 
 // A faire: revoir l'ordre pour les regrouper par thème.
 // Proposer aussi des présélection Espagnol->telle liste, Maths->telle liste, Grec->telle liste,...
@@ -311,7 +313,8 @@ $tab_caracteres_html=array('&quot;',
 '&clubs;',
 '&hearts;',
 '&diams;',
-'&lang;');
+'&lang;',);
+// '<em><span style="font-family:\'Times New Roman\', Times, serif;">x</span></em>'
 
 function get_tab_car_spec_cdt2() {
 

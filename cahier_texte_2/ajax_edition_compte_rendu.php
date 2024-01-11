@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2021 Josselin Jacquard, Stephane Boireau
+ * Copyright 2009-2024 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -240,6 +240,10 @@ for($loop=1;$loop<21;$loop++) {
 			$ts_date_ct_cours_suivant=$ts_test;
 			break;
 		}
+
+		// Chercher si une notice existe pour un groupe associé à la classe/groupe (3B et dédoublement en 3B_gr1, 3B_gr2)
+		// Chercher si une notice existe hors EDT avant la date trouvée (par exemple, pour un remplacement)
+
 	}
 }
 //================================================
@@ -804,14 +808,32 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 
 			if(isset($tab_tag_type["tag_compte_rendu"])) {
 				echo "<br />";
+
+				/*
+				echo "<pre>";
+				print_r($tab_tag_notice);
+				echo "</pre>";
+				*/
+
+				//$cpt_tag=0;
 				foreach($tab_tag_type["tag_compte_rendu"] as $id_tag => $tag_courant) {
 					echo " <input type='checkbox' name='tag[]' id='tag_".$id_tag."' value='".$id_tag."'";
 					$style_label="";
 					if((isset($tab_tag_notice["id"]))&&(in_array($id_tag, $tab_tag_notice["id"]))) {
 						echo " checked";
 						$style_label=" style='font-weight:bold'";
+
+						//20240111
+						$style_commentaire='';
 					}
-					echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comporte un ".$tag_courant['nom_tag'].".\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_label>".$tag_courant['nom_tag']."</label>";
+					else {
+						$style_commentaire='none';
+					}
+					// 20240111
+					//echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comporte un ".$tag_courant['nom_tag'].".\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_label>".$tag_courant['nom_tag']."</label>";
+					echo " onchange=\"checkbox_change(this.id); if(this.checked==true) {document.getElementById('tag_commentaire_".$id_tag."').style.display=''} else {document.getElementById('tag_commentaire_".$id_tag."').style.display='none'}\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comporte un ".$tag_courant['nom_tag'].".\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_label>".$tag_courant['nom_tag']."</label>";
+					echo "<input type='text' name='tag_commentaire[".$id_tag."]' id='tag_commentaire_".$id_tag."' value=\"".(isset($tab_tag_notice["commentaire"][$id_tag]) ? $tab_tag_notice["commentaire"][$id_tag] : '')."\" style='display: ".$style_commentaire."' size='8' />";
+					//$cpt_tag++;
 				}
 			}
 		?>

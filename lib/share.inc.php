@@ -15552,6 +15552,8 @@ function get_tab_tag_notice($id_ct, $type_ct) {
 		if (isset($tab_tag_type["id"][$lig_tag->id_tag])) {
 			$tab_tag_notice['indice'][] = $tab_tag_type["id"][$lig_tag->id_tag];
 			$tab_tag_notice['id'][] = $lig_tag->id_tag;
+			// 20240111
+			$tab_tag_notice['commentaire'][$lig_tag->id_tag] = $lig_tag->commentaire;
 		} else {
 			// Anomalie
 			//echo "\$tab_tag_type[\"id\"][$lig_tag->id_tag] non défini.<br />";
