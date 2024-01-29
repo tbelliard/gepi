@@ -183,7 +183,7 @@ $precedent_suivant='';
 if($_SESSION['statut']=='professeur') {
 	if((getSettingAOui('active_cahiers_texte'))||
 	(getSettingAOui('acces_cdt_prof'))) {
-		$retour='../cahier_de_texte_2/index.php';
+		$retour='../cahier_texte_2/index.php';
 
 		//=======================================
 		echo "<p class='bold'><a href='".$retour."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
