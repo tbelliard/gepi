@@ -13,4 +13,3 @@ if ($gepiShowGenTime == "yes") {
    $pageload_time = $pageload_endtime - $pageload_starttime;
    $tbs_microtime=$pageload_time;
 }
-?>
