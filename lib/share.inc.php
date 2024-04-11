@@ -4785,6 +4785,28 @@ function nom_photo($_elenoet_ou_login, $repertoire = "eleves", $arbo = 1) {
 }
 
 
+// 20240411
+/**
+ * Retourne le type de l'image
+ *
+ * @param string $file_source fichier à identifier
+ * @return type du fichier s'il est identifié, false sinon
+ */
+function get_image_type($file_source) {
+	if (function_exists('exif_imagetype')) {
+		return exif_imagetype($file_source);
+	}
+	else {
+		if ( ( list($width, $height, $type, $attr) = getimagesize( $file_source ) ) !== false ) {
+			return $type;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+
 /**
  * Redimensionne un fichier photo JPG en conservant son ratio d'origine
  * Si les dimensions du fichier source sont plus petites que celles du
@@ -4800,8 +4822,28 @@ function nom_photo($_elenoet_ou_login, $repertoire = "eleves", $arbo = 1) {
  */
 function redim_photo($file_source, $largeur_destination, $hauteur_destination, $angle_rotation = 0) {
 	if (!is_file($file_source)) return false;
-	$source = imagecreatefromjpeg($file_source);
-	if ($source === false) return false;
+
+	// 20240411
+	//echo "<p>".get_image_type($file_source)."</p>";
+	if(!$img_type=get_image_type($file_source)) return false;
+	if(($img_type=='IMAGETYPE_JPEG')||($img_type=='2')) {
+		$source = imagecreatefromjpeg($file_source);
+	}
+	elseif(($img_type=='IMAGETYPE_PNG')||($img_type=='3')) {
+		$source = imagecreatefrompng($file_source);
+	}
+	/*
+	// Pb dans modify_eleve.php avec les images webp
+	// La copie de tmp vers dest ne se fait pas ???
+	elseif(($img_type=='IMAGETYPE_WEBP')||($img_type=='18')) {
+		$source = imagecreatefromwebp($file_source);
+	}
+	*/
+	else {
+		return false;
+	}
+
+	if ($source===false) return false;
 
 	if ($angle_rotation != 0) $source = imagerotate($source, -$angle_rotation, 0xFFFFFF);
 	if ($source === false) return false;
