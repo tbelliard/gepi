@@ -1624,7 +1624,7 @@ Patientez pendant l'extraction des données... merci.
 			$chaine_acces_modif_tel="";
 			if($acces_tel_ele) {
 				if($acces_saisie_tel_ele) {
-					$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?login_ele=".$ele_login."' onclick=\"affiche_corrige_tel_ele('".$ele_login."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
+					$chaine_acces_modif_tel="<div style='float:right; width:16px;margin-left:0.5em;'><a href='$gepiPath/gestion/saisie_contact.php?login_ele=".$ele_login."' onclick=\"affiche_corrige_tel_ele('".$ele_login."');return false;\" target='_blank' title=\"Modifier/corriger les numéros de téléphone, email.\nAprès une modification, il faudra rafraichir la présente page.\"><img src='".$gepiPath."/images/edit16.png' class='icone16' alt='Éditer' /></a></div>\n";
 				}
 
 				if((isset($tab_ele["tel_pers"]))&&($tab_ele["tel_pers"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {

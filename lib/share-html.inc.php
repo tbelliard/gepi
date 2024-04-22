@@ -7112,7 +7112,7 @@ function necessaire_modif_tel_resp_ele() {
 		}
 		email='';
 		if(document.getElementById('email')) {
-			mel=document.getElementById('email').value;
+			email=document.getElementById('email').value;
 		}
 
 		//new Ajax.Updater($('div_modif_tel_resp_ou_ele'), '$gepiPath/gestion/saisie_contact.php?mode=js&valide_correction_telephone&pers_id='+pers_id,{method: 'get'});
