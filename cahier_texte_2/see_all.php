@@ -162,7 +162,7 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //**************** EN-TETE *****************
 if ($current_imprime=='n') {
 	$titre_page = "Cahier de textes - Vue d'ensemble";
-	if(isset($current_group_list_classes) {
+	if(isset($current_group_list_classes)) {
 	$titre_page=$current_group_list_classes." ".$titre_page;
 	}
 }
