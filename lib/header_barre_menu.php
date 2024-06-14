@@ -128,8 +128,15 @@ echo '<!--[if lt IE 7]>
 	}else{$barre_textes = '';}
 
 	// Module carnet de notes
-	if(getSettingValue("active_carnets_notes") == 'y'){
+	if(getSettingValue("active_carnets_notes") == 'y') {
 		// Cahiers de notes
+
+		// 20240111
+		$nom_cc=getSettingValue('nom_cc');
+		if($nom_cc=='') {
+			$nom_cc="Évaluations cumul";
+		}
+
 		$barre_note = '<li class="li_inline"><a href="'.$gepiPath.'/cahier_notes/index.php"'.insert_confirm_abandon().'>Notes</a>'."\n";
 			$barre_note .= '	<ul class="niveau2">'."\n";
 				foreach($mes_groupes as $tmp_group) {
@@ -154,6 +161,14 @@ echo '<!--[if lt IE 7]>
 								$barre_note.='</a>';
 								$barre_note.='</li>'."\n";
 							}
+
+							// 20240111
+							$tmp_id_racine_menu=get_valeur_champ('cn_cahier_notes', "id_groupe='".$tmp_group['id']."'", 'id_cahier_notes');
+							$barre_note.= '				<li><a href="'.$gepiPath.'/cahier_notes/index_cc.php?id_racine='.$tmp_id_racine_menu.'"'.insert_confirm_abandon().'>'.$nom_cc;
+							$barre_note.='</a>';
+							$barre_note.='</li>'."\n";
+
+
 							$barre_note.= '			</ul>'."\n";
 						}
 						$barre_note.= '		</li>'."\n";
