@@ -1058,7 +1058,7 @@ if (($nb_dev == 0) and ($nb_sous_cont == 0)) {
 	} else {
 		echo "Le ";
 	}
-	echo htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite"))) . " $nom_conteneur ne contient aucune évaluation. </p>\n";
+	echo htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite"))) . " $nom_conteneur ne contient aucune évaluation.<br /><a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"><img src='../images/icons/add.png' class='icone16' /> Créer une évaluation</a></p>\n";
 
 	/**
 	 * Pied de page
