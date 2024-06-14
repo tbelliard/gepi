@@ -147,8 +147,20 @@ if(mysqli_num_rows($res)>0) {
 	// Contrôler que la personne est propriétaire du CDT.
 	$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='".$lig_ct->id_groupe."' AND login='".$_SESSION['login']."';";
 	$test=mysqli_query($mysqli, $sql);
-	if(mysqli_num_rows($res)>0) {
+	if(mysqli_num_rows($test)>0) {
 		$titre_page_title2=get_info_grp($lig_ct->id_groupe, array('classes'), '');
+
+		$sql="SELECT DISTINCT jgm.id_matiere FROM j_groupes_matieres jgm, j_groupes_professeurs jgp WHERE jgm.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."';";
+		//echo "$sql<br />";
+		$test=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($test)==1) {
+			$tmp_lig_matiere=mysqli_fetch_object($test);
+			$tmp_matiere=$tmp_lig_matiere->id_matiere;
+			$tmp_titre_page_title2=preg_replace('/^'.$tmp_matiere.' en /', '', $titre_page_title2);
+			if($tmp_titre_page_title2!='') {
+				$titre_page_title2='CDT '.$tmp_titre_page_title2;
+			}
+		}
 	}
 }
 

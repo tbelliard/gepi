@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2023 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
+* Copyright 2001, 2024 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -64,6 +64,9 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 
 if (is_numeric($id_groupe)) {
 	$current_group = get_group($id_groupe);
+	if(isset($current_group['classlist_string'])) {
+		$current_group_list_classes=$current_group['classlist_string'];
+	}
 } else {
 	$current_group = false;
 }
@@ -157,7 +160,12 @@ $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 //**************** EN-TETE *****************
-if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
+if ($current_imprime=='n') {
+	$titre_page = "Cahier de textes - Vue d'ensemble";
+	if(isset($current_group_list_classes) {
+	$titre_page=$current_group_list_classes." ".$titre_page;
+	}
+}
 require_once("../lib/header.inc.php");
 if ($current_imprime=='y') echo "<div id='container'>\n";
 //**************** FIN EN-TETE *************
