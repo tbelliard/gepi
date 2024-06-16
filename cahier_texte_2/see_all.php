@@ -204,7 +204,8 @@ if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR
 	if((isset($id_groupe))&&(is_numeric($id_groupe))) {
 		$tab_tag_type=get_tab_tag_cdt();
 
-		echo "<table class='boireaus boireaus_alt'>
+		if(isset($tab_tag_type['indice'])) {
+			echo "<table class='boireaus boireaus_alt'>
 		<thead>
 			<tr>
 				<th></th>
@@ -213,53 +214,54 @@ if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR
 			</tr>
 		</thead>
 		<tbody>";
-		foreach($tab_tag_type['indice'] as $key => $value) {
-			$afficher_ligne=false;
-			$ligne="
+			foreach($tab_tag_type['indice'] as $key => $value) {
+				$afficher_ligne=false;
+				$ligne="
 			<tr>
 				<th>".ucfirst($value['nom_tag'])."</th><td>";
-			$sql="SELECT DISTINCT cte.id_ct FROM ct_entry cte, 
-							ct_tag ctt 
-						WHERE cte.id_groupe='".$id_groupe."' AND 
-							cte.id_ct=ctt.id_ct AND 
-							ctt.id_tag='".$value['id']."'";
-			$res_cpt_tag=mysqli_query($mysqli, $sql);
-			if(mysqli_num_rows($res_cpt_tag)>0) {
-				$afficher_ligne=true;
-				//$ligne.="<a href=\"javascript:affichage_notices_tag(".$value['id'].", 'c')\">".mysqli_num_rows($res_cpt_tag)."</a>";
-				//$chaine_id_ct='';
-				$lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag);
-				$chaine_id_ct=$lig_id_ct_tag->id_ct;
-				while($lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag)) {
-					$chaine_id_ct.=', '.$lig_id_ct_tag->id_ct;
+				$sql="SELECT DISTINCT cte.id_ct FROM ct_entry cte, 
+								ct_tag ctt 
+							WHERE cte.id_groupe='".$id_groupe."' AND 
+								cte.id_ct=ctt.id_ct AND 
+								ctt.id_tag='".$value['id']."'";
+				$res_cpt_tag=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_cpt_tag)>0) {
+					$afficher_ligne=true;
+					//$ligne.="<a href=\"javascript:affichage_notices_tag(".$value['id'].", 'c')\">".mysqli_num_rows($res_cpt_tag)."</a>";
+					//$chaine_id_ct='';
+					$lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag);
+					$chaine_id_ct=$lig_id_ct_tag->id_ct;
+					while($lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag)) {
+						$chaine_id_ct.=', '.$lig_id_ct_tag->id_ct;
+					}
+					$ligne.="<a href=\"javascript:affichage_notices_tag(new Array(".$chaine_id_ct."), 'c')\" title=\"N'afficher que ces notices.\">".mysqli_num_rows($res_cpt_tag)."</a>";
 				}
-				$ligne.="<a href=\"javascript:affichage_notices_tag(new Array(".$chaine_id_ct."), 'c')\" title=\"N'afficher que ces notices.\">".mysqli_num_rows($res_cpt_tag)."</a>";
-			}
-			$ligne.="</td><td>";
-			$sql="SELECT DISTINCT cte.id_ct FROM ct_devoirs_entry cte, 
-							ct_tag ctt 
-						WHERE cte.id_groupe='".$id_groupe."' AND 
-							cte.id_ct=ctt.id_ct AND 
-							ctt.id_tag='".$value['id']."'";
-			$res_cpt_tag=mysqli_query($mysqli, $sql);
-			if(mysqli_num_rows($res_cpt_tag)>0) {
-				$afficher_ligne=true;
-				//$ligne.="<a href=\"javascript:affichage_notices_tag(".$value['id'].", 't')\">".mysqli_num_rows($res_cpt_tag)."</a>";
-				$lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag);
-				$chaine_id_ct=$lig_id_ct_tag->id_ct;
-				while($lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag)) {
-					$chaine_id_ct.=', '.$lig_id_ct_tag->id_ct;
+				$ligne.="</td><td>";
+				$sql="SELECT DISTINCT cte.id_ct FROM ct_devoirs_entry cte, 
+								ct_tag ctt 
+							WHERE cte.id_groupe='".$id_groupe."' AND 
+								cte.id_ct=ctt.id_ct AND 
+								ctt.id_tag='".$value['id']."'";
+				$res_cpt_tag=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_cpt_tag)>0) {
+					$afficher_ligne=true;
+					//$ligne.="<a href=\"javascript:affichage_notices_tag(".$value['id'].", 't')\">".mysqli_num_rows($res_cpt_tag)."</a>";
+					$lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag);
+					$chaine_id_ct=$lig_id_ct_tag->id_ct;
+					while($lig_id_ct_tag=mysqli_fetch_object($res_cpt_tag)) {
+						$chaine_id_ct.=', '.$lig_id_ct_tag->id_ct;
+					}
+					$ligne.="<a href=\"javascript:affichage_notices_tag(new Array(".$chaine_id_ct."), 't')\" title=\"N'afficher que ces notices.\">".mysqli_num_rows($res_cpt_tag)."</a>";
 				}
-				$ligne.="<a href=\"javascript:affichage_notices_tag(new Array(".$chaine_id_ct."), 't')\" title=\"N'afficher que ces notices.\">".mysqli_num_rows($res_cpt_tag)."</a>";
+				$ligne.="</td></tr>";
+				if($afficher_ligne) {
+					echo $ligne;
+				}
 			}
-			$ligne.="</td></tr>";
-			if($afficher_ligne) {
-				echo $ligne;
-			}
-		}
-		echo "
+			echo "
 		</tbody>
 	</table>";
+		}
 	}
 	echo "</div>";
 }
