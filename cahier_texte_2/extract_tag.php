@@ -296,7 +296,8 @@ if((isset($mode))&&($mode=="extraire")) {
 						$tab_notices["t"][$cpt]['contenu']="<div style='float:right; width:16px;'><a href='../cahier_texte_2/affiche_notice.php?id_ct=".$lig['id_ct']."&type_notice=t' title=\"Voir la notice\" target='_blank'><img src='../images/icons/notices_CDT_travail.png' width='16' height='16' /></a></div>".$tab_notices["t"][$cpt]['contenu'];
 					}
 
-					$sql="SELECT DISTINCT ct.id_tag FROM ct_tag ct,ct.commentaire WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='t';";
+					$sql="SELECT DISTINCT ct.id_tag, ct.commentaire FROM ct_tag ct WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='t';";
+					//echo "$sql<br />";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig2=mysqli_fetch_object($res2)) {
 						$tab_notices["t"][$cpt]["id_tag"][]=$lig2->id_tag;
@@ -324,7 +325,8 @@ if((isset($mode))&&($mode=="extraire")) {
 						$tab_notices["p"][$cpt]['contenu']="<div style='float:right; width:16px;'><a href='../cahier_texte_2/affiche_notice.php?id_ct=".$lig['id_ct']."&type_notice=t' title=\"Voir la notice\" target='_blank'><img src='../images/icons/notices_CDT_privee.png' width='16' height='16' /></a></div>".$tab_notices["p"][$cpt]['contenu'];
 					}
 
-					$sql="SELECT DISTINCT ct.id_tag FROM ct_tag ct,ct.commentaire WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='p';";
+					$sql="SELECT DISTINCT ct.id_tag, ct.commentaire FROM ct_tag ct WHERE ct.id_ct='".$lig['id_ct']."' AND ct.type_ct='p';";
+					//echo "$sql<br />";
 					$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig2=mysqli_fetch_object($res2)) {
 						$tab_notices["p"][$cpt]["id_tag"][]=$lig2->id_tag;
@@ -650,16 +652,18 @@ else {
 					}
 				}
 				$chaine_tags="";
-				for($loop2=0;$loop2<count($tab[$loop]["id_tag"]);$loop2++) {
-					if($loop2>0) {
-						$chaine_tags.=", ";
-					}
+				if((isset($tab[$loop]))&&(isset($tab[$loop]["id_tag"]))) {
+					for($loop2=0;$loop2<count($tab[$loop]["id_tag"]);$loop2++) {
+						if($loop2>0) {
+							$chaine_tags.=", ";
+						}
 
-					if(isset($tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["drapeau"])) {
-						$chaine_tags.="<img src='../".$tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["drapeau"]."' class='icone16' title=\"".$tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["nom_tag"]."\" />";
-					}
-					else {
-						$chaine_tags.=$tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["nom_tag"];
+						if(isset($tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["drapeau"])) {
+							$chaine_tags.="<img src='../".$tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["drapeau"]."' class='icone16' title=\"".$tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["nom_tag"]."\" />";
+						}
+						else {
+							$chaine_tags.=$tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["nom_tag"];
+						}
 					}
 				}
 				echo "
