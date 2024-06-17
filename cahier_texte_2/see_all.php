@@ -1047,7 +1047,7 @@ if(($id_groupe=='Toutes_matieres')&&
 
 echo "<hr />\n";
 
-$test_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$test_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu FROM ct_entry WHERE (id_groupe='$id_groupe')");
 $nb_test = mysqli_num_rows($test_cahier_texte);
 if ($nb_test == 0) {
 	echo "\n<h2 class='gepi centre_texte'>\n";
@@ -1101,6 +1101,15 @@ if ($infos_generales != '') {
 	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
 
 // 20200526 : Affichage/masquage des notices de tel type
+// 20240617 : N'afficher les boutons que s'il y a des notices de compte-rendus et de travaux à faire
+$sql="SELECT 1=1 FROM ct_entry WHERE id_groupe='".$id_groupe."' and date_ct!='' LIMIT 1;";
+//echo "$sql<br />";
+$test_ct_entry=mysqli_query($GLOBALS["mysqli"], $sql);
+
+$sql="SELECT 1=1 FROM ct_devoirs_entry WHERE id_groupe='".$id_groupe."' and date_ct!='' LIMIT 1;";
+//echo "$sql<br />";
+$test_ct_devoirs_entry=mysqli_query($GLOBALS["mysqli"], $sql);
+
 echo "
 <div id='fixe' class='no_print'>
 	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables_fixe' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
@@ -1108,11 +1117,16 @@ echo "
 	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables_fixe' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
 </div>
 
-<div id='div_masquage_type_notices' style='float:right; width: 60px; margin:3px;'>
+<div id='div_masquage_type_notices' style='float:right; width: 60px; margin:3px;'>";
+
+if((mysqli_num_rows($test_ct_devoirs_entry)>0)&&(mysqli_num_rows($test_ct_entry)>0)) {
+	echo "
 	<a href='#' onclick=\"alterne_affichage_notices('c'); return false;\" id='a_alterne_affichage_notices_c' title=\"Afficher/masquer les notices de compte-rendus de séance.\"><img src='../images/icons/notices_CDT_compte_rendu.png' class='icone16' id='img_alterne_affichage_notices_c' /></a>
 
-	<a href='#' onclick=\"alterne_affichage_notices('t'); return false;\" id='a_alterne_affichage_notices_t' title=\"Afficher/masquer les notices de travail à faire.\"><img src='../images/icons/notices_CDT_travail.png' class='icone16' id='img_alterne_affichage_notices_t' /></a>
+	<a href='#' onclick=\"alterne_affichage_notices('t'); return false;\" id='a_alterne_affichage_notices_t' title=\"Afficher/masquer les notices de travail à faire.\"><img src='../images/icons/notices_CDT_travail.png' class='icone16' id='img_alterne_affichage_notices_t' /></a>";
+}
 
+echo "
 	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
 
 	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
