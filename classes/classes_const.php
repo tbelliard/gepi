@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2020 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2024 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -52,6 +52,9 @@ include "../lib/periodes.inc.php";
 $_SESSION['chemin_retour'] = $gepiPath."/classes/classes_const.php?id_classe=".$id_classe;
 
 $explication_motif_bloquant_suppression_eleve_de_la_classe="La présence de moyennes, appréciations ou avis du conseil de classe est bloquante pour la suppression d'un élève d'une classe.<br />Vous pouvez demander aux professeurs de vider leurs notes et appréciations pour le ou les élèves en question.<br />Sinon, un compte de statut 'secours' permet de corriger/vider des moyennes, appréciations et/ou avis du conseil de classe en se rendant dans la <em>rubrique Saisie/Bulletin : saisie des moyennes et des appréciations par matière/Choix d'un élève</em>.";
+
+$aff_debug=false;
+if($aff_debug) {debug_var();}
 
 if (isset($is_posted)) {
 	check_token();
@@ -104,10 +107,14 @@ if (isset($is_posted)) {
 			$call_regime = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
 			$nb_test_regime = mysqli_num_rows($call_regime);
 			if ($nb_test_regime == 0) {
-				$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_regime SET login='$login_eleve',     doublant='$reg_doublant', regime='$reg_regime'");
+				$sql="INSERT INTO j_eleves_regime SET login='$login_eleve',     doublant='$reg_doublant', regime='$reg_regime';";
+				if($aff_debug) {echo "$sql<br />";}
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)) $reg_ok = 'no';
 			} else {
-				$reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE j_eleves_regime SET doublant = '$reg_doublant', regime = '$reg_regime'  WHERE login='$login_eleve'");
+				$sql="UPDATE j_eleves_regime SET doublant = '$reg_doublant', regime = '$reg_regime'  WHERE login='$login_eleve';";
+				if($aff_debug) {echo "$sql<br />";}
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)) $reg_ok = 'no';
 			}
 
@@ -123,12 +130,12 @@ if (isset($is_posted)) {
 			//=========================
 
 			$sql="SELECT professeur FROM j_eleves_professeurs WHERE (login = '$login_eleve' AND id_classe='$id_classe')";
-			//echo "$sql<br />";
+			if($aff_debug) {echo "$sql<br />";}
 			$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($call_profsuivi_eleve)>1) {
 				// ANOMALIE&nbsp;: On fait le ménage
 				$sql="DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')";
-				//echo "$sql<br />";
+				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)){
 					$reg_ok = 'no';
@@ -145,7 +152,7 @@ if (isset($is_posted)) {
 			//echo "\$eleve_profsuivi=$eleve_profsuivi<br />\n";
 			if (($reg_prof == '(vide)') and ($eleve_profsuivi != '')) {
 				$sql="DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')";
-				//echo "$sql<br />";
+				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)){
 					$reg_ok = 'no';
@@ -156,10 +163,11 @@ if (isset($is_posted)) {
 				// Problème de doublon
 				//$sql="UPDATE j_eleves_professeurs SET professeur ='$reg_prof' WHERE (login='$login_eleve' AND id_classe='$id_classe')";
 				$sql="DELETE FROM j_eleves_professeurs WHERE (login='$login_eleve' AND id_classe='$id_classe')";
-				//echo "$sql<br />";
+				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
+
 				$sql="INSERT INTO j_eleves_professeurs VALUES ('$login_eleve', '$reg_prof', '$id_classe')";
-				//echo "$sql<br />";
+				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)){
 					$reg_ok = 'no';
@@ -168,7 +176,7 @@ if (isset($is_posted)) {
 			}
 			if  (($reg_prof != '(vide)') and ($eleve_profsuivi == '')) {
 				$sql="INSERT INTO j_eleves_professeurs VALUES ('$login_eleve', '$reg_prof', '$id_classe')";
-				//echo "$sql<br />";
+				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)){
 					$reg_ok = 'no';
@@ -186,11 +194,13 @@ if (isset($is_posted)) {
 			//echo "\$reg_cperesp=$reg_cperesp<br />\n";
 			//=========================
 
-			$call_cperesp_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT cpe_login FROM j_eleves_cpe WHERE e_login = '$login_eleve'");
+			$sql="SELECT cpe_login FROM j_eleves_cpe WHERE e_login = '$login_eleve';";
+			if($aff_debug) {echo "$sql<br />";}
+			$call_cperesp_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 			$eleve_cperesp = @old_mysql_result($call_cperesp_eleve, '0', 'cpe_login');
 			if (($reg_cperesp == '(vide)') and ($eleve_cperesp != '')) {
 				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve'";
-				//echo "$sql<br />";
+				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)){
 					$reg_ok = 'no';
@@ -198,8 +208,18 @@ if (isset($is_posted)) {
 				}
 			}
 			if  (($reg_cperesp != '(vide)') and ($eleve_cperesp != '') and ($reg_cperesp != $eleve_cperesp)) {
-				$sql="UPDATE j_eleves_cpe SET cpe_login ='$reg_cperesp' WHERE e_login='$login_eleve'";
-				//echo "$sql<br />";
+				if(mysqli_num_rows($call_cperesp_eleve)>1) {
+					// Ca ne devrait pas arriver
+					$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve'";
+					if($aff_debug) {echo "$sql<br />";}
+					$menage = mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$sql="INSERT INTO j_eleves_cpe VALUES ('$login_eleve', '$reg_cperesp')";
+				}
+				else {
+					$sql="UPDATE j_eleves_cpe SET cpe_login ='$reg_cperesp' WHERE e_login='$login_eleve'";
+				}
+				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)){
 					$reg_ok = 'no';
@@ -208,7 +228,7 @@ if (isset($is_posted)) {
 			}
 			if  (($reg_cperesp != '(vide)') and ($eleve_cperesp == '')) {
 				$sql="INSERT INTO j_eleves_cpe VALUES ('$login_eleve', '$reg_cperesp')";
-				//echo "$sql<br />";
+				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)){
 					$reg_ok = 'no';
@@ -258,17 +278,17 @@ if (isset($is_posted)) {
 
 				if ($del_eleve[$i] == 'yes') {
 					$sql="SELECT * FROM matieres_notes WHERE (login='$eleve_login' and periode = '$i');";
-					//echo "$sql<br />";
+					if($aff_debug) {echo "$sql<br />";}
 					$test = mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_test = mysqli_num_rows($test);
 
 					$sql="SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' and periode='$i')";
-					//echo "$sql<br />";
+					if($aff_debug) {echo "$sql<br />";}
 					$test_app = mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_test_app = mysqli_num_rows($test_app);
 
 					$sql="SELECT * FROM avis_conseil_classe WHERE (login='$eleve_login' and periode='$i' and avis!='')";
-					//echo "$sql<br />";
+					if($aff_debug) {echo "$sql<br />";}
 					$test_app_conseil = mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_test_app_conseil = mysqli_num_rows($test_app_conseil);
 
@@ -320,7 +340,7 @@ if (isset($is_posted)) {
 		$message_enregistrement = "Opération Impossible (voir message d'avertissement en rouge).";
 		$affiche_message = 'yes';
 	} else {
-	//$message_enregistrement = "Il y a eu un problème lors de l'enregistrement";
+		//$message_enregistrement = "Il y a eu un problème lors de l'enregistrement";
 		$message_enregistrement="Il y a eu un problème lors de l'enregistrement";
 		$affiche_message = 'yes';
 	}
