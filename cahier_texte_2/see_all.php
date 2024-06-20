@@ -223,7 +223,9 @@ if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR
 								ct_tag ctt 
 							WHERE cte.id_groupe='".$id_groupe."' AND 
 								cte.id_ct=ctt.id_ct AND 
+								ctt.type_ct='c' AND 
 								ctt.id_tag='".$value['id']."'";
+				//echo "$sql<br />";
 				$res_cpt_tag=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res_cpt_tag)>0) {
 					$afficher_ligne=true;
@@ -241,7 +243,9 @@ if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR
 								ct_tag ctt 
 							WHERE cte.id_groupe='".$id_groupe."' AND 
 								cte.id_ct=ctt.id_ct AND 
+								ctt.type_ct='t' AND 
 								ctt.id_tag='".$value['id']."'";
+				//echo "$sql<br />";
 				$res_cpt_tag=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res_cpt_tag)>0) {
 					$afficher_ligne=true;
