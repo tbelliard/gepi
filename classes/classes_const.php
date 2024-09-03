@@ -198,7 +198,8 @@ if (isset($is_posted)) {
 			if($aff_debug) {echo "$sql<br />";}
 			$call_cperesp_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 			$eleve_cperesp = @old_mysql_result($call_cperesp_eleve, '0', 'cpe_login');
-			if (($reg_cperesp == '(vide)') and ($eleve_cperesp != '')) {
+			//if (($reg_cperesp == '(vide)') and ($eleve_cperesp != '')) {
+			if ((($reg_cperesp == '(vide)') and ($eleve_cperesp != ''))||(mysqli_num_rows($call_cperesp_eleve)>1)) {
 				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve'";
 				if($aff_debug) {echo "$sql<br />";}
 				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
