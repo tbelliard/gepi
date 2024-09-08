@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2024 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -252,12 +252,18 @@ echo "<script type='text/javascript'>
 </script>\n";
 
 if(isset($tab_id_classe)) {
-	echo "|<a href='".$_SERVER['PHP_SELF']."'> Choisir d'autres classes </a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'> Choisir d'autres classes </a>";
 }
 elseif(isset($id_classe)) {
-	echo "|<a href='".$_SERVER['PHP_SELF']."' title=\"Définir le $gepi_prof_suivi pour une sélection de plusieurs classes\"> Effectuer une sélection de classes </a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."' title=\"Définir le $gepi_prof_suivi pour une sélection de plusieurs classes\"> Effectuer une sélection de classes </a>";
 }
-echo "|<a href='help.php'> Aide </a></p>\n";
+//echo " | <a href='help.php'> Aide </a>";
+
+if($_SESSION['statut']=='administrateur') {
+	echo " | <a href='scol_resp.php'>Paramétrage Scolarité</a> | <a href='cpe_resp.php'>Paramétrage CPE</a>";
+}
+
+echo "</p>\n";
 echo "</form>\n";
 //=========================================================================
 

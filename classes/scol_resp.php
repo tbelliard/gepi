@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2018 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2024 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -153,6 +153,12 @@ echo add_token_field();
 if(!isset($quitter_la_page)){
 	echo "<p class='bold'>";
 	echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
+
+	if($_SESSION['statut']=='administrateur') {
+		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+		echo " | <a href='cpe_resp.php'>Paramétrage CPE</a> | <a href='prof_suivi.php'>Paramétrage ".$gepi_prof_suivi."</a>";
+	}
+
 	echo "</p>\n";
 }
 else{
@@ -160,6 +166,12 @@ else{
 	// Après modification éventuelle, il faut quitter cette page.
 	echo "<p class='bold'>";
 	echo "<a href='index.php' onClick=\"if(confirm_abandon (this, change, '$themessage')){self.close()};return false;\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a>";
+
+	if($_SESSION['statut']=='administrateur') {
+		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+		echo " | <a href='cpe_resp.php'>Paramétrage CPE</a> | <a href='prof_suivi.php'>Paramétrage ".$gepi_prof_suivi."</a>";
+	}
+
 	echo "</p>\n";
 
 	echo "<input type='hidden' name='quitter_la_page' value='y' />\n";
