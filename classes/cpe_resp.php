@@ -58,10 +58,19 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_cperesp")) {
                 $eleve_login = old_mysql_result($call_eleves, $j, "login");
                 $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_cpe WHERE e_login='$eleve_login'");
                 $nbtest = mysqli_num_rows($test);
+                if ($nbtest>1) {
+                    $sql="DELETE FROM j_eleves_cpe WHERE e_login='$eleve_login';";
+                    //echo "$sql<br />";
+                    $menage = mysqli_query($GLOBALS["mysqli"], $sql);
+                    if (!($menage)){
+                        $msg .= "Erreur lors du ménage sur les associations CPE pour $eleve_login<br />";
+                        $notok=true;
+                    }
+                }
                 if ($nbtest == "0") { // Si aucun enregistrement, on en créé un nouveau
                     $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_cpe SET e_login='$eleve_login', cpe_login='" . $_POST['reg_cpelogin'] . "'");
                     if (!$reg_data) {
-                        $msg .= "Erreur lors lors de l'insertion d'un nouvel enregistrement.";
+                        $msg .= "Erreur lors de l'insertion d'un nouvel enregistrement concernant $eleve_login avec " . $_POST['reg_cpelogin'] . ".<br />";
                         $notok = true;
                     }
                     else {
@@ -72,7 +81,7 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_cperesp")) {
                     if ($test_cpelogin != $_POST['reg_cpelogin']) {
                         $reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE j_eleves_cpe SET cpe_login='". $_POST['reg_cpelogin'] . "' WHERE e_login='$eleve_login'");
                         if (!$reg_data) { 
-                            $msg .= "Erreur lors de la mise à jour d'un enregistrement.";
+                            $msg .= "Erreur lors de la mise à jour d'un enregistrement concernant $eleve_login avec " . $_POST['reg_cpelogin'] . ".<br />";
                             $notok = true;
                         }
                         else {
@@ -84,12 +93,12 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_cperesp")) {
         }
     }
     if ($notok == true) {
-        $msg .= "Il y a eu des erreurs lors de l'enregistrement des données";
+        $msg .= "Il y a eu des erreurs lors de l'enregistrement des données.<br />";
     } elseif($nb_reg>0) {
-        $msg .= $nb_reg." association(s) élève/cpe effectuée(s).";
+        $msg .= $nb_reg." association(s) élève/cpe effectuée(s).<br />";
     }
     else {
-        $msg .= "Aucun enregistrement n'a été effectué.";
+        $msg .= "Aucun enregistrement n'a été effectué.<br />";
     }
 }
 
