@@ -77,6 +77,9 @@ if (!acces_cdt()) {
 	die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //include "../lib/mincals.inc";
 
 //==========================================================================
@@ -609,7 +612,10 @@ elseif($mode=='professeur') {
 		}
 	}
 
-	$groups=get_groups_for_prof($login_prof);
+	// 20241019
+	//$groups=get_groups_for_prof($login_prof);
+	$tab_champs=array('classes', 'matieres', 'profs');
+	$groups=get_groups_for_prof($login_prof, NULL, $tab_champs);
 
 	// Passage à la semaine précédente/courante/suivante
 	include("../lib/calendrier/calendrier.class.php");
@@ -1226,8 +1232,11 @@ elseif(($_SESSION['statut']=='responsable')||($_SESSION['statut']=='eleve')) {
 */
 
 if($mode=='professeur') {
-	//$tab_champs=array();
-	$tab_grp=get_groups_for_prof($_SESSION['login']);
+	// 20241019
+	//$tab_grp=get_groups_for_prof($_SESSION['login']);
+	$tab_champs=array('classes');
+	$tab_grp=get_groups_for_prof($_SESSION['login'], NULL, $tab_champs);
+
 }
 elseif($mode=='classe') {
 	$tab_grp=get_groups_for_class($id_classe);

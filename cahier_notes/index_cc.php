@@ -52,6 +52,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
 	die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 require('cc_lib.php');
 
 $id_racine = isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);

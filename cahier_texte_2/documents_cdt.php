@@ -59,6 +59,9 @@ if (!checkAccess()) {
 	die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 $msg="";
 
 $entete=isset($_POST['entete']) ? $_POST['entete'] : (isset($_GET['entete']) ? $_GET['entete'] : 'y');
@@ -249,7 +252,10 @@ else {
 		// Choisir un groupe:
 		// Choisir Compte-rendus et/ou devoirs à faire
 
-		$tab=get_groups_for_prof($_SESSION['login']);
+		// 20241019
+		//$tab=get_groups_for_prof($_SESSION['login']);
+		$tab_champs=array('classes');
+		$tab=get_groups_for_prof($_SESSION['login'], NULL, $tab_champs);
 
 		if(count($tab)==0) {
 			echo "<p style='color:red'>Vous ne semblez être enseignant dans aucun groupe.</p>";
@@ -271,5 +277,6 @@ else {
 	}
 
 }
-
+// 20241019
+require("../lib/footer.inc.php");
 ?>

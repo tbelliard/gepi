@@ -55,6 +55,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
 	die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 // Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
 $aff_temoin_serveur_hors_entete="y";
 

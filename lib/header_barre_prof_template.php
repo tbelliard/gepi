@@ -44,6 +44,9 @@ if (!$_SESSION["login"]) {
     die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 // Fonction générant le menu Plugins
 include("tbs_menu_plugins.inc.php");
 

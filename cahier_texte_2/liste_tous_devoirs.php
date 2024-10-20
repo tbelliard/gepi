@@ -58,6 +58,9 @@ if (!acces_cdt()) {
     die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 if(!getSettingAOui("active_cahiers_texte")) {
 	// On doit avoir acces_cdt_prof=y
 	echo "<p style='text-align:center; color:red'>Ces cahiers de textes sont personnels. Ils ne sont pas accessibles des élèves, parents,...</p>";

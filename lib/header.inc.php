@@ -46,6 +46,10 @@ if(isset($_SESSION['statut'])) {
 	switch ($_SESSION['statut']) {
 		case 'professeur':
 			include_once $racineGepi.'/edt_organisation/fonctions_calendrier.php';
+
+			// 20241019
+			$GLOBALS['dont_get_modalite_elect']=true;
+
 			break;
 		default :
 			break;

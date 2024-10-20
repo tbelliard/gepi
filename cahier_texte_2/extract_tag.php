@@ -71,6 +71,9 @@ if((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui('acces_cdt_prof')
 	die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //debug_var();
 
 //=======================
@@ -521,7 +524,10 @@ if(!isset($mode)) {
 	<input type='checkbox' name='type_notice[]' id='type_notice_p' value='p' onchange=\"checkbox_change('type_notice_p')\"".$checked." /><label for='type_notice_p' id='texte_type_notice_p'> notices privées</label><br />";
 
 		// Checkbox des groupes
-		$groups=get_groups_for_prof($_SESSION['login']);
+		// 20241019
+		//$groups=get_groups_for_prof($_SESSION['login']);
+		$tab_champs=array('matieres', 'classes', 'profs');
+		$groups=get_groups_for_prof($_SESSION['login'], NULL, $tab_champs);
 		if(count($groups)>0) {
 			echo "
 	<p style='text-indent:-3em; margin-left:3em;'>Se limiter aux notices des enseignements suivants&nbsp;:<br />";

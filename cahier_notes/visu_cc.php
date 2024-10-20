@@ -55,6 +55,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
 	die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 @setlocale(LC_NUMERIC,'C');
 
 require('cc_lib.php');

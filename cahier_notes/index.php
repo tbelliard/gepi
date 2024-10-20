@@ -73,6 +73,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
 
 //debug_var();
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 $msg="";
 
 // 20210301

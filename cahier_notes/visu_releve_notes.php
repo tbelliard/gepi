@@ -41,6 +41,9 @@ if (!checkAccess()) {
     die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 // rajout christian
 
 function verif_num($texte_ver) {

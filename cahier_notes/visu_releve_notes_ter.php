@@ -47,6 +47,9 @@ if (!checkAccess()) {
 	die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 $nom_cc=getSettingValue('nom_cc');
 if($nom_cc=='') {
 	$nom_cc="evaluation-cumul";

@@ -45,6 +45,9 @@ if (!acces_cdt()) {
     die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 // Vérification : est-ce que l'utilisateur a le droit d'être ici ?
 if (isset($current_group["id"]) AND ($current_group["id"] != "") ) {
     if (!check_prof_groupe($_SESSION['login'],$current_group["id"])) {
@@ -55,7 +58,10 @@ if (isset($current_group["id"]) AND ($current_group["id"] != "") ) {
 
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 if (is_numeric($id_groupe)) {
-    $current_group = get_group($id_groupe);
+	// 20241019
+	//$current_group = get_group($id_groupe);
+	$tab_champs=array('classes');
+	$current_group = get_group($id_groupe, $tab_champs);
 } else {
     $current_group = false;
     die();

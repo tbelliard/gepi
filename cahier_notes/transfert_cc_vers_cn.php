@@ -65,6 +65,9 @@ if (!checkAccess()) {
 }
 //======================================================================================
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 $msg="";
 
 $id_racine=isset($_POST['id_racine']) ? $_POST['id_racine'] : (isset($_GET['id_racine']) ? $_GET['id_racine'] : NULL);

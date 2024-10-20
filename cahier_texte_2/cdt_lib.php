@@ -20,6 +20,11 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+
+	// 20241019
+	$GLOBALS['dont_get_modalite_elect']=true;
+
+
 	function html_entete($titre='Cahier de textes',$n_arbo=1,$avec_init_php='n',$chaine_login_prof="") {
 		$entete="";
 

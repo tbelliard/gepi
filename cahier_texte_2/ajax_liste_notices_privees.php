@@ -27,6 +27,9 @@ if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -95,7 +98,13 @@ else {
 	}
 	echo "</div>\n";
 
-	$groups=get_groups_for_prof($_SESSION['login']);
+
+
+	// 20241019
+	//$groups=get_groups_for_prof($_SESSION['login']);
+	$tab_champs=array('classes', 'matieres', 'profs');
+	$groups=get_groups_for_prof($_SESSION['login'], NULL, $tab_champs);
+
 	if(count($groups)==1) {
 		$current_group=$groups[0];
 		echo "<p class='bold'>".$current_group['name']." (<em>".$current_group['description']."</em>) en ".$current_group['classlist_string']."</p>\n";

@@ -52,6 +52,9 @@ if(($_SESSION['statut']=='autre')&&(!acces("/cahier_notes/visu_releve_notes_bis.
 	die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //debug_var();
 
 //================================

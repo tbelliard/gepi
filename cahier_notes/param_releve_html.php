@@ -52,6 +52,10 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 $reg_ok = 'yes';
 $msg = '';
 $bgcolor = "#DEDEDE";

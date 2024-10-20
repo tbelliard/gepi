@@ -67,6 +67,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
     die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 isset($id_conteneur);
 $id_conteneur = isset($_POST["id_conteneur"]) ? $_POST["id_conteneur"] : (isset($_GET["id_conteneur"]) ? $_GET["id_conteneur"] : NULL);
 

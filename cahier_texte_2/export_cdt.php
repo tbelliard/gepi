@@ -64,6 +64,9 @@ if((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui('acces_cdt_prof')
 	die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //=======================
 //Configuration du calendrier
 /*
@@ -360,7 +363,9 @@ if(!isset($id_groupe)) {
 				echo "<input type='hidden' name='login_prof' value='$login_prof' />\n";
 	
 				$cpt=0;
-				$groups=get_groups_for_prof($login_prof);
+				//$groups=get_groups_for_prof($login_prof);
+				$tab_champs=array('matieres', 'classes', 'profs');
+				$groups=get_groups_for_prof($login_prof, NULL, $tab_champs);
 				echo "<table class='boireaus' summary='Choix des enseignements'>\n";
 				echo "<tr>\n";
 				echo "<th>\n";
@@ -689,7 +694,10 @@ if(!isset($id_groupe)) {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
 		$cpt=0;
-		$groups=get_groups_for_prof($_SESSION['login']);
+		// 20241019
+		//$groups=get_groups_for_prof($_SESSION['login']);
+		$tab_champs=array('matieres', 'classes', 'profs');
+		$groups=get_groups_for_prof($_SESSION['login'], NULL, $tab_champs);
 		echo "<table class='boireaus' summary='Choix des enseignements'>\n";
 		echo "<tr>\n";
 		echo "<th>\n";

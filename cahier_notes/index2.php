@@ -52,6 +52,9 @@ if (!checkAccess()) {
     die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
 // On fait quelques tests si le statut est 'prof', pour vérifier les restrictions d'accès

@@ -58,6 +58,9 @@ if (!checkAccess()) {
 	die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //On vérifie si le module est activé
 if ((!getSettingAOui("active_cahiers_texte"))&&(!getSettingAOui("acces_cdt_prof"))) {
 	die("Le module n'est pas activé.");

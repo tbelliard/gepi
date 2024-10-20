@@ -65,6 +65,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
     die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 unset($id_racine);
 $id_racine=isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);
 $type_export=isset($_POST["type_export"]) ? $_POST["type_export"] : (isset($_GET["type_export"]) ? $_GET["type_export"] : NULL);

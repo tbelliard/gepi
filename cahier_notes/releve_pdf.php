@@ -68,6 +68,9 @@ if (!checkAccess()) {
 	die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //debug_var();
 /*
 foreach($_SESSION['classe'] as $key => $value) {

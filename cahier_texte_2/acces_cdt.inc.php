@@ -34,6 +34,8 @@ if (!acces_cdt()) {
 	die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
 
 require($prefixe_arbo_acces_cdt."/cahier_texte_2/cdt_lib.php");
 

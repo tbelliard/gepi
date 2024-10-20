@@ -43,6 +43,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
     die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //Initialisation pour le pdf
 $w_pdf=array();
 $w1 = "i"; //largeur de la première colonne

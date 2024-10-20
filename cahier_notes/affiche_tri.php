@@ -67,6 +67,9 @@ if (!checkAccess()) {
 	die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 $titre=isset($_POST["titre"]) ? $_POST["titre"] : (isset($_GET["titre"]) ? $_GET["titre"] : NULL);
 $chaine1= isset($_POST["chaine1"]) ? $_POST["chaine1"] : (isset($_GET["chaine1"]) ? $_GET["chaine1"] : NULL);
 $chaine2= isset($_POST["chaine2"]) ? $_POST["chaine2"] : (isset($_GET["chaine2"]) ? $_GET["chaine2"] : NULL);

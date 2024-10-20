@@ -361,7 +361,12 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		$get_profs='y';
 		$get_periodes='y';
 		$get_visibilite='y';
-		$get_modalite_elect='y';
+
+		// 20241019
+		if(!isset($GLOBALS['dont_get_modalite_elect'])) {
+			$get_modalite_elect='y';
+		}
+
 		$get_param='y';
 	}
 	else {

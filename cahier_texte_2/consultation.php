@@ -53,6 +53,9 @@ if (!checkAccess()) {
   die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //On vérifie si le module est activé
 if (!acces_cdt()) {
   tentative_intrusion(1, "Tentative d'accès au cahier de textes en consultation alors que le module n'est pas activé.");
@@ -75,8 +78,12 @@ unset($id_groupe);
 // modification Régis : traité "matiere" au cas où le javascript est désactivé
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : (isset($_POST['matiere']) ?  mb_substr(strstr($_POST['matiere'],"id_groupe="),10) : (isset($_GET["matiere"]) ?  mb_substr(strstr($_GET["matiere"],"id_groupe="),10) :  NULL)));
 if (is_numeric($id_groupe)) {
-    $current_group = get_group($id_groupe);
-    //if ($id_classe == NULL) $id_classe = $current_group["classes"]["list"][0];
+	// 20241019
+	//$current_group = get_group($id_groupe);
+	$tab_champs=array('matieres', 'classes', 'profs');
+	$current_group = get_group($id_groupe, $tab_champs);
+
+	//if ($id_classe == NULL) $id_classe = $current_group["classes"]["list"][0];
 } else {
     $current_group = false;
 }

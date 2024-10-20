@@ -48,6 +48,9 @@ if (!acces_cdt()) {
 
 //include "../lib/mincals.inc";
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 
 unset($day);
 $day = isset($_POST["day"]) ? $_POST["day"] : (isset($_GET["day"]) ? $_GET["day"] : date("d"));
@@ -63,7 +66,10 @@ unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 
 if (is_numeric($id_groupe)) {
-	$current_group = get_group($id_groupe);
+	// 20241019
+	//$current_group = get_group($id_groupe);
+	$tab_champs=array('matieres', 'classes', 'profs');
+	$current_group = get_group($id_groupe, $tab_champs);
 	if(isset($current_group['classlist_string'])) {
 		$current_group_list_classes=$current_group['classlist_string'];
 	}
@@ -517,9 +523,9 @@ if(($id_groupe=='Toutes_matieres')&&
 	}
 
 	echo "<div id='fixe' class='no_print'>
-	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables_fixe' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables_fixe' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\nCet icone n'a d'effet que s'il y a des images insérées dans le CDT.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
 
-	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables_fixe' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
+	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables_fixe' title=\"Rendre les images du CDT non cliquables.\nCet icone n'a d'effet que s'il y a des images insérées dans le CDT.\"><img src='../images/icons/image.png' class='icone16' /></a>
 </div>";
 
 	echo "<div class='no_print'>\n";
@@ -557,7 +563,7 @@ if(($id_groupe=='Toutes_matieres')&&
 		}
 
 	echo "- 
-	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\nCet icone n'a d'effet que s'il y a des images insérées dans le CDT.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
 
 	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
 
@@ -569,6 +575,9 @@ if(($id_groupe=='Toutes_matieres')&&
 			document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='none';
 			document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='';
 
+			cpt_img_cdt=0;
+
+			// CA NE VA PAS : ON COMPTE TOUTES LES IMAGES DE LA PAGE ALORS QU IL FAUDRAIT SE RESTREINDRE AUX IMAGES DANS LES CONTENUS DE SEANCE
 			img=document.getElementsByTagName('img');
 			for(i=0;i<img.length;i++) {
 				//id=img[i].getAttribute('id');
@@ -583,9 +592,15 @@ if(($id_groupe=='Toutes_matieres')&&
 
 					img[i].setAttributeNode(att);
 
+					cpt_img_cdt++;
 					//alert(i);
 				}
 			}
+
+			if(cpt_img_cdt==0) {
+				document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
+			}
+			//alert(cpt_img_cdt);
 		}
 
 		function rendre_les_images_CDT_non_cliquables() {
@@ -1116,7 +1131,7 @@ $test_ct_devoirs_entry=mysqli_query($GLOBALS["mysqli"], $sql);
 
 echo "
 <div id='fixe' class='no_print'>
-	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables_fixe' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables_fixe' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\nCet icone n'a d'effet que s'il y a des images insérées dans le CDT.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
 
 	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables_fixe' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
 </div>
@@ -1131,7 +1146,7 @@ if((mysqli_num_rows($test_ct_devoirs_entry)>0)&&(mysqli_num_rows($test_ct_entry)
 }
 
 echo "
-	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
+	<a href='#' onclick=\"rendre_les_images_CDT_cliquables(); return false;\" id='a_rendre_les_images_CDT_cliquables' title=\"Rendre les images du CDT cliquables pour une ouverture en popup.\nCet icone n'a d'effet que s'il y a des images insérées dans le CDT.\"><img src='../images/icons/image_wiz.png' class='icone16' /></a>
 
 	<a href='#' onclick=\"rendre_les_images_CDT_non_cliquables(); return false;\" id='a_rendre_les_images_CDT_non_cliquables' title=\"Rendre les images du CDT non cliquables.\"><img src='../images/icons/image.png' class='icone16' /></a>
 
@@ -1202,6 +1217,9 @@ echo "
 			document.getElementById('a_rendre_les_images_CDT_cliquables_fixe').style.display='none';
 			document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='';
 
+			cpt_img_cdt=0;
+
+			// CA NE VA PAS : ON COMPTE TOUTES LES IMAGES DE LA PAGE ALORS QU IL FAUDRAIT SE RESTREINDRE AUX IMAGES DANS LES CONTENUS DE SEANCE
 			img=document.getElementsByTagName('img');
 			for(i=0;i<img.length;i++) {
 				//id=img[i].getAttribute('id');
@@ -1216,9 +1234,16 @@ echo "
 
 					img[i].setAttributeNode(att);
 
+					cpt_img_cdt++;
+
 					//alert(i);
 				}
 			}
+
+			if(cpt_img_cdt==0) {
+				document.getElementById('a_rendre_les_images_CDT_non_cliquables_fixe').style.display='none';
+			}
+			//alert(cpt_img_cdt);
 		}
 
 		function rendre_les_images_CDT_non_cliquables() {

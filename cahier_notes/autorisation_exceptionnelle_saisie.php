@@ -42,6 +42,9 @@ if (!checkAccess()) {
 	die();
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 /*
 
 DROP TABLE IF EXISTS acces_cn;

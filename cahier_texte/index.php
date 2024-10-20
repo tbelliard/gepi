@@ -53,6 +53,9 @@ if (!acces_cdt()) {
     die("Le module n'est pas activé.");
 }
 
+// 20241019
+$GLOBALS['dont_get_modalite_elect']=true;
+
 //debug_var();
 
 $message_avertissement_navigateur = "";
@@ -170,7 +173,9 @@ if ($id_groupe != "") {
 // $id_document : tableau des identifiants des documents joints
 
 if (is_numeric($id_groupe)) {
-    $current_group = get_group($id_groupe);
+	// 20241019
+	//$current_group = get_group($id_groupe);
+	$current_group = get_group($id_groupe, array('classes'));
 } else {
     $current_group = false;
 }
