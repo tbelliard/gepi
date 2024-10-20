@@ -351,6 +351,9 @@ Cliquez pour faire apparaître cette note sur le relevé de notes.' alt='Evaluat
 
 					echo " - <a href='copie_dev.php?id_devoir=".$id_dev."' title=\"Copier le devoir et les notes vers une autre période ou un autre enseignement (Les notes ne sont copiées que si les élèves sont les mêmes).\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='' /></a>\n";
 
+					// 20240411
+					//echo " - <a href='../cahier_notes/saisie_notes.php?export_csv=y&id_groupe=".$id_groupe."&periode_num=".$periode_num."&tmp_id_devoir=$id_dev".add_token_in_url()."' title=\"Exporter en CSV.\"><img src='../images/icons/csv.png' class='icone16' /></a>\n";
+
 					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo "</li>\n";
 					$j++;
@@ -4057,6 +4060,15 @@ function cdt2_affiche_car_spec_sous_textarea() {
 			$retour.="<input type='button' name='bouton_$loop' value=\"".$tab[$loop].";\" style='background-color:$bg;' onclick=\"insere_texte_dans_ckeditor('".$tab[$loop].";')\" /> ";
 		}
 	}
+	return $retour;
+}
+
+function cdt2_affiche_TEX_sous_textarea() {
+	$retour="";
+
+	$retour.="<input type='text' name='champ_insertion_TEX' id='champ_insertion_TEX' value=\"\" /> ";
+	$retour.="<input type='button' name='bouton_insertion_TEX' value=\"->\" onclick=\"insere_TEX_dans_ckeditor(document.getElementById('champ_insertion_TEX').value)\" /> ";
+
 	return $retour;
 }
 
