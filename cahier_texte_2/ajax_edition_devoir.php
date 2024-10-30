@@ -800,6 +800,7 @@ echo "<script type='text/javascript'>
 
 		if(getPref($_SESSION["login"], 'cdt2_car_spec_sous_textarea', "no")=="yes") {
 			echo cdt2_affiche_car_spec_sous_textarea();
+			echo cdt2_affiche_TEX_sous_textarea();
 		}
 
 		//// gestion des fichiers attaché
