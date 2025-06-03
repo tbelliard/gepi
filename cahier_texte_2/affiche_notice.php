@@ -140,6 +140,7 @@ else {
 	$table_ct='ct_private_entry';
 }
 $sql="SELECT * FROM ".$table_ct." WHERE id_ct='".$id_ct."';";
+//echo "$sql<br />";
 $res=mysqli_query($mysqli, $sql);
 if(mysqli_num_rows($res)>0) {
 	$lig_ct=mysqli_fetch_object($res);
@@ -401,18 +402,31 @@ $liens_precedent_suivant="
 
 // Problème lorsqu'on a deux heures dans la même journée (ajouter un test)
 $sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct<'".$id_ct."' AND date_ct='".$lig_ct->date_ct."' ORDER BY id_ct DESC;";
+//echo "$sql<br />";
 $res_mult=mysqli_query($mysqli, $sql);
 if(mysqli_num_rows($res_mult)>0) {
 	$lig_prec=mysqli_fetch_object($res_mult);
+	//echo "Une autre séance le même jour avant celle affichée ci-dessous : ".$lig_prec->id_ct." du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."<br />";
 	$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\"><img src='../images/icons/back.png' class='icone16' alt='Séance précédente' /></a>";
 	$url_seance_precedente=$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice;
 }
 else {
+	//$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct<'".$lig_ct->date_ct."' ORDER BY date_ct DESC, id_ct ASC limit 1;";
 	$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct<'".$lig_ct->date_ct."' ORDER BY date_ct DESC limit 1;";
+	//echo "$sql<br />";
 	$res_prec=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_prec)>0) {
 		$lig_prec=mysqli_fetch_object($res_prec);
+
+		// Tester s'il y a plusieurs notices le même jour
+		// Et récupérer celle de plus grand id_ct
+		$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct='".$lig_prec->date_ct."' ORDER BY id_ct DESC limit 1;";
+		//echo "$sql<br />";
+		$res_prec=mysqli_query($mysqli, $sql);
+		$lig_prec=mysqli_fetch_object($res_prec);
+
+		//echo "Une autre séance un autre jour avant celle affichée ci-dessous : ".$lig_prec->id_ct." du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."<br />";
 		$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_prec->date_ct)."\"><img src='../images/icons/back.png' class='icone16' alt='Séance précédente' /></a>";
 		$url_seance_precedente=$_SERVER['PHP_SELF']."?id_ct=".$lig_prec->id_ct."&type_notice=".$type_notice;
@@ -433,6 +447,7 @@ else {
 	$type_notice_2='priv';
 }
 
+// Lien d'édition de la notice courante
 $liens_precedent_suivant.="
 		 <a href='index.php?id_groupe=".$lig_ct->id_groupe."&id_ct=".$id_ct."&type_notice=".$type_notice_2."' title=\"Éditer la séance du ".french_strftime("%A %d/%m/%Y", $lig_ct->date_ct)."\"><img src='../images/edit16.png' class='icone16' alt='Séance' /></a> ";
 
@@ -442,18 +457,22 @@ $liens_precedent_suivant.="
 	<div style='float:left; width:20px; text-align:center; '>";
 
 $sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct>'".$id_ct."' AND date_ct='".$lig_ct->date_ct."' ORDER BY id_ct ASC;";
+//echo "$sql<br />";
 $res_mult=mysqli_query($mysqli, $sql);
 if(mysqli_num_rows($res_mult)>0) {
 	$lig_suiv=mysqli_fetch_object($res_mult);
+	//echo "Une autre séance le même jour après celle affichée ci-dessous : ".$lig_suiv->id_ct." du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."<br />";
 	$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\"><img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' /></a>";
 	$url_seance_suivante=$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice;
 }
 else {
-	$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct>'".$lig_ct->date_ct."' ORDER BY date_ct ASC limit 1;";
+	$sql="SELECT * FROM ".$table_ct." WHERE id_groupe='".$lig_ct->id_groupe."' AND id_ct!='".$id_ct."' AND date_ct>'".$lig_ct->date_ct."' ORDER BY date_ct ASC, id_ct ASC limit 1;";
+	//echo "$sql<br />";
 	$res_suiv=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_suiv)>0) {
 		$lig_suiv=mysqli_fetch_object($res_suiv);
+		//echo "Une autre séance un autre jour après celle affichée ci-dessous : ".$lig_suiv->id_ct." du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."<br />";
 		$liens_precedent_suivant.="
 		 <a href='".$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice."' title=\"Afficher la séance du ".french_strftime("%A %d/%m/%Y", $lig_suiv->date_ct)."\"><img src='../images/icons/forward.png' class='icone16' alt='Séance suivante' /></a>";
 		$url_seance_suivante=$_SERVER['PHP_SELF']."?id_ct=".$lig_suiv->id_ct."&type_notice=".$type_notice;
