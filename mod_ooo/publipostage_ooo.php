@@ -346,7 +346,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 elseif(isset($_GET['suppr_fich'])) {
 	check_token();
 
-	if(!preg_match('/^[0-9]$/',$_GET['suppr_fich'])) {
+	if(!preg_match('/^[0-9]{1,}$/',$_GET['suppr_fich'])) {
 		$msg="Numéro de fichier invalide : ".$_GET['suppr_fich']."<br />\n";
 	}
 	else {
