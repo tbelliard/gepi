@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2021 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2025 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -304,6 +304,8 @@ else {
 	}
 
 	echo "";
+
+	// 20251102
 	echo "
 	<div align='center'>
 		<p class='bold'>Images jointes&nbsp;: 
@@ -311,7 +313,12 @@ else {
 			<img src='../images/icons/arrow-left.png' class='icone20' />
 		</a>
 		&nbsp;
-		<img src='../images/icons/image.png' class='icone20' />
+		<a href='#' onclick=\"toutes_les_images(); return false;\" title=\"Afficher toutes les images\" id='a_toutes_images'>
+			<img src='../images/icons/images.png' class='icone20' />
+		</a>
+		<a href='#' onclick=\"une_seule_image(); return false;\" title=\"N'afficher qu'une seule image\" id='a_une_seule_image' style='display:none'>
+			<img src='../images/icons/image.png' class='icone20' />
+		</a>
 		&nbsp;
 		<a href='#' onclick=\"image_suivante(); return false;\" title='Précédent'>
 			<img src='../images/icons/arrow-right.png' class='icone20' />
@@ -357,6 +364,25 @@ else {
 						}
 					}
 				}
+			}
+
+			function une_seule_image() {
+				indice=0;
+				document.getElementById('image_0').style.display='';
+
+				for(i=1;i<".count($tab_img).";i++) {
+					document.getElementById('image_'+i).style.display='none';
+				}
+				document.getElementById('a_toutes_images').style.display='';
+				document.getElementById('a_une_seule_image').style.display='none';
+			}
+
+			function toutes_les_images() {
+				for(i=0;i<".count($tab_img).";i++) {
+					document.getElementById('image_'+i).style.display='block';
+				}
+				document.getElementById('a_toutes_images').style.display='none';
+				document.getElementById('a_une_seule_image').style.display='';
 			}
 
 		</script>";
